@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{4b8b74d0-743d-46e1-bfab-8e82229f9d96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Containers">
+      <UniqueIdentifier>{221c83fa-ef3d-4f96-bd67-cae3f536051b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Memory">
+      <UniqueIdentifier>{8c700876-947c-4e61-9e52-af5676f9e6ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Math">
+      <UniqueIdentifier>{6de1ce4c-7462-4870-b4d2-56e3fb7ca7d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Utility">
+      <UniqueIdentifier>{675cbb34-71ef-4ab5-90ad-b18a1a424803}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Events">
+      <UniqueIdentifier>{6083e4c9-2b35-4d98-aef5-2b17aa4d215e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Concurrency">
+      <UniqueIdentifier>{a13e749e-be7d-4ee1-aa38-4197278e6fb8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Core\Containers\bcContainer.h">
+      <Filter>Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Containers\bcList.h">
+      <Filter>Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Containers\bcMap.h">
+      <Filter>Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Containers\bcString.h">
+      <Filter>Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Containers\bcTree.h">
+      <Filter>Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Containers\bcVector.h">
+      <Filter>Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\CoreUtility.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\CorePCH.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\CoreExceptions.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Math\BasicMath.h">
+      <Filter>Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Math\xnamath.h">
+      <Filter>Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Math\CoreMathUtility.h">
+      <Filter>Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Containers\bcBitVector.h">
+      <Filter>Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Events\bcEventHandle.h">
+      <Filter>Core\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Events\bcEventListener.h">
+      <Filter>Core\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Events\bcEvent.h">
+      <Filter>Core\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Events\bcEventManager.h">
+      <Filter>Core\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Events\bcCoreEvents.h">
+      <Filter>Core\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\bcDelegate.h">
+      <Filter>Core\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\FastDelegate.h">
+      <Filter>Core\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\a_variadic.h">
+      <Filter>Core\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\bcSingleton.h">
+      <Filter>Core\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\CoreOS.h">
+      <Filter>Core\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\Allocators.h">
+      <Filter>Core\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\bcMemMngHashMap.h">
+      <Filter>Core\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\bcMemMngList.h">
+      <Filter>Core\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\bcMemory.h">
+      <Filter>Core\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\MemBlock.h">
+      <Filter>Core\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\MemoryManagment.h">
+      <Filter>Core\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\Ptr.h">
+      <Filter>Core\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Concurrency\bcAtomic.h">
+      <Filter>Core\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Concurrency\bcConcurrencyDefinition.h">
+      <Filter>Core\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Concurrency\bcConditionVariable.h">
+      <Filter>Core\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Concurrency\bcFuture.h">
+      <Filter>Core\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Concurrency\bcLockFreeMemMng.h">
+      <Filter>Core\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Concurrency\bcMutex.h">
+      <Filter>Core\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Concurrency\bcThread.h">
+      <Filter>Core\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Concurrency\bcThreadManager.h">
+      <Filter>Core\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Concurrency\bcConcurrencyUtility.h">
+      <Filter>Core\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Containers\bcConcurrentQueue.h">
+      <Filter>Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\bcMemMngFreeList.h">
+      <Filter>Core\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Containers\bcConcurrentList.h">
+      <Filter>Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Containers\bcIterator.h">
+      <Filter>Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Containers\bcConcurrentHashMap.h">
+      <Filter>Core\Containers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Core\CorePCH.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Math\BasicMath.cpp">
+      <Filter>Core\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Math\CoreMathUtility.cpp">
+      <Filter>Core\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Containers\bcString.cpp">
+      <Filter>Core\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Containers\bcBitVector.cpp">
+      <Filter>Core\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Events\bcEventManager.cpp">
+      <Filter>Core\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Events\bcCoreEvents.cpp">
+      <Filter>Core\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Memory\FixedSizeAllocator.cpp">
+      <Filter>Core\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Memory\HeapAllocator.cpp">
+      <Filter>Core\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Memory\MemoryManagment.cpp">
+      <Filter>Core\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Memory\Ptr.cpp">
+      <Filter>Core\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Memory\StackAllocator.cpp">
+      <Filter>Core\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Concurrency\bcMutex.cpp">
+      <Filter>Core\Concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Concurrency\bcConcurrencyUtility.cpp">
+      <Filter>Core\Concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Concurrency\bcThreadManager.cpp">
+      <Filter>Core\Concurrency</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Core\Math\xnamathconvert.inl">
+      <Filter>Core\Math</Filter>
+    </None>
+    <None Include="Core\Math\xnamathmatrix.inl">
+      <Filter>Core\Math</Filter>
+    </None>
+    <None Include="Core\Math\xnamathmisc.inl">
+      <Filter>Core\Math</Filter>
+    </None>
+    <None Include="Core\Math\xnamathvector.inl">
+      <Filter>Core\Math</Filter>
+    </None>
+  </ItemGroup>
+</Project>
