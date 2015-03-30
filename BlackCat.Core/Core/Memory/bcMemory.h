@@ -45,9 +45,9 @@ namespace black_cat
 
 			virtual void* alloc(bc_memblock* p_memblock) = 0;
 
-			virtual void free(const void* p_pointer, bc_memblock* p_memblock) = 0;
+			virtual void free(void* p_pointer, bc_memblock* p_memblock) = 0;
 
-			virtual bool contain_pointer(const void* p_memory) const = 0;
+			virtual bool contain_pointer(void* p_memory) const = 0;
 
 			virtual void clear() = 0;
 

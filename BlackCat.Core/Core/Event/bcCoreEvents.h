@@ -10,34 +10,34 @@ namespace black_cat
 {
 	namespace core
 	{
-		class bc_event_error : public bc_event
+		class bc_app_event_error : public bc_app_event
 		{
 		public:
-			bc_event_error(const bcCHAR* p_message)
-				: bc_event("error"),
+			explicit bc_app_event_error(const bcCHAR* p_message)
+				: bc_app_event(event_name()),
 				m_message(p_message)
 			{
 			}
 
-			bc_event_error(bc_string p_message)
-				: bc_event("error"),
+			explicit bc_app_event_error(bc_string p_message)
+				: bc_app_event(event_name()),
 				m_message(std::move(p_message))
 			{
 			}
 
-			bc_event_error(const bc_event_error&) = default;
+			bc_app_event_error(const bc_app_event_error&) = default;
 
-			bc_event_error(bc_event_error&& p_other)
-				: bc_event(p_other),
+			bc_app_event_error(bc_app_event_error&& p_other)
+				: bc_app_event(p_other),
 				m_message(std::move(p_other.m_message))
 			{
 			}
 
-			~bc_event_error() = default;
+			~bc_app_event_error() = default;
 
-			bc_event_error& operator =(const bc_event_error&) = default;
+			bc_app_event_error& operator =(const bc_app_event_error&) = default;
 
-			bc_event_error& operator =(bc_event_error&& p_other)
+			bc_app_event_error& operator =(bc_app_event_error&& p_other)
 			{
 				m_message = std::move(p_other.m_message);
 
@@ -47,6 +47,11 @@ namespace black_cat
 			const bc_string& get_message() const noexcept(true)
 			{
 				return m_message;
+			}
+
+			static bcCHAR* event_name()
+			{
+				return "EventError";
 			}
 
 		protected:
@@ -55,34 +60,34 @@ namespace black_cat
 			bc_string m_message;
 		};
 
-		class bc_event_warning : public bc_event
+		class bc_app_event_warning : public bc_app_event
 		{
 		public:
-			bc_event_warning(const bcCHAR* p_message)
-				: bc_event("warning"),
+			explicit bc_app_event_warning(const bcCHAR* p_message)
+				: bc_app_event(event_name()),
 				m_message(p_message)
 			{
 			}
 
-			bc_event_warning(bc_string p_message)
-				: bc_event("warning"),
+			explicit bc_app_event_warning(bc_string p_message)
+				: bc_app_event(event_name()),
 				m_message(std::move(p_message))
 			{
 			}
 
-			bc_event_warning(const bc_event_warning&) = default;
+			bc_app_event_warning(const bc_app_event_warning&) = default;
 
-			bc_event_warning(bc_event_warning&& p_other)
-				: bc_event(p_other),
+			bc_app_event_warning(bc_app_event_warning&& p_other)
+				: bc_app_event(p_other),
 				m_message(std::move(p_other.m_message))
 			{
 			}
 
-			~bc_event_warning() = default;
+			~bc_app_event_warning() = default;
 
-			bc_event_warning& operator =(const bc_event_warning&) = default;
+			bc_app_event_warning& operator =(const bc_app_event_warning&) = default;
 
-			bc_event_warning& operator =(bc_event_warning&& p_other)
+			bc_app_event_warning& operator =(bc_app_event_warning&& p_other)
 			{
 				m_message = std::move(p_other.m_message);
 
@@ -92,6 +97,11 @@ namespace black_cat
 			const bc_string& get_message() const noexcept(true)
 			{
 				return m_message;
+			}
+
+			static bcCHAR* event_name()
+			{
+				return "EventWarning";
 			}
 
 		protected:

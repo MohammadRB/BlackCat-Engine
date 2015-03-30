@@ -9,7 +9,7 @@ namespace black_cat
 	{
 		bc_event_handle bc_event_manager::register_event_listener(const bcCHAR* p_event_name, delegate_type&& p_listener)
 		{
-			bcUINT32 l_hash = bc_event::get_hash(p_event_name);
+			bcUINT32 l_hash = bc_ievent::get_hash(p_event_name);
 			bc_event_handle l_index;
 
 			core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_gaurd(m_mutex);
@@ -22,7 +22,7 @@ namespace black_cat
 
 		void bc_event_manager::unregister_event_listener(const bcCHAR* p_event_name, bc_event_handle p_listener_index)
 		{
-			bcUINT32 l_hash = bc_event::get_hash(p_event_name);
+			bcUINT32 l_hash = bc_ievent::get_hash(p_event_name);
 
 			core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_gaurd(m_mutex);
 
@@ -45,6 +45,9 @@ namespace black_cat
 
 			auto l_ite = m_handlers.find(l_hash);
 
+			if (l_ite == m_handlers.end())
+				return l_handled;
+
 			for (bcUINT32 l_i = 0, l_c = l_ite->second.delegate_count(); l_i < l_c; ++l_i)
 			{
 				l_handled = true;
@@ -54,7 +57,7 @@ namespace black_cat
 			return l_handled;
 		};
 
-		void bc_event_manager::queue_event(bc_event_ptr&& p_event,
+		void bc_event_manager::queue_event(bc_event_ptr<bc_ievent>&& p_event,
 			core_platform::bc_clock::large_time_delta_type p_current_time,
 			core_platform::bc_clock::little_time_delta_type p_milisecond)
 		{
@@ -70,7 +73,8 @@ namespace black_cat
 			{
 				m_local_queue.push_back(std::move(l_event));
 			}
-
+			
+			// TODO
 			std::sort(
 				std::begin(m_local_queue),
 				std::end(m_local_queue),

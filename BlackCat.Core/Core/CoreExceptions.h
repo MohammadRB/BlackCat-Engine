@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CorePlatform/bcCorePlatformException.h"
 #include "Core/CorePCH.h"
 #include "Core/Container/bcString.h"
 

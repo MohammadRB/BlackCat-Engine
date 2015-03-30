@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CorePlatformImp/Concurrency/bcAtomicProvider.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/CorePCH.h"
 
 namespace black_cat

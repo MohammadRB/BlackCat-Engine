@@ -57,7 +57,7 @@ namespace black_cat
 
 			float xAbs = fabs( x );
 			float yAbs = fabs( y );
-			float minVal = min( xAbs, yAbs );
+			float minVal = (std::min)( xAbs, yAbs );
 
 			if ( xAbs == minVal )
 				bcVector2::Cross( *this, bcVector2( 1.0f, 0.0f ), &lReturn );
@@ -791,7 +791,7 @@ namespace black_cat
 			float xAbs = fabs( x );
 			float yAbs = fabs( y );
 			float zAbs = fabs( z );
-			float minVal = min( min( xAbs, yAbs ), zAbs );
+			float minVal = (std::min)((std::min)( xAbs, yAbs ), zAbs );
 
 			if ( xAbs == minVal )
 				bcVector3::Cross( *this, bcVector3( 1.0f, 0.0f, 0.0f ), &lReturn );

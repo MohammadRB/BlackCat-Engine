@@ -4,8 +4,8 @@
 
 #include "Core/CorePCH.h"
 #include "Core/Utility/bcDelegate.h"
-#include "CorePlatformImp/Concurrency/bcMutexProvider.h"
-#include "CorePlatformImp/Concurrency/bcAtomicProvider.h"
+#include "CorePlatformImp/Concurrency/bcMutex.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 
 namespace black_cat
 {
@@ -68,7 +68,7 @@ namespace black_cat
 
 			T* get() const { return m_pointer == nullptr ? (m_pointer = m_initializer()) : m_pointer; }
 
-			bool is_set() const { return !m_pointer; }
+			bool is_set() const { return m_pointer; }
 
 			bool operator ==(std::nullptr_t) const
 			{
@@ -211,7 +211,7 @@ namespace black_cat
 
 			bool is_set() const
 			{
-				return !m_pointer.load(core_platform::bc_memory_order::relaxed);
+				return m_pointer.load(core_platform::bc_memory_order::relaxed);
 			}
 
 			bool operator ==(std::nullptr_t) const

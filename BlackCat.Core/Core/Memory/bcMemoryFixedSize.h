@@ -14,7 +14,7 @@ namespace black_cat
 	{
 #ifdef BC_MEMORY_ENABLE
 
-		class BC_COREDLL_EXP bc_memory_fixed_size : public bc_memory
+		class BC_COREDLL_EXP bc_memory_fixed_size : public bc_memory, bc_initializable<bcUINT32, bcUINT32, const bcCHAR*>
 		{
 		public:
 			using this_type = bc_memory_fixed_size;
@@ -29,9 +29,9 @@ namespace black_cat
 
 			this_type& operator =(this_type&& p_other) noexcept(true);
 
-			void initialize(bcUINT32 p_num_block, bcUINT32 p_block_size, const bcCHAR* p_tag);
+			void initialize(bcUINT32 p_num_block, bcUINT32 p_block_size, const bcCHAR* p_tag) override;
 
-			void destroy() noexcept(true);
+			void destroy() noexcept(true) override;
 
 			bcUINT32 block_size() const { return m_block_size; };
 
@@ -39,9 +39,9 @@ namespace black_cat
 
 			void* alloc(bc_memblock* p_mem_block) noexcept(true) override;
 
-			void free(const void* p_pointer, bc_memblock* p_mem_block) noexcept(true) override;
+			void free(void* p_pointer, bc_memblock* p_mem_block) noexcept(true) override;
 
-			bool contain_pointer(const void* p_pointer) const noexcept(true) override;
+			bool contain_pointer(void* p_pointer) const noexcept(true) override;
 
 			void clear() noexcept(true) override;
 
@@ -67,9 +67,9 @@ namespace black_cat
 				m_allocated_block.store(l_allocated_block, core_platform::bc_memory_order::release);
 			}
 
-#define FIXEDSIZE_INDEX_TYPE bcUINT32
-#define FIXEDSIZE_INDEX_MASK 0xffffffff
-#define FIXEDSIZE_INDEX_SIZE 32
+			using bitblock_type = bcUINT32;
+			static const bitblock_type s_bitblock_mask = 0xffffffff;
+			static const bcSIZE s_bitblock_size = sizeof(bitblock_type);
 
 			bcUINT32 m_num_block;
 			bcUINT32 m_block_size;
@@ -77,7 +77,7 @@ namespace black_cat
 			// An index that searching for free block will continue from this place /
 			core_platform::bc_atomic< bcUINT32 > m_allocated_block;
 			// bit-vector indicating if a block is allocated or not /
-			core_platform::bc_atomic< FIXEDSIZE_INDEX_TYPE >* m_blocks;
+			core_platform::bc_atomic< bitblock_type >* m_blocks;
 			// block of data /
 			bcUBYTE* m_heap;
 		};

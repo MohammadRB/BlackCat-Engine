@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "CorePlatformImp/Concurrency/bcAtomicProvider.h"
-#include "CorePlatformImp/Concurrency/bcConcurrencyUtilityProvider.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
+#include "CorePlatformImp/Concurrency/bcConcurrencyUtility.h"
 #include "Core/CorePCH.h"
 #include "Core/bcCoreUtility.h"
 #include "Core/Memory/bcAlloc.h"

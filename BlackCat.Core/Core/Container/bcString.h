@@ -453,6 +453,12 @@ namespace black_cat
 		using bc_string = bc_basic_string< bcCHAR, std::char_traits< bcCHAR >, bc_std_allocator< bcCHAR > >;
 
 		using bc_wstring = bc_basic_string< bcWCHAR, std::char_traits< bcWCHAR >, bc_std_allocator< bcWCHAR > >;
+
+#ifdef BC_UNICODE
+		using bc_estring = bc_wstring;
+#else
+		using bc_estring = bc_string;
+#endif
 		
 		/*
 		template< class TChar, class TTraits, class TAllocator >
@@ -1025,6 +1031,20 @@ namespace black_cat
 			return bc_string(l_buf);
 		}
 
+		inline bc_string bc_to_string(bc_wstring p_str)
+		{
+			bc_wstring::size_type l_len = p_str.size() + 1;
+			bc_string l_str('#', l_len);
+
+			std::mbstate_t l_state = std::mbstate_t();
+			bcCHAR* l_dest = &l_str[0];
+			const bcWCHAR* l_src = &p_str[0];
+
+			std::wcsrtombs(l_dest, &l_src, l_len, &l_state);
+
+			return std::move(l_str);
+		}
+
 		inline bc_wstring bc_to_wstring(int p_value)
 		{
 			wchar_t l_buf[2 * TO_STRING_BUFF];
@@ -1104,6 +1124,20 @@ namespace black_cat
 			std::swprintf(l_buf, sizeof(l_buf), L"%Lf", p_value);
 
 			return bc_wstring(l_buf);
+		}
+
+		inline bc_wstring bc_to_wstring(bc_string p_str)
+		{
+			bc_string::size_type l_len = p_str.size() + 1;
+			bc_wstring l_str('#', l_len);
+
+			std::mbstate_t l_state = std::mbstate_t();
+			bcWCHAR* l_dest = &l_str[0];
+			const bcCHAR* l_src = &p_str[0];
+
+			std::mbsrtowcs(l_dest, &l_src, l_len, &l_state);
+			
+			return std::move(l_str);
 		}
 
 #undef TO_STRING_BUFF

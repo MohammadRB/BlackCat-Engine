@@ -18,7 +18,6 @@ namespace black_cat
 
 			virtual ~bc_initializable()
 			{
-				bcAssert(!m_initialized);
 			}
 
 			virtual void initialize(A... pArgs) = 0;

@@ -3,12 +3,13 @@
 #pragma once
 
 #include "Core/CorePCH.h"
+#include "Core/bcCoreUtility.h"
 #include "Core/Memory/bcMemBlock.h"
 #include "Core/Memory/bcMemory.h"
 #include "Core/Memory/bcMemoryTracer.h"
 #include "Core/Memory/bcMemMngFreeList.h"
-#include "CorePlatformImp/Concurrency/bcAtomicProvider.h"
-#include "CorePlatformImp/Concurrency/bcMutexProvider.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 
 namespace black_cat
 {
@@ -16,7 +17,7 @@ namespace black_cat
 	{
 #ifdef BC_MEMORY_ENABLE
 
-		class BC_COREDLL_EXP bc_memory_heap : public bc_memory_movable
+		class BC_COREDLL_EXP bc_memory_heap : public bc_memory_movable, bc_initializable<bcSIZE, const bcCHAR*>
 		{
 		public:
 			using this_type = bc_memory_heap;
@@ -39,15 +40,15 @@ namespace black_cat
 
 			bcInline bcSIZE fragmentation_count() { return m_num_fragmentation; };
 
-			void initialize(bcSIZE p_size, const bcCHAR* p_tag);
+			void initialize(bcSIZE p_size, const bcCHAR* p_tag) override;
 
-			void destroy() noexcept(true);
+			void destroy() noexcept(true) override;
 
 			void* alloc(bc_memblock* p_memblock) noexcept(true) override;
 
-			void free(const void* p_pointer, bc_memblock* p_memblock) noexcept(true) override;
+			void free(void* p_pointer, bc_memblock* p_memblock) noexcept(true) override;
 
-			bool contain_pointer(const void* p_memory) const noexcept(true) override;
+			bool contain_pointer(void* p_memory) const noexcept(true) override;
 
 			void clear() noexcept(true) override;
 

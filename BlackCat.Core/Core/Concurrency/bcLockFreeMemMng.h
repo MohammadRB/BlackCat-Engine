@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/CorePCH.h"
-#include "CorePlatformImp/Concurrency/bcAtomicProvider.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 
 namespace black_cat
 {

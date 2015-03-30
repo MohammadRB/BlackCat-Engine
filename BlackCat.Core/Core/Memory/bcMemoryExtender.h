@@ -14,7 +14,9 @@ namespace black_cat
 	namespace core
 	{
 		template< typename TMemory >
-		class bc_memory_extender : public bc_memory, private core_platform::bc_no_copy
+		class bc_memory_extender : public bc_memory, 
+			bc_initializable<bc_delegate< TMemory*() >&&, bc_delegate< void(TMemory*) >&&>,
+			private core_platform::bc_no_copy
 		{
 		public:
 			using this_type = bc_memory_extender;
@@ -100,7 +102,8 @@ namespace black_cat
 
 			~bc_memory_extender()
 			{
-				destroy();
+				if (m_initialized)
+					destroy();
 			}
 
 			this_type& operator =(this_type&& p_other) noexcept(true)
@@ -109,16 +112,15 @@ namespace black_cat
 				return *this;
 			}
 
-			bcInline void initialize(initializer_type&& p_initializer, cleanup_type&& p_cleanup)
+			void initialize(initializer_type&& p_initializer, cleanup_type&& p_cleanup) override
 			{
 				m_initializer = std::move(p_initializer);
 				m_cleanup = std::move(p_cleanup);
-				/*m_first = std::move(bc_concurrent_lazy< _bucket >(
-					bc_delegate< _bucket*() >(this, &this_type::_bucket_initializer),
-					bc_delegate< void(_bucket*) >(this, &this_type::_bucket_cleanup)));*/
+				
+				m_initialized = true;
 			}
 
-			bcInline void destroy() noexcept(true)
+			void destroy() noexcept(true) override
 			{
 				bc_concurrent_lazy< _bucket >* l_current_bucket = &m_first;
 
@@ -128,6 +130,8 @@ namespace black_cat
 
 					l_current_bucket = &((*l_current_bucket)->m_next);
 				}
+
+				m_initialized = false;
 			}
 
 			bcInline void* alloc(bc_memblock* p_memblock) noexcept(true) override
@@ -146,7 +150,7 @@ namespace black_cat
 				return l_result;
 			}
 
-			bcInline void free(const void* p_pointer, bc_memblock* p_memblock) noexcept(true) override
+			bcInline void free(void* p_pointer, bc_memblock* p_memblock) noexcept(true) override
 			{
 				bc_concurrent_lazy< _bucket >* l_current_bucket = &m_first;
 
@@ -162,7 +166,7 @@ namespace black_cat
 				}
 			}
 
-			bcInline bool contain_pointer(const void* p_pointer) const noexcept(true) override
+			bcInline bool contain_pointer(void* p_pointer) const noexcept(true) override
 			{
 				bool l_result = false;
 				bc_concurrent_lazy< _bucket >* l_current_bucket = const_cast<bc_concurrent_lazy< _bucket >*>(&m_first);

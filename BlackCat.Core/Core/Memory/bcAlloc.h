@@ -157,13 +157,13 @@ namespace black_cat
 
 		//TODO check array allocation
 #define bcNew(p_type, p_alloc_type)											new (p_alloc_type, __FILE__, __LINE__) p_type
-#define bcNewArray(p_type, p_length, p_alloc_type)							bc_memmng::get().new_array<p_type>(p_length, p_alloc_type, __FILE__, __LINE__)
-#define bcDelete(p_t)														bc_memmng::get().delete_(p_t); p_t = nullptr
-#define bcDeleteArray(p_t)													bc_memmng::get().delete_array(p_t); p_t = nullptr
+#define bcNewArray(p_type, p_length, p_alloc_type)							black_cat::core::bc_memmng::get().new_array<p_type>(p_length, p_alloc_type, __FILE__, __LINE__)
+#define bcDelete(p_t)														black_cat::core::bc_memmng::get().delete_(p_t); p_t = nullptr
+#define bcDeleteArray(p_t)													black_cat::core::bc_memmng::get().delete_array(p_t); p_t = nullptr
 #define bcAlignedNew(p_type, p_alignment, p_alloc_type)						new (pAlignment, p_alloc_type, __FILE__, __LINE__) p_type
-#define bcAlignedNewArray(p_alignment, p_length, p_alloc_type)				bc_memmng::get().aligned_new_array<p_type>(p_length, p_alignment, p_alloc_type, __FILE__, __LINE__)
-#define bcAlignedDelete(p_t)												bc_memmng::get().aligned_delete(p_t); p_t = nullptr
-#define bcAlignedDeleteArray(p_t)											bc_memmng::get().aligned_delete_array(p_t); p_t = nullptr
+#define bcAlignedNewArray(p_alignment, p_length, p_alloc_type)				black_cat::core::bc_memmng::get().aligned_new_array<p_type>(p_length, p_alignment, p_alloc_type, __FILE__, __LINE__)
+#define bcAlignedDelete(p_t)												black_cat::core::bc_memmng::get().aligned_delete(p_t); p_t = nullptr
+#define bcAlignedDeleteArray(p_t)											black_cat::core::bc_memmng::get().aligned_delete_array(p_t); p_t = nullptr
 	}
 }
 

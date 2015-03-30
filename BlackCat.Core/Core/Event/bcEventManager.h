@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CorePlatformImp/Concurrency/bcMutexProvider.h"
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/CorePCH.h"
 #include "Core/Memory/bcPtr.h"
@@ -16,12 +16,14 @@ namespace black_cat
 {
 	namespace core
 	{
+		template< class TEvent >
+		using bc_event_ptr = bc_unique_ptr<TEvent>;
+
 		class BC_COREDLL_EXP bc_event_manager
 		{
 		public:
 			using event_handler_type = bc_event_handler< bool(bc_ievent&) >;
 			using delegate_type = event_handler_type::delegate_type;
-			using bc_event_ptr = bc_unique_ptr< bc_ievent >;
 		
 		public:
 			bc_event_manager()
@@ -45,7 +47,7 @@ namespace black_cat
 
 			// Queue event for processing in a specific time in future that will be indicated by millisecond.
 			// This function is thread safe and can be called with multiple threads.
-			void queue_event(bc_event_ptr&& p_event, 
+			void queue_event(bc_event_ptr<bc_ievent>&& p_event, 
 				core_platform::bc_clock::large_time_delta_type p_current_time,
 				core_platform::bc_clock::little_time_delta_type p_milisecond);
 
@@ -65,7 +67,7 @@ namespace black_cat
 				{
 				}
 
-				_queued_event(bc_event_ptr&& p_event, core_platform::bc_clock::large_time_delta_type p_process_time) noexcept(true)
+				_queued_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::large_time_delta_type p_process_time) noexcept(true)
 					: m_event(std::move(p_event)),
 					m_process_time(p_process_time)
 				{
@@ -87,7 +89,7 @@ namespace black_cat
 					return *this;
 				}
 
-				bc_event_ptr m_event;
+				bc_event_ptr<bc_ievent> m_event;
 				core_platform::bc_clock::large_time_delta_type m_process_time;
 			};
 

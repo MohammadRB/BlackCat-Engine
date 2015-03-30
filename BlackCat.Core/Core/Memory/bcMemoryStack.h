@@ -5,8 +5,9 @@
 #include "Core/CorePCH.h"
 #include "Core/Memory/bcMemBlock.h"
 #include "Core/Memory/bcMemory.h"
+#include "Core/bcCoreUtility.h"
 #include "Core/Memory/bcMemoryTracer.h"
-#include "CorePlatformImp/Concurrency/bcAtomicProvider.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 
 namespace black_cat
 {
@@ -14,7 +15,7 @@ namespace black_cat
 	{
 #ifdef BC_MEMORY_ENABLE
 
-		class BC_COREDLL_EXP bc_memory_stack : public bc_memory
+		class BC_COREDLL_EXP bc_memory_stack : public bc_memory, bc_initializable<bcUINT32, const bcCHAR*>
 		{
 		public:
 			using this_type = bc_memory_stack;
@@ -29,21 +30,21 @@ namespace black_cat
 
 			this_type& operator =(this_type&& p_other) noexcept(true);
 
-			void initialize(bcUINT32 p_size, const bcCHAR* p_tag);
+			void initialize(bcUINT32 p_size, const bcCHAR* p_tag) override;
 
-			void destroy() noexcept(true);
+			void destroy() noexcept(true) override;
 
 			bcUINT32 size() const { return m_size; };
 
 			void* push(bc_memblock* p_mem_block) noexcept(true);
 
-			void pop(const void* p_pointer, bc_memblock* p_mem_block) noexcept(true);
+			void pop(void* p_pointer, bc_memblock* p_mem_block) noexcept(true);
 
 			void* alloc(bc_memblock* p_mem_block) noexcept(true) override;
 
-			void free(const void* p_pointer, bc_memblock* p_mem_block) noexcept(true) override;
+			void free(void* p_pointer, bc_memblock* p_mem_block) noexcept(true) override;
 
-			bool contain_pointer(const void* p_pointer) const noexcept(true) override;
+			bool contain_pointer(void* p_pointer) const noexcept(true) override;
 
 			void clear() noexcept(true) override;
 

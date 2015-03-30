@@ -31,8 +31,8 @@
 //#endif
 //
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
-#define NOMINMAX						// Suppress min-max macroes
-//#define STRICT							// Use strict declarations for Windows types
+//#define NOMINMAX						// Suppress min-max macroes
+//#define STRICT						// Use strict declarations for Windows types
 
 // Windows Header Files:
 #include <windows.h>
@@ -42,9 +42,10 @@
 
 #include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatform/bcType.h"
+#include "CorePlatform/bcPlatform.h"
 
-#if defined BC_COREWIN32_DLL
-#define BC_COREWIN32_DLL_EXP __declspec(dllexport)
+#if defined BC_COREPLATFORMIMP_DLL
+#define BC_COREPLATFORMIMP_DLL_EXP __declspec(dllexport)
 #else
-#define BC_COREWIN32_DLL_EXP __declspec(dllimport)
+#define BC_COREPLATFORMIMP_DLL_EXP __declspec(dllimport)
 #endif

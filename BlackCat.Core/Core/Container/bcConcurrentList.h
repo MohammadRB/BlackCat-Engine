@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CorePlatformImp/Concurrency/bcAtomicProvider.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/CorePCH.h"
 #include "Core/bcCoreUtility.h"
 #include "Core/Concurrency/bcLockFreeMemMng.h"

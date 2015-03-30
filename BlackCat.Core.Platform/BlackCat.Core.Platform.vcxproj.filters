@@ -30,23 +30,8 @@
     <ClInclude Include="CorePlatform\bcPlatform.h">
       <Filter>CorePlatform</Filter>
     </ClInclude>
-    <ClInclude Include="CorePlatform\Concurrency\bcMutexProvider.h">
-      <Filter>CorePlatform\Concurrency</Filter>
-    </ClInclude>
     <ClInclude Include="CorePlatform\bcType.h">
       <Filter>CorePlatform</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePlatform\Concurrency\bcFutureProvider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePlatform\Concurrency\bcConditionVariableProvider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePlatform\Concurrency\bcThreadProvider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePlatform\Concurrency\bcAtomicProvider.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CorePlatform\bcCorePlatformUtility.h">
       <Filter>CorePlatform</Filter>
@@ -55,9 +40,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CorePlatform\bcHardwareInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePlatform\Concurrency\bcConcurrencyUtilityProvider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CorePlatform\bcCorePlatformException.h">
@@ -69,13 +51,28 @@
     <ClInclude Include="CorePlatform\Utility\bcClock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CorePlatform\Concurrency\bcAtomic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatform\Concurrency\bcConcurrencyUtility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatform\Concurrency\bcConditionVariable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatform\Concurrency\bcFuture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatform\Concurrency\bcMutex.h">
+      <Filter>CorePlatform\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatform\Concurrency\bcThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CorePlatform\CorePlatformPCH.cpp">
       <Filter>CorePlatform</Filter>
-    </ClCompile>
-    <ClCompile Include="CorePlatform\Concurrency\bcThreadProvider.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

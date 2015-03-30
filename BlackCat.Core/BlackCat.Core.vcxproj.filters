@@ -171,9 +171,6 @@
     <ClInclude Include="Core\Utility\bcObjectPool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Utility\bcMemoryPool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Event\bcCoreEvents.h">
       <Filter>Core\Events</Filter>
     </ClInclude>
@@ -227,14 +224,17 @@
     <ClCompile Include="Core\Container\bcString.cpp">
       <Filter>Core\Containers</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Utility\bcMemoryPool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Core\Event\bcEvent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\Event\bcEventManager.cpp">
       <Filter>Core\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Utility\bcObjectPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Utility\bcServiceManager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 // [10/11/2014 MRB]
 
-#include "CorePlatformImp/CoreWin32PCH.h"
+#include "CorePlatformImp/CorePlatformImpPCH.h"
 
 namespace black_cat
 {

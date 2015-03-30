@@ -29,26 +29,11 @@ namespace black_cat
 			void* app_max_address;
 		};
 
-		template< bc_platform TP >
-		class bc_hardware_info_provider
-		{
-		public:
-
-		protected:
-
-		private:
-		};
-
-		template< class T >
+		template< bc_platform TPlatform >
 		class bc_hardware_info_proxy
 		{
-			using provider_type = T;
-
 		public:
-			static void get_basic_info(bc_basic_hardware_info* p_info)
-			{
-				provider_type::get_basic_info(p_info);
-			}
+			static void get_basic_info(bc_basic_hardware_info* p_info);
 
 		protected:
 
@@ -56,6 +41,6 @@ namespace black_cat
 
 		};
 
-		using bc_hardware_info = bc_hardware_info_proxy< bc_hardware_info_provider< g_current_platform > >;
+		using bc_hardware_info = bc_hardware_info_proxy< g_current_platform >;
 	}
 }

@@ -36,7 +36,7 @@ namespace black_cat
 			virtual bc_string service_name() const = 0;
 		};
 
-		class bc_service_manager : public bc_singleton< bc_service_manager() >
+		class BC_COREDLL_EXP bc_service_manager : public bc_singleton< bc_service_manager() >
 		{
 		public:
 			template< class TService >
@@ -90,11 +90,6 @@ namespace black_cat
 				return l_result;
 			}
 
-			core_platform::bc_clock& global_clock() noexcept(true)
-			{
-				return m_clock;
-			}
-
 			bc_event_manager& global_event_manager() noexcept(true)
 			{
 				return m_event_manager;
@@ -140,7 +135,6 @@ namespace black_cat
 
 			bc_map<bc_string, service_container> m_services;
 
-			core_platform::bc_clock m_clock;
 			bc_event_manager m_event_manager;
 		};
 	}

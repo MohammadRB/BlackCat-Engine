@@ -52,14 +52,14 @@ namespace black_cat
 				return result;
 			}
 
-			bcInline void free(const void* p_pointer, bc_memblock* p_memblock) override
+			bcInline void free(void* p_pointer, bc_memblock* p_memblock) override
 			{
 				core_platform::bc_mem_aligned_free(const_cast<void*>(p_pointer));
 				p_memblock->free(true, core_platform::bc_memory_order::seqcst);
 				m_tracer.accept_free(p_memblock->size());
 			}
 
-			bcInline bool contain_pointer(const void* p_pointer) const override
+			bcInline bool contain_pointer(void* p_pointer) const override
 			{
 				return true;
 			}

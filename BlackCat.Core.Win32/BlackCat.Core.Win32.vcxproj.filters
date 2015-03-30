@@ -21,43 +21,40 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CorePlatformImp\Concurrency\bcConditionVariableProvider.h">
-      <Filter>CorePlatformImp\Concurrency</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePlatformImp\Concurrency\bcFutureProvider.h">
-      <Filter>CorePlatformImp\Concurrency</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePlatformImp\Concurrency\bcMutexProvider.h">
-      <Filter>CorePlatformImp\Concurrency</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePlatformImp\Concurrency\bcThreadProvider.h">
-      <Filter>CorePlatformImp\Concurrency</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePlatformImp\CoreWin32PCH.h">
-      <Filter>CorePlatformImp</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePlatformImp\Concurrency\bcAtomicProvider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CorePlatformImp\bcHardwareInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePlatformImp\Concurrency\bcConcurrencyUtilityProvider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CorePlatformImp\Utility\bcClock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CorePlatformImp\CorePlatformImpPCH.h">
+      <Filter>CorePlatformImp</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatformImp\Concurrency\bcAtomic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatformImp\Concurrency\bcConcurrencyUtility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatformImp\Concurrency\bcConditionVariable.h">
+      <Filter>CorePlatformImp\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatformImp\Concurrency\bcFuture.h">
+      <Filter>CorePlatformImp\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatformImp\Concurrency\bcMutex.h">
+      <Filter>CorePlatformImp\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatformImp\Concurrency\bcThread.h">
+      <Filter>CorePlatformImp\Concurrency</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CorePlatformImp\CoreWin32PCH.cpp">
-      <Filter>CorePlatformImp</Filter>
-    </ClCompile>
     <ClCompile Include="CorePlatformImp\Memory\bcMemAlloc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CorePlatformImp\Concurrency\bcConcurrencyUtilityProvider.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="CorePlatformImp\CorePlatformImpPCH.cpp">
+      <Filter>CorePlatformImp</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

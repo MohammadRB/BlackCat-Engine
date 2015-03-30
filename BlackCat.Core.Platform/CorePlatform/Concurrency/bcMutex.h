@@ -6,8 +6,7 @@
 #include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatform/bcType.h"
 #include "CorePlatform/bcPlatform.h"
-#include "coreplatform/bccoreplatformutility.h"
-#include "coreplatform/concurrency/bcilockable.h"
+#include "CorePlatform/bcCorePlatformUtility.h"
 #include "CorePlatform/Concurrency/bcConcurrencyDef.h"
 
 namespace black_cat
@@ -15,312 +14,197 @@ namespace black_cat
 	namespace core_platform
 	{
 		template< bc_platform TP >
-		class bc_mutex_provider : private bc_no_copy
+		struct bc_mutex_pack
 		{
-		public:
-
-		protected:
-
-		private:
-
 		};
 
 		template< bc_platform TP >
-		class bc_timed_mutex_provider : private bc_no_copy
+		struct bc_timed_mutex_pack
 		{
-		public:
-
-		protected:
-
-		private:
-
 		};
 
 		template< bc_platform TP >
-		class bc_recursive_mutex_provider : private bc_no_copy
+		struct bc_recursive_mutex_pack
 		{
-		public:
-
-		protected:
-
-		private:
-
 		};
 
 		template< bc_platform TP >
-		class bc_recursive_timed_mutex_provider : private bc_no_copy
+		struct bc_recursive_timed_mutex_pack
 		{
-		public:
-
-		protected:
-
-		private:
-
 		};
 
 		template< bc_platform TP >
-		class bc_shared_mutex_provider : private bc_no_copy
+		struct bc_shared_mutex_pack
 		{
-		public:
-
-		protected:
-
-		private:
 		};
 
 		template< bc_platform TP >
-		class bc_hybrid_mutex_provider : private bc_no_copy
+		struct bc_hybrid_mutex_pack
 		{
-		public:
-
-		protected:
-
-		private:
-
 		};
 
-		template< class TProvider >
+		template< bc_platform TP >
 		class bc_mutex_proxy : private bc_no_copy
 		{
-			using provider_type = TProvider;
+		public:
+			using platform_pack = bc_mutex_pack<TP>;
 
 		public:
-			bc_mutex_proxy() : m_provider() {}
+			bc_mutex_proxy();
 
-			~bc_mutex_proxy() {}
+			~bc_mutex_proxy();
 
-			bcInline void lock()
-			{
-				m_provider.lock();
-			}
+			bcInline void lock();
 
-			bcInline void unlock() noexcept(true)
-			{
-				m_provider.unlock();
-			}
+			bcInline void unlock() noexcept(true);
 
-			bcInline bool try_lock() noexcept(true)
-			{
-				return m_provider.try_lock();
-			}
+			bcInline bool try_lock() noexcept(true);
 
 		protected:
 
 		private:
-			provider_type m_provider;
-
+			platform_pack m_pack;
 		};
 
-		template< class TProvider >
+		template< bc_platform TP >
 		class bc_timed_mutex_proxy : private bc_no_copy
 		{
-			using provider_type = TProvider;
+		public:
+			using platform_pack = bc_timed_mutex_pack<TP>;
 
 		public:
-			bc_timed_mutex_proxy() : m_provider() {};
+			bc_timed_mutex_proxy();
 
-			~bc_timed_mutex_proxy(){};
+			~bc_timed_mutex_proxy();
 
-			bcInline void lock()
-			{
-				m_provider.lock();
-			}
+			bcInline void lock();
 
-			bcInline void unlock() noexcept(true)
-			{
-				m_provider.unlock();
-			}
+			bcInline void unlock() noexcept(true);
 
-			bcInline bool try_lock() noexcept(true)
-			{
-				return m_provider.try_lock();
-			}
+			bcInline bool try_lock() noexcept(true);
 
-			bcInline bool try_lock_for(const bcUINT64 p_nano)
-			{
-				return m_provider.try_lock_for(p_nano);
-			}
+			bcInline bool try_lock_for(const bcUINT64 p_nano);
 
 		protected:
 
 		private:
-			provider_type m_provider;
-
+			platform_pack m_pack;
 		};
 
-		template< class TProvider >
+		template< bc_platform TP >
 		class bc_recursive_mutex_proxy : private bc_no_copy
 		{
-			using provider_type = TProvider;
 		public:
-			bc_recursive_mutex_proxy() : m_provider() {};
+			using platform_pack = bc_recursive_mutex_pack<TP>;
 
-			~bc_recursive_mutex_proxy() {};
+		public:
+			bc_recursive_mutex_proxy();
 
-			bcInline void lock()
-			{
-				m_provider.lock();
-			}
+			~bc_recursive_mutex_proxy();
 
-			bcInline void unlock() noexcept(true)
-			{
-				m_provider.unlock();
-			}
+			bcInline void lock();
 
-			bcInline bool try_lock() noexcept(true)
-			{
-				return m_provider.try_lock();
-			}
+			bcInline void unlock() noexcept(true);
+
+			bcInline bool try_lock() noexcept(true);
 
 		protected:
 
 		private:
-			provider_type m_provider;
-
+			platform_pack m_pack;
 		};
 
-		template< class TProvider >
+		template< bc_platform TP >
 		class bc_recursive_timed_mutex_proxy : private bc_no_copy
 		{
-			using provider_type = TProvider;
 		public:
-			bc_recursive_timed_mutex_proxy() : m_provider() {};
+			using platform_pack = bc_recursive_timed_mutex_pack<TP>;
 
-			~bc_recursive_timed_mutex_proxy() {};
+		public:
+			bc_recursive_timed_mutex_proxy();
 
-			bcInline void lock()
-			{
-				m_provider.lock();
-			}
+			~bc_recursive_timed_mutex_proxy();
 
-			bcInline void unlock() noexcept(true)
-			{
-				m_provider.unlock();
-			}
+			bcInline void lock();
 
-			bcInline bool try_lock() noexcept(true)
-			{
-				return m_provider.try_lock();
-			}
+			bcInline void unlock() noexcept(true);
 
-			bcInline bool try_lock_for(const bcUINT64 p_nano)
-			{
-				return m_provider.try_lock_for(p_nano);
-			}
+			bcInline bool try_lock() noexcept(true);
+
+			bcInline bool try_lock_for(const bcUINT64 p_nano);
 
 		protected:
 
 		private:
-			provider_type m_provider;
-
+			platform_pack m_pack;
 		};
 
-		template< class TProvider >
+		template< bc_platform TP >
 		class bc_shared_mutex_proxy : private bc_no_copy
 		{
-		private:
-			using provider_type = TProvider;
+		public:
+			using platform_pack = bc_shared_mutex_pack<TP>;
 
 		public:
-			bc_shared_mutex_proxy() : m_provider() {}
+			bc_shared_mutex_proxy();
 
-			~bc_shared_mutex_proxy() {}
+			~bc_shared_mutex_proxy();
 
-			bcInline void lock()
-			{
-				m_provider.lock();
-			}
+			bcInline void lock();
 
-			bcInline void lock_shared()
-			{
-				m_provider.lock_shared();
-			}
+			bcInline void lock_shared();
 
-			bcInline void unlock()
-			{
-				m_provider.unlock();
-			}
+			bcInline void unlock();
 
-			bcInline void unlock_shared()
-			{
-				m_provider.unlock_shared();
-			}
+			bcInline void unlock_shared();
 
-			bcInline bool try_lock()
-			{
-				return m_provider.try_lock();
-			}
+			bcInline bool try_lock();
 
-			bcInline bool try_lock_shared()
-			{
-				return m_provider.try_lock_shared();
-			}
+			bcInline bool try_lock_shared();
 
-			bcInline bool try_lock_for(const bcUINT64 p_nano)
-			{
-				return m_provider.try_lock_for(p_nano);
-			}
+			bcInline bool try_lock_for(const bcUINT64 p_nano);
 
-			bcInline bool try_lock_shared_for(const bcUINT64 p_nano)
-			{
-				return m_provider.try_lock_shared_for(p_nano);
-			}
+			bcInline bool try_lock_shared_for(const bcUINT64 p_nano);
 
 		protected:
 
 		private:
-			provider_type m_provider;
+			platform_pack m_pack;
 		};
 
-		template< class TProvider >
+		template< bc_platform TP >
 		class bc_hybrid_mutex_proxy : private bc_no_copy
 		{
-		private:
-			using provider_type = TProvider;
+		public:
+			using platform_pack = bc_hybrid_mutex_pack<TP>;
 
 		public:
-			bc_hybrid_mutex_proxy() : m_provider() {}
+			bc_hybrid_mutex_proxy();
 
-			~bc_hybrid_mutex_proxy() {}
+			~bc_hybrid_mutex_proxy();
 
-			bcInline void lock()
-			{
-				m_provider.lock();
-			}
+			bcInline void lock();
 
-			bcInline void lock(bc_lock_operation p_lock_operation)
-			{
-				m_provider.lock(p_lock_operation);
-			}
+			bcInline void lock(bc_lock_operation p_lock_operation);
 
-			bcInline void unlock() noexcept(true)
-			{
-				m_provider.unlock();
-			}
+			bcInline void unlock() noexcept(true);
 
-			bcInline bool try_lock() noexcept(true)
-			{
-				return m_provider.try_lock();
-			}
+			bcInline bool try_lock() noexcept(true);
 
-			bcInline bool try_lock(bc_lock_operation p_lock_operation) noexcept(true)
-			{
-				return m_provider.try_lock(p_lock_operation);
-			}
+			bcInline bool try_lock(bc_lock_operation p_lock_operation) noexcept(true);
 
 		protected:
 
 		private:
-			provider_type m_provider;
-
+			platform_pack m_pack;
 		};
 
-		using bc_mutex = bc_mutex_proxy< bc_mutex_provider< g_current_platform > >;
-		using bc_timed_mutex = bc_timed_mutex_proxy< bc_timed_mutex_provider< g_current_platform > >;
-		using bc_recursive_mutex = bc_recursive_mutex_proxy< bc_recursive_mutex_provider< g_current_platform > >;
-		using bc_recursive_timed_mutex = bc_recursive_timed_mutex_proxy< bc_recursive_timed_mutex_provider< g_current_platform > >;
-		using bc_shared_mutex = bc_shared_mutex_proxy< bc_shared_mutex_provider< g_current_platform > >;
-		using bc_hybrid_mutex = bc_hybrid_mutex_proxy< bc_hybrid_mutex_provider< g_current_platform > >;
+		using bc_mutex = bc_mutex_proxy< g_current_platform >;
+		using bc_timed_mutex = bc_timed_mutex_proxy< g_current_platform >;
+		using bc_recursive_mutex = bc_recursive_mutex_proxy< g_current_platform >;
+		using bc_recursive_timed_mutex = bc_recursive_timed_mutex_proxy< g_current_platform >;
+		using bc_shared_mutex = bc_shared_mutex_proxy< g_current_platform >;
+		using bc_hybrid_mutex = bc_hybrid_mutex_proxy< g_current_platform >;
 
 		template< typename T >
 		class bc_lock_guard : private bc_no_copy

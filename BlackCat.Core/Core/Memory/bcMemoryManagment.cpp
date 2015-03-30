@@ -130,8 +130,7 @@ namespace black_cat
 		
 		void* bc_memmng::alloc(bcSIZE p_size, bc_alloc_type p_allocType, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true)
 		{
-			if (!m_initialized)
-				return core_platform::bc_mem_alloc(p_size);
+			bcAssert(m_initialized);
 
 			void* l_result = nullptr;
 			bc_memory* l_allocator = nullptr;
@@ -196,12 +195,9 @@ namespace black_cat
 		
 		void bc_memmng::free(void* p_pointer) noexcept(true)
 		{
-			if (!m_initialized)
-				return core_platform::bc_mem_free(p_pointer);
-
 			if (!p_pointer) return;
 
-			const void* l_pointer = p_pointer;
+			void* l_pointer = p_pointer;
 			bc_memblock* l_block = bc_memblock::retrieve_mem_block(l_pointer);
 
 			bcAssert(l_block);
@@ -240,8 +236,7 @@ namespace black_cat
 		
 		void* bc_memmng::aligned_alloc(bcSIZE p_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true)
 		{
-			if (!m_initialized)
-				return core_platform::bc_mem_alloc(p_size);
+			bcAssert(m_initialized);
 
 			void* l_result = nullptr;
 			bc_memory* l_allocator = nullptr;
@@ -305,12 +300,9 @@ namespace black_cat
 		
 		void bc_memmng::aligned_free(void* p_pointer) noexcept(true)
 		{
-			if (!m_initialized)
-				core_platform::bc_mem_free(p_pointer);
-
 			if (!p_pointer) return;
 
-			const void* l_pointer = p_pointer;
+			void* l_pointer = p_pointer;
 			bc_memblock* l_block = bc_memblock::retrieve_mem_block(l_pointer);
 
 			bcAssert(l_block);

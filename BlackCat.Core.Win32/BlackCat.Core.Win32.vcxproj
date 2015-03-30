@@ -16,18 +16,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CorePlatformImp\bcHardwareInfo.h" />
-    <ClInclude Include="CorePlatformImp\Concurrency\bcAtomicProvider.h" />
-    <ClInclude Include="CorePlatformImp\Concurrency\bcConcurrencyUtilityProvider.h" />
-    <ClInclude Include="CorePlatformImp\Concurrency\bcConditionVariableProvider.h" />
-    <ClInclude Include="CorePlatformImp\Concurrency\bcFutureProvider.h" />
-    <ClInclude Include="CorePlatformImp\Concurrency\bcMutexProvider.h" />
-    <ClInclude Include="CorePlatformImp\Concurrency\bcThreadProvider.h" />
-    <ClInclude Include="CorePlatformImp\CoreWin32PCH.h" />
+    <ClInclude Include="CorePlatformImp\Concurrency\bcAtomic.h" />
+    <ClInclude Include="CorePlatformImp\Concurrency\bcConcurrencyUtility.h" />
+    <ClInclude Include="CorePlatformImp\Concurrency\bcConditionVariable.h" />
+    <ClInclude Include="CorePlatformImp\Concurrency\bcFuture.h" />
+    <ClInclude Include="CorePlatformImp\Concurrency\bcMutex.h" />
+    <ClInclude Include="CorePlatformImp\Concurrency\bcThread.h" />
+    <ClInclude Include="CorePlatformImp\CorePlatformImpPCH.h" />
     <ClInclude Include="CorePlatformImp\Utility\bcClock.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CorePlatformImp\Concurrency\bcConcurrencyUtilityProvider.cpp" />
-    <ClCompile Include="CorePlatformImp\CoreWin32PCH.cpp">
+    <ClCompile Include="CorePlatformImp\CorePlatformImpPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">Create</PrecompiledHeader>
     </ClCompile>
@@ -89,10 +88,10 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATCOREWIN32_EXPORTS;BC_COREWIN32_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATCOREWIN32_EXPORTS;BC_COREPLATFORMIMP_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile>CorePlatformImp/CoreWin32PCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>CorePlatformImp/CorePlatformImpPCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>

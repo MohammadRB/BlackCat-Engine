@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <cstdlib>
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
@@ -58,6 +59,10 @@
 #else
 #define bcAssert(expr) {}
 #define bcStaticAssert(expr, msg) {}
+#endif
+
+#ifdef UNICODE
+#define BC_UNICODE
 #endif
 
 // == BlackCat General Definations ============================================================================ /

@@ -6,7 +6,7 @@
 #include "CorePlatform/bcType.h"
 #include "CorePlatform/bcCorePlatformUtility.h"
 #include "CorePlatform/Concurrency/bcConcurrencyDef.h"
-#include "CorePlatform/Concurrency/bcAtomicProvider.h"
+#include "CorePlatform/Concurrency/bcAtomic.h"
 #include "CorePlatform/Memory/bcMemAlloc.h"
 #include <stack>
 #include <map>
@@ -17,14 +17,8 @@ namespace black_cat
 	namespace core_platform
 	{
 		template< bc_platform TP >
-		class bc_thread_provider : private bc_no_copy
+		struct bc_thread_pack
 		{
-		public:
-
-		protected:
-
-		private:
-
 		};
 
 		class bc_per_thread_data : private bc_no_copy
@@ -103,95 +97,49 @@ namespace black_cat
 			_thread_exiter m_exiter;
 		};
 
-		template< class TProvider >
+		template< bc_platform TP >
 		class bc_thread_proxy : private bc_no_copy
 		{
-			using provider_type = TProvider;
-			using this_type = bc_thread_proxy< provider_type >;
+		public:
+			using this_type = bc_thread_proxy< TP >;
+			using id = bcUINT32;
+			using platform_pack = bc_thread_pack<TP>;
 
 		public:
-			bc_thread_proxy() noexcept(true)
-				: m_provider()
-			{
-			}
+			bc_thread_proxy() noexcept(true);
 
-			bc_thread_proxy(this_type&& p_other) noexcept(true)
-				: m_provider(std::move(p_other.m_provider))
-			{
-			}
-
-			bc_thread_proxy(const this_type& p_other) = delete;
+			bc_thread_proxy(this_type&& p_other) noexcept(true);
 
 			template< typename Callable, typename ...Args >
-			explicit bc_thread_proxy(Callable&& pFunc, Args&&... pArgs)
-				: m_provider(std::forward<Callable>(pFunc), std::forward<Args>(pArgs)...)
-			{
-			}
+			explicit bc_thread_proxy(Callable&& pFunc, Args&&... pArgs);
 
 			~bc_thread_proxy()
 			{
 				this_type::s_static_data.remove_me();
 			}
 
-			this_type& operator =(this_type&& p_other) noexcept(true)
-			{
-				m_provider = std::move(p_other.m_provider);
+			this_type& operator =(this_type&& p_other) noexcept(true);
 
-				return *this;
-			}
+			bcInline void swap(this_type& p_other) noexcept(true);
 
-			bcInline void swap(this_type& p_other) noexcept(true)
-			{
-				m_provider.swap(p_other.m_provider);
-			}
+			bcInline void join();
 
-			bcInline void join()
-			{
-				m_provider.join();
-			}
+			bcInline void detach();
 
-			bcInline void detach()
-			{
-				m_provider.detach();
-			}
+			bcInline bool joinable() const noexcept(true);
 
-			bcInline bool joinable() const noexcept(true)
-			{
-				return m_provider.joinable();
-			}
+			bcInline id get_id() const noexcept(true);
 
-			bcInline bcUINT32 get_id() const noexcept(true)
-			{
-				return m_provider.get_id();
-			}
+			bcInline static id current_thread_id() noexcept(true);
 
-			/*bcInline static bcUINT32 hardware_concurrency() noexcept(true)
-			{
-				return provider_type::hardware_concurrency();
-			}*/
-
-			bcInline static bcUINT32 current_thread_id() noexcept(true)
-			{
-				return provider_type::current_thread_id();
-			}
-
-			bcInline static void current_thread_sleep_for(bcUINT64 p_nano)
-			{
-				provider_type::current_thread_sleep_for(p_nano);
-			}
+			bcInline static void current_thread_sleep_for(bcUINT64 p_nano);
 
 			// make the processor available to other logical processors in a hyper threading enabled processor so that the other 
 			// logical processors can make progress
-			bcInline static void current_thread_yield() noexcept(true)
-			{
-				provider_type::current_thread_yield();
-			}
+			bcInline static void current_thread_yield() noexcept(true);
 
 			// reschedule the execution of current thread, allowing other threads to run
-			bcInline static void current_thread_yield_switch() noexcept(true)
-			{
-				provider_type::current_thread_yield_switch();
-			}
+			bcInline static void current_thread_yield_switch() noexcept(true);
 
 			bcInline static void current_thread_on_exit(std::function< void() > p_func)
 			{
@@ -239,7 +187,7 @@ namespace black_cat
 			class _static_data
 			{
 			private:
-				using map_type = std::map< bcUINT32, bc_per_thread_data >;
+				using map_type = std::map< id, bc_per_thread_data >;
 
 			public:
 				_static_data() : m_flag(), m_threads()
@@ -260,7 +208,7 @@ namespace black_cat
 
 				bc_per_thread_data& me()
 				{
-					bcUINT32 l_thread_id = this_type::current_thread_id();
+					id l_thread_id = this_type::current_thread_id();
 
 					lock_shared();
 
@@ -308,13 +256,12 @@ namespace black_cat
 			};
 
 			static _static_data s_static_data;
-			provider_type m_provider;
-
+			platform_pack m_pack;
 		};
 
-		template< typename TProvider >
-		typename bc_thread_proxy< TProvider >::_static_data bc_thread_proxy< TProvider >::s_static_data;
+		template< bc_platform TP >
+		typename bc_thread_proxy< TP >::_static_data bc_thread_proxy< TP >::s_static_data;
 
-		using bc_thread = bc_thread_proxy< bc_thread_provider< g_current_platform > >;
+		using bc_thread = bc_thread_proxy< g_current_platform >;
 	}
 }

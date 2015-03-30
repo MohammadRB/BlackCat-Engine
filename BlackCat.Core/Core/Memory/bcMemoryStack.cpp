@@ -18,9 +18,10 @@ namespace black_cat
 			_move(std::move(p_other));
 		};
 
-		bc_memory_stack::~bc_memory_stack() noexcept
+		bc_memory_stack::~bc_memory_stack() noexcept(true)
 		{
-			destroy();
+			if (m_initialized)
+				destroy();
 		};
 
 		bc_memory_stack::this_type& bc_memory_stack::operator =(bc_memory_stack::this_type&& p_other) noexcept(true)
@@ -45,11 +46,15 @@ namespace black_cat
 
 			m_tracer.initialize(m_size);
 			if (p_tag) bc_memory::tag(p_tag);
+
+			m_initialized = true;
 		};
 
 		void bc_memory_stack::destroy() noexcept(true)
 		{
 			core_platform::bc_mem_aligned_free(m_heap);
+
+			m_initialized = false;
 		};
 
 		void* bc_memory_stack::push(bc_memblock* p_mem_block) noexcept(true)
@@ -122,7 +127,7 @@ namespace black_cat
 			}
 		};
 		
-		void bc_memory_stack::pop(const void* p_pointer, bc_memblock* p_mem_block) noexcept(true)
+		void bc_memory_stack::pop(void* p_pointer, bc_memblock* p_mem_block) noexcept(true)
 		{
 			bool l_back_trace = false;
 			bcSIZE l_free_block_size = p_mem_block->size();
@@ -144,7 +149,7 @@ namespace black_cat
 				bc_memblock* l_top_mem_block = bc_memblock::retrieve_mem_block(l_local_top);
 				l_new_top = static_cast<bcUBYTE*>(l_top_mem_block->allocators_extra());
 				bool l_is_freeing_top = p_pointer == l_local_top;
-				bcUBYTE* l_pointer_copy = const_cast<bcUBYTE*>(static_cast<const bcUBYTE*>(p_pointer));
+				bcUBYTE* l_pointer_copy = static_cast<bcUBYTE*>(p_pointer);
 
 				// If we're not freeing the top of the stack mark block as free /
 				if (!l_is_freeing_top)
@@ -170,7 +175,7 @@ namespace black_cat
 						m_tracer.accept_free(l_free_block_size);
 
 #ifdef BC_MEMORY_DEBUG
-						std::memset(reinterpret_cast<void*>(reinterpret_cast<bcUINT32>(l_local_top)), 0, l_free_block_size - l_offset);
+						std::memset(reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(l_local_top)-l_offset), 0, l_free_block_size);
 						p_mem_block->free(true, core_platform::bc_memory_order::seqcst);
 #endif
 
@@ -229,12 +234,12 @@ namespace black_cat
 			return push(pMemBlock);
 		};
 
-		void bc_memory_stack::free(const void* pPointer, bc_memblock* pMemBlock) noexcept(true)
+		void bc_memory_stack::free(void* pPointer, bc_memblock* pMemBlock) noexcept(true)
 		{
 			pop(pPointer, pMemBlock);
 		};
 
-		bool bc_memory_stack::contain_pointer(const void* pPointer) const noexcept(true)
+		bool bc_memory_stack::contain_pointer(void* pPointer) const noexcept(true)
 		{
 			return (pPointer >= m_heap && pPointer < m_heap + m_size) ? true : false;
 		};

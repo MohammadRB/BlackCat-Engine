@@ -85,7 +85,15 @@
 
 #include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatform/bcType.h"
+#include "CorePlatform/bcPlatform.h"
 #include "CorePlatform/Memory/bcMemAlloc.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
+#include "CorePlatformImp/Concurrency/bcThread.h"
+#include "CorePlatformImp/Concurrency/bcMutex.h"
+#include "CorePlatformImp/Concurrency/bcFuture.h"
+#include "CorePlatformImp/Concurrency/bcConditionVariable.h"
+#include "CorePlatformImp/Concurrency/bcConcurrencyUtility.h"
+#include "CorePlatformImp/Utility/bcClock.h"
 
 // == BlackCat General Definations ========================================================================= /
 
@@ -94,14 +102,6 @@
 #else
 #define BC_COREDLL_EXP __declspec(dllimport)
 #endif
-
-// == BlackCat Debug Definations ========================================================================== /
-
-//#define SAFE_FREE( x ) {if(x){free(x);(x)=nullptr;}}
-//#define SAFE_DELETE( x ) {if(x){delete (x);(x)=nullptr;}}
-//#define SAFE_ALIGNED_FREE( x ) {if(x){_aligned_free (x);(x)=nullptr;}}
-//#define SAFE_DELETE_ARRAY( x ) {if(x){delete[] (x);(x)=nullptr;}}
-//#define SAFE_RELEASE( x ) {if(x){(x)->Release();(x)=nullptr;}}
 
 // == BlackCat Memory Definations ========================================================================= /
 #ifndef BC_MEMORY_ENABLE

@@ -18,9 +18,10 @@ namespace black_cat
 			_move(std::move(p_other));
 		};
 
-		bc_memory_heap::~bc_memory_heap() noexcept
+		bc_memory_heap::~bc_memory_heap() noexcept(true)
 		{
-			destroy();
+			if (m_initialized)
+				destroy();
 		};
 
 		bc_memory_heap::this_type& bc_memory_heap::operator =(bc_memory_heap::this_type&& p_other) noexcept(true)
@@ -64,11 +65,15 @@ namespace black_cat
 			if (p_tag) bc_memory::tag(p_tag);
 
 			m_tracer.accept_overhead(sizeof(heap_memblock));
+
+			m_initialized = true;
 		};
 
 		void bc_memory_heap::destroy() noexcept(true)
 		{
 			core_platform::bc_mem_aligned_free(m_heap);
+
+			m_initialized = false;
 		};
 
 		void* bc_memory_heap::alloc(bc_memblock* p_memblock) noexcept(true)
@@ -179,7 +184,7 @@ namespace black_cat
 			return l_return_pointer;
 		};
 
-		void bc_memory_heap::free(const void* p_pointer, bc_memblock* p_memblock) noexcept(true)
+		void bc_memory_heap::free(void* p_pointer, bc_memblock* p_memblock) noexcept(true)
 		{
 			heap_memblock* l_heapblock = reinterpret_cast<heap_memblock*>(p_memblock->allocators_extra());
 
@@ -298,11 +303,11 @@ namespace black_cat
 			m_tracer.accept_free(p_memblock->size());
 
 #ifdef BC_MEMORY_DEBUG
-			std::memset(reinterpret_cast<void*>(reinterpret_cast<bcUINT32>(p_pointer)-p_memblock->offset()), 0, p_memblock->size());
+			std::memset(reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(p_pointer)-p_memblock->offset()), 0, p_memblock->size());
 #endif
 		};
 
-		bool bc_memory_heap::contain_pointer(const void* p_memory) const noexcept(true)
+		bool bc_memory_heap::contain_pointer(void* p_memory) const noexcept(true)
 		{
 			return (p_memory >= m_heap && p_memory < m_heap + m_size) ? true : false;
 		};

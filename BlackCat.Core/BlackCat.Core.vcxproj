@@ -205,7 +205,6 @@ copy ..\BC_SDK\Lib\$(Configuration)\$(ProjectName)_$(PlatformName).pdb ..\$(Conf
     <ClInclude Include="Core\Container\bcUnorderedMap.h" />
     <ClInclude Include="Core\Memory\bcMemory.h" />
     <ClInclude Include="Core\Memory\bcMemoryExtender.h" />
-    <ClInclude Include="Core\Utility\bcMemoryPool.h" />
     <ClInclude Include="Core\Memory\bcMemoryProxy.h" />
     <ClInclude Include="Core\Memory\bcMemoryFixedSize.h" />
     <ClInclude Include="Core\Concurrency\_bcLockFreeMemMng.h">
@@ -277,8 +276,9 @@ copy ..\BC_SDK\Lib\$(Configuration)\$(ProjectName)_$(PlatformName).pdb ..\$(Conf
     <ClCompile Include="Core\Memory\bcMemoryFixedSize.cpp" />
     <ClCompile Include="Core\Memory\bcMemoryHeap.cpp" />
     <ClCompile Include="Core\Memory\bcMemoryManagment.cpp" />
-    <ClCompile Include="Core\Utility\bcMemoryPool.cpp" />
+    <ClCompile Include="Core\Utility\bcObjectPool.cpp" />
     <ClCompile Include="Core\Memory\bcMemoryStack.cpp" />
+    <ClCompile Include="Core\Utility\bcServiceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\Math\xnamathconvert.inl" />

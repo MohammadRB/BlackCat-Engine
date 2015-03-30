@@ -2,46 +2,40 @@
 
 #pragma once
 
-#include "coreplatform/coreplatformpch.h"
+#include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatform/bcPlatform.h"
 #include "CorePlatform/bcCorePlatformUtility.h"
-#include "CorePlatform/Concurrency/bcThreadProvider.h"
+#include "CorePlatform/Concurrency/bcThread.h"
 
 namespace black_cat
 {
 	namespace core_platform
 	{
-		template< bc_platform TP, typename T >
-		class bc_thread_local_provider : private bc_no_copy
+		template< bc_platform TP >
+		struct bc_thread_local_pack
 		{
-		public:
-			using type = T;
-
-		public:
-
-		protected:
-
-		private:
 		};
 
-		template< class TProvider, typename T >
+		template< bc_platform TPlatform, typename T >
 		class bc_thread_local_proxy : private bc_no_copy
 		{
 		public:
 			using type = T;
 			using this_type = bc_thread_local_proxy;
-			using provider_type = TProvider;
-			typedef void(*cleanup_function)(type*);
+			using platform_pack = bc_thread_local_pack<TPlatform>;
+			using cleanup_function = void(*)(type*);
 
 		public:
 			bc_thread_local_proxy() noexcept(false)
 				: m_cleanup_function(&_default_clean_up)
 			{
+				_platform_initialize();
 			}
 
 			explicit bc_thread_local_proxy(cleanup_function p_cleanup_function) noexcept(false)
 				: m_cleanup_function(p_cleanup_function)
 			{
+				_platform_initialize();
 			}
 
 			bc_thread_local_proxy(this_type&& p_other)
@@ -52,6 +46,7 @@ namespace black_cat
 			~bc_thread_local_proxy() noexcept(true)
 			{
 				_cleanup();
+				_platform_cleanup();
 			};
 
 			this_type& operator =(this_type&& p_other)
@@ -64,7 +59,7 @@ namespace black_cat
 			// return thread local pointer, or in case of any error return null
 			bcInline type* get() const noexcept(true)
 			{
-				return m_provider.get();
+				return _platform_get();
 			}
 
 			// set thread local pointer and cleanup previous pointer and return true in case of success otherwise false
@@ -76,25 +71,26 @@ namespace black_cat
 				else
 					m_cleanup_function(l_pointer);
 
-				return m_provider.set(p_pointer);
+				return _platform_set(p_pointer);
 			}
 
 			bcInline type* operator ->() const noexcept(true)
 			{
-				//return m_provider.operator->();
-				return m_provider.get();
+				return get();
 			}
 
 			bcInline type& operator *() const noexcept(true)
 			{
-				//return m_provider.operator*();
-				return *m_provider.get();
+				return *get();
 			}
 
 			// set thread local pointer to null and return current value
 			bcInline type* release() noexcept(true)
 			{
-				return m_provider.release();
+				type* l_pointer = get();
+				set(nullptr);
+
+				return l_pointer;
 			}
 
 		protected:
@@ -103,6 +99,12 @@ namespace black_cat
 			static void _default_clean_up(type* p_pointer)
 			{
 				delete p_pointer;
+			}
+
+			void _assign(this_type&& p_other)
+			{
+				m_cleanup_function = p_other.m_cleanup_function;
+				_platform_assign(std::move(p_other));
 			}
 
 			void _cleanup()
@@ -114,18 +116,21 @@ namespace black_cat
 				}
 			}
 
-			void _assign(this_type&& p_other)
-			{
-				m_provider = std::move(p_other.m_provider);
-				m_cleanup_function = p_other.m_cleanup_function;
-			}
+			void _platform_initialize();
 
-			provider_type m_provider;
+			void _platform_cleanup();
+
+			void _platform_assign(this_type&&);
+
+			bool _platform_set(type*);
+
+			type* _platform_get() const;
+
+			platform_pack m_pack;
 			cleanup_function m_cleanup_function;
-
 		};
 
 		template< typename T >
-		using bc_thread_local = bc_thread_local_proxy< bc_thread_local_provider< g_current_platform, T >, T >;
+		using bc_thread_local = bc_thread_local_proxy< g_current_platform, T >;
 	}
 }

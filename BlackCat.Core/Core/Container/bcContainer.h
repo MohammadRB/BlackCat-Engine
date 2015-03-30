@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "CorePlatformImp/Concurrency/bcAtomicProvider.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/CorePCH.h"
 #include "Core/Memory/bcAlloc.h"
 #include "Core/Container/bcAllocator.h"

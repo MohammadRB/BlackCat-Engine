@@ -3,53 +3,42 @@
 #pragma once
 
 #include "coreplatform/bchardwareinfo.h"
-#include "coreplatformimp/corewin32pch.h"
+#include "CorePlatformImp/CorePlatformImpPCH.h"
 
 namespace black_cat
 {
 	namespace core_platform
 	{
 		template<>
-		class bc_hardware_info_provider< bc_platform::win32 >
+		inline void bc_hardware_info_proxy<bc_platform::win32>::get_basic_info(bc_basic_hardware_info* p_info)
 		{
-		public:
-			bc_hardware_info_provider() {}
-			~bc_hardware_info_provider() {}
+			SYSTEM_INFO l_sys_info;
+			GetSystemInfo(&l_sys_info);
+			ULONGLONG l_mem_size = 0;
+			GetPhysicallyInstalledSystemMemory(&l_mem_size);
 
-			static void get_basic_info(bc_basic_hardware_info* p_info)
+			switch (l_sys_info.wProcessorArchitecture)
 			{
-				SYSTEM_INFO l_sys_info;
-				GetSystemInfo(&l_sys_info);
-				ULONGLONG l_mem_size = 0;
-				GetPhysicallyInstalledSystemMemory(&l_mem_size);
-
-				switch (l_sys_info.wProcessorArchitecture)
-				{
-				case PROCESSOR_ARCHITECTURE_INTEL:
-					p_info->processor_architecture = bc_processor_architecture::x86;
-					break;
-				case PROCESSOR_ARCHITECTURE_AMD64:
-					p_info->processor_architecture = bc_processor_architecture::x64;
-					break;
-				case PROCESSOR_ARCHITECTURE_ARM:
-					p_info->processor_architecture = bc_processor_architecture::ARM;
-					break;
-				case PROCESSOR_ARCHITECTURE_IA64:
-				case PROCESSOR_ARCHITECTURE_UNKNOWN:
-					p_info->processor_architecture = bc_processor_architecture::unknown;
-					break;
-				}
-
-				p_info->proccessor_count = l_sys_info.dwNumberOfProcessors;
-				p_info->page_size = l_sys_info.dwPageSize;
-				p_info->memory_size = l_mem_size;
-				p_info->app_min_address = l_sys_info.lpMinimumApplicationAddress;
-				p_info->app_max_address = l_sys_info.lpMaximumApplicationAddress;
+			case PROCESSOR_ARCHITECTURE_INTEL:
+				p_info->processor_architecture = bc_processor_architecture::x86;
+				break;
+			case PROCESSOR_ARCHITECTURE_AMD64:
+				p_info->processor_architecture = bc_processor_architecture::x64;
+				break;
+			case PROCESSOR_ARCHITECTURE_ARM:
+				p_info->processor_architecture = bc_processor_architecture::ARM;
+				break;
+			case PROCESSOR_ARCHITECTURE_IA64:
+			case PROCESSOR_ARCHITECTURE_UNKNOWN:
+				p_info->processor_architecture = bc_processor_architecture::unknown;
+				break;
 			}
 
-		protected:
-
-		private:
+			p_info->proccessor_count = l_sys_info.dwNumberOfProcessors;
+			p_info->page_size = l_sys_info.dwPageSize;
+			p_info->memory_size = l_mem_size;
+			p_info->app_min_address = l_sys_info.lpMinimumApplicationAddress;
+			p_info->app_max_address = l_sys_info.lpMaximumApplicationAddress;
 		};
 	}
 }

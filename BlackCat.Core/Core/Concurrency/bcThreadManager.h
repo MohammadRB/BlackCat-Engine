@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CorePlatform/Concurrency/bcConcurrencyDef.h"
-#include "CorePlatformImp/Concurrency/bcAtomicProvider.h"
-#include "CorePlatformImp/Concurrency/bcConditionVariableProvider.h"
-#include "CorePlatformImp/Concurrency/bcFutureProvider.h"
-#include "CorePlatformImp/Concurrency/bcMutexProvider.h"
-#include "CorePlatformImp/Concurrency/bcThreadProvider.h"
-#include "CorePlatformImp/Concurrency/bcConcurrencyUtilityProvider.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
+#include "CorePlatformImp/Concurrency/bcConditionVariable.h"
+#include "CorePlatformImp/Concurrency/bcFuture.h"
+#include "CorePlatformImp/Concurrency/bcMutex.h"
+#include "CorePlatformImp/Concurrency/bcThread.h"
+#include "CorePlatformImp/Concurrency/bcConcurrencyUtility.h"
 #include "Core/CorePCH.h"
 #include "Core/CoreExceptions.h"
 #include "Core/bcCoreUtility.h"

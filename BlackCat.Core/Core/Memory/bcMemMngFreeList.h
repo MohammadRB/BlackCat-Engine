@@ -5,8 +5,8 @@
 #include "coreplatform/bccoreplatformutility.h"
 #include "coreplatform/memory/bcmemalloc.h"
 #include "CorePlatformImp/bcHardwareInfo.h"
-#include "CorePlatformImp/Concurrency/bcAtomicProvider.h"
-#include "CorePlatformImp/Concurrency/bcMutexProvider.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 
 namespace black_cat
 {

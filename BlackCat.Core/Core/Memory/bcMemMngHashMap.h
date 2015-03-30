@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "CorePlatformImp/Concurrency/bcConditionVariableProvider.h"
-#include "CorePlatformImp/Concurrency/bcMutexProvider.h"
+#include "CorePlatformImp/Concurrency/bcConditionVariable.h"
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/CorePCH.h"
 #include "Core/Memory/bcMemBlock.h"
 

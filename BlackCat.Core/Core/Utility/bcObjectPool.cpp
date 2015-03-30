@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/CorePCH.h"
-#include "Core/Utility/bcMemoryPool.h"
+#include "Core/Utility/bcObjectPool.h"
 
 namespace black_cat
 {
@@ -109,10 +109,10 @@ namespace black_cat
 
 		void bc_concurrent_memory_pool::free(void* p_pointer) noexcept(true)
 		{
-			bcUBYTE* l_pointer = reinterpret_cast<bcUBYTE*>(const_cast<void*>(p_pointer));
-
 			// is this pointer in our heap?
-			bcAssert((l_pointer >= m_heap) && (l_pointer < m_heap + m_block_size * m_num_block));
+			bcAssert(contain_pointer(p_pointer));
+
+			bcUBYTE* l_pointer = reinterpret_cast<bcUBYTE*>(p_pointer);
 
 			// convert the pointer into a block index
 			bcINT32 l_block = static_cast<bcINT32>(l_pointer - m_heap) / m_block_size;
@@ -136,23 +136,6 @@ namespace black_cat
 		void bc_concurrent_memory_pool::clear() noexcept(true)
 		{
 			std::memset(m_blocks, 0, m_num_bitblocks * sizeof(core_platform::bc_atomic< bitblock_type >));
-		}
-
-		bc_bit_vector bc_concurrent_memory_pool::get_state(bc_alloc_type p_alloc_type) const
-		{
-			bc_bit_vector l_bits(0);
-			l_bits.resize(m_num_block, p_alloc_type);
-
-			for (bcUINT32 l_i = 0; l_i < m_num_bitblocks; ++l_i)
-			{
-				bitblock_type l_current_block = m_blocks[l_i].load(core_platform::bc_memory_order::relaxed);
-				for (bcUINT32 l_j = 0; l_j < s_bitblock_size; ++l_j)
-				{
-					l_bits.set(l_i * s_bitblock_size + l_j, l_current_block & 1 << l_j);
-				}
-			}
-
-			return std::move(l_bits);
 		}
 	}
 }

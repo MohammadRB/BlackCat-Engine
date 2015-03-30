@@ -69,7 +69,7 @@ namespace black_cat
 
 			l_new_vector = reinterpret_cast<bcUINT32*>(bcAllocThrow(((p_size / 32) + 1) * sizeof(bcUINT32), p_alloc_type));
 
-			bcINT32 l_min = std::min(p_size, m_size);
+			bcINT32 l_min = (std::min)(p_size, m_size);
 			std::memcpy(l_new_vector, m_array, l_min * sizeof(bcUINT32));
 
 			if (m_size < p_size)

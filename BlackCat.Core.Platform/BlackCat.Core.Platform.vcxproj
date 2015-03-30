@@ -19,21 +19,20 @@
     <ClInclude Include="CorePlatform\bcHardwareInfo.h" />
     <ClInclude Include="CorePlatform\bcType.h" />
     <ClInclude Include="CorePlatform\bcCorePlatformUtility.h" />
-    <ClInclude Include="CorePlatform\Concurrency\bcAtomicProvider.h" />
+    <ClInclude Include="CorePlatform\Concurrency\bcAtomic.h" />
     <ClInclude Include="CorePlatform\Concurrency\bcConcurrencyDef.h" />
-    <ClInclude Include="CorePlatform\Concurrency\bcConcurrencyUtilityProvider.h" />
-    <ClInclude Include="CorePlatform\Concurrency\bcConditionVariableProvider.h" />
-    <ClInclude Include="CorePlatform\Concurrency\bcFutureProvider.h" />
+    <ClInclude Include="CorePlatform\Concurrency\bcConcurrencyUtility.h" />
+    <ClInclude Include="CorePlatform\Concurrency\bcConditionVariable.h" />
+    <ClInclude Include="CorePlatform\Concurrency\bcFuture.h" />
     <ClInclude Include="CorePlatform\Concurrency\bcILockable.h" />
-    <ClInclude Include="CorePlatform\Concurrency\bcMutexProvider.h" />
-    <ClInclude Include="CorePlatform\Concurrency\bcThreadProvider.h" />
+    <ClInclude Include="CorePlatform\Concurrency\bcMutex.h" />
+    <ClInclude Include="CorePlatform\Concurrency\bcThread.h" />
     <ClInclude Include="CorePlatform\CorePlatformPCH.h" />
     <ClInclude Include="CorePlatform\bcPlatform.h" />
     <ClInclude Include="CorePlatform\Memory\bcMemAlloc.h" />
     <ClInclude Include="CorePlatform\Utility\bcClock.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CorePlatform\Concurrency\bcThreadProvider.cpp" />
     <ClCompile Include="CorePlatform\CorePlatformPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">Create</PrecompiledHeader>
