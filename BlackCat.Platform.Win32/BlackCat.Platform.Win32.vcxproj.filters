@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="PlatformImp">
+      <UniqueIdentifier>{fd05af6c-e1d5-45eb-9a41-051049c1e3d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlatformImp\Application">
+      <UniqueIdentifier>{c3a660fb-4679-4378-ab45-5c3091c7ad45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlatformImp\File">
+      <UniqueIdentifier>{ec790478-5d38-400b-80bb-1bfb171e87f4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PlatformImp\PlatformImpPCH.h">
+      <Filter>PlatformImp</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Application\bcRenderApplication.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Application\bcRenderWindow.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\File\bcPath.h">
+      <Filter>PlatformImp\File</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\bcUtility.h">
+      <Filter>PlatformImp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PlatformImp\PlatformImpPCH.cpp">
+      <Filter>PlatformImp</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Application\bcRenderWindow.cpp">
+      <Filter>PlatformImp\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Application\bcRenderApplication.cpp">
+      <Filter>PlatformImp\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\File\bcPath.cpp">
+      <Filter>PlatformImp\File</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\bcUtility.cpp">
+      <Filter>PlatformImp</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

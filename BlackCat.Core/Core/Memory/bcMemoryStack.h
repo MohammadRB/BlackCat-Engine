@@ -15,7 +15,7 @@ namespace black_cat
 	{
 #ifdef BC_MEMORY_ENABLE
 
-		class BC_COREDLL_EXP bc_memory_stack : public bc_memory, bc_initializable<bcUINT32, const bcCHAR*>
+		class BC_COREDLL_EXP bc_memory_stack : public bc_memory, public bc_initializable<bcUINT32, const bcCHAR*>
 		{
 		public:
 			using this_type = bc_memory_stack;
@@ -26,13 +26,9 @@ namespace black_cat
 
 			bc_memory_stack(this_type&& p_other) noexcept(true);
 
-			~bc_memory_stack();
+			~bc_memory_stack() noexcept(true);
 
 			this_type& operator =(this_type&& p_other) noexcept(true);
-
-			void initialize(bcUINT32 p_size, const bcCHAR* p_tag) override;
-
-			void destroy() noexcept(true) override;
 
 			bcUINT32 size() const { return m_size; };
 
@@ -51,6 +47,10 @@ namespace black_cat
 		protected:
 
 		private:
+			void _initialize(bcUINT32 p_size, const bcCHAR* p_tag) override;
+
+			void _destroy() noexcept(true) override;
+
 			void _move(this_type&& p_other)
 			{
 				bcUBYTE* l_top = p_other.m_top.load(core_platform::bc_memory_order::acquire);

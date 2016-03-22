@@ -27,18 +27,18 @@ namespace black_cat
 			bc_container_node(value_type&& p_value) noexcept(std::is_nothrow_move_constructible<value_type>::value)
 				: m_value(std::move(p_value)) {}
 
-			template< typename ...TArgs >
-			bc_container_node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible<value_type, TArgs...>::value)
-				: m_value(std::forward<TArgs>(p_args)...)
-			{
-				static_assert(std::is_constructible<value_type, TArgs...>::value, "container node value is not constructible with args");
-			}
-
 			bc_container_node(const this_type& p_other) noexcept(std::is_nothrow_copy_constructible<value_type>::value)
 				: m_value(p_other.m_value) {}
 
 			bc_container_node(this_type&& p_other) noexcept(std::is_nothrow_move_constructible<value_type>::value)
 				: m_value(std::move(p_other.m_value)) {}
+			
+			template< typename ...TArgs >
+			bc_container_node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible< value_type, TArgs... >::value)
+				: m_value(std::forward< TArgs >(p_args)...)
+			{
+				static_assert(std::is_constructible< value_type, TArgs... >::value, "container node value is not constructible with args");
+			}
 
 			value_type m_value;
 		};

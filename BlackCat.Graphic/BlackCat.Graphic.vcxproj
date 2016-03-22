@@ -1,0 +1,245 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BlackCat.Core\BlackCat.Core.vcxproj">
+      <Project>{e4a77cc4-66c0-49b1-bfcf-a92173763741}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Graphic\bcDeviceObject.h" />
+    <ClInclude Include="Graphic\bcGraphicDefinition.h" />
+    <ClInclude Include="Graphic\bcGraphicException.h" />
+    <ClInclude Include="Graphic\bcPlatformRenderApi.h" />
+    <ClInclude Include="Graphic\bcRenderApiInfo.h" />
+    <ClInclude Include="Graphic\bcResourcePtr.h" />
+    <ClInclude Include="Graphic\Device\bcDevice.h" />
+    <ClInclude Include="Graphic\Device\bcDeviceInfo.h" />
+    <ClInclude Include="Graphic\Device\Command\bcDeviceCommandList.h" />
+    <ClInclude Include="Graphic\Device\Command\bcDeviceCommandExecuter.h" />
+    <ClInclude Include="Graphic\Device\bcDevicePipeline.h" />
+    <ClInclude Include="Graphic\Device\bcDevicePipelineState.h" />
+    <ClInclude Include="Graphic\GraphicPCH.h" />
+    <ClInclude Include="Graphic\Math\bcMatrix3f.h" />
+    <ClInclude Include="Graphic\Math\bcMatrix4f.h" />
+    <ClInclude Include="Graphic\Math\bcVector2f.h" />
+    <ClInclude Include="Graphic\Math\bcVector3f.h" />
+    <ClInclude Include="Graphic\Math\bcVector4f.h" />
+    <ClInclude Include="Graphic\PipelineStage\bcComputeStage.h" />
+    <ClInclude Include="Graphic\PipelineStage\bcDomainStage.h" />
+    <ClInclude Include="Graphic\PipelineStage\bcGeometryStage.h" />
+    <ClInclude Include="Graphic\PipelineStage\bcHullStage.h" />
+    <ClInclude Include="Graphic\PipelineStage\bcInputAssemblerStage.h" />
+    <ClInclude Include="Graphic\PipelineStage\bcOutputMergerStage.h" />
+    <ClInclude Include="Graphic\PipelineStage\bcPipelineStateArrayVariable.h" />
+    <ClInclude Include="Graphic\PipelineStage\bcPipelineStateVariable.h" />
+    <ClInclude Include="Graphic\PipelineStage\bcPixelStage.h" />
+    <ClInclude Include="Graphic\PipelineStage\bcProgrammableStage.h" />
+    <ClInclude Include="Graphic\PipelineStage\bcRasterizerStage.h" />
+    <ClInclude Include="Graphic\PipelineStage\bcStreamOutputStage.h" />
+    <ClInclude Include="Graphic\PipelineStage\bcVertexStage.h" />
+    <ClInclude Include="Graphic\Rendering\bcRenderCommand.h" />
+    <ClInclude Include="Graphic\Rendering\bcRenderPass.h" />
+    <ClInclude Include="Graphic\Rendering\bcRenderPassManager.h" />
+    <ClInclude Include="Graphic\Rendering\bcRenderTask.h" />
+    <ClInclude Include="Graphic\Resource\bcResource.h" />
+    <ClInclude Include="Graphic\Resource\bcResourceConfig.h" />
+    <ClInclude Include="Graphic\Resource\Buffer\bcBuffer.h" />
+    <ClInclude Include="Graphic\Resource\Buffer\bcBufferConfig.h" />
+    <ClInclude Include="Graphic\Resource\State\bcBlendState.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Graphic\Resource\State\bcDepthStencilState.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Graphic\Resource\State\bcInputLayout.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Graphic\Resource\State\bcRasterizerState.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Graphic\Resource\State\bcSamplerState.h" />
+    <ClInclude Include="Graphic\Resource\State\bcViewPort.h" />
+    <ClInclude Include="Graphic\Resource\Texture\bcTexture2d.h" />
+    <ClInclude Include="Graphic\Resource\Texture\bcTextureConfig.h" />
+    <ClInclude Include="Graphic\Resource\View\bcDepthStencilViewConfig.h" />
+    <ClInclude Include="Graphic\Resource\View\bcRenderTargetViewConfig.h" />
+    <ClInclude Include="Graphic\Resource\View\bcResourceViewConfig.h" />
+    <ClInclude Include="Graphic\Resource\View\bcDepthStencilView.h" />
+    <ClInclude Include="Graphic\Resource\View\bcRenderTargetView.h" />
+    <ClInclude Include="Graphic\Resource\View\bcResourceView.h" />
+    <ClInclude Include="Graphic\Resource\View\bcShaderView.h" />
+    <ClInclude Include="Graphic\Shader\bcComputeShader.h" />
+    <ClInclude Include="Graphic\Shader\bcDomainShader.h" />
+    <ClInclude Include="Graphic\Shader\bcGeometryShader.h" />
+    <ClInclude Include="Graphic\Shader\bcHullShader.h" />
+    <ClInclude Include="Graphic\Shader\bcPixelShader.h" />
+    <ClInclude Include="Graphic\Shader\bcShader.h" />
+    <ClInclude Include="Graphic\Shader\bcVertexShader.h" />
+    <ClInclude Include="Graphic\Shader\Parameter\bcConstantBufferParameter.h" />
+    <ClInclude Include="Graphic\Shader\Parameter\bcMatrix4fParameter.h" />
+    <ClInclude Include="Graphic\Shader\Parameter\bcSamplerParameter.h" />
+    <ClInclude Include="Graphic\Shader\Parameter\bcShaderParameter.h" />
+    <ClInclude Include="Graphic\Shader\Parameter\bcShaderParameterManager.h" />
+    <ClInclude Include="Graphic\Shader\Parameter\bcShaderResourceParameter.h" />
+    <ClInclude Include="Graphic\Shader\Parameter\bcVectorParameter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Graphic\GraphicPCH.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Graphic\Math\bcMatrix3f.cpp" />
+    <ClCompile Include="Graphic\Math\bcMatrix4f.cpp" />
+    <ClCompile Include="Graphic\Math\bcVector2f.cpp" />
+    <ClCompile Include="Graphic\Math\bcVector3f.cpp" />
+    <ClCompile Include="Graphic\Math\bcVector4f.cpp" />
+    <ClCompile Include="Graphic\PipelineStage\bcInputAssemblerStage.cpp" />
+    <ClCompile Include="Graphic\PipelineStage\bcOutputMergerStage.cpp" />
+    <ClCompile Include="Graphic\PipelineStage\bcProgrammableStage.cpp" />
+    <ClCompile Include="Graphic\PipelineStage\bcRasterizerStage.cpp" />
+    <ClCompile Include="Graphic\PipelineStage\bcStreamOutputStage.cpp" />
+    <ClCompile Include="Graphic\Rendering\bcRenderPassManager.cpp" />
+    <ClCompile Include="Graphic\Shader\Parameter\bcShaderParameterManager.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7B267E54-9DA2-435D-BE52-4388E78A1661}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>BlackCatGraphic</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATGRAPHIC_EXPORTS;BC_GRAPHIC_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform/;../BlackCat.Core.Platform.Win32/;../BlackCat.Core/;../BlackCat.Platform/;../BlackCat.Platform.Win32/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>Graphic/GraphicPCH.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy Graphic\*.h ..\BC_SDK\Include\Graphic
+copy Graphic\Device\*.h ..\BC_SDK\Include\Graphic\Device
+copy Graphic\Device\Command\*.h ..\BC_SDK\Include\Graphic\Device\Command
+copy Graphic\Math\*.h ..\BC_SDK\Include\Graphic\Math
+copy Graphic\PipelineStage\*.h ..\BC_SDK\Include\Graphic\PipelineStage
+copy Graphic\Rendering\*.h ..\BC_SDK\Include\Graphic\Rendering
+copy Graphic\Resource\*.h ..\BC_SDK\Include\Graphic\Graphic\Resource
+copy Graphic\Resource\Buffer\*.h ..\BC_SDK\Include\Graphic\Resource\Buffer
+copy Graphic\Resource\State\*.h ..\BC_SDK\Include\Graphic\Resource\State
+copy Graphic\Resource\Texture\*.h ..\BC_SDK\Include\Graphic\Resource\Texture
+copy Graphic\Resource\View\*.h ..\BC_SDK\Include\Graphic\Resource\View
+copy Graphic\Shader\*.h ..\BC_SDK\Include\Graphic\Shader
+copy Graphic\Shader\Parameter\*.h ..\BC_SDK\Include\Graphic\Shader\Parameter
+
+copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
+copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp
+copy ..\$(Configuration)\$(ProjectName).ilk ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).ilk
+copy ..\$(Configuration)\$(ProjectName).lib ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).lib
+copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).pdb</Command>
+    </PostBuildEvent>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;BLACKCATGRAPHIC_EXPORTS;BC_GRAPHIC_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform/;../BlackCat.Core.Platform.Win32/;../BlackCat.Core/;../BlackCat.Platform/;../BlackCat.Platform.Win32/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>Graphic/GraphicPCH.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy Graphic\*.h ..\BC_SDK\Include\Graphic
+copy Graphic\Device\*.h ..\BC_SDK\Include\Graphic\Device
+copy Graphic\Device\Command\*.h ..\BC_SDK\Include\Graphic\Device\Command
+copy Graphic\Math\*.h ..\BC_SDK\Include\Graphic\Math
+copy Graphic\PipelineStage\*.h ..\BC_SDK\Include\Graphic\PipelineStage
+copy Graphic\Rendering\*.h ..\BC_SDK\Include\Graphic\Rendering
+copy Graphic\Rendering\Command\*.h ..\BC_SDK\Include\Graphic\Rendering\Command
+copy Graphic\Rendering\Pass\*.h ..\BC_SDK\Include\Graphic\Rendering\Pass
+copy Graphic\Rendering\Task\*.h ..\BC_SDK\Include\Graphic\Rendering\Task
+copy Graphic\Resource\*.h ..\BC_SDK\Include\Graphic\Graphic\Resource
+copy Graphic\Resource\Buffer\*.h ..\BC_SDK\Include\Graphic\Resource\Buffer
+copy Graphic\Resource\State\*.h ..\BC_SDK\Include\Graphic\Resource\State
+copy Graphic\Resource\Texture\*.h ..\BC_SDK\Include\Graphic\Resource\Texture
+copy Graphic\Resource\View\*.h ..\BC_SDK\Include\Graphic\Resource\View
+copy Graphic\Shader\*.h ..\BC_SDK\Include\Graphic\Shader
+copy Graphic\Shader\Parameter\*.h ..\BC_SDK\Include\Graphic\Shader\Parameter
+
+copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
+copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp
+copy ..\$(Configuration)\$(ProjectName).ilk ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).ilk
+copy ..\$(Configuration)\$(ProjectName).lib ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).lib
+copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).pdb</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

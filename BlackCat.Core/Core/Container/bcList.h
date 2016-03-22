@@ -69,14 +69,6 @@ namespace black_cat
 				{
 				}
 
-				template< typename ...TArgs >
-				node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible<bc_container_node<value_type>, TArgs...>::value)
-					: bc_container_node(std::forward<TArgs>(p_args)...),
-					m_next(nullptr),
-					m_prev(nullptr)
-				{
-				}
-
 				node(const node& p_other)
 					: bc_container_node(p_other.m_value),
 					m_next(p_other.m_next),
@@ -91,6 +83,14 @@ namespace black_cat
 				{
 					p_other.m_next = nullptr;
 					p_other.m_prev = nullptr;
+				}
+
+				template< typename ...TArgs >
+				node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible<bc_container_node<value_type>, TArgs...>::value)
+					: bc_container_node(std::forward<TArgs>(p_args)...),
+					m_next(nullptr),
+					m_prev(nullptr)
+				{
 				}
 
 				~node()
@@ -114,7 +114,7 @@ namespace black_cat
 
 			value_type* iterator_dereference(node_type* p_node) const noexcept(true)
 			{
-				return &p_node->m_value;
+				return std::addressof(p_node->m_value);
 			}
 
 			node_type* iterator_increment(node_type* p_node) const noexcept(true)
@@ -166,7 +166,7 @@ namespace black_cat
 				std::for_each(p_first, p_last, [=, &l_last_inserted, &l_count](typename std::iterator_traits<TInputIterator>::value_type& p_value)->void
 				{
 
-					l_last_inserted = _new_node(l_last_inserted, p_value);
+					l_last_inserted = _new_node(l_last_inserted, 1, p_value);
 					++l_last_inserted;
 					++l_count;
 
@@ -235,7 +235,7 @@ namespace black_cat
 		private:
 		};
 
-		template < typename T, class TAllocator = bc_allocator_movable< T > >
+		template < typename T, class TAllocator = bc_allocator< T > >
 		class bc_list : public bc_list_base< T, TAllocator >
 		{
 			bc_make_iterators_friend(bc_list);
@@ -253,6 +253,8 @@ namespace black_cat
 			using size_type = typename base_type::size_type;
 			using iterator = bc_bidirectional_iterator< this_type >;
 			using const_iterator = bc_const_bidirectional_iterator< this_type >;
+			using reverse_iterator = std::reverse_iterator<iterator>;
+			using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 		protected:
 			using node_type = typename base_type::node_type;
@@ -315,6 +317,18 @@ namespace black_cat
 			const_iterator end() const;
 
 			const_iterator cend() const;
+
+			reverse_iterator rbegin();
+
+			const_reverse_iterator rbegin() const;
+
+			const_reverse_iterator crbegin() const;
+
+			reverse_iterator rend();
+
+			const_reverse_iterator rend() const;
+
+			const_reverse_iterator crend() const;
 
 			void clear();
 
@@ -432,6 +446,21 @@ namespace black_cat
 				p_other.m_head = nullptr;
 			}
 		};
+
+		template< typename T, template< typename > class TAllocator >
+		using bc_list_a = bc_list< T, TAllocator< T > >;
+
+		template< typename T >
+		using bc_list_program = bc_list_a< T, bc_allocator_program >;
+
+		template< typename T >
+		using bc_list_level = bc_list_a< T, bc_allocator_level >;
+
+		template< typename T >
+		using bc_list_frame = bc_list_a< T, bc_allocator_frame >;
+
+		template< typename T >
+		using bc_list_movale = bc_list_a< T, bc_allocator_movable >;
 
 		template< typename T, class TAllocator >
 		bc_list<T, TAllocator>::bc_list(const allocator_type& p_allocator)
@@ -633,6 +662,42 @@ namespace black_cat
 		typename bc_list<T, TAllocator>::const_iterator bc_list<T, TAllocator>::cend() const
 		{
 			return const_iterator(this, base_type::m_head);
+		}
+
+		template< typename T, class TAllocator >
+		typename bc_list<T, TAllocator>::reverse_iterator bc_list<T, TAllocator>::rbegin()
+		{
+			return reverse_iterator(iterator(this, base_type::m_first));
+		}
+
+		template< typename T, class TAllocator >
+		typename bc_list<T, TAllocator>::const_reverse_iterator bc_list<T, TAllocator>::rbegin() const
+		{
+			return const_reverse_iterator(const_iterator(this, base_type::m_first));
+		}
+
+		template< typename T, class TAllocator >
+		typename bc_list<T, TAllocator>::const_reverse_iterator bc_list<T, TAllocator>::crbegin() const
+		{
+			return const_reverse_iterator(this, base_type::m_first);
+		}
+
+		template< typename T, class TAllocator >
+		typename bc_list<T, TAllocator>::reverse_iterator bc_list<T, TAllocator>::rend()
+		{
+			return reverse_iterator(this, base_type::_get_end());
+		}
+
+		template< typename T, class TAllocator >
+		typename bc_list<T, TAllocator>::const_reverse_iterator bc_list<T, TAllocator>::rend() const
+		{
+			return const_reverse_iterator(this, base_type::_get_end());
+		}
+
+		template< typename T, class TAllocator >
+		typename bc_list<T, TAllocator>::const_reverse_iterator bc_list<T, TAllocator>::crend() const
+		{
+			return const_reverse_iterator(this, base_type::_get_end());
 		}
 
 		template< typename T, class TAllocator >

@@ -150,9 +150,6 @@
     <ClInclude Include="Core\Container\bcVector.h">
       <Filter>Core\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Utility\bcDefaultMemberType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Container\bcArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -190,6 +187,12 @@
       <Filter>Core\Concurrency</Filter>
     </ClInclude>
     <ClInclude Include="Core\Concurrency\bcLockFreeMemMng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\bcParameterPack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\bcTemplateMetaType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

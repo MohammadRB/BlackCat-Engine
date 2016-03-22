@@ -21,7 +21,7 @@ namespace black_cat
 		bc_memory_heap::~bc_memory_heap() noexcept(true)
 		{
 			if (m_initialized)
-				destroy();
+				_destroy();
 		};
 
 		bc_memory_heap::this_type& bc_memory_heap::operator =(bc_memory_heap::this_type&& p_other) noexcept(true)
@@ -32,7 +32,7 @@ namespace black_cat
 			return *this;
 		};
 
-		void bc_memory_heap::initialize(bcSIZE p_size, const bcCHAR* p_tag)
+		void bc_memory_heap::_initialize(bcSIZE p_size, const bcCHAR* p_tag)
 		{
 			m_size = p_size;
 			m_remaining_free_space_limit = sizeof(bc_memblock) + BC_MEMORY_MIN_ALIGN;
@@ -65,15 +65,11 @@ namespace black_cat
 			if (p_tag) bc_memory::tag(p_tag);
 
 			m_tracer.accept_overhead(sizeof(heap_memblock));
-
-			m_initialized = true;
 		};
 
-		void bc_memory_heap::destroy() noexcept(true)
+		void bc_memory_heap::_destroy() noexcept(true)
 		{
 			core_platform::bc_mem_aligned_free(m_heap);
-
-			m_initialized = false;
 		};
 
 		void* bc_memory_heap::alloc(bc_memblock* p_memblock) noexcept(true)

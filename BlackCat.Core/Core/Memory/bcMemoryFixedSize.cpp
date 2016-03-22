@@ -22,7 +22,7 @@ namespace black_cat
 		bc_memory_fixed_size::~bc_memory_fixed_size() noexcept(true)
 		{
 			if (m_initialized)
-				destroy();
+				_destroy();
 		};
 
 		bc_memory_fixed_size::this_type& bc_memory_fixed_size::operator =(bc_memory_fixed_size::this_type&& p_other) noexcept(true)
@@ -33,7 +33,7 @@ namespace black_cat
 			return *this;
 		};
 
-		void bc_memory_fixed_size::initialize(bcUINT32 p_num_block, bcUINT32 p_block_size, const bcCHAR* p_tag)
+		void bc_memory_fixed_size::_initialize(bcUINT32 p_num_block, bcUINT32 p_block_size, const bcCHAR* p_tag)
 		{
 			m_num_block = p_num_block;
 			m_block_size = p_block_size;
@@ -70,16 +70,12 @@ namespace black_cat
 
 			m_tracer.initialize((m_block_size * m_num_block) * sizeof(bcUBYTE));
 			if (p_tag) bc_memory::tag(p_tag);
-
-			m_initialized = true;
 		};
 
-		void bc_memory_fixed_size::destroy() noexcept(true)
+		void bc_memory_fixed_size::_destroy() noexcept(true)
 		{
 			core_platform::bc_mem_aligned_free(m_blocks);
 			core_platform::bc_mem_aligned_free(m_heap);
-
-			m_initialized = false;
 		};
 
 		void* bc_memory_fixed_size::alloc(bc_memblock* p_mem_block) noexcept(true)

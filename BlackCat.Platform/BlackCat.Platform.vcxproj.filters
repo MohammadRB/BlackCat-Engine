@@ -11,6 +11,9 @@
     <Filter Include="Platform\Application">
       <UniqueIdentifier>{fa865c9e-deb1-4c7d-9162-ac8a22226c2f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Platform\File">
+      <UniqueIdentifier>{9b31a53e-a6a7-4e29-9697-4e7e3436efad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Platform\PlatformPCH.h">
@@ -27,6 +30,9 @@
     </ClInclude>
     <ClInclude Include="Platform\Application\bcRenderWindow.h">
       <Filter>Platform\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\File\bcPath.h">
+      <Filter>Platform\File</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

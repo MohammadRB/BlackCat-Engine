@@ -12,43 +12,43 @@ namespace black_cat
 	namespace core_platform
 	{
 		template<bc_platform TPlatform, typename T>
-		struct bc_future_pack
+		struct bc_platform_future_pack
 		{
 		};
 
 		template<bc_platform TPlatform, typename T>
-		struct bc_shared_future_pack
+		struct bc_platform_shared_future_pack
 		{
 		};
 
 		template<bc_platform TPlatform, typename T>
-		struct bc_promise_pack
+		struct bc_platform_promise_pack
 		{
 		};
 
 		template< bc_platform TPlatform, typename T >
-		class bc_shared_future_proxy;
+		class bc_platform_shared_future;
 
 		template< bc_platform TPlatform, typename T >
-		class bc_promise_proxy;
+		class bc_platform_promise;
 
 		template< bc_platform TPlatform, typename T >
-		class bc_future_proxy : private bc_no_copy
+		class bc_platform_future : private bc_no_copy
 		{
 			using type = T;
-			using platform_pack = bc_future_pack< TPlatform, T >;
-			using this_type = bc_future_proxy< TPlatform, T >;
-			using shared_type = bc_shared_future_proxy< TPlatform, T >;
-			using promise_type = bc_promise_proxy< TPlatform, T >;
+			using platform_pack = bc_platform_future_pack< TPlatform, T >;
+			using this_type = bc_platform_future< TPlatform, T >;
+			using shared_type = bc_platform_shared_future< TPlatform, T >;
+			using promise_type = bc_platform_promise< TPlatform, T >;
 
 			friend class promise_type;
 
 		public:
-			bc_future_proxy() noexcept(true);
+			bc_platform_future() noexcept(true);
 
-			bc_future_proxy(this_type&& p_other) noexcept(true);
+			bc_platform_future(this_type&& p_other) noexcept(true);
 
-			~bc_future_proxy() noexcept(true);
+			~bc_platform_future() noexcept(true);
 
 			this_type& operator =(this_type&& p_other) noexcept(true);
 
@@ -69,25 +69,25 @@ namespace black_cat
 		};
 
 		template< bc_platform TPlatform, typename T >
-		class bc_shared_future_proxy
+		class bc_platform_shared_future
 		{
 			using type = T;
-			using platform_pack = bc_shared_future_pack< TPlatform, T >;
-			using this_type = bc_shared_future_proxy< TPlatform, T >;
-			using future_type = bc_future_proxy< TPlatform, T >;
+			using platform_pack = bc_platform_shared_future_pack< TPlatform, T >;
+			using this_type = bc_platform_shared_future< TPlatform, T >;
+			using future_type = bc_platform_future< TPlatform, T >;
 
 			friend class future_type;
 
 		public:
-			bc_shared_future_proxy() noexcept(true);
+			bc_platform_shared_future() noexcept(true);
 
-			bc_shared_future_proxy(const this_type& p_other) noexcept(true);
+			bc_platform_shared_future(const this_type& p_other) noexcept(true);
 
-			bc_shared_future_proxy(this_type&& p_other) noexcept(true);
+			bc_platform_shared_future(this_type&& p_other) noexcept(true);
 
-			bc_shared_future_proxy(future_type&& p_future);
+			bc_platform_shared_future(future_type&& p_future);
 
-			~bc_shared_future_proxy() noexcept(true);
+			~bc_platform_shared_future() noexcept(true);
 
 			this_type& operator =(const this_type& p_other);
 
@@ -108,23 +108,23 @@ namespace black_cat
 		};
 
 		template< bc_platform TPlatform, typename T >
-		class bc_promise_proxy : private bc_no_copy
+		class bc_platform_promise : private bc_no_copy
 		{
 			using type = T;
-			using platform_pack = bc_promise_pack<TPlatform, T>;
-			using this_type = bc_promise_proxy< TPlatform, T >;
-			using future_type = bc_future_proxy< TPlatform, T >;
+			using platform_pack = bc_platform_promise_pack<TPlatform, T>;
+			using this_type = bc_platform_promise< TPlatform, T >;
+			using future_type = bc_platform_future< TPlatform, T >;
 
 		public:
-			bc_promise_proxy() noexcept(true);
+			bc_platform_promise() noexcept(true);
 
 			// TODO: Check here
 			/*template<typename Allocator>
 			bcPromiseBase(std::allocator_arg_t, Allocator const&);*/
 
-			bc_promise_proxy(this_type&& p_other) noexcept(true);
+			bc_platform_promise(this_type&& p_other) noexcept(true);
 
-			~bc_promise_proxy();
+			~bc_platform_promise();
 
 			this_type& operator =(this_type&& p_other);
 
@@ -145,10 +145,10 @@ namespace black_cat
 		};
 
 		template< typename T >
-		using bc_future = bc_future_proxy< g_current_platform, T >;
+		using bc_future = bc_platform_future< g_current_platform, T >;
 		template< typename T >
-		using bc_shared_future = bc_shared_future_proxy< g_current_platform, T >;
+		using bc_shared_future = bc_platform_shared_future< g_current_platform, T >;
 		template< typename T >
-		using bc_promise = bc_promise_proxy< g_current_platform, T >;
+		using bc_promise = bc_platform_promise< g_current_platform, T >;
 	}
 }

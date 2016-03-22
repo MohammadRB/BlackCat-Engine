@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "CorePlatform/CorePlatformPCH.h"
+#include "CorePlatformImp/CorePlatformImpPCH.h"
 #include "Core/CorePCH.h"
 #include "Core/bcCoreUtility.h"
 #include "Core/Memory/bcMemoryManagment.h"

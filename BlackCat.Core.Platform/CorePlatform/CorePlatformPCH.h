@@ -28,9 +28,9 @@
 #define asm _asm
 #endif
 
-#ifndef noexcept
-#define noexcept(p) noexcept
-#endif
+//#ifndef noexcept
+//#define noexcept(p) noexcept
+//#endif
 
 //#ifndef except
 //#define except throw(...)
@@ -54,6 +54,8 @@
 #ifdef BC_ASSERTION
 #define bcDebugBreak() asm { int 3 }
 #define bcAssert(expr) \
+	assert(((expr)))
+#define bcAssert(expr, msg) \
 	assert(((expr)))
 #define bcStaticAssert(expr, msg) static_assert(expr, msg)
 #else

@@ -13,6 +13,8 @@ namespace black_cat
 		template< typename T >
 		class bc_function_wrapper;
 
+		// In case of large functor objects that bc_delegate can't handle them use this class
+		// instead of bc_delegate
 		// TODO complete as bc_delegate
 		template< typename TR, typename ...TArgs >
 		class bc_function_wrapper< TR(TArgs...) >
@@ -32,7 +34,7 @@ namespace black_cat
 
 			template<typename TF>
 			bc_function_wrapper(TF&& p_func, bc_alloc_type p_alloc_type = bc_alloc_type::unknown)
-				: m_ptr(bcNew(imp<TF>(std::move(p_func)), p_alloc_type))
+				: m_ptr(bc_make_unique<imp<TF>>(p_alloc_type, std::forward<TF>(p_func)))
 			{
 				static_assert(std::is_convertible<typename std::result_of<TF>::type, return_type>::value,
 					"functor object must return appropriate type");

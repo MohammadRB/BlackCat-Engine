@@ -38,9 +38,10 @@ namespace black_cat
 				: m_allocator(p_allocator)
 			{
 				static_assert(internal_allocator_type::is_movable_type::value == false, "Movable allocators aren't supported");
-				static_assert(std::is_nothrow_move_assignable<value_type>::value == true, "T must be default constructible"); // TODO
+				static_assert(std::is_default_constructible<value_type>::value == true, "T must be default constructible"); // TODO
 				static_assert(std::is_nothrow_move_assignable<value_type>::value == true, "T must be nothrow move assignable");
 
+				// BUG If we use frame allocator we can't use allocator for allocation of head node(check other containers)
 				node_pointer l_node = bc_allocator_traits< internal_allocator_type >::allocate(m_allocator, 1);
 				bc_allocator_traits< internal_allocator_type >::construct(m_allocator, l_node);
 				m_tail.store(l_node, core_platform::bc_memory_order::relaxed);
@@ -86,13 +87,6 @@ namespace black_cat
 				{
 				}
 
-				template< typename ...TArgs >
-				node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible<bc_container_node<value_type>, TArgs...>::value)
-					: bc_container_node(std::forward<TArgs>(p_args)...),
-					m_next(nullptr)
-				{
-				}
-
 				node(const node& p_other) noexcept(std::is_nothrow_copy_constructible<bc_container_node<value_type>>::value)
 					: bc_container_node(p_other.m_value),
 					m_next(p_other.m_next)
@@ -104,6 +98,13 @@ namespace black_cat
 					m_next(p_other.m_next)
 				{
 					p_other.m_next = nullptr;
+				}
+
+				template< typename ...TArgs >
+				node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible< bc_container_node< value_type >, TArgs... >::value)
+					: bc_container_node(std::forward< TArgs >(p_args)...),
+					m_next(nullptr)
+				{
 				}
 
 				~node()
@@ -299,7 +300,7 @@ namespace black_cat
 		private:
 			void reclaim_node(node_type* p_node)
 			{
-				bc_allocator_traits< internal_allocator_type >::destruct(base_type::m_allocator, p_node);
+				bc_allocator_traits< internal_allocator_type >::destroy(base_type::m_allocator, p_node);
 				bc_allocator_traits< internal_allocator_type >::deallocate(base_type::m_allocator, p_node);
 			}
 
@@ -316,6 +317,9 @@ namespace black_cat
 			bc_lockfree_memmng< this_type > m_memmng;
 			
 		};
+
+		template< typename T, template< typename > typename TAllocator >
+		using bc_concurrent_queue_a = bc_concurrent_queue< T, TAllocator< T > >;
 
 		template< typename T, typename TAllocator >
 		void swap(bc_concurrent_queue< T, TAllocator > p_first, bc_concurrent_queue< T, TAllocator > p_second)

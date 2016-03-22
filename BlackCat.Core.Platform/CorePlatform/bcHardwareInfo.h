@@ -30,7 +30,7 @@ namespace black_cat
 		};
 
 		template< bc_platform TPlatform >
-		class bc_hardware_info_proxy
+		class bc_platform_hardware_info
 		{
 		public:
 			static void get_basic_info(bc_basic_hardware_info* p_info);
@@ -41,6 +41,6 @@ namespace black_cat
 
 		};
 
-		using bc_hardware_info = bc_hardware_info_proxy< g_current_platform >;
+		using bc_hardware_info = bc_platform_hardware_info< g_current_platform >;
 	}
 }

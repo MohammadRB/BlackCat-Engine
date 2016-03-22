@@ -48,11 +48,8 @@ namespace black_cat
 			if (l_ite == m_handlers.end())
 				return l_handled;
 
-			for (bcUINT32 l_i = 0, l_c = l_ite->second.delegate_count(); l_i < l_c; ++l_i)
-			{
-				l_handled = true;
-				l_ite->second(p_event);
-			}
+			l_handled = true;
+			l_ite->second(p_event);
 
 			return l_handled;
 		};
@@ -61,13 +58,13 @@ namespace black_cat
 			core_platform::bc_clock::large_time_delta_type p_current_time,
 			core_platform::bc_clock::little_time_delta_type p_milisecond)
 		{
-			m_global_queue.push(_queued_event(std::move(p_event), p_current_time + p_milisecond));
+			m_global_queue.push(_bc_queued_event(std::move(p_event), p_current_time + p_milisecond));
 		};
 
 		bcUINT32 bc_event_manager::process_event_queue(core_platform::bc_clock::large_time_delta_type p_current_time)
 		{
 			bcUINT32 l_processed_event_count = 0;
-			_queued_event l_event(nullptr, 0);
+			_bc_queued_event l_event(nullptr, 0);
 
 			while (m_global_queue.pop(l_event))
 			{
@@ -78,7 +75,7 @@ namespace black_cat
 			std::sort(
 				std::begin(m_local_queue),
 				std::end(m_local_queue),
-				[](const _queued_event& p_first, const _queued_event& p_second)->bool
+				[](const _bc_queued_event& p_first, const _bc_queued_event& p_second)->bool
 				{
 					
 					return p_first.m_process_time >= p_second.m_process_time;

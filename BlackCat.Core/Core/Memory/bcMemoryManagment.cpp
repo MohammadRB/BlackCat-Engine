@@ -12,13 +12,13 @@ namespace black_cat
 		bc_memmng bc_memmng::m_instance;
 
 		bc_memmng::bc_memmng() noexcept(true)
-			: m_fsa_allocators(nullptr),
+			: m_initialized(false),
+			m_fsa_allocators(nullptr),
 			m_per_program_stack(nullptr),
 			m_per_level_stack(nullptr),
 			m_per_frame_stack(nullptr),
 			m_super_heap(nullptr),
-			m_crt_allocator(nullptr),
-			m_initialized(false)
+			m_crt_allocator(nullptr)
 #ifdef BC_MEMORY_LEAK_DETECTION
 			,
 			m_leak_allocator(nullptr)

@@ -74,7 +74,7 @@ namespace black_cat
 			}
 
 			void try_reclaim(traits_type& p_traits, node_pointer p_node)
-				noexcept(noexcept(this_type::_delete_nodes(p_traits, p_node)))
+				noexcept(noexcept(_delete_nodes(p_traits, p_node)))
 			{
 				if (m_num_thread.load(core_platform::bc_memory_order::seqcst) == 1)
 				{

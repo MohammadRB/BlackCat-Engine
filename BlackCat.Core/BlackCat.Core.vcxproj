@@ -22,13 +22,14 @@
     <ProjectGuid>{E4A77CC4-66C0-49B1-BFCF-A92173763741}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>BlackCatCore</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>CTP_Nov2013</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -47,7 +48,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -67,7 +68,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">
@@ -77,11 +78,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\BC_SDK\Lib\$(Configuration)\</OutDir>
-    <TargetName>$(ProjectName)_$(PlatformName)</TargetName>
+    <OutDir>..\$(Configuration)\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -90,14 +92,51 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATCORE_EXPORTS;BC_CORE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>Core/CorePCH.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\BC_SDK\Lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>BlackCat.Core.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy Core\Concurrency\*.h ..\BC_SDK\Include\Core\Concurrency
+copy Core\Container\*.h ..\BC_SDK\Include\Core\Container
+copy Core\Memory\*.h ..\BC_SDK\Include\Core\Memory
+copy Core\Math\*.h ..\BC_SDK\Include\Core\Math
+copy Core\Event\*.h ..\BC_SDK\Include\Core\Event
+copy Core\Utility\*.h ..\BC_SDK\Include\Core\Utility
+copy Core\*.h ..\BC_SDK\Include\Core
+
+copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
+copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp
+copy ..\$(Configuration)\$(ProjectName).ilk ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).ilk
+copy ..\$(Configuration)\$(ProjectName).lib ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).lib
+copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).pdb
+
+</Command>
+    </PostBuildEvent>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATCORE_EXPORTS;BC_CORE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>Core/CorePCH.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\BC_SDK\Lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy Core\Concurrency\*.h ..\BC_SDK\Include\Core\Concurrency
@@ -117,28 +156,29 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATCORE_EXPORTS;BC_CORE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>Core/CorePCH.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\BC_SDK\Lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy Core\Concurrency\*.h ..\BC_SDK\Include\BlackCatCore\Concurrency
-copy Core\Containers\*.h ..\BC_SDK\Include\BlackCatCore\Containers
-copy Core\Memory\*.h ..\BC_SDK\Include\BlackCatCore\Memory
-copy Core\Math\*.h ..\BC_SDK\Include\BlackCatCore\Math
-copy Core\Events\*.h ..\BC_SDK\Include\BlackCatCore\Events
-copy Core\Utility\*.h ..\BC_SDK\Include\BlackCatCore\Utility
-copy Core\*.h ..\BC_SDK\Include\BlackCatCore
+      <Command>copy Core\Concurrency\*.h ..\BC_SDK\Include\Core\Concurrency
+copy Core\Container\*.h ..\BC_SDK\Include\Core\Container
+copy Core\Memory\*.h ..\BC_SDK\Include\Core\Memory
+copy Core\Math\*.h ..\BC_SDK\Include\Core\Math
+copy Core\Event\*.h ..\BC_SDK\Include\Core\Event
+copy Core\Utility\*.h ..\BC_SDK\Include\Core\Utility
+copy Core\*.h ..\BC_SDK\Include\Core
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
 copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp
@@ -149,53 +189,43 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">
-    <ClCompile>
-      <PrecompiledHeader>Create</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BC_COREDLL;BLACKCATCORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeaderFile>CorePCH.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Core;Core\Containers;Core\Memory;Core\Math;Core\Events;Core\Utility;Core\Concurrency;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-    <PostBuildEvent>
-      <Command>copy Core\Containers\*.h ..\BC_SDK\Include
-copy Core\Memory\*.h ..\BC_SDK\Include
-copy Core\Math\*.h ..\BC_SDK\Include
-copy Core\Events\*.h ..\BC_SDK\Include
-copy Core\Concurrency\*.h ..\BC_SDK\Include
-copy Core\Utility\*.h ..\BC_SDK\Include
-copy Core\*.h ..\BC_SDK\Include
-
-copy ..\BC_SDK\Lib\$(Configuration)\$(ProjectName)_$(PlatformName).dll ..\$(Configuration)\$(ProjectName)_$(PlatformName).dll
-copy ..\BC_SDK\Lib\$(Configuration)\$(ProjectName)_$(PlatformName).exp ..\$(Configuration)\$(ProjectName)_$(PlatformName).exp
-copy ..\BC_SDK\Lib\$(Configuration)\$(ProjectName)_$(PlatformName).ilk ..\$(Configuration)\$(ProjectName)_$(PlatformName).ilk
-copy ..\BC_SDK\Lib\$(Configuration)\$(ProjectName)_$(PlatformName).lib ..\$(Configuration)\$(ProjectName)_$(PlatformName).lib
-copy ..\BC_SDK\Lib\$(Configuration)\$(ProjectName)_$(PlatformName).pdb ..\$(Configuration)\$(ProjectName)_$(PlatformName).pdb
-
-</Command>
-    </PostBuildEvent>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;BLACKCATCORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;BLACKCATCORE_EXPORTS;BC_CORE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeaderFile>Core/CorePCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\BC_SDK\Lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy Core\Concurrency\*.h ..\BC_SDK\Include\Core\Concurrency
+copy Core\Container\*.h ..\BC_SDK\Include\Core\Container
+copy Core\Memory\*.h ..\BC_SDK\Include\Core\Memory
+copy Core\Math\*.h ..\BC_SDK\Include\Core\Math
+copy Core\Event\*.h ..\BC_SDK\Include\Core\Event
+copy Core\Utility\*.h ..\BC_SDK\Include\Core\Utility
+copy Core\*.h ..\BC_SDK\Include\Core
+
+copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
+copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp
+copy ..\$(Configuration)\$(ProjectName).ilk ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).ilk
+copy ..\$(Configuration)\$(ProjectName).lib ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).lib
+copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).pdb
+
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Core\Concurrency\bcLockFreeMemMng.h" />
@@ -250,12 +280,13 @@ copy ..\BC_SDK\Lib\$(Configuration)\$(ProjectName)_$(PlatformName).pdb ..\$(Conf
     <ClInclude Include="Core\Memory\bcMemMngFreeList.h" />
     <ClInclude Include="Core\Memory\bcMemoryManagment.h" />
     <ClInclude Include="Core\Memory\bcPtr.h" />
-    <ClInclude Include="Core\Utility\bcDefaultMemberType.h" />
+    <ClInclude Include="Core\Utility\bcTemplateMetaType.h" />
     <ClInclude Include="Core\Utility\bcDelegate.h" />
     <ClInclude Include="Core\Utility\bcFunctionWrapper.h" />
     <ClInclude Include="Core\Utility\bcLazy.h" />
     <ClInclude Include="Core\Utility\bcNullable.h" />
     <ClInclude Include="Core\Utility\bcObjectPool.h" />
+    <ClInclude Include="Core\Utility\bcParameterPack.h" />
     <ClInclude Include="Core\Utility\bcServiceManager.h" />
     <ClInclude Include="Core\Utility\bcSingleton.h" />
   </ItemGroup>
@@ -287,7 +318,7 @@ copy ..\BC_SDK\Lib\$(Configuration)\$(ProjectName)_$(PlatformName).pdb ..\$(Conf
     <None Include="Core\Math\xnamathvector.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BlackCat.Core.Win32\BlackCat.Core.Win32.vcxproj">
+    <ProjectReference Include="..\BlackCat.Core.Platform.Win32\BlackCat.Core.Platform.Win32.vcxproj">
       <Project>{be5cab27-d8e0-4781-abf8-f37fe773b65b}</Project>
     </ProjectReference>
   </ItemGroup>

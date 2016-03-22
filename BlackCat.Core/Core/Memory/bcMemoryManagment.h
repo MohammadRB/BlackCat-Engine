@@ -15,9 +15,12 @@ namespace black_cat
 {
 	namespace core
 	{
-#define B 1
-#define KB 1024
-#define MB 1048576
+		enum class bc_mem_size
+		{
+			b = 1,
+			kb = 1024,
+			mb = 1048576
+		};
 
 		enum class bc_alloc_type
 		{

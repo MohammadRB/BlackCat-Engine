@@ -11,6 +11,8 @@
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcConcurrentQueue.h"
+#include "Core/Container/bcString.h"
+#include "Core/Utility/bcServiceManager.h"
 
 namespace black_cat
 {
@@ -19,7 +21,43 @@ namespace black_cat
 		template< class TEvent >
 		using bc_event_ptr = bc_unique_ptr<TEvent>;
 
-		class BC_COREDLL_EXP bc_event_manager
+		class _bc_queued_event
+		{
+		public:
+			// This is for bc_concurrent_queue constraint on default construction
+			_bc_queued_event() noexcept
+				: m_event(nullptr),
+				m_process_time(0)
+			{
+			}
+
+			_bc_queued_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::large_time_delta_type p_process_time) noexcept(true)
+				: m_event(std::move(p_event)),
+				m_process_time(p_process_time)
+			{
+			}
+
+			_bc_queued_event(_bc_queued_event&& p_other) noexcept(true)
+				: m_event(std::move(p_other.m_event)),
+				m_process_time(p_other.m_process_time)
+			{
+			}
+
+			~_bc_queued_event() = default;
+
+			_bc_queued_event& operator =(_bc_queued_event&& p_other) noexcept(true)
+			{
+				m_event = std::move(p_other.m_event);
+				m_process_time = p_other.m_process_time;
+
+				return *this;
+			}
+
+			bc_event_ptr<bc_ievent> m_event;
+			core_platform::bc_clock::large_time_delta_type m_process_time;
+		};
+
+		class BC_COREDLL_EXP bc_event_manager : public bc_iservice
 		{
 		public:
 			using event_handler_type = bc_event_handler< bool(bc_ievent&) >;
@@ -31,10 +69,6 @@ namespace black_cat
 			}
 
 			~bc_event_manager()
-			{
-			}
-
-			void initialize()
 			{
 			}
 
@@ -55,49 +89,19 @@ namespace black_cat
 			// This function isn't thread safe and in one time must be called only by one thread.
 			bcUINT32 process_event_queue(core_platform::bc_clock::large_time_delta_type p_current_time);
 
+			static bc_string service_name()
+			{
+				return "Event_Manager";
+			}
+
 		protected:
 
 		private:
-			class _queued_event
-			{
-			public:
-				_queued_event() // This is for bc_concurrent_queue constraint on default construction
-					: m_event(nullptr),
-					m_process_time(0)
-				{
-				}
-
-				_queued_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::large_time_delta_type p_process_time) noexcept(true)
-					: m_event(std::move(p_event)),
-					m_process_time(p_process_time)
-				{
-				}
-
-				_queued_event(_queued_event&& p_other) noexcept(true)
-					: m_event(std::move(p_other.m_event)),
-					m_process_time(p_other.m_process_time)
-				{
-				}
-
-				~_queued_event() = default;
-
-				_queued_event& operator =(_queued_event&& p_other) noexcept(true)
-				{
-					m_event = std::move(p_other.m_event);
-					m_process_time = p_other.m_process_time;
-
-					return *this;
-				}
-
-				bc_event_ptr<bc_ievent> m_event;
-				core_platform::bc_clock::large_time_delta_type m_process_time;
-			};
-
 			core_platform::bc_shared_mutex m_mutex;
 			bc_unordered_map< bc_event_hash, event_handler_type > m_handlers;
 
-			bc_concurrent_queue< _queued_event > m_global_queue;
-			bc_vector< _queued_event > m_local_queue;
+			bc_concurrent_queue< _bc_queued_event > m_global_queue;
+			bc_vector< _bc_queued_event > m_local_queue;
 		};
 	}
 }

@@ -12,7 +12,9 @@ namespace black_cat
 
 		// Any singleton class is no copyable and movable
 		template < typename C, typename ...A >
-		class bc_singleton< C(A...) > : public bc_initializable< A... >, private core_platform::bc_no_copy_move
+		class bc_singleton< C(A...) > 
+			: public bc_initializable< A... >, 
+			private core_platform::bc_no_copy_move
 		{
 		private:
 			using this_type = bc_singleton< C(A...) >;
@@ -25,7 +27,7 @@ namespace black_cat
 
 			bc_singleton(const this_type&) = delete;
 
-			~bc_singleton()
+			virtual ~bc_singleton()
 			{
 			}
 

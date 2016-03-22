@@ -50,7 +50,7 @@ namespace black_cat
 
 			bcUINT32 num_block() const noexcept(true) { return m_num_block; };
 
-			// Return null pointer in case allocation failure
+			// Return null pointer in case of allocation failure
 			void* alloc() noexcept(true);
 
 			void free(void* p_pointer) noexcept(true);

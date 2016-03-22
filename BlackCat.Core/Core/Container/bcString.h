@@ -323,7 +323,7 @@ namespace black_cat
 
 		iterator_type erase(const_iterator_type p_position);
 
-		iterator_type erase(const_iterator_type p_first, const_iterator_type p_last);
+		iterator_type erase(const_iterator_type p_first, const_iterator p_last);
 
 		void push_back(value_type p_ch);
 
@@ -366,26 +366,26 @@ namespace black_cat
 
 		this_type& replace(size_type p_pos, size_type p_count, const this_type& p_str);
 
-		this_type& replace(const_iterator_type p_first, const_iterator_type p_last, const this_type& p_str);
+		this_type& replace(const_iterator_type p_first, const_iterator p_last, const this_type& p_str);
 
 		this_type& replace(size_type p_pos, size_type p_count, const this_type& p_str, size_type p_pos2, size_type p_count2 = npos);
 
 		template< class InputIt >
-		this_type& replace(const_iterator_type p_first, const_iterator_type p_last, InputIt p_first2, InputIt p_last2);
+		this_type& replace(const_iterator_type p_first, const_iterator p_last, InputIt p_first2, InputIt p_last2);
 
 		this_type& replace(size_type p_pos, size_type p_count, const value_type* p_cstr, size_type p_count2);
 
-		this_type& replace(const_iterator_type p_first, const_iterator_type p_last, const value_type* p_cstr, size_type p_count2);
+		this_type& replace(const_iterator_type p_first, const_iterator p_last, const value_type* p_cstr, size_type p_count2);
 
 		this_type& replace(size_type p_pos, size_type p_count, const value_type* p_cstr);
 
-		this_type& replace(const_iterator_type p_first, const_iterator_type p_last, const value_type* p_cstr);
+		this_type& replace(const_iterator_type p_first, const_iterator p_last, const value_type* p_cstr);
 
 		this_type& replace(size_type p_pos, size_type p_count, size_type p_count2, value_type p_ch);
 
-		this_type& replace(const_iterator_type p_first, const_iterator_type p_last, size_type p_count2, value_type p_ch);
+		this_type& replace(const_iterator_type p_first, const_iterator p_last, size_type p_count2, value_type p_ch);
 
-		this_type& replace(const_iterator_type p_first, const_iterator_type p_last, std::initializer_list<value_type> p_ilist);
+		this_type& replace(const_iterator_type p_first, const_iterator p_last, std::initializer_list<value_type> p_ilist);
 
 		this_type substr(size_type p_pos = 0, size_type p_count = npos) const;
 
@@ -450,14 +450,44 @@ namespace black_cat
 		template< typename TChar, typename TTraits, typename TAllocator >
 		using bc_basic_string = std::basic_string<TChar, TTraits, TAllocator>;
 
-		using bc_string = bc_basic_string< bcCHAR, std::char_traits< bcCHAR >, bc_std_allocator< bcCHAR > >;
+		using bc_string = bc_basic_string< bcCHAR, std::char_traits< bcCHAR >, bc_allocator< bcCHAR > >;
 
-		using bc_wstring = bc_basic_string< bcWCHAR, std::char_traits< bcWCHAR >, bc_std_allocator< bcWCHAR > >;
+		template<template<typename> typename TAllocator >
+		using bc_string_a = bc_basic_string< bcCHAR, std::char_traits< bcCHAR >, TAllocator< bcCHAR > >;
+
+		using bc_string_program = bc_string_a< bc_allocator_program >;
+
+		using bc_string_level = bc_string_a< bc_allocator_level >;
+
+		using bc_string_frame = bc_string_a< bc_allocator_frame >;
+
+		/*template<template<typename> typename TAllocator >
+		using bc_string_movale = bc_string_a< bc_allocator_movable >;*/
+
+		using bc_wstring = bc_basic_string< bcWCHAR, std::char_traits< bcWCHAR >, bc_allocator< bcECHAR > >;
+
+		template<template<typename> typename TAllocator >
+		using bc_wstring_a = bc_basic_string< bcWCHAR, std::char_traits< bcWCHAR >, TAllocator< bcECHAR > >;
+
+		using bc_wstring_program = bc_wstring_a< bc_allocator_program >;
+
+		using bc_wstring_level = bc_wstring_a< bc_allocator_level >;
+
+		using bc_wstring_frame = bc_wstring_a< bc_allocator_frame >;
+
+		/*template<template<typename> typename TAllocator >
+		using bc_wstring_movale = bc_wstring_a< bc_allocator_movable >;*/
 
 #ifdef BC_UNICODE
 		using bc_estring = bc_wstring;
+
+		template<template<typename> typename TAllocator >
+		using bc_estring_a = bc_wstring_a<TAllocator>;
 #else
 		using bc_estring = bc_string;
+
+		template<template<typename> typename TAllocator >
+		using bc_estring_a = bc_astring<TAllocator>;
 #endif
 		
 		/*
@@ -1031,16 +1061,35 @@ namespace black_cat
 			return bc_string(l_buf);
 		}
 
-		inline bc_string bc_to_string(bc_wstring p_str)
+		inline void bc_to_wstring(const bcECHAR* p_src, bcCHAR* p_dest, bcSIZE p_len)
 		{
-			bc_wstring::size_type l_len = p_str.size() + 1;
-			bc_string l_str('#', l_len);
-
 			std::mbstate_t l_state = std::mbstate_t();
+			std::wcsrtombs(p_dest, &p_src, p_len, &l_state);
+		};
+
+		template< template< typename > typename TAllocator >
+		inline bc_string_a<TAllocator> bc_to_string(bc_wstring_a<TAllocator> p_str)
+		{
+			typename bc_string_a<TAllocator>::size_type l_len = p_str.size() + 1;
+			bc_string_a<TAllocator> l_str('#', l_len);
+
 			bcCHAR* l_dest = &l_str[0];
 			const bcWCHAR* l_src = &p_str[0];
 
-			std::wcsrtombs(l_dest, &l_src, l_len, &l_state);
+			bc_to_wstring(l_src, l_dest, l_len);
+
+			return std::move(l_str);
+		};
+
+		inline bc_string bc_to_string(bc_wstring p_str)
+		{
+			bc_string::size_type l_len = p_str.size() + 1;
+			bc_string l_str('#', l_len);
+
+			bcCHAR* l_dest = &l_str[0];
+			const bcWCHAR* l_src = &p_str[0];
+
+			bc_to_wstring(l_src, l_dest, l_len);
 
 			return std::move(l_str);
 		}
@@ -1126,22 +1175,66 @@ namespace black_cat
 			return bc_wstring(l_buf);
 		}
 
-		inline bc_wstring bc_to_wstring(bc_string p_str)
+		inline void bc_to_wstring(const bcCHAR* p_src, bcWCHAR* p_dest, bcSIZE p_len)
 		{
-			bc_string::size_type l_len = p_str.size() + 1;
-			bc_wstring l_str('#', l_len);
-
 			std::mbstate_t l_state = std::mbstate_t();
+			std::mbsrtowcs(p_dest, &p_src, p_len, &l_state);
+		};
+
+		template< template<typename> typename TAllocator >
+		inline bc_wstring_a<TAllocator> bc_to_wstring(bc_string_a<TAllocator> p_str)
+		{
+			typename bc_wstring_a<TAllocator>::size_type l_len = p_str.size() + 1;
+			bc_wstring_a<TAllocator> l_str('#', l_len);
+
 			bcWCHAR* l_dest = &l_str[0];
 			const bcCHAR* l_src = &p_str[0];
 
-			std::mbsrtowcs(l_dest, &l_src, l_len, &l_state);
-			
+			bc_to_wstring(l_src, l_dest, l_len);
+
+			return std::move(l_str);
+		};
+
+		inline bc_wstring bc_to_wstring(bc_string p_str)
+		{
+			bc_wstring::size_type l_len = p_str.size() + 1;
+			bc_wstring l_str('#', l_len);
+
+			bcWCHAR* l_dest = &l_str[0];
+			const bcCHAR* l_src = &p_str[0];
+
+			bc_to_wstring(l_src, l_dest, l_len);
+
 			return std::move(l_str);
 		}
 
 #undef TO_STRING_BUFF
 
+		inline bcSIZE bc_string_hash(const bcCHAR* p_string)
+		{
+			uint32_t l_hash = 0;
+			uint32_t l_length = std::strlen(p_string);
+
+			for (uint32_t i = 0; i < l_length; i++)
+			{
+				l_hash += ((i + 1) * static_cast< uint32_t >(p_string[i]));
+			}
+
+			return l_hash;
+		}
+
+		inline bcSIZE bc_wstring_hash(const bcWCHAR* p_string)
+		{
+			uint32_t l_hash = 0;
+			uint32_t l_length = std::wcslen(p_string);
+
+			for (uint32_t i = 0; i < l_length; i++)
+			{
+				l_hash += ((i + 1) * static_cast< uint32_t >(p_string[i]));
+			}
+
+			return l_hash;
+		}
 	}
 }
 
@@ -1154,18 +1247,48 @@ namespace std
 		using argument_type = black_cat::core::bc_string;
 		using result_type = std::size_t;
 
-		result_type operator ()(argument_type p_arg)
+		result_type operator ()(const argument_type& p_arg) const
 		{
-			uint32_t l_hash = 0;
-			uint32_t l_length = p_arg.length();
-			argument_type::value_type* l_raw = const_cast<argument_type::value_type*>(p_arg.c_str());
+			return black_cat::core::bc_string_hash(p_arg.c_str());
+		}
+	};
 
-			for (uint32_t i = 0; i < l_length; i++)
-			{
-				l_hash += ((i + 1) * l_raw[i]);
-			}
+	template<>
+	struct hash< black_cat::core::bc_string_program >
+	{
+	public:
+		using argument_type = black_cat::core::bc_string_program;
+		using result_type = std::size_t;
 
-			return l_hash;
+		result_type operator ()(const argument_type& p_arg) const
+		{
+			return black_cat::core::bc_string_hash(p_arg.c_str());
+		}
+	};
+
+	template<>
+	struct hash< black_cat::core::bc_string_level >
+	{
+	public:
+		using argument_type = black_cat::core::bc_string_level;
+		using result_type = std::size_t;
+
+		result_type operator ()(const argument_type& p_arg) const
+		{
+			return black_cat::core::bc_string_hash(p_arg.c_str());
+		}
+	};
+
+	template<>
+	struct hash< black_cat::core::bc_string_frame >
+	{
+	public:
+		using argument_type = black_cat::core::bc_string_frame;
+		using result_type = std::size_t;
+
+		result_type operator ()(const argument_type& p_arg) const
+		{
+			return black_cat::core::bc_string_hash(p_arg.c_str());
 		}
 	};
 
@@ -1175,18 +1298,48 @@ namespace std
 		using argument_type = black_cat::core::bc_wstring;
 		using result_type = std::size_t;
 
-		result_type operator ()(argument_type p_arg)
+		result_type operator ()(const argument_type& p_arg) const
 		{
-			uint32_t l_hash = 0;
-			uint32_t l_length = p_arg.length();
-			argument_type::value_type* l_raw = const_cast<argument_type::value_type*>(p_arg.c_str());
+			return black_cat::core::bc_wstring_hash(p_arg.c_str());
+		}
+	};
 
-			for (uint32_t i = 0; i < l_length; i++)
-			{
-				l_hash += ((i + 1) * l_raw[i]);
-			}
+	template<>
+	struct hash< black_cat::core::bc_wstring_program >
+	{
+	public:
+		using argument_type = black_cat::core::bc_wstring_program;
+		using result_type = std::size_t;
 
-			return l_hash;
+		result_type operator ()(const argument_type& p_arg) const
+		{
+			return black_cat::core::bc_wstring_hash(p_arg.c_str());
+		}
+	};
+
+	template<>
+	struct hash< black_cat::core::bc_wstring_level >
+	{
+	public:
+		using argument_type = black_cat::core::bc_wstring_level;
+		using result_type = std::size_t;
+
+		result_type operator ()(const argument_type& p_arg) const
+		{
+			return black_cat::core::bc_wstring_hash(p_arg.c_str());
+		}
+	};
+
+	template<>
+	struct hash< black_cat::core::bc_wstring_frame >
+	{
+	public:
+		using argument_type = black_cat::core::bc_wstring_frame;
+		using result_type = std::size_t;
+
+		result_type operator ()(const argument_type& p_arg) const
+		{
+			return black_cat::core::bc_wstring_hash(p_arg.c_str());
 		}
 	};
 }

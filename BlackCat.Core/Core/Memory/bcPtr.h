@@ -7,7 +7,6 @@
 #include "Core/Memory/bcMemBlock.h"
 #include "Core/Memory/bcMemoryManagment.h"
 #include "Core/Memory/bcAlloc.h"
-#include "Core/Container/bcAllocator.h"
 #include "Core/Utility/bcDelegate.h"
 
 namespace black_cat
@@ -18,10 +17,10 @@ namespace black_cat
 		class bc_default_deleter
 		{
 		public:
-			bc_default_deleter() = default;
+			constexpr bc_default_deleter() = default;
 
 			template< typename T1 >
-			bc_default_deleter(bc_default_deleter<T1>) {}
+			constexpr bc_default_deleter(bc_default_deleter<T1>) {}
 
 			~bc_default_deleter() = default;
 
@@ -53,7 +52,7 @@ namespace black_cat
 			}
 #endif
 
-			// if pointer point to a movable block register it in it's allocator
+			// if pointer point to a movable block, register it in it's allocator
 			bcInline void _base_register(T** p_pointer)
 			{
 #if defined(BC_MEMORY_ENABLE) && defined(BC_MEMORY_DEFRAG)
@@ -112,12 +111,15 @@ namespace black_cat
 				m_deleter()
 			{
 			}
-
+			
 			constexpr bc_unique_ptr(std::nullptr_t) noexcept(true)
-				: bc_unique_ptr()
+				/*: bc_unique_ptr() TODO visual studio 2015 has a bug in constexpr delegating construction */
+				: bc_ptr_base(), 
+				m_pointer(nullptr),
+				m_deleter()
 			{
 			}
-
+			
 			explicit bc_unique_ptr(pointer p_pointer) noexcept(true)
 				: bc_ptr_base(),
 				m_pointer(nullptr),
@@ -210,12 +212,7 @@ namespace black_cat
 				return m_pointer;
 			}
 
-			bcInline deleter_type get_deleter() noexcept(true)
-			{
-				return m_deleter;
-			}
-
-			bcInline const deleter_type get_deleter() const noexcept(true)
+			bcInline deleter_type get_deleter() const noexcept(true)
 			{
 				return m_deleter;
 			}
@@ -738,13 +735,7 @@ namespace black_cat
 				if (this != &p_other) // avoid self assignment
 				{
 					_destruct();
-					
-					m_pointer = p_other.m_pointer;
-					m_meta = p_other.m_meta;
-
-					_base_register(&m_pointer);
-
-					_inc_reference_count();
+					_construct(p_other.m_pointer, p_other.m_meta);
 				}
 			}
 
@@ -758,10 +749,10 @@ namespace black_cat
 					m_pointer = p_other.m_pointer;
 					m_meta = p_other.m_meta;
 
-					_base_register(&m_pointer);
-
 					if (p_other.m_pointer)
 					{
+						_base_register(&m_pointer);
+
 						p_other._base_unregister(&p_other.m_pointer);
 						p_other.m_pointer = nullptr;
 					}
@@ -956,41 +947,6 @@ namespace black_cat
 				_destruct();
 			}
 
-			bcInline T* release() noexcept(true)
-			{
-				T* l_pointer = get();
-				m_pointer = nullptr;
-
-				return l_pointer;
-			}
-
-			template< typename T1 >
-			bcInline void reset(T1* p_pointer) noexcept(true)
-			{
-				_destruct();
-				_construct(p_pointer);
-			}
-
-			bcInline void swap(bc_handle_ptr<T>& p_other) noexcept(true)
-			{
-				std::swap(m_pointer, p_other.m_pointer);
-			}
-
-			bcInline T* get() const noexcept(true)
-			{
-				return m_pointer;
-			}
-
-			bcInline T& operator *() const
-			{
-				return *m_pointer;
-			}
-
-			bcInline T* operator ->() const noexcept(true)
-			{
-				return m_pointer;
-			}
-				
 			bc_handle_ptr<T>& operator =(std::nullptr_t) noexcept(true)
 			{
 				_destruct();
@@ -1028,6 +984,41 @@ namespace black_cat
 				return *this;
 			}
 
+			bcInline T* release() noexcept(true)
+			{
+				T* l_pointer = get();
+				m_pointer = nullptr;
+
+				return l_pointer;
+			}
+
+			template< typename T1 >
+			bcInline void reset(T1* p_pointer) noexcept(true)
+			{
+				_destruct();
+				_construct(p_pointer);
+			}
+
+			bcInline void swap(bc_handle_ptr<T>& p_other) noexcept(true)
+			{
+				std::swap(m_pointer, p_other.m_pointer);
+			}
+
+			bcInline T* get() const noexcept(true)
+			{
+				return m_pointer;
+			}
+
+			bcInline T& operator *() const
+			{
+				return *m_pointer;
+			}
+
+			bcInline T* operator ->() const noexcept(true)
+			{
+				return m_pointer;
+			}
+				
 			bcInline operator T*() const noexcept(true)
 			{
 				return get();

@@ -17,7 +17,7 @@ namespace black_cat
 	{
 #ifdef BC_MEMORY_ENABLE
 
-		class BC_COREDLL_EXP bc_memory_heap : public bc_memory_movable, bc_initializable<bcSIZE, const bcCHAR*>
+		class BC_COREDLL_EXP bc_memory_heap : public bc_memory_movable, public bc_initializable<bcSIZE, const bcCHAR*>
 		{
 		public:
 			using this_type = bc_memory_heap;
@@ -40,10 +40,6 @@ namespace black_cat
 
 			bcInline bcSIZE fragmentation_count() { return m_num_fragmentation; };
 
-			void initialize(bcSIZE p_size, const bcCHAR* p_tag) override;
-
-			void destroy() noexcept(true) override;
-
 			void* alloc(bc_memblock* p_memblock) noexcept(true) override;
 
 			void free(void* p_pointer, bc_memblock* p_memblock) noexcept(true) override;
@@ -63,6 +59,10 @@ namespace black_cat
 		protected:
 
 		private:
+			void _initialize(bcSIZE p_size, const bcCHAR* p_tag) override;
+
+			void _destroy() noexcept(true) override;
+
 			struct heap_memblock
 			{
 			public:

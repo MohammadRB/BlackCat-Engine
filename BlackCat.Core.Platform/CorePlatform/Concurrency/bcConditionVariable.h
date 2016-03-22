@@ -11,21 +11,21 @@ namespace black_cat
 	namespace core_platform
 	{
 		template<bc_platform TPlatform>
-		struct bc_condition_variable_pack
+		struct bc_platform_condition_variable_pack
 		{
 			
 		};
 
 		template< bc_platform TPlatform >
-		class bc_condition_variable_proxy : private bc_no_copy
+		class bc_platform_condition_variable : private bc_no_copy
 		{
 		public:
-			using platform_pack = bc_condition_variable_pack<TPlatform>;
+			using platform_pack = bc_platform_condition_variable_pack<TPlatform>;
 
 		public:
-			bc_condition_variable_proxy();
+			bc_platform_condition_variable();
 
-			~bc_condition_variable_proxy();
+			~bc_platform_condition_variable();
 
 			bcInline void notify_one();
 
@@ -49,6 +49,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_condition_variable = bc_condition_variable_proxy< g_current_platform >;
+		using bc_condition_variable = bc_platform_condition_variable< g_current_platform >;
 	}
 }

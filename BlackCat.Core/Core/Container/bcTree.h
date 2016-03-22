@@ -143,7 +143,7 @@ namespace black_cat
 
 			value_type* iterator_dereference(node_type* p_node) const noexcept(true)
 			{
-				return &p_node->m_value;
+				return std::addressof(p_node->m_value);
 			}
 
 			node_type* iterator_increment(node_type* p_node)  const noexcept(true)
@@ -379,7 +379,7 @@ namespace black_cat
 					else
 						p_root = nullptr;
 
-					bc_allocator_traits< internal_allocator_type >::destruct(m_allocator, p_node);
+					bc_allocator_traits< internal_allocator_type >::destroy(m_allocator, p_node);
 					bc_allocator_traits< internal_allocator_type >::deallocate(m_allocator, p_node);
 				}
 				else if((p_node->m_left && !p_node->m_right) || (!p_node->m_left && p_node->m_right))
@@ -452,7 +452,7 @@ namespace black_cat
 						}
 					}
 
-					bc_allocator_traits< internal_allocator_type >::destruct(m_allocator, p_node);
+					bc_allocator_traits< internal_allocator_type >::destroy(m_allocator, p_node);
 					bc_allocator_traits< internal_allocator_type >::deallocate(m_allocator, p_node);
 				}
 				else
@@ -478,7 +478,7 @@ namespace black_cat
 						bc_allocator_traits<internal_allocator_type>::register_pointer(m_allocator, &p_node->m_parent->m_right);
 					}
 
-					bc_allocator_traits< internal_allocator_type >::destruct(m_allocator, p_node);
+					bc_allocator_traits< internal_allocator_type >::destroy(m_allocator, p_node);
 					bc_allocator_traits< internal_allocator_type >::deallocate(m_allocator, p_node);
 				}
 
@@ -517,7 +517,7 @@ namespace black_cat
 				return l_node;
 			};
 
-			node_type* _node_find(node_type* p_root, const key_type& p_key, bool p_as_lower_bound)
+			node_type* _node_find(node_type* p_root, const key_type& p_key, bool p_as_lower_bound) const
 			{
 				node_type* l_prev_node = nullptr;
 				node_type* l_curr_node = p_root;
@@ -728,8 +728,10 @@ namespace black_cat
 			using const_reference = typename base_type::const_reference;
 			using difference_type = typename base_type::difference_type;
 			using size_type = typename base_type::size_type;
-			using iterator_type = bc_bidirectional_iterator< this_type >;
-			using const_iterator_type = bc_const_bidirectional_iterator< this_type >;
+			using iterator = bc_bidirectional_iterator< this_type >;
+			using const_iterator = bc_const_bidirectional_iterator< this_type >;
+			using reverse_iterator = std::reverse_iterator<iterator>;
+			using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 		protected:
 			using node_type = typename base_type::node_type;
@@ -772,27 +774,39 @@ namespace black_cat
 			
 			mapped_type& operator[](key_type&& p_key);
 
-			iterator_type begin();
+			iterator begin();
 
-			const_iterator_type begin() const;
+			const_iterator begin() const;
 
-			const_iterator_type cbegin() const;
+			const_iterator cbegin() const;
 
-			iterator_type end();
+			iterator end();
 
-			const_iterator_type end() const;
+			const_iterator end() const;
 
-			const_iterator_type cend() const;
+			const_iterator cend() const;
+			
+			reverse_iterator rbegin();
+
+			const_reverse_iterator rbegin() const;
+
+			const_reverse_iterator crbegin() const;
+
+			reverse_iterator rend();
+
+			const_reverse_iterator rend() const;
+
+			const_reverse_iterator crend() const;
 
 			void clear();
 
-			std::pair<iterator_type, bool> insert(const value_type& p_value);
+			std::pair<iterator, bool> insert(const value_type& p_value);
 
-			std::pair<iterator_type, bool> insert(value_type&& p_value);
+			std::pair<iterator, bool> insert(value_type&& p_value);
 
-			iterator_type insert(const_iterator_type p_hint, const value_type& p_value);
+			iterator insert(const_iterator p_hint, const value_type& p_value);
 
-			iterator_type insert(const_iterator_type p_hint, value_type&& p_value);
+			iterator insert(const_iterator p_hint, value_type&& p_value);
 
 			template< class TInputIterator >
 			void insert(TInputIterator p_first, TInputIterator p_last);
@@ -800,14 +814,15 @@ namespace black_cat
 			void insert(std::initializer_list<value_type> p_initializer);
 
 			template< class ...TArgs >
-			std::pair<iterator_type, bool> emplace(TArgs&&... p_args);
+			std::pair<iterator, bool> emplace(TArgs&&... p_args);
 
+			// TODO implement hint function
 			template <class ...TArgs>
-			iterator_type emplace_hint(const_iterator_type p_hint, TArgs&&... p_args);
+			iterator emplace_hint(const_iterator p_hint, TArgs&&... p_args);
 
-			iterator_type erase(const_iterator_type p_position);
+			iterator erase(const_iterator p_position);
 
-			iterator_type erase(const_iterator_type p_first, const_iterator_type p_last);
+			iterator erase(const_iterator p_first, const_iterator p_last);
 
 			size_type erase(const key_type& p_key);
 
@@ -815,21 +830,21 @@ namespace black_cat
 
 			size_type count(const key_type& p_key) const;
 
-			iterator_type find(const key_type& p_key);
+			iterator find(const key_type& p_key);
 
-			const_iterator_type find(const key_type& p_key) const;
+			const_iterator find(const key_type& p_key) const;
 
-			std::pair<iterator_type, iterator_type> equal_range(const key_type& p_key);
+			std::pair<iterator, iterator> equal_range(const key_type& p_key);
 
-			std::pair<const_iterator_type, const_iterator_type> equal_range(const key_type& p_key) const;
+			std::pair<const_iterator, const_iterator> equal_range(const key_type& p_key) const;
 
-			iterator_type lower_bound(const key_type& p_key);
+			iterator lower_bound(const key_type& p_key);
 
-			const_iterator_type lower_bound(const key_type& p_key) const;
+			const_iterator lower_bound(const key_type& p_key) const;
 
-			iterator_type upper_bound(const key_type& p_key);
+			iterator upper_bound(const key_type& p_key);
 
-			const_iterator_type upper_bound(const key_type& p_key) const;
+			const_iterator upper_bound(const key_type& p_key) const;
 
 			key_compare_type key_comp() const;
 
@@ -863,7 +878,7 @@ namespace black_cat
 				else
 					base_type::m_allocator = std::move(p_other.m_allocator);
 
-				base_type::m_comapre = p_other.m_compare;
+				base_type::m_compare = p_other.m_compare;
 				base_type::m_size = p_other.m_size;
 				base_type::m_root = p_other.m_root;
 
@@ -872,6 +887,13 @@ namespace black_cat
 			}
 
 		};
+
+		template< typename TKey,
+			typename T,
+			bcUINT32 MaxDiff,
+			class TCompare,
+			template< typename > class TAllocator >
+		using bc_tree_a = bc_tree< TKey, T, MaxDiff, TCompare, TAllocator< std::pair< const TKey, T > > >;
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
 		bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::bc_tree()
@@ -983,69 +1005,105 @@ namespace black_cat
 			if (!l_found)
 				throw std::out_of_range("Value with specified key doesn't exist");
 
-			return l_node->m_value.second;
+			return l_node->second;
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
 		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::mapped_type& bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::operator[](const key_type& p_key)
 		{
-			const_iterator_type l_where = lower_bound(p_key);
+			const_iterator l_where = lower_bound(p_key);
 			
 			if (l_where == end() || base_type::m_compare(p_key, l_where->first))
 			{
-				l_where = emplace_hint(l_where, std::move(p_key), mapped_type());
+				l_where = emplace_hint(l_where, p_key, mapped_type());
 			}
 
-			return l_where->m_value.second;
+			return l_where->second;
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
 		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::mapped_type& bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::operator[](key_type&& p_key)
 		{
-			const_iterator_type l_where = lower_bound(p_key);
+			const_iterator l_where = lower_bound(p_key);
 			
 			if (l_where == end() || base_type::m_compare(p_key, l_where->first))
 			{
 				l_where = emplace_hint(l_where, std::move(p_key), mapped_type());
 			}
 
-			return l_where->m_value.second;
+			return l_where->second;
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::begin()
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::begin()
 		{
-			return iterator_type(this, base_type::_node_min(base_type::m_root));
+			return iterator(this, base_type::_node_min(base_type::m_root));
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::begin() const
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::begin() const
 		{
-			return const_iterator_type(this, base_type::_node_min(base_type::m_root));
+			return const_iterator(this, base_type::_node_min(base_type::m_root));
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::cbegin() const
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::cbegin() const
 		{
-			return const_iterator_type(this, base_type::_node_min(base_type::m_root));
+			return const_iterator(this, base_type::_node_min(base_type::m_root));
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::end()
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::end()
 		{
-			return iterator_type(this, nullptr);
+			return iterator(this, nullptr);
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::end() const
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::end() const
 		{
-			return const_terator_type(this, nullptr);
+			return const_iterator(this, nullptr);
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::cend() const
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::cend() const
 		{
-			return const_iterator_type(this, nullptr);
+			return const_iterator(this, nullptr);
+		}
+
+		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::reverse_iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::rbegin()
+		{
+			return reverse_iterator(iterator(this, base_type::m_first));
+		}
+
+		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_reverse_iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::rbegin() const
+		{
+			return const_reverse_iterator(const_iterator(this, base_type::m_first));
+		}
+
+		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_reverse_iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::crbegin() const
+		{
+			return const_reverse_iterator(this, base_type::m_first);
+		}
+
+		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::reverse_iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::rend()
+		{
+			return reverse_iterator(this, base_type::_get_end());
+		}
+
+		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_reverse_iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::rend() const
+		{
+			return const_reverse_iterator(this, base_type::_get_end());
+		}
+
+		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_reverse_iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::crend() const
+		{
+			return const_reverse_iterator(this, base_type::_get_end());
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
@@ -1072,7 +1130,7 @@ namespace black_cat
 							l_curr_node->m_right = nullptr;
 					}
 
-					bc_allocator_traits< internal_allocator_type >::destruct(base_type::m_allocator, l_del_node);
+					bc_allocator_traits< internal_allocator_type >::destroy(base_type::m_allocator, l_del_node);
 					bc_allocator_traits< internal_allocator_type >::deallocate(base_type::m_allocator, l_del_node);
 				}
 			}
@@ -1082,32 +1140,32 @@ namespace black_cat
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		std::pair<typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator_type, bool> bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::insert(const value_type& p_value)
+		std::pair<typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator, bool> bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::insert(const value_type& p_value)
 		{
 			node_type* l_node = nullptr;
 			bool l_inserted = base_type::_new_node(base_type::m_root, &l_node, p_value);
 
-			return std::pair<iterator_type, bool>(iterator_type(this, l_node), l_inserted);
+			return std::pair<iterator, bool>(iterator(this, l_node), l_inserted);
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		std::pair<typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator_type, bool> bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::insert(value_type&& p_value)
+		std::pair<typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator, bool> bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::insert(value_type&& p_value)
 		{
 			node_type* l_node = nullptr;
 			bool l_inserted = base_type::_new_node(base_type::m_root, &l_node, std::move(p_value));
 
-			return std::pair<iterator_type, bool>(iterator_type(this, l_node), l_inserted);
+			return std::pair<iterator, bool>(iterator(this, l_node), l_inserted);
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::insert(const_iterator_type p_hint, const value_type& p_value)
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::insert(const_iterator p_hint, const value_type& p_value)
 		{
 			// TODO use hint
 			return insert(p_value).first;
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::insert(const_iterator_type p_hint, value_type&& p_value)
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::insert(const_iterator p_hint, value_type&& p_value)
 		{
 			// TODO use hint
 			return insert(std::move(p_value)).first;
@@ -1131,31 +1189,31 @@ namespace black_cat
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
 		template< class ...TArgs >
-		std::pair<typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator_type, bool> bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::emplace(TArgs&&... p_args)
+		std::pair<typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator, bool> bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::emplace(TArgs&&... p_args)
 		{
 			node_type* l_node = nullptr;
 			bool l_inserted = base_type::_new_node(base_type::m_root, &l_node, std::forward<TArgs>(p_args)...);
 
-			return std::pair<iterator_type, bool>(iterator_type(this, l_node), l_inserted);
+			return std::pair<iterator, bool>(iterator(this, l_node), l_inserted);
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
 		template< class ... TArgs >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::emplace_hint(const_iterator_type p_hint, TArgs&&... p_args)
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::emplace_hint(const_iterator p_hint, TArgs&&... p_args)
 		{
-			return emplace(std::forward<TArgs>(p_args)).first;
+			return emplace(std::forward<TArgs>(p_args)...).first;
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::erase(const_iterator_type p_position)
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::erase(const_iterator p_position)
 		{
 			node_type* l_node = base_type::_free_node(base_type::m_root, p_position.get_node());
 
-			return iterator_type(this, l_node);
+			return iterator(this, l_node);
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::erase(const_iterator_type p_first, const_iterator_type p_last)
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::erase(const_iterator p_first, const_iterator p_last)
 		{
 			node_type* l_node = nullptr;
 
@@ -1164,7 +1222,7 @@ namespace black_cat
 				l_node = erase(p_first++);
 			}
 
-			return iterator_type(this, l_node);
+			return iterator(this, l_node);
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
@@ -1198,23 +1256,23 @@ namespace black_cat
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::find(const key_type& p_key)
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::find(const key_type& p_key)
 		{
 			node_type* l_node = base_type::_node_find(base_type::m_root, p_key, false);
 
-			return iterator_type(this, l_node);
+			return iterator(this, l_node);
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::find(const key_type& p_key) const
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::find(const key_type& p_key) const
 		{
 			node_type* l_node = base_type::_node_find(base_type::m_root, p_key, false);
 
-			return const_iterator_type(this, l_node);
+			return const_iterator(this, l_node);
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		std::pair<typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator_type, typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator_type> bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::equal_range(const key_type& p_key)
+		std::pair<typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator, typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator> bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::equal_range(const key_type& p_key)
 		{
 			node_type* l_lower = base_type::_node_find(base_type::m_root, p_key, true);
 			node_type* l_upper = l_lower;
@@ -1222,11 +1280,11 @@ namespace black_cat
 			while (!base_type::m_compare(p_key, l_upper->m_value.first) && !base_type::m_compare(l_upper->m_value.first, p_key))
 				++l_upper;
 
-			return std::pair<iterator_type, iterator_type>(iterator_type(this, l_lower), iterator_type(this, l_upper));
+			return std::pair<iterator, iterator>(iterator(this, l_lower), iterator(this, l_upper));
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		std::pair<typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator_type, typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator_type> bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::equal_range(const key_type& p_key) const
+		std::pair<typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator, typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator> bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::equal_range(const key_type& p_key) const
 		{
 			node_type* l_lower = base_type::_node_find(base_type::m_root, p_key, true);
 			node_type* l_upper = l_lower;
@@ -1234,43 +1292,43 @@ namespace black_cat
 			while (!base_type::m_compare(p_key, l_upper->m_value.first) && !base_type::m_compare(l_upper->m_value.first, p_key))
 				++l_upper;
 
-			return std::pair<iterator_type, iterator_type>(iterator_type(this, l_lower), iterator_type(this, l_upper));
+			return std::pair<iterator, iterator>(iterator(this, l_lower), iterator(this, l_upper));
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::lower_bound(const key_type& p_key)
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::lower_bound(const key_type& p_key)
 		{
 			node_type* l_node = base_type::_node_find(base_type::m_root, p_key, true);
 
-			return iterator_type(this, l_node);
+			return iterator(this, l_node);
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::lower_bound(const key_type& p_key) const
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::lower_bound(const key_type& p_key) const
 		{
 			node_type* l_node = base_type::_node_find(base_type::m_root, p_key, true);
 
-			return const_iterator_type(this, l_node);
+			return const_iterator(this, l_node);
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::upper_bound(const key_type& p_key)
-		{
-			node_type* l_node = base_type::_node_find(base_type::m_root, p_key, true);
-			if (!base_type::m_compare(l_node->m_value.first, p_key) && !base_type::m_compare(p_key, l_node->m_value.first))
-				l_node = base_type::_node_successor(l_node);
-
-			return iterator_type(this, l_node);
-		}
-
-		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
-		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator_type bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::upper_bound(const key_type& p_key) const
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::upper_bound(const key_type& p_key)
 		{
 			node_type* l_node = base_type::_node_find(base_type::m_root, p_key, true);
 			if (!base_type::m_compare(l_node->m_value.first, p_key) && !base_type::m_compare(p_key, l_node->m_value.first))
 				l_node = base_type::_node_successor(l_node);
 
-			return const_iterator_type(this, l_node);
+			return iterator(this, l_node);
+		}
+
+		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
+		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::const_iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::upper_bound(const key_type& p_key) const
+		{
+			node_type* l_node = base_type::_node_find(base_type::m_root, p_key, true);
+			if (!base_type::m_compare(l_node->m_value.first, p_key) && !base_type::m_compare(p_key, l_node->m_value.first))
+				l_node = base_type::_node_successor(l_node);
+
+			return const_iterator(this, l_node);
 		}
 
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >

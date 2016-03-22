@@ -1,0 +1,697 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_CTPNov2012|Win32">
+      <Configuration>Debug_CTPNov2012</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_CTP_Nov_2013|Win32">
+      <Configuration>Debug_CTP_Nov_2013</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D6D32113-4C80-4613-87DF-1000C12D3FE9}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>BlackCat</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>CTP_Nov2013</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <ExecutablePath>$(DXSDK_DIR)Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(DXSDK_DIR)Include;Assimp\include;$(IncludePath)</IncludePath>
+    <OutDir>..\$(Configuration)\</OutDir>
+    <LibraryPath>$(DXSDK_LIB)\Lib\x86;Assimp\lib\assimp_debug-dll_win32;$(LibraryPath)</LibraryPath>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <ExecutablePath>$(DXSDK_DIR)Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(DXSDK_DIR)Include;Assimp\include;$(IncludePath)</IncludePath>
+    <OutDir>..\BC_SDK\Lib\$(Configuration)\</OutDir>
+    <LibraryPath>$(DXSDK_LIB)\Lib\x86;Assimp\lib\assimp_debug-dll_win32;$(LibraryPath)</LibraryPath>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;BC_BLACKCAT_DLL;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>BlackCat/BlackCatPCH.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(DXSDK_LIB)\Lib\x86;Assimp\lib\assimp_debug-dll_win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy BlackCat\*.h ..\BC_SDK\Include\BlackCat
+copy BlackCat\Graphic\Command\*.h ..\BC_SDK\Include\BlackCat\Graphic\Command
+copy BlackCat\Graphic\Pass\*.h ..\BC_SDK\Include\BlackCat\Graphic\Pass
+copy BlackCat\Graphic\Task\*.h ..\BC_SDK\Include\BlackCat\Graphic\Task
+
+copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(configuration)
+</Command>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>BlackCat.Core.lib;BlackCat.Core.Platform.Win32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;BC_BLACKCAT_DLL;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>BlackCat/Application/PCH.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(DXSDK_LIB)\Lib\x86;Assimp\lib\assimp_debug-dll_win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy Application\*.h ..\BC_SDK\Include\BlackCat\Application
+copy Graphics\*.h ..\BC_SDK\Include\BlackCat\Graphics
+copy Graphics\PostProcessing\*.h ..\BC_SDK\Include\BlackCat\Graphics\PostProcessing\
+copy Graphics\PostProcessing\DeferedRendering\*.h ..\BC_SDK\Include\BlackCat\Graphics\PostProcessing\DeferedRendering
+copy GUI\*.h ..\BC_SDK\Include\BlackCat\GUI
+copy Mathematic\*.h ..\BC_SDK\Include\BlackCat\Mathematic
+copy Entity\*.h ..\BC_SDK\Include\BlackCat\Entity
+copy Utility\*.h ..\BC_SDK\Include\BlackCat\Utility
+
+copy Shaders\*.hlsl ..\BC_SDK\Shaders
+copy Shaders\PostProcess\*.hlsl ..\BC_SDK\Shaders\PostProcess
+copy Textures\*.* ..\BC_SDK\Textures
+</Command>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>assimp.lib;BlackCat.Core_Win32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Assimp\lib\assimp_debug-dll_win32;..\BC_SDK\Lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;BC_BLACKCAT_DLL;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>BlackCat/Application/PCH.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(DXSDK_LIB)\Lib\x86;Assimp\lib\assimp_debug-dll_win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy Application\*.h ..\BC_SDK\Include
+copy Graphics\*.h ..\BC_SDK\Include
+copy Graphics\PostProcessing\*.h ..\BC_SDK\Include
+copy Graphics\PostProcessing\DeferedRendering\*.h ..\BC_SDK\Include
+copy GUI\*.h ..\BC_SDK\Include
+copy Mathematic\*.h ..\BC_SDK\Include
+copy Entity\*.h ..\BC_SDK\Include
+copy Utility\*.h ..\BC_SDK\Include
+
+copy Shaders\*.hlsl ..\BC_SDK\Shaders
+copy Shaders\PostProcess\*.hlsl ..\BC_SDK\Shaders\PostProcess
+copy Textures\*.* ..\BC_SDK\Textures
+</Command>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>assimp.lib;BlackCat.Core_Win32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Assimp\lib\assimp_debug-dll_win32;..\BC_SDK\Lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;BC_BLACKCAT_DLL;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeaderFile>BlackCat/BlackCatPCH.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy BlackCat\*.h ..\BC_SDK\Include\BlackCat
+copy BlackCat\Graphic\Command\*.h ..\BC_SDK\Include\BlackCat\Graphic\Command
+copy BlackCat\Graphic\Pass\*.h ..\BC_SDK\Include\BlackCat\Graphic\Pass
+copy BlackCat\Graphic\Task\*.h ..\BC_SDK\Include\BlackCat\Graphic\Task
+
+copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(configuration)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="BlackCat\BlackCatPCH.h" />
+    <ClInclude Include="BlackCat\Graphic\Command\bcPipelineDrawCommand.h" />
+    <ClInclude Include="BlackCat\Graphic\Command\bcPipelineDrawIndexedCommand.h" />
+    <ClInclude Include="BlackCat\Graphic\Command\bcPipelineDrawIndexedInstancedCommand.h" />
+    <ClInclude Include="BlackCat\Graphic\Pass\bcBackBufferOutputPass.h" />
+    <ClInclude Include="BlackCat\_\Application\App.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Application\BlackCat.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Application\Exceptions.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Application\Input.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Application\InterfacePointers.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Application\PCH.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Application\Timer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Application\Utility.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Application\Window.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Entity\Terrain.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\bcModel.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\Camera.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\DeviceManager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\DeviceStates.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\GraphicsTypes.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\Managers.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\Model.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\PostProcessing\DeferedRendering\DeferedRenderer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\PostProcessing\DeferedRendering\Light.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\PostProcessing\PostProcessor.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\PostProcessorBase.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\SDKMesh.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\ShaderCompilation.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\SpriteFont.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\SpriteRenderer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Graphics\Structs.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\GUI\GUIObject.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\GUI\Slider.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Mathematic\BasicMath.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Mathematic\bcShapes.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Mathematic\xnaCollision.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Utility\FileSystem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Utility\Operands.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Utility\Log.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Utility\MathUtility.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BlackCat\_\Utility\ShapeDraw.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BlackCat\BlackCatPCH.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="BlackCat\Graphic\Command\bcPipelineDrawCommand.cpp" />
+    <ClCompile Include="BlackCat\Graphic\Command\bcPipelineDrawIndexedCommand.cpp" />
+    <ClCompile Include="BlackCat\Graphic\Command\bcPipelineDrawIndexedInstancedCommand.cpp" />
+    <ClCompile Include="BlackCat\Graphic\Pass\bcBackBufferOutputPass.cpp" />
+    <ClCompile Include="BlackCat\_\Application\App.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Application\BlackCat.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Application\Input.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Application\PCH.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">Create</PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Application\Timer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Application\Utility.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Application\Window.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Entity\Terrain.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Graphics\bcModel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Graphics\Camera.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Graphics\DeviceManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Graphics\DeviceStates.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Graphics\GraphicsTypes.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Graphics\Managers.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Graphics\Model.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Graphics\PostProcessing\DeferedRendering\DeferedRenderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Graphics\PostProcessing\DeferedRendering\Light.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Graphics\PostProcessing\PostProcessor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Graphics\PostProcessorBase.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Graphics\SDKMesh.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Graphics\ShaderCompilation.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Graphics\SpriteFont.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Graphics\SpriteRenderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\GUI\GUIObject.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\GUI\Slider.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Mathematic\BasicMath.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Mathematic\bcShapes.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Mathematic\xnaCollision.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Utility\FileSystem.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Utility\Operands.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Utility\Log.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Utility\MathUtility.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BlackCat\_\Utility\ShapeDraw.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BlackCat.Core.Platform.Win32\BlackCat.Core.Platform.Win32.vcxproj">
+      <Project>{be5cab27-d8e0-4781-abf8-f37fe773b65b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\BlackCat.Core\BlackCat.Core.vcxproj">
+      <Project>{e4a77cc4-66c0-49b1-bfcf-a92173763741}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\BlackCat.Graphic.DirectX11\BlackCat.Graphic.DirectX11.vcxproj">
+      <Project>{d176029e-3b2c-4599-986c-3c8685f35f6f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\BlackCat.Graphic\BlackCat.Graphic.vcxproj">
+      <Project>{7b267e54-9da2-435d-be52-4388e78a1661}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\BlackCat.Platform.Win32\BlackCat.Platform.Win32.vcxproj">
+      <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

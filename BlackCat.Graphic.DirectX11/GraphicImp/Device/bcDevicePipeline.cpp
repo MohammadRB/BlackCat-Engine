@@ -1,0 +1,551 @@
+// [01/26/2016 MRB]
+
+#include "GraphicImp/GraphicImpPCH.h"
+#include "Graphic/Math/bcVector4f.h"
+#include "GraphicImp/Resource/bcResource.h"
+#include "GraphicImp/Resource/Buffer/bcBuffer.h"
+#include "GraphicImp/Resource/View/bcShaderView.h"
+#include "GraphicImp/Resource/View/bcRenderTargetView.h"
+#include "GraphicImp/Resource/View/bcDepthStencilView.h"
+#include "GraphicImp/Device/bcDevice.h"
+#include "GraphicImp/Device/bcDevicePipeline.h"
+#include "GraphicImp/Device/bcDevicePipelineState.h"
+#include "GraphicImp/Device/Command/bcDeviceCommandList.h"
+#include "GraphicImp/Shader/bcVertexShader.h"
+#include "GraphicImp/Shader/bcHullShader.h"
+#include "GraphicImp/Shader/bcDomainShader.h"
+#include "GraphicImp/Shader/bcGeometryShader.h"
+#include "GraphicImp/Shader/bcPixelShader.h"
+#include "Graphic/Shader/Parameter/bcConstantBufferParameter.h"
+#include "Graphic/Shader/Parameter/bcSamplerParameter.h"
+#include "Graphic/Shader/Parameter/bcShaderResourceParameter.h"
+
+namespace black_cat
+{
+	namespace graphic
+	{
+		template<>
+		BC_GRAPHICIMP_DLL_EXP bc_platform_device_pipeline< g_api_dx11 >::bc_platform_device_pipeline(bc_device& p_device)
+			: m_shader_stages{ &m_vertex_shader_stage,
+				&m_hull_shader_stage,
+				&m_domain_shader_stage,
+				&m_geometry_shader_stage,
+				&m_pixel_shader_stage,
+				&m_compute_shader_stage },
+			m_device(p_device)
+		{
+			dx_call(m_device.get_platform_pack().m_device->CreateDeferredContext(0, m_pack.m_context.GetAddressOf()));
+
+			D3D11_QUERY_DESC l_query_desc;
+			l_query_desc.Query = D3D11_QUERY_PIPELINE_STATISTICS;
+			l_query_desc.MiscFlags = 0;
+
+			dx_call(m_device.get_platform_pack().m_device->CreateQuery(&l_query_desc, m_pack.m_query.GetAddressOf()));
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP bc_platform_device_pipeline<g_api_dx11>::bc_platform_device_pipeline(bc_platform_device_pipeline&& p_other)
+			: bc_device_object(std::move(p_other)),
+			m_device(p_other.m_device),
+			m_pack(std::move(p_other.m_pack))
+		{
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP bc_platform_device_pipeline<g_api_dx11>::~bc_platform_device_pipeline()
+		{
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP bc_platform_device_pipeline<g_api_dx11>& bc_platform_device_pipeline<bc_platform_render_api::directx11>::operator=(bc_platform_device_pipeline&& p_other)
+		{
+			bc_device_object::operator=(std::move(p_other));
+			m_pack = std::move(p_other.m_pack);
+
+			return *this;
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::bind_pipeline_state(bc_device_pipeline_state* p_state)
+		{
+			if (p_state->get_platform_pack().m_config.m_vertex_shader != nullptr)
+				m_device.get_platform_pack().m_immediate_context->VSSetShader
+					(
+						p_state->get_platform_pack().m_config.m_vertex_shader->get_platform_pack().m_shader.Get(),
+						nullptr,
+						0
+					);
+			if (p_state->get_platform_pack().m_config.m_hull_shader != nullptr)
+				m_device.get_platform_pack().m_immediate_context->HSSetShader
+					(
+						p_state->get_platform_pack().m_config.m_hull_shader->get_platform_pack().m_shader.Get(),
+						nullptr,
+						0
+					);
+			if (p_state->get_platform_pack().m_config.m_domain_shader != nullptr)
+				m_device.get_platform_pack().m_immediate_context->DSSetShader
+					(
+						p_state->get_platform_pack().m_config.m_domain_shader->get_platform_pack().m_shader.Get(),
+						nullptr,
+						0
+					);
+			if (p_state->get_platform_pack().m_config.m_geometry_shader != nullptr)
+				m_device.get_platform_pack().m_immediate_context->GSSetShader
+					(
+						p_state->get_platform_pack().m_config.m_geometry_shader->get_platform_pack().m_shader.Get(),
+						nullptr,
+						0
+					);
+			if (p_state->get_platform_pack().m_config.m_pixel_shader != nullptr)
+				m_device.get_platform_pack().m_immediate_context->PSSetShader
+					(
+						p_state->get_platform_pack().m_config.m_pixel_shader->get_platform_pack().m_shader.Get(),
+						nullptr,
+						0
+					);
+
+			bc_vector4f l_blend_factor = m_output_merger_stage.get_required_state().m_blend_factors.get();
+			const bcFLOAT32 l_blend_factors[] = {l_blend_factor.x, l_blend_factor.y, l_blend_factor.z, l_blend_factor.w};
+			bcUINT l_stencil_ref = m_output_merger_stage.get_required_state().m_stencil_ref.get();
+
+			m_device.get_platform_pack().m_immediate_context->OMSetBlendState
+				(
+					p_state->get_platform_pack().m_blend_state.Get(),
+					l_blend_factors,
+					p_state->get_platform_pack().m_config.m_sample_mask
+				);
+			m_device.get_platform_pack().m_immediate_context->OMSetDepthStencilState
+				(
+					p_state->get_platform_pack().m_depth_stencil_state.Get(),
+					l_stencil_ref
+				);
+			m_device.get_platform_pack().m_immediate_context->RSSetState(p_state->get_platform_pack().m_rasterizer_state.Get());
+			m_device.get_platform_pack().m_immediate_context->IASetInputLayout(p_state->get_platform_pack().m_input_layout.Get());
+		}
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::bind_ia_primitive_topology(bc_primitive p_primitive)
+		{
+			m_input_assembler_stage.get_required_state().m_primitive_topology.set(p_primitive);
+		}
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::bind_ia_index_buffer(bc_buffer* p_buffer, bc_format p_format)
+		{
+			m_input_assembler_stage.get_required_state().m_index_buffer.set(p_buffer);
+			m_input_assembler_stage.get_required_state().m_index_buffer_format.set(p_format);
+		}
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::bind_ia_vertex_buffers(bcUINT p_start_slot, bcUINT p_buffer_count, bc_buffer* p_buffers, bcUINT* p_strides, bcUINT* p_offsets)
+		{
+			bcAssert(p_start_slot + p_buffer_count <= bc_render_api_info::number_of_ia_vertex_buffers());
+
+			for (bcUINT32 l_c = p_start_slot; l_c < p_buffer_count; ++l_c)
+			{
+				m_input_assembler_stage.get_required_state().m_vertex_buffers.set(l_c, &p_buffers[l_c]);
+				m_input_assembler_stage.get_required_state().m_vertex_buffers_strides.set(l_c, p_strides[l_c]);
+				m_input_assembler_stage.get_required_state().m_vertex_buffers_offsets.set(l_c, p_offsets[l_c]);
+			}
+		}
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::bind_ps_constant_buffer_parameter(bc_shader_type p_shader, const bc_constant_buffer_parameter& p_parameter)
+		{
+			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_shader_constant_buffer());
+
+			bc_buffer* l_buffer = p_parameter.get_buffer();
+
+			m_shader_stages[static_cast<bcINT>(p_shader)]
+				->get_required_state()
+				.m_constant_buffers
+				.set(p_parameter.get_register_index(), l_buffer);
+		}
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::bind_ps_sampler_parameter(bc_shader_type p_shader, const bc_sampler_parameter& p_parameter)
+		{
+			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_shader_sampler());
+
+			bc_sampler_state* l_sampler = p_parameter.get_sampler();
+
+			m_shader_stages[static_cast<bcINT>(p_shader)]
+				->get_required_state()
+				.m_sampler_states
+				.set(p_parameter.get_register_index(), l_sampler);
+		}
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::bind_ps_shader_resource_parameter(bc_shader_type p_shader, const bc_shader_resource_parameter& p_parameter)
+		{
+			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_ps_cs_uav_registers());
+
+			bc_shader_view* l_resource = p_parameter.get_shader_resource();
+
+			if(l_resource->get_view_type() == bc_resource_view_type::shader)
+			{
+				m_shader_stages[static_cast<bcINT>(p_shader)]
+					->get_required_state()
+					.m_shader_resource_views
+					.set(p_parameter.get_register_index(), l_resource);
+			}
+			else
+			{
+				bcAssert(p_shader == bc_shader_type::pixel || p_shader == bc_shader_type::compute);
+
+				m_shader_stages[static_cast<bcINT>(p_shader)]
+					->get_required_state()
+					.m_unordered_access_views
+					.set(p_parameter.get_register_index(), l_resource);
+			}
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::bind_os_stream_outputs(bcUINT p_buffer_count, bc_buffer* p_buffers, bcUINT* p_offsets)
+		{
+			bcAssert(p_buffer_count <= bc_render_api_info::number_of_so_streams());
+
+			m_stream_output_stage.get_required_state().m_stream_buffers.set_to_initial_state();
+			m_stream_output_stage.get_required_state().m_stream_offsets.set_to_initial_state();
+
+			for (bcUINT32 l_c = 0; l_c < p_buffer_count; ++l_c)
+			{
+				m_stream_output_stage.get_required_state().m_stream_buffers.set(l_c, &p_buffers[l_c]);
+				m_stream_output_stage.get_required_state().m_stream_offsets.set(l_c, p_offsets[l_c]);
+			}
+		}
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::bind_rs_viewports(bcUINT p_count, bc_viewport* p_viewports)
+		{
+			bcAssert(p_count <= bc_render_api_info::number_of_rs_viewport_scissorrect());
+
+			m_rasterizer_stage.get_required_state().m_viewports.set_to_initial_state();
+
+			for (bcUINT32 l_c = 0; l_c < p_count; ++l_c)
+				m_rasterizer_stage.get_required_state().m_viewports.set(l_c, &p_viewports[l_c]);
+			m_rasterizer_stage.get_required_state().m_viewport_count.set(p_count);
+		}
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::bind_om_blend_factors(bc_vector4f l_factors)
+		{
+			m_output_merger_stage.get_required_state().m_blend_factors.set(l_factors);
+		}
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::bind_om_stencil_ref(bcUINT32 l_stencil_ref)
+		{
+			m_output_merger_stage.get_required_state().m_stencil_ref.set(l_stencil_ref);
+		}
+
+		template < >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::bind_om_render_targets(bcUINT p_target_count, bc_render_target_view* p_targets, bc_depth_stencil_view* p_depth)
+		{
+			bcAssert(p_target_count <= bc_render_api_info::number_of_om_render_target_slots());
+
+			m_output_merger_stage.get_required_state().m_render_target_views.set_to_initial_state();
+			m_output_merger_stage.get_required_state().m_depth_target_view.set_to_initial_state();
+
+			for (bcUINT l_index = 0; l_index < p_target_count; ++l_index)
+				m_output_merger_stage.get_required_state().m_render_target_views.set(l_index, &p_targets[l_index]);
+			m_output_merger_stage.get_required_state().m_depth_target_view.set(p_depth);
+		}
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::pipeline_apply_states(bc_pipeline_stage p_stages)
+		{
+			bool l_input_assembler_stage = (static_cast< bcUINT >(p_stages) & 
+				static_cast< bcUINT >(bc_pipeline_stage::input_assembler_stage)) == 
+				static_cast< bcUINT >(bc_pipeline_stage::input_assembler_stage);
+			bool l_vertex_stage = (static_cast< bcUINT >(p_stages) & 
+				static_cast< bcUINT >(bc_pipeline_stage::vertex_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::vertex_stage);
+			bool l_hull_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::hull_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::hull_stage);
+			bool l_domain_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::domain_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::domain_stage);
+			bool l_geometry_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::geometry_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::geometry_stage);
+			bool l_pixel_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::pixel_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::pixel_stage);
+			bool l_compute_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::compute_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::compute_stage);
+			bool l_stream_output_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::stream_output_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::stream_output_stage);
+			bool l_rasterizer_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::rasterizer_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::rasterizer_stage);
+			bool l_output_merger_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::output_merger_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::output_merger_stage);
+
+			if (l_input_assembler_stage)
+				m_input_assembler_stage.apply_required_state(static_cast<bc_device_pipeline*>(this));
+			if (l_vertex_stage)
+				m_vertex_shader_stage.apply_required_state(static_cast<bc_device_pipeline*>(this));
+			if (l_hull_stage)
+				m_hull_shader_stage.apply_required_state(static_cast<bc_device_pipeline*>(this));
+			if (l_domain_stage)
+				m_domain_shader_stage.apply_required_state(static_cast<bc_device_pipeline*>(this));
+			if (l_geometry_stage)
+				m_geometry_shader_stage.apply_required_state(static_cast<bc_device_pipeline*>(this));
+			if (l_pixel_stage)
+				m_pixel_shader_stage.apply_required_state(static_cast<bc_device_pipeline*>(this));
+			if (l_compute_stage)
+				m_compute_shader_stage.apply_required_state(static_cast<bc_device_pipeline*>(this));
+			if (l_stream_output_stage)
+				m_stream_output_stage.apply_required_state(static_cast<bc_device_pipeline*>(this));
+			if (l_rasterizer_stage)
+				m_rasterizer_stage.apply_required_state(static_cast<bc_device_pipeline*>(this));
+			if (l_output_merger_stage)
+				m_output_merger_stage.apply_required_state(static_cast<bc_device_pipeline*>(this));
+		}
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::pipeline_set_default_states(bc_pipeline_stage p_stages)
+		{
+			bool l_input_assembler_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::input_assembler_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::input_assembler_stage);
+			bool l_vertex_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::vertex_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::vertex_stage);
+			bool l_hull_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::hull_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::hull_stage);
+			bool l_domain_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::domain_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::domain_stage);
+			bool l_geometry_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::geometry_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::geometry_stage);
+			bool l_pixel_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::pixel_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::pixel_stage);
+			bool l_compute_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::compute_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::compute_stage);
+			bool l_stream_output_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::stream_output_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::stream_output_stage);
+			bool l_rasterizer_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::rasterizer_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::rasterizer_stage);
+			bool l_output_merger_stage = (static_cast< bcUINT >(p_stages) &
+				static_cast< bcUINT >(bc_pipeline_stage::output_merger_stage)) ==
+				static_cast< bcUINT >(bc_pipeline_stage::output_merger_stage);
+
+			if (l_input_assembler_stage)
+				m_input_assembler_stage.set_to_default_state(static_cast<bc_device_pipeline*>(this));
+			if (l_vertex_stage)
+				m_vertex_shader_stage.set_to_default_state(static_cast<bc_device_pipeline*>(this));
+			if (l_hull_stage)
+				m_hull_shader_stage.set_to_default_state(static_cast<bc_device_pipeline*>(this));
+			if (l_domain_stage)
+				m_domain_shader_stage.set_to_default_state(static_cast<bc_device_pipeline*>(this));
+			if (l_geometry_stage)
+				m_geometry_shader_stage.set_to_default_state(static_cast<bc_device_pipeline*>(this));
+			if (l_pixel_stage)
+				m_pixel_shader_stage.set_to_default_state(static_cast<bc_device_pipeline*>(this));
+			if (l_compute_stage)
+				m_compute_shader_stage.set_to_default_state(static_cast<bc_device_pipeline*>(this));
+			if (l_stream_output_stage)
+				m_stream_output_stage.set_to_default_state(static_cast<bc_device_pipeline*>(this));
+			if (l_rasterizer_stage)
+				m_rasterizer_stage.set_to_default_state(static_cast<bc_device_pipeline*>(this));
+			if (l_output_merger_stage)
+				m_output_merger_stage.set_to_default_state(static_cast<bc_device_pipeline*>(this));
+		}
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::draw(bcUINT p_start_vertex, bcUINT p_vertex_count)
+		{
+			m_pack.m_context->Draw(p_vertex_count, p_start_vertex);
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::draw_indexed(bcUINT p_start_index, bcUINT p_index_count, bcINT p_vertex_offset)
+		{
+			m_pack.m_context->DrawIndexed(p_index_count, p_start_index, p_vertex_offset);
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::draw_indexed_instanced(bcUINT p_index_count_per_instance,
+			bcUINT p_instance_count, 
+			bcUINT p_start_index_location, 
+			bcINT p_base_vertex_location, 
+			bcUINT p_start_instance_location)
+		{
+			m_pack.m_context->DrawIndexedInstanced(p_index_count_per_instance, 
+				p_instance_count, 
+				p_start_index_location, 
+				p_base_vertex_location, 
+				p_start_instance_location);
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::draw_indexed_instanced_indirect(bc_buffer* p_args_buffer, bcUINT p_offset)
+		{
+			m_pack.m_context->DrawIndexedInstancedIndirect(p_args_buffer->get_platform_pack().m_buffer.Get(), p_offset);
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::dispatch(bcUINT p_x, bcUINT p_y, bcUINT p_z)
+		{
+			m_pack.m_context->Dispatch(p_x, p_y, p_z);
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::dispatch_indirect(bc_buffer* p_args, bcUINT p_offset)
+		{
+			m_pack.m_context->DispatchIndirect(p_args->get_platform_pack().m_buffer.Get(), p_offset);
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::clear_buffers(bc_vector4f p_color, bcFLOAT32 p_depth, bcUINT p_stencil)
+		{
+			const bcUINT32 l_target_count = bc_render_api_info::number_of_om_render_target_slots();
+			ComPtr< ID3D11RenderTargetView > l_target_views[l_target_count];
+			ComPtr< ID3D11DepthStencilView > l_depth_view;
+
+			m_pack.m_context->OMGetRenderTargets(l_target_count, l_target_views[0].GetAddressOf(), l_depth_view.GetAddressOf());
+
+			bcFLOAT32 l_colors[] = { p_color.x, p_color.y, p_color.z, p_color.w };
+			for (bcUINT i = 0; i < l_target_count; ++i)
+			{
+				ID3D11RenderTargetView* l_render_target = l_target_views[i].Get();
+				if(l_render_target != nullptr)
+				{
+					m_pack.m_context->ClearRenderTargetView(l_render_target, l_colors);
+				}
+			}
+
+			if (l_depth_view != nullptr)
+			{
+				m_pack.m_context->ClearDepthStencilView(l_depth_view.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, p_depth, p_stencil);
+			}
+		};
+
+		template<  >
+		BC_GRAPHICIMP_DLL_EXP bc_mapped_resource bc_platform_device_pipeline<g_api_dx11>::map_resource(bc_iresource* p_resource, bcUINT p_subresource, bc_resource_map p_map_type)
+		{
+			bc_mapped_resource l_result;
+			D3D11_MAPPED_SUBRESOURCE l_mapped_resource;
+			
+			dx_call(m_pack.m_context->Map(p_resource->get_platform_pack().m_resource.Get(), 
+				p_subresource, 
+				bc_graphic_cast(p_map_type),
+				0, 
+				&l_mapped_resource));
+
+			l_result.m_data = l_mapped_resource.pData;
+			l_result.m_row_pitch = l_mapped_resource.RowPitch;
+			l_result.m_depth_pitch = l_mapped_resource.DepthPitch;
+
+			return l_result;
+		};
+
+		template<  >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::unmap_resource(bc_iresource* p_resource, bcUINT p_subresource)
+		{
+			m_pack.m_context->Unmap(p_resource->get_platform_pack().m_resource.Get(), p_subresource);
+		};
+
+		template<  >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::update_subresource(bc_iresource* p_resource, bcUINT p_dst_subresource, const void* p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch)
+		{
+			m_pack.m_context->UpdateSubresource(p_resource->get_platform_pack().m_resource.Get(), 
+				p_dst_subresource, 
+				nullptr, 
+				p_src_data, 
+				p_src_row_pitch, 
+				p_src_depth_pitch);
+		};
+
+		template<  >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::copy_subresource(bc_iresource* p_dest_resource, bcUINT p_dst_subresource, bc_iresource* p_src_resource, bcUINT p_src_subresource)
+		{
+			m_pack.m_context->CopySubresourceRegion(p_dest_resource->get_platform_pack().m_resource.Get(),
+				p_dst_subresource,
+				0,
+				0,
+				0,
+				p_src_resource->get_platform_pack().m_resource.Get(),
+				p_src_subresource,
+				nullptr);
+		};
+
+		template<  >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::copy_resource(bc_iresource* p_dest_resource, bc_iresource* p_src_resource)
+		{
+			m_pack.m_context->CopyResource(p_dest_resource->get_platform_pack().m_resource.Get(),
+				p_src_resource->get_platform_pack().m_resource.Get());
+		};
+
+		template<  >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::copy_structure_count(bc_buffer* p_dest_resource, bcUINT p_offset, bc_shader_view* p_unordered_resource)
+		{
+			bcAssert(p_unordered_resource->get_view_type() == bc_resource_view_type::unordered);
+
+			m_pack.m_context->CopyStructureCount(p_dest_resource->get_platform_pack().m_buffer.Get(),
+				p_offset,
+				p_unordered_resource->get_platform_pack().m_unordered_shader_view.Get());
+		};
+
+		template<  >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::resolve_subresource(bc_iresource* p_dest_resource, bcUINT p_dest_subresource, bc_iresource* p_src_resource, bcUINT p_src_subresource, bc_format p_format)
+		{
+			m_pack.m_context->ResolveSubresource(p_dest_resource->get_platform_pack().m_resource.Get(),
+				p_dest_subresource,
+				p_src_resource->get_platform_pack().m_resource.Get(),
+				p_src_subresource,
+				bc_graphic_cast(p_format));
+		};
+
+		template<  >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline< g_api_dx11 >::finish_command_list(bc_device_command_list* p_command_list)
+		{
+			m_pack.m_context->FinishCommandList(false, p_command_list->get_platform_pack().m_command_list.GetAddressOf());
+		};
+
+		template<  >
+		BC_GRAPHICIMP_DLL_EXP void bc_platform_device_pipeline<g_api_dx11>::start_monitoring_pipeline()
+		{
+			m_pack.m_context->Begin(m_pack.m_query.Get());
+		};
+
+		template<  >
+		BC_GRAPHICIMP_DLL_EXP bc_device_pipeline_statistic bc_platform_device_pipeline<g_api_dx11>::end_monitoring_pipeline()
+		{
+			bc_device_pipeline_statistic l_result;
+			D3D11_QUERY_DATA_PIPELINE_STATISTICS l_statistics;
+
+			m_pack.m_context->End(m_pack.m_query.Get());
+			dx_call
+			(
+				m_pack.m_context->GetData(m_pack.m_query.Get(), &l_statistics, sizeof(D3D11_QUERY_DATA_PIPELINE_STATISTICS), 0)
+			);
+
+			l_result.m_ia_vertices = l_statistics.IAVertices;
+			l_result.m_ia_primitives = l_statistics.IAPrimitives;
+			l_result.m_vs_invocations = l_statistics.VSInvocations;
+			l_result.m_hs_invocations = l_statistics.HSInvocations;
+			l_result.m_ds_invocations = l_statistics.DSInvocations;
+			l_result.m_gs_invocations = l_statistics.GSInvocations;
+			l_result.m_gs_primitives = l_statistics.GSPrimitives;
+			l_result.m_ps_invocations = l_statistics.PSInvocations;
+			l_result.m_cs_invocations = l_statistics.CSInvocations;
+			l_result.m_r_invocations = l_statistics.CInvocations;
+			l_result.m_r_primitives = l_statistics.CPrimitives;
+
+			return l_result;
+		};
+	}
+}

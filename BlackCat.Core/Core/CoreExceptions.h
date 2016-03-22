@@ -10,6 +10,7 @@ namespace black_cat
 {
 	namespace core
 	{
+		// TODO remove this class when all references has been removed
 		// Generic exception, used as base class for other types
 		class Exception
 		{
@@ -20,7 +21,7 @@ namespace black_cat
 			}
 
 			// Specify an actual error message
-			Exception (const bc_wstring& exceptionMessage) : 
+			Exception(const bc_wstring& exceptionMessage) :
 				mMessage(exceptionMessage)
 			{
 			}
@@ -33,11 +34,11 @@ namespace black_cat
 
 			/*void ShowErrorMessage() const throw ()
 			{
-				MessageBox(nullptr, message.c_str(), L"Error", MB_OK|MB_ICONERROR);
+			MessageBox(nullptr, message.c_str(), L"Error", MB_OK|MB_ICONERROR);
 			}*/
 
 		protected:
-			bc_wstring mMessage;	
+			bc_wstring mMessage;
 		};
 
 		class bc_thread_interrupted_exception : public std::exception

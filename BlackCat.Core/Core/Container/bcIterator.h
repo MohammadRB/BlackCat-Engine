@@ -654,7 +654,7 @@ namespace black_cat
 				return *this;
 			}
 
-			this_type& operator +(difference_type p_count)
+			this_type operator +(difference_type p_count)
 			{
 				this_type l_temp = *this;
 				l_temp += p_count;
@@ -693,7 +693,7 @@ namespace black_cat
 				return *this;
 			}
 
-			this_type& operator -(difference_type p_count)
+			this_type operator -(difference_type p_count)
 			{
 				this_type l_temp = *this;
 				l_temp -= p_count;
@@ -820,7 +820,7 @@ namespace black_cat
 				return *this;
 			}
 
-			this_type& operator +(difference_type p_count)
+			this_type operator +(difference_type p_count)
 			{
 				this_type l_temp = *this;
 				l_temp += p_count;
@@ -851,7 +851,7 @@ namespace black_cat
 				return *this;
 			}
 
-			this_type& operator -(difference_type p_count)
+			this_type operator -(difference_type p_count)
 			{
 				this_type l_temp = *this;
 				l_temp -= p_count;
@@ -894,7 +894,7 @@ namespace black_cat
 		private:
 		};
 
-		template< typename TProvider >
+		template< class TProvider >
 		bc_const_random_access_iterator<TProvider> operator +(typename bc_const_random_access_iterator<TProvider>::difference_type p_first,
 			bc_const_random_access_iterator<TProvider>& p_second)
 		{
@@ -904,7 +904,7 @@ namespace black_cat
 			return l_temp;
 		}
 
-		template< typename TProvider >
+		template< class TProvider >
 		bc_random_access_iterator<TProvider> operator +(typename bc_random_access_iterator<TProvider>::difference_type p_first,
 			bc_random_access_iterator<TProvider>& p_second)
 		{

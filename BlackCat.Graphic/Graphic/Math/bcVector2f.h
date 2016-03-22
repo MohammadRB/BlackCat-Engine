@@ -1,0 +1,77 @@
+//--------------------------------------------------------------------------------
+// This file is a portion of the Hieroglyph 3 Rendering Engine.  It is distributed
+// under the MIT License, available in the root of this distribution and 
+// at the following URL:
+//
+// http://www.opensource.org/licenses/mit-license.php
+//
+// Copyright (c) Jason Zink 
+//--------------------------------------------------------------------------------
+
+#pragma once
+
+#include "Graphic/GraphicPCH.h"
+
+namespace black_cat
+{
+	namespace graphic
+	{
+		class BC_GRAPHIC_DLL_EXP bc_vector2f
+		{
+		public:
+			bc_vector2f();
+
+			bc_vector2f(bcFLOAT32 x, bcFLOAT32 y);
+
+			bc_vector2f(const bc_vector2f& p_other);
+
+			// vector operations
+			void clamp();
+
+			void make_zero();
+
+			void normalize();
+
+			bcFLOAT32 magnitude();
+
+			// assignment
+			bc_vector2f& operator= (const bc_vector2f& p_other);
+
+			// accessors
+			bcFLOAT32 operator[] (int p_pos) const;
+
+			bcFLOAT32& operator[] (int p_pos);
+
+			// boolean comparison
+			bool operator== (const bc_vector2f& p_other) const;
+
+			bool operator!= (const bc_vector2f& p_other) const;
+
+			// arithmetic operations
+			bc_vector2f operator+ (const bc_vector2f& p_other) const;
+
+			bc_vector2f operator- (const bc_vector2f& p_other) const;
+
+			bc_vector2f operator* (const bc_vector2f& p_other) const;
+
+			bc_vector2f operator* (bcFLOAT32 p_scalar) const;
+
+			bc_vector2f operator/ (bcFLOAT32 p_scalar) const;
+
+			bc_vector2f operator- () const;
+
+			// arithmetic updates
+			bc_vector2f& operator+= (const bc_vector2f& p_other);
+
+			bc_vector2f& operator-= (const bc_vector2f& p_other);
+
+			bc_vector2f& operator*= (bcFLOAT32 p_scalar);
+
+			bc_vector2f& operator/= (bcFLOAT32 p_scalar);
+
+		public:
+			bcFLOAT32 x;
+			bcFLOAT32 y;
+		};
+	}
+}

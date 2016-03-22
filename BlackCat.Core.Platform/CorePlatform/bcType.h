@@ -14,8 +14,10 @@ namespace black_cat
 	using bcWCHAR = wchar_t;
 #ifdef BC_UNICODE
 	using bcECHAR = bcWCHAR;
+#define  bcL(str) L##str
 #else
 	using bcECHAR = bcCHAR;
+#define bcL(str) str
 #endif
 	using bcINT8 = int8_t;
 	using bcUINT8 = uint8_t;
@@ -23,6 +25,8 @@ namespace black_cat
 	using bcUINT16 = uint16_t;
 	using bcINT32 = int32_t;
 	using bcUINT32 = uint32_t;
+	using bcINT = int;
+	using bcUINT = unsigned int;
 	using bcFLOAT32 = float;
 	using bcINT64 = int64_t;
 	using bcUINT64 = uint64_t;
@@ -33,4 +37,9 @@ namespace black_cat
 	using bcUINTPTR = uintptr_t;
 	using bcLPCSTR = const char*;
 	using bcLPCWSTR = const wchar_t*;
+#ifdef BC_UNICODE
+	using bcLPCESTR = bcLPCSTR;
+#else
+	using bcLPCESTR = bcLPCWSTR;
+#endif
 }

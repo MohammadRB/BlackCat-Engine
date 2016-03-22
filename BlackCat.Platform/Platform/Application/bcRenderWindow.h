@@ -35,10 +35,10 @@ namespace black_cat
 		};
 
 		template< core_platform::bc_platform >
-		struct bc_render_window_parameter_pack
+		struct bc_platform_render_window_parameter_pack
 		{
 		public:
-			bc_render_window_parameter_pack(core::bc_estring p_caption, bcUINT32 p_width, bcUINT32 p_height)
+			bc_platform_render_window_parameter_pack(core::bc_estring p_caption, bcUINT32 p_width, bcUINT32 p_height)
 				: m_caption(std::move(p_caption)),
 				m_width(p_width),
 				m_height(p_height)
@@ -50,54 +50,54 @@ namespace black_cat
 			bcUINT32 m_height;
 		};
 
-		using bc_render_window_parameter = bc_render_window_parameter_pack< core_platform::g_current_platform >;
+		using bc_render_window_parameter = bc_platform_render_window_parameter_pack< core_platform::g_current_platform >;
 
 		template< core_platform::bc_platform >
-		struct bc_render_window_pack
+		struct bc_platform_render_window_pack
 		{
 			
 		};
 
 		template< core_platform::bc_platform TPlatform >
-		class bc_render_window_proxy : private core_platform::bc_no_copy
+		class bc_platform_render_window : private core_platform::bc_no_copy
 		{
 		public:
-			using platform_pack = bc_render_window_pack< TPlatform >;
+			using platform_pack = bc_platform_render_window_pack< TPlatform >;
 
 		public:
-			bc_render_window_proxy(bc_render_window_parameter& p_parameters);
+			bc_platform_render_window(bc_render_window_parameter& p_parameters);
 
-			bc_render_window_proxy(bc_render_window_proxy&& p_other) noexcept(true);
+			bc_platform_render_window(bc_platform_render_window&& p_other) noexcept(true);
 
-			~bc_render_window_proxy();
+			~bc_platform_render_window();
 
-			bc_render_window_proxy& operator =(bc_render_window_proxy&& p_other) noexcept(true);
+			bc_platform_render_window& operator =(bc_platform_render_window&& p_other) noexcept(true);
 
-			bcUINT32 width() const noexcept(true);
+			bcUINT32 get_width() const noexcept(true);
 
-			void width(bcUINT32 p_width) noexcept(true);
+			void set_width(bcUINT32 p_width) noexcept(true);
 
-			bcUINT32 height() const noexcept(true);
+			bcUINT32 get_height() const noexcept(true);
 
-			void height(bcUINT32 p_height) noexcept(true);
+			void set_height(bcUINT32 p_height) noexcept(true);
 
-			bcUINT32 left() const noexcept(true);
+			bcUINT32 get_left() const noexcept(true);
 
-			void left(bcUINT32 p_left) noexcept(true);
+			void set_left(bcUINT32 p_left) noexcept(true);
 
-			bcUINT32 top() const noexcept(true);
+			bcUINT32 get_top() const noexcept(true);
 
-			void top(bcUINT32 p_top) noexcept(true);
+			void set_top(bcUINT32 p_top) noexcept(true);
 
 			void set_size(bcUINT32 p_width, bcUINT32 p_height) noexcept(true);
 
 			void set_position(bcUINT32 p_left, bcUINT32 p_top) noexcept(true);
 
-			core::bc_estring caption() const;
+			core::bc_estring get_caption() const;
 
-			void caption(core::bc_estring& p_caption);
+			void set_caption(core::bc_estring& p_caption);
 
-			void caption(core::bc_estring&& p_caption);
+			void set_caption(core::bc_estring&& p_caption);
 
 			bool is_minimized() const noexcept(true);
 
@@ -109,15 +109,15 @@ namespace black_cat
 
 			platform_pack& get_platform_pack()
 			{
-				return m_platform_pack;
+				return m_pack;
 			}
 
 		protected:
 
 		private:
-			platform_pack m_platform_pack;
+			platform_pack m_pack;
 		};
 
-		using bc_render_window = bc_render_window_proxy< core_platform::g_current_platform >;
+		using bc_render_window = bc_platform_render_window< core_platform::g_current_platform >;
 	}
 }

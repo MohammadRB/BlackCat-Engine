@@ -14,45 +14,45 @@ namespace black_cat
 	namespace core_platform
 	{
 		template< bc_platform TP >
-		struct bc_mutex_pack
+		struct bc_platform_mutex_pack
 		{
 		};
 
 		template< bc_platform TP >
-		struct bc_timed_mutex_pack
+		struct bc_platform_timed_mutex_pack
 		{
 		};
 
 		template< bc_platform TP >
-		struct bc_recursive_mutex_pack
+		struct bc_platform_recursive_mutex_pack
 		{
 		};
 
 		template< bc_platform TP >
-		struct bc_recursive_timed_mutex_pack
+		struct bc_platform_recursive_timed_mutex_pack
 		{
 		};
 
 		template< bc_platform TP >
-		struct bc_shared_mutex_pack
+		struct bc_platform_shared_mutex_pack
 		{
 		};
 
 		template< bc_platform TP >
-		struct bc_hybrid_mutex_pack
+		struct bc_platform_hybrid_mutex_pack
 		{
 		};
 
 		template< bc_platform TP >
-		class bc_mutex_proxy : private bc_no_copy
+		class bc_platform_mutex : private bc_no_copy
 		{
 		public:
-			using platform_pack = bc_mutex_pack<TP>;
+			using platform_pack = bc_platform_mutex_pack<TP>;
 
 		public:
-			bc_mutex_proxy();
+			bc_platform_mutex();
 
-			~bc_mutex_proxy();
+			~bc_platform_mutex();
 
 			bcInline void lock();
 
@@ -67,63 +67,15 @@ namespace black_cat
 		};
 
 		template< bc_platform TP >
-		class bc_timed_mutex_proxy : private bc_no_copy
+		class bc_platform_timed_mutex : private bc_no_copy
 		{
 		public:
-			using platform_pack = bc_timed_mutex_pack<TP>;
+			using platform_pack = bc_platform_timed_mutex_pack<TP>;
 
 		public:
-			bc_timed_mutex_proxy();
+			bc_platform_timed_mutex();
 
-			~bc_timed_mutex_proxy();
-
-			bcInline void lock();
-
-			bcInline void unlock() noexcept(true);
-
-			bcInline bool try_lock() noexcept(true);
-
-			bcInline bool try_lock_for(const bcUINT64 p_nano);
-
-		protected:
-
-		private:
-			platform_pack m_pack;
-		};
-
-		template< bc_platform TP >
-		class bc_recursive_mutex_proxy : private bc_no_copy
-		{
-		public:
-			using platform_pack = bc_recursive_mutex_pack<TP>;
-
-		public:
-			bc_recursive_mutex_proxy();
-
-			~bc_recursive_mutex_proxy();
-
-			bcInline void lock();
-
-			bcInline void unlock() noexcept(true);
-
-			bcInline bool try_lock() noexcept(true);
-
-		protected:
-
-		private:
-			platform_pack m_pack;
-		};
-
-		template< bc_platform TP >
-		class bc_recursive_timed_mutex_proxy : private bc_no_copy
-		{
-		public:
-			using platform_pack = bc_recursive_timed_mutex_pack<TP>;
-
-		public:
-			bc_recursive_timed_mutex_proxy();
-
-			~bc_recursive_timed_mutex_proxy();
+			~bc_platform_timed_mutex();
 
 			bcInline void lock();
 
@@ -140,15 +92,63 @@ namespace black_cat
 		};
 
 		template< bc_platform TP >
-		class bc_shared_mutex_proxy : private bc_no_copy
+		class bc_platform_recursive_mutex : private bc_no_copy
 		{
 		public:
-			using platform_pack = bc_shared_mutex_pack<TP>;
+			using platform_pack = bc_platform_recursive_mutex_pack<TP>;
 
 		public:
-			bc_shared_mutex_proxy();
+			bc_platform_recursive_mutex();
 
-			~bc_shared_mutex_proxy();
+			~bc_platform_recursive_mutex();
+
+			bcInline void lock();
+
+			bcInline void unlock() noexcept(true);
+
+			bcInline bool try_lock() noexcept(true);
+
+		protected:
+
+		private:
+			platform_pack m_pack;
+		};
+
+		template< bc_platform TP >
+		class bc_platform_recursive_timed_mutex : private bc_no_copy
+		{
+		public:
+			using platform_pack = bc_platform_recursive_timed_mutex_pack<TP>;
+
+		public:
+			bc_platform_recursive_timed_mutex();
+
+			~bc_platform_recursive_timed_mutex();
+
+			bcInline void lock();
+
+			bcInline void unlock() noexcept(true);
+
+			bcInline bool try_lock() noexcept(true);
+
+			bcInline bool try_lock_for(const bcUINT64 p_nano);
+
+		protected:
+
+		private:
+			platform_pack m_pack;
+		};
+
+		template< bc_platform TP >
+		class bc_platform_shared_mutex : private bc_no_copy
+		{
+		public:
+			using platform_pack = bc_platform_shared_mutex_pack<TP>;
+
+		public:
+			bc_platform_shared_mutex();
+
+			~bc_platform_shared_mutex();
 
 			bcInline void lock();
 
@@ -173,15 +173,15 @@ namespace black_cat
 		};
 
 		template< bc_platform TP >
-		class bc_hybrid_mutex_proxy : private bc_no_copy
+		class bc_platform_hybrid_mutex : private bc_no_copy
 		{
 		public:
-			using platform_pack = bc_hybrid_mutex_pack<TP>;
+			using platform_pack = bc_platform_hybrid_mutex_pack<TP>;
 
 		public:
-			bc_hybrid_mutex_proxy();
+			bc_platform_hybrid_mutex();
 
-			~bc_hybrid_mutex_proxy();
+			~bc_platform_hybrid_mutex();
 
 			bcInline void lock();
 
@@ -199,12 +199,12 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_mutex = bc_mutex_proxy< g_current_platform >;
-		using bc_timed_mutex = bc_timed_mutex_proxy< g_current_platform >;
-		using bc_recursive_mutex = bc_recursive_mutex_proxy< g_current_platform >;
-		using bc_recursive_timed_mutex = bc_recursive_timed_mutex_proxy< g_current_platform >;
-		using bc_shared_mutex = bc_shared_mutex_proxy< g_current_platform >;
-		using bc_hybrid_mutex = bc_hybrid_mutex_proxy< g_current_platform >;
+		using bc_mutex = bc_platform_mutex< g_current_platform >;
+		using bc_timed_mutex = bc_platform_timed_mutex< g_current_platform >;
+		using bc_recursive_mutex = bc_platform_recursive_mutex< g_current_platform >;
+		using bc_recursive_timed_mutex = bc_platform_recursive_timed_mutex< g_current_platform >;
+		using bc_shared_mutex = bc_platform_shared_mutex< g_current_platform >;
+		using bc_hybrid_mutex = bc_platform_hybrid_mutex< g_current_platform >;
 
 		template< typename T >
 		class bc_lock_guard : private bc_no_copy

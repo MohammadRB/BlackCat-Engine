@@ -17,7 +17,7 @@ namespace black_cat
 	namespace core_platform
 	{
 		template< bc_platform TP >
-		struct bc_thread_pack
+		struct bc_platform_thread_pack
 		{
 		};
 
@@ -98,22 +98,22 @@ namespace black_cat
 		};
 
 		template< bc_platform TP >
-		class bc_thread_proxy : private bc_no_copy
+		class bc_platform_thread : private bc_no_copy
 		{
 		public:
-			using this_type = bc_thread_proxy< TP >;
+			using this_type = bc_platform_thread< TP >;
 			using id = bcUINT32;
-			using platform_pack = bc_thread_pack<TP>;
+			using platform_pack = bc_platform_thread_pack<TP>;
 
 		public:
-			bc_thread_proxy() noexcept(true);
+			bc_platform_thread() noexcept(true);
 
-			bc_thread_proxy(this_type&& p_other) noexcept(true);
+			bc_platform_thread(this_type&& p_other) noexcept(true);
 
 			template< typename Callable, typename ...Args >
-			explicit bc_thread_proxy(Callable&& pFunc, Args&&... pArgs);
+			explicit bc_platform_thread(Callable&& pFunc, Args&&... pArgs);
 
-			~bc_thread_proxy()
+			~bc_platform_thread()
 			{
 				this_type::s_static_data.remove_me();
 			}
@@ -260,8 +260,8 @@ namespace black_cat
 		};
 
 		template< bc_platform TP >
-		typename bc_thread_proxy< TP >::_static_data bc_thread_proxy< TP >::s_static_data;
+		typename bc_platform_thread< TP >::_static_data bc_platform_thread< TP >::s_static_data;
 
-		using bc_thread = bc_thread_proxy< g_current_platform >;
+		using bc_thread = bc_platform_thread< g_current_platform >;
 	}
 }

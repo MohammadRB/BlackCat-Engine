@@ -14,6 +14,9 @@ namespace black_cat
 			win32
 		};
 
-		constexpr bc_platform g_current_platform = bc_platform::win32;
+		constexpr bc_platform g_api_unknown = bc_platform::unknown;
+		constexpr bc_platform g_api_win32 = bc_platform::win32;
+
+		constexpr bc_platform g_current_platform = g_api_win32;
 	}
 }

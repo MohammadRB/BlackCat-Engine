@@ -12,7 +12,7 @@
 #include "Core/CorePCH.h"
 #include "Core/CoreExceptions.h"
 #include "Core/bcCoreUtility.h"
-#include "Core/Utility/bcSingleton.h"
+#include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcFunctionWrapper.h"
 #include "Core/Utility/bcDelegate.h"
 #include "Core/Memory/bcAlloc.h"
@@ -92,7 +92,7 @@ namespace black_cat
 		protected:
 
 		private:
-			bc_deque< task_type, bc_std_allocator_frame< task_type > > m_deque;
+			bc_deque< task_type, bc_allocator_frame< task_type > > m_deque;
 			mutable core_platform::bc_mutex m_mutex;
 		};
 
@@ -185,7 +185,7 @@ namespace black_cat
 
 			core_platform::bc_future_status wait_for(const bcUINT64 p_nano) const
 			{
-				return m_future.wait_for(std::chrono.nanoseconds(p_nano));
+				return m_future.wait_for(std::chrono::nanoseconds(p_nano));
 			}
 			
 			// When executer thread see this interrupt, it will throw an exception
@@ -283,58 +283,43 @@ namespace black_cat
 			core_platform::bc_promise<bcUINT32> m_thread_id_promise;
 		};
 
-		class bc_thread_manager : public bc_singleton< bc_thread_manager(bcSIZE, bcSIZE) >
+		class bc_thread_manager : public bc_iservice
 		{
 		private:
 			using task_wrapper_type = bc_function_wrapper<void(bcUINT32)>;
-			template< typename T > 
-			using vector_type = bc_vector< T, bc_allocator_program< T > >;
 
 		public:
-			bc_thread_manager() noexcept(true)
+			bc_thread_manager(bcSIZE p_thread_count, bcSIZE p_additional_thread_count) noexcept(true)
 				: m_my_data(&_thread_data_cleanup)
 			{
+				_initialize(p_thread_count, p_additional_thread_count);
 			}
 
 			bc_thread_manager(const bc_thread_manager&) = delete;
 
-			bc_thread_manager(bc_thread_manager&&) = delete;
-
-			~bc_thread_manager() = default;
-
-			bc_thread_manager& operator =(const bc_thread_manager&) = delete;
-
-			bc_thread_manager& operator =(bc_thread_manager&&) = delete;
-
-			void initialize(bcSIZE p_thread_count, bcSIZE p_additional_thread_count) override
+			bc_thread_manager(bc_thread_manager&& p_other)
 			{
-				m_thread_count = p_thread_count;
-				m_additional_thread_count = p_additional_thread_count;
-				m_task_count.store(0, core_platform::bc_memory_order::seqcst);
-				m_done.store(false);
-
-				try
-				{
-					m_threads.reserve(p_thread_count + p_additional_thread_count);
-
-					for (bcUINT32 l_i = 0; l_i < p_thread_count; ++l_i)
-					{
-						_push_worker();
-					}
-				}
-				catch (...)
-				{
-					destroy();
-
-					throw;
-				}
+				operator=(std::move(p_other));
 			}
 
-			void destroy() override
+			~bc_thread_manager()
 			{
-				m_done.store(true);
+				_destroy();
+			}
 
-				_join_workers();
+			bc_thread_manager& operator=(const bc_thread_manager&) = delete;
+
+			bc_thread_manager& operator=(bc_thread_manager&& p_other)
+			{
+				m_thread_count = p_other.m_thread_count;
+				m_additional_thread_count = p_other.m_additional_thread_count;
+				m_task_count.store(p_other.m_task_count.load());
+				m_done.store(p_other.m_done.load());
+				m_threads = std::move(p_other.m_threads);
+				m_global_queue = std::move(p_other.m_global_queue);
+				m_my_data = std::move(p_other.m_my_data);
+
+				return *this;
 			}
 
 			template<typename T>
@@ -343,7 +328,7 @@ namespace black_cat
 				bc_task_link<T> l_task_link(std::move(p_delegate));
 				bc_task<T> l_task = l_task_link.getTask();
 
-				task_wrapper_type l_task_wrapper(std::move(p_delegate));
+				task_wrapper_type l_task_wrapper(l_task_link);
 				_thread_data* l_my_data = nullptr;
 
 				if (p_option == bc_task_creation_option::none)
@@ -402,6 +387,11 @@ namespace black_cat
 
 			}
 
+			static bc_string service_name()
+			{
+				return "Thread_Manager";
+			}
+
 		protected:
 
 		private:
@@ -454,6 +444,37 @@ namespace black_cat
 				bc_interrupt_flag m_interrupt_flag;
 				core_platform::bc_thread m_thread;
 			};
+
+			void _initialize(bcSIZE p_thread_count, bcSIZE p_additional_thread_count)
+			{
+				m_thread_count = p_thread_count;
+				m_additional_thread_count = p_additional_thread_count;
+				m_task_count.store(0, core_platform::bc_memory_order::seqcst);
+				m_done.store(false);
+
+				try
+				{
+					m_threads.reserve(p_thread_count + p_additional_thread_count);
+
+					for (bcUINT32 l_i = 0; l_i < p_thread_count; ++l_i)
+					{
+						_push_worker();
+					}
+				}
+				catch (...)
+				{
+					_destroy();
+
+					throw;
+				}
+			}
+
+			void _destroy()
+			{
+				m_done.store(true);
+
+				_join_workers();
+			}
 
 			static void _thread_data_cleanup(_thread_data*)
 			{
@@ -559,7 +580,7 @@ namespace black_cat
 			core_platform::bc_atomic< bcSIZE > m_task_count;
 			core_platform::bc_atomic< bool > m_done;
 
-			bc_vector< bc_unique_ptr<_thread_data>, bc_allocator_program< bc_unique_ptr<_thread_data> > > m_threads;
+			bc_vector_a< bc_unique_ptr<_thread_data>, bc_allocator_program > m_threads;
 			bc_concurrent_queue< task_wrapper_type, bc_allocator_frame< task_wrapper_type > > m_global_queue;
 			core_platform::bc_thread_local< _thread_data > m_my_data;
 			mutable core_platform::bc_shared_mutex m_shared_mutex;
@@ -567,7 +588,7 @@ namespace black_cat
 
 		bcInline void bc_check_for_interruption()
 		{
-			bc_thread_manager::get().check_for_interruption();
+			bc_service_manager::get().get_service<bc_thread_manager>()->check_for_interruption();
 		}
 	}
 }

@@ -12,38 +12,38 @@ namespace black_cat
 	namespace core_platform
 	{
 		template< bc_platform TP >
-		struct bc_thread_local_pack
+		struct bc_platform_thread_local_pack
 		{
 		};
 
 		template< bc_platform TPlatform, typename T >
-		class bc_thread_local_proxy : private bc_no_copy
+		class bc_platform_thread_local : private bc_no_copy
 		{
 		public:
 			using type = T;
-			using this_type = bc_thread_local_proxy;
-			using platform_pack = bc_thread_local_pack<TPlatform>;
+			using this_type = bc_platform_thread_local;
+			using platform_pack = bc_platform_thread_local_pack<TPlatform>;
 			using cleanup_function = void(*)(type*);
 
 		public:
-			bc_thread_local_proxy() noexcept(false)
+			bc_platform_thread_local() noexcept(false)
 				: m_cleanup_function(&_default_clean_up)
 			{
 				_platform_initialize();
 			}
 
-			explicit bc_thread_local_proxy(cleanup_function p_cleanup_function) noexcept(false)
+			explicit bc_platform_thread_local(cleanup_function p_cleanup_function) noexcept(false)
 				: m_cleanup_function(p_cleanup_function)
 			{
 				_platform_initialize();
 			}
 
-			bc_thread_local_proxy(this_type&& p_other)
+			bc_platform_thread_local(this_type&& p_other)
 			{
 				_assign(std::move(p_other));
 			}
 
-			~bc_thread_local_proxy() noexcept(true)
+			~bc_platform_thread_local() noexcept(true)
 			{
 				_cleanup();
 				_platform_cleanup();
@@ -67,7 +67,7 @@ namespace black_cat
 			{
 				type* l_pointer = get();
 				if (!l_pointer)
-					bc_thread::current_thread_on_exit(std::bind(&bc_thread_local_proxy::_cleanup, this));
+					bc_thread::current_thread_on_exit(std::bind(&bc_platform_thread_local::_cleanup, this));
 				else
 					m_cleanup_function(l_pointer);
 
@@ -131,6 +131,6 @@ namespace black_cat
 		};
 
 		template< typename T >
-		using bc_thread_local = bc_thread_local_proxy< g_current_platform, T >;
+		using bc_thread_local = bc_platform_thread_local< g_current_platform, T >;
 	}
 }

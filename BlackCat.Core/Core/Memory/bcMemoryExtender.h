@@ -15,8 +15,7 @@ namespace black_cat
 	{
 		template< typename TMemory >
 		class bc_memory_extender : public bc_memory, 
-			bc_initializable<bc_delegate< TMemory*() >&&, bc_delegate< void(TMemory*) >&&>,
-			private core_platform::bc_no_copy
+			public bc_initializable<bc_delegate< TMemory*() >&&, bc_delegate< void(TMemory*) >&&>
 		{
 		public:
 			using this_type = bc_memory_extender;
@@ -103,35 +102,13 @@ namespace black_cat
 			~bc_memory_extender()
 			{
 				if (m_initialized)
-					destroy();
+					_destroy();
 			}
 
 			this_type& operator =(this_type&& p_other) noexcept(true)
 			{
 				_assign(std::move(p_other));
 				return *this;
-			}
-
-			void initialize(initializer_type&& p_initializer, cleanup_type&& p_cleanup) override
-			{
-				m_initializer = std::move(p_initializer);
-				m_cleanup = std::move(p_cleanup);
-				
-				m_initialized = true;
-			}
-
-			void destroy() noexcept(true) override
-			{
-				bc_concurrent_lazy< _bucket >* l_current_bucket = &m_first;
-
-				while (l_current_bucket->is_set())
-				{
-					(*l_current_bucket)->m_my->destroy();
-
-					l_current_bucket = &((*l_current_bucket)->m_next);
-				}
-
-				m_initialized = false;
 			}
 
 			bcInline void* alloc(bc_memblock* p_memblock) noexcept(true) override
@@ -237,6 +214,24 @@ namespace black_cat
 		protected:
 
 		private:
+			void _initialize(initializer_type&& p_initializer, cleanup_type&& p_cleanup) override
+			{
+				m_initializer = std::move(p_initializer);
+				m_cleanup = std::move(p_cleanup);
+			}
+
+			void _destroy() noexcept(true) override
+			{
+				bc_concurrent_lazy< _bucket >* l_current_bucket = &m_first;
+
+				while (l_current_bucket->is_set())
+				{
+					(*l_current_bucket)->m_my->destroy();
+
+					l_current_bucket = &((*l_current_bucket)->m_next);
+				}
+			}
+
 			_bucket* _bucket_initializer()
 			{
 				_bucket* l_result = reinterpret_cast<_bucket*>(core_platform::bc_mem_alloc(sizeof(_bucket)));

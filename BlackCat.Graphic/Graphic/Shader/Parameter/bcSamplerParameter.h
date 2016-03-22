@@ -1,0 +1,69 @@
+// [01/16/2016 MRB]
+
+#pragma once
+
+#include "Graphic/Resource/State/bcSamplerState.h"
+#include "Graphic/Shader/Parameter/bcShaderParameter.h"
+
+namespace black_cat
+{
+	namespace graphic
+	{
+		class bc_sampler_parameter : public bc_ishader_parameter
+		{
+		public:
+			bc_sampler_parameter();
+
+			bc_sampler_parameter(bcINT p_register, bc_sampler_state* p_sampler);
+
+			bc_sampler_parameter(bc_sampler_parameter&) = default;
+
+			~bc_sampler_parameter() = default;
+
+			bc_sampler_parameter& operator=(bc_sampler_parameter&) = default;
+
+			bc_sampler_state* get_sampler() const;
+
+			void set_sampler(bc_sampler_state* p_sampler);
+
+			bc_shader_parameter_type get_parameter_type() const override;
+
+			void set_parameter_data(void* p_data) override;
+
+		protected:
+
+		private:
+			bc_sampler_state* m_sampler;
+		};
+
+		inline bc_sampler_parameter::bc_sampler_parameter() : m_sampler(nullptr)
+		{
+		}
+
+		inline bc_sampler_parameter::bc_sampler_parameter(bcINT p_register, bc_sampler_state* p_sampler)
+			: bc_ishader_parameter(p_register),
+			m_sampler(p_sampler)
+		{
+		}
+
+		inline bc_sampler_state* bc_sampler_parameter::get_sampler() const
+		{
+			return m_sampler;
+		}
+
+		inline void bc_sampler_parameter::set_sampler(bc_sampler_state* p_sampler)
+		{
+			m_sampler = p_sampler;
+		}
+
+		inline bc_shader_parameter_type bc_sampler_parameter::get_parameter_type() const
+		{
+			return bc_shader_parameter_type::sampler;
+		}
+
+		inline void bc_sampler_parameter::set_parameter_data(void* p_data)
+		{
+			set_sampler(reinterpret_cast<bc_sampler_state*>(p_data));
+		}
+	}
+}

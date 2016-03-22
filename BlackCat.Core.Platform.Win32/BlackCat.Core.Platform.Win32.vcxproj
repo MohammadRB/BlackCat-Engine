@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_CTP_Nov_2013|Win32">
+      <Configuration>Debug_CTP_Nov_2013</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CorePlatformImp\bcHardwareInfo.h" />
+    <ClInclude Include="CorePlatformImp\Concurrency\bcAtomic.h" />
+    <ClInclude Include="CorePlatformImp\Concurrency\bcConcurrencyUtility.h" />
+    <ClInclude Include="CorePlatformImp\Concurrency\bcConditionVariable.h" />
+    <ClInclude Include="CorePlatformImp\Concurrency\bcFuture.h" />
+    <ClInclude Include="CorePlatformImp\Concurrency\bcMutex.h" />
+    <ClInclude Include="CorePlatformImp\Concurrency\bcThread.h" />
+    <ClInclude Include="CorePlatformImp\CorePlatformImpPCH.h" />
+    <ClInclude Include="CorePlatformImp\Utility\bcClock.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CorePlatformImp\CorePlatformImpPCH.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="CorePlatformImp\Memory\bcMemAlloc.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{BE5CAB27-D8E0-4781-ABF8-F37FE773B65B}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>BlackCatCoreWin32</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\$(Configuration)\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATCOREWIN32_EXPORTS;BC_COREPLATFORMIMP_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>CorePlatformImp/CorePlatformImpPCH.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\BC_SDK\Lib\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy CorePlatformImp\Concurrency\*.h ..\BC_SDK\Include\CorePlatformImp\Concurrency
+copy CorePlatformImp\Memory\*.h ..\BC_SDK\Include\CorePlatformImp\Memory
+copy CorePlatformImp\Utility\*.h ..\BC_SDK\Include\CorePlatformImp\Utility
+copy CorePlatformImp\*.h ..\BC_SDK\Include\CorePlatformImp
+
+copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
+copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp
+copy ..\$(Configuration)\$(ProjectName).ilk ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).ilk
+copy ..\$(Configuration)\$(ProjectName).lib ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).lib
+copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).pdb
+
+</Command>
+    </PostBuildEvent>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATCOREWIN32_EXPORTS;BC_COREPLATFORMIMP_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>CorePlatformImp/CorePlatformImpPCH.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\BC_SDK\Lib\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy CorePlatformImp\Concurrency\*.h ..\BC_SDK\Include\CorePlatformImp\Concurrency
+copy CorePlatformImp\Memory\*.h ..\BC_SDK\Include\CorePlatformImp\Memory
+copy CorePlatformImp\Utility\*.h ..\BC_SDK\Include\CorePlatformImp\Utility
+copy CorePlatformImp\*.h ..\BC_SDK\Include\CorePlatformImp
+
+copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
+copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp
+copy ..\$(Configuration)\$(ProjectName).ilk ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).ilk
+copy ..\$(Configuration)\$(ProjectName).lib ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).lib
+copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).pdb
+
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;BLACKCATCOREWIN32_EXPORTS;BC_COREPLATFORMIMP_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeaderFile>CorePlatformImp/CorePlatformImpPCH.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\BC_SDK\Lib\$(Configuration)\</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy CorePlatformImp\Concurrency\*.h ..\BC_SDK\Include\CorePlatformImp\Concurrency
+copy CorePlatformImp\Memory\*.h ..\BC_SDK\Include\CorePlatformImp\Memory
+copy CorePlatformImp\Utility\*.h ..\BC_SDK\Include\CorePlatformImp\Utility
+copy CorePlatformImp\*.h ..\BC_SDK\Include\CorePlatformImp
+
+copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
+copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp
+copy ..\$(Configuration)\$(ProjectName).ilk ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).ilk
+copy ..\$(Configuration)\$(ProjectName).lib ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).lib
+copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).pdb
+
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

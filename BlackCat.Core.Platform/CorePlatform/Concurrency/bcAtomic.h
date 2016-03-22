@@ -11,24 +11,24 @@ namespace black_cat
 	namespace core_platform
 	{
 		template< bc_platform TPlatform >
-		struct bc_atomic_flag_pack {};
+		struct bc_platform_atomic_flag_pack {};
 
 		template< bc_platform TPlatform, typename T >
-		struct bc_atomic_pack {};
+		struct bc_platform_atomic_pack {};
 
 		template< bc_platform TPlatform >
-		class bc_atomic_flag_proxy : private bc_no_copy
+		class bc_platform_atomic_flag : private bc_no_copy
 		{
 		public:
-			using platform_pack = bc_atomic_flag_pack< TPlatform >;
-			using this_type = bc_atomic_flag_proxy;
+			using platform_pack = bc_platform_atomic_flag_pack< TPlatform >;
+			using this_type = bc_platform_atomic_flag;
 
 		public:
-			bc_atomic_flag_proxy() noexcept(true);
+			bc_platform_atomic_flag() noexcept(true);
 
-			bc_atomic_flag_proxy(bool p_flag) noexcept(true);
+			bc_platform_atomic_flag(bool p_flag) noexcept(true);
 
-			~bc_atomic_flag_proxy() noexcept(true);
+			~bc_platform_atomic_flag() noexcept(true);
 
 			bcInline bool test_and_set() volatile noexcept(true);
 
@@ -53,18 +53,18 @@ namespace black_cat
 		};
 
 		template< bc_platform TPlatform, typename T >
-		class bc_atomic_proxy : private bc_no_copy
+		class bc_platform_atomic : private bc_no_copy
 		{
 		public:
-			using platform_pack = bc_atomic_pack< TPlatform, T >;
-			using this_type = bc_atomic_proxy;
+			using platform_pack = bc_platform_atomic_pack< TPlatform, T >;
+			using this_type = bc_platform_atomic;
 
 		public:
-			bc_atomic_proxy() noexcept(true);
+			bc_platform_atomic() noexcept(true);
 
-			~bc_atomic_proxy() noexcept(true);
+			~bc_platform_atomic() noexcept(true);
 
-			bc_atomic_proxy(T p_value) noexcept(true);
+			bc_platform_atomic(T p_value) noexcept(true);
 
 			bcInline bool is_lock_free() const volatile noexcept(true);
 
@@ -168,9 +168,9 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_atomic_flag = bc_atomic_flag_proxy< g_current_platform >;
+		using bc_atomic_flag = bc_platform_atomic_flag< g_current_platform >;
 
 		template< typename T >
-		using bc_atomic = bc_atomic_proxy< g_current_platform, T >;
+		using bc_atomic = bc_platform_atomic< g_current_platform, T >;
 	}
 }
