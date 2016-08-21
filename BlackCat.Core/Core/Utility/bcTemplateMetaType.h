@@ -45,51 +45,75 @@ namespace black_cat
 
 		template< typename T >
 		struct bc_get_pointer_type
-			member_type_or_default(T,
+			member_type_or_default
+			(
+				T,
 				pointer,
-				typename T::value_type*);
+				typename T::value_type*
+			);
 
 		template< typename T >
 		struct bc_get_const_pointer_type
-			member_type_or_default(T,
+			member_type_or_default
+			(
+				T,
 				const_pointer,
-				typename std::pointer_traits< typename bc_get_pointer_type< T >::type >::template rebind< const typename T::value_type >);
+				typename std::pointer_traits< typename bc_get_pointer_type< T >::type >::template rebind< const typename T::value_type >
+			);
 
 		template< typename T >
 		struct bc_get_void_pointer_type
-			member_type_or_default(T,
+			member_type_or_default
+			(
+				T,
 				void_pointer,
-				typename std::pointer_traits< typename bc_get_pointer_type< T >::type >::template rebind< void >);
+				typename std::pointer_traits< typename bc_get_pointer_type< T >::type >::template rebind< void >
+			);
 
 		template< typename T >
 		struct bc_get_const_void_pointer_type
-			member_type_or_default(T,
+			member_type_or_default
+			(
+				T,
 				const_void_pointer,
-				typename std::pointer_traits< typename bc_get_pointer_type< T >::type >::template rebind< const void >);
+				typename std::pointer_traits< typename bc_get_pointer_type< T >::type >::template rebind< const void >
+			);
 
 		template< typename T >
 		struct bc_get_reference_type
-			member_type_or_default(T,
+			member_type_or_default
+			(
+				T,
 				reference,
-				typename T::value_type&);
+				typename T::value_type&
+			);
 
 		template< typename T >
 		struct bc_get_const_reference_type
-			member_type_or_default(T,
+			member_type_or_default
+			(
+				T,
 				const_reference,
-				const typename T::value_type&);
+				const typename T::value_type&
+			);
 
 		template< typename T >
 		struct bc_get_difference_type
-			member_type_or_default(T,
+			member_type_or_default
+			(
+				T,
 				difference_type,
-				typename std::pointer_traits< typename bc_get_pointer_type< T >::type >::difference_type);
+				typename std::pointer_traits< typename bc_get_pointer_type< T >::type >::difference_type
+			);
 
 		template< typename T >
 		struct bc_get_size_type
-			member_type_or_default(T,
+			member_type_or_default
+			(
+				T,
 				size_type,
-				bcSIZE);
+				bcSIZE
+			);
 
 		/*template< typename T, typename ...TOther >
 		struct bc_get_rebind_type

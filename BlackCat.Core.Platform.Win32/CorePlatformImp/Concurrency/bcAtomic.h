@@ -3,7 +3,7 @@
 #pragma once
 
 #include <atomic>
-#include "CorePlatform/bcCorePlatformUtility.h"
+#include "CorePlatform/Utility/bcNoCopy.h"
 #include "CorePlatform/Concurrency/bcConcurrencyDef.h"
 #include "CorePlatform/Concurrency/bcAtomic.h"
 #include "CorePlatformImp/CorePlatformImpPCH.h"

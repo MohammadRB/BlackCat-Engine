@@ -229,7 +229,11 @@ namespace black_cat
 
 			~bc_concurrent_queue()
 			{
-				while (base_type::_dequeue(nullptr));
+				node_type* l_node = nullptr;
+				while ((l_node = base_type::_dequeue(nullptr)))
+				{
+					m_memmng.try_reclaim(*this, l_node);
+				}
 			}
 
 			this_type& operator =(const this_type&) = delete;
@@ -269,7 +273,10 @@ namespace black_cat
 
 				node_type* l_node = base_type::_dequeue(&p_result);
 				if (!l_node)
+				{
+					m_memmng.exist_pop_widthou_reclaim();
 					return false;
+				}
 
 				m_memmng.try_reclaim(*this, l_node);
 
@@ -320,6 +327,9 @@ namespace black_cat
 
 		template< typename T, template< typename > typename TAllocator >
 		using bc_concurrent_queue_a = bc_concurrent_queue< T, TAllocator< T > >;
+
+		template< typename T >
+		using bc_concurrent_queue_frame = bc_concurrent_queue< T, bc_allocator_frame< T > >;
 
 		template< typename T, typename TAllocator >
 		void swap(bc_concurrent_queue< T, TAllocator > p_first, bc_concurrent_queue< T, TAllocator > p_second)

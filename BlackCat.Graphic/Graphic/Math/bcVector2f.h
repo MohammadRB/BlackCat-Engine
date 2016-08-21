@@ -11,17 +11,18 @@
 #pragma once
 
 #include "Graphic/GraphicPCH.h"
+#include "Graphic/bcExport.h"
 
 namespace black_cat
 {
 	namespace graphic
 	{
-		class BC_GRAPHIC_DLL_EXP bc_vector2f
+		class BC_GRAPHIC_DLL bc_vector2f
 		{
 		public:
 			bc_vector2f();
 
-			bc_vector2f(bcFLOAT32 x, bcFLOAT32 y);
+			bc_vector2f(bcFLOAT x, bcFLOAT y);
 
 			bc_vector2f(const bc_vector2f& p_other);
 
@@ -32,15 +33,15 @@ namespace black_cat
 
 			void normalize();
 
-			bcFLOAT32 magnitude();
+			bcFLOAT magnitude();
 
 			// assignment
 			bc_vector2f& operator= (const bc_vector2f& p_other);
 
 			// accessors
-			bcFLOAT32 operator[] (int p_pos) const;
+			bcFLOAT operator[] (int p_pos) const;
 
-			bcFLOAT32& operator[] (int p_pos);
+			bcFLOAT& operator[] (int p_pos);
 
 			// boolean comparison
 			bool operator== (const bc_vector2f& p_other) const;
@@ -54,9 +55,9 @@ namespace black_cat
 
 			bc_vector2f operator* (const bc_vector2f& p_other) const;
 
-			bc_vector2f operator* (bcFLOAT32 p_scalar) const;
+			bc_vector2f operator* (bcFLOAT p_scalar) const;
 
-			bc_vector2f operator/ (bcFLOAT32 p_scalar) const;
+			bc_vector2f operator/ (bcFLOAT p_scalar) const;
 
 			bc_vector2f operator- () const;
 
@@ -65,13 +66,13 @@ namespace black_cat
 
 			bc_vector2f& operator-= (const bc_vector2f& p_other);
 
-			bc_vector2f& operator*= (bcFLOAT32 p_scalar);
+			bc_vector2f& operator*= (bcFLOAT p_scalar);
 
-			bc_vector2f& operator/= (bcFLOAT32 p_scalar);
+			bc_vector2f& operator/= (bcFLOAT p_scalar);
 
 		public:
-			bcFLOAT32 x;
-			bcFLOAT32 y;
+			bcFLOAT x;
+			bcFLOAT y;
 		};
 	}
 }

@@ -6,7 +6,7 @@
 #include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatform/bcType.h"
 #include "CorePlatform/bcPlatform.h"
-#include "CorePlatform/bcCorePlatformUtility.h"
+#include "CorePlatform/Utility/bcNoCopy.h"
 #include "CorePlatform/Concurrency/bcConcurrencyDef.h"
 
 namespace black_cat

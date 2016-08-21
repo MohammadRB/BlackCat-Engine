@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Graphic/GraphicPCH.h"
+#include "Graphic/bcExport.h"
 #include "Graphic/bcPlatformRenderApi.h"
 #include "Graphic/bcRenderApiInfo.h"
 #include "Graphic/PipelineStage/bcPipelineStateVariable.h"
@@ -19,7 +20,7 @@ namespace black_cat
 
 		// -- Rasterizer state -----------------------------------------------------------------------------
 
-		class BC_GRAPHIC_DLL_EXP bc_rasterizer_stage_state
+		class BC_GRAPHIC_DLL bc_rasterizer_stage_state
 		{
 		public:
 			bc_rasterizer_stage_state();

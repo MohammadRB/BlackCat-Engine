@@ -96,7 +96,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BC_BLACKCAT_DLL;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11;../BlackCat.Game;../3rdParty</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>BlackCat/BlackCatPCH.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -111,16 +111,15 @@
     </Link>
     <PostBuildEvent>
       <Command>copy BlackCat\*.h ..\BC_SDK\Include\BlackCat
-copy BlackCat\Graphic\Command\*.h ..\BC_SDK\Include\BlackCat\Graphic\Command
-copy BlackCat\Graphic\Pass\*.h ..\BC_SDK\Include\BlackCat\Graphic\Pass
-copy BlackCat\Graphic\Task\*.h ..\BC_SDK\Include\BlackCat\Graphic\Task
+copy BlackCat\Application\*.h ..\BC_SDK\Include\BlackCat\Application
+copy BlackCat\Loader\*.h ..\BC_SDK\Include\BlackCat\Loader
 
 copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(configuration)
 </Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>BlackCat.Core.lib;BlackCat.Core.Platform.Win32.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Game.lib;3rdParty/Assimp/lib/$(Configuration)/assimp-vc130-mtd.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\$(Configuration)\;..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <ProjectReference>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
@@ -135,7 +134,7 @@ copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(configuration)
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BC_BLACKCAT_DLL;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11;../BlackCat.Game;../3rdParty</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>BlackCat/Application/PCH.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -176,7 +175,7 @@ copy Textures\*.* ..\BC_SDK\Textures
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BC_BLACKCAT_DLL;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11;../BlackCat.Game;../3rdParty</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>BlackCat/Application/PCH.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -219,7 +218,7 @@ copy Textures\*.* ..\BC_SDK\Textures
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BC_BLACKCAT_DLL;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11;../BlackCat.Game;../3rdParty</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>BlackCat/BlackCatPCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -231,6 +230,7 @@ copy Textures\*.* ..\BC_SDK\Textures
     </Link>
     <PostBuildEvent>
       <Command>copy BlackCat\*.h ..\BC_SDK\Include\BlackCat
+copy BlackCat\Application\*.h ..\BC_SDK\Include\BlackCat\Application
 copy BlackCat\Graphic\Command\*.h ..\BC_SDK\Include\BlackCat\Graphic\Command
 copy BlackCat\Graphic\Pass\*.h ..\BC_SDK\Include\BlackCat\Graphic\Pass
 copy BlackCat\Graphic\Task\*.h ..\BC_SDK\Include\BlackCat\Graphic\Task
@@ -239,11 +239,16 @@ copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BlackCat\Application\bcBaseRenderApplication.h" />
+    <ClInclude Include="BlackCat\bcExport.h" />
     <ClInclude Include="BlackCat\BlackCatPCH.h" />
-    <ClInclude Include="BlackCat\Graphic\Command\bcPipelineDrawCommand.h" />
-    <ClInclude Include="BlackCat\Graphic\Command\bcPipelineDrawIndexedCommand.h" />
-    <ClInclude Include="BlackCat\Graphic\Command\bcPipelineDrawIndexedInstancedCommand.h" />
-    <ClInclude Include="BlackCat\Graphic\Pass\bcBackBufferOutputPass.h" />
+    <ClInclude Include="BlackCat\Loader\bcDomainShaderLoader.h" />
+    <ClInclude Include="BlackCat\Loader\bcGeometryShaderLoader.h" />
+    <ClInclude Include="BlackCat\Loader\bcHullShaderLoader.h" />
+    <ClInclude Include="BlackCat\Loader\bcMeshLoader.h" />
+    <ClInclude Include="BlackCat\Loader\bcPixelShaderLoader.h" />
+    <ClInclude Include="BlackCat\Loader\bcTextureLoader.h" />
+    <ClInclude Include="BlackCat\Loader\bcVertexShaderLoader.h" />
     <ClInclude Include="BlackCat\_\Application\App.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
@@ -468,10 +473,13 @@ copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(configuration)</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="BlackCat\Graphic\Command\bcPipelineDrawCommand.cpp" />
-    <ClCompile Include="BlackCat\Graphic\Command\bcPipelineDrawIndexedCommand.cpp" />
-    <ClCompile Include="BlackCat\Graphic\Command\bcPipelineDrawIndexedInstancedCommand.cpp" />
-    <ClCompile Include="BlackCat\Graphic\Pass\bcBackBufferOutputPass.cpp" />
+    <ClCompile Include="BlackCat\Loader\bcDomainShaderLoader.cpp" />
+    <ClCompile Include="BlackCat\Loader\bcGeometryShaderLoader.cpp" />
+    <ClCompile Include="BlackCat\Loader\bcHullShaderLoader.cpp" />
+    <ClCompile Include="BlackCat\Loader\bcMeshLoader.cpp" />
+    <ClCompile Include="BlackCat\Loader\bcPixelShaderLoader.cpp" />
+    <ClCompile Include="BlackCat\Loader\bcTextureLoader.cpp" />
+    <ClCompile Include="BlackCat\Loader\bcVertexShaderLoader.cpp" />
     <ClCompile Include="BlackCat\_\Application\App.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
@@ -680,6 +688,9 @@ copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(configuration)</Command>
     </ProjectReference>
     <ProjectReference Include="..\BlackCat.Core\BlackCat.Core.vcxproj">
       <Project>{e4a77cc4-66c0-49b1-bfcf-a92173763741}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\BlackCat.Game\BlackCat.Game.vcxproj">
+      <Project>{905ddbc6-a5b1-49e9-8af0-064c358fce65}</Project>
     </ProjectReference>
     <ProjectReference Include="..\BlackCat.Graphic.DirectX11\BlackCat.Graphic.DirectX11.vcxproj">
       <Project>{d176029e-3b2c-4599-986c-3c8685f35f6f}</Project>

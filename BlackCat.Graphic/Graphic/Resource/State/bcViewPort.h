@@ -11,14 +11,14 @@ namespace black_cat
 	{
 		struct bc_viewport
 		{
-			bcFLOAT32 m_top_left_x;
-			bcFLOAT32 m_top_left_y;
-			bcFLOAT32 m_width;
-			bcFLOAT32 m_height;
-			bcFLOAT32 m_min_depth;
-			bcFLOAT32 m_max_depth;
+			bcFLOAT m_top_left_x;
+			bcFLOAT m_top_left_y;
+			bcFLOAT m_width;
+			bcFLOAT m_height;
+			bcFLOAT m_min_depth;
+			bcFLOAT m_max_depth;
 
-			static bc_viewport& default_config(bcFLOAT32 p_width, bcFLOAT32 p_height)
+			static bc_viewport& default_config(bcFLOAT p_width, bcFLOAT p_height)
 			{
 				static bc_viewport s_config;
 

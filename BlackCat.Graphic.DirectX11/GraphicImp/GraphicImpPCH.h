@@ -12,7 +12,7 @@
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcPlatformRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
-#include "Graphic/bcGraphicException.h"
+#include "Graphic/bcException.h"
 #include "GraphicImp/bcUtility.h"
 
 // == DirectX Definitions ============================================================================ /
@@ -60,12 +60,4 @@
 #else
 //#pragma comment(lib, "comsuppw.lib")
 //#pragma comment(lib, "d3dx9.lib")
-#endif
-
-// == BlackCat General Definations ============================================================================ /
-
-#if defined BC_GRAPHICIMP_DLL
-#define BC_GRAPHICIMP_DLL_EXP __declspec(dllexport)
-#else
-#define BC_GRAPHICIMP_DLL_EXP __declspec(dllimport)
 #endif

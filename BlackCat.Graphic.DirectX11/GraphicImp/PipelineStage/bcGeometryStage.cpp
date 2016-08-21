@@ -1,6 +1,7 @@
 // [02/10/2016 MRB]
 
 #include "GraphicImp/GraphicImpPCH.h"
+#include "GraphicImp/bcExport.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/PipelineStage/bcGeometryStage.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
@@ -13,26 +14,26 @@ namespace black_cat
 	namespace graphic
 	{
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_geometry_stage<g_api_dx11>::bc_platform_geometry_stage()
 		{
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_geometry_stage<g_api_dx11>::bc_platform_geometry_stage(bc_platform_geometry_stage&& p_other)
 			: bc_programmable_stage(std::move(p_other))
 		{
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_geometry_stage<g_api_dx11>::~bc_platform_geometry_stage()
 		{
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_geometry_stage<g_api_dx11>& bc_platform_geometry_stage<g_api_dx11>::operator=(bc_platform_geometry_stage&& p_other)
 		{
 			bc_programmable_stage::operator=(std::move(p_other));
@@ -41,14 +42,14 @@ namespace black_cat
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		void bc_platform_geometry_stage<g_api_dx11>::apply_shader_program(bc_device_pipeline* p_pipeline)
 		{
 			// shader programs are in pipeline state
 		};
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		void bc_platform_geometry_stage<g_api_dx11>::apply_constant_buffers(bc_device_pipeline* p_pipeline)
 		{
 			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_context.Get();
@@ -67,12 +68,12 @@ namespace black_cat
 				bcUINT l_dirty_slot_start = m_required_state.m_constant_buffers.get_dirty_start();
 				bcUINT l_dirty_slot_num = m_required_state.m_constant_buffers.get_dirty_count();
 
-				l_context->GSSetConstantBuffers(l_dirty_slot_start, l_dirty_slot_num, l_constant_buffers);
+				l_context->GSSetConstantBuffers(l_dirty_slot_start, l_dirty_slot_num, &l_constant_buffers[l_dirty_slot_start]);
 			}
 		};
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		void bc_platform_geometry_stage<g_api_dx11>::apply_sampler_states(bc_device_pipeline* p_pipeline)
 		{
 			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_context.Get();
@@ -91,12 +92,12 @@ namespace black_cat
 				bcUINT l_dirty_slot_start = m_required_state.m_sampler_states.get_dirty_start();
 				bcUINT l_dirty_slot_num = m_required_state.m_sampler_states.get_dirty_count();
 
-				l_context->GSSetSamplers(l_dirty_slot_start, l_dirty_slot_num, l_sampler_states);
+				l_context->GSSetSamplers(l_dirty_slot_start, l_dirty_slot_num, &l_sampler_states[l_dirty_slot_start]);
 			}
 		};
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		void bc_platform_geometry_stage<g_api_dx11>::apply_shader_resource_views(bc_device_pipeline* p_pipeline)
 		{
 			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_context.Get();
@@ -115,7 +116,7 @@ namespace black_cat
 				bcUINT l_dirty_slot_start = m_required_state.m_shader_resource_views.get_dirty_start();
 				bcUINT l_dirty_slot_num = m_required_state.m_shader_resource_views.get_dirty_count();
 
-				l_context->GSSetShaderResources(l_dirty_slot_start, l_dirty_slot_num, l_views);
+				l_context->GSSetShaderResources(l_dirty_slot_start, l_dirty_slot_num, &l_views[l_dirty_slot_start]);
 			}
 		};
 

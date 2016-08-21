@@ -1,6 +1,7 @@
 // [02/10/2016 MRB]
 
 #include "GraphicImp/GraphicImpPCH.h"
+#include "GraphicImp/bcExport.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/PipelineStage/bcVertexStage.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
@@ -13,26 +14,26 @@ namespace black_cat
 	namespace graphic
 	{
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_compute_stage<g_api_dx11>::bc_platform_compute_stage()
 		{
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_compute_stage<g_api_dx11>::bc_platform_compute_stage(bc_platform_compute_stage&& p_other)
 			: bc_programmable_stage(std::move(p_other))
 		{
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_compute_stage<g_api_dx11>::~bc_platform_compute_stage()
 		{
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_compute_stage<g_api_dx11>& bc_platform_compute_stage<g_api_dx11>::operator=(bc_platform_compute_stage&& p_other)
 		{
 			bc_programmable_stage::operator=(std::move(p_other));
@@ -41,14 +42,14 @@ namespace black_cat
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		void bc_platform_compute_stage<g_api_dx11>::apply_shader_program(bc_device_pipeline* p_pipeline)
 		{
 			// shader programs are in pipeline state
 		};
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		void bc_platform_compute_stage<g_api_dx11>::apply_constant_buffers(bc_device_pipeline* p_pipeline)
 		{
 			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_context.Get();
@@ -67,12 +68,12 @@ namespace black_cat
 				bcUINT l_dirty_slot_start = m_required_state.m_constant_buffers.get_dirty_start();
 				bcUINT l_dirty_slot_num = m_required_state.m_constant_buffers.get_dirty_count();
 
-				l_context->CSSetConstantBuffers(l_dirty_slot_start, l_dirty_slot_num, l_constant_buffers);
+				l_context->CSSetConstantBuffers(l_dirty_slot_start, l_dirty_slot_num, &l_constant_buffers[l_dirty_slot_start]);
 			}
 		};
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		void bc_platform_compute_stage<g_api_dx11>::apply_sampler_states(bc_device_pipeline* p_pipeline)
 		{
 			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_context.Get();
@@ -91,12 +92,12 @@ namespace black_cat
 				bcUINT l_dirty_slot_start = m_required_state.m_sampler_states.get_dirty_start();
 				bcUINT l_dirty_slot_num = m_required_state.m_sampler_states.get_dirty_count();
 
-				l_context->CSSetSamplers(l_dirty_slot_start, l_dirty_slot_num, l_sampler_states);
+				l_context->CSSetSamplers(l_dirty_slot_start, l_dirty_slot_num, &l_sampler_states[l_dirty_slot_start]);
 			}
 		};
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		void bc_platform_compute_stage<g_api_dx11>::apply_shader_resource_views(bc_device_pipeline* p_pipeline)
 		{
 			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_context.Get();
@@ -115,7 +116,7 @@ namespace black_cat
 				bcUINT l_dirty_slot_start = m_required_state.m_shader_resource_views.get_dirty_start();
 				bcUINT l_dirty_slot_num = m_required_state.m_shader_resource_views.get_dirty_count();
 
-				l_context->CSSetShaderResources(l_dirty_slot_start, l_dirty_slot_num, l_views);
+				l_context->CSSetShaderResources(l_dirty_slot_start, l_dirty_slot_num, &l_views[l_dirty_slot_start]);
 			}
 
 			if (m_required_state.m_unordered_access_views.update_needed())
@@ -133,7 +134,7 @@ namespace black_cat
 				bcUINT l_dirty_slot_start = m_required_state.m_unordered_access_views.get_dirty_start();
 				bcUINT l_dirty_slot_num = m_required_state.m_unordered_access_views.get_dirty_count();
 
-				l_context->CSSetUnorderedAccessViews(l_dirty_slot_start, l_dirty_slot_num, l_ua_views, l_initial_counts);
+				l_context->CSSetUnorderedAccessViews(l_dirty_slot_start, l_dirty_slot_num, &l_ua_views[l_dirty_slot_start], l_initial_counts);
 			}
 		};
 
@@ -157,7 +158,7 @@ namespace black_cat
 		//		bcUINT l_start_slot = m_required_state.m_unordered_access_views.get_dirty_start();
 		//		bcUINT l_end_slot = m_required_state.m_unordered_access_views.get_dirty_end();
 
-		//		l_context->CSSetUnorderedAccessViews(l_start_slot, l_end_slot - l_start_slot + 1, l_ua_views, l_initial_counts);
+		//		l_context->CSSetUnorderedAccessViews(l_start_slot, l_end_slot - l_start_slot + 1, &l_ua_views[l_dirty_slot_start], l_initial_counts);
 		//	}
 		//};
 	}

@@ -5,6 +5,7 @@
 #include "CorePlatform/bcType.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcMap.h"
+#include "Graphic/bcExport.h"
 #include "Graphic/Resource/bcResource.h"
 #include "Graphic/Resource/State/bcSamplerState.h"
 #include "Graphic/Resource/Buffer/bcBuffer.h"
@@ -15,13 +16,13 @@
 #include "Graphic/Shader/Parameter/bcMatrix4fParameter.h"
 #include "Graphic/Shader/Parameter/bcConstantBufferParameter.h"
 #include "Graphic/Shader/Parameter/bcSamplerParameter.h"
-#include "Graphic/Shader/Parameter/bcShaderResourceParameter.h"
+#include "Graphic/Shader/Parameter/bcShaderViewParameter.h"
 
 namespace black_cat
 {
 	namespace graphic
 	{
-		class BC_GRAPHIC_DLL_EXP bc_shader_parameter_manager
+		class BC_GRAPHIC_DLL bc_shader_parameter_manager
 		{
 		public:
 			// Use this struct as an entry for map collection of parameters
@@ -48,7 +49,7 @@ namespace black_cat
 
 			bc_sampler_parameter* get_sampler_parameter_ref(bc_shader_type p_shader_type, bcINT p_register) const;
 
-			bc_shader_resource_parameter* get_shader_resource_parameter_ref(bc_shader_type p_shader_type, bcINT p_register) const;
+			bc_shader_view_parameter* get_shader_resource_parameter_ref(bc_shader_type p_shader_type, bcINT p_register) const;
 
 			bc_constant_buffer_parameter* get_constant_buffer_parameter_ref(bc_shader_type p_shader_type, bcINT p_register) const;
 

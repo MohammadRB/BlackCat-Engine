@@ -2,6 +2,7 @@
 
 #include "Core/CorePCH.h"
 #include "Core/Memory/bcMemoryManagment.h"
+#include "Core/Memory/bcMemoryExtender.h"
 
 namespace black_cat
 {
@@ -21,6 +22,7 @@ namespace black_cat
 			m_crt_allocator(nullptr)
 #ifdef BC_MEMORY_LEAK_DETECTION
 			,
+			m_allocation_count(0),
 			m_leak_allocator(nullptr)
 #endif
 		{
@@ -187,7 +189,7 @@ namespace black_cat
 			bc_memblock::inititalize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			m_leak_allocator->insert(l_result, bc_mem_block_leak_information(p_line, p_file));
+			m_leak_allocator->insert(l_result, bc_mem_block_leak_information(l_result, ++m_allocation_count, p_size, p_line, p_file));
 #endif
 
 			return l_result;
@@ -292,7 +294,7 @@ namespace black_cat
 			bc_memblock::inititalize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			m_leak_allocator->insert(l_result, bc_mem_block_leak_information(p_line, p_file));
+			m_leak_allocator->insert(l_result, bc_mem_block_leak_information(l_result, ++m_allocation_count, p_size, p_line, p_file));
 #endif
 
 			return l_result;
@@ -347,6 +349,7 @@ namespace black_cat
 			m_super_heap->defragment(l_num_fragment);
 #endif
 
+			bcAssert(m_per_frame_stack->tracer().alloc_count() == 0);
 			m_per_frame_stack->clear();
 		};
 
@@ -427,9 +430,9 @@ namespace black_cat
 		{
 			bcSIZE lLeakCount = m_leak_allocator->count();
 			
-			m_leak_allocator->iterate_over([](void* pKey, bc_mem_block_leak_information& pValue)->void
+			m_leak_allocator->iterate_over([](void* p_key, bc_mem_block_leak_information& p_value)->void
 			{
-				
+				bc_memblock* l_memblock = bc_memblock::retrieve_mem_block(p_value.m_pointer);
 			});
 
 			return lLeakCount;

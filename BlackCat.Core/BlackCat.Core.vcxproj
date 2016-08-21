@@ -35,13 +35,13 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>CTP_Nov2013</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -73,12 +73,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -92,23 +92,24 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATCORE_EXPORTS;BC_CORE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>Core/CorePCH.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Platform.Win32;..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BrowseInformation>true</BrowseInformation>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\BC_SDK\Lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\$(Configuration);..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;3rdParty\Assimp\lib\$(Configuration)\assimp-vc130-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy Core\Concurrency\*.h ..\BC_SDK\Include\Core\Concurrency
 copy Core\Container\*.h ..\BC_SDK\Include\Core\Container
 copy Core\Memory\*.h ..\BC_SDK\Include\Core\Memory
-copy Core\Math\*.h ..\BC_SDK\Include\Core\Math
 copy Core\Event\*.h ..\BC_SDK\Include\Core\Event
 copy Core\Utility\*.h ..\BC_SDK\Include\Core\Utility
+copy Core\File\*.h ..\BC_SDK\Include\Core\File
 copy Core\*.h ..\BC_SDK\Include\Core
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
@@ -130,21 +131,22 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATCORE_EXPORTS;BC_CORE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>Core/CorePCH.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Platform.Win32;..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\BC_SDK\Lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\$(Configuration);..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;3rdParty\Assimp\lib\$(Configuration)\assimp-vc130-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy Core\Concurrency\*.h ..\BC_SDK\Include\Core\Concurrency
 copy Core\Container\*.h ..\BC_SDK\Include\Core\Container
 copy Core\Memory\*.h ..\BC_SDK\Include\Core\Memory
-copy Core\Math\*.h ..\BC_SDK\Include\Core\Math
 copy Core\Event\*.h ..\BC_SDK\Include\Core\Event
 copy Core\Utility\*.h ..\BC_SDK\Include\Core\Utility
+copy Core\File\*.h ..\BC_SDK\Include\Core\File
 copy Core\*.h ..\BC_SDK\Include\Core
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
@@ -163,21 +165,22 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATCORE_EXPORTS;BC_CORE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>Core/CorePCH.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Platform.Win32;..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\BC_SDK\Lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\$(Configuration);..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;3rdParty\Assimp\lib\$(Configuration)\assimp-vc130-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy Core\Concurrency\*.h ..\BC_SDK\Include\Core\Concurrency
 copy Core\Container\*.h ..\BC_SDK\Include\Core\Container
 copy Core\Memory\*.h ..\BC_SDK\Include\Core\Memory
-copy Core\Math\*.h ..\BC_SDK\Include\Core\Math
 copy Core\Event\*.h ..\BC_SDK\Include\Core\Event
 copy Core\Utility\*.h ..\BC_SDK\Include\Core\Utility
+copy Core\File\*.h ..\BC_SDK\Include\Core\File
 copy Core\*.h ..\BC_SDK\Include\Core
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
@@ -197,25 +200,26 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;BLACKCATCORE_EXPORTS;BC_CORE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Platform.Win32;..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>Core/CorePCH.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\BC_SDK\Lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\$(Configuration);..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;3rdParty\Assimp\lib\$(Configuration)\assimp-vc130-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy Core\Concurrency\*.h ..\BC_SDK\Include\Core\Concurrency
 copy Core\Container\*.h ..\BC_SDK\Include\Core\Container
 copy Core\Memory\*.h ..\BC_SDK\Include\Core\Memory
-copy Core\Math\*.h ..\BC_SDK\Include\Core\Math
 copy Core\Event\*.h ..\BC_SDK\Include\Core\Event
 copy Core\Utility\*.h ..\BC_SDK\Include\Core\Utility
+copy Core\File\*.h ..\BC_SDK\Include\Core\File
 copy Core\*.h ..\BC_SDK\Include\Core
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
@@ -228,11 +232,25 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Core\bcConstant.h" />
+    <ClInclude Include="Core\bcExport.h" />
+    <ClInclude Include="Core\Concurrency\bcBackOff.h" />
+    <ClInclude Include="Core\Concurrency\bcConcurrency.h" />
     <ClInclude Include="Core\Concurrency\bcLockFreeMemMng.h" />
+    <ClInclude Include="Core\Concurrency\bcThreadLocal.h" />
     <ClInclude Include="Core\Container\bcAllocator.h" />
     <ClInclude Include="Core\Container\bcArray.h" />
     <ClInclude Include="Core\Container\bcDeque.h" />
     <ClInclude Include="Core\Container\bcUnorderedMap.h" />
+    <ClInclude Include="Core\File\bcContent.h" />
+    <ClInclude Include="Core\File\bcContentLoader.h" />
+    <ClInclude Include="Core\File\bcContentManager.h" />
+    <ClInclude Include="Core\File\bcContentStreamManager.h" />
+    <ClInclude Include="Core\File\bcFileStream.h" />
+    <ClInclude Include="Core\File\bcJsonDocument.h" />
+    <ClInclude Include="Core\File\bcLazyContent.h" />
+    <ClInclude Include="Core\File\bcPath.h" />
+    <ClInclude Include="Core\File\bcStream.h" />
     <ClInclude Include="Core\Memory\bcMemory.h" />
     <ClInclude Include="Core\Memory\bcMemoryExtender.h" />
     <ClInclude Include="Core\Memory\bcMemoryProxy.h" />
@@ -241,7 +259,6 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Core\Concurrency\bcThreadManager.h" />
-    <ClInclude Include="Core\Concurrency\bcConcurrencyUtility.h" />
     <ClInclude Include="Core\Container\bcConcurrentHashMap.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
@@ -257,16 +274,12 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
     <ClInclude Include="Core\Container\bcTree.h" />
     <ClInclude Include="Core\Container\bcVector.h" />
     <ClInclude Include="Core\Container\bcBitVector.h" />
-    <ClInclude Include="Core\CoreExceptions.h" />
+    <ClInclude Include="Core\bcException.h" />
     <ClInclude Include="Core\CorePCH.h" />
-    <ClInclude Include="Core\bcCoreUtility.h" />
     <ClInclude Include="Core\Event\bcEvent.h" />
     <ClInclude Include="Core\Event\bcEventHandler.h" />
     <ClInclude Include="Core\Event\bcEventManager.h" />
     <ClInclude Include="Core\Event\bcCoreEvents.h" />
-    <ClInclude Include="Core\Math\BasicMath.h" />
-    <ClInclude Include="Core\Math\CoreMathUtility.h" />
-    <ClInclude Include="Core\Math\xnamath.h" />
     <ClInclude Include="Core\Memory\bcMemoryCRT.h" />
     <ClInclude Include="Core\Memory\bcMemoryHeap.h" />
     <ClInclude Include="Core\Memory\bcMemMngHashMap.h" />
@@ -280,9 +293,20 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
     <ClInclude Include="Core\Memory\bcMemMngFreeList.h" />
     <ClInclude Include="Core\Memory\bcMemoryManagment.h" />
     <ClInclude Include="Core\Memory\bcPtr.h" />
+    <ClInclude Include="Core\Utility\bcDataDrivenParameter.h" />
+    <ClInclude Include="Core\Utility\bcDelegate.hpp" />
+    <ClInclude Include="Core\Utility\bcExpressionParameterManager.h" />
+    <ClInclude Include="Core\Utility\bcEnumOperand.h" />
+    <ClInclude Include="Core\Utility\bcExpression.h" />
+    <ClInclude Include="Core\Utility\bcExpressionParameter.h" />
+    <ClInclude Include="Core\Utility\bcInitializable.h" />
+    <ClInclude Include="Core\Utility\bcLogger.h" />
+    <ClInclude Include="Core\Utility\bcRefCountPtr.h" />
     <ClInclude Include="Core\Utility\bcTemplateMetaType.h" />
     <ClInclude Include="Core\Utility\bcDelegate.h" />
-    <ClInclude Include="Core\Utility\bcFunctionWrapper.h" />
+    <ClInclude Include="Core\Utility\bcFunctionWrapper.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Core\Utility\bcLazy.h" />
     <ClInclude Include="Core\Utility\bcNullable.h" />
     <ClInclude Include="Core\Utility\bcObjectPool.h" />
@@ -302,20 +326,20 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
     </ClCompile>
     <ClCompile Include="Core\Event\bcEvent.cpp" />
     <ClCompile Include="Core\Event\bcEventManager.cpp" />
-    <ClCompile Include="Core\Math\BasicMath.cpp" />
-    <ClCompile Include="Core\Math\CoreMathUtility.cpp" />
+    <ClCompile Include="Core\File\bcContent.cpp" />
+    <ClCompile Include="Core\File\bcContentLoader.cpp" />
+    <ClCompile Include="Core\File\bcContentStreamManager.cpp" />
+    <ClCompile Include="Core\File\bcPath.cpp" />
+    <ClCompile Include="Core\File\bcStream.cpp" />
     <ClCompile Include="Core\Memory\bcMemoryFixedSize.cpp" />
     <ClCompile Include="Core\Memory\bcMemoryHeap.cpp" />
     <ClCompile Include="Core\Memory\bcMemoryManagment.cpp" />
+    <ClCompile Include="Core\Utility\bcExpressionParameterManager.cpp" />
+    <ClCompile Include="Core\Utility\bcExpression.cpp" />
+    <ClCompile Include="Core\Utility\bcLogger.cpp" />
     <ClCompile Include="Core\Utility\bcObjectPool.cpp" />
     <ClCompile Include="Core\Memory\bcMemoryStack.cpp" />
     <ClCompile Include="Core\Utility\bcServiceManager.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Core\Math\xnamathconvert.inl" />
-    <None Include="Core\Math\xnamathmatrix.inl" />
-    <None Include="Core\Math\xnamathmisc.inl" />
-    <None Include="Core\Math\xnamathvector.inl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BlackCat.Core.Platform.Win32\BlackCat.Core.Platform.Win32.vcxproj">

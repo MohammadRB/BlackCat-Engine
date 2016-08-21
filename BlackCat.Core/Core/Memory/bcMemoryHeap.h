@@ -3,7 +3,8 @@
 #pragma once
 
 #include "Core/CorePCH.h"
-#include "Core/bcCoreUtility.h"
+#include "Core/bcExport.h"
+#include "Core/Utility/bcInitializable.h"
 #include "Core/Memory/bcMemBlock.h"
 #include "Core/Memory/bcMemory.h"
 #include "Core/Memory/bcMemoryTracer.h"
@@ -17,7 +18,7 @@ namespace black_cat
 	{
 #ifdef BC_MEMORY_ENABLE
 
-		class BC_COREDLL_EXP bc_memory_heap : public bc_memory_movable, public bc_initializable<bcSIZE, const bcCHAR*>
+		class BC_CORE_DLL bc_memory_heap : public bc_memory_movable, public bc_initializable<bcSIZE, const bcCHAR*>
 		{
 		public:
 			using this_type = bc_memory_heap;
@@ -165,7 +166,7 @@ namespace black_cat
 						core_platform::bc_lock_operation::light);
 
 					bool l_has_set = false;
-					for (void** l_ptr : m_pointers)
+					for (void**& l_ptr : m_pointers)
 					{
 						if (l_ptr == nullptr)
 						{
@@ -192,12 +193,12 @@ namespace black_cat
 						core_platform::bc_lock_operation::light);
 
 					bool l_found = false;
-					for (void** l_ptr : m_pointers)
+					for (void**& l_ptr : m_pointers)
 					{
-						if (l_ptr && *l_ptr == *p_pointer)
+						if (l_ptr && l_ptr == p_pointer)
 						{
-							l_found = true;
 							l_ptr = nullptr;
+							l_found = true;
 							break;
 						}
 					}
@@ -238,8 +239,8 @@ namespace black_cat
 				bcSIZE m_size;
 				heap_memblock* m_next;
 				heap_memblock* m_prev;
-				core_platform::bc_hybrid_mutex m_mutex;
 #ifdef BC_MEMORY_DEFRAG
+				core_platform::bc_hybrid_mutex m_mutex;
 				/*pointer_refs* m_pointers;*/
 				pointer_refs m_pointers;
 #endif

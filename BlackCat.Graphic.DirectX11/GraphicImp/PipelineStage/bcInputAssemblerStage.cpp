@@ -1,6 +1,7 @@
 // [02/09/2016 MRB]
 
 #include "GraphicImp/GraphicImpPCH.h"
+#include "GraphicImp/bcExport.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/PipelineStage/bcInputAssemblerStage.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
@@ -11,27 +12,27 @@ namespace black_cat
 	namespace graphic
 	{
 		template< >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_input_assembler_stage<g_api_dx11>::bc_platform_input_assembler_stage()
 			: m_pack()
 		{
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_input_assembler_stage<g_api_dx11>::bc_platform_input_assembler_stage(bc_platform_input_assembler_stage&& p_other)
 			: m_pack(std::move(p_other.m_pack))
 		{
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_input_assembler_stage<g_api_dx11>::~bc_platform_input_assembler_stage()
 		{
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_input_assembler_stage<g_api_dx11>& bc_platform_input_assembler_stage<g_api_dx11>::operator=(bc_platform_input_assembler_stage&& p_other)
 		{
 			m_pack = std::move(p_other.m_pack);
@@ -40,7 +41,7 @@ namespace black_cat
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		void bc_platform_input_assembler_stage<g_api_dx11>::apply_required_state(bc_device_pipeline* p_pipeline)
 		{
 			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_context.Get();
@@ -91,17 +92,18 @@ namespace black_cat
 					(
 						l_dirty_slot_start,
 						l_dirty_slot_num - l_dirty_slot_start + 1,
-						l_vertex_buffers,
-						l_vertex_strides,
-						l_vertex_offsets
+						&l_vertex_buffers[l_dirty_slot_start],
+						&l_vertex_strides[l_dirty_slot_start],
+						&l_vertex_offsets[l_dirty_slot_start]
 					);
 			}
 
 			if(l_required_state.m_index_buffer.update_needed())
 			{
+				bc_buffer* l_index_buffer = l_required_state.m_index_buffer.get();
 				l_context->IASetIndexBuffer
 					(
-						l_required_state.m_index_buffer.get()->get_platform_pack().m_buffer.Get(),
+						l_index_buffer ? l_index_buffer->get_platform_pack().m_buffer.Get() : nullptr,
 						bc_graphic_cast(l_required_state.m_index_buffer_format.get()),
 						0
 					);
@@ -111,7 +113,7 @@ namespace black_cat
 		};
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		void bc_platform_input_assembler_stage<g_api_dx11>::set_to_default_state(bc_device_pipeline* p_pipeline)
 		{
 			m_required_state.set_to_initial_state();

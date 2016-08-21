@@ -2,14 +2,16 @@
 
 #pragma once
 
-#include "CorePlatform/bcCorePlatformUtility.h"
-#include "Core/bcCoreUtility.h"
+#include "CorePlatform/Utility/bcNoCopy.h"
+#include "CorePlatformImp/Concurrency/bcMutex.h"
+#include "Core/Utility/bcInitializable.h"
 #include "Core/Container/bcAllocator.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Event/bcEvent.h"
 #include "Platform/bcPlatformEvents.h"
 #include "PlatformImp/Application/bcRenderWindow.h"
 #include "Graphic/GraphicPCH.h"
+#include "Graphic/bcResourcePtr.h"
 #include "Graphic/bcPlatformRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
 #include "Graphic/bcDeviceObject.h"
@@ -43,6 +45,10 @@ namespace black_cat
 		template<bc_platform_render_api>
 		class bc_platform_sampler_state;
 		using bc_sampler_state = bc_platform_sampler_state< g_current_platform_render_api >;
+
+		template<bc_platform_render_api>
+		class bc_platform_compiled_shader;
+		using bc_compiled_shader = bc_platform_compiled_shader< g_current_platform_render_api >;
 
 		template<bc_platform_render_api>
 		class bc_platform_vertex_shader;
@@ -114,9 +120,6 @@ namespace black_cat
 		class bc_platform_render_target_view;
 		using bc_render_target_view = bc_platform_render_target_view< g_current_platform_render_api >;
 
-		template<class>
-		class bc_resource_ptr;
-
 		struct bc_device_parameters
 		{
 		public:
@@ -134,14 +137,12 @@ namespace black_cat
 			bc_texture_ms_config m_multi_sample;
 		};
 
-		class bc_idevice_listener;
-
 		template< bc_platform_render_api TRenderApi >
 		struct bc_platform_device_pack
 		{
 		};
 
-		// TODO complete device parameters
+		// Thread safe class
 		template< bc_platform_render_api TRenderApi >
 		class bc_platform_device 
 			: public core::bc_initializable<bcUINT, bcUINT, bc_format, platform::bc_render_window&>,
@@ -180,33 +181,45 @@ namespace black_cat
 
 			bcUINT check_multi_sampling(bc_format p_textue_format, bcUINT p_sample_count) const;
 
-			bc_resource_ptr<bc_buffer> create_buffer(bc_buffer_config* p_config, bc_subresource_data* p_data);
+			bc_resource_ptr<bc_buffer> create_buffer(bc_buffer_config& p_config, bc_subresource_data* p_data);
 
-			bc_resource_ptr<bc_texture2d> create_texture2d(bc_texture_config* p_config, bc_subresource_data* p_data);
+			bc_resource_ptr<bc_texture2d> create_texture2d(bc_texture_config& p_config, bc_subresource_data* p_data);
 
-			bc_resource_ptr<bc_texture2d> create_texture2d(bc_texture_config* p_config, const bcECHAR* p_filename);
+			bc_resource_ptr<bc_texture2d> create_texture2d(bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format);
 
-			bc_resource_ptr<bc_sampler_state> create_sampler_state(bc_sampler_state_config* p_config);
+			bc_resource_ptr<bc_sampler_state> create_sampler_state(bc_sampler_state_config& p_config);
 
-			bc_resource_ptr<bc_vertex_shader> create_vertex_shader(const bcECHAR* p_filepath, const bcCHAR* p_function);
+			bc_resource_ptr<bc_compiled_shader> compile_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file);
 
-			bc_resource_ptr<bc_hull_shader> create_hull_shader(const bcECHAR* p_filepath, const bcCHAR* p_function);
+			bc_resource_ptr<bc_vertex_shader> create_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-			bc_resource_ptr<bc_domain_shader> create_domain_shader(const bcECHAR* p_filepath, const bcCHAR* p_function);
+			bc_resource_ptr<bc_compiled_shader> compile_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file);
 
-			bc_resource_ptr<bc_geometry_shader> create_geometry_shader(const bcECHAR* p_filepath, const bcCHAR* p_function);
+			bc_resource_ptr<bc_hull_shader> create_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-			bc_resource_ptr<bc_pixel_shader> create_pixel_shader(const bcECHAR* p_filepath, const bcCHAR* p_function);
+			bc_resource_ptr<bc_compiled_shader> compile_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file);
 
-			bc_resource_ptr<bc_compute_shader> create_compute_shader(const bcECHAR* p_filepath, const bcCHAR* p_function);
+			bc_resource_ptr<bc_domain_shader> create_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-			bc_resource_ptr<bc_shader_view> create_shader_view(bc_iresource* p_resource, bc_resource_view_config* p_view_config);
+			bc_resource_ptr<bc_compiled_shader> compile_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file);
 
-			bc_resource_ptr<bc_depth_stencil_view> create_depth_stencil_view(bc_iresource* p_resource, bc_depth_stencil_view_config* p_view_config);
+			bc_resource_ptr<bc_geometry_shader> create_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-			bc_resource_ptr<bc_render_target_view> create_render_target_view(bc_iresource* p_resource, bc_render_target_view_config* p_view_config);
+			bc_resource_ptr<bc_compiled_shader> compile_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file);
 
-			bc_resource_ptr<bc_device_pipeline_state> create_pipeline_state(bc_device_pipeline_state_config* p_config);
+			bc_resource_ptr<bc_pixel_shader> create_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
+
+			bc_resource_ptr<bc_compiled_shader> compile_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file);
+
+			bc_resource_ptr<bc_compute_shader> create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
+
+			bc_resource_ptr<bc_shader_view> create_shader_view(bc_iresource* p_resource, bc_resource_view_config& p_view_config);
+
+			bc_resource_ptr<bc_depth_stencil_view> create_depth_stencil_view(bc_iresource* p_resource, bc_depth_stencil_view_config& p_view_config);
+
+			bc_resource_ptr<bc_render_target_view> create_render_target_view(bc_iresource* p_resource, bc_render_target_view_config& p_view_config);
+
+			bc_resource_ptr<bc_device_pipeline_state> create_pipeline_state(bc_device_pipeline_state_config& p_config);
 
 			bc_resource_ptr<bc_device_pipeline> create_pipeline();
 			
@@ -220,17 +233,13 @@ namespace black_cat
 
 			void resize_back_buffer(bcUINT p_width, bcUINT p_height, bc_format p_format);
 
-			void resize_texture2d(bc_resource_ptr<bc_texture2d> p_texture, 
+			void resize_texture2d(bc_resource_ptr<bc_texture2d>& p_texture, 
 				bcUINT p_width, 
 				bcUINT p_height, 
 				bcUINT p_num_views,
 				bc_resource_ptr<bc_iresource_view> p_views[]);
 
 			void present();
-			
-			void register_listender(bc_idevice_listener* p_listener);
-
-			void unregister_listener(bc_idevice_listener* p_listener);
 
 			void destroy_resource(bc_device_object* p_resource);
 
@@ -249,29 +258,14 @@ namespace black_cat
 			template< class TResource >
 			void _store_new_resource(core::bc_object_allocator::ptr<TResource>&& p_resource);
 
-			bool _event_handler(core::bc_ievent& p_event);
-
-			// Use non-movale allocator, because we use pointer to internall objects of vector in resource pointers 
+			// Use non-movale allocator, because internall objects of vector are movale themselves
 			core::bc_vector< core::bc_object_allocator::ptr<bc_device_object> > m_resources;
-			core::bc_vector< bc_idevice_listener* > m_listeners;
+			mutable core_platform::bc_shared_mutex m_resources_mutex;
 
 			platform_pack m_pack;
 		};
 
 		using bc_device = bc_platform_device< g_current_platform_render_api >;
-
-		// Interface for device related events
-		class bc_idevice_listener
-		{
-		public:
-			virtual ~bc_idevice_listener() = default;
-
-			// Eligible function for every cleanup action that must take place before reseting device for 
-			// exmaple if device back buffer was resized all resourced must be released before reseting
-			virtual void before_reset(bc_device* p_device, bc_device_parameters& p_old_parameters, bc_device_parameters& p_new_parameters) = 0;
-
-			virtual void after_reset(bc_device* p_device, bc_device_parameters& p_old_parameters, bc_device_parameters& p_new_parameters) = 0;
-		};
 
 		template< bc_platform_render_api TRenderApi >
 		bcUINT32 bc_platform_device<TRenderApi>::get_back_buffer_width() const
@@ -291,79 +285,61 @@ namespace black_cat
 			return get_back_buffer_texture()->get_format();
 		}
 
-		template< bc_platform_render_api TRenderApi >
-		void bc_platform_device<TRenderApi>::register_listender(bc_idevice_listener* p_listener)
-		{
-			m_listeners.push_back(p_listener);
-		}
-
-		template< bc_platform_render_api TRenderApi >
-		void bc_platform_device<TRenderApi>::unregister_listener(bc_idevice_listener* p_listener)
-		{
-			auto l_listener = std::find(std::begin(m_listeners), std::end(m_listeners), p_listener);
-
-			if (l_listener != std::end(m_listeners))
-				m_listeners.erase(l_listener);
-		}
-
 		template <bc_platform_render_api TRenderApi >
 		void bc_platform_device<TRenderApi>::destroy_resource(bc_device_object* p_resource)
 		{
-			auto l_item = std::find_if(std::begin(m_resources), std::end(m_resources), [=](ptr<bc_device_object>& p_item)
+			core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_resources_mutex);
 			{
-				
-				return p_item.get() == p_resource;
+				auto l_item = std::find_if(std::begin(m_resources), std::end(m_resources), [=](ptr<bc_device_object>& p_item)
+				{
 
-			});
+					return p_item.get() == p_resource;
 
-			if (l_item == std::end(m_resources))
-			{
-				bcAssert(false, "Resource not found");
-				return;
+				});
+
+				if (l_item == std::end(m_resources))
+				{
+					bcAssert(false, "Resource not found");
+					return;
+				}
+
+				// We set pointer to null because we can use null pointers again 
+				(*l_item).reset(nullptr);
 			}
-
-			// We set pointer to null because we can use null pointers again 
-			(*l_item).reset(nullptr);
 		}
 
 		template <bc_platform_render_api TRenderApi >
 		template < class TResource >
 		void bc_platform_device<TRenderApi>::_store_new_resource(core::bc_object_allocator::ptr<TResource>&& p_resource)
 		{
-			// Get parameter as template and convert ptr<> to ptr< bc_device_object > manually, because if we let implicit 
-			// conversation do the work, bc_delegate< void(*) > will be converted to bc_delegate< void(bc_device_object*) >
-			// and this conversation cause problem in bc_delegate class(this conversation will call template ctor in bc_delegate
-			// class and produce a bc_delegate that hold another bc_delegate< void(bc_device_object*) >).
+			//// Get parameter as template and convert ptr<> to ptr< bc_device_object > manually, because if we let implicit 
+			//// conversation do the work, bc_delegate< void(*) > will be converted to bc_delegate< void(bc_device_object*) >
+			//// and this conversation cause problem in bc_delegate class(this conversation will call template ctor in bc_delegate
+			//// class and produce a bc_delegate that hold another bc_delegate< void(bc_device_object*) >).
 			auto l_pointer = core::bc_object_allocator::ptr< bc_device_object >
 				(
 					p_resource.release(),
-					core::bc_delegate< void(bc_device_object*) >(this, &bc_platform_device::deallocate)
+					reinterpret_cast< void(*)(bc_device_object*) >(p_resource.get_deleter())
 				);
-			auto l_first_empty = std::find(std::begin(m_resources), std::end(m_resources), ptr<bc_device_object>(nullptr));
-
-			if (l_first_empty != std::end(m_resources))
+			
 			{
-				(*l_first_empty).swap(l_pointer);
+				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_resources_mutex);
+				{
+					auto l_first_empty = std::find(std::begin(m_resources), std::end(m_resources), ptr<bc_device_object>(nullptr));
+
+					if (l_first_empty != std::end(m_resources))
+					{
+						(*l_first_empty).swap(l_pointer);
+
+						return;
+					}
+				}
 			}
-			else
+
+			core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_gaurd(m_resources_mutex);
 			{
 				m_resources.push_back(std::move(l_pointer));
 			}
-		}
-
-		template <bc_platform_render_api TRenderApi >
-		bool bc_platform_device<TRenderApi>::_event_handler(core::bc_ievent& p_event)
-		{
-			bool l_is_resize = p_event.get_event_hash() == core::bc_ievent::get_hash(platform::bc_app_event_window_resize::event_name());
-
-			if (!l_is_resize)
-				return false;
-
-			platform::bc_app_event_window_resize& l_resize_event = static_cast< platform::bc_app_event_window_resize& >(p_event);
-			
-			resize_back_buffer(l_resize_event.width(), l_resize_event.height());
-
-			return true;
 		}
 	}
 }

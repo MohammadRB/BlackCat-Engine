@@ -15,7 +15,7 @@ namespace black_cat
 		template< class TK, typename T, class TCompare = std::less< TK >, template< typename > class TAllocator >
 		using bc_map_a = bc_map< TK, T, TCompare, TAllocator< std::pair< const TK, T > > >;
 
-		template< class TK, typename T, class TCompare = std::less< TK >, template< typename > class TAllocator >
+		template< class TK, typename T, class TCompare = std::less< TK > >
 		using bc_map_program = bc_map_a< TK, T, TCompare, bc_allocator_program >;
 
 		template< class TK, typename T, class TCompare = std::less< TK > >

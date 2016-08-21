@@ -2,15 +2,26 @@
 
 #pragma once
 
-#include "Core/CorePCH.h"
+#include "CorePlatform/bcType.h"
+#include "Core/bcExport.h"
+#include "Core/bcConstant.h"
 
 namespace black_cat
 {
 	namespace core
 	{
-		using bc_event_hash = bcUINT32;
+		using bc_event_hash = bcUINT;
 
-		class BC_COREDLL_EXP bc_ievent
+		template< class TEvent >
+		struct bc_event_traits
+		{
+			static const bcCHAR* event_name()
+			{
+				return TEvent::event_name();
+			}
+		};
+
+		class BC_CORE_DLL bc_ievent
 		{
 		public:
 			virtual ~bc_ievent() = 0;
@@ -20,9 +31,15 @@ namespace black_cat
 			virtual const bcCHAR* get_event_name() const noexcept(true) = 0;
 
 			static bc_event_hash get_hash(const bcCHAR* p_name) noexcept(true);
+
+			template< class TEvent >
+			static bool event_is(const bc_ievent& p_event)
+			{
+				return get_hash(bc_event_traits<TEvent>::event_name()) == p_event.get_event_hash();
+			}
 		};
 
-		class BC_COREDLL_EXP bc_event : public bc_ievent
+		class BC_CORE_DLL bc_event : public bc_ievent
 		{
 		public:
 			explicit bc_event(const bcCHAR* p_name) noexcept(true);
@@ -45,7 +62,7 @@ namespace black_cat
 		};
 
 		// Base class for application level events
-		class BC_COREDLL_EXP bc_app_event : public bc_event
+		class BC_CORE_DLL bc_app_event : public bc_event
 		{
 		public:
 			explicit bc_app_event(const bcCHAR* p_name) noexcept(true);

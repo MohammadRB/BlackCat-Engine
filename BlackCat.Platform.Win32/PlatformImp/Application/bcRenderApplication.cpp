@@ -1,6 +1,7 @@
 // [03/24/2015 MRB]
 
 #include "PlatformImp/PlatformImpPCH.h"
+#include "PlatformImp/bcExport.h"
 #include "PlatformImp/Application/bcRenderWindow.h"
 #include "PlatformImp/Application/bcRenderApplication.h"
 
@@ -9,18 +10,18 @@ namespace black_cat
 	namespace platform
 	{
 		template< >
-		BC_PLATFORMIMP_DLL_EXP bc_platform_render_application<core_platform::bc_platform::win32>::bc_platform_render_application(bc_render_application_parameter& p_parameter)
+		BC_PLATFORMIMP_DLL bc_platform_render_application<core_platform::bc_platform::win32>::bc_platform_render_application(bc_render_application_parameter& p_parameter)
 			: m_pack(p_parameter.m_instance)
 		{
 		};
 		
 		template< >
-		BC_PLATFORMIMP_DLL_EXP bc_platform_render_application<core_platform::bc_platform::win32>::~bc_platform_render_application()
+		BC_PLATFORMIMP_DLL bc_platform_render_application<core_platform::bc_platform::win32>::~bc_platform_render_application()
 		{
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP bc_render_window bc_platform_render_application< core_platform::bc_platform::win32 >::create_render_window(core::bc_estring p_caption,
+		BC_PLATFORMIMP_DLL bc_render_window bc_platform_render_application< core_platform::bc_platform::win32 >::create_render_window(core::bc_estring p_caption,
 			bcUINT32 p_width,
 			bcUINT32 p_height)
 		{
@@ -31,7 +32,7 @@ namespace black_cat
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP void bc_platform_render_application< core_platform::bc_platform::win32 >::update(bc_render_window& p_render_window)
+		BC_PLATFORMIMP_DLL void bc_platform_render_application< core_platform::bc_platform::win32 >::update(bc_render_window& p_render_window)
 		{
 			MSG l_msg;
 
@@ -58,7 +59,7 @@ namespace black_cat
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP void bc_platform_render_application<core_platform::bc_platform::win32>::request_termination()
+		BC_PLATFORMIMP_DLL void bc_platform_render_application<core_platform::bc_platform::win32>::request_termination()
 		{
 			PostQuitMessage(0);
 		};

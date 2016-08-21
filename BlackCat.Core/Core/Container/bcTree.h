@@ -4,7 +4,7 @@
 
 #include "Core/CorePCH.h"
 #include "Core/Container/bcContainer.h"
-#include "Core/bcCoreUtility.h"
+#include "Core/Utility/bcInitializable.h"
 
 namespace black_cat
 {
@@ -328,6 +328,9 @@ namespace black_cat
 				_refresh_node_heights(p_root, l_node, 1);
 
 				*p_result = l_node;
+
+				base_type::m_size += 1;
+
 				return true;
 			};
 
@@ -342,18 +345,14 @@ namespace black_cat
 			{
 				base_type::template _check_iterator< TInputIterator >();
 
-				size_type l_count = 0;
 				node_type* l_last_inserted = nullptr;
 
-				std::for_each(p_first, p_last, [=, &l_count](typename std::iterator_traits<TInputIterator>::value_type& p_value)->void
+				std::for_each(p_first, p_last, [=](typename std::iterator_traits<TInputIterator>::value_type& p_value)->void
 				{
 
-					l_last_inserted = _new_node(p_root, p_value);
-					++l_count;
+					_new_node(p_root, &l_last_inserted, p_value);
 
 				});
-
-				base_type::m_size += l_count;
 
 				return l_last_inserted;
 			}
@@ -481,6 +480,8 @@ namespace black_cat
 					bc_allocator_traits< internal_allocator_type >::destroy(m_allocator, p_node);
 					bc_allocator_traits< internal_allocator_type >::deallocate(m_allocator, p_node);
 				}
+
+				base_type::m_size -= 1;
 
 				return l_result;
 			};
@@ -730,8 +731,8 @@ namespace black_cat
 			using size_type = typename base_type::size_type;
 			using iterator = bc_bidirectional_iterator< this_type >;
 			using const_iterator = bc_const_bidirectional_iterator< this_type >;
-			using reverse_iterator = std::reverse_iterator<iterator>;
-			using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+			using reverse_iterator = bc_reverse_iterator<iterator>;
+			using const_reverse_iterator = bc_reverse_iterator<const_iterator>;
 
 		protected:
 			using node_type = typename base_type::node_type;
@@ -864,8 +865,12 @@ namespace black_cat
 					base_type::m_allocator = p_other.m_allocator;
 
 				base_type::m_compare = p_other.m_compare;
+				base_type::m_size = p_other.m_size;
 
-				base_type::m_root = base_type::_copy_node_and_sub_tree(p_other.m_root, nullptr);
+				if(p_other.m_root)
+				{
+					base_type::m_root = base_type::_copy_node_and_sub_tree(p_other.m_root, nullptr);
+				}
 			}
 
 			bcInline void _assign(this_type&& p_other, const allocator_type* p_allocator)
@@ -1160,7 +1165,9 @@ namespace black_cat
 		template< class TK, typename T, bcUINT32 MaxDiff, class TCompare, class TAllocator >
 		typename bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::iterator bc_tree<TK, T, MaxDiff, TCompare, TAllocator>::insert(const_iterator p_hint, const value_type& p_value)
 		{
-			// TODO use hint
+			// TODO use hint 
+			// The container could just make sure the newly added item has a key that is less than the hint and has a key 
+			// that is greater than the item before the hint. Otherwise the hint was wrong and it performs a normal insert.
 			return insert(p_value).first;
 		}
 

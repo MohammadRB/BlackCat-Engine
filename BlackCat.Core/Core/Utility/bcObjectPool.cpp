@@ -9,6 +9,28 @@ namespace black_cat
 {
 	namespace core
 	{
+		bc_concurrent_memory_pool::bc_concurrent_memory_pool(): m_heap(nullptr)
+		{
+		}
+
+		bc_concurrent_memory_pool::bc_concurrent_memory_pool(bc_concurrent_memory_pool&& p_other) noexcept(true)
+		{
+			_move(std::move(p_other));
+		}
+
+		bc_concurrent_memory_pool::~bc_concurrent_memory_pool()
+		{
+			if (m_heap)
+				destroy();
+		}
+
+		bc_concurrent_memory_pool& bc_concurrent_memory_pool::operator=(bc_concurrent_memory_pool&& p_other) noexcept(true)
+		{
+			_move(std::move(p_other));
+
+			return *this;
+		}
+
 		void bc_concurrent_memory_pool::initialize(bcUINT32 p_num_block, bcUINT32 p_block_size, bc_alloc_type p_alloc_type)
 		{
 			m_num_block = p_num_block;
@@ -136,6 +158,25 @@ namespace black_cat
 		void bc_concurrent_memory_pool::clear() noexcept(true)
 		{
 			std::memset(m_blocks, 0, m_num_bitblocks * sizeof(core_platform::bc_atomic< bitblock_type >));
+		}
+
+		void bc_concurrent_memory_pool::_move(bc_concurrent_memory_pool&& p_other)
+		{
+			bcUINT32 l_allocated_block = p_other.m_allocated_block.load(core_platform::bc_memory_order::acquire);
+
+			m_num_block = p_other.m_num_block;
+			m_block_size = p_other.m_block_size;
+			m_num_bitblocks = p_other.m_num_bitblocks;
+			m_blocks = p_other.m_blocks;
+			m_heap = p_other.m_heap;
+
+			p_other.m_num_block = 0;
+			p_other.m_block_size = 0;
+			p_other.m_num_bitblocks = 0;
+			p_other.m_blocks = nullptr;
+			p_other.m_heap = nullptr;
+
+			m_allocated_block.store(l_allocated_block, core_platform::bc_memory_order::release);
 		}
 	}
 }

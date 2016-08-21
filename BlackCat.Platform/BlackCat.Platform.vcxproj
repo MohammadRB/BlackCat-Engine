@@ -11,11 +11,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Platform\Application\bcHumanInterfaceDevice.h" />
+    <ClInclude Include="Platform\Application\bcKeyDevice.h" />
+    <ClInclude Include="Platform\Application\bcPointingDevice.h" />
     <ClInclude Include="Platform\Application\bcRenderApplication.h" />
     <ClInclude Include="Platform\Application\bcRenderWindow.h" />
+    <ClInclude Include="Platform\bcExport.h" />
+    <ClInclude Include="Platform\bcLogIDEDebug.h" />
     <ClInclude Include="Platform\bcPlatformEvents.h" />
-    <ClInclude Include="Platform\bcPlatformException.h" />
-    <ClInclude Include="Platform\File\bcPath.h" />
+    <ClInclude Include="Platform\bcException.h" />
+    <ClInclude Include="Platform\File\bcPath.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Platform\PlatformPCH.h" />
   </ItemGroup>
   <ItemGroup>

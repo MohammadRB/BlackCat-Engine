@@ -12,7 +12,7 @@
 #include "Graphic/Device/Command/bcDeviceCommandList.h"
 #include "Graphic/Shader/Parameter/bcConstantBufferParameter.h"
 #include "Graphic/Shader/Parameter/bcSamplerParameter.h"
-#include "Graphic/Shader/Parameter/bcShaderResourceParameter.h"
+#include "Graphic/Shader/Parameter/bcShaderViewParameter.h"
 #include "Graphic/PipelineStage/bcInputAssemblerStage.h"
 #include "Graphic/PipelineStage/bcStreamOutputStage.h"
 #include "Graphic/PipelineStage/bcRasterizerStage.h"
@@ -50,29 +50,48 @@ namespace black_cat
 
 			bc_platform_device_pipeline& operator=(bc_platform_device_pipeline&&);
 
+			// Bind and Apply required pipeline states
 			void bind_pipeline_state(bc_device_pipeline_state* p_state);
+
+			void unbind_pipeline_state();
 
 			void bind_ia_primitive_topology(bc_primitive p_primitive);
 
 			void bind_ia_index_buffer(bc_buffer* p_buffer, bc_format p_format);
 
+			void unbind_ia_index_buffer();
+
 			void bind_ia_vertex_buffers(bcUINT p_start_slot, bcUINT p_buffer_count, bc_buffer* p_buffers, bcUINT* p_strides, bcUINT* p_offsets);
 
-			void bind_ps_constant_buffer_parameter(bc_shader_type p_shader, const bc_constant_buffer_parameter& p_parameter);
+			void unbind_ia_vertex_buffers(bcUINT p_start_slot, bcUINT p_buffer_count);
 
-			void bind_ps_sampler_parameter(bc_shader_type p_shader, const bc_sampler_parameter& p_parameter);
+			void bind_ps_constant_buffer_parameter(const bc_constant_buffer_parameter& p_parameter);
 
-			void bind_ps_shader_resource_parameter(bc_shader_type p_shader, const bc_shader_resource_parameter& p_parameter);
+			void unbind_ps_constant_buffer_parameter(const bc_constant_buffer_parameter& p_parameter);
+
+			void bind_ps_sampler_parameter(const bc_sampler_parameter& p_parameter);
+
+			void unbind_ps_sampler_parameter(const bc_sampler_parameter& p_parameter);
+
+			void bind_ps_shader_view_parameter(const bc_shader_view_parameter& p_parameter);
+
+			void unbind_ps_shader_view_parameter(const bc_shader_view_parameter& p_parameter);
 
 			void bind_os_stream_outputs(bcUINT p_buffer_count, bc_buffer* p_buffers, bcUINT* p_offsets);
 
+			void unbind_os_stream_outputs();
+
 			void bind_rs_viewports(bcUINT p_count, bc_viewport* p_viewports);
+
+			void unbind_rs_viewports();
 
 			void bind_om_blend_factors(bc_vector4f l_factors);
 
 			void bind_om_stencil_ref(bcUINT32 l_stencil_ref);
 
 			void bind_om_render_targets(bcUINT p_target_count, bc_render_target_view* p_targets, bc_depth_stencil_view* p_depth);
+
+			void unbind_om_render_targets();
 
 			void pipeline_apply_states(bc_pipeline_stage p_stages);
 
@@ -90,7 +109,7 @@ namespace black_cat
 
 			void dispatch_indirect(bc_buffer* p_args, bcUINT p_offset);
 
-			void clear_buffers(bc_vector4f p_color, bcFLOAT32 p_depth = 1.0f, bcUINT p_stencil = 0);
+			void clear_buffers(bc_vector4f p_color, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
 
 			bc_mapped_resource map_resource(bc_iresource* p_resource, bcUINT p_subresource, bc_resource_map p_map_type);
 			
@@ -110,6 +129,7 @@ namespace black_cat
 				bcUINT p_src_subresource,
 				bc_format p_format);
 
+			// Write commands to command list and reset pipeline state
 			void finish_command_list(bc_device_command_list* p_command_list);
 
 			void start_monitoring_pipeline();

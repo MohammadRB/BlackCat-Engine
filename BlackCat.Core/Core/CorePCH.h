@@ -11,6 +11,7 @@
 
 //// C++ Standard Library Header Files
 #include <functional>
+#include <numeric>
 #include <array>
 //#include <string>
 //#include <vector>
@@ -24,6 +25,7 @@
 #include <ostream>
 #include <algorithm>
 #include <chrono>
+#include <type_traits>
 
 //// MSVC COM Support
 //#include <comip.h>
@@ -34,24 +36,7 @@
 #include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatform/bcType.h"
 #include "CorePlatform/bcPlatform.h"
-#include "CorePlatform/bcCorePlatformUtility.h"
-#include "CorePlatform/Memory/bcMemAlloc.h"
-#include "CorePlatformImp/CorePlatformImpPCH.h"
-#include "CorePlatformImp/Concurrency/bcAtomic.h"
-#include "CorePlatformImp/Concurrency/bcThread.h"
-#include "CorePlatformImp/Concurrency/bcMutex.h"
-#include "CorePlatformImp/Concurrency/bcFuture.h"
-#include "CorePlatformImp/Concurrency/bcConditionVariable.h"
-#include "CorePlatformImp/Concurrency/bcConcurrencyUtility.h"
-#include "CorePlatformImp/Utility/bcClock.h"
-
-// == BlackCat General Definations ========================================================================= /
-
-#if defined BC_CORE_DLL
-#define BC_COREDLL_EXP __declspec(dllexport)
-#else
-#define BC_COREDLL_EXP __declspec(dllimport)
-#endif
+#include "CorePlatform/Utility/bcNoCopy.h"
 
 // == BlackCat Memory Definations ========================================================================= /
 #ifndef BC_MEMORY_ENABLE

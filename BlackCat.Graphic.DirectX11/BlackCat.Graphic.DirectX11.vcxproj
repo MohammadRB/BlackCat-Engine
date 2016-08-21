@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GraphicImp\bcExport.h" />
     <ClInclude Include="GraphicImp\bcRenderApiInfo.h" />
     <ClInclude Include="GraphicImp\bcUtility.h" />
     <ClInclude Include="GraphicImp\Device\bcDevice.h" />
@@ -19,6 +20,30 @@
     <ClInclude Include="GraphicImp\Device\Command\bcDeviceCommandExecuter.h" />
     <ClInclude Include="GraphicImp\Device\Command\bcDeviceCommandList.h" />
     <ClInclude Include="GraphicImp\GraphicImpPCH.h" />
+    <ClInclude Include="GraphicImp\Loader\bcDomainShaderLoader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Loader\bcGeometryShaderLoader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Loader\bcHullShaderLoader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Loader\bcPixelShaderLoader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Loader\bcTextureLoader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Loader\bcVertexShaderLoader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="GraphicImp\PipelineStage\bcComputeStage.h" />
     <ClInclude Include="GraphicImp\PipelineStage\bcDomainStage.h" />
     <ClInclude Include="GraphicImp\PipelineStage\bcGeometryStage.h" />
@@ -60,6 +85,30 @@
     <ClCompile Include="GraphicImp\Device\Command\bcDeviceCommandList.cpp" />
     <ClCompile Include="GraphicImp\GraphicImpPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="GraphicImp\Loader\bcDomainShaderLoader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GraphicImp\Loader\bcGeometryShaderLoader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GraphicImp\Loader\bcHullShaderLoader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GraphicImp\Loader\bcPixelShaderLoader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GraphicImp\Loader\bcTextureLoader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GraphicImp\Loader\bcVertexShaderLoader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GraphicImp\PipelineStage\bcComputeStage.cpp" />
     <ClCompile Include="GraphicImp\PipelineStage\bcDomainStage.cpp" />
@@ -151,9 +200,9 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATDIRECTX11_EXPORTS;BC_GRAPHICIMP_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;BLACKCATDIRECTX11_EXPORTS;BC_GRAPHICIMP_DLL;_CRT_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Core;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../3rdParty/DirectXTK-master\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Core;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../3rdParty</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>GraphicImp/GraphicImpPCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BrowseInformation>true</BrowseInformation>
@@ -161,13 +210,14 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\$(Configuration);..\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\$(Configuration);..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy GraphicImp\*.h ..\BC_SDK\Include\GraphicImp
 copy GraphicImp\Device\*.h ..\BC_SDK\Include\GraphicImp\Device
 copy GraphicImp\Device\Command\*.h ..\BC_SDK\Include\GraphicImp\Device\Command
+copy GraphicImp\Device\Loader\*.h ..\BC_SDK\Include\GraphicImp\Loader
 copy GraphicImp\PipelineStage\*.h ..\BC_SDK\Include\GraphicImp\PipelineStage
 copy GraphicImp\Rendering\*.h ..\BC_SDK\Include\GraphicImp\Rendering
 copy GraphicImp\Resource\*.h ..\BC_SDK\Include\GraphicImp\Resource
@@ -183,9 +233,9 @@ copy ..\$(Configuration)\$(ProjectName).ilk ..\BC_SDK\Lib\$(Configuration)\$(Pro
 copy ..\$(Configuration)\$(ProjectName).lib ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).lib
 copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).pdb
 
-copy ..\3rdParty\DirectXTK-master\Inc\*.h ..\BC_SDK\Include\3rdParty\DirectXTK
-copy ..\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.lib ..\BC_SDK\Lib\3rdParty\DirectXTK\$(Configuration)
-copy ..\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.pdb ..\BC_SDK\Lib\3rdParty\DirectXTK\$(Configuration)</Command>
+copy ..\3rdParty\3rdParty\DirectXTK-master\Inc\*.h ..\BC_SDK\Include\3rdParty\DirectXTK
+copy ..\3rdParty\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.lib ..\BC_SDK\Lib\3rdParty\DirectXTK\$(Configuration)
+copy ..\3rdParty\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.pdb ..\BC_SDK\Lib\3rdParty\DirectXTK\$(Configuration)</Command>
     </PostBuildEvent>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -198,9 +248,9 @@ copy ..\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;BLACKCATDIRECTX11_EXPORTS;BC_GRAPHICIMP_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;BLACKCATDIRECTX11_EXPORTS;BC_GRAPHICIMP_DLL;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Core;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../3rdParty/DirectXTK-master\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Core;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../3rdParty</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>GraphicImp/GraphicImpPCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -209,13 +259,14 @@ copy ..\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\$(Configuration);..\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\$(Configuration);..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy GraphicImp\*.h ..\BC_SDK\Include\GraphicImp
 copy GraphicImp\Device\*.h ..\BC_SDK\Include\GraphicImp\Device
 copy GraphicImp\Device\Command\*.h ..\BC_SDK\Include\GraphicImp\Device\Command
+copy GraphicImp\Device\Loader\*.h ..\BC_SDK\Include\GraphicImp\Loader
 copy GraphicImp\PipelineStage\*.h ..\BC_SDK\Include\GraphicImp\PipelineStage
 copy GraphicImp\Rendering\*.h ..\BC_SDK\Include\GraphicImp\Rendering
 copy GraphicImp\Resource\*.h ..\BC_SDK\Include\GraphicImp\Resource
@@ -231,9 +282,9 @@ copy ..\$(Configuration)\$(ProjectName).ilk ..\BC_SDK\Lib\$(Configuration)\$(Pro
 copy ..\$(Configuration)\$(ProjectName).lib ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).lib
 copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).pdb
 
-copy ..\3rdParty\DirectXTK-master\Inc\*.h ..\BC_SDK\Include\3rdParty\DirectXTK
-copy ..\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.lib ..\BC_SDK\Lib\3rdParty\DirectXTK\$(Configuration)
-copy ..\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.pdb ..\BC_SDK\Lib\3rdParty\DirectXTK\$(Configuration)</Command>
+copy ..\3rdParty\3rdParty\DirectXTK-master\Inc\*.h ..\BC_SDK\Include\3rdParty\DirectXTK
+copy ..\3rdParty\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.lib ..\BC_SDK\Lib\3rdParty\DirectXTK\$(Configuration)
+copy ..\3rdParty\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.pdb ..\BC_SDK\Lib\3rdParty\DirectXTK\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

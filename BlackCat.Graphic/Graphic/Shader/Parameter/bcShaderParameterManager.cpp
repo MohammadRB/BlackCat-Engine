@@ -24,9 +24,9 @@ namespace black_cat
 			return l_param;
 		}
 
-		bc_shader_resource_parameter* bc_shader_parameter_manager::get_shader_resource_parameter_ref(bc_shader_type p_shader_type, bcINT p_register) const
+		bc_shader_view_parameter* bc_shader_parameter_manager::get_shader_resource_parameter_ref(bc_shader_type p_shader_type, bcINT p_register) const
 		{
-			bc_shader_resource_parameter* l_param = _get_param_ref<bc_shader_parameter_type::shader_resource, bc_shader_resource_parameter>(p_shader_type, p_register);
+			bc_shader_view_parameter* l_param = _get_param_ref<bc_shader_parameter_type::shader_resource, bc_shader_view_parameter>(p_shader_type, p_register);
 			return l_param;
 		}
 
@@ -48,7 +48,7 @@ namespace black_cat
 
 		bc_shader_view* bc_shader_parameter_manager::get_shader_resource_parameter(bc_shader_type p_shader_type, bcINT p_register) const
 		{
-			bc_shader_resource_parameter* l_parameter = get_shader_resource_parameter_ref(p_shader_type, p_register);
+			bc_shader_view_parameter* l_parameter = get_shader_resource_parameter_ref(p_shader_type, p_register);
 
 			if (l_parameter != nullptr)
 				return l_parameter->get_shader_resource();
@@ -81,7 +81,7 @@ namespace black_cat
 			bc_shader_view* l_parameter = nullptr;
 
 			if (p_parameter->get_parameter_type() == bc_shader_parameter_type::sampler)
-				l_parameter = static_cast<bc_shader_resource_parameter*>(p_parameter)->get_shader_resource();
+				l_parameter = static_cast<bc_shader_view_parameter*>(p_parameter)->get_shader_resource();
 
 			return l_parameter;
 		}
@@ -104,7 +104,7 @@ namespace black_cat
 
 		void bc_shader_parameter_manager::set_shader_resource_parameter(bc_shader_type p_shader_type, bcINT p_register, bc_shader_view* p_resource)
 		{
-			bc_ishader_parameter* l_parameter = _set_param_value<bc_shader_resource_parameter>(p_shader_type, p_register, p_resource);
+			bc_ishader_parameter* l_parameter = _set_param_value<bc_shader_view_parameter>(p_shader_type, p_register, p_resource);
 			bcAssert(l_parameter->get_parameter_type() == bc_shader_parameter_type::shader_resource);
 		}
 

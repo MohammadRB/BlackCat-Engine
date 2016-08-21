@@ -12,9 +12,9 @@ namespace black_cat
 		class bc_matrix4f_parameter : public bc_ishader_parameter
 		{
 		public:
-			bc_matrix4f_parameter() = default;
+			bc_matrix4f_parameter();
 
-			bc_matrix4f_parameter(bcINT p_register, bc_matrix4f& p_matrix);
+			bc_matrix4f_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_matrix4f& p_matrix);
 
 			bc_matrix4f_parameter(bc_matrix4f_parameter&) = default;
 
@@ -30,14 +30,20 @@ namespace black_cat
 
 			void set_parameter_data(void* p_data) override;
 
+			bool is_valid() const override;
 		protected:
 
 		private:
 			bc_matrix4f m_matrix;
 		};
 
-		inline bc_matrix4f_parameter::bc_matrix4f_parameter(bcINT p_register, bc_matrix4f& p_matrix) 
-			: bc_ishader_parameter(p_register),
+		inline bc_matrix4f_parameter::bc_matrix4f_parameter()
+			: bc_ishader_parameter()
+		{
+		}
+
+		inline bc_matrix4f_parameter::bc_matrix4f_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_matrix4f& p_matrix)
+			: bc_ishader_parameter(p_register, p_shader_types),
 			m_matrix(p_matrix)
 		{
 		}
@@ -63,6 +69,11 @@ namespace black_cat
 				set_matrix(bc_matrix4f::identity());
 			else
 				set_matrix(*reinterpret_cast<bc_matrix4f*>(p_data));
+		}
+
+		inline bool bc_matrix4f_parameter::is_valid() const
+		{
+			return m_register_index != -1;
 		}
 	}
 }

@@ -2,16 +2,42 @@
 
 #pragma once
 
-#include "Graphic/GraphicPCH.h"
+#include "Core/Utility/bcRefCountPtr.h"
+#include "Graphic/bcExport.h"
 #include "Graphic/bcPlatformRenderApi.h"
-#include "Graphic/bcDeviceObject.h"
-#include "Graphic/Device/bcDevice.h"
 
 namespace black_cat
 {
 	namespace graphic
 	{
-		// Reference counting pointer for resources created by device(use smart pointer for persistance pointers)
+		template<bc_platform_render_api>
+		class bc_platform_device;
+
+		using bc_device = bc_platform_device< g_current_platform_render_api >;
+
+		class bc_device_object;
+
+		class BC_GRAPHIC_DLL _bc_resource_ptr_deleter
+		{
+		public:
+			_bc_resource_ptr_deleter();
+
+			_bc_resource_ptr_deleter(bc_device* p_device);
+
+			void operator ()(bc_device_object* p_resource) const;
+
+		protected:
+
+		private:
+			bc_device* m_device;
+		};
+
+		template< typename TResource >
+		using bc_resource_ptr = core::bc_ref_count_ptr< TResource, _bc_resource_ptr_deleter >;
+
+		/*
+		// Reference counting pointer for resources created by device
+		// (device resources don't use movale memroy, so this smart pointer isn't movable aware)
 		template<class TResource>
 		class bc_resource_ptr
 		{
@@ -48,10 +74,10 @@ namespace black_cat
 			bc_resource_ptr& operator=(bc_resource_ptr&& p_other) noexcept(true);
 
 			template<class TOtherResource>
-			bc_resource_ptr operator=(const bc_resource_ptr<TOtherResource>& p_other) noexcept(true);
+			bc_resource_ptr& operator=(const bc_resource_ptr<TOtherResource>& p_other) noexcept(true);
 
 			template<class TOtherResource>
-			bc_resource_ptr operator=(bc_resource_ptr<TOtherResource>&& p_other) noexcept(true);
+			bc_resource_ptr& operator=(bc_resource_ptr<TOtherResource>&& p_other) noexcept(true);
 
 			void reset(pointer p_resource) noexcept(true);
 
@@ -171,7 +197,7 @@ namespace black_cat
 
 		template <class TResource >
 		template <class TOtherResource >
-		bc_resource_ptr<TResource> bc_resource_ptr<TResource>::operator=(const bc_resource_ptr<TOtherResource>& p_other) noexcept(true)
+		bc_resource_ptr<TResource>& bc_resource_ptr<TResource>::operator=(const bc_resource_ptr<TOtherResource>& p_other) noexcept(true)
 		{
 			if (this != &p_other)
 			{
@@ -183,7 +209,7 @@ namespace black_cat
 
 		template <class TResource >
 		template <class TOtherResource >
-		bc_resource_ptr<TResource> bc_resource_ptr<TResource>::operator=(bc_resource_ptr<TOtherResource>&& p_other) noexcept(true)
+		bc_resource_ptr<TResource>& bc_resource_ptr<TResource>::operator=(bc_resource_ptr<TOtherResource>&& p_other) noexcept(true)
 		{
 			if (this != &p_other)
 			{
@@ -307,6 +333,6 @@ namespace black_cat
 			{
 				p_other.m_resource = nullptr;
 			}
-		}
+		}*/
 	}
 }

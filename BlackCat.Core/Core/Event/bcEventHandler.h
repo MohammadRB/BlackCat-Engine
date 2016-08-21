@@ -4,13 +4,14 @@
 
 #include "Core/CorePCH.h"
 #include "Core/Container/bcVector.h"
-#include "Core/Utility/bcDelegate.h"
+#include "Core/Utility/bcDelegate.hpp"
+#include "Core/Event/bcEvent.h"
 
 namespace black_cat
 {
 	namespace core
 	{
-		using bc_event_handle = bcSIZE;
+		using bc_event_handler_index = bcSIZE;
 
 		template< typename T >
 		class bc_event_handler;
@@ -43,26 +44,43 @@ namespace black_cat
 			}
 
 			template < typename ...A >
-			void operator()(A&&... p_args) 
+			void operator()(A&&... p_args) const
 			{
 				for (auto l_i = m_delegates.begin(), l_e = m_delegates.end(); l_i != l_e; ++l_i)
 				{
-					(*l_i)(std::forward<A>(p_args)...);
+					if((*l_i) != nullptr)
+					{
+						(*l_i)(std::forward<A>(p_args)...);
+					}
 				}
 			}
 
-			bc_event_handle add_delegate(delegate_type&& p_del)
+			bc_event_handler_index add_delegate(delegate_type&& p_del)
 			{
-				bc_event_handle l_index = m_delegates.size();
+				bc_event_handler_index l_index = 0;
 				
-				m_delegates.push_back(std::move(p_del));
+				auto l_item = std::find_if(std::cbegin(m_delegates), std::cend(m_delegates), [&l_index](const delegate_type& p_del)
+				{
+					++l_index;
+					return p_del == nullptr;
+				});
+
+				if(l_item != std::cend(m_delegates))
+				{
+					--l_index;
+					*l_item = std::move(p_del);
+				}
+				else
+				{
+					m_delegates.push_back(std::move(p_del));
+				}
 
 				return l_index;
 			}
 
-			void remove_delegate(bc_event_handle p_index)
+			void remove_delegate(bc_event_handler_index p_index)
 			{
-				m_delegates.erase(m_delegates.begin() + p_index);
+				m_delegates.at(p_index).reset();
 			}
 
 			void clear()

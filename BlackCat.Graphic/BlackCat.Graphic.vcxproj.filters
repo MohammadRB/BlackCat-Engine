@@ -34,11 +34,11 @@
     <Filter Include="Graphic\PipelineStage">
       <UniqueIdentifier>{c04bde60-9f3f-4902-845b-8f0572f5f9e6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Graphic\Rendering">
-      <UniqueIdentifier>{eab9f938-75fb-4f62-9471-91211bdc7abf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Graphic\Resource\View">
       <UniqueIdentifier>{e68d8f99-a77b-4a59-86e1-b092ce63556e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\Loader">
+      <UniqueIdentifier>{d91a7249-d7b6-42f3-a72e-d4db3ddcf056}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -132,9 +132,6 @@
     <ClInclude Include="Graphic\Shader\Parameter\bcSamplerParameter.h">
       <Filter>Graphic\Shader\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="Graphic\Shader\Parameter\bcShaderResourceParameter.h">
-      <Filter>Graphic\Shader\Parameter</Filter>
-    </ClInclude>
     <ClInclude Include="Graphic\Shader\Parameter\bcVectorParameter.h">
       <Filter>Graphic\Shader\Parameter</Filter>
     </ClInclude>
@@ -192,9 +189,6 @@
     <ClInclude Include="Graphic\Device\Command\bcDeviceCommandList.h">
       <Filter>Graphic\Device\Command</Filter>
     </ClInclude>
-    <ClInclude Include="Graphic\bcGraphicException.h">
-      <Filter>Graphic</Filter>
-    </ClInclude>
     <ClInclude Include="Graphic\Shader\bcVertexShader.h">
       <Filter>Graphic\Shader</Filter>
     </ClInclude>
@@ -225,18 +219,6 @@
     <ClInclude Include="Graphic\bcDeviceObject.h">
       <Filter>Graphic</Filter>
     </ClInclude>
-    <ClInclude Include="Graphic\Rendering\bcRenderCommand.h">
-      <Filter>Graphic\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Rendering\bcRenderPass.h">
-      <Filter>Graphic\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Rendering\bcRenderTask.h">
-      <Filter>Graphic\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Rendering\bcRenderPassManager.h">
-      <Filter>Graphic\Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="Graphic\Device\bcDeviceInfo.h">
       <Filter>Graphic\Device</Filter>
     </ClInclude>
@@ -245,6 +227,42 @@
     </ClInclude>
     <ClInclude Include="Graphic\Resource\View\bcDepthStencilViewConfig.h">
       <Filter>Graphic\Resource\View</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Loader\bcTextureLoader.h">
+      <Filter>Graphic\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Loader\bcVertexShaderLoader.h">
+      <Filter>Graphic\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Loader\bcDeviceResourceContent.h">
+      <Filter>Graphic\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Loader\bcHullShaderLoader.h">
+      <Filter>Graphic\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Loader\bcDomainShaderLoader.h">
+      <Filter>Graphic\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Loader\bcGeometryShaderLoader.h">
+      <Filter>Graphic\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Loader\bcPixelShaderLoader.h">
+      <Filter>Graphic\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\bcEvent.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Shader\Parameter\bcShaderViewParameter.h">
+      <Filter>Graphic\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\bcExport.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\bcException.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\bcDeviceResourceContent.h">
+      <Filter>Graphic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -284,8 +302,8 @@
     <ClCompile Include="Graphic\PipelineStage\bcStreamOutputStage.cpp">
       <Filter>Graphic\PipelineStage</Filter>
     </ClCompile>
-    <ClCompile Include="Graphic\Rendering\bcRenderPassManager.cpp">
-      <Filter>Graphic\Rendering</Filter>
+    <ClCompile Include="Graphic\bcResourcePtr.cpp">
+      <Filter>Graphic</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

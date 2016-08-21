@@ -9,10 +9,11 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		Microsoft::WRL::ComPtr<ID3D10Blob> compile_shader(const bcECHAR* p_path,
-			const bcCHAR* p_function_name,
-			const bcCHAR* p_profile,
-			const D3D_SHADER_MACRO* p_defines,
-			ID3DInclude* p_includes);
+		template< >
+		struct bc_platform_compiled_shader_pack< g_api_dx11 >
+		{
+		public:
+			Microsoft::WRL::ComPtr< ID3D10Blob > m_blob;
+		};
 	}
 }

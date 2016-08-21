@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "Core/CorePCH.h"
-#include "Core/bcCoreUtility.h"
+#include "Core/bcExport.h"
+#include "Core/Utility/bcInitializable.h"
 #include "Core/Memory/bcMemory.h"
 #include "Core/Memory/bcMemBlock.h"
 #include "Core/Memory/bcMemoryTracer.h"
@@ -14,8 +14,7 @@ namespace black_cat
 	{
 #ifdef BC_MEMORY_ENABLE
 
-		class BC_COREDLL_EXP bc_memory_fixed_size : public bc_memory, 
-			public bc_initializable<bcUINT32, bcUINT32, const bcCHAR*>
+		class BC_CORE_DLL bc_memory_fixed_size : public bc_memory, public bc_initializable<bcUINT32, bcUINT32, const bcCHAR*>
 		{
 		public:
 			using this_type = bc_memory_fixed_size;

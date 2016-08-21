@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Game">
+      <UniqueIdentifier>{079e0610-6bfb-4ecb-853c-bfb46a32479a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object">
+      <UniqueIdentifier>{0bcf3d8c-33d6-4fb1-a5af-7d5e734a6e10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Graphic">
+      <UniqueIdentifier>{e9227613-b4a3-46b3-8983-7fe1822f5ee1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Graphic\Command">
+      <UniqueIdentifier>{0750fdf5-61dc-4768-8c9d-84164034e990}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Graphic\Pass">
+      <UniqueIdentifier>{052174de-3f99-40d0-ab57-1410aa66085c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Graphic\Task">
+      <UniqueIdentifier>{45c0b0da-35dc-466a-a2d2-ef0094a68f97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Scence">
+      <UniqueIdentifier>{d00460ed-5e94-401e-8188-6f56a78bee13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\System">
+      <UniqueIdentifier>{a79d60e9-94c5-433e-b088-bd11f872e345}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Scence\Component">
+      <UniqueIdentifier>{0a7a922f-aa87-4dcf-9ddc-e3860dedaf0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Mesh">
+      <UniqueIdentifier>{da9d584e-66fe-42a0-b9c2-d26ae328eece}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\System\Render">
+      <UniqueIdentifier>{77c9d19b-19e9-4367-b4c8-1023c8f193a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\System\Input">
+      <UniqueIdentifier>{d6f401ea-1120-4600-9ff9-af392588d883}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\System\Render\Pass">
+      <UniqueIdentifier>{86dff892-dba3-4386-b177-eb07cb336f04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\System\Render\Scence">
+      <UniqueIdentifier>{54c2b83a-cb76-4e3f-803e-4743cbb6b339}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Shader">
+      <UniqueIdentifier>{2b1d2b11-124b-45b2-bcf5-9691b09b6b81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Shader\DirectX11">
+      <UniqueIdentifier>{5241496f-1311-43f5-914d-808ba94b802d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game\GamePCH.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Graphic\Command\bcPipelineDispatchCommand.h">
+      <Filter>Game\Graphic\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Graphic\Command\bcPipelineDrawCommand.h">
+      <Filter>Game\Graphic\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Graphic\Command\bcPipelineDrawIndexedCommand.h">
+      <Filter>Game\Graphic\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Graphic\Command\bcPipelineDrawIndexedInstancedCommand.h">
+      <Filter>Game\Graphic\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scence\bcActor.h">
+      <Filter>Game\Object\Scence</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scence\bcActorComponent.h">
+      <Filter>Game\Object\Scence</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scence\Component\bcRenderComponent.h">
+      <Filter>Game\Object\Scence\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Graphic\bcRenderCommand.h">
+      <Filter>Game\Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Graphic\bcRenderPass.h">
+      <Filter>Game\Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Graphic\bcRenderTask.h">
+      <Filter>Game\Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\bcGameSystem.h">
+      <Filter>Game\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scence\Component\bcMeshComponent.h">
+      <Filter>Game\Object\Scence\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Mesh\bcMeshGenerator.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Mesh\bcMesh.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\bcExport.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Render\bcRenderSystem.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Render\bcVertexLayout.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Input\bcInputSystem.h">
+      <Filter>Game\System\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scence\bcActorComponentContainer.h">
+      <Filter>Game\Object\Scence</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scence\bcActorComponentManager.h">
+      <Filter>Game\Object\Scence</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scence\bcActor.hpp">
+      <Filter>Game\Object\Scence</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scence\bcEntityManager.h">
+      <Filter>Game\Object\Scence</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Input\bcFileSystem.h">
+      <Filter>Game\System\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Mesh\bcMeshPart.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Render\bcStateConfigs.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Render\bcRenderState.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Render\bcRenderInstance.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Render\bcRenderSystemParameter.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Render\bcRenderPassState.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scence\Component\bcHierarchyComponent.h">
+      <Filter>Game\Object\Scence\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\bcException.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Input\bcCamera.h">
+      <Filter>Game\System\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Input\bcFreeCamera.h">
+      <Filter>Game\System\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Render\bcRenderPass.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Render\bcRenderPassManager.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Render\Pass\bcBackBufferOutputPass.h">
+      <Filter>Game\System\Render\Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Render\Scence\bcScenceGraph.h">
+      <Filter>Game\System\Render\Scence</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Game\GamePCH.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Graphic\Command\bcPipelineDispatchCommand.cpp">
+      <Filter>Game\Graphic\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Graphic\Command\bcPipelineDrawCommand.cpp">
+      <Filter>Game\Graphic\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Graphic\Command\bcPipelineDrawIndexedCommand.cpp">
+      <Filter>Game\Graphic\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Graphic\Command\bcPipelineDrawIndexedInstancedCommand.cpp">
+      <Filter>Game\Graphic\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Mesh\bcMeshGenerator.cpp">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Render\bcRenderSystem.cpp">
+      <Filter>Game\System\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Scence\bcEntityManager.cpp">
+      <Filter>Game\Object\Scence</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Input\bcFileSystem.cpp">
+      <Filter>Game\System\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Scence\Component\bcMeshComponent.cpp">
+      <Filter>Game\Object\Scence\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Mesh\bcRenderComponent.cpp">
+      <Filter>Game\Object\Scence\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Render\bcRenderState.cpp">
+      <Filter>Game\System\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Render\bcRenderPassState.cpp">
+      <Filter>Game\System\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Mesh\bcMesh.cpp">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Scence\Component\bcHierarchyComponent.cpp">
+      <Filter>Game\Object\Scence\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Input\bcCamera.cpp">
+      <Filter>Game\System\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Input\bcFreeCamera.cpp">
+      <Filter>Game\System\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Render\bcRenderPassManager.cpp">
+      <Filter>Game\System\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Render\Pass\bcBackBufferOutputPass.cpp">
+      <Filter>Game\System\Render\Pass</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Render\Scence\bcScenceGraph.cpp">
+      <Filter>Game\System\Render\Scence</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Game\Shader\DirectX11\bcRegister.hlsli">
+      <Filter>Game\Shader\DirectX11</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Game\Shader\DirectX11\bcMeshShader.hlsl">
+      <Filter>Game\Shader\DirectX11</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>

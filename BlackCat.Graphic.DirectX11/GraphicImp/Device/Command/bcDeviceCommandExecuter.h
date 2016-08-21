@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GraphicImp/Device/bcDevice.h"
+#include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 
 #include "Graphic/Device/Command/bcDeviceCommandExecuter.h"
 #include "GraphicImp/GraphicImpPCH.h"

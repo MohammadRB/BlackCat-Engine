@@ -10,13 +10,12 @@ namespace black_cat
 	{
 		enum class bc_platform
 		{
-			unknown,
-			win32
+			unknown = 0,
+			win32 = 1
 		};
 
 		constexpr bc_platform g_api_unknown = bc_platform::unknown;
 		constexpr bc_platform g_api_win32 = bc_platform::win32;
-
 		constexpr bc_platform g_current_platform = g_api_win32;
 	}
 }

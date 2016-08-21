@@ -10,8 +10,8 @@ namespace black_cat
 	{
 		enum class bc_platform_render_api
 		{
-			unknown,
-			directx11
+			unknown = 0,
+			directx11 = 1
 		};
 
 		constexpr bc_platform_render_api g_api_unknown = bc_platform_render_api::unknown;

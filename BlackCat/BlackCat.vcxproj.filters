@@ -31,17 +31,11 @@
     <Filter Include="BlackCat\_\Utility">
       <UniqueIdentifier>{68636d85-dabe-419c-9edd-26a03adfd738}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BlackCat\Graphic">
-      <UniqueIdentifier>{8ed387fa-7d74-415b-b2b2-b2f7605b3e11}</UniqueIdentifier>
+    <Filter Include="BlackCat\Application">
+      <UniqueIdentifier>{e10ee3b7-46cd-4758-b2df-7a5e94555f5a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BlackCat\Graphic\Command">
-      <UniqueIdentifier>{8c4d6a6b-3422-4021-a3ca-b07c2728f76a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="BlackCat\Graphic\Pass">
-      <UniqueIdentifier>{f061ba69-5326-4089-9ba4-501b01156d58}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="BlackCat\Graphic\Task">
-      <UniqueIdentifier>{e7c6ed0b-5e2e-4d4f-8e12-a30c16392db4}</UniqueIdentifier>
+    <Filter Include="BlackCat\Loader">
+      <UniqueIdentifier>{f9899ba9-f744-4944-aee2-a10c56072bfc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -153,20 +147,35 @@
     <ClInclude Include="BlackCat\_\Utility\ShapeDraw.h">
       <Filter>BlackCat\_\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="BlackCat\Graphic\Pass\bcBackBufferOutputPass.h">
-      <Filter>BlackCat\Graphic\Pass</Filter>
-    </ClInclude>
     <ClInclude Include="BlackCat\BlackCatPCH.h">
       <Filter>BlackCat</Filter>
     </ClInclude>
-    <ClInclude Include="BlackCat\Graphic\Command\bcPipelineDrawCommand.h">
-      <Filter>BlackCat\Graphic\Command</Filter>
+    <ClInclude Include="BlackCat\Application\bcBaseRenderApplication.h">
+      <Filter>BlackCat\Application</Filter>
     </ClInclude>
-    <ClInclude Include="BlackCat\Graphic\Command\bcPipelineDrawIndexedCommand.h">
-      <Filter>BlackCat\Graphic\Command</Filter>
+    <ClInclude Include="BlackCat\Loader\bcMeshLoader.h">
+      <Filter>BlackCat\Loader</Filter>
     </ClInclude>
-    <ClInclude Include="BlackCat\Graphic\Command\bcPipelineDrawIndexedInstancedCommand.h">
-      <Filter>BlackCat\Graphic\Command</Filter>
+    <ClInclude Include="BlackCat\Loader\bcDomainShaderLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackCat\Loader\bcGeometryShaderLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackCat\Loader\bcHullShaderLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackCat\Loader\bcPixelShaderLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackCat\Loader\bcTextureLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackCat\Loader\bcVertexShaderLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackCat\bcExport.h">
+      <Filter>BlackCat</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -269,20 +278,29 @@
     <ClCompile Include="BlackCat\_\Utility\ShapeDraw.cpp">
       <Filter>BlackCat\_\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="BlackCat\Graphic\Pass\bcBackBufferOutputPass.cpp">
-      <Filter>BlackCat\Graphic\Pass</Filter>
-    </ClCompile>
     <ClCompile Include="BlackCat\BlackCatPCH.cpp">
       <Filter>BlackCat</Filter>
     </ClCompile>
-    <ClCompile Include="BlackCat\Graphic\Command\bcPipelineDrawCommand.cpp">
-      <Filter>BlackCat\Graphic\Command</Filter>
+    <ClCompile Include="BlackCat\Loader\bcMeshLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
     </ClCompile>
-    <ClCompile Include="BlackCat\Graphic\Command\bcPipelineDrawIndexedCommand.cpp">
-      <Filter>BlackCat\Graphic\Command</Filter>
+    <ClCompile Include="BlackCat\Loader\bcDomainShaderLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
     </ClCompile>
-    <ClCompile Include="BlackCat\Graphic\Command\bcPipelineDrawIndexedInstancedCommand.cpp">
-      <Filter>BlackCat\Graphic\Command</Filter>
+    <ClCompile Include="BlackCat\Loader\bcGeometryShaderLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackCat\Loader\bcHullShaderLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackCat\Loader\bcPixelShaderLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackCat\Loader\bcTextureLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackCat\Loader\bcVertexShaderLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -15,8 +15,8 @@ namespace black_cat
 			bc_cull_mode m_cull_mode;
 			bool m_front_counter_clockwise;
 			bcINT m_depth_bias;
-			bcFLOAT32 m_depth_bias_clamp;
-			bcFLOAT32 m_slope_scaled_depth_bias;
+			bcFLOAT m_depth_bias_clamp;
+			bcFLOAT m_slope_scaled_depth_bias;
 			bool m_depth_clip_enable;
 			bool m_scissor_enable;
 			bool m_multisample_enable;

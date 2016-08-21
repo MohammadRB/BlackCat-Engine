@@ -1,6 +1,6 @@
 
 #include "Core/CorePCH.h"
-#include "Core/CoreExceptions.h"
+#include "Core/bcException.h"
 #include "Core/Container/bcBitVector.h"
 
 namespace black_cat

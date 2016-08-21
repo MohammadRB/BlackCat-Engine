@@ -39,7 +39,7 @@ namespace black_cat
 		{
 		public:
 			bc_platform_render_window_parameter_pack(core::bc_estring p_caption, bcUINT32 p_width, bcUINT32 p_height)
-				: m_caption(std::move(p_caption)),
+				: m_caption(move(p_caption)),
 				m_width(p_width),
 				m_height(p_height)
 			{
@@ -105,7 +105,9 @@ namespace black_cat
 
 			void close() noexcept(true);
 
-			bc_messagebox_value messagebox(core::bc_estring p_caption, core::bc_estring p_text, bc_messagebox_type p_type, bc_messagebox_buttom p_button);
+			bc_messagebox_value messagebox(const bcECHAR* p_caption, const bcECHAR* p_text, bc_messagebox_type p_type, bc_messagebox_buttom p_button);
+
+			bc_messagebox_value messagebox(core::bc_estring_frame p_caption, core::bc_estring_frame p_text, bc_messagebox_type p_type, bc_messagebox_buttom p_button);
 
 			platform_pack& get_platform_pack()
 			{

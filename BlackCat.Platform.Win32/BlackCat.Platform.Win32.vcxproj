@@ -11,17 +11,28 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="PlatformImp\Application\bcHumanInterfaceDevice.h" />
+    <ClInclude Include="PlatformImp\Application\bcKeyDevice.h" />
+    <ClInclude Include="PlatformImp\Application\bcPointingDevice.h" />
+    <ClInclude Include="PlatformImp\bcExport.h" />
+    <ClInclude Include="PlatformImp\bcLogIDEDebug.h" />
     <ClInclude Include="PlatformImp\Application\bcRenderApplication.h" />
     <ClInclude Include="PlatformImp\Application\bcRenderWindow.h" />
-    <ClInclude Include="PlatformImp\bcUtility.h" />
-    <ClInclude Include="PlatformImp\File\bcPath.h" />
+    <ClInclude Include="PlatformImp\File\bcPath.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="PlatformImp\PlatformImpPCH.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="PlatformImp\Application\bcHumanInterfaceDevice.cpp" />
+    <ClCompile Include="PlatformImp\Application\bcKeyDevice.cpp" />
+    <ClCompile Include="PlatformImp\Application\bcPointingDevice.cpp" />
     <ClCompile Include="PlatformImp\Application\bcRenderApplication.cpp" />
     <ClCompile Include="PlatformImp\Application\bcRenderWindow.cpp" />
-    <ClCompile Include="PlatformImp\bcUtility.cpp" />
-    <ClCompile Include="PlatformImp\File\bcPath.cpp" />
+    <ClCompile Include="PlatformImp\bcLogIDEDebug.cpp" />
+    <ClCompile Include="PlatformImp\File\bcPath.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="PlatformImp\PlatformImpPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PlatformImp/PlatformImpPCH.h</PrecompiledHeaderFile>
@@ -92,7 +103,7 @@
     <PostBuildEvent>
       <Command>copy PlatformImp\*.h ..\BC_SDK\Include\PlatformImp
 copy PlatformImp\Application\*.h ..\BC_SDK\Include\PlatformImp\Application
-copy Platform\File\*.h ..\BC_SDK\Include\Platform\File
+copy PlatformImp\File\*.h ..\BC_SDK\Include\PlatformImp\File
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
 copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp
@@ -127,7 +138,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
     <PostBuildEvent>
       <Command>copy PlatformImp\*.h ..\BC_SDK\Include\PlatformImp
 copy PlatformImp\Application\*.h ..\BC_SDK\Include\PlatformImp\Application
-copy Platform\File\*.h ..\BC_SDK\Include\Platform\File
+copy PlatformImp\File\*.h ..\BC_SDK\Include\PlatformImp\File
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
 copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp

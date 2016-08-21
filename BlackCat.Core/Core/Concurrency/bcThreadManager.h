@@ -3,24 +3,22 @@
 #pragma once
 
 #include "CorePlatform/Concurrency/bcConcurrencyDef.h"
-#include "CorePlatformImp/Concurrency/bcAtomic.h"
-#include "CorePlatformImp/Concurrency/bcConditionVariable.h"
 #include "CorePlatformImp/Concurrency/bcFuture.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Concurrency/bcThread.h"
-#include "CorePlatformImp/Concurrency/bcConcurrencyUtility.h"
+#include "CorePlatformImp/Concurrency/bcThreadLocal.h"
 #include "Core/CorePCH.h"
-#include "Core/CoreExceptions.h"
-#include "Core/bcCoreUtility.h"
-#include "Core/Utility/bcServiceManager.h"
-#include "Core/Utility/bcFunctionWrapper.h"
-#include "Core/Utility/bcDelegate.h"
+#include "Core/bcConstant.h"
+#include "Core/bcException.h"
 #include "Core/Memory/bcAlloc.h"
 #include "Core/Memory/bcPtr.h"
-#include "Core/Concurrency/bcConcurrencyUtility.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcConcurrentQueue.h"
 #include "Core/Container/bcDeque.h"
+#include "Core/Utility/bcInitializable.h"
+#include "Core/Utility/bcServiceManager.h"
+#include "Core/Utility/bcDelegate.hpp"
 
 namespace black_cat
 {
@@ -30,7 +28,7 @@ namespace black_cat
 		{
 		public:
 			using this_type = bc_task_stealing_queue;
-			using task_type = bc_function_wrapper<void(bcUINT32)>;
+			using task_type = bc_delegate<void(core_platform::bc_thread::id)>;
 
 		public:
 			bc_task_stealing_queue() = default;
@@ -45,7 +43,7 @@ namespace black_cat
 
 			this_type& operator =(this_type&&) = delete;
 
-			void push(task_type p_task)
+			void push(task_type&& p_task)
 			{
 				core_platform::bc_lock_guard<core_platform::bc_mutex> l_lock(m_mutex);
 				
@@ -92,7 +90,8 @@ namespace black_cat
 		protected:
 
 		private:
-			bc_deque< task_type, bc_allocator_frame< task_type > > m_deque;
+			//bc_deque_frame< task_type > m_deque; TODO
+			bc_deque< task_type > m_deque;
 			mutable core_platform::bc_mutex m_mutex;
 		};
 
@@ -143,8 +142,8 @@ namespace black_cat
 
 		enum class bc_task_creation_option
 		{
-			none,
-			fairness
+			none,		// Push task in local task queue of current thread
+			fairness	// Push task in global task queue 
 		};
 
 		template< typename T >
@@ -162,7 +161,7 @@ namespace black_cat
 		public:
 			bc_task() = default;
 
-			bc_task(this_type&& p_other) 
+			bc_task(this_type&& p_other) noexcept(std::is_nothrow_move_constructible<core_platform::bc_future<type>>::value)
 				: m_future(std::move(p_other.m_future)), 
 				m_thread_id_future(std::move(p_other.m_thread_id_future))
 			{
@@ -170,7 +169,7 @@ namespace black_cat
 
 			~bc_task() = default;
 
-			this_type& operator =(this_type&& p_other) 
+			this_type& operator =(this_type&& p_other) noexcept(std::is_nothrow_move_assignable<core_platform::bc_future<type>>::value)
 			{ 
 				m_future = std::move(p_other.m_future); 
 				m_thread_id_future = std::move(p_other.m_thread_id_future); 
@@ -178,12 +177,17 @@ namespace black_cat
 				return *this;
 			}
 
-			type get()
+			type get() noexcept(noexcept(std::declval<core_platform::bc_future<type>>().get()))
 			{
 				return m_future.get();
 			}
 
-			core_platform::bc_future_status wait_for(const bcUINT64 p_nano) const
+			void wait() const noexcept(noexcept(std::declval<core_platform::bc_future<type>>().wait()))
+			{
+				m_future.wait();
+			}
+
+			core_platform::bc_future_status wait_for(const bcUINT64 p_nano) const noexcept(core_platform::bc_future<type>::wait_for)
 			{
 				return m_future.wait_for(std::chrono::nanoseconds(p_nano));
 			}
@@ -191,21 +195,21 @@ namespace black_cat
 			// When executer thread see this interrupt, it will throw an exception
 			void interrupt_executer_thread()
 			{
-				bcUINT32 l_excecuter_thread_id = m_thread_id_future.get();
-				bc_thread_manager::Get()->interrupt_thread(l_excecuter_thread_id);
+				core_platform::bc_thread::id l_excecuter_thread_id = m_thread_id_future.get();
+				bc_service_manager::get().get_service< bc_thread_manager >()->interrupt_thread(l_excecuter_thread_id);
 			}
 
-			static this_type start_new(bc_delegate< type(void) >&& p_delegate, 
+			/*static this_type start_new(bc_delegate< type(void) >&& p_delegate, 
 				bc_task_creation_option p_option = bc_task_creation_option::none)
 			{
-				return bc_thread_manager::Get()->start_new_task(std::move(p_delegate), p_option);
-			}
+				return bc_service_manager::get().get_service< bc_thread_manager >()->start_new_task(std::move(p_delegate), p_option);
+			}*/
 
 		protected:
 
 		private:
 			core_platform::bc_future<type> m_future;
-			core_platform::bc_future<bcUINT32> m_thread_id_future;
+			core_platform::bc_future<core_platform::bc_thread::id> m_thread_id_future;
 		};
 
 		template<typename T>
@@ -240,19 +244,9 @@ namespace black_cat
 				return *this;
 			}
 
-			void operator ()(bcUINT32 p_thread_id)
+			void operator ()(core_platform::bc_thread::id p_thread_id)
 			{
-				try
-				{
-					// Set executer thread id so in bcTask we can access to this id
-					m_thread_id_promise.set_value(p_thread_id);
-					type lResult = m_del();
-					m_promise.setValue(lResult);
-				}
-				catch (...)
-				{
-					m_promise.setException(std::current_exception());
-				}
+				_call(p_thread_id, std::is_same< typename std::remove_reference< type >::type, void >::type());
 			}
 
 			bc_task<type> get_task()
@@ -268,25 +262,55 @@ namespace black_cat
 		protected:
 
 		private:
+			void _call(core_platform::bc_thread::id p_thread_id, std::true_type)
+			{
+				try
+				{
+					// Set executer thread id so in bcTask we can access to this id
+					m_thread_id_promise.set_value(p_thread_id);
+					m_del();
+					m_promise.set_value();
+				}
+				catch (...)
+				{
+					m_promise.set_exception(std::current_exception());
+				}
+			}
+
+			void _call(core_platform::bc_thread::id p_thread_id, std::false_type)
+			{
+				try
+				{
+					// Set executer thread id so in bcTask we can access to this id
+					m_thread_id_promise.set_value(p_thread_id);
+					type lResult = m_del();
+					m_promise.set_value(lResult);
+				}
+				catch (...)
+				{
+					m_promise.set_exception(std::current_exception());
+				}
+			}
+
 			core_platform::bc_future<type> _get_future()
 			{
 				return m_promise.get_future();
 			}
 
-			core_platform::bc_future<bcUINT32> _get_thread_id_future()
+			core_platform::bc_future<core_platform::bc_thread::id> _get_thread_id_future()
 			{
 				return m_thread_id_promise.get_future();
 			}
 
 			task_delegate_type m_del;
-			core_platform::bc_promise<type> m_promise;
-			core_platform::bc_promise<bcUINT32> m_thread_id_promise;
+			core_platform::bc_promise< type > m_promise;
+			core_platform::bc_promise< core_platform::bc_thread::id > m_thread_id_promise;
 		};
 
 		class bc_thread_manager : public bc_iservice
 		{
 		private:
-			using task_wrapper_type = bc_function_wrapper<void(bcUINT32)>;
+			using task_type = bc_delegate<void(core_platform::bc_thread::id)>;
 
 		public:
 			bc_thread_manager(bcSIZE p_thread_count, bcSIZE p_additional_thread_count) noexcept(true)
@@ -322,31 +346,6 @@ namespace black_cat
 				return *this;
 			}
 
-			template<typename T>
-			bc_task<T> start_new_task(bc_delegate< T(void) >&& p_delegate, bc_task_creation_option p_option = bc_task_creation_option::none)
-			{
-				bc_task_link<T> l_task_link(std::move(p_delegate));
-				bc_task<T> l_task = l_task_link.getTask();
-
-				task_wrapper_type l_task_wrapper(l_task_link);
-				_thread_data* l_my_data = nullptr;
-
-				if (p_option == bc_task_creation_option::none)
-					l_my_data = m_my_data.get();
-
-				if (l_my_data)
-					l_my_data->local_queue().push(std::move(l_task_wrapper));
-				else
-					m_global_queue.push(std::move(l_task_wrapper));
-
-				bcUINT32 l_task_count = m_task_count.fetch_add(1U, core_platform::bc_memory_order::seqcst);
-
-				if (l_task_count >= s_new_thread_threshold)
-					_push_worker();
-
-				return l_task;
-			}
-
 			bcSIZE thread_count() const
 			{
 				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_shared_mutex);
@@ -359,7 +358,7 @@ namespace black_cat
 				return m_task_count.load(core_platform::bc_memory_order::seqcst);
 			}
 
-			void interrupt_thread(bcUINT32 p_thread_id)
+			void interrupt_thread(core_platform::bc_thread::id p_thread_id)
 			{
 				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_shared_mutex);
 
@@ -387,9 +386,34 @@ namespace black_cat
 
 			}
 
-			static bc_string service_name()
+			template<typename T>
+			bc_task<T> start_new_task(bc_delegate< T(void) >&& p_delegate, bc_task_creation_option p_option = bc_task_creation_option::none)
 			{
-				return "Thread_Manager";
+				bc_task_link<T> l_task_link(std::move(p_delegate));
+				bc_task<T> l_task = l_task_link.get_task();
+
+				task_type l_task_wrapper(task_type::make_from_big_object(bc_alloc_type::frame, std::move(l_task_link))); // TODO
+				_thread_data* l_my_data = nullptr;
+
+				if (p_option == bc_task_creation_option::none)
+					l_my_data = m_my_data.get();
+
+				if (l_my_data)
+					l_my_data->local_queue().push(std::move(l_task_wrapper));
+				else
+					m_global_queue.push(std::move(l_task_wrapper));
+
+				bcUINT32 l_task_count = m_task_count.fetch_add(1U, core_platform::bc_memory_order::seqcst);
+
+				if (l_task_count >= s_new_thread_threshold)
+					_push_worker();
+
+				return l_task;
+			}
+
+			static const bcCHAR* service_name()
+			{
+				return g_srv_thread_manager;
 			}
 
 		protected:
@@ -508,19 +532,19 @@ namespace black_cat
 				}
 			}
 
-			bool _pop_task_from_local_queue(task_wrapper_type& p_task)
+			bool _pop_task_from_local_queue(task_type& p_task)
 			{
 				_thread_data* l_my_data = m_my_data.get();
 
 				return l_my_data && l_my_data->local_queue().pop(p_task);
 			}
 
-			bool _pop_task_from_global_queue(task_wrapper_type& p_task)
+			bool _pop_task_from_global_queue(task_type& p_task)
 			{
 				return m_global_queue.pop(p_task);
 			}
 
-			bool _pop_task_from_others_queue(task_wrapper_type& p_task)
+			bool _pop_task_from_others_queue(task_type& p_task)
 			{
 				_thread_data* l_my_data = m_my_data.get();
 
@@ -547,7 +571,7 @@ namespace black_cat
 				}
 
 				bcUINT32 l_without_task = 0;
-				task_wrapper_type l_task;
+				task_type l_task;
 
 				while (!m_done.load())
 				{
@@ -559,6 +583,7 @@ namespace black_cat
 						m_task_count.fetch_sub(1U, core_platform::bc_memory_order::seqcst);
 
 						l_task(core_platform::bc_thread::current_thread_id());
+						l_task.reset();
 					}
 					else
 					{
@@ -572,6 +597,7 @@ namespace black_cat
 				}
 			}
 
+		private:
 			static const bcUINT32 s_worker_switch_threshold = 10;
 			static const bcUINT32 s_new_thread_threshold = 10;
 
@@ -581,14 +607,10 @@ namespace black_cat
 			core_platform::bc_atomic< bool > m_done;
 
 			bc_vector_a< bc_unique_ptr<_thread_data>, bc_allocator_program > m_threads;
-			bc_concurrent_queue< task_wrapper_type, bc_allocator_frame< task_wrapper_type > > m_global_queue;
+			//bc_concurrent_queue_frame< task_wrapper_type > m_global_queue; TODO
+			bc_concurrent_queue< task_type > m_global_queue;
 			core_platform::bc_thread_local< _thread_data > m_my_data;
 			mutable core_platform::bc_shared_mutex m_shared_mutex;
 		};
-
-		bcInline void bc_check_for_interruption()
-		{
-			bc_service_manager::get().get_service<bc_thread_manager>()->check_for_interruption();
-		}
 	}
 }

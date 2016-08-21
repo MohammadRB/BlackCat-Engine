@@ -19,7 +19,7 @@ namespace black_cat
 		{
 		}
 		
-		bc_vector2f::bc_vector2f(bcFLOAT32 p_x, bcFLOAT32 p_y)
+		bc_vector2f::bc_vector2f(bcFLOAT p_x, bcFLOAT p_y)
 		{
 			x = p_x;
 			y = p_y;
@@ -47,15 +47,15 @@ namespace black_cat
 		
 		void bc_vector2f::normalize()
 		{
-			bcFLOAT32 l_inv_mag = (1.0f / magnitude());
+			bcFLOAT l_inv_mag = (1.0f / magnitude());
 
 			x *= l_inv_mag;
 			y *= l_inv_mag;
 		}
 		
-		bcFLOAT32 bc_vector2f::magnitude()
+		bcFLOAT bc_vector2f::magnitude()
 		{
-			bcFLOAT32 l_length = 0.0f;
+			bcFLOAT l_length = 0.0f;
 
 			l_length += x * x;
 			l_length += y * y;
@@ -72,13 +72,13 @@ namespace black_cat
 			if (y < 0.0f) y = 0.0f;
 		}
 		
-		bcFLOAT32 bc_vector2f::operator[] (int p_pos) const
+		bcFLOAT bc_vector2f::operator[] (int p_pos) const
 		{
 			if (p_pos == 0) return(x);
 			return(y);
 		}
 		
-		bcFLOAT32& bc_vector2f::operator[] (int p_pos)
+		bcFLOAT& bc_vector2f::operator[] (int p_pos)
 		{
 			if (p_pos == 0) return(x);
 			return(y);
@@ -129,7 +129,7 @@ namespace black_cat
 			return(l_prod);
 		}
 		
-		bc_vector2f bc_vector2f::operator* (bcFLOAT32 p_scalar) const
+		bc_vector2f bc_vector2f::operator* (bcFLOAT p_scalar) const
 		{
 			bc_vector2f l_prod;
 
@@ -139,12 +139,12 @@ namespace black_cat
 			return(l_prod);
 		}
 		
-		bc_vector2f bc_vector2f::operator/ (bcFLOAT32 p_scalar) const
+		bc_vector2f bc_vector2f::operator/ (bcFLOAT p_scalar) const
 		{
 			bc_vector2f l_quot;
 			if (p_scalar != 0.0f)
 			{
-				bcFLOAT32 l_inv_scalar = 1.0f / p_scalar;
+				bcFLOAT l_inv_scalar = 1.0f / p_scalar;
 				l_quot.x = x * l_inv_scalar;
 				l_quot.y = y * l_inv_scalar;
 			}
@@ -182,7 +182,7 @@ namespace black_cat
 			return(*this);
 		}
 		
-		bc_vector2f& bc_vector2f::operator*= (bcFLOAT32 p_scalar)
+		bc_vector2f& bc_vector2f::operator*= (bcFLOAT p_scalar)
 		{
 			x *= p_scalar;
 			y *= p_scalar;
@@ -190,11 +190,11 @@ namespace black_cat
 			return(*this);
 		}
 		
-		bc_vector2f& bc_vector2f::operator/= (bcFLOAT32 p_scalar)
+		bc_vector2f& bc_vector2f::operator/= (bcFLOAT p_scalar)
 		{
 			if (p_scalar != 0.0f)
 			{
-				bcFLOAT32 l_inv_scalar = 1.0f / p_scalar;
+				bcFLOAT l_inv_scalar = 1.0f / p_scalar;
 				x *= l_inv_scalar;
 				y *= l_inv_scalar;
 			}

@@ -39,18 +39,6 @@
     <ClInclude Include="Core\CorePCH.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Core\CoreExceptions.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Math\BasicMath.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Math\xnamath.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Math\CoreMathUtility.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Utility\bcDelegate.h">
       <Filter>Core\Utility</Filter>
     </ClInclude>
@@ -66,14 +54,8 @@
     <ClInclude Include="Core\Concurrency\bcThreadManager.h">
       <Filter>Core\Concurrency</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Concurrency\bcConcurrencyUtility.h">
-      <Filter>Core\Concurrency</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Memory\bcMemMngFreeList.h">
       <Filter>Core\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\bcCoreUtility.h">
-      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\Memory\bcMemoryExtender.h">
       <Filter>Header Files</Filter>
@@ -195,16 +177,82 @@
     <ClInclude Include="Core\Utility\bcTemplateMetaType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Utility\bcLogger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\bcEnumOperand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\bcInitializable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\bcRefCountPtr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Concurrency\bcThreadLocal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Concurrency\bcBackOff.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\File\bcContent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\File\bcContentManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\File\bcStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\File\bcFileStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\File\bcContentLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\File\bcJsonDocument.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Concurrency\bcConcurrency.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\bcExpression.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\bcExpressionParameter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\bcExpressionParameterManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\bcDataDrivenParameter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\bcConstant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\bcDelegate.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\File\bcContentStreamManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\File\bcLazyContent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\File\bcPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\bcExport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\bcException.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\CorePCH.cpp">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Math\BasicMath.cpp">
-      <Filter>Core\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Math\CoreMathUtility.cpp">
-      <Filter>Core\Math</Filter>
     </ClCompile>
     <ClCompile Include="Core\Concurrency\bcThreadManager.cpp">
       <Filter>Core\Concurrency</Filter>
@@ -239,19 +287,29 @@
     <ClCompile Include="Core\Utility\bcServiceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Core\Math\xnamathconvert.inl">
-      <Filter>Core\Math</Filter>
-    </None>
-    <None Include="Core\Math\xnamathmatrix.inl">
-      <Filter>Core\Math</Filter>
-    </None>
-    <None Include="Core\Math\xnamathmisc.inl">
-      <Filter>Core\Math</Filter>
-    </None>
-    <None Include="Core\Math\xnamathvector.inl">
-      <Filter>Core\Math</Filter>
-    </None>
+    <ClCompile Include="Core\Utility\bcLogger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\File\bcContent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\File\bcContentLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Utility\bcExpression.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Utility\bcExpressionParameterManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\File\bcContentStreamManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\File\bcStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\File\bcPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -15,21 +15,30 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CorePlatformImp\bcHardwareInfo.h" />
+    <ClInclude Include="CorePlatformImp\bcExport.h" />
+    <ClInclude Include="CorePlatformImp\bcUtility.h" />
     <ClInclude Include="CorePlatformImp\Concurrency\bcAtomic.h" />
-    <ClInclude Include="CorePlatformImp\Concurrency\bcConcurrencyUtility.h" />
     <ClInclude Include="CorePlatformImp\Concurrency\bcConditionVariable.h" />
     <ClInclude Include="CorePlatformImp\Concurrency\bcFuture.h" />
     <ClInclude Include="CorePlatformImp\Concurrency\bcMutex.h" />
     <ClInclude Include="CorePlatformImp\Concurrency\bcThread.h" />
+    <ClInclude Include="CorePlatformImp\Concurrency\bcThreadLocal.h" />
     <ClInclude Include="CorePlatformImp\CorePlatformImpPCH.h" />
+    <ClInclude Include="CorePlatformImp\File\bcFile.h" />
+    <ClInclude Include="CorePlatformImp\File\bcFileInfo.h" />
+    <ClInclude Include="CorePlatformImp\File\bcPath.h" />
     <ClInclude Include="CorePlatformImp\Utility\bcClock.h" />
+    <ClInclude Include="CorePlatformImp\Utility\bcHardwareInfo.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CorePlatformImp\bcUtility.cpp" />
     <ClCompile Include="CorePlatformImp\CorePlatformImpPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="CorePlatformImp\File\bcFile.cpp" />
+    <ClCompile Include="CorePlatformImp\File\bcFileInfo.cpp" />
+    <ClCompile Include="CorePlatformImp\File\bcPath.cpp" />
     <ClCompile Include="CorePlatformImp\Memory\bcMemAlloc.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -107,6 +116,7 @@
       <Command>copy CorePlatformImp\Concurrency\*.h ..\BC_SDK\Include\CorePlatformImp\Concurrency
 copy CorePlatformImp\Memory\*.h ..\BC_SDK\Include\CorePlatformImp\Memory
 copy CorePlatformImp\Utility\*.h ..\BC_SDK\Include\CorePlatformImp\Utility
+copy CorePlatformImp\File\*.h ..\BC_SDK\Include\CorePlatformImp\File
 copy CorePlatformImp\*.h ..\BC_SDK\Include\CorePlatformImp
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
@@ -142,6 +152,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
       <Command>copy CorePlatformImp\Concurrency\*.h ..\BC_SDK\Include\CorePlatformImp\Concurrency
 copy CorePlatformImp\Memory\*.h ..\BC_SDK\Include\CorePlatformImp\Memory
 copy CorePlatformImp\Utility\*.h ..\BC_SDK\Include\CorePlatformImp\Utility
+copy CorePlatformImp\File\*.h ..\BC_SDK\Include\CorePlatformImp\File
 copy CorePlatformImp\*.h ..\BC_SDK\Include\CorePlatformImp
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
@@ -177,6 +188,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
       <Command>copy CorePlatformImp\Concurrency\*.h ..\BC_SDK\Include\CorePlatformImp\Concurrency
 copy CorePlatformImp\Memory\*.h ..\BC_SDK\Include\CorePlatformImp\Memory
 copy CorePlatformImp\Utility\*.h ..\BC_SDK\Include\CorePlatformImp\Utility
+copy CorePlatformImp\File\*.h ..\BC_SDK\Include\CorePlatformImp\File
 copy CorePlatformImp\*.h ..\BC_SDK\Include\CorePlatformImp
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll

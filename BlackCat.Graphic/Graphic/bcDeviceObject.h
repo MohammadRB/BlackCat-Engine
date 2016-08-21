@@ -2,26 +2,23 @@
 
 #pragma once
 
-#include "CorePlatform/bcCorePlatformUtility.h"
+#include "CorePlatform/Utility/bcNoCopy.h"
+#include "Graphic/bcResourcePtr.h"
 
 namespace black_cat
 {
 	namespace graphic
 	{
-		template<class>
-		class bc_resource_ptr;
-
-		class bc_device_object : public core_platform::bc_no_copy
+		class bc_device_object : 
+			private core::bc_ref_count,
+			public core_platform::bc_no_copy
 		{
 		public:
-			template<class>
-			friend class bc_resource_ptr;
+			template< class T, class TDeleter >
+			friend class bc_ref_count_ptr;
 
 		public:
-			bc_device_object()
-				: m_ref_count(0)
-			{
-			}
+			bc_device_object() = default;
 
 			virtual ~bc_device_object() = default;
 
@@ -30,22 +27,8 @@ namespace black_cat
 			bc_device_object& operator=(bc_device_object&&) = default;
 			
 		protected:
-			void add_ref() noexcept
-			{
-				++m_ref_count;
-			}
-
-			// Return true if reference count reach zero
-			bool dec_ref() noexcept
-			{
-				bcAssert(m_ref_count > 0);
-				--m_ref_count;
-
-				return m_ref_count == 0;
-			}
 
 		private:
-			bcUINT m_ref_count;
 		};
 	}
 }

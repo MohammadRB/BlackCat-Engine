@@ -3,7 +3,7 @@
 #pragma once
 
 #include <mutex>
-#include "CorePlatform/bcCorePlatformUtility.h"
+#include "CorePlatform/Utility/bcNoCopy.h"
 #include "CorePlatform/Concurrency/bcMutex.h"
 #include "CorePlatformImp/CorePlatformImpPCH.h"
 #include "CorePlatformImp/Concurrency/bcAtomic.h"

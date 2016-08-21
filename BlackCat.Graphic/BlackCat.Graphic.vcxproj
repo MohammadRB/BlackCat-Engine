@@ -11,14 +11,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BlackCat.Core.Platform.Win32\BlackCat.Core.Platform.Win32.vcxproj">
+      <Project>{be5cab27-d8e0-4781-abf8-f37fe773b65b}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\BlackCat.Core\BlackCat.Core.vcxproj">
       <Project>{e4a77cc4-66c0-49b1-bfcf-a92173763741}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\BlackCat.Platform.Win32\BlackCat.Platform.Win32.vcxproj">
+      <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphic\bcDeviceObject.h" />
+    <ClInclude Include="Graphic\bcDeviceResourceContent.h" />
+    <ClInclude Include="Graphic\bcEvent.h" />
+    <ClInclude Include="Graphic\bcExport.h" />
     <ClInclude Include="Graphic\bcGraphicDefinition.h" />
-    <ClInclude Include="Graphic\bcGraphicException.h" />
+    <ClInclude Include="Graphic\bcException.h" />
     <ClInclude Include="Graphic\bcPlatformRenderApi.h" />
     <ClInclude Include="Graphic\bcRenderApiInfo.h" />
     <ClInclude Include="Graphic\bcResourcePtr.h" />
@@ -29,6 +38,34 @@
     <ClInclude Include="Graphic\Device\bcDevicePipeline.h" />
     <ClInclude Include="Graphic\Device\bcDevicePipelineState.h" />
     <ClInclude Include="Graphic\GraphicPCH.h" />
+    <ClInclude Include="Graphic\Loader\bcDeviceResourceContent.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Graphic\Loader\bcDomainShaderLoader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Graphic\Loader\bcGeometryShaderLoader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Graphic\Loader\bcHullShaderLoader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Graphic\Loader\bcPixelShaderLoader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Graphic\Loader\bcTextureLoader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Graphic\Loader\bcVertexShaderLoader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Graphic\Math\bcMatrix3f.h" />
     <ClInclude Include="Graphic\Math\bcMatrix4f.h" />
     <ClInclude Include="Graphic\Math\bcVector2f.h" />
@@ -47,10 +84,6 @@
     <ClInclude Include="Graphic\PipelineStage\bcRasterizerStage.h" />
     <ClInclude Include="Graphic\PipelineStage\bcStreamOutputStage.h" />
     <ClInclude Include="Graphic\PipelineStage\bcVertexStage.h" />
-    <ClInclude Include="Graphic\Rendering\bcRenderCommand.h" />
-    <ClInclude Include="Graphic\Rendering\bcRenderPass.h" />
-    <ClInclude Include="Graphic\Rendering\bcRenderPassManager.h" />
-    <ClInclude Include="Graphic\Rendering\bcRenderTask.h" />
     <ClInclude Include="Graphic\Resource\bcResource.h" />
     <ClInclude Include="Graphic\Resource\bcResourceConfig.h" />
     <ClInclude Include="Graphic\Resource\Buffer\bcBuffer.h" />
@@ -93,11 +126,14 @@
     <ClInclude Include="Graphic\Shader\Parameter\bcMatrix4fParameter.h" />
     <ClInclude Include="Graphic\Shader\Parameter\bcSamplerParameter.h" />
     <ClInclude Include="Graphic\Shader\Parameter\bcShaderParameter.h" />
-    <ClInclude Include="Graphic\Shader\Parameter\bcShaderParameterManager.h" />
-    <ClInclude Include="Graphic\Shader\Parameter\bcShaderResourceParameter.h" />
+    <ClInclude Include="Graphic\Shader\Parameter\bcShaderParameterManager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Graphic\Shader\Parameter\bcShaderViewParameter.h" />
     <ClInclude Include="Graphic\Shader\Parameter\bcVectorParameter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Graphic\bcResourcePtr.cpp" />
     <ClCompile Include="Graphic\GraphicPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
@@ -111,8 +147,9 @@
     <ClCompile Include="Graphic\PipelineStage\bcProgrammableStage.cpp" />
     <ClCompile Include="Graphic\PipelineStage\bcRasterizerStage.cpp" />
     <ClCompile Include="Graphic\PipelineStage\bcStreamOutputStage.cpp" />
-    <ClCompile Include="Graphic\Rendering\bcRenderPassManager.cpp" />
-    <ClCompile Include="Graphic\Shader\Parameter\bcShaderParameterManager.cpp" />
+    <ClCompile Include="Graphic\Shader\Parameter\bcShaderParameterManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7B267E54-9DA2-435D-BE52-4388E78A1661}</ProjectGuid>
@@ -173,9 +210,9 @@
       <Command>copy Graphic\*.h ..\BC_SDK\Include\Graphic
 copy Graphic\Device\*.h ..\BC_SDK\Include\Graphic\Device
 copy Graphic\Device\Command\*.h ..\BC_SDK\Include\Graphic\Device\Command
+copy Graphic\Loader\*.h ..\BC_SDK\Include\Graphic\Loader
 copy Graphic\Math\*.h ..\BC_SDK\Include\Graphic\Math
 copy Graphic\PipelineStage\*.h ..\BC_SDK\Include\Graphic\PipelineStage
-copy Graphic\Rendering\*.h ..\BC_SDK\Include\Graphic\Rendering
 copy Graphic\Resource\*.h ..\BC_SDK\Include\Graphic\Graphic\Resource
 copy Graphic\Resource\Buffer\*.h ..\BC_SDK\Include\Graphic\Resource\Buffer
 copy Graphic\Resource\State\*.h ..\BC_SDK\Include\Graphic\Resource\State
@@ -218,12 +255,10 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
       <Command>copy Graphic\*.h ..\BC_SDK\Include\Graphic
 copy Graphic\Device\*.h ..\BC_SDK\Include\Graphic\Device
 copy Graphic\Device\Command\*.h ..\BC_SDK\Include\Graphic\Device\Command
+copy Graphic\Loader\*.h ..\BC_SDK\Include\Graphic\Loader
 copy Graphic\Math\*.h ..\BC_SDK\Include\Graphic\Math
 copy Graphic\PipelineStage\*.h ..\BC_SDK\Include\Graphic\PipelineStage
 copy Graphic\Rendering\*.h ..\BC_SDK\Include\Graphic\Rendering
-copy Graphic\Rendering\Command\*.h ..\BC_SDK\Include\Graphic\Rendering\Command
-copy Graphic\Rendering\Pass\*.h ..\BC_SDK\Include\Graphic\Rendering\Pass
-copy Graphic\Rendering\Task\*.h ..\BC_SDK\Include\Graphic\Rendering\Task
 copy Graphic\Resource\*.h ..\BC_SDK\Include\Graphic\Graphic\Resource
 copy Graphic\Resource\Buffer\*.h ..\BC_SDK\Include\Graphic\Resource\Buffer
 copy Graphic\Resource\State\*.h ..\BC_SDK\Include\Graphic\Resource\State

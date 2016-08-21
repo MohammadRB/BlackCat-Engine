@@ -2,9 +2,8 @@
 
 #include "Core/CorePCH.h"
 #include "CorePlatform/Concurrency/bcConcurrencyDef.h"
-#include "coreplatform/bccoreplatformutility.h"
 #include "coreplatform/memory/bcmemalloc.h"
-#include "CorePlatformImp/bcHardwareInfo.h"
+#include "CorePlatformImp/Utility/bcHardwareInfo.h"
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 
@@ -20,7 +19,8 @@ namespace black_cat
 			using this_type = bc_memmng_freelist;
 
 		public:
-			bc_memmng_freelist() :
+			bc_memmng_freelist() 
+				: m_alloc_size(0),
 				m_first_block(nullptr)
 			{
 				m_free.store(reinterpret_cast<memmng_freelist_item*>(nullptr));
@@ -51,7 +51,7 @@ namespace black_cat
 				core_platform::bc_hardware_info::get_basic_info(&l_hardware_info);
 
 				// Round up allocation size to multiple of platform page size, because we use paging allocation /
-				m_alloc_size = core_platform::bc_math_utility::roundup_p2(p_alloc_size, l_hardware_info.page_size);
+				m_alloc_size = roundup_p2(p_alloc_size, l_hardware_info.page_size);
 				
 				_alloc_new_block();
 			}
@@ -162,6 +162,11 @@ namespace black_cat
 		protected:
 			
 		private:
+			bcINT32 roundup_p2(bcINT32 p_num, bcINT32 p_multipe)
+			{
+				return (p_num + p_multipe - 1) & ~(p_multipe - 1);
+			}
+
 			void _move(this_type&& p_other)
 			{
 				memmng_freelist_item* l_free = m_free.load(core_platform::bc_memory_order::acquire);

@@ -6,7 +6,6 @@
 #include "Core/Utility/bcTemplateMetaType.h"
 #include "Core/Memory/bcAlloc.h"
 #include "Core/Memory/bcPtr.h"
-#include "Core/Utility/bcDelegate.h"
 
 namespace black_cat
 {
@@ -417,11 +416,12 @@ namespace black_cat
 		};
 
 		// Provide an interface for classes that use dynamic memory and their clients to change allocation properties
+		// (Don't use movale memory to allocate objects of this type)
 		class bc_object_allocator
 		{
 		public:
 			template<typename T>
-			using ptr = bc_unique_ptr<T, bc_delegate<void(T*)>>;
+			using ptr = bc_unique_ptr<T, void(*)(T*)>;
 
 		public:
 			explicit bc_object_allocator(bc_alloc_type p_alloc_type = bc_alloc_type::unknown, bcUINT p_alignment = BC_MEMORY_MIN_ALIGN)
@@ -429,6 +429,16 @@ namespace black_cat
 				m_alignment(p_alignment)
 			{	
 			}
+
+			bc_object_allocator(const bc_object_allocator& p_other) = default;
+
+			bc_object_allocator(bc_object_allocator&& p_other) = default;
+
+			~bc_object_allocator() = default;
+
+			bc_object_allocator& operator=(const bc_object_allocator& p_other) = default;
+
+			bc_object_allocator& operator=(bc_object_allocator&& p_other) = default;
 
 			bc_alloc_type get_allocator_alloc_type()const
 			{
@@ -473,15 +483,25 @@ namespace black_cat
 					throw;
 				}
 
-				bc_delegate<void(T*)> l_deleter(this, &bc_object_allocator::deallocate<T>);
-				return ptr<T>(l_pointer, std::move(l_deleter));
+				return ptr<T>(l_pointer, &bc_object_allocator::deallocate<T>);
+			}
+
+			// Used to allocate raw memory
+			template<>
+			ptr<bcBYTE> allocate<bcBYTE, bcUINT>(bcUINT&& p_num)
+			{
+				bc_runtime_allocator<bcBYTE> l_allocator(m_alloc_type, m_alignment);
+
+				bcBYTE* l_pointer = l_allocator.allocate(p_num);
+
+				return ptr<bcBYTE>(l_pointer, &bc_object_allocator::deallocate<bcBYTE>);
 			}
 
 			// Destruct object and deallocate it's memory
 			template<typename T>
-			void deallocate(T* p_pointer)
+			static void deallocate(T* p_pointer)
 			{
-				bc_runtime_allocator<T> l_allocator(m_alloc_type, m_alignment);
+				bc_runtime_allocator<T> l_allocator(bc_alloc_type::unknown);
 
 				try
 				{
@@ -497,14 +517,23 @@ namespace black_cat
 			}
 
 			template<typename T>
-			void deallocate(ptr<T> p_pointer)
+			static void deallocate(ptr<T> p_pointer)
 			{
 				deallocate(p_pointer.get());
 			}
 
+			// Used to deallocate raw memory
+			template<>
+			static void deallocate(bcBYTE* p_pointer)
+			{
+				bc_runtime_allocator<bcBYTE> l_allocator(bc_alloc_type::unknown);
+
+				l_allocator.deallocate(p_pointer);
+			}
+
 		private:
 			bc_alloc_type m_alloc_type;
-			bcUINT m_alignment;
+			bcUINT16 m_alignment;
 		};
 	}
 }

@@ -33,28 +33,13 @@
     <ClInclude Include="CorePlatform\bcType.h">
       <Filter>CorePlatform</Filter>
     </ClInclude>
-    <ClInclude Include="CorePlatform\bcCorePlatformUtility.h">
-      <Filter>CorePlatform</Filter>
-    </ClInclude>
     <ClInclude Include="CorePlatform\Memory\bcMemAlloc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePlatform\bcHardwareInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePlatform\bcCorePlatformException.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePlatform\Concurrency\bcILockable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CorePlatform\Utility\bcClock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CorePlatform\Concurrency\bcAtomic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePlatform\Concurrency\bcConcurrencyUtility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CorePlatform\Concurrency\bcConditionVariable.h">
@@ -67,6 +52,30 @@
       <Filter>CorePlatform\Concurrency</Filter>
     </ClInclude>
     <ClInclude Include="CorePlatform\Concurrency\bcThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatform\Concurrency\bcThreadLocal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatform\Utility\bcNoCopy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatform\File\bcFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatform\File\bcFileInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatform\Utility\bcHardwareInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatform\File\bcPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatform\bcExport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePlatform\bcException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

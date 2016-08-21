@@ -25,7 +25,7 @@ namespace black_cat
 		struct bc_device_pipeline_state_config
 		{
 			bc_device_pipeline_state_config()
-				: m_sample_config(1, 0)
+				: m_sample_mask(0), m_num_render_target(0), m_depth_stencil_format(), m_sample_config(1, 0)
 			{
 			}
 

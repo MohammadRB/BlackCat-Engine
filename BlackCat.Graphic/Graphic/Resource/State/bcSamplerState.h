@@ -18,30 +18,30 @@ namespace black_cat
 			bc_texture_address_mode m_address_u;
 			bc_texture_address_mode m_address_v;
 			bc_texture_address_mode m_address_w;
-			bcFLOAT32 m_mip_lod_bias;
+			bcFLOAT m_mip_lod_bias;
 			bcUINT m_max_anisotropy;
 			bc_comparison_func m_comparison_func;
-			bcFLOAT32 m_border_color[4];
-			bcFLOAT32 m_min_lod;
-			bcFLOAT32 m_max_lod;
+			bcFLOAT m_border_color[4];
+			bcFLOAT m_min_lod;
+			bcFLOAT m_max_lod;
 
 			static bc_sampler_state_config& default_config()
 			{
 				static bc_sampler_state_config s_config;
 
-				s_config.m_filter = bc_filter::comparison_min_mag_mip_linear;
+				s_config.m_filter = bc_filter::min_mag_mip_linear;
 				s_config.m_address_u = bc_texture_address_mode::wrap;
 				s_config.m_address_v = bc_texture_address_mode::wrap;
 				s_config.m_address_w = bc_texture_address_mode::wrap;
 				s_config.m_mip_lod_bias = 0.0f;
 				s_config.m_max_anisotropy = 1;
-				s_config.m_comparison_func = bc_comparison_func::always;
-				s_config.m_border_color[0] = 0.0f; 
-				s_config.m_border_color[1] = 0.0f; 
-				s_config.m_border_color[2] = 0.0f; 
-				s_config.m_border_color[3] = 0.0f;
+				s_config.m_comparison_func = bc_comparison_func::never;
+				s_config.m_border_color[0] = 1.0f; 
+				s_config.m_border_color[1] = 1.0f; 
+				s_config.m_border_color[2] = 1.0f; 
+				s_config.m_border_color[3] = 1.0f;
 				s_config.m_min_lod = 0;
-				s_config.m_max_lod = (std::numeric_limits<bcFLOAT32>::max)();
+				s_config.m_max_lod = (std::numeric_limits<bcFLOAT>::max)();
 
 				return s_config;
 			}

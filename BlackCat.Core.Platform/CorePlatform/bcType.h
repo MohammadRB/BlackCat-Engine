@@ -27,10 +27,10 @@ namespace black_cat
 	using bcUINT32 = uint32_t;
 	using bcINT = int;
 	using bcUINT = unsigned int;
-	using bcFLOAT32 = float;
+	using bcFLOAT = float;
 	using bcINT64 = int64_t;
 	using bcUINT64 = uint64_t;
-	using bcDOUBLE64 = double;
+	using bcDOUBLE = double;
 	using bcSIZE = size_t;
 	using bcPTRDIFF = ptrdiff_t;
 	using bcINTPTR = intptr_t;

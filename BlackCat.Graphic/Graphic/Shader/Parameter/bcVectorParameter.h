@@ -12,9 +12,9 @@ namespace black_cat
 		class bc_vector_parameter : public bc_ishader_parameter
 		{
 		public:
-			bc_vector_parameter() = default;
+			bc_vector_parameter();
 
-			bc_vector_parameter(bcINT p_register, bc_vector4f& p_vector);
+			bc_vector_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_vector4f& p_vector);
 
 			bc_vector_parameter(bc_vector_parameter&) = default;
 
@@ -30,14 +30,20 @@ namespace black_cat
 
 			void set_parameter_data(void* p_data) override;
 
+			bool is_valid() const override;
 		protected:
 
 		private:
 			bc_vector4f m_vector;
 		};
 
-		inline bc_vector_parameter::bc_vector_parameter(bcINT p_register, bc_vector4f& p_vector)
-			: bc_ishader_parameter(p_register),
+		inline bc_vector_parameter::bc_vector_parameter()
+			: bc_ishader_parameter()
+		{
+		}
+
+		inline bc_vector_parameter::bc_vector_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_vector4f& p_vector)
+			: bc_ishader_parameter(p_register, p_shader_types),
 			m_vector(p_vector)
 		{
 		}
@@ -63,6 +69,11 @@ namespace black_cat
 				set_vector(bc_vector4f(0, 0, 0, 0));
 			else
 				set_vector(*reinterpret_cast<bc_vector4f*>(p_data));
+		}
+
+		inline bool bc_vector_parameter::is_valid() const
+		{
+			return m_register_index != -1;
 		}
 	}
 }

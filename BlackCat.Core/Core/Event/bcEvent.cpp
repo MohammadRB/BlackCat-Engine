@@ -2,6 +2,7 @@
 
 #include "Core/CorePCH.h"
 #include "Core/Event/bcEvent.h"
+#include "Core/Container/bcString.h"
 
 namespace black_cat
 {
@@ -13,18 +14,7 @@ namespace black_cat
 
 		bc_event_hash bc_ievent::get_hash(const bcCHAR* p_name) noexcept(true)
 		{
-			bc_event_hash l_hash = 0;
-			bcSIZE l_length;
-
-			if ((l_length = std::strlen(p_name)) != 0)
-			{
-				bcUINT32 l_offset = 0;
-
-				for (bcUINT32 l_i = 0; l_i < l_length; ++l_i)
-				{
-					l_hash = 31 * l_hash + p_name[l_offset++];
-				}
-			}
+			bc_event_hash l_hash = std::hash<const bcCHAR*>()(p_name);
 
 			bcAssert(l_hash != 0);
 

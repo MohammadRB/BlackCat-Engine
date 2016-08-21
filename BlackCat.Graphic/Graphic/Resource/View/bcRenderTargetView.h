@@ -35,7 +35,7 @@ namespace black_cat
 
 			bc_resource_view_type get_view_type() const override;
 
-			bc_resource_view_config& get_config()
+			bc_render_target_view_config& get_config()
 			{
 				return m_pack.m_config;
 			}

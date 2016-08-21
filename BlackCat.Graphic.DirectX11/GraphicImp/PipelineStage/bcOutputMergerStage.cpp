@@ -1,6 +1,7 @@
 // [02/09/2016 MRB]
 
 #include "GraphicImp/GraphicImpPCH.h"
+#include "GraphicImp/bcExport.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/PipelineStage/bcOutputMergerStage.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
@@ -13,27 +14,27 @@ namespace black_cat
 	namespace graphic
 	{
 		template< >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_output_merger_stage<g_api_dx11>::bc_platform_output_merger_stage()
 			: m_pack()
 		{
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_output_merger_stage<g_api_dx11>::bc_platform_output_merger_stage(bc_platform_output_merger_stage&& p_other)
 			: m_pack(std::move(p_other.m_pack))
 		{
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_output_merger_stage<g_api_dx11>::~bc_platform_output_merger_stage()
 		{
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		bc_platform_output_merger_stage<g_api_dx11>& bc_platform_output_merger_stage<g_api_dx11>::operator=(bc_platform_output_merger_stage&& p_other)
 		{
 			m_pack = std::move(p_other.m_pack);
@@ -42,7 +43,7 @@ namespace black_cat
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		void bc_platform_output_merger_stage<g_api_dx11>::apply_required_state(bc_device_pipeline* p_pipeline)
 		{
 			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_context.Get();
@@ -51,7 +52,7 @@ namespace black_cat
 			if(l_required_state.m_blend_factors.update_needed())
 			{
 				ComPtr<ID3D11BlendState> l_current_blend_state;
-				bcFLOAT32 l_current_blend_factors[4];
+				bcFLOAT l_current_blend_factors[4];
 				bcUINT l_current_sample_mask;
 
 				l_context->OMGetBlendState(l_current_blend_state.GetAddressOf(), l_current_blend_factors, &l_current_sample_mask);
@@ -112,7 +113,7 @@ namespace black_cat
 						l_depth_stencil_view,
 						l_uav_dirty_slot_start,
 						l_uav_dirty_slot_num,
-						l_unordered_views,
+						&l_unordered_views[l_uav_dirty_slot_start],
 						l_uav_initialCounts
 					);
 			}
@@ -121,7 +122,7 @@ namespace black_cat
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP
+		BC_GRAPHICIMP_DLL
 		void bc_platform_output_merger_stage<g_api_dx11>::set_to_default_state(bc_device_pipeline* p_pipeline)
 		{
 			m_required_state.set_to_initial_state();

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Core/CorePCH.h"
+#include "Core/bcExport.h"
 #include "Core/Container/bcContainer.h"
 
 namespace black_cat
 {
 	namespace core
 	{
-		class BC_COREDLL_EXP bc_bit_vector
+		class BC_CORE_DLL bc_bit_vector
 		{
 		public:
 			bc_bit_vector(bcUINT32 p_size);

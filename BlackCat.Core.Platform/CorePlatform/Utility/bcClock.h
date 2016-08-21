@@ -5,7 +5,7 @@
 #include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatform/bcType.h"
 #include "CorePlatform/bcPlatform.h"
-#include "CorePlatform/bcCorePlatformUtility.h"
+#include "CorePlatform/Utility/bcNoCopy.h"
 
 namespace black_cat
 {
@@ -21,10 +21,22 @@ namespace black_cat
 		{
 		public:
 			using platform_pack = bc_platform_clock_pack< TPlatform >;
-			using large_clock_type = typename platform_pack::large_clock_type;
-			using little_clock_type = typename platform_pack::little_clock_type;
-			using large_time_delta_type = typename platform_pack::large_time_delta_type;
-			using little_time_delta_type = typename platform_pack::little_time_delta_type;
+			using big_clock = typename platform_pack::big_clock;
+			using small_clock = typename platform_pack::small_clock;
+			using big_delta_time = typename platform_pack::big_delta_time;
+			using small_delta_time = typename platform_pack::small_delta_time;
+
+			struct update_param
+			{
+				update_param(big_clock p_total_elapsed, small_delta_time p_elapsed)
+					: m_total_elapsed(p_total_elapsed),
+					m_elapsed(p_elapsed)
+				{
+				}
+
+				big_clock m_total_elapsed;
+				small_delta_time m_elapsed;
+			};
 
 		public:
 			bc_platform_clock() noexcept(true);
@@ -32,30 +44,30 @@ namespace black_cat
 			~bc_platform_clock() noexcept(true);
 
 			// Number of cpu cycles that has been elapsed since clock startup
-			large_clock_type get_clocks() const noexcept(true)
+			big_clock get_clocks() const noexcept(true)
 			{
 				return m_clocks;
 			}
 
-			// Total elapsed time by millisecond since clock startup
-			large_time_delta_type get_total_elapsed() const noexcept(true)
+			// Total elapsed time by millisecond since clock startup(This is a real value)
+			big_delta_time get_total_elapsed() const noexcept(true)
 			{
-				return _clocks_to_milliseconds(m_clocks);
+				return _clocks_to_milliseconds(m_clocks - m_start_up_clocks);
 			}
 
-			// Elapsed time by millisecond from last update
-			little_time_delta_type get_elapsed() const noexcept(true)
+			// Elapsed time by millisecond from last update(This can be scaled or limited)
+			small_delta_time get_elapsed() const noexcept(true)
 			{
 				return m_elapsed;
 			}
 
 			// Scale up/down clock progress
-			void set_scale(little_time_delta_type p_scale) noexcept(true)
+			void set_scale(small_delta_time p_scale) noexcept(true)
 			{
 				m_scale = p_scale;
 			}
 
-			little_time_delta_type get_scale() const noexcept(true)
+			small_delta_time get_scale() const noexcept(true)
 			{
 				return m_scale;
 			}
@@ -77,7 +89,7 @@ namespace black_cat
 			}
 
 			// Specify a fixed step time by millisecond
-			void fixed_step(little_time_delta_type p_delta) noexcept(true)
+			void fixed_step(small_delta_time p_delta) noexcept(true)
 			{
 				if (p_delta < 0)
 					p_delta = -1;
@@ -86,18 +98,18 @@ namespace black_cat
 			}
 
 			// Fixed step time by millisecond if clock is in fixed step mode otherwise -1
-			little_time_delta_type fixed_step() const noexcept(true)
+			small_delta_time fixed_step() const noexcept(true)
 			{
 				return m_fixed_step;
 			}
 
 			// Time difference between two clock by millisecond
-			little_time_delta_type get_delta_time(const bc_platform_clock& p_other)
+			small_delta_time get_delta_time(const bc_platform_clock& p_other)
 			{
 				return _clocks_to_milliseconds(m_clocks - p_other.m_clocks);
 			}
 
-			little_time_delta_type operator -(const bc_platform_clock& p_other) noexcept(true)
+			small_delta_time operator -(const bc_platform_clock& p_other) noexcept(true)
 			{
 				return get_delta_time(p_other);
 			}
@@ -107,26 +119,27 @@ namespace black_cat
 		protected:
 
 		private:
-			large_clock_type _query_clock_per_millisecond();
+			big_clock _query_clock_per_millisecond();
 
-			large_clock_type _query_elapsed_clocks();
+			big_clock _query_elapsed_clocks();
 
-			inline large_clock_type _milliseconds_to_clocks(little_time_delta_type p_seconds) const
+			inline big_clock _milliseconds_to_clocks(small_delta_time p_seconds) const
 			{
-				return static_cast< large_clock_type >(p_seconds * m_clock_per_millisecond);
+				return static_cast< big_clock >(p_seconds * m_clock_per_millisecond);
 			}
 
 			// Use for short period of time
-			inline little_time_delta_type _clocks_to_milliseconds(large_clock_type p_clocks) const
+			inline small_delta_time _clocks_to_milliseconds(big_clock p_clocks) const
 			{
-				return static_cast< little_time_delta_type >(p_clocks) / m_clock_per_millisecond;
+				return static_cast< small_delta_time >(p_clocks) / m_clock_per_millisecond;
 			}
 
-			large_clock_type m_clock_per_millisecond;
-			large_clock_type m_clocks;
-			little_time_delta_type m_fixed_step;
-			little_time_delta_type m_scale;
-			little_time_delta_type m_elapsed;
+			big_clock m_clock_per_millisecond;
+			big_clock m_start_up_clocks;
+			big_clock m_clocks;
+			small_delta_time m_fixed_step;
+			small_delta_time m_scale;
+			small_delta_time m_elapsed;
 			bool m_paused;
 		};
 
@@ -137,6 +150,7 @@ namespace black_cat
 		{
 			m_clock_per_millisecond = _query_clock_per_millisecond();
 			m_clocks = _query_elapsed_clocks();
+			m_start_up_clocks = m_clocks;
 			m_fixed_step = -1;
 			m_scale = 1;
 			m_paused = false;
@@ -153,7 +167,7 @@ namespace black_cat
 			if (m_paused) return;
 
 			bool l_is_fixed = m_fixed_step != -1;
-			large_clock_type l_current_clock;
+			big_clock l_current_clock;
 
 			l_current_clock = _query_elapsed_clocks();
 

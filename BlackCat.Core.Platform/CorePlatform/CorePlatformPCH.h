@@ -59,8 +59,8 @@
 	assert(((expr)))
 #define bcStaticAssert(expr, msg) static_assert(expr, msg)
 #else
-#define bcAssert(expr) {}
-#define bcStaticAssert(expr, msg) {}
+#define bcAssert(expr) void(0)
+#define bcStaticAssert(expr, msg) void(0)
 #endif
 
 #ifdef UNICODE
@@ -68,9 +68,3 @@
 #endif
 
 // == BlackCat General Definations ============================================================================ /
-
-#ifdef BC_COREPLATFORM_DLL
-#define BC_COREPLATFORM_DLL_EXP __declspec(dllexport)
-#else
-#define BC_COREPLATFORM_DLL_EXP __declspec(dllimport)
-#endif

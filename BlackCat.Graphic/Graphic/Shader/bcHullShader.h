@@ -6,6 +6,7 @@
 #include "Graphic/bcPlatformRenderApi.h"
 #include "Graphic/bcResourcePtr.h"
 #include "Graphic/Shader/bcShader.h"
+#include "Graphic/bcDeviceResourceContent.h"
 
 namespace black_cat
 {
@@ -49,5 +50,7 @@ namespace black_cat
 		using bc_hull_shader = bc_platform_hull_shader< g_current_platform_render_api >;
 
 		using bc_hull_shader_ptr = bc_resource_ptr< bc_hull_shader >;
+		using bc_hull_shader_content = bc_device_resource_content< bc_hull_shader >;
+		using bc_hull_shader_content_ptr = core::bc_content_ptr<bc_hull_shader_content>;
 	}
 }

@@ -6,7 +6,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		//template BC_COREDLL_EXP class bc_singleton< bc_thread_manager(bcSIZE, bcSIZE) >;
+		//template BC_C_DLL class bc_singleton< bc_thread_manager(bcSIZE, bcSIZE) >;
 	}
 }
 

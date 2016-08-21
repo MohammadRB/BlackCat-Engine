@@ -8,7 +8,7 @@
       <UniqueIdentifier>{c3a660fb-4679-4378-ab45-5c3091c7ad45}</UniqueIdentifier>
     </Filter>
     <Filter Include="PlatformImp\File">
-      <UniqueIdentifier>{ec790478-5d38-400b-80bb-1bfb171e87f4}</UniqueIdentifier>
+      <UniqueIdentifier>{027a195c-bfc6-4afe-9053-2031d31f035f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -21,10 +21,22 @@
     <ClInclude Include="PlatformImp\Application\bcRenderWindow.h">
       <Filter>PlatformImp\Application</Filter>
     </ClInclude>
+    <ClInclude Include="PlatformImp\bcLogIDEDebug.h">
+      <Filter>PlatformImp</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Application\bcKeyDevice.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Application\bcPointingDevice.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Application\bcHumanInterfaceDevice.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
     <ClInclude Include="PlatformImp\File\bcPath.h">
       <Filter>PlatformImp\File</Filter>
     </ClInclude>
-    <ClInclude Include="PlatformImp\bcUtility.h">
+    <ClInclude Include="PlatformImp\bcExport.h">
       <Filter>PlatformImp</Filter>
     </ClInclude>
   </ItemGroup>
@@ -38,11 +50,20 @@
     <ClCompile Include="PlatformImp\Application\bcRenderApplication.cpp">
       <Filter>PlatformImp\Application</Filter>
     </ClCompile>
+    <ClCompile Include="PlatformImp\bcLogIDEDebug.cpp">
+      <Filter>PlatformImp</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Application\bcKeyDevice.cpp">
+      <Filter>PlatformImp\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Application\bcPointingDevice.cpp">
+      <Filter>PlatformImp\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Application\bcHumanInterfaceDevice.cpp">
+      <Filter>PlatformImp\Application</Filter>
+    </ClCompile>
     <ClCompile Include="PlatformImp\File\bcPath.cpp">
       <Filter>PlatformImp\File</Filter>
-    </ClCompile>
-    <ClCompile Include="PlatformImp\bcUtility.cpp">
-      <Filter>PlatformImp</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

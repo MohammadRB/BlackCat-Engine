@@ -6,7 +6,7 @@
 #include "Core/CorePCH.h"
 #include "Core/Concurrency/bcLockFreeMemMng.h"
 #include "Core/Concurrency/bcConcurrencyUtility.h"
-#include "Core/bcCoreUtility.h"
+#include "Core/Utility/bcInitializable.h"
 
 namespace black_cat
 {

@@ -1,8 +1,8 @@
 // [01/29/2016 MRB]
 
 #include "GraphicImp/GraphicImpPCH.h"
-#include "PlatformImp/bcUtility.h"
 #include "GraphicImp/bcUtility.h"
+#include "CorePlatformImp/bcUtility.h"
 
 namespace black_cat
 {
@@ -105,7 +105,7 @@ namespace black_cat
 				l_message += l_error_string;
 
 				DWORD l_win32_code;
-				platform::win32_from_hresult(p_hr, &l_win32_code);
+				core_platform::win32_from_hresult(p_hr, &l_win32_code);
 
 				throw bc_graphic_exception(static_cast<bcINT>(l_win32_code),l_message);
 			}

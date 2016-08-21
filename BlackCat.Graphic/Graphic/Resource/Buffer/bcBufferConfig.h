@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcGraphicDefinition.h"
 
 namespace black_cat
 {

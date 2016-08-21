@@ -12,16 +12,16 @@ namespace black_cat
 		template<>
 		struct bc_platform_clock_pack<bc_platform::win32>
 		{
-			using large_clock_type = bcUINT64;
-			using little_clock_type = bcUINT32;
-			using large_time_delta_type = bcDOUBLE64;
-			using little_time_delta_type = bcFLOAT32;
+			using big_clock = bcUINT64;
+			using small_clock = bcUINT32;
+			using big_delta_time = bcDOUBLE;
+			using small_delta_time = bcFLOAT;
 		};
 
 		template< >
-		inline bc_platform_clock<bc_platform::win32>::large_clock_type bc_platform_clock<bc_platform::win32>::_query_clock_per_millisecond()
+		inline bc_platform_clock<bc_platform::win32>::big_clock bc_platform_clock<bc_platform::win32>::_query_clock_per_millisecond()
 		{
-			large_clock_type l_clock_per_millisecond;
+			big_clock l_clock_per_millisecond;
 
 			QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER*>(&l_clock_per_millisecond));
 			l_clock_per_millisecond /= 1000;
@@ -30,9 +30,9 @@ namespace black_cat
 		}
 
 		template< >
-		inline bc_platform_clock<bc_platform::win32>::large_clock_type bc_platform_clock<bc_platform::win32>::_query_elapsed_clocks()
+		inline bc_platform_clock<bc_platform::win32>::big_clock bc_platform_clock<bc_platform::win32>::_query_elapsed_clocks()
 		{
-			large_clock_type l_clocks;
+			big_clock l_clocks;
 
 			QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&l_clocks));
 

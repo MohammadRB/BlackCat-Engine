@@ -4,7 +4,7 @@
 
 #include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatform/bcPlatform.h"
-#include "CorePlatform/bcCorePlatformUtility.h"
+#include "CorePlatform/Utility/bcNoCopy.h"
 
 namespace black_cat
 {

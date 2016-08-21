@@ -85,6 +85,7 @@ namespace black_cat
 
 		enum class bc_resource_view_type
 		{
+			none = 0,
 			shader = 1,
 			unordered = 2,
 			render_target = 4,
@@ -308,7 +309,7 @@ namespace black_cat
 			png,
 			gif,
 			tiff,
-			jpeg
+			jpg
 		};
 
 		// -- Blend --------------------------------------------------------------------------------

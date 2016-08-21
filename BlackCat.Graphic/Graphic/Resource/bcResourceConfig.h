@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Graphic/GraphicPCH.h"
+#include "Graphic/bcExport.h"
 #include "Graphic/Resource/Buffer/bcBufferConfig.h"
 #include "Graphic/Resource/Texture/bcTextureConfig.h"
 #include "Graphic/Resource/View/bcResourceViewConfig.h"
@@ -13,7 +14,7 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		class BC_GRAPHIC_DLL_EXP bc_buffer_configure_modifier
+		class BC_GRAPHIC_DLL bc_buffer_configure_modifier
 		{
 		public:
 			explicit bc_buffer_configure_modifier(bc_buffer_config p_config) noexcept;
@@ -38,14 +39,16 @@ namespace black_cat
 			bc_buffer_config m_config;
 		};
 
-		class BC_GRAPHIC_DLL_EXP bc_texture_configure_modifier
+		class BC_GRAPHIC_DLL bc_texture_configure_modifier
 		{
 		public:
 			explicit bc_texture_configure_modifier(bc_texture_config p_config) noexcept;
 
-			bc_texture_config as_depth_stencil_texture() noexcept;
+			bc_texture_config as_normal_texture() noexcept;
 
 			bc_texture_config as_render_target_texture() noexcept;
+
+			bc_texture_config as_depth_stencil_texture() noexcept;
 
 		protected:
 
@@ -53,7 +56,7 @@ namespace black_cat
 			bc_texture_config m_config;
 		};
 
-		class BC_GRAPHIC_DLL_EXP bc_buffer_view_configure_modifier
+		class BC_GRAPHIC_DLL bc_buffer_view_configure_modifier
 		{
 		public:
 			explicit bc_buffer_view_configure_modifier(bc_resource_view_config p_config) noexcept;
@@ -72,7 +75,7 @@ namespace black_cat
 			bc_resource_view_config m_config;
 		};
 
-		class BC_GRAPHIC_DLL_EXP bc_buffer_view_configure
+		class BC_GRAPHIC_DLL bc_buffer_view_configure
 		{
 		public:
 			explicit bc_buffer_view_configure(bc_format p_format) noexcept;
@@ -87,7 +90,7 @@ namespace black_cat
 			bc_format m_format;
 		};
 
-		class BC_GRAPHIC_DLL_EXP bc_texture_view_configure_modifier
+		class BC_GRAPHIC_DLL bc_texture_view_configure_modifier
 		{
 		public:
 			friend class bc_texture_view_configure;
@@ -107,7 +110,7 @@ namespace black_cat
 			bc_resource_view_config m_config;
 		};
 
-		class BC_GRAPHIC_DLL_EXP bc_texture_view_configure
+		class BC_GRAPHIC_DLL bc_texture_view_configure
 		{
 		public:
 			explicit bc_texture_view_configure(bc_format p_format) noexcept;
@@ -167,14 +170,13 @@ namespace black_cat
 			}
 		};
 
-		class BC_GRAPHIC_DLL_EXP bc_resource_configure
+		class BC_GRAPHIC_DLL bc_resource_configure
 		{
 		public:
 			bc_buffer_configure_modifier as_buffer(bcUINT p_num_element,
 				bcUINT p_element_size,
-				bc_format p_format,
 				bc_resource_usage p_usage,
-				bc_resource_view_type p_view_types,
+				bc_resource_view_type p_view_types = bc_resource_view_type::none,
 				bool p_as_stream_output = false) noexcept;
 
 			bc_texture_configure_modifier as_texture2d(bcUINT p_width,

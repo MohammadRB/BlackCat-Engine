@@ -49,9 +49,9 @@ namespace black_cat
 				return m_message;
 			}
 
-			static bcCHAR* event_name()
+			static const bcCHAR* event_name()
 			{
-				return "EventError";
+				return g_evt_error;
 			}
 
 		protected:
@@ -99,9 +99,9 @@ namespace black_cat
 				return m_message;
 			}
 
-			static bcCHAR* event_name()
+			static const bcCHAR* event_name()
 			{
-				return "EventWarning";
+				return g_evt_warning;
 			}
 
 		protected:

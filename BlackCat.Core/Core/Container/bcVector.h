@@ -96,8 +96,8 @@ namespace black_cat
 						p_dest + l_i,
 						std::move(*(p_src + l_i)));
 
-					// If elements has been copied call thier destructions
-					if (!std::is_move_constructible<node_type>::value)
+					//// If elements has been copied call thier destructions
+					//if (!std::is_move_constructible<node_type>::value)
 					{
 						bc_allocator_traits< internal_allocator_type >::destroy(
 							m_allocator,
@@ -106,7 +106,8 @@ namespace black_cat
 				}
 			}
 
-			bcInline void _move_if_noexcept_elements(node_type* p_dest, node_type* p_src, size_type p_count)
+			// If T is copy constructible, try to move if noexcept else copy them
+			bcInline void _move_if_noexcept_elements(node_type* p_dest, node_type* p_src, size_type p_count, std::true_type)
 			{
 				for (bcUINT32 l_i = 0; l_i < p_count; ++l_i)
 				{
@@ -114,6 +115,26 @@ namespace black_cat
 						m_allocator,
 						p_dest + l_i,
 						std::move_if_noexcept(*(p_src + l_i)));
+
+					//// If elements has been copied call thier destructions
+					//if (!std::is_nothrow_move_constructible<node_type>::value)
+					{
+						bc_allocator_traits< internal_allocator_type >::destroy(
+							m_allocator,
+							p_src + l_i);
+					}
+				}
+			}
+
+			// If T is not copy constructible, move them
+			bcInline void _move_if_noexcept_elements(node_type* p_dest, node_type* p_src, size_type p_count, std::false_type)
+			{
+				for (bcUINT32 l_i = 0; l_i < p_count; ++l_i)
+				{
+					bc_allocator_traits<internal_allocator_type>::construct(
+						m_allocator,
+						p_dest + l_i,
+						std::move(*(p_src + l_i)));
 
 					//// If elements has been copied call thier destructions
 					//if (!std::is_nothrow_move_constructible<node_type>::value)
@@ -135,7 +156,13 @@ namespace black_cat
 				{
 					try
 					{
-						_move_if_noexcept_elements(l_heap, m_first, std::min< size_type >(base_type::m_size, p_new_capacity));
+						_move_if_noexcept_elements
+							(
+								l_heap, 
+								m_first, 
+								std::min< size_type >(base_type::m_size, p_new_capacity),
+								typename std::is_copy_constructible< value_type >::type()
+							);
 					}
 					catch (...)
 					{
@@ -151,21 +178,17 @@ namespace black_cat
 				m_capacity = p_new_capacity;
 			}
 
-			// Zero for auto increasing or other values for manual increasing
-			bcInline void _increase_capacity(size_type p_count_to_add = 0)
+			bcInline void _increase_capacity(size_type p_count_to_add)
 			{
 				size_type l_reserved_count = m_capacity - base_type::m_size;
-				size_type l_new_capacity = m_capacity == 0 ? 1 : m_capacity;
 
-				while (p_count_to_add > l_reserved_count)
+				if(p_count_to_add <= l_reserved_count)
 				{
-					l_new_capacity *= 2;
-					l_reserved_count = (l_new_capacity - base_type::m_size);
+					return;
 				}
 
-				if (l_new_capacity <= m_capacity)
-					return;
-
+				size_type l_new_capacity = std::pow(2, std::ceil(std::log2(std::max(m_capacity + p_count_to_add, 2U))));
+				
 				_change_capacity(l_new_capacity);
 			};
 
@@ -173,7 +196,18 @@ namespace black_cat
 			{
 				if (m_capacity > base_type::m_size)
 				{
-					_change_capacity(base_type::m_size);
+					if(base_type::m_size != 0)
+					{
+						_change_capacity(base_type::m_size);
+					}
+					// If vector is empty, deallocate it's buffer because '_change_capacity' function 
+					// always allocate a buffer even if new capacity is zero
+					else
+					{
+						bc_allocator_traits< internal_allocator_type >::deallocate(m_allocator, m_first);
+						m_first = nullptr;
+						m_capacity = 0;
+					}
 				}
 			}
 
@@ -333,8 +367,8 @@ namespace black_cat
 			using size_type = typename base_type::size_type;
 			using iterator = bc_random_access_iterator< this_type >;
 			using const_iterator = bc_const_random_access_iterator< this_type >;
-			using reverse_iterator = std::reverse_iterator< iterator >;
-			using const_reverse_iterator = std::reverse_iterator< const_iterator >;
+			using reverse_iterator = bc_reverse_iterator< iterator >;
+			using const_reverse_iterator = bc_reverse_iterator< const_iterator >;
 
 		protected:
 			using node_type = typename base_type::node_type;
@@ -498,7 +532,7 @@ namespace black_cat
 
 			bcInline node_type& _get_node(size_type p_position) const
 			{
-				bcAssert(p_position >= 0 && p_position <= base_type::m_size && base_type::m_size > 0);
+				bcAssert(p_position >= 0 && p_position <= base_type::m_size);
 
 				return *(base_type::m_first + p_position);
 			}
@@ -646,7 +680,7 @@ namespace black_cat
 			base_type::_new_node(base_type::m_first,
 				std::begin(p_initializer),
 				std::end(p_initializer),
-				typename std::iterator_traits< std::initializer_list<value_type> >::iterator_category());
+				typename std::iterator_traits< typename std::initializer_list<value_type>::iterator >::iterator_category());
 		}
 
 		template< typename T, class TAllocator >
@@ -658,7 +692,7 @@ namespace black_cat
 		template< typename T, class TAllocator >
 		typename bc_vector<T, TAllocator>::reference bc_vector<T, TAllocator>::at(size_type p_position)
 		{
-			if (p_position >= base_type::size())
+			if (p_position < 0 || p_position >= base_type::size())
 				throw std::out_of_range("Index out of range");
 
 			return _get_node(p_position).m_value;
@@ -667,7 +701,7 @@ namespace black_cat
 		template< typename T, class TAllocator >
 		typename bc_vector<T, TAllocator>::const_reference bc_vector<T, TAllocator>::at(size_type p_position) const
 		{
-			if (p_position >= base_type::size())
+			if (p_position < 0 || p_position >= base_type::size())
 				throw std::out_of_range("Index out of range");
 
 			return _get_node(p_position).m_value;
@@ -760,43 +794,92 @@ namespace black_cat
 		template< typename T, class TAllocator >
 		typename bc_vector<T, TAllocator>::reverse_iterator bc_vector<T, TAllocator>::rbegin()
 		{
-			return reverse_iterator(iterator(this, base_type::m_first));
+			auto l_end = base_type::_get_end();
+			if (l_end != nullptr)
+			{
+				return reverse_iterator(iterator(this, l_end - 1));
+			}
+			else
+			{
+				return reverse_iterator(iterator(this, l_end));
+			}
 		}
 
 		template< typename T, class TAllocator >
 		typename bc_vector<T, TAllocator>::const_reverse_iterator bc_vector<T, TAllocator>::rbegin() const
 		{
-			return const_reverse_iterator(const_iterator(this, base_type::m_first));
+			auto l_end = base_type::_get_end();
+			if (l_end != nullptr)
+			{
+				return const_reverse_iterator(const_iterator(this, l_end - 1));
+			}
+			else
+			{
+				return const_reverse_iterator(const_iterator(this, l_end));
+			}
 		}
 
 		template< typename T, class TAllocator >
 		typename bc_vector<T, TAllocator>::const_reverse_iterator bc_vector<T, TAllocator>::crbegin() const
 		{
-			return const_reverse_iterator(this, base_type::m_first);
+			auto l_end = base_type::_get_end();
+			if (l_end != nullptr)
+			{
+				return const_reverse_iterator(const_iterator(this, l_end - 1));
+			}
+			else
+			{
+				return const_reverse_iterator(const_iterator(this, l_end));
+			}
 		}
 
 		template< typename T, class TAllocator >
 		typename bc_vector<T, TAllocator>::reverse_iterator bc_vector<T, TAllocator>::rend()
 		{
-			return reverse_iterator(this, base_type::_get_end());
+			auto l_begin = base_type::m_first;
+			if (l_begin != nullptr)
+			{
+				return reverse_iterator(iterator(this, l_begin - 1));
+			}
+			else
+			{
+				return reverse_iterator(iterator(this, l_begin));
+			}
 		}
 
 		template< typename T, class TAllocator >
 		typename bc_vector<T, TAllocator>::const_reverse_iterator bc_vector<T, TAllocator>::rend() const
 		{
-			return const_reverse_iterator(this, base_type::_get_end());
+			auto l_begin = base_type::m_first;
+			if (l_begin != nullptr)
+			{
+				return const_reverse_iterator(const_iterator(this, l_begin - 1));
+			}
+			else
+			{
+				return const_reverse_iterator(const_iterator(this, l_begin));
+			}
 		}
 
 		template< typename T, class TAllocator >
 		typename bc_vector<T, TAllocator>::const_reverse_iterator bc_vector<T, TAllocator>::crend() const
 		{
-			return const_reverse_iterator(this, base_type::_get_end());
+			auto l_begin = base_type::m_first;
+			if (l_begin != nullptr)
+			{
+				return const_reverse_iterator(const_iterator(this, l_begin - 1));
+			}
+			else
+			{
+				return const_reverse_iterator(const_iterator(this, l_begin));
+			}
 		}
 
 		template< typename T, class TAllocator >
 		void bc_vector<T, TAllocator>::reserve(size_type p_new_capacity)
 		{
-			base_type::_increase_capacity(p_new_capacity - base_type::capacity());
+			if(p_new_capacity > base_type::capacity())
+				base_type::_increase_capacity(p_new_capacity - base_type::capacity());
 		}
 
 		template< typename T, class TAllocator >
@@ -854,7 +937,7 @@ namespace black_cat
 			node_type* l_node = base_type::_new_node(static_cast<node_type*>(p_position.get_node()),
 				std::begin(p_initializer),
 				std::end(p_initializer),
-				typename std::iterator_traits< std::initializer_list<value_type> >::iterator_category());
+				typename std::iterator_traits< typename std::initializer_list<value_type>::iterator >::iterator_category());
 
 			return iterator(this, l_node);
 		}

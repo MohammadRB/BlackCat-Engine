@@ -4,7 +4,7 @@
 
 #include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatform/bcType.h"
-#include "CorePlatform/bcCorePlatformUtility.h"
+#include "CorePlatform/Utility/bcNoCopy.h"
 #include "CorePlatform/Concurrency/bcConcurrencyDef.h"
 
 namespace black_cat
@@ -41,7 +41,7 @@ namespace black_cat
 			using shared_type = bc_platform_shared_future< TPlatform, T >;
 			using promise_type = bc_platform_promise< TPlatform, T >;
 
-			friend class promise_type;
+			friend  class promise_type;
 
 		public:
 			bc_platform_future() noexcept(true);
@@ -135,6 +135,41 @@ namespace black_cat
 			bcInline void set_value(const type& p_value);
 
 			bcInline void set_value(type&& p_value);
+
+			bcInline void set_exception(std::exception_ptr p_exception);
+
+		protected:
+
+		private:
+			platform_pack m_pack;
+		};
+
+		template< bc_platform TPlatform >
+		class bc_platform_promise< TPlatform, void > : private bc_no_copy
+		{
+			using type = void;
+			using platform_pack = bc_platform_promise_pack<TPlatform, void>;
+			using this_type = bc_platform_promise< TPlatform, void >;
+			using future_type = bc_platform_future< TPlatform, void >;
+
+		public:
+			bc_platform_promise() noexcept(true);
+
+			// TODO: Check here
+			/*template<typename Allocator>
+			bcPromiseBase(std::allocator_arg_t, Allocator const&);*/
+
+			bc_platform_promise(this_type&& p_other) noexcept(true);
+
+			~bc_platform_promise();
+
+			this_type& operator =(this_type&& p_other);
+
+			bcInline void swap(this_type& p_other) noexcept(true);
+
+			bcInline future_type get_future();
+
+			bcInline void set_value();
 
 			bcInline void set_exception(std::exception_ptr p_exception);
 

@@ -1,8 +1,9 @@
 //  [8/23/2013 MRB]
 
 #include "Core/CorePCH.h"
-#include "Core/Memory/bcMemoryFixedSize.h"
+#include "CorePlatform/Memory/bcMemAlloc.h"
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
+#include "Core/Memory/bcMemoryFixedSize.h"
 
 namespace black_cat
 {
@@ -14,7 +15,7 @@ namespace black_cat
 		{
 		};
 
-		bc_memory_fixed_size::bc_memory_fixed_size(bc_memory_fixed_size::this_type&& p_other) noexcept(true) : bc_memory(std::move(p_other))
+		bc_memory_fixed_size::bc_memory_fixed_size(this_type&& p_other) noexcept(true) : bc_memory(std::move(p_other))
 		{
 			_move(std::move(p_other));
 		};
@@ -25,7 +26,7 @@ namespace black_cat
 				_destroy();
 		};
 
-		bc_memory_fixed_size::this_type& bc_memory_fixed_size::operator =(bc_memory_fixed_size::this_type&& p_other) noexcept(true)
+		bc_memory_fixed_size::this_type& bc_memory_fixed_size::operator =(this_type&& p_other) noexcept(true)
 		{
 			bc_memory::operator =(std::move(p_other));
 			_move(std::move(p_other));
@@ -54,7 +55,7 @@ namespace black_cat
 
 			if (!m_blocks)
 				throw std::bad_alloc();
-			
+
 			for (bcUINT32 i = 0; i < m_num_bitblocks; ++i)
 				m_blocks[i].store(0U);
 
@@ -64,17 +65,17 @@ namespace black_cat
 
 			if (!m_heap)
 			{
-				_aligned_free(m_blocks);
+				bc_mem_aligned_free(m_blocks);
 				throw std::bad_alloc();
 			}
 
 			m_tracer.initialize((m_block_size * m_num_block) * sizeof(bcUBYTE));
-			if (p_tag) bc_memory::tag(p_tag);
+			if (p_tag) tag(p_tag);
 		};
 
 		void bc_memory_fixed_size::_destroy() noexcept(true)
 		{
-			core_platform::bc_mem_aligned_free(m_blocks);
+			bc_mem_aligned_free(m_blocks);
 			core_platform::bc_mem_aligned_free(m_heap);
 		};
 
@@ -164,7 +165,7 @@ namespace black_cat
 
 			p_mem_block->free(true, core_platform::bc_memory_order::seqcst);
 #ifdef BC_MEMORY_DEBUG
-			std::memset(reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(l_pointer)-p_mem_block->offset()), 0, p_mem_block->size());
+			memset(reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(l_pointer)-p_mem_block->offset()), 0, p_mem_block->size());
 #endif
 
 			m_tracer.accept_free(p_mem_block->size());
@@ -177,7 +178,7 @@ namespace black_cat
 
 		void bc_memory_fixed_size::clear() noexcept(true)
 		{
-			std::memset(m_blocks, 0, m_num_bitblocks * sizeof(core_platform::bc_atomic< bitblock_type >));
+			memset(m_blocks, 0, m_num_bitblocks * sizeof(core_platform::bc_atomic< bitblock_type >));
 
 			m_tracer.accept_clear();
 		};

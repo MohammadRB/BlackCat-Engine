@@ -11,6 +11,7 @@
 #pragma once
 
 #include "Graphic/GraphicPCH.h"
+#include "Graphic/bcExport.h"
 
 namespace black_cat
 {
@@ -19,7 +20,7 @@ namespace black_cat
 		class bc_vector2f;
 		class bc_vector3f;
 
-		class BC_GRAPHIC_DLL_EXP bc_vector4f
+		class BC_GRAPHIC_DLL bc_vector4f
 		{
 		public:
 			bc_vector4f();

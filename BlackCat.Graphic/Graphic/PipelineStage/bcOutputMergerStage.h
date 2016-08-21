@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Graphic/GraphicPCH.h"
+#include "Graphic/bcExport.h"
 #include "Graphic/bcPlatformRenderApi.h"
 #include "Graphic/Math/bcVector4f.h"
 #include "Graphic/bcRenderApiInfo.h"
@@ -22,7 +23,7 @@ namespace black_cat
 
 		// -- Output merger state -----------------------------------------------------------------------------
 
-		class BC_GRAPHIC_DLL_EXP bc_output_merger_stage_state
+		class BC_GRAPHIC_DLL bc_output_merger_stage_state
 		{
 		public:
 			bc_output_merger_stage_state();

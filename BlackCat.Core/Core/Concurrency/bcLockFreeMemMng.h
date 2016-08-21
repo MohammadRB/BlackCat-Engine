@@ -44,7 +44,8 @@ namespace black_cat
 
 		public:
 			bc_lockfree_memmng() noexcept(true)
-				: m_num_thread(0)
+				: m_num_thread(0),
+				m_to_delete(nullptr)
 			{
 			}
 
@@ -71,6 +72,11 @@ namespace black_cat
 			bcUINT32 enter_pop() noexcept(true)
 			{
 				return m_num_thread.fetch_add(1, core_platform::bc_memory_order::relaxed);
+			}
+
+			void exist_pop_widthou_reclaim() noexcept(true)
+			{
+				m_num_thread.fetch_sub(1, core_platform::bc_memory_order::relaxed);
 			}
 
 			void try_reclaim(traits_type& p_traits, node_pointer p_node)

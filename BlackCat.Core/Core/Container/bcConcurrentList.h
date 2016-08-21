@@ -4,7 +4,7 @@
 
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/CorePCH.h"
-#include "Core/bcCoreUtility.h"
+#include "Core/Utility/bcInitializable.h"
 #include "Core/Concurrency/bcLockFreeMemMng.h"
 #include "Core/Concurrency/bcConcurrencyUtility.h"
 #include "Core/Container/bcContainer.h"

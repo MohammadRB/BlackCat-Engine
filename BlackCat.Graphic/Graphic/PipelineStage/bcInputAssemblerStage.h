@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Graphic/GraphicPCH.h"
+#include "Graphic/bcExport.h"
 #include "Graphic/bcPlatformRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
 #include "Graphic/bcRenderApiInfo.h"
@@ -20,7 +20,7 @@ namespace black_cat
 
 		// -- Input assembler state -----------------------------------------------------------------------------
 
-		class BC_GRAPHIC_DLL_EXP bc_input_assembler_stage_state
+		class BC_GRAPHIC_DLL bc_input_assembler_stage_state
 		{
 		public:
 			bc_input_assembler_stage_state();

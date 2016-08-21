@@ -19,7 +19,7 @@ namespace black_cat
 		{
 		}
 		
-		bc_vector3f::bc_vector3f(bcFLOAT32 p_x, bcFLOAT32 p_y, bcFLOAT32 p_z)
+		bc_vector3f::bc_vector3f(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z)
 		{
 			x = p_x;
 			y = p_y;
@@ -42,19 +42,19 @@ namespace black_cat
 		
 		void bc_vector3f::normalize()
 		{
-			bcFLOAT32 l_mag = magnitude();
+			bcFLOAT l_mag = magnitude();
 			if (0.0f == l_mag) l_mag = 0.0001f;
 
-			bcFLOAT32 l_inv_mag = (1.0f / l_mag);
+			bcFLOAT l_inv_mag = (1.0f / l_mag);
 
 			x *= l_inv_mag;
 			y *= l_inv_mag;
 			z *= l_inv_mag;
 		}
 		
-		bcFLOAT32 bc_vector3f::magnitude()
+		bcFLOAT bc_vector3f::magnitude()
 		{
-			bcFLOAT32 l_length = 0.0f;
+			bcFLOAT l_length = 0.0f;
 
 			l_length += x * x;
 			l_length += y * y;
@@ -65,10 +65,10 @@ namespace black_cat
 		
 		bc_vector3f bc_vector3f::perpendicular()
 		{
-			bcFLOAT32 l_x_abs = fabs(x);
-			bcFLOAT32 l_y_abs = fabs(y);
-			bcFLOAT32 l_z_abs = fabs(z);
-			bcFLOAT32 minVal = min(min(l_x_abs, l_y_abs), l_z_abs);
+			bcFLOAT l_x_abs = fabs(x);
+			bcFLOAT l_y_abs = fabs(y);
+			bcFLOAT l_z_abs = fabs(z);
+			bcFLOAT minVal = std::min(std::min(l_x_abs, l_y_abs), l_z_abs);
 
 			if (l_x_abs == minVal)
 				return cross(bc_vector3f(1.0f, 0.0f, 0.0f));
@@ -89,9 +89,9 @@ namespace black_cat
 			return(l_ret);
 		}
 		
-		bcFLOAT32 bc_vector3f::dot(const bc_vector3f& p_other) const
+		bcFLOAT bc_vector3f::dot(const bc_vector3f& p_other) const
 		{
-			bcFLOAT32 l_ret = 0.0f;
+			bcFLOAT l_ret = 0.0f;
 
 			l_ret = x * p_other.x;
 			l_ret += y * p_other.y;
@@ -114,9 +114,9 @@ namespace black_cat
 		
 		bc_vector3f bc_vector3f::random()
 		{
-			bcFLOAT32 l_x = static_cast<bcFLOAT32>((double)rand() / RAND_MAX) * 2.0f - 1.0f;
-			bcFLOAT32 l_y = static_cast<bcFLOAT32>((double)rand() / RAND_MAX) * 2.0f - 1.0f;
-			bcFLOAT32 l_z = static_cast<bcFLOAT32>((double)rand() / RAND_MAX) * 2.0f - 1.0f;
+			bcFLOAT l_x = static_cast<bcFLOAT>((double)rand() / RAND_MAX) * 2.0f - 1.0f;
+			bcFLOAT l_y = static_cast<bcFLOAT>((double)rand() / RAND_MAX) * 2.0f - 1.0f;
+			bcFLOAT l_z = static_cast<bcFLOAT>((double)rand() / RAND_MAX) * 2.0f - 1.0f;
 
 			bc_vector3f l_random = bc_vector3f(l_x, l_y, l_z);
 			l_random.normalize();
@@ -133,14 +133,14 @@ namespace black_cat
 			return(*this);
 		}
 		
-		bcFLOAT32 bc_vector3f::operator[] (int p_pos) const
+		bcFLOAT bc_vector3f::operator[] (int p_pos) const
 		{
 			if (p_pos == 0) return(x);
 			if (p_pos == 1) return(y);
 			return(z);
 		}
 		
-		bcFLOAT32& bc_vector3f::operator[] (int p_pos)
+		bcFLOAT& bc_vector3f::operator[] (int p_pos)
 		{
 			if (p_pos == 0) return(x);
 			if (p_pos == 1) return(y);
@@ -187,7 +187,7 @@ namespace black_cat
 			return(l_diff);
 		}
 		
-		bc_vector3f bc_vector3f::operator* (bcFLOAT32 p_scalar) const
+		bc_vector3f bc_vector3f::operator* (bcFLOAT p_scalar) const
 		{
 			bc_vector3f l_prod;
 
@@ -209,12 +209,12 @@ namespace black_cat
 			return(l_prod);
 		}
 		
-		bc_vector3f bc_vector3f::operator/ (bcFLOAT32 p_scalar) const
+		bc_vector3f bc_vector3f::operator/ (bcFLOAT p_scalar) const
 		{
 			bc_vector3f l_quot;
 			if (p_scalar != 0.0f)
 			{
-				bcFLOAT32 l_inv_scalar = 1.0f / p_scalar;
+				bcFLOAT l_inv_scalar = 1.0f / p_scalar;
 				l_quot.x = x * l_inv_scalar;
 				l_quot.y = y * l_inv_scalar;
 				l_quot.z = z * l_inv_scalar;
@@ -266,7 +266,7 @@ namespace black_cat
 			return(*this);
 		}
 		
-		bc_vector3f& bc_vector3f::operator*= (bcFLOAT32 p_scalar)
+		bc_vector3f& bc_vector3f::operator*= (bcFLOAT p_scalar)
 		{
 			x *= p_scalar;
 			y *= p_scalar;
@@ -284,11 +284,11 @@ namespace black_cat
 			return(*this);
 		}
 		
-		bc_vector3f& bc_vector3f::operator/= (bcFLOAT32 p_scalar)
+		bc_vector3f& bc_vector3f::operator/= (bcFLOAT p_scalar)
 		{
 			if (p_scalar != 0.0f)
 			{
-				bcFLOAT32 l_inv_scalar = 1.0f / p_scalar;
+				bcFLOAT l_inv_scalar = 1.0f / p_scalar;
 				x *= l_inv_scalar;
 				y *= l_inv_scalar;
 				z *= l_inv_scalar;
@@ -322,12 +322,12 @@ namespace black_cat
 			return p_first.cross(p_second);
 		}
 		
-		bcFLOAT32 bc_vector3f::dot(const bc_vector3f& p_first, const bc_vector3f& p_second)
+		bcFLOAT bc_vector3f::dot(const bc_vector3f& p_first, const bc_vector3f& p_second)
 		{
 			return p_first.dot(p_second);
 		}
 		
-		bcFLOAT32 bc_vector3f::length_sq(const bc_vector3f& p_vector)
+		bcFLOAT bc_vector3f::length_sq(const bc_vector3f& p_vector)
 		{
 			return dot(p_vector, p_vector);
 		}

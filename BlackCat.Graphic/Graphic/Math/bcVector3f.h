@@ -11,17 +11,18 @@
 #pragma once
 
 #include "Graphic/GraphicPCH.h"
+#include "Graphic/bcExport.h"
 
 namespace black_cat
 {
 	namespace graphic
 	{
-		class BC_GRAPHIC_DLL_EXP bc_vector3f
+		class BC_GRAPHIC_DLL bc_vector3f
 		{
 		public:
 			bc_vector3f();
 
-			bc_vector3f(bcFLOAT32 p_x, bcFLOAT32 p_y, bcFLOAT32 p_z);
+			bc_vector3f(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z);
 
 			bc_vector3f(const bc_vector3f& p_other);
 
@@ -30,11 +31,11 @@ namespace black_cat
 
 			bc_vector3f cross(const bc_vector3f& p_vector) const;
 
-			bcFLOAT32 dot(const bc_vector3f& p_vector) const;
+			bcFLOAT dot(const bc_vector3f& p_vector) const;
 
 			void make_zero();
 
-			bcFLOAT32 magnitude();
+			bcFLOAT magnitude();
 
 			void normalize();
 
@@ -45,9 +46,9 @@ namespace black_cat
 
 			static bc_vector3f cross(const bc_vector3f& p_first, const bc_vector3f& p_second);
 
-			static bcFLOAT32 dot(const bc_vector3f& p_first, const bc_vector3f& p_second);
+			static bcFLOAT dot(const bc_vector3f& p_first, const bc_vector3f& p_second);
 
-			static bcFLOAT32 length_sq(const bc_vector3f& p_vector);
+			static bcFLOAT length_sq(const bc_vector3f& p_vector);
 
 			static bc_vector3f normalize(const bc_vector3f& p_vector);
 
@@ -59,9 +60,9 @@ namespace black_cat
 			bc_vector3f& operator= (const bc_vector3f& p_other);
 
 			// member access
-			bcFLOAT32 operator[] (int p_pos) const;
+			bcFLOAT operator[] (int p_pos) const;
 
-			bcFLOAT32& operator[] (int p_pos);
+			bcFLOAT& operator[] (int p_pos);
 
 			// comparison
 			bool operator== (const bc_vector3f& p_other) const;
@@ -75,11 +76,11 @@ namespace black_cat
 
 			bc_vector3f operator* (const bc_vector3f& p_other) const;
 
-			bc_vector3f operator* (bcFLOAT32 p_scalar) const;
+			bc_vector3f operator* (bcFLOAT p_scalar) const;
 
 			bc_vector3f operator/ (const bc_vector3f& p_other) const;
 
-			bc_vector3f operator/ (bcFLOAT32 p_scalar) const;
+			bc_vector3f operator/ (bcFLOAT p_scalar) const;
 
 			bc_vector3f operator- () const;
 
@@ -90,16 +91,16 @@ namespace black_cat
 
 			bc_vector3f& operator*= (const bc_vector3f& p_other);
 
-			bc_vector3f& operator*= (bcFLOAT32 p_scalar);
+			bc_vector3f& operator*= (bcFLOAT p_scalar);
 
 			bc_vector3f& operator/= (const bc_vector3f& p_other);
 
-			bc_vector3f& operator/= (bcFLOAT32 p_scalar);
+			bc_vector3f& operator/= (bcFLOAT p_scalar);
 
 		public:
-			bcFLOAT32 x;
-			bcFLOAT32 y;
-			bcFLOAT32 z;
+			bcFLOAT x;
+			bcFLOAT y;
+			bcFLOAT z;
 		};
 	}
 }

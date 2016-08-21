@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Graphic/GraphicPCH.h"
+#include "Graphic/bcResourcePtr.h"
 #include "Graphic/bcPlatformRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
 #include "Graphic/bcDeviceObject.h"
@@ -11,9 +12,6 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template<class>
-		class bc_resource_ptr;
-
 		class bc_subresource_data
 		{
 		public:

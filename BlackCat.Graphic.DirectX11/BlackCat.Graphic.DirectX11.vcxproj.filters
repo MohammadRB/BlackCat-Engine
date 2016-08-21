@@ -31,6 +31,9 @@
     <Filter Include="GraphicImp\Device\Command">
       <UniqueIdentifier>{93a3d060-5eed-4618-a17f-2df57d01452e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GraphicImp\Loader">
+      <UniqueIdentifier>{20caf7e9-a8ea-4ea9-a87c-500b291a17a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicImp\GraphicImpPCH.cpp">
@@ -128,6 +131,24 @@
     </ClCompile>
     <ClCompile Include="GraphicImp\Resource\View\bcResourceView.cpp">
       <Filter>GraphicImp\Resource\View</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicImp\Loader\bcTextureLoader.cpp">
+      <Filter>GraphicImp\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicImp\Loader\bcVertexShaderLoader.cpp">
+      <Filter>GraphicImp\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicImp\Loader\bcHullShaderLoader.cpp">
+      <Filter>GraphicImp\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicImp\Loader\bcDomainShaderLoader.cpp">
+      <Filter>GraphicImp\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicImp\Loader\bcGeometryShaderLoader.cpp">
+      <Filter>GraphicImp\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicImp\Loader\bcPixelShaderLoader.cpp">
+      <Filter>GraphicImp\Loader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -250,6 +271,27 @@
     </ClInclude>
     <ClInclude Include="GraphicImp\Resource\View\bcDepthStencilViewConfig.h">
       <Filter>GraphicImp\Resource\View</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Loader\bcTextureLoader.h">
+      <Filter>GraphicImp\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Loader\bcVertexShaderLoader.h">
+      <Filter>GraphicImp\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Loader\bcHullShaderLoader.h">
+      <Filter>GraphicImp\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Loader\bcDomainShaderLoader.h">
+      <Filter>GraphicImp\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Loader\bcGeometryShaderLoader.h">
+      <Filter>GraphicImp\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Loader\bcPixelShaderLoader.h">
+      <Filter>GraphicImp\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\bcExport.h">
+      <Filter>GraphicImp</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

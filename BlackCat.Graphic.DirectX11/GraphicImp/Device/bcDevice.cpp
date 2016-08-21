@@ -1,21 +1,19 @@
 // [01/23/2016 MRB]
 
+#include "CorePlatform/CorePlatformPCH.h"
 #include "GraphicImp/GraphicImpPCH.h"
-#include <DDSTextureLoader.h>
-#include <WICTextureLoader.h>
-#include <ScreenGrab.h>
-#include <wincodec.h>
+#include "GraphicImp/bcExport.h"
 #include "Core/Container/bcAllocator.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Event/bcEventManager.h"
+#include "CorePlatformImp/bcUtility.h"
 #include "Platform/bcPlatformEvents.h"
-#include "PlatformImp/File/bcPath.h"
-#include "PlatformImp/bcUtility.h"
 // Because explicit specialization of device pack must be included first and 
 // some other header files has included bcDevice.h we must put this header at 
 // top of other header files
 #include "GraphicImp/Device/bcDevice.h"
 #include "Graphic/bcResourcePtr.h"
+#include "Graphic/bcEvent.h"
 #include "GraphicImp/bcUtility.h"
 #include "GraphicImp/Resource/bcResource.h"
 #include "GraphicImp/Resource/bcResourceConfig.h"
@@ -35,6 +33,11 @@
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
+
+#include "3rdParty/DirectXTK-master/Inc/DDSTextureLoader.h"
+#include "3rdParty/DirectXTK-master/Inc/WICTextureLoader.h"
+#include "3rdParty/DirectXTK-master/Inc/ScreenGrab.h"
+#include <wincodec.h>
 
 using namespace Microsoft::WRL;
 
@@ -90,11 +93,8 @@ namespace black_cat
 			p_texture->bc_iresource::get_platform_pack().m_resource = l_texture;
 		}
 
-		void _initialize_texture(bc_device* p_device, bc_texture2d* p_texture, bc_texture_config* p_config, const bcECHAR* p_file_name)
+		void _initialize_texture(bc_device* p_device, bc_texture2d* p_texture, bc_texture_config* p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
 		{
-			platform::bc_path l_path(p_file_name);
-			core::bc_estring l_file_extension = l_path.get_file_extension();
-
 			ComPtr< ID3D11Resource > l_texture;
 			D3D11_TEXTURE2D_DESC l_texture_desc = p_config->get_platform_pack().m_desc;
 
@@ -103,22 +103,13 @@ namespace black_cat
 			bcUINT l_access_flags = l_texture_desc.CPUAccessFlags;
 			bcUINT l_misc_flags = l_texture_desc.MiscFlags;
 
-			// Perform case insencitive comparision
-			if (std::equal
-				(
-					std::begin(l_file_extension),
-					std::end(l_file_extension),
-					std::begin("dds"),
-					[](bcECHAR l_first, bcECHAR l_second)-> bool
-					{
-						return tolower(l_first) == tolower(l_second);
-					}
-				))
+			if(p_format == bc_image_format::dds)
 			{
-				dx_call(DirectX::CreateDDSTextureFromFileEx
+				dx_call(DirectX::CreateDDSTextureFromMemoryEx
 					(
 						p_device->get_platform_pack().m_device.Get(),
-						p_file_name,
+						reinterpret_cast< const bcUBYTE* >(p_data),
+						p_data_size,
 						0,
 						l_usage,
 						l_bind_flags,
@@ -131,10 +122,12 @@ namespace black_cat
 			}
 			else // There are built-in WIC codecs in Windows for .BMP, .PNG, .GIF, .TIFF, .JPEG, and JPEG-XR / HD Photo images
 			{
-				dx_call(DirectX::CreateWICTextureFromFileEx
+				CoInitialize(nullptr);
+				dx_call(DirectX::CreateWICTextureFromMemoryEx
 					(
 						p_device->get_platform_pack().m_device.Get(),
-						p_file_name,
+						reinterpret_cast< const bcUBYTE* >(p_data),
+						p_data_size,
 						0,
 						l_usage,
 						l_bind_flags,
@@ -177,7 +170,7 @@ namespace black_cat
 				case bc_image_format::tiff:
 					l_format = GUID_ContainerFormatTiff;
 					break;
-				case bc_image_format::jpeg:
+				case bc_image_format::jpg:
 					l_format = GUID_ContainerFormatJpeg;
 					break;
 				default:
@@ -192,79 +185,130 @@ namespace black_cat
 			}
 		};
 
-		void _initialize_vertex_shader(bc_device* p_device, bc_vertex_shader* p_shader, const bcECHAR* p_filepath, const bcCHAR* p_function)
+		ComPtr<ID3D10Blob> _compile_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_profile, const D3D_SHADER_MACRO* p_defines, const bcCHAR* p_source_file)
 		{
-			ComPtr< ID3DBlob > l_compiled_shader = compile_shader(p_filepath, p_function, "VS_5_0", nullptr, nullptr);
+			// Loop until we succeed, or an exception is thrown
+			while (true)
+			{
+				bcUINT l_flags = 0;
+#if defined( BC_DEBUG )
+				l_flags |= D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION/*|D3D10_SHADER_WARNINGS_ARE_ERRORS*/;
+#endif
+
+				ComPtr<ID3D10Blob> l_compiled_shader;
+				ComPtr<ID3D10Blob> l_error_messages;
+				HRESULT l_hr = D3DCompile(p_data,
+					p_data_size,
+					p_source_file,
+					p_defines,
+					D3D_COMPILE_STANDARD_FILE_INCLUDE,
+					p_function_name,
+					p_profile,
+					l_flags,
+					0,
+					l_compiled_shader.GetAddressOf(),
+					l_error_messages.GetAddressOf());
+
+				if (FAILED(l_hr))
+				{
+					DWORD l_error_code;
+					core_platform::win32_from_hresult(l_hr, &l_error_code);
+					core::bc_string l_full_message = "Error compiling shader file \"";
+
+					if (l_error_messages)
+					{
+						bcCHAR l_message[3072];
+						l_message[0] = NULL;
+						bcCHAR* l_blobdata = reinterpret_cast<char*>(l_error_messages->GetBufferPointer());
+
+						std::strcpy(l_message, l_blobdata);
+
+						l_full_message += l_message;
+
+						throw bc_graphic_exception(static_cast<bcINT>(l_error_code), l_full_message);
+					}
+					else
+					{
+						bcAssert(false);
+						throw bc_graphic_exception(static_cast<bcINT>(l_error_code), l_full_message);
+					}
+				}
+
+				return l_compiled_shader;
+			}
+		}
+
+		void _initialize_vertex_shader(bc_device* p_device, bc_vertex_shader* p_shader, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		{
 			ComPtr< ID3D11VertexShader > l_shader;
 
-			dx_call(p_device->get_platform_pack().m_device->CreateVertexShader(l_compiled_shader->GetBufferPointer(),
-				l_compiled_shader->GetBufferSize(),
-				nullptr,
-				l_shader.GetAddressOf()));
+			dx_call(p_device->get_platform_pack().m_device->CreateVertexShader
+				(
+					p_data,
+					p_data_size,
+					nullptr,
+					l_shader.GetAddressOf()
+				));
 
-			p_shader->get_platform_pack().m_compiled_shader = l_compiled_shader;
+			dx_call(D3DCreateBlob(p_data_size, p_shader->get_platform_pack().m_compiled_shader.GetAddressOf()));
+			std::memcpy(p_shader->get_platform_pack().m_compiled_shader->GetBufferPointer(), p_data, p_data_size);
 			p_shader->get_platform_pack().m_shader = l_shader;
 		}
 
-		void _initialize_hull_shader(bc_device* p_device, bc_hull_shader* p_shader, const bcECHAR* p_filepath, const bcCHAR* p_function)
+		void _initialize_hull_shader(bc_device* p_device, bc_hull_shader* p_shader, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			ComPtr< ID3DBlob > l_compiled_shader = compile_shader(p_filepath, p_function, "CS_5_0", nullptr, nullptr);
 			ComPtr< ID3D11HullShader > l_shader;
 
-			dx_call(p_device->get_platform_pack().m_device->CreateHullShader(l_compiled_shader->GetBufferPointer(),
-				l_compiled_shader->GetBufferSize(),
+			dx_call(p_device->get_platform_pack().m_device->CreateHullShader(p_data,
+				p_data_size,
 				nullptr,
 				l_shader.GetAddressOf()));
 
 			p_shader->get_platform_pack().m_shader = l_shader;
 		}
 
-		void _initialize_domain_shader(bc_device* p_device, bc_domain_shader* p_shader, const bcECHAR* p_filepath, const bcCHAR* p_function)
+		void _initialize_domain_shader(bc_device* p_device, bc_domain_shader* p_shader, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			ComPtr< ID3DBlob > l_compiled_shader = compile_shader(p_filepath, p_function, "CS_5_0", nullptr, nullptr);
 			ComPtr< ID3D11DomainShader > l_shader;
 
-			dx_call(p_device->get_platform_pack().m_device->CreateDomainShader(l_compiled_shader->GetBufferPointer(),
-				l_compiled_shader->GetBufferSize(),
+			dx_call(p_device->get_platform_pack().m_device->CreateDomainShader(p_data,
+				p_data_size,
 				nullptr,
 				l_shader.GetAddressOf()));
 
 			p_shader->get_platform_pack().m_shader = l_shader;
 		}
 
-		void _initialize_geometry_shader(bc_device* p_device, bc_geometry_shader* p_shader, const bcECHAR* p_filepath, const bcCHAR* p_function)
+		void _initialize_geometry_shader(bc_device* p_device, bc_geometry_shader* p_shader, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			ComPtr< ID3DBlob > l_compiled_shader = compile_shader(p_filepath, p_function, "CS_5_0", nullptr, nullptr);
 			ComPtr< ID3D11GeometryShader > l_shader;
 
-			dx_call(p_device->get_platform_pack().m_device->CreateGeometryShader(l_compiled_shader->GetBufferPointer(),
-				l_compiled_shader->GetBufferSize(),
+			dx_call(p_device->get_platform_pack().m_device->CreateGeometryShader(p_data,
+				p_data_size,
 				nullptr,
 				l_shader.GetAddressOf()));
 
 			p_shader->get_platform_pack().m_shader = l_shader;
 		}
 
-		void _initialize_pixel_shader(bc_device* p_device, bc_pixel_shader* p_shader, const bcECHAR* p_filepath, const bcCHAR* p_function)
+		void _initialize_pixel_shader(bc_device* p_device, bc_pixel_shader* p_shader, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			ComPtr< ID3DBlob > l_compiled_shader = compile_shader(p_filepath, p_function, "CS_5_0", nullptr, nullptr);
 			ComPtr< ID3D11PixelShader > l_shader;
 
-			dx_call(p_device->get_platform_pack().m_device->CreatePixelShader(l_compiled_shader->GetBufferPointer(),
-				l_compiled_shader->GetBufferSize(),
+			dx_call(p_device->get_platform_pack().m_device->CreatePixelShader(p_data,
+				p_data_size,
 				nullptr,
 				l_shader.GetAddressOf()));
 
 			p_shader->get_platform_pack().m_shader = l_shader;
 		}
 
-		void _initialize_compute_shader(bc_device* p_device, bc_compute_shader* p_shader, const bcECHAR* p_filepath, const bcCHAR* p_function)
+		void _initialize_compute_shader(bc_device* p_device, bc_compute_shader* p_shader, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			ComPtr< ID3DBlob > l_compiled_shader = compile_shader(p_filepath, p_function, "CS_5_0", nullptr, nullptr);
 			ComPtr< ID3D11ComputeShader > l_shader;
 
-			dx_call(p_device->get_platform_pack().m_device->CreateComputeShader(l_compiled_shader->GetBufferPointer(),
-				l_compiled_shader->GetBufferSize(),
+			dx_call(p_device->get_platform_pack().m_device->CreateComputeShader(p_data,
+				p_data_size,
 				nullptr,
 				l_shader.GetAddressOf()));
 
@@ -389,25 +433,25 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_platform_device<g_api_dx11>::bc_platform_device()
+		BC_GRAPHICIMP_DLL bc_platform_device<g_api_dx11>::bc_platform_device()
 		{
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_platform_device<g_api_dx11>::bc_platform_device(bc_platform_device&& p_other)
+		BC_GRAPHICIMP_DLL bc_platform_device<g_api_dx11>::bc_platform_device(bc_platform_device&& p_other)
 			: m_pack(std::move(p_other.m_pack))
 		{
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_platform_device<g_api_dx11>::~bc_platform_device()
+		BC_GRAPHICIMP_DLL bc_platform_device<g_api_dx11>::~bc_platform_device()
 		{
 			if (m_initialized)
 				_destroy();
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_platform_device<g_api_dx11>& bc_platform_device<g_api_dx11>::operator=(bc_platform_device&& p_other)
+		BC_GRAPHICIMP_DLL bc_platform_device<g_api_dx11>& bc_platform_device<g_api_dx11>::operator=(bc_platform_device&& p_other)
 		{
 			m_pack = std::move(p_other.m_pack);
 
@@ -415,19 +459,19 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bool bc_platform_device<g_api_dx11>::get_vsync() const
+		BC_GRAPHICIMP_DLL bool bc_platform_device<g_api_dx11>::get_vsync() const
 		{
 			return m_pack.m_vsync;
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP void bc_platform_device<g_api_dx11>::set_vsync(bool p_sync)
+		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::set_vsync(bool p_sync)
 		{
 			m_pack.m_vsync = p_sync;
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bool bc_platform_device<g_api_dx11>::get_full_screen() const
+		BC_GRAPHICIMP_DLL bool bc_platform_device<g_api_dx11>::get_full_screen() const
 		{
 			DXGI_SWAP_CHAIN_DESC l_desc;
 			m_pack.m_swap_chain->GetDesc(&l_desc);
@@ -436,7 +480,7 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP void bc_platform_device<g_api_dx11>::set_full_screen(bool p_full_screen)
+		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::set_full_screen(bool p_full_screen)
 		{
 			if(p_full_screen)
 			{
@@ -461,14 +505,17 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_texture2d* bc_platform_device<g_api_dx11>::get_back_buffer_texture() const
+		BC_GRAPHICIMP_DLL bc_texture2d* bc_platform_device<g_api_dx11>::get_back_buffer_texture() const
 		{
-			// First resource in resources is a texture2d object that hold back buffer texture
-			return static_cast< bc_texture2d* >(m_resources.at(0).get());
+			core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_resources_mutex);
+			{
+				// First resource in resources is a texture2d object that hold back buffer texture
+				return static_cast< bc_texture2d* >(m_resources.at(0).get());
+			}
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_device_info bc_platform_device<g_api_dx11>::get_device_info() const
+		BC_GRAPHICIMP_DLL bc_device_info bc_platform_device<g_api_dx11>::get_device_info() const
 		{
 			ComPtr<IDXGIDevice> l_dxgi_device;
 			ComPtr<IDXGIAdapter> l_adapter;
@@ -485,7 +532,7 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bcUINT bc_platform_device<g_api_dx11>::check_multi_sampling(bc_format p_textue_format, bcUINT p_sample_count) const
+		BC_GRAPHICIMP_DLL bcUINT bc_platform_device<g_api_dx11>::check_multi_sampling(bc_format p_textue_format, bcUINT p_sample_count) const
 		{
 			bcUINT l_sample_quality;
 
@@ -495,46 +542,46 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_buffer_ptr bc_platform_device<g_api_dx11>::create_buffer(bc_buffer_config* p_config, bc_subresource_data* p_data)
+		BC_GRAPHICIMP_DLL bc_buffer_ptr bc_platform_device<g_api_dx11>::create_buffer(bc_buffer_config& p_config, bc_subresource_data* p_data)
 		{
 			auto l_buffer = allocate<bc_buffer>();
 			bc_buffer* l_pointer = l_buffer.get();
 
-			_initialize_buffer(static_cast<bc_device*>(this), l_pointer, p_config, p_data);
+			_initialize_buffer(static_cast<bc_device*>(this), l_pointer, &p_config, p_data);
 			
 			_store_new_resource(std::move(l_buffer));
 
-			return bc_buffer_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_buffer_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_texture2d_ptr bc_platform_device<g_api_dx11>::create_texture2d(bc_texture_config* p_config, bc_subresource_data* p_data)
+		BC_GRAPHICIMP_DLL bc_texture2d_ptr bc_platform_device<g_api_dx11>::create_texture2d(bc_texture_config& p_config, bc_subresource_data* p_data)
 		{
 			auto l_texture = allocate<bc_texture2d>();
 			bc_texture2d* l_pointer = l_texture.get();
 
-			_initialize_texture(static_cast<bc_device*>(this), l_pointer, p_config, p_data);
+			_initialize_texture(static_cast<bc_device*>(this), l_pointer, &p_config, p_data);
 
 			_store_new_resource(std::move(l_texture));
 
-			return bc_texture2d_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_texture2d_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_texture2d_ptr bc_platform_device<g_api_dx11>::create_texture2d(bc_texture_config* p_config, const bcECHAR* p_filename)
+		BC_GRAPHICIMP_DLL bc_texture2d_ptr bc_platform_device<g_api_dx11>::create_texture2d(bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
 		{
 			auto l_texture = allocate<bc_texture2d>();
 			bc_texture2d* l_pointer = l_texture.get();
 
-			_initialize_texture(static_cast<bc_device*>(this), l_pointer, p_config, p_filename);
+			_initialize_texture(static_cast<bc_device*>(this), l_pointer, &p_config, p_data, p_data_size, p_format);
 
 			_store_new_resource(std::move(l_texture));
 
-			return bc_texture2d_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_texture2d_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		};
 		
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_sampler_state_ptr bc_platform_device<g_api_dx11>::create_sampler_state(bc_sampler_state_config* p_config)
+		BC_GRAPHICIMP_DLL bc_sampler_state_ptr bc_platform_device<g_api_dx11>::create_sampler_state(bc_sampler_state_config& p_config)
 		{
 			auto l_sampler = allocate<bc_sampler_state>();
 			bc_sampler_state* l_pointer = l_sampler.get();
@@ -542,147 +589,285 @@ namespace black_cat
 			ComPtr< ID3D11SamplerState > l_dx_sampler;
 			D3D11_SAMPLER_DESC l_dx_sampler_desc;
 			
-			l_dx_sampler_desc.Filter = bc_graphic_cast(p_config->m_filter);
-			l_dx_sampler_desc.AddressU = bc_graphic_cast(p_config->m_address_u);
-			l_dx_sampler_desc.AddressV = bc_graphic_cast(p_config->m_address_v);
-			l_dx_sampler_desc.AddressW = bc_graphic_cast(p_config->m_address_w);
-			l_dx_sampler_desc.MipLODBias = p_config->m_mip_lod_bias;
-			l_dx_sampler_desc.MaxAnisotropy = p_config->m_max_anisotropy;
-			l_dx_sampler_desc.ComparisonFunc = bc_graphic_cast(p_config->m_comparison_func);
-			l_dx_sampler_desc.BorderColor[0] = p_config->m_border_color[0];
-			l_dx_sampler_desc.BorderColor[1] = p_config->m_border_color[1];
-			l_dx_sampler_desc.BorderColor[2] = p_config->m_border_color[2];
-			l_dx_sampler_desc.BorderColor[3] = p_config->m_border_color[3];
-			l_dx_sampler_desc.MaxLOD = p_config->m_max_lod;
-			l_dx_sampler_desc.MinLOD = p_config->m_min_lod;
+			l_dx_sampler_desc.Filter = bc_graphic_cast(p_config.m_filter);
+			l_dx_sampler_desc.AddressU = bc_graphic_cast(p_config.m_address_u);
+			l_dx_sampler_desc.AddressV = bc_graphic_cast(p_config.m_address_v);
+			l_dx_sampler_desc.AddressW = bc_graphic_cast(p_config.m_address_w);
+			l_dx_sampler_desc.MipLODBias = p_config.m_mip_lod_bias;
+			l_dx_sampler_desc.MaxAnisotropy = p_config.m_max_anisotropy;
+			l_dx_sampler_desc.ComparisonFunc = bc_graphic_cast(p_config.m_comparison_func);
+			l_dx_sampler_desc.BorderColor[0] = p_config.m_border_color[0];
+			l_dx_sampler_desc.BorderColor[1] = p_config.m_border_color[1];
+			l_dx_sampler_desc.BorderColor[2] = p_config.m_border_color[2];
+			l_dx_sampler_desc.BorderColor[3] = p_config.m_border_color[3];
+			l_dx_sampler_desc.MaxLOD = p_config.m_max_lod;
+			l_dx_sampler_desc.MinLOD = p_config.m_min_lod;
 
 			dx_call(m_pack.m_device->CreateSamplerState(&l_dx_sampler_desc, l_dx_sampler.GetAddressOf()));
 			l_sampler->get_platform_pack().m_sampler_state.Swap(l_dx_sampler);
 
 			_store_new_resource(std::move(l_sampler));
 
-			return bc_sampler_state_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_sampler_state_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_vertex_shader_ptr bc_platform_device<g_api_dx11>::create_vertex_shader(const bcECHAR* p_filepath, const bcCHAR* p_function)
+		BC_GRAPHICIMP_DLL bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		{
+			auto l_shader = allocate<bc_compiled_shader>();
+			bc_compiled_shader* l_pointer = l_shader.get();
+
+			Microsoft::WRL::ComPtr< ID3DBlob > l_compiled_shader = _compile_shader
+			(
+				p_data,
+				p_data_size,
+				p_function_name,
+				"vs_5_0",
+				nullptr,
+				p_source_file
+			);
+
+			l_pointer->get_platform_pack().m_blob = l_compiled_shader;
+
+			_store_new_resource(std::move(l_shader));
+
+			return bc_compiled_shader_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL bc_vertex_shader_ptr bc_platform_device<g_api_dx11>::create_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto l_shader = allocate<bc_vertex_shader>();
 			bc_vertex_shader* l_pointer = l_shader.get();
 
-			_initialize_vertex_shader(static_cast<bc_device*>(this), l_pointer, p_filepath, p_function);
+			_initialize_vertex_shader(static_cast<bc_device*>(this), l_pointer, p_data, p_data_size, p_function);
 
 			_store_new_resource(std::move(l_shader));
 
-			return bc_vertex_shader_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_vertex_shader_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_hull_shader_ptr bc_platform_device<g_api_dx11>::create_hull_shader(const bcECHAR* p_filepath, const bcCHAR* p_function)
+		BC_GRAPHICIMP_DLL bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		{
+			auto l_shader = allocate<bc_compiled_shader>();
+			bc_compiled_shader* l_pointer = l_shader.get();
+
+			Microsoft::WRL::ComPtr< ID3DBlob > l_compiled_shader = _compile_shader
+			(
+				p_data,
+				p_data_size,
+				p_function_name,
+				"hs_5_0",
+				nullptr,
+				p_source_file
+			);
+
+			l_pointer->get_platform_pack().m_blob = l_compiled_shader;
+
+			_store_new_resource(std::move(l_shader));
+
+			return bc_compiled_shader_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL bc_hull_shader_ptr bc_platform_device<g_api_dx11>::create_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto l_shader = allocate<bc_hull_shader>();
 			bc_hull_shader* l_pointer = l_shader.get();
 
-			_initialize_hull_shader(static_cast<bc_device*>(this), l_pointer, p_filepath, p_function);
+			_initialize_hull_shader(static_cast<bc_device*>(this), l_pointer, p_data, p_data_size, p_function);
 
 			_store_new_resource(std::move(l_shader));
 
-			return bc_hull_shader_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_hull_shader_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_domain_shader_ptr bc_platform_device<g_api_dx11>::create_domain_shader(const bcECHAR* p_filepath, const bcCHAR* p_function)
+		BC_GRAPHICIMP_DLL bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		{
+			auto l_shader = allocate<bc_compiled_shader>();
+			bc_compiled_shader* l_pointer = l_shader.get();
+
+			Microsoft::WRL::ComPtr< ID3DBlob > l_compiled_shader = _compile_shader
+			(
+				p_data,
+				p_data_size,
+				p_function_name,
+				"ds_5_0",
+				nullptr,
+				p_source_file
+			);
+
+			l_pointer->get_platform_pack().m_blob = l_compiled_shader;
+
+			_store_new_resource(std::move(l_shader));
+
+			return bc_compiled_shader_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL bc_domain_shader_ptr bc_platform_device<g_api_dx11>::create_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto l_shader = allocate<bc_domain_shader>();
 			bc_domain_shader* l_pointer = l_shader.get();
 
-			_initialize_domain_shader(static_cast<bc_device*>(this), l_pointer, p_filepath, p_function);
+			_initialize_domain_shader(static_cast<bc_device*>(this), l_pointer, p_data, p_data_size, p_function);
 
 			_store_new_resource(std::move(l_shader));
 
-			return bc_domain_shader_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_domain_shader_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_geometry_shader_ptr bc_platform_device<g_api_dx11>::create_geometry_shader(const bcECHAR* p_filepath, const bcCHAR* p_function)
+		BC_GRAPHICIMP_DLL bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		{
+			auto l_shader = allocate<bc_compiled_shader>();
+			bc_compiled_shader* l_pointer = l_shader.get();
+
+			Microsoft::WRL::ComPtr< ID3DBlob > l_compiled_shader = _compile_shader
+			(
+				p_data,
+				p_data_size,
+				p_function_name,
+				"gs_5_0",
+				nullptr,
+				p_source_file
+			);
+
+			l_pointer->get_platform_pack().m_blob = l_compiled_shader;
+
+			_store_new_resource(std::move(l_shader));
+
+			return bc_compiled_shader_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL bc_geometry_shader_ptr bc_platform_device<g_api_dx11>::create_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto l_shader = allocate<bc_geometry_shader>();
 			bc_geometry_shader* l_pointer = l_shader.get();
 
-			_initialize_geometry_shader(static_cast<bc_device*>(this), l_pointer, p_filepath, p_function);
+			_initialize_geometry_shader(static_cast<bc_device*>(this), l_pointer, p_data, p_data_size, p_function);
 
 			_store_new_resource(std::move(l_shader));
 
-			return bc_geometry_shader_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_geometry_shader_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_pixel_shader_ptr bc_platform_device<g_api_dx11>::create_pixel_shader(const bcECHAR* p_filepath, const bcCHAR* p_function)
+		BC_GRAPHICIMP_DLL bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		{
+			auto l_shader = allocate<bc_compiled_shader>();
+			bc_compiled_shader* l_pointer = l_shader.get();
+
+			Microsoft::WRL::ComPtr< ID3DBlob > l_compiled_shader = _compile_shader
+			(
+				p_data,
+				p_data_size,
+				p_function_name,
+				"ps_5_0",
+				nullptr,
+				p_source_file
+			);
+
+			l_pointer->get_platform_pack().m_blob = l_compiled_shader;
+
+			_store_new_resource(std::move(l_shader));
+
+			return bc_compiled_shader_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL bc_pixel_shader_ptr bc_platform_device<g_api_dx11>::create_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto l_shader = allocate<bc_pixel_shader>();
 			bc_pixel_shader* l_pointer = l_shader.get();
 
-			_initialize_pixel_shader(static_cast<bc_device*>(this), l_pointer, p_filepath, p_function);
+			_initialize_pixel_shader(static_cast<bc_device*>(this), l_pointer, p_data, p_data_size, p_function);
 
 			_store_new_resource(std::move(l_shader));
 
-			return bc_pixel_shader_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_pixel_shader_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_compute_shader_ptr bc_platform_device<g_api_dx11>::create_compute_shader(const bcECHAR* p_filepath, const bcCHAR* p_function)
+		BC_GRAPHICIMP_DLL bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		{
+			auto l_shader = allocate<bc_compiled_shader>();
+			bc_compiled_shader* l_pointer = l_shader.get();
+
+			Microsoft::WRL::ComPtr< ID3DBlob > l_compiled_shader = _compile_shader
+			(
+				p_data,
+				p_data_size,
+				p_function_name,
+				"cs_5_0",
+				nullptr,
+				p_source_file
+			);
+
+			l_pointer->get_platform_pack().m_blob = l_compiled_shader;
+
+			_store_new_resource(std::move(l_shader));
+
+			return bc_compiled_shader_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
+		};
+
+		template< >
+		BC_GRAPHICIMP_DLL bc_compute_shader_ptr bc_platform_device<g_api_dx11>::create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto l_shader = allocate<bc_compute_shader>();
 			bc_compute_shader* l_pointer = l_shader.get();
 
-			_initialize_compute_shader(static_cast<bc_device*>(this), l_pointer, p_filepath, p_function);
+			_initialize_compute_shader(static_cast<bc_device*>(this), l_pointer, p_data, p_data_size, p_function);
 
 			_store_new_resource(std::move(l_shader));
 
-			return bc_compute_shader_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_compute_shader_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		};
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP bc_shader_view_ptr bc_platform_device<g_api_dx11>::create_shader_view(bc_iresource* p_resource, bc_resource_view_config* p_view_config)
+		BC_GRAPHICIMP_DLL bc_shader_view_ptr bc_platform_device<g_api_dx11>::create_shader_view(bc_iresource* p_resource, bc_resource_view_config& p_view_config)
 		{
 			auto l_view = allocate<bc_shader_view>();
 			bc_shader_view* l_pointer = l_view.get();
 
-			_initialize_shader_view(static_cast<bc_device*>(this), l_pointer,p_resource, p_view_config);
+			_initialize_shader_view(static_cast<bc_device*>(this), l_pointer, p_resource, &p_view_config);
 
 			_store_new_resource(std::move(l_view));
 
-			return bc_shader_view_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_shader_view_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP bc_depth_stencil_view_ptr bc_platform_device<g_api_dx11>::create_depth_stencil_view(bc_iresource* p_resource, bc_depth_stencil_view_config* p_view_config)
+		BC_GRAPHICIMP_DLL bc_depth_stencil_view_ptr bc_platform_device<g_api_dx11>::create_depth_stencil_view(bc_iresource* p_resource, bc_depth_stencil_view_config& p_view_config)
 		{
 			auto l_view = allocate<bc_depth_stencil_view>();
 			bc_depth_stencil_view* l_pointer = l_view.get();
 
-			_initialize_depth_stencil_view(static_cast<bc_device*>(this), l_pointer, p_resource, p_view_config);
+			_initialize_depth_stencil_view(static_cast<bc_device*>(this), l_pointer, p_resource, &p_view_config);
 
 			_store_new_resource(std::move(l_view));
 
-			return bc_depth_stencil_view_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_depth_stencil_view_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP bc_render_target_view_ptr bc_platform_device<g_api_dx11>::create_render_target_view(bc_iresource* p_resource, bc_render_target_view_config* p_view_config)
+		BC_GRAPHICIMP_DLL bc_render_target_view_ptr bc_platform_device<g_api_dx11>::create_render_target_view(bc_iresource* p_resource, bc_render_target_view_config& p_view_config)
 		{
 			auto l_view = allocate<bc_render_target_view>();
 			bc_render_target_view* l_pointer = l_view.get();
 
-			_initialize_render_target_view(static_cast<bc_device*>(this), l_pointer, p_resource, p_view_config);
+			_initialize_render_target_view(static_cast<bc_device*>(this), l_pointer, p_resource, &p_view_config);
 
 			_store_new_resource(std::move(l_view));
 
-			return bc_render_target_view_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_render_target_view_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_device_pipeline_state_ptr bc_platform_device<g_api_dx11>::create_pipeline_state(bc_device_pipeline_state_config* p_config)
+		BC_GRAPHICIMP_DLL bc_device_pipeline_state_ptr bc_platform_device<g_api_dx11>::create_pipeline_state(bc_device_pipeline_state_config& p_config)
 		{
 			auto l_pipeline_state = allocate<bc_device_pipeline_state>();
 			bc_device_pipeline_state* l_pointer = l_pipeline_state.get();
@@ -694,50 +879,51 @@ namespace black_cat
 			D3D11_BLEND_DESC l_dx_blend_desc;
 			D3D11_DEPTH_STENCIL_DESC l_dx_depth_stencil_desc;
 			D3D11_RASTERIZER_DESC l_dx_rasterizer_desc;
-			core::bc_vector_frame<D3D11_INPUT_ELEMENT_DESC> l_dx_input_elements(p_config->m_input_layout_config.m_input_elements.size());
+			core::bc_vector_frame<D3D11_INPUT_ELEMENT_DESC> l_dx_input_elements;
 
-			l_dx_blend_desc.AlphaToCoverageEnable = p_config->m_blend_state_config.m_alpha_to_coverage_enable;
-			l_dx_blend_desc.IndependentBlendEnable = p_config->m_blend_state_config.m_independent_blend_enable;
+			l_dx_input_elements.reserve(p_config.m_input_layout_config.m_input_elements.size());
+
+			l_dx_blend_desc.AlphaToCoverageEnable = p_config.m_blend_state_config.m_alpha_to_coverage_enable;
+			l_dx_blend_desc.IndependentBlendEnable = p_config.m_blend_state_config.m_independent_blend_enable;
 			for (bcUINT i = 0; i < bc_render_api_info::number_of_om_render_target_slots(); ++i)
 			{
-				l_dx_blend_desc.RenderTarget[i].BlendEnable = p_config->m_blend_state_config.m_render_target[i].m_blend_enable;
-				l_dx_blend_desc.RenderTarget[i].SrcBlend = bc_graphic_cast(p_config->m_blend_state_config.m_render_target[i].m_src_blend);
-				l_dx_blend_desc.RenderTarget[i].DestBlend = bc_graphic_cast(p_config->m_blend_state_config.m_render_target[i].m_dest_blend);
-				l_dx_blend_desc.RenderTarget[i].BlendOp = bc_graphic_cast(p_config->m_blend_state_config.m_render_target[i].m_blend_op);
-				l_dx_blend_desc.RenderTarget[i].SrcBlendAlpha = bc_graphic_cast(p_config->m_blend_state_config.m_render_target[i].m_src_blend_alpha);
-				l_dx_blend_desc.RenderTarget[i].DestBlendAlpha = bc_graphic_cast(p_config->m_blend_state_config.m_render_target[i].m_dest_blend_alpha);
-				l_dx_blend_desc.RenderTarget[i].BlendOpAlpha = bc_graphic_cast(p_config->m_blend_state_config.m_render_target[i].m_blend_op_alpha);
-				l_dx_blend_desc.RenderTarget[i
-				].RenderTargetWriteMask = p_config->m_blend_state_config.m_render_target[0].m_render_target_write_mask;
+				l_dx_blend_desc.RenderTarget[i].BlendEnable = p_config.m_blend_state_config.m_render_target[i].m_blend_enable;
+				l_dx_blend_desc.RenderTarget[i].SrcBlend = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_src_blend);
+				l_dx_blend_desc.RenderTarget[i].DestBlend = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_dest_blend);
+				l_dx_blend_desc.RenderTarget[i].BlendOp = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_blend_op);
+				l_dx_blend_desc.RenderTarget[i].SrcBlendAlpha = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_src_blend_alpha);
+				l_dx_blend_desc.RenderTarget[i].DestBlendAlpha = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_dest_blend_alpha);
+				l_dx_blend_desc.RenderTarget[i].BlendOpAlpha = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_blend_op_alpha);
+				l_dx_blend_desc.RenderTarget[i].RenderTargetWriteMask = p_config.m_blend_state_config.m_render_target[0].m_render_target_write_mask;
 			}
 
-			l_dx_depth_stencil_desc.DepthEnable = p_config->m_depth_stencil_state_config.m_depth_enable;
-			l_dx_depth_stencil_desc.DepthWriteMask = bc_graphic_cast(p_config->m_depth_stencil_state_config.m_depth_write_mask);
-			l_dx_depth_stencil_desc.DepthFunc = bc_graphic_cast(p_config->m_depth_stencil_state_config.m_depth_func);
-			l_dx_depth_stencil_desc.StencilEnable = p_config->m_depth_stencil_state_config.m_stencil_enable;
-			l_dx_depth_stencil_desc.StencilReadMask = p_config->m_depth_stencil_state_config.m_stencil_read_mask;
-			l_dx_depth_stencil_desc.StencilWriteMask = p_config->m_depth_stencil_state_config.m_stencil_write_mask;
-			l_dx_depth_stencil_desc.FrontFace.StencilFailOp = bc_graphic_cast(p_config->m_depth_stencil_state_config.m_front_face.m_stencil_fail_op);
-			l_dx_depth_stencil_desc.FrontFace.StencilDepthFailOp = bc_graphic_cast(p_config->m_depth_stencil_state_config.m_front_face.m_stencil_depth_fail_op);
-			l_dx_depth_stencil_desc.FrontFace.StencilPassOp = bc_graphic_cast(p_config->m_depth_stencil_state_config.m_front_face.m_stencil_pass_op);
-			l_dx_depth_stencil_desc.FrontFace.StencilFunc = bc_graphic_cast(p_config->m_depth_stencil_state_config.m_front_face.m_stencil_func);
-			l_dx_depth_stencil_desc.BackFace.StencilFailOp = bc_graphic_cast(p_config->m_depth_stencil_state_config.m_back_face.m_stencil_fail_op);
-			l_dx_depth_stencil_desc.BackFace.StencilDepthFailOp = bc_graphic_cast(p_config->m_depth_stencil_state_config.m_back_face.m_stencil_depth_fail_op);
-			l_dx_depth_stencil_desc.BackFace.StencilPassOp = bc_graphic_cast(p_config->m_depth_stencil_state_config.m_back_face.m_stencil_pass_op);
-			l_dx_depth_stencil_desc.BackFace.StencilFunc = bc_graphic_cast(p_config->m_depth_stencil_state_config.m_back_face.m_stencil_func);
+			l_dx_depth_stencil_desc.DepthEnable = p_config.m_depth_stencil_state_config.m_depth_enable;
+			l_dx_depth_stencil_desc.DepthWriteMask = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_depth_write_mask);
+			l_dx_depth_stencil_desc.DepthFunc = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_depth_func);
+			l_dx_depth_stencil_desc.StencilEnable = p_config.m_depth_stencil_state_config.m_stencil_enable;
+			l_dx_depth_stencil_desc.StencilReadMask = p_config.m_depth_stencil_state_config.m_stencil_read_mask;
+			l_dx_depth_stencil_desc.StencilWriteMask = p_config.m_depth_stencil_state_config.m_stencil_write_mask;
+			l_dx_depth_stencil_desc.FrontFace.StencilFailOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_front_face.m_stencil_fail_op);
+			l_dx_depth_stencil_desc.FrontFace.StencilDepthFailOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_front_face.m_stencil_depth_fail_op);
+			l_dx_depth_stencil_desc.FrontFace.StencilPassOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_front_face.m_stencil_pass_op);
+			l_dx_depth_stencil_desc.FrontFace.StencilFunc = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_front_face.m_stencil_func);
+			l_dx_depth_stencil_desc.BackFace.StencilFailOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_back_face.m_stencil_fail_op);
+			l_dx_depth_stencil_desc.BackFace.StencilDepthFailOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_back_face.m_stencil_depth_fail_op);
+			l_dx_depth_stencil_desc.BackFace.StencilPassOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_back_face.m_stencil_pass_op);
+			l_dx_depth_stencil_desc.BackFace.StencilFunc = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_back_face.m_stencil_func);
 
-			l_dx_rasterizer_desc.FillMode = bc_graphic_cast(p_config->m_rasterizer_state_config.m_fill_mode);
-			l_dx_rasterizer_desc.CullMode = bc_graphic_cast(p_config->m_rasterizer_state_config.m_cull_mode);
-			l_dx_rasterizer_desc.FrontCounterClockwise = p_config->m_rasterizer_state_config.m_front_counter_clockwise;
-			l_dx_rasterizer_desc.DepthBias = p_config->m_rasterizer_state_config.m_depth_bias;
-			l_dx_rasterizer_desc.DepthBiasClamp = p_config->m_rasterizer_state_config.m_depth_bias_clamp;
-			l_dx_rasterizer_desc.SlopeScaledDepthBias = p_config->m_rasterizer_state_config.m_slope_scaled_depth_bias;
-			l_dx_rasterizer_desc.DepthClipEnable = p_config->m_rasterizer_state_config.m_depth_clip_enable;
-			l_dx_rasterizer_desc.ScissorEnable = p_config->m_rasterizer_state_config.m_scissor_enable;
-			l_dx_rasterizer_desc.MultisampleEnable = p_config->m_rasterizer_state_config.m_multisample_enable;
-			l_dx_rasterizer_desc.AntialiasedLineEnable = p_config->m_rasterizer_state_config.m_antialiased_line_enable;
+			l_dx_rasterizer_desc.FillMode = bc_graphic_cast(p_config.m_rasterizer_state_config.m_fill_mode);
+			l_dx_rasterizer_desc.CullMode = bc_graphic_cast(p_config.m_rasterizer_state_config.m_cull_mode);
+			l_dx_rasterizer_desc.FrontCounterClockwise = p_config.m_rasterizer_state_config.m_front_counter_clockwise;
+			l_dx_rasterizer_desc.DepthBias = p_config.m_rasterizer_state_config.m_depth_bias;
+			l_dx_rasterizer_desc.DepthBiasClamp = p_config.m_rasterizer_state_config.m_depth_bias_clamp;
+			l_dx_rasterizer_desc.SlopeScaledDepthBias = p_config.m_rasterizer_state_config.m_slope_scaled_depth_bias;
+			l_dx_rasterizer_desc.DepthClipEnable = p_config.m_rasterizer_state_config.m_depth_clip_enable;
+			l_dx_rasterizer_desc.ScissorEnable = p_config.m_rasterizer_state_config.m_scissor_enable;
+			l_dx_rasterizer_desc.MultisampleEnable = p_config.m_rasterizer_state_config.m_multisample_enable;
+			l_dx_rasterizer_desc.AntialiasedLineEnable = p_config.m_rasterizer_state_config.m_antialiased_line_enable;
 
-			for(auto& l_input_element : p_config->m_input_layout_config.m_input_elements)
+			for(auto& l_input_element : p_config.m_input_layout_config.m_input_elements)
 			{
 				D3D11_INPUT_ELEMENT_DESC l_element_desc;
 				l_element_desc.SemanticName = l_input_element.m_semantic_name;
@@ -754,17 +940,17 @@ namespace black_cat
 			dx_call(m_pack.m_device->CreateBlendState(&l_dx_blend_desc, l_dx_blend_state.GetAddressOf()));
 			dx_call(m_pack.m_device->CreateDepthStencilState(&l_dx_depth_stencil_desc, l_dx_depth_stencil.GetAddressOf()));
 			dx_call(m_pack.m_device->CreateRasterizerState(&l_dx_rasterizer_desc, l_dx_rasterizer_state.GetAddressOf()));
-			if (p_config->m_vertex_shader != nullptr)
+			if (p_config.m_vertex_shader != nullptr)
 				dx_call(m_pack.m_device->CreateInputLayout
 					(
 						l_dx_input_elements.data(),
 						l_dx_input_elements.size(),
-						p_config->m_vertex_shader->get_platform_pack().m_compiled_shader->GetBufferPointer(),
-						p_config->m_vertex_shader->get_platform_pack().m_compiled_shader->GetBufferSize(),
+						p_config.m_vertex_shader->get_platform_pack().m_compiled_shader->GetBufferPointer(),
+						p_config.m_vertex_shader->get_platform_pack().m_compiled_shader->GetBufferSize(),
 						l_dx_input_layout.GetAddressOf()
 					));
 
-			l_pipeline_state->get_platform_pack().m_config = std::move(*p_config);
+			l_pipeline_state->get_platform_pack().m_config = std::move(p_config);
 			l_pipeline_state->get_platform_pack().m_blend_state = l_dx_blend_state;
 			l_pipeline_state->get_platform_pack().m_depth_stencil_state = l_dx_depth_stencil;
 			l_pipeline_state->get_platform_pack().m_rasterizer_state = l_dx_rasterizer_state;
@@ -772,50 +958,50 @@ namespace black_cat
 
 			_store_new_resource(std::move(l_pipeline_state));
 
-			return bc_device_pipeline_state_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_device_pipeline_state_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_device_pipeline_ptr bc_platform_device<g_api_dx11>::create_pipeline()
+		BC_GRAPHICIMP_DLL bc_device_pipeline_ptr bc_platform_device<g_api_dx11>::create_pipeline()
 		{
 			auto l_pipeline = allocate<bc_device_pipeline>(static_cast<bc_device&>(*this));
 			bc_device_pipeline* l_pointer = l_pipeline.get();
 
 			_store_new_resource(std::move(l_pipeline));
 
-			return bc_device_pipeline_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_device_pipeline_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_device_command_list_ptr bc_platform_device<g_api_dx11>::create_command_list()
+		BC_GRAPHICIMP_DLL bc_device_command_list_ptr bc_platform_device<g_api_dx11>::create_command_list()
 		{
 			auto l_commnad_list = allocate<bc_device_command_list>();
 			bc_device_command_list* l_pointer = l_commnad_list.get();
 
 			_store_new_resource(std::move(l_commnad_list));
 
-			return bc_device_command_list_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_device_command_list_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP bc_device_command_executer_ptr bc_platform_device<g_api_dx11>::create_command_executer()
+		BC_GRAPHICIMP_DLL bc_device_command_executer_ptr bc_platform_device<g_api_dx11>::create_command_executer()
 		{
 			auto l_executer = allocate<bc_device_command_executer>(static_cast<bc_device&>(*this));
 			bc_device_command_executer* l_pointer = l_executer.get();
 
 			_store_new_resource(std::move(l_executer));
 
-			return bc_device_command_executer_ptr(static_cast<bc_device*>(this), l_pointer);
+			return bc_device_command_executer_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP void bc_platform_device<g_api_dx11>::resize_back_buffer(bcUINT p_width, bcUINT p_height)
+		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::resize_back_buffer(bcUINT p_width, bcUINT p_height)
 		{
 			resize_back_buffer(p_width, p_height, get_back_buffer_format());
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP void bc_platform_device<g_api_dx11>::resize_back_buffer(bcUINT p_width, bcUINT p_height, bc_format p_format)
+		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::resize_back_buffer(bcUINT p_width, bcUINT p_height, bc_format p_format)
 		{
 			// If we are in fullscreen state change resulotion too
 			if(get_full_screen()) // TODO check for 
@@ -838,16 +1024,26 @@ namespace black_cat
 				dx_call(m_pack.m_swap_chain->ResizeTarget(&l_best_mode_desc));
 			}
 
-			auto l_back_buffer_ite = std::begin(m_resources);
-			auto l_back_buffer = static_cast<bc_texture2d*>(l_back_buffer_ite->get());
+			bc_texture2d* l_back_buffer = nullptr;
+			{
+				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_resources_mutex);
+				{
+					l_back_buffer = static_cast<bc_texture2d*>(std::begin(m_resources)->get());
+				}
+			}
 
 			bc_device_parameters l_new_parameters(p_width, p_height, p_format, bc_texture_ms_config(1, 0));
 			bc_device_parameters l_old_parameters(l_back_buffer->get_width(), l_back_buffer->get_height(), l_back_buffer->get_format(), bc_texture_ms_config(1, 0));
 
-			for (auto& l_listener : m_listeners)
+			/*for (auto& l_listener : m_listeners)
 			{
 				l_listener->before_reset(static_cast<bc_device*>(this), l_old_parameters, l_new_parameters);
-			}
+			}*/
+
+			auto* l_event_manager = core::bc_service_manager::get().get_service<core::bc_event_manager>();
+			bc_app_event_device_reset l_reset_event(static_cast<bc_device*>(this), l_old_parameters, l_new_parameters, true);
+
+			l_event_manager->process_event(l_reset_event);
 
 			if (l_back_buffer->get_width() != p_width ||
 				l_back_buffer->get_height() != p_height)
@@ -868,14 +1064,17 @@ namespace black_cat
 				_initialize_back_buffer_texture(m_pack.m_swap_chain.Get(), l_back_buffer);
 			}
 
-			for (auto& l_listener : m_listeners)
+			l_reset_event.m_before_reset = false;
+			l_event_manager->process_event(l_reset_event);
+
+			/*for (auto& l_listener : m_listeners)
 			{
 				l_listener->after_reset(static_cast<bc_device*>(this), l_old_parameters, l_new_parameters);
-			}
+			}*/
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL_EXP void bc_platform_device<g_api_dx11>::resize_texture2d(bc_texture2d_ptr p_texture, 
+		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::resize_texture2d(bc_texture2d_ptr& p_texture, 
 			bcUINT p_width, 
 			bcUINT p_height, 
 			bcUINT p_num_views,
@@ -955,13 +1154,13 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP void bc_platform_device<g_api_dx11>::present()
+		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::present()
 		{
 			m_pack.m_swap_chain->Present(m_pack.m_vsync ? 1 : 0, 0);
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP void bc_platform_device<g_api_dx11>::_initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, platform::bc_render_window& p_output_window)
+		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::_initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, platform::bc_render_window& p_output_window)
 		{
 			HRESULT l_result = S_OK;
 
@@ -1007,7 +1206,7 @@ namespace black_cat
 			if (FAILED(l_result))
 			{
 				DWORD l_error_code;
-				platform::win32_from_hresult(l_result, &l_error_code);
+				core_platform::win32_from_hresult(l_result, &l_error_code);
 				throw bc_graphic_exception(static_cast<bcINT>(l_error_code), "Can not found an adapter compatible with DirectX11");
 			}
 
@@ -1035,36 +1234,48 @@ namespace black_cat
 			if (FAILED(l_result))
 			{
 				DWORD l_error_code;
-				platform::win32_from_hresult(l_result, &l_error_code);
+				core_platform::win32_from_hresult(l_result, &l_error_code);
 				throw bc_graphic_exception(static_cast<bcINT>(l_error_code), "Faild to create DirectX11 SwapChain");
 			}
 
 			set_vsync(true);
 			m_resources.reserve(25);
-			m_listeners.reserve(10);
+			//m_listeners.reserve(10);
+
+			set_allocator_alloc_type(core::bc_alloc_type::unknown_movale);
 
 			// Store back buffer texture in a texture and put it to resources as first resource
 			auto l_texture = allocate<bc_texture2d>();
 			_initialize_back_buffer_texture(m_pack.m_swap_chain.Get(), l_texture.get());
 			_store_new_resource(std::move(l_texture));
-
-			// Register listener for window resize event(we automatically resize textures in response to window resize)
-			core::bc_service_manager::get().get_service<core::bc_event_manager>()->register_event_listener
-				(
-					platform::bc_app_event_window_resize::event_name(),
-					core::bc_event_manager::delegate_type(this, &bc_platform_device::_event_handler)
-				);
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL_EXP void bc_platform_device<g_api_dx11>::_destroy()
+		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::_destroy()
 		{
-			m_listeners.clear();
-			bcAssert(m_resources.size() == 0); // All of resources must be released before resource been destroy
+#ifdef BC_DEBUG
+			// All of resources must be released before destroying device(first resource is back buffer)
+			bcSIZE l_num_resource = 0;
+			for(auto& l_item : m_resources)
+			{
+				if (l_item != nullptr)
+					++l_num_resource;
+			}
+			bcAssert(l_num_resource == 1);
+#endif
 			m_resources.clear();
+			m_resources.shrink_to_fit();
 
 			m_pack.m_swap_chain.ReleaseAndGetAddressOf();
 			m_pack.m_immediate_context.ReleaseAndGetAddressOf();
+
+#ifdef BC_DEBUG
+			ComPtr<ID3D11Debug> l_debug_layer;
+			m_pack.m_device.Get()->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast< void** >(l_debug_layer.GetAddressOf()));
+			l_debug_layer->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+			l_debug_layer.ReleaseAndGetAddressOf();
+#endif
+
 			m_pack.m_device.ReleaseAndGetAddressOf();
 		}
 	}

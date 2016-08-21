@@ -12,7 +12,7 @@
       <UniqueIdentifier>{fa865c9e-deb1-4c7d-9162-ac8a22226c2f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Platform\File">
-      <UniqueIdentifier>{9b31a53e-a6a7-4e29-9697-4e7e3436efad}</UniqueIdentifier>
+      <UniqueIdentifier>{686ecfeb-6ebc-47df-aafe-3ee6cfdb037d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -25,14 +25,29 @@
     <ClInclude Include="Platform\bcPlatformEvents.h">
       <Filter>Platform</Filter>
     </ClInclude>
-    <ClInclude Include="Platform\bcPlatformException.h">
-      <Filter>Platform</Filter>
-    </ClInclude>
     <ClInclude Include="Platform\Application\bcRenderWindow.h">
       <Filter>Platform\Application</Filter>
     </ClInclude>
+    <ClInclude Include="Platform\Application\bcKeyDevice.h">
+      <Filter>Platform\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Application\bcPointingDevice.h">
+      <Filter>Platform\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Application\bcHumanInterfaceDevice.h">
+      <Filter>Platform\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\bcLogIDEDebug.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
     <ClInclude Include="Platform\File\bcPath.h">
       <Filter>Platform\File</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\bcExport.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\bcException.h">
+      <Filter>Platform</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

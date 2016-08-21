@@ -3,7 +3,7 @@
 #pragma once
 
 #include <thread>
-#include "CorePlatform/bcCorePlatformUtility.h"
+#include "CorePlatform/Utility/bcNoCopy.h"
 #include "CorePlatform/Concurrency/bcThread.h"
 #include "CorePlatform/bcPlatform.h"
 #include "CorePlatformImp/CorePlatformImpPCH.h"

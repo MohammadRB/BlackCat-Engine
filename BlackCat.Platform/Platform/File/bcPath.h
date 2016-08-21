@@ -11,12 +11,6 @@ namespace black_cat
 		template< core_platform::bc_platform >
 		struct bc_platform_path_pack
 		{
-			bc_platform_path_pack(core::bc_estring&& p_path) // See definition of bc_platform_path construction for usage of r-value parameter
-				: m_path(std::move(p_path))
-			{
-			}
-
-			core::bc_estring m_path;
 		};
 
 		template< core_platform::bc_platform TPlatform >
@@ -27,10 +21,9 @@ namespace black_cat
 			static const bcECHAR* s_path_sep;
 			static const bcECHAR* s_rlv_dir;
 			static const bcECHAR* s_ext_sep;
-
-		public:
 			using platform_pack = bc_platform_path_pack<TPlatform>;
 
+		public:
 			explicit bc_platform_path(const bcECHAR* p_path);
 
 			explicit bc_platform_path(core::bc_estring p_path);
@@ -53,6 +46,7 @@ namespace black_cat
 
 			core::bc_estring get_filename_without_extension() const;
 
+			// Change file name with it's extension
 			void set_filename(core::bc_estring p_filename);
 
 			core::bc_estring get_file_extension() const;
@@ -72,7 +66,11 @@ namespace black_cat
 			platform_pack& get_platform_pack()
 			{
 				return m_pack;
-			};
+			}
+
+			static core::bc_estring get_program_path();
+
+			static core::bc_estring get_absolute_path(const bcECHAR* p_relative_path);
 
 		protected:
 

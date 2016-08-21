@@ -203,18 +203,28 @@ namespace black_cat
 		struct bc_mem_block_leak_information
 		{
 			static const bcUINT32 s_filename_length = 20;
-			bcUINT32 m_line_number;
+
+			void* m_pointer;
+			bcSIZE m_number;
+			bcSIZE m_requested_size;
+			bcSIZE m_line_number;
 			bcCHAR m_file_name[s_filename_length];
 
-			bc_mem_block_leak_information()
+			bc_mem_block_leak_information() : m_pointer(nullptr), m_number(0), m_requested_size(0), m_line_number(0)
 			{
 			}
 
-			bc_mem_block_leak_information(bcUINT32 pLineNumber, const bcCHAR* pFileName)
+			bc_mem_block_leak_information(void* p_pointer, bcSIZE p_number, bcSIZE p_requested_size, bcSIZE p_line_number, const bcCHAR* p_file_name)
+				: m_pointer(p_pointer), 
+				m_number(p_number),
+				m_requested_size(p_requested_size),
+				m_line_number(p_line_number)
 			{
-				m_line_number = pLineNumber;
-				std::strcpy(m_file_name, 
-					&pFileName[std::max<bcINT32>(static_cast<bcINT32>(std::strlen(pFileName)) - (s_filename_length - 1), 0)]);
+				std::strcpy
+					(
+						m_file_name,
+						&p_file_name[std::max< bcINT32 >(static_cast< bcINT32 >(std::strlen(p_file_name)) - (s_filename_length - 1), 0)]
+					);
 			}
 		};
 #endif

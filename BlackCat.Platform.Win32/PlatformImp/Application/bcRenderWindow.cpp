@@ -1,7 +1,13 @@
 // [03/20/2015 MRB]
 
 #include "PlatformImp/PlatformImpPCH.h"
+
+#include "CorePlatform/bcException.h"
+#include "Core/Utility/bcServiceManager.h"
+#include "Core/Event/bcEventManager.h"
+#include "PlatformImp/bcExport.h"
 #include "PlatformImp/Application/bcRenderWindow.h"
+#include "Platform/bcPlatformEvents.h"
 
 namespace black_cat
 {
@@ -88,7 +94,7 @@ namespace black_cat
 		}
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP bc_platform_render_window<core_platform::bc_platform::win32>::bc_platform_render_window(bc_render_window_parameter& p_parameters)
+		BC_PLATFORMIMP_DLL bc_platform_render_window<core_platform::bc_platform::win32>::bc_platform_render_window(bc_render_window_parameter& p_parameters)
 			: m_pack(p_parameters.m_instance, std::move(p_parameters.m_caption))
 		{
 			// The first task to creating a window is to describe some of its characteristics by filling out a WNDCLASS structure.
@@ -136,19 +142,19 @@ namespace black_cat
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP bc_platform_render_window<core_platform::bc_platform::win32>::bc_platform_render_window(bc_platform_render_window&& p_other) noexcept(true)
+		BC_PLATFORMIMP_DLL bc_platform_render_window<core_platform::bc_platform::win32>::bc_platform_render_window(bc_platform_render_window&& p_other) noexcept(true)
 			: m_pack(p_other.m_pack.m_instance, std::move(p_other.m_pack.m_caption))
 		{
 			m_pack.m_handle = p_other.m_pack.m_handle;
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP bc_platform_render_window<core_platform::bc_platform::win32>::~bc_platform_render_window()
+		BC_PLATFORMIMP_DLL bc_platform_render_window<core_platform::bc_platform::win32>::~bc_platform_render_window()
 		{
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP bc_platform_render_window<core_platform::bc_platform::win32>& bc_platform_render_window<core_platform::bc_platform::win32>::operator=(bc_platform_render_window&& p_other) noexcept(true)
+		BC_PLATFORMIMP_DLL bc_platform_render_window<core_platform::bc_platform::win32>& bc_platform_render_window<core_platform::bc_platform::win32>::operator=(bc_platform_render_window&& p_other) noexcept(true)
 		{
 			m_pack.m_instance = p_other.m_pack.m_instance;
 			m_pack.m_handle = p_other.m_pack.m_handle;
@@ -158,7 +164,7 @@ namespace black_cat
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP bcUINT32 bc_platform_render_window<core_platform::bc_platform::win32>::get_width() const noexcept(true)
+		BC_PLATFORMIMP_DLL bcUINT32 bc_platform_render_window<core_platform::bc_platform::win32>::get_width() const noexcept(true)
 		{
 			RECT l_rect;
 			GetClientRect(m_pack.m_handle, &l_rect);
@@ -167,13 +173,13 @@ namespace black_cat
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP void bc_platform_render_window<core_platform::bc_platform::win32>::set_width(bcUINT32 p_width) noexcept(true)
+		BC_PLATFORMIMP_DLL void bc_platform_render_window<core_platform::bc_platform::win32>::set_width(bcUINT32 p_width) noexcept(true)
 		{
 			_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), p_width, get_height());
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP bcUINT32 bc_platform_render_window<core_platform::bc_platform::win32>::get_height() const noexcept(true)
+		BC_PLATFORMIMP_DLL bcUINT32 bc_platform_render_window<core_platform::bc_platform::win32>::get_height() const noexcept(true)
 		{
 			RECT l_rect;
 			GetClientRect(m_pack.m_handle, &l_rect);
@@ -182,13 +188,13 @@ namespace black_cat
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP void bc_platform_render_window<core_platform::bc_platform::win32>::set_height(bcUINT32 p_height) noexcept(true)
+		BC_PLATFORMIMP_DLL void bc_platform_render_window<core_platform::bc_platform::win32>::set_height(bcUINT32 p_height) noexcept(true)
 		{
 			_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), get_width(), p_height);
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP bcUINT32 bc_platform_render_window<core_platform::bc_platform::win32>::get_left() const noexcept(true)
+		BC_PLATFORMIMP_DLL bcUINT32 bc_platform_render_window<core_platform::bc_platform::win32>::get_left() const noexcept(true)
 		{
 			POINT point;
 			point.x = 0;
@@ -200,13 +206,13 @@ namespace black_cat
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP void bc_platform_render_window<core_platform::bc_platform::win32>::set_left(bcUINT32 p_left) noexcept(true)
+		BC_PLATFORMIMP_DLL void bc_platform_render_window<core_platform::bc_platform::win32>::set_left(bcUINT32 p_left) noexcept(true)
 		{
 			_update_window_pos_size(m_pack.m_handle, p_left, get_top(), get_width(), get_height());
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP bcUINT32 bc_platform_render_window<core_platform::bc_platform::win32>::get_top() const noexcept(true)
+		BC_PLATFORMIMP_DLL bcUINT32 bc_platform_render_window<core_platform::bc_platform::win32>::get_top() const noexcept(true)
 		{
 			POINT point;
 			point.x = 0;
@@ -218,31 +224,31 @@ namespace black_cat
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP void bc_platform_render_window<core_platform::bc_platform::win32>::set_top(bcUINT32 p_top) noexcept(true)
+		BC_PLATFORMIMP_DLL void bc_platform_render_window<core_platform::bc_platform::win32>::set_top(bcUINT32 p_top) noexcept(true)
 		{
 			_update_window_pos_size(m_pack.m_handle, get_left(), p_top, get_width(), get_height());
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP void bc_platform_render_window<core_platform::bc_platform::win32>::set_size(bcUINT32 p_width, bcUINT32 p_height) noexcept(true)
+		BC_PLATFORMIMP_DLL void bc_platform_render_window<core_platform::bc_platform::win32>::set_size(bcUINT32 p_width, bcUINT32 p_height) noexcept(true)
 		{
 			_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), p_width, p_height);
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP void bc_platform_render_window<core_platform::bc_platform::win32>::set_position(bcUINT32 p_left, bcUINT32 p_top) noexcept(true)
+		BC_PLATFORMIMP_DLL void bc_platform_render_window<core_platform::bc_platform::win32>::set_position(bcUINT32 p_left, bcUINT32 p_top) noexcept(true)
 		{
 			_update_window_pos_size(m_pack.m_handle, p_left, p_top, get_width(), get_height());
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP core::bc_estring bc_platform_render_window<core_platform::bc_platform::win32>::get_caption() const
+		BC_PLATFORMIMP_DLL core::bc_estring bc_platform_render_window<core_platform::bc_platform::win32>::get_caption() const
 		{
 			return m_pack.m_caption;
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP void bc_platform_render_window<core_platform::bc_platform::win32>::set_caption(core::bc_estring& p_caption)
+		BC_PLATFORMIMP_DLL void bc_platform_render_window<core_platform::bc_platform::win32>::set_caption(core::bc_estring& p_caption)
 		{
 			m_pack.m_caption = p_caption;
 
@@ -250,7 +256,7 @@ namespace black_cat
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP void bc_platform_render_window<core_platform::bc_platform::win32>::set_caption(core::bc_estring&& p_caption)
+		BC_PLATFORMIMP_DLL void bc_platform_render_window<core_platform::bc_platform::win32>::set_caption(core::bc_estring&& p_caption)
 		{
 			m_pack.m_caption = std::move(p_caption);
 
@@ -258,13 +264,13 @@ namespace black_cat
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP bool bc_platform_render_window<core_platform::bc_platform::win32>::is_minimized() const noexcept(true)
+		BC_PLATFORMIMP_DLL bool bc_platform_render_window<core_platform::bc_platform::win32>::is_minimized() const noexcept(true)
 		{
 			return IsIconic(m_pack.m_handle);
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP void bc_platform_render_window<core_platform::bc_platform::win32>::show(bool p_visible)
+		BC_PLATFORMIMP_DLL void bc_platform_render_window<core_platform::bc_platform::win32>::show(bool p_visible)
 		{
 			bcINT32 l_show = p_visible ? SW_SHOW : SW_HIDE;
 
@@ -272,13 +278,13 @@ namespace black_cat
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP void bc_platform_render_window<core_platform::bc_platform::win32>::close() noexcept(true)
+		BC_PLATFORMIMP_DLL void bc_platform_render_window<core_platform::bc_platform::win32>::close() noexcept(true)
 		{
 			DestroyWindow(m_pack.m_handle);
 		};
 
 		template< >
-		BC_PLATFORMIMP_DLL_EXP bc_messagebox_value bc_platform_render_window<core_platform::bc_platform::win32>::messagebox(core::bc_estring p_caption, core::bc_estring p_text, bc_messagebox_type p_type, bc_messagebox_buttom p_button)
+		BC_PLATFORMIMP_DLL bc_messagebox_value bc_platform_render_window<core_platform::bc_platform::win32>::messagebox(const bcECHAR* p_caption, const bcECHAR* p_text, bc_messagebox_type p_type, bc_messagebox_buttom p_button)
 		{
 			bc_messagebox_value l_result = bc_messagebox_value::ok;
 			bcUINT32 l_type = 0;
@@ -319,7 +325,7 @@ namespace black_cat
 				break;
 			}
 
-			bcINT32 l_value = MessageBox(m_pack.m_handle, p_text.c_str(), p_caption.c_str(), l_type | l_button);
+			bcINT32 l_value = MessageBox(m_pack.m_handle, p_text, p_caption, l_type | l_button);
 
 			switch (l_value)
 			{
@@ -341,6 +347,12 @@ namespace black_cat
 			}
 
 			return l_result;
+		};
+
+		template< >
+		BC_PLATFORMIMP_DLL bc_messagebox_value bc_platform_render_window<core_platform::bc_platform::win32>::messagebox(core::bc_estring_frame p_caption, core::bc_estring_frame p_text, bc_messagebox_type p_type, bc_messagebox_buttom p_button)
+		{
+			return messagebox(p_caption.c_str(), p_text.c_str(), p_type, p_button);
 		};
 	}
 }

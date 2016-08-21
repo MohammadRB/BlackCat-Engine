@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/CorePCH.h"
-#include "Core/bcCoreUtility.h"
+#include "Core/Utility/bcInitializable.h"
 
 namespace black_cat
 {

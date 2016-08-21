@@ -23,17 +23,17 @@ namespace black_cat
 		bc_matrix3f::bc_matrix3f(bool p_zero)
 		{
 			if (p_zero)
-				std::memset(m_entry, 0, 3 * 3 * sizeof(bcFLOAT32));
+				std::memset(m_entry, 0, 3 * 3 * sizeof(bcFLOAT));
 		}
 		
 		bc_matrix3f::bc_matrix3f(const bc_matrix3f& p_other)
 		{
-			std::memcpy(m_entry, static_cast<void*>(const_cast<bc_matrix3f*>(&p_other)), 9 * sizeof(bcFLOAT32));
+			std::memcpy(m_entry, static_cast<void*>(const_cast<bc_matrix3f*>(&p_other)), 9 * sizeof(bcFLOAT));
 		}
 		
-		bc_matrix3f::bc_matrix3f(bcFLOAT32 p_m11, bcFLOAT32 p_m12, bcFLOAT32 p_m13,
-			bcFLOAT32 p_m21, bcFLOAT32 p_m22, bcFLOAT32 p_m23,
-			bcFLOAT32 p_m31, bcFLOAT32 p_m32, bcFLOAT32 p_m33)
+		bc_matrix3f::bc_matrix3f(bcFLOAT p_m11, bcFLOAT p_m12, bcFLOAT p_m13,
+			bcFLOAT p_m21, bcFLOAT p_m22, bcFLOAT p_m23,
+			bcFLOAT p_m31, bcFLOAT p_m32, bcFLOAT p_m33)
 		{
 			m_entry[0] = p_m11;
 			m_entry[1] = p_m12;
@@ -50,14 +50,14 @@ namespace black_cat
 		
 		bc_matrix3f& bc_matrix3f::operator= (const bc_matrix3f& p_other)
 		{
-			std::memcpy(m_entry, p_other.m_entry, 9 * sizeof(bcFLOAT32));
+			std::memcpy(m_entry, p_other.m_entry, 9 * sizeof(bcFLOAT));
 			return *this;
 		}
 		
-		void bc_matrix3f::rotation_x(bcFLOAT32 p_radians)
+		void bc_matrix3f::rotation_x(bcFLOAT p_radians)
 		{
-			bcFLOAT32 l_sin = sinf(p_radians);
-			bcFLOAT32 l_cos = cosf(p_radians);
+			bcFLOAT l_sin = sinf(p_radians);
+			bcFLOAT l_cos = cosf(p_radians);
 
 			m_entry[0] = 1.0f;
 			m_entry[1] = 0.0f;
@@ -72,10 +72,10 @@ namespace black_cat
 			m_entry[8] = l_cos;
 		}
 		
-		void bc_matrix3f::rotation_y(bcFLOAT32 p_radians)
+		void bc_matrix3f::rotation_y(bcFLOAT p_radians)
 		{
-			bcFLOAT32 l_sin = sinf(p_radians);
-			bcFLOAT32 l_cos = cosf(p_radians);
+			bcFLOAT l_sin = sinf(p_radians);
+			bcFLOAT l_cos = cosf(p_radians);
 
 			m_entry[0] = l_cos;
 			m_entry[1] = 0.0f;
@@ -90,10 +90,10 @@ namespace black_cat
 			m_entry[8] = l_cos;
 		}
 		
-		void bc_matrix3f::rotation_z(bcFLOAT32 p_radians)
+		void bc_matrix3f::rotation_z(bcFLOAT p_radians)
 		{
-			bcFLOAT32 l_sin = sinf(p_radians);
-			bcFLOAT32 l_cos = cosf(p_radians);
+			bcFLOAT l_sin = sinf(p_radians);
+			bcFLOAT l_cos = cosf(p_radians);
 
 			m_entry[0] = l_cos;
 			m_entry[1] = l_sin;
@@ -134,11 +134,11 @@ namespace black_cat
 			*this = l_rot1;
 		}
 		
-		void bc_matrix3f::rotation_euler(bc_vector3f& p_axis, bcFLOAT32 p_angle)
+		void bc_matrix3f::rotation_euler(bc_vector3f& p_axis, bcFLOAT p_angle)
 		{
-			bcFLOAT32 l_s = sinf(p_angle);
-			bcFLOAT32 l_c = cosf(p_angle);
-			bcFLOAT32 l_t = 1 - l_c;
+			bcFLOAT l_s = sinf(p_angle);
+			bcFLOAT l_c = cosf(p_angle);
+			bcFLOAT l_t = 1 - l_c;
 
 			m_entry[0] = l_t*p_axis.x*p_axis.x + l_c;
 			m_entry[1] = l_t*p_axis.x*p_axis.y + l_s*p_axis.z;
@@ -171,7 +171,7 @@ namespace black_cat
 			//(1.0/sqrt((double)fValue))
 
 			// compute q0
-			bcFLOAT32 l_inv_length = static_cast<bcFLOAT32>(1.0 / sqrt(static_cast<double>(m_entry[0] * m_entry[0] +
+			bcFLOAT l_inv_length = static_cast<bcFLOAT>(1.0 / sqrt(static_cast<double>(m_entry[0] * m_entry[0] +
 				m_entry[3] * m_entry[3] + m_entry[6] * m_entry[6])));
 
 			m_entry[0] *= l_inv_length;
@@ -179,14 +179,14 @@ namespace black_cat
 			m_entry[6] *= l_inv_length;
 
 			// compute q1
-			bcFLOAT32 l_dot0 = m_entry[0] * m_entry[1] + m_entry[3] * m_entry[4] +
+			bcFLOAT l_dot0 = m_entry[0] * m_entry[1] + m_entry[3] * m_entry[4] +
 				m_entry[6] * m_entry[7];
 
 			m_entry[1] -= l_dot0*m_entry[0];
 			m_entry[4] -= l_dot0*m_entry[3];
 			m_entry[7] -= l_dot0*m_entry[6];
 
-			l_inv_length = static_cast<bcFLOAT32>(1.0 / sqrt(static_cast<double>(m_entry[1] * m_entry[1] +
+			l_inv_length = static_cast<bcFLOAT>(1.0 / sqrt(static_cast<double>(m_entry[1] * m_entry[1] +
 				m_entry[4] * m_entry[4] + m_entry[7] * m_entry[7])));
 
 			m_entry[1] *= l_inv_length;
@@ -194,7 +194,7 @@ namespace black_cat
 			m_entry[7] *= l_inv_length;
 
 			// compute q2
-			bcFLOAT32 fDot1 = m_entry[1] * m_entry[2] + m_entry[4] * m_entry[5] +
+			bcFLOAT fDot1 = m_entry[1] * m_entry[2] + m_entry[4] * m_entry[5] +
 				m_entry[7] * m_entry[8];
 
 			l_dot0 = m_entry[0] * m_entry[2] + m_entry[3] * m_entry[5] +
@@ -204,7 +204,7 @@ namespace black_cat
 			m_entry[5] -= l_dot0*m_entry[3] + fDot1*m_entry[4];
 			m_entry[8] -= l_dot0*m_entry[6] + fDot1*m_entry[7];
 
-			l_inv_length = static_cast<bcFLOAT32>(1.0 / sqrt(static_cast<double>(m_entry[2] * m_entry[2] +
+			l_inv_length = static_cast<bcFLOAT>(1.0 / sqrt(static_cast<double>(m_entry[2] * m_entry[2] +
 				m_entry[5] * m_entry[5] + m_entry[8] * m_entry[8])));
 
 			m_entry[2] *= l_inv_length;
@@ -212,34 +212,34 @@ namespace black_cat
 			m_entry[8] *= l_inv_length;
 		}
 		//----------------------------------------------------------------------------
-		bcFLOAT32 bc_matrix3f::operator[] (bcINT p_pos) const
+		bcFLOAT bc_matrix3f::operator[] (bcINT p_pos) const
 		{
 			return(m_entry[p_pos]);
 		}
 		//----------------------------------------------------------------------------
-		bcFLOAT32& bc_matrix3f::operator[] (bcINT p_pos)
+		bcFLOAT& bc_matrix3f::operator[] (bcINT p_pos)
 		{
 			return(m_entry[p_pos]);
 		}
 		//----------------------------------------------------------------------------
-		bcFLOAT32 bc_matrix3f::operator() (bcINT p_row, bcINT p_col) const
+		bcFLOAT bc_matrix3f::operator() (bcINT p_row, bcINT p_col) const
 		{
 			return(m_entry[I(p_row, p_col)]);
 		}
 		//----------------------------------------------------------------------------
-		bcFLOAT32& bc_matrix3f::operator() (bcINT p_row, bcINT p_col)
+		bcFLOAT& bc_matrix3f::operator() (bcINT p_row, bcINT p_col)
 		{
 			return(m_entry[I(p_row, p_col)]);
 		}
 		//----------------------------------------------------------------------------
 		bool bc_matrix3f::operator== (const bc_matrix3f& p_other) const
 		{
-			return(std::memcmp(m_entry, p_other.m_entry, 3 * 3 * sizeof(bcFLOAT32)) == 0);
+			return(std::memcmp(m_entry, p_other.m_entry, 3 * 3 * sizeof(bcFLOAT)) == 0);
 		}
 		
 		bool bc_matrix3f::operator!= (const bc_matrix3f& p_other) const
 		{
-			return(std::memcmp(m_entry, p_other.m_entry, 3 * 3 * sizeof(bcFLOAT32)) != 0);
+			return(std::memcmp(m_entry, p_other.m_entry, 3 * 3 * sizeof(bcFLOAT)) != 0);
 		}
 		
 		bc_matrix3f bc_matrix3f::operator* (const bc_matrix3f& p_other) const
@@ -282,7 +282,7 @@ namespace black_cat
 			return(l_diff);
 		}
 		
-		bc_matrix3f bc_matrix3f::operator* (bcFLOAT32 p_scalar) const
+		bc_matrix3f bc_matrix3f::operator* (bcFLOAT p_scalar) const
 		{
 			bc_matrix3f l_prod;
 
@@ -292,12 +292,12 @@ namespace black_cat
 			return(l_prod);
 		}
 		
-		bc_matrix3f bc_matrix3f::operator/ (bcFLOAT32 p_scalar) const
+		bc_matrix3f bc_matrix3f::operator/ (bcFLOAT p_scalar) const
 		{
 			bc_matrix3f l_quot;
 			if (p_scalar != 0.0f)
 			{
-				bcFLOAT32 l_inv_scalar = 1.0f / p_scalar;
+				bcFLOAT l_inv_scalar = 1.0f / p_scalar;
 				for (bcINT i = 0; i < 3 * 3; i++)
 					l_quot.m_entry[i] = m_entry[i] * l_inv_scalar;
 			}
@@ -336,7 +336,7 @@ namespace black_cat
 			return(*this);
 		}
 		
-		bc_matrix3f& bc_matrix3f::operator*= (bcFLOAT32 p_scalar)
+		bc_matrix3f& bc_matrix3f::operator*= (bcFLOAT p_scalar)
 		{
 			for (bcINT i = 0; i < 3 * 3; i++)
 				m_entry[i] *= p_scalar;
@@ -364,11 +364,11 @@ namespace black_cat
 			return(*this);
 		}
 		
-		bc_matrix3f& bc_matrix3f::operator/= (bcFLOAT32 p_scalar)
+		bc_matrix3f& bc_matrix3f::operator/= (bcFLOAT p_scalar)
 		{
 			if (p_scalar != 0.0f)
 			{
-				bcFLOAT32 l_inv_scalar = 1.0f / p_scalar;
+				bcFLOAT l_inv_scalar = 1.0f / p_scalar;
 				for (bcINT i = 0; i < 3 * 3; i++)
 					m_entry[i] *= l_inv_scalar;
 			}
@@ -383,7 +383,7 @@ namespace black_cat
 		
 		void bc_matrix3f::make_zero()
 		{
-			std::memset(m_entry, 0, 3 * 3 * sizeof(bcFLOAT32));
+			std::memset(m_entry, 0, 3 * 3 * sizeof(bcFLOAT));
 		}
 		
 		void bc_matrix3f::make_identity()
@@ -410,7 +410,7 @@ namespace black_cat
 					l_transpose.m_entry[I(l_row, l_col)] = m_entry[I(l_col, l_row)];
 			}
 
-			std::memcpy(m_entry, l_transpose.m_entry, 3 * 3 * sizeof(bcFLOAT32));
+			std::memcpy(m_entry, l_transpose.m_entry, 3 * 3 * sizeof(bcFLOAT));
 		}
 		
 		bc_matrix3f bc_matrix3f::zero()

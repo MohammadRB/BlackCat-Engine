@@ -15,22 +15,25 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CorePlatform\bcCorePlatformException.h" />
-    <ClInclude Include="CorePlatform\bcHardwareInfo.h" />
+    <ClInclude Include="CorePlatform\bcException.h" />
+    <ClInclude Include="CorePlatform\bcExport.h" />
     <ClInclude Include="CorePlatform\bcType.h" />
-    <ClInclude Include="CorePlatform\bcCorePlatformUtility.h" />
     <ClInclude Include="CorePlatform\Concurrency\bcAtomic.h" />
     <ClInclude Include="CorePlatform\Concurrency\bcConcurrencyDef.h" />
-    <ClInclude Include="CorePlatform\Concurrency\bcConcurrencyUtility.h" />
+    <ClInclude Include="CorePlatform\Concurrency\bcThreadLocal.h" />
     <ClInclude Include="CorePlatform\Concurrency\bcConditionVariable.h" />
     <ClInclude Include="CorePlatform\Concurrency\bcFuture.h" />
-    <ClInclude Include="CorePlatform\Concurrency\bcILockable.h" />
     <ClInclude Include="CorePlatform\Concurrency\bcMutex.h" />
     <ClInclude Include="CorePlatform\Concurrency\bcThread.h" />
     <ClInclude Include="CorePlatform\CorePlatformPCH.h" />
     <ClInclude Include="CorePlatform\bcPlatform.h" />
+    <ClInclude Include="CorePlatform\File\bcFile.h" />
+    <ClInclude Include="CorePlatform\File\bcFileInfo.h" />
+    <ClInclude Include="CorePlatform\File\bcPath.h" />
     <ClInclude Include="CorePlatform\Memory\bcMemAlloc.h" />
     <ClInclude Include="CorePlatform\Utility\bcClock.h" />
+    <ClInclude Include="CorePlatform\Utility\bcHardwareInfo.h" />
+    <ClInclude Include="CorePlatform\Utility\bcNoCopy.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CorePlatform\CorePlatformPCH.cpp">
@@ -111,6 +114,7 @@
       <Command>copy CorePlatform\Concurrency\*.h ..\BC_SDK\Include\CorePlatform\Concurrency
 copy CorePlatform\Memory\*.h ..\BC_SDK\Include\CorePlatform\Memory
 copy CorePlatform\Utility\*.h ..\BC_SDK\Include\CorePlatform\Utility
+copy CorePlatform\File\*.h ..\BC_SDK\Include\CorePlatform\File
 copy CorePlatform\*.h ..\BC_SDK\Include\CorePlatform
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
@@ -144,6 +148,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
       <Command>copy CorePlatform\Concurrency\*.h ..\BC_SDK\Include\CorePlatform\Concurrency
 copy CorePlatform\Memory\*.h ..\BC_SDK\Include\CorePlatform\Memory
 copy CorePlatform\Utility\*.h ..\BC_SDK\Include\CorePlatform\Utility
+copy CorePlatform\File\*.h ..\BC_SDK\Include\CorePlatform\File
 copy CorePlatform\*.h ..\BC_SDK\Include\CorePlatform
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
@@ -178,6 +183,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
       <Command>copy CorePlatform\Concurrency\*.h ..\BC_SDK\Include\CorePlatform\Concurrency
 copy CorePlatform\Memory\*.h ..\BC_SDK\Include\CorePlatform\Memory
 copy CorePlatform\Utility\*.h ..\BC_SDK\Include\CorePlatform\Utility
+copy CorePlatform\File\*.h ..\BC_SDK\Include\CorePlatform\File
 copy CorePlatform\*.h ..\BC_SDK\Include\CorePlatform
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll

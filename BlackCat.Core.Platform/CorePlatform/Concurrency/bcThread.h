@@ -4,7 +4,7 @@
 
 #include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatform/bcType.h"
-#include "CorePlatform/bcCorePlatformUtility.h"
+#include "CorePlatform/Utility/bcNoCopy.h"
 #include "CorePlatform/Concurrency/bcConcurrencyDef.h"
 #include "CorePlatform/Concurrency/bcAtomic.h"
 #include "CorePlatform/Memory/bcMemAlloc.h"
@@ -21,81 +21,81 @@ namespace black_cat
 		{
 		};
 
-		class bc_per_thread_data : private bc_no_copy
-		{
-		public:
-			using this_type = bc_per_thread_data;
+		//class bc_per_thread_data : private bc_no_copy
+		//{
+		//public:
+		//	using this_type = bc_per_thread_data;
 
-		public:
-			bc_per_thread_data()
-				: m_exiter()
-			{
-			};
+		//public:
+		//	bc_per_thread_data()
+		//		: m_exiter()
+		//	{
+		//	};
 
-			bc_per_thread_data(this_type&& p_other)
-				: m_exiter(std::move(p_other.m_exiter))
-			{
-			}
+		//	bc_per_thread_data(this_type&& p_other)
+		//		: m_exiter(std::move(p_other.m_exiter))
+		//	{
+		//	}
 
-			~bc_per_thread_data() = default;
+		//	~bc_per_thread_data() = default;
 
-			this_type& operator =(this_type&& p_other)
-			{
-				m_exiter = std::move(p_other.m_exiter);
+		//	this_type& operator =(this_type&& p_other)
+		//	{
+		//		m_exiter = std::move(p_other.m_exiter);
 
-				return *this;
-			}
+		//		return *this;
+		//	}
 
-			void add_exit_func(std::function< void() > p_func)
-			{
-				m_exiter.add(p_func);
-			}
+		//	void add_exit_func(std::function< void() > p_func)
+		//	{
+		//		m_exiter.add(p_func);
+		//	}
 
-		protected:
+		//protected:
 
-		private:
-			class _thread_exiter : private bc_no_copy
-			{
-			public:
-				using this_type = _thread_exiter;
+		//private:
+		//	class _thread_exiter : private bc_no_copy
+		//	{
+		//	public:
+		//		using this_type = _thread_exiter;
 
-			public:
-				_thread_exiter() = default;
+		//	public:
+		//		_thread_exiter() = default;
 
-				_thread_exiter(this_type&& p_other)
-					: m_exit_funcs(std::move(p_other.m_exit_funcs))
-				{
-				}
+		//		_thread_exiter(this_type&& p_other)
+		//			: m_exit_funcs(std::move(p_other.m_exit_funcs))
+		//		{
+		//		}
 
-				~_thread_exiter()
-				{
-					while (!m_exit_funcs.empty())
-					{
-						m_exit_funcs.top()();
-						m_exit_funcs.pop();
-					}
-				}
+		//		~_thread_exiter()
+		//		{
+		//			while (!m_exit_funcs.empty())
+		//			{
+		//				m_exit_funcs.top()();
+		//				m_exit_funcs.pop();
+		//			}
+		//		}
 
-				this_type& operator =(this_type&& p_other)
-				{
-					m_exit_funcs = std::move(p_other.m_exit_funcs);
+		//		this_type& operator =(this_type&& p_other)
+		//		{
+		//			m_exit_funcs = std::move(p_other.m_exit_funcs);
 
-					return *this;
-				}
+		//			return *this;
+		//		}
 
-				void add(std::function< void() > p_func)
-				{
-					m_exit_funcs.push(std::move(p_func));
-				}
+		//		void add(std::function< void() > p_func)
+		//		{
+		//			m_exit_funcs.push(std::move(p_func));
+		//		}
 
-			protected:
+		//	protected:
 
-			private:
-				std::stack< std::function< void() > > m_exit_funcs;
-			};
+		//	private:
+		//		std::stack< std::function< void() > > m_exit_funcs;
+		//	};
 
-			_thread_exiter m_exiter;
-		};
+		//	_thread_exiter m_exiter;
+		//};
 
 		template< bc_platform TP >
 		class bc_platform_thread : private bc_no_copy
@@ -115,7 +115,7 @@ namespace black_cat
 
 			~bc_platform_thread()
 			{
-				this_type::s_static_data.remove_me();
+				//this_type::s_static_data.remove_me();
 			}
 
 			this_type& operator =(this_type&& p_other) noexcept(true);
@@ -143,124 +143,124 @@ namespace black_cat
 
 			bcInline static void current_thread_on_exit(std::function< void() > p_func)
 			{
-				//// http://stackoverflow.com/questions/20112221/invoking-a-function-automatically-on-stdthread-exit-in-c11
-				//class thread_exiter : private bc_no_copy
-				//{
-				//public:
-				//	thread_exiter() = default;
+				// http://stackoverflow.com/questions/20112221/invoking-a-function-automatically-on-stdthread-exit-in-c11
+				class thread_exiter : private bc_no_copy
+				{
+				public:
+					thread_exiter() = default;
 
-				//	~thread_exiter()
-				//	{
-				//		while (!m_exit_funcs.empty())
-				//		{
-				//			m_exit_funcs.top()();
-				//			m_exit_funcs.pop();
-				//		}
-				//	}
+					~thread_exiter()
+					{
+						while (!m_exit_funcs.empty())
+						{
+							m_exit_funcs.top()();
+							m_exit_funcs.pop();
+						}
+					}
 
-				//	void add(std::function< void() > p_func)
-				//	{
-				//		m_exit_funcs.push(std::move(p_func));
-				//	}
+					void add(std::function< void() > p_func)
+					{
+						m_exit_funcs.push(std::move(p_func));
+					}
 
-				//protected:
+				protected:
 
-				//private:
-				//	std::stack< std::function< void() > > m_exit_funcs;
-				//};
+				private:
+					std::stack< std::function< void() > > m_exit_funcs;
+				};
 
-				//thread_local static thread_exiter l_exiter;
-				//l_exiter.add(std::move(p_func));
+				thread_local static thread_exiter l_exiter;
+				l_exiter.add(std::move(p_func));
 
-				this_type::s_static_data.me().add_exit_func(p_func);
+				//this_type::s_static_data.me().add_exit_func(p_func);
 			}
 
 			// Call this function when main thread is about exit, to remove it's per-thread-data
 			static void on_main_thread_exit()
 			{
-				this_type::s_static_data.remove_me();
+				//this_type::s_static_data.remove_me();
 			}
 
 		protected:
 
 		private:
-			class _static_data
-			{
-			private:
-				using map_type = std::map< id, bc_per_thread_data >;
+			//class _static_data
+			//{
+			//private:
+			//	using map_type = std::map< id, bc_per_thread_data >;
 
-			public:
-				_static_data() : m_flag(), m_threads()
-				{
-					m_flag.clear(std::memory_order::memory_order_relaxed);
-				}
+			//public:
+			//	_static_data() : m_flag(), m_threads()
+			//	{
+			//		m_flag.clear(std::memory_order::memory_order_relaxed);
+			//	}
 
-				~_static_data() {}
+			//	~_static_data() {}
 
-				void remove_me()
-				{
-					lock();
+			//	void remove_me()
+			//	{
+			//		lock();
 
-					m_threads.erase(this_type::current_thread_id());
+			//		m_threads.erase(this_type::current_thread_id());
 
-					unlock();
-				}
+			//		unlock();
+			//	}
 
-				bc_per_thread_data& me()
-				{
-					id l_thread_id = this_type::current_thread_id();
+			//	bc_per_thread_data& me()
+			//	{
+			//		id l_thread_id = this_type::current_thread_id();
 
-					lock_shared();
+			//		lock_shared();
 
-					auto l_iterator = m_threads.find(l_thread_id);
-					
-					unlock_shared();
+			//		auto l_iterator = m_threads.find(l_thread_id);
+			//		
+			//		unlock_shared();
 
-					if (l_iterator == m_threads.end())
-					{
-						lock();
+			//		if (l_iterator == m_threads.end())
+			//		{
+			//			lock();
 
-						l_iterator = m_threads.insert(map_type::value_type(l_thread_id, bc_per_thread_data())).first;
+			//			l_iterator = m_threads.insert(map_type::value_type(l_thread_id, bc_per_thread_data())).first;
 
-						unlock();
-					}
+			//			unlock();
+			//		}
 
-					return *&l_iterator->second;
-				}
+			//		return *&l_iterator->second;
+			//	}
 
-			protected:
+			//protected:
 
-			private:
-				bcInline void lock()
-				{
-					while (m_flag.test_and_set(std::memory_order::memory_order_acquire));
-				}
+			//private:
+			//	bcInline void lock()
+			//	{
+			//		while (m_flag.test_and_set(std::memory_order::memory_order_acquire));
+			//	}
 
-				bcInline void lock_shared()
-				{
-					lock();
-				}
+			//	bcInline void lock_shared()
+			//	{
+			//		lock();
+			//	}
 
-				bcInline void unlock()
-				{
-					m_flag.clear(std::memory_order::memory_order_release);
-				}
+			//	bcInline void unlock()
+			//	{
+			//		m_flag.clear(std::memory_order::memory_order_release);
+			//	}
 
-				bcInline void unlock_shared()
-				{
-					unlock();
-				}
+			//	bcInline void unlock_shared()
+			//	{
+			//		unlock();
+			//	}
 
-				std::atomic_flag m_flag; // TODO
-				map_type m_threads;
-			};
+			//	std::atomic_flag m_flag; // TODO
+			//	map_type m_threads;
+			//};
 
-			static _static_data s_static_data;
+			//static _static_data s_static_data;
 			platform_pack m_pack;
 		};
 
-		template< bc_platform TP >
-		typename bc_platform_thread< TP >::_static_data bc_platform_thread< TP >::s_static_data;
+		/*template< bc_platform TP >
+		typename bc_platform_thread< TP >::_static_data bc_platform_thread< TP >::s_static_data;*/
 
 		using bc_thread = bc_platform_thread< g_current_platform >;
 	}

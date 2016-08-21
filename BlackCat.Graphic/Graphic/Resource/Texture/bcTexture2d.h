@@ -7,6 +7,7 @@
 #include "Graphic/bcResourcePtr.h"
 #include "Graphic/Resource/bcResource.h"
 #include "Graphic/Resource/Texture/bcTextureConfig.h"
+#include "Graphic/bcDeviceResourceContent.h"
 
 namespace black_cat
 {
@@ -70,5 +71,7 @@ namespace black_cat
 		using bc_texture2d = bc_platform_texture2d< g_current_platform_render_api >;
 
 		using bc_texture2d_ptr = bc_resource_ptr< bc_texture2d >;
+		using bc_texture2d_content = bc_device_resource_content< bc_texture2d >;
+		using bc_texture2d_content_ptr = core::bc_content_ptr<bc_texture2d_content>;
 	}
 }

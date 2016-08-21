@@ -1,0 +1,337 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{905DDBC6-A5B1-49E9-8AF0-064C358FCE65}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>BlackCatGame</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;BC_GAME_DLL;_DEBUG;_WINDOWS;_USRDLL;BLACKCATGAME_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11;..\3rdParty</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>Game/GamePCH.h</PrecompiledHeaderFile>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\BC_SDK\Lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy Game\*.h ..\BC_SDK\Include\Game
+copy Game\Graphic\Command\*.h ..\BC_SDK\Include\Game\Graphic\Command
+copy Game\Graphic\Pass\*.h ..\BC_SDK\Include\Game\Graphic\Pass
+copy Game\Graphic\Task\*.h ..\BC_SDK\Include\Game\Graphic\Task
+copy Game\Shader\*.h ..\BC_SDK\Include\Game\Shader
+copy Game\Shader\DirectX11\*.h ..\BC_SDK\Include\Game\Shader\DirectX11
+copy Game\Object\*.h ..\BC_SDK\Include\Game\Object
+copy Game\Object\Mesh\*.h ..\BC_SDK\Include\Game\Object\Mesh
+copy Game\Object\Scence\*.h ..\BC_SDK\Include\Game\Object\Scence
+copy Game\Object\Scence\Component\*.h ..\BC_SDK\Include\Game\Object\Scence\Component
+copy Game\System\*.h ..\BC_SDK\Include\Game\System
+copy Game\System\Input\*.h ..\BC_SDK\Include\Game\System\Input
+copy Game\System\Render\*.h ..\BC_SDK\Include\Game\System\Render
+copy Game\System\Render\Pass\*.h ..\BC_SDK\Include\Game\System\Render\Pass
+copy Game\System\Render\Scence\*.h ..\BC_SDK\Include\Game\System\Render\Scence
+
+copy Game\Shader\DirectX11\*.hlsli ..\BC_SDK\Content\Shader\DirectX11
+copy Game\Shader\DirectX11\*.hlsl ..\BC_SDK\Content\Shader\DirectX11
+
+copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
+copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp
+copy ..\$(Configuration)\$(ProjectName).ilk ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).ilk
+copy ..\$(Configuration)\$(ProjectName).lib ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).lib
+copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).pdb</Command>
+    </PostBuildEvent>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+    <FxCompile>
+      <EntryPointName />
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;BLACKCATGAME_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;BC_GAME_DLL;NDEBUG;_WINDOWS;_USRDLL;BLACKCATGAME_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11;..\3rdParty</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>Game/GamePCH.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\BC_SDK\Lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy Game\*.h ..\BC_SDK\Include\Game
+copy Game\Graphic\Command\*.h ..\BC_SDK\Include\Game\Graphic\Command
+copy Game\Graphic\Pass\*.h ..\BC_SDK\Include\Game\Graphic\Pass
+copy Game\Graphic\Task\*.h ..\BC_SDK\Include\Game\Graphic\Task
+copy Game\Shader\*.h ..\BC_SDK\Include\Game\Shader
+copy Game\Shader\DirectX11\*.h ..\BC_SDK\Include\Game\Shader\DirectX11
+copy Game\Object\*.h ..\BC_SDK\Include\Game\Object
+copy Game\Object\Mesh\*.h ..\BC_SDK\Include\Game\Object\Mesh
+copy Game\Object\Scence\*.h ..\BC_SDK\Include\Game\Object\Scence
+copy Game\Object\Scence\Component\*.h ..\BC_SDK\Include\Game\Object\Scence\Component
+copy Game\System\*.h ..\BC_SDK\Include\Game\System
+copy Game\System\Input\*.h ..\BC_SDK\Include\Game\System\Input
+copy Game\System\Render\*.h ..\BC_SDK\Include\Game\System\Render
+copy Game\System\Render\Pass\*.h ..\BC_SDK\Include\Game\System\Render\Pass
+copy Game\System\Render\Scence\*.h ..\BC_SDK\Include\Game\System\Render\Scence
+
+copy Game\Shader\DirectX11\*.hlsli ..\BC_SDK\Content\Shader\DirectX11
+copy Game\Shader\DirectX11\*.hlsl ..\BC_SDK\Content\Shader\DirectX11
+
+copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
+copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp
+copy ..\$(Configuration)\$(ProjectName).ilk ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).ilk
+copy ..\$(Configuration)\$(ProjectName).lib ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).lib
+copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).pdb</Command>
+    </PostBuildEvent>
+    <FxCompile>
+      <EntryPointName />
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;BLACKCATGAME_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Game\bcException.h" />
+    <ClInclude Include="Game\bcExport.h" />
+    <ClInclude Include="Game\GamePCH.h" />
+    <ClInclude Include="Game\Graphic\bcRenderCommand.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Game\Graphic\bcRenderPass.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Game\Graphic\bcRenderTask.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Game\Graphic\Command\bcPipelineDispatchCommand.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Game\Graphic\Command\bcPipelineDrawCommand.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Game\Graphic\Command\bcPipelineDrawIndexedCommand.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Game\Graphic\Command\bcPipelineDrawIndexedInstancedCommand.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Mesh\bcMesh.h" />
+    <ClInclude Include="Game\Object\Mesh\bcMeshGenerator.h" />
+    <ClInclude Include="Game\Object\Mesh\bcMeshPart.h" />
+    <ClInclude Include="Game\Object\Scence\bcActor.h" />
+    <ClInclude Include="Game\Object\Scence\bcActor.hpp" />
+    <ClInclude Include="Game\Object\Scence\bcActorComponent.h" />
+    <ClInclude Include="Game\Object\Scence\bcActorComponentContainer.h" />
+    <ClInclude Include="Game\Object\Scence\bcActorComponentManager.h" />
+    <ClInclude Include="Game\Object\Scence\bcEntityManager.h" />
+    <ClInclude Include="Game\Object\Scence\Component\bcHierarchyComponent.h" />
+    <ClInclude Include="Game\Object\Scence\Component\bcMeshComponent.h" />
+    <ClInclude Include="Game\Object\Scence\Component\bcRenderComponent.h" />
+    <ClInclude Include="Game\System\bcGameSystem.h" />
+    <ClInclude Include="Game\System\Input\bcCamera.h" />
+    <ClInclude Include="Game\System\Input\bcFileSystem.h" />
+    <ClInclude Include="Game\System\Input\bcFreeCamera.h" />
+    <ClInclude Include="Game\System\Input\bcInputSystem.h" />
+    <ClInclude Include="Game\System\Render\bcRenderInstance.h" />
+    <ClInclude Include="Game\System\Render\bcRenderPass.h" />
+    <ClInclude Include="Game\System\Render\bcRenderPassManager.h" />
+    <ClInclude Include="Game\System\Render\bcRenderPassState.h" />
+    <ClInclude Include="Game\System\Render\bcRenderState.h" />
+    <ClInclude Include="Game\System\Render\bcRenderSystem.h" />
+    <ClInclude Include="Game\System\Render\bcRenderSystemParameter.h" />
+    <ClInclude Include="Game\System\Render\bcStateConfigs.h" />
+    <ClInclude Include="Game\System\Render\bcVertexLayout.h" />
+    <ClInclude Include="Game\System\Render\Pass\bcBackBufferOutputPass.h" />
+    <ClInclude Include="Game\System\Render\Scence\bcScenceGraph.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Game\GamePCH.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Game\Graphic\Command\bcPipelineDispatchCommand.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Game\Graphic\Command\bcPipelineDrawCommand.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Game\Graphic\Command\bcPipelineDrawIndexedCommand.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Game\Graphic\Command\bcPipelineDrawIndexedInstancedCommand.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Mesh\bcMesh.cpp" />
+    <ClCompile Include="Game\Object\Mesh\bcMeshGenerator.cpp" />
+    <ClCompile Include="Game\Object\Mesh\bcRenderComponent.cpp" />
+    <ClCompile Include="Game\Object\Scence\bcEntityManager.cpp" />
+    <ClCompile Include="Game\Object\Scence\Component\bcHierarchyComponent.cpp" />
+    <ClCompile Include="Game\Object\Scence\Component\bcMeshComponent.cpp" />
+    <ClCompile Include="Game\System\Input\bcCamera.cpp" />
+    <ClCompile Include="Game\System\Input\bcFileSystem.cpp" />
+    <ClCompile Include="Game\System\Input\bcFreeCamera.cpp" />
+    <ClCompile Include="Game\System\Render\bcRenderPassManager.cpp" />
+    <ClCompile Include="Game\System\Render\bcRenderPassState.cpp" />
+    <ClCompile Include="Game\System\Render\bcRenderState.cpp" />
+    <ClCompile Include="Game\System\Render\bcRenderSystem.cpp" />
+    <ClCompile Include="Game\System\Render\Pass\bcBackBufferOutputPass.cpp" />
+    <ClCompile Include="Game\System\Render\Scence\bcScenceGraph.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BlackCat.Core.Platform.Win32\BlackCat.Core.Platform.Win32.vcxproj">
+      <Project>{be5cab27-d8e0-4781-abf8-f37fe773b65b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\BlackCat.Core\BlackCat.Core.vcxproj">
+      <Project>{e4a77cc4-66c0-49b1-bfcf-a92173763741}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\BlackCat.Graphic.DirectX11\BlackCat.Graphic.DirectX11.vcxproj">
+      <Project>{d176029e-3b2c-4599-986c-3c8685f35f6f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\BlackCat.Graphic\BlackCat.Graphic.vcxproj">
+      <Project>{7b267e54-9da2-435d-be52-4388e78a1661}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\BlackCat.Platform.Win32\BlackCat.Platform.Win32.vcxproj">
+      <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Game\Shader\DirectX11\bcRegister.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Game\Shader\DirectX11\bcMeshShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

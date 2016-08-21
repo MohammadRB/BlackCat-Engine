@@ -3,7 +3,7 @@
 #pragma once
 
 #include <condition_variable>
-#include "CorePlatform/bcCorePlatformUtility.h"
+#include "CorePlatform/Utility/bcNoCopy.h"
 #include "CorePlatform/Concurrency/bcConditionVariable.h"
 #include "CorePlatformImp/CorePlatformImpPCH.h"
 

@@ -15,7 +15,7 @@ namespace black_cat
 		public:
 			bc_constant_buffer_parameter();
 
-			bc_constant_buffer_parameter(bcINT p_register, bc_buffer* p_buffer);
+			bc_constant_buffer_parameter(bcINT p_register, bc_shader_type p_shader_types, const bc_buffer_ptr& p_buffer);
 
 			bc_constant_buffer_parameter(const bc_constant_buffer_parameter&) = default;
 
@@ -23,26 +23,29 @@ namespace black_cat
 
 			bc_constant_buffer_parameter& operator=(const bc_constant_buffer_parameter&) = default;
 
-			bc_buffer* get_buffer() const;
+			const bc_buffer_ptr& get_buffer() const;
 
-			void set_buffer(bc_buffer* p_buffer);
+			void set_buffer(const bc_buffer_ptr& p_buffer);
 
 			bc_shader_parameter_type get_parameter_type() const override;
 
 			void set_parameter_data(void* p_data) override;
 
+			bool is_valid() const override;
 		protected:
 
 		private:
-			bc_buffer* m_buffer;
+			bc_buffer_ptr m_buffer;
 		};
 
-		inline bc_constant_buffer_parameter::bc_constant_buffer_parameter() : m_buffer(nullptr)
+		inline bc_constant_buffer_parameter::bc_constant_buffer_parameter()
+			: bc_ishader_parameter(),
+			m_buffer(nullptr) 
 		{
 		}
 
-		inline bc_constant_buffer_parameter::bc_constant_buffer_parameter(bcINT p_register, bc_buffer* p_buffer) 
-			: bc_ishader_parameter(p_register),
+		inline bc_constant_buffer_parameter::bc_constant_buffer_parameter(bcINT p_register, bc_shader_type p_shader_types, const bc_buffer_ptr& p_buffer)
+			: bc_ishader_parameter(p_register, p_shader_types),
 			m_buffer(p_buffer)
 		{
 		}
@@ -51,12 +54,12 @@ namespace black_cat
 		{
 		}
 
-		inline bc_buffer* bc_constant_buffer_parameter::get_buffer() const
+		inline const bc_buffer_ptr& bc_constant_buffer_parameter::get_buffer() const
 		{
 			return m_buffer;
 		}
 
-		inline void bc_constant_buffer_parameter::set_buffer(bc_buffer* p_buffer)
+		inline void bc_constant_buffer_parameter::set_buffer(const bc_buffer_ptr& p_buffer)
 		{
 			m_buffer = p_buffer;
 		}
@@ -68,7 +71,12 @@ namespace black_cat
 
 		inline void bc_constant_buffer_parameter::set_parameter_data(void* p_data)
 		{
-			set_buffer(reinterpret_cast<bc_buffer*>(p_data));
+			set_buffer(reinterpret_cast<const bc_buffer_ptr&>(p_data));
+		}
+
+		inline bool bc_constant_buffer_parameter::is_valid() const
+		{
+			return m_register_index != -1 && m_buffer != nullptr;
 		}
 	}
 }

@@ -5,6 +5,7 @@
 #include "Core/Container/bcVector.h"
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcGraphicDefinition.h"
 
 namespace black_cat
 {

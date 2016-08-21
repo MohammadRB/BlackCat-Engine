@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/CorePCH.h"
-#include "Core/Utility/bcDelegate.h"
+#include "Core/Utility/bcDelegate.hpp"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 

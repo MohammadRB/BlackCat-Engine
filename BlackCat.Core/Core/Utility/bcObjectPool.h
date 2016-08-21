@@ -4,6 +4,7 @@
 
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/CorePCH.h"
+#include "Core/bcExport.h"
 #include "Core/Memory/bcAlloc.h"
 
 namespace black_cat
@@ -13,34 +14,19 @@ namespace black_cat
 		template< typename T >
 		class bc_concurrent_object_pool;
 
-		class BC_COREDLL_EXP bc_concurrent_memory_pool
+		class BC_CORE_DLL bc_concurrent_memory_pool
 		{
 			template< typename T >
 			friend class bc_concurrent_object_pool;
 
 		public:
-			bc_concurrent_memory_pool()
-				: m_heap(nullptr)
-			{
-			};
+			bc_concurrent_memory_pool();;
 
-			bc_concurrent_memory_pool(bc_concurrent_memory_pool&& p_other) noexcept(true)
-			{
-				_move(std::move(p_other));
-			}
+			bc_concurrent_memory_pool(bc_concurrent_memory_pool&& p_other) noexcept(true);
 
-			~bc_concurrent_memory_pool()
-			{
-				if (m_heap)
-					destroy();
-			};
+			~bc_concurrent_memory_pool();;
 
-			bc_concurrent_memory_pool& operator =(bc_concurrent_memory_pool&& p_other) noexcept(true)
-			{
-				_move(std::move(p_other));
-
-				return *this;
-			}
+			bc_concurrent_memory_pool& operator =(bc_concurrent_memory_pool&& p_other) noexcept(true);
 
 			void initialize(bcUINT32 p_num_block, bcUINT32 p_block_size, bc_alloc_type p_alloc_type);
 
@@ -62,24 +48,7 @@ namespace black_cat
 		protected:
 			
 		private:
-			void _move(bc_concurrent_memory_pool&& p_other)
-			{
-				bcUINT32 l_allocated_block = p_other.m_allocated_block.load(core_platform::bc_memory_order::acquire);
-
-				m_num_block = p_other.m_num_block;
-				m_block_size = p_other.m_block_size;
-				m_num_bitblocks = p_other.m_num_bitblocks;
-				m_blocks = p_other.m_blocks;
-				m_heap = p_other.m_heap;
-
-				p_other.m_num_block = 0;
-				p_other.m_block_size = 0;
-				p_other.m_num_bitblocks = 0;
-				p_other.m_blocks = nullptr;
-				p_other.m_heap = nullptr;
-
-				m_allocated_block.store(l_allocated_block, core_platform::bc_memory_order::release);
-			}
+			void _move(bc_concurrent_memory_pool&& p_other);
 
 			using bitblock_type = bcUINT32;
 			static const bitblock_type s_bitblock_mask = 0xffffffff;
@@ -103,7 +72,8 @@ namespace black_cat
 			bc_concurrent_object_pool() = default;
 
 			bc_concurrent_object_pool(bc_concurrent_object_pool&& p_other)
-				: m_memory_pool(std::move(p_other.m_memory_pool))
+				: m_alloc_type(p_other.m_alloc_type),
+				m_memory_pool(std::move(p_other.m_memory_pool))
 			{
 			}
 

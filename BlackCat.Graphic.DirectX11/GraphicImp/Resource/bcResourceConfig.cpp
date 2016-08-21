@@ -1,6 +1,7 @@
 // [02/12/2016 MRB]
 
 #include "GraphicImp/GraphicImpPCH.h"
+#include "Core/Utility/bcEnumOperand.h"
 #include "GraphicImp/Resource/Buffer/bcBufferConfig.h"
 #include "GraphicImp/Resource/Texture/bcTextureConfig.h"
 #include "GraphicImp/Resource/View/bcResourceViewConfig.h"
@@ -19,7 +20,11 @@ namespace black_cat
 		
 		bc_buffer_config bc_buffer_configure_modifier::as_vertex_buffer() noexcept
 		{
-			m_config.get_platform_pack().m_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+			bool l_is_stream_output = m_config.get_platform_pack().m_desc.BindFlags & 
+				static_cast<bcUINT>(D3D11_BIND_STREAM_OUTPUT) == static_cast<bcUINT>(D3D11_BIND_STREAM_OUTPUT);
+			
+			m_config.get_platform_pack().m_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER |
+				(l_is_stream_output ? D3D11_BIND_STREAM_OUTPUT : 0);
 
 			return m_config;
 		}
@@ -73,7 +78,12 @@ namespace black_cat
 		bc_texture_configure_modifier::bc_texture_configure_modifier(bc_texture_config p_config) noexcept: m_config(p_config)
 		{
 		}
-		
+
+		bc_texture_config bc_texture_configure_modifier::as_normal_texture() noexcept
+		{
+			return m_config;
+		}
+
 		bc_texture_config bc_texture_configure_modifier::as_depth_stencil_texture() noexcept
 		{
 			DXGI_FORMAT l_new_format;
@@ -149,7 +159,6 @@ namespace black_cat
 
 		bc_buffer_configure_modifier bc_resource_configure::as_buffer(bcUINT p_num_element,
 			bcUINT p_element_size,
-			bc_format p_format,
 			bc_resource_usage p_usage,
 			bc_resource_view_type p_view_types,
 			bool p_as_stream_output) noexcept
@@ -169,9 +178,10 @@ namespace black_cat
 			l_dxbuffer_desc.ByteWidth = p_num_element * p_element_size;
 			l_dxbuffer_desc.MiscFlags = 0;
 			l_dxbuffer_desc.StructureByteStride = p_element_size;
-			l_dxbuffer_desc.BindFlags = 
+			l_dxbuffer_desc.BindFlags =
 				(l_has_shader_view ? D3D11_BIND_SHADER_RESOURCE : 0) |
-				(l_has_unordered_view ? D3D11_BIND_UNORDERED_ACCESS : 0);
+				(l_has_unordered_view ? D3D11_BIND_UNORDERED_ACCESS : 0) |
+				(p_as_stream_output ? D3D11_BIND_STREAM_OUTPUT : 0);
 			l_dxbuffer_desc.Usage = bc_graphic_cast(p_usage);
 			l_dxbuffer_desc.CPUAccessFlags =
 				p_usage == bc_resource_usage::gpu_r_cpu_w ?
@@ -219,17 +229,17 @@ namespace black_cat
 			l_dxtexture_desc.SampleDesc.Quality = p_sample_quality;
 			l_dxtexture_desc.Usage = bc_graphic_cast(p_usage);
 			l_dxtexture_desc.BindFlags =
-				l_has_shader_view ? D3D11_BIND_SHADER_RESOURCE : 0 |
-				l_has_unordered_view ? D3D11_BIND_UNORDERED_ACCESS : 0 |
-				l_has_render_target_view ? D3D11_BIND_RENDER_TARGET : 0 |
-				l_has_depth_stencil_view ? D3D11_BIND_DEPTH_STENCIL : 0;
+				(l_has_shader_view ? D3D11_BIND_SHADER_RESOURCE : 0) |
+				(l_has_unordered_view ? D3D11_BIND_UNORDERED_ACCESS : 0) |
+				(l_has_render_target_view ? D3D11_BIND_RENDER_TARGET : 0) |
+				(l_has_depth_stencil_view ? D3D11_BIND_DEPTH_STENCIL : 0);
 			l_dxtexture_desc.CPUAccessFlags =
 				p_usage == bc_resource_usage::gpu_r_cpu_w ?
 					D3D11_CPU_ACCESS_WRITE :
 					p_usage == bc_resource_usage::gpu_rw_cpu_rw ?
 						D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE :
 						0;
-			l_dxtexture_desc.MiscFlags = p_mip_generation && p_mip_levels > 1 ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0;
+			l_dxtexture_desc.MiscFlags = p_mip_generation && (p_mip_levels == 0 || p_mip_levels > 1) ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0;
 
 			return bc_texture_configure_modifier(l_texture_config);
 		}

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CorePlatform/Memory/bcMemAlloc.h"
 #include "Core/CorePCH.h"
 #include "Core/Memory/bcMemory.h"
 #include "Core/Memory/bcMemBlock.h"
@@ -57,8 +58,8 @@ namespace black_cat
 				// Return pointer to it's orginal location
 				void* l_pointer = reinterpret_cast< void* >(reinterpret_cast<bcUINTPTR>(p_pointer) - p_memblock->offset());
 
-				core_platform::bc_mem_aligned_free(const_cast<void*>(l_pointer));
 				m_tracer.accept_free(p_memblock->size());
+				core_platform::bc_mem_aligned_free(const_cast<void*>(l_pointer));
 			}
 
 			bcInline bool contain_pointer(void* p_pointer) const override

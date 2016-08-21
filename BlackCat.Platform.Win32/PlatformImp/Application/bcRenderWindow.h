@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/Container/bcString.h"
 #include "PlatformImp/PlatformImpPCH.h"
 #include "Platform/Application/bcRenderWindow.h"
 

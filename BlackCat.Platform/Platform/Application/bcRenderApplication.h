@@ -3,6 +3,8 @@
 #pragma once
 
 #include "Core/Utility/bcSingleton.h"
+#include "Core/Concurrency/bcThreadManager.h"
+#include "Core/Event/bcEventManager.h"
 #include "Platform/PlatformPCH.h"
 #include "Platform/bcPlatformEvents.h"
 #include "Platform/Application/bcRenderWindow.h"
@@ -107,16 +109,16 @@ namespace black_cat
 			bc_render_window create_render_window(core::bc_estring p_caption, bcUINT32 p_width, bcUINT32 p_height);
 
 			// Initialize required engine components(call in top of derived function)
-			virtual void app_start_engine_components(bc_engine_components_parameters& p_engine_components);
+			virtual void app_start_engine_components(bc_engine_components_parameters& p_engine_components) = 0;
 
 			// Do required initialization for app(call in top of derived function)
-			virtual void app_initialize(const bcCHAR* p_commandline);
+			virtual void app_initialize(const bcCHAR* p_commandline) = 0;
 
 			// Load required contents(call in top of derived function)
-			virtual void app_load_content();
+			virtual void app_load_content() = 0;
 
 			// Update and render app(call in top of derived function)
-			virtual void app_update(core_platform::bc_clock::little_time_delta_type p_elapsed);
+			virtual void app_update(core_platform::bc_clock::update_param p_clock_update_param) = 0;
 
 			// Handle render window resizing
 			virtual void app_handle_render_window_resize(bcUINT32 p_width, bcUINT32 p_height) = 0;
@@ -125,13 +127,13 @@ namespace black_cat
 			virtual bool app_event(core::bc_ievent& p_event);
 
 			// Cleanup loaeded contents(call in bottom of derived function)
-			virtual void app_unload_content();
+			virtual void app_unload_content() = 0;
 
 			// Do cleanup in app(call in bottom of derived function)
-			virtual void app_destroy();
+			virtual void app_destroy() = 0;
 
 			// Close all used engine components(call in bottom of derived function)
-			virtual void app_close_engine_components();
+			virtual void app_close_engine_components() = 0;
 
 		protected:
 
@@ -140,7 +142,7 @@ namespace black_cat
 
 			void _destroy() override final;
 
-			void _calculate_fps(core_platform::bc_clock::little_time_delta_type p_delta);
+			void _calculate_fps(core_platform::bc_clock::small_delta_time p_delta);
 
 			core::bc_unique_ptr< bc_platform_render_application< core_platform::g_current_platform > > m_app;
 			core::bc_unique_ptr< bc_render_window > m_render_window;
@@ -151,10 +153,14 @@ namespace black_cat
 			bcINT32 m_termination_code;
 
 			static const bcUINT32 s_num_time_delta_samples = 64;
-			core_platform::bc_clock::little_time_delta_type m_time_delta_buffer[s_num_time_delta_samples];
+			core_platform::bc_clock::small_delta_time m_time_delta_buffer[s_num_time_delta_samples];
 			bcUINT32 m_current_time_delta_sample;
 			bcUINT32 m_fps;
 			bcUINT32 m_fixed_fps;
+
+			core::bc_event_listener_handle m_event_handle_app_exit;
+			core::bc_event_listener_handle m_event_handle_app_active;
+			core::bc_event_listener_handle m_event_handle_window_resize;
 		};
 
 		template< class TApp >
@@ -213,13 +219,14 @@ namespace black_cat
 
 					m_clock->update();
 
-					core_platform::bc_clock::little_time_delta_type l_elaped = m_clock->get_elapsed();
+					core_platform::bc_clock::small_delta_time l_elaped = m_clock->get_elapsed();
+					core_platform::bc_clock::big_delta_time l_total_elapsed = m_clock->get_total_elapsed();
 
 					// Fixed FPS
-					core_platform::bc_clock::little_time_delta_type l_fixed_elapsed = 1000.0f / m_fixed_fps;
+					core_platform::bc_clock::small_delta_time l_fixed_elapsed = 1000.0f / m_fixed_fps;
 					if (m_fixed_fps != -1 && l_elaped < l_fixed_elapsed)
 					{
-						core_platform::bc_clock::little_time_delta_type l_diff = l_fixed_elapsed - l_elaped;
+						auto l_diff = l_fixed_elapsed - l_elaped;
 						core_platform::bc_thread::current_thread_sleep_for(l_diff * 1000000);
 
 						l_elaped = l_fixed_elapsed;
@@ -231,11 +238,7 @@ namespace black_cat
 
 					_calculate_fps(l_elaped);
 
-					app_update(l_elaped);
-
-#ifdef BC_MEMORY_ENABLE
-					core::bc_memmng::get().end_of_frame();
-#endif
+					app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_elaped));
 				}
 			}
 			catch (std::exception& l_exception)
@@ -260,71 +263,7 @@ namespace black_cat
 		template< class TApp >
 		bc_render_window bc_render_application< TApp >::create_render_window(core::bc_estring p_caption, bcUINT32 p_width, bcUINT32 p_height)
 		{
-			return m_app->create_render_window(std::move(p_caption), p_width, p_height);
-		}
-
-		template< class TApp >
-		void bc_render_application< TApp >::app_start_engine_components(bc_engine_components_parameters& p_engine_components)
-		{
-#ifdef BC_MEMORY_ENABLE
-			black_cat::core::bc_memmng::startup
-				(
-					p_engine_components.m_memmng_fsa_start_size,
-					p_engine_components.m_memmng_fsa_count,
-					p_engine_components.m_memmng_fsa_allocation_count,
-					p_engine_components.m_memmng_program_stack_size,
-					p_engine_components.m_memmng_level_stack_size,
-					p_engine_components.m_memmng_frame_stack_size,
-					p_engine_components.m_memmng_super_heap_size
-				);
-#endif
-			black_cat::core::bc_service_manager::start_up();
-
-			core::bc_service_manager::get().register_service< core::bc_thread_manager >
-				(
-					core::bc_make_unique< core::bc_thread_manager >
-					(
-						core::bc_alloc_type::program,
-						p_engine_components.m_thread_manager_thread_count,
-						p_engine_components.m_thread_manager_reserve_thread_count
-					)
-				);
-			core::bc_service_manager::get().register_service< core::bc_event_manager >
-				(
-					core::bc_make_unique< core::bc_event_manager >(core::bc_alloc_type::program)
-				);
-		}
-
-		template< class TApp >
-		void bc_render_application< TApp >::app_initialize(const bcCHAR* p_commandline)
-		{
-			core::bc_event_manager* l_event_manager = core::bc_service_manager::get().get_service< core::bc_event_manager >();
-
-			l_event_manager->register_event_listener
-				(
-					bc_app_event_exit::event_name(),
-					core::bc_event_manager::delegate_type(this, &bc_render_application::app_event)
-				);
-			l_event_manager->register_event_listener
-				(
-					bc_app_event_window_resize::event_name(),
-					core::bc_event_manager::delegate_type(this, &bc_render_application::app_event)
-				);
-			l_event_manager->register_event_listener
-				(
-					bc_app_event_active::event_name(),
-					core::bc_event_manager::delegate_type(this, &bc_render_application::app_event)
-				);
-		}
-
-		template< class TApp >
-		void bc_render_application< TApp >::app_load_content()
-		{
-		}
-
-		template< class TApp >
-		void bc_render_application< TApp >::app_update(core_platform::bc_clock::little_time_delta_type p_elapsed)
-		{
+			return m_app->create_render_window(move(p_caption), p_width, p_height);
 		}
 
 		template< class TApp >
@@ -332,7 +271,7 @@ namespace black_cat
 		{
 			core::bc_event_hash l_hash = p_event.get_event_hash();
 
-			if (l_hash == core::bc_ievent::get_hash(bc_app_event_window_resize::event_name()))
+			if (core::bc_ievent::event_is< bc_app_event_window_resize >(p_event))
 			{
 				bc_app_event_window_resize& l_resize_event = static_cast< bc_app_event_window_resize& >(p_event);
 				app_handle_render_window_resize(l_resize_event.width(), l_resize_event.height());
@@ -340,7 +279,7 @@ namespace black_cat
 				return true;
 			}
 
-			if (l_hash == core::bc_ievent::get_hash(bc_app_event_active::event_name()))
+			if (core::bc_ievent::event_is< bc_app_event_active >(p_event))
 			{
 				bc_app_event_active& l_active_event = static_cast< bc_app_event_active& >(p_event);
 				m_paused = !l_active_event.activate();
@@ -353,7 +292,7 @@ namespace black_cat
 				return true;
 			}
 
-			if (l_hash == core::bc_ievent::get_hash(bc_app_event_exit::event_name()))
+			if (core::bc_ievent::event_is< bc_app_event_exit >(p_event))
 			{
 				bc_app_event_exit& l_exit_event = static_cast< bc_app_event_exit& >(p_event);
 
@@ -364,37 +303,6 @@ namespace black_cat
 			}
 
 			return false;
-		}
-
-		template< class TApp >
-		void bc_render_application< TApp >::app_unload_content()
-		{
-		}
-
-		template< class TApp >
-		void bc_render_application< TApp >::app_destroy()
-		{
-		}
-
-		template< class TApp >
-		void bc_render_application< TApp >::app_close_engine_components()
-		{
-			black_cat::core::bc_service_manager::close();
-
-#ifdef BC_MEMORY_ENABLE
-#ifdef BC_MEMORY_LEAK_DETECTION
-			black_cat::bcUINT32 lLeakCounts = black_cat::core::bc_memmng::get().report_memory_leaks();
-			if (lLeakCounts > 0)
-			{
-				get_render_window().messagebox(
-					L"Warning",
-					black_cat::core::bc_estring(black_cat::core::bc_to_wstring(lLeakCounts) + bcL(" Memory leak detected")),
-					black_cat::platform::bc_messagebox_type::warning,
-					black_cat::platform::bc_messagebox_buttom::ok);
-			}
-#endif
-			black_cat::core::bc_memmng::close();
-#endif
 		}
 
 		template< class TApp >
@@ -421,10 +329,25 @@ namespace black_cat
 			m_paused = false;
 			m_termination_code = 0;
 
-			std::memset(&m_time_delta_buffer, 0, sizeof(core_platform::bc_clock::little_time_delta_type) * s_num_time_delta_samples);
+			memset(&m_time_delta_buffer, 0, sizeof(core_platform::bc_clock::small_delta_time) * s_num_time_delta_samples);
 			m_current_time_delta_sample = 0;
 			m_fps = 0;
 			m_fixed_fps = -1;
+
+			core::bc_event_manager* l_event_manager = core::bc_service_manager::get().get_service< core::bc_event_manager >();
+
+			m_event_handle_app_exit = l_event_manager->register_event_listener<bc_app_event_exit>
+				(
+					core::bc_event_manager::delegate_type(this, &bc_render_application::app_event)
+				);
+			m_event_handle_window_resize = l_event_manager->register_event_listener<bc_app_event_window_resize>
+				(
+					core::bc_event_manager::delegate_type(this, &bc_render_application::app_event)
+				);
+			m_event_handle_app_active = l_event_manager->register_event_listener<bc_app_event_active>
+				(
+					core::bc_event_manager::delegate_type(this, &bc_render_application::app_event)
+				);
 
 			app_initialize(p_platform_parameters.m_commandline);
 
@@ -438,6 +361,10 @@ namespace black_cat
 
 			app_destroy();
 
+			m_event_handle_app_exit.reset();
+			m_event_handle_window_resize.reset();
+			m_event_handle_app_active.reset();
+
 			m_app.reset(nullptr);
 			m_render_window.reset(nullptr);
 			m_clock.reset(nullptr);
@@ -448,17 +375,17 @@ namespace black_cat
 		}
 
 		template< class TApp >
-		void bc_render_application< TApp >::_calculate_fps(core_platform::bc_clock::little_time_delta_type p_delta)
+		void bc_render_application< TApp >::_calculate_fps(core_platform::bc_clock::small_delta_time p_delta)
 		{
 			m_time_delta_buffer[m_current_time_delta_sample] = p_delta;
 			m_current_time_delta_sample = (m_current_time_delta_sample + 1) % s_num_time_delta_samples;
 
-			core_platform::bc_clock::little_time_delta_type l_average_delta = 0;
+			core_platform::bc_clock::small_delta_time l_average_delta = 0;
 			for (UINT i = 0; i < s_num_time_delta_samples; ++i)
 				l_average_delta += m_time_delta_buffer[i];
 			l_average_delta /= s_num_time_delta_samples;
 
-			m_fps = std::round(1000.0f / l_average_delta);
+			m_fps = round(1000.0f / l_average_delta);
 		}
 	}
 }

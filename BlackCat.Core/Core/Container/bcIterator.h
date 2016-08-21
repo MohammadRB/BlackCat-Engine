@@ -414,9 +414,9 @@ namespace black_cat
 
 			this_type& operator ++()
 			{
-				m_node = bc_bidirectional_iterator_provider_traits< provider_type >::increment(*m_provider, m_node);
-
 				bcAssert(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+
+				m_node = bc_bidirectional_iterator_provider_traits< provider_type >::increment(*m_provider, m_node);
 
 				return *this;
 			}
@@ -425,18 +425,18 @@ namespace black_cat
 			{
 				this_type l_old = *this;
 
-				m_node = bc_bidirectional_iterator_provider_traits< provider_type >::increment(*m_provider, m_node);
-
 				bcAssert(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+
+				m_node = bc_bidirectional_iterator_provider_traits< provider_type >::increment(*m_provider, m_node);
 
 				return l_old;
 			}
 
 			this_type& operator --()
 			{
-				m_node = bc_bidirectional_iterator_provider_traits< provider_type >::decrement(*m_provider, m_node);
-
 				bcAssert(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+
+				m_node = bc_bidirectional_iterator_provider_traits< provider_type >::decrement(*m_provider, m_node);
 
 				return *this;
 			}
@@ -445,9 +445,9 @@ namespace black_cat
 			{
 				this_type l_old = *this;
 
-				m_node = bc_bidirectional_iterator_provider_traits< provider_type >::decrement(*m_provider, m_node);
-
 				bcAssert(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+
+				m_node = bc_bidirectional_iterator_provider_traits< provider_type >::decrement(*m_provider, m_node);
 
 				return l_old;
 			}
@@ -919,5 +919,163 @@ namespace black_cat
 	friend class bc_forward_iterator_provider_traits<TProvider>; \
 	friend class bc_bidirectional_iterator_provider_traits<TProvider>; \
 	friend class bc_random_access_iterator_provider_traits<TProvider>;
+
+		// Unlike std::reverse_iterator this iterator doesn't point to one-past-the-end iterator
+		template< typename TIterator >
+		class bc_reverse_iterator : public std::iterator< typename std::iterator_traits<TIterator>::iterator_category,
+			typename std::iterator_traits<TIterator>::value_type,
+			typename std::iterator_traits<TIterator>::difference_type,
+			typename std::iterator_traits<TIterator>::pointer,
+			typename std::iterator_traits<TIterator>::reference >
+		{
+		public:
+			using this_type = bc_reverse_iterator;
+			using iterator_type = TIterator;
+			using pointer = typename std::iterator_traits<TIterator>::pointer;
+			using reference = typename std::iterator_traits<TIterator>::reference;
+
+		public:
+			explicit bc_reverse_iterator(TIterator p_iterator) noexcept(true)
+				: m_iterator(p_iterator)
+			{
+			}
+
+			bc_reverse_iterator(const this_type& p_other) noexcept(true)
+				: m_iterator(p_other.m_iterator)
+			{
+			}
+
+			~bc_reverse_iterator()
+			{
+			}
+
+			this_type& operator =(const this_type& p_other) noexcept(true)
+			{
+				m_iterator = p_other.m_iterator;
+				return *this;
+			}
+
+			bool operator ==(const this_type& p_other) const noexcept(true)
+			{
+				return m_iterator == p_other.m_iterator;
+			}
+
+			bool operator !=(const this_type& p_other) const noexcept(true)
+			{
+				return m_iterator != p_other.m_iterator;
+			}
+
+			reference operator *() const
+			{
+				return m_iterator.operator*();
+			}
+
+			pointer operator ->() const noexcept(true)
+			{
+				return m_iterator.operator->();
+			}
+
+			this_type& operator ++()
+			{
+				--m_iterator;
+
+				return *this;
+			}
+
+			const this_type operator ++(difference_type)
+			{
+				this_type l_old = *this;
+
+				--m_iterator;
+
+				return l_old;
+			}
+
+			this_type& operator +=(difference_type p_count)
+			{
+				m_iterator -= p_count;
+
+				return *this;
+			}
+
+			this_type operator +(difference_type p_count)
+			{
+				this_type l_old = *this;
+
+				l_old.m_iterator -= p_count;
+
+				return l_old;
+			}
+
+			this_type& operator --()
+			{
+				return ++m_iterator;
+			}
+
+			const this_type operator --(difference_type)
+			{
+				this_type l_old = *this;
+
+				++m_iterator;
+
+				return l_old;
+			}
+
+			this_type& operator -=(difference_type p_count)
+			{
+				m_iterator += p_count;
+
+				return m_iterator;
+			}
+
+			this_type operator -(difference_type p_count)
+			{
+				this_type l_old = *this;
+
+				l_old.m_iterator += p_count;
+
+				return l_old;
+			}
+
+			difference_type operator -(this_type& p_other)
+			{
+				return m_iterator - p_other.m_iterator;
+			}
+
+			bool operator <(const this_type& p_other) noexcept(true)
+			{
+				return m_iterator < p_other.m_iterator;
+			}
+
+			bool operator <=(const this_type& p_other) noexcept(true)
+			{
+				return m_iterator <= p_other.m_iterator;
+			}
+
+			bool operator >(const this_type& p_other) noexcept(true)
+			{
+				return m_iterator > p_other.m_iterator;
+			}
+
+			bool operator >=(const this_type& p_other) noexcept(true)
+			{
+				return m_iterator >= p_other.m_iterator;
+			}
+
+			void swap(this_type& p_other) noexcept(true)
+			{
+				m_iterator.swap(p_other.m_iterator);
+			}
+
+			TIterator base() const noexcept(true)
+			{
+				return m_iterator;
+			}
+
+		protected:
+
+		private:
+			TIterator m_iterator;
+		};
 	}
 }

@@ -14,7 +14,7 @@ namespace black_cat
 		public:
 			bc_sampler_parameter();
 
-			bc_sampler_parameter(bcINT p_register, bc_sampler_state* p_sampler);
+			bc_sampler_parameter(bcINT p_register, bc_shader_type p_shader_types, const bc_sampler_state_ptr& p_sampler);
 
 			bc_sampler_parameter(bc_sampler_parameter&) = default;
 
@@ -22,36 +22,39 @@ namespace black_cat
 
 			bc_sampler_parameter& operator=(bc_sampler_parameter&) = default;
 
-			bc_sampler_state* get_sampler() const;
+			const bc_sampler_state_ptr& get_sampler() const;
 
-			void set_sampler(bc_sampler_state* p_sampler);
+			void set_sampler(const bc_sampler_state_ptr& p_sampler);
 
 			bc_shader_parameter_type get_parameter_type() const override;
 
 			void set_parameter_data(void* p_data) override;
 
+			bool is_valid() const override;
 		protected:
 
 		private:
-			bc_sampler_state* m_sampler;
+			bc_sampler_state_ptr m_sampler;
 		};
 
-		inline bc_sampler_parameter::bc_sampler_parameter() : m_sampler(nullptr)
+		inline bc_sampler_parameter::bc_sampler_parameter()
+			: bc_ishader_parameter(),
+			m_sampler(nullptr) 
 		{
 		}
 
-		inline bc_sampler_parameter::bc_sampler_parameter(bcINT p_register, bc_sampler_state* p_sampler)
-			: bc_ishader_parameter(p_register),
+		inline bc_sampler_parameter::bc_sampler_parameter(bcINT p_register, bc_shader_type p_shader_types, const bc_sampler_state_ptr& p_sampler)
+			: bc_ishader_parameter(p_register, p_shader_types),
 			m_sampler(p_sampler)
 		{
 		}
 
-		inline bc_sampler_state* bc_sampler_parameter::get_sampler() const
+		inline const bc_sampler_state_ptr& bc_sampler_parameter::get_sampler() const
 		{
 			return m_sampler;
 		}
 
-		inline void bc_sampler_parameter::set_sampler(bc_sampler_state* p_sampler)
+		inline void bc_sampler_parameter::set_sampler(const bc_sampler_state_ptr& p_sampler)
 		{
 			m_sampler = p_sampler;
 		}
@@ -63,7 +66,12 @@ namespace black_cat
 
 		inline void bc_sampler_parameter::set_parameter_data(void* p_data)
 		{
-			set_sampler(reinterpret_cast<bc_sampler_state*>(p_data));
+			set_sampler(reinterpret_cast<const bc_sampler_state_ptr&>(p_data));
+		}
+
+		inline bool bc_sampler_parameter::is_valid() const
+		{
+			return m_register_index != -1 && m_sampler != nullptr;
 		}
 	}
 }

@@ -3,6 +3,8 @@
 #pragma once
 
 #include "Platform/PlatformPCH.h"
+#include "Platform/Application/bcKeyDevice.h"
+#include "Platform/Application/bcPointingDevice.h"
 
 namespace black_cat
 {
@@ -30,7 +32,7 @@ namespace black_cat
 
 			static const bcCHAR* event_name()
 			{
-				return "EventAppExit";
+				return core::g_evt_app_exit;
 			}
 
 		protected:
@@ -67,7 +69,7 @@ namespace black_cat
 
 			static const bcCHAR* event_name()
 			{
-				return "EventWinResize";
+				return core::g_evt_window_resize;
 			}
 
 		protected:
@@ -98,13 +100,82 @@ namespace black_cat
 
 			static const bcCHAR* event_name()
 			{
-				return "EventAppActivate";
+				return core::g_evt_app_active;
 			}
 
 		protected:
 
 		private:
 			bool m_active;
+		};
+
+		class bc_app_event_key : public core::bc_app_event
+		{
+		public:
+			bc_app_event_key(bc_key p_key, bc_key_state p_state)
+				: bc_app_event(event_name()),
+				m_key(p_key),
+				m_state(p_state)
+			{
+			}
+
+			bc_app_event_key(const bc_app_event_key&) = default;
+
+			~bc_app_event_key() = default;
+
+			bc_app_event_key& operator =(const bc_app_event_key&) = default;
+
+			bc_key get_key() const noexcept
+			{
+				return m_key;
+			}
+
+			bc_key_state get_key_state() const noexcept
+			{
+				return m_state;
+			}
+
+			static const bcCHAR* event_name()
+			{
+				return core::g_evt_key;
+			}
+
+		protected:
+
+		private:
+			bc_key m_key;
+			bc_key_state m_state;
+		};
+
+		class bc_app_event_pointing : public core::bc_app_event
+		{
+		public:
+			explicit bc_app_event_pointing(bc_pointing_device_state p_state)
+				: bc_app_event(event_name()),
+				m_state(p_state)
+			{
+			}
+
+			bc_app_event_pointing(const bc_app_event_pointing&) = default;
+
+			~bc_app_event_pointing() = default;
+
+			bc_app_event_pointing& operator =(const bc_app_event_pointing&) = default;
+
+			bc_pointing_device_state get_state() const noexcept
+			{
+				return m_state;
+			}
+
+			static const bcCHAR* event_name()
+			{
+				return core::g_evt_point;
+			}
+
+		protected:
+
+		private:
+			bc_pointing_device_state m_state;
 		};
 	}
 }
