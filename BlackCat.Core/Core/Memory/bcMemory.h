@@ -18,14 +18,14 @@ namespace black_cat
 		public:
 			bc_memory() {}
 
-			bc_memory(this_type&& p_other)
+			bc_memory(this_type&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 			}
 
 			virtual ~bc_memory() {}
 
-			this_type& operator =(this_type&& p_other)
+			this_type& operator =(this_type&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 
@@ -39,7 +39,7 @@ namespace black_cat
 				*(m_tag + std::min<bcSIZE>(bcSIZE(s_tag_lenght - 1), strlen(p_tag))) = '\0';
 			}
 
-			bcInline const bcCHAR* tag() const { return m_tag; };
+			bcInline const bcCHAR* tag() const { return m_tag; }
 
 			bcInline const bc_memory_tracer& tracer() const { return m_tracer; }
 
@@ -47,7 +47,7 @@ namespace black_cat
 
 			virtual void free(void* p_pointer, bc_memblock* p_memblock) = 0;
 
-			virtual bool contain_pointer(void* p_memory) const = 0;
+			virtual bool contain_pointer(void* p_memory) const noexcept = 0;
 
 			virtual void clear() = 0;
 
@@ -73,13 +73,14 @@ namespace black_cat
 		public:
 			bc_memory_movable() {}
 
-			bc_memory_movable(this_type&& p_other) : bc_memory(std::move(p_other))
+			bc_memory_movable(this_type&& p_other) noexcept
+				: bc_memory(std::move(p_other))
 			{
 			}
 
 			virtual ~bc_memory_movable() {}
 
-			this_type& operator =(this_type&& p_other)
+			this_type& operator =(this_type&& p_other) noexcept
 			{
 				bc_memory::operator =(std::move(p_other));
 
@@ -87,9 +88,9 @@ namespace black_cat
 			}
 
 #ifdef BC_MEMORY_DEFRAG
-			virtual void register_pointer(void** p_pointer) = 0;
+			virtual void register_pointer(void** p_pointer, bc_memblock* p_memblock) = 0;
 
-			virtual void unregister_pointer(void** p_pointer) = 0;
+			virtual void unregister_pointer(void** p_pointer, bc_memblock* p_memblock) = 0;
 
 			virtual void defragment(bcINT32 p_num_defrag) = 0;
 #endif

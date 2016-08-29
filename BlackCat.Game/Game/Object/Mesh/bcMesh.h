@@ -26,6 +26,11 @@ namespace black_cat
 		struct bc_mesh_node_material
 		{
 		public:
+			~bc_mesh_node_material()
+			{
+				
+			}
+
 			graphic::bc_vector4f m_diffuse;
 			bcFLOAT m_specular_intency;
 			bcFLOAT m_specular_power;
@@ -118,10 +123,10 @@ namespace black_cat
 			bc_mesh_node* _add_node(core::bc_string p_name,
 				bc_mesh_node* p_parent,
 				graphic::bc_matrix4f& p_transformation,
-				bc_mesh_node_material& p_material,
+				bc_mesh_node_material&& p_material,
 				const bc_render_state_ptr& p_render_state,
-				core::bc_vector_frame< bc_vertex_pos_tex_nor_tan > p_vertices,
-				core::bc_vector_frame< bcBYTE > p_indices);
+				core::bc_vector_frame<bc_vertex_pos_tex_nor_tan>& p_vertices,
+				core::bc_vector_frame<bcBYTE>& p_indices);
 
 			static const bcCHAR* content_name()
 			{

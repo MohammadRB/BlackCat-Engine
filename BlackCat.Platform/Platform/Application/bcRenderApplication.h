@@ -17,6 +17,7 @@ namespace black_cat
 		{
 			bcSIZE m_memmng_fsa_start_size;
 			bcSIZE m_memmng_fsa_count;
+			bcSIZE m_memmng_fsa_step_size;
 			bcSIZE m_memmng_fsa_allocation_count;
 			bcSIZE m_memmng_program_stack_size;
 			bcSIZE m_memmng_level_stack_size;

@@ -984,51 +984,51 @@ namespace black_cat
 			return l_ans;
 		}
 
-#define TO_STRING_BUFF 32
+#define TO_STRING_BUFF 2 * 32
 		
 		inline void _bc_to_string(int p_value, bcCHAR* p_buf)
 		{
-			std::sprintf(p_buf, "%d", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, "%d", p_value);
 		}
 
 		inline void _bc_to_string(long p_value, bcCHAR* p_buf)
 		{
-			std::sprintf(p_buf, "%ld", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, "%ld", p_value);
 		}
 
 		inline void _bc_to_string(long long p_value, bcCHAR* p_buf)
 		{
-			std::sprintf(p_buf, "%lld", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, "%lld", p_value);
 		}
 
 		inline void _bc_to_string(unsigned int p_value, bcCHAR* p_buf)
 		{
-			std::sprintf(p_buf, "%u", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, "%u", p_value);
 		}
 
 		inline void _bc_to_string(unsigned long p_value, bcCHAR* p_buf)
 		{
-			std::sprintf(p_buf, "%lu", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, "%lu", p_value);
 		}
 
 		inline void _bc_to_string(unsigned long long p_value, bcCHAR* p_buf)
 		{
-			std::sprintf(p_buf, "%llu", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, "%llu", p_value);
 		}
 
 		inline void _bc_to_string(float p_value, bcCHAR* p_buf)
 		{
-			std::sprintf(p_buf, "%f", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, "%f", p_value);
 		}
 
 		inline void _bc_to_string(double p_value, bcCHAR* p_buf)
 		{
-			std::sprintf(p_buf, "%f", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, "%f", p_value);
 		}
 
 		inline void _bc_to_string(long double p_value, bcCHAR* p_buf)
 		{
-			std::sprintf(p_buf, "%Lf", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, "%Lf", p_value);
 		}
 
 		template< template< typename > typename TInputAllocator, template< typename > typename TOutputAllocator >
@@ -1058,7 +1058,7 @@ namespace black_cat
 		>
 		inline bc_string bc_to_string(T p_value)
 		{
-			bcCHAR l_buf[2 * TO_STRING_BUFF];
+			bcCHAR l_buf[TO_STRING_BUFF];
 
 			_bc_to_string(p_value, l_buf);
 
@@ -1078,7 +1078,7 @@ namespace black_cat
 		>
 		inline bc_string_program bc_to_string_program(T p_value)
 		{
-			bcCHAR l_buf[2 * TO_STRING_BUFF];
+			bcCHAR l_buf[TO_STRING_BUFF];
 
 			_bc_to_string(p_value, l_buf);
 
@@ -1098,7 +1098,7 @@ namespace black_cat
 		>
 		inline bc_string_level bc_to_string_level(T p_value)
 		{
-			bcCHAR l_buf[2 * TO_STRING_BUFF];
+			bcCHAR l_buf[TO_STRING_BUFF];
 
 			_bc_to_string(p_value, l_buf);
 
@@ -1118,7 +1118,7 @@ namespace black_cat
 		>
 		inline bc_string_frame bc_to_string_frame(T p_value)
 		{
-			bcCHAR l_buf[2 * TO_STRING_BUFF];
+			bcCHAR l_buf[TO_STRING_BUFF];
 
 			_bc_to_string(p_value, l_buf);
 
@@ -1213,47 +1213,47 @@ namespace black_cat
 
 		inline void _bc_to_wstring(int p_value, bcWCHAR* p_buf)
 		{
-			std::swprintf(p_buf, sizeof(p_buf), L"%d", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, L"%d", p_value);
 		}
 
 		inline void _bc_to_wstring(long p_value, bcWCHAR* p_buf)
 		{
-			std::swprintf(p_buf, sizeof(p_buf), L"%ld", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, L"%ld", p_value);
 		}
 
 		inline void _bc_to_wstring(long long p_value, bcWCHAR* p_buf)
 		{
-			std::swprintf(p_buf, sizeof(p_buf), L"%lld", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, L"%lld", p_value);
 		}
 
 		inline void _bc_to_wstring(unsigned p_value, bcWCHAR* p_buf)
 		{
-			std::swprintf(p_buf, sizeof(p_buf), L"%u", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, L"%u", p_value);
 		}
 
 		inline void _bc_to_wstring(unsigned long p_value, bcWCHAR* p_buf)
 		{
-			std::swprintf(p_buf, sizeof(p_buf), L"%lu", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, L"%lu", p_value);
 		}
 
 		inline void _bc_to_wstring(unsigned long long p_value, bcWCHAR* p_buf)
 		{
-			std::swprintf(p_buf, sizeof(p_buf), L"%llu", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, L"%llu", p_value);
 		}
 
 		inline void _bc_to_wstring(float p_value, bcWCHAR* p_buf)
 		{
-			std::swprintf(p_buf, sizeof(p_buf), L"%f", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, L"%f", p_value);
 		}
 
 		inline void _bc_to_wstring(double p_value, bcWCHAR* p_buf)
 		{
-			std::swprintf(p_buf, sizeof(p_buf), L"%f", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, L"%f", p_value);
 		}
 
 		inline void _bc_to_wstring(long double p_value, bcWCHAR* p_buf)
 		{
-			std::swprintf(p_buf, sizeof(p_buf), L"%Lf", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, L"%Lf", p_value);
 		}
 
 		template< template<typename> typename TInputAllocator, template<typename> typename TOutputAllocator >
@@ -1283,7 +1283,7 @@ namespace black_cat
 		>
 		inline bc_wstring bc_to_wstring(T p_value)
 		{
-			bcWCHAR l_buf[2 * TO_STRING_BUFF];
+			bcWCHAR l_buf[TO_STRING_BUFF];
 
 			_bc_to_wstring(p_value, l_buf);
 
@@ -1303,7 +1303,7 @@ namespace black_cat
 		>
 		inline bc_wstring_program bc_to_wstring_program(T p_value)
 		{
-			bcWCHAR l_buf[2 * TO_STRING_BUFF];
+			bcWCHAR l_buf[TO_STRING_BUFF];
 
 			_bc_to_wstring(p_value, l_buf);
 
@@ -1323,7 +1323,7 @@ namespace black_cat
 		>
 		inline bc_wstring_level bc_to_wstring_level(T p_value)
 		{
-			bcWCHAR l_buf[2 * TO_STRING_BUFF];
+			bcWCHAR l_buf[TO_STRING_BUFF];
 
 			_bc_to_wstring(p_value, l_buf);
 
@@ -1343,7 +1343,7 @@ namespace black_cat
 		>
 		inline bc_wstring_frame bc_to_wstring_frame(T p_value)
 		{
-			bcWCHAR l_buf[2 * TO_STRING_BUFF];
+			bcWCHAR l_buf[TO_STRING_BUFF];
 
 			_bc_to_wstring(p_value, l_buf);
 

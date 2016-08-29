@@ -11,18 +11,21 @@ namespace black_cat
 
 		bc_memory_heap::bc_memory_heap() noexcept(true)
 		{
-		};
+		}
 
-		bc_memory_heap::bc_memory_heap(bc_memory_heap::this_type&& p_other) noexcept(true) : bc_memory_movable(std::move(p_other))
+		bc_memory_heap::bc_memory_heap(bc_memory_heap::this_type&& p_other) noexcept(true) 
+			: bc_memory_movable(std::move(p_other))
 		{
 			_move(std::move(p_other));
-		};
+		}
 
 		bc_memory_heap::~bc_memory_heap() noexcept(true)
 		{
 			if (m_initialized)
-				_destroy();
-		};
+			{
+				destroy();
+			}
+		}
 
 		bc_memory_heap::this_type& bc_memory_heap::operator =(bc_memory_heap::this_type&& p_other) noexcept(true)
 		{
@@ -30,7 +33,7 @@ namespace black_cat
 			_move(std::move(p_other));
 
 			return *this;
-		};
+		}
 
 		void bc_memory_heap::_initialize(bcSIZE p_size, const bcCHAR* p_tag)
 		{
@@ -44,13 +47,13 @@ namespace black_cat
 				throw std::bad_alloc();
 
 			bcUINT32 l_heap_block_count = 100;
-			m_block_allocator.initialize(sizeof(heap_memblock)* l_heap_block_count);
+			m_block_allocator.initialize(sizeof(_bc_heap_memblock)* l_heap_block_count);
 #ifdef BC_MEMORY_DEFRAG
 			//m_pointer_ref_allocator.initialize(sizeof(heap_memblock::pointer_refs) * l_heap_block_count * 2);
 #endif
 
 			m_first_memblock = m_block_allocator.alloc();
-			new(m_first_memblock)heap_memblock();
+			new(m_first_memblock)_bc_heap_memblock();
 			m_first_memblock->data_address(reinterpret_cast<bcUINTPTR>(m_heap));
 			m_first_memblock->size(m_size);
 			m_first_memblock->free(true);
@@ -64,13 +67,13 @@ namespace black_cat
 			m_tracer.initialize(p_size);
 			if (p_tag) bc_memory::tag(p_tag);
 
-			m_tracer.accept_overhead(sizeof(heap_memblock));
-		};
+			m_tracer.accept_overhead(sizeof(_bc_heap_memblock));
+		}
 
 		void bc_memory_heap::_destroy() noexcept(true)
 		{
 			core_platform::bc_mem_aligned_free(m_heap);
-		};
+		}
 
 		void* bc_memory_heap::alloc(bc_memblock* p_memblock) noexcept(true)
 		{
@@ -79,7 +82,7 @@ namespace black_cat
 
 			bcAssert(l_require_size > 0);
 
-			heap_memblock* l_curr_block = nullptr;
+			_bc_heap_memblock* l_curr_block;
 			while (true)
 			{
 				l_curr_block = m_top.load(core_platform::bc_memory_order::relaxed);
@@ -106,7 +109,7 @@ namespace black_cat
 
 				while (l_curr_block && (!l_curr_block->free() || l_curr_block->size() < l_require_size))
 				{
-					heap_memblock* l_next = l_curr_block->next();
+					_bc_heap_memblock* l_next = l_curr_block->next();
 
 					if (l_next != nullptr)
 					{
@@ -133,8 +136,8 @@ namespace black_cat
 			// Check if we must divide our free block then do it /
 			if (l_curr_block->size() > l_require_size && l_curr_block->size() - l_require_size >= m_remaining_free_space_limit)
 			{
-				heap_memblock* l_free_memblock = m_block_allocator.alloc();
-				new(l_free_memblock)heap_memblock();
+				_bc_heap_memblock* l_free_memblock = m_block_allocator.alloc();
+				new(l_free_memblock)_bc_heap_memblock();
 
 				l_free_memblock->data_address(l_curr_block->data_address() + l_require_size);
 				l_free_memblock->size(l_curr_block->size() - l_require_size);
@@ -142,7 +145,7 @@ namespace black_cat
 				l_free_memblock->prev(l_curr_block);
 				if (l_curr_block->next())
 				{
-					heap_memblock* l_next = l_curr_block->next();
+					_bc_heap_memblock* l_next = l_curr_block->next();
 
 					l_next->lock(core_platform::bc_lock_operation::light);
 					l_next->prev(l_free_memblock);
@@ -163,7 +166,7 @@ namespace black_cat
 				l_return_pointer = reinterpret_cast<void*>(l_curr_block->data_address());
 
 				m_tracer.accept_alloc(l_require_size);
-				m_tracer.accept_overhead(sizeof(heap_memblock));
+				m_tracer.accept_overhead(sizeof(_bc_heap_memblock));
 			}
 			else
 			{
@@ -178,21 +181,18 @@ namespace black_cat
 			}
 
 			return l_return_pointer;
-		};
+		}
 
 		void bc_memory_heap::free(void* p_pointer, bc_memblock* p_memblock) noexcept(true)
 		{
-			heap_memblock* l_heapblock = reinterpret_cast<heap_memblock*>(p_memblock->allocators_extra());
+			_bc_heap_memblock* l_heapblock = reinterpret_cast<_bc_heap_memblock*>(p_memblock->allocators_extra());
 
 			bool l_next_free = false;
 			bool l_prev_free = false;
 
-			heap_memblock* l_top = nullptr;
-			heap_memblock* l_next = nullptr;
-			heap_memblock* l_prev = nullptr;
-#ifdef BC_MEMORY_DEFRAG
-			//const heap_memblock::pointer_refs* l_heapblock_ptrs = nullptr;
-#endif
+			_bc_heap_memblock* l_top = nullptr;
+			_bc_heap_memblock* l_next = nullptr;
+			_bc_heap_memblock* l_prev = nullptr;
 
 			// try to lock prev and current block so that avoid deadlock
 			while (true)
@@ -203,25 +203,32 @@ namespace black_cat
 				if (l_prev != nullptr)
 				{
 					if (l_prev->try_lock(core_platform::bc_lock_operation::light))
+					{
 						break;
+					}
 					else
+					{
 						l_heapblock->unlock();
+					}
 				}
 				else
+				{
 					break;
+				}
 			}
 
-
-#ifdef BC_MEMORY_DEFRAG
-			//l_heapblock_ptrs = l_heapblock->pointers();
-#endif
 			l_next = l_heapblock->next();
 
 			// we need next block in merging prev or next
 			if (l_next != nullptr && (l_prev != nullptr || l_next != nullptr))
+			{
 				l_next->lock(core_platform::bc_lock_operation::light);
+			}
 
-			p_memblock->free(true);
+#ifdef BC_MEMORY_DEBUG
+			std::memset(p_pointer, 0, p_memblock->size());
+#endif
+
 			l_heapblock->free(true);
 
 			// Merge free block to it's next, if next block is free
@@ -253,117 +260,63 @@ namespace black_cat
 				l_prev->size(l_prev->size() + l_heapblock->size());
 				l_prev->next(l_heapblock->next());
 				if (l_heapblock->next())
+				{
 					l_heapblock->next()->prev(l_prev);
+				}
 			}
 
 			if (l_prev)
+			{
 				l_prev->unlock();
+			}
 			l_heapblock->unlock();
 			if (l_next)
+			{
 				l_next->unlock();
+			}
 
 			if (!l_prev_free && !l_next_free)
+			{
 				++m_num_fragmentation;
-			else if ((l_prev_free && l_next_free) || 
-					(l_prev_free && l_heapblock == (l_top != nullptr ? l_top : m_top.load(core_platform::bc_memory_order::relaxed))) ||
-					(l_prev_free && l_prev == m_first_memblock && l_next == nullptr))
+			}
+			else if
+			(
+				(l_prev_free && l_next_free) ||
+				(l_prev_free && l_heapblock == (l_top != nullptr ? l_top : m_top.load(core_platform::bc_memory_order::relaxed))) ||
+				(l_prev_free && l_prev == m_first_memblock && l_next == nullptr)
+			)
+			{
 				--m_num_fragmentation;
-
-#ifdef BC_MEMORY_DEFRAG
-			//// Free allocated pointers in this block /
-			//while (l_heapblock_ptrs)
-			//{
-			//	heap_memblock::pointer_refs* l_next = l_heapblock_ptrs->m_next;
-			//	l_heapblock_ptrs->~pointer_refs();
-			//	m_pointer_ref_allocator.free(l_heapblock_ptrs);
-			//	l_heapblock_ptrs = l_next;
-
-			//	m_tracer.accept_free_overhead(sizeof(heap_memblock::pointer_refs));
-			//}
-#endif
+			}
 
 			if (l_next_free)
 			{
 				// clear next free block
-				l_next->~heap_memblock();
+				l_next->~_bc_heap_memblock();
 				m_block_allocator.free(l_next);
-				m_tracer.accept_free_overhead(sizeof(heap_memblock));
+				m_tracer.accept_free_overhead(sizeof(_bc_heap_memblock));
 			}
 			if (l_prev_free)
 			{
 				// clear prev free block
-				l_heapblock->~heap_memblock();
+				l_heapblock->~_bc_heap_memblock();
 				m_block_allocator.free(l_heapblock);
-				m_tracer.accept_free_overhead(sizeof(heap_memblock));
+				m_tracer.accept_free_overhead(sizeof(_bc_heap_memblock));
 			}
 			m_tracer.accept_free(p_memblock->size());
-
-#ifdef BC_MEMORY_DEBUG
-			std::memset(reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(p_pointer)-p_memblock->offset()), 0, p_memblock->size());
-#endif
-		};
+		}
 
 		bool bc_memory_heap::contain_pointer(void* p_memory) const noexcept(true)
 		{
 			return (p_memory >= m_heap && p_memory < m_heap + m_size) ? true : false;
-		};
-
-		/*bool bc_memory_heap::is_empty() const
-		{
-			heap_memblock* l_first_memblock = m_first_memblock;
-			l_first_memblock->lock(core_platform::bc_lock_operation::light);
-
-			while (l_first_memblock)
-			{
-				if (!l_first_memblock->free())
-				{
-					l_first_memblock->unlock();
-					return false;
-				}
-
-				l_first_memblock->unlock();
-
-				l_first_memblock = l_first_memblock->next();
-
-				if (l_first_memblock)
-					l_first_memblock->lock(core_platform::bc_lock_operation::light);
-			}
-
-			return true;
-		};*/
+		}
 
 		void bc_memory_heap::clear() noexcept(true)
 		{
-//			// Free all blocks and theirs pointer references /
-//			heap_memblock* l_first_memblock = m_first_memblock;
-//			while (l_first_memblock)
-//			{
-//				heap_memblock* l_next = m_first_memblock->next();
-//
-//#ifdef BC_MEMORY_DEFRAG
-//				// Free allocated pointers to this block /
-//				const heap_memblock::pointer_refs* l_heap_blockptrs = l_first_memblock->pointers();
-//				while (l_heap_blockptrs)
-//				{
-//					heap_memblock::pointer_refs* l_next_ptr = l_heap_blockptrs->m_next;
-//					l_heap_blockptrs->~pointer_refs();
-//					m_pointer_ref_allocator.free(l_heap_blockptrs);
-//					l_heap_blockptrs = l_next_ptr;
-//				}
-//#endif
-//
-//				l_first_memblock->~heap_memblock();
-//				m_block_allocator.free(l_first_memblock);
-//				l_first_memblock = l_next;
-//			}
-
 			m_block_allocator.clear();
-#ifdef BC_MEMORY_DEFRAG
-			//m_pointer_ref_allocator.clear();
-#endif
 
 			m_first_memblock = m_block_allocator.alloc();
-			new(m_first_memblock)heap_memblock();
+			new(m_first_memblock)_bc_heap_memblock();
 
 			m_first_memblock->data_address(reinterpret_cast<bcUINTPTR>(m_heap));
 
@@ -379,46 +332,33 @@ namespace black_cat
 			m_top.store(m_first_memblock, core_platform::bc_memory_order::relaxed);
 
 			m_tracer.accept_clear();
-			m_tracer.accept_overhead(sizeof(heap_memblock));
+			m_tracer.accept_overhead(sizeof(_bc_heap_memblock));
 		};
 		
 #ifdef BC_MEMORY_DEFRAG
-		void bc_memory_heap::register_pointer(void** p_pointer) noexcept(true)
+		void bc_memory_heap::register_pointer(void** p_pointer, bc_memblock* p_memblock) noexcept(true)
 		{
-			heap_memblock* l_mem_block = reinterpret_cast<heap_memblock*>(
-				bc_memblock::retrieve_mem_block(*p_pointer)->allocators_extra());
-
-			/*heap_memblock::pointer_refs* l_pointer = m_pointer_ref_allocator.alloc();
-			new(l_pointer)heap_memblock::pointer_refs();*/
+			_bc_heap_memblock* l_mem_block = reinterpret_cast<_bc_heap_memblock*>(p_memblock->allocators_extra());
 
 			l_mem_block->register_new_pointer(p_pointer);
+		}
 
-			//m_tracer.accept_overhead(sizeof(heap_memblock::pointer_refs));
-		};
-
-		void bc_memory_heap::unregister_pointer(void** p_pointer) noexcept(true)
+		void bc_memory_heap::unregister_pointer(void** p_pointer, bc_memblock* p_memblock) noexcept(true)
 		{
-			heap_memblock* l_memblock = reinterpret_cast<heap_memblock*>(
-				bc_memblock::retrieve_mem_block(*p_pointer)->allocators_extra());
+			_bc_heap_memblock* l_memblock = reinterpret_cast<_bc_heap_memblock*>(p_memblock->allocators_extra());
 
 			l_memblock->unregister_pointer(p_pointer);
-			/*heap_memblock::pointer_refs* l_pointer = lMemBlock->unregister_pointer(p_pointer);
-			l_pointer->~pointer_refs();*/
-
-			//m_pointer_ref_allocator.free(l_pointer);
-
-			//m_tracer.accept_free_overhead(sizeof(heap_memblock::pointer_refs));
-		};
+		}
 
 		void bc_memory_heap::defragment(bcINT32 p_num_defrag) noexcept(true)
 		{
 			// TODO check for memory consistency problem
-			heap_memblock* l_first_block = m_first_memblock;
-			heap_memblock* l_prev_freeblock = nullptr;
-			heap_memblock* l_freeblock = nullptr;
-			heap_memblock* l_usedblock = nullptr;
-			heap_memblock* l_last_usedblock = nullptr;
-			heap_memblock* l_alignedblock = nullptr;
+			_bc_heap_memblock* l_first_block = m_first_memblock;
+			_bc_heap_memblock* l_prev_freeblock = nullptr;
+			_bc_heap_memblock* l_freeblock = nullptr;
+			_bc_heap_memblock* l_usedblock = nullptr;
+			_bc_heap_memblock* l_last_usedblock = nullptr;
+			_bc_heap_memblock* l_alignedblock = nullptr;
 			bcUINT32 l_num_movedblocks = 0;
 
 			while (--p_num_defrag >= 0)
@@ -465,7 +405,7 @@ namespace black_cat
 
 				// Correct MemBlock's mDataAddress /
 				bcUINTPTR l_move_offset = l_usedblock->data_address() - l_freeblock->data_address();
-				heap_memblock* l_used_blocks = l_usedblock;
+				_bc_heap_memblock* l_used_blocks = l_usedblock;
 				for (; l_num_movedblocks > 0; --l_num_movedblocks, l_used_blocks = l_used_blocks->next())
 				{
 					l_used_blocks->data_address(l_used_blocks->data_address() - l_move_offset);
@@ -477,8 +417,8 @@ namespace black_cat
 						l_block_pointers = l_block_pointers->m_next;
 					}*/
 
-					heap_memblock::pointer_refs::iterator l_current_pointer = l_used_blocks->pointer_refs_begin();
-					heap_memblock::pointer_refs::iterator l_pointers_end = l_used_blocks->pointer_refs_end();
+					_bc_heap_memblock::pointer_refs::iterator l_current_pointer = l_used_blocks->pointer_refs_begin();
+					_bc_heap_memblock::pointer_refs::iterator l_pointers_end = l_used_blocks->pointer_refs_end();
 
 					while (l_current_pointer != l_pointers_end)
 					{
@@ -534,8 +474,8 @@ namespace black_cat
 							reinterpret_cast<bcUINTPTR>(*l_block_pointers->m_pointer_reference) - l_aligned_move_offset);
 						l_block_pointers = l_block_pointers->m_next;
 					}*/
-					heap_memblock::pointer_refs::iterator l_current_pointer = l_alignedblock->pointer_refs_begin();
-					heap_memblock::pointer_refs::iterator l_pointers_end = l_alignedblock->pointer_refs_end();
+					_bc_heap_memblock::pointer_refs::iterator l_current_pointer = l_alignedblock->pointer_refs_begin();
+					_bc_heap_memblock::pointer_refs::iterator l_pointers_end = l_alignedblock->pointer_refs_end();
 
 					while (l_current_pointer != l_pointers_end)
 					{
@@ -591,7 +531,7 @@ namespace black_cat
 					l_freeblock->next()->size(l_freeblock->next()->size() + l_freeblock->size());
 					l_freeblock->next()->data_address(l_freeblock->data_address());
 
-					l_freeblock->~heap_memblock();
+					l_freeblock->~_bc_heap_memblock();
 					m_block_allocator.free(l_freeblock);
 				}
 				// If lFreeBlock->mNext point to nullptr, it is last block in the heap, so mTop most point to it /
@@ -602,7 +542,7 @@ namespace black_cat
 
 				--m_num_fragmentation;
 			}
-		};
+		}
 #endif
 
 #endif

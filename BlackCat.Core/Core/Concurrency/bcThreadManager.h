@@ -4,6 +4,7 @@
 
 #include "CorePlatform/Concurrency/bcConcurrencyDef.h"
 #include "CorePlatformImp/Concurrency/bcFuture.h"
+#include "CorePlatformImp/Concurrency/bcConditionVariable.h"
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Concurrency/bcThread.h"
@@ -321,7 +322,7 @@ namespace black_cat
 
 			bc_thread_manager(const bc_thread_manager&) = delete;
 
-			bc_thread_manager(bc_thread_manager&& p_other)
+			bc_thread_manager(bc_thread_manager&& p_other) noexcept
 			{
 				operator=(std::move(p_other));
 			}
@@ -333,7 +334,7 @@ namespace black_cat
 
 			bc_thread_manager& operator=(const bc_thread_manager&) = delete;
 
-			bc_thread_manager& operator=(bc_thread_manager&& p_other)
+			bc_thread_manager& operator=(bc_thread_manager&& p_other) noexcept
 			{
 				m_thread_count = p_other.m_thread_count;
 				m_additional_thread_count = p_other.m_additional_thread_count;
@@ -348,9 +349,10 @@ namespace black_cat
 
 			bcSIZE thread_count() const
 			{
-				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_shared_mutex);
-
-				return m_threads.size();
+				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_threads_mutex);
+				{
+					return m_threads.size();
+				}
 			}
 
 			bcSIZE task_count() const
@@ -360,15 +362,16 @@ namespace black_cat
 
 			void interrupt_thread(core_platform::bc_thread::id p_thread_id)
 			{
-				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_shared_mutex);
-
-				for (bcUINT32 l_i = 0, l_c = m_threads.size(); l_i < l_c; ++l_i)
+				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_threads_mutex);
 				{
-					_thread_data* l_current = m_threads[l_i].get();
-					if (l_current->thread().get_id() == p_thread_id)
+					for (bcUINT32 l_i = 0, l_c = m_threads.size(); l_i < l_c; ++l_i)
 					{
-						l_current->interrupt_flag().set();
-						return;
+						_thread_data* l_current = m_threads[l_i].get();
+						if (l_current->thread().get_id() == p_thread_id)
+						{
+							l_current->interrupt_flag().set();
+							return;
+						}
 					}
 				}
 
@@ -396,17 +399,27 @@ namespace black_cat
 				_thread_data* l_my_data = nullptr;
 
 				if (p_option == bc_task_creation_option::none)
+				{
 					l_my_data = m_my_data.get();
+				}
 
 				if (l_my_data)
+				{
 					l_my_data->local_queue().push(std::move(l_task_wrapper));
+				}
 				else
+				{
 					m_global_queue.push(std::move(l_task_wrapper));
+				}
+
+				m_cvariable.notify_one();
 
 				bcUINT32 l_task_count = m_task_count.fetch_add(1U, core_platform::bc_memory_order::seqcst);
 
 				if (l_task_count >= s_new_thread_threshold)
+				{
 					_push_worker();
+				}
 
 				return l_task;
 			}
@@ -475,6 +488,7 @@ namespace black_cat
 				m_additional_thread_count = p_additional_thread_count;
 				m_task_count.store(0, core_platform::bc_memory_order::seqcst);
 				m_done.store(false);
+				m_num_thread_in_spin = 0;
 
 				try
 				{
@@ -496,6 +510,7 @@ namespace black_cat
 			void _destroy()
 			{
 				m_done.store(true);
+				m_cvariable.notify_all();
 
 				_join_workers();
 			}
@@ -506,29 +521,33 @@ namespace black_cat
 
 			void _push_worker()
 			{
-				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_gaurd(m_shared_mutex);
+				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_gaurd(m_threads_mutex);
+				{
+					bcUINT32 l_my_index = m_threads.size();
 
-				bcUINT32 l_my_index = m_threads.size();
+					if (l_my_index >= m_thread_count + m_additional_thread_count)
+						return;
 
-				if (l_my_index >= m_thread_count + m_additional_thread_count)
-					return;
-
-				m_threads.push_back(bc_make_unique<_thread_data>(
-					bc_alloc_type::program,
-					l_my_index,
-					core_platform::bc_thread(&bc_thread_manager::_worker_spin, this, l_my_index)));
+					m_threads.push_back(bc_make_unique<_thread_data>(
+						bc_alloc_type::program,
+						l_my_index,
+						core_platform::bc_thread(&bc_thread_manager::_worker_spin, this, l_my_index)));
+				}
 			}
 
 			// TODO create pop mechanism for additional threads
 
 			void _join_workers()
 			{
-				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_shared_mutex);
-
-				for (auto l_begin = m_threads.begin(), l_end = m_threads.end(); l_begin != l_end; ++l_begin)
+				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_threads_mutex);
 				{
-					if ((*l_begin)->thread().joinable())
-						(*l_begin)->thread().join();
+					for (auto l_begin = m_threads.begin(), l_end = m_threads.end(); l_begin != l_end; ++l_begin)
+					{
+						if ((*l_begin)->thread().joinable())
+						{
+							(*l_begin)->thread().join();
+						}
+					}
 				}
 			}
 
@@ -548,14 +567,15 @@ namespace black_cat
 			{
 				_thread_data* l_my_data = m_my_data.get();
 
-				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_shared_mutex);
-
-				for (bcUINT32 l_i = 0, l_c = m_threads.size(); l_i < l_c; ++l_i)
+				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_threads_mutex);
 				{
-					const bcUINT32 l_index = (l_my_data->index() + l_i + 1) % l_c;
+					for (bcUINT32 l_i = 0, l_c = m_threads.size(); l_i < l_c; ++l_i)
+					{
+						const bcUINT32 l_index = (l_my_data->index() + l_i + 1) % l_c;
 
-					if (m_threads[l_index]->local_queue().try_steal(p_task))
-						return true;
+						if (m_threads[l_index]->local_queue().try_steal(p_task))
+							return true;
+					}
 				}
 
 				return false;
@@ -564,10 +584,16 @@ namespace black_cat
 			void _worker_spin(bcUINT32 p_my_index)
 			{
 				{
-					core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_shared_mutex);
+					core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_threads_mutex);
+					{
+						// It is safe to get a pointer from vector because we have reserved needed memory in vector
+						m_my_data.set(m_threads[p_my_index].get());
+					}
 
-					// It is safe to get a pointer from vector because we have reserved needed memory in vector
-					m_my_data.set(m_threads[p_my_index].get());
+					core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_cvariable_mutex);
+					{
+						++m_num_thread_in_spin;
+					}
 				}
 
 				bcUINT32 l_without_task = 0;
@@ -590,27 +616,49 @@ namespace black_cat
 						++l_without_task;
 
 						if (l_without_task <= s_worker_switch_threshold)
+						{
 							core_platform::bc_thread::current_thread_yield();
-						else
+						}
+						else if(l_without_task > s_worker_switch_threshold * 2)
+						{
 							core_platform::bc_thread::current_thread_yield_switch();
+						}
+						else
+						{
+							core_platform::bc_unique_lock< core_platform::bc_mutex > l_gaurd(m_cvariable_mutex);
+							{
+								if (m_num_thread_in_spin >= s_num_thread_in_spin)
+								{
+									--m_num_thread_in_spin;
+
+									m_cvariable.wait(l_gaurd);
+
+									++m_num_thread_in_spin;
+								}
+							}
+						}
 					}
 				}
 			}
 
 		private:
-			static const bcUINT32 s_worker_switch_threshold = 10;
-			static const bcUINT32 s_new_thread_threshold = 10;
+			static const bcSIZE s_worker_switch_threshold = 10;
+			static const bcSIZE s_new_thread_threshold = 10;
+			static const bcSIZE s_num_thread_in_spin = 1;
 
 			bcSIZE m_thread_count;
 			bcSIZE m_additional_thread_count;
 			core_platform::bc_atomic< bcSIZE > m_task_count;
 			core_platform::bc_atomic< bool > m_done;
+			core_platform::bc_mutex m_cvariable_mutex;
+			core_platform::bc_condition_variable m_cvariable;
+			bcSIZE m_num_thread_in_spin;
 
 			bc_vector_a< bc_unique_ptr<_thread_data>, bc_allocator_program > m_threads;
 			//bc_concurrent_queue_frame< task_wrapper_type > m_global_queue; TODO
 			bc_concurrent_queue< task_type > m_global_queue;
 			core_platform::bc_thread_local< _thread_data > m_my_data;
-			mutable core_platform::bc_shared_mutex m_shared_mutex;
+			mutable core_platform::bc_shared_mutex m_threads_mutex;
 		};
 	}
 }

@@ -34,7 +34,7 @@ namespace black_cat
 			{
 			}
 
-			_bc_memory_extender_bucket(_bc_memory_extender_bucket&& p_other)
+			_bc_memory_extender_bucket(_bc_memory_extender_bucket&& p_other) noexcept
 				: m_initializer(p_other.m_initializer),
 				m_cleanup(p_other.m_cleanup),
 				m_my(std::move(p_other.m_my)),
@@ -47,7 +47,7 @@ namespace black_cat
 				m_cleanup(m_my);
 			}
 
-			_bc_memory_extender_bucket& operator =(_bc_memory_extender_bucket&& p_other)
+			_bc_memory_extender_bucket& operator =(_bc_memory_extender_bucket&& p_other) noexcept
 			{
 				m_initializer = p_other.m_initializer;
 				m_cleanup = p_other.m_cleanup;

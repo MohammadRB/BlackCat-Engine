@@ -136,24 +136,28 @@ namespace black_cat
 		{
 			map_type::value_type::second_type l_value;
 
-			core_platform::bc_lock_guard< core_platform::bc_shared_mutex > m_guard(m_contents_mutex);
 			{
-				auto l_item = std::find_if(begin(m_contents), end(m_contents), [=](map_type::value_type& p_item)
+				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > m_guard(m_contents_mutex);
 				{
-					return p_item.second.get() == p_content;
-				});
+					auto l_item = std::find_if(begin(m_contents), end(m_contents), [=](map_type::value_type& p_item)
+					{
+						return p_item.second.get() == p_content;
+					});
 
-				if (l_item == end(m_contents))
-				{
-					bcAssert(false, "Content not found");
-					return;
+					if (l_item == end(m_contents))
+					{
+						bcAssert(false, "Content not found");
+						return;
+					}
+
+					// Move value from container because some times content have inner content and destroying
+					// content while lock is acquired cause deadlock
+					l_value = std::move(l_item->second);
+					m_contents.erase(l_item);
 				}
-
-				// Move value from container because some times content have inner content and destroying
-				// content while lock is acquired cause deadlock
-				l_value = std::move(l_item->second);
-				m_contents.erase(l_item);
 			}
+
+			l_value.reset(nullptr);
 		}
 
 		template< class TContent, class TLoader >

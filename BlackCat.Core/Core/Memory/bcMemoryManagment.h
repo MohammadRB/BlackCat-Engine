@@ -24,16 +24,12 @@ namespace black_cat
 
 		enum class bc_alloc_type : bcUBYTE
 		{
-			// Alloc in programm stack
-			program,
-			// Alloc in level stack
-			level,
-			// Alloc in frame stack
-			frame,
-			// Try to alloc in fixed size allocators, otherwise alloc in crt memory
-			unknown,
-			// Try to alloc in fixed size allocators, then in super heap that is defragmentable, otherwise in crt memory
-			unknown_movale,
+			program,		// Alloc in programm stack
+			level,			// Alloc in level stack
+			frame,			// Alloc in frame stack
+			unknown,		// Try to alloc in fixed size allocators, otherwise alloc in crt memory
+			unknown_movale,	// Try to alloc in fixed size allocators, then in super heap that is defragmentable, 
+							// otherwise in crt memory
 		};
 
 #ifdef BC_MEMORY_ENABLE
@@ -50,6 +46,7 @@ namespace black_cat
 
 			void initialize(bcUINT32 p_fsa_start_size,
 				bcUINT32 p_fsa_num,
+				bcUINT32 p_fsa_step_size,
 				bcUINT32 p_fsa_num_allocations,
 				bcUINT32 p_per_prg_heap_size,
 				bcUINT32 p_per_lvl_heap_size,
@@ -60,6 +57,7 @@ namespace black_cat
 
 			static void startup(bcUINT32 p_fsa_start_size,
 				bcUINT32 p_fsa_num,
+				bcUINT32 p_fsa_step_size,
 				bcUINT32 p_fsa_num_allocations,
 				bcUINT32 p_per_prg_heap_size,
 				bcUINT32 p_per_lvl_heap_size,
@@ -68,10 +66,10 @@ namespace black_cat
 
 			static void close() noexcept(true);
 
-			bcInline static bc_memmng& get() noexcept(true)
+			static bc_memmng& get() noexcept(true)
 			{
 				return bc_memmng::m_instance;
-			};
+			}
 
 			void* alloc(bcSIZE p_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true);
 
@@ -86,21 +84,25 @@ namespace black_cat
 			void* aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true);
 
 #ifdef BC_MEMORY_DEFRAG
-			bcInline void register_pointer_in_movable_allocators(void** p_pointer) noexcept(true)
+			void register_pointer_in_movable_allocators(void** p_pointer) noexcept(true)
 			{
 				if (m_super_heap->contain_pointer(*p_pointer))
 				{
-					m_super_heap->register_pointer(p_pointer);
-				}
-			};
+					bc_memblock* l_block = bc_memblock::retrieve_mem_block(*p_pointer);
 
-			bcInline void unregister_pointer_in_movable_allocators(void** p_pointer) noexcept(true)
+					m_super_heap->register_pointer(p_pointer, l_block);
+				}
+			}
+
+			void unregister_pointer_in_movable_allocators(void** p_pointer) noexcept(true)
 			{
 				if (m_super_heap->contain_pointer(*p_pointer))
 				{
-					m_super_heap->unregister_pointer(p_pointer);
+					bc_memblock* l_block = bc_memblock::retrieve_mem_block(*p_pointer);
+
+					m_super_heap->unregister_pointer(p_pointer, l_block);
 				}
-			};
+			}
 #endif
 
 			void end_of_frame() noexcept(true);
@@ -120,23 +122,23 @@ namespace black_cat
 		protected:
 
 		private:
-			bcInline bcUINT32 _fsa_index_max_size(bcUINT32 p_index)
+			bcUINT32 _fsa_index_max_size(bcUINT32 p_index) const
 			{
-				return m_fsa_allocators_start_size + p_index * s_fsa_step_size;
-			};
+				return m_fsa_allocators_start_size + p_index * m_fsa_step_size;
+			}
 
-			bcInline bcUINT32 _get_fsa_index(bcSIZE p_size)
+			bcUINT32 _get_fsa_index(bcUINT32 p_size) const
 			{
-				bcUINT32 l_index = std::ceil((p_size - m_fsa_allocators_start_size) / s_fsa_step_size);
+				bcUINT32 l_index = std::ceil((p_size - m_fsa_allocators_start_size) / m_fsa_step_size);
 				return l_index;
-			};
+			}
 
 			// We don't use static pointer because it is possible after we free pointer on exit, some call to free be called
 			static bc_memmng m_instance;
-			static const bcUINT32 s_fsa_step_size = BC_MEMORY_MIN_ALIGN;
 
 			bcUINT32 m_fsa_allocators_start_size;
 			bcUINT32 m_fsa_num_allocators;
+			bcUINT32 m_fsa_step_size;
 			bool m_initialized;
 			bc_memory_extender<bc_memory_fixed_size>* m_fsa_allocators;
 			bc_memory_stack* m_per_program_stack;
@@ -145,7 +147,7 @@ namespace black_cat
 			bc_memory_heap* m_super_heap;
 			bc_memory_crt* m_crt_allocator;
 #ifdef BC_MEMORY_LEAK_DETECTION
-			bcSIZE m_allocation_count;
+			bcUINT32 m_allocation_count;
 			bc_memmng_hashmap<bc_mem_block_leak_information, 15, 5>* m_leak_allocator;
 #endif
 		};

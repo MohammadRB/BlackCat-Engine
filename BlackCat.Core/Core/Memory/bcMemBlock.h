@@ -22,7 +22,6 @@ namespace black_cat
 				m_alignment(BC_MEMORY_MIN_ALIGN),
 				m_offset(0),
 				m_movable(false),
-				m_free(false),
 				m_extra(nullptr),
 				m_allocators_extra(nullptr)
 			{
@@ -34,7 +33,6 @@ namespace black_cat
 				m_alignment(p_other.alignment()),
 				m_offset(p_other.offset()),
 				m_movable(p_other.movable_pointer()),
-				m_free(p_other.free(core_platform::bc_memory_order::relaxed)),
 				m_extra(p_other.extra()),
 				m_allocators_extra(p_other.allocators_extra())
 			{
@@ -47,7 +45,6 @@ namespace black_cat
 				alignment(p_other.alignment());
 				offset(p_other.offset());
 				movable_pointer(p_other.movable_pointer());
-				free(p_other.free(core_platform::bc_memory_order::relaxed), core_platform::bc_memory_order::relaxed);
 				extra(p_other.extra());
 				allocators_extra(p_other.allocators_extra());
 
@@ -57,27 +54,11 @@ namespace black_cat
 			bcSIZE size() const { return m_size; }
 			void size(bcSIZE p_val) { m_size = p_val; }
 
-			/*bcUBYTE refrence_count(core_platform::bc_memory_order p_order) const { return  m_refrence_count.load(p_order); }
-			void refrence_count(bcUBYTE p_val, core_platform::bc_memory_order p_order) 
-			{
-				bcAssert(p_val <= (std::numeric_limits<bcUBYTE>::max)());
-				m_refrence_count.store(p_val, p_order); 
-			}*/
-
 			bcUBYTE alignment() const { return m_alignment; }
 			void alignment(bcUBYTE p_val) { m_alignment = p_val; }
 
 			bcUBYTE offset() const { return m_offset; }
 			void offset(bcUBYTE p_val) { m_offset = p_val; }
-
-			bool free(core_platform::bc_memory_order p_order = core_platform::bc_memory_order::seqcst) const
-			{
-				return m_free.load(p_order);
-			}
-			void free(bool p_val, core_platform::bc_memory_order p_order = core_platform::bc_memory_order::seqcst)
-			{
-				m_free.store(p_val, p_order);
-			}
 
 #ifdef BC_MEMORY_DEFRAG
 			bool movable_pointer() const { return m_movable; }
@@ -95,13 +76,7 @@ namespace black_cat
 				bcSIZE l_mis_alignment = p_size % p_alignment;
 				return (l_mis_alignment == 0) ? p_size : (p_size - l_mis_alignment) + p_alignment;
 			}
-
-			// Store MemBlock for pointer that point to actual location of data
-			bcInline static void store_mem_block(const void* p_pointer, const bc_memblock* p_block)
-			{
-				*(reinterpret_cast<bc_memblock*>((reinterpret_cast<bcUINTPTR>(p_pointer) - sizeof(bc_memblock)))) = *p_block;
-			}
-
+			
 			// Retrieve MemBlock for pointer that point to actual location of data, or null if parameter is null
 			bcInline static bc_memblock* retrieve_mem_block(const void* p_pointer)
 			{
@@ -110,8 +85,6 @@ namespace black_cat
 				else
 					return nullptr;
 			}
-
-			bcInline static void free_mem_block(const void* p_pointer) {}
 
 			bcInline static bcSIZE get_required_size(bcSIZE p_data_size, bcSIZE p_alignment)
 			{
@@ -151,13 +124,12 @@ namespace black_cat
 					reinterpret_cast<bcUINTPTR>(p_pointer);
 			}
 
-			bcInline static void initialize_mem_block_for_alllocation(bcSIZE p_size, bcSIZE p_alignment, bc_memblock* p_block)
+			bcInline static void initialize_mem_block_before_allocation(bcSIZE p_size, bcSIZE p_alignment, bc_memblock* p_block)
 			{
 				p_block->size(get_required_size(p_size, p_alignment));
 				//p_block->refrence_count(0, core_platform::bc_memory_order::relaxed);
 				p_block->alignment(p_alignment);
 				p_block->offset(0);
-				p_block->free(false, core_platform::bc_memory_order::relaxed);
 #ifdef BC_MEMORY_DEFRAG
 				p_block->movable_pointer(false);
 #endif
@@ -166,7 +138,7 @@ namespace black_cat
 			}
 
 			// Fill MemBlock with data and shift pPointer with requeried offset for actual data
-			bcInline static void inititalize_mem_block_after_allocation(void** p_pointer,
+			bcInline static void initialize_mem_block_after_allocation(void** p_pointer,
 				bool p_dynamic,
 				void* p_extra,
 				bc_memblock* p_block)
@@ -182,19 +154,23 @@ namespace black_cat
 				bc_memblock::store_mem_block(*p_pointer, p_block);
 			}
 
+			// Store MemBlock for pointer that point to actual location of data
+			bcInline static void store_mem_block(const void* p_pointer, const bc_memblock* p_block)
+			{
+				*(reinterpret_cast<bc_memblock*>((reinterpret_cast<bcUINTPTR>(p_pointer) - sizeof(bc_memblock)))) = *p_block;
+			}
+
+			bcInline static void free_mem_block(const void* p_pointer) {}
+
 		protected:
 
 		private:
-			// Total size of block
-			bcSIZE m_size;
-			//core_platform::bc_atomic<bcUBYTE> m_refrence_count;
+			bcSIZE m_size;			// Total size of block
 			bcUBYTE m_alignment;
-			// Offset from begin of block where actual data is located /
-			bcUBYTE m_offset;
+			bcUBYTE m_offset;		// Offset from begin of block where actual data is located
 #ifdef BC_MEMORY_DEFRAG
 			bool m_movable;
 #endif
-			core_platform::bc_atomic<bool> m_free;
 			void* m_extra;
 			void* m_allocators_extra;
 		};

@@ -20,7 +20,7 @@ namespace black_cat
 		{
 			if(p_type == core::bc_log_type::debug)
 			{
-				OutputDebugString(bcL("BlackCat Debug:"));
+				OutputDebugString(bcL("BlackCat Debug: "));
 				OutputDebugString(p_log);
 				OutputDebugString(bcL("\n"));
 			}

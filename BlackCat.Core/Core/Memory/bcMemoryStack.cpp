@@ -12,18 +12,20 @@ namespace black_cat
 
 		bc_memory_stack::bc_memory_stack() noexcept(true)
 		{
-		};
+		}
 
 		bc_memory_stack::bc_memory_stack(bc_memory_stack::this_type&& p_other) noexcept(true) : bc_memory(std::move(p_other))
 		{
 			_move(std::move(p_other));
-		};
+		}
 
 		bc_memory_stack::~bc_memory_stack() noexcept(true)
 		{
 			if (m_initialized)
-				_destroy();
-		};
+			{
+				destroy();
+			}
+		}
 
 		bc_memory_stack::this_type& bc_memory_stack::operator =(bc_memory_stack::this_type&& p_other) noexcept(true)
 		{
@@ -35,24 +37,31 @@ namespace black_cat
 
 		void bc_memory_stack::_initialize(bcUINT32 p_size, const bcCHAR* p_tag)
 		{
-			m_size = p_size;
-
 			// We alloc mHeap by min align defined in CorePCH because we want all of our allocations have MIN_Align /
-			m_heap = static_cast<bcUBYTE*>(core_platform::bc_mem_aligned_alloc(m_size * sizeof(bcUBYTE), BC_MEMORY_MIN_ALIGN));
+			m_heap = static_cast<bcUBYTE*>(core_platform::bc_mem_aligned_alloc(p_size * sizeof(bcUBYTE), BC_MEMORY_MIN_ALIGN));
 
 			if (!m_heap)
+			{
 				throw std::bad_alloc();
+			}
 
-			m_top.store(m_heap, core_platform::bc_memory_order::seqcst);
+			m_size = p_size;
+			m_top.store(m_heap, core_platform::bc_memory_order::relaxed);
+			m_pop_thread_count.store(0, core_platform::bc_memory_order::relaxed);
+			m_free_block_count.store(0, core_platform::bc_memory_order::relaxed);
 
 			m_tracer.initialize(m_size);
-			if (p_tag) bc_memory::tag(p_tag);
-		};
+
+			if (p_tag)
+			{
+				bc_memory::tag(p_tag);
+			}
+		}
 
 		void bc_memory_stack::_destroy() noexcept(true)
 		{
 			core_platform::bc_mem_aligned_free(m_heap);
-		};
+		}
 
 		void* bc_memory_stack::push(bc_memblock* p_mem_block) noexcept(true)
 		{
@@ -62,202 +71,220 @@ namespace black_cat
 			bcAssert(l_size > 0);
 
 			bcUBYTE* l_local_top = m_top.load(core_platform::bc_memory_order::seqcst);
+
 			while (true)
 			{
-				bc_memblock* l_last_mem_block = nullptr;
-				bcSIZE l_byte_free = 0;
-				if (l_local_top != m_heap)
-				{
-					l_last_mem_block = bc_memblock::retrieve_mem_block(l_local_top);
-					l_byte_free = 
-						(reinterpret_cast<bcSIZE>(m_heap)+m_size) -
-						(reinterpret_cast<bcSIZE>(l_local_top)-l_last_mem_block->offset() + l_last_mem_block->size());
-				}
-				else
-				{
-					l_byte_free = m_size;
-				}
-				
-				if (l_size <= l_byte_free)
-				{
-					bcUINT32 l_offset;
-					bcUBYTE* l_new_top;
-					bcUBYTE* l_allocation_top;
+				bcUBYTE* l_new_top = l_local_top + l_size;
+				bcSIZE l_byte_free = (m_heap + m_size - l_local_top) -
+					(m_free_block_count.load(core_platform::bc_memory_order::seqcst) * sizeof(_bc_memory_stack_block));
 
-					// m_top must point to last allocation space plus it's offset /
-					if (l_local_top != m_heap)
-					{
-						l_allocation_top = l_local_top - l_last_mem_block->offset() + l_last_mem_block->size();
-					}
-					else
-					{
-						l_allocation_top = l_local_top;
-					}
-
-					l_offset = bc_memblock::get_required_offset_for_data(l_allocation_top, p_mem_block->alignment());
-					l_new_top = l_allocation_top + l_offset;
-
-					if (m_top.compare_exchange_strong(&l_local_top,
-						l_new_top,
-						core_platform::bc_memory_order::seqcst,
-						core_platform::bc_memory_order::seqcst))
-					{
-						l_result = l_allocation_top;
-
-						// MemBlock::mExtra must point to previous allocated data so we can extract it's MemBlock in 
-						// pop function in order to free it if that block was free /
-						p_mem_block->allocators_extra(l_local_top);
-
-						m_tracer.accept_alloc(l_size);
-
-						return l_result;
-					}
-					else
-						continue;
-				}
-				else // No more free memory /
+				// No more free memory
+				if (l_size > l_byte_free)
 				{
 					m_tracer.reject_alloc(l_size);
 
 					return l_result;
 				}
-			}
-		};
-		
-		void bc_memory_stack::pop(void* p_pointer, bc_memblock* p_mem_block) noexcept(true)
-		{
-			bcUINTPTR l_free_position = 0;
-			bcSIZE l_free_size = 0;
 
-			bool l_back_trace = false;
-
-			bcUBYTE* l_new_top;
-			bcUBYTE* l_local_top;
-			while (true)
-			{
-				l_local_top = m_top.load(core_platform::bc_memory_order::seqcst);
-
-				if (l_local_top == m_heap) // it is free
+				if (m_top.compare_exchange_strong
+				(
+					&l_local_top,
+					l_new_top,
+					core_platform::bc_memory_order::seqcst,
+					core_platform::bc_memory_order::seqcst
+				))
 				{
-					bcAssert(false);
-					return;
+					l_result = l_local_top;
+
+					m_tracer.accept_alloc(l_size);
+
+					return l_result;
 				}
+			}
+		}
+		
+		bool bc_memory_stack::pop(void* p_pointer, bc_memblock* p_mem_block) noexcept(true)
+		{
+			bcSIZE l_size = p_mem_block->size();
+			bcUBYTE* l_local_top = m_top.load(core_platform::bc_memory_order::seqcst);
+			bool l_is_freeing_top;
 
-				bc_memblock* l_top_mem_block = bc_memblock::retrieve_mem_block(l_local_top);
-				l_new_top = static_cast<bcUBYTE*>(l_top_mem_block->allocators_extra());
-				bool l_is_freeing_top = p_pointer == l_local_top;
-				bcUBYTE* l_pointer_copy = static_cast<bcUBYTE*>(p_pointer);
+			if (l_local_top == m_heap) // it is free
+			{
+				bcAssert(false);
+				return true;
+			}
 
-				// If we're not freeing the top of the stack mark block as free /
+			l_is_freeing_top = l_local_top - l_size == p_pointer;
+
+			if(!l_is_freeing_top)
+			{
+				// Check again if current block has become top block because after first compare it's 
+				// possible duo to poping by other threads this block become top block
+				l_local_top = m_top.load(core_platform::bc_memory_order::seqcst);
+				l_is_freeing_top = l_local_top - l_size == p_pointer;
+
 				if (!l_is_freeing_top)
 				{
-					p_mem_block->free(true, core_platform::bc_memory_order::seqcst);
-
-					// After we mark this block as free, check again if block has become top block because
-					// before we mark block as free it's possible duo to poping by other threads this block
-					// become top block
-					l_back_trace = m_top.compare_exchange_strong(&l_pointer_copy,
-						l_new_top,
-						core_platform::bc_memory_order::seqcst,
-						core_platform::bc_memory_order::seqcst);
-
-					if (l_back_trace)
-					{
-						m_tracer.accept_free(p_mem_block->size());
-#ifdef BC_MEMORY_DEBUG
-						l_free_position = reinterpret_cast<bcUINTPTR>(l_pointer_copy) - p_mem_block->offset();
-						l_free_size = p_mem_block->size();
-#endif
-
-					}
-					break;
-				}
-				else
-				{
-					if (m_top.compare_exchange_strong(&l_local_top,
-						l_new_top,
-						core_platform::bc_memory_order::seqcst,
-						core_platform::bc_memory_order::seqcst))
-					{
-						m_tracer.accept_free(p_mem_block->size());
-
-#ifdef BC_MEMORY_DEBUG
-						l_free_position = reinterpret_cast<bcUINTPTR>(l_local_top) - p_mem_block->offset();
-						l_free_size = p_mem_block->size();
-#endif
-
-						l_back_trace = true;
-						break;
-					}
-					else
-						continue;
+					return false;
 				}
 			}
 
-			// If Previous blocks are free, decrease mTop pointer /
-			if (l_back_trace)
+			bcUBYTE* l_new_top = l_local_top - l_size;
+
+			bool l_freed = m_top.compare_exchange_strong
+			(
+				&l_local_top,
+				l_new_top,
+				core_platform::bc_memory_order::seqcst,
+				core_platform::bc_memory_order::seqcst
+			);
+
+			if(l_freed)
 			{
-				// MemBlock->mExtra point to previous allocated data so we can extract it's MemBlock to check if it was free / 
-				bcUBYTE* l_prev_top = static_cast<bcUBYTE*>(p_mem_block->allocators_extra());
-				if (l_prev_top != m_heap)
+				m_tracer.accept_free(p_mem_block->size());
+
+				return true;
+			}
+
+			return false;
+		}
+
+		void* bc_memory_stack::alloc(bc_memblock* p_memblock) noexcept(true)
+		{
+			return push(p_memblock);
+		}
+
+		void bc_memory_stack::free(void* p_pointer, bc_memblock* p_memblock) noexcept(true)
+		{
+			m_pop_thread_count.fetch_add(1U, core_platform::bc_memory_order::seqcst);
+
+			bool l_was_top = pop(p_pointer, p_memblock);
+
+			if (!l_was_top)
+			{
+				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_guard(m_free_block_mutex);
 				{
-					bc_memblock* l_prev_allocation_block = bc_memblock::retrieve_mem_block(l_prev_top);
-					
-					bcUBYTE* l_back_trace_new_top = nullptr;
-					bool l_is_prev_block_free = l_prev_allocation_block->free(core_platform::bc_memory_order::seqcst);
-					while (l_is_prev_block_free)
-					{
-						l_back_trace_new_top = static_cast<bcUBYTE*>(l_prev_allocation_block->allocators_extra());
-
-						if (!m_top.compare_exchange_strong(&l_new_top,
-							l_back_trace_new_top,
-							core_platform::bc_memory_order::seqcst,
-							core_platform::bc_memory_order::seqcst))
-							break;
-
-						m_tracer.accept_free(l_prev_allocation_block->size());
-
-#ifdef BC_MEMORY_DEBUG
-						l_free_position = reinterpret_cast<bcUINTPTR>(l_new_top) - l_prev_allocation_block->offset();
-						l_free_size += l_prev_allocation_block->size();
-#endif
-
-						l_new_top = l_back_trace_new_top;
-						if (l_new_top == m_heap)
-							break;
-						bc_memblock* l_prev_prev_allocation_block = bc_memblock::retrieve_mem_block(l_prev_allocation_block->allocators_extra());
-						l_prev_allocation_block = l_prev_prev_allocation_block;
-						l_is_prev_block_free = l_prev_allocation_block->free(core_platform::bc_memory_order::seqcst);
-					}
+					// Add current block to free list
+					_add_free_block(p_pointer, p_memblock);
 				}
 			}
 
-#ifdef BC_MEMORY_DEBUG
-			std::memset(reinterpret_cast<void*>(l_free_position), 0, l_free_size);
-#endif
-		};
+			auto l_poping_thread_count = m_pop_thread_count.fetch_sub(1U, core_platform::bc_memory_order::seqcst) - 1;
 
-		void* bc_memory_stack::alloc(bc_memblock* pMemBlock) noexcept(true)
-		{
-			return push(pMemBlock);
-		};
+			if (l_poping_thread_count == 0)
+			{
+				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_free_block_mutex);
+				{
+					if (m_pop_thread_count.load(core_platform::bc_memory_order::relaxed) == 0)
+					{
+						_reclaim_free_blocks();
+					}
+				}
+			}
+		}
 
-		void bc_memory_stack::free(void* pPointer, bc_memblock* pMemBlock) noexcept(true)
+		bool bc_memory_stack::contain_pointer(void* p_pointer) const noexcept(true)
 		{
-			pop(pPointer, pMemBlock);
-		};
-
-		bool bc_memory_stack::contain_pointer(void* pPointer) const noexcept(true)
-		{
-			return (pPointer >= m_heap && pPointer < m_heap + m_size) ? true : false;
-		};
+			return (p_pointer >= m_heap && p_pointer < m_heap + m_size) ? true : false;
+		}
 
 		void bc_memory_stack::clear() noexcept(true)
 		{
-			m_top.store(m_heap, core_platform::bc_memory_order::seqcst);
+			m_top.store(m_heap, core_platform::bc_memory_order::relaxed);
+			m_free_block_count.store(0, core_platform::bc_memory_order::relaxed);
 
 			m_tracer.accept_clear();
-		};
+		}
+
+		void bc_memory_stack::_add_free_block(void* p_pointer, bc_memblock* p_memblock)
+		{
+			auto l_free_block_count = m_free_block_count.fetch_add(1U, core_platform::bc_memory_order::relaxed) + 1;
+			auto* l_free_block_top = reinterpret_cast< _bc_memory_stack_block* >(m_heap + m_size) - l_free_block_count;
+
+			*l_free_block_top = _bc_memory_stack_block(p_pointer, p_memblock->size());
+
+			// Use release ordering to propagate all writes to _reclaim_free_blocks function
+			m_free_block_count.fetch_or(0U, core_platform::bc_memory_order::release);
+		}
+
+		void bc_memory_stack::_reclaim_free_blocks()
+		{
+			// Use acquire ordering to get all changes from _add_free_block function
+			auto l_free_block_count = m_free_block_count.load(core_platform::bc_memory_order::acquire);
+
+			if(l_free_block_count == 0)
+			{
+				return;
+			}
+
+			_bc_memory_stack_block* l_free_block_begin = reinterpret_cast< _bc_memory_stack_block* >(m_heap + m_size);
+			_bc_memory_stack_block* l_free_block_top = l_free_block_begin - l_free_block_count;
+			_bc_memory_stack_block* l_current_free_block = l_free_block_top;
+			
+			while(l_current_free_block != l_free_block_begin)
+			{
+				bcUBYTE* l_current_free_block_pointer = reinterpret_cast<bcUBYTE*>(l_current_free_block->m_address) + l_current_free_block->m_size;
+				bcUBYTE* l_local_top = m_top.load(core_platform::bc_memory_order::relaxed);
+
+				// If this free block is top
+				if (l_current_free_block_pointer == l_local_top)
+				{
+					bc_memblock l_memblock;
+					l_memblock.size(l_current_free_block->m_size);
+
+					bool l_freed = pop(l_current_free_block->m_address, &l_memblock);
+
+					if (!l_freed)
+					{
+						++l_current_free_block;
+						continue;
+					}
+
+					// Mark this block as free
+					l_current_free_block->m_address = nullptr;
+					l_current_free_block->m_size = 0;
+
+					// If current block is top block try to reclaim it and any other block that is marked with 
+					// free flag
+					if (l_current_free_block == l_free_block_top)
+					{
+						while (l_current_free_block->m_address == nullptr && l_current_free_block != l_free_block_begin)
+						{
+							m_free_block_count.fetch_sub(1U, core_platform::bc_memory_order::relaxed);
+							l_free_block_top++;
+							l_current_free_block++;
+						}
+					}
+					// If current block isn't top reset searching because by poping this block other blocks
+					// may become top block
+					else
+					{
+						l_current_free_block = l_free_block_top;
+					}
+				}
+				else
+				{
+					++l_current_free_block;
+				}
+			}
+		}
+
+		void bc_memory_stack::_move(this_type&& p_other)
+		{
+			bcUBYTE* l_top = p_other.m_top.load(core_platform::bc_memory_order::relaxed);
+			bcUINT32 l_free_block_count = p_other.m_free_block_count.load(core_platform::bc_memory_order::relaxed);
+
+			m_size = p_other.m_size;
+			m_heap = p_other.m_heap;
+			m_top.store(l_top, core_platform::bc_memory_order::relaxed);
+			m_free_block_count.store(l_free_block_count, core_platform::bc_memory_order::relaxed);
+
+			p_other.m_size = 0;
+			p_other.m_heap = nullptr;
+			p_other.m_top.store(0, core_platform::bc_memory_order::relaxed);
+			p_other.m_free_block_count.store(0, core_platform::bc_memory_order::relaxed);
+		}
 
 #endif
 	}

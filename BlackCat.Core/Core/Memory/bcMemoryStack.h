@@ -9,12 +9,29 @@
 #include "Core/Utility/bcInitializable.h"
 #include "Core/Memory/bcMemoryTracer.h"
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 
 namespace black_cat
 {
 	namespace core
 	{
 #ifdef BC_MEMORY_ENABLE
+
+		struct _bc_memory_stack_block
+		{
+		public:
+			_bc_memory_stack_block(void* p_address, bcSIZE p_size)
+			{
+				m_address = p_address;
+				m_size = p_size;
+			}
+
+			void* m_address;
+			bcSIZE m_size;
+		protected:
+
+		private:
+		};
 
 		class BC_CORE_DLL bc_memory_stack : public bc_memory, public bc_initializable<bcUINT32, const bcCHAR*>
 		{
@@ -35,10 +52,10 @@ namespace black_cat
 
 			void* push(bc_memblock* p_mem_block) noexcept(true);
 
-			void pop(void* p_pointer, bc_memblock* p_mem_block) noexcept(true);
+			bool pop(void* p_pointer, bc_memblock* p_mem_block) noexcept(true);
 
 			void* alloc(bc_memblock* p_mem_block) noexcept(true) override;
-
+			
 			void free(void* p_pointer, bc_memblock* p_mem_block) noexcept(true) override;
 
 			bool contain_pointer(void* p_pointer) const noexcept(true) override;
@@ -52,24 +69,18 @@ namespace black_cat
 
 			void _destroy() noexcept(true) override;
 
-			void _move(this_type&& p_other)
-			{
-				bcUBYTE* l_top = p_other.m_top.load(core_platform::bc_memory_order::acquire);
+			void _add_free_block(void* p_pointer, bc_memblock* p_memblock);
 
-				m_size = p_other.m_size;
-				m_heap = p_other.m_heap;
+			void _reclaim_free_blocks();
 
-				p_other.m_size = 0;
-				p_other.m_top.store(0, core_platform::bc_memory_order::relaxed);
-				m_heap = nullptr;
-
-				m_top.store(l_top, core_platform::bc_memory_order::release);
-			}
+			void _move(this_type&& p_other);
 
 			bcUINT32 m_size;
-			core_platform::bc_atomic< bcUBYTE* > m_top;
 			bcUBYTE* m_heap;
-
+			core_platform::bc_atomic< bcUBYTE* > m_top;
+			core_platform::bc_atomic< bcUINT32 > m_pop_thread_count;
+			core_platform::bc_atomic< bcUINT32 > m_free_block_count;
+			core_platform::bc_shared_mutex m_free_block_mutex;
 		};
 
 #endif

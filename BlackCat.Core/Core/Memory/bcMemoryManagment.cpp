@@ -26,14 +26,15 @@ namespace black_cat
 			m_leak_allocator(nullptr)
 #endif
 		{
-		};
+		}
 
 		bc_memmng::~bc_memmng()
 		{
-		};
+		}
 								
 		void bc_memmng::initialize(bcUINT32 p_fsa_start_size,
 			bcUINT32 p_fsa_num,
+			bcUINT32 p_fsa_step_size,
 			bcUINT32 p_fsa_num_allocations,
 			bcUINT32 p_per_prg_heap_size,
 			bcUINT32 p_per_lvl_heap_size,
@@ -42,6 +43,7 @@ namespace black_cat
 		{
 			m_fsa_allocators_start_size = p_fsa_start_size;
 			m_fsa_num_allocators = p_fsa_num;
+			m_fsa_step_size = p_fsa_step_size;
 
 			try
 			{
@@ -49,9 +51,9 @@ namespace black_cat
 
 				for (bcUINT32 i = 0; i < m_fsa_num_allocators; i++)
 				{
-					m_fsa_allocators[i].initialize([=]()->bc_memory_fixed_size* {
+					m_fsa_allocators[i].initialize([=]() {
 
-						bcUINT32 l_block_size = m_fsa_allocators_start_size + i * s_fsa_step_size;
+						bcUINT32 l_block_size = m_fsa_allocators_start_size + i * m_fsa_step_size;
 						std::string l_tag = std::string("FSA") + std::to_string(i);
 
 						bc_memory_fixed_size* l_result = new bc_memory_fixed_size();
@@ -59,7 +61,7 @@ namespace black_cat
 
 						return l_result;
 
-					}, [=](bc_memory_fixed_size* p_pointer)->void {
+					}, [=](bc_memory_fixed_size* p_pointer) {
 
 						delete p_pointer;
 
@@ -90,7 +92,7 @@ namespace black_cat
 			}
 
 			m_initialized = true;
-		};
+		}
 
 		void bc_memmng::destroy() noexcept(true)
 		{
@@ -109,6 +111,7 @@ namespace black_cat
 
 		void bc_memmng::startup(bcUINT32 p_fsa_start_size,
 			bcUINT32 p_fsa_num,
+			bcUINT32 p_fsa_step_size,
 			bcUINT32 p_fsa_num_allocations,
 			bcUINT32 p_per_prg_heap_size,
 			bcUINT32 p_per_lvl_heap_size,
@@ -118,17 +121,18 @@ namespace black_cat
 						
 			bc_memmng::m_instance.initialize(p_fsa_start_size,
 				p_fsa_num,
+				p_fsa_step_size,
 				p_fsa_num_allocations,
 				p_per_prg_heap_size,
 				p_per_lvl_heap_size,
 				p_per_frm_heap_size,
 				p_super_heap_size);
-		};
+		}
 		
 		void bc_memmng::close() noexcept(true)
 		{
 			bc_memmng::m_instance.destroy();
-		};
+		}
 		
 		void* bc_memmng::alloc(bcSIZE p_size, bc_alloc_type p_allocType, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true)
 		{
@@ -137,7 +141,7 @@ namespace black_cat
 			void* l_result = nullptr;
 			bc_memory* l_allocator = nullptr;
 			bc_memblock l_block;
-			bc_memblock::initialize_mem_block_for_alllocation(p_size, BC_MEMORY_MIN_ALIGN, &l_block);
+			bc_memblock::initialize_mem_block_before_allocation(p_size, BC_MEMORY_MIN_ALIGN, &l_block);
 			bcSIZE l_size = l_block.size();
 
 			switch (p_allocType)
@@ -186,21 +190,24 @@ namespace black_cat
 				return l_result;
 			}
 
-			bc_memblock::inititalize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
+			bc_memblock::initialize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
 
 #ifdef BC_MEMORY_LEAK_DETECTION
 			m_leak_allocator->insert(l_result, bc_mem_block_leak_information(l_result, ++m_allocation_count, p_size, p_line, p_file));
 #endif
 
 			return l_result;
-		};
+		}
 		
 		void bc_memmng::free(void* p_pointer) noexcept(true)
 		{
-			if (!p_pointer) return;
+			if (!p_pointer)
+			{
+				return;
+			}
 
-			void* l_pointer = p_pointer;
-			bc_memblock* l_block = bc_memblock::retrieve_mem_block(l_pointer);
+			bc_memblock* l_block = bc_memblock::retrieve_mem_block(p_pointer);
+			void* l_pointer = reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer) - l_block->offset());
 
 			bcAssert(l_block);
 
@@ -212,7 +219,7 @@ namespace black_cat
 #ifdef BC_MEMORY_LEAK_DETECTION
 			m_leak_allocator->remove(p_pointer);
 #endif
-		};
+		}
 		
 		void* bc_memmng::realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true)
 		{
@@ -226,10 +233,12 @@ namespace black_cat
 
 			bcSIZE l_min_size = std::min<bcSIZE>(l_block->size() - l_block->offset(), l_new_block->size() - l_new_block->offset());
 
-			std::memcpy(
-				reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(l_new_pointer) + l_new_block->offset()), 
-				reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(p_pointer) + l_block->offset()),
-				l_min_size);
+			std::memcpy
+			(
+				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(l_new_pointer) + l_new_block->offset()),
+				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer) + l_block->offset()),
+				l_min_size
+			);
 
 			free(p_pointer);
 
@@ -243,7 +252,7 @@ namespace black_cat
 			void* l_result = nullptr;
 			bc_memory* l_allocator = nullptr;
 			bc_memblock l_block;
-			bc_memblock::initialize_mem_block_for_alllocation(p_size, p_alignment, &l_block);
+			bc_memblock::initialize_mem_block_before_allocation(p_size, p_alignment, &l_block);
 			bcSIZE l_size = l_block.size();
 
 			switch (p_alloc_type)
@@ -291,7 +300,7 @@ namespace black_cat
 				return l_result;
 			}
 
-			bc_memblock::inititalize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
+			bc_memblock::initialize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
 
 #ifdef BC_MEMORY_LEAK_DETECTION
 			m_leak_allocator->insert(l_result, bc_mem_block_leak_information(l_result, ++m_allocation_count, p_size, p_line, p_file));
@@ -304,8 +313,8 @@ namespace black_cat
 		{
 			if (!p_pointer) return;
 
-			void* l_pointer = p_pointer;
-			bc_memblock* l_block = bc_memblock::retrieve_mem_block(l_pointer);
+			bc_memblock* l_block = bc_memblock::retrieve_mem_block(p_pointer);
+			void* l_pointer = reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer) - l_block->offset());
 
 			bcAssert(l_block);
 
@@ -330,10 +339,12 @@ namespace black_cat
 
 			bcSIZE l_min_size = std::min<bcSIZE>(l_block->size() - l_block->offset(), l_new_block->size() - l_new_block->offset());
 
-			std::memcpy(
-				reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(l_new_pointer) + l_new_block->offset()), 
-				reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(p_pointer) + l_block->offset()),
-				l_min_size);
+			std::memcpy
+			(
+				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(l_new_pointer) + l_new_block->offset()),
+				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer) + l_block->offset()),
+				l_min_size
+			);
 
 			free(p_pointer);
 

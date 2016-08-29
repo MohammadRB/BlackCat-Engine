@@ -297,6 +297,7 @@ namespace black_cat
 			auto l_cbuffer_data = graphic::bc_subresource_data(&l_mesh_part_cbuffer, 0, 0);
 
 			l_cbuffer = l_device->create_buffer(l_cbuffer_config, &l_cbuffer_data);
+			
 			l_diffuse_map_view = l_material.m_diffuse_map ?
 				                     l_device->create_shader_view(l_material.m_diffuse_map->get_resource().get(), l_texture_view_config) :
 				                     nullptr;
@@ -335,7 +336,7 @@ namespace black_cat
 				p_ainode->mName.C_Str(),
 				p_parent, 
 				l_node_transformation,
-				l_material,
+				std::move(l_material),
 				l_render_state,
 				l_vertices,
 				l_indices

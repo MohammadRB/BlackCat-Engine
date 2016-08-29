@@ -140,7 +140,7 @@ namespace black_cat
 			}
 
 			p_texture->get_platform_pack().m_config = *p_config;
-			p_texture->get_platform_pack().m_texture.Attach(static_cast< ID3D11Texture2D* >(l_texture.Get()));
+			p_texture->get_platform_pack().m_texture = static_cast< ID3D11Texture2D* >(l_texture.Get());
 			p_texture->bc_iresource::get_platform_pack().m_resource = l_texture;
 		}
 
@@ -1035,11 +1035,6 @@ namespace black_cat
 			bc_device_parameters l_new_parameters(p_width, p_height, p_format, bc_texture_ms_config(1, 0));
 			bc_device_parameters l_old_parameters(l_back_buffer->get_width(), l_back_buffer->get_height(), l_back_buffer->get_format(), bc_texture_ms_config(1, 0));
 
-			/*for (auto& l_listener : m_listeners)
-			{
-				l_listener->before_reset(static_cast<bc_device*>(this), l_old_parameters, l_new_parameters);
-			}*/
-
 			auto* l_event_manager = core::bc_service_manager::get().get_service<core::bc_event_manager>();
 			bc_app_event_device_reset l_reset_event(static_cast<bc_device*>(this), l_old_parameters, l_new_parameters, true);
 
@@ -1066,11 +1061,6 @@ namespace black_cat
 
 			l_reset_event.m_before_reset = false;
 			l_event_manager->process_event(l_reset_event);
-
-			/*for (auto& l_listener : m_listeners)
-			{
-				l_listener->after_reset(static_cast<bc_device*>(this), l_old_parameters, l_new_parameters);
-			}*/
 		}
 
 		template < >

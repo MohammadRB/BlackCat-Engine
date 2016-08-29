@@ -13,18 +13,21 @@ namespace black_cat
 
 		bc_memory_fixed_size::bc_memory_fixed_size() noexcept(true)
 		{
-		};
+		}
 
-		bc_memory_fixed_size::bc_memory_fixed_size(this_type&& p_other) noexcept(true) : bc_memory(std::move(p_other))
+		bc_memory_fixed_size::bc_memory_fixed_size(this_type&& p_other) noexcept(true) 
+			: bc_memory(std::move(p_other))
 		{
 			_move(std::move(p_other));
-		};
+		}
 
 		bc_memory_fixed_size::~bc_memory_fixed_size() noexcept(true)
 		{
 			if (m_initialized)
-				_destroy();
-		};
+			{
+				destroy();
+			}
+		}
 
 		bc_memory_fixed_size::this_type& bc_memory_fixed_size::operator =(this_type&& p_other) noexcept(true)
 		{
@@ -32,7 +35,7 @@ namespace black_cat
 			_move(std::move(p_other));
 
 			return *this;
-		};
+		}
 
 		void bc_memory_fixed_size::_initialize(bcUINT32 p_num_block, bcUINT32 p_block_size, const bcCHAR* p_tag)
 		{
@@ -71,13 +74,13 @@ namespace black_cat
 
 			m_tracer.initialize((m_block_size * m_num_block) * sizeof(bcUBYTE));
 			if (p_tag) tag(p_tag);
-		};
+		}
 
 		void bc_memory_fixed_size::_destroy() noexcept(true)
 		{
 			bc_mem_aligned_free(m_blocks);
 			core_platform::bc_mem_aligned_free(m_heap);
-		};
+		}
 
 		void* bc_memory_fixed_size::alloc(bc_memblock* p_mem_block) noexcept(true)
 		{
@@ -145,11 +148,11 @@ namespace black_cat
 			}
 
 			return l_result;
-		};
+		}
 
 		void bc_memory_fixed_size::free(void* p_pointer, bc_memblock* p_mem_block) noexcept(true)
 		{
-			bcUBYTE* l_pointer = reinterpret_cast<bcUBYTE*>(const_cast<void*>(p_pointer));
+			bcUBYTE* l_pointer = reinterpret_cast<bcUBYTE*>(p_pointer);
 
 			// is this pointer in our heap? /
 			bcAssert((l_pointer >= m_heap) && (l_pointer < m_heap + m_block_size * m_num_block));
@@ -161,27 +164,26 @@ namespace black_cat
 			bcINT32 l_chunk_index = l_block / s_bitblock_size;
 			bcINT32 l_bit_index = l_block % s_bitblock_size;
 
-			m_blocks[l_chunk_index].fetch_and(~(bitblock_type(1) << l_bit_index), core_platform::bc_memory_order::seqcst);
-
-			p_mem_block->free(true, core_platform::bc_memory_order::seqcst);
 #ifdef BC_MEMORY_DEBUG
-			memset(reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(l_pointer)-p_mem_block->offset()), 0, p_mem_block->size());
+			memset(l_pointer, 0, p_mem_block->size());
 #endif
 
+			m_blocks[l_chunk_index].fetch_and(~(bitblock_type(1) << l_bit_index), core_platform::bc_memory_order::seqcst);
+
 			m_tracer.accept_free(p_mem_block->size());
-		};
+		}
 
 		bool bc_memory_fixed_size::contain_pointer(void* p_pointer) const noexcept(true)
 		{
 			return (p_pointer >= m_heap && p_pointer < m_heap + (m_block_size * m_num_block)) ? true : false;
-		};
+		}
 
 		void bc_memory_fixed_size::clear() noexcept(true)
 		{
 			memset(m_blocks, 0, m_num_bitblocks * sizeof(core_platform::bc_atomic< bitblock_type >));
 
 			m_tracer.accept_clear();
-		};
+		}
 
 #endif
 	}

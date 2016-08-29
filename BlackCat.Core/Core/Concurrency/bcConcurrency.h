@@ -102,9 +102,9 @@ namespace black_cat
 					"Iterator must random access iterator type"
 				);
 
-			auto l_num_thread = std::max(p_num_thread, 1U);
-			auto l_num = std::distance(p_begin, p_end);
-			auto l_chund_size = l_num / l_num_thread;
+			bcUINT32 l_num_thread = std::max(p_num_thread, 1U);
+			bcUINT32 l_num = std::distance(p_begin, p_end);
+			bcUINT32 l_chund_size = std::ceil((l_num * 1.f) / l_num_thread);
 
 			bc_vector_frame< bc_task< void > > l_tasks;
 			l_tasks.reserve(l_num_thread);
@@ -113,7 +113,12 @@ namespace black_cat
 			{
 				bcUINT32 l_begin_index = l_thread * l_chund_size;
 				bcUINT32 l_end_index = (l_thread + 1) * l_chund_size;
-				l_end_index = l_thread == l_num_thread - 1 ? l_end_index + (l_num % (l_chund_size * l_num_thread)) : l_end_index;
+				l_end_index = l_end_index > l_num ? l_num : l_end_index;
+
+				if(l_begin_index >= l_end_index)
+				{
+					break;
+				}
 
 				TIte l_begin = p_begin + l_begin_index;
 				TIte l_end = p_begin + l_end_index;

@@ -199,7 +199,7 @@ namespace black_cat
 				{
 					core_platform::bc_lock_guard< core_platform::bc_mutex > l_gaurd(s_mutex);
 
-					if (m_pointer.load(core_platform::bc_memory_order::relaxed) == nullptr)
+					if ((l_pointer = m_pointer.load(core_platform::bc_memory_order::relaxed)) == nullptr)
 					{
 						l_pointer = m_initializer();
 						m_pointer.store(l_pointer, core_platform::bc_memory_order::release);

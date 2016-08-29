@@ -6,6 +6,7 @@
 #include "Core/File/bcContentStreamManager.h"
 #include "Core/Event/bcEventManager.h"
 #include "Core/Utility/bcEnumOperand.h"
+#include "Core/Utility/bcLogger.h"
 #include "Platform/bcPlatformEvents.h"
 #include "Graphic/bcEvent.h"
 #include "Graphic/Math/bcMatrix4f.h"
@@ -721,7 +722,7 @@ namespace black_cat
 
 			m_global_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
 			m_perobject_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
-
+			 
 			l_event_manager->unregister_event_listener(m_device_listener_handle);
 			l_event_manager->unregister_event_listener(m_window_resize_handle);
 

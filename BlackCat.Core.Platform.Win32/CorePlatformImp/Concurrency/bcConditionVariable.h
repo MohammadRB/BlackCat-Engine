@@ -36,7 +36,7 @@ namespace black_cat
 		template<>
 		inline void bc_platform_condition_variable<bc_platform::win32>::notify_all() noexcept(true)
 		{
-			m_pack.m_con_var.notify_one();
+			m_pack.m_con_var.notify_all();
 		};
 
 		template<>

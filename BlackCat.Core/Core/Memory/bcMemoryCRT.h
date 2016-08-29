@@ -23,11 +23,11 @@ namespace black_cat
 		public:
 			bc_memory_crt() = default;
 
-			bc_memory_crt(this_type&& p_other) = default;
+			bc_memory_crt(this_type&& p_other) noexcept = default;
 
 			~bc_memory_crt() = default;
 
-			this_type& operator =(this_type&& p_other)
+			this_type& operator =(this_type&& p_other) noexcept
 			{
 				return *this;
 			}
@@ -42,7 +42,7 @@ namespace black_cat
 			{
 			}
 
-			bcInline void* alloc(bc_memblock* p_memblock) override
+			void* alloc(bc_memblock* p_memblock) noexcept override
 			{
 				void* result = core_platform::bc_mem_aligned_alloc(p_memblock->size(), BC_MEMORY_MIN_ALIGN);
 				if(result)
@@ -53,21 +53,18 @@ namespace black_cat
 				return result;
 			}
 
-			bcInline void free(void* p_pointer, bc_memblock* p_memblock) override
+			void free(void* p_pointer, bc_memblock* p_memblock) noexcept override
 			{
-				// Return pointer to it's orginal location
-				void* l_pointer = reinterpret_cast< void* >(reinterpret_cast<bcUINTPTR>(p_pointer) - p_memblock->offset());
-
 				m_tracer.accept_free(p_memblock->size());
-				core_platform::bc_mem_aligned_free(const_cast<void*>(l_pointer));
+				core_platform::bc_mem_aligned_free(const_cast<void*>(p_pointer));
 			}
 
-			bcInline bool contain_pointer(void* p_pointer) const override
+			bool contain_pointer(void* p_pointer) const noexcept override
 			{
 				return true;
 			}
 			
-			bcInline void clear() override 
+			void clear() override 
 			{
 			}
 

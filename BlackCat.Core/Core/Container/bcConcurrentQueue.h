@@ -50,7 +50,7 @@ namespace black_cat
 
 			bc_concurrent_queue_base(const this_type&) = delete;
 
-			bc_concurrent_queue_base(this_type&& p_other)
+			bc_concurrent_queue_base(this_type&& p_other) noexcept
 			{
 				_assing(std::move(p_other));
 			}
@@ -64,7 +64,7 @@ namespace black_cat
 
 			this_type& operator =(const this_type&) = delete;
 
-			this_type& operator =(this_type&& p_other)
+			this_type& operator =(this_type&& p_other) noexcept
 			{
 				_assing(std::move(p_other));
 
