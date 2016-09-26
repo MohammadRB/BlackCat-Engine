@@ -5,6 +5,7 @@
 #include "Core/CorePCH.h"
 #include "Core/Memory/bcMemBlock.h"
 #include "Core/Memory/bcMemoryTracer.h"
+#include "Core/Utility/bcDelegate.h"
 
 namespace black_cat
 {
@@ -32,24 +33,30 @@ namespace black_cat
 				return *this;
 			}
 
-			bcInline void tag(const bcCHAR* p_tag)
+			void tag(const bcCHAR* p_tag)
 			{
 				// In allocators we call this function only in theirs Initialize method, so it is safe /
 				std::memcpy(m_tag, p_tag, std::min<bcSIZE>(bcSIZE(s_tag_lenght - 1), strlen(p_tag)));
 				*(m_tag + std::min<bcSIZE>(bcSIZE(s_tag_lenght - 1), strlen(p_tag))) = '\0';
 			}
 
-			bcInline const bcCHAR* tag() const { return m_tag; }
+			const bcCHAR* tag() const noexcept 
+			{ 
+				return m_tag; 
+			}
 
-			bcInline const bc_memory_tracer& tracer() const { return m_tracer; }
+			const bc_memory_tracer& tracer() const noexcept 
+			{ 
+				return m_tracer; 
+			}
 
-			virtual void* alloc(bc_memblock* p_memblock) = 0;
+			virtual void* alloc(bc_memblock* p_memblock) noexcept = 0;
 
-			virtual void free(void* p_pointer, bc_memblock* p_memblock) = 0;
+			virtual void free(void* p_pointer, bc_memblock* p_memblock) noexcept = 0;
 
 			virtual bool contain_pointer(void* p_memory) const noexcept = 0;
 
-			virtual void clear() = 0;
+			virtual void clear() noexcept = 0;
 
 		protected:
 			bc_memory_tracer m_tracer;
@@ -69,6 +76,7 @@ namespace black_cat
 		{
 		public:
 			using this_type = bc_memory_movable;
+			using defrag_callback = bc_delegate<void(void*,void*)>;
 
 		public:
 			bc_memory_movable() {}
@@ -88,11 +96,11 @@ namespace black_cat
 			}
 
 #ifdef BC_MEMORY_DEFRAG
-			virtual void register_pointer(void** p_pointer, bc_memblock* p_memblock) = 0;
+			virtual void register_pointer(void** p_pointer, bc_memblock* p_memblock) noexcept = 0;
 
-			virtual void unregister_pointer(void** p_pointer, bc_memblock* p_memblock) = 0;
+			virtual void unregister_pointer(void** p_pointer, bc_memblock* p_memblock) noexcept = 0;
 
-			virtual void defragment(bcINT32 p_num_defrag) = 0;
+			virtual void defragment(bcINT32 p_num_defrag, defrag_callback p_defrag_callback) noexcept = 0;
 #endif
 
 		protected:

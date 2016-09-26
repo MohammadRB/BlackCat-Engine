@@ -8,7 +8,7 @@
 #include "Core/Container/bcAllocator.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Event/bcEvent.h"
-#include "Platform/bcPlatformEvents.h"
+#include "Platform/bcEvent.h"
 #include "PlatformImp/Application/bcRenderWindow.h"
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcResourcePtr.h"
@@ -84,6 +84,12 @@ namespace black_cat
 		class bc_platform_device_pipeline_state;
 		using bc_device_pipeline_state = bc_platform_device_pipeline_state< g_current_platform_render_api >;
 
+		struct bc_device_compute_state_config;
+
+		template<bc_platform_render_api>
+		class bc_platform_device_compute_state;
+		using bc_device_compute_state = bc_platform_device_compute_state< g_current_platform_render_api >;
+
 		template<bc_platform_render_api>
 		class bc_platform_device_command_list;
 		using bc_device_command_list = bc_platform_device_command_list< g_current_platform_render_api >;
@@ -109,8 +115,8 @@ namespace black_cat
 		using bc_iresource_view = bc_platform_iresource_view< g_current_platform_render_api >;
 
 		template<bc_platform_render_api>
-		class bc_platform_shader_view;
-		using bc_shader_view = bc_platform_shader_view< g_current_platform_render_api >;
+		class bc_platform_resource_view;
+		using bc_resource_view = bc_platform_resource_view< g_current_platform_render_api >;
 
 		template<bc_platform_render_api>
 		class bc_platform_depth_stencil_view;
@@ -213,13 +219,15 @@ namespace black_cat
 
 			bc_resource_ptr<bc_compute_shader> create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-			bc_resource_ptr<bc_shader_view> create_shader_view(bc_iresource* p_resource, bc_resource_view_config& p_view_config);
+			bc_resource_ptr<bc_resource_view> create_resource_view(bc_iresource* p_resource, bc_resource_view_config& p_view_config);
 
 			bc_resource_ptr<bc_depth_stencil_view> create_depth_stencil_view(bc_iresource* p_resource, bc_depth_stencil_view_config& p_view_config);
 
 			bc_resource_ptr<bc_render_target_view> create_render_target_view(bc_iresource* p_resource, bc_render_target_view_config& p_view_config);
 
 			bc_resource_ptr<bc_device_pipeline_state> create_pipeline_state(bc_device_pipeline_state_config& p_config);
+
+			bc_resource_ptr<bc_device_compute_state> create_compute_state(bc_device_compute_state_config& p_config);
 
 			bc_resource_ptr<bc_device_pipeline> create_pipeline();
 			

@@ -4,6 +4,7 @@
 
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcPlatformRenderApi.h"
+#include <d3d11.h>
 
 namespace black_cat
 {
@@ -19,13 +20,13 @@ namespace black_cat
 
 			constexpr static bool is_left_handed() noexcept;
 
+			constexpr static bcSIZE number_of_texture2d_pixels() noexcept;
+
 			constexpr static bcSIZE number_of_ia_vertex_buffers() noexcept;
 
 			constexpr static bcSIZE number_of_ia_index_buffers() noexcept;
 
 			constexpr static bcSIZE number_of_om_render_target_slots() noexcept;
-
-			constexpr static bcSIZE number_of_ps_cs_uav_registers() noexcept;
 
 			constexpr static bcSIZE number_of_rs_viewport_scissorrect() noexcept;
 
@@ -36,6 +37,8 @@ namespace black_cat
 			constexpr static bcSIZE number_of_shader_sampler() noexcept;
 
 			constexpr static bcSIZE number_of_shader_resource() noexcept;
+
+			constexpr static bcSIZE number_of_ps_cs_uav_resource() noexcept;
 
 			constexpr static bcSIZE required_cbuffer_align() noexcept;
 
@@ -58,6 +61,13 @@ namespace black_cat
 			return true;
 		}
 
+		template< bc_platform_render_api TRenderApi >
+		constexpr bcSIZE bc_platform_render_api_info<TRenderApi>::number_of_texture2d_pixels() noexcept
+		{
+			// D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION;
+			return 16384;
+		}
+
 		template< >
 		constexpr bcSIZE bc_platform_render_api_info<g_api_dx11>::number_of_ia_vertex_buffers() noexcept
 		{
@@ -76,13 +86,6 @@ namespace black_cat
 		constexpr bcSIZE bc_platform_render_api_info<g_api_dx11>::number_of_om_render_target_slots() noexcept
 		{
 			// D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT
-			return 8;
-		}
-
-		template< >
-		constexpr bcSIZE bc_platform_render_api_info<g_api_dx11>::number_of_ps_cs_uav_registers() noexcept
-		{
-			// D3D11_PS_CS_UAV_REGISTER_COUNT
 			return 8;
 		}
 
@@ -119,6 +122,13 @@ namespace black_cat
 		{
 			// D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT
 			return 16;
+		}
+
+		template< >
+		constexpr bcSIZE bc_platform_render_api_info<g_api_dx11>::number_of_ps_cs_uav_resource() noexcept
+		{
+			// D3D11_PS_CS_UAV_REGISTER_COUNT
+			return 8;
 		}
 
 		template< >

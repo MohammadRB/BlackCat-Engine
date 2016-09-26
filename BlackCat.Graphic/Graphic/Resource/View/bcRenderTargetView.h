@@ -5,7 +5,7 @@
 #include "Graphic/bcPlatformRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
 #include "Graphic/bcResourcePtr.h"
-#include "Graphic/Resource/View/bcResourceView.h"
+#include "Graphic/Resource/View/bcIResourceView.h"
 #include "Graphic/Resource/View/bcRenderTargetViewConfig.h"
 
 namespace black_cat

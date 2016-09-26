@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/CorePCH.h"
 #include "Core/bcExport.h"
 #include "Core/Utility/bcInitializable.h"
@@ -147,7 +148,7 @@ namespace black_cat
 			bc_memory_heap* m_super_heap;
 			bc_memory_crt* m_crt_allocator;
 #ifdef BC_MEMORY_LEAK_DETECTION
-			bcUINT32 m_allocation_count;
+			core_platform::bc_atomic< bcUINT32 > m_allocation_count;
 			bc_memmng_hashmap<bc_mem_block_leak_information, 15, 5>* m_leak_allocator;
 #endif
 		};

@@ -46,16 +46,16 @@ namespace black_cat
 			bc_index_type p_index_type,
 			bcUINT32 p_index_count,
 			bcUINT32 p_index_buffer_offset,
-			bc_render_state_shader_view_array&& p_shader_views,
+			bc_render_state_resource_view_array&& p_shader_views,
 			bc_render_state_constant_buffer_array&& p_shader_buffers)
 			: m_primitive(p_primitive),
-			m_vertex_buffer(std::move(p_vertex_buffer)),
-			m_verext_buffer_offset(p_verext_buffer_offset),
-			m_index_buffer(std::move(p_index_buffer)),
+			m_vertex_buffer(p_vertex_buffer),
+			m_vertex_buffer_offset(p_verext_buffer_offset),
+			m_index_buffer(p_index_buffer),
 			m_index_type(p_index_type),
 			m_index_count(p_index_count),
 			m_index_buffer_offset(p_index_buffer_offset),
-			m_shader_views(std::move(p_shader_views)),
+			m_resource_views(std::move(p_shader_views)),
 			m_shader_cbuffers(std::move(p_shader_buffers))
 		{
 		}

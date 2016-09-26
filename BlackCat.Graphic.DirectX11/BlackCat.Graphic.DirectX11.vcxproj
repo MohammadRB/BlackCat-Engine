@@ -15,35 +15,12 @@
     <ClInclude Include="GraphicImp\bcRenderApiInfo.h" />
     <ClInclude Include="GraphicImp\bcUtility.h" />
     <ClInclude Include="GraphicImp\Device\bcDevice.h" />
+    <ClInclude Include="GraphicImp\Device\bcDeviceComputeState.h" />
     <ClInclude Include="GraphicImp\Device\bcDevicePipeline.h" />
     <ClInclude Include="GraphicImp\Device\bcDevicePipelineState.h" />
     <ClInclude Include="GraphicImp\Device\Command\bcDeviceCommandExecuter.h" />
     <ClInclude Include="GraphicImp\Device\Command\bcDeviceCommandList.h" />
     <ClInclude Include="GraphicImp\GraphicImpPCH.h" />
-    <ClInclude Include="GraphicImp\Loader\bcDomainShaderLoader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="GraphicImp\Loader\bcGeometryShaderLoader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="GraphicImp\Loader\bcHullShaderLoader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="GraphicImp\Loader\bcPixelShaderLoader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="GraphicImp\Loader\bcTextureLoader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="GraphicImp\Loader\bcVertexShaderLoader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="GraphicImp\PipelineStage\bcComputeStage.h" />
     <ClInclude Include="GraphicImp\PipelineStage\bcDomainStage.h" />
     <ClInclude Include="GraphicImp\PipelineStage\bcGeometryStage.h" />
@@ -67,8 +44,8 @@
     <ClInclude Include="GraphicImp\Resource\View\bcRenderTargetView.h" />
     <ClInclude Include="GraphicImp\Resource\View\bcRenderTargetViewConfig.h" />
     <ClInclude Include="GraphicImp\Resource\View\bcResourceViewConfig.h" />
+    <ClInclude Include="GraphicImp\Resource\View\bcIResourceView.h" />
     <ClInclude Include="GraphicImp\Resource\View\bcResourceView.h" />
-    <ClInclude Include="GraphicImp\Resource\View\bcShaderView.h" />
     <ClInclude Include="GraphicImp\Shader\bcComputeShader.h" />
     <ClInclude Include="GraphicImp\Shader\bcDomainShader.h" />
     <ClInclude Include="GraphicImp\Shader\bcGeometryShader.h" />
@@ -76,6 +53,10 @@
     <ClInclude Include="GraphicImp\Shader\bcPixelShader.h" />
     <ClInclude Include="GraphicImp\Shader\bcShader.h" />
     <ClInclude Include="GraphicImp\Shader\bcVertexShader.h" />
+    <ClInclude Include="GraphicImp\Shader\Parameter\bcConstantBufferParameter.h" />
+    <ClInclude Include="GraphicImp\Shader\Parameter\bcResourceViewParameter.h" />
+    <ClInclude Include="GraphicImp\Shader\Parameter\bcSamplerParameter.h" />
+    <ClInclude Include="GraphicImp\Shader\Parameter\bcShaderParameter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicImp\bcUtility.cpp" />
@@ -85,30 +66,6 @@
     <ClCompile Include="GraphicImp\Device\Command\bcDeviceCommandList.cpp" />
     <ClCompile Include="GraphicImp\GraphicImpPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="GraphicImp\Loader\bcDomainShaderLoader.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GraphicImp\Loader\bcGeometryShaderLoader.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GraphicImp\Loader\bcHullShaderLoader.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GraphicImp\Loader\bcPixelShaderLoader.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GraphicImp\Loader\bcTextureLoader.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GraphicImp\Loader\bcVertexShaderLoader.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GraphicImp\PipelineStage\bcComputeStage.cpp" />
     <ClCompile Include="GraphicImp\PipelineStage\bcDomainStage.cpp" />
@@ -127,8 +84,8 @@
     <ClCompile Include="GraphicImp\Resource\Texture\bcTexture2d.cpp" />
     <ClCompile Include="GraphicImp\Resource\View\bcDepthStencilView.cpp" />
     <ClCompile Include="GraphicImp\Resource\View\bcRenderTargetView.cpp" />
+    <ClCompile Include="GraphicImp\Resource\View\bcIResourceView.cpp" />
     <ClCompile Include="GraphicImp\Resource\View\bcResourceView.cpp" />
-    <ClCompile Include="GraphicImp\Resource\View\bcShaderView.cpp" />
     <ClCompile Include="GraphicImp\Shader\bcComputeShader.cpp" />
     <ClCompile Include="GraphicImp\Shader\bcDomainShader.cpp" />
     <ClCompile Include="GraphicImp\Shader\bcGeometryShader.cpp" />
@@ -201,7 +158,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;BLACKCATDIRECTX11_EXPORTS;BC_GRAPHICIMP_DLL;_CRT_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>
+      </SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Core;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../3rdParty</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>GraphicImp/GraphicImpPCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -226,6 +184,7 @@ copy GraphicImp\Resource\State\*.h ..\BC_SDK\Include\GraphicImp\Resource\State
 copy GraphicImp\Resource\Texture\*.h ..\BC_SDK\Include\GraphicImp\Resource\Texture
 copy GraphicImp\Resource\View\*.h ..\BC_SDK\Include\GraphicImp\Resource\View
 copy GraphicImp\Shader\*.h ..\BC_SDK\Include\GraphicImp\Shader
+copy GraphicImp\Shader\Parameter\*.h ..\BC_SDK\Include\GraphicImp\Shader\Parameter
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
 copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp
@@ -249,7 +208,8 @@ copy ..\3rdParty\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Config
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;BLACKCATDIRECTX11_EXPORTS;BC_GRAPHICIMP_DLL;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>
+      </SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Core;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../3rdParty</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>GraphicImp/GraphicImpPCH.h</PrecompiledHeaderFile>
@@ -275,6 +235,7 @@ copy GraphicImp\Resource\State\*.h ..\BC_SDK\Include\GraphicImp\Resource\State
 copy GraphicImp\Resource\Texture\*.h ..\BC_SDK\Include\GraphicImp\Resource\Texture
 copy GraphicImp\Resource\View\*.h ..\BC_SDK\Include\GraphicImp\Resource\View
 copy GraphicImp\Shader\*.h ..\BC_SDK\Include\GraphicImp\Shader
+copy GraphicImp\Shader\Parameter\*.h ..\BC_SDK\Include\GraphicImp\Shader\Parameter
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
 copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp

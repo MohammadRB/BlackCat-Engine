@@ -9,14 +9,14 @@
 #include "Graphic/Resource/bcResource.h"
 #include "Graphic/Resource/State/bcSamplerState.h"
 #include "Graphic/Resource/Buffer/bcBuffer.h"
-#include "Graphic/Resource/View/bcShaderView.h"
+#include "Graphic/Resource/View/bcResourceView.h"
 #include "Graphic/Shader/bcShader.h"
 #include "Graphic/Shader/Parameter/bcShaderParameter.h"
 #include "Graphic/Shader/Parameter/bcVectorParameter.h"
 #include "Graphic/Shader/Parameter/bcMatrix4fParameter.h"
 #include "Graphic/Shader/Parameter/bcConstantBufferParameter.h"
 #include "Graphic/Shader/Parameter/bcSamplerParameter.h"
-#include "Graphic/Shader/Parameter/bcShaderViewParameter.h"
+#include "Graphic/Shader/Parameter/bcResourceViewParameter.h"
 
 namespace black_cat
 {
@@ -49,14 +49,14 @@ namespace black_cat
 
 			bc_sampler_parameter* get_sampler_parameter_ref(bc_shader_type p_shader_type, bcINT p_register) const;
 
-			bc_shader_view_parameter* get_shader_resource_parameter_ref(bc_shader_type p_shader_type, bcINT p_register) const;
+			bc_resource_view_parameter* get_shader_resource_parameter_ref(bc_shader_type p_shader_type, bcINT p_register) const;
 
 			bc_constant_buffer_parameter* get_constant_buffer_parameter_ref(bc_shader_type p_shader_type, bcINT p_register) const;
 
 
 			bc_sampler_state* get_sampler_parameter(bc_shader_type p_shader_type, bcINT p_register) const;
 
-			bc_shader_view* get_shader_resource_parameter(bc_shader_type p_shader_type, bcINT p_register) const;
+			bc_resource_view* get_shader_resource_parameter(bc_shader_type p_shader_type, bcINT p_register) const;
 
 			/*bc_iresource* get_unordered_access_parameter(bc_shader_type p_shader_type, bcINT p_register) const;*/
 
@@ -65,7 +65,7 @@ namespace black_cat
 
 			bc_sampler_state* get_sampler_parameter(bc_ishader_parameter* p_parameter) const;
 
-			bc_shader_view* get_shader_resource_parameter(bc_ishader_parameter* p_parameter) const;
+			bc_resource_view* get_shader_resource_parameter(bc_ishader_parameter* p_parameter) const;
 
 			/*bc_iresource* get_unordered_access_parameter(bc_ishader_parameter* p_parameter) const;*/
 
@@ -74,7 +74,7 @@ namespace black_cat
 			
 			void set_sampler_parameter(bc_shader_type p_shader_type, bcINT p_register, bc_sampler_state* p_sampler);
 
-			void set_shader_resource_parameter(bc_shader_type p_shader_type, bcINT p_register, bc_shader_view* p_resource);
+			void set_shader_resource_parameter(bc_shader_type p_shader_type, bcINT p_register, bc_resource_view* p_resource);
 
 			/*void set_unordered_access_parameter(bc_shader_type p_shader_type, bcINT p_register, bc_iresource* p_resource, bcUINT p_initial = -1);*/
 
@@ -83,7 +83,7 @@ namespace black_cat
 
 			void set_sampler_parameter(bc_ishader_parameter* p_parameter, bc_sampler_state* p_sampler);
 
-			void set_shader_resource_parameter(bc_ishader_parameter* p_parameter, bcINT p_register, bc_shader_view* p_resource);
+			void set_shader_resource_parameter(bc_ishader_parameter* p_parameter, bcINT p_register, bc_resource_view* p_resource);
 
 			/*void set_unordered_access_parameter(bc_ishader_parameter* p_parameter, bcINT p_register, bc_iresource* p_resource, bcUINT p_initial = -1);*/
 

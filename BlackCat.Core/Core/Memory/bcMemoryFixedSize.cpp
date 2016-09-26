@@ -97,14 +97,11 @@ namespace black_cat
 			bool l_reach_end = false;
 			// TODO
 			bcUINT32 l_allocated_block = m_allocated_block.load(core_platform::bc_memory_order::seqcst);
-			for (register bcINT32 i = l_allocated_block; (i != l_allocated_block || !l_reach_end); ++i)
+			bcUINT32 l_end = l_allocated_block + m_num_bitblocks;
+			for (bcINT32 i = l_allocated_block; i < l_end; ++i)
 			{
-				if (i >= m_num_bitblocks)
-				{
-					i = 0;
-					l_reach_end = true;
-				}
-				bitblock_type l_current_block = m_blocks[i].load(core_platform::bc_memory_order::seqcst);
+				bcUINT32 l_i = i % m_num_bitblocks;
+				bitblock_type l_current_block = m_blocks[l_i].load(core_platform::bc_memory_order::seqcst);
 
 				// any free blocks in this chunk? /
 				if (s_bitblock_mask != l_current_block)
@@ -115,15 +112,15 @@ namespace black_cat
 						if (bitblock_type(0) == (l_current_block & (bitblock_type(1) << j)))
 						{
 							bitblock_type l_current_block_changed = l_current_block | (bitblock_type(1) << j);
-							if (m_blocks[i].compare_exchange_strong(
+							if (m_blocks[l_i].compare_exchange_strong(
 								&l_current_block,
 								l_current_block_changed,
 								core_platform::bc_memory_order::seqcst,
 								core_platform::bc_memory_order::seqcst))
 							{
-								l_block = i * s_bitblock_size + j;
+								l_block = l_i * s_bitblock_size + j;
 
-								m_allocated_block.compare_exchange_strong(&l_allocated_block, i, core_platform::bc_memory_order::seqcst);
+								m_allocated_block.compare_exchange_strong(&l_allocated_block, l_i, core_platform::bc_memory_order::seqcst);
 
 								break;
 							}
@@ -132,7 +129,9 @@ namespace black_cat
 					}
 
 					if (l_block != -1)
+					{
 						break;
+					}
 				}
 			}
 

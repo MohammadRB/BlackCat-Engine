@@ -52,23 +52,28 @@ namespace black_cat
 			}
 
 			bcSIZE size() const { return m_size; }
+
 			void size(bcSIZE p_val) { m_size = p_val; }
 
 			bcUBYTE alignment() const { return m_alignment; }
+
 			void alignment(bcUBYTE p_val) { m_alignment = p_val; }
 
 			bcUBYTE offset() const { return m_offset; }
+
 			void offset(bcUBYTE p_val) { m_offset = p_val; }
 
 #ifdef BC_MEMORY_DEFRAG
 			bool movable_pointer() const { return m_movable; }
+
 			void movable_pointer(bool p_val) { m_movable = p_val; }
 #endif
-
 			void* extra() const { return m_extra; }
+
 			void extra(void* p_val) { m_extra = p_val; }
 
 			void* allocators_extra() const { return m_allocators_extra; }
+
 			void allocators_extra(void* p_val) { m_allocators_extra = p_val; }
 
 			bcInline static bcSIZE get_aligned_size(bcSIZE p_size, bcSIZE p_alignment)
@@ -89,9 +94,9 @@ namespace black_cat
 			bcInline static bcSIZE get_required_size(bcSIZE p_data_size, bcSIZE p_alignment)
 			{
 				bcSIZE l_extra_alignment = p_alignment - BC_MEMORY_MIN_ALIGN;
-				l_extra_alignment = l_extra_alignment < 0 ? 0 : l_extra_alignment;
+				l_extra_alignment = std::max(0U, l_extra_alignment);
 
-				return 
+				return
 					get_aligned_size(sizeof(bc_memblock), BC_MEMORY_MIN_ALIGN) +
 					l_extra_alignment +
 					get_aligned_size(p_data_size, BC_MEMORY_MIN_ALIGN);
@@ -100,21 +105,12 @@ namespace black_cat
 			// Return required offset from begging of block where actual data must be stored
 			bcInline static bcSIZE get_required_offset_for_data(const void* p_pointer, bcSIZE p_alignment)
 			{
-				/*bcSIZE l_extra_alignment = p_alignment - BC_MEMORY_MIN_ALIGN;
-				l_extra_alignment = l_extra_alignment < 0 ? 0 : l_extra_alignment;
-
-				bcSIZE l_mem_block_offset = reinterpret_cast<bcUINTPTR>(p_pointer) +
-					get_aligned_size(sizeof(bc_memblock), BC_MEMORY_MIN_ALIGN) +
-					l_extra_alignment;
-
-				return p_alignment - (l_mem_block_offset % p_alignment);*/
-
-				bcSIZE l_mem_block_offset = reinterpret_cast<bcUINTPTR>(p_pointer)+
+				bcSIZE l_mem_block_offset = reinterpret_cast< bcUINTPTR >(p_pointer) +
 					get_aligned_size(sizeof(bc_memblock), BC_MEMORY_MIN_ALIGN);
 				bcSIZE l_mis_alignment = l_mem_block_offset % p_alignment;
 				l_mem_block_offset += l_mis_alignment;
 
-				return l_mem_block_offset - reinterpret_cast<bcUINTPTR>(p_pointer);
+				return l_mem_block_offset - reinterpret_cast< bcUINTPTR >(p_pointer);
 			}
 
 			bcInline static bcSIZE get_required_offset_for_mem_block(const void* p_pointer, bcSIZE p_alignment)

@@ -3,22 +3,23 @@
 #pragma once
 
 #include "Core/CorePCH.h"
+#include "Core/Utility/bcTemplateMetaType.h"
 
 namespace black_cat
 {
 	namespace core
 	{
 		// Wrap a non-nullable object (a class that doesn't support uninitialized state)
-		// also this class doesn't use dynamic memory
+		// This class doesn't use dynamic memory
 		template< typename T >
 		class bc_nullable
 		{
+		public:
 			using type = T;
-			using this_type = bc_nullable< type >;
 
 		public:
 			bc_nullable() noexcept
-				: m_value(nullptr)
+				: m_set(false)
 			{
 			}
 
@@ -27,21 +28,21 @@ namespace black_cat
 			{
 			}
 
-			template< typename = typename std::enable_if< std::is_copy_constructible< typename std::decay< type >::type >::type >::type >
-			explicit bc_nullable(const type& p_value) noexcept(std::is_nothrow_copy_constructible<type>::value)
+			template< typename = typename std::enable_if< bc_type_traits< type >::is_copyable >::type >
+			explicit bc_nullable(const type& p_value) noexcept(bc_type_traits<type>::is_no_throw_copy)
 				: bc_nullable()
 			{
 				_set(p_value);
 			}
 
-			explicit bc_nullable(type&& p_value) noexcept(std::is_nothrow_move_constructible<type>::value)
+			explicit bc_nullable(type&& p_value) noexcept(bc_type_traits<type>::is_no_throw_move)
 				: bc_nullable()
 			{
 				_set(std::move(p_value));
 			}
 
-			template< typename = typename std::enable_if< std::is_copy_constructible< typename std::decay< type >::type >::type >::type >
-			bc_nullable(const bc_nullable& p_other) noexcept(std::is_nothrow_copy_constructible<type>::value)
+			template< typename = typename std::enable_if< bc_type_traits< type >::is_copyable >::type >
+			bc_nullable(const bc_nullable& p_other) noexcept(bc_type_traits<type>::is_no_throw_copy)
 				: bc_nullable()
 			{
 				if(p_other.is_set())
@@ -50,7 +51,7 @@ namespace black_cat
 				}
 			}
 
-			bc_nullable(bc_nullable&& p_other) noexcept(std::is_nothrow_move_constructible<type>::value)
+			bc_nullable(bc_nullable&& p_other) noexcept(bc_type_traits<type>::is_no_throw_move)
 				: bc_nullable()
 			{
 				if(p_other.is_set())
@@ -65,8 +66,8 @@ namespace black_cat
 				_unset();
 			}
 
-			template< typename = typename std::enable_if< std::is_copy_constructible< typename std::decay< type >::type >::type >::type >
-			bc_nullable& operator=(const bc_nullable& p_other) noexcept(std::is_nothrow_copy_constructible<type>::value)
+			template< typename = typename std::enable_if< bc_type_traits<type>::is_copyable >::type >
+			bc_nullable& operator=(const bc_nullable& p_other) noexcept(bc_type_traits<type>::is_no_throw_copy)
 			{
 				if(p_other.is_set())
 				{
@@ -80,7 +81,7 @@ namespace black_cat
 				return *this;
 			}
 
-			bc_nullable& operator=(bc_nullable&& p_other) noexcept(std::is_nothrow_move_constructible<type>::value)
+			bc_nullable& operator=(bc_nullable&& p_other) noexcept(bc_type_traits<type>::is_no_throw_move)
 			{
 				if(p_other.is_set())
 				{
@@ -95,66 +96,81 @@ namespace black_cat
 				return *this;
 			}
 
-			template< typename = typename std::enable_if< std::is_copy_constructible< typename std::decay< type >::type >::type >::type >
-			type& operator =(const type& p_value) noexcept(std::is_nothrow_copy_assignable<type>::value)
+			template< typename = typename std::enable_if< bc_type_traits< type >::is_copyable >::type >
+			type& operator =(const type& p_value) noexcept(bc_type_traits<type>::is_no_throw_copy)
 			{ 
 				_set(p_value); 
 				
-				return m_value; 
+				return get(); 
 			}
 
-			type& operator =(type&& p_value) noexcept(std::is_nothrow_move_assignable<type>::value)
+			type& operator =(type&& p_value) noexcept(bc_type_traits<type>::is_no_throw_move)
 			{ 
 				_set(std::move(p_value)); 
 				
-				return *m_value; 
+				return get(); 
 			}
 
-			void operator =(std::nullptr_t) noexcept(true)
+			void operator =(std::nullptr_t) noexcept
 			{
 				_unset();
 			}
 
-			bool operator ==(this_type& p_other) const noexcept(true)
+			bool operator ==(bc_nullable& p_other) const noexcept
 			{
 				return _equal(p_other);
 			}
 
-			bool operator ==(std::nullptr_t) const noexcept(true)
+			bool operator ==(std::nullptr_t) const noexcept
 			{ 
 				return _equal(std::nullptr_t());
 			}
 
-			bool operator !=(this_type& p_other) const noexcept(true)
+			bool operator !=(bc_nullable& p_other) const noexcept
 			{
 				return !_equal(p_other);
 			}
 
-			bool operator !=(std::nullptr_t) const noexcept(true)
+			bool operator !=(std::nullptr_t) const noexcept
 			{ 
 				return !_equal(std::nullptr_t()); 
 			}
 
 			type* operator ->()
 			{
-				return m_value;
+				return &get();
+			}
+
+			const type* operator ->() const
+			{
+				return &get();
 			}
 
 			type& operator *() noexcept
 			{
-				return *m_value;
+				return get();
 			}
 
-			type& get() const noexcept
+			const type& operator *() const noexcept
+			{
+				return get();
+			}
+
+			type& get() noexcept
 			{
 				bcAssert(is_set());
 
-				return *m_value;
+				return *reinterpret_cast< type* >(&m_buffer);
+			}
+
+			const type& get() const noexcept
+			{
+				return const_cast<bc_nullable*>(this)->get();
 			}
 
 			bool is_set() const noexcept
 			{ 
-				return m_value != nullptr;
+				return m_set;
 			}
 
 			void reset() noexcept
@@ -180,7 +196,7 @@ namespace black_cat
 		protected:
 
 		private:
-			type* m_value;
+			bool m_set;
 			bcBYTE m_buffer[sizeof(type)];
 
 			void _set(const type& p_value)
@@ -188,11 +204,11 @@ namespace black_cat
 				if (!is_set())
 				{
 					new(m_buffer) type(p_value);
-					m_value = reinterpret_cast< type* >(&m_buffer[0]);
+					m_set = true;
 				}
 				else
 				{
-					*m_value = p_value;
+					get() = p_value;
 				}
 			}
 
@@ -201,11 +217,11 @@ namespace black_cat
 				if (!is_set())
 				{
 					new (m_buffer) type(std::move(p_value));
-					m_value = reinterpret_cast< type* >(&m_buffer[0]);
+					m_set = true;
 				}
 				else
 				{
-					*m_value = std::move(p_value);
+					get() = std::move(p_value);
 				}
 			}
 
@@ -213,17 +229,17 @@ namespace black_cat
 			{
 				if(is_set())
 				{
-					m_value->~type();
-					m_value = nullptr;
+					get().~type();
+					m_set = false;
 				}
 			}
 
-			bool _equal(this_type& p_other) const
+			bool _equal(bc_nullable& p_other) const
 			{
 				if (!is_set())
 					return !p_other.is_set();
 
-				return *m_value == *p_other.m_value;
+				return get() == p_other.get();
 			}
 
 			bool _equal(std::nullptr_t) const

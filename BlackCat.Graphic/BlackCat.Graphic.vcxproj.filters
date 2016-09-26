@@ -37,9 +37,6 @@
     <Filter Include="Graphic\Resource\View">
       <UniqueIdentifier>{e68d8f99-a77b-4a59-86e1-b092ce63556e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Graphic\Loader">
-      <UniqueIdentifier>{d91a7249-d7b6-42f3-a72e-d4db3ddcf056}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphic\GraphicPCH.h">
@@ -192,12 +189,6 @@
     <ClInclude Include="Graphic\Shader\bcVertexShader.h">
       <Filter>Graphic\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="Graphic\Resource\View\bcResourceView.h">
-      <Filter>Graphic\Resource\View</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Resource\View\bcShaderView.h">
-      <Filter>Graphic\Resource\View</Filter>
-    </ClInclude>
     <ClInclude Include="Graphic\Resource\View\bcRenderTargetView.h">
       <Filter>Graphic\Resource\View</Filter>
     </ClInclude>
@@ -228,32 +219,8 @@
     <ClInclude Include="Graphic\Resource\View\bcDepthStencilViewConfig.h">
       <Filter>Graphic\Resource\View</Filter>
     </ClInclude>
-    <ClInclude Include="Graphic\Loader\bcTextureLoader.h">
-      <Filter>Graphic\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Loader\bcVertexShaderLoader.h">
-      <Filter>Graphic\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Loader\bcDeviceResourceContent.h">
-      <Filter>Graphic\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Loader\bcHullShaderLoader.h">
-      <Filter>Graphic\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Loader\bcDomainShaderLoader.h">
-      <Filter>Graphic\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Loader\bcGeometryShaderLoader.h">
-      <Filter>Graphic\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Loader\bcPixelShaderLoader.h">
-      <Filter>Graphic\Loader</Filter>
-    </ClInclude>
     <ClInclude Include="Graphic\bcEvent.h">
       <Filter>Graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Shader\Parameter\bcShaderViewParameter.h">
-      <Filter>Graphic\Shader\Parameter</Filter>
     </ClInclude>
     <ClInclude Include="Graphic\bcExport.h">
       <Filter>Graphic</Filter>
@@ -263,6 +230,18 @@
     </ClInclude>
     <ClInclude Include="Graphic\bcDeviceResourceContent.h">
       <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Resource\View\bcIResourceView.h">
+      <Filter>Graphic\Resource\View</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Resource\View\bcResourceView.h">
+      <Filter>Graphic\Resource\View</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Shader\Parameter\bcResourceViewParameter.h">
+      <Filter>Graphic\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Device\bcDeviceComputeState.h">
+      <Filter>Graphic\Device</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

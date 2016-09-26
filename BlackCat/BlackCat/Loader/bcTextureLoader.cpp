@@ -7,6 +7,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/File/bcPath.h"
 #include "GraphicImp/Resource/bcResourceConfig.h"
+#include "Game/System/bcGameSystem.h"
 #include "BlackCat/Loader/bcTextureLoader.h"
 
 namespace black_cat
@@ -16,7 +17,7 @@ namespace black_cat
 	{
 	}
 
-	bc_texture_loader::bc_texture_loader(bc_texture_loader&& p_other)
+	bc_texture_loader::bc_texture_loader(bc_texture_loader&& p_other) noexcept
 		: bc_base_content_loader(std::move(p_other))
 	{
 	}
@@ -25,7 +26,7 @@ namespace black_cat
 	{
 	}
 
-	bc_texture_loader& bc_texture_loader::operator=(bc_texture_loader&& p_other)
+	bc_texture_loader& bc_texture_loader::operator=(bc_texture_loader&& p_other) noexcept
 	{
 		bc_base_content_loader::operator=(std::move(p_other));
 
@@ -74,7 +75,7 @@ namespace black_cat
 			throw bc_invalid_argument_exception((core::bc_to_string(p_context.m_file_path) + " Unknown image file format").c_str());
 		}
 
-		graphic::bc_device* l_device = p_context.m_parameter.get_value_throw< graphic::bc_device* >(core::g_param_device);
+		graphic::bc_device* l_device = &core::bc_service_manager::get().get_service< game::bc_game_system >()->get_render_system().get_device();
 		graphic::bc_texture_config l_config = graphic::bc_graphic_resource_configure().as_resource().as_texture2d
 			(
 				0,

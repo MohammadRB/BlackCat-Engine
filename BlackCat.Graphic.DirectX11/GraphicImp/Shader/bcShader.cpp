@@ -1,9 +1,10 @@
 // [01/27/2016 MRB]
 
 #include "GraphicImp/GraphicImpPCH.h"
-#include "GraphicImp/bcExport.h"
+
 #include "Core/Container/bcAllocator.h"
 #include "CorePlatformImp/bcUtility.h"
+#include "GraphicImp/bcExport.h"
 #include "GraphicImp/Shader/bcShader.h"
 
 using namespace Microsoft::WRL;

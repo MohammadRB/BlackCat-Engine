@@ -115,6 +115,8 @@ namespace black_cat
 			template< class TComponent > // This function will be used by component containers during update phase
 			const bc_actor& _component_get_actor(const TComponent& p_component) const noexcept;
 
+			void _resize_actor_to_component_index_maps();
+
 			actor_container_type m_actors;
 			component_map_type m_components;
 		};
@@ -151,6 +153,8 @@ namespace black_cat
 					(
 						_bc_actor_entry(bc_actor(this, l_index), p_parent ? p_parent->get_index() : g_actor_invalid_index)
 					));
+
+				_resize_actor_to_component_index_maps();
 			}
 
 			return bc_actor(this, l_index);
@@ -162,13 +166,15 @@ namespace black_cat
 
 			for(auto& l_component : m_components)
 			{
-				const _bc_actor_component_entry& l_component_entry = l_component.second;
+				_bc_actor_component_entry& l_component_entry = l_component.second;
 				bc_actor_component_index l_component_index = l_component_entry.m_actor_to_component_index_map[l_actor_index];
 				
 				// This actor has this component type
 				if(l_component_index != g_actor_component_invalid_index)
 				{
 					l_component_entry.m_container->remove(l_component_index);
+					l_component_entry.m_component_to_actor_index_map[l_component_index] = g_actor_invalid_index;
+					l_component_entry.m_actor_to_component_index_map[l_actor_index] = g_actor_component_invalid_index;
 				}
 			}
 
@@ -179,21 +185,6 @@ namespace black_cat
 		void bc_actor_component_manager::create_component(const bc_actor& p_actor)
 		{
 			static component_map_type::value_type* l_component_entry = _get_component_entry< TComponent >();
-
-			/*if (l_component_entry == nullptr)
-			{
-				auto l_hash = bc_actor_component_traits< TComponent >::component_hash();
-				auto l_priority = bc_actor_component_traits< TComponent >::component_priority();
-				_bc_actor_component_entry l_data
-				{
-					l_priority,
-					core::bc_vector_movale< bcINT32 >(),
-					core::bc_vector_movale< bcINT32 >(),
-					core::bc_make_unique< bc_actor_component_container< TComponent > >()
-				};
-
-				l_component_entry = &*m_components.insert(component_map_type::value_type(l_hash, std::move(l_data))).first;
-			}*/
 
 			// Cast to concrete container to avoid virtual calls
 			auto* l_concrete_container = static_cast<bc_actor_component_container< TComponent >*>(l_component_entry->second.m_container.get());
@@ -224,12 +215,6 @@ namespace black_cat
 				l_component_index = l_concrete_container->create();
 			}
 
-			// If component type haven't enaugh index map
-			if (l_component_entry->second.m_actor_to_component_index_map.size() < m_actors.size())
-			{
-				l_component_entry->second.m_actor_to_component_index_map.resize(m_actors.capacity(), g_actor_component_invalid_index);
-			}
-
 			if (l_component_entry->second.m_component_to_actor_index_map.size() < l_component_index + 1)
 			{
 				l_component_entry->second.m_component_to_actor_index_map.resize(l_concrete_container->capacity(), g_actor_invalid_index);
@@ -244,20 +229,13 @@ namespace black_cat
 		{
 			static component_map_type::value_type* l_component_entry = _get_component_entry< TComponent >();
 
-			//// There is not any component of type TComponent
-			//if (l_component_entry == nullptr)
-			//{
-			//	bcAssert(false);
-			//	return;
-			//}
-
 			bc_actor_index l_actor_index = p_actor.get_index();
 
 			bcAssert(l_actor_index != g_actor_invalid_index);
 
-			bcINT32 l_actor_to_component = l_component_entry->second.m_actor_to_component_index_map[l_actor_index];
+			bcINT32 l_component_index = l_component_entry->second.m_actor_to_component_index_map[l_actor_index];
 			// Actor has not this type of component
-			if (l_actor_to_component == g_actor_component_invalid_index)
+			if (l_component_index == g_actor_component_invalid_index)
 			{
 				bcAssert(false);
 				return;
@@ -266,7 +244,10 @@ namespace black_cat
 			// Cast to concrete container to avoid virtual calls
 			auto* l_concrete_container = static_cast<bc_actor_component_container< TComponent >*>(l_component_entry->second.m_container.get());
 
-			l_concrete_container->remove(l_actor_to_component);
+			l_concrete_container->remove(l_component_index);
+
+			l_component_entry->second.m_component_to_actor_index_map[l_component_index] = g_actor_invalid_index;
+			l_component_entry->second.m_actor_to_component_index_map[l_actor_index] = g_actor_component_invalid_index;
 		}
 
 		template< class TComponent >
@@ -279,20 +260,6 @@ namespace black_cat
 		TComponent* bc_actor_component_manager::actor_get_component(const bc_actor& p_actor)
 		{
 			static component_map_type::value_type* l_component_entry = _get_component_entry< TComponent >();
-
-			//// There is not any component of type TComponent
-			//if (l_component_entry == nullptr)
-			//{
-			//	// Try to get component entry from hash map again. due to usage of static initialization of
-			//	// local variable it is possible to initialize local variable with null when this function 
-			//	// were called for the first time
-			//	l_component_entry = _get_component_entry< TComponent >();
-
-			//	if (l_component_entry == nullptr)
-			//	{
-			//		return nullptr;
-			//	}
-			//}
 
 			bc_actor_index l_actor_index = p_actor.get_index();
 
@@ -316,7 +283,7 @@ namespace black_cat
 		template< class TComponent >
 		const TComponent* bc_actor_component_manager::actor_get_component(const bc_actor& p_actor) const
 		{
-			return const_cast<bc_actor_component_manager*>(this)->actor_get_component(p_actor);
+			return const_cast<bc_actor_component_manager*>(this)->actor_get_component< TComponent >(p_actor);
 		}
 
 		inline void bc_actor_component_manager::update(core_platform::bc_clock::update_param p_clock_update_param)
@@ -343,26 +310,37 @@ namespace black_cat
 		template< class ...TComponent >
 		void bc_actor_component_manager::register_component_types()
 		{
-			// Create a dummy actor and add all components to it to initialize local static variables
-			// in component related functions
-			bc_actor l_actor = create_actor();
 			bcSIZE l_counter = 0;
 
 			auto l_expansion_list =
-				{
-					(
-						[this, l_actor, &l_counter]()
-						{
-							this->_register_component_type< TComponent >(l_counter++);
+			{
+				(
+					[this, &l_counter]()
+					{
+						this->_register_component_type< TComponent >(l_counter++);
 
-							this->create_component< TComponent >(l_actor);
-							this->actor_get_component< TComponent >(l_actor);
-							this->remove_component< TComponent >(l_actor);
+						return true;
+					}()
+				)...
+			};
 
-							return true;
-						}()
-					)...
-				};
+			// Create a dummy actor and add all components to it to initialize local static variables
+			// in component related functions
+			bc_actor l_actor = create_actor();
+
+			l_expansion_list =
+			{
+				(
+					[this, l_actor, &l_counter]()
+					{
+						this->create_component< TComponent >(l_actor);
+						this->actor_get_component< TComponent >(l_actor);
+						this->remove_component< TComponent >(l_actor);
+
+						return true;
+					}()
+				)...
+			};
 
 			remove_actor(l_actor);
 		}
@@ -410,9 +388,21 @@ namespace black_cat
 
 			bc_actor_component_index l_component_index = p_component.get_index();
 			bcINT32 l_component_to_actor = l_component_entry->second.m_component_to_actor_index_map[l_component_index];
-			bc_actor& l_actor = m_actors[l_component_to_actor].get().m_actor;
+			const bc_actor& l_actor = m_actors[l_component_to_actor].get().m_actor;
 
 			return l_actor;
+		}
+
+		inline void bc_actor_component_manager::_resize_actor_to_component_index_maps()
+		{
+			for (auto& l_component_entry : m_components)
+			{
+				// If component type haven't enaugh index map
+				if (l_component_entry.second.m_actor_to_component_index_map.size() < m_actors.size())
+				{
+					l_component_entry.second.m_actor_to_component_index_map.resize(m_actors.capacity(), g_actor_component_invalid_index);
+				}
+			}
 		}
 	}
 }

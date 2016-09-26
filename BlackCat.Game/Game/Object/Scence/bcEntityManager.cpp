@@ -39,92 +39,9 @@ namespace black_cat
 			BC_JSON_ARRAY(_bc_json_entity, entities);
 		};
 
-		bc_entity_manager::bc_entity_manager(const bcECHAR* p_json_file_path)
+		bc_entity_manager::bc_entity_manager()
 			: m_actor_component_manager(core::bc_service_manager::get().get_service< bc_actor_component_manager >())
 		{
-			core::bc_file_stream l_json_file;
-			core::bc_string_frame l_buffer;
-
-			l_json_file.open_read(p_json_file_path);
-
-			core::bc_string_frame l_line;
-			while (core::bc_get_line(l_json_file, &l_line))
-			{
-				l_buffer.append(l_line);
-			}
-
-			core::bc_json_document< _bc_entity_json > l_json;
-			l_json.parse(l_buffer);
-
-			for(auto& l_entity : *l_json->m_entities)
-			{
-				core::bc_string_frame& l_entity_name = *l_entity->m_name;
-				auto l_entity_name_hash = string_hash()(l_entity_name.c_str());
-				entity_map_type::value_type::second_type l_entity_components;
-				
-				// Because we used program heap we must reserve needed memory
-				l_entity_components.reserve(l_entity->m_components->size());
-
-				for(auto& l_component : *l_entity->m_components)
-				{
-					core::bc_string_frame& l_component_name = *l_component->m_name;
-					auto l_component_name_hash = bc_compile_time_string_hash(l_component_name.c_str()); // We used this function in component name hashing
-					
-					_bc_entity_component_data l_component_data;
-					l_component_data.m_component_hash = l_component_name_hash;
-
-					/*std::for_each
-						(
-							std::begin(*l_component->m_parameters),
-							std::end(*l_component->m_parameters),
-							[&](core::bc_json_object<_bc_json_entity_component_parameters>& p_parameter)
-							{
-								core::bc_any l_value;
-
-								auto* l_exp_param = p_parameter->m_value->as< core::bc_expression_parameter >();
-								if (l_exp_param != nullptr)
-								{
-									l_value = l_exp_param->evaluate();
-								}
-								else
-								{
-									l_value = *p_parameter->m_value;
-								}
-
-								l_component_data.m_component_parameters.add_value(p_parameter->m_name->c_str(), std::move(l_value));
-							}
-						);*/
-
-					auto* l_exp_params = &*l_component->m_parameters;
-
-					std::for_each
-						(
-							std::begin(l_exp_params->m_key_values),
-							std::end(l_exp_params->m_key_values),
-							[&](core::bc_json_key_value::key_value_array_t::value_type& p_parameter)
-							{
-								core::bc_any l_value;
-
-								auto* l_exp_param = p_parameter.second.as< core::bc_expression_parameter >();
-								if (l_exp_param != nullptr)
-								{
-									l_value = l_exp_param->evaluate();
-								}
-								else
-								{
-									l_value = p_parameter.second;
-								}
-
-								l_component_data.m_component_parameters.add_value(p_parameter.first.c_str(), std::move(l_value));
-							}
-						);
-
-					l_entity_components.push_back(std::move(l_component_data));
-				}
-
-				entity_map_type::value_type l_entity_value(l_entity_name_hash, std::move(l_entity_components));
-				m_entities.insert(std::move(l_entity_value));
-			}
 		}
 
 		bc_entity_manager::bc_entity_manager(bc_entity_manager&& p_other)
@@ -145,6 +62,93 @@ namespace black_cat
 			m_entities = std::move(p_other.m_entities);
 
 			return *this;
+		}
+
+		void bc_entity_manager::read_entity_file(const bcECHAR* p_json_file_path)
+		{
+			core::bc_file_stream l_json_file;
+			core::bc_string_frame l_buffer;
+
+			l_json_file.open_read(p_json_file_path);
+
+			core::bc_string_frame l_line;
+			while (core::bc_get_line(l_json_file, &l_line))
+			{
+				l_buffer.append(l_line);
+			}
+
+			core::bc_json_document< _bc_entity_json > l_json;
+			l_json.parse(l_buffer);
+
+			for (auto& l_entity : *l_json->m_entities)
+			{
+				core::bc_string_frame& l_entity_name = *l_entity->m_name;
+				auto l_entity_name_hash = string_hash()(l_entity_name.c_str());
+				entity_map_type::value_type::second_type l_entity_components;
+
+				// Because we used program heap we must reserve needed memory
+				l_entity_components.reserve(l_entity->m_components->size());
+
+				for (auto& l_component : *l_entity->m_components)
+				{
+					core::bc_string_frame& l_component_name = *l_component->m_name;
+					auto l_component_name_hash = bc_compile_time_string_hash(l_component_name.c_str()); // We used this function in component name hashing
+
+					_bc_entity_component_data l_component_data;
+					l_component_data.m_component_hash = l_component_name_hash;
+
+					/*std::for_each
+					(
+					std::begin(*l_component->m_parameters),
+					std::end(*l_component->m_parameters),
+					[&](core::bc_json_object<_bc_json_entity_component_parameters>& p_parameter)
+					{
+					core::bc_any l_value;
+
+					auto* l_exp_param = p_parameter->m_value->as< core::bc_expression_parameter >();
+					if (l_exp_param != nullptr)
+					{
+					l_value = l_exp_param->evaluate();
+					}
+					else
+					{
+					l_value = *p_parameter->m_value;
+					}
+
+					l_component_data.m_component_parameters.add_value(p_parameter->m_name->c_str(), std::move(l_value));
+					}
+					);*/
+
+					auto* l_exp_params = &*l_component->m_parameters;
+
+					std::for_each
+					(
+						std::begin(l_exp_params->m_key_values),
+						std::end(l_exp_params->m_key_values),
+						[&](core::bc_json_key_value::key_value_array_t::value_type& p_parameter)
+					{
+						core::bc_any l_value;
+
+						auto* l_exp_param = p_parameter.second.as< core::bc_expression_parameter >();
+						if (l_exp_param != nullptr)
+						{
+							l_value = l_exp_param->evaluate();
+						}
+						else
+						{
+							l_value = p_parameter.second;
+						}
+
+						l_component_data.m_component_parameters.add_value(p_parameter.first.c_str(), std::move(l_value));
+					}
+					);
+
+					l_entity_components.push_back(std::move(l_component_data));
+				}
+
+				entity_map_type::value_type l_entity_value(l_entity_name_hash, std::move(l_entity_components));
+				m_entities.insert(std::move(l_entity_value));
+			}
 		}
 
 		bc_actor bc_entity_manager::create_entity(const const bcCHAR* p_entity_name)

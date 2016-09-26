@@ -29,9 +29,15 @@ namespace black_cat
 
 			bc_actor remove_object(bc_actor p_actor);
 
+			core::bc_vector_frame< bc_actor > get_heightmaps() const;
+
 			void update(const bc_input_system& p_input_system, core_platform::bc_clock::update_param p_clock_update_param);
 
-			void render(bc_render_system& p_render_system, bool p_preserve_render_instances);
+			void render_heightmaps(bc_render_system& p_render_system);
+
+			void render_meshes(bc_render_system& p_render_system, bool p_preserve_render_instances);
+
+			void clear();
 
 		protected:
 

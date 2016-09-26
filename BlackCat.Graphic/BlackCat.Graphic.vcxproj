@@ -32,40 +32,13 @@
     <ClInclude Include="Graphic\bcRenderApiInfo.h" />
     <ClInclude Include="Graphic\bcResourcePtr.h" />
     <ClInclude Include="Graphic\Device\bcDevice.h" />
+    <ClInclude Include="Graphic\Device\bcDeviceComputeState.h" />
     <ClInclude Include="Graphic\Device\bcDeviceInfo.h" />
     <ClInclude Include="Graphic\Device\Command\bcDeviceCommandList.h" />
     <ClInclude Include="Graphic\Device\Command\bcDeviceCommandExecuter.h" />
     <ClInclude Include="Graphic\Device\bcDevicePipeline.h" />
     <ClInclude Include="Graphic\Device\bcDevicePipelineState.h" />
     <ClInclude Include="Graphic\GraphicPCH.h" />
-    <ClInclude Include="Graphic\Loader\bcDeviceResourceContent.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Graphic\Loader\bcDomainShaderLoader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Graphic\Loader\bcGeometryShaderLoader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Graphic\Loader\bcHullShaderLoader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Graphic\Loader\bcPixelShaderLoader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Graphic\Loader\bcTextureLoader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Graphic\Loader\bcVertexShaderLoader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="Graphic\Math\bcMatrix3f.h" />
     <ClInclude Include="Graphic\Math\bcMatrix4f.h" />
     <ClInclude Include="Graphic\Math\bcVector2f.h" />
@@ -113,8 +86,8 @@
     <ClInclude Include="Graphic\Resource\View\bcResourceViewConfig.h" />
     <ClInclude Include="Graphic\Resource\View\bcDepthStencilView.h" />
     <ClInclude Include="Graphic\Resource\View\bcRenderTargetView.h" />
+    <ClInclude Include="Graphic\Resource\View\bcIResourceView.h" />
     <ClInclude Include="Graphic\Resource\View\bcResourceView.h" />
-    <ClInclude Include="Graphic\Resource\View\bcShaderView.h" />
     <ClInclude Include="Graphic\Shader\bcComputeShader.h" />
     <ClInclude Include="Graphic\Shader\bcDomainShader.h" />
     <ClInclude Include="Graphic\Shader\bcGeometryShader.h" />
@@ -129,7 +102,7 @@
     <ClInclude Include="Graphic\Shader\Parameter\bcShaderParameterManager.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Graphic\Shader\Parameter\bcShaderViewParameter.h" />
+    <ClInclude Include="Graphic\Shader\Parameter\bcResourceViewParameter.h" />
     <ClInclude Include="Graphic\Shader\Parameter\bcVectorParameter.h" />
   </ItemGroup>
   <ItemGroup>
@@ -195,7 +168,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATGRAPHIC_EXPORTS;BC_GRAPHIC_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>
+      </SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform/;../BlackCat.Core.Platform.Win32/;../BlackCat.Core/;../BlackCat.Platform/;../BlackCat.Platform.Win32/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>Graphic/GraphicPCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -210,7 +184,6 @@
       <Command>copy Graphic\*.h ..\BC_SDK\Include\Graphic
 copy Graphic\Device\*.h ..\BC_SDK\Include\Graphic\Device
 copy Graphic\Device\Command\*.h ..\BC_SDK\Include\Graphic\Device\Command
-copy Graphic\Loader\*.h ..\BC_SDK\Include\Graphic\Loader
 copy Graphic\Math\*.h ..\BC_SDK\Include\Graphic\Math
 copy Graphic\PipelineStage\*.h ..\BC_SDK\Include\Graphic\PipelineStage
 copy Graphic\Resource\*.h ..\BC_SDK\Include\Graphic\Graphic\Resource
@@ -239,7 +212,8 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;BLACKCATGRAPHIC_EXPORTS;BC_GRAPHIC_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>
+      </SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform/;../BlackCat.Core.Platform.Win32/;../BlackCat.Core/;../BlackCat.Platform/;../BlackCat.Platform.Win32/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>Graphic/GraphicPCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -255,10 +229,8 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
       <Command>copy Graphic\*.h ..\BC_SDK\Include\Graphic
 copy Graphic\Device\*.h ..\BC_SDK\Include\Graphic\Device
 copy Graphic\Device\Command\*.h ..\BC_SDK\Include\Graphic\Device\Command
-copy Graphic\Loader\*.h ..\BC_SDK\Include\Graphic\Loader
 copy Graphic\Math\*.h ..\BC_SDK\Include\Graphic\Math
 copy Graphic\PipelineStage\*.h ..\BC_SDK\Include\Graphic\PipelineStage
-copy Graphic\Rendering\*.h ..\BC_SDK\Include\Graphic\Rendering
 copy Graphic\Resource\*.h ..\BC_SDK\Include\Graphic\Graphic\Resource
 copy Graphic\Resource\Buffer\*.h ..\BC_SDK\Include\Graphic\Resource\Buffer
 copy Graphic\Resource\State\*.h ..\BC_SDK\Include\Graphic\Resource\State

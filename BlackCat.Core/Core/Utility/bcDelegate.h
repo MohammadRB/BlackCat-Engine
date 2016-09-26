@@ -207,7 +207,7 @@ namespace black_cat
 				<
 					(!std::is_same< this_type, typename std::decay< TFunctor >::type >::value ||
 					!std::is_same< func_type, typename std::decay< TFunctor >::type >::value) &&
-					is_callable< TFunctor >::value // Check if TFunctor is actually a callable object
+					bc_is_callable< TFunctor >::value // Check if TFunctor is actually a callable object
 				>::type
 			>
 			bc_delegate(TFunctor& p_functor) noexcept(std::is_nothrow_copy_constructible<TFunctor>::value)
@@ -258,7 +258,7 @@ namespace black_cat
 				typename = typename std::enable_if
 				<
 					!std::is_same< func_type, typename std::decay< TFunctor >::type >::value && 
-					is_callable< TFunctor >::value // Check if TFunctor is actually a callable object
+					bc_is_callable< TFunctor >::value // Check if TFunctor is actually a callable object
 				>::type
 			>
 			void bind(TFunctor& p_functor) noexcept(std::is_nothrow_copy_constructible<TFunctor>::value)

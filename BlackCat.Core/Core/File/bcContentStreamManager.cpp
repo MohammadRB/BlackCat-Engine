@@ -43,13 +43,43 @@ namespace black_cat
 			BC_JSON_ARRAY(_bc_content_stream, streams);
 		};
 
-		bc_content_stream_manager::bc_content_stream_manager(const bcECHAR* p_json_file_path) noexcept(false)
+		bc_content_stream_manager::bc_content_stream_manager() noexcept(false)
+		{
+		}
+
+		bc_content_stream_manager::bc_content_stream_manager(bc_content_stream_manager&& p_other) noexcept(
+			std::is_nothrow_move_constructible< content_types_map_type >::value &&
+			std::is_nothrow_move_constructible< streams_map_type >::value &&
+			std::is_nothrow_move_constructible< contents_map_type >::value)
+			: m_content_types(std::move(p_other.m_content_types)),
+			m_streams(std::move(p_other.m_streams)),
+			m_contents(std::move(p_other.m_contents))
+		{
+		}
+
+		bc_content_stream_manager::~bc_content_stream_manager()
+		{
+		}
+
+		bc_content_stream_manager& bc_content_stream_manager::operator=(bc_content_stream_manager&& p_other) noexcept(
+			std::is_nothrow_move_assignable< content_types_map_type >::value &&
+			std::is_nothrow_move_assignable< streams_map_type >::value &&
+			std::is_nothrow_move_assignable< contents_map_type >::value)
+		{
+			m_content_types = std::move(p_other.m_content_types);
+			m_streams = std::move(p_other.m_streams);
+			m_contents = std::move(p_other.m_contents);
+
+			return *this;
+		}
+
+		void bc_content_stream_manager::read_stream_file(const bcECHAR* p_json_file_path)
 		{
 			bc_file_stream l_json_file;
 			bc_string_frame l_buffer;
 
 			l_json_file.open_read(p_json_file_path);
-			
+
 			bc_string_frame l_line;
 			while (core::bc_get_line(l_json_file, &l_line))
 			{
@@ -63,10 +93,10 @@ namespace black_cat
 			{
 				string_hash::result_type l_stream_hash = string_hash()(l_stream->m_stream_name->c_str());
 				bc_vector_program< _bc_content_stream_file > l_stream_files;
-				
+
 				l_stream_files.reserve(l_stream->m_stream_content->size());
 
-				for(bc_json_object< _bc_content_stream_content >& l_stream_content : *l_stream->m_stream_content)
+				for (bc_json_object< _bc_content_stream_content >& l_stream_content : *l_stream->m_stream_content)
 				{
 					_bc_content_stream_file l_stream_file
 					{
@@ -80,75 +110,59 @@ namespace black_cat
 					//l_stream_file.m_parameters.reserve(l_content_params->m_key_values.size());
 
 					std::for_each
-						(
-							std::begin(l_content_params->m_key_values),
-							std::end(l_content_params->m_key_values),
-							[&l_stream_file](bc_json_key_value::key_value_array_t::value_type& p_parameter)
-							{
-								bc_any l_value;
+					(
+						std::begin(l_content_params->m_key_values),
+						std::end(l_content_params->m_key_values),
+						[&l_stream_file](bc_json_key_value::key_value_array_t::value_type& p_parameter)
+					{
+						bc_any l_value;
 
-								auto* l_exp_param = p_parameter.second.as< bc_expression_parameter >();
-								if (l_exp_param != nullptr)
-								{
-									l_value = l_exp_param->evaluate();
-								}
-								else
-								{
-									l_value = p_parameter.second;
-								}
+						auto* l_exp_param = p_parameter.second.as< bc_expression_parameter >();
+						if (l_exp_param != nullptr)
+						{
+							l_value = l_exp_param->evaluate();
+						}
+						else
+						{
+							l_value = p_parameter.second;
+						}
 
-								l_stream_file.m_parameters.add_value(p_parameter.first.c_str(), std::move(l_value));
-							}
-						);
+						l_stream_file.m_parameters.add_value(p_parameter.first.c_str(), std::move(l_value));
+					}
+					);
 
 					/*std::transform
-						(
-							std::begin(*l_stream_content->m_content_parameter),
-							std::end(*l_stream_content->m_content_parameter),
-							std::back_inserter(l_stream_file.m_parameters),
-							[](bc_json_object<_bc_content_stream_content_parameter>& p_parameter)
-							{
-								bc_any l_value;
+					(
+					std::begin(*l_stream_content->m_content_parameter),
+					std::end(*l_stream_content->m_content_parameter),
+					std::back_inserter(l_stream_file.m_parameters),
+					[](bc_json_object<_bc_content_stream_content_parameter>& p_parameter)
+					{
+					bc_any l_value;
 
-								auto* l_exp_param = p_parameter->m_value->as< bc_expression_parameter >();
-								if(l_exp_param != nullptr)
-								{
-									l_value = l_exp_param->evaluate();
-								}
-								else
-								{
-									l_value = *p_parameter->m_value;
-								}
+					auto* l_exp_param = p_parameter->m_value->as< bc_expression_parameter >();
+					if(l_exp_param != nullptr)
+					{
+					l_value = l_exp_param->evaluate();
+					}
+					else
+					{
+					l_value = *p_parameter->m_value;
+					}
 
-								return std::pair< bc_string_program, bc_any >
-									(
-										bc_string_program(p_parameter->m_name->c_str()),
-										std::move(l_value)
-									);
-							}
-						);*/
+					return std::pair< bc_string_program, bc_any >
+					(
+					bc_string_program(p_parameter->m_name->c_str()),
+					std::move(l_value)
+					);
+					}
+					);*/
 
 					l_stream_files.push_back(std::move(l_stream_file));
 				}
 
 				m_streams.insert(streams_map_type::value_type(l_stream_hash, std::move(l_stream_files)));
 			}
-		}
-
-		bc_content_stream_manager::bc_content_stream_manager(bc_content_stream_manager&& p_other)
-			: m_streams(std::move(p_other.m_streams))
-		{
-		}
-
-		bc_content_stream_manager::~bc_content_stream_manager()
-		{
-		}
-
-		bc_content_stream_manager& bc_content_stream_manager::operator=(bc_content_stream_manager&& p_other)
-		{
-			m_streams = std::move(p_other.m_streams);
-
-			return *this;
 		}
 
 		void bc_content_stream_manager::load_content_stream(bc_alloc_type p_alloc_type, const bcCHAR* p_stream_name)
@@ -200,7 +214,7 @@ namespace black_cat
 
 						if(l_loader_entry == std::end(m_content_types))
 						{
-							throw bc_key_not_found_exception("Content loader with specified name doesn't exist");
+							throw bc_key_not_found_exception(("There isn't any registered loader for " + l_content_file.m_name).c_str());
 						}
 
 						bc_content_loader_parameter l_loader_parameter = l_content_file.m_parameters;
@@ -220,10 +234,11 @@ namespace black_cat
 					[this](bc_list_frame<contents_map_type::value_type>& p_locals)
 					{
 						core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_lock_gaurd(m_contents_mutex);
-
-						for (auto& l_content_entry : p_locals)
 						{
-							m_contents.insert(std::move(l_content_entry));
+							for (auto& l_content_entry : p_locals)
+							{
+								m_contents.insert(std::move(l_content_entry));
+							}
 						}
 					}
 				);
@@ -267,8 +282,9 @@ namespace black_cat
 					{
 						{
 							core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_lock_gaurd(m_contents_mutex);
-
-							m_contents.erase(l_content_entry);
+							{
+								m_contents.erase(l_content_entry);
+							}
 						}
 					}
 				}
@@ -283,9 +299,10 @@ namespace black_cat
 
 			{
 				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock_gaurd(m_contents_mutex);
-
-				l_content_entry = m_contents.find(l_content_hash);
-				l_content_end = std::end(m_contents);
+				{
+					l_content_entry = m_contents.find(l_content_hash);
+					l_content_end = std::end(m_contents);
+				}
 			}
 
 			if (l_content_entry != l_content_end)

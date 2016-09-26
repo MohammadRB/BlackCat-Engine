@@ -5,7 +5,7 @@
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/PipelineStage/bcOutputMergerStage.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
-#include "GraphicImp/Resource/View/bcShaderView.h"
+#include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "GraphicImp/Resource/View/bcDepthStencilView.h"
 
@@ -83,8 +83,8 @@ namespace black_cat
 				bcUINT l_num_rtv = l_required_state.m_render_target_views.get_dirty_count();
 				ID3D11RenderTargetView* l_render_target_views[bc_render_api_info::number_of_om_render_target_slots()];
 				ID3D11DepthStencilView* l_depth_stencil_view;
-				ID3D11UnorderedAccessView* l_unordered_views[bc_render_api_info::number_of_ps_cs_uav_registers()];
-				bcUINT l_uav_initialCounts[bc_render_api_info::number_of_ps_cs_uav_registers()];
+				ID3D11UnorderedAccessView* l_unordered_views[bc_render_api_info::number_of_ps_cs_uav_resource()];
+				bcUINT l_uav_initialCounts[bc_render_api_info::number_of_ps_cs_uav_resource()];
 
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_om_render_target_slots(); ++i)
 				{
@@ -96,9 +96,9 @@ namespace black_cat
 				l_depth_stencil_view = l_required_state.m_depth_target_view.get() ?
 					                       l_required_state.m_depth_target_view.get()->get_platform_pack().m_depth_stencil_view.Get() :
 					                       nullptr;
-				for (bcUINT i = 0; i < bc_render_api_info::number_of_ps_cs_uav_registers(); ++i)
+				for (bcUINT i = 0; i < bc_render_api_info::number_of_ps_cs_uav_resource(); ++i)
 				{
-					bc_shader_view* l_view = l_required_state.m_unordered_access_views.get(i);
+					bc_resource_view* l_view = l_required_state.m_unordered_access_views.get(i);
 					l_unordered_views[i] = l_view ? l_view->get_platform_pack().m_unordered_shader_view.Get() : nullptr;
 					l_uav_initialCounts[i] = -1;
 				}

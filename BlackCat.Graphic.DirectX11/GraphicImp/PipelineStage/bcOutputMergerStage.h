@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "GraphicImp/Resource/View/bcShaderView.h"
+#include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "GraphicImp/Resource/View/bcDepthStencilView.h"
 

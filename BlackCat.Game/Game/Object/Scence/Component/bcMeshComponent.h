@@ -8,6 +8,7 @@
 #include "Game/bcExport.h"
 #include "Game/Object/Scence/bcActor.h"
 #include "Game/Object/Scence/bcActorComponent.h"
+#include "Game/Object/Scence/Component/bcRenderComponent.h"
 #include "Game/Object/Mesh/bcMeshPart.h"
 
 namespace black_cat
@@ -38,6 +39,8 @@ namespace black_cat
 			void initialize(const core::bc_data_driven_parameter& p_parameters) override;
 
 			void update(const bc_actor& p_actor, core_platform::bc_clock::update_param p_clock_update_param) override;
+
+			void render(const bc_render_component& p_render_component) const;
 
 			static constexpr const bcCHAR* component_name()
 			{

@@ -26,16 +26,6 @@ namespace black_cat
 
 			bc_device_resource_content& operator=(bc_device_resource_content&&)  noexcept = default;
 
-			TResource& operator*() const
-			{
-				return m_resource.operator*();
-			}
-
-			TResource* operator->() const noexcept
-			{
-				return m_resource.operator->();
-			}
-
 			bc_resource_ptr<TResource>& get_resource() noexcept
 			{
 				return m_resource;

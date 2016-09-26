@@ -21,7 +21,8 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_device_command_executer< bc_platform_render_api::directx11 >::bc_platform_device_command_executer(bc_platform_device_command_executer&& p_other)
-			: m_device(p_other.m_device), 
+			: bc_device_object(std::move(p_other)),
+			m_device(p_other.m_device), 
 			m_pack(std::move(p_other.m_pack))
 		{
 		};
@@ -36,6 +37,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_platform_device_command_executer< bc_platform_render_api::directx11 >& bc_platform_device_command_executer< bc_platform_render_api::directx11 >::operator=(bc_platform_device_command_executer&& p_other)
 		{
+			bc_device_object::operator=(std::move(p_other));
 			m_pack = std::move(p_other.m_pack);
 
 			return *this;

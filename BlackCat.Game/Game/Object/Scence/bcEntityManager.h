@@ -37,7 +37,7 @@ namespace black_cat
 			using entity_map_type = core::bc_unordered_map_program< string_hash::result_type, core::bc_vector_program< _bc_entity_component_data > >;
 
 		public:
-			explicit bc_entity_manager(const bcECHAR* p_json_file_path);
+			explicit bc_entity_manager();
 
 			bc_entity_manager(bc_entity_manager&&);
 
@@ -47,6 +47,8 @@ namespace black_cat
 
 			template< class ...TComponent >
 			void register_component_types();
+
+			void read_entity_file(const bcECHAR* p_json_file_path);
 
 			// Create an uninitialized actor along with it's components
 			bc_actor create_entity(const bcCHAR* p_entity_name);

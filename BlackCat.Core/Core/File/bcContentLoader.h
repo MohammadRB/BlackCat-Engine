@@ -23,20 +23,20 @@ namespace black_cat
 			template< class TContent >
 			explicit bc_content_loader_result(bc_object_allocator::ptr<TContent>&& p_result)
 				: m_successed(true),
-				m_exception(nullptr)
+				m_exception(nullptr),
+				m_result(p_result.release(), reinterpret_cast< bc_object_allocator::ptr<bc_icontent>::deleter_type >(p_result.get_deleter()))
 			{
 				static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherite from bc_icontent");
-
-				m_result.set_value(std::move(p_result));
 			}
 
 			bc_content_loader_result(bc_io_exception p_exception)
 				: m_successed(false),
-				m_exception(std::move(p_exception))
+				m_exception(std::move(p_exception)),
+				m_result(nullptr)
 			{
 			}
 
-			bc_content_loader_result(bc_content_loader_result&& p_other)
+			bc_content_loader_result(bc_content_loader_result&& p_other) noexcept
 				: m_successed(p_other.m_successed),
 				m_exception(std::move(p_other.m_exception)),
 				m_result(std::move(p_other.m_result))
@@ -45,7 +45,7 @@ namespace black_cat
 
 			~bc_content_loader_result() = default;
 
-			bc_content_loader_result& operator=(bc_content_loader_result&& p_other)
+			bc_content_loader_result& operator=(bc_content_loader_result&& p_other) noexcept
 			{
 				m_successed = p_other.m_successed;
 				m_exception = std::move(p_other.m_exception);
@@ -60,7 +60,7 @@ namespace black_cat
 			}
 
 			template< class TContent >
-			bc_object_allocator::ptr<TContent> get_result()
+			bc_object_allocator::ptr< TContent > get_result()
 			{
 				static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherite from bc_icontent");
 
@@ -69,9 +69,13 @@ namespace black_cat
 					throw m_exception;
 				}
 
-				bcAssert(m_result.has_value());
+				bcAssert(m_result != nullptr);
 
-				return m_result.release_as<bc_object_allocator::ptr<TContent>>();
+				return bc_object_allocator::ptr< TContent >
+				(
+					static_cast< TContent* >(m_result.release()),
+					reinterpret_cast< typename bc_object_allocator::ptr< TContent >::deleter_type >(m_result.get_deleter())
+				);
 			}
 
 		protected:
@@ -79,7 +83,7 @@ namespace black_cat
 		private:
 			bool m_successed;
 			bc_io_exception m_exception;
-			bc_parameter_pack m_result;
+			bc_object_allocator::ptr<bc_icontent> m_result;
 		};
 		
 		using bc_content_loader_parameter = bc_data_driven_parameter;
@@ -186,9 +190,9 @@ namespace black_cat
 		protected:
 			bc_base_content_loader();
 
-			bc_base_content_loader(bc_base_content_loader&& p_other);
+			bc_base_content_loader(bc_base_content_loader&& p_other) noexcept;
 
-			bc_base_content_loader& operator=(bc_base_content_loader&& p_other);
+			bc_base_content_loader& operator=(bc_base_content_loader&& p_other) noexcept;
 
 		private:
 		};

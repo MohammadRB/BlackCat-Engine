@@ -7,7 +7,7 @@
 #include "Core/Event/bcEventManager.h"
 #include "PlatformImp/bcExport.h"
 #include "PlatformImp/Application/bcRenderWindow.h"
-#include "Platform/bcPlatformEvents.h"
+#include "Platform/bcEvent.h"
 
 namespace black_cat
 {

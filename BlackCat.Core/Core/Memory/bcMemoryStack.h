@@ -40,27 +40,27 @@ namespace black_cat
 			using is_movable_type = std::false_type;
 
 		public:
-			bc_memory_stack() noexcept(true);
+			bc_memory_stack() noexcept;
 
-			bc_memory_stack(this_type&& p_other) noexcept(true);
+			bc_memory_stack(this_type&& p_other) noexcept;
 
-			~bc_memory_stack() noexcept(true);
+			~bc_memory_stack() noexcept;
 
-			this_type& operator =(this_type&& p_other) noexcept(true);
+			this_type& operator =(this_type&& p_other) noexcept;
 
-			bcUINT32 size() const { return m_size; };
+			bcUINT32 size() const noexcept { return m_size; }
 
-			void* push(bc_memblock* p_mem_block) noexcept(true);
+			void* push(bc_memblock* p_mem_block) noexcept;
 
-			bool pop(void* p_pointer, bc_memblock* p_mem_block) noexcept(true);
+			bool pop(void* p_pointer, bc_memblock* p_mem_block) noexcept;
 
-			void* alloc(bc_memblock* p_mem_block) noexcept(true) override;
+			void* alloc(bc_memblock* p_mem_block) noexcept override;
 			
-			void free(void* p_pointer, bc_memblock* p_mem_block) noexcept(true) override;
+			void free(void* p_pointer, bc_memblock* p_mem_block) noexcept override;
 
-			bool contain_pointer(void* p_pointer) const noexcept(true) override;
+			bool contain_pointer(void* p_pointer) const noexcept override;
 
-			void clear() noexcept(true) override;
+			void clear() noexcept override;
 
 		protected:
 

@@ -4,19 +4,18 @@
 
 #include "CorePlatform/Utility/bcNoCopy.h"
 #include "CorePlatformImp/Utility/bcClock.h"
-#include "GraphicImp/Device/bcDevice.h"
-#include "GraphicImp/Device/bcDevicePipeline.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
+#include "Game/System/Render/bcRenderThread.h"
+#include "Game/System/Render/bcRenderPassResourceShare.h"
 
 namespace black_cat
 {
 	namespace game
 	{
 		class bc_render_system;
+		struct bc_render_system_update_param;
 
 		// Represent a whole rendering pass that do all tasks that required to render a scene with
-		// a specified configuration (Don't use movale memory for this type becuase render passes
-		// usually register themselve in device via raw pointers) 
+		// a specified configuration 
 		class bc_irender_pass : public core_platform::bc_no_copy
 		{
 		public:
@@ -28,14 +27,14 @@ namespace black_cat
 			virtual void initialize_resources(bc_render_system& p_render_system, graphic::bc_device* p_device) = 0;
 
 			// This function will be called during app update phase
-			virtual void update(core_platform::bc_clock::update_param p_clock_update_param) = 0;
+			virtual void update(const bc_render_system_update_param& p_update_param) = 0;
 
 			// This function will be called in start of frame
 			// (Default implementation call set_render_parameters function)
-			virtual void initialize_frame(bc_render_system& p_render_system, graphic::bc_device_pipeline* p_pipeline, graphic::bc_device_command_executer* p_executer) = 0;
+			virtual void initialize_frame(bc_render_system& p_render_system, bc_render_thread& p_thread) = 0;
 
 			// This function will be called in draw frme phase
-			virtual void execute(bc_render_system& p_render_system, graphic::bc_device_pipeline* p_pipeline, graphic::bc_device_command_executer* p_executer) = 0;
+			virtual void execute(bc_render_system& p_render_system, bc_render_thread& p_thread) = 0;
 
 			// This function will be called when device duo to some parameter changes and buffer resize need reset
 			virtual void before_reset(bc_render_system& p_render_system, graphic::bc_device* p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) = 0;
@@ -49,9 +48,41 @@ namespace black_cat
 
 			virtual core::bc_string get_name() = 0;
 
+			void _set_pass_resource_share(bc_render_pass_resource_share* p_state_share);
+
 		protected:
+			template< typename T >
+			void share_resource(bc_render_pass_resource_variable p_variable, T&& p_value);
+
+			void unshare_resource(bc_render_pass_resource_variable p_variable);
+
+			template< typename T >
+			T* get_shared_resource(bc_render_pass_resource_variable p_variable) const noexcept;
 
 		private:
+			bc_render_pass_resource_share* m_resource_share;
 		};
+
+		inline void bc_irender_pass::_set_pass_resource_share(bc_render_pass_resource_share* p_state_share)
+		{
+			m_resource_share = p_state_share;
+		}
+
+		template< typename T >
+		void bc_irender_pass::share_resource(bc_render_pass_resource_variable p_variable, T&& p_value)
+		{
+			m_resource_share->share_resource(p_variable, std::forward<T>(p_value));
+		}
+
+		inline void bc_irender_pass::unshare_resource(bc_render_pass_resource_variable p_variable)
+		{
+			m_resource_share->unshare_resource(p_variable);
+		}
+
+		template< typename T >
+		T* bc_irender_pass::get_shared_resource(bc_render_pass_resource_variable p_variable) const noexcept
+		{
+			return m_resource_share->get_resource< T >(p_variable);
+		}
 	}
 }

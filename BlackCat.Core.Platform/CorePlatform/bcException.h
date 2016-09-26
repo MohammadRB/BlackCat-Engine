@@ -109,8 +109,9 @@ namespace black_cat
 	private:
 	};
 
-	using bc_invalid_argument_exception = std::invalid_argument;
 	using bc_logic_exception = std::logic_error;
 	using bc_runtime_exception = std::runtime_error;
+	using bc_invalid_argument_exception = std::invalid_argument;
+	using bc_out_of_range_exception = std::out_of_range;
 	using bc_key_not_found_exception = std::runtime_error;
 }

@@ -23,11 +23,11 @@ namespace black_cat
 	public:
 		explicit bc_texture_loader();
 
-		bc_texture_loader(bc_texture_loader&&);
+		bc_texture_loader(bc_texture_loader&&) noexcept;
 
 		~bc_texture_loader();
 
-		bc_texture_loader& operator=(bc_texture_loader&&);
+		bc_texture_loader& operator=(bc_texture_loader&&) noexcept;
 
 		void content_offline_processing(core::bc_content_loader_context& p_context) override;
 

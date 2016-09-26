@@ -16,7 +16,6 @@
 #include "Graphic/Shader/bcDomainShader.h"
 #include "Graphic/Shader/bcGeometryShader.h"
 #include "Graphic/Shader/bcPixelShader.h"
-#include "Graphic/Shader/bcComputeShader.h"
 
 namespace black_cat
 {
@@ -60,7 +59,7 @@ namespace black_cat
 
 		public:
 			bc_platform_device_pipeline_state();
-
+			
 			bc_platform_device_pipeline_state(bc_platform_device_pipeline_state&&);
 
 			~bc_platform_device_pipeline_state();

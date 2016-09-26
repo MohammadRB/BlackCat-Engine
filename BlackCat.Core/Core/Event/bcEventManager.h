@@ -33,11 +33,11 @@ namespace black_cat
 
 			bc_event_listener_handle(const bcCHAR* p_event_name, bcSIZE p_event_index);
 
-			bc_event_listener_handle(bc_event_listener_handle&& p_other);
+			bc_event_listener_handle(bc_event_listener_handle&& p_other) noexcept;
 
 			~bc_event_listener_handle();
 
-			bc_event_listener_handle& operator=(bc_event_listener_handle&& p_other);
+			bc_event_listener_handle& operator=(bc_event_listener_handle&& p_other) noexcept;
 
 			void reset();
 

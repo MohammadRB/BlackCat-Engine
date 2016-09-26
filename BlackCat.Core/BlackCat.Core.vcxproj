@@ -133,6 +133,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
       <PrecompiledHeaderFile>Core/CorePCH.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Platform.Win32;..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -167,6 +168,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
       <PrecompiledHeaderFile>Core/CorePCH.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Platform.Win32;..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -233,6 +235,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Core\bcConstant.h" />
+    <ClInclude Include="Core\bcEvent.h" />
     <ClInclude Include="Core\bcExport.h" />
     <ClInclude Include="Core\Concurrency\bcBackOff.h" />
     <ClInclude Include="Core\Concurrency\bcConcurrency.h" />
@@ -279,7 +282,6 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
     <ClInclude Include="Core\Event\bcEvent.h" />
     <ClInclude Include="Core\Event\bcEventHandler.h" />
     <ClInclude Include="Core\Event\bcEventManager.h" />
-    <ClInclude Include="Core\Event\bcCoreEvents.h" />
     <ClInclude Include="Core\Memory\bcMemoryCRT.h" />
     <ClInclude Include="Core\Memory\bcMemoryHeap.h" />
     <ClInclude Include="Core\Memory\bcMemMngHashMap.h" />
@@ -304,15 +306,13 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
     <ClInclude Include="Core\Utility\bcRefCountPtr.h" />
     <ClInclude Include="Core\Utility\bcTemplateMetaType.h" />
     <ClInclude Include="Core\Utility\bcDelegate.h" />
-    <ClInclude Include="Core\Utility\bcFunctionWrapper.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="Core\Utility\bcLazy.h" />
     <ClInclude Include="Core\Utility\bcNullable.h" />
     <ClInclude Include="Core\Utility\bcObjectPool.h" />
     <ClInclude Include="Core\Utility\bcParameterPack.h" />
     <ClInclude Include="Core\Utility\bcServiceManager.h" />
     <ClInclude Include="Core\Utility\bcSingleton.h" />
+    <ClInclude Include="Core\Utility\bcUtility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Concurrency\bcThreadManager.cpp" />

@@ -44,14 +44,14 @@ namespace black_cat
 			bc_render_pass_state_render_target_view_array&& p_shader_targets, 
 			graphic::bc_depth_stencil_view_ptr& p_shader_depth, 
 			bc_render_pass_state_sampler_array&& p_shader_samplers, 
-			bc_render_pass_state_shader_view_array&& p_shader_views, 
+			bc_render_pass_state_resource_view_array&& p_shader_views, 
 			bc_render_pass_state_constant_buffer_array&& p_shader_buffers)
 			: m_pipeline_state(p_pipeline_state),
 			m_viewport(p_viewport),
 			m_shader_targets(std::move(p_shader_targets)),
 			m_shader_depth(p_shader_depth),
 			m_shader_samplers(std::move(p_shader_samplers)),
-			m_shader_views(std::move(p_shader_views)),
+			m_resource_views(std::move(p_shader_views)),
 			m_shader_cbuffers(std::move(p_shader_buffers))
 		{
 		}

@@ -37,6 +37,15 @@
     <Filter Include="BlackCat\Loader">
       <UniqueIdentifier>{f9899ba9-f744-4944-aee2-a10c56072bfc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BlackCat\RenderPass">
+      <UniqueIdentifier>{89a16671-3371-4fee-aac0-1ebfe8d07ad3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Shader">
+      <UniqueIdentifier>{4a0c7987-a9ff-45ed-9f43-089cca5858c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Shader\DirectX11">
+      <UniqueIdentifier>{5ffddde4-c01d-47e1-99b4-0016f04a463c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackCat\_\Application\App.h">
@@ -177,6 +186,24 @@
     <ClInclude Include="BlackCat\bcExport.h">
       <Filter>BlackCat</Filter>
     </ClInclude>
+    <ClInclude Include="BlackCat\RenderPass\bcBackBufferOutputPass.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackCat\RenderPass\bcInitializePass.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackCat\bcException.h">
+      <Filter>BlackCat</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackCat\Loader\bcComputeShaderLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackCat\Loader\bcHeightMapLoaderDx11.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackCat\RenderPass\bcTerrainPassDx11.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlackCat\_\Application\App.cpp">
@@ -302,5 +329,36 @@
     <ClCompile Include="BlackCat\Loader\bcVertexShaderLoader.cpp">
       <Filter>BlackCat\Loader</Filter>
     </ClCompile>
+    <ClCompile Include="BlackCat\RenderPass\bcBackBufferOutputPass.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackCat\RenderPass\bcInitializePass.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackCat\Loader\bcComputeShaderLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackCat\Loader\bcHeightMapLoaderDx11.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackCat\RenderPass\bcTerrainPassDx11.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="BlackCat\Shader\DirectX11\bcMeshShader.hlsl">
+      <Filter>BlackCat\Shader\DirectX11</Filter>
+    </FxCompile>
+    <FxCompile Include="BlackCat\Shader\DirectX11\bcTerrain.hlsl">
+      <Filter>BlackCat\Shader\DirectX11</Filter>
+    </FxCompile>
+    <FxCompile Include="BlackCat\Shader\DirectX11\bcTerrainTools.hlsl">
+      <Filter>BlackCat\Shader\DirectX11</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BlackCat\Shader\DirectX11\bcRegister.hlsli">
+      <Filter>BlackCat\Shader\DirectX11</Filter>
+    </None>
   </ItemGroup>
 </Project>

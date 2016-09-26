@@ -20,14 +20,14 @@ namespace black_cat
 		{
 		}
 
-		_bc_service_container::_bc_service_container(_bc_service_container&& p_other) 
+		_bc_service_container::_bc_service_container(_bc_service_container&& p_other) noexcept
 			: m_service(std::move(p_other.m_service)),
 			m_priority(p_other.m_priority)
 		{
 			p_other.m_service = nullptr;
 		}
 
-		_bc_service_container& _bc_service_container::operator=(_bc_service_container&& p_other)
+		_bc_service_container& _bc_service_container::operator=(_bc_service_container&& p_other) noexcept
 		{
 			m_service = std::move(p_other.m_service);
 			m_priority = p_other.m_priority;

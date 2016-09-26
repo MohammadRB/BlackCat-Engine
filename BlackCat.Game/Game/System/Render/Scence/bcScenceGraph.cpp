@@ -4,6 +4,8 @@
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/Scence/bcScenceGraph.h"
 #include "Game/Object/Scence/Component/bcRenderComponent.h"
+#include "Game/Object/Scence/Component/bcHeightMapComponent.h"
+#include "Game/Object/Scence/Component/bcMeshComponent.h"
 
 namespace black_cat
 {
@@ -31,20 +33,69 @@ namespace black_cat
 			return *l_object;
 		}
 
+		core::bc_vector_frame<bc_actor> bc_scence_graph::get_heightmaps() const
+		{
+			core::bc_vector_frame<bc_actor> l_result;
+
+			for (auto& l_actor : m_objects)
+			{
+				if(l_actor.has_component<bc_height_map_component>())
+				{
+					l_result.push_back(l_actor);
+				}
+			}
+
+			return l_result;
+		}
+
 		void bc_scence_graph::update(const bc_input_system& p_input_system, core_platform::bc_clock::update_param p_clock_update_param)
 		{
 		}
 
-		void bc_scence_graph::render(bc_render_system& p_render_system, bool p_preserve_render_instances)
+		void bc_scence_graph::render_heightmaps(bc_render_system& p_render_system)
+		{
+			for (auto& l_actor : m_objects)
+			{
+				auto* l_height_map_component = l_actor.get_component< bc_height_map_component >();
+
+				if (!l_height_map_component)
+				{
+					continue;
+				}
+
+				auto* l_render_component = l_actor.get_component< bc_render_component >();
+
+				if (!l_render_component)
+				{
+					continue;
+				}
+
+				l_height_map_component->render(*l_render_component);
+			}
+
+			p_render_system.render_all_instances();
+			p_render_system.clear_render_instances();
+		}
+
+		void bc_scence_graph::render_meshes(bc_render_system& p_render_system, bool p_preserve_render_instances)
 		{
 			for(auto& l_actor : m_objects)
 			{
+				auto* l_mesh_component = l_actor.get_component< bc_mesh_component >();
+
+				if (!l_mesh_component)
+				{
+					continue;
+				}
+
 				auto* l_render_component = l_actor.get_component< bc_render_component >();
 
-				if(l_render_component != nullptr)
+				if(!l_render_component)
 				{
-					l_render_component->render(p_render_system);
+					continue;
 				}
+
+				l_mesh_component->render(*l_render_component);
 			}
 
 			p_render_system.render_all_instances();
@@ -53,6 +104,17 @@ namespace black_cat
 			{
 				p_render_system.clear_render_instances();
 			}
+		}
+
+		void bc_scence_graph::clear()
+		{
+			for (auto& l_actor : m_objects)
+			{
+				l_actor.destroy();
+			}
+
+			m_objects.clear();
+			m_objects.shrink_to_fit();
 		}
 	}
 }

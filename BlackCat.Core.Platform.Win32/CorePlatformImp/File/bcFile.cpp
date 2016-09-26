@@ -119,14 +119,14 @@ namespace black_cat
 		BC_COREPLATFORMIMP_DLL
 		bool bc_platform_file<core_platform::g_api_win32>::open(const bcECHAR* p_file, bc_file_mode p_mode, bc_file_access p_access) noexcept
 		{
-			return open(p_file, p_mode, p_access, bc_file_sharing::none);
+			return open(p_file, p_mode, p_access, p_access == bc_file_access::read ? bc_file_sharing::read : bc_file_sharing::none);
 		}
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
 		bool bc_platform_file<core_platform::g_api_win32>::open_read(const bcECHAR* p_file) noexcept
 		{
-			return open(p_file, bc_file_mode::open, bc_file_access::read, bc_file_sharing::none);
+			return open(p_file, bc_file_mode::open, bc_file_access::read, bc_file_sharing::read);
 		}
 
 		template< >

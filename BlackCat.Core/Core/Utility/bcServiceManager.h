@@ -60,9 +60,9 @@ namespace black_cat
 		public:
 			_bc_service_container(bc_service_ptr< bc_iservice >&& p_service, bcSIZE p_priority);
 
-			_bc_service_container(_bc_service_container&& p_other);
+			_bc_service_container(_bc_service_container&& p_other) noexcept;
 
-			_bc_service_container& operator =(_bc_service_container&& p_other);
+			_bc_service_container& operator =(_bc_service_container&& p_other) noexcept;
 
 			~_bc_service_container() = default;
 

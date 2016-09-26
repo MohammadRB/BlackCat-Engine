@@ -35,9 +35,9 @@ namespace black_cat
 			
 			bc_platform_texture2d& operator=(bc_platform_texture2d&& p_other);
 
-			bcUINT get_width() const;
+			bcUINT32 get_width() const;
 
-			bcUINT get_height() const;
+			bcUINT32 get_height() const;
 
 			bc_resource_usage get_usage() const;
 

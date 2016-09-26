@@ -20,11 +20,11 @@ namespace black_cat
 	public:
 		explicit bc_vertex_shader_loader();
 
-		bc_vertex_shader_loader(bc_vertex_shader_loader&&);
+		bc_vertex_shader_loader(bc_vertex_shader_loader&&) noexcept;
 
 		~bc_vertex_shader_loader();
 
-		bc_vertex_shader_loader& operator=(bc_vertex_shader_loader&&);
+		bc_vertex_shader_loader& operator=(bc_vertex_shader_loader&&) noexcept;
 
 		void content_offline_processing(core::bc_content_loader_context& p_context) override;
 

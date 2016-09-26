@@ -96,19 +96,19 @@ namespace black_cat
 		public:
 			bc_memory_extender();
 
-			bc_memory_extender(this_type&& p_other) noexcept(true);
+			bc_memory_extender(this_type&& p_other) noexcept;
 
 			~bc_memory_extender();
 
-			this_type& operator =(this_type&& p_other) noexcept(true);
+			this_type& operator =(this_type&& p_other) noexcept;
 
-			void* alloc(bc_memblock* p_memblock) noexcept(true) override;
+			void* alloc(bc_memblock* p_memblock) noexcept override;
 
-			void free(void* p_pointer, bc_memblock* p_memblock) noexcept(true) override;
+			void free(void* p_pointer, bc_memblock* p_memblock) noexcept override;
 
-			bool contain_pointer(void* p_pointer) const noexcept(true) override;
+			bool contain_pointer(void* p_pointer) const noexcept override;
 
-			void clear() noexcept(true) override;
+			void clear() noexcept override;
 
 			const bc_memory_tracer& tracer();
 

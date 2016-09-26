@@ -64,7 +64,7 @@ namespace black_cat
 				return true;
 			}
 			
-			void clear() override 
+			void clear() noexcept override
 			{
 			}
 

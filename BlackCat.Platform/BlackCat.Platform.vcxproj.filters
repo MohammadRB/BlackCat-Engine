@@ -22,9 +22,6 @@
     <ClInclude Include="Platform\Application\bcRenderApplication.h">
       <Filter>Platform\Application</Filter>
     </ClInclude>
-    <ClInclude Include="Platform\bcPlatformEvents.h">
-      <Filter>Platform</Filter>
-    </ClInclude>
     <ClInclude Include="Platform\Application\bcRenderWindow.h">
       <Filter>Platform\Application</Filter>
     </ClInclude>
@@ -47,6 +44,9 @@
       <Filter>Platform</Filter>
     </ClInclude>
     <ClInclude Include="Platform\bcException.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\bcEvent.h">
       <Filter>Platform</Filter>
     </ClInclude>
   </ItemGroup>

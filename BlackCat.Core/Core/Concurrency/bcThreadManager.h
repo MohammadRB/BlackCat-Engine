@@ -200,12 +200,6 @@ namespace black_cat
 				bc_service_manager::get().get_service< bc_thread_manager >()->interrupt_thread(l_excecuter_thread_id);
 			}
 
-			/*static this_type start_new(bc_delegate< type(void) >&& p_delegate, 
-				bc_task_creation_option p_option = bc_task_creation_option::none)
-			{
-				return bc_service_manager::get().get_service< bc_thread_manager >()->start_new_task(std::move(p_delegate), p_option);
-			}*/
-
 		protected:
 
 		private:
@@ -227,7 +221,7 @@ namespace black_cat
 			{	
 			}
 
-			bc_task_link(this_type&& p_other)
+			bc_task_link(this_type&& p_other) noexcept(std::is_nothrow_move_constructible<core_platform::bc_promise< type >>::value)
 			{
 				m_del = std::move(p_other.m_del);
 				m_promise = std::move(p_other.m_promise);
@@ -236,7 +230,7 @@ namespace black_cat
 
 			~bc_task_link() = default;
 
-			this_type& operator =(this_type&& p_other)
+			this_type& operator =(this_type&& p_other)noexcept(std::is_nothrow_move_assignable<core_platform::bc_promise< type >>::value)
 			{
 				m_del = std::move(p_other.m_del);
 				m_promise = std::move(p_other.m_promise);
@@ -396,15 +390,10 @@ namespace black_cat
 				bc_task<T> l_task = l_task_link.get_task();
 
 				task_type l_task_wrapper(task_type::make_from_big_object(bc_alloc_type::frame, std::move(l_task_link))); // TODO
-				_thread_data* l_my_data = nullptr;
 
 				if (p_option == bc_task_creation_option::none)
 				{
-					l_my_data = m_my_data.get();
-				}
-
-				if (l_my_data)
-				{
+					_thread_data* l_my_data = m_my_data.get();
 					l_my_data->local_queue().push(std::move(l_task_wrapper));
 				}
 				else
@@ -412,14 +401,14 @@ namespace black_cat
 					m_global_queue.push(std::move(l_task_wrapper));
 				}
 
-				m_cvariable.notify_one();
-
-				bcUINT32 l_task_count = m_task_count.fetch_add(1U, core_platform::bc_memory_order::seqcst);
+				bcUINT32 l_task_count = m_task_count.fetch_add(1, core_platform::bc_memory_order::seqcst);
 
 				if (l_task_count >= s_new_thread_threshold)
 				{
 					_push_worker();
 				}
+
+				m_cvariable.notify_one();
 
 				return l_task;
 			}
@@ -606,7 +595,7 @@ namespace black_cat
 						_pop_task_from_others_queue(l_task))
 					{
 						l_without_task = 0;
-						m_task_count.fetch_sub(1U, core_platform::bc_memory_order::seqcst);
+						m_task_count.fetch_sub(1, core_platform::bc_memory_order::seqcst);
 
 						l_task(core_platform::bc_thread::current_thread_id());
 						l_task.reset();
@@ -648,7 +637,7 @@ namespace black_cat
 
 			bcSIZE m_thread_count;
 			bcSIZE m_additional_thread_count;
-			core_platform::bc_atomic< bcSIZE > m_task_count;
+			core_platform::bc_atomic< bcINT32 > m_task_count;
 			core_platform::bc_atomic< bool > m_done;
 			core_platform::bc_mutex m_cvariable_mutex;
 			core_platform::bc_condition_variable m_cvariable;

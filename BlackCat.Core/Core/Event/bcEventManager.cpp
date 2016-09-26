@@ -19,7 +19,7 @@ namespace black_cat
 		{
 		}
 
-		bc_event_listener_handle::bc_event_listener_handle(bc_event_listener_handle&& p_other)
+		bc_event_listener_handle::bc_event_listener_handle(bc_event_listener_handle&& p_other) noexcept
 		{
 			m_event_name = p_other.m_event_name;
 			m_event_index = p_other.m_event_index;
@@ -32,7 +32,7 @@ namespace black_cat
 			reset();
 		}
 
-		bc_event_listener_handle& bc_event_listener_handle::operator=(bc_event_listener_handle&& p_other)
+		bc_event_listener_handle& bc_event_listener_handle::operator=(bc_event_listener_handle&& p_other) noexcept
 		{
 			reset(std::move(p_other));
 

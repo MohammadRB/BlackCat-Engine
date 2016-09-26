@@ -7,11 +7,13 @@
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
+#include "Game/System/Render/bcRenderThread.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		struct bc_render_system_update_param;
 		class bc_render_system;
 
 		// Represent a whole rendering pass that do all tasks that required to render a scene with
@@ -28,14 +30,14 @@ namespace black_cat
 			virtual void initialize_resources(bc_render_system& p_render_system, graphic::bc_device* p_device) = 0;
 
 			// This function will be called during app update phase
-			virtual void update(core_platform::bc_clock::update_param p_clock_update_param) = 0;
+			virtual void update(const bc_render_system_update_param& p_update_param) = 0;
 
 			// This function will be called in start of frame
 			// (Default implementation call set_render_parameters function)
-			virtual void initialize_frame(bc_render_system& p_render_system, graphic::bc_device_pipeline* p_pipeline, graphic::bc_device_command_executer* p_executer) = 0;
+			virtual void initialize_frame(bc_render_system& p_render_system, bc_render_thread& p_thread) = 0;
 
 			// This function will be called in draw frme phase
-			virtual void execute(bc_render_system& p_render_system, graphic::bc_device_pipeline* p_pipeline, graphic::bc_device_command_executer* p_executer) = 0;
+			virtual void execute(bc_render_system& p_render_system, bc_render_thread& p_thread) = 0;
 
 			// This function will be called when device duo to some parameter changes and buffer resize need reset
 			virtual void before_reset(bc_render_system& p_render_system, graphic::bc_device* p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) = 0;

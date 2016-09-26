@@ -47,14 +47,14 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bcUINT bc_platform_texture2d< g_api_dx11 >::get_width() const
+		bcUINT32 bc_platform_texture2d< g_api_dx11 >::get_width() const
 		{
 			return const_cast< bc_platform_texture2d* >(this)->m_pack.m_config.get_platform_pack().m_desc.Width;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bcUINT bc_platform_texture2d< g_api_dx11 >::get_height() const
+		bcUINT32 bc_platform_texture2d< g_api_dx11 >::get_height() const
 		{
 			return const_cast< bc_platform_texture2d* >(this)->m_pack.m_config.get_platform_pack().m_desc.Height;
 		}

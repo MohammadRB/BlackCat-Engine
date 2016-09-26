@@ -5,8 +5,9 @@
 #include "Core/Utility/bcSingleton.h"
 #include "Core/Concurrency/bcThreadManager.h"
 #include "Core/Event/bcEventManager.h"
+#include "Core/File/bcContentStreamManager.h"
 #include "Platform/PlatformPCH.h"
-#include "Platform/bcPlatformEvents.h"
+#include "Platform/bcEvent.h"
 #include "Platform/Application/bcRenderWindow.h"
 
 namespace black_cat
@@ -116,19 +117,16 @@ namespace black_cat
 			virtual void app_initialize(const bcCHAR* p_commandline) = 0;
 
 			// Load required contents(call in top of derived function)
-			virtual void app_load_content() = 0;
+			virtual void app_load_content(core::bc_content_stream_manager* p_stream_manager) = 0;
 
 			// Update and render app(call in top of derived function)
 			virtual void app_update(core_platform::bc_clock::update_param p_clock_update_param) = 0;
-
-			// Handle render window resizing
-			virtual void app_handle_render_window_resize(bcUINT32 p_width, bcUINT32 p_height) = 0;
 
 			// Handle app events(call in bottom of derived function)
 			virtual bool app_event(core::bc_ievent& p_event);
 
 			// Cleanup loaeded contents(call in bottom of derived function)
-			virtual void app_unload_content() = 0;
+			virtual void app_unload_content(core::bc_content_stream_manager* p_stream_manager) = 0;
 
 			// Do cleanup in app(call in bottom of derived function)
 			virtual void app_destroy() = 0;
@@ -161,7 +159,6 @@ namespace black_cat
 
 			core::bc_event_listener_handle m_event_handle_app_exit;
 			core::bc_event_listener_handle m_event_handle_app_active;
-			core::bc_event_listener_handle m_event_handle_window_resize;
 		};
 
 		template< class TApp >
@@ -234,12 +231,18 @@ namespace black_cat
 					}
 #ifdef BC_DEBUG
 					if (l_elaped > 1000.0f)
+					{
 						l_elaped = m_fixed_fps != -1 ? l_fixed_elapsed : 1000.0f / 32;
+					}
 #endif
 
 					_calculate_fps(l_elaped);
 
 					app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_elaped));
+
+#ifdef BC_MEMORY_ENABLE
+					core::bc_memmng::get().end_of_frame();
+#endif
 				}
 			}
 			catch (std::exception& l_exception)
@@ -270,25 +273,19 @@ namespace black_cat
 		template< class TApp >
 		bool bc_render_application< TApp >::app_event(core::bc_ievent& p_event)
 		{
-			core::bc_event_hash l_hash = p_event.get_event_hash();
-
-			if (core::bc_ievent::event_is< bc_app_event_window_resize >(p_event))
-			{
-				bc_app_event_window_resize& l_resize_event = static_cast< bc_app_event_window_resize& >(p_event);
-				app_handle_render_window_resize(l_resize_event.width(), l_resize_event.height());
-
-				return true;
-			}
-
 			if (core::bc_ievent::event_is< bc_app_event_active >(p_event))
 			{
 				bc_app_event_active& l_active_event = static_cast< bc_app_event_active& >(p_event);
 				m_paused = !l_active_event.activate();
 
 				if (m_paused)
+				{
 					m_clock->pause();
+				}
 				else
+				{
 					m_clock->resume();
+				}
 
 				return true;
 			}
@@ -310,6 +307,10 @@ namespace black_cat
 		void bc_render_application< TApp >::_initialize(bc_render_application_parameter& p_platform_parameters)
 		{
 			app_start_engine_components(p_platform_parameters.m_engine_components);
+
+			auto& l_service_manager = core::bc_service_manager::get();
+			auto* l_event_manager = l_service_manager.get_service< core::bc_event_manager >();
+			auto* l_content_stream_manager = l_service_manager.get_service< core::bc_content_stream_manager >();
 
 			m_app = core::bc_make_unique< bc_platform_render_application< core_platform::g_current_platform > >
 				(
@@ -335,13 +336,7 @@ namespace black_cat
 			m_fps = 0;
 			m_fixed_fps = -1;
 
-			core::bc_event_manager* l_event_manager = core::bc_service_manager::get().get_service< core::bc_event_manager >();
-
 			m_event_handle_app_exit = l_event_manager->register_event_listener<bc_app_event_exit>
-				(
-					core::bc_event_manager::delegate_type(this, &bc_render_application::app_event)
-				);
-			m_event_handle_window_resize = l_event_manager->register_event_listener<bc_app_event_window_resize>
 				(
 					core::bc_event_manager::delegate_type(this, &bc_render_application::app_event)
 				);
@@ -351,19 +346,19 @@ namespace black_cat
 				);
 
 			app_initialize(p_platform_parameters.m_commandline);
-
-			app_load_content();
+			app_load_content(l_content_stream_manager);
 		}
 
 		template< class TApp >
 		void bc_render_application< TApp >::_destroy()
 		{
-			app_unload_content();
+			auto& l_service_manager = core::bc_service_manager::get();
+			auto* l_content_stream_manager = l_service_manager.get_service< core::bc_content_stream_manager >();
 
+			app_unload_content(l_content_stream_manager);
 			app_destroy();
 
 			m_event_handle_app_exit.reset();
-			m_event_handle_window_resize.reset();
 			m_event_handle_app_active.reset();
 
 			m_app.reset(nullptr);

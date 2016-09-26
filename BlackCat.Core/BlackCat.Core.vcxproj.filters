@@ -138,9 +138,6 @@
     <ClInclude Include="Core\Container\bcDeque.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Utility\bcFunctionWrapper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Utility\bcNullable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -149,9 +146,6 @@
     </ClInclude>
     <ClInclude Include="Core\Utility\bcObjectPool.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Event\bcCoreEvents.h">
-      <Filter>Core\Events</Filter>
     </ClInclude>
     <ClInclude Include="Core\Event\bcEvent.h">
       <Filter>Core\Events</Filter>
@@ -249,6 +243,12 @@
     <ClInclude Include="Core\bcException.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Utility\bcUtility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\bcEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\CorePCH.cpp">
@@ -261,9 +261,6 @@
       <Filter>Core\Memory</Filter>
     </ClCompile>
     <ClCompile Include="Core\Memory\bcMemoryStack.cpp">
-      <Filter>Core\Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Memory\bcMemoryHeap.cpp">
       <Filter>Core\Memory</Filter>
     </ClCompile>
     <ClCompile Include="Core\Memory\bcMemoryManagment.cpp">
@@ -309,6 +306,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\File\bcPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Memory\bcMemoryHeap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

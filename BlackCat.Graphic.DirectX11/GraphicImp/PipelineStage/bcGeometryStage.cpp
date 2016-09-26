@@ -6,7 +6,7 @@
 #include "GraphicImp/PipelineStage/bcGeometryStage.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
-#include "GraphicImp/Resource/View/bcShaderView.h"
+#include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
 
 namespace black_cat
@@ -109,7 +109,7 @@ namespace black_cat
 
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_shader_resource(); ++i)
 				{
-					bc_shader_view* l_shader_view = l_required_state.m_shader_resource_views.get(i);
+					bc_resource_view* l_shader_view = l_required_state.m_shader_resource_views.get(i);
 					l_views[i] = l_shader_view ? l_shader_view->get_platform_pack().m_shader_view.Get() : nullptr;
 				}
 

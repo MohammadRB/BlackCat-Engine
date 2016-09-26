@@ -4,48 +4,55 @@
 
 #include "Graphic/bcPlatformRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
-#include "Graphic/bcDeviceObject.h"
 #include "Graphic/bcResourcePtr.h"
+#include "Graphic/Resource/View/bcIResourceView.h"
+#include "Graphic/Resource/View/bcResourceViewConfig.h"
 
 namespace black_cat
 {
 	namespace graphic
 	{
 		template< bc_platform_render_api TRenderApi >
-		struct bc_platform_iresource_view_pack
+		struct bc_platform_shader_view_pack
 		{
-
+			bc_resource_view_type m_type;
+			bc_resource_view_config m_config;
 		};
 
 		template< bc_platform_render_api TRenderApi >
-		class bc_platform_iresource_view : public bc_device_object
+		class bc_platform_resource_view : public bc_iresource_view
 		{
 		public:
-			using platform_pack = bc_platform_iresource_view_pack<TRenderApi>;
+			using platform_pack = bc_platform_shader_view_pack<TRenderApi>;
 
 		public:
-			virtual ~bc_platform_iresource_view();
+			bc_platform_resource_view();
 
-			virtual bc_resource_view_type get_view_type() const = 0;
+			bc_platform_resource_view(bc_platform_resource_view&&);
+
+			~bc_platform_resource_view();
+
+			bc_platform_resource_view& operator=(bc_platform_resource_view&&);
+
+			bc_resource_view_type get_view_type() const override;
+
+			bc_resource_view_config& get_config()
+			{
+				return m_pack.m_config;
+			}
 
 			platform_pack& get_platform_pack()
 			{
 				return m_pack;
 			}
-			
 		protected:
-			bc_platform_iresource_view();
-
-			bc_platform_iresource_view(bc_platform_iresource_view&&);
-
-			bc_platform_iresource_view& operator=(bc_platform_iresource_view&&);
 
 		private:
 			platform_pack m_pack;
 		};
 
-		using bc_iresource_view = bc_platform_iresource_view< g_current_platform_render_api >;
+		using bc_resource_view = bc_platform_resource_view< g_current_platform_render_api >;
 
-		using bc_iresource_view_ptr = bc_resource_ptr< bc_iresource_view >;
+		using bc_resource_view_ptr = bc_resource_ptr< bc_resource_view >;
 	}
 }

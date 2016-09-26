@@ -5,7 +5,8 @@
 #include "Game/bcExport.h"
 #include "Game/Object/Scence/bcActor.h"
 #include "Game/Object/Scence/bcActorComponent.h"
-#include "Game/Object/Scence/Component/bcMeshComponent.h"
+#include "Game/System/Render/bcRenderState.h"
+#include "Game/System/Render/bcRenderInstance.h"
 
 namespace black_cat
 {
@@ -28,7 +29,7 @@ namespace black_cat
 
 			void update(const bc_actor& p_actor, core_platform::bc_clock::update_param p_clock_update_param) override;
 
-			void render(bc_render_system& p_render_system);
+			void render(const bc_render_state* p_render_state, const bc_render_instance& p_render_instance) const;
 
 			static constexpr const bcCHAR* component_name()
 			{
@@ -38,7 +39,7 @@ namespace black_cat
 		protected:
 
 		private:
-			const bc_mesh_component* m_mesh_component;
+			bc_render_system* m_render_system;
 		};
 	}
 }

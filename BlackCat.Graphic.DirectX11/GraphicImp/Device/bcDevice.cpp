@@ -7,7 +7,7 @@
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Event/bcEventManager.h"
 #include "CorePlatformImp/bcUtility.h"
-#include "Platform/bcPlatformEvents.h"
+#include "Platform/bcEvent.h"
 // Because explicit specialization of device pack must be included first and 
 // some other header files has included bcDevice.h we must put this header at 
 // top of other header files
@@ -19,7 +19,7 @@
 #include "GraphicImp/Resource/bcResourceConfig.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
-#include "GraphicImp/Resource/View/bcShaderView.h"
+#include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "GraphicImp/Resource/View/bcDepthStencilView.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
@@ -32,6 +32,7 @@
 #include "GraphicImp/Shader/bcComputeShader.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
+#include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
 
 #include "3rdParty/DirectXTK-master/Inc/DDSTextureLoader.h"
@@ -139,7 +140,10 @@ namespace black_cat
 					));
 			}
 
-			p_texture->get_platform_pack().m_config = *p_config;
+			D3D11_TEXTURE2D_DESC l_desc;
+			static_cast< ID3D11Texture2D* >(l_texture.Get())->GetDesc(&l_desc);
+
+			p_texture->get_platform_pack().m_config.get_platform_pack().m_desc = l_desc;
 			p_texture->get_platform_pack().m_texture = static_cast< ID3D11Texture2D* >(l_texture.Get());
 			p_texture->bc_iresource::get_platform_pack().m_resource = l_texture;
 		}
@@ -225,6 +229,7 @@ namespace black_cat
 
 						l_full_message += l_message;
 
+						bcAssert(false);
 						throw bc_graphic_exception(static_cast<bcINT>(l_error_code), l_full_message);
 					}
 					else
@@ -315,7 +320,7 @@ namespace black_cat
 			p_shader->get_platform_pack().m_shader = l_shader;
 		}
 
-		void _initialize_shader_view(bc_device* p_device, bc_shader_view* p_view, bc_iresource* p_resource, bc_resource_view_config* p_view_config)
+		void _initialize_shader_view(bc_device* p_device, bc_resource_view* p_view, bc_iresource* p_resource, bc_resource_view_config* p_view_config)
 		{
 			bcAssert
 			(
@@ -433,25 +438,29 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_platform_device<g_api_dx11>::bc_platform_device()
+		BC_GRAPHICIMP_DLL 
+		bc_platform_device<g_api_dx11>::bc_platform_device()
 		{
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_platform_device<g_api_dx11>::bc_platform_device(bc_platform_device&& p_other)
+		BC_GRAPHICIMP_DLL 
+		bc_platform_device<g_api_dx11>::bc_platform_device(bc_platform_device&& p_other)
 			: m_pack(std::move(p_other.m_pack))
 		{
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_platform_device<g_api_dx11>::~bc_platform_device()
+		BC_GRAPHICIMP_DLL 
+		bc_platform_device<g_api_dx11>::~bc_platform_device()
 		{
 			if (m_initialized)
 				_destroy();
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_platform_device<g_api_dx11>& bc_platform_device<g_api_dx11>::operator=(bc_platform_device&& p_other)
+		BC_GRAPHICIMP_DLL 
+		bc_platform_device<g_api_dx11>& bc_platform_device<g_api_dx11>::operator=(bc_platform_device&& p_other)
 		{
 			m_pack = std::move(p_other.m_pack);
 
@@ -459,19 +468,22 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL bool bc_platform_device<g_api_dx11>::get_vsync() const
+		BC_GRAPHICIMP_DLL 
+		bool bc_platform_device<g_api_dx11>::get_vsync() const
 		{
 			return m_pack.m_vsync;
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::set_vsync(bool p_sync)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device<g_api_dx11>::set_vsync(bool p_sync)
 		{
 			m_pack.m_vsync = p_sync;
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL bool bc_platform_device<g_api_dx11>::get_full_screen() const
+		BC_GRAPHICIMP_DLL 
+		bool bc_platform_device<g_api_dx11>::get_full_screen() const
 		{
 			DXGI_SWAP_CHAIN_DESC l_desc;
 			m_pack.m_swap_chain->GetDesc(&l_desc);
@@ -480,7 +492,8 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::set_full_screen(bool p_full_screen)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device<g_api_dx11>::set_full_screen(bool p_full_screen)
 		{
 			if(p_full_screen)
 			{
@@ -505,7 +518,8 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_texture2d* bc_platform_device<g_api_dx11>::get_back_buffer_texture() const
+		BC_GRAPHICIMP_DLL 
+		bc_texture2d* bc_platform_device<g_api_dx11>::get_back_buffer_texture() const
 		{
 			core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_resources_mutex);
 			{
@@ -515,7 +529,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_device_info bc_platform_device<g_api_dx11>::get_device_info() const
+		BC_GRAPHICIMP_DLL 
+		bc_device_info bc_platform_device<g_api_dx11>::get_device_info() const
 		{
 			ComPtr<IDXGIDevice> l_dxgi_device;
 			ComPtr<IDXGIAdapter> l_adapter;
@@ -532,7 +547,8 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL bcUINT bc_platform_device<g_api_dx11>::check_multi_sampling(bc_format p_textue_format, bcUINT p_sample_count) const
+		BC_GRAPHICIMP_DLL 
+		bcUINT bc_platform_device<g_api_dx11>::check_multi_sampling(bc_format p_textue_format, bcUINT p_sample_count) const
 		{
 			bcUINT l_sample_quality;
 
@@ -542,7 +558,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_buffer_ptr bc_platform_device<g_api_dx11>::create_buffer(bc_buffer_config& p_config, bc_subresource_data* p_data)
+		BC_GRAPHICIMP_DLL 
+		bc_buffer_ptr bc_platform_device<g_api_dx11>::create_buffer(bc_buffer_config& p_config, bc_subresource_data* p_data)
 		{
 			auto l_buffer = allocate<bc_buffer>();
 			bc_buffer* l_pointer = l_buffer.get();
@@ -555,7 +572,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_texture2d_ptr bc_platform_device<g_api_dx11>::create_texture2d(bc_texture_config& p_config, bc_subresource_data* p_data)
+		BC_GRAPHICIMP_DLL 
+		bc_texture2d_ptr bc_platform_device<g_api_dx11>::create_texture2d(bc_texture_config& p_config, bc_subresource_data* p_data)
 		{
 			auto l_texture = allocate<bc_texture2d>();
 			bc_texture2d* l_pointer = l_texture.get();
@@ -568,7 +586,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_texture2d_ptr bc_platform_device<g_api_dx11>::create_texture2d(bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
+		BC_GRAPHICIMP_DLL 
+		bc_texture2d_ptr bc_platform_device<g_api_dx11>::create_texture2d(bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
 		{
 			auto l_texture = allocate<bc_texture2d>();
 			bc_texture2d* l_pointer = l_texture.get();
@@ -581,7 +600,8 @@ namespace black_cat
 		};
 		
 		template< >
-		BC_GRAPHICIMP_DLL bc_sampler_state_ptr bc_platform_device<g_api_dx11>::create_sampler_state(bc_sampler_state_config& p_config)
+		BC_GRAPHICIMP_DLL 
+		bc_sampler_state_ptr bc_platform_device<g_api_dx11>::create_sampler_state(bc_sampler_state_config& p_config)
 		{
 			auto l_sampler = allocate<bc_sampler_state>();
 			bc_sampler_state* l_pointer = l_sampler.get();
@@ -612,7 +632,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		BC_GRAPHICIMP_DLL 
+		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
 		{
 			auto l_shader = allocate<bc_compiled_shader>();
 			bc_compiled_shader* l_pointer = l_shader.get();
@@ -635,7 +656,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_vertex_shader_ptr bc_platform_device<g_api_dx11>::create_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		BC_GRAPHICIMP_DLL 
+		bc_vertex_shader_ptr bc_platform_device<g_api_dx11>::create_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto l_shader = allocate<bc_vertex_shader>();
 			bc_vertex_shader* l_pointer = l_shader.get();
@@ -648,7 +670,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		BC_GRAPHICIMP_DLL 
+		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
 		{
 			auto l_shader = allocate<bc_compiled_shader>();
 			bc_compiled_shader* l_pointer = l_shader.get();
@@ -671,7 +694,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_hull_shader_ptr bc_platform_device<g_api_dx11>::create_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		BC_GRAPHICIMP_DLL 
+		bc_hull_shader_ptr bc_platform_device<g_api_dx11>::create_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto l_shader = allocate<bc_hull_shader>();
 			bc_hull_shader* l_pointer = l_shader.get();
@@ -684,7 +708,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		BC_GRAPHICIMP_DLL 
+		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
 		{
 			auto l_shader = allocate<bc_compiled_shader>();
 			bc_compiled_shader* l_pointer = l_shader.get();
@@ -707,7 +732,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_domain_shader_ptr bc_platform_device<g_api_dx11>::create_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		BC_GRAPHICIMP_DLL 
+		bc_domain_shader_ptr bc_platform_device<g_api_dx11>::create_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto l_shader = allocate<bc_domain_shader>();
 			bc_domain_shader* l_pointer = l_shader.get();
@@ -720,7 +746,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		BC_GRAPHICIMP_DLL 
+		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
 		{
 			auto l_shader = allocate<bc_compiled_shader>();
 			bc_compiled_shader* l_pointer = l_shader.get();
@@ -743,7 +770,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_geometry_shader_ptr bc_platform_device<g_api_dx11>::create_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		BC_GRAPHICIMP_DLL 
+		bc_geometry_shader_ptr bc_platform_device<g_api_dx11>::create_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto l_shader = allocate<bc_geometry_shader>();
 			bc_geometry_shader* l_pointer = l_shader.get();
@@ -756,7 +784,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		BC_GRAPHICIMP_DLL 
+		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
 		{
 			auto l_shader = allocate<bc_compiled_shader>();
 			bc_compiled_shader* l_pointer = l_shader.get();
@@ -779,7 +808,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_pixel_shader_ptr bc_platform_device<g_api_dx11>::create_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		BC_GRAPHICIMP_DLL 
+		bc_pixel_shader_ptr bc_platform_device<g_api_dx11>::create_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto l_shader = allocate<bc_pixel_shader>();
 			bc_pixel_shader* l_pointer = l_shader.get();
@@ -792,7 +822,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		BC_GRAPHICIMP_DLL 
+		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
 		{
 			auto l_shader = allocate<bc_compiled_shader>();
 			bc_compiled_shader* l_pointer = l_shader.get();
@@ -815,7 +846,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_compute_shader_ptr bc_platform_device<g_api_dx11>::create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		BC_GRAPHICIMP_DLL 
+		bc_compute_shader_ptr bc_platform_device<g_api_dx11>::create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto l_shader = allocate<bc_compute_shader>();
 			bc_compute_shader* l_pointer = l_shader.get();
@@ -828,20 +860,22 @@ namespace black_cat
 		};
 
 		template < >
-		BC_GRAPHICIMP_DLL bc_shader_view_ptr bc_platform_device<g_api_dx11>::create_shader_view(bc_iresource* p_resource, bc_resource_view_config& p_view_config)
+		BC_GRAPHICIMP_DLL
+		bc_resource_view_ptr bc_platform_device<g_api_dx11>::create_resource_view(bc_iresource* p_resource, bc_resource_view_config& p_view_config)
 		{
-			auto l_view = allocate<bc_shader_view>();
-			bc_shader_view* l_pointer = l_view.get();
+			auto l_view = allocate<bc_resource_view>();
+			bc_resource_view* l_pointer = l_view.get();
 
 			_initialize_shader_view(static_cast<bc_device*>(this), l_pointer, p_resource, &p_view_config);
 
 			_store_new_resource(std::move(l_view));
 
-			return bc_shader_view_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
+			return bc_resource_view_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL bc_depth_stencil_view_ptr bc_platform_device<g_api_dx11>::create_depth_stencil_view(bc_iresource* p_resource, bc_depth_stencil_view_config& p_view_config)
+		BC_GRAPHICIMP_DLL 
+		bc_depth_stencil_view_ptr bc_platform_device<g_api_dx11>::create_depth_stencil_view(bc_iresource* p_resource, bc_depth_stencil_view_config& p_view_config)
 		{
 			auto l_view = allocate<bc_depth_stencil_view>();
 			bc_depth_stencil_view* l_pointer = l_view.get();
@@ -854,7 +888,8 @@ namespace black_cat
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL bc_render_target_view_ptr bc_platform_device<g_api_dx11>::create_render_target_view(bc_iresource* p_resource, bc_render_target_view_config& p_view_config)
+		BC_GRAPHICIMP_DLL 
+		bc_render_target_view_ptr bc_platform_device<g_api_dx11>::create_render_target_view(bc_iresource* p_resource, bc_render_target_view_config& p_view_config)
 		{
 			auto l_view = allocate<bc_render_target_view>();
 			bc_render_target_view* l_pointer = l_view.get();
@@ -867,7 +902,8 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_device_pipeline_state_ptr bc_platform_device<g_api_dx11>::create_pipeline_state(bc_device_pipeline_state_config& p_config)
+		BC_GRAPHICIMP_DLL 
+		bc_device_pipeline_state_ptr bc_platform_device<g_api_dx11>::create_pipeline_state(bc_device_pipeline_state_config& p_config)
 		{
 			auto l_pipeline_state = allocate<bc_device_pipeline_state>();
 			bc_device_pipeline_state* l_pointer = l_pipeline_state.get();
@@ -959,10 +995,25 @@ namespace black_cat
 			_store_new_resource(std::move(l_pipeline_state));
 
 			return bc_device_pipeline_state_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
-		};
+		}
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_device_pipeline_ptr bc_platform_device<g_api_dx11>::create_pipeline()
+		BC_GRAPHICIMP_DLL
+		bc_device_compute_state_ptr bc_platform_device<g_api_dx11>::create_compute_state(bc_device_compute_state_config& p_config)
+		{
+			auto l_compute_state = allocate<bc_device_compute_state>();
+			bc_device_compute_state* l_pointer = l_compute_state.get();
+
+			l_compute_state->get_platform_pack().m_config = std::move(p_config);
+
+			_store_new_resource(std::move(l_compute_state));
+
+			return bc_device_compute_state_ptr(l_pointer, _bc_resource_ptr_deleter(static_cast<bc_device*>(this)));
+		}
+
+		template< >
+		BC_GRAPHICIMP_DLL 
+		bc_device_pipeline_ptr bc_platform_device<g_api_dx11>::create_pipeline()
 		{
 			auto l_pipeline = allocate<bc_device_pipeline>(static_cast<bc_device&>(*this));
 			bc_device_pipeline* l_pointer = l_pipeline.get();
@@ -973,7 +1024,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_device_command_list_ptr bc_platform_device<g_api_dx11>::create_command_list()
+		BC_GRAPHICIMP_DLL 
+		bc_device_command_list_ptr bc_platform_device<g_api_dx11>::create_command_list()
 		{
 			auto l_commnad_list = allocate<bc_device_command_list>();
 			bc_device_command_list* l_pointer = l_commnad_list.get();
@@ -984,7 +1036,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_device_command_executer_ptr bc_platform_device<g_api_dx11>::create_command_executer()
+		BC_GRAPHICIMP_DLL 
+		bc_device_command_executer_ptr bc_platform_device<g_api_dx11>::create_command_executer()
 		{
 			auto l_executer = allocate<bc_device_command_executer>(static_cast<bc_device&>(*this));
 			bc_device_command_executer* l_pointer = l_executer.get();
@@ -995,13 +1048,15 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::resize_back_buffer(bcUINT p_width, bcUINT p_height)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device<g_api_dx11>::resize_back_buffer(bcUINT p_width, bcUINT p_height)
 		{
 			resize_back_buffer(p_width, p_height, get_back_buffer_format());
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::resize_back_buffer(bcUINT p_width, bcUINT p_height, bc_format p_format)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device<g_api_dx11>::resize_back_buffer(bcUINT p_width, bcUINT p_height, bc_format p_format)
 		{
 			// If we are in fullscreen state change resulotion too
 			if(get_full_screen()) // TODO check for 
@@ -1064,7 +1119,8 @@ namespace black_cat
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::resize_texture2d(bc_texture2d_ptr& p_texture, 
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device<g_api_dx11>::resize_texture2d(bc_texture2d_ptr& p_texture, 
 			bcUINT p_width, 
 			bcUINT p_height, 
 			bcUINT p_num_views,
@@ -1090,7 +1146,7 @@ namespace black_cat
 
 				if (l_view->get_view_type() == bc_resource_view_type::shader)
 				{
-					bc_shader_view* l_shader_view = static_cast< bc_shader_view* >(l_view);
+					bc_resource_view* l_shader_view = static_cast< bc_resource_view* >(l_view);
 
 					l_shader_view->get_platform_pack().m_shader_view.ReleaseAndGetAddressOf();
 					_initialize_shader_view
@@ -1103,7 +1159,7 @@ namespace black_cat
 				}
 				else if (l_view->get_view_type() == bc_resource_view_type::unordered)
 				{
-					bc_shader_view* l_shader_view = static_cast< bc_shader_view* >(l_view);
+					bc_resource_view* l_shader_view = static_cast< bc_resource_view* >(l_view);
 
 					l_shader_view->get_platform_pack().m_unordered_shader_view.ReleaseAndGetAddressOf();
 					_initialize_shader_view
@@ -1144,13 +1200,15 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::present()
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device<g_api_dx11>::present()
 		{
 			m_pack.m_swap_chain->Present(m_pack.m_vsync ? 1 : 0, 0);
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::_initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, platform::bc_render_window& p_output_window)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device<g_api_dx11>::_initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, platform::bc_render_window& p_output_window)
 		{
 			HRESULT l_result = S_OK;
 
@@ -1230,7 +1288,6 @@ namespace black_cat
 
 			set_vsync(true);
 			m_resources.reserve(25);
-			//m_listeners.reserve(10);
 
 			set_allocator_alloc_type(core::bc_alloc_type::unknown_movale);
 
@@ -1241,7 +1298,8 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device<g_api_dx11>::_destroy()
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device<g_api_dx11>::_destroy()
 		{
 #ifdef BC_DEBUG
 			// All of resources must be released before destroying device(first resource is back buffer)

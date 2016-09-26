@@ -20,12 +20,12 @@ namespace black_cat
 		public:
 			bc_device_object() = default;
 
+			bc_device_object(bc_device_object&& p_other) noexcept = default;
+
 			virtual ~bc_device_object() = default;
 
-			bc_device_object(bc_device_object&&) = default;
+			bc_device_object& operator=(bc_device_object&&) noexcept = default;
 
-			bc_device_object& operator=(bc_device_object&&) = default;
-			
 		protected:
 
 		private:

@@ -4,7 +4,7 @@
 
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
-#include "GraphicImp/Resource/View/bcShaderView.h"
+#include "GraphicImp/Resource/View/bcResourceView.h"
 
 #include "Graphic/PipelineStage/bcProgrammableStage.h"
 #include "GraphicImp/GraphicImpPCH.h"

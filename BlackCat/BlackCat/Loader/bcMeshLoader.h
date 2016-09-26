@@ -16,11 +16,11 @@ namespace black_cat
 	public:
 		bc_mesh_loader();
 
-		bc_mesh_loader(bc_mesh_loader&&);
+		bc_mesh_loader(bc_mesh_loader&&) noexcept;
 
 		~bc_mesh_loader();
 
-		bc_mesh_loader& operator=(bc_mesh_loader&&);
+		bc_mesh_loader& operator=(bc_mesh_loader&&) noexcept;
 
 		void content_offline_processing(core::bc_content_loader_context& p_context) override;
 

@@ -26,7 +26,6 @@ namespace black_cat
 			bc_string_program m_name;
 			bc_estring_program m_file;
 			bc_data_driven_parameter m_parameters;
-			//bc_vector_program< std::pair< bc_string_program, bc_any > > m_parameters; // TODO use data driven parameter
 		};
 
 		// Make bcContentManager data driven
@@ -41,29 +40,57 @@ namespace black_cat
 			using contents_map_type = bc_unordered_map_program< string_hash::result_type, bc_vector< bc_icontent_ptr > >;
 
 		public:
-			// Read content streams from a non-unicode json file
-			bc_content_stream_manager(const bcECHAR* p_json_file_path) noexcept(false);
+			bc_content_stream_manager() noexcept(false);
 
-			bc_content_stream_manager(bc_content_stream_manager&&);
+			bc_content_stream_manager(bc_content_stream_manager&&) noexcept(
+				std::is_nothrow_move_constructible< content_types_map_type >::value &&
+				std::is_nothrow_move_constructible< streams_map_type >::value &&
+				std::is_nothrow_move_constructible< contents_map_type >::value);
 
 			~bc_content_stream_manager();
 
-			bc_content_stream_manager& operator=(bc_content_stream_manager&&);
+			bc_content_stream_manager& operator=(bc_content_stream_manager&&) noexcept(
+				std::is_nothrow_move_assignable< content_types_map_type >::value &&
+				std::is_nothrow_move_assignable< streams_map_type >::value &&
+				std::is_nothrow_move_assignable< contents_map_type >::value);
 
 			template< class TContent, class TLoader >
 			void register_loader(bc_cloader_ptr< TLoader >&& p_loader);
 
-			// Load contents in the stream concurrent
+			/**
+			 * \brief Read content streams from a non-unicode json file
+			 * \param p_json_file_path 
+			 */
+			void read_stream_file(const bcECHAR* p_json_file_path);
+
+			/**
+			 * \brief Load contents in the stream concurrent (TSFunc)
+			 * \param p_alloc_type 
+			 * \param p_stream_name 
+			 */
 			void load_content_stream(bc_alloc_type p_alloc_type, const bcCHAR* p_stream_name);
 
+			/**
+			 * \brief (TSFunc)
+			 * \param p_stream_name 
+			 */
 			void unload_content_stream(const bcCHAR* p_stream_name);
 
-			// Return Content with specified title otherwise return nullptr
+			/**
+			 * \brief Return Content with specified title otherwise return nullptr (TSFunc)
+			 * \param p_content_name 
+			 * \return 
+			 */
 			bc_icontent_ptr find_content(const bcCHAR* p_content_name);
 
 			bc_icontent_ptr find_content_throw(const bcCHAR* p_content_name);
 
-			// Return Content with specified title otherwise return nullptr
+			/**
+			 * \brief Return Content with specified title otherwise return nullptr (TSFunc)
+			 * \tparam TContent 
+			 * \param p_content_name 
+			 * \return 
+			 */
 			template< class TContent >
 			bc_content_ptr< TContent > find_content(const bcCHAR* p_content_name);
 

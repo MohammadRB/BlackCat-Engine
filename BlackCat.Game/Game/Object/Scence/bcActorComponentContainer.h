@@ -90,7 +90,14 @@ namespace black_cat
 		template< class TComponent >
 		bc_iactor_component* bc_actor_component_container<TComponent>::get(bc_actor_component_index p_index)
 		{
-			return &m_components[p_index].get();
+			auto& l_entry = m_components[p_index];
+
+			if(!l_entry.is_set())
+			{
+				return nullptr;
+			}
+
+			return &l_entry.get();
 		}
 
 		template< class TComponent >

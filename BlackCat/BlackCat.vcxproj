@@ -113,6 +113,15 @@
       <Command>copy BlackCat\*.h ..\BC_SDK\Include\BlackCat
 copy BlackCat\Application\*.h ..\BC_SDK\Include\BlackCat\Application
 copy BlackCat\Loader\*.h ..\BC_SDK\Include\BlackCat\Loader
+copy BlackCat\RenderPass\*.h ..\BC_SDK\Include\BlackCat\RenderPass
+copy BlackCat\Shader\*.h ..\BC_SDK\Include\BlackCat\Shader
+copy BlackCat\Shader\DirectX11\*.h ..\BC_SDK\Include\BlackCat\Shader\DirectX11
+
+copy BlackCat\Shader\DirectX11\*.hlsli ..\BC_SDK\Content\Shader\DirectX11
+copy BlackCat\Shader\DirectX11\*.hlsl ..\BC_SDK\Content\Shader\DirectX11
+
+copy BlackCat\Shader\DirectX11\*.hlsli ..\$(Configuration)\Content\Shader\DirectX11
+copy BlackCat\Shader\DirectX11\*.hlsl ..\$(Configuration)\Content\Shader\DirectX11
 
 copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(configuration)
 </Command>
@@ -147,18 +156,20 @@ copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(configuration)
       </AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy Application\*.h ..\BC_SDK\Include\BlackCat\Application
-copy Graphics\*.h ..\BC_SDK\Include\BlackCat\Graphics
-copy Graphics\PostProcessing\*.h ..\BC_SDK\Include\BlackCat\Graphics\PostProcessing\
-copy Graphics\PostProcessing\DeferedRendering\*.h ..\BC_SDK\Include\BlackCat\Graphics\PostProcessing\DeferedRendering
-copy GUI\*.h ..\BC_SDK\Include\BlackCat\GUI
-copy Mathematic\*.h ..\BC_SDK\Include\BlackCat\Mathematic
-copy Entity\*.h ..\BC_SDK\Include\BlackCat\Entity
-copy Utility\*.h ..\BC_SDK\Include\BlackCat\Utility
+      <Command>copy BlackCat\*.h ..\BC_SDK\Include\BlackCat
+copy BlackCat\Application\*.h ..\BC_SDK\Include\BlackCat\Application
+copy BlackCat\Loader\*.h ..\BC_SDK\Include\BlackCat\Loader
+copy BlackCat\RenderPass\*.h ..\BC_SDK\Include\BlackCat\RenderPass
+copy BlackCat\Shader\*.h ..\BC_SDK\Include\BlackCat\Shader
+copy BlackCat\Shader\DirectX11\*.h ..\BC_SDK\Include\BlackCat\Shader\DirectX11
 
-copy Shaders\*.hlsl ..\BC_SDK\Shaders
-copy Shaders\PostProcess\*.hlsl ..\BC_SDK\Shaders\PostProcess
-copy Textures\*.* ..\BC_SDK\Textures
+copy BlackCat\Shader\DirectX11\*.hlsli ..\BC_SDK\Content\Shader\DirectX11
+copy BlackCat\Shader\DirectX11\*.hlsl ..\BC_SDK\Content\Shader\DirectX11
+
+copy BlackCat\Shader\DirectX11\*.hlsli ..\$(Configuration)\Content\Shader\DirectX11
+copy BlackCat\Shader\DirectX11\*.hlsl ..\$(Configuration)\Content\Shader\DirectX11
+
+copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(configuration)
 </Command>
     </PostBuildEvent>
     <Lib>
@@ -188,18 +199,20 @@ copy Textures\*.* ..\BC_SDK\Textures
       </AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy Application\*.h ..\BC_SDK\Include
-copy Graphics\*.h ..\BC_SDK\Include
-copy Graphics\PostProcessing\*.h ..\BC_SDK\Include
-copy Graphics\PostProcessing\DeferedRendering\*.h ..\BC_SDK\Include
-copy GUI\*.h ..\BC_SDK\Include
-copy Mathematic\*.h ..\BC_SDK\Include
-copy Entity\*.h ..\BC_SDK\Include
-copy Utility\*.h ..\BC_SDK\Include
+      <Command>copy BlackCat\*.h ..\BC_SDK\Include\BlackCat
+copy BlackCat\Application\*.h ..\BC_SDK\Include\BlackCat\Application
+copy BlackCat\Loader\*.h ..\BC_SDK\Include\BlackCat\Loader
+copy BlackCat\RenderPass\*.h ..\BC_SDK\Include\BlackCat\RenderPass
+copy BlackCat\Shader\*.h ..\BC_SDK\Include\BlackCat\Shader
+copy BlackCat\Shader\DirectX11\*.h ..\BC_SDK\Include\BlackCat\Shader\DirectX11
 
-copy Shaders\*.hlsl ..\BC_SDK\Shaders
-copy Shaders\PostProcess\*.hlsl ..\BC_SDK\Shaders\PostProcess
-copy Textures\*.* ..\BC_SDK\Textures
+copy BlackCat\Shader\DirectX11\*.hlsli ..\BC_SDK\Content\Shader\DirectX11
+copy BlackCat\Shader\DirectX11\*.hlsl ..\BC_SDK\Content\Shader\DirectX11
+
+copy BlackCat\Shader\DirectX11\*.hlsli ..\$(Configuration)\Content\Shader\DirectX11
+copy BlackCat\Shader\DirectX11\*.hlsl ..\$(Configuration)\Content\Shader\DirectX11
+
+copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(configuration)
 </Command>
     </PostBuildEvent>
     <Lib>
@@ -231,24 +244,38 @@ copy Textures\*.* ..\BC_SDK\Textures
     <PostBuildEvent>
       <Command>copy BlackCat\*.h ..\BC_SDK\Include\BlackCat
 copy BlackCat\Application\*.h ..\BC_SDK\Include\BlackCat\Application
-copy BlackCat\Graphic\Command\*.h ..\BC_SDK\Include\BlackCat\Graphic\Command
-copy BlackCat\Graphic\Pass\*.h ..\BC_SDK\Include\BlackCat\Graphic\Pass
-copy BlackCat\Graphic\Task\*.h ..\BC_SDK\Include\BlackCat\Graphic\Task
+copy BlackCat\Loader\*.h ..\BC_SDK\Include\BlackCat\Loader
+copy BlackCat\RenderPass\*.h ..\BC_SDK\Include\BlackCat\RenderPass
+copy BlackCat\Shader\*.h ..\BC_SDK\Include\BlackCat\Shader
+copy BlackCat\Shader\DirectX11\*.h ..\BC_SDK\Include\BlackCat\Shader\DirectX11
 
-copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(configuration)</Command>
+copy BlackCat\Shader\DirectX11\*.hlsli ..\BC_SDK\Content\Shader\DirectX11
+copy BlackCat\Shader\DirectX11\*.hlsl ..\BC_SDK\Content\Shader\DirectX11
+
+copy BlackCat\Shader\DirectX11\*.hlsli ..\$(Configuration)\Content\Shader\DirectX11
+copy BlackCat\Shader\DirectX11\*.hlsl ..\$(Configuration)\Content\Shader\DirectX11
+
+copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(configuration)
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BlackCat\Application\bcBaseRenderApplication.h" />
+    <ClInclude Include="BlackCat\bcException.h" />
     <ClInclude Include="BlackCat\bcExport.h" />
     <ClInclude Include="BlackCat\BlackCatPCH.h" />
+    <ClInclude Include="BlackCat\Loader\bcComputeShaderLoader.h" />
     <ClInclude Include="BlackCat\Loader\bcDomainShaderLoader.h" />
     <ClInclude Include="BlackCat\Loader\bcGeometryShaderLoader.h" />
+    <ClInclude Include="BlackCat\Loader\bcHeightMapLoaderDx11.h" />
     <ClInclude Include="BlackCat\Loader\bcHullShaderLoader.h" />
     <ClInclude Include="BlackCat\Loader\bcMeshLoader.h" />
     <ClInclude Include="BlackCat\Loader\bcPixelShaderLoader.h" />
     <ClInclude Include="BlackCat\Loader\bcTextureLoader.h" />
     <ClInclude Include="BlackCat\Loader\bcVertexShaderLoader.h" />
+    <ClInclude Include="BlackCat\RenderPass\bcBackBufferOutputPass.h" />
+    <ClInclude Include="BlackCat\RenderPass\bcInitializePass.h" />
+    <ClInclude Include="BlackCat\RenderPass\bcTerrainPassDx11.h" />
     <ClInclude Include="BlackCat\_\Application\App.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
@@ -473,13 +500,18 @@ copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(configuration)</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="BlackCat\Loader\bcComputeShaderLoader.cpp" />
     <ClCompile Include="BlackCat\Loader\bcDomainShaderLoader.cpp" />
     <ClCompile Include="BlackCat\Loader\bcGeometryShaderLoader.cpp" />
+    <ClCompile Include="BlackCat\Loader\bcHeightMapLoaderDx11.cpp" />
     <ClCompile Include="BlackCat\Loader\bcHullShaderLoader.cpp" />
     <ClCompile Include="BlackCat\Loader\bcMeshLoader.cpp" />
     <ClCompile Include="BlackCat\Loader\bcPixelShaderLoader.cpp" />
     <ClCompile Include="BlackCat\Loader\bcTextureLoader.cpp" />
     <ClCompile Include="BlackCat\Loader\bcVertexShaderLoader.cpp" />
+    <ClCompile Include="BlackCat\RenderPass\bcBackBufferOutputPass.cpp" />
+    <ClCompile Include="BlackCat\RenderPass\bcInitializePass.cpp" />
+    <ClCompile Include="BlackCat\RenderPass\bcTerrainPassDx11.cpp" />
     <ClCompile Include="BlackCat\_\Application\App.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
@@ -701,6 +733,46 @@ copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(configuration)</Command>
     <ProjectReference Include="..\BlackCat.Platform.Win32\BlackCat.Platform.Win32.vcxproj">
       <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="BlackCat\Shader\DirectX11\bcMeshShader.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="BlackCat\Shader\DirectX11\bcTerrain.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="BlackCat\Shader\DirectX11\bcTerrainTools.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BlackCat\Shader\DirectX11\bcRegister.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTPNov2012|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_CTP_Nov_2013|Win32'">true</ExcludedFromBuild>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

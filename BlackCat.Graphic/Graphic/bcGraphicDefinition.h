@@ -106,7 +106,7 @@ namespace black_cat
 			gpu_rw = 0,
 			gpu_r = 1,
 			gpu_r_cpu_w = 2,
-			gpu_rw_cpu_rw = 3
+			gpu_r_cpu_r = 3
 		};
 
 		/*enum class bc_resource_bind
@@ -132,7 +132,7 @@ namespace black_cat
 
 		enum class bc_format
 		{
-			UNKNOWN = 0,
+			unknown = 0,
 			R32G32B32A32_TYPELESS = 1,
 			R32G32B32A32_FLOAT = 2,
 			R32G32B32A32_UINT = 3,

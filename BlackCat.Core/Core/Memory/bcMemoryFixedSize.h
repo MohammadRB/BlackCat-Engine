@@ -21,25 +21,25 @@ namespace black_cat
 			using is_movable_type = std::false_type;
 
 		public:
-			bc_memory_fixed_size() noexcept(true);
+			bc_memory_fixed_size() noexcept;
 
-			bc_memory_fixed_size(this_type&& p_other) noexcept(true);
+			bc_memory_fixed_size(this_type&& p_other) noexcept;
 			
 			~bc_memory_fixed_size();
 
-			this_type& operator =(this_type&& p_other) noexcept(true);
+			this_type& operator =(this_type&& p_other) noexcept;
 
-			bcUINT32 block_size() const { return m_block_size; };
+			bcUINT32 block_size() const noexcept { return m_block_size; };
 
-			bcUINT32 num_block() const { return m_num_block; };
+			bcUINT32 num_block() const noexcept { return m_num_block; };
 
-			void* alloc(bc_memblock* p_mem_block) noexcept(true) override;
+			void* alloc(bc_memblock* p_mem_block) noexcept override;
 
-			void free(void* p_pointer, bc_memblock* p_mem_block) noexcept(true) override;
+			void free(void* p_pointer, bc_memblock* p_mem_block) noexcept override;
 
-			bool contain_pointer(void* p_pointer) const noexcept(true) override;
+			bool contain_pointer(void* p_pointer) const noexcept override;
 
-			void clear() noexcept(true) override;
+			void clear() noexcept override;
 
 		protected:
 

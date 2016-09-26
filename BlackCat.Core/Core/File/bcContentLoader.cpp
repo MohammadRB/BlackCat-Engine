@@ -12,7 +12,7 @@ namespace black_cat
 		{
 		}
 
-		bc_base_content_loader::bc_base_content_loader(bc_base_content_loader&& p_other)
+		bc_base_content_loader::bc_base_content_loader(bc_base_content_loader&& p_other) noexcept
 			: bc_icontent_loader(std::move(p_other))
 		{
 		}
@@ -21,7 +21,7 @@ namespace black_cat
 		{
 		}
 
-		bc_base_content_loader& bc_base_content_loader::operator=(bc_base_content_loader&& p_other)
+		bc_base_content_loader& bc_base_content_loader::operator=(bc_base_content_loader&& p_other) noexcept
 		{
 			bc_icontent_loader::operator=(std::move(p_other));
 

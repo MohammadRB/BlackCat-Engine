@@ -6,7 +6,7 @@
 #include "GraphicImp/bcExport.h"
 #include "GraphicImp/Resource/bcResource.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
-#include "GraphicImp/Resource/View/bcShaderView.h"
+#include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "GraphicImp/Resource/View/bcDepthStencilView.h"
 #include "GraphicImp/Device/bcDevice.h"
@@ -20,20 +20,21 @@
 #include "GraphicImp/Shader/bcPixelShader.h"
 #include "Graphic/Shader/Parameter/bcConstantBufferParameter.h"
 #include "Graphic/Shader/Parameter/bcSamplerParameter.h"
-#include "Graphic/Shader/Parameter/bcShaderViewParameter.h"
+#include "Graphic/Shader/Parameter/bcResourceViewParameter.h"
 
 namespace black_cat
 {
 	namespace graphic
 	{
 		template<>
-		BC_GRAPHICIMP_DLL bc_platform_device_pipeline< g_api_dx11 >::bc_platform_device_pipeline(bc_device& p_device)
-			: m_shader_stages{ &m_vertex_shader_stage,
+		BC_GRAPHICIMP_DLL
+		bc_platform_device_pipeline< g_api_dx11 >::bc_platform_device_pipeline(bc_device& p_device)
+			: m_shader_stages{&m_vertex_shader_stage,
 				&m_hull_shader_stage,
 				&m_domain_shader_stage,
 				&m_geometry_shader_stage,
 				&m_pixel_shader_stage,
-				&m_compute_shader_stage },
+				&m_compute_shader_stage},
 			m_device(p_device)
 		{
 			dx_call(m_device.get_platform_pack().m_device->CreateDeferredContext(0, m_pack.m_context.GetAddressOf()));
@@ -46,7 +47,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_platform_device_pipeline<g_api_dx11>::bc_platform_device_pipeline(bc_platform_device_pipeline&& p_other)
+		BC_GRAPHICIMP_DLL 
+		bc_platform_device_pipeline<g_api_dx11>::bc_platform_device_pipeline(bc_platform_device_pipeline&& p_other)
 			: bc_device_object(std::move(p_other)),
 			m_device(p_other.m_device),
 			m_pack(std::move(p_other.m_pack))
@@ -54,12 +56,14 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_platform_device_pipeline<g_api_dx11>::~bc_platform_device_pipeline()
+		BC_GRAPHICIMP_DLL 
+		bc_platform_device_pipeline<g_api_dx11>::~bc_platform_device_pipeline()
 		{
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL bc_platform_device_pipeline<g_api_dx11>& bc_platform_device_pipeline<bc_platform_render_api::directx11>::operator=(bc_platform_device_pipeline&& p_other)
+		BC_GRAPHICIMP_DLL 
+		bc_platform_device_pipeline<g_api_dx11>& bc_platform_device_pipeline<bc_platform_render_api::directx11>::operator=(bc_platform_device_pipeline&& p_other)
 		{
 			bc_device_object::operator=(std::move(p_other));
 			m_pack = std::move(p_other.m_pack);
@@ -68,7 +72,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::bind_pipeline_state(bc_device_pipeline_state* p_state)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::bind_pipeline_state(bc_device_pipeline_state* p_state)
 		{
 			if (p_state->get_platform_pack().m_config.m_vertex_shader != nullptr)
 				m_pack.m_context->VSSetShader
@@ -126,7 +131,8 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::unbind_pipeline_state()
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::unbind_pipeline_state()
 		{
 			m_pack.m_context->VSSetShader
 			(
@@ -179,27 +185,57 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::bind_ia_primitive_topology(bc_primitive p_primitive)
+		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline<g_api_dx11>::bind_compute_state(bc_device_compute_state* p_state)
+		{
+			bcAssert(p_state->get_platform_pack().m_config.m_compute_shader != nullptr);
+
+			m_pack.m_context->CSSetShader
+			(
+				p_state->get_platform_pack().m_config.m_compute_shader->get_platform_pack().m_shader.Get(),
+				nullptr,
+				0
+			);
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline<g_api_dx11>::unbind_compute_state()
+		{
+			m_pack.m_context->CSSetShader
+			(
+				nullptr,
+				nullptr,
+				0
+			);
+		}
+
+		template< >
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::bind_ia_primitive_topology(bc_primitive p_primitive)
 		{
 			m_input_assembler_stage.get_required_state().m_primitive_topology.set(p_primitive);
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::bind_ia_index_buffer(bc_buffer* p_buffer, bc_format p_format)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::bind_ia_index_buffer(bc_buffer* p_buffer, bc_format p_format)
 		{
 			m_input_assembler_stage.get_required_state().m_index_buffer.set(p_buffer);
 			m_input_assembler_stage.get_required_state().m_index_buffer_format.set(p_format);
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::unbind_ia_index_buffer()
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::unbind_ia_index_buffer()
 		{
 			m_input_assembler_stage.get_required_state().m_index_buffer.set_to_initial_state();
 			m_input_assembler_stage.get_required_state().m_index_buffer_format.set_to_initial_state();
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::bind_ia_vertex_buffers(bcUINT p_start_slot, bcUINT p_buffer_count, bc_buffer* p_buffers, bcUINT* p_strides, bcUINT* p_offsets)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::bind_ia_vertex_buffers(bcUINT p_start_slot, bcUINT p_buffer_count, bc_buffer* p_buffers, bcUINT* p_strides, bcUINT* p_offsets)
 		{
 			bcAssert(p_start_slot + p_buffer_count <= bc_render_api_info::number_of_ia_vertex_buffers());
 
@@ -212,7 +248,8 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::unbind_ia_vertex_buffers(bcUINT p_start_slot, bcUINT p_buffer_count)
+		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline<g_api_dx11>::unbind_ia_vertex_buffers(bcUINT p_start_slot, bcUINT p_buffer_count)
 		{
 			bcAssert(p_start_slot + p_buffer_count <= bc_render_api_info::number_of_ia_vertex_buffers());
 
@@ -225,13 +262,14 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::bind_ps_constant_buffer_parameter(const bc_constant_buffer_parameter& p_parameter)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::bind_ps_constant_buffer_parameter(const bc_constant_buffer_parameter& p_parameter)
 		{
 			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_shader_constant_buffer());
 
 			bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
-			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
 			bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
+			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
 			bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
 			bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
 			bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
@@ -245,14 +283,14 @@ namespace black_cat
 					.m_constant_buffers
 					.set(p_parameter.get_register_index(), l_buffer);
 			}
-			if (l_domain_shader)
+			if (l_hull_shader)
 			{
 				m_shader_stages[1]
 					->get_required_state()
 					.m_constant_buffers
 					.set(p_parameter.get_register_index(), l_buffer);
 			}
-			if (l_hull_shader)
+			if (l_domain_shader)
 			{
 				m_shader_stages[2]
 					->get_required_state()
@@ -283,13 +321,14 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::unbind_ps_constant_buffer_parameter(const bc_constant_buffer_parameter& p_parameter)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::unbind_ps_constant_buffer_parameter(const bc_constant_buffer_parameter& p_parameter)
 		{
 			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_shader_constant_buffer());
 
 			bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
-			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
 			bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
+			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
 			bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
 			bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
 			bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
@@ -301,14 +340,14 @@ namespace black_cat
 					.m_constant_buffers
 					.set(p_parameter.get_register_index(), nullptr);
 			}
-			if (l_domain_shader)
+			if (l_hull_shader)
 			{
 				m_shader_stages[1]
 					->get_required_state()
 					.m_constant_buffers
 					.set(p_parameter.get_register_index(), nullptr);
 			}
-			if (l_hull_shader)
+			if (l_domain_shader)
 			{
 				m_shader_stages[2]
 					->get_required_state()
@@ -339,13 +378,14 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::bind_ps_sampler_parameter(const bc_sampler_parameter& p_parameter)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::bind_ps_sampler_parameter(const bc_sampler_parameter& p_parameter)
 		{
 			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_shader_sampler());
 
 			bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
-			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
 			bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
+			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
 			bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
 			bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
 			bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
@@ -359,14 +399,14 @@ namespace black_cat
 					.m_sampler_states
 					.set(p_parameter.get_register_index(), l_sampler);
 			}
-			if (l_domain_shader)
+			if (l_hull_shader)
 			{
 				m_shader_stages[1]
 					->get_required_state()
 					.m_sampler_states
 					.set(p_parameter.get_register_index(), l_sampler);
 			}
-			if (l_hull_shader)
+			if (l_domain_shader)
 			{
 				m_shader_stages[2]
 					->get_required_state()
@@ -397,13 +437,14 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::unbind_ps_sampler_parameter(const bc_sampler_parameter& p_parameter)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::unbind_ps_sampler_parameter(const bc_sampler_parameter& p_parameter)
 		{
 			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_shader_sampler());
 
 			bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
-			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
 			bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
+			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
 			bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
 			bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
 			bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
@@ -415,14 +456,14 @@ namespace black_cat
 					.m_sampler_states
 					.set(p_parameter.get_register_index(), nullptr);
 			}
-			if (l_domain_shader)
+			if (l_hull_shader)
 			{
 				m_shader_stages[1]
 					->get_required_state()
 					.m_sampler_states
 					.set(p_parameter.get_register_index(), nullptr);
 			}
-			if (l_hull_shader)
+			if (l_domain_shader)
 			{
 				m_shader_stages[2]
 					->get_required_state()
@@ -453,18 +494,19 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::bind_ps_shader_view_parameter(const bc_shader_view_parameter& p_parameter)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::bind_ps_shader_view_parameter(const bc_resource_view_parameter& p_parameter)
 		{
-			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_ps_cs_uav_registers());
+			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_ps_cs_uav_resource());
 
 			bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
-			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
 			bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
+			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
 			bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
 			bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
 			bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
 
-			bc_shader_view* l_resource = p_parameter.get_shader_resource().get();
+			bc_resource_view* l_resource = p_parameter.get_resource_view().get();
 
 			if (l_vertex_shader)
 			{
@@ -476,7 +518,7 @@ namespace black_cat
 						.set(p_parameter.get_register_index(), l_resource);
 				}
 			}
-			if (l_domain_shader)
+			if (l_hull_shader)
 			{
 				if (l_resource->get_view_type() == bc_resource_view_type::shader)
 				{
@@ -486,7 +528,7 @@ namespace black_cat
 						.set(p_parameter.get_register_index(), l_resource);
 				}
 			}
-			if (l_hull_shader)
+			if (l_domain_shader)
 			{
 				if (l_resource->get_view_type() == bc_resource_view_type::shader)
 				{
@@ -543,18 +585,19 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::unbind_ps_shader_view_parameter(const bc_shader_view_parameter& p_parameter)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::unbind_ps_shader_view_parameter(const bc_resource_view_parameter& p_parameter)
 		{
-			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_ps_cs_uav_registers());
+			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_ps_cs_uav_resource());
 
 			bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
-			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
 			bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
+			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
 			bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
 			bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
 			bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
 
-			bc_shader_view* l_resource = p_parameter.get_shader_resource().get();
+			bc_resource_view* l_resource = p_parameter.get_resource_view().get();
 
 			if (l_vertex_shader)
 			{
@@ -566,7 +609,7 @@ namespace black_cat
 						.set(p_parameter.get_register_index(), nullptr);
 				}
 			}
-			if (l_domain_shader)
+			if (l_hull_shader)
 			{
 				if (l_resource->get_view_type() == bc_resource_view_type::shader)
 				{
@@ -576,7 +619,7 @@ namespace black_cat
 						.set(p_parameter.get_register_index(), nullptr);
 				}
 			}
-			if (l_hull_shader)
+			if (l_domain_shader)
 			{
 				if (l_resource->get_view_type() == bc_resource_view_type::shader)
 				{
@@ -633,7 +676,8 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::bind_os_stream_outputs(bcUINT p_buffer_count, bc_buffer* p_buffers, bcUINT* p_offsets)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::bind_os_stream_outputs(bcUINT p_buffer_count, bc_buffer* p_buffers, bcUINT* p_offsets)
 		{
 			bcAssert(p_buffer_count <= bc_render_api_info::number_of_so_streams());
 
@@ -648,14 +692,16 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::unbind_os_stream_outputs()
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::unbind_os_stream_outputs()
 		{
 			m_stream_output_stage.get_required_state().m_stream_buffers.set_to_initial_state();
 			m_stream_output_stage.get_required_state().m_stream_offsets.set_to_initial_state();
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::bind_rs_viewports(bcUINT p_count, bc_viewport* p_viewports)
+		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline<g_api_dx11>::bind_rs_viewports(bcUINT p_count, bc_viewport* p_viewports)
 		{
 			bcAssert(p_count <= bc_render_api_info::number_of_rs_viewport_scissorrect());
 
@@ -667,26 +713,30 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::unbind_rs_viewports()
+		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline<g_api_dx11>::unbind_rs_viewports()
 		{
 			m_rasterizer_stage.get_required_state().m_viewports.set_to_initial_state();
 			m_rasterizer_stage.get_required_state().m_viewport_count.set_to_initial_state();
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::bind_om_blend_factors(bc_vector4f l_factors)
+		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline<g_api_dx11>::bind_om_blend_factors(bc_vector4f l_factors)
 		{
 			m_output_merger_stage.get_required_state().m_blend_factors.set(l_factors);
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::bind_om_stencil_ref(bcUINT32 l_stencil_ref)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::bind_om_stencil_ref(bcUINT32 l_stencil_ref)
 		{
 			m_output_merger_stage.get_required_state().m_stencil_ref.set(l_stencil_ref);
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::bind_om_render_targets(bcUINT p_target_count, bc_render_target_view* p_targets, bc_depth_stencil_view* p_depth)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::bind_om_render_targets(bcUINT p_target_count, bc_render_target_view* p_targets, bc_depth_stencil_view* p_depth)
 		{
 			bcAssert(p_target_count <= bc_render_api_info::number_of_om_render_target_slots());
 
@@ -699,14 +749,16 @@ namespace black_cat
 		}
 
 		template < >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::unbind_om_render_targets()
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::unbind_om_render_targets()
 		{
 			m_output_merger_stage.get_required_state().m_render_target_views.set_to_initial_state();
 			m_output_merger_stage.get_required_state().m_depth_target_view.set_to_initial_state();
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::pipeline_apply_states(bc_pipeline_stage p_stages)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::pipeline_apply_states(bc_pipeline_stage p_stages)
 		{
 			bool l_input_assembler_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::input_assembler_stage);
 			bool l_vertex_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::vertex_stage);
@@ -742,7 +794,8 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::pipeline_set_default_states(bc_pipeline_stage p_stages)
+		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline<g_api_dx11>::pipeline_set_default_states(bc_pipeline_stage p_stages)
 		{
 			bool l_input_assembler_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::input_assembler_stage);
 			bool l_vertex_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::vertex_stage);
@@ -778,19 +831,22 @@ namespace black_cat
 		}
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::draw(bcUINT p_start_vertex, bcUINT p_vertex_count)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::draw(bcUINT p_start_vertex, bcUINT p_vertex_count)
 		{
 			m_pack.m_context->Draw(p_vertex_count, p_start_vertex);
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::draw_indexed(bcUINT p_start_index, bcUINT p_index_count, bcINT p_vertex_offset)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::draw_indexed(bcUINT p_start_index, bcUINT p_index_count, bcINT p_vertex_offset)
 		{
 			m_pack.m_context->DrawIndexed(p_index_count, p_start_index, p_vertex_offset);
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::draw_indexed_instanced(bcUINT p_index_count_per_instance,
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::draw_indexed_instanced(bcUINT p_index_count_per_instance,
 			bcUINT p_instance_count, 
 			bcUINT p_start_index_location, 
 			bcINT p_base_vertex_location, 
@@ -804,25 +860,29 @@ namespace black_cat
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::draw_indexed_instanced_indirect(bc_buffer* p_args_buffer, bcUINT p_offset)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::draw_indexed_instanced_indirect(bc_buffer* p_args_buffer, bcUINT p_offset)
 		{
 			m_pack.m_context->DrawIndexedInstancedIndirect(p_args_buffer->get_platform_pack().m_buffer.Get(), p_offset);
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::dispatch(bcUINT p_x, bcUINT p_y, bcUINT p_z)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::dispatch(bcUINT p_x, bcUINT p_y, bcUINT p_z)
 		{
 			m_pack.m_context->Dispatch(p_x, p_y, p_z);
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::dispatch_indirect(bc_buffer* p_args, bcUINT p_offset)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::dispatch_indirect(bc_buffer* p_args, bcUINT p_offset)
 		{
 			m_pack.m_context->DispatchIndirect(p_args->get_platform_pack().m_buffer.Get(), p_offset);
 		};
 
 		template< >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::clear_buffers(bc_vector4f p_color, bcFLOAT p_depth, bcUINT p_stencil)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::clear_buffers(bc_vector4f p_color, bcFLOAT p_depth, bcUINT p_stencil)
 		{
 			const bcUINT32 l_target_count = bc_render_api_info::number_of_om_render_target_slots();
 			ComPtr< ID3D11RenderTargetView > l_target_views[l_target_count];
@@ -847,7 +907,8 @@ namespace black_cat
 		};
 
 		template<  >
-		BC_GRAPHICIMP_DLL bc_mapped_resource bc_platform_device_pipeline<g_api_dx11>::map_resource(bc_iresource* p_resource, bcUINT p_subresource, bc_resource_map p_map_type)
+		BC_GRAPHICIMP_DLL 
+		bc_mapped_resource bc_platform_device_pipeline<g_api_dx11>::map_resource(bc_iresource* p_resource, bcUINT p_subresource, bc_resource_map p_map_type)
 		{
 			bc_mapped_resource l_result;
 			D3D11_MAPPED_SUBRESOURCE l_mapped_resource;
@@ -866,13 +927,15 @@ namespace black_cat
 		};
 
 		template<  >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::unmap_resource(bc_iresource* p_resource, bcUINT p_subresource)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::unmap_resource(bc_iresource* p_resource, bcUINT p_subresource)
 		{
 			m_pack.m_context->Unmap(p_resource->get_platform_pack().m_resource.Get(), p_subresource);
 		};
 
 		template<  >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::update_subresource(bc_iresource* p_resource, bcUINT p_dst_subresource, const void* p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::update_subresource(bc_iresource* p_resource, bcUINT p_dst_subresource, const void* p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch)
 		{
 			m_pack.m_context->UpdateSubresource(p_resource->get_platform_pack().m_resource.Get(), 
 				p_dst_subresource, 
@@ -883,7 +946,8 @@ namespace black_cat
 		};
 
 		template<  >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::copy_subresource(bc_iresource* p_dest_resource, bcUINT p_dst_subresource, bc_iresource* p_src_resource, bcUINT p_src_subresource)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::copy_subresource(bc_iresource* p_dest_resource, bcUINT p_dst_subresource, bc_iresource* p_src_resource, bcUINT p_src_subresource)
 		{
 			m_pack.m_context->CopySubresourceRegion(p_dest_resource->get_platform_pack().m_resource.Get(),
 				p_dst_subresource,
@@ -896,14 +960,16 @@ namespace black_cat
 		};
 
 		template<  >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::copy_resource(bc_iresource* p_dest_resource, bc_iresource* p_src_resource)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::copy_resource(bc_iresource* p_dest_resource, bc_iresource* p_src_resource)
 		{
 			m_pack.m_context->CopyResource(p_dest_resource->get_platform_pack().m_resource.Get(),
 				p_src_resource->get_platform_pack().m_resource.Get());
 		};
 
 		template<  >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::copy_structure_count(bc_buffer* p_dest_resource, bcUINT p_offset, bc_shader_view* p_unordered_resource)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::copy_structure_count(bc_buffer* p_dest_resource, bcUINT p_offset, bc_resource_view* p_unordered_resource)
 		{
 			bcAssert(p_unordered_resource->get_view_type() == bc_resource_view_type::unordered);
 
@@ -913,7 +979,8 @@ namespace black_cat
 		};
 
 		template<  >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::resolve_subresource(bc_iresource* p_dest_resource, bcUINT p_dest_subresource, bc_iresource* p_src_resource, bcUINT p_src_subresource, bc_format p_format)
+		BC_GRAPHICIMP_DLL 
+		void bc_platform_device_pipeline<g_api_dx11>::resolve_subresource(bc_iresource* p_dest_resource, bcUINT p_dest_subresource, bc_iresource* p_src_resource, bcUINT p_src_subresource, bc_format p_format)
 		{
 			m_pack.m_context->ResolveSubresource(p_dest_resource->get_platform_pack().m_resource.Get(),
 				p_dest_subresource,
@@ -923,7 +990,8 @@ namespace black_cat
 		};
 
 		template<  >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline< g_api_dx11 >::finish_command_list(bc_device_command_list* p_command_list)
+		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline< g_api_dx11 >::finish_command_list(bc_device_command_list* p_command_list)
 		{
 			m_pack.m_context->FinishCommandList(false, p_command_list->get_platform_pack().m_command_list.GetAddressOf());
 			
@@ -940,13 +1008,15 @@ namespace black_cat
 		};
 
 		template<  >
-		BC_GRAPHICIMP_DLL void bc_platform_device_pipeline<g_api_dx11>::start_monitoring_pipeline()
+		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline<g_api_dx11>::start_monitoring_pipeline()
 		{
 			m_pack.m_context->Begin(m_pack.m_query.Get());
 		};
 
 		template<  >
-		BC_GRAPHICIMP_DLL bc_device_pipeline_statistic bc_platform_device_pipeline<g_api_dx11>::end_monitoring_pipeline()
+		BC_GRAPHICIMP_DLL
+		bc_device_pipeline_statistic bc_platform_device_pipeline<g_api_dx11>::end_monitoring_pipeline()
 		{
 			bc_device_pipeline_statistic l_result;
 			D3D11_QUERY_DATA_PIPELINE_STATISTICS l_statistics;

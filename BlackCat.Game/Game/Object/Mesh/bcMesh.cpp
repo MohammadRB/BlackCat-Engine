@@ -1,6 +1,7 @@
 // [06/14/2016 MRB]
 
 #include "Game/GamePCH.h"
+#include "Game/bcException.h"
 #include "Game/Object/Mesh/bcMesh.h"
 
 namespace black_cat
@@ -9,17 +10,27 @@ namespace black_cat
 	{
 		// -- bc_mesh_node --------------------------------------------------------------------------------
 
-		bc_mesh_node::bc_mesh_node(core::bc_string p_name, node_indexing p_data_index, bc_mesh_node* p_parent, const bc_render_state_ptr& p_render_state)
+		bc_mesh_node::bc_mesh_node(core::bc_string p_name,
+			bc_mesh_node* p_parent,
+			node_indexing p_transformation,
+			node_indexing p_first_mesh,
+			bcUINT32 p_mesh_count)
 			: m_name(std::move(p_name)),
-			m_data_index(p_data_index),
 			m_parent(p_parent),
-			m_render_state(p_render_state)
+			m_transformation_index(p_transformation),
+			m_first_mesh_index(p_first_mesh),
+			m_mesh_count(p_mesh_count)
 		{
 		}
 
-		bc_mesh_node::node_indexing bc_mesh_node::get_data_idnex() const
+		bc_mesh_node::node_indexing bc_mesh_node::get_transformation_index() const
 		{
-			return m_data_index;
+			return m_transformation_index;
+		}
+
+		bc_mesh_node::node_indexing bc_mesh_node::get_mesh_count() const
+		{
+			return m_mesh_count;
 		}
 
 		const core::bc_string& bc_mesh_node::get_name() const
@@ -34,21 +45,15 @@ namespace black_cat
 
 		// -- bc_mesh --------------------------------------------------------------------------------
 
-		bc_mesh::bc_mesh(core::bc_string p_name, bcSIZE p_node_count)
+		bc_mesh::bc_mesh(core::bc_string p_name, bcSIZE p_node_count, bcSIZE p_mesh_count)
 			: m_name(p_name)
 		{
 			// Reserve needed memory for nodes because we use raw pointers in bc_mesh_node for parent and childs
 			m_nodes.reserve(p_node_count);
 			m_nodes_hash.reserve(p_node_count);
 			m_transformations.reserve(p_node_count);
-			m_materials.reserve(p_node_count);
-			m_vertices.reserve(p_node_count);
-			m_indices.reserve(p_node_count);
-		}
-
-		bc_index_type bc_mesh::index_layout() const
-		{
-			return m_index_layout;
+			m_meshes.reserve(p_mesh_count);
+			m_render_states.reserve(p_mesh_count);
 		}
 
 		const core::bc_string& bc_mesh::get_name() const
@@ -74,24 +79,9 @@ namespace black_cat
 			return l_entry->second;
 		}
 
-		const bc_mesh_node* bc_mesh::get_parent_node(const bc_mesh_node* p_node) const
+		const bc_mesh_node* bc_mesh::get_node_parent(const bc_mesh_node* p_node) const
 		{
 			return p_node->m_parent;
-		}
-
-		const graphic::bc_matrix4f* bc_mesh::get_node_transformation(const bc_mesh_node* p_node) const
-		{
-			return &m_transformations.at(p_node->m_data_index);
-		}
-
-		const bc_mesh_node_material* bc_mesh::get_node_material(const bc_mesh_node* p_node) const
-		{
-			return &m_materials.at(p_node->m_data_index);
-		}
-
-		const bc_render_state_ptr& bc_mesh::get_node_render_state(const bc_mesh_node* p_node) const
-		{
-			return p_node->m_render_state;
 		}
 
 		const core::bc_vector<bc_mesh_node*>& bc_mesh::get_node_childs(const bc_mesh_node* p_node) const
@@ -99,42 +89,58 @@ namespace black_cat
 			return p_node->m_childs;
 		}
 
-		const core::bc_vector_movale<bc_vertex_pos_tex_nor_tan>& bc_mesh::get_node_vertices(const bc_mesh_node* p_node) const
+		const graphic::bc_matrix4f* bc_mesh::get_node_transformation(const bc_mesh_node* p_node) const
 		{
-			return m_vertices.at(p_node->m_data_index);
+			return &m_transformations.at(p_node->m_transformation_index);
 		}
 
-		const core::bc_vector_movale<bcBYTE>& bc_mesh::get_node_indices(const bc_mesh_node* p_node) const
+		const bc_mesh_material* bc_mesh::get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
 		{
-			return m_indices.at(p_node->m_data_index);
+			if(p_mesh_index >= p_node->m_mesh_count)
+			{
+				throw bc_out_of_range_exception("Invalid mesh index");
+			}
+
+			return &m_meshes[p_node->m_first_mesh_index + p_mesh_index].m_material;
 		}
 
-		bc_mesh_node* bc_mesh::_add_node(core::bc_string p_name, 
-			bc_mesh_node* p_parent, 
-			graphic::bc_matrix4f& p_transformation, 
-			bc_mesh_node_material&& p_material, 
-			const bc_render_state_ptr& p_render_state,
-			core::bc_vector_frame<bc_vertex_pos_tex_nor_tan>& p_vertices, 
-			core::bc_vector_frame<bcBYTE>& p_indices)
+		const bc_render_state* bc_mesh::get_node_mesh_render_state(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
+		{
+			if (p_mesh_index >= p_node->m_mesh_count)
+			{
+				throw bc_out_of_range_exception("Invalid mesh index");
+			}
+
+			return m_render_states[p_node->m_first_mesh_index + p_mesh_index].get();
+		}
+
+		bc_mesh_node* bc_mesh::_add_node(core::bc_string p_name,
+			bc_mesh_node* p_parent,
+			graphic::bc_matrix4f& p_transformation,
+			core::bc_vector_frame<std::pair<bc_mesh_data, bc_render_state_ptr>> p_meshes)
 		{
 			if(!p_parent)
 			{
 				m_nodes.clear();
 				m_transformations.clear();
-				m_materials.clear();
-				m_vertices.clear();
-				m_indices.clear();
+				m_meshes.clear();
+				m_render_states.clear();
 			}
 
-			auto l_data_index = m_nodes.size();
+			auto l_data_index = m_transformations.size();
 			auto l_node_hash = hash_t()(p_name.c_str());
-
-			m_nodes.push_back(bc_mesh_node(p_name, l_data_index, p_parent, p_render_state));
+			auto l_mesh_start_index = m_meshes.size();
+			auto l_mesh_count = p_meshes.size();
+			
+			m_nodes.push_back(bc_mesh_node(p_name, p_parent, l_data_index, l_mesh_start_index, l_mesh_count));
 			m_nodes_hash.insert(std::make_pair(l_node_hash, &*m_nodes.rbegin()));
 			m_transformations.push_back(p_transformation);
-			m_materials.push_back(std::move(p_material));
-			m_vertices.push_back(core::bc_vector_movale<bc_vertex_pos_tex_nor_tan>(std::begin(p_vertices), std::end(p_vertices)));
-			m_indices.push_back(core::bc_vector_movale<bcBYTE>(std::begin(p_indices), std::end(p_indices)));
+
+			for (auto& l_mesh : p_meshes)
+			{
+				m_meshes.push_back(std::move(std::get< bc_mesh_data >(l_mesh)));
+				m_render_states.push_back(std::get< bc_render_state_ptr >(l_mesh));
+			}
 
 			auto l_node = &(*m_nodes.rbegin());
 

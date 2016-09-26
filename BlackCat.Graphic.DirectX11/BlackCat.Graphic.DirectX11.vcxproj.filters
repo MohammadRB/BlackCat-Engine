@@ -31,8 +31,8 @@
     <Filter Include="GraphicImp\Device\Command">
       <UniqueIdentifier>{93a3d060-5eed-4618-a17f-2df57d01452e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GraphicImp\Loader">
-      <UniqueIdentifier>{20caf7e9-a8ea-4ea9-a87c-500b291a17a5}</UniqueIdentifier>
+    <Filter Include="GraphicImp\Shader\Parameter">
+      <UniqueIdentifier>{c8968d20-e180-447b-bd83-ed243494a300}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -114,9 +114,6 @@
     <ClCompile Include="GraphicImp\PipelineStage\bcComputeStage.cpp">
       <Filter>GraphicImp\PipelineStage</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicImp\Resource\View\bcShaderView.cpp">
-      <Filter>GraphicImp\Resource\View</Filter>
-    </ClCompile>
     <ClCompile Include="GraphicImp\Resource\bcResourceConfig.cpp">
       <Filter>GraphicImp\Resource</Filter>
     </ClCompile>
@@ -129,26 +126,11 @@
     <ClCompile Include="GraphicImp\PipelineStage\bcOutputMergerStage.cpp">
       <Filter>GraphicImp\PipelineStage</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicImp\Resource\View\bcResourceView.cpp">
+    <ClCompile Include="GraphicImp\Resource\View\bcIResourceView.cpp">
       <Filter>GraphicImp\Resource\View</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicImp\Loader\bcTextureLoader.cpp">
-      <Filter>GraphicImp\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicImp\Loader\bcVertexShaderLoader.cpp">
-      <Filter>GraphicImp\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicImp\Loader\bcHullShaderLoader.cpp">
-      <Filter>GraphicImp\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicImp\Loader\bcDomainShaderLoader.cpp">
-      <Filter>GraphicImp\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicImp\Loader\bcGeometryShaderLoader.cpp">
-      <Filter>GraphicImp\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicImp\Loader\bcPixelShaderLoader.cpp">
-      <Filter>GraphicImp\Loader</Filter>
+    <ClCompile Include="GraphicImp\Resource\View\bcResourceView.cpp">
+      <Filter>GraphicImp\Resource\View</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -239,12 +221,6 @@
     <ClInclude Include="GraphicImp\PipelineStage\bcComputeStage.h">
       <Filter>GraphicImp\PipelineStage</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicImp\Resource\View\bcShaderView.h">
-      <Filter>GraphicImp\Resource\View</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicImp\Resource\View\bcResourceView.h">
-      <Filter>GraphicImp\Resource\View</Filter>
-    </ClInclude>
     <ClInclude Include="GraphicImp\Resource\Buffer\bcBufferConfig.h">
       <Filter>GraphicImp\Resource\Buffer</Filter>
     </ClInclude>
@@ -272,26 +248,29 @@
     <ClInclude Include="GraphicImp\Resource\View\bcDepthStencilViewConfig.h">
       <Filter>GraphicImp\Resource\View</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicImp\Loader\bcTextureLoader.h">
-      <Filter>GraphicImp\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicImp\Loader\bcVertexShaderLoader.h">
-      <Filter>GraphicImp\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicImp\Loader\bcHullShaderLoader.h">
-      <Filter>GraphicImp\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicImp\Loader\bcDomainShaderLoader.h">
-      <Filter>GraphicImp\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicImp\Loader\bcGeometryShaderLoader.h">
-      <Filter>GraphicImp\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicImp\Loader\bcPixelShaderLoader.h">
-      <Filter>GraphicImp\Loader</Filter>
-    </ClInclude>
     <ClInclude Include="GraphicImp\bcExport.h">
       <Filter>GraphicImp</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Resource\View\bcIResourceView.h">
+      <Filter>GraphicImp\Resource\View</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Resource\View\bcResourceView.h">
+      <Filter>GraphicImp\Resource\View</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Device\bcDeviceComputeState.h">
+      <Filter>GraphicImp\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Shader\Parameter\bcConstantBufferParameter.h">
+      <Filter>GraphicImp\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Shader\Parameter\bcResourceViewParameter.h">
+      <Filter>GraphicImp\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Shader\Parameter\bcSamplerParameter.h">
+      <Filter>GraphicImp\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Shader\Parameter\bcShaderParameter.h">
+      <Filter>GraphicImp\Shader\Parameter</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

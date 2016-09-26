@@ -20,11 +20,11 @@ namespace black_cat
 	public:
 		explicit bc_pixel_shader_loader();
 
-		bc_pixel_shader_loader(bc_pixel_shader_loader&&);
+		bc_pixel_shader_loader(bc_pixel_shader_loader&&) noexcept;
 
 		~bc_pixel_shader_loader();
 
-		bc_pixel_shader_loader& operator=(bc_pixel_shader_loader&&);
+		bc_pixel_shader_loader& operator=(bc_pixel_shader_loader&&) noexcept;
 
 		void content_offline_processing(core::bc_content_loader_context& p_context) override;
 

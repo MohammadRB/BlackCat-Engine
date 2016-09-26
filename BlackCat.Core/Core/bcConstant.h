@@ -28,9 +28,10 @@ namespace black_cat
 		BC_PARAMETER(mesh, "mesh");
 		BC_PARAMETER(mesh_part, "mesh_part");
 		BC_PARAMETER(child_actor, "childs");
+		BC_PARAMETER(heightmap, "heightmap");
 
-		BC_PARAMETER_RESOLVER(device, "get_device");
 		BC_PARAMETER_RESOLVER(mesh, "get_mesh");
+		BC_PARAMETER_RESOLVER(heightmap, "get_heightmap");
 
 		BC_SERVICE(thread_manager, "thread_manager");
 		BC_SERVICE(content_manager, "content_manager");
@@ -48,11 +49,14 @@ namespace black_cat
 		BC_CONTENT(hull_shader, "hull_shader_content");
 		BC_CONTENT(geometry_shader, "geometry_shader_content");
 		BC_CONTENT(pixel_shader, "pixel_shader_content");
+		BC_CONTENT(compute_shader, "compute_shader_content");
 		BC_CONTENT(texture2d, "texture2d_content");
+		BC_CONTENT(heightmap, "heightmap_content");
 
 		BC_COMPONENT(hierarchy, "hierarchy_component");
 		BC_COMPONENT(mesh, "mesh_component");
 		BC_COMPONENT(render, "render_component");
+		BC_COMPONENT(heightmap, "heightmap_component");
 
 		BC_EVENT(error, "error_event");
 		BC_EVENT(warning, "warning_event");

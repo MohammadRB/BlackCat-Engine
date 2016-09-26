@@ -46,6 +46,12 @@ namespace black_cat
 			create_view_matrix();
 		}
 
+		void bc_icamera::set_position_lookat(const graphic::bc_vector3f& p_position, const graphic::bc_vector3f& p_lookat)
+		{
+			set_position(p_position);
+			set_lookat(p_lookat);
+		}
+
 		graphic::bc_vector3f bc_icamera::get_forward() const noexcept
 		{
 			return get_direction();
@@ -60,7 +66,7 @@ namespace black_cat
 		{
 			auto l_direction = get_direction();
 
-			auto l_right = l_direction.cross(graphic::bc_vector3f(0, 1, 0));
+			auto l_right = graphic::bc_vector3f(0, 1, 0).cross(l_direction);
 			auto l_up = l_direction.cross(l_right);
 
 			l_up.normalize();
@@ -179,12 +185,12 @@ namespace black_cat
 		// -- bc_perspective_camera --------------------------------------------------------------------------------
 
 		bc_perspective_camera::bc_perspective_camera(bcFLOAT p_aspect_ratio, 
-			bcFLOAT p_field_of_view, 
+			bcFLOAT p_height_fov,
 			bcFLOAT p_near_clip, 
 			bcFLOAT p_far_clip)
 			: bc_icamera(p_near_clip, p_far_clip),
 			m_aspect_ratio(p_aspect_ratio),
-			m_field_of_view(p_field_of_view)
+			m_field_of_view(p_height_fov)
 		{
 			create_projection_matrix();
 		}
@@ -199,6 +205,27 @@ namespace black_cat
 		{
 			m_field_of_view = p_field_of_view;
 			create_projection_matrix();
+		}
+
+		void bc_perspective_camera::get_extend_points(extend& p_points)
+		{
+			auto l_fov_tan = 2 * std::tanf(m_field_of_view / 2);
+			auto l_near_clip_height = l_fov_tan * get_near_clip();
+			auto l_near_clip_width = l_near_clip_height * m_aspect_ratio;
+			auto l_far_clip_height = l_fov_tan * get_far_clip();
+			auto l_far_clip_width = l_far_clip_height * m_aspect_ratio;
+
+			auto l_near_clip_center = get_position() + get_forward() * get_near_clip();
+			auto l_far_clip_center = get_position() + get_forward() * get_far_clip();
+
+			p_points[0] = l_near_clip_center + get_left() * (l_near_clip_width / 2) + get_down() * (l_near_clip_height / 2);
+			p_points[1] = l_near_clip_center + get_left() * (l_near_clip_width / 2) + get_up() * (l_near_clip_height / 2);
+			p_points[2] = l_near_clip_center + get_right() * (l_near_clip_width / 2) + get_up() * (l_near_clip_height / 2);
+			p_points[3] = l_near_clip_center + get_right() * (l_near_clip_width / 2) + get_down() * (l_near_clip_height / 2);
+			p_points[4] = l_far_clip_center + get_left() * (l_far_clip_width / 2) + get_down() * (l_far_clip_height / 2);
+			p_points[5] = l_far_clip_center + get_left() * (l_far_clip_width / 2) + get_up() * (l_far_clip_height / 2);
+			p_points[6] = l_far_clip_center + get_right() * (l_far_clip_width / 2) + get_up() * (l_far_clip_height / 2);
+			p_points[7] = l_far_clip_center + get_right() * (l_far_clip_width / 2) + get_down() * (l_far_clip_height / 2);
 		}
 
 		void bc_perspective_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept

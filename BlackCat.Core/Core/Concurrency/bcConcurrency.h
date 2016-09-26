@@ -5,6 +5,8 @@
 #include "Core/Container/bcIterator.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Concurrency/bcThreadManager.h"
+#include "Core/Event/bcEventManager.h"
+#include "Core/bcEvent.h"
 
 namespace black_cat
 {
@@ -148,10 +150,27 @@ namespace black_cat
 
 			when_all(std::begin(l_tasks), std::end(l_tasks));
 			
-			for (bc_task< void >& l_task : l_tasks) // Call get to find if tasks has thrown any exception 
+#ifdef BC_DEBUG
+			try
 			{
-				l_task.get();
+#endif
+				for (bc_task< void >& l_task : l_tasks) // Call get to find if tasks has thrown any exception 
+				{
+					l_task.get();
+				}
+#ifdef BC_DEBUG
 			}
+			catch (std::exception& p_exception)
+			{
+				auto* l_event_manager = bc_service_manager::get().get_service< bc_event_manager >();
+
+				bc_app_event_error l_error_event(p_exception.what());
+
+				l_event_manager->process_event(l_error_event);
+
+				throw p_exception;
+			}
+#endif
 		}
 	}
 }

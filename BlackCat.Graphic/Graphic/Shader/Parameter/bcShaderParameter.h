@@ -14,8 +14,8 @@ namespace black_cat
 			vector,
 			matrix,
 			matrix_array,
-			shader_resource,
-			unordered_access,
+			shader_view,
+			unordered_view,
 			cbuffer,
 			sampler
 		};

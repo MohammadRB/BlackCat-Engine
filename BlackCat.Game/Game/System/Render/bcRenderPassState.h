@@ -6,7 +6,7 @@
 #include "Core/Utility/bcRefCountPtr.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
-#include "GraphicImp/Resource/View/bcShaderView.h"
+#include "GraphicImp/Resource/View/bcResourceView.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/bcRenderState.h"
 #include "Game/System/Render/bcRenderSystemParameter.h"
@@ -16,6 +16,7 @@ namespace black_cat
 	namespace game
 	{
 		class bc_render_system;
+		class bc_render_thread;
 		class bc_render_pass_state;
 
 		class BC_GAME_DLL _bc_render_pass_state_handle_deleter
@@ -40,12 +41,15 @@ namespace black_cat
 
 		// Non-mutable object that represent whole configuration that is needed for a render pass.
 		// Shader parameters will be mapped to device registers as they appear in their array
-		class BC_GAME_DLL bc_render_pass_state : private core::bc_ref_count
+		class BC_GAME_DLL bc_render_pass_state
+			: private core::bc_ref_count,
+			core_platform::bc_no_copy
 		{
 		public:
 			template< class T, class TDeleter >
 			friend class core::bc_ref_count_handle;
 			friend class bc_render_system;
+			friend class bc_render_thread;
 
 		public:
 			bc_render_pass_state(bc_render_pass_state&&) noexcept = default;
@@ -54,7 +58,7 @@ namespace black_cat
 
 			bc_render_pass_state& operator=(bc_render_pass_state&&) noexcept = default;
 
-			graphic::bc_device_pipeline_state_ptr get_pipeline_state() const
+			const graphic::bc_device_pipeline_state_ptr& get_pipeline_state() const
 			{
 				return m_pipeline_state;
 			}
@@ -69,7 +73,7 @@ namespace black_cat
 				return m_shader_targets;
 			}
 
-			graphic::bc_depth_stencil_view_ptr get_depth_stencil() const
+			const graphic::bc_depth_stencil_view_ptr& get_depth_stencil() const
 			{
 				return m_shader_depth;
 			}
@@ -79,9 +83,9 @@ namespace black_cat
 				return m_shader_samplers;
 			}
 
-			const bc_render_pass_state_shader_view_array& get_shader_views() const
+			const bc_render_pass_state_resource_view_array& get_shader_views() const
 			{
-				return m_shader_views;
+				return m_resource_views;
 			}
 
 			const bc_render_pass_state_constant_buffer_array& get_cbuffers() const
@@ -97,7 +101,7 @@ namespace black_cat
 				bc_render_pass_state_render_target_view_array&& p_shader_targets,
 				graphic::bc_depth_stencil_view_ptr& p_shader_depth,
 				bc_render_pass_state_sampler_array&& p_shader_samplers,
-				bc_render_pass_state_shader_view_array&& p_shader_views,
+				bc_render_pass_state_resource_view_array&& p_shader_views,
 				bc_render_pass_state_constant_buffer_array&& p_shader_buffers);
 
 			graphic::bc_device_pipeline_state_ptr m_pipeline_state;
@@ -105,7 +109,7 @@ namespace black_cat
 			bc_render_pass_state_render_target_view_array m_shader_targets;
 			graphic::bc_depth_stencil_view_ptr m_shader_depth;
 			bc_render_pass_state_sampler_array m_shader_samplers;
-			bc_render_pass_state_shader_view_array m_shader_views;
+			bc_render_pass_state_resource_view_array m_resource_views;
 			bc_render_pass_state_constant_buffer_array m_shader_cbuffers;
 		};
 

@@ -82,6 +82,7 @@ namespace black_cat
 				m_crt_allocator->initialize("CrtAllocator");
 
 #ifdef BC_MEMORY_LEAK_DETECTION
+				m_allocation_count.store(0, core_platform::bc_memory_order::relaxed);
 				m_leak_allocator = new bc_memmng_hashmap<bc_mem_block_leak_information, 15, 5>();
 #endif
 			}
@@ -193,7 +194,18 @@ namespace black_cat
 			bc_memblock::initialize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			m_leak_allocator->insert(l_result, bc_mem_block_leak_information(l_result, ++m_allocation_count, p_size, p_line, p_file));
+			m_leak_allocator->insert
+			(
+				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(l_result) - l_block.offset()),
+				bc_mem_block_leak_information
+				(
+					l_result,
+					m_allocation_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1,
+					p_size,
+					p_line,
+					p_file
+				)
+			);
 #endif
 
 			return l_result;
@@ -217,7 +229,7 @@ namespace black_cat
 			bc_memblock::free_mem_block(l_pointer);
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			m_leak_allocator->remove(p_pointer);
+			m_leak_allocator->remove(l_pointer);
 #endif
 		}
 		
@@ -303,7 +315,18 @@ namespace black_cat
 			bc_memblock::initialize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			m_leak_allocator->insert(l_result, bc_mem_block_leak_information(l_result, ++m_allocation_count, p_size, p_line, p_file));
+			m_leak_allocator->insert
+			(
+				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(l_result) - l_block.offset()),
+				bc_mem_block_leak_information
+				(
+					l_result,
+					m_allocation_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1,
+					p_size,
+					p_line,
+					p_file
+				)
+			);
 #endif
 
 			return l_result;
@@ -324,7 +347,7 @@ namespace black_cat
 			bc_memblock::free_mem_block(l_pointer);
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			m_leak_allocator->remove(p_pointer);
+			m_leak_allocator->remove(l_pointer);
 #endif
 		};
 		
@@ -355,9 +378,21 @@ namespace black_cat
 		{
 #ifdef BC_MEMORY_DEFRAG
 			bcUINT32 l_num_fragment = m_super_heap->fragmentation_count();
-			l_num_fragment = (l_num_fragment == 0) ? 0 : l_num_fragment / 3 + 1;
+			l_num_fragment = l_num_fragment == 0 ? 0 : l_num_fragment / 3 + 1;
 
-			m_super_heap->defragment(l_num_fragment);
+			m_super_heap->defragment
+			(
+				l_num_fragment,
+#ifdef BC_MEMORY_LEAK_DETECTION
+				[this](void* p_old, void* p_new)
+				{
+					this->m_leak_allocator->relocate(p_old, p_new);
+
+				}
+#else
+				bc_memory_heap::defrag_callback()
+#endif
+			);
 #endif
 
 			bcAssert(m_per_frame_stack->tracer().alloc_count() == 0);

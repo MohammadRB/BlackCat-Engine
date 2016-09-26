@@ -168,12 +168,8 @@ namespace black_cat
 
 			std::memset(&l_dxbuffer_desc, 0, sizeof(D3D11_BUFFER_DESC));
 
-			bool l_has_shader_view = (static_cast< bcINT >(p_view_types) &
-				static_cast< bcINT >(bc_resource_view_type::shader)) ==
-				static_cast< bcINT >(bc_resource_view_type::shader);
-			bool l_has_unordered_view = (static_cast< bcINT >(p_view_types) &
-				static_cast< bcINT >(bc_resource_view_type::unordered)) ==
-				static_cast< bcINT >(bc_resource_view_type::unordered);
+			bool l_has_shader_view = core::bc_enum::has(p_view_types, bc_resource_view_type::shader);
+			bool l_has_unordered_view = core::bc_enum::has(p_view_types, bc_resource_view_type::unordered);
 
 			l_dxbuffer_desc.ByteWidth = p_num_element * p_element_size;
 			l_dxbuffer_desc.MiscFlags = 0;
@@ -186,7 +182,7 @@ namespace black_cat
 			l_dxbuffer_desc.CPUAccessFlags =
 				p_usage == bc_resource_usage::gpu_r_cpu_w ?
 					D3D11_CPU_ACCESS_WRITE :
-					p_usage == bc_resource_usage::gpu_rw_cpu_rw ?
+					p_usage == bc_resource_usage::gpu_r_cpu_r ?
 						D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE :
 						0;
 
@@ -236,7 +232,7 @@ namespace black_cat
 			l_dxtexture_desc.CPUAccessFlags =
 				p_usage == bc_resource_usage::gpu_r_cpu_w ?
 					D3D11_CPU_ACCESS_WRITE :
-					p_usage == bc_resource_usage::gpu_rw_cpu_rw ?
+					p_usage == bc_resource_usage::gpu_r_cpu_r ?
 						D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE :
 						0;
 			l_dxtexture_desc.MiscFlags = p_mip_generation && (p_mip_levels == 0 || p_mip_levels > 1) ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0;

@@ -8,11 +8,12 @@
 #include "Graphic/bcResourcePtr.h"
 #include "Graphic/Device/bcDevice.h"
 #include "Graphic/Device/bcDevicePipelineState.h"
+#include "Graphic/Device/bcDeviceComputeState.h"
 #include "Graphic/Device/bcDeviceInfo.h"
 #include "Graphic/Device/Command/bcDeviceCommandList.h"
 #include "Graphic/Shader/Parameter/bcConstantBufferParameter.h"
 #include "Graphic/Shader/Parameter/bcSamplerParameter.h"
-#include "Graphic/Shader/Parameter/bcShaderViewParameter.h"
+#include "Graphic/Shader/Parameter/bcResourceViewParameter.h"
 #include "Graphic/PipelineStage/bcInputAssemblerStage.h"
 #include "Graphic/PipelineStage/bcStreamOutputStage.h"
 #include "Graphic/PipelineStage/bcRasterizerStage.h"
@@ -55,6 +56,11 @@ namespace black_cat
 
 			void unbind_pipeline_state();
 
+			// Bind and Apply required pipeline states
+			void bind_compute_state(bc_device_compute_state* p_state);
+
+			void unbind_compute_state();
+
 			void bind_ia_primitive_topology(bc_primitive p_primitive);
 
 			void bind_ia_index_buffer(bc_buffer* p_buffer, bc_format p_format);
@@ -73,9 +79,9 @@ namespace black_cat
 
 			void unbind_ps_sampler_parameter(const bc_sampler_parameter& p_parameter);
 
-			void bind_ps_shader_view_parameter(const bc_shader_view_parameter& p_parameter);
+			void bind_ps_shader_view_parameter(const bc_resource_view_parameter& p_parameter);
 
-			void unbind_ps_shader_view_parameter(const bc_shader_view_parameter& p_parameter);
+			void unbind_ps_shader_view_parameter(const bc_resource_view_parameter& p_parameter);
 
 			void bind_os_stream_outputs(bcUINT p_buffer_count, bc_buffer* p_buffers, bcUINT* p_offsets);
 
@@ -121,7 +127,7 @@ namespace black_cat
 
 			void copy_resource(bc_iresource* p_dest_resource, bc_iresource* p_src_resource);
 
-			void copy_structure_count(bc_buffer* p_dest_resource, bcUINT p_offset, bc_shader_view* p_unordered_resource);
+			void copy_structure_count(bc_buffer* p_dest_resource, bcUINT p_offset, bc_resource_view* p_unordered_resource);
 
 			void resolve_subresource(bc_iresource* p_dest_resource,
 				bcUINT p_dest_subresource,

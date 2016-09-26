@@ -15,12 +15,12 @@ namespace black_cat
 			bc_memory_tracer()
 #ifdef BC_MEMORY_TRACING
 				: m_total_size(0U),
+				m_alloc_count(0U),
 				m_used_size(0U),
 				m_overhead_size(0U),
 				m_max_used_size(0U),
-				m_alloc_count(0U),
-				m_rejected_alloc_size(0U),
-				m_rejected_alloc_count(0U)
+				m_rejected_alloc_count(0U),
+				m_rejected_alloc_size(0U)
 #endif
 			{
 			}
@@ -28,12 +28,12 @@ namespace black_cat
 			bc_memory_tracer(bc_memory_tracer& p_other)
 #ifdef BC_MEMORY_TRACING
 				: m_total_size(p_other.total_size()),
+				m_alloc_count(p_other.alloc_count()),
 				m_used_size(p_other.used_size()),
 				m_overhead_size(p_other.overhead_size()),
 				m_max_used_size(p_other.max_used_size()),
-				m_alloc_count(p_other.alloc_count()),
-				m_rejected_alloc_size(p_other.rejected_alloc_size()),
-				m_rejected_alloc_count(p_other.rejected_alloc_count())
+				m_rejected_alloc_count(p_other.rejected_alloc_count()),
+				m_rejected_alloc_size(p_other.rejected_alloc_size())
 #endif
 			{
 			}
@@ -216,20 +216,18 @@ namespace black_cat
 				m_used_size.store(0U, core_platform::bc_memory_order::relaxed);
 				m_overhead_size.store(0U, core_platform::bc_memory_order::relaxed);
 				m_alloc_count.store(0U, core_platform::bc_memory_order::relaxed);
-				//mRejectedAllocSize = 0;
-				//mRejectedAllocCount = 0;
 #endif
 			}
 
 		protected:
 #ifdef BC_MEMORY_TRACING
 			core_platform::bc_atomic< bcSIZE > m_total_size;
-			core_platform::bc_atomic< bcSIZE > m_used_size;
 			core_platform::bc_atomic< bcSIZE > m_alloc_count;
+			core_platform::bc_atomic< bcSIZE > m_used_size;
 			core_platform::bc_atomic< bcSIZE > m_overhead_size;
 			core_platform::bc_atomic< bcSIZE > m_max_used_size;
-			core_platform::bc_atomic< bcSIZE > m_rejected_alloc_size;
 			core_platform::bc_atomic< bcSIZE > m_rejected_alloc_count;
+			core_platform::bc_atomic< bcSIZE > m_rejected_alloc_size;
 #endif	
 
 		private:

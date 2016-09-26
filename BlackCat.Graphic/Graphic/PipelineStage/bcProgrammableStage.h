@@ -10,7 +10,7 @@
 #include "Graphic/PipelineStage/bcPipelineStateArrayVariable.h"
 #include "Graphic/Resource/Buffer/bcBuffer.h"
 #include "Graphic/Resource/State/bcSamplerState.h"
-#include "Graphic/Resource/View/bcShaderView.h"
+#include "Graphic/Resource/View/bcResourceView.h"
 
 namespace black_cat
 {
@@ -44,8 +44,8 @@ namespace black_cat
 			//bc_pipeline_state_variable< bc_ishader* > m_shader_program;
 			bc_pipeline_state_array_variable< bc_buffer*, bc_render_api_info::number_of_shader_constant_buffer()>  m_constant_buffers;
 			bc_pipeline_state_array_variable< bc_sampler_state*, bc_render_api_info::number_of_shader_sampler() > m_sampler_states;
-			bc_pipeline_state_array_variable< bc_shader_view*, bc_render_api_info::number_of_shader_resource()> m_shader_resource_views;
-			bc_pipeline_state_array_variable< bc_shader_view*, bc_render_api_info::number_of_ps_cs_uav_registers() > m_unordered_access_views;
+			bc_pipeline_state_array_variable< bc_resource_view*, bc_render_api_info::number_of_shader_resource()> m_shader_resource_views;
+			bc_pipeline_state_array_variable< bc_resource_view*, bc_render_api_info::number_of_ps_cs_uav_resource() > m_unordered_access_views;
 			/*bc_pipeline_state_array_variable< bcUINT > m_uav_initial_counts;*/
 
 		protected:

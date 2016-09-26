@@ -209,7 +209,9 @@ namespace black_cat
 				);
 
 			if (l_loader_wrapper == nullptr)
+			{
 				throw bc_invalid_argument_exception((bc_string("Loader for ") + _loader_wrapper< TContent >::service_name() + " not found").c_str());
+			}
 
 			bc_icontent_loader* l_loader = l_loader_wrapper->m_loader.get();
 

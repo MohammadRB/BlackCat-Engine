@@ -152,7 +152,7 @@ namespace black_cat
 		};
 
 		template< typename T >
-		struct is_callable
+		struct bc_is_callable
 			: std::conditional
 			<
 				std::is_class< T >::value,
@@ -160,6 +160,19 @@ namespace black_cat
 				std::false_type
 			>::type
 		{
+		};
+
+		template< typename T >
+		struct bc_type_traits
+		{
+		public:
+			using type = T;
+			using raw_type = typename std::decay< type >::type;
+
+			static constexpr bool is_copyable = std::is_copy_constructible< raw_type >::value && std::is_copy_assignable< raw_type >::value;
+			static constexpr bool is_movable = std::is_move_constructible< raw_type >::value && std::is_move_assignable< raw_type >::value;
+			static constexpr bool is_no_throw_copy = std::is_nothrow_copy_constructible<type>::value && std::is_nothrow_copy_assignable<type>::value;
+			static constexpr bool is_no_throw_move = std::is_nothrow_move_constructible<type>::value && std::is_nothrow_move_assignable<type>::value;
 		};
 	}
 }

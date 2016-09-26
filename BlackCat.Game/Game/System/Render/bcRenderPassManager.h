@@ -10,11 +10,23 @@
 #include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/bcRenderPass.h"
+#include "Game/System/Render/bcRenderThread.h"
+#include "Game/System/Render/bcRenderPassResourceShare.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		class bc_render_system;
+		struct bc_render_system_update_param;
+
+		struct _bc_pass_entry
+		{
+		public:
+			bcUINT32 m_position;
+			core::bc_unique_ptr< bc_irender_pass > m_pass;
+		};
+
 		class BC_GAME_DLL bc_render_pass_manager : public core_platform::bc_no_copy
 		{
 		public:
@@ -26,23 +38,21 @@ namespace black_cat
 
 			bc_render_pass_manager& operator=(bc_render_pass_manager&&) = default;
 
-			bc_irender_pass* get_pass(bcUINT p_location);
+			bc_irender_pass* get_pass(bcUINT32 p_location);
 
 			bc_irender_pass* get_pass(core::bc_string p_name);
 
-			void add_pass(bcUINT p_location, core::bc_unique_ptr< bc_irender_pass >&& p_pass);
+			void add_pass(bcUINT32 p_location, core::bc_unique_ptr< bc_irender_pass >&& p_pass);
 
-			bool remove_pass(bcUINT p_location);
+			bool remove_pass(bcUINT32 p_location);
 
 			bool remove_pass(core::bc_string p_name);
 
 			void pass_initialize_resources(bc_render_system& p_render_system, graphic::bc_device* p_device);
 
-			void pass_update(core_platform::bc_clock::update_param p_clock_update_param);
+			void pass_update(const bc_render_system_update_param& p_clock_update_param);
 
-			void pass_initialize_frame(bc_render_system& p_render_system, graphic::bc_device_pipeline* p_pipeline, graphic::bc_device_command_executer* p_executer);
-
-			void pass_execute(bc_render_system& p_render_system, graphic::bc_device_pipeline* p_pipeline, graphic::bc_device_command_executer* p_executer);
+			void pass_execute(bc_render_system& p_render_system, bc_render_thread& p_thread);
 
 			void before_reset(bc_render_system& p_render_system, graphic::bc_device* p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters);
 
@@ -53,7 +63,8 @@ namespace black_cat
 		protected:
 
 		private:
-			core::bc_vector< core::bc_unique_ptr< bc_irender_pass > > m_passes;
+			core::bc_vector< _bc_pass_entry > m_passes;
+			bc_render_pass_resource_share m_state_share;
 		};
 	}
 }

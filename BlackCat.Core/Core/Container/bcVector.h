@@ -391,7 +391,7 @@ namespace black_cat
 
 			bc_vector(const this_type& p_other, const allocator_type& p_allocator);
 
-			bc_vector(this_type&& p_other);
+			bc_vector(this_type&& p_other) noexcept;
 
 			bc_vector(this_type&& p_other, const allocator_type& p_allocator);
 
@@ -399,7 +399,7 @@ namespace black_cat
 
 			this_type& operator =(const this_type& p_other);
 
-			this_type& operator =(this_type&& p_other);
+			this_type& operator =(this_type&& p_other) noexcept;
 
 			this_type& operator =(std::initializer_list< value_type > p_initializer);
 
@@ -493,44 +493,16 @@ namespace black_cat
 
 			void resize(size_type p_count, const value_type& p_value);
 
-			void swap(this_type& p_other);
+			void swap(this_type& p_other) noexcept;
 
 		protected:
 			
 		private:
-			bcInline void _assign(const this_type& p_other, const allocator_type* p_allocator)
-			{
-				// Clear content before allocator change
-				clear();
+			void _assign(const this_type& p_other, const allocator_type* p_allocator);
 
-				if (p_allocator)
-					base_type::m_allocator = *p_allocator;
-				else
-					base_type::m_allocator = p_other.m_allocator;
+			void _assign(this_type&& p_other, const allocator_type* p_allocator);
 
-				base_type::_new_node(base_type::m_first, std::begin(p_other), std::end(p_other), std::random_access_iterator_tag());
-			}
-
-			bcInline void _assign(this_type&& p_other, const allocator_type* p_allocator)
-			{
-				// Clear content before allocator change
-				clear();
-
-				if (p_allocator)
-					base_type::m_allocator = *p_allocator;
-				else
-					base_type::m_allocator = std::move(p_other.m_allocator);
-
-				base_type::m_size = p_other.m_size;
-				base_type::m_capacity = p_other.m_capacity;
-				base_type::m_first = std::move(p_other.m_first);
-
-				p_other.m_size = 0;
-				p_other.m_capacity = 0;
-				p_other.m_first = nullptr;
-			}
-
-			bcInline node_type& _get_node(size_type p_position) const
+			node_type& _get_node(size_type p_position) const
 			{
 				bcAssert(p_position >= 0 && p_position <= base_type::m_size);
 
@@ -606,7 +578,7 @@ namespace black_cat
 		}
 
 		template< typename T, class TAllocator >
-		bc_vector<T, TAllocator>::bc_vector(this_type&& p_other)
+		bc_vector<T, TAllocator>::bc_vector(this_type&& p_other) noexcept
 			: bc_vector_base()
 		{
 			_assign(std::move(p_other), nullptr);
@@ -635,7 +607,7 @@ namespace black_cat
 		}
 
 		template< typename T, class TAllocator >
-		typename bc_vector<T, TAllocator>::this_type& bc_vector<T, TAllocator>::operator =(this_type&& p_other)
+		typename bc_vector<T, TAllocator>::this_type& bc_vector<T, TAllocator>::operator =(this_type&& p_other) noexcept
 		{
 			_assign(std::move(p_other), nullptr);
 
@@ -1021,7 +993,7 @@ namespace black_cat
 		}
 
 		template< typename T, class TAllocator >
-		void bc_vector<T, TAllocator>::swap(this_type& p_other)
+		void bc_vector<T, TAllocator>::swap(this_type& p_other) noexcept
 		{
 			using std::swap;
 
@@ -1031,8 +1003,61 @@ namespace black_cat
 			swap(base_type::m_first, p_other.m_first);
 		}
 
+		template< typename T, class TAllocator >
+		void bc_vector< T, TAllocator >::_assign(const this_type& p_other, const allocator_type* p_allocator)
+		{
+			// Clear content before allocator change
+			clear();
+
+			if (p_allocator)
+			{
+				base_type::m_allocator = *p_allocator;
+			}
+			else
+			{
+				base_type::m_allocator = p_other.m_allocator;
+			}
+
+			base_type::_new_node(base_type::m_first, std::begin(p_other), std::end(p_other), std::random_access_iterator_tag());
+		}
+
+		template< typename T, class TAllocator >
+		void bc_vector< T, TAllocator >::_assign(this_type&& p_other, const allocator_type* p_allocator)
+		{
+			// Clear content before allocator change
+			clear();
+			shrink_to_fit();
+
+			if (p_allocator)
+			{
+				base_type::m_allocator = *p_allocator;
+			}
+			else
+			{
+				base_type::m_allocator = std::move(p_other.m_allocator);
+			}
+
+			if(p_other.m_first)
+			{
+				bc_allocator_traits< internal_allocator_type >::unregister_pointer(p_other.m_allocator, &p_other.m_first);
+			}
+
+			base_type::m_size = p_other.m_size;
+			base_type::m_capacity = p_other.m_capacity;
+			base_type::m_first = std::move(p_other.m_first);
+
+			if(base_type::m_first)
+			{
+				bc_allocator_traits< internal_allocator_type >::register_pointer(base_type::m_allocator, &(base_type::m_first));
+			}
+
+			p_other.m_size = 0;
+			p_other.m_capacity = 0;
+			p_other.m_first = nullptr;
+		}
+
 		template< typename T, typename TAllocator >
-		void swap(bc_vector< T, TAllocator >& p_first, bc_vector< T, TAllocator >& p_second)
+		void swap(bc_vector< T, TAllocator >& p_first, bc_vector< T, TAllocator >& p_second) noexcept
 		{
 			p_first.swap(p_second);
 		}

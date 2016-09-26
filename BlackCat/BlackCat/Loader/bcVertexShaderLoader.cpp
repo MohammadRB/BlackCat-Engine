@@ -15,7 +15,7 @@ namespace black_cat
 	{
 	}
 
-	bc_vertex_shader_loader::bc_vertex_shader_loader(bc_vertex_shader_loader&& p_other)
+	bc_vertex_shader_loader::bc_vertex_shader_loader(bc_vertex_shader_loader&& p_other) noexcept
 		: bc_base_content_loader(std::move(p_other))
 	{
 	}
@@ -24,7 +24,7 @@ namespace black_cat
 	{
 	}
 
-	bc_vertex_shader_loader& bc_vertex_shader_loader::operator=(bc_vertex_shader_loader&& p_other)
+	bc_vertex_shader_loader& bc_vertex_shader_loader::operator=(bc_vertex_shader_loader&& p_other) noexcept
 	{
 		bc_base_content_loader::operator=(std::move(p_other));
 

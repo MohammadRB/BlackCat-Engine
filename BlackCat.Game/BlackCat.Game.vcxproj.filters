@@ -37,17 +37,8 @@
     <Filter Include="Game\System\Input">
       <UniqueIdentifier>{d6f401ea-1120-4600-9ff9-af392588d883}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\System\Render\Pass">
-      <UniqueIdentifier>{86dff892-dba3-4386-b177-eb07cb336f04}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\System\Render\Scence">
       <UniqueIdentifier>{54c2b83a-cb76-4e3f-803e-4743cbb6b339}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Shader">
-      <UniqueIdentifier>{2b1d2b11-124b-45b2-bcf5-9691b09b6b81}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Shader\DirectX11">
-      <UniqueIdentifier>{5241496f-1311-43f5-914d-808ba94b802d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -159,11 +150,23 @@
     <ClInclude Include="Game\System\Render\bcRenderPassManager.h">
       <Filter>Game\System\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Game\System\Render\Pass\bcBackBufferOutputPass.h">
-      <Filter>Game\System\Render\Pass</Filter>
-    </ClInclude>
     <ClInclude Include="Game\System\Render\Scence\bcScenceGraph.h">
       <Filter>Game\System\Render\Scence</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Render\bcRenderPassResourceShare.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Render\bcRenderThread.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Render\bcComputeState.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Mesh\bcHeightMap.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scence\Component\bcHeightMapComponent.h">
+      <Filter>Game\Object\Scence\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -221,21 +224,17 @@
     <ClCompile Include="Game\System\Render\bcRenderPassManager.cpp">
       <Filter>Game\System\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Game\System\Render\Pass\bcBackBufferOutputPass.cpp">
-      <Filter>Game\System\Render\Pass</Filter>
-    </ClCompile>
     <ClCompile Include="Game\System\Render\Scence\bcScenceGraph.cpp">
       <Filter>Game\System\Render\Scence</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Game\Shader\DirectX11\bcRegister.hlsli">
-      <Filter>Game\Shader\DirectX11</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Game\Shader\DirectX11\bcMeshShader.hlsl">
-      <Filter>Game\Shader\DirectX11</Filter>
-    </FxCompile>
+    <ClCompile Include="Game\System\Render\bcRenderThread.cpp">
+      <Filter>Game\System\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Render\bcComputeState.cpp">
+      <Filter>Game\System\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Scence\Component\bcHeightMapComponent.cpp">
+      <Filter>Game\Object\Scence\Component</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

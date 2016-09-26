@@ -142,7 +142,7 @@ namespace black_cat
 
 			if(l_freed)
 			{
-				m_tracer.accept_free(p_mem_block->size());
+				m_tracer.accept_free(l_size);
 
 				return true;
 			}
@@ -157,7 +157,7 @@ namespace black_cat
 
 		void bc_memory_stack::free(void* p_pointer, bc_memblock* p_memblock) noexcept(true)
 		{
-			m_pop_thread_count.fetch_add(1U, core_platform::bc_memory_order::seqcst);
+			m_pop_thread_count.fetch_add(1U, core_platform::bc_memory_order::acquire);
 
 			bool l_was_top = pop(p_pointer, p_memblock);
 
@@ -170,9 +170,9 @@ namespace black_cat
 				}
 			}
 
-			auto l_poping_thread_count = m_pop_thread_count.fetch_sub(1U, core_platform::bc_memory_order::seqcst) - 1;
+			auto l_poping_thread_count = m_pop_thread_count.fetch_sub(1U, core_platform::bc_memory_order::release);
 
-			if (l_poping_thread_count == 0)
+			if (l_poping_thread_count == 1)
 			{
 				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_free_block_mutex);
 				{
@@ -204,8 +204,9 @@ namespace black_cat
 
 			*l_free_block_top = _bc_memory_stack_block(p_pointer, p_memblock->size());
 
-			// Use release ordering to propagate all writes to _reclaim_free_blocks function
-			m_free_block_count.fetch_or(0U, core_platform::bc_memory_order::release);
+			// Use aquire ordering to get other threads changes to transitive them and release ordering to propagate 
+			// all writes to _reclaim_free_blocks function
+			m_free_block_count.fetch_or(0U, core_platform::bc_memory_order::acqrel);
 		}
 
 		void bc_memory_stack::_reclaim_free_blocks()

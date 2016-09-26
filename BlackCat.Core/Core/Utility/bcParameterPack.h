@@ -106,9 +106,15 @@ namespace black_cat
 			template<typename T>
 			T* as();
 
+			template<typename T>
+			const T* as() const;
+
 			// Throw bad_cast exception if underlying type mismatch
 			template < typename T >
-			T* bc_parameter_pack::as_throw();
+			T* as_throw();
+
+			template < typename T >
+			const T* as_throw() const;
 
 			template<typename T>
 			T release_as();
@@ -276,6 +282,12 @@ namespace black_cat
 			return nullptr;
 		}
 
+		template< typename T >
+		const T* bc_parameter_pack::as() const
+		{
+			return const_cast< bc_parameter_pack& >(*this).as< T >();
+		}
+
 		template < typename T >
 		T* bc_parameter_pack::as_throw()
 		{
@@ -285,6 +297,12 @@ namespace black_cat
 				throw std::bad_cast();
 
 			return &l_value->m_value;
+		}
+
+		template< typename T >
+		const T* bc_parameter_pack::as_throw() const
+		{
+			return const_cast< bc_parameter_pack& >(*this).as_throw< T >();
 		}
 
 		template< typename T >

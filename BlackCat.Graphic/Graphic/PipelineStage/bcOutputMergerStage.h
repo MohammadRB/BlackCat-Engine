@@ -9,7 +9,7 @@
 #include "Graphic/bcRenderApiInfo.h"
 #include "Graphic/PipelineStage/bcPipelineStateVariable.h"
 #include "Graphic/PipelineStage/bcPipelineStateArrayVariable.h"
-#include "Graphic/Resource/View/bcShaderView.h"
+#include "Graphic/Resource/View/bcResourceView.h"
 #include "Graphic/Resource/View/bcRenderTargetView.h"
 #include "Graphic/Resource/View/bcDepthStencilView.h"
 
@@ -50,7 +50,7 @@ namespace black_cat
 			bc_pipeline_state_variable< bcUINT > m_stencil_ref;
 			bc_pipeline_state_array_variable< bc_render_target_view*, bc_render_api_info::number_of_om_render_target_slots() > m_render_target_views;
 			bc_pipeline_state_variable< bc_depth_stencil_view* > m_depth_target_view;
-			bc_pipeline_state_array_variable< bc_shader_view*, bc_render_api_info::number_of_ps_cs_uav_registers() > m_unordered_access_views;
+			bc_pipeline_state_array_variable< bc_resource_view*, bc_render_api_info::number_of_ps_cs_uav_resource() > m_unordered_access_views;
 			//bc_pipeline_state_array_variable< bcUINT > m_uav_initial_counts;
 
 		protected:

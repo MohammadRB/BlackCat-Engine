@@ -36,13 +36,17 @@ namespace black_cat
 		inline void _register_pointer(void** p_pointer)
 		{
 			if (is_movale_pointer(*p_pointer))
+			{
 				register_movable_pointer(p_pointer);
+			}	
 		}
 
 		inline void _unregister_pointer(void** p_pointer)
 		{
 			if (is_movale_pointer(*p_pointer))
+			{
 				unregister_movable_pointer(p_pointer);
+			}	
 		}
 
 #pragma region bcUniquePtr
@@ -940,8 +944,8 @@ namespace black_cat
 			bcInline T* release() noexcept(true)
 			{
 				T* l_pointer = get();
-				_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
-				m_pointer = nullptr;
+
+				_destruct();
 
 				return l_pointer;
 			}
@@ -997,7 +1001,9 @@ namespace black_cat
 				m_pointer = p_pointer;
 
 				if (m_pointer)
+				{
 					_register_pointer(reinterpret_cast< void** >(&m_pointer));
+				}
 			}
 
 			bcInline void _destruct()
@@ -1023,11 +1029,6 @@ namespace black_cat
 			{
 				if (static_cast< const void* >(this) != static_cast< const void* >(&p_other)) // avoid self assignment
 				{
-					if (p_other.get())
-					{
-						_unregister_pointer(reinterpret_cast< void** >(&p_other.m_pointer));
-					}
-
 					reset(p_other.release());
 				}
 			}

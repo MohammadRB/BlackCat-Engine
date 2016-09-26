@@ -15,11 +15,11 @@ namespace black_cat
 		{
 		public:
 			bc_free_camera(bcFLOAT p_aspect_ratio,
-				bcFLOAT p_field_of_view,
+				bcFLOAT p_height_fov,
 				bcFLOAT p_near_clip,
 				bcFLOAT p_far_clip,
-				bcFLOAT p_move_speed = 2,
-				bcFLOAT p_rotate_speed = 2);
+				bcFLOAT p_move_speed = 25,
+				bcFLOAT p_rotate_speed = 1);
 
 			bc_free_camera(const bc_free_camera&) = default;
 

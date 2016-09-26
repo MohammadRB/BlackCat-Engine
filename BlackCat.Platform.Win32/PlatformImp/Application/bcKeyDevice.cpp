@@ -3,7 +3,7 @@
 #include "PlatformImp/PlatformImpPCH.h"
 
 #include "CorePlatformImp/bcUtility.h"
-#include "Platform/bcPlatformEvents.h"
+#include "Platform/bcEvent.h"
 #include "PlatformImp/bcExport.h"
 #include "PlatformImp/Application/bcKeyDevice.h"
 

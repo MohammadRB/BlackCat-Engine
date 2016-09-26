@@ -21,12 +21,21 @@ namespace black_cat
 			{
 			}
 
-			bc_mesh_part_transformation(bc_mesh_node::node_indexing p_root_node_index,
-				core::bc_vector<graphic::bc_matrix4f>&& p_transformations)
+			bc_mesh_part_transformation(bc_mesh_node::node_indexing p_root_node_index, core::bc_vector<graphic::bc_matrix4f>&& p_transformations)
 				: m_root_node_index(p_root_node_index),
 				m_transformations(std::move(p_transformations))
 			{
 			}
+
+			bc_mesh_part_transformation(const bc_mesh_part_transformation&) = default;
+
+			bc_mesh_part_transformation(bc_mesh_part_transformation&&) = default;
+
+			~bc_mesh_part_transformation() = default;
+
+			bc_mesh_part_transformation& operator=(const bc_mesh_part_transformation&) = default;
+
+			bc_mesh_part_transformation& operator=(bc_mesh_part_transformation&&) = default;
 
 		protected:
 
@@ -56,19 +65,17 @@ namespace black_cat
 
 			const bc_mesh_node* get_parent_node(const bc_mesh_node* p_node) const;
 
+			const core::bc_vector< bc_mesh_node* >& get_node_childs(const bc_mesh_node* p_node) const;
+
 			const graphic::bc_matrix4f* get_node_transformation(const bc_mesh_node* p_node) const;
 
-			const bc_mesh_node_material* get_node_material(const bc_mesh_node* p_node) const;
+			const bc_mesh_material* get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
-			const bc_render_state_ptr& get_node_render_state(const bc_mesh_node* p_node) const;
-
-			const core::bc_vector< bc_mesh_node* >& get_node_childs(const bc_mesh_node* p_node) const;
+			const bc_render_state* get_node_mesh_render_state(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
 			const graphic::bc_matrix4f* get_node_absolute_transformation(const bc_mesh_part_transformation& p_transformations, const bc_mesh_node* p_node) const;
 
 			bc_mesh_part_transformation calculate_absolute_transformations(const graphic::bc_matrix4f& p_world) const;
-
-			bc_render_state_ptr get_render_state() const;
 
 		protected:
 
@@ -145,7 +152,12 @@ namespace black_cat
 
 		inline const bc_mesh_node* bc_mesh_part::get_parent_node(const bc_mesh_node* p_node) const
 		{
-			return m_mesh->get_parent_node(p_node);
+			return m_mesh->get_node_parent(p_node);
+		}
+		
+		inline const core::bc_vector<bc_mesh_node*>& bc_mesh_part::get_node_childs(const bc_mesh_node* p_node) const
+		{
+			return m_mesh->get_node_childs(p_node);
 		}
 
 		inline const graphic::bc_matrix4f* bc_mesh_part::get_node_transformation(const bc_mesh_node* p_node) const
@@ -153,25 +165,20 @@ namespace black_cat
 			return m_mesh->get_node_transformation(p_node);
 		}
 
-		inline const bc_mesh_node_material* bc_mesh_part::get_node_material(const bc_mesh_node* p_node) const
+		inline const bc_mesh_material* bc_mesh_part::get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
 		{
-			return m_mesh->get_node_material(p_node);
+			return m_mesh->get_node_mesh_material(p_node, p_mesh_index);
 		}
 
-		inline const bc_render_state_ptr& bc_mesh_part::get_node_render_state(const bc_mesh_node* p_node) const
+		inline const bc_render_state* bc_mesh_part::get_node_mesh_render_state(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
 		{
-			return m_mesh->get_node_render_state(p_node);
-		}
-
-		inline const core::bc_vector<bc_mesh_node*>& bc_mesh_part::get_node_childs(const bc_mesh_node* p_node) const
-		{
-			return m_mesh->get_node_childs(p_node);
+			return m_mesh->get_node_mesh_render_state(p_node, p_mesh_index);
 		}
 
 		inline const graphic::bc_matrix4f* bc_mesh_part::get_node_absolute_transformation(const bc_mesh_part_transformation& p_transformations, const bc_mesh_node* p_node) const
 		{
 			auto l_root_node_index = p_transformations.m_root_node_index;
-			auto l_node_index = p_node->get_data_idnex();
+			auto l_node_index = p_node->get_transformation_index();
 
 			bcAssert(l_root_node_index != bc_mesh_node::node_indexing(-1) && l_node_index >= l_root_node_index);
 
@@ -186,12 +193,7 @@ namespace black_cat
 
 			_calculate_absolute_transformations(p_world, l_begin, l_begin + 1, p_result);
 
-			return bc_mesh_part_transformation(m_node->get_data_idnex(), std::move(p_result));
-		}
-
-		inline bc_render_state_ptr bc_mesh_part::get_render_state() const
-		{
-			return m_mesh->get_node_render_state(m_node);
+			return bc_mesh_part_transformation(m_node->get_transformation_index(), std::move(p_result));
 		}
 
 		inline void bc_mesh_part::_calculate_absolute_transformations(const graphic::bc_matrix4f& p_parent_transformation, 

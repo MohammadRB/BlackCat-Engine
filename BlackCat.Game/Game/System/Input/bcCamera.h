@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CorePlatformImp/Utility/bcClock.h"
+#include "Core/Container/bcArray.h"
 #include "PlatformImp/Application/bcHumanInterfaceDevice.h"
 #include "Graphic/Math/bcVector3f.h"
 #include "Graphic/Math/bcMatrix3f.h"
@@ -15,6 +16,9 @@ namespace black_cat
 	{
 		class BC_GAME_DLL bc_icamera
 		{
+		public:
+			using extend = core::bc_array<graphic::bc_vector3f, 8>;
+
 		public:
 			bc_icamera(bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
 
@@ -52,6 +56,8 @@ namespace black_cat
 
 			void set_lookat(graphic::bc_vector3f p_lookat) noexcept;
 
+			void set_position_lookat(const graphic::bc_vector3f& p_position, const graphic::bc_vector3f& p_lookat);
+
 			graphic::bc_vector3f get_forward() const noexcept;
 
 			graphic::bc_vector3f get_back() const noexcept;
@@ -63,6 +69,13 @@ namespace black_cat
 			graphic::bc_vector3f get_right() const noexcept;
 
 			graphic::bc_vector3f get_left() const noexcept;
+
+			/**
+			 * \brief Get 8 point that describe camera frustum. First four point lay on near clip and two four on far clip 
+			 * ordered by lower-left upper-left upper-right lower-right
+			 * \param p_points 
+			 */
+			virtual void get_extend_points(extend& p_points) = 0;
 
 			graphic::bc_matrix4f get_view() const noexcept
 			{
@@ -175,7 +188,7 @@ namespace black_cat
 			using bc_icamera::set_projection;
 
 		public:
-			bc_perspective_camera(bcFLOAT p_aspect_ratio, bcFLOAT p_field_of_view, bcFLOAT p_near_clip, bcFLOAT p_far_clip);
+			bc_perspective_camera(bcFLOAT p_aspect_ratio, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip);
 
 			bc_perspective_camera(const bc_perspective_camera&) = default;
 
@@ -196,6 +209,8 @@ namespace black_cat
 			}
 
 			void set_field_of_view(bcFLOAT p_field_of_view) noexcept;
+
+			void get_extend_points(extend& p_points) override;
 
 			void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept override;
 
