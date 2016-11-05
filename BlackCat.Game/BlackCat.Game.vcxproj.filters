@@ -40,6 +40,9 @@
     <Filter Include="Game\System\Render\Scence">
       <UniqueIdentifier>{54c2b83a-cb76-4e3f-803e-4743cbb6b339}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\System\Script">
+      <UniqueIdentifier>{3510ce94-bf32-46a7-83d3-f4f7bb770296}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\GamePCH.h">
@@ -168,6 +171,21 @@
     <ClInclude Include="Game\Object\Scence\Component\bcHeightMapComponent.h">
       <Filter>Game\Object\Scence\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Game\System\Script\bcScriptSystem.h">
+      <Filter>Game\System\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Script\bcGameConsole.h">
+      <Filter>Game\System\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Script\bcDefaultGameConsole.h">
+      <Filter>Game\System\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\bcRenderApplication.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Script\bcScriptUIContext.h">
+      <Filter>Game\System\Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\GamePCH.cpp">
@@ -235,6 +253,21 @@
     </ClCompile>
     <ClCompile Include="Game\Object\Scence\Component\bcHeightMapComponent.cpp">
       <Filter>Game\Object\Scence\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Script\bcScriptSystem.cpp">
+      <Filter>Game\System\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Script\bcGameConsole.cpp">
+      <Filter>Game\System\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Script\bcDefaultGameConsole.cpp">
+      <Filter>Game\System\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\bcRenderApplication.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Script\bcScriptUIContext.cpp">
+      <Filter>Game\System\Script</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

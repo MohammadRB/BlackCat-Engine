@@ -168,7 +168,7 @@ namespace black_cat
 
 			bc_service_manager::get().register_service< _content_wrapper< TContent > >
 				(
-					core::bc_make_unique< _loader_wrapper< TContent > >(bc_alloc_type::program, std::move(p_loader))
+					core::bc_make_service< _loader_wrapper< TContent > >(std::move(p_loader))
 				);
 		}
 

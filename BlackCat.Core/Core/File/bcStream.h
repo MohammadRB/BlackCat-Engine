@@ -248,5 +248,8 @@ namespace black_cat
 
 		// Read a line from stream and replace in p_line string if stream is readable and stream position isn't at end
 		bool BC_CORE_DLL bc_get_line(bc_istream_adapter& p_stream, bc_string_frame* p_line);
+
+		// Read a line from stream and replace in p_line string if stream is readable and stream position isn't at end
+		bool BC_CORE_DLL bc_get_wline(bc_istream_adapter& p_stream, bc_wstring_frame* p_line);
 	}
 }

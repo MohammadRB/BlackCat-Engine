@@ -11,7 +11,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		template< typename TR, typename ... TA >
+		template< typename TR, typename ...TA >
 		template< typename TFunctor >
 		typename bc_delegate< TR(TA ...) >::this_type bc_delegate< TR(TA ...) >::make_from_big_object(bc_alloc_type p_alloc_type, TFunctor&& p_functor)
 		{
@@ -25,7 +25,7 @@ namespace black_cat
 			});
 		}
 
-		template< typename TR, typename ... TA >
+		template< typename TR, typename ...TA >
 		template< typename TFunctor >
 		typename bc_delegate< TR(TA ...) >::this_type bc_delegate< TR(TA ...) >::make_from_big_object(TFunctor&& p_functor)
 		{

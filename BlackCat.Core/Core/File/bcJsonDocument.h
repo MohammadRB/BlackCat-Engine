@@ -313,7 +313,7 @@ namespace black_cat
 
 			bc_json_document& operator=(bc_json_document&&) noexcept(std::is_nothrow_move_assignable<T>::value) = delete;
 
-			void parse(bc_string_frame& p_json);
+			void parse(const bcCHAR* p_json);
 
 			T& get() noexcept;
 
@@ -722,10 +722,10 @@ namespace black_cat
 		// -- Json document --------------------------------------------------------------------------------
 
 		template< typename T >
-		void bc_json_document< T >::parse(bc_string_frame& p_json)
+		void bc_json_document< T >::parse(const bcCHAR* p_json)
 		{
 			rapidjson::Document l_json;
-			l_json.Parse(p_json.data());
+			l_json.Parse(p_json);
 
 			if (!l_json.IsObject())
 				throw bc_io_exception("bad json format");

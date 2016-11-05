@@ -14,16 +14,13 @@
     <Filter Include="Platform\File">
       <UniqueIdentifier>{686ecfeb-6ebc-47df-aafe-3ee6cfdb037d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Platform\Script">
+      <UniqueIdentifier>{600c2e28-6ac0-4e48-aa40-29a23d3883ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Platform\PlatformPCH.h">
       <Filter>Platform</Filter>
-    </ClInclude>
-    <ClInclude Include="Platform\Application\bcRenderApplication.h">
-      <Filter>Platform\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Platform\Application\bcRenderWindow.h">
-      <Filter>Platform\Application</Filter>
     </ClInclude>
     <ClInclude Include="Platform\Application\bcKeyDevice.h">
       <Filter>Platform\Application</Filter>
@@ -48,6 +45,66 @@
     </ClInclude>
     <ClInclude Include="Platform\bcEvent.h">
       <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptRuntime.h">
+      <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptContext.h">
+      <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptReference.h">
+      <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptByteCode.h">
+      <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptVariable.h">
+      <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptFunction.h">
+      <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptObject.h">
+      <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptString.h">
+      <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptError.h">
+      <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptRef.h">
+      <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptArray.h">
+      <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptExternalObject.h">
+      <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptPrototypeBuilder.h">
+      <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptPrototype.h">
+      <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptRuntime.hpp">
+      <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Application\bcConsoleWindow.h">
+      <Filter>Platform\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Application\bcWindow.h">
+      <Filter>Platform\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Application\bcApplication.h">
+      <Filter>Platform\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Application\bcBasicWindow.h">
+      <Filter>Platform\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptGlobalPrototypeBuilder.h">
+      <Filter>Platform\Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -9,7 +9,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Event/bcEvent.h"
 #include "Platform/bcEvent.h"
-#include "PlatformImp/Application/bcRenderWindow.h"
+#include "PlatformImp/Application/bcBasicWindow.h"
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcResourcePtr.h"
 #include "Graphic/bcPlatformRenderApi.h"
@@ -151,7 +151,7 @@ namespace black_cat
 		// Thread safe class
 		template< bc_platform_render_api TRenderApi >
 		class bc_platform_device 
-			: public core::bc_initializable<bcUINT, bcUINT, bc_format, platform::bc_render_window&>,
+			: public core::bc_initializable<bcUINT, bcUINT, bc_format, platform::bc_basic_window&>,
 			public core::bc_object_allocator,
 			public core_platform::bc_no_copy
 		{
@@ -161,11 +161,11 @@ namespace black_cat
 		public:
 			bc_platform_device();
 
-			bc_platform_device(bc_platform_device&& p_other);
+			bc_platform_device(bc_platform_device&& p_other) noexcept;
 
 			~bc_platform_device();
 
-			bc_platform_device& operator=(bc_platform_device&& p_other);
+			bc_platform_device& operator=(bc_platform_device&& p_other) noexcept;
 
 			bool get_vsync() const;
 
@@ -259,7 +259,7 @@ namespace black_cat
 		protected:
 
 		private:
-			void _initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, platform::bc_render_window& p_output_window) override;
+			void _initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, platform::bc_basic_window& p_output_window) override;
 
 			void _destroy() override;
 

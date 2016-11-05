@@ -63,7 +63,7 @@ namespace black_cat
 		};
 
 		inline bc_input_system::bc_input_system()
-			:m_key_device(platform::bc_human_interface_device::create_key_device(0)),
+			: m_key_device(platform::bc_human_interface_device::create_key_device(0)),
 			m_pointing_device(platform::bc_human_interface_device::create_pointing_device(0))
 		{
 			m_device_reset_listener_handle = core::bc_service_manager::get()

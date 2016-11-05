@@ -74,10 +74,12 @@ namespace black_cat
 			T m_value;
 		};
 
-		// This class can hold any data type, (for small data types it use an internall buffer and for large data,
-		// memory will be allocated from frame allocator)
-		// You can use both copy and movale objects but if you use movale only object and try to copy this object
-		// a logic exception will be thrown
+		/**
+		 * \brief This class can hold any data type, (for small data types it use an internall buffer and for large data,
+		 * memory will be allocated from frame allocator)
+		 * You can use both copy and movale objects but if you use movale only object and try to copy this object
+		 * a logic exception will be thrown
+		 */
 		class bc_parameter_pack : public bc_object_allocator
 		{
 		public:
@@ -102,24 +104,48 @@ namespace black_cat
 			template< typename T >
 			bool is() const;
 
-			// Return null if underlying type mismatch
+			/**
+			 * \brief Cast underlying type to requested type.
+			 * \tparam T 
+			 * \return Return null if underlying type mismatch
+			 */
 			template<typename T>
 			T* as();
 
 			template<typename T>
 			const T* as() const;
 
-			// Throw bad_cast exception if underlying type mismatch
+			/**
+			* \brief Return pointer to underlying buffer
+			* \return Return null if there is no state
+			*/
+			template<>
+			const void* as< void >() const;
+
+			/**
+			 * \brief Cast underlying type to requested type. Throw bad_cast exception if underlying type mismatch
+			 * \tparam T 
+			 * \return 
+			 */
 			template < typename T >
 			T* as_throw();
 
 			template < typename T >
 			const T* as_throw() const;
 
+			/**
+			 * \brief Return pointer to underlying buffer. Throw bad_cast exception if there is no state
+			 * \return 
+			 */
+			template <>
+			const void* as_throw< void >() const;
+
 			template<typename T>
 			T release_as();
 
-			// Clear internal states if any exist
+			/**
+			 * \brief Clear internal states if any exist
+			 */
 			void reset();
 
 			bool has_value() const;
@@ -137,7 +163,7 @@ namespace black_cat
 			_bc_parameter_pack_base* m_object;
 		};
 
-		// Same as bc_parameter_pack but don't use frame allocator.
+		// Same as bc_parameter_pack but doesn't use frame allocator.
 		class bc_any : public bc_parameter_pack
 		{
 		public:
@@ -270,8 +296,10 @@ namespace black_cat
 		T* bc_parameter_pack::as()
 		{
 			if (!has_value())
+			{
 				return nullptr;
-
+			}
+			
 			auto* l_imp = dynamic_cast< _bc_parameter_pack_imp<T>* >(m_object);
 
 			if(l_imp)
@@ -288,13 +316,26 @@ namespace black_cat
 			return const_cast< bc_parameter_pack& >(*this).as< T >();
 		}
 
+		template<>
+		const void* bc_parameter_pack::as<void>() const
+		{
+			if (!has_value())
+			{
+				return nullptr;
+			}
+
+			return m_object;
+		}
+
 		template < typename T >
 		T* bc_parameter_pack::as_throw()
 		{
 			T* l_value = as<T>();
 
 			if (l_value == nullptr)
-				throw std::bad_cast();
+			{
+				throw bc_bad_cast_exception();
+			}
 
 			return &l_value->m_value;
 		}
@@ -303,6 +344,17 @@ namespace black_cat
 		const T* bc_parameter_pack::as_throw() const
 		{
 			return const_cast< bc_parameter_pack& >(*this).as_throw< T >();
+		}
+
+		template<>
+		const void* bc_parameter_pack::as_throw<void>() const
+		{
+			if (!has_value())
+			{
+				throw bc_bad_cast_exception();
+			}
+
+			return m_object;
 		}
 
 		template< typename T >

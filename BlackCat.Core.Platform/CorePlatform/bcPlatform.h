@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "CorePlatform/CorePlatformPCH.h"
-
 namespace black_cat
 {
 	namespace core_platform

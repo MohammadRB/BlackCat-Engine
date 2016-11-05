@@ -5,6 +5,7 @@
 #include "Core/bcConstant.h"
 #include "Core/Memory/bcMemoryManagment.h"
 #include "Core/bcEvent.h"
+#include "Core/Utility/bcSingleton.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcLogger.h"
 #include "Core/Utility/bcExpressionParameterManager.h"
@@ -14,11 +15,10 @@
 #include "Core/File/bcContentStreamManager.h"
 #include "Core/File/bcLazyContent.h"
 #include "PlatformImp/bcLogIDEDebug.h"
-#include "PlatformImp/Application/bcRenderWindow.h"
-#include "PlatformImp/Application/bcRenderApplication.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
+#include "Game/bcRenderApplication.h"
 #include "Game/System/Render/bcRenderPassManager.h"
 #include "Game/Object/Scence/bcActorComponentManager.h"
 #include "Game/Object/Scence/bcEntityManager.h"
@@ -40,44 +40,67 @@
 namespace black_cat
 {
 	template< class TApp >
-	class bc_base_render_application : public platform::bc_render_application< TApp >
+	class bc_base_render_application :
+		public game::bc_render_application,
+		public core::bc_singleton< TApp(game::bc_engine_application_parameter&) >
 	{
-	private:
-		using base_type = platform::bc_render_application< TApp >;
+	public:
+		using bc_render_application::initialize;
+		using bc_render_application::destroy;
 
 	public:
 		bc_base_render_application();
 
-		~bc_base_render_application();
+		virtual ~bc_base_render_application();
 
-		virtual void app_start_engine_components(platform::bc_engine_components_parameters& p_engine_components) override;
+		virtual void application_start_engine_components(game::bc_engine_component_parameter& p_engine_components) = 0;
 
-		virtual void app_initialize(const bcCHAR* p_commandline) override;
+		virtual void application_initialize(const bcCHAR* p_commandline) = 0;
 
-		virtual void app_load_content(core::bc_content_stream_manager* p_stream_manager) override;
+		virtual void application_load_content(core::bc_content_stream_manager* p_stream_manager) = 0;
 
-		virtual void app_update(core_platform::bc_clock::update_param p_clock_update_param) override;
+		virtual void application_update(core_platform::bc_clock::update_param p_clock_update_param) = 0;
 
-		virtual bool app_event(core::bc_ievent& p_event) override;
+		virtual bool application_event(core::bc_ievent& p_event) = 0;
 
-		virtual void app_unload_content(core::bc_content_stream_manager* p_stream_manager) override;
+		virtual void application_unload_content(core::bc_content_stream_manager* p_stream_manager) = 0;
 
-		virtual void app_destroy() override;
+		virtual void application_destroy() = 0;
 
-		virtual void app_close_engine_components() override;
+		virtual void application_close_engine_components() = 0;
 
 	protected:
 		core::bc_service_manager* m_service_manager;
 		game::bc_game_system* m_game_system;
 
 	private:
+		void app_start_engine_components(game::bc_engine_component_parameter& p_engine_components) override final;
+
+		void app_initialize(const bcCHAR* p_commandline) override final;
+
+		void app_load_content() override final;
+
+		void app_update(core_platform::bc_clock::update_param p_clock_update_param) override final;
+
+		bool app_event(core::bc_ievent& p_event) override final;
+
+		void app_unload_content() override final;
+
+		void app_destroy() override final;
+
+		void app_close_engine_components() override final;
+
+		void _initialize(game::bc_engine_application_parameter&) override;
+
+		void _destroy() override;
+
 		core::bc_event_listener_handle m_event_error_handle;
 		core::bc_event_listener_handle m_event_warning_handle;
 	};
 
 	template< class TApp >
 	bc_base_render_application< TApp >::bc_base_render_application()
-		: base_type(), 
+		: bc_render_application(),
 		m_service_manager(nullptr),
 		m_game_system(nullptr)
 	{
@@ -89,64 +112,64 @@ namespace black_cat
 	}
 
 	template< class TApp >
-	void bc_base_render_application< TApp >::app_start_engine_components(platform::bc_engine_components_parameters& p_engine_components)
+	void bc_base_render_application< TApp >::app_start_engine_components(game::bc_engine_component_parameter& p_engine_components)
 	{
 #ifdef BC_MEMORY_ENABLE
 		core::bc_memmng::startup
-			(
-				p_engine_components.m_memmng_fsa_start_size,
-				p_engine_components.m_memmng_fsa_count,
-				p_engine_components.m_memmng_fsa_step_size,
-				p_engine_components.m_memmng_fsa_allocation_count,
-				p_engine_components.m_memmng_program_stack_size,
-				p_engine_components.m_memmng_level_stack_size,
-				p_engine_components.m_memmng_frame_stack_size,
-				p_engine_components.m_memmng_super_heap_size
-			);
+		(
+			p_engine_components.m_memmng_fsa_start_size,
+			p_engine_components.m_memmng_fsa_count,
+			p_engine_components.m_memmng_fsa_step_size,
+			p_engine_components.m_memmng_fsa_allocation_count,
+			p_engine_components.m_memmng_program_stack_size,
+			p_engine_components.m_memmng_level_stack_size,
+			p_engine_components.m_memmng_frame_stack_size,
+			p_engine_components.m_memmng_super_heap_size
+		);
 #endif
 		core::bc_service_manager::start_up();
 		m_service_manager = &core::bc_service_manager::get();
 
 		auto* l_logger_manager = m_service_manager->register_service< core::bc_logger >
-			(
-				core::bc_make_service< core::bc_logger >()
-			);
+		(
+			core::bc_make_service< core::bc_logger >()
+		);
 		m_service_manager->register_service< core::bc_event_manager >
-			(
-				core::bc_make_service< core::bc_event_manager >()
-			);
+		(
+			core::bc_make_service< core::bc_event_manager >()
+		);
 		m_service_manager->register_service< core::bc_thread_manager >
+		(
+			core::bc_make_service< core::bc_thread_manager >
 			(
-				core::bc_make_service< core::bc_thread_manager >
-				(
-					p_engine_components.m_thread_manager_thread_count,
-					p_engine_components.m_thread_manager_reserve_thread_count
-				)
-			);
+				p_engine_components.m_thread_manager_thread_count,
+				p_engine_components.m_thread_manager_reserve_thread_count
+			)
+		);
 		auto* l_expression_parameter_manager = m_service_manager->register_service< core::bc_expression_parameter_manager >
-			(
-				core::bc_make_service< core::bc_expression_parameter_manager >()
-			);
+		(
+			core::bc_make_service< core::bc_expression_parameter_manager >()
+		);
 		m_service_manager->register_service< core::bc_content_manager >
-			(
-				core::bc_make_service< core::bc_content_manager >()
-			);
+		(
+			core::bc_make_service< core::bc_content_manager >()
+		);
 		auto* l_content_stream_manager = m_service_manager->register_service< core::bc_content_stream_manager >
-			(
-				core::bc_make_service< core::bc_content_stream_manager >()
-			);
+		(
+			core::bc_make_service< core::bc_content_stream_manager >()
+		);
 		m_service_manager->register_service< game::bc_actor_component_manager >
-			(
-				core::bc_make_service< game::bc_actor_component_manager >()
-			);
+		(
+			core::bc_make_service< game::bc_actor_component_manager >()
+		);
 		auto* l_entity_manager = m_service_manager->register_service< game::bc_entity_manager >
-			(
-				core::bc_make_service< game::bc_entity_manager >()
-			);
+		(
+			core::bc_make_service< game::bc_entity_manager >()
+		);
 		m_game_system = m_service_manager->register_service< game::bc_game_system >
-			(
-				core::bc_make_service< game::bc_game_system >()
-			);
+		(
+			core::bc_make_service< game::bc_game_system >()
+		);
 
 #ifdef BC_DEBUG
 		l_logger_manager->register_listener
@@ -174,51 +197,53 @@ namespace black_cat
 		);
 
 		l_content_stream_manager->register_loader< graphic::bc_texture2d_content, bc_texture_loader >
-			(
-				core::bc_make_loader< bc_texture_loader >()
-			);
+		(
+			core::bc_make_loader< bc_texture_loader >()
+		);
 		l_content_stream_manager->register_loader< graphic::bc_vertex_shader_content, bc_vertex_shader_loader >
-			(
-				core::bc_make_loader< bc_vertex_shader_loader >()
-			);
+		(
+			core::bc_make_loader< bc_vertex_shader_loader >()
+		);
 		l_content_stream_manager->register_loader< graphic::bc_hull_shader_content, bc_hull_shader_loader >
-			(
-				core::bc_make_loader< bc_hull_shader_loader >()
-			);
+		(
+			core::bc_make_loader< bc_hull_shader_loader >()
+		);
 		l_content_stream_manager->register_loader< graphic::bc_domain_shader_content, bc_domain_shader_loader >
-			(
-				core::bc_make_loader< bc_domain_shader_loader >()
-			);
+		(
+			core::bc_make_loader< bc_domain_shader_loader >()
+		);
 		l_content_stream_manager->register_loader< graphic::bc_geometry_shader_content, bc_geometry_shader_loader >
-			(
-				core::bc_make_loader< bc_geometry_shader_loader >()
-			);
+		(
+			core::bc_make_loader< bc_geometry_shader_loader >()
+		);
 		l_content_stream_manager->register_loader< graphic::bc_pixel_shader_content, bc_pixel_shader_loader >
-			(
-				core::bc_make_loader< bc_pixel_shader_loader >()
-			);
+		(
+			core::bc_make_loader< bc_pixel_shader_loader >()
+		);
 		l_content_stream_manager->register_loader< graphic::bc_compute_shader_content, bc_compute_shader_loader >
-			(
-				core::bc_make_loader< bc_compute_shader_loader >()
-			);
+		(
+			core::bc_make_loader< bc_compute_shader_loader >()
+		);
 		l_content_stream_manager->register_loader< game::bc_mesh, bc_mesh_loader >
-			(
-				core::bc_make_loader< bc_mesh_loader >()
-			);
+		(
+			core::bc_make_loader< bc_mesh_loader >()
+		);
 
 		l_entity_manager->register_component_types
-			<
-				game::bc_mesh_component,
-				game::bc_hierarchy_component,
-				game::bc_render_component,
-				game::bc_height_map_component
-			>();
+		<
+			game::bc_mesh_component,
+			game::bc_hierarchy_component,
+			game::bc_render_component,
+			game::bc_height_map_component
+		>();
+
+		application_start_engine_components(p_engine_components);
 	}
 
 	template< class TApp >
 	void bc_base_render_application< TApp >::app_initialize(const bcCHAR* p_commandline)
 	{
-		auto* l_event_manager = core::bc_service_manager::get().get_service<core::bc_event_manager>();
+		auto* l_event_manager = m_service_manager->get_service< core::bc_event_manager >();
 		auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
 		auto* l_entity_manager = m_service_manager->get_service< game::bc_entity_manager >();
 
@@ -235,64 +260,75 @@ namespace black_cat
 		(
 			game::bc_game_system_parameter(game::bc_render_system_parameter
 			(
-				base_type::get_render_window().get_width(),
-				base_type::get_render_window().get_height(),
+				bc_render_application::get_render_window().get_width(),
+				bc_render_application::get_render_window().get_height(),
 				graphic::bc_format::R8G8B8A8_UNORM,
-				base_type::get_render_window()
+				bc_render_application::get_render_window()
 			))
 		);
 
-		l_content_stream_manager->read_stream_file(m_game_system->get_file_system().get_content_stream_path());
-		l_entity_manager->read_entity_file(m_game_system->get_file_system().get_entity_type_path());
+		l_content_stream_manager->read_stream_file(m_game_system->get_file_system().get_content_data_path(bcL("ContentStream.json")).c_str());
+		l_entity_manager->read_entity_file(m_game_system->get_file_system().get_content_data_path(bcL("EntityType.json")).c_str());
 
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_shaders");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_resources");
+
+		application_initialize(p_commandline);
 	}
 
 	template< class TApp >
-	void bc_base_render_application< TApp >::app_load_content(core::bc_content_stream_manager* p_stream_manager)
+	void bc_base_render_application< TApp >::app_load_content()
 	{
+		application_load_content(m_service_manager->get_service< core::bc_content_stream_manager >());
 	}
 
 	template< class TApp >
 	void bc_base_render_application< TApp >::app_update(core_platform::bc_clock::update_param p_clock_update_param)
 	{
+		application_update(p_clock_update_param);
 	}
 
 	template< class TApp >
 	bool bc_base_render_application< TApp >::app_event(core::bc_ievent& p_event)
 	{
+		bool l_result = false;
+
 		if (core::bc_ievent::event_is< core::bc_app_event_error >(p_event))
 		{
-			base_type::get_render_window().messagebox
+			bc_render_application::get_render_window().messagebox
 			(
 				bcL("Error"),
 				bc_to_wstring(static_cast< core::bc_app_event_error& >(p_event).get_message()).c_str(),
 				platform::bc_messagebox_type::error,
 				platform::bc_messagebox_buttom::ok
 			);
-			return true;
+			l_result = true;
 		}
 
 		if (core::bc_ievent::event_is< core::bc_app_event_warning >(p_event))
 		{
-			base_type::get_render_window().messagebox
+			bc_render_application::get_render_window().messagebox
 			(
 				bcL("Warning"),
 				bc_to_wstring(static_cast< core::bc_app_event_warning& >(p_event).get_message()).c_str(),
 				platform::bc_messagebox_type::warning,
 				platform::bc_messagebox_buttom::ok
 			);
-			return true;
+			l_result = true;
 		}
 
-		return base_type::app_event(p_event);
+		l_result = l_result || bc_render_application::app_event(p_event);
+		l_result = l_result || application_event(p_event);
+
+		return l_result;
 	}
 
 	template< class TApp >
-	void bc_base_render_application< TApp >::app_unload_content(core::bc_content_stream_manager* p_stream_manager)
+	void bc_base_render_application< TApp >::app_unload_content()
 	{
 		auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
+
+		application_unload_content(l_content_stream_manager);
 
 		l_content_stream_manager->unload_content_stream("engine_shaders");
 		l_content_stream_manager->unload_content_stream("engine_resources");
@@ -301,6 +337,8 @@ namespace black_cat
 	template< class TApp >
 	void bc_base_render_application< TApp >::app_destroy()
 	{
+		application_destroy();
+
 		m_event_warning_handle.reset();
 		m_event_error_handle.reset();
 	}
@@ -308,6 +346,8 @@ namespace black_cat
 	template< class TApp >
 	void bc_base_render_application< TApp >::app_close_engine_components()
 	{
+		application_close_engine_components();
+
 		core::bc_service_manager::close();
 #ifdef BC_MEMORY_ENABLE
 #ifdef BC_MEMORY_LEAK_DETECTION
@@ -320,5 +360,17 @@ namespace black_cat
 
 		core::bc_memmng::close();
 #endif
+	}
+
+	template< class TApp >
+	void bc_base_render_application<TApp>::_initialize(game::bc_engine_application_parameter& p_parameter)
+	{
+		bc_render_application::_initialize(p_parameter);
+	}
+
+	template< class TApp >
+	void bc_base_render_application<TApp>::_destroy()
+	{
+		bc_render_application::_destroy();
 	}
 }

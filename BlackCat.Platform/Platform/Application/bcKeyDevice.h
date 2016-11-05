@@ -130,10 +130,10 @@ namespace black_cat
 
 		enum class bc_key_state : bcUBYTE
 		{
-			up= 0,
-			pressing = 1,
-			pressed = 2, 
-			releasing = 4
+			up = 0,			// Key did not pressed
+			pressing = 1,	// Key pressed in this frame
+			pressed = 2,	// Key was pressed in this frame and last frames
+			releasing = 4	// Key was pressed in last frame but has been released in this frame
 		};
 
 		template< core_platform::bc_platform TPlatform >

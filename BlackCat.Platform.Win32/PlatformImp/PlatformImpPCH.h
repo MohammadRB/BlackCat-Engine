@@ -2,7 +2,9 @@
 
 #pragma once
 
-#include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatformImp/CorePlatformImpPCH.h"
-#include "Core/CorePCH.h"
-#include "Platform/PlatformPCH.h"
+
+#include "3rdParty/ChakraCore/Include/ChakraCore.h"
+#include "3rdParty/ChakraCore/Include/ChakraCommon.h"
+#include "3rdParty/ChakraCore/Include/ChakraCommonWindows.h"
+#include "3rdParty/ChakraCore/Include/ChakraDebug.h"

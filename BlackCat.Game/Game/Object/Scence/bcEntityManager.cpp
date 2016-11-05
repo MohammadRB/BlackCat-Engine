@@ -78,7 +78,7 @@ namespace black_cat
 			}
 
 			core::bc_json_document< _bc_entity_json > l_json;
-			l_json.parse(l_buffer);
+			l_json.parse(l_buffer.c_str());
 
 			for (auto& l_entity : *l_json->m_entities)
 			{
@@ -97,28 +97,6 @@ namespace black_cat
 					_bc_entity_component_data l_component_data;
 					l_component_data.m_component_hash = l_component_name_hash;
 
-					/*std::for_each
-					(
-					std::begin(*l_component->m_parameters),
-					std::end(*l_component->m_parameters),
-					[&](core::bc_json_object<_bc_json_entity_component_parameters>& p_parameter)
-					{
-					core::bc_any l_value;
-
-					auto* l_exp_param = p_parameter->m_value->as< core::bc_expression_parameter >();
-					if (l_exp_param != nullptr)
-					{
-					l_value = l_exp_param->evaluate();
-					}
-					else
-					{
-					l_value = *p_parameter->m_value;
-					}
-
-					l_component_data.m_component_parameters.add_value(p_parameter->m_name->c_str(), std::move(l_value));
-					}
-					);*/
-
 					auto* l_exp_params = &*l_component->m_parameters;
 
 					std::for_each
@@ -126,21 +104,21 @@ namespace black_cat
 						std::begin(l_exp_params->m_key_values),
 						std::end(l_exp_params->m_key_values),
 						[&](core::bc_json_key_value::key_value_array_t::value_type& p_parameter)
-					{
-						core::bc_any l_value;
-
-						auto* l_exp_param = p_parameter.second.as< core::bc_expression_parameter >();
-						if (l_exp_param != nullptr)
 						{
-							l_value = l_exp_param->evaluate();
-						}
-						else
-						{
-							l_value = p_parameter.second;
-						}
+							core::bc_any l_value;
 
-						l_component_data.m_component_parameters.add_value(p_parameter.first.c_str(), std::move(l_value));
-					}
+							auto* l_exp_param = p_parameter.second.as< core::bc_expression_parameter >();
+							if (l_exp_param != nullptr)
+							{
+								l_value = l_exp_param->evaluate();
+							}
+							else
+							{
+								l_value = p_parameter.second;
+							}
+
+							l_component_data.m_component_parameters.add_value(p_parameter.first.c_str(), std::move(l_value));
+						}
 					);
 
 					l_entity_components.push_back(std::move(l_component_data));

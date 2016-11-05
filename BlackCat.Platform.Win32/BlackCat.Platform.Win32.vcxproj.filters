@@ -10,16 +10,13 @@
     <Filter Include="PlatformImp\File">
       <UniqueIdentifier>{027a195c-bfc6-4afe-9053-2031d31f035f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlatformImp\Script">
+      <UniqueIdentifier>{58b88f36-d869-457f-8fd8-cabdf529528a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PlatformImp\PlatformImpPCH.h">
       <Filter>PlatformImp</Filter>
-    </ClInclude>
-    <ClInclude Include="PlatformImp\Application\bcRenderApplication.h">
-      <Filter>PlatformImp\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="PlatformImp\Application\bcRenderWindow.h">
-      <Filter>PlatformImp\Application</Filter>
     </ClInclude>
     <ClInclude Include="PlatformImp\bcLogIDEDebug.h">
       <Filter>PlatformImp</Filter>
@@ -39,16 +36,67 @@
     <ClInclude Include="PlatformImp\bcExport.h">
       <Filter>PlatformImp</Filter>
     </ClInclude>
+    <ClInclude Include="PlatformImp\Script\bcScriptRuntime.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Script\bcScriptError.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Script\bcScriptContext.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Script\bcScriptByteCode.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Script\bcScriptVariable.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Script\bcScriptReference.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Script\bcScriptRef.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Script\bcScriptString.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Script\bcScriptObject.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Script\bcScriptArray.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Script\bcScriptFunction.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Script\bcScriptPrototypeBuilder.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Script\bcScriptPrototype.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Application\bcWindow.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Application\bcConsoleWindow.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Application\bcApplication.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Application\bcBasicWindow.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Script\bcScriptContext.hpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformImp\Script\bcScriptGlobalPrototypeBuilder.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PlatformImp\PlatformImpPCH.cpp">
       <Filter>PlatformImp</Filter>
-    </ClCompile>
-    <ClCompile Include="PlatformImp\Application\bcRenderWindow.cpp">
-      <Filter>PlatformImp\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="PlatformImp\Application\bcRenderApplication.cpp">
-      <Filter>PlatformImp\Application</Filter>
     </ClCompile>
     <ClCompile Include="PlatformImp\bcLogIDEDebug.cpp">
       <Filter>PlatformImp</Filter>
@@ -64,6 +112,39 @@
     </ClCompile>
     <ClCompile Include="PlatformImp\File\bcPath.cpp">
       <Filter>PlatformImp\File</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Script\bcScriptRuntime.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Script\bcScriptError.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Script\bcScriptByteCode.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Script\bcScriptVariable.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Script\bcScriptReference.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Script\bcScriptString.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Script\bcScriptObject.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Application\bcWindow.cpp">
+      <Filter>PlatformImp\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Application\bcConsoleWindow.cpp">
+      <Filter>PlatformImp\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Application\bcApplication.cpp">
+      <Filter>PlatformImp\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Application\bcBasicWindow.cpp">
+      <Filter>PlatformImp\Application</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

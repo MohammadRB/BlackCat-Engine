@@ -109,6 +109,7 @@ namespace black_cat
 	private:
 	};
 
+	using bc_bad_cast_exception = std::bad_cast;
 	using bc_logic_exception = std::logic_error;
 	using bc_runtime_exception = std::runtime_error;
 	using bc_invalid_argument_exception = std::invalid_argument;

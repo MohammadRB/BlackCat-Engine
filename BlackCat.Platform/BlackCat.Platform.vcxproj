@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -11,11 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Platform\Application\bcConsoleWindow.h" />
     <ClInclude Include="Platform\Application\bcHumanInterfaceDevice.h" />
     <ClInclude Include="Platform\Application\bcKeyDevice.h" />
     <ClInclude Include="Platform\Application\bcPointingDevice.h" />
-    <ClInclude Include="Platform\Application\bcRenderApplication.h" />
-    <ClInclude Include="Platform\Application\bcRenderWindow.h" />
+    <ClInclude Include="Platform\Application\bcApplication.h" />
+    <ClInclude Include="Platform\Application\bcBasicWindow.h" />
+    <ClInclude Include="Platform\Application\bcWindow.h" />
     <ClInclude Include="Platform\bcExport.h" />
     <ClInclude Include="Platform\bcLogIDEDebug.h" />
     <ClInclude Include="Platform\bcEvent.h" />
@@ -24,10 +26,32 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Platform\PlatformPCH.h" />
+    <ClInclude Include="Platform\Script\bcScriptArray.h" />
+    <ClInclude Include="Platform\Script\bcScriptByteCode.h" />
+    <ClInclude Include="Platform\Script\bcScriptContext.h" />
+    <ClInclude Include="Platform\Script\bcScriptGlobalPrototypeBuilder.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptError.h" />
+    <ClInclude Include="Platform\Script\bcScriptExternalObject.h" />
+    <ClInclude Include="Platform\Script\bcScriptFunction.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Platform\Script\bcScriptObject.h" />
+    <ClInclude Include="Platform\Script\bcScriptPrototype.h" />
+    <ClInclude Include="Platform\Script\bcScriptPrototypeBuilder.h" />
+    <ClInclude Include="Platform\Script\bcScriptRef.h" />
+    <ClInclude Include="Platform\Script\bcScriptReference.h" />
+    <ClInclude Include="Platform\Script\bcScriptRuntime.h" />
+    <ClInclude Include="Platform\Script\bcScriptRuntime.hpp" />
+    <ClInclude Include="Platform\Script\bcScriptString.h" />
+    <ClInclude Include="Platform\Script\bcScriptVariable.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Platform\PlatformPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -53,7 +77,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -68,10 +92,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -81,10 +107,9 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;BLACKCATPLATFORM_EXPORTS;BC_PLATFORM_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>
       </SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Core;../3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>Platform/PlatformPCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -95,12 +120,13 @@
       <Command>copy Platform\*.h ..\BC_SDK\Include\Platform
 copy Platform\Application\*.h ..\BC_SDK\Include\Platform\Application
 copy Platform\File\*.h ..\BC_SDK\Include\Platform\File
+copy Platform\Script\*.h ..\BC_SDK\Include\Platform\Script
 
-copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
-copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp
-copy ..\$(Configuration)\$(ProjectName).ilk ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).ilk
-copy ..\$(Configuration)\$(ProjectName).lib ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).lib
-copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).pdb</Command>
+copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+copy ..\$(Configuration)\$(ProjectName).ilk ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+copy ..\$(Configuration)\$(ProjectName).lib ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
     </PostBuildEvent>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -116,7 +142,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;BLACKCATPLATFORM_EXPORTS;BC_PLATFORM_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>
       </SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Core;../3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>Platform/PlatformPCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -131,12 +157,13 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(Pro
       <Command>copy Platform\*.h ..\BC_SDK\Include\Platform
 copy Platform\Application\*.h ..\BC_SDK\Include\Platform\Application
 copy Platform\File\*.h ..\BC_SDK\Include\Platform\File
+copy Platform\Script\*.h ..\BC_SDK\Include\Platform\Script
 
-copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).dll
-copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).exp
-copy ..\$(Configuration)\$(ProjectName).ilk ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).ilk
-copy ..\$(Configuration)\$(ProjectName).lib ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).lib
-copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Configuration)\$(ProjectName).pdb</Command>
+copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+copy ..\$(Configuration)\$(ProjectName).ilk ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+copy ..\$(Configuration)\$(ProjectName).lib ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

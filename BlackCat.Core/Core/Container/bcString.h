@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/CorePCH.h"
+#include "Core/bcException.h"
 #include "Core/Container/bcContainer.h"
 #include <cerrno>
 #include <string>
@@ -696,297 +697,393 @@ namespace black_cat
 		}
 		*/
 
-		inline int bc_stoi(const bc_string& p_str, bcSIZE* p_pos = nullptr, int p_base = 10)
+		inline bcINT bc_stoi(const bc_string& p_str, bcSIZE* p_pos = nullptr, int p_base = 10)
 		{
-			const char* l_ptr = p_str.c_str();
-			char* l_eptr;
+			const bcCHAR* l_ptr = p_str.c_str();
+			bcCHAR* l_eptr;
 			errno = 0;
 			long l_ans = std::strtol(l_ptr, &l_eptr, p_base);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stoi argument");
+			{
+				throw std::invalid_argument("invalid stoi argument");
+			}
 			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
-				std::out_of_range("stoi argument out of range");
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 			
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
-			return static_cast<int>(l_ans);
+			return static_cast<bcINT>(l_ans);
 		}
 
-		inline int bc_stoi(const bc_wstring& p_str, bcSIZE* p_pos = nullptr, int p_base = 10)
+		inline bcINT bc_stoi(const bc_wstring& p_str, bcSIZE* p_pos = nullptr, int p_base = 10)
 		{
-			const wchar_t *l_ptr = p_str.c_str();
-			wchar_t *l_eptr;
+			const bcWCHAR* l_ptr = p_str.c_str();
+			bcWCHAR* l_eptr;
 			errno = 0;
 			long l_ans = std::wcstol(l_ptr, &l_eptr, p_base);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stoi argument");
+			{
+				throw std::invalid_argument("invalid stoi argument");
+			}
 			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
-				std::out_of_range("stoi argument out of range");
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
-			return static_cast<int>(l_ans);
+			return static_cast<bcINT>(l_ans);
 		}
 
 		inline long bc_stol(const bc_string& p_str, bcSIZE* p_pos = nullptr, int p_base = 10)
 		{
-			const char *l_ptr = p_str.c_str();
-			char *l_eptr;
+			const bcCHAR* l_ptr = p_str.c_str();
+			bcCHAR* l_eptr;
 			errno = 0;
 			long l_ans = std::strtol(l_ptr, &l_eptr, p_base);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stol argument");
-			if (errno == ERANGE)
-				std::out_of_range("stol argument out of range");
+			{
+				throw std::invalid_argument("invalid stol argument");
+			}
+			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
 			return l_ans;
 		}
 
 		inline long bc_stol(const bc_wstring& p_str, bcSIZE* p_pos = nullptr, int p_base = 10)
 		{
-			const wchar_t *l_ptr = p_str.c_str();
-			wchar_t *l_eptr;
+			const bcWCHAR* l_ptr = p_str.c_str();
+			bcWCHAR* l_eptr;
 			errno = 0;
 			long l_ans = std::wcstol(l_ptr, &l_eptr, p_base);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stol argument");
-			if (errno == ERANGE)
-				std::out_of_range("stol argument out of range");
+			{
+				throw std::invalid_argument("invalid stol argument");
+			}
+			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
 			return l_ans;
 		}
 
 		inline long long bc_stoll(const bc_string& p_str, bcSIZE* p_pos = nullptr, int p_base = 10)
 		{
-			const char *l_ptr = p_str.c_str();
-			char *l_eptr;
+			const bcCHAR* l_ptr = p_str.c_str();
+			bcCHAR* l_eptr;
 			errno = 0;
-			_Longlong l_ans = std::strtoll(l_ptr, &l_eptr, p_base);
+			long long l_ans = std::strtoll(l_ptr, &l_eptr, p_base);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stoll argument");
-			if (errno == ERANGE)
-				std::out_of_range("stoll argument out of range");
+			{
+				throw std::invalid_argument("invalid stoll argument");
+			}
+			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
 			return l_ans;
 		}
 
 		inline long long bc_stoll(const bc_wstring& p_str, bcSIZE* p_pos = nullptr, int p_base = 10)
 		{
-			const wchar_t *l_ptr = p_str.c_str();
-			wchar_t *l_eptr;
+			const bcWCHAR* l_ptr = p_str.c_str();
+			bcWCHAR* l_eptr;
 			errno = 0;
-			_Longlong l_ans = std::wcstoll(l_ptr, &l_eptr, p_base);
+			long long l_ans = std::wcstoll(l_ptr, &l_eptr, p_base);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stoll argument");
-			if (errno == ERANGE)
-				std::out_of_range("stoll argument out of range");
+			{
+				throw std::invalid_argument("invalid stoll argument");
+			}
+			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
 			return l_ans;
 		}
 
 		inline unsigned long bc_stoul(const bc_string& p_str, bcSIZE* p_pos = nullptr, int p_base = 10)
 		{
-			const char *l_ptr = p_str.c_str();
-			char *l_eptr;
+			const bcCHAR* l_ptr = p_str.c_str();
+			bcCHAR* l_eptr;
 			errno = 0;
 			unsigned long l_ans = std::strtoul(l_ptr, &l_eptr, p_base);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stoul argument");
-			if (errno == ERANGE)
-				std::out_of_range("stoul argument out of range");
+			{
+				throw std::invalid_argument("invalid strtoul argument");
+			}
+			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
 			return l_ans;
 		}
 
 		inline unsigned long bc_stoul(const bc_wstring& p_str, bcSIZE* p_pos = nullptr, int p_base = 10)
 		{
-			const wchar_t *l_ptr = p_str.c_str();
-			wchar_t *l_eptr;
+			const bcWCHAR* l_ptr = p_str.c_str();
+			bcWCHAR* l_eptr;
 			errno = 0;
 			unsigned long l_ans = std::wcstoul(l_ptr, &l_eptr, p_base);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stoul argument");
-			if (errno == ERANGE)
-				std::out_of_range("stoul argument out of range");
+			{
+				throw std::invalid_argument("invalid wcstoul argument");
+			}
+			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
 			return l_ans;
 		}
 
 		inline unsigned long long bc_stoull(const bc_string& p_str, bcSIZE* p_pos = nullptr, int p_base = 10)
 		{
-			const char *l_ptr = p_str.c_str();
+			const bcCHAR* l_ptr = p_str.c_str();
+			bcCHAR* l_eptr;
 			errno = 0;
-			char *l_eptr;
 			unsigned long long l_ans = std::strtoull(l_ptr, &l_eptr, p_base);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stoull argument");
-			if (errno == ERANGE)
-				std::out_of_range("stoull argument out of range");
+			{
+				throw std::invalid_argument("invalid strtoull argument");
+			}
+			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
 			return l_ans;
 		}
 
 		inline unsigned long long bc_stoull(const bc_wstring& p_str, bcSIZE* p_pos = nullptr, int p_base = 10)
 		{
-			const wchar_t *l_ptr = p_str.c_str();
+			const bcWCHAR* l_ptr = p_str.c_str();
+			bcWCHAR* l_eptr;
 			errno = 0;
-			wchar_t *l_eptr;
 			unsigned long long l_ans = std::wcstoull(l_ptr, &l_eptr, p_base);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stoull argument");
-			if (errno == ERANGE)
-				std::out_of_range("stoull argument out of range");
+			{
+				throw std::invalid_argument("invalid wcstoull argument");
+			}
+			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
 			return l_ans;
 		}
 
-		inline float bc_stof(const bc_string& p_str, bcSIZE* p_pos = nullptr)
+		inline bcFLOAT bc_stof(const bc_string& p_str, bcSIZE* p_pos = nullptr)
 		{
-			const char *l_ptr = p_str.c_str();
+			const bcCHAR* l_ptr = p_str.c_str();
+			bcCHAR* l_eptr;
 			errno = 0;
-			char *l_eptr;
-			float l_ans = static_cast<float>(std::strtof(l_ptr, &l_eptr));
+			bcFLOAT l_ans = std::strtof(l_ptr, &l_eptr);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stof argument");
-			if (errno == ERANGE)
-				std::out_of_range("stof argument out of range");
+			{
+				throw std::invalid_argument("invalid strtof argument");
+			}
+			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
 			return l_ans;
 		}
 
-		inline float bc_stof(const bc_wstring& p_str, bcSIZE* p_pos = nullptr)
+		inline bcFLOAT bc_stof(const bc_wstring& p_str, bcSIZE* p_pos = nullptr)
 		{
-			const wchar_t *l_ptr = p_str.c_str();
+			const bcWCHAR* l_ptr = p_str.c_str();
+			bcWCHAR* l_eptr;
 			errno = 0;
-			wchar_t *l_eptr;
-			float l_ans = static_cast<float>(std::wcstof(l_ptr, &l_eptr));
+			bcFLOAT l_ans = std::wcstof(l_ptr, &l_eptr);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stof argument");
-			if (errno == ERANGE)
-				std::out_of_range("stof argument out of range");
+			{
+				throw std::invalid_argument("invalid wcstof argument");
+			}
+			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
 			return l_ans;
 		}
 
-		inline double bc_stod(const bc_string& p_str, bcSIZE* p_pos = nullptr)
+		inline bcDOUBLE bc_stod(const bc_string& p_str, bcSIZE* p_pos = nullptr)
 		{
-			const char *l_ptr = p_str.c_str();
+			const bcCHAR* l_ptr = p_str.c_str();
+			bcCHAR* l_eptr;
 			errno = 0;
-			char *l_eptr;
-			double l_ans = std::strtod(l_ptr, &l_eptr);
+			bcDOUBLE l_ans = std::strtod(l_ptr, &l_eptr);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stod argument");
-			if (errno == ERANGE)
-				std::out_of_range("stod argument out of range");
+			{
+				throw std::invalid_argument("invalid strtod argument");
+			}
+			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
 			return l_ans;
 		}
 
-		inline double bc_stod(const bc_wstring& p_str, bcSIZE* p_pos = nullptr)
+		inline bcDOUBLE bc_stod(const bc_wstring& p_str, bcSIZE* p_pos = nullptr)
 		{
-			const wchar_t *l_ptr = p_str.c_str();
+			const bcWCHAR* l_ptr = p_str.c_str();
+			bcWCHAR* l_eptr;
 			errno = 0;
-			wchar_t *l_eptr;
-			double l_ans = std::wcstod(l_ptr, &l_eptr);
+			bcDOUBLE l_ans = std::wcstod(l_ptr, &l_eptr);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stod argument");
-			if (errno == ERANGE)
-				std::out_of_range("stod argument out of range");
+			{
+				throw std::invalid_argument("invalid wcstod argument");
+			}
+			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
 			return l_ans;
 		}
 
 		inline long double bc_stold(const bc_string& p_str, bcSIZE* p_pos = nullptr)
 		{
-			const char *l_ptr = p_str.c_str();
+			const bcCHAR* l_ptr = p_str.c_str();
+			bcCHAR* l_eptr;
 			errno = 0;
-			char *l_eptr;
 			long double l_ans = std::strtold(l_ptr, &l_eptr);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stold argument");
-			if (errno == ERANGE)
-				std::out_of_range("stold argument out of range");
+			{
+				throw std::invalid_argument("invalid strtold argument");
+			}
+			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
 			return l_ans;
 		}
 
 		inline long double bc_stold(const bc_wstring& p_str, bcSIZE* p_pos = nullptr)
 		{
-			const wchar_t *l_ptr = p_str.c_str();
+			const bcWCHAR* l_ptr = p_str.c_str();
+			bcWCHAR* l_eptr;
 			errno = 0;
-			wchar_t *l_eptr;
 			long double l_ans = std::wcstold(l_ptr, &l_eptr);
 
 			if (l_ptr == l_eptr)
-				std::invalid_argument("invalid stold argument");
-			if (errno == ERANGE)
-				std::out_of_range("stold argument out of range");
+			{
+				throw std::invalid_argument("invalid wcstold argument");
+			}
+			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			{
+				throw std::out_of_range("stoi argument out of range");
+			}
 
 			if (p_pos != nullptr)
+			{
 				*p_pos = static_cast<bcSIZE>(l_eptr - l_ptr);
+			}
 
 			return l_ans;
 		}
 
 #define TO_STRING_BUFF 2 * 32
 		
-		inline void _bc_to_string(int p_value, bcCHAR* p_buf)
+		inline void _bc_to_string(bcINT p_value, bcCHAR* p_buf)
 		{
 			std::snprintf(p_buf, TO_STRING_BUFF, "%d", p_value);
 		}
@@ -1001,7 +1098,7 @@ namespace black_cat
 			std::snprintf(p_buf, TO_STRING_BUFF, "%lld", p_value);
 		}
 
-		inline void _bc_to_string(unsigned int p_value, bcCHAR* p_buf)
+		inline void _bc_to_string(bcUINT p_value, bcCHAR* p_buf)
 		{
 			std::snprintf(p_buf, TO_STRING_BUFF, "%u", p_value);
 		}
@@ -1016,12 +1113,12 @@ namespace black_cat
 			std::snprintf(p_buf, TO_STRING_BUFF, "%llu", p_value);
 		}
 
-		inline void _bc_to_string(float p_value, bcCHAR* p_buf)
+		inline void _bc_to_string(bcFLOAT p_value, bcCHAR* p_buf)
 		{
 			std::snprintf(p_buf, TO_STRING_BUFF, "%f", p_value);
 		}
 
-		inline void _bc_to_string(double p_value, bcCHAR* p_buf)
+		inline void _bc_to_string(bcDOUBLE p_value, bcCHAR* p_buf)
 		{
 			std::snprintf(p_buf, TO_STRING_BUFF, "%f", p_value);
 		}
@@ -1030,6 +1127,12 @@ namespace black_cat
 		{
 			std::snprintf(p_buf, TO_STRING_BUFF, "%Lf", p_value);
 		}
+
+		inline void _bc_to_string(const bcWCHAR* p_src, bcCHAR* p_dest, bcSIZE p_len)
+		{
+			std::mbstate_t l_state = std::mbstate_t();
+			std::wcsrtombs(p_dest, &p_src, p_len, &l_state);
+		};
 
 		template< template< typename > typename TInputAllocator, template< typename > typename TOutputAllocator >
 		inline bc_string_a<TOutputAllocator> _bc_to_string(const bc_wstring_a<TInputAllocator>& p_str)
@@ -1040,23 +1143,12 @@ namespace black_cat
 			bcCHAR* l_dest = &l_str[0];
 			const bcWCHAR* l_src = &p_str[0];
 
-			bc_to_string(l_src, l_dest, l_len);
+			_bc_to_string(l_src, l_dest, l_len);
 
 			return std::move(l_str);
 		};
 
-		template
-		<
-			typename T,
-			typename = std::enable_if
-			<
-				!std::is_same< typename std::decay< T >::type, bc_wstring >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_wstring_program >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_wstring_level >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_wstring_frame >::value
-			>
-		>
-		inline bc_string bc_to_string(T p_value)
+		inline bc_string bc_to_string(bcINT p_value)
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
@@ -1065,71 +1157,87 @@ namespace black_cat
 			return bc_string(l_buf);
 		}
 
-		template
-		<
-			typename T,
-			typename = std::enable_if
-			<
-				!std::is_same< typename std::decay< T >::type, bc_wstring >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_wstring_program >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_wstring_level >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_wstring_frame >::value
-			>
-		>
-		inline bc_string_program bc_to_string_program(T p_value)
+		inline bc_string bc_to_string(long p_value)
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
 			_bc_to_string(p_value, l_buf);
 
-			return bc_string_program(l_buf);
+			return bc_string(l_buf);
 		}
 
-		template
-		<
-			typename T,
-			typename = std::enable_if
-			<
-				!std::is_same< typename std::decay< T >::type, bc_wstring >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_wstring_program >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_wstring_level >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_wstring_frame >::value
-			>
-		>
-		inline bc_string_level bc_to_string_level(T p_value)
+		inline bc_string bc_to_string(long long p_value)
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
 			_bc_to_string(p_value, l_buf);
 
-			return bc_string_level(l_buf);
+			return bc_string(l_buf);
 		}
 
-		template
-		<
-			typename T,
-			typename = std::enable_if
-			<
-				!std::is_same< typename std::decay< T >::type, bc_wstring >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_wstring_program >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_wstring_level >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_wstring_frame >::value
-			>
-		>
-		inline bc_string_frame bc_to_string_frame(T p_value)
+		inline bc_string bc_to_string(bcUINT p_value)
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
 			_bc_to_string(p_value, l_buf);
 
-			return bc_string_frame(l_buf);
+			return bc_string(l_buf);
 		}
 
-		inline void bc_to_string(const bcWCHAR* p_src, bcCHAR* p_dest, bcSIZE p_len)
+		inline bc_string bc_to_string(unsigned long p_value)
 		{
-			std::mbstate_t l_state = std::mbstate_t();
-			std::wcsrtombs(p_dest, &p_src, p_len, &l_state);
-		};
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string(l_buf);
+		}
+
+		inline bc_string bc_to_string(unsigned long long p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string(l_buf);
+		}
+
+		inline bc_string bc_to_string(bcFLOAT p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string(l_buf);
+		}
+
+		inline bc_string bc_to_string(bcDOUBLE p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string(l_buf);
+		}
+
+		inline bc_string bc_to_string(long double p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string(l_buf);
+		}
+
+		inline bc_string bc_to_string(const bcWCHAR* p_str)
+		{
+			auto l_str_len = std::wcslen(p_str);
+			bc_string l_str(l_str_len, bcL('#'));
+
+			_bc_to_string(p_str, &l_str.at(0), l_str_len);
+
+			return l_str;
+		}
 
 		inline bc_string bc_to_string(const bc_wstring& p_str)
 		{
@@ -1149,6 +1257,108 @@ namespace black_cat
 		inline bc_string bc_to_string(const bc_wstring_frame& p_str)
 		{
 			return _bc_to_string<bc_allocator_frame, bc_allocator>(p_str);
+		}
+
+		inline bc_string bc_to_string(const bc_string& p_str)
+		{
+			return p_str;
+		}
+
+		inline bc_string bc_to_string(const bc_string_program& p_str)
+		{
+			return bc_string(p_str.c_str());
+		}
+
+		inline bc_string bc_to_string(const bc_string_level& p_str)
+		{
+			return bc_string(p_str.c_str());
+		}
+
+		inline bc_string bc_to_string(const bc_string_frame& p_str)
+		{
+			return bc_string(p_str.c_str());
+		}
+
+		inline bc_string_program bc_to_string_program(bcINT p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_program(l_buf);
+		}
+
+		inline bc_string_program bc_to_string_program(long p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_program(l_buf);
+		}
+
+		inline bc_string_program bc_to_string_program(long long p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_program(l_buf);
+		}
+
+		inline bc_string_program bc_to_string_program(bcUINT p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_program(l_buf);
+		}
+
+		inline bc_string_program bc_to_string_program(unsigned long p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_program(l_buf);
+		}
+
+		inline bc_string_program bc_to_string_program(unsigned long long p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_program(l_buf);
+		}
+
+		inline bc_string_program bc_to_string_program(bcFLOAT p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_program(l_buf);
+		}
+
+		inline bc_string_program bc_to_string_program(bcDOUBLE p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_program(l_buf);
+		}
+
+		inline bc_string_program bc_to_string_program(const bcWCHAR* p_str)
+		{
+			auto l_str_len = std::wcslen(p_str);
+			bc_string_program l_str(l_str_len, bcL('#'));
+
+			_bc_to_string(p_str, &l_str.at(0), l_str_len);
+
+			return l_str;
 		}
 
 		inline bc_string_program bc_to_string_program(const bc_wstring& p_str)
@@ -1171,24 +1381,124 @@ namespace black_cat
 			return _bc_to_string<bc_allocator_frame, bc_allocator_program>(p_str);
 		}
 
-		inline bc_string_level bc_to_string_level(const bc_wstring& p_str)
+		inline bc_string_program bc_to_string_program(const bc_string& p_str)
 		{
-			return _bc_to_string<bc_allocator, bc_allocator_level>(p_str);
+			return bc_string_program(p_str.c_str());
 		}
 
-		inline bc_string_level bc_to_string_level(const bc_wstring_program& p_str)
+		inline bc_string_program bc_to_string_program(const bc_string_program& p_str)
 		{
-			return _bc_to_string<bc_allocator_program, bc_allocator_level>(p_str);
+			return p_str;
 		}
 
-		inline bc_string_level bc_to_string_level(const bc_wstring_level& p_str)
+		inline bc_string_program bc_to_string_program(const bc_string_level& p_str)
 		{
-			return _bc_to_string<bc_allocator_level, bc_allocator_level>(p_str);
+			return bc_string_program(p_str.c_str());
 		}
 
-		inline bc_string_level bc_to_string_level(const bc_wstring_frame& p_str)
+		inline bc_string_program bc_to_string_program(const bc_string_frame& p_str)
 		{
-			return _bc_to_string<bc_allocator_frame, bc_allocator_level>(p_str);
+			return bc_string_program(p_str.c_str());
+		}
+
+		inline bc_string_program bc_to_string_program(long double p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_program(l_buf);
+		}
+
+		inline bc_string_frame bc_to_string_frame(bcINT p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_frame(l_buf);
+		}
+
+		inline bc_string_frame bc_to_string_frame(long p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_frame(l_buf);
+		}
+
+		inline bc_string_frame bc_to_string_frame(long long p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_frame(l_buf);
+		}
+
+		inline bc_string_frame bc_to_string_frame(bcUINT p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_frame(l_buf);
+		}
+
+		inline bc_string_frame bc_to_string_frame(unsigned long p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_frame(l_buf);
+		}
+
+		inline bc_string_frame bc_to_string_frame(unsigned long long p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_frame(l_buf);
+		}
+
+		inline bc_string_frame bc_to_string_frame(bcFLOAT p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_frame(l_buf);
+		}
+
+		inline bc_string_frame bc_to_string_frame(bcDOUBLE p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_frame(l_buf);
+		}
+
+		inline bc_string_frame bc_to_string_frame(long double p_value)
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf);
+
+			return bc_string_frame(l_buf);
+		}
+
+		inline bc_string_frame bc_to_string_frame(const bcWCHAR* p_str)
+		{
+			auto l_str_len = std::wcslen(p_str);
+			bc_string_frame l_str(l_str_len, bcL('#'));
+
+			_bc_to_string(p_str, &l_str.at(0), l_str_len);
+
+			return l_str;
 		}
 
 		inline bc_string_frame bc_to_string_frame(const bc_wstring& p_str)
@@ -1209,6 +1519,26 @@ namespace black_cat
 		inline bc_string_frame bc_to_string_frame(const bc_wstring_frame& p_str)
 		{
 			return _bc_to_string<bc_allocator_frame, bc_allocator_frame>(p_str);
+		}
+
+		inline bc_string_frame bc_to_string_frame(const bc_string& p_str)
+		{
+			return bc_string_frame(p_str.c_str());
+		}
+
+		inline bc_string_frame bc_to_string_frame(const bc_string_program& p_str)
+		{
+			return bc_string_frame(p_str.c_str());
+		}
+
+		inline bc_string_frame bc_to_string_frame(const bc_string_level& p_str)
+		{
+			return bc_string_frame(p_str.c_str());
+		}
+
+		inline bc_string_frame bc_to_string_frame(const bc_string_frame& p_str)
+		{
+			return p_str;
 		}
 
 		inline void _bc_to_wstring(int p_value, bcWCHAR* p_buf)
@@ -1256,6 +1586,12 @@ namespace black_cat
 			std::swprintf(p_buf, TO_STRING_BUFF, L"%Lf", p_value);
 		}
 
+		inline void _bc_to_wstring(const bcCHAR* p_src, bcWCHAR* p_dest, bcSIZE p_len)
+		{
+			std::mbstate_t l_state = std::mbstate_t();
+			std::mbsrtowcs(p_dest, &p_src, p_len, &l_state);
+		};
+
 		template< template<typename> typename TInputAllocator, template<typename> typename TOutputAllocator >
 		inline bc_wstring_a<TOutputAllocator> _bc_to_wstring(const bc_string_a<TInputAllocator>& p_str)
 		{
@@ -1265,23 +1601,12 @@ namespace black_cat
 			bcWCHAR* l_dest = &l_str[0];
 			const bcCHAR* l_src = &p_str[0];
 
-			bc_to_wstring(l_src, l_dest, l_len);
+			_bc_to_wstring(l_src, l_dest, l_len);
 
 			return l_str;
 		};
 
-		template
-		<
-			typename T,
-			typename = std::enable_if
-			<
-				!std::is_same< typename std::decay< T >::type, bc_string >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_string_program >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_string_level >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_string_frame >::value
-			>
-		>
-		inline bc_wstring bc_to_wstring(T p_value)
+		inline bc_wstring bc_to_wstring(bcINT p_value)
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
@@ -1290,71 +1615,87 @@ namespace black_cat
 			return bc_wstring(l_buf);
 		}
 
-		template
-		<
-			typename T,
-			typename = std::enable_if
-			<
-				!std::is_same< typename std::decay< T >::type, bc_string >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_string_program >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_string_level >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_string_frame >::value
-			>
-		>
-		inline bc_wstring_program bc_to_wstring_program(T p_value)
+		inline bc_wstring bc_to_wstring(long p_value)
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
 			_bc_to_wstring(p_value, l_buf);
 
-			return bc_wstring_program(l_buf);
+			return bc_wstring(l_buf);
 		}
 
-		template
-		<
-			typename T,
-			typename = std::enable_if
-			<
-				!std::is_same< typename std::decay< T >::type, bc_string >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_string_program >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_string_level >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_string_frame >::value
-			>
-		>
-		inline bc_wstring_level bc_to_wstring_level(T p_value)
+		inline bc_wstring bc_to_wstring(long long p_value)
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
 			_bc_to_wstring(p_value, l_buf);
 
-			return bc_wstring_level(l_buf);
+			return bc_wstring(l_buf);
 		}
 
-		template
-		<
-			typename T,
-			typename = std::enable_if
-			<
-				!std::is_same< typename std::decay< T >::type, bc_string >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_string_program >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_string_level >::value &&
-				!std::is_same< typename std::decay< T >::type, bc_string_frame >::value
-			>
-		>
-		inline bc_wstring_frame bc_to_wstring_frame(T p_value)
+		inline bc_wstring bc_to_wstring(bcUINT p_value)
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
 			_bc_to_wstring(p_value, l_buf);
 
-			return bc_wstring_frame(l_buf);
+			return bc_wstring(l_buf);
 		}
 
-		inline void bc_to_wstring(const bcCHAR* p_src, bcWCHAR* p_dest, bcSIZE p_len)
+		inline bc_wstring bc_to_wstring(unsigned long p_value)
 		{
-			std::mbstate_t l_state = std::mbstate_t();
-			std::mbsrtowcs(p_dest, &p_src, p_len, &l_state);
-		};
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring(l_buf);
+		}
+
+		inline bc_wstring bc_to_wstring(unsigned long long p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring(l_buf);
+		}
+
+		inline bc_wstring bc_to_wstring(bcFLOAT p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring(l_buf);
+		}
+
+		inline bc_wstring bc_to_wstring(bcDOUBLE p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring(l_buf);
+		}
+
+		inline bc_wstring bc_to_wstring(long double p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring(l_buf);
+		}
+
+		inline bc_wstring bc_to_wstring(const bcCHAR* p_str)
+		{
+			auto l_str_len = std::strlen(p_str);
+			bc_wstring l_str(l_str_len, bcL('#'));
+
+			_bc_to_wstring(p_str, &l_str.at(0), l_str_len);
+
+			return l_str;
+		}
 
 		inline bc_wstring bc_to_wstring(const bc_string& p_str)
 		{
@@ -1374,6 +1715,117 @@ namespace black_cat
 		inline bc_wstring bc_to_wstring(const bc_string_frame& p_str)
 		{
 			return _bc_to_wstring<bc_allocator_frame, bc_allocator>(p_str);
+		}
+
+		inline bc_wstring bc_to_wstring(const bc_wstring& p_str)
+		{
+			return p_str;
+		}
+
+		inline bc_wstring bc_to_wstring(const bc_wstring_program& p_str)
+		{
+			return bc_wstring(p_str.c_str());
+		}
+
+		inline bc_wstring bc_to_wstring(const bc_wstring_level& p_str)
+		{
+			return bc_wstring(p_str.c_str());
+		}
+
+		inline bc_wstring bc_to_wstring(const bc_wstring_frame& p_str)
+		{
+			return bc_wstring(p_str.c_str());
+		}
+
+		inline bc_wstring_program bc_to_wstring_program(bcINT p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_program(l_buf);
+		}
+
+		inline bc_wstring_program bc_to_wstring_program(long p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_program(l_buf);
+		}
+
+		inline bc_wstring_program bc_to_wstring_program(long long p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_program(l_buf);
+		}
+
+		inline bc_wstring_program bc_to_wstring_program(bcUINT p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_program(l_buf);
+		}
+
+		inline bc_wstring_program bc_to_wstring_program(unsigned long p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_program(l_buf);
+		}
+
+		inline bc_wstring_program bc_to_wstring_program(unsigned long long p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_program(l_buf);
+		}
+
+		inline bc_wstring_program bc_to_wstring_program(bcFLOAT p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_program(l_buf);
+		}
+
+		inline bc_wstring_program bc_to_wstring_program(bcDOUBLE p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_program(l_buf);
+		}
+
+		inline bc_wstring_program bc_to_wstring_program(long double p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_program(l_buf);
+		}
+
+		inline bc_wstring_program bc_to_wstring_program(const bcCHAR* p_str)
+		{
+			auto l_str_len = std::strlen(p_str);
+			bc_wstring_program l_str(l_str_len, bcL('#'));
+
+			_bc_to_wstring(p_str, &l_str.at(0), l_str_len);
+
+			return l_str;
 		}
 
 		inline bc_wstring_program bc_to_wstring_program(const bc_string& p_str)
@@ -1396,24 +1848,115 @@ namespace black_cat
 			return _bc_to_wstring<bc_allocator_frame, bc_allocator_program>(p_str);
 		}
 
-		inline bc_wstring_level bc_to_wstring_level(const bc_string& p_str)
+		inline bc_wstring_program bc_to_wstring_program(const bc_wstring& p_str)
 		{
-			return _bc_to_wstring<bc_allocator, bc_allocator_level>(p_str);
+			return bc_wstring_program(p_str.c_str());
 		}
 
-		inline bc_wstring_level bc_to_wstring_level(const bc_string_program& p_str)
+		inline bc_wstring_program bc_to_wstring_program(const bc_wstring_program& p_str)
 		{
-			return _bc_to_wstring<bc_allocator_program, bc_allocator_level>(p_str);
+			return p_str;
 		}
 
-		inline bc_wstring_level bc_to_wstring_level(const bc_string_level& p_str)
+		inline bc_wstring_program bc_to_wstring_program(const bc_wstring_level& p_str)
 		{
-			return _bc_to_wstring<bc_allocator_level, bc_allocator_level>(p_str);
+			return bc_wstring_program(p_str.c_str());
 		}
 
-		inline bc_wstring_level bc_to_wstring_level(const bc_string_frame& p_str)
+		inline bc_wstring_program bc_to_wstring_program(const bc_wstring_frame& p_str)
 		{
-			return _bc_to_wstring<bc_allocator_frame, bc_allocator_level>(p_str);
+			return bc_wstring_program(p_str.c_str());
+		}
+
+		inline bc_wstring_frame bc_to_wstring_frame(bcINT p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_frame(l_buf);
+		}
+
+		inline bc_wstring_frame bc_to_wstring_frame(long p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_frame(l_buf);
+		}
+
+		inline bc_wstring_frame bc_to_wstring_frame(long long p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_frame(l_buf);
+		}
+
+		inline bc_wstring_frame bc_to_wstring_frame(bcUINT p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_frame(l_buf);
+		}
+
+		inline bc_wstring_frame bc_to_wstring_frame(unsigned long p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_frame(l_buf);
+		}
+
+		inline bc_wstring_frame bc_to_wstring_frame(unsigned long long p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_frame(l_buf);
+		}
+
+		inline bc_wstring_frame bc_to_wstring_frame(bcFLOAT p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_frame(l_buf);
+		}
+
+		inline bc_wstring_frame bc_to_wstring_frame(bcDOUBLE p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_frame(l_buf);
+		}
+
+		inline bc_wstring_frame bc_to_wstring_frame(long double p_value)
+		{
+			bcWCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_wstring(p_value, l_buf);
+
+			return bc_wstring_frame(l_buf);
+		}
+
+		inline bc_wstring_frame bc_to_wstring_frame(const bcCHAR* p_str)
+		{
+			auto l_str_len = std::strlen(p_str);
+			bc_wstring_frame l_str(l_str_len, bcL('#'));
+
+			_bc_to_wstring(p_str, &l_str.at(0), l_str_len);
+
+			return l_str;
 		}
 
 		inline bc_wstring_frame bc_to_wstring_frame(const bc_string& p_str)
@@ -1434,6 +1977,26 @@ namespace black_cat
 		inline bc_wstring_frame bc_to_wstring_frame(const bc_string_frame& p_str)
 		{
 			return _bc_to_wstring<bc_allocator_frame, bc_allocator_frame>(p_str);
+		}
+
+		inline bc_wstring_frame bc_to_wstring_frame(const bc_wstring& p_str)
+		{
+			return bc_wstring_frame(p_str.c_str());
+		}
+
+		inline bc_wstring_frame bc_to_wstring_frame(const bc_wstring_program& p_str)
+		{
+			return bc_wstring_frame(p_str.c_str());
+		}
+
+		inline bc_wstring_frame bc_to_wstring_frame(const bc_wstring_level& p_str)
+		{
+			return bc_wstring_frame(p_str.c_str());
+		}
+
+		inline bc_wstring_frame bc_to_wstring_frame(const bc_wstring_frame& p_str)
+		{
+			return p_str;
 		}
 
 		template< typename T >
@@ -1457,16 +2020,6 @@ namespace black_cat
 		}
 
 		template< typename T >
-		inline bc_estring_level bc_to_estring_level(T&& p_value)
-		{
-#ifdef BC_UNICODE
-			return bc_to_wstring_level(std::forward<T>(p_value));
-#else
-			return bc_to_string_level(std::forward<T>(p_value));
-#endif
-		}
-
-		template< typename T >
 		inline bc_estring_frame bc_to_estring_frame(T&& p_value)
 		{
 #ifdef BC_UNICODE
@@ -1486,24 +2039,9 @@ namespace black_cat
 			auto l_str_len = std::wcslen(p_value);
 			bc_string l_str(l_str_len, '#');
 
-			bc_to_string(p_value, &l_str.at(0), l_str_len);
+			_bc_to_string(p_value, &l_str.at(0), l_str_len);
 
 			return l_str;
-		}
-
-		inline bc_wstring bc_to_exclusive_wstring(const bcCHAR* p_value)
-		{
-			auto l_str_len = std::strlen(p_value);
-			bc_wstring l_str(l_str_len, bcL('#'));
-
-			bc_to_wstring(p_value, &l_str.at(0), l_str_len);
-
-			return l_str;
-		}
-
-		inline bc_wstring bc_to_exclusive_wstring(const bcWCHAR* p_value)
-		{
-			return bc_wstring(p_value);
 		}
 
 		inline bc_string& bc_to_exclusive_string(const bc_string& p_value)
@@ -1514,6 +2052,21 @@ namespace black_cat
 		inline bc_string bc_to_exclusive_string(const bc_wstring& p_value)
 		{
 			return bc_to_string(p_value);
+		}
+
+		inline bc_wstring bc_to_exclusive_wstring(const bcCHAR* p_value)
+		{
+			auto l_str_len = std::strlen(p_value);
+			bc_wstring l_str(l_str_len, bcL('#'));
+
+			_bc_to_wstring(p_value, &l_str.at(0), l_str_len);
+
+			return l_str;
+		}
+
+		inline bc_wstring bc_to_exclusive_wstring(const bcWCHAR* p_value)
+		{
+			return bc_wstring(p_value);
 		}
 
 		inline bc_wstring bc_to_exclusive_wstring(const bc_string& p_value)

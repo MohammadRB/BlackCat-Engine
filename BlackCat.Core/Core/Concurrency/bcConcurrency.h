@@ -6,6 +6,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Concurrency/bcThreadManager.h"
 #include "Core/Event/bcEventManager.h"
+#include "Core/Utility/bcDelegate.h"
 #include "Core/bcEvent.h"
 
 namespace black_cat
@@ -15,10 +16,10 @@ namespace black_cat
 		class bc_concurreny
 		{
 		public:
-			void check_for_interruption();
+			static void check_for_interruption();
 
 			template< typename T >
-			static bc_task<T> start_task(bc_delegate< T(void) >&& p_delegate, bc_task_creation_option p_option = bc_task_creation_option::none);
+			static bc_task<T> start_task(bc_delegate< T(void) >&& p_delegate, bc_task_creation_option p_option = bc_task_creation_option::policy_none);
 
 			template< typename ...T >
 			static void when_all(bc_task<T>&... p_tasks);
@@ -39,12 +40,18 @@ namespace black_cat
 			template<typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc>
 			static void concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer);
 
+			template< typename T >
+			static T* double_check_lock(core_platform::bc_atomic< T* >& p_pointer, bc_delegate< T*() >& p_initializer);
+
+			template< typename T >
+			static bool double_check_lock(core_platform::bc_atomic< T* >& p_pointer);
+
 		protected:
 
 		private:
 			static bc_thread_manager* _get_thread_manager()
 			{
-				static bc_thread_manager* m_thread_manager = bc_service_manager::get().get_service< bc_thread_manager >();
+				static bc_thread_manager* m_thread_manager = bc_get_service< bc_thread_manager >();
 
 				return m_thread_manager;
 			}
@@ -142,7 +149,7 @@ namespace black_cat
 								p_finalizer(l_init);
 							}
 						),
-						bc_task_creation_option::fairness
+						bc_task_creation_option::policy_fairness
 					);
 
 				l_tasks.push_back(std::move(l_task));
@@ -171,6 +178,44 @@ namespace black_cat
 				throw p_exception;
 			}
 #endif
+		}
+
+		template< typename T >
+		T* bc_concurreny::double_check_lock(core_platform::bc_atomic< T* >& p_pointer, bc_delegate< T*() >& p_initializer)
+		{
+			T* l_pointer;
+			static core_platform::bc_mutex s_mutex;
+
+			if ((l_pointer = p_pointer.load(core_platform::bc_memory_order::acquire)) == nullptr)
+			{
+				core_platform::bc_lock_guard< core_platform::bc_mutex > l_gaurd(s_mutex);
+
+				if ((l_pointer = p_pointer.load(core_platform::bc_memory_order::relaxed)) == nullptr)
+				{
+					l_pointer = p_initializer();
+					p_pointer.store(l_pointer, core_platform::bc_memory_order::release);
+				}
+			}
+
+			return l_pointer;
+		}
+
+		template< typename T >
+		bool bc_concurreny::double_check_lock(core_platform::bc_atomic< T* >& p_pointer)
+		{
+			static core_platform::bc_mutex s_mutex;
+
+			if (p_pointer.load(core_platform::bc_memory_order::acquire) == nullptr)
+			{
+				core_platform::bc_lock_guard< core_platform::bc_mutex > l_gaurd(s_mutex);
+
+				if (p_pointer.load(core_platform::bc_memory_order::relaxed) == nullptr)
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }

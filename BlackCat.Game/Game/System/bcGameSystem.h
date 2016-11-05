@@ -10,6 +10,8 @@
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Input/bcInputSystem.h"
 #include "Game/System/Input/bcFileSystem.h"
+#include "Game/System/Script/bcScriptSystem.h"
+#include "Game/System/Script/bcGameConsole.h"
 
 namespace black_cat
 {
@@ -28,7 +30,7 @@ namespace black_cat
 		class bc_game_system : public core::bc_iservice, public core::bc_initializable< bc_game_system_parameter >
 		{
 		public:
-			bc_game_system() = default;
+			bc_game_system();
 
 			bc_game_system(bc_game_system&&) = default;
 
@@ -51,6 +53,16 @@ namespace black_cat
 				return m_file_system;
 			}
 
+			bc_script_system& get_script_system()
+			{
+				return m_script_system;
+			}
+
+			bc_game_console& get_console()
+			{
+				return m_console;
+			}
+
 			static const bcCHAR* service_name()
 			{
 				return core::g_srv_game_system;
@@ -67,7 +79,19 @@ namespace black_cat
 			bc_render_system m_render_system;
 			bc_input_system m_input_system;
 			bc_file_system m_file_system;
+			bc_script_system m_script_system;
+			bc_game_console m_console;
 		};
+
+		inline bc_game_system::bc_game_system()
+			: m_render_system(),
+			m_input_system(),
+			m_file_system(),
+			m_script_system(),
+			m_console(m_script_system)
+		{
+
+		}
 
 		inline bc_game_system::~bc_game_system()
 		{
@@ -82,8 +106,8 @@ namespace black_cat
 			bc_icamera::extend l_camera_extends;
 
 			m_input_system.update(p_clock_update_param);
-			m_input_system.get_camera().get_extend_points(l_camera_extends);
 
+			m_input_system.get_camera().get_extend_points(l_camera_extends);
 			auto l_render_system_update_params = bc_render_system::update_param
 			(
 				p_clock_update_param,
@@ -94,6 +118,8 @@ namespace black_cat
 			);
 
 			m_render_system.update(l_render_system_update_params);
+			m_script_system.update(p_clock_update_param);
+			m_console.update(p_clock_update_param);
 		}
 
 		inline void bc_game_system::_initialize(bc_game_system_parameter p_paramter)

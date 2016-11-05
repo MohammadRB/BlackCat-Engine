@@ -184,8 +184,17 @@ $RECYCLE.BIN/
 .DS_Store
 
 ###############
-## Folders
+## Custom
 ###############
+
+# Files
+
+*.iobj
+*.ipdb
+*.db
+BlackCat.VC.db
+
+# Folders
 
 BC_SDK/
 BlackCar.Core.UnitTest/

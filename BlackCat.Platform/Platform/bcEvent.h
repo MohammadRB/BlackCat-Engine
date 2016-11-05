@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Platform/PlatformPCH.h"
+#include "Platform/Application/bcWindow.h"
 #include "Platform/Application/bcKeyDevice.h"
 #include "Platform/Application/bcPointingDevice.h"
 
@@ -107,6 +108,37 @@ namespace black_cat
 
 		private:
 			bool m_active;
+		};
+
+		class bc_app_event_window_close : public core::bc_app_event
+		{
+		public:
+			explicit bc_app_event_window_close(bc_window_id p_window_id) noexcept
+				: bc_app_event(event_name()),
+				m_window_id(p_window_id)
+			{
+			}
+
+			bc_app_event_window_close(const bc_app_event_window_close&) = default;
+
+			~bc_app_event_window_close() = default;
+
+			bc_app_event_window_close& operator =(const bc_app_event_window_close&) = default;
+
+			bc_window_id get_window_id() const noexcept
+			{
+				return m_window_id;
+			}
+
+			static const bcCHAR* event_name()
+			{
+				return core::g_evt_window_resize;
+			}
+
+		protected:
+
+		private:
+			bc_window_id m_window_id;
 		};
 
 		class bc_app_event_key : public core::bc_app_event

@@ -445,9 +445,9 @@ namespace black_cat
 
 		template< >
 		BC_GRAPHICIMP_DLL 
-		bc_platform_device<g_api_dx11>::bc_platform_device(bc_platform_device&& p_other)
-			: m_pack(std::move(p_other.m_pack))
+		bc_platform_device<g_api_dx11>::bc_platform_device(bc_platform_device&& p_other) noexcept
 		{
+			operator=(std::move(p_other));
 		};
 
 		template< >
@@ -460,8 +460,9 @@ namespace black_cat
 
 		template< >
 		BC_GRAPHICIMP_DLL 
-		bc_platform_device<g_api_dx11>& bc_platform_device<g_api_dx11>::operator=(bc_platform_device&& p_other)
+		bc_platform_device<g_api_dx11>& bc_platform_device<g_api_dx11>::operator=(bc_platform_device&& p_other) noexcept
 		{
+			m_resources = std::move(p_other.m_resources);
 			m_pack = std::move(p_other.m_pack);
 
 			return *this;
@@ -1208,7 +1209,7 @@ namespace black_cat
 
 		template< >
 		BC_GRAPHICIMP_DLL 
-		void bc_platform_device<g_api_dx11>::_initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, platform::bc_render_window& p_output_window)
+		void bc_platform_device<g_api_dx11>::_initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, platform::bc_basic_window& p_output_window)
 		{
 			HRESULT l_result = S_OK;
 

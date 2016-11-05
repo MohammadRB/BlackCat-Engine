@@ -62,6 +62,7 @@ namespace black_cat
 		BC_EVENT(warning, "warning_event");
 		BC_EVENT(app_exit, "exit_event");
 		BC_EVENT(window_resize, "window_resize_event");
+		BC_EVENT(window_close, "window_close_event");
 		BC_EVENT(app_active, "app_active_event");
 		BC_EVENT(key, "key_event");
 		BC_EVENT(point, "point_event");

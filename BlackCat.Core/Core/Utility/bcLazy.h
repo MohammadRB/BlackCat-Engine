@@ -2,10 +2,12 @@
 
 #pragma once
 
-#include "Core/CorePCH.h"
-#include "Core/Utility/bcDelegate.hpp"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
+#include "Core/CorePCH.h"
+#include "Core/Utility/bcTemplateMetaType.h"
+#include "Core/Utility/bcDelegate.h"
+#include "Core/Concurrency/bcConcurrency.h"
 
 namespace black_cat
 {
@@ -33,12 +35,12 @@ namespace black_cat
 			{
 			}
 
-			bc_lazy(const this_type& p_other)
+			bc_lazy(const this_type& p_other) noexcept(bc_type_traits< T >::is_no_throw_copy)
 			{
 				_assign(p_other);
 			}
 
-			bc_lazy(this_type&& p_other)
+			bc_lazy(this_type&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 			}
@@ -48,34 +50,46 @@ namespace black_cat
 				_cleanup();
 			}
 
-			this_type& operator =(const this_type& p_other)
+			this_type& operator =(const this_type& p_other) noexcept(bc_type_traits< T >::is_no_throw_copy)
 			{
 				_assign(p_other);
 
 				return *this;
 			}
 
-			this_type& operator =(this_type&& p_other)
+			this_type& operator =(this_type&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 
 				return *this;
 			}
 
-			T* operator ->() const { return get(); }
+			T* operator ->() const noexcept
+			{ 
+				return get(); 
+			}
 
-			T& operator *() const { return *get(); }
+			T& operator *() const 
+			{ 
+				return *get(); 
+			}
 
-			T* get() const { return m_pointer == nullptr ? (m_pointer = m_initializer()) : m_pointer; }
+			T* get() const
+			{
+				return m_pointer == nullptr ? (m_pointer = m_initializer()) : m_pointer;
+			}
 
-			bool is_set() const { return m_pointer; }
+			bool is_set() const noexcept
+			{
+				return m_pointer;
+			}
 
-			bool operator ==(std::nullptr_t) const
+			bool operator ==(std::nullptr_t) const noexcept
 			{
 				return !is_set();
 			}
 
-			bool operator !=(std::nullptr_t) const
+			bool operator !=(std::nullptr_t) const noexcept
 			{
 				return is_set();
 			}
@@ -154,12 +168,12 @@ namespace black_cat
 			{
 			}
 
-			bc_concurrent_lazy(const this_type& p_other)
+			bc_concurrent_lazy(const this_type& p_other) noexcept(bc_type_traits< T >::is_no_throw_copy)
 			{
 				_assign(p_other);
 			}
 
-			bc_concurrent_lazy(this_type&& p_other)
+			bc_concurrent_lazy(this_type&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 			}
@@ -172,27 +186,33 @@ namespace black_cat
 					m_cleanup(l_pointer);
 			}
 
-			this_type& operator =(const this_type& p_other)
+			this_type& operator =(const this_type& p_other) noexcept(bc_type_traits< T >::is_no_throw_copy)
 			{
 				_assign(p_other);
 
 				return *this;
 			}
 
-			this_type& operator =(this_type&& p_other)
+			this_type& operator =(this_type&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 
 				return *this;
 			}
 
-			T* operator ->() const { return get(); }
+			T* operator ->() const noexcept
+			{ 
+				return get();
+			}
 
-			T& operator *() const { return *get(); }
+			T& operator *() const 
+			{ 
+				return *get(); 
+			}
 
 			T* get() const
 			{
-				T* l_pointer;
+				/*T* l_pointer;
 				static core_platform::bc_mutex s_mutex;
 
 				if ((l_pointer = m_pointer.load(core_platform::bc_memory_order::acquire)) == nullptr)
@@ -206,20 +226,22 @@ namespace black_cat
 					}
 				}
 
-				return l_pointer;
+				return l_pointer;*/
+
+				return bc_concurreny::double_check_lock(m_pointer, m_initializer);
 			}
 
-			bool is_set() const
+			bool is_set() const noexcept
 			{
 				return m_pointer.load(core_platform::bc_memory_order::relaxed);
 			}
 
-			bool operator ==(std::nullptr_t) const
+			bool operator ==(std::nullptr_t) const noexcept
 			{
 				return !is_set();
 			}
 
-			bool operator !=(std::nullptr_t) const
+			bool operator !=(std::nullptr_t) const noexcept
 			{
 				return is_set();
 			}

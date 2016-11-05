@@ -1,0 +1,50 @@
+{
+  "entities": [
+    {
+      "name": "crysis_heightmap",
+      "components": [
+        {
+          "name": "heightmap_component",
+          "parameters": {
+            "heightmap": "expr: get_heightmap('crysis_heightmap')"
+          }
+        },
+        {
+          "name": "render_component",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "m16A2",
+      "components": [
+        {
+          "name": "mesh_component",
+          "parameters": {
+            "mesh": "expr: get_mesh('m16A2')"
+          }
+        },
+        {
+          "name": "render_component",
+          "parameters": { }
+        }
+      ]
+    },
+    {
+      "name": "ship",
+      "components": [
+        {
+          "name": "mesh_component",
+          "parameters":
+          {
+            "mesh": "expr: get_mesh('ship')"
+          }
+        },
+        {
+          "name": "render_component",
+          "parameters": {}
+        }
+      ]
+    }
+  ]
+}

@@ -17,18 +17,11 @@ namespace black_cat
 {
 	namespace core
 	{
-		/*BC_JSON_STRUCTURE(_bc_content_stream_content_parameter)
-		{
-			BC_JSON_VALUE(bc_string_frame, name);
-			BC_JSON_VALUE(bc_parameter_pack, value);
-		};*/
-
 		BC_JSON_STRUCTURE(_bc_content_stream_content)
 		{
 			BC_JSON_VALUE(bc_string_frame, content_title);
 			BC_JSON_VALUE(bc_string_frame, content_name);
 			BC_JSON_VALUE(bc_string_frame, content_file);
-			//BC_JSON_ARRAY(_bc_content_stream_content_parameter, content_parameter);
 			BC_JSON_VALUE(bc_json_key_value, content_parameter);
 		};
 
@@ -87,7 +80,7 @@ namespace black_cat
 			}
 
 			bc_json_document< _bc_content_stream_json > l_content_stream;
-			l_content_stream.parse(l_buffer);
+			l_content_stream.parse(l_buffer.c_str());
 
 			for (bc_json_object< _bc_content_stream >& l_stream : *l_content_stream->m_streams)
 			{
@@ -107,56 +100,27 @@ namespace black_cat
 
 					auto* l_content_params = &*l_stream_content->m_content_parameter;
 
-					//l_stream_file.m_parameters.reserve(l_content_params->m_key_values.size());
-
 					std::for_each
 					(
 						std::begin(l_content_params->m_key_values),
 						std::end(l_content_params->m_key_values),
 						[&l_stream_file](bc_json_key_value::key_value_array_t::value_type& p_parameter)
-					{
-						bc_any l_value;
-
-						auto* l_exp_param = p_parameter.second.as< bc_expression_parameter >();
-						if (l_exp_param != nullptr)
 						{
-							l_value = l_exp_param->evaluate();
+							bc_any l_value;
+
+							auto* l_exp_param = p_parameter.second.as< bc_expression_parameter >();
+							if (l_exp_param != nullptr)
+							{
+								l_value = l_exp_param->evaluate();
+							}
+							else
+							{
+								l_value = p_parameter.second;
+							}
+
+							l_stream_file.m_parameters.add_value(p_parameter.first.c_str(), std::move(l_value));
 						}
-						else
-						{
-							l_value = p_parameter.second;
-						}
-
-						l_stream_file.m_parameters.add_value(p_parameter.first.c_str(), std::move(l_value));
-					}
 					);
-
-					/*std::transform
-					(
-					std::begin(*l_stream_content->m_content_parameter),
-					std::end(*l_stream_content->m_content_parameter),
-					std::back_inserter(l_stream_file.m_parameters),
-					[](bc_json_object<_bc_content_stream_content_parameter>& p_parameter)
-					{
-					bc_any l_value;
-
-					auto* l_exp_param = p_parameter->m_value->as< bc_expression_parameter >();
-					if(l_exp_param != nullptr)
-					{
-					l_value = l_exp_param->evaluate();
-					}
-					else
-					{
-					l_value = *p_parameter->m_value;
-					}
-
-					return std::pair< bc_string_program, bc_any >
-					(
-					bc_string_program(p_parameter->m_name->c_str()),
-					std::move(l_value)
-					);
-					}
-					);*/
 
 					l_stream_files.push_back(std::move(l_stream_file));
 				}

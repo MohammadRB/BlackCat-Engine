@@ -17,35 +17,39 @@ namespace black_cat
 		public:
 			bc_file_system();
 
-			bc_file_system(bc_file_system&&);
+			bc_file_system(bc_file_system&&) noexcept;
 
 			~bc_file_system();
 
-			bc_file_system& operator=(bc_file_system&&);
-
-			const bcECHAR* get_content_stream_path() const;
-
-			const bcECHAR* get_entity_type_path() const;
-
-			const bcECHAR* get_platform_shaders_path() const;
-
-			core::bc_estring get_platform_shader_path(const bcECHAR* p_shader_path) const;
+			bc_file_system& operator=(bc_file_system&&) noexcept;
 
 			const bcECHAR* get_content_base_path() const;
 
-			const bcECHAR* get_content_models_path() const;
+			const bcECHAR* get_content_data_path() const;
+
+			core::bc_estring get_content_data_path(const bcECHAR* p_data_path) const;
+
+			const bcECHAR* get_content_model_path() const;
 
 			core::bc_estring get_content_model_path(const bcECHAR* p_model_path) const;
+
+			const bcECHAR* get_content_platform_shader_path() const;
+
+			core::bc_estring get_content_platform_shader_path(const bcECHAR* p_shader_path) const;
+
+			const bcECHAR* get_content_script_path() const;
+
+			core::bc_estring get_content_script_path(const bcECHAR* p_script_path) const;
 
 		protected:
 
 		private:
 			core::bc_estring m_execute_path;
 			core::bc_estring m_content_base_path;
-			core::bc_estring m_content_stream_path;
-			core::bc_estring m_platform_shader_path;
-			core::bc_estring m_entity_type_path;
-			core::bc_estring content_models_path;
+			core::bc_estring m_content_data_path;
+			core::bc_estring m_content_model_path;
+			core::bc_estring m_content_platform_shader_path;
+			core::bc_estring m_content_script_path;
 		};
 	}
 }

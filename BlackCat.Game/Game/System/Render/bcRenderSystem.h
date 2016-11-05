@@ -38,7 +38,7 @@ namespace black_cat
 			bc_render_system_parameter(bcUINT32 p_device_backbuffer_width, 
 				bcUINT32 p_device_backbuffer_height, 
 				graphic::bc_format p_device_backbuffer_format, 
-				platform::bc_render_window& p_render_window)
+				platform::bc_basic_window& p_render_window)
 				: m_device_backbuffer_width(p_device_backbuffer_width),
 				m_device_backbuffer_height(p_device_backbuffer_height),
 				m_device_backbuffer_format(p_device_backbuffer_format),
@@ -49,7 +49,7 @@ namespace black_cat
 			bcUINT32 m_device_backbuffer_width;
 			bcUINT32 m_device_backbuffer_height;
 			graphic::bc_format m_device_backbuffer_format;
-			platform::bc_render_window& m_render_window;
+			platform::bc_basic_window& m_render_window;
 		};
 
 		struct bc_render_system_update_param : public core_platform::bc_clock::update_param

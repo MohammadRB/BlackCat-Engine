@@ -80,5 +80,8 @@
     <ClCompile Include="CorePlatformImp\File\bcPath.cpp">
       <Filter>CorePlatformImp\File</Filter>
     </ClCompile>
+    <ClCompile Include="CorePlatformImp\Concurrency\bcMutex.cpp">
+      <Filter>CorePlatformImp\Concurrency</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

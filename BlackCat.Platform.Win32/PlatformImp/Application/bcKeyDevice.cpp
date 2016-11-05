@@ -3,6 +3,7 @@
 #include "PlatformImp/PlatformImpPCH.h"
 
 #include "CorePlatformImp/bcUtility.h"
+#include "Platform/bcException.h"
 #include "Platform/bcEvent.h"
 #include "PlatformImp/bcExport.h"
 #include "PlatformImp/Application/bcKeyDevice.h"
@@ -14,14 +15,16 @@ namespace black_cat
 		void _check_key_device_index(bcBYTE p_device_index)
 		{
 			if (p_device_index != 0)
-				throw std::runtime_error("Invalid device index");
+			{
+				throw bc_runtime_exception("Invalid device index");
+			}
 		}
 
 		template< >
 		BC_PLATFORMIMP_DLL
 		bc_platform_key_device<core_platform::g_api_win32>::bc_platform_key_device(bcUBYTE p_device_index)
-			: m_pack(),
-			m_device_index(p_device_index),
+			: m_device_index(p_device_index),
+			m_pack(),
 			m_event_manager(core::bc_service_manager::get().get_service< core::bc_event_manager >())
 		{
 			_check_key_device_index(m_device_index);
@@ -32,8 +35,8 @@ namespace black_cat
 		template< >
 		BC_PLATFORMIMP_DLL
 		bc_platform_key_device<core_platform::g_api_win32>::bc_platform_key_device(const bc_platform_key_device& p_other) noexcept
-			: m_pack(p_other.m_pack),
-			m_device_index(p_other.m_device_index),
+			: m_device_index(p_other.m_device_index),
+			m_pack(p_other.m_pack),
 			m_event_manager(p_other.m_event_manager)
 		{
 		}
@@ -82,7 +85,7 @@ namespace black_cat
 				}
 				else
 				{
-					if (l_prev_state == bc_key_state::pressed || l_prev_state == bc_key_state::pressing)
+					if (l_prev_state == bc_key_state::pressing || l_prev_state == bc_key_state::pressed)
 					{
 						l_key_state = bc_key_state::releasing;
 					}
@@ -92,8 +95,12 @@ namespace black_cat
 					}
 				}
 
-				if (l_pressed && l_prev_state == bc_key_state::up)
-					m_event_manager->process_event(platform::bc_app_event_key(static_cast<bc_key>(i), l_key_state));
+				if (l_key_state == bc_key_state::pressing)
+				{
+					bc_app_event_key l_key_event(static_cast<bc_key>(i), l_key_state);
+
+					m_event_manager->process_event(l_key_event);
+				}
 
 				*&l_prev_state = l_key_state;
 			}
