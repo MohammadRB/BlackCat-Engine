@@ -13,6 +13,8 @@ namespace black_cat
 	{
 		class bc_height_map : public core::bc_icontent
 		{
+			BC_CONTENT(height_map)
+
 		public:
 			bc_height_map(const graphic::bc_vector3f& p_position,
 				bcUINT16 p_width,
@@ -55,11 +57,6 @@ namespace black_cat
 			const bc_render_state* get_render_state() const
 			{
 				return m_render_state.get();
-			}
-
-			static const bcCHAR* content_name()
-			{
-				return core::g_cnt_heightmap;
 			}
 
 		protected:

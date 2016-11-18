@@ -5,37 +5,37 @@
       "stream_content": [
         {
           "content_title": "mesh_vs",
-          "content_name": "vertex_shader_content",
+          "content_name": "cnt_vertex_shader",
           "content_file": "content\\shader\\directx11\\bcMeshShader.hlsl",
           "content_parameter": { "function": "vs" }
         }, {
           "content_title": "mesh_ps",
-          "content_name": "pixel_shader_content",
+          "content_name": "cnt_pixel_shader",
           "content_file": "content\\shader\\directx11\\bcMeshShader.hlsl",
           "content_parameter": { "function": "ps" }
         }, {
           "content_title": "terrain_vs",
-          "content_name": "vertex_shader_content",
+          "content_name": "cnt_vertex_shader",
           "content_file": "content\\shader\\directx11\\bcTerrain.hlsl",
           "content_parameter": { "function": "vs" }
         }, {
           "content_title": "terrain_hs",
-          "content_name": "hull_shader_content",
+          "content_name": "cnt_hull_shader",
           "content_file": "content\\shader\\directx11\\bcTerrain.hlsl",
           "content_parameter": { "function": "hs" }
         }, {
           "content_title": "terrain_ds",
-          "content_name": "domain_shader_content",
+          "content_name": "cnt_domain_shader",
           "content_file": "content\\shader\\directx11\\bcTerrain.hlsl",
           "content_parameter": { "function": "ds" }
         }, {
           "content_title": "terrain_ps",
-          "content_name": "pixel_shader_content",
+          "content_name": "cnt_pixel_shader",
           "content_file": "content\\shader\\directx11\\bcTerrain.hlsl",
           "content_parameter": { "function": "ps" }
         }, {
           "content_title": "terrain_chunk_info",
-          "content_name": "compute_shader_content",
+          "content_name": "cnt_compute_shader",
           "content_file": "content\\shader\\directx11\\bcTerrainTools.hlsl",
           "content_parameter": { "function": "chunk_info" }
         }
@@ -51,7 +51,7 @@
       "stream_content": [
         {
           "content_title": "crysis_heightmap",
-          "content_name": "heightmap_content",
+          "content_name": "cnt_height_map",
           "content_file": "content\\texture\\CrysisHM1-1024.bmp",
           "content_parameter": {
             "x_pos": 0,
@@ -65,13 +65,13 @@
         },
         {
           "content_title": "m16A2",
-          "content_name": "mesh_content",
+          "content_name": "cnt_mesh",
           "content_file": "content\\model\\m16-A2\\m16-A2.3ds",
           "content_parameter": { }
         },
         {
           "content_title": "ship",
-          "content_name": "mesh_content",
+          "content_name": "cnt_mesh",
           "content_file": "content\\model\\ship.x",
           "content_parameter": {}
         }

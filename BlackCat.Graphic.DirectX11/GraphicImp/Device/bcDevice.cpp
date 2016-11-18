@@ -30,6 +30,7 @@
 #include "GraphicImp/Shader/bcGeometryShader.h"
 #include "GraphicImp/Shader/bcPixelShader.h"
 #include "GraphicImp/Shader/bcComputeShader.h"
+#include "GraphicImp/Device/bcDeviceOutput.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
@@ -1209,7 +1210,7 @@ namespace black_cat
 
 		template< >
 		BC_GRAPHICIMP_DLL 
-		void bc_platform_device<g_api_dx11>::_initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, platform::bc_basic_window& p_output_window)
+		void bc_platform_device<g_api_dx11>::_initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, bc_platform_device_output<g_api_dx11> p_output)
 		{
 			HRESULT l_result = S_OK;
 
@@ -1275,7 +1276,7 @@ namespace black_cat
 			l_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 			l_swap_chain_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 			l_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-			l_swap_chain_desc.OutputWindow = p_output_window.get_platform_pack().m_handle;
+			l_swap_chain_desc.OutputWindow = p_output.get_platform_pack().m_output_handle;
 			l_swap_chain_desc.Windowed = true;
 
 			l_result = l_factory->CreateSwapChain(m_pack.m_device.Get(), &l_swap_chain_desc, m_pack.m_swap_chain.GetAddressOf());

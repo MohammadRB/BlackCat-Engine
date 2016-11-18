@@ -126,8 +126,7 @@ namespace black_cat
 			void _destroy() override;
 
 		private:
-			// Hold all external object meta data in one place so when runtime destroyed we can clear
-			// these data
+			// Hold all external object meta data in one place so when runtime destroyed we can clear these data
 			core::bc_list_program< core::bc_any > m_external_object_meta_datas;
 			platform_pack m_pack;
 		};

@@ -146,5 +146,14 @@
     <ClCompile Include="PlatformImp\Application\bcBasicWindow.cpp">
       <Filter>PlatformImp\Application</Filter>
     </ClCompile>
+    <ClCompile Include="PlatformImp\Script\bcScriptFunction.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Script\bcScriptArray.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformImp\Script\bcScriptRef.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -13,7 +13,7 @@ namespace black_cat
 	namespace game
 	{
 		class bc_actor_component_manager;
-		using bc_actor_component_hash = bcSIZE;
+		using bc_actor_component_hash = bcUINT32;
 		using bc_actor_component_index = bcINT32;
 		constexpr bc_actor_component_index g_actor_component_invalid_index = bc_actor_component_index(-1);
 

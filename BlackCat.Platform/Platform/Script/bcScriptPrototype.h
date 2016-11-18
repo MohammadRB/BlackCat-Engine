@@ -4,6 +4,7 @@
 
 #include "CorePlatform/bcPlatform.h"
 #include "CorePlatform/bcType.h"
+#include "Platform/Script/bcScriptRef.h"
 #include "Platform/Script/bcScriptReference.h"
 #include "Platform/Script/bcScriptContext.h"
 
@@ -50,5 +51,7 @@ namespace black_cat
 
 		template< typename T >
 		using bc_script_prototype = bc_platform_script_prototype< core_platform::g_current_platform, T >;
+		template< typename T >
+		using bc_script_prototype_ref = bc_script_ref< bc_script_prototype<T> >;
 	}
 }

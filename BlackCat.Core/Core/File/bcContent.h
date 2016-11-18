@@ -42,9 +42,14 @@ namespace black_cat
 		class bc_content_traits
 		{
 		public:
-			static const bcCHAR* content_name()
+			static constexpr const bcCHAR* content_name()
 			{
 				return TContent::content_name();
+			}
+
+			static constexpr bcUINT32 content_hash()
+			{
+				return TContent::content_hash();
 			}
 		};
 

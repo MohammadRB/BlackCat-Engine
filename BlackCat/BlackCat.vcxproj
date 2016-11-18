@@ -73,19 +73,17 @@
 copy BlackCat\Application\*.h ..\BC_SDK\Include\BlackCat\Application
 copy BlackCat\Loader\*.h ..\BC_SDK\Include\BlackCat\Loader
 copy BlackCat\RenderPass\*.h ..\BC_SDK\Include\BlackCat\RenderPass
-copy BlackCat\Shader\*.h ..\BC_SDK\Include\BlackCat\Shader
-copy BlackCat\Shader\DirectX11\*.h ..\BC_SDK\Include\BlackCat\Shader\DirectX11
 
-copy BlackCat\Shader\DirectX11\*.hlsli ..\BC_SDK\Content\Shader\DirectX11
-copy BlackCat\Shader\DirectX11\*.hlsl ..\BC_SDK\Content\Shader\DirectX11
-copy BlackCat\Shader\DirectX11\*.hlsli ..\$(Configuration)\Content\Shader\DirectX11
-copy BlackCat\Shader\DirectX11\*.hlsl ..\$(Configuration)\Content\Shader\DirectX11
+copy BlackCat\Content\Shader\DirectX11\*.hlsli ..\BC_SDK\Content\Shader\DirectX11
+copy BlackCat\Content\Shader\DirectX11\*.hlsl ..\BC_SDK\Content\Shader\DirectX11
+copy BlackCat\Content\Shader\DirectX11\*.hlsli ..\$(Configuration)\Content\Shader\DirectX11
+copy BlackCat\Content\Shader\DirectX11\*.hlsl ..\$(Configuration)\Content\Shader\DirectX11
 
-copy BlackCat\Data\*.json ..\BC_SDK\Content\Data
-copy BlackCat\Data\*.json ..\$(Configuration)\Content\Data
+copy BlackCat\Content\Data\*.json ..\BC_SDK\Content\Data
+copy BlackCat\Content\Data\*.json ..\$(Configuration)\Content\Data
 
-copy BlackCat\Script\*.js ..\BC_SDK\Content\Script
-copy BlackCat\Script\*.js ..\$(Configuration)\Content\Script
+copy BlackCat\Content\Script\*.js ..\BC_SDK\Content\Script
+copy BlackCat\Content\Script\*.js ..\$(Configuration)\Content\Script
 
 copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(Platform)_$(configuration)
 </Command>

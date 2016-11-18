@@ -19,8 +19,8 @@ namespace black_cat
 	{
 		struct bc_game_system_parameter
 		{
-			explicit bc_game_system_parameter(const bc_render_system_parameter& p_render_system_parameter)
-				: m_render_system_parameter(p_render_system_parameter)
+			explicit bc_game_system_parameter(bc_render_system_parameter&& p_render_system_parameter)
+				: m_render_system_parameter(std::move(p_render_system_parameter))
 			{
 			}
 
@@ -29,6 +29,8 @@ namespace black_cat
 
 		class bc_game_system : public core::bc_iservice, public core::bc_initializable< bc_game_system_parameter >
 		{
+			BC_SERVICE(game_system)
+
 		public:
 			bc_game_system();
 
@@ -61,11 +63,6 @@ namespace black_cat
 			bc_game_console& get_console()
 			{
 				return m_console;
-			}
-
-			static const bcCHAR* service_name()
-			{
-				return core::g_srv_game_system;
 			}
 
 		protected:
@@ -124,7 +121,7 @@ namespace black_cat
 
 		inline void bc_game_system::_initialize(bc_game_system_parameter p_paramter)
 		{
-			m_render_system.initialize(p_paramter.m_render_system_parameter);
+			m_render_system.initialize(std::move(p_paramter.m_render_system_parameter));
 		}
 
 		inline void bc_game_system::_destroy()

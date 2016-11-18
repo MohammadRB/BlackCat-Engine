@@ -24,6 +24,8 @@ namespace black_cat
 
 		class BC_CORE_DLL bc_expression_parameter_manager : public bc_iservice
 		{
+			BC_SERVICE(expression_parameter_manager)
+
 		public:
 			friend class bc_expression_parameter;
 
@@ -44,11 +46,6 @@ namespace black_cat
 
 			// This function can be called with multiple threads to resolve expressions
 			bc_parameter_pack resolve(const bc_expression_parameter& p_expression) const;
-
-			static const bcCHAR* service_name()
-			{
-				return g_srv_expression_parameter_manager;
-			}
 
 		protected:
 

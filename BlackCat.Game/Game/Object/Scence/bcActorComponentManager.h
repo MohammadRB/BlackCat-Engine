@@ -29,7 +29,7 @@ namespace black_cat
 
 			static constexpr bc_actor_component_hash component_hash()
 			{
-				return static_cast< bc_actor_component_hash >(core::bc_enum::value(TComponent::component_name()));
+				return static_cast< bc_actor_component_hash >(TComponent::component_hash());
 			}
 		};
 
@@ -57,6 +57,8 @@ namespace black_cat
 
 		class bc_actor_component_manager : public core::bc_iservice
 		{
+			BC_SERVICE(actor_component_manager)
+
 		private:
 			template< class TComponent >
 			friend class bc_actor_component_container;
@@ -97,11 +99,6 @@ namespace black_cat
 
 			template< class ...TComponent >
 			void register_component_types();
-
-			static const bcCHAR* service_name()
-			{
-				return core::g_srv_actor_component_manager;
-			}
 
 		protected:
 

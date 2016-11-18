@@ -1,14 +1,16 @@
 // [2/23/2015 MRB]
 
 #include "Game/GamePCH.h"
-#include "Game/bcRenderApplication.h"
+#include "Game/Application/bcRenderApplication.h"
 
 namespace black_cat
 {
 	namespace game
 	{
 		bc_render_application::bc_render_application()
-			: m_render_window(nullptr),
+			: m_app(nullptr),
+			m_default_output_window(nullptr),
+			m_output_window(nullptr),
 			m_clock(nullptr),
 			m_is_terminated(false),
 			m_paused(false),
@@ -19,9 +21,9 @@ namespace black_cat
 		{
 		}
 
-		platform::bc_basic_window& bc_render_application::get_render_window() const
+		bc_irender_application_output_window& bc_render_application::get_output_window() const
 		{
-			return *m_render_window;
+			return *m_output_window;
 		}
 
 		core_platform::bc_clock& bc_render_application::get_clock() const
@@ -48,7 +50,7 @@ namespace black_cat
 			{
 				while (!m_is_terminated)
 				{
-					m_render_window->update();
+					m_output_window->update();
 					m_app->update();
 
 					if (m_paused)
@@ -105,7 +107,7 @@ namespace black_cat
 			m_app->request_termination();
 		}
 
-		platform::bc_basic_window bc_render_application::create_render_window(core::bc_estring p_caption, bcUINT32 p_width, bcUINT32 p_height)
+		platform::bc_basic_window bc_render_application::create_basic_render_window(core::bc_estring p_caption, bcUINT32 p_width, bcUINT32 p_height)
 		{
 			return m_app->create_basic_window(std::move(p_caption), p_width, p_height);
 		}
@@ -117,10 +119,31 @@ namespace black_cat
 
 		bool bc_render_application::app_event(core::bc_ievent& p_event)
 		{
+			if (core::bc_ievent::event_is< platform::bc_app_event_window_resizing >(p_event))
+			{
+				platform::bc_app_event_window_resizing& l_resizing_event = static_cast< platform::bc_app_event_window_resizing& >(p_event);
+
+				if (l_resizing_event.get_window_id() == m_output_window->get_id())
+				{
+					if(l_resizing_event.start_resizing())
+					{
+						platform::bc_app_event_active l_active_event(false);
+						core::bc_get_service< core::bc_event_manager >()->process_event(l_active_event);
+					}
+					else
+					{
+						platform::bc_app_event_active l_active_event(true);
+						core::bc_get_service< core::bc_event_manager >()->process_event(l_active_event);
+					}
+				}
+
+				return true;
+			}
+
 			if (core::bc_ievent::event_is< platform::bc_app_event_active >(p_event))
 			{
 				platform::bc_app_event_active& l_active_event = static_cast< platform::bc_app_event_active& >(p_event);
-				m_paused = !l_active_event.activate();
+				m_paused = !l_active_event.active();
 
 				if (m_paused)
 				{
@@ -129,6 +152,20 @@ namespace black_cat
 				else
 				{
 					m_clock->resume();
+				}
+
+				return true;
+			}
+
+			if (core::bc_ievent::event_is< platform::bc_app_event_window_close >(p_event))
+			{
+				platform::bc_app_event_window_close& l_close_event = static_cast< platform::bc_app_event_window_close& >(p_event);
+
+				if(l_close_event.get_window_id() == m_output_window->get_id())
+				{
+					platform::bc_app_event_exit l_exit_event(0);
+
+					core::bc_get_service< core::bc_event_manager >()->process_event(l_exit_event);
 				}
 
 				return true;
@@ -151,24 +188,23 @@ namespace black_cat
 		{
 			app_start_engine_components(p_parameters.m_engine_parameters);
 
-			auto& l_service_manager = core::bc_service_manager::get();
-			auto* l_event_manager = l_service_manager.get_service< core::bc_event_manager >();
+			auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
 
-			m_app = core::bc_make_unique< platform::bc_application >
-			(
-				core::bc_alloc_type::program,
-				p_parameters.m_app_parameters
-			);
-			m_render_window = core::bc_make_unique< platform::bc_basic_window >
-			(
-				core::bc_alloc_type::program,
-				create_render_window
+			m_app = core::bc_make_unique< platform::bc_application >(core::bc_alloc_type::program, p_parameters.m_app_parameters);
+
+			if (p_parameters.m_app_parameters.m_output_window == nullptr)
+			{
+				m_default_output_window = core::bc_make_unique< bc_render_application_basic_output_window >(create_basic_render_window
 				(
-					core::bc_estring(p_parameters.m_app_parameters.m_app_name),
-					p_parameters.m_app_parameters.m_window_width,
-					p_parameters.m_app_parameters.m_window_height
-				)
-			);
+					core::bc_to_estring_frame(p_parameters.m_app_parameters.m_app_name).c_str(),
+					800,
+					450
+				));
+
+				p_parameters.m_app_parameters.m_output_window = m_default_output_window.get();
+			}
+
+			m_output_window = p_parameters.m_app_parameters.m_output_window;
 			m_clock = core::bc_make_unique< core_platform::bc_clock >(core::bc_alloc_type::program);
 
 			m_is_terminated = false;
@@ -180,11 +216,19 @@ namespace black_cat
 			m_fps = 0;
 			m_fixed_fps = -1;
 
-			m_event_handle_app_exit = l_event_manager->register_event_listener< platform::bc_app_event_exit >
+			m_event_handle_window_resizing = l_event_manager->register_event_listener< platform::bc_app_event_window_resizing >
+			(
+				core::bc_event_manager::delegate_type(this, &bc_render_application::app_event)
+			);
+			m_event_handle_window_close = l_event_manager->register_event_listener< platform::bc_app_event_window_close >
 			(
 				core::bc_event_manager::delegate_type(this, &bc_render_application::app_event)
 			);
 			m_event_handle_app_active = l_event_manager->register_event_listener< platform::bc_app_event_active >
+			(
+				core::bc_event_manager::delegate_type(this, &bc_render_application::app_event)
+			);
+			m_event_handle_app_exit = l_event_manager->register_event_listener< platform::bc_app_event_exit >
 			(
 				core::bc_event_manager::delegate_type(this, &bc_render_application::app_event)
 			);
@@ -198,12 +242,14 @@ namespace black_cat
 			app_unload_content();
 			app_destroy();
 
-			m_event_handle_app_exit.reset();
+			m_event_handle_window_resizing.reset();
+			m_event_handle_window_close.reset();
 			m_event_handle_app_active.reset();
+			m_event_handle_app_exit.reset();
 
 			m_clock.reset(nullptr);
-			m_render_window->close();
-			m_render_window.reset(nullptr);
+			m_output_window->close();
+			m_default_output_window.reset(nullptr);
 			m_app.reset(nullptr);
 
 			app_close_engine_components();

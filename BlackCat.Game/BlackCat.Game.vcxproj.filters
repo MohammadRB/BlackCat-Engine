@@ -43,6 +43,9 @@
     <Filter Include="Game\System\Script">
       <UniqueIdentifier>{3510ce94-bf32-46a7-83d3-f4f7bb770296}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Application">
+      <UniqueIdentifier>{a821cfc4-1d07-4dfa-8394-6ede76abbb14}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\GamePCH.h">
@@ -180,11 +183,17 @@
     <ClInclude Include="Game\System\Script\bcDefaultGameConsole.h">
       <Filter>Game\System\Script</Filter>
     </ClInclude>
-    <ClInclude Include="Game\bcRenderApplication.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="Game\System\Script\bcScriptUIContext.h">
       <Filter>Game\System\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Script\bcScriptBinding.h">
+      <Filter>Game\System\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Application\bcRenderApplication.h">
+      <Filter>Game\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Application\bcIRenderApplicationOutputWindow.h">
+      <Filter>Game\Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -263,11 +272,11 @@
     <ClCompile Include="Game\System\Script\bcDefaultGameConsole.cpp">
       <Filter>Game\System\Script</Filter>
     </ClCompile>
-    <ClCompile Include="Game\bcRenderApplication.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="Game\System\Script\bcScriptUIContext.cpp">
       <Filter>Game\System\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Application\bcRenderApplication.cpp">
+      <Filter>Game\Application</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

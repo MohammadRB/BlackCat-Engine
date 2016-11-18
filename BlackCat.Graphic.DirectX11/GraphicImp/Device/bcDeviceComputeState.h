@@ -11,12 +11,10 @@ namespace black_cat
 {
 	namespace graphic
 	{
-
 		template<>
 		struct bc_platform_device_compute_state_pack<bc_platform_render_api::directx11>
 			: public bc_platform_device_compute_state_pack<bc_platform_render_api::unknown>
 		{
-
 		};
 
 		template< >

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "PlatformImp/Script/bcScriptRef.h"
 #include "PlatformImp/Script/bcScriptReference.h"
 #include "PlatformImp/Script/bcScriptContext.h"
 

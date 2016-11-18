@@ -1259,6 +1259,11 @@ namespace black_cat
 			return _bc_to_string<bc_allocator_frame, bc_allocator>(p_str);
 		}
 
+		inline bc_string bc_to_string(const bcCHAR* p_str)
+		{
+			return bc_string(p_str);
+		}
+
 		inline bc_string bc_to_string(const bc_string& p_str)
 		{
 			return p_str;
@@ -1379,6 +1384,11 @@ namespace black_cat
 		inline bc_string_program bc_to_string_program(const bc_wstring_frame& p_str)
 		{
 			return _bc_to_string<bc_allocator_frame, bc_allocator_program>(p_str);
+		}
+
+		inline bc_string_program bc_to_string_program(const bcCHAR* p_str)
+		{
+			return bc_string_program(p_str);
 		}
 
 		inline bc_string_program bc_to_string_program(const bc_string& p_str)
@@ -1519,6 +1529,11 @@ namespace black_cat
 		inline bc_string_frame bc_to_string_frame(const bc_wstring_frame& p_str)
 		{
 			return _bc_to_string<bc_allocator_frame, bc_allocator_frame>(p_str);
+		}
+
+		inline bc_string_frame bc_to_string_frame(const bcCHAR* p_str)
+		{
+			return bc_string_frame(p_str);
 		}
 
 		inline bc_string_frame bc_to_string_frame(const bc_string& p_str)
@@ -1717,6 +1732,11 @@ namespace black_cat
 			return _bc_to_wstring<bc_allocator_frame, bc_allocator>(p_str);
 		}
 
+		inline bc_wstring bc_to_wstring(const bcWCHAR* p_str)
+		{
+			return bc_wstring(p_str);
+		}
+
 		inline bc_wstring bc_to_wstring(const bc_wstring& p_str)
 		{
 			return p_str;
@@ -1846,6 +1866,11 @@ namespace black_cat
 		inline bc_wstring_program bc_to_wstring_program(const bc_string_frame& p_str)
 		{
 			return _bc_to_wstring<bc_allocator_frame, bc_allocator_program>(p_str);
+		}
+
+		inline bc_wstring_program bc_to_wstring_program(const bcWCHAR* p_str)
+		{
+			return bc_wstring_program(p_str);
 		}
 
 		inline bc_wstring_program bc_to_wstring_program(const bc_wstring& p_str)
@@ -1979,6 +2004,11 @@ namespace black_cat
 			return _bc_to_wstring<bc_allocator_frame, bc_allocator_frame>(p_str);
 		}
 
+		inline bc_wstring_frame bc_to_wstring_frame(const bcWCHAR* p_str)
+		{
+			return bc_wstring_frame(p_str);
+		}
+
 		inline bc_wstring_frame bc_to_wstring_frame(const bc_wstring& p_str)
 		{
 			return bc_wstring_frame(p_str.c_str());
@@ -2108,7 +2138,7 @@ namespace black_cat
 		}
 		
 		// CRC32 Table (zlib polynomial)
-		static constexpr uint32_t crc_table[256] = {
+		static constexpr bcUINT32 _crc_table[256] = {
 			0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA,
 			0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
 			0x0EDB8832, 0x79DCB8A4, 0xE0D5E91E, 0x97D2D988,
@@ -2179,21 +2209,31 @@ namespace black_cat
 		};
 
 		// http://stackoverflow.com/questions/2111667/compile-time-string-hashing
-		template<size_t idx>
-		constexpr uint32_t crc32(const char* str)
+		template< bcSIZE TIdx >
+		constexpr bcUINT32 _str_crc32(const bcCHAR* p_str)
 		{
-			return (crc32<idx - 1>(str) >> 8) ^ crc_table[(crc32<idx - 1>(str) ^ str[idx]) & 0x000000FF];
+			return (_str_crc32< TIdx - 1 >(p_str) >> 8) ^ _crc_table[(_str_crc32< TIdx - 1 >(p_str) ^ p_str[TIdx]) & 0x000000FF];
 		}
 
-		// This is the stop-recursion function
 		template<>
-		constexpr uint32_t crc32<size_t(-1)>(const char * str)
+		constexpr bcUINT32 _str_crc32< bcSIZE(-1) >(const bcCHAR* p_str)
 		{
 			return 0xFFFFFFFF;
 		}
 
+		inline bcUINT32 __str_crc32(const bcCHAR* p_str, bcSIZE p_idx)
+		{
+			if(p_idx == -1)
+			{
+				return 0xFFFFFFFF;
+			}
+
+			return (__str_crc32(p_str, p_idx - 1) >> 8) ^ _crc_table[(__str_crc32(p_str, p_idx - 1) ^ p_str[p_idx]) & 0x000000FF];
+		}
+
 		// This doesn't take into account the nul char
-#define bc_compile_time_string_hash(str) (black_cat::core::crc32<sizeof(str) - 2>(str) ^ 0xFFFFFFFF)
+#define bc_compile_time_string_hash(str) (black_cat::core::_str_crc32<sizeof(str) - 2>(str) ^ 0xFFFFFFFF)
+#define bc_run_time_string_hash(str, length) (black_cat::core::__str_crc32(str, length - 1) ^ 0xFFFFFFFF)
 	}
 }
 

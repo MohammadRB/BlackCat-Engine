@@ -18,8 +18,10 @@
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
-#include "Game/bcRenderApplication.h"
+#include "Game/Application/bcRenderApplication.h"
 #include "Game/System/Render/bcRenderPassManager.h"
+#include "Game/System/Script/bcScriptSystem.h"
+#include "Game/System/Script/bcScriptBinding.h"
 #include "Game/Object/Scence/bcActorComponentManager.h"
 #include "Game/Object/Scence/bcEntityManager.h"
 #include "Game/Object/Scence/Component/bcRenderComponent.h"
@@ -246,6 +248,8 @@ namespace black_cat
 		auto* l_event_manager = m_service_manager->get_service< core::bc_event_manager >();
 		auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
 		auto* l_entity_manager = m_service_manager->get_service< game::bc_entity_manager >();
+		auto& l_script_system = m_game_system->get_script_system();
+		auto l_script_binder = l_script_system.get_script_binder();
 
 		m_event_error_handle = l_event_manager->register_event_listener< core::bc_app_event_error >
 		(
@@ -260,10 +264,10 @@ namespace black_cat
 		(
 			game::bc_game_system_parameter(game::bc_render_system_parameter
 			(
-				bc_render_application::get_render_window().get_width(),
-				bc_render_application::get_render_window().get_height(),
+				bc_render_application::get_output_window().get_width(),
+				bc_render_application::get_output_window().get_height(),
 				graphic::bc_format::R8G8B8A8_UNORM,
-				bc_render_application::get_render_window()
+				bc_render_application::get_output_window().get_device_output()
 			))
 		);
 
@@ -272,6 +276,10 @@ namespace black_cat
 
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_shaders");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_resources");
+
+		l_script_binder.bind_instance<game::bc_script_context::ui, game::bc_game_console>(m_game_system->get_console());
+
+		l_script_system.set_script_binder(std::move(l_script_binder));
 
 		application_initialize(p_commandline);
 	}
@@ -295,26 +303,36 @@ namespace black_cat
 
 		if (core::bc_ievent::event_is< core::bc_app_event_error >(p_event))
 		{
-			bc_render_application::get_render_window().messagebox
+			/*bc_render_application::get_output_window().messagebox
 			(
 				bcL("Error"),
 				bc_to_wstring(static_cast< core::bc_app_event_error& >(p_event).get_message()).c_str(),
 				platform::bc_messagebox_type::error,
 				platform::bc_messagebox_buttom::ok
 			);
-			l_result = true;
+			l_result = true;*/
+			m_service_manager->get_service< core::bc_logger >()->log
+			(
+				core::bc_log_type::error,
+				core::bc_to_estring_frame(static_cast<core::bc_app_event_error&>(p_event).get_message()).c_str()
+			);
 		}
 
 		if (core::bc_ievent::event_is< core::bc_app_event_warning >(p_event))
 		{
-			bc_render_application::get_render_window().messagebox
+			/*bc_render_application::get_output_window().messagebox
 			(
 				bcL("Warning"),
 				bc_to_wstring(static_cast< core::bc_app_event_warning& >(p_event).get_message()).c_str(),
 				platform::bc_messagebox_type::warning,
 				platform::bc_messagebox_buttom::ok
 			);
-			l_result = true;
+			l_result = true;*/
+			m_service_manager->get_service< core::bc_logger >()->log
+			(
+				core::bc_log_type::info,
+				core::bc_to_estring_frame(static_cast<core::bc_app_event_warning&>(p_event).get_message()).c_str()
+			);
 		}
 
 		l_result = l_result || bc_render_application::app_event(p_event);

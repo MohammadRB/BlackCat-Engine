@@ -10,9 +10,15 @@
 namespace black_cat
 {
 	template<>
-	inline const bcCHAR* graphic::bc_device_resource_content< graphic::bc_hull_shader >::content_name()
+	inline constexpr bcCHAR* graphic::bc_device_resource_content< graphic::bc_hull_shader >::content_name()
 	{
-		return core::g_cnt_hull_shader;
+		return BC_CONTENT_NAME(hull_shader);
+	}
+
+	template< >
+	inline constexpr bcUINT32 graphic::bc_device_resource_content< graphic::bc_hull_shader >::content_hash()
+	{
+		return bc_compile_time_string_hash(BC_CONTENT_NAME(hull_shader));
 	}
 
 	class BC_BLACKCAT_DLL_EXP bc_hull_shader_loader : public core::bc_base_content_loader

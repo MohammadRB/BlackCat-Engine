@@ -33,7 +33,6 @@ namespace black_cat
 
 		template<>
 		struct bc_platform_application_pack< core_platform::bc_platform::win32 > 
-			: public bc_platform_application_pack< core_platform::bc_platform::unknown >
 		{
 			explicit bc_platform_application_pack(HINSTANCE p_instance)
 				: m_instance(p_instance)

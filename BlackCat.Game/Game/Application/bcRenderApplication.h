@@ -6,6 +6,7 @@
 #include "Core/Event/bcEventManager.h"
 #include "PlatformImp/Application/bcApplication.h"
 #include "Game/bcExport.h"
+#include "Game/Application/bcIRenderApplicationOutputWindow.h"
 
 namespace black_cat
 {
@@ -51,22 +52,19 @@ namespace black_cat
 		struct bc_render_application_parameter : public platform::bc_application_parameter
 		{
 			bc_render_application_parameter(platform::bc_application_parameter& p_app_parameters,
-				bcUINT32 p_window_width,
-				bcUINT32 p_window_height)
+				bc_irender_application_output_window* p_output_window)
 				: platform::bc_application_parameter(p_app_parameters),
-				m_window_width(p_window_width),
-				m_window_height(p_window_height)
+				m_output_window(p_output_window)
 			{
 			}
 
-			bcUINT32 m_window_width;
-			bcUINT32 m_window_height;
+			bc_irender_application_output_window* m_output_window;
 		};
 
 		struct bc_engine_application_parameter
 		{
-			bc_engine_application_parameter(const bc_engine_component_parameter& p_engine_parameters,
-				const bc_render_application_parameter& p_app_parameters)
+			bc_engine_application_parameter(bc_engine_component_parameter& p_engine_parameters,
+				bc_render_application_parameter& p_app_parameters)
 				: m_engine_parameters(p_engine_parameters),
 				m_app_parameters(p_app_parameters)
 			{
@@ -87,7 +85,7 @@ namespace black_cat
 
 			bc_render_application& operator=(bc_render_application&&) = default;
 
-			platform::bc_basic_window& get_render_window() const;
+			bc_irender_application_output_window& get_output_window() const;
 
 			core_platform::bc_clock& get_clock() const;
 
@@ -113,7 +111,7 @@ namespace black_cat
 			* \param p_height
 			* \return
 			*/
-			platform::bc_basic_window create_render_window(core::bc_estring p_caption, bcUINT32 p_width, bcUINT32 p_height);
+			platform::bc_basic_window create_basic_render_window(core::bc_estring p_caption, bcUINT32 p_width, bcUINT32 p_height);
 
 			/**
 			* \brief Create a console window. Support for creating console window along with render window is platform specific.
@@ -176,7 +174,8 @@ namespace black_cat
 			void _calculate_fps(core_platform::bc_clock::small_delta_time p_delta);
 
 			core::bc_unique_ptr< platform::bc_application > m_app;
-			core::bc_unique_ptr< platform::bc_basic_window > m_render_window;
+			core::bc_unique_ptr< bc_render_application_basic_output_window > m_default_output_window;
+			bc_irender_application_output_window* m_output_window;
 			core::bc_unique_ptr< core_platform::bc_clock > m_clock;
 
 			bool m_is_terminated;
@@ -189,8 +188,10 @@ namespace black_cat
 			bcUINT32 m_fps;
 			bcINT32 m_fixed_fps;
 
-			core::bc_event_listener_handle m_event_handle_app_exit;
+			core::bc_event_listener_handle m_event_handle_window_resizing;
+			core::bc_event_listener_handle m_event_handle_window_close;
 			core::bc_event_listener_handle m_event_handle_app_active;
+			core::bc_event_listener_handle m_event_handle_app_exit;
 		};
 	}
 }

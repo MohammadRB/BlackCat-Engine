@@ -11,7 +11,6 @@ namespace black_cat
 	{
 		template<>
 		struct bc_platform_sampler_state_pack<bc_platform_render_api::directx11>
-			: public bc_platform_sampler_state_pack<bc_platform_render_api::unknown>
 		{
 			Microsoft::WRL::ComPtr<ID3D11SamplerState> m_sampler_state;
 		};

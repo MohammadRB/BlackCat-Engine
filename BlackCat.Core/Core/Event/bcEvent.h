@@ -10,14 +10,20 @@ namespace black_cat
 {
 	namespace core
 	{
+		class bc_event_manager;
 		using bc_event_hash = bcUINT;
 
 		template< class TEvent >
 		struct bc_event_traits
 		{
-			static const bcCHAR* event_name()
+			static constexpr const bcCHAR* event_name()
 			{
 				return TEvent::event_name();
+			}
+
+			static constexpr bcUINT32 event_hash()
+			{
+				return TEvent::event_hash();
 			}
 		};
 
@@ -26,11 +32,11 @@ namespace black_cat
 		public:
 			virtual ~bc_ievent() = 0;
 
-			virtual bc_event_hash get_event_hash() const noexcept(true) = 0;
+			virtual const bcCHAR* get_event_name() const noexcept = 0;
 
-			virtual const bcCHAR* get_event_name() const noexcept(true) = 0;
+			virtual bc_event_hash get_event_hash() const noexcept = 0;
 
-			static bc_event_hash get_hash(const bcCHAR* p_name) noexcept(true);
+			static bc_event_hash get_hash(const bcCHAR* p_name) noexcept;
 
 			template< class TEvent >
 			static bool event_is(const bc_ievent& p_event)
@@ -42,7 +48,7 @@ namespace black_cat
 		class BC_CORE_DLL bc_event : public bc_ievent
 		{
 		public:
-			explicit bc_event(const bcCHAR* p_name) noexcept(true);
+			explicit bc_event(const bcCHAR* p_name) noexcept;
 
 			bc_event(const bc_event&) = default;
 
@@ -50,9 +56,9 @@ namespace black_cat
 
 			bc_event& operator =(const bc_event&) = default;
 
-			bc_event_hash get_event_hash() const noexcept(true) override;
+			const bcCHAR* get_event_name() const noexcept override;
 
-			const bcCHAR* get_event_name() const noexcept(true) override;
+			bc_event_hash get_event_hash() const noexcept override;
 
 		protected:
 
@@ -65,13 +71,40 @@ namespace black_cat
 		class BC_CORE_DLL bc_app_event : public bc_event
 		{
 		public:
-			explicit bc_app_event(const bcCHAR* p_name) noexcept(true);
+			explicit bc_app_event(const bcCHAR* p_name) noexcept;
 
 			bc_app_event(const bc_app_event&) = default;
 
 			virtual ~bc_app_event() = 0;
 
 			bc_app_event& operator =(const bc_app_event&) = default;
+		};
+
+		class BC_CORE_DLL bc_event_listener_handle
+		{
+		public:
+			friend class bc_event_manager;
+
+		public:
+			bc_event_listener_handle();
+
+			bc_event_listener_handle(const bcCHAR* p_event_name, bcSIZE p_event_index);
+
+			bc_event_listener_handle(bc_event_listener_handle&& p_other) noexcept;
+
+			~bc_event_listener_handle();
+
+			bc_event_listener_handle& operator=(bc_event_listener_handle&& p_other) noexcept;
+
+			void reset();
+
+			void reset(bc_event_listener_handle&& p_other);
+
+		protected:
+
+		private:
+			const bcCHAR* m_event_name;
+			bcSIZE m_event_index;
 		};
 	}
 }

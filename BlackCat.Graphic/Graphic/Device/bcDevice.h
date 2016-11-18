@@ -16,6 +16,7 @@
 #include "Graphic/bcGraphicDefinition.h"
 #include "Graphic/bcDeviceObject.h"
 #include "Graphic/Device/bcDeviceInfo.h"
+#include "Graphic/Device/bcDeviceOutput.h"
 #include "Graphic/Resource/bcResource.h"
 
 namespace black_cat
@@ -151,7 +152,7 @@ namespace black_cat
 		// Thread safe class
 		template< bc_platform_render_api TRenderApi >
 		class bc_platform_device 
-			: public core::bc_initializable<bcUINT, bcUINT, bc_format, platform::bc_basic_window&>,
+			: public core::bc_initializable<bcUINT, bcUINT, bc_format, bc_device_output>,
 			public core::bc_object_allocator,
 			public core_platform::bc_no_copy
 		{
@@ -259,7 +260,7 @@ namespace black_cat
 		protected:
 
 		private:
-			void _initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, platform::bc_basic_window& p_output_window) override;
+			void _initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, bc_device_output p_output) override;
 
 			void _destroy() override;
 

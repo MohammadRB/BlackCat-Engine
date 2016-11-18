@@ -28,6 +28,8 @@ namespace black_cat
 		// Make bcActorComponentManager data driven
 		class BC_GAME_DLL bc_entity_manager : public core::bc_iservice
 		{
+			BC_SERVICE(entity_manager)
+
 		private:
 			friend struct _bc_entity_component_callbacks;
 			using string_hash = std::hash< const bcCHAR* >;
@@ -55,11 +57,6 @@ namespace black_cat
 
 			// Remove actor and all of it's components
 			void remove_entity(const bc_actor& p_entity);
-
-			static const bcCHAR* service_name()
-			{
-				return core::g_srv_entity_manager;
-			}
 
 		protected:
 

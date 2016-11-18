@@ -25,7 +25,7 @@ namespace black_cat
 		bc_platform_key_device<core_platform::g_api_win32>::bc_platform_key_device(bcUBYTE p_device_index)
 			: m_device_index(p_device_index),
 			m_pack(),
-			m_event_manager(core::bc_service_manager::get().get_service< core::bc_event_manager >())
+			m_event_manager(core::bc_get_service<core::bc_event_manager>())
 		{
 			_check_key_device_index(m_device_index);
 
@@ -95,7 +95,7 @@ namespace black_cat
 					}
 				}
 
-				if (l_key_state == bc_key_state::pressing)
+				if (l_key_state != bc_key_state::up)
 				{
 					bc_app_event_key l_key_event(static_cast<bc_key>(i), l_key_state);
 

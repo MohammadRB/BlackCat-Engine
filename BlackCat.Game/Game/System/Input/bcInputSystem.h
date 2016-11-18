@@ -19,11 +19,11 @@ namespace black_cat
 		public:
 			bc_input_system();
 
-			bc_input_system(bc_input_system&&);
+			bc_input_system(bc_input_system&&) noexcept;
 
 			~bc_input_system();
 
-			bc_input_system& operator=(bc_input_system&&);
+			bc_input_system& operator=(bc_input_system&&) noexcept;
 
 			const platform::bc_key_device& get_key_device() const noexcept
 			{
@@ -74,11 +74,11 @@ namespace black_cat
 				);
 		}
 
-		inline bc_input_system::bc_input_system(bc_input_system&&) = default;
+		inline bc_input_system::bc_input_system(bc_input_system&&) noexcept = default;
 
 		inline bc_input_system::~bc_input_system() = default;
 
-		inline bc_input_system& bc_input_system::operator=(bc_input_system&&) = default;
+		inline bc_input_system& bc_input_system::operator=(bc_input_system&&) noexcept = default;
 
 		inline void bc_input_system::register_camera(core::bc_unique_ptr<bc_icamera> p_camera)
 		{

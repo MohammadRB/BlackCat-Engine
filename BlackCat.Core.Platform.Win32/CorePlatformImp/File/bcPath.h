@@ -10,7 +10,6 @@ namespace black_cat
 	{
 		template< >
 		struct bc_platform_path_pack< g_api_win32 >
-			: public bc_platform_path_pack< g_api_unknown >
 		{
 		public:
 #ifdef BC_UNICODE

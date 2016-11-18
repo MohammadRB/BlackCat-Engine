@@ -7,89 +7,75 @@
 #include "Platform/Script/bcScriptRef.h"
 #include "PlatformImp/PlatformImpPCH.h"
 #include "PlatformImp/bcExport.h"
-#include "PlatformImp/Script/bcScriptContext.h"
-#include "PlatformImp/Script/bcScriptVariable.h"
-#include "PlatformImp/Script/bcScriptByteCode.h"
-#include "PlatformImp/Script/bcScriptObject.h"
-#include "PlatformImp/Script/bcScriptString.h"
-#include "PlatformImp/Script/bcScriptFunction.h"
-#include "PlatformImp/Script/bcScriptError.h"
 
 namespace black_cat
 {
 	namespace platform
 	{
-		inline void _inc_ref(bc_script_context& p_context)
-		{
-			bc_chakra_call l_call = JsAddRef(p_context.get_platform_pack().m_js_context, nullptr);
-		}
+		template< core_platform::bc_platform TPlatform >
+		class bc_platform_script_context;
 
-		inline void _dec_ref(bc_script_context& p_context)
-		{
-			bc_chakra_call l_call = JsRelease(p_context.get_platform_pack().m_js_context, nullptr);
-		}
+		template< core_platform::bc_platform TPlatform >
+		class bc_platform_script_bytecode;
 
-		inline void _inc_ref(bc_script_bytecode& p_byte_code)
-		{
-			bc_chakra_call l_call = JsAddRef(p_byte_code.get_platform_pack().m_js_parsed_script, nullptr);
-		}
+		template< core_platform::bc_platform TPlatform >
+		class bc_platform_script_variable;
 
-		inline void _dec_ref(bc_script_bytecode& p_byte_code)
-		{
-			bc_chakra_call l_call = JsRelease(p_byte_code.get_platform_pack().m_js_parsed_script, nullptr);
-		}
+		template< core_platform::bc_platform TPlatform >
+		class bc_platform_script_object;
 
-		inline void _inc_ref(bc_script_variable& p_variable)
-		{
-			bc_chakra_call l_call = JsAddRef(p_variable.get_platform_pack().m_js_value, nullptr);
-		}
+		template< core_platform::bc_platform TPlatform >
+		class bc_platform_script_string;
 
-		inline void _dec_ref(bc_script_variable& p_variable)
-		{
-			bc_chakra_call l_call = JsRelease(p_variable.get_platform_pack().m_js_value, nullptr);
-		}
+		template< core_platform::bc_platform TPlatform >
+		class bc_platform_script_function_base;
 
-		inline void _inc_ref(bc_script_object& p_object)
-		{
-			bc_chakra_call l_call = JsAddRef(p_object.get_platform_pack().m_js_object, nullptr);
-		}
+		template< core_platform::bc_platform TPlatform >
+		class bc_platform_script_array_base;
 
-		inline void _dec_ref(bc_script_object& p_object)
-		{
-			bc_chakra_call l_call = JsRelease(p_object.get_platform_pack().m_js_object, nullptr);
-		}
+		template< core_platform::bc_platform TPlatform >
+		class bc_platform_script_error;
 
-		inline void _inc_ref(bc_script_string& p_string)
-		{
-			bc_chakra_call l_call = JsAddRef(p_string.get_platform_pack().m_js_string, nullptr);
-		}
+		template< core_platform::bc_platform TPlatform, typename T >
+		class bc_platform_script_prototype;
 
-		inline void _dec_ref(bc_script_string& p_string)
-		{
-			bc_chakra_call l_call = JsRelease(p_string.get_platform_pack().m_js_string, nullptr);
-		}
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_context<core_platform::g_api_win32>& p_context);
 
-		template< typename TR, typename ...TA >
-		inline void _inc_ref(bc_script_function< TR(TA ...) >& p_function)
-		{
-			bc_chakra_call l_call = JsAddRef(p_function.get_platform_pack().m_js_function, nullptr);
-		}
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_context<core_platform::g_api_win32>& p_context);
 
-		template< typename TR, typename ...TA >
-		inline void _dec_ref(bc_script_function< TR(TA ...) >& p_function)
-		{
-			bc_chakra_call l_call = JsRelease(p_function.get_platform_pack().m_js_function, nullptr);
-		}
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_bytecode<core_platform::g_api_win32>& p_byte_code);
 
-		inline void _inc_ref(bc_script_error& p_error)
-		{
-			bc_chakra_call l_call = JsAddRef(p_error.get_platform_pack().m_js_error, nullptr);
-		}
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_bytecode<core_platform::g_api_win32>& p_byte_code);
 
-		inline void _dec_ref(bc_script_error& p_error)
-		{
-			bc_chakra_call l_call = JsRelease(p_error.get_platform_pack().m_js_error, nullptr);
-		}
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_variable<core_platform::g_api_win32>& p_variable);
+
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_variable<core_platform::g_api_win32>& p_variable);
+
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_object<core_platform::g_api_win32>& p_object);
+
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_object<core_platform::g_api_win32>& p_object);
+
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_string<core_platform::g_api_win32>& p_string);
+
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_string<core_platform::g_api_win32>& p_string);
+
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_function_base<core_platform::g_api_win32>& p_function);
+
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_function_base<core_platform::g_api_win32>& p_function);
+
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_array_base<core_platform::g_api_win32>& p_array);
+
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_array_base<core_platform::g_api_win32>& p_array);
+
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_error<core_platform::g_api_win32>& p_error);
+
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_error<core_platform::g_api_win32>& p_error);
+
+		template< typename T >
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_prototype<core_platform::g_api_win32, T>& p_error);
+
+		template< typename T >
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_prototype<core_platform::g_api_win32, T>& p_error);
 
 		template< typename T >
 		struct bc_platform_script_ref_pack< core_platform::g_api_win32, T >

@@ -8,7 +8,7 @@
 #include "Core/Utility/bcNullable.h"
 #include "PlatformImp/Application/bcConsoleWindow.h"
 #include "Game/bcExport.h"
-#include "Game/bcRenderApplication.h"
+#include "Game/Application/bcRenderApplication.h"
 #include "Game/System/Script/bcGameConsole.h"
 
 namespace black_cat

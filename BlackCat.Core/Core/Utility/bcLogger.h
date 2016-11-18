@@ -3,10 +3,11 @@
 #pragma once
 
 #include "CorePlatform/bcType.h"
+#include "CorePlatform/CorePlatformPCH.h"
 #include "Core/bcExport.h"
 #include "Core/bcConstant.h"
 #include "Core/Container/bcString.h"
-#include "Core/Container/bcUnorderedMap.h"
+#include "Core/Container/bcArray.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Memory/bcPtr.h"
@@ -66,9 +67,11 @@ namespace black_cat
 
 		class BC_CORE_DLL bc_logger : public bc_iservice
 		{
+			BC_SERVICE(logger)
+
 		private:
 			using key_type = std::underlying_type< bc_log_type >::type;
-			using map_type = bc_unordered_map_program< key_type, bc_vector< _bc_log_listener_container > >;
+			using map_type = bc_array< bc_vector< _bc_log_listener_container >, 3 >;
 
 		public:
 			bc_logger() = default;
@@ -82,38 +85,52 @@ namespace black_cat
 			/**
 			 * \brief 
 			 * Use binary OR to pass multiple type.
-			 * \param p_type 
+			 * \param p_types
 			 * \param p_log 
 			 */
-			void log(bc_log_type p_type, const bcECHAR* p_log);
+			void log(bc_log_type p_types, const bcECHAR* p_log);
+
+			void log_info(const bcECHAR* p_log)
+			{
+				_log(bc_log_type::info, p_log);
+			}
+
+			void log_debug(const bcECHAR* p_log)
+			{
+#ifdef BC_DEBUG
+				_log(bc_log_type::debug, p_log);
+#endif
+			}
+
+			void log_error(const bcECHAR* p_log)
+			{
+				_log(bc_log_type::error, p_log);
+			}
 
 			/**
 			 * \brief 
 			 * Register and take the ownership of listener.
 			 * Use binary OR to pass multiple type.
-			 * \param p_type 
+			 * \param p_types
 			 * \param p_listener 
 			 */
-			void register_listener(bc_log_type p_type, bc_unique_ptr<bc_ilog_listener> p_listener);
+			void register_listener(bc_log_type p_types, bc_unique_ptr<bc_ilog_listener> p_listener);
 
 			/**
 			 * \brief 
 			 * Register listener.
 			 * Use binary OR to pass multiple type.
-			 * \param p_type 
+			 * \param p_types
 			 * \param p_listener 
 			 */
-			void register_listener(bc_log_type p_type, bc_ilog_listener* p_listener);
-
-			static const bcCHAR* service_name()
-			{
-				return g_srv_logger;
-			}
+			void register_listener(bc_log_type p_types, bc_ilog_listener* p_listener);
 
 		protected:
 
 		private:
-			void _register_listener(bc_log_type p_type, _bc_log_listener_container&& p_listener);
+			void _log(bc_log_type p_type, const bcECHAR* p_log);
+
+			void _register_listener(bc_log_type p_types, _bc_log_listener_container&& p_listener);
 
 			map_type m_listeners;
 		};	

@@ -29,10 +29,6 @@ namespace black_cat
 				return m_context.get();
 			}
 
-			static bcINT get_count() noexcept;
-
-			static void set_count(const bcINT& p_count) noexcept;
-
 		protected:
 
 		private:
@@ -40,9 +36,7 @@ namespace black_cat
 
 			void _destroy() override;
 
-			platform::bc_script_ref< platform::bc_script_context > m_context;
-
-			static bcINT s_count;
+			platform::bc_script_context_ref m_context;
 		};
 	}
 }

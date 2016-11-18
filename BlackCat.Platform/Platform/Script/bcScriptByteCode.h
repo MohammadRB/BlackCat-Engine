@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CorePlatform/bcPlatform.h"
+#include "Platform/Script/bcScriptRef.h"
 #include "Platform/Script/bcScriptReference.h"
 #include "Platform/Script/bcScriptRuntime.h"
 
@@ -45,5 +46,6 @@ namespace black_cat
 		};
 
 		using bc_script_bytecode = bc_platform_script_bytecode< core_platform::g_current_platform >;
+		using bc_script_bytecode_ref = bc_script_ref< bc_script_bytecode >;
 	}
 }

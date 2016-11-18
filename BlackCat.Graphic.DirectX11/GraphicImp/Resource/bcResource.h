@@ -11,7 +11,6 @@ namespace black_cat
 	{
 		template<>
 		struct bc_platform_iresource_pack<g_api_dx11>
-			: public bc_platform_iresource_pack<g_api_unknown>
 		{
 			Microsoft::WRL::ComPtr< ID3D11Resource > m_resource;
 		};

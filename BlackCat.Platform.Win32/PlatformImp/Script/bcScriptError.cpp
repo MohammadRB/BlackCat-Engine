@@ -58,7 +58,7 @@ namespace black_cat
 			JsPropertyIdRef l_message_id;
 			JsValueType l_message_type;
 
-			JsGetPropertyIdFromName(L"message", &l_message_id);
+			l_call = JsGetPropertyIdFromName(L"message", &l_message_id);
 			l_call = JsGetProperty(m_pack.m_js_error, l_message_id, &l_message_property);
 
 			if(!l_call.successed())

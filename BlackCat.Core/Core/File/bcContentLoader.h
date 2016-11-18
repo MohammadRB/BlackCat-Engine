@@ -129,7 +129,7 @@ namespace black_cat
 
 		// Stateless and threadsafe class
 		// (Don't use movable memory to allocate objects of this type)
-		class BC_CORE_DLL bc_icontent_loader : public bc_iservice
+		class BC_CORE_DLL bc_icontent_loader /*: public bc_iservice*/
 		{
 		public:
 			virtual ~bc_icontent_loader() = default;

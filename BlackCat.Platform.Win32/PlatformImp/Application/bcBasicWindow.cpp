@@ -26,58 +26,62 @@ namespace black_cat
 				{
 					if (LOWORD(p_wparam) == WA_INACTIVE)
 					{
-						/*bc_app_event_active l_pause_event(false);
-						l_event_manager->process_event(l_pause_event);*/
+						bc_app_event_window_focus l_focus_event(reinterpret_cast< bc_window_id >(p_hwnd), false);
+						l_event_manager->process_event(l_focus_event);
 					}
 					else
 					{
-						/*bc_app_event_active l_resume_event(true);
-						l_event_manager->process_event(l_resume_event);*/
+						bc_app_event_window_focus l_focus_event(reinterpret_cast< bc_window_id >(p_hwnd), true);
+						l_event_manager->process_event(l_focus_event);
 					}
 
 					break;
 				}
 			case WM_SIZE:
 				{
-					if (p_wparam != SIZE_MINIMIZED)
-					{
-						bcUINT32 l_width = LOWORD(p_lparam);
-						bcUINT32 l_height = HIWORD(p_lparam);
-						bc_app_event_window_resize l_resize_event(l_width, l_height);
-						bc_app_event_active l_resume_event(true);
+					bcUINT32 l_width = LOWORD(p_lparam);
+					bcUINT32 l_height = HIWORD(p_lparam);
+					auto l_state = bc_app_event_window_resize::state::resize;
 
-						// Because we send a pause event when window is minimized we send a resume event before resize event 
-						l_event_manager->process_event(l_resume_event);
-						l_event_manager->process_event(l_resize_event);
-					}
-					else
+					if (p_wparam == SIZE_MINIMIZED)
 					{
-						bc_app_event_active l_pause_event(false);
-						l_event_manager->process_event(l_pause_event);
+						l_state = bc_app_event_window_resize::state::minimized;
 					}
+					else if (p_wparam == SIZE_MAXIMIZED)
+					{
+						l_state = bc_app_event_window_resize::state::maximized;
+					}
+					else if (p_wparam == SIZE_RESTORED)
+					{
+						l_state = bc_app_event_window_resize::state::resize;
+					}
+
+					bc_app_event_window_resize l_resize_event(reinterpret_cast< bc_window_id >(p_hwnd), l_state, l_width, l_height);
+					l_event_manager->process_event(l_resize_event);
 
 					break;
 				}
 				// WM_EXITSIZEMOVE is sent when the user grabs the resize bars.
 			case WM_ENTERSIZEMOVE:
 				{
-					bc_app_event_active l_pause_event(false);
-					l_event_manager->process_event(l_pause_event);
+					bc_app_event_window_resizing l_start_event(reinterpret_cast< bc_window_id >(p_hwnd), true);
+					l_event_manager->process_event(l_start_event);
 
 					break;
 				}
 				// WM_EXITSIZEMOVE is sent when the user releases the resize bars.
 			case WM_EXITSIZEMOVE:
 				{
-					bc_app_event_active l_resume_event(true);
-					l_event_manager->process_event(l_resume_event);
+					bc_app_event_window_resizing l_end_event(reinterpret_cast< bc_window_id >(p_hwnd), false);
+					l_event_manager->process_event(l_end_event);
 
 					break;
 				}
 				// WM_DESTROY is sent when the window is being destroyed.
 			case WM_DESTROY:
 				{
-					PostQuitMessage(0);
+					bc_app_event_window_close l_close_event(reinterpret_cast< bc_window_id >(p_hwnd));
+					l_event_manager->process_event(l_close_event);
 
 					break;
 				}
@@ -170,7 +174,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_basic_window< core_platform::bc_platform::win32 >::id bc_platform_basic_window< core_platform::bc_platform::win32 >::get_id() const
+		bc_platform_basic_window< core_platform::bc_platform::win32 >::id bc_platform_basic_window< core_platform::bc_platform::win32 >::get_id() const noexcept
 		{
 			return reinterpret_cast< id >(m_pack.m_handle);
 		};

@@ -5,6 +5,7 @@
 #include "CorePlatform/bcPlatform.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcString.h"
+#include "Platform/Script/bcScriptRef.h"
 #include "Platform/Script/bcScriptContext.h"
 #include "Platform/Script/bcScriptVariable.h"
 #include "Platform/Script/bcScriptPrototype.h"
@@ -74,5 +75,6 @@ namespace black_cat
 		};
 
 		using bc_script_object = bc_platform_script_object< core_platform::g_current_platform >;
+		using bc_script_object_ref = bc_script_ref< bc_script_object >;
 	}
 }

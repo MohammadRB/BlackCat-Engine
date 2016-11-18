@@ -4,6 +4,7 @@
 
 #include "CorePlatform/bcPlatform.h"
 #include "Core/Container/bcString.h"
+#include "Platform/Script/bcScriptRef.h"
 #include "Platform/Script/bcScriptReference.h"
 #include "Platform/Script/bcScriptContext.h"
 
@@ -50,5 +51,6 @@ namespace black_cat
 		};
 
 		using bc_script_error = bc_platform_script_error< core_platform::g_current_platform >;
+		using bc_script_error_ref = bc_script_ref< bc_script_error >;
 	}
 }

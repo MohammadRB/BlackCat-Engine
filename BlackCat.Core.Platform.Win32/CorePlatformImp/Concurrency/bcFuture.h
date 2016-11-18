@@ -170,7 +170,7 @@ namespace black_cat
 		}
 
 		template< bc_platform TPlatform, typename T >
-		typename bc_platform_shared_future<TPlatform, T>::this_type& bc_platform_shared_future<TPlatform, T>::operator=(this_type&& p_other)
+		typename bc_platform_shared_future<TPlatform, T>::this_type& bc_platform_shared_future<TPlatform, T>::operator=(this_type&& p_other) noexcept
 		{
 			m_pack.m_future = std::move(p_other.m_pack.m_future);
 
@@ -225,7 +225,7 @@ namespace black_cat
 		};
 
 		template< bc_platform TPlatform, typename T >
-		typename bc_platform_promise<TPlatform, T>::this_type& bc_platform_promise<TPlatform, T>::operator=(this_type&& p_other)
+		typename bc_platform_promise<TPlatform, T>::this_type& bc_platform_promise<TPlatform, T>::operator=(this_type&& p_other) noexcept
 		{
 			m_pack.m_promise = std::move(p_other.m_pack.m_promise);
 
@@ -283,7 +283,7 @@ namespace black_cat
 		};
 
 		template< bc_platform TPlatform >
-		typename bc_platform_promise<TPlatform, void>::this_type& bc_platform_promise<TPlatform, void>::operator=(this_type&& p_other)
+		typename bc_platform_promise<TPlatform, void>::this_type& bc_platform_promise<TPlatform, void>::operator=(this_type&& p_other) noexcept
 		{
 			m_pack.m_promise = std::move(p_other.m_pack.m_promise);
 

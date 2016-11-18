@@ -11,6 +11,8 @@ namespace black_cat
 	{
 		class bc_app_event_device_reset : public core::bc_app_event
 		{
+			BC_EVENT(app_device_reset)
+
 		public:
 			explicit bc_app_event_device_reset(bc_device* p_device,
 				bc_device_parameters& p_old_parameters,
@@ -30,11 +32,6 @@ namespace black_cat
 			~bc_app_event_device_reset() = default;
 
 			bc_app_event_device_reset& operator =(const bc_app_event_device_reset&) = default;
-
-			static const bcCHAR* event_name()
-			{
-				return core::g_evt_device_reset;
-			}
 
 			bc_device* m_device;
 			bc_device_parameters& m_old_parameters;

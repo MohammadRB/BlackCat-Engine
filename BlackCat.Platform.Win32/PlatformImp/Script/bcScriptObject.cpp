@@ -24,26 +24,6 @@ namespace black_cat
 		}
 
 		template<>
-		template< typename T >
-		BC_PLATFORMIMP_DLL
-		bc_platform_script_object< core_platform::g_api_win32 >::bc_platform_script_object(bc_script_context& p_context, bc_script_prototype<T>& p_prototype, T&& p_native_object) noexcept
-		{
-			bc_chakra_call l_call(p_context);
-			bc_script_external_object< T >* l_native_object;
-			JsValueRef l_script_object;
-
-			if (!p_prototype.is_valid())
-			{
-				throw bc_invalid_operation_exception("Invalid prototype object");
-			}
-
-			l_native_object = bc_script_runtime::create_native< T, T&& >(std::move(p_native_object));
-
-			l_call = JsCreateExternalObject(l_native_object, reinterpret_cast< JsFinalizeCallback >(&_js_object_finalizer<T>), &l_script_object);
-			l_call = JsSetPrototype(l_script_object, p_prototype.get_platform_pack().m_js_prototype);
-		}
-
-		template<>
 		BC_PLATFORMIMP_DLL
 		bc_platform_script_object< core_platform::g_api_win32 >::bc_platform_script_object(const bc_platform_script_object& p_other) noexcept
 		{
@@ -169,8 +149,9 @@ namespace black_cat
 			return l_property_names;
 		}
 
-		template< core_platform::bc_platform TPlatform >
-		bool bc_platform_script_object<TPlatform>::is_valid() const noexcept
+		template<>
+		BC_PLATFORMIMP_DLL
+		bool bc_platform_script_object< core_platform::g_api_win32 >::is_valid() const noexcept
 		{
 			return m_pack.m_js_object != JS_INVALID_REFERENCE;
 		}

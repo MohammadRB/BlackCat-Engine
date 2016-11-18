@@ -4,6 +4,7 @@
 #include "Core/Container/bcString.h"
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Utility/bcEnumOperand.h"
+#include "Core/Utility/bcLogger.h"
 #include "Platform/bcEvent.h"
 #include "Game/System/Script/bcDefaultGameConsole.h"
 #include <string>
@@ -73,6 +74,7 @@ namespace black_cat
 
 			l_message.append(p_msg);
 
+			if (is_visibile())
 			{
 				core_platform::bc_lock_guard< core_platform::bc_mutex > l_input_guard(m_input_mutex);
 				
@@ -123,6 +125,7 @@ namespace black_cat
 
 		void bc_default_game_console::clear_output()
 		{
+			if(is_visibile())
 			{
 				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_console_mutex);
 				
@@ -197,7 +200,8 @@ namespace black_cat
 
 				if(!l_wline.empty())
 				{
-					m_game_console.run_script(l_wline.c_str());
+					m_game_console.run_script(l_wline.c_str(), true);
+					
 					l_wline.clear();
 				}
 			}

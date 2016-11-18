@@ -132,6 +132,9 @@
     <ClCompile Include="GraphicImp\Resource\View\bcResourceView.cpp">
       <Filter>GraphicImp\Resource\View</Filter>
     </ClCompile>
+    <ClCompile Include="GraphicImp\Device\bcDeviceOutput.cpp">
+      <Filter>GraphicImp\Device</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicImp\GraphicImpPCH.h">
@@ -271,6 +274,9 @@
     </ClInclude>
     <ClInclude Include="GraphicImp\Shader\Parameter\bcShaderParameter.h">
       <Filter>GraphicImp\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\Device\bcDeviceOutput.h">
+      <Filter>GraphicImp\Device</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

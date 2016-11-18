@@ -37,7 +37,7 @@ namespace black_cat
 			* \param p_bool
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& constant(const bcWCHAR* p_name, bool p_bool);
+			bc_platform_script_global_prototype_builder& constant(const bcWCHAR* p_name, bc_script_bool p_bool);
 
 			/**
 			* \brief Define constant property in object prototype.
@@ -48,7 +48,7 @@ namespace black_cat
 			* \param p_integer
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& constant(const bcWCHAR* p_name, bcINT p_integer);
+			bc_platform_script_global_prototype_builder& constant(const bcWCHAR* p_name, bc_script_int p_integer);
 
 			/**
 			* \brief Define constant property in object prototype.
@@ -59,7 +59,7 @@ namespace black_cat
 			* \param p_double
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& constant(const bcWCHAR* p_name, bcDOUBLE p_double);
+			bc_platform_script_global_prototype_builder& constant(const bcWCHAR* p_name, bc_script_double p_double);
 
 			/**
 			* \brief Define constant property in object prototype.
@@ -70,7 +70,7 @@ namespace black_cat
 			* \param p_string
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& constant(const bcWCHAR* p_name, const core::bc_string& p_string);
+			bc_platform_script_global_prototype_builder& constant(const bcWCHAR* p_name, bc_script_string& p_string);
 
 			/**
 			* \brief Define property in object prototype with default descriptions.
@@ -83,7 +83,7 @@ namespace black_cat
 			* \param p_bool
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bool* p_bool);
+			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_bool* p_bool);
 
 			/**
 			* \brief Define property in object prototype with default descriptions.
@@ -96,7 +96,7 @@ namespace black_cat
 			* \param p_int
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bcINT* p_int);
+			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_int* p_int);
 
 			/**
 			* \brief Define property in object prototype with default descriptions.
@@ -109,7 +109,7 @@ namespace black_cat
 			* \param p_double
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bcDOUBLE* p_double);
+			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_double* p_double);
 
 			/**
 			* \brief Define property in object prototype with default descriptions.
@@ -122,7 +122,7 @@ namespace black_cat
 			* \param p_string
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, core::bc_string* p_string);
+			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_string* p_string);
 
 			/**
 			* \brief Define property in object prototype with default descriptions.
@@ -143,7 +143,7 @@ namespace black_cat
 			* \param p_descriptor
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor< bool >& p_descriptor);
+			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor< bc_script_bool >& p_descriptor);
 
 			/**
 			* \brief Define property in object prototype.
@@ -151,7 +151,7 @@ namespace black_cat
 			* \param p_descriptor
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor< bcINT >& p_descriptor);
+			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor< bc_script_int >& p_descriptor);
 
 			/**
 			* \brief Define property in object prototype.
@@ -159,7 +159,7 @@ namespace black_cat
 			* \param p_descriptor
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor< bcDOUBLE >& p_descriptor);
+			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor< bc_script_double >& p_descriptor);
 
 			/**
 			* \brief Define property in object prototype.
@@ -167,7 +167,7 @@ namespace black_cat
 			* \param p_descriptor
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor< core::bc_string >& p_descriptor);
+			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor< bc_script_string >& p_descriptor);
 
 			/**
 			* \brief Define property in object prototype.

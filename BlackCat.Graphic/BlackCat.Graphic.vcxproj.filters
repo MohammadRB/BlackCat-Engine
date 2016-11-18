@@ -243,6 +243,9 @@
     <ClInclude Include="Graphic\Device\bcDeviceComputeState.h">
       <Filter>Graphic\Device</Filter>
     </ClInclude>
+    <ClInclude Include="Graphic\Device\bcDeviceOutput.h">
+      <Filter>Graphic\Device</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphic\GraphicPCH.cpp">

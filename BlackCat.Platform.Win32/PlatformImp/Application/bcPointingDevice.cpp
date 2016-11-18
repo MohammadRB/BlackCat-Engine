@@ -70,7 +70,8 @@ namespace black_cat
 
 			if (l_x != m_pack.m_state.m_x || l_y != m_pack.m_state.m_y)
 			{
-				m_event_manager->process_event(platform::bc_app_event_pointing(m_pack.m_state));
+				bc_app_event_pointing l_event_pointing(m_pack.m_state);
+				m_event_manager->process_event(l_event_pointing);
 			}
 		}
 

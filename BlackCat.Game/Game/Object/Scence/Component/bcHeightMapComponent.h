@@ -14,6 +14,8 @@ namespace black_cat
 	{
 		class BC_GAME_DLL bc_height_map_component : public bc_iactor_component
 		{
+			BC_COMPONENT(height_map)
+
 		public:
 			explicit bc_height_map_component(bc_actor_component_index p_index);
 
@@ -33,11 +35,6 @@ namespace black_cat
 			void update(const bc_actor& p_actor, core_platform::bc_clock::update_param p_clock_update_param) override;
 
 			void render(const bc_render_component& p_render_component) const;
-
-			static constexpr const bcCHAR* component_name()
-			{
-				return core::g_cmp_heightmap;
-			}
 
 		protected:
 

@@ -4,6 +4,7 @@
 
 #include "CorePlatform/bcPlatform.h"
 #include "Core/Container/bcArray.h"
+#include "Platform/Script/bcScriptRef.h"
 #include "Platform/Script/bcScriptReference.h"
 #include "Platform/Script/bcScriptContext.h"
 #include "Platform/Script/bcScriptVariable.h"
@@ -12,25 +13,60 @@ namespace black_cat
 {
 	namespace platform
 	{
+		// == FunctionBase =====================================================================================
+
 		template< typename ...TA >
 		using bc_script_var_pack = core::bc_array< bc_script_variable, sizeof...(TA) >;
 
-		template< core_platform::bc_platform TPlatform, typename TR, typename ...TA  >
-		struct bc_platform_script_function_pack
+		template< core_platform::bc_platform TPlatform >
+		struct bc_platform_script_function_base_pack
 		{
 		};
-		
+
+		template< core_platform::bc_platform TPlatform >
+		class bc_platform_script_function_base : public bc_platform_script_reference< TPlatform >
+		{
+		public:
+			using platform_pack = bc_platform_script_function_base_pack< TPlatform >;
+			using callback_t = bc_script_variable(*)(bc_script_variable*, bcSIZE);
+			friend bc_script_context;
+
+		public:
+			bc_platform_script_function_base();
+
+			bc_platform_script_function_base(const bc_platform_script_function_base&) noexcept;
+
+			~bc_platform_script_function_base();
+
+			bc_platform_script_function_base& operator=(const bc_platform_script_function_base&) noexcept;
+
+			bc_script_variable operator()(bc_script_variable& p_this, bc_script_variable* p_args, bcSIZE p_arg_count) const;
+
+			bool is_valid() const noexcept override;
+
+			platform_pack& get_platform_pack()
+			{
+				return m_pack;
+			}
+
+		protected:
+			bc_platform_script_function_base(bc_script_context& p_context/*, callback_t p_callback*/);
+
+		private:
+			platform_pack m_pack;
+		};
+
+		// == Function ========================================================================================
+
 		/**
 		 * \brief Wrap a script function.
-		 * Incompatible with movable memory.
 		 * \tparam TR Function return type.
 		 * \tparam TA Function argument types.
 		 */
 		template< core_platform::bc_platform TPlatform, typename TR, typename ...TA >
-		class bc_platform_script_function< TPlatform, TR(TA...) > : public bc_platform_script_reference< TPlatform >
+		class bc_platform_script_function< TPlatform, TR(TA...) > : public bc_platform_script_function_base< TPlatform >
 		{
 		public:
-			using platform_pack = bc_platform_script_function_pack< TPlatform, TR, TA... >;
 			using callback_t = TR(*)(TA...);
 			friend bc_script_context;
 			template< core_platform::bc_platform TPlatform, typename TR, typename ...TA >
@@ -45,16 +81,7 @@ namespace black_cat
 
 			bc_platform_script_function& operator=(const bc_platform_script_function&) noexcept;
 
-			TR operator()(bc_script_var_pack< bc_script_variable, TA... >& p_args) const;
-			
 			TR operator()(bc_script_variable& p_this, TA&... p_args) const;
-
-			bool is_valid() const noexcept override;
-
-			platform_pack& get_platform_pack()
-			{
-				return m_pack;
-			}
 
 			/**
 			 * \brief Convert provided arguments to function signature parameters and call callable object 
@@ -71,17 +98,67 @@ namespace black_cat
 		protected:
 
 		private:
-			bc_platform_script_function(bc_script_context& p_context, callback_t p_callback);
+			bc_platform_script_function(bc_script_context& p_context/*, callback_t p_callback*/);
 
 			static void _pack_args(bc_script_var_pack< TA... >& p_pack, const TA&... p_args);
 
 			static void _unpack_args(bc_script_var_pack< TA... >& p_pack, const TA&... p_args);
-
-			platform_pack m_pack;
 		};
+
+		using bc_script_function_base = bc_platform_script_function_base< core_platform::g_current_platform >;
+		using bc_script_function_base_ref = bc_script_ref< bc_script_function_base >;
 
 		template< typename TR, typename ...TA >
 		using bc_script_function = bc_platform_script_function< core_platform::g_current_platform, TR, TA... >;
+		template< typename TR, typename ...TA >
+		using bc_script_function_ref = bc_script_ref< bc_script_function< TR, TA... > >;
+
+		template <core_platform::bc_platform TPlatform, typename TR, typename ... TA >
+		bc_platform_script_function< TPlatform, TR(TA...) >::bc_platform_script_function()
+			: bc_platform_script_function_base()
+		{
+		}
+
+		template< core_platform::bc_platform TPlatform, typename TR, typename ... TA >
+		bc_platform_script_function< TPlatform, TR(TA...) >::bc_platform_script_function(bc_script_context& p_context/*, callback_t p_callback*/)
+			: bc_platform_script_function_base(p_context)
+		{
+		}
+
+		template< core_platform::bc_platform TPlatform, typename TR, typename ... TA >
+		bc_platform_script_function< TPlatform, TR(TA...) >::bc_platform_script_function(const bc_platform_script_function& p_other) noexcept
+		{
+			operator=(p_other);
+		}
+
+		template< core_platform::bc_platform TPlatform, typename TR, typename ... TA >
+		bc_platform_script_function< TPlatform, TR(TA...) >::~bc_platform_script_function()
+		{
+		}
+
+		template< core_platform::bc_platform TPlatform, typename TR, typename ... TA >
+		bc_platform_script_function< TPlatform, TR(TA...) >& bc_platform_script_function< TPlatform, TR(TA...) >::operator=(const bc_platform_script_function& p_other) noexcept
+		{
+			bc_platform_script_function_base::operator=(p_other);
+
+			return *this;
+		}
+
+		template< core_platform::bc_platform TPlatform, typename TR, typename ...TA >
+		TR bc_platform_script_function< TPlatform, TR(TA...) >::operator()(bc_script_variable& p_this, TA&... p_args) const
+		{
+			bc_script_variable l_call_result;
+			bc_script_var_pack< TA... > l_packed_args;
+
+			bc_platform_script_function::_pack_args(l_packed_args, p_args...);
+
+			l_call_result = bc_platform_script_function_base::operator()(p_this, l_packed_args.data(), l_packed_args.size());
+
+			TR l_result;
+			bc_script_variable::_unpack_arg(l_call_result, &l_result);
+
+			return l_result;
+		}
 
 		template< core_platform::bc_platform TPlatform, typename TR, typename ...TA >
 		void bc_platform_script_function< TPlatform, TR(TA...) >::_pack_args(bc_script_var_pack< TA... >& p_pack, const TA&... p_args)

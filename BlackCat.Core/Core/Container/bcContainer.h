@@ -63,7 +63,7 @@ namespace black_cat
 
 			size_type size() const { return m_size; }
 
-			bool empty() const { return size() > 0 ? true : false; }
+			bool empty() const { return size() == 0 ? true : false; }
 
 		protected:
 			template< typename TInputIterator >

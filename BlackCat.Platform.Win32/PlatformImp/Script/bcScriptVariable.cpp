@@ -121,6 +121,8 @@ namespace black_cat
 				l_type = bc_script_value_type::array;
 				break;
 			case JsError:
+				l_type = bc_script_value_type::error;
+				break;
 			default:
 				l_type = bc_script_value_type::object;
 				break;
@@ -230,7 +232,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_variable< core_platform::g_api_win32 >::as_boolean(bool p_bool)
+		void bc_platform_script_variable< core_platform::g_api_win32 >::as_boolean(bc_script_bool p_bool)
 		{
 			//JsConvertValueToBoolean(m_pack.m_js_value, &m_pack.m_js_value);
 			JsBoolToBoolean(p_bool, &m_pack.m_js_value);
@@ -238,11 +240,11 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_variable< core_platform::g_api_win32 >::as_boolean() const
+		bc_script_bool bc_platform_script_variable< core_platform::g_api_win32 >::as_boolean() const
 		{
 			bcAssert(is_boolean());
 
-			bool l_value;
+			bc_script_bool l_value;
 
 			JsBooleanToBool(m_pack.m_js_value, &l_value);
 
@@ -251,7 +253,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_variable< core_platform::g_api_win32 >::as_integer(bcINT p_int)
+		void bc_platform_script_variable< core_platform::g_api_win32 >::as_integer(bc_script_int p_int)
 		{
 			//JsConvertValueToNumber(m_pack.m_js_value, &m_pack.m_js_value);
 			JsIntToNumber(p_int, &m_pack.m_js_value);
@@ -259,11 +261,11 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bcINT bc_platform_script_variable< core_platform::g_api_win32 >::as_integer() const
+		bc_script_int bc_platform_script_variable< core_platform::g_api_win32 >::as_integer() const
 		{
 			bcAssert(is_number());
 
-			bcINT l_value;
+			bc_script_int l_value;
 
 			JsNumberToInt(m_pack.m_js_value, &l_value);
 
@@ -272,7 +274,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_variable< core_platform::g_api_win32 >::as_double(bcDOUBLE p_value)
+		void bc_platform_script_variable< core_platform::g_api_win32 >::as_double(bc_script_double p_value)
 		{
 			//JsConvertValueToNumber(m_pack.m_js_value, &m_pack.m_js_value);
 			JsDoubleToNumber(p_value, &m_pack.m_js_value);
@@ -280,11 +282,11 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bcDOUBLE bc_platform_script_variable< core_platform::g_api_win32 >::as_double() const
+		bc_script_double bc_platform_script_variable< core_platform::g_api_win32 >::as_double() const
 		{
 			bcAssert(is_number());
 
-			bcDOUBLE l_value;
+			bc_script_double l_value;
 
 			JsNumberToDouble(m_pack.m_js_value, &l_value);
 
@@ -293,9 +295,9 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_variable< core_platform::g_api_win32 >::as_string(bc_script_string& p_string)
+		void bc_platform_script_variable< core_platform::g_api_win32 >::as_string(const bc_script_string& p_string)
 		{
-			m_pack.m_js_value = p_string.get_platform_pack().m_js_string;
+			m_pack.m_js_value = const_cast< bc_script_string& >(p_string).get_platform_pack().m_js_string;
 		}
 
 		template<>
@@ -313,9 +315,9 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_variable< core_platform::g_api_win32 >::as_object(bc_script_object& p_object)
+		void bc_platform_script_variable< core_platform::g_api_win32 >::as_object(const bc_script_object& p_object)
 		{
-			m_pack.m_js_value = p_object.get_platform_pack().m_js_object;
+			m_pack.m_js_value = const_cast< bc_script_object& >(p_object).get_platform_pack().m_js_object;
 		}
 
 		template<>
@@ -333,9 +335,9 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_variable< core_platform::g_api_win32 >::as_error(bc_script_error& p_error)
+		void bc_platform_script_variable< core_platform::g_api_win32 >::as_error(const bc_script_error& p_error)
 		{
-			m_pack.m_js_value = p_error.get_platform_pack().m_js_error;
+			m_pack.m_js_value = const_cast< bc_script_error& >(p_error).get_platform_pack().m_js_error;
 		}
 
 		template<>

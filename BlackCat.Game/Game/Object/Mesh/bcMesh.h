@@ -90,6 +90,8 @@ namespace black_cat
 
 		class BC_GAME_DLL bc_mesh : public core::bc_icontent
 		{
+			BC_CONTENT(mesh)
+
 		public:
 			friend class bc_mesh_node;
 			using hash_t = std::hash< const bcCHAR* >;
@@ -128,11 +130,6 @@ namespace black_cat
 				bc_mesh_node* p_parent,
 				graphic::bc_matrix4f& p_transformation,
 				core::bc_vector_frame<std::pair<bc_mesh_data, bc_render_state_ptr>> p_meshes);
-
-			static const bcCHAR* content_name()
-			{
-				return core::g_cnt_mesh;
-			}
 
 		protected:
 

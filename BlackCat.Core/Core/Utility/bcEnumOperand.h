@@ -48,11 +48,6 @@ namespace black_cat
 			{
 				return bc_enum::and({ p_values, p_value }) == p_value;
 			}
-
-			static constexpr bcUINT32 value(const bcCHAR* p_str) // Bug
-			{
-				return bc_compile_time_string_hash(p_str);
-			}
 		};
 	}
 }

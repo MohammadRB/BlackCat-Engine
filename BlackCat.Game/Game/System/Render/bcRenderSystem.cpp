@@ -534,7 +534,7 @@ namespace black_cat
 					p_parameter.m_device_backbuffer_width,
 					p_parameter.m_device_backbuffer_height,
 					p_parameter.m_device_backbuffer_format,
-					p_parameter.m_render_window
+					std::move(p_parameter.m_render_output)
 				);
 			auto l_alloc_type = m_device.set_allocator_alloc_type(core::bc_alloc_type::program);
 
@@ -640,7 +640,10 @@ namespace black_cat
 			{
 				platform::bc_app_event_window_resize& l_resize_event = static_cast< platform::bc_app_event_window_resize& >(p_event);
 
-				m_device.resize_back_buffer(l_resize_event.width(), l_resize_event.height());
+				if(l_resize_event.get_state() != platform::bc_app_event_window_resize::state::minimized)
+				{
+					m_device.resize_back_buffer(l_resize_event.width(), l_resize_event.height());
+				}
 
 				return true;
 			}

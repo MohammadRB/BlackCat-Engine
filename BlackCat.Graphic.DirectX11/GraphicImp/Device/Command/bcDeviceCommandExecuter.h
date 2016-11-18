@@ -16,7 +16,6 @@ namespace black_cat
 	{
 		template< >
 		struct bc_platform_device_command_executer_pack<bc_platform_render_api::directx11>
-			: public bc_platform_device_command_executer_pack<bc_platform_render_api::unknown>
 		{
 		};
 	}

@@ -5,6 +5,7 @@
 #include "CorePlatform/bcPlatform.h"
 #include "CorePlatform/Utility/bcNoCopy.h"
 #include "Core/Container/bcString.h"
+#include "Platform/Script/bcScriptRef.h"
 #include "Platform/Script/bcScriptReference.h"
 #include "Platform/Script/bcScriptRuntime.h"
 
@@ -12,6 +13,10 @@ namespace black_cat
 {
 	namespace platform
 	{
+		using bc_script_bool = bool;
+		using bc_script_int = bcINT32;
+		using bc_script_double = bcDOUBLE;
+
 		template< core_platform::bc_platform TPlatform >
 		class bc_platform_script_variable;
 		using bc_script_variable = bc_platform_script_variable< core_platform::g_current_platform >;
@@ -85,8 +90,7 @@ namespace black_cat
 			bc_platform_script_context& operator=(bc_platform_script_context&&) noexcept;
 
 			/**
-			 * \brief Create context global object prototype to define global property and function definitions.
-			 * \tparam T 
+			 * \brief Create context global object prototype builder to define global property and function definitions.
 			 * \return 
 			 */
 			bc_script_global_prototype_builder create_global_prototype_builder();
@@ -94,20 +98,19 @@ namespace black_cat
 			/**
 			 * \brief Set global object prototype that contain global property and function definitions.
 			 * This function must be called only one time to set global object.
-			 * \tparam T Type of global native object
 			 * \param p_global_prototype Global object prototype
 			 */
-			void register_global_prototype(bc_script_global_prototype_builder& p_global_prototype);
+			void register_global_prototype(bc_script_global_prototype_builder&& p_global_prototype);
 
 			bc_script_variable create_undefined();
 
 			bc_script_variable create_null();
 
-			bc_script_variable create_variable(bool p_bool);
+			bc_script_variable create_variable(bc_script_bool p_bool);
 
-			bc_script_variable create_variable(bcINT p_integer);
+			bc_script_variable create_variable(bc_script_int p_integer);
 
-			bc_script_variable create_variable(bcDOUBLE p_double);
+			bc_script_variable create_variable(bc_script_double p_double);
 
 			bc_script_variable create_variable(bc_script_string& p_string);
 
@@ -132,8 +135,8 @@ namespace black_cat
 			template< typename T >
 			bc_script_array< T > create_array(std::initializer_list< T >& p_array);
 
-			template< typename TR, typename ...TA >
-			bc_script_function<TR(TA...)> create_function(typename bc_script_function<TR, TA...>::callback_t p_delegate);
+			/*template< typename TR, typename ...TA >
+			bc_script_function<TR(TA...)> create_function(typename bc_script_function<TR, TA...>::callback_t p_delegate);*/
 
 			bc_script_error create_error(const core::bc_wstring& p_message);
 
@@ -191,6 +194,7 @@ namespace black_cat
 		};
 
 		using bc_script_context = bc_platform_script_context< core_platform::g_current_platform >;
+		using bc_script_context_ref = bc_script_ref< bc_script_context >;
 
 		template< core_platform::bc_platform TPlatform >
 		class bc_script_context_scope : public core_platform::bc_no_copy

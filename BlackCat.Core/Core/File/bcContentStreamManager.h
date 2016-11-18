@@ -32,6 +32,8 @@ namespace black_cat
 		// Thread safe class
 		class BC_CORE_DLL bc_content_stream_manager : public bc_iservice
 		{
+			BC_SERVICE(content_stream_manager)
+
 		private:
 			using string_hash = std::hash< const bcCHAR* >;
 			using content_load_delegate = bc_delegate< bc_icontent_ptr(bc_alloc_type, const bcECHAR*, bc_content_loader_parameter&&) >;
@@ -96,11 +98,6 @@ namespace black_cat
 
 			template< class TContent >
 			bc_content_ptr< TContent > find_content_throw(const bcCHAR* p_content_name);
-
-			static const bcCHAR* service_name()
-			{
-				return g_srv_content_stream_manager;
-			}
 
 		protected:
 

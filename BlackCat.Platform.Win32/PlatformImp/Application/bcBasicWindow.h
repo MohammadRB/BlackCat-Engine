@@ -34,7 +34,6 @@ namespace black_cat
 
 		template<>
 		struct bc_platform_basic_window_pack< core_platform::bc_platform::win32 >
-			: public bc_platform_basic_window_pack< core_platform::bc_platform::unknown >
 		{
 			HINSTANCE m_instance;
 			HWND m_handle;

@@ -296,6 +296,8 @@ namespace black_cat
 
 		class bc_thread_manager : public bc_iservice
 		{
+			BC_SERVICE(thread_manager)
+
 		private:
 			using task_type = bc_delegate<void(core_platform::bc_thread::id)>;
 
@@ -415,11 +417,6 @@ namespace black_cat
 				}
 
 				return l_task;
-			}
-
-			static const bcCHAR* service_name()
-			{
-				return g_srv_thread_manager;
 			}
 
 		protected:

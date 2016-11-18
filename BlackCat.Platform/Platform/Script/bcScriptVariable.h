@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CorePlatform/bcPlatform.h"
+#include "Platform/Script/bcScriptRef.h"
 #include "Platform/Script/bcScriptReference.h"
 #include "Platform/Script/bcScriptContext.h"
 
@@ -18,6 +19,7 @@ namespace black_cat
 			object,
 			function,
 			array,
+			error,
 			null,
 			undefined
 		};
@@ -25,6 +27,7 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform >
 		class bc_platform_script_variable;
 		using bc_script_variable = bc_platform_script_variable< core_platform::g_current_platform >;
+		using bc_script_variable_ref = bc_script_ref< bc_script_variable >;
 
 		template< core_platform::bc_platform TPlatform >
 		class bc_platform_script_string;
@@ -62,11 +65,11 @@ namespace black_cat
 		public:
 			bc_platform_script_variable() noexcept;
 
-			bc_platform_script_variable(bc_script_context& p_context, bool p_bool);
+			bc_platform_script_variable(bc_script_context& p_context, bc_script_bool p_bool);
 
-			bc_platform_script_variable(bc_script_context& p_context, bcINT p_int);
+			bc_platform_script_variable(bc_script_context& p_context, bc_script_int p_int);
 
-			bc_platform_script_variable(bc_script_context& p_context, bcDOUBLE p_double);
+			bc_platform_script_variable(bc_script_context& p_context, bc_script_double p_double);
 
 			bc_platform_script_variable(bc_script_context& p_context, bc_script_string& p_string);
 
@@ -103,39 +106,39 @@ namespace black_cat
 
 			bool is_undefined() const noexcept;
 
-			void as_boolean(bool p_bool);
+			void as_boolean(bc_script_bool p_bool);
 
-			bool as_boolean() const;
+			bc_script_bool as_boolean() const;
 
-			void as_integer(bcINT p_int);
+			void as_integer(bc_script_int p_int);
 
-			bcINT as_integer() const;
+			bc_script_int as_integer() const;
 
-			void as_double(bcDOUBLE p_double);
+			void as_double(bc_script_double p_double);
 
-			bcDOUBLE as_double() const;
+			bc_script_double as_double() const;
 
-			void as_string(bc_script_string& p_string);
+			void as_string(const bc_script_string& p_string);
 
 			bc_script_string as_string() const;
 
-			void as_object(bc_script_object& p_object);
+			void as_object(const bc_script_object& p_object);
 
 			bc_script_object as_object() const;
 
 			template< typename TR, typename ...TA >
-			void as_function(bc_script_function< TR(TA...) >& p_function);
+			void as_function(const bc_script_function< TR(TA...) >& p_function);
 
 			template< typename TR, typename ...TA >
 			bc_script_function< TR(TA...) > as_function() const;
 
 			template< typename T >
-			void as_array(bc_script_array< T >& p_array);
+			void as_array(const bc_script_array< T >& p_array);
 
 			template< typename T >
 			bc_script_array< T > as_array() const;
 
-			void as_error(bc_script_error& p_error);
+			void as_error(const bc_script_error& p_error);
 
 			bc_script_error as_error() const;
 
@@ -162,11 +165,11 @@ namespace black_cat
 
 			static bc_script_variable _pack_arg(void);
 
-			static bc_script_variable _pack_arg(bool p_value);
+			static bc_script_variable _pack_arg(bc_script_bool p_value);
 
-			static bc_script_variable _pack_arg(bcINT p_value);
+			static bc_script_variable _pack_arg(bc_script_int p_value);
 
-			static bc_script_variable _pack_arg(bcDOUBLE p_value);
+			static bc_script_variable _pack_arg(bc_script_double p_value);
 
 			static bc_script_variable _pack_arg(const bc_script_variable& p_value);
 
@@ -177,11 +180,11 @@ namespace black_cat
 			template< typename T >
 			static bc_script_variable _pack_arg(const bc_script_array< T >& p_value);
 
-			static void _unpack_arg(const bc_script_variable& p_pack, bool* p_value);
+			static void _unpack_arg(const bc_script_variable& p_pack, bc_script_bool* p_value);
 
-			static void _unpack_arg(const bc_script_variable& p_pack, bcINT* p_value);
+			static void _unpack_arg(const bc_script_variable& p_pack, bc_script_int* p_value);
 
-			static void _unpack_arg(const bc_script_variable& p_pack, bcDOUBLE* p_value);
+			static void _unpack_arg(const bc_script_variable& p_pack, bc_script_double* p_value);
 
 			static void _unpack_arg(const bc_script_variable& p_pack, bc_script_variable* p_value);
 
@@ -210,7 +213,7 @@ namespace black_cat
 		}
 
 		template< core_platform::bc_platform TPlatform >
-		bc_script_variable bc_platform_script_variable< TPlatform >::_pack_arg(bool p_value)
+		bc_script_variable bc_platform_script_variable< TPlatform >::_pack_arg(bc_script_bool p_value)
 		{
 			bc_script_variable l_result;
 
@@ -220,7 +223,7 @@ namespace black_cat
 		}
 
 		template< core_platform::bc_platform TPlatform >
-		bc_script_variable bc_platform_script_variable< TPlatform >::_pack_arg(bcINT p_value)
+		bc_script_variable bc_platform_script_variable< TPlatform >::_pack_arg(bc_script_int p_value)
 		{
 			bc_script_variable l_result;
 
@@ -230,7 +233,7 @@ namespace black_cat
 		}
 
 		template< core_platform::bc_platform TPlatform >
-		bc_script_variable bc_platform_script_variable< TPlatform >::_pack_arg(bcDOUBLE p_value)
+		bc_script_variable bc_platform_script_variable< TPlatform >::_pack_arg(bc_script_double p_value)
 		{
 			bc_script_variable l_result;
 
@@ -277,19 +280,19 @@ namespace black_cat
 		}
 
 		template< core_platform::bc_platform TPlatform >
-		void bc_platform_script_variable< TPlatform >::_unpack_arg(const bc_script_variable& p_pack, bool* p_value)
+		void bc_platform_script_variable< TPlatform >::_unpack_arg(const bc_script_variable& p_pack, bc_script_bool* p_value)
 		{
 			*p_value = p_pack.as_boolean();
 		}
 
 		template< core_platform::bc_platform TPlatform >
-		void bc_platform_script_variable< TPlatform >::_unpack_arg(const bc_script_variable& p_pack, bcINT* p_value)
+		void bc_platform_script_variable< TPlatform >::_unpack_arg(const bc_script_variable& p_pack, bc_script_int* p_value)
 		{
 			*p_value = p_pack.as_integer();
 		}
 
 		template< core_platform::bc_platform TPlatform >
-		void bc_platform_script_variable< TPlatform >::_unpack_arg(const bc_script_variable& p_pack, bcDOUBLE* p_value)
+		void bc_platform_script_variable< TPlatform >::_unpack_arg(const bc_script_variable& p_pack, bc_script_double* p_value)
 		{
 			*p_value = p_pack.as_double();
 		}

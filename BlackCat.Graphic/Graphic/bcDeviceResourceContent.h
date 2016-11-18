@@ -31,7 +31,9 @@ namespace black_cat
 				return m_resource;
 			}
 
-			static const bcCHAR* content_name();
+			static constexpr bcCHAR* content_name();
+
+			static constexpr bcUINT32 content_hash();
 
 		protected:
 

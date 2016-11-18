@@ -70,7 +70,7 @@ namespace black_cat
 		}
 
 		template<>
-		inline void bc_platform_script_context< core_platform::g_api_win32 >::register_global_prototype(bc_script_global_prototype_builder& p_global_prototype)
+		inline void bc_platform_script_context< core_platform::g_api_win32 >::register_global_prototype(bc_script_global_prototype_builder&& p_global_prototype)
 		{
 		}
 
@@ -95,19 +95,19 @@ namespace black_cat
 		}
 
 		template<>
-		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bool p_bool)
+		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bc_script_bool p_bool)
 		{
 			return bc_script_variable(*this, p_bool);
 		}
 
 		template<>
-		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bcINT p_integer)
+		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bc_script_int p_integer)
 		{
 			return bc_script_variable(*this, p_integer);
 		}
 
 		template<>
-		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bcDOUBLE p_double)
+		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bc_script_double p_double)
 		{
 			return bc_script_variable(*this, p_double);
 		}
@@ -171,12 +171,12 @@ namespace black_cat
 			return bc_script_array< T >(*this, p_array);
 		}
 
-		template<>
+		/*template<>
 		template< typename TR, typename ...TA >
 		bc_script_function< TR(TA ...) > bc_platform_script_context< core_platform::g_api_win32 >::create_function(typename bc_script_function< TR, TA... >::callback_t p_delegate)
 		{
 			return bc_script_function< TR(TA ...) >(*this, p_delegate);
-		}
+		}*/
 
 		template<>
 		template< typename T >
@@ -197,11 +197,6 @@ namespace black_cat
 		{
 			bc_script_prototype< T > l_prototype;
 
-			if (p_prototype_builder.get_platform_pack().m_js_ctor_function == JS_INVALID_REFERENCE)
-			{
-				throw bc_invalid_operation_exception("Before creating prototype define constructor signature");
-			}
-
 			l_prototype.get_platform_pack().m_js_ctor_function = p_prototype_builder.get_platform_pack().m_js_ctor_function;
 			l_prototype.get_platform_pack().m_js_prototype = p_prototype_builder.get_platform_pack().m_js_prototype;
 
@@ -217,6 +212,11 @@ namespace black_cat
 			bc_chakra_call l_call(*this);
 			JsValueRef l_global;
 			JsPropertyIdRef l_prototype_name;
+
+			if (p_object_prototype.get_platform_pack().m_js_ctor_function == JS_INVALID_REFERENCE)
+			{
+				throw bc_invalid_operation_exception("Prototype doesn't include constructor function signature");
+			}
 
 			l_global = get_global().get_platform_pack().m_js_object;
 

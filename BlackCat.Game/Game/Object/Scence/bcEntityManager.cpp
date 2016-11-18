@@ -92,7 +92,8 @@ namespace black_cat
 				for (auto& l_component : *l_entity->m_components)
 				{
 					core::bc_string_frame& l_component_name = *l_component->m_name;
-					auto l_component_name_hash = bc_compile_time_string_hash(l_component_name.c_str()); // We used this function in component name hashing
+					// We used this function in component name hashing
+					auto l_component_name_hash = bc_run_time_string_hash(l_component_name.c_str(), l_component_name.size());
 
 					_bc_entity_component_data l_component_data;
 					l_component_data.m_component_hash = l_component_name_hash;

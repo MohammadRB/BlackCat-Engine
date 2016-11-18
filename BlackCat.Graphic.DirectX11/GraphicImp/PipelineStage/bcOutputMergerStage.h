@@ -15,7 +15,6 @@ namespace black_cat
 	{
 		template< >
 		struct bc_platform_output_merger_stage_pack<g_api_dx11>
-			: public bc_platform_output_merger_stage_pack<g_api_unknown>
 		{
 		};
 	}

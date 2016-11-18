@@ -34,18 +34,18 @@ namespace black_cat
 		class bc_script_property_descriptor
 		{
 		public:
-			bc_script_property_descriptor(TM p_value, bool p_writable = true, bool p_enumerable = true, bool p_configurable = false)
+			explicit bc_script_property_descriptor(TM* p_value, bool p_writable = true, bool p_enumerable = true, bool p_configurable = false)
 				: m_value(p_value),
 				m_writable(p_writable),
 				m_enumerable(p_enumerable),
 				m_configurable(p_configurable),
-				m_getter(),
-				m_setter()
+				m_getter(nullptr),
+				m_setter(nullptr)
 			{
 			}
 
 			bc_script_property_descriptor(bc_script_getter< TM > p_getter, bc_script_setter< TM > p_setter, bool p_enumerable = true, bool p_configurable = false)
-				: m_value(),
+				: m_value(nullptr),
 				m_writable(false),
 				m_enumerable(p_enumerable),
 				m_configurable(p_configurable),
@@ -54,7 +54,7 @@ namespace black_cat
 			{
 			}
 
-			TM m_value;
+			TM* m_value;
 			bool m_writable;
 			bool m_enumerable;
 			bool m_configurable;
@@ -66,18 +66,18 @@ namespace black_cat
 		class bc_script_member_property_descriptor
 		{
 		public:
-			bc_script_member_property_descriptor(TM p_value, bool p_writable = true, bool p_enumerable = true, bool p_configurable = false)
+			explicit bc_script_member_property_descriptor(TM T::* p_value, bool p_writable = true, bool p_enumerable = true, bool p_configurable = false)
 				: m_value(p_value),
 				m_writable(p_writable),
 				m_enumerable(p_enumerable),
 				m_configurable(p_configurable),
-				m_getter(),
-				m_setter()
+				m_getter(nullptr),
+				m_setter(nullptr)
 			{
 			}
 
 			bc_script_member_property_descriptor(bc_script_member_getter< T, TM > p_getter, bc_script_member_setter< T, TM > p_setter, bool p_enumerable = true, bool p_configurable = false)
-				: m_value(),
+				: m_value(nullptr),
 				m_writable(false),
 				m_enumerable(p_enumerable),
 				m_configurable(p_configurable),
@@ -86,7 +86,7 @@ namespace black_cat
 			{
 			}
 
-			TM m_value;
+			TM T::* m_value;
 			bool m_writable;
 			bool m_enumerable;
 			bool m_configurable;
@@ -115,8 +115,10 @@ namespace black_cat
 			bc_platform_script_prototype_builder& operator=(bc_platform_script_prototype_builder&&) noexcept;
 
 			/**
-			 * \brief Specify constructor function signature. Calling this function more than one time 
-			 * will throw bc_invalid_operation_exception
+			 * \brief Specify constructor function signature. 
+			 * Defing constructor signature for new types is mandatory, but for objects that won't create
+			 * in script runtime(eg global objects) there is no need to define constructor signature.
+			 * Calling this function more than one time will throw bc_invalid_operation_exception.
 			 * \tparam TA Arguments to constructor function
 			 * \return 
 			 */
@@ -132,7 +134,7 @@ namespace black_cat
 			* \param p_bool
 			* \return
 			*/
-			bc_platform_script_prototype_builder& constant(const bcWCHAR* p_name, bool p_bool);
+			bc_platform_script_prototype_builder& constant(const bcWCHAR* p_name, bc_script_bool p_bool);
 
 			/**
 			* \brief Define constant property in object prototype.
@@ -143,7 +145,7 @@ namespace black_cat
 			* \param p_integer
 			* \return
 			*/
-			bc_platform_script_prototype_builder& constant(const bcWCHAR* p_name, bcINT p_integer);
+			bc_platform_script_prototype_builder& constant(const bcWCHAR* p_name, bc_script_int p_integer);
 
 			/**
 			* \brief Define constant property in object prototype.
@@ -154,7 +156,7 @@ namespace black_cat
 			* \param p_double
 			* \return
 			*/
-			bc_platform_script_prototype_builder& constant(const bcWCHAR* p_name, bcDOUBLE p_double);
+			bc_platform_script_prototype_builder& constant(const bcWCHAR* p_name, bc_script_double p_double);
 
 			/**
 			* \brief Define constant property in object prototype.
@@ -165,7 +167,7 @@ namespace black_cat
 			* \param p_string
 			* \return
 			*/
-			bc_platform_script_prototype_builder& constant(const bcWCHAR* p_name, const core::bc_string& p_string);
+			bc_platform_script_prototype_builder& constant(const bcWCHAR* p_name, bc_script_string& p_string);
 
 			/**
 			 * \brief Define property in object prototype with default descriptions.
@@ -178,7 +180,7 @@ namespace black_cat
 			 * \param p_bool 
 			 * \return 
 			 */
-			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, bool type::* p_bool);
+			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, bc_script_bool type::* p_bool);
 
 			/**
 			* \brief Define property in object prototype with default descriptions.
@@ -191,7 +193,7 @@ namespace black_cat
 			* \param p_int
 			* \return
 			*/
-			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, bcINT type::* p_int);
+			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, bc_script_int type::* p_int);
 
 			/**
 			* \brief Define property in object prototype with default descriptions.
@@ -204,7 +206,7 @@ namespace black_cat
 			* \param p_double
 			* \return
 			*/
-			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, bcDOUBLE type::* p_double);
+			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, bc_script_double type::* p_double);
 
 			/**
 			* \brief Define property in object prototype with default descriptions.
@@ -217,7 +219,7 @@ namespace black_cat
 			* \param p_string
 			* \return
 			*/
-			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, core::bc_string type::* p_string);
+			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, bc_script_string type::* p_string);
 
 			/**
 			* \brief Define property in object prototype with default descriptions.
@@ -238,7 +240,7 @@ namespace black_cat
 			 * \param p_descriptor 
 			 * \return 
 			 */
-			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, bc_script_member_property_descriptor<type, bool>& p_descriptor);
+			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, bc_script_member_property_descriptor<type, bc_script_bool>& p_descriptor);
 
 			/**
 			* \brief Define property in object prototype.
@@ -246,7 +248,7 @@ namespace black_cat
 			* \param p_descriptor
 			* \return
 			*/
-			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, bc_script_member_property_descriptor<type, bcINT>& p_descriptor);
+			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, bc_script_member_property_descriptor<type, bc_script_int>& p_descriptor);
 
 			/**
 			* \brief Define property in object prototype.
@@ -254,7 +256,7 @@ namespace black_cat
 			* \param p_descriptor
 			* \return
 			*/
-			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, bc_script_member_property_descriptor<type, bcDOUBLE>& p_descriptor);
+			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, bc_script_member_property_descriptor<type, bc_script_double>& p_descriptor);
 
 			/**
 			* \brief Define property in object prototype.
@@ -262,7 +264,7 @@ namespace black_cat
 			* \param p_descriptor
 			* \return
 			*/
-			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, bc_script_member_property_descriptor<type, core::bc_string>& p_descriptor);
+			bc_platform_script_prototype_builder& property(const bcWCHAR* p_name, bc_script_member_property_descriptor<type, bc_script_string>& p_descriptor);
 
 			/**
 			* \brief Define property in object prototype.

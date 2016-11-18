@@ -37,9 +37,14 @@ namespace black_cat
 		class _content_wrapper : public bc_iservice
 		{
 		public:
-			static const bcCHAR* service_name()
+			static constexpr const bcCHAR* service_name()
 			{
 				return bc_content_traits< TContent >::content_name();
+			}
+
+			static constexpr bcUINT32 service_hash()
+			{
+				return bc_content_traits< TContent >::content_hash();
 			}
 		};
 
@@ -60,6 +65,8 @@ namespace black_cat
 		// Thread safe class
 		class bc_content_manager : public bc_iservice
 		{
+			BC_SERVICE(content_manager)
+
 		private:
 			using string_hash = std::hash<const bcECHAR*>;
 			using map_type = bc_unordered_map< string_hash::result_type, bc_object_allocator::ptr< bc_icontent > >;
@@ -93,11 +100,6 @@ namespace black_cat
 			bc_task< bc_content_ptr< TContent > > load_async(bc_alloc_type p_alloc_type, const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter);
 
 			void destroy_content(bc_icontent* p_content);
-
-			static const bcCHAR* service_name()
-			{
-				return g_srv_content_manager;
-			}
 
 		protected:
 

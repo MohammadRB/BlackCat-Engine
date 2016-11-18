@@ -44,23 +44,23 @@ namespace black_cat
 			friend  class promise_type;
 
 		public:
-			bc_platform_future() noexcept(true);
+			bc_platform_future() noexcept;
 
-			bc_platform_future(this_type&& p_other) noexcept(true);
+			bc_platform_future(this_type&& p_other) noexcept;
 
-			~bc_platform_future() noexcept(true);
+			~bc_platform_future() noexcept;
 
-			this_type& operator =(this_type&& p_other) noexcept(true);
+			this_type& operator =(this_type&& p_other) noexcept;
 
-			bcInline shared_type share();
+			shared_type share();
 
-			bcInline bool valid() const noexcept(true);
+			bool valid() const noexcept;
 
-			bcInline type get();
+			type get();
 
-			bcInline void wait() const noexcept(true);
+			void wait() const noexcept;
 
-			bcInline bc_future_status wait_for(const bcUINT64 p_nano) const;
+			bc_future_status wait_for(const bcUINT64 p_nano) const;
 
 		protected:
 
@@ -79,27 +79,27 @@ namespace black_cat
 			friend class future_type;
 
 		public:
-			bc_platform_shared_future() noexcept(true);
+			bc_platform_shared_future() noexcept;
 
-			bc_platform_shared_future(const this_type& p_other) noexcept(true);
+			bc_platform_shared_future(const this_type& p_other) noexcept;
 
-			bc_platform_shared_future(this_type&& p_other) noexcept(true);
+			bc_platform_shared_future(this_type&& p_other) noexcept;
 
 			bc_platform_shared_future(future_type&& p_future);
 
-			~bc_platform_shared_future() noexcept(true);
+			~bc_platform_shared_future() noexcept;
 
 			this_type& operator =(const this_type& p_other);
 
-			this_type& operator =(this_type&& p_other);
+			this_type& operator =(this_type&& p_other) noexcept;
 
-			bcInline bool valid() const noexcept(true);
+			bool valid() const noexcept;
 
-			bcInline type get() const;
+			type get() const;
 
-			bcInline void wait() const noexcept(true);
+			void wait() const noexcept;
 
-			bcInline bc_future_status wait_for(const bcUINT64 p_nano) const;
+			bc_future_status wait_for(const bcUINT64 p_nano) const;
 
 		protected:
 
@@ -116,27 +116,27 @@ namespace black_cat
 			using future_type = bc_platform_future< TPlatform, T >;
 
 		public:
-			bc_platform_promise() noexcept(true);
+			bc_platform_promise() noexcept;
 
 			// TODO: Check here
 			/*template<typename Allocator>
 			bcPromiseBase(std::allocator_arg_t, Allocator const&);*/
 
-			bc_platform_promise(this_type&& p_other) noexcept(true);
+			bc_platform_promise(this_type&& p_other) noexcept;
 
 			~bc_platform_promise();
 
-			this_type& operator =(this_type&& p_other);
+			this_type& operator =(this_type&& p_other) noexcept;
 
-			bcInline void swap(this_type& p_other) noexcept(true);
+			void swap(this_type& p_other) noexcept;
 
-			bcInline future_type get_future();
+			future_type get_future();
 
-			bcInline void set_value(const type& p_value);
+			void set_value(const type& p_value);
 
-			bcInline void set_value(type&& p_value);
+			void set_value(type&& p_value);
 
-			bcInline void set_exception(std::exception_ptr p_exception);
+			void set_exception(std::exception_ptr p_exception);
 
 		protected:
 
@@ -153,25 +153,25 @@ namespace black_cat
 			using future_type = bc_platform_future< TPlatform, void >;
 
 		public:
-			bc_platform_promise() noexcept(true);
+			bc_platform_promise() noexcept;
 
 			// TODO: Check here
 			/*template<typename Allocator>
 			bcPromiseBase(std::allocator_arg_t, Allocator const&);*/
 
-			bc_platform_promise(this_type&& p_other) noexcept(true);
+			bc_platform_promise(this_type&& p_other) noexcept;
 
 			~bc_platform_promise();
 
-			this_type& operator =(this_type&& p_other);
+			this_type& operator =(this_type&& p_other) noexcept;
 
-			bcInline void swap(this_type& p_other) noexcept(true);
+			void swap(this_type& p_other) noexcept;
 
-			bcInline future_type get_future();
+			future_type get_future();
 
-			bcInline void set_value();
+			void set_value();
 
-			bcInline void set_exception(std::exception_ptr p_exception);
+			void set_exception(std::exception_ptr p_exception);
 
 		protected:
 

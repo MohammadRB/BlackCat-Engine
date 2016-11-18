@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "PlatformImp/Script/bcScriptRef.h"
 #include "PlatformImp/Script/bcScriptReference.h"
 #include "PlatformImp/Script/bcScriptContext.h"
 
@@ -27,9 +28,9 @@ namespace black_cat
 
 		template< core_platform::bc_platform TPlatform >
 		template< typename TR, typename ... TA >
-		void bc_platform_script_variable< TPlatform >::as_function(bc_script_function< TR(TA ...) >& p_function)
+		void bc_platform_script_variable< TPlatform >::as_function(const bc_script_function< TR(TA ...) >& p_function)
 		{
-			m_pack.m_js_value = p_function.get_platform_pack().m_js_function;
+			m_pack.m_js_value = const_cast< bc_script_function< TR(TA ...) >& >(p_function).get_platform_pack().m_js_function;
 		}
 
 		template< core_platform::bc_platform TPlatform >
@@ -47,7 +48,7 @@ namespace black_cat
 
 		template<>
 		template< typename T >
-		void bc_platform_script_variable< core_platform::g_api_win32 >::as_array(bc_script_array< T >& p_array)
+		void bc_platform_script_variable< core_platform::g_api_win32 >::as_array(const bc_script_array< T >& p_array)
 		{
 			as_object(p_array);
 		}

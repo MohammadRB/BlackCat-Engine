@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "GraphicImp/Device/bcDeviceOutput.h"
 #include "GraphicImp/Resource/bcResource.h"
 
 #include "Graphic/Device/bcDevice.h"
@@ -13,7 +14,6 @@ namespace black_cat
 	{
 		template<>
 		struct bc_platform_device_pack<bc_platform_render_api::directx11>
-			: public bc_platform_device_pack<bc_platform_render_api::unknown>
 		{
 			bool m_vsync;
 			Microsoft::WRL::ComPtr< ID3D11Device > m_device;

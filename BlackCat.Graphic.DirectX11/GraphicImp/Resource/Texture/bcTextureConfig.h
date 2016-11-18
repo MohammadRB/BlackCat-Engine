@@ -11,7 +11,6 @@ namespace black_cat
 	{
 		template< >
 		struct bc_platform_texture_config_pack< g_api_dx11 >
-			: public bc_platform_texture_config_pack< g_api_unknown >
 		{
 			D3D11_TEXTURE2D_DESC m_desc;
 		};

@@ -77,7 +77,7 @@ namespace black_cat
 
 			bc_platform_basic_window& operator =(bc_platform_basic_window&& p_other) noexcept;
 
-			id get_id() const override;
+			id get_id() const noexcept override;
 
 			bcUINT32 get_width() const noexcept;
 

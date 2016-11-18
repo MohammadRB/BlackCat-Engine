@@ -16,6 +16,7 @@
     <ClInclude Include="GraphicImp\bcUtility.h" />
     <ClInclude Include="GraphicImp\Device\bcDevice.h" />
     <ClInclude Include="GraphicImp\Device\bcDeviceComputeState.h" />
+    <ClInclude Include="GraphicImp\Device\bcDeviceOutput.h" />
     <ClInclude Include="GraphicImp\Device\bcDevicePipeline.h" />
     <ClInclude Include="GraphicImp\Device\bcDevicePipelineState.h" />
     <ClInclude Include="GraphicImp\Device\Command\bcDeviceCommandExecuter.h" />
@@ -61,6 +62,7 @@
   <ItemGroup>
     <ClCompile Include="GraphicImp\bcUtility.cpp" />
     <ClCompile Include="GraphicImp\Device\bcDevice.cpp" />
+    <ClCompile Include="GraphicImp\Device\bcDeviceOutput.cpp" />
     <ClCompile Include="GraphicImp\Device\bcDevicePipeline.cpp" />
     <ClCompile Include="GraphicImp\Device\Command\bcDeviceCommandExecuter.cpp" />
     <ClCompile Include="GraphicImp\Device\Command\bcDeviceCommandList.cpp" />

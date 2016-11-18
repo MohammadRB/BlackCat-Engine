@@ -106,6 +106,7 @@
 copy Game\Graphic\Command\*.h ..\BC_SDK\Include\Game\Graphic\Command
 copy Game\Graphic\Pass\*.h ..\BC_SDK\Include\Game\Graphic\Pass
 copy Game\Graphic\Task\*.h ..\BC_SDK\Include\Game\Graphic\Task
+copy Game\Application\*.h ..\BC_SDK\Include\Game\Application
 copy Game\Object\*.h ..\BC_SDK\Include\Game\Object
 copy Game\Object\Mesh\*.h ..\BC_SDK\Include\Game\Object\Mesh
 copy Game\Object\Scence\*.h ..\BC_SDK\Include\Game\Object\Scence
@@ -209,9 +210,10 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Application\bcIRenderApplicationOutputWindow.h" />
     <ClInclude Include="Game\bcException.h" />
     <ClInclude Include="Game\bcExport.h" />
-    <ClInclude Include="Game\bcRenderApplication.h" />
+    <ClInclude Include="Game\Application\bcRenderApplication.h" />
     <ClInclude Include="Game\GamePCH.h" />
     <ClInclude Include="Game\Graphic\bcRenderCommand.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -277,6 +279,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="Game\System\Script\bcGameConsole.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Game\System\Script\bcScriptBinding.h" />
     <ClInclude Include="Game\System\Script\bcScriptUIContext.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
@@ -285,7 +288,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game\bcRenderApplication.cpp" />
+    <ClCompile Include="Game\Application\bcRenderApplication.cpp" />
     <ClCompile Include="Game\GamePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
