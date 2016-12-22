@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Graphic/GraphicPCH.h"
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 #include <d3d11.h>
 
 namespace black_cat
@@ -12,7 +12,7 @@ namespace black_cat
 	{
 #define BC_CBUFFER_ALIGN alignas(black_cat::graphic::bc_render_api_info::required_cbuffer_align())
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		class bc_platform_render_api_info
 		{
 		public:
@@ -47,9 +47,9 @@ namespace black_cat
 		private:
 		};
 
-		using bc_render_api_info = bc_platform_render_api_info< g_current_platform_render_api >;
+		using bc_render_api_info = bc_platform_render_api_info< g_current_render_api >;
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		constexpr const bcCHAR* bc_platform_render_api_info<TRenderApi>::api_name() noexcept
 		{
 			return "directx11";
@@ -61,7 +61,7 @@ namespace black_cat
 			return true;
 		}
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		constexpr bcSIZE bc_platform_render_api_info<TRenderApi>::number_of_texture2d_pixels() noexcept
 		{
 			// D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION;

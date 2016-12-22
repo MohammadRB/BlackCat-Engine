@@ -4,7 +4,7 @@
 
 #include "Core/Utility/bcUtility.h"
 #include "Core/File/bcContentManager.h"
-#include "Graphic/Math/bcVector3f.h"
+#include "Core/Math/bcVector3f.h"
 #include "GraphicImp/Resource/bcResourceConfig.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "Game/System/Render/bcVertexLayout.h"
@@ -27,7 +27,7 @@ namespace black_cat
 		bcUINT32 m_height_detail;
 	};
 
-	bc_height_map_dx11::bc_height_map_dx11(const graphic::bc_vector3f& p_position,
+	bc_height_map_dx11::bc_height_map_dx11(const core::bc_vector3f& p_position,
 		bcUINT16 p_xz_multiplier,
 		bcUINT16 p_y_multiplier,
 		bcUINT16 p_distance_detail,
@@ -90,7 +90,7 @@ namespace black_cat
 		auto* l_distance_detail_value = p_context.m_parameter.get_value< bcINT >("distance_detail");
 		auto* l_height_detail_value = p_context.m_parameter.get_value< bcINT >("height_detail");
 
-		auto l_position = graphic::bc_vector3f
+		auto l_position = core::bc_vector3f
 		(
 			bc_null_default(l_x_pos_value, 0),
 			bc_null_default(l_y_pos_value, 0),
@@ -116,13 +116,13 @@ namespace black_cat
 			{
 				game::bc_vertex_pos_tex& l_vertex = l_vertices[l_counter++];
 
-				l_vertex.m_position = graphic::bc_vector3f
+				l_vertex.m_position = core::bc_vector3f
 				(
 					x * l_chund_size * l_xz_multiplier + l_position.x,
 					0,
 					z * l_chund_size * l_xz_multiplier + l_position.z
 				);
-				l_vertex.m_texcoord = graphic::bc_vector2f
+				l_vertex.m_texcoord = core::bc_vector2f
 				(
 					(static_cast< bcFLOAT >(x) + (l_width_chunk_count / 2)) / l_width_chunk_count,
 					(static_cast< bcFLOAT >(z) + (l_height_chunk_count / 2)) / l_height_chunk_count
@@ -188,11 +188,11 @@ namespace black_cat
 			.as_buffer
 			(
 				l_width_chunk_count * l_height_chunk_count,
-				sizeof(graphic::bc_vector3f),
+				sizeof(core::bc_vector3f),
 				graphic::bc_resource_usage::gpu_rw,
 				core::bc_enum::or({graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered})
 			)
-			.as_structured_buffer(sizeof(graphic::bc_vector3f));
+			.as_structured_buffer(sizeof(core::bc_vector3f));
 		auto l_parameter_cbuffer_config = l_resource_configure
 			.as_resource()
 			.as_buffer

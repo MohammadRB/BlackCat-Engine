@@ -100,10 +100,9 @@ namespace black_cat
 
 		template< core_platform::bc_platform TPlatform, typename T >
 		template< typename >
-		bc_platform_script_ref< TPlatform, T >::bc_platform_script_ref(type&& p_object)
+		bc_platform_script_ref< TPlatform, T >::bc_platform_script_ref(type& p_object)
 		{
-			m_pack.m_value = std::move(p_object);
-			m_pack.add_reference();
+			reset(p_object);
 		}
 
 		template< core_platform::bc_platform TPlatform, typename T >
@@ -119,9 +118,9 @@ namespace black_cat
 		bc_platform_script_ref< TPlatform, T >& bc_platform_script_ref< TPlatform, T >::operator=(bc_platform_script_ref&&) noexcept = default;
 
 		template< core_platform::bc_platform TPlatform, typename T >
-		bc_platform_script_ref<TPlatform, T>& bc_platform_script_ref<TPlatform, T>::operator=(type&& p_object)
+		bc_platform_script_ref<TPlatform, T>& bc_platform_script_ref<TPlatform, T>::operator=(type& p_object)
 		{
-			reset(std::move(p_object));
+			reset(p_object);
 
 			return *this;
 		}
@@ -161,13 +160,13 @@ namespace black_cat
 		}
 
 		template< core_platform::bc_platform TPlatform, typename T >
-		void bc_platform_script_ref<TPlatform, T>::reset(type&& p_object)
+		void bc_platform_script_ref<TPlatform, T>::reset(type& p_object)
 		{
 			if (m_pack.m_value.is_valid())
 			{
 				m_pack.release_reference();
 			}
-			m_pack.m_value = std::move(p_object);
+			m_pack.m_value = p_object;
 			m_pack.add_reference();
 		}
 	}

@@ -2,7 +2,7 @@
 
 #include "GraphicImp/GraphicImpPCH.h"
 #include "Core/Utility/bcEnumOperand.h"
-#include "Graphic/Math/bcVector4f.h"
+#include "Core/Math/bcMatrix4f.h"
 #include "GraphicImp/bcExport.h"
 #include "GraphicImp/Resource/bcResource.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
@@ -63,7 +63,7 @@ namespace black_cat
 
 		template< >
 		BC_GRAPHICIMP_DLL 
-		bc_platform_device_pipeline<g_api_dx11>& bc_platform_device_pipeline<bc_platform_render_api::directx11>::operator=(bc_platform_device_pipeline&& p_other)
+		bc_platform_device_pipeline<g_api_dx11>& bc_platform_device_pipeline<bc_render_api::directx11>::operator=(bc_platform_device_pipeline&& p_other)
 		{
 			bc_device_object::operator=(std::move(p_other));
 			m_pack = std::move(p_other.m_pack);
@@ -111,7 +111,7 @@ namespace black_cat
 						0
 					);
 
-			bc_vector4f l_blend_factor = m_output_merger_stage.get_required_state().m_blend_factors.get();
+			core::bc_vector4f l_blend_factor = m_output_merger_stage.get_required_state().m_blend_factors.get();
 			const bcFLOAT l_blend_factors[] = {l_blend_factor.x, l_blend_factor.y, l_blend_factor.z, l_blend_factor.w};
 			bcUINT l_stencil_ref = m_output_merger_stage.get_required_state().m_stencil_ref.get();
 
@@ -722,7 +722,7 @@ namespace black_cat
 
 		template< >
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline<g_api_dx11>::bind_om_blend_factors(bc_vector4f l_factors)
+		void bc_platform_device_pipeline<g_api_dx11>::bind_om_blend_factors(core::bc_vector4f l_factors)
 		{
 			m_output_merger_stage.get_required_state().m_blend_factors.set(l_factors);
 		}
@@ -882,7 +882,7 @@ namespace black_cat
 
 		template< >
 		BC_GRAPHICIMP_DLL 
-		void bc_platform_device_pipeline<g_api_dx11>::clear_buffers(bc_vector4f p_color, bcFLOAT p_depth, bcUINT p_stencil)
+		void bc_platform_device_pipeline<g_api_dx11>::clear_buffers(core::bc_vector4f p_color, bcFLOAT p_depth, bcUINT p_stencil)
 		{
 			const bcUINT32 l_target_count = bc_render_api_info::number_of_om_render_target_slots();
 			ComPtr< ID3D11RenderTargetView > l_target_views[l_target_count];

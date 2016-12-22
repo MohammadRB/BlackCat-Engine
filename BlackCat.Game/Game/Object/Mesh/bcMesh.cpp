@@ -89,7 +89,7 @@ namespace black_cat
 			return p_node->m_childs;
 		}
 
-		const graphic::bc_matrix4f* bc_mesh::get_node_transformation(const bc_mesh_node* p_node) const
+		const core::bc_matrix4f* bc_mesh::get_node_transformation(const bc_mesh_node* p_node) const
 		{
 			return &m_transformations.at(p_node->m_transformation_index);
 		}
@@ -116,7 +116,7 @@ namespace black_cat
 
 		bc_mesh_node* bc_mesh::_add_node(core::bc_string p_name,
 			bc_mesh_node* p_parent,
-			graphic::bc_matrix4f& p_transformation,
+			core::bc_matrix4f& p_transformation,
 			core::bc_vector_frame<std::pair<bc_mesh_data, bc_render_state_ptr>> p_meshes)
 		{
 			if(!p_parent)

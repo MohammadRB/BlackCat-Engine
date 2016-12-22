@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{bb08e310-5145-4f28-85e4-f20cfc655a41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Fundation">
+      <UniqueIdentifier>{55d05966-ee3e-46c9-8f34-33eb91594286}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Shape">
+      <UniqueIdentifier>{fb8ecdbf-1517-4e93-a508-d318bddc16b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Body">
+      <UniqueIdentifier>{1ea9ec6c-342f-4178-b4c0-35484835bc26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Collision">
+      <UniqueIdentifier>{f5d1ecaf-ca25-42f7-acf3-2d8b91d05d99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Joint">
+      <UniqueIdentifier>{72ba18fc-0732-45eb-869e-1331d3a6ed92}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Physics\PhysicsPCH.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\bcPhysicsApi.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\bcException.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Fundation\bcTransform.h">
+      <Filter>Physics\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Fundation\bcPhysics.h">
+      <Filter>Physics\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Fundation\bcScene.h">
+      <Filter>Physics\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Fundation\bcFundation.h">
+      <Filter>Physics\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Shape\bcShape.h">
+      <Filter>Physics\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Shape\bcShapeSphere.h">
+      <Filter>Physics\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Shape\bcShapePlane.h">
+      <Filter>Physics\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Shape\bcShapeCapsule.h">
+      <Filter>Physics\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Shape\bcShapeBox.h">
+      <Filter>Physics\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Shape\bcBoundBox.h">
+      <Filter>Physics\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\bcUtility.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Shape\bcConvexMesh.h">
+      <Filter>Physics\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Shape\bcTriangleMesh.h">
+      <Filter>Physics\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Shape\bcShapeConvexMesh.h">
+      <Filter>Physics\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Shape\bcShapeTriangleMesh.h">
+      <Filter>Physics\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Fundation\bcMaterial.h">
+      <Filter>Physics\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Shape\bcHeightField.h">
+      <Filter>Physics\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Shape\bcShapeHeightField.h">
+      <Filter>Physics\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Body\bcActor.h">
+      <Filter>Physics\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Body\bcAggregate.h">
+      <Filter>Physics\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Body\bcRigidActor.h">
+      <Filter>Physics\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Body\bcRigidStatic.h">
+      <Filter>Physics\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Body\bcRigidDynamic.h">
+      <Filter>Physics\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Body\bcRigidBody.h">
+      <Filter>Physics\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Collision\bcCollisionGroup.h">
+      <Filter>Physics\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Collision\bcContactFilterCallback.h">
+      <Filter>Physics\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Collision\bcContactModifyCallback.h">
+      <Filter>Physics\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Fundation\bcSimulationEventCallback.h">
+      <Filter>Physics\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Joint\bcJoint.h">
+      <Filter>Physics\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Joint\bcFixedJoint.h">
+      <Filter>Physics\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Joint\bcDistanceJoint.h">
+      <Filter>Physics\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Joint\bcSphericalJoint.h">
+      <Filter>Physics\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Joint\bcRevoluteJoint.h">
+      <Filter>Physics\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Joint\bcPrismaticJoint.h">
+      <Filter>Physics\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Joint\bcD6Joint.h">
+      <Filter>Physics\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Joint\bcJointLimit.h">
+      <Filter>Physics\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Shape\bcShapeGeometry.h">
+      <Filter>Physics\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Fundation\bcSceneBuilder.h">
+      <Filter>Physics\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Fundation\bcSceneDebug.h">
+      <Filter>Physics\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Collision\bcQueryGroup.h">
+      <Filter>Physics\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Collision\bcShapeQuery.h">
+      <Filter>Physics\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Collision\bcSceneQuery.h">
+      <Filter>Physics\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Fundation\bcMeshBuffer.h">
+      <Filter>Physics\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\bcPhysicsReference.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\bcPhysicsRef.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Fundation\bcTask.h">
+      <Filter>Physics\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\bcExport.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Physics\PhysicsPCH.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

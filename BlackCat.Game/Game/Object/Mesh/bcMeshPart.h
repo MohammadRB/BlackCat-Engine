@@ -21,7 +21,7 @@ namespace black_cat
 			{
 			}
 
-			bc_mesh_part_transformation(bc_mesh_node::node_indexing p_root_node_index, core::bc_vector<graphic::bc_matrix4f>&& p_transformations)
+			bc_mesh_part_transformation(bc_mesh_node::node_indexing p_root_node_index, core::bc_vector<core::bc_matrix4f>&& p_transformations)
 				: m_root_node_index(p_root_node_index),
 				m_transformations(std::move(p_transformations))
 			{
@@ -41,7 +41,7 @@ namespace black_cat
 
 		private:
 			bc_mesh_node::node_indexing m_root_node_index;
-			core::bc_vector<graphic::bc_matrix4f> m_transformations;
+			core::bc_vector<core::bc_matrix4f> m_transformations;
 		};
 
 		class BC_GAME_DLL bc_mesh_part
@@ -67,23 +67,23 @@ namespace black_cat
 
 			const core::bc_vector< bc_mesh_node* >& get_node_childs(const bc_mesh_node* p_node) const;
 
-			const graphic::bc_matrix4f* get_node_transformation(const bc_mesh_node* p_node) const;
+			const core::bc_matrix4f* get_node_transformation(const bc_mesh_node* p_node) const;
 
 			const bc_mesh_material* get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_render_state* get_node_mesh_render_state(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
-			const graphic::bc_matrix4f* get_node_absolute_transformation(const bc_mesh_part_transformation& p_transformations, const bc_mesh_node* p_node) const;
+			const core::bc_matrix4f* get_node_absolute_transformation(const bc_mesh_part_transformation& p_transformations, const bc_mesh_node* p_node) const;
 
-			bc_mesh_part_transformation calculate_absolute_transformations(const graphic::bc_matrix4f& p_world) const;
+			bc_mesh_part_transformation calculate_absolute_transformations(const core::bc_matrix4f& p_world) const;
 
 		protected:
 
 		private:
-			void _calculate_absolute_transformations(const graphic::bc_matrix4f& p_parent_transformation,
+			void _calculate_absolute_transformations(const core::bc_matrix4f& p_parent_transformation,
 				bc_mesh_node** p_begin, 
 				bc_mesh_node** p_end,
-				core::bc_vector<graphic::bc_matrix4f>& p_result) const;
+				core::bc_vector<core::bc_matrix4f>& p_result) const;
 
 			bc_mesh_ptr m_mesh;
 			const bc_mesh_node* m_node;
@@ -160,7 +160,7 @@ namespace black_cat
 			return m_mesh->get_node_childs(p_node);
 		}
 
-		inline const graphic::bc_matrix4f* bc_mesh_part::get_node_transformation(const bc_mesh_node* p_node) const
+		inline const core::bc_matrix4f* bc_mesh_part::get_node_transformation(const bc_mesh_node* p_node) const
 		{
 			return m_mesh->get_node_transformation(p_node);
 		}
@@ -175,7 +175,7 @@ namespace black_cat
 			return m_mesh->get_node_mesh_render_state(p_node, p_mesh_index);
 		}
 
-		inline const graphic::bc_matrix4f* bc_mesh_part::get_node_absolute_transformation(const bc_mesh_part_transformation& p_transformations, const bc_mesh_node* p_node) const
+		inline const core::bc_matrix4f* bc_mesh_part::get_node_absolute_transformation(const bc_mesh_part_transformation& p_transformations, const bc_mesh_node* p_node) const
 		{
 			auto l_root_node_index = p_transformations.m_root_node_index;
 			auto l_node_index = p_node->get_transformation_index();
@@ -185,9 +185,9 @@ namespace black_cat
 			return &p_transformations.m_transformations[l_node_index - l_root_node_index];
 		}
 
-		inline bc_mesh_part_transformation bc_mesh_part::calculate_absolute_transformations(const graphic::bc_matrix4f& p_world) const
+		inline bc_mesh_part_transformation bc_mesh_part::calculate_absolute_transformations(const core::bc_matrix4f& p_world) const
 		{
-			core::bc_vector<graphic::bc_matrix4f> p_result;
+			core::bc_vector<core::bc_matrix4f> p_result;
 			bc_mesh_node* l_node = const_cast< bc_mesh_node* >(m_node);
 			bc_mesh_node** l_begin = &l_node;
 
@@ -196,10 +196,10 @@ namespace black_cat
 			return bc_mesh_part_transformation(m_node->get_transformation_index(), std::move(p_result));
 		}
 
-		inline void bc_mesh_part::_calculate_absolute_transformations(const graphic::bc_matrix4f& p_parent_transformation, 
+		inline void bc_mesh_part::_calculate_absolute_transformations(const core::bc_matrix4f& p_parent_transformation,
 			bc_mesh_node** p_begin,
 			bc_mesh_node** p_end,
-			core::bc_vector<graphic::bc_matrix4f>& p_result) const
+			core::bc_vector<core::bc_matrix4f>& p_result) const
 		{
 			for(; p_begin != p_end; ++p_begin)
 			{

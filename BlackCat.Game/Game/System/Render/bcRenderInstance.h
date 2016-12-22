@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Graphic/Math/bcMatrix4f.h"
+#include "Core/Math/bcMatrix4f.h"
 
 namespace black_cat
 {
@@ -20,12 +20,12 @@ namespace black_cat
 
 			bc_render_instance& operator=(const bc_render_instance&) = default;
 
-			const graphic::bc_matrix4f& get_world() const
+			const core::bc_matrix4f& get_world() const
 			{
 				return m_world;
 			}
 
-			void set_world(const graphic::bc_matrix4f& p_world)
+			void set_world(const core::bc_matrix4f& p_world)
 			{
 				m_world = p_world;
 			}
@@ -33,7 +33,7 @@ namespace black_cat
 		protected:
 
 		private:
-			graphic::bc_matrix4f m_world;
+			core::bc_matrix4f m_world;
 		};
 	}
 }

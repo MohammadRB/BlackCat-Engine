@@ -13,7 +13,7 @@ namespace black_cat
 	namespace graphic
 	{
 		template<>
-		struct bc_platform_device_pack<bc_platform_render_api::directx11>
+		struct bc_platform_device_pack<bc_render_api::directx11>
 		{
 			bool m_vsync;
 			Microsoft::WRL::ComPtr< ID3D11Device > m_device;

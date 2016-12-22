@@ -3,23 +3,23 @@
 #pragma once
 
 #include "PlatformImp/Application/bcBasicWindow.h"
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 
 namespace black_cat
 {
 	namespace graphic
 	{
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		struct bc_platform_device_output_parameter
 		{
 		};
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		struct bc_platform_device_output_pack
 		{
 		};
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		class bc_platform_device_output
 		{
 		public:
@@ -48,6 +48,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_device_output = bc_platform_device_output< g_current_platform_render_api >;
+		using bc_device_output = bc_platform_device_output< g_current_render_api >;
 	}
 }

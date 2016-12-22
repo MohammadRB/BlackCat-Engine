@@ -16,9 +16,9 @@
 
 namespace black_cat
 {
-	graphic::bc_vector4f _plane_from_3_point(const graphic::bc_vector3f& p_first,
-		const graphic::bc_vector3f& p_second,
-		const graphic::bc_vector3f& p_third)
+	core::bc_vector4f _plane_from_3_point(const core::bc_vector3f& p_first,
+		const core::bc_vector3f& p_second,
+		const core::bc_vector3f& p_third)
 	{
 		auto l_vector1 = p_second - p_first;
 		auto l_vector2 = p_third - p_first;
@@ -27,13 +27,13 @@ namespace black_cat
 		l_normal.normalize();
 		auto l_distance = l_normal.dot(p_first);
 
-		return graphic::bc_vector4f(l_normal, -l_distance);
+		return core::bc_vector4f(l_normal, -l_distance);
 	}
 
 	struct _bc_parameter_buffer
 	{
 		BC_CBUFFER_ALIGN
-		graphic::bc_vector4f m_frustum_planes[6];
+		core::bc_vector4f m_frustum_planes[6];
 	};
 
 	void bc_terrain_pass_dx11::initialize_resources(game::bc_render_system& p_render_system, graphic::bc_device* p_device)
@@ -315,7 +315,7 @@ namespace black_cat
 
 		p_thread.bind_render_pass_state(m_render_pass_state.get());
 
-		p_thread.clear_buffers(graphic::bc_vector4f(0, 0, 255, 0), 1, 0);
+		p_thread.clear_buffers(core::bc_vector4f(0, 0, 255, 0), 1, 0);
 	}
 
 	void bc_terrain_pass_dx11::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread)

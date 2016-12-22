@@ -10,7 +10,7 @@
 #include "Platform/PlatformPCH.h"
 #include "PlatformImp/PlatformImpPCH.h"
 #include "Graphic/GraphicPCH.h"
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
 #include "Graphic/bcException.h"
 #include "GraphicImp/bcUtility.h"

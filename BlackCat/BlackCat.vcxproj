@@ -56,10 +56,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;BC_BLACKCAT_DLL;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11;../BlackCat.Game;../3rdParty</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11;../BlackCat.Game;../BlackCat.Physics;../BlackCat.Physics.PhysX;../3rdParty</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>BlackCat/BlackCatPCH.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -107,7 +108,7 @@ copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(Platform)_$(configuration)
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;BC_BLACKCAT_DLL;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11;../BlackCat.Game;../3rdParty</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11;../BlackCat.Game;../BlackCat.Physics;../BlackCat.Physics.PhysX;../3rdParty</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>BlackCat/BlackCatPCH.h</PrecompiledHeaderFile>
     </ClCompile>

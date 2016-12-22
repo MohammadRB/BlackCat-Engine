@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Graphic/Math/bcVector3f.h"
+#include "Core/Math/bcVector3f.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"

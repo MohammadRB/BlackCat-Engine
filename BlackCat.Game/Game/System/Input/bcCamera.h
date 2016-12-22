@@ -5,10 +5,10 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcArray.h"
 #include "Core/Event/bcEvent.h"
+#include "Core/Math/bcVector3f.h"
+#include "Core/Math/bcMatrix3f.h"
+#include "Core/Math/bcMatrix4f.h"
 #include "PlatformImp/Application/bcHumanInterfaceDevice.h"
-#include "Graphic/Math/bcVector3f.h"
-#include "Graphic/Math/bcMatrix3f.h"
-#include "Graphic/Math/bcMatrix4f.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -18,7 +18,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_icamera
 		{
 		public:
-			using extend = core::bc_array<graphic::bc_vector3f, 8>;
+			using extend = core::bc_array<core::bc_vector3f, 8>;
 
 		public:
 			virtual ~bc_icamera();
@@ -37,37 +37,37 @@ namespace black_cat
 
 			void set_near_clip(bcFLOAT p_near_clip) noexcept;
 
-			graphic::bc_vector3f get_position() const noexcept
+			core::bc_vector3f get_position() const noexcept
 			{
 				return m_position;
 			}
 
-			void set_position(graphic::bc_vector3f p_position) noexcept;
+			void set_position(core::bc_vector3f p_position) noexcept;
 
-			graphic::bc_vector3f get_direction() const noexcept;
+			core::bc_vector3f get_direction() const noexcept;
 
-			void set_direction(graphic::bc_vector3f p_direction) noexcept;
+			void set_direction(core::bc_vector3f p_direction) noexcept;
 
-			graphic::bc_vector3f get_lookat() const noexcept
+			core::bc_vector3f get_lookat() const noexcept
 			{
 				return m_lookat;
 			}
 
-			void set_lookat(graphic::bc_vector3f p_lookat) noexcept;
+			void set_lookat(core::bc_vector3f p_lookat) noexcept;
 
-			void set_position_lookat(const graphic::bc_vector3f& p_position, const graphic::bc_vector3f& p_lookat);
+			void set_position_lookat(const core::bc_vector3f& p_position, const core::bc_vector3f& p_lookat);
 
-			graphic::bc_vector3f get_forward() const noexcept;
+			core::bc_vector3f get_forward() const noexcept;
 
-			graphic::bc_vector3f get_back() const noexcept;
+			core::bc_vector3f get_back() const noexcept;
 
-			graphic::bc_vector3f get_up() const noexcept;
+			core::bc_vector3f get_up() const noexcept;
 
-			graphic::bc_vector3f get_down() const noexcept;
+			core::bc_vector3f get_down() const noexcept;
 
-			graphic::bc_vector3f get_right() const noexcept;
+			core::bc_vector3f get_right() const noexcept;
 
-			graphic::bc_vector3f get_left() const noexcept;
+			core::bc_vector3f get_left() const noexcept;
 
 			/**
 			 * \brief Get 8 point that describe camera frustum. First four point lay on near clip and two four on far clip 
@@ -76,29 +76,29 @@ namespace black_cat
 			 */
 			virtual void get_extend_points(extend& p_points) = 0;
 
-			graphic::bc_matrix4f get_view() const noexcept
+			core::bc_matrix4f get_view() const noexcept
 			{
 				return m_view;
 			}
 
-			void set_view(const graphic::bc_matrix4f& p_view) noexcept
+			void set_view(const core::bc_matrix4f& p_view) noexcept
 			{
 				m_view = p_view;
 			}
 
-			graphic::bc_matrix4f get_projection() const noexcept
+			core::bc_matrix4f get_projection() const noexcept
 			{
 				return m_projection;
 			}
 
-			void set_projection(const graphic::bc_matrix4f& p_proj) noexcept
+			void set_projection(const core::bc_matrix4f& p_proj) noexcept
 			{
 				m_projection = p_proj;
 			}
 
 			virtual void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept = 0;
 
-			void look_at(const graphic::bc_vector3f& p_position, const graphic::bc_vector3f& p_lookat, const graphic::bc_vector3f& up);
+			void look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_lookat, const core::bc_vector3f& up);
 
 			virtual void update(core_platform::bc_clock::update_param p_clock_update_param,
 				const platform::bc_pointing_device& p_pointing_device,
@@ -111,7 +111,7 @@ namespace black_cat
 
 			bc_icamera& operator=(bc_icamera&&) = default;
 
-			void create_view_matrix(const graphic::bc_vector3f& p_up = graphic::bc_vector3f(0, 1, 0));
+			void create_view_matrix(const core::bc_vector3f& p_up = core::bc_vector3f(0, 1, 0));
 
 			virtual void create_projection_matrix() = 0;
 
@@ -122,10 +122,10 @@ namespace black_cat
 		private:
 			bcFLOAT m_near;
 			bcFLOAT m_far;
-			graphic::bc_vector3f m_position;
-			graphic::bc_vector3f m_lookat;
-			graphic::bc_matrix4f m_view;
-			graphic::bc_matrix4f m_projection;
+			core::bc_vector3f m_position;
+			core::bc_vector3f m_lookat;
+			core::bc_matrix4f m_view;
+			core::bc_matrix4f m_projection;
 
 			core::bc_event_listener_handle m_key_listener_handle;
 			core::bc_event_listener_handle m_pointing_listener_handle;

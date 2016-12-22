@@ -4,16 +4,15 @@
 
 #include "Core/Utility/bcRefCountPtr.h"
 #include "Graphic/bcExport.h"
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 
 namespace black_cat
 {
 	namespace graphic
 	{
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_device;
-
-		using bc_device = bc_platform_device< g_current_platform_render_api >;
+		using bc_device = bc_platform_device< g_current_render_api >;
 
 		class bc_device_object;
 

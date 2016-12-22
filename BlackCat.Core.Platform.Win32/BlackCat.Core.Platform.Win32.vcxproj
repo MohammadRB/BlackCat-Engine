@@ -90,6 +90,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>CorePlatformImp/CorePlatformImpPCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

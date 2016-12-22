@@ -7,9 +7,10 @@
 #include "Core/Container/bcString.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Game/bcExport.h"
-#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Input/bcInputSystem.h"
 #include "Game/System/Input/bcFileSystem.h"
+#include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/Script/bcScriptSystem.h"
 #include "Game/System/Script/bcGameConsole.h"
 
@@ -40,11 +41,6 @@ namespace black_cat
 
 			bc_game_system& operator=(bc_game_system&&) = default;
 
-			bc_render_system& get_render_system()
-			{
-				return m_render_system;
-			}
-
 			bc_input_system& get_input_system()
 			{
 				return m_input_system;
@@ -53,6 +49,11 @@ namespace black_cat
 			bc_file_system& get_file_system()
 			{
 				return m_file_system;
+			}
+
+			bc_render_system& get_render_system()
+			{
+				return m_render_system;
 			}
 
 			bc_script_system& get_script_system()
@@ -73,17 +74,19 @@ namespace black_cat
 
 			void _destroy() override;
 
-			bc_render_system m_render_system;
 			bc_input_system m_input_system;
 			bc_file_system m_file_system;
+			bc_render_system m_render_system;
+			bc_physics_system m_physics_system;
 			bc_script_system m_script_system;
 			bc_game_console m_console;
 		};
 
 		inline bc_game_system::bc_game_system()
-			: m_render_system(),
-			m_input_system(),
+			: m_input_system(),
 			m_file_system(),
+			m_render_system(),
+			m_physics_system(),
 			m_script_system(),
 			m_console(m_script_system)
 		{
@@ -115,6 +118,7 @@ namespace black_cat
 			);
 
 			m_render_system.update(l_render_system_update_params);
+			m_physics_system.update(p_clock_update_param);
 			m_script_system.update(p_clock_update_param);
 			m_console.update(p_clock_update_param);
 		}
@@ -122,10 +126,12 @@ namespace black_cat
 		inline void bc_game_system::_initialize(bc_game_system_parameter p_paramter)
 		{
 			m_render_system.initialize(std::move(p_paramter.m_render_system_parameter));
+			m_physics_system.initialize();
 		}
 
 		inline void bc_game_system::_destroy()
 		{
+			m_physics_system.destroy();
 			m_render_system.destroy();
 		}
 	}

@@ -7,9 +7,9 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcArray.h"
 #include "Core/File/bcContentManager.h"
-#include "Graphic/Math/bcVector2f.h"
-#include "Graphic/Math/bcVector3f.h"
-#include "Graphic/Math/bcMatrix4f.h"
+#include "Core/Math/bcVector2f.h"
+#include "Core/Math/bcVector3f.h"
+#include "Core/Math/bcMatrix4f.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Resource/bcResourceConfig.h"
@@ -28,7 +28,7 @@ namespace black_cat
 {
 	void _calculate_node_mesh_count(const aiNode* p_begin, bcSIZE* p_node_count, bcSIZE* p_mesh_count);
 
-	void _convert_aimatrix(const aiMatrix4x4& p_aimatrix, graphic::bc_matrix4f& p_matrix);
+	void _convert_aimatrix(const aiMatrix4x4& p_aimatrix, core::bc_matrix4f& p_matrix);
 
 	void _convert_aimaterial(core::bc_content_loader_context& p_context, const aiMaterial& p_aimaterial, game::bc_mesh_material& p_material);
 
@@ -123,7 +123,7 @@ namespace black_cat
 		}
 	}
 
-	void _convert_aimatrix(const aiMatrix4x4& p_aimatrix, graphic::bc_matrix4f& p_matrix)
+	void _convert_aimatrix(const aiMatrix4x4& p_aimatrix, core::bc_matrix4f& p_matrix)
 	{
 		aiMatrix4x4 l_aimatrix = p_aimatrix;
 		l_aimatrix.Transpose();
@@ -160,7 +160,7 @@ namespace black_cat
 		p_aimaterial.Get(AI_MATKEY_SHININESS, l_specular_power);
 		p_aimaterial.Get(AI_MATKEY_OPACITY, l_alpha);
 
-		p_material.m_diffuse = graphic::bc_vector4f(l_diffuse.r, l_diffuse.g, l_diffuse.b, l_alpha);
+		p_material.m_diffuse = core::bc_vector4f(l_diffuse.r, l_diffuse.g, l_diffuse.b, l_alpha);
 		p_material.m_specular_intency = l_specular_intency;
 		p_material.m_specular_power = l_specular_power;
 
@@ -233,10 +233,10 @@ namespace black_cat
 			auto* l_ainoraml = l_has_normal ? &p_aimesh->mNormals[l_vertex] : nullptr;
 			auto* l_aitangent = l_has_tangent ? &p_aimesh->mTangents[l_vertex] : nullptr;
 
-			l_vertex_layout.m_position = graphic::bc_vector3f(l_aivertex->x, l_aivertex->y, l_aivertex->z);
-			l_vertex_layout.m_texcoord = l_aitexcoord ? graphic::bc_vector2f(l_aitexcoord->x, l_aitexcoord->y) : graphic::bc_vector2f();
-			l_vertex_layout.m_normal = l_ainoraml ? graphic::bc_vector3f(l_ainoraml->x, l_ainoraml->y, l_ainoraml->z) : graphic::bc_vector3f();
-			l_vertex_layout.m_tangent = l_aitangent ? graphic::bc_vector3f(l_aitangent->x, l_aitangent->y, l_aitangent->z) : graphic::bc_vector3f();
+			l_vertex_layout.m_position = core::bc_vector3f(l_aivertex->x, l_aivertex->y, l_aivertex->z);
+			l_vertex_layout.m_texcoord = l_aitexcoord ? core::bc_vector2f(l_aitexcoord->x, l_aitexcoord->y) : core::bc_vector2f();
+			l_vertex_layout.m_normal = l_ainoraml ? core::bc_vector3f(l_ainoraml->x, l_ainoraml->y, l_ainoraml->z) : core::bc_vector3f();
+			l_vertex_layout.m_tangent = l_aitangent ? core::bc_vector3f(l_aitangent->x, l_aitangent->y, l_aitangent->z) : core::bc_vector3f();
 
 			l_vertices.push_back(l_vertex_layout);
 		}
@@ -378,7 +378,7 @@ namespace black_cat
 			l_meshes.push_back(std::make_pair(std::move(l_mesh_data), l_mesh_render_state));
 		}
 
-		graphic::bc_matrix4f l_node_transformation;
+		core::bc_matrix4f l_node_transformation;
 		_convert_aimatrix(p_ainode->mTransformation, l_node_transformation);
 
 		game::bc_mesh_node* l_added_node = p_mesh->_add_node

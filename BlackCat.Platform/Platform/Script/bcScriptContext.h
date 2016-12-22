@@ -83,11 +83,11 @@ namespace black_cat
 		public:
 			bc_platform_script_context();
 
-			bc_platform_script_context(bc_platform_script_context&&) noexcept;
+			bc_platform_script_context(const bc_platform_script_context&) noexcept;
 
 			~bc_platform_script_context();
 
-			bc_platform_script_context& operator=(bc_platform_script_context&&) noexcept;
+			bc_platform_script_context& operator=(const bc_platform_script_context&) noexcept;
 
 			/**
 			 * \brief Create context global object prototype builder to define global property and function definitions.

@@ -18,9 +18,9 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_bytecode< core_platform::g_api_win32 >::bc_platform_script_bytecode(bc_platform_script_bytecode&& p_other) noexcept
+		bc_platform_script_bytecode< core_platform::g_api_win32 >::bc_platform_script_bytecode(const bc_platform_script_bytecode& p_other) noexcept
 		{
-			operator=(std::move(p_other));
+			operator=(p_other);
 		}
 
 		template<>
@@ -31,12 +31,10 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_bytecode< core_platform::g_api_win32 >& bc_platform_script_bytecode< core_platform::g_api_win32 >::operator=(bc_platform_script_bytecode&& p_other) noexcept
+		bc_platform_script_bytecode< core_platform::g_api_win32 >& bc_platform_script_bytecode< core_platform::g_api_win32 >::operator=(const bc_platform_script_bytecode& p_other) noexcept
 		{
 			bc_platform_script_reference::operator=(p_other);
 			m_pack = p_other.m_pack;
-
-			p_other.m_pack.m_js_parsed_script = JS_INVALID_REFERENCE;
 
 			return *this;
 		}

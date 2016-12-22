@@ -4,7 +4,7 @@
 
 #include "Core/Container/bcVector.h"
 #include "Graphic/GraphicPCH.h"
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
 
 namespace black_cat
@@ -50,7 +50,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		class bc_input_layout : public bc_platform_input_layout<g_current_platform_render_api>
+		class bc_input_layout : public bc_platform_input_layout<g_current_render_api>
 		{};*/
 	}
 }

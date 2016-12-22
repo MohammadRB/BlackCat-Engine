@@ -8,8 +8,8 @@
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/File/bcContent.h"
-#include "Graphic/Math/bcVector4f.h"
-#include "Graphic/Math/bcMatrix4f.h"
+#include "Core/Math/bcVector4f.h"
+#include "Core/Math/bcMatrix4f.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
@@ -26,7 +26,7 @@ namespace black_cat
 		struct bc_mesh_material
 		{
 		public:
-			graphic::bc_vector4f m_diffuse;
+			core::bc_vector4f m_diffuse;
 			bcFLOAT m_specular_intency;
 			bcFLOAT m_specular_power;
 
@@ -45,7 +45,7 @@ namespace black_cat
 
 		struct bc_mesh_part_cbuffer
 		{
-			BC_CBUFFER_ALIGN graphic::bc_vector4f m_diffuse;
+			BC_CBUFFER_ALIGN core::bc_vector4f m_diffuse;
 			BC_CBUFFER_ALIGN bcFLOAT m_specular_intency;
 			bcFLOAT m_specular_power;
 		};
@@ -119,7 +119,7 @@ namespace black_cat
 
 			const core::bc_vector< bc_mesh_node* >& get_node_childs(const bc_mesh_node* p_node) const;
 
-			const graphic::bc_matrix4f* get_node_transformation(const bc_mesh_node* p_node) const;
+			const core::bc_matrix4f* get_node_transformation(const bc_mesh_node* p_node) const;
 
 			const bc_mesh_material* get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
@@ -128,7 +128,7 @@ namespace black_cat
 			// Add a mesh part to node hierarchy of mesh. Adding a node with null parent will override root node of mesh
 			bc_mesh_node* _add_node(core::bc_string p_name,
 				bc_mesh_node* p_parent,
-				graphic::bc_matrix4f& p_transformation,
+				core::bc_matrix4f& p_transformation,
 				core::bc_vector_frame<std::pair<bc_mesh_data, bc_render_state_ptr>> p_meshes);
 
 		protected:
@@ -139,7 +139,7 @@ namespace black_cat
 			core::bc_vector< bc_mesh_node > m_nodes;					// Don't use movable memory due to raw pointers in bc_mesh_node
 			core::bc_vector< bc_render_state_ptr > m_render_states;		// Place render states along with nodes
 			core::bc_unordered_map< hash_t::result_type, bc_mesh_node* > m_nodes_hash;
-			core::bc_vector_movale< graphic::bc_matrix4f > m_transformations;
+			core::bc_vector_movale< core::bc_matrix4f > m_transformations;
 			core::bc_vector< bc_mesh_data > m_meshes;
 		};
 

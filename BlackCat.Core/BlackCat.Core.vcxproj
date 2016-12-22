@@ -61,6 +61,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir);..\BlackCat.Core.Platform;..\BlackCat.Core.Platform.Win32;..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -75,6 +76,7 @@ copy Core\Memory\*.h ..\BC_SDK\Include\Core\Memory
 copy Core\Event\*.h ..\BC_SDK\Include\Core\Event
 copy Core\Utility\*.h ..\BC_SDK\Include\Core\Utility
 copy Core\File\*.h ..\BC_SDK\Include\Core\File
+copy Core\Math\*.h ..\BC_SDK\Include\Core\Math
 copy Core\*.h ..\BC_SDK\Include\Core
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
@@ -117,6 +119,7 @@ copy Core\Memory\*.h ..\BC_SDK\Include\Core\Memory
 copy Core\Event\*.h ..\BC_SDK\Include\Core\Event
 copy Core\Utility\*.h ..\BC_SDK\Include\Core\Utility
 copy Core\File\*.h ..\BC_SDK\Include\Core\File
+copy Core\Math\*.h ..\BC_SDK\Include\Core\Math
 copy Core\*.h ..\BC_SDK\Include\Core
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
@@ -149,6 +152,11 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="Core\File\bcLazyContent.h" />
     <ClInclude Include="Core\File\bcPath.h" />
     <ClInclude Include="Core\File\bcStream.h" />
+    <ClInclude Include="Core\Math\bcMatrix3f.h" />
+    <ClInclude Include="Core\Math\bcMatrix4f.h" />
+    <ClInclude Include="Core\Math\bcVector2f.h" />
+    <ClInclude Include="Core\Math\bcVector3f.h" />
+    <ClInclude Include="Core\Math\bcVector4f.h" />
     <ClInclude Include="Core\Memory\bcMemory.h" />
     <ClInclude Include="Core\Memory\bcMemoryExtender.h" />
     <ClInclude Include="Core\Memory\bcMemoryProxy.h" />
@@ -225,6 +233,11 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="Core\File\bcContentStreamManager.cpp" />
     <ClCompile Include="Core\File\bcPath.cpp" />
     <ClCompile Include="Core\File\bcStream.cpp" />
+    <ClCompile Include="Core\Math\bcMatrix3f.cpp" />
+    <ClCompile Include="Core\Math\bcMatrix4f.cpp" />
+    <ClCompile Include="Core\Math\bcVector2f.cpp" />
+    <ClCompile Include="Core\Math\bcVector3f.cpp" />
+    <ClCompile Include="Core\Math\bcVector4f.cpp" />
     <ClCompile Include="Core\Memory\bcMemoryFixedSize.cpp" />
     <ClCompile Include="Core\Memory\bcMemoryHeap.cpp" />
     <ClCompile Include="Core\Memory\bcMemoryManagment.cpp" />

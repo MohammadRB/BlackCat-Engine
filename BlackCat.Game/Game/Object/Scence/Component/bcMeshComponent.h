@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "Graphic/Math/bcVector3f.h"
-#include "Graphic/Math/bcMatrix3f.h"
-#include "Graphic/Math/bcMatrix4f.h"
+#include "Core/Math/bcVector3f.h"
+#include "Core/Math/bcMatrix3f.h"
+#include "Core/Math/bcMatrix4f.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scence/bcActor.h"
 #include "Game/Object/Scence/bcActorComponent.h"

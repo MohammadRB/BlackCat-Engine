@@ -25,9 +25,6 @@
     <Filter Include="Graphic\Shader\Parameter">
       <UniqueIdentifier>{af647664-89f6-44c9-aef3-a11959b6e146}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Graphic\Math">
-      <UniqueIdentifier>{613b2c9f-4938-48ba-88ef-9d9f459714e1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Graphic\Device\Command">
       <UniqueIdentifier>{f59e8e03-9f7d-46a4-8217-73c5ef2fc45a}</UniqueIdentifier>
     </Filter>
@@ -40,9 +37,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphic\GraphicPCH.h">
-      <Filter>Graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\bcPlatformRenderApi.h">
       <Filter>Graphic</Filter>
     </ClInclude>
     <ClInclude Include="Graphic\Resource\bcResource.h">
@@ -104,21 +98,6 @@
     </ClInclude>
     <ClInclude Include="Graphic\Shader\Parameter\bcShaderParameter.h">
       <Filter>Graphic\Shader\Parameter</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Math\bcVector2f.h">
-      <Filter>Graphic\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Math\bcVector3f.h">
-      <Filter>Graphic\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Math\bcVector4f.h">
-      <Filter>Graphic\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Math\bcMatrix3f.h">
-      <Filter>Graphic\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic\Math\bcMatrix4f.h">
-      <Filter>Graphic\Math</Filter>
     </ClInclude>
     <ClInclude Include="Graphic\Shader\Parameter\bcConstantBufferParameter.h">
       <Filter>Graphic\Shader\Parameter</Filter>
@@ -246,25 +225,13 @@
     <ClInclude Include="Graphic\Device\bcDeviceOutput.h">
       <Filter>Graphic\Device</Filter>
     </ClInclude>
+    <ClInclude Include="Graphic\bcRenderApi.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphic\GraphicPCH.cpp">
       <Filter>Graphic</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphic\Math\bcVector2f.cpp">
-      <Filter>Graphic\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphic\Math\bcVector3f.cpp">
-      <Filter>Graphic\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphic\Math\bcVector4f.cpp">
-      <Filter>Graphic\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphic\Math\bcMatrix3f.cpp">
-      <Filter>Graphic\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphic\Math\bcMatrix4f.cpp">
-      <Filter>Graphic\Math</Filter>
     </ClCompile>
     <ClCompile Include="Graphic\Shader\Parameter\bcShaderParameterManager.cpp">
       <Filter>Graphic\Shader\Parameter</Filter>

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "Graphic/GraphicPCH.h"
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 #include "Graphic/PipelineStage/bcProgrammableStage.h"
 
 namespace black_cat
 {
 	namespace graphic
 	{
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		class bc_platform_geometry_stage : public bc_programmable_stage
 		{
 		public:
@@ -37,6 +37,6 @@ namespace black_cat
 
 		};
 
-		using bc_geometry_stage = bc_platform_geometry_stage< g_current_platform_render_api >;
+		using bc_geometry_stage = bc_platform_geometry_stage< g_current_render_api >;
 	}
 }

@@ -2,8 +2,9 @@
 
 #pragma once
 
+#include "Core/Math/bcVector4f.h"
 #include "Graphic/GraphicPCH.h"
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 #include "Graphic/bcDeviceObject.h"
 #include "Graphic/bcResourcePtr.h"
 #include "Graphic/Device/bcDevice.h"
@@ -25,18 +26,17 @@
 #include "Graphic/PipelineStage/bcPixelStage.h"
 #include "Graphic/PipelineStage/bcComputeStage.h"
 #include "Graphic/Resource/bcResource.h"
-#include "Graphic/Math/bcVector4f.h"
 
 namespace black_cat
 {
 	namespace graphic
 	{
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		struct bc_platform_device_pipeline_pack
 		{
 		};
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		class bc_platform_device_pipeline : public bc_device_object
 		{
 		public:
@@ -91,7 +91,7 @@ namespace black_cat
 
 			void unbind_rs_viewports();
 
-			void bind_om_blend_factors(bc_vector4f l_factors);
+			void bind_om_blend_factors(core::bc_vector4f l_factors);
 
 			void bind_om_stencil_ref(bcUINT32 l_stencil_ref);
 
@@ -115,7 +115,7 @@ namespace black_cat
 
 			void dispatch_indirect(bc_buffer* p_args, bcUINT p_offset);
 
-			void clear_buffers(bc_vector4f p_color, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
+			void clear_buffers(core::bc_vector4f p_color, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
 
 			bc_mapped_resource map_resource(bc_iresource* p_resource, bcUINT p_subresource, bc_resource_map p_map_type);
 			
@@ -168,7 +168,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_device_pipeline = bc_platform_device_pipeline< g_current_platform_render_api >;
+		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
 
 		using bc_device_pipeline_ptr = bc_resource_ptr< bc_device_pipeline >;
 	}

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Graphic/GraphicPCH.h"
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 #include "Graphic/bcRenderApiInfo.h"
 #include "Graphic/bcDeviceObject.h"
 #include "Graphic/bcResourcePtr.h"
@@ -45,13 +45,13 @@ namespace black_cat
 			bc_texture_ms_config m_sample_config;
 		};
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		struct bc_platform_device_pipeline_state_pack
 		{
 			bc_device_pipeline_state_config m_config;
 		};
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		class bc_platform_device_pipeline_state : public bc_device_object
 		{
 		public:
@@ -82,7 +82,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_device_pipeline_state = bc_platform_device_pipeline_state<g_current_platform_render_api>;
+		using bc_device_pipeline_state = bc_platform_device_pipeline_state<g_current_render_api>;
 
 		using bc_device_pipeline_state_ptr = bc_resource_ptr<bc_device_pipeline_state>;
 	}

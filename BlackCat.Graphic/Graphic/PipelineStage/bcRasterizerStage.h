@@ -4,7 +4,7 @@
 
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcExport.h"
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 #include "Graphic/bcRenderApiInfo.h"
 #include "Graphic/PipelineStage/bcPipelineStateVariable.h"
 #include "Graphic/PipelineStage/bcPipelineStateArrayVariable.h"
@@ -14,9 +14,9 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_device_pipeline;
-		using bc_device_pipeline = bc_platform_device_pipeline< g_current_platform_render_api >;
+		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
 
 		// -- Rasterizer state -----------------------------------------------------------------------------
 
@@ -53,12 +53,12 @@ namespace black_cat
 
 		// -- Rasterizer stage -----------------------------------------------------------------------------
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		struct bc_platform_rasterizer_stage_pack
 		{
 		};
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		class bc_platform_rasterizer_stage : public core_platform::bc_no_copy
 		{
 		public:
@@ -94,6 +94,6 @@ namespace black_cat
 			bc_rasterizer_stage_state m_required_state;
 		};
 
-		using bc_rasterizer_stage = bc_platform_rasterizer_stage<g_current_platform_render_api>;
+		using bc_rasterizer_stage = bc_platform_rasterizer_stage<g_current_render_api>;
 	}
 }

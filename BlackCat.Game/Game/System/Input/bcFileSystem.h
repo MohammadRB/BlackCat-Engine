@@ -5,7 +5,7 @@
 #include "CorePlatform/bcType.h"
 #include "CorePlatform/Utility/bcNoCopy.h"
 #include "Core/Container/bcString.h"
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 #include "Game/bcExport.h"
 
 namespace black_cat

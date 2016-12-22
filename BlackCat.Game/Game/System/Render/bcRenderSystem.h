@@ -9,7 +9,8 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcArray.h"
 #include "Core/Event/bcEvent.h"
-#include "Graphic/Math/bcMatrix4f.h"
+#include "Core/Math/bcVector3f.h"
+#include "Core/Math/bcMatrix4f.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
@@ -55,9 +56,9 @@ namespace black_cat
 		struct bc_render_system_update_param : public core_platform::bc_clock::update_param
 		{
 			bc_render_system_update_param(const core_platform::bc_clock::update_param& p_clock_update,
-				const graphic::bc_vector3f p_camera_position,
-				const graphic::bc_matrix4f& p_view,
-				const graphic::bc_matrix4f& p_projection,
+				const core::bc_vector3f p_camera_position,
+				const core::bc_matrix4f& p_view,
+				const core::bc_matrix4f& p_projection,
 				bc_icamera::extend& p_camera_extends)
 				: update_param(p_clock_update),
 				m_camera_position(p_camera_position),
@@ -67,9 +68,9 @@ namespace black_cat
 			{
 			}
 
-			graphic::bc_vector3f m_camera_position;
-			graphic::bc_matrix4f m_view_matrix;
-			graphic::bc_matrix4f m_projection_matrix;
+			core::bc_vector3f m_camera_position;
+			core::bc_matrix4f m_view_matrix;
+			core::bc_matrix4f m_projection_matrix;
 			bc_icamera::extend m_camera_extends;
 		};
 

@@ -2,10 +2,10 @@
 
 #pragma once
 
+#include "Core/Math/bcVector4f.h"
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcExport.h"
-#include "Graphic/bcPlatformRenderApi.h"
-#include "Graphic/Math/bcVector4f.h"
+#include "Graphic/bcRenderApi.h"
 #include "Graphic/bcRenderApiInfo.h"
 #include "Graphic/PipelineStage/bcPipelineStateVariable.h"
 #include "Graphic/PipelineStage/bcPipelineStateArrayVariable.h"
@@ -17,9 +17,9 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_device_pipeline;
-		using bc_device_pipeline = bc_platform_device_pipeline< g_current_platform_render_api >;
+		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
 
 		// -- Output merger state -----------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ namespace black_cat
 
 			//bc_pipeline_state_variable< bc_blend_state* > m_blend_state;
 			//bc_pipeline_state_variable< bc_depth_stencil_state* > m_depth_stencil_state;
-			bc_pipeline_state_variable< bc_vector4f > m_blend_factors;
+			bc_pipeline_state_variable< core::bc_vector4f > m_blend_factors;
 			bc_pipeline_state_variable< bcUINT > m_stencil_ref;
 			bc_pipeline_state_array_variable< bc_render_target_view*, bc_render_api_info::number_of_om_render_target_slots() > m_render_target_views;
 			bc_pipeline_state_variable< bc_depth_stencil_view* > m_depth_target_view;
@@ -61,12 +61,12 @@ namespace black_cat
 
 		// -- Output merger stage -----------------------------------------------------------------------------
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		struct bc_platform_output_merger_stage_pack
 		{
 		};
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		class bc_platform_output_merger_stage : public core_platform::bc_no_copy
 		{
 		public:
@@ -103,6 +103,6 @@ namespace black_cat
 			bc_output_merger_stage_state m_required_state;
 		};
 
-		using bc_output_merger_stage = bc_platform_output_merger_stage<g_current_platform_render_api>;
+		using bc_output_merger_stage = bc_platform_output_merger_stage<g_current_render_api>;
 	}
 }

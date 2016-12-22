@@ -38,9 +38,9 @@ namespace black_cat
 		}
 
 		template<>
-		inline bc_platform_script_context< core_platform::g_api_win32 >::bc_platform_script_context(bc_platform_script_context&& p_other) noexcept
+		inline bc_platform_script_context< core_platform::g_api_win32 >::bc_platform_script_context(const bc_platform_script_context& p_other) noexcept
 		{
-			operator=(std::move(p_other));
+			operator=(p_other);
 		}
 
 		template<>
@@ -49,14 +49,11 @@ namespace black_cat
 		}
 
 		template<>
-		inline bc_platform_script_context< core_platform::g_api_win32 >& bc_platform_script_context< core_platform::g_api_win32 >::operator=(bc_platform_script_context&& p_other) noexcept
+		inline bc_platform_script_context< core_platform::g_api_win32 >& bc_platform_script_context< core_platform::g_api_win32 >::operator=(const bc_platform_script_context& p_other) noexcept
 		{
-			bc_platform_script_reference::operator=(std::move(p_other));
+			bc_platform_script_reference::operator=(p_other);
 			m_runtime = p_other.m_runtime;
 			m_pack.m_js_context = p_other.m_pack.m_js_context;
-
-			p_other.m_runtime = nullptr;
-			p_other.m_pack.m_js_context = JS_INVALID_REFERENCE;
 
 			return *this;
 		}

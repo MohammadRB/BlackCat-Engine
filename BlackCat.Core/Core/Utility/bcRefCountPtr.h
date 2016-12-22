@@ -61,7 +61,7 @@ namespace black_cat
 			}
 
 		private:
-			core_platform::bc_atomic<bcSIZE> m_ref_count;
+			core_platform::bc_atomic<bcUINT32> m_ref_count;
 		};
 
 		// A movable aware reference counting pointer

@@ -12,7 +12,7 @@
 #include "PlatformImp/Application/bcBasicWindow.h"
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcResourcePtr.h"
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
 #include "Graphic/bcDeviceObject.h"
 #include "Graphic/Device/bcDeviceInfo.h"
@@ -23,109 +23,109 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_buffer;
-		using bc_buffer = bc_platform_buffer< g_current_platform_render_api >;
+		using bc_buffer = bc_platform_buffer< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_buffer_config;
-		using bc_buffer_config = bc_platform_buffer_config< g_current_platform_render_api >;
+		using bc_buffer_config = bc_platform_buffer_config< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_texture_config;
-		using bc_texture_config = bc_platform_texture_config< g_current_platform_render_api >;
+		using bc_texture_config = bc_platform_texture_config< g_current_render_api >;
 
 		class bc_subresource_data;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_texture2d;
-		using bc_texture2d = bc_platform_texture2d< g_current_platform_render_api >;
+		using bc_texture2d = bc_platform_texture2d< g_current_render_api >;
 
 		struct bc_sampler_state_config;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_sampler_state;
-		using bc_sampler_state = bc_platform_sampler_state< g_current_platform_render_api >;
+		using bc_sampler_state = bc_platform_sampler_state< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_compiled_shader;
-		using bc_compiled_shader = bc_platform_compiled_shader< g_current_platform_render_api >;
+		using bc_compiled_shader = bc_platform_compiled_shader< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_vertex_shader;
-		using bc_vertex_shader = bc_platform_vertex_shader< g_current_platform_render_api >;
+		using bc_vertex_shader = bc_platform_vertex_shader< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_hull_shader;
-		using bc_hull_shader = bc_platform_hull_shader< g_current_platform_render_api >;
+		using bc_hull_shader = bc_platform_hull_shader< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_domain_shader;
-		using bc_domain_shader = bc_platform_domain_shader< g_current_platform_render_api >;
+		using bc_domain_shader = bc_platform_domain_shader< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_geometry_shader;
-		using bc_geometry_shader = bc_platform_geometry_shader< g_current_platform_render_api >;
+		using bc_geometry_shader = bc_platform_geometry_shader< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_pixel_shader;
-		using bc_pixel_shader = bc_platform_pixel_shader< g_current_platform_render_api >;
+		using bc_pixel_shader = bc_platform_pixel_shader< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_compute_shader;
-		using bc_compute_shader = bc_platform_compute_shader< g_current_platform_render_api >;
+		using bc_compute_shader = bc_platform_compute_shader< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_device_pipeline;
-		using bc_device_pipeline = bc_platform_device_pipeline< g_current_platform_render_api >;
+		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
 
 		struct bc_device_pipeline_state_config;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_device_pipeline_state;
-		using bc_device_pipeline_state = bc_platform_device_pipeline_state< g_current_platform_render_api >;
+		using bc_device_pipeline_state = bc_platform_device_pipeline_state< g_current_render_api >;
 
 		struct bc_device_compute_state_config;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_device_compute_state;
-		using bc_device_compute_state = bc_platform_device_compute_state< g_current_platform_render_api >;
+		using bc_device_compute_state = bc_platform_device_compute_state< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_device_command_list;
-		using bc_device_command_list = bc_platform_device_command_list< g_current_platform_render_api >;
+		using bc_device_command_list = bc_platform_device_command_list< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_device_command_executer;
-		using bc_device_command_executer = bc_platform_device_command_executer< g_current_platform_render_api >;
+		using bc_device_command_executer = bc_platform_device_command_executer< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_resource_view_config;
-		using bc_resource_view_config = bc_platform_resource_view_config< g_current_platform_render_api >;
+		using bc_resource_view_config = bc_platform_resource_view_config< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_render_target_view_config;
-		using bc_render_target_view_config = bc_platform_render_target_view_config< g_current_platform_render_api >;
+		using bc_render_target_view_config = bc_platform_render_target_view_config< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_depth_stencil_view_config;
-		using bc_depth_stencil_view_config = bc_platform_depth_stencil_view_config< g_current_platform_render_api >;
+		using bc_depth_stencil_view_config = bc_platform_depth_stencil_view_config< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_iresource_view;
-		using bc_iresource_view = bc_platform_iresource_view< g_current_platform_render_api >;
+		using bc_iresource_view = bc_platform_iresource_view< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_resource_view;
-		using bc_resource_view = bc_platform_resource_view< g_current_platform_render_api >;
+		using bc_resource_view = bc_platform_resource_view< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_depth_stencil_view;
-		using bc_depth_stencil_view = bc_platform_depth_stencil_view< g_current_platform_render_api >;
+		using bc_depth_stencil_view = bc_platform_depth_stencil_view< g_current_render_api >;
 
-		template<bc_platform_render_api>
+		template<bc_render_api>
 		class bc_platform_render_target_view;
-		using bc_render_target_view = bc_platform_render_target_view< g_current_platform_render_api >;
+		using bc_render_target_view = bc_platform_render_target_view< g_current_render_api >;
 
 		struct bc_device_parameters
 		{
@@ -144,13 +144,13 @@ namespace black_cat
 			bc_texture_ms_config m_multi_sample;
 		};
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		struct bc_platform_device_pack
 		{
 		};
 
 		// Thread safe class
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		class bc_platform_device 
 			: public core::bc_initializable<bcUINT, bcUINT, bc_format, bc_device_output>,
 			public core::bc_object_allocator,
@@ -274,27 +274,27 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_device = bc_platform_device< g_current_platform_render_api >;
+		using bc_device = bc_platform_device< g_current_render_api >;
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		bcUINT32 bc_platform_device<TRenderApi>::get_back_buffer_width() const
 		{
 			return get_back_buffer_texture()->get_width();
 		}
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		bcUINT32 bc_platform_device<TRenderApi>::get_back_buffer_height() const
 		{
 			return get_back_buffer_texture()->get_height();
 		}
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		bc_format bc_platform_device<TRenderApi>::get_back_buffer_format() const
 		{
 			return get_back_buffer_texture()->get_format();
 		}
 
-		template <bc_platform_render_api TRenderApi >
+		template <bc_render_api TRenderApi >
 		void bc_platform_device<TRenderApi>::destroy_resource(bc_device_object* p_resource)
 		{
 			core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_gaurd(m_resources_mutex);
@@ -317,7 +317,7 @@ namespace black_cat
 			}
 		}
 
-		template <bc_platform_render_api TRenderApi >
+		template <bc_render_api TRenderApi >
 		template < class TResource >
 		void bc_platform_device<TRenderApi>::_store_new_resource(core::bc_object_allocator::ptr<TResource>&& p_resource)
 		{

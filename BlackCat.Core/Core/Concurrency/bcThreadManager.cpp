@@ -9,6 +9,3 @@ namespace black_cat
 		//template BC_C_DLL class bc_singleton< bc_thread_manager(bcSIZE, bcSIZE) >;
 	}
 }
-
-
-

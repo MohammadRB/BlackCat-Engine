@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 #include "Graphic/bcDeviceObject.h"
 #include "Graphic/bcResourcePtr.h"
 #include "Graphic/Shader/bcComputeShader.h"
@@ -16,13 +16,13 @@ namespace black_cat
 			bc_compute_shader_ptr m_compute_shader;
 		};
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		struct bc_platform_device_compute_state_pack
 		{
 			bc_device_compute_state_config m_config;
 		};
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		class bc_platform_device_compute_state : public bc_device_object
 		{
 		public:
@@ -53,7 +53,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_device_compute_state = bc_platform_device_compute_state<g_current_platform_render_api>;
+		using bc_device_compute_state = bc_platform_device_compute_state<g_current_render_api>;
 
 		using bc_device_compute_state_ptr = bc_resource_ptr<bc_device_compute_state>;
 	}

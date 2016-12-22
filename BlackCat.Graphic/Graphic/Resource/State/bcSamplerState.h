@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Graphic/GraphicPCH.h"
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
 #include "Graphic/bcDeviceObject.h"
 #include "Graphic/bcResourcePtr.h"
@@ -47,13 +47,13 @@ namespace black_cat
 			}
 		};
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		struct bc_platform_sampler_state_pack
 		{
 
 		};
 
-		template< bc_platform_render_api TRenderApi >
+		template< bc_render_api TRenderApi >
 		class bc_platform_sampler_state : public bc_device_object
 		{
 		public:
@@ -79,7 +79,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_sampler_state = bc_platform_sampler_state<g_current_platform_render_api>;
+		using bc_sampler_state = bc_platform_sampler_state<g_current_render_api>;
 
 		using bc_sampler_state_ptr = bc_resource_ptr< bc_sampler_state >;
 	}

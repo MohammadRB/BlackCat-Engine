@@ -168,6 +168,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Core;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../3rdParty</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>GraphicImp/GraphicImpPCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

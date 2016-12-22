@@ -24,11 +24,11 @@ namespace black_cat
 			friend bc_script_runtime;
 
 		public:
-			bc_platform_script_bytecode(bc_platform_script_bytecode&&) noexcept;
+			bc_platform_script_bytecode(const bc_platform_script_bytecode&) noexcept;
 
 			~bc_platform_script_bytecode();
 
-			bc_platform_script_bytecode& operator=(bc_platform_script_bytecode&&) noexcept;
+			bc_platform_script_bytecode& operator=(const bc_platform_script_bytecode&) noexcept;
 
 			bool is_valid() const noexcept override;
 

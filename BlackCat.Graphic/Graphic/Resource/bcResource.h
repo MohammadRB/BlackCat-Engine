@@ -4,7 +4,7 @@
 
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcResourcePtr.h"
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
 #include "Graphic/bcDeviceObject.h"
 
@@ -35,12 +35,12 @@ namespace black_cat
 			bcUINT m_depth_pitch;
 		};
 
-		template<bc_platform_render_api TRenderApi>
+		template<bc_render_api TRenderApi>
 		struct bc_platform_iresource_pack
 		{
 		};
 
-		template<bc_platform_render_api TRenderApi>
+		template<bc_render_api TRenderApi>
 		class bc_platform_iresource : public bc_device_object
 		{
 		public:
@@ -72,7 +72,7 @@ namespace black_cat
 		private:
 		};
 
-		using bc_iresource = bc_platform_iresource<g_current_platform_render_api>;
+		using bc_iresource = bc_platform_iresource<g_current_render_api>;
 
 		using bc_iresource_ptr = bc_resource_ptr< bc_iresource >;
 	}

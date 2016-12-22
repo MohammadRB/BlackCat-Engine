@@ -15,7 +15,7 @@ namespace black_cat
 	namespace graphic
 	{
 		template< >
-		struct bc_platform_device_command_executer_pack<bc_platform_render_api::directx11>
+		struct bc_platform_device_command_executer_pack<bc_render_api::directx11>
 		{
 		};
 	}

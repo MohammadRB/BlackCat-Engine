@@ -45,7 +45,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_shader_type bc_platform_geometry_shader< bc_platform_render_api::directx11 >::get_type() const
+		bc_shader_type bc_platform_geometry_shader< bc_render_api::directx11 >::get_type() const
 		{
 			return bc_shader_type::geometry;
 		};

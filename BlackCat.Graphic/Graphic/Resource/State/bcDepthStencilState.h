@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Graphic/GraphicPCH.h"
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
 
 namespace black_cat
@@ -78,7 +78,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		class bc_depth_stencil_state : public bc_platform_depth_stencil_state<g_current_platform_render_api>
+		class bc_depth_stencil_state : public bc_platform_depth_stencil_state<g_current_render_api>
 		{};*/
 	}
 }

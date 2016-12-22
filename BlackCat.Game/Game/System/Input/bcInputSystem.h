@@ -66,8 +66,7 @@ namespace black_cat
 			: m_key_device(platform::bc_human_interface_device::create_key_device(0)),
 			m_pointing_device(platform::bc_human_interface_device::create_pointing_device(0))
 		{
-			m_device_reset_listener_handle = core::bc_service_manager::get()
-				.get_service<core::bc_event_manager>()
+			m_device_reset_listener_handle = core::bc_get_service< core::bc_event_manager >()
 				->register_event_listener< graphic::bc_app_event_device_reset >
 				(
 					core::bc_event_manager::delegate_type(this, &bc_input_system::_event_handler)

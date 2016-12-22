@@ -384,7 +384,7 @@ namespace black_cat
 			m_pipeline->unbind_rs_viewports();
 		}*/
 
-		void bc_render_thread::bind_om_blend_factors(graphic::bc_vector4f l_factors)
+		void bc_render_thread::bind_om_blend_factors(core::bc_vector4f l_factors)
 		{
 			m_pipeline->bind_om_blend_factors(l_factors);
 		}
@@ -444,7 +444,7 @@ namespace black_cat
 			m_pipeline->dispatch_indirect(p_args, p_offset);
 		}
 
-		void bc_render_thread::clear_buffers(graphic::bc_vector4f p_color, bcFLOAT p_depth, bcUINT p_stencil)
+		void bc_render_thread::clear_buffers(core::bc_vector4f p_color, bcFLOAT p_depth, bcUINT p_stencil)
 		{
 			m_pipeline->clear_buffers(p_color, p_depth, p_stencil);
 		}

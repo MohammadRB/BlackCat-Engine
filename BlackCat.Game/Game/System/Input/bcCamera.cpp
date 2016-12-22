@@ -14,8 +14,8 @@ namespace black_cat
 		bc_icamera::bc_icamera(bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
 			: m_near(p_near_clip),
 			m_far(p_far_clip),
-			m_position(graphic::bc_vector3f(0, 0, 0)),
-			m_lookat(graphic::bc_vector3f(0, 0, 1))
+			m_position(core::bc_vector3f(0, 0, 0)),
+			m_lookat(core::bc_vector3f(0, 0, 1))
 		{
 			create_view_matrix();
 
@@ -47,39 +47,39 @@ namespace black_cat
 			create_projection_matrix();
 		}
 
-		void bc_icamera::set_position(graphic::bc_vector3f p_position) noexcept
+		void bc_icamera::set_position(core::bc_vector3f p_position) noexcept
 		{
 			m_position = p_position;
 			create_view_matrix();
 		}
 
-		void bc_icamera::set_lookat(graphic::bc_vector3f p_lookat) noexcept
+		void bc_icamera::set_lookat(core::bc_vector3f p_lookat) noexcept
 		{
 			m_lookat = p_lookat;
 			create_view_matrix();
 		}
 
-		void bc_icamera::set_position_lookat(const graphic::bc_vector3f& p_position, const graphic::bc_vector3f& p_lookat)
+		void bc_icamera::set_position_lookat(const core::bc_vector3f& p_position, const core::bc_vector3f& p_lookat)
 		{
 			set_position(p_position);
 			set_lookat(p_lookat);
 		}
 
-		graphic::bc_vector3f bc_icamera::get_forward() const noexcept
+		core::bc_vector3f bc_icamera::get_forward() const noexcept
 		{
 			return get_direction();
 		}
 
-		graphic::bc_vector3f bc_icamera::get_back() const noexcept
+		core::bc_vector3f bc_icamera::get_back() const noexcept
 		{
 			return get_forward() * -1;
 		}
 
-		graphic::bc_vector3f bc_icamera::get_up() const noexcept
+		core::bc_vector3f bc_icamera::get_up() const noexcept
 		{
 			auto l_direction = get_direction();
 
-			auto l_right = graphic::bc_vector3f(0, 1, 0).cross(l_direction);
+			auto l_right = core::bc_vector3f(0, 1, 0).cross(l_direction);
 			auto l_up = l_direction.cross(l_right);
 
 			l_up.normalize();
@@ -87,27 +87,27 @@ namespace black_cat
 			return l_up;
 		}
 
-		graphic::bc_vector3f bc_icamera::get_down() const noexcept
+		core::bc_vector3f bc_icamera::get_down() const noexcept
 		{
 			return get_up() * -1;
 		}
 
-		graphic::bc_vector3f bc_icamera::get_right() const noexcept
+		core::bc_vector3f bc_icamera::get_right() const noexcept
 		{
 			auto l_direction = get_direction();
-			auto l_right = graphic::bc_vector3f(0, 1, 0).cross(l_direction);
+			auto l_right = core::bc_vector3f(0, 1, 0).cross(l_direction);
 
 			l_right.normalize();
 
 			return l_right;
 		}
 
-		graphic::bc_vector3f bc_icamera::get_left() const noexcept
+		core::bc_vector3f bc_icamera::get_left() const noexcept
 		{
 			return get_right() * -1;
 		}
 
-		graphic::bc_vector3f bc_icamera::get_direction() const noexcept
+		core::bc_vector3f bc_icamera::get_direction() const noexcept
 		{
 			auto l_direction = (m_lookat - m_position);
 			l_direction.normalize();
@@ -115,7 +115,7 @@ namespace black_cat
 			return l_direction;
 		}
 
-		void bc_icamera::set_direction(graphic::bc_vector3f p_direction) noexcept
+		void bc_icamera::set_direction(core::bc_vector3f p_direction) noexcept
 		{
 			p_direction.normalize();
 			m_lookat = m_position + p_direction;
@@ -123,7 +123,7 @@ namespace black_cat
 			create_view_matrix();
 		}
 
-		void bc_icamera::look_at(const graphic::bc_vector3f& p_position, const graphic::bc_vector3f& p_lookat, const graphic::bc_vector3f& up)
+		void bc_icamera::look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_lookat, const core::bc_vector3f& up)
 		{
 			m_position = p_position;
 			m_lookat = p_lookat;
@@ -131,9 +131,9 @@ namespace black_cat
 			create_view_matrix();
 		}
 
-		void bc_icamera::create_view_matrix(const graphic::bc_vector3f& p_up)
+		void bc_icamera::create_view_matrix(const core::bc_vector3f& p_up)
 		{
-			m_view = graphic::bc_matrix4f::look_at_lh_matrix(m_position, m_lookat, p_up);
+			m_view = core::bc_matrix4f::look_at_lh_matrix(m_position, m_lookat, p_up);
 		}
 
 		// -- bc_orthographic_camera --------------------------------------------------------------------------------
@@ -192,7 +192,7 @@ namespace black_cat
 
 		void bc_orthographic_camera::create_projection_matrix()
 		{
-			set_projection(graphic::bc_matrix4f::orthographic_lh_matrix(get_near_clip(), get_far_clip(), m_max_x - m_min_x, m_max_y - m_min_y));
+			set_projection(core::bc_matrix4f::orthographic_lh_matrix(get_near_clip(), get_far_clip(), m_max_x - m_min_x, m_max_y - m_min_y));
 		}
 
 		// -- bc_perspective_camera --------------------------------------------------------------------------------
@@ -252,7 +252,7 @@ namespace black_cat
 
 		void bc_perspective_camera::create_projection_matrix()
 		{
-			set_projection(graphic::bc_matrix4f::perspective_fov_lh_matrix(m_field_of_view, m_aspect_ratio, get_near_clip(), get_far_clip()));
+			set_projection(core::bc_matrix4f::perspective_fov_lh_matrix(m_field_of_view, m_aspect_ratio, get_near_clip(), get_far_clip()));
 		}
 	}
 }

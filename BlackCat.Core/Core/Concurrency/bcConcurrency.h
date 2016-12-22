@@ -18,6 +18,8 @@ namespace black_cat
 		public:
 			static void check_for_interruption();
 
+			static bcUINT32 worker_count();
+
 			template< typename T >
 			static bc_task<T> start_task(bc_delegate< T(void) >&& p_delegate, bc_task_creation_option p_option = bc_task_creation_option::policy_none);
 
@@ -30,10 +32,18 @@ namespace black_cat
 			template< typename TIte >
 			static void when_all(TIte p_begin, TIte p_end);
 
-			// TIte:								Iterator type
-			// p_init_func:	<TLocal(void)>			Function that initialzie local data
-			// TBodyFunc:	<TLocal(TLocal, Ite)>	Function that execute as for loop body
-			// TFinalFunc	<void(TLocal)>			Function that will be called by all started threads to accumulate results
+			/**
+			 * \brief 
+			 * \tparam										TIte Iterator type
+			 * \tparam TInitFunc	<TLocal(void)>			Function that initialzie local data
+			 * \tparam TBodyFunc	<TLocal(TLocal, Ite)>	Function that execute as for loop body
+			 * \tparam TFinalFunc	<void(TLocal)>			Function that will be called by all started threads to accumulate results
+			 * \param p_begin 
+			 * \param p_end 
+			 * \param p_init_func 
+			 * \param p_body_func 
+			 * \param p_finalizer 
+			 */
 			template<typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc>
 			static void concurrent_for_each(TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer);
 			
@@ -51,15 +61,20 @@ namespace black_cat
 		private:
 			static bc_thread_manager* _get_thread_manager()
 			{
-				static bc_thread_manager* m_thread_manager = bc_get_service< bc_thread_manager >();
+				static bc_thread_manager* s_thread_manager = bc_get_service< bc_thread_manager >();
 
-				return m_thread_manager;
+				return s_thread_manager;
 			}
 		};
 
 		inline void bc_concurreny::check_for_interruption()
 		{
 			_get_thread_manager()->check_for_interruption();
+		}
+
+		inline bcUINT32 bc_concurreny::worker_count()
+		{
+			return _get_thread_manager()->thread_count();
 		}
 
 		template< typename T >

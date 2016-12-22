@@ -33,10 +33,10 @@ namespace black_cat
 			<
 				typename = typename std::enable_if
 				<
-					std::is_base_of< bc_platform_script_reference< TPlatform >, typename std::decay< type >::type >::value
+					std::is_base_of< bc_platform_script_reference< TPlatform >, std::decay_t< type > >::value
 				>::type
 			>
-			explicit bc_platform_script_ref(type&& p_object);
+			explicit bc_platform_script_ref(type& p_object);
 
 			bc_platform_script_ref(bc_platform_script_ref&&) noexcept;
 
@@ -44,7 +44,7 @@ namespace black_cat
 
 			bc_platform_script_ref& operator=(bc_platform_script_ref&&) noexcept;
 
-			bc_platform_script_ref& operator=(type&& p_object);
+			bc_platform_script_ref& operator=(type& p_object);
 
 			type* operator->() noexcept;
 
@@ -56,7 +56,7 @@ namespace black_cat
 
 			void reset();
 
-			void reset(type&& p_object);
+			void reset(type& p_object);
 
 			platform_pack& get_platform_pack()
 			{

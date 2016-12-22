@@ -17,8 +17,8 @@ namespace black_cat
 	namespace graphic
 	{
 		template<>
-		struct bc_platform_device_pipeline_state_pack<bc_platform_render_api::directx11>
-			: public bc_platform_device_pipeline_state_pack<bc_platform_render_api::unknown>
+		struct bc_platform_device_pipeline_state_pack<bc_render_api::directx11>
+			: public bc_platform_device_pipeline_state_pack<bc_render_api::unknown>
 		{
 			Microsoft::WRL::ComPtr< ID3D11BlendState > m_blend_state;
 			Microsoft::WRL::ComPtr< ID3D11DepthStencilState > m_depth_stencil_state;
@@ -27,16 +27,16 @@ namespace black_cat
 		};
 
 		template< >
-		inline bc_platform_device_pipeline_state<bc_platform_render_api::directx11>::bc_platform_device_pipeline_state() = default;
+		inline bc_platform_device_pipeline_state<bc_render_api::directx11>::bc_platform_device_pipeline_state() = default;
 
 		template< >
-		inline bc_platform_device_pipeline_state<bc_platform_render_api::directx11>::bc_platform_device_pipeline_state(bc_platform_device_pipeline_state&&) = default;
+		inline bc_platform_device_pipeline_state<bc_render_api::directx11>::bc_platform_device_pipeline_state(bc_platform_device_pipeline_state&&) = default;
 
 		template< >
-		inline bc_platform_device_pipeline_state<bc_platform_render_api::directx11>::~bc_platform_device_pipeline_state() = default;
+		inline bc_platform_device_pipeline_state<bc_render_api::directx11>::~bc_platform_device_pipeline_state() = default;
 
 		template< >
-		inline bc_platform_device_pipeline_state<bc_platform_render_api::directx11>& bc_platform_device_pipeline_state<bc_platform_render_api::directx11>::operator=(bc_platform_device_pipeline_state&&) = default;
+		inline bc_platform_device_pipeline_state<bc_render_api::directx11>& bc_platform_device_pipeline_state<bc_render_api::directx11>::operator=(bc_platform_device_pipeline_state&&) = default;
 	}
 }
 

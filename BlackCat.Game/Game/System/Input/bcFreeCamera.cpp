@@ -35,7 +35,7 @@ namespace black_cat
 			const platform::bc_pointing_device& p_pointing_device,
 			const platform::bc_key_device& p_key_device)
 		{
-			graphic::bc_vector3f l_position = get_position();
+			core::bc_vector3f l_position = get_position();
 			bcFLOAT l_move_speed = m_shift_pressed ? m_move_speed * 6 : m_ctrl_pressed ? m_move_speed * 0.25 : m_move_speed;
 			bcFLOAT l_rotate_speed = m_rotate_speed;
 
@@ -67,7 +67,7 @@ namespace black_cat
 				l_position += get_up() * l_move_speed;
 			}
 
-			graphic::bc_vector3f l_direction = get_direction();
+			core::bc_vector3f l_direction = get_direction();
 
 			if (m_rmb_pressed)
 			{
@@ -84,12 +84,12 @@ namespace black_cat
 					m_dy = -l_pi;
 				}
 
-				graphic::bc_matrix3f l_rotation_y;
-				graphic::bc_matrix3f l_rotation_x;
-				graphic::bc_matrix3f l_rotation;
+				core::bc_matrix3f l_rotation_y;
+				core::bc_matrix3f l_rotation_x;
+				core::bc_matrix3f l_rotation;
 
-				graphic::bc_vector3f l_right = get_right();
-				graphic::bc_vector3f l_up = get_up();
+				core::bc_vector3f l_right = get_right();
+				core::bc_vector3f l_up = get_up();
 
 				l_rotation_y.rotation_euler(l_up, -l_dx);
 				l_rotation_x.rotation_euler(l_right, l_dy);
@@ -101,7 +101,7 @@ namespace black_cat
 
 			auto l_lookat = l_position + l_direction;
 
-			look_at(l_position, l_lookat, graphic::bc_vector3f(0, 1, 0));
+			look_at(l_position, l_lookat, core::bc_vector3f(0, 1, 0));
 
 			m_dx = 0;
 			m_dy = 0;

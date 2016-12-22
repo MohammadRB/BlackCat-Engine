@@ -41,7 +41,7 @@ namespace black_cat
 			m_game_system->get_render_system().add_render_pass(1, core::bc_make_unique< bc_terrain_pass_dx11 >());
 			m_game_system->get_render_system().add_render_pass(2, core::bc_make_unique< bc_back_buffer_output_pass >());
 
-			m_game_system->get_input_system().get_camera().set_position_lookat(graphic::bc_vector3f(0, 100, -512), graphic::bc_vector3f(0, 0, 0));
+			m_game_system->get_input_system().get_camera().set_position_lookat(core::bc_vector3f(0, 100, -512), core::bc_vector3f(0, 0, 0));
 		}
 
 		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager* p_stream_manager)

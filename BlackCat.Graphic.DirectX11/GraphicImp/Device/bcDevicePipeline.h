@@ -28,7 +28,7 @@ namespace black_cat
 	namespace graphic
 	{
 		template< >
-		struct bc_platform_device_pipeline_pack<bc_platform_render_api::directx11> 
+		struct bc_platform_device_pipeline_pack<bc_render_api::directx11> 
 		{
 			Microsoft::WRL::ComPtr< ID3D11DeviceContext > m_context;
 			Microsoft::WRL::ComPtr< ID3D11Query > m_query;

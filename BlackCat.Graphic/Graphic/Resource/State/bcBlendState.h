@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Graphic/GraphicPCH.h"
-#include "Graphic/bcPlatformRenderApi.h"
+#include "Graphic/bcRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
 #include "Graphic/bcRenderApiInfo.h"
 
@@ -75,7 +75,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		class bc_blend_state : public bc_platform_blend_state<g_current_platform_render_api>
+		class bc_blend_state : public bc_platform_blend_state<g_current_render_api>
 		{};*/
 	}
 }

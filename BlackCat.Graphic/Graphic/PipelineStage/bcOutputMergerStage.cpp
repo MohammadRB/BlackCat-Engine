@@ -1,6 +1,7 @@
 // [01/13/2016 MRB]
 
 #include "Graphic/GraphicPCH.h"
+#include "Core/Math/bcVector4f.h"
 #include "Graphic/PipelineStage/bcOutputMergerStage.h"
 #include "Graphic/bcRenderApiInfo.h"
 
@@ -11,7 +12,7 @@ namespace black_cat
 		bc_output_merger_stage_state::bc_output_merger_stage_state()
 			: //m_blend_state(nullptr),
 			//m_depth_stencil_state(nullptr),
-			m_blend_factors(bc_vector4f(0,0,0,0)),
+			m_blend_factors(core::bc_vector4f(0,0,0,0)),
 			m_stencil_ref(0), 
 			m_render_target_views(nullptr), 
 			m_depth_target_view(nullptr), 

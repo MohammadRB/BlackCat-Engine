@@ -9,7 +9,7 @@
 #include "Core/Utility/bcLogger.h"
 #include "Platform/bcEvent.h"
 #include "Graphic/bcEvent.h"
-#include "Graphic/Math/bcMatrix4f.h"
+#include "Core/Math/bcMatrix4f.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/Resource/bcResourceConfig.h"
 #include "Game/System/Render/bcRenderSystem.h"
@@ -22,13 +22,13 @@ namespace black_cat
 		struct _bc_render_system_global_state_cbuffer
 		{
 			BC_CBUFFER_ALIGN 
-			graphic::bc_matrix4f m_view;
+			core::bc_matrix4f m_view;
 			BC_CBUFFER_ALIGN 
-			graphic::bc_matrix4f m_projection;
+			core::bc_matrix4f m_projection;
 			BC_CBUFFER_ALIGN 
-			graphic::bc_matrix4f m_viewprojection;
+			core::bc_matrix4f m_viewprojection;
 			BC_CBUFFER_ALIGN 
-			graphic::bc_vector3f m_camera_position;
+			core::bc_vector3f m_camera_position;
 			BC_CBUFFER_ALIGN 
 			bcDOUBLE m_total_elapsed;
 			bcFLOAT m_elapsed;
@@ -571,7 +571,7 @@ namespace black_cat
 				.as_buffer
 				(
 					1,
-					sizeof(graphic::bc_matrix4f),
+					sizeof(core::bc_matrix4f),
 					graphic::bc_resource_usage::gpu_rw,
 					graphic::bc_resource_view_type::none
 				)

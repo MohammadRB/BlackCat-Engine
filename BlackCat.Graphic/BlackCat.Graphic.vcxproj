@@ -28,7 +28,7 @@
     <ClInclude Include="Graphic\bcExport.h" />
     <ClInclude Include="Graphic\bcGraphicDefinition.h" />
     <ClInclude Include="Graphic\bcException.h" />
-    <ClInclude Include="Graphic\bcPlatformRenderApi.h" />
+    <ClInclude Include="Graphic\bcRenderApi.h" />
     <ClInclude Include="Graphic\bcRenderApiInfo.h" />
     <ClInclude Include="Graphic\bcResourcePtr.h" />
     <ClInclude Include="Graphic\Device\bcDevice.h" />
@@ -40,11 +40,6 @@
     <ClInclude Include="Graphic\Device\bcDevicePipeline.h" />
     <ClInclude Include="Graphic\Device\bcDevicePipelineState.h" />
     <ClInclude Include="Graphic\GraphicPCH.h" />
-    <ClInclude Include="Graphic\Math\bcMatrix3f.h" />
-    <ClInclude Include="Graphic\Math\bcMatrix4f.h" />
-    <ClInclude Include="Graphic\Math\bcVector2f.h" />
-    <ClInclude Include="Graphic\Math\bcVector3f.h" />
-    <ClInclude Include="Graphic\Math\bcVector4f.h" />
     <ClInclude Include="Graphic\PipelineStage\bcComputeStage.h" />
     <ClInclude Include="Graphic\PipelineStage\bcDomainStage.h" />
     <ClInclude Include="Graphic\PipelineStage\bcGeometryStage.h" />
@@ -112,11 +107,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Graphic\Math\bcMatrix3f.cpp" />
-    <ClCompile Include="Graphic\Math\bcMatrix4f.cpp" />
-    <ClCompile Include="Graphic\Math\bcVector2f.cpp" />
-    <ClCompile Include="Graphic\Math\bcVector3f.cpp" />
-    <ClCompile Include="Graphic\Math\bcVector4f.cpp" />
     <ClCompile Include="Graphic\PipelineStage\bcInputAssemblerStage.cpp" />
     <ClCompile Include="Graphic\PipelineStage\bcOutputMergerStage.cpp" />
     <ClCompile Include="Graphic\PipelineStage\bcProgrammableStage.cpp" />
@@ -177,6 +167,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform/;../BlackCat.Core.Platform.Win32/;../BlackCat.Core/;../BlackCat.Platform/;../BlackCat.Platform.Win32/;../3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>Graphic/GraphicPCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -187,7 +178,6 @@
       <Command>copy Graphic\*.h ..\BC_SDK\Include\Graphic
 copy Graphic\Device\*.h ..\BC_SDK\Include\Graphic\Device
 copy Graphic\Device\Command\*.h ..\BC_SDK\Include\Graphic\Device\Command
-copy Graphic\Math\*.h ..\BC_SDK\Include\Graphic\Math
 copy Graphic\PipelineStage\*.h ..\BC_SDK\Include\Graphic\PipelineStage
 copy Graphic\Resource\*.h ..\BC_SDK\Include\Graphic\Graphic\Resource
 copy Graphic\Resource\Buffer\*.h ..\BC_SDK\Include\Graphic\Resource\Buffer
@@ -232,7 +222,6 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
       <Command>copy Graphic\*.h ..\BC_SDK\Include\Graphic
 copy Graphic\Device\*.h ..\BC_SDK\Include\Graphic\Device
 copy Graphic\Device\Command\*.h ..\BC_SDK\Include\Graphic\Device\Command
-copy Graphic\Math\*.h ..\BC_SDK\Include\Graphic\Math
 copy Graphic\PipelineStage\*.h ..\BC_SDK\Include\Graphic\PipelineStage
 copy Graphic\Resource\*.h ..\BC_SDK\Include\Graphic\Graphic\Resource
 copy Graphic\Resource\Buffer\*.h ..\BC_SDK\Include\Graphic\Resource\Buffer

@@ -97,7 +97,7 @@ namespace black_cat
 
 			void unbind_rs_viewports();*/
 
-			void bind_om_blend_factors(graphic::bc_vector4f l_factors);
+			void bind_om_blend_factors(core::bc_vector4f l_factors);
 
 			void bind_om_stencil_ref(bcUINT32 l_stencil_ref);
 
@@ -121,7 +121,7 @@ namespace black_cat
 
 			void dispatch_indirect(graphic::bc_buffer* p_args, bcUINT p_offset);
 
-			void clear_buffers(graphic::bc_vector4f p_color, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
+			void clear_buffers(core::bc_vector4f p_color, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
 
 			graphic::bc_mapped_resource map_resource(graphic::bc_iresource* p_resource, bcUINT p_subresource, graphic::bc_resource_map p_map_type);
 

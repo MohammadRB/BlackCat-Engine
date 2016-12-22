@@ -81,7 +81,7 @@ namespace black_cat
 			core::bc_string* l_mesh_part_name = p_parameters.get_value< core::bc_string >(core::g_param_mesh_part);
 
 			m_mesh_part = l_mesh_part_name ? bc_mesh_part(l_mesh, l_mesh_part_name->c_str()) : bc_mesh_part(l_mesh);
-			m_mesh_part_transformation = m_mesh_part.calculate_absolute_transformations(graphic::bc_matrix4f::identity());
+			m_mesh_part_transformation = m_mesh_part.calculate_absolute_transformations(core::bc_matrix4f::identity());
 		}
 
 		void bc_mesh_component::update(const bc_actor& p_actor, core_platform::bc_clock::update_param p_clock_update_param)

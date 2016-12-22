@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/bcConstant.h"
-#include "Graphic/Math/bcVector3f.h"
+#include "Core/Math/bcVector3f.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "Game/System/Render/bcRenderState.h"
 
@@ -16,7 +16,7 @@ namespace black_cat
 			BC_CONTENT(height_map)
 
 		public:
-			bc_height_map(const graphic::bc_vector3f& p_position,
+			bc_height_map(const core::bc_vector3f& p_position,
 				bcUINT16 p_width,
 				bcUINT16 p_height,
 				bcUINT16 p_xz_multiplier,
@@ -29,7 +29,7 @@ namespace black_cat
 
 			bc_height_map& operator=(bc_height_map&& p_other) = default;
 
-			const graphic::bc_vector3f& get_position() const
+			const core::bc_vector3f& get_position() const
 			{
 				return m_position;
 			}
@@ -62,7 +62,7 @@ namespace black_cat
 		protected:
 
 		private:
-			graphic::bc_vector3f m_position;
+			core::bc_vector3f m_position;
 			bcUINT16 m_width;
 			bcUINT16 m_height;
 			bcUINT16 m_xz_multiplier;
@@ -73,7 +73,7 @@ namespace black_cat
 
 		using bc_height_map_ptr = core::bc_content_ptr< bc_height_map >;
 
-		inline bc_height_map::bc_height_map(const graphic::bc_vector3f& p_position,
+		inline bc_height_map::bc_height_map(const core::bc_vector3f& p_position,
 			bcUINT16 p_width,
 			bcUINT16 p_height,
 			bcUINT16 p_xz_multiplier,

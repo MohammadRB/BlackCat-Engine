@@ -91,9 +91,10 @@
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;BC_GAME_DLL;_DEBUG;_WINDOWS;_USRDLL;BLACKCATGAME_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>
       </SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11;../3rdParty</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11;../BlackCat.Physics;../BlackCat.Physics.PhysX;../3rdParty</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>Game/GamePCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -116,6 +117,7 @@ copy Game\System\Input\*.h ..\BC_SDK\Include\Game\System\Input
 copy Game\System\Script\*.h ..\BC_SDK\Include\Game\System\Script
 copy Game\System\Render\*.h ..\BC_SDK\Include\Game\System\Render
 copy Game\System\Render\Scence\*.h ..\BC_SDK\Include\Game\System\Render\Scence
+copy Game\System\Physics\*.h ..\BC_SDK\Include\Game\System\Physics
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
@@ -154,7 +156,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;BC_GAME_DLL;NDEBUG;_WINDOWS;_USRDLL;BLACKCATGAME_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>
       </SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11;../3rdParty</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core;../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Graphic.DirectX11;../BlackCat.Physics;../BlackCat.Physics.PhysX;../3rdParty</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>Game/GamePCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -171,6 +173,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
 copy Game\Graphic\Command\*.h ..\BC_SDK\Include\Game\Graphic\Command
 copy Game\Graphic\Pass\*.h ..\BC_SDK\Include\Game\Graphic\Pass
 copy Game\Graphic\Task\*.h ..\BC_SDK\Include\Game\Graphic\Task
+copy Game\Application\*.h ..\BC_SDK\Include\Game\Application
 copy Game\Object\*.h ..\BC_SDK\Include\Game\Object
 copy Game\Object\Mesh\*.h ..\BC_SDK\Include\Game\Object\Mesh
 copy Game\Object\Scence\*.h ..\BC_SDK\Include\Game\Object\Scence
@@ -180,6 +183,7 @@ copy Game\System\Input\*.h ..\BC_SDK\Include\Game\System\Input
 copy Game\System\Script\*.h ..\BC_SDK\Include\Game\System\Script
 copy Game\System\Render\*.h ..\BC_SDK\Include\Game\System\Render
 copy Game\System\Render\Scence\*.h ..\BC_SDK\Include\Game\System\Render\Scence
+copy Game\System\Physics\*.h ..\BC_SDK\Include\Game\System\Physics
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 copy ..\$(Configuration)\$(ProjectName).exp ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
@@ -255,6 +259,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="Game\System\Input\bcFileSystem.h" />
     <ClInclude Include="Game\System\Input\bcFreeCamera.h" />
     <ClInclude Include="Game\System\Input\bcInputSystem.h" />
+    <ClInclude Include="Game\System\Physics\bcPhysicsSystem.h" />
     <ClInclude Include="Game\System\Render\bcComputeState.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </ExcludedFromBuild>
@@ -315,6 +320,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="Game\System\Input\bcCamera.cpp" />
     <ClCompile Include="Game\System\Input\bcFileSystem.cpp" />
     <ClCompile Include="Game\System\Input\bcFreeCamera.cpp" />
+    <ClCompile Include="Game\System\Physics\bcPhysicsSystem.cpp" />
     <ClCompile Include="Game\System\Render\bcComputeState.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </ExcludedFromBuild>
@@ -352,6 +358,9 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     </ProjectReference>
     <ProjectReference Include="..\BlackCat.Graphic\BlackCat.Graphic.vcxproj">
       <Project>{7b267e54-9da2-435d-be52-4388e78a1661}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\BlackCat.Physics.PhysX\BlackCat.Physics.PhysX.vcxproj">
+      <Project>{f3bd2963-a256-4b38-9018-a31aa5558593}</Project>
     </ProjectReference>
     <ProjectReference Include="..\BlackCat.Platform.Win32\BlackCat.Platform.Win32.vcxproj">
       <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
