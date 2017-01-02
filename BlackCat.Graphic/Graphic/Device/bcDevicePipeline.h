@@ -5,8 +5,8 @@
 #include "Core/Math/bcVector4f.h"
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcRenderApi.h"
-#include "Graphic/bcDeviceObject.h"
-#include "Graphic/bcResourcePtr.h"
+#include "Graphic/bcDeviceReference.h"
+#include "Graphic/bcDeviceRef.h"
 #include "Graphic/Device/bcDevice.h"
 #include "Graphic/Device/bcDevicePipelineState.h"
 #include "Graphic/Device/bcDeviceComputeState.h"
@@ -37,33 +37,41 @@ namespace black_cat
 		};
 
 		template< bc_render_api TRenderApi >
-		class bc_platform_device_pipeline : public bc_device_object
+		class bc_platform_device_pipeline : public bc_platform_device_reference<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_device_pipeline_pack<TRenderApi>;
 
 		public:
-			bc_platform_device_pipeline(bc_device& p_device);
+			bc_platform_device_pipeline();
 
-			bc_platform_device_pipeline(bc_platform_device_pipeline&&);
+			bc_platform_device_pipeline(platform_pack& p_pack, bc_device* p_device);
+
+			bc_platform_device_pipeline(const bc_platform_device_pipeline&);
 
 			~bc_platform_device_pipeline();
 
-			bc_platform_device_pipeline& operator=(bc_platform_device_pipeline&&);
+			bc_platform_device_pipeline& operator=(const bc_platform_device_pipeline&);
 
-			// Bind and Apply required pipeline states
-			void bind_pipeline_state(bc_device_pipeline_state* p_state);
+			/**
+			 * \brief Bind and Apply required pipeline states.
+			 * \param p_state 
+			 */
+			void bind_pipeline_state(bc_device_pipeline_state p_state);
 
 			void unbind_pipeline_state();
 
-			// Bind and Apply required pipeline states
-			void bind_compute_state(bc_device_compute_state* p_state);
+			/**
+			 * \brief Bind and Apply required pipeline states.
+			 * \param p_state 
+			 */
+			void bind_compute_state(bc_device_compute_state p_state);
 
 			void unbind_compute_state();
 
 			void bind_ia_primitive_topology(bc_primitive p_primitive);
 
-			void bind_ia_index_buffer(bc_buffer* p_buffer, bc_format p_format);
+			void bind_ia_index_buffer(bc_buffer p_buffer, bc_format p_format);
 
 			void unbind_ia_index_buffer();
 
@@ -95,7 +103,7 @@ namespace black_cat
 
 			void bind_om_stencil_ref(bcUINT32 l_stencil_ref);
 
-			void bind_om_render_targets(bcUINT p_target_count, bc_render_target_view* p_targets, bc_depth_stencil_view* p_depth);
+			void bind_om_render_targets(bcUINT p_target_count, bc_render_target_view* p_targets, bc_depth_stencil_view p_depth);
 
 			void unbind_om_render_targets();
 
@@ -109,38 +117,51 @@ namespace black_cat
 
 			void draw_indexed_instanced(bcUINT p_index_count_per_instance, bcUINT p_instance_count, bcUINT p_start_index_location, bcINT p_base_vertex_location, bcUINT p_start_instance_location);
 			
-			void draw_indexed_instanced_indirect(bc_buffer* p_args_buffer, bcUINT p_offset);
+			void draw_indexed_instanced_indirect(bc_buffer p_args_buffer, bcUINT p_offset);
 
 			void dispatch(bcUINT p_x, bcUINT p_y, bcUINT p_z);
 
-			void dispatch_indirect(bc_buffer* p_args, bcUINT p_offset);
+			void dispatch_indirect(bc_buffer p_args, bcUINT p_offset);
 
 			void clear_buffers(core::bc_vector4f p_color, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
 
-			bc_mapped_resource map_resource(bc_iresource* p_resource, bcUINT p_subresource, bc_resource_map p_map_type);
+			bc_mapped_resource map_resource(bc_iresource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type);
 			
-			void unmap_resource(bc_iresource* p_resource, bcUINT p_subresource);
+			void unmap_resource(bc_iresource& p_resource, bcUINT p_subresource);
 
-			void update_subresource(bc_iresource* p_resource, bcUINT p_dst_subresource, const void *p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch);
+			void update_subresource(bc_iresource& p_resource, bcUINT p_dst_subresource, const void *p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch);
 
-			void copy_subresource(bc_iresource* p_dest_resource, bcUINT p_dst_subresource, bc_iresource* p_src_resource, bcUINT p_src_subresource);
+			void copy_subresource(bc_iresource& p_dest_resource, bcUINT p_dst_subresource, bc_iresource& p_src_resource, bcUINT p_src_subresource);
 
-			void copy_resource(bc_iresource* p_dest_resource, bc_iresource* p_src_resource);
+			void copy_resource(bc_iresource& p_dest_resource, bc_iresource& p_src_resource);
 
-			void copy_structure_count(bc_buffer* p_dest_resource, bcUINT p_offset, bc_resource_view* p_unordered_resource);
+			void copy_structure_count(bc_buffer p_dest_resource, bcUINT p_offset, bc_resource_view p_unordered_resource);
 
-			void resolve_subresource(bc_iresource* p_dest_resource,
+			void resolve_subresource(bc_iresource& p_dest_resource,
 				bcUINT p_dest_subresource,
-				bc_iresource* p_src_resource,
+				bc_iresource& p_src_resource,
 				bcUINT p_src_subresource,
 				bc_format p_format);
 
-			// Write commands to command list and reset pipeline state
-			void finish_command_list(bc_device_command_list* p_command_list);
+			/**
+			 * \brief Write commands to command list and reset pipeline state.
+			 * \param p_command_list 
+			 */
+			void finish_command_list(bc_device_command_list& p_command_list);
 
 			void start_monitoring_pipeline();
 
 			bc_device_pipeline_statistic end_monitoring_pipeline();
+
+			bool is_valid() const noexcept override;
+
+			bool operator==(const bc_platform_device_pipeline& p_other) const noexcept;
+
+			bool operator!=(const bc_platform_device_pipeline& p_other) const noexcept;
+
+			bool operator==(std::nullptr_t) const noexcept;
+
+			bool operator!=(std::nullptr_t) const noexcept;
 
 			platform_pack& get_platform_pack()
 			{
@@ -150,26 +171,11 @@ namespace black_cat
 		protected:
 
 		private:
-			bc_device& m_device;
-
-			bc_input_assembler_stage m_input_assembler_stage;
-			bc_stream_output_stage m_stream_output_stage;
-			bc_rasterizer_stage m_rasterizer_stage;
-			bc_output_merger_stage m_output_merger_stage;
-			bc_vertex_stage	m_vertex_shader_stage;
-			bc_hull_stage m_hull_shader_stage;
-			bc_domain_stage	m_domain_shader_stage;
-			bc_geometry_stage m_geometry_shader_stage;
-			bc_pixel_stage m_pixel_shader_stage;
-			bc_compute_stage m_compute_shader_stage;
-
-			bc_programmable_stage* m_shader_stages[6];
-
+			bc_device* m_device;
 			platform_pack m_pack;
 		};
 
 		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
-
-		using bc_device_pipeline_ptr = bc_resource_ptr< bc_device_pipeline >;
+		using bc_device_pipeline_ptr = bc_device_ref< bc_device_pipeline >;
 	}
 }

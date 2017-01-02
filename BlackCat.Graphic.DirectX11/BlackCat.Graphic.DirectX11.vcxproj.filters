@@ -135,6 +135,12 @@
     <ClCompile Include="GraphicImp\Device\bcDeviceOutput.cpp">
       <Filter>GraphicImp\Device</Filter>
     </ClCompile>
+    <ClCompile Include="GraphicImp\bcDeviceReference.cpp">
+      <Filter>GraphicImp</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicImp\bcDeviceRef.cpp">
+      <Filter>GraphicImp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicImp\GraphicImpPCH.h">
@@ -277,6 +283,15 @@
     </ClInclude>
     <ClInclude Include="GraphicImp\Device\bcDeviceOutput.h">
       <Filter>GraphicImp\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\bcDeviceReference.h">
+      <Filter>GraphicImp</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\bcDeviceRef.h">
+      <Filter>GraphicImp</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\bcRefCountProxy.h">
+      <Filter>GraphicImp</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

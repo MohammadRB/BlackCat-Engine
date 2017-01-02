@@ -58,9 +58,9 @@ namespace black_cat
 
 			bc_render_pass_state& operator=(bc_render_pass_state&&) noexcept = default;
 
-			const graphic::bc_device_pipeline_state_ptr& get_pipeline_state() const
+			const graphic::bc_device_pipeline_state& get_pipeline_state() const
 			{
-				return m_pipeline_state;
+				return m_pipeline_state.get();
 			}
 
 			graphic::bc_viewport get_viewport() const
@@ -73,9 +73,9 @@ namespace black_cat
 				return m_shader_targets;
 			}
 
-			const graphic::bc_depth_stencil_view_ptr& get_depth_stencil() const
+			const graphic::bc_depth_stencil_view& get_depth_stencil() const
 			{
-				return m_shader_depth;
+				return m_shader_depth.get();
 			}
 
 			const bc_render_pass_state_sampler_array& get_samplers() const
@@ -96,10 +96,10 @@ namespace black_cat
 		protected:
 
 		private:
-			bc_render_pass_state(graphic::bc_device_pipeline_state_ptr& p_pipeline_state,
+			bc_render_pass_state(graphic::bc_device_pipeline_state p_pipeline_state,
 				graphic::bc_viewport p_viewport,
 				bc_render_pass_state_render_target_view_array&& p_shader_targets,
-				graphic::bc_depth_stencil_view_ptr& p_shader_depth,
+				graphic::bc_depth_stencil_view p_shader_depth,
 				bc_render_pass_state_sampler_array&& p_shader_samplers,
 				bc_render_pass_state_resource_view_array&& p_shader_views,
 				bc_render_pass_state_constant_buffer_array&& p_shader_buffers);

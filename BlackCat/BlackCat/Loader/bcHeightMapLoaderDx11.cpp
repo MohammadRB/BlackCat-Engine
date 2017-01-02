@@ -68,7 +68,7 @@ namespace black_cat
 			core::bc_content_loader_parameter(p_context.m_parameter)
 		);
 
-		bcUINT16 l_chund_size = 64;
+		constexpr bcUINT16 l_chund_size = 64;
 		auto l_width = l_heightmap_texture->get_resource()->get_width();
 		auto l_height = l_heightmap_texture->get_resource()->get_height();
 
@@ -240,9 +240,10 @@ namespace black_cat
 		auto l_render_state = l_render_system.create_render_state
 		(
 			graphic::bc_primitive::control_point_4_patchlist,
-			l_vertex_buffer,
+			l_vertex_buffer.get(),
+			sizeof(game::bc_vertex_pos_tex),
 			0,
-			l_index_buffer,
+			l_index_buffer.get(),
 			game::i16bit,
 			l_indices.size(),
 			0,

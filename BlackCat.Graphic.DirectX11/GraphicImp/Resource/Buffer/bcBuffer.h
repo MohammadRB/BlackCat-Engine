@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "GraphicImp/bcDeviceRef.h"
 #include "GraphicImp/Resource/bcResource.h"
 #include "GraphicImp/Resource/Buffer/bcBufferConfig.h"
 
@@ -13,9 +14,9 @@ namespace black_cat
 	namespace graphic
 	{
 		template<>
-		struct bc_platform_buffer_pack<g_api_dx11> : public bc_platform_buffer_pack<g_api_unknown>
+		struct bc_platform_buffer_pack<g_api_dx11>
 		{
-			Microsoft::WRL::ComPtr< ID3D11Buffer > m_buffer;
+			ID3D11Buffer* m_buffer;
 		};
 	}
 }

@@ -318,20 +318,21 @@ namespace black_cat
 
 		l_diffuse_map_view = l_material.m_diffuse_map ?
 			                     p_device->create_resource_view(l_material.m_diffuse_map->get_resource().get(), l_texture_view_config) :
-			                     nullptr;
+			                     graphic::bc_resource_view_ptr();
 		l_specular_map_view = l_material.m_specular_map ?
 			                      p_device->create_resource_view(l_material.m_specular_map->get_resource().get(), l_texture_view_config) :
-			                      nullptr;
+			                      graphic::bc_resource_view_ptr();
 		l_normal_map_view = l_material.m_normal_map ?
 			                    p_device->create_resource_view(l_material.m_normal_map->get_resource().get(), l_texture_view_config) :
-			                    nullptr;
+			                    graphic::bc_resource_view_ptr();
 
 		*p_mesh_render_state = p_game_system->get_render_system().create_render_state
 		(
 			graphic::bc_primitive::trianglelist,
-			l_vertex_buffer,
+			l_vertex_buffer.get(),
+			sizeof(game::bc_vertex_pos_tex_nor_tan),
 			0,
-			l_index_buffer,
+			l_index_buffer.get(),
 			l_need_32bit_indices ? game::bc_index_type::i32bit : game::bc_index_type::i16bit,
 			l_index_count,
 			0,

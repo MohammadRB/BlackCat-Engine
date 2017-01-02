@@ -21,23 +21,23 @@ namespace black_cat
 		public:
 			bc_render_thread();
 
-			graphic::bc_device_pipeline* get_pipeline() noexcept
+			graphic::bc_device_pipeline get_pipeline() noexcept
 			{
 				return m_pipeline.get();
 			}
 
-			graphic::bc_device_command_executer* get_executer() noexcept
+			graphic::bc_device_command_executer get_executer() noexcept
 			{
 				return m_executer.get();
 			}
 
-			void start(graphic::bc_device_command_list* p_command_list) noexcept;
+			void start(graphic::bc_device_command_list p_command_list) noexcept;
 			
 			/**
 			 * \brief save device pipeline commands in command list and execute command list
 			 * \return command list passed into when running new thread
 			 */
-			graphic::bc_device_command_list* finish() noexcept;
+			graphic::bc_device_command_list finish() noexcept;
 
 			/**
 			 * \brief Bind render pass states to given device pipeline and apply changes
@@ -115,42 +115,42 @@ namespace black_cat
 
 			void draw_indexed_instanced(bcUINT p_index_count_per_instance, bcUINT p_instance_count, bcUINT p_start_index_location, bcINT p_base_vertex_location, bcUINT p_start_instance_location);
 
-			void draw_indexed_instanced_indirect(graphic::bc_buffer* p_args_buffer, bcUINT p_offset);
+			void draw_indexed_instanced_indirect(graphic::bc_buffer p_args_buffer, bcUINT p_offset);
 
 			void dispatch(bcUINT p_x, bcUINT p_y, bcUINT p_z);
 
-			void dispatch_indirect(graphic::bc_buffer* p_args, bcUINT p_offset);
+			void dispatch_indirect(graphic::bc_buffer p_args, bcUINT p_offset);
 
 			void clear_buffers(core::bc_vector4f p_color, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
 
-			graphic::bc_mapped_resource map_resource(graphic::bc_iresource* p_resource, bcUINT p_subresource, graphic::bc_resource_map p_map_type);
+			graphic::bc_mapped_resource map_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource, graphic::bc_resource_map p_map_type);
 
-			void unmap_resource(graphic::bc_iresource* p_resource, bcUINT p_subresource);
+			void unmap_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource);
 
-			void update_subresource(graphic::bc_iresource* p_resource, bcUINT p_dst_subresource, const void *p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch);
+			void update_subresource(graphic::bc_iresource& p_resource, bcUINT p_dst_subresource, const void *p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch);
 
-			void copy_subresource(graphic::bc_iresource* p_dest_resource, bcUINT p_dst_subresource, graphic::bc_iresource* p_src_resource, bcUINT p_src_subresource);
+			void copy_subresource(graphic::bc_iresource& p_dest_resource, bcUINT p_dst_subresource, graphic::bc_iresource& p_src_resource, bcUINT p_src_subresource);
 
-			void copy_resource(graphic::bc_iresource* p_dest_resource, graphic::bc_iresource* p_src_resource);
+			void copy_resource(graphic::bc_iresource& p_dest_resource, graphic::bc_iresource& p_src_resource);
 
-			void copy_structure_count(graphic::bc_buffer* p_dest_resource, bcUINT p_offset, graphic::bc_resource_view* p_unordered_resource);
+			void copy_structure_count(graphic::bc_buffer p_dest_resource, bcUINT p_offset, graphic::bc_resource_view p_unordered_resource);
 
-			void resolve_subresource(graphic::bc_iresource* p_dest_resource,
+			void resolve_subresource(graphic::bc_iresource& p_dest_resource,
 				bcUINT p_dest_subresource,
-				graphic::bc_iresource* p_src_resource,
+				graphic::bc_iresource& p_src_resource,
 				bcUINT p_src_subresource,
 				graphic::bc_format p_format);
 
 			void reset();
 
-			void reset(graphic::bc_device_pipeline_ptr& p_pipeline, graphic::bc_device_command_executer_ptr& p_command_executer);
+			void reset(graphic::bc_device_pipeline p_pipeline, graphic::bc_device_command_executer p_command_executer);
 
 		protected:
 
 		private:
 			graphic::bc_device_pipeline_ptr m_pipeline;
 			graphic::bc_device_command_executer_ptr m_executer;
-			graphic::bc_device_command_list* m_command_list;
+			graphic::bc_device_command_list m_command_list;
 		};
 	}
 }

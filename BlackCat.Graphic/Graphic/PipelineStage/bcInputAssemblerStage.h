@@ -20,28 +20,28 @@ namespace black_cat
 
 		// -- Input assembler state -----------------------------------------------------------------------------
 
-		class BC_GRAPHIC_DLL bc_input_assembler_stage_state
+		class bc_input_assembler_stage_state
 		{
 		public:
 			bc_input_assembler_stage_state();
 
-			bc_input_assembler_stage_state(const bc_input_assembler_stage_state&) = default;
+			bc_input_assembler_stage_state(const bc_input_assembler_stage_state&) noexcept = default;
 
-			bc_input_assembler_stage_state(bc_input_assembler_stage_state&&) = default;
+			bc_input_assembler_stage_state(bc_input_assembler_stage_state&&) noexcept = default;
 
 			~bc_input_assembler_stage_state();
 
-			bc_input_assembler_stage_state& operator=(const bc_input_assembler_stage_state&) = default;
+			bc_input_assembler_stage_state& operator=(const bc_input_assembler_stage_state&) noexcept = default;
 
-			bc_input_assembler_stage_state& operator=(bc_input_assembler_stage_state&&) = default;
+			bc_input_assembler_stage_state& operator=(bc_input_assembler_stage_state&&) noexcept = default;
 
-			void set_to_initial_state();
+			void set_to_initial_state() noexcept;
 
-			void reset_tracking();
+			void reset_tracking() noexcept;
 
-			bc_pipeline_state_variable< bc_buffer* > m_index_buffer;
+			bc_pipeline_state_variable< bc_buffer > m_index_buffer;
 			bc_pipeline_state_variable< bc_format > m_index_buffer_format;
-			bc_pipeline_state_array_variable< bc_buffer*, bc_render_api_info::number_of_ia_vertex_buffers() > m_vertex_buffers;
+			bc_pipeline_state_array_variable< bc_buffer, bc_render_api_info::number_of_ia_vertex_buffers() > m_vertex_buffers;
 			bc_pipeline_state_array_variable< bcUINT, bc_render_api_info::number_of_ia_vertex_buffers() > m_vertex_buffers_strides;
 			bc_pipeline_state_array_variable< bcUINT, bc_render_api_info::number_of_ia_vertex_buffers() > m_vertex_buffers_offsets;
 			//bc_pipeline_state_variable< bc_input_layout* > m_input_layout;
@@ -50,8 +50,45 @@ namespace black_cat
 		protected:
 
 		private:
-
 		};
+
+		inline bc_input_assembler_stage_state::bc_input_assembler_stage_state()
+			: m_index_buffer(bc_buffer()),
+			m_index_buffer_format(bc_format::R32_UINT),
+			m_vertex_buffers(bc_buffer()),
+			m_vertex_buffers_strides(0),
+			m_vertex_buffers_offsets(0),
+			//m_input_layout(nullptr),
+			m_primitive_topology(bc_primitive::undefined)
+
+		{
+		}
+
+		inline bc_input_assembler_stage_state::~bc_input_assembler_stage_state()
+		{
+		}
+
+		inline void bc_input_assembler_stage_state::set_to_initial_state() noexcept
+		{
+			m_index_buffer.set_to_initial_state();
+			m_index_buffer_format.set_to_initial_state();
+			m_vertex_buffers.set_to_initial_state();
+			m_vertex_buffers_strides.set_to_initial_state();
+			m_vertex_buffers_offsets.set_to_initial_state();
+			//m_input_layout.set_to_initial_state();
+			m_primitive_topology.set_to_initial_state();
+		}
+
+		inline void bc_input_assembler_stage_state::reset_tracking() noexcept
+		{
+			m_index_buffer.reset_tracking();
+			m_index_buffer_format.reset_tracking();
+			m_vertex_buffers.reset_tracking();
+			m_vertex_buffers_strides.reset_tracking();
+			m_vertex_buffers_offsets.reset_tracking();
+			//m_input_layout.reset_tracking();
+			m_primitive_topology.reset_tracking();
+		}
 
 		// -- Input assembler stage -----------------------------------------------------------------------------
 
@@ -67,13 +104,13 @@ namespace black_cat
 			using platform_pack = bc_platform_input_assembler_stage_pack<TRenderApi>;
 
 		public:
-			bc_platform_input_assembler_stage();
+			bc_platform_input_assembler_stage(platform_pack& p_pack);
 
-			bc_platform_input_assembler_stage(bc_platform_input_assembler_stage&&);
+			bc_platform_input_assembler_stage(bc_platform_input_assembler_stage&&) noexcept;
 
 			~bc_platform_input_assembler_stage();
 
-			bc_platform_input_assembler_stage& operator=(bc_platform_input_assembler_stage&&);
+			bc_platform_input_assembler_stage& operator=(bc_platform_input_assembler_stage&&) noexcept;
 
 			void apply_required_state(bc_device_pipeline* p_pipeline);
 

@@ -101,11 +101,11 @@ namespace black_cat
 
 			graphic::bc_device_pipeline_state_config l_pipeline_config;
 
-			l_pipeline_config.m_vertex_shader = l_vertex_shader ? l_vertex_shader.get()->get_resource() : nullptr;
-			l_pipeline_config.m_hull_shader = l_hull_shader ? l_hull_shader.get()->get_resource() : nullptr;
-			l_pipeline_config.m_domain_shader = l_domain_shader ? l_domain_shader.get()->get_resource() : nullptr;
-			l_pipeline_config.m_geometry_shader = l_geometry_shader ? l_geometry_shader.get()->get_resource() : nullptr;
-			l_pipeline_config.m_pixel_shader = l_pixel_shader ? l_pixel_shader.get()->get_resource() : nullptr;
+			l_pipeline_config.m_vertex_shader = l_vertex_shader ? l_vertex_shader.get()->get_resource() : graphic::bc_vertex_shader_ptr();
+			l_pipeline_config.m_hull_shader = l_hull_shader ? l_hull_shader.get()->get_resource() : graphic::bc_hull_shader_ptr();
+			l_pipeline_config.m_domain_shader = l_domain_shader ? l_domain_shader.get()->get_resource() : graphic::bc_domain_shader_ptr();
+			l_pipeline_config.m_geometry_shader = l_geometry_shader ? l_geometry_shader.get()->get_resource() : graphic::bc_geometry_shader_ptr();
+			l_pipeline_config.m_pixel_shader = l_pixel_shader ? l_pixel_shader.get()->get_resource() : graphic::bc_pixel_shader_ptr();
 			l_pipeline_config.m_blend_state_config = l_blend_state_config;
 			l_pipeline_config.m_sample_mask = p_sample_mask;
 			l_pipeline_config.m_depth_stencil_state_config = l_depth_stencil_state_config;
@@ -134,10 +134,10 @@ namespace black_cat
 			return m_device.create_compute_state(l_compute_config);
 		}
 
-		bc_render_pass_state_ptr bc_render_system::create_render_pass_state(graphic::bc_device_pipeline_state_ptr& p_pipeline_state,
+		bc_render_pass_state_ptr bc_render_system::create_render_pass_state(graphic::bc_device_pipeline_state p_pipeline_state,
 			graphic::bc_viewport p_viewport,
 			bc_render_pass_state_render_target_view_array&& p_shader_targets,
-			graphic::bc_depth_stencil_view_ptr& p_shader_depth,
+			graphic::bc_depth_stencil_view p_shader_depth,
 			bc_render_pass_state_sampler_array&& p_shader_samplers,
 			bc_render_pass_state_resource_view_array&& p_resource_views,
 			bc_render_pass_state_constant_buffer_array&& p_shader_buffers)
@@ -200,9 +200,10 @@ namespace black_cat
 		}
 
 		bc_render_state_ptr bc_render_system::create_render_state(graphic::bc_primitive p_primitive,
-			graphic::bc_buffer_ptr& p_vertex_buffer, 
+			graphic::bc_buffer p_vertex_buffer, 
+			bcUINT32 p_vertex_buffer_stride,
 			bcUINT32 p_verext_buffer_offset, 
-			graphic::bc_buffer_ptr& p_index_buffer, 
+			graphic::bc_buffer p_index_buffer, 
 			bc_index_type p_index_type,
 			bcUINT32 p_index_count, 
 			bcUINT32 p_index_buffer_offset, 
@@ -213,6 +214,7 @@ namespace black_cat
 				(
 					p_primitive,
 					p_vertex_buffer,
+					p_vertex_buffer_stride,
 					p_verext_buffer_offset,
 					p_index_buffer,
 					p_index_type,
@@ -265,7 +267,7 @@ namespace black_cat
 			}
 		}
 
-		bc_compute_state_ptr bc_render_system::create_compute_state(graphic::bc_device_compute_state_ptr& p_compute_state,
+		bc_compute_state_ptr bc_render_system::create_compute_state(graphic::bc_device_compute_state p_compute_state,
 			bcUINT32 p_dispatch_x,
 			bcUINT32 p_dispatch_y,
 			bcUINT32 p_dispatch_z,
@@ -416,7 +418,7 @@ namespace black_cat
 
 			auto l_pass = m_render_pass_manager.get_pass(p_location);
 
-			l_pass->initialize_resources(*this, &m_device);
+			l_pass->initialize_resources(*this, m_device);
 		}
 
 		bool bc_render_system::remove_render_pass(bcUINT p_location)
@@ -426,7 +428,7 @@ namespace black_cat
 			if (!l_pass)
 				return false;
 
-			l_pass->destroy(&m_device);
+			l_pass->destroy(m_device);
 
 			return m_render_pass_manager.remove_pass(p_location);
 		}
@@ -436,9 +438,11 @@ namespace black_cat
 			auto* l_pass = m_render_pass_manager.get_pass(std::move(p_name));
 
 			if (!l_pass)
+			{
 				return false;
-
-			l_pass->destroy(&m_device);
+			}
+			
+			l_pass->destroy(m_device);
 
 			return m_render_pass_manager.remove_pass(std::move(p_name));
 		}
@@ -541,7 +545,7 @@ namespace black_cat
 			auto l_device_executer = m_device.create_command_executer();
 			auto l_device_pipeline = m_device.create_pipeline();
 			
-			m_render_thread.reset(l_device_pipeline, l_device_executer);
+			m_render_thread.reset(l_device_pipeline.get(), l_device_executer.get());
 
 			m_device.set_allocator_alloc_type(l_alloc_type);
 
@@ -610,7 +614,7 @@ namespace black_cat
 			m_device_listener_handle.reset();
 			m_window_resize_handle.reset();
 
-			m_render_pass_manager.pass_destroy(&m_device);
+			m_render_pass_manager.pass_destroy(m_device);
 
 #ifdef BC_DEBUG // All states must be release upon render system destruction
 			auto l_render_pass_states_count = 0;

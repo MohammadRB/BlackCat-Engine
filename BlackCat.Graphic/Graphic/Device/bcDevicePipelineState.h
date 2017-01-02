@@ -5,8 +5,8 @@
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcRenderApi.h"
 #include "Graphic/bcRenderApiInfo.h"
-#include "Graphic/bcDeviceObject.h"
-#include "Graphic/bcResourcePtr.h"
+#include "Graphic/bcDeviceReference.h"
+#include "Graphic/bcDeviceRef.h"
 #include "Graphic/Resource/State/bcBlendState.h"
 #include "Graphic/Resource/State/bcDepthStencilState.h"
 #include "Graphic/Resource/State/bcRasterizerState.h"
@@ -48,28 +48,36 @@ namespace black_cat
 		template< bc_render_api TRenderApi >
 		struct bc_platform_device_pipeline_state_pack
 		{
-			bc_device_pipeline_state_config m_config;
 		};
 
 		template< bc_render_api TRenderApi >
-		class bc_platform_device_pipeline_state : public bc_device_object
+		class bc_platform_device_pipeline_state : public bc_platform_device_reference<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_device_pipeline_state_pack<TRenderApi>;
 
 		public:
 			bc_platform_device_pipeline_state();
+
+			explicit bc_platform_device_pipeline_state(platform_pack& p_pack);
 			
-			bc_platform_device_pipeline_state(bc_platform_device_pipeline_state&&);
+			bc_platform_device_pipeline_state(const bc_platform_device_pipeline_state&);
 
 			~bc_platform_device_pipeline_state();
 
-			bc_platform_device_pipeline_state& operator=(bc_platform_device_pipeline_state&&);
+			bc_platform_device_pipeline_state& operator=(const bc_platform_device_pipeline_state&);
 
-			bc_device_pipeline_state_config& get_config()
-			{
-				return m_pack.m_config;
-			}
+			void get_config(bc_device_pipeline_state_config& p_config);
+
+			bool is_valid() const noexcept override;
+
+			bool operator==(const bc_platform_device_pipeline_state& p_other) const noexcept;
+
+			bool operator!=(const bc_platform_device_pipeline_state& p_other) const noexcept;
+
+			bool operator==(std::nullptr_t) const noexcept;
+
+			bool operator!=(std::nullptr_t) const noexcept;
 
 			platform_pack& get_platform_pack()
 			{
@@ -83,7 +91,6 @@ namespace black_cat
 		};
 
 		using bc_device_pipeline_state = bc_platform_device_pipeline_state<g_current_render_api>;
-
-		using bc_device_pipeline_state_ptr = bc_resource_ptr<bc_device_pipeline_state>;
+		using bc_device_pipeline_state_ptr = bc_device_ref<bc_device_pipeline_state>;
 	}
 }

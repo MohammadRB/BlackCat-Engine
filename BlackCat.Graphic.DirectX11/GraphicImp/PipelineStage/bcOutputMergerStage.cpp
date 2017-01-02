@@ -13,45 +13,45 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< >
+		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_output_merger_stage<g_api_dx11>::bc_platform_output_merger_stage()
-			: m_pack()
+		bc_platform_output_merger_stage< g_api_dx11 >::bc_platform_output_merger_stage(platform_pack& p_pack)
+			: m_pack(p_pack)
 		{
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_output_merger_stage<g_api_dx11>::bc_platform_output_merger_stage(bc_platform_output_merger_stage&& p_other)
+		bc_platform_output_merger_stage< g_api_dx11 >::bc_platform_output_merger_stage(bc_platform_output_merger_stage&& p_other) noexcept
 			: m_pack(std::move(p_other.m_pack))
 		{
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_output_merger_stage<g_api_dx11>::~bc_platform_output_merger_stage()
+		bc_platform_output_merger_stage< g_api_dx11 >::~bc_platform_output_merger_stage()
 		{
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_output_merger_stage<g_api_dx11>& bc_platform_output_merger_stage<g_api_dx11>::operator=(bc_platform_output_merger_stage&& p_other)
+		bc_platform_output_merger_stage< g_api_dx11 >& bc_platform_output_merger_stage< g_api_dx11 >::operator=(bc_platform_output_merger_stage&& p_other) noexcept
 		{
 			m_pack = std::move(p_other.m_pack);
 
 			return *this;
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_output_merger_stage<g_api_dx11>::apply_required_state(bc_device_pipeline* p_pipeline)
+		void bc_platform_output_merger_stage< g_api_dx11 >::apply_required_state(bc_device_pipeline* p_pipeline)
 		{
-			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_context.Get();
+			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline->m_context;
 			bc_output_merger_stage_state& l_required_state = m_required_state;
 
-			if(l_required_state.m_blend_factors.update_needed())
+			if (l_required_state.m_blend_factors.update_needed())
 			{
-				ComPtr<ID3D11BlendState> l_current_blend_state;
+				ComPtr< ID3D11BlendState > l_current_blend_state;
 				bcFLOAT l_current_blend_factors[4];
 				bcUINT l_current_sample_mask;
 
@@ -65,9 +65,9 @@ namespace black_cat
 				l_context->OMSetBlendState(l_current_blend_state.Get(), l_current_blend_factors, l_current_sample_mask);
 			}
 
-			if(l_required_state.m_stencil_ref.update_needed())
+			if (l_required_state.m_stencil_ref.update_needed())
 			{
-				ComPtr<ID3D11DepthStencilState> l_current_depth_stencil_state;
+				ComPtr< ID3D11DepthStencilState > l_current_depth_stencil_state;
 				bcUINT32 l_current_stencil_ref;
 
 				l_context->OMGetDepthStencilState(l_current_depth_stencil_state.GetAddressOf(), &l_current_stencil_ref);
@@ -88,18 +88,18 @@ namespace black_cat
 
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_om_render_target_slots(); ++i)
 				{
-					bc_render_target_view* l_target_view = l_required_state.m_render_target_views.get(i);
-					l_render_target_views[i] = l_target_view ?
-						                           l_target_view->get_platform_pack().m_render_target_view.Get() :
+					bc_render_target_view l_target_view = l_required_state.m_render_target_views.get(i);
+					l_render_target_views[i] = l_target_view.is_valid() ?
+						                           l_target_view.get_platform_pack().m_render_target_view :
 						                           nullptr;
 				}
-				l_depth_stencil_view = l_required_state.m_depth_target_view.get() ?
-					                       l_required_state.m_depth_target_view.get()->get_platform_pack().m_depth_stencil_view.Get() :
+				l_depth_stencil_view = l_required_state.m_depth_target_view.get().is_valid() ?
+					                       l_required_state.m_depth_target_view.get().get_platform_pack().m_depth_stencil_view :
 					                       nullptr;
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_ps_cs_uav_resource(); ++i)
 				{
-					bc_resource_view* l_view = l_required_state.m_unordered_access_views.get(i);
-					l_unordered_views[i] = l_view ? l_view->get_platform_pack().m_unordered_shader_view.Get() : nullptr;
+					bc_resource_view l_view = l_required_state.m_unordered_access_views.get(i);
+					l_unordered_views[i] = l_view.is_valid() ? l_view.get_platform_pack().m_unordered_shader_view : nullptr;
 					l_uav_initialCounts[i] = -1;
 				}
 
@@ -107,23 +107,23 @@ namespace black_cat
 				bcUINT l_uav_dirty_slot_num = l_required_state.m_unordered_access_views.get_dirty_count();
 
 				l_context->OMSetRenderTargetsAndUnorderedAccessViews
-					(
-						l_num_rtv,
-						l_render_target_views,
-						l_depth_stencil_view,
-						l_uav_dirty_slot_start,
-						l_uav_dirty_slot_num,
-						&l_unordered_views[l_uav_dirty_slot_start],
-						l_uav_initialCounts
-					);
+				(
+					l_num_rtv,
+					l_render_target_views,
+					l_depth_stencil_view,
+					l_uav_dirty_slot_start,
+					l_uav_dirty_slot_num,
+					&l_unordered_views[l_uav_dirty_slot_start],
+					l_uav_initialCounts
+				);
 			}
 
 			m_required_state.reset_tracking();
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_output_merger_stage<g_api_dx11>::set_to_default_state(bc_device_pipeline* p_pipeline)
+		void bc_platform_output_merger_stage< g_api_dx11 >::set_to_default_state(bc_device_pipeline* p_pipeline)
 		{
 			m_required_state.set_to_initial_state();
 		}

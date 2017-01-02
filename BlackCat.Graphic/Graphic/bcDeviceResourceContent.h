@@ -4,7 +4,7 @@
 
 #include "Core/Container/bcString.h"
 #include "Core/File/bcContent.h"
-#include "Graphic/bcResourcePtr.h"
+#include "Graphic/bcDeviceRef.h"
 
 namespace black_cat
 {
@@ -15,7 +15,7 @@ namespace black_cat
 		class bc_device_resource_content : public core::bc_icontent
 		{
 		public:
-			explicit bc_device_resource_content(bc_resource_ptr<TResource>&& p_resource) noexcept
+			explicit bc_device_resource_content(bc_device_ref<TResource>&& p_resource) noexcept
 				: m_resource(std::move(p_resource))
 			{
 			}
@@ -26,7 +26,7 @@ namespace black_cat
 
 			bc_device_resource_content& operator=(bc_device_resource_content&&)  noexcept = default;
 
-			bc_resource_ptr<TResource>& get_resource() noexcept
+			bc_device_ref<TResource>& get_resource() noexcept
 			{
 				return m_resource;
 			}
@@ -38,7 +38,7 @@ namespace black_cat
 		protected:
 
 		private:
-			bc_resource_ptr<TResource> m_resource;
+			bc_device_ref<TResource> m_resource;
 		};
 	}
 }

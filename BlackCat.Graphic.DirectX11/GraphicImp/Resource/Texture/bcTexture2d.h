@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "GraphicImp/bcDeviceReference.h"
+#include "GraphicImp/bcDeviceRef.h"
 #include "GraphicImp/Resource/bcResource.h"
 #include "GraphicImp/Resource/Texture/bcTextureConfig.h"
 
@@ -14,9 +16,8 @@ namespace black_cat
 	{
 		template< >
 		struct bc_platform_texture2d_pack<g_api_dx11>
-			: public bc_platform_texture2d_pack<g_api_unknown>
 		{
-			Microsoft::WRL::ComPtr< ID3D11Texture2D > m_texture;
+			ID3D11Texture2D* m_texture;
 		};
 	}
 }

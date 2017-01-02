@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "GraphicImp/bcDeviceRef.h"
 #include "GraphicImp/Device/bcDeviceOutput.h"
 #include "GraphicImp/Resource/bcResource.h"
 

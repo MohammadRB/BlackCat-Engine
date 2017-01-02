@@ -48,17 +48,17 @@ namespace black_cat
 
 			bool remove_pass(core::bc_string p_name);
 
-			void pass_initialize_resources(bc_render_system& p_render_system, graphic::bc_device* p_device);
+			void pass_initialize_resources(bc_render_system& p_render_system, graphic::bc_device& p_device);
 
 			void pass_update(const bc_render_system_update_param& p_clock_update_param);
 
 			void pass_execute(bc_render_system& p_render_system, bc_render_thread& p_thread);
 
-			void before_reset(bc_render_system& p_render_system, graphic::bc_device* p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters);
+			void before_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters);
 
-			void after_reset(bc_render_system& p_render_system, graphic::bc_device* p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters);
+			void after_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters);
 
-			void pass_destroy(graphic::bc_device* p_device);
+			void pass_destroy(graphic::bc_device& p_device);
 
 		protected:
 

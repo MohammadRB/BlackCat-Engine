@@ -100,13 +100,16 @@ namespace black_cat
 
 		template< core_platform::bc_platform TPlatform, typename T >
 		template< typename >
-		bc_platform_script_ref< TPlatform, T >::bc_platform_script_ref(type& p_object)
+		bc_platform_script_ref< TPlatform, T >::bc_platform_script_ref(const type& p_object)
 		{
 			reset(p_object);
 		}
 
 		template< core_platform::bc_platform TPlatform, typename T >
-		bc_platform_script_ref< TPlatform, T >::bc_platform_script_ref(bc_platform_script_ref&&) noexcept = default;
+		bc_platform_script_ref< TPlatform, T >::bc_platform_script_ref(bc_platform_script_ref&& p_other) noexcept
+		{
+			operator=(std::move(p_other));
+		}
 
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_ref< TPlatform, T >::~bc_platform_script_ref()
@@ -115,7 +118,13 @@ namespace black_cat
 		}
 
 		template< core_platform::bc_platform TPlatform, typename T >
-		bc_platform_script_ref< TPlatform, T >& bc_platform_script_ref< TPlatform, T >::operator=(bc_platform_script_ref&&) noexcept = default;
+		bc_platform_script_ref< TPlatform, T >& bc_platform_script_ref< TPlatform, T >::operator=(bc_platform_script_ref&& p_other) noexcept
+		{
+			reset(p_other.m_pack.m_value);
+			p_other.m_pack.m_value = type();
+
+			return *this;
+		}
 
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_ref<TPlatform, T>& bc_platform_script_ref<TPlatform, T>::operator=(type& p_object)
@@ -160,7 +169,7 @@ namespace black_cat
 		}
 
 		template< core_platform::bc_platform TPlatform, typename T >
-		void bc_platform_script_ref<TPlatform, T>::reset(type& p_object)
+		void bc_platform_script_ref<TPlatform, T>::reset(const type& p_object)
 		{
 			if (m_pack.m_value.is_valid())
 			{

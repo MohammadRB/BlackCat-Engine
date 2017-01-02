@@ -4,7 +4,8 @@
 
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcRenderApi.h"
-#include "Graphic/bcResourcePtr.h"
+#include "Graphic/bcDeviceReference.h"
+#include "Graphic/bcDeviceRef.h"
 #include "Graphic/Resource/bcResource.h"
 #include "Graphic/Resource/Texture/bcTextureConfig.h"
 #include "Graphic/bcDeviceResourceContent.h"
@@ -16,12 +17,10 @@ namespace black_cat
 		template< bc_render_api TRenderApi >
 		struct bc_platform_texture2d_pack
 		{
-			bc_texture_config m_config;
 		};
 
 		template< bc_render_api TRenderApi >
-		class bc_platform_texture2d : public bc_iresource
-			
+		class bc_platform_texture2d : public bc_platform_iresource<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_texture2d_pack<TRenderApi>;
@@ -29,11 +28,13 @@ namespace black_cat
 		public:
 			bc_platform_texture2d();
 
-			bc_platform_texture2d(bc_platform_texture2d&& p_other);
+			explicit  bc_platform_texture2d(platform_pack& p_pack);
+
+			bc_platform_texture2d(const bc_platform_texture2d& p_other);
 
 			~bc_platform_texture2d();
 			
-			bc_platform_texture2d& operator=(bc_platform_texture2d&& p_other);
+			bc_platform_texture2d& operator=(const bc_platform_texture2d& p_other);
 
 			bcUINT32 get_width() const;
 
@@ -52,10 +53,15 @@ namespace black_cat
 				return bc_resource_type::texture_2d;
 			}
 
-			bc_texture_config& get_config()
-			{
-				return m_pack.m_config;
-			}
+			bool is_valid() const noexcept override;
+
+			bool operator==(const bc_platform_texture2d& p_other) const noexcept;
+
+			bool operator!=(const bc_platform_texture2d& p_other) const noexcept;
+
+			bool operator==(std::nullptr_t) const noexcept;
+
+			bool operator!=(std::nullptr_t) const noexcept;
 
 			platform_pack& get_platform_pack()
 			{
@@ -69,8 +75,7 @@ namespace black_cat
 		};
 
 		using bc_texture2d = bc_platform_texture2d< g_current_render_api >;
-
-		using bc_texture2d_ptr = bc_resource_ptr< bc_texture2d >;
+		using bc_texture2d_ptr = bc_device_ref< bc_texture2d >;
 		using bc_texture2d_content = bc_device_resource_content< bc_texture2d >;
 		using bc_texture2d_content_ptr = core::bc_content_ptr<bc_texture2d_content>;
 	}

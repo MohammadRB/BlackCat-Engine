@@ -14,7 +14,7 @@ namespace black_cat
 			BC_EVENT(app_device_reset)
 
 		public:
-			explicit bc_app_event_device_reset(bc_device* p_device,
+			bc_app_event_device_reset(bc_device& p_device,
 				bc_device_parameters& p_old_parameters,
 				bc_device_parameters& p_new_parameters,
 				bool p_before_reset)
@@ -33,7 +33,7 @@ namespace black_cat
 
 			bc_app_event_device_reset& operator =(const bc_app_event_device_reset&) = default;
 
-			bc_device* m_device;
+			bc_device& m_device;
 			bc_device_parameters& m_old_parameters;
 			bc_device_parameters& m_new_parameters;
 			bool m_before_reset;

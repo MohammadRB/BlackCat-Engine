@@ -13,8 +13,8 @@ namespace black_cat
 	{
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_rasterizer_stage< g_api_dx11 >::bc_platform_rasterizer_stage()
-			: m_pack()
+		bc_platform_rasterizer_stage< g_api_dx11 >::bc_platform_rasterizer_stage(platform_pack& p_pack)
+			: m_pack(p_pack)
 		{
 		}
 
@@ -26,14 +26,14 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_rasterizer_stage< g_api_dx11 >::bc_platform_rasterizer_stage(bc_platform_rasterizer_stage&& p_other)
+		bc_platform_rasterizer_stage< g_api_dx11 >::bc_platform_rasterizer_stage(bc_platform_rasterizer_stage&& p_other) noexcept
 			: m_pack(std::move(p_other.m_pack))
 		{
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_rasterizer_stage< g_api_dx11 >& bc_platform_rasterizer_stage< g_api_dx11 >::operator=(bc_platform_rasterizer_stage&& p_other)
+		bc_platform_rasterizer_stage< g_api_dx11 >& bc_platform_rasterizer_stage< g_api_dx11 >::operator=(bc_platform_rasterizer_stage&& p_other) noexcept
 		{
 			m_pack = std::move(p_other.m_pack);
 
@@ -44,7 +44,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_rasterizer_stage<g_api_dx11>::apply_required_state(bc_device_pipeline* p_pipeline)
 		{
-			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_context.Get();
+			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline->m_context;
 			bc_rasterizer_stage_state& l_required_state = m_required_state;
 
 			if (l_required_state.m_viewports.update_needed() ||

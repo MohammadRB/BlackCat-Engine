@@ -4,8 +4,8 @@
 
 #include "Graphic/bcRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
-#include "Graphic/bcDeviceObject.h"
-#include "Graphic/bcResourcePtr.h"
+#include "Graphic/bcDeviceReference.h"
+#include "Graphic/bcDeviceRef.h"
 
 namespace black_cat
 {
@@ -14,11 +14,10 @@ namespace black_cat
 		template< bc_render_api TRenderApi >
 		struct bc_platform_iresource_view_pack
 		{
-
 		};
 
 		template< bc_render_api TRenderApi >
-		class bc_platform_iresource_view : public bc_device_object
+		class bc_platform_iresource_view : public bc_platform_device_reference<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_iresource_view_pack<TRenderApi>;
@@ -36,16 +35,16 @@ namespace black_cat
 		protected:
 			bc_platform_iresource_view();
 
-			bc_platform_iresource_view(bc_platform_iresource_view&&);
+			explicit bc_platform_iresource_view(platform_pack& p_pack);
 
-			bc_platform_iresource_view& operator=(bc_platform_iresource_view&&);
+			bc_platform_iresource_view(const bc_platform_iresource_view&);
+
+			bc_platform_iresource_view& operator=(const bc_platform_iresource_view&);
 
 		private:
 			platform_pack m_pack;
 		};
 
 		using bc_iresource_view = bc_platform_iresource_view< g_current_render_api >;
-
-		using bc_iresource_view_ptr = bc_resource_ptr< bc_iresource_view >;
 	}
 }

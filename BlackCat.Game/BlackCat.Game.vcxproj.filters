@@ -7,18 +7,6 @@
     <Filter Include="Game\Object">
       <UniqueIdentifier>{0bcf3d8c-33d6-4fb1-a5af-7d5e734a6e10}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Graphic">
-      <UniqueIdentifier>{e9227613-b4a3-46b3-8983-7fe1822f5ee1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Graphic\Command">
-      <UniqueIdentifier>{0750fdf5-61dc-4768-8c9d-84164034e990}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Graphic\Pass">
-      <UniqueIdentifier>{052174de-3f99-40d0-ab57-1410aa66085c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Graphic\Task">
-      <UniqueIdentifier>{45c0b0da-35dc-466a-a2d2-ef0094a68f97}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Object\Scence">
       <UniqueIdentifier>{d00460ed-5e94-401e-8188-6f56a78bee13}</UniqueIdentifier>
     </Filter>
@@ -54,18 +42,6 @@
     <ClInclude Include="Game\GamePCH.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Graphic\Command\bcPipelineDispatchCommand.h">
-      <Filter>Game\Graphic\Command</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Graphic\Command\bcPipelineDrawCommand.h">
-      <Filter>Game\Graphic\Command</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Graphic\Command\bcPipelineDrawIndexedCommand.h">
-      <Filter>Game\Graphic\Command</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Graphic\Command\bcPipelineDrawIndexedInstancedCommand.h">
-      <Filter>Game\Graphic\Command</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Object\Scence\bcActor.h">
       <Filter>Game\Object\Scence</Filter>
     </ClInclude>
@@ -74,15 +50,6 @@
     </ClInclude>
     <ClInclude Include="Game\Object\Scence\Component\bcRenderComponent.h">
       <Filter>Game\Object\Scence\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Graphic\bcRenderCommand.h">
-      <Filter>Game\Graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Graphic\bcRenderPass.h">
-      <Filter>Game\Graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Graphic\bcRenderTask.h">
-      <Filter>Game\Graphic</Filter>
     </ClInclude>
     <ClInclude Include="Game\System\bcGameSystem.h">
       <Filter>Game\System</Filter>
@@ -205,18 +172,6 @@
   <ItemGroup>
     <ClCompile Include="Game\GamePCH.cpp">
       <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Graphic\Command\bcPipelineDispatchCommand.cpp">
-      <Filter>Game\Graphic\Command</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Graphic\Command\bcPipelineDrawCommand.cpp">
-      <Filter>Game\Graphic\Command</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Graphic\Command\bcPipelineDrawIndexedCommand.cpp">
-      <Filter>Game\Graphic\Command</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Graphic\Command\bcPipelineDrawIndexedInstancedCommand.cpp">
-      <Filter>Game\Graphic\Command</Filter>
     </ClCompile>
     <ClCompile Include="Game\Object\Mesh\bcMeshGenerator.cpp">
       <Filter>Game\Object\Mesh</Filter>

@@ -3,10 +3,10 @@
 #pragma once
 
 #include "Graphic/GraphicPCH.h"
-#include "Graphic/bcResourcePtr.h"
+#include "Graphic/bcDeviceReference.h"
+#include "Graphic/bcDeviceRef.h"
 #include "Graphic/bcRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
-#include "Graphic/bcDeviceObject.h"
 
 namespace black_cat
 {
@@ -41,7 +41,7 @@ namespace black_cat
 		};
 
 		template<bc_render_api TRenderApi>
-		class bc_platform_iresource : public bc_device_object
+		class bc_platform_iresource : public bc_platform_device_reference<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_iresource_pack<TRenderApi>;
@@ -63,9 +63,11 @@ namespace black_cat
 		protected:
 			bc_platform_iresource();
 
-			bc_platform_iresource(bc_platform_iresource&& p_other);
+			explicit bc_platform_iresource(platform_pack& p_pack);
 
-			bc_platform_iresource& operator=(bc_platform_iresource&& p_other);
+			bc_platform_iresource(const bc_platform_iresource& p_other);
+
+			bc_platform_iresource& operator=(const bc_platform_iresource& p_other);
 
 			platform_pack m_pack;
 
@@ -73,7 +75,5 @@ namespace black_cat
 		};
 
 		using bc_iresource = bc_platform_iresource<g_current_render_api>;
-
-		using bc_iresource_ptr = bc_resource_ptr< bc_iresource >;
 	}
 }

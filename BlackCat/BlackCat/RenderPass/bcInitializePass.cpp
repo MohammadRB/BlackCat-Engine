@@ -3,14 +3,18 @@
 #include "BlackCat/BlackCatPCH.h"
 #include "BlackCat/RenderPass/bcInitializePass.h"
 #include "Graphic/Resource/bcResourceConfig.h"
+#include "BlackCat/Loader/bcComputeShaderLoader.h"
+#include "BlackCat/Loader/bcComputeShaderLoader.h"
+#include "BlackCat/Loader/bcComputeShaderLoader.h"
+#include "BlackCat/Loader/bcComputeShaderLoader.h"
 
 namespace black_cat
 {
-	void bc_initialize_pass::initialize_resources(game::bc_render_system& p_render_system, graphic::bc_device* p_device)
+	void bc_initialize_pass::initialize_resources(game::bc_render_system& p_render_system, graphic::bc_device& p_device)
 	{
 		m_depth_stencil_format = graphic::bc_format::D32_FLOAT;
 
-		graphic::bc_texture2d* l_back_buffer_texture = p_device->get_back_buffer_texture();
+		graphic::bc_texture2d l_back_buffer_texture = p_device.get_back_buffer_texture();
 
 		graphic::bc_device_parameters l_old_parameters
 		(
@@ -21,10 +25,10 @@ namespace black_cat
 		);
 		graphic::bc_device_parameters l_new_parameters
 		(
-			l_back_buffer_texture->get_width(),
-			l_back_buffer_texture->get_height(),
-			l_back_buffer_texture->get_format(),
-			l_back_buffer_texture->get_sample_count()
+			l_back_buffer_texture.get_width(),
+			l_back_buffer_texture.get_height(),
+			l_back_buffer_texture.get_format(),
+			l_back_buffer_texture.get_sample_count()
 		);
 
 		after_reset(p_render_system, p_device, l_old_parameters, l_new_parameters);
@@ -43,18 +47,18 @@ namespace black_cat
 	{
 	}
 
-	void bc_initialize_pass::before_reset(game::bc_render_system& p_render_system, graphic::bc_device* p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
+	void bc_initialize_pass::before_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
 	{
 		destroy(p_device);
 	}
 
-	void bc_initialize_pass::after_reset(game::bc_render_system& p_render_system, graphic::bc_device* p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
+	void bc_initialize_pass::after_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
 	{
 		graphic::bc_graphic_resource_configure l_resource_configure;
 
 		m_render_target_format = p_new_parameters.m_format;
 
-		auto* l_back_buffer_texture = p_device->get_back_buffer_texture();
+		auto l_back_buffer_texture = p_device.get_back_buffer_texture();
 		auto l_depth_buffer_config = l_resource_configure.as_resource().as_texture2d
 			(
 				p_new_parameters.m_width,
@@ -75,16 +79,16 @@ namespace black_cat
 			.as_texture_view(m_render_target_format)
 			.as_tex2d_render_target_view(0);
 
-		m_depth_buffer = p_device->create_texture2d(l_depth_buffer_config, nullptr);
-		m_depth_stencil_view = p_device->create_depth_stencil_view(m_depth_buffer.get(), l_depth_view_config);
-		m_render_target_view = p_device->create_render_target_view(l_back_buffer_texture, l_render_target_config);
+		m_depth_buffer = p_device.create_texture2d(l_depth_buffer_config, nullptr);
+		m_depth_stencil_view = p_device.create_depth_stencil_view(m_depth_buffer.get(), l_depth_view_config);
+		m_render_target_view = p_device.create_render_target_view(l_back_buffer_texture, l_render_target_config);
 
-		share_resource(game::bc_render_pass_resource_variable::depth_stencil_texture, m_depth_buffer);
-		share_resource(game::bc_render_pass_resource_variable::depth_stencil_view, m_depth_stencil_view);
-		share_resource(game::bc_render_pass_resource_variable::render_target_view, m_render_target_view);
+		share_resource(game::bc_render_pass_resource_variable::depth_stencil_texture, m_depth_buffer.get());
+		share_resource(game::bc_render_pass_resource_variable::depth_stencil_view, m_depth_stencil_view.get());
+		share_resource(game::bc_render_pass_resource_variable::render_target_view, m_render_target_view.get());
 	}
 
-	void bc_initialize_pass::destroy(graphic::bc_device* p_device)
+	void bc_initialize_pass::destroy(graphic::bc_device& p_device)
 	{
 		unshare_resource(game::bc_render_pass_resource_variable::depth_stencil_texture);
 		unshare_resource(game::bc_render_pass_resource_variable::depth_stencil_view);

@@ -84,6 +84,8 @@ namespace black_cat
 
 				m_bound_console.reset();
 			}
+
+			core::bc_get_service< core::bc_logger >()->unregister_listener(this);
 		}
 
 		bc_game_console& bc_game_console::operator=(bc_game_console&& p_other) noexcept

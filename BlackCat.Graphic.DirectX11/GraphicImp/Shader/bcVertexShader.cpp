@@ -15,8 +15,19 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_vertex_shader< g_api_dx11 >::bc_platform_vertex_shader()
-			: m_pack()
+			: bc_platform_ishader()
 		{
+			m_pack.m_shader = nullptr;
+			m_pack.m_compiled_shader = nullptr;
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_platform_vertex_shader< g_api_dx11 >::bc_platform_vertex_shader(platform_pack& p_pack)
+			: bc_platform_ishader()
+		{
+			m_pack.m_shader = p_pack.m_shader;
+			m_pack.m_compiled_shader = p_pack.m_compiled_shader;
 		}
 
 		template<>
@@ -27,27 +38,64 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_vertex_shader< g_api_dx11 >::bc_platform_vertex_shader(bc_platform_vertex_shader&& p_other)
-			: bc_ishader(std::move(p_other)),
-			m_pack(std::move(p_other.m_pack))
+		bc_platform_vertex_shader< g_api_dx11 >::bc_platform_vertex_shader(const bc_platform_vertex_shader& p_other)
+			: bc_platform_ishader(p_other)
 		{
+			m_pack.m_shader = p_other.m_pack.m_shader;
+			m_pack.m_compiled_shader = p_other.m_pack.m_compiled_shader;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_vertex_shader< g_api_dx11 >& bc_platform_vertex_shader< g_api_dx11 >::operator=(bc_platform_vertex_shader&& p_other)
+		bc_platform_vertex_shader< g_api_dx11 >& bc_platform_vertex_shader< g_api_dx11 >::operator=(const bc_platform_vertex_shader& p_other)
 		{
-			bc_ishader::operator=(std::move(p_other));
-			m_pack = std::move(p_other.m_pack);
+			bc_platform_ishader::operator=(p_other);
+			m_pack.m_shader = p_other.m_pack.m_shader;
+			m_pack.m_compiled_shader = p_other.m_pack.m_compiled_shader;
 
 			return *this;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_shader_type bc_platform_vertex_shader< bc_render_api::directx11 >::get_type() const
+		bc_shader_type bc_platform_vertex_shader< g_api_dx11 >::get_type() const
 		{
 			return bc_shader_type::vertex;
-		};
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bool bc_platform_vertex_shader< g_api_dx11 >::is_valid() const noexcept
+		{
+			return m_pack.m_shader != nullptr;
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bool bc_platform_vertex_shader< g_api_dx11 >::operator==(const bc_platform_vertex_shader& p_other) const noexcept
+		{
+			return m_pack.m_shader == p_other.m_pack.m_shader;
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bool bc_platform_vertex_shader< g_api_dx11 >::operator!=(const bc_platform_vertex_shader& p_other) const noexcept
+		{
+			return !operator==(p_other);
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bool bc_platform_vertex_shader< g_api_dx11 >::operator==(std::nullptr_t) const noexcept
+		{
+			return !is_valid();
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bool bc_platform_vertex_shader< g_api_dx11 >::operator!=(std::nullptr_t) const noexcept
+		{
+			return is_valid();
+		}
 	}
 }

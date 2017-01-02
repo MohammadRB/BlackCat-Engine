@@ -24,7 +24,7 @@ namespace black_cat
 
 		template< bc_physics_api TApi, class TObject >
 		template< typename >
-		bc_platform_physics_ref<TApi, TObject>::bc_platform_physics_ref(type& p_object)
+		bc_platform_physics_ref<TApi, TObject>::bc_platform_physics_ref(const type& p_object)
 		{
 			reset(p_object);
 		}
@@ -44,9 +44,7 @@ namespace black_cat
 		template< bc_physics_api TApi, class TObject >
 		bc_platform_physics_ref<TApi, TObject>& bc_platform_physics_ref<TApi, TObject>::operator=(bc_platform_physics_ref&& p_other) noexcept
 		{
-			reset();
-
-			m_pack.m_object = std::move(p_other.m_pack.m_object);
+			reset(p_other.m_pack.m_object);
 			p_other.m_pack.m_object = type();
 
 			return *this;
@@ -80,7 +78,7 @@ namespace black_cat
 		void bc_platform_physics_ref<TApi, TObject>::reset()
 		{
 			auto& l_reference = static_cast<bc_platform_physics_reference<TApi>&>(m_pack.m_object);
-			
+
 			if(l_reference.is_valid())
 			{
 				l_reference.get_platform_pack().m_px_object->release();
@@ -89,10 +87,10 @@ namespace black_cat
 		}
 
 		template< bc_physics_api TApi, class TObject >
-		void bc_platform_physics_ref<TApi, TObject>::reset(type& p_object)
+		void bc_platform_physics_ref<TApi, TObject>::reset(const type& p_object)
 		{
 			auto& l_reference = static_cast<bc_platform_physics_reference<TApi>&>(m_pack.m_object);
-			
+
 			if (l_reference.is_valid())
 			{
 				l_reference.get_platform_pack().m_px_object->release();

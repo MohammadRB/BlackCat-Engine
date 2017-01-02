@@ -40,9 +40,10 @@ namespace black_cat
 		}
 
 		bc_render_state::bc_render_state(graphic::bc_primitive p_primitive,
-			graphic::bc_buffer_ptr& p_vertex_buffer,
+			graphic::bc_buffer p_vertex_buffer,
+			bcUINT32 p_vertex_buffer_stride,
 			bcUINT32 p_verext_buffer_offset,
-			graphic::bc_buffer_ptr& p_index_buffer,
+			graphic::bc_buffer p_index_buffer,
 			bc_index_type p_index_type,
 			bcUINT32 p_index_count,
 			bcUINT32 p_index_buffer_offset,
@@ -50,6 +51,7 @@ namespace black_cat
 			bc_render_state_constant_buffer_array&& p_shader_buffers)
 			: m_primitive(p_primitive),
 			m_vertex_buffer(p_vertex_buffer),
+			m_vertex_buffer_stride(p_vertex_buffer_stride),
 			m_vertex_buffer_offset(p_verext_buffer_offset),
 			m_index_buffer(p_index_buffer),
 			m_index_type(p_index_type),

@@ -35,6 +35,27 @@ namespace black_cat
 			_register_listener(p_types, _bc_log_listener_container(p_listener));
 		}
 
+		void bc_logger::unregister_listener(bc_ilog_listener* p_listener)
+		{
+			for (auto& l_entry : m_listeners)
+			{
+				auto l_position = std::find_if(std::cbegin(l_entry), std::cend(l_entry), [p_listener](const _bc_log_listener_container& p_list)
+				{
+					if(p_list.m_raw_pointer && p_list.m_raw_pointer == p_listener)
+					{
+						return true;
+					}
+
+					return false;
+				});
+
+				if(l_position != std::cend(l_entry))
+				{
+					l_entry.erase(l_position);
+				}
+			}
+		}
+
 		void bc_logger::_log(bc_log_type p_types, const bcECHAR* p_log)
 		{
 			auto l_entry_index = std::log2(static_cast<map_type::size_type>(p_types));
@@ -60,7 +81,7 @@ namespace black_cat
 
 				auto l_entry_idnex = std::log2(static_cast< map_type::size_type >(l_type));
 				
-				m_listeners.at(l_entry_idnex).push_back(std::move(p_listener));
+				m_listeners.at(l_entry_idnex).push_back(p_listener);
 			}
 		}
 	}

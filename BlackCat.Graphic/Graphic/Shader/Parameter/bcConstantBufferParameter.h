@@ -23,6 +23,8 @@ namespace black_cat
 
 			bc_constant_buffer_parameter& operator=(const bc_constant_buffer_parameter&) = default;
 
+			bc_buffer_ptr& get_buffer();
+
 			const bc_buffer_ptr& get_buffer() const;
 
 			void set_buffer(const bc_buffer_ptr& p_buffer);
@@ -40,7 +42,7 @@ namespace black_cat
 
 		inline bc_constant_buffer_parameter::bc_constant_buffer_parameter()
 			: bc_ishader_parameter(),
-			m_buffer(nullptr) 
+			m_buffer() 
 		{
 		}
 
@@ -52,6 +54,11 @@ namespace black_cat
 
 		inline bc_constant_buffer_parameter::~bc_constant_buffer_parameter()
 		{
+		}
+
+		inline bc_buffer_ptr& bc_constant_buffer_parameter::get_buffer()
+		{
+			return m_buffer;
 		}
 
 		inline const bc_buffer_ptr& bc_constant_buffer_parameter::get_buffer() const

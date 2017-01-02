@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "GraphicImp/bcDeviceReference.h"
+#include "GraphicImp/bcDeviceRef.h"
 #include "GraphicImp/Shader/bcShader.h"
 
 #include "Graphic/Shader/bcGeometryShader.h"
@@ -14,7 +16,7 @@ namespace black_cat
 		template<>
 		struct bc_platform_geometry_shader_pack<bc_render_api::directx11>
 		{
-			Microsoft::WRL::ComPtr< ID3D11GeometryShader > m_shader;
+			ID3D11GeometryShader* m_shader;
 		};
 	}
 }

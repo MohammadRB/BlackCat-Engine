@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "GraphicImp/bcDeviceReference.h"
+#include "GraphicImp/bcDeviceRef.h"
 #include "GraphicImp/Shader/bcShader.h"
 
 #include "Graphic/Shader/bcVertexShader.h"
@@ -12,10 +14,10 @@ namespace black_cat
 	namespace graphic
 	{
 		template<>
-		struct bc_platform_vertex_shader_pack<bc_render_api::directx11>
+		struct bc_platform_vertex_shader_pack<g_api_dx11>
 		{
-			Microsoft::WRL::ComPtr< ID3DBlob > m_compiled_shader;
-			Microsoft::WRL::ComPtr< ID3D11VertexShader > m_shader;
+			ID3DBlob* m_compiled_shader;
+			ID3D11VertexShader* m_shader;
 		};
 	}
 }

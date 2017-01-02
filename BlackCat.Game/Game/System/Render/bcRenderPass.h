@@ -24,7 +24,7 @@ namespace black_cat
 			virtual ~bc_irender_pass() = default;
 
 			// This function will be called during app initialization
-			virtual void initialize_resources(bc_render_system& p_render_system, graphic::bc_device* p_device) = 0;
+			virtual void initialize_resources(bc_render_system& p_render_system, graphic::bc_device& p_device) = 0;
 
 			// This function will be called during app update phase
 			virtual void update(const bc_render_system_update_param& p_update_param) = 0;
@@ -37,14 +37,14 @@ namespace black_cat
 			virtual void execute(bc_render_system& p_render_system, bc_render_thread& p_thread) = 0;
 
 			// This function will be called when device duo to some parameter changes and buffer resize need reset
-			virtual void before_reset(bc_render_system& p_render_system, graphic::bc_device* p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) = 0;
+			virtual void before_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) = 0;
 
 			// This function will be called when device duo to some parameter changes and buffer resize need reset
-			virtual void after_reset(bc_render_system& p_render_system, graphic::bc_device* p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) = 0;
+			virtual void after_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) = 0;
 
 			// This function will be called when pass is going to be destroy
 			// (before device destroying this function must be called) 
-			virtual void destroy(graphic::bc_device* p_device) = 0;
+			virtual void destroy(graphic::bc_device& p_device) = 0;
 
 			virtual core::bc_string get_name() = 0;
 

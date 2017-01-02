@@ -2,31 +2,99 @@
 
 #pragma once
 
+#include "GraphicImp/bcDeviceReference.h"
+#include "GraphicImp/bcDeviceRef.h"
 #include "GraphicImp/Shader/bcComputeShader.h"
 
 #include "Graphic/Device/bcDeviceComputeState.h"
 #include "GraphicImp/GraphicImpPCH.h"
+#include "GraphicImp/bcRefCountProxy.h"
 
 namespace black_cat
 {
 	namespace graphic
 	{
-		template<>
-		struct bc_platform_device_compute_state_pack<bc_render_api::directx11>
-			: public bc_platform_device_compute_state_pack<bc_render_api::unknown>
+		class _bc_device_compute_state
 		{
+		public:
+			bc_device_compute_state_config m_config;
 		};
 
-		template< >
-		inline bc_platform_device_compute_state<bc_render_api::directx11>::bc_platform_device_compute_state() = default;
+		using bc_device_compute_state_proxy = bc_refcount_proxy<_bc_device_compute_state>;
 
-		template< >
-		inline bc_platform_device_compute_state<bc_render_api::directx11>::bc_platform_device_compute_state(bc_platform_device_compute_state&&) noexcept = default;
+		template<>
+		struct bc_platform_device_compute_state_pack< g_api_dx11 >
+		{
+			bc_device_compute_state_proxy* m_compute_state;
+		};
 
-		template< >
-		inline bc_platform_device_compute_state<bc_render_api::directx11>::~bc_platform_device_compute_state() = default;
+		template<>
+		inline bc_platform_device_compute_state< g_api_dx11 >::bc_platform_device_compute_state()
+		{
+			m_pack.m_compute_state = nullptr;
+		}
 
-		template< >
-		inline bc_platform_device_compute_state<bc_render_api::directx11>& bc_platform_device_compute_state<bc_render_api::directx11>::operator=(bc_platform_device_compute_state&&) noexcept = default;
+		template<>
+		inline bc_platform_device_compute_state<g_api_dx11>::bc_platform_device_compute_state(platform_pack& p_pack)
+		{
+			m_pack.m_compute_state = p_pack.m_compute_state;
+		}
+
+		template<>
+		inline bc_platform_device_compute_state< g_api_dx11 >::bc_platform_device_compute_state(const bc_platform_device_compute_state& p_other) noexcept
+			: bc_platform_device_reference()
+		{
+			m_pack.m_compute_state = p_other.m_pack.m_compute_state;
+		}
+
+		template<>
+		inline bc_platform_device_compute_state< g_api_dx11 >::~bc_platform_device_compute_state()
+		{
+		}
+
+		template<>
+		inline bc_platform_device_compute_state< g_api_dx11 >& bc_platform_device_compute_state< g_api_dx11 >::operator=(const bc_platform_device_compute_state& p_other) noexcept
+		{
+			bc_platform_device_reference::operator=(p_other);
+			m_pack.m_compute_state = p_other.m_pack.m_compute_state;
+
+			return *this;
+		}
+
+		template<>
+		inline void bc_platform_device_compute_state< g_api_dx11 >::get_config(bc_device_compute_state_config& p_config)
+		{
+			p_config = m_pack.m_compute_state->m_config;
+		}
+
+		template<>
+		inline bool bc_platform_device_compute_state< g_api_dx11 >::is_valid() const noexcept
+		{
+			return m_pack.m_compute_state != nullptr;
+		}
+
+		template<>
+		inline bool bc_platform_device_compute_state<g_api_dx11>::operator==(const bc_platform_device_compute_state& p_other) const noexcept
+		{
+			return m_pack.m_compute_state == p_other.m_pack.m_compute_state;
+		}
+
+		template<>
+		inline bool bc_platform_device_compute_state<g_api_dx11>::operator!=(const bc_platform_device_compute_state& p_other) const noexcept
+		{
+			return !operator==(p_other);
+		}
+
+		template<>
+		inline bool bc_platform_device_compute_state<g_api_dx11>::operator==(std::nullptr_t) const noexcept
+		{
+			return !is_valid();
+		}
+
+		template<>
+		inline bool bc_platform_device_compute_state<g_api_dx11>::operator!=(std::nullptr_t) const noexcept
+		{
+			return is_valid();
+		}
 	}
 }

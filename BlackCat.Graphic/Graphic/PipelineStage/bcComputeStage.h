@@ -16,11 +16,11 @@ namespace black_cat
 		public:
 			bc_platform_compute_stage();
 
-			bc_platform_compute_stage(bc_platform_compute_stage&&);
+			bc_platform_compute_stage(bc_platform_compute_stage&&) noexcept;
 
 			~bc_platform_compute_stage();
 
-			bc_platform_compute_stage& operator=(bc_platform_compute_stage&&);
+			bc_platform_compute_stage& operator=(bc_platform_compute_stage&&) noexcept;
 
 		protected:
 

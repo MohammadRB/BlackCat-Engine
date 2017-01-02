@@ -228,6 +228,12 @@
     <ClInclude Include="Graphic\bcRenderApi.h">
       <Filter>Graphic</Filter>
     </ClInclude>
+    <ClInclude Include="Graphic\bcDeviceReference.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\bcDeviceRef.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphic\GraphicPCH.cpp">

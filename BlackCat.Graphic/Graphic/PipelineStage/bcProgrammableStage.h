@@ -22,37 +22,70 @@ namespace black_cat
 
 		// -- Programmable state --------------------------------------------------------------------------------
 
-		class BC_GRAPHIC_DLL bc_programmable_stage_state
+		class bc_programmable_stage_state
 		{
 		public:
-			bc_programmable_stage_state();
+			bc_programmable_stage_state() noexcept;
 
-			bc_programmable_stage_state(const bc_programmable_stage_state&) = default;
+			bc_programmable_stage_state(const bc_programmable_stage_state&) noexcept = default;
 
-			bc_programmable_stage_state(bc_programmable_stage_state&&) = default;
+			bc_programmable_stage_state(bc_programmable_stage_state&&) noexcept = default;
 
 			~bc_programmable_stage_state();
 
-			bc_programmable_stage_state& operator=(const bc_programmable_stage_state&) = default;
+			bc_programmable_stage_state& operator=(const bc_programmable_stage_state&) noexcept = default;
 
-			bc_programmable_stage_state& operator=(bc_programmable_stage_state&&) = default;
+			bc_programmable_stage_state& operator=(bc_programmable_stage_state&&) noexcept = default;
 
-			void set_to_initial_state();
+			void set_to_initial_state() noexcept;
 
-			void reset_tracking();
+			void reset_tracking() noexcept;
 
 			//bc_pipeline_state_variable< bc_ishader* > m_shader_program;
-			bc_pipeline_state_array_variable< bc_buffer*, bc_render_api_info::number_of_shader_constant_buffer()>  m_constant_buffers;
-			bc_pipeline_state_array_variable< bc_sampler_state*, bc_render_api_info::number_of_shader_sampler() > m_sampler_states;
-			bc_pipeline_state_array_variable< bc_resource_view*, bc_render_api_info::number_of_shader_resource()> m_shader_resource_views;
-			bc_pipeline_state_array_variable< bc_resource_view*, bc_render_api_info::number_of_ps_cs_uav_resource() > m_unordered_access_views;
+			bc_pipeline_state_array_variable< bc_buffer, bc_render_api_info::number_of_shader_constant_buffer()> m_constant_buffers;
+			bc_pipeline_state_array_variable< bc_sampler_state, bc_render_api_info::number_of_shader_sampler() > m_sampler_states;
+			bc_pipeline_state_array_variable< bc_resource_view, bc_render_api_info::number_of_shader_resource()> m_shader_resource_views;
+			bc_pipeline_state_array_variable< bc_resource_view, bc_render_api_info::number_of_ps_cs_uav_resource() > m_unordered_access_views;
 			/*bc_pipeline_state_array_variable< bcUINT > m_uav_initial_counts;*/
 
 		protected:
 
 		private:
-
 		};
+
+		inline bc_programmable_stage_state::bc_programmable_stage_state() noexcept
+			: //m_shader_program(nullptr),
+			m_constant_buffers(bc_buffer()),
+			m_sampler_states(bc_sampler_state()),
+			m_shader_resource_views(bc_resource_view()),
+			m_unordered_access_views(bc_resource_view())
+			/*m_uav_initial_counts(0, bc_render_api_info::number_of_ps_cs_uav_registers())*/
+		{
+		}
+
+		inline bc_programmable_stage_state::~bc_programmable_stage_state()
+		{
+		}
+
+		inline void bc_programmable_stage_state::set_to_initial_state() noexcept
+		{
+			//m_shader_program.set_to_initial_state();
+			m_constant_buffers.set_to_initial_state();
+			m_sampler_states.set_to_initial_state();
+			m_shader_resource_views.set_to_initial_state();
+			m_unordered_access_views.set_to_initial_state();
+			/*m_uav_initial_counts.set_to_initial_state();*/
+		}
+
+		inline void bc_programmable_stage_state::reset_tracking() noexcept
+		{
+			//m_shader_program.reset_tracking();
+			m_constant_buffers.reset_tracking();
+			m_sampler_states.reset_tracking();
+			m_shader_resource_views.reset_tracking();
+			m_unordered_access_views.reset_tracking();
+			/*m_uav_initial_counts.reset_tracking();*/
+		}
 
 		// -- Programmable stage --------------------------------------------------------------------------------
 
@@ -68,13 +101,13 @@ namespace black_cat
 			using platform_pack = bc_platform_programmable_stage_pack<TRenderApi>;
 
 		public:
-			bc_platform_programmable_stage();
+			explicit bc_platform_programmable_stage(platform_pack& p_pack);
 
-			bc_platform_programmable_stage(bc_platform_programmable_stage&&);
+			bc_platform_programmable_stage(bc_platform_programmable_stage&&) noexcept;
 
-			~bc_platform_programmable_stage();
+			virtual ~bc_platform_programmable_stage();
 
-			bc_platform_programmable_stage& operator=(bc_platform_programmable_stage&&);
+			bc_platform_programmable_stage& operator=(bc_platform_programmable_stage&&) noexcept;
 
 			void apply_required_state(bc_device_pipeline* p_pipeline);
 

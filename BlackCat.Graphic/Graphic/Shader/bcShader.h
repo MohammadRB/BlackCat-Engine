@@ -4,7 +4,8 @@
 
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcRenderApi.h"
-#include "Graphic/bcDeviceObject.h"
+#include "Graphic/bcDeviceReference.h"
+#include "Graphic/bcDeviceRef.h"
 
 namespace black_cat
 {
@@ -23,11 +24,10 @@ namespace black_cat
 		template< bc_render_api TRenderApi >
 		struct bc_platform_compiled_shader_pack
 		{
-
 		};
 
 		template< bc_render_api TRenderApi >
-		class bc_platform_compiled_shader : public bc_device_object
+		class bc_platform_compiled_shader : public bc_platform_device_reference<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_compiled_shader_pack<TRenderApi>;
@@ -35,11 +35,15 @@ namespace black_cat
 		public:
 			bc_platform_compiled_shader();
 
-			bc_platform_compiled_shader(bc_platform_compiled_shader&& p_other);
+			explicit bc_platform_compiled_shader(platform_pack& p_pack);
+
+			bc_platform_compiled_shader(const bc_platform_compiled_shader& p_other);
 
 			~bc_platform_compiled_shader();
 
-			bc_platform_compiled_shader& operator=(bc_platform_compiled_shader&& p_other);
+			bc_platform_compiled_shader& operator=(const bc_platform_compiled_shader& p_other);
+
+			bool is_valid() const noexcept override;
 
 			platform_pack& get_platform_pack()
 			{
@@ -53,31 +57,32 @@ namespace black_cat
 		};
 
 		using bc_compiled_shader = bc_platform_compiled_shader< g_current_render_api >;
-		using bc_compiled_shader_ptr = bc_resource_ptr< bc_compiled_shader >;
+		using bc_compiled_shader_ptr = bc_device_ref< bc_compiled_shader >;
 
 		template< bc_render_api TRenderApi >
 		struct bc_platform_ishader_pack
 		{
-			
 		};
 
 		template< bc_render_api TRenderApi >
-		class bc_platform_ishader : public bc_device_object
+		class bc_platform_ishader : public bc_platform_device_reference<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_ishader_pack<TRenderApi>;
 
 		public:
-			bc_platform_ishader();
-
-			virtual ~bc_platform_ishader() = 0;
+			virtual ~bc_platform_ishader();
 
 			virtual bc_shader_type get_type() const = 0;
 
 		protected:
-			bc_platform_ishader(bc_platform_ishader&& p_other);
+			bc_platform_ishader();
 
-			bc_platform_ishader& operator=(bc_platform_ishader&& p_other);
+			explicit bc_platform_ishader(platform_pack& p_pack);
+
+			bc_platform_ishader(const bc_platform_ishader& p_other);
+
+			bc_platform_ishader& operator=(const bc_platform_ishader& p_other);
 
 			platform_pack m_pack;
 

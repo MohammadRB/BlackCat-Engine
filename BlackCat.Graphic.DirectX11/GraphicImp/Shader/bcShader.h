@@ -2,8 +2,11 @@
 
 #pragma once
 
-#include "GraphicImp/GraphicImpPCH.h"
+#include "GraphicImp/bcDeviceReference.h"
+#include "GraphicImp/bcDeviceRef.h"
+
 #include "Graphic/Shader/bcShader.h"
+#include "GraphicImp/GraphicImpPCH.h"
 
 namespace black_cat
 {
@@ -13,7 +16,7 @@ namespace black_cat
 		struct bc_platform_compiled_shader_pack< g_api_dx11 >
 		{
 		public:
-			Microsoft::WRL::ComPtr< ID3D10Blob > m_blob;
+			ID3D10Blob* m_blob;
 		};
 	}
 }

@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "GraphicImp/bcDeviceReference.h"
+#include "GraphicImp/bcDeviceRef.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 
@@ -15,7 +17,7 @@ namespace black_cat
 	namespace graphic
 	{
 		template< >
-		struct bc_platform_device_command_executer_pack<bc_render_api::directx11>
+		struct bc_platform_device_command_executer_pack<g_api_dx11>
 		{
 		};
 	}

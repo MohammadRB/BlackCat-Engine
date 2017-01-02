@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "GraphicImp/bcDeviceReference.h"
+#include "GraphicImp/bcDeviceRef.h"
 #include "GraphicImp/Shader/bcShader.h"
 
 #include "Graphic/Shader/bcDomainShader.h"
@@ -14,7 +16,7 @@ namespace black_cat
 		template<>
 		struct bc_platform_domain_shader_pack<bc_render_api::directx11>
 		{
-			Microsoft::WRL::ComPtr< ID3D11DomainShader > m_shader;
+			ID3D11DomainShader* m_shader;
 		};
 	}
 }

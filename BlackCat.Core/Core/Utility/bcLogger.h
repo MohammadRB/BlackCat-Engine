@@ -38,21 +38,25 @@ namespace black_cat
 		class _bc_log_listener_container
 		{
 		public:
-			_bc_log_listener_container(bc_ilog_listener* p_raw_pointer) noexcept
+			explicit _bc_log_listener_container(bc_ilog_listener* p_raw_pointer) noexcept
 				: m_raw_pointer(p_raw_pointer),
 				m_smart_pointer(nullptr)
 			{
 			}
 
-			_bc_log_listener_container(bc_unique_ptr< bc_ilog_listener >&& p_smart_pointer) noexcept
+			explicit _bc_log_listener_container(bc_unique_ptr< bc_ilog_listener >&& p_smart_pointer) noexcept
 				: m_raw_pointer(nullptr),
 				m_smart_pointer(std::move(p_smart_pointer))
 			{
 			}
 
+			_bc_log_listener_container(const _bc_log_listener_container& p_other) = default;
+
 			_bc_log_listener_container(_bc_log_listener_container&& p_other) = default;
 
 			~_bc_log_listener_container() = default;
+
+			_bc_log_listener_container& operator=(const _bc_log_listener_container& p_other) = default;
 
 			_bc_log_listener_container& operator=(_bc_log_listener_container&& p_other) = default;
 
@@ -62,7 +66,7 @@ namespace black_cat
 			}
 
 			bc_ilog_listener* m_raw_pointer;
-			bc_unique_ptr<bc_ilog_listener> m_smart_pointer;
+			bc_shared_ptr<bc_ilog_listener> m_smart_pointer;
 		};
 
 		class BC_CORE_DLL bc_logger : public bc_iservice
@@ -124,6 +128,8 @@ namespace black_cat
 			 * \param p_listener 
 			 */
 			void register_listener(bc_log_type p_types, bc_ilog_listener* p_listener);
+
+			void unregister_listener(bc_ilog_listener* p_listener);
 
 		protected:
 

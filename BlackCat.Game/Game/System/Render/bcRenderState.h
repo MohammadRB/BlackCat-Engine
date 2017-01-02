@@ -110,9 +110,14 @@ namespace black_cat
 				return m_primitive;
 			}
 
-			const graphic::bc_buffer_ptr& get_vertex_buffer() const
+			const graphic::bc_buffer& get_vertex_buffer() const
 			{
-				return m_vertex_buffer;
+				return m_vertex_buffer.get();
+			}
+
+			bcUINT32 get_vertex_buffer_stride() const
+			{
+				return m_vertex_buffer_stride;
 			}
 
 			bcUINT32 get_vertex_buffer_offset() const
@@ -120,9 +125,9 @@ namespace black_cat
 				return m_vertex_buffer_offset;
 			}
 
-			const graphic::bc_buffer_ptr& get_index_buffer() const
+			const graphic::bc_buffer& get_index_buffer() const
 			{
-				return m_index_buffer;
+				return m_index_buffer.get();
 			}
 
 			bc_index_type get_index_type() const
@@ -154,9 +159,10 @@ namespace black_cat
 
 		private:
 			bc_render_state(graphic::bc_primitive p_primitive,
-				graphic::bc_buffer_ptr& p_vertex_buffer,
+				graphic::bc_buffer p_vertex_buffer,
+				bcUINT32 p_vertex_buffer_stride,
 				bcUINT32 p_verext_buffer_offset,
-				graphic::bc_buffer_ptr& p_index_buffer,
+				graphic::bc_buffer p_index_buffer,
 				bc_index_type p_index_type,
 				bcUINT32 p_index_count,
 				bcUINT32 p_index_buffer_offset,
@@ -165,6 +171,7 @@ namespace black_cat
 
 			graphic::bc_primitive m_primitive;
 			graphic::bc_buffer_ptr m_vertex_buffer;
+			bcUINT32 m_vertex_buffer_stride;
 			bcUINT32 m_vertex_buffer_offset;
 			graphic::bc_buffer_ptr m_index_buffer;
 			bc_index_type m_index_type;

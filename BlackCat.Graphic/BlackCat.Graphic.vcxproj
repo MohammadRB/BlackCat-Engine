@@ -23,6 +23,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphic\bcDeviceObject.h" />
+    <ClInclude Include="Graphic\bcDeviceRef.h" />
+    <ClInclude Include="Graphic\bcDeviceReference.h" />
     <ClInclude Include="Graphic\bcDeviceResourceContent.h" />
     <ClInclude Include="Graphic\bcEvent.h" />
     <ClInclude Include="Graphic\bcExport.h" />

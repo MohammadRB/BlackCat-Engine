@@ -33,10 +33,10 @@ namespace black_cat
 			<
 				typename = typename std::enable_if
 				<
-					std::is_base_of< bc_platform_physics_reference< TApi >, typename std::decay< type >::type >::value
+					std::is_base_of_v< bc_platform_physics_reference< TApi >, std::decay_t< type > >
 				>::type
 			>
-			explicit bc_platform_physics_ref(type& p_object);
+			explicit bc_platform_physics_ref(const type& p_object);
 
 			bc_platform_physics_ref(bc_platform_physics_ref&& p_other) noexcept;
 
@@ -54,7 +54,7 @@ namespace black_cat
 
 			void reset();
 
-			void reset(type& p_object);
+			void reset(const type& p_object);
 
 			platform_pack& get_platform_pack()
 			{

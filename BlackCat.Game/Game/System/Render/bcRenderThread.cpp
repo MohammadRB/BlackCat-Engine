@@ -58,38 +58,34 @@ namespace black_cat
 		}
 
 		bc_render_thread::bc_render_thread()
-			: m_pipeline(nullptr),
-			m_executer(nullptr),
-			m_command_list(nullptr)
+			: m_pipeline(),
+			m_executer(),
+			m_command_list()
 		{
 		}
 
-		void bc_render_thread::start(graphic::bc_device_command_list* p_command_list) noexcept
+		void bc_render_thread::start(graphic::bc_device_command_list p_command_list) noexcept
 		{
-			bcAssert(m_command_list == nullptr);
+			//bcAssert(m_command_list == nullptr);
 
 			m_command_list = p_command_list;
 		}
 
-		graphic::bc_device_command_list* bc_render_thread::finish() noexcept
+		graphic::bc_device_command_list bc_render_thread::finish() noexcept
 		{
-			bcAssert(m_command_list != nullptr);
+			//bcAssert(m_command_list != nullptr);
 
-			graphic::bc_device_command_list* l_result = nullptr;
+			m_pipeline->finish_command_list(m_command_list);
+			m_executer->excecute_command_list(m_command_list);
 
-			std::swap(m_command_list, l_result);
-
-			m_pipeline->finish_command_list(l_result);
-			m_executer->excecute_command_list(l_result);
-
-			return l_result;
+			return m_command_list;
 		}
 
 		void bc_render_thread::bind_render_pass_state(bc_render_pass_state* p_render_pass_state)
 		{
 			bcSIZE l_render_target_count = 0;
-			core::bc_array< graphic::bc_render_target_view*, g_render_pass_state_render_target_view_count > l_render_targets;
-			graphic::bc_depth_stencil_view* l_depth_stencil = p_render_pass_state->m_shader_depth.get();
+			core::bc_array< graphic::bc_render_target_view, g_render_pass_state_render_target_view_count > l_render_targets;
+			graphic::bc_depth_stencil_view l_depth_stencil = p_render_pass_state->m_shader_depth.get();
 			std::transform
 			(
 				std::cbegin(p_render_pass_state->m_shader_targets),
@@ -97,14 +93,12 @@ namespace black_cat
 				std::begin(l_render_targets),
 				[&l_render_target_count](const graphic::bc_render_target_view_ptr& p_target)
 				{
-					auto l_pointer = static_cast< graphic::bc_render_target_view* >(p_target.get());
-
-					if (l_pointer)
+					if (p_target != nullptr)
 					{
 						++l_render_target_count;
 					}
 
-					return l_pointer;
+					return p_target.get();
 				}
 			);
 
@@ -116,7 +110,7 @@ namespace black_cat
 
 			m_pipeline->bind_pipeline_state(p_render_pass_state->m_pipeline_state.get());
 			m_pipeline->bind_rs_viewports(1, &p_render_pass_state->m_viewport);
-			m_pipeline->bind_om_render_targets(l_render_target_count, *l_render_targets.data(), l_depth_stencil);
+			m_pipeline->bind_om_render_targets(l_render_target_count, l_render_targets.data(), l_depth_stencil);
 
 			graphic::bc_shader_type l_shader_types = core::bc_enum::none< graphic::bc_shader_type >();
 
@@ -206,13 +200,13 @@ namespace black_cat
 			(
 				0,
 				1,
-				p_render_state->get_vertex_buffer().get(),
-				(core::bc_array< bcUINT, 1 >() = { p_render_state->get_vertex_buffer()->get_structure_byte_stride()}).data(),
-				(core::bc_array< bcUINT, 1 >() = {0}).data()
+				(core::bc_array< graphic::bc_buffer, 1 >() = { p_render_state->get_vertex_buffer() }).data(),
+				(core::bc_array< bcUINT, 1 >() = { p_render_state->get_vertex_buffer_stride() }).data(),
+				(core::bc_array< bcUINT, 1 >() = { 0 }).data()
 			);
 			m_pipeline->bind_ia_index_buffer
 			(
-				p_render_state->get_index_buffer().get(),
+				p_render_state->get_index_buffer(),
 				p_render_state->get_index_type() == i32bit ? graphic::bc_format::R32_UINT : graphic::bc_format::R16_UINT
 			);
 
@@ -429,7 +423,7 @@ namespace black_cat
 			m_pipeline->draw_indexed_instanced(p_index_count_per_instance, p_instance_count, p_start_index_location, p_base_vertex_location, p_start_instance_location);
 		}
 
-		void bc_render_thread::draw_indexed_instanced_indirect(graphic::bc_buffer* p_args_buffer, bcUINT p_offset)
+		void bc_render_thread::draw_indexed_instanced_indirect(graphic::bc_buffer p_args_buffer, bcUINT p_offset)
 		{
 			m_pipeline->draw_indexed_instanced_indirect(p_args_buffer, p_offset);
 		}
@@ -439,7 +433,7 @@ namespace black_cat
 			m_pipeline->dispatch(p_x, p_y, p_z);
 		}
 
-		void bc_render_thread::dispatch_indirect(graphic::bc_buffer* p_args, bcUINT p_offset)
+		void bc_render_thread::dispatch_indirect(graphic::bc_buffer p_args, bcUINT p_offset)
 		{
 			m_pipeline->dispatch_indirect(p_args, p_offset);
 		}
@@ -449,50 +443,50 @@ namespace black_cat
 			m_pipeline->clear_buffers(p_color, p_depth, p_stencil);
 		}
 
-		graphic::bc_mapped_resource bc_render_thread::map_resource(graphic::bc_iresource* p_resource, bcUINT p_subresource, graphic::bc_resource_map p_map_type)
+		graphic::bc_mapped_resource bc_render_thread::map_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource, graphic::bc_resource_map p_map_type)
 		{
 			return m_pipeline->map_resource(p_resource, p_subresource, p_map_type);
 		}
 
-		void bc_render_thread::unmap_resource(graphic::bc_iresource* p_resource, bcUINT p_subresource)
+		void bc_render_thread::unmap_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource)
 		{
 			m_pipeline->unmap_resource(p_resource, p_subresource);
 		}
 
-		void bc_render_thread::update_subresource(graphic::bc_iresource* p_resource, bcUINT p_dst_subresource, const void* p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch)
+		void bc_render_thread::update_subresource(graphic::bc_iresource& p_resource, bcUINT p_dst_subresource, const void* p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch)
 		{
 			m_pipeline->update_subresource(p_resource, p_dst_subresource, p_src_data, p_src_row_pitch, p_src_depth_pitch);
 		}
 
-		void bc_render_thread::copy_subresource(graphic::bc_iresource* p_dest_resource, bcUINT p_dst_subresource, graphic::bc_iresource* p_src_resource, bcUINT p_src_subresource)
+		void bc_render_thread::copy_subresource(graphic::bc_iresource& p_dest_resource, bcUINT p_dst_subresource, graphic::bc_iresource& p_src_resource, bcUINT p_src_subresource)
 		{
 			m_pipeline->copy_subresource(p_dest_resource, p_dst_subresource, p_src_resource, p_src_subresource);
 		}
 
-		void bc_render_thread::copy_resource(graphic::bc_iresource* p_dest_resource, graphic::bc_iresource* p_src_resource)
+		void bc_render_thread::copy_resource(graphic::bc_iresource& p_dest_resource, graphic::bc_iresource& p_src_resource)
 		{
 			m_pipeline->copy_resource(p_dest_resource, p_src_resource);
 		}
 
-		void bc_render_thread::copy_structure_count(graphic::bc_buffer* p_dest_resource, bcUINT p_offset, graphic::bc_resource_view* p_unordered_resource)
+		void bc_render_thread::copy_structure_count(graphic::bc_buffer p_dest_resource, bcUINT p_offset, graphic::bc_resource_view p_unordered_resource)
 		{
 			m_pipeline->copy_structure_count(p_dest_resource, p_offset, p_unordered_resource);
 		}
 
-		void bc_render_thread::resolve_subresource(graphic::bc_iresource* p_dest_resource, bcUINT p_dest_subresource, graphic::bc_iresource* p_src_resource, bcUINT p_src_subresource, graphic::bc_format p_format)
+		void bc_render_thread::resolve_subresource(graphic::bc_iresource& p_dest_resource, bcUINT p_dest_subresource, graphic::bc_iresource& p_src_resource, bcUINT p_src_subresource, graphic::bc_format p_format)
 		{
 			m_pipeline->resolve_subresource(p_dest_resource, p_dest_subresource, p_src_resource, p_src_subresource, p_format);
 		}
 
 		void bc_render_thread::reset()
 		{
-			bcAssert(m_command_list == nullptr);
+			//bcAssert(m_command_list == nullptr);
 
 			m_pipeline.reset();
 			m_executer.reset();
 		}
 
-		void bc_render_thread::reset(graphic::bc_device_pipeline_ptr& p_pipeline, graphic::bc_device_command_executer_ptr& p_command_executer)
+		void bc_render_thread::reset(graphic::bc_device_pipeline p_pipeline, graphic::bc_device_command_executer p_command_executer)
 		{
 			bcAssert(m_command_list == nullptr);
 

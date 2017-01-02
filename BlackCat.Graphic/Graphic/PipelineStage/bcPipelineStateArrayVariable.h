@@ -9,40 +9,40 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< typename TState, bcUINT TNum >
+		template< typename TState, bcUINT32 TNum >
 		class bc_pipeline_state_array_variable
 		{
 		public:
-			explicit bc_pipeline_state_array_variable(TState p_initial_state);
+			explicit bc_pipeline_state_array_variable(TState p_initial_state) noexcept;
 
-			bc_pipeline_state_array_variable(const bc_pipeline_state_array_variable&);
+			bc_pipeline_state_array_variable(const bc_pipeline_state_array_variable&) noexcept;
 
 			~bc_pipeline_state_array_variable();
 
-			bc_pipeline_state_array_variable& operator=(const bc_pipeline_state_array_variable&);
+			bc_pipeline_state_array_variable& operator=(const bc_pipeline_state_array_variable&) noexcept;
 
-			void set_to_initial_state();
+			void set_to_initial_state() noexcept;
 
-			void set(bcUINT p_slot, TState p_state);
+			void set(bcUINT32 p_slot, TState p_state) noexcept;
 
-			TState get(bcUINT p_slot) const;
+			TState get(bcUINT32 p_slot) const noexcept;
 
 			// Get pointer to internal memory of object(all objects are in continues memory)
-			TState* get_slot(bcUINT p_slot);
+			TState* get_slot(bcUINT32 p_slot) noexcept;
 
-			TState* get_first_slot();
+			TState* get_first_slot() noexcept;
 
-			bcUINT get_dirty_start() const;
+			bcUINT32 get_dirty_start() const noexcept;
 
-			bcUINT get_dirty_end() const;
+			bcUINT32 get_dirty_end() const noexcept;
 
-			bcUINT get_dirty_count() const;
+			bcUINT32 get_dirty_count() const noexcept;
 
-			bcUINT variable_count() const;
+			bcUINT32 variable_count() const noexcept;
 
-			bool update_needed() const;
+			bool update_needed() const noexcept;
 
-			void reset_tracking();
+			void reset_tracking() noexcept;
 
 		protected:
 
@@ -50,15 +50,15 @@ namespace black_cat
 			const TState m_initial_state;
 			core::bc_array< TState, TNum > m_states;
 
-			bcINT m_dirty_start;
-			bcINT m_dirty_end;
+			bcINT32 m_dirty_start;
+			bcINT32 m_dirty_end;
 			bool m_update_needed;
 		};
 
-		template< typename TState, bcUINT TNum >
-		bc_pipeline_state_array_variable< TState, TNum >::bc_pipeline_state_array_variable(TState p_initial_state)
+		template< typename TState, bcUINT32 TNum >
+		bc_pipeline_state_array_variable< TState, TNum >::bc_pipeline_state_array_variable(TState p_initial_state) noexcept
 			: m_initial_state(p_initial_state),
-			m_states(),
+			m_states{ m_initial_state },
 			m_dirty_start(-1),
 			m_dirty_end(-1),
 			m_update_needed(false)
@@ -66,8 +66,8 @@ namespace black_cat
 			m_states.assign(p_initial_state);
 		}
 
-		template< typename TState, bcUINT TNum >
-		bc_pipeline_state_array_variable<TState, TNum>::bc_pipeline_state_array_variable(const bc_pipeline_state_array_variable& p_other)
+		template< typename TState, bcUINT32 TNum >
+		bc_pipeline_state_array_variable<TState, TNum>::bc_pipeline_state_array_variable(const bc_pipeline_state_array_variable& p_other) noexcept
 			: m_initial_state(p_other.m_initial_state),
 			m_states(p_other.m_states),
 			m_dirty_start(p_other.m_dirty_start),
@@ -76,13 +76,13 @@ namespace black_cat
 		{
 		}
 
-		template< typename TState, bcUINT TNum >
+		template< typename TState, bcUINT32 TNum >
 		bc_pipeline_state_array_variable< TState, TNum >::~bc_pipeline_state_array_variable()
 		{
 		}
 
-		template< typename TState, bcUINT TNum >
-		bc_pipeline_state_array_variable<TState, TNum>& bc_pipeline_state_array_variable<TState, TNum>::operator=(const bc_pipeline_state_array_variable& p_other)
+		template< typename TState, bcUINT32 TNum >
+		bc_pipeline_state_array_variable<TState, TNum>& bc_pipeline_state_array_variable<TState, TNum>::operator=(const bc_pipeline_state_array_variable& p_other) noexcept
 		{
 			m_states = p_other.m_states;
 			m_dirty_start = p_other.m_dirty_start;
@@ -92,17 +92,17 @@ namespace black_cat
 			return *this;
 		}
 
-		template< typename TState, bcUINT TNum >
-		void bc_pipeline_state_array_variable< TState, TNum >::set_to_initial_state()
+		template< typename TState, bcUINT32 TNum >
+		void bc_pipeline_state_array_variable< TState, TNum >::set_to_initial_state() noexcept
 		{
-			for (bcUINT i = 0; i < TNum; ++i)
+			for (bcUINT32 i = 0; i < TNum; ++i)
 			{
 				set(i, m_initial_state);
 			}
 		}
 
-		template< typename TState, bcUINT TNum >
-		void bc_pipeline_state_array_variable< TState, TNum >::set(bcUINT p_slot, TState p_state)
+		template< typename TState, bcUINT32 TNum >
+		void bc_pipeline_state_array_variable< TState, TNum >::set(bcUINT32 p_slot, TState p_state) noexcept
 		{
 			bcAssert(p_slot < m_states.size());
 
@@ -122,66 +122,66 @@ namespace black_cat
 			}
 		}
 
-		template< typename TState, bcUINT TNum >
-		TState bc_pipeline_state_array_variable< TState, TNum >::get(bcUINT p_slot) const
+		template< typename TState, bcUINT32 TNum >
+		TState bc_pipeline_state_array_variable< TState, TNum >::get(bcUINT32 p_slot) const noexcept
 		{
 			bcAssert(p_slot < m_states.size());
 
 			return m_states[p_slot];
 		}
 
-		template< typename TState, bcUINT TNum >
-		TState* bc_pipeline_state_array_variable< TState, TNum >::get_slot(bcUINT p_slot)
+		template< typename TState, bcUINT32 TNum >
+		TState* bc_pipeline_state_array_variable< TState, TNum >::get_slot(bcUINT32 p_slot) noexcept
 		{
 			bcAssert(p_slot < m_states.size());
 
 			return &m_states[p_slot];
 		}
 
-		template< typename TState, bcUINT TNum >
-		TState* bc_pipeline_state_array_variable< TState, TNum >::get_first_slot()
+		template< typename TState, bcUINT32 TNum >
+		TState* bc_pipeline_state_array_variable< TState, TNum >::get_first_slot() noexcept
 		{
 			return get_slot(0);
 		}
 
-		template< typename TState, bcUINT TNum >
-		bcUINT bc_pipeline_state_array_variable< TState, TNum >::get_dirty_start() const
+		template< typename TState, bcUINT32 TNum >
+		bcUINT32 bc_pipeline_state_array_variable< TState, TNum >::get_dirty_start() const noexcept
 		{
 			if (!update_needed())
 				return 0;
 			return m_dirty_start;
 		}
 
-		template< typename TState, bcUINT TNum >
-		bcUINT bc_pipeline_state_array_variable< TState, TNum >::get_dirty_end() const
+		template< typename TState, bcUINT32 TNum >
+		bcUINT32 bc_pipeline_state_array_variable< TState, TNum >::get_dirty_end() const noexcept
 		{
 			if (!update_needed())
 				return 0;
 			return m_dirty_end;
 		}
 
-		template< typename TState, bcUINT TNum >
-		bcUINT bc_pipeline_state_array_variable< TState, TNum >::get_dirty_count() const
+		template< typename TState, bcUINT32 TNum >
+		bcUINT32 bc_pipeline_state_array_variable< TState, TNum >::get_dirty_count() const noexcept
 		{
 			if (!update_needed()) 
 				return 0;
 			return get_dirty_end() - get_dirty_start() + 1;
 		}
 
-		template< typename TState, bcUINT TNum >
-		bcUINT bc_pipeline_state_array_variable< TState, TNum >::variable_count() const
+		template< typename TState, bcUINT32 TNum >
+		bcUINT32 bc_pipeline_state_array_variable< TState, TNum >::variable_count() const noexcept
 		{
 			return TNum;
 		}
 
-		template< typename TState, bcUINT TNum >
-		bool bc_pipeline_state_array_variable< TState, TNum >::update_needed() const
+		template< typename TState, bcUINT32 TNum >
+		bool bc_pipeline_state_array_variable< TState, TNum >::update_needed() const noexcept
 		{
 			return m_update_needed;
 		}
 
-		template< typename TState, bcUINT TNum >
-		void bc_pipeline_state_array_variable< TState, TNum >::reset_tracking()
+		template< typename TState, bcUINT32 TNum >
+		void bc_pipeline_state_array_variable< TState, TNum >::reset_tracking() noexcept
 		{
 			m_update_needed = false;
 			m_dirty_start = -1;

@@ -4,7 +4,7 @@
 
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcRenderApi.h"
-#include "Graphic/bcResourcePtr.h"
+#include "Graphic/bcDeviceRef.h"
 #include "Graphic/Resource/bcResource.h"
 #include "Graphic/Resource/Buffer/bcBufferConfig.h"
 
@@ -15,11 +15,10 @@ namespace black_cat
 		template<bc_render_api TRenderApi>
 		struct bc_platform_buffer_pack
 		{
-			bc_buffer_config m_config;
 		};
 		
 		template<bc_render_api TRenderApi>
-		class bc_platform_buffer : public bc_iresource
+		class bc_platform_buffer : public bc_platform_iresource<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_buffer_pack<TRenderApi>;
@@ -27,11 +26,13 @@ namespace black_cat
 		public:
 			bc_platform_buffer();
 
-			bc_platform_buffer(bc_platform_buffer&& p_other);
+			explicit bc_platform_buffer(platform_pack& p_pack);
+
+			bc_platform_buffer(const bc_platform_buffer& p_other);
 
 			~bc_platform_buffer();
 
-			bc_platform_buffer& operator=(bc_platform_buffer&& p_other);
+			bc_platform_buffer& operator=(const bc_platform_buffer& p_other);
 
 			bcUINT get_byte_width() const;
 
@@ -39,14 +40,19 @@ namespace black_cat
 
 			bcUINT get_structure_byte_stride() const;
 
+			bool is_valid() const noexcept override;
+
+			bool operator==(const bc_platform_buffer& p_other) const noexcept;
+
+			bool operator!=(const bc_platform_buffer& p_other) const noexcept;
+
+			bool operator==(std::nullptr_t) const noexcept;
+
+			bool operator!=(std::nullptr_t) const noexcept;
+
 			bc_resource_type get_type() const override
 			{
 				return bc_resource_type::buffer;
-			}
-
-			bc_buffer_config& get_config()
-			{
-				return m_pack.m_config;
 			}
 
 			platform_pack& get_platform_pack()
@@ -60,7 +66,6 @@ namespace black_cat
 		};
 
 		using bc_buffer = bc_platform_buffer<g_current_render_api>;
-
-		using bc_buffer_ptr = bc_resource_ptr< bc_buffer >;
+		using bc_buffer_ptr = bc_device_ref< bc_buffer >;
 	}
 }

@@ -11,7 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GraphicImp\bcDeviceRef.h" />
+    <ClInclude Include="GraphicImp\bcDeviceReference.h" />
     <ClInclude Include="GraphicImp\bcExport.h" />
+    <ClInclude Include="GraphicImp\bcRefCountProxy.h" />
     <ClInclude Include="GraphicImp\bcRenderApiInfo.h" />
     <ClInclude Include="GraphicImp\bcUtility.h" />
     <ClInclude Include="GraphicImp\Device\bcDevice.h" />
@@ -60,6 +63,8 @@
     <ClInclude Include="GraphicImp\Shader\Parameter\bcShaderParameter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GraphicImp\bcDeviceRef.cpp" />
+    <ClCompile Include="GraphicImp\bcDeviceReference.cpp" />
     <ClCompile Include="GraphicImp\bcUtility.cpp" />
     <ClCompile Include="GraphicImp\Device\bcDevice.cpp" />
     <ClCompile Include="GraphicImp\Device\bcDeviceOutput.cpp" />

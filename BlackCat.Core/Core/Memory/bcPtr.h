@@ -152,6 +152,11 @@ namespace black_cat
 				return lPointer;
 			}
 
+			void reset() noexcept(true)
+			{
+				_destruct();
+			}
+
 			void reset(T* p_pointer) noexcept(true)
 			{
 				_destruct();
@@ -371,6 +376,10 @@ namespace black_cat
 			class meta_data
 			{
 			public:
+				template <typename T1>
+				friend class bc_shared_ptr;
+
+			public:
 				template< typename TDeleter >
 				meta_data(TDeleter p_deleter, bool p_is_shared)
 					: m_deleter(p_deleter),
@@ -412,7 +421,6 @@ namespace black_cat
 				bc_delegate<void(pointer)> m_deleter;
 				core_platform::bc_atomic<bcSIZE> m_ref_count;
 				bool m_is_shared;
-				
 			};
 
 		public:
@@ -423,7 +431,9 @@ namespace black_cat
 			}
 
 			constexpr bc_shared_ptr(std::nullptr_t) noexcept(true)
-				: bc_shared_ptr()
+				/*: bc_shared_ptr() TODO visual studio 2015 has a bug in constexpr delegating construction */
+				: m_pointer(nullptr),
+				m_meta(nullptr)
 			{
 			}
 
@@ -632,11 +642,16 @@ namespace black_cat
 				{
 					// If meta structure is shared with data call it's destructor else free it's memory
 					if (m_meta->is_shared())
+					{
+						auto l_deleter = std::move(m_meta->m_deleter);
 						m_meta->~meta_data();
+						l_deleter(m_pointer);
+					}
 					else
+					{
+						m_meta->call_deleter(m_pointer);
 						_deallocate_meta(m_meta);
-
-					m_meta->call_deleter(m_pointer);
+					}
 				}
 			}
 

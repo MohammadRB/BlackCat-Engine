@@ -10,11 +10,6 @@ namespace black_cat
 	namespace graphic
 	{
 		template< bc_render_api TRenderApi >
-		struct bc_platform_device_output_parameter
-		{
-		};
-
-		template< bc_render_api TRenderApi >
 		struct bc_platform_device_output_pack
 		{
 		};
@@ -23,11 +18,10 @@ namespace black_cat
 		class bc_platform_device_output
 		{
 		public:
-			using parameter = bc_platform_device_output_parameter<TRenderApi>;
 			using platform_pack = bc_platform_device_output_pack<TRenderApi>;
 
 		public:
-			bc_platform_device_output(parameter p_parameter);
+			bc_platform_device_output(platform_pack p_parameter);
 
 			bc_platform_device_output(bc_platform_device_output&&) noexcept;
 

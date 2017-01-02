@@ -36,7 +36,7 @@ namespace black_cat
 
 		graphic::bc_device_output bc_d3d_output_widget::get_device_output() const
 		{
-			return graphic::bc_device_output(graphic::bc_device_output::parameter(m_win_id));
+			return graphic::bc_device_output(graphic::bc_device_output::platform_pack(m_win_id));
 		}
 
 		void bc_d3d_output_widget::mousePressEvent(QMouseEvent* p_event)

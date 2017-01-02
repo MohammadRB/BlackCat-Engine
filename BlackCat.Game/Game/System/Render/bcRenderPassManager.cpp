@@ -96,7 +96,7 @@ namespace black_cat
 			return false;
 		}
 
-		void bc_render_pass_manager::pass_initialize_resources(bc_render_system& p_render_system, graphic::bc_device* p_device)
+		void bc_render_pass_manager::pass_initialize_resources(bc_render_system& p_render_system, graphic::bc_device& p_device)
 		{
 			for (auto& l_entry : m_passes)
 			{
@@ -121,7 +121,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_pass_manager::before_reset(bc_render_system& p_render_system, graphic::bc_device* p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
+		void bc_render_pass_manager::before_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
 		{
 			for (auto& l_entry : m_passes)
 			{
@@ -129,7 +129,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_pass_manager::after_reset(bc_render_system& p_render_system, graphic::bc_device* p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
+		void bc_render_pass_manager::after_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
 		{
 			for (auto& l_entry : m_passes)
 			{
@@ -137,7 +137,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_pass_manager::pass_destroy(graphic::bc_device* p_device)
+		void bc_render_pass_manager::pass_destroy(graphic::bc_device& p_device)
 		{
 			for (auto& l_entry : m_passes)
 			{

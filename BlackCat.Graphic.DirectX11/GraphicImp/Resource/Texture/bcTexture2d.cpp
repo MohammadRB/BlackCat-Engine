@@ -17,8 +17,17 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_texture2d< g_api_dx11 >::bc_platform_texture2d()
-			: m_pack()
+			: bc_platform_iresource()
 		{
+			m_pack.m_texture = nullptr;
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_platform_texture2d<g_api_dx11>::bc_platform_texture2d(platform_pack& p_pack)
+			: bc_platform_iresource(bc_platform_iresource::platform_pack(p_pack.m_texture))
+		{
+			m_pack.m_texture = p_pack.m_texture;
 		}
 
 		template<>
@@ -29,18 +38,18 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_texture2d< g_api_dx11 >::bc_platform_texture2d(bc_platform_texture2d&& p_other)
-			: bc_iresource(std::move(p_other)),
-			m_pack(std::move(p_other.m_pack))
+		bc_platform_texture2d< g_api_dx11 >::bc_platform_texture2d(const bc_platform_texture2d& p_other)
+			: bc_platform_iresource(p_other)
 		{
+			m_pack.m_texture = p_other.m_pack.m_texture;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_texture2d< g_api_dx11 >& bc_platform_texture2d< g_api_dx11 >::operator=(bc_platform_texture2d&& p_other)
+		bc_platform_texture2d< g_api_dx11 >& bc_platform_texture2d< g_api_dx11 >::operator=(const bc_platform_texture2d& p_other)
 		{
-			bc_iresource::operator=(std::move(p_other));
-			m_pack = std::move(p_other.m_pack);
+			bc_platform_iresource::operator=(p_other);
+			m_pack.m_texture = p_other.m_pack.m_texture;
 
 			return *this;
 		}
@@ -49,43 +58,101 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bcUINT32 bc_platform_texture2d< g_api_dx11 >::get_width() const
 		{
-			return const_cast< bc_platform_texture2d* >(this)->m_pack.m_config.get_platform_pack().m_desc.Width;
+			D3D11_TEXTURE2D_DESC l_desc;
+
+			m_pack.m_texture->GetDesc(&l_desc);
+
+			return l_desc.Width;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		bcUINT32 bc_platform_texture2d< g_api_dx11 >::get_height() const
 		{
-			return const_cast< bc_platform_texture2d* >(this)->m_pack.m_config.get_platform_pack().m_desc.Height;
+			D3D11_TEXTURE2D_DESC l_desc;
+
+			m_pack.m_texture->GetDesc(&l_desc);
+
+			return l_desc.Height;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_resource_usage bc_platform_texture2d< g_api_dx11 >::get_usage() const
 		{
-			return bc_graphic_cast(const_cast< bc_platform_texture2d* >(this)->m_pack.m_config.get_platform_pack().m_desc.Usage);
+			D3D11_TEXTURE2D_DESC l_desc;
+
+			m_pack.m_texture->GetDesc(&l_desc);
+
+			return bc_graphic_cast(l_desc.Usage);
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		bool bc_platform_texture2d< g_api_dx11 >::is_multisampled() const
 		{
-			return const_cast< bc_platform_texture2d* >(this)->m_pack.m_config.get_platform_pack().m_desc.SampleDesc.Count > 1;
+			D3D11_TEXTURE2D_DESC l_desc;
+
+			m_pack.m_texture->GetDesc(&l_desc);
+
+			return l_desc.SampleDesc.Count > 1;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_texture_ms_config bc_platform_texture2d< g_api_dx11 >::get_sample_count() const
 		{
-			auto& l_sample_desc = const_cast<bc_platform_texture2d*>(this)->m_pack.m_config.get_platform_pack().m_desc.SampleDesc;
-			return bc_texture_ms_config(l_sample_desc.Count, l_sample_desc.Quality);
+			D3D11_TEXTURE2D_DESC l_desc;
+
+			m_pack.m_texture->GetDesc(&l_desc);
+
+			return bc_texture_ms_config(l_desc.SampleDesc.Count, l_desc.SampleDesc.Quality);
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_format bc_platform_texture2d< g_api_dx11 >::get_format() const
 		{
-			return bc_graphic_cast(const_cast< bc_platform_texture2d* >(this)->m_pack.m_config.get_platform_pack().m_desc.Format);
+			D3D11_TEXTURE2D_DESC l_desc;
+
+			m_pack.m_texture->GetDesc(&l_desc);
+
+			return bc_graphic_cast(l_desc.Format);
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bool bc_platform_texture2d<g_api_dx11>::is_valid() const noexcept
+		{
+			return m_pack.m_texture != nullptr;
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bool bc_platform_texture2d<g_api_dx11>::operator==(const bc_platform_texture2d& p_other) const noexcept
+		{
+			return m_pack.m_texture == p_other.m_pack.m_texture;
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bool bc_platform_texture2d<g_api_dx11>::operator!=(const bc_platform_texture2d& p_other) const noexcept
+		{
+			return !operator==(p_other);
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bool bc_platform_texture2d<g_api_dx11>::operator==(std::nullptr_t) const noexcept
+		{
+			return !is_valid();
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bool bc_platform_texture2d<g_api_dx11>::operator!=(std::nullptr_t) const noexcept
+		{
+			return is_valid();
 		}
 	}
 }

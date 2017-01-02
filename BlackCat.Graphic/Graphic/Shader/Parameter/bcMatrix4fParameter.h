@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Graphic/Math/bcMatrix4f.h"
+#include "Core/Math/bcMatrix4f.h"
 #include "Graphic/Shader/Parameter/bcShaderParameter.h"
 
 namespace black_cat
@@ -14,7 +14,7 @@ namespace black_cat
 		public:
 			bc_matrix4f_parameter();
 
-			bc_matrix4f_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_matrix4f& p_matrix);
+			bc_matrix4f_parameter(bcINT p_register, bc_shader_type p_shader_types, core::bc_matrix4f& p_matrix);
 
 			bc_matrix4f_parameter(bc_matrix4f_parameter&) = default;
 
@@ -22,9 +22,9 @@ namespace black_cat
 
 			bc_matrix4f_parameter& operator=(bc_matrix4f_parameter&) = default;
 
-			bc_matrix4f get_matrix() const;
+			core::bc_matrix4f get_matrix() const;
 
-			void set_matrix(bc_matrix4f& p_matrix);
+			void set_matrix(core::bc_matrix4f& p_matrix);
 
 			bc_shader_parameter_type get_parameter_type() const override;
 
@@ -34,7 +34,7 @@ namespace black_cat
 		protected:
 
 		private:
-			bc_matrix4f m_matrix;
+			core::bc_matrix4f m_matrix;
 		};
 
 		inline bc_matrix4f_parameter::bc_matrix4f_parameter()
@@ -42,18 +42,18 @@ namespace black_cat
 		{
 		}
 
-		inline bc_matrix4f_parameter::bc_matrix4f_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_matrix4f& p_matrix)
+		inline bc_matrix4f_parameter::bc_matrix4f_parameter(bcINT p_register, bc_shader_type p_shader_types, core::bc_matrix4f& p_matrix)
 			: bc_ishader_parameter(p_register, p_shader_types),
 			m_matrix(p_matrix)
 		{
 		}
 
-		inline bc_matrix4f bc_matrix4f_parameter::get_matrix() const
+		inline core::bc_matrix4f bc_matrix4f_parameter::get_matrix() const
 		{
 			return m_matrix;
 		}
 
-		inline void bc_matrix4f_parameter::set_matrix(bc_matrix4f& p_matrix)
+		inline void bc_matrix4f_parameter::set_matrix(core::bc_matrix4f& p_matrix)
 		{
 			m_matrix = p_matrix;
 		}
@@ -66,9 +66,9 @@ namespace black_cat
 		inline void bc_matrix4f_parameter::set_parameter_data(void* p_data)
 		{
 			if (!p_data)
-				set_matrix(bc_matrix4f::identity());
+				set_matrix(core::bc_matrix4f::identity());
 			else
-				set_matrix(*reinterpret_cast<bc_matrix4f*>(p_data));
+				set_matrix(*reinterpret_cast< core::bc_matrix4f*>(p_data));
 		}
 
 		inline bool bc_matrix4f_parameter::is_valid() const

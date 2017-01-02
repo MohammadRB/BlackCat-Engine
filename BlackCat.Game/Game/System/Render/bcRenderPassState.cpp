@@ -39,10 +39,10 @@ namespace black_cat
 			m_render_system->destroy_render_pass_state(p_render_state);
 		}
 
-		bc_render_pass_state::bc_render_pass_state(graphic::bc_device_pipeline_state_ptr& p_pipeline_state,
+		bc_render_pass_state::bc_render_pass_state(graphic::bc_device_pipeline_state p_pipeline_state,
 			graphic::bc_viewport p_viewport,
 			bc_render_pass_state_render_target_view_array&& p_shader_targets, 
-			graphic::bc_depth_stencil_view_ptr& p_shader_depth, 
+			graphic::bc_depth_stencil_view p_shader_depth, 
 			bc_render_pass_state_sampler_array&& p_shader_samplers, 
 			bc_render_pass_state_resource_view_array&& p_shader_views, 
 			bc_render_pass_state_constant_buffer_array&& p_shader_buffers)

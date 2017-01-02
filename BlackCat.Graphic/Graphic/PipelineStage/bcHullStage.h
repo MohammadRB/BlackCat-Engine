@@ -16,11 +16,11 @@ namespace black_cat
 		public:
 			bc_platform_hull_stage();
 
-			bc_platform_hull_stage(bc_platform_hull_stage&&);
+			bc_platform_hull_stage(bc_platform_hull_stage&&) noexcept;
 
 			~bc_platform_hull_stage();
 
-			bc_platform_hull_stage& operator=(bc_platform_hull_stage&&);
+			bc_platform_hull_stage& operator=(bc_platform_hull_stage&&) noexcept;
 
 		protected:
 			void apply_shader_program(bc_device_pipeline* p_pipeline) override;

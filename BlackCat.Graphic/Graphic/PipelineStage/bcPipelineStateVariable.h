@@ -12,23 +12,23 @@ namespace black_cat
 		class bc_pipeline_state_variable
 		{
 		public:
-			explicit bc_pipeline_state_variable(TState p_initial_state);
+			explicit bc_pipeline_state_variable(TState p_initial_state) noexcept;
 
-			bc_pipeline_state_variable(const bc_pipeline_state_variable&);
+			bc_pipeline_state_variable(const bc_pipeline_state_variable&) noexcept;
 
 			~bc_pipeline_state_variable();
 
-			bc_pipeline_state_variable& operator=(const bc_pipeline_state_variable&);
+			bc_pipeline_state_variable& operator=(const bc_pipeline_state_variable&) noexcept;
 
-			void set(TState p_state);
+			void set(TState p_state) noexcept;
 
-			TState get() const;
+			TState get() const noexcept;
 
-			void set_to_initial_state();
+			void set_to_initial_state() noexcept;
 
-			bool update_needed() const;
+			bool update_needed() const noexcept;
 
-			void reset_tracking();
+			void reset_tracking() noexcept;
 
 		protected:
 
@@ -40,7 +40,7 @@ namespace black_cat
 		};
 
 		template< typename TState >
-		bc_pipeline_state_variable<TState>::bc_pipeline_state_variable(TState p_initial_state)
+		bc_pipeline_state_variable<TState>::bc_pipeline_state_variable(TState p_initial_state) noexcept
 			: m_initial_state(p_initial_state),
 			m_state(p_initial_state),
 			m_update_needed(false)
@@ -48,7 +48,7 @@ namespace black_cat
 		}
 
 		template< typename TState >
-		bc_pipeline_state_variable<TState>::bc_pipeline_state_variable(const bc_pipeline_state_variable& p_other)
+		bc_pipeline_state_variable<TState>::bc_pipeline_state_variable(const bc_pipeline_state_variable& p_other) noexcept
 			: m_initial_state(p_other.m_initial_state),
 			m_state(p_other.m_state),
 			m_update_needed(p_other.m_update_needed)
@@ -61,7 +61,7 @@ namespace black_cat
 		}
 
 		template< typename TState >
-		bc_pipeline_state_variable<TState>& bc_pipeline_state_variable<TState>::operator=(const bc_pipeline_state_variable& p_other)
+		bc_pipeline_state_variable<TState>& bc_pipeline_state_variable<TState>::operator=(const bc_pipeline_state_variable& p_other) noexcept
 		{
 			m_state = p_other.m_state;
 			m_update_needed = p_other.m_update_needed;
@@ -70,7 +70,7 @@ namespace black_cat
 		}
 
 		template< typename TState >
-		void bc_pipeline_state_variable<TState>::set(TState p_state)
+		void bc_pipeline_state_variable<TState>::set(TState p_state) noexcept
 		{
 			if (p_state != m_state)
 				m_update_needed = true;
@@ -81,25 +81,25 @@ namespace black_cat
 		}
 
 		template< typename TState >
-		TState bc_pipeline_state_variable<TState>::get() const
+		TState bc_pipeline_state_variable<TState>::get() const noexcept
 		{
 			return m_state;
 		}
 
 		template< typename TState >
-		void bc_pipeline_state_variable<TState>::set_to_initial_state()
+		void bc_pipeline_state_variable<TState>::set_to_initial_state() noexcept
 		{
 			set(m_initial_state);
 		}
 
 		template< typename TState >
-		bool bc_pipeline_state_variable<TState>::update_needed() const
+		bool bc_pipeline_state_variable<TState>::update_needed() const noexcept
 		{
 			return m_update_needed;
 		}
 
 		template< typename TState >
-		void bc_pipeline_state_variable<TState>::reset_tracking()
+		void bc_pipeline_state_variable<TState>::reset_tracking() noexcept
 		{
 			m_update_needed = false;
 		}

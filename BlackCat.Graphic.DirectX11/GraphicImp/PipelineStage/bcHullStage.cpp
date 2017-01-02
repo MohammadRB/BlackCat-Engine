@@ -16,13 +16,14 @@ namespace black_cat
 		template < >
 		BC_GRAPHICIMP_DLL
 		bc_platform_hull_stage<g_api_dx11>::bc_platform_hull_stage()
+			: bc_platform_programmable_stage(bc_platform_programmable_stage::platform_pack())
 		{
 		}
 
 		template < >
 		BC_GRAPHICIMP_DLL
-		bc_platform_hull_stage<g_api_dx11>::bc_platform_hull_stage(bc_platform_hull_stage&& p_other)
-			: bc_platform_hull_stage(std::move(p_other))
+		bc_platform_hull_stage<g_api_dx11>::bc_platform_hull_stage(bc_platform_hull_stage&& p_other) noexcept
+			: bc_programmable_stage(std::move(p_other))
 		{
 		}
 
@@ -34,7 +35,7 @@ namespace black_cat
 
 		template < >
 		BC_GRAPHICIMP_DLL
-		bc_platform_hull_stage<g_api_dx11>& bc_platform_hull_stage<g_api_dx11>::operator=(bc_platform_hull_stage&& p_other)
+		bc_platform_hull_stage<g_api_dx11>& bc_platform_hull_stage<g_api_dx11>::operator=(bc_platform_hull_stage&& p_other) noexcept
 		{
 			bc_programmable_stage::operator=(std::move(p_other));
 
@@ -52,7 +53,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_hull_stage<g_api_dx11>::apply_constant_buffers(bc_device_pipeline* p_pipeline)
 		{
-			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_context.Get();
+			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline->m_context;
 			bc_programmable_stage_state& l_required_state = m_required_state;
 
 			if (m_required_state.m_constant_buffers.update_needed())
@@ -61,8 +62,8 @@ namespace black_cat
 
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_shader_constant_buffer(); ++i)
 				{
-					bc_buffer* l_buffer = l_required_state.m_constant_buffers.get(i);
-					l_constant_buffers[i] = l_buffer ? l_required_state.m_constant_buffers.get(i)->get_platform_pack().m_buffer.Get() : nullptr;
+					bc_buffer l_buffer = l_required_state.m_constant_buffers.get(i);
+					l_constant_buffers[i] = l_buffer.is_valid() ? l_buffer.get_platform_pack().m_buffer : nullptr;
 				}
 
 				bcUINT l_dirty_slot_start = m_required_state.m_constant_buffers.get_dirty_start();
@@ -76,7 +77,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_hull_stage<g_api_dx11>::apply_sampler_states(bc_device_pipeline* p_pipeline)
 		{
-			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_context.Get();
+			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline->m_context;
 			bc_programmable_stage_state& l_required_state = m_required_state;
 
 			if (m_required_state.m_sampler_states.update_needed())
@@ -85,8 +86,8 @@ namespace black_cat
 
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_shader_sampler(); ++i)
 				{
-					bc_sampler_state* l_sampler_state = l_required_state.m_sampler_states.get(i);
-					l_sampler_states[i] = l_sampler_state ? l_sampler_state->get_platform_pack().m_sampler_state.Get() : nullptr;
+					bc_sampler_state l_sampler_state = l_required_state.m_sampler_states.get(i);
+					l_sampler_states[i] = l_sampler_state.is_valid() ? l_sampler_state.get_platform_pack().m_sampler_state : nullptr;
 				}
 
 				bcUINT l_dirty_slot_start = m_required_state.m_sampler_states.get_dirty_start();
@@ -100,7 +101,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_hull_stage<g_api_dx11>::apply_shader_resource_views(bc_device_pipeline* p_pipeline)
 		{
-			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_context.Get();
+			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline->m_context;
 			bc_programmable_stage_state& l_required_state = m_required_state;
 
 			if (m_required_state.m_shader_resource_views.update_needed())
@@ -109,8 +110,8 @@ namespace black_cat
 
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_shader_resource(); ++i)
 				{
-					bc_resource_view* l_shader_view = l_required_state.m_shader_resource_views.get(i);
-					l_views[i] = l_shader_view ? l_shader_view->get_platform_pack().m_shader_view.Get() : nullptr;
+					bc_resource_view l_shader_view = l_required_state.m_shader_resource_views.get(i);
+					l_views[i] = l_shader_view.is_valid() ? l_shader_view.get_platform_pack().m_shader_view : nullptr;
 				}
 
 				bcUINT l_dirty_slot_start = m_required_state.m_shader_resource_views.get_dirty_start();

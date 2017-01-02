@@ -20,24 +20,24 @@ namespace black_cat
 
 		// -- Rasterizer state -----------------------------------------------------------------------------
 
-		class BC_GRAPHIC_DLL bc_rasterizer_stage_state
+		class bc_rasterizer_stage_state
 		{
 		public:
 			bc_rasterizer_stage_state();
 
-			bc_rasterizer_stage_state(const bc_rasterizer_stage_state&) = default;
+			bc_rasterizer_stage_state(const bc_rasterizer_stage_state&) noexcept = default;
 
-			bc_rasterizer_stage_state(bc_rasterizer_stage_state&&) = default;
+			bc_rasterizer_stage_state(bc_rasterizer_stage_state&&) noexcept = default;
 
 			~bc_rasterizer_stage_state();
 
-			bc_rasterizer_stage_state& operator=(const bc_rasterizer_stage_state&) = default;
+			bc_rasterizer_stage_state& operator=(const bc_rasterizer_stage_state&) noexcept = default;
 
-			bc_rasterizer_stage_state& operator=(bc_rasterizer_stage_state&&) = default;
+			bc_rasterizer_stage_state& operator=(bc_rasterizer_stage_state&&) noexcept = default;
 
-			void set_to_initial_state();
+			void set_to_initial_state() noexcept;
 
-			void reset_tracking();
+			void reset_tracking() noexcept;
 
 			//bc_pipeline_state_variable< bc_rasterizer_stage_state* > m_rasterizer_state;
 			bc_pipeline_state_variable< bcUINT > m_viewport_count;
@@ -48,8 +48,32 @@ namespace black_cat
 		protected:
 
 		private:
-
 		};
+
+		inline bc_rasterizer_stage_state::bc_rasterizer_stage_state()
+			: //m_rasterizer_state(nullptr),
+			m_viewport_count(0),
+			m_viewports(nullptr)
+		{
+		}
+
+		inline bc_rasterizer_stage_state::~bc_rasterizer_stage_state()
+		{
+		}
+
+		inline void bc_rasterizer_stage_state::set_to_initial_state() noexcept
+		{
+			//m_rasterizer_state.set_to_initial_state();
+			m_viewport_count.set_to_initial_state();
+			m_viewports.set_to_initial_state();
+		}
+
+		inline void bc_rasterizer_stage_state::reset_tracking() noexcept
+		{
+			//m_rasterizer_state.reset_tracking();
+			m_viewport_count.reset_tracking();
+			m_viewports.reset_tracking();
+		}
 
 		// -- Rasterizer stage -----------------------------------------------------------------------------
 
@@ -65,13 +89,13 @@ namespace black_cat
 			using platform_pack = bc_platform_rasterizer_stage_pack<TRenderApi>;
 
 		public:
-			bc_platform_rasterizer_stage();
+			bc_platform_rasterizer_stage(platform_pack& p_pack);
 
-			bc_platform_rasterizer_stage(bc_platform_rasterizer_stage&&);
+			bc_platform_rasterizer_stage(bc_platform_rasterizer_stage&&) noexcept;
 
 			~bc_platform_rasterizer_stage();
 
-			bc_platform_rasterizer_stage& operator=(bc_platform_rasterizer_stage&&);
+			bc_platform_rasterizer_stage& operator=(bc_platform_rasterizer_stage&&) noexcept;
 
 			void apply_required_state(bc_device_pipeline* p_pipeline);
 

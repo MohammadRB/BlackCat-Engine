@@ -104,9 +104,6 @@
     </Link>
     <PostBuildEvent>
       <Command>copy Game\*.h ..\BC_SDK\Include\Game
-copy Game\Graphic\Command\*.h ..\BC_SDK\Include\Game\Graphic\Command
-copy Game\Graphic\Pass\*.h ..\BC_SDK\Include\Game\Graphic\Pass
-copy Game\Graphic\Task\*.h ..\BC_SDK\Include\Game\Graphic\Task
 copy Game\Application\*.h ..\BC_SDK\Include\Game\Application
 copy Game\Object\*.h ..\BC_SDK\Include\Game\Object
 copy Game\Object\Mesh\*.h ..\BC_SDK\Include\Game\Object\Mesh
@@ -170,9 +167,6 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     </Link>
     <PostBuildEvent>
       <Command>copy Game\*.h ..\BC_SDK\Include\Game
-copy Game\Graphic\Command\*.h ..\BC_SDK\Include\Game\Graphic\Command
-copy Game\Graphic\Pass\*.h ..\BC_SDK\Include\Game\Graphic\Pass
-copy Game\Graphic\Task\*.h ..\BC_SDK\Include\Game\Graphic\Task
 copy Game\Application\*.h ..\BC_SDK\Include\Game\Application
 copy Game\Object\*.h ..\BC_SDK\Include\Game\Object
 copy Game\Object\Mesh\*.h ..\BC_SDK\Include\Game\Object\Mesh
@@ -219,27 +213,6 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="Game\bcExport.h" />
     <ClInclude Include="Game\Application\bcRenderApplication.h" />
     <ClInclude Include="Game\GamePCH.h" />
-    <ClInclude Include="Game\Graphic\bcRenderCommand.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Game\Graphic\bcRenderPass.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Game\Graphic\bcRenderTask.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Game\Graphic\Command\bcPipelineDispatchCommand.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Game\Graphic\Command\bcPipelineDrawCommand.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Game\Graphic\Command\bcPipelineDrawIndexedCommand.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Game\Graphic\Command\bcPipelineDrawIndexedInstancedCommand.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="Game\Object\Mesh\bcHeightMap.h" />
     <ClInclude Include="Game\Object\Mesh\bcMesh.h" />
     <ClInclude Include="Game\Object\Mesh\bcMeshGenerator.h" />
@@ -297,18 +270,6 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="Game\GamePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Game\Graphic\Command\bcPipelineDispatchCommand.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Game\Graphic\Command\bcPipelineDrawCommand.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Game\Graphic\Command\bcPipelineDrawIndexedCommand.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Game\Graphic\Command\bcPipelineDrawIndexedInstancedCommand.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Game\Object\Mesh\bcMesh.cpp" />
     <ClCompile Include="Game\Object\Mesh\bcMeshGenerator.cpp" />

@@ -12,6 +12,10 @@
 #include "Game/System/Render/bcRenderPass.h"
 #include "Game/System/Render/bcRenderPassState.h"
 #include "BlackCat/bcExport.h"
+#include "BlackCat/Loader/bcComputeShaderLoader.h"
+#include "BlackCat/Loader/bcComputeShaderLoader.h"
+#include "BlackCat/Loader/bcComputeShaderLoader.h"
+#include "BlackCat/Loader/bcComputeShaderLoader.h"
 
 namespace black_cat
 {
@@ -26,7 +30,7 @@ namespace black_cat
 
 		bc_back_buffer_output_pass& operator=(const bc_back_buffer_output_pass&) = default;
 
-		void initialize_resources(game::bc_render_system& p_render_system, graphic::bc_device* p_device) override;
+		void initialize_resources(game::bc_render_system& p_render_system, graphic::bc_device& p_device) override;
 
 		void update(const game::bc_render_system_update_param& p_update_param) override;
 
@@ -34,11 +38,11 @@ namespace black_cat
 
 		void execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread) override;
 
-		void destroy(graphic::bc_device* p_device) override;
+		void destroy(graphic::bc_device& p_device) override;
 
-		void before_reset(game::bc_render_system& p_render_system, graphic::bc_device* p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) override;
+		void before_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) override;
 
-		void after_reset(game::bc_render_system& p_render_system, graphic::bc_device* p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) override;
+		void after_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) override;
 
 		core::bc_string get_name() override;
 

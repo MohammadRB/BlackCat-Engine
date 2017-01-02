@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Graphic/Math/bcVector4f.h"
+#include "Core/Math/bcVector4f.h"
 #include "Graphic/Shader/Parameter/bcShaderParameter.h"
 
 namespace black_cat
@@ -14,7 +14,7 @@ namespace black_cat
 		public:
 			bc_vector_parameter();
 
-			bc_vector_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_vector4f& p_vector);
+			bc_vector_parameter(bcINT p_register, bc_shader_type p_shader_types, core::bc_vector4f& p_vector);
 
 			bc_vector_parameter(bc_vector_parameter&) = default;
 
@@ -22,9 +22,9 @@ namespace black_cat
 
 			bc_vector_parameter& operator=(bc_vector_parameter&) = default;
 
-			bc_vector4f get_vector() const;
+			core::bc_vector4f get_vector() const;
 
-			void set_vector(bc_vector4f& p_vector);
+			void set_vector(core::bc_vector4f& p_vector);
 
 			bc_shader_parameter_type get_parameter_type() const override;
 
@@ -34,7 +34,7 @@ namespace black_cat
 		protected:
 
 		private:
-			bc_vector4f m_vector;
+			core::bc_vector4f m_vector;
 		};
 
 		inline bc_vector_parameter::bc_vector_parameter()
@@ -42,18 +42,18 @@ namespace black_cat
 		{
 		}
 
-		inline bc_vector_parameter::bc_vector_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_vector4f& p_vector)
+		inline bc_vector_parameter::bc_vector_parameter(bcINT p_register, bc_shader_type p_shader_types, core::bc_vector4f& p_vector)
 			: bc_ishader_parameter(p_register, p_shader_types),
 			m_vector(p_vector)
 		{
 		}
 
-		inline bc_vector4f bc_vector_parameter::get_vector() const
+		inline core::bc_vector4f bc_vector_parameter::get_vector() const
 		{
 			return m_vector;
 		}
 
-		inline void bc_vector_parameter::set_vector(bc_vector4f& p_matrix)
+		inline void bc_vector_parameter::set_vector(core::bc_vector4f& p_matrix)
 		{
 			m_vector = p_matrix;
 		}
@@ -66,9 +66,9 @@ namespace black_cat
 		inline void bc_vector_parameter::set_parameter_data(void* p_data)
 		{
 			if (!p_data)
-				set_vector(bc_vector4f(0, 0, 0, 0));
+				set_vector(core::bc_vector4f(0, 0, 0, 0));
 			else
-				set_vector(*reinterpret_cast<bc_vector4f*>(p_data));
+				set_vector(*reinterpret_cast< core::bc_vector4f*>(p_data));
 		}
 
 		inline bool bc_vector_parameter::is_valid() const

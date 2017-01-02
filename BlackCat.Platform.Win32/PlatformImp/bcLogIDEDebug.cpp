@@ -24,6 +24,12 @@ namespace black_cat
 				OutputDebugString(p_log);
 				OutputDebugString(bcL("\n"));
 			}
+			else if(p_type == core::bc_log_type::error)
+			{
+				OutputDebugString(bcL("BlackCat Error: "));
+				OutputDebugString(p_log);
+				OutputDebugString(bcL("\n"));
+			}
 		}
 	}
 }

@@ -13,14 +13,14 @@ namespace black_cat
 	{
 		template < >
 		BC_GRAPHICIMP_DLL
-		bc_platform_stream_output_stage<g_api_dx11>::bc_platform_stream_output_stage()
-			: m_pack()
+		bc_platform_stream_output_stage<g_api_dx11>::bc_platform_stream_output_stage(platform_pack& p_pack)
+			: m_pack(p_pack)
 		{
 		}
 
 		template < >
 		BC_GRAPHICIMP_DLL
-		bc_platform_stream_output_stage<g_api_dx11>::bc_platform_stream_output_stage(bc_platform_stream_output_stage&& p_other)
+		bc_platform_stream_output_stage<g_api_dx11>::bc_platform_stream_output_stage(bc_platform_stream_output_stage&& p_other) noexcept
 			: m_pack(std::move(p_other.m_pack))
 		{
 		}
@@ -33,7 +33,7 @@ namespace black_cat
 
 		template < >
 		BC_GRAPHICIMP_DLL
-		bc_platform_stream_output_stage<g_api_dx11>& bc_platform_stream_output_stage<g_api_dx11>::operator=(bc_platform_stream_output_stage&& p_other)
+		bc_platform_stream_output_stage<g_api_dx11>& bc_platform_stream_output_stage<g_api_dx11>::operator=(bc_platform_stream_output_stage&& p_other) noexcept
 		{
 			m_pack = std::move(p_other.m_pack);
 
@@ -44,7 +44,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_stream_output_stage< g_api_dx11 >::apply_required_state(bc_device_pipeline* p_pipeline)
 		{
-			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_context.Get();
+			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline->m_context;
 			bc_stream_output_stage_state& l_required_state = m_required_state;
 
 			if (l_required_state.m_stream_buffers.update_needed() ||
@@ -55,8 +55,8 @@ namespace black_cat
 
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_so_streams(); ++i)
 				{
-					bc_buffer* l_buffer = l_required_state.m_stream_buffers.get(i);
-					l_buffers[i] = l_buffer ? l_buffer->get_platform_pack().m_buffer.Get() : nullptr;
+					bc_buffer l_buffer = l_required_state.m_stream_buffers.get(i);
+					l_buffers[i] = l_buffer.is_valid() ? l_buffer.get_platform_pack().m_buffer : nullptr;
 				}
 
 				bcUINT l_dirty_slot_num = (std::max)

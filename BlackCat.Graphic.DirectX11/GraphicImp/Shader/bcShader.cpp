@@ -7,70 +7,89 @@
 #include "GraphicImp/bcExport.h"
 #include "GraphicImp/Shader/bcShader.h"
 
-using namespace Microsoft::WRL;
-
 namespace black_cat
 {
 	namespace graphic
 	{
-		template< >
+		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_compiled_shader< g_api_dx11 >::bc_platform_compiled_shader()
-			: m_pack()
+			: bc_platform_device_reference()
 		{
+			m_pack.m_blob = nullptr;
 		}
 
-		template< >
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_platform_compiled_shader<g_api_dx11>::bc_platform_compiled_shader(platform_pack& p_pack)
+			: bc_platform_device_reference()
+		{
+			m_pack.m_blob = p_pack.m_blob;
+		}
+
+		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_compiled_shader< g_api_dx11 >::~bc_platform_compiled_shader()
 		{
 		}
 
-		template< >
+		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_compiled_shader< g_api_dx11 >::bc_platform_compiled_shader(bc_platform_compiled_shader&& p_other)
-			: bc_device_object(std::move(p_other)),
-			m_pack(std::move(p_other.m_pack))
+		bc_platform_compiled_shader< g_api_dx11 >::bc_platform_compiled_shader(const bc_platform_compiled_shader& p_other)
+			: bc_platform_device_reference(p_other)
 		{
+			m_pack.m_blob = p_other.m_pack.m_blob;
 		}
 
-		template< >
+		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_compiled_shader< g_api_dx11 >& bc_platform_compiled_shader<bc_render_api::directx11>::operator=(bc_platform_compiled_shader&& p_other)
+		bc_platform_compiled_shader< g_api_dx11 >& bc_platform_compiled_shader< g_api_dx11 >::operator=(const bc_platform_compiled_shader& p_other)
 		{
-			bc_device_object::operator=(std::move(p_other));
-			m_pack = std::move(p_other.m_pack);
+			bc_platform_device_reference::operator=(std::move(p_other));
+			m_pack.m_blob = p_other.m_pack.m_blob;
 
 			return *this;
 		}
 
-		template< >
-		BC_GRAPHICIMP_DLL 
-		bc_platform_ishader<bc_render_api::directx11>::bc_platform_ishader()
-			: m_pack()
+		template<>
+		BC_GRAPHICIMP_DLL
+		bool bc_platform_compiled_shader<g_api_dx11>::is_valid() const noexcept
+		{
+			return m_pack.m_blob != nullptr;
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_platform_ishader< g_api_dx11 >::bc_platform_ishader()
+			: bc_platform_device_reference()
 		{
 		}
 
-		template< >
-		BC_GRAPHICIMP_DLL 
-		bc_platform_ishader< bc_render_api::directx11 >::~bc_platform_ishader()
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_platform_ishader<g_api_dx11>::bc_platform_ishader(platform_pack& p_pack)
+			: bc_platform_device_reference()
 		{
 		}
 
-		template< >
-		BC_GRAPHICIMP_DLL 
-		bc_platform_ishader<bc_render_api::directx11>::bc_platform_ishader(bc_platform_ishader&& p_other)
-			: bc_device_object(std::move(p_other)),
-			m_pack(std::move(p_other.m_pack))
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_platform_ishader< g_api_dx11 >::~bc_platform_ishader()
 		{
 		}
 
-		template< >
-		BC_GRAPHICIMP_DLL 
-		bc_platform_ishader<bc_render_api::directx11>& bc_platform_ishader<bc_render_api::directx11>::operator=(bc_platform_ishader&& p_other)
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_platform_ishader< g_api_dx11 >::bc_platform_ishader(const bc_platform_ishader& p_other)
+			: bc_platform_device_reference(p_other)
 		{
-			bc_device_object::operator=(std::move(p_other));
-			m_pack = std::move(p_other.m_pack);
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_platform_ishader< g_api_dx11 >& bc_platform_ishader< g_api_dx11 >::operator=(const bc_platform_ishader& p_other)
+		{
+			bc_platform_device_reference::operator=(p_other);
 
 			return *this;
 		}

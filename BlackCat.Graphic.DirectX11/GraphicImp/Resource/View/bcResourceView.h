@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "GraphicImp/bcDeviceReference.h"
+#include "GraphicImp/bcDeviceRef.h"
 #include "GraphicImp/Resource/View/bcIResourceView.h"
 #include "GraphicImp/Resource/View/bcResourceViewConfig.h"
 
@@ -14,10 +16,9 @@ namespace black_cat
 	{
 		template< >
 		struct bc_platform_shader_view_pack< g_api_dx11 >
-			: public bc_platform_shader_view_pack< g_api_unknown >
 		{
-			Microsoft::WRL::ComPtr< ID3D11ShaderResourceView > m_shader_view;
-			Microsoft::WRL::ComPtr< ID3D11UnorderedAccessView > m_unordered_shader_view;
+			ID3D11ShaderResourceView* m_shader_view;
+			ID3D11UnorderedAccessView* m_unordered_shader_view;
 		};
 	}
 }

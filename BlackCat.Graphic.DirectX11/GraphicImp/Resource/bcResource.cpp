@@ -11,8 +11,17 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_iresource< g_api_dx11 >::bc_platform_iresource()
-			: m_pack()
+			: bc_platform_device_reference()
 		{
+			m_pack.m_resource = nullptr;
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_platform_iresource<g_api_dx11>::bc_platform_iresource(platform_pack& p_pack)
+			: bc_platform_device_reference()
+		{
+			m_pack.m_resource = p_pack.m_resource;
 		}
 
 		template<>
@@ -23,18 +32,18 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_iresource< g_api_dx11 >::bc_platform_iresource(bc_platform_iresource&& p_other)
-			: bc_device_object(std::move(p_other)),
-			m_pack(std::move(p_other.m_pack))
+		bc_platform_iresource< g_api_dx11 >::bc_platform_iresource(const bc_platform_iresource& p_other)
+			: bc_platform_device_reference(p_other)
 		{
+			m_pack.m_resource = p_other.m_pack.m_resource;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_iresource< g_api_dx11 >& bc_platform_iresource< g_api_dx11 >::operator=(bc_platform_iresource&& p_other)
+		bc_platform_iresource< g_api_dx11 >& bc_platform_iresource< g_api_dx11 >::operator=(const bc_platform_iresource& p_other)
 		{
-			bc_device_object::operator=(std::move(p_other));
-			m_pack = std::move(p_other.m_pack);
+			bc_platform_device_reference::operator=(p_other);
+			m_pack.m_resource = p_other.m_pack.m_resource;
 
 			return *this;
 		}

@@ -41,6 +41,12 @@ namespace black_cat
 				m_variables.erase(p_variable);
 			}
 
+			/**
+			 * \brief Return shared variable ar null in case of no variable were found.
+			 * \tparam T 
+			 * \param p_variable 
+			 * \return 
+			 */
 			template< typename T >
 			T* get_resource(bc_render_pass_resource_variable p_variable) const noexcept
 			{

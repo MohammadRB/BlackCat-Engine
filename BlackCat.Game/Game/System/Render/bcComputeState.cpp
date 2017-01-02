@@ -39,7 +39,7 @@ namespace black_cat
 			m_render_system->destroy_compute_state(p_compute_state);
 		}
 
-		bc_compute_state::bc_compute_state(graphic::bc_device_compute_state_ptr& p_compute_state,
+		bc_compute_state::bc_compute_state(graphic::bc_device_compute_state p_compute_state,
 			bcUINT32 p_dispatch_x,
 			bcUINT32 p_dispatch_y,
 			bcUINT32 p_dispatch_z,

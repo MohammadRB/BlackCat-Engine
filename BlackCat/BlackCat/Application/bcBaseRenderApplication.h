@@ -176,7 +176,7 @@ namespace black_cat
 #ifdef BC_DEBUG
 		l_logger_manager->register_listener
 		(
-			core::bc_log_type::debug,
+			core::bc_enum::or({core::bc_log_type::debug, core::bc_log_type::error }),
 			core::bc_make_unique< platform::bcLogIDEDebug >(core::bc_alloc_type::program)
 		);
 #endif
