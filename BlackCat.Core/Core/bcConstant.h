@@ -9,15 +9,15 @@ namespace black_cat
 {
 	namespace core
 	{
-		
+
 #define BC_PARAMETER_RESOLVER(p_name, p_value)	constexpr const bcCHAR* g_param_rsv_##p_name = p_value
-		
+
 #define BC_PARAMETER(p_name, p_value)			constexpr const bcCHAR* g_param_##p_name = p_value
-		
+
 #define BC_SERVICE_NAME(p_name)					"srv_" ## #p_name
-		
+
 #define BC_CONTENT_NAME(p_name)					"cnt_" ## #p_name
-		
+
 #define BC_COMPONENT_NAME(p_name)				"cmp_" ## #p_name
 
 #define BC_EVENT_NAME(p_name)					"evt_" ## #p_name
@@ -46,6 +46,25 @@ namespace black_cat
 
 #define BC_COMPONENT(p_name) \
 	public: \
+	static constexpr bool component_is_abstract() \
+	{ \
+		return false; \
+	} \
+	static constexpr const bcCHAR* component_name() \
+	{ \
+		return BC_COMPONENT_NAME(p_name); \
+	} \
+	static constexpr bcUINT32 component_hash() \
+	{ \
+		return bc_compile_time_string_hash(BC_COMPONENT_NAME(p_name)); \
+	} \
+
+#define BC_ABSTRACT_COMPONENT(p_name) \
+	public: \
+	static constexpr bool component_is_abstract() \
+	{ \
+		return true; \
+	} \
 	static constexpr const bcCHAR* component_name() \
 	{ \
 		return BC_COMPONENT_NAME(p_name); \

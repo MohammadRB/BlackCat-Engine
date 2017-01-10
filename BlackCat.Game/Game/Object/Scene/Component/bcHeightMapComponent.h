@@ -3,10 +3,10 @@
 #pragma once
 
 #include "Game/bcExport.h"
-#include "Game/Object/Scence/bcActor.h"
-#include "Game/Object/Scence/bcActorComponent.h"
+#include "Game/Object/Scene/bcActor.h"
+#include "Game/Object/Scene/bcActorComponent.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
-#include "Game/Object/Scence/Component/bcRenderComponent.h"
+#include "Game/Object/Scene/Component/bcRenderComponent.h"
 
 namespace black_cat
 {
@@ -25,12 +25,12 @@ namespace black_cat
 
 			bc_height_map_component& operator=(bc_height_map_component&&) noexcept;
 
-			const bc_height_map_ptr& get_height_map() const
+			const bc_height_map* get_height_map() const
 			{
-				return m_height_map;
+				return m_height_map.get();
 			}
 
-			void initialize(const core::bc_data_driven_parameter& p_parameters) override;
+			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
 			void update(const bc_actor& p_actor, core_platform::bc_clock::update_param p_clock_update_param) override;
 

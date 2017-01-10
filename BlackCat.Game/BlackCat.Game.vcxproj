@@ -100,20 +100,19 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\$(Configuration);..\3rdParty;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.lib;BlackCat.Graphic.DirectX11.lib;3rdParty\ChakraCore\Lib\x86_debug\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;3rdParty\ChakraCore\Lib\x86_debug\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy Game\*.h ..\BC_SDK\Include\Game
 copy Game\Application\*.h ..\BC_SDK\Include\Game\Application
 copy Game\Object\*.h ..\BC_SDK\Include\Game\Object
 copy Game\Object\Mesh\*.h ..\BC_SDK\Include\Game\Object\Mesh
-copy Game\Object\Scence\*.h ..\BC_SDK\Include\Game\Object\Scence
-copy Game\Object\Scence\Component\*.h ..\BC_SDK\Include\Game\Object\Scence\Component
+copy Game\Object\Scene\*.h ..\BC_SDK\Include\Game\Object\Scene
+copy Game\Object\Scene\Component\*.h ..\BC_SDK\Include\Game\Object\Scene\Component
 copy Game\System\*.h ..\BC_SDK\Include\Game\System
 copy Game\System\Input\*.h ..\BC_SDK\Include\Game\System\Input
 copy Game\System\Script\*.h ..\BC_SDK\Include\Game\System\Script
 copy Game\System\Render\*.h ..\BC_SDK\Include\Game\System\Render
-copy Game\System\Render\Scence\*.h ..\BC_SDK\Include\Game\System\Render\Scence
 copy Game\System\Physics\*.h ..\BC_SDK\Include\Game\System\Physics
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
@@ -163,20 +162,19 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\$(Configuration);..\3rdParty;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.lib;BlackCat.Graphic.DirectX11.lib;3rdParty\ChakraCore\Lib\x86_debug\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;3rdParty\ChakraCore\Lib\x86_debug\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy Game\*.h ..\BC_SDK\Include\Game
 copy Game\Application\*.h ..\BC_SDK\Include\Game\Application
 copy Game\Object\*.h ..\BC_SDK\Include\Game\Object
 copy Game\Object\Mesh\*.h ..\BC_SDK\Include\Game\Object\Mesh
-copy Game\Object\Scence\*.h ..\BC_SDK\Include\Game\Object\Scence
-copy Game\Object\Scence\Component\*.h ..\BC_SDK\Include\Game\Object\Scence\Component
+copy Game\Object\Scene\*.h ..\BC_SDK\Include\Game\Object\Scene
+copy Game\Object\Scene\Component\*.h ..\BC_SDK\Include\Game\Object\Scene\Component
 copy Game\System\*.h ..\BC_SDK\Include\Game\System
 copy Game\System\Input\*.h ..\BC_SDK\Include\Game\System\Input
 copy Game\System\Script\*.h ..\BC_SDK\Include\Game\System\Script
 copy Game\System\Render\*.h ..\BC_SDK\Include\Game\System\Render
-copy Game\System\Render\Scence\*.h ..\BC_SDK\Include\Game\System\Render\Scence
 copy Game\System\Physics\*.h ..\BC_SDK\Include\Game\System\Physics
 
 copy ..\$(Configuration)\$(ProjectName).dll ..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
@@ -217,16 +215,20 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="Game\Object\Mesh\bcMesh.h" />
     <ClInclude Include="Game\Object\Mesh\bcMeshGenerator.h" />
     <ClInclude Include="Game\Object\Mesh\bcMeshPart.h" />
-    <ClInclude Include="Game\Object\Scence\bcActor.h" />
-    <ClInclude Include="Game\Object\Scence\bcActor.hpp" />
-    <ClInclude Include="Game\Object\Scence\bcActorComponent.h" />
-    <ClInclude Include="Game\Object\Scence\bcActorComponentContainer.h" />
-    <ClInclude Include="Game\Object\Scence\bcActorComponentManager.h" />
-    <ClInclude Include="Game\Object\Scence\bcEntityManager.h" />
-    <ClInclude Include="Game\Object\Scence\Component\bcHeightMapComponent.h" />
-    <ClInclude Include="Game\Object\Scence\Component\bcHierarchyComponent.h" />
-    <ClInclude Include="Game\Object\Scence\Component\bcMeshComponent.h" />
-    <ClInclude Include="Game\Object\Scence\Component\bcRenderComponent.h" />
+    <ClInclude Include="Game\Object\Scene\bcActor.h" />
+    <ClInclude Include="Game\Object\Scene\bcActor.hpp" />
+    <ClInclude Include="Game\Object\Scene\bcActorComponent.h" />
+    <ClInclude Include="Game\Object\Scene\bcActorComponentContainer.h" />
+    <ClInclude Include="Game\Object\Scene\bcActorComponentManager.h" />
+    <ClInclude Include="Game\Object\Scene\bcEntityManager.h" />
+    <ClInclude Include="Game\Object\Scene\bcScenceGraph.h" />
+    <ClInclude Include="Game\Object\Scene\Component\bcHeightMapComponent.h" />
+    <ClInclude Include="Game\Object\Scene\Component\bcHierarchyComponent.h" />
+    <ClInclude Include="Game\Object\Scene\Component\bcMeshComponent.h" />
+    <ClInclude Include="Game\Object\Scene\Component\bcRenderComponent.h" />
+    <ClInclude Include="Game\Object\Scene\Component\bcRigidBodyComponent.h" />
+    <ClInclude Include="Game\Object\Scene\Component\bcRigidDynamicComponent.h" />
+    <ClInclude Include="Game\Object\Scene\Component\bcRigidStaticComponent.h" />
     <ClInclude Include="Game\System\bcGameSystem.h" />
     <ClInclude Include="Game\System\Input\bcCamera.h" />
     <ClInclude Include="Game\System\Input\bcFileSystem.h" />
@@ -247,10 +249,10 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="Game\System\Render\bcRenderState.h" />
     <ClInclude Include="Game\System\Render\bcRenderSystem.h" />
     <ClInclude Include="Game\System\Render\bcRenderSystemParameter.h" />
+    <ClInclude Include="Game\System\Render\bcRenderTask.h" />
     <ClInclude Include="Game\System\Render\bcRenderThread.h" />
     <ClInclude Include="Game\System\Render\bcStateConfigs.h" />
     <ClInclude Include="Game\System\Render\bcVertexLayout.h" />
-    <ClInclude Include="Game\System\Render\Scence\bcScenceGraph.h" />
     <ClInclude Include="Game\System\Script\bcDefaultGameConsole.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
@@ -273,11 +275,14 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     </ClCompile>
     <ClCompile Include="Game\Object\Mesh\bcMesh.cpp" />
     <ClCompile Include="Game\Object\Mesh\bcMeshGenerator.cpp" />
-    <ClCompile Include="Game\Object\Mesh\bcRenderComponent.cpp" />
-    <ClCompile Include="Game\Object\Scence\bcEntityManager.cpp" />
-    <ClCompile Include="Game\Object\Scence\Component\bcHeightMapComponent.cpp" />
-    <ClCompile Include="Game\Object\Scence\Component\bcHierarchyComponent.cpp" />
-    <ClCompile Include="Game\Object\Scence\Component\bcMeshComponent.cpp" />
+    <ClCompile Include="Game\Object\Scene\Component\bcRenderComponent.cpp" />
+    <ClCompile Include="Game\Object\Scene\bcEntityManager.cpp" />
+    <ClCompile Include="Game\Object\Scene\bcScenceGraph.cpp" />
+    <ClCompile Include="Game\Object\Scene\Component\bcHeightMapComponent.cpp" />
+    <ClCompile Include="Game\Object\Scene\Component\bcHierarchyComponent.cpp" />
+    <ClCompile Include="Game\Object\Scene\Component\bcMeshComponent.cpp" />
+    <ClCompile Include="Game\Object\Scene\Component\bcRigidDynamicComponent.cpp" />
+    <ClCompile Include="Game\Object\Scene\Component\bcRigidStaticComponent.cpp" />
     <ClCompile Include="Game\System\Input\bcCamera.cpp" />
     <ClCompile Include="Game\System\Input\bcFileSystem.cpp" />
     <ClCompile Include="Game\System\Input\bcFreeCamera.cpp" />
@@ -293,7 +298,6 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="Game\System\Render\bcRenderState.cpp" />
     <ClCompile Include="Game\System\Render\bcRenderSystem.cpp" />
     <ClCompile Include="Game\System\Render\bcRenderThread.cpp" />
-    <ClCompile Include="Game\System\Render\Scence\bcScenceGraph.cpp" />
     <ClCompile Include="Game\System\Script\bcGameConsole.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
@@ -316,9 +320,6 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     </ProjectReference>
     <ProjectReference Include="..\BlackCat.Graphic.DirectX11\BlackCat.Graphic.DirectX11.vcxproj">
       <Project>{d176029e-3b2c-4599-986c-3c8685f35f6f}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\BlackCat.Graphic\BlackCat.Graphic.vcxproj">
-      <Project>{7b267e54-9da2-435d-be52-4388e78a1661}</Project>
     </ProjectReference>
     <ProjectReference Include="..\BlackCat.Physics.PhysX\BlackCat.Physics.PhysX.vcxproj">
       <Project>{f3bd2963-a256-4b38-9018-a31aa5558593}</Project>

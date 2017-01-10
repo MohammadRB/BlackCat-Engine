@@ -11,6 +11,14 @@ namespace black_cat
 		struct bc_strided_data
 		{
 		public:
+			/**
+			 * \brief Construct to null data
+			 */
+			bc_strided_data()
+				: bc_strided_data(nullptr, 0)
+			{
+			}
+
 			bc_strided_data(const void* p_data, bcUINT32 p_stride)
 				: m_data(p_data),
 				m_stride(p_stride)
@@ -20,6 +28,7 @@ namespace black_cat
 			template< typename T >
 			const T& at(bcUINT32 p_index) const
 			{
+				bcAssert(m_data != nullptr);
 				return *reinterpret_cast< const T* >(reinterpret_cast<const bcBYTE*>(m_data) + p_index * m_stride);
 			}
 

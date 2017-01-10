@@ -27,13 +27,15 @@
 #include "Game/System/Render/bcRenderSystemParameter.h"
 #include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/bcRenderPass.h"
-#include "Game/System/Render/Scence/bcScenceGraph.h"
+#include "Game/Object/Scene/bcScenceGraph.h"
 #include "Game/System/Input/bcCamera.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		class bc_irender_task;
+
 		struct bc_render_system_parameter
 		{
 			bc_render_system_parameter(bcUINT32 p_device_backbuffer_width, 
@@ -99,9 +101,9 @@ namespace black_cat
 				return m_device;
 			}
 
-			bc_scence_graph& get_scence_graph()
+			bc_scene_graph& get_scene_graph()
 			{
-				return m_scence_graph;
+				return m_scene_graph;
 			}
 
 			/**
@@ -243,7 +245,7 @@ namespace black_cat
 			/**
 			 * \brief Render all instances in render queue
 			 */
-			void render_all_instances();
+			void render_all_instances(bc_render_thread& p_render_thread);
 
 			/**
 			 * \brief Clear render queue. After rendering instances this function must be called
@@ -253,6 +255,8 @@ namespace black_cat
 			void update(const update_param& p_update_params);
 
 			void render();
+
+			void add_render_task(bc_irender_task& p_task);
 
 		protected:
 
@@ -278,7 +282,7 @@ namespace black_cat
 			graphic::bc_constant_buffer_parameter m_global_cbuffer_parameter;
 			graphic::bc_constant_buffer_parameter m_perobject_cbuffer_parameter;
 
-			bc_scence_graph m_scence_graph;
+			bc_scene_graph m_scene_graph;
 		};
 	}
 }

@@ -10,8 +10,8 @@
 #include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcDataDrivenParameter.h"
 #include "Game/bcExport.h"
-#include "Game/Object/Scence/bcActor.hpp"
-#include "Game/Object/Scence/bcActorComponentManager.h"
+#include "Game/Object/Scene/bcActor.hpp"
+#include "Game/Object/Scene/bcActorComponentManager.h"
 
 namespace black_cat
 {
@@ -25,7 +25,9 @@ namespace black_cat
 			core::bc_data_driven_parameter m_component_parameters;
 		};
 
-		// Make bcActorComponentManager data driven
+		/**
+		 * \brief Make bcActorComponentManager data driven
+		 */
 		class BC_GAME_DLL bc_entity_manager : public core::bc_iservice
 		{
 			BC_SERVICE(entity_manager)
@@ -47,9 +49,6 @@ namespace black_cat
 
 			bc_entity_manager& operator=(bc_entity_manager&&);
 
-			template< class ...TComponent >
-			void register_component_types();
-
 			void read_entity_file(const bcECHAR* p_json_file_path);
 
 			// Create an uninitialized actor along with it's components
@@ -57,6 +56,12 @@ namespace black_cat
 
 			// Remove actor and all of it's components
 			void remove_entity(const bc_actor& p_entity);
+
+			template< class ...TComponent >
+			void register_component_types();
+
+			template< class ...TComponent >
+			void register_abstract_component_types();
 
 		protected:
 
@@ -82,24 +87,30 @@ namespace black_cat
 		template< class ...TComponent >
 		void bc_entity_manager::register_component_types()
 		{
-			m_actor_component_manager->register_component_types<TComponent...>();
+			m_actor_component_manager->register_component_types< TComponent... >();
 
 			auto l_expansion_list =
-				{
-					(
-						[this]()
-						{
-							this->_register_component_type< TComponent >();
-							return true;
-						}()
-					)...
-				};
+			{
+				(
+					[this]()
+					{
+						this->_register_component_type< TComponent >();
+						return true;
+					}()
+				)...
+			};
+		}
+
+		template< class ...TComponent >
+		void bc_entity_manager::register_abstract_component_types()
+		{
+			m_actor_component_manager->register_abstract_component_types<TComponent...>();
 		}
 
 		template< class TComponent >
 		void bc_entity_manager::_register_component_type()
 		{
-			auto* l_actor_component_manager = core::bc_service_manager::get().get_service< bc_actor_component_manager >();
+			auto* l_actor_component_manager = core::bc_get_service< bc_actor_component_manager >();
 
 			bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
 			actor_component_create_delegate l_creatation_delegate(l_actor_component_manager, &bc_actor_component_manager::create_component< TComponent >);
@@ -119,7 +130,7 @@ namespace black_cat
 
 			if (l_component)
 			{
-				l_component->initialize(p_parameters);
+				l_component->initialize(p_actor, p_parameters);
 			}
 		}
 	}

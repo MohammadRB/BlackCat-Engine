@@ -30,32 +30,29 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_device_pipeline<g_api_dx11>::bc_platform_device_pipeline()
-			: m_device(nullptr)
 		{
 			m_pack.m_pipeline = nullptr;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device_pipeline< g_api_dx11 >::bc_platform_device_pipeline(platform_pack& p_pack, bc_device* p_device)
-			: m_device(p_device)
+		bc_platform_device_pipeline< g_api_dx11 >::bc_platform_device_pipeline(platform_pack& p_pack)
 		{
 			m_pack.m_pipeline = p_pack.m_pipeline;
 
-			dx_call(m_device->get_platform_pack().m_device->CreateDeferredContext(0, &m_pack.m_pipeline->m_context));
+			dx_call(m_pack.m_pipeline->m_device->get_platform_pack().m_device->CreateDeferredContext(0, &m_pack.m_pipeline->m_context));
 
 			D3D11_QUERY_DESC l_query_desc;
 			l_query_desc.Query = D3D11_QUERY_PIPELINE_STATISTICS;
 			l_query_desc.MiscFlags = 0;
 
-			dx_call(m_device->get_platform_pack().m_device->CreateQuery(&l_query_desc, &m_pack.m_pipeline->m_query));
+			dx_call(m_pack.m_pipeline->m_device->get_platform_pack().m_device->CreateQuery(&l_query_desc, &m_pack.m_pipeline->m_query));
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_device_pipeline< g_api_dx11 >::bc_platform_device_pipeline(const bc_platform_device_pipeline& p_other)
-			: bc_platform_device_reference(p_other),
-			m_device(p_other.m_device)
+			: bc_platform_device_reference(p_other)
 		{
 			m_pack.m_pipeline = p_other.m_pack.m_pipeline;
 		}
@@ -71,7 +68,6 @@ namespace black_cat
 		bc_platform_device_pipeline< g_api_dx11 >& bc_platform_device_pipeline< g_api_dx11 >::operator=(const bc_platform_device_pipeline& p_other)
 		{
 			bc_platform_device_reference::operator=(p_other);
-			m_device = p_other.m_device;
 			m_pack.m_pipeline = p_other.m_pack.m_pipeline;
 
 			return *this;
@@ -914,34 +910,7 @@ namespace black_cat
 			{
 				m_pack.m_pipeline->m_context->ClearDepthStencilView(l_depth_view.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, p_depth, p_stencil);
 			}
-		};
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_mapped_resource bc_platform_device_pipeline< g_api_dx11 >::map_resource(bc_iresource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type)
-		{
-			bc_mapped_resource l_result;
-			D3D11_MAPPED_SUBRESOURCE l_mapped_resource;
-
-			dx_call(m_pack.m_pipeline->m_context->Map(p_resource.get_platform_pack().m_resource,
-				p_subresource,
-				bc_graphic_cast(p_map_type),
-				0,
-				&l_mapped_resource));
-
-			l_result.m_data = l_mapped_resource.pData;
-			l_result.m_row_pitch = l_mapped_resource.RowPitch;
-			l_result.m_depth_pitch = l_mapped_resource.DepthPitch;
-
-			return l_result;
-		};
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline< g_api_dx11 >::unmap_resource(bc_iresource& p_resource, bcUINT p_subresource)
-		{
-			m_pack.m_pipeline->m_context->Unmap(p_resource.get_platform_pack().m_resource, p_subresource);
-		};
+		};	
 
 		template<>
 		BC_GRAPHICIMP_DLL

@@ -7,14 +7,8 @@
     <Filter Include="Game\Object">
       <UniqueIdentifier>{0bcf3d8c-33d6-4fb1-a5af-7d5e734a6e10}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Object\Scence">
-      <UniqueIdentifier>{d00460ed-5e94-401e-8188-6f56a78bee13}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\System">
       <UniqueIdentifier>{a79d60e9-94c5-433e-b088-bd11f872e345}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Object\Scence\Component">
-      <UniqueIdentifier>{0a7a922f-aa87-4dcf-9ddc-e3860dedaf0e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Object\Mesh">
       <UniqueIdentifier>{da9d584e-66fe-42a0-b9c2-d26ae328eece}</UniqueIdentifier>
@@ -25,9 +19,6 @@
     <Filter Include="Game\System\Input">
       <UniqueIdentifier>{d6f401ea-1120-4600-9ff9-af392588d883}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\System\Render\Scence">
-      <UniqueIdentifier>{54c2b83a-cb76-4e3f-803e-4743cbb6b339}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\System\Script">
       <UniqueIdentifier>{3510ce94-bf32-46a7-83d3-f4f7bb770296}</UniqueIdentifier>
     </Filter>
@@ -37,25 +28,19 @@
     <Filter Include="Game\System\Physics">
       <UniqueIdentifier>{d81fe06f-709c-4da9-9aa1-bcaa29054821}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Object\Scene">
+      <UniqueIdentifier>{d00460ed-5e94-401e-8188-6f56a78bee13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Scene\Component">
+      <UniqueIdentifier>{0a7a922f-aa87-4dcf-9ddc-e3860dedaf0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\GamePCH.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Object\Scence\bcActor.h">
-      <Filter>Game\Object\Scence</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Object\Scence\bcActorComponent.h">
-      <Filter>Game\Object\Scence</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Object\Scence\Component\bcRenderComponent.h">
-      <Filter>Game\Object\Scence\Component</Filter>
-    </ClInclude>
     <ClInclude Include="Game\System\bcGameSystem.h">
       <Filter>Game\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Object\Scence\Component\bcMeshComponent.h">
-      <Filter>Game\Object\Scence\Component</Filter>
     </ClInclude>
     <ClInclude Include="Game\Object\Mesh\bcMeshGenerator.h">
       <Filter>Game\Object\Mesh</Filter>
@@ -74,18 +59,6 @@
     </ClInclude>
     <ClInclude Include="Game\System\Input\bcInputSystem.h">
       <Filter>Game\System\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Object\Scence\bcActorComponentContainer.h">
-      <Filter>Game\Object\Scence</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Object\Scence\bcActorComponentManager.h">
-      <Filter>Game\Object\Scence</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Object\Scence\bcActor.hpp">
-      <Filter>Game\Object\Scence</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Object\Scence\bcEntityManager.h">
-      <Filter>Game\Object\Scence</Filter>
     </ClInclude>
     <ClInclude Include="Game\System\Input\bcFileSystem.h">
       <Filter>Game\System\Input</Filter>
@@ -108,9 +81,6 @@
     <ClInclude Include="Game\System\Render\bcRenderPassState.h">
       <Filter>Game\System\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Object\Scence\Component\bcHierarchyComponent.h">
-      <Filter>Game\Object\Scence\Component</Filter>
-    </ClInclude>
     <ClInclude Include="Game\bcException.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -126,9 +96,6 @@
     <ClInclude Include="Game\System\Render\bcRenderPassManager.h">
       <Filter>Game\System\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Game\System\Render\Scence\bcScenceGraph.h">
-      <Filter>Game\System\Render\Scence</Filter>
-    </ClInclude>
     <ClInclude Include="Game\System\Render\bcRenderPassResourceShare.h">
       <Filter>Game\System\Render</Filter>
     </ClInclude>
@@ -140,9 +107,6 @@
     </ClInclude>
     <ClInclude Include="Game\Object\Mesh\bcHeightMap.h">
       <Filter>Game\Object\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Object\Scence\Component\bcHeightMapComponent.h">
-      <Filter>Game\Object\Scence\Component</Filter>
     </ClInclude>
     <ClInclude Include="Game\System\Script\bcScriptSystem.h">
       <Filter>Game\System\Script</Filter>
@@ -168,6 +132,51 @@
     <ClInclude Include="Game\System\Physics\bcPhysicsSystem.h">
       <Filter>Game\System\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="Game\System\Render\bcRenderTask.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scene\bcActor.h">
+      <Filter>Game\Object\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scene\bcActor.hpp">
+      <Filter>Game\Object\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scene\bcActorComponent.h">
+      <Filter>Game\Object\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scene\bcActorComponentContainer.h">
+      <Filter>Game\Object\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scene\bcActorComponentManager.h">
+      <Filter>Game\Object\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scene\bcEntityManager.h">
+      <Filter>Game\Object\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scene\bcScenceGraph.h">
+      <Filter>Game\Object\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scene\Component\bcHeightMapComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scene\Component\bcHierarchyComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scene\Component\bcMeshComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scene\Component\bcRenderComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scene\Component\bcRigidBodyComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scene\Component\bcRigidDynamicComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Scene\Component\bcRigidStaticComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\GamePCH.cpp">
@@ -179,17 +188,8 @@
     <ClCompile Include="Game\System\Render\bcRenderSystem.cpp">
       <Filter>Game\System\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object\Scence\bcEntityManager.cpp">
-      <Filter>Game\Object\Scence</Filter>
-    </ClCompile>
     <ClCompile Include="Game\System\Input\bcFileSystem.cpp">
       <Filter>Game\System\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Object\Scence\Component\bcMeshComponent.cpp">
-      <Filter>Game\Object\Scence\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Object\Mesh\bcRenderComponent.cpp">
-      <Filter>Game\Object\Scence\Component</Filter>
     </ClCompile>
     <ClCompile Include="Game\System\Render\bcRenderState.cpp">
       <Filter>Game\System\Render</Filter>
@@ -200,9 +200,6 @@
     <ClCompile Include="Game\Object\Mesh\bcMesh.cpp">
       <Filter>Game\Object\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object\Scence\Component\bcHierarchyComponent.cpp">
-      <Filter>Game\Object\Scence\Component</Filter>
-    </ClCompile>
     <ClCompile Include="Game\System\Input\bcCamera.cpp">
       <Filter>Game\System\Input</Filter>
     </ClCompile>
@@ -212,17 +209,11 @@
     <ClCompile Include="Game\System\Render\bcRenderPassManager.cpp">
       <Filter>Game\System\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Game\System\Render\Scence\bcScenceGraph.cpp">
-      <Filter>Game\System\Render\Scence</Filter>
-    </ClCompile>
     <ClCompile Include="Game\System\Render\bcRenderThread.cpp">
       <Filter>Game\System\Render</Filter>
     </ClCompile>
     <ClCompile Include="Game\System\Render\bcComputeState.cpp">
       <Filter>Game\System\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Object\Scence\Component\bcHeightMapComponent.cpp">
-      <Filter>Game\Object\Scence\Component</Filter>
     </ClCompile>
     <ClCompile Include="Game\System\Script\bcScriptSystem.cpp">
       <Filter>Game\System\Script</Filter>
@@ -241,6 +232,30 @@
     </ClCompile>
     <ClCompile Include="Game\System\Physics\bcPhysicsSystem.cpp">
       <Filter>Game\System\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Scene\bcEntityManager.cpp">
+      <Filter>Game\Object\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Scene\bcScenceGraph.cpp">
+      <Filter>Game\Object\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Scene\Component\bcHeightMapComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Scene\Component\bcHierarchyComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Scene\Component\bcMeshComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Scene\Component\bcRenderComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Scene\Component\bcRigidDynamicComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Scene\Component\bcRigidStaticComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

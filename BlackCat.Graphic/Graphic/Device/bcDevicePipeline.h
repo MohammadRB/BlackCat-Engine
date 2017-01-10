@@ -45,7 +45,7 @@ namespace black_cat
 		public:
 			bc_platform_device_pipeline();
 
-			bc_platform_device_pipeline(platform_pack& p_pack, bc_device* p_device);
+			bc_platform_device_pipeline(platform_pack& p_pack);
 
 			bc_platform_device_pipeline(const bc_platform_device_pipeline&);
 
@@ -125,10 +125,6 @@ namespace black_cat
 
 			void clear_buffers(core::bc_vector4f p_color, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
 
-			bc_mapped_resource map_resource(bc_iresource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type);
-			
-			void unmap_resource(bc_iresource& p_resource, bcUINT p_subresource);
-
 			void update_subresource(bc_iresource& p_resource, bcUINT p_dst_subresource, const void *p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch);
 
 			void copy_subresource(bc_iresource& p_dest_resource, bcUINT p_dst_subresource, bc_iresource& p_src_resource, bcUINT p_src_subresource);
@@ -171,7 +167,6 @@ namespace black_cat
 		protected:
 
 		private:
-			bc_device* m_device;
 			platform_pack m_pack;
 		};
 

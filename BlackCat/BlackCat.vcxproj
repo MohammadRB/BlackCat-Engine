@@ -24,11 +24,11 @@
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -90,7 +90,7 @@ copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(Platform)_$(configuration)
 </Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Game.lib;3rdParty/Assimp/lib/$(Configuration)/assimp-vc130-mtd.lib</AdditionalDependencies>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/lib/$(Configuration)/assimp-vc130-mtd.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\$(Configuration)\;..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <ProjectReference>
@@ -467,8 +467,8 @@ copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(Platform)_$(configuration)
     <ProjectReference Include="..\BlackCat.Graphic.DirectX11\BlackCat.Graphic.DirectX11.vcxproj">
       <Project>{d176029e-3b2c-4599-986c-3c8685f35f6f}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\BlackCat.Graphic\BlackCat.Graphic.vcxproj">
-      <Project>{7b267e54-9da2-435d-be52-4388e78a1661}</Project>
+    <ProjectReference Include="..\BlackCat.Physics.PhysX\BlackCat.Physics.PhysX.vcxproj">
+      <Project>{f3bd2963-a256-4b38-9018-a31aa5558593}</Project>
     </ProjectReference>
     <ProjectReference Include="..\BlackCat.Platform.Win32\BlackCat.Platform.Win32.vcxproj">
       <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>

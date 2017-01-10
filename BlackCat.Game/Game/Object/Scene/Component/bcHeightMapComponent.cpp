@@ -3,7 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "Core/File/bcLazyContent.h"
-#include "Game/Object/Scence/Component/bcHeightMapComponent.h"
+#include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/System/Render/bcRenderInstance.h"
 
 namespace black_cat
@@ -33,7 +33,7 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_height_map_component::initialize(const core::bc_data_driven_parameter& p_parameters)
+		void bc_height_map_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
 		{
 			m_height_map = p_parameters.get_value_throw< core::bc_lazy_content >(core::g_param_heightmap).get_content< bc_height_map >();
 		}

@@ -109,9 +109,6 @@
     <ProjectReference Include="..\BlackCat.Core\BlackCat.Core.vcxproj">
       <Project>{e4a77cc4-66c0-49b1-bfcf-a92173763741}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\BlackCat.Graphic\BlackCat.Graphic.vcxproj">
-      <Project>{7b267e54-9da2-435d-be52-4388e78a1661}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\BlackCat.Platform.Win32\BlackCat.Platform.Win32.vcxproj">
       <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
     </ProjectReference>

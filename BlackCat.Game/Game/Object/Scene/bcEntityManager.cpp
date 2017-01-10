@@ -7,9 +7,9 @@
 #include "Core/File/bcFileStream.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Core/Utility/bcParameterPack.h"
-#include "Game/Object/Scence/bcActor.h"
-#include "Game/Object/Scence/bcActorComponentManager.h"
-#include "Game/Object/Scence/bcEntityManager.h"
+#include "Game/Object/Scene/bcActor.h"
+#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/bcEntityManager.h"
 
 namespace black_cat
 {

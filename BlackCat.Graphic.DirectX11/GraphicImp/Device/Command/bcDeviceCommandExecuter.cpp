@@ -13,23 +13,23 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_device_command_executer<g_api_dx11>::bc_platform_device_command_executer()
-			: m_device(nullptr)
 		{
+			m_pack.m_device = nullptr;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device_command_executer< g_api_dx11 >::bc_platform_device_command_executer(platform_pack& p_pack, bc_device* p_device)
-			: m_device(p_device)
+		bc_platform_device_command_executer< g_api_dx11 >::bc_platform_device_command_executer(platform_pack& p_pack)
 		{
+			m_pack.m_device = p_pack.m_device;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_device_command_executer< g_api_dx11 >::bc_platform_device_command_executer(const bc_platform_device_command_executer& p_other)
-			: bc_platform_device_reference(std::move(p_other)),
-			m_device(p_other.m_device)
+			: bc_platform_device_reference(std::move(p_other))
 		{
+			m_pack.m_device = p_other.m_pack.m_device;
 		}
 
 		template<>
@@ -43,7 +43,7 @@ namespace black_cat
 		bc_platform_device_command_executer< g_api_dx11 >& bc_platform_device_command_executer< g_api_dx11 >::operator=(const bc_platform_device_command_executer& p_other)
 		{
 			bc_platform_device_reference::operator=(p_other);
-			m_device = p_other.m_device;
+			m_pack.m_device = p_other.m_pack.m_device;
 
 			return *this;
 		}
@@ -52,7 +52,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_command_executer< g_api_dx11 >::excecute_command_list(bc_device_command_list p_command_list)
 		{
-			m_device->get_platform_pack().m_immediate_context->ExecuteCommandList
+			m_pack.m_device->get_platform_pack().m_immediate_context->ExecuteCommandList
 			(
 				p_command_list.get_platform_pack().m_command_list_proxy->m_command_list, 
 				false

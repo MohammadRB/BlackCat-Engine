@@ -1084,8 +1084,9 @@ namespace black_cat
 
 			bc_device_pipeline::platform_pack l_pack;
 			l_pack.m_pipeline = l_pipeline_proxy;
+			l_pack.m_pipeline->m_device = this;
 
-			bc_device_pipeline l_pipeline(l_pack, this);
+			bc_device_pipeline l_pipeline(l_pack);
 			bc_device_pipeline_ptr l_pipeline_ptr(l_pipeline);
 
 			l_pack.m_pipeline->m_context->Release();
@@ -1114,9 +1115,37 @@ namespace black_cat
 		bc_device_command_executer_ptr bc_platform_device< g_api_dx11 >::create_command_executer()
 		{
 			bc_device_command_executer::platform_pack l_pack;
-			bc_device_command_executer l_pointer(l_pack, this);
+			l_pack.m_device = this;
+			bc_device_command_executer l_pointer(l_pack);
 
 			return bc_device_command_executer_ptr(l_pointer);
+		};
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_mapped_resource bc_platform_device< g_api_dx11 >::map_resource(bc_iresource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type)
+		{
+			bc_mapped_resource l_result;
+			D3D11_MAPPED_SUBRESOURCE l_mapped_resource;
+
+			dx_call(m_pack.m_immediate_context->Map(p_resource.get_platform_pack().m_resource,
+				p_subresource,
+				bc_graphic_cast(p_map_type),
+				0,
+				&l_mapped_resource));
+
+			l_result.m_data = l_mapped_resource.pData;
+			l_result.m_row_pitch = l_mapped_resource.RowPitch;
+			l_result.m_depth_pitch = l_mapped_resource.DepthPitch;
+
+			return l_result;
+		};
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		void bc_platform_device< g_api_dx11 >::unmap_resource(bc_iresource& p_resource, bcUINT p_subresource)
+		{
+			m_pack.m_immediate_context->Unmap(p_resource.get_platform_pack().m_resource, p_subresource);
 		};
 
 		template<>

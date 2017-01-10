@@ -123,9 +123,9 @@ namespace black_cat
 
 			void clear_buffers(core::bc_vector4f p_color, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
 
-			graphic::bc_mapped_resource map_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource, graphic::bc_resource_map p_map_type);
+			/*graphic::bc_mapped_resource map_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource, graphic::bc_resource_map p_map_type);
 
-			void unmap_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource);
+			void unmap_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource);*/
 
 			void update_subresource(graphic::bc_iresource& p_resource, bcUINT p_dst_subresource, const void *p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch);
 

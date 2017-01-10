@@ -248,6 +248,8 @@ namespace black_cat
 
 			bcUINT32 get_height_field_count() const noexcept;
 
+			bc_mesh_buffer read_to_mesh_buffer(void* p_data, bcUINT32 p_size);
+
 			/**
 			 * \brief Create a fixed joint.
 			 * \param[in] p_actor0 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame

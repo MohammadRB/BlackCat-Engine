@@ -8,8 +8,6 @@ namespace black_cat
 {
 	namespace physics
 	{
-		//_bc_physics_reference_counter bc_platform_physics_reference_pack< g_api_physx >::s_reference_counters;
-
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_physics_reference< g_current_physics_api >::bc_platform_physics_reference() noexcept
@@ -27,11 +25,6 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_platform_physics_reference< g_current_physics_api >::~bc_platform_physics_reference()
 		{
-			//// There isn't any strong reference to this object
-			//if (m_pack.m_ref_counter_index == _bc_physics_reference_counter::invalid_index)
-			//{
-			//	m_pack.m_px_object->release();
-			//}
 		}
 
 		template<>

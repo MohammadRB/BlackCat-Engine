@@ -9,7 +9,7 @@
 #include "GraphicImp/Resource/bcResourceConfig.h"
 #include "Game/System/Render/bcVertexLayout.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
-#include "Game/Object/Scence/Component/bcHeightMapComponent.h"
+#include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "BlackCat/bcException.h"
 #include "BlackCat/RenderPass/bcTerrainPassDx11.h"
 #include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
@@ -118,23 +118,23 @@ namespace black_cat
 
 		if(m_run_chunk_info_shader)
 		{
-			auto l_heightmaps = p_render_system.get_scence_graph().get_heightmaps();
+			auto l_heightmaps = p_render_system.get_scene_graph().get_heightmaps();
 
 			for(auto& l_actor : l_heightmaps)
 			{
-				auto& l_heightmap = l_actor.get_component< game::bc_height_map_component >()->get_height_map();
-				auto& l_heightmap_dx11 = static_cast<bc_height_map_dx11&>(*l_heightmap);
+				const game::bc_height_map* l_heightmap = l_actor.get_component< game::bc_height_map_component >()->get_height_map();
+				const bc_height_map_dx11* l_heightmap_dx11 = static_cast<const bc_height_map_dx11*>(l_heightmap);
 
 				auto l_compute_state = p_render_system.create_compute_state
 				(
 					m_device_compute_state.get(),
-					l_heightmap_dx11.get_width() / s_shader_thread_group_size,
-					l_heightmap_dx11.get_height() / s_shader_thread_group_size,
+					l_heightmap_dx11->get_width() / s_shader_thread_group_size,
+					l_heightmap_dx11->get_height() / s_shader_thread_group_size,
 					1,
 					{},
-					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_heightmap_dx11.get_height_map_view()) },
-					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_heightmap_dx11.get_chunk_info_unordered_view()) },
-					{ graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, l_heightmap_dx11.get_parameter_cbuffer()) }
+					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_heightmap_dx11->get_height_map_view()) },
+					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_heightmap_dx11->get_chunk_info_unordered_view()) },
+					{ graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, l_heightmap_dx11->get_parameter_cbuffer()) }
 				);
 
 				p_thread.run_compute_shader(l_compute_state.get());
@@ -150,7 +150,7 @@ namespace black_cat
 
 	void bc_terrain_pass_dx11::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread)
 	{
-		p_render_system.get_scence_graph().render_heightmaps(p_render_system);
+		p_render_system.get_scene_graph().render_heightmaps(p_render_system, p_thread);
 
 		p_thread.unbind_render_pass_state(m_render_pass_state.get());
 		p_thread.finish();

@@ -47,10 +47,10 @@ namespace black_cat
 		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager* p_stream_manager)
 		{
 			auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
-			auto& l_scence_graph = m_game_system->get_render_system().get_scence_graph();
+			auto& l_scence_graph = m_game_system->get_render_system().get_scene_graph();
 
 			p_stream_manager->load_content_stream(core::bc_alloc_type::program, "main");
-
+			
 			auto l_actor1 = l_entity_manager->create_entity("crysis_heightmap");
 			auto l_actor2 = l_entity_manager->create_entity("m16A2");
 			auto l_actor3 = l_entity_manager->create_entity("ship");
@@ -74,6 +74,10 @@ namespace black_cat
 
 		void bc_editor_render_app::application_unload_content(core::bc_content_stream_manager* p_stream_manager)
 		{
+			auto& l_scence_graph = m_game_system->get_render_system().get_scene_graph();
+
+			l_scence_graph.clear();
+
 			p_stream_manager->unload_content_stream("main");
 		}
 

@@ -179,6 +179,20 @@ namespace black_cat
 				bc_resource_view_type p_view_types = bc_resource_view_type::none,
 				bool p_as_stream_output = false) noexcept;
 
+			/**
+			 * \brief 
+			 * \param p_width Width of texture to generate
+			 * \param p_height Height of texture to generate
+			 * \param p_mip_generation True if p_mip_levels is 0 or greater that 1
+			 * \param p_mip_levels 0 for auto mip level generation or a value greater than 1 to enable mip generation
+			 * \param p_format Format of texture to generate
+			 * \param p_usage Resource access usage by CPU and GPU
+			 * \param p_view_types The views that will be created on this texture
+			 * \param p_sample_count Number of samples in multisampling textures
+			 * \param p_sample_quality Quality of samples in multisampling textures
+			 * \param p_array_size Size of array in it is a texture array
+			 * \return 
+			 */
 			bc_texture_configure_modifier as_texture2d(bcUINT p_width,
 				bcUINT p_height,
 				bool p_mip_generation,

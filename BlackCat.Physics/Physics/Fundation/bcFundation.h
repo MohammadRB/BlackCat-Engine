@@ -114,11 +114,14 @@ namespace black_cat
 		public:
 			void add_task(bc_task&& p_task) override
 			{
-				core::bc_delegate<void()> l_del = [t = std::move(p_task)]() mutable
-				{
-					t.run();
-				};
-				core::bc_concurreny::start_task(std::move(l_del), core::bc_task_creation_option::policy_none);
+				core::bc_concurreny::start_task< void >
+				(
+					[t = std::move(p_task)]() mutable
+					{
+						t.run();
+					},
+					core::bc_task_creation_option::policy_none
+				);
 			}
 
 			bcSIZE worker_count() const noexcept override

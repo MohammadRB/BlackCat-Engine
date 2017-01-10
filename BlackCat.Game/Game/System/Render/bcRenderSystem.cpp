@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "CorePlatform/CorePlatformPCH.h"
+#include "Core/Concurrency/bcConcurrency.h"
 #include "Core/File/bcContentStreamManager.h"
 #include "Core/Event/bcEventManager.h"
 #include "Core/Utility/bcEnumOperand.h"
@@ -14,6 +15,7 @@
 #include "GraphicImp/Resource/bcResourceConfig.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcRenderState.h"
+#include "Game/System/Render/bcRenderTask.h"
 
 namespace black_cat
 {
@@ -460,10 +462,10 @@ namespace black_cat
 			m_render_states.at(l_state_index).second.push_back(p_instance);
 		}
 
-		void bc_render_system::render_all_instances()
+		void bc_render_system::render_all_instances(bc_render_thread& p_render_thread)
 		{
-			m_render_thread.bind_ps_constant_buffer_parameter(m_global_cbuffer_parameter);
-			m_render_thread.pipeline_apply_states(_convert_shader_type_to_pipeline_stage(m_global_cbuffer_parameter.get_shader_types()));
+			p_render_thread.bind_ps_constant_buffer_parameter(m_global_cbuffer_parameter);
+			p_render_thread.pipeline_apply_states(_convert_shader_type_to_pipeline_stage(m_global_cbuffer_parameter.get_shader_types()));
 
 			graphic::bc_pipeline_stage l_perobject_cbuffer_stages = _convert_shader_type_to_pipeline_stage(m_perobject_cbuffer_parameter.get_shader_types());
 
@@ -472,18 +474,18 @@ namespace black_cat
 				if (l_render_state.first.is_set() && l_render_state.second.size() > 0)
 				{
 					auto* l_render_state_ptr = &l_render_state.first.get();
-					m_render_thread.bind_render_state(l_render_state_ptr);
+					p_render_thread.bind_render_state(l_render_state_ptr);
 
 					for (bc_render_instance& l_instance : l_render_state.second)
 					{
 						auto l_transposed_world = l_instance.get_world().transpose();
 
-						m_render_thread.update_subresource(m_perobject_cbuffer_parameter.get_buffer().get(), 0, &l_transposed_world, 0, 0);
+						p_render_thread.update_subresource(m_perobject_cbuffer_parameter.get_buffer().get(), 0, &l_transposed_world, 0, 0);
 
-						m_render_thread.bind_ps_constant_buffer_parameter(m_perobject_cbuffer_parameter);
-						m_render_thread.pipeline_apply_states(l_perobject_cbuffer_stages);
+						p_render_thread.bind_ps_constant_buffer_parameter(m_perobject_cbuffer_parameter);
+						p_render_thread.pipeline_apply_states(l_perobject_cbuffer_stages);
 
-						m_render_thread.draw_indexed
+						p_render_thread.draw_indexed
 						(
 							l_render_state.first->get_index_buffer_offset(),
 							l_render_state.first->get_index_count(),
@@ -491,7 +493,7 @@ namespace black_cat
 						);
 					}
 
-					m_render_thread.unbind_render_state(l_render_state_ptr);
+					p_render_thread.unbind_render_state(l_render_state_ptr);
 				}
 			}
 		}
@@ -531,20 +533,31 @@ namespace black_cat
 			m_device.present();
 		}
 
+		void bc_render_system::add_render_task(bc_irender_task& p_task)
+		{
+			// TODO 
+			core::bc_task<void> l_cpu_task = core::bc_concurreny::start_task<void>([this, &p_task]()
+			{
+				p_task.execute(*this, this->m_render_thread);
+			});
+
+			p_task._set_cpu_task(std::move(l_cpu_task));
+		}
+
 		void bc_render_system::_initialize(bc_render_system_parameter p_parameter)
 		{
 			m_device.initialize
-				(
-					p_parameter.m_device_backbuffer_width,
-					p_parameter.m_device_backbuffer_height,
-					p_parameter.m_device_backbuffer_format,
-					std::move(p_parameter.m_render_output)
-				);
+			(
+				p_parameter.m_device_backbuffer_width,
+				p_parameter.m_device_backbuffer_height,
+				p_parameter.m_device_backbuffer_format,
+				std::move(p_parameter.m_render_output)
+			);
 			auto l_alloc_type = m_device.set_allocator_alloc_type(core::bc_alloc_type::program);
 
 			auto l_device_executer = m_device.create_command_executer();
 			auto l_device_pipeline = m_device.create_pipeline();
-			
+
 			m_render_thread.reset(l_device_pipeline.get(), l_device_executer.get());
 
 			m_device.set_allocator_alloc_type(l_alloc_type);
@@ -552,13 +565,13 @@ namespace black_cat
 			auto* l_event_manager = core::bc_service_manager::get().get_service< core::bc_event_manager >();
 
 			m_window_resize_handle = l_event_manager->register_event_listener< platform::bc_app_event_window_resize >
-				(
-					core::bc_event_manager::delegate_type(this, &bc_render_system::_event_handler)
-				);
+			(
+				core::bc_event_manager::delegate_type(this, &bc_render_system::_event_handler)
+			);
 			m_device_listener_handle = l_event_manager->register_event_listener< graphic::bc_app_event_device_reset >
-				(
-					core::bc_event_manager::delegate_type(this, &bc_render_system::_event_handler)
-				);
+			(
+				core::bc_event_manager::delegate_type(this, &bc_render_system::_event_handler)
+			);
 
 			auto l_global_cbuffer_config = graphic::bc_graphic_resource_configure()
 				.as_resource()
@@ -599,14 +612,14 @@ namespace black_cat
 			m_perobject_cbuffer_parameter = graphic::bc_constant_buffer_parameter
 			(
 				g_render_state_constant_buffer_min_index - 1,
-				core::bc_enum::or({graphic::bc_shader_type::vertex}),
+				core::bc_enum::or({ graphic::bc_shader_type::vertex }),
 				l_perobject_cbuffer
 			);
 		}
 
 		void bc_render_system::_destroy()
 		{
-			m_scence_graph.clear();
+			m_scene_graph.clear();
 
 			m_global_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
 			m_perobject_cbuffer_parameter = graphic::bc_constant_buffer_parameter();

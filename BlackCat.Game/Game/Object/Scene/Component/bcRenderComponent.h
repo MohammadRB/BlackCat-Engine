@@ -3,8 +3,8 @@
 #pragma once
 
 #include "Game/bcExport.h"
-#include "Game/Object/Scence/bcActor.h"
-#include "Game/Object/Scence/bcActorComponent.h"
+#include "Game/Object/Scene/bcActor.h"
+#include "Game/Object/Scene/bcActorComponent.h"
 #include "Game/System/Render/bcRenderState.h"
 #include "Game/System/Render/bcRenderInstance.h"
 
@@ -27,7 +27,7 @@ namespace black_cat
 
 			bc_render_component& operator=(bc_render_component&&) noexcept;
 
-			void initialize(const core::bc_data_driven_parameter& p_parameters) override;
+			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
 			void update(const bc_actor& p_actor, core_platform::bc_clock::update_param p_clock_update_param) override;
 

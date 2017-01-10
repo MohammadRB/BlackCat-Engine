@@ -2,9 +2,9 @@
 
 #include "Game/GamePCH.h"
 #include "Game/System/bcGameSystem.h"
-#include "Game/Object/Scence/bcActor.hpp"
-#include "Game/Object/Scence/Component/bcRenderComponent.h"
-#include "Game/Object/Scence/Component/bcMeshComponent.h"
+#include "Game/Object/Scene/bcActor.hpp"
+#include "Game/Object/Scene/Component/bcRenderComponent.h"
+#include "Game/Object/Scene/Component/bcMeshComponent.h"
 
 namespace black_cat
 {
@@ -34,7 +34,7 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_render_component::initialize(const core::bc_data_driven_parameter& p_parameters)
+		void bc_render_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
 		{
 			m_render_system = &core::bc_service_manager::get().get_service< game::bc_game_system >()->get_render_system();
 		}

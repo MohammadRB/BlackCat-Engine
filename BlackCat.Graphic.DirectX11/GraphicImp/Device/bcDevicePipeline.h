@@ -38,7 +38,8 @@ namespace black_cat
 		{
 		public:
 			_bc_device_pipeline()
-				: m_context(nullptr),
+				: m_device(nullptr),
+				m_context(nullptr),
 				m_query(nullptr),
 				m_input_assembler_stage(bc_input_assembler_stage::platform_pack()),
 				m_stream_output_stage(bc_stream_output_stage::platform_pack()),
@@ -56,6 +57,7 @@ namespace black_cat
 			{
 			}
 
+			bc_device* m_device;
 			ID3D11DeviceContext* m_context;
 			ID3D11Query* m_query;
 			bc_input_assembler_stage m_input_assembler_stage;

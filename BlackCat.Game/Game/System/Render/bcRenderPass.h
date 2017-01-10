@@ -14,8 +14,9 @@ namespace black_cat
 		class bc_render_system;
 		struct bc_render_system_update_param;
 
-		// Represent a whole rendering pass that do all tasks that required to render a scene with
-		// a specified configuration 
+		/**
+		 * \brief Represent a whole rendering pass that do all tasks that required to render a scene with a specified configuration 
+		 */
 		class bc_irender_pass : public core_platform::bc_no_copy
 		{
 		public:
@@ -23,27 +24,58 @@ namespace black_cat
 
 			virtual ~bc_irender_pass() = default;
 
-			// This function will be called during app initialization
+			/**
+			 * \brief This function will be called during app initialization
+			 * \param p_render_system 
+			 * \param p_device 
+			 */
 			virtual void initialize_resources(bc_render_system& p_render_system, graphic::bc_device& p_device) = 0;
 
-			// This function will be called during app update phase
+			/**
+			 * \brief This function will be called during app update phase
+			 * \param p_update_param 
+			 */
 			virtual void update(const bc_render_system_update_param& p_update_param) = 0;
 
-			// This function will be called in start of frame
-			// (Default implementation call set_render_parameters function)
+			/**
+			 * \brief This function will be called in start of frame.
+			 * Threading: This function will be executed by a cpu worker thread concurrency.
+			 * \param p_render_system 
+			 * \param p_thread 
+			 */
 			virtual void initialize_frame(bc_render_system& p_render_system, bc_render_thread& p_thread) = 0;
 
-			// This function will be called in draw frme phase
+			/**
+			 * \brief This function will be called in draw frme phase.
+			 * Threading: This function will be executed by a cpu worker thread concurrency.
+			 * \param p_render_system 
+			 * \param p_thread 
+			 */
 			virtual void execute(bc_render_system& p_render_system, bc_render_thread& p_thread) = 0;
 
-			// This function will be called when device duo to some parameter changes and buffer resize need reset
+			/**
+			 * \brief This function will be called when device duo to some parameter changes and buffer resize need reset
+			 * \param p_render_system 
+			 * \param p_device 
+			 * \param p_old_parameters 
+			 * \param p_new_parameters 
+			 */
 			virtual void before_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) = 0;
 
-			// This function will be called when device duo to some parameter changes and buffer resize need reset
+			/**
+			 * \brief This function will be called when device duo to some parameter changes and buffer resize need reset
+			 * \param p_render_system 
+			 * \param p_device 
+			 * \param p_old_parameters 
+			 * \param p_new_parameters 
+			 */
 			virtual void after_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) = 0;
 
-			// This function will be called when pass is going to be destroy
-			// (before device destroying this function must be called) 
+			/**
+			 * \brief This function will be called when pass is going to be destroy.
+			 * Before device destruction this function must be called.
+			 * \param p_device 
+			 */
 			virtual void destroy(graphic::bc_device& p_device) = 0;
 
 			virtual core::bc_string get_name() = 0;

@@ -6,9 +6,9 @@
 #include "Core/Math/bcMatrix3f.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "Game/bcExport.h"
-#include "Game/Object/Scence/bcActor.h"
-#include "Game/Object/Scence/bcActorComponent.h"
-#include "Game/Object/Scence/Component/bcRenderComponent.h"
+#include "Game/Object/Scene/bcActor.h"
+#include "Game/Object/Scene/bcActorComponent.h"
+#include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Mesh/bcMeshPart.h"
 
 namespace black_cat
@@ -38,7 +38,7 @@ namespace black_cat
 				return m_mesh_part_transformation;
 			}
 
-			void initialize(const core::bc_data_driven_parameter& p_parameters) override;
+			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
 			void update(const bc_actor& p_actor, core_platform::bc_clock::update_param p_clock_update_param) override;
 

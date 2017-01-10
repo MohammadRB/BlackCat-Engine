@@ -4,7 +4,7 @@
 
 #include "Core/bcConstant.h"
 #include "Core/File/bcLazyContent.h"
-#include "Game/Object/Scence/Component/bcMeshComponent.h"
+#include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/System/Render/bcRenderInstance.h"
 
 namespace black_cat
@@ -75,7 +75,7 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_mesh_component::initialize(const core::bc_data_driven_parameter& p_parameters)
+		void bc_mesh_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
 		{
 			bc_mesh_ptr l_mesh = p_parameters.get_value_throw< core::bc_lazy_content >(core::g_param_mesh).get_content< bc_mesh >();
 			core::bc_string* l_mesh_part_name = p_parameters.get_value< core::bc_string >(core::g_param_mesh_part);

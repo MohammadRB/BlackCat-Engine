@@ -73,7 +73,7 @@ namespace black_cat
 
 	void bc_back_buffer_output_pass::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread)
 	{
-		p_render_system.get_scence_graph().render_meshes(p_render_system, false);
+		p_render_system.get_scene_graph().render_meshes(p_render_system, p_thread, false);
 
 		p_thread.unbind_render_pass_state(m_render_pass_state.get());
 		p_thread.finish();

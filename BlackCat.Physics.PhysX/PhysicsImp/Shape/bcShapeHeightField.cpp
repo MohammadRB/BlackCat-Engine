@@ -18,7 +18,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_height_field< g_api_physx >::bc_platform_shape_height_field(const bc_height_field& p_height_field, bcUINT16 p_xz_scale, bcUINT16 p_y_scale)
+		bc_platform_shape_height_field< g_api_physx >::bc_platform_shape_height_field(const bc_height_field& p_height_field, bcUINT16 p_xz_scale, bcFLOAT p_y_scale)
 			: bc_platform_shape_geometry(bc_platform_shape_geometry::platform_pack(m_pack.m_px_geometry)),
 			m_pack(physx::PxHeightFieldGeometry())
 		{

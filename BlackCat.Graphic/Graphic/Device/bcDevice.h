@@ -254,6 +254,10 @@ namespace black_cat
 
 			bc_device_command_executer_ptr create_command_executer();
 
+			bc_mapped_resource map_resource(bc_iresource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type);
+
+			void unmap_resource(bc_iresource& p_resource, bcUINT p_subresource);
+
 			/**
 			 * \brief Resize back buffer and send bc_app_event_device_reset event to resize all other resizable resources. 
 			 * If device is in fullscreen mode change resulotion too.

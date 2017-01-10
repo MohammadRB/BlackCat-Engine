@@ -4,7 +4,7 @@
 
 #include "Core/bcConstant.h"
 #include "Core/Math/bcVector3f.h"
-#include "GraphicImp/Resource/Texture/bcTexture2d.h"
+#include "PhysicsImp/Shape/bcHeightField.h"
 #include "Game/System/Render/bcRenderState.h"
 
 namespace black_cat
@@ -21,7 +21,8 @@ namespace black_cat
 				bcUINT16 p_height,
 				bcUINT16 p_xz_multiplier,
 				bcUINT16 p_y_multiplier,
-				bc_render_state_ptr& p_render_state);
+				bc_render_state_ptr& p_render_state,
+				physics::bc_height_field_ref&& p_px_height_map);
 
 			bc_height_map(bc_height_map&& p_other) = default;
 
@@ -59,6 +60,11 @@ namespace black_cat
 				return m_render_state.get();
 			}
 
+			physics::bc_height_field get_height_field() const
+			{
+				return m_px_height_map.get();
+			}
+
 		protected:
 
 		private:
@@ -69,6 +75,7 @@ namespace black_cat
 			bcUINT16 m_y_multiplier;
 
 			bc_render_state_ptr m_render_state;
+			physics::bc_height_field_ref m_px_height_map;
 		};
 
 		using bc_height_map_ptr = core::bc_content_ptr< bc_height_map >;
@@ -78,13 +85,15 @@ namespace black_cat
 			bcUINT16 p_height,
 			bcUINT16 p_xz_multiplier,
 			bcUINT16 p_y_multiplier,
-			bc_render_state_ptr& p_render_state)
+			bc_render_state_ptr& p_render_state,
+			physics::bc_height_field_ref&& p_px_height_map)
 			: m_position(p_position),
 			m_width(p_width),
 			m_height(p_height),
 			m_xz_multiplier(p_xz_multiplier),
 			m_y_multiplier(p_y_multiplier),
-			m_render_state(p_render_state)
+			m_render_state(p_render_state),
+			m_px_height_map(std::move(p_px_height_map))
 		{
 		}
 

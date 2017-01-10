@@ -56,6 +56,11 @@ namespace black_cat
 				return m_render_system;
 			}
 
+			bc_physics_system& get_physics_system()
+			{
+				return m_physics_system;
+			}
+
 			bc_script_system& get_script_system()
 			{
 				return m_script_system;

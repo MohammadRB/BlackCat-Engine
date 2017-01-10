@@ -15,15 +15,16 @@ namespace black_cat
 				bcAlloc(sizeof(physx::PxHeightFieldSample) * (p_desc.m_num_row * p_desc.m_num_column), core::bc_alloc_type::frame)
 			);
 
+			bool l_has_material = p_desc.m_samples_material.m_data;
 			bcUINT32 l_source_index = 0;
-			for (bcUINT32 x = p_desc.m_num_row - 1; x >= 0; --x)
+			for (bcINT32 x = p_desc.m_num_row - 1; x >= 0; --x)
 			{
 				for (bcUINT32 z = 0; z < p_desc.m_num_column; ++z)
 				{
 					auto l_target_index = x * p_desc.m_num_row + z;
 
 					bcINT16 l_height = p_desc.m_samples.at< bcINT16 >(l_source_index);
-					physx::PxBitAndByte l_material_index(p_desc.m_samples_material.at< bc_material_index >(l_source_index));
+					physx::PxBitAndByte l_material_index(l_has_material ? p_desc.m_samples_material.at< bc_material_index >(l_source_index) : 0);
 
 					l_px_samples[l_target_index] = physx::PxHeightFieldSample
 					{

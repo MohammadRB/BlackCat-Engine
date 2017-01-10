@@ -81,13 +81,12 @@ namespace black_cat
 		(
 			p_context.m_data.data(),
 			p_context.m_data.size(),
-				0
 			/*aiProcess_GenSmoothNormals |*/
-			/*aiProcess_CalcTangentSpace |
+			aiProcess_CalcTangentSpace |
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices |
-			aiProcess_SortByPType |*/
-			/*graphic::bc_render_api_info::is_left_handed() ? aiProcess_MakeLeftHanded : 0*/
+			aiProcess_SortByPType |
+			graphic::bc_render_api_info::is_left_handed() ? aiProcess_MakeLeftHanded : 0
 		);
 
 		if (!l_scene || !l_scene->HasMeshes())

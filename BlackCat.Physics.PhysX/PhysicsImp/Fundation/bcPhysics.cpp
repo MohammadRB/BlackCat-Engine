@@ -405,6 +405,17 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
+		bc_mesh_buffer bc_platform_physics< g_api_physx >::read_to_mesh_buffer(void* p_data, bcUINT32 p_size)
+		{
+			bc_mesh_buffer l_result;
+			l_result.get_platform_pack().m_px_stream->write(p_data, p_size);
+			l_result.get_platform_pack().m_is_valid = true;
+
+			return l_result;
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
 		bc_fixed_joint_ref bc_platform_physics< g_api_physx >::create_fixed_joint(bc_rigid_actor* p_actor0,
 			const bc_transform& p_local_frame0,
 			bc_rigid_actor* p_actor1,

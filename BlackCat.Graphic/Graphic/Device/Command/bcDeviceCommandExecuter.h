@@ -27,7 +27,7 @@ namespace black_cat
 		public:
 			bc_platform_device_command_executer();
 
-			bc_platform_device_command_executer(platform_pack& p_pack, bc_device* p_device);
+			bc_platform_device_command_executer(platform_pack& p_pack);
 
 			bc_platform_device_command_executer(const bc_platform_device_command_executer&);
 
@@ -56,7 +56,6 @@ namespace black_cat
 
 		private:
 			platform_pack m_pack;
-			bc_device* m_device;
 		};
 
 		using bc_device_command_executer = bc_platform_device_command_executer< g_current_render_api >;

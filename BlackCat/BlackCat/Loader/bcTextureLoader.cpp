@@ -12,6 +12,18 @@
 
 namespace black_cat
 {
+	graphic::bc_texture_config bc_texture_loader::s_default_config = graphic::bc_graphic_resource_configure().as_resource().as_texture2d
+	(
+		0,
+		0,
+		false, // DX11 requires shader_bind_flag & render_target_bind_flag to be set for auto mip generation
+		0,
+		graphic::bc_format::R8G8B8A8_UNORM,
+		graphic::bc_resource_usage::gpu_r,
+		graphic::bc_resource_view_type::shader
+	)
+	.as_normal_texture();
+
 	bc_texture_loader::bc_texture_loader()
 		: bc_base_content_loader()
 	{
@@ -75,22 +87,11 @@ namespace black_cat
 			throw bc_invalid_argument_exception((core::bc_to_string(p_context.m_file_path) + " Unknown image file format").c_str());
 		}
 
-		graphic::bc_device* l_device = &core::bc_service_manager::get().get_service< game::bc_game_system >()->get_render_system().get_device();
-		graphic::bc_texture_config l_config = graphic::bc_graphic_resource_configure().as_resource().as_texture2d
-			(
-				0,
-				0,
-				false, // DX11 requires shader_bind_flag & render_target_bind_flag to be set for auto mip generation
-				0,
-				graphic::bc_format::R8G8B8A8_UNORM,
-				graphic::bc_resource_usage::gpu_r,
-				graphic::bc_resource_view_type::shader
-			)
-			.as_normal_texture();
+		graphic::bc_device* l_device = &core::bc_get_service< game::bc_game_system >()->get_render_system().get_device();
 
 		graphic::bc_texture2d_ptr l_result = l_device->create_texture2d
 			(
-				l_config,
+				s_default_config,
 				p_context.m_data.data(),
 				p_context.m_data.size(),
 				l_format

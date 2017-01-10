@@ -4,8 +4,8 @@
 
 #include "Core/Container/bcVector.h"
 #include "Game/bcExport.h"
-#include "Game/Object/Scence/bcActor.h"
-#include "Game/Object/Scence/bcActorComponent.h"
+#include "Game/Object/Scene/bcActor.h"
+#include "Game/Object/Scene/bcActorComponent.h"
 
 namespace black_cat
 {
@@ -35,7 +35,7 @@ namespace black_cat
 
 			void remove_actor(const bc_actor& p_actor);
 
-			void initialize(const core::bc_data_driven_parameter& p_parameters) override;
+			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
 			void update(const bc_actor& p_actor, core_platform::bc_clock::update_param p_clock_update_param) override;
 

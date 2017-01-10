@@ -11,6 +11,10 @@
         },
         {
           "name": "cmp_render",
+          "parameters": { }
+        },
+        {
+          "name": "cmp_rigid_static",
           "parameters": {}
         }
       ]

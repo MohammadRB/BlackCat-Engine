@@ -22,12 +22,14 @@
 #include "Game/System/Render/bcRenderPassManager.h"
 #include "Game/System/Script/bcScriptSystem.h"
 #include "Game/System/Script/bcScriptBinding.h"
-#include "Game/Object/Scence/bcActorComponentManager.h"
-#include "Game/Object/Scence/bcEntityManager.h"
-#include "Game/Object/Scence/Component/bcRenderComponent.h"
-#include "Game/Object/Scence/Component/bcMeshComponent.h"
-#include "Game/Object/Scence/Component/bcHierarchyComponent.h"
-#include "Game/Object/Scence/Component/bcHeightMapComponent.h"
+#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/bcEntityManager.h"
+#include "Game/Object/Scene/Component/bcRenderComponent.h"
+#include "Game/Object/Scene/Component/bcMeshComponent.h"
+#include "Game/Object/Scene/Component/bcHierarchyComponent.h"
+#include "Game/Object/Scene/Component/bcHeightMapComponent.h"
+#include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
+#include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/System/bcGameSystem.h"
 #include "BlackCat/Loader/bcMeshLoader.h"
 #include "BlackCat/Loader/bcTextureLoader.h"
@@ -235,8 +237,14 @@ namespace black_cat
 		<
 			game::bc_mesh_component,
 			game::bc_hierarchy_component,
+			game::bc_rigid_static_component,
+			game::bc_rigid_dynamic_component,
 			game::bc_render_component,
 			game::bc_height_map_component
+		>();
+		l_entity_manager->register_abstract_component_types
+		<
+			game::bc_abstract_component<game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component>
 		>();
 
 		application_start_engine_components(p_engine_components);

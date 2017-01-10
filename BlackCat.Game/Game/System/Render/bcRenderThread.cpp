@@ -66,19 +66,23 @@ namespace black_cat
 
 		void bc_render_thread::start(graphic::bc_device_command_list p_command_list) noexcept
 		{
-			//bcAssert(m_command_list == nullptr);
+			bcAssert(!m_command_list.is_valid());
 
 			m_command_list = p_command_list;
 		}
 
 		graphic::bc_device_command_list bc_render_thread::finish() noexcept
 		{
-			//bcAssert(m_command_list != nullptr);
+			bcAssert(m_command_list.is_valid());
 
 			m_pipeline->finish_command_list(m_command_list);
 			m_executer->excecute_command_list(m_command_list);
 
-			return m_command_list;
+			graphic::bc_device_command_list l_command_list;
+			std::swap(l_command_list, m_command_list);
+
+
+			return l_command_list;
 		}
 
 		void bc_render_thread::bind_render_pass_state(bc_render_pass_state* p_render_pass_state)
@@ -443,7 +447,7 @@ namespace black_cat
 			m_pipeline->clear_buffers(p_color, p_depth, p_stencil);
 		}
 
-		graphic::bc_mapped_resource bc_render_thread::map_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource, graphic::bc_resource_map p_map_type)
+		/*graphic::bc_mapped_resource bc_render_thread::map_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource, graphic::bc_resource_map p_map_type)
 		{
 			return m_pipeline->map_resource(p_resource, p_subresource, p_map_type);
 		}
@@ -451,7 +455,7 @@ namespace black_cat
 		void bc_render_thread::unmap_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource)
 		{
 			m_pipeline->unmap_resource(p_resource, p_subresource);
-		}
+		}*/
 
 		void bc_render_thread::update_subresource(graphic::bc_iresource& p_resource, bcUINT p_dst_subresource, const void* p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch)
 		{
@@ -480,15 +484,15 @@ namespace black_cat
 
 		void bc_render_thread::reset()
 		{
-			//bcAssert(m_command_list == nullptr);
-
+			bcAssert(!m_command_list.is_valid());
+			
 			m_pipeline.reset();
 			m_executer.reset();
 		}
 
 		void bc_render_thread::reset(graphic::bc_device_pipeline p_pipeline, graphic::bc_device_command_executer p_command_executer)
 		{
-			bcAssert(m_command_list == nullptr);
+			bcAssert(!m_command_list.is_valid());
 
 			m_pipeline.reset(p_pipeline);
 			m_executer.reset(p_command_executer);

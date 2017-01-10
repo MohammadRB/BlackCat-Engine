@@ -15,13 +15,13 @@ namespace black_cat
 	template< >
 	inline constexpr bcCHAR* graphic::bc_device_resource_content< graphic::bc_texture2d >::content_name()
 	{
-		return BC_CONTENT_NAME(texture_shader);
+		return BC_CONTENT_NAME(texture2d);
 	}
 
 	template< >
 	inline constexpr bcUINT32 graphic::bc_device_resource_content< graphic::bc_texture2d >::content_hash()
 	{
-		return bc_compile_time_string_hash(BC_CONTENT_NAME(texture_shader));
+		return bc_compile_time_string_hash(BC_CONTENT_NAME(texture2d));
 	}
 
 	class BC_BLACKCAT_DLL_EXP bc_texture_loader : public core::bc_base_content_loader
@@ -38,6 +38,8 @@ namespace black_cat
 		void content_offline_processing(core::bc_content_loader_context& p_context) override;
 
 		void content_processing(core::bc_content_loader_context& p_context) override;
+
+		static graphic::bc_texture_config s_default_config;
 
 	protected:
 

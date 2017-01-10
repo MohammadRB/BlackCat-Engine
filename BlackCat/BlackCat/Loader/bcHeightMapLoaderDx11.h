@@ -24,7 +24,8 @@ namespace black_cat
 			game::bc_render_state_ptr& p_render_state,
 			graphic::bc_buffer_ptr& p_chunk_info_buffer,
 			graphic::bc_resource_view_ptr& p_chunk_info_view,
-			graphic::bc_resource_view_ptr& p_chunk_info_unordered_view);
+			graphic::bc_resource_view_ptr& p_chunk_info_unordered_view,
+			physics::bc_height_field_ref&& p_px_height_map);
 
 		bc_height_map_dx11(bc_height_map_dx11&& p_other) = default;
 
@@ -81,5 +82,6 @@ namespace black_cat
 	protected:
 
 	private:
+		constexpr static bcUINT16 s_chund_size = 64;
 	};
 }

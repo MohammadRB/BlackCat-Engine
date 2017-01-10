@@ -6,7 +6,7 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/bcConstant.h"
 #include "Core/Utility/bcDataDrivenParameter.h"
-#include "Game/Object/Scence/bcActor.h"
+#include "Game/Object/Scene/bcActor.h"
 
 namespace black_cat
 {
@@ -25,8 +25,12 @@ namespace black_cat
 		public:
 			virtual ~bc_iactor_component();
 
-			// Initialize component per entity data members
-			virtual void initialize(const core::bc_data_driven_parameter& p_parameters) = 0;
+			/**
+			 * \brief Initialize component data members that are shared between instances of this component.
+			 * In other word data memebers that act like entity template datas.
+			 * \param p_parameters 
+			 */
+			virtual void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) = 0;
 
 			virtual void update(const bc_actor& p_actor, core_platform::bc_clock::update_param p_clock_update_param) = 0;
 

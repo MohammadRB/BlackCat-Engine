@@ -19,6 +19,7 @@ namespace black_cat
 		template< >
 		struct bc_platform_device_command_executer_pack<g_api_dx11>
 		{
+			bc_device* m_device;
 		};
 	}
 }
