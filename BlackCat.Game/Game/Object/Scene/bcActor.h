@@ -20,11 +20,15 @@ namespace black_cat
 		public:
 			bc_actor();
 
+			explicit bc_actor(bc_actor_index p_index);
+
 			bc_actor(const bc_actor&) noexcept;
 
 			~bc_actor();
 
 			bc_actor& operator=(const bc_actor&) noexcept;
+
+			bc_actor_index get_index() const noexcept;
 
 			template< class TComponent >
 			void create_component();
@@ -48,12 +52,10 @@ namespace black_cat
 			bool operator!=(const bc_actor& p_other) const noexcept;
 
 		protected:
-			bc_actor_index get_index() const noexcept;
 
 		private:
-			bc_actor(bc_actor_component_manager* p_manager, bc_actor_index p_index);
+			static bc_actor_component_manager* _get_manager() noexcept;
 
-			bc_actor_component_manager* m_manager;
 			bc_actor_index m_index;
 		};		
 	}

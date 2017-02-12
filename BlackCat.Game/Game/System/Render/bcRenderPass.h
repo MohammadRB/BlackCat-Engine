@@ -12,6 +12,7 @@ namespace black_cat
 	namespace game
 	{
 		class bc_render_system;
+		class bc_scene;
 		struct bc_render_system_update_param;
 
 		/**
@@ -27,9 +28,8 @@ namespace black_cat
 			/**
 			 * \brief This function will be called during app initialization
 			 * \param p_render_system 
-			 * \param p_device 
 			 */
-			virtual void initialize_resources(bc_render_system& p_render_system, graphic::bc_device& p_device) = 0;
+			virtual void initialize_resources(bc_render_system& p_render_system) = 0;
 
 			/**
 			 * \brief This function will be called during app update phase
@@ -43,7 +43,7 @@ namespace black_cat
 			 * \param p_render_system 
 			 * \param p_thread 
 			 */
-			virtual void initialize_frame(bc_render_system& p_render_system, bc_render_thread& p_thread) = 0;
+			virtual void initialize_frame(bc_render_system& p_render_system, bc_scene& p_scene, bc_render_thread& p_thread) = 0;
 
 			/**
 			 * \brief This function will be called in draw frme phase.
@@ -51,7 +51,7 @@ namespace black_cat
 			 * \param p_render_system 
 			 * \param p_thread 
 			 */
-			virtual void execute(bc_render_system& p_render_system, bc_render_thread& p_thread) = 0;
+			virtual void execute(bc_render_system& p_render_system, bc_scene& p_scene, bc_render_thread& p_thread) = 0;
 
 			/**
 			 * \brief This function will be called when device duo to some parameter changes and buffer resize need reset

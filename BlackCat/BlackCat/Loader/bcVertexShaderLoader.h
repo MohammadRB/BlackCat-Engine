@@ -21,7 +21,7 @@ namespace black_cat
 		return bc_compile_time_string_hash(BC_CONTENT_NAME(vertex_shader));
 	}
 
-	class BC_BLACKCAT_DLL_EXP bc_vertex_shader_loader : public core::bc_base_content_loader
+	class BC_BLACKCAT_DLL bc_vertex_shader_loader : public core::bc_base_content_loader
 	{
 	public:
 		explicit bc_vertex_shader_loader();
@@ -32,9 +32,9 @@ namespace black_cat
 
 		bc_vertex_shader_loader& operator=(bc_vertex_shader_loader&&) noexcept;
 
-		void content_offline_processing(core::bc_content_loader_context& p_context) override;
+		void content_offline_processing(core::bc_content_loader_context& p_context) const override;
 
-		void content_processing(core::bc_content_loader_context& p_context) override;
+		void content_processing(core::bc_content_loader_context& p_context) const override;
 
 	protected:
 

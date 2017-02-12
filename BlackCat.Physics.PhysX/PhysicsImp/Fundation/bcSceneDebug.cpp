@@ -3,6 +3,7 @@
 #include "PhysicsImp/PhysicsImpPCH.h"
 #include "PhysicsImp/bcExport.h"
 #include "PhysicsImp/Fundation/bcSceneDebug.h"
+#include "PhysicsImp/bcUtility.h"
 
 namespace black_cat
 {
@@ -58,9 +59,9 @@ namespace black_cat
 			{
 				result.push_back(bc_scene_debug_line
 				(
-					core::bc_vector3f(l_px_lines->pos0.x, l_px_lines->pos0.y, l_px_lines->pos0.z),
+					bc_to_game_hand(l_px_lines->pos0),
 					l_px_lines->color0,
-					core::bc_vector3f(l_px_lines->pos1.x, l_px_lines->pos1.y, l_px_lines->pos1.z),
+					bc_to_game_hand(l_px_lines->pos1),
 					l_px_lines->color1
 				));
 			}
@@ -89,7 +90,7 @@ namespace black_cat
 			{
 				result.push_back(bc_scene_debug_text
 				(
-					core::bc_vector3f(l_px_texts->position.x, l_px_texts->position.y, l_px_texts->position.z),
+					bc_to_game_hand(l_px_texts->position),
 					l_px_texts->color,
 					l_px_texts->size,
 					l_px_texts->string

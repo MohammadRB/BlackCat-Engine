@@ -10,16 +10,16 @@ namespace black_cat
 	{
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_task<g_api_physx>::bc_platform_task()
+		bc_platform_task<g_api_physx>::bc_platform_task(const platform_pack& p_pack)
+			: m_pack(p_pack)
 		{
-			m_pack.m_px_task = nullptr;
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_task<g_api_physx>::bc_platform_task(bc_platform_task&& p_other) noexcept
+			: m_pack(p_other.m_pack)
 		{
-			m_pack.m_px_task = p_other.m_pack.m_px_task;
 			p_other.m_pack.m_px_task = nullptr;
 		}
 

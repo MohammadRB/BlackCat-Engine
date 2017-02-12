@@ -2,6 +2,7 @@
 
 #include "PhysicsImp/PhysicsImpPCH.h"
 #include "PhysicsImp/bcExport.h"
+#include "PhysicsImp/bcUtility.h"
 #include "PhysicsImp/bcImplementation.h"
 #include "PhysicsImp/Fundation/bcSimulationEventCallback.h"
 #include "PhysicsImp/Collision/bcContactModifyCallback.h"
@@ -21,6 +22,10 @@ namespace black_cat
 			m_pack.m_px_desc.filterShaderData = m_pack.m_fitler_shader_data.get();
 			m_pack.m_px_desc.filterShaderDataSize = sizeof(bc_px_fitler_shader_data);
 			m_pack.m_px_desc.filterShader = &bc_px_filter_shader;
+
+			m_pack.m_px_desc.flags |= physx::PxSceneFlag::eENABLE_ACTIVETRANSFORMS;
+
+			gravity(core::bc_vector3f(0, -9.8f, 0));
 		}
 
 		template<>
@@ -64,7 +69,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_platform_scene_builder< g_api_physx >& bc_platform_scene_builder< g_api_physx >::gravity(const core::bc_vector3f& p_gravity)
 		{
-			m_pack.m_px_desc.gravity = physx::PxVec3(p_gravity.x, p_gravity.y, p_gravity.z);
+			m_pack.m_px_desc.gravity = bc_to_right_hand(p_gravity);
 
 			return *this;
 		}

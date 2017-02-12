@@ -9,14 +9,11 @@
 #include "GraphicImp/Resource/bcResourceConfig.h"
 #include "Game/System/Render/bcVertexLayout.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "BlackCat/bcException.h"
 #include "BlackCat/RenderPass/bcTerrainPassDx11.h"
 #include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
 
 namespace black_cat
 {
@@ -40,11 +37,12 @@ namespace black_cat
 		core::bc_vector4f m_frustum_planes[6];
 	};
 
-	void bc_terrain_pass_dx11::initialize_resources(game::bc_render_system& p_render_system, graphic::bc_device& p_device)
+	void bc_terrain_pass_dx11::initialize_resources(game::bc_render_system& p_render_system)
 	{
-		graphic::bc_texture2d l_back_buffer_texture = p_device.get_back_buffer_texture();
+		graphic::bc_device& l_device = p_render_system.get_device();
+		graphic::bc_texture2d l_back_buffer_texture = l_device.get_back_buffer_texture();
 
-		m_command_list = p_device.create_command_list();
+		m_command_list = l_device.create_command_list();
 		m_pipeline_state = p_render_system.create_device_pipeline_state
 		(
 			"terrain_vs",
@@ -74,7 +72,7 @@ namespace black_cat
 			)
 			.as_constant_buffer();
 
-		m_parameter_cbuffer = p_device.create_buffer(l_parameter_cbuffer_config, nullptr);
+		m_parameter_cbuffer = l_device.create_buffer(l_parameter_cbuffer_config, nullptr);
 
 		graphic::bc_device_parameters l_old_parameters
 		(
@@ -91,7 +89,7 @@ namespace black_cat
 			l_back_buffer_texture.get_sample_count()
 		);
 
-		after_reset(p_render_system, p_device, l_old_parameters, l_new_parameters);
+		after_reset(p_render_system, l_device, l_old_parameters, l_new_parameters);
 
 		m_device_compute_state = p_render_system.create_device_compute_state("terrain_chunk_info");
 		m_run_chunk_info_shader = true;
@@ -102,7 +100,7 @@ namespace black_cat
 		m_camera_extends = p_update_param.m_camera_extends;
 	}
 
-	void bc_terrain_pass_dx11::initialize_frame(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread)
+	void bc_terrain_pass_dx11::initialize_frame(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
 	{
 		p_thread.start(m_command_list.get());
 
@@ -118,7 +116,7 @@ namespace black_cat
 
 		if(m_run_chunk_info_shader)
 		{
-			auto l_heightmaps = p_render_system.get_scene_graph().get_heightmaps();
+			auto l_heightmaps = p_scene.get_heightmaps();
 
 			for(auto& l_actor : l_heightmaps)
 			{
@@ -148,9 +146,9 @@ namespace black_cat
 		p_thread.clear_buffers(core::bc_vector4f(0, 0, 255, 0), 1, 0);
 	}
 
-	void bc_terrain_pass_dx11::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread)
+	void bc_terrain_pass_dx11::execute(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
 	{
-		p_render_system.get_scene_graph().render_heightmaps(p_render_system, p_thread);
+		p_scene.render_heightmaps(p_render_system, p_thread);
 
 		p_thread.unbind_render_pass_state(m_render_pass_state.get());
 		p_thread.finish();
@@ -180,12 +178,12 @@ namespace black_cat
 		{
 			graphic::bc_texture2d l_back_buffer_texture = p_device.get_back_buffer_texture();
 
-			auto l_linear_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_clamp_clamp_clamp);
+			auto l_linear_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_point_point_point_address_clamp_clamp_clamp);
 
 			auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(game::bc_render_pass_resource_variable::depth_stencil_view);
 			auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(game::bc_render_pass_resource_variable::render_target_view);
 			auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
-			auto l_linear_sampler = p_device.create_sampler_state(l_linear_sampler_config);
+			auto l_point_sampler = p_device.create_sampler_state(l_linear_sampler_config);
 
 			m_render_pass_state = p_render_system.create_render_pass_state
 			(
@@ -194,7 +192,7 @@ namespace black_cat
 				{ graphic::bc_render_target_view_ptr(l_render_target_view) },
 				l_depth_stencil_view,
 				{
-					graphic::bc_sampler_parameter(0, core::bc_enum::or({ graphic::bc_shader_type::vertex, graphic::bc_shader_type::domain, graphic::bc_shader_type::pixel }), l_linear_sampler) 
+					graphic::bc_sampler_parameter(0, core::bc_enum::or({ graphic::bc_shader_type::vertex, graphic::bc_shader_type::domain, graphic::bc_shader_type::pixel }), l_point_sampler) 
 				},
 				{},
 				{

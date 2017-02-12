@@ -89,7 +89,7 @@
       <PreprocessorDefinitions>WIN32;BC_PHYSICSIMP_DLL;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;_USRDLL;BLACKCATPHYSICSPHYSX_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile>PhysicsImp/PhysicsImpPCH.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Core;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Physics;../3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Core;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Physics;../3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -97,7 +97,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\$(Configuration);..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>3rdParty\PhysX\Lib\x86_debug\PhysX3CommonDEBUG_x86.lib;3rdParty\PhysX\Lib\x86_debug\PhysX3DEBUG_x86.lib;3rdParty\PhysX\Lib\x86_debug\PhysX3CookingDEBUG_x86.lib;3rdParty\PhysX\Lib\x86_debug\PhysX3ExtensionsDEBUG.lib;3rdParty\PhysX\Lib\x86_debug\PhysXProfileSDKDEBUG.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>3rdParty\PhysX\Lib\x86_debug\PhysX3CommonDEBUG_x86.lib;3rdParty\PhysX\Lib\x86_debug\PhysX3DEBUG_x86.lib;3rdParty\PhysX\Lib\x86_debug\PhysX3CookingDEBUG_x86.lib;3rdParty\PhysX\Lib\x86_debug\PhysX3ExtensionsDEBUG.lib;3rdParty\PhysX\Lib\x86_debug\PhysXProfileSDKDEBUG.lib;3rdParty\PhysX\Lib\x86_debug\PhysXVisualDebuggerSDKDEBUG.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy PhysicsImp\*.h ..\BC_SDK\Include\PhysicsImp
@@ -138,7 +138,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
       <PreprocessorDefinitions>WIN32;BC_PHYSICSIMP_DLL;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;_USRDLL;BLACKCATPHYSICSPHYSX_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile>PhysicsImp/PhysicsImpPCH.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Core;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Physics;../3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);../BlackCat.Core.Platform;../BlackCat.Core.Platform.Win32;../BlackCat.Core;../BlackCat.Platform;../BlackCat.Platform.Win32;../BlackCat.Graphic;../BlackCat.Physics;../3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

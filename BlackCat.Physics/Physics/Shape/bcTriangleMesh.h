@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CorePlatform/bcType.h"
+#include "Core/Math/bcVector3f.h"
 #include "Core/Utility/bcEnumOperand.h"
 #include "Physics/bcPhysicsApi.h"
 #include "Physics/bcUtility.h"
@@ -22,19 +23,16 @@ namespace black_cat
 
 		struct bc_triangle_mesh_desc
 		{
-			bc_triangle_mesh_desc(const bc_bounded_strided_data& p_points,
+			bc_triangle_mesh_desc(const bc_bounded_strided_typed_data<core::bc_vector3f>& p_points,
 				const bc_bounded_strided_data& p_indices,
 				bc_triangle_mesh_flag p_flags = core::bc_enum::none< bc_triangle_mesh_flag >())
-				: m_points(p_points),
-				m_indices(p_indices),
-				m_material_indices(nullptr, 0, 0),
-				m_flag(p_flags)
+				: bc_triangle_mesh_desc(p_points, p_indices, bc_bounded_strided_typed_data<bc_material_index>(), p_flags)
 			{
 			}
 
-			bc_triangle_mesh_desc(const bc_bounded_strided_data& p_points,
+			bc_triangle_mesh_desc(const bc_bounded_strided_typed_data<core::bc_vector3f>& p_points,
 				const bc_bounded_strided_data& p_indices,
-				const bc_bounded_strided_data& p_material_indices,
+				const bc_bounded_strided_typed_data<bc_material_index>& p_material_indices,
 				bc_triangle_mesh_flag p_flags = core::bc_enum::none< bc_triangle_mesh_flag >())
 				: m_points(p_points),
 				m_indices(p_indices),
@@ -43,9 +41,9 @@ namespace black_cat
 			{
 			}
 
-			const bc_bounded_strided_data m_points;
+			const bc_bounded_strided_typed_data<core::bc_vector3f> m_points;
 			const bc_bounded_strided_data m_indices;
-			const bc_bounded_strided_data m_material_indices;
+			const bc_bounded_strided_typed_data<bc_material_index> m_material_indices;
 			const bc_triangle_mesh_flag m_flag;
 		};
 

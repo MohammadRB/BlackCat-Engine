@@ -99,8 +99,6 @@ namespace black_cat
 			BC_SERVICE(actor_component_manager)
 
 		private:
-			template< class TComponent >
-			friend class bc_actor_component_container;
 			template<class TAbstract, class ...TDeriveds>
 			friend class _bc_abstract_component;
 
@@ -136,6 +134,9 @@ namespace black_cat
 			template< class TComponent >
 			const TComponent* actor_get_component(const bc_actor& p_actor) const;
 			
+			template< class TComponent >
+			bc_actor component_get_actor(const TComponent& p_component) const noexcept;
+
 			void update(core_platform::bc_clock::update_param p_clock_update_param) override;
 
 			template< class ...TComponent >
@@ -162,8 +163,8 @@ namespace black_cat
 			template< class TComponent >
 			component_map_type::value_type* _get_component_entry();
 
-			template< class TComponent > // This function will be used by component containers during update phase
-			const bc_actor& _component_get_actor(const TComponent& p_component) const noexcept;
+			template< class TComponent >
+			const component_map_type::value_type* _get_component_entry() const;
 
 			void _resize_actor_to_component_index_maps();
 
@@ -188,7 +189,7 @@ namespace black_cat
 			{
 				if (!l_actor.is_set())
 				{
-					l_actor.reset(_bc_actor_entry(bc_actor(this, l_index), p_parent ? p_parent->get_index() : g_actor_invalid_index));
+					l_actor.reset(_bc_actor_entry(bc_actor(l_index), p_parent ? p_parent->get_index() : g_actor_invalid_index));
 					l_has_setted = true;
 				}
 				else
@@ -201,13 +202,13 @@ namespace black_cat
 			{
 				m_actors.push_back(core::bc_nullable< _bc_actor_entry >
 					(
-						_bc_actor_entry(bc_actor(this, l_index), p_parent ? p_parent->get_index() : g_actor_invalid_index)
+						_bc_actor_entry(bc_actor(l_index), p_parent ? p_parent->get_index() : g_actor_invalid_index)
 					));
 
 				_resize_actor_to_component_index_maps();
 			}
 
-			return bc_actor(this, l_index);
+			return bc_actor(l_index);
 		}
 
 		inline void bc_actor_component_manager::remove_actor(const bc_actor& p_actor)
@@ -325,6 +326,18 @@ namespace black_cat
 			return const_cast<bc_actor_component_manager*>(this)->actor_get_component< TComponent >(p_actor);
 		}
 
+		template< class TComponent >
+		bc_actor bc_actor_component_manager::component_get_actor(const TComponent& p_component) const noexcept
+		{
+			static_assert(!bc_actor_component_traits<TComponent>::component_is_abstract(), "Can't get actor from abstract component");
+
+			static const component_map_type::value_type* l_component_entry = _get_component_entry< TComponent >();
+
+			bc_actor_component_index l_component_index = p_component.get_index();
+			bcINT32 l_component_to_actor = l_component_entry->second.m_component_to_actor_index_map[l_component_index];
+			return m_actors[l_component_to_actor].get().m_actor;
+		}
+
 		inline void bc_actor_component_manager::update(core_platform::bc_clock::update_param p_clock_update_param)
 		{
 			core::bc_vector_frame< _bc_actor_component_entry* > l_components;
@@ -379,7 +392,8 @@ namespace black_cat
 					[this, l_actor]()
 					{
 						this->create_component< TComponent >(l_actor);
-						this->actor_get_component< TComponent >(l_actor);
+						TComponent* l_component = this->actor_get_component< TComponent >(l_actor);
+						l_component->get_actor();
 						this->remove_component< TComponent >(l_actor);
 
 						return true;
@@ -419,6 +433,7 @@ namespace black_cat
 		{
 			static component_map_type::value_type* l_component_entry = _get_component_entry< TComponent >();
 
+			// Is it abstract
 			bcAssert(l_component_entry->second.m_component_priority == _bc_actor_component_entry::s_invalid_priority_value);
 
 			for(auto& l_derived_get : l_component_entry->second.m_deriveds)
@@ -439,6 +454,7 @@ namespace black_cat
 		{
 			static component_map_type::value_type* l_component_entry = _get_component_entry< TComponent >();
 
+			// Isn't it abstract
 			bcAssert(l_component_entry->second.m_component_priority != _bc_actor_component_entry::s_invalid_priority_value);
 
 			bc_actor_index l_actor_index = p_actor.get_index();
@@ -534,18 +550,9 @@ namespace black_cat
 		}
 
 		template< class TComponent >
-		const bc_actor& bc_actor_component_manager::_component_get_actor(const TComponent& p_component) const noexcept
+		const bc_actor_component_manager::component_map_type::value_type* bc_actor_component_manager::_get_component_entry() const
 		{
-			// This function will be used by component containers during update phase, so when this function
-			// is called with TComponent argument, there will be an entry for TComponent in components hash
-			// map, so it is safe to use static initialization for local variable
-			static component_map_type::value_type* l_component_entry = const_cast<bc_actor_component_manager*>(this)->_get_component_entry< TComponent >();
-
-			bc_actor_component_index l_component_index = p_component.get_index();
-			bcINT32 l_component_to_actor = l_component_entry->second.m_component_to_actor_index_map[l_component_index];
-			const bc_actor& l_actor = m_actors[l_component_to_actor].get().m_actor;
-
-			return l_actor;
+			return const_cast< bc_actor_component_manager& >(*this)._get_component_entry< TComponent >();
 		}
 
 		inline void bc_actor_component_manager::_resize_actor_to_component_index_maps()

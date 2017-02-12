@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "GraphicImp/Device/bcDevice.h"
-#include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
@@ -12,14 +10,10 @@
 #include "Game/System/Render/bcRenderPass.h"
 #include "Game/System/Render/bcRenderPassState.h"
 #include "BlackCat/bcExport.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
 
 namespace black_cat
 {
-	class BC_BLACKCAT_DLL_EXP bc_back_buffer_output_pass : public game::bc_irender_pass
+	class BC_BLACKCAT_DLL bc_back_buffer_output_pass : public game::bc_irender_pass
 	{
 	public:
 		bc_back_buffer_output_pass() = default;
@@ -30,13 +24,13 @@ namespace black_cat
 
 		bc_back_buffer_output_pass& operator=(const bc_back_buffer_output_pass&) = default;
 
-		void initialize_resources(game::bc_render_system& p_render_system, graphic::bc_device& p_device) override;
+		void initialize_resources(game::bc_render_system& p_render_system) override;
 
 		void update(const game::bc_render_system_update_param& p_update_param) override;
 
-		void initialize_frame(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread) override;
+		void initialize_frame(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread) override;
 
-		void execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread) override;
+		void execute(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread) override;
 
 		void destroy(graphic::bc_device& p_device) override;
 

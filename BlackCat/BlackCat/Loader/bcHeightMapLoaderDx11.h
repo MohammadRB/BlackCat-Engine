@@ -72,12 +72,12 @@ namespace black_cat
 		graphic::bc_resource_view_ptr m_chunk_info_unordered_view;
 	};
 
-	class BC_BLACKCAT_DLL_EXP bc_height_map_loader_dx11 : public core::bc_base_content_loader
+	class BC_BLACKCAT_DLL bc_height_map_loader_dx11 : public core::bc_base_content_loader
 	{
 	public:
-		void content_offline_processing(core::bc_content_loader_context& p_context) override;
+		void content_offline_processing(core::bc_content_loader_context& p_context) const override;
 
-		void content_processing(core::bc_content_loader_context& p_context) override;
+		void content_processing(core::bc_content_loader_context& p_context) const override;
 
 	protected:
 

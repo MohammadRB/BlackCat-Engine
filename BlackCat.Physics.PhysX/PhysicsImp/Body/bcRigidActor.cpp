@@ -56,7 +56,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_rigid_actor< g_api_physx >::set_globla_pose(const bc_transform& p_transform) noexcept
+		void bc_platform_rigid_actor< g_api_physx >::set_global_pose(const bc_transform& p_transform) noexcept
 		{
 			auto* l_px_actor = static_cast< physx::PxRigidActor* >
 			(
@@ -68,7 +68,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_shape_ref bc_platform_rigid_actor< g_api_physx >::create_shape(const bc_shape_geometry& p_shape, const bc_material& p_material, bc_shape_flag p_flags)
+		bc_shape bc_platform_rigid_actor< g_api_physx >::create_shape(const bc_shape_geometry& p_shape, const bc_material& p_material, bc_shape_flag p_flags)
 		{
 			auto* l_px_actor = static_cast< physx::PxRigidActor* >
 			(
@@ -88,12 +88,12 @@ namespace black_cat
 					static_cast< physx::PxShapeFlag::Enum >(static_cast< physx::PxShapeFlags::InternalType >(p_flags))
 				);
 
-			return bc_shape_ref(l_shape);
+			return l_shape;
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_shape_ref bc_platform_rigid_actor< g_api_physx >::create_shape(const bc_shape_geometry& p_shape, const bc_material* p_materials, bcUINT32 p_material_count, bc_shape_flag p_flags)
+		bc_shape bc_platform_rigid_actor< g_api_physx >::create_shape(const bc_shape_geometry& p_shape, const bc_material* p_materials, bcUINT32 p_material_count, bc_shape_flag p_flags)
 		{
 			auto* l_px_actor = static_cast< physx::PxRigidActor* >
 			(
@@ -126,7 +126,7 @@ namespace black_cat
 
 			bcFree(l_buffer);
 
-			return bc_shape_ref(l_shape);
+			return l_shape;
 		}
 
 		template<>

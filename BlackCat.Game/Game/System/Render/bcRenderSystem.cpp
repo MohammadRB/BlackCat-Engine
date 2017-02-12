@@ -420,7 +420,7 @@ namespace black_cat
 
 			auto l_pass = m_render_pass_manager.get_pass(p_location);
 
-			l_pass->initialize_resources(*this, m_device);
+			l_pass->initialize_resources(*this);
 		}
 
 		bool bc_render_system::remove_render_pass(bcUINT p_location)
@@ -524,9 +524,9 @@ namespace black_cat
 			m_render_pass_manager.pass_update(p_update_params);
 		}
 
-		void bc_render_system::render()
+		void bc_render_system::render(bc_scene& p_scene)
 		{
-			m_render_pass_manager.pass_execute(*this, m_render_thread);
+			m_render_pass_manager.pass_execute(*this, p_scene, m_render_thread);
 			
 			clear_render_instances();
 
@@ -619,8 +619,6 @@ namespace black_cat
 
 		void bc_render_system::_destroy()
 		{
-			m_scene_graph.clear();
-
 			m_global_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
 			m_perobject_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
 			 

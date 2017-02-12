@@ -1,20 +1,19 @@
 // [08/31/2016 MRB]
 
 #include "BlackCat/BlackCatPCH.h"
+
+#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "BlackCat/RenderPass/bcInitializePass.h"
-#include "Graphic/Resource/bcResourceConfig.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
 
 namespace black_cat
 {
-	void bc_initialize_pass::initialize_resources(game::bc_render_system& p_render_system, graphic::bc_device& p_device)
+	void bc_initialize_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
+		auto& l_device = p_render_system.get_device();
 		m_depth_stencil_format = graphic::bc_format::D32_FLOAT;
 
-		graphic::bc_texture2d l_back_buffer_texture = p_device.get_back_buffer_texture();
+		graphic::bc_texture2d l_back_buffer_texture = l_device.get_back_buffer_texture();
 
 		graphic::bc_device_parameters l_old_parameters
 		(
@@ -31,19 +30,19 @@ namespace black_cat
 			l_back_buffer_texture.get_sample_count()
 		);
 
-		after_reset(p_render_system, p_device, l_old_parameters, l_new_parameters);
+		after_reset(p_render_system, l_device, l_old_parameters, l_new_parameters);
 	}
 
 	void bc_initialize_pass::update(const game::bc_render_system_update_param& p_update_param)
 	{
 	}
 
-	void bc_initialize_pass::initialize_frame(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread)
+	void bc_initialize_pass::initialize_frame(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
 	{
 
 	}
 
-	void bc_initialize_pass::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread)
+	void bc_initialize_pass::execute(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
 	{
 	}
 

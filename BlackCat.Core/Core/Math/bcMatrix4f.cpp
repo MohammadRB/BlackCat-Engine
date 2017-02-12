@@ -65,7 +65,7 @@ namespace black_cat
 			return(*this);
 		}
 		
-		void bc_matrix4f::rotation_x(bcFLOAT p_radians)
+		void bc_matrix4f::rotation_x_lh(bcFLOAT p_radians)
 		{
 			bcFLOAT l_sin = sinf(p_radians);
 			bcFLOAT l_cos = cosf(p_radians);
@@ -91,7 +91,7 @@ namespace black_cat
 			m_entry[15] = 1.0f;
 		}
 		
-		void bc_matrix4f::rotation_y(bcFLOAT p_radians)
+		void bc_matrix4f::rotation_y_lh(bcFLOAT p_radians)
 		{
 			bcFLOAT l_sin = sinf(p_radians);
 			bcFLOAT l_cos = cosf(p_radians);
@@ -117,7 +117,7 @@ namespace black_cat
 			m_entry[15] = 1.0f;
 		}
 		
-		void bc_matrix4f::rotation_z(bcFLOAT p_radians)
+		void bc_matrix4f::rotation_z_lh(bcFLOAT p_radians)
 		{
 			bcFLOAT l_sin = sinf(p_radians);
 			bcFLOAT l_cos = cosf(p_radians);
@@ -142,7 +142,31 @@ namespace black_cat
 			m_entry[14] = 0.0f;
 			m_entry[15] = 1.0f;
 		}
-		
+
+		void bc_matrix4f::rotation_x_rh(bcFLOAT p_radians)
+		{
+			rotation_x_lh(p_radians);
+
+			m_entry[6] = -m_entry[6];
+			m_entry[9] = -m_entry[9];
+		}
+
+		void bc_matrix4f::rotation_y_rh(bcFLOAT p_radians)
+		{
+			rotation_y_lh(p_radians);
+
+			m_entry[2] = -m_entry[2];
+			m_entry[8] = -m_entry[8];
+		}
+
+		void bc_matrix4f::rotation_z_rh(bcFLOAT p_radians)
+		{
+			rotation_z_lh(p_radians);
+
+			m_entry[1] = -m_entry[1];
+			m_entry[4] = -m_entry[4];
+		}
+
 		void bc_matrix4f::scale(bcFLOAT p_scale)
 		{
 			m_entry[0] = p_scale;
@@ -189,6 +213,70 @@ namespace black_cat
 			m_entry[15] = 1.0f;
 		}
 		
+		bc_vector3f bc_matrix4f::get_basis_x() const
+		{
+			bc_vector3f l_basis;
+
+			for (bcINT i = 0; i < 3; i++)
+				l_basis[i] = m_entry[I(0, i)];
+
+			return(l_basis);
+		}
+		
+		bc_vector3f bc_matrix4f::get_basis_y() const
+		{
+			bc_vector3f l_basis;
+
+			for (bcINT i = 0; i < 3; i++)
+				l_basis[i] = m_entry[I(1, i)];
+
+			return(l_basis);
+		}
+		
+		bc_vector3f bc_matrix4f::get_basis_z() const
+		{
+			bc_vector3f l_basis;
+
+			for (bcINT i = 0; i < 3; i++)
+				l_basis[i] = m_entry[I(2, i)];
+
+			return(l_basis);
+		}
+		
+		bc_vector3f bc_matrix4f::get_translation() const
+		{
+			bc_vector3f l_pos;
+
+			for (bcINT i = 0; i < 3; i++)
+				l_pos[i] = m_entry[I(3, i)];
+
+			return(l_pos);
+		}
+
+		bc_matrix3f bc_matrix4f::get_rotation() const
+		{
+			bc_matrix3f mRet;
+
+			mRet.set_row(0, get_basis_x());
+			mRet.set_row(1, get_basis_y());
+			mRet.set_row(2, get_basis_z());
+
+			return(mRet);
+		}
+				
+		void bc_matrix4f::set_rotation(const bc_matrix3f& p_rot)
+		{
+			for (bcINT i = 0; i < 3; i++)
+				for (bcINT j = 0; j < 3; j++)
+					m_entry[I(i, j)] = p_rot[(3 * i + j)];
+		}
+
+		void bc_matrix4f::set_translation(const bc_vector3f& p_trans)
+		{
+			for (bcINT i = 0; i < 3; i++)
+				m_entry[I(3, i)] = p_trans[i];
+		}
+
 		bc_matrix4f bc_matrix4f::inverse() const
 		{
 			bcFLOAT l_a0 = m_entry[0] * m_entry[5] - m_entry[1] * m_entry[4];
@@ -236,281 +324,123 @@ namespace black_cat
 			return(l_inv);
 		}
 		
-		bc_vector3f bc_matrix4f::get_basis_x() const
+		void bc_matrix4f::make_zero()
 		{
-			bc_vector3f l_basis;
-
-			for (bcINT i = 0; i < 3; i++)
-				l_basis[i] = m_entry[I(0, i)];
-
-			return(l_basis);
+			std::memset(m_entry, 0, 4 * 4 * sizeof(bcFLOAT));
 		}
-		
-		bc_vector3f bc_matrix4f::get_basis_y() const
+
+		void bc_matrix4f::make_identity()
 		{
-			bc_vector3f l_basis;
-
-			for (bcINT i = 0; i < 3; i++)
-				l_basis[i] = m_entry[I(1, i)];
-
-			return(l_basis);
+			for (bcINT l_row = 0; l_row < 4; l_row++)
+			{
+				for (bcINT l_col = 0; l_col < 4; l_col++)
+				{
+					if (l_row == l_col)
+						m_entry[I(l_row, l_col)] = 1.0f;
+					else
+						m_entry[I(l_row, l_col)] = 0.0f;
+				}
+			}
 		}
-		
-		bc_vector3f bc_matrix4f::get_basis_z() const
+
+		void bc_matrix4f::make_transpose()
 		{
-			bc_vector3f l_basis;
+			bc_matrix4f l_transpose;
 
-			for (bcINT i = 0; i < 3; i++)
-				l_basis[i] = m_entry[I(2, i)];
+			for (bcINT l_row = 0; l_row < 4; l_row++)
+			{
+				for (bcINT l_col = 0; l_col < 4; l_col++)
+					l_transpose.m_entry[I(l_row, l_col)] = m_entry[I(l_col, l_row)];
+			}
 
-			return(l_basis);
+			std::memcpy(m_entry, l_transpose.m_entry, 4 * 4 * sizeof(bcFLOAT));
 		}
-		
-		bc_vector3f bc_matrix4f::get_translation() const
+
+		bc_matrix4f bc_matrix4f::zero()
 		{
-			bc_vector3f l_pos;
+			bc_matrix4f l_return = bc_matrix4f(true);
 
-			for (bcINT i = 0; i < 3; i++)
-				l_pos[i] = m_entry[I(3, i)];
-
-			return(l_pos);
+			return(l_return);
 		}
-		
-		void bc_matrix4f::set_translation(const bc_vector3f& p_trans)
+
+		bc_matrix4f bc_matrix4f::identity()
 		{
-			for (bcINT i = 0; i < 3; i++)
-				m_entry[I(3, i)] = p_trans[i];
+			bc_matrix4f l_ident;
+
+			for (bcINT l_row = 0; l_row < 4; l_row++)
+			{
+				for (bcINT l_col = 0; l_col < 4; l_col++)
+				{
+					if (l_row == l_col)
+						l_ident.m_entry[I(l_row, l_col)] = 1.0f;
+					else
+						l_ident.m_entry[I(l_row, l_col)] = 0.0f;
+				}
+			}
+
+			return(l_ident);
 		}
-		
-		bc_matrix3f bc_matrix4f::get_rotation() const
+
+		bc_matrix4f bc_matrix4f::transpose() const
 		{
-			bc_matrix3f mRet;
+			bc_matrix4f l_transpose;
 
-			mRet.set_row(0, get_basis_x());
-			mRet.set_row(1, get_basis_y());
-			mRet.set_row(2, get_basis_z());
+			for (bcINT l_row = 0; l_row < 4; l_row++)
+			{
+				for (bcINT l_col = 0; l_col < 4; l_col++)
+					l_transpose.m_entry[I(l_row, l_col)] = m_entry[I(l_col, l_row)];
+			}
 
-			return(mRet);
+			return(l_transpose);
+
 		}
-		
-		void bc_matrix4f::set_rotation(const bc_matrix3f& p_rot)
+
+		void bc_matrix4f::set_row(bcINT p_row, const bc_vector4f& p_vector)
 		{
-			for (bcINT i = 0; i < 3; i++)
-				for (bcINT j = 0; j < 3; j++)
-					m_entry[I(i, j)] = p_rot[(3 * i + j)];
+			for (bcINT l_col = 0; l_col < 4; l_col++)
+				m_entry[I(p_row, l_col)] = p_vector[l_col];
 		}
-		
-		bc_matrix4f bc_matrix4f::rotation_matrix_xyz(bcFLOAT p_radians_x, bcFLOAT p_radians_y, bcFLOAT p_radians_z)
+
+		void bc_matrix4f::set_row(bcINT p_row, const bc_vector3f& p_vector)
 		{
-			//Matrix4f mRot1;
-			//Matrix4f mRot2;
-			//
-			//mRot1.RotationZ(fRadiansZ);
-			//mRot2.RotationX(fRadiansX);
-			//mRot1 *= mRot2;
-			//mRot2.RotationY(fRadiansY);
-			//mRot1 *= mRot2;
-			//*this = mRot1;
-
-			return bc_matrix4f::rotation_matrix_z(p_radians_z) * bc_matrix4f::rotation_matrix_x(p_radians_x) * bc_matrix4f::rotation_matrix_y(p_radians_y);
+			for (bcINT l_col = 0; l_col < 3; l_col++)
+				m_entry[I(p_row, l_col)] = p_vector[l_col];
 		}
-		
-		bc_matrix4f bc_matrix4f::rotation_matrix_x(bcFLOAT p_radians)
+
+		bc_vector4f bc_matrix4f::get_row(bcINT p_row) const
 		{
-			bc_matrix4f l_ret;
-			l_ret.rotation_x(p_radians);
-			return(l_ret);
+			bc_vector4f l_row;
+			for (bcINT iCol = 0; iCol < 4; iCol++)
+				l_row[iCol] = m_entry[I(p_row, iCol)];
+
+			return(l_row);
 		}
-		
-		bc_matrix4f bc_matrix4f::rotation_matrix_y(bcFLOAT p_radians)
+
+		void bc_matrix4f::set_column(bcINT p_col, const bc_vector4f& p_vector)
 		{
-			bc_matrix4f l_ret;
-			l_ret.rotation_y(p_radians);
-			return(l_ret);
+			for (bcINT l_row = 0; l_row < 4; l_row++)
+				m_entry[I(l_row, p_col)] = p_vector[l_row];
 		}
-		
-		bc_matrix4f bc_matrix4f::rotation_matrix_z(bcFLOAT p_radians)
+
+		bc_vector4f bc_matrix4f::get_column(bcINT p_col) const
 		{
-			bc_matrix4f l_ret;
-			l_ret.rotation_z(p_radians);
-			return(l_ret);
+			bc_vector4f l_col;
+			for (bcINT l_row = 0; l_row < 4; l_row++)
+				l_col[l_row] = m_entry[I(l_row, p_col)];
+
+			return(l_col);
 		}
-		
-		bc_matrix4f bc_matrix4f::scale_matrix(bcFLOAT p_scale)
+
+		bcFLOAT bc_matrix4f::operator() (bcINT p_row, bcINT p_col) const
 		{
-			bc_matrix4f l_ret;
-			l_ret.scale(p_scale);
-			return(l_ret);
+			return(m_entry[I(p_row, p_col)]);
 		}
-		
-		bc_matrix4f bc_matrix4f::scale_matrix(const bc_vector3f& p_scale)
+
+		bcFLOAT& bc_matrix4f::operator() (bcINT p_row, bcINT p_col)
 		{
-			bc_matrix4f l_ret;
-
-			l_ret.m_entry[0] = p_scale.x;
-			l_ret.m_entry[1] = 0.0f;
-			l_ret.m_entry[2] = 0.0f;
-			l_ret.m_entry[3] = 0.0f;
-
-			l_ret.m_entry[4] = 0.0f;
-			l_ret.m_entry[5] = p_scale.y;
-			l_ret.m_entry[6] = 0.0f;
-			l_ret.m_entry[7] = 0.0f;
-
-			l_ret.m_entry[8] = 0.0f;
-			l_ret.m_entry[9] = 0.0f;
-			l_ret.m_entry[10] = p_scale.z;
-			l_ret.m_entry[11] = 0.0f;
-
-			l_ret.m_entry[12] = 0.0f;
-			l_ret.m_entry[13] = 0.0f;
-			l_ret.m_entry[14] = 0.0f;
-			l_ret.m_entry[15] = 1.0f;
-
-			return(l_ret);
+			return(m_entry[I(p_row, p_col)]);
 		}
-		
-		bc_matrix4f bc_matrix4f::scale_matrix_xyz(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z)
-		{
-			bc_matrix4f l_ret;
 
-			l_ret.m_entry[0] = p_x;
-			l_ret.m_entry[1] = 0.0f;
-			l_ret.m_entry[2] = 0.0f;
-			l_ret.m_entry[3] = 0.0f;
-
-			l_ret.m_entry[4] = 0.0f;
-			l_ret.m_entry[5] = p_y;
-			l_ret.m_entry[6] = 0.0f;
-			l_ret.m_entry[7] = 0.0f;
-
-			l_ret.m_entry[8] = 0.0f;
-			l_ret.m_entry[9] = 0.0f;
-			l_ret.m_entry[10] = p_z;
-			l_ret.m_entry[11] = 0.0f;
-
-			l_ret.m_entry[12] = 0.0f;
-			l_ret.m_entry[13] = 0.0f;
-			l_ret.m_entry[14] = 0.0f;
-			l_ret.m_entry[15] = 1.0f;
-
-			return(l_ret);
-		}
-		
-		bc_matrix4f bc_matrix4f::translation_matrix(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z)
-		{
-			bc_matrix4f l_ret;
-			l_ret.translate(p_x, p_y, p_z);
-			return(l_ret);
-		}
-		
-		bc_matrix4f bc_matrix4f::look_at_lh_matrix(const bc_vector3f& p_eye, const bc_vector3f& p_at, const bc_vector3f& p_up)
-		{
-			// This method is based on the method of the same name from the D3DX library.
-
-			bc_matrix4f l_ret;
-
-			bc_vector3f l_zaxis = p_at - p_eye;
-			l_zaxis.normalize();
-
-			bc_vector3f l_xaxis = p_up.cross(l_zaxis);
-			l_xaxis.normalize();
-
-			bc_vector3f l_yaxis = l_zaxis.cross(l_xaxis);
-
-			l_ret.m_entry[0] = l_xaxis.x;
-			l_ret.m_entry[1] = l_yaxis.x;
-			l_ret.m_entry[2] = l_zaxis.x;
-			l_ret.m_entry[3] = 0.0f;
-
-			l_ret.m_entry[4] = l_xaxis.y;
-			l_ret.m_entry[5] = l_yaxis.y;
-			l_ret.m_entry[6] = l_zaxis.y;
-			l_ret.m_entry[7] = 0.0f;
-
-			l_ret.m_entry[8] = l_xaxis.z;
-			l_ret.m_entry[9] = l_yaxis.z;
-			l_ret.m_entry[10] = l_zaxis.z;
-			l_ret.m_entry[11] = 0.0f;
-
-			l_ret.m_entry[12] = -(l_xaxis.dot(p_eye));
-			l_ret.m_entry[13] = -(l_yaxis.dot(p_eye));
-			l_ret.m_entry[14] = -(l_zaxis.dot(p_eye));
-			l_ret.m_entry[15] = 1.0f;
-
-			return(l_ret);
-		}
-		
-		bc_matrix4f bc_matrix4f::perspective_fov_lh_matrix(bcFLOAT p_fovy, bcFLOAT p_aspect, bcFLOAT p_zn, bcFLOAT p_zf)
-		{
-			// This method is based on the method of the same name from the D3DX library.
-
-			bc_matrix4f l_ret;
-
-			bcFLOAT l_tan_y = tan(p_fovy / 2.0f);
-			if (0.0f == l_tan_y) l_tan_y = 0.001f;
-			bcFLOAT l_scale = 1.0f / l_tan_y;
-
-			if (0.0f == p_aspect) p_aspect = 0.001f;
-			bcFLOAT l_x_scale = l_scale / p_aspect;
-
-			l_ret.m_entry[0] = l_x_scale;
-			l_ret.m_entry[1] = 0.0f;
-			l_ret.m_entry[2] = 0.0f;
-			l_ret.m_entry[3] = 0.0f;
-
-			l_ret.m_entry[4] = 0.0f;
-			l_ret.m_entry[5] = l_scale;
-			l_ret.m_entry[6] = 0.0f;
-			l_ret.m_entry[7] = 0.0f;
-
-			l_ret.m_entry[8] = 0.0f;
-			l_ret.m_entry[9] = 0.0f;
-			l_ret.m_entry[10] = p_zf / (p_zf - p_zn);
-			l_ret.m_entry[11] = 1.0f;
-
-			l_ret.m_entry[12] = 0.0f;
-			l_ret.m_entry[13] = 0.0f;
-			l_ret.m_entry[14] = -p_zn*p_zf / (p_zf - p_zn);
-			l_ret.m_entry[15] = 0.0f;
-
-			return(l_ret);
-		}
-		
-		bc_matrix4f bc_matrix4f::orthographic_lh_matrix(bcFLOAT p_zn, bcFLOAT p_zf, bcFLOAT p_width, bcFLOAT p_height)
-		{
-			// This method is based on the method of the same name from the D3DX library.
-
-			bc_matrix4f l_ret;
-
-
-			if (p_zn == p_zf) p_zf = p_zn + 0.1f;
-			if (p_width <= 0.0f) p_width = 1.0f;
-			if (p_height <= 0.0f) p_height = 1.0f;
-
-			l_ret.m_entry[0] = 2.0f / p_width;
-			l_ret.m_entry[1] = 0.0f;
-			l_ret.m_entry[2] = 0.0f;
-			l_ret.m_entry[3] = 0.0f;
-
-			l_ret.m_entry[4] = 0.0f;
-			l_ret.m_entry[5] = 2.0f / p_height;
-			l_ret.m_entry[6] = 0.0f;
-			l_ret.m_entry[7] = 0.0f;
-
-			l_ret.m_entry[8] = 0.0f;
-			l_ret.m_entry[9] = 0.0f;
-			l_ret.m_entry[10] = 1.0f / (p_zf - p_zn);
-			l_ret.m_entry[11] = 0.0f;
-
-			l_ret.m_entry[12] = 0.0f;
-			l_ret.m_entry[13] = 0.0f;
-			l_ret.m_entry[14] = p_zn / (p_zn - p_zf);
-			l_ret.m_entry[15] = 1.0f;
-
-			return(l_ret);
-		}
-		
 		bcFLOAT bc_matrix4f::operator[] (bcINT p_pos) const
 		{
 			return(m_entry[p_pos]);
@@ -519,16 +449,6 @@ namespace black_cat
 		bcFLOAT& bc_matrix4f::operator[] (bcINT p_pos)
 		{
 			return(m_entry[p_pos]);
-		}
-		
-		bcFLOAT bc_matrix4f::operator() (bcINT p_row, bcINT p_col) const
-		{
-			return(m_entry[I(p_row, p_col)]);
-		}
-		
-		bcFLOAT& bc_matrix4f::operator() (bcINT p_row, bcINT p_col)
-		{
-			return(m_entry[I(p_row, p_col)]);
 		}
 		
 		bool bc_matrix4f::operator== (const bc_matrix4f& p_other) const
@@ -680,82 +600,6 @@ namespace black_cat
 			return(*this);
 		}
 		
-		void bc_matrix4f::make_zero()
-		{
-			std::memset(m_entry, 0, 4 * 4 * sizeof(bcFLOAT));
-		}
-		
-		void bc_matrix4f::make_identity()
-		{
-			for (bcINT l_row = 0; l_row < 4; l_row++)
-			{
-				for (bcINT l_col = 0; l_col < 4; l_col++)
-				{
-					if (l_row == l_col)
-						m_entry[I(l_row, l_col)] = 1.0f;
-					else
-						m_entry[I(l_row, l_col)] = 0.0f;
-				}
-			}
-		}
-		
-		void bc_matrix4f::make_transpose()
-		{
-			bc_matrix4f l_transpose;
-
-			for (bcINT l_row = 0; l_row < 4; l_row++)
-			{
-				for (bcINT l_col = 0; l_col < 4; l_col++)
-					l_transpose.m_entry[I(l_row, l_col)] = m_entry[I(l_col, l_row)];
-			}
-
-			std::memcpy(m_entry, l_transpose.m_entry, 4 * 4 * sizeof(bcFLOAT));
-		}
-		
-		bc_matrix4f bc_matrix4f::zero()
-		{
-			bc_matrix4f l_return = bc_matrix4f(true);
-
-			return(l_return);
-		}
-		
-		bc_matrix4f bc_matrix4f::identity()
-		{
-			bc_matrix4f l_ident;
-
-			for (bcINT l_row = 0; l_row < 4; l_row++)
-			{
-				for (bcINT l_col = 0; l_col < 4; l_col++)
-				{
-					if (l_row == l_col)
-						l_ident.m_entry[I(l_row, l_col)] = 1.0f;
-					else
-						l_ident.m_entry[I(l_row, l_col)] = 0.0f;
-				}
-			}
-
-			return(l_ident);
-		}
-		
-		bc_matrix4f bc_matrix4f::transpose() const
-		{
-			bc_matrix4f l_transpose;
-
-			for (bcINT l_row = 0; l_row < 4; l_row++)
-			{
-				for (bcINT l_col = 0; l_col < 4; l_col++)
-					l_transpose.m_entry[I(l_row, l_col)] = m_entry[I(l_col, l_row)];
-			}
-
-			return(l_transpose);
-
-		}
-		
-		bcINT bc_matrix4f::I(bcINT iRow, bcINT iCol)
-		{
-			return(4 * iRow + iCol);
-		}
-		
 		bc_vector4f bc_matrix4f::operator* (const bc_vector4f& Vector) const
 		{
 			bc_vector4f l_prod;
@@ -767,41 +611,342 @@ namespace black_cat
 			}
 			return(l_prod);
 		}
-		
-		void bc_matrix4f::set_row(bcINT p_row, const bc_vector4f& p_vector)
-		{
-			for (bcINT l_col = 0; l_col < 4; l_col++)
-				m_entry[I(p_row, l_col)] = p_vector[l_col];
-		}
-		
-		void bc_matrix4f::set_row(bcINT p_row, const bc_vector3f& p_vector)
-		{
-			for (bcINT l_col = 0; l_col < 3; l_col++)
-				m_entry[I(p_row, l_col)] = p_vector[l_col];
-		}
-		
-		bc_vector4f bc_matrix4f::get_row(bcINT p_row) const
-		{
-			bc_vector4f l_row;
-			for (bcINT iCol = 0; iCol < 4; iCol++)
-				l_row[iCol] = m_entry[I(p_row, iCol)];
 
-			return(l_row);
-		}
-		
-		void bc_matrix4f::set_column(bcINT p_col, const bc_vector4f& p_vector)
+		bc_matrix4f bc_matrix4f::rotation_matrix_xyz_lh(bcFLOAT p_radians_x, bcFLOAT p_radians_y, bcFLOAT p_radians_z)
 		{
-			for (bcINT l_row = 0; l_row < 4; l_row++)
-				m_entry[I(l_row, p_col)] = p_vector[l_row];
+			return bc_matrix4f::rotation_matrix_z_lh(p_radians_z) * bc_matrix4f::rotation_matrix_x_lh(p_radians_x) * bc_matrix4f::rotation_matrix_y_lh(p_radians_y);
 		}
-		
-		bc_vector4f bc_matrix4f::get_column(bcINT p_col) const
-		{
-			bc_vector4f l_col;
-			for (bcINT l_row = 0; l_row < 4; l_row++)
-				l_col[l_row] = m_entry[I(l_row, p_col)];
 
-			return(l_col);
+		bc_matrix4f bc_matrix4f::rotation_matrix_x_lh(bcFLOAT p_radians)
+		{
+			bc_matrix4f l_ret;
+			l_ret.rotation_x_lh(p_radians);
+
+			return l_ret;
+		}
+
+		bc_matrix4f bc_matrix4f::rotation_matrix_y_lh(bcFLOAT p_radians)
+		{
+			bc_matrix4f l_ret;
+			l_ret.rotation_y_lh(p_radians);
+
+			return l_ret;
+		}
+
+		bc_matrix4f bc_matrix4f::rotation_matrix_z_lh(bcFLOAT p_radians)
+		{
+			bc_matrix4f l_ret;
+			l_ret.rotation_z_lh(p_radians);
+
+			return l_ret;
+		}
+
+		bc_matrix4f bc_matrix4f::rotation_matrix_xyz_rh(bcFLOAT p_radians_x, bcFLOAT p_radians_y, bcFLOAT p_radians_z)
+		{
+			return bc_matrix4f::rotation_matrix_z_rh(p_radians_z) * bc_matrix4f::rotation_matrix_x_rh(p_radians_x) * bc_matrix4f::rotation_matrix_y_rh(p_radians_y);
+		}
+
+		bc_matrix4f bc_matrix4f::rotation_matrix_x_rh(bcFLOAT p_radians)
+		{
+			bc_matrix4f l_ret;
+			l_ret.rotation_x_rh(p_radians);
+
+			return l_ret;
+		}
+
+		bc_matrix4f bc_matrix4f::rotation_matrix_y_rh(bcFLOAT p_radians)
+		{
+			bc_matrix4f l_ret;
+			l_ret.rotation_y_rh(p_radians);
+
+			return l_ret;
+		}
+
+		bc_matrix4f bc_matrix4f::rotation_matrix_z_rh(bcFLOAT p_radians)
+		{
+			bc_matrix4f l_ret;
+			l_ret.rotation_z_rh(p_radians);
+
+			return l_ret;
+		}
+
+		bc_matrix4f bc_matrix4f::scale_matrix(bcFLOAT p_scale)
+		{
+			bc_matrix4f l_ret;
+			l_ret.scale(p_scale);
+			return(l_ret);
+		}
+
+		bc_matrix4f bc_matrix4f::scale_matrix(const bc_vector3f& p_scale)
+		{
+			bc_matrix4f l_ret;
+
+			l_ret.m_entry[0] = p_scale.x;
+			l_ret.m_entry[1] = 0.0f;
+			l_ret.m_entry[2] = 0.0f;
+			l_ret.m_entry[3] = 0.0f;
+
+			l_ret.m_entry[4] = 0.0f;
+			l_ret.m_entry[5] = p_scale.y;
+			l_ret.m_entry[6] = 0.0f;
+			l_ret.m_entry[7] = 0.0f;
+
+			l_ret.m_entry[8] = 0.0f;
+			l_ret.m_entry[9] = 0.0f;
+			l_ret.m_entry[10] = p_scale.z;
+			l_ret.m_entry[11] = 0.0f;
+
+			l_ret.m_entry[12] = 0.0f;
+			l_ret.m_entry[13] = 0.0f;
+			l_ret.m_entry[14] = 0.0f;
+			l_ret.m_entry[15] = 1.0f;
+
+			return(l_ret);
+		}
+
+		bc_matrix4f bc_matrix4f::scale_matrix_xyz(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z)
+		{
+			bc_matrix4f l_ret;
+
+			l_ret.m_entry[0] = p_x;
+			l_ret.m_entry[1] = 0.0f;
+			l_ret.m_entry[2] = 0.0f;
+			l_ret.m_entry[3] = 0.0f;
+
+			l_ret.m_entry[4] = 0.0f;
+			l_ret.m_entry[5] = p_y;
+			l_ret.m_entry[6] = 0.0f;
+			l_ret.m_entry[7] = 0.0f;
+
+			l_ret.m_entry[8] = 0.0f;
+			l_ret.m_entry[9] = 0.0f;
+			l_ret.m_entry[10] = p_z;
+			l_ret.m_entry[11] = 0.0f;
+
+			l_ret.m_entry[12] = 0.0f;
+			l_ret.m_entry[13] = 0.0f;
+			l_ret.m_entry[14] = 0.0f;
+			l_ret.m_entry[15] = 1.0f;
+
+			return(l_ret);
+		}
+
+		bc_matrix4f bc_matrix4f::translation_matrix(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z)
+		{
+			bc_matrix4f l_ret;
+			l_ret.translate(p_x, p_y, p_z);
+			return(l_ret);
+		}
+
+		bc_matrix4f bc_matrix4f::look_at_matrix_lh(const bc_vector3f& p_eye, const bc_vector3f& p_at, const bc_vector3f& p_up)
+		{
+			// This method is based on the method of the same name from the D3DX library.
+
+			bc_matrix4f l_ret;
+
+			bc_vector3f l_zaxis = p_at - p_eye;
+			l_zaxis.normalize();
+
+			bc_vector3f l_xaxis = p_up.cross(l_zaxis);
+			l_xaxis.normalize();
+
+			bc_vector3f l_yaxis = l_zaxis.cross(l_xaxis);
+
+			l_ret.m_entry[0] = l_xaxis.x;
+			l_ret.m_entry[1] = l_yaxis.x;
+			l_ret.m_entry[2] = l_zaxis.x;
+			l_ret.m_entry[3] = 0.0f;
+
+			l_ret.m_entry[4] = l_xaxis.y;
+			l_ret.m_entry[5] = l_yaxis.y;
+			l_ret.m_entry[6] = l_zaxis.y;
+			l_ret.m_entry[7] = 0.0f;
+
+			l_ret.m_entry[8] = l_xaxis.z;
+			l_ret.m_entry[9] = l_yaxis.z;
+			l_ret.m_entry[10] = l_zaxis.z;
+			l_ret.m_entry[11] = 0.0f;
+
+			l_ret.m_entry[12] = -l_xaxis.dot(p_eye);
+			l_ret.m_entry[13] = -l_yaxis.dot(p_eye);
+			l_ret.m_entry[14] = -l_zaxis.dot(p_eye);
+			l_ret.m_entry[15] = 1.0f;
+
+			return l_ret;
+		}
+
+		bc_matrix4f bc_matrix4f::perspective_fov_matrix_lh(bcFLOAT p_fovy, bcFLOAT p_aspect, bcFLOAT p_zn, bcFLOAT p_zf)
+		{
+			// This method is based on the method of the same name from the D3DX library.
+
+			bc_matrix4f l_ret;
+
+			bcFLOAT l_tan_y = tan(p_fovy / 2.0f);
+			if (0.0f == l_tan_y) l_tan_y = 0.001f;
+			bcFLOAT l_y_scale = 1.0f / l_tan_y;
+
+			if (0.0f == p_aspect) p_aspect = 0.001f;
+			bcFLOAT l_x_scale = l_y_scale / p_aspect;
+
+			l_ret.m_entry[0] = l_x_scale;
+			l_ret.m_entry[1] = 0.0f;
+			l_ret.m_entry[2] = 0.0f;
+			l_ret.m_entry[3] = 0.0f;
+
+			l_ret.m_entry[4] = 0.0f;
+			l_ret.m_entry[5] = l_y_scale;
+			l_ret.m_entry[6] = 0.0f;
+			l_ret.m_entry[7] = 0.0f;
+
+			l_ret.m_entry[8] = 0.0f;
+			l_ret.m_entry[9] = 0.0f;
+			l_ret.m_entry[10] = p_zf / (p_zf - p_zn);
+			l_ret.m_entry[11] = 1.0f;
+
+			l_ret.m_entry[12] = 0.0f;
+			l_ret.m_entry[13] = 0.0f;
+			l_ret.m_entry[14] = -p_zn*p_zf / (p_zf - p_zn);
+			l_ret.m_entry[15] = 0.0f;
+
+			return l_ret;
+		}
+
+		bc_matrix4f bc_matrix4f::orthographic_matrix_lh(bcFLOAT p_zn, bcFLOAT p_zf, bcFLOAT p_width, bcFLOAT p_height)
+		{
+			// This method is based on the method of the same name from the D3DX library.
+
+			bc_matrix4f l_ret;
+
+			if (p_zn == p_zf) p_zf = p_zn + 0.1f;
+			if (p_width <= 0.0f) p_width = 1.0f;
+			if (p_height <= 0.0f) p_height = 1.0f;
+
+			l_ret.m_entry[0] = 2.0f / p_width;
+			l_ret.m_entry[1] = 0.0f;
+			l_ret.m_entry[2] = 0.0f;
+			l_ret.m_entry[3] = 0.0f;
+
+			l_ret.m_entry[4] = 0.0f;
+			l_ret.m_entry[5] = 2.0f / p_height;
+			l_ret.m_entry[6] = 0.0f;
+			l_ret.m_entry[7] = 0.0f;
+
+			l_ret.m_entry[8] = 0.0f;
+			l_ret.m_entry[9] = 0.0f;
+			l_ret.m_entry[10] = 1.0f / (p_zf - p_zn);
+			l_ret.m_entry[11] = 0.0f;
+
+			l_ret.m_entry[12] = 0.0f;
+			l_ret.m_entry[13] = 0.0f;
+			l_ret.m_entry[14] = -p_zn / (p_zf - p_zn);
+			l_ret.m_entry[15] = 1.0f;
+
+			return l_ret;
+		}
+
+		bc_matrix4f bc_matrix4f::look_at_matrix_rh(const bc_vector3f& p_eye, const bc_vector3f& p_at, const bc_vector3f& p_up)
+		{
+			bc_matrix4f l_ret;
+
+			bc_vector3f l_zaxis = p_eye - p_at;
+			l_zaxis.normalize();
+
+			bc_vector3f l_xaxis = p_up.cross(l_zaxis);
+			l_xaxis.normalize();
+
+			bc_vector3f l_yaxis = l_zaxis.cross(l_xaxis);
+
+			l_ret.m_entry[0] = l_xaxis.x;
+			l_ret.m_entry[1] = l_yaxis.x;
+			l_ret.m_entry[2] = l_zaxis.x;
+			l_ret.m_entry[3] = 0.0f;
+
+			l_ret.m_entry[4] = l_xaxis.y;
+			l_ret.m_entry[5] = l_yaxis.y;
+			l_ret.m_entry[6] = l_zaxis.y;
+			l_ret.m_entry[7] = 0.0f;
+
+			l_ret.m_entry[8] = l_xaxis.z;
+			l_ret.m_entry[9] = l_yaxis.z;
+			l_ret.m_entry[10] = l_zaxis.z;
+			l_ret.m_entry[11] = 0.0f;
+
+			l_ret.m_entry[12] = l_xaxis.dot(p_eye);
+			l_ret.m_entry[13] = l_yaxis.dot(p_eye);
+			l_ret.m_entry[14] = l_zaxis.dot(p_eye);
+			l_ret.m_entry[15] = 1.0f;
+
+			return l_ret;
+		}
+
+		bc_matrix4f bc_matrix4f::perspective_fov_matrix_rh(bcFLOAT p_fovy, bcFLOAT p_aspect, bcFLOAT p_zn, bcFLOAT p_zf)
+		{
+			bc_matrix4f l_ret;
+
+			bcFLOAT l_tan_y = tan(p_fovy / 2.0f);
+			if (0.0f == l_tan_y) l_tan_y = 0.001f;
+			bcFLOAT l_y_scale = 1.0f / l_tan_y;
+
+			if (0.0f == p_aspect) p_aspect = 0.001f;
+			bcFLOAT l_x_scale = l_y_scale / p_aspect;
+
+			l_ret.m_entry[0] = l_x_scale;
+			l_ret.m_entry[1] = 0.0f;
+			l_ret.m_entry[2] = 0.0f;
+			l_ret.m_entry[3] = 0.0f;
+
+			l_ret.m_entry[4] = 0.0f;
+			l_ret.m_entry[5] = l_y_scale;
+			l_ret.m_entry[6] = 0.0f;
+			l_ret.m_entry[7] = 0.0f;
+
+			l_ret.m_entry[8] = 0.0f;
+			l_ret.m_entry[9] = 0.0f;
+			l_ret.m_entry[10] = p_zf / (p_zf - p_zn);
+			l_ret.m_entry[11] = -1.0f;
+
+			l_ret.m_entry[12] = 0.0f;
+			l_ret.m_entry[13] = 0.0f;
+			l_ret.m_entry[14] = p_zn*p_zf / (p_zf - p_zn);
+			l_ret.m_entry[15] = 0.0f;
+
+			return l_ret;
+		}
+
+		bc_matrix4f bc_matrix4f::orthographic_matrix_rh(bcFLOAT p_zn, bcFLOAT p_zf, bcFLOAT p_width, bcFLOAT p_height)
+		{
+			bc_matrix4f l_ret;
+
+			if (p_zn == p_zf) p_zf = p_zn + 0.1f;
+			if (p_width <= 0.0f) p_width = 1.0f;
+			if (p_height <= 0.0f) p_height = 1.0f;
+
+			l_ret.m_entry[0] = 2.0f / p_width;
+			l_ret.m_entry[1] = 0.0f;
+			l_ret.m_entry[2] = 0.0f;
+			l_ret.m_entry[3] = 0.0f;
+
+			l_ret.m_entry[4] = 0.0f;
+			l_ret.m_entry[5] = 2.0f / p_height;
+			l_ret.m_entry[6] = 0.0f;
+			l_ret.m_entry[7] = 0.0f;
+
+			l_ret.m_entry[8] = 0.0f;
+			l_ret.m_entry[9] = 0.0f;
+			l_ret.m_entry[10] = 1.0f / (p_zn - p_zf);
+			l_ret.m_entry[11] = 0.0f;
+
+			l_ret.m_entry[12] = 0.0f;
+			l_ret.m_entry[13] = 0.0f;
+			l_ret.m_entry[14] = p_zn / (p_zn - p_zf);
+			l_ret.m_entry[15] = 1.0f;
+
+			return l_ret;
+		}
+
+		bcINT bc_matrix4f::I(bcINT iRow, bcINT iCol)
+		{
+			return(4 * iRow + iCol);
 		}
 	}
 }

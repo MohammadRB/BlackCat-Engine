@@ -36,6 +36,19 @@ namespace black_cat
 
 		enum class bc_actor_type;
 
+		struct bc_updated_actor
+		{
+		public:
+			bc_updated_actor(bc_actor p_actor, const bc_transform& p_transform)
+				: m_actor(p_actor),
+				m_global_pose(p_transform)
+			{
+			}
+
+			bc_actor m_actor;
+			bc_transform m_global_pose;
+		};
+
 		template< bc_physics_api TApi >
 		struct bc_platform_scene_pack
 		{
@@ -140,7 +153,7 @@ namespace black_cat
 			 * This function run simulation async and return immediatly.
 			 * \param p_elapsed_time Amount of time to advance simulation by.
 			 */
-			void update(core_platform::bc_clock::small_delta_time p_elapsed_time);
+			void update(core_platform::bc_clock::update_param p_elapsed_time);
 
 			/**
 			 * \brief Check if simulation has been done.
@@ -175,6 +188,12 @@ namespace black_cat
 			 * \return The render buffer.
 			 */
 			bc_scene_debug get_debug_buffer() noexcept;
+
+			/**
+			 * \brief Get updated actors through last update call
+			 * \return 
+			 */
+			core::bc_vector_frame<bc_updated_actor> get_active_actors() noexcept;
 
 			/**
 			 * \brief Performs a raycast against objects in the scene.
@@ -248,9 +267,12 @@ namespace black_cat
 		private:
 			bc_platform_scene();
 
+			explicit bc_platform_scene(platform_pack& p_pack);
+
 			platform_pack m_pack;
 		};
 
 		using bc_scene = bc_platform_scene< g_current_physics_api >;
+		using bc_scene_ref = bc_physics_ref<bc_scene>;
 	}
 }

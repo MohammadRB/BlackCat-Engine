@@ -18,6 +18,7 @@ namespace black_cat
 
 		bc_scene_graph::~bc_scene_graph()
 		{
+			clear();
 		}
 
 		void bc_scene_graph::add_object(bc_actor p_actor)
@@ -49,7 +50,7 @@ namespace black_cat
 			return l_result;
 		}
 
-		void bc_scene_graph::update(const bc_input_system& p_input_system, core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_scene_graph::update(core_platform::bc_clock::update_param p_clock_update_param)
 		{
 		}
 

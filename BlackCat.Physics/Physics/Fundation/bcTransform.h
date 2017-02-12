@@ -58,6 +58,12 @@ namespace black_cat
 
 			bool is_valid() const noexcept;
 
+			core::bc_vector3f get_position() const noexcept;
+
+			core::bc_matrix3f get_matrix3() const noexcept;
+
+			core::bc_matrix4f get_matrix4() const noexcept;
+
 			static bc_platform_transform identity() noexcept;
 
 			platform_pack& get_platform_pack()

@@ -264,6 +264,9 @@
     <ClInclude Include="Core\Math\bcVector4f.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Math\bcCoordinate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\CorePCH.cpp">

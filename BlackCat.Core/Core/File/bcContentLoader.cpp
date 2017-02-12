@@ -28,7 +28,7 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_base_content_loader::content_file_open_successed(bc_content_loader_context& p_context)
+		void bc_base_content_loader::content_file_open_successed(bc_content_loader_context& p_context) const
 		{
 			auto l_file_size = p_context.m_file->length();
 
@@ -37,17 +37,20 @@ namespace black_cat
 			p_context.m_file->read(p_context.m_data.data(), l_file_size);
 		}
 
-		void bc_base_content_loader::content_file_open_failed(bc_content_loader_context& p_context)
+		void bc_base_content_loader::content_file_open_failed(bc_content_loader_context& p_context) const
 		{
-			throw bc_io_exception("Cann't open content file");
+			auto l_file_name = bc_to_exclusive_string(p_context.m_file_path.c_str());
+			auto l_error_msg = bc_string_frame("Cannot open content file: ") + l_file_name.c_str();
+
+			throw bc_io_exception(l_error_msg.c_str());
 		}
 
-		void bc_base_content_loader::content_offline_saving(bc_content_loader_context& p_context)
+		void bc_base_content_loader::content_offline_saving(bc_content_loader_context& p_context) const
 		{
 			p_context.m_file->write(p_context.m_data.data(), p_context.m_data.size());
 		}
 
-		void bc_base_content_loader::content_offline_file_open_successed(bc_content_loader_context& p_context)
+		void bc_base_content_loader::content_offline_file_open_successed(bc_content_loader_context& p_context) const
 		{
 			auto l_file_size = p_context.m_file->length();
 
@@ -56,7 +59,7 @@ namespace black_cat
 			p_context.m_file->read(p_context.m_data.data(), l_file_size);
 		}
 
-		bc_content_loader_result bc_base_content_loader::finish(bc_content_loader_context& p_context)
+		bc_content_loader_result bc_base_content_loader::finish(bc_content_loader_context& p_context) const
 		{
 			if (p_context.m_result != nullptr)
 			{
@@ -69,7 +72,7 @@ namespace black_cat
 			return bc_content_loader_result(bc_io_exception("Error in loading content"));
 		}
 
-		void bc_base_content_loader::cleanup(bc_content_loader_context& p_context)
+		void bc_base_content_loader::cleanup(bc_content_loader_context& p_context) const
 		{
 			p_context.m_file.reset();
 			p_context.m_parameter.reset();

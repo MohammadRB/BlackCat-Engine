@@ -145,6 +145,7 @@ copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(Platform)_$(configuration)
     <ClInclude Include="BlackCat\Application\bcBaseRenderApplication.h" />
     <ClInclude Include="BlackCat\bcException.h" />
     <ClInclude Include="BlackCat\bcExport.h" />
+    <ClInclude Include="BlackCat\bcUtility.h" />
     <ClInclude Include="BlackCat\BlackCatPCH.h" />
     <ClInclude Include="BlackCat\Loader\bcComputeShaderLoader.h" />
     <ClInclude Include="BlackCat\Loader\bcDomainShaderLoader.h" />
@@ -152,6 +153,7 @@ copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(Platform)_$(configuration)
     <ClInclude Include="BlackCat\Loader\bcHeightMapLoaderDx11.h" />
     <ClInclude Include="BlackCat\Loader\bcHullShaderLoader.h" />
     <ClInclude Include="BlackCat\Loader\bcMeshLoader.h" />
+    <ClInclude Include="BlackCat\Loader\bcMeshPhysicsLoader.h" />
     <ClInclude Include="BlackCat\Loader\bcPixelShaderLoader.h" />
     <ClInclude Include="BlackCat\Loader\bcTextureLoader.h" />
     <ClInclude Include="BlackCat\Loader\bcVertexShaderLoader.h" />
@@ -304,6 +306,7 @@ copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(Platform)_$(configuration)
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BlackCat\bcUtility.cpp" />
     <ClCompile Include="BlackCat\BlackCatPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -314,6 +317,7 @@ copy ..\$(configuration)\BlackCat.lib ..\BC_SDK\Lib\$(Platform)_$(configuration)
     <ClCompile Include="BlackCat\Loader\bcHeightMapLoaderDx11.cpp" />
     <ClCompile Include="BlackCat\Loader\bcHullShaderLoader.cpp" />
     <ClCompile Include="BlackCat\Loader\bcMeshLoader.cpp" />
+    <ClCompile Include="BlackCat\Loader\bcMeshPhysicsLoader.cpp" />
     <ClCompile Include="BlackCat\Loader\bcPixelShaderLoader.cpp" />
     <ClCompile Include="BlackCat\Loader\bcTextureLoader.cpp" />
     <ClCompile Include="BlackCat\Loader\bcVertexShaderLoader.cpp" />

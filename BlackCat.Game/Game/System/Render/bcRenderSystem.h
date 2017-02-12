@@ -101,11 +101,6 @@ namespace black_cat
 				return m_device;
 			}
 
-			bc_scene_graph& get_scene_graph()
-			{
-				return m_scene_graph;
-			}
-
 			/**
 			 * \brief Thread safe function
 			 * \param p_vertex_shader_name 
@@ -254,7 +249,7 @@ namespace black_cat
 
 			void update(const update_param& p_update_params);
 
-			void render();
+			void render(bc_scene& p_scene);
 
 			void add_render_task(bc_irender_task& p_task);
 
@@ -281,8 +276,6 @@ namespace black_cat
 
 			graphic::bc_constant_buffer_parameter m_global_cbuffer_parameter;
 			graphic::bc_constant_buffer_parameter m_perobject_cbuffer_parameter;
-
-			bc_scene_graph m_scene_graph;
 		};
 	}
 }

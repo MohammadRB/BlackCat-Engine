@@ -50,7 +50,7 @@ public:
     {
         if (bcBlackCatEditorClass->objectName().isEmpty())
             bcBlackCatEditorClass->setObjectName(QStringLiteral("bcBlackCatEditorClass"));
-        bcBlackCatEditorClass->resize(1200, 750);
+        bcBlackCatEditorClass->resize(1399, 809);
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -142,7 +142,7 @@ public:
         bcBlackCatEditorClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(bcBlackCatEditorClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1200, 21));
+        menuBar->setGeometry(QRect(0, 0, 1399, 26));
         bcBlackCatEditorClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(bcBlackCatEditorClass);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));

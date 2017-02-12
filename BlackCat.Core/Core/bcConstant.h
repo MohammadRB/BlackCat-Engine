@@ -88,7 +88,7 @@ namespace black_cat
 		BC_PARAMETER(device, "device");
 		BC_PARAMETER(shader_function, "function");
 		BC_PARAMETER(mesh, "mesh");
-		BC_PARAMETER(mesh_part, "mesh_part");
+		BC_PARAMETER(sub_mesh, "sub_mesh");
 		BC_PARAMETER(child_actor, "childs");
 		BC_PARAMETER(heightmap, "heightmap");
 

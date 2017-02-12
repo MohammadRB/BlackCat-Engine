@@ -97,7 +97,7 @@ namespace black_cat
 
 			auto l_px_vec3 = l_px_height_field->getTriangleNormal(p_triangle_index);
 
-			return core::bc_vector3f(l_px_vec3.x, l_px_vec3.y, l_px_vec3.z);
+			return bc_to_game_hand(l_px_vec3);
 		}
 
 		template<>
@@ -108,13 +108,16 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_height_field& >(*this)).get_platform_pack().m_px_object
 			);
+			physx::PxHeightFieldSample* l_px_samples = static_cast< physx::PxHeightFieldSample* >
+			(
+				bcAlloc(sizeof(physx::PxHeightFieldSample) * (p_desc.m_num_row * p_desc.m_num_column), core::bc_alloc_type::frame)
+			);
 
-			physx::PxHeightFieldDesc l_px_height_desc = bc_convert_to_px_height_field(p_desc);
+			physx::PxHeightFieldDesc l_px_height_desc = bc_convert_to_px_height_field(p_desc, l_px_samples);
 			bool l_result = l_px_height_field->modifySamples(p_row, p_column, l_px_height_desc);
 
 			// TODO Is it required to free samples
-			void* l_data = const_cast<void*>(l_px_height_desc.samples.data);
-			bcFree(l_data);
+			bcFree(l_px_samples);
 
 			return l_result;
 		}

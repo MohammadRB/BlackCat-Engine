@@ -171,7 +171,7 @@ namespace black_cat
 			{
 				if(l_component.is_set())
 				{
-					const bc_actor& l_actor = p_manager->_component_get_actor< TComponent >(l_component.get());
+					bc_actor l_actor = p_manager->component_get_actor< TComponent >(l_component.get());
 					
 					l_component->update(l_actor, p_clock_update_param);
 				}

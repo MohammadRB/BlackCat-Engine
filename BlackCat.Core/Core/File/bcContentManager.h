@@ -177,7 +177,7 @@ namespace black_cat
 		template< class TContent >
 		bc_content_ptr< TContent > bc_content_manager::load(const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter)
 		{
-			return load<TContent>(bc_alloc_type::unknown_movale, p_file, p_parameter);
+			return load<TContent>(bc_alloc_type::unknown_movale, p_file, std::move(p_parameter));
 		}
 
 		template< class TContent >
@@ -195,20 +195,18 @@ namespace black_cat
 
 			{
 				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > m_guard(m_contents_mutex);
-				{
-					auto l_content_ite = m_contents.find(l_hash);
+				auto l_content_ite = m_contents.find(l_hash);
 
-					if (l_content_ite != m_contents.end()) // Content has alreay loaded
-					{
-						return bc_content_ptr< TContent >(l_content_ite->second.get(), _bc_content_ptr_deleter(this));
-					}
+				if (l_content_ite != m_contents.end()) // Content has alreay loaded
+				{
+					return bc_content_ptr< TContent >(l_content_ite->second.get(), _bc_content_ptr_deleter(this));
 				}
 			}
 
 			_loader_wrapper< TContent >* l_loader_wrapper = static_cast< _loader_wrapper< TContent >* >
-				(
-					bc_service_manager::get().get_service< _content_wrapper< TContent > >()
-				);
+			(
+				bc_get_service< _content_wrapper< TContent > >()
+			);
 
 			if (l_loader_wrapper == nullptr)
 			{
@@ -242,7 +240,7 @@ namespace black_cat
 					{
 						return load< TContent >(p_alloc_type, p_file, p_parameter);
 					},
-					bc_task_creation_option::fairness
+					bc_task_creation_option::policy_fairness
 				);
 
 			return l_task;
@@ -280,7 +278,10 @@ namespace black_cat
 						l_context.m_file.reset(bc_stream(std::move(l_file_stream)));
 						p_loader->content_file_open_failed(l_context);
 						
-						throw bc_io_exception("error in opening content file");
+						auto l_file_name = bc_to_exclusive_string(l_context.m_file_path.c_str());
+						auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
+
+						throw bc_io_exception(l_error_msg.c_str());
 					}
 
 					l_context.m_file.reset(bc_stream(std::move(l_file_stream)));
@@ -297,7 +298,10 @@ namespace black_cat
 						l_context.m_file.reset(bc_stream(std::move(l_offline_file_stream)));
 						p_loader->content_file_open_failed(l_context);
 						
-						throw bc_io_exception("error in opening content file");
+						auto l_file_name = bc_to_exclusive_string(l_context.m_file_path.c_str());
+						auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
+
+						throw bc_io_exception(l_error_msg.c_str());
 					}
 
 					try
@@ -325,7 +329,10 @@ namespace black_cat
 					l_context.m_file.reset(bc_stream(std::move(l_offline_file_stream)));
 					p_loader->content_file_open_failed(l_context);
 					
-					throw bc_io_exception("error in opening content file");
+					auto l_file_name = bc_to_exclusive_string(l_context.m_file_path.c_str());
+					auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
+
+					throw bc_io_exception(l_error_msg.c_str());
 				}
 
 				l_context.m_file.reset(bc_stream(std::move(l_offline_file_stream)));

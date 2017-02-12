@@ -21,6 +21,21 @@ namespace black_cat
 		{
 			m_pack.m_px_scene = nullptr;
 			m_pack.m_allocator = nullptr;
+			m_pack.m_task_dispatcher = nullptr;
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_scene<g_api_physx>::bc_platform_scene(platform_pack& p_pack)
+		{
+			m_pack.m_px_scene = p_pack.m_px_scene;
+			m_pack.m_allocator = p_pack.m_allocator;
+			m_pack.m_task_dispatcher = p_pack.m_task_dispatcher;
+			m_pack.m_query_filter_callback = p_pack.m_query_filter_callback;
+			m_pack.m_simulation_callback = std::move(p_pack.m_simulation_callback);
+			m_pack.m_contact_filter_callback = std::move(p_pack.m_contact_filter_callback);
+			m_pack.m_contact_modify_callback = std::move(p_pack.m_contact_modify_callback);
+			m_pack.m_fitler_shader_data = std::move(p_pack.m_fitler_shader_data);
 		}
 
 		template<>
@@ -34,7 +49,10 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_platform_scene< g_api_physx >::~bc_platform_scene()
 		{
-			m_pack.m_px_scene->release();
+			if(m_pack.m_px_scene)
+			{
+				m_pack.m_px_scene->release();
+			}
 		}
 
 		template<>
@@ -43,6 +61,7 @@ namespace black_cat
 		{
 			m_pack.m_px_scene = p_other.m_pack.m_px_scene;
 			m_pack.m_allocator = p_other.m_pack.m_allocator;
+			m_pack.m_task_dispatcher = p_other.m_pack.m_task_dispatcher;
 			m_pack.m_query_filter_callback = p_other.m_pack.m_query_filter_callback;
 			m_pack.m_simulation_callback = std::move(p_other.m_pack.m_simulation_callback);
 			m_pack.m_contact_filter_callback = std::move(p_other.m_pack.m_contact_filter_callback);
@@ -184,14 +203,14 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_scene< g_api_physx >::update(core_platform::bc_clock::small_delta_time p_elapsed_time)
+		void bc_platform_scene< g_api_physx >::update(core_platform::bc_clock::update_param p_time)
 		{
 			constexpr bcUINT32 l_block_size = 16 * 1024;
-			constexpr bcUINT32 l_num_block_to_alloc = 4;
+			constexpr bcUINT32 l_num_block_to_alloc = 10;
 
 			void* l_temp_buffer = m_pack.m_allocator->temp_allocate(l_block_size * l_num_block_to_alloc, __FILE__, __LINE__);
 
-			m_pack.m_px_scene->simulate(p_elapsed_time, nullptr, l_temp_buffer, l_block_size * l_num_block_to_alloc);
+			m_pack.m_px_scene->simulate(p_time.m_elapsed_second, nullptr, l_temp_buffer, l_block_size * l_num_block_to_alloc);
 
 			m_pack.m_allocator->temp_free(l_temp_buffer);
 		}
@@ -207,14 +226,14 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		void bc_platform_scene< g_api_physx >::wait() const noexcept
 		{
-			m_pack.m_px_scene->checkResults(true);
+			m_pack.m_px_scene->fetchResults(true);
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		void bc_platform_scene< g_api_physx >::set_gravity(const core::bc_vector3f& p_gravity) noexcept
 		{
-			m_pack.m_px_scene->setGravity(physx::PxVec3(p_gravity.x, p_gravity.y, p_gravity.z));
+			m_pack.m_px_scene->setGravity(bc_to_right_hand(p_gravity));
 		}
 
 		template<>
@@ -223,7 +242,7 @@ namespace black_cat
 		{
 			auto l_px_vec = m_pack.m_px_scene->getGravity();
 
-			return core::bc_vector3f(l_px_vec.x, l_px_vec.y, l_px_vec.z);
+			return bc_to_game_hand(l_px_vec);
 		}
 
 		template<>
@@ -256,6 +275,29 @@ namespace black_cat
 		{
 			bc_scene_debug l_result;
 			l_result.get_platform_pack().m_px_debug = &m_pack.m_px_scene->getRenderBuffer();
+			
+			return l_result;
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		core::bc_vector_frame<bc_updated_actor> bc_platform_scene< g_api_physx >::get_active_actors() noexcept
+		{
+			physx::PxU32 l_transform_count;
+			const physx::PxActiveTransform* l_transforms = m_pack.m_px_scene->getActiveTransforms(l_transform_count);
+
+			core::bc_vector_frame<bc_updated_actor> l_result;
+			l_result.reserve(l_transform_count);
+
+			for (physx::PxU32 l_index = 0; l_index < l_transform_count; ++l_index)
+			{
+				bc_actor l_actor;
+				static_cast<bc_physics_reference&>(l_actor).get_platform_pack().m_px_object = l_transforms[l_index].actor;
+				bc_transform l_transform;
+				l_transform.get_platform_pack().m_px_transform = l_transforms[l_index].actor2World;
+
+				l_result.emplace_back(l_actor, l_transform);
+			}
 
 			return l_result;
 		}
@@ -300,7 +342,7 @@ namespace black_cat
 			bc_query_flags p_query_flags, 
 			bc_query_group p_query_groups) const
 		{
-			physx::PxVec3 l_dir(p_unit_dir.x, p_unit_dir.y, p_unit_dir.z);
+			physx::PxVec3 l_dir = bc_to_right_hand(p_unit_dir);
 			physx::PxQueryFilterData l_px_filter_data
 			(
 				physx::PxFilterData(static_cast< physx::PxU32 >(p_query_groups), 0, 0, 0), 

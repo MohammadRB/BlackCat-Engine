@@ -49,14 +49,21 @@ namespace black_cat
 			 * 
 			 * \param p_transform 
 			 */
-			void set_globla_pose(const bc_transform& p_transform) noexcept;
+			void set_global_pose(const bc_transform& p_transform) noexcept;
 
-			bc_shape_ref create_shape(const bc_shape_geometry& p_shape,
+			/**
+			 * \brief Add a new shape to actor shapes collection
+			 * \param p_shape 
+			 * \param p_material 
+			 * \param p_flags 
+			 * \return 
+			 */
+			bc_shape create_shape(const bc_shape_geometry& p_shape,
 				const bc_material& p_material,
 				bc_shape_flag p_flags = core::bc_enum::or({ bc_shape_flag::simulation, bc_shape_flag::query, bc_shape_flag::visualization }));
 
 			/**
-			 * \brief Craete a box shape and add it to actor shape collections.
+			 * \brief Add a new shape to actor shapes collection
 			 * Waking: No
 			 * \param p_shape 
 			 * \param p_materials 
@@ -64,7 +71,7 @@ namespace black_cat
 			 * \param p_flags 
 			 * \return 
 			 */
-			bc_shape_ref create_shape(const bc_shape_geometry& p_shape,
+			bc_shape create_shape(const bc_shape_geometry& p_shape,
 				const bc_material* p_materials,
 				bcUINT32 p_material_count,
 				bc_shape_flag p_flags = core::bc_enum::or({ bc_shape_flag::simulation, bc_shape_flag::query, bc_shape_flag::visualization }));

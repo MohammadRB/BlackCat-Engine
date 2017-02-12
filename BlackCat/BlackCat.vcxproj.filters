@@ -213,6 +213,12 @@
     <ClInclude Include="BlackCat\RenderPass\bcTerrainPassDx11.h">
       <Filter>BlackCat\RenderPass</Filter>
     </ClInclude>
+    <ClInclude Include="BlackCat\bcUtility.h">
+      <Filter>BlackCat</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackCat\Loader\bcMeshPhysicsLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlackCat\_\Application\App.cpp">
@@ -352,6 +358,12 @@
     </ClCompile>
     <ClCompile Include="BlackCat\RenderPass\bcTerrainPassDx11.cpp">
       <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackCat\bcUtility.cpp">
+      <Filter>BlackCat</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackCat\Loader\bcMeshPhysicsLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

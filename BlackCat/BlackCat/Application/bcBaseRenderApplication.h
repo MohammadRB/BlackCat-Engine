@@ -40,6 +40,7 @@
 #include "BlackCat/Loader/bcPixelShaderLoader.h"
 #include "BlackCat/Loader/bcComputeShaderLoader.h"
 #include "BlackCat/BlackCatPCH.h"
+#include "BlackCat/Loader/bcMeshPhysicsLoader.h"
 
 namespace black_cat
 {
@@ -65,6 +66,8 @@ namespace black_cat
 
 		virtual void application_update(core_platform::bc_clock::update_param p_clock_update_param) = 0;
 
+		virtual void application_render(core_platform::bc_clock::update_param p_clock_update_param) = 0;
+
 		virtual bool application_event(core::bc_ievent& p_event) = 0;
 
 		virtual void application_unload_content(core::bc_content_stream_manager* p_stream_manager) = 0;
@@ -86,6 +89,8 @@ namespace black_cat
 
 		void app_update(core_platform::bc_clock::update_param p_clock_update_param) override final;
 
+		void app_render(core_platform::bc_clock::update_param p_clock_update_param) override;
+
 		bool app_event(core::bc_ievent& p_event) override final;
 
 		void app_unload_content() override final;
@@ -97,9 +102,6 @@ namespace black_cat
 		void _initialize(game::bc_engine_application_parameter&) override;
 
 		void _destroy() override;
-
-		core::bc_event_listener_handle m_event_error_handle;
-		core::bc_event_listener_handle m_event_warning_handle;
 	};
 
 	template< class TApp >
@@ -228,6 +230,10 @@ namespace black_cat
 		(
 			core::bc_make_loader< bc_compute_shader_loader >()
 		);
+		l_content_stream_manager->register_loader< game::bc_mesh_collider, bc_mesh_physics_loader >
+		(
+			core::bc_make_loader< bc_mesh_physics_loader >()
+		);
 		l_content_stream_manager->register_loader< game::bc_mesh, bc_mesh_loader >
 		(
 			core::bc_make_loader< bc_mesh_loader >()
@@ -253,20 +259,10 @@ namespace black_cat
 	template< class TApp >
 	void bc_base_render_application< TApp >::app_initialize(const bcCHAR* p_commandline)
 	{
-		auto* l_event_manager = m_service_manager->get_service< core::bc_event_manager >();
 		auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
 		auto* l_entity_manager = m_service_manager->get_service< game::bc_entity_manager >();
 		auto& l_script_system = m_game_system->get_script_system();
 		auto l_script_binder = l_script_system.get_script_binder();
-
-		m_event_error_handle = l_event_manager->register_event_listener< core::bc_app_event_error >
-		(
-			core::bc_event_manager::delegate_type(this, &bc_base_render_application::app_event)
-		);
-		m_event_warning_handle = l_event_manager->register_event_listener< core::bc_app_event_warning >
-		(
-			core::bc_event_manager::delegate_type(this, &bc_base_render_application::app_event)
-		);
 
 		m_game_system->initialize
 		(
@@ -305,43 +301,15 @@ namespace black_cat
 	}
 
 	template< class TApp >
+	void bc_base_render_application<TApp>::app_render(core_platform::bc_clock::update_param p_clock_update_param)
+	{
+		application_render(p_clock_update_param);
+	}
+
+	template< class TApp >
 	bool bc_base_render_application< TApp >::app_event(core::bc_ievent& p_event)
 	{
 		bool l_result = false;
-
-		if (core::bc_ievent::event_is< core::bc_app_event_error >(p_event))
-		{
-			/*bc_render_application::get_output_window().messagebox
-			(
-				bcL("Error"),
-				bc_to_wstring(static_cast< core::bc_app_event_error& >(p_event).get_message()).c_str(),
-				platform::bc_messagebox_type::error,
-				platform::bc_messagebox_buttom::ok
-			);
-			l_result = true;*/
-			m_service_manager->get_service< core::bc_logger >()->log
-			(
-				core::bc_log_type::error,
-				core::bc_to_estring_frame(static_cast<core::bc_app_event_error&>(p_event).get_message()).c_str()
-			);
-		}
-
-		if (core::bc_ievent::event_is< core::bc_app_event_warning >(p_event))
-		{
-			/*bc_render_application::get_output_window().messagebox
-			(
-				bcL("Warning"),
-				bc_to_wstring(static_cast< core::bc_app_event_warning& >(p_event).get_message()).c_str(),
-				platform::bc_messagebox_type::warning,
-				platform::bc_messagebox_buttom::ok
-			);
-			l_result = true;*/
-			m_service_manager->get_service< core::bc_logger >()->log
-			(
-				core::bc_log_type::info,
-				core::bc_to_estring_frame(static_cast<core::bc_app_event_warning&>(p_event).get_message()).c_str()
-			);
-		}
 
 		l_result = l_result || bc_render_application::app_event(p_event);
 		l_result = l_result || application_event(p_event);
@@ -364,9 +332,6 @@ namespace black_cat
 	void bc_base_render_application< TApp >::app_destroy()
 	{
 		application_destroy();
-
-		m_event_warning_handle.reset();
-		m_event_error_handle.reset();
 	}
 
 	template< class TApp >

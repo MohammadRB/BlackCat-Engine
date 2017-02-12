@@ -27,6 +27,11 @@ namespace black_cat
 		public:
 			bc_platform_shape_capsule(platform_pack& p_pack);
 
+			/**
+			 * \brief Constructor to initialzie capsule with passed radius and half height.
+			 * \param p_half_height Half of the capsule's height, measured between the centers of the hemispherical ends.
+			 * \param p_radius 
+			 */
 			bc_platform_shape_capsule(bcFLOAT p_half_height, bcFLOAT p_radius);
 
 			bc_platform_shape_capsule(const bc_platform_shape_capsule&);

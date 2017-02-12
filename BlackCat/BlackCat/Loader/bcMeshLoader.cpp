@@ -4,6 +4,7 @@
 
 #include "Core/File/bcPath.h"
 #include "Core/bcConstant.h"
+#include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcArray.h"
 #include "Core/File/bcContentManager.h"
@@ -16,113 +17,33 @@
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
+#include "PhysicsImp/Fundation/bcPhysics.h"
+#include "PhysicsImp/Fundation/bcMeshBuffer.h"
 #include "Game/System/Render/bcVertexLayout.h"
 #include "Game/System/bcGameSystem.h"
+#include "BlackCat/Loader/bcMeshPhysicsLoader.h"
 #include "BlackCat/Loader/bcMeshLoader.h"
-
-#include "3rdParty/Assimp/include/assimp/Importer.hpp"
-#include "3rdParty/Assimp/include/assimp/postprocess.h"
-#include "3rdParty/Assimp/include/assimp/scene.h"
+#include "BlackCat/bcUtility.h"
 
 namespace black_cat
 {
-	void _calculate_node_mesh_count(const aiNode* p_begin, bcSIZE* p_node_count, bcSIZE* p_mesh_count);
-
-	void _convert_aimatrix(const aiMatrix4x4& p_aimatrix, core::bc_matrix4f& p_matrix);
-
-	void _convert_aimaterial(core::bc_content_loader_context& p_context, const aiMaterial& p_aimaterial, game::bc_mesh_material& p_material);
-
-	void _convert_aimesh(game::bc_game_system* p_game_system,
-		graphic::bc_device* p_device,
-		core::bc_content_loader_context& p_context,
-		const aiScene* p_aiscene,
-		const aiNode* p_ainode,
-		const aiMesh* p_aimesh,
-		game::bc_mesh_data* p_mesh,
-		game::bc_render_state_ptr* p_mesh_render_state);
-
-	void _convert_ainodes(game::bc_game_system* p_game_system,
-		graphic::bc_device* p_device,
-		core::bc_content_loader_context& p_context,
-		const aiScene* p_aiscene,
-		const aiNode* p_ainode,
-		game::bc_mesh* p_mesh,
-		game::bc_mesh_node* p_parent);
-
-	bc_mesh_loader::bc_mesh_loader()
+	void bc_mesh_loader::calculate_node_mesh_count(const aiNode& p_node, bcSIZE& p_node_count, bcSIZE& p_mesh_count)
 	{
-	}
-
-	bc_mesh_loader::bc_mesh_loader(bc_mesh_loader&& p_other) noexcept
-		: core::bc_base_content_loader(std::move(p_other))
-	{
-	}
-
-	bc_mesh_loader::~bc_mesh_loader()
-	{
-	}
-
-	bc_mesh_loader& bc_mesh_loader::operator=(bc_mesh_loader&& p_other) noexcept
-	{
-		core::bc_base_content_loader::operator=(std::move(p_other));
-
-		return *this;
-	}
-
-	void bc_mesh_loader::content_offline_processing(core::bc_content_loader_context& p_context)
-	{
-	}
-
-	void bc_mesh_loader::content_processing(core::bc_content_loader_context& p_context)
-	{
-		Assimp::Importer l_importer;
-
-		const aiScene* l_scene = l_importer.ReadFileFromMemory
-		(
-			p_context.m_data.data(),
-			p_context.m_data.size(),
-			/*aiProcess_GenSmoothNormals |*/
-			aiProcess_CalcTangentSpace |
-			aiProcess_Triangulate |
-			aiProcess_JoinIdenticalVertices |
-			aiProcess_SortByPType |
-			graphic::bc_render_api_info::is_left_handed() ? aiProcess_MakeLeftHanded : 0
-		);
-
-		if (!l_scene || !l_scene->HasMeshes())
+		if (bc_mesh_physics_loader::is_px_node(p_node))
 		{
-			auto l_error_msg = core::bc_string_frame("Content file doesn't include mesh data") + core::bc_to_exclusive_string(p_context.m_file_path.c_str()).c_str();
-			p_context.set_result(bc_io_exception(l_error_msg.c_str()));
 			return;
 		}
 
-		game::bc_game_system* l_game_system = core::bc_service_manager::get().get_service< game::bc_game_system >();
-		graphic::bc_device* l_device = &l_game_system->get_render_system().get_device();
+		++p_node_count;
+		p_mesh_count += p_node.mNumMeshes;
 
-		bcSIZE l_node_count = 0;
-		bcSIZE l_mesh_count = 0;
-		_calculate_node_mesh_count(l_scene->mRootNode, &l_node_count, &l_mesh_count);
-
-		core::bc_estring l_mesh_name = core::bc_path(p_context.m_file_path.c_str()).get_filename();
-		game::bc_mesh l_mesh(core::bc_to_exclusive_string(l_mesh_name), l_node_count, l_mesh_count);
-
-		_convert_ainodes(l_game_system, l_device, p_context, l_scene, l_scene->mRootNode, &l_mesh, nullptr);
-
-		p_context.set_result(std::move(l_mesh));
-	}
-
-	void _calculate_node_mesh_count(const aiNode* p_begin, bcSIZE* p_node_count, bcSIZE* p_mesh_count)
-	{
-		++*p_node_count;
-		*p_mesh_count += p_begin->mNumMeshes;
-
-		for (bcUINT32 i = 0; i < p_begin->mNumChildren; ++i)
+		for (bcUINT32 i = 0; i < p_node.mNumChildren; ++i)
 		{
-			_calculate_node_mesh_count(p_begin->mChildren[i], p_node_count, p_mesh_count);
+			calculate_node_mesh_count(*p_node.mChildren[i], p_node_count, p_mesh_count);
 		}
 	}
 
-	void _convert_aimatrix(const aiMatrix4x4& p_aimatrix, core::bc_matrix4f& p_matrix)
+	void bc_mesh_loader::convert_aimatrix(const aiMatrix4x4& p_aimatrix, core::bc_matrix4f& p_matrix)
 	{
 		aiMatrix4x4 l_aimatrix = p_aimatrix;
 		l_aimatrix.Transpose();
@@ -145,7 +66,7 @@ namespace black_cat
 		p_matrix[15] = l_aimatrix.d4;
 	}
 
-	void _convert_aimaterial(core::bc_content_loader_context& p_context, const aiMaterial& p_aimaterial, game::bc_mesh_material& p_material)
+	void bc_mesh_loader::convert_aimaterial(core::bc_content_loader_context& p_context, const aiMaterial& p_aimaterial, game::bc_mesh_part_material& p_material)
 	{
 		core::bc_content_manager* l_content_manager = core::bc_service_manager::get().get_service< core::bc_content_manager >();
 
@@ -195,17 +116,17 @@ namespace black_cat
 		}
 	}
 
-	void _convert_aimesh(game::bc_game_system* p_game_system,
-		graphic::bc_device* p_device,
+	void bc_mesh_loader::convert_aimesh(game::bc_render_system& p_render_system,
 		core::bc_content_loader_context& p_context,
-		const aiScene* p_aiscene,
-		const aiNode* p_ainode,
-		const aiMesh* p_aimesh,
-		game::bc_mesh_data* p_mesh,
-		game::bc_render_state_ptr* p_mesh_render_state)
+		const aiScene& p_aiscene,
+		const aiNode& p_ainode,
+		const aiMesh& p_aimesh,
+		game::bc_mesh_part_data& p_mesh,
+		game::bc_render_state_ptr& p_mesh_render_state)
 	{
-		core::bc_vector_frame< game::bc_vertex_pos_tex_nor_tan > l_vertices;
-		core::bc_vector_frame< bcBYTE > l_indices;
+		auto& l_device = p_render_system.get_device();
+		core::bc_vector_movale< game::bc_vertex_pos_tex_nor_tan > l_vertices;
+		core::bc_vector_movale< bcBYTE > l_indices;
 		graphic::bc_graphic_resource_configure l_resource_configure;
 		graphic::bc_buffer_ptr l_vertex_buffer;
 		graphic::bc_buffer_ptr l_index_buffer;
@@ -214,23 +135,23 @@ namespace black_cat
 		graphic::bc_resource_view_ptr l_diffuse_map_view;
 		graphic::bc_resource_view_ptr l_specular_map_view;
 		graphic::bc_resource_view_ptr l_normal_map_view;
-		game::bc_mesh_material l_material;
+		game::bc_mesh_part_material l_material;
 
-		bool l_need_32bit_indices = p_aimesh->mNumFaces * 3 > std::numeric_limits< bcUINT16 >::max();
-		bool l_has_texcoord = p_aimesh->HasTextureCoords(0);
-		bool l_has_normal = p_aimesh->HasNormals();
-		bool l_has_tangent = p_aimesh->HasTangentsAndBitangents();
+		bool l_need_32bit_indices = p_aimesh.mNumFaces * 3 > std::numeric_limits< bcUINT16 >::max();
+		bool l_has_texcoord = p_aimesh.HasTextureCoords(0);
+		bool l_has_normal = p_aimesh.HasNormals();
+		bool l_has_tangent = p_aimesh.HasTangentsAndBitangents();
 
-		l_vertices.reserve(p_aimesh->mNumVertices);
-		l_indices.reserve(p_aimesh->mNumFaces * 3 * (l_need_32bit_indices ? static_cast< bcINT >(game::bc_index_type::i32bit) : static_cast< bcINT >(game::bc_index_type::i16bit)));
+		l_vertices.reserve(p_aimesh.mNumVertices);
+		l_indices.reserve(p_aimesh.mNumFaces * 3 * (l_need_32bit_indices ? static_cast< bcINT >(game::bc_index_type::i32bit) : static_cast< bcINT >(game::bc_index_type::i16bit)));
 
-		for (bcUINT l_vertex = 0; l_vertex < p_aimesh->mNumVertices; ++l_vertex)
+		for (bcUINT l_vertex = 0; l_vertex < p_aimesh.mNumVertices; ++l_vertex)
 		{
 			game::bc_vertex_pos_tex_nor_tan l_vertex_layout;
-			auto* l_aivertex = &p_aimesh->mVertices[l_vertex];
-			auto* l_aitexcoord = l_has_texcoord ? &p_aimesh->mTextureCoords[0][l_vertex] : nullptr;
-			auto* l_ainoraml = l_has_normal ? &p_aimesh->mNormals[l_vertex] : nullptr;
-			auto* l_aitangent = l_has_tangent ? &p_aimesh->mTangents[l_vertex] : nullptr;
+			auto* l_aivertex = &p_aimesh.mVertices[l_vertex];
+			auto* l_aitexcoord = l_has_texcoord ? &p_aimesh.mTextureCoords[0][l_vertex] : nullptr;
+			auto* l_ainoraml = l_has_normal ? &p_aimesh.mNormals[l_vertex] : nullptr;
+			auto* l_aitangent = l_has_tangent ? &p_aimesh.mTangents[l_vertex] : nullptr;
 
 			l_vertex_layout.m_position = core::bc_vector3f(l_aivertex->x, l_aivertex->y, l_aivertex->z);
 			l_vertex_layout.m_texcoord = l_aitexcoord ? core::bc_vector2f(l_aitexcoord->x, l_aitexcoord->y) : core::bc_vector2f();
@@ -243,18 +164,18 @@ namespace black_cat
 		bcUINT16* l_16bit_indices = reinterpret_cast< bcUINT16* >(l_indices.data());
 		bcUINT32* l_32bit_indices = reinterpret_cast< bcUINT32* >(l_indices.data());
 
-		for (bcUINT l_face_index = 0; l_face_index < p_aimesh->mNumFaces; ++l_face_index)
+		for (bcUINT l_face_index = 0; l_face_index < p_aimesh.mNumFaces; ++l_face_index)
 		{
-			for (bcBYTE l_index = 2; l_index >= 0; --l_index)
+			for (bcBYTE l_index = 0; l_index < 3; ++l_index)
 			{
 				if (l_need_32bit_indices)
 				{
-					*l_32bit_indices = static_cast< bcUINT32 >(p_aimesh->mFaces[l_face_index].mIndices[l_index]);
+					*l_32bit_indices = static_cast< bcUINT32 >(p_aimesh.mFaces[l_face_index].mIndices[l_index]);
 					++l_32bit_indices;
 				}
 				else
 				{
-					*l_16bit_indices = static_cast< bcUINT16 >(p_aimesh->mFaces[l_face_index].mIndices[l_index]);
+					*l_16bit_indices = static_cast< bcUINT16 >(p_aimesh.mFaces[l_face_index].mIndices[l_index]);
 					++l_16bit_indices;
 				}
 
@@ -285,10 +206,10 @@ namespace black_cat
 		auto l_vertex_buffer_data = graphic::bc_subresource_data(l_vertices.data(), 0, 0);
 		auto l_index_buffer_data = graphic::bc_subresource_data(l_indices.data(), 0, 0);
 
-		l_vertex_buffer = p_device->create_buffer(l_vertex_buffer_config, &l_vertex_buffer_data);
-		l_index_buffer = p_device->create_buffer(l_index_buffer_config, &l_index_buffer_data);
+		l_vertex_buffer = l_device.create_buffer(l_vertex_buffer_config, &l_vertex_buffer_data);
+		l_index_buffer = l_device.create_buffer(l_index_buffer_config, &l_index_buffer_data);
 
-		_convert_aimaterial(p_context, *p_aiscene->mMaterials[p_aimesh->mMaterialIndex], l_material);
+		convert_aimaterial(p_context, *p_aiscene.mMaterials[p_aimesh.mMaterialIndex], l_material);
 
 		auto l_cbuffer_config = l_resource_configure
 			.as_resource()
@@ -313,19 +234,23 @@ namespace black_cat
 		};
 		auto l_cbuffer_data = graphic::bc_subresource_data(&l_mesh_part_cbuffer, 0, 0);
 
-		l_cbuffer = p_device->create_buffer(l_cbuffer_config, &l_cbuffer_data);
+		l_cbuffer = l_device.create_buffer(l_cbuffer_config, &l_cbuffer_data);
 
 		l_diffuse_map_view = l_material.m_diffuse_map ?
-			                     p_device->create_resource_view(l_material.m_diffuse_map->get_resource().get(), l_texture_view_config) :
+			                     l_device.create_resource_view(l_material.m_diffuse_map->get_resource().get(), l_texture_view_config) :
 			                     graphic::bc_resource_view_ptr();
 		l_specular_map_view = l_material.m_specular_map ?
-			                      p_device->create_resource_view(l_material.m_specular_map->get_resource().get(), l_texture_view_config) :
+			                      l_device.create_resource_view(l_material.m_specular_map->get_resource().get(), l_texture_view_config) :
 			                      graphic::bc_resource_view_ptr();
 		l_normal_map_view = l_material.m_normal_map ?
-			                    p_device->create_resource_view(l_material.m_normal_map->get_resource().get(), l_texture_view_config) :
+			                    l_device.create_resource_view(l_material.m_normal_map->get_resource().get(), l_texture_view_config) :
 			                    graphic::bc_resource_view_ptr();
 
-		*p_mesh_render_state = p_game_system->get_render_system().create_render_state
+		p_mesh.m_name = p_aimesh.mName.C_Str();
+		p_mesh.m_material = std::move(l_material);
+		p_mesh.m_vertices = std::move(l_vertices);
+		p_mesh.m_indices = std::move(l_indices);
+		p_mesh_render_state = p_render_system.create_render_state
 		(
 			graphic::bc_primitive::trianglelist,
 			l_vertex_buffer.get(),
@@ -346,54 +271,116 @@ namespace black_cat
 		);
 	}
 
-	void _convert_ainodes(game::bc_game_system* p_game_system,
-		graphic::bc_device* p_device,
+	void bc_mesh_loader::convert_ainodes(game::bc_render_system& p_render_system,
 		core::bc_content_loader_context& p_context,
-		const aiScene* p_aiscene,
-		const aiNode* p_ainode,
-		game::bc_mesh* p_mesh,
-		game::bc_mesh_node* p_parent)
+		const aiScene& p_aiscene,
+		const aiNode& p_ainode,
+		game::bc_mesh& p_mesh,
+		game::bc_mesh_node* p_parent,
+		const core::bc_matrix4f& p_parent_transformation)
 	{
-		core::bc_vector_frame<std::pair< game::bc_mesh_data, game::bc_render_state_ptr>> l_meshes;
-		
-		l_meshes.reserve(p_ainode->mNumMeshes);
-
-		for(bcUINT32 i = 0; i < p_ainode->mNumMeshes; ++i)
+		if (bc_mesh_physics_loader::is_px_node(p_ainode))
 		{
-			game::bc_mesh_data l_mesh_data;
-			game::bc_render_state_ptr l_mesh_render_state;
-
-			_convert_aimesh
-			(
-				p_game_system,
-				p_device,
-				p_context,
-				p_aiscene,
-				p_ainode,
-				p_aiscene->mMeshes[p_ainode->mMeshes[i]],
-				&l_mesh_data,
-				&l_mesh_render_state
-			);
-
-			l_meshes.push_back(std::make_pair(std::move(l_mesh_data), l_mesh_render_state));
+			return;
 		}
 
 		core::bc_matrix4f l_node_transformation;
-		_convert_aimatrix(p_ainode->mTransformation, l_node_transformation);
+		core::bc_matrix4f l_node_absolute_transformation;
 
-		game::bc_mesh_node* l_added_node = p_mesh->_add_node
+		convert_aimatrix(p_ainode.mTransformation, l_node_transformation);
+		l_node_absolute_transformation = l_node_transformation * p_parent_transformation;
+
+		core::bc_vector_frame< game::bc_mesh_node_data > l_meshes;
+		l_meshes.reserve(p_ainode.mNumMeshes);
+
+		for (bcUINT32 i = 0; i < p_ainode.mNumMeshes; ++i)
+		{
+			game::bc_mesh_part_data l_mesh_data;
+			game::bc_render_state_ptr l_mesh_render_state;
+			aiMesh* l_aimesh = p_aiscene.mMeshes[p_ainode.mMeshes[i]];
+
+			convert_aimesh
+			(
+				p_render_system,
+				p_context,
+				p_aiscene,
+				p_ainode,
+				*l_aimesh,
+				l_mesh_data,
+				l_mesh_render_state
+			);
+
+			l_meshes.push_back(game::bc_mesh_node_data(std::move(l_mesh_data), l_mesh_render_state));
+		}
+
+		l_meshes.shrink_to_fit();
+
+		game::bc_mesh_node* l_added_node = p_mesh._add_node
 		(
-			p_ainode->mName.C_Str(),
+			p_ainode.mName.C_Str(),
 			p_parent,
 			l_node_transformation,
 			std::move(l_meshes)
 		);
 
-		for (bcUINT l_child_index = 0; l_child_index < p_ainode->mNumChildren; ++l_child_index)
+		for (bcUINT l_child_index = 0; l_child_index < p_ainode.mNumChildren; ++l_child_index)
 		{
-			aiNode* l_child = p_ainode->mChildren[l_child_index];
+			aiNode* l_child = p_ainode.mChildren[l_child_index];
 
-			_convert_ainodes(p_game_system, p_device, p_context, p_aiscene, l_child, p_mesh, l_added_node);
+			convert_ainodes(p_render_system, p_context, p_aiscene, *l_child, p_mesh, l_added_node, l_node_absolute_transformation);
 		}
+	}
+
+	void bc_mesh_loader::content_offline_processing(core::bc_content_loader_context& p_context) const
+	{
+	}
+
+	void bc_mesh_loader::content_processing(core::bc_content_loader_context& p_context) const
+	{
+		Assimp::Importer l_importer;
+
+		const aiScene* l_scene = l_importer.ReadFileFromMemory
+		(
+			p_context.m_data.data(),
+			p_context.m_data.size(),
+			aiProcess_GenNormals |
+			aiProcess_CalcTangentSpace |
+			aiProcess_Triangulate |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_SortByPType |
+			aiProcessPreset_TargetRealtime_Fast |
+			graphic::bc_render_api_info::is_left_handed() ? aiProcess_ConvertToLeftHanded : 0
+		);
+
+		if (!l_scene || !l_scene->HasMeshes())
+		{
+			auto l_error_msg =
+				core::bc_string_frame("Content file doesn't include mesh data")
+				+
+				core::bc_to_exclusive_string(p_context.m_file_path.c_str()).c_str();
+			p_context.set_result(bc_io_exception(l_error_msg.c_str()));
+
+			return;
+		}
+
+		game::bc_mesh_collider_ptr l_mesh_colliders = core::bc_get_service< core::bc_content_manager >()->load< game::bc_mesh_collider >
+		(
+			p_context.get_allocator_alloc_type(),
+			p_context.m_file_path.c_str(),
+			core::bc_content_loader_parameter(p_context.m_parameter)
+		);
+
+		game::bc_game_system& l_game_system = *core::bc_service_manager::get().get_service< game::bc_game_system >();
+
+		bcSIZE l_node_count = 0;
+		bcSIZE l_mesh_count = 0;
+		calculate_node_mesh_count(*l_scene->mRootNode, l_node_count, l_mesh_count);
+
+		core::bc_estring l_mesh_name = core::bc_path(p_context.m_file_path.c_str()).get_filename();
+		game::bc_mesh l_mesh(core::bc_to_exclusive_string(l_mesh_name), l_node_count, l_mesh_count, l_mesh_colliders);
+
+		convert_ainodes(l_game_system.get_render_system(), p_context, *l_scene, *l_scene->mRootNode, l_mesh, nullptr, core::bc_matrix4f::identity());
+
+		p_context.set_result(std::move(l_mesh));
 	}
 }

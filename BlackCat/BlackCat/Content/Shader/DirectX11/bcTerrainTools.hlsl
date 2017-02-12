@@ -34,6 +34,7 @@ float compute_distance_from_plane(float4 p_plane, float3 p_position)
 
 float get_height(uint2 p_texcoord)
 {
+    p_texcoord.y = g_height - p_texcoord.y; // In directx TexCoord (0,0) is top-left but we begin from bottom-left
     return g_heightmap[p_texcoord] * g_y_multiplier;
 }
 

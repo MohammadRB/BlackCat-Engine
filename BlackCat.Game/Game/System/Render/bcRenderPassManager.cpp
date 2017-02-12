@@ -96,11 +96,11 @@ namespace black_cat
 			return false;
 		}
 
-		void bc_render_pass_manager::pass_initialize_resources(bc_render_system& p_render_system, graphic::bc_device& p_device)
+		void bc_render_pass_manager::pass_initialize_resources(bc_render_system& p_render_system)
 		{
 			for (auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->initialize_resources(p_render_system, p_device);
+				l_entry.m_pass->initialize_resources(p_render_system);
 			}
 		}
 
@@ -112,12 +112,12 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_pass_manager::pass_execute(bc_render_system& p_render_system, bc_render_thread& p_thread)
+		void bc_render_pass_manager::pass_execute(bc_render_system& p_render_system, bc_scene& p_scene, bc_render_thread& p_thread)
 		{
 			for(auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->initialize_frame(p_render_system, p_thread);
-				l_entry.m_pass->execute(p_render_system, p_thread);
+				l_entry.m_pass->initialize_frame(p_render_system, p_scene, p_thread);
+				l_entry.m_pass->execute(p_render_system, p_scene, p_thread);
 			}
 		}
 

@@ -20,11 +20,13 @@ namespace black_cat
 			physx::PxFoundation* m_px_fundation;
 #ifdef BC_DEBUG
 			physx::PxProfileZoneManager* m_px_profile;
+			physx::PxVisualDebuggerConnection* m_visaulizer;
 #endif
 			physx::PxPhysics* m_px_physics;
 			physx::PxCooking* m_px_cooking;
 
 			core::bc_unique_ptr< bc_px_allocator > m_allocator;
+			core::bc_unique_ptr< bc_px_task_dispatcher > m_task_dispatcher;
 			core::bc_unique_ptr< bc_px_logger > m_logger;
 		};
 	}

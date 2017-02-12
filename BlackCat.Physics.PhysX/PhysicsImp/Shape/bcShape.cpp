@@ -525,5 +525,29 @@ namespace black_cat
 			return static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_shape& >(*this))
 				.get_platform_pack().m_px_object != nullptr;
 		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		void bc_platform_shape< g_api_physx >::set_data(void* user_data) noexcept
+		{
+			auto* l_px_shape = static_cast< physx::PxShape* >
+			(
+				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_shape& >(*this)).get_platform_pack().m_px_object
+			);
+
+			l_px_shape->userData = user_data;
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		void* bc_platform_shape< g_api_physx >::get_data() const noexcept
+		{
+			auto* l_px_shape = static_cast< physx::PxShape* >
+			(
+				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_shape& >(*this)).get_platform_pack().m_px_object
+			);
+
+			return l_px_shape->userData;
+		}
 	}
 }

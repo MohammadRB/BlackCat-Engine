@@ -15,11 +15,14 @@ namespace black_cat
 	namespace physics
 	{
 		/**
-		 * \brief Represent required data to create a hieght field in physics api.
+		 * \brief Represent required data to create a height field in physics api.
 		 */
 		struct bc_height_field_desc
 		{
-			bc_height_field_desc(bcUINT32 p_num_row, bcUINT32 p_num_column, const bc_strided_data& p_samples, const bc_strided_data& p_samples_material)
+			bc_height_field_desc(bcUINT32 p_num_row, 
+				bcUINT32 p_num_column, 
+				const bc_bounded_strided_typed_data<bcINT16>& p_samples, 
+				const bc_bounded_strided_typed_data<bc_material_index>& p_samples_material)
 				: m_num_row(p_num_row),
 				m_num_column(p_num_column),
 				m_samples(p_samples),
@@ -32,12 +35,12 @@ namespace black_cat
 			/**
 			 * \brief must have be m_num_row * m_num_column sample that each one map to a bcINT16.
 			 */
-			const bc_strided_data m_samples;
+			const bc_bounded_strided_typed_data<bcINT16> m_samples;
 			/**
 			 * \brief must have m_num_row * m_num_column sample that each one map to a bc_material_index witch 
 			 * will be used as material index for each cell.
 			 */
-			const bc_strided_data m_samples_material;
+			const bc_bounded_strided_typed_data<bc_material_index> m_samples_material;
 		};
 
 		template< bc_physics_api TApi >

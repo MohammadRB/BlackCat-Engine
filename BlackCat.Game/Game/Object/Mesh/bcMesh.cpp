@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 #include "Game/bcException.h"
 #include "Game/Object/Mesh/bcMesh.h"
+#include "Game/System/Physics/bcMeshPartCollider.h"
 
 namespace black_cat
 {
@@ -33,6 +34,11 @@ namespace black_cat
 			return m_mesh_count;
 		}
 
+		bcUINT32 bc_mesh_node::get_child_count() const
+		{
+			return m_childs.size();
+		}
+
 		const core::bc_string& bc_mesh_node::get_name() const
 		{
 			return m_name;
@@ -45,12 +51,14 @@ namespace black_cat
 
 		// -- bc_mesh --------------------------------------------------------------------------------
 
-		bc_mesh::bc_mesh(core::bc_string p_name, bcSIZE p_node_count, bcSIZE p_mesh_count)
-			: m_name(p_name)
+		bc_mesh::bc_mesh(core::bc_string p_name, bcSIZE p_node_count, bcSIZE p_mesh_count, bc_mesh_collider_ptr p_colliders)
+			: m_name(p_name),
+			m_root(nullptr),
+			m_colliders(std::move(p_colliders))
 		{
 			// Reserve needed memory for nodes because we use raw pointers in bc_mesh_node for parent and childs
 			m_nodes.reserve(p_node_count);
-			m_nodes_hash.reserve(p_node_count);
+			m_nodes_map.reserve(p_node_count);
 			m_transformations.reserve(p_node_count);
 			m_meshes.reserve(p_mesh_count);
 			m_render_states.reserve(p_mesh_count);
@@ -69,9 +77,9 @@ namespace black_cat
 		const bc_mesh_node* bc_mesh::find_node(const bcCHAR* p_name) const
 		{
 			auto l_hash = hash_t()(p_name);
-			auto l_entry = m_nodes_hash.find(l_hash);
+			auto l_entry = m_nodes_map.find(l_hash);
 
-			if(l_entry == std::end(m_nodes_hash))
+			if(l_entry == std::end(m_nodes_map))
 			{
 				return nullptr;
 			}
@@ -94,7 +102,7 @@ namespace black_cat
 			return &m_transformations.at(p_node->m_transformation_index);
 		}
 
-		const bc_mesh_material* bc_mesh::get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
+		const bc_mesh_part_material* bc_mesh::get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
 		{
 			if(p_mesh_index >= p_node->m_mesh_count)
 			{
@@ -114,10 +122,20 @@ namespace black_cat
 			return m_render_states[p_node->m_first_mesh_index + p_mesh_index].get();
 		}
 
+		const bc_mesh_part_collider* bc_mesh::get_node_mesh_colliders(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
+		{
+			if (p_mesh_index >= p_node->m_mesh_count)
+			{
+				throw bc_out_of_range_exception("Invalid mesh index");
+			}
+
+			return m_colliders_map[p_node->m_first_mesh_index + p_mesh_index];;
+		}
+
 		bc_mesh_node* bc_mesh::_add_node(core::bc_string p_name,
 			bc_mesh_node* p_parent,
 			core::bc_matrix4f& p_transformation,
-			core::bc_vector_frame<std::pair<bc_mesh_data, bc_render_state_ptr>> p_meshes)
+			core::bc_vector_frame<bc_mesh_node_data> p_meshes)
 		{
 			if(!p_parent)
 			{
@@ -132,14 +150,17 @@ namespace black_cat
 			auto l_mesh_start_index = m_meshes.size();
 			auto l_mesh_count = p_meshes.size();
 			
-			m_nodes.push_back(bc_mesh_node(p_name, p_parent, l_data_index, l_mesh_start_index, l_mesh_count));
-			m_nodes_hash.insert(std::make_pair(l_node_hash, &*m_nodes.rbegin()));
+			m_nodes.push_back(bc_mesh_node(std::move(p_name), p_parent, l_data_index, l_mesh_start_index, l_mesh_count));
+			m_nodes_map.insert(std::make_pair(l_node_hash, &*m_nodes.rbegin()));
 			m_transformations.push_back(p_transformation);
 
-			for (auto& l_mesh : p_meshes)
+			for (bc_mesh_node_data& l_mesh : p_meshes)
 			{
-				m_meshes.push_back(std::move(std::get< bc_mesh_data >(l_mesh)));
-				m_render_states.push_back(std::get< bc_render_state_ptr >(l_mesh));
+				const auto* l_mesh_part_colliders = m_colliders->find_mesh_colliders(l_mesh.m_data.m_name);
+
+				m_meshes.push_back(std::move((l_mesh.m_data)));
+				m_render_states.push_back(std::move(l_mesh.m_render_state));
+				m_colliders_map.push_back(l_mesh_part_colliders);
 			}
 
 			auto l_node = &(*m_nodes.rbegin());

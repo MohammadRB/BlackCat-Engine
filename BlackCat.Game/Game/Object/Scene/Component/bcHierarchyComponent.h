@@ -31,6 +31,8 @@ namespace black_cat
 				return m_actors;
 			}
 
+			bc_actor get_actor() const noexcept override;
+
 			void add_actor(const bc_actor& p_actor);
 
 			void remove_actor(const bc_actor& p_actor);

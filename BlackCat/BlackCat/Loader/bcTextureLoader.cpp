@@ -45,11 +45,11 @@ namespace black_cat
 		return *this;
 	}
 
-	void bc_texture_loader::content_offline_processing(core::bc_content_loader_context& p_context)
+	void bc_texture_loader::content_offline_processing(core::bc_content_loader_context& p_context) const
 	{
 	}
 
-	void bc_texture_loader::content_processing(core::bc_content_loader_context& p_context)
+	void bc_texture_loader::content_processing(core::bc_content_loader_context& p_context) const
 	{
 		core::bc_path l_path(p_context.m_file_path.c_str());
 		core::bc_estring l_extension = l_path.get_file_extension();

@@ -77,6 +77,11 @@ namespace black_cat
 		using bc_rigid_actor_ref = bc_physics_ref< bc_rigid_actor >;
 
 		template< bc_physics_api TApi >
+		class bc_platform_rigid_body;
+		using bc_rigid_body = bc_platform_rigid_body< g_current_physics_api >;
+		using bc_rigid_body_ref = bc_physics_ref< bc_rigid_body >;
+
+		template< bc_physics_api TApi >
 		class bc_platform_rigid_static;
 		using bc_rigid_static = bc_platform_rigid_static< g_current_physics_api >;
 		using bc_rigid_static_ref = bc_physics_ref<bc_rigid_static>;
@@ -127,7 +132,7 @@ namespace black_cat
 		};
 
 		template< bc_physics_api TApi >
-		class bc_platform_physics : public core::bc_initializable<core::bc_unique_ptr<bc_iallocator>, core::bc_unique_ptr<bc_ilogger>>
+		class bc_platform_physics : public core::bc_initializable<core::bc_unique_ptr<bc_iallocator>, core::bc_unique_ptr<bc_itask_dispatcher>, core::bc_unique_ptr<bc_ilogger>>
 		{
 		public:
 			using platform_pack = bc_platform_physics_pack< TApi >;
@@ -213,9 +218,9 @@ namespace black_cat
 
 			/**
 			* \brief Creates a new material with default properties.
-			* \param p_static_friction the coefficient of static friction
-			* \param p_dynamic_friction the coefficient of dynamic friction
-			* \param p_restitution the coefficient of restitution
+			* \param p_static_friction the coefficient of static friction. Range [0, max_float]
+			* \param p_dynamic_friction the coefficient of dynamic friction. Range [0, max_float]
+			* \param p_restitution the coefficient of restitution. Range [0, 1]
 			* \return The new material.
 			*/
 			bc_material_ref create_material(bcFLOAT p_static_friction, bcFLOAT p_dynamic_friction, bcFLOAT p_restitution);
@@ -331,6 +336,7 @@ namespace black_cat
 			
 		private:
 			void _initialize(core::bc_unique_ptr<bc_iallocator> p_allocator, 
+				core::bc_unique_ptr<bc_itask_dispatcher> p_task_dispatcher,
 				core::bc_unique_ptr<bc_ilogger> p_logger) noexcept(false) override;
 
 			void _destroy() override;

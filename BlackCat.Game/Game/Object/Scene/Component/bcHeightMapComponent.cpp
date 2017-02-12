@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "Core/File/bcLazyContent.h"
+#include "Game/Object/Scene/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/System/Render/bcRenderInstance.h"
 
@@ -31,6 +32,11 @@ namespace black_cat
 			m_height_map = std::move(p_other.m_height_map);
 
 			return *this;
+		}
+
+		bc_actor bc_height_map_component::get_actor() const noexcept
+		{
+			return _get_manager()->component_get_actor(*this);
 		}
 
 		void bc_height_map_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)

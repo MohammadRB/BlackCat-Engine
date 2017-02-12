@@ -63,9 +63,6 @@
     <ClInclude Include="Game\System\Input\bcFileSystem.h">
       <Filter>Game\System\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Object\Mesh\bcMeshPart.h">
-      <Filter>Game\Object\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="Game\System\Render\bcStateConfigs.h">
       <Filter>Game\System\Render</Filter>
     </ClInclude>
@@ -177,6 +174,18 @@
     <ClInclude Include="Game\Object\Scene\Component\bcRigidStaticComponent.h">
       <Filter>Game\Object\Scene\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Object\Scene\bcScene.h">
+      <Filter>Game\Object\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Mesh\bcSubMesh.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Mesh\bcMeshCollider.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Physics\bcMeshPartCollider.h">
+      <Filter>Game\System\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\GamePCH.cpp">
@@ -256,6 +265,24 @@
     </ClCompile>
     <ClCompile Include="Game\Object\Scene\Component\bcRigidStaticComponent.cpp">
       <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Scene\bcScene.cpp">
+      <Filter>Game\Object\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Scene\bcActorComponent.cpp">
+      <Filter>Game\Object\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Scene\Component\bcRigidBodyComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Mesh\bcSubMesh.cpp">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Mesh\bcMeshCollider.cpp">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Physics\bcMeshPartCollider.cpp">
+      <Filter>Game\System\Physics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

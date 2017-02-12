@@ -4,6 +4,10 @@
 #include "PhysicsImp/bcExport.h"
 #include "PhysicsImp/Body/bcActor.h"
 #include "PhysicsImp/Body/bcAggregate.h"
+#include "PhysicsImp/Body/bcRigidActor.h"
+#include "PhysicsImp/Body/bcRigidBody.h"
+#include "PhysicsImp/Body/bcRigidStatic.h"
+#include "PhysicsImp/Body/bcRigidDynamic.h"
 
 namespace black_cat
 {
@@ -53,26 +57,70 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bool bc_platform_actor< g_api_physx >::is_rigid_static() const noexcept
+		bc_rigid_actor bc_platform_actor< g_api_physx >::is_rigid_actor() const noexcept
 		{
+			bc_rigid_actor l_rigid_actor;
+
 			auto* l_px_actor = static_cast< physx::PxActor* >
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_actor& >(*this)).get_platform_pack().m_px_object
 			);
+			auto l_px_rigid_actor = l_px_actor->isRigidActor();
 
-			return l_px_actor->isRigidStatic() != nullptr;
+			static_cast< bc_platform_physics_reference& >(l_rigid_actor).get_platform_pack().m_px_object = l_px_rigid_actor;
+
+			return l_rigid_actor;
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bool bc_platform_actor< g_api_physx >::is_rigid_dynamic() const noexcept
+		bc_rigid_body bc_platform_actor< g_api_physx >::is_rigid_body() const noexcept
 		{
+			bc_rigid_body l_rigid_body;
+
 			auto* l_px_actor = static_cast< physx::PxActor* >
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_actor& >(*this)).get_platform_pack().m_px_object
 			);
+			auto l_px_rigid_body = l_px_actor->isRigidBody();
 
-			return l_px_actor->isRigidDynamic() != nullptr;
+			static_cast< bc_platform_physics_reference& >(l_rigid_body).get_platform_pack().m_px_object = l_px_rigid_body;
+
+			return l_rigid_body;
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_rigid_static bc_platform_actor< g_api_physx >::is_rigid_static() const noexcept
+		{
+			bc_rigid_static l_rigid_static;
+
+			auto* l_px_actor = static_cast< physx::PxActor* >
+			(
+				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_actor& >(*this)).get_platform_pack().m_px_object
+			);
+			auto l_px_rigid_static = l_px_actor->isRigidStatic();
+
+			static_cast< bc_platform_physics_reference& >(l_rigid_static).get_platform_pack().m_px_object = l_px_rigid_static;
+
+			return l_rigid_static;
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_rigid_dynamic bc_platform_actor< g_api_physx >::is_rigid_dynamic() const noexcept
+		{
+			bc_rigid_dynamic l_rigid_dynamic;
+
+			auto* l_px_actor = static_cast< physx::PxActor* >
+			(
+				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_actor& >(*this)).get_platform_pack().m_px_object
+			);
+			auto l_px_rigid_dynamic = l_px_actor->isRigidDynamic();
+
+			static_cast< bc_platform_physics_reference& >(l_rigid_dynamic).get_platform_pack().m_px_object = l_px_rigid_dynamic;
+
+			return l_rigid_dynamic;
 		}
 
 		template<>
@@ -133,6 +181,30 @@ namespace black_cat
 		bool bc_platform_actor< g_api_physx >::is_valid() const noexcept
 		{
 			return static_cast<bc_platform_physics_reference&>(const_cast<bc_platform_actor&>(*this)).get_platform_pack().m_px_object != nullptr;
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		void bc_platform_actor< g_api_physx >::set_data(void* user_data) noexcept
+		{
+			auto* l_px_actor = static_cast< physx::PxActor* >
+			(
+				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_actor& >(*this)).get_platform_pack().m_px_object
+			);
+
+			l_px_actor->userData = user_data;
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		void* bc_platform_actor< g_api_physx >::get_data() const noexcept
+		{
+			auto* l_px_actor = static_cast< physx::PxActor* >
+			(
+				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_actor& >(*this)).get_platform_pack().m_px_object
+			);
+
+			return l_px_actor->userData;
 		}
 	}
 }

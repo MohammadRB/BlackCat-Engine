@@ -13,19 +13,17 @@
 #include "GraphicImp/Resource/View/bcDepthStencilView.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcRenderPassResourceShare.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "BlackCat/RenderPass/bcBackBufferOutputPass.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
 
 namespace black_cat
 {
-	void bc_back_buffer_output_pass::initialize_resources(game::bc_render_system& p_render_system, graphic::bc_device& p_device)
+	void bc_back_buffer_output_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
-		graphic::bc_texture2d l_back_buffer_texture = p_device.get_back_buffer_texture();
+		auto& l_device = p_render_system.get_device();
+		graphic::bc_texture2d l_back_buffer_texture = l_device.get_back_buffer_texture();
 
-		m_command_list = p_device.create_command_list();
+		m_command_list = l_device.create_command_list();
 		m_pipeline_state = p_render_system.create_device_pipeline_state
 		(
 			"mesh_vs",
@@ -58,22 +56,22 @@ namespace black_cat
 			l_back_buffer_texture.get_sample_count()
 		);
 
-		after_reset(p_render_system, p_device, l_old_parameters, l_new_parameters);
+		after_reset(p_render_system, l_device, l_old_parameters, l_new_parameters);
 	}
 
 	void bc_back_buffer_output_pass::update(const game::bc_render_system_update_param& p_update_param)
 	{
 	}
 
-	void bc_back_buffer_output_pass::initialize_frame(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread)
+	void bc_back_buffer_output_pass::initialize_frame(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
 	{
 		p_thread.start(m_command_list.get());
 		p_thread.bind_render_pass_state(m_render_pass_state.get());
 	}
 
-	void bc_back_buffer_output_pass::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread)
+	void bc_back_buffer_output_pass::execute(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
 	{
-		p_render_system.get_scene_graph().render_meshes(p_render_system, p_thread, false);
+		p_scene.render_meshes(p_render_system, p_thread, false);
 
 		p_thread.unbind_render_pass_state(m_render_pass_state.get());
 		p_thread.finish();

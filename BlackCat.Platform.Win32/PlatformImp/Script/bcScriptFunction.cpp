@@ -14,13 +14,13 @@ namespace black_cat
 
 			auto l_function = reinterpret_cast< bc_script_function_base::callback_t >(p_callback_state);
 			bc_script_var_pack
-				<
+			<
 				bc_script_variable, bc_script_variable,
 				bc_script_variable, bc_script_variable,
 				bc_script_variable, bc_script_variable,
 				bc_script_variable, bc_script_variable,
 				bc_script_variable, bc_script_variable
-				> l_pack;
+			> l_pack;
 
 			std::transform
 			(
@@ -28,12 +28,12 @@ namespace black_cat
 				std::next(p_arguments, p_argument_count),
 				std::begin(l_pack),
 				[](JsValueRef p_js_value)
-			{
-				bc_script_variable l_variable;
-				l_variable.get_platform_pack().m_js_value = p_js_value;
+				{
+					bc_script_variable l_variable;
+					l_variable.get_platform_pack().m_js_value = p_js_value;
 
-				return l_variable;
-			}
+					return l_variable;
+				}
 			);
 
 			bc_script_variable l_callback_result = l_function(l_pack.data(), p_argument_count);

@@ -2,6 +2,7 @@
 
 #include "PhysicsImp/PhysicsImpPCH.h"
 #include "PhysicsImp/bcExport.h"
+#include "PhysicsImp/bcUtility.h"
 #include "PhysicsImp/Body/bcRigidBody.h"
 
 namespace black_cat
@@ -96,10 +97,9 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_body& >(*this)).get_platform_pack().m_px_object
 			);
-			physx::PxVec3 l_px_vec3;
-			l_px_actor->setMassSpaceInertiaTensor(l_px_vec3);
+			physx::PxVec3 l_px_vec3 = l_px_actor->getMassSpaceInertiaTensor();
 
-			return core::bc_vector3f(l_px_vec3.x, l_px_vec3.y, l_px_vec3.z);
+			return bc_to_game_hand(l_px_vec3);
 		}
 
 		template<>
@@ -110,7 +110,7 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_body& >(*this)).get_platform_pack().m_px_object
 			);
-			l_px_actor->setMassSpaceInertiaTensor(physx::PxVec3(p_mass.x, p_mass.y, p_mass.z));
+			l_px_actor->setMassSpaceInertiaTensor(bc_to_right_hand(p_mass));
 		}
 
 		template<>
@@ -124,7 +124,7 @@ namespace black_cat
 
 			if (p_mass_local_pose)
 			{
-				auto l_mas_pose = physx::PxVec3(p_mass_local_pose->x, p_mass_local_pose->y, p_mass_local_pose->z);
+				auto l_mas_pose = bc_to_right_hand(*p_mass_local_pose);
 				return physx::PxRigidBodyExt::updateMassAndInertia
 				(
 					*l_px_actor,
@@ -153,7 +153,7 @@ namespace black_cat
 
 			if (p_mass_local_pose)
 			{
-				auto l_mas_pose = physx::PxVec3(p_mass_local_pose->x, p_mass_local_pose->y, p_mass_local_pose->z);
+				auto l_mas_pose = bc_to_right_hand(*p_mass_local_pose);
 				return physx::PxRigidBodyExt::updateMassAndInertia
 				(
 					*l_px_actor,
@@ -179,7 +179,7 @@ namespace black_cat
 			);
 			physx::PxVec3 l_px_vec3 = l_px_actor->getLinearVelocity();
 
-			return core::bc_vector3f(l_px_vec3.x, l_px_vec3.y, l_px_vec3.z);
+			return bc_to_game_hand(l_px_vec3);
 		}
 
 		template<>
@@ -191,7 +191,7 @@ namespace black_cat
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_body& >(*this)).get_platform_pack().m_px_object
 			);
 
-			l_px_actor->setLinearVelocity(physx::PxVec3(p_velociy.x, p_velociy.y, p_velociy.z));
+			l_px_actor->setLinearVelocity(bc_to_right_hand(p_velociy));
 		}
 
 		template<>
@@ -204,7 +204,7 @@ namespace black_cat
 			);
 			physx::PxVec3 l_px_vec3 = l_px_actor->getAngularVelocity();
 
-			return core::bc_vector3f(l_px_vec3.x, l_px_vec3.y, l_px_vec3.z);
+			return bc_to_game_hand(l_px_vec3);
 		}
 
 		template<>
@@ -216,7 +216,7 @@ namespace black_cat
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_body& >(*this)).get_platform_pack().m_px_object
 			);
 
-			l_px_actor->setAngularVelocity(physx::PxVec3(p_velociy.x, p_velociy.y, p_velociy.z));
+			l_px_actor->setAngularVelocity(bc_to_right_hand(p_velociy));
 		}
 
 		template<>
@@ -228,7 +228,7 @@ namespace black_cat
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_body& >(*this)).get_platform_pack().m_px_object
 			);
 
-			l_px_actor->addForce(physx::PxVec3(p_force.x, p_force.y, p_force.z), static_cast< physx::PxForceMode::Enum >(p_mode));
+			l_px_actor->addForce(bc_to_right_hand(p_force), static_cast< physx::PxForceMode::Enum >(p_mode));
 		}
 
 		template<>
@@ -243,8 +243,8 @@ namespace black_cat
 			physx::PxRigidBodyExt::addForceAtPos
 			(
 				*l_px_actor,
-				physx::PxVec3(p_force.x, p_force.y, p_force.z),
-				physx::PxVec3(p_pose.x, p_pose.y, p_pose.z),
+				bc_to_right_hand(p_force),
+				bc_to_right_hand(p_pose),
 				static_cast< physx::PxForceMode::Enum >(p_mode)
 			);
 		}
@@ -261,8 +261,8 @@ namespace black_cat
 			physx::PxRigidBodyExt::addForceAtLocalPos
 			(
 				*l_px_actor,
-				physx::PxVec3(p_force.x, p_force.y, p_force.z),
-				physx::PxVec3(p_pose.x, p_pose.y, p_pose.z),
+				bc_to_right_hand(p_force),
+				bc_to_right_hand(p_pose),
 				static_cast< physx::PxForceMode::Enum >(p_mode)
 			);
 		}
@@ -279,8 +279,8 @@ namespace black_cat
 			physx::PxRigidBodyExt::addLocalForceAtPos
 			(
 				*l_px_actor,
-				physx::PxVec3(p_force.x, p_force.y, p_force.z),
-				physx::PxVec3(p_pose.x, p_pose.y, p_pose.z),
+				bc_to_right_hand(p_force),
+				bc_to_right_hand(p_pose),
 				static_cast< physx::PxForceMode::Enum >(p_mode)
 			);
 		}
@@ -297,8 +297,8 @@ namespace black_cat
 			physx::PxRigidBodyExt::addLocalForceAtLocalPos
 			(
 				*l_px_actor,
-				physx::PxVec3(p_force.x, p_force.y, p_force.z),
-				physx::PxVec3(p_pose.x, p_pose.y, p_pose.z),
+				bc_to_right_hand(p_force),
+				bc_to_right_hand(p_pose),
 				static_cast< physx::PxForceMode::Enum >(p_mode)
 			);
 		}
@@ -314,7 +314,7 @@ namespace black_cat
 
 			l_px_actor->addTorque
 			(
-				physx::PxVec3(p_torque.x, p_torque.y, p_torque.z),
+				bc_to_right_hand(p_torque),
 				static_cast< physx::PxForceMode::Enum >(p_mode)
 			);
 		}

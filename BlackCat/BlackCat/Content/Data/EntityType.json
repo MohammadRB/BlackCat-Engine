@@ -39,13 +39,88 @@
       "components": [
         {
           "name": "cmp_mesh",
-          "parameters":
-          {
+          "parameters": {
             "mesh": "expr: get_mesh('ship')"
           }
         },
         {
           "name": "cmp_render",
+          "parameters": { }
+        }
+      ]
+    },
+    {
+      "name": "box",
+      "components": [
+        {
+          "name": "cmp_mesh",
+          "parameters": {
+            "mesh": "expr: get_mesh('box')"
+          }
+        },
+        {
+          "name": "cmp_render",
+          "parameters": { }
+        },
+        {
+          "name": "cmp_rigid_dynamic",
+          "parameters": { }
+        }
+      ]
+    },
+    {
+      "name": "sphere",
+      "components": [
+        {
+          "name": "cmp_mesh",
+          "parameters": {
+            "mesh": "expr: get_mesh('sphere')"
+          }
+        },
+        {
+          "name": "cmp_render",
+          "parameters": { }
+        },
+        {
+          "name": "cmp_rigid_dynamic",
+          "parameters": { }
+        }
+      ]
+    },
+    {
+      "name": "convex",
+      "components": [
+        {
+          "name": "cmp_mesh",
+          "parameters": {
+            "mesh": "expr: get_mesh('convex')"
+          }
+        },
+        {
+          "name": "cmp_render",
+          "parameters": { }
+        },
+        {
+          "name": "cmp_rigid_dynamic",
+          "parameters": { }
+        }
+      ]
+    },
+    {
+      "name": "train",
+      "components": [
+        {
+          "name": "cmp_mesh",
+          "parameters": {
+            "mesh": "expr: get_mesh('train')"
+          }
+        },
+        {
+          "name": "cmp_render",
+          "parameters": { }
+        },
+        {
+          "name": "cmp_rigid_static",
           "parameters": {}
         }
       ]

@@ -165,6 +165,10 @@ namespace black_cat
 
 			bool is_valid() const noexcept override;
 
+			void set_data(void* p_user_data) noexcept;
+
+			void* get_data() const noexcept;
+
 			platform_pack& get_platform_pack()
 			{
 				return m_pack;

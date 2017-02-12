@@ -69,7 +69,12 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_convex_mesh& >(*this)).get_platform_pack().m_px_object
 			);
-			bc_bounded_strided_data l_data(l_px_convex_mesh->getVertices(), sizeof(physx::PxVec3), l_px_convex_mesh->getNbVertices());
+			bc_bounded_strided_data l_data
+			(
+				reinterpret_cast< const core::bc_vector3f* >(l_px_convex_mesh->getVertices()), 
+				sizeof(physx::PxVec3), 
+				l_px_convex_mesh->getNbVertices()
+			);
 
 			return l_data;
 		}
@@ -82,7 +87,7 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_convex_mesh& >(*this)).get_platform_pack().m_px_object
 			);
-			bc_strided_data l_data(l_px_convex_mesh->getIndexBuffer(), sizeof(bcUINT16));
+			bc_strided_data l_data(reinterpret_cast< const bcUINT16* >(l_px_convex_mesh->getIndexBuffer()), sizeof(bcUINT16));
 
 			return l_data;
 		}

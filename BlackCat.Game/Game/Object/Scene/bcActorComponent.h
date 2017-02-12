@@ -6,6 +6,7 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/bcConstant.h"
 #include "Core/Utility/bcDataDrivenParameter.h"
+#include "Game/bcExport.h"
 #include "Game/Object/Scene/bcActor.h"
 
 namespace black_cat
@@ -17,13 +18,15 @@ namespace black_cat
 		using bc_actor_component_index = bcINT32;
 		constexpr bc_actor_component_index g_actor_component_invalid_index = bc_actor_component_index(-1);
 
-		class bc_iactor_component
+		class BC_GAME_DLL bc_iactor_component
 		{
 		private:
 			friend class bc_actor_component_manager;
 
 		public:
 			virtual ~bc_iactor_component();
+
+			virtual bc_actor get_actor() const noexcept = 0;
 
 			/**
 			 * \brief Initialize component data members that are shared between instances of this component.
@@ -42,6 +45,8 @@ namespace black_cat
 			bc_iactor_component& operator=(bc_iactor_component&& p_other) noexcept;
 
 			bc_actor_component_index get_index() const noexcept;
+
+			static bc_actor_component_manager* _get_manager() noexcept;
 
 		private:
 			bc_actor_component_index m_index;

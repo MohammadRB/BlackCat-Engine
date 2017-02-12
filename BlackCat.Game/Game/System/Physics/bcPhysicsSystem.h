@@ -12,6 +12,8 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_actor;
+
 		class BC_GAME_DLL bc_physics_system : public core::bc_initializable<>
 		{
 		public:
@@ -33,11 +35,23 @@ namespace black_cat
 				return s_height_field_y_scale_ratio;
 			}
 
+			core::bc_unique_ptr< bcINT16 > convert_height_field_samples(bcUINT32 p_num_row, bcUINT32 p_num_column, bcFLOAT* p_samples);
+
+			/**
+			 * \brief Store a pointer of bc_actor inside bc_rigid_body so it can be accessible within physics callbacks
+			 * \param p_px_actor 
+			 * \param p_rigid_component 
+			 */
+			void connect_px_actor_to_game_actor(physics::bc_rigid_actor& p_px_actor, bc_actor p_actor);
+
+			/**
+			 * \brief Retrieve stored pointer of bc_actor
+			 * \param p_px_actor 
+			 * \return 
+			 */
+			bc_actor get_game_actor(physics::bc_rigid_actor& p_px_actor);
+
 			void update(core_platform::bc_clock::update_param p_clock_update_param);
-
-			physics::bc_mesh_buffer create_height_field(bcUINT32 p_num_row, bcUINT32 p_num_column, bcFLOAT* p_samples);
-
-			physics::bc_height_field_ref create_height_field(physics::bc_mesh_buffer& p_buffer);
 
 		protected:
 			void _initialize() override;

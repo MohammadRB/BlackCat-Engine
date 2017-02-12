@@ -24,7 +24,13 @@ namespace black_cat
 		public:
 			bc_platform_shape_box(platform_pack& p_pack);
 
-			bc_platform_shape_box(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z);
+			/**
+			 * \brief Constructor to initialize half extents
+			 * \param p_x_half half of x extend
+			 * \param p_y_half half of y extend
+			 * \param p_z_half half of z extend
+			 */
+			bc_platform_shape_box(bcFLOAT p_x_half, bcFLOAT p_y_half, bcFLOAT p_z_half);
 
 			explicit bc_platform_shape_box(const core::bc_vector3f& p_half_extends);
 

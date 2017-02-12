@@ -34,6 +34,11 @@ namespace black_cat
 			return *this;
 		}
 
+		bc_actor bc_render_component::get_actor() const noexcept
+		{
+			return _get_manager()->component_get_actor(*this);
+		}
+
 		void bc_render_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
 		{
 			m_render_system = &core::bc_service_manager::get().get_service< game::bc_game_system >()->get_render_system();

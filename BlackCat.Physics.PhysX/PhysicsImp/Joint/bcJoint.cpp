@@ -4,6 +4,7 @@
 #include "PhysicsImp/bcExport.h"
 #include "PhysicsImp/Body/bcRigidActor.h"
 #include "PhysicsImp/Joint/bcJoint.h"
+#include "PhysicsImp/bcUtility.h"
 
 namespace black_cat
 {
@@ -142,7 +143,7 @@ namespace black_cat
 			);
 			auto l_px_vec = l_px_joint->getRelativeLinearVelocity();
 
-			return core::bc_vector3f(l_px_vec.x, l_px_vec.y, l_px_vec.z);
+			return bc_to_game_hand(l_px_vec);
 		}
 
 		template<>
@@ -155,7 +156,7 @@ namespace black_cat
 			);
 			auto l_px_vec = l_px_joint->getRelativeAngularVelocity();
 
-			return core::bc_vector3f(l_px_vec.x, l_px_vec.y, l_px_vec.z);
+			return bc_to_game_hand(l_px_vec);
 		}
 
 		template<>

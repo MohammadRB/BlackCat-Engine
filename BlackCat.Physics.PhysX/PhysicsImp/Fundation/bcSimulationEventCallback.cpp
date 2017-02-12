@@ -181,7 +181,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		core::bc_vector3f bc_platform_contact_point< g_api_physx >::get_position() const noexcept
 		{
-			return core::bc_vector3f(m_pack.m_px_point.position.x, m_pack.m_px_point.position.y, m_pack.m_px_point.position.z);
+			return bc_to_game_hand(m_pack.m_px_point.position);
 		}
 
 		template<>
@@ -195,7 +195,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		core::bc_vector3f bc_platform_contact_point< g_api_physx >::get_normal() const noexcept
 		{
-			return core::bc_vector3f(m_pack.m_px_point.normal.x, m_pack.m_px_point.normal.y, m_pack.m_px_point.normal.z);
+			return bc_to_game_hand(m_pack.m_px_point.normal);
 		}
 
 		template<>
@@ -216,7 +216,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		core::bc_vector3f bc_platform_contact_point< g_api_physx >::get_impulse() const noexcept
 		{
-			return core::bc_vector3f(m_pack.m_px_point.impulse.x, m_pack.m_px_point.impulse.y, m_pack.m_px_point.impulse.z);
+			return bc_to_game_hand(m_pack.m_px_point.impulse);
 		}
 
 		template<>

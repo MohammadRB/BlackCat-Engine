@@ -20,6 +20,8 @@ namespace black_cat
 
 			constexpr static bool is_left_handed() noexcept;
 
+			constexpr static bool is_top_left_texcoord() noexcept;
+
 			constexpr static bcSIZE number_of_texture2d_pixels() noexcept;
 
 			constexpr static bcSIZE number_of_ia_vertex_buffers() noexcept;
@@ -49,8 +51,8 @@ namespace black_cat
 
 		using bc_render_api_info = bc_platform_render_api_info< g_current_render_api >;
 
-		template< bc_render_api TRenderApi >
-		constexpr const bcCHAR* bc_platform_render_api_info<TRenderApi>::api_name() noexcept
+		template< >
+		constexpr const bcCHAR* bc_platform_render_api_info<g_api_dx11>::api_name() noexcept
 		{
 			return "directx11";
 		}
@@ -61,8 +63,14 @@ namespace black_cat
 			return true;
 		}
 
-		template< bc_render_api TRenderApi >
-		constexpr bcSIZE bc_platform_render_api_info<TRenderApi>::number_of_texture2d_pixels() noexcept
+		template< >
+		constexpr bool bc_platform_render_api_info<g_api_dx11>::is_top_left_texcoord() noexcept
+		{
+			return true;
+		}
+
+		template< >
+		constexpr bcSIZE bc_platform_render_api_info<g_api_dx11>::number_of_texture2d_pixels() noexcept
 		{
 			// D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION;
 			return 16384;

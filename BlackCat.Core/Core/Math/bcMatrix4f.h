@@ -36,13 +36,19 @@ namespace black_cat
 				bcFLOAT p_m31, bcFLOAT p_m32, bcFLOAT p_m33, bcFLOAT p_m34,
 				bcFLOAT p_m41, bcFLOAT p_m42, bcFLOAT p_m43, bcFLOAT p_m44);
 
-			bc_matrix4f inverse() const;
+			bc_matrix4f& operator= (const bc_matrix4f& p_matrix);
 			
-			void rotation_x(bcFLOAT p_radians);
+			void rotation_x_lh(bcFLOAT p_radians);
 
-			void rotation_y(bcFLOAT p_radians);
+			void rotation_y_lh(bcFLOAT p_radians);
 
-			void rotation_z(bcFLOAT p_radians);
+			void rotation_z_lh(bcFLOAT p_radians);
+
+			void rotation_x_rh(bcFLOAT p_radians);
+
+			void rotation_y_rh(bcFLOAT p_radians);
+
+			void rotation_z_rh(bcFLOAT p_radians);
 
 			void scale(bcFLOAT p_scale);
 
@@ -62,27 +68,7 @@ namespace black_cat
 
 			void set_translation(const bc_vector3f& p_trans);
 
-			static bc_matrix4f rotation_matrix_xyz(bcFLOAT p_radians_x, bcFLOAT p_radians_y, bcFLOAT p_radians_z);
-
-			static bc_matrix4f rotation_matrix_x(bcFLOAT p_radians);
-
-			static bc_matrix4f rotation_matrix_y(bcFLOAT p_radians);
-
-			static bc_matrix4f rotation_matrix_z(bcFLOAT p_radians);
-
-			static bc_matrix4f scale_matrix(bcFLOAT p_scale);
-
-			static bc_matrix4f scale_matrix(const bc_vector3f& p_scale);
-
-			static bc_matrix4f scale_matrix_xyz(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z);
-
-			static bc_matrix4f translation_matrix(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z);
-
-			static bc_matrix4f look_at_lh_matrix(const bc_vector3f& p_eye, const bc_vector3f& p_at, const bc_vector3f& p_up);
-
-			static bc_matrix4f perspective_fov_lh_matrix(bcFLOAT p_fovy, bcFLOAT p_aspect, bcFLOAT p_zn, bcFLOAT p_zf);
-
-			static bc_matrix4f orthographic_lh_matrix(bcFLOAT p_zn, bcFLOAT p_zf, bcFLOAT p_width, bcFLOAT p_height);
+			bc_matrix4f inverse() const;
 
 			void make_zero();
 
@@ -95,18 +81,6 @@ namespace black_cat
 			static bc_matrix4f identity();
 
 			bc_matrix4f transpose() const;
-
-			// Operators
-			bc_matrix4f& operator= (const bc_matrix4f& p_matrix);
-
-			// member access
-			bcFLOAT operator() (bcINT p_row, bcINT p_col) const;
-
-			bcFLOAT& operator() (bcINT p_row, bcINT p_col);
-
-			bcFLOAT operator[] (bcINT p_pos) const;
-
-			bcFLOAT& operator[] (bcINT p_pos);
 			
 			void set_row(bcINT p_row, const bc_vector4f& p_vector);
 
@@ -118,12 +92,18 @@ namespace black_cat
 
 			bc_vector4f get_column(bcINT p_col) const;
 
-			// comparison
+			bcFLOAT operator() (bcINT p_row, bcINT p_col) const;
+
+			bcFLOAT& operator() (bcINT p_row, bcINT p_col);
+
+			bcFLOAT operator[] (bcINT p_pos) const;
+
+			bcFLOAT& operator[] (bcINT p_pos);
+
 			bool operator== (const bc_matrix4f& p_other) const;
 
 			bool operator!= (const bc_matrix4f& p_other) const;
 
-			// arithmetic operations
 			bc_matrix4f operator+ (const bc_matrix4f& p_other) const;
 
 			bc_matrix4f operator- (const bc_matrix4f& p_other) const;
@@ -136,7 +116,6 @@ namespace black_cat
 
 			bc_matrix4f operator- () const;
 
-			// arithmetic updates
 			bc_matrix4f& operator+= (const bc_matrix4f& p_other);
 
 			bc_matrix4f& operator-= (const bc_matrix4f& p_other);
@@ -147,8 +126,43 @@ namespace black_cat
 
 			bc_matrix4f& operator/= (bcFLOAT p_scalar);
 
-			// matrix - vector operations
-			bc_vector4f operator* (const bc_vector4f& p_other) const;  // M * v
+			bc_vector4f operator* (const bc_vector4f& p_other) const;
+
+			static bc_matrix4f rotation_matrix_xyz_lh(bcFLOAT p_radians_x, bcFLOAT p_radians_y, bcFLOAT p_radians_z);
+
+			static bc_matrix4f rotation_matrix_x_lh(bcFLOAT p_radians);
+
+			static bc_matrix4f rotation_matrix_y_lh(bcFLOAT p_radians);
+			
+			static bc_matrix4f rotation_matrix_z_lh(bcFLOAT p_radians);
+
+			static bc_matrix4f rotation_matrix_xyz_rh(bcFLOAT p_radians_x, bcFLOAT p_radians_y, bcFLOAT p_radians_z);
+
+			static bc_matrix4f rotation_matrix_x_rh(bcFLOAT p_radians);
+
+			static bc_matrix4f rotation_matrix_y_rh(bcFLOAT p_radians);
+
+			static bc_matrix4f rotation_matrix_z_rh(bcFLOAT p_radians);
+
+			static bc_matrix4f scale_matrix(bcFLOAT p_scale);
+
+			static bc_matrix4f scale_matrix(const bc_vector3f& p_scale);
+
+			static bc_matrix4f scale_matrix_xyz(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z);
+
+			static bc_matrix4f translation_matrix(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z);
+
+			static bc_matrix4f look_at_matrix_lh(const bc_vector3f& p_eye, const bc_vector3f& p_at, const bc_vector3f& p_up);
+
+			static bc_matrix4f perspective_fov_matrix_lh(bcFLOAT p_fovy, bcFLOAT p_aspect, bcFLOAT p_zn, bcFLOAT p_zf);
+
+			static bc_matrix4f orthographic_matrix_lh(bcFLOAT p_zn, bcFLOAT p_zf, bcFLOAT p_width, bcFLOAT p_height);
+
+			static bc_matrix4f look_at_matrix_rh(const bc_vector3f& p_eye, const bc_vector3f& p_at, const bc_vector3f& p_up);
+
+			static bc_matrix4f perspective_fov_matrix_rh(bcFLOAT p_fovy, bcFLOAT p_aspect, bcFLOAT p_zn, bcFLOAT p_zf);
+
+			static bc_matrix4f orthographic_matrix_rh(bcFLOAT p_zn, bcFLOAT p_zf, bcFLOAT p_width, bcFLOAT p_height);
 
 			static const bcINT m11 = 0;
 			static const bcINT m12 = 1;

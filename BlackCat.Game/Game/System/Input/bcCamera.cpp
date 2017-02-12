@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 #include "Core/Event/bcEventManager.h"
 #include "Platform/bcEvent.h"
+#include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Input/bcCamera.h"
 
 namespace black_cat
@@ -133,7 +134,14 @@ namespace black_cat
 
 		void bc_icamera::create_view_matrix(const core::bc_vector3f& p_up)
 		{
-			m_view = core::bc_matrix4f::look_at_lh_matrix(m_position, m_lookat, p_up);
+			if(graphic::bc_render_api_info::is_left_handed())
+			{
+				m_view = core::bc_matrix4f::look_at_matrix_lh(m_position, m_lookat, p_up);
+			}
+			else
+			{
+				m_view = core::bc_matrix4f::look_at_matrix_rh(m_position, m_lookat, p_up);
+			}
 		}
 
 		// -- bc_orthographic_camera --------------------------------------------------------------------------------
@@ -192,7 +200,18 @@ namespace black_cat
 
 		void bc_orthographic_camera::create_projection_matrix()
 		{
-			set_projection(core::bc_matrix4f::orthographic_lh_matrix(get_near_clip(), get_far_clip(), m_max_x - m_min_x, m_max_y - m_min_y));
+			core::bc_matrix4f l_proj;
+
+			if(graphic::bc_render_api_info::is_left_handed())
+			{
+				l_proj = core::bc_matrix4f::orthographic_matrix_lh(get_near_clip(), get_far_clip(), m_max_x - m_min_x, m_max_y - m_min_y);
+			}
+			else
+			{
+				l_proj = core::bc_matrix4f::orthographic_matrix_rh(get_near_clip(), get_far_clip(), m_max_x - m_min_x, m_max_y - m_min_y);
+			}
+
+			set_projection(l_proj);
 		}
 
 		// -- bc_perspective_camera --------------------------------------------------------------------------------
@@ -252,7 +271,18 @@ namespace black_cat
 
 		void bc_perspective_camera::create_projection_matrix()
 		{
-			set_projection(core::bc_matrix4f::perspective_fov_lh_matrix(m_field_of_view, m_aspect_ratio, get_near_clip(), get_far_clip()));
+			core::bc_matrix4f l_proj;
+
+			if (graphic::bc_render_api_info::is_left_handed())
+			{
+				l_proj = core::bc_matrix4f::perspective_fov_matrix_lh(m_field_of_view, m_aspect_ratio, get_near_clip(), get_far_clip());
+			}
+			else
+			{
+				l_proj = core::bc_matrix4f::perspective_fov_matrix_rh(m_field_of_view, m_aspect_ratio, get_near_clip(), get_far_clip());
+			}
+
+			set_projection(l_proj);
 		}
 	}
 }

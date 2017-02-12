@@ -69,7 +69,7 @@ namespace black_cat
 			for (bcUINT i = 0; i < 256; ++i)
 			{
 				bc_key_state l_key_state = bc_key_state::up;
-				bc_key_state& l_prev_state = m_pack.m_state[i];
+				bc_key_state l_prev_state = m_pack.m_state[i];
 				bool l_pressed = (l_key_states[i] & 0x80) > 0;
 
 				if(l_pressed)
@@ -95,14 +95,14 @@ namespace black_cat
 					}
 				}
 
+				m_pack.m_state[i] = l_key_state;
+
 				if (l_key_state != bc_key_state::up)
 				{
 					bc_app_event_key l_key_event(static_cast<bc_key>(i), l_key_state);
 
 					m_event_manager->process_event(l_key_event);
 				}
-
-				*&l_prev_state = l_key_state;
 			}
 		}
 

@@ -138,10 +138,16 @@ namespace black_cat
 			virtual void app_load_content() = 0;
 
 			/**
-			 * \brief Update and render app
+			 * \brief Update app
 			 * \param p_clock_update_param 
 			 */
 			virtual void app_update(core_platform::bc_clock::update_param p_clock_update_param) = 0;
+
+			/**
+			 * \brief Render app
+			 * \param p_clock_update_param 
+			 */
+			virtual void app_render(core_platform::bc_clock::update_param p_clock_update_param) = 0;
 
 			/**
 			 * \brief Handle app events
@@ -182,16 +188,20 @@ namespace black_cat
 			bool m_paused;
 			bcINT32 m_termination_code;
 
+			bcUINT32 m_min_update_rate;
+			bcINT32 m_render_rate;
+
 			static const bcUINT32 s_num_time_delta_samples = 64;
 			core_platform::bc_clock::small_delta_time m_time_delta_buffer[s_num_time_delta_samples];
 			bcUINT32 m_current_time_delta_sample;
 			bcUINT32 m_fps;
-			bcINT32 m_fixed_fps;
 
 			core::bc_event_listener_handle m_event_handle_window_resizing;
 			core::bc_event_listener_handle m_event_handle_window_close;
 			core::bc_event_listener_handle m_event_handle_app_active;
 			core::bc_event_listener_handle m_event_handle_app_exit;
+			core::bc_event_listener_handle m_event_error_handle;
+			core::bc_event_listener_handle m_event_warning_handle;
 		};
 	}
 }

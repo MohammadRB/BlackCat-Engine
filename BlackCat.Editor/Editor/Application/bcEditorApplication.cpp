@@ -63,7 +63,7 @@ namespace black_cat
 
 			m_d3d_widget = std::make_unique< bc_d3d_output_widget >(centralWidget()->findChild<QFrame*>("leftRenderFrame"));
 			m_d3d_output_window = std::make_unique<bc_render_application_d3dwidget_output_window>(m_d3d_widget.get());
-			
+
 			m_render_app_thread.m_instance = p_instance;
 			m_render_app_thread.m_cmd_line = nullptr;
 			m_render_app_thread.m_output_window = m_d3d_output_window.get();
@@ -84,10 +84,6 @@ namespace black_cat
 			m_editor_game_console->connect_widget(m_console_widget.get());
 
 			QObject::connect(m_editor_game_console.get(), SIGNAL(scriptExecuted(const QString&)), this, SLOT(onScriptExecution(const QString&)));
-			
-			core::bc_get_service<core::bc_logger>()->log_info(bcL("info from editor"));
-			core::bc_get_service<core::bc_logger>()->log_debug(bcL("debug from editor"));
-			core::bc_get_service<core::bc_logger>()->log_error(bcL("error from editor"));
 		}
 
 		bc_editor_app::~bc_editor_app()

@@ -81,9 +81,12 @@ namespace black_cat
 		bc_scene bc_platform_physics< g_api_physx >::create_scene(bc_scene_builder&& p_desc)
 		{
 			bc_scene l_result;
-			
+
+			p_desc.get_platform_pack().m_px_desc.cpuDispatcher = m_pack.m_task_dispatcher.get();
+
 			l_result.get_platform_pack().m_px_scene = m_pack.m_px_physics->createScene(p_desc.get_platform_pack().m_px_desc);
 			l_result.get_platform_pack().m_allocator = m_pack.m_allocator->m_imp.get();
+			l_result.get_platform_pack().m_task_dispatcher = m_pack.m_task_dispatcher->m_imp.get();
 			l_result.get_platform_pack().m_simulation_callback = std::move(p_desc.get_platform_pack().m_simulation_callback);
 			l_result.get_platform_pack().m_contact_filter_callback = std::move(p_desc.get_platform_pack().m_contact_filter_callback);
 			l_result.get_platform_pack().m_contact_modify_callback = std::move(p_desc.get_platform_pack().m_contact_modify_callback);
@@ -254,12 +257,12 @@ namespace black_cat
 		bc_mesh_buffer bc_platform_physics< g_api_physx >::create_convex_mesh(const bc_convex_mesh_desc& p_desc)
 		{
 			bc_mesh_buffer l_result;
-			physx::PxConvexMeshDesc l_px_desc;
+			core::bc_unique_ptr<physx::PxVec3> l_vertex_buffer(static_cast< physx::PxVec3* >
+			(
+				bcAlloc(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
+			));
 
-			l_px_desc.points.data = p_desc.m_points.m_data;
-			l_px_desc.points.stride = p_desc.m_points.m_stride;
-			l_px_desc.points.count = p_desc.m_points.m_count;
-			l_px_desc.vertexLimit = p_desc.m_vertex_limit;
+			physx::PxConvexMeshDesc l_px_desc = bc_convert_to_px_convex_mesh(p_desc, l_vertex_buffer.get());
 			l_px_desc.flags = physx::PxConvexFlag::eCOMPUTE_CONVEX;
 
 			physx::PxConvexMeshCookingResult::Enum l_px_result_flag;
@@ -312,17 +315,18 @@ namespace black_cat
 		bc_mesh_buffer bc_platform_physics< g_api_physx >::create_triangle_mesh(const bc_triangle_mesh_desc& p_desc)
 		{
 			bc_mesh_buffer l_result;
-			physx::PxTriangleMeshDesc l_px_desc;
+			bool is_16_bit_index = core::bc_enum::has(p_desc.m_flag, bc_triangle_mesh_flag::use_16bit_index);
 
-			l_px_desc.points.data = p_desc.m_points.m_data;
-			l_px_desc.points.stride = p_desc.m_points.m_stride;
-			l_px_desc.points.count = p_desc.m_points.m_count;
-			l_px_desc.triangles.data = p_desc.m_indices.m_data;
-			l_px_desc.triangles.stride = p_desc.m_indices.m_stride;
-			l_px_desc.triangles.count = p_desc.m_indices.m_count;
-			l_px_desc.materialIndices.data = reinterpret_cast< const physx::PxMaterialTableIndex* >(p_desc.m_material_indices.m_data);
-			l_px_desc.materialIndices.stride = p_desc.m_material_indices.m_stride;
-			l_px_desc.flags = static_cast< physx::PxMeshFlag::Enum >(p_desc.m_flag);
+			core::bc_unique_ptr<physx::PxVec3> l_vertex_buffer(static_cast< physx::PxVec3* >
+			(
+				bcAlloc(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
+			));
+			core::bc_unique_ptr< bcBYTE > l_index_buffer(static_cast< bcBYTE* >
+			(
+				bcAlloc(sizeof(bcBYTE) * p_desc.m_indices.m_count * is_16_bit_index ? sizeof(bcUINT16) : sizeof(bcUINT32), core::bc_alloc_type::frame)
+			));
+
+			physx::PxTriangleMeshDesc l_px_desc = bc_convert_to_px_triangle_mesh(p_desc, l_vertex_buffer.get(), l_index_buffer.get());
 
 			if (m_pack.m_px_cooking->cookTriangleMesh(l_px_desc, *l_result.get_platform_pack().m_px_stream))
 			{
@@ -363,16 +367,17 @@ namespace black_cat
 		bc_mesh_buffer bc_platform_physics< g_api_physx >::create_height_field(const bc_height_field_desc& p_desc)
 		{
 			bc_mesh_buffer l_result;
-			physx::PxHeightFieldDesc l_px_desc = bc_convert_to_px_height_field(p_desc);
+			core::bc_unique_ptr<physx::PxHeightFieldSample> l_sample_buffer(static_cast< physx::PxHeightFieldSample* >
+			(
+				bcAlloc(sizeof(physx::PxHeightFieldSample) * (p_desc.m_num_row * p_desc.m_num_column), core::bc_alloc_type::frame)
+			));
+
+			physx::PxHeightFieldDesc l_px_desc = bc_convert_to_px_height_field(p_desc, l_sample_buffer.get());
 
 			if (m_pack.m_px_cooking->cookHeightField(l_px_desc, *l_result.get_platform_pack().m_px_stream))
 			{
 				l_result.get_platform_pack().m_is_valid = true;
 			}
-
-			// TODO Is it required to free samples
-			void* l_data = const_cast< void* >(l_px_desc.samples.data);
-			bcFree(l_data);
 
 			return l_result;
 		}
@@ -549,11 +554,13 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		void bc_platform_physics< g_api_physx >::_initialize(core::bc_unique_ptr<bc_iallocator> p_allocator, 
+			core::bc_unique_ptr<bc_itask_dispatcher> p_task_dispatcher,
 			core::bc_unique_ptr<bc_ilogger> p_logger)
 		{
 			physx::PxTolerancesScale l_px_scale;
 
 			m_pack.m_allocator = core::bc_make_unique<bc_px_allocator>(std::move(p_allocator));
+			m_pack.m_task_dispatcher = core::bc_make_unique<bc_px_task_dispatcher>(std::move(p_task_dispatcher));
 			m_pack.m_logger = core::bc_make_unique<bc_px_logger>(std::move(p_logger));
 
 			m_pack.m_px_fundation = PxCreateFoundation(PX_PHYSICS_VERSION, *m_pack.m_allocator, *m_pack.m_logger);
@@ -609,6 +616,25 @@ namespace black_cat
 			}
 
 			PxRegisterHeightFields(*m_pack.m_px_physics);
+
+#ifdef BC_DEBUG
+			if (m_pack.m_px_physics->getPvdConnectionManager() != nullptr)
+			{
+				const bcCHAR* pvd_host_ip = "127.0.0.1";
+				bcINT32 port = 5425;
+				bcUINT32 timeout = 100;
+				physx::PxVisualDebuggerConnectionFlags connectionFlags = physx::PxVisualDebuggerExt::getAllConnectionFlags();
+
+				m_pack.m_visaulizer = physx::PxVisualDebuggerExt::createConnection
+				(
+					m_pack.m_px_physics->getPvdConnectionManager(),
+					pvd_host_ip,
+					port,
+					timeout,
+					connectionFlags
+				);
+			}
+#endif
 		}
 
 		template<>
@@ -619,10 +645,15 @@ namespace black_cat
 			m_pack.m_px_physics->release();
 #ifdef BC_DEBUG
 			m_pack.m_px_profile->release();
+			if(m_pack.m_visaulizer)
+			{
+				m_pack.m_visaulizer->release();
+			}
 #endif
 			m_pack.m_px_fundation->release();
 
 			m_pack.m_allocator.reset(nullptr);
+			m_pack.m_task_dispatcher.reset(nullptr);
 			m_pack.m_logger.reset(nullptr);
 		}
 	}

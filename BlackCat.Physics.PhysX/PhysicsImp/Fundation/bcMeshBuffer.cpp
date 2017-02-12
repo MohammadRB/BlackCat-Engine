@@ -20,7 +20,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_platform_mesh_buffer<g_api_physx>::bc_platform_mesh_buffer(bc_platform_mesh_buffer&& p_other) noexcept
 		{
-			m_pack.m_px_stream = std::move(p_other.m_pack.m_px_stream);
+			operator=(std::move(p_other));
 		}
 
 		template<>
@@ -34,6 +34,7 @@ namespace black_cat
 		bc_platform_mesh_buffer<g_api_physx>& bc_platform_mesh_buffer<g_api_physx>::operator=(bc_platform_mesh_buffer&& p_other) noexcept
 		{
 			m_pack.m_px_stream = std::move(p_other.m_pack.m_px_stream);
+			m_pack.m_is_valid = p_other.m_pack.m_is_valid;
 
 			return *this;
 		}

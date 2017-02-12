@@ -134,6 +134,7 @@ bc_vs_output vs(bc_vs_input p_input, uint p_vertex_id : SV_VertexID)
 
     l_output.m_position = p_input.m_position;
     l_output.m_texcoord = p_input.m_texcoord;
+    //l_output.m_texcoord.y = 1 - l_output.m_texcoord.y;
 
     return l_output;
 }

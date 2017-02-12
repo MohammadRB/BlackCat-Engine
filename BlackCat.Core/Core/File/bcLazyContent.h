@@ -21,7 +21,7 @@ namespace black_cat
 
 			bc_icontent_ptr get_content() const
 			{
-				auto* l_content_stream_manager = bc_service_manager::get().get_service< bc_content_stream_manager >();
+				auto* l_content_stream_manager = bc_get_service< bc_content_stream_manager >();
 				auto l_content = l_content_stream_manager->find_content(m_content_name.c_str());
 
 				if(l_content == nullptr)

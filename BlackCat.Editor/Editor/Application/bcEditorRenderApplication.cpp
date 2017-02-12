@@ -1,6 +1,7 @@
 // [11/13/2016 MRB]
 
 #include "Editor/EditorPCH.h"
+#include "Platform/bcEvent.h"
 #include "Game/System/Input/bcFreeCamera.h"
 #include "BlackCat/RenderPass/bcInitializePass.h"
 #include "BlackCat/RenderPass/bcTerrainPassDx11.h"
@@ -42,29 +43,92 @@ namespace black_cat
 			m_game_system->get_render_system().add_render_pass(2, core::bc_make_unique< bc_back_buffer_output_pass >());
 
 			m_game_system->get_input_system().get_camera().set_position_lookat(core::bc_vector3f(0, 100, -512), core::bc_vector3f(0, 0, 0));
+
+			m_shape_throw_key_handle = core::bc_get_service< core::bc_event_manager >()->register_event_listener
+			(
+				platform::bc_app_event_key::event_name(),
+				[this, l_counter = 0](const core::bc_ievent& p_event) mutable
+				{
+					const platform::bc_app_event_key& l_key_event = static_cast< const platform::bc_app_event_key& >(p_event);
+
+					if(l_key_event.get_key_state() == platform::bc_key_state::pressing && l_key_event.get_key() == platform::bc_key::kb_space)
+					{
+						auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
+						auto* l_scene = m_game_system->get_scene();
+
+						game::bc_actor l_actor;
+
+						l_counter = l_counter % 4;
+						switch (l_counter)
+						{
+						case 0:
+							l_actor = l_entity_manager->create_entity("sphere");
+							break;
+						case 1:
+							l_actor = l_entity_manager->create_entity("box");
+							break;
+						case 2:
+							l_actor = l_entity_manager->create_entity("convex");
+							break;
+						case 3:
+							l_actor = l_entity_manager->create_entity("train");
+							break;
+						}
+						++l_counter;
+
+						auto* l_rigid_component = l_actor.get_component<game::bc_rigid_body_component>();
+						auto l_rigid = l_rigid_component->get_body();
+
+						auto l_position = m_game_system->get_input_system().get_camera().get_position();
+						l_rigid_component->get_body().set_global_pose(physics::bc_transform(l_position));
+
+						if(l_rigid.is_rigid_dynamic().is_valid())
+						{
+							auto l_direction = m_game_system->get_input_system().get_camera().get_forward();
+
+							l_rigid_component->get_body().update_mass_inertia(10);
+							l_rigid_component->get_body().set_linear_velocity(l_direction * 50);
+						}
+						else
+						{
+							core::bc_matrix4f l_mat;
+							l_mat.translate(l_position.x, l_position.y, l_position.z);
+
+							l_actor.get_component<game::bc_mesh_component>()->set_world_pos(l_mat);
+						}
+
+						l_scene->add_object(l_actor);
+					}
+
+					return true;
+				}
+			);
 		}
 
 		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager* p_stream_manager)
 		{
 			auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
-			auto& l_scence_graph = m_game_system->get_render_system().get_scene_graph();
+			auto* l_scene = m_game_system->get_scene();
 
 			p_stream_manager->load_content_stream(core::bc_alloc_type::program, "main");
 			
-			auto l_actor1 = l_entity_manager->create_entity("crysis_heightmap");
-			auto l_actor2 = l_entity_manager->create_entity("m16A2");
-			auto l_actor3 = l_entity_manager->create_entity("ship");
+			auto l_terrain = l_entity_manager->create_entity("crysis_heightmap");
+			auto l_m16 = l_entity_manager->create_entity("m16A2");
+			auto l_ship = l_entity_manager->create_entity("ship");
 
-			l_scence_graph.add_object(l_actor1);
-			l_scence_graph.add_object(l_actor2);
-			l_scence_graph.add_object(l_actor3);
+			l_scene->add_object(l_terrain);
+			l_scene->add_object(l_m16);
+			l_scene->add_object(l_ship);
 		}
 
 		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param)
 		{
 			m_service_manager->update(p_clock_update_param);
+		}
 
-			m_game_system->get_render_system().render();
+		void bc_editor_render_app::application_render(core_platform::bc_clock::update_param p_clock_update_param)
+		{
+			m_game_system->render();
 		}
 
 		bool bc_editor_render_app::application_event(core::bc_ievent& p_event)
@@ -74,15 +138,13 @@ namespace black_cat
 
 		void bc_editor_render_app::application_unload_content(core::bc_content_stream_manager* p_stream_manager)
 		{
-			auto& l_scence_graph = m_game_system->get_render_system().get_scene_graph();
-
-			l_scence_graph.clear();
-
+			m_game_system->set_scene(nullptr);
 			p_stream_manager->unload_content_stream("main");
 		}
 
 		void bc_editor_render_app::application_destroy()
 		{
+			m_shape_throw_key_handle.reset();
 		}
 
 		void bc_editor_render_app::application_close_engine_components()

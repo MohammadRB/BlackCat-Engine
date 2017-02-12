@@ -22,6 +22,7 @@ namespace black_cat
 		{
 			physx::PxScene* m_px_scene;
 			bc_iallocator* m_allocator;
+			bc_itask_dispatcher* m_task_dispatcher;
 			bc_px_query_filter_callback m_query_filter_callback;
 			core::bc_unique_ptr<bc_px_simulation_callback> m_simulation_callback;
 			core::bc_unique_ptr<bc_px_contact_filter_callback> m_contact_filter_callback;

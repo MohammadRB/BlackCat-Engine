@@ -12,6 +12,11 @@ namespace black_cat
 		template<>
 		struct bc_platform_task_pack<g_api_physx>
 		{
+			explicit bc_platform_task_pack(physx::PxBaseTask* p_px_task)
+				: m_px_task(p_px_task)
+			{
+			}
+
 			physx::PxBaseTask* m_px_task;
 		};
 	}

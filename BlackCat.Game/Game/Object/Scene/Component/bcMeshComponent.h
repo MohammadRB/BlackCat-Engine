@@ -9,7 +9,7 @@
 #include "Game/Object/Scene/bcActor.h"
 #include "Game/Object/Scene/bcActorComponent.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
-#include "Game/Object/Mesh/bcMeshPart.h"
+#include "Game/Object/Mesh/bcSubMesh.h"
 
 namespace black_cat
 {
@@ -28,15 +28,19 @@ namespace black_cat
 
 			bc_mesh_component& operator=(bc_mesh_component&&) noexcept;
 
-			const bc_mesh_part& get_mesh_part() const
+			const bc_sub_mesh& get_sub_mesh() const
 			{
-				return m_mesh_part;
+				return m_sub_mesh;
 			}
 
 			const bc_mesh_part_transformation& get_mesh_part_transformation() const
 			{
 				return m_mesh_part_transformation;
 			}
+
+			bc_actor get_actor() const noexcept override;
+
+			void set_world_pos(const core::bc_matrix4f& p_pos);
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
@@ -47,7 +51,7 @@ namespace black_cat
 		protected:
 
 		private:
-			bc_mesh_part m_mesh_part;
+			bc_sub_mesh m_sub_mesh;
 			bc_mesh_part_transformation m_mesh_part_transformation;
 		};
 	}

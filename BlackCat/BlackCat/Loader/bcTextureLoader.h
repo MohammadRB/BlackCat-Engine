@@ -24,7 +24,7 @@ namespace black_cat
 		return bc_compile_time_string_hash(BC_CONTENT_NAME(texture2d));
 	}
 
-	class BC_BLACKCAT_DLL_EXP bc_texture_loader : public core::bc_base_content_loader
+	class BC_BLACKCAT_DLL bc_texture_loader : public core::bc_base_content_loader
 	{
 	public:
 		explicit bc_texture_loader();
@@ -35,9 +35,9 @@ namespace black_cat
 
 		bc_texture_loader& operator=(bc_texture_loader&&) noexcept;
 
-		void content_offline_processing(core::bc_content_loader_context& p_context) override;
+		void content_offline_processing(core::bc_content_loader_context& p_context) const override;
 
-		void content_processing(core::bc_content_loader_context& p_context) override;
+		void content_processing(core::bc_content_loader_context& p_context) const override;
 
 		static graphic::bc_texture_config s_default_config;
 

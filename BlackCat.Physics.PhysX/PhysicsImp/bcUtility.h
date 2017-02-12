@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CorePlatform/bcType.h"
+#include "Core/Math/bcCoordinate.h"
+#include "../BlackCat.Graphic.DirectX11/GraphicImp/bcRenderApiInfo.h"
 #include "Physics/Shape/bcShapeGeometry.h"
 #include "Physics/Shape/bcShapeSphere.h"
 #include "Physics/Shape/bcShapeBox.h"
@@ -36,131 +38,138 @@ namespace black_cat
 			}
 		}
 
-		physx::PxHeightFieldDesc bc_convert_to_px_height_field(const bc_height_field_desc& p_desc);
+		physx::PxHeightFieldDesc bc_convert_to_px_height_field(const bc_height_field_desc& p_desc, physx::PxHeightFieldSample* p_px_sample_buffer);
 
-		/*class bc_px_geometry_holder
+		physx::PxConvexMeshDesc bc_convert_to_px_convex_mesh(const bc_convex_mesh_desc& p_desc, physx::PxVec3* p_px_point_buffer);
+
+		physx::PxTriangleMeshDesc bc_convert_to_px_triangle_mesh(const bc_triangle_mesh_desc& p_desc, physx::PxVec3* p_px_point_buffer, bcBYTE* p_px_index_buffer);
+
+		inline physx::PxVec3 bc_to_right_hand(const core::bc_vector3f& p_vector)
 		{
-		public:
-			explicit bc_px_geometry_holder(const bc_shape_geometry& p_geometry)
+			if(graphic::bc_render_api_info::is_left_handed())
 			{
-				switch (p_geometry.get_type())
-				{
-				case bc_shape_type::sphere:
-					from_sphere(static_cast< const bc_shape_sphere& >(p_geometry));
-					m_geometry = &m_sphere;
-					break;
-				case bc_shape_type::plane:
-					from_box(static_cast< const bc_shape_box& >(p_geometry));
-					m_geometry = &m_box;
-					break;
-				case bc_shape_type::capsule:
-					from_capsule(static_cast< const bc_shape_capsule& >(p_geometry));
-					m_geometry = &m_capsule;
-					break;
-				case bc_shape_type::box:
-					from_plane(static_cast< const bc_shape_plane& >(p_geometry));
-					m_geometry = &m_plane;
-					break;
-				case bc_shape_type::convexmesh:
-					from_convex_mesh(static_cast< const bc_shape_convex_mesh& >(p_geometry));
-					m_geometry = &m_convex_mesh;
-					break;
-				case bc_shape_type::trianglemesh:
-					from_triangle_mesh(static_cast< const bc_shape_triangle_mesh& >(p_geometry));
-					m_geometry = &m_triangle_mesh;
-					break;
-				case bc_shape_type::heightfield:
-					from_height_field(static_cast< const bc_shape_height_field& >(p_geometry));
-					m_geometry = &m_height_field;
-					break;
-				default:
-					break;
-				}
+				auto l_vec = p_vector;
+
+				core::bc_to_right_hand(l_vec);
+
+				return physx::PxVec3(l_vec.x, l_vec.y, l_vec.z);
 			}
 
-			void from_sphere(const bc_shape_sphere& p_sphere) noexcept
+			return physx::PxVec3(p_vector.x, p_vector.y, p_vector.z);
+		}
+
+		inline core::bc_vector3f bc_to_game_hand(const physx::PxVec3& p_vector)
+		{
+			if(graphic::bc_render_api_info::is_left_handed())
 			{
-				m_sphere = physx::PxSphereGeometry(p_sphere.m_radius);
+				core::bc_vector3f l_vec(p_vector.x, p_vector.y, p_vector.z);
+
+				core::bc_to_left_hand(l_vec);
+
+				return l_vec;
 			}
 
-			void from_box(const bc_shape_box& p_box) noexcept
+			return core::bc_vector3f(p_vector.x, p_vector.y, p_vector.z);
+		}
+
+		inline physx::PxMat33 bc_to_right_hand(const core::bc_matrix3f& p_mat)
+		{
+			if (graphic::bc_render_api_info::is_left_handed())
 			{
-				m_box = physx::PxBoxGeometry(physx::PxVec3
+				auto l_mat = p_mat;
+
+				core::bc_to_right_hand(l_mat);
+
+				return physx::PxMat33
 				(
-					p_box.m_half_extends.x,
-					p_box.m_half_extends.y,
-					p_box.m_half_extends.z
-				));
-			}
-
-			void from_capsule(const bc_shape_capsule& p_capsule) noexcept
-			{
-				m_capsule = physx::PxCapsuleGeometry(p_capsule.m_radius, p_capsule.m_half_height);
-			}
-
-			void from_plane(const bc_shape_plane& p_plane) noexcept
-			{
-				m_plane = physx::PxPlaneGeometry();
-			}
-
-			void from_convex_mesh(const bc_shape_convex_mesh& p_convex_mesh) noexcept
-			{
-				m_convex_mesh = physx::PxConvexMeshGeometry
-				(
-					static_cast< physx::PxConvexMesh* >(static_cast< bc_physics_reference& >
-					(
-						const_cast< bc_convex_mesh& >(p_convex_mesh.m_convex)
-					).get_platform_pack().m_px_object),
-					physx::PxMeshScale(p_convex_mesh.m_scale.m_scale)
+					physx::PxVec3(l_mat[0], l_mat[1], l_mat[2]),
+					physx::PxVec3(l_mat[3], l_mat[4], l_mat[5]),
+					physx::PxVec3(l_mat[6], l_mat[7], l_mat[8])
 				);
 			}
 
-			void from_triangle_mesh(const bc_shape_triangle_mesh& p_triangle_mesh) noexcept
+			return physx::PxMat33
+			(
+				physx::PxVec3(p_mat[0], p_mat[1], p_mat[2]),
+				physx::PxVec3(p_mat[3], p_mat[4], p_mat[5]),
+				physx::PxVec3(p_mat[6], p_mat[7], p_mat[8])
+			);
+		}
+
+		inline core::bc_matrix3f bc_to_game_hand(const physx::PxMat33& p_mat)
+		{
+			if (graphic::bc_render_api_info::is_left_handed())
 			{
-				m_triangle_mesh = physx::PxTriangleMeshGeometry
+				core::bc_matrix3f l_mat
 				(
-					static_cast< physx::PxTriangleMesh* >(static_cast< bc_physics_reference& >
-					(
-						const_cast< bc_triangle_mesh& >(p_triangle_mesh.m_mesh)
-					).get_platform_pack().m_px_object),
-					physx::PxMeshScale(p_triangle_mesh.m_scale.m_scale)
+					p_mat.column0.x, p_mat.column0.y, p_mat.column0.z,
+					p_mat.column1.x, p_mat.column1.y, p_mat.column1.z,
+					p_mat.column2.x, p_mat.column2.y, p_mat.column2.z
+				);
+
+				core::bc_to_left_hand(l_mat);
+
+				return l_mat;
+			}
+
+			return core::bc_matrix3f
+			(
+				p_mat.column0.x, p_mat.column0.y, p_mat.column0.z,
+				p_mat.column1.x, p_mat.column1.y, p_mat.column1.z,
+				p_mat.column2.x, p_mat.column2.y, p_mat.column2.z
+			);
+		}
+
+		inline physx::PxMat44 bc_to_right_hand(const core::bc_matrix4f& p_mat)
+		{
+			if (graphic::bc_render_api_info::is_left_handed())
+			{
+				auto l_mat = p_mat;
+
+				core::bc_to_right_hand(l_mat);
+
+				return physx::PxMat44
+				(
+					physx::PxVec4(l_mat[0], l_mat[1], l_mat[2], l_mat[3]),
+					physx::PxVec4(l_mat[4], l_mat[5], l_mat[6], l_mat[7]),
+					physx::PxVec4(l_mat[8], l_mat[9], l_mat[10], l_mat[11]),
+					physx::PxVec4(l_mat[12], l_mat[13], l_mat[14], l_mat[15])
 				);
 			}
 
-			void from_height_field(const bc_shape_height_field& p_height_field) noexcept
+			return physx::PxMat44
+			(
+				physx::PxVec4(p_mat[0], p_mat[1], p_mat[2], p_mat[3]),
+				physx::PxVec4(p_mat[4], p_mat[5], p_mat[6], p_mat[7]),
+				physx::PxVec4(p_mat[8], p_mat[9], p_mat[10], p_mat[11]),
+				physx::PxVec4(p_mat[12], p_mat[13], p_mat[14], p_mat[15])
+			);
+		}
+
+		inline core::bc_matrix4f bc_to_game_hand(const physx::PxMat44& p_mat)
+		{
+			if (graphic::bc_render_api_info::is_left_handed())
 			{
-				m_height_field = physx::PxHeightFieldGeometry
+				core::bc_matrix4f l_mat
 				(
-					static_cast< physx::PxHeightField* >(static_cast< bc_physics_reference& >
-					(
-						const_cast< bc_height_field& >(p_height_field.m_height_field)
-					).get_platform_pack().m_px_object),
-					physx::PxMeshGeometryFlags(),
-					p_height_field.m_y_scale,
-					p_height_field.m_xz_scale,
-					p_height_field.m_xz_scale
+					p_mat.column0.x, p_mat.column0.y, p_mat.column0.z, p_mat.column0.w,
+					p_mat.column1.x, p_mat.column1.y, p_mat.column1.z, p_mat.column1.w,
+					p_mat.column2.x, p_mat.column2.y, p_mat.column2.z, p_mat.column2.w,
+					p_mat.column3.x, p_mat.column3.y, p_mat.column3.z, p_mat.column3.w
 				);
+
+				core::bc_to_left_hand(l_mat);
+
+				return l_mat;
 			}
 
-			physx::PxGeometry& get() const noexcept
-			{
-				return *m_geometry;
-			}
-
-		protected:
-
-		private:
-			physx::PxGeometry* m_geometry;
-			union
-			{
-				physx::PxSphereGeometry m_sphere;
-				physx::PxBoxGeometry m_box;
-				physx::PxCapsuleGeometry m_capsule;
-				physx::PxPlaneGeometry m_plane;
-				physx::PxConvexMeshGeometry m_convex_mesh;
-				physx::PxTriangleMeshGeometry m_triangle_mesh;
-				physx::PxHeightFieldGeometry m_height_field;
-			};
-		};*/
+			return core::bc_matrix4f
+			(
+				p_mat.column0.x, p_mat.column0.y, p_mat.column0.z, p_mat.column0.w,
+				p_mat.column1.x, p_mat.column1.y, p_mat.column1.z, p_mat.column1.w,
+				p_mat.column2.x, p_mat.column2.y, p_mat.column2.z, p_mat.column2.w,
+				p_mat.column3.x, p_mat.column3.y, p_mat.column3.z, p_mat.column3.w
+			);
+		}
 	}
 }

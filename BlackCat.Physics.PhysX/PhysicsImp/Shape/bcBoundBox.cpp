@@ -3,6 +3,7 @@
 #include "PhysicsImp/PhysicsImpPCH.h"
 #include "PhysicsImp/bcExport.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
+#include "PhysicsImp/bcUtility.h"
 
 namespace black_cat
 {
@@ -20,7 +21,7 @@ namespace black_cat
 		{
 			m_pack.m_bound = physx::PxBounds3::centerExtents
 			(
-				physx::PxVec3(p_center.x, p_center.y, p_center.z),
+				bc_to_right_hand(p_center),
 				physx::PxVec3(p_half_extend.x, p_half_extend.y, p_half_extend.z)
 			);
 		}
@@ -52,7 +53,7 @@ namespace black_cat
 		core::bc_vector3f bc_platform_bound_box< g_api_physx >::get_center() const noexcept
 		{
 			auto l_vec3 = m_pack.m_bound.getCenter();
-			return core::bc_vector3f(l_vec3.x, l_vec3.y, l_vec3.z);
+			return bc_to_game_hand(l_vec3);
 		}
 
 		template<>
@@ -67,7 +68,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		void bc_platform_bound_box< g_api_physx >::expand(const core::bc_vector3f& p_point) noexcept
 		{
-			m_pack.m_bound.include(physx::PxVec3(p_point.x, p_point.y, p_point.z));
+			m_pack.m_bound.include(bc_to_right_hand(p_point));
 		}
 
 		template<>
@@ -88,7 +89,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bool bc_platform_bound_box< g_api_physx >::contains(const core::bc_vector3f& p_point) const noexcept
 		{
-			return m_pack.m_bound.contains(physx::PxVec3(p_point.x, p_point.y, p_point.z));
+			return m_pack.m_bound.contains(bc_to_right_hand(p_point));
 		}
 
 		template<>

@@ -32,7 +32,7 @@ namespace black_cat
 
 			core::bc_vector_frame< bc_actor > get_heightmaps() const;
 
-			void update(const bc_input_system& p_input_system, core_platform::bc_clock::update_param p_clock_update_param);
+			void update(core_platform::bc_clock::update_param p_clock_update_param);
 
 			void render_heightmaps(bc_render_system& p_render_system, bc_render_thread& p_render_thread);
 

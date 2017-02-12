@@ -33,17 +33,31 @@ namespace black_cat
 				bcFLOAT p_m21, bcFLOAT p_m22, bcFLOAT p_m23,
 				bcFLOAT p_m31, bcFLOAT p_m32, bcFLOAT p_m33);
 
-			void rotation_x(bcFLOAT p_radians);
+			bc_matrix3f& operator= (const bc_matrix3f& p_matrix);
 
-			void rotation_y(bcFLOAT p_radians);
+			void rotation_x_lh(bcFLOAT p_radians);
 
-			void rotation_z(bcFLOAT p_radians);
+			void rotation_y_lh(bcFLOAT p_radians);
 
-			void rotation(bc_vector3f& p_rot);
+			void rotation_z_lh(bcFLOAT p_radians);
 
-			void rotation_zyx(bc_vector3f& p_rot);
+			void rotation_lh(bc_vector3f& p_rot);
 
-			void rotation_euler(bc_vector3f& p_axis, bcFLOAT p_angle);
+			void rotation_zyx_lh(bc_vector3f& p_rot);
+
+			void rotation_euler_lh(bc_vector3f& p_axis, bcFLOAT p_angle);
+
+			void rotation_x_rh(bcFLOAT p_radians);
+
+			void rotation_y_rh(bcFLOAT p_radians);
+
+			void rotation_z_rh(bcFLOAT p_radians);
+
+			void rotation_rh(bc_vector3f& p_rot);
+
+			void rotation_zyx_rh(bc_vector3f& p_rot);
+
+			void rotation_euler_rh(bc_vector3f& p_axis, bcFLOAT p_angle);
 
 			void orthonormalize();
 
@@ -59,7 +73,13 @@ namespace black_cat
 
 			bc_matrix3f transpose();
 
-			bc_matrix3f& operator= (const bc_matrix3f& p_matrix);
+			void set_row(bcINT p_row, const bc_vector3f& p_vector);
+
+			bc_vector3f get_row(bcINT p_row) const;
+
+			void set_column(bcINT p_col, const bc_vector3f& p_vector);
+
+			bc_vector3f get_column(bcINT p_col) const;
 
 			bcFLOAT operator() (bcINT p_row, bcINT p_col) const;
 
@@ -68,14 +88,6 @@ namespace black_cat
 			bcFLOAT operator[] (bcINT p_pos) const;
 
 			bcFLOAT& operator[] (bcINT p_pos);
-
-			void set_row(bcINT p_row, const bc_vector3f& p_vector);
-
-			bc_vector3f get_row(bcINT p_row) const;
-
-			void set_column(bcINT p_col, const bc_vector3f& p_vector);
-
-			bc_vector3f get_column(bcINT p_col) const;
 
 			bool operator== (const bc_matrix3f& p_other) const;
 

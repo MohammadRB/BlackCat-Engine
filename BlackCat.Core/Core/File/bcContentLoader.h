@@ -134,29 +134,54 @@ namespace black_cat
 		public:
 			virtual ~bc_icontent_loader() = default;
 
-			// Will be called when content file opened for offline processing
-			virtual void content_file_open_successed(bc_content_loader_context& p_context) = 0;
+			/**
+			 * \brief Will be called when offline content file opened for processing
+			 * \param p_context 
+			 */
+			virtual void content_offline_file_open_successed(bc_content_loader_context& p_context) const = 0;
 
-			// Will be called when there is a problem with opening content or offline file
-			virtual void content_file_open_failed(bc_content_loader_context& p_context) = 0;
+			/**
+			 * \brief Will be called when offline content file doesn't exist and it must be created
+			 * \param p_context 
+			 */
+			virtual void content_offline_processing(bc_content_loader_context& p_context) const = 0;
 
-			// Will be called when offline content file doesn't exist and it must be created
-			virtual void content_offline_processing(bc_content_loader_context& p_context) = 0;
+			/**
+			 * \brief Will be called when offline file processing finish and it's time to save offline file
+			 * \param p_context 
+			 */
+			virtual void content_offline_saving(bc_content_loader_context& p_context) const = 0;
 
-			// Will be called when offline file processing finish and it's time to save offline file
-			virtual void content_offline_saving(bc_content_loader_context& p_context) = 0;
+			/**
+			 * \brief Will be called when content file opened for offline processing
+			 * \param p_context 
+			 */
+			virtual void content_file_open_successed(bc_content_loader_context& p_context) const = 0;
 
-			// Will be called when offline content file opened for processing
-			virtual void content_offline_file_open_successed(bc_content_loader_context& p_context) = 0;
+			/**
+			 * \brief Will be called when there is a problem with opening content or offline file
+			 * \param p_context 
+			 */
+			virtual void content_file_open_failed(bc_content_loader_context& p_context) const = 0;
 
-			// Will be called when offline content file exist and it is valid
-			virtual void content_processing(bc_content_loader_context& p_context) = 0;
+			/**
+			 * \brief Will be called when offline content file exist and it is valid
+			 * \param p_context 
+			 */
+			virtual void content_processing(bc_content_loader_context& p_context) const = 0;
 
-			// Will be called to get the result
-			virtual bc_content_loader_result finish(bc_content_loader_context& p_context) = 0;
+			/**
+			 * \brief Will be called to get the result
+			 * \param p_context 
+			 * \return 
+			 */
+			virtual bc_content_loader_result finish(bc_content_loader_context& p_context) const = 0;
 
-			// Will be called when content processing has been finished, or an exception has been thrown during pipeline
-			virtual void cleanup(bc_content_loader_context& p_context) = 0;
+			/**
+			 * \brief Will be called when content processing has been finished, or an exception has been thrown during pipeline
+			 * \param p_context 
+			 */
+			virtual void cleanup(bc_content_loader_context& p_context) const = 0;
 
 		protected:
 			bc_icontent_loader() = default;
@@ -171,21 +196,33 @@ namespace black_cat
 		public:
 			virtual ~bc_base_content_loader();
 
-			// Load file in bc_vector_frame<bcBYTE>
-			void content_file_open_successed(bc_content_loader_context& p_context) override;
+			/**
+			 * \brief Load file in bc_vector_frame<bcBYTE>
+			 * \param p_context 
+			 */
+			void content_offline_file_open_successed(bc_content_loader_context& p_context) const override;
 
-			// Throw exception
-			void content_file_open_failed(bc_content_loader_context& p_context) override;
+			/**
+			 * \brief Write bc_vector_frame<bcBYTE> to file
+			 * \param p_context 
+			 */
+			void content_offline_saving(bc_content_loader_context& p_context) const override;
 
-			// Write bc_vector_frame<bcBYTE> to file
-			void content_offline_saving(bc_content_loader_context& p_context) override;
+			/**
+			 * \brief Load file in bc_vector_frame<bcBYTE>
+			 * \param p_context 
+			 */
+			void content_file_open_successed(bc_content_loader_context& p_context) const override;
 
-			// Load file in bc_vector_frame<bcBYTE>
-			void content_offline_file_open_successed(bc_content_loader_context& p_context) override;
+			/**
+			 * \brief Throw exception
+			 * \param p_context 
+			 */
+			void content_file_open_failed(bc_content_loader_context& p_context) const override;
 
-			bc_content_loader_result finish(bc_content_loader_context& p_context) override;
+			bc_content_loader_result finish(bc_content_loader_context& p_context) const override;
 
-			void cleanup(bc_content_loader_context& p_context) override;
+			void cleanup(bc_content_loader_context& p_context) const override;
 
 		protected:
 			bc_base_content_loader();

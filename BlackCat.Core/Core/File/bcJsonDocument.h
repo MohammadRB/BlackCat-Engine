@@ -250,22 +250,22 @@ namespace black_cat
 
 		template< typename T >
 		class bc_json_array
+		<
+			T,
+			typename std::enable_if
 			<
-				T,
-				typename std::enable_if
-				<
-					std::is_same< bool, typename std::decay< T >::type >::value ||
-					std::is_same< bcINT, typename std::decay< T >::type >::value ||
-					std::is_same< bcUINT, typename std::decay< T >::type >::value ||
-					std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
-					std::is_same< bc_string, typename std::decay< T >::type >::value ||
-					std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
-					std::is_same< bc_string_level, typename std::decay< T >::type >::value ||
-					std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
-					std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
-					std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
-				>::type
-			> : public bc_ijson_value
+				std::is_same< bool, typename std::decay< T >::type >::value ||
+				std::is_same< bcINT, typename std::decay< T >::type >::value ||
+				std::is_same< bcUINT, typename std::decay< T >::type >::value ||
+				std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_level, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
+				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
+				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
+			>::type
+		> : public bc_ijson_value
 		{
 		public:
 			bc_json_array(const char* p_name, bc_ijson_structure* p_jstructure);

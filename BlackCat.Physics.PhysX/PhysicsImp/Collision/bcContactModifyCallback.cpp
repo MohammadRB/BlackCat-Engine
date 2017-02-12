@@ -3,6 +3,7 @@
 #include "PhysicsImp/PhysicsImpPCH.h"
 #include "PhysicsImp/bcExport.h"
 #include "PhysicsImp/Collision/bcContactModifyCallback.h"
+#include "PhysicsImp/bcUtility.h"
 
 namespace black_cat
 {
@@ -42,14 +43,14 @@ namespace black_cat
 		{
 			auto l_px_vec = m_pack.m_px_set->getPoint(p_index);
 
-			return core::bc_vector3f(l_px_vec.x, l_px_vec.y, l_px_vec.z);
+			return bc_to_game_hand(l_px_vec);
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		void bc_platform_contact_modify_set<g_api_physx>::set_point(bcUINT32 p_index, const core::bc_vector3f& p_point) noexcept
 		{
-			m_pack.m_px_set->setPoint(p_index, physx::PxVec3(p_point.x, p_point.y, p_point.z));
+			m_pack.m_px_set->setPoint(p_index, bc_to_right_hand(p_point));
 		}
 
 		template<>
@@ -58,14 +59,14 @@ namespace black_cat
 		{
 			auto l_px_vec = m_pack.m_px_set->getNormal(p_index);
 
-			return core::bc_vector3f(l_px_vec.x, l_px_vec.y, l_px_vec.z);
+			return bc_to_game_hand(l_px_vec);
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		void bc_platform_contact_modify_set<g_api_physx>::set_normal(bcUINT32 p_index, const core::bc_vector3f& p_normal) noexcept
 		{
-			m_pack.m_px_set->setNormal(p_index, physx::PxVec3(p_normal.x, p_normal.y, p_normal.z));
+			m_pack.m_px_set->setNormal(p_index, bc_to_right_hand(p_normal));
 		}
 
 		template<>

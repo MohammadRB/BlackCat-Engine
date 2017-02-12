@@ -51,6 +51,27 @@ namespace black_cat
 			core::bc_unique_ptr< bc_iallocator > m_imp;
 		};
 
+		class bc_px_task_dispatcher : public physx::PxCpuDispatcher
+		{
+		public:
+			explicit bc_px_task_dispatcher(core::bc_unique_ptr< bc_itask_dispatcher > p_imp)
+				: m_imp(std::move(p_imp))
+			{
+			}
+
+			void submitTask(physx::PxBaseTask& task) override
+			{
+				m_imp->add_task(bc_task(bc_task::platform_pack(&task)));
+			}
+
+			physx::PxU32 getWorkerCount() const override
+			{
+				return m_imp->worker_count();
+			}
+
+			core::bc_unique_ptr< bc_itask_dispatcher > m_imp;
+		};
+
 		class bc_px_logger : public physx::PxErrorCallback
 		{
 		public:

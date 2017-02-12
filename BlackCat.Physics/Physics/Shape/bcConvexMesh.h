@@ -4,6 +4,7 @@
 
 #include "CorePlatform/bcType.h"
 #include "Core/Utility/bcEnumOperand.h"
+#include "Core/Math/bcVector3f.h"
 #include "Physics/bcPhysicsApi.h"
 #include "Physics/bcUtility.h"
 #include "Physics/bcPhysicsReference.h"
@@ -34,7 +35,7 @@ namespace black_cat
 
 		struct bc_convex_mesh_desc
 		{
-			bc_convex_mesh_desc(const bc_bounded_strided_data& p_points,
+			bc_convex_mesh_desc(const bc_bounded_strided_typed_data<core::bc_vector3f>& p_points,
 				bcUINT16 p_vertex_limit = 256,
 				bc_convex_mesh_flag p_flags = core::bc_enum::none<bc_convex_mesh_flag>()/*core::bc_enum::or({ bc_convex_mesh_flag::use_16bit_index })*/)
 				: m_points(p_points),
@@ -43,7 +44,13 @@ namespace black_cat
 			{
 			}
 
-			const bc_bounded_strided_data m_points;
+			/**
+			 * \brief Vertex positions data in bc_vector3f format.
+			 */
+			const bc_bounded_strided_typed_data<core::bc_vector3f> m_points;
+			/**
+			 * \brief Limits the number of vertices of the result convex mesh. Hard maximum limit is 256 and minimum limit is 4. 
+			 */
 			const bcUINT16 m_vertex_limit;
 			const bc_convex_mesh_flag m_flags;
 		};

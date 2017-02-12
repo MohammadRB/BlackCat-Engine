@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 #include "Platform/bcEvent.h"
+#include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Input/bcFreeCamera.h"
 
 namespace black_cat
@@ -91,8 +92,16 @@ namespace black_cat
 				core::bc_vector3f l_right = get_right();
 				core::bc_vector3f l_up = get_up();
 
-				l_rotation_y.rotation_euler(l_up, -l_dx);
-				l_rotation_x.rotation_euler(l_right, l_dy);
+				if(graphic::bc_render_api_info::is_left_handed())
+				{
+					l_rotation_y.rotation_euler_lh(l_up, -l_dx);
+					l_rotation_x.rotation_euler_lh(l_right, l_dy);
+				}
+				else
+				{
+					l_rotation_y.rotation_euler_rh(l_up, -l_dx);
+					l_rotation_x.rotation_euler_rh(l_right, l_dy);
+				}
 				l_rotation = l_rotation_y * l_rotation_x;
 
 				l_direction = l_rotation * l_direction;

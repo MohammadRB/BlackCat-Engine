@@ -13,6 +13,7 @@
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/Script/bcScriptSystem.h"
 #include "Game/System/Script/bcGameConsole.h"
+#include "Game/Object/Scene/bcScene.h"
 
 namespace black_cat
 {
@@ -71,6 +72,15 @@ namespace black_cat
 				return m_console;
 			}
 
+			bc_scene* get_scene() const
+			{
+				return m_scene.get();
+			}
+
+			void set_scene(core::bc_unique_ptr<bc_scene> p_scene);
+
+			void render();
+
 		protected:
 			void update(core_platform::bc_clock::update_param p_clock_update_param) override;
 
@@ -81,21 +91,21 @@ namespace black_cat
 
 			bc_input_system m_input_system;
 			bc_file_system m_file_system;
-			bc_render_system m_render_system;
 			bc_physics_system m_physics_system;
 			bc_script_system m_script_system;
+			bc_render_system m_render_system;
 			bc_game_console m_console;
+			core::bc_unique_ptr<bc_scene> m_scene;
 		};
 
 		inline bc_game_system::bc_game_system()
 			: m_input_system(),
 			m_file_system(),
-			m_render_system(),
 			m_physics_system(),
 			m_script_system(),
+			m_render_system(),
 			m_console(m_script_system)
-		{
-
+		{	
 		}
 
 		inline bc_game_system::~bc_game_system()
@@ -104,6 +114,16 @@ namespace black_cat
 			{
 				destroy();
 			}
+		}
+
+		inline void bc_game_system::set_scene(core::bc_unique_ptr<bc_scene> p_scene)
+		{
+			m_scene = std::move(p_scene);
+		}
+
+		inline void bc_game_system::render()
+		{
+			m_render_system.render(*m_scene.get());
 		}
 
 		inline void bc_game_system::update(core_platform::bc_clock::update_param p_clock_update_param)
@@ -122,20 +142,30 @@ namespace black_cat
 				l_camera_extends
 			);
 
-			m_render_system.update(l_render_system_update_params);
 			m_physics_system.update(p_clock_update_param);
 			m_script_system.update(p_clock_update_param);
+			m_render_system.update(l_render_system_update_params);
 			m_console.update(p_clock_update_param);
+
+			m_scene->update(m_physics_system, p_clock_update_param);
 		}
 
 		inline void bc_game_system::_initialize(bc_game_system_parameter p_paramter)
 		{
 			m_render_system.initialize(std::move(p_paramter.m_render_system_parameter));
 			m_physics_system.initialize();
+
+			auto l_px_scene_builder = std::move(physics::bc_scene_builder()
+				.enable_ccd());
+			auto l_px_scene = m_physics_system.get_physics().create_scene(std::move(l_px_scene_builder));
+			auto l_scene_graph = bc_scene_graph();
+
+			m_scene = core::bc_make_unique<bc_scene>(std::move(l_scene_graph), std::move(l_px_scene));
 		}
 
 		inline void bc_game_system::_destroy()
 		{
+			m_scene.reset();
 			m_physics_system.destroy();
 			m_render_system.destroy();
 		}

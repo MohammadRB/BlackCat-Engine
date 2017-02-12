@@ -152,6 +152,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="Core\File\bcLazyContent.h" />
     <ClInclude Include="Core\File\bcPath.h" />
     <ClInclude Include="Core\File\bcStream.h" />
+    <ClInclude Include="Core\Math\bcCoordinate.h" />
     <ClInclude Include="Core\Math\bcMatrix3f.h" />
     <ClInclude Include="Core\Math\bcMatrix4f.h" />
     <ClInclude Include="Core\Math\bcVector2f.h" />
