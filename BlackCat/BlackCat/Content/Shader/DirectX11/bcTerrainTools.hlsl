@@ -6,16 +6,16 @@
 
 // == Resource ===================================================================================
 
-Texture2D<float> g_heightmap            : register(BC_COMPUTE_STATE_T0);
+Texture2D<int> g_heightmap              : register(BC_COMPUTE_STATE_T0);
 RWStructuredBuffer<int3> g_chunk_info   : register(BC_COMPUTE_STATE_U0);
 
-cbuffer g_cb_parameter : register(BC_COMPUTE_STATE_CB0)
+cbuffer g_cb_parameter      : register(BC_COMPUTE_STATE_CB0)
 {
     uint g_width            : packoffset(c0.x);
     uint g_height           : packoffset(c0.y);
     uint g_chunk_size       : packoffset(c0.z);
-    uint g_xz_Multiplier    : packoffset(c0.w);
-    uint g_y_multiplier     : packoffset(c1.x);
+    uint g_xz_multiplier    : packoffset(c0.w);
+    float g_y_multiplier    : packoffset(c1.x);
     uint g_distance_detail  : packoffset(c1.y); // Distance from camera that render will happen with full detail
     uint g_height_detail    : packoffset(c1.z); // Lower values result in higher details
 };
@@ -35,7 +35,7 @@ float compute_distance_from_plane(float4 p_plane, float3 p_position)
 float get_height(uint2 p_texcoord)
 {
     p_texcoord.y = g_height - p_texcoord.y; // In directx TexCoord (0,0) is top-left but we begin from bottom-left
-    return g_heightmap[p_texcoord] * g_y_multiplier;
+    return g_heightmap.Load(int3(p_texcoord, 0)) * g_y_multiplier;
 }
 
 uint2 get_chunk_id(uint2 p_dispatch_thread_id)
@@ -72,7 +72,7 @@ void chunk_info(uint3 p_group_id : SV_GroupID,
 
     // Wait for all threads to load
     GroupMemoryBarrierWithGroupSync();
-
+    
     uint l_step = 1;
     uint l_divider = 2;
     

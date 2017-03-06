@@ -26,7 +26,7 @@ namespace black_cat
 		bcUINT32 m_chunk_size;
 		bcUINT32 m_xz_multiplier;
 		BC_CBUFFER_ALIGN
-		bcUINT32 m_y_multiplier;
+		bcFLOAT m_y_multiplier;
 		bcUINT32 m_distance_detail;
 		bcUINT32 m_height_detail;
 	};
@@ -35,7 +35,8 @@ namespace black_cat
 	{
 	public:
 		explicit bc_height_map_texture_read_task(graphic::bc_texture2d p_height_map)
-			: m_height_map(p_height_map)
+			: m_height_map(p_height_map),
+			m_texel_size(0)
 		{
 		}
 
@@ -68,8 +69,8 @@ namespace black_cat
 
 			auto l_mapped = l_device.map_resource(l_texture.get(), 0, graphic::bc_resource_map::read);
 			
-			auto l_texel_size = l_mapped.m_row_pitch / l_width;
-			bcUINT32 l_buffer_size = l_width * l_height * l_texel_size;
+			m_texel_size = l_mapped.m_row_pitch / l_width;
+			bcUINT32 l_buffer_size = l_width * l_height * m_texel_size;
 			m_texture_buffer.reset(static_cast< bcUBYTE* >(bcAlloc(l_buffer_size, core::bc_alloc_type::frame)));
 
 			void* l_src = l_mapped.m_data;
@@ -87,15 +88,16 @@ namespace black_cat
 		}
 
 		graphic::bc_texture2d m_height_map;
+		bcUINT32 m_texel_size;
 		core::bc_unique_ptr<bcUBYTE> m_texture_buffer;
 	};
 
 	bc_height_map_dx11::bc_height_map_dx11(const core::bc_vector3f& p_position,
 		bcUINT16 p_xz_multiplier,
-		bcUINT16 p_y_multiplier,
+		bcFLOAT p_y_multiplier,
 		bcUINT16 p_distance_detail,
 		bcUINT16 p_height_detail,
-		graphic::bc_texture2d_content_ptr& p_height_map,
+		graphic::bc_texture2d_ptr& p_height_map,
 		graphic::bc_resource_view_ptr& p_height_map_view,
 		graphic::bc_buffer_ptr& p_parameter_cbuffer,
 		game::bc_render_state_ptr& p_render_state,
@@ -106,8 +108,8 @@ namespace black_cat
 		: bc_height_map
 		(
 			p_position,
-			p_height_map->get_resource()->get_width(),
-			p_height_map->get_resource()->get_height(),
+			p_height_map->get_width(),
+			p_height_map->get_height(),
 			p_xz_multiplier,
 			p_y_multiplier,
 			p_render_state,
@@ -157,25 +159,24 @@ namespace black_cat
 		l_height_map_copy_task.wait();
 
 		bcUINT32 l_sample_count = l_width * l_height;
-		core::bc_unique_ptr<bcFLOAT> l_heights(reinterpret_cast<bcFLOAT*>(bcAlloc(sizeof(bcFLOAT) * l_sample_count, core::bc_alloc_type::frame)));
+		core::bc_unique_ptr<bcINT16> l_heights(reinterpret_cast<bcINT16*>(bcAlloc(sizeof(bcINT16) * l_sample_count, core::bc_alloc_type::frame)));
 
+		bcUINT32 l_texel_size = l_height_map_copy_task.m_texel_size;
 		bcUBYTE* l_texture_data = l_height_map_copy_task.m_texture_buffer.get();
-		bcFLOAT* l_dest = l_heights.get();
+		bcINT16* l_dest = l_heights.get();
 		auto* l_y_multiplier_value = p_context.m_parameter.get_value< bcINT >("y_multiplier");
 		auto l_y_multiplier = bc_null_default(l_y_multiplier_value, 512);
 		
 		for (bcUINT32 l_i = 0, l_end = l_sample_count; l_i < l_end; ++l_i)
 		{
-			bcFLOAT l_value = (l_texture_data[l_i * 4] / 255.f) * l_y_multiplier; // read red channel of texture
+			bcINT16 l_value = ((l_texture_data[l_i * l_texel_size] / 255.f) / l_physics_system.get_height_field_y_scale()) * l_y_multiplier; // read red channel of texture
 
 			l_dest[l_i] = l_value;
 		}
 
 		l_height_map_copy_task.m_texture_buffer.reset();
 
-		auto l_samples_buffer = l_physics_system.convert_height_field_samples(l_width, l_height, l_heights.get());
-		
-		physics::bc_bounded_strided_typed_data<bcINT16> l_samples_data(l_samples_buffer.get(), sizeof(bcINT16), l_sample_count);
+		physics::bc_bounded_strided_typed_data<bcINT16> l_samples_data(l_dest, sizeof(bcINT16), l_sample_count);
 		physics::bc_bounded_strided_typed_data<physics::bc_material_index> l_samples_material;
 
 		physics::bc_height_field_desc l_px_desc(l_width, l_height, l_samples_data, l_samples_material);
@@ -187,22 +188,33 @@ namespace black_cat
 
 	void bc_height_map_loader_dx11::content_processing(core::bc_content_loader_context& p_context) const
 	{
-		auto* l_content_loader = core::bc_get_service< core::bc_content_manager >();
 		auto* l_game_system = core::bc_get_service< game::bc_game_system >();
 		auto& l_render_system = l_game_system->get_render_system();
 		auto& l_physics_system = l_game_system->get_physics_system();
 		auto* l_device = &l_render_system.get_device();
 		auto* l_physics = &l_physics_system.get_physics();
+		
+		physics::bc_mesh_buffer l_px_buffer = l_physics->read_to_mesh_buffer(p_context.m_data.data(), p_context.m_data.size());
+		physics::bc_height_field_ref l_px_height_map = l_physics->create_height_field(l_px_buffer);
 
-		auto l_heightmap_texture = l_content_loader->load< graphic::bc_texture2d_content >
-		(
-			p_context.get_allocator_alloc_type(),
-			p_context.m_file_path.c_str(),
-			core::bc_content_loader_parameter(p_context.m_parameter)
-		);
+		auto l_width = l_px_height_map->get_num_column();
+		auto l_height = l_px_height_map->get_num_row();
 
-		auto l_width = l_heightmap_texture->get_resource()->get_width();
-		auto l_height = l_heightmap_texture->get_resource()->get_height();
+		// TODO use appropriate sample type based on texture format
+		core::bc_unique_ptr<bcINT32> l_samples(static_cast<bcINT32*>(bcAlloc(l_width * l_height * sizeof(bcINT32), core::bc_alloc_type::frame)));
+		bcINT32* l_dest = l_samples.get();
+
+		for (bcUINT32 l_z = 0; l_z < l_width; ++l_z)
+		{
+			for(bcUINT32 l_x = 0; l_x < l_height; ++l_x)
+			{
+				l_dest[l_z * l_width + l_x] = l_px_height_map->get_height(l_x, l_z);
+			}
+		}
+
+		auto l_heightmap_texture_config = get_height_map_texture_config(l_width, l_height);
+		graphic::bc_subresource_data l_height_map_texture_data(l_dest, l_width * sizeof(bcINT32), l_width * l_height * sizeof(bcINT32));
+		auto l_heightmap_texture = l_render_system.get_device().create_texture2d(l_heightmap_texture_config, &l_height_map_texture_data);
 		
 		auto* l_x_pos_value = p_context.m_parameter.get_value< bcINT >("x_pos");
 		auto* l_y_pos_value = p_context.m_parameter.get_value< bcINT >("y_pos");
@@ -219,7 +231,7 @@ namespace black_cat
 			bc_null_default(l_z_pos_value, 0)
 		);
 		bcUINT16 l_xz_multiplier = bc_null_default(l_xz_multiplier_value, 1);
-		bcUINT16 l_y_multiplier = bc_null_default(l_y_multiplier_value, 512);
+		bcFLOAT l_y_multiplier = bc_null_default(l_y_multiplier_value, 512);
 		bcUINT16 l_distance_detail = bc_null_default(l_distance_detail_value, 100);
 		bcUINT16 l_height_detail = bc_null_default(l_height_detail_value, 20);
 
@@ -286,7 +298,7 @@ namespace black_cat
 		l_parameter.m_height = l_height;
 		l_parameter.m_chunk_size = s_chund_size;
 		l_parameter.m_xz_multiplier = l_xz_multiplier;
-		l_parameter.m_y_multiplier = l_y_multiplier;
+		l_parameter.m_y_multiplier = l_physics_system.get_height_field_y_scale();
 		l_parameter.m_distance_detail = l_distance_detail;
 		l_parameter.m_height_detail = l_height_detail;
 
@@ -344,7 +356,7 @@ namespace black_cat
 
 		auto l_heightmap_view_config = l_resource_configure
 			.as_resource_view()
-			.as_texture_view(graphic::bc_format::R8G8B8A8_UNORM)
+			.as_texture_view(l_heightmap_texture->get_format())
 			.as_tex2d_shader_view(0, 1)
 			.on_texture2d();
 		auto l_chunk_info_view_config = l_resource_configure
@@ -358,7 +370,7 @@ namespace black_cat
 			.as_unordered_view(0, l_width_chunk_count * l_height_chunk_count)
 			.as_structured_buffer();
 
-		auto l_heightmap_view = l_device->create_resource_view(l_heightmap_texture->get_resource().get(), l_heightmap_view_config);
+		auto l_heightmap_view = l_device->create_resource_view(l_heightmap_texture.get(), l_heightmap_view_config);
 		auto l_chunk_info_view = l_device->create_resource_view(l_chunk_info_buffer.get(), l_chunk_info_view_config);
 		auto l_chunk_info_unordered_view = l_device->create_resource_view(l_chunk_info_buffer.get(), l_chunk_info_unordered_view_config);
 
@@ -383,14 +395,11 @@ namespace black_cat
 			}
 		);
 
-		physics::bc_mesh_buffer l_px_buffer = l_physics->read_to_mesh_buffer(p_context.m_data.data(), p_context.m_data.size());
-		physics::bc_height_field_ref l_px_height_map = l_physics->create_height_field(l_px_buffer);
-
 		auto l_height_map = bc_height_map_dx11
 		(
 			l_position,
 			l_xz_multiplier,
-			l_y_multiplier,
+			l_physics_system.get_height_field_y_scale(),
 			l_distance_detail,
 			l_height_detail, 
 			l_heightmap_texture,
@@ -404,5 +413,21 @@ namespace black_cat
 		);
 
 		p_context.set_result(std::move(l_height_map));
+	}
+
+	graphic::bc_texture_config bc_height_map_loader_dx11::get_height_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const
+	{
+		return graphic::bc_graphic_resource_configure().as_resource()
+			.as_texture2d
+			(
+				p_width,
+				p_height,
+				false,
+				1,
+				graphic::bc_format::R16_SINT,
+				graphic::bc_resource_usage::gpu_rw,
+				core::bc_enum::or({ graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered })
+			)
+			.as_normal_texture();
 	}
 }

@@ -1,9 +1,10 @@
 // [11/13/2016 MRB]
 
 #include "Editor/EditorPCH.h"
+
 #include "Core/Event/bcEventManager.h"
 #include "Platform/bcEvent.h"
-#include "Editor/Application/bcD3DOutputWidget.h"
+#include "Editor/Widget/bcD3DOutputWidget.h"
 
 namespace black_cat
 {
@@ -59,8 +60,9 @@ namespace black_cat
 			}
 			
 			platform::bc_app_event_key l_key_event(l_key, platform::bc_key_state::pressing);
-
 			core::bc_get_service< core::bc_event_manager >()->queue_event(core::bc_make_event(l_key_event), 0);
+
+			emit mousePressed(p_event);
 		}
 
 		void bc_d3d_output_widget::mouseReleaseEvent(QMouseEvent* p_event)
@@ -83,8 +85,9 @@ namespace black_cat
 			}
 
 			platform::bc_app_event_key l_key_event(l_key, platform::bc_key_state::releasing);
-
 			core::bc_get_service< core::bc_event_manager >()->queue_event(core::bc_make_event(l_key_event), 0);
+
+			emit mouseReleased(p_event);
 		}
 
 		void bc_d3d_output_widget::mouseMoveEvent(QMouseEvent* p_event)
@@ -96,11 +99,12 @@ namespace black_cat
 			l_pointing_state.m_dy = p_event->globalY() - m_last_mouse_y;
 
 			platform::bc_app_event_pointing l_pointing_event(l_pointing_state);
-
 			core::bc_get_service< core::bc_event_manager >()->queue_event(core::bc_make_event(l_pointing_event), 0);
 
 			m_last_mouse_x = p_event->globalX();
 			m_last_mouse_y = p_event->globalY();
+
+			emit mouseMoved(p_event);
 		}
 
 		void bc_d3d_output_widget::keyPressEvent(QKeyEvent* p_event)

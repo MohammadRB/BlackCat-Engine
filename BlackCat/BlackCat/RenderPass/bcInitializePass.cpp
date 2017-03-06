@@ -97,9 +97,4 @@ namespace black_cat
 		m_depth_stencil_view.reset();
 		m_render_target_view.reset();
 	}
-
-	core::bc_string bc_initialize_pass::get_name()
-	{
-		return "initialize_pass";
-	}
 }

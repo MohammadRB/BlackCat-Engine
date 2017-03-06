@@ -15,30 +15,30 @@ namespace black_cat
 		struct bc_platform_scene_query_buffer_pack< g_api_physx, bc_platform_ray_hit< g_api_physx > >
 		{
 			physx::PxRaycastBuffer m_px_query;
-			mutable bc_platform_ray_hit< g_api_physx > m_block;
-			mutable core::bc_vector< bc_platform_ray_hit< g_api_physx > > m_touches;
+			/*mutable bc_platform_ray_hit< g_api_physx > m_block;
+			mutable core::bc_vector< bc_platform_ray_hit< g_api_physx > > m_touches;*/
 		};
 
 		template<>
 		struct bc_platform_scene_query_buffer_pack< g_api_physx, bc_platform_overlap_hit< g_api_physx > >
 		{
 			physx::PxOverlapBuffer m_px_query;
-			mutable bc_platform_overlap_hit< g_api_physx > m_block;
-			mutable core::bc_vector< bc_platform_overlap_hit< g_api_physx > > m_touches;
+			/*mutable bc_platform_overlap_hit< g_api_physx > m_block;
+			mutable core::bc_vector< bc_platform_overlap_hit< g_api_physx > > m_touches;*/
 		};
 
 		template<>
 		struct bc_platform_scene_query_buffer_pack< g_api_physx, bc_platform_sweep_hit< g_api_physx > >
 		{
 			physx::PxSweepBuffer m_px_query;
-			mutable bc_platform_sweep_hit< g_api_physx > m_block;
-			mutable core::bc_vector< bc_platform_sweep_hit< g_api_physx > > m_touches;
+			/*mutable bc_platform_sweep_hit< g_api_physx > m_block;
+			mutable core::bc_vector< bc_platform_sweep_hit< g_api_physx > > m_touches;*/
 		};
 
 		template<bc_physics_api TApi, class THit>
 		bc_platform_scene_query_buffer< TApi, THit >::bc_platform_scene_query_buffer(bcUINT32 p_touching_hit_count)
 		{
-			m_pack.m_touches.reserve(p_touching_hit_count);
+			//m_pack.m_touches.reserve(p_touching_hit_count);
 		}
 
 		template<bc_physics_api TApi, class THit>
@@ -56,8 +56,8 @@ namespace black_cat
 		bc_platform_scene_query_buffer< TApi, THit >& bc_platform_scene_query_buffer< TApi, THit >::operator=(const bc_platform_scene_query_buffer& p_other) noexcept
 		{
 			m_pack.m_px_query = p_other.m_pack.m_px_query;
-			m_pack.m_block = p_other.m_pack.m_block;
-			m_pack.m_touches = p_other.m_pack.m_touches;
+			/*m_pack.m_block = p_other.m_pack.m_block;
+			m_pack.m_touches = p_other.m_pack.m_touches;*/
 
 			return *this;
 		}
@@ -69,11 +69,15 @@ namespace black_cat
 		}
 
 		template<bc_physics_api TApi, class THit>
-		const THit* bc_platform_scene_query_buffer< TApi, THit >::get_block() const noexcept
+		THit bc_platform_scene_query_buffer< TApi, THit >::get_block() const noexcept
 		{
-			m_pack.m_block.get_platform_pack().m_px_hit = m_pack.m_px_query.block;
+			/*m_pack.m_block.get_platform_pack().m_px_hit = m_pack.m_px_query.block;
 
-			return &m_pack.m_block;
+			return &m_pack.m_block;*/
+			THit l_hit;
+			l_hit.get_platform_pack().m_px_hit = m_pack.m_px_query.block;
+
+			return l_hit;
 		}
 
 		template<bc_physics_api TApi, class THit>
@@ -83,9 +87,9 @@ namespace black_cat
 		}
 
 		template<bc_physics_api TApi, class THit>
-		const THit* bc_platform_scene_query_buffer< TApi, THit >::get_touches() const noexcept
+		THit bc_platform_scene_query_buffer< TApi, THit >::get_touch(bcUINT32 p_index) const noexcept
 		{
-			if (m_pack.m_touches.size() == 0)
+			/*if (m_pack.m_touches.size() == 0)
 			{
 				m_pack.m_touches.resize(m_pack.m_touches.capacity());
 
@@ -95,7 +99,11 @@ namespace black_cat
 				}
 			}
 
-			return m_pack.m_touches.data();
+			return m_pack.m_touches.data();*/
+			THit l_hit;
+			l_hit.get_platform_pack().m_px_hit = m_pack.m_px_query.touches[p_index];
+
+			return l_hit;
 		}
 	}
 }

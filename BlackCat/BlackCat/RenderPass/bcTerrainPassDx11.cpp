@@ -53,7 +53,7 @@ namespace black_cat
 			game::bc_vertex_type::pos_tex,
 			game::bc_blend_type::opaque,
 			game::bc_depth_stencil_type::depth_less_stencil_off,
-			game::bc_rasterizer_type::fill_wireframe_cull_back,
+			game::bc_rasterizer_type::fill_solid_cull_back,
 			0x1,
 			{ l_back_buffer_texture.get_format() },
 			game::bc_surface_format_type::D32_FLOAT,
@@ -178,12 +178,14 @@ namespace black_cat
 		{
 			graphic::bc_texture2d l_back_buffer_texture = p_device.get_back_buffer_texture();
 
-			auto l_linear_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_point_point_point_address_clamp_clamp_clamp);
+			auto l_point_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_point_point_point_address_clamp_clamp_clamp);
+			auto l_linear_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_clamp_clamp_clamp);
 
 			auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(game::bc_render_pass_resource_variable::depth_stencil_view);
 			auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(game::bc_render_pass_resource_variable::render_target_view);
 			auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
-			auto l_point_sampler = p_device.create_sampler_state(l_linear_sampler_config);
+			auto l_point_sampler = p_device.create_sampler_state(l_point_sampler_config);
+			auto l_linear_sampler = p_device.create_sampler_state(l_linear_sampler_config);
 
 			m_render_pass_state = p_render_system.create_render_pass_state
 			(
@@ -192,7 +194,8 @@ namespace black_cat
 				{ graphic::bc_render_target_view_ptr(l_render_target_view) },
 				l_depth_stencil_view,
 				{
-					graphic::bc_sampler_parameter(0, core::bc_enum::or({ graphic::bc_shader_type::vertex, graphic::bc_shader_type::domain, graphic::bc_shader_type::pixel }), l_point_sampler) 
+					graphic::bc_sampler_parameter(0, core::bc_enum::or({ graphic::bc_shader_type::vertex, graphic::bc_shader_type::domain, graphic::bc_shader_type::pixel }), l_point_sampler),
+					graphic::bc_sampler_parameter(0, core::bc_enum::or({ graphic::bc_shader_type::pixel }), l_linear_sampler)
 				},
 				{},
 				{
@@ -209,10 +212,5 @@ namespace black_cat
 		m_parameter_cbuffer.reset();
 		m_pipeline_state.reset();
 		m_command_list.reset();
-	}
-
-	core::bc_string bc_terrain_pass_dx11::get_name()
-	{
-		return "terrain_pass";
 	}
 }

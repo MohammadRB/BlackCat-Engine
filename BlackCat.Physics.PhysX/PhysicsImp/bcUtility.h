@@ -29,7 +29,7 @@ namespace black_cat
 
 			// Initialize objects in reverse order to prevent data overwrite(in case of wrapper objects are bigger) 
 			// when writing to the array
-			for (bcUINT32 i = p_element_count - 1; i >= 0; --i)
+			for (bcINT32 i = p_element_count - 1; i >= 0; --i)
 			{
 				TPxType* l_px_type = l_px_types[i];
 				TBcType* l_bc_type = &p_buffer[i];

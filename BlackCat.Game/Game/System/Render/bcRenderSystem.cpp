@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "CorePlatform/CorePlatformPCH.h"
+#include "CorePlatformImp/Utility/bcHardwareInfo.h"
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/File/bcContentStreamManager.h"
 #include "Core/Event/bcEventManager.h"
@@ -39,6 +40,19 @@ namespace black_cat
 
 		extern graphic::bc_pipeline_stage _convert_shader_type_to_pipeline_stage(graphic::bc_shader_type p_shader_types);
 
+		bc_render_system::bc_render_system()
+			: m_content_stream(nullptr),
+			m_last_update_params
+			(
+				core_platform::bc_clock::update_param(0, 0),
+				core::bc_vector3f(),
+				core::bc_matrix4f(),
+				core::bc_matrix4f(),
+				bc_icamera::extend()
+			)
+		{
+		}
+
 		bc_render_system::~bc_render_system()
 		{
 			if(m_initialized)
@@ -63,8 +77,6 @@ namespace black_cat
 		{
 			bcAssert(p_render_target_formats.size() < graphic::bc_render_api_info::number_of_om_render_target_slots());
 
-			auto* l_content_stream = core::bc_service_manager::get().get_service< core::bc_content_stream_manager >();
-
 			graphic::bc_vertex_shader_content_ptr l_vertex_shader;
 			graphic::bc_hull_shader_content_ptr l_hull_shader;
 			graphic::bc_domain_shader_content_ptr l_domain_shader;
@@ -77,23 +89,23 @@ namespace black_cat
 
 			if(p_vertex_shader_name)
 			{
-				l_vertex_shader = l_content_stream->find_content_throw< graphic::bc_vertex_shader_content >(p_vertex_shader_name);
+				l_vertex_shader = m_content_stream->find_content_throw< graphic::bc_vertex_shader_content >(p_vertex_shader_name);
 			}
 			if (p_hull_shader_name)
 			{
-				l_hull_shader = l_content_stream->find_content_throw< graphic::bc_hull_shader_content >(p_hull_shader_name);
+				l_hull_shader = m_content_stream->find_content_throw< graphic::bc_hull_shader_content >(p_hull_shader_name);
 			}
 			if (p_domain_shader_name)
 			{
-				l_domain_shader = l_content_stream->find_content_throw< graphic::bc_domain_shader_content >(p_domain_shader_name);
+				l_domain_shader = m_content_stream->find_content_throw< graphic::bc_domain_shader_content >(p_domain_shader_name);
 			}
 			if (p_geometry_shader_name)
 			{
-				l_geometry_shader = l_content_stream->find_content_throw< graphic::bc_geometry_shader_content >(p_geometry_shader_name);
+				l_geometry_shader = m_content_stream->find_content_throw< graphic::bc_geometry_shader_content >(p_geometry_shader_name);
 			}
 			if (p_pixel_shader_name)
 			{
-				l_pixel_shader = l_content_stream->find_content_throw< graphic::bc_pixel_shader_content >(p_pixel_shader_name);
+				l_pixel_shader = m_content_stream->find_content_throw< graphic::bc_pixel_shader_content >(p_pixel_shader_name);
 			}
 
 			l_input_layout_config = bc_graphic_state_configs::bc_input_layout_config(p_vertex_layout);
@@ -123,11 +135,9 @@ namespace black_cat
 
 		graphic::bc_device_compute_state_ptr bc_render_system::create_device_compute_state(const bcCHAR* p_compute_shader_name)
 		{
-			auto* l_content_stream = core::bc_service_manager::get().get_service< core::bc_content_stream_manager >();
-
 			graphic::bc_compute_shader_content_ptr l_compute_shader;
 
-			l_compute_shader = l_content_stream->find_content_throw< graphic::bc_compute_shader_content >(p_compute_shader_name);
+			l_compute_shader = m_content_stream->find_content_throw< graphic::bc_compute_shader_content >(p_compute_shader_name);
 
 			graphic::bc_device_compute_state_config l_compute_config;
 
@@ -414,15 +424,6 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_system::add_render_pass(bcUINT p_location, core::bc_unique_ptr<bc_irender_pass>&& p_pass)
-		{
-			m_render_pass_manager.add_pass(p_location, std::move(p_pass));
-
-			auto l_pass = m_render_pass_manager.get_pass(p_location);
-
-			l_pass->initialize_resources(*this);
-		}
-
 		bool bc_render_system::remove_render_pass(bcUINT p_location)
 		{
 			bc_irender_pass* l_pass = m_render_pass_manager.get_pass(p_location);
@@ -433,20 +434,6 @@ namespace black_cat
 			l_pass->destroy(m_device);
 
 			return m_render_pass_manager.remove_pass(p_location);
-		}
-
-		bool bc_render_system::remove_render_pass(core::bc_string p_name)
-		{
-			auto* l_pass = m_render_pass_manager.get_pass(std::move(p_name));
-
-			if (!l_pass)
-			{
-				return false;
-			}
-			
-			l_pass->destroy(m_device);
-
-			return m_render_pass_manager.remove_pass(std::move(p_name));
 		}
 
 		void bc_render_system::add_render_instance(const bc_render_state* p_state, const bc_render_instance& p_instance)
@@ -510,23 +497,27 @@ namespace black_cat
 
 		void bc_render_system::update(const update_param& p_update_params)
 		{
-			_bc_render_system_global_state_cbuffer l_global_state;
-			l_global_state.m_view = p_update_params.m_view_matrix.transpose();
-			l_global_state.m_projection = p_update_params.m_projection_matrix.transpose();
-			l_global_state.m_viewprojection = (p_update_params.m_view_matrix * p_update_params.m_projection_matrix).transpose();
-			l_global_state.m_camera_position = p_update_params.m_camera_position;
-			l_global_state.m_elapsed = p_update_params.m_elapsed;
-			l_global_state.m_total_elapsed = p_update_params.m_total_elapsed;
-			l_global_state.m_elapsed_second = p_update_params.m_elapsed_second;
-
-			m_render_thread.update_subresource(m_global_cbuffer_parameter.get_buffer().get(), 0, &l_global_state, 0, 0);
-
+			m_last_update_params = p_update_params;
 			m_render_pass_manager.pass_update(p_update_params);
 		}
 
 		void bc_render_system::render(bc_scene& p_scene)
 		{
-			m_render_pass_manager.pass_execute(*this, p_scene, m_render_thread);
+			auto l_render_thread_wrapper = m_thread_manager->get_available_thread_wait();
+			auto& l_render_thread = *l_render_thread_wrapper.get_thread();
+
+			_bc_render_system_global_state_cbuffer l_global_state;
+			l_global_state.m_view = m_last_update_params.m_view_matrix.transpose();
+			l_global_state.m_projection = m_last_update_params.m_projection_matrix.transpose();
+			l_global_state.m_viewprojection = (m_last_update_params.m_view_matrix * m_last_update_params.m_projection_matrix).transpose();
+			l_global_state.m_camera_position = m_last_update_params.m_camera_position;
+			l_global_state.m_elapsed = m_last_update_params.m_elapsed;
+			l_global_state.m_total_elapsed = m_last_update_params.m_total_elapsed;
+			l_global_state.m_elapsed_second = m_last_update_params.m_elapsed_second;
+
+			l_render_thread.update_subresource(m_global_cbuffer_parameter.get_buffer().get(), 0, &l_global_state, 0, 0);
+
+			m_render_pass_manager.pass_execute(*this, p_scene, l_render_thread);
 			
 			clear_render_instances();
 
@@ -535,17 +526,20 @@ namespace black_cat
 
 		void bc_render_system::add_render_task(bc_irender_task& p_task)
 		{
-			// TODO 
 			core::bc_task<void> l_cpu_task = core::bc_concurreny::start_task<void>([this, &p_task]()
 			{
-				p_task.execute(*this, this->m_render_thread);
+				auto l_render_thread_wrapper = m_thread_manager->get_available_thread_wait();
+				auto& l_render_thread = *l_render_thread_wrapper.get_thread();
+
+				p_task.execute(*this, l_render_thread);
 			});
 
 			p_task._set_cpu_task(std::move(l_cpu_task));
 		}
 
-		void bc_render_system::_initialize(bc_render_system_parameter p_parameter)
+		void bc_render_system::_initialize(core::bc_content_stream_manager& p_content_stream, bc_render_system_parameter p_parameter)
 		{
+			m_content_stream = &p_content_stream;
 			m_device.initialize
 			(
 				p_parameter.m_device_backbuffer_width,
@@ -555,10 +549,10 @@ namespace black_cat
 			);
 			auto l_alloc_type = m_device.set_allocator_alloc_type(core::bc_alloc_type::program);
 
-			auto l_device_executer = m_device.create_command_executer();
-			auto l_device_pipeline = m_device.create_pipeline();
+			core_platform::bc_basic_hardware_info l_hw_info;
+			core_platform::bc_hardware_info::get_basic_info(&l_hw_info);
 
-			m_render_thread.reset(l_device_pipeline.get(), l_device_executer.get());
+			m_thread_manager = core::bc_make_unique<bc_render_thread_manager>(*this, std::max(1U, l_hw_info.proccessor_count / 2));
 
 			m_device.set_allocator_alloc_type(l_alloc_type);
 
@@ -645,7 +639,7 @@ namespace black_cat
 			bcAssert(l_render_pass_states_count + l_render_states_count == 0);
 #endif
 
-			m_render_thread.reset();
+			m_thread_manager.reset();
 			m_device.destroy();
 		}
 

@@ -14,8 +14,14 @@ namespace black_cat
 {
 	namespace physics
 	{
+		template<bc_physics_api>
+		class bc_platform_shape;
+
+		using bc_shape = bc_platform_shape<g_current_physics_api>;
+
 		/**
 		 * \brief Represent required data to create a height field in physics api.
+		 * Height samples must be defined from top-left corner.
 		 */
 		struct bc_height_field_desc
 		{
@@ -79,7 +85,21 @@ namespace black_cat
 
 			core::bc_vector3f get_triangle_normal(bcUINT32 p_triangle_index);
 
-			bool modify_samples(bcUINT32 p_row, bcUINT32 p_column, const bc_height_field_desc& p_desc);
+			/**
+			 * \brief Replaces a rectangular subfield in the sample data array.
+			 * Source samples that are out of range of target heightfield will be clipped with no error.
+			 * \param p_row First row in the destination heightfield to be modified.Can be negative.
+			 * \param p_column First cell in the destination heightfield to be modified.Can be negative.
+			 * \param p_desc
+			 * \param p_height_field_shapes Shapes that are created with this height field.
+			 * \param p_shape_count Number of shapes associated with this height field.
+			 * \return 
+			 */
+			bool modify_samples(bcUINT32 p_row, 
+				bcUINT32 p_column, 
+				const bc_height_field_desc& p_desc, 
+				bc_shape* p_height_field_shapes, 
+				bcUINT32 p_shape_count);
 
 			bool is_valid() const noexcept override;
 

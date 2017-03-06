@@ -31,67 +31,27 @@ namespace black_cat
 			return nullptr;
 		}
 
-		bc_irender_pass* bc_render_pass_manager::get_pass(core::bc_string p_name)
-		{
-			for (auto& l_entry : m_passes)
-			{
-				if (l_entry.m_pass->get_name() == p_name)
-				{
-					return l_entry.m_pass.get();
-				}
-			}
-
-			return nullptr;
-		}
-
-		void bc_render_pass_manager::add_pass(bcUINT32 p_location, core::bc_unique_ptr<bc_irender_pass>&& p_pass)
-		{
-			p_pass->_set_pass_resource_share(&m_state_share);
-
-			_bc_pass_entry m_entry;
-			m_entry.m_position = p_location;
-			m_entry.m_pass = std::move(p_pass);
-
-			m_passes.push_back(std::move(m_entry));
-
-			std::sort(std::begin(m_passes), std::end(m_passes), [](_bc_pass_entry& p_first, _bc_pass_entry& p_second)
-			{
-				return p_first.m_position < p_second.m_position;
-			});
-		}
-
 		bool bc_render_pass_manager::remove_pass(bcUINT32 p_location)
 		{
-			bcAssert(p_location < m_passes.size());
-
-			if (p_location >= m_passes.size())
-				return false;
-
-			auto l_location = std::begin(m_passes) + p_location;
-
-			m_passes.erase(l_location);
-
-			return true;
-		}
-
-		bool bc_render_pass_manager::remove_pass(core::bc_string p_name)
-		{
 			bool l_found = false;
-			bcUINT l_location = 0;
+			bcUINT32 l_location = 0;
 
-			for(auto& l_entry : m_passes)
+			for (auto& l_entry : m_passes)
 			{
-				if (l_entry.m_pass->get_name() == p_name)
+				if (l_entry.m_position == p_location)
 				{
 					l_found = true;
 					break;
 				}
-				
+
 				l_location++;
 			}
 
-			if(l_found)
-				return remove_pass(l_location);
+			if (l_found)
+			{
+				m_passes.erase(std::next(std::cbegin(m_passes), l_location));
+				return true;
+			}
 
 			return false;
 		}
@@ -143,6 +103,56 @@ namespace black_cat
 			{
 				l_entry.m_pass->destroy(p_device);
 			}
+		}
+
+		void bc_render_pass_manager::_add_pass(_bc_pass_entry&& p_entry)
+		{
+			p_entry.m_pass->_set_pass_resource_share(&m_state_share);
+
+			m_passes.push_back(std::move(p_entry));
+
+			std::sort(std::begin(m_passes), std::end(m_passes), [](_bc_pass_entry& p_first, _bc_pass_entry& p_second)
+			{
+				return p_first.m_position < p_second.m_position;
+			});
+		}
+
+		bool bc_render_pass_manager::_remove_pass(const bcCHAR* p_name)
+		{
+			bool l_found = false;
+			bcUINT32 l_location = 0;
+
+			for (auto& l_entry : m_passes)
+			{
+				if (std::strcmp(l_entry.m_name, p_name))
+				{
+					l_found = true;
+					break;
+				}
+
+				l_location++;
+			}
+
+			if (l_found)
+			{
+				m_passes.erase(std::next(std::cbegin(m_passes), l_location));
+				return true;
+			}
+
+			return false;
+		}
+
+		bc_irender_pass* bc_render_pass_manager::_get_pass(const bcCHAR* p_name)
+		{
+			for (auto& l_entry : m_passes)
+			{
+				if (std::strcmp(l_entry.m_name, p_name))
+				{
+					return l_entry.m_pass.get();
+				}
+			}
+
+			return nullptr;
 		}
 	}
 }

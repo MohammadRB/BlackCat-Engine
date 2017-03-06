@@ -74,7 +74,17 @@ namespace black_cat
 			 * ordered by lower-left upper-left upper-right lower-right
 			 * \param p_points 
 			 */
-			virtual void get_extend_points(extend& p_points) = 0;
+			virtual void get_extend_points(extend& p_points) const = 0;
+
+			/**
+			 * \brief Convert a point from screen space to a normalized ray in 3d space
+			 * \param p_screen_width 
+			 * \param p_screen_height 
+			 * \param p_left Point offset from the left of screen
+			 * \param p_top point offset from the top of screen
+			 * \return 
+			 */
+			core::bc_vector3f project_clip_point_to_3d_ray(bcUINT16 p_screen_width, bcUINT16 p_screen_height, bcUINT16 p_left, bcUINT16 p_top) const;
 
 			core::bc_matrix4f get_view() const noexcept
 			{
@@ -212,7 +222,7 @@ namespace black_cat
 
 			void set_field_of_view(bcFLOAT p_field_of_view) noexcept;
 
-			void get_extend_points(extend& p_points) override final;
+			void get_extend_points(extend& p_points) const override final;
 
 			void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept override final;
 

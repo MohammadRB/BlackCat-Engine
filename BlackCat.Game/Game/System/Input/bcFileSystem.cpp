@@ -23,20 +23,20 @@ namespace black_cat
 			l_temp = l_execute_path;
 			l_temp.combine(core::bc_path(bcL("Content\\Data")));
 			m_content_data_path = l_temp.get_path();
-			
+
 			l_temp = l_execute_path;
 			l_temp.combine(core::bc_path(bcL("Content\\Model")));
 			m_content_model_path = l_temp.get_path();
 
 			l_temp = l_execute_path;
 			l_temp.combine(core::bc_path
+			(
 				(
-					(
-						core::bc_estring_frame(bcL("Content\\Shader\\"))
-						+
-						core::bc_to_exclusive_wstring(graphic::bc_render_api_info::api_name()).c_str()
-					).c_str()
-				));
+					core::bc_estring_frame(bcL("Content\\Shader\\"))
+					+
+					core::bc_to_exclusive_wstring(graphic::bc_render_api_info::api_name()).c_str()
+				).c_str()
+			));
 			m_content_platform_shader_path = l_temp.get_path();
 
 			l_temp = l_execute_path;

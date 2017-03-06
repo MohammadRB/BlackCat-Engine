@@ -490,12 +490,12 @@ namespace black_cat
 			m_executer.reset();
 		}
 
-		void bc_render_thread::reset(graphic::bc_device_pipeline p_pipeline, graphic::bc_device_command_executer p_command_executer)
+		void bc_render_thread::reset(graphic::bc_device_pipeline_ptr p_pipeline, graphic::bc_device_command_executer_ptr p_command_executer)
 		{
 			bcAssert(!m_command_list.is_valid());
 
-			m_pipeline.reset(p_pipeline);
-			m_executer.reset(p_command_executer);
+			m_pipeline = std::move(p_pipeline);
+			m_executer = std::move(p_command_executer);
 		}
 	}
 }

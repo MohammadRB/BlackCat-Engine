@@ -26,29 +26,24 @@ namespace black_cat
 
 			bc_vector2f(const bc_vector2f& p_other);
 
-			// vector operations
 			void clamp();
-
-			void make_zero();
 
 			void normalize();
 
 			bcFLOAT magnitude();
 
-			// assignment
+			void make_zero();
+
 			bc_vector2f& operator= (const bc_vector2f& p_other);
 
-			// accessors
 			bcFLOAT operator[] (int p_pos) const;
 
 			bcFLOAT& operator[] (int p_pos);
 
-			// boolean comparison
 			bool operator== (const bc_vector2f& p_other) const;
 
 			bool operator!= (const bc_vector2f& p_other) const;
 
-			// arithmetic operations
 			bc_vector2f operator+ (const bc_vector2f& p_other) const;
 
 			bc_vector2f operator- (const bc_vector2f& p_other) const;
@@ -61,7 +56,6 @@ namespace black_cat
 
 			bc_vector2f operator- () const;
 
-			// arithmetic updates
 			bc_vector2f& operator+= (const bc_vector2f& p_other);
 
 			bc_vector2f& operator-= (const bc_vector2f& p_other);

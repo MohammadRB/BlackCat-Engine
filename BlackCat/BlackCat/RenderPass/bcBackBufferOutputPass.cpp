@@ -127,9 +127,4 @@ namespace black_cat
 		m_pipeline_state.reset();
 		m_render_pass_state.reset();
 	}
-
-	core::bc_string bc_back_buffer_output_pass::get_name()
-	{
-		return "back_buffer_output_pass";
-	}
 }

@@ -39,6 +39,27 @@
     <Filter Include="Editor\QtAwesome">
       <UniqueIdentifier>{71fdec04-6a6e-4900-9929-b27b10f802b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Editor\UI">
+      <UniqueIdentifier>{00795aa5-1cab-4aca-83f5-50e261dcb7d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\Widget">
+      <UniqueIdentifier>{a5045b09-0d06-40f2-842d-6bccae74258a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\UICommand">
+      <UniqueIdentifier>{45053c34-4b28-40d8-a975-6fdbaf107508}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\Content">
+      <UniqueIdentifier>{81084f97-8aaf-482d-8f17-57f0be153828}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\Content\Shader">
+      <UniqueIdentifier>{b1714ae5-e861-4fee-9b86-2517cea99768}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\Content\Shader\DirectX11">
+      <UniqueIdentifier>{3c9b6ac7-c5dc-4fe6-923a-a13d8acf7ffe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\Content\Data">
+      <UniqueIdentifier>{5f31b520-2838-4b62-88ae-32a0e300fcf2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\qrc_bcBlackCatEditor.cpp">
@@ -53,15 +74,6 @@
     <ClCompile Include="GeneratedFiles\qrc_style.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bcD3DOutputWidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bcD3DOutputWidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Application\bcD3DOutputWidget.cpp">
-      <Filter>Editor\Application</Filter>
-    </ClCompile>
     <ClCompile Include="Editor\Application\bcEditorRenderApplication.cpp">
       <Filter>Editor\Application</Filter>
     </ClCompile>
@@ -72,15 +84,6 @@
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Editor\Application\bcEditorApplication.cpp">
-      <Filter>Editor\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bcConsoleWidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bcConsoleWidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor\Application\bcConsoleWidget.cpp">
       <Filter>Editor\Application</Filter>
     </ClCompile>
     <ClCompile Include="Editor\Application\bcEditorGameConsole.cpp">
@@ -110,6 +113,45 @@
     <ClCompile Include="GeneratedFiles\Release\moc_QtAwesomeAnim.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\Widget\bcConsoleWidget.cpp">
+      <Filter>Editor\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_bcConsoleWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_bcConsoleWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Widget\bcD3DOutputWidget.cpp">
+      <Filter>Editor\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_bcD3DOutputWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_bcD3DOutputWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_bcFormTools.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_bcFormTools.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\UI\bcFormTools.cpp">
+      <Filter>Editor\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Application\bcUICommandService.cpp">
+      <Filter>Editor\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\UICommand\bcUITerrainHeightCommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Application\bcEditorHeightMapLoaderDx11.cpp">
+      <Filter>Editor\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\UICommand\bcUITerrainSmoothCommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_bcBlackCatEditor.h">
@@ -124,6 +166,24 @@
     <ClInclude Include="Editor\Application\bcEditorRenderApplication.h">
       <Filter>Editor\Application</Filter>
     </ClInclude>
+    <ClInclude Include="Editor\UI\bcFormTerrain.h">
+      <Filter>Editor\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Application\bcUICommandService.h">
+      <Filter>Editor\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Application\bcUICommand.h">
+      <Filter>Editor\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\UICommand\bcUITerrainHeightCommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Application\bcEditorHeightMapLoaderDx11.h">
+      <Filter>Editor\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\UICommand\bcUITerrainSmoothCommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Editor\bcBlackCatEditor.ui">
@@ -135,13 +195,7 @@
     <CustomBuild Include="Editor\qdarkstyle\style.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="Editor\Application\bcD3DOutputWidget.h">
-      <Filter>Editor\Application</Filter>
-    </CustomBuild>
     <CustomBuild Include="Editor\Application\bcEditorApplication.h">
-      <Filter>Editor\Application</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Editor\Application\bcConsoleWidget.h">
       <Filter>Editor\Application</Filter>
     </CustomBuild>
     <CustomBuild Include="Editor\Application\bcEditorGameConsole.h">
@@ -152,6 +206,15 @@
     </CustomBuild>
     <CustomBuild Include="Editor\QtAwesome\QtAwesomeAnim.h">
       <Filter>Editor\QtAwesome</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Editor\Widget\bcConsoleWidget.h">
+      <Filter>Editor\Widget</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Editor\Widget\bcD3DOutputWidget.h">
+      <Filter>Editor\Widget</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Editor\UI\bcFormTools.h">
+      <Filter>Editor\UI</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -277,5 +340,16 @@
     <None Include="Editor\qdarkstyle\style.qss">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Editor\Content\Data\EditorContentStream.json">
+      <Filter>Editor\Content\Data</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Editor\Content\Shader\DirectX11\bcTerrainHeight.hlsl">
+      <Filter>Editor\Content\Shader\DirectX11</Filter>
+    </FxCompile>
+    <FxCompile Include="Editor\Content\Shader\DirectX11\bcTerrainSmooth.hlsl">
+      <Filter>Editor\Content\Shader\DirectX11</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

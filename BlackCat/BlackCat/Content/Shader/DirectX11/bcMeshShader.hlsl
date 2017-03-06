@@ -31,6 +31,8 @@ struct bc_vs_output
 {
 	float4 m_position	: SV_POSITION;
 	float2 m_texcoord	: TEXCOORD0;
+    float3 m_normal     : NORMAL0;
+    float3 m_tangent    : TANGENT0;
 };
 
 struct bc_ps_output
@@ -47,15 +49,25 @@ bc_vs_output vs(bc_vs_input p_input)
 	float4x4 l_world_view_projection = mul(g_world, g_viewprojection);
 	l_output.m_position = mul(float4(p_input.m_position, 1), l_world_view_projection);
 	l_output.m_texcoord = p_input.m_texcoord;
+    l_output.m_normal = mul(p_input.m_normal, (float3x3)g_world);
+    l_output.m_tangent = mul(p_input.m_tangent, (float3x3) g_world);
 
 	return l_output;
 }
 
 bc_ps_output ps(bc_vs_output p_input)
 {
-	bc_ps_output l_putput;
+	bc_ps_output l_output;
 
-	l_putput.m_color = g_text2d_diffuse.Sample(g_sam_sampler, p_input.m_texcoord);
+    float4 l_diffuse = g_text2d_diffuse.Sample(g_sam_sampler, p_input.m_texcoord);
 
-	return l_putput;
+    float3 l_light_dir = -g_light_dir;
+    float3 l_normal = p_input.m_normal;
+
+    float l_ndl = max(0, dot(l_normal, l_light_dir));
+    l_diffuse.xyz = l_ndl * g_light_color;
+    
+    l_output.m_color = float4(l_diffuse.xyz, 1);
+
+    return l_output;
 }

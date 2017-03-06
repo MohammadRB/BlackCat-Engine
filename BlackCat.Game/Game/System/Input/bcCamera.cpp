@@ -108,6 +108,38 @@ namespace black_cat
 			return get_right() * -1;
 		}
 
+		core::bc_vector3f bc_icamera::project_clip_point_to_3d_ray(bcUINT16 p_screen_width, bcUINT16 p_screen_height, bcUINT16 p_left, bcUINT16 p_top) const
+		{
+			bcFLOAT l_left = static_cast<bcFLOAT>(p_left) / p_screen_width;
+			bcFLOAT l_botton = 1 - (static_cast<bcFLOAT>(p_top) / p_screen_height);
+			extend l_camera_extends;
+
+			get_extend_points(l_camera_extends);
+
+			bcFLOAT l_near_width = std::abs((l_camera_extends[0] - l_camera_extends[3]).magnitude());
+			bcFLOAT l_near_height = std::abs((l_camera_extends[0] - l_camera_extends[1]).magnitude());
+			bcFLOAT l_far_width = std::abs((l_camera_extends[4] - l_camera_extends[7]).magnitude());
+			bcFLOAT l_far_height = std::abs((l_camera_extends[4] - l_camera_extends[5]).magnitude());
+
+			bcFLOAT l_near_width_ratio = l_near_width * l_left;
+			bcFLOAT l_near_height_ratio = l_near_height * l_botton;
+			bcFLOAT l_far_width_ratio = l_far_width * l_left;
+			bcFLOAT l_far_height_ratio = l_far_height * l_botton;
+
+			auto l_near_point = l_camera_extends[0];
+			auto l_far_point = l_camera_extends[4];
+
+			l_near_point += get_right() * l_near_width_ratio;
+			l_near_point += get_up() * l_near_height_ratio;
+			l_far_point += get_right() * l_far_width_ratio;
+			l_far_point += get_up() * l_far_height_ratio;
+
+			auto l_ray = l_far_point - l_near_point;
+			l_ray.normalize();
+
+			return l_ray;
+		}
+
 		core::bc_vector3f bc_icamera::get_direction() const noexcept
 		{
 			auto l_direction = (m_lookat - m_position);
@@ -239,7 +271,7 @@ namespace black_cat
 			create_projection_matrix();
 		}
 
-		void bc_perspective_camera::get_extend_points(extend& p_points)
+		void bc_perspective_camera::get_extend_points(extend& p_points) const
 		{
 			auto l_fov_tan = 2 * std::tanf(m_field_of_view / 2);
 			auto l_near_clip_height = l_fov_tan * get_near_clip();

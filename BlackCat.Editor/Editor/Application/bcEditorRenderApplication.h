@@ -16,7 +16,7 @@ namespace black_cat
 
 			~bc_editor_render_app();
 
-			void application_start_engine_components(game::bc_engine_component_parameter& p_engine_components) override;
+			void application_start_engine_components(game::bc_engine_component_parameter& p_engine_components, core::bc_service_manager& p_service_manager) override;
 
 			void application_initialize(const bcCHAR* p_commandline) override;
 

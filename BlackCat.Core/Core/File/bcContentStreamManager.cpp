@@ -71,7 +71,13 @@ namespace black_cat
 			bc_file_stream l_json_file;
 			bc_string_frame l_buffer;
 
-			l_json_file.open_read(p_json_file_path);
+			if(!l_json_file.open_read(p_json_file_path))
+			{
+				bc_string_frame l_msg = "Error in reading content stream file: ";
+				l_msg += bc_to_exclusive_string(p_json_file_path).c_str();
+
+				throw bc_io_exception(l_msg.c_str());
+			}
 
 			bc_string_frame l_line;
 			while (core::bc_get_line(l_json_file, &l_line))
@@ -136,7 +142,10 @@ namespace black_cat
 
 			if(l_stream_entry == std::end(m_streams))
 			{
-				throw bc_invalid_argument_exception("Invalid content stream name");
+				bc_string_frame l_msg = "Invalid content stream name: ";
+				l_msg += p_stream_name;
+
+				throw bc_invalid_argument_exception(l_msg.c_str());
 			}
 
 			bc_content_manager* l_content_manager = bc_service_manager::get().get_service< bc_content_manager >();
@@ -215,7 +224,10 @@ namespace black_cat
 
 			if (l_stream_entry == std::end(m_streams))
 			{
-				throw bc_invalid_argument_exception("Invalid content stream name");
+				bc_string_frame l_msg = "Invalid content stream name: ";
+				l_msg += p_stream_name;
+
+				throw bc_invalid_argument_exception(l_msg.c_str());
 			}
 
 			auto& l_contents = l_stream_entry->second;
@@ -255,11 +267,11 @@ namespace black_cat
 			}
 		}
 
-		bc_icontent_ptr bc_content_stream_manager::find_content(const bcCHAR* p_content_name)
+		bc_icontent_ptr bc_content_stream_manager::find_content(const bcCHAR* p_content_name) const
 		{
 			auto l_content_hash = string_hash()(p_content_name);
-			contents_map_type::iterator l_content_entry;
-			contents_map_type::iterator l_content_end;
+			contents_map_type::const_iterator l_content_entry;
+			contents_map_type::const_iterator l_content_end;
 
 			{
 				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock_gaurd(m_contents_mutex);
@@ -279,7 +291,7 @@ namespace black_cat
 			return nullptr;
 		}
 
-		bc_icontent_ptr bc_content_stream_manager::find_content_throw(const bcCHAR* p_content_name)
+		bc_icontent_ptr bc_content_stream_manager::find_content_throw(const bcCHAR* p_content_name) const
 		{
 			auto l_content = find_content(p_content_name);
 

@@ -195,7 +195,9 @@ namespace black_cat
 				return m_future.wait_for(std::chrono::nanoseconds(p_nano));
 			}
 			
-			// When executer thread see this interrupt, it will throw an exception
+			/**
+			 * \brief When executer thread see this interrupt, it will throw a bc_thread_interrupted_exception
+			 */
 			void interrupt_executer_thread()
 			{
 				core_platform::bc_thread::id l_excecuter_thread_id = m_thread_id_future.get();

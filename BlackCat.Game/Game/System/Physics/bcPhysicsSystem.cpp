@@ -9,6 +9,9 @@
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/Object/Scene/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
+#include "PhysicsImp/Body/bcActor.h"
+#include "PhysicsImp/Body/bcActor.h"
+#include "PhysicsImp/Body/bcActor.h"
 
 namespace black_cat
 {
@@ -45,12 +48,12 @@ namespace black_cat
 			return l_buffer;
 		}
 
-		void bc_physics_system::connect_px_actor_to_game_actor(physics::bc_rigid_actor& p_px_actor, bc_actor p_actor)
+		void bc_physics_system::connect_px_actor_to_game_actor(physics::bc_actor& p_px_actor, bc_actor p_actor)
 		{
 			p_px_actor.set_data(reinterpret_cast<void*>(static_cast<bcUINTPTR>(p_actor.get_index())));
 		}
 
-		bc_actor bc_physics_system::get_game_actor(physics::bc_rigid_actor& p_px_actor)
+		bc_actor bc_physics_system::get_game_actor(physics::bc_actor& p_px_actor)
 		{
 			return bc_actor(static_cast<bc_actor_index>(reinterpret_cast<bcUINTPTR>(p_px_actor.get_data())));
 		}

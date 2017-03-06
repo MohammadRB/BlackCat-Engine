@@ -12,6 +12,9 @@ namespace black_cat
 		class bc_enum
 		{
 		public:
+			template<typename TEnum>
+			using enum_t = std::underlying_type_t<TEnum>;
+
 			static constexpr bcINT value(bcINT p_index)
 			{
 				return 1 << p_index;

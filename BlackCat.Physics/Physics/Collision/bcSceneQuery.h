@@ -30,7 +30,7 @@ namespace black_cat
 			using platform_pack = bc_platform_scene_query_buffer_pack< TApi, THit >;
 
 		public:
-			bc_platform_scene_query_buffer(bcUINT32 p_touching_hit_count);
+			explicit bc_platform_scene_query_buffer(bcUINT32 p_touching_hit_count);
 
 			bc_platform_scene_query_buffer(const bc_platform_scene_query_buffer&) noexcept;
 
@@ -40,11 +40,11 @@ namespace black_cat
 
 			bool has_block() const noexcept;
 
-			const THit* get_block() const noexcept;
+			THit get_block() const noexcept;
 
 			bcUINT32 get_touch_count() const noexcept;
 
-			const THit* get_touches() const noexcept;
+			THit get_touch(bcUINT32 p_index) const noexcept;
 
 			platform_pack& get_platform_pack()
 			{

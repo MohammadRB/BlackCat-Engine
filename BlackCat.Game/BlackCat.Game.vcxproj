@@ -238,6 +238,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="Game\System\Input\bcInputSystem.h" />
     <ClInclude Include="Game\System\Physics\bcMeshPartCollider.h" />
     <ClInclude Include="Game\System\Physics\bcPhysicsSystem.h" />
+    <ClInclude Include="Game\System\Physics\bcPxWrap.h" />
     <ClInclude Include="Game\System\Render\bcComputeState.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </ExcludedFromBuild>
@@ -254,6 +255,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="Game\System\Render\bcRenderSystemParameter.h" />
     <ClInclude Include="Game\System\Render\bcRenderTask.h" />
     <ClInclude Include="Game\System\Render\bcRenderThread.h" />
+    <ClInclude Include="Game\System\Render\bcRenderThreadManager.h" />
     <ClInclude Include="Game\System\Render\bcStateConfigs.h" />
     <ClInclude Include="Game\System\Render\bcVertexLayout.h" />
     <ClInclude Include="Game\System\Script\bcDefaultGameConsole.h">
@@ -307,6 +309,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="Game\System\Render\bcRenderState.cpp" />
     <ClCompile Include="Game\System\Render\bcRenderSystem.cpp" />
     <ClCompile Include="Game\System\Render\bcRenderThread.cpp" />
+    <ClCompile Include="Game\System\Render\bcRenderThreadManager.cpp" />
     <ClCompile Include="Game\System\Script\bcGameConsole.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>

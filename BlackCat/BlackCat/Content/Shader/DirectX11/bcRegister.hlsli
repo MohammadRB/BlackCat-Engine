@@ -90,3 +90,9 @@ cbuffer g_cb_object_state       : register(BC_RENDER_STATE_CB0)
 {
     float4x4 g_world            : packoffset(c0);
 }
+
+// Temp variables
+static float3 g_light_dir = normalize(float3(0, -0.3, 1));
+static float3 g_light_color = normalize(float3(203 / 255.0f, 199 / 255.0f, 175 / 255.0f));
+static float3 g_terrain_color = normalize(float3(205 / 255.0f, 205 / 255.0f, 205 / 255.0f));
+static float3 g_mesh_color = normalize(float3(180 / 255.0f, 180 / 255.0f, 180 / 255.0f));

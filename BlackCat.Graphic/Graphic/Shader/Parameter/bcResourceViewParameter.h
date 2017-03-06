@@ -14,6 +14,8 @@ namespace black_cat
 		public:
 			bc_resource_view_parameter();
 
+			bc_resource_view_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_resource_view p_shader_resource);
+
 			bc_resource_view_parameter(bcINT p_register, bc_shader_type p_shader_types, const bc_resource_view_ptr& p_shader_resource);
 
 			bc_resource_view_parameter(bc_resource_view_parameter&) = default;
@@ -42,6 +44,11 @@ namespace black_cat
 		inline bc_resource_view_parameter::bc_resource_view_parameter()
 			: bc_ishader_parameter(),
 			m_shader_resource() 
+		{
+		}
+
+		inline bc_resource_view_parameter::bc_resource_view_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_resource_view p_shader_resource)
+			: bc_resource_view_parameter(p_register, p_shader_types, bc_resource_view_ptr(p_shader_resource))
 		{
 		}
 

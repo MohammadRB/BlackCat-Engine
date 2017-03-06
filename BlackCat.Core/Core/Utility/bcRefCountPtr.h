@@ -321,7 +321,7 @@ namespace black_cat
 		template< class TOther >
 		bc_ref_count_ptr< T, TDeleter >& bc_ref_count_ptr< T, TDeleter >::operator=(const bc_ref_count_ptr< TOther, TDeleter >& p_other) noexcept(true)
 		{
-			if (this != &p_other)
+			if (m_pointer != p_other.m_pointer)
 			{
 				_assign(p_other);
 			}
@@ -333,7 +333,7 @@ namespace black_cat
 		template< class TOther >
 		bc_ref_count_ptr< T, TDeleter >& bc_ref_count_ptr< T, TDeleter >::operator=(bc_ref_count_ptr< TOther, TDeleter >&& p_other) noexcept(true)
 		{
-			if (this != &p_other)
+			if (m_pointer != p_other.m_pointer)
 			{
 				_assign(std::move(p_other));
 			}

@@ -2,12 +2,15 @@
 
 #pragma once
 
-#include "Editor/Application/bcD3DOutputWidget.h"
+#include "Editor/Widget/bcD3DOutputWidget.h"
+#include "Editor/Widget/bcConsoleWidget.h"
 #include "Editor/Application/bcRenderApplicationD3DWidgetOutputWindow.h"
-#include "Editor/Application/bcConsoleWidget.h"
 #include "Editor/Application/bcEditorGameConsole.h"
 #include "Editor/QtAwesome/QtAwesome.h"
+#include "Editor/UI/bcFormTools.h"
+#include "Editor/UI/bcFormTerrain.h"
 #include "ui_bcBlackCatEditor.h"
+
 #include <QtWidgets/QMainWindow>
 #include <QtConcurrent/QtConcurrent>
 
@@ -55,6 +58,12 @@ namespace black_cat
 		private:
 			void _load_style() const;
 
+			void _load_icon(QWidget* p_parent, QVariantMap& p_options) const;
+
+			void _load_icon_button(QAbstractButton* p_bottom, QVariantMap& p_options) const;
+
+			void _load_icon_toolbox(QToolBox* p_tool_box, QVariantMap& p_options) const;
+
 			Ui::bcBlackCatEditorClass ui;
 			std::unique_ptr< QtAwesome > m_awesome;
 
@@ -62,6 +71,9 @@ namespace black_cat
 			std::unique_ptr< bc_render_application_d3dwidget_output_window > m_d3d_output_window;
 			std::unique_ptr< bc_console_widget > m_console_widget;
 			std::unique_ptr< bc_editor_game_console > m_editor_game_console;
+
+			std::unique_ptr< bc_form_tools > m_form_tools;
+			std::unique_ptr< bc_form_terrain > m_form_terrain;
 
 			bc_render_app_thread m_render_app_thread;
 		};

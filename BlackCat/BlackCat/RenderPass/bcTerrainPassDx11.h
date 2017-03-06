@@ -15,6 +15,8 @@ namespace black_cat
 {
 	class BC_BLACKCAT_DLL bc_terrain_pass_dx11 : public game::bc_irender_pass
 	{
+		BC_RENDER_PASS(terrain_pass)
+
 	public:
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 
@@ -29,8 +31,6 @@ namespace black_cat
 		void after_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) override;
 
 		void destroy(graphic::bc_device& p_device) override;
-
-		core::bc_string get_name() override;
 
 	protected:
 

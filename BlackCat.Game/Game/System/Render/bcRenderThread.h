@@ -21,6 +21,12 @@ namespace black_cat
 		public:
 			bc_render_thread();
 
+			bc_render_thread(bc_render_thread&&) = default;
+
+			~bc_render_thread() = default;
+
+			bc_render_thread& operator=(bc_render_thread&&) = default;
+
 			graphic::bc_device_pipeline get_pipeline() noexcept
 			{
 				return m_pipeline.get();
@@ -31,6 +37,10 @@ namespace black_cat
 				return m_executer.get();
 			}
 
+			/**
+			 * \brief Start thread to capture device pipeline commands and save them in passed command list
+			 * \param p_command_list 
+			 */
 			void start(graphic::bc_device_command_list p_command_list) noexcept;
 			
 			/**
@@ -143,7 +153,7 @@ namespace black_cat
 
 			void reset();
 
-			void reset(graphic::bc_device_pipeline p_pipeline, graphic::bc_device_command_executer p_command_executer);
+			void reset(graphic::bc_device_pipeline_ptr p_pipeline, graphic::bc_device_command_executer_ptr p_command_executer);
 
 		protected:
 

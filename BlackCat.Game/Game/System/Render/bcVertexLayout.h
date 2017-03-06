@@ -34,17 +34,17 @@ namespace black_cat
 		{
 		public:
 			core::bc_vector3f m_position;
-			core::bc_vector3f m_normal;
 			core::bc_vector2f m_texcoord;
+			core::bc_vector3f m_normal;
 		};
 
 		class bc_vertex_pos_tex_nor_tan
 		{
 		public:
 			core::bc_vector3f m_position;
+			core::bc_vector2f m_texcoord;
 			core::bc_vector3f m_normal;
 			core::bc_vector3f m_tangent;
-			core::bc_vector2f m_texcoord;
 		};
 	}
 }

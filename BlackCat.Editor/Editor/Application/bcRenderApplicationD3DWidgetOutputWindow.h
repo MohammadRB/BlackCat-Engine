@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Game/Application/bcIRenderApplicationOutputWindow.h"
-#include "Editor/Application/bcD3DOutputWidget.h"
+#include "Editor/Widget/bcD3DOutputWidget.h"
 
 namespace black_cat
 {

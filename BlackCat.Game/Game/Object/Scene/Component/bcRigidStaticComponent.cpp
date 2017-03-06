@@ -6,6 +6,7 @@
 #include "Game/bcExport.h"
 #include "Game/bcException.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/System/Physics/bcPxWrap.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
@@ -73,6 +74,8 @@ namespace black_cat
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform::identity());
 				_initialize_from_height_map(l_physics_system, p_actor, *l_height_map_component);
 
+				m_px_actor_ref->set_query_group(static_cast< physics::bc_query_group >(bc_query_group::terrain));
+
 				return;
 			}
 
@@ -86,7 +89,7 @@ namespace black_cat
 		void bc_rigid_static_component::_initialize_from_height_map(bc_physics_system& p_physics_system, bc_actor& p_actor, bc_height_map_component& p_component)
 		{
 			auto* l_height_map = p_component.get_height_map();
-			auto l_px_height_field = l_height_map->get_height_field();
+			auto l_px_height_field = l_height_map->get_px_height_field();
 
 			auto& l_physics = p_physics_system.get_physics();
 

@@ -186,6 +186,12 @@
     <ClInclude Include="Game\System\Physics\bcMeshPartCollider.h">
       <Filter>Game\System\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="Game\System\Physics\bcPxWrap.h">
+      <Filter>Game\System\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\System\Render\bcRenderThreadManager.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\GamePCH.cpp">
@@ -283,6 +289,9 @@
     </ClCompile>
     <ClCompile Include="Game\System\Physics\bcMeshPartCollider.cpp">
       <Filter>Game\System\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Render\bcRenderThreadManager.cpp">
+      <Filter>Game\System\Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -15,6 +15,21 @@ namespace black_cat
 		class bc_scene;
 		struct bc_render_system_update_param;
 
+		template<typename TPass>
+		struct bc_render_pass_trait
+		{
+		public:
+			static constexpr const bcCHAR* render_pass_name()
+			{
+				return TPass::render_pass_name();
+			}
+			
+			static constexpr bcUINT32 render_pass_hash()
+			{
+				return TPass::render_pass_hash();
+			}
+		};
+
 		/**
 		 * \brief Represent a whole rendering pass that do all tasks that required to render a scene with a specified configuration 
 		 */
@@ -77,8 +92,6 @@ namespace black_cat
 			 * \param p_device 
 			 */
 			virtual void destroy(graphic::bc_device& p_device) = 0;
-
-			virtual core::bc_string get_name() = 0;
 
 			void _set_pass_resource_share(bc_render_pass_resource_share* p_state_share);
 

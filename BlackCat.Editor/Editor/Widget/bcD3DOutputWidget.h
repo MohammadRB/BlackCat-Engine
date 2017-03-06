@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GraphicImp/Device/bcDeviceOutput.h"
+
 #include <QWidget>
 
 namespace black_cat
@@ -26,6 +27,13 @@ namespace black_cat
 			QPaintEngine* paintEngine() const override;
 
 			graphic::bc_device_output get_device_output() const;
+
+		signals:
+			void mousePressed(QMouseEvent* p_event);
+
+			void mouseReleased(QMouseEvent* p_event);
+
+			void mouseMoved(QMouseEvent* p_event);
 
 		protected:
 			void mousePressEvent(QMouseEvent* p_event) override;

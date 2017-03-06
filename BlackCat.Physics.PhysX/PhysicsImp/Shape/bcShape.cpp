@@ -500,7 +500,7 @@ namespace black_cat
 			l_px_shape->setQueryFilterData(physx::PxFilterData
 			(
 				l_px_filter_data.word0,
-				static_cast< physx::PxU32 >(p_flag),
+				static_cast< physx::PxU32 >(core::bc_enum::set(static_cast< bc_shape_query_flag >(l_px_filter_data.word1), p_flag, p_value)),
 				l_px_filter_data.word2,
 				l_px_filter_data.word3
 			));

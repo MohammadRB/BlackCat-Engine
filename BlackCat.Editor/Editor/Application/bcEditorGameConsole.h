@@ -3,7 +3,8 @@
 #pragma once
 
 #include "Game/System/Script/bcGameConsole.h"
-#include "Editor/Application/bcConsoleWidget.h"
+#include "Editor/Widget/bcConsoleWidget.h"
+
 #include <QObject>
 #include <QtConcurrent/QtConcurrent>
 

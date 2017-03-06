@@ -38,11 +38,14 @@ namespace black_cat
 
 			return(*this);
 		}
-		
-		void bc_vector2f::make_zero()
+
+		void bc_vector2f::clamp()
 		{
-			x = 0.0f;
-			y = 0.0f;
+			if (x > 1.0f) x = 1.0f;
+			if (x < 0.0f) x = 0.0f;
+
+			if (y > 1.0f) y = 1.0f;
+			if (y < 0.0f) y = 0.0f;
 		}
 		
 		void bc_vector2f::normalize()
@@ -62,14 +65,11 @@ namespace black_cat
 
 			return(sqrtf(l_length));
 		}
-		
-		void bc_vector2f::clamp()
-		{
-			if (x > 1.0f) x = 1.0f;
-			if (x < 0.0f) x = 0.0f;
 
-			if (y > 1.0f) y = 1.0f;
-			if (y < 0.0f) y = 0.0f;
+		void bc_vector2f::make_zero()
+		{
+			x = 0.0f;
+			y = 0.0f;
 		}
 		
 		bcFLOAT bc_vector2f::operator[] (int p_pos) const

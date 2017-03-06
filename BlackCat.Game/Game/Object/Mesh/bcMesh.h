@@ -10,7 +10,7 @@
 #include "Core/File/bcContent.h"
 #include "Core/Math/bcVector4f.h"
 #include "Core/Math/bcMatrix4f.h"
-#include "GraphicImp/bcRenderApiInfo.h"
+#include "Graphic/bcRenderApiInfo.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "Game/bcExport.h"

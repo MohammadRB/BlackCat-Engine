@@ -12,7 +12,9 @@ namespace black_cat
 	{
 		using core_platform::bc_path_info;
 
-		// Same as core_platform::bc_platform_path but provide convenience api
+		/**
+		 * \brief Same as core_platform::bc_platform_path but provide convenience api
+		 */
 		class BC_CORE_DLL bc_path
 		{
 		public:
@@ -20,35 +22,46 @@ namespace black_cat
 
 			bc_path(const bc_path& p_other);
 
-			bc_path(bc_path&& p_other);
+			bc_path(bc_path&& p_other) noexcept;
 
 			bc_path& operator=(const bc_path& p_other);
 
-			bc_path& operator=(bc_path&& p_other);
+			bc_path& operator=(bc_path&& p_other) noexcept;
 
 			bc_estring get_path() const;
 
 			bc_estring get_directory() const;
 
-			bc_path& set_directory(bc_estring p_directory);
+			bc_path& set_directory(const bcECHAR* p_directory);
 
 			bc_estring get_filename() const;
 
 			bc_estring get_filename_without_extension() const;
 
-			// Change file name with it's extension
-			bc_path& set_filename(bc_estring p_filename);
+			/**
+			 * \brief Change file name with it's extension
+			 * \param p_filename 
+			 * \return 
+			 */
+			bc_path& set_filename(const bcECHAR* p_filename);
 
 			bc_estring get_file_extension() const;
 
-			bc_path& set_file_extension(bc_estring p_file_extension);
+			bc_path& set_file_extension(const bcECHAR* p_file_extension);
 
-			// If second path is fully qualfied, it will be replaced with current path 
-			bc_path& combine(bc_path& p_other);
+			/**
+			 * \brief If second path is fully qualfied, it will be replaced with current path 
+			 * \param p_other 
+			 * \return 
+			 */
+			bc_path& combine(const bc_path& p_other);
 
 			bool is_relative() const;
 
-			// If path doesn't exist, it will return false
+			/**
+			 * \brief If path doesn't exist, it will return false
+			 * \return 
+			 */
 			bool is_file() const;
 
 			bool exist() const;

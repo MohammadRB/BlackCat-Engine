@@ -25,6 +25,7 @@ namespace black_cat
 		{
 		public:
 			bcUINT32 m_position;
+			const bcCHAR* m_name;
 			core::bc_unique_ptr< bc_irender_pass > m_pass;
 		};
 
@@ -39,15 +40,18 @@ namespace black_cat
 
 			bc_render_pass_manager& operator=(bc_render_pass_manager&&) = default;
 
+			template< typename T >
+			void add_pass(bcUINT32 p_location, core::bc_unique_ptr< T >&& p_pass);
+
+			template< typename T >
+			T* get_pass();
+
 			bc_irender_pass* get_pass(bcUINT32 p_location);
 
-			bc_irender_pass* get_pass(core::bc_string p_name);
-
-			void add_pass(bcUINT32 p_location, core::bc_unique_ptr< bc_irender_pass >&& p_pass);
+			template< typename T >
+			bool remove_pass();
 
 			bool remove_pass(bcUINT32 p_location);
-
-			bool remove_pass(core::bc_string p_name);
 
 			void pass_initialize_resources(bc_render_system& p_render_system);
 
@@ -64,8 +68,43 @@ namespace black_cat
 		protected:
 
 		private:
+			void _add_pass(_bc_pass_entry&& p_entry);
+
+			bool _remove_pass(const bcCHAR* p_name);
+
+			bc_irender_pass* _get_pass(const bcCHAR* p_name);
+
 			core::bc_vector< _bc_pass_entry > m_passes;
 			bc_render_pass_resource_share m_state_share;
 		};
+
+		template< typename T >
+		void bc_render_pass_manager::add_pass(bcUINT32 p_location, core::bc_unique_ptr<T>&& p_pass)
+		{
+			static_assert(std::is_base_of_v<bc_irender_pass, T>, "T must inherite from bc_irender_pass");
+
+			_bc_pass_entry l_entry;
+			l_entry.m_position = p_location;
+			l_entry.m_name = bc_render_pass_trait<T>::render_pass_name();
+			l_entry.m_pass = std::move(p_pass);
+
+			_add_pass(std::move(l_entry));
+		}
+
+		template< typename T >
+		bool bc_render_pass_manager::remove_pass()
+		{
+			static_assert(std::is_base_of_v<bc_irender_pass, T>, "T must inherite from bc_irender_pass");
+
+			return _remove_pass(bc_render_pass_trait<T>::render_pass_name());
+		}
+
+		template< typename T >
+		T* bc_render_pass_manager::get_pass()
+		{
+			static_assert(std::is_base_of_v<bc_irender_pass, T>, "T must inherite from bc_irender_pass");
+
+			return _get_pass(bc_render_pass_trait<T>::render_pass_name());
+		}
 	}
 }

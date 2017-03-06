@@ -14,6 +14,7 @@ namespace black_cat
 		{
 		public:
 			Q_OBJECT
+			Q_DISABLE_COPY(bc_console_widget)
 
 		public:
 			explicit bc_console_widget(QtAwesome* p_awesome, QWidget* p_parent = nullptr);

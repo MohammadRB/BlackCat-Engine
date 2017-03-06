@@ -23,7 +23,7 @@ namespace black_cat
 		public:
 			explicit bc_platform_shape_height_field(platform_pack& p_pack);
 
-			explicit bc_platform_shape_height_field(const bc_height_field& p_height_field,
+			bc_platform_shape_height_field(const bc_height_field& p_height_field,
 				bcUINT16 p_xz_scale,
 				bcFLOAT p_y_scale);
 

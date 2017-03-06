@@ -122,8 +122,7 @@ namespace black_cat
 		bc_rigid_actor bc_platform_overlap_hit<g_api_physx>::get_actor() const noexcept
 		{
 			bc_rigid_actor l_result;
-			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object =
-				m_pack.m_px_hit.actor;
+			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object = m_pack.m_px_hit.actor;
 
 			return l_result;
 		}
@@ -133,8 +132,7 @@ namespace black_cat
 		bc_shape bc_platform_overlap_hit<g_api_physx>::get_shape() const noexcept
 		{
 			bc_shape l_result;
-			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object =
-				m_pack.m_px_hit.actor;
+			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object = m_pack.m_px_hit.actor;
 
 			return l_result;
 		}
@@ -179,8 +177,7 @@ namespace black_cat
 		bc_rigid_actor bc_platform_sweep_hit<g_api_physx>::get_actor() const noexcept
 		{
 			bc_rigid_actor l_result;
-			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object =
-				m_pack.m_px_hit.actor;
+			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object = m_pack.m_px_hit.actor;
 
 			return l_result;
 		}
@@ -190,8 +187,7 @@ namespace black_cat
 		bc_shape bc_platform_sweep_hit<g_api_physx>::get_shape() const noexcept
 		{
 			bc_shape l_result;
-			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object =
-				m_pack.m_px_hit.actor;
+			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object = m_pack.m_px_hit.actor;
 
 			return l_result;
 		}
@@ -268,7 +264,7 @@ namespace black_cat
 				const_cast<bc_shape_geometry&>(p_geom0).get_platform_pack().m_px_geometry,
 				const_cast<bc_transform&>(p_pose0).get_platform_pack().m_px_transform,
 				const_cast<bc_shape_geometry&>(p_geom1).get_platform_pack().m_px_geometry,
-				const_cast<bc_transform&>(p_pose0).get_platform_pack().m_px_transform,
+				const_cast<bc_transform&>(p_pose1).get_platform_pack().m_px_transform,
 				p_hit.get_platform_pack().m_px_hit,
 				static_cast< physx::PxHitFlag::Enum >(p_flags),
 				p_inflation

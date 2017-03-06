@@ -15,6 +15,8 @@ namespace black_cat
 {
 	class BC_BLACKCAT_DLL bc_back_buffer_output_pass : public game::bc_irender_pass
 	{
+		BC_RENDER_PASS(back_buffer_output_pass)
+
 	public:
 		bc_back_buffer_output_pass() = default;
 
@@ -37,8 +39,6 @@ namespace black_cat
 		void before_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) override;
 
 		void after_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) override;
-
-		core::bc_string get_name() override;
 
 	protected:
 

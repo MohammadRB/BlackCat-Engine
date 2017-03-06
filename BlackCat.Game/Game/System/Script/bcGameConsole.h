@@ -161,6 +161,7 @@ namespace black_cat
 			explicit bc_igame_console_imp(bc_game_console& p_game_console)
 				: m_game_console(p_game_console)
 			{
+				m_game_console.set_implementation(this);
 			}
 
 			bc_igame_console_imp(bc_igame_console_imp&& p_other) noexcept

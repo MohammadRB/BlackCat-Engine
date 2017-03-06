@@ -32,24 +32,39 @@ namespace black_cat
 			y = p_other.y;
 			z = p_other.z;
 		}
-		
-		void bc_vector3f::make_zero()
+
+		void bc_vector3f::clamp()
 		{
-			x = 0.0f;
-			y = 0.0f;
-			z = 0.0f;
+			if (x > 1.0f) x = 1.0f;
+			if (x < 0.0f) x = 0.0f;
+
+			if (y > 1.0f) y = 1.0f;
+			if (y < 0.0f) y = 0.0f;
+
+			if (z > 1.0f) z = 1.0f;
+			if (z < 0.0f) z = 0.0f;
 		}
-		
-		void bc_vector3f::normalize()
+
+		bcFLOAT bc_vector3f::dot(const bc_vector3f& p_other) const
 		{
-			bcFLOAT l_mag = magnitude();
-			if (0.0f == l_mag) l_mag = 0.0001f;
+			bcFLOAT l_ret = 0.0f;
 
-			bcFLOAT l_inv_mag = (1.0f / l_mag);
+			l_ret = x * p_other.x;
+			l_ret += y * p_other.y;
+			l_ret += z * p_other.z;
 
-			x *= l_inv_mag;
-			y *= l_inv_mag;
-			z *= l_inv_mag;
+			return l_ret;
+		}
+
+		bc_vector3f bc_vector3f::cross(const bc_vector3f& p_other) const
+		{
+			bc_vector3f l_ret;
+
+			l_ret.x = y * p_other.z - z * p_other.y;
+			l_ret.y = z * p_other.x - x * p_other.z;
+			l_ret.z = x * p_other.y - y * p_other.x;
+
+			return(l_ret);
 		}
 		
 		bcFLOAT bc_vector3f::magnitude()
@@ -62,7 +77,19 @@ namespace black_cat
 
 			return(sqrt(l_length));
 		}
-		
+
+		void bc_vector3f::normalize()
+		{
+			bcFLOAT l_mag = magnitude();
+			if (0.0f == l_mag) l_mag = 0.0001f;
+
+			bcFLOAT l_inv_mag = (1.0f / l_mag);
+
+			x *= l_inv_mag;
+			y *= l_inv_mag;
+			z *= l_inv_mag;
+		}
+
 		bc_vector3f bc_vector3f::perpendicular()
 		{
 			bcFLOAT l_x_abs = fabs(x);
@@ -77,51 +104,12 @@ namespace black_cat
 			else
 				return cross(bc_vector3f(0.0f, 0.0f, 1.0f));
 		}
-		
-		bc_vector3f bc_vector3f::cross(const bc_vector3f& p_other) const
+
+		void bc_vector3f::make_zero()
 		{
-			bc_vector3f l_ret;
-
-			l_ret.x = y * p_other.z - z * p_other.y;
-			l_ret.y = z * p_other.x - x * p_other.z;
-			l_ret.z = x * p_other.y - y * p_other.x;
-
-			return(l_ret);
-		}
-		
-		bcFLOAT bc_vector3f::dot(const bc_vector3f& p_other) const
-		{
-			bcFLOAT l_ret = 0.0f;
-
-			l_ret = x * p_other.x;
-			l_ret += y * p_other.y;
-			l_ret += z * p_other.z;
-
-			return l_ret;
-		}
-		
-		void bc_vector3f::clamp()
-		{
-			if (x > 1.0f) x = 1.0f;
-			if (x < 0.0f) x = 0.0f;
-
-			if (y > 1.0f) y = 1.0f;
-			if (y < 0.0f) y = 0.0f;
-
-			if (z > 1.0f) z = 1.0f;
-			if (z < 0.0f) z = 0.0f;
-		}
-		
-		bc_vector3f bc_vector3f::random()
-		{
-			bcFLOAT l_x = static_cast<bcFLOAT>((double)rand() / RAND_MAX) * 2.0f - 1.0f;
-			bcFLOAT l_y = static_cast<bcFLOAT>((double)rand() / RAND_MAX) * 2.0f - 1.0f;
-			bcFLOAT l_z = static_cast<bcFLOAT>((double)rand() / RAND_MAX) * 2.0f - 1.0f;
-
-			bc_vector3f l_random = bc_vector3f(l_x, l_y, l_z);
-			l_random.normalize();
-
-			return(l_random);
+			x = 0.0f;
+			y = 0.0f;
+			z = 0.0f;
 		}
 		
 		bc_vector3f& bc_vector3f::operator= (const bc_vector3f& p_other)
@@ -343,6 +331,18 @@ namespace black_cat
 		{
 			bc_vector3f vec = p_vector;
 			return vec.perpendicular();
+		}
+
+		bc_vector3f bc_vector3f::random()
+		{
+			bcFLOAT l_x = static_cast<bcFLOAT>(static_cast< double >(rand()) / RAND_MAX) * 2.0f - 1.0f;
+			bcFLOAT l_y = static_cast<bcFLOAT>(static_cast< double >(rand()) / RAND_MAX) * 2.0f - 1.0f;
+			bcFLOAT l_z = static_cast<bcFLOAT>(static_cast< double >(rand()) / RAND_MAX) * 2.0f - 1.0f;
+
+			bc_vector3f l_random = bc_vector3f(l_x, l_y, l_z);
+			l_random.normalize();
+
+			return(l_random);
 		}
 	}
 }

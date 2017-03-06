@@ -15,6 +15,8 @@ namespace black_cat
 		public:
 			bc_constant_buffer_parameter();
 
+			bc_constant_buffer_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_buffer p_buffer);
+
 			bc_constant_buffer_parameter(bcINT p_register, bc_shader_type p_shader_types, const bc_buffer_ptr& p_buffer);
 
 			bc_constant_buffer_parameter(const bc_constant_buffer_parameter&) = default;
@@ -43,6 +45,11 @@ namespace black_cat
 		inline bc_constant_buffer_parameter::bc_constant_buffer_parameter()
 			: bc_ishader_parameter(),
 			m_buffer() 
+		{
+		}
+
+		inline bc_constant_buffer_parameter::bc_constant_buffer_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_buffer p_buffer)
+			: bc_constant_buffer_parameter(p_register, p_shader_types, bc_buffer_ptr(p_buffer))
 		{
 		}
 

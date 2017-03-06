@@ -20,7 +20,7 @@ namespace black_cat
 				bcUINT16 p_width,
 				bcUINT16 p_height,
 				bcUINT16 p_xz_multiplier,
-				bcUINT16 p_y_multiplier,
+				bcFLOAT p_y_multiplier,
 				bc_render_state_ptr& p_render_state,
 				physics::bc_height_field_ref&& p_px_height_map);
 
@@ -50,7 +50,7 @@ namespace black_cat
 				return m_xz_multiplier;
 			}
 
-			bcUINT16 get_y_multiplier() const
+			bcFLOAT get_y_multiplier() const
 			{
 				return m_y_multiplier;
 			}
@@ -60,7 +60,7 @@ namespace black_cat
 				return m_render_state.get();
 			}
 
-			physics::bc_height_field get_height_field() const
+			physics::bc_height_field get_px_height_field() const
 			{
 				return m_px_height_map.get();
 			}
@@ -72,7 +72,7 @@ namespace black_cat
 			bcUINT16 m_width;
 			bcUINT16 m_height;
 			bcUINT16 m_xz_multiplier;
-			bcUINT16 m_y_multiplier;
+			bcFLOAT m_y_multiplier;
 
 			bc_render_state_ptr m_render_state;
 			physics::bc_height_field_ref m_px_height_map;
@@ -84,7 +84,7 @@ namespace black_cat
 			bcUINT16 p_width,
 			bcUINT16 p_height,
 			bcUINT16 p_xz_multiplier,
-			bcUINT16 p_y_multiplier,
+			bcFLOAT p_y_multiplier,
 			bc_render_state_ptr& p_render_state,
 			physics::bc_height_field_ref&& p_px_height_map)
 			: m_position(p_position),

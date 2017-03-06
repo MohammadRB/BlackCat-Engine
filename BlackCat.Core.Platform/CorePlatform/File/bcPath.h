@@ -35,11 +35,11 @@ namespace black_cat
 
 			bc_platform_path(const bc_platform_path& p_other);
 
-			bc_platform_path(bc_platform_path&& p_other);
+			bc_platform_path(bc_platform_path&& p_other) noexcept;
 
 			bc_platform_path& operator=(const bc_platform_path& p_other);
 
-			bc_platform_path& operator=(bc_platform_path&& p_other);
+			bc_platform_path& operator=(bc_platform_path&& p_other) noexcept;
 
 			bcSIZE get_length() const;
 
@@ -53,24 +53,35 @@ namespace black_cat
 
 			void get_filename_without_extension(bcECHAR* p_buffer, bcSIZE p_buffer_size) const;
 
-			// Change file name with it's extension
+			/**
+			 * \brief Change file name with it's extension
+			 * \param p_filename 
+			 */
 			void set_filename(const bcECHAR* p_filename);
 
 			void get_file_extension(bcECHAR* p_buffer, bcSIZE p_buffer_size) const;
 
 			void set_file_extension(const bcECHAR* p_file_extension);
 
-			// If second path is fully qualfied, it will be replaced with current path 
-			void combine(bc_platform_path& p_other);
+			/**
+			 * \brief If second path is fully qualfied, it will be replaced with current path 
+			 * \param p_other 
+			 */
+			void combine(const bc_platform_path& p_other);
 
 			bool is_relative() const;
 
-			// If path doesn't exist, it will return false
+			/**
+			 * \brief If path doesn't exist, it will return false
+			 * \return 
+			 */
 			bool is_file() const;
 
 			bool exist() const;
 
-			// Delete directory or file
+			/**
+			 * \brief Delete directory or file
+			 */
 			void delete_path() const noexcept(false);
 
 			platform_pack& get_platform_pack()

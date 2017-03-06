@@ -4,14 +4,15 @@
 
 // == Resource ===================================================================================
 
-SamplerState g_heightmap_sampler        : register(BC_RENDER_PASS_STATE_S0);
+SamplerState g_heightmap_point_sampler        : register(BC_RENDER_PASS_STATE_S0);
+SamplerState g_heightmap_linear_sampler       : register(BC_RENDER_PASS_STATE_S1);
 
 cbuffer g_cb_render_pass_parameter      : register(BC_RENDER_PASS_STATE_CB1)
 {
     float4 g_frustum_planes[6] : packoffset(c0.x);
 };
 
-Texture2D g_heightmap                   : register(BC_RENDER_STATE_T0);
+Texture2D<int> g_heightmap              : register(BC_RENDER_STATE_T0);
 StructuredBuffer<int3> g_chunk_info     : register(BC_RENDER_STATE_T1);
 
 cbuffer g_cb_parameter                  : register(BC_RENDER_STATE_CB1)
@@ -19,8 +20,8 @@ cbuffer g_cb_parameter                  : register(BC_RENDER_STATE_CB1)
     uint g_width                        : packoffset(c0.x);
     uint g_height                       : packoffset(c0.y);
     uint g_chunk_size                   : packoffset(c0.z);
-    uint g_xz_Multiplier                : packoffset(c0.w);
-    uint g_y_multiplier                 : packoffset(c1.x);
+    uint g_xz_multiplier                : packoffset(c0.w);
+    float g_y_multiplier                : packoffset(c1.x);
     uint g_distance_detail              : packoffset(c1.y); // Distance from camera that render will happen with full detail
     uint g_height_detail                : packoffset(c1.z); // Lower values result in higher details
 };
@@ -67,13 +68,22 @@ struct bc_ps_output
 
 float get_height(float2 p_texcoord)
 {
-    return g_heightmap.SampleLevel(g_heightmap_sampler, p_texcoord, 0) * g_y_multiplier;
+    //return g_heightmap.SampleLevel(g_heightmap_point_sampler, p_texcoord, 0) * g_y_multiplier;
+    int2 l_texcoord = int2(p_texcoord.x * g_width, p_texcoord.y * g_height);
+    return g_heightmap.Load(int3(l_texcoord, 0)) * g_y_multiplier;
+}
+
+float get_height_linear(float2 p_texcoord)
+{
+    //return g_heightmap.SampleLevel(g_heightmap_linear_sampler, p_texcoord, 0) * g_y_multiplier;
+    int2 l_texcoord = int2(p_texcoord.x * g_width, p_texcoord.y * g_height);
+    return g_heightmap.Load(int3(l_texcoord, 0)) * g_y_multiplier;
 }
 
 float calc_tess_factor(float3 p_patch_center, int p_patch_diff_height)
 {
-    float l_max_dis = sqrt(pow(g_width * g_xz_Multiplier, 2) + pow(g_height * g_xz_Multiplier, 2));
-    float l_min_dis = (g_chunk_size * g_xz_Multiplier) / 2;
+    float l_max_dis = sqrt(pow(g_width * g_xz_multiplier, 2) + pow(g_height * g_xz_multiplier, 2));
+    float l_min_dis = (g_chunk_size * g_xz_multiplier) / 2;
     float l_dis = distance(p_patch_center, g_camera_position) - g_distance_detail;
     float l_tess_factor = 1 - saturate((l_dis - l_min_dis) / (l_max_dis - l_min_dis));
     l_tess_factor = pow(l_tess_factor, 16);
@@ -171,7 +181,7 @@ bc_constant_hs_output constant_hs(InputPatch<bc_vs_output, 4> p_input, uint p_pa
 
     uint l_width_chunk_count = g_width / g_chunk_size;
     uint l_height_chunk_count = g_height / g_chunk_size;
-    uint l_chunk_size = g_chunk_size * g_xz_Multiplier;
+    uint l_chunk_size = g_chunk_size * g_xz_multiplier;
     
     int2 l_patch_index = uint2(p_patch_id % l_width_chunk_count, p_patch_id / l_width_chunk_count);
     int2 l_left_patch_index = l_patch_index;
@@ -275,7 +285,29 @@ bc_ps_output ps(bc_ds_output p_input)
 {
     bc_ps_output l_output = (bc_ps_output) 0;
 
-    l_output.m_color = float4(1, 1, 1, 1);
+    float2 l_texel_space = float2(1, 1) / float2(g_width + 1, g_height + 1);
+    float2 l_left_tex = p_input.m_texcoord + float2(-l_texel_space.x, 0.0f);
+    float2 l_right_tex = p_input.m_texcoord + float2(l_texel_space.x, 0.0f);
+    float2 l_bottom_tex = p_input.m_texcoord + float2(0.0f, l_texel_space.y);
+    float2 l_top_tex = p_input.m_texcoord + float2(0.0f, -l_texel_space.y);
+	
+    float l_left_height = get_height_linear(l_left_tex);
+    float l_right_height = get_height_linear(l_right_tex);
+    float l_bottom_height = get_height_linear(l_bottom_tex);
+    float l_top_height = get_height_linear(l_top_tex);
+
+    float3x3 tbn;
+    tbn[0] = normalize(float3(2.0f * g_xz_multiplier, l_right_height - l_left_height, 0.0f));
+    tbn[1] = normalize(float3(0.0f, l_bottom_height - l_top_height, -2.0f * g_xz_multiplier));
+    tbn[2] = cross(tbn[0], tbn[1]);
+
+    float3 l_light_dir = -g_light_dir;
+    float3 l_normal = tbn[2];
+
+    float l_ndl = max(0, dot(l_normal, l_light_dir));
+    float3 l_diffuse = l_ndl * g_light_color;
+    
+    l_output.m_color = float4(l_diffuse, 1);
 	
     return l_output;
 }

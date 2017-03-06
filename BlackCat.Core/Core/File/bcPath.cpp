@@ -17,7 +17,7 @@ namespace black_cat
 		{
 		}
 
-		bc_path::bc_path(bc_path&& p_other)
+		bc_path::bc_path(bc_path&& p_other) noexcept
 			: m_path(std::move(p_other.m_path))
 		{
 		}
@@ -29,7 +29,7 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_path& bc_path::operator=(bc_path&& p_other)
+		bc_path& bc_path::operator=(bc_path&& p_other) noexcept
 		{
 			m_path = std::move(p_other.m_path);
 
@@ -54,9 +54,9 @@ namespace black_cat
 			return bc_estring(l_buffer.c_str());
 		}
 
-		bc_path& bc_path::set_directory(bc_estring p_directory)
+		bc_path& bc_path::set_directory(const bcECHAR* p_directory)
 		{
-			m_path.set_directory(p_directory.c_str());
+			m_path.set_directory(p_directory);
 
 			return *this;
 		}
@@ -79,9 +79,9 @@ namespace black_cat
 			return bc_estring(l_buffer.c_str());
 		}
 
-		bc_path& bc_path::set_filename(bc_estring p_filename)
+		bc_path& bc_path::set_filename(const bcECHAR* p_filename)
 		{
-			m_path.set_filename(p_filename.c_str());
+			m_path.set_filename(p_filename);
 
 			return *this;
 		}
@@ -95,14 +95,14 @@ namespace black_cat
 			return bc_estring(l_buffer.c_str());
 		}
 
-		bc_path& bc_path::set_file_extension(bc_estring p_file_extension)
+		bc_path& bc_path::set_file_extension(const bcECHAR* p_file_extension)
 		{
-			m_path.set_file_extension(p_file_extension.c_str());
+			m_path.set_file_extension(p_file_extension);
 
 			return *this;
 		}
 
-		bc_path& bc_path::combine(bc_path& p_other)
+		bc_path& bc_path::combine(const bc_path& p_other)
 		{
 			m_path.combine(p_other.m_path);
 

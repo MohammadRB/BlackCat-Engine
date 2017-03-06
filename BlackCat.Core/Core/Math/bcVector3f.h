@@ -26,14 +26,11 @@ namespace black_cat
 
 			bc_vector3f(const bc_vector3f& p_other);
 
-			// vector operations
 			void clamp();
 
 			bc_vector3f cross(const bc_vector3f& p_vector) const;
 
 			bcFLOAT dot(const bc_vector3f& p_vector) const;
-
-			void make_zero();
 
 			bcFLOAT magnitude();
 
@@ -41,35 +38,18 @@ namespace black_cat
 
 			bc_vector3f perpendicular();
 
-			// static vector ops
-			static bc_vector3f clamp(const bc_vector3f& p_first);
-
-			static bc_vector3f cross(const bc_vector3f& p_first, const bc_vector3f& p_second);
-
-			static bcFLOAT dot(const bc_vector3f& p_first, const bc_vector3f& p_second);
-
-			static bcFLOAT length_sq(const bc_vector3f& p_vector);
-
-			static bc_vector3f normalize(const bc_vector3f& p_vector);
-
-			static bc_vector3f perpendicular(const bc_vector3f& p_vector);
-
-			static bc_vector3f random();
+			void make_zero();
 			
-			// assignment
 			bc_vector3f& operator= (const bc_vector3f& p_other);
 
-			// member access
 			bcFLOAT operator[] (int p_pos) const;
 
 			bcFLOAT& operator[] (int p_pos);
 
-			// comparison
 			bool operator== (const bc_vector3f& p_other) const;
 
 			bool operator!= (const bc_vector3f& p_other) const;
 
-			// arithmetic operations
 			bc_vector3f operator+ (const bc_vector3f& p_other) const;
 
 			bc_vector3f operator- (const bc_vector3f& p_other) const;
@@ -84,7 +64,6 @@ namespace black_cat
 
 			bc_vector3f operator- () const;
 
-			// arithmetic updates
 			bc_vector3f& operator+= (const bc_vector3f& p_other);
 
 			bc_vector3f& operator-= (const bc_vector3f& p_other);
@@ -96,6 +75,20 @@ namespace black_cat
 			bc_vector3f& operator/= (const bc_vector3f& p_other);
 
 			bc_vector3f& operator/= (bcFLOAT p_scalar);
+
+			static bc_vector3f clamp(const bc_vector3f& p_first);
+
+			static bc_vector3f cross(const bc_vector3f& p_first, const bc_vector3f& p_second);
+
+			static bcFLOAT dot(const bc_vector3f& p_first, const bc_vector3f& p_second);
+
+			static bcFLOAT length_sq(const bc_vector3f& p_vector);
+
+			static bc_vector3f normalize(const bc_vector3f& p_vector);
+
+			static bc_vector3f perpendicular(const bc_vector3f& p_vector);
+
+			static bc_vector3f random();
 
 		public:
 			bcFLOAT x;

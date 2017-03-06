@@ -83,9 +83,9 @@ namespace black_cat
 			 * \param p_content_name 
 			 * \return 
 			 */
-			bc_icontent_ptr find_content(const bcCHAR* p_content_name);
+			bc_icontent_ptr find_content(const bcCHAR* p_content_name) const;
 
-			bc_icontent_ptr find_content_throw(const bcCHAR* p_content_name);
+			bc_icontent_ptr find_content_throw(const bcCHAR* p_content_name) const;
 
 			/**
 			 * \brief Return Content with specified title otherwise return nullptr (TSFunc)
@@ -94,10 +94,10 @@ namespace black_cat
 			 * \return 
 			 */
 			template< class TContent >
-			bc_content_ptr< TContent > find_content(const bcCHAR* p_content_name);
+			bc_content_ptr< TContent > find_content(const bcCHAR* p_content_name) const;
 
 			template< class TContent >
-			bc_content_ptr< TContent > find_content_throw(const bcCHAR* p_content_name);
+			bc_content_ptr< TContent > find_content_throw(const bcCHAR* p_content_name) const;
 
 		protected:
 
@@ -105,7 +105,7 @@ namespace black_cat
 			template< class TContent >
 			void _register_content_type();
 
-			core_platform::bc_shared_mutex m_contents_mutex;
+			mutable core_platform::bc_shared_mutex m_contents_mutex;
 
 			content_types_map_type m_content_types;
 			streams_map_type m_streams;
@@ -137,7 +137,7 @@ namespace black_cat
 		}
 
 		template< class TContent >
-		bc_content_ptr<TContent> bc_content_stream_manager::find_content(const bcCHAR* p_content_name)
+		bc_content_ptr<TContent> bc_content_stream_manager::find_content(const bcCHAR* p_content_name) const
 		{
 			static_assert(std::is_base_of< bc_icontent, TContent >::value, "TContent must be a content type");
 
@@ -152,7 +152,7 @@ namespace black_cat
 		}
 
 		template< class TContent >
-		bc_content_ptr<TContent> bc_content_stream_manager::find_content_throw(const bcCHAR* p_content_name)
+		bc_content_ptr<TContent> bc_content_stream_manager::find_content_throw(const bcCHAR* p_content_name) const
 		{
 			static_assert(std::is_base_of< bc_icontent, TContent >::value, "TContent must be a content type");
 

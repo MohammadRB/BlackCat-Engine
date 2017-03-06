@@ -1,7 +1,7 @@
 // [11/14/2016 MRB]
 
 #include "Editor/EditorPCH.h"
-#include "Editor/Application/bcConsoleWidget.h"
+#include "Editor/Widget/bcConsoleWidget.h"
 
 namespace black_cat
 {

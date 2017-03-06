@@ -14,6 +14,8 @@ namespace black_cat
 		public:
 			bc_sampler_parameter();
 
+			bc_sampler_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_sampler_state p_sampler);
+
 			bc_sampler_parameter(bcINT p_register, bc_shader_type p_shader_types, const bc_sampler_state_ptr& p_sampler);
 
 			bc_sampler_parameter(bc_sampler_parameter&) = default;
@@ -42,6 +44,11 @@ namespace black_cat
 		inline bc_sampler_parameter::bc_sampler_parameter()
 			: bc_ishader_parameter(),
 			m_sampler() 
+		{
+		}
+
+		inline bc_sampler_parameter::bc_sampler_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_sampler_state p_sampler)
+			: bc_sampler_parameter(p_register, p_shader_types, bc_sampler_state_ptr(p_sampler))
 		{
 		}
 

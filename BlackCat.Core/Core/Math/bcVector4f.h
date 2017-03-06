@@ -30,32 +30,27 @@ namespace black_cat
 			bc_vector4f(const bc_vector3f& p_vector, float w);
 
 			bc_vector4f(const bc_vector4f& p_vector);
-			
-			// vector operations
+		
 			void clamp();
 
 			float dot(bc_vector4f& p_other) const;
-
-			void make_zero();
 
 			void normalize();
 
 			float magnitude() const;
 
-			// Operators
+			void make_zero();
+
 			bc_vector4f& operator= (const bc_vector4f& p_other);
 
-			// member access
 			float operator[] (int p_pos) const;
 
 			float& operator[] (int p_pos);
 
-			// comparison
 			bool operator== (const bc_vector4f& p_other) const;
 
 			bool operator!= (const bc_vector4f& p_other) const;
 
-			// arithmetic operations
 			bc_vector4f operator+ (const bc_vector4f& p_other) const;
 
 			bc_vector4f operator- (const bc_vector4f& p_other) const;
@@ -70,7 +65,6 @@ namespace black_cat
 
 			bc_vector4f operator- () const;
 
-			// arithmetic updates
 			bc_vector4f& operator+= (const bc_vector4f& p_other);
 
 			bc_vector4f& operator-= (const bc_vector4f& p_other);

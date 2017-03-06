@@ -18,13 +18,13 @@ namespace black_cat
 		{
 		public:
 			bc_physics_system();
-
+			
 			bc_physics_system(bc_physics_system&&) noexcept(core::bc_type_traits<physics::bc_physics>::is_no_throw_move);
 
 			~bc_physics_system();
-
-			bc_physics_system& operator=(bc_physics_system&&) noexcept(core::bc_type_traits<physics::bc_physics>::is_no_throw_move);;
-
+			
+			bc_physics_system& operator=(bc_physics_system&&) noexcept(core::bc_type_traits<physics::bc_physics>::is_no_throw_move);
+			
 			physics::bc_physics& get_physics() noexcept
 			{
 				return m_physics;
@@ -40,16 +40,16 @@ namespace black_cat
 			/**
 			 * \brief Store a pointer of bc_actor inside bc_rigid_body so it can be accessible within physics callbacks
 			 * \param p_px_actor 
-			 * \param p_rigid_component 
+			 * \param p_actor 
 			 */
-			void connect_px_actor_to_game_actor(physics::bc_rigid_actor& p_px_actor, bc_actor p_actor);
+			void connect_px_actor_to_game_actor(physics::bc_actor& p_px_actor, bc_actor p_actor);
 
 			/**
 			 * \brief Retrieve stored pointer of bc_actor
-			 * \param p_px_actor 
-			 * \return 
+			 * \param p_px_actor
+			 * \return
 			 */
-			bc_actor get_game_actor(physics::bc_rigid_actor& p_px_actor);
+			bc_actor get_game_actor(physics::bc_actor& p_px_actor);
 
 			void update(core_platform::bc_clock::update_param p_clock_update_param);
 

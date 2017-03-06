@@ -55,14 +55,33 @@ namespace black_cat
 			return *this;
 		}
 		
-		void bc_vector4f::make_zero()
+		void bc_vector4f::clamp()
 		{
-			x = 0.0f;
-			y = 0.0f;
-			z = 0.0f;
-			w = 0.0f;
+			if (x > 1.0f) x = 1.0f;
+			if (x < 0.0f) x = 0.0f;
+
+			if (y > 1.0f) y = 1.0f;
+			if (y < 0.0f) y = 0.0f;
+
+			if (z > 1.0f) z = 1.0f;
+			if (z < 0.0f) z = 0.0f;
+
+			if (w > 1.0f) w = 1.0f;
+			if (w < 0.0f) w = 0.0f;
 		}
-		
+
+		float bc_vector4f::dot(bc_vector4f& p_other) const
+		{
+			float l_ret = 0.0f;
+
+			l_ret += x * p_other.x;
+			l_ret += y * p_other.y;
+			l_ret += z * p_other.z;
+			l_ret += w * p_other.w;
+
+			return l_ret;
+		}
+
 		void bc_vector4f::normalize()
 		{
 			float l_inv_mag = (1.0f / magnitude());
@@ -85,16 +104,12 @@ namespace black_cat
 			return(sqrt(l_length));
 		}
 		
-		float bc_vector4f::dot(bc_vector4f& p_other) const
+		void bc_vector4f::make_zero()
 		{
-			float l_ret = 0.0f;
-
-			l_ret += x * p_other.x;
-			l_ret += y * p_other.y;
-			l_ret += z * p_other.z;
-			l_ret += w * p_other.w;
-
-			return l_ret;
+			x = 0.0f;
+			y = 0.0f;
+			z = 0.0f;
+			w = 0.0f;
 		}
 		
 		float bc_vector4f::operator[] (int p_pos) const
@@ -104,7 +119,7 @@ namespace black_cat
 			if (p_pos == 2) return(z);
 			return(w);
 		}
-		//----------------------------------------------------------------------------
+
 		float& bc_vector4f::operator[] (int p_pos)
 		{
 			if (p_pos == 0) return(x);
@@ -112,7 +127,7 @@ namespace black_cat
 			if (p_pos == 2) return(z);
 			return(w);
 		}
-		//----------------------------------------------------------------------------
+
 		bool bc_vector4f::operator== (const bc_vector4f& p_other) const
 		{
 
@@ -289,21 +304,6 @@ namespace black_cat
 			w = p_other.w != 0.0f ? w / p_other.w : 0.0f;
 
 			return(*this);
-		}
-		
-		void bc_vector4f::clamp()
-		{
-			if (x > 1.0f) x = 1.0f;
-			if (x < 0.0f) x = 0.0f;
-
-			if (y > 1.0f) y = 1.0f;
-			if (y < 0.0f) y = 0.0f;
-
-			if (z > 1.0f) z = 1.0f;
-			if (z < 0.0f) z = 0.0f;
-
-			if (w > 1.0f) w = 1.0f;
-			if (w < 0.0f) w = 0.0f;
 		}
 		
 		unsigned int bc_vector4f::to_ARGB()

@@ -362,7 +362,7 @@ namespace black_cat
 			bc_resource_view_config l_resource_view_config;
 			D3D11_UNORDERED_ACCESS_VIEW_DESC& l_uav_desc = l_resource_view_config.get_platform_pack().m_unordered_shader_view_desc;
 
-			l_resource_view_config.get_platform_pack().m_type = bc_resource_view_type::shader;
+			l_resource_view_config.get_platform_pack().m_type = bc_resource_view_type::unordered;
 
 			std::memset(&l_uav_desc, 0, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
 

@@ -22,6 +22,8 @@ namespace black_cat
 
 #define BC_EVENT_NAME(p_name)					"evt_" ## #p_name
 
+#define BC_RENDER_PASS_NAME(p_name)				"rpass_" ## #p_name
+
 #define BC_SERVICE(p_name) \
 	public: \
 	static constexpr const bcCHAR* service_name() \
@@ -83,6 +85,17 @@ namespace black_cat
 	static constexpr bcUINT32 event_hash() \
 	{ \
 		return bc_compile_time_string_hash(BC_EVENT_NAME(p_name)); \
+	} \
+
+#define BC_RENDER_PASS(p_name) \
+	public: \
+	static constexpr const bcCHAR* render_pass_name() \
+	{ \
+		return BC_EVENT_NAME(p_name); \
+	} \
+	static constexpr bcUINT32 render_pass_hash() \
+	{ \
+		return bc_compile_time_string_hash(BC_RENDER_PASS_NAME(p_name)); \
 	} \
 
 		BC_PARAMETER(device, "device");

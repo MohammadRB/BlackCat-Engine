@@ -1,0 +1,26 @@
+{
+  "streams": [
+    {
+      "stream_name": "editor_shaders",
+      "stream_content": [
+        {
+          "content_title": "terrain_height_cs",
+          "content_name": "cnt_compute_shader",
+          "content_file": "content\\shader\\directx11\\bcTerrainHeight.hlsl",
+          "content_parameter": { "function": "main" }
+        },
+        {
+          "content_title": "terrain_smooth_cs",
+          "content_name": "cnt_compute_shader",
+          "content_file": "content\\shader\\directx11\\bcTerrainSmooth.hlsl",
+          "content_parameter": { "function": "main" }
+        }
+      ]
+    },
+    {
+      "stream_name": "editor_resources",
+      "stream_content": [
+      ]
+    }
+  ]
+}

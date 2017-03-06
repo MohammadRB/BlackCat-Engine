@@ -58,7 +58,7 @@ namespace black_cat
 
 		virtual ~bc_base_render_application();
 
-		virtual void application_start_engine_components(game::bc_engine_component_parameter& p_engine_components) = 0;
+		virtual void application_start_engine_components(game::bc_engine_component_parameter& p_engine_components, core::bc_service_manager& p_service_manager) = 0;
 
 		virtual void application_initialize(const bcCHAR* p_commandline) = 0;
 
@@ -253,7 +253,7 @@ namespace black_cat
 			game::bc_abstract_component<game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component>
 		>();
 
-		application_start_engine_components(p_engine_components);
+		application_start_engine_components(p_engine_components, *m_service_manager);
 	}
 
 	template< class TApp >

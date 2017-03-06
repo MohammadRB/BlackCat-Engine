@@ -9,6 +9,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcArray.h"
 #include "Core/Event/bcEvent.h"
+#include "Core/File/bcContentStreamManager.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "GraphicImp/Device/bcDevice.h"
@@ -18,6 +19,7 @@
 #include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "Game/bcExport.h"
+#include "Game/System/Render/bcRenderThreadManager.h"
 #include "Game/System/Render/bcRenderPassManager.h"
 #include "Game/System/Render/bcStateConfigs.h"
 #include "Game/System/Render/bcRenderState.h"
@@ -35,7 +37,7 @@ namespace black_cat
 	namespace game
 	{
 		class bc_irender_task;
-
+		
 		struct bc_render_system_parameter
 		{
 			bc_render_system_parameter(bcUINT32 p_device_backbuffer_width, 
@@ -61,7 +63,7 @@ namespace black_cat
 				const core::bc_vector3f p_camera_position,
 				const core::bc_matrix4f& p_view,
 				const core::bc_matrix4f& p_projection,
-				bc_icamera::extend& p_camera_extends)
+				const bc_icamera::extend& p_camera_extends)
 				: update_param(p_clock_update),
 				m_camera_position(p_camera_position),
 				m_view_matrix(p_view),
@@ -76,7 +78,7 @@ namespace black_cat
 			bc_icamera::extend m_camera_extends;
 		};
 
-		class BC_GAME_DLL bc_render_system : public core::bc_initializable<bc_render_system_parameter>
+		class BC_GAME_DLL bc_render_system : public core::bc_initializable< core::bc_content_stream_manager&, bc_render_system_parameter >
 		{
 		private:
 			friend class _bc_render_state_handle_deleter;
@@ -88,7 +90,7 @@ namespace black_cat
 			using update_param = bc_render_system_update_param;
 
 		public:
-			bc_render_system() = default;
+			bc_render_system();
 
 			bc_render_system(bc_render_system&&) = default;
 
@@ -224,11 +226,13 @@ namespace black_cat
 			 */
 			void destroy_compute_state(bc_compute_state* p_compute_state);
 
-			void add_render_pass(bcUINT p_location, core::bc_unique_ptr< bc_irender_pass >&& p_pass);
+			template< typename TPass >
+			void add_render_pass(bcUINT p_location, core::bc_unique_ptr< TPass >&& p_pass);
 
 			bool remove_render_pass(bcUINT p_location);
 
-			bool remove_render_pass(core::bc_string p_name);
+			template< typename TPass >
+			bool remove_render_pass();
 
 			/**
 			 * \brief Add a render instance to render queue
@@ -256,26 +260,54 @@ namespace black_cat
 		protected:
 
 		private:
-			void _initialize(bc_render_system_parameter p_parameter) override;
+			void _initialize(core::bc_content_stream_manager& p_content_stream, bc_render_system_parameter p_parameter) override;
 
 			void _destroy() override;
 
 			bool _event_handler(core::bc_ievent& p_event);
 
+			core::bc_content_stream_manager* m_content_stream;
 			graphic::bc_device m_device;
-			bc_render_thread m_render_thread;
+			core::bc_unique_ptr< bc_render_thread_manager > m_thread_manager;
 
 			core::bc_event_listener_handle m_window_resize_handle;
 			core::bc_event_listener_handle m_device_listener_handle;
 
 			bc_render_pass_manager m_render_pass_manager;
+
 			core_platform::bc_mutex m_render_states_mutex;
 			core::bc_vector_movale< core::bc_nullable< bc_render_pass_state > > m_render_pass_states;
 			core::bc_vector_movale< render_state_entry > m_render_states;
 			core::bc_vector_movale< core::bc_nullable< bc_compute_state > > m_compute_states;
 
+			update_param m_last_update_params;
 			graphic::bc_constant_buffer_parameter m_global_cbuffer_parameter;
 			graphic::bc_constant_buffer_parameter m_perobject_cbuffer_parameter;
 		};
+
+		template< typename TPass >
+		void bc_render_system::add_render_pass(bcUINT p_location, core::bc_unique_ptr<TPass>&& p_pass)
+		{
+			m_render_pass_manager.add_pass(p_location, std::move(p_pass));
+
+			auto l_pass = m_render_pass_manager.get_pass(p_location);
+
+			l_pass->initialize_resources(*this);
+		}
+
+		template< typename TPass >
+		bool bc_render_system::remove_render_pass()
+		{
+			auto* l_pass = m_render_pass_manager.get_pass<TPass>();
+
+			if (!l_pass)
+			{
+				return false;
+			}
+
+			l_pass->destroy(m_device);
+
+			return m_render_pass_manager.remove_pass<TPass>();
+		}
 	}
 }

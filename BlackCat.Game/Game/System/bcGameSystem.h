@@ -5,6 +5,7 @@
 #include "CorePlatform/bcType.h"
 #include "Core/bcConstant.h"
 #include "Core/Container/bcString.h"
+#include "Core/File/bcContentStreamManager.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Game/bcExport.h"
 #include "Game/System/Input/bcInputSystem.h"
@@ -47,7 +48,17 @@ namespace black_cat
 				return m_input_system;
 			}
 
+			const bc_input_system& get_input_system() const
+			{
+				return m_input_system;
+			}
+
 			bc_file_system& get_file_system()
+			{
+				return m_file_system;
+			}
+
+			const bc_file_system& get_file_system() const
 			{
 				return m_file_system;
 			}
@@ -57,7 +68,17 @@ namespace black_cat
 				return m_render_system;
 			}
 
+			const bc_render_system& get_render_system() const
+			{
+				return m_render_system;
+			}
+
 			bc_physics_system& get_physics_system()
+			{
+				return m_physics_system;
+			}
+
+			const bc_physics_system& get_physics_system() const
 			{
 				return m_physics_system;
 			}
@@ -67,9 +88,24 @@ namespace black_cat
 				return m_script_system;
 			}
 
+			const bc_script_system& get_script_system() const
+			{
+				return m_script_system;
+			}
+
 			bc_game_console& get_console()
 			{
 				return m_console;
+			}
+
+			const bc_game_console& get_console() const
+			{
+				return m_console;
+			}
+
+			bc_scene* get_scene()
+			{
+				return m_scene.get();
 			}
 
 			bc_scene* get_scene() const
@@ -152,7 +188,7 @@ namespace black_cat
 
 		inline void bc_game_system::_initialize(bc_game_system_parameter p_paramter)
 		{
-			m_render_system.initialize(std::move(p_paramter.m_render_system_parameter));
+			m_render_system.initialize(*core::bc_get_service<core::bc_content_stream_manager>(), std::move(p_paramter.m_render_system_parameter));
 			m_physics_system.initialize();
 
 			auto l_px_scene_builder = std::move(physics::bc_scene_builder()

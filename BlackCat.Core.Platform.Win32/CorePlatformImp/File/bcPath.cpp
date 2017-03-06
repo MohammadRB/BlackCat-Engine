@@ -47,7 +47,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bc_platform_path<g_api_win32>::bc_platform_path(bc_platform_path&& p_other)
+		bc_platform_path<g_api_win32>::bc_platform_path(bc_platform_path&& p_other) noexcept
 			: m_pack(std::move(p_other.m_pack))
 		{
 		}
@@ -63,7 +63,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bc_platform_path<g_api_win32>& bc_platform_path<g_api_win32>::operator=(bc_platform_path&& p_other)
+		bc_platform_path<g_api_win32>& bc_platform_path<g_api_win32>::operator=(bc_platform_path&& p_other) noexcept
 		{
 			m_pack = std::move(p_other.m_pack);
 
@@ -170,7 +170,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		void bc_platform_path<g_api_win32>::combine(bc_platform_path& p_other)
+		void bc_platform_path<g_api_win32>::combine(const bc_platform_path& p_other)
 		{
 			bcECHAR l_buffer[MAX_PATH] = { '\0' };
 			_copy_current_path_to_buffer(m_pack.m_path, l_buffer, MAX_PATH);

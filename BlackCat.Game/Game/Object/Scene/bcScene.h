@@ -23,6 +23,26 @@ namespace black_cat
 
 			bc_scene& operator=(bc_scene&&) noexcept;
 
+			bc_scene_graph& get_scene_graph()
+			{
+				return m_scene_graph;
+			}
+
+			const bc_scene_graph& get_scene_graph() const
+			{
+				return m_scene_graph;
+			}
+
+			physics::bc_scene& get_px_scene()
+			{
+				return m_px_scene;
+			}
+
+			const physics::bc_scene& get_px_scene() const
+			{
+				return m_px_scene;
+			}
+
 			core::bc_vector_frame< bc_actor > get_heightmaps() const;
 
 			void add_object(bc_actor p_actor);
