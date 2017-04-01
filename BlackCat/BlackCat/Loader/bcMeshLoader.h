@@ -30,7 +30,7 @@ namespace black_cat
 
 		static void convert_aimatrix(const aiMatrix4x4& p_aimatrix, core::bc_matrix4f& p_matrix);
 
-		static void convert_aimaterial(core::bc_content_loader_context& p_context, const aiMaterial& p_aimaterial, game::bc_mesh_part_material& p_material);
+		static void convert_aimaterial(core::bc_content_loader_context& p_context, const aiMaterial& p_aimaterial, game::bc_render_material& p_material);
 
 		static void convert_aimesh(game::bc_render_system& p_render_system,
 			core::bc_content_loader_context& p_context,

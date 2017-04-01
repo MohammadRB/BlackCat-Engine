@@ -193,6 +193,7 @@ $RECYCLE.BIN/
 *.ipdb
 *.db
 BlackCat.VC.db
+BlackCat.VC.VC.opendb
 
 # Folders
 

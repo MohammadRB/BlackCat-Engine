@@ -120,6 +120,8 @@ namespace black_cat
 
 			element_ptr get() const noexcept(true);
 
+			bcUINT32 ref_count() const noexcept;
+
 			element_type& operator*() const;
 
 			element_ptr operator->() const noexcept(true);
@@ -200,6 +202,8 @@ namespace black_cat
 			element_t* get() const noexcept(true);
 
 			handle_t get_handle() const noexcept(true);
+
+			bcUINT32 ref_count() const noexcept;
 
 			element_t& operator*() const;
 
@@ -372,6 +376,17 @@ namespace black_cat
 		typename bc_ref_count_ptr< T, TDeleter >::element_ptr bc_ref_count_ptr< T, TDeleter >::get() const noexcept(true)
 		{
 			return m_pointer;
+		}
+
+		template< class T, class TDeleter >
+		bcUINT32 bc_ref_count_ptr<T, TDeleter>::ref_count() const noexcept
+		{
+			if(m_pointer)
+			{
+				return static_cast<bc_ref_count*>(m_pointer)->m_ref_count.load(core_platform::bc_memory_order::relaxed);
+			}
+
+			return 0;
 		}
 
 		template< class T, class TDeleter >
@@ -596,6 +611,17 @@ namespace black_cat
 		typename bc_ref_count_handle<T, TDeleter>::handle_t bc_ref_count_handle<T, TDeleter>::get_handle() const noexcept(true)
 		{
 			return m_handle;
+		}
+
+		template< class T, class TDeleter >
+		bcUINT32 bc_ref_count_handle<T, TDeleter>::ref_count() const noexcept
+		{
+			if(m_handle)
+			{
+				return static_cast<bc_ref_count*>(get())->m_ref_count.load(core_platform::bc_memory_order::relaxed);
+			}
+
+			return 0;
 		}
 
 		template< class T, class TDeleter >

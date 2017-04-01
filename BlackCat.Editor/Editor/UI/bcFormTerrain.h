@@ -19,11 +19,22 @@ namespace black_cat
 				m_height_slider = p_parent.findChild<QSlider*>("terrainHeightSlider");
 				m_smooth_slider = p_parent.findChild<QSlider*>("terrainSmoothSlider");
 				m_radius_slider = p_parent.findChild<QSlider*>("terrainRadiusSlider");
+				m_material_combo = p_parent.findChild<QComboBox*>("terrainMaterialCombo");
 			}
 
 			bcINT32 get_height() const
 			{
 				return m_height_slider->value();
+			}
+
+			bcUINT32 get_radius() const
+			{
+				return m_radius_slider->value();
+			}
+
+			void set_radius(bcUINT32 p_value)
+			{
+				m_radius_slider->setValue(p_value);
 			}
 
 			void set_height(bcINT32 p_value)
@@ -41,22 +52,23 @@ namespace black_cat
 				m_smooth_slider->setValue(p_value);
 			}
 
-			bcUINT32 get_radius() const
+			bcUINT32 get_material() const
 			{
-				return m_radius_slider->value();
+				return m_material_combo->currentIndex() + 1;
 			}
 
-			void set_radius(bcUINT32 p_value)
+			void set_material(bcUINT32 p_index)
 			{
-				m_radius_slider->setValue(p_value);
+				m_material_combo->setCurrentIndex(p_index - 1);
 			}
 
 		protected:
 
 		private:
 			QSlider* m_height_slider;
-			QSlider* m_smooth_slider;
 			QSlider* m_radius_slider;
+			QSlider* m_smooth_slider;
+			QComboBox* m_material_combo;
 		};
 	}
 }

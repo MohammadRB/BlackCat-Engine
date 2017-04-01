@@ -9,9 +9,6 @@
 //--------------------------------------------------------------------------------
 
 #include "Core/CorePCH.h"
-#include "Core/Math/bcVector3f.h"
-#include "Core/Math/bcVector4f.h"
-#include "Core/Math/bcMatrix3f.h"
 #include "Core/Math/bcMatrix4f.h"
 
 namespace black_cat
@@ -30,7 +27,7 @@ namespace black_cat
 		
 		bc_matrix4f::bc_matrix4f(const bc_matrix4f& p_matrix)
 		{
-			std::memcpy(m_entry, (void*)&p_matrix, 16 * sizeof(bcFLOAT));
+			std::memcpy(m_entry, reinterpret_cast<const void*>(&p_matrix), 16 * sizeof(bcFLOAT));
 		}
 		
 		bc_matrix4f::bc_matrix4f(bcFLOAT p_m11, bcFLOAT p_m12, bcFLOAT p_m13, bcFLOAT p_m14,
@@ -314,7 +311,7 @@ namespace black_cat
 			l_inv(2, 3) = -m_entry[8] * l_a4 + m_entry[9] * l_a2 - m_entry[11] * l_a0;
 			l_inv(3, 3) = +m_entry[8] * l_a3 - m_entry[9] * l_a1 + m_entry[10] * l_a0;
 
-			bcFLOAT l_inv_det = ((bcFLOAT)1.0) / l_det;
+			bcFLOAT l_inv_det = static_cast< bcFLOAT >(1.0) / l_det;
 			for (bcINT l_row = 0; l_row < 4; l_row++)
 			{
 				for (bcINT l_col = 0; l_col < 4; l_col++)

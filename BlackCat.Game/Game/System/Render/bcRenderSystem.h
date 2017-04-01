@@ -19,7 +19,6 @@
 #include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "Game/bcExport.h"
-#include "Game/System/Render/bcRenderThreadManager.h"
 #include "Game/System/Render/bcRenderPassManager.h"
 #include "Game/System/Render/bcStateConfigs.h"
 #include "Game/System/Render/bcRenderState.h"
@@ -37,6 +36,9 @@ namespace black_cat
 	namespace game
 	{
 		class bc_irender_task;
+		class bc_file_system;
+		class bc_render_thread_manager;
+		class bc_material_manager;
 		
 		struct bc_render_system_parameter
 		{
@@ -101,6 +103,11 @@ namespace black_cat
 			graphic::bc_device& get_device()
 			{
 				return m_device;
+			}
+
+			bc_material_manager& get_material_manager() noexcept
+			{
+				return *m_material_manager.get();
 			}
 
 			/**
@@ -269,6 +276,7 @@ namespace black_cat
 			core::bc_content_stream_manager* m_content_stream;
 			graphic::bc_device m_device;
 			core::bc_unique_ptr< bc_render_thread_manager > m_thread_manager;
+			core::bc_unique_ptr< bc_material_manager > m_material_manager;
 
 			core::bc_event_listener_handle m_window_resize_handle;
 			core::bc_event_listener_handle m_device_listener_handle;

@@ -3,24 +3,11 @@
 #pragma once
 
 #include "Core/File/bcContentLoader.h"
-#include "Graphic/bcDeviceResourceContent.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
 {
-	template< >
-	inline constexpr bcCHAR* graphic::bc_device_resource_content< graphic::bc_pixel_shader >::content_name()
-	{
-		return BC_CONTENT_NAME(pixel_shader);
-	}
-
-	template< >
-	inline constexpr bcUINT32 graphic::bc_device_resource_content< graphic::bc_pixel_shader >::content_hash()
-	{
-		return bc_compile_time_string_hash(BC_CONTENT_NAME(pixel_shader));
-	}
-
 	class BC_BLACKCAT_DLL bc_pixel_shader_loader : public core::bc_base_content_loader
 	{
 	public:

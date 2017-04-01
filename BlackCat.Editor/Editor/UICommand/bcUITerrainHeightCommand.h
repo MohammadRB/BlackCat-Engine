@@ -8,12 +8,13 @@
 #include "Game/System/Render/bcRenderTask.h"
 #include "Game/Object/Scene/bcActor.hpp"
 #include "Editor/Application/bcUICommand.h"
-#include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
 
 namespace black_cat
 {
 	namespace editor
 	{
+		class bc_editor_height_map_dx11;
+
 		struct bc_ui_terrain_height_command_parameter_cbuffer
 		{
 			BC_CBUFFER_ALIGN

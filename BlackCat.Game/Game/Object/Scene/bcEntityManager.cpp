@@ -72,7 +72,7 @@ namespace black_cat
 			l_json_file.open_read(p_json_file_path);
 
 			core::bc_string_frame l_line;
-			while (core::bc_get_line(l_json_file, &l_line))
+			while (core::bc_get_line(l_json_file, l_line))
 			{
 				l_buffer.append(l_line);
 			}

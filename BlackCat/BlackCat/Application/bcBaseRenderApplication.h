@@ -20,6 +20,7 @@
 #include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
 #include "Game/Application/bcRenderApplication.h"
 #include "Game/System/Render/bcRenderPassManager.h"
+#include "Game/System/Render/bcMaterialManager.h"
 #include "Game/System/Script/bcScriptSystem.h"
 #include "Game/System/Script/bcScriptBinding.h"
 #include "Game/Object/Scene/bcActorComponentManager.h"
@@ -156,13 +157,13 @@ namespace black_cat
 		(
 			core::bc_make_service< core::bc_expression_parameter_manager >()
 		);
-		m_service_manager->register_service< core::bc_content_manager >
+		auto* l_content_manager = m_service_manager->register_service< core::bc_content_manager >
 		(
 			core::bc_make_service< core::bc_content_manager >()
 		);
 		auto* l_content_stream_manager = m_service_manager->register_service< core::bc_content_stream_manager >
 		(
-			core::bc_make_service< core::bc_content_stream_manager >()
+			core::bc_make_service< core::bc_content_stream_manager >(*l_content_manager)
 		);
 		m_service_manager->register_service< game::bc_actor_component_manager >
 		(
@@ -277,6 +278,7 @@ namespace black_cat
 
 		l_content_stream_manager->read_stream_file(m_game_system->get_file_system().get_content_data_path(bcL("ContentStream.json")).c_str());
 		l_entity_manager->read_entity_file(m_game_system->get_file_system().get_content_data_path(bcL("EntityType.json")).c_str());
+		m_game_system->get_render_system().get_material_manager().read_material_file(m_game_system->get_file_system().get_content_data_path(bcL("Material.json")).c_str());
 
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_shaders");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_resources");

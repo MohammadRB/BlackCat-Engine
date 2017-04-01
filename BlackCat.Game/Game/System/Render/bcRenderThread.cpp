@@ -81,7 +81,6 @@ namespace black_cat
 			graphic::bc_device_command_list l_command_list;
 			std::swap(l_command_list, m_command_list);
 
-
 			return l_command_list;
 		}
 

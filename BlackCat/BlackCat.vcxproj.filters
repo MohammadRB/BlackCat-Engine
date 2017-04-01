@@ -373,7 +373,7 @@
     <FxCompile Include="BlackCat\Content\Shader\DirectX11\bcTerrain.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11</Filter>
     </FxCompile>
-    <FxCompile Include="BlackCat\Content\Shader\DirectX11\bcTerrainTools.hlsl">
+    <FxCompile Include="BlackCat\Content\Shader\DirectX11\bcTerrainChunkInfo.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11</Filter>
     </FxCompile>
   </ItemGroup>
@@ -386,6 +386,9 @@
     </None>
     <None Include="BlackCat\Content\Shader\DirectX11\bcRegister.hlsli">
       <Filter>BlackCat\Content\Shader\DirectX11</Filter>
+    </None>
+    <None Include="BlackCat\Content\Data\Material.json">
+      <Filter>BlackCat\Content\Data</Filter>
     </None>
   </ItemGroup>
 </Project>

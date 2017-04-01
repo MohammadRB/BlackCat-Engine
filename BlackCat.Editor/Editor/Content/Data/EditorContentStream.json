@@ -14,6 +14,18 @@
           "content_name": "cnt_compute_shader",
           "content_file": "content\\shader\\directx11\\bcTerrainSmooth.hlsl",
           "content_parameter": { "function": "main" }
+        },
+        {
+          "content_title": "terrain_material_cs",
+          "content_name": "cnt_compute_shader",
+          "content_file": "content\\shader\\directx11\\bcTerrainMaterial.hlsl",
+          "content_parameter": { "function": "main" }
+        },
+        {
+          "content_title": "terrain_material_smooth_cs",
+          "content_name": "cnt_compute_shader",
+          "content_file": "content\\shader\\directx11\\bcTerrainMaterialSmooth.hlsl",
+          "content_parameter": { "function": "main" }
         }
       ]
     },

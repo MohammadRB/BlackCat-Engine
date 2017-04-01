@@ -6,6 +6,7 @@
 #include "GraphicImp/Device/bcDeviceOutput.h"
 #include "GraphicImp/Resource/bcResource.h"
 
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Graphic/Device/bcDevice.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
@@ -20,6 +21,7 @@ namespace black_cat
 			Microsoft::WRL::ComPtr< ID3D11Device > m_device;
 			Microsoft::WRL::ComPtr< ID3D11DeviceContext > m_immediate_context;
 			Microsoft::WRL::ComPtr< IDXGISwapChain > m_swap_chain;
+			core_platform::bc_mutex m_context_mutex;
 		};
 	}
 }

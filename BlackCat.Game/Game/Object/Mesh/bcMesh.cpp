@@ -102,7 +102,7 @@ namespace black_cat
 			return &m_transformations.at(p_node->m_transformation_index);
 		}
 
-		const bc_mesh_part_material* bc_mesh::get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
+		const bc_render_material* bc_mesh::get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
 		{
 			if(p_mesh_index >= p_node->m_mesh_count)
 			{

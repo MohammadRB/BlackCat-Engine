@@ -7,6 +7,7 @@
 #include "Core/Concurrency/bcThreadManager.h"
 #include "Core/Event/bcEventManager.h"
 #include "Core/Utility/bcDelegate.h"
+#include "Core/Utility/bcTemplateMetaType.h"
 #include "Core/bcEvent.h"
 
 namespace black_cat
@@ -29,7 +30,7 @@ namespace black_cat
 			template< typename T >
 			static void when_all(std::initializer_list<bc_task<T>&> p_tasks);
 
-			template< typename TIte >
+			template< typename TIte, typename = std::enable_if_t< bc_is_iterator< TIte >::value >>
 			static void when_all(TIte p_begin, TIte p_end);
 
 			/**
@@ -86,7 +87,16 @@ namespace black_cat
 		template< typename ...T >
 		void bc_concurreny::when_all(bc_task<T>&... p_tasks)
 		{
-			[](...) {} ((p_tasks.wait())...);
+			[&](...) {}
+			(
+				(
+					[&]()
+					{
+						p_tasks.wait();
+						return true;
+					}()
+				)...
+			);
 		}
 
 		template< typename T >
@@ -98,7 +108,7 @@ namespace black_cat
 			});
 		}
 
-		template< typename TIte >
+		template< typename TIte, typename = std::enable_if_t< bc_is_iterator< TIte >::value >>
 		void bc_concurreny::when_all(TIte p_begin, TIte p_end)
 		{
 			std::for_each(p_begin, p_end, [](const typename std::iterator_traits< TIte >::value_type& p_task)
@@ -151,7 +161,7 @@ namespace black_cat
 					(
 						bc_delegate< void() >::make_from_big_object
 						(
-							bc_alloc_type::level,
+							bc_alloc_type::frame,
 							[l_begin, l_end, &p_init_func, &p_body_func, &p_finalizer]()
 							{
 								auto l_init = p_init_func();

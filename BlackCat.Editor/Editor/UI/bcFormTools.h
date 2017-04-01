@@ -14,17 +14,20 @@ namespace black_cat
 {
 	namespace editor
 	{
+		enum class bc_form_tools_state
+		{
+			none,
+			object_selection,
+			terrain_height,
+			terrain_smooth,
+			terrain_material,
+			terrain_material_smooth
+		};
+
 		class bc_form_tools : public QObject
 		{
-		private:
 			Q_OBJECT;
-			enum class state
-			{
-				none,
-				object_selection,
-				terrain_height,
-				terrain_smooth
-			};
+			using state = bc_form_tools_state;
 
 		public:
 			explicit bc_form_tools(bc_ui_command_service& p_ui_command_service, 
@@ -40,6 +43,10 @@ namespace black_cat
 			void onTerrainHeightToggle(bool p_toggled);
 
 			void onTerrainSmoothToggle(bool p_toggled);
+
+			void onTerrainMaterialToggle(bool p_toggled);
+
+			void onTerrainMaterialSmoothToggle(bool p_toggled);
 
 			void onMousePress(QMouseEvent* p_event);
 
@@ -59,6 +66,8 @@ namespace black_cat
 			QAbstractButton* m_object_selection;
 			QAbstractButton* m_terrain_height;
 			QAbstractButton* m_terrain_smooth;
+			QAbstractButton* m_terrain_material;
+			QAbstractButton* m_terrain_material_smooth;
 
 			state m_state;
 			bool m_is_mouse_pressed;

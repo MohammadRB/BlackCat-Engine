@@ -116,7 +116,9 @@ namespace black_cat
 			auto* l_ui_command_manager = core::bc_get_service< bc_ui_command_service >();
 			auto* l_scene = m_game_system->get_scene();
 
+			p_stream_manager->load_content_stream(core::bc_alloc_type::program, "terrain_textures");
 			p_stream_manager->load_content_stream(core::bc_alloc_type::program, "main");
+
 			l_ui_command_manager->load_content();
 
 			auto l_terrain = l_entity_manager->create_entity("crysis_heightmap");
@@ -150,6 +152,7 @@ namespace black_cat
 			m_game_system->set_scene(nullptr);
 			l_ui_command_manager->unload_content();
 			p_stream_manager->unload_content_stream("main");
+			p_stream_manager->unload_content_stream("terrain_textures");
 		}
 
 		void bc_editor_render_app::application_destroy()

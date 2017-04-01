@@ -36,7 +36,8 @@ namespace black_cat
 			BC_JSON_ARRAY(_bc_content_stream, streams);
 		};
 
-		bc_content_stream_manager::bc_content_stream_manager() noexcept(false)
+		bc_content_stream_manager::bc_content_stream_manager(bc_content_manager& p_content_manager) noexcept
+			: m_content_manager(p_content_manager)
 		{
 		}
 
@@ -44,7 +45,8 @@ namespace black_cat
 			std::is_nothrow_move_constructible< content_types_map_type >::value &&
 			std::is_nothrow_move_constructible< streams_map_type >::value &&
 			std::is_nothrow_move_constructible< contents_map_type >::value)
-			: m_content_types(std::move(p_other.m_content_types)),
+			: m_content_manager(p_other.m_content_manager),
+			m_content_types(std::move(p_other.m_content_types)),
 			m_streams(std::move(p_other.m_streams)),
 			m_contents(std::move(p_other.m_contents))
 		{
@@ -80,7 +82,7 @@ namespace black_cat
 			}
 
 			bc_string_frame l_line;
-			while (core::bc_get_line(l_json_file, &l_line))
+			while (core::bc_get_line(l_json_file, l_line))
 			{
 				l_buffer.append(l_line);
 			}
@@ -148,7 +150,6 @@ namespace black_cat
 				throw bc_invalid_argument_exception(l_msg.c_str());
 			}
 
-			bc_content_manager* l_content_manager = bc_service_manager::get().get_service< bc_content_manager >();
 			auto& l_contents = l_stream_entry->second;
 
 			bc_concurreny::concurrent_for_each
@@ -159,7 +160,7 @@ namespace black_cat
 					{
 						return bc_list_frame<contents_map_type::value_type>();
 					},
-					[this, l_content_manager, p_alloc_type](bc_list_frame<contents_map_type::value_type>& p_local, _bc_content_stream_file& l_content_file)
+					[this, p_alloc_type](bc_list_frame<contents_map_type::value_type>& p_local, _bc_content_stream_file& l_content_file)
 					{
 						auto l_content_hash = string_hash()(l_content_file.m_title.c_str());
 						contents_map_type::iterator l_content_entry;
@@ -215,6 +216,14 @@ namespace black_cat
 						}
 					}
 				);
+		}
+
+		bc_task< void > bc_content_stream_manager::load_content_stream_async(bc_alloc_type p_alloc_type, const bcCHAR* p_stream_name)
+		{
+			return bc_concurreny::start_task< void >([this, p_alloc_type, p_stream_name]()
+				{
+					this->load_content_stream(p_alloc_type, p_stream_name);
+				});
 		}
 
 		void bc_content_stream_manager::unload_content_stream(const bcCHAR* p_stream_name)

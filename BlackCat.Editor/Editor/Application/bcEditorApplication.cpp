@@ -35,8 +35,8 @@ namespace black_cat
 				static_cast< bcUINT32 >(core::bc_mem_size::mb) * 25,
 				static_cast< bcUINT32 >(core::bc_mem_size::mb) * 15,
 				static_cast< bcUINT32 >(core::bc_mem_size::mb) * 100,
-				l_hardware_info.proccessor_count / 4,
-				l_hardware_info.proccessor_count / 2
+				l_hardware_info.proccessor_count,
+				l_hardware_info.proccessor_count / 4
 			);
 			game::bc_engine_application_parameter l_engine_app_parameters
 			(

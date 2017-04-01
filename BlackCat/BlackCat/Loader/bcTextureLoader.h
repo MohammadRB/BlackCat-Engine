@@ -4,7 +4,6 @@
 
 #include "Core/File/bcContent.h"
 #include "Core/File/bcContentLoader.h"
-#include "Graphic/bcDeviceResourceContent.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Resource/Texture/bcTextureConfig.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
@@ -12,18 +11,6 @@
 
 namespace black_cat
 {
-	template< >
-	inline constexpr bcCHAR* graphic::bc_device_resource_content< graphic::bc_texture2d >::content_name()
-	{
-		return BC_CONTENT_NAME(texture2d);
-	}
-
-	template< >
-	inline constexpr bcUINT32 graphic::bc_device_resource_content< graphic::bc_texture2d >::content_hash()
-	{
-		return bc_compile_time_string_hash(BC_CONTENT_NAME(texture2d));
-	}
-
 	class BC_BLACKCAT_DLL bc_texture_loader : public core::bc_base_content_loader
 	{
 	public:

@@ -52,11 +52,15 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_command_executer< g_api_dx11 >::excecute_command_list(bc_device_command_list p_command_list)
 		{
-			m_pack.m_device->get_platform_pack().m_immediate_context->ExecuteCommandList
-			(
-				p_command_list.get_platform_pack().m_command_list_proxy->m_command_list, 
-				false
-			);
+			{
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_pack.m_device->get_platform_pack().m_context_mutex);
+
+				m_pack.m_device->get_platform_pack().m_immediate_context->ExecuteCommandList
+				(
+					p_command_list.get_platform_pack().m_command_list_proxy->m_command_list, 
+					false
+				);
+			}
 		}
 
 		template<>

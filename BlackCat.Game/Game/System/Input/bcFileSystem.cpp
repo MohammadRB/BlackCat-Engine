@@ -25,6 +25,10 @@ namespace black_cat
 			m_content_data_path = l_temp.get_path();
 
 			l_temp = l_execute_path;
+			l_temp.combine(core::bc_path(bcL("Content\\Texture")));
+			m_content_texture_path = l_temp.get_path();
+
+			l_temp = l_execute_path;
 			l_temp.combine(core::bc_path(bcL("Content\\Model")));
 			m_content_model_path = l_temp.get_path();
 
@@ -44,13 +48,9 @@ namespace black_cat
 			m_content_script_path = l_temp.get_path();
 		}
 
-		bc_file_system::bc_file_system(bc_file_system&& p_other) noexcept
-			: m_execute_path(std::move(p_other.m_execute_path)),
-			m_content_base_path(std::move(p_other.m_content_base_path)),
-			m_content_data_path(std::move(p_other.m_content_data_path)),
-			m_content_model_path(std::move(p_other.m_content_model_path)),
-			m_content_platform_shader_path(std::move(m_content_platform_shader_path))
+		bc_file_system::bc_file_system(bc_file_system&& p_other) noexcept	
 		{
+			operator=(std::move(p_other));
 		}
 
 		bc_file_system::~bc_file_system()
@@ -62,6 +62,7 @@ namespace black_cat
 			m_execute_path = std::move(p_other.m_execute_path);
 			m_content_base_path = std::move(p_other.m_content_base_path);
 			m_content_data_path = std::move(p_other.m_content_data_path);
+			m_content_texture_path = std::move(p_other.m_content_texture_path);
 			m_content_model_path = std::move(p_other.m_content_model_path);
 			m_content_platform_shader_path = std::move(m_content_platform_shader_path);
 
@@ -82,6 +83,19 @@ namespace black_cat
 		{
 			core::bc_path l_path(get_content_data_path());
 			l_path.combine(core::bc_path(p_data_path));
+
+			return l_path.get_path();
+		}
+
+		const bcECHAR* bc_file_system::get_content_texture_path() const
+		{
+			return m_content_texture_path.c_str();
+		}
+
+		core::bc_estring bc_file_system::get_content_texture_path(const bcECHAR* p_texture_path) const
+		{
+			core::bc_path l_path(get_content_texture_path());
+			l_path.combine(core::bc_path(p_texture_path));
 
 			return l_path.get_path();
 		}

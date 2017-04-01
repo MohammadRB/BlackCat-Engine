@@ -40,6 +40,7 @@
 #include "3rdParty/DirectXTK-master/Inc/WICTextureLoader.h"
 #include "3rdParty/DirectXTK-master/Inc/ScreenGrab.h"
 #include <wincodec.h>
+#include "Graphic/Device/bcDevice.h"
 
 using namespace Microsoft::WRL;
 
@@ -142,48 +143,52 @@ namespace black_cat
 
 		void _save_texture(bc_device* p_device, bc_texture2d* p_texture, bc_image_format p_format, const bcECHAR* p_file_name)
 		{
-			if (p_format == bc_image_format::dds)
 			{
-				dx_call(DirectX::SaveDDSTextureToFile
-				(
-					p_device->get_platform_pack().m_immediate_context.Get(),
-					p_texture->get_platform_pack().m_texture,
-					p_file_name
-				));
-			}
-			else
-			{
-				GUID l_format;
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(p_device->get_platform_pack().m_context_mutex);
 
-				switch (p_format)
+				if (p_format == bc_image_format::dds)
 				{
-				case bc_image_format::bmp:
-					l_format = GUID_ContainerFormatBmp;
-					break;
-				case bc_image_format::png:
-					l_format = GUID_ContainerFormatPng;
-					break;
-				case bc_image_format::gif:
-					l_format = GUID_ContainerFormatGif;
-					break;
-				case bc_image_format::tiff:
-					l_format = GUID_ContainerFormatTiff;
-					break;
-				case bc_image_format::jpg:
-					l_format = GUID_ContainerFormatJpeg;
-					break;
-				default:
-					bcAssert(false);
-					break;
+					dx_call(DirectX::SaveDDSTextureToFile
+					(
+						p_device->get_platform_pack().m_immediate_context.Get(),
+						p_texture->get_platform_pack().m_texture,
+						p_file_name
+					));
 				}
+				else
+				{
+					GUID l_format;
 
-				dx_call(DirectX::SaveWICTextureToFile
-				(
-					p_device->get_platform_pack().m_immediate_context.Get(),
-					p_texture->get_platform_pack().m_texture,
-					l_format,
-					p_file_name
-				));
+					switch (p_format)
+					{
+					case bc_image_format::bmp:
+						l_format = GUID_ContainerFormatBmp;
+						break;
+					case bc_image_format::png:
+						l_format = GUID_ContainerFormatPng;
+						break;
+					case bc_image_format::gif:
+						l_format = GUID_ContainerFormatGif;
+						break;
+					case bc_image_format::tiff:
+						l_format = GUID_ContainerFormatTiff;
+						break;
+					case bc_image_format::jpg:
+						l_format = GUID_ContainerFormatJpeg;
+						break;
+					default:
+						bcAssert(false);
+						break;
+					}
+
+					dx_call(DirectX::SaveWICTextureToFile
+					(
+						p_device->get_platform_pack().m_immediate_context.Get(),
+						p_texture->get_platform_pack().m_texture,
+						l_format,
+						p_file_name
+					));
+				}
 			}
 		};
 
@@ -450,7 +455,10 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_platform_device< g_api_dx11 >& bc_platform_device< g_api_dx11 >::operator=(bc_platform_device&& p_other) noexcept
 		{
-			m_pack = std::move(p_other.m_pack);
+			m_pack.m_vsync = p_other.m_pack.m_vsync;
+			m_pack.m_device = std::move(p_other.m_pack.m_device);
+			m_pack.m_immediate_context = std::move(p_other.m_pack.m_immediate_context);
+			m_pack.m_swap_chain = std::move(p_other.m_pack.m_swap_chain);
 
 			return *this;
 		}
@@ -595,8 +603,15 @@ namespace black_cat
 			l_dx_texture->Release();
 
 			return l_texture_ptr;
-		};
+		}
 
+		template<>
+		BC_GRAPHICIMP_DLL
+		void bc_platform_device< g_api_dx11 >::save_texture2d(bc_texture2d& p_texture, bc_image_format p_format, const bcECHAR* p_path)
+		{
+			_save_texture(static_cast<bc_device*>(this), &p_texture, p_format, p_path);
+		}
+		 
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_sampler_state_ptr bc_platform_device< g_api_dx11 >::create_sampler_state(bc_sampler_state_config& p_config)
@@ -1128,25 +1143,36 @@ namespace black_cat
 			bc_mapped_resource l_result;
 			D3D11_MAPPED_SUBRESOURCE l_mapped_resource;
 
-			dx_call(m_pack.m_immediate_context->Map(p_resource.get_platform_pack().m_resource,
-				p_subresource,
-				bc_graphic_cast(p_map_type),
-				0,
-				&l_mapped_resource));
+			{
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_pack.m_context_mutex);
+
+				dx_call(m_pack.m_immediate_context->Map
+				(
+					p_resource.get_platform_pack().m_resource,
+					p_subresource,
+					bc_graphic_cast(p_map_type),
+					0,
+					&l_mapped_resource
+				));
+			}
 
 			l_result.m_data = l_mapped_resource.pData;
 			l_result.m_row_pitch = l_mapped_resource.RowPitch;
 			l_result.m_depth_pitch = l_mapped_resource.DepthPitch;
 
 			return l_result;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device< g_api_dx11 >::unmap_resource(bc_iresource& p_resource, bcUINT p_subresource)
 		{
-			m_pack.m_immediate_context->Unmap(p_resource.get_platform_pack().m_resource, p_subresource);
-		};
+			{
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_pack.m_context_mutex);
+
+				m_pack.m_immediate_context->Unmap(p_resource.get_platform_pack().m_resource, p_subresource);
+			}
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -1159,7 +1185,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device< g_api_dx11 >::resize_back_buffer(bcUINT p_width, bcUINT p_height, bc_format p_format)
 		{
-			// If we are in fullscreen state change resulotion too
+			// If we are in fullscreen state change resolution too
 			if (get_full_screen()) // TODO check for 
 			{
 				DXGI_SWAP_CHAIN_DESC l_new_mode_desc;
@@ -1338,7 +1364,9 @@ namespace black_cat
 
 			for (auto& l_adapter : l_adapters)
 			{
-				l_result = D3D11CreateDevice(l_adapter.Get(),
+				l_result = D3D11CreateDevice
+				(
+					l_adapter.Get(),
 					l_device_driver_type,
 					nullptr,
 					l_device_flags,
@@ -1347,10 +1375,13 @@ namespace black_cat
 					D3D11_SDK_VERSION,
 					m_pack.m_device.GetAddressOf(),
 					&l_device_created_feature,
-					m_pack.m_immediate_context.GetAddressOf());
+					m_pack.m_immediate_context.GetAddressOf()
+				);
 
 				if (SUCCEEDED(l_result))
+				{
 					break;
+				}
 			}
 
 			if (FAILED(l_result))

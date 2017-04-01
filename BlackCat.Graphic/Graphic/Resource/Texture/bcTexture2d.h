@@ -6,9 +6,9 @@
 #include "Graphic/bcRenderApi.h"
 #include "Graphic/bcDeviceReference.h"
 #include "Graphic/bcDeviceRef.h"
+#include "Graphic/bcDeviceResourceContent.h"
 #include "Graphic/Resource/bcResource.h"
 #include "Graphic/Resource/Texture/bcTextureConfig.h"
-#include "Graphic/bcDeviceResourceContent.h"
 
 namespace black_cat
 {

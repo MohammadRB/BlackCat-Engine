@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="GraphicImp\bcDeviceRef.h" />
     <ClInclude Include="GraphicImp\bcDeviceReference.h" />
+    <ClInclude Include="GraphicImp\bcDeviceResourceContent.h" />
     <ClInclude Include="GraphicImp\bcExport.h" />
     <ClInclude Include="GraphicImp\bcRefCountProxy.h" />
     <ClInclude Include="GraphicImp\bcRenderApiInfo.h" />
@@ -65,6 +66,7 @@
   <ItemGroup>
     <ClCompile Include="GraphicImp\bcDeviceRef.cpp" />
     <ClCompile Include="GraphicImp\bcDeviceReference.cpp" />
+    <ClCompile Include="GraphicImp\bcDeviceResourceContent.cpp" />
     <ClCompile Include="GraphicImp\bcUtility.cpp" />
     <ClCompile Include="GraphicImp\Device\bcDevice.cpp" />
     <ClCompile Include="GraphicImp\Device\bcDeviceOutput.cpp" />
@@ -89,7 +91,9 @@
     <ClCompile Include="GraphicImp\Resource\bcResource.cpp" />
     <ClCompile Include="GraphicImp\Resource\bcResourceConfig.cpp" />
     <ClCompile Include="GraphicImp\Resource\Buffer\bcBuffer.cpp" />
+    <ClCompile Include="GraphicImp\Resource\Buffer\bcBufferConfig.cpp" />
     <ClCompile Include="GraphicImp\Resource\Texture\bcTexture2d.cpp" />
+    <ClCompile Include="GraphicImp\Resource\Texture\bcTextureConfig.cpp" />
     <ClCompile Include="GraphicImp\Resource\View\bcDepthStencilView.cpp" />
     <ClCompile Include="GraphicImp\Resource\View\bcRenderTargetView.cpp" />
     <ClCompile Include="GraphicImp\Resource\View\bcIResourceView.cpp" />

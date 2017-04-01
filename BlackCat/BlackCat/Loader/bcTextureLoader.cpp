@@ -87,15 +87,18 @@ namespace black_cat
 			throw bc_invalid_argument_exception((core::bc_to_string(p_context.m_file_path) + " Unknown image file format").c_str());
 		}
 
-		graphic::bc_device* l_device = &core::bc_get_service< game::bc_game_system >()->get_render_system().get_device();
+		graphic::bc_device& l_device = core::bc_get_service< game::bc_game_system >()->get_render_system().get_device();
+		graphic::bc_texture_config* l_config = p_context.m_parameter.get_value<graphic::bc_texture_config>(core::g_param_texture_config);
 
-		graphic::bc_texture2d_ptr l_result = l_device->create_texture2d
-			(
-				s_default_config,
-				p_context.m_data.data(),
-				p_context.m_data.size(),
-				l_format
-			);
+		l_config = l_config ? l_config : &s_default_config;
+
+		graphic::bc_texture2d_ptr l_result = l_device.create_texture2d
+		(
+			*l_config,
+			p_context.m_data.data(),
+			p_context.m_data.size(),
+			l_format
+		);
 
 		p_context.set_result(graphic::bc_texture2d_content(std::move(l_result)));
 	}

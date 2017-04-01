@@ -26,7 +26,7 @@ cbuffer g_cb_parameter1 : register(BC_COMPUTE_STATE_CB1)
     uint g_tool_center_x : packoffset(c0.x);
     uint g_tool_center_z : packoffset(c0.y);
     uint g_tool_radius : packoffset(c0.z);
-    int g_tool_smooth : packoffset(c0.w);
+    uint g_tool_smooth : packoffset(c0.w);
 };
 
 // == Helper ======================================================================================

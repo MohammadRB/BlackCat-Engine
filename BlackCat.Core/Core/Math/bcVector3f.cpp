@@ -15,7 +15,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		bc_vector3f::bc_vector3f() : x(0), y(0), z(0)
+		/*bc_vector3f::bc_vector3f() : x(0), y(0), z(0)
 		{
 		}
 		
@@ -343,6 +343,6 @@ namespace black_cat
 			l_random.normalize();
 
 			return(l_random);
-		}
+		}*/
 	}
 }

@@ -192,6 +192,12 @@
     <ClInclude Include="Game\System\Render\bcRenderThreadManager.h">
       <Filter>Game\System\Render</Filter>
     </ClInclude>
+    <ClInclude Include="Game\System\Render\bcMaterialManager.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Mesh\bcMaterial.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\GamePCH.cpp">
@@ -291,6 +297,12 @@
       <Filter>Game\System\Physics</Filter>
     </ClCompile>
     <ClCompile Include="Game\System\Render\bcRenderThreadManager.cpp">
+      <Filter>Game\System\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Mesh\bcMaterial.cpp">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\System\Render\bcMaterialManager.cpp">
       <Filter>Game\System\Render</Filter>
     </ClCompile>
   </ItemGroup>

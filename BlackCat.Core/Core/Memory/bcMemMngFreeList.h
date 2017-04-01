@@ -75,7 +75,6 @@ namespace black_cat
 			// Call object construction after this function /
 			T* alloc()
 			{
-				return (T*)std::malloc(sizeof(T));
 				_freelist_item* l_local_free = m_free.load(core_platform::bc_memory_order::seqcst);
 				while (l_local_free != nullptr)
 				{
@@ -125,7 +124,6 @@ namespace black_cat
 			// Call object destructor before this function /
 			void free(T* p_ptr)
 			{
-				return std::free(p_ptr);
 				_freelist_item* l_node = reinterpret_cast<_freelist_item*>(
 					reinterpret_cast<bcUBYTE*>(p_ptr) - 
 					sizeof(_freelist_item*));

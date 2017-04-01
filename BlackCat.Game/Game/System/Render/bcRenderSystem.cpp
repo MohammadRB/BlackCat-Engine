@@ -17,6 +17,8 @@
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcRenderState.h"
 #include "Game/System/Render/bcRenderTask.h"
+#include "Game/System/Render/bcMaterialManager.h"
+#include "Game/System/Render/bcRenderThreadManager.h"
 
 namespace black_cat
 {
@@ -553,6 +555,7 @@ namespace black_cat
 			core_platform::bc_hardware_info::get_basic_info(&l_hw_info);
 
 			m_thread_manager = core::bc_make_unique<bc_render_thread_manager>(*this, std::max(1U, l_hw_info.proccessor_count / 2));
+			m_material_manager = core::bc_make_unique<bc_material_manager>(p_content_stream, *this);
 
 			m_device.set_allocator_alloc_type(l_alloc_type);
 
@@ -639,6 +642,7 @@ namespace black_cat
 			bcAssert(l_render_pass_states_count + l_render_states_count == 0);
 #endif
 
+			m_material_manager.reset();
 			m_thread_manager.reset();
 			m_device.destroy();
 		}

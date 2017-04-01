@@ -11,16 +11,15 @@
 #pragma once
 
 #include "CorePlatform/bcType.h"
+#include "Core/Math/bcVector3f.h"
+#include "Core/Math/bcVector4f.h"
+#include "Core/Math/bcMatrix3f.h"
 #include "Core/bcExport.h"
 
 namespace black_cat
 {
 	namespace core
 	{
-		class bc_vector3f;
-		class bc_vector4f;
-		class bc_matrix3f;
-
 		class BC_CORE_DLL bc_matrix4f
 		{
 		public:

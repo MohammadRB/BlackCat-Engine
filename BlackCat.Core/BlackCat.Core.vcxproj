@@ -28,7 +28,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -149,6 +149,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="Core\File\bcContentStreamManager.h" />
     <ClInclude Include="Core\File\bcFileStream.h" />
     <ClInclude Include="Core\File\bcJsonDocument.h" />
+    <ClInclude Include="Core\File\bcJsonParse.h" />
     <ClInclude Include="Core\File\bcLazyContent.h" />
     <ClInclude Include="Core\File\bcPath.h" />
     <ClInclude Include="Core\File\bcStream.h" />
@@ -206,6 +207,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="Core\Utility\bcExpression.h" />
     <ClInclude Include="Core\Utility\bcExpressionParameter.h" />
     <ClInclude Include="Core\Utility\bcInitializable.h" />
+    <ClInclude Include="Core\Utility\bcJsonParse.h" />
     <ClInclude Include="Core\Utility\bcLogger.h" />
     <ClInclude Include="Core\Utility\bcRefCountPtr.h" />
     <ClInclude Include="Core\Utility\bcTemplateMetaType.h" />

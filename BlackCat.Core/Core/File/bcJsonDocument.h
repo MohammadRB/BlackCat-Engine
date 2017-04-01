@@ -4,10 +4,12 @@
 
 #include "CorePlatform/bcType.h"
 #include "Core/Container/bcString.h"
+#include "Core/Container/bcVector.h"
 #include "Core/Container/bcList.h"
 #include "Core/bcException.h"
 #include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcExpressionParameter.h"
+#include "Core/File/bcJsonParse.h"
 
 #include "3rdParty/RapidJSON/include/rapidjson/document.h"
 
@@ -15,10 +17,13 @@ namespace black_cat
 {
 	namespace core
 	{
-#define BC_JSON_VALUE(type, name)	black_cat::core::bc_json_value< type > m_##name { #name, this }
-#define BC_JSON_OBJECT(type, name)	black_cat::core::bc_json_object< type > m_##name { #name, this }
-#define BC_JSON_ARRAY(type, name)	black_cat::core::bc_json_array< type > m_##name { #name, this }
-#define BC_JSON_STRUCTURE(name)		struct name : public black_cat::core::bc_ijson_structure
+#define BC_JSON_VALUE(type, name)		black_cat::core::bc_json_value< type > m_##name { #name, this }
+#define BC_JSON_VALUE_OP(type, name)	black_cat::core::bc_json_value< type > m_##name { #name, this, true }
+#define BC_JSON_OBJECT(type, name)		black_cat::core::bc_json_object< type > m_##name { #name, this }
+#define BC_JSON_OBJECT_OP(type, name)	black_cat::core::bc_json_object< type > m_##name { #name, this, true }
+#define BC_JSON_ARRAY(type, name)		black_cat::core::bc_json_array< type > m_##name { #name, this }
+#define BC_JSON_ARRAY_OP(type, name)	black_cat::core::bc_json_array< type > m_##name { #name, this, true }
+#define BC_JSON_STRUCTURE(name)			struct name : public black_cat::core::bc_ijson_structure
 
 		using bc_json_parse_object = rapidjson::Document::ValueType;
 
@@ -36,26 +41,23 @@ namespace black_cat
 		protected:
 
 		private:
-			std::vector<bc_ijson_value*> m_parsers;
+			bc_vector<bc_ijson_value*> m_parsers;
 		};
 
 		class bc_ijson_value
 		{
 		public:
-			explicit bc_ijson_value(bc_ijson_structure* p_jstructure);
+			explicit bc_ijson_value(bc_ijson_structure* p_jstructure, bool p_optional);
 
 			virtual ~bc_ijson_value() = default;
 
 			virtual void parse(bc_json_parse_object& p_value) = 0;
-		};
 
-		inline bc_ijson_value::bc_ijson_value(bc_ijson_structure* p_jstructure)
-		{
-			if (p_jstructure)
-			{
-				p_jstructure->add_parser(this);
-			}
-		}
+		protected:
+			bc_json_parse_object* _get_json_field(bc_json_parse_object& p_value, const bcCHAR* p_name);
+
+			bool m_optional;
+		};
 
 		inline void bc_ijson_structure::parse(bc_json_parse_object& p_value)
 		{
@@ -70,6 +72,36 @@ namespace black_cat
 			m_parsers.push_back(p_jparser);
 		}
 
+		inline bc_ijson_value::bc_ijson_value(bc_ijson_structure* p_jstructure, bool p_optional)
+			: m_optional(p_optional)
+		{
+			if (p_jstructure)
+			{
+				p_jstructure->add_parser(this);
+			}
+		}
+
+		inline bc_json_parse_object* bc_ijson_value::_get_json_field(bc_json_parse_object& p_value, const bcCHAR* p_name)
+		{
+			auto* l_jvalue = p_value.HasMember(p_name) ? &p_value[p_name] : nullptr;
+
+			if (!l_jvalue && !m_optional)
+			{
+				bc_string_frame l_msg = "json key for non optional field '";
+				l_msg += p_name;
+				l_msg += "' not found";
+
+				throw bc_io_exception(l_msg.c_str());
+			}
+
+			return l_jvalue;
+		}
+
+		/**
+		 * \brief Store json values as key value pair.
+		 * If value is a json array, stored value will be bc_vector<bc_any>.
+		 * If value is a json object, stored value will be bc_json_key_value.
+		 */
 		struct bc_json_key_value
 		{
 		public:
@@ -79,14 +111,17 @@ namespace black_cat
 			key_value_array_t m_key_values;
 		};
 
-		// T can be fundamental types like bool, bcINT, bcUINT, bcFLOAT32, bc_string, bc_string_program, bc_string_level, 
-		// bc_string_frame as well bc_expression_parameter and bc_parameter_pack that last one can hold all of previous 
-		// types.
+		/**
+		 * \brief T can be fundamental types like bool, bcINT, bcUINT, bcFLOAT32, bc_string, bc_string_program, bc_string_level, 
+		 * bc_string_frame, bc_json_key_value as well bc_expression_parameter and bc_parameter_pack that last one can hold all of 
+		 * previous types.
+		 * \tparam T 
+		 */
 		template< typename T >
 		class bc_json_value : public bc_ijson_value
 		{
 		public:
-			bc_json_value(const bcCHAR* p_name, bc_ijson_structure* p_jstructure);
+			bc_json_value(const bcCHAR* p_name, bc_ijson_structure* p_jstructure, bool p_optional = false);
 
 			bc_json_value(const bc_json_value&) noexcept(std::is_nothrow_copy_constructible<T>::value) = delete;
 
@@ -117,27 +152,32 @@ namespace black_cat
 		protected:
 
 		private:
-			void _parse(bool* p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bool& p_value, bc_json_parse_object& p_jvalue);
 
-			void _parse(bcINT* p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bcINT& p_value, bc_json_parse_object& p_jvalue);
 
-			void _parse(bcUINT* p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bcUINT& p_value, bc_json_parse_object& p_jvalue);
 
-			void _parse(bcFLOAT* p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bcFLOAT& p_value, bc_json_parse_object& p_jvalue);
 
-			void _parse(bc_string* p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bc_string& p_value, bc_json_parse_object& p_jvalue);
 
-			void _parse(bc_string_program* p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bc_string_program& p_value, bc_json_parse_object& p_jvalue);
 
-			void _parse(bc_string_level* p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bc_string_level& p_value, bc_json_parse_object& p_jvalue);
 
-			void _parse(bc_string_frame* p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bc_string_frame& p_value, bc_json_parse_object& p_jvalue);
 
-			void _parse(bc_expression_parameter* p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bc_expression_parameter& p_value, bc_json_parse_object& p_jvalue);
 
-			void _parse(bc_parameter_pack* p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bc_parameter_pack& p_value, bc_json_parse_object& p_jvalue);
 
-			void _parse(bc_json_key_value* p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bc_any& p_value, bc_json_parse_object& p_jvalue);
+
+			void _parse(bc_json_key_value& p_value, bc_json_parse_object& p_jvalue);
+
+			template<typename T1>
+			void _parse(T1& p_value, bc_json_parse_object& p_jvalue);
 
 			const bcCHAR* m_name;
 			T m_value;
@@ -147,7 +187,7 @@ namespace black_cat
 		class bc_json_object : public bc_ijson_value
 		{
 		public:
-			bc_json_object(const bcCHAR* p_name, bc_ijson_structure* p_jstructure);
+			bc_json_object(const bcCHAR* p_name, bc_ijson_structure* p_jstructure, bool p_optional = false);
 
 			bc_json_object(const bc_json_object&) noexcept(std::is_nothrow_copy_constructible<T>::value) = delete;
 
@@ -186,7 +226,7 @@ namespace black_cat
 		class bc_json_array : public bc_ijson_value
 		{
 		public:
-			bc_json_array(const char* p_name, bc_ijson_structure* p_jstructure);
+			bc_json_array(const char* p_name, bc_ijson_structure* p_jstructure, bool p_optional = false);
 
 			bc_json_array(const bc_json_array&) noexcept(std::is_nothrow_copy_constructible<T>::value) = default;
 
@@ -215,39 +255,6 @@ namespace black_cat
 			bc_list< bc_json_object< T > > m_value; // Because json objects are non-copy and movable we used list instead of vector
 		};
 
-		/*template< typename T >
-		struct _bc_json_array_remap { using type = T; };
-
-		template<>
-		struct _bc_json_array_remap<bool> { using type = void; };
-
-		template<>
-		struct _bc_json_array_remap<bcINT> { using type = void; };
-
-		template<>
-		struct _bc_json_array_remap<bcUINT> { using type = void; };
-
-		template<>
-		struct _bc_json_array_remap<bcFLOAT32> { using type = void; };
-
-		template<>
-		struct _bc_json_array_remap<bc_string> { using type = void; };
-
-		template<>
-		struct _bc_json_array_remap<bc_string_program> { using type = void; };
-
-		template<>
-		struct _bc_json_array_remap<bc_string_level> { using type = void; };
-
-		template<>
-		struct _bc_json_array_remap<bc_string_frame> { using type = void; };
-
-		template<>
-		struct _bc_json_array_remap<bc_expression_parameter> { using type = void; };
-
-		template<>
-		struct _bc_json_array_remap<bc_parameter_pack> { using type = void; };*/
-
 		template< typename T >
 		class bc_json_array
 		<
@@ -268,7 +275,7 @@ namespace black_cat
 		> : public bc_ijson_value
 		{
 		public:
-			bc_json_array(const char* p_name, bc_ijson_structure* p_jstructure);
+			bc_json_array(const bcCHAR* p_name, bc_ijson_structure* p_jstructure, bool p_optional = false);
 
 			bc_json_array(const bc_json_array&) noexcept(std::is_nothrow_copy_constructible<T>::value) = delete;
 
@@ -338,19 +345,26 @@ namespace black_cat
 		// -- Json value --------------------------------------------------------------------------------
 
 		template< typename T >
-		bc_json_value< T >::bc_json_value(const bcCHAR* p_name, bc_ijson_structure* p_jstructure) : bc_ijson_value(p_jstructure),
+		bc_json_value< T >::bc_json_value(const bcCHAR* p_name, bc_ijson_structure* p_jstructure, bool p_optional)
+			: bc_ijson_value(p_jstructure, p_optional),
 			m_name(p_name),
 			m_value()
 		{
+			static_assert(std::is_default_constructible_v<T>, "T must be default constructible");
 		}
 
 		template< typename T >
 		void bc_json_value< T >::parse(bc_json_parse_object& p_value)
 		{
 			// If we use json value within json array m_name will be null
-			auto& l_jvalue = m_name != nullptr ? p_value[m_name] : p_value;
+			auto* l_jvalue = m_name != nullptr ? _get_json_field(p_value, m_name) : &p_value;
 
-			_parse(&m_value, l_jvalue);
+			if(!l_jvalue)
+			{
+				return;
+			}
+
+			_parse(m_value, *l_jvalue);
 		}
 
 		template< typename T >
@@ -396,116 +410,134 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bool* p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bool& p_value, bc_json_parse_object& p_jvalue)
 		{
 			if (!p_jvalue.IsBool())
+			{
 				throw bc_io_exception("bad json format");
+			}
 
-			*p_value = p_jvalue.GetBool();
+			p_value = p_jvalue.GetBool();
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bcINT* p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bcINT& p_value, bc_json_parse_object& p_jvalue)
 		{
 			if (!p_jvalue.IsNumber())
+			{
 				throw bc_io_exception("bad json format");
+			}
 
-			*p_value = p_jvalue.GetInt();
+			p_value = p_jvalue.GetInt();
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bcUINT* p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bcUINT& p_value, bc_json_parse_object& p_jvalue)
 		{
 			if (!p_jvalue.IsNumber())
+			{
 				throw bc_io_exception("bad json format");
+			}
 
-			*p_value = p_jvalue.GetUint();
+			p_value = p_jvalue.GetUint();
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bcFLOAT* p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bcFLOAT& p_value, bc_json_parse_object& p_jvalue)
 		{
 			if (!p_jvalue.IsNumber())
+			{
 				throw bc_io_exception("bad json format");
+			}
 
-			*p_value = p_jvalue.GetFloat();
+			p_value = p_jvalue.GetFloat();
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bc_string* p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bc_string& p_value, bc_json_parse_object& p_jvalue)
 		{
 			if (!p_jvalue.IsString())
+			{
 				throw bc_io_exception("bad json format");
+			}
 
-			*p_value = p_jvalue.GetString();
+			p_value = p_jvalue.GetString();
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bc_string_program* p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bc_string_program& p_value, bc_json_parse_object& p_jvalue)
 		{
 			if (!p_jvalue.IsString())
+			{
 				throw bc_io_exception("bad json format");
+			}
 
-			*p_value = p_jvalue.GetString();
+			p_value = p_jvalue.GetString();
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bc_string_level* p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bc_string_level& p_value, bc_json_parse_object& p_jvalue)
 		{
 			if (!p_jvalue.IsString())
+			{
 				throw bc_io_exception("bad json format");
+			}
 
-			*p_value = p_jvalue.GetString();
+			p_value = p_jvalue.GetString();
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bc_string_frame* p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bc_string_frame& p_value, bc_json_parse_object& p_jvalue)
 		{
 			if (!p_jvalue.IsString())
+			{
 				throw bc_io_exception("bad json format");
+			}
 
-			*p_value = p_jvalue.GetString();
+			p_value = p_jvalue.GetString();
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_parse(bc_expression_parameter* p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value<T>::_parse(bc_expression_parameter& p_value, bc_json_parse_object& p_jvalue)
 		{
 			if (!p_jvalue.IsString())
+			{
 				throw bc_io_exception("bad json format");
+			}
 
-			p_value->compile(p_jvalue.GetString());
+			p_value.compile(p_jvalue.GetString());
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bc_parameter_pack* p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bc_parameter_pack& p_value, bc_json_parse_object& p_jvalue)
 		{
 			if (p_jvalue.IsBool())
 			{
-				p_value->set_value(p_jvalue.GetBool());
+				p_value.set_value(p_jvalue.GetBool());
 			}
 			else if (p_jvalue.IsDouble())
 			{
-				p_value->set_value(p_jvalue.GetDouble());
+				p_value.set_value(p_jvalue.GetDouble());
 			}
 			else if (p_jvalue.IsFloat())
 			{
-				p_value->set_value(p_jvalue.GetFloat());
+				p_value.set_value(p_jvalue.GetFloat());
 			}
 			else if (p_jvalue.IsInt())
 			{
-				p_value->set_value(p_jvalue.GetInt());
+				p_value.set_value(p_jvalue.GetInt());
 			}
 			else if (p_jvalue.IsInt64())
 			{
-				p_value->set_value(p_jvalue.GetInt64());
+				p_value.set_value(p_jvalue.GetInt64());
 			}
 			else if (p_jvalue.IsUint())
 			{
-				p_value->set_value(p_jvalue.GetUint());
+				p_value.set_value(p_jvalue.GetUint());
 			}
 			else if (p_jvalue.IsUint64())
 			{
-				p_value->set_value(p_jvalue.GetUint64());
+				p_value.set_value(p_jvalue.GetUint64());
 			}
 			else if (p_jvalue.IsString())
 			{
@@ -514,11 +546,65 @@ namespace black_cat
 					bc_expression_parameter l_expression;
 					l_expression.compile(p_jvalue.GetString());
 
-					p_value->set_value(std::move(l_expression));
+					p_value.set_value(std::move(l_expression));
 				}
 				else
 				{
-					p_value->set_value(bc_string(p_jvalue.GetString()));
+					p_value.set_value(bc_string(p_jvalue.GetString()));
+				}
+			}
+			else if(p_jvalue.IsObject())
+			{
+				bc_json_key_value l_value;
+				_parse(l_value, p_jvalue);
+
+				p_value.set_value(std::move(l_value));
+			}
+			else if(p_jvalue.IsArray())
+			{
+				auto l_array = p_jvalue.GetArray();
+				bc_vector<bc_any> l_values;
+
+				l_values.reserve(l_array.Size());
+
+				for(auto& l_array_item : l_array)
+				{
+					bc_any l_value;
+					
+					_parse(l_value, l_array_item);
+
+					l_values.push_back(std::move(l_value));
+				}
+
+				p_value.set_value(std::move(l_values));
+			}
+			else
+			{
+				throw bc_io_exception("bad json format");
+			}
+		}
+
+		template< typename T >
+		void bc_json_value<T>::_parse(bc_any& p_value, bc_json_parse_object& p_jvalue)
+		{
+			_parse(static_cast< bc_parameter_pack& >(p_value), p_jvalue);
+		}
+
+		template< typename T >
+		void bc_json_value<T>::_parse(bc_json_key_value& p_value, bc_json_parse_object& p_jvalue)
+		{
+			if (p_jvalue.IsObject())
+			{
+				p_value.m_key_values.reserve(p_jvalue.GetObjectW().MemberCount());
+
+				for (auto& l_jobject_memeber : p_jvalue.GetObjectW())
+				{
+					bc_string l_key = l_jobject_memeber.name.GetString();
+					bc_any l_value;
+
+					_parse(l_value, l_jobject_memeber.value);
+
+					p_value.m_key_values.push_back(std::make_pair(std::move(l_key), std::move(l_value)));
 				}
 			}
 			else
@@ -528,32 +614,17 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_parse(bc_json_key_value* p_value, bc_json_parse_object& p_jvalue)
+		template< typename T1 >
+		void bc_json_value<T>::_parse(T1& p_value, bc_json_parse_object& p_jvalue)
 		{
-			if (p_jvalue.IsObject())
-			{
-				p_value->m_key_values.reserve(p_jvalue.GetObjectW().MemberCount());
-
-				for (auto& l_jobject_memeber : p_jvalue.GetObjectW())
-				{
-					bc_string l_key = l_jobject_memeber.name.GetString();
-					bc_any l_value;
-
-					_parse(&l_value, l_jobject_memeber.value);
-
-					p_value->m_key_values.push_back(std::make_pair(std::move(l_key), std::move(l_value)));
-				}
-			}
-			else
-			{
-				throw bc_io_exception("bad json format");
-			}
+			json_parse::bc_parse(p_value, p_jvalue);
 		}
 
 		// -- Json object --------------------------------------------------------------------------------
 
 		template< class T >
-		bc_json_object< T >::bc_json_object(const bcCHAR* p_name, bc_ijson_structure* p_jstructure) : bc_ijson_value(p_jstructure),
+		bc_json_object< T >::bc_json_object(const bcCHAR* p_name, bc_ijson_structure* p_jstructure, bool p_optional) 
+			: bc_ijson_value(p_jstructure, p_optional),
 			m_name(p_name),
 			m_value()
 		{
@@ -563,12 +634,19 @@ namespace black_cat
 		void bc_json_object< T >::parse(bc_json_parse_object& p_value)
 		{
 			// If we use json object within json array m_name will be null
-			auto& l_jvalue = m_name != nullptr ? p_value[m_name] : p_value;
+			auto* l_jvalue = m_name != nullptr ? _get_json_field(p_value, m_name) : &p_value;
 
-			if (!l_jvalue.IsObject())
+			if (!l_jvalue)
+			{
+				return;
+			}
+
+			if (!l_jvalue->IsObject())
+			{
 				throw bc_io_exception("bad json format");
+			}
 
-			m_value.parse(l_jvalue);
+			m_value.parse(*l_jvalue);
 		}
 
 		template< class T >
@@ -616,8 +694,8 @@ namespace black_cat
 		// -- Json array --------------------------------------------------------------------------------
 
 		template< typename T, typename T1 >
-		bc_json_array< T, T1 >::bc_json_array(const char* p_name, bc_ijson_structure* p_jstructure) 
-			: bc_ijson_value(p_jstructure),
+		bc_json_array< T, T1 >::bc_json_array(const char* p_name, bc_ijson_structure* p_jstructure, bool p_optional)
+			: bc_ijson_value(p_jstructure, p_optional),
 			m_name(p_name),
 			m_value()
 		{
@@ -626,12 +704,19 @@ namespace black_cat
 		template< typename T, typename T1 >
 		void bc_json_array< T, T1 >::parse(bc_json_parse_object& p_value)
 		{
-			auto& l_jvalue = p_value[m_name];
+			auto* l_jvalue = _get_json_field(p_value, m_name);
 
-			if (!l_jvalue.IsArray())
+			if (!l_jvalue)
+			{
+				return;
+			}
+
+			if (!l_jvalue->IsArray())
+			{
 				throw bc_io_exception("bad json format");
+			}
 
-			auto l_jarray = l_jvalue.GetArray();
+			auto l_jarray = l_jvalue->GetArray();
 			for (auto& l_jarray_value : l_jarray)
 			{
 				// Because json objects are non-copy and movable we emplace one in array and then parse it in-place
@@ -668,22 +753,63 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_json_array<T, typename std::enable_if<std::is_same<bool, typename std::decay<T>::type>::value || std::is_same<bcINT, typename std::decay<T>::type>::value || std::is_same<bcUINT, typename std::decay<T>::type>::value || std::is_same<bcFLOAT, typename std::decay<T>::type>::value || std::is_same<bc_string, typename std::decay<T>::type>::value || std::is_same<bc_string_program, typename std::decay<T>::type>::value || std::is_same<bc_string_level, typename std::decay<T>::type>::value || std::is_same<bc_string_frame, typename std::decay<T>::type>::value || std::is_same<bc_expression_parameter, typename std::decay<T>::type>::value || std::is_same<bc_parameter_pack, typename std::decay<T>::type>::value>::type>::bc_json_array(const char* p_name, bc_ijson_structure* p_jstructure)
-			: bc_ijson_value(p_jstructure),
+		bc_json_array
+		<
+			T,
+			typename std::enable_if
+			<
+				std::is_same< bool, typename std::decay< T >::type >::value ||
+				std::is_same< bcINT, typename std::decay< T >::type >::value ||
+				std::is_same< bcUINT, typename std::decay< T >::type >::value ||
+				std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_level, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
+				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
+				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
+			>::type
+		>
+		::bc_json_array(const char* p_name, bc_ijson_structure* p_jstructure, bool p_optional)
+			: bc_ijson_value(p_jstructure, p_optional),
 			m_name(p_name),
 			m_value()
 		{
 		}
 
 		template< typename T >
-		void bc_json_array<T, typename std::enable_if<std::is_same<bool, typename std::decay<T>::type>::value || std::is_same<bcINT, typename std::decay<T>::type>::value || std::is_same<bcUINT, typename std::decay<T>::type>::value || std::is_same<bcFLOAT, typename std::decay<T>::type>::value || std::is_same<bc_string, typename std::decay<T>::type>::value || std::is_same<bc_string_program, typename std::decay<T>::type>::value || std::is_same<bc_string_level, typename std::decay<T>::type>::value || std::is_same<bc_string_frame, typename std::decay<T>::type>::value || std::is_same<bc_expression_parameter, typename std::decay<T>::type>::value || std::is_same<bc_parameter_pack, typename std::decay<T>::type>::value>::type>::parse(bc_json_parse_object& p_value)
+		void bc_json_array
+		<
+			T,
+			typename std::enable_if
+			<
+				std::is_same< bool, typename std::decay< T >::type >::value ||
+				std::is_same< bcINT, typename std::decay< T >::type >::value ||
+				std::is_same< bcUINT, typename std::decay< T >::type >::value ||
+				std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_level, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
+				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
+				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
+			>::type
+		>
+		::parse(bc_json_parse_object& p_value)
 		{
-			auto& l_jvalue = p_value[m_name];
+			auto* l_jvalue = _get_json_field(p_value, m_name);
 
-			if (!l_jvalue.IsArray())
+			if (!l_jvalue)
+			{
+				return;
+			}
+
+			if (!l_jvalue->IsArray())
+			{
 				throw bc_io_exception("bad json format");
+			}
 
-			auto l_jarray = l_jvalue.GetArray();
+			auto l_jarray = l_jvalue->GetArray();
 			for (auto& l_jarray_value : l_jarray)
 			{
 				// Because json objects are non-copy and movable we emplace one in array and then parse it in-place
@@ -696,25 +822,85 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_list< bc_json_value< T > >* bc_json_array<T, typename std::enable_if<std::is_same<bool, typename std::decay<T>::type>::value || std::is_same<bcINT, typename std::decay<T>::type>::value || std::is_same<bcUINT, typename std::decay<T>::type>::value || std::is_same<bcFLOAT, typename std::decay<T>::type>::value || std::is_same<bc_string, typename std::decay<T>::type>::value || std::is_same<bc_string_program, typename std::decay<T>::type>::value || std::is_same<bc_string_level, typename std::decay<T>::type>::value || std::is_same<bc_string_frame, typename std::decay<T>::type>::value || std::is_same<bc_expression_parameter, typename std::decay<T>::type>::value || std::is_same<bc_parameter_pack, typename std::decay<T>::type>::value>::type>::operator->() noexcept
+		bc_list< bc_json_value< T > >* bc_json_array
+		<
+			T,
+			typename std::enable_if< std::is_same< bool, typename std::decay< T >::type >::value ||
+				std::is_same< bcINT, typename std::decay< T >::type >::value ||
+				std::is_same< bcUINT, typename std::decay< T >::type >::value ||
+				std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_level, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
+				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
+				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
+			>::type
+		>
+		::operator->() noexcept
 		{
 			return &m_value;
 		}
 
 		template< typename T >
-		const bc_list< bc_json_value< T > >* bc_json_array<T, typename std::enable_if<std::is_same<bool, typename std::decay<T>::type>::value || std::is_same<bcINT, typename std::decay<T>::type>::value || std::is_same<bcUINT, typename std::decay<T>::type>::value || std::is_same<bcFLOAT, typename std::decay<T>::type>::value || std::is_same<bc_string, typename std::decay<T>::type>::value || std::is_same<bc_string_program, typename std::decay<T>::type>::value || std::is_same<bc_string_level, typename std::decay<T>::type>::value || std::is_same<bc_string_frame, typename std::decay<T>::type>::value || std::is_same<bc_expression_parameter, typename std::decay<T>::type>::value || std::is_same<bc_parameter_pack, typename std::decay<T>::type>::value>::type>::operator->() const noexcept
+		const bc_list< bc_json_value< T > >* bc_json_array
+		<
+			T,
+			typename std::enable_if< std::is_same< bool, typename std::decay< T >::type >::value ||
+				std::is_same< bcINT, typename std::decay< T >::type >::value ||
+				std::is_same< bcUINT, typename std::decay< T >::type >::value ||
+				std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_level, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
+				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
+				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
+			>::type
+		>
+		::operator->() const noexcept
 		{
 			return operator->();
 		}
 
 		template< typename T >
-		bc_list< bc_json_value< T > >& bc_json_array<T, typename std::enable_if<std::is_same<bool, typename std::decay<T>::type>::value || std::is_same<bcINT, typename std::decay<T>::type>::value || std::is_same<bcUINT, typename std::decay<T>::type>::value || std::is_same<bcFLOAT, typename std::decay<T>::type>::value || std::is_same<bc_string, typename std::decay<T>::type>::value || std::is_same<bc_string_program, typename std::decay<T>::type>::value || std::is_same<bc_string_level, typename std::decay<T>::type>::value || std::is_same<bc_string_frame, typename std::decay<T>::type>::value || std::is_same<bc_expression_parameter, typename std::decay<T>::type>::value || std::is_same<bc_parameter_pack, typename std::decay<T>::type>::value>::type>::operator*() noexcept
+		bc_list< bc_json_value< T > >& bc_json_array
+		<
+			T,
+			typename std::enable_if< std::is_same< bool, typename std::decay< T >::type >::value ||
+				std::is_same< bcINT, typename std::decay< T >::type >::value ||
+				std::is_same< bcUINT, typename std::decay< T >::type >::value ||
+				std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_level, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
+				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
+				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
+			>::type
+		>
+		::operator*() noexcept
 		{
 			return m_value;
 		}
 
 		template< typename T >
-		const bc_list< bc_json_value< T > >& bc_json_array<T, typename std::enable_if<std::is_same<bool, typename std::decay<T>::type>::value || std::is_same<bcINT, typename std::decay<T>::type>::value || std::is_same<bcUINT, typename std::decay<T>::type>::value || std::is_same<bcFLOAT, typename std::decay<T>::type>::value || std::is_same<bc_string, typename std::decay<T>::type>::value || std::is_same<bc_string_program, typename std::decay<T>::type>::value || std::is_same<bc_string_level, typename std::decay<T>::type>::value || std::is_same<bc_string_frame, typename std::decay<T>::type>::value || std::is_same<bc_expression_parameter, typename std::decay<T>::type>::value || std::is_same<bc_parameter_pack, typename std::decay<T>::type>::value>::type>::operator*() const noexcept
+		const bc_list< bc_json_value< T > >& bc_json_array
+		<
+			T,
+			typename std::enable_if< std::is_same< bool, typename std::decay< T >::type >::value ||
+				std::is_same< bcINT, typename std::decay< T >::type >::value ||
+				std::is_same< bcUINT, typename std::decay< T >::type >::value ||
+				std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_level, typename std::decay< T >::type >::value ||
+				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
+				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
+				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
+			>::type
+		>
+		::operator*() const noexcept
 		{
 			return operator*();
 		}
@@ -728,7 +914,9 @@ namespace black_cat
 			l_json.Parse(p_json);
 
 			if (!l_json.IsObject())
+			{
 				throw bc_io_exception("bad json format");
+			}
 
 			m_value.parse(l_json);
 		}

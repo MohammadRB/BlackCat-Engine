@@ -323,7 +323,7 @@ namespace black_cat
 			));
 			core::bc_unique_ptr< bcBYTE > l_index_buffer(static_cast< bcBYTE* >
 			(
-				bcAlloc(sizeof(bcBYTE) * p_desc.m_indices.m_count * is_16_bit_index ? sizeof(bcUINT16) : sizeof(bcUINT32), core::bc_alloc_type::frame)
+				bcAlloc(sizeof(bcBYTE) * p_desc.m_indices.m_count * (is_16_bit_index ? sizeof(bcUINT16) : sizeof(bcUINT32)), core::bc_alloc_type::frame)
 			));
 
 			physx::PxTriangleMeshDesc l_px_desc = bc_convert_to_px_triangle_mesh(p_desc, l_vertex_buffer.get(), l_index_buffer.get());

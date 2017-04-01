@@ -46,6 +46,8 @@ namespace black_cat
 
 		bc_iui_commnad::state_ptr bc_ui_terrain_height_command::create_state(state_context& p_context) const
 		{
+			auto& l_render_system = p_context.m_game_system.get_render_system();
+
 			auto l_cb_config = graphic::bc_graphic_resource_configure().as_resource()
 				.as_buffer
 				(
@@ -55,9 +57,10 @@ namespace black_cat
 					graphic::bc_resource_view_type::none
 				)
 				.as_constant_buffer();
-			auto l_cbuffer = p_context.m_game_system.get_render_system().get_device().create_buffer(l_cb_config, nullptr);
-			auto l_device_compute_state = p_context.m_game_system.get_render_system().create_device_compute_state("terrain_height_cs");
-			auto l_device_command_list = p_context.m_game_system.get_render_system().get_device().create_command_list();
+
+			auto l_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);
+			auto l_device_compute_state = l_render_system.create_device_compute_state("terrain_height_cs");
+			auto l_device_command_list = l_render_system.get_device().create_command_list();
 
 			bc_ui_terrain_height_commnad_state l_state;
 			l_state.m_device_compute_state = l_device_compute_state;
@@ -192,7 +195,9 @@ namespace black_cat
 				1,
 				{},
 				{},
-				{graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_height_map.get_height_map_unordered_view())},
+				{
+					graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_height_map.get_height_map_unordered_view())
+				},
 				{
 					graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, m_height_map.get_parameter_cbuffer()),
 					graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, m_command_state.m_parameter_cbuffer)

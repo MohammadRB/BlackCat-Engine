@@ -499,7 +499,14 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline< g_api_dx11 >::bind_ps_shader_view_parameter(const bc_resource_view_parameter& p_parameter)
 		{
-			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_ps_cs_uav_resource());
+			bc_resource_view l_resource = p_parameter.get_resource_view().get();
+
+			bcAssert
+			(
+				l_resource.get_view_type() == bc_resource_view_type::shader ?
+				p_parameter.get_register_index() <= bc_render_api_info::number_of_shader_resource() :
+				p_parameter.get_register_index() <= bc_render_api_info::number_of_ps_cs_uav_resource()
+			);
 
 			bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
 			bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
@@ -507,8 +514,6 @@ namespace black_cat
 			bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
 			bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
 			bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
-
-			bc_resource_view l_resource = p_parameter.get_resource_view().get();
 
 			if (l_vertex_shader)
 			{
@@ -559,7 +564,7 @@ namespace black_cat
 						.m_shader_resource_views
 						.set(p_parameter.get_register_index(), l_resource);
 				}
-				else
+				else if(l_resource.get_view_type() == bc_resource_view_type::unordered)
 				{
 					m_pack.m_pipeline->m_shader_stages[4]
 						->get_required_state()
@@ -576,7 +581,7 @@ namespace black_cat
 						.m_shader_resource_views
 						.set(p_parameter.get_register_index(), l_resource);
 				}
-				else
+				else if (l_resource.get_view_type() == bc_resource_view_type::unordered)
 				{
 					m_pack.m_pipeline->m_shader_stages[5]
 						->get_required_state()
@@ -590,7 +595,14 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline< g_api_dx11 >::unbind_ps_shader_view_parameter(const bc_resource_view_parameter& p_parameter)
 		{
-			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_ps_cs_uav_resource());
+			bc_resource_view l_resource = p_parameter.get_resource_view().get();
+
+			bcAssert
+			(
+				l_resource.get_view_type() == bc_resource_view_type::shader ?
+				p_parameter.get_register_index() <= bc_render_api_info::number_of_shader_resource() :
+				p_parameter.get_register_index() <= bc_render_api_info::number_of_ps_cs_uav_resource()
+			);
 
 			bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
 			bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
@@ -598,8 +610,6 @@ namespace black_cat
 			bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
 			bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
 			bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
-
-			bc_resource_view l_resource = p_parameter.get_resource_view().get();
 
 			if (l_vertex_shader)
 			{
@@ -650,7 +660,7 @@ namespace black_cat
 						.m_shader_resource_views
 						.set(p_parameter.get_register_index(), bc_resource_view());
 				}
-				else
+				else if (l_resource.get_view_type() == bc_resource_view_type::unordered)
 				{
 					m_pack.m_pipeline->m_shader_stages[4]
 						->get_required_state()
@@ -667,7 +677,7 @@ namespace black_cat
 						.m_shader_resource_views
 						.set(p_parameter.get_register_index(), bc_resource_view());
 				}
-				else
+				else if (l_resource.get_view_type() == bc_resource_view_type::unordered)
 				{
 					m_pack.m_pipeline->m_shader_stages[5]
 						->get_required_state()

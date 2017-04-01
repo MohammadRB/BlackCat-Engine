@@ -62,34 +62,51 @@ namespace black_cat
 			bc_cloader_ptr< bc_icontent_loader > m_loader;
 		};
 
-		// Thread safe class
-		class bc_content_manager : public bc_iservice
+		/**
+		 * \brief 
+		 * \ThreadSafe
+		 */
+		class bc_content_manager : public bc_iservice, protected bc_object_allocator
 		{
 			BC_SERVICE(content_manager)
 
 		private:
-			using string_hash = std::hash<const bcECHAR*>;
-			using map_type = bc_unordered_map< string_hash::result_type, bc_object_allocator::ptr< bc_icontent > >;
+			using string_hash = std::hash< const bcCHAR* >;
+			using wstring_hash = std::hash<const bcECHAR*>;
+			using map_type = bc_unordered_map< wstring_hash::result_type, bc_object_allocator::ptr< bc_icontent > >;
 
 		public:
 			bc_content_manager();
 
+			bc_content_manager(bc_content_manager&&) noexcept;
+
 			~bc_content_manager();
 
-			bc_content_manager(bc_content_manager&&);
-
-			bc_content_manager& operator=(bc_content_manager&&);
+			bc_content_manager& operator=(bc_content_manager&&) noexcept;
 
 			template< class TContent, class TLoader >
 			void register_loader(bc_cloader_ptr< TLoader >&& p_loader);
 
-			// Load specified content from file or if it's loaded earlier return a pointer to it
-			// file name must be relative
+			/**
+			 * \brief Load specified content from file or if it's loaded earlier return a pointer to it.
+			 * file name must be relative
+			 * \tparam TContent 
+			 * \param p_file 
+			 * \param p_parameter 
+			 * \return 
+			 */
 			template< class TContent >
 			bc_content_ptr< TContent > load(const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter);
 
-			// Load specified content from file or if it's loaded earlier return a pointer to it
-			// file name must be relative
+			/**
+			 * \brief Load specified content from file or if it's loaded earlier return a pointer to it.
+			 * file name must be relative
+			 * \tparam TContent 
+			 * \param p_alloc_type 
+			 * \param p_file 
+			 * \param p_parameter 
+			 * \return 
+			 */
 			template< class TContent >
 			bc_content_ptr< TContent > load(bc_alloc_type p_alloc_type, const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter);
 
@@ -98,6 +115,12 @@ namespace black_cat
 
 			template< class TContent >
 			bc_task< bc_content_ptr< TContent > > load_async(bc_alloc_type p_alloc_type, const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter);
+
+			template< class TContent >
+			bc_content_ptr<TContent> store_content(const bcCHAR* p_content_name, TContent&& p_content);
+
+			template< class TContent >
+			bc_content_ptr<TContent> store_content(bc_alloc_type p_alloc_type, const bcCHAR* p_content_name, TContent&& p_content);
 
 			void destroy_content(bc_icontent* p_content);
 
@@ -108,13 +131,19 @@ namespace black_cat
 			bc_object_allocator::ptr< TContent > _load_content(bc_alloc_type p_alloc_type, const bcECHAR* p_file, const bcECHAR* p_offline_file, bc_content_loader_parameter&& p_parameter, bc_icontent_loader* p_loader);
 
 			template< class TContent >
-			void _store_new_content(string_hash::result_type p_content_hash, bc_object_allocator::ptr< TContent > p_content);
+			void _store_new_content(wstring_hash::result_type p_content_hash, bc_object_allocator::ptr< TContent > p_content);
 
 			map_type m_contents;
 			core_platform::bc_shared_mutex m_contents_mutex;
 		};
 
 		inline bc_content_manager::bc_content_manager()
+			: bc_object_allocator()
+		{
+		}
+
+		inline bc_content_manager::bc_content_manager(bc_content_manager&& p_other) noexcept
+			: m_contents(move(p_other.m_contents))
 		{
 		}
 
@@ -122,12 +151,7 @@ namespace black_cat
 		{
 		}
 
-		inline bc_content_manager::bc_content_manager(bc_content_manager&& p_other)
-			: m_contents(move(p_other.m_contents))
-		{
-		}
-
-		inline bc_content_manager& bc_content_manager::operator=(bc_content_manager&& p_other)
+		inline bc_content_manager& bc_content_manager::operator=(bc_content_manager&& p_other) noexcept
 		{
 			m_contents = move(p_other.m_contents);
 
@@ -247,6 +271,29 @@ namespace black_cat
 		}
 
 		template< class TContent >
+		bc_content_ptr<TContent> bc_content_manager::store_content(const bcCHAR* p_content_name, TContent&& p_content)
+		{
+			return store_content(bc_alloc_type::unknown, p_content_name, std::move(p_content));
+		}
+
+		template< class TContent >
+		bc_content_ptr<TContent> bc_content_manager::store_content(bc_alloc_type p_alloc_type, const bcCHAR* p_content_name, TContent&& p_content)
+		{
+			auto l_prev_alloc_type = bc_object_allocator::set_allocator_alloc_type(p_alloc_type);
+
+			bc_object_allocator::ptr<TContent> l_content = bc_object_allocator::allocate<TContent>(std::move(p_content));
+
+			bc_object_allocator::set_allocator_alloc_type(l_prev_alloc_type);
+
+			auto l_content_hash = string_hash()(p_content_name);
+			auto l_content_ptr = l_content.get();
+
+			_store_new_content(l_content_hash, std::move(l_content));
+
+			return bc_content_ptr<TContent>(l_content_ptr, _bc_content_ptr_deleter(this));
+		}
+
+		template< class TContent >
 		bc_object_allocator::ptr< TContent > bc_content_manager::_load_content(bc_alloc_type p_alloc_type, const bcECHAR* p_file, const bcECHAR* p_offline_file, bc_content_loader_parameter&& p_parameter, bc_icontent_loader* p_loader)
 		{
 			bc_estring l_file_path = bc_path::get_absolute_path(p_file);
@@ -346,7 +393,7 @@ namespace black_cat
 		}
 
 		template< class TContent >
-		void bc_content_manager::_store_new_content(string_hash::result_type p_content_hash, bc_object_allocator::ptr< TContent > p_content)
+		void bc_content_manager::_store_new_content(wstring_hash::result_type p_content_hash, bc_object_allocator::ptr< TContent > p_content)
 		{
 			auto l_pointer = bc_object_allocator::ptr< bc_icontent >
 				(

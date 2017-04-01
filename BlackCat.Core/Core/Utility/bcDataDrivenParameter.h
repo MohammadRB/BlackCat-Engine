@@ -32,35 +32,42 @@ namespace black_cat
 
 			// Add parameter to collection
 			template< typename T >
-			void add_value(const bcCHAR* p_name, T&& p_value)
+			bc_data_driven_parameter& add_value(const bcCHAR* p_name, T&& p_value)
 			{
 				auto l_hash = key_hash()(p_name);
 				bc_any l_parameter;
-
 				l_parameter.set_value(std::forward<T>(p_value));
 
 				m_values.insert(map_type::value_type(l_hash, std::move(l_parameter)));
+
+				return *this;
 			}
 
-			void add_value(const bcCHAR* p_name, bc_parameter_pack& p_value)
+			bc_data_driven_parameter& add_value(const bcCHAR* p_name, bc_parameter_pack& p_value)
 			{
 				auto l_hash = key_hash()(p_name);
 
 				m_values.insert(map_type::value_type(l_hash, bc_any(p_value)));
+
+				return *this;
 			}
 
-			void add_value(const bcCHAR* p_name, bc_any& p_value)
+			bc_data_driven_parameter& add_value(const bcCHAR* p_name, bc_any& p_value)
 			{
 				auto l_hash = key_hash()(p_name);
 
 				m_values.insert(map_type::value_type(l_hash, p_value));
+
+				return *this;
 			}
 
-			void add_value(const bcCHAR* p_name, bc_any&& p_value)
+			bc_data_driven_parameter& add_value(const bcCHAR* p_name, bc_any&& p_value)
 			{
 				auto l_hash = key_hash()(p_name);
 
 				m_values.insert(map_type::value_type(l_hash, std::move(p_value)));
+
+				return *this;
 			}
 
 			// Return null if parameter isn't present

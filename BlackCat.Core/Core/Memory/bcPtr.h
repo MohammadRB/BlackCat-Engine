@@ -27,8 +27,9 @@ namespace black_cat
 			template< typename T1 >
 			bc_default_deleter& operator =(bc_default_deleter<T1>) { return *this; }
 
-			void operator()(T* p_pointer)
+			void operator()(T* p_pointer) noexcept
 			{
+				static_assert(sizeof(T) > 0, "can't delete an incomplete type");
 				bcDelete(p_pointer);
 			}
 		};

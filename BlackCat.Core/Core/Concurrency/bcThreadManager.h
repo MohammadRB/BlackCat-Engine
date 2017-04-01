@@ -411,9 +411,10 @@ namespace black_cat
 					m_global_queue.push(std::move(l_task_wrapper));
 				}
 
-				bcUINT32 l_task_count = m_task_count.fetch_add(1, core_platform::bc_memory_order::seqcst);
+				bcINT32 l_task_count = m_task_count.fetch_add(1, core_platform::bc_memory_order::seqcst);
 
-				if (l_task_count >= s_new_thread_threshold)
+				// Task count can be negative, so cast to signed int to prevent incorrect comparison
+				if (l_task_count >= static_cast< bcINT32 >(s_new_thread_threshold))
 				{
 					_push_worker();
 				}

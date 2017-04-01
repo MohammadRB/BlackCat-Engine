@@ -110,7 +110,30 @@ namespace black_cat
 
 		core::bc_vector3f bc_icamera::project_clip_point_to_3d_ray(bcUINT16 p_screen_width, bcUINT16 p_screen_height, bcUINT16 p_left, bcUINT16 p_top) const
 		{
-			bcFLOAT l_left = static_cast<bcFLOAT>(p_left) / p_screen_width;
+			auto l_view = get_view();
+			auto l_proj = get_projection();
+
+			// Compute picking ray in view space.
+			bcFLOAT l_vx = (+2.0f * p_left / p_screen_width - 1.0f) / l_proj(0, 0);
+			bcFLOAT l_vy = (-2.0f * p_top / p_screen_height + 1.0f) / l_proj(1, 1);
+
+			// Ray definition in view space.
+			auto l_ray_origin = core::bc_vector4f(0.0f, 0.0f, 0.0f, 1.0f);
+			auto l_ray_dir = core::bc_vector4f(l_vx, l_vy, 1.0f, 0.0f);
+
+			// Transform ray to world space
+			auto l_inv_view = l_view.inverse();
+
+			l_ray_origin = l_inv_view * l_ray_origin;
+			l_ray_dir = l_inv_view * l_ray_dir;
+
+			// Make the ray direction unit length for the intersection tests.
+			auto l_dir = l_ray_dir.xyz();
+			l_dir.normalize();
+
+			return l_dir;
+
+			/*bcFLOAT l_left = static_cast<bcFLOAT>(p_left) / p_screen_width;
 			bcFLOAT l_botton = 1 - (static_cast<bcFLOAT>(p_top) / p_screen_height);
 			extend l_camera_extends;
 
@@ -137,7 +160,7 @@ namespace black_cat
 			auto l_ray = l_far_point - l_near_point;
 			l_ray.normalize();
 
-			return l_ray;
+			return l_ray;*/
 		}
 
 		core::bc_vector3f bc_icamera::get_direction() const noexcept

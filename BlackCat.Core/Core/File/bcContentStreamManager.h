@@ -20,6 +20,9 @@ namespace black_cat
 {
 	namespace core
 	{
+		template< typename T >
+		class bc_task;
+
 		struct _bc_content_stream_file
 		{
 			bc_string_program m_title;
@@ -28,8 +31,10 @@ namespace black_cat
 			bc_data_driven_parameter m_parameters;
 		};
 
-		// Make bcContentManager data driven
-		// Thread safe class
+		/**
+		 * \brief Make bcContentManager data driven
+		 * \ThreadSafe
+		 */
 		class BC_CORE_DLL bc_content_stream_manager : public bc_iservice
 		{
 			BC_SERVICE(content_stream_manager)
@@ -42,7 +47,7 @@ namespace black_cat
 			using contents_map_type = bc_unordered_map_program< string_hash::result_type, bc_vector< bc_icontent_ptr > >;
 
 		public:
-			bc_content_stream_manager() noexcept(false);
+			bc_content_stream_manager(bc_content_manager& p_content_manager) noexcept;
 
 			bc_content_stream_manager(bc_content_stream_manager&&) noexcept(
 				std::is_nothrow_move_constructible< content_types_map_type >::value &&
@@ -56,6 +61,11 @@ namespace black_cat
 				std::is_nothrow_move_assignable< streams_map_type >::value &&
 				std::is_nothrow_move_assignable< contents_map_type >::value);
 
+			bc_content_manager& get_content_manager() const noexcept
+			{
+				return m_content_manager;
+			}
+
 			template< class TContent, class TLoader >
 			void register_loader(bc_cloader_ptr< TLoader >&& p_loader);
 
@@ -66,20 +76,25 @@ namespace black_cat
 			void read_stream_file(const bcECHAR* p_json_file_path);
 
 			/**
-			 * \brief Load contents in the stream concurrent (TSFunc)
+			 * \brief Load contents in the stream concurrent
+			 * \ThreadSafe
 			 * \param p_alloc_type 
 			 * \param p_stream_name 
 			 */
 			void load_content_stream(bc_alloc_type p_alloc_type, const bcCHAR* p_stream_name);
 
+			bc_task<void> load_content_stream_async(bc_alloc_type p_alloc_type, const bcCHAR* p_stream_name);
+
 			/**
-			 * \brief (TSFunc)
+			 * \brief 
+			 * \ThreadSafe
 			 * \param p_stream_name 
 			 */
 			void unload_content_stream(const bcCHAR* p_stream_name);
 
 			/**
-			 * \brief Return Content with specified title otherwise return nullptr (TSFunc)
+			 * \brief Return Content with specified title otherwise return nullptr
+			 * \ThreadSafe
 			 * \param p_content_name 
 			 * \return 
 			 */
@@ -88,7 +103,8 @@ namespace black_cat
 			bc_icontent_ptr find_content_throw(const bcCHAR* p_content_name) const;
 
 			/**
-			 * \brief Return Content with specified title otherwise return nullptr (TSFunc)
+			 * \brief Return Content with specified title otherwise return nullptr
+			 * \ThreadSafe
 			 * \tparam TContent 
 			 * \param p_content_name 
 			 * \return 
@@ -104,6 +120,8 @@ namespace black_cat
 		private:
 			template< class TContent >
 			void _register_content_type();
+
+			bc_content_manager& m_content_manager;
 
 			mutable core_platform::bc_shared_mutex m_contents_mutex;
 

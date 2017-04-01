@@ -141,6 +141,15 @@
     <ClCompile Include="GraphicImp\bcDeviceRef.cpp">
       <Filter>GraphicImp</Filter>
     </ClCompile>
+    <ClCompile Include="GraphicImp\bcDeviceResourceContent.cpp">
+      <Filter>GraphicImp</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicImp\Resource\Texture\bcTextureConfig.cpp">
+      <Filter>GraphicImp\Resource\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicImp\Resource\Buffer\bcBufferConfig.cpp">
+      <Filter>GraphicImp\Resource\Buffer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicImp\GraphicImpPCH.h">
@@ -291,6 +300,9 @@
       <Filter>GraphicImp</Filter>
     </ClInclude>
     <ClInclude Include="GraphicImp\bcRefCountProxy.h">
+      <Filter>GraphicImp</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicImp\bcDeviceResourceContent.h">
       <Filter>GraphicImp</Filter>
     </ClInclude>
   </ItemGroup>

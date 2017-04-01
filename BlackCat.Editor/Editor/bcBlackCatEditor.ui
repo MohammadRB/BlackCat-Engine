@@ -207,72 +207,6 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
-              <widget class="QLabel" name="terrainSmoothLable">
-               <property name="text">
-                <string>Smooth:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QLabel" name="terrainSmoothValue">
-               <property name="text">
-                <string>1</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0" colspan="2">
-              <widget class="QSlider" name="terrainSmoothSlider">
-               <property name="minimum">
-                <number>1</number>
-               </property>
-               <property name="maximum">
-                <number>5</number>
-               </property>
-               <property name="pageStep">
-                <number>1</number>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="0">
-              <widget class="QLabel" name="terrainRadiusLable">
-               <property name="text">
-                <string>Radius: </string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="1">
-              <widget class="QLabel" name="terrainRadiusValue">
-               <property name="text">
-                <string>1</string>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="0" colspan="2">
-              <widget class="QSlider" name="terrainRadiusSlider">
-               <property name="minimum">
-                <number>1</number>
-               </property>
-               <property name="maximum">
-                <number>50</number>
-               </property>
-               <property name="singleStep">
-                <number>1</number>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="invertedAppearance">
-                <bool>false</bool>
-               </property>
-               <property name="tickInterval">
-                <number>0</number>
-               </property>
-              </widget>
-             </item>
              <item row="2" column="0" colspan="2">
               <widget class="QSlider" name="terrainHeightSlider">
                <property name="minimum">
@@ -295,6 +229,126 @@
                </property>
                <property name="tickInterval">
                 <number>0</number>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QLabel" name="terrainSmoothLable">
+               <property name="text">
+                <string>Smooth:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="0" colspan="2">
+              <widget class="QSlider" name="terrainSmoothSlider">
+               <property name="minimum">
+                <number>1</number>
+               </property>
+               <property name="maximum">
+                <number>5</number>
+               </property>
+               <property name="pageStep">
+                <number>1</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="1">
+              <widget class="QLabel" name="terrainSmoothValue">
+               <property name="text">
+                <string>1</string>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="0">
+              <widget class="QLabel" name="terrainMaterialLable">
+               <property name="text">
+                <string>Material: </string>
+               </property>
+              </widget>
+             </item>
+             <item row="11" column="0" colspan="2">
+              <widget class="QComboBox" name="terrainMaterialCombo">
+               <item>
+                <property name="text">
+                 <string>Material 1</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Material 2</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Material 3</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Material 4</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Material 5</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Material 6</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Material 7</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Material 8</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="4" column="0" colspan="2">
+              <widget class="QSlider" name="terrainRadiusSlider">
+               <property name="minimum">
+                <number>1</number>
+               </property>
+               <property name="maximum">
+                <number>50</number>
+               </property>
+               <property name="singleStep">
+                <number>1</number>
+               </property>
+               <property name="value">
+                <number>25</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="invertedAppearance">
+                <bool>false</bool>
+               </property>
+               <property name="tickInterval">
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="terrainRadiusLable">
+               <property name="text">
+                <string>Radius: </string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLabel" name="terrainRadiusValue">
+               <property name="text">
+                <string>25</string>
                </property>
               </widget>
              </item>
@@ -510,40 +564,52 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="toolButton_3">
+      <widget class="QToolButton" name="terrainMaterialButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>Terrain Material</string>
+       </property>
        <property name="text">
-        <string>...</string>
+        <string/>
        </property>
        <property name="checkable">
         <bool>true</bool>
        </property>
        <property name="autoExclusive">
         <bool>true</bool>
+       </property>
+       <property name="fontAwesome" stdset="0">
+        <string>envira</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="toolButton">
+      <widget class="QToolButton" name="terrainMaterialSmoothButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>Terrain Material Smooth</string>
+       </property>
        <property name="text">
-        <string>...</string>
+        <string/>
        </property>
        <property name="checkable">
         <bool>true</bool>
        </property>
        <property name="autoExclusive">
         <bool>true</bool>
+       </property>
+       <property name="fontAwesome" stdset="0">
+        <string>bullseye</string>
        </property>
       </widget>
      </item>

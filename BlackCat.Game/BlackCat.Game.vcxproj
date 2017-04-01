@@ -212,6 +212,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="Game\Application\bcRenderApplication.h" />
     <ClInclude Include="Game\GamePCH.h" />
     <ClInclude Include="Game\Object\Mesh\bcHeightMap.h" />
+    <ClInclude Include="Game\Object\Mesh\bcMaterial.h" />
     <ClInclude Include="Game\Object\Mesh\bcMesh.h" />
     <ClInclude Include="Game\Object\Mesh\bcMeshCollider.h" />
     <ClInclude Include="Game\Object\Mesh\bcMeshGenerator.h" />
@@ -245,6 +246,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Game\System\Render\bcMaterialManager.h" />
     <ClInclude Include="Game\System\Render\bcRenderInstance.h" />
     <ClInclude Include="Game\System\Render\bcRenderPass.h" />
     <ClInclude Include="Game\System\Render\bcRenderPassManager.h" />
@@ -278,6 +280,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Game\Object\Mesh\bcMaterial.cpp" />
     <ClCompile Include="Game\Object\Mesh\bcMesh.cpp" />
     <ClCompile Include="Game\Object\Mesh\bcMeshCollider.cpp" />
     <ClCompile Include="Game\Object\Mesh\bcMeshGenerator.cpp" />
@@ -304,6 +307,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Game\System\Render\bcMaterialManager.cpp" />
     <ClCompile Include="Game\System\Render\bcRenderPassManager.cpp" />
     <ClCompile Include="Game\System\Render\bcRenderPassState.cpp" />
     <ClCompile Include="Game\System\Render\bcRenderState.cpp" />

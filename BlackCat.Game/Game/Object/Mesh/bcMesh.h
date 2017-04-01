@@ -17,6 +17,7 @@
 #include "Game/System/Render/bcVertexLayout.h"
 #include "Game/System/Render/bcRenderState.h"
 #include "Game/Object/Mesh/bcMeshCollider.h"
+#include "Game/Object/Mesh/bcMaterial.h"
 
 namespace black_cat
 {
@@ -31,23 +32,11 @@ namespace black_cat
 			bcFLOAT m_specular_power;
 		};
 
-		struct bc_mesh_part_material
-		{
-		public:
-			core::bc_vector4f m_diffuse;
-			bcFLOAT m_specular_intency;
-			bcFLOAT m_specular_power;
-
-			graphic::bc_texture2d_content_ptr m_diffuse_map;
-			graphic::bc_texture2d_content_ptr m_specular_map;
-			graphic::bc_texture2d_content_ptr m_normal_map;
-		};
-
 		struct bc_mesh_part_data
 		{
 		public:
 			core::bc_string m_name;
-			bc_mesh_part_material m_material;
+			bc_render_material m_material;
 			core::bc_vector_movale< bc_vertex_pos_tex_nor_tan > m_vertices;
 			core::bc_vector_movale< bcBYTE > m_indices;
 		};
@@ -147,7 +136,7 @@ namespace black_cat
 
 			const core::bc_matrix4f* get_node_transformation(const bc_mesh_node* p_node) const;
 
-			const bc_mesh_part_material* get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+			const bc_render_material* get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_render_state* get_node_mesh_render_state(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 

@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QDockWidget>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QFrame>
@@ -54,13 +55,15 @@ public:
     QFormLayout *formLayout;
     QLabel *terrainHeightLable;
     QLabel *terrainHeightValue;
+    QSlider *terrainHeightSlider;
     QLabel *terrainSmoothLable;
-    QLabel *terrainSmoothValue;
     QSlider *terrainSmoothSlider;
+    QLabel *terrainSmoothValue;
+    QLabel *terrainMaterialLable;
+    QComboBox *terrainMaterialCombo;
+    QSlider *terrainRadiusSlider;
     QLabel *terrainRadiusLable;
     QLabel *terrainRadiusValue;
-    QSlider *terrainRadiusSlider;
-    QSlider *terrainHeightSlider;
     QWidget *page_2;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
@@ -71,8 +74,8 @@ public:
     QToolButton *objectSelectButton;
     QToolButton *terrainHeightButton;
     QToolButton *terrainSmoothButton;
-    QToolButton *toolButton_3;
-    QToolButton *toolButton;
+    QToolButton *terrainMaterialButton;
+    QToolButton *terrainMaterialSmoothButton;
 
     void setupUi(QMainWindow *bcBlackCatEditorClass)
     {
@@ -184,46 +187,6 @@ public:
 
         formLayout->setWidget(0, QFormLayout::FieldRole, terrainHeightValue);
 
-        terrainSmoothLable = new QLabel(rightToolBoxTerrain);
-        terrainSmoothLable->setObjectName(QStringLiteral("terrainSmoothLable"));
-
-        formLayout->setWidget(3, QFormLayout::LabelRole, terrainSmoothLable);
-
-        terrainSmoothValue = new QLabel(rightToolBoxTerrain);
-        terrainSmoothValue->setObjectName(QStringLiteral("terrainSmoothValue"));
-
-        formLayout->setWidget(3, QFormLayout::FieldRole, terrainSmoothValue);
-
-        terrainSmoothSlider = new QSlider(rightToolBoxTerrain);
-        terrainSmoothSlider->setObjectName(QStringLiteral("terrainSmoothSlider"));
-        terrainSmoothSlider->setMinimum(1);
-        terrainSmoothSlider->setMaximum(5);
-        terrainSmoothSlider->setPageStep(1);
-        terrainSmoothSlider->setOrientation(Qt::Horizontal);
-
-        formLayout->setWidget(4, QFormLayout::SpanningRole, terrainSmoothSlider);
-
-        terrainRadiusLable = new QLabel(rightToolBoxTerrain);
-        terrainRadiusLable->setObjectName(QStringLiteral("terrainRadiusLable"));
-
-        formLayout->setWidget(5, QFormLayout::LabelRole, terrainRadiusLable);
-
-        terrainRadiusValue = new QLabel(rightToolBoxTerrain);
-        terrainRadiusValue->setObjectName(QStringLiteral("terrainRadiusValue"));
-
-        formLayout->setWidget(5, QFormLayout::FieldRole, terrainRadiusValue);
-
-        terrainRadiusSlider = new QSlider(rightToolBoxTerrain);
-        terrainRadiusSlider->setObjectName(QStringLiteral("terrainRadiusSlider"));
-        terrainRadiusSlider->setMinimum(1);
-        terrainRadiusSlider->setMaximum(50);
-        terrainRadiusSlider->setSingleStep(1);
-        terrainRadiusSlider->setOrientation(Qt::Horizontal);
-        terrainRadiusSlider->setInvertedAppearance(false);
-        terrainRadiusSlider->setTickInterval(0);
-
-        formLayout->setWidget(6, QFormLayout::SpanningRole, terrainRadiusSlider);
-
         terrainHeightSlider = new QSlider(rightToolBoxTerrain);
         terrainHeightSlider->setObjectName(QStringLiteral("terrainHeightSlider"));
         terrainHeightSlider->setMinimum(-20);
@@ -235,6 +198,57 @@ public:
         terrainHeightSlider->setTickInterval(0);
 
         formLayout->setWidget(2, QFormLayout::SpanningRole, terrainHeightSlider);
+
+        terrainSmoothLable = new QLabel(rightToolBoxTerrain);
+        terrainSmoothLable->setObjectName(QStringLiteral("terrainSmoothLable"));
+
+        formLayout->setWidget(6, QFormLayout::LabelRole, terrainSmoothLable);
+
+        terrainSmoothSlider = new QSlider(rightToolBoxTerrain);
+        terrainSmoothSlider->setObjectName(QStringLiteral("terrainSmoothSlider"));
+        terrainSmoothSlider->setMinimum(1);
+        terrainSmoothSlider->setMaximum(5);
+        terrainSmoothSlider->setPageStep(1);
+        terrainSmoothSlider->setOrientation(Qt::Horizontal);
+
+        formLayout->setWidget(7, QFormLayout::SpanningRole, terrainSmoothSlider);
+
+        terrainSmoothValue = new QLabel(rightToolBoxTerrain);
+        terrainSmoothValue->setObjectName(QStringLiteral("terrainSmoothValue"));
+
+        formLayout->setWidget(6, QFormLayout::FieldRole, terrainSmoothValue);
+
+        terrainMaterialLable = new QLabel(rightToolBoxTerrain);
+        terrainMaterialLable->setObjectName(QStringLiteral("terrainMaterialLable"));
+
+        formLayout->setWidget(10, QFormLayout::LabelRole, terrainMaterialLable);
+
+        terrainMaterialCombo = new QComboBox(rightToolBoxTerrain);
+        terrainMaterialCombo->setObjectName(QStringLiteral("terrainMaterialCombo"));
+
+        formLayout->setWidget(11, QFormLayout::SpanningRole, terrainMaterialCombo);
+
+        terrainRadiusSlider = new QSlider(rightToolBoxTerrain);
+        terrainRadiusSlider->setObjectName(QStringLiteral("terrainRadiusSlider"));
+        terrainRadiusSlider->setMinimum(1);
+        terrainRadiusSlider->setMaximum(50);
+        terrainRadiusSlider->setSingleStep(1);
+        terrainRadiusSlider->setValue(25);
+        terrainRadiusSlider->setOrientation(Qt::Horizontal);
+        terrainRadiusSlider->setInvertedAppearance(false);
+        terrainRadiusSlider->setTickInterval(0);
+
+        formLayout->setWidget(4, QFormLayout::SpanningRole, terrainRadiusSlider);
+
+        terrainRadiusLable = new QLabel(rightToolBoxTerrain);
+        terrainRadiusLable->setObjectName(QStringLiteral("terrainRadiusLable"));
+
+        formLayout->setWidget(3, QFormLayout::LabelRole, terrainRadiusLable);
+
+        terrainRadiusValue = new QLabel(rightToolBoxTerrain);
+        terrainRadiusValue->setObjectName(QStringLiteral("terrainRadiusValue"));
+
+        formLayout->setWidget(3, QFormLayout::FieldRole, terrainRadiusValue);
 
         QIcon icon;
         QString iconThemeName = QStringLiteral("areaChart");
@@ -330,23 +344,23 @@ public:
 
         verticalLayout_3->addWidget(terrainSmoothButton);
 
-        toolButton_3 = new QToolButton(toolsDockContents);
-        toolButton_3->setObjectName(QStringLiteral("toolButton_3"));
-        sizePolicy6.setHeightForWidth(toolButton_3->sizePolicy().hasHeightForWidth());
-        toolButton_3->setSizePolicy(sizePolicy6);
-        toolButton_3->setCheckable(true);
-        toolButton_3->setAutoExclusive(true);
+        terrainMaterialButton = new QToolButton(toolsDockContents);
+        terrainMaterialButton->setObjectName(QStringLiteral("terrainMaterialButton"));
+        sizePolicy6.setHeightForWidth(terrainMaterialButton->sizePolicy().hasHeightForWidth());
+        terrainMaterialButton->setSizePolicy(sizePolicy6);
+        terrainMaterialButton->setCheckable(true);
+        terrainMaterialButton->setAutoExclusive(true);
 
-        verticalLayout_3->addWidget(toolButton_3);
+        verticalLayout_3->addWidget(terrainMaterialButton);
 
-        toolButton = new QToolButton(toolsDockContents);
-        toolButton->setObjectName(QStringLiteral("toolButton"));
-        sizePolicy6.setHeightForWidth(toolButton->sizePolicy().hasHeightForWidth());
-        toolButton->setSizePolicy(sizePolicy6);
-        toolButton->setCheckable(true);
-        toolButton->setAutoExclusive(true);
+        terrainMaterialSmoothButton = new QToolButton(toolsDockContents);
+        terrainMaterialSmoothButton->setObjectName(QStringLiteral("terrainMaterialSmoothButton"));
+        sizePolicy6.setHeightForWidth(terrainMaterialSmoothButton->sizePolicy().hasHeightForWidth());
+        terrainMaterialSmoothButton->setSizePolicy(sizePolicy6);
+        terrainMaterialSmoothButton->setCheckable(true);
+        terrainMaterialSmoothButton->setAutoExclusive(true);
 
-        verticalLayout_3->addWidget(toolButton);
+        verticalLayout_3->addWidget(terrainMaterialSmoothButton);
 
         toolsDock->setWidget(toolsDockContents);
         bcBlackCatEditorClass->addDockWidget(static_cast<Qt::DockWidgetArea>(1), toolsDock);
@@ -372,8 +386,20 @@ public:
         terrainHeightValue->setText(QApplication::translate("bcBlackCatEditorClass", "0", 0));
         terrainSmoothLable->setText(QApplication::translate("bcBlackCatEditorClass", "Smooth:", 0));
         terrainSmoothValue->setText(QApplication::translate("bcBlackCatEditorClass", "1", 0));
+        terrainMaterialLable->setText(QApplication::translate("bcBlackCatEditorClass", "Material: ", 0));
+        terrainMaterialCombo->clear();
+        terrainMaterialCombo->insertItems(0, QStringList()
+         << QApplication::translate("bcBlackCatEditorClass", "Material 1", 0)
+         << QApplication::translate("bcBlackCatEditorClass", "Material 2", 0)
+         << QApplication::translate("bcBlackCatEditorClass", "Material 3", 0)
+         << QApplication::translate("bcBlackCatEditorClass", "Material 4", 0)
+         << QApplication::translate("bcBlackCatEditorClass", "Material 5", 0)
+         << QApplication::translate("bcBlackCatEditorClass", "Material 6", 0)
+         << QApplication::translate("bcBlackCatEditorClass", "Material 7", 0)
+         << QApplication::translate("bcBlackCatEditorClass", "Material 8", 0)
+        );
         terrainRadiusLable->setText(QApplication::translate("bcBlackCatEditorClass", "Radius: ", 0));
-        terrainRadiusValue->setText(QApplication::translate("bcBlackCatEditorClass", "1", 0));
+        terrainRadiusValue->setText(QApplication::translate("bcBlackCatEditorClass", "25", 0));
         rightToolBox->setItemText(rightToolBox->indexOf(rightToolBoxTerrain), QApplication::translate("bcBlackCatEditorClass", "Terrain", 0));
         rightToolBox->setItemText(rightToolBox->indexOf(page_2), QApplication::translate("bcBlackCatEditorClass", "Page 2", 0));
 #ifndef QT_NO_TOOLTIP
@@ -391,8 +417,16 @@ public:
 #endif // QT_NO_TOOLTIP
         terrainSmoothButton->setText(QString());
         terrainSmoothButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "bullseye", 0)));
-        toolButton_3->setText(QApplication::translate("bcBlackCatEditorClass", "...", 0));
-        toolButton->setText(QApplication::translate("bcBlackCatEditorClass", "...", 0));
+#ifndef QT_NO_TOOLTIP
+        terrainMaterialButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Terrain Material", 0));
+#endif // QT_NO_TOOLTIP
+        terrainMaterialButton->setText(QString());
+        terrainMaterialButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "envira", 0)));
+#ifndef QT_NO_TOOLTIP
+        terrainMaterialSmoothButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Terrain Material Smooth", 0));
+#endif // QT_NO_TOOLTIP
+        terrainMaterialSmoothButton->setText(QString());
+        terrainMaterialSmoothButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "bullseye", 0)));
     } // retranslateUi
 
 };

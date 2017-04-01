@@ -29,7 +29,7 @@ namespace black_cat
 			return p_stream.read(reinterpret_cast< bcBYTE* >(p_char), sizeof(bcWCHAR)) == sizeof(bcWCHAR);
 		}
 
-		bool bc_get_line(bc_istream_adapter& p_stream, bc_string_frame* p_line)
+		bool bc_get_line(bc_istream_adapter& p_stream, bc_string_frame& p_line)
 		{
 			bcCHAR l_char;
 			bool l_first_read;
@@ -39,12 +39,12 @@ namespace black_cat
 
 			if(l_first_read)
 			{
-				p_line->clear();
+				p_line.clear();
 			}
 
 			while (l_read)
 			{
-				p_line->push_back(l_char);
+				p_line.push_back(l_char);
 
 				if (l_char == '\n')
 				{
@@ -57,7 +57,7 @@ namespace black_cat
 			return l_first_read;
 		}
 
-		bool bc_get_wline(bc_istream_adapter& p_stream, bc_wstring_frame* p_line)
+		bool bc_get_wline(bc_istream_adapter& p_stream, bc_wstring_frame& p_line)
 		{
 			bcWCHAR l_char;
 			bool l_first_read;
@@ -67,12 +67,12 @@ namespace black_cat
 
 			if (l_first_read)
 			{
-				p_line->clear();
+				p_line.clear();
 			}
 
 			while (l_read)
 			{
-				p_line->push_back(l_char);
+				p_line.push_back(l_char);
 
 				if (l_char == '\n')
 				{

@@ -12,14 +12,12 @@
 
 #include "CorePlatform/bcType.h"
 #include "Core/bcExport.h"
-#include "Core/Math/bcMatrix3f.h"
+#include "Core/Math/bcVector3f.h"
 
 namespace black_cat
 {
 	namespace core
 	{
-		class bc_vector3f;
-
 		class BC_CORE_DLL bc_matrix3f
 		{
 		public:

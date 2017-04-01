@@ -267,6 +267,12 @@
     <ClInclude Include="Core\Math\bcCoordinate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\File\bcJsonParse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utility\bcJsonParse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\CorePCH.cpp">

@@ -29,6 +29,10 @@ namespace black_cat
 
 			core::bc_estring get_content_data_path(const bcECHAR* p_data_path) const;
 
+			const bcECHAR* get_content_texture_path() const;
+
+			core::bc_estring get_content_texture_path(const bcECHAR* p_texture_path) const;
+
 			const bcECHAR* get_content_model_path() const;
 
 			core::bc_estring get_content_model_path(const bcECHAR* p_model_path) const;
@@ -47,6 +51,7 @@ namespace black_cat
 			core::bc_estring m_execute_path;
 			core::bc_estring m_content_base_path;
 			core::bc_estring m_content_data_path;
+			core::bc_estring m_content_texture_path;
 			core::bc_estring m_content_model_path;
 			core::bc_estring m_content_platform_shader_path;
 			core::bc_estring m_content_script_path;

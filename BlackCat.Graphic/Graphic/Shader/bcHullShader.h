@@ -6,8 +6,8 @@
 #include "Graphic/bcRenderApi.h"
 #include "Graphic/bcDeviceReference.h"
 #include "Graphic/bcDeviceRef.h"
-#include "Graphic/Shader/bcShader.h"
 #include "Graphic/bcDeviceResourceContent.h"
+#include "Graphic/Shader/bcShader.h"
 
 namespace black_cat
 {
@@ -56,7 +56,6 @@ namespace black_cat
 
 		private:
 			platform_pack m_pack;
-
 		};
 
 		using bc_hull_shader = bc_platform_hull_shader< g_current_render_api >;

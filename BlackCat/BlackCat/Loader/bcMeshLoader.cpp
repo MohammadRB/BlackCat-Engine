@@ -66,7 +66,7 @@ namespace black_cat
 		p_matrix[15] = l_aimatrix.d4;
 	}
 
-	void bc_mesh_loader::convert_aimaterial(core::bc_content_loader_context& p_context, const aiMaterial& p_aimaterial, game::bc_mesh_part_material& p_material)
+	void bc_mesh_loader::convert_aimaterial(core::bc_content_loader_context& p_context, const aiMaterial& p_aimaterial, game::bc_render_material& p_material)
 	{
 		core::bc_content_manager* l_content_manager = core::bc_service_manager::get().get_service< core::bc_content_manager >();
 
@@ -135,7 +135,7 @@ namespace black_cat
 		graphic::bc_resource_view_ptr l_diffuse_map_view;
 		graphic::bc_resource_view_ptr l_specular_map_view;
 		graphic::bc_resource_view_ptr l_normal_map_view;
-		game::bc_mesh_part_material l_material;
+		game::bc_render_material l_material;
 
 		bool l_need_32bit_indices = p_aimesh.mNumFaces * 3 > std::numeric_limits< bcUINT16 >::max();
 		bool l_has_texcoord = p_aimesh.HasTextureCoords(0);

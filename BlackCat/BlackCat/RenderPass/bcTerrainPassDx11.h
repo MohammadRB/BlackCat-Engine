@@ -32,6 +32,8 @@ namespace black_cat
 
 		void destroy(graphic::bc_device& p_device) override;
 
+		void update_chunk_infoes();
+
 	protected:
 
 	private:

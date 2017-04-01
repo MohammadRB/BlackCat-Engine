@@ -20,6 +20,16 @@ namespace black_cat
 		public:
 			using platform_pack = bc_platform_texture_config_pack< TRenderApi >;
 
+			bcUINT32 get_width() const;
+
+			bcUINT32 get_height() const;
+
+			bc_resource_usage get_usage() const;
+
+			bc_texture_ms_config get_sample_count() const;
+
+			bc_format get_format() const;
+
 		public:
 			platform_pack& get_platform_pack()
 			{

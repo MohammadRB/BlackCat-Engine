@@ -36,13 +36,6 @@ namespace black_cat
 			using type = typename _type_or_default< p_type >::type; \
 		}
 
-		template< template< typename > class T, typename ...TInner >
-		struct bc_template_template
-		{
-		public:
-			using type = T< TInner... >;
-		};
-
 		template< typename T >
 		struct bc_get_pointer_type
 			member_type_or_default
@@ -115,13 +108,6 @@ namespace black_cat
 				bcSIZE
 			);
 
-		/*template< typename T, typename ...TOther >
-		struct bc_get_rebind_type
-			member_type_or_default(T,
-				template rebind< TOther >::other,
-				typename bc_template_template<T BC_MACRO_COMMA TOther...>::type);*/
-
-		// http://stackoverflow.com/questions/15393938/find-out-if-a-c-object-is-callable
 		template< typename T >
 		struct is_callable_impl
 		{
@@ -151,6 +137,7 @@ namespace black_cat
 			static const bool value = sizeof(test< Derived >(0)) == sizeof(yes);
 		};
 
+		// http://stackoverflow.com/questions/15393938/find-out-if-a-c-object-is-callable
 		template< typename T >
 		struct bc_is_callable
 			: std::conditional
@@ -159,6 +146,20 @@ namespace black_cat
 				is_callable_impl< T >,
 				std::false_type
 			>::type
+		{
+		};
+
+		template <typename... >
+		using bc_void_t = void;
+
+		template <class T, class = void>
+		struct bc_is_iterator : std::false_type
+		{
+		};
+
+		// http://stackoverflow.com/questions/4335962/how-to-check-if-a-template-parameter-is-an-iterator-type-or-not
+		template <class T>
+		struct bc_is_iterator<T, bc_void_t<typename std::iterator_traits<T>::iterator_category>> : std::true_type
 		{
 		};
 

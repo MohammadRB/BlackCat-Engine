@@ -4,6 +4,8 @@
 #include "Editor/UI/bcFormTools.h"
 #include "Editor/UICommand/bcUITerrainHeightCommand.h"
 #include "Editor/UICommand/bcUITerrainSmoothCommand.h"
+#include "Editor/UICommand/bcUITerrainMaterialCommand.h"
+#include "Editor/UICommand/bcUITerrainMaterialSmoothCommand.h"
 
 namespace black_cat
 {
@@ -24,10 +26,14 @@ namespace black_cat
 			m_object_selection = m_tool_bar.findChild< QAbstractButton* >("objectSelectButton");
 			m_terrain_height = m_tool_bar.findChild< QAbstractButton* >("terrainHeightButton");
 			m_terrain_smooth = m_tool_bar.findChild< QAbstractButton* >("terrainSmoothButton");
+			m_terrain_material = m_tool_bar.findChild< QAbstractButton* >("terrainMaterialButton");
+			m_terrain_material_smooth = m_tool_bar.findChild< QAbstractButton* >("terrainMaterialSmoothButton");
 
 			QObject::connect(m_object_selection, SIGNAL(toggled(bool)), this, SLOT(onObjectSelectionToggle(bool)));
 			QObject::connect(m_terrain_height, SIGNAL(toggled(bool)), this, SLOT(onTerrainHeightToggle(bool)));
 			QObject::connect(m_terrain_smooth, SIGNAL(toggled(bool)), this, SLOT(onTerrainSmoothToggle(bool)));
+			QObject::connect(m_terrain_material, SIGNAL(toggled(bool)), this, SLOT(onTerrainMaterialToggle(bool)));
+			QObject::connect(m_terrain_material_smooth, SIGNAL(toggled(bool)), this, SLOT(onTerrainMaterialSmoothToggle(bool)));
 
 			QObject::connect(&m_render_widget, SIGNAL(mousePressed(QMouseEvent*)), this, SLOT(onMousePress(QMouseEvent*)));
 			QObject::connect(&m_render_widget, SIGNAL(mouseReleased(QMouseEvent*)), this, SLOT(onMouseRelease(QMouseEvent*)));
@@ -65,6 +71,28 @@ namespace black_cat
 			}
 
 			m_state = state::terrain_smooth;
+		}
+
+		void bc_form_tools::onTerrainMaterialToggle(bool p_toggled)
+		{
+			if (!p_toggled)
+			{
+				m_state = state::none;
+				return;
+			}
+
+			m_state = state::terrain_material;
+		}
+
+		void bc_form_tools::onTerrainMaterialSmoothToggle(bool p_toggled)
+		{
+			if (!p_toggled)
+			{
+				m_state = state::none;
+				return;
+			}
+
+			m_state = state::terrain_material_smooth;
 		}
 
 		void bc_form_tools::onMousePress(QMouseEvent* p_event)
@@ -125,7 +153,36 @@ namespace black_cat
 					m_ui_command_service.execute_command(std::move(m_command));
 				}
 				break;
+			case state::terrain_material:
+				{
+					bc_ui_terrain_material_command m_command
+					(
+						m_render_widget.width(),
+						m_render_widget.height(),
+						p_event->x(),
+						p_event->y(),
+						m_terrain_form.get_radius(),
+						m_terrain_form.get_material()
+					);
+					m_ui_command_service.execute_command(std::move(m_command));
+				}
+				break;
+			case bc_form_tools_state::terrain_material_smooth:
+				{
+					bc_ui_terrain_material_smooth_command m_command
+					(
+						m_render_widget.width(),
+						m_render_widget.height(),
+						p_event->x(),
+						p_event->y(),
+						m_terrain_form.get_radius(),
+						m_terrain_form.get_smooth()
+					);
+					m_ui_command_service.execute_command(std::move(m_command));
+				}
+				break;
 			case state::none:
+			default:
 				break;
 			}
 		}

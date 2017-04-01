@@ -104,6 +104,7 @@ namespace black_cat
 		BC_PARAMETER(sub_mesh, "sub_mesh");
 		BC_PARAMETER(child_actor, "childs");
 		BC_PARAMETER(heightmap, "heightmap");
+		BC_PARAMETER(texture_config, "config");
 
 		BC_PARAMETER_RESOLVER(mesh, "get_mesh");
 		BC_PARAMETER_RESOLVER(heightmap, "get_heightmap");

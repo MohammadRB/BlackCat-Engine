@@ -9,7 +9,6 @@
 //--------------------------------------------------------------------------------
 
 #include "Core/CorePCH.h"
-#include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix3f.h"
 
 namespace black_cat

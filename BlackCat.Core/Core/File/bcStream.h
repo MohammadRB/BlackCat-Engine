@@ -240,16 +240,36 @@ namespace black_cat
 			return m_stream->get_type();
 		}
 
-		// Read a char from stream if stream is readable and stream position isn't at end
+		/**
+		 * \brief Read a char from stream if stream is readable and stream position isn't at end
+		 * \param p_stream 
+		 * \param p_char 
+		 * \return 
+		 */
 		bool BC_CORE_DLL bc_get_char(bc_istream_adapter& p_stream, bcCHAR* p_char);
-
-		// Read a wchar from stream if stream is readable and stream position isn't at end
+		
+		/**
+		 * \brief Read a wchar from stream if stream is readable and stream position isn't at end
+		 * \param p_stream 
+		 * \param p_char 
+		 * \return 
+		 */
 		bool BC_CORE_DLL bc_get_wchar(bc_istream_adapter& p_stream, bcWCHAR* p_char);
 
-		// Read a line from stream and replace in p_line string if stream is readable and stream position isn't at end
-		bool BC_CORE_DLL bc_get_line(bc_istream_adapter& p_stream, bc_string_frame* p_line);
+		/**
+		 * \brief Read a line from stream and replace in p_line string if stream is readable and stream position isn't at end
+		 * \param p_stream 
+		 * \param p_line 
+		 * \return 
+		 */
+		bool BC_CORE_DLL bc_get_line(bc_istream_adapter& p_stream, bc_string_frame& p_line);
 
-		// Read a line from stream and replace in p_line string if stream is readable and stream position isn't at end
-		bool BC_CORE_DLL bc_get_wline(bc_istream_adapter& p_stream, bc_wstring_frame* p_line);
+		/**
+		 * \brief Read a line from stream and replace in p_line string if stream is readable and stream position isn't at end
+		 * \param p_stream 
+		 * \param p_line 
+		 * \return 
+		 */
+		bool BC_CORE_DLL bc_get_wline(bc_istream_adapter& p_stream, bc_wstring_frame& p_line);
 	}
 }

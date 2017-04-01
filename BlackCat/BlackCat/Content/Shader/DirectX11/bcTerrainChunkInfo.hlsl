@@ -61,7 +61,7 @@ groupshared float3 gs_normals[4];
 groupshared float4 gs_plane;
 
 [numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]
-void chunk_info(uint3 p_group_id : SV_GroupID, 
+void main(uint3 p_group_id : SV_GroupID, 
     uint p_group_index : SV_GroupIndex, 
     uint3 p_group_thread_id : SV_GroupThreadID,
     uint3 p_dispatch_thread_id : SV_DispatchThreadID)

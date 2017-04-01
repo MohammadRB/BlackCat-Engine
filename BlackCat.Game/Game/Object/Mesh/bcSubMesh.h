@@ -69,7 +69,7 @@ namespace black_cat
 
 			const core::bc_matrix4f* get_node_transformation(const bc_mesh_node* p_node) const;
 
-			const bc_mesh_part_material* get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+			const bc_render_material* get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_render_state* get_node_mesh_render_state(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
@@ -167,7 +167,7 @@ namespace black_cat
 			return m_mesh->get_node_transformation(p_node);
 		}
 
-		inline const bc_mesh_part_material* bc_sub_mesh::get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
+		inline const bc_render_material* bc_sub_mesh::get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
 		{
 			return m_mesh->get_node_mesh_material(p_node, p_mesh_index);
 		}

@@ -28,7 +28,7 @@ namespace black_cat
 		constexpr bcSIZE g_render_pass_state_constant_buffer_max_index = 3;
 		constexpr bcSIZE g_render_pass_state_constant_buffer_count = g_render_pass_state_constant_buffer_max_index - g_render_pass_state_constant_buffer_min_index + 1;
 		constexpr bcSIZE g_render_state_shader_view_min_index = g_render_pass_state_shader_view_max_index + 1;
-		constexpr bcSIZE g_render_state_shader_view_max_index = g_render_state_shader_view_min_index + 3;
+		constexpr bcSIZE g_render_state_shader_view_max_index = g_render_state_shader_view_min_index + 19;
 		constexpr bcSIZE g_render_state_shader_view_count = g_render_state_shader_view_max_index - g_render_state_shader_view_min_index + 1;
 		constexpr bcSIZE g_render_state_constant_buffer_min_index = g_render_pass_state_constant_buffer_max_index + 1 + 1; // +1 for perobject cbuffer
 		constexpr bcSIZE g_render_state_constant_buffer_max_index = g_render_state_constant_buffer_min_index + 3;

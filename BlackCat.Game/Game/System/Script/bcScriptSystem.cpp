@@ -85,7 +85,7 @@ namespace black_cat
 			core::bc_wstring_frame l_script_file_content;
 			core::bc_wstring_frame l_line;
 			
-			while (core::bc_get_wline(l_script_file, &l_line))
+			while (core::bc_get_wline(l_script_file, l_line))
 			{
 				l_script_file_content.append(l_line);
 			}

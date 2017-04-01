@@ -128,8 +128,8 @@ namespace black_cat
 		template< >
 		constexpr bcSIZE bc_platform_render_api_info<g_api_dx11>::number_of_shader_resource() noexcept
 		{
-			// D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT
-			return 16;
+			// D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT
+			return 128;
 		}
 
 		template< >

@@ -4,6 +4,7 @@
 
 #include "GraphicImp/bcDeviceReference.h"
 #include "GraphicImp/bcDeviceRef.h"
+#include "GraphicImp/bcDeviceResourceContent.h"
 #include "GraphicImp/Shader/bcShader.h"
 
 #include "Graphic/Shader/bcHullShader.h"

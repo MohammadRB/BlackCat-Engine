@@ -152,6 +152,12 @@
     <ClCompile Include="Editor\UICommand\bcUITerrainSmoothCommand.cpp">
       <Filter>Editor\UICommand</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\UICommand\bcUITerrainMaterialCommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\UICommand\bcUITerrainMaterialSmoothCommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_bcBlackCatEditor.h">
@@ -182,6 +188,12 @@
       <Filter>Editor\Application</Filter>
     </ClInclude>
     <ClInclude Include="Editor\UICommand\bcUITerrainSmoothCommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\UICommand\bcUITerrainMaterialCommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\UICommand\bcUITerrainMaterialSmoothCommand.h">
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
   </ItemGroup>
@@ -349,6 +361,12 @@
       <Filter>Editor\Content\Shader\DirectX11</Filter>
     </FxCompile>
     <FxCompile Include="Editor\Content\Shader\DirectX11\bcTerrainSmooth.hlsl">
+      <Filter>Editor\Content\Shader\DirectX11</Filter>
+    </FxCompile>
+    <FxCompile Include="Editor\Content\Shader\DirectX11\bcTerrainMaterial.hlsl">
+      <Filter>Editor\Content\Shader\DirectX11</Filter>
+    </FxCompile>
+    <FxCompile Include="Editor\Content\Shader\DirectX11\bcTerrainMaterialSmooth.hlsl">
       <Filter>Editor\Content\Shader\DirectX11</Filter>
     </FxCompile>
   </ItemGroup>

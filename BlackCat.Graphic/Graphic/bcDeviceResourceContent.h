@@ -10,7 +10,10 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		// Wrap device resource pointers and make required interface for content manager
+		/**
+		 * \brief Wrap device resource pointers and make required interface for content manager.
+		 * \tparam TResource 
+		 */
 		template< class TResource >
 		class bc_device_resource_content : public core::bc_icontent
 		{
