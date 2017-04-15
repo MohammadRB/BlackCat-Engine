@@ -158,6 +158,9 @@
     <ClCompile Include="Editor\UICommand\bcUITerrainMaterialSmoothCommand.cpp">
       <Filter>Editor\UICommand</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\UICommand\bcUITerrainCommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_bcBlackCatEditor.h">
@@ -194,6 +197,9 @@
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
     <ClInclude Include="Editor\UICommand\bcUITerrainMaterialSmoothCommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\UICommand\bcUITerrainCommand.h">
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
   </ItemGroup>

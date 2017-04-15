@@ -236,6 +236,9 @@ namespace black_cat
 			template< typename TPass >
 			void add_render_pass(bcUINT p_location, core::bc_unique_ptr< TPass >&& p_pass);
 
+			template< typename T >
+			T* get_render_pass();
+
 			bool remove_render_pass(bcUINT p_location);
 
 			template< typename TPass >
@@ -301,6 +304,12 @@ namespace black_cat
 			auto l_pass = m_render_pass_manager.get_pass(p_location);
 
 			l_pass->initialize_resources(*this);
+		}
+
+		template< typename T >
+		T* bc_render_system::get_render_pass()
+		{
+			return m_render_pass_manager.get_pass< T >();
 		}
 
 		template< typename TPass >

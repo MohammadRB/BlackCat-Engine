@@ -18,7 +18,7 @@
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "PhysicsImp/Fundation/bcPhysics.h"
-#include "PhysicsImp/Fundation/bcMeshBuffer.h"
+#include "PhysicsImp/Fundation/bcMemoryBuffer.h"
 #include "Game/System/Render/bcVertexLayout.h"
 #include "Game/System/bcGameSystem.h"
 #include "BlackCat/Loader/bcMeshPhysicsLoader.h"
@@ -66,7 +66,7 @@ namespace black_cat
 		p_matrix[15] = l_aimatrix.d4;
 	}
 
-	void bc_mesh_loader::convert_aimaterial(core::bc_content_loader_context& p_context, const aiMaterial& p_aimaterial, game::bc_render_material& p_material)
+	void bc_mesh_loader::convert_aimaterial(core::bc_content_loading_context& p_context, const aiMaterial& p_aimaterial, game::bc_render_material& p_material)
 	{
 		core::bc_content_manager* l_content_manager = core::bc_service_manager::get().get_service< core::bc_content_manager >();
 
@@ -117,7 +117,7 @@ namespace black_cat
 	}
 
 	void bc_mesh_loader::convert_aimesh(game::bc_render_system& p_render_system,
-		core::bc_content_loader_context& p_context,
+		core::bc_content_loading_context& p_context,
 		const aiScene& p_aiscene,
 		const aiNode& p_ainode,
 		const aiMesh& p_aimesh,
@@ -272,7 +272,7 @@ namespace black_cat
 	}
 
 	void bc_mesh_loader::convert_ainodes(game::bc_render_system& p_render_system,
-		core::bc_content_loader_context& p_context,
+		core::bc_content_loading_context& p_context,
 		const aiScene& p_aiscene,
 		const aiNode& p_ainode,
 		game::bc_mesh& p_mesh,
@@ -331,11 +331,11 @@ namespace black_cat
 		}
 	}
 
-	void bc_mesh_loader::content_offline_processing(core::bc_content_loader_context& p_context) const
+	void bc_mesh_loader::content_offline_processing(core::bc_content_loading_context& p_context) const
 	{
 	}
 
-	void bc_mesh_loader::content_processing(core::bc_content_loader_context& p_context) const
+	void bc_mesh_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
 		Assimp::Importer l_importer;
 

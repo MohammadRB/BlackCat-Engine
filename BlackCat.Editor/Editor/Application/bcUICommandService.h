@@ -7,12 +7,21 @@
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcUnorderedMap.h"
-#include "Core/File/bcContentStreamManager.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Editor/Application/bcUICommand.h"
 
 namespace black_cat
 {
+	namespace core
+	{
+		class bc_content_stream_manager;
+	}
+
+	namespace game
+	{
+		class bc_game_system;
+	}
+
 	namespace editor
 	{
 		class bc_ui_command_service : public core::bc_iservice

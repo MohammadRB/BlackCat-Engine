@@ -199,11 +199,12 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="PhysicsImp\Collision\bcShapeQuery.h" />
     <ClInclude Include="PhysicsImp\Fundation\bcFundation.h" />
     <ClInclude Include="PhysicsImp\Fundation\bcMaterial.h" />
-    <ClInclude Include="PhysicsImp\Fundation\bcMeshBuffer.h" />
+    <ClInclude Include="PhysicsImp\Fundation\bcMemoryBuffer.h" />
     <ClInclude Include="PhysicsImp\Fundation\bcPhysics.h" />
     <ClInclude Include="PhysicsImp\Fundation\bcScene.h" />
     <ClInclude Include="PhysicsImp\Fundation\bcSceneBuilder.h" />
     <ClInclude Include="PhysicsImp\Fundation\bcSceneDebug.h" />
+    <ClInclude Include="PhysicsImp\Fundation\bcSerializeBuffer.h" />
     <ClInclude Include="PhysicsImp\Fundation\bcSimulationEventCallback.h" />
     <ClInclude Include="PhysicsImp\Fundation\bcTask.h" />
     <ClInclude Include="PhysicsImp\Fundation\bcTransform.h" />
@@ -243,11 +244,12 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="PhysicsImp\Collision\bcShapeQuery.cpp" />
     <ClCompile Include="PhysicsImp\Collision\bcSceneQuery.cpp" />
     <ClCompile Include="PhysicsImp\Fundation\bcMaterial.cpp" />
-    <ClCompile Include="PhysicsImp\Fundation\bcMeshBuffer.cpp" />
+    <ClCompile Include="PhysicsImp\Fundation\bcMemoryBuffer.cpp" />
     <ClCompile Include="PhysicsImp\Fundation\bcPhysics.cpp" />
     <ClCompile Include="PhysicsImp\Fundation\bcScene.cpp" />
     <ClCompile Include="PhysicsImp\Fundation\bcSceneBuilder.cpp" />
     <ClCompile Include="PhysicsImp\Fundation\bcSceneDebug.cpp" />
+    <ClCompile Include="PhysicsImp\Fundation\bcSerializeBuffer.cpp" />
     <ClCompile Include="PhysicsImp\Fundation\bcSimulationEventCallback.cpp" />
     <ClCompile Include="PhysicsImp\Fundation\bcTask.cpp" />
     <ClCompile Include="PhysicsImp\Fundation\bcTransform.cpp" />

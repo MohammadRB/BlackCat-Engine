@@ -124,7 +124,7 @@ namespace black_cat
 
 			for (auto& l_entry : m_passes)
 			{
-				if (std::strcmp(l_entry.m_name, p_name))
+				if (std::strcmp(l_entry.m_name, p_name) == 0)
 				{
 					l_found = true;
 					break;
@@ -146,7 +146,7 @@ namespace black_cat
 		{
 			for (auto& l_entry : m_passes)
 			{
-				if (std::strcmp(l_entry.m_name, p_name))
+				if (std::strcmp(l_entry.m_name, p_name) == 0)
 				{
 					return l_entry.m_pass.get();
 				}

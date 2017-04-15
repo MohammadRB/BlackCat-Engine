@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace editor
 	{
-		void bc_editor_height_map_loader_dx11::content_processing(core::bc_content_loader_context& p_context) const
+		void bc_editor_height_map_loader_dx11::content_processing(core::bc_content_loading_context& p_context) const
 		{
 			game::bc_game_system& l_game_system = *core::bc_get_service<game::bc_game_system>();
 			game::bc_render_system& l_render_system = l_game_system.get_render_system();

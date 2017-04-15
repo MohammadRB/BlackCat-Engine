@@ -107,6 +107,7 @@ copy Editor\Content\Data\*.json ..\$(Configuration)\Content\Data</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Editor\UICommand\bcUITerrainCommand.cpp" />
     <ClCompile Include="Editor\UICommand\bcUITerrainHeightCommand.cpp" />
     <ClCompile Include="Editor\UICommand\bcUITerrainMaterialCommand.cpp" />
     <ClCompile Include="Editor\UICommand\bcUITerrainMaterialSmoothCommand.cpp" />
@@ -240,6 +241,7 @@ copy Editor\Content\Data\*.json ..\$(Configuration)\Content\Data</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fstdafx.h" "-f../../Editor/Widget/bcD3DOutputWidget.h"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-I$(ProjectDir)\." "-I.\..\BlackCat.Core" "-I.\..\BlackCat.Core.Platform" "-I.\..\BlackCat.Core.Platform.Win32" "-I.\..\BlackCat.Platform" "-I.\..\BlackCat.Platform.Win32" "-I.\..\BlackCat.Graphic" "-I.\..\BlackCat.Graphic.DirectX11" "-I.\..\BlackCat.Physics" "-I.\..\BlackCat.Physics.PhysX" "-I.\..\BlackCat.Game" "-I.\..\BlackCat" "-I.\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I." "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets"</Command>
     </CustomBuild>
+    <ClInclude Include="Editor\UICommand\bcUITerrainCommand.h" />
     <ClInclude Include="Editor\UICommand\bcUITerrainHeightCommand.h" />
     <ClInclude Include="Editor\UICommand\bcUITerrainMaterialCommand.h" />
     <ClInclude Include="Editor\UICommand\bcUITerrainMaterialSmoothCommand.h" />

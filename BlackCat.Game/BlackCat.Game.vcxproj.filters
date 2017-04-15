@@ -25,14 +25,14 @@
     <Filter Include="Game\Application">
       <UniqueIdentifier>{a821cfc4-1d07-4dfa-8394-6ede76abbb14}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\System\Physics">
-      <UniqueIdentifier>{d81fe06f-709c-4da9-9aa1-bcaa29054821}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Object\Scene">
       <UniqueIdentifier>{d00460ed-5e94-401e-8188-6f56a78bee13}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Object\Scene\Component">
       <UniqueIdentifier>{0a7a922f-aa87-4dcf-9ddc-e3860dedaf0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\System\Input\Physics">
+      <UniqueIdentifier>{d81fe06f-709c-4da9-9aa1-bcaa29054821}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -127,7 +127,7 @@
       <Filter>Game\Application</Filter>
     </ClInclude>
     <ClInclude Include="Game\System\Physics\bcPhysicsSystem.h">
-      <Filter>Game\System\Physics</Filter>
+      <Filter>Game\System\Input\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Game\System\Render\bcRenderTask.h">
       <Filter>Game\System\Render</Filter>
@@ -184,10 +184,10 @@
       <Filter>Game\Object\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="Game\System\Physics\bcMeshPartCollider.h">
-      <Filter>Game\System\Physics</Filter>
+      <Filter>Game\System\Input\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Game\System\Physics\bcPxWrap.h">
-      <Filter>Game\System\Physics</Filter>
+      <Filter>Game\System\Input\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Game\System\Render\bcRenderThreadManager.h">
       <Filter>Game\System\Render</Filter>
@@ -252,7 +252,7 @@
       <Filter>Game\Application</Filter>
     </ClCompile>
     <ClCompile Include="Game\System\Physics\bcPhysicsSystem.cpp">
-      <Filter>Game\System\Physics</Filter>
+      <Filter>Game\System\Input\Physics</Filter>
     </ClCompile>
     <ClCompile Include="Game\Object\Scene\bcEntityManager.cpp">
       <Filter>Game\Object\Scene</Filter>
@@ -294,7 +294,7 @@
       <Filter>Game\Object\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="Game\System\Physics\bcMeshPartCollider.cpp">
-      <Filter>Game\System\Physics</Filter>
+      <Filter>Game\System\Input\Physics</Filter>
     </ClCompile>
     <ClCompile Include="Game\System\Render\bcRenderThreadManager.cpp">
       <Filter>Game\System\Render</Filter>
@@ -304,6 +304,9 @@
     </ClCompile>
     <ClCompile Include="Game\System\Render\bcMaterialManager.cpp">
       <Filter>Game\System\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Mesh\bcHeightMap.cpp">
+      <Filter>Game\Object\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

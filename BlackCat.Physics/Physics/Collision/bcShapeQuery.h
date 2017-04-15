@@ -273,7 +273,6 @@ namespace black_cat
 			 * - mesh/mesh
 			 * - mesh/heightfield
 			 * - heightfield/heightfield
-
 			 */
 			static BC_PHYSICS_DLL bool compute_penetration(const bc_shape_geometry& p_geom0,
 				const bc_transform& p_pose0,

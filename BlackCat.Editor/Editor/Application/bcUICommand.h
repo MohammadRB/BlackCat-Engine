@@ -6,10 +6,14 @@
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcString.h"
 #include "Core/File/bcContentStreamManager.h"
-#include "Game/System/bcGameSystem.h"
 
 namespace black_cat
 {
+	namespace game
+	{
+		class bc_game_system;
+	}
+
 	namespace editor
 	{
 		class bc_ui_command_service;

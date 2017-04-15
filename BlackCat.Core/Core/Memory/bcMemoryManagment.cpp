@@ -387,7 +387,6 @@ namespace black_cat
 				[this](void* p_old, void* p_new)
 				{
 					this->m_leak_allocator->relocate(p_old, p_new);
-
 				}
 #else
 				bc_memory_heap::defrag_callback()
@@ -474,14 +473,14 @@ namespace black_cat
 #ifdef BC_MEMORY_LEAK_DETECTION
 		bcUINT32 bc_memmng::report_memory_leaks()
 		{
-			bcSIZE lLeakCount = m_leak_allocator->count();
+			bcSIZE l_leak_count = m_leak_allocator->count();
 			
 			m_leak_allocator->iterate_over([](void* p_key, bc_mem_block_leak_information& p_value)->void
 			{
 				bc_memblock* l_memblock = bc_memblock::retrieve_mem_block(p_value.m_pointer);
 			});
 
-			return lLeakCount;
+			return l_leak_count;
 		};
 #endif
 

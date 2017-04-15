@@ -11,7 +11,8 @@
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/Resource/bcResourceConfig.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
-#include "PhysicsImp/Fundation/bcMeshBuffer.h"
+#include "PhysicsImp/Fundation/bcMemoryBuffer.h"
+#include "PhysicsImp/Fundation/bcSerializeBuffer.h"
 #include "PhysicsImp/Shape/bcHeightField.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Render/bcVertexLayout.h"
@@ -119,7 +120,8 @@ namespace black_cat
 		graphic::bc_resource_view_ptr& p_chunk_info_unordered_view,
 		graphic::bc_buffer_ptr& p_material_properties_buffer,
 		core::bc_vector<game::bc_material_ptr>&& p_materials,
-		physics::bc_height_field_ref&& p_px_height_map)
+		physics::bc_height_field_ref&& p_px_height_map,
+		void* p_px_height_map_deserialize_buffer)
 		: bc_height_map
 		(
 			p_position,
@@ -128,7 +130,8 @@ namespace black_cat
 			p_xz_multiplier,
 			p_y_multiplier,
 			p_render_state,
-			std::move(p_px_height_map)
+			std::move(p_px_height_map),
+			p_px_height_map_deserialize_buffer
 		),
 		m_distance_detail(p_distance_detail),
 		m_height_detail(p_height_detail),
@@ -145,7 +148,7 @@ namespace black_cat
 	{
 	}
 
-	void bc_height_map_loader_dx11::content_offline_processing(core::bc_content_loader_context& p_context) const
+	void bc_height_map_loader_dx11::content_offline_processing(core::bc_content_loading_context& p_context) const
 	{
 		auto* l_content_loader = core::bc_get_service< core::bc_content_manager >();
 		auto* l_game_system = core::bc_get_service< game::bc_game_system >();
@@ -217,13 +220,19 @@ namespace black_cat
 		physics::bc_bounded_strided_typed_data<physics::bc_material_index> l_samples_material;
 
 		physics::bc_height_field_desc l_px_desc(l_width, l_height, l_samples_data, l_samples_material);
-		auto l_height_field_buffer = l_physics.create_height_field(l_px_desc);
+		physics::bc_memory_buffer l_height_field_buffer = l_physics.create_height_field(l_px_desc);
+		physics::bc_height_field_ref l_height_field = l_physics.create_height_field(l_height_field_buffer);
 
-		p_context.m_data = core::bc_vector_frame<bcBYTE>(l_height_field_buffer.get_buffer_size());
-		std::memcpy(p_context.m_data.data(), l_height_field_buffer.get_buffer_pointer(), l_height_field_buffer.get_buffer_size());
+		physics::bc_serialize_buffer l_serialize_buffer = l_physics.create_serialize_buffer();
+		l_serialize_buffer.add(l_height_field.get());
+
+		physics::bc_memory_buffer l_serialized_buffer = l_physics.serialize(l_serialize_buffer);
+
+		p_context.m_data = core::bc_vector_frame<bcBYTE>(l_serialized_buffer.get_buffer_size());
+		std::memcpy(p_context.m_data.data(), l_serialized_buffer.get_buffer_pointer(), l_serialized_buffer.get_buffer_size());
 	}
 
-	void bc_height_map_loader_dx11::content_processing(core::bc_content_loader_context& p_context) const
+	void bc_height_map_loader_dx11::content_processing(core::bc_content_loading_context& p_context) const
 	{
 		auto* l_content_loader = core::bc_get_service< core::bc_content_manager >();
 		auto* l_game_system = core::bc_get_service< game::bc_game_system >();
@@ -232,8 +241,11 @@ namespace black_cat
 		auto* l_device = &l_render_system.get_device();
 		auto* l_physics = &l_physics_system.get_physics();
 		
-		physics::bc_mesh_buffer l_px_buffer = l_physics->read_to_mesh_buffer(p_context.m_data.data(), p_context.m_data.size());
-		physics::bc_height_field_ref l_px_height_map = l_physics->create_height_field(l_px_buffer);
+		physics::bc_memory_buffer l_px_serialized_buffer = l_physics->read_to_memory_buffer(p_context.m_data.data(), p_context.m_data.size());
+		physics::bc_serialize_buffer l_px_deserialized_buffer = l_physics->deserialize(l_px_serialized_buffer);
+		physics::bc_height_field_ref l_px_height_map;
+
+		l_px_deserialized_buffer.get(0, l_px_height_map.get());
 
 		auto l_width = l_px_height_map->get_num_column();
 		auto l_height = l_px_height_map->get_num_row();
@@ -573,10 +585,31 @@ namespace black_cat
 			l_chunk_info_unordered_view,
 			l_material_properties_cbuffer,
 			std::move(l_materials),
-			std::move(l_px_height_map)
+			std::move(l_px_height_map),
+			l_px_deserialized_buffer.get_deserialize_buffer()
 		);
 
 		p_context.set_result(std::move(l_height_map));
+	}
+
+	void bc_height_map_loader_dx11::content_processing(core::bc_content_saving_context& p_context) const
+	{
+		auto* l_content_loader = core::bc_get_service< core::bc_content_manager >();
+		auto* l_game_system = core::bc_get_service< game::bc_game_system >();
+		auto& l_physics = l_game_system->get_physics_system().get_physics();
+		auto* l_height_map_dx11 = static_cast< bc_height_map_dx11* >(p_context.m_content);
+
+		physics::bc_height_field l_px_height_field = l_height_map_dx11->get_px_height_field();
+		graphic::bc_texture2d_content l_texture_map(graphic::bc_texture2d_ptr(l_height_map_dx11->get_texture_map()));
+
+		physics::bc_serialize_buffer l_px_serialize_buffer = l_physics.create_serialize_buffer();
+		l_px_serialize_buffer.add(l_px_height_field);
+		physics::bc_memory_buffer l_px_serialized_buffer = l_physics.serialize(l_px_serialize_buffer);
+
+		core::bc_task<void> l_texture_map_task = l_content_loader->save_async(l_texture_map);
+		p_context.m_file->write(reinterpret_cast< bcBYTE* >(l_px_serialized_buffer.get_buffer_pointer()), l_px_serialized_buffer.get_buffer_size());
+
+		l_texture_map_task.wait();
 	}
 
 	std::pair< graphic::bc_texture_config, graphic::bc_resource_view_config > bc_height_map_loader_dx11::get_height_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const

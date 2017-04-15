@@ -2,7 +2,7 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
-#include "PhysicsImp/Fundation/bcMeshBuffer.h"
+#include "PhysicsImp/Fundation/bcMemoryBuffer.h"
 #include "Game/System/Render/bcVertexLayout.h"
 #include "Game/System/bcGameSystem.h"
 #include "BlackCat/bcUtility.h"
@@ -107,7 +107,7 @@ namespace black_cat
 					l_mesh->mNumVertices
 				));
 
-				physics::bc_mesh_buffer l_convex_buffer = p_physics.create_convex_mesh(l_px_convex_desc);
+				physics::bc_memory_buffer l_convex_buffer = p_physics.create_convex_mesh(l_px_convex_desc);
 				physics::bc_convex_mesh_ref l_convex = p_physics.create_convex_mesh(l_convex_buffer);
 
 				l_result.add_px_shape(std::move(l_convex), l_node_transformation);
@@ -157,7 +157,7 @@ namespace black_cat
 					)
 				);
 
-				physics::bc_mesh_buffer l_triangle_buffer = p_physics.create_triangle_mesh(l_px_triangle_desc);
+				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(l_px_triangle_desc);
 				physics::bc_triangle_mesh_ref l_triangle_mesh = p_physics.create_triangle_mesh(l_triangle_buffer);
 
 				physics::bc_transform l_transform = l_node_absolute_transformation;
@@ -170,7 +170,7 @@ namespace black_cat
 	}
 
 	void bc_mesh_physics_loader::convert_nodes(game::bc_physics_system& p_physics_system,
-		core::bc_content_loader_context& p_context,
+		core::bc_content_loading_context& p_context,
 		const aiScene& p_aiscene,
 		const aiNode& p_ainode,
 		const core::bc_matrix4f& p_parent_transformation,
@@ -211,11 +211,11 @@ namespace black_cat
 		}
 	}
 
-	void bc_mesh_physics_loader::content_offline_processing(core::bc_content_loader_context& p_context) const
+	void bc_mesh_physics_loader::content_offline_processing(core::bc_content_loading_context& p_context) const
 	{
 	}
 
-	void bc_mesh_physics_loader::content_processing(core::bc_content_loader_context& p_context) const
+	void bc_mesh_physics_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
 		Assimp::Importer l_importer;
 

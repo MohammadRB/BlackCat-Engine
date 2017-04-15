@@ -5,6 +5,7 @@
 #include "Graphic/bcRenderApiInfo.h"
 #include "Game/System/Render/bcRenderTask.h"
 #include "Editor/Application/bcUICommand.h"
+#include "Editor/UICommand/bcUITerrainCommand.h"
 
 namespace black_cat
 {
@@ -21,15 +22,9 @@ namespace black_cat
 			bcUINT32 m_tool_smooth;
 		};
 
-		class bc_ui_terrain_smooth_commnad_state : public bc_iui_command_state
-		{
-		public:
-			graphic::bc_buffer_ptr m_parameter_cbuffer;
-			graphic::bc_device_compute_state_ptr m_device_compute_state;
-			graphic::bc_device_command_list_ptr m_device_command_list;
-		};
+		using bc_ui_terrain_smooth_commnad_state = bc_ui_terrain_commnad_state;
 
-		class bc_ui_terrain_smooth_command : public bc_iui_commnad
+		class bc_ui_terrain_smooth_command : public bc_ui_terrain_command
 		{
 		public:
 			bc_ui_terrain_smooth_command(bcUINT16 p_screen_width,
@@ -49,23 +44,14 @@ namespace black_cat
 
 			state_ptr create_state(state_context& p_context) const override;
 
-			bool update(update_context& p_context) override;
-
 		protected:
+			bool update(terrain_update_context& p_context) override;
 
 		private:
 			static constexpr bcINT32 s_smooth_max = 5;
 			static constexpr bcINT32 s_smooth_radius = 1;
 
-			bcUINT16 m_screen_width;
-			bcUINT16 m_screen_height;
-			bcUINT16 m_point_left;
-			bcUINT16 m_point_top;
-			bcUINT16 m_radius;
 			bcUINT16 m_smooth;
-
-			game::bc_actor m_terrain;
-			core::bc_vector3f m_hit_position;
 		};
 
 		class bc_ui_terrain_smooth_command_render_task : public game::bc_irender_task

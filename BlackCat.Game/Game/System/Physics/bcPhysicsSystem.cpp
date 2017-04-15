@@ -5,7 +5,7 @@
 #include "Core/Container/bcAllocator.h"
 #include "Core/Utility/bcLogger.h"
 #include "PhysicsImp/Fundation/bcPhysics.h"
-#include "PhysicsImp/Fundation/bcMeshBuffer.h"
+#include "PhysicsImp/Fundation/bcMemoryBuffer.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/Object/Scene/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"

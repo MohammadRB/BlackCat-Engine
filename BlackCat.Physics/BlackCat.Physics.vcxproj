@@ -38,12 +38,13 @@
     <ClInclude Include="Physics\Collision\bcCollisionGroup.h" />
     <ClInclude Include="Physics\Collision\bcContactModifyCallback.h" />
     <ClInclude Include="Physics\Fundation\bcMaterial.h" />
-    <ClInclude Include="Physics\Fundation\bcMeshBuffer.h" />
+    <ClInclude Include="Physics\Fundation\bcMemoryBuffer.h" />
     <ClInclude Include="Physics\Fundation\bcPhysics.h" />
     <ClInclude Include="Physics\Fundation\bcFundation.h" />
     <ClInclude Include="Physics\Fundation\bcScene.h" />
     <ClInclude Include="Physics\Fundation\bcSceneBuilder.h" />
     <ClInclude Include="Physics\Fundation\bcSceneDebug.h" />
+    <ClInclude Include="Physics\Fundation\bcSerializeBuffer.h" />
     <ClInclude Include="Physics\Fundation\bcSimulationEventCallback.h" />
     <ClInclude Include="Physics\Fundation\bcTask.h" />
     <ClInclude Include="Physics\Fundation\bcTransform.h" />

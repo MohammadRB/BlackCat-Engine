@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/Memory/bcPtr.h"
-#include "Physics/Fundation/bcMeshBuffer.h"
+#include "Physics/Fundation/bcMemoryBuffer.h"
 #include "PhysicsImp/PhysicsImpPCH.h"
 
 namespace black_cat

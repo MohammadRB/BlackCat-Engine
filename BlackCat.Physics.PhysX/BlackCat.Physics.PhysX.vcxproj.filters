@@ -105,9 +105,6 @@
     <ClInclude Include="PhysicsImp\Collision\bcSceneQuery.h">
       <Filter>PhysicsImp\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsImp\Fundation\bcMeshBuffer.h">
-      <Filter>PhysicsImp\Fundation</Filter>
-    </ClInclude>
     <ClInclude Include="PhysicsImp\Fundation\bcSceneBuilder.h">
       <Filter>PhysicsImp\Fundation</Filter>
     </ClInclude>
@@ -158,6 +155,12 @@
     </ClInclude>
     <ClInclude Include="PhysicsImp\Shape\bcShapeHeightField.h">
       <Filter>PhysicsImp\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsImp\Fundation\bcMemoryBuffer.h">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsImp\Fundation\bcSerializeBuffer.h">
+      <Filter>PhysicsImp\Fundation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -239,9 +242,6 @@
     <ClCompile Include="PhysicsImp\Collision\bcSceneQuery.cpp">
       <Filter>PhysicsImp\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsImp\Fundation\bcMeshBuffer.cpp">
-      <Filter>PhysicsImp\Fundation</Filter>
-    </ClCompile>
     <ClCompile Include="PhysicsImp\Fundation\bcSceneBuilder.cpp">
       <Filter>PhysicsImp\Fundation</Filter>
     </ClCompile>
@@ -286,6 +286,12 @@
     </ClCompile>
     <ClCompile Include="PhysicsImp\bcImplementation.cpp">
       <Filter>PhysicsImp</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsImp\Fundation\bcMemoryBuffer.cpp">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsImp\Fundation\bcSerializeBuffer.cpp">
+      <Filter>PhysicsImp\Fundation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

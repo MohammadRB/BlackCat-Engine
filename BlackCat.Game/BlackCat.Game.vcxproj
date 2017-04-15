@@ -280,6 +280,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Game\Object\Mesh\bcHeightMap.cpp" />
     <ClCompile Include="Game\Object\Mesh\bcMaterial.cpp" />
     <ClCompile Include="Game\Object\Mesh\bcMesh.cpp" />
     <ClCompile Include="Game\Object\Mesh\bcMeshCollider.cpp" />

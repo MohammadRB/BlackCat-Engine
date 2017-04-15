@@ -11,7 +11,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_height_map : public core::bc_icontent
+		class BC_GAME_DLL bc_height_map : public core::bc_icontent
 		{
 			BC_CONTENT(height_map)
 
@@ -22,13 +22,14 @@ namespace black_cat
 				bcUINT16 p_xz_multiplier,
 				bcFLOAT p_y_multiplier,
 				bc_render_state_ptr& p_render_state,
-				physics::bc_height_field_ref&& p_px_height_map);
+				physics::bc_height_field_ref&& p_px_height_map,
+				void* p_px_height_map_deserialize_buffer);
 
-			bc_height_map(bc_height_map&& p_other) = default;
+			bc_height_map(bc_height_map&& p_other) noexcept;
 
-			virtual ~bc_height_map() = default;
+			virtual ~bc_height_map();
 
-			bc_height_map& operator=(bc_height_map&& p_other) = default;
+			bc_height_map& operator=(bc_height_map&& p_other) noexcept;
 
 			const core::bc_vector3f& get_position() const
 			{
@@ -76,26 +77,9 @@ namespace black_cat
 
 			bc_render_state_ptr m_render_state;
 			physics::bc_height_field_ref m_px_height_map;
+			void* m_px_height_map_deserialize_buffer;
 		};
 
 		using bc_height_map_ptr = core::bc_content_ptr< bc_height_map >;
-
-		inline bc_height_map::bc_height_map(const core::bc_vector3f& p_position,
-			bcUINT16 p_width,
-			bcUINT16 p_height,
-			bcUINT16 p_xz_multiplier,
-			bcFLOAT p_y_multiplier,
-			bc_render_state_ptr& p_render_state,
-			physics::bc_height_field_ref&& p_px_height_map)
-			: m_position(p_position),
-			m_width(p_width),
-			m_height(p_height),
-			m_xz_multiplier(p_xz_multiplier),
-			m_y_multiplier(p_y_multiplier),
-			m_render_state(p_render_state),
-			m_px_height_map(std::move(p_px_height_map))
-		{
-		}
-
 	}
 }

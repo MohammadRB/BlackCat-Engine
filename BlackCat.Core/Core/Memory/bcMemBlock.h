@@ -76,10 +76,9 @@ namespace black_cat
 
 			void allocators_extra(void* p_val) { m_allocators_extra = p_val; }
 
-			bcInline static bcSIZE get_aligned_size(bcSIZE p_size, bcSIZE p_alignment)
+			bcInline static constexpr bcSIZE get_aligned_size(bcSIZE p_size, bcSIZE p_alignment)
 			{
-				bcSIZE l_mis_alignment = p_size % p_alignment;
-				return (l_mis_alignment == 0) ? p_size : (p_size - l_mis_alignment) + p_alignment;
+				return (p_size % p_alignment == 0) ? p_size : (p_size - (p_size % p_alignment)) + p_alignment;
 			}
 			
 			// Retrieve MemBlock for pointer that point to actual location of data, or null if parameter is null
@@ -102,21 +101,24 @@ namespace black_cat
 					get_aligned_size(p_data_size, BC_MEMORY_MIN_ALIGN);
 			}
 
-			// Return required offset from begging of block where actual data must be stored
+			// Return required offset from begining of block where actual data must be stored
 			bcInline static bcSIZE get_required_offset_for_data(const void* p_pointer, bcSIZE p_alignment)
 			{
 				bcSIZE l_mem_block_offset = reinterpret_cast< bcUINTPTR >(p_pointer) +
 					get_aligned_size(sizeof(bc_memblock), BC_MEMORY_MIN_ALIGN);
 				bcSIZE l_mis_alignment = l_mem_block_offset % p_alignment;
-				l_mem_block_offset += l_mis_alignment;
+
+				if(l_mis_alignment > 0)
+				{
+					l_mem_block_offset += (p_alignment - l_mis_alignment);
+				}
 
 				return l_mem_block_offset - reinterpret_cast< bcUINTPTR >(p_pointer);
 			}
 
 			bcInline static bcSIZE get_required_offset_for_mem_block(const void* p_pointer, bcSIZE p_alignment)
 			{
-				return 
-					(get_required_offset_for_data(p_pointer, p_alignment) - sizeof(bc_memblock)) - 
+				return (get_required_offset_for_data(p_pointer, p_alignment) - sizeof(bc_memblock)) - 
 					reinterpret_cast<bcUINTPTR>(p_pointer);
 			}
 

@@ -90,9 +90,9 @@ namespace black_cat
 						if(l_rigid.is_rigid_dynamic().is_valid())
 						{
 							auto l_direction = m_game_system->get_input_system().get_camera().get_forward();
-
+							
 							l_rigid_component->get_body().update_mass_inertia(10);
-							l_rigid_component->get_body().set_linear_velocity(l_direction * 50);
+							l_rigid_component->get_body().set_linear_velocity(l_direction * 70);
 						}
 						else
 						{

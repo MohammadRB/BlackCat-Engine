@@ -32,14 +32,14 @@ namespace black_cat
 			const core::bc_matrix4f& p_parent_transformation);
 
 		static void  convert_nodes(game::bc_physics_system& p_physics_system,
-			core::bc_content_loader_context& p_context,
+			core::bc_content_loading_context& p_context,
 			const aiScene& p_aiscene,
 			const aiNode& p_ainode,
 			const core::bc_matrix4f& p_parent_transformation,
 			game::bc_mesh_collider& p_result);
 
-		void content_offline_processing(core::bc_content_loader_context& p_context) const override;
+		void content_offline_processing(core::bc_content_loading_context& p_context) const override;
 
-		void content_processing(core::bc_content_loader_context& p_context) const override;
+		void content_processing(core::bc_content_loading_context& p_context) const override;
 	};
 }

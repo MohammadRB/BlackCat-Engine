@@ -22,18 +22,18 @@ namespace black_cat
 		 * \tparam TApi 
 		 */
 		template< bc_physics_api TApi >
-		class bc_platform_mesh_buffer
+		class bc_platform_memory_buffer
 		{
 		public:
 			using platform_pack = bc_platform_mesh_buffer_pack< TApi >;
 			friend bc_platform_physics< TApi >;
 
 		public:
-			bc_platform_mesh_buffer(bc_platform_mesh_buffer&&) noexcept;
+			bc_platform_memory_buffer(bc_platform_memory_buffer&&) noexcept;
 
-			~bc_platform_mesh_buffer();
+			~bc_platform_memory_buffer();
 
-			bc_platform_mesh_buffer& operator=(bc_platform_mesh_buffer&&) noexcept;
+			bc_platform_memory_buffer& operator=(bc_platform_memory_buffer&&) noexcept;
 
 			bool is_valid() const noexcept;
 
@@ -49,11 +49,11 @@ namespace black_cat
 		protected:
 
 		private:
-			bc_platform_mesh_buffer();
+			bc_platform_memory_buffer();
 
 			platform_pack m_pack;
 		};
 
-		using bc_mesh_buffer = bc_platform_mesh_buffer< g_current_physics_api >;
+		using bc_memory_buffer = bc_platform_memory_buffer< g_current_physics_api >;
 	}
 }

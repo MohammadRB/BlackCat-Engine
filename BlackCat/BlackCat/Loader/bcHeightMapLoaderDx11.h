@@ -32,7 +32,8 @@ namespace black_cat
 			graphic::bc_resource_view_ptr& p_chunk_info_unordered_view,
 			graphic::bc_buffer_ptr& p_material_properties_buffer,
 			core::bc_vector<game::bc_material_ptr>&& p_materials,
-			physics::bc_height_field_ref&& p_px_height_map);
+			physics::bc_height_field_ref&& p_px_height_map,
+			void* p_px_height_map_deserialize_buffer);
 
 		bc_height_map_dx11(bc_height_map_dx11&&) = default;
 
@@ -101,9 +102,11 @@ namespace black_cat
 	class BC_BLACKCAT_DLL bc_height_map_loader_dx11 : public core::bc_base_content_loader
 	{
 	public:
-		void content_offline_processing(core::bc_content_loader_context& p_context) const override;
+		void content_offline_processing(core::bc_content_loading_context& p_context) const override;
 
-		void content_processing(core::bc_content_loader_context& p_context) const override;
+		void content_processing(core::bc_content_loading_context& p_context) const override;
+		
+		void content_processing(core::bc_content_saving_context& p_context) const override;
 
 	protected:
 		virtual std::pair< graphic::bc_texture_config, graphic::bc_resource_view_config > get_height_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const;

@@ -104,7 +104,7 @@ namespace black_cat
 		{
 			static_assert(std::is_base_of_v<bc_irender_pass, T>, "T must inherite from bc_irender_pass");
 
-			return _get_pass(bc_render_pass_trait<T>::render_pass_name());
+			return static_cast< T* >(_get_pass(bc_render_pass_trait<T>::render_pass_name()));
 		}
 	}
 }

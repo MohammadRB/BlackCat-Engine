@@ -22,13 +22,16 @@ namespace black_cat
 			bcUINT16 p_screen_height,
 			bcUINT16 p_point_left,
 			bcUINT16 p_point_top,
-			bcUINT16 p_diameter,
+			bcUINT16 p_radius,
 			bcINT16 p_height)
-			: m_screen_width(p_screen_width),
-			m_screen_height(p_screen_height),
-			m_point_left(p_point_left),
-			m_point_top(p_point_top),
-			m_radius(p_diameter),
+			: bc_ui_terrain_command
+			(
+				p_screen_width,
+				p_screen_height,
+				p_point_left,
+				p_point_top,
+				p_radius
+			),
 			m_height(p_height)
 		{
 		}
@@ -70,43 +73,16 @@ namespace black_cat
 			return core::bc_make_unique<bc_ui_terrain_height_commnad_state>(std::move(l_state));
 		}
 
-		bool bc_ui_terrain_height_command::update(update_context& p_context)
+		bool bc_ui_terrain_height_command::update(terrain_update_context& p_context)
 		{
-			auto& l_camera = p_context.m_game_system.get_input_system().get_camera();
-
-			auto l_pointing_ray = l_camera.project_clip_point_to_3d_ray(m_screen_width, m_screen_height, m_point_left, m_point_top);
-			physics::bc_scene_ray_query_buffer l_buffer(0);
-			bool l_px_hit_result = p_context.m_game_system.get_scene()->get_px_scene().raycast
-			(
-				physics::bc_ray(l_camera.get_position(), l_pointing_ray, l_camera.get_far_clip()),
-				l_buffer,
-				physics::bc_hit_flag::hit_info,
-				core::bc_enum::or({ physics::bc_query_flags::statics }),
-				static_cast< physics::bc_query_group >(game::bc_query_group::terrain)
-			);
-			
-			if (!l_px_hit_result && !l_buffer.has_block())
-			{
-				return false;
-			}
-
-			game::bc_ray_hit l_hit = l_buffer.get_block();
-
-			m_terrain = l_hit.get_actor();
-			
-			auto* l_rigid_component = m_terrain.get_component<game::bc_rigid_static_component>();
-			auto* l_height_map_component = m_terrain.get_component<game::bc_height_map_component>();
+			auto* l_rigid_component = p_context.m_terrain.get_component<game::bc_rigid_static_component>();
+			auto* l_height_map_component = p_context.m_terrain.get_component<game::bc_height_map_component>();
 			auto* l_dx11_height_map = static_cast<const bc_editor_height_map_dx11*>(l_height_map_component->get_height_map());
 			auto l_px_height_map = l_dx11_height_map->get_px_height_field();
 
-			m_hit_position = l_hit.get_position() - l_dx11_height_map->get_position();
-
-			bcUINT16 l_half_width = l_dx11_height_map->get_width() * l_dx11_height_map->get_xz_multiplier() / 2;
-			bcUINT16 l_half_height = l_dx11_height_map->get_height() * l_dx11_height_map->get_xz_multiplier() / 2;
-
 			bc_ui_terrain_height_command_parameter_cbuffer l_cbuffer_parameters;
-			l_cbuffer_parameters.m_tool_center_x = (static_cast< bcINT32 >(m_hit_position.x) + l_half_width)  / l_dx11_height_map->get_xz_multiplier();
-			l_cbuffer_parameters.m_tool_center_z = l_dx11_height_map->get_height() - ((static_cast< bcINT32 >(m_hit_position.z) + l_half_height)  / l_dx11_height_map->get_xz_multiplier());
+			l_cbuffer_parameters.m_tool_center_x = p_context.m_tool_center_x;
+			l_cbuffer_parameters.m_tool_center_z = p_context.m_tool_center_z;
 			l_cbuffer_parameters.m_tool_height = m_height;
 			l_cbuffer_parameters.m_tool_radius = m_radius;
 

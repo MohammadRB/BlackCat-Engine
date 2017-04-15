@@ -1,6 +1,9 @@
 // [02/19/2017 MRB]
 
 #include "Editor/EditorPCH.h"
+
+#include "Core/File/bcContentStreamManager.h"
+#include "Game/System/bcGameSystem.h"
 #include "Editor/Application/bcUICommandService.h"
 
 namespace black_cat

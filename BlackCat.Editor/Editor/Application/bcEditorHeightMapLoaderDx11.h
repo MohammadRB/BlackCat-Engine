@@ -47,7 +47,7 @@ namespace black_cat
 		class bc_editor_height_map_loader_dx11 : public bc_height_map_loader_dx11
 		{
 		public:
-			void content_processing(core::bc_content_loader_context& p_context) const override;
+			void content_processing(core::bc_content_loading_context& p_context) const override;
 
 		protected:
 			std::pair< graphic::bc_texture_config, graphic::bc_resource_view_config > get_height_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const override;

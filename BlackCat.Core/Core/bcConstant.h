@@ -91,7 +91,7 @@ namespace black_cat
 	public: \
 	static constexpr const bcCHAR* render_pass_name() \
 	{ \
-		return BC_EVENT_NAME(p_name); \
+		return BC_RENDER_PASS_NAME(p_name); \
 	} \
 	static constexpr bcUINT32 render_pass_hash() \
 	{ \

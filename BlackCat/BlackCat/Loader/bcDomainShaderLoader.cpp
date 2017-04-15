@@ -31,7 +31,7 @@ namespace black_cat
 		return *this;
 	}
 
-	void bc_domain_shader_loader::content_offline_processing(core::bc_content_loader_context& p_context) const
+	void bc_domain_shader_loader::content_offline_processing(core::bc_content_loading_context& p_context) const
 	{
 		graphic::bc_device& l_device = core::bc_service_manager::get().get_service< game::bc_game_system >()->get_render_system().get_device();
 		core::bc_string l_file_path = core::bc_to_exclusive_string(core::bc_path::get_absolute_path(p_context.m_file_path.c_str()));
@@ -55,7 +55,7 @@ namespace black_cat
 		);
 	}
 
-	void bc_domain_shader_loader::content_processing(core::bc_content_loader_context& p_context) const
+	void bc_domain_shader_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
 		graphic::bc_device& l_device = core::bc_service_manager::get().get_service< game::bc_game_system >()->get_render_system().get_device();
 		core::bc_string& l_function = p_context.m_parameter.get_value_throw< core::bc_string >(core::g_param_shader_function);

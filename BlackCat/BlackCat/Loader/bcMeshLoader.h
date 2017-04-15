@@ -30,10 +30,10 @@ namespace black_cat
 
 		static void convert_aimatrix(const aiMatrix4x4& p_aimatrix, core::bc_matrix4f& p_matrix);
 
-		static void convert_aimaterial(core::bc_content_loader_context& p_context, const aiMaterial& p_aimaterial, game::bc_render_material& p_material);
+		static void convert_aimaterial(core::bc_content_loading_context& p_context, const aiMaterial& p_aimaterial, game::bc_render_material& p_material);
 
 		static void convert_aimesh(game::bc_render_system& p_render_system,
-			core::bc_content_loader_context& p_context,
+			core::bc_content_loading_context& p_context,
 			const aiScene& p_aiscene,
 			const aiNode& p_ainode,
 			const aiMesh& p_aimesh,
@@ -41,16 +41,16 @@ namespace black_cat
 			game::bc_render_state_ptr& p_mesh_render_state);
 
 		static void convert_ainodes(game::bc_render_system& p_render_system,
-			core::bc_content_loader_context& p_context,
+			core::bc_content_loading_context& p_context,
 			const aiScene& p_aiscene,
 			const aiNode& p_ainode,
 			game::bc_mesh& p_mesh,
 			game::bc_mesh_node* p_parent,
 			const core::bc_matrix4f& p_parent_transformation);
 
-		void content_offline_processing(core::bc_content_loader_context& p_context) const override;
+		void content_offline_processing(core::bc_content_loading_context& p_context) const override;
 
-		void content_processing(core::bc_content_loader_context& p_context) const override;
+		void content_processing(core::bc_content_loading_context& p_context) const override;
 
 	protected:
 

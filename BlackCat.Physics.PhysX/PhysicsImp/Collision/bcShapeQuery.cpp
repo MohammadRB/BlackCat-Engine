@@ -65,14 +65,14 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		core::bc_vector3f bc_platform_ray_hit<g_api_physx>::get_position() const noexcept
 		{
-			return core::bc_vector3f(m_pack.m_px_hit.position.x, m_pack.m_px_hit.position.y, m_pack.m_px_hit.position.z);
+			return bc_to_game_hand(m_pack.m_px_hit.position);
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		core::bc_vector3f bc_platform_ray_hit<g_api_physx>::get_normal() const noexcept
 		{
-			return core::bc_vector3f(m_pack.m_px_hit.normal.x, m_pack.m_px_hit.normal.y, m_pack.m_px_hit.normal.z);
+			return bc_to_game_hand(m_pack.m_px_hit.normal);
 		}
 
 		template<>
@@ -196,14 +196,14 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		core::bc_vector3f bc_platform_sweep_hit<g_api_physx>::get_position() const noexcept
 		{
-			return core::bc_vector3f(m_pack.m_px_hit.position.x, m_pack.m_px_hit.position.y, m_pack.m_px_hit.position.z);
+			return bc_to_game_hand(m_pack.m_px_hit.position);
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		core::bc_vector3f bc_platform_sweep_hit<g_api_physx>::get_normal() const noexcept
 		{
-			return core::bc_vector3f(m_pack.m_px_hit.normal.x, m_pack.m_px_hit.normal.y, m_pack.m_px_hit.normal.z);
+			return bc_to_game_hand(m_pack.m_px_hit.normal);
 		}
 
 		template<>
@@ -229,9 +229,9 @@ namespace black_cat
 		{
 			bcUINT32 l_written_count = physx::PxGeometryQuery::raycast
 			(
-				physx::PxVec3(p_ray.m_origin.x, p_ray.m_origin.y, p_ray.m_origin.z),
-				physx::PxVec3(p_ray.m_dir.x, p_ray.m_dir.y, p_ray.m_dir.z),
-				const_cast<bc_shape_geometry&>(p_shape).get_platform_pack().m_px_geometry,
+				bc_to_right_hand(p_ray.m_origin),
+				bc_to_right_hand(p_ray.m_dir),
+				const_cast< bc_shape_geometry& >(p_shape).get_platform_pack().m_px_geometry,
 				const_cast< bc_transform& >(p_shape_pose).get_platform_pack().m_px_transform,
 				p_ray.m_length,
 				static_cast< physx::PxHitFlag::Enum >(p_flags),
@@ -259,7 +259,7 @@ namespace black_cat
 		{
 			bool l_result = physx::PxGeometryQuery::sweep
 			(
-				physx::PxVec3(p_unit_dir.x, p_unit_dir.y, p_unit_dir.z),
+				bc_to_right_hand(p_unit_dir),
 				p_max_dist,
 				const_cast<bc_shape_geometry&>(p_geom0).get_platform_pack().m_px_geometry,
 				const_cast<bc_transform&>(p_pose0).get_platform_pack().m_px_transform,
@@ -296,15 +296,18 @@ namespace black_cat
 			core::bc_vector3f& p_direction,
 			bcFLOAT& p_depth)
 		{
+			auto l_direction = bc_to_right_hand(static_cast< const core::bc_vector3f& >(p_direction));
 			bool l_result = physx::PxGeometryQuery::computePenetration
 			(
-				physx::PxVec3(p_direction.x, p_direction.y, p_direction.z),
+				l_direction,
 				p_depth,
 				const_cast<bc_shape_geometry&>(p_geom0).get_platform_pack().m_px_geometry,
 				const_cast< bc_transform& >(p_pose0).get_platform_pack().m_px_transform,
 				const_cast<bc_shape_geometry&>(p_geom1).get_platform_pack().m_px_geometry,
 				const_cast< bc_transform& >(p_pose1).get_platform_pack().m_px_transform
 			);
+
+			p_direction = bc_to_game_hand(l_direction);
 
 			return l_result;
 		}
@@ -318,15 +321,13 @@ namespace black_cat
 
 			bcFLOAT l_result = physx::PxGeometryQuery::pointDistance
 			(
-				physx::PxVec3(p_point.x, p_point.y, p_point.z),
+				bc_to_right_hand(p_point),
 				const_cast<bc_shape_geometry&>(p_geom).get_platform_pack().m_px_geometry,
 				const_cast< bc_transform& >(p_pose).get_platform_pack().m_px_transform,
 				&l_closest_point
 			);
 
-			p_closest_point->x = l_closest_point.x;
-			p_closest_point->y = l_closest_point.y;
-			p_closest_point->z = l_closest_point.z;
+			*p_closest_point = bc_to_game_hand(l_closest_point);
 
 			return l_result;
 		}

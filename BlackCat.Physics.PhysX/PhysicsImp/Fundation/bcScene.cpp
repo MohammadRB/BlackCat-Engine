@@ -95,7 +95,7 @@ namespace black_cat
 				static_cast< bc_physics_reference& >(p_actor).get_platform_pack().m_px_object
 			);
 
-			m_pack.m_px_scene->removeActor(*l_px_actor);
+			m_pack.m_px_scene->removeActor(*l_px_actor, wake_on_lost_touch);
 		}
 
 		template<>
@@ -146,7 +146,7 @@ namespace black_cat
 				static_cast< bc_physics_reference& >(p_aggregate).get_platform_pack().m_px_object
 			);
 
-			m_pack.m_px_scene->removeAggregate(*l_px_aggregate);
+			m_pack.m_px_scene->removeAggregate(*l_px_aggregate, wake_on_lost_touch);
 		}
 
 		template<>
@@ -310,8 +310,8 @@ namespace black_cat
 			bc_query_flags p_query_flags, 
 			bc_query_group p_query_groups) const
 		{
-			physx::PxVec3 l_origin(p_ray.m_origin.x, p_ray.m_origin.y, p_ray.m_origin.z);
-			physx::PxVec3 l_dir(p_ray.m_dir.x, p_ray.m_dir.y, p_ray.m_dir.z);
+			physx::PxVec3 l_origin = bc_to_right_hand(p_ray.m_origin);
+			physx::PxVec3 l_dir = bc_to_right_hand(p_ray.m_dir);
 			physx::PxQueryFilterData l_px_filter_data
 			(
 				physx::PxFilterData(static_cast< physx::PxU32 >(p_query_groups), 0, 0, 0),

@@ -156,9 +156,6 @@
     <ClInclude Include="Physics\Collision\bcSceneQuery.h">
       <Filter>Physics\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Physics\Fundation\bcMeshBuffer.h">
-      <Filter>Physics\Fundation</Filter>
-    </ClInclude>
     <ClInclude Include="Physics\bcPhysicsReference.h">
       <Filter>Physics</Filter>
     </ClInclude>
@@ -170,6 +167,12 @@
     </ClInclude>
     <ClInclude Include="Physics\bcExport.h">
       <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Fundation\bcMemoryBuffer.h">
+      <Filter>Physics\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Fundation\bcSerializeBuffer.h">
+      <Filter>Physics\Fundation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

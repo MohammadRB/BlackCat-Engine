@@ -102,23 +102,13 @@ namespace black_cat
 
 	void bc_terrain_pass_dx11::initialize_frame(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
 	{
-		p_thread.start(m_command_list.get());
-
-		_bc_parameter_buffer l_parameter;
-		l_parameter.m_frustum_planes[0] = _plane_from_3_point(m_camera_extends[0], m_camera_extends[1], m_camera_extends[2]);
-		l_parameter.m_frustum_planes[1] = _plane_from_3_point(m_camera_extends[6], m_camera_extends[5], m_camera_extends[4]);
-		l_parameter.m_frustum_planes[2] = _plane_from_3_point(m_camera_extends[0], m_camera_extends[4], m_camera_extends[5]);
-		l_parameter.m_frustum_planes[3] = _plane_from_3_point(m_camera_extends[1], m_camera_extends[5], m_camera_extends[6]);
-		l_parameter.m_frustum_planes[4] = _plane_from_3_point(m_camera_extends[2], m_camera_extends[6], m_camera_extends[7]);
-		l_parameter.m_frustum_planes[5] = _plane_from_3_point(m_camera_extends[7], m_camera_extends[4], m_camera_extends[0]);
-
-		p_thread.update_subresource(m_parameter_cbuffer.get(), 0, &l_parameter, 0, 0);
-
-		if(m_run_chunk_info_shader)
+		if (m_run_chunk_info_shader)
 		{
+			p_thread.start(m_command_list.get());
+
 			auto l_heightmaps = p_scene.get_heightmaps();
 
-			for(auto& l_actor : l_heightmaps)
+			for (auto& l_actor : l_heightmaps)
 			{
 				const game::bc_height_map* l_heightmap = l_actor.get_component< game::bc_height_map_component >()->get_height_map();
 				const bc_height_map_dx11* l_heightmap_dx11 = static_cast<const bc_height_map_dx11*>(l_heightmap);
@@ -138,11 +128,22 @@ namespace black_cat
 				p_thread.run_compute_shader(l_compute_state.get());
 			}
 
+			p_thread.finish();
 			m_run_chunk_info_shader = false;
 		}
 
-		p_thread.bind_render_pass_state(m_render_pass_state.get());
+		p_thread.start(m_command_list.get());
 
+		_bc_parameter_buffer l_parameter;
+		l_parameter.m_frustum_planes[0] = _plane_from_3_point(m_camera_extends[0], m_camera_extends[1], m_camera_extends[2]);
+		l_parameter.m_frustum_planes[1] = _plane_from_3_point(m_camera_extends[6], m_camera_extends[5], m_camera_extends[4]);
+		l_parameter.m_frustum_planes[2] = _plane_from_3_point(m_camera_extends[0], m_camera_extends[4], m_camera_extends[5]);
+		l_parameter.m_frustum_planes[3] = _plane_from_3_point(m_camera_extends[1], m_camera_extends[5], m_camera_extends[6]);
+		l_parameter.m_frustum_planes[4] = _plane_from_3_point(m_camera_extends[2], m_camera_extends[6], m_camera_extends[7]);
+		l_parameter.m_frustum_planes[5] = _plane_from_3_point(m_camera_extends[7], m_camera_extends[4], m_camera_extends[0]);
+
+		p_thread.update_subresource(m_parameter_cbuffer.get(), 0, &l_parameter, 0, 0);
+		p_thread.bind_render_pass_state(m_render_pass_state.get());
 		p_thread.clear_buffers(core::bc_vector4f(0, 0, 255, 0), 1, 0);
 	}
 

@@ -14,11 +14,7 @@ namespace black_cat
 		class bc_icontent;
 		class bc_content_manager;
 
-		enum class bc_content_type
-		{
-			mesh,
-			texture,
-		};
+		using bc_content_hash_t = std::hash< const bcECHAR* >;
 
 		class BC_CORE_DLL _bc_content_ptr_deleter
 		{
@@ -64,6 +60,16 @@ namespace black_cat
 		public:
 			virtual ~bc_icontent() = default;
 
+			bc_content_hash_t::result_type _get_hash() const
+			{
+				return m_hash;
+			}
+
+			void _set_hash(bc_content_hash_t::result_type p_hash)
+			{
+				m_hash = p_hash;
+			}
+
 		protected:
 			bc_icontent() = default;
 
@@ -72,6 +78,7 @@ namespace black_cat
 			bc_icontent& operator=(bc_icontent&&) = default;
 
 		private:
+			bc_content_hash_t::result_type m_hash;
 		};
 
 		using bc_icontent_ptr = bc_content_ptr< bc_icontent >;

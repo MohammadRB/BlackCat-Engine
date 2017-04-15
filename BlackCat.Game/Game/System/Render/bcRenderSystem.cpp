@@ -431,7 +431,9 @@ namespace black_cat
 			bc_irender_pass* l_pass = m_render_pass_manager.get_pass(p_location);
 
 			if (!l_pass)
+			{
 				return false;
+			}
 
 			l_pass->destroy(m_device);
 

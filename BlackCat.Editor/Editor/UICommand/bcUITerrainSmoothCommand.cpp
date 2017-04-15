@@ -15,17 +15,20 @@ namespace black_cat
 	{
 		// == bc_ui_terrain_smooth_command =============================================================================================
 
-		bc_ui_terrain_smooth_command::bc_ui_terrain_smooth_command(bcUINT16 p_screen_width, 
-			bcUINT16 p_screen_height, 
-			bcUINT16 p_point_left, 
-			bcUINT16 p_point_top, 
-			bcUINT16 p_radius, 
+		bc_ui_terrain_smooth_command::bc_ui_terrain_smooth_command(bcUINT16 p_screen_width,
+			bcUINT16 p_screen_height,
+			bcUINT16 p_point_left,
+			bcUINT16 p_point_top,
+			bcUINT16 p_radius,
 			bcUINT16 p_smooth)
-			: m_screen_width(p_screen_width),
-			m_screen_height(p_screen_height),
-			m_point_left(p_point_left),
-			m_point_top(p_point_top),
-			m_radius(p_radius),
+			: bc_ui_terrain_command
+			(
+				p_screen_width,
+				p_screen_height,
+				p_point_left,
+				p_point_top,
+				p_radius
+			),
 			m_smooth(p_smooth)
 		{
 		}
@@ -64,46 +67,19 @@ namespace black_cat
 			l_state.m_parameter_cbuffer = l_cbuffer;
 			l_state.m_device_command_list = l_device_command_list;
 
-			return core::bc_make_unique<bc_ui_terrain_smooth_commnad_state>(std::move(l_state));
+			return core::bc_make_unique< bc_ui_terrain_smooth_commnad_state >(std::move(l_state));
 		}
 
-		bool bc_ui_terrain_smooth_command::update(update_context& p_context)
+		bool bc_ui_terrain_smooth_command::update(terrain_update_context& p_context)
 		{
-			auto& l_camera = p_context.m_game_system.get_input_system().get_camera();
-
-			auto l_pointing_ray = l_camera.project_clip_point_to_3d_ray(m_screen_width, m_screen_height, m_point_left, m_point_top);
-			physics::bc_scene_ray_query_buffer l_buffer(0);
-			bool l_px_hit_result = p_context.m_game_system.get_scene()->get_px_scene().raycast
-			(
-				physics::bc_ray(l_camera.get_position(), l_pointing_ray, l_camera.get_far_clip()),
-				l_buffer,
-				physics::bc_hit_flag::hit_info,
-				core::bc_enum:: or ({ physics::bc_query_flags::statics }),
-				static_cast< physics::bc_query_group >(game::bc_query_group::terrain)
-			);
-
-			if (!l_px_hit_result && !l_buffer.has_block())
-			{
-				return false;
-			}
-
-			game::bc_ray_hit l_hit = l_buffer.get_block();
-
-			m_terrain = l_hit.get_actor();
-
-			auto* l_rigid_component = m_terrain.get_component<game::bc_rigid_static_component>();
-			auto* l_height_map_component = m_terrain.get_component<game::bc_height_map_component>();
-			auto* l_dx11_height_map = static_cast<const bc_editor_height_map_dx11*>(l_height_map_component->get_height_map());
+			auto* l_rigid_component = p_context.m_terrain.get_component< game::bc_rigid_static_component >();
+			auto* l_height_map_component = p_context.m_terrain.get_component< game::bc_height_map_component >();
+			auto* l_dx11_height_map = static_cast< const bc_editor_height_map_dx11* >(l_height_map_component->get_height_map());
 			auto l_px_height_map = l_dx11_height_map->get_px_height_field();
 
-			m_hit_position = l_hit.get_position() - l_dx11_height_map->get_position();
-
-			bcUINT16 l_half_width = l_dx11_height_map->get_width() * l_dx11_height_map->get_xz_multiplier() / 2;
-			bcUINT16 l_half_height = l_dx11_height_map->get_height() * l_dx11_height_map->get_xz_multiplier() / 2;
-
 			bc_ui_terrain_smooth_command_parameter_cbuffer l_cbuffer_parameters;
-			l_cbuffer_parameters.m_tool_center_x = (static_cast< bcINT32 >(m_hit_position.x) + l_half_width) / l_dx11_height_map->get_xz_multiplier();
-			l_cbuffer_parameters.m_tool_center_z = l_dx11_height_map->get_height() - ((static_cast< bcINT32 >(m_hit_position.z) + l_half_height) / l_dx11_height_map->get_xz_multiplier());
+			l_cbuffer_parameters.m_tool_center_x = p_context.m_tool_center_x;
+			l_cbuffer_parameters.m_tool_center_z = p_context.m_tool_center_z;
 			l_cbuffer_parameters.m_tool_smooth = m_smooth;
 			l_cbuffer_parameters.m_tool_radius = m_radius;
 
@@ -117,7 +93,7 @@ namespace black_cat
 
 			bcINT32 l_diameter = l_cbuffer_parameters.m_tool_radius * 2;
 			bcUINT32 l_sample_count = l_diameter * l_diameter;
-			core::bc_unique_ptr<bcINT16> l_sample_buffer(static_cast<bcINT16*>(bcAlloc(l_sample_count * sizeof(bcINT16), core::bc_alloc_type::frame)));
+			core::bc_unique_ptr< bcINT16 > l_sample_buffer(static_cast< bcINT16* >(bcAlloc(l_sample_count * sizeof(bcINT16), core::bc_alloc_type::frame)));
 			bcINT16* l_samples = l_sample_buffer.get();
 
 			core::bc_vector2f l_tool_center(l_cbuffer_parameters.m_tool_center_x, l_cbuffer_parameters.m_tool_center_z);
@@ -161,13 +137,13 @@ namespace black_cat
 					bcFLOAT l_source_height = l_px_height_map.get_height(l_global_coord.x, l_global_coord.y) * l_dx11_height_map->get_y_multiplier();
 					bcFLOAT l_smooth_ratio = (s_smooth_max - l_cbuffer_parameters.m_tool_smooth * 1.0f) / s_smooth_max;
 					bcFLOAT l_final_height = (l_heights * (1 - l_smooth_ratio)) + (l_source_height * l_smooth_ratio);
-					
+
 					l_samples[l_sample_index] = l_final_height / l_dx11_height_map->get_y_multiplier();
 				}
 			}
 
-			physics::bc_bounded_strided_typed_data<bcINT16> l_px_samples(l_samples, sizeof(bcINT16), l_sample_count);
-			physics::bc_bounded_strided_typed_data<physics::bc_material_index> l_px_sample_materials;
+			physics::bc_bounded_strided_typed_data< bcINT16 > l_px_samples(l_samples, sizeof(bcINT16), l_sample_count);
+			physics::bc_bounded_strided_typed_data< physics::bc_material_index > l_px_sample_materials;
 			physics::bc_height_field_desc l_px_height_map_desc(l_diameter, l_diameter, l_px_samples, l_px_sample_materials);
 
 			physics::bc_shape l_terrain_shape;
@@ -186,7 +162,7 @@ namespace black_cat
 
 			return false;
 		}
-	
+
 		// == bc_ui_terrain_smooth_command_render_task ==================================================================================
 
 		bc_ui_terrain_smooth_command_render_task::bc_ui_terrain_smooth_command_render_task(const bc_editor_height_map_dx11& p_height_map,
@@ -216,7 +192,7 @@ namespace black_cat
 					graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, m_height_map.get_parameter_cbuffer()),
 					graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, m_command_state.m_parameter_cbuffer)
 				}
-				);
+			);
 
 			p_render_thread.start(m_command_state.m_device_command_list.get());
 

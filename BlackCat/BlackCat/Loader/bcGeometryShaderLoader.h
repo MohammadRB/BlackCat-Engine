@@ -19,9 +19,9 @@ namespace black_cat
 
 		bc_geometry_shader_loader& operator=(bc_geometry_shader_loader&&) noexcept;
 
-		void content_offline_processing(core::bc_content_loader_context& p_context) const override;
+		void content_offline_processing(core::bc_content_loading_context& p_context) const override;
 
-		void content_processing(core::bc_content_loader_context& p_context) const override;
+		void content_processing(core::bc_content_loading_context& p_context) const override;
 	protected:
 
 	private:

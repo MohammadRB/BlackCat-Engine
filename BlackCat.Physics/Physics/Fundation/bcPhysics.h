@@ -25,10 +25,6 @@ namespace black_cat
 		class bc_platform_transform;
 		using bc_transform = bc_platform_transform< g_current_physics_api >;
 
-		template< bc_physics_api TApi >
-		class bc_platform_mesh_buffer;
-		using bc_mesh_buffer = bc_platform_mesh_buffer< g_current_physics_api >;
-
 		struct bc_triangle_mesh_desc;
 
 		template< bc_physics_api TApi >
@@ -125,6 +121,14 @@ namespace black_cat
 		class bc_platfrom_d6_joint;
 		using bc_d6_joint = bc_platfrom_d6_joint< g_current_physics_api >;
 		using bc_d6_joint_ref = bc_physics_ref<bc_d6_joint>;
+
+		template< bc_physics_api TApi >
+		class bc_platform_memory_buffer;
+		using bc_memory_buffer = bc_platform_memory_buffer< g_current_physics_api >;
+
+		template< bc_physics_api TApi >
+		class bc_platform_serialize_buffer;
+		using bc_serialize_buffer = bc_platform_serialize_buffer< g_current_physics_api >;
 
 		template< bc_physics_api TApi >
 		struct bc_platform_physics_pack
@@ -235,25 +239,23 @@ namespace black_cat
 			 */
 			bc_aggregate_ref create_aggregate(bcUINT32 p_max_size, bool p_enable_self_collision);
 
-			bc_mesh_buffer create_convex_mesh(const bc_convex_mesh_desc& p_desc);
+			bc_memory_buffer create_convex_mesh(const bc_convex_mesh_desc& p_desc);
 
-			bc_convex_mesh_ref create_convex_mesh(bc_mesh_buffer& p_buffer);
+			bc_convex_mesh_ref create_convex_mesh(bc_memory_buffer& p_buffer);
 
 			bcUINT32 get_convex_mesh_count() const noexcept;
 
-			bc_mesh_buffer create_triangle_mesh(const bc_triangle_mesh_desc& p_desc);
+			bc_memory_buffer create_triangle_mesh(const bc_triangle_mesh_desc& p_desc);
 
-			bc_triangle_mesh_ref create_triangle_mesh(bc_mesh_buffer& p_buffer);
+			bc_triangle_mesh_ref create_triangle_mesh(bc_memory_buffer& p_buffer);
 
 			bcUINT32 get_triangle_mesh_count() const noexcept;
 
-			bc_mesh_buffer create_height_field(const bc_height_field_desc& p_desc);
+			bc_memory_buffer create_height_field(const bc_height_field_desc& p_desc);
 
-			bc_height_field_ref create_height_field(bc_mesh_buffer& p_buffer);
+			bc_height_field_ref create_height_field(bc_memory_buffer& p_buffer);
 
 			bcUINT32 get_height_field_count() const noexcept;
-
-			bc_mesh_buffer read_to_mesh_buffer(void* p_data, bcUINT32 p_size);
 
 			/**
 			 * \brief Create a fixed joint.
@@ -326,6 +328,14 @@ namespace black_cat
 				const bc_transform& p_local_frame0,
 				bc_rigid_actor* p_actor1,
 				const bc_transform& p_local_frame1);
+
+			bc_memory_buffer read_to_memory_buffer(void* p_data, bcUINT32 p_size);
+
+			bc_serialize_buffer create_serialize_buffer();
+
+			bc_memory_buffer serialize(bc_serialize_buffer& p_buffer);
+
+			bc_serialize_buffer deserialize(bc_memory_buffer& p_buffer);
 
 			platform_pack& get_platform_pack()
 			{
