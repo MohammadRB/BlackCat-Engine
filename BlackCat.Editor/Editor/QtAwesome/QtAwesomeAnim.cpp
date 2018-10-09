@@ -1,10 +1,10 @@
 #include "QtAwesomeAnim.h"
 
 #include <cmath>
-#include <QPainter>
-#include <QRect>
-#include <QTimer>
-#include <QWidget>
+#include <QtGui/QPainter>
+#include <QtCore/QRect>
+#include <QtCore/QTimer>
+#include <QtWidgets/QWidget>
 
 
 QtAwesomeAnimation::QtAwesomeAnimation(QWidget *parentWidget, int interval, int step)

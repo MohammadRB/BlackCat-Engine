@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'bcBlackCatEditor.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.0
+** Created by: Qt User Interface Compiler version 5.11.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,15 +10,12 @@
 #define UI_BCBLACKCATEDITOR_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDockWidget>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
@@ -224,6 +221,14 @@ public:
         formLayout->setWidget(10, QFormLayout::LabelRole, terrainMaterialLable);
 
         terrainMaterialCombo = new QComboBox(rightToolBoxTerrain);
+        terrainMaterialCombo->addItem(QString());
+        terrainMaterialCombo->addItem(QString());
+        terrainMaterialCombo->addItem(QString());
+        terrainMaterialCombo->addItem(QString());
+        terrainMaterialCombo->addItem(QString());
+        terrainMaterialCombo->addItem(QString());
+        terrainMaterialCombo->addItem(QString());
+        terrainMaterialCombo->addItem(QString());
         terrainMaterialCombo->setObjectName(QStringLiteral("terrainMaterialCombo"));
 
         formLayout->setWidget(11, QFormLayout::SpanningRole, terrainMaterialCombo);
@@ -379,54 +384,52 @@ public:
 
     void retranslateUi(QMainWindow *bcBlackCatEditorClass)
     {
-        bcBlackCatEditorClass->setWindowTitle(QApplication::translate("bcBlackCatEditorClass", "BlackCatEditor", 0));
-        leftBottomTab->setTabText(leftBottomTab->indexOf(consoleTab), QApplication::translate("bcBlackCatEditorClass", "Console", 0));
-        rightToolBox->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "areachart,adjust", 0)));
-        terrainHeightLable->setText(QApplication::translate("bcBlackCatEditorClass", "Height: ", 0));
-        terrainHeightValue->setText(QApplication::translate("bcBlackCatEditorClass", "0", 0));
-        terrainSmoothLable->setText(QApplication::translate("bcBlackCatEditorClass", "Smooth:", 0));
-        terrainSmoothValue->setText(QApplication::translate("bcBlackCatEditorClass", "1", 0));
-        terrainMaterialLable->setText(QApplication::translate("bcBlackCatEditorClass", "Material: ", 0));
-        terrainMaterialCombo->clear();
-        terrainMaterialCombo->insertItems(0, QStringList()
-         << QApplication::translate("bcBlackCatEditorClass", "Material 1", 0)
-         << QApplication::translate("bcBlackCatEditorClass", "Material 2", 0)
-         << QApplication::translate("bcBlackCatEditorClass", "Material 3", 0)
-         << QApplication::translate("bcBlackCatEditorClass", "Material 4", 0)
-         << QApplication::translate("bcBlackCatEditorClass", "Material 5", 0)
-         << QApplication::translate("bcBlackCatEditorClass", "Material 6", 0)
-         << QApplication::translate("bcBlackCatEditorClass", "Material 7", 0)
-         << QApplication::translate("bcBlackCatEditorClass", "Material 8", 0)
-        );
-        terrainRadiusLable->setText(QApplication::translate("bcBlackCatEditorClass", "Radius: ", 0));
-        terrainRadiusValue->setText(QApplication::translate("bcBlackCatEditorClass", "25", 0));
-        rightToolBox->setItemText(rightToolBox->indexOf(rightToolBoxTerrain), QApplication::translate("bcBlackCatEditorClass", "Terrain", 0));
-        rightToolBox->setItemText(rightToolBox->indexOf(page_2), QApplication::translate("bcBlackCatEditorClass", "Page 2", 0));
+        bcBlackCatEditorClass->setWindowTitle(QApplication::translate("bcBlackCatEditorClass", "BlackCatEditor", nullptr));
+        leftBottomTab->setTabText(leftBottomTab->indexOf(consoleTab), QApplication::translate("bcBlackCatEditorClass", "Console", nullptr));
+        rightToolBox->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "areachart,adjust", nullptr)));
+        terrainHeightLable->setText(QApplication::translate("bcBlackCatEditorClass", "Height: ", nullptr));
+        terrainHeightValue->setText(QApplication::translate("bcBlackCatEditorClass", "0", nullptr));
+        terrainSmoothLable->setText(QApplication::translate("bcBlackCatEditorClass", "Smooth:", nullptr));
+        terrainSmoothValue->setText(QApplication::translate("bcBlackCatEditorClass", "1", nullptr));
+        terrainMaterialLable->setText(QApplication::translate("bcBlackCatEditorClass", "Material: ", nullptr));
+        terrainMaterialCombo->setItemText(0, QApplication::translate("bcBlackCatEditorClass", "Material 1", nullptr));
+        terrainMaterialCombo->setItemText(1, QApplication::translate("bcBlackCatEditorClass", "Material 2", nullptr));
+        terrainMaterialCombo->setItemText(2, QApplication::translate("bcBlackCatEditorClass", "Material 3", nullptr));
+        terrainMaterialCombo->setItemText(3, QApplication::translate("bcBlackCatEditorClass", "Material 4", nullptr));
+        terrainMaterialCombo->setItemText(4, QApplication::translate("bcBlackCatEditorClass", "Material 5", nullptr));
+        terrainMaterialCombo->setItemText(5, QApplication::translate("bcBlackCatEditorClass", "Material 6", nullptr));
+        terrainMaterialCombo->setItemText(6, QApplication::translate("bcBlackCatEditorClass", "Material 7", nullptr));
+        terrainMaterialCombo->setItemText(7, QApplication::translate("bcBlackCatEditorClass", "Material 8", nullptr));
+
+        terrainRadiusLable->setText(QApplication::translate("bcBlackCatEditorClass", "Radius: ", nullptr));
+        terrainRadiusValue->setText(QApplication::translate("bcBlackCatEditorClass", "25", nullptr));
+        rightToolBox->setItemText(rightToolBox->indexOf(rightToolBoxTerrain), QApplication::translate("bcBlackCatEditorClass", "Terrain", nullptr));
+        rightToolBox->setItemText(rightToolBox->indexOf(page_2), QApplication::translate("bcBlackCatEditorClass", "Page 2", nullptr));
 #ifndef QT_NO_TOOLTIP
-        objectSelectButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Object selection", 0));
+        objectSelectButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Object selection", nullptr));
 #endif // QT_NO_TOOLTIP
         objectSelectButton->setText(QString());
-        objectSelectButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "handpointero", 0)));
+        objectSelectButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "handpointero", nullptr)));
 #ifndef QT_NO_TOOLTIP
-        terrainHeightButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Terrain Height", 0));
+        terrainHeightButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Terrain Height", nullptr));
 #endif // QT_NO_TOOLTIP
         terrainHeightButton->setText(QString());
-        terrainHeightButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "areachart", 0)));
+        terrainHeightButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "areachart", nullptr)));
 #ifndef QT_NO_TOOLTIP
-        terrainSmoothButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Terrain Smooth", 0));
+        terrainSmoothButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Terrain Smooth", nullptr));
 #endif // QT_NO_TOOLTIP
         terrainSmoothButton->setText(QString());
-        terrainSmoothButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "bullseye", 0)));
+        terrainSmoothButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "bullseye", nullptr)));
 #ifndef QT_NO_TOOLTIP
-        terrainMaterialButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Terrain Material", 0));
+        terrainMaterialButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Terrain Material", nullptr));
 #endif // QT_NO_TOOLTIP
         terrainMaterialButton->setText(QString());
-        terrainMaterialButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "envira", 0)));
+        terrainMaterialButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "envira", nullptr)));
 #ifndef QT_NO_TOOLTIP
-        terrainMaterialSmoothButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Terrain Material Smooth", 0));
+        terrainMaterialSmoothButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Terrain Material Smooth", nullptr));
 #endif // QT_NO_TOOLTIP
         terrainMaterialSmoothButton->setText(QString());
-        terrainMaterialSmoothButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "bullseye", 0)));
+        terrainMaterialSmoothButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "bullseye", nullptr)));
     } // retranslateUi
 
 };

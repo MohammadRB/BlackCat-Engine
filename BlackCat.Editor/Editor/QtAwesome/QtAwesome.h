@@ -12,11 +12,11 @@
 
 #include "QtAwesomeAnim.h"
 
-#include <QIcon>
-#include <QIconEngine>
-#include <QPainter>
-#include <QRect>
-#include <QVariantMap>
+#include <QtGui/QIcon>
+#include <QtGui/QIconEngine>
+#include <QtGui/QPainter>
+#include <QtCore/QRect>
+#include <QtCore/QVariantMap>
 
 
 /// A list of all icon-names with the codepoint (unicode-value) on the right

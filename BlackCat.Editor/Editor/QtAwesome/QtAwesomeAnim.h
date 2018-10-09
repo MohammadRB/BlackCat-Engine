@@ -1,7 +1,7 @@
 #ifndef QTAWESOMEANIMATION_H
 #define QTAWESOMEANIMATION_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class QPainter;
 class QRect;

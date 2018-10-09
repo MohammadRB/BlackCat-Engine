@@ -5,7 +5,7 @@
 #include "CorePlatform/bcType.h"
 
 #include <QtWidgets/QMainWindow>
-#include <QSlider>
+#include <QtWidgets/QSlider>
 
 namespace black_cat
 {

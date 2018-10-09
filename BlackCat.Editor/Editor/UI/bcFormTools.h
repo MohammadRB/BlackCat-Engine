@@ -7,8 +7,8 @@
 #include "Editor/Widget/bcD3DOutputWidget.h"
 #include "Editor/UI/bcFormTerrain.h"
 
-#include <QWidget>
-#include <QDockWidget>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QDockWidget>
 
 namespace black_cat
 {

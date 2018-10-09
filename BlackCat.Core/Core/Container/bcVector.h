@@ -96,8 +96,8 @@ namespace black_cat
 						p_dest + l_i,
 						std::move(*(p_src + l_i)));
 
-					//// If elements has been copied call thier destructions
-					//if (!std::is_move_constructible<node_type>::value)
+					//// If elements has been copied call their destruction
+					//if (!std::is_move_constructable<node_type>::value)
 					{
 						bc_allocator_traits< internal_allocator_type >::destroy(
 							m_allocator,
@@ -106,7 +106,7 @@ namespace black_cat
 				}
 			}
 
-			// If T is copy constructible, try to move if noexcept else copy them
+			// If T is copy constructable, try to move if noexcept else copy them
 			bcInline void _move_if_noexcept_elements(node_type* p_dest, node_type* p_src, size_type p_count, std::true_type)
 			{
 				for (bcUINT32 l_i = 0; l_i < p_count; ++l_i)

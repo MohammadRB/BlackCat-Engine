@@ -1392,7 +1392,7 @@ namespace black_cat
 			}
 
 			DXGI_SWAP_CHAIN_DESC l_swap_chain_desc;
-			std::memset(&l_swap_chain_desc, 0, sizeof(IDXGISwapChain));
+			std::memset(&l_swap_chain_desc, 0, sizeof(DXGI_SWAP_CHAIN_DESC));
 
 			l_swap_chain_desc.BufferCount = 2;
 			l_swap_chain_desc.BufferDesc.Format = bc_graphic_cast(p_back_buffer_format);

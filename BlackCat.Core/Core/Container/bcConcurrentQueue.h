@@ -34,7 +34,7 @@ namespace black_cat
 			using internal_allocator_type = typename bc_allocator_traits< allocator_type >::template rebind_alloc< node_type >::other;
 
 		public:
-			bc_concurrent_queue_base(const allocator_type& p_allocator = allocator_type())
+			explicit bc_concurrent_queue_base(const allocator_type& p_allocator = allocator_type())
 				: m_allocator(p_allocator)
 			{
 				static_assert(internal_allocator_type::is_movable_type::value == false, "Movable allocators aren't supported");
@@ -52,7 +52,7 @@ namespace black_cat
 
 			bc_concurrent_queue_base(this_type&& p_other) noexcept
 			{
-				_assing(std::move(p_other));
+				_assign(std::move(p_other));
 			}
 
 			~bc_concurrent_queue_base()
@@ -66,54 +66,12 @@ namespace black_cat
 
 			this_type& operator =(this_type&& p_other) noexcept
 			{
-				_assing(std::move(p_other));
+				_assign(std::move(p_other));
 
 				return *this;
 			}
 
 		protected:
-			struct node : public bc_container_node< value_type >
-			{
-			public:
-				node(const value_type& p_value) noexcept(std::is_nothrow_copy_constructible<bc_container_node<value_type>>::value)
-					: bc_container_node(p_value),
-					m_next(nullptr)
-				{
-				}
-
-				node(value_type&& p_value) noexcept(std::is_nothrow_move_constructible<bc_container_node<value_type>>::value)
-					: bc_container_node(std::move(p_value)),
-					m_next(nullptr)
-				{
-				}
-
-				node(const node& p_other) noexcept(std::is_nothrow_copy_constructible<bc_container_node<value_type>>::value)
-					: bc_container_node(p_other.m_value),
-					m_next(p_other.m_next)
-				{
-				}
-
-				node(node&& p_other) noexcept(std::is_nothrow_move_constructible<bc_container_node<value_type>>::value)
-					: bc_container_node(std::move(p_other.m_value)),
-					m_next(p_other.m_next)
-				{
-					p_other.m_next = nullptr;
-				}
-
-				template< typename ...TArgs >
-				node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible< bc_container_node< value_type >, TArgs... >::value)
-					: bc_container_node(std::forward< TArgs >(p_args)...),
-					m_next(nullptr)
-				{
-				}
-
-				~node()
-				{
-				}
-
-				core_platform::bc_atomic< node_pointer > m_next;
-			};
-
 			template< typename ...TArgs >
 			node_type* _enqueue(TArgs&&... p_args)
 			{
@@ -171,7 +129,7 @@ namespace black_cat
 			internal_allocator_type m_allocator;
 
 		private:
-			void _assing(this_type&& p_other)
+			void _assign(this_type&& p_other)
 			{
 				m_tail.store(
 					p_other.m_tail.load(core_platform::bc_memory_order::relaxed), 
@@ -185,13 +143,57 @@ namespace black_cat
 
 				m_allocator = std::move(p_other.m_allocator);
 			}
+		};
 
+		template< typename T, typename TAllocator >
+		struct bc_concurrent_queue_base<T, TAllocator>::node : public bc_container_node< value_type >
+		{
+		public:
+			node(const value_type& p_value) noexcept(std::is_nothrow_copy_constructible<bc_container_node<value_type>>::value)
+				: bc_container_node(p_value),
+				m_next(nullptr)
+			{
+			}
+
+			node(value_type&& p_value) noexcept(std::is_nothrow_move_constructible<bc_container_node<value_type>>::value)
+				: bc_container_node(std::move(p_value)),
+				m_next(nullptr)
+			{
+			}
+
+			node(const node& p_other) noexcept(std::is_nothrow_copy_constructible<bc_container_node<value_type>>::value)
+				: bc_container_node(p_other.m_value),
+				m_next(p_other.m_next)
+			{
+			}
+
+			node(node&& p_other) noexcept(std::is_nothrow_move_constructible<bc_container_node<value_type>>::value)
+				: bc_container_node(std::move(p_other.m_value)),
+				m_next(p_other.m_next)
+			{
+				p_other.m_next = nullptr;
+			}
+
+			template< typename ...TArgs >
+			node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible< bc_container_node< value_type >, TArgs... >::value)
+				: bc_container_node(std::forward< TArgs >(p_args)...),
+				m_next(nullptr)
+			{
+			}
+
+			~node() = default;
+
+			node& operator=(const node&) = delete;
+
+			node& operator=(node&&) = delete;
+
+			core_platform::bc_atomic< node_pointer > m_next;
 		};
 
 		template< typename T, typename TAllocator = bc_allocator< T > >
 		class bc_concurrent_queue : private bc_concurrent_queue_base< T, TAllocator >
 		{
-			friend class bc_lockfree_memmng_node_traits<bc_concurrent_queue>;
+			friend struct bc_lockfree_memmng_container_traits<bc_concurrent_queue>;
 
 		public:
 			using this_type = bc_concurrent_queue;
@@ -274,7 +276,7 @@ namespace black_cat
 				node_type* l_node = base_type::_dequeue(&p_result);
 				if (!l_node)
 				{
-					m_memmng.exist_pop_widthou_reclaim();
+					m_memmng.exist_pop_without_reclaim();
 					return false;
 				}
 
@@ -336,251 +338,5 @@ namespace black_cat
 		{
 			p_first.swap(p_second);
 		}
-
-		/*
-		template<typename T, typename Allocator>
-		class bcConcurentQueueBase : public bcConcurrentContainer<T, Allocator>, protected bcLockFreeContainerMemMngConfig<T>
-		{
-			typedef bcConcurentQueueBase<T, Allocator> ThisType;
-		private:
-
-		protected:
-			struct Node : bcLockFreeNode<ValueType>
-			{
-				struct Link : bcLockFreeLink<Node>
-				{
-				public:
-					Link() { mPointer.store((Node*)nullptr, core_platform::bc_memory_order::seqcst); }
-					Link(Node* pNode) { mPointer.store(pNode, core_platform::bc_memory_order::seqcst); }
-					~Link() {}
-
-					bool operator ==(const Link& pOther)
-					{
-						return mPointer.load(core_platform::bc_memory_order::seqcst) ==
-							pOther.mPointer.load(core_platform::bc_memory_order::seqcst);
-					}
-					bool operator !=(const Link& pOther) { return !operator==(pOther); }
-				};
-
-				//ValueType mValue;
-				Link mNext;
-
-				Node() { }
-				Node(const ValueType& pValue) : bcLockFreeNode(pValue) { }
-				Node(ValueType&& pValue) : bcLockFreeNode(std::move(pValue)) { }
-				~Node() {}
-			};
-			typedef Node NodeType;
-			typedef typename NodeType::Link LinkType;
-
-			bcLockFreeMemMng<T, NodeType, LinkType, Allocator> mMemMng;
-
-			void _terminateNode(NodeBaseType* pNode, bool pConcurrent) override
-			{
-				NodeType* lNode = static_cast<NodeType*>(pNode);
-
-				if (!pConcurrent)
-				{
-					mMemMng.storeRef(&lNode->mNext, &LinkType(nullptr));
-				}
-				else // TODO check here
-				{
-					while (true)
-					{
-						LinkType* lNext = &lNode->mNext;
-						if (mMemMng.compareAndSwapRef(&lNode->mNext, lNext, &LinkType(nullptr)))
-							break;
-					}
-				}
-			}
-			void _cleanUpNode(NodeBaseType* pNode) override
-			{
-				NodeType* lNode = static_cast<NodeType*>(pNode);
-
-				while (true)
-				{
-					NodeType* lNext = mMemMng.deRefLink(&lNode->mNext);
-					if (!lNext || !lNext->mDel.load(core_platform::bc_memory_order::seqcst))
-					{
-						mMemMng.releaseRef(lNext);
-						break;
-					}
-					NodeType* lNext2 = mMemMng.deRefLink(&lNext->mNext);
-					mMemMng.compareAndSwapRef(&lNode->mNext, &LinkType(lNext), &LinkType(lNext2));
-					mMemMng.releaseRef(lNext2);
-					mMemMng.releaseRef(lNext);
-				}
-			}
-
-			NodeBaseType* _alloc() override
-			{
-				NodeType* lPointer = static_cast<NodeType*>(static_cast<void*>(mAllocator.alloc(sizeof(NodeType))));
-				//Node* lResult = new (lPointer) Node;
-
-				//return lResult;
-				return lPointer;
-			}
-			void _free(NodeBaseType* pPointer) override
-			{
-				NodeType* lNode = static_cast<NodeType*>(pPointer);
-				lNode->~Node();
-				mAllocator.free(lNode);
-			}
-
-			bcInline NodeType* _createNode(const ValueType& pValue)
-			{
-				NodeType* lNode = mMemMng.newNode();
-				new (lNode)NodeType(pValue);
-
-				return lNode;
-			}
-			bcInline NodeType* _createNode(ValueType&& pValue)
-			{
-				NodeType* lNode = mMemMng.newNode();
-				new (lNode)NodeType(std::forward<ValueType>(pValue));
-
-				return lNode;
-			}
-
-			bcInline void _enQueue(LinkType* pTail, NodeType* lNode)
-			{
-				//lNode->mNext = LinkType(nullptr);
-
-				NodeType* lOld = mMemMng.deRefLink(pTail);
-				NodeType* lPrev = lOld;
-
-				do
-				{
-					while (lPrev->mNext != LinkType(nullptr))
-					{
-						NodeType* lPrev2 = mMemMng.deRefLink(&lPrev->mNext);
-						if (lOld != lPrev) mMemMng.releaseRef(lPrev);
-						lPrev = lPrev2;
-					}
-				} while (!mMemMng.compareAndSwapRef(&lPrev->mNext, &LinkType(nullptr), &LinkType(lNode)));
-
-				mMemMng.compareAndSwapRef(pTail, &LinkType(lOld), &LinkType(lNode));
-
-				if (lOld != lPrev) mMemMng.releaseRef(lPrev);
-				mMemMng.releaseRef(lOld);
-				mMemMng.releaseRef(lNode);
-			}
-
-		public:
-			bcConcurentQueueBase(bcUINT32 pNumThread) : bcLockFreeContainerMemMngConfig(pNumThread, 1, 1, 3), mMemMng(this)
-			{}
-			~bcConcurentQueueBase() 
-			{}
-
-			bcConcurentQueueBase(const ThisType&) = delete;
-			ThisType& operator =(const ThisType&) = delete;
-
-			bcInline bool deQueue(LinkType* pHead, bcNullable<ValueType>* pData)
-			{
-				NodeType* lNode = nullptr;
-				NodeType* lNext = nullptr;
-				while (true)
-				{
-					lNode = mMemMng.deRefLink(pHead);
-					lNext = mMemMng.deRefLink(&lNode->mNext);
-
-					if (lNext == nullptr)
-					{
-						mMemMng.releaseRef(lNode);
-						mMemMng.releaseRef(lNext);
-						if (pData != nullptr) *pData = nullptr;
-						return false;
-					}
-
-					if (mMemMng.compareAndSwapRef(pHead, &LinkType(lNode), &LinkType(lNext))) break;
-
-					mMemMng.releaseRef(lNode);
-					mMemMng.releaseRef(lNext);
-				}
-
-				mMemMng.deleteNode(lNode);
-				if (pData != nullptr)
-					*pData = std::move(lNext->m_value);
-
-				mMemMng.releaseRef(lNext);
-
-				return true;
-			}
-
-			bcInline void enQueue(LinkType* pTail, const ValueType& pData)
-			{
-				NodeType* lNode = _createNode(pData);
-				_enQueue(pTail, lNode);
-			}
-			bcInline void enQueue(LinkType* pTail, ValueType&& pData)
-			{
-				NodeType* lNode = _createNode(std::forward<ValueType>(pData));
-				_enQueue(pTail, lNode);
-			}
-		};
-
-		template<typename T, typename Allocator = bcContainerAllocation<>>
-		class bcConcurrentQueue : protected bcConcurentQueueBase<T, Allocator>
-		{
-			typedef bcConcurrentQueue<T, Allocator> ThisType;
-		private:
-
-		protected:
-			LinkType mHead;
-			LinkType mTail;
-
-		public:
-			bcConcurrentQueue(bcUINT32 pNumThread) : bcConcurentQueueBase(pNumThread)
-			{
-				NodeType* lNode = _createNode(ValueType());
-				//lNode->mNext = LinkType(nullptr);
-
-				mMemMng.storeRef(&mHead, &LinkType(lNode));
-				mMemMng.storeRef(&mTail, &LinkType(lNode));
-
-				mMemMng.releaseRef(lNode);
-			}
-			~bcConcurrentQueue()
-			{
-				clear();
-				mMemMng.deleteNode(mMemMng.deRefLink(&mHead));
-
-				mMemMng.forceCleanUp();
-			}
-
-			bcConcurrentQueue(const ThisType&) = delete;
-			ThisType& operator =(const ThisType&) = delete;
-
-			void pushBack()
-			{
-				enQueue(&mTail, ValueType());
-				mSize.fetch_add(1U, core_platform::bc_memory_order::seqcst);
-			}
-
-			void pushBack(const ValueType& pValue)
-			{
-				enQueue(&mTail, pValue);
-				mSize.fetch_add(1U, core_platform::bc_memory_order::seqcst);
-			}
-			void pushBack(ValueType&& pValue)
-			{
-				enQueue(&mTail, std::forward<ValueType>(pValue));
-				mSize.fetch_add(1U, core_platform::bc_memory_order::seqcst);
-			}
-
-			bool popFront(bcNullable<ValueType>* pData = nullptr)
-			{
-				bool lDeleted = deQueue(&mHead, pData);
-				if (lDeleted)
-					mSize.fetch_sub(1U, core_platform::bc_memory_order::seqcst);
-				return lDeleted;
-			}
-
-			void clear()
-			{
-				while (deQueue(&mHead, nullptr));
-			}
-		};
-		*/
 	}
 }

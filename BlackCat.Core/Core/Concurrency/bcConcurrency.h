@@ -108,7 +108,7 @@ namespace black_cat
 			});
 		}
 
-		template< typename TIte, typename = std::enable_if_t< bc_is_iterator< TIte >::value >>
+		template< typename TIte, typename >
 		void bc_concurreny::when_all(TIte p_begin, TIte p_end)
 		{
 			std::for_each(p_begin, p_end, [](const typename std::iterator_traits< TIte >::value_type& p_task)
@@ -213,7 +213,7 @@ namespace black_cat
 
 			if ((l_pointer = p_pointer.load(core_platform::bc_memory_order::acquire)) == nullptr)
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_gaurd(s_mutex);
+				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(s_mutex);
 
 				if ((l_pointer = p_pointer.load(core_platform::bc_memory_order::relaxed)) == nullptr)
 				{
@@ -232,7 +232,7 @@ namespace black_cat
 
 			if (p_pointer.load(core_platform::bc_memory_order::acquire) == nullptr)
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_gaurd(s_mutex);
+				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(s_mutex);
 
 				if (p_pointer.load(core_platform::bc_memory_order::relaxed) == nullptr)
 				{

@@ -18,4 +18,4 @@
 #include <chrono>
 #include <assert.h>
 
-#include <QtWidgets>
+#include <QtWidgets/QtWidgets>

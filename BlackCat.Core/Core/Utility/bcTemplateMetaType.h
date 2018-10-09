@@ -149,7 +149,7 @@ namespace black_cat
 		{
 		};
 
-		template <typename... >
+		template< typename... >
 		using bc_void_t = void;
 
 		template <class T, class = void>

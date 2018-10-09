@@ -145,7 +145,7 @@ namespace black_cat
 				return *this;
 			}
 
-			const this_type operator ++(bcINT32)
+			this_type operator ++(bcINT32)
 			{
 				this_type l_old = *this;
 
@@ -244,7 +244,7 @@ namespace black_cat
 				return *this;
 			}
 
-			const this_type operator ++(bcINT32)
+			this_type operator ++(bcINT32)
 			{
 				this_type l_old = *this;
 
@@ -331,7 +331,7 @@ namespace black_cat
 				return *this;
 			}
 
-			const this_type operator ++(bcINT32)
+			this_type operator ++(bcINT32)
 			{
 				this_type l_old = *this;
 
@@ -421,7 +421,7 @@ namespace black_cat
 				return *this;
 			}
 
-			const this_type operator ++(bcINT32)
+			this_type operator ++(bcINT32)
 			{
 				this_type l_old = *this;
 
@@ -441,7 +441,7 @@ namespace black_cat
 				return *this;
 			}
 
-			const this_type operator --(bcINT32)
+			this_type operator --(bcINT32)
 			{
 				this_type l_old = *this;
 
@@ -528,7 +528,7 @@ namespace black_cat
 				return *this;
 			}
 
-			const this_type operator ++(bcINT32)
+			this_type operator ++(bcINT32)
 			{
 				this_type l_old = *this;
 
@@ -544,7 +544,7 @@ namespace black_cat
 				return *this;
 			}
 
-			const this_type operator --(bcINT32)
+			this_type operator --(bcINT32)
 			{
 				this_type l_old = *this;
 
@@ -634,7 +634,7 @@ namespace black_cat
 				return *this;
 			}
 
-			const this_type operator ++(difference_type)
+			this_type operator ++(difference_type)
 			{
 				this_type l_old = *this;
 
@@ -654,7 +654,7 @@ namespace black_cat
 				return *this;
 			}
 
-			this_type operator +(difference_type p_count)
+			this_type operator +(difference_type p_count) const
 			{
 				this_type l_temp = *this;
 				l_temp += p_count;
@@ -673,7 +673,7 @@ namespace black_cat
 				return *this;
 			}
 
-			const this_type operator --(difference_type)
+			this_type operator --(difference_type)
 			{
 				this_type l_old = *this;
 
@@ -693,7 +693,7 @@ namespace black_cat
 				return *this;
 			}
 
-			this_type operator -(difference_type p_count)
+			this_type operator -(difference_type p_count) const
 			{
 				this_type l_temp = *this;
 				l_temp -= p_count;
@@ -703,27 +703,27 @@ namespace black_cat
 				return l_temp;
 			}
 
-			difference_type operator -(this_type& p_other)
+			difference_type operator -(const this_type& p_other) const
 			{
 				return m_node - p_other.m_node;
 			}
 
-			bool operator <(const this_type& p_other) noexcept(true)
+			bool operator <(const this_type& p_other) const noexcept(true)
 			{
 				return bc_random_access_iterator_provider_traits< provider_type >::compare(*m_provider, m_node, p_other.m_node) < 0;
 			}
 
-			bool operator <=(const this_type& p_other) noexcept(true)
+			bool operator <=(const this_type& p_other) const noexcept(true)
 			{
 				return bc_random_access_iterator_provider_traits< provider_info >::compare(*m_provider, m_node, p_other.m_node) <= 0;
 			}
 
-			bool operator >(const this_type& p_other) noexcept(true)
+			bool operator >(const this_type& p_other) const noexcept(true)
 			{
 				return bc_random_access_iterator_provider_traits< provider_info >::compare(*m_provider, m_node, p_other.m_node) > 0;
 			}
 
-			bool operator >=(const this_type& p_other) noexcept(true)
+			bool operator >=(const this_type& p_other) const noexcept(true)
 			{
 				return bc_random_access_iterator_provider_traits< provider_info >::compare(*m_provider, m_node, p_other.m_node) >= 0;
 			}
@@ -804,7 +804,7 @@ namespace black_cat
 				return *this;
 			}
 
-			const this_type operator ++(difference_type)
+			this_type operator ++(difference_type)
 			{
 				this_type l_old = *this;
 
@@ -820,7 +820,7 @@ namespace black_cat
 				return *this;
 			}
 
-			this_type operator +(difference_type p_count)
+			this_type operator +(difference_type p_count) const
 			{
 				this_type l_temp = *this;
 				l_temp += p_count;
@@ -835,7 +835,7 @@ namespace black_cat
 				return *this;
 			}
 
-			const this_type operator --(difference_type)
+			this_type operator --(difference_type)
 			{
 				this_type l_old = *this;
 
@@ -851,7 +851,7 @@ namespace black_cat
 				return *this;
 			}
 
-			this_type operator -(difference_type p_count)
+			this_type operator -(difference_type p_count) const
 			{
 				this_type l_temp = *this;
 				l_temp -= p_count;
@@ -859,27 +859,27 @@ namespace black_cat
 				return l_temp;
 			}
 
-			difference_type operator -(this_type& p_other)
+			difference_type operator -(const this_type& p_other) const
 			{
 				return base_type::operator-(p_other);
 			}
 
-			bool operator <(const this_type& p_other) noexcept(true)
+			bool operator <(const this_type& p_other) const noexcept(true)
 			{
 				return base_type::operator<(p_other);
 			}
 
-			bool operator <=(const this_type& p_other) noexcept(true)
+			bool operator <=(const this_type& p_other) const noexcept(true)
 			{
 				return base_type::operator<=(p_other);
 			}
 
-			bool operator >(const this_type& p_other) noexcept(true)
+			bool operator >(const this_type& p_other) const noexcept(true)
 			{
 				return base_type::operator>(p_other);
 			}
 
-			bool operator >=(const this_type& p_other) noexcept(true)
+			bool operator >=(const this_type& p_other) const noexcept(true)
 			{
 				return base_type::operator>=(p_other);
 			}
@@ -920,7 +920,7 @@ namespace black_cat
 	friend class bc_bidirectional_iterator_provider_traits<TProvider>; \
 	friend class bc_random_access_iterator_provider_traits<TProvider>;
 
-		// Unlike std::reverse_iterator this iterator doesn't point to one-past-the-end iterator
+		// Unlike std::reverse_iterator this iterator does not point to one-past-the-end iterator
 		template< typename TIterator >
 		class bc_reverse_iterator : public std::iterator< typename std::iterator_traits<TIterator>::iterator_category,
 			typename std::iterator_traits<TIterator>::value_type,

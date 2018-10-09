@@ -75,9 +75,9 @@ namespace black_cat
 		};
 
 		/**
-		 * \brief This class can hold any data type, (for small data types it use an internall buffer and for large data,
+		 * \brief This class can hold any data type, (for small data types it use an internal buffer and for large data,
 		 * memory will be allocated from frame allocator)
-		 * You can use both copy and movale objects but if you use movale only object and try to copy this object
+		 * You can use both copy and movable objects but if you use movable only object and try to copy this object
 		 * a logic exception will be thrown
 		 */
 		class bc_parameter_pack : public bc_object_allocator
@@ -89,7 +89,7 @@ namespace black_cat
 
 			bc_parameter_pack(bc_parameter_pack&& p_other);
 
-			template< typename T, typename = typename std::enable_if< !std::is_same< typename std::decay<T>::type, bc_parameter_pack >::value >::type >
+			template< typename T, typename = std::enable_if_t< !std::is_same_v< std::decay_t<T>, bc_parameter_pack > > >
 			explicit bc_parameter_pack(T&& p_value);
 
 			~bc_parameter_pack();
@@ -150,7 +150,7 @@ namespace black_cat
 
 			bool has_value() const;
 
-			bool used_internall_buffer() const;
+			bool used_internal_buffer() const;
 
 		protected:
 
@@ -192,7 +192,8 @@ namespace black_cat
 		};
 
 		inline bc_parameter_pack::bc_parameter_pack()
-			: m_used_internal_buffer(false),
+			: m_buffer(),
+			m_used_internal_buffer(false),
 			m_object(nullptr)
 		{
 			set_allocator_alloc_type(bc_alloc_type::frame);
@@ -210,7 +211,7 @@ namespace black_cat
 			operator=(std::move(p_other));
 		}
 
-		template< typename T, typename = typename std::enable_if< !std::is_same< typename std::decay<T>::type, bc_parameter_pack >::value >::type >
+		template< typename T, typename >
 		bc_parameter_pack::bc_parameter_pack(T&& p_value)
 			: bc_parameter_pack()
 		{
@@ -389,7 +390,7 @@ namespace black_cat
 			return m_object != nullptr;
 		}
 
-		inline bool bc_parameter_pack::used_internall_buffer() const
+		inline bool bc_parameter_pack::used_internal_buffer() const
 		{
 			return m_used_internal_buffer;
 		}

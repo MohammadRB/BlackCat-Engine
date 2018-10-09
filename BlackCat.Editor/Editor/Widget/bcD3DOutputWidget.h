@@ -4,7 +4,7 @@
 
 #include "GraphicImp/Device/bcDeviceOutput.h"
 
-#include <QWidget>
+#include <QtWidgets/qwidget.h>
 
 namespace black_cat
 {

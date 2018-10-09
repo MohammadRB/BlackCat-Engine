@@ -1,5 +1,4 @@
-//  [9/8/2013 MRB]
-// [12/20/2014 MRB]
+// [09/08/2013 MRB]
 
 #pragma once
 
@@ -40,6 +39,8 @@ namespace black_cat
 				static_assert(std::is_constructible< value_type, TArgs... >::value, "container node value is not constructible with args");
 			}
 
+			~bc_container_node() = default;
+
 			value_type m_value;
 		};
 		
@@ -59,7 +60,7 @@ namespace black_cat
 		public:
 			bc_container() : m_size(0) {}
 
-			~bc_container() {}
+			~bc_container() = default;
 
 			size_type size() const { return m_size; }
 

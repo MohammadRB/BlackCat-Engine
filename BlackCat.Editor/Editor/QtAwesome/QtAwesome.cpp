@@ -10,9 +10,9 @@
 #include "QtAwesome.h"
 #include "QtAwesomeAnim.h"
 
-#include <QDebug>
-#include <QFile>
-#include <QFontDatabase>
+#include <QtCore/QDebug>
+#include <QtCore/QFile>
+#include <QtGui/QFontDatabase>
 
 
 

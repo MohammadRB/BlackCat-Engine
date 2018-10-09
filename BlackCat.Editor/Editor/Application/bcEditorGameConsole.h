@@ -5,7 +5,7 @@
 #include "Game/System/Script/bcGameConsole.h"
 #include "Editor/Widget/bcConsoleWidget.h"
 
-#include <QObject>
+#include <QtCore/QObject>
 #include <QtConcurrent/QtConcurrent>
 
 namespace black_cat
