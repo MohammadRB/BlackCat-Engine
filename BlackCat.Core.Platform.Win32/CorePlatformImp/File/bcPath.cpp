@@ -21,7 +21,7 @@ namespace black_cat
 		{
 			if (p_buffer_size < p_path.size() + 1)
 			{
-				throw bc_invalid_operation_exception("Provided buffer hasn't enaugh space");
+				throw bc_invalid_operation_exception("Provided buffer hasn't enough space");
 			}
 
 #ifdef BC_UNICODE
@@ -41,14 +41,14 @@ namespace black_cat
 		template< >
 		BC_COREPLATFORMIMP_DLL
 		bc_platform_path<g_api_win32>::bc_platform_path(const bc_platform_path& p_other)
-			: m_pack(p_other.m_pack)
+			: m_pack(p_other.m_pack.m_path)
 		{
 		}
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
 		bc_platform_path<g_api_win32>::bc_platform_path(bc_platform_path&& p_other) noexcept
-			: m_pack(std::move(p_other.m_pack))
+			: m_pack(std::move(p_other.m_pack.m_path))
 		{
 		}
 
@@ -56,8 +56,7 @@ namespace black_cat
 		BC_COREPLATFORMIMP_DLL
 		bc_platform_path<g_api_win32>& bc_platform_path<g_api_win32>::operator=(const bc_platform_path& p_other)
 		{
-			m_pack = p_other.m_pack;
-
+			m_pack.m_path = p_other.m_pack.m_path;
 			return *this;
 		}
 
@@ -65,9 +64,14 @@ namespace black_cat
 		BC_COREPLATFORMIMP_DLL
 		bc_platform_path<g_api_win32>& bc_platform_path<g_api_win32>::operator=(bc_platform_path&& p_other) noexcept
 		{
-			m_pack = std::move(p_other.m_pack);
-
+			m_pack.m_path = std::move(p_other.m_pack.m_path);
 			return *this;
+		}
+
+		template< >
+		BC_COREPLATFORMIMP_DLL
+		bc_platform_path<g_api_win32>::~bc_platform_path()
+		{	
 		}
 
 		template< >
@@ -197,12 +201,11 @@ namespace black_cat
 			DWORD l_attributes = GetFileAttributes(m_pack.m_path.c_str());
 
 			if (l_attributes == INVALID_FILE_ATTRIBUTES)
+			{
 				win_call(false);
+			}
 
-			if (l_attributes & FILE_ATTRIBUTE_DIRECTORY)
-				return false;
-
-			return true;
+			return (l_attributes & FILE_ATTRIBUTE_DIRECTORY) == 0;
 		}
 
 		template< >
@@ -266,10 +269,10 @@ namespace black_cat
 		{
 			bc_path_info l_info;
 			l_info.m_max_path_length = MAX_PATH;
-			l_info.m_net_drive = L"\\\\";
-			l_info.m_path_sep = L"\\";
-			l_info.m_rlv_dir = L".\\";
-			l_info.m_ext_sep = L".";
+			l_info.m_net_drive = bcL("\\\\");
+			l_info.m_path_sep = bcL("\\");
+			l_info.m_rlv_dir = bcL(".\\");
+			l_info.m_ext_sep = bcL(".");
 
 			return l_info;
 		}

@@ -37,7 +37,7 @@ namespace black_cat
 
 			bcUINT32 get_timeout() const noexcept override;
 
-			void set_timeout(bcUINT32 p_milisecond) const noexcept override;
+			void set_timeout(bcUINT32 p_millisecond) noexcept override;
 		
 			// This function doesn't throw exception but if it fail any subsequence calls to object will
 			// throw exception
@@ -78,9 +78,7 @@ namespace black_cat
 			bc_estring m_path;
 		};
 
-		inline bc_file_stream::bc_file_stream()
-		{
-		}
+		inline bc_file_stream::bc_file_stream() = default;
 
 		inline bc_file_stream::bc_file_stream(bc_file_stream && p_other)
 			noexcept (std::is_nothrow_move_constructible< core_platform::bc_file >::value) = default;
@@ -88,7 +86,9 @@ namespace black_cat
 		inline bc_file_stream::~bc_file_stream()
 		{
 			if (get_status() == bc_stream_status::open)
+			{
 				close();
+			}
 		}
 
 		inline bc_file_stream& bc_file_stream::operator=(bc_file_stream && p_other)
@@ -145,7 +145,7 @@ namespace black_cat
 			return 0;
 		}
 
-		inline void bc_file_stream::set_timeout(bcUINT32 p_milisecond) const noexcept
+		inline void bc_file_stream::set_timeout(bcUINT32 p_millisecond) noexcept
 		{
 		}
 

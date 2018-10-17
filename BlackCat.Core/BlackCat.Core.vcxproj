@@ -190,9 +190,6 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="Core\Memory\bcMemoryCRT.h" />
     <ClInclude Include="Core\Memory\bcMemoryHeap.h" />
     <ClInclude Include="Core\Memory\bcMemMngHashMap.h" />
-    <ClInclude Include="Core\Memory\bcMemMngList.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="Core\Memory\bcAlloc.h" />
     <ClInclude Include="Core\Memory\bcMemoryTracer.h" />
     <ClInclude Include="Core\Memory\bcMemoryStack.h" />

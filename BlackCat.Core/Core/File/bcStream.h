@@ -53,7 +53,7 @@ namespace black_cat
 
 			virtual bcUINT32 get_timeout() const noexcept = 0;
 
-			virtual void set_timeout(bcUINT32 p_milisecond) const noexcept = 0;
+			virtual void set_timeout(bcUINT32 p_millisecond) noexcept = 0;
 
 			virtual bcUINT64 get_position() const = 0;
 
@@ -105,12 +105,12 @@ namespace black_cat
 
 			bcUINT32 get_timeout() const noexcept;
 
-			void set_timeout(bcUINT32 p_milisecond);
+			void set_timeout(bcUINT32 p_millisecond);
 
-			// Get stream pointer from beginig of stream
+			// Get stream pointer from beginning of stream
 			bcUINT64 get_position() const;
 
-			// Move stream pointer by offset(bytes) and return new location from begining of stream
+			// Move stream pointer by offset(bytes) and return new location from beginning of stream
 			bcUINT64 set_position(bc_stream_seek p_seek_location, bcINT64 p_offset);
 
 			// Return number of bytes that has been read
@@ -138,10 +138,10 @@ namespace black_cat
 		template< class TStreamAdapter >
 		bc_stream::bc_stream(TStreamAdapter&& p_stream)
 		{
-			using stream_adapter_t = typename std::remove_reference< TStreamAdapter >::type;
+			using stream_adapter_t = std::remove_reference_t< TStreamAdapter >;
 			static_assert(std::is_base_of< bc_istream_adapter, stream_adapter_t >::value, "Stream class must inherite from bc_istream_adapter");
 
-			m_stream = core::bc_make_unique< stream_adapter_t >(bc_alloc_type::unknown_movale, std::move(p_stream));
+			m_stream = core::bc_make_unique< stream_adapter_t >(bc_alloc_type::unknown_movable, std::move(p_stream));
 		}
 
 		inline bc_stream::bc_stream(bc_stream&& p_other) noexcept = default;
@@ -190,9 +190,9 @@ namespace black_cat
 			return m_stream->get_timeout();
 		}
 
-		inline void bc_stream::set_timeout(bcUINT32 p_milisecond)
+		inline void bc_stream::set_timeout(bcUINT32 p_millisecond)
 		{
-			return m_stream->set_timeout(p_milisecond);
+			return m_stream->set_timeout(p_millisecond);
 		}
 
 		inline bcUINT64 bc_stream::get_position() const

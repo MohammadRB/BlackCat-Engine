@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		inline bool is_movale_pointer(void* p_pointer) noexcept
+		inline bool is_movable_pointer(void* p_pointer) noexcept
 		{
 #if defined(BC_MEMORY_ENABLE) && defined(BC_MEMORY_DEFRAG)
 			if (!p_pointer)
@@ -193,18 +193,16 @@ namespace black_cat
 		template<typename T>
 		T* bc_mem_new_array(bcUINT32 p_array_length, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line)
 		{
-			T* l_return_pointer;
-
 			// alloc 4 byte more for array length, it will be used in last 4 byte of allocated block
-			bcUINT32 l_size = sizeof(T)* p_array_length + sizeof(bcUINT32);
-			l_return_pointer = reinterpret_cast<T*>(bc_mem_alloc_throw(l_size, p_alloc_type, p_file, p_line));
+			const bcUINT32 l_size = (sizeof(T) * p_array_length) + sizeof(bcUINT32);
+			T* l_return_pointer = reinterpret_cast< T* >(bc_mem_alloc_throw(l_size, p_alloc_type, p_file, p_line));
 
 			// store array length
 			bc_memblock* l_block = bc_memblock::retrieve_mem_block(l_return_pointer);
 			*(reinterpret_cast<bcUINT32*>(reinterpret_cast<bcUINTPTR>(l_return_pointer) - l_block->offset() + l_block->size() - sizeof(bcUINT32))) = p_array_length;
 
 			T* l_first = l_return_pointer;
-			for (register bcUINT32 i = 0; i < p_array_length; ++i, ++l_first)
+			for (bcUINT32 i = 0; i < p_array_length; ++i, ++l_first)
 			{
 				new(l_first)T();
 			}
@@ -318,7 +316,7 @@ namespace black_cat
 #define bcFree(p_pointer)													black_cat::core::bc_mem_free(p_pointer); p_pointer = nullptr
 #define bcReAlloc(p_pointer, p_new_size, p_alloc_type)						black_cat::core::bc_mem_realloc(p_pointer, p_new_size, p_alloc_type, __FILE__, __LINE__)
 #define bcAlignedAlloc(p_size, p_alignment, p_alloc_type)					black_cat::core::bc_mem_aligned_alloc(p_size, p_alignment, p_alloc_type, __FILE__, __LINE__)
-#define bcAlignedFree(p_pointer)											black_cat::core::bc_mem_aligned_free(p_pointer); p_pointer = nullptr
+#define bcAlignedFree(p_pointer)												black_cat::core::bc_mem_aligned_free(p_pointer); p_pointer = nullptr
 #define bcAlignedReAlloc(p_pointer, p_new_size, p_alignment, p_alloc_type)	black_cat::core::bc_mem_aligned_realloc(p_pointer, p_new_size, p_alignment, p_alloc_type, __FILE__, __LINE__)
 #define bcAllocThrow(p_size, p_alloc_type)									black_cat::core::bc_mem_alloc_throw(p_size, p_alloc_type, __FILE__, __LINE__)
 #define bcAlignedAllocThrow(p_size, p_alignment, p_alloc_type)				black_cat::core::bc_mem_aligned_alloc_throw(p_size, p_alignment, p_alloc_type, __FILE__, __LINE__)
@@ -328,9 +326,9 @@ namespace black_cat
 #define bcNewArray(p_type, p_length, p_alloc_type)							black_cat::core::bc_mem_new_array<p_type>(p_length, p_alloc_type, __FILE__, __LINE__)
 #define bcDelete(p_t)														black_cat::core::bc_mem_delete(p_t); p_t = nullptr
 #define bcDeleteArray(p_t)													black_cat::core::bc_mem_delete_array(p_t); p_t = nullptr
-#define bcAlignedNew(p_type, p_alignment, p_alloc_type)						new (pAlignment, p_alloc_type, __FILE__, __LINE__) p_type
+#define bcAlignedNew(p_type, p_alignment, p_alloc_type)						new (p_alignment, p_alloc_type, __FILE__, __LINE__) p_type
 #define bcAlignedNewArray(p_alignment, p_length, p_alloc_type)				black_cat::core::bc_mem_aligned_new_array<p_type>(p_length, p_alignment, p_alloc_type, __FILE__, __LINE__)
-#define bcAlignedDelete(p_t)												black_cat::core::bc_mem_aligned_delete(p_t); p_t = nullptr
+#define bcAlignedDelete(p_t)													black_cat::core::bc_mem_aligned_delete(p_t); p_t = nullptr
 #define bcAlignedDeleteArray(p_t)											black_cat::core::bc_mem_aligned_delete_array(p_t); p_t = nullptr
 	}
 }

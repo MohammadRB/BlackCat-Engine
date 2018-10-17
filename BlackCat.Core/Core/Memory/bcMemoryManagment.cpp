@@ -13,7 +13,10 @@ namespace black_cat
 		bc_memmng bc_memmng::m_instance;
 
 		bc_memmng::bc_memmng() noexcept(true)
-			: m_initialized(false),
+			: m_fsa_allocators_start_size(0),
+			m_fsa_num_allocators(0),
+			m_fsa_step_size(0),
+			m_initialized(false),
 			m_fsa_allocators(nullptr),
 			m_per_program_stack(nullptr),
 			m_per_level_stack(nullptr),
@@ -28,10 +31,8 @@ namespace black_cat
 		{
 		}
 
-		bc_memmng::~bc_memmng()
-		{
-		}
-								
+		bc_memmng::~bc_memmng() = default;
+
 		void bc_memmng::initialize(bcUINT32 p_fsa_start_size,
 			bcUINT32 p_fsa_num,
 			bcUINT32 p_fsa_step_size,
@@ -51,21 +52,28 @@ namespace black_cat
 
 				for (bcUINT32 i = 0; i < m_fsa_num_allocators; i++)
 				{
-					m_fsa_allocators[i].initialize([=]() {
+					auto l_initialize_delegate = bc_delegate< bc_memory_fixed_size*() >
+					(
+						[=]()
+						{
+							const bcUINT32 l_block_size = m_fsa_allocators_start_size + i * m_fsa_step_size;
+							std::string l_tag = std::string("FSA") + std::to_string(i);
 
-						bcUINT32 l_block_size = m_fsa_allocators_start_size + i * m_fsa_step_size;
-						std::string l_tag = std::string("FSA") + std::to_string(i);
+							bc_memory_fixed_size* l_result = new bc_memory_fixed_size();
+							l_result->initialize(p_fsa_num_allocations, l_block_size, l_tag.c_str());
 
-						bc_memory_fixed_size* l_result = new bc_memory_fixed_size();
-						l_result->initialize(p_fsa_num_allocations, l_block_size, l_tag.c_str());
+							return l_result;
+						}
+					);
+					auto l_destroy_delegate = bc_delegate< void(bc_memory_fixed_size*) >
+					(
+						[=](bc_memory_fixed_size* p_pointer)
+						{
+							delete p_pointer;
+						}
+					);
 
-						return l_result;
-
-					}, [=](bc_memory_fixed_size* p_pointer) {
-
-						delete p_pointer;
-
-					});
+					m_fsa_allocators[i].initialize(std::move(l_initialize_delegate), std::move(l_destroy_delegate));
 				}
 
 				m_per_program_stack = new bc_memory_stack();
@@ -153,7 +161,7 @@ namespace black_cat
 				break;
 
 			case bc_alloc_type::unknown:
-			case bc_alloc_type::unknown_movale:
+			case bc_alloc_type::unknown_movable:
 				// Check request can be handled by FSAllocators
 				if (l_size <= _fsa_index_max_size(m_fsa_num_allocators - 1))
 				{
@@ -174,7 +182,7 @@ namespace black_cat
 				break;
 			}
 
-			if (!l_result && p_allocType == bc_alloc_type::unknown_movale)
+			if (!l_result && p_allocType == bc_alloc_type::unknown_movable)
 			{
 				l_result = m_super_heap->alloc(&l_block);
 				l_allocator = m_super_heap;
@@ -236,13 +244,14 @@ namespace black_cat
 		void* bc_memmng::realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true)
 		{
 			bc_memblock* l_block = bc_memblock::retrieve_mem_block(p_pointer);
-			void* l_new_pointer;
-			bc_memblock* l_new_block;
 
-			l_new_pointer = alloc(p_new_size, p_alloc_type, p_file, p_line);
-			if (!l_new_pointer) return l_new_pointer;
-			l_new_block = bc_memblock::retrieve_mem_block(l_new_pointer);
+			void* l_new_pointer = alloc(p_new_size, p_alloc_type, p_file, p_line);
+			if (!l_new_pointer) 
+			{
+				return l_new_pointer;
+			}
 
+			bc_memblock* l_new_block = bc_memblock::retrieve_mem_block(l_new_pointer);
 			bcSIZE l_min_size = std::min<bcSIZE>(l_block->size() - l_block->offset(), l_new_block->size() - l_new_block->offset());
 
 			std::memcpy
@@ -275,7 +284,7 @@ namespace black_cat
 				break;
 
 			case bc_alloc_type::unknown:
-			case bc_alloc_type::unknown_movale:
+			case bc_alloc_type::unknown_movable:
 				// Check can Request handled by FSAllocators
 				if (l_size <= _fsa_index_max_size(m_fsa_num_allocators - 1))
 				{
@@ -295,7 +304,7 @@ namespace black_cat
 				break;
 			};
 
-			if (!l_result && p_alloc_type == bc_alloc_type::unknown_movale)
+			if (!l_result && p_alloc_type == bc_alloc_type::unknown_movable)
 			{
 				l_result = m_super_heap->alloc(&l_block);
 				l_allocator = m_super_heap;
@@ -334,7 +343,10 @@ namespace black_cat
 		
 		void bc_memmng::aligned_free(void* p_pointer) noexcept(true)
 		{
-			if (!p_pointer) return;
+			if (!p_pointer) 
+			{
+				return;
+			}
 
 			bc_memblock* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 			void* l_pointer = reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer) - l_block->offset());
@@ -354,11 +366,9 @@ namespace black_cat
 		void* bc_memmng::aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true)
 		{
 			bc_memblock* l_block = bc_memblock::retrieve_mem_block(p_pointer);
-			void* l_new_pointer;
-			bc_memblock* l_new_block;
 
-			l_new_pointer = aligned_alloc(p_new_size, p_alignment, p_alloc_type, p_file, p_line);
-			l_new_block = bc_memblock::retrieve_mem_block(l_new_pointer);
+			void* l_new_pointer = aligned_alloc(p_new_size, p_alignment, p_alloc_type, p_file, p_line);
+			bc_memblock* l_new_block = bc_memblock::retrieve_mem_block(l_new_pointer);
 
 			bcSIZE l_min_size = std::min<bcSIZE>(l_block->size() - l_block->offset(), l_new_block->size() - l_new_block->offset());
 
@@ -398,13 +408,15 @@ namespace black_cat
 			m_per_frame_stack->clear();
 		};
 
-		bcSIZE bc_memmng::get_total_size()
+		bcSIZE bc_memmng::get_total_size() const
 		{
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_total_size = 0;
 
 			for(bcUINT32 i = 0; i < m_fsa_num_allocators; i++)
+			{
 				l_total_size += m_fsa_allocators[i].tracer().total_size();
+			}
 
 			l_total_size += m_per_program_stack->tracer().total_size();
 			l_total_size += m_per_level_stack->tracer().total_size();
@@ -416,7 +428,7 @@ namespace black_cat
 			return 0;
 		};
 		
-		bcSIZE bc_memmng::get_used_size()
+		bcSIZE bc_memmng::get_used_size() const
 		{
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_used_size = 0;
@@ -434,7 +446,7 @@ namespace black_cat
 			return 0;
 		};
 		
-		bcSIZE bc_memmng::get_overhead_size()
+		bcSIZE bc_memmng::get_overhead_size() const
 		{
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_wasted_size = 0;
@@ -452,7 +464,7 @@ namespace black_cat
 			return 0;
 		};
 		
-		bcSIZE bc_memmng::get_max_used_size()
+		bcSIZE bc_memmng::get_max_used_size() const
 		{
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_max_used_size = 0;
@@ -471,7 +483,7 @@ namespace black_cat
 		};
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-		bcUINT32 bc_memmng::report_memory_leaks()
+		bcUINT32 bc_memmng::report_memory_leaks() const
 		{
 			bcSIZE l_leak_count = m_leak_allocator->count();
 			

@@ -25,18 +25,17 @@ namespace black_cat
 
 		enum class bc_alloc_type : bcUBYTE
 		{
-			program,		// Alloc in programm stack
-			level,			// Alloc in level stack
-			frame,			// Alloc in frame stack
-			unknown,		// Try to alloc in fixed size allocators, otherwise alloc in crt memory
-			unknown_movale,	// Try to alloc in fixed size allocators, then in super heap that is defragmentable, 
-							// otherwise in crt memory
+			program,				// Alloc in program stack
+			level,				// Alloc in level stack
+			frame,				// Alloc in frame stack
+			unknown,				// Try to alloc in fixed size allocators, otherwise alloc in crt memory
+			unknown_movable,		// Try to alloc in fixed size allocators, then in super heap that is defragmentable, otherwise in crt memory
 		};
 
 #ifdef BC_MEMORY_ENABLE
 
 		template< typename TMemory >
-		class bc_memory_extender; // used forward decleration duo to dependencies between bcPtr and bcDelegate
+		class bc_memory_extender; // used forward declaration duo to dependencies between bcPtr and bcDelegate
 
 		class BC_CORE_DLL bc_memmng : core_platform::bc_no_copy
 		{
@@ -108,16 +107,16 @@ namespace black_cat
 
 			void end_of_frame() noexcept(true);
 
-			bcSIZE get_total_size();
+			bcSIZE get_total_size() const;
 
-			bcSIZE get_used_size();
+			bcSIZE get_used_size() const;
 
-			bcSIZE get_overhead_size();
+			bcSIZE get_overhead_size() const;
 
-			bcSIZE get_max_used_size();
+			bcSIZE get_max_used_size() const;
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			bcUINT32 report_memory_leaks();
+			bcUINT32 report_memory_leaks() const;
 #endif
 
 		protected:

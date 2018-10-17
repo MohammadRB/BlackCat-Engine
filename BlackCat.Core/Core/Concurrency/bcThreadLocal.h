@@ -22,7 +22,7 @@ namespace black_cat
 			bc_thread_local()
 				: m_local(&_default_clean_up)
 			{
-				static_assert(t_alloc_type != bc_alloc_type::unknown_movale, "movable pointers are not allowed");
+				static_assert(t_alloc_type != bc_alloc_type::unknown_movable, "movable pointers are not allowed");
 			}
 
 			bc_thread_local(this_type&& p_other)

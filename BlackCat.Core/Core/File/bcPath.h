@@ -28,6 +28,8 @@ namespace black_cat
 
 			bc_path& operator=(bc_path&& p_other) noexcept;
 
+			~bc_path();
+
 			bc_estring get_path() const;
 
 			bc_estring get_directory() const;
@@ -50,7 +52,7 @@ namespace black_cat
 			bc_path& set_file_extension(const bcECHAR* p_file_extension);
 
 			/**
-			 * \brief If second path is fully qualfied, it will be replaced with current path 
+			 * \brief If second path is fully qualified, it will be replaced with current path 
 			 * \param p_other 
 			 * \return 
 			 */

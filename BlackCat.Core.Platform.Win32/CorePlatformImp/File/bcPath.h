@@ -18,8 +18,13 @@ namespace black_cat
 			using path_string = std::string;
 #endif
 
-			bc_platform_path_pack(path_string&& p_path) // See definition of bc_platform_path construction for usage of r-value parameter
-				: m_path(move(p_path))
+			bc_platform_path_pack(const path_string& p_path)
+				: m_path(p_path)
+			{
+			}
+
+			bc_platform_path_pack(path_string&& p_path)
+				: m_path(std::move(p_path))
 			{
 			}
 

@@ -48,9 +48,6 @@
     <ClInclude Include="Core\Memory\bcMemMngHashMap.h">
       <Filter>Core\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Memory\bcMemMngList.h">
-      <Filter>Core\Memory</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Concurrency\bcThreadManager.h">
       <Filter>Core\Concurrency</Filter>
     </ClInclude>

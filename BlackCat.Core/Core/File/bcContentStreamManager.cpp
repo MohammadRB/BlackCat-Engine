@@ -283,11 +283,10 @@ namespace black_cat
 			contents_map_type::const_iterator l_content_end;
 
 			{
-				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock_gaurd(m_contents_mutex);
-				{
-					l_content_entry = m_contents.find(l_content_hash);
-					l_content_end = std::end(m_contents);
-				}
+				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
+				
+				l_content_entry = m_contents.find(l_content_hash);
+				l_content_end = std::end(m_contents);
 			}
 
 			if (l_content_entry != l_content_end)

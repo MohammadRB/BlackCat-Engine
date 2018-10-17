@@ -41,6 +41,8 @@ namespace black_cat
 
 			bc_platform_path& operator=(bc_platform_path&& p_other) noexcept;
 
+			~bc_platform_path();
+
 			bcSIZE get_length() const;
 
 			void get_path(bcECHAR* p_buffer, bcSIZE p_buffer_size) const;
@@ -64,7 +66,7 @@ namespace black_cat
 			void set_file_extension(const bcECHAR* p_file_extension);
 
 			/**
-			 * \brief If second path is fully qualfied, it will be replaced with current path 
+			 * \brief If second path is fully qualified, it will be replaced with current path 
 			 * \param p_other 
 			 */
 			void combine(const bc_platform_path& p_other);

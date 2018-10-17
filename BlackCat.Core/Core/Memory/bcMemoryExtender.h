@@ -121,8 +121,7 @@ namespace black_cat
 		};
 
 		template< typename TMemory >
-		class bc_memory_extender : 
-			public bc_memory, 
+		class bc_memory_extender : public bc_memory,
 			public bc_initializable<bc_delegate< TMemory*() >&&, bc_delegate< void(TMemory*) >&&>
 		{
 		public:

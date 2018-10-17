@@ -29,14 +29,14 @@ namespace black_cat
 
 			void operator()(T* p_pointer) noexcept
 			{
-				static_assert(sizeof(T) > 0, "can't delete an incomplete type");
+				static_assert(sizeof(T) > 0, "Can not delete an incomplete type");
 				bcDelete(p_pointer);
 			}
 		};
 
 		inline void _register_pointer(void** p_pointer)
 		{
-			if (is_movale_pointer(*p_pointer))
+			if (is_movable_pointer(*p_pointer))
 			{
 				register_movable_pointer(p_pointer);
 			}	
@@ -44,7 +44,7 @@ namespace black_cat
 
 		inline void _unregister_pointer(void** p_pointer)
 		{
-			if (is_movale_pointer(*p_pointer))
+			if (is_movable_pointer(*p_pointer))
 			{
 				unregister_movable_pointer(p_pointer);
 			}	
@@ -1192,6 +1192,12 @@ namespace black_cat
 		}
 
 		template< typename T, typename ...TArgs >
+		bc_unique_ptr< T > bc_make_unique(bc_alloc_type p_alloc_type, bcUINT16 p_alignment, TArgs&&... p_args)
+		{
+			return bc_unique_ptr< T >(bcAlignedNew(T(std::forward< TArgs >(p_args)...), p_alignment, p_alloc_type));
+		}
+
+		template< typename T, typename ...TArgs >
 		bc_shared_ptr< T > bc_make_shared(TArgs&&... p_args)
 		{
 			return bc_make_shared< T >(bc_alloc_type::unknown, std::forward< TArgs >(p_args)...);
@@ -1202,10 +1208,12 @@ namespace black_cat
 		{
 			using meta_type = typename bc_shared_ptr< T >::meta_data;
 
-			bcSIZE l_required_size = sizeof(T) + sizeof(meta_type);
+			const bcSIZE l_required_size = sizeof(T) + sizeof(meta_type);
 			void* l_alloc = bcAlloc(l_required_size, p_alloc_type);
 			if (!l_alloc)
+			{
 				throw std::bad_alloc();
+			}
 
 			T* l_pointer = l_alloc;
 			meta_type* l_meta_pointer = l_alloc + sizeof(T);

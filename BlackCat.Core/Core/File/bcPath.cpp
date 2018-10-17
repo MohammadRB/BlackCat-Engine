@@ -12,29 +12,15 @@ namespace black_cat
 		{
 		}
 
-		bc_path::bc_path(const bc_path& p_other)
-			: m_path(p_other.m_path)
-		{
-		}
+		bc_path::bc_path(const bc_path& p_other) = default;
 
-		bc_path::bc_path(bc_path&& p_other) noexcept
-			: m_path(std::move(p_other.m_path))
-		{
-		}
+		bc_path::bc_path(bc_path&& p_other) noexcept = default;
 
-		bc_path& bc_path::operator=(const bc_path& p_other)
-		{
-			m_path = p_other.m_path;
+		bc_path& bc_path::operator=(const bc_path& p_other) = default;
 
-			return *this;
-		}
+		bc_path& bc_path::operator=(bc_path&& p_other) noexcept = default;
 
-		bc_path& bc_path::operator=(bc_path&& p_other) noexcept
-		{
-			m_path = std::move(p_other.m_path);
-
-			return *this;
-		}
+		bc_path::~bc_path() = default;
 
 		bc_estring bc_path::get_path() const
 		{

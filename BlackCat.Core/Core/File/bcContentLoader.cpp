@@ -28,7 +28,7 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_base_content_loader::content_offline_file_open_successed(bc_content_loading_context& p_context) const
+		void bc_base_content_loader::content_offline_file_open_succeeded(bc_content_loading_context& p_context) const
 		{
 			auto l_file_size = p_context.m_file->length();
 
@@ -42,7 +42,7 @@ namespace black_cat
 			p_context.m_file->write(p_context.m_data.data(), p_context.m_data.size());
 		}
 
-		void bc_base_content_loader::content_file_open_successed(bc_content_loading_context& p_context) const
+		void bc_base_content_loader::content_file_open_succeeded(bc_content_loading_context& p_context) const
 		{
 			auto l_file_size = p_context.m_file->length();
 

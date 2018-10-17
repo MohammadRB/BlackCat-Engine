@@ -36,7 +36,7 @@ namespace black_cat
 
 			void parse(bc_json_parse_object& p_value);
 
-			void add_parser(bc_ijson_value* p_jparser);
+			void add_parser(bc_ijson_value* p_parser);
 
 		protected:
 
@@ -47,14 +47,14 @@ namespace black_cat
 		class bc_ijson_value
 		{
 		public:
-			explicit bc_ijson_value(bc_ijson_structure* p_jstructure, bool p_optional);
+			explicit bc_ijson_value(bc_ijson_structure* p_structure, bool p_optional);
 
 			virtual ~bc_ijson_value() = default;
 
 			virtual void parse(bc_json_parse_object& p_value) = 0;
 
 		protected:
-			bc_json_parse_object* _get_json_field(bc_json_parse_object& p_value, const bcCHAR* p_name);
+			bc_json_parse_object* _get_json_field(bc_json_parse_object& p_value, const bcCHAR* p_name) const;
 
 			bool m_optional;
 		};
@@ -67,25 +67,25 @@ namespace black_cat
 			}
 		}
 
-		inline void bc_ijson_structure::add_parser(bc_ijson_value* p_jparser)
+		inline void bc_ijson_structure::add_parser(bc_ijson_value* p_parser)
 		{
-			m_parsers.push_back(p_jparser);
+			m_parsers.push_back(p_parser);
 		}
 
-		inline bc_ijson_value::bc_ijson_value(bc_ijson_structure* p_jstructure, bool p_optional)
+		inline bc_ijson_value::bc_ijson_value(bc_ijson_structure* p_structure, bool p_optional)
 			: m_optional(p_optional)
 		{
-			if (p_jstructure)
+			if (p_structure)
 			{
-				p_jstructure->add_parser(this);
+				p_structure->add_parser(this);
 			}
 		}
 
-		inline bc_json_parse_object* bc_ijson_value::_get_json_field(bc_json_parse_object& p_value, const bcCHAR* p_name)
+		inline bc_json_parse_object* bc_ijson_value::_get_json_field(bc_json_parse_object& p_value, const bcCHAR* p_name) const
 		{
-			auto* l_jvalue = p_value.HasMember(p_name) ? &p_value[p_name] : nullptr;
+			auto* l_value = p_value.HasMember(p_name) ? &p_value[p_name] : nullptr;
 
-			if (!l_jvalue && !m_optional)
+			if (!l_value && !m_optional)
 			{
 				bc_string_frame l_msg = "json key for non optional field '";
 				l_msg += p_name;
@@ -94,7 +94,7 @@ namespace black_cat
 				throw bc_io_exception(l_msg.c_str());
 			}
 
-			return l_jvalue;
+			return l_value;
 		}
 
 		/**
@@ -121,7 +121,7 @@ namespace black_cat
 		class bc_json_value : public bc_ijson_value
 		{
 		public:
-			bc_json_value(const bcCHAR* p_name, bc_ijson_structure* p_jstructure, bool p_optional = false);
+			bc_json_value(const bcCHAR* p_name, bc_ijson_structure* p_structure, bool p_optional = false);
 
 			bc_json_value(const bc_json_value&) noexcept(std::is_nothrow_copy_constructible<T>::value) = delete;
 
@@ -152,32 +152,32 @@ namespace black_cat
 		protected:
 
 		private:
-			void _parse(bool& p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bool& p_value, bc_json_parse_object& p_json_value);
 
-			void _parse(bcINT& p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bcINT& p_value, bc_json_parse_object& p_json_value);
 
-			void _parse(bcUINT& p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bcUINT& p_value, bc_json_parse_object& p_json_value);
 
-			void _parse(bcFLOAT& p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bcFLOAT& p_value, bc_json_parse_object& p_json_value);
 
-			void _parse(bc_string& p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bc_string& p_value, bc_json_parse_object& p_json_value);
 
-			void _parse(bc_string_program& p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bc_string_program& p_value, bc_json_parse_object& p_json_value);
 
-			void _parse(bc_string_level& p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bc_string_level& p_value, bc_json_parse_object& p_json_value);
 
-			void _parse(bc_string_frame& p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bc_string_frame& p_value, bc_json_parse_object& p_json_value);
 
-			void _parse(bc_expression_parameter& p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bc_expression_parameter& p_value, bc_json_parse_object& p_json_value);
 
-			void _parse(bc_parameter_pack& p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bc_parameter_pack& p_value, bc_json_parse_object& p_json_value);
 
-			void _parse(bc_any& p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bc_any& p_value, bc_json_parse_object& p_json_value);
 
-			void _parse(bc_json_key_value& p_value, bc_json_parse_object& p_jvalue);
+			void _parse(bc_json_key_value& p_value, bc_json_parse_object& p_json_value);
 
 			template<typename T1>
-			void _parse(T1& p_value, bc_json_parse_object& p_jvalue);
+			void _parse(T1& p_value, bc_json_parse_object& p_json_value);
 
 			const bcCHAR* m_name;
 			T m_value;
@@ -187,7 +187,7 @@ namespace black_cat
 		class bc_json_object : public bc_ijson_value
 		{
 		public:
-			bc_json_object(const bcCHAR* p_name, bc_ijson_structure* p_jstructure, bool p_optional = false);
+			bc_json_object(const bcCHAR* p_name, bc_ijson_structure* p_structure, bool p_optional = false);
 
 			bc_json_object(const bc_json_object&) noexcept(std::is_nothrow_copy_constructible<T>::value) = delete;
 
@@ -226,7 +226,7 @@ namespace black_cat
 		class bc_json_array : public bc_ijson_value
 		{
 		public:
-			bc_json_array(const char* p_name, bc_ijson_structure* p_jstructure, bool p_optional = false);
+			bc_json_array(const char* p_name, bc_ijson_structure* p_structure, bool p_optional = false);
 
 			bc_json_array(const bc_json_array&) noexcept(std::is_nothrow_copy_constructible<T>::value) = default;
 
@@ -275,7 +275,7 @@ namespace black_cat
 		> : public bc_ijson_value
 		{
 		public:
-			bc_json_array(const bcCHAR* p_name, bc_ijson_structure* p_jstructure, bool p_optional = false);
+			bc_json_array(const bcCHAR* p_name, bc_ijson_structure* p_structure, bool p_optional = false);
 
 			bc_json_array(const bc_json_array&) noexcept(std::is_nothrow_copy_constructible<T>::value) = delete;
 
@@ -345,8 +345,8 @@ namespace black_cat
 		// -- Json value --------------------------------------------------------------------------------
 
 		template< typename T >
-		bc_json_value< T >::bc_json_value(const bcCHAR* p_name, bc_ijson_structure* p_jstructure, bool p_optional)
-			: bc_ijson_value(p_jstructure, p_optional),
+		bc_json_value< T >::bc_json_value(const bcCHAR* p_name, bc_ijson_structure* p_structure, bool p_optional)
+			: bc_ijson_value(p_structure, p_optional),
 			m_name(p_name),
 			m_value()
 		{
@@ -357,14 +357,14 @@ namespace black_cat
 		void bc_json_value< T >::parse(bc_json_parse_object& p_value)
 		{
 			// If we use json value within json array m_name will be null
-			auto* l_jvalue = m_name != nullptr ? _get_json_field(p_value, m_name) : &p_value;
+			auto* l_value = m_name != nullptr ? _get_json_field(p_value, m_name) : &p_value;
 
-			if(!l_jvalue)
+			if(!l_value)
 			{
 				return;
 			}
 
-			_parse(m_value, *l_jvalue);
+			_parse(m_value, *l_value);
 		}
 
 		template< typename T >
@@ -410,159 +410,159 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bool& p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bool& p_value, bc_json_parse_object& p_json_value)
 		{
-			if (!p_jvalue.IsBool())
+			if (!p_json_value.IsBool())
 			{
 				throw bc_io_exception("bad json format");
 			}
 
-			p_value = p_jvalue.GetBool();
+			p_value = p_json_value.GetBool();
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bcINT& p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bcINT& p_value, bc_json_parse_object& p_json_value)
 		{
-			if (!p_jvalue.IsNumber())
+			if (!p_json_value.IsNumber())
 			{
 				throw bc_io_exception("bad json format");
 			}
 
-			p_value = p_jvalue.GetInt();
+			p_value = p_json_value.GetInt();
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bcUINT& p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bcUINT& p_value, bc_json_parse_object& p_json_value)
 		{
-			if (!p_jvalue.IsNumber())
+			if (!p_json_value.IsNumber())
 			{
 				throw bc_io_exception("bad json format");
 			}
 
-			p_value = p_jvalue.GetUint();
+			p_value = p_json_value.GetUint();
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bcFLOAT& p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bcFLOAT& p_value, bc_json_parse_object& p_json_value)
 		{
-			if (!p_jvalue.IsNumber())
+			if (!p_json_value.IsNumber())
 			{
 				throw bc_io_exception("bad json format");
 			}
 
-			p_value = p_jvalue.GetFloat();
+			p_value = p_json_value.GetFloat();
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bc_string& p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bc_string& p_value, bc_json_parse_object& p_json_value)
 		{
-			if (!p_jvalue.IsString())
+			if (!p_json_value.IsString())
 			{
 				throw bc_io_exception("bad json format");
 			}
 
-			p_value = p_jvalue.GetString();
+			p_value = p_json_value.GetString();
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bc_string_program& p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bc_string_program& p_value, bc_json_parse_object& p_json_value)
 		{
-			if (!p_jvalue.IsString())
+			if (!p_json_value.IsString())
 			{
 				throw bc_io_exception("bad json format");
 			}
 
-			p_value = p_jvalue.GetString();
+			p_value = p_json_value.GetString();
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bc_string_level& p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bc_string_level& p_value, bc_json_parse_object& p_json_value)
 		{
-			if (!p_jvalue.IsString())
+			if (!p_json_value.IsString())
 			{
 				throw bc_io_exception("bad json format");
 			}
 
-			p_value = p_jvalue.GetString();
+			p_value = p_json_value.GetString();
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bc_string_frame& p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bc_string_frame& p_value, bc_json_parse_object& p_json_value)
 		{
-			if (!p_jvalue.IsString())
+			if (!p_json_value.IsString())
 			{
 				throw bc_io_exception("bad json format");
 			}
 
-			p_value = p_jvalue.GetString();
+			p_value = p_json_value.GetString();
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_parse(bc_expression_parameter& p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value<T>::_parse(bc_expression_parameter& p_value, bc_json_parse_object& p_json_value)
 		{
-			if (!p_jvalue.IsString())
+			if (!p_json_value.IsString())
 			{
 				throw bc_io_exception("bad json format");
 			}
 
-			p_value.compile(p_jvalue.GetString());
+			p_value.compile(p_json_value.GetString());
 		}
 
 		template< typename T >
-		void bc_json_value< T >::_parse(bc_parameter_pack& p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value< T >::_parse(bc_parameter_pack& p_value, bc_json_parse_object& p_json_value)
 		{
-			if (p_jvalue.IsBool())
+			if (p_json_value.IsBool())
 			{
-				p_value.set_value(p_jvalue.GetBool());
+				p_value.set_value(p_json_value.GetBool());
 			}
-			else if (p_jvalue.IsDouble())
+			else if (p_json_value.IsDouble())
 			{
-				p_value.set_value(p_jvalue.GetDouble());
+				p_value.set_value(p_json_value.GetDouble());
 			}
-			else if (p_jvalue.IsFloat())
+			else if (p_json_value.IsFloat())
 			{
-				p_value.set_value(p_jvalue.GetFloat());
+				p_value.set_value(p_json_value.GetFloat());
 			}
-			else if (p_jvalue.IsInt())
+			else if (p_json_value.IsInt())
 			{
-				p_value.set_value(p_jvalue.GetInt());
+				p_value.set_value(p_json_value.GetInt());
 			}
-			else if (p_jvalue.IsInt64())
+			else if (p_json_value.IsInt64())
 			{
-				p_value.set_value(p_jvalue.GetInt64());
+				p_value.set_value(p_json_value.GetInt64());
 			}
-			else if (p_jvalue.IsUint())
+			else if (p_json_value.IsUint())
 			{
-				p_value.set_value(p_jvalue.GetUint());
+				p_value.set_value(p_json_value.GetUint());
 			}
-			else if (p_jvalue.IsUint64())
+			else if (p_json_value.IsUint64())
 			{
-				p_value.set_value(p_jvalue.GetUint64());
+				p_value.set_value(p_json_value.GetUint64());
 			}
-			else if (p_jvalue.IsString())
+			else if (p_json_value.IsString())
 			{
-				if(bc_expression_parameter::is_expression_parameter(p_jvalue.GetString()))
+				if(bc_expression_parameter::is_expression_parameter(p_json_value.GetString()))
 				{
 					bc_expression_parameter l_expression;
-					l_expression.compile(p_jvalue.GetString());
+					l_expression.compile(p_json_value.GetString());
 
 					p_value.set_value(std::move(l_expression));
 				}
 				else
 				{
-					p_value.set_value(bc_string(p_jvalue.GetString()));
+					p_value.set_value(bc_string(p_json_value.GetString()));
 				}
 			}
-			else if(p_jvalue.IsObject())
+			else if(p_json_value.IsObject())
 			{
 				bc_json_key_value l_value;
-				_parse(l_value, p_jvalue);
+				_parse(l_value, p_json_value);
 
 				p_value.set_value(std::move(l_value));
 			}
-			else if(p_jvalue.IsArray())
+			else if(p_json_value.IsArray())
 			{
-				auto l_array = p_jvalue.GetArray();
+				auto l_array = p_json_value.GetArray();
 				bc_vector<bc_any> l_values;
 
 				l_values.reserve(l_array.Size());
@@ -585,24 +585,24 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_parse(bc_any& p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value<T>::_parse(bc_any& p_value, bc_json_parse_object& p_json_value)
 		{
-			_parse(static_cast< bc_parameter_pack& >(p_value), p_jvalue);
+			_parse(static_cast< bc_parameter_pack& >(p_value), p_json_value);
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_parse(bc_json_key_value& p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value<T>::_parse(bc_json_key_value& p_value, bc_json_parse_object& p_json_value)
 		{
-			if (p_jvalue.IsObject())
+			if (p_json_value.IsObject())
 			{
-				p_value.m_key_values.reserve(p_jvalue.GetObjectW().MemberCount());
+				p_value.m_key_values.reserve(p_json_value.GetObjectW().MemberCount());
 
-				for (auto& l_jobject_memeber : p_jvalue.GetObjectW())
+				for (auto& l_object_member : p_json_value.GetObjectW())
 				{
-					bc_string l_key = l_jobject_memeber.name.GetString();
+					bc_string l_key = l_object_member.name.GetString();
 					bc_any l_value;
 
-					_parse(l_value, l_jobject_memeber.value);
+					_parse(l_value, l_object_member.value);
 
 					p_value.m_key_values.push_back(std::make_pair(std::move(l_key), std::move(l_value)));
 				}
@@ -615,16 +615,16 @@ namespace black_cat
 
 		template< typename T >
 		template< typename T1 >
-		void bc_json_value<T>::_parse(T1& p_value, bc_json_parse_object& p_jvalue)
+		void bc_json_value<T>::_parse(T1& p_value, bc_json_parse_object& p_json_value)
 		{
-			json_parse::bc_parse(p_value, p_jvalue);
+			json_parse::bc_parse(p_value, p_json_value);
 		}
 
 		// -- Json object --------------------------------------------------------------------------------
 
 		template< class T >
-		bc_json_object< T >::bc_json_object(const bcCHAR* p_name, bc_ijson_structure* p_jstructure, bool p_optional) 
-			: bc_ijson_value(p_jstructure, p_optional),
+		bc_json_object< T >::bc_json_object(const bcCHAR* p_name, bc_ijson_structure* p_structure, bool p_optional) 
+			: bc_ijson_value(p_structure, p_optional),
 			m_name(p_name),
 			m_value()
 		{
@@ -634,19 +634,19 @@ namespace black_cat
 		void bc_json_object< T >::parse(bc_json_parse_object& p_value)
 		{
 			// If we use json object within json array m_name will be null
-			auto* l_jvalue = m_name != nullptr ? _get_json_field(p_value, m_name) : &p_value;
+			auto* l_value = m_name != nullptr ? _get_json_field(p_value, m_name) : &p_value;
 
-			if (!l_jvalue)
+			if (!l_value)
 			{
 				return;
 			}
 
-			if (!l_jvalue->IsObject())
+			if (!l_value->IsObject())
 			{
 				throw bc_io_exception("bad json format");
 			}
 
-			m_value.parse(*l_jvalue);
+			m_value.parse(*l_value);
 		}
 
 		template< class T >
@@ -694,8 +694,8 @@ namespace black_cat
 		// -- Json array --------------------------------------------------------------------------------
 
 		template< typename T, typename T1 >
-		bc_json_array< T, T1 >::bc_json_array(const char* p_name, bc_ijson_structure* p_jstructure, bool p_optional)
-			: bc_ijson_value(p_jstructure, p_optional),
+		bc_json_array< T, T1 >::bc_json_array(const char* p_name, bc_ijson_structure* p_structure, bool p_optional)
+			: bc_ijson_value(p_structure, p_optional),
 			m_name(p_name),
 			m_value()
 		{
@@ -704,27 +704,27 @@ namespace black_cat
 		template< typename T, typename T1 >
 		void bc_json_array< T, T1 >::parse(bc_json_parse_object& p_value)
 		{
-			auto* l_jvalue = _get_json_field(p_value, m_name);
+			auto* l_value = _get_json_field(p_value, m_name);
 
-			if (!l_jvalue)
+			if (!l_value)
 			{
 				return;
 			}
 
-			if (!l_jvalue->IsArray())
+			if (!l_value->IsArray())
 			{
 				throw bc_io_exception("bad json format");
 			}
 
-			auto l_jarray = l_jvalue->GetArray();
-			for (auto& l_jarray_value : l_jarray)
+			auto l_array = l_value->GetArray();
+			for (auto& l_array_value : l_array)
 			{
 				// Because json objects are non-copy and movable we emplace one in array and then parse it in-place
 				m_value.emplace_back(nullptr, nullptr);
 
 				auto l_value = m_value.rbegin();
 
-				l_value->parse(l_jarray_value);
+				l_value->parse(l_array_value);
 			}
 		}
 
@@ -770,8 +770,8 @@ namespace black_cat
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
 			>::type
 		>
-		::bc_json_array(const char* p_name, bc_ijson_structure* p_jstructure, bool p_optional)
-			: bc_ijson_value(p_jstructure, p_optional),
+		::bc_json_array(const char* p_name, bc_ijson_structure* p_structure, bool p_optional)
+			: bc_ijson_value(p_structure, p_optional),
 			m_name(p_name),
 			m_value()
 		{
@@ -797,27 +797,27 @@ namespace black_cat
 		>
 		::parse(bc_json_parse_object& p_value)
 		{
-			auto* l_jvalue = _get_json_field(p_value, m_name);
+			auto* l_value = _get_json_field(p_value, m_name);
 
-			if (!l_jvalue)
+			if (!l_value)
 			{
 				return;
 			}
 
-			if (!l_jvalue->IsArray())
+			if (!l_value->IsArray())
 			{
 				throw bc_io_exception("bad json format");
 			}
 
-			auto l_jarray = l_jvalue->GetArray();
-			for (auto& l_jarray_value : l_jarray)
+			auto l_array = l_value->GetArray();
+			for (auto& l_array_value : l_array)
 			{
 				// Because json objects are non-copy and movable we emplace one in array and then parse it in-place
 				m_value.emplace_back(nullptr, nullptr);
 
 				auto l_value = m_value.rbegin();
 
-				l_value->parse(l_jarray_value);
+				l_value->parse(l_array_value);
 			}
 		}
 

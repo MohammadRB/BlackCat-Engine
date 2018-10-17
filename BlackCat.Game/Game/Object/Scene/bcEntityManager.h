@@ -113,11 +113,11 @@ namespace black_cat
 			auto* l_actor_component_manager = core::bc_get_service< bc_actor_component_manager >();
 
 			bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
-			actor_component_create_delegate l_creatation_delegate(l_actor_component_manager, &bc_actor_component_manager::create_component< TComponent >);
+			actor_component_create_delegate l_creation_delegate(l_actor_component_manager, &bc_actor_component_manager::create_component< TComponent >);
 			actor_component_initialize_delegate l_initialization_delegate(this, &bc_entity_manager::_actor_component_initialization< TComponent >);
 
 			_bc_entity_component_callbacks l_component_callbacks;
-			l_component_callbacks.m_create_delegate = std::move(l_creatation_delegate);
+			l_component_callbacks.m_create_delegate = std::move(l_creation_delegate);
 			l_component_callbacks.m_initialize_delegate = std::move(l_initialization_delegate);
 
 			m_components.insert(component_map_type::value_type(l_hash, std::move(l_component_callbacks)));

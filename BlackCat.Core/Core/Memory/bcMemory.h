@@ -36,8 +36,8 @@ namespace black_cat
 			void tag(const bcCHAR* p_tag)
 			{
 				// In allocators we call this function only in theirs Initialize method, so it is safe /
-				std::memcpy(m_tag, p_tag, std::min<bcSIZE>(bcSIZE(s_tag_lenght - 1), strlen(p_tag)));
-				*(m_tag + std::min<bcSIZE>(bcSIZE(s_tag_lenght - 1), strlen(p_tag))) = '\0';
+				std::memcpy(m_tag, p_tag, std::min<bcSIZE>(bcSIZE(s_tag_length - 1), strlen(p_tag)));
+				*(m_tag + std::min<bcSIZE>(bcSIZE(s_tag_length - 1), strlen(p_tag))) = '\0';
 			}
 
 			const bcCHAR* tag() const noexcept 
@@ -62,8 +62,8 @@ namespace black_cat
 			bc_memory_tracer m_tracer;
 
 		private:
-			static const bcUINT8 s_tag_lenght = 15;
-			bcCHAR m_tag[s_tag_lenght];
+			static const bcUINT8 s_tag_length = 15;
+			bcCHAR m_tag[s_tag_length];
 
 			void _assign(this_type&& p_other)
 			{

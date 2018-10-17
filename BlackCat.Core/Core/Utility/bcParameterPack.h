@@ -106,7 +106,7 @@ namespace black_cat
 
 			/**
 			 * \brief Cast underlying type to requested type.
-			 * \tparam T 
+			 * \tparam T
 			 * \return Return null if underlying type mismatch
 			 */
 			template<typename T>
@@ -124,8 +124,8 @@ namespace black_cat
 
 			/**
 			 * \brief Cast underlying type to requested type. Throw bad_cast exception if underlying type mismatch
-			 * \tparam T 
-			 * \return 
+			 * \tparam T
+			 * \return
 			 */
 			template < typename T >
 			T* as_throw();
@@ -135,7 +135,7 @@ namespace black_cat
 
 			/**
 			 * \brief Return pointer to underlying buffer. Throw bad_cast exception if there is no state
-			 * \return 
+			 * \return
 			 */
 			template <>
 			const void* as_throw< void >() const;
@@ -156,10 +156,9 @@ namespace black_cat
 
 		private:
 			static constexpr bcUINT s_buffer_size = 5 * sizeof(void*);
-			
-			bcUINT m_buffer[s_buffer_size];
 
 			bool m_used_internal_buffer;
+			bcUINT m_buffer[s_buffer_size];
 			_bc_parameter_pack_base* m_object;
 		};
 
@@ -192,8 +191,8 @@ namespace black_cat
 		};
 
 		inline bc_parameter_pack::bc_parameter_pack()
-			: m_buffer(),
-			m_used_internal_buffer(false),
+			: m_used_internal_buffer(false),
+			m_buffer(),
 			m_object(nullptr)
 		{
 			set_allocator_alloc_type(bc_alloc_type::frame);
@@ -300,10 +299,10 @@ namespace black_cat
 			{
 				return nullptr;
 			}
-			
-			auto* l_imp = dynamic_cast< _bc_parameter_pack_imp<T>* >(m_object);
 
-			if(l_imp)
+			auto* l_imp = dynamic_cast<_bc_parameter_pack_imp<T>*>(m_object);
+
+			if (l_imp)
 			{
 				return &l_imp->m_value;
 			}
@@ -314,11 +313,11 @@ namespace black_cat
 		template< typename T >
 		const T* bc_parameter_pack::as() const
 		{
-			return const_cast< bc_parameter_pack& >(*this).as< T >();
+			return const_cast<bc_parameter_pack&>(*this).as< T >();
 		}
 
 		template<>
-		const void* bc_parameter_pack::as<void>() const
+		inline const void* bc_parameter_pack::as<void>() const
 		{
 			if (!has_value())
 			{
@@ -344,11 +343,11 @@ namespace black_cat
 		template< typename T >
 		const T* bc_parameter_pack::as_throw() const
 		{
-			return const_cast< bc_parameter_pack& >(*this).as_throw< T >();
+			return const_cast<bc_parameter_pack&>(*this).as_throw< T >();
 		}
 
 		template<>
-		const void* bc_parameter_pack::as_throw<void>() const
+		inline const void* bc_parameter_pack::as_throw<void>() const
 		{
 			if (!has_value())
 			{
@@ -371,12 +370,12 @@ namespace black_cat
 		inline void bc_parameter_pack::reset()
 		{
 			// Free allocated memory
-			if(m_object && !m_used_internal_buffer)
+			if (m_object && !m_used_internal_buffer)
 			{
 				deallocate(m_object);
 			}
 			// Only destruct constructed object in internal buffer
-			else if(m_object && m_used_internal_buffer)
+			else if (m_object && m_used_internal_buffer)
 			{
 				m_object->~_bc_parameter_pack_base();
 			}
@@ -418,16 +417,14 @@ namespace black_cat
 			operator=(std::move(p_other));
 		}
 
-		template< typename T, typename = typename std::enable_if< !std::is_same< typename std::decay<T>::type, bc_parameter_pack >::value >::type >
+		template< typename T, typename >
 		bc_any::bc_any(T&& p_value)
 			: bc_any()
 		{
 			set_value(std::forward<T>(p_value));
 		}
 
-		inline bc_any::~bc_any()
-		{
-		}
+		inline bc_any::~bc_any() = default;
 
 		inline bc_any& bc_any::operator=(const bc_parameter_pack& p_other)
 		{
@@ -436,18 +433,8 @@ namespace black_cat
 			return *this;
 		}
 
-		inline bc_any& bc_any::operator=(const bc_any& p_other)
-		{
-			bc_parameter_pack::operator=(p_other);
+		inline bc_any& bc_any::operator=(const bc_any& p_other) = default;
 
-			return *this;
-		}
-
-		inline bc_any& bc_any::operator=(bc_any&& p_other)
-		{
-			bc_parameter_pack::operator=(std::move(p_other));
-
-			return *this;
-		}
+		inline bc_any& bc_any::operator=(bc_any&& p_other) = default;
 	}
 }

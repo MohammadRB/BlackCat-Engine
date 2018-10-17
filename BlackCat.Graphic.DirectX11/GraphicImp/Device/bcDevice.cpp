@@ -1420,7 +1420,7 @@ namespace black_cat
 			}
 
 			set_vsync(true);
-			set_allocator_alloc_type(core::bc_alloc_type::unknown_movale);
+			set_allocator_alloc_type(core::bc_alloc_type::unknown_movable);
 		}
 
 		template<>

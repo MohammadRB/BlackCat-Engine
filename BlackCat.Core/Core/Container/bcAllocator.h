@@ -121,7 +121,7 @@ namespace black_cat
 			using propagate_on_container_copy_assignment = std::false_type;
 			using propagate_on_container_move_assignment = std::false_type;
 			using propagate_on_container_swap = std::false_type;
-			using is_movable_type = typename std::conditional< TAllocType == bc_alloc_type::unknown_movale, std::true_type, std::false_type >::type;
+			using is_movable_type = typename std::conditional< TAllocType == bc_alloc_type::unknown_movable, std::true_type, std::false_type >::type;
 
 			template< typename TOther >
 			struct rebind
@@ -265,7 +265,7 @@ namespace black_cat
 		using bc_allocator = bc_allocator_base< T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::unknown >;
 
 		template< typename T >
-		using bc_allocator_movable = bc_allocator_base< T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::unknown_movale >;
+		using bc_allocator_movable = bc_allocator_base< T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::unknown_movable >;
 
 		template< typename T, bcUINT32 TAlign >
 		using bc_aligned_allocator_program = bc_allocator_base< T, TAlign, bc_alloc_type::program >;
@@ -280,7 +280,7 @@ namespace black_cat
 		using bc_aligned_allocator = bc_allocator_base< T, TAlign, bc_alloc_type::unknown >;
 
 		template< typename T, bcUINT32 TAlign >
-		using bc_aligned_allocator_movable = bc_allocator_base< T, TAlign, bc_alloc_type::unknown_movale >;
+		using bc_aligned_allocator_movable = bc_allocator_base< T, TAlign, bc_alloc_type::unknown_movable >;
 
 		template< typename T >
 		class bc_runtime_allocator
@@ -368,7 +368,10 @@ namespace black_cat
 			pointer allocate(size_type p_count, std::allocator<void>::const_pointer p_hint = nullptr)
 			{
 				if (m_alignment <= BC_MEMORY_MIN_ALIGN)
+				{
 					return static_cast<pointer>(bcAllocThrow(sizeof(value_type)* p_count, m_alloc_type));
+				}
+
 				return static_cast<pointer>(bcAlignedAllocThrow(sizeof(value_type)* p_count, m_alignment, m_alloc_type));
 			}
 
@@ -398,13 +401,13 @@ namespace black_cat
 
 			void register_pointer(pointer* p_pointer) noexcept(true)
 			{
-				if(m_alloc_type == bc_alloc_type::unknown_movale)
+				if(m_alloc_type == bc_alloc_type::unknown_movable)
 					register_movable_pointer(reinterpret_cast<void**>(p_pointer));
 			}
 
 			void unregister_pointer(pointer* p_pointer) noexcept(true)
 			{
-				if (m_alloc_type == bc_alloc_type::unknown_movale)
+				if (m_alloc_type == bc_alloc_type::unknown_movable)
 					unregister_movable_pointer(reinterpret_cast< void** >(p_pointer));
 			}
 
@@ -415,13 +418,16 @@ namespace black_cat
 			bcUINT m_alignment;
 		};
 
-		// Provide an interface for classes that use dynamic memory and their clients to change allocation properties
-		// (Don't use movale memory to allocate objects of this type)
+		/**
+		 * \brief 
+		 * Provide an interface for classes that use memory allocation and their clients need to change allocation properties.
+		 * (Don't use movable memory to allocate objects of this type)
+		 */
 		class bc_object_allocator
 		{
 		public:
-			template<typename T>
-			using ptr = bc_unique_ptr<T, void(*)(T*)>;
+			/*template<typename T>
+			using ptr = bc_unique_ptr<T, void(*)(T*)>;*/
 
 		public:
 			explicit bc_object_allocator(bc_alloc_type p_alloc_type = bc_alloc_type::unknown, bcUINT p_alignment = BC_MEMORY_MIN_ALIGN)
@@ -466,69 +472,40 @@ namespace black_cat
 
 		protected:
 			// Allocate memory for an object and construct it. return type of this function is a unique pointer 
-			// that will call deallocate function and there is no need to use deallocate manualy
+			// that will call deallocate function and there is no need to use deallocate manually
 			template<typename T, typename ...TArgs>
-			ptr<T> allocate(TArgs&&... p_args)
+			bc_unique_ptr<T> allocate(TArgs&&... p_args) const
 			{
-				bc_runtime_allocator<T> l_allocator(m_alloc_type, m_alignment);
-
-				T* l_pointer = l_allocator.allocate(1);
-				try
-				{
-					l_allocator.construct(l_pointer, std::forward<TArgs>(p_args)...);
-				}
-				catch(...)
-				{
-					l_allocator.deallocate(l_pointer);
-					throw;
-				}
-
-				return ptr<T>(l_pointer, &bc_object_allocator::deallocate<T>);
+				return bc_make_unique<T>(m_alloc_type, m_alignment, std::forward<TArgs>(p_args)...);
 			}
 
 			// Used to allocate raw memory
-			template<>
-			ptr<bcBYTE> allocate<bcBYTE, bcUINT>(bcUINT&& p_num)
+			bc_unique_ptr<bcBYTE> allocate_raw(bcUINT p_num) const
 			{
-				bc_runtime_allocator<bcBYTE> l_allocator(m_alloc_type, m_alignment);
+				void* l_memory;
+				if(m_alignment > BC_MEMORY_MIN_ALIGN)
+				{
+					l_memory = bcAlignedAlloc(p_num, m_alignment, m_alloc_type);
+				}
+				else
+				{
+					l_memory = bcAlloc(p_num, m_alloc_type);
+				}
 
-				bcBYTE* l_pointer = l_allocator.allocate(p_num);
-
-				return ptr<bcBYTE>(l_pointer, &bc_object_allocator::deallocate<bcBYTE>);
+				return bc_unique_ptr<bcBYTE>(reinterpret_cast<bcBYTE*>(l_memory));
 			}
 
 			// Destruct object and deallocate it's memory
 			template<typename T>
 			static void deallocate(T* p_pointer)
 			{
-				bc_runtime_allocator<T> l_allocator(bc_alloc_type::unknown);
-
-				try
-				{
-					l_allocator.destroy(p_pointer);
-				}
-				catch(...)
-				{
-					l_allocator.deallocate(p_pointer);
-					throw;
-				}
-
-				l_allocator.deallocate(p_pointer);
-			}
-
-			template<typename T>
-			static void deallocate(ptr<T> p_pointer)
-			{
-				deallocate(p_pointer.get());
+				bcDelete(p_pointer);
 			}
 
 			// Used to deallocate raw memory
-			template<>
-			static void deallocate(bcBYTE* p_pointer)
+			static void deallocate_raw(bcBYTE* p_pointer)
 			{
-				bc_runtime_allocator<bcBYTE> l_allocator(bc_alloc_type::unknown);
-
-				l_allocator.deallocate(p_pointer);
+				bcFree(p_pointer);
 			}
 
 		private:

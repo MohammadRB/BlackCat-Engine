@@ -18,7 +18,7 @@
 #include <chrono>
 #include <assert.h>
 
-// == BlackCat Definatoins ==================================================================================== /
+// == BlackCat Definitions ==================================================================================== /
 
 #ifndef bcInline
 #define bcInline inline
@@ -36,7 +36,7 @@
 //#define except throw(...)
 //#endif
 
-// == BlackCat Debug Definations ============================================================================== /
+// == BlackCat Debug Definitions ============================================================================== /
 
 #if defined( DEBUG ) || defined( _DEBUG )
 #ifndef BC_DEBUG
@@ -67,4 +67,4 @@
 #define BC_UNICODE
 #endif
 
-// == BlackCat General Definations ============================================================================ /
+// == BlackCat General Definitions ============================================================================ /

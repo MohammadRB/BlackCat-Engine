@@ -12,7 +12,7 @@ namespace black_cat
 		public:
 			void initialize(TArgs... p_args)
 			{
-				// Because TArgs can be rvalue reference we must forwad it
+				// Because TArgs can be rvalue reference we must forward it
 				_initialize(std::forward<TArgs>(p_args)...);
 				m_initialized = true;
 			}
@@ -34,9 +34,7 @@ namespace black_cat
 			{
 			}
 
-			~bc_initializable()
-			{
-			}
+			~bc_initializable() = default;
 
 			virtual void _initialize(TArgs... pArgs) = 0;
 

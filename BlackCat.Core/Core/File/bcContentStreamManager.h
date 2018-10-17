@@ -135,15 +135,14 @@ namespace black_cat
 		{
 			_register_content_type<TContent>();
 
-			bc_content_manager* l_content_manager = bc_service_manager::get().get_service< bc_content_manager >();
-
+			bc_content_manager* l_content_manager = bc_get_service< bc_content_manager >();
 			l_content_manager->register_loader<TContent, TLoader>(std::move(p_loader));
 		}
 
 		template< class TContent >
 		void bc_content_stream_manager::_register_content_type()
 		{
-			auto* l_content_manager = bc_service_manager::get().get_service< bc_content_manager >();
+			auto* l_content_manager = bc_get_service< bc_content_manager >();
 
 			auto l_hash = string_hash()(bc_content_traits< TContent >::content_name());
 			content_load_delegate l_load_delegate([l_content_manager](bc_alloc_type p_alloc_type, const bcECHAR* p_file_name, bc_content_loader_parameter&& p_parameters)
