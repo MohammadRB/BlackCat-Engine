@@ -20,6 +20,7 @@ namespace black_cat
 		template< bc_physics_api TApi >
 		class bc_platform_scene;
 		using bc_scene = bc_platform_scene< g_current_physics_api >;
+		using bc_scene_ref = bc_physics_ref<bc_scene>;
 
 		template< bc_physics_api TApi >
 		class bc_platform_transform;
@@ -150,7 +151,7 @@ namespace black_cat
 
 			bc_platform_physics& operator=(bc_platform_physics&& p_other) noexcept;
 
-			bc_scene create_scene(bc_scene_builder&& p_desc);
+			bc_scene_ref create_scene(bc_scene_builder&& p_desc);
 
 			bcUINT32 get_scene_count() const noexcept;
 

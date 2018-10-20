@@ -13,7 +13,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_scene::bc_scene(bc_scene_graph&& p_scene_graph, physics::bc_scene&& p_px_scene)
+		bc_scene::bc_scene(bc_scene_graph&& p_scene_graph, physics::bc_scene_ref&& p_px_scene)
 			: m_scene_graph(std::move(p_scene_graph)),
 			m_px_scene(std::move(p_px_scene))
 		{
@@ -49,7 +49,7 @@ namespace black_cat
 			if(l_rigid_component)
 			{
 				physics::bc_rigid_body l_rigid_body = l_rigid_component->get_body();
-				m_px_scene.add_actor(l_rigid_body);
+				m_px_scene->add_actor(l_rigid_body);
 			}
 
 			m_scene_graph.add_object(p_actor);
@@ -62,7 +62,7 @@ namespace black_cat
 			if (l_rigid_component)
 			{
 				physics::bc_rigid_body l_rigid_body = l_rigid_component->get_body();
-				m_px_scene.remove_actor(l_rigid_body);
+				m_px_scene->remove_actor(l_rigid_body);
 			}
 
 			return m_scene_graph.remove_object(p_actor);
@@ -80,10 +80,10 @@ namespace black_cat
 
 		void bc_scene::update(bc_physics_system& p_physics, core_platform::bc_clock::update_param p_time)
 		{
-			m_px_scene.update(p_time);
-			m_px_scene.wait();
+			m_px_scene->update(p_time);
+			m_px_scene->wait();
 
-			auto l_px_actors = m_px_scene.get_active_actors();
+			auto l_px_actors = m_px_scene->get_active_actors();
 			for(physics::bc_updated_actor& l_px_actor : l_px_actors)
 			{
 				auto l_rigid_body = l_px_actor.m_actor.is_rigid_body();

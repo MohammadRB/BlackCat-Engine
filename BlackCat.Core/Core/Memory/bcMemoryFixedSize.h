@@ -25,7 +25,7 @@ namespace black_cat
 
 			bc_memory_fixed_size(this_type&& p_other) noexcept;
 			
-			~bc_memory_fixed_size();
+			~bc_memory_fixed_size() noexcept;
 
 			this_type& operator =(this_type&& p_other) noexcept;
 
@@ -46,7 +46,7 @@ namespace black_cat
 		private:
 			void _initialize(bcUINT32 p_num_block, bcUINT32 p_block_size, const bcCHAR* p_tag) override;
 
-			void _destroy() noexcept(true) override;
+			void _destroy() noexcept override;
 
 			bcInline void _move(this_type&& p_other)
 			{
@@ -74,12 +74,9 @@ namespace black_cat
 			bcUINT32 m_num_block;
 			bcUINT32 m_block_size;
 			bcUINT32 m_num_bitblocks;
-			// An index that searching for free block will continue from this place /
-			core_platform::bc_atomic< bcUINT32 > m_allocated_block;
-			// bit-vector indicating if a block is allocated or not /
-			core_platform::bc_atomic< bitblock_type >* m_blocks;
-			// block of data /
-			bcUBYTE* m_heap;
+			core_platform::bc_atomic< bcUINT32 > m_allocated_block;		// An index that searching for free block will continue from this place
+			core_platform::bc_atomic< bitblock_type >* m_blocks;			// bit-vector indicating if a block is allocated or not
+			bcUBYTE* m_heap;												// block of data
 		};
 
 #endif

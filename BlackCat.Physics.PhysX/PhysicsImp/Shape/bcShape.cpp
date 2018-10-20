@@ -522,8 +522,10 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bool bc_platform_shape< g_api_physx >::is_valid() const noexcept
 		{
-			return static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_shape& >(*this))
-				.get_platform_pack().m_px_object != nullptr;
+			return static_cast< bc_platform_physics_reference& >
+			(
+				const_cast< bc_platform_shape& >(*this)
+			).get_platform_pack().m_px_object != nullptr;
 		}
 
 		template<>

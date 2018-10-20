@@ -39,6 +39,11 @@ namespace black_cat
 		}
 
 		bc_memory_heap::bc_memory_heap() noexcept(true)
+			: m_heap(nullptr),
+			m_heap_size(0),
+			m_remaining_free_space_limit(0),
+			m_block_size(0),
+			m_last_block(nullptr)
 		{
 		}
 

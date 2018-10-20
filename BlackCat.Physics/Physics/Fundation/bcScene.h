@@ -6,6 +6,7 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Math/bcVector3f.h"
 #include "Physics/bcPhysicsApi.h"
+#include "Physics/bcPhysicsReference.h"
 #include "Physics/Fundation/bcFundation.h"
 #include "Physics/Fundation/bcTransform.h"
 #include "Physics/Fundation/bcPhysics.h"
@@ -13,14 +14,15 @@
 #include "Physics/Fundation/bcSceneDebug.h"
 #include "Physics/Collision/bcQueryGroup.h"
 #include "Physics/Collision/bcSceneQuery.h"
+#include "Physics/Body/bcActor.h"
 
 namespace black_cat
 {
 	namespace physics
 	{
-		template< bc_physics_api TApi >
+		/*template< bc_physics_api TApi >
 		class bc_platform_actor;
-		using bc_actor = bc_platform_actor< g_current_physics_api >;
+		using bc_actor = bc_platform_actor< g_current_physics_api >;*/
 
 		template< bc_physics_api TApi >
 		class bc_platform_aggregate;
@@ -39,7 +41,7 @@ namespace black_cat
 		struct bc_updated_actor
 		{
 		public:
-			bc_updated_actor(bc_actor p_actor, const bc_transform& p_transform)
+			bc_updated_actor(const bc_actor& p_actor, const bc_transform& p_transform)
 				: m_actor(p_actor),
 				m_global_pose(p_transform)
 			{
@@ -55,18 +57,20 @@ namespace black_cat
 		};
 
 		template< bc_physics_api TApi >
-		class bc_platform_scene
+		class bc_platform_scene : public bc_platform_physics_reference<TApi>
 		{
 		public:
 			using platform_pack = bc_platform_scene_pack<TApi>;
 			friend bc_platform_physics<TApi>;
 
 		public:
-			bc_platform_scene(bc_platform_scene&& p_other) noexcept;
+			bc_platform_scene();
+
+			bc_platform_scene(const bc_platform_scene& p_other) noexcept;
 
 			~bc_platform_scene();
 
-			bc_platform_scene& operator=(bc_platform_scene&& p_other) noexcept;
+			bc_platform_scene& operator=(const bc_platform_scene& p_other) noexcept;
 
 			/**
 			 * \brief Adds an actor to this scene.
@@ -257,6 +261,8 @@ namespace black_cat
 
 			void unlock_shared();
 
+			bool is_valid() const noexcept override;
+
 			platform_pack& get_platform_pack()
 			{
 				return m_pack;
@@ -265,10 +271,6 @@ namespace black_cat
 		protected:
 
 		private:
-			bc_platform_scene();
-
-			explicit bc_platform_scene(platform_pack& p_pack);
-
 			platform_pack m_pack;
 		};
 

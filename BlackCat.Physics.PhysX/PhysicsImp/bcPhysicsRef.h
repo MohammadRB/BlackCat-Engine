@@ -6,11 +6,16 @@
 
 #include "CorePlatform/bcType.h"
 #include "Physics/bcPhysicsRef.h"
+#include "PhysicsImp/bcExport.h"
 
 namespace black_cat
 {
 	namespace physics
 	{
+		template< bc_physics_api TApi >
+		class bc_platform_scene;
+		using bc_scene = bc_platform_scene< g_current_physics_api >;
+		
 		template< class TObject >
 		struct bc_platform_physics_ref_pack<g_api_physx, TObject>
 		{
@@ -78,10 +83,9 @@ namespace black_cat
 		void bc_platform_physics_ref<TApi, TObject>::reset()
 		{
 			auto& l_reference = static_cast<bc_platform_physics_reference<TApi>&>(m_pack.m_object);
-
-			if(l_reference.is_valid())
+			if (l_reference.is_valid())
 			{
-				l_reference.get_platform_pack().m_px_object->release();
+				_release_px_reference(l_reference, std::is_same<bc_platform_scene<TApi>, TObject>());
 				m_pack.m_object = type();
 			}
 		}
@@ -89,14 +93,12 @@ namespace black_cat
 		template< bc_physics_api TApi, class TObject >
 		void bc_platform_physics_ref<TApi, TObject>::reset(const type& p_object)
 		{
-			auto& l_reference = static_cast<bc_platform_physics_reference<TApi>&>(m_pack.m_object);
-
-			if (l_reference.is_valid())
-			{
-				l_reference.get_platform_pack().m_px_object->release();
-			}
-
+			reset();
 			m_pack.m_object = p_object;
 		}
+		
+		void BC_PHYSICSIMP_DLL _release_px_reference(bc_platform_physics_reference<g_api_physx>& p_reference, std::true_type p_is_scene);
+
+		void BC_PHYSICSIMP_DLL _release_px_reference(bc_platform_physics_reference<g_api_physx>& p_reference, std::false_type p_is_scene);
 	}
 }

@@ -373,56 +373,7 @@ namespace black_cat
 			{
 				using other = bc_shared_ptr< TOther >;
 			};
-
-			class meta_data
-			{
-			public:
-				template <typename T1>
-				friend class bc_shared_ptr;
-
-			public:
-				template< typename TDeleter >
-				meta_data(TDeleter p_deleter, bool p_is_shared)
-					: m_deleter(p_deleter),
-					m_ref_count(0),
-					m_is_shared(p_is_shared)
-				{
-				}
-
-				bcSIZE inc_ref_count() noexcept(true)
-				{
-					bcSIZE l_count = m_ref_count.fetch_add(1, core_platform::bc_memory_order::relaxed);
-					return l_count + 1;
-				}
-
-				bcSIZE dec_ref_count() noexcept(true)
-				{
-					bcSIZE l_count = m_ref_count.fetch_sub(1, core_platform::bc_memory_order::relaxed);
-					return l_count - 1;
-				}
-
-				bcSIZE ref_count() const noexcept(true)
-				{
-					return m_ref_count.load(core_platform::bc_memory_order::relaxed);
-				}
-
-				void call_deleter(pointer p_pointer) const
-				{
-					m_deleter(p_pointer);
-				}
-
-				bool is_shared() const noexcept(true)
-				{
-					return m_is_shared;
-				}
-				
-			protected:
-
-			private:
-				bc_delegate<void(pointer)> m_deleter;
-				core_platform::bc_atomic<bcSIZE> m_ref_count;
-				bool m_is_shared;
-			};
+			class meta_data;
 
 		public:
 			constexpr bc_shared_ptr() noexcept(true)
@@ -737,6 +688,57 @@ namespace black_cat
 
 			pointer m_pointer;
 			meta_data* m_meta;
+		};
+
+		template <typename T>
+		class bc_shared_ptr<T>::meta_data
+		{
+		public:
+			template <typename T1>
+			friend class bc_shared_ptr;
+
+		public:
+			template< typename TDeleter >
+			meta_data(TDeleter p_deleter, bool p_is_shared)
+				: m_deleter(p_deleter),
+				m_ref_count(0),
+				m_is_shared(p_is_shared)
+			{
+			}
+
+			bcSIZE inc_ref_count() noexcept(true)
+			{
+				bcSIZE l_count = m_ref_count.fetch_add(1, core_platform::bc_memory_order::relaxed);
+				return l_count + 1;
+			}
+
+			bcSIZE dec_ref_count() noexcept(true)
+			{
+				bcSIZE l_count = m_ref_count.fetch_sub(1, core_platform::bc_memory_order::relaxed);
+				return l_count - 1;
+			}
+
+			bcSIZE ref_count() const noexcept(true)
+			{
+				return m_ref_count.load(core_platform::bc_memory_order::relaxed);
+			}
+
+			void call_deleter(pointer p_pointer) const
+			{
+				m_deleter(p_pointer);
+			}
+
+			bool is_shared() const noexcept(true)
+			{
+				return m_is_shared;
+			}
+
+		protected:
+
+		private:
+			bc_delegate<void(pointer)> m_deleter;
+			core_platform::bc_atomic<bcSIZE> m_ref_count;
+			bool m_is_shared;
 		};
 
 		template<class T1, class T2>
@@ -1215,8 +1217,8 @@ namespace black_cat
 				throw std::bad_alloc();
 			}
 
-			T* l_pointer = l_alloc;
-			meta_type* l_meta_pointer = l_alloc + sizeof(T);
+			T* l_pointer = reinterpret_cast<T*>(l_alloc);
+			meta_type* l_meta_pointer = reinterpret_cast<meta_type*>(l_pointer + 1);
 
 			new(l_pointer)T(std::forward< TArgs >(p_args)...);
 			new(l_meta_pointer)meta_type(bc_default_deleter< T >(), true);

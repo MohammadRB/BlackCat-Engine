@@ -15,7 +15,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_scene
 		{
 		public:
-			bc_scene(bc_scene_graph&& p_scene_graph, physics::bc_scene&& p_px_scene);
+			bc_scene(bc_scene_graph&& p_scene_graph, physics::bc_scene_ref&& p_px_scene);
 
 			bc_scene(bc_scene&&) noexcept;
 
@@ -35,12 +35,12 @@ namespace black_cat
 
 			physics::bc_scene& get_px_scene()
 			{
-				return m_px_scene;
+				return m_px_scene.get();
 			}
 
 			const physics::bc_scene& get_px_scene() const
 			{
-				return m_px_scene;
+				return m_px_scene.get();
 			}
 
 			core::bc_vector_frame< bc_actor > get_heightmaps() const;
@@ -59,7 +59,7 @@ namespace black_cat
 
 		private:
 			bc_scene_graph m_scene_graph;
-			physics::bc_scene m_px_scene;
+			physics::bc_scene_ref m_px_scene;
 		};
 	}
 }

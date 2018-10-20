@@ -231,6 +231,7 @@ copy ..\$(Configuration)\$(ProjectName).pdb ..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="PhysicsImp\Shape\bcTriangleMesh.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bcPhysicsRef.cpp" />
     <ClCompile Include="PhysicsImp\bcImplementation.cpp" />
     <ClCompile Include="PhysicsImp\bcPhysicsReference.cpp" />
     <ClCompile Include="PhysicsImp\bcUtility.cpp" />

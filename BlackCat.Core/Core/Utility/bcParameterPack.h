@@ -233,7 +233,7 @@ namespace black_cat
 			}
 			else
 			{
-				bcBYTE* l_buffer = allocate<bcBYTE>(p_other.m_object->size()).release();
+				bcBYTE* l_buffer = allocate_raw(p_other.m_object->size()).release();
 				m_object = p_other.m_object->copy(l_buffer);
 				m_used_internal_buffer = false;
 			}

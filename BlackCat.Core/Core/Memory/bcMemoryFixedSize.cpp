@@ -11,17 +11,17 @@ namespace black_cat
 	{
 #ifdef BC_MEMORY_ENABLE
 
-		bc_memory_fixed_size::bc_memory_fixed_size() noexcept(true)
+		bc_memory_fixed_size::bc_memory_fixed_size() noexcept
 		{
 		}
 
-		bc_memory_fixed_size::bc_memory_fixed_size(this_type&& p_other) noexcept(true) 
+		bc_memory_fixed_size::bc_memory_fixed_size(this_type&& p_other) noexcept
 			: bc_memory(std::move(p_other))
 		{
 			_move(std::move(p_other));
 		}
 
-		bc_memory_fixed_size::~bc_memory_fixed_size() noexcept(true)
+		bc_memory_fixed_size::~bc_memory_fixed_size() noexcept
 		{
 			if (m_initialized)
 			{
@@ -29,7 +29,7 @@ namespace black_cat
 			}
 		}
 
-		bc_memory_fixed_size::this_type& bc_memory_fixed_size::operator =(this_type&& p_other) noexcept(true)
+		bc_memory_fixed_size::this_type& bc_memory_fixed_size::operator =(this_type&& p_other) noexcept
 		{
 			bc_memory::operator =(std::move(p_other));
 			_move(std::move(p_other));
@@ -52,19 +52,27 @@ namespace black_cat
 				m_num_bitblocks = m_num_block / s_bitblock_size;
 			}
 			m_allocated_block.store(0U);
-			
-			m_blocks = static_cast<core_platform::bc_atomic< bitblock_type >*>
-				(core_platform::bc_mem_aligned_alloc(m_num_bitblocks * sizeof(core_platform::bc_atomic< bitblock_type >), BC_MEMORY_MIN_ALIGN));
+
+			m_blocks = static_cast< core_platform::bc_atomic< bitblock_type >* >
+			(
+				core_platform::bc_mem_aligned_alloc(m_num_bitblocks * sizeof(core_platform::bc_atomic< bitblock_type >), BC_MEMORY_MIN_ALIGN)
+			);
 
 			if (!m_blocks)
+			{
 				throw std::bad_alloc();
+			}
 
 			for (bcUINT32 i = 0; i < m_num_bitblocks; ++i)
+			{
 				m_blocks[i].store(0U);
+			}
 
 			// We alloc m_heap by min align defined in CorePCH because we want all of our allocations have MIN_Align /
 			m_heap = static_cast<bcUBYTE*>
-				(core_platform::bc_mem_aligned_alloc((m_block_size * m_num_block) * sizeof(bcUBYTE), BC_MEMORY_MIN_ALIGN));
+			(
+				core_platform::bc_mem_aligned_alloc((m_block_size * m_num_block) * sizeof(bcUBYTE), BC_MEMORY_MIN_ALIGN)
+			);
 
 			if (!m_heap)
 			{
@@ -73,16 +81,19 @@ namespace black_cat
 			}
 
 			m_tracer.initialize((m_block_size * m_num_block) * sizeof(bcUBYTE));
-			if (p_tag) tag(p_tag);
+			if (p_tag) 
+			{
+				tag(p_tag);
+			}
 		}
 
-		void bc_memory_fixed_size::_destroy() noexcept(true)
+		void bc_memory_fixed_size::_destroy() noexcept
 		{
-			bc_mem_aligned_free(m_blocks);
+			core_platform::bc_mem_aligned_free(m_blocks);
 			core_platform::bc_mem_aligned_free(m_heap);
 		}
 
-		void* bc_memory_fixed_size::alloc(bc_memblock* p_mem_block) noexcept(true)
+		void* bc_memory_fixed_size::alloc(bc_memblock* p_mem_block) noexcept
 		{
 			bcUINT32 l_size = p_mem_block->size();
 
@@ -149,7 +160,7 @@ namespace black_cat
 			return l_result;
 		}
 
-		void bc_memory_fixed_size::free(void* p_pointer, bc_memblock* p_mem_block) noexcept(true)
+		void bc_memory_fixed_size::free(void* p_pointer, bc_memblock* p_mem_block) noexcept
 		{
 			bcUBYTE* l_pointer = reinterpret_cast<bcUBYTE*>(p_pointer);
 
@@ -164,7 +175,7 @@ namespace black_cat
 			bcINT32 l_bit_index = l_block % s_bitblock_size;
 
 #ifdef BC_MEMORY_DEBUG
-			memset(l_pointer, 0, p_mem_block->size());
+			std::memset(l_pointer, 0, p_mem_block->size());
 #endif
 
 			m_blocks[l_chunk_index].fetch_and(~(bitblock_type(1) << l_bit_index), core_platform::bc_memory_order::seqcst);
@@ -172,14 +183,17 @@ namespace black_cat
 			m_tracer.accept_free(p_mem_block->size());
 		}
 
-		bool bc_memory_fixed_size::contain_pointer(void* p_pointer) const noexcept(true)
+		bool bc_memory_fixed_size::contain_pointer(void* p_pointer) const noexcept
 		{
-			return (p_pointer >= m_heap && p_pointer < m_heap + (m_block_size * m_num_block)) ? true : false;
+			return p_pointer >= m_heap && p_pointer < m_heap + (m_block_size * m_num_block);
 		}
 
-		void bc_memory_fixed_size::clear() noexcept(true)
+		void bc_memory_fixed_size::clear() noexcept
 		{
-			memset(m_blocks, 0, m_num_bitblocks * sizeof(core_platform::bc_atomic< bitblock_type >));
+			for (bcUINT32 i = 0; i < m_num_bitblocks; ++i)
+			{
+				m_blocks[i].store(0U);
+			}
 
 			m_tracer.accept_clear();
 		}

@@ -186,9 +186,9 @@ namespace black_cat
 			m_scene->update(m_physics_system, p_clock_update_param);
 		}
 
-		inline void bc_game_system::_initialize(bc_game_system_parameter p_paramter)
+		inline void bc_game_system::_initialize(bc_game_system_parameter p_parameter)
 		{
-			m_render_system.initialize(*core::bc_get_service<core::bc_content_stream_manager>(), std::move(p_paramter.m_render_system_parameter));
+			m_render_system.initialize(*core::bc_get_service<core::bc_content_stream_manager>(), std::move(p_parameter.m_render_system_parameter));
 			m_physics_system.initialize();
 
 			auto l_px_scene_builder = std::move(physics::bc_scene_builder()

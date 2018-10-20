@@ -293,5 +293,8 @@
     <ClCompile Include="PhysicsImp\Fundation\bcSerializeBuffer.cpp">
       <Filter>PhysicsImp\Fundation</Filter>
     </ClCompile>
+    <ClCompile Include="bcPhysicsRef.cpp">
+      <Filter>PhysicsImp</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

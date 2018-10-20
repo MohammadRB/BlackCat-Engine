@@ -13,9 +13,9 @@ namespace black_cat
 	{
 #ifdef BC_MEMORY_ENABLE
 
-		inline bcINT32 _roundup_p2(bcINT32 p_num, bcINT32 p_multipe)
+		inline bcINT32 _roundup_p2(bcINT32 p_num, bcINT32 p_multiple)
 		{
-			return (p_num + p_multipe - 1) & ~(p_multipe - 1);
+			return (p_num + p_multiple - 1) & ~(p_multiple - 1);
 		}
 
 		template< typename T >

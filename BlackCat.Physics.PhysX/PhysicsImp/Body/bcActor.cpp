@@ -189,7 +189,7 @@ namespace black_cat
 		{
 			auto* l_px_actor = static_cast< physx::PxActor* >
 			(
-				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_actor& >(*this)).get_platform_pack().m_px_object
+				static_cast< bc_platform_physics_reference& >(*this).get_platform_pack().m_px_object
 			);
 
 			l_px_actor->userData = user_data;

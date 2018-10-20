@@ -16,7 +16,7 @@ namespace black_cat
 		public:
 			using this_type = bc_memory_proxy;
 			using memory_type = TMemory;
-			using is_movale_type = typename memory_type::is_movable; // must be std::true_type or std::false_type
+			using is_movable_type = typename memory_type::is_movable; // must be std::true_type or std::false_type
 
 		public:
 			bc_memory_proxy() noexcept(true)
@@ -117,7 +117,7 @@ namespace black_cat
 		private:
 			// http://stackoverflow.com/questions/11363822/compile-time-conditional-member-function-call-in-c
 			template< typename T1 >
-			bcInline typename std::enable_if< is_movale_type::value_type >::type register_pointer(const void* p_pointer)
+			bcInline typename std::enable_if< is_movable_type::value_type >::type register_pointer(const void* p_pointer)
 			{
 #ifdef BC_MEMORY_DEFRAG
 				m_memory.register_pointer(p_pointer);
@@ -125,12 +125,12 @@ namespace black_cat
 			}
 
 			template< typename T1 >
-			bcInline typename std::enable_if< !is_movale_type::value_type >::type register_pointer(const void* p_pointer)
+			bcInline typename std::enable_if< !is_movable_type::value_type >::type register_pointer(const void* p_pointer)
 			{
 			}
 
 			template< typename T1 >
-			bcInline typename std::enable_if< is_movale_type::value_type >::type unregister_pointer(const void* p_pointer)
+			bcInline typename std::enable_if< is_movable_type::value_type >::type unregister_pointer(const void* p_pointer)
 			{
 #ifdef BC_MEMORY_DEFRAG
 				m_memory.unregister_pointer(p_pointer);
@@ -138,12 +138,12 @@ namespace black_cat
 			}
 			
 			template< typename T1 >
-			bcInline typename std::enable_if< !is_movale_type::value_type >::type unregister_pointer(const void* p_pointer)
+			bcInline typename std::enable_if< !is_movable_type::value_type >::type unregister_pointer(const void* p_pointer)
 			{
 			}
 
 			template< typename T1 >
-			bcInline typename std::enable_if< is_movale_type::value_type >::type defragment(bcUINT32 p_num)
+			bcInline typename std::enable_if< is_movable_type::value_type >::type defragment(bcUINT32 p_num)
 			{
 #ifdef BC_MEMORY_DEFRAG
 				m_memory.defragment(p_num);
@@ -151,7 +151,7 @@ namespace black_cat
 			}
 
 			template< typename T1 >
-			bcInline typename std::enable_if< !is_movale_type::value_type >::type defragment(bcUINT32 p_num)
+			bcInline typename std::enable_if< !is_movable_type::value_type >::type defragment(bcUINT32 p_num)
 			{
 			}
 						
