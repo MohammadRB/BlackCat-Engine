@@ -199,10 +199,10 @@ BlackCat.VC.VC.opendb
 
 BC_SDK/
 BlackCar.Core.UnitTest/
-BlackCat/BlackCat/_/
 Debug/
 ipch/
 Test/
 Test2/
 TestResults/
 .vs/
+*.Debug/

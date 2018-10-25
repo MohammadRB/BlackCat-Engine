@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D6D32113-4C80-4613-87DF-1000C12D3FE9}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>BlackCat</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+    <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;BC_BLACKCAT_DLL;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../Src/BlackCat;../../Src/BlackCat.Core;../../Src/BlackCat.Core.Platform;../../Src/BlackCat.Core.Platform.Win32;../../Src/BlackCat.Platform;../../Src/BlackCat.Platform.Win32;../../Src/BlackCat.Graphic;../../Src/BlackCat.Graphic.DirectX11;../../Src/BlackCat.Game;../../Src/BlackCat.Physics;../../Src/BlackCat.Physics.PhysX;../../3rdParty</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>BlackCat/BlackCatPCH.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(DXSDK_LIB)\Lib\x86;Assimp\lib\assimp_debug-dll_win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\Src\BlackCat\BlackCat\*.h ..\..\BC_SDK\Include\BlackCat
+copy ..\..\Src\BlackCat\BlackCat\Application\*.h ..\..\BC_SDK\Include\BlackCat\Application
+copy ..\..\Src\BlackCat\BlackCat\Loader\*.h ..\..\BC_SDK\Include\BlackCat\Loader
+copy ..\..\Src\BlackCat\BlackCat\RenderPass\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass
+
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli $(Configuration)\Content\Shader\DirectX11
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl $(Configuration)\Content\Shader\DirectX11
+
+copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json ..\..\BC_SDK\Content\Data
+copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json $(Configuration)\Content\Data
+
+copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js ..\..\BC_SDK\Content\Script
+copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js $(Configuration)\Content\Script
+
+copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
+</Command>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/lib/$(Configuration)/assimp-vc130-mtd.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(Configuration)\;..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;BC_BLACKCAT_DLL;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../Src/BlackCat;../../Src/BlackCat.Core;../../Src/BlackCat.Core.Platform;../../Src/BlackCat.Core.Platform.Win32;../../Src/BlackCat.Platform;../../Src/BlackCat.Platform.Win32;../../Src/BlackCat.Graphic;../../Src/BlackCat.Graphic.DirectX11;../../Src/BlackCat.Game;../../Src/BlackCat.Physics;../../Src/BlackCat.Physics.PhysX;../../3rdParty</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeaderFile>BlackCat/BlackCatPCH.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\Src\BlackCat\BlackCat\*.h ..\..\BC_SDK\Include\BlackCat
+copy ..\..\Src\BlackCat\BlackCat\Application\*.h ..\..\BC_SDK\Include\BlackCat\Application
+copy ..\..\Src\BlackCat\BlackCat\Loader\*.h ..\..\BC_SDK\Include\BlackCat\Loader
+copy ..\..\Src\BlackCat\BlackCat\RenderPass\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass
+
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli $(Configuration)\Content\Shader\DirectX11
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl $(Configuration)\Content\Shader\DirectX11
+
+copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json ..\..\BC_SDK\Content\Data
+copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json $(Configuration)\Content\Data
+
+copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js ..\..\BC_SDK\Content\Script
+copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js $(Configuration)\Content\Script
+
+copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
+</Command>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/lib/$(Configuration)/assimp-vc130-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(Configuration)\;..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Application\bcBaseRenderApplication.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\bcException.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\bcExport.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\bcUtility.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\BlackCatPCH.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcDomainShaderLoader.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcGeometryShaderLoader.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcHeightMapLoaderDx11.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcHullShaderLoader.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshLoader.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshPhysicsLoader.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcPixelShaderLoader.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcTextureLoader.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferOutputPass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcInitializePass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTerrainPassDx11.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\bcUtility.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\BlackCatPCH.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcDomainShaderLoader.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcGeometryShaderLoader.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcHeightMapLoaderDx11.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcHullShaderLoader.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshLoader.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshPhysicsLoader.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcPixelShaderLoader.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcTextureLoader.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferOutputPass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcInitializePass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTerrainPassDx11.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="BlackCat.Core.Platform.Win32.vcxproj">
+      <Project>{be5cab27-d8e0-4781-abf8-f37fe773b65b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BlackCat.Core.vcxproj">
+      <Project>{e4a77cc4-66c0-49b1-bfcf-a92173763741}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BlackCat.Game.vcxproj">
+      <Project>{905ddbc6-a5b1-49e9-8af0-064c358fce65}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BlackCat.Graphic.DirectX11.vcxproj">
+      <Project>{d176029e-3b2c-4599-986c-3c8685f35f6f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BlackCat.Physics.PhysX.vcxproj">
+      <Project>{f3bd2963-a256-4b38-9018-a31aa5558593}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BlackCat.Platform.Win32.vcxproj">
+      <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcMeshShader.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcTerrain.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcTerrainChunkInfo.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\ContentStream.json" />
+    <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\EntityType.json" />
+    <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\Material.json" />
+    <None Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcRegister.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

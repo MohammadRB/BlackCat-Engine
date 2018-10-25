@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcApplication.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcBasicWindow.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcConsoleWindow.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcHumanInterfaceDevice.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcKeyDevice.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcPointingDevice.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcWindow.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcExport.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcLogIDEDebug.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\File\bcPath.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\PlatformImpPCH.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptArray.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptByteCode.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptContext.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptContext.hpp" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptError.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptFunction.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptGlobalPrototypeBuilder.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptObject.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptPrototype.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptPrototypeBuilder.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptRef.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptReference.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptRuntime.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptString.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptVariable.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcApplication.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcBasicWindow.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcConsoleWindow.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcHumanInterfaceDevice.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcKeyDevice.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcPointingDevice.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcWindow.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcLogIDEDebug.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\File\bcPath.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\PlatformImpPCH.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptArray.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptByteCode.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptError.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptFunction.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptObject.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptRef.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptReference.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptRuntime.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptString.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptVariable.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="BlackCat.Core.Platform.Win32.vcxproj">
+      <Project>{be5cab27-d8e0-4781-abf8-f37fe773b65b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BlackCat.Core.vcxproj">
+      <Project>{e4a77cc4-66c0-49b1-bfcf-a92173763741}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{854BD395-C225-4C15-A88F-26DFB81D8C58}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>BlackCatWin32</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;BLACKCATWIN32_EXPORTS;BC_PLATFORMIMP_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>
+      </SDLCheck>
+      <AdditionalIncludeDirectories>..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Platform;..\..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>PlatformImp/PlatformImpPCH.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>3rdParty\ChakraCore\Lib\x86_debug\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\*.h ..\..\BC_SDK\Include\PlatformImp
+copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\*.h ..\..\BC_SDK\Include\PlatformImp\Application
+copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\File\*.h ..\..\BC_SDK\Include\PlatformImp\File
+copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\*.h ..\..\BC_SDK\Include\PlatformImp\Script
+
+copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+    </PostBuildEvent>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;BC_PLATFORMIMP_DLL;NDEBUG;_WINDOWS;_USRDLL;BLACKCATWIN32_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>
+      </SDLCheck>
+      <AdditionalIncludeDirectories>..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Platform;..\..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeaderFile>PlatformImp/PlatformImpPCH.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>3rdParty\ChakraCore\Lib\x86_release\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\*.h ..\..\BC_SDK\Include\PlatformImp
+copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\*.h ..\..\BC_SDK\Include\PlatformImp\Application
+copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\File\*.h ..\..\BC_SDK\Include\PlatformImp\File
+copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\*.h ..\..\BC_SDK\Include\PlatformImp\Script
+
+copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

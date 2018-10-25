@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E4A77CC4-66C0-49B1-BFCF-A92173763741}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>BlackCatCore</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATCORE_EXPORTS;BC_CORE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>Core/CorePCH.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\Src\BlackCat.Core\Core\Concurrency\*.h ..\..\BC_SDK\Include\Core\Concurrency
+copy ..\..\Src\BlackCat.Core\Core\Container\*.h ..\..\BC_SDK\Include\Core\Container
+copy ..\..\Src\BlackCat.Core\Core\Memory\*.h ..\..\BC_SDK\Include\Core\Memory
+copy ..\..\Src\BlackCat.Core\Core\Event\*.h ..\..\BC_SDK\Include\Core\Event
+copy ..\..\Src\BlackCat.Core\Core\Utility\*.h ..\..\BC_SDK\Include\Core\Utility
+copy ..\..\Src\BlackCat.Core\Core\File\*.h ..\..\BC_SDK\Include\Core\File
+copy ..\..\Src\BlackCat.Core\Core\Math\*.h ..\..\BC_SDK\Include\Core\Math
+copy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core
+
+copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+</Command>
+    </PostBuildEvent>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;BLACKCATCORE_EXPORTS;BC_CORE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeaderFile>Core/CorePCH.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\Src\BlackCat.Core\Core\Concurrency\*.h ..\..\BC_SDK\Include\Core\Concurrency
+copy ..\..\Src\BlackCat.Core\Core\Container\*.h ..\..\BC_SDK\Include\Core\Container
+copy ..\..\Src\BlackCat.Core\Core\Memory\*.h ..\..\BC_SDK\Include\Core\Memory
+copy ..\..\Src\BlackCat.Core\Core\Event\*.h ..\..\BC_SDK\Include\Core\Event
+copy ..\..\Src\BlackCat.Core\Core\Utility\*.h ..\..\BC_SDK\Include\Core\Utility
+copy ..\..\Src\BlackCat.Core\Core\File\*.h ..\..\BC_SDK\Include\Core\File
+copy ..\..\Src\BlackCat.Core\Core\Math\*.h ..\..\BC_SDK\Include\Core\Math
+copy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core
+
+copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\bcConstant.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\bcEvent.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\bcExport.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcBackOff.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcConcurrency.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcLockFreeMemMng.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadLocal.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcAllocator.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcArray.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcDeque.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcUnorderedMap.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcContent.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcContentLoader.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcContentManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcContentStreamManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcFileStream.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcJsonDocument.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcJsonParse.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcLazyContent.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcPath.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcStream.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcCoordinate.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcMatrix3f.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcMatrix4f.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcVector2f.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcVector3f.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcVector4f.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemory.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryExtender.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryProxy.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcDataDrivenParameter.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcDelegate.hpp" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcEnumOperand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpression.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpressionParameter.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpressionParameterManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcInitializable.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcJsonParse.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcLazy.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcLogger.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcNullable.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectPool.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcParameterPack.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcRefCountPtr.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcServiceManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcTemplateMetaType.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcUtility.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryFixedSize.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\_bcLockFreeMemMng.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcConcurrentHashMap.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcConcurrentList.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcConcurrentQueue.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcContainer.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcIterator.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcList.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcMap.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcString.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcTree.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcVector.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcBitVector.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\bcException.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\CorePCH.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Event\bcEvent.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Event\bcEventHandler.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Event\bcEventManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryCRT.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryHeap.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemMngHashMap.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcAlloc.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryTracer.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryStack.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemBlock.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemMngFreeList.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryManagment.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcPtr.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcDelegate.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcSingleton.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Container\bcString.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Container\bcBitVector.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\CorePCH.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Core/CorePCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Event\bcEvent.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcContent.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcContentLoader.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcContentStreamManager.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcPath.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcStream.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcMatrix3f.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcMatrix4f.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector2f.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector3f.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector4f.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryHeap.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpression.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpressionParameterManager.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcLogger.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectPool.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcServiceManager.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Event\bcEventManager.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryFixedSize.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryManagment.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryStack.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="BlackCat.Core.Platform.Win32.vcxproj">
+      <Project>{be5cab27-d8e0-4781-abf8-f37fe773b65b}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

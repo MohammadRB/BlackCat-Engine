@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F3BD2963-A256-4B38-9018-A31AA5558593}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>BlackCatPhysicsPhysX</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;BC_PHYSICSIMP_DLL;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;_USRDLL;BLACKCATPHYSICSPHYSX_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <PrecompiledHeaderFile>PhysicsImp/PhysicsImpPCH.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Physics;..\..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>3rdParty\PhysX\Lib\x86_debug\PhysX3CommonDEBUG_x86.lib;3rdParty\PhysX\Lib\x86_debug\PhysX3DEBUG_x86.lib;3rdParty\PhysX\Lib\x86_debug\PhysX3CookingDEBUG_x86.lib;3rdParty\PhysX\Lib\x86_debug\PhysX3ExtensionsDEBUG.lib;3rdParty\PhysX\Lib\x86_debug\PhysXProfileSDKDEBUG.lib;3rdParty\PhysX\Lib\x86_debug\PhysXVisualDebuggerSDKDEBUG.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\PhysicsImp
+copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\*.h ..\..\BC_SDK\Include\PhysicsImp\Body
+copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\*.h ..\..\BC_SDK\Include\PhysicsImp\Collision
+copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\*.h ..\..\BC_SDK\Include\PhysicsImp\Fundation
+copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\*.h ..\..\BC_SDK\Include\PhysicsImp\Joint
+copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\*.h ..\..\BC_SDK\Include\PhysicsImp\Shape
+
+copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;BLACKCATPHYSICSPHYSX_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;BC_PHYSICSIMP_DLL;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;_USRDLL;BLACKCATPHYSICSPHYSX_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <PrecompiledHeaderFile>PhysicsImp/PhysicsImpPCH.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Physics;..\..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>3rdParty\PhysX\Lib\x86_release\PhysX3Common_x86.lib;3rdParty\PhysX\Lib\x86_release\PhysX3_x86.lib;3rdParty\PhysX\Lib\x86_release\PhysX3Cooking_x86.lib;3rdParty\PhysX\Lib\x86_release\PhysX3Extensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\PhysicsImp
+copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\*.h ..\..\BC_SDK\Include\PhysicsImp\Body
+copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\*.h ..\..\BC_SDK\Include\PhysicsImp\Collision
+copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\*.h ..\..\BC_SDK\Include\PhysicsImp\Fundation
+copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\*.h ..\..\BC_SDK\Include\PhysicsImp\Joint
+copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\*.h ..\..\BC_SDK\Include\PhysicsImp\Shape
+
+copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;BLACKCATPHYSICSPHYSX_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcExport.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcImplementation.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcPhysicsRef.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcPhysicsReference.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcUtility.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcActor.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcAggregate.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidActor.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidBody.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidDynamic.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidStatic.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcContactFilterCallback.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcContactModifyCallback.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcSceneQuery.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcShapeQuery.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcFundation.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcMaterial.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcMemoryBuffer.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcPhysics.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcScene.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSceneBuilder.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSceneDebug.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSerializeBuffer.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSimulationEventCallback.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcTask.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcTransform.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcD6Joint.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcDistanceJoint.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcFixedJoint.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcJoint.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcPrismaticJoint.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcRevoluteJoint.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcSphericalJoint.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\PhysicsImpPCH.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcBoundBox.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcConvexMesh.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcHeightField.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShape.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeBox.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeCapsule.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeConvexMesh.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeGeometry.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeHeightField.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapePlane.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeSphere.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeTriangleMesh.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcTriangleMesh.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcImplementation.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcPhysicsRef.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcPhysicsReference.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcUtility.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcActor.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcAggregate.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidActor.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidBody.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidDynamic.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidStatic.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcContactModifyCallback.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcSceneQuery.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcShapeQuery.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcMaterial.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcMemoryBuffer.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcPhysics.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcScene.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSceneBuilder.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSceneDebug.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSerializeBuffer.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSimulationEventCallback.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcTask.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcTransform.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcD6Joint.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcDistanceJoint.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcFixedJoint.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcJoint.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcPrismaticJoint.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcRevoluteJoint.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcSphericalJoint.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\PhysicsImpPCH.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcBoundBox.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcConvexMesh.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcHeightField.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShape.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeBox.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeCapsule.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeConvexMesh.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeGeometry.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeHeightField.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapePlane.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeSphere.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeTriangleMesh.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcTriangleMesh.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="BlackCat.Core.vcxproj">
+      <Project>{e4a77cc4-66c0-49b1-bfcf-a92173763741}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BlackCat.Platform.Win32.vcxproj">
+      <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

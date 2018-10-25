@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="CorePlatformImp">
+      <UniqueIdentifier>{fef38497-f271-4bee-ad80-611c5094863c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CorePlatformImp\Concurrency">
+      <UniqueIdentifier>{b8cc9854-b26d-498d-86ed-e51d8e6686b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CorePlatformImp\File">
+      <UniqueIdentifier>{9e0fd61c-da83-4edd-816f-4c0e5bcce92c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CorePlatformImp\Memory">
+      <UniqueIdentifier>{1fabfdfb-5a27-4c01-a49b-c502faeb5945}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CorePlatformImp\Utility">
+      <UniqueIdentifier>{d608cd80-29c0-4ff7-b83a-22eed603bcf3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Concurrency\bcAtomic.h">
+      <Filter>CorePlatformImp\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Concurrency\bcConditionVariable.h">
+      <Filter>CorePlatformImp\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Concurrency\bcFuture.h">
+      <Filter>CorePlatformImp\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Concurrency\bcMutex.h">
+      <Filter>CorePlatformImp\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Concurrency\bcThread.h">
+      <Filter>CorePlatformImp\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Concurrency\bcThreadLocal.h">
+      <Filter>CorePlatformImp\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\File\bcFile.h">
+      <Filter>CorePlatformImp\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\File\bcFileInfo.h">
+      <Filter>CorePlatformImp\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\File\bcPath.h">
+      <Filter>CorePlatformImp\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Utility\bcClock.h">
+      <Filter>CorePlatformImp\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Utility\bcHardwareInfo.h">
+      <Filter>CorePlatformImp\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\bcExport.h">
+      <Filter>CorePlatformImp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\bcUtility.h">
+      <Filter>CorePlatformImp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\CorePlatformImpPCH.h">
+      <Filter>CorePlatformImp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Concurrency\bcMutex.cpp">
+      <Filter>CorePlatformImp\Concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\File\bcFile.cpp">
+      <Filter>CorePlatformImp\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\File\bcFileInfo.cpp">
+      <Filter>CorePlatformImp\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\File\bcPath.cpp">
+      <Filter>CorePlatformImp\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Memory\bcMemAlloc.cpp">
+      <Filter>CorePlatformImp\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\bcUtility.cpp">
+      <Filter>CorePlatformImp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\CorePlatformImpPCH.cpp">
+      <Filter>CorePlatformImp</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

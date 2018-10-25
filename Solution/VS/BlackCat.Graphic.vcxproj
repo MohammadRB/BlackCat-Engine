@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcDeviceObject.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcDeviceRef.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcDeviceReference.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcDeviceResourceContent.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcEvent.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcException.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcExport.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcGraphicDefinition.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcRenderApi.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcRenderApiInfo.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcResourcePtr.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDevice.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceComputeState.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceInfo.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceOutput.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDevicePipeline.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDevicePipelineState.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Command\bcDeviceCommandExecuter.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Command\bcDeviceCommandList.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\GraphicPCH.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcComputeStage.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcDomainStage.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcGeometryStage.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcHullStage.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcInputAssemblerStage.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcOutputMergerStage.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcPipelineStateArrayVariable.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcPipelineStateVariable.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcPixelStage.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcProgrammableStage.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcRasterizerStage.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcStreamOutputStage.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcVertexStage.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\bcResource.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\bcResourceConfig.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\Buffer\bcBuffer.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\Buffer\bcBufferConfig.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\State\bcBlendState.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\State\bcDepthStencilState.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\State\bcInputLayout.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\State\bcRasterizerState.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\State\bcSamplerState.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\State\bcViewPort.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\Texture\bcTexture2d.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\Texture\bcTextureConfig.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\View\bcDepthStencilView.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\View\bcDepthStencilViewConfig.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\View\bcIResourceView.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\View\bcRenderTargetView.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\View\bcRenderTargetViewConfig.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\View\bcResourceView.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\View\bcResourceViewConfig.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcComputeShader.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcDomainShader.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcGeometryShader.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcHullShader.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcPixelShader.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcShader.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcVertexShader.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcConstantBufferParameter.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcMatrix4fParameter.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcResourceViewParameter.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcSamplerParameter.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameter.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameterManager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcVectorParameter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\bcResourcePtr.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\GraphicPCH.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcInputAssemblerStage.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcOutputMergerStage.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcProgrammableStage.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcRasterizerStage.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcStreamOutputStage.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameterManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="BlackCat.Core.Platform.Win32.vcxproj">
+      <Project>{be5cab27-d8e0-4781-abf8-f37fe773b65b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BlackCat.Core.vcxproj">
+      <Project>{e4a77cc4-66c0-49b1-bfcf-a92173763741}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BlackCat.Platform.Win32.vcxproj">
+      <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7B267E54-9DA2-435D-BE52-4388E78A1661}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>BlackCatGraphic</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATGRAPHIC_EXPORTS;BC_GRAPHIC_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>
+      </SDLCheck>
+      <AdditionalIncludeDirectories>../../Src/BlackCat.Graphic/;../../Src/BlackCat.Core.Platform/;../../Src/BlackCat.Core.Platform.Win32/;../../Src/BlackCat.Core/;../../Src/BlackCat.Platform/;../../Src/BlackCat.Platform.Win32/;../../3rdParty/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>Graphic/GraphicPCH.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\Src\BlackCat.Graphycs\Graphic\*.h ..\..\BC_SDK\Include\Graphic
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Device\*.h ..\..\BC_SDK\Include\Graphic\Device
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Device\Command\*.h ..\..\BC_SDK\Include\Graphic\Device\Command
+copy ..\..\Src\BlackCat.Graphycs\Graphic\PipelineStage\*.h ..\..\BC_SDK\Include\Graphic\PipelineStage
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\*.h ..\..\BC_SDK\Include\Graphic\Graphic\Resource
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\Buffer\*.h ..\..\BC_SDK\Include\Graphic\Resource\Buffer
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\State\*.h ..\..\BC_SDK\Include\Graphic\Resource\State
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\Texture\*.h ..\..\BC_SDK\Include\Graphic\Resource\Texture
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\View\*.h ..\..\BC_SDK\Include\Graphic\Resource\View
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Shader\*.h ..\..\BC_SDK\Include\Graphic\Shader
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Shader\Parameter\*.h ..\..\BC_SDK\Include\Graphic\Shader\Parameter
+
+copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+    </PostBuildEvent>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;BLACKCATGRAPHIC_EXPORTS;BC_GRAPHIC_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>
+      </SDLCheck>
+      <AdditionalIncludeDirectories>../../Src/BlackCat.Graphic/;../../Src/BlackCat.Core.Platform/;../../Src/BlackCat.Core.Platform.Win32/;../../Src/BlackCat.Core/;../../Src/BlackCat.Platform/;../../Src/BlackCat.Platform.Win32/;../../3rdParty/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>Graphic/GraphicPCH.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\Src\BlackCat.Graphycs\Graphic\*.h ..\..\BC_SDK\Include\Graphic
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Device\*.h ..\..\BC_SDK\Include\Graphic\Device
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Device\Command\*.h ..\..\BC_SDK\Include\Graphic\Device\Command
+copy ..\..\Src\BlackCat.Graphycs\Graphic\PipelineStage\*.h ..\..\BC_SDK\Include\Graphic\PipelineStage
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\*.h ..\..\BC_SDK\Include\Graphic\Graphic\Resource
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\Buffer\*.h ..\..\BC_SDK\Include\Graphic\Resource\Buffer
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\State\*.h ..\..\BC_SDK\Include\Graphic\Resource\State
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\Texture\*.h ..\..\BC_SDK\Include\Graphic\Resource\Texture
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\View\*.h ..\..\BC_SDK\Include\Graphic\Resource\View
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Shader\*.h ..\..\BC_SDK\Include\Graphic\Shader
+copy ..\..\Src\BlackCat.Graphycs\Graphic\Shader\Parameter\*.h ..\..\BC_SDK\Include\Graphic\Shader\Parameter
+
+copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

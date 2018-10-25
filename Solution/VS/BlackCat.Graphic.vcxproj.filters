@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Graphic">
+      <UniqueIdentifier>{672a3246-6d36-44ec-8d53-89b671733938}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\Resource">
+      <UniqueIdentifier>{37153da8-4cd6-49b8-867d-b0ba0a43a849}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\Device">
+      <UniqueIdentifier>{71aa417b-5fd5-4817-8eb6-0cfea61fe27f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\Resource\Buffer">
+      <UniqueIdentifier>{96e7516a-7e17-4f27-ba9a-ed4537daa9ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\Resource\Texture">
+      <UniqueIdentifier>{19a78a13-bef3-4131-bae1-182e897a14f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\Resource\State">
+      <UniqueIdentifier>{2d64eb9e-ebe0-48b7-8d08-14037cea5574}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\Shader">
+      <UniqueIdentifier>{81f97c29-96ba-49a3-8cb9-d6cd3dae80d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\Shader\Parameter">
+      <UniqueIdentifier>{af647664-89f6-44c9-aef3-a11959b6e146}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\Device\Command">
+      <UniqueIdentifier>{f59e8e03-9f7d-46a4-8217-73c5ef2fc45a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\PipelineStage">
+      <UniqueIdentifier>{c04bde60-9f3f-4902-845b-8f0572f5f9e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\Resource\View">
+      <UniqueIdentifier>{e68d8f99-a77b-4a59-86e1-b092ce63556e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Command\bcDeviceCommandExecuter.h">
+      <Filter>Graphic\Device\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Command\bcDeviceCommandList.h">
+      <Filter>Graphic\Device\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDevice.h">
+      <Filter>Graphic\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceComputeState.h">
+      <Filter>Graphic\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceInfo.h">
+      <Filter>Graphic\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceOutput.h">
+      <Filter>Graphic\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDevicePipeline.h">
+      <Filter>Graphic\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDevicePipelineState.h">
+      <Filter>Graphic\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcComputeStage.h">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcDomainStage.h">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcGeometryStage.h">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcHullStage.h">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcInputAssemblerStage.h">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcOutputMergerStage.h">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcPipelineStateArrayVariable.h">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcPipelineStateVariable.h">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcPixelStage.h">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcProgrammableStage.h">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcRasterizerStage.h">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcStreamOutputStage.h">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcVertexStage.h">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\Buffer\bcBuffer.h">
+      <Filter>Graphic\Resource\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\Buffer\bcBufferConfig.h">
+      <Filter>Graphic\Resource\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\State\bcBlendState.h">
+      <Filter>Graphic\Resource\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\State\bcDepthStencilState.h">
+      <Filter>Graphic\Resource\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\State\bcInputLayout.h">
+      <Filter>Graphic\Resource\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\State\bcRasterizerState.h">
+      <Filter>Graphic\Resource\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\State\bcSamplerState.h">
+      <Filter>Graphic\Resource\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\State\bcViewPort.h">
+      <Filter>Graphic\Resource\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\Texture\bcTexture2d.h">
+      <Filter>Graphic\Resource\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\Texture\bcTextureConfig.h">
+      <Filter>Graphic\Resource\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\View\bcDepthStencilView.h">
+      <Filter>Graphic\Resource\View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\View\bcDepthStencilViewConfig.h">
+      <Filter>Graphic\Resource\View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\View\bcIResourceView.h">
+      <Filter>Graphic\Resource\View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\View\bcRenderTargetView.h">
+      <Filter>Graphic\Resource\View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\View\bcRenderTargetViewConfig.h">
+      <Filter>Graphic\Resource\View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\View\bcResourceView.h">
+      <Filter>Graphic\Resource\View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\View\bcResourceViewConfig.h">
+      <Filter>Graphic\Resource\View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\bcResource.h">
+      <Filter>Graphic\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\bcResourceConfig.h">
+      <Filter>Graphic\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcConstantBufferParameter.h">
+      <Filter>Graphic\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcMatrix4fParameter.h">
+      <Filter>Graphic\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcResourceViewParameter.h">
+      <Filter>Graphic\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcSamplerParameter.h">
+      <Filter>Graphic\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameter.h">
+      <Filter>Graphic\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameterManager.h">
+      <Filter>Graphic\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcVectorParameter.h">
+      <Filter>Graphic\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcComputeShader.h">
+      <Filter>Graphic\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcDomainShader.h">
+      <Filter>Graphic\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcGeometryShader.h">
+      <Filter>Graphic\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcHullShader.h">
+      <Filter>Graphic\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcPixelShader.h">
+      <Filter>Graphic\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcShader.h">
+      <Filter>Graphic\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcVertexShader.h">
+      <Filter>Graphic\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcDeviceObject.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcDeviceRef.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcDeviceReference.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcDeviceResourceContent.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcEvent.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcException.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcExport.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcGraphicDefinition.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcRenderApi.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcRenderApiInfo.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcResourcePtr.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\GraphicPCH.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcInputAssemblerStage.cpp">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcOutputMergerStage.cpp">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcProgrammableStage.cpp">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcRasterizerStage.cpp">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcStreamOutputStage.cpp">
+      <Filter>Graphic\PipelineStage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameterManager.cpp">
+      <Filter>Graphic\Shader\Parameter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\bcResourcePtr.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\GraphicPCH.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

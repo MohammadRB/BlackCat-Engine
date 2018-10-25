@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="PhysicsImp">
+      <UniqueIdentifier>{5037ba62-578f-4508-b728-196431cc72b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PhysicsImp\Body">
+      <UniqueIdentifier>{c99441b9-6df9-4895-87de-f637f5e8dce0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PhysicsImp\Collision">
+      <UniqueIdentifier>{a501329f-5549-4550-9f13-6e6be36f364a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PhysicsImp\Fundation">
+      <UniqueIdentifier>{43e0adc9-e923-4b7e-892b-be273e02f4a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PhysicsImp\Joint">
+      <UniqueIdentifier>{9c4ccf7f-1916-4e10-83f2-7c03fc3a0f7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PhysicsImp\Shape">
+      <UniqueIdentifier>{2de8e5c2-f2d4-4f3e-ac11-430fdc319ebd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcActor.h">
+      <Filter>PhysicsImp\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcAggregate.h">
+      <Filter>PhysicsImp\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidActor.h">
+      <Filter>PhysicsImp\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidBody.h">
+      <Filter>PhysicsImp\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidDynamic.h">
+      <Filter>PhysicsImp\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidStatic.h">
+      <Filter>PhysicsImp\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcContactFilterCallback.h">
+      <Filter>PhysicsImp\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcContactModifyCallback.h">
+      <Filter>PhysicsImp\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcSceneQuery.h">
+      <Filter>PhysicsImp\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcShapeQuery.h">
+      <Filter>PhysicsImp\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcFundation.h">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcMaterial.h">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcMemoryBuffer.h">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcPhysics.h">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcScene.h">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSceneBuilder.h">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSceneDebug.h">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSerializeBuffer.h">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSimulationEventCallback.h">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcTask.h">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcTransform.h">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcD6Joint.h">
+      <Filter>PhysicsImp\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcDistanceJoint.h">
+      <Filter>PhysicsImp\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcFixedJoint.h">
+      <Filter>PhysicsImp\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcJoint.h">
+      <Filter>PhysicsImp\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcPrismaticJoint.h">
+      <Filter>PhysicsImp\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcRevoluteJoint.h">
+      <Filter>PhysicsImp\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcSphericalJoint.h">
+      <Filter>PhysicsImp\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcBoundBox.h">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcConvexMesh.h">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcHeightField.h">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShape.h">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeBox.h">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeCapsule.h">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeConvexMesh.h">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeGeometry.h">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeHeightField.h">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapePlane.h">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeSphere.h">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeTriangleMesh.h">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcTriangleMesh.h">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcExport.h">
+      <Filter>PhysicsImp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcImplementation.h">
+      <Filter>PhysicsImp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcPhysicsRef.h">
+      <Filter>PhysicsImp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcPhysicsReference.h">
+      <Filter>PhysicsImp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcUtility.h">
+      <Filter>PhysicsImp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\PhysicsImpPCH.h">
+      <Filter>PhysicsImp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcActor.cpp">
+      <Filter>PhysicsImp\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcAggregate.cpp">
+      <Filter>PhysicsImp\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidActor.cpp">
+      <Filter>PhysicsImp\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidBody.cpp">
+      <Filter>PhysicsImp\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidDynamic.cpp">
+      <Filter>PhysicsImp\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcRigidStatic.cpp">
+      <Filter>PhysicsImp\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcContactModifyCallback.cpp">
+      <Filter>PhysicsImp\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcSceneQuery.cpp">
+      <Filter>PhysicsImp\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcShapeQuery.cpp">
+      <Filter>PhysicsImp\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcMaterial.cpp">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcMemoryBuffer.cpp">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcPhysics.cpp">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcScene.cpp">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSceneBuilder.cpp">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSceneDebug.cpp">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSerializeBuffer.cpp">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSimulationEventCallback.cpp">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcTask.cpp">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcTransform.cpp">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcD6Joint.cpp">
+      <Filter>PhysicsImp\Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcDistanceJoint.cpp">
+      <Filter>PhysicsImp\Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcFixedJoint.cpp">
+      <Filter>PhysicsImp\Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcJoint.cpp">
+      <Filter>PhysicsImp\Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcPrismaticJoint.cpp">
+      <Filter>PhysicsImp\Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcRevoluteJoint.cpp">
+      <Filter>PhysicsImp\Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcSphericalJoint.cpp">
+      <Filter>PhysicsImp\Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcBoundBox.cpp">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcConvexMesh.cpp">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcHeightField.cpp">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShape.cpp">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeBox.cpp">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeCapsule.cpp">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeConvexMesh.cpp">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeGeometry.cpp">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeHeightField.cpp">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapePlane.cpp">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeSphere.cpp">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeTriangleMesh.cpp">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcTriangleMesh.cpp">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcImplementation.cpp">
+      <Filter>PhysicsImp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcPhysicsRef.cpp">
+      <Filter>PhysicsImp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcPhysicsReference.cpp">
+      <Filter>PhysicsImp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\bcUtility.cpp">
+      <Filter>PhysicsImp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\PhysicsImpPCH.cpp">
+      <Filter>PhysicsImp</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

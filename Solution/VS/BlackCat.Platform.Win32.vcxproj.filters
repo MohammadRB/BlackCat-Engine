@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="PlatformImp">
+      <UniqueIdentifier>{fd05af6c-e1d5-45eb-9a41-051049c1e3d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlatformImp\Application">
+      <UniqueIdentifier>{c3a660fb-4679-4378-ab45-5c3091c7ad45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlatformImp\File">
+      <UniqueIdentifier>{027a195c-bfc6-4afe-9053-2031d31f035f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlatformImp\Script">
+      <UniqueIdentifier>{58b88f36-d869-457f-8fd8-cabdf529528a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcApplication.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcBasicWindow.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcConsoleWindow.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcHumanInterfaceDevice.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcKeyDevice.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcPointingDevice.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcWindow.h">
+      <Filter>PlatformImp\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\File\bcPath.h">
+      <Filter>PlatformImp\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptArray.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptByteCode.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptContext.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptContext.hpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptError.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptFunction.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptGlobalPrototypeBuilder.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptObject.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptPrototype.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptPrototypeBuilder.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptRef.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptReference.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptRuntime.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptString.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptVariable.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcExport.h">
+      <Filter>PlatformImp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcLogIDEDebug.h">
+      <Filter>PlatformImp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\PlatformImpPCH.h">
+      <Filter>PlatformImp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcApplication.cpp">
+      <Filter>PlatformImp\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcBasicWindow.cpp">
+      <Filter>PlatformImp\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcConsoleWindow.cpp">
+      <Filter>PlatformImp\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcHumanInterfaceDevice.cpp">
+      <Filter>PlatformImp\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcKeyDevice.cpp">
+      <Filter>PlatformImp\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcPointingDevice.cpp">
+      <Filter>PlatformImp\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcWindow.cpp">
+      <Filter>PlatformImp\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\File\bcPath.cpp">
+      <Filter>PlatformImp\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptArray.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptByteCode.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptError.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptFunction.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptObject.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptRef.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptReference.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptRuntime.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptString.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptVariable.cpp">
+      <Filter>PlatformImp\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcLogIDEDebug.cpp">
+      <Filter>PlatformImp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\PlatformImpPCH.cpp">
+      <Filter>PlatformImp</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
