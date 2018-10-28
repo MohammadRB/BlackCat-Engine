@@ -41,7 +41,7 @@
 #include "BlackCat/Loader/bcPixelShaderLoader.h"
 #include "BlackCat/Loader/bcComputeShaderLoader.h"
 #include "BlackCat/BlackCatPCH.h"
-#include "BlackCat/Loader/bcMeshPhysicsLoader.h"
+#include "BlackCat/Loader/bcMeshColliderLoader.h"
 
 namespace black_cat
 {
@@ -231,9 +231,9 @@ namespace black_cat
 		(
 			core::bc_make_loader< bc_compute_shader_loader >()
 		);
-		l_content_stream_manager->register_loader< game::bc_mesh_collider, bc_mesh_physics_loader >
+		l_content_stream_manager->register_loader< game::bc_mesh_collider, bc_mesh_collider_loader >
 		(
-			core::bc_make_loader< bc_mesh_physics_loader >()
+			core::bc_make_loader< bc_mesh_collider_loader >()
 		);
 		l_content_stream_manager->register_loader< game::bc_mesh, bc_mesh_loader >
 		(
@@ -283,7 +283,7 @@ namespace black_cat
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_shaders");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_resources");
 
-		l_script_binder.bind_instance<game::bc_script_context::ui, game::bc_game_console>(m_game_system->get_console());
+		l_script_binder.bind<game::bc_game_console>(game::bc_script_context::ui, m_game_system->get_console());
 
 		l_script_system.set_script_binder(std::move(l_script_binder));
 

@@ -28,7 +28,7 @@ namespace black_cat
 				auto l_transformation = *m_mesh->get_node_transformation(l_node) * p_parent_transformation;
 				p_result.m_transformations.push_back(l_transformation);
 
-				const auto& l_node_childs = m_mesh->get_node_childs(l_node);
+				const auto& l_node_childs = m_mesh->get_node_children(l_node);
 
 				if (l_node_childs.size() > 0)
 				{

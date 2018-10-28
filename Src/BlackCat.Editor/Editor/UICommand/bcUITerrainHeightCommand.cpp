@@ -47,7 +47,7 @@ namespace black_cat
 			return "Terrain Height";
 		}
 
-		bc_iui_commnad::state_ptr bc_ui_terrain_height_command::create_state(state_context& p_context) const
+		bc_iui_command::state_ptr bc_ui_terrain_height_command::create_state(state_context& p_context) const
 		{
 			auto& l_render_system = p_context.m_game_system.get_render_system();
 

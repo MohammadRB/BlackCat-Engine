@@ -35,7 +35,7 @@ class Ui_bcBlackCatEditorClass
 {
 public:
     QWidget *centralWidget;
-    QHBoxLayout *horizontalLayout;
+    QVBoxLayout *verticalLayout_4;
     QHBoxLayout *mainLayout;
     QFrame *leftFrame;
     QVBoxLayout *verticalLayout;
@@ -48,6 +48,9 @@ public:
     QFrame *rightFrame;
     QVBoxLayout *verticalLayout_2;
     QToolBox *rightToolBox;
+    QWidget *rightToolBoxObjectSelect;
+    QLabel *objectNameLable;
+    QLabel *objectNameLableValue;
     QWidget *rightToolBoxTerrain;
     QFormLayout *formLayout;
     QLabel *terrainHeightLable;
@@ -61,7 +64,6 @@ public:
     QSlider *terrainRadiusSlider;
     QLabel *terrainRadiusLable;
     QLabel *terrainRadiusValue;
-    QWidget *page_2;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -93,11 +95,11 @@ public:
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
         centralWidget->setSizePolicy(sizePolicy1);
-        horizontalLayout = new QHBoxLayout(centralWidget);
-        horizontalLayout->setSpacing(6);
-        horizontalLayout->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        horizontalLayout->setContentsMargins(3, 3, 3, 3);
+        verticalLayout_4 = new QVBoxLayout(centralWidget);
+        verticalLayout_4->setSpacing(6);
+        verticalLayout_4->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
+        verticalLayout_4->setContentsMargins(3, 3, 3, 3);
         mainLayout = new QHBoxLayout();
         mainLayout->setSpacing(6);
         mainLayout->setObjectName(QStringLiteral("mainLayout"));
@@ -167,9 +169,19 @@ public:
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
         rightToolBox = new QToolBox(rightFrame);
         rightToolBox->setObjectName(QStringLiteral("rightToolBox"));
+        rightToolBoxObjectSelect = new QWidget();
+        rightToolBoxObjectSelect->setObjectName(QStringLiteral("rightToolBoxObjectSelect"));
+        rightToolBoxObjectSelect->setGeometry(QRect(0, 0, 338, 736));
+        objectNameLable = new QLabel(rightToolBoxObjectSelect);
+        objectNameLable->setObjectName(QStringLiteral("objectNameLable"));
+        objectNameLable->setGeometry(QRect(10, 10, 81, 16));
+        objectNameLableValue = new QLabel(rightToolBoxObjectSelect);
+        objectNameLableValue->setObjectName(QStringLiteral("objectNameLableValue"));
+        objectNameLableValue->setGeometry(QRect(100, 10, 231, 16));
+        rightToolBox->addItem(rightToolBoxObjectSelect, QStringLiteral("ObjectSelection"));
         rightToolBoxTerrain = new QWidget();
         rightToolBoxTerrain->setObjectName(QStringLiteral("rightToolBoxTerrain"));
-        rightToolBoxTerrain->setGeometry(QRect(0, 0, 336, 721));
+        rightToolBoxTerrain->setGeometry(QRect(0, 0, 338, 736));
         formLayout = new QFormLayout(rightToolBoxTerrain);
         formLayout->setSpacing(6);
         formLayout->setContentsMargins(11, 11, 11, 11);
@@ -263,10 +275,6 @@ public:
             icon.addFile(QStringLiteral("."), QSize(), QIcon::Normal, QIcon::Off);
         }
         rightToolBox->addItem(rightToolBoxTerrain, icon, QStringLiteral("Terrain"));
-        page_2 = new QWidget();
-        page_2->setObjectName(QStringLiteral("page_2"));
-        page_2->setGeometry(QRect(0, 0, 98, 28));
-        rightToolBox->addItem(page_2, QStringLiteral("Page 2"));
 
         verticalLayout_2->addWidget(rightToolBox);
 
@@ -274,12 +282,12 @@ public:
         mainLayout->addWidget(rightFrame);
 
 
-        horizontalLayout->addLayout(mainLayout);
+        verticalLayout_4->addLayout(mainLayout);
 
         bcBlackCatEditorClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(bcBlackCatEditorClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1600, 26));
+        menuBar->setGeometry(QRect(0, 0, 1600, 23));
         bcBlackCatEditorClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(bcBlackCatEditorClass);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -386,7 +394,10 @@ public:
     {
         bcBlackCatEditorClass->setWindowTitle(QApplication::translate("bcBlackCatEditorClass", "BlackCatEditor", nullptr));
         leftBottomTab->setTabText(leftBottomTab->indexOf(consoleTab), QApplication::translate("bcBlackCatEditorClass", "Console", nullptr));
-        rightToolBox->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "areachart,adjust", nullptr)));
+        rightToolBox->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "handpointero,areachart", nullptr)));
+        objectNameLable->setText(QApplication::translate("bcBlackCatEditorClass", "ObjectName:", nullptr));
+        objectNameLableValue->setText(QString());
+        rightToolBox->setItemText(rightToolBox->indexOf(rightToolBoxObjectSelect), QApplication::translate("bcBlackCatEditorClass", "ObjectSelection", nullptr));
         terrainHeightLable->setText(QApplication::translate("bcBlackCatEditorClass", "Height: ", nullptr));
         terrainHeightValue->setText(QApplication::translate("bcBlackCatEditorClass", "0", nullptr));
         terrainSmoothLable->setText(QApplication::translate("bcBlackCatEditorClass", "Smooth:", nullptr));
@@ -404,7 +415,6 @@ public:
         terrainRadiusLable->setText(QApplication::translate("bcBlackCatEditorClass", "Radius: ", nullptr));
         terrainRadiusValue->setText(QApplication::translate("bcBlackCatEditorClass", "25", nullptr));
         rightToolBox->setItemText(rightToolBox->indexOf(rightToolBoxTerrain), QApplication::translate("bcBlackCatEditorClass", "Terrain", nullptr));
-        rightToolBox->setItemText(rightToolBox->indexOf(page_2), QApplication::translate("bcBlackCatEditorClass", "Page 2", nullptr));
 #ifndef QT_NO_TOOLTIP
         objectSelectButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Object selection", nullptr));
 #endif // QT_NO_TOOLTIP

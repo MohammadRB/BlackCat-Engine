@@ -62,7 +62,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_game_console : private core::bc_ilog_listener
 		{
 		public:
-			explicit bc_game_console(bc_script_system& pP_script_system);
+			explicit bc_game_console(bc_script_system& p_script_system);
 
 			bc_game_console(bc_game_console&&) noexcept;
 
@@ -155,7 +155,7 @@ namespace black_cat
 			 * \brief Check the visibility of output screen
 			 * \return 
 			 */
-			virtual bool is_visibile() = 0;
+			virtual bool is_visible() = 0;
 
 		protected:
 			explicit bc_igame_console_imp(bc_game_console& p_game_console)

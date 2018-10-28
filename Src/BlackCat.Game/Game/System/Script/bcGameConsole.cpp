@@ -219,7 +219,7 @@ namespace black_cat
 					.function(L"clear", &bc_game_console_bind::clear_output);
 
 				auto l_console_prototype = p_context.create_prototype(l_console_builder);
-				p_instance.m_bound_console = p_context.create_object(l_console_prototype, bc_game_console_bind(p_instance));
+				p_instance.m_bound_console = platform::bc_script_object_ref(p_context.create_object(l_console_prototype, bc_game_console_bind(p_instance)));
 
 				platform::bc_script_property_descriptor< platform::bc_script_object > l_console_descriptor(&p_instance.m_bound_console.get(), false);
 
@@ -265,7 +265,7 @@ namespace black_cat
 			if (l_key_event.get_key() == platform::bc_key::kb_grave &&
 				l_key_event.get_key_state() == platform::bc_key_state::pressing)
 			{
-				if(m_imp->is_visibile())
+				if(m_imp->is_visible())
 				{
 					m_imp->hide();
 				}

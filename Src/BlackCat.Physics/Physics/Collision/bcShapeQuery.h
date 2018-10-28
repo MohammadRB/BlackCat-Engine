@@ -187,12 +187,12 @@ namespace black_cat
 		{
 		public:
 			/**
-			 * \brief Raycast test against a geometry object.
+			 * \brief Ray-cast test against a geometry object.
 			 * \param[in] p_ray The ray to test against shape
 			 * \param[in] p_shape The geometry object to test the ray against
 			 * \param[in] p_shape_pose Pose of the geometry object
 			 * \param[in] p_flags Specification of the kind of information to retrieve on hit.
-			 * \param[out] p_hits Raycast hits information
+			 * \param[out] p_hits Ray-cast hits information
 			 * \param[in] p_hits_count max number of returned hits = size of 'rayHits' buffer
 			 * \return Number of hits between the ray and the geometry object
 			 */
@@ -221,7 +221,6 @@ namespace black_cat
 			 * \li PxCapsuleGeometry vs. {PxSphereGeometry, PxPlaneGeometry, PxCapsuleGeometry, PxBoxGeometry, PxConvexMeshGeometry, PxTriangleMeshGeometry, PxHeightFieldGeometry}
 			 * \li PxBoxGeometry vs. {PxSphereGeometry, PxPlaneGeometry, PxCapsuleGeometry, PxBoxGeometry, PxConvexMeshGeometry, PxTriangleMeshGeometry, PxHeightFieldGeometry}
 			 * \li PxConvexMeshGeometry vs. {PxSphereGeometry, PxPlaneGeometry, PxCapsuleGeometry, PxBoxGeometry, PxConvexMeshGeometry, PxTriangleMeshGeometry, PxHeightFieldGeometry}
-			 
 			 */
 			static BC_PHYSICS_DLL bool sweep(const bc_shape_geometry& p_geom0,
 				const bc_transform& p_pose0,
@@ -245,7 +244,6 @@ namespace black_cat
 			 * \li PxPlaneGeometry vs. {PxPlaneGeometry, PxTriangleMeshGeometry, PxHeightFieldGeometry}
 			 * \li PxTriangleMeshGeometry vs. {PxTriangleMeshGeometry, PxHeightFieldGeometry}
 			 * \li PxHeightFieldGeometry vs. {PxHeightFieldGeometry}
-
 			 */
 			static BC_PHYSICS_DLL bool overlap(const bc_shape_geometry& p_geom0,
 				const bc_transform& p_pose0,
@@ -255,7 +253,7 @@ namespace black_cat
 			/**
 			 * \brief Compute minimum translational distance (MTD) between two geometry objects.
 			 * The function returns a unit vector ('direction') and a penetration depth ('depth').
-			 * The depenetration vector D = direction * depth should be applied to the first object, to get out of the second object.
+			 * The penetration vector D = direction * depth should be applied to the first object, to get out of the second object.
 			 * Returned depth should always be positive or null.
 			 * If objects do not overlap, the function can not compute the MTD and returns false.
 			 * \param[in] p_geom0 The first geometry object
@@ -269,10 +267,10 @@ namespace black_cat
 			 * All combinations of geom objects are supported except:
 			 * - plane/plane
 			 * - plane/mesh
-			 * - plane/heightfield
+			 * - plane/height-field
 			 * - mesh/mesh
 			 * - mesh/heightfield
-			 * - heightfield/heightfield
+			 * - height-field/height-field
 			 */
 			static BC_PHYSICS_DLL bool compute_penetration(const bc_shape_geometry& p_geom0,
 				const bc_transform& p_pose0,

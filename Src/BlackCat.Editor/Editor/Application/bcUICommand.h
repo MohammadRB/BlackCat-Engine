@@ -55,7 +55,7 @@ namespace black_cat
 			bc_iui_command_state* m_state;
 		};
 
-		class bc_iui_commnad
+		class bc_iui_command
 		{
 		public:
 			using state = bc_iui_command_state;
@@ -64,7 +64,7 @@ namespace black_cat
 			using update_context = bc_ui_command_update_context;
 
 		public:
-			virtual ~bc_iui_commnad() = default;
+			virtual ~bc_iui_command() = default;
 
 			virtual core::bc_string title() const = 0;
 
@@ -87,16 +87,16 @@ namespace black_cat
 			virtual bool update(update_context& p_context) = 0;
 		};
 
-		class bc_iui_command_reversable : public bc_iui_commnad
+		class bc_iui_command_reversible : public bc_iui_command
 		{
 		public:
-			virtual ~bc_iui_command_reversable() = default;
+			virtual ~bc_iui_command_reversible() = default;
 
 			/**
 			 * \brief This method will be called from engine main thread.
 			 * \param p_context 
 			 */
-			virtual void rollback(update_context& p_context);
+			virtual void rollback(update_context& p_context) = 0;
 		};
 	}
 }

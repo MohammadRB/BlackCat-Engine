@@ -29,7 +29,7 @@ namespace black_cat
 
 		bc_default_game_console::~bc_default_game_console()
 		{
-			if(is_visibile())
+			if(is_visible())
 			{
 				m_input_spin_task.interrupt_executer_thread();
 				m_console->close();
@@ -74,7 +74,7 @@ namespace black_cat
 
 			l_message.append(p_msg);
 
-			if (is_visibile())
+			if (is_visible())
 			{
 				core_platform::bc_lock_guard< core_platform::bc_mutex > l_input_guard(m_input_mutex);
 				
@@ -125,7 +125,7 @@ namespace black_cat
 
 		void bc_default_game_console::clear_output()
 		{
-			if(is_visibile())
+			if(is_visible())
 			{
 				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_console_mutex);
 				
@@ -135,7 +135,7 @@ namespace black_cat
 
 		void bc_default_game_console::show()
 		{
-			if(is_visibile())
+			if(is_visible())
 			{
 				return;
 			}
@@ -150,7 +150,7 @@ namespace black_cat
 
 		void bc_default_game_console::hide()
 		{
-			/*if(!is_visibile())
+			/*if(!is_visible())
 			{
 				return;
 			}
@@ -160,14 +160,14 @@ namespace black_cat
 			m_console.reset();*/
 		}
 
-		bool bc_default_game_console::is_visibile()
+		bool bc_default_game_console::is_visible()
 		{
 			return m_console.is_set();
 		}
 
 		void bc_default_game_console::update(core_platform::bc_clock::update_param p_clock_update_param)
 		{
-			if(is_visibile())
+			if(is_visible())
 			{
 				m_console->update();
 			}

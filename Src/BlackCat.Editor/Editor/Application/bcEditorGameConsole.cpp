@@ -61,7 +61,7 @@ namespace black_cat
 		{
 		}
 
-		bool bc_editor_game_console::is_visibile()
+		bool bc_editor_game_console::is_visible()
 		{
 			return true;
 		}

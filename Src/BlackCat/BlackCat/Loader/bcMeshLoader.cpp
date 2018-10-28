@@ -21,7 +21,7 @@
 #include "PhysicsImp/Fundation/bcMemoryBuffer.h"
 #include "Game/System/Render/bcVertexLayout.h"
 #include "Game/System/bcGameSystem.h"
-#include "BlackCat/Loader/bcMeshPhysicsLoader.h"
+#include "BlackCat/Loader/bcMeshColliderLoader.h"
 #include "BlackCat/Loader/bcMeshLoader.h"
 #include "BlackCat/bcUtility.h"
 
@@ -29,7 +29,7 @@ namespace black_cat
 {
 	void bc_mesh_loader::calculate_node_mesh_count(const aiNode& p_node, bcSIZE& p_node_count, bcSIZE& p_mesh_count)
 	{
-		if (bc_mesh_physics_loader::is_px_node(p_node))
+		if (bc_mesh_collider_loader::is_px_node(p_node))
 		{
 			return;
 		}
@@ -68,24 +68,24 @@ namespace black_cat
 
 	void bc_mesh_loader::convert_aimaterial(core::bc_content_loading_context& p_context, const aiMaterial& p_aimaterial, game::bc_render_material& p_material)
 	{
-		core::bc_content_manager* l_content_manager = core::bc_service_manager::get().get_service< core::bc_content_manager >();
+		auto* l_content_manager = core::bc_service_manager::get().get_service< core::bc_content_manager >();
 
 		aiColor3D l_diffuse;
 		bcFLOAT l_alpha;
-		bcFLOAT l_specular_intency;
+		bcFLOAT l_specular_intensity;
 		bcFLOAT l_specular_power;
 
 		p_aimaterial.Get(AI_MATKEY_COLOR_DIFFUSE, l_diffuse);
-		p_aimaterial.Get(AI_MATKEY_SHININESS_STRENGTH, l_specular_intency);
+		p_aimaterial.Get(AI_MATKEY_SHININESS_STRENGTH, l_specular_intensity);
 		p_aimaterial.Get(AI_MATKEY_SHININESS, l_specular_power);
 		p_aimaterial.Get(AI_MATKEY_OPACITY, l_alpha);
 
 		p_material.m_diffuse = core::bc_vector4f(l_diffuse.r, l_diffuse.g, l_diffuse.b, l_alpha);
-		p_material.m_specular_intency = l_specular_intency;
+		p_material.m_specular_intensity = l_specular_intensity;
 		p_material.m_specular_power = l_specular_power;
 
 		aiString l_aistr;
-		core::bc_path l_file_path = core::bc_path(p_context.m_file_path.c_str()).set_filename(bcL(""));
+		const core::bc_path l_file_path = core::bc_path(p_context.m_file_path.c_str()).set_filename(bcL(""));
 
 		if (p_aimaterial.GetTexture(aiTextureType_DIFFUSE, 0, &l_aistr) == aiReturn_SUCCESS)
 		{
@@ -229,7 +229,7 @@ namespace black_cat
 		game::bc_mesh_part_cbuffer l_mesh_part_cbuffer
 		{
 			l_material.m_diffuse,
-			l_material.m_specular_intency,
+			l_material.m_specular_intensity,
 			l_material.m_specular_power
 		};
 		auto l_cbuffer_data = graphic::bc_subresource_data(&l_mesh_part_cbuffer, 0, 0);
@@ -279,7 +279,7 @@ namespace black_cat
 		game::bc_mesh_node* p_parent,
 		const core::bc_matrix4f& p_parent_transformation)
 	{
-		if (bc_mesh_physics_loader::is_px_node(p_ainode))
+		if (bc_mesh_collider_loader::is_px_node(p_ainode))
 		{
 			return;
 		}

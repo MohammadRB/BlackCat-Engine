@@ -51,9 +51,6 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshLoader.h">
       <Filter>BlackCat\Loader</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshPhysicsLoader.h">
-      <Filter>BlackCat\Loader</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcPixelShaderLoader.h">
       <Filter>BlackCat\Loader</Filter>
     </ClInclude>
@@ -84,6 +81,9 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\BlackCatPCH.h">
       <Filter>BlackCat</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshColliderLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -102,9 +102,6 @@
       <Filter>BlackCat\Loader</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshLoader.cpp">
-      <Filter>BlackCat\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshPhysicsLoader.cpp">
       <Filter>BlackCat\Loader</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcPixelShaderLoader.cpp">
@@ -130,6 +127,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\BlackCatPCH.cpp">
       <Filter>BlackCat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshColliderLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -38,7 +38,7 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_4">
     <property name="leftMargin">
      <number>3</number>
     </property>
@@ -174,15 +174,54 @@
             <number>0</number>
            </property>
            <property name="fontAwesome" stdset="0">
-            <string>areachart,adjust</string>
+            <string>handpointero,areachart</string>
            </property>
+           <widget class="QWidget" name="rightToolBoxObjectSelect">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>338</width>
+              <height>736</height>
+             </rect>
+            </property>
+            <attribute name="label">
+             <string>ObjectSelection</string>
+            </attribute>
+            <widget class="QLabel" name="entityNameLable">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>10</y>
+               <width>81</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>ObjectName:</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="entityNameLableValue">
+             <property name="geometry">
+              <rect>
+               <x>100</x>
+               <y>10</y>
+               <width>231</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </widget>
            <widget class="QWidget" name="rightToolBoxTerrain">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>336</width>
-              <height>721</height>
+              <width>338</width>
+              <height>736</height>
              </rect>
             </property>
             <attribute name="icon">
@@ -354,19 +393,6 @@
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="page_2">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>98</width>
-              <height>28</height>
-             </rect>
-            </property>
-            <attribute name="label">
-             <string>Page 2</string>
-            </attribute>
-           </widget>
           </widget>
          </item>
         </layout>
@@ -382,7 +408,7 @@
      <x>0</x>
      <y>0</y>
      <width>1600</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

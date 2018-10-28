@@ -50,12 +50,12 @@ namespace black_cat
 
 		void bc_physics_system::connect_px_actor_to_game_actor(physics::bc_actor& p_px_actor, bc_actor p_actor)
 		{
-			p_px_actor.set_data(reinterpret_cast<void*>(static_cast<bcUINTPTR>(p_actor.get_index())));
+			p_px_actor.set_data(reinterpret_cast<void*>(static_cast<bcINTPTR>(p_actor.get_index())));
 		}
 
 		bc_actor bc_physics_system::get_game_actor(physics::bc_actor& p_px_actor)
 		{
-			return bc_actor(static_cast<bc_actor_index>(reinterpret_cast<bcUINTPTR>(p_px_actor.get_data())));
+			return bc_actor(static_cast<bc_actor_index>(reinterpret_cast<bcINTPTR>(p_px_actor.get_data())));
 		}
 
 		void bc_physics_system::update(core_platform::bc_clock::update_param p_clock_update_param)

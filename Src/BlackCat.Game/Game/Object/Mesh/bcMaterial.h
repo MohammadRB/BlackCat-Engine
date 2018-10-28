@@ -29,7 +29,7 @@ namespace black_cat
 		{
 		public:
 			core::bc_vector4f m_diffuse;
-			bcFLOAT m_specular_intency;
+			bcFLOAT m_specular_intensity;
 			bcFLOAT m_specular_power;
 
 			graphic::bc_texture2d_content_ptr m_diffuse_map;

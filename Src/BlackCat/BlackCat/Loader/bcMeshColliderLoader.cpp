@@ -7,27 +7,22 @@
 #include "Game/System/bcGameSystem.h"
 #include "BlackCat/bcUtility.h"
 #include "BlackCat/Loader/bcMeshLoader.h"
-#include "BlackCat/Loader/bcMeshPhysicsLoader.h"
+#include "BlackCat/Loader/bcMeshColliderLoader.h"
 
 #include "3rdParty/Assimp/include/assimp/postprocess.h"
 #include "3rdParty/Assimp/include/assimp/Importer.hpp"
 
 namespace black_cat
 {
-	bool bc_mesh_physics_loader::is_px_node(const aiNode& p_node)
+	bool bc_mesh_collider_loader::is_px_node(const aiNode& p_node)
 	{
 		core::bc_string_frame l_node_name(p_node.mName.data);
 		const bcCHAR* l_px_str = "px_";
 
-		if (l_node_name.compare(0, std::strlen(l_px_str), l_px_str) == 0)
-		{
-			return true;
-		}
-
-		return false;
+		return l_node_name.compare(0, std::strlen(l_px_str), l_px_str) == 0;
 	}
 
-	aiNode* bc_mesh_physics_loader::find_px_node(const aiNode& p_ainode, const aiMesh& p_ainode_mesh)
+	aiNode* bc_mesh_collider_loader::find_px_node(const aiNode& p_ainode, const aiMesh& p_ainode_mesh)
 	{
 		aiNode* l_result = nullptr;
 		core::bc_string_frame l_px_node_name;
@@ -38,7 +33,7 @@ namespace black_cat
 
 		for (bcUINT32 l_index = 0; l_index < p_ainode.mNumChildren; ++l_index)
 		{
-			if (l_px_node_name.compare(p_ainode.mChildren[l_index]->mName.data) == 0)
+			if (l_px_node_name == p_ainode.mChildren[l_index]->mName.data)
 			{
 				l_result = p_ainode.mChildren[l_index];
 				break;
@@ -48,7 +43,7 @@ namespace black_cat
 		return l_result;
 	}
 
-	game::bc_mesh_part_collider bc_mesh_physics_loader::convert_px_node(physics::bc_physics& p_physics,
+	game::bc_mesh_part_collider bc_mesh_collider_loader::convert_px_node(physics::bc_physics& p_physics,
 		const aiScene& p_aiscene,
 		const aiNode& p_ainode,
 		const core::bc_matrix4f& p_parent_transformation)
@@ -65,7 +60,7 @@ namespace black_cat
 			const aiMesh* l_mesh = p_aiscene.mMeshes[p_ainode.mMeshes[l_mesh_index]];
 			l_mesh_name.assign(l_mesh->mName.data);
 
-			if (l_mesh_name.compare("sphere") == 0)
+			if (l_mesh_name == "sphere")
 			{
 				physics::bc_shape_sphere l_px_sphere = bc_extract_sphere_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
 				(
@@ -76,7 +71,7 @@ namespace black_cat
 
 				l_result.add_px_shape(l_px_sphere, l_node_transformation);
 			}
-			else if (l_mesh_name.compare("box") == 0)
+			else if (l_mesh_name == "box")
 			{
 				physics::bc_shape_box l_px_box = bc_extract_box_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
 				(
@@ -87,7 +82,7 @@ namespace black_cat
 
 				l_result.add_px_shape(l_px_box, l_node_transformation);
 			}
-			else if (l_mesh_name.compare("capsule") == 0)
+			else if (l_mesh_name == "capsule")
 			{
 				physics::bc_shape_capsule l_px_capsule = bc_extract_capsule_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
 				(
@@ -98,7 +93,7 @@ namespace black_cat
 
 				l_result.add_px_shape(l_px_capsule, l_node_transformation);
 			}
-			else if (l_mesh_name.compare("convex") == 0)
+			else if (l_mesh_name == "convex")
 			{
 				physics::bc_convex_mesh_desc l_px_convex_desc = bc_extract_convex_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
 				(
@@ -112,9 +107,9 @@ namespace black_cat
 
 				l_result.add_px_shape(std::move(l_convex), l_node_transformation);
 			}
-			else if (l_mesh_name.compare("mesh") == 0)
+			else if (l_mesh_name == "mesh")
 			{
-				bool l_need_32bit_indices = l_mesh->mNumFaces * 3 > std::numeric_limits< bcUINT16 >::max();
+				const bool l_need_32bit_indices = l_mesh->mNumFaces * 3 > std::numeric_limits< bcUINT16 >::max();
 				core::bc_vector_frame< bcBYTE > l_indices;
 				l_indices.reserve(l_mesh->mNumFaces * 3 * (l_need_32bit_indices ? static_cast< bcINT >(game::bc_index_type::i32bit) : static_cast< bcINT >(game::bc_index_type::i16bit)));
 
@@ -169,7 +164,7 @@ namespace black_cat
 		return l_result;
 	}
 
-	void bc_mesh_physics_loader::convert_nodes(game::bc_physics_system& p_physics_system,
+	void bc_mesh_collider_loader::convert_nodes(game::bc_physics_system& p_physics_system,
 		core::bc_content_loading_context& p_context,
 		const aiScene& p_aiscene,
 		const aiNode& p_ainode,
@@ -211,11 +206,11 @@ namespace black_cat
 		}
 	}
 
-	void bc_mesh_physics_loader::content_offline_processing(core::bc_content_loading_context& p_context) const
+	void bc_mesh_collider_loader::content_offline_processing(core::bc_content_loading_context& p_context) const
 	{
 	}
 
-	void bc_mesh_physics_loader::content_processing(core::bc_content_loading_context& p_context) const
+	void bc_mesh_collider_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
 		Assimp::Importer l_importer;
 
@@ -234,7 +229,7 @@ namespace black_cat
 
 		if (!l_scene || !l_scene->HasMeshes())
 		{
-			auto l_error_msg = core::bc_string_frame("Content file doesn't include mesh data") + core::bc_to_exclusive_string(p_context.m_file_path.c_str()).c_str();
+			auto l_error_msg = core::bc_string_frame("Content file doesn't include mesh data. ") + core::bc_to_exclusive_string(p_context.m_file_path.c_str()).c_str();
 			p_context.set_result(bc_io_exception(l_error_msg.c_str()));
 			return;
 		}

@@ -11,16 +11,16 @@
 
 namespace black_cat
 {
-	class BC_BLACKCAT_DLL bc_mesh_physics_loader : public core::bc_base_content_loader
+	class BC_BLACKCAT_DLL bc_mesh_collider_loader : public core::bc_base_content_loader
 	{
 	public:
-		bc_mesh_physics_loader() = default;
+		bc_mesh_collider_loader() = default;
 
-		bc_mesh_physics_loader(bc_mesh_physics_loader&&) = default;
+		bc_mesh_collider_loader(bc_mesh_collider_loader&&) = default;
 
-		~bc_mesh_physics_loader() = default;
+		~bc_mesh_collider_loader() = default;
 
-		bc_mesh_physics_loader& operator=(bc_mesh_physics_loader&&) = default;
+		bc_mesh_collider_loader& operator=(bc_mesh_collider_loader&&) = default;
 
 		static bool is_px_node(const aiNode& p_node);
 

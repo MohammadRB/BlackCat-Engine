@@ -36,7 +36,7 @@ namespace black_cat
 
 		bcUINT32 bc_mesh_node::get_child_count() const
 		{
-			return m_childs.size();
+			return m_children.size();
 		}
 
 		const core::bc_string& bc_mesh_node::get_name() const
@@ -46,7 +46,7 @@ namespace black_cat
 
 		void bc_mesh_node::_add_child(bc_mesh_node* p_mesh_part)
 		{
-			m_childs.push_back(p_mesh_part);
+			m_children.push_back(p_mesh_part);
 		}
 
 		// -- bc_mesh --------------------------------------------------------------------------------
@@ -92,9 +92,9 @@ namespace black_cat
 			return p_node->m_parent;
 		}
 
-		const core::bc_vector<bc_mesh_node*>& bc_mesh::get_node_childs(const bc_mesh_node* p_node) const
+		const core::bc_vector<bc_mesh_node*>& bc_mesh::get_node_children(const bc_mesh_node* p_node) const
 		{
-			return p_node->m_childs;
+			return p_node->m_children;
 		}
 
 		const core::bc_matrix4f* bc_mesh::get_node_transformation(const bc_mesh_node* p_node) const

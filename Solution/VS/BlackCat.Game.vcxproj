@@ -211,9 +211,16 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\bcException.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\bcExport.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\GamePCH.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcHeightMap.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMaterial.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMesh.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshCollider.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshGenerator.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcSubMesh.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcActor.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcActor.hpp" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcActorComponent.h" />
@@ -257,13 +264,6 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptBinding.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptSystem.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptUIContext.h" />
-    <ClInclude Include="..\..\Src\BlackCat.GameGame\Application\bcRenderApplication.h" />
-    <ClInclude Include="..\..\Src\BlackCat.GameGame\Object\Mesh\bcHeightMap.h" />
-    <ClInclude Include="..\..\Src\BlackCat.GameGame\Object\Mesh\bcMaterial.h" />
-    <ClInclude Include="..\..\Src\BlackCat.GameGame\Object\Mesh\bcMesh.h" />
-    <ClInclude Include="..\..\Src\BlackCat.GameGame\Object\Mesh\bcMeshCollider.h" />
-    <ClInclude Include="..\..\Src\BlackCat.GameGame\Object\Mesh\bcMeshGenerator.h" />
-    <ClInclude Include="..\..\Src\BlackCat.GameGame\Object\Mesh\bcSubMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp" />

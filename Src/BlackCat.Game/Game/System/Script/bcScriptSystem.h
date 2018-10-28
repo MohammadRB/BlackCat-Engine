@@ -93,7 +93,7 @@ namespace black_cat
 
 			core::bc_wstring stringify(platform::bc_script_variable& p_value);
 
-			void interupt_script_execuation();
+			void interrupt_script_execution();
 
 			void collect_garbage();
 
@@ -110,6 +110,8 @@ namespace black_cat
 				{
 				case bc_script_context::ui:
 					return m_ui_context.get_context();
+				default: 
+					throw bc_invalid_argument_exception("Invalid script context");
 				}
 			}
 

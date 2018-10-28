@@ -56,6 +56,4 @@ namespace black_cat
 
 	private:
 	};
-
-	using bc_mesh_ptr = core::bc_content_ptr< game::bc_mesh >;
 }

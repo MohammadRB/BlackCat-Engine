@@ -13,7 +13,7 @@ namespace black_cat
 
 		bc_mesh_part_collider::bc_mesh_part_collider(bc_mesh_part_collider&& p_other) noexcept
 			: m_shapes(std::move(p_other.m_shapes)),
-			m_convexs(std::move(p_other.m_convexs)),
+			m_convexes(std::move(p_other.m_convexes)),
 			m_triangles(std::move(p_other.m_triangles))
 		{
 		}
@@ -25,7 +25,7 @@ namespace black_cat
 		bc_mesh_part_collider& bc_mesh_part_collider::operator=(bc_mesh_part_collider&& p_other) noexcept
 		{
 			m_shapes = std::move(p_other.m_shapes);
-			m_convexs = std::move(p_other.m_convexs);
+			m_convexes = std::move(p_other.m_convexes);
 			m_triangles = std::move(p_other.m_triangles);
 
 			return *this;
@@ -53,7 +53,7 @@ namespace black_cat
 				core::bc_make_unique<physics::bc_shape_convex_mesh>(physics::bc_shape_convex_mesh(p_convex.get())),
 				p_transformation
 			));
-			m_convexs.push_back(std::move(p_convex));
+			m_convexes.push_back(std::move(p_convex));
 		}
 
 		void bc_mesh_part_collider::add_px_shape(physics::bc_triangle_mesh_ref&& p_mesh, const physics::bc_transform& p_transformation)
@@ -84,7 +84,7 @@ namespace black_cat
 		void bc_mesh_part_collider::shrink_to_fit()
 		{
 			m_shapes.shrink_to_fit();
-			m_convexs.shrink_to_fit();
+			m_convexes.shrink_to_fit();
 			m_triangles.shrink_to_fit();
 		}
 	}

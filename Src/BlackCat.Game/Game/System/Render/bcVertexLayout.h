@@ -18,8 +18,8 @@ namespace black_cat
 
 		enum class bc_vertex_type
 		{
-			pos_tex = 0,			// Position_Texcoord
-			pos_tex_nor = 1,		// Position_Texcoord_Normal
+			pos_tex = 0,				// Position_Texcoord
+			pos_tex_nor = 1,			// Position_Texcoord_Normal
 			pos_tex_nor_tan = 2		// Position_Texcoord_Normal_Tangent
 		};
 

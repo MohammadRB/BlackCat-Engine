@@ -159,7 +159,7 @@ namespace black_cat
 		
 		inline const core::bc_vector<bc_mesh_node*>& bc_sub_mesh::get_node_childs(const bc_mesh_node* p_node) const
 		{
-			return m_mesh->get_node_childs(p_node);
+			return m_mesh->get_node_children(p_node);
 		}
 
 		inline const core::bc_matrix4f* bc_sub_mesh::get_node_transformation(const bc_mesh_node* p_node) const

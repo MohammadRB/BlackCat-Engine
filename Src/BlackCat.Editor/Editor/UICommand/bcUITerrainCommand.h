@@ -36,7 +36,7 @@ namespace black_cat
 			bcUINT32 m_tool_center_z;
 		};
 
-		class bc_ui_terrain_command : public bc_iui_commnad
+		class bc_ui_terrain_command : public bc_iui_command
 		{
 		public:
 			using terrain_update_context = bc_ui_terrain_command_update_context;

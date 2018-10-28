@@ -216,7 +216,7 @@ namespace black_cat
 			return l_result_string;
 		}
 
-		void bc_script_system::interupt_script_execuation()
+		void bc_script_system::interrupt_script_execution()
 		{
 			m_script_runtime.interupt_script_execuation();
 		}

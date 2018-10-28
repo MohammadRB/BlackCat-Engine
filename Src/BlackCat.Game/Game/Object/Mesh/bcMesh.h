@@ -28,7 +28,7 @@ namespace black_cat
 		struct bc_mesh_part_cbuffer
 		{
 			BC_CBUFFER_ALIGN core::bc_vector4f m_diffuse;
-			BC_CBUFFER_ALIGN bcFLOAT m_specular_intency;
+			BC_CBUFFER_ALIGN bcFLOAT m_specular_intensity;
 			bcFLOAT m_specular_power;
 		};
 
@@ -93,7 +93,7 @@ namespace black_cat
 
 			core::bc_string m_name;
 			bc_mesh_node* m_parent;
-			core::bc_vector< bc_mesh_node* > m_childs;
+			core::bc_vector< bc_mesh_node* > m_children;
 			node_indexing m_transformation_index;
 			node_indexing m_first_mesh_index;
 			bcUINT32 m_mesh_count;
@@ -132,7 +132,7 @@ namespace black_cat
 
 			const bc_mesh_node* get_node_parent(const bc_mesh_node* p_node) const;
 
-			const core::bc_vector< bc_mesh_node* >& get_node_childs(const bc_mesh_node* p_node) const;
+			const core::bc_vector< bc_mesh_node* >& get_node_children(const bc_mesh_node* p_node) const;
 
 			const core::bc_matrix4f* get_node_transformation(const bc_mesh_node* p_node) const;
 
@@ -160,7 +160,7 @@ namespace black_cat
 		private:
 			core::bc_string m_name;
 			bc_mesh_node* m_root;
-			core::bc_vector< bc_mesh_node > m_nodes;							// Don't use movable memory due to raw pointers in bc_mesh_node
+			core::bc_vector< bc_mesh_node > m_nodes;								// Don't use movable memory due to raw pointers in bc_mesh_node
 			core::bc_vector< bc_render_state_ptr > m_render_states;				// Place render states along with nodes
 			core::bc_vector_movale< core::bc_matrix4f > m_transformations;
 			bc_mesh_collider_ptr m_colliders;

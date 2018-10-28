@@ -133,21 +133,21 @@ namespace black_cat
 
 			//return l_dir;
 
-			bcFLOAT l_left = static_cast<bcFLOAT>(p_left) / p_screen_width;
-			bcFLOAT l_botton = 1 - (static_cast<bcFLOAT>(p_top) / p_screen_height);
+			const bcFLOAT l_left = static_cast<bcFLOAT>(p_left) / p_screen_width;
+			const bcFLOAT l_bottom = 1 - (static_cast<bcFLOAT>(p_top) / p_screen_height);
 			extend l_camera_extends;
 
 			get_extend_points(l_camera_extends);
 
-			bcFLOAT l_near_width = std::abs((l_camera_extends[0] - l_camera_extends[3]).magnitude());
-			bcFLOAT l_near_height = std::abs((l_camera_extends[0] - l_camera_extends[1]).magnitude());
-			bcFLOAT l_far_width = std::abs((l_camera_extends[4] - l_camera_extends[7]).magnitude());
-			bcFLOAT l_far_height = std::abs((l_camera_extends[4] - l_camera_extends[5]).magnitude());
+			const bcFLOAT l_near_width = std::abs((l_camera_extends[0] - l_camera_extends[3]).magnitude());
+			const bcFLOAT l_near_height = std::abs((l_camera_extends[0] - l_camera_extends[1]).magnitude());
+			const bcFLOAT l_far_width = std::abs((l_camera_extends[4] - l_camera_extends[7]).magnitude());
+			const bcFLOAT l_far_height = std::abs((l_camera_extends[4] - l_camera_extends[5]).magnitude());
 
-			bcFLOAT l_near_width_ratio = l_near_width * l_left;
-			bcFLOAT l_near_height_ratio = l_near_height * l_botton;
-			bcFLOAT l_far_width_ratio = l_far_width * l_left;
-			bcFLOAT l_far_height_ratio = l_far_height * l_botton;
+			const bcFLOAT l_near_width_ratio = l_near_width * l_left;
+			const bcFLOAT l_near_height_ratio = l_near_height * l_bottom;
+			const bcFLOAT l_far_width_ratio = l_far_width * l_left;
+			const bcFLOAT l_far_height_ratio = l_far_height * l_bottom;
 
 			auto l_near_point = l_camera_extends[0];
 			auto l_far_point = l_camera_extends[4];

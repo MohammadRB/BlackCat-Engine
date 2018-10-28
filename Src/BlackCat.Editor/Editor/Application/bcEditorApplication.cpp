@@ -167,14 +167,14 @@ namespace black_cat
 				_load_icon_toolbox(l_tool_box, p_options);
 			}
 
-			auto* l_botton = qobject_cast<QToolButton*>(p_parent);
-			if (l_botton)
+			auto* l_button = qobject_cast<QToolButton*>(p_parent);
+			if (l_button)
 			{
-				_load_icon_button(l_botton, p_options);
+				_load_icon_button(l_button, p_options);
 			}
 
-			auto& l_childs = p_parent->children();
-			for (auto l_child_obj : l_childs)
+			auto& l_children = p_parent->children();
+			for (auto l_child_obj : l_children)
 			{
 				auto* l_child = qobject_cast<QWidget*>(l_child_obj);
 
@@ -190,7 +190,6 @@ namespace black_cat
 		void bc_editor_app::_load_icon_button(QAbstractButton* p_bottom, QVariantMap& p_options) const
 		{
 			auto l_font_name_property = p_bottom->property("fontAwesome");
-
 			if (!l_font_name_property.isValid())
 			{
 				return;
@@ -203,7 +202,6 @@ namespace black_cat
 		void bc_editor_app::_load_icon_toolbox(QToolBox* p_tool_box, QVariantMap& p_options) const
 		{
 			auto l_font_name_property = p_tool_box->property("fontAwesome");
-			
 			if(!l_font_name_property.isValid())
 			{
 				return;

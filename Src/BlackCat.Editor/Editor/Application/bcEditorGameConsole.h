@@ -37,7 +37,7 @@ namespace black_cat
 
 			void update(core_platform::bc_clock::update_param p_clock_update_param) override;
 
-			bool is_visibile() override;
+			bool is_visible() override;
 
 			/**
 			 * \brief Make a widget able to run script through console.

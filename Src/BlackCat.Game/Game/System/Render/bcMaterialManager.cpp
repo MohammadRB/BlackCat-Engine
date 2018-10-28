@@ -207,7 +207,7 @@ namespace black_cat
 				l_description_entry->second.m_diffuse_color.z / 255.0f,
 				l_description_entry->second.m_diffuse_color.w / 255.0f
 			);
-			l_material->m_specular_intency = l_description_entry->second.m_specualr_intency;
+			l_material->m_specular_intensity = l_description_entry->second.m_specualr_intency;
 			l_material->m_specular_power = l_description_entry->second.m_specualr_power;
 			l_material->m_diffuse_map = l_diffuse_map;
 			l_material->m_normal_map = l_normal_map;
