@@ -21,18 +21,20 @@ namespace black_cat
 			bcFLOAT p_y_multiplier,
 			bcUINT16 p_distance_detail,
 			bcUINT16 p_height_detail,
-			game::bc_render_state_ptr& p_render_state,
-			graphic::bc_texture2d_ptr& p_height_map,
-			graphic::bc_resource_view_ptr& p_height_map_view,
-			graphic::bc_texture2d_content_ptr& p_texture_map,
-			graphic::bc_resource_view_ptr& p_texture_map_view,
-			graphic::bc_buffer_ptr& p_parameter_cbuffer,
-			graphic::bc_buffer_ptr& p_chunk_info_buffer,
-			graphic::bc_resource_view_ptr& p_chunk_info_view,
-			graphic::bc_resource_view_ptr& p_chunk_info_unordered_view,
-			graphic::bc_buffer_ptr& p_material_properties_buffer,
-			core::bc_vector<game::bc_material_ptr>&& p_materials,
-			physics::bc_height_field_ref&& p_px_height_map,
+			game::bc_render_state_ptr p_render_state,
+			graphic::bc_buffer_ptr p_vertex_buffer,
+			graphic::bc_buffer_ptr p_index_buffer,
+			graphic::bc_texture2d_ptr p_height_map,
+			graphic::bc_resource_view_ptr p_height_map_view,
+			graphic::bc_texture2d_content_ptr p_texture_map,
+			graphic::bc_resource_view_ptr p_texture_map_view,
+			graphic::bc_buffer_ptr p_parameter_cbuffer,
+			graphic::bc_buffer_ptr p_chunk_info_buffer,
+			graphic::bc_resource_view_ptr p_chunk_info_view,
+			graphic::bc_resource_view_ptr p_chunk_info_unordered_view,
+			graphic::bc_buffer_ptr p_material_properties_buffer,
+			core::bc_vector<game::bc_render_material_ptr> p_materials,
+			physics::bc_height_field_ref p_px_height_map,
 			void* p_px_height_map_deserialize_buffer);
 
 		bc_height_map_dx11(bc_height_map_dx11&&) = default;
@@ -43,7 +45,7 @@ namespace black_cat
 		
 		graphic::bc_texture2d get_height_map() const
 		{
-			return m_heightmap.get();
+			return m_height_map.get();
 		}
 
 		graphic::bc_resource_view get_height_map_view() const
@@ -53,7 +55,7 @@ namespace black_cat
 
 		graphic::bc_texture2d get_texture_map() const
 		{
-			return m_texture_map->get_resource().get();
+			return m_texture_map->get_resource();
 		}
 
 		graphic::bc_resource_view get_texture_map_view() const
@@ -76,7 +78,7 @@ namespace black_cat
 			return m_chunk_info_unordered_view.get();
 		}
 
-		const core::bc_vector<game::bc_material_ptr>& get_materials() const
+		const core::bc_vector<game::bc_render_material_ptr>& get_materials() const
 		{
 			return m_materials;
 		}
@@ -87,7 +89,7 @@ namespace black_cat
 		bcUINT16 m_distance_detail;
 		bcUINT16 m_height_detail;
 
-		graphic::bc_texture2d_ptr m_heightmap;
+		graphic::bc_texture2d_ptr m_height_map;
 		graphic::bc_resource_view_ptr m_height_map_view;
 		graphic::bc_texture2d_content_ptr m_texture_map;
 		graphic::bc_resource_view_ptr m_texture_map_view;
@@ -96,7 +98,7 @@ namespace black_cat
 		graphic::bc_resource_view_ptr m_chunk_info_view;
 		graphic::bc_resource_view_ptr m_chunk_info_unordered_view;
 		graphic::bc_buffer_ptr m_material_properties_buffer;
-		core::bc_vector<game::bc_material_ptr> m_materials;
+		core::bc_vector<game::bc_render_material_ptr> m_materials;
 	};
 
 	class BC_BLACKCAT_DLL bc_height_map_loader_dx11 : public core::bc_base_content_loader
@@ -114,6 +116,6 @@ namespace black_cat
 		virtual std::pair< graphic::bc_texture_config, graphic::bc_resource_view_config > get_texture_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const;
 
 	private:
-		constexpr static bcUINT16 s_chund_size = 64;
+		constexpr static bcUINT16 s_chunk_size = 64;
 	};
 }

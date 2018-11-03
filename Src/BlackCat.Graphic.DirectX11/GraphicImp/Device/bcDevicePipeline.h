@@ -79,7 +79,7 @@ namespace black_cat
 		template<>
 		struct bc_platform_device_pipeline_pack< g_api_dx11 >
 		{
-			bc_device_pipeline_proxy* m_pipeline;
+			bc_device_pipeline_proxy* m_pipeline_proxy;
 		};
 	}
 }

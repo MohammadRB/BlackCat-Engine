@@ -23,7 +23,7 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceOutput.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDevicePipeline.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDevicePipelineState.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandExecuter.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandExecutor.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandList.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\GraphicImpPCH.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\PipelineStage\bcComputeStage.h" />
@@ -71,7 +71,7 @@
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDevice.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceOutput.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDevicePipeline.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandExecuter.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandExecutor.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandList.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\GraphicImpPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

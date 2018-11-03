@@ -57,14 +57,10 @@ namespace black_cat
 				)
 				.as_constant_buffer();
 
-			auto l_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);
-			auto l_device_compute_state = l_render_system.create_device_compute_state("terrain_material_cs");
-			auto l_device_command_list = l_render_system.get_device().create_command_list();
-
 			bc_ui_terrain_material_commnad_state l_state;
-			l_state.m_device_compute_state = l_device_compute_state;
-			l_state.m_parameter_cbuffer = l_cbuffer;
-			l_state.m_device_command_list = l_device_command_list;
+			l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_material_cs");;
+			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);;
+			l_state.m_device_command_list = l_render_system.get_device().create_command_list();;
 
 			return core::bc_make_unique< bc_ui_terrain_material_commnad_state >(std::move(l_state));
 		}
@@ -106,8 +102,8 @@ namespace black_cat
 
 		void bc_ui_terrain_material_command_render_task::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_render_thread)
 		{
-			auto l_tool_diameter = m_shader_parameter.m_tool_radius * 2;
-			auto l_thread_group_count = (l_tool_diameter / 32) + 1;
+			const auto l_tool_diameter = m_shader_parameter.m_tool_radius * 2;
+			const auto l_thread_group_count = (l_tool_diameter / 32) + 1;
 
 			auto l_compute_state = p_render_system.create_compute_state
 			(
@@ -122,7 +118,7 @@ namespace black_cat
 				},
 				{
 					graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, m_height_map.get_parameter_cbuffer()),
-					graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, m_command_state.m_parameter_cbuffer)
+					graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, m_command_state.m_parameter_cbuffer.get())
 				}
 			);
 

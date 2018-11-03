@@ -44,7 +44,7 @@ namespace black_cat
 
 			/**
 			 * \brief Get buffer used to deserialize objects. This buffer must persist while deserialized objects
-			 * exist. This buffer allocated with aligned allocation routines and must be deallocated with aligned
+			 * exist. This buffer allocated with aligned allocation routines and must be deallocate with aligned
 			 * deallocation routines.
 			 * This method can be called only one time.
 			 * \return 
@@ -52,10 +52,10 @@ namespace black_cat
 			void* get_deserialize_buffer() noexcept;
 
 			/**
-			 * \brief Try to retrieve a bc_height_field varibale from deserialized collection at given index.
+			 * \brief Try to retrieve a bc_height_field variable from deserialized collection at given index.
 			 * \param p_index 
 			 * \param p_height_field 
-			 * \return True if successed
+			 * \return True if succeeded
 			 */
 			bool get(bcUINT32 p_index, bc_height_field& p_height_field) noexcept;
 

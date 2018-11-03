@@ -3,10 +3,11 @@
 #pragma once
 
 #include "GraphicImp/Device/bcDevicePipelineState.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
+#include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "GraphicImp/Resource/View/bcDepthStencilView.h"
+#include "GraphicImp/Resource/State/bcSamplerState.h"
 #include "Game/System/Render/bcRenderPass.h"
 #include "Game/System/Render/bcRenderPassState.h"
 #include "BlackCat/bcExport.h"
@@ -45,6 +46,7 @@ namespace black_cat
 	private:
 		graphic::bc_device_command_list_ptr m_command_list;
 		graphic::bc_device_pipeline_state_ptr m_pipeline_state;
+		graphic::bc_sampler_state_ptr m_sampler_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;
 	};
 }

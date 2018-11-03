@@ -4,7 +4,7 @@
 
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
+#include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/bcRenderPassState.h"
 #include "Game/System/Render/bcRenderState.h"
@@ -32,9 +32,9 @@ namespace black_cat
 				return m_pipeline.get();
 			}
 
-			graphic::bc_device_command_executer get_executer() noexcept
+			graphic::bc_device_command_executor get_executor() noexcept
 			{
-				return m_executer.get();
+				return m_executor.get();
 			}
 
 			/**
@@ -153,13 +153,13 @@ namespace black_cat
 
 			void reset();
 
-			void reset(graphic::bc_device_pipeline_ptr p_pipeline, graphic::bc_device_command_executer_ptr p_command_executer);
+			void reset(graphic::bc_device_pipeline_ptr p_pipeline, graphic::bc_device_command_executor_ptr p_command_executor);
 
 		protected:
 
 		private:
 			graphic::bc_device_pipeline_ptr m_pipeline;
-			graphic::bc_device_command_executer_ptr m_executer;
+			graphic::bc_device_command_executor_ptr m_executor;
 			graphic::bc_device_command_list m_command_list;
 		};
 	}

@@ -53,18 +53,21 @@ namespace black_cat
 			// Return true if reference count reach zero
 			bool dec_ref() noexcept
 			{
-				auto l_ref_count = m_ref_count.fetch_sub(1U, core_platform::bc_memory_order::relaxed);
+				const auto l_ref_count = static_cast<bcINT32>(m_ref_count.fetch_sub(1U, core_platform::bc_memory_order::relaxed)) - 1;
+				bcAssert(l_ref_count >= 0);
 
-				bcAssert(l_ref_count > 0);
-
-				return l_ref_count == 1;
+				return l_ref_count == 0;
 			}
 
 		private:
 			core_platform::bc_atomic<bcUINT32> m_ref_count;
 		};
 
-		// A movable aware reference counting pointer
+		/**
+		 * \brief A movable aware reference counting pointer.
+		 * \tparam T 
+		 * \tparam TDeleter 
+		 */
 		template< class T, class TDeleter >
 		class bc_ref_count_ptr
 		{
@@ -149,9 +152,13 @@ namespace black_cat
 			TDeleter m_deleter;
 		};
 
-		// Reference counting handle pointer. 
-		// Handle must be nullptr constructible and assignable and comparable
-		// TDeleter must have two operator(): one for deleting owing resource and another for dereferencing resource
+		/**
+		 * \brief Reference counting handle pointer.
+		 * Handle must be nullptr constructable, assignable and comparable.
+		 * TDeleter must have two operator(): one for deleting owing resource and another for dereferencing resource.
+		 * \tparam T 
+		 * \tparam TDeleter 
+		 */
 		template< class T, class TDeleter >
 		class bc_ref_count_handle
 		{
@@ -195,7 +202,7 @@ namespace black_cat
 
 			void reset() noexcept(true);
 
-			void reset(handle_t p_pointer) noexcept(true);
+			void reset(handle_t p_handle) noexcept(true);
 
 			void swap(bc_ref_count_handle& p_other) noexcept(true);
 
@@ -218,7 +225,7 @@ namespace black_cat
 		protected:
 
 		private:
-			void _construct(handle_t p_pointer, const TDeleter& p_deleter);
+			void _construct(handle_t p_handle, const TDeleter& p_deleter);
 
 			void _destruct();
 
@@ -663,7 +670,9 @@ namespace black_cat
 			m_deleter = p_deleter;
 
 			if (m_handle != nullptr)
-				static_cast< bc_ref_count* >(get())->add_ref();
+			{
+				static_cast<bc_ref_count*>(get())->add_ref();
+			}
 		}
 
 		template< class T, class TDeleter >

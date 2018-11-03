@@ -7,7 +7,7 @@
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
+#include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/bcRenderPass.h"
 #include "Game/System/Render/bcRenderThread.h"

@@ -51,7 +51,7 @@ namespace black_cat
 				}
 			}
 
-			auto& l_node_childs = p_mesh.get_node_childs(p_mesh_node);
+			auto& l_node_childs = p_mesh.get_node_children(p_mesh_node);
 			for (bcUINT32 l_child = 0, l_end = l_node_childs.size(); l_child < l_end; ++l_child)
 			{
 				_get_mesh_colliders(p_mesh, l_node_childs[l_child], p_result);

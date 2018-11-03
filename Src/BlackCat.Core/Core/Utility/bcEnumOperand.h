@@ -23,7 +23,7 @@ namespace black_cat
 			template< typename TEnum >
 			static TEnum none()
 			{
-				using type = typename std::underlying_type<TEnum>::type;
+				using type = enum_t<TEnum>;
 
 				return static_cast<TEnum>(type(0));
 			}
@@ -31,7 +31,7 @@ namespace black_cat
 			template<typename TEnum>
 			static TEnum all()
 			{
-				using type = typename std::underlying_type<TEnum>::type;
+				using type = enum_t<TEnum>;
 
 				return static_cast<TEnum>(type(std::numeric_limits<type>::max()));
 			}
@@ -39,7 +39,7 @@ namespace black_cat
 			template< typename TEnum >
 			static TEnum or(std::initializer_list<TEnum> p_values)
 			{
-				using type = typename std::underlying_type<TEnum>::type;
+				using type = enum_t<TEnum>;
 
 				return std::accumulate(std::begin(p_values), std::end(p_values), static_cast< TEnum >(0), [](TEnum p_first, TEnum p_second)
 				{
@@ -50,7 +50,7 @@ namespace black_cat
 			template< typename TEnum >
 			static TEnum and(std::initializer_list<TEnum> p_values)
 			{
-				using type = typename std::underlying_type<TEnum>::type;
+				using type = enum_t<TEnum>;
 				const type l_max = (std::numeric_limits<type>::max)();
 
 				return std::accumulate(std::begin(p_values), std::end(p_values), static_cast< TEnum >(l_max), [](TEnum p_first, TEnum p_second)
@@ -62,7 +62,7 @@ namespace black_cat
 			template< typename TEnum >
 			static TEnum set(TEnum p_values, TEnum p_value, bool p_bool)
 			{
-				using type = typename std::underlying_type<TEnum>::type;
+				using type = enum_t<TEnum>;
 
 				if(p_bool)
 				{

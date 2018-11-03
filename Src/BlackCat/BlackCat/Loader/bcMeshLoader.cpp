@@ -96,18 +96,18 @@ namespace black_cat
 				core::bc_content_loader_parameter(p_context.m_parameter)
 			);
 		}
-		if (p_aimaterial.GetTexture(aiTextureType_SPECULAR, 0, &l_aistr) == aiReturn_SUCCESS)
+		if (p_aimaterial.GetTexture(aiTextureType_NORMALS, 0, &l_aistr) == aiReturn_SUCCESS)
 		{
-			p_material.m_specular_map = l_content_manager->load< graphic::bc_texture2d_content >
+			p_material.m_normal_map = l_content_manager->load< graphic::bc_texture2d_content >
 			(
 				p_context.get_allocator_alloc_type(),
 				core::bc_path(l_file_path).set_filename(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str()).get_path().c_str(),
 				core::bc_content_loader_parameter(p_context.m_parameter)
 			);
 		}
-		if (p_aimaterial.GetTexture(aiTextureType_NORMALS, 0, &l_aistr) == aiReturn_SUCCESS)
+		if (p_aimaterial.GetTexture(aiTextureType_SPECULAR, 0, &l_aistr) == aiReturn_SUCCESS)
 		{
-			p_material.m_normal_map = l_content_manager->load< graphic::bc_texture2d_content >
+			p_material.m_specular_map = l_content_manager->load< graphic::bc_texture2d_content >
 			(
 				p_context.get_allocator_alloc_type(),
 				core::bc_path(l_file_path).set_filename(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str()).get_path().c_str(),
@@ -132,9 +132,6 @@ namespace black_cat
 		graphic::bc_buffer_ptr l_index_buffer;
 		bcSIZE l_index_count = 0;
 		graphic::bc_buffer_ptr l_cbuffer;
-		graphic::bc_resource_view_ptr l_diffuse_map_view;
-		graphic::bc_resource_view_ptr l_specular_map_view;
-		graphic::bc_resource_view_ptr l_normal_map_view;
 		game::bc_render_material l_material;
 
 		bool l_need_32bit_indices = p_aimesh.mNumFaces * 3 > std::numeric_limits< bcUINT16 >::max();
@@ -235,38 +232,40 @@ namespace black_cat
 		auto l_cbuffer_data = graphic::bc_subresource_data(&l_mesh_part_cbuffer, 0, 0);
 
 		l_cbuffer = l_device.create_buffer(l_cbuffer_config, &l_cbuffer_data);
-
-		l_diffuse_map_view = l_material.m_diffuse_map ?
-			                     l_device.create_resource_view(l_material.m_diffuse_map->get_resource().get(), l_texture_view_config) :
-			                     graphic::bc_resource_view_ptr();
-		l_specular_map_view = l_material.m_specular_map ?
-			                      l_device.create_resource_view(l_material.m_specular_map->get_resource().get(), l_texture_view_config) :
-			                      graphic::bc_resource_view_ptr();
-		l_normal_map_view = l_material.m_normal_map ?
-			                    l_device.create_resource_view(l_material.m_normal_map->get_resource().get(), l_texture_view_config) :
-			                    graphic::bc_resource_view_ptr();
+		l_material.m_diffuse_map_view = l_material.m_diffuse_map ?
+			l_device.create_resource_view(l_material.m_diffuse_map->get_resource(), l_texture_view_config) :
+			graphic::bc_resource_view_ptr();
+		l_material.m_normal_map_view = l_material.m_normal_map ?
+			l_device.create_resource_view(l_material.m_normal_map->get_resource(), l_texture_view_config) :
+			graphic::bc_resource_view_ptr();
+		l_material.m_specular_map_view = l_material.m_specular_map ?
+			l_device.create_resource_view(l_material.m_specular_map->get_resource(), l_texture_view_config) :
+			graphic::bc_resource_view_ptr();
 
 		p_mesh.m_name = p_aimesh.mName.C_Str();
 		p_mesh.m_material = std::move(l_material);
 		p_mesh.m_vertices = std::move(l_vertices);
 		p_mesh.m_indices = std::move(l_indices);
+		p_mesh.m_cbuffer = std::move(l_cbuffer);
+		p_mesh.m_vertex_buffer = std::move(l_vertex_buffer);
+		p_mesh.m_index_buffer = std::move(l_index_buffer);
 		p_mesh_render_state = p_render_system.create_render_state
 		(
 			graphic::bc_primitive::trianglelist,
-			l_vertex_buffer.get(),
+			p_mesh.m_vertex_buffer.get(),
 			sizeof(game::bc_vertex_pos_tex_nor_tan),
 			0,
-			l_index_buffer.get(),
+			p_mesh.m_index_buffer.get(),
 			l_need_32bit_indices ? game::bc_index_type::i32bit : game::bc_index_type::i16bit,
 			l_index_count,
 			0,
 			{
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_diffuse_map_view),
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_normal_map_view),
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_specular_map_view),
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, p_mesh.m_material.m_diffuse_map_view.get()),
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, p_mesh.m_material.m_normal_map_view.get()),
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, p_mesh.m_material.m_specular_map_view.get()),
 			},
 			{
-				graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::pixel, l_cbuffer)
+				graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::pixel, p_mesh.m_cbuffer.get())
 			}
 		);
 	}
@@ -290,7 +289,7 @@ namespace black_cat
 		convert_aimatrix(p_ainode.mTransformation, l_node_transformation);
 		l_node_absolute_transformation = l_node_transformation * p_parent_transformation;
 
-		core::bc_vector_frame< game::bc_mesh_node_data > l_meshes;
+		core::bc_vector_frame< std::tuple< game::bc_mesh_part_data, game::bc_render_state_ptr> > l_meshes;
 		l_meshes.reserve(p_ainode.mNumMeshes);
 
 		for (bcUINT32 i = 0; i < p_ainode.mNumMeshes; ++i)
@@ -310,17 +309,15 @@ namespace black_cat
 				l_mesh_render_state
 			);
 
-			l_meshes.push_back(game::bc_mesh_node_data(std::move(l_mesh_data), l_mesh_render_state));
+			l_meshes.push_back(std::make_tuple(std::move(l_mesh_data), l_mesh_render_state));
 		}
-
-		l_meshes.shrink_to_fit();
 
 		game::bc_mesh_node* l_added_node = p_mesh._add_node
 		(
 			p_ainode.mName.C_Str(),
 			p_parent,
 			l_node_transformation,
-			std::move(l_meshes)
+			l_meshes
 		);
 
 		for (bcUINT l_child_index = 0; l_child_index < p_ainode.mNumChildren; ++l_child_index)

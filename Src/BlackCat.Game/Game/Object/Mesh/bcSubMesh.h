@@ -22,8 +22,7 @@ namespace black_cat
 			}
 
 			explicit bc_mesh_part_transformation(bc_mesh_node::node_indexing p_root_node_index)
-				: m_root_node_index(p_root_node_index),
-				m_transformations()
+				: m_root_node_index(p_root_node_index)
 			{
 			}
 
@@ -65,7 +64,7 @@ namespace black_cat
 
 			const bc_mesh_node* get_parent_node(const bc_mesh_node* p_node) const;
 
-			const core::bc_vector< bc_mesh_node* >& get_node_childs(const bc_mesh_node* p_node) const;
+			const core::bc_vector< bc_mesh_node* >& get_node_children(const bc_mesh_node* p_node) const;
 
 			const core::bc_matrix4f* get_node_transformation(const bc_mesh_node* p_node) const;
 
@@ -157,7 +156,7 @@ namespace black_cat
 			return m_mesh->get_node_parent(p_node);
 		}
 		
-		inline const core::bc_vector<bc_mesh_node*>& bc_sub_mesh::get_node_childs(const bc_mesh_node* p_node) const
+		inline const core::bc_vector<bc_mesh_node*>& bc_sub_mesh::get_node_children(const bc_mesh_node* p_node) const
 		{
 			return m_mesh->get_node_children(p_node);
 		}

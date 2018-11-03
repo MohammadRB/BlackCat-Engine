@@ -106,23 +106,23 @@ namespace black_cat
 		{
 			p_thread.start(m_command_list.get());
 
-			auto l_heightmaps = p_scene.get_heightmaps();
+			auto l_height_maps = p_scene.get_heightmaps();
 
-			for (auto& l_actor : l_heightmaps)
+			for (auto& l_actor : l_height_maps)
 			{
-				const game::bc_height_map* l_heightmap = l_actor.get_component< game::bc_height_map_component >()->get_height_map();
-				const bc_height_map_dx11* l_heightmap_dx11 = static_cast<const bc_height_map_dx11*>(l_heightmap);
+				const game::bc_height_map* l_height_map = l_actor.get_component< game::bc_height_map_component >()->get_height_map();
+				const bc_height_map_dx11* l_height_map_dx11 = static_cast<const bc_height_map_dx11*>(l_height_map);
 
 				auto l_compute_state = p_render_system.create_compute_state
 				(
 					m_device_compute_state.get(),
-					l_heightmap_dx11->get_width() / s_shader_thread_group_size,
-					l_heightmap_dx11->get_height() / s_shader_thread_group_size,
+					l_height_map_dx11->get_width() / s_shader_thread_group_size,
+					l_height_map_dx11->get_height() / s_shader_thread_group_size,
 					1,
 					{},
-					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_heightmap_dx11->get_height_map_view()) },
-					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_heightmap_dx11->get_chunk_info_unordered_view()) },
-					{ graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, l_heightmap_dx11->get_parameter_cbuffer()) }
+					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11->get_height_map_view()) },
+					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11->get_chunk_info_unordered_view()) },
+					{ graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11->get_parameter_cbuffer()) }
 				);
 
 				p_thread.run_compute_shader(l_compute_state.get());
@@ -179,30 +179,28 @@ namespace black_cat
 		{
 			graphic::bc_texture2d l_back_buffer_texture = p_device.get_back_buffer_texture();
 
-			auto l_texturemap_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_clamp_clamp_clamp);
+			auto l_texture_map_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_clamp_clamp_clamp);
 			auto l_texture_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_wrap_wrap_wrap);
 
-			auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(game::bc_render_pass_resource_variable::depth_stencil_view);
-			auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(game::bc_render_pass_resource_variable::render_target_view);
-			auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
-			auto l_texturemap_sampler = p_device.create_sampler_state(l_texturemap_sampler_config);
-			auto l_texture_sampler = p_device.create_sampler_state(l_texture_sampler_config);
+			const auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(game::bc_render_pass_resource_variable::depth_stencil_view);
+			const auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(game::bc_render_pass_resource_variable::render_target_view);
+			const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
+			m_texture_map_sampler = p_device.create_sampler_state(l_texture_map_sampler_config);
+			m_texture_sampler = p_device.create_sampler_state(l_texture_sampler_config);
 
 			m_render_pass_state = p_render_system.create_render_pass_state
 			(
 				m_pipeline_state.get(),
 				l_viewport,
-				{
-					graphic::bc_render_target_view_ptr(l_render_target_view)
-				},
+				{ l_render_target_view },
 				l_depth_stencil_view,
 				{
-					graphic::bc_sampler_parameter(0, core::bc_enum::or({ graphic::bc_shader_type::pixel }), l_texturemap_sampler),
-					graphic::bc_sampler_parameter(0, core::bc_enum::or({ graphic::bc_shader_type::pixel }), l_texture_sampler)
+					graphic::bc_sampler_parameter(0, core::bc_enum::or({ graphic::bc_shader_type::pixel }), m_texture_map_sampler.get()),
+					graphic::bc_sampler_parameter(0, core::bc_enum::or({ graphic::bc_shader_type::pixel }), m_texture_sampler.get())
 				},
 				{},
 				{
-					graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::hull, m_parameter_cbuffer)
+					graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::hull, m_parameter_cbuffer.get())
 				}
 			);
 		}
@@ -211,13 +209,15 @@ namespace black_cat
 	void bc_terrain_pass_dx11::destroy(graphic::bc_device& p_device)
 	{
 		m_device_compute_state.reset();
+		m_pipeline_state.reset();
 		m_render_pass_state.reset();
 		m_parameter_cbuffer.reset();
-		m_pipeline_state.reset();
+		m_texture_map_sampler.reset();
+		m_texture_sampler.reset();
 		m_command_list.reset();
 	}
 
-	void bc_terrain_pass_dx11::update_chunk_infoes()
+	void bc_terrain_pass_dx11::update_chunk_infos()
 	{
 		m_run_chunk_info_shader = true;
 	}

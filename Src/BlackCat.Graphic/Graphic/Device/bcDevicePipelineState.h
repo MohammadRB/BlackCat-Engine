@@ -24,15 +24,22 @@ namespace black_cat
 		struct bc_device_pipeline_state_config
 		{
 			bc_device_pipeline_state_config()
-				: m_sample_mask(0), m_num_render_target(0), m_depth_stencil_format(), m_sample_config(1, 0)
+				: m_blend_state_config(),
+				m_sample_mask(0),
+				m_depth_stencil_state_config(),
+				m_rasterizer_state_config(),
+				m_num_render_target(0),
+				m_render_target_format(),
+				m_depth_stencil_format(),
+				m_sample_config(1, 0)
 			{
 			}
 
-			bc_vertex_shader_ptr m_vertex_shader;
-			bc_hull_shader_ptr m_hull_shader;
-			bc_domain_shader_ptr m_domain_shader;
-			bc_geometry_shader_ptr m_geometry_shader;
-			bc_pixel_shader_ptr m_pixel_shader;
+			bc_vertex_shader m_vertex_shader;
+			bc_hull_shader m_hull_shader;
+			bc_domain_shader m_domain_shader;
+			bc_geometry_shader m_geometry_shader;
+			bc_pixel_shader m_pixel_shader;
 
 			bc_blend_state_config m_blend_state_config;
 			bcUINT m_sample_mask;
@@ -67,7 +74,7 @@ namespace black_cat
 
 			bc_platform_device_pipeline_state& operator=(const bc_platform_device_pipeline_state&);
 
-			void get_config(bc_device_pipeline_state_config& p_config);
+			const bc_device_pipeline_state_config& get_config() const;
 
 			bool is_valid() const noexcept override;
 

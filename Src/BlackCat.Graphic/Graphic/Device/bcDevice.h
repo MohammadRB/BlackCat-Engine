@@ -110,9 +110,9 @@ namespace black_cat
 		using bc_device_command_list_ptr = bc_device_ref< bc_device_command_list >;
 
 		template<bc_render_api>
-		class bc_platform_device_command_executer;
-		using bc_device_command_executer = bc_platform_device_command_executer< g_current_render_api >;
-		using bc_device_command_executer_ptr = bc_device_ref< bc_device_command_executer >;
+		class bc_platform_device_command_executor;
+		using bc_device_command_executor = bc_platform_device_command_executor< g_current_render_api >;
+		using bc_device_command_executor_ptr = bc_device_ref< bc_device_command_executor >;
 
 		template<bc_render_api>
 		class bc_platform_resource_view_config;
@@ -212,7 +212,7 @@ namespace black_cat
 
 			bc_texture2d_ptr create_texture2d(bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format);
 
-			void save_texture2d(bc_texture2d& p_texture, bc_image_format p_format, const bcECHAR* p_path);
+			void save_texture2d(bc_texture2d p_texture, bc_image_format p_format, const bcECHAR* p_path);
 
 			bc_sampler_state_ptr create_sampler_state(bc_sampler_state_config& p_config);
 
@@ -254,7 +254,7 @@ namespace black_cat
 			
 			bc_device_command_list_ptr create_command_list();
 
-			bc_device_command_executer_ptr create_command_executer();
+			bc_device_command_executor_ptr create_command_executor();
 
 			bc_mapped_resource map_resource(bc_iresource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type);
 
@@ -262,7 +262,7 @@ namespace black_cat
 
 			/**
 			 * \brief Resize back buffer and send bc_app_event_device_reset event to resize all other resizable resources. 
-			 * If device is in fullscreen mode change resulotion too.
+			 * If device is in fullscreen mode change resolution too.
 			 * \param p_width 
 			 * \param p_height 
 			 */
@@ -270,9 +270,10 @@ namespace black_cat
 
 			/**
 			* \brief Resize back buffer and send bc_app_event_device_reset event to resize all other resizable resources.
-			* If device is in fullscreen mode change resulotion too.
+			* If device is in fullscreen mode change resolution too.
 			* \param p_width
 			* \param p_height
+			* \param p_format
 			*/
 			void resize_back_buffer(bcUINT p_width, bcUINT p_height, bc_format p_format);
 

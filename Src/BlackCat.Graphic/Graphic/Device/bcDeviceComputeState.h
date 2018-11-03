@@ -13,7 +13,7 @@ namespace black_cat
 	{
 		struct bc_device_compute_state_config
 		{
-			bc_compute_shader_ptr m_compute_shader;
+			bc_compute_shader m_compute_shader;
 		};
 
 		template< bc_render_api TRenderApi >
@@ -38,7 +38,7 @@ namespace black_cat
 
 			bc_platform_device_compute_state& operator=(const bc_platform_device_compute_state&) noexcept;
 
-			void get_config(bc_device_compute_state_config& p_config);
+			const bc_device_compute_state_config& get_config() const;
 
 			bool is_valid() const noexcept override;
 

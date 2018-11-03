@@ -85,8 +85,7 @@ namespace black_cat
 			bc_render_system* m_render_system;
 		};
 
-		// Non-mutable object that represent part of device pipeline state configs that can be set apart from
-		// bc_device_pipeline_state object.
+		// Non-mutable object that represent part of device pipeline states that can be set apart from bc_device_pipeline_state object.
 		// Shader parameters will be mapped to device registers as they appear in their array
 		class BC_GAME_DLL bc_render_state 
 			: private core::bc_ref_count,
@@ -99,11 +98,11 @@ namespace black_cat
 			friend class bc_render_thread;
 
 		public:
-			bc_render_state(bc_render_state&&) noexcept = default;
+			bc_render_state(bc_render_state&& p_other) noexcept;
 
 			~bc_render_state() = default;
 
-			bc_render_state& operator=(bc_render_state&&) noexcept = default;
+			bc_render_state& operator=(bc_render_state&& p_other) noexcept;
 
 			graphic::bc_primitive get_primitive() const
 			{
@@ -112,7 +111,7 @@ namespace black_cat
 
 			const graphic::bc_buffer& get_vertex_buffer() const
 			{
-				return m_vertex_buffer.get();
+				return m_vertex_buffer;
 			}
 
 			bcUINT32 get_vertex_buffer_stride() const
@@ -127,7 +126,7 @@ namespace black_cat
 
 			const graphic::bc_buffer& get_index_buffer() const
 			{
-				return m_index_buffer.get();
+				return m_index_buffer;
 			}
 
 			bc_index_type get_index_type() const
@@ -161,7 +160,7 @@ namespace black_cat
 			bc_render_state(graphic::bc_primitive p_primitive,
 				graphic::bc_buffer p_vertex_buffer,
 				bcUINT32 p_vertex_buffer_stride,
-				bcUINT32 p_verext_buffer_offset,
+				bcUINT32 p_vertex_buffer_offset,
 				graphic::bc_buffer p_index_buffer,
 				bc_index_type p_index_type,
 				bcUINT32 p_index_count,
@@ -170,10 +169,10 @@ namespace black_cat
 				bc_render_state_constant_buffer_array&& p_shader_buffers);
 
 			graphic::bc_primitive m_primitive;
-			graphic::bc_buffer_ptr m_vertex_buffer;
+			graphic::bc_buffer m_vertex_buffer;
 			bcUINT32 m_vertex_buffer_stride;
 			bcUINT32 m_vertex_buffer_offset;
-			graphic::bc_buffer_ptr m_index_buffer;
+			graphic::bc_buffer m_index_buffer;
 			bc_index_type m_index_type;
 			bcUINT32 m_index_count;
 			bcUINT32 m_index_buffer_offset;

@@ -9,8 +9,13 @@ namespace black_cat
 {
 	namespace core
 	{
-		// Wrap a non-nullable object (a class that doesn't support uninitialized state)
-		// This class doesn't use dynamic memory
+		
+		/**
+		 * \brief 
+		 * Wrap a non-nullable object (a class that doesn't support uninitialized state).
+		 * This class doesn't use dynamic memory
+		 * \tparam T 
+		 */
 		template< typename T >
 		class bc_nullable
 		{
@@ -19,7 +24,8 @@ namespace black_cat
 
 		public:
 			bc_nullable() noexcept
-				: m_set(false)
+				: m_set(false),
+				m_buffer()
 			{
 			}
 
@@ -28,7 +34,7 @@ namespace black_cat
 			{
 			}
 
-			template< typename = typename std::enable_if< bc_type_traits< type >::is_copyable >::type >
+			template< typename = std::enable_if_t< bc_type_traits< type >::is_copyable > >
 			explicit bc_nullable(const type& p_value) noexcept(bc_type_traits<type>::is_no_throw_copy)
 				: bc_nullable()
 			{
@@ -41,7 +47,7 @@ namespace black_cat
 				_set(std::move(p_value));
 			}
 
-			template< typename = typename std::enable_if< bc_type_traits< type >::is_copyable >::type >
+			template< typename = std::enable_if_t< bc_type_traits< type >::is_copyable > >
 			bc_nullable(const bc_nullable& p_other) noexcept(bc_type_traits<type>::is_no_throw_copy)
 				: bc_nullable()
 			{
@@ -66,7 +72,7 @@ namespace black_cat
 				_unset();
 			}
 
-			template< typename = typename std::enable_if< bc_type_traits<type>::is_copyable >::type >
+			template< typename = std::enable_if_t< bc_type_traits<type>::is_copyable > >
 			bc_nullable& operator=(const bc_nullable& p_other) noexcept(bc_type_traits<type>::is_no_throw_copy)
 			{
 				if(p_other.is_set())
@@ -96,7 +102,7 @@ namespace black_cat
 				return *this;
 			}
 
-			template< typename = typename std::enable_if< bc_type_traits< type >::is_copyable >::type >
+			template< typename = std::enable_if_t< bc_type_traits< type >::is_copyable > >
 			type& operator =(const type& p_value) noexcept(bc_type_traits<type>::is_no_throw_copy)
 			{ 
 				_set(p_value); 
@@ -237,7 +243,9 @@ namespace black_cat
 			bool _equal(bc_nullable& p_other) const
 			{
 				if (!is_set())
+				{
 					return !p_other.is_set();
+				}
 
 				return get() == p_other.get();
 			}

@@ -16,19 +16,15 @@ namespace black_cat
 
 			bc_resource_view_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_resource_view p_shader_resource);
 
-			bc_resource_view_parameter(bcINT p_register, bc_shader_type p_shader_types, const bc_resource_view_ptr& p_shader_resource);
-
 			bc_resource_view_parameter(bc_resource_view_parameter&) = default;
 
 			~bc_resource_view_parameter() = default;
 
 			bc_resource_view_parameter& operator=(bc_resource_view_parameter&) = default;
 
-			bc_resource_view_ptr& get_resource_view();
+			bc_resource_view get_resource_view() const;
 
-			const bc_resource_view_ptr& get_resource_view() const;
-
-			void set_resource_view(const bc_resource_view_ptr& p_shader_resource);
+			void set_resource_view(bc_resource_view p_shader_resource);
 
 			bc_shader_parameter_type get_parameter_type() const override;
 
@@ -38,7 +34,7 @@ namespace black_cat
 		protected:
 
 		private:
-			bc_resource_view_ptr m_shader_resource;
+			bc_resource_view m_shader_resource;
 		};
 
 		inline bc_resource_view_parameter::bc_resource_view_parameter()
@@ -48,34 +44,24 @@ namespace black_cat
 		}
 
 		inline bc_resource_view_parameter::bc_resource_view_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_resource_view p_shader_resource)
-			: bc_resource_view_parameter(p_register, p_shader_types, bc_resource_view_ptr(p_shader_resource))
-		{
-		}
-
-		inline bc_resource_view_parameter::bc_resource_view_parameter(bcINT p_register, bc_shader_type p_shader_types, const bc_resource_view_ptr& p_shader_resource)
 			: bc_ishader_parameter(p_register, p_shader_types),
 			m_shader_resource(p_shader_resource)
 		{
 		}
 
-		inline bc_resource_view_ptr& bc_resource_view_parameter::get_resource_view()
+		inline bc_resource_view bc_resource_view_parameter::get_resource_view() const
 		{
 			return m_shader_resource;
 		}
 
-		inline const bc_resource_view_ptr& bc_resource_view_parameter::get_resource_view() const
-		{
-			return m_shader_resource;
-		}
-
-		inline void bc_resource_view_parameter::set_resource_view(const bc_resource_view_ptr& p_shader_resource)
+		inline void bc_resource_view_parameter::set_resource_view(bc_resource_view p_shader_resource)
 		{
 			m_shader_resource = p_shader_resource;
 		}
 
 		inline bc_shader_parameter_type bc_resource_view_parameter::get_parameter_type() const
 		{
-			if (m_shader_resource != nullptr && m_shader_resource->get_view_type() == bc_resource_view_type::unordered)
+			if (m_shader_resource != nullptr && m_shader_resource.get_view_type() == bc_resource_view_type::unordered)
 			{
 				return bc_shader_parameter_type::unordered_view;
 			}
@@ -85,7 +71,7 @@ namespace black_cat
 
 		inline void bc_resource_view_parameter::set_parameter_data(void* p_data)
 		{
-			set_resource_view(reinterpret_cast<const bc_resource_view_ptr&>(p_data));
+			set_resource_view(*reinterpret_cast<bc_resource_view*>(p_data));
 		}
 
 		inline bool bc_resource_view_parameter::is_valid() const

@@ -41,10 +41,12 @@ namespace black_cat
 		{
 		}
 
-		bc_content_stream_manager::bc_content_stream_manager(bc_content_stream_manager&& p_other) noexcept(
+		bc_content_stream_manager::bc_content_stream_manager(bc_content_stream_manager&& p_other) noexcept
+		(
 			std::is_nothrow_move_constructible< content_types_map_type >::value &&
 			std::is_nothrow_move_constructible< streams_map_type >::value &&
-			std::is_nothrow_move_constructible< contents_map_type >::value)
+			std::is_nothrow_move_constructible< contents_map_type >::value
+		)
 			: m_content_manager(p_other.m_content_manager),
 			m_content_types(std::move(p_other.m_content_types)),
 			m_streams(std::move(p_other.m_streams)),
@@ -139,7 +141,7 @@ namespace black_cat
 
 		void bc_content_stream_manager::load_content_stream(bc_alloc_type p_alloc_type, const bcCHAR* p_stream_name)
 		{
-			auto l_hash = string_hash()(p_stream_name);
+			const auto l_hash = string_hash()(p_stream_name);
 			auto l_stream_entry = m_streams.find(l_hash);
 
 			if(l_stream_entry == std::end(m_streams))
@@ -153,69 +155,70 @@ namespace black_cat
 			auto& l_contents = l_stream_entry->second;
 
 			bc_concurreny::concurrent_for_each
-				(
-					std::begin(l_contents),
-					std::end(l_contents),
-					[]()
+			(
+				std::begin(l_contents),
+				std::end(l_contents),
+				[]()
+				{
+					return bc_list_frame<contents_map_type::value_type>();
+				},
+				[this, p_alloc_type](bc_list_frame<contents_map_type::value_type>& p_local, _bc_content_stream_file& l_content_file)
+				{
+					auto l_content_hash = string_hash()(l_content_file.m_title.c_str());
+					contents_map_type::iterator l_content_entry;
+					contents_map_type::iterator l_content_end;
+
 					{
-						return bc_list_frame<contents_map_type::value_type>();
-					},
-					[this, p_alloc_type](bc_list_frame<contents_map_type::value_type>& p_local, _bc_content_stream_file& l_content_file)
+						core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
+
+						l_content_entry = m_contents.find(l_content_hash);
+						l_content_end = std::end(m_contents);
+					}
+
+					// Content already loaded from another stream
+					if (l_content_entry != l_content_end)
 					{
-						auto l_content_hash = string_hash()(l_content_file.m_title.c_str());
-						contents_map_type::iterator l_content_entry;
-						contents_map_type::iterator l_content_end;
+						core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
 
-						{
-							core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock_gaurd(m_contents_mutex);
+						// Make a copy of content pointer to increase it's reference counter
+						l_content_entry->second.push_back(*std::begin(l_content_entry->second));
+						return;
+					}
 
-							l_content_entry = m_contents.find(l_content_hash);
-							l_content_end = std::end(m_contents);
-						}
+					const auto l_loader_hash = string_hash()(l_content_file.m_name.c_str());
+					auto l_loader_entry = m_content_types.find(l_loader_hash);
 
-						// Content already loaded from another stream
-						if (l_content_entry != l_content_end)
-						{
-							core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
-
-							// Make a copy of content pointer to increase it's reference counter
-							l_content_entry->second.push_back(*std::begin(l_content_entry->second));
-							return;
-						}
-
-						auto l_loader_hash = string_hash()(l_content_file.m_name.c_str());
-						auto l_loader_entry = m_content_types.find(l_loader_hash);
-
-						if(l_loader_entry == std::end(m_content_types))
-						{
-							throw bc_key_not_found_exception(("There isn't any registered loader for " + l_content_file.m_name).c_str());
-						}
-
-						bc_content_loader_parameter l_loader_parameter = l_content_file.m_parameters;
-
-						bc_icontent_ptr l_content = l_loader_entry->second
-							(
-								p_alloc_type,
-								l_content_file.m_file.c_str(),
-								std::move(l_loader_parameter)
-							);
-
-						contents_map_type::value_type l_new_content_entry = contents_map_type::value_type(l_content_hash, contents_map_type::value_type::second_type());
-						l_new_content_entry.second.push_back(std::move(l_content));
-
-						p_local.push_back(std::move(l_new_content_entry));
-					},
-					[this](bc_list_frame<contents_map_type::value_type>& p_locals)
+					if(l_loader_entry == std::end(m_content_types))
 					{
-						core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_lock_gaurd(m_contents_mutex);
+						throw bc_key_not_found_exception(("There isn't any registered loader for " + l_content_file.m_name).c_str());
+					}
+
+					bc_content_loader_parameter l_loader_parameter = l_content_file.m_parameters;
+
+					bc_icontent_ptr l_content = l_loader_entry->second
+					(
+						p_alloc_type,
+						l_content_file.m_file.c_str(),
+						std::move(l_loader_parameter)
+					);
+
+					contents_map_type::value_type l_new_content_entry = contents_map_type::value_type(l_content_hash, contents_map_type::value_type::second_type());
+					l_new_content_entry.second.push_back(std::move(l_content));
+
+					p_local.push_back(std::move(l_new_content_entry));
+				},
+				[this](bc_list_frame<contents_map_type::value_type>& p_locals)
+				{
+					{
+						core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
+
+						for (auto& l_content_entry : p_locals)
 						{
-							for (auto& l_content_entry : p_locals)
-							{
-								m_contents.insert(std::move(l_content_entry));
-							}
+							m_contents.insert(std::move(l_content_entry));
 						}
 					}
-				);
+				}
+			);
 		}
 
 		bc_task< void > bc_content_stream_manager::load_content_stream_async(bc_alloc_type p_alloc_type, const bcCHAR* p_stream_name)
@@ -228,7 +231,7 @@ namespace black_cat
 
 		void bc_content_stream_manager::unload_content_stream(const bcCHAR* p_stream_name)
 		{
-			auto l_hash = string_hash()(p_stream_name);
+			const auto l_hash = string_hash()(p_stream_name);
 			auto l_stream_entry = m_streams.find(l_hash);
 
 			if (l_stream_entry == std::end(m_streams))
@@ -242,18 +245,17 @@ namespace black_cat
 			auto& l_contents = l_stream_entry->second;
 			for (_bc_content_stream_file& l_content_file : l_contents)
 			{
-				// TODO remove content pointer to decrease reference count or explicity unload via content manager
+				// TODO remove content pointer to decrease reference count or explicitly unload via content manager
 
 				auto l_content_hash = string_hash()(l_content_file.m_title.c_str());
 				contents_map_type::iterator l_content_entry;
 				contents_map_type::iterator l_content_end;
 
 				{
-					core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock_gaurd(m_contents_mutex);
-					{
-						l_content_entry = m_contents.find(l_content_hash);
-						l_content_end = std::end(m_contents);
-					}
+					core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
+
+					l_content_entry = m_contents.find(l_content_hash);
+					l_content_end = std::end(m_contents);
 				}
 
 				if (l_content_entry != l_content_end)
@@ -266,10 +268,9 @@ namespace black_cat
 					if (l_content_entry->second.size() == 0)
 					{
 						{
-							core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_lock_gaurd(m_contents_mutex);
-							{
-								m_contents.erase(l_content_entry);
-							}
+							core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
+
+							m_contents.erase(l_content_entry);
 						}
 					}
 				}
@@ -278,7 +279,7 @@ namespace black_cat
 
 		bc_icontent_ptr bc_content_stream_manager::find_content(const bcCHAR* p_content_name) const
 		{
-			auto l_content_hash = string_hash()(p_content_name);
+			const auto l_content_hash = string_hash()(p_content_name);
 			contents_map_type::const_iterator l_content_entry;
 			contents_map_type::const_iterator l_content_end;
 

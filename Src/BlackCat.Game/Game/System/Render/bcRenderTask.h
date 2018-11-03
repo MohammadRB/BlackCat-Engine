@@ -13,7 +13,8 @@ namespace black_cat
 		class bc_render_thread;
 
 		/**
-		 * \brief Represent a rendering task that can execute commands on hardware device without need to bc_render_pass
+		 * \brief 
+		 * Represent a rendering task that can execute commands on hardware device without bc_render_pass 
 		 * and will be executed on different cpu and render thread.
 		 */
 		class bc_irender_task
@@ -22,7 +23,7 @@ namespace black_cat
 			virtual ~bc_irender_task() = default;
 
 			/**
-			 * \brief Executer function.
+			 * \brief Executor function.
 			 * Threading: This function will be executed by a cpu worker thread concurrency.
 			 * \param p_render_system 
 			 * \param p_render_thread 

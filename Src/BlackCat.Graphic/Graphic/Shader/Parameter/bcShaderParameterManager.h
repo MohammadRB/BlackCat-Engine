@@ -93,7 +93,7 @@ namespace black_cat
 
 		private:
 			template< typename TParameter, typename TParameterValue >
-			bc_ishader_parameter* _set_param_value(bc_shader_type p_shader_type, bcINT p_register, TParameterValue* p_paraemter);
+			bc_ishader_parameter* _set_param_value(bc_shader_type p_shader_type, bcINT p_register, TParameterValue* p_parameter);
 
 			template< bc_shader_parameter_type TParameterType, typename TParameter >
 			TParameter* _get_param_ref(bc_shader_type p_shader_type, bcINT p_register) const;

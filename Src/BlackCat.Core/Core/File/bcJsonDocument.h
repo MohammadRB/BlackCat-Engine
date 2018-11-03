@@ -18,11 +18,11 @@ namespace black_cat
 	namespace core
 	{
 #define BC_JSON_VALUE(type, name)		black_cat::core::bc_json_value< type > m_##name { #name, this }
-#define BC_JSON_VALUE_OP(type, name)	black_cat::core::bc_json_value< type > m_##name { #name, this, true }
+#define BC_JSON_VALUE_OP(type, name)		black_cat::core::bc_json_value< type > m_##name { #name, this, true }
 #define BC_JSON_OBJECT(type, name)		black_cat::core::bc_json_object< type > m_##name { #name, this }
 #define BC_JSON_OBJECT_OP(type, name)	black_cat::core::bc_json_object< type > m_##name { #name, this, true }
 #define BC_JSON_ARRAY(type, name)		black_cat::core::bc_json_array< type > m_##name { #name, this }
-#define BC_JSON_ARRAY_OP(type, name)	black_cat::core::bc_json_array< type > m_##name { #name, this, true }
+#define BC_JSON_ARRAY_OP(type, name)		black_cat::core::bc_json_array< type > m_##name { #name, this, true }
 #define BC_JSON_STRUCTURE(name)			struct name : public black_cat::core::bc_ijson_structure
 
 		using bc_json_parse_object = rapidjson::Document::ValueType;

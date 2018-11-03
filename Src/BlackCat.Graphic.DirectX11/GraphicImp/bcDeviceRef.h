@@ -15,7 +15,7 @@ namespace black_cat
 		class bc_platform_device_command_list;
 
 		template<bc_render_api TApi>
-		class bc_platform_device_command_executer;
+		class bc_platform_device_command_executor;
 
 		template< bc_render_api TRenderApi >
 		class bc_platform_device_compute_state;
@@ -69,9 +69,9 @@ namespace black_cat
 
 		void BC_GRAPHICIMP_DLL _release(bc_platform_device_command_list<g_api_dx11>& p_command_list);
 
-		void BC_GRAPHICIMP_DLL _add_ref(bc_platform_device_command_executer<g_api_dx11>& p_command_executer);
+		void BC_GRAPHICIMP_DLL _add_ref(bc_platform_device_command_executor<g_api_dx11>& p_command_executor);
 
-		void BC_GRAPHICIMP_DLL _release(bc_platform_device_command_executer<g_api_dx11>& p_command_executer);
+		void BC_GRAPHICIMP_DLL _release(bc_platform_device_command_executor<g_api_dx11>& p_command_executor);
 
 		void BC_GRAPHICIMP_DLL _add_ref(bc_platform_device_compute_state<g_api_dx11>& p_compute_state);
 
@@ -166,12 +166,6 @@ namespace black_cat
 		}
 
 		template< bc_render_api TApi, class TObject >
-		bc_platform_device_ref<TApi, TObject>::bc_platform_device_ref(const bc_platform_device_ref& p_other) noexcept	
-		{
-			operator=(p_other);
-		}
-
-		template< bc_render_api TApi, class TObject >
 		bc_platform_device_ref<TApi, TObject>::bc_platform_device_ref(bc_platform_device_ref&& p_other) noexcept
 		{
 			operator=(std::move(p_other));
@@ -181,14 +175,6 @@ namespace black_cat
 		bc_platform_device_ref<TApi, TObject>::~bc_platform_device_ref()
 		{
 			reset();
-		}
-
-		template< bc_render_api TApi, class TObject >
-		bc_platform_device_ref<TApi, TObject>& bc_platform_device_ref<TApi, TObject>::operator=(const bc_platform_device_ref& p_other) noexcept
-		{
-			reset(p_other.m_pack.m_object);
-
-			return *this;
 		}
 
 		template< bc_render_api TApi, class TObject >

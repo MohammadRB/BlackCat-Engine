@@ -34,7 +34,7 @@
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
+#include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 
 #include "3rdParty/DirectXTK-master/Inc/DDSTextureLoader.h"
 #include "3rdParty/DirectXTK-master/Inc/WICTextureLoader.h"
@@ -190,7 +190,7 @@ namespace black_cat
 					));
 				}
 			}
-		};
+		}
 
 		ID3D10Blob* _compile_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_profile, const D3D_SHADER_MACRO* p_defines, const bcCHAR* p_source_file)
 		{
@@ -432,14 +432,14 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_platform_device< g_api_dx11 >::bc_platform_device()
 		{
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_device< g_api_dx11 >::bc_platform_device(bc_platform_device&& p_other) noexcept
 		{
 			operator=(std::move(p_other));
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -449,7 +449,7 @@ namespace black_cat
 			{
 				_destroy();
 			}
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -552,7 +552,7 @@ namespace black_cat
 			m_pack.m_device->CheckMultisampleQualityLevels(bc_graphic_cast(p_textue_format), p_sample_count, &l_sample_quality);
 
 			return l_sample_quality;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -569,7 +569,7 @@ namespace black_cat
 			l_dx_buffer->Release();
 
 			return l_buffer_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -586,7 +586,7 @@ namespace black_cat
 			l_dx_texture->Release();
 
 			return l_texture_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -607,7 +607,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device< g_api_dx11 >::save_texture2d(bc_texture2d& p_texture, bc_image_format p_format, const bcECHAR* p_path)
+		void bc_platform_device< g_api_dx11 >::save_texture2d(bc_texture2d p_texture, bc_image_format p_format, const bcECHAR* p_path)
 		{
 			_save_texture(static_cast<bc_device*>(this), &p_texture, p_format, p_path);
 		}
@@ -644,7 +644,7 @@ namespace black_cat
 			l_dx_sampler->Release();
 
 			return l_sampler_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -669,7 +669,7 @@ namespace black_cat
 			l_dx_blob->Release();
 
 			return l_shader_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -688,7 +688,7 @@ namespace black_cat
 			l_dx_shader.second->Release();
 
 			return l_sahder_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -713,7 +713,7 @@ namespace black_cat
 			l_dx_shader->Release();
 
 			return l_shader_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -730,7 +730,7 @@ namespace black_cat
 			l_dx_shader->Release();
 
 			return l_shader_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -755,7 +755,7 @@ namespace black_cat
 			l_dx_shader->Release();
 
 			return l_shader_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -772,7 +772,7 @@ namespace black_cat
 			l_dx_shader->Release();
 
 			return l_shader_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -797,7 +797,7 @@ namespace black_cat
 			l_dx_shader->Release();
 
 			return l_shader_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -814,7 +814,7 @@ namespace black_cat
 			l_dx_shader->Release();
 
 			return l_shader_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -839,7 +839,7 @@ namespace black_cat
 			l_dx_shader->Release();
 
 			return l_shader_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -856,7 +856,7 @@ namespace black_cat
 			l_dx_shader->Release();
 
 			return l_shader_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -881,7 +881,7 @@ namespace black_cat
 			l_dx_shader->Release();
 
 			return l_shader_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -898,7 +898,7 @@ namespace black_cat
 			l_dx_shader->Release();
 
 			return l_shader_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -1043,8 +1043,8 @@ namespace black_cat
 				(
 					l_dx_input_elements.data(),
 					l_dx_input_elements.size(),
-					p_config.m_vertex_shader->get_platform_pack().m_compiled_shader->GetBufferPointer(),
-					p_config.m_vertex_shader->get_platform_pack().m_compiled_shader->GetBufferSize(),
+					p_config.m_vertex_shader.get_platform_pack().m_compiled_shader->GetBufferPointer(),
+					p_config.m_vertex_shader.get_platform_pack().m_compiled_shader->GetBufferSize(),
 					&l_dx_input_layout
 				));
 			}
@@ -1059,7 +1059,7 @@ namespace black_cat
 			l_pipeline_state_poxy->m_input_layout = l_dx_input_layout;
 
 			bc_device_pipeline_state::platform_pack l_pack;
-			l_pack.m_pipeline_state = l_pipeline_state_poxy;
+			l_pack.m_pipeline_state_proxy = l_pipeline_state_poxy;
 
 			bc_device_pipeline_state l_pipeline_state(l_pack);
 			bc_device_pipeline_state_ptr l_pipeline_state_ptr(l_pipeline_state);
@@ -1082,7 +1082,7 @@ namespace black_cat
 			l_compute_state_proxy->m_config = std::move(p_config);
 
 			bc_device_compute_state::platform_pack l_pack;
-			l_pack.m_compute_state = l_compute_state_proxy;
+			l_pack.m_compute_state_proxy = l_compute_state_proxy;
 
 			bc_device_compute_state l_compute_state(l_pack);
 			bc_device_compute_state_ptr l_compute_state_ptr(l_compute_state);
@@ -1097,18 +1097,29 @@ namespace black_cat
 			/*auto l_pipeline_proxy = allocate< bc_device_pipeline_proxy >();*/
 			auto l_pipeline_proxy = bcNew(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
 
+			ID3D11Query* l_query;
+			ID3D11DeviceContext* l_context;
+
+			D3D11_QUERY_DESC l_query_desc;
+			l_query_desc.Query = D3D11_QUERY_PIPELINE_STATISTICS;
+			l_query_desc.MiscFlags = 0;
+			dx_call(m_pack.m_device->CreateQuery(&l_query_desc, &l_query));
+			dx_call(m_pack.m_device->CreateDeferredContext(0, &l_context));
+
 			bc_device_pipeline::platform_pack l_pack;
-			l_pack.m_pipeline = l_pipeline_proxy;
-			l_pack.m_pipeline->m_device = this;
+			l_pack.m_pipeline_proxy = l_pipeline_proxy;
+			l_pack.m_pipeline_proxy->m_device = this;
+			l_pack.m_pipeline_proxy->m_query = l_query;
+			l_pack.m_pipeline_proxy->m_context = l_context;
 
 			bc_device_pipeline l_pipeline(l_pack);
 			bc_device_pipeline_ptr l_pipeline_ptr(l_pipeline);
 
-			l_pack.m_pipeline->m_context->Release();
-			l_pack.m_pipeline->m_query->Release();
+			l_pack.m_pipeline_proxy->m_context->Release();
+			l_pack.m_pipeline_proxy->m_query->Release();
 
 			return l_pipeline_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -1119,22 +1130,23 @@ namespace black_cat
 			bc_device_command_list::platform_pack l_pack;
 			l_pack.m_command_list_proxy = l_command_list_proxy;
 			l_pack.m_command_list_proxy->m_command_list = nullptr;
+
 			bc_device_command_list l_command_list(l_pack);
 			bc_device_command_list_ptr l_command_list_ptr(l_command_list);
 
 			return l_command_list_ptr;
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_command_executer_ptr bc_platform_device< g_api_dx11 >::create_command_executer()
+		bc_device_command_executor_ptr bc_platform_device< g_api_dx11 >::create_command_executor()
 		{
-			bc_device_command_executer::platform_pack l_pack;
+			bc_device_command_executor::platform_pack l_pack;
 			l_pack.m_device = this;
-			bc_device_command_executer l_pointer(l_pack);
+			bc_device_command_executor l_pointer(l_pack);
 
-			return bc_device_command_executer_ptr(l_pointer);
-		};
+			return bc_device_command_executor_ptr(l_pointer);
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -1332,7 +1344,7 @@ namespace black_cat
 		void bc_platform_device< g_api_dx11 >::present()
 		{
 			m_pack.m_swap_chain->Present(m_pack.m_vsync ? 1 : 0, 0);
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL

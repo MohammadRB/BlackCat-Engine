@@ -55,8 +55,8 @@ namespace black_cat
 		void execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_render_thread) override
 		{
 			auto& l_device = p_render_system.get_device();
-			auto l_width = m_height_map.get_width();
-			auto l_height = m_height_map.get_height();
+			const auto l_width = m_height_map.get_width();
+			const auto l_height = m_height_map.get_height();
 			
 			auto l_texture_config = graphic::bc_graphic_resource_configure().as_resource()
 				.as_texture2d
@@ -109,18 +109,20 @@ namespace black_cat
 		bcFLOAT p_y_multiplier,
 		bcUINT16 p_distance_detail,
 		bcUINT16 p_height_detail,
-		game::bc_render_state_ptr& p_render_state,
-		graphic::bc_texture2d_ptr& p_height_map,
-		graphic::bc_resource_view_ptr& p_height_map_view,
-		graphic::bc_texture2d_content_ptr& p_texture_map,
-		graphic::bc_resource_view_ptr& p_texture_map_view,
-		graphic::bc_buffer_ptr& p_parameter_cbuffer,
-		graphic::bc_buffer_ptr& p_chunk_info_buffer,
-		graphic::bc_resource_view_ptr& p_chunk_info_view,
-		graphic::bc_resource_view_ptr& p_chunk_info_unordered_view,
-		graphic::bc_buffer_ptr& p_material_properties_buffer,
-		core::bc_vector<game::bc_material_ptr>&& p_materials,
-		physics::bc_height_field_ref&& p_px_height_map,
+		game::bc_render_state_ptr p_render_state,
+		graphic::bc_buffer_ptr p_vertex_buffer,
+		graphic::bc_buffer_ptr p_index_buffer,
+		graphic::bc_texture2d_ptr p_height_map,
+		graphic::bc_resource_view_ptr p_height_map_view,
+		graphic::bc_texture2d_content_ptr p_texture_map,
+		graphic::bc_resource_view_ptr p_texture_map_view,
+		graphic::bc_buffer_ptr p_parameter_cbuffer,
+		graphic::bc_buffer_ptr p_chunk_info_buffer,
+		graphic::bc_resource_view_ptr p_chunk_info_view,
+		graphic::bc_resource_view_ptr p_chunk_info_unordered_view,
+		graphic::bc_buffer_ptr p_material_properties_buffer,
+		core::bc_vector<game::bc_render_material_ptr> p_materials,
+		physics::bc_height_field_ref p_px_height_map,
 		void* p_px_height_map_deserialize_buffer)
 		: bc_height_map
 		(
@@ -130,20 +132,22 @@ namespace black_cat
 			p_xz_multiplier,
 			p_y_multiplier,
 			p_render_state,
+			std::move(p_vertex_buffer),
+			std::move(p_index_buffer),
 			std::move(p_px_height_map),
 			p_px_height_map_deserialize_buffer
 		),
 		m_distance_detail(p_distance_detail),
 		m_height_detail(p_height_detail),
-		m_heightmap(p_height_map),
-		m_height_map_view(p_height_map_view),
-		m_texture_map(p_texture_map),
-		m_texture_map_view(p_texture_map_view),
-		m_parameter_cbuffer(p_parameter_cbuffer),
-		m_chunk_info_buffer(p_chunk_info_buffer),
-		m_chunk_info_view(p_chunk_info_view),
-		m_chunk_info_unordered_view(p_chunk_info_unordered_view),
-		m_material_properties_buffer(p_material_properties_buffer),
+		m_height_map(std::move(p_height_map)),
+		m_height_map_view(std::move(p_height_map_view)),
+		m_texture_map(std::move(p_texture_map)),
+		m_texture_map_view(std::move(p_texture_map_view)),
+		m_parameter_cbuffer(std::move(p_parameter_cbuffer)),
+		m_chunk_info_buffer(std::move(p_chunk_info_buffer)),
+		m_chunk_info_view(std::move(p_chunk_info_view)),
+		m_chunk_info_unordered_view(std::move(p_chunk_info_unordered_view)),
+		m_material_properties_buffer(std::move(p_material_properties_buffer)),
 		m_materials(std::move(p_materials))
 	{
 	}
@@ -156,44 +160,43 @@ namespace black_cat
 		auto& l_physics_system = l_game_system->get_physics_system();
 		auto& l_physics = l_physics_system.get_physics();
 
-		auto l_heightmap_texture = l_content_loader->load< graphic::bc_texture2d_content >
+		auto l_height_map_texture = l_content_loader->load< graphic::bc_texture2d_content >
 		(
 			p_context.get_allocator_alloc_type(),
 			p_context.m_file_path.c_str(),
 			core::bc_content_loader_parameter(p_context.m_parameter)
 		);
 
-		auto l_width = l_heightmap_texture->get_resource()->get_width();
-		auto l_height = l_heightmap_texture->get_resource()->get_height();
+		auto l_width = l_height_map_texture->get_resource().get_width();
+		auto l_height = l_height_map_texture->get_resource().get_height();
 
 		if (!bc_is_power_of_two(l_width) || !bc_is_power_of_two(l_height))
 		{
 			throw bc_invalid_operation_exception("Height map texture width and height must be power of 2");
 		}
 
-		if (l_width < s_chund_size || l_height < s_chund_size)
+		if (l_width < s_chunk_size || l_height < s_chunk_size)
 		{
 			throw bc_invalid_operation_exception("Height map texture width and height must be greater than 64");
 		}
 
-		bc_height_map_texture_read_task l_height_map_copy_task(l_heightmap_texture->get_resource().get());
+		bc_height_map_texture_read_task l_height_map_copy_task(l_height_map_texture->get_resource());
 		l_render_system.add_render_task(l_height_map_copy_task);
 
-		auto l_texturemap_file_path = core::bc_path(p_context.m_file_path.c_str());
-		l_texturemap_file_path.set_filename((l_texturemap_file_path.get_filename_without_extension() + bcL("_texture_map")).c_str())
-			.set_file_extension(bcL("dds"));
-		auto l_texturemap_file_relative = l_texturemap_file_path.get_path();
-		auto l_texturemap_file_absolute = core::bc_path::get_absolute_path(l_texturemap_file_relative.c_str());
+		auto l_texture_map_file_path = core::bc_path(p_context.m_file_path.c_str());
+		l_texture_map_file_path.set_filename((l_texture_map_file_path.get_filename_without_extension() + bcL("_texture_map")).c_str()).set_file_extension(bcL("dds"));
+		auto l_texture_map_file_relative = l_texture_map_file_path.get_path();
+		auto l_texture_map_file_absolute = core::bc_path::get_absolute_path(l_texture_map_file_relative.c_str());
 
-		core_platform::bc_basic_file_info l_texturemap_file_info;
-		core_platform::bc_file_info::get_basic_info(l_texturemap_file_absolute.c_str(), &l_texturemap_file_info);
+		core_platform::bc_basic_file_info l_texture_map_file_info;
+		core_platform::bc_file_info::get_basic_info(l_texture_map_file_absolute.c_str(), &l_texture_map_file_info);
 
-		if (!l_texturemap_file_info.m_exist)
+		if (!l_texture_map_file_info.m_exist)
 		{
-			auto l_texturemap_config = get_texture_map_texture_config(l_width, l_height).first;
-			auto l_texture_map = l_render_system.get_device().create_texture2d(l_texturemap_config, nullptr);
+			auto l_texture_map_config = get_texture_map_texture_config(l_width, l_height).first;
+			auto l_texture_map = l_render_system.get_device().create_texture2d(l_texture_map_config, nullptr);
 
-			l_render_system.get_device().save_texture2d(l_texture_map.get(), graphic::bc_image_format::dds, l_texturemap_file_absolute.c_str());
+			l_render_system.get_device().save_texture2d(l_texture_map.get(), graphic::bc_image_format::dds, l_texture_map_file_absolute.c_str());
 		}
 
 		bcUINT32 l_sample_count = l_width * l_height;
@@ -209,7 +212,10 @@ namespace black_cat
 		
 		for (bcUINT32 l_i = 0, l_end = l_sample_count; l_i < l_end; ++l_i)
 		{
-			bcINT16 l_value = ((l_texture_data[l_i * l_texel_size] / 255.f) / l_physics_system.get_height_field_y_scale()) * l_y_multiplier; // read red channel of texture
+			bcINT16 l_value =
+			(
+				(l_texture_data[l_i * l_texel_size] / 255.f) / l_physics_system.get_height_field_y_scale()
+			) * l_y_multiplier; // read red channel of texture
 
 			l_dest[l_i] = l_value;
 		}
@@ -359,12 +365,12 @@ namespace black_cat
 			);
 		}
 
-		bcUINT16 l_width_chunk_count = l_width / s_chund_size;
-		bcUINT16 l_height_chunk_count = l_height / s_chund_size;
+		bcUINT16 l_width_chunk_count = l_width / s_chunk_size;
+		bcUINT16 l_height_chunk_count = l_height / s_chunk_size;
 
 		core::bc_vector_frame< game::bc_vertex_pos_tex > l_vertices((l_width_chunk_count + 1) * (l_height_chunk_count + 1));
 		core::bc_vector_frame< bcUINT16 > l_indices(l_width_chunk_count * l_height_chunk_count * 4);
-		core::bc_vector_frame< std::array< bcINT32, 3 > > l_chunk_infoes(l_width_chunk_count * l_height_chunk_count);
+		core::bc_vector_frame< std::array< bcINT32, 3 > > l_chunk_infos(l_width_chunk_count * l_height_chunk_count);
 
 		bcUINT16 l_counter = 0;
 
@@ -376,9 +382,9 @@ namespace black_cat
 
 				l_vertex.m_position = core::bc_vector3f
 				(
-					x * s_chund_size * l_xz_multiplier + l_position.x,
+					x * s_chunk_size * l_xz_multiplier + l_position.x,
 					0,
-					z * s_chund_size * l_xz_multiplier + l_position.z
+					z * s_chunk_size * l_xz_multiplier + l_position.z
 				);
 				l_vertex.m_texcoord = core::bc_vector2f
 				(
@@ -414,13 +420,13 @@ namespace black_cat
 
 		for (bcUINT16 x = 0, end = l_width_chunk_count * l_height_chunk_count; x < end; ++x)
 		{
-			l_chunk_infoes[x] = std::array< bcINT32, 3 >{std::numeric_limits< bcINT32 >::max(), 0, 0};
+			l_chunk_infos[x] = std::array< bcINT32, 3 >{std::numeric_limits< bcINT32 >::max(), 0, 0};
 		}
 
 		_bc_parameter_buffer l_parameter;
 		l_parameter.m_width = l_width;
 		l_parameter.m_height = l_height;
-		l_parameter.m_chunk_size = s_chund_size;
+		l_parameter.m_chunk_size = s_chunk_size;
 		l_parameter.m_xz_multiplier = l_xz_multiplier;
 		l_parameter.m_y_multiplier = l_physics_system.get_height_field_y_scale();
 		l_parameter.m_distance_detail = l_distance_detail;
@@ -486,7 +492,7 @@ namespace black_cat
 
 		graphic::bc_subresource_data l_vbuffer_data(l_vertices.data(), 0, 0);
 		graphic::bc_subresource_data l_ibuffer_data(l_indices.data(), 0, 0);
-		graphic::bc_subresource_data l_chunk_info_buffer_data(l_chunk_infoes.data(), 0, 0);
+		graphic::bc_subresource_data l_chunk_info_buffer_data(l_chunk_infos.data(), 0, 0);
 		graphic::bc_subresource_data l_parameter_cbuffer_data(&l_parameter, 0, 0);
 		graphic::bc_subresource_data l_material_properties_data(&l_material_properties, 0, 0);
 
@@ -510,40 +516,52 @@ namespace black_cat
 			.as_structured_buffer();
 
 		auto l_height_map_view = l_device->create_resource_view(l_height_map_texture.get(), l_height_map_view_config);
-		auto l_texture_map_view = l_device->create_resource_view(l_texture_map_texture->get_resource().get(), l_texture_map_view_config);
+		auto l_texture_map_view = l_device->create_resource_view(l_texture_map_texture->get_resource(), l_texture_map_view_config);
 		auto l_chunk_info_view = l_device->create_resource_view(l_chunk_info_buffer.get(), l_chunk_info_view_config);
 		auto l_chunk_info_unordered_view = l_device->create_resource_view(l_chunk_info_buffer.get(), l_chunk_info_unordered_view_config);
 
 		game::bc_render_state_resource_view_array l_render_state_resource_view_array =
-		{ 
-			graphic::bc_resource_view_parameter(0, core::bc_enum::or({ graphic::bc_shader_type::vertex, graphic::bc_shader_type::hull, graphic::bc_shader_type::domain, graphic::bc_shader_type::pixel }), l_height_map_view),
-			graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::hull, l_chunk_info_view),
-			graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::pixel, l_texture_map_view)
+		{
+			graphic::bc_resource_view_parameter(0, core::bc_enum::or
+			({
+				graphic::bc_shader_type::vertex,
+				graphic::bc_shader_type::hull,
+				graphic::bc_shader_type::domain,
+				graphic::bc_shader_type::pixel
+			}), l_height_map_view.get()),
+			graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::hull, l_chunk_info_view.get()),
+			graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::pixel, l_texture_map_view.get())
 		};
-		core::bc_vector<game::bc_material_ptr> l_materials;
+		core::bc_vector<game::bc_render_material_ptr> l_materials;
 		l_materials.reserve(l_material_names.size());
 
 		bcUINT32 l_resource_view_count = 3;
 		for(auto& l_material_name : l_material_names)
 		{
-			game::bc_material_ptr l_material = l_render_system.get_material_manager().load_material_throw(p_context.get_allocator_alloc_type(), std::get<0>(l_material_name).c_str());
+			game::bc_render_material_ptr l_material = l_render_system.get_material_manager().load_material_throw
+			(
+				p_context.get_allocator_alloc_type(), std::get<core::bc_string>(l_material_name).c_str()
+			);
+
+			graphic::bc_texture2d l_diffuse_map = l_material->m_diffuse_map->get_resource();
+			graphic::bc_texture2d l_normal_map = l_material->m_normal_map->get_resource();
 
 			auto l_diffuse_map_view_config = l_resource_configure
 				.as_resource_view()
-				.as_texture_view(l_material->m_diffuse_map->get_resource()->get_format())
+				.as_texture_view(l_diffuse_map.get_format())
 				.as_tex2d_shader_view(0, -1)
 				.on_texture2d();
 			auto l_normal_map_view_config = l_resource_configure
 				.as_resource_view()
-				.as_texture_view(l_material->m_normal_map->get_resource()->get_format())
+				.as_texture_view(l_normal_map.get_format())
 				.as_tex2d_shader_view(0, -1)
 				.on_texture2d();
 
-			auto l_diffuse_map_view = l_render_system.get_device().create_resource_view(l_material->m_diffuse_map->get_resource().get(), l_diffuse_map_view_config);
-			auto l_normal_map_view = l_render_system.get_device().create_resource_view(l_material->m_normal_map->get_resource().get(), l_normal_map_view_config);
+			l_material->m_diffuse_map_view = l_render_system.get_device().create_resource_view(l_diffuse_map, l_diffuse_map_view_config);
+			l_material->m_normal_map_view = l_render_system.get_device().create_resource_view(l_normal_map, l_normal_map_view_config);
 
-			l_render_state_resource_view_array[l_resource_view_count++] = graphic::bc_resource_view_parameter(l_resource_view_count, graphic::bc_shader_type::pixel, l_diffuse_map_view);
-			l_render_state_resource_view_array[l_resource_view_count++] = graphic::bc_resource_view_parameter(l_resource_view_count + 1, graphic::bc_shader_type::pixel, l_normal_map_view);
+			l_render_state_resource_view_array[l_resource_view_count++] = graphic::bc_resource_view_parameter(l_resource_view_count, graphic::bc_shader_type::pixel, l_material->m_diffuse_map_view.get());
+			l_render_state_resource_view_array[l_resource_view_count++] = graphic::bc_resource_view_parameter(l_resource_view_count + 1, graphic::bc_shader_type::pixel, l_material->m_normal_map_view.get());
 
 			l_materials.push_back(std::move(l_material));
 		}
@@ -562,8 +580,14 @@ namespace black_cat
 			0,
 			std::move(l_render_state_resource_view_array),
 			{
-				graphic::bc_constant_buffer_parameter(0, core::bc_enum::or({ graphic::bc_shader_type::vertex, graphic::bc_shader_type::hull, graphic::bc_shader_type::domain, graphic::bc_shader_type::pixel }), l_parameter_cbuffer),
-				graphic::bc_constant_buffer_parameter(1, core::bc_enum::or({ graphic::bc_shader_type::pixel }), l_material_properties_cbuffer)
+				graphic::bc_constant_buffer_parameter(0, core::bc_enum::or
+				({
+					graphic::bc_shader_type::vertex,
+					graphic::bc_shader_type::hull,
+					graphic::bc_shader_type::domain,
+					graphic::bc_shader_type::pixel
+				}), l_parameter_cbuffer.get()),
+				graphic::bc_constant_buffer_parameter(1, core::bc_enum::or({ graphic::bc_shader_type::pixel }), l_material_properties_cbuffer.get())
 			}
 		);
 
@@ -574,16 +598,18 @@ namespace black_cat
 			l_physics_system.get_height_field_y_scale(),
 			l_distance_detail,
 			l_height_detail, 
-			l_render_state,
-			l_height_map_texture,
-			l_height_map_view,
-			l_texture_map_texture,
-			l_texture_map_view,
-			l_parameter_cbuffer,
-			l_chunk_info_buffer,
-			l_chunk_info_view,
-			l_chunk_info_unordered_view,
-			l_material_properties_cbuffer,
+			std::move(l_render_state),
+			std::move(l_vertex_buffer),
+			std::move(l_index_buffer),
+			std::move(l_height_map_texture),
+			std::move(l_height_map_view),
+			std::move(l_texture_map_texture),
+			std::move(l_texture_map_view),
+			std::move(l_parameter_cbuffer),
+			std::move(l_chunk_info_buffer),
+			std::move(l_chunk_info_view),
+			std::move(l_chunk_info_unordered_view),
+			std::move(l_material_properties_cbuffer),
 			std::move(l_materials),
 			std::move(l_px_height_map),
 			l_px_deserialized_buffer.get_deserialize_buffer()

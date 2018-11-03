@@ -52,11 +52,11 @@ namespace black_cat
 		// -- bc_mesh --------------------------------------------------------------------------------
 
 		bc_mesh::bc_mesh(core::bc_string p_name, bcSIZE p_node_count, bcSIZE p_mesh_count, bc_mesh_collider_ptr p_colliders)
-			: m_name(p_name),
+			: m_name(std::move(p_name)),
 			m_root(nullptr),
 			m_colliders(std::move(p_colliders))
 		{
-			// Reserve needed memory for nodes because we use raw pointers in bc_mesh_node for parent and childs
+			// Reserve needed memory for nodes because we use raw pointers in bc_mesh_node for parent and children
 			m_nodes.reserve(p_node_count);
 			m_nodes_map.reserve(p_node_count);
 			m_transformations.reserve(p_node_count);
@@ -135,7 +135,7 @@ namespace black_cat
 		bc_mesh_node* bc_mesh::_add_node(core::bc_string p_name,
 			bc_mesh_node* p_parent,
 			core::bc_matrix4f& p_transformation,
-			core::bc_vector_frame<bc_mesh_node_data> p_meshes)
+			const core::bc_vector_frame<std::tuple<bc_mesh_part_data, bc_render_state_ptr>>& p_meshes)
 		{
 			if(!p_parent)
 			{
@@ -154,12 +154,12 @@ namespace black_cat
 			m_nodes_map.insert(std::make_pair(l_node_hash, &*m_nodes.rbegin()));
 			m_transformations.push_back(p_transformation);
 
-			for (bc_mesh_node_data& l_mesh : p_meshes)
+			for (auto& l_mesh : p_meshes)
 			{
-				const auto* l_mesh_part_colliders = m_colliders->find_mesh_colliders(l_mesh.m_data.m_name);
+				const auto* l_mesh_part_colliders = m_colliders->find_mesh_colliders(std::get<bc_mesh_part_data>(l_mesh).m_name);
 
-				m_meshes.push_back(std::move((l_mesh.m_data)));
-				m_render_states.push_back(std::move(l_mesh.m_render_state));
+				m_meshes.push_back(std::move(std::get<bc_mesh_part_data>(l_mesh)));
+				m_render_states.push_back(std::move(std::get<bc_render_state_ptr>(l_mesh)));
 				m_colliders_map.push_back(l_mesh_part_colliders);
 			}
 

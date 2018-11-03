@@ -83,7 +83,7 @@ namespace black_cat
 
 			const bool l_result = update(l_context);
 
-			p_context.m_game_system.get_render_system().get_render_pass<bc_terrain_pass_dx11>()->update_chunk_infoes();
+			p_context.m_game_system.get_render_system().get_render_pass<bc_terrain_pass_dx11>()->update_chunk_infos();
 
 			return l_result;
 		}
