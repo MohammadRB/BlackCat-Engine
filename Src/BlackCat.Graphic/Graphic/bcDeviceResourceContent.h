@@ -29,9 +29,9 @@ namespace black_cat
 
 			bc_device_resource_content& operator=(bc_device_resource_content&&)  noexcept = default;
 
-			bc_device_ref<TResource>& get_resource() noexcept
+			TResource get_resource() noexcept
 			{
-				return m_resource;
+				return m_resource.get();
 			}
 
 			static constexpr bcCHAR* content_name();

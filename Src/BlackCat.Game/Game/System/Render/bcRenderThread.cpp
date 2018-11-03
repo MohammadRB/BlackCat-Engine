@@ -59,7 +59,7 @@ namespace black_cat
 
 		bc_render_thread::bc_render_thread()
 			: m_pipeline(),
-			m_executer(),
+			m_executor(),
 			m_command_list()
 		{
 		}
@@ -76,7 +76,7 @@ namespace black_cat
 			bcAssert(m_command_list.is_valid());
 
 			m_pipeline->finish_command_list(m_command_list);
-			m_executer->excecute_command_list(m_command_list);
+			m_executor->excecute_command_list(m_command_list);
 
 			graphic::bc_device_command_list l_command_list;
 			std::swap(l_command_list, m_command_list);
@@ -88,20 +88,20 @@ namespace black_cat
 		{
 			bcSIZE l_render_target_count = 0;
 			core::bc_array< graphic::bc_render_target_view, g_render_pass_state_render_target_view_count > l_render_targets;
-			graphic::bc_depth_stencil_view l_depth_stencil = p_render_pass_state->m_shader_depth.get();
+			graphic::bc_depth_stencil_view l_depth_stencil = p_render_pass_state->m_shader_depth;
 			std::transform
 			(
 				std::cbegin(p_render_pass_state->m_shader_targets),
 				std::cend(p_render_pass_state->m_shader_targets),
 				std::begin(l_render_targets),
-				[&l_render_target_count](const graphic::bc_render_target_view_ptr& p_target)
+				[&l_render_target_count](const graphic::bc_render_target_view& p_target)
 				{
 					if (p_target != nullptr)
 					{
 						++l_render_target_count;
 					}
 
-					return p_target.get();
+					return p_target;
 				}
 			);
 
@@ -111,7 +111,7 @@ namespace black_cat
 				graphic::bc_pipeline_stage::output_merger_stage
 			});
 
-			m_pipeline->bind_pipeline_state(p_render_pass_state->m_pipeline_state.get());
+			m_pipeline->bind_pipeline_state(p_render_pass_state->m_pipeline_state);
 			m_pipeline->bind_rs_viewports(1, &p_render_pass_state->m_viewport);
 			m_pipeline->bind_om_render_targets(l_render_target_count, l_render_targets.data(), l_depth_stencil);
 
@@ -270,7 +270,7 @@ namespace black_cat
 
 		void bc_render_thread::run_compute_shader(bc_compute_state* p_compute_state)
 		{
-			m_pipeline->bind_compute_state(p_compute_state->m_compute_state.get());
+			m_pipeline->bind_compute_state(p_compute_state->m_compute_state);
 
 			for (auto& l_sampler_parameter : p_compute_state->m_samplers)
 			{
@@ -486,15 +486,15 @@ namespace black_cat
 			bcAssert(!m_command_list.is_valid());
 			
 			m_pipeline.reset();
-			m_executer.reset();
+			m_executor.reset();
 		}
 
-		void bc_render_thread::reset(graphic::bc_device_pipeline_ptr p_pipeline, graphic::bc_device_command_executer_ptr p_command_executer)
+		void bc_render_thread::reset(graphic::bc_device_pipeline_ptr p_pipeline, graphic::bc_device_command_executor_ptr p_command_executer)
 		{
 			bcAssert(!m_command_list.is_valid());
 
 			m_pipeline = std::move(p_pipeline);
-			m_executer = std::move(p_command_executer);
+			m_executor = std::move(p_command_executer);
 		}
 	}
 }

@@ -36,9 +36,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Command\bcDeviceCommandExecuter.h">
-      <Filter>Graphic\Device\Command</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Command\bcDeviceCommandList.h">
       <Filter>Graphic\Device\Command</Filter>
     </ClInclude>
@@ -233,6 +230,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\GraphicPCH.h">
       <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Command\bcDeviceCommandExecutor.h">
+      <Filter>Graphic\Device\Command</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -44,7 +44,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_stream_output_stage< g_api_dx11 >::apply_required_state(bc_device_pipeline* p_pipeline)
 		{
-			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline->m_context;
+			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline_proxy->m_context;
 			bc_stream_output_stage_state& l_required_state = m_required_state;
 
 			if (l_required_state.m_stream_buffers.update_needed() ||

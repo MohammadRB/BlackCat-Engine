@@ -4,7 +4,7 @@
 #include "GraphicImp/bcExport.h"
 #include "GraphicImp/bcDeviceRef.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
+#include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
@@ -40,54 +40,54 @@ namespace black_cat
 			p_command_list.get_platform_pack().m_command_list_proxy->release();
 		}
 
-		void _add_ref(bc_platform_device_command_executer< g_api_dx11 >& p_command_executer)
+		void _add_ref(bc_platform_device_command_executor< g_api_dx11 >& p_command_executor)
 		{
 		}
 
-		void _release(bc_platform_device_command_executer< g_api_dx11 >& p_command_executer)
+		void _release(bc_platform_device_command_executor< g_api_dx11 >& p_command_executor)
 		{
 		}
 
 		void _add_ref(bc_platform_device_compute_state< g_api_dx11 >& p_compute_state)
 		{
-			p_compute_state.get_platform_pack().m_compute_state->add_ref();
+			p_compute_state.get_platform_pack().m_compute_state_proxy->add_ref();
 		}
 
 		void _release(bc_platform_device_compute_state< g_api_dx11 >& p_compute_state)
 		{
-			p_compute_state.get_platform_pack().m_compute_state->release();
+			p_compute_state.get_platform_pack().m_compute_state_proxy->release();
 		}
 
 		void _add_ref(bc_platform_device_pipeline< g_api_dx11 >& p_pipeline)
 		{
-			p_pipeline.get_platform_pack().m_pipeline->add_ref();
-			p_pipeline.get_platform_pack().m_pipeline->m_context->AddRef();
-			p_pipeline.get_platform_pack().m_pipeline->m_query->AddRef();
+			p_pipeline.get_platform_pack().m_pipeline_proxy->add_ref();
+			p_pipeline.get_platform_pack().m_pipeline_proxy->m_context->AddRef();
+			p_pipeline.get_platform_pack().m_pipeline_proxy->m_query->AddRef();
 		}
 
 		void _release(bc_platform_device_pipeline< g_api_dx11 >& p_pipeline)
 		{
-			p_pipeline.get_platform_pack().m_pipeline->m_context->Release();
-			p_pipeline.get_platform_pack().m_pipeline->m_query->Release();
-			p_pipeline.get_platform_pack().m_pipeline->release();
+			p_pipeline.get_platform_pack().m_pipeline_proxy->m_context->Release();
+			p_pipeline.get_platform_pack().m_pipeline_proxy->m_query->Release();
+			p_pipeline.get_platform_pack().m_pipeline_proxy->release();
 		}
 
 		void _add_ref(bc_platform_device_pipeline_state< g_api_dx11 >& p_pipeline_state)
 		{
-			p_pipeline_state.get_platform_pack().m_pipeline_state->add_ref();
-			p_pipeline_state.get_platform_pack().m_pipeline_state->m_blend_state->AddRef();
-			p_pipeline_state.get_platform_pack().m_pipeline_state->m_depth_stencil_state->AddRef();
-			p_pipeline_state.get_platform_pack().m_pipeline_state->m_input_layout->AddRef();
-			p_pipeline_state.get_platform_pack().m_pipeline_state->m_rasterizer_state->AddRef();
+			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->add_ref();
+			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_blend_state->AddRef();
+			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_depth_stencil_state->AddRef();
+			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_input_layout->AddRef();
+			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_rasterizer_state->AddRef();
 		}
 
 		void _release(bc_platform_device_pipeline_state< g_api_dx11 >& p_pipeline_state)
 		{
-			p_pipeline_state.get_platform_pack().m_pipeline_state->m_blend_state->Release();
-			p_pipeline_state.get_platform_pack().m_pipeline_state->m_depth_stencil_state->Release();
-			p_pipeline_state.get_platform_pack().m_pipeline_state->m_input_layout->Release();
-			p_pipeline_state.get_platform_pack().m_pipeline_state->m_rasterizer_state->Release();
-			p_pipeline_state.get_platform_pack().m_pipeline_state->release();
+			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_blend_state->Release();
+			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_depth_stencil_state->Release();
+			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_input_layout->Release();
+			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_rasterizer_state->Release();
+			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->release();
 		}
 
 		void _add_ref(bc_platform_buffer< g_api_dx11 >& p_buffer)

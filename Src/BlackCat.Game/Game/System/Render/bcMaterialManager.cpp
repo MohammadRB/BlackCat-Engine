@@ -24,8 +24,8 @@ namespace black_cat
 		public:
 			BC_JSON_VALUE(core::bc_string, name);
 			BC_JSON_VALUE_OP(core::bc_vector4i, diffuse_color);
-			BC_JSON_VALUE_OP(bcUINT32, specualr_intency);
-			BC_JSON_VALUE_OP(bcUINT32, specualr_power);
+			BC_JSON_VALUE_OP(bcUINT32, specular_intensity);
+			BC_JSON_VALUE_OP(bcUINT32, specular_power);
 			BC_JSON_VALUE_OP(core::bc_string, diffuse_map);
 			BC_JSON_VALUE_OP(core::bc_string, normal_map);
 		};
@@ -122,8 +122,8 @@ namespace black_cat
 			{
 				_bc_material_description l_material_description;
 				l_material_description.m_diffuse_color = *l_material_desc->m_diffuse_color;
-				l_material_description.m_specualr_intency = *l_material_desc->m_specualr_intency;
-				l_material_description.m_specualr_power = *l_material_desc->m_specualr_power;
+				l_material_description.m_specular_intensity = *l_material_desc->m_specular_intensity;
+				l_material_description.m_specular_power = *l_material_desc->m_specular_power;
 				l_material_description.m_diffuse_map_name = *l_material_desc->m_diffuse_map;
 				l_material_description.m_normal_map_name = *l_material_desc->m_normal_map;
 
@@ -134,12 +134,12 @@ namespace black_cat
 			}
 		}
 
-		bc_material_ptr bc_material_manager::load_material(const bcCHAR* p_material) noexcept
+		bc_render_material_ptr bc_material_manager::load_material(const bcCHAR* p_material) noexcept
 		{
 			return load_material(core::bc_alloc_type::unknown, p_material);
 		}
 
-		bc_material_ptr bc_material_manager::load_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_material) noexcept
+		bc_render_material_ptr bc_material_manager::load_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_material) noexcept
 		{
 			auto l_hash = string_hash()(p_material);
 			material_map::iterator l_entry;
@@ -150,7 +150,7 @@ namespace black_cat
 				l_entry = m_materials.find(l_hash);
 				if (l_entry != std::cend(m_materials))
 				{
-					return bc_material_ptr(l_entry->second.get(), _bc_material_ptr_deleter(this));
+					return bc_render_material_ptr(l_entry->second.get(), _bc_material_ptr_deleter(this));
 				}
 			}
 
@@ -207,8 +207,8 @@ namespace black_cat
 				l_description_entry->second.m_diffuse_color.z / 255.0f,
 				l_description_entry->second.m_diffuse_color.w / 255.0f
 			);
-			l_material->m_specular_intensity = l_description_entry->second.m_specualr_intency;
-			l_material->m_specular_power = l_description_entry->second.m_specualr_power;
+			l_material->m_specular_intensity = l_description_entry->second.m_specular_intensity;
+			l_material->m_specular_power = l_description_entry->second.m_specular_power;
 			l_material->m_diffuse_map = l_diffuse_map;
 			l_material->m_normal_map = l_normal_map;
 
@@ -221,16 +221,16 @@ namespace black_cat
 					core::bc_unique_ptr<bc_render_material>(l_material.release())
 				)).first->second.get();
 
-				return bc_material_ptr(l_result, _bc_material_ptr_deleter(this));
+				return bc_render_material_ptr(l_result, _bc_material_ptr_deleter(this));
 			}
 		}
 
-		bc_material_ptr bc_material_manager::load_material_throw(const bcCHAR* p_material)
+		bc_render_material_ptr bc_material_manager::load_material_throw(const bcCHAR* p_material)
 		{
 			return load_material_throw(core::bc_alloc_type::unknown, p_material);
 		}
 
-		bc_material_ptr bc_material_manager::load_material_throw(core::bc_alloc_type p_alloc_type, const bcCHAR* p_material)
+		bc_render_material_ptr bc_material_manager::load_material_throw(core::bc_alloc_type p_alloc_type, const bcCHAR* p_material)
 		{
 			auto l_material_ptr = load_material(p_alloc_type, p_material);
 

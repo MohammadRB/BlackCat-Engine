@@ -6,7 +6,7 @@
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
+#include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
@@ -103,18 +103,18 @@ namespace black_cat
 
 			auto l_linear_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_wrap_wrap_wrap);
 
-			auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(game::bc_render_pass_resource_variable::depth_stencil_view);
-			auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(game::bc_render_pass_resource_variable::render_target_view);
-			auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
-			auto l_linear_sampler = p_device.create_sampler_state(l_linear_sampler_config);
+			const auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(game::bc_render_pass_resource_variable::depth_stencil_view);
+			const auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(game::bc_render_pass_resource_variable::render_target_view);
+			const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
+			m_sampler_state = p_device.create_sampler_state(l_linear_sampler_config);
 
 			m_render_pass_state = p_render_system.create_render_pass_state
 			(
 				m_pipeline_state.get(),
 				l_viewport,
-				{ graphic::bc_render_target_view_ptr(l_render_target_view) },
+				{ l_render_target_view },
 				l_depth_stencil_view,
-				{ graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, l_linear_sampler) },
+				{ graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler_state.get()) },
 				{},
 				{}
 			);
@@ -125,6 +125,7 @@ namespace black_cat
 	{
 		m_command_list.reset();
 		m_pipeline_state.reset();
+		m_sampler_state.reset();
 		m_render_pass_state.reset();
 	}
 }

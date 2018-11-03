@@ -44,8 +44,8 @@ namespace black_cat
 					p_render_component,
 					p_mesh_part,
 					p_transformations,
-					std::begin(p_mesh_part.get_node_childs(l_node)),
-					std::end(p_mesh_part.get_node_childs(l_node))
+					std::begin(p_mesh_part.get_node_children(l_node)),
+					std::end(p_mesh_part.get_node_children(l_node))
 				);
 			}
 		}
@@ -71,7 +71,7 @@ namespace black_cat
 		{
 			bc_iactor_component::operator=(std::move(p_other));
 			m_sub_mesh = std::move(p_other.m_sub_mesh);
-			m_mesh_part_transformation = std::move(m_mesh_part_transformation);
+			m_mesh_part_transformation = std::move(p_other.m_mesh_part_transformation);
 
 			return *this;
 		}
@@ -88,7 +88,7 @@ namespace black_cat
 
 		void bc_mesh_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
 		{
-			bc_mesh_ptr l_mesh = p_parameters.get_value_throw< core::bc_lazy_content >(core::g_param_mesh).get_content< bc_mesh >();
+			const bc_mesh_ptr l_mesh = p_parameters.get_value_throw< core::bc_lazy_content >(core::g_param_mesh).get_content< bc_mesh >();
 			core::bc_string* l_sub_mesh_name = p_parameters.get_value< core::bc_string >(core::g_param_sub_mesh);
 
 			m_sub_mesh = l_sub_mesh_name ? bc_sub_mesh(l_mesh, l_sub_mesh_name->c_str()) : bc_sub_mesh(l_mesh);

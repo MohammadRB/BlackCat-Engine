@@ -16,7 +16,7 @@
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
+#include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/bcRenderPassManager.h"
@@ -149,7 +149,7 @@ namespace black_cat
 			graphic::bc_device_compute_state_ptr create_device_compute_state(const bcCHAR* p_compute_shader_name);
 
 			/**
-			 * \brief Shader parameter register indices will be reindexed based on their ordering in the array.
+			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
 			 * Thread safe function
 			 * \param p_pipeline_state 
 			 * \param p_viewport 
@@ -169,11 +169,12 @@ namespace black_cat
 				bc_render_pass_state_constant_buffer_array&& p_shader_buffers);
 
 			/**
-			 * \brief Shader parameter register indices will be reindexed based on their ordering in the array.
+			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
 			 * Thread safe function
 			 * \param p_primitive 
-			 * \param p_vertex_buffer 
-			 * \param p_verext_buffer_offset 
+			 * \param p_vertex_buffer
+			 * \param p_vertex_buffer_stride 
+			 * \param p_vertex_buffer_offset 
 			 * \param p_index_buffer 
 			 * \param p_index_type 
 			 * \param p_index_count 
@@ -185,7 +186,7 @@ namespace black_cat
 			bc_render_state_ptr create_render_state(graphic::bc_primitive p_primitive,
 				graphic::bc_buffer p_vertex_buffer,
 				bcUINT32 p_vertex_buffer_stride,
-				bcUINT32 p_verext_buffer_offset,
+				bcUINT32 p_vertex_buffer_offset,
 				graphic::bc_buffer p_index_buffer,
 				bc_index_type p_index_type,
 				bcUINT32 p_index_count,
@@ -194,7 +195,7 @@ namespace black_cat
 				bc_render_state_constant_buffer_array&& p_shader_buffers);
 
 			/**
-			 * \brief Shader parameter register indices will be reindexed based on their ordering in the array.
+			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
 			 * Thread safe function
 			 * \param p_compute_state 
 			 * \param p_dispatch_x 
@@ -292,8 +293,10 @@ namespace black_cat
 			core::bc_vector_movale< core::bc_nullable< bc_compute_state > > m_compute_states;
 
 			update_param m_last_update_params;
+			graphic::bc_buffer_ptr m_global_cbuffer;
+			graphic::bc_buffer_ptr m_per_object_cbuffer;
 			graphic::bc_constant_buffer_parameter m_global_cbuffer_parameter;
-			graphic::bc_constant_buffer_parameter m_perobject_cbuffer_parameter;
+			graphic::bc_constant_buffer_parameter m_per_object_cbuffer_parameter;
 		};
 
 		template< typename TPass >

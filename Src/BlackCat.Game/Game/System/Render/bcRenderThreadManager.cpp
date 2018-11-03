@@ -59,7 +59,7 @@ namespace black_cat
 			for(bcUINT32 i = 0; i < p_thread_count; ++i)
 			{
 				auto l_render_pipeline = p_render_system.get_device().create_pipeline();
-				auto l_command_executer = p_render_system.get_device().create_command_executer();
+				auto l_command_executer = p_render_system.get_device().create_command_executor();
 
 				_bc_render_thread_entry l_entry;
 				l_entry.m_thread.reset(std::move(l_render_pipeline), std::move(l_command_executer));

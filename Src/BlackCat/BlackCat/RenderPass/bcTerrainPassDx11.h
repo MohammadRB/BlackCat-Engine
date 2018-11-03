@@ -4,9 +4,10 @@
 
 #include "Core/Math/bcVector3f.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandExecuter.h"
+#include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
+#include "GraphicImp/Resource/State/bcSamplerState.h"
 #include "Game/System/Render/bcRenderPass.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "BlackCat/bcExport.h"
@@ -32,21 +33,23 @@ namespace black_cat
 
 		void destroy(graphic::bc_device& p_device) override;
 
-		void update_chunk_infoes();
+		void update_chunk_infos();
 
 	protected:
 
 	private:
 		static constexpr bcUINT16 s_shader_thread_group_size = 32;
-		static constexpr bcUINT16 s_chund_size = 64;
+		static constexpr bcUINT16 s_chunk_size = 64;
 
-		bool m_run_chunk_info_shader;
+		bool m_run_chunk_info_shader = false;
 		game::bc_icamera::extend m_camera_extends;
 
 		graphic::bc_device_command_list_ptr m_command_list;
 		graphic::bc_device_pipeline_state_ptr m_pipeline_state;
-		graphic::bc_buffer_ptr m_parameter_cbuffer;
-		game::bc_render_pass_state_ptr m_render_pass_state;
 		graphic::bc_device_compute_state_ptr m_device_compute_state;
+		graphic::bc_buffer_ptr m_parameter_cbuffer;
+		graphic::bc_sampler_state_ptr m_texture_map_sampler;
+		graphic::bc_sampler_state_ptr m_texture_sampler;
+		game::bc_render_pass_state_ptr m_render_pass_state;
 	};
 }

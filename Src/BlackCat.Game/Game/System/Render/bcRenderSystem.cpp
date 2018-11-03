@@ -31,7 +31,7 @@ namespace black_cat
 			BC_CBUFFER_ALIGN 
 			core::bc_matrix4f m_projection;
 			BC_CBUFFER_ALIGN 
-			core::bc_matrix4f m_viewprojection;
+			core::bc_matrix4f m_view_projection;
 			BC_CBUFFER_ALIGN 
 			core::bc_vector3f m_camera_position;
 			BC_CBUFFER_ALIGN 
@@ -84,10 +84,6 @@ namespace black_cat
 			graphic::bc_domain_shader_content_ptr l_domain_shader;
 			graphic::bc_geometry_shader_content_ptr l_geometry_shader;
 			graphic::bc_pixel_shader_content_ptr l_pixel_shader;
-			graphic::bc_input_layout_config l_input_layout_config;
-			graphic::bc_blend_state_config l_blend_state_config;
-			graphic::bc_depth_stencil_state_config l_depth_stencil_state_config;
-			graphic::bc_rasterizer_state_config l_rasterizer_state_config;
 
 			if(p_vertex_shader_name)
 			{
@@ -110,18 +106,18 @@ namespace black_cat
 				l_pixel_shader = m_content_stream->find_content_throw< graphic::bc_pixel_shader_content >(p_pixel_shader_name);
 			}
 
-			l_input_layout_config = bc_graphic_state_configs::bc_input_layout_config(p_vertex_layout);
-			l_blend_state_config = bc_graphic_state_configs::bc_blend_config(p_blend);
-			l_depth_stencil_state_config = bc_graphic_state_configs::bc_depth_stencil_config(p_depth_stencil);
-			l_rasterizer_state_config = bc_graphic_state_configs::bc_rasterizer_config(p_rasterizer);
+			const auto l_input_layout_config = bc_graphic_state_configs::bc_input_layout_config(p_vertex_layout);
+			const auto l_blend_state_config = bc_graphic_state_configs::bc_blend_config(p_blend);
+			const auto l_depth_stencil_state_config = bc_graphic_state_configs::bc_depth_stencil_config(p_depth_stencil);
+			const auto l_rasterizer_state_config = bc_graphic_state_configs::bc_rasterizer_config(p_rasterizer);
 
 			graphic::bc_device_pipeline_state_config l_pipeline_config;
 
-			l_pipeline_config.m_vertex_shader = l_vertex_shader ? l_vertex_shader.get()->get_resource() : graphic::bc_vertex_shader_ptr();
-			l_pipeline_config.m_hull_shader = l_hull_shader ? l_hull_shader.get()->get_resource() : graphic::bc_hull_shader_ptr();
-			l_pipeline_config.m_domain_shader = l_domain_shader ? l_domain_shader.get()->get_resource() : graphic::bc_domain_shader_ptr();
-			l_pipeline_config.m_geometry_shader = l_geometry_shader ? l_geometry_shader.get()->get_resource() : graphic::bc_geometry_shader_ptr();
-			l_pipeline_config.m_pixel_shader = l_pixel_shader ? l_pixel_shader.get()->get_resource() : graphic::bc_pixel_shader_ptr();
+			l_pipeline_config.m_vertex_shader = l_vertex_shader ? l_vertex_shader.get()->get_resource() : graphic::bc_vertex_shader();
+			l_pipeline_config.m_hull_shader = l_hull_shader ? l_hull_shader.get()->get_resource() : graphic::bc_hull_shader();
+			l_pipeline_config.m_domain_shader = l_domain_shader ? l_domain_shader.get()->get_resource() : graphic::bc_domain_shader();
+			l_pipeline_config.m_geometry_shader = l_geometry_shader ? l_geometry_shader.get()->get_resource() : graphic::bc_geometry_shader();
+			l_pipeline_config.m_pixel_shader = l_pixel_shader ? l_pixel_shader.get()->get_resource() : graphic::bc_pixel_shader();
 			l_pipeline_config.m_blend_state_config = l_blend_state_config;
 			l_pipeline_config.m_sample_mask = p_sample_mask;
 			l_pipeline_config.m_depth_stencil_state_config = l_depth_stencil_state_config;
@@ -137,12 +133,9 @@ namespace black_cat
 
 		graphic::bc_device_compute_state_ptr bc_render_system::create_device_compute_state(const bcCHAR* p_compute_shader_name)
 		{
-			graphic::bc_compute_shader_content_ptr l_compute_shader;
-
-			l_compute_shader = m_content_stream->find_content_throw< graphic::bc_compute_shader_content >(p_compute_shader_name);
+			graphic::bc_compute_shader_content_ptr l_compute_shader = m_content_stream->find_content_throw< graphic::bc_compute_shader_content >(p_compute_shader_name);
 
 			graphic::bc_device_compute_state_config l_compute_config;
-
 			l_compute_config.m_compute_shader = l_compute_shader->get_resource();
 
 			return m_device.create_compute_state(l_compute_config);
@@ -190,7 +183,7 @@ namespace black_cat
 
 			core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
 			{
-				auto l_first_empty = std::find_if(std::begin(m_render_pass_states), std::end(m_render_pass_states), [this](const core::bc_nullable< bc_render_pass_state >& p_item)
+				auto l_first_empty = std::find_if(std::begin(m_render_pass_states), std::end(m_render_pass_states), [](const core::bc_nullable< bc_render_pass_state >& p_item)
 				{
 					return !p_item.is_set();
 				});
@@ -216,7 +209,7 @@ namespace black_cat
 		bc_render_state_ptr bc_render_system::create_render_state(graphic::bc_primitive p_primitive,
 			graphic::bc_buffer p_vertex_buffer, 
 			bcUINT32 p_vertex_buffer_stride,
-			bcUINT32 p_verext_buffer_offset, 
+			bcUINT32 p_vertex_buffer_offset, 
 			graphic::bc_buffer p_index_buffer, 
 			bc_index_type p_index_type,
 			bcUINT32 p_index_count, 
@@ -225,18 +218,18 @@ namespace black_cat
 			bc_render_state_constant_buffer_array&& p_shader_buffers)
 		{
 			bc_render_state l_render_state
-				(
-					p_primitive,
-					p_vertex_buffer,
-					p_vertex_buffer_stride,
-					p_verext_buffer_offset,
-					p_index_buffer,
-					p_index_type,
-					p_index_count,
-					p_index_buffer_offset,
-					std::move(p_resource_views),
-					std::move(p_shader_buffers)
-				);
+			(
+				p_primitive,
+				p_vertex_buffer,
+				p_vertex_buffer_stride,
+				p_vertex_buffer_offset,
+				p_index_buffer,
+				p_index_type,
+				p_index_count,
+				p_index_buffer_offset,
+				std::move(p_resource_views),
+				std::move(p_shader_buffers)
+			);
 
 			bcSIZE l_parameter_register = g_render_state_shader_view_min_index;
 
@@ -252,9 +245,10 @@ namespace black_cat
 				l_cbuffer_parameter.set_register_index(l_parameter_register++);
 			}
 
-			core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
 			{
-				auto l_first_empty = std::find_if(std::begin(m_render_states), std::end(m_render_states), [this](const render_state_entry& p_item)
+				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
+
+				auto l_first_empty = std::find_if(std::begin(m_render_states), std::end(m_render_states), [](const render_state_entry& p_item)
 				{
 					return !p_item.first.is_set();
 				});
@@ -336,7 +330,7 @@ namespace black_cat
 
 			core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
 			{
-				auto l_first_empty = std::find_if(std::begin(m_compute_states), std::end(m_compute_states), [this](const core::bc_nullable< bc_compute_state >& p_item)
+				auto l_first_empty = std::find_if(std::begin(m_compute_states), std::end(m_compute_states), [](const core::bc_nullable< bc_compute_state >& p_item)
 				{
 					return !p_item.is_set();
 				});
@@ -364,11 +358,9 @@ namespace black_cat
 		{
 			core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
 			{
-				auto l_item = std::find_if(std::begin(m_render_pass_states), std::end(m_render_pass_states), [this, p_render_pass_state](const core::bc_nullable< bc_render_pass_state >& p_item)
+				auto l_item = std::find_if(std::begin(m_render_pass_states), std::end(m_render_pass_states), [p_render_pass_state](const core::bc_nullable< bc_render_pass_state >& p_item)
 				{
-
 					return p_item.is_set() && &p_item.get() == p_render_pass_state;
-
 				});
 
 				if (l_item == std::end(m_render_pass_states))
@@ -377,7 +369,7 @@ namespace black_cat
 					return;
 				}
 
-				// We set object to null because we can use null objetcs again 
+				// We set object to null because we can use null objects again 
 				(*l_item).reset(nullptr);
 			}
 		}
@@ -386,11 +378,9 @@ namespace black_cat
 		{
 			core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
 			{
-				auto l_item = std::find_if(std::begin(m_render_states), std::end(m_render_states), [this, p_render_state](const render_state_entry& p_item)
+				auto l_item = std::find_if(std::begin(m_render_states), std::end(m_render_states), [p_render_state](const render_state_entry& p_item)
 				{
-
 					return p_item.first.is_set() && &p_item.first.get() == p_render_state;
-
 				});
 
 				if (l_item == std::end(m_render_states))
@@ -399,7 +389,7 @@ namespace black_cat
 					return;
 				}
 
-				// We set object to null because we can use null objetcs again 
+				// We set object to null because we can use null objects again 
 				(*l_item).first.reset(nullptr);
 			}
 		}
@@ -408,11 +398,9 @@ namespace black_cat
 		{
 			core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
 			{
-				auto l_item = std::find_if(std::begin(m_compute_states), std::end(m_compute_states), [this, p_compute_state](const core::bc_nullable< bc_compute_state >& p_item)
+				auto l_item = std::find_if(std::begin(m_compute_states), std::end(m_compute_states), [p_compute_state](const core::bc_nullable< bc_compute_state >& p_item)
 				{
-
 					return p_item.is_set() && &p_item.get() == p_compute_state;
-
 				});
 
 				if (l_item == std::end(m_compute_states))
@@ -421,7 +409,7 @@ namespace black_cat
 					return;
 				}
 
-				// We set object to null because we can use null objetcs again 
+				// We set object to null because we can use null objects again 
 				(*l_item).reset(nullptr);
 			}
 		}
@@ -442,11 +430,11 @@ namespace black_cat
 
 		void bc_render_system::add_render_instance(const bc_render_state* p_state, const bc_render_instance& p_instance)
 		{
-			// Bug this function isn't threadsafe
-			auto l_render_states_entry_size = sizeof(render_state_entry);
-			auto l_render_states_first = reinterpret_cast< bcUINTPTR >(&*m_render_states.begin());
-			auto l_render_state = reinterpret_cast<bcUINTPTR>(p_state);
-			auto l_state_index = (l_render_state - l_render_states_first) / l_render_states_entry_size;
+			// Bug this function isn't thread-safe
+			const auto l_render_states_entry_size = sizeof(render_state_entry);
+			const auto l_render_states_first = reinterpret_cast< bcUINTPTR >(&*m_render_states.begin());
+			const auto l_render_state = reinterpret_cast<bcUINTPTR>(p_state);
+			const auto l_state_index = (l_render_state - l_render_states_first) / l_render_states_entry_size;
 
 			bcAssert(m_render_states.at(l_state_index).first.is_set());
 
@@ -458,7 +446,7 @@ namespace black_cat
 			p_render_thread.bind_ps_constant_buffer_parameter(m_global_cbuffer_parameter);
 			p_render_thread.pipeline_apply_states(_convert_shader_type_to_pipeline_stage(m_global_cbuffer_parameter.get_shader_types()));
 
-			graphic::bc_pipeline_stage l_perobject_cbuffer_stages = _convert_shader_type_to_pipeline_stage(m_perobject_cbuffer_parameter.get_shader_types());
+			const graphic::bc_pipeline_stage l_per_object_cbuffer_stages = _convert_shader_type_to_pipeline_stage(m_per_object_cbuffer_parameter.get_shader_types());
 
 			for (render_state_entry& l_render_state : m_render_states)
 			{
@@ -471,10 +459,11 @@ namespace black_cat
 					{
 						auto l_transposed_world = l_instance.get_world().transpose();
 
-						p_render_thread.update_subresource(m_perobject_cbuffer_parameter.get_buffer().get(), 0, &l_transposed_world, 0, 0);
+						graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
+						p_render_thread.update_subresource(l_buffer, 0, &l_transposed_world, 0, 0);
 
-						p_render_thread.bind_ps_constant_buffer_parameter(m_perobject_cbuffer_parameter);
-						p_render_thread.pipeline_apply_states(l_perobject_cbuffer_stages);
+						p_render_thread.bind_ps_constant_buffer_parameter(m_per_object_cbuffer_parameter);
+						p_render_thread.pipeline_apply_states(l_per_object_cbuffer_stages);
 
 						p_render_thread.draw_indexed
 						(
@@ -513,13 +502,14 @@ namespace black_cat
 			_bc_render_system_global_state_cbuffer l_global_state;
 			l_global_state.m_view = m_last_update_params.m_view_matrix.transpose();
 			l_global_state.m_projection = m_last_update_params.m_projection_matrix.transpose();
-			l_global_state.m_viewprojection = (m_last_update_params.m_view_matrix * m_last_update_params.m_projection_matrix).transpose();
+			l_global_state.m_view_projection = (m_last_update_params.m_view_matrix * m_last_update_params.m_projection_matrix).transpose();
 			l_global_state.m_camera_position = m_last_update_params.m_camera_position;
 			l_global_state.m_elapsed = m_last_update_params.m_elapsed;
 			l_global_state.m_total_elapsed = m_last_update_params.m_total_elapsed;
 			l_global_state.m_elapsed_second = m_last_update_params.m_elapsed_second;
 
-			l_render_thread.update_subresource(m_global_cbuffer_parameter.get_buffer().get(), 0, &l_global_state, 0, 0);
+			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
+			l_render_thread.update_subresource(l_buffer, 0, &l_global_state, 0, 0);
 
 			m_render_pass_manager.pass_execute(*this, p_scene, l_render_thread);
 			
@@ -582,7 +572,7 @@ namespace black_cat
 					graphic::bc_resource_view_type::none
 				)
 				.as_constant_buffer();
-			auto l_perobject_cbuffer_config = graphic::bc_graphic_resource_configure()
+			auto l_per_object_cbuffer_config = graphic::bc_graphic_resource_configure()
 				.as_resource()
 				.as_buffer
 				(
@@ -592,8 +582,8 @@ namespace black_cat
 					graphic::bc_resource_view_type::none
 				)
 				.as_constant_buffer();
-			auto l_global_cbuffer = m_device.create_buffer(l_global_cbuffer_config, nullptr);
-			auto l_perobject_cbuffer = m_device.create_buffer(l_perobject_cbuffer_config, nullptr);
+			m_global_cbuffer = m_device.create_buffer(l_global_cbuffer_config, nullptr);
+			m_per_object_cbuffer = m_device.create_buffer(l_per_object_cbuffer_config, nullptr);
 
 			m_global_cbuffer_parameter = graphic::bc_constant_buffer_parameter
 			(
@@ -606,20 +596,22 @@ namespace black_cat
 					graphic::bc_shader_type::geometry,
 					graphic::bc_shader_type::pixel
 				}),
-				l_global_cbuffer
+				m_global_cbuffer.get()
 			);
-			m_perobject_cbuffer_parameter = graphic::bc_constant_buffer_parameter
+			m_per_object_cbuffer_parameter = graphic::bc_constant_buffer_parameter
 			(
 				g_render_state_constant_buffer_min_index - 1,
 				core::bc_enum::or({ graphic::bc_shader_type::vertex }),
-				l_perobject_cbuffer
+				m_per_object_cbuffer.get()
 			);
 		}
 
 		void bc_render_system::_destroy()
 		{
+			m_global_cbuffer.reset();
+			m_per_object_cbuffer.reset();
 			m_global_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
-			m_perobject_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
+			m_per_object_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
 			 
 			m_device_listener_handle.reset();
 			m_window_resize_handle.reset();

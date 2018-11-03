@@ -4,6 +4,7 @@
 
 #include "Core/bcConstant.h"
 #include "Core/Math/bcVector3f.h"
+#include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "PhysicsImp/Shape/bcHeightField.h"
 #include "Game/System/Render/bcRenderState.h"
 
@@ -21,8 +22,10 @@ namespace black_cat
 				bcUINT16 p_height,
 				bcUINT16 p_xz_multiplier,
 				bcFLOAT p_y_multiplier,
-				bc_render_state_ptr& p_render_state,
-				physics::bc_height_field_ref&& p_px_height_map,
+				bc_render_state_ptr p_render_state,
+				graphic::bc_buffer_ptr p_vertex_buffer,
+				graphic::bc_buffer_ptr p_index_buffer,
+				physics::bc_height_field_ref p_px_height_map,
 				void* p_px_height_map_deserialize_buffer);
 
 			bc_height_map(bc_height_map&& p_other) noexcept;
@@ -61,6 +64,16 @@ namespace black_cat
 				return m_render_state.get();
 			}
 
+			graphic::bc_buffer get_vertex_buffer() const
+			{
+				return m_vertex_buffer.get();
+			}
+
+			graphic::bc_buffer get_index_buffer() const
+			{
+				return m_index_buffer.get();
+			}
+
 			physics::bc_height_field get_px_height_field() const
 			{
 				return m_px_height_map.get();
@@ -76,6 +89,8 @@ namespace black_cat
 			bcFLOAT m_y_multiplier;
 
 			bc_render_state_ptr m_render_state;
+			graphic::bc_buffer_ptr m_vertex_buffer;
+			graphic::bc_buffer_ptr m_index_buffer;
 			physics::bc_height_field_ref m_px_height_map;
 			void* m_px_height_map_deserialize_buffer;
 		};

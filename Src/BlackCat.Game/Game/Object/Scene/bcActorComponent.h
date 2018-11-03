@@ -30,7 +30,8 @@ namespace black_cat
 
 			/**
 			 * \brief Initialize component data members that are shared between instances of this component.
-			 * In other word data memebers that act like entity template datas.
+			 * In other word data members that act like entity template data.
+			 * \param p_actor
 			 * \param p_parameters 
 			 */
 			virtual void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) = 0;

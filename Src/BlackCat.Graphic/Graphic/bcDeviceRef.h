@@ -42,13 +42,9 @@ namespace black_cat
 			>
 			explicit bc_platform_device_ref(const type& p_object);
 
-			bc_platform_device_ref(const bc_platform_device_ref& p_other) noexcept;
-
 			bc_platform_device_ref(bc_platform_device_ref&& p_other) noexcept;
 
 			~bc_platform_device_ref();
-
-			bc_platform_device_ref& operator=(const bc_platform_device_ref& p_other) noexcept;
 
 			bc_platform_device_ref& operator=(bc_platform_device_ref&& p_other) noexcept;
 

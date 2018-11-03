@@ -25,26 +25,29 @@ namespace black_cat
 		template<>
 		struct bc_platform_device_compute_state_pack< g_api_dx11 >
 		{
-			bc_device_compute_state_proxy* m_compute_state;
+			bc_device_compute_state_proxy* m_compute_state_proxy;
 		};
 
 		template<>
 		inline bc_platform_device_compute_state< g_api_dx11 >::bc_platform_device_compute_state()
+			: m_pack()
 		{
-			m_pack.m_compute_state = nullptr;
+			m_pack.m_compute_state_proxy = nullptr;
 		}
 
 		template<>
 		inline bc_platform_device_compute_state<g_api_dx11>::bc_platform_device_compute_state(platform_pack& p_pack)
+			: m_pack()
 		{
-			m_pack.m_compute_state = p_pack.m_compute_state;
+			m_pack.m_compute_state_proxy = p_pack.m_compute_state_proxy;
 		}
 
 		template<>
 		inline bc_platform_device_compute_state< g_api_dx11 >::bc_platform_device_compute_state(const bc_platform_device_compute_state& p_other) noexcept
-			: bc_platform_device_reference()
+			: bc_platform_device_reference(p_other),
+			m_pack()
 		{
-			m_pack.m_compute_state = p_other.m_pack.m_compute_state;
+			m_pack.m_compute_state_proxy = p_other.m_pack.m_compute_state_proxy;
 		}
 
 		template<>
@@ -56,27 +59,27 @@ namespace black_cat
 		inline bc_platform_device_compute_state< g_api_dx11 >& bc_platform_device_compute_state< g_api_dx11 >::operator=(const bc_platform_device_compute_state& p_other) noexcept
 		{
 			bc_platform_device_reference::operator=(p_other);
-			m_pack.m_compute_state = p_other.m_pack.m_compute_state;
+			m_pack.m_compute_state_proxy = p_other.m_pack.m_compute_state_proxy;
 
 			return *this;
 		}
 
 		template<>
-		inline void bc_platform_device_compute_state< g_api_dx11 >::get_config(bc_device_compute_state_config& p_config)
+		inline const bc_device_compute_state_config& bc_platform_device_compute_state< g_api_dx11 >::get_config() const
 		{
-			p_config = m_pack.m_compute_state->m_config;
+			return m_pack.m_compute_state_proxy->m_config;
 		}
 
 		template<>
 		inline bool bc_platform_device_compute_state< g_api_dx11 >::is_valid() const noexcept
 		{
-			return m_pack.m_compute_state != nullptr;
+			return m_pack.m_compute_state_proxy != nullptr;
 		}
 
 		template<>
 		inline bool bc_platform_device_compute_state<g_api_dx11>::operator==(const bc_platform_device_compute_state& p_other) const noexcept
 		{
-			return m_pack.m_compute_state == p_other.m_pack.m_compute_state;
+			return m_pack.m_compute_state_proxy == p_other.m_pack.m_compute_state_proxy;
 		}
 
 		template<>

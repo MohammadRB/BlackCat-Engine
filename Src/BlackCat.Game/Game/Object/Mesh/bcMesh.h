@@ -13,6 +13,7 @@
 #include "Graphic/bcRenderApiInfo.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
+#include "GraphicImp/Resource/View/bcResourceView.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/bcVertexLayout.h"
 #include "Game/System/Render/bcRenderState.h"
@@ -39,24 +40,10 @@ namespace black_cat
 			bc_render_material m_material;
 			core::bc_vector_movale< bc_vertex_pos_tex_nor_tan > m_vertices;
 			core::bc_vector_movale< bcBYTE > m_indices;
-		};
 
-		struct bc_mesh_node_data
-		{
-			bc_mesh_node_data(bc_mesh_part_data&& p_data, bc_render_state_ptr p_render_state)
-				: m_data(std::move(p_data)),
-				m_render_state(std::move(p_render_state))
-			{
-			}
-
-			bc_mesh_node_data(bc_mesh_node_data&&) = default;
-
-			~bc_mesh_node_data() = default;
-
-			bc_mesh_node_data& operator=(bc_mesh_node_data&&) = default;
-
-			bc_mesh_part_data m_data;
-			bc_render_state_ptr m_render_state;
+			graphic::bc_buffer_ptr m_cbuffer;
+			graphic::bc_buffer_ptr m_vertex_buffer;
+			graphic::bc_buffer_ptr m_index_buffer;
 		};
 
 		class BC_GAME_DLL bc_mesh_node : public core_platform::bc_no_copy
@@ -153,7 +140,7 @@ namespace black_cat
 			bc_mesh_node* _add_node(core::bc_string p_name,
 				bc_mesh_node* p_parent,
 				core::bc_matrix4f& p_transformation,
-				core::bc_vector_frame<bc_mesh_node_data> p_meshes);
+				const core::bc_vector_frame<std::tuple<bc_mesh_part_data, bc_render_state_ptr>>& p_meshes);
 
 		protected:
 

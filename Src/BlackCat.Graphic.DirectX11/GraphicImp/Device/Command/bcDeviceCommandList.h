@@ -26,9 +26,9 @@ namespace black_cat
 		template< >
 		struct bc_platform_device_command_list_pack<bc_render_api::directx11>
 		{
-			// Because in Dx11, command lists create with call to ID3D11DeviceContext::FinishCommandList, there is
-			// no way to make created command list instance with device and all it's copies point to the same 
-			// command list object, so we used a proxy.
+			// Because in Dx11, command lists are created with a call to ID3D11DeviceContext::FinishCommandList, there is
+			// no way to created command list instance with device so all copies point to the same command list object, 
+			// so we used a proxy.
 			bc_device_command_list_proxy* m_command_list_proxy;
 		};
 	}

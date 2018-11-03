@@ -28,8 +28,8 @@ namespace black_cat
 		{
 		public:
 			core::bc_vector4i m_diffuse_color;
-			bcFLOAT m_specualr_intency;
-			bcFLOAT m_specualr_power;
+			bcFLOAT m_specular_intensity;
+			bcFLOAT m_specular_power;
 			core::bc_string m_diffuse_map_name;
 			core::bc_string m_normal_map_name;
 		};
@@ -64,9 +64,9 @@ namespace black_cat
 			 * \param p_material 
 			 * \return null_ptr if material descriptor not found.
 			 */
-			bc_material_ptr load_material(const bcCHAR* p_material) noexcept;
+			bc_render_material_ptr load_material(const bcCHAR* p_material) noexcept;
 
-			bc_material_ptr load_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_material) noexcept;
+			bc_render_material_ptr load_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_material) noexcept;
 
 			/**
 			* \brief Found associated material description and load material from it's descriptor.
@@ -76,9 +76,9 @@ namespace black_cat
 			* \param p_material
 			* \return
 			*/
-			bc_material_ptr load_material_throw(const bcCHAR* p_material);
+			bc_render_material_ptr load_material_throw(const bcCHAR* p_material);
 
-			bc_material_ptr load_material_throw(core::bc_alloc_type p_alloc_type, const bcCHAR* p_material);
+			bc_render_material_ptr load_material_throw(core::bc_alloc_type p_alloc_type, const bcCHAR* p_material);
 
 			void destroy_material(bc_render_material* p_material);
 
