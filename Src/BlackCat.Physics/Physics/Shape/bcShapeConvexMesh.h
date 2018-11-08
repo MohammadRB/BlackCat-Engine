@@ -41,7 +41,7 @@ namespace black_cat
 
 			bc_shape_type get_type() const noexcept override
 			{
-				return bc_shape_type::convexmesh;
+				return bc_shape_type::convex_mesh;
 			}
 
 			platform_pack& get_platform_pack()

@@ -6,6 +6,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "PhysicsImp/Fundation/bcTransform.h"
+#include "PhysicsImp/Shape/bcShape.h"
 #include "PhysicsImp/Shape/bcShapeGeometry.h"
 #include "PhysicsImp/Shape/bcShapeBox.h"
 #include "PhysicsImp/Shape/bcShapeSphere.h"
@@ -20,9 +21,18 @@ namespace black_cat
 	{
 		struct bc_mesh_part_collider_entry
 		{
-			bc_mesh_part_collider_entry(core::bc_unique_ptr<physics::bc_shape_geometry> p_px_shape, const physics::bc_transform& p_transformation)
+			bc_mesh_part_collider_entry(core::bc_unique_ptr< physics::bc_shape_geometry > p_px_shape,
+				const physics::bc_transform& p_transformation)
+				: bc_mesh_part_collider_entry(std::move(p_px_shape), p_transformation, physics::bc_shape_flag::default)
+			{
+			}
+
+			bc_mesh_part_collider_entry(core::bc_unique_ptr< physics::bc_shape_geometry > p_px_shape,
+				const physics::bc_transform& p_transformation,
+				physics::bc_shape_flag p_flag)
 				: m_px_shape(std::move(p_px_shape)),
-				m_transformation(p_transformation)
+				m_transformation(p_transformation),
+				m_shape_flags(p_flag)
 			{
 			}
 
@@ -32,8 +42,9 @@ namespace black_cat
 
 			bc_mesh_part_collider_entry& operator=(bc_mesh_part_collider_entry&&) = default;
 
-			core::bc_unique_ptr<physics::bc_shape_geometry> m_px_shape;
+			core::bc_unique_ptr< physics::bc_shape_geometry > m_px_shape;
 			physics::bc_transform m_transformation;
+			physics::bc_shape_flag m_shape_flags;
 		};
 
 		class BC_GAME_DLL bc_mesh_part_collider
@@ -55,15 +66,15 @@ namespace black_cat
 
 			bc_mesh_part_collider& operator=(bc_mesh_part_collider&&) noexcept;
 
-			void add_px_shape(const physics::bc_shape_box& p_box, const physics::bc_transform& p_transformation);
+			void add_px_shape(const physics::bc_shape_box& p_box, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags = physics::bc_shape_flag::default);
 
-			void add_px_shape(const physics::bc_shape_sphere& p_sphere, const physics::bc_transform& p_transformation);
+			void add_px_shape(const physics::bc_shape_sphere& p_sphere, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags = physics::bc_shape_flag::default);
 
-			void add_px_shape(const physics::bc_shape_capsule& p_capsule, const physics::bc_transform& p_transformation);
+			void add_px_shape(const physics::bc_shape_capsule& p_capsule, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags = physics::bc_shape_flag::default);
 
-			void add_px_shape(physics::bc_convex_mesh_ref&& p_convex, const physics::bc_transform& p_transformation);
+			void add_px_shape(physics::bc_convex_mesh_ref&& p_convex, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags = physics::bc_shape_flag::default);
 
-			void add_px_shape(physics::bc_triangle_mesh_ref&& p_mesh, const physics::bc_transform& p_transformation);
+			void add_px_shape(physics::bc_triangle_mesh_ref&& p_mesh, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags = physics::bc_shape_flag::default);
 
 			const_iterator cbegin() const;
 

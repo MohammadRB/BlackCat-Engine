@@ -275,8 +275,7 @@ namespace black_cat
 		const aiScene& p_aiscene,
 		const aiNode& p_ainode,
 		game::bc_mesh& p_mesh,
-		game::bc_mesh_node* p_parent,
-		const core::bc_matrix4f& p_parent_transformation)
+		game::bc_mesh_node* p_parent)
 	{
 		if (bc_mesh_collider_loader::is_px_node(p_ainode))
 		{
@@ -284,11 +283,8 @@ namespace black_cat
 		}
 
 		core::bc_matrix4f l_node_transformation;
-		core::bc_matrix4f l_node_absolute_transformation;
-
 		convert_aimatrix(p_ainode.mTransformation, l_node_transformation);
-		l_node_absolute_transformation = l_node_transformation * p_parent_transformation;
-
+		
 		core::bc_vector_frame< std::tuple< game::bc_mesh_part_data, game::bc_render_state_ptr> > l_meshes;
 		l_meshes.reserve(p_ainode.mNumMeshes);
 
@@ -324,7 +320,7 @@ namespace black_cat
 		{
 			aiNode* l_child = p_ainode.mChildren[l_child_index];
 
-			convert_ainodes(p_render_system, p_context, p_aiscene, *l_child, p_mesh, l_added_node, l_node_absolute_transformation);
+			convert_ainodes(p_render_system, p_context, p_aiscene, *l_child, p_mesh, l_added_node);
 		}
 	}
 
@@ -345,7 +341,7 @@ namespace black_cat
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices |
 			aiProcess_SortByPType |
-			graphic::bc_render_api_info::is_left_handed() ? aiProcess_ConvertToLeftHanded : 0
+			(graphic::bc_render_api_info::is_left_handed() ? aiProcess_ConvertToLeftHanded : 0)
 		);
 
 		if (!l_scene || !l_scene->HasMeshes())
@@ -363,7 +359,7 @@ namespace black_cat
 		(
 			p_context.get_allocator_alloc_type(),
 			p_context.m_file_path.c_str(),
-			core::bc_content_loader_parameter(p_context.m_parameter)
+			std::move(core::bc_content_loader_parameter(p_context.m_parameter).add_value("aiScene", l_scene))
 		);
 
 		game::bc_game_system& l_game_system = *core::bc_service_manager::get().get_service< game::bc_game_system >();
@@ -372,10 +368,10 @@ namespace black_cat
 		bcSIZE l_mesh_count = 0;
 		calculate_node_mesh_count(*l_scene->mRootNode, l_node_count, l_mesh_count);
 
-		core::bc_estring l_mesh_name = core::bc_path(p_context.m_file_path.c_str()).get_filename();
+		const core::bc_estring l_mesh_name = core::bc_path(p_context.m_file_path.c_str()).get_filename();
 		game::bc_mesh l_mesh(core::bc_to_exclusive_string(l_mesh_name), l_node_count, l_mesh_count, l_mesh_colliders);
 
-		convert_ainodes(l_game_system.get_render_system(), p_context, *l_scene, *l_scene->mRootNode, l_mesh, nullptr, core::bc_matrix4f::identity());
+		convert_ainodes(l_game_system.get_render_system(), p_context, *l_scene, *l_scene->mRootNode, l_mesh, nullptr);
 
 		p_context.set_result(std::move(l_mesh));
 	}

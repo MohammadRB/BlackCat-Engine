@@ -233,7 +233,7 @@ namespace black_cat
 		);
 		l_content_stream_manager->register_loader< game::bc_mesh_collider, bc_mesh_collider_loader >
 		(
-			core::bc_make_loader< bc_mesh_collider_loader >()
+			core::bc_make_loader< bc_mesh_collider_loader >(true)
 		);
 		l_content_stream_manager->register_loader< game::bc_mesh, bc_mesh_loader >
 		(

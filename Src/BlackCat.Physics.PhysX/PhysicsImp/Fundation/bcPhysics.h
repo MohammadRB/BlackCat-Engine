@@ -17,10 +17,10 @@ namespace black_cat
 		template<>
 		struct bc_platform_physics_pack<g_api_physx>
 		{
-			physx::PxFoundation* m_px_fundation;
+			physx::PxFoundation* m_px_foundation;
 #ifdef BC_DEBUG
 			physx::PxProfileZoneManager* m_px_profile;
-			physx::PxVisualDebuggerConnection* m_visaulizer;
+			physx::PxVisualDebuggerConnection* m_visualizer;
 #endif
 			physx::PxPhysics* m_px_physics;
 			physx::PxCooking* m_px_cooking;

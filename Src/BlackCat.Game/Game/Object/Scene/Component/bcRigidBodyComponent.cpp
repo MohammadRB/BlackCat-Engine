@@ -17,16 +17,16 @@ namespace black_cat
 		{
 			auto& l_physics = p_physics_system.get_physics();
 			const bc_sub_mesh& l_mesh_part = p_mesh_component.get_sub_mesh();
-			core::bc_vector_frame<const bc_mesh_part_collider::entry*> l_shapes;
+			core::bc_vector_frame<const bc_mesh_part_collider_entry*> l_colliders;
 
-			_get_mesh_colliders(l_mesh_part, l_mesh_part.get_node(), l_shapes);
+			_get_mesh_colliders(l_mesh_part, l_mesh_part.get_node(), l_colliders);
 
 			auto l_px_material = l_physics.create_material(1, 1, 0.1);
 
-			for (const bc_mesh_part_collider_entry* l_shape : l_shapes)
+			for (const bc_mesh_part_collider_entry* l_collider : l_colliders)
 			{
-				auto l_px_shape = p_px_actor.create_shape(*l_shape->m_px_shape.get(), l_px_material.get());
-				l_px_shape.set_local_pose(l_shape->m_transformation);
+				auto l_px_shape = p_px_actor.create_shape(*l_collider->m_px_shape.get(), l_px_material.get());
+				l_px_shape.set_local_pose(l_collider->m_transformation);
 			}
 
 			p_physics_system.connect_px_actor_to_game_actor(p_px_actor, p_actor);

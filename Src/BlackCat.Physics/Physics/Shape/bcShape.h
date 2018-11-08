@@ -32,15 +32,16 @@ namespace black_cat
 		enum class bc_shape_query_flag
 		{
 			blocking,	// Treat as blocking object.By default shapes are blocking
-			touching	// Treat as toucing object
+			touching	// Treat as touching object
 		};
 
 		enum class bc_shape_flag
 		{
 			simulation = core::bc_enum::value(0),		// The shape will partake in collision in the physical simulation.
-			query = core::bc_enum::value(1),			// The shape will partake in scene queries.
+			query = core::bc_enum::value(1),				// The shape will partake in scene queries.
 			trigger = core::bc_enum::value(2),			// The shape is a trigger which can send reports whenever other shapes enter/leave its volume.
-			visualization = core::bc_enum::value(3)		// The shape will be visualized
+			visualization = core::bc_enum::value(3),		// The shape will be visualized
+			default = simulation | query | visualization
 		};
 
 		template< bc_physics_api TApi >
@@ -107,7 +108,7 @@ namespace black_cat
 
 			/**
 			 * \brief Retrieve material from given triangle index.
-			 * his function is only useful for triangle meshes or heightfields, which have per-triangle materials. 
+			 * his function is only useful for triangle meshes or height-fields, which have per-triangle materials. 
 			 * For other shapes the function returns the single material associated with the shape, regardless of the index.
 			 * \param p_face_index 
 			 * \return 
@@ -121,7 +122,7 @@ namespace black_cat
 			* Shapes whose distance is less than the sum of their contactOffset values will generate contacts.
 			* The contact offset must be positive and greater than the rest offset.
 			* Having a contactOffset greater than than the restOffset allows the collision detection system to
-			* predictively enforce the contact constraint even when the objects are slightly separated.
+			* predicatively enforce the contact constraint even when the objects are slightly separated.
 			* This prevents jitter that would occur if the constraint were enforced only when shapes were within the rest distance.
 			* Waking: No.
 			* Default: 0.02f

@@ -29,14 +29,12 @@ namespace black_cat
 		void _add_ref(bc_platform_device_command_list< g_api_dx11 >& p_command_list)
 		{
 			// See bcDevicePipeline.finish_command_list function.
-			//p_command_list.get_platform_pack().m_command_list->AddRef();
 			p_command_list.get_platform_pack().m_command_list_proxy->add_ref();
 		}
 
 		void _release(bc_platform_device_command_list< g_api_dx11 >& p_command_list)
 		{
 			// See bcDevicePipeline.finish_command_list function.
-			//p_command_list.get_platform_pack().m_command_list->Release();
 			p_command_list.get_platform_pack().m_command_list_proxy->release();
 		}
 

@@ -30,7 +30,7 @@ namespace black_cat
 		template< typename TLoader, typename ...TArgs >
 		bc_cloader_ptr< TLoader > bc_make_loader(TArgs&&... p_args)
 		{
-			return core::bc_make_unique< TLoader >(bc_alloc_type::program, std::forward< TArgs >()...);
+			return core::bc_make_unique< TLoader >(bc_alloc_type::program, std::forward< TArgs >(p_args)...);
 		}
 
 		template< class TContent >

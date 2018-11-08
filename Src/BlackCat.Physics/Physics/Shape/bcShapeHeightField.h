@@ -41,7 +41,7 @@ namespace black_cat
 
 			bc_shape_type get_type() const noexcept override
 			{
-				return bc_shape_type::heightfield;
+				return bc_shape_type::height_field;
 			}
 
 			platform_pack& get_platform_pack()

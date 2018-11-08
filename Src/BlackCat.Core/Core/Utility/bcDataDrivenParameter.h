@@ -30,7 +30,6 @@ namespace black_cat
 
 			bc_data_driven_parameter& operator=(bc_data_driven_parameter&&) = default;
 
-			// Add parameter to collection
 			template< typename T >
 			bc_data_driven_parameter& add_value(const bcCHAR* p_name, T&& p_value)
 			{
@@ -70,7 +69,12 @@ namespace black_cat
 				return *this;
 			}
 
-			// Return null if parameter isn't present
+			/**
+			 * \brief Return null if parameter is not presented
+			 * \tparam T 
+			 * \param p_name 
+			 * \return 
+			 */
 			template< typename T >
 			T* get_value(const bcCHAR* p_name) const
 			{
@@ -85,7 +89,12 @@ namespace black_cat
 				return l_value->second.as<T>();
 			}
 
-			// Throw exception if parameter isn't present
+			/**
+			 * \brief Throw exception if parameter isn't presented
+			 * \tparam T 
+			 * \param p_name 
+			 * \return 
+			 */
 			template< typename T >
 			T& get_value_throw(const bcCHAR* p_name) const
 			{

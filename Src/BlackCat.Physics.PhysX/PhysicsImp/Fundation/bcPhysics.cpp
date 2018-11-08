@@ -62,14 +62,14 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_platform_physics< g_api_physx >& bc_platform_physics< g_api_physx >::operator=(bc_platform_physics&& p_other) noexcept
 		{
-			m_pack.m_px_fundation = p_other.m_pack.m_px_fundation;
+			m_pack.m_px_foundation = p_other.m_pack.m_px_foundation;
 			m_pack.m_px_profile = p_other.m_pack.m_px_profile;
 			m_pack.m_px_physics = p_other.m_pack.m_px_physics;
 			m_pack.m_px_cooking = p_other.m_pack.m_px_cooking;
 			m_pack.m_allocator = std::move(p_other.m_pack.m_allocator);
 			m_pack.m_logger = std::move(p_other.m_pack.m_logger);
 
-			p_other.m_pack.m_px_fundation = nullptr;
+			p_other.m_pack.m_px_foundation = nullptr;
 			p_other.m_pack.m_px_profile = nullptr;
 			p_other.m_pack.m_px_physics = nullptr;
 			p_other.m_pack.m_px_cooking = nullptr;
@@ -140,7 +140,7 @@ namespace black_cat
 			(
 				p_geometry,
 				p_material,
-				core::bc_enum::and({ bc_shape_flag::simulation, bc_shape_flag::query, bc_shape_flag::visualization }),
+				bc_shape_flag::default,
 				p_is_exclusive
 			);
 		}
@@ -178,7 +178,7 @@ namespace black_cat
 				p_geometry,
 				p_materials,
 				p_material_count,
-				core::bc_enum::and({ bc_shape_flag::simulation, bc_shape_flag::query,bc_shape_flag::visualization }),
+				bc_shape_flag::default,
 				p_is_exclusive
 			);
 		}
@@ -625,9 +625,9 @@ namespace black_cat
 			m_pack.m_task_dispatcher = core::bc_make_unique< bc_px_task_dispatcher >(std::move(p_task_dispatcher));
 			m_pack.m_logger = core::bc_make_unique< bc_px_logger >(std::move(p_logger));
 
-			m_pack.m_px_fundation = PxCreateFoundation(PX_PHYSICS_VERSION, *m_pack.m_allocator, *m_pack.m_logger);
+			m_pack.m_px_foundation = PxCreateFoundation(PX_PHYSICS_VERSION, *m_pack.m_allocator, *m_pack.m_logger);
 
-			if (!m_pack.m_px_fundation)
+			if (!m_pack.m_px_foundation)
 			{
 				throw bc_physics_exception(0, "Failed to create Physx fundation");
 			}
@@ -635,7 +635,7 @@ namespace black_cat
 			bool l_track_memory = false;
 #ifdef BC_DEBUG
 			l_track_memory = true;
-			m_pack.m_px_profile = &physx::PxProfileZoneManager::createProfileZoneManager(m_pack.m_px_fundation);
+			m_pack.m_px_profile = &physx::PxProfileZoneManager::createProfileZoneManager(m_pack.m_px_foundation);
 
 			if (!m_pack.m_px_profile)
 			{
@@ -646,7 +646,7 @@ namespace black_cat
 			m_pack.m_px_physics = PxCreatePhysics
 			(
 				PX_PHYSICS_VERSION,
-				*m_pack.m_px_fundation,
+				*m_pack.m_px_foundation,
 				l_px_scale,
 				l_track_memory
 #ifdef BC_DEBUG
@@ -663,7 +663,7 @@ namespace black_cat
 			m_pack.m_px_cooking = PxCreateCooking
 			(
 				PX_PHYSICS_VERSION,
-				*m_pack.m_px_fundation,
+				*m_pack.m_px_foundation,
 				physx::PxCookingParams(l_px_scale)
 			);
 
@@ -687,7 +687,7 @@ namespace black_cat
 				bcUINT32 l_timeout = 100;
 				physx::PxVisualDebuggerConnectionFlags l_connection_flags = physx::PxVisualDebuggerExt::getAllConnectionFlags();
 
-				m_pack.m_visaulizer = physx::PxVisualDebuggerExt::createConnection
+				m_pack.m_visualizer = physx::PxVisualDebuggerExt::createConnection
 				(
 					m_pack.m_px_physics->getPvdConnectionManager(),
 					l_pvd_host_ip,
@@ -708,12 +708,12 @@ namespace black_cat
 			m_pack.m_px_physics->release();
 #ifdef BC_DEBUG
 			m_pack.m_px_profile->release();
-			if (m_pack.m_visaulizer)
+			if (m_pack.m_visualizer)
 			{
-				m_pack.m_visaulizer->release();
+				m_pack.m_visualizer->release();
 			}
 #endif
-			m_pack.m_px_fundation->release();
+			m_pack.m_px_foundation->release();
 
 			m_pack.m_allocator.reset(nullptr);
 			m_pack.m_task_dispatcher.reset(nullptr);

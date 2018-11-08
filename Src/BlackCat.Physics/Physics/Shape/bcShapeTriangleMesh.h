@@ -40,7 +40,7 @@ namespace black_cat
 
 			bc_shape_type get_type() const noexcept override
 			{
-				return bc_shape_type::trianglemesh;
+				return bc_shape_type::triangle_mesh;
 			}
 
 			platform_pack& get_platform_pack()

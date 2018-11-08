@@ -6,7 +6,7 @@
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/File/bcContent.h"
 #include "Game/bcExport.h"
-#include "Game/System/Physics/bcMeshPartCollider.h"
+#include "Game/Object/Mesh/bcMeshPartCollider.h"
 
 namespace black_cat
 {

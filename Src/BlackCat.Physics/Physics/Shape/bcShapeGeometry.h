@@ -14,9 +14,9 @@ namespace black_cat
 			plane,
 			capsule,
 			box,
-			convexmesh,
-			trianglemesh,
-			heightfield
+			convex_mesh,
+			triangle_mesh,
+			height_field
 		};
 
 		template<bc_physics_api TApi>

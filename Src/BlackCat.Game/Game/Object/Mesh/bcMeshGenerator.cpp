@@ -8,19 +8,19 @@ namespace black_cat
 {
 	namespace game
 	{
-		void bc_mesh_generator::create_wired_box(core::bc_vector_frame<core::bc_vector3f>& p_veritices, core::bc_vector_frame<bcUINT32>& p_indices)
+		void bc_mesh_generator::create_wired_box(core::bc_vector_frame<core::bc_vector3f>& p_vertices, core::bc_vector_frame<bcUINT32>& p_indices)
 		{
-			p_veritices.reserve(8);
+			p_vertices.reserve(8);
 			p_indices.reserve(12);
 
-			p_veritices[0] = core::bc_vector3f(-1, 1, 1);
-			p_veritices[1] = core::bc_vector3f(1, 1, 1);
-			p_veritices[2] = core::bc_vector3f(1, 1, -1);
-			p_veritices[3] = core::bc_vector3f(-1, 1, -1);
-			p_veritices[4] = core::bc_vector3f(-1, -1, 1);
-			p_veritices[5] = core::bc_vector3f(1, -1, 1);
-			p_veritices[6] = core::bc_vector3f(1, -1, -1);
-			p_veritices[7] = core::bc_vector3f(-1, -1, -1);
+			p_vertices[0] = core::bc_vector3f(-1, 1, 1);
+			p_vertices[1] = core::bc_vector3f(1, 1, 1);
+			p_vertices[2] = core::bc_vector3f(1, 1, -1);
+			p_vertices[3] = core::bc_vector3f(-1, 1, -1);
+			p_vertices[4] = core::bc_vector3f(-1, -1, 1);
+			p_vertices[5] = core::bc_vector3f(1, -1, 1);
+			p_vertices[6] = core::bc_vector3f(1, -1, -1);
+			p_vertices[7] = core::bc_vector3f(-1, -1, -1);
 
 			p_indices[0] = 0;
 			p_indices[0] = 1;
@@ -49,7 +49,7 @@ namespace black_cat
 		}
 
 		void bc_mesh_generator::create_vertex_index_buffer(graphic::bc_device& p_device,
-			core::bc_vector_frame<core::bc_vector3f>& p_veritices,
+			core::bc_vector_frame<core::bc_vector3f>& p_vertices,
 			core::bc_vector_frame<bcUINT32>& p_indices,
 			graphic::bc_buffer_ptr& p_vertex_buffer,
 			graphic::bc_buffer_ptr& p_index_buffer)
@@ -59,7 +59,7 @@ namespace black_cat
 				.as_resource()
 				.as_buffer
 				(
-					p_veritices.size(),
+					p_vertices.size(),
 					sizeof(core::bc_vector3f),
 					graphic::bc_resource_usage::gpu_r,
 					graphic::bc_resource_view_type::none,
@@ -78,7 +78,7 @@ namespace black_cat
 					)
 				.as_index_buffer();
 
-			graphic::bc_subresource_data l_vertex_data = graphic::bc_subresource_data(p_veritices.data(), 0, 0);
+			graphic::bc_subresource_data l_vertex_data = graphic::bc_subresource_data(p_vertices.data(), 0, 0);
 			graphic::bc_subresource_data l_index_data = graphic::bc_subresource_data(p_indices.data(), 0, 0);
 
 			p_vertex_buffer = p_device.create_buffer(l_vertex_buffer_config, &l_vertex_data);

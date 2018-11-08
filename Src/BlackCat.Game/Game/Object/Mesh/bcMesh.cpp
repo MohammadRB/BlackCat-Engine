@@ -3,7 +3,7 @@
 #include "Game/GamePCH.h"
 #include "Game/bcException.h"
 #include "Game/Object/Mesh/bcMesh.h"
-#include "Game/System/Physics/bcMeshPartCollider.h"
+#include "Game/Object/Mesh/bcMeshPartCollider.h"
 
 namespace black_cat
 {

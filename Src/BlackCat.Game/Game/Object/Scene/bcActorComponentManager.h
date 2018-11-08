@@ -247,7 +247,7 @@ namespace black_cat
 			// Cast to concrete container to avoid virtual calls
 			auto* l_concrete_container = static_cast<bc_actor_component_container< TComponent >*>(l_component_entry->second.m_container.get());
 
-			bc_actor_index l_actor_index = p_actor.get_index();
+			const bc_actor_index l_actor_index = p_actor.get_index();
 
 			bcAssert(l_actor_index != g_actor_invalid_index);
 

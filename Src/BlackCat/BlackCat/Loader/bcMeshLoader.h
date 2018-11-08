@@ -45,8 +45,7 @@ namespace black_cat
 			const aiScene& p_aiscene,
 			const aiNode& p_ainode,
 			game::bc_mesh& p_mesh,
-			game::bc_mesh_node* p_parent,
-			const core::bc_matrix4f& p_parent_transformation);
+			game::bc_mesh_node* p_parent);
 
 		void content_offline_processing(core::bc_content_loading_context& p_context) const override;
 

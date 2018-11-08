@@ -42,6 +42,7 @@ namespace black_cat
 	/**
 	* \brief Extract surrounding triangle mesh for a given set of points. Points must be defined with identity transformation.
 	* \param p_vertices
+	* \param p_indices
 	* \return
 	*/
 	physics::bc_triangle_mesh_desc bc_extract_mesh_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f > p_vertices, 

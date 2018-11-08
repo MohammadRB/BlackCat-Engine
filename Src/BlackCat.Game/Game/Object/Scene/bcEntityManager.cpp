@@ -130,7 +130,7 @@ namespace black_cat
 			}
 		}
 
-		bc_actor bc_entity_manager::create_entity(const const bcCHAR* p_entity_name)
+		bc_actor bc_entity_manager::create_entity(const bcCHAR* p_entity_name)
 		{
 			auto l_hash = string_hash()(p_entity_name);
 			auto l_entity_entry = m_entities.find(l_hash);

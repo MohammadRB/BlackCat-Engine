@@ -84,9 +84,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcScene.h">
       <Filter>Game\Object\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcMeshPartCollider.h">
-      <Filter>Game\System\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsSystem.h">
       <Filter>Game\System\Physics</Filter>
     </ClInclude>
@@ -198,6 +195,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcSubMesh.h">
       <Filter>Game\Object\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshPartCollider.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -235,9 +235,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcScene.cpp">
       <Filter>Game\Object\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcMeshPartCollider.cpp">
-      <Filter>Game\System\Physics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsSystem.cpp">
       <Filter>Game\System\Physics</Filter>
@@ -306,6 +303,9 @@
       <Filter>Game\Object\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcSubMesh.cpp">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshPartCollider.cpp">
       <Filter>Game\Object\Mesh</Filter>
     </ClCompile>
   </ItemGroup>

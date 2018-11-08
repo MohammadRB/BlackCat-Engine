@@ -1,7 +1,7 @@
 // [01/21/2017 MRB]
 
 #include "Game/GamePCH.h"
-#include "Game/System/Physics/bcMeshPartCollider.h"
+#include "Game/Object/Mesh/bcMeshPartCollider.h"
 
 namespace black_cat
 {
@@ -31,37 +31,39 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_mesh_part_collider::add_px_shape(const physics::bc_shape_box& p_box, const physics::bc_transform& p_transformation)
+		void bc_mesh_part_collider::add_px_shape(const physics::bc_shape_box& p_box, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags)
 		{
-			m_shapes.push_back(bc_mesh_part_collider_entry(core::bc_make_unique<physics::bc_shape_box>(p_box), p_transformation));
+			m_shapes.push_back(bc_mesh_part_collider_entry(core::bc_make_unique<physics::bc_shape_box>(p_box), p_transformation, p_flags));
 		}
 
-		void bc_mesh_part_collider::add_px_shape(const physics::bc_shape_sphere& p_sphere, const physics::bc_transform& p_transformation)
+		void bc_mesh_part_collider::add_px_shape(const physics::bc_shape_sphere& p_sphere, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags)
 		{
-			m_shapes.push_back(bc_mesh_part_collider_entry(core::bc_make_unique<physics::bc_shape_sphere>(p_sphere), p_transformation));
+			m_shapes.push_back(bc_mesh_part_collider_entry(core::bc_make_unique<physics::bc_shape_sphere>(p_sphere), p_transformation, p_flags));
 		}
 
-		void bc_mesh_part_collider::add_px_shape(const physics::bc_shape_capsule& p_capsule, const physics::bc_transform& p_transformation)
+		void bc_mesh_part_collider::add_px_shape(const physics::bc_shape_capsule& p_capsule, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags)
 		{
-			m_shapes.push_back(bc_mesh_part_collider_entry(core::bc_make_unique<physics::bc_shape_capsule>(p_capsule), p_transformation));
+			m_shapes.push_back(bc_mesh_part_collider_entry(core::bc_make_unique<physics::bc_shape_capsule>(p_capsule), p_transformation, p_flags));
 		}
 
-		void bc_mesh_part_collider::add_px_shape(physics::bc_convex_mesh_ref&& p_convex, const physics::bc_transform& p_transformation)
+		void bc_mesh_part_collider::add_px_shape(physics::bc_convex_mesh_ref&& p_convex, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags)
 		{
 			m_shapes.push_back(bc_mesh_part_collider_entry
 			(
 				core::bc_make_unique<physics::bc_shape_convex_mesh>(physics::bc_shape_convex_mesh(p_convex.get())),
-				p_transformation
+				p_transformation,
+				p_flags
 			));
 			m_convexes.push_back(std::move(p_convex));
 		}
 
-		void bc_mesh_part_collider::add_px_shape(physics::bc_triangle_mesh_ref&& p_mesh, const physics::bc_transform& p_transformation)
+		void bc_mesh_part_collider::add_px_shape(physics::bc_triangle_mesh_ref&& p_mesh, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags)
 		{
 			m_shapes.push_back(bc_mesh_part_collider_entry
 			(
 				core::bc_make_unique<physics::bc_shape_triangle_mesh>(physics::bc_shape_triangle_mesh(p_mesh.get())), 
-				p_transformation
+				p_transformation,
+				p_flags
 			));
 			m_triangles.push_back(std::move(p_mesh));
 		}

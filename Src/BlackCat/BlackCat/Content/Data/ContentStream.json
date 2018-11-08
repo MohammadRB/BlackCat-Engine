@@ -190,13 +190,17 @@
           "content_title": "box",
           "content_name": "cnt_mesh",
           "content_file": "content\\model\\box.fbx",
-          "content_parameter": {}
+          "content_parameter": {
+            "high_detail_query_shape": false
+          }
         },
         {
           "content_title": "sphere",
           "content_name": "cnt_mesh",
           "content_file": "content\\model\\sphere.fbx",
-          "content_parameter": {}
+          "content_parameter": {
+            "high_detail_query_shape": false
+          }
         },
         {
           "content_title": "convex",
