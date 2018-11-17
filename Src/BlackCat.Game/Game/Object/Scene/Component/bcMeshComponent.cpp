@@ -78,7 +78,7 @@ namespace black_cat
 
 		bc_actor bc_mesh_component::get_actor() const noexcept
 		{
-			return _get_manager()->component_get_actor(*this);
+			return get_manager()->component_get_actor(*this);
 		}
 
 		void bc_mesh_component::set_world_pos(const core::bc_matrix4f& p_pos)

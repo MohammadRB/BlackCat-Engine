@@ -114,11 +114,11 @@ namespace black_cat
 			void set_query_group(bc_query_group p_filter) noexcept;
 
 			/**
-			 * \brief Set collision flag for all shapes included in this actor
+			 * \brief Set notify flag for all shapes included in this actor
 			 * \param p_flag 
 			 * \param p_value 
 			 */
-			void set_collision_flag(bc_shape_notify_flag p_flag, bool p_value) noexcept;
+			void set_notify_flag(bc_shape_notify_flag p_flag, bool p_value) noexcept;
 
 			platform_pack& get_platform_pack()
 			{

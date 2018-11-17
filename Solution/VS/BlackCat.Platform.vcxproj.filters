@@ -96,10 +96,10 @@
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\bcExport.h">
       <Filter>Platform</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\bcLogIDEDebug.h">
+    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\PlatformPCH.h">
       <Filter>Platform</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\PlatformPCH.h">
+    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\bc_ide_logger.h">
       <Filter>Platform</Filter>
     </ClInclude>
   </ItemGroup>

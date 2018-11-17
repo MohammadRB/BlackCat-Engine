@@ -56,8 +56,7 @@ namespace black_cat
 		}
 
 		bc_editor_app::bc_editor_app(HINSTANCE p_instance, QWidget *parent)
-			: QMainWindow(parent),
-			m_render_app_thread()
+			: QMainWindow(parent)
 		{
 			ui.setupUi(this);
 			_load_style();
@@ -74,28 +73,25 @@ namespace black_cat
 			m_awesome->initFontAwesome();
 			m_console_widget = std::make_unique< bc_console_widget >(m_awesome.get(), centralWidget()->findChild<QWidget*>("consoleTab"));
 
-			QVariantMap l_icon_defaults;
-			QColor l_icon_default_color(224, 224, 224);
-			l_icon_defaults.insert("color", l_icon_default_color);
-			l_icon_defaults.insert("color-selected", l_icon_default_color);
-			l_icon_defaults.insert("color-active", l_icon_default_color);
-
-			_load_icon(centralWidget(), l_icon_defaults);
-			_load_icon(ui.toolsDock, l_icon_defaults);
+			_load_icons();
 			
-			while (m_render_app_thread.m_initialized.load() == 0);
+			while (m_render_app_thread.m_initialized.load() == 0){}
 
 			// Now that game is available initialize console
 			game::bc_game_console& l_game_console = core::bc_get_service< game::bc_game_system >()->get_console();
 			m_editor_game_console = std::make_unique< bc_editor_game_console >(l_game_console, m_console_widget.get());
-
 			m_editor_game_console->connect_widget(this);
 			m_editor_game_console->connect_widget(m_console_widget.get());
 
-			QObject::connect(m_editor_game_console.get(), SIGNAL(scriptExecuted(const QString&)), this, SLOT(onScriptExecution(const QString&)));
-
+			m_ui_command_service = core::bc_get_service<bc_ui_command_service>();
 			m_form_terrain = std::make_unique< bc_form_terrain >(*centralWidget());
-			m_form_tools = std::make_unique< bc_form_tools >(*core::bc_get_service<bc_ui_command_service>(), *ui.toolsDock, *m_d3d_widget, *m_form_terrain);
+			m_form_tools = std::make_unique< bc_form_tools >(*m_ui_command_service, *ui.toolsDock, *m_d3d_widget, *m_form_terrain);
+			m_form_object = std::make_unique< bc_form_object >(*centralWidget());
+			m_timer = std::make_unique< QTimer >();
+			m_timer->start(1000.0 / 60);
+
+			QObject::connect(m_editor_game_console.get(), SIGNAL(scriptExecuted(const QString&)), this, SLOT(scriptExecuted(const QString&)));
+			QObject::connect(m_timer.get(), SIGNAL(timeout()), this, SLOT(timerTimeout()));
 		}
 
 		bc_editor_app::~bc_editor_app()
@@ -159,6 +155,18 @@ namespace black_cat
 			}
 		}
 
+		void bc_editor_app::_load_icons() const
+		{
+			QVariantMap l_icon_defaults;
+			const QColor l_icon_default_color(224, 224, 224);
+			l_icon_defaults.insert("color", l_icon_default_color);
+			l_icon_defaults.insert("color-selected", l_icon_default_color);
+			l_icon_defaults.insert("color-active", l_icon_default_color);
+
+			_load_icon(centralWidget(), l_icon_defaults);
+			_load_icon(ui.toolsDock, l_icon_defaults);
+		}
+
 		void bc_editor_app::_load_icon(QWidget* p_parent, QVariantMap& p_options) const
 		{
 			auto* l_tool_box = qobject_cast<QToolBox*>(p_parent);
@@ -219,10 +227,16 @@ namespace black_cat
 				p_tool_box->setItemIcon(i, l_icon);
 			}
 		}
-
-		void bc_editor_app::onScriptExecution(const QString& p_string)
+		
+		void bc_editor_app::scriptExecuted(const QString& p_string)
 		{
 			statusBar()->showMessage("Script executed: " + p_string, 3000);
+		}
+
+		void bc_editor_app::timerTimeout()
+		{
+			bc_iui_command::update_ui_context l_context(*m_form_object);
+			m_ui_command_service->update_ui(l_context);
 		}
 	}
 }

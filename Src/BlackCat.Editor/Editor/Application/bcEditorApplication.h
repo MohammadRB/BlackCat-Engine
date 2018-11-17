@@ -9,6 +9,7 @@
 #include "Editor/QtAwesome/QtAwesome.h"
 #include "Editor/UI/bcFormTools.h"
 #include "Editor/UI/bcFormTerrain.h"
+#include "Editor/UI/bcFormObject.h"
 #include "ui_bcBlackCatEditor.h"
 
 #include <QtWidgets/QMainWindow>
@@ -50,23 +51,29 @@ namespace black_cat
 			void changeEvent(QEvent* p_event) override;
 
 		private slots:
-			void onScriptExecution(const QString& p_string);
+			void scriptExecuted(const QString& p_string);
+
+			void timerTimeout();
 
 		signals:
-			void uiScripted(const QString& p_string);
+			void executeUIScript(const QString& p_string);
 
 		private:
 			void _load_style() const;
+
+			void _load_icons() const;
 
 			void _load_icon(QWidget* p_parent, QVariantMap& p_options) const;
 
 			void _load_icon_button(QAbstractButton* p_bottom, QVariantMap& p_options) const;
 
 			void _load_icon_toolbox(QToolBox* p_tool_box, QVariantMap& p_options) const;
+					  
 
 			Ui::bcBlackCatEditorClass ui;
 			std::unique_ptr< QtAwesome > m_awesome;
 
+			bc_ui_command_service* m_ui_command_service;
 			std::unique_ptr< bc_d3d_output_widget > m_d3d_widget;
 			std::unique_ptr< bc_render_application_d3dwidget_output_window > m_d3d_output_window;
 			std::unique_ptr< bc_console_widget > m_console_widget;
@@ -74,6 +81,8 @@ namespace black_cat
 
 			std::unique_ptr< bc_form_tools > m_form_tools;
 			std::unique_ptr< bc_form_terrain > m_form_terrain;
+			std::unique_ptr< bc_form_object > m_form_object;
+			std::unique_ptr< QTimer > m_timer;
 
 			bc_render_app_thread m_render_app_thread;
 		};

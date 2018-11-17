@@ -13,7 +13,9 @@ namespace black_cat
 		bc_ui_command_service::bc_ui_command_service(core::bc_content_stream_manager& p_content_stream, game::bc_game_system& p_game_system)
 			: m_content_stream(p_content_stream),
 			m_game_system(p_game_system),
-			m_reversible_command_to_update(nullptr)
+			m_last_update_clock(0),
+			m_last_execute_clock(0),
+			m_commands_to_undo(0)
 		{
 		}
 
@@ -28,9 +30,11 @@ namespace black_cat
 
 		bc_ui_command_service& bc_ui_command_service::operator=(bc_ui_command_service&& p_other) noexcept
 		{
-			m_command_to_update = std::move(p_other.m_command_to_update);
-			m_reversible_command_to_update = p_other.m_reversible_command_to_update;
+			m_commands_to_execute = std::move(p_other.m_commands_to_execute);
 			m_reversible_commands = std::move(p_other.m_reversible_commands);
+			m_executed_commands = std::move(p_other.m_executed_commands);
+			m_commands_to_undo = p_other.m_commands_to_undo;
+			m_command_states = std::move(p_other.m_command_states);
 
 			return *this;
 		}
@@ -49,8 +53,7 @@ namespace black_cat
 		bcUINT32 bc_ui_command_service::command_count() const
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> m_guard(m_commands_lock);
-
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_commands_lock);
 				return m_reversible_commands.size();
 			}
 		}
@@ -58,93 +61,74 @@ namespace black_cat
 		void bc_ui_command_service::undo()
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> m_guard(m_commands_lock);
-
-				if(m_reversible_commands.empty())
-				{
-					return;
-				}
-
-				m_reversible_command_to_rollback = std::move(m_reversible_commands.front());
-				m_reversible_commands.pop_back();
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_commands_lock);
+				m_commands_to_undo++;
 			}
 		}
-
+		
 		void bc_ui_command_service::update(core_platform::bc_clock::update_param p_elapsed)
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> m_guard(m_commands_lock);
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_commands_lock);
+				m_last_update_clock = p_elapsed.m_total_elapsed;
 
-				if (m_command_to_update)
+				while (!m_commands_to_execute.empty())
 				{
+					bc_iui_command& l_command = *m_commands_to_execute.front();
 					bc_iui_command::update_context l_context
 					(
 						p_elapsed, 
 						m_game_system, 
-						_get_command_state(m_command_to_update.get())
+						_get_command_state(l_command)
 					);
 
-					if (!m_command_to_update->update(l_context))
+					if (!l_command.update(l_context))
 					{
-						m_command_to_update.reset();
+						m_executed_commands.push(m_commands_to_execute.front());
+						m_commands_to_execute.pop();
 					}
 				}
-				else if (m_reversible_command_to_update)
+				
+				if(m_commands_to_undo)
 				{
-					bc_iui_command::update_context l_context
-					(
-						p_elapsed,
-						m_game_system, 
-						_get_command_state(m_reversible_command_to_update)
-					);
-
-					if (!m_reversible_command_to_update->update(l_context))
-					{
-						m_reversible_command_to_update = nullptr;
-					}
-				}
-				else if(m_reversible_command_to_rollback)
-				{
+					bc_iui_command_reversible& l_command = static_cast<bc_iui_command_reversible&>(*m_reversible_commands.front());
 					bc_iui_command::update_context l_context
 					(
 						p_elapsed,
 						m_game_system,
-						_get_command_state(m_reversible_command_to_rollback.get())
+						_get_command_state(l_command)
 					);
+					l_command.rollback(l_context);
 
-					m_reversible_command_to_rollback->rollback(l_context);
+					m_reversible_commands.pop();
+					m_commands_to_undo--;
 				}
 			}
 		}
 
-		void bc_ui_command_service::_execute_command(core::bc_unique_ptr<bc_iui_command> p_command, std::false_type)
+		void bc_ui_command_service::update_ui(bc_iui_command::update_ui_context& p_context)
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> m_guard(m_commands_lock);
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_commands_lock);
 
-				m_command_to_update = std::move(p_command);
+				if(!m_executed_commands.empty())
+				{
+					bc_iui_command& l_command = *m_executed_commands.front();
+					l_command.update_ui(p_context);
+					m_executed_commands.pop();
+				}
 			}
 		}
 
-		void bc_ui_command_service::_execute_command(core::bc_unique_ptr<bc_iui_command_reversible> p_command, std::true_type)
+		bc_iui_command::state* bc_ui_command_service::_get_command_state(const bc_iui_command& p_command)
 		{
-			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> m_guard(m_commands_lock);
-
-				m_reversible_commands.push_back(std::move(p_command));
-				m_reversible_command_to_update = &*m_reversible_commands.front();
-			}
-		}
-
-		bc_iui_command::state* bc_ui_command_service::_get_command_state(const bc_iui_command* p_command)
-		{
-			auto l_command_hash = command_hash_t()(p_command->title());
+			auto l_command_hash = command_hash_t()(p_command.title());
 			auto l_command_state = m_command_states.find(l_command_hash);
 
 			if (l_command_state == std::cend(m_command_states))
 			{
 				bc_iui_command::state_context l_context(m_content_stream, m_game_system);
-				bc_iui_command::state_ptr l_state = p_command->create_state(l_context);
+				bc_iui_command::state_ptr l_state = p_command.create_state(l_context);
 
 				l_command_state = m_command_states.insert(command_state_container::value_type(l_command_hash, std::move(l_state))).first;
 			}

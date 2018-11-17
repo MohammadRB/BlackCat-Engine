@@ -6,6 +6,7 @@
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcQueue.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Editor/Application/bcUICommand.h"
@@ -53,23 +54,23 @@ namespace black_cat
 
 			void update(core_platform::bc_clock::update_param p_elapsed) override;
 
+			void update_ui(bc_iui_command::update_ui_context& p_context);
+
 		protected:
 
 		private:
-			void _execute_command(core::bc_unique_ptr<bc_iui_command> p_command, std::false_type);
-	
-			void _execute_command(core::bc_unique_ptr<bc_iui_command_reversible> p_command, std::true_type);
-
-			bc_iui_command::state* _get_command_state(const bc_iui_command* p_command);
+			bc_iui_command::state* _get_command_state(const bc_iui_command& p_command);
 
 			core::bc_content_stream_manager& m_content_stream;
 			game::bc_game_system& m_game_system;
 
 			mutable core_platform::bc_mutex m_commands_lock;
-			core::bc_unique_ptr<bc_iui_command> m_command_to_update;
-			bc_iui_command_reversible* m_reversible_command_to_update;
-			core::bc_unique_ptr<bc_iui_command_reversible> m_reversible_command_to_rollback;
-			core::bc_vector<core::bc_unique_ptr<bc_iui_command_reversible>> m_reversible_commands;
+			core_platform::bc_clock::big_clock m_last_update_clock;
+			core_platform::bc_clock::big_clock m_last_execute_clock;
+			core::bc_queue<core::bc_shared_ptr<bc_iui_command>> m_commands_to_execute;
+			core::bc_queue<core::bc_shared_ptr<bc_iui_command>> m_reversible_commands;
+			core::bc_queue<core::bc_shared_ptr<bc_iui_command>> m_executed_commands;
+			bcUINT32 m_commands_to_undo;
 
 			command_state_container m_command_states;
 		};
@@ -79,9 +80,23 @@ namespace black_cat
 		{
 			static_assert(std::is_base_of_v<bc_iui_command, T>, "T must inherit from bc_iui_command");
 
-			core::bc_unique_ptr<T> l_command = core::bc_make_unique<T>(std::move(p_command));
+			{
+				core_platform::bc_lock_guard<core_platform::bc_mutex> m_guard(m_commands_lock);
+				
+				if(m_last_execute_clock == m_last_update_clock) // Only allow one command per frame
+				{
+					return;
+				}
+				m_last_execute_clock = m_last_update_clock;
 
-			_execute_command(std::move(l_command), std::is_base_of<bc_iui_command_reversible, T>::type());
+				auto l_command = core::bc_make_shared<T>(std::move(p_command));
+				m_commands_to_execute.push(l_command);
+				
+				if(l_command->is_reversible())
+				{
+					m_reversible_commands.push(l_command);
+				}
+			}
 		}
 	}
 }

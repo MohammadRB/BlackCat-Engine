@@ -8,7 +8,7 @@ namespace black_cat
 	namespace physics
 	{
 		bc_px_contact_filter_callback::bc_px_contact_filter_callback(core::bc_unique_ptr< bc_icontact_filter_callback > p_imp)
-		: m_imp(std::move(p_imp))
+			: m_imp(std::move(p_imp))
 		{
 		}
 
@@ -134,7 +134,7 @@ namespace black_cat
 		}
 
 		bc_px_contact_modify_callback::bc_px_contact_modify_callback(core::bc_unique_ptr< bc_icontact_modify_callback > p_imp)
-		: m_imp(std::move(p_imp))
+			: m_imp(std::move(p_imp))
 		{
 		}
 
@@ -167,7 +167,7 @@ namespace black_cat
 		}
 
 		bc_px_simulation_callback::bc_px_simulation_callback(core::bc_unique_ptr< bc_isimulation_event_callback > p_imp)
-		: m_imp(std::move(p_imp))
+			: m_imp(std::move(p_imp))
 		{
 		}
 
@@ -254,8 +254,8 @@ namespace black_cat
 			bc_query_group l_query_groups = static_cast< bc_query_group >(p_filter_data.word0);
 			bc_query_group l_shape_group = l_shape.get_query_group();
 
-			// If query groups doesn't include shape query group discard test
-			if (!core::bc_enum::has(l_query_groups, l_shape_group))
+			// If filter data is zero or query groups does not include shape query group then discard test
+			if (l_query_groups != bc_query_group::all && !core::bc_enum::has(l_query_groups, l_shape_group))
 			{
 				return physx::PxQueryHitType::eNONE;
 			}

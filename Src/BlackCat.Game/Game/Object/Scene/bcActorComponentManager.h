@@ -244,6 +244,8 @@ namespace black_cat
 		{
 			static component_map_type::value_type* l_component_entry = _get_component_entry< TComponent >();
 
+			bcAssert(l_component_entry != nullptr);
+
 			// Cast to concrete container to avoid virtual calls
 			auto* l_concrete_container = static_cast<bc_actor_component_container< TComponent >*>(l_component_entry->second.m_container.get());
 
@@ -333,8 +335,8 @@ namespace black_cat
 
 			static const component_map_type::value_type* l_component_entry = _get_component_entry< TComponent >();
 
-			bc_actor_component_index l_component_index = p_component.get_index();
-			bcINT32 l_component_to_actor = l_component_entry->second.m_component_to_actor_index_map[l_component_index];
+			const bc_actor_component_index l_component_index = p_component.get_index();
+			const bcINT32 l_component_to_actor = l_component_entry->second.m_component_to_actor_index_map[l_component_index];
 			return m_actors[l_component_to_actor].get().m_actor;
 		}
 

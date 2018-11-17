@@ -32,8 +32,8 @@ namespace black_cat
 
 		bc_rigid_static_component& bc_rigid_static_component::operator=(bc_rigid_static_component&& p_other) noexcept
 		{
-			bc_rigid_body_component::operator=(std::move(p_other));
 			m_px_actor_ref = std::move(p_other.m_px_actor_ref);
+			bc_rigid_body_component::operator=(std::move(p_other));
 
 			return *this;
 		}
@@ -50,7 +50,7 @@ namespace black_cat
 
 		bc_actor bc_rigid_static_component::get_actor() const noexcept
 		{
-			return _get_manager()->component_get_actor(*this);
+			return get_manager()->component_get_actor(*this);
 		}
 
 		void bc_rigid_static_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
@@ -73,8 +73,6 @@ namespace black_cat
 			{
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform::identity());
 				_initialize_from_height_map(l_physics_system, p_actor, *l_height_map_component);
-
-				m_px_actor_ref->set_query_group(static_cast< physics::bc_query_group >(bc_query_group::terrain));
 
 				return;
 			}
@@ -103,6 +101,7 @@ namespace black_cat
 			auto l_half_height = (l_height_map->get_height() * l_height_map->get_xz_multiplier()) / 2;
 			auto l_position = l_height_map->get_position() + core::bc_vector3f(-l_half_width, 0, l_half_height);
 			m_px_actor_ref->set_global_pose(physics::bc_transform(l_position));
+			m_px_actor_ref->set_query_group(static_cast<physics::bc_query_group>(bc_query_group::terrain));
 
 			p_physics_system.connect_px_actor_to_game_actor(m_px_actor_ref.get(), p_actor);
 		}

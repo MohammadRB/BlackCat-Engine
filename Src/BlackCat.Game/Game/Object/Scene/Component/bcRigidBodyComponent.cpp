@@ -25,7 +25,7 @@ namespace black_cat
 
 			for (const bc_mesh_part_collider_entry* l_collider : l_colliders)
 			{
-				auto l_px_shape = p_px_actor.create_shape(*l_collider->m_px_shape.get(), l_px_material.get());
+ 				auto l_px_shape = p_px_actor.create_shape(*l_collider->m_px_shape.get(), l_px_material.get(), l_collider->m_shape_flags);
 				l_px_shape.set_local_pose(l_collider->m_transformation);
 			}
 

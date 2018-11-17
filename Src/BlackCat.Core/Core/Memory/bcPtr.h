@@ -4,30 +4,18 @@
 
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/CorePCH.h"
-#include "Core/Memory/bcMemBlock.h"
 #include "Core/Memory/bcMemoryManagment.h"
 #include "Core/Memory/bcAlloc.h"
-#include "Core/Utility/bcDelegate.h"
 
 namespace black_cat
 {
 	namespace core
 	{
-		template< typename T >
 		class bc_default_deleter
 		{
 		public:
-			constexpr bc_default_deleter() = default;
-
-			template< typename T1 >
-			constexpr bc_default_deleter(bc_default_deleter<T1>) {}
-
-			~bc_default_deleter() = default;
-
-			template< typename T1 >
-			bc_default_deleter& operator =(bc_default_deleter<T1>) { return *this; }
-
-			void operator()(T* p_pointer) noexcept
+			template<typename T>
+			void operator()(T* p_pointer) const noexcept
 			{
 				static_assert(sizeof(T) > 0, "Can not delete an incomplete type");
 				bcDelete(p_pointer);
@@ -52,7 +40,7 @@ namespace black_cat
 
 #pragma region bcUniquePtr
 
-		template <typename T, typename TDeleter = bc_default_deleter<T>>
+		template <typename T, typename TDeleter = bc_default_deleter>
 		class bc_unique_ptr
 		{
 			template< typename T1, typename TDeleter1 >
@@ -77,9 +65,7 @@ namespace black_cat
 			}
 			
 			constexpr bc_unique_ptr(std::nullptr_t) noexcept(true)
-				/*: bc_unique_ptr() TODO visual studio 2015 has a bug in constexpr delegating construction */
-				: m_pointer(nullptr),
-				m_deleter()
+				: bc_unique_ptr()
 			{
 			}
 			
@@ -368,12 +354,14 @@ namespace black_cat
 			using this_type = bc_shared_ptr;
 			using pointer = T*;
 			using element_type = T;
+			class meta_data;
+			template< typename TDeleter > 
+			class meta_data_imp;
 			template< typename TOther >
 			struct rebind
 			{
 				using other = bc_shared_ptr< TOther >;
 			};
-			class meta_data;
 
 		public:
 			constexpr bc_shared_ptr() noexcept(true)
@@ -383,9 +371,7 @@ namespace black_cat
 			}
 
 			constexpr bc_shared_ptr(std::nullptr_t) noexcept(true)
-				/*: bc_shared_ptr() TODO visual studio 2015 has a bug in constexpr delegating construction */
-				: m_pointer(nullptr),
-				m_meta(nullptr)
+				: bc_shared_ptr()
 			{
 			}
 
@@ -398,7 +384,7 @@ namespace black_cat
 			explicit bc_shared_ptr(pointer p_pointer)
 				: m_pointer(nullptr)
 			{
-				_construct(p_pointer, bc_default_deleter<T>());
+				_construct(p_pointer, bc_default_deleter());
 			}
 
 			template< typename TDeleter >
@@ -412,7 +398,7 @@ namespace black_cat
 			explicit bc_shared_ptr(T1* p_pointer)
 				: m_pointer(nullptr)
 			{
-				_construct(static_cast<T*>(p_pointer), bc_default_deleter<T>());
+				_construct(static_cast<T*>(p_pointer), bc_default_deleter());
 			}
 
 			template< typename T1, typename TDeleter >
@@ -509,7 +495,7 @@ namespace black_cat
 			void reset(T1* p_pointer)
 			{
 				_destruct();
-				_construct(p_pointer, bc_default_deleter<T>());
+				_construct(p_pointer, bc_default_deleter());
 			}
 
 			template< typename T1, typename TDeleter >
@@ -575,7 +561,7 @@ namespace black_cat
 			template< typename TDeleter >
 			meta_data* _allocate_meta(TDeleter p_deleter)
 			{
-				return bcNew(meta_data(p_deleter, false), bc_alloc_type::unknown);
+				return bcNew(meta_data_imp<TDeleter>(p_deleter, false), bc_alloc_type::unknown);
 			}
 
 			void _deallocate_meta(meta_data* p_meta)
@@ -592,12 +578,10 @@ namespace black_cat
 			{
 				if (m_meta->dec_ref_count() == 0)
 				{
-					// If meta structure is shared with data call it's destructor else free it's memory
+					// If meta structure is shared with main data call it's destructor otherwise free it's memory
 					if (m_meta->is_shared())
 					{
-						auto l_deleter = std::move(m_meta->m_deleter);
-						m_meta->~meta_data();
-						l_deleter(m_pointer);
+						m_meta->call_deleter_and_destruct(m_pointer);
 					}
 					else
 					{
@@ -624,7 +608,6 @@ namespace black_cat
 				if (m_pointer)
 				{
 					_register_pointer(reinterpret_cast< void** >(&m_pointer));
-
 					_inc_reference_count();
 				}
 			}
@@ -637,7 +620,6 @@ namespace black_cat
 				if (m_pointer)
 				{
 					_register_pointer(reinterpret_cast< void** >(&m_pointer));
-
 					_inc_reference_count();
 				}
 			}
@@ -647,7 +629,6 @@ namespace black_cat
 				if (m_pointer)
 				{
 					_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
-
 					_dec_reference_count();
 				}
 			}
@@ -655,17 +636,21 @@ namespace black_cat
 			template<typename T1>
 			void _assign(const bc_shared_ptr<T1>& p_other)
 			{
-				if (this != &p_other) // avoid self assignment
+				if (this != reinterpret_cast<const bc_shared_ptr<T>*>(&p_other)) // avoid self assignment
 				{
 					_destruct();
-					_construct(static_cast<T*>(p_other.m_pointer), p_other.m_meta);
+					_construct
+					(
+						static_cast< T* >(const_cast< T1* >(p_other.m_pointer)),
+						reinterpret_cast<meta_data*>(const_cast< typename bc_shared_ptr< T1 >::meta_data* >(p_other.m_meta))
+					);
 				}
 			}
 
 			template<typename T1>
 			void _assign(bc_shared_ptr<T1>&& p_other)
 			{
-				if (this != &p_other) // avoid self assignment
+				if (this != reinterpret_cast<bc_shared_ptr<T>*>(&p_other)) // avoid self assignment
 				{
 					_destruct();
 					
@@ -694,18 +679,14 @@ namespace black_cat
 		class bc_shared_ptr<T>::meta_data
 		{
 		public:
-			template <typename T1>
-			friend class bc_shared_ptr;
-
-		public:
-			template< typename TDeleter >
-			meta_data(TDeleter p_deleter, bool p_is_shared)
-				: m_deleter(p_deleter),
-				m_ref_count(0),
+			meta_data(bool p_is_shared)
+				: m_ref_count(0),
 				m_is_shared(p_is_shared)
 			{
 			}
 
+			virtual ~meta_data() = default;
+			
 			bcSIZE inc_ref_count() noexcept(true)
 			{
 				bcSIZE l_count = m_ref_count.fetch_add(1, core_platform::bc_memory_order::relaxed);
@@ -723,22 +704,51 @@ namespace black_cat
 				return m_ref_count.load(core_platform::bc_memory_order::relaxed);
 			}
 
-			void call_deleter(pointer p_pointer) const
-			{
-				m_deleter(p_pointer);
-			}
-
 			bool is_shared() const noexcept(true)
 			{
 				return m_is_shared;
 			}
 
+			virtual void call_deleter(pointer p_pointer) const = 0;
+
+			virtual void call_deleter_and_destruct(pointer p_pointer) const = 0;
+
 		protected:
 
 		private:
-			bc_delegate<void(pointer)> m_deleter;
 			core_platform::bc_atomic<bcSIZE> m_ref_count;
 			bool m_is_shared;
+		};
+
+		template< typename T >
+		template< typename TDeleter >
+		class bc_shared_ptr<T>::meta_data_imp : public meta_data
+		{
+		public:
+			meta_data_imp(TDeleter p_deleter, bool p_is_shared)
+				: meta_data(p_is_shared),
+				m_deleter(p_deleter)
+			{
+			}
+
+			void call_deleter(pointer p_pointer) const override
+			{
+				m_deleter(p_pointer);
+			}
+
+			void call_deleter_and_destruct(pointer p_pointer) const override
+			{
+				// If meta is shared, we need to first destruct it then deallocate memory
+				TDeleter l_deleter = m_deleter;
+				this->~meta_data_imp();
+
+				l_deleter(p_pointer);
+			}
+
+		protected:
+
+		private:
+			TDeleter m_deleter;
 		};
 
 		template<class T1, class T2>
@@ -874,8 +884,7 @@ namespace black_cat
 			}
 
 			constexpr bc_handle_ptr(std::nullptr_t) noexcept(true)
-				/*: bc_handle_ptr() TODO visual studio 2015 has a bug in constexpr delegating construction */
-				: m_pointer(nullptr)
+				: bc_handle_ptr()
 			{
 			}
 
@@ -1208,7 +1217,7 @@ namespace black_cat
 		template< typename T, typename ...TArgs >
 		bc_shared_ptr< T > bc_make_shared(bc_alloc_type p_alloc_type, TArgs&&... p_args)
 		{
-			using meta_type = typename bc_shared_ptr< T >::meta_data;
+			using meta_type = typename bc_shared_ptr< T >::template meta_data_imp<bc_default_deleter>;
 
 			const bcSIZE l_required_size = sizeof(T) + sizeof(meta_type);
 			void* l_alloc = bcAlloc(l_required_size, p_alloc_type);
@@ -1221,7 +1230,7 @@ namespace black_cat
 			meta_type* l_meta_pointer = reinterpret_cast<meta_type*>(l_pointer + 1);
 
 			new(l_pointer)T(std::forward< TArgs >(p_args)...);
-			new(l_meta_pointer)meta_type(bc_default_deleter< T >(), true);
+			new(l_meta_pointer)meta_type(bc_default_deleter(), true);
 
 			bc_shared_ptr< T > l_result;
 			l_result._make(l_pointer, l_meta_pointer);

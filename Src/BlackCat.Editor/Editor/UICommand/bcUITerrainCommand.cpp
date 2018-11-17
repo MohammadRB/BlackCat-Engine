@@ -48,18 +48,18 @@ namespace black_cat
 
 		bool bc_ui_terrain_command::update(update_context& p_context)
 		{
-			const auto& l_camera = p_context.m_game_system.get_input_system().get_camera();
-			const auto l_pointing_ray = l_camera.project_clip_point_to_3d_ray(m_screen_width, m_screen_height, m_point_left, m_point_top);
 			physics::bc_scene_ray_query_buffer l_buffer(0);
-			const bool l_px_hit_result = p_context.m_game_system.get_scene()->get_px_scene().raycast
+			const bool l_px_hit_result = query_ray_in_scene
 			(
-				physics::bc_ray(l_camera.get_position(), l_pointing_ray, l_camera.get_far_clip()),
-				l_buffer,
-				physics::bc_hit_flag::hit_info,
-				core::bc_enum::or({ physics::bc_query_flags::statics }),
-				static_cast< physics::bc_query_group >(game::bc_query_group::terrain)
+				p_context, 
+				m_screen_width, 
+				m_screen_height, 
+				m_point_left, 
+				m_point_top, 
+				game::bc_query_group::terrain,
+				physics::bc_query_flags::statics,
+				l_buffer
 			);
-
 			if (!l_px_hit_result && !l_buffer.has_block())
 			{
 				return false;

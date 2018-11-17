@@ -42,7 +42,7 @@ namespace black_cat
 
 		bc_actor bc_hierarchy_component::get_actor() const noexcept
 		{
-			return _get_manager()->component_get_actor(*this);
+			return get_manager()->component_get_actor(*this);
 		}
 
 		void bc_hierarchy_component::add_actor(const bc_actor& p_actor)

@@ -22,7 +22,7 @@ namespace black_cat
 			bcUINT32 m_tool_smooth;
 		};
 
-		using bc_ui_terrain_smooth_commnad_state = bc_ui_terrain_commnad_state;
+		using bc_ui_terrain_smooth_commnad_state = bc_ui_terrain_command_state;
 
 		class bc_ui_terrain_smooth_command : public bc_ui_terrain_command
 		{

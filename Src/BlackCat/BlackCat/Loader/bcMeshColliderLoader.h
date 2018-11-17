@@ -42,6 +42,7 @@ namespace black_cat
 			const aiScene& p_aiscene,
 			const aiNode& p_ainode,
 			const core::bc_matrix4f& p_parent_transformation,
+			bool p_generate_high_detail_query_shape,
 			game::bc_mesh_collider& p_result) const;
 
 		bool m_high_detail_query_shape;

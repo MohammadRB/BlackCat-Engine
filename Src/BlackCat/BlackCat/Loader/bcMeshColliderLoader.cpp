@@ -62,10 +62,20 @@ namespace black_cat
 			return;
 		}
 
+		const bool l_generate_high_detail_query_shape = m_high_detail_query_shape && bc_null_default(p_context.m_parameter.get_value<bool>("high_detail_query_shape"), true);
 		game::bc_game_system& l_game_system = *core::bc_get_service< game::bc_game_system >();
 		game::bc_mesh_collider l_result;
 
-		convert_nodes(l_game_system.get_physics_system().get_physics(), p_context, *l_scene, *l_scene->mRootNode, core::bc_matrix4f::identity(), l_result);
+		convert_nodes
+		(
+			l_game_system.get_physics_system().get_physics(), 
+			p_context, 
+			*l_scene, 
+			*l_scene->mRootNode, 
+			core::bc_matrix4f::identity(), 
+			l_generate_high_detail_query_shape, 
+			l_result
+		);
 
 		p_context.set_result(std::move(l_result));
 	}
@@ -95,15 +105,15 @@ namespace black_cat
 		const aiScene& p_aiscene,
 		const aiNode& p_ainode,
 		const core::bc_matrix4f& p_parent_transformation,
-		bool l_generate_high_detail_query_shape) const
+		bool p_generate_high_detail_query_shape) const
 	{
 		game::bc_mesh_part_collider l_result;
 		core::bc_string_frame l_mesh_name;
 		core::bc_matrix4f l_node_transformation;
 
 		bc_mesh_loader::convert_aimatrix(p_ainode.mTransformation, l_node_transformation);
-		//core::bc_matrix4f l_node_absolute_transformation = l_node_transformation * p_parent_transformation;
-		physics::bc_shape_flag l_shape_flag = l_generate_high_detail_query_shape ?
+		core::bc_matrix4f l_node_absolute_transformation = l_node_transformation * p_parent_transformation;
+		physics::bc_shape_flag l_shape_flag = p_generate_high_detail_query_shape ?
 			core::bc_enum::or({ physics::bc_shape_flag::simulation, physics::bc_shape_flag::visualization }) :
 			physics::bc_shape_flag::default;
 
@@ -121,7 +131,7 @@ namespace black_cat
 						l_aimesh->mNumVertices
 					));
 
-				l_result.add_px_shape(l_px_sphere, l_node_transformation, l_shape_flag);
+				l_result.add_px_shape(l_px_sphere, l_node_absolute_transformation, l_shape_flag);
 			}
 			else if (l_mesh_name == "box")
 			{
@@ -132,7 +142,7 @@ namespace black_cat
 						l_aimesh->mNumVertices
 					));
 
-				l_result.add_px_shape(l_px_box, l_node_transformation, l_shape_flag);
+				l_result.add_px_shape(l_px_box, l_node_absolute_transformation, l_shape_flag);
 			}
 			else if (l_mesh_name == "capsule")
 			{
@@ -143,7 +153,7 @@ namespace black_cat
 						l_aimesh->mNumVertices
 					));
 
-				l_result.add_px_shape(l_px_capsule, l_node_transformation, l_shape_flag);
+				l_result.add_px_shape(l_px_capsule, l_node_absolute_transformation, l_shape_flag);
 			}
 			else if (l_mesh_name == "convex")
 			{
@@ -157,7 +167,7 @@ namespace black_cat
 				physics::bc_memory_buffer l_convex_buffer = p_physics.create_convex_mesh(l_px_convex_desc);
 				physics::bc_convex_mesh_ref l_convex = p_physics.create_convex_mesh(l_convex_buffer);
 
-				l_result.add_px_shape(std::move(l_convex), l_node_transformation, l_shape_flag);
+				l_result.add_px_shape(std::move(l_convex), l_node_absolute_transformation, l_shape_flag);
 			}
 			else if (l_mesh_name == "mesh")
 			{
@@ -166,17 +176,17 @@ namespace black_cat
 				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(l_px_triangle_desc1);
 				physics::bc_triangle_mesh_ref l_triangle_mesh = p_physics.create_triangle_mesh(l_triangle_buffer);
 
-				l_result.add_px_shape(std::move(l_triangle_mesh), l_node_transformation, l_shape_flag);
+				l_result.add_px_shape(std::move(l_triangle_mesh), l_node_absolute_transformation, l_shape_flag);
 			}
 
-			if (l_generate_high_detail_query_shape)
+			if (p_generate_high_detail_query_shape)
 			{
 				core::bc_vector_frame< bcBYTE > p_intermediate_buffer;
 				physics::bc_triangle_mesh_desc l_px_triangle_desc1 = _bc_extract_triangle_mesh(l_aimesh, p_intermediate_buffer);
 				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(l_px_triangle_desc1);
 				physics::bc_triangle_mesh_ref l_triangle_mesh = p_physics.create_triangle_mesh(l_triangle_buffer);
 
-				l_result.add_px_shape(std::move(l_triangle_mesh), l_node_transformation, physics::bc_shape_flag::query);
+				l_result.add_px_shape(std::move(l_triangle_mesh), l_node_absolute_transformation, physics::bc_shape_flag::query);
 			}
 		}
 
@@ -188,6 +198,7 @@ namespace black_cat
 		const aiScene& p_aiscene,
 		const aiNode& p_ainode,
 		const core::bc_matrix4f& p_parent_transformation,
+		bool p_generate_high_detail_query_shape,
 		game::bc_mesh_collider& p_result) const
 	{
 		if (is_px_node(p_ainode))
@@ -195,7 +206,6 @@ namespace black_cat
 			return;
 		}
 
-		bool l_generate_high_detail_query_shape = m_high_detail_query_shape || bc_null_default(p_context.m_parameter.get_value<bool>("high_detail_query_shape"), false);
 		core::bc_matrix4f l_node_transformation;
 		core::bc_matrix4f l_node_absolute_transformation;
 
@@ -211,7 +221,7 @@ namespace black_cat
 
 			if (l_px_node)
 			{
-				l_mesh_colliders = convert_px_node(p_physics, p_aiscene, *l_px_node, l_node_absolute_transformation, l_generate_high_detail_query_shape);
+				l_mesh_colliders = convert_px_node(p_physics, p_aiscene, *l_px_node, l_node_absolute_transformation, p_generate_high_detail_query_shape);
 				l_mesh_colliders.shrink_to_fit();
 			}
 
@@ -222,7 +232,7 @@ namespace black_cat
 		{
 			aiNode* l_child = p_ainode.mChildren[l_child_index];
 
-			convert_nodes(p_physics, p_context, p_aiscene, *l_child, l_node_absolute_transformation, p_result);
+			convert_nodes(p_physics, p_context, p_aiscene, *l_child, l_node_absolute_transformation, p_generate_high_detail_query_shape, p_result);
 		}
 	}
 

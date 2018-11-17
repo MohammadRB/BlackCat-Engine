@@ -188,7 +188,7 @@
             <attribute name="label">
              <string>ObjectSelection</string>
             </attribute>
-            <widget class="QLabel" name="entityNameLable">
+            <widget class="QLabel" name="entityNameLabel">
              <property name="geometry">
               <rect>
                <x>10</x>
@@ -198,10 +198,10 @@
               </rect>
              </property>
              <property name="text">
-              <string>ObjectName:</string>
+              <string>EntityName:</string>
              </property>
             </widget>
-            <widget class="QLabel" name="entityNameLableValue">
+            <widget class="QLabel" name="entityNameLabelValue">
              <property name="geometry">
               <rect>
                <x>100</x>

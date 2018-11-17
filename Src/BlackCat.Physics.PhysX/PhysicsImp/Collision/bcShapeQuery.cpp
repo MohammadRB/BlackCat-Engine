@@ -44,8 +44,7 @@ namespace black_cat
 		bc_rigid_actor bc_platform_ray_hit<g_api_physx>::get_actor() const noexcept
 		{
 			bc_rigid_actor l_result;
-			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object =
-				m_pack.m_px_hit.actor;
+			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object = m_pack.m_px_hit.actor;
 
 			return l_result;
 		}
@@ -55,8 +54,7 @@ namespace black_cat
 		bc_shape bc_platform_ray_hit<g_api_physx>::get_shape() const noexcept
 		{
 			bc_shape l_result;
-			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object =
-				m_pack.m_px_hit.shape;
+			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object = m_pack.m_px_hit.shape;
 
 			return l_result;
 		}

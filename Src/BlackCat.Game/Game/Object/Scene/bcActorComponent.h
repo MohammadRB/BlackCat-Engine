@@ -26,7 +26,7 @@ namespace black_cat
 		public:
 			virtual ~bc_iactor_component();
 
-			virtual bc_actor get_actor() const noexcept = 0;
+			virtual bc_actor get_actor() const noexcept = 0; // TODO provide default implementation
 
 			/**
 			 * \brief Initialize component data members that are shared between instances of this component.
@@ -47,7 +47,7 @@ namespace black_cat
 
 			bc_actor_component_index get_index() const noexcept;
 
-			static bc_actor_component_manager* _get_manager() noexcept;
+			static bc_actor_component_manager* get_manager() noexcept;
 
 		private:
 			bc_actor_component_index m_index;

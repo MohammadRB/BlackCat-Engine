@@ -78,11 +78,11 @@ namespace black_cat
 		{
 			if (p_toggle)
 			{
-				emit uiScripted("console.enableOutput(console.outputInfo)");
+				emit executeUIScript("console.enableOutput(console.outputInfo)");
 			}
 			else
 			{
-				emit uiScripted("console.disableOutput(console.outputInfo)");
+				emit executeUIScript("console.disableOutput(console.outputInfo)");
 			}
 		}
 
@@ -90,11 +90,11 @@ namespace black_cat
 		{
 			if (p_toggle)
 			{
-				emit uiScripted("console.enableOutput(console.outputDebug)");
+				emit executeUIScript("console.enableOutput(console.outputDebug)");
 			}
 			else
 			{
-				emit uiScripted("console.disableOutput(console.outputDebug)");
+				emit executeUIScript("console.disableOutput(console.outputDebug)");
 			}
 		}
 
@@ -102,11 +102,11 @@ namespace black_cat
 		{
 			if (p_toggle)
 			{
-				emit uiScripted("console.enableOutput(console.outputError)");
+				emit executeUIScript("console.enableOutput(console.outputError)");
 			}
 			else
 			{
-				emit uiScripted("console.disableOutput(console.outputError)");
+				emit executeUIScript("console.disableOutput(console.outputError)");
 			}
 		}
 
@@ -114,17 +114,17 @@ namespace black_cat
 		{
 			if (p_toggle)
 			{
-				emit uiScripted("console.enableOutput(console.outputScript)");
+				emit executeUIScript("console.enableOutput(console.outputScript)");
 			}
 			else
 			{
-				emit uiScripted("console.disableOutput(console.outputScript)");
+				emit executeUIScript("console.disableOutput(console.outputScript)");
 			}
 		}
 
 		void bc_console_widget::_clearClicked()
 		{
-			emit uiScripted("console.clear()");
+			emit executeUIScript("console.clear()");
 		}
 
 		void bc_console_widget::_setup_ui()

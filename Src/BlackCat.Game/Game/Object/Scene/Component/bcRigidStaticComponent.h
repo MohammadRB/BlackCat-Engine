@@ -17,7 +17,7 @@ namespace black_cat
 			BC_COMPONENT(rigid_static)
 
 		public:
-			bc_rigid_static_component(bc_actor_component_index p_index) noexcept;
+			explicit bc_rigid_static_component(bc_actor_component_index p_index) noexcept;
 
 			bc_rigid_static_component(bc_rigid_static_component&&) noexcept;
 

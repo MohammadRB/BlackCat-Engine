@@ -41,7 +41,7 @@ namespace black_cat
 
 			/**
 			 * \brief Make a widget able to run script through console.
-			 * This function connect widget's uiScripted signal to it's slot. 
+			 * This function connect widget executeUIScript signal to it's slot. 
 			 * \param p_widget 
 			 */
 			void connect_widget(QWidget* p_widget);
@@ -49,9 +49,9 @@ namespace black_cat
 		protected:
 
 		private slots:
-			void onScript(const QString& p_script);
+			void executeScript(const QString& p_script);
 			
-			void onUIScript(const QString& p_ui_script);
+			void executeUIScript(const QString& p_ui_script);
 
 		signals:
 			void logRecieved(game::bc_console_output_type p_log_type, const QString& p_log);

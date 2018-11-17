@@ -157,7 +157,7 @@ namespace black_cat
 			virtual bool app_event(core::bc_ievent& p_event);
 
 			/**
-			 * \brief Cleanup loaeded contents
+			 * \brief Cleanup loaded contents
 			 */
 			virtual void app_unload_content() = 0;
 

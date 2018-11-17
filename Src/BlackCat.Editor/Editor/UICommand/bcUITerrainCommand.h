@@ -13,7 +13,7 @@ namespace black_cat
 {
 	namespace editor
 	{
-		class bc_ui_terrain_commnad_state : public bc_iui_command_state
+		class bc_ui_terrain_command_state : public bc_iui_command_state
 		{
 		public:
 			graphic::bc_buffer_ptr m_parameter_cbuffer;

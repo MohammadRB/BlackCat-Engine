@@ -40,7 +40,7 @@ namespace black_cat
 
 		core::bc_string bc_ui_terrain_material_command::title() const
 		{
-			return "Terrain Material";
+			return "TerrainMaterial";
 		}
 
 		bc_iui_command::state_ptr bc_ui_terrain_material_command::create_state(state_context& p_context) const

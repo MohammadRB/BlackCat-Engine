@@ -30,7 +30,7 @@ namespace black_cat
 			using state = bc_form_tools_state;
 
 		public:
-			explicit bc_form_tools(bc_ui_command_service& p_ui_command_service, 
+			bc_form_tools(bc_ui_command_service& p_ui_command_service, 
 				QDockWidget& p_container, 
 				bc_d3d_output_widget& p_render_widget, 
 				bc_form_terrain& p_terrain_form);
@@ -38,21 +38,21 @@ namespace black_cat
 		protected:
 
 		private slots:
-			void onObjectSelectionToggle(bool p_toggled);
+			void objectSelectionToggled(bool p_toggled);
 
-			void onTerrainHeightToggle(bool p_toggled);
+			void terrainHeightToggled(bool p_toggled);
 
-			void onTerrainSmoothToggle(bool p_toggled);
+			void terrainSmoothToggled(bool p_toggled);
 
-			void onTerrainMaterialToggle(bool p_toggled);
+			void terrainMaterialToggled(bool p_toggled);
 
-			void onTerrainMaterialSmoothToggle(bool p_toggled);
+			void terrainMaterialSmoothToggled(bool p_toggled);
 
-			void onMousePress(QMouseEvent* p_event);
+			void mousePressed(QMouseEvent* p_event);
 
-			void onMouseRelease(QMouseEvent* p_event);
+			void mouseReleased(QMouseEvent* p_event);
 
-			void onMouseMove(QMouseEvent* p_event);
+			void mouseMoved(QMouseEvent* p_event);
 
 		private:
 			void _send_ui_command(QMouseEvent* p_event);

@@ -2,21 +2,21 @@
 
 #include "PlatformImp/PlatformImpPCH.h"
 #include "PlatformImp/bcExport.h"
-#include "PlatformImp/bcLogIDEDebug.h"
+#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {
 	namespace platform
 	{
-		bcLogIDEDebug::bcLogIDEDebug()
+		bc_ide_logger::bc_ide_logger()
 		{
 		}
 
-		bcLogIDEDebug::~bcLogIDEDebug()
+		bc_ide_logger::~bc_ide_logger()
 		{
 		}
 
-		void bcLogIDEDebug::on_log(core::bc_log_type p_type, const bcECHAR* p_log)
+		void bc_ide_logger::on_log(core::bc_log_type p_type, const bcECHAR* p_log)
 		{
 			if(p_type == core::bc_log_type::debug)
 			{

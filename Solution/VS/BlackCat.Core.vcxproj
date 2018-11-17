@@ -138,10 +138,12 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcBackOff.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcConcurrency.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcLockFreeMemMng.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcTask.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadLocal.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcAllocator.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcArray.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcDeque.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcQueue.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcUnorderedMap.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcContent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcContentLoader.h" />

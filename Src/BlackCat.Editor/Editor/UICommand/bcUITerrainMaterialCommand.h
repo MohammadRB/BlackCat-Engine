@@ -21,7 +21,7 @@ namespace black_cat
 			bcUINT32 m_tool_material;
 		};
 
-		using bc_ui_terrain_material_commnad_state = bc_ui_terrain_commnad_state;
+		using bc_ui_terrain_material_commnad_state = bc_ui_terrain_command_state;
 
 		class bc_ui_terrain_material_command : public bc_ui_terrain_command
 		{

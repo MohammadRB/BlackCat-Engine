@@ -87,10 +87,10 @@
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcExport.h">
       <Filter>PlatformImp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcLogIDEDebug.h">
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\PlatformImpPCH.h">
       <Filter>PlatformImp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\PlatformImpPCH.h">
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bc_ide_logger.h">
       <Filter>PlatformImp</Filter>
     </ClInclude>
   </ItemGroup>
@@ -149,10 +149,10 @@
     <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptVariable.cpp">
       <Filter>PlatformImp\Script</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcLogIDEDebug.cpp">
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\PlatformImpPCH.cpp">
       <Filter>PlatformImp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\PlatformImpPCH.cpp">
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcIDELogger.cpp">
       <Filter>PlatformImp</Filter>
     </ClCompile>
   </ItemGroup>

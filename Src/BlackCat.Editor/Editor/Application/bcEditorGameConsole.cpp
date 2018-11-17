@@ -68,10 +68,10 @@ namespace black_cat
 
 		void bc_editor_game_console::connect_widget(QWidget* p_widget)
 		{
-			QObject::connect(p_widget, SIGNAL(uiScripted(const QString&)), this, SLOT(onUIScript(const QString&)));
+			QObject::connect(p_widget, SIGNAL(executeUIScript(const QString&)), this, SLOT(executeUIScript(const QString&)));
 		}
 
-		void bc_editor_game_console::onScript(const QString& p_script)
+		void bc_editor_game_console::executeScript(const QString& p_script)
 		{
 			auto l_wstring = p_script.toStdWString();
 
@@ -80,7 +80,7 @@ namespace black_cat
 			emit scriptExecuted(p_script);
 		}
 
-		void bc_editor_game_console::onUIScript(const QString& p_ui_script)
+		void bc_editor_game_console::executeUIScript(const QString& p_ui_script)
 		{
 			auto l_wstring = p_ui_script.toStdWString();
 

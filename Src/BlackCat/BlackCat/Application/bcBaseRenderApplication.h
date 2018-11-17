@@ -14,7 +14,7 @@
 #include "Core/File/bcContentManager.h"
 #include "Core/File/bcContentStreamManager.h"
 #include "Core/File/bcLazyContent.h"
-#include "PlatformImp/bcLogIDEDebug.h"
+#include "PlatformImp/bc_ide_logger.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
@@ -31,6 +31,7 @@
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
+#include "Game/Object/Scene/Component/bcNameComponent.h"
 #include "Game/System/bcGameSystem.h"
 #include "BlackCat/Loader/bcMeshLoader.h"
 #include "BlackCat/Loader/bcTextureLoader.h"
@@ -182,7 +183,7 @@ namespace black_cat
 		l_logger_manager->register_listener
 		(
 			core::bc_enum::or({core::bc_log_type::debug, core::bc_log_type::error }),
-			core::bc_make_unique< platform::bcLogIDEDebug >(core::bc_alloc_type::program)
+			core::bc_make_unique< platform::bc_ide_logger >(core::bc_alloc_type::program)
 		);
 #endif
 
@@ -242,6 +243,7 @@ namespace black_cat
 
 		l_entity_manager->register_component_types
 		<
+			game::bc_name_component,
 			game::bc_mesh_component,
 			game::bc_hierarchy_component,
 			game::bc_rigid_static_component,

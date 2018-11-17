@@ -10,21 +10,15 @@
 #include "Game/Object/Scene/bcActor.h"
 #include "Game/Object/Scene/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
+#include "Game/Object/Scene/Component/bcNameComponent.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		/*BC_JSON_STRUCTURE(_bc_json_entity_component_parameters)
-		{
-			BC_JSON_VALUE(core::bc_string_frame, name);
-			BC_JSON_VALUE(core::bc_parameter_pack, value);
-		};*/
-
 		BC_JSON_STRUCTURE(_bc_json_entity_components)
 		{
 			BC_JSON_VALUE(core::bc_string_frame, name);
-			//BC_JSON_ARRAY(_bc_json_entity_component_parameters, parameters);
 			BC_JSON_VALUE(core::bc_json_key_value, parameters);
 		};
 
@@ -87,13 +81,14 @@ namespace black_cat
 				entity_map_type::value_type::second_type l_entity_components;
 
 				// Because we used program heap we must reserve needed memory
-				l_entity_components.reserve(l_entity->m_components->size());
+				l_entity_components.m_components.reserve(l_entity->m_components->size());
+				l_entity_components.m_entity_name = l_entity_name.c_str();
 
 				for (auto& l_component : *l_entity->m_components)
 				{
 					core::bc_string_frame& l_component_name = *l_component->m_name;
-					// We used this function in component name hashing
-					auto l_component_name_hash = bc_run_time_string_hash(l_component_name.c_str(), l_component_name.size());
+					// We have used this function in component name hashing
+					const auto l_component_name_hash = bc_run_time_string_hash(l_component_name.c_str(), l_component_name.size());
 
 					_bc_entity_component_data l_component_data;
 					l_component_data.m_component_hash = l_component_name_hash;
@@ -122,7 +117,7 @@ namespace black_cat
 						}
 					);
 
-					l_entity_components.push_back(std::move(l_component_data));
+					l_entity_components.m_components.push_back(std::move(l_component_data));
 				}
 
 				entity_map_type::value_type l_entity_value(l_entity_name_hash, std::move(l_entity_components));
@@ -132,7 +127,7 @@ namespace black_cat
 
 		bc_actor bc_entity_manager::create_entity(const bcCHAR* p_entity_name)
 		{
-			auto l_hash = string_hash()(p_entity_name);
+			const auto l_hash = string_hash()(p_entity_name);
 			auto l_entity_entry = m_entities.find(l_hash);
 
 			if(l_entity_entry == std::end(m_entities))
@@ -141,8 +136,10 @@ namespace black_cat
 			}
 
 			bc_actor l_actor = m_actor_component_manager->create_actor();
+			l_actor.create_component<bc_name_component>();
+			l_actor.get_component<bc_name_component>()->set_entity_name(l_entity_entry->second.m_entity_name.c_str());
 
-			for (auto& l_entity_component_data : l_entity_entry->second)
+			for (auto& l_entity_component_data : l_entity_entry->second.m_components)
 			{
 				auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
 

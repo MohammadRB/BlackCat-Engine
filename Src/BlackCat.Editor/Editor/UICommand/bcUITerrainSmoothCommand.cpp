@@ -41,7 +41,7 @@ namespace black_cat
 
 		core::bc_string bc_ui_terrain_smooth_command::title() const
 		{
-			return "Terrain Smooth";
+			return "TerrainSmooth";
 		}
 
 		bc_iui_command::state_ptr bc_ui_terrain_smooth_command::create_state(state_context& p_context) const

@@ -31,7 +31,7 @@ namespace black_cat
 		{
 			if(is_visible())
 			{
-				m_input_spin_task.interrupt_executer_thread();
+				m_input_spin_task.interrupt_executor_thread();
 				m_console->close();
 				m_console.reset();
 			}
@@ -155,7 +155,7 @@ namespace black_cat
 				return;
 			}
 
-			m_input_spin_task.interrupt_executer_thread();
+			m_input_spin_task.interrupt_executor_thread();
 			m_console->close();
 			m_console.reset();*/
 		}

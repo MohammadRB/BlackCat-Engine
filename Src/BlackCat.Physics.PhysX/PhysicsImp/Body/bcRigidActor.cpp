@@ -234,7 +234,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_rigid_actor< g_api_physx >::set_collision_flag(bc_shape_notify_flag p_flag, bool p_value) noexcept
+		void bc_platform_rigid_actor< g_api_physx >::set_notify_flag(bc_shape_notify_flag p_flag, bool p_value) noexcept
 		{
 			auto l_buffer_size = get_shape_count();
 			auto* l_buffer = static_cast< bc_shape* >

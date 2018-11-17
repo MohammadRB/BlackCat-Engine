@@ -42,10 +42,7 @@ namespace black_cat
 			group29 = core::bc_enum::value(28),
 			group30 = core::bc_enum::value(29),
 			group31 = core::bc_enum::value(30),
-			all = group1 | group2 | group3 | group4 | group5 | group6 | group7 | group8 | group9 | group10 |
-			group11 | group12 | group13 | group14 | group15 | group16 | group17 | group18 | group19 | group20 |
-			group21 | group22 | group23 | group24 | group25 | group26 | group27 | group28 | group29 | group30 |
-			group31
+			all = 0 // Zero means to not check query groups
 		};
 	}
 }

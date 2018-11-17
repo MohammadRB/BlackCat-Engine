@@ -9,12 +9,12 @@ namespace black_cat
 {
 	namespace platform
 	{
-		class BC_PLATFORMSHARED_DLL bcLogIDEDebug : public core::bc_ilog_listener
+		class BC_PLATFORMSHARED_DLL bc_ide_logger : public core::bc_ilog_listener
 		{
 		public:
-			bcLogIDEDebug();
+			bc_ide_logger();
 
-			~bcLogIDEDebug();
+			~bc_ide_logger();
 
 			void on_log(core::bc_log_type p_type, const bcECHAR* p_log) override;
 		};

@@ -17,13 +17,9 @@ namespace black_cat
 {
 	namespace game
 	{
+		struct _bc_entity_data;
+		struct _bc_entity_component_data;
 		struct _bc_entity_component_callbacks;
-
-		struct _bc_entity_component_data
-		{
-			bc_actor_component_hash m_component_hash;
-			core::bc_data_driven_parameter m_component_parameters;
-		};
 
 		/**
 		 * \brief Make bcActorComponentManager data driven
@@ -38,7 +34,7 @@ namespace black_cat
 			using actor_component_create_delegate = core::bc_delegate< void(const bc_actor&) >;
 			using actor_component_initialize_delegate = core::bc_delegate< void(bc_actor&, const core::bc_data_driven_parameter&) >;
 			using component_map_type = core::bc_unordered_map_program< bc_actor_component_hash, _bc_entity_component_callbacks >;
-			using entity_map_type = core::bc_unordered_map_program< string_hash::result_type, core::bc_vector_program< _bc_entity_component_data > >;
+			using entity_map_type = core::bc_unordered_map_program< string_hash::result_type, _bc_entity_data >;
 
 		public:
 			explicit bc_entity_manager();
@@ -76,6 +72,18 @@ namespace black_cat
 
 			component_map_type m_components;
 			entity_map_type m_entities;
+		};
+
+		struct _bc_entity_data
+		{
+			core::bc_string_program m_entity_name;
+			core::bc_vector_program< _bc_entity_component_data > m_components;
+		};
+
+		struct _bc_entity_component_data
+		{
+			bc_actor_component_hash m_component_hash;
+			core::bc_data_driven_parameter m_component_parameters;
 		};
 
 		struct _bc_entity_component_callbacks

@@ -40,7 +40,7 @@ namespace black_cat
 
 		core::bc_string bc_ui_terrain_material_smooth_command::title() const
 		{
-			return "Terrain Material Smooth";
+			return "TerrainMaterialSmooth";
 		}
 
 		bc_iui_command::state_ptr bc_ui_terrain_material_smooth_command::create_state(state_context& p_context) const
@@ -57,12 +57,12 @@ namespace black_cat
 				)
 				.as_constant_buffer();
 
-			bc_ui_terrain_material_smooth_commnad_state l_state;
+			bc_ui_terrain_material_smooth_command_state l_state;
 			l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_material_smooth_cs");;
 			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);;
 			l_state.m_device_command_list = l_render_system.get_device().create_command_list();;
 
-			return core::bc_make_unique< bc_ui_terrain_material_smooth_commnad_state >(std::move(l_state));
+			return core::bc_make_unique< bc_ui_terrain_material_smooth_command_state >(std::move(l_state));
 		}
 
 		bool bc_ui_terrain_material_smooth_command::update(terrain_update_context& p_context)
@@ -79,7 +79,7 @@ namespace black_cat
 			bc_ui_terrain_material_smooth_command_render_task l_render_task
 			(
 				*l_dx11_height_map,
-				*static_cast< bc_ui_terrain_material_smooth_commnad_state* >(p_context.m_state),
+				*static_cast< bc_ui_terrain_material_smooth_command_state* >(p_context.m_state),
 				l_cbuffer_parameters
 			);
 			p_context.m_game_system.get_render_system().add_render_task(l_render_task);
@@ -92,7 +92,7 @@ namespace black_cat
 		// == bc_ui_terrain_material_smooth_command_render_task ======================================================================
 
 		bc_ui_terrain_material_smooth_command_render_task::bc_ui_terrain_material_smooth_command_render_task(const bc_editor_height_map_dx11& p_height_map,
-			bc_ui_terrain_material_smooth_commnad_state& p_command_state,
+			bc_ui_terrain_material_smooth_command_state& p_command_state,
 			const bc_ui_terrain_material_smooth_command_parameter_cbuffer& p_shader_parameter)
 			: m_height_map(p_height_map),
 			m_command_state(p_command_state),

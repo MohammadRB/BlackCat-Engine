@@ -43,7 +43,7 @@ namespace black_cat
 		signals:
 			void returnPressed(const QString& p_string);
 
-			void uiScripted(const QString& p_string);
+			void executeUIScript(const QString& p_string);
 
 		private:
 			void _setup_ui();

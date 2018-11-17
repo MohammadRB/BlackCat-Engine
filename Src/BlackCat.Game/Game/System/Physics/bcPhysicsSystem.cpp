@@ -9,9 +9,6 @@
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/Object/Scene/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
-#include "PhysicsImp/Body/bcActor.h"
-#include "PhysicsImp/Body/bcActor.h"
-#include "PhysicsImp/Body/bcActor.h"
 
 namespace black_cat
 {
