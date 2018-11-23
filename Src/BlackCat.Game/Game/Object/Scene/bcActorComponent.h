@@ -36,7 +36,7 @@ namespace black_cat
 			 */
 			virtual void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) = 0;
 
-			virtual void update(const bc_actor& p_actor, core_platform::bc_clock::update_param p_clock_update_param) = 0;
+			virtual void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) = 0;
 
 		protected:
 			explicit bc_iactor_component(bc_actor_component_index p_index) noexcept;

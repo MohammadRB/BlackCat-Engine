@@ -47,10 +47,19 @@ namespace black_cat
 
 			void read_entity_file(const bcECHAR* p_json_file_path);
 
-			// Create an uninitialized actor along with it's components
+			core::bc_vector_frame<const bcCHAR*> get_entity_names() const;
+
+			/**
+			 * \brief Create an uninitialized actor along with it's components
+			 * \param p_entity_name 
+			 * \return 
+			 */
 			bc_actor create_entity(const bcCHAR* p_entity_name);
 
-			// Remove actor and all of it's components
+			/**
+			 * \brief Remove actor and all of it's components
+			 * \param p_entity 
+			 */
 			void remove_entity(const bc_actor& p_entity);
 
 			template< class ...TComponent >

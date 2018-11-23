@@ -3,13 +3,13 @@
 #pragma once
 
 #include "Core/Event/bcEvent.h"
-#include "BlackCat/Application/bcBaseRenderApplication.h"
+#include "BlackCat/Application/bcRenderApplication.h"
 
 namespace black_cat
 {
 	namespace editor
 	{
-		class bc_editor_render_app : public bc_base_render_application< bc_editor_render_app >
+		class bc_editor_render_app : public bc_render_application
 		{
 		public:
 			bc_editor_render_app();

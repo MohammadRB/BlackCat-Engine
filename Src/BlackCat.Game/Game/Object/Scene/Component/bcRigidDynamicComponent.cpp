@@ -8,6 +8,7 @@
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/System/bcGameSystem.h"
+#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {
@@ -70,7 +71,7 @@ namespace black_cat
 			throw bc_invalid_operation_exception("Rigid dynamic component need mesh component.");
 		}
 
-		void bc_rigid_dynamic_component::update(const bc_actor& p_actor, core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_rigid_dynamic_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}	
 	}

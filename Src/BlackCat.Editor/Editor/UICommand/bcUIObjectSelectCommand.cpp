@@ -55,6 +55,8 @@ namespace black_cat
 			);
 			if(!l_query_result)
 			{
+				m_selected_actor_index = game::bc_actor::invalid_index;
+				m_selected_actor_entity_name = nullptr;
 				return false;
 			}
 
@@ -70,7 +72,14 @@ namespace black_cat
 
 		void bc_ui_object_select_command::update_ui(update_ui_context& p_context)
 		{
-			p_context.m_form_object.setEntityName(m_selected_actor_entity_name);
+			if(m_selected_actor_index != game::bc_actor::invalid_index)
+			{
+				p_context.m_form_object.setEntityName(m_selected_actor_entity_name);
+			}
+			else
+			{
+				p_context.m_form_object.setEntityName(nullptr);
+			}
 		}
 	}
 }

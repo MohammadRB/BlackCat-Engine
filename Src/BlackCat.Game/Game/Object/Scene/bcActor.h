@@ -10,10 +10,12 @@ namespace black_cat
 	{
 		class bc_actor_component_manager;
 		using bc_actor_index = bcINT32;
-		constexpr bc_actor_index g_actor_invalid_index = bc_actor_index(-1);
 
 		class bc_actor
 		{
+		public:
+			constexpr static bc_actor_index invalid_index = bc_actor_index(-1);
+
 		private:
 			friend class bc_actor_component_manager;
 

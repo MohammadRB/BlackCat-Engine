@@ -70,7 +70,7 @@ namespace black_cat
 		struct _bc_actor_entry
 		{
 		public:
-			_bc_actor_entry(const bc_actor& p_actor, bc_actor_index p_parent_index = g_actor_invalid_index)
+			_bc_actor_entry(const bc_actor& p_actor, bc_actor_index p_parent_index = bc_actor::invalid_index)
 				: m_actor(p_actor),
 				m_parent_index(p_parent_index)
 			{
@@ -183,14 +183,14 @@ namespace black_cat
 		inline bc_actor bc_actor_component_manager::create_actor(const bc_actor* p_parent)
 		{
 			bc_actor_index l_index = 0;
-			bool l_has_setted = false;
+			bool l_has_value = false;
 
 			for (core::bc_nullable< _bc_actor_entry >& l_actor : m_actors) // TODO use fast free space lookup
 			{
 				if (!l_actor.is_set())
 				{
-					l_actor.reset(_bc_actor_entry(bc_actor(l_index), p_parent ? p_parent->get_index() : g_actor_invalid_index));
-					l_has_setted = true;
+					l_actor.reset(_bc_actor_entry(bc_actor(l_index), p_parent ? p_parent->get_index() : bc_actor::invalid_index));
+					l_has_value = true;
 				}
 				else
 				{
@@ -198,12 +198,12 @@ namespace black_cat
 				}
 			}
 
-			if (!l_has_setted)
+			if (!l_has_value)
 			{
 				m_actors.push_back(core::bc_nullable< _bc_actor_entry >
-					(
-						_bc_actor_entry(bc_actor(l_index), p_parent ? p_parent->get_index() : g_actor_invalid_index)
-					));
+				(
+					_bc_actor_entry(bc_actor(l_index), p_parent ? p_parent->get_index() : bc_actor::invalid_index)
+				));
 
 				_resize_actor_to_component_index_maps();
 			}
@@ -231,7 +231,7 @@ namespace black_cat
 				if(l_component_index != g_actor_component_invalid_index)
 				{
 					l_component_entry.m_container->remove(l_component_index);
-					l_component_entry.m_component_to_actor_index_map[l_component_index] = g_actor_invalid_index;
+					l_component_entry.m_component_to_actor_index_map[l_component_index] = bc_actor::invalid_index;
 					l_component_entry.m_actor_to_component_index_map[l_actor_index] = g_actor_component_invalid_index;
 				}
 			}
@@ -251,14 +251,14 @@ namespace black_cat
 
 			const bc_actor_index l_actor_index = p_actor.get_index();
 
-			bcAssert(l_actor_index != g_actor_invalid_index);
+			bcAssert(l_actor_index != bc_actor::invalid_index);
 
 			bc_actor_index l_parent_actor_index = m_actors[l_actor_index]->m_parent_index;
 			bc_actor_component_index l_component_index = g_actor_component_invalid_index;
 
 			// If actor has parent and it's parent has this component type we must create actor component
 			// after parent component in sorting order of container so parent component get updated earlier
-			if(l_parent_actor_index != g_actor_invalid_index)
+			if(l_parent_actor_index != bc_actor::invalid_index)
 			{
 				const bc_actor& l_parent = m_actors[l_parent_actor_index]->m_actor;
 				const TComponent* l_parent_component = l_parent.get_component<TComponent>();
@@ -277,7 +277,7 @@ namespace black_cat
 
 			if (l_component_entry->second.m_component_to_actor_index_map.size() < l_component_index + 1)
 			{
-				l_component_entry->second.m_component_to_actor_index_map.resize(l_concrete_container->capacity(), g_actor_invalid_index);
+				l_component_entry->second.m_component_to_actor_index_map.resize(l_concrete_container->capacity(), bc_actor::invalid_index);
 			}
 
 			l_component_entry->second.m_component_to_actor_index_map[l_component_index] = l_actor_index;
@@ -291,7 +291,7 @@ namespace black_cat
 
 			bc_actor_index l_actor_index = p_actor.get_index();
 
-			bcAssert(l_actor_index != g_actor_invalid_index);
+			bcAssert(l_actor_index != bc_actor::invalid_index);
 
 			bcINT32 l_component_index = l_component_entry->second.m_actor_to_component_index_map[l_actor_index];
 			// Actor has not this type of component
@@ -306,7 +306,7 @@ namespace black_cat
 
 			l_concrete_container->remove(l_component_index);
 
-			l_component_entry->second.m_component_to_actor_index_map[l_component_index] = g_actor_invalid_index;
+			l_component_entry->second.m_component_to_actor_index_map[l_component_index] = bc_actor::invalid_index;
 			l_component_entry->second.m_actor_to_component_index_map[l_actor_index] = g_actor_component_invalid_index;
 		}
 
@@ -416,7 +416,7 @@ namespace black_cat
 				(
 					[this, l_actor]()
 					{
-						using expanded_type = TComponent::template apply< _bc_abstract_component >;
+						using expanded_type = typename TComponent::template apply< _bc_abstract_component >;
 						expanded_type l_expanded_object(*this);
 						l_expanded_object();
 
@@ -459,9 +459,9 @@ namespace black_cat
 			// Isn't it abstract
 			bcAssert(l_component_entry->second.m_component_priority != _bc_actor_component_entry::s_invalid_priority_value);
 
-			bc_actor_index l_actor_index = p_actor.get_index();
+			const bc_actor_index l_actor_index = p_actor.get_index();
 
-			bcAssert(l_actor_index != g_actor_invalid_index);
+			bcAssert(l_actor_index != bc_actor::invalid_index);
 
 			bcINT32 l_actor_to_component = l_component_entry->second.m_actor_to_component_index_map[l_actor_index];
 			// Actor has not this type of component
@@ -567,7 +567,7 @@ namespace black_cat
 					continue;
 				}
 
-				// If component type haven't enaugh index map
+				// If component type haven't enough index map
 				if (l_component_entry.second.m_actor_to_component_index_map.size() < m_actors.size())
 				{
 					l_component_entry.second.m_actor_to_component_index_map.resize(m_actors.capacity(), g_actor_component_invalid_index);

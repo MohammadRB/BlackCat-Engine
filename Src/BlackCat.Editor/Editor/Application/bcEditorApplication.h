@@ -2,14 +2,16 @@
 
 #pragma once
 
+#include "Editor/Application/bcEditorGameConsole.h"
+#include "Editor/Application/bcRenderApplicationD3DWidgetOutputWindow.h"
+#include "Editor/Application/bcEditorRenderApplicationThread.h"
 #include "Editor/Widget/bcD3DOutputWidget.h"
 #include "Editor/Widget/bcConsoleWidget.h"
-#include "Editor/Application/bcRenderApplicationD3DWidgetOutputWindow.h"
-#include "Editor/Application/bcEditorGameConsole.h"
 #include "Editor/QtAwesome/QtAwesome.h"
 #include "Editor/UI/bcFormTools.h"
 #include "Editor/UI/bcFormTerrain.h"
 #include "Editor/UI/bcFormObject.h"
+#include "Editor/UI/bcFormObjectInsert.h"
 #include "ui_bcBlackCatEditor.h"
 
 #include <QtWidgets/QMainWindow>
@@ -19,19 +21,6 @@ namespace black_cat
 {
 	namespace editor
 	{
-		class bc_render_app_thread : public QThread
-		{
-		public:
-			HINSTANCE m_instance;
-			const char* m_cmd_line;
-			game::bc_irender_application_output_window* m_output_window;
-			QAtomicInt m_initialized;
-			QAtomicInt m_result_code;
-
-		protected:
-			void run() override;
-		};
-
 		class bc_editor_app : public QMainWindow
 		{
 			Q_OBJECT
@@ -68,7 +57,6 @@ namespace black_cat
 			void _load_icon_button(QAbstractButton* p_bottom, QVariantMap& p_options) const;
 
 			void _load_icon_toolbox(QToolBox* p_tool_box, QVariantMap& p_options) const;
-					  
 
 			Ui::bcBlackCatEditorClass ui;
 			std::unique_ptr< QtAwesome > m_awesome;
@@ -82,9 +70,10 @@ namespace black_cat
 			std::unique_ptr< bc_form_tools > m_form_tools;
 			std::unique_ptr< bc_form_terrain > m_form_terrain;
 			std::unique_ptr< bc_form_object > m_form_object;
+			std::unique_ptr< bc_form_object_insert > m_form_object_insert;
 			std::unique_ptr< QTimer > m_timer;
 
-			bc_render_app_thread m_render_app_thread;
+			bc_editor_render_app_thread m_render_app_thread;
 		};
 	}
 }

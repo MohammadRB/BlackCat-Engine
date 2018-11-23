@@ -30,9 +30,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Application\bcBaseRenderApplication.h">
-      <Filter>BlackCat\Application</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.h">
       <Filter>BlackCat\Loader</Filter>
     </ClInclude>
@@ -84,6 +81,9 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshColliderLoader.h">
       <Filter>BlackCat\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Application\bcRenderApplication.h">
+      <Filter>BlackCat\Application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -130,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshColliderLoader.cpp">
       <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Application\bcRenderApplication.cpp">
+      <Filter>BlackCat\Application</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

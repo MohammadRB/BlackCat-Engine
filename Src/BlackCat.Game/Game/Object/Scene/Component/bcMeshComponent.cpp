@@ -7,6 +7,7 @@
 #include "Game/Object/Scene/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/System/Render/bcRenderInstance.h"
+#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {
@@ -96,7 +97,7 @@ namespace black_cat
 			set_world_pos(core::bc_matrix4f::identity());
 		}
 
-		void bc_mesh_component::update(const bc_actor& p_actor, core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_mesh_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 

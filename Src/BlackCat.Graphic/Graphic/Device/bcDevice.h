@@ -148,11 +148,14 @@ namespace black_cat
 		struct bc_device_parameters
 		{
 		public:
-			bc_device_parameters(bcUINT p_width, bcUINT p_height, bc_format p_format, bc_texture_ms_config p_multi_sample)
+			bc_device_parameters(bcUINT p_width,
+				bcUINT p_height,
+				bc_format p_format,
+				bc_texture_ms_config p_multi_sample)
 				: m_width(p_width),
 				m_height(p_height),
 				m_format(p_format),
-				m_multi_sample(m_multi_sample)
+				m_multi_sample(p_multi_sample)
 			{
 			}
 

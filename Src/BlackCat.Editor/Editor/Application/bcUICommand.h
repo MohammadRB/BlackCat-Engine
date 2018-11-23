@@ -9,6 +9,7 @@
 #include "PhysicsImp/Collision/bcSceneQuery.h"
 #include "Game/System/Physics/bcPxWrap.h"
 #include "Editor/UI/bcFormObject.h"
+#include "Editor/UI/bcFormObjectInsert.h"
 
 namespace black_cat
 {
@@ -66,12 +67,14 @@ namespace black_cat
 		class bc_ui_command_update_ui_context
 		{
 		public:
-			bc_ui_command_update_ui_context(bc_form_object& p_form_object)
-				: m_form_object(p_form_object)
+			bc_ui_command_update_ui_context(bc_form_object& p_form_object, bc_form_object_insert& p_form_object_insert)
+				: m_form_object(p_form_object),
+				m_form_object_insert(p_form_object_insert)
 			{
 			}
 
 			bc_form_object& m_form_object;
+			bc_form_object_insert& m_form_object_insert;
 		};
 
 		class bc_iui_command
@@ -115,6 +118,12 @@ namespace black_cat
 			virtual void update_ui(update_ui_context& p_context);
 
 		protected:
+			physics::bc_ray get_pointer_ray(const update_context& p_context,
+				bcUINT16 p_screen_width,
+				bcUINT16 p_screen_height,
+				bcUINT16 p_point_left,
+				bcUINT16 p_point_top) const;
+
 			bool query_ray_in_scene(const update_context& p_context,
 				bcUINT16 p_screen_width, 
 				bcUINT16 p_screen_height, 

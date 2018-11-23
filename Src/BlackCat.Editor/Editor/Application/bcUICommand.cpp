@@ -17,6 +17,18 @@ namespace black_cat
 		{
 		}
 
+		physics::bc_ray bc_iui_command::get_pointer_ray(const update_context& p_context,
+			bcUINT16 p_screen_width,
+			bcUINT16 p_screen_height,
+			bcUINT16 p_point_left,
+			bcUINT16 p_point_top) const
+		{
+			const auto& l_camera = p_context.m_game_system.get_input_system().get_camera();
+			const auto l_pointing_ray = l_camera.project_clip_point_to_3d_ray(p_screen_width, p_screen_height, p_point_left, p_point_top);
+
+			return physics::bc_ray(l_camera.get_position(), l_pointing_ray, l_camera.get_far_clip());
+		}
+
 		bool bc_iui_command::query_ray_in_scene(const update_context& p_context,
 			bcUINT16 p_screen_width,
 			bcUINT16 p_screen_height,
@@ -26,11 +38,10 @@ namespace black_cat
 			physics::bc_query_flags p_flags,
 			physics::bc_scene_ray_query_buffer& p_result) const
 		{
-			const auto& l_camera = p_context.m_game_system.get_input_system().get_camera();
-			const auto l_pointing_ray = l_camera.project_clip_point_to_3d_ray(p_screen_width, p_screen_height, p_point_left, p_point_top);
+			const auto l_ray = get_pointer_ray(p_context, p_screen_width, p_screen_height, p_point_left, p_point_top);
 			const bool l_px_hit_result = p_context.m_game_system.get_scene()->get_px_scene().raycast
 			(
-				physics::bc_ray(l_camera.get_position(), l_pointing_ray, l_camera.get_far_clip()),
+				l_ray,
 				p_result,
 				physics::bc_hit_flag::hit_info,
 				p_flags,

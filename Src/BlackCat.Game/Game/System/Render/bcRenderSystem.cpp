@@ -645,11 +645,16 @@ namespace black_cat
 		{
 			if(core::bc_ievent::event_is<platform::bc_app_event_window_resize>(p_event))
 			{
-				platform::bc_app_event_window_resize& l_resize_event = static_cast< platform::bc_app_event_window_resize& >(p_event);
+				auto& l_resize_event = static_cast< platform::bc_app_event_window_resize& >(p_event);
 
 				if(l_resize_event.get_state() != platform::bc_app_event_window_resize::state::minimized)
 				{
-					m_device.resize_back_buffer(l_resize_event.width(), l_resize_event.height());
+					// If nothing has change do not continue
+					if (l_resize_event.width() != m_device.get_back_buffer_width() ||
+						l_resize_event.height() != m_device.get_back_buffer_height())
+					{
+						m_device.resize_back_buffer(l_resize_event.width(), l_resize_event.height());
+					}
 				}
 
 				return true;

@@ -8,6 +8,7 @@
 #include "Game/Object/Scene/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcHierarchyComponent.h"
+#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {
@@ -82,7 +83,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_hierarchy_component::update(const bc_actor& p_actor, core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_hierarchy_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 	}

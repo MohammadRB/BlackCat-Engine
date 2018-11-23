@@ -5,7 +5,6 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/Memory/bcPtr.h"
-#include "Core/Container/bcVector.h"
 #include "Core/Container/bcQueue.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Utility/bcServiceManager.h"

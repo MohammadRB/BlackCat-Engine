@@ -125,6 +125,19 @@ namespace black_cat
 			}
 		}
 
+		core::bc_vector_frame<const bcCHAR*> bc_entity_manager::get_entity_names() const
+		{
+			core::bc_vector_frame<const bcCHAR*> l_result;
+			l_result.reserve(m_entities.size());
+
+			for (const auto& l_entity : m_entities)
+			{
+				l_result.push_back(l_entity.second.m_entity_name.c_str());
+			}
+
+			return l_result;
+		}
+
 		bc_actor bc_entity_manager::create_entity(const bcCHAR* p_entity_name)
 		{
 			const auto l_hash = string_hash()(p_entity_name);

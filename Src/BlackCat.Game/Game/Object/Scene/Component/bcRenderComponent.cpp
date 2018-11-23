@@ -5,6 +5,7 @@
 #include "Game/Object/Scene/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
+#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {
@@ -44,7 +45,7 @@ namespace black_cat
 			m_render_system = &core::bc_service_manager::get().get_service< game::bc_game_system >()->get_render_system();
 		}
 
-		void bc_render_component::update(const bc_actor& p_actor, core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_render_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 

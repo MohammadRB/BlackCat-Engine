@@ -85,14 +85,14 @@ namespace black_cat
 						auto l_rigid = l_rigid_component->get_body();
 
 						auto l_position = m_game_system->get_input_system().get_camera().get_position();
-						l_rigid_component->get_body().set_global_pose(physics::bc_transform(l_position));
+						l_rigid.set_global_pose(physics::bc_transform(l_position));
 
 						if(l_rigid.is_rigid_dynamic().is_valid())
 						{
 							auto l_direction = m_game_system->get_input_system().get_camera().get_forward();
 							
-							l_rigid_component->get_body().update_mass_inertia(10);
-							l_rigid_component->get_body().set_linear_velocity(l_direction * 70);
+							l_rigid.update_mass_inertia(10);
+							l_rigid.set_linear_velocity(l_direction * 70);
 						}
 						else
 						{
@@ -122,12 +122,8 @@ namespace black_cat
 			l_ui_command_manager->load_content();
 
 			auto l_terrain = l_entity_manager->create_entity("crysis_heightmap");
-			auto l_m16 = l_entity_manager->create_entity("m16A2");
-			auto l_ship = l_entity_manager->create_entity("ship");
 
 			l_scene->add_object(l_terrain);
-			l_scene->add_object(l_m16);
-			l_scene->add_object(l_ship);
 		}
 
 		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param)

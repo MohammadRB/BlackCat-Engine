@@ -147,7 +147,7 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Application\bcBaseRenderApplication.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Application\bcRenderApplication.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\bcException.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\bcExport.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\bcUtility.h" />
@@ -167,6 +167,7 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTerrainPassDx11.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Application\bcRenderApplication.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\bcUtility.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\BlackCatPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

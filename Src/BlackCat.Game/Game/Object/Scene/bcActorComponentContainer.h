@@ -6,6 +6,8 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcNullable.h"
 #include "Game/Object/Scene/bcActorComponent.h"
+#include "PlatformImp/bc_ide_logger.h"
+#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {
@@ -26,7 +28,7 @@ namespace black_cat
 
 			virtual void remove(bc_actor_component_index p_index) = 0;
 
-			virtual void update(const bc_actor_component_manager* p_manager, core_platform::bc_clock::update_param p_clock_update_param) = 0;
+			virtual void update(const bc_actor_component_manager* p_manager, const core_platform::bc_clock::update_param& p_clock_update_param) = 0;
 
 			virtual bcSIZE size() = 0;
 
@@ -60,7 +62,7 @@ namespace black_cat
 
 			void remove(bc_actor_component_index p_index) override;
 
-			void update(const bc_actor_component_manager* p_manager, core_platform::bc_clock::update_param p_clock_update_param) override;
+			void update(const bc_actor_component_manager* p_manager, const core_platform::bc_clock::update_param& p_clock_update_param) override;
 
 			bcSIZE size() override;
 
@@ -165,7 +167,7 @@ namespace black_cat
 		}
 
 		template< class TComponent >
-		void bc_actor_component_container<TComponent>::update(const bc_actor_component_manager* p_manager, core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_actor_component_container<TComponent>::update(const bc_actor_component_manager* p_manager, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 			for(auto& l_component : m_components)
 			{

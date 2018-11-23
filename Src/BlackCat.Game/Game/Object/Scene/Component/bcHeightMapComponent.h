@@ -7,6 +7,7 @@
 #include "Game/Object/Scene/bcActorComponent.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
+#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {
@@ -34,7 +35,7 @@ namespace black_cat
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
-			void update(const bc_actor& p_actor, core_platform::bc_clock::update_param p_clock_update_param) override;
+			void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
 
 			void render(const bc_render_component& p_render_component) const;
 

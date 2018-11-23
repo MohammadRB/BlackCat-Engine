@@ -1,126 +1,22 @@
-// [03/23/2016 MRB]
+// [11/22/2018 MRB]
 
-#pragma once
-
-#include "Core/bcConstant.h"
-#include "Core/Memory/bcMemoryManagment.h"
-#include "Core/bcEvent.h"
-#include "Core/Utility/bcSingleton.h"
-#include "Core/Utility/bcServiceManager.h"
-#include "Core/Utility/bcLogger.h"
-#include "Core/Utility/bcExpressionParameterManager.h"
-#include "Core/Concurrency/bcThreadManager.h"
-#include "Core/Event/bcEventManager.h"
-#include "Core/File/bcContentManager.h"
-#include "Core/File/bcContentStreamManager.h"
-#include "Core/File/bcLazyContent.h"
-#include "PlatformImp/bc_ide_logger.h"
-#include "GraphicImp/Device/bcDevice.h"
-#include "GraphicImp/Device/bcDevicePipeline.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
-#include "Game/Application/bcRenderApplication.h"
-#include "Game/System/Render/bcRenderPassManager.h"
-#include "Game/System/Render/bcMaterialManager.h"
-#include "Game/System/Script/bcScriptSystem.h"
-#include "Game/System/Script/bcScriptBinding.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
-#include "Game/Object/Scene/bcEntityManager.h"
-#include "Game/Object/Scene/Component/bcRenderComponent.h"
-#include "Game/Object/Scene/Component/bcMeshComponent.h"
-#include "Game/Object/Scene/Component/bcHierarchyComponent.h"
-#include "Game/Object/Scene/Component/bcHeightMapComponent.h"
-#include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
-#include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
-#include "Game/Object/Scene/Component/bcNameComponent.h"
-#include "Game/System/bcGameSystem.h"
-#include "BlackCat/Loader/bcMeshLoader.h"
-#include "BlackCat/Loader/bcTextureLoader.h"
-#include "BlackCat/Loader/bcVertexShaderLoader.h"
-#include "BlackCat/Loader/bcHullShaderLoader.h"
-#include "BlackCat/Loader/bcDomainShaderLoader.h"
-#include "BlackCat/Loader/bcGeometryShaderLoader.h"
-#include "BlackCat/Loader/bcPixelShaderLoader.h"
-#include "BlackCat/Loader/bcComputeShaderLoader.h"
 #include "BlackCat/BlackCatPCH.h"
-#include "BlackCat/Loader/bcMeshColliderLoader.h"
+#include "BlackCat/Application/bcRenderApplication.h"
 
 namespace black_cat
 {
-	template< class TApp >
-	class bc_base_render_application :
-		public game::bc_render_application,
-		public core::bc_singleton< TApp(game::bc_engine_application_parameter&) >
-	{
-	public:
-		using bc_render_application::initialize;
-		using bc_render_application::destroy;
-
-	public:
-		bc_base_render_application();
-
-		virtual ~bc_base_render_application();
-
-		virtual void application_start_engine_components(game::bc_engine_component_parameter& p_engine_components, core::bc_service_manager& p_service_manager) = 0;
-
-		virtual void application_initialize(const bcCHAR* p_commandline) = 0;
-
-		virtual void application_load_content(core::bc_content_stream_manager* p_stream_manager) = 0;
-
-		virtual void application_update(core_platform::bc_clock::update_param p_clock_update_param) = 0;
-
-		virtual void application_render(core_platform::bc_clock::update_param p_clock_update_param) = 0;
-
-		virtual bool application_event(core::bc_ievent& p_event) = 0;
-
-		virtual void application_unload_content(core::bc_content_stream_manager* p_stream_manager) = 0;
-
-		virtual void application_destroy() = 0;
-
-		virtual void application_close_engine_components() = 0;
-
-	protected:
-		core::bc_service_manager* m_service_manager;
-		game::bc_game_system* m_game_system;
-
-	private:
-		void app_start_engine_components(game::bc_engine_component_parameter& p_engine_components) override final;
-
-		void app_initialize(const bcCHAR* p_commandline) override final;
-
-		void app_load_content() override final;
-
-		void app_update(core_platform::bc_clock::update_param p_clock_update_param) override final;
-
-		void app_render(core_platform::bc_clock::update_param p_clock_update_param) override;
-
-		bool app_event(core::bc_ievent& p_event) override final;
-
-		void app_unload_content() override final;
-
-		void app_destroy() override final;
-
-		void app_close_engine_components() override final;
-
-		void _initialize(game::bc_engine_application_parameter&) override;
-
-		void _destroy() override;
-	};
-
-	template< class TApp >
-	bc_base_render_application< TApp >::bc_base_render_application()
-		: bc_render_application(),
+	bc_render_application::bc_render_application()
+		: game::bc_render_application(),
 		m_service_manager(nullptr),
 		m_game_system(nullptr)
 	{
 	}
 
-	template< class TApp >
-	bc_base_render_application< TApp >::~bc_base_render_application()
+	bc_render_application::~bc_render_application()
 	{
 	}
 
-	template< class TApp >
-	void bc_base_render_application< TApp >::app_start_engine_components(game::bc_engine_component_parameter& p_engine_components)
+	void bc_render_application::app_start_engine_components(game::bc_engine_component_parameter& p_engine_components)
 	{
 #ifdef BC_MEMORY_ENABLE
 		core::bc_memmng::startup
@@ -182,7 +78,7 @@ namespace black_cat
 #ifdef BC_DEBUG
 		l_logger_manager->register_listener
 		(
-			core::bc_enum::or({core::bc_log_type::debug, core::bc_log_type::error }),
+			core::bc_enum:: or ({ core::bc_log_type::debug, core::bc_log_type::error }),
 			core::bc_make_unique< platform::bc_ide_logger >(core::bc_alloc_type::program)
 		);
 #endif
@@ -191,17 +87,17 @@ namespace black_cat
 		(
 			core::g_param_rsv_mesh,
 			core::bc_expr_param_func_pack_string([this](const core::bc_string& p_mesh_name)
-				{
-					return core::bc_parameter_pack(core::bc_lazy_content(p_mesh_name));
-				})
+			{
+				return core::bc_parameter_pack(core::bc_lazy_content(p_mesh_name));
+			})
 		);
 		l_expression_parameter_manager->register_resolver
 		(
 			core::g_param_rsv_heightmap,
 			core::bc_expr_param_func_pack_string([this](const core::bc_string& p_heightmap_name)
-				{
-					return core::bc_parameter_pack(core::bc_lazy_content(p_heightmap_name));
-				})
+			{
+				return core::bc_parameter_pack(core::bc_lazy_content(p_heightmap_name));
+			})
 		);
 
 		l_content_stream_manager->register_loader< graphic::bc_texture2d_content, bc_texture_loader >
@@ -259,8 +155,7 @@ namespace black_cat
 		application_start_engine_components(p_engine_components, *m_service_manager);
 	}
 
-	template< class TApp >
-	void bc_base_render_application< TApp >::app_initialize(const bcCHAR* p_commandline)
+	void bc_render_application::app_initialize(const bcCHAR* p_commandline)
 	{
 		auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
 		auto* l_entity_manager = m_service_manager->get_service< game::bc_entity_manager >();
@@ -271,10 +166,10 @@ namespace black_cat
 		(
 			game::bc_game_system_parameter(game::bc_render_system_parameter
 			(
-				bc_render_application::get_output_window().get_width(),
-				bc_render_application::get_output_window().get_height(),
+				game::bc_render_application::get_output_window().get_width(),
+				game::bc_render_application::get_output_window().get_height(),
 				graphic::bc_format::R8G8B8A8_UNORM,
-				bc_render_application::get_output_window().get_device_output()
+				game::bc_render_application::get_output_window().get_device_output()
 			))
 		);
 
@@ -292,37 +187,32 @@ namespace black_cat
 		application_initialize(p_commandline);
 	}
 
-	template< class TApp >
-	void bc_base_render_application< TApp >::app_load_content()
+	void bc_render_application::app_load_content()
 	{
 		application_load_content(m_service_manager->get_service< core::bc_content_stream_manager >());
 	}
 
-	template< class TApp >
-	void bc_base_render_application< TApp >::app_update(core_platform::bc_clock::update_param p_clock_update_param)
+	void bc_render_application::app_update(core_platform::bc_clock::update_param p_clock_update_param)
 	{
 		application_update(p_clock_update_param);
 	}
 
-	template< class TApp >
-	void bc_base_render_application<TApp>::app_render(core_platform::bc_clock::update_param p_clock_update_param)
+	void bc_render_application::app_render(core_platform::bc_clock::update_param p_clock_update_param)
 	{
 		application_render(p_clock_update_param);
 	}
 
-	template< class TApp >
-	bool bc_base_render_application< TApp >::app_event(core::bc_ievent& p_event)
+	bool bc_render_application::app_event(core::bc_ievent& p_event)
 	{
 		bool l_result = false;
 
-		l_result = l_result || bc_render_application::app_event(p_event);
+		l_result = l_result || game::bc_render_application::app_event(p_event);
 		l_result = l_result || application_event(p_event);
 
 		return l_result;
 	}
 
-	template< class TApp >
-	void bc_base_render_application< TApp >::app_unload_content()
+	void bc_render_application::app_unload_content()
 	{
 		auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
 
@@ -332,14 +222,12 @@ namespace black_cat
 		l_content_stream_manager->unload_content_stream("engine_resources");
 	}
 
-	template< class TApp >
-	void bc_base_render_application< TApp >::app_destroy()
+	void bc_render_application::app_destroy()
 	{
 		application_destroy();
 	}
 
-	template< class TApp >
-	void bc_base_render_application< TApp >::app_close_engine_components()
+	void bc_render_application::app_close_engine_components()
 	{
 		application_close_engine_components();
 
@@ -355,17 +243,5 @@ namespace black_cat
 
 		core::bc_memmng::close();
 #endif
-	}
-
-	template< class TApp >
-	void bc_base_render_application<TApp>::_initialize(game::bc_engine_application_parameter& p_parameter)
-	{
-		bc_render_application::_initialize(p_parameter);
-	}
-
-	template< class TApp >
-	void bc_base_render_application<TApp>::_destroy()
-	{
-		bc_render_application::_destroy();
 	}
 }

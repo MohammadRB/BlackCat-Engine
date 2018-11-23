@@ -19,6 +19,7 @@ namespace black_cat
 			m_termination_code(0),
 			m_min_update_rate(60),
 			m_render_rate(m_min_update_rate),
+			m_time_delta_buffer{},
 			m_current_time_delta_sample(0),
 			m_fps(0)
 		{
@@ -71,39 +72,39 @@ namespace black_cat
 
 					m_clock->update();
 
-					core_platform::bc_clock::small_delta_time l_elaped = m_clock->get_elapsed();
+					core_platform::bc_clock::small_delta_time l_elapsed = m_clock->get_elapsed();
 					core_platform::bc_clock::big_delta_time l_total_elapsed = m_clock->get_total_elapsed();
 
 #ifdef BC_DEBUG
-					if (l_elaped > 1000.0f)
+					if (l_elapsed > 1000.0f)
 					{
-						l_elaped = l_update_elapsing;
+						l_elapsed = l_update_elapsing;
 					}
 #endif
 
-					l_local_elapsed += l_elaped;
+					l_local_elapsed += l_elapsed;
 					while (l_local_elapsed >= l_update_elapsing)
 					{
 						app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_update_elapsing));
 						l_local_elapsed -= l_update_elapsing;
 					}
 
-					app_render(core_platform::bc_clock::update_param(l_total_elapsed, l_elaped));
+					app_render(core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed));
 
 					if (m_render_rate != -1) // Fixed render rate
 					{
 						core_platform::bc_clock::small_delta_time l_render_elapsing = 1000.0f / m_render_rate;
 
-						if(l_elaped < l_render_elapsing)
+						if(l_elapsed < l_render_elapsing)
 						{
-							auto l_diff = l_render_elapsing - l_elaped;
+							auto l_diff = l_render_elapsing - l_elapsed;
 							core_platform::bc_thread::current_thread_sleep_for(l_diff * 1000000);
 
-							l_elaped = l_render_elapsing;
+							l_elapsed = l_render_elapsing;
 						}
 					}
 
-					_calculate_fps(l_elaped);
+					_calculate_fps(l_elapsed);
 
 #ifdef BC_MEMORY_ENABLE
 					core::bc_memmng::get().end_of_frame();
@@ -142,7 +143,7 @@ namespace black_cat
 		{
 			if (core::bc_ievent::event_is< platform::bc_app_event_window_resizing >(p_event))
 			{
-				platform::bc_app_event_window_resizing& l_resizing_event = static_cast< platform::bc_app_event_window_resizing& >(p_event);
+				auto& l_resizing_event = static_cast< platform::bc_app_event_window_resizing& >(p_event);
 
 				if (l_resizing_event.get_window_id() == m_output_window->get_id())
 				{
@@ -185,7 +186,6 @@ namespace black_cat
 				if(l_close_event.get_window_id() == m_output_window->get_id())
 				{
 					platform::bc_app_event_exit l_exit_event(0);
-
 					core::bc_get_service< core::bc_event_manager >()->process_event(l_exit_event);
 				}
 

@@ -43,6 +43,12 @@ namespace black_cat
 
 			bc_game_system& operator=(bc_game_system&&) = default;
 
+			template<typename T>
+			T* get_service()
+			{
+				return core::bc_get_service<T>();
+			}
+
 			bc_input_system& get_input_system()
 			{
 				return m_input_system;

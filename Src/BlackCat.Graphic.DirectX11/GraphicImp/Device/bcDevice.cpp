@@ -1197,6 +1197,8 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device< g_api_dx11 >::resize_back_buffer(bcUINT p_width, bcUINT p_height, bc_format p_format)
 		{
+			bc_texture2d l_back_buffer = get_back_buffer_texture();
+
 			// If we are in fullscreen state change resolution too
 			if (get_full_screen()) // TODO check for 
 			{
@@ -1217,8 +1219,6 @@ namespace black_cat
 				);
 				dx_call(m_pack.m_swap_chain->ResizeTarget(&l_best_mode_desc));
 			}
-
-			bc_texture2d l_back_buffer = get_back_buffer_texture();
 
 			bc_device_parameters l_new_parameters(p_width, p_height, p_format, bc_texture_ms_config(1, 0));
 			bc_device_parameters l_old_parameters(l_back_buffer.get_width(), l_back_buffer.get_height(), l_back_buffer.get_format(), bc_texture_ms_config(1, 0));

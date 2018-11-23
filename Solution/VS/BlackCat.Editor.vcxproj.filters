@@ -173,6 +173,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_bcFormObject.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorRenderApplicationThread.cpp">
+      <Filter>Editor\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectListCommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectInsertCommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_bcBlackCatEditor.h">
@@ -215,6 +224,18 @@
       <Filter>Editor</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectSelectCommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObjectInsert.h">
+      <Filter>Editor\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorRenderApplicationThread.h">
+      <Filter>Editor\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectListCommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectInsertCommand.h">
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
   </ItemGroup>

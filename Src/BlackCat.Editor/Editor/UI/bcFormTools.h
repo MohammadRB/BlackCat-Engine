@@ -18,6 +18,7 @@ namespace black_cat
 		{
 			none,
 			object_selection,
+			object_insert,
 			terrain_height,
 			terrain_smooth,
 			terrain_material,
@@ -30,15 +31,19 @@ namespace black_cat
 			using state = bc_form_tools_state;
 
 		public:
-			bc_form_tools(bc_ui_command_service& p_ui_command_service, 
-				QDockWidget& p_container, 
-				bc_d3d_output_widget& p_render_widget, 
-				bc_form_terrain& p_terrain_form);
+			bc_form_tools(bc_ui_command_service& p_ui_command_service,
+				bc_d3d_output_widget& p_render_widget,
+				QDockWidget& p_container,
+				QToolBox& p_tool_properties_container,
+				bc_form_terrain& p_terrain_form,
+				bc_form_object_insert& p_object_insert_form);
 
 		protected:
 
 		private slots:
 			void objectSelectionToggled(bool p_toggled);
+
+			void objectInsertToggled(bool p_toggled);
 
 			void terrainHeightToggled(bool p_toggled);
 
@@ -61,9 +66,12 @@ namespace black_cat
 
 			bc_d3d_output_widget& m_render_widget;
 			bc_form_terrain& m_terrain_form;
+			bc_form_object_insert& m_object_insert_form;
 
 			QDockWidget& m_tool_bar;
+			QToolBox& m_tool_properties_container;
 			QAbstractButton* m_object_selection;
+			QAbstractButton* m_object_insert;
 			QAbstractButton* m_terrain_height;
 			QAbstractButton* m_terrain_smooth;
 			QAbstractButton* m_terrain_material;

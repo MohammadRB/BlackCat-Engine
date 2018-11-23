@@ -12,7 +12,7 @@ namespace black_cat
 	namespace game
 	{
 		inline bc_actor::bc_actor()
-			: m_index(g_actor_invalid_index)
+			: m_index(invalid_index)
 		{
 		}
 
@@ -65,7 +65,7 @@ namespace black_cat
 		inline void bc_actor::destroy()
 		{
 			_get_manager()->remove_actor(*this);
-			m_index = g_actor_invalid_index;
+			m_index = invalid_index;
 		}
 
 		inline bool bc_actor::operator==(const bc_actor& p_other) const noexcept

@@ -63,7 +63,8 @@ namespace black_cat
 		template< class TService >
 		TService* bc_get_service()
 		{
-			return bc_service_manager::get().get_service<TService>();
+			static bc_service_manager& s_instance = bc_service_manager::get();
+			return s_instance.get_service<TService>();
 		}
 
 		class BC_CORE_DLL _bc_service_container : private core_platform::bc_no_copy

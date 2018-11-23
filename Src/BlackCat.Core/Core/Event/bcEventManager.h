@@ -22,9 +22,9 @@ namespace black_cat
 		using bc_event_ptr = bc_unique_ptr<TEvent>;
 
 		template< class TEvent >
-		bc_event_ptr<TEvent> bc_make_event(TEvent& p_event)
+		bc_event_ptr<std::decay_t<TEvent>> bc_make_event(TEvent&& p_event)
 		{
-			return bc_make_unique<TEvent>(p_event);
+			return bc_make_unique<std::decay_t<TEvent>>(std::forward<TEvent>(p_event));
 		}
 
 		class _bc_queued_event
@@ -90,22 +90,34 @@ namespace black_cat
 
 			void unregister_event_listener(bc_event_listener_handle& p_listener_handle);
 
-			// Process an event and return true if there is any handler for this type of event, otherwise return false
+			/**
+			 * \brief Process an event and return true if there is any handler for this type of event, otherwise return false.
+			 * \param p_event 
+			 * \return 
+			 */
 			bool process_event(bc_ievent& p_event);
 
-			// Queue event for processing in a specific time in future that will be indicated by millisecond.
-			// This function is thread safe and can be called with multiple threads.
-			void queue_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::small_delta_time p_milisecond);
-
-			// Process queued events if it's time to handle them and return number of proccessed events.
-			// This function isn't thread safe and in one time must be called only by one thread.
+			/**
+			 * \brief Queue event for processing in a specific time in future that will be indicated by millisecond.
+			 * This function is thread safe and can be called with multiple threads.
+			 * \param p_event 
+			 * \param p_millisecond 
+			 */
+			template< class TEvent >
+			void queue_event(TEvent&& p_event, core_platform::bc_clock::small_delta_time p_millisecond);
+			
+			/**
+			 * \brief Process queued events if it's time to handle them and return number of precessed events.
+			 * This function isn't thread safe and in one time must be called only by one thread.
+			 * \param p_current_time 
+			 * \return 
+			 */
 			bcUINT32 process_event_queue(core_platform::bc_clock::big_clock p_current_time);
 
 		protected:
-			void update(core_platform::bc_clock::update_param p_clock_update_param) override
-			{
-				process_event_queue(p_clock_update_param.m_total_elapsed);
-			}
+			void update(core_platform::bc_clock::update_param p_clock_update_param) override;
+
+			void queue_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::small_delta_time p_millisecond);
 
 		private:
 			core_platform::bc_shared_mutex m_handlers_mutex;
@@ -115,5 +127,12 @@ namespace black_cat
 			bc_concurrent_queue< _bc_queued_event > m_global_queue;
 			core_platform::bc_clock::big_clock m_total_elapsed;
 		};
+
+		template< class TEvent >
+		void bc_event_manager::queue_event(TEvent&& p_event, core_platform::bc_clock::small_delta_time p_millisecond)
+		{
+			auto l_event = static_cast<bc_event_ptr<bc_ievent>>(bc_make_event(std::forward<TEvent>(p_event)));
+			queue_event(std::move(l_event), p_millisecond);
+		}
 	}
 }

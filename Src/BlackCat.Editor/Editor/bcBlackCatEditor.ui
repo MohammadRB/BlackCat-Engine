@@ -38,7 +38,7 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_4">
+   <layout class="QHBoxLayout" name="horizontalLayout">
     <property name="leftMargin">
      <number>3</number>
     </property>
@@ -174,7 +174,7 @@
             <number>0</number>
            </property>
            <property name="fontAwesome" stdset="0">
-            <string>handpointero,areachart</string>
+            <string>handpointero,cubes,areachart</string>
            </property>
            <widget class="QWidget" name="rightToolBoxObjectSelect">
             <property name="geometry">
@@ -182,7 +182,7 @@
               <x>0</x>
               <y>0</y>
               <width>338</width>
-              <height>736</height>
+              <height>708</height>
              </rect>
             </property>
             <attribute name="label">
@@ -215,13 +215,31 @@
              </property>
             </widget>
            </widget>
+           <widget class="QWidget" name="rightToolBoxObjectInsert">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>338</width>
+              <height>708</height>
+             </rect>
+            </property>
+            <attribute name="label">
+             <string>ObjectInsert</string>
+            </attribute>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QListWidget" name="entityNameList"/>
+             </item>
+            </layout>
+           </widget>
            <widget class="QWidget" name="rightToolBoxTerrain">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
               <width>338</width>
-              <height>736</height>
+              <height>708</height>
              </rect>
             </property>
             <attribute name="icon">
@@ -477,7 +495,7 @@
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="toolsDockContents">
-    <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0,0">
+    <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0,0,0">
      <property name="spacing">
       <number>0</number>
      </property>
@@ -518,6 +536,31 @@
        </property>
        <property name="fontAwesome" stdset="0">
         <string>handpointero</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="objectInsertButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Object Insert</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+       <property name="fontAwesome" stdset="0">
+        <string>cubes</string>
        </property>
       </widget>
      </item>

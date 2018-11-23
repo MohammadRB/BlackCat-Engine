@@ -17,6 +17,7 @@
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QSlider>
@@ -35,7 +36,7 @@ class Ui_bcBlackCatEditorClass
 {
 public:
     QWidget *centralWidget;
-    QVBoxLayout *verticalLayout_4;
+    QHBoxLayout *horizontalLayout;
     QHBoxLayout *mainLayout;
     QFrame *leftFrame;
     QVBoxLayout *verticalLayout;
@@ -51,6 +52,9 @@ public:
     QWidget *rightToolBoxObjectSelect;
     QLabel *entityNameLabel;
     QLabel *entityNameLabelValue;
+    QWidget *rightToolBoxObjectInsert;
+    QHBoxLayout *horizontalLayout_2;
+    QListWidget *entityNameList;
     QWidget *rightToolBoxTerrain;
     QFormLayout *formLayout;
     QLabel *terrainHeightLable;
@@ -71,6 +75,7 @@ public:
     QWidget *toolsDockContents;
     QVBoxLayout *verticalLayout_3;
     QToolButton *objectSelectButton;
+    QToolButton *objectInsertButton;
     QToolButton *terrainHeightButton;
     QToolButton *terrainSmoothButton;
     QToolButton *terrainMaterialButton;
@@ -95,11 +100,11 @@ public:
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
         centralWidget->setSizePolicy(sizePolicy1);
-        verticalLayout_4 = new QVBoxLayout(centralWidget);
-        verticalLayout_4->setSpacing(6);
-        verticalLayout_4->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
-        verticalLayout_4->setContentsMargins(3, 3, 3, 3);
+        horizontalLayout = new QHBoxLayout(centralWidget);
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setContentsMargins(3, 3, 3, 3);
         mainLayout = new QHBoxLayout();
         mainLayout->setSpacing(6);
         mainLayout->setObjectName(QStringLiteral("mainLayout"));
@@ -171,7 +176,7 @@ public:
         rightToolBox->setObjectName(QStringLiteral("rightToolBox"));
         rightToolBoxObjectSelect = new QWidget();
         rightToolBoxObjectSelect->setObjectName(QStringLiteral("rightToolBoxObjectSelect"));
-        rightToolBoxObjectSelect->setGeometry(QRect(0, 0, 338, 736));
+        rightToolBoxObjectSelect->setGeometry(QRect(0, 0, 338, 708));
         entityNameLabel = new QLabel(rightToolBoxObjectSelect);
         entityNameLabel->setObjectName(QStringLiteral("entityNameLabel"));
         entityNameLabel->setGeometry(QRect(10, 10, 81, 16));
@@ -179,9 +184,22 @@ public:
         entityNameLabelValue->setObjectName(QStringLiteral("entityNameLabelValue"));
         entityNameLabelValue->setGeometry(QRect(100, 10, 231, 16));
         rightToolBox->addItem(rightToolBoxObjectSelect, QStringLiteral("ObjectSelection"));
+        rightToolBoxObjectInsert = new QWidget();
+        rightToolBoxObjectInsert->setObjectName(QStringLiteral("rightToolBoxObjectInsert"));
+        rightToolBoxObjectInsert->setGeometry(QRect(0, 0, 338, 708));
+        horizontalLayout_2 = new QHBoxLayout(rightToolBoxObjectInsert);
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        entityNameList = new QListWidget(rightToolBoxObjectInsert);
+        entityNameList->setObjectName(QStringLiteral("entityNameList"));
+
+        horizontalLayout_2->addWidget(entityNameList);
+
+        rightToolBox->addItem(rightToolBoxObjectInsert, QStringLiteral("ObjectInsert"));
         rightToolBoxTerrain = new QWidget();
         rightToolBoxTerrain->setObjectName(QStringLiteral("rightToolBoxTerrain"));
-        rightToolBoxTerrain->setGeometry(QRect(0, 0, 338, 736));
+        rightToolBoxTerrain->setGeometry(QRect(0, 0, 338, 708));
         formLayout = new QFormLayout(rightToolBoxTerrain);
         formLayout->setSpacing(6);
         formLayout->setContentsMargins(11, 11, 11, 11);
@@ -282,7 +300,7 @@ public:
         mainLayout->addWidget(rightFrame);
 
 
-        verticalLayout_4->addLayout(mainLayout);
+        horizontalLayout->addLayout(mainLayout);
 
         bcBlackCatEditorClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(bcBlackCatEditorClass);
@@ -335,6 +353,15 @@ public:
         objectSelectButton->setAutoExclusive(true);
 
         verticalLayout_3->addWidget(objectSelectButton);
+
+        objectInsertButton = new QToolButton(toolsDockContents);
+        objectInsertButton->setObjectName(QStringLiteral("objectInsertButton"));
+        sizePolicy6.setHeightForWidth(objectInsertButton->sizePolicy().hasHeightForWidth());
+        objectInsertButton->setSizePolicy(sizePolicy6);
+        objectInsertButton->setCheckable(true);
+        objectInsertButton->setAutoExclusive(true);
+
+        verticalLayout_3->addWidget(objectInsertButton);
 
         terrainHeightButton = new QToolButton(toolsDockContents);
         terrainHeightButton->setObjectName(QStringLiteral("terrainHeightButton"));
@@ -394,10 +421,11 @@ public:
     {
         bcBlackCatEditorClass->setWindowTitle(QApplication::translate("bcBlackCatEditorClass", "BlackCatEditor", nullptr));
         leftBottomTab->setTabText(leftBottomTab->indexOf(consoleTab), QApplication::translate("bcBlackCatEditorClass", "Console", nullptr));
-        rightToolBox->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "handpointero,areachart", nullptr)));
+        rightToolBox->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "handpointero,cubes,areachart", nullptr)));
         entityNameLabel->setText(QApplication::translate("bcBlackCatEditorClass", "EntityName:", nullptr));
         entityNameLabelValue->setText(QString());
         rightToolBox->setItemText(rightToolBox->indexOf(rightToolBoxObjectSelect), QApplication::translate("bcBlackCatEditorClass", "ObjectSelection", nullptr));
+        rightToolBox->setItemText(rightToolBox->indexOf(rightToolBoxObjectInsert), QApplication::translate("bcBlackCatEditorClass", "ObjectInsert", nullptr));
         terrainHeightLable->setText(QApplication::translate("bcBlackCatEditorClass", "Height: ", nullptr));
         terrainHeightValue->setText(QApplication::translate("bcBlackCatEditorClass", "0", nullptr));
         terrainSmoothLable->setText(QApplication::translate("bcBlackCatEditorClass", "Smooth:", nullptr));
@@ -420,6 +448,11 @@ public:
 #endif // QT_NO_TOOLTIP
         objectSelectButton->setText(QString());
         objectSelectButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "handpointero", nullptr)));
+#ifndef QT_NO_TOOLTIP
+        objectInsertButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Object Insert", nullptr));
+#endif // QT_NO_TOOLTIP
+        objectInsertButton->setText(QString());
+        objectInsertButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "cubes", nullptr)));
 #ifndef QT_NO_TOOLTIP
         terrainHeightButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Terrain Height", nullptr));
 #endif // QT_NO_TOOLTIP

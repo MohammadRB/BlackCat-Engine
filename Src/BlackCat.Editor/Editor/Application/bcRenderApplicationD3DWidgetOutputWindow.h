@@ -78,12 +78,12 @@ namespace black_cat
 
 		inline void bc_render_application_d3dwidget_output_window::update()
 		{
+			// Because this thread will be called by engine thread we cannot update anything related to UI
 		}
 
 		inline void bc_render_application_d3dwidget_output_window::close() noexcept
 		{
-			// Because we are running blackcat appliction in a separate thread and this function will be called 
-			// by that thread we can't call qt widget close function due to concurrency problem with main gui thread
+			// Because this thread will be called by engine thread we cannot update anything related to UI
 			//m_d3d_widget->close();
 		}
 	}
