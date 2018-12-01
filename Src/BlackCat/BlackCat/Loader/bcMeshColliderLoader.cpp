@@ -7,7 +7,7 @@
 #include "PhysicsImp/Shape/bcShape.h"
 #include "Game/System/Render/bcVertexLayout.h"
 #include "Game/System/bcGameSystem.h"
-#include "BlackCat/bcUtility.h"
+#include "Game/System/Physics/bcPhysicsShapeUtility.h"
 #include "BlackCat/Loader/bcMeshLoader.h"
 #include "BlackCat/Loader/bcMeshColliderLoader.h"
 
@@ -112,8 +112,8 @@ namespace black_cat
 		core::bc_matrix4f l_node_transformation;
 
 		bc_mesh_loader::convert_aimatrix(p_ainode.mTransformation, l_node_transformation);
-		core::bc_matrix4f l_node_absolute_transformation = l_node_transformation * p_parent_transformation;
-		physics::bc_shape_flag l_shape_flag = p_generate_high_detail_query_shape ?
+		const core::bc_matrix4f l_node_absolute_transformation = l_node_transformation * p_parent_transformation;
+		const physics::bc_shape_flag l_shape_flag = p_generate_high_detail_query_shape ?
 			core::bc_enum::or({ physics::bc_shape_flag::simulation, physics::bc_shape_flag::visualization }) :
 			physics::bc_shape_flag::default;
 
@@ -124,7 +124,7 @@ namespace black_cat
 
 			if (l_mesh_name == "sphere")
 			{
-				physics::bc_shape_sphere l_px_sphere = bc_extract_sphere_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
+				physics::bc_shape_sphere l_px_sphere = game::bc_extract_sphere_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
 					(
 						reinterpret_cast<const core::bc_vector3f*>(l_aimesh->mVertices),
 						sizeof(aiVector3D),
@@ -135,7 +135,7 @@ namespace black_cat
 			}
 			else if (l_mesh_name == "box")
 			{
-				physics::bc_shape_box l_px_box = bc_extract_box_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
+				physics::bc_shape_box l_px_box = game::bc_extract_box_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
 					(
 						reinterpret_cast<const core::bc_vector3f*>(l_aimesh->mVertices),
 						sizeof(aiVector3D),
@@ -146,7 +146,7 @@ namespace black_cat
 			}
 			else if (l_mesh_name == "capsule")
 			{
-				physics::bc_shape_capsule l_px_capsule = bc_extract_capsule_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
+				physics::bc_shape_capsule l_px_capsule = game::bc_extract_capsule_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
 					(
 						reinterpret_cast<const core::bc_vector3f*>(l_aimesh->mVertices),
 						sizeof(aiVector3D),
@@ -157,7 +157,7 @@ namespace black_cat
 			}
 			else if (l_mesh_name == "convex")
 			{
-				physics::bc_convex_mesh_desc l_px_convex_desc = bc_extract_convex_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
+				physics::bc_convex_mesh_desc l_px_convex_desc = game::bc_extract_convex_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
 					(
 						reinterpret_cast<const core::bc_vector3f*>(l_aimesh->mVertices),
 						sizeof(aiVector3D),
@@ -171,8 +171,8 @@ namespace black_cat
 			}
 			else if (l_mesh_name == "mesh")
 			{
-				core::bc_vector_frame< bcBYTE > p_intermediate_buffer;
-				physics::bc_triangle_mesh_desc l_px_triangle_desc1 = _bc_extract_triangle_mesh(l_aimesh, p_intermediate_buffer);
+				core::bc_vector_frame< bcBYTE > l_intermediate_buffer;
+				physics::bc_triangle_mesh_desc l_px_triangle_desc1 = _bc_extract_triangle_mesh(l_aimesh, l_intermediate_buffer);
 				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(l_px_triangle_desc1);
 				physics::bc_triangle_mesh_ref l_triangle_mesh = p_physics.create_triangle_mesh(l_triangle_buffer);
 
@@ -265,7 +265,7 @@ namespace black_cat
 			}
 		}
 
-		physics::bc_triangle_mesh_desc l_px_triangle_desc = bc_extract_mesh_from_points
+		physics::bc_triangle_mesh_desc l_px_triangle_desc = game::bc_extract_mesh_from_points
 		(
 			physics::bc_bounded_strided_typed_data< core::bc_vector3f >
 			(

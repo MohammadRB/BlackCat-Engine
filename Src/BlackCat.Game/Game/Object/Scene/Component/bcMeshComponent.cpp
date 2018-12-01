@@ -7,7 +7,6 @@
 #include "Game/Object/Scene/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/System/Render/bcRenderInstance.h"
-#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {
@@ -16,7 +15,7 @@ namespace black_cat
 		template< typename TIterator >
 		void _render_mesh_node(const bc_render_component& p_render_component,
 			const bc_sub_mesh& p_mesh_part,
-			const bc_mesh_part_transformation& p_transformations,
+			const bc_sub_mesh_transformation& p_transformations,
 			TIterator p_begin,
 			TIterator p_end)
 		{
@@ -70,9 +69,9 @@ namespace black_cat
 
 		bc_mesh_component& bc_mesh_component::operator=(bc_mesh_component&& p_other) noexcept
 		{
-			bc_iactor_component::operator=(std::move(p_other));
 			m_sub_mesh = std::move(p_other.m_sub_mesh);
 			m_mesh_part_transformation = std::move(p_other.m_mesh_part_transformation);
+			bc_iactor_component::operator=(std::move(p_other));
 
 			return *this;
 		}
@@ -84,7 +83,7 @@ namespace black_cat
 
 		void bc_mesh_component::set_world_pos(const core::bc_matrix4f& p_pos)
 		{
-			m_sub_mesh.calculate_absolute_transformations(p_pos, m_mesh_part_transformation);
+			m_sub_mesh.calculate_absolute_transformations(p_pos, m_mesh_part_transformation, m_bound_box);
 		}
 
 		void bc_mesh_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)

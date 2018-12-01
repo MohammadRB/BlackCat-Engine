@@ -72,9 +72,6 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\bcExport.h">
       <Filter>BlackCat</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\bcUtility.h">
-      <Filter>BlackCat</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\BlackCatPCH.h">
       <Filter>BlackCat</Filter>
     </ClInclude>
@@ -121,9 +118,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTerrainPassDx11.cpp">
       <Filter>BlackCat\RenderPass</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\bcUtility.cpp">
-      <Filter>BlackCat</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\BlackCatPCH.cpp">
       <Filter>BlackCat</Filter>

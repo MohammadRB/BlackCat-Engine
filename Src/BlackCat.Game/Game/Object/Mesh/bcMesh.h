@@ -12,8 +12,7 @@
 #include "Core/Math/bcMatrix4f.h"
 #include "Graphic/bcRenderApiInfo.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
-#include "GraphicImp/Resource/Texture/bcTexture2d.h"
-#include "GraphicImp/Resource/View/bcResourceView.h"
+#include "PhysicsImp/Shape/bcShapeBox.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/bcVertexLayout.h"
 #include "Game/System/Render/bcRenderState.h"
@@ -44,6 +43,8 @@ namespace black_cat
 			graphic::bc_buffer_ptr m_cbuffer;
 			graphic::bc_buffer_ptr m_vertex_buffer;
 			graphic::bc_buffer_ptr m_index_buffer;
+
+			physics::bc_shape_box m_bound_box {0,0,0};
 		};
 
 		class BC_GAME_DLL bc_mesh_node : public core_platform::bc_no_copy
@@ -69,7 +70,7 @@ namespace black_cat
 
 			node_indexing get_mesh_count() const;
 
-			bcUINT32 get_child_count() const;
+			bcUINT32 get_children_count() const;
 
 			const core::bc_string& get_name() const;
 
@@ -126,6 +127,8 @@ namespace black_cat
 			const bc_render_material* get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_render_state* get_node_mesh_render_state(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+
+			const physics::bc_shape_box* get_node_mesh_bound_box(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_mesh_part_collider* get_node_mesh_colliders(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 

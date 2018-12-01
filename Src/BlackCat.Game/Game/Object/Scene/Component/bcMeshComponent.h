@@ -5,12 +5,12 @@
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix3f.h"
 #include "Core/Math/bcMatrix4f.h"
+#include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/bcActor.h"
 #include "Game/Object/Scene/bcActorComponent.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Mesh/bcSubMesh.h"
-#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {
@@ -34,7 +34,7 @@ namespace black_cat
 				return m_sub_mesh;
 			}
 
-			const bc_mesh_part_transformation& get_mesh_part_transformation() const
+			const bc_sub_mesh_transformation& get_mesh_part_transformation() const
 			{
 				return m_mesh_part_transformation;
 			}
@@ -53,7 +53,8 @@ namespace black_cat
 
 		private:
 			bc_sub_mesh m_sub_mesh;
-			bc_mesh_part_transformation m_mesh_part_transformation;
+			bc_sub_mesh_transformation m_mesh_part_transformation;
+			physics::bc_bound_box m_bound_box;
 		};
 	}
 }

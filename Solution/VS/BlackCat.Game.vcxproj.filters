@@ -34,6 +34,9 @@
     <Filter Include="Game\System\Physics">
       <UniqueIdentifier>{d81fe06f-709c-4da9-9aa1-bcaa29054821}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Object\Scene\SceneGraph">
+      <UniqueIdentifier>{57a57c24-c593-4f84-b2a5-7a1ad0ed5ee6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h">
@@ -76,9 +79,6 @@
       <Filter>Game\Object\Scene</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcEntityManager.h">
-      <Filter>Game\Object\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcScenceGraph.h">
       <Filter>Game\Object\Scene</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcScene.h">
@@ -201,6 +201,15 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcNameComponent.h">
       <Filter>Game\Object\Scene\Component</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcSceneGraphNode.h">
+      <Filter>Game\Object\Scene\SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcScenceGraph.h">
+      <Filter>Game\Object\Scene\SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsShapeUtility.h">
+      <Filter>Game\System\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -231,9 +240,6 @@
       <Filter>Game\Object\Scene</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcEntityManager.cpp">
-      <Filter>Game\Object\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcScenceGraph.cpp">
       <Filter>Game\Object\Scene</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcScene.cpp">
@@ -314,5 +320,20 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcNameComponent.cpp">
       <Filter>Game\Object\Scene\Component</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcScenceGraph.cpp">
+      <Filter>Game\Object\Scene\SceneGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcSceneGraphNode.cpp">
+      <Filter>Game\Object\Scene\SceneGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\bcGameSystem.cpp">
+      <Filter>Game\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsShapeUtility.cpp">
+      <Filter>Game\System\Physics</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

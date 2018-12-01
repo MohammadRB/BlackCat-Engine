@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "PhysicsImp/Fundation/bcTransform.h"
+
 #include "Physics/Shape/bcBoundBox.h"
 #include "PhysicsImp/PhysicsImpPCH.h"
 

@@ -13,19 +13,19 @@ namespace black_cat
 		{
 		}
 
-		bc_render_thread_wrapper::bc_render_thread_wrapper(bc_render_thread_manager& p_thread_manager, bc_render_thread* p_thread)
+		bc_render_thread_guard::bc_render_thread_guard(bc_render_thread_manager& p_thread_manager, bc_render_thread* p_thread)
 			: m_thread_manager(p_thread_manager),
 			m_thread(p_thread)
 		{
 		}
 
-		bc_render_thread_wrapper::bc_render_thread_wrapper(bc_render_thread_wrapper&& p_other) noexcept
+		bc_render_thread_guard::bc_render_thread_guard(bc_render_thread_guard&& p_other) noexcept
 			: m_thread_manager(p_other.m_thread_manager)
 		{
 			operator=(std::move(p_other));
 		}
 
-		bc_render_thread_wrapper::~bc_render_thread_wrapper()
+		bc_render_thread_guard::~bc_render_thread_guard()
 		{
 			if(is_valid())
 			{
@@ -33,7 +33,7 @@ namespace black_cat
 			}
 		}
 
-		bc_render_thread_wrapper& bc_render_thread_wrapper::operator=(bc_render_thread_wrapper&& p_other) noexcept
+		bc_render_thread_guard& bc_render_thread_guard::operator=(bc_render_thread_guard&& p_other) noexcept
 		{
 			m_thread = p_other.m_thread;
 			p_other.m_thread = nullptr;
@@ -41,12 +41,12 @@ namespace black_cat
 			return *this;
 		}
 
-		bool bc_render_thread_wrapper::is_valid() const
+		bool bc_render_thread_guard::is_valid() const
 		{
 			return m_thread;
 		}
 
-		bc_render_thread* bc_render_thread_wrapper::get_thread() const
+		bc_render_thread* bc_render_thread_guard::get_thread() const
 		{
 			return m_thread;
 		}
@@ -59,10 +59,10 @@ namespace black_cat
 			for(bcUINT32 i = 0; i < p_thread_count; ++i)
 			{
 				auto l_render_pipeline = p_render_system.get_device().create_pipeline();
-				auto l_command_executer = p_render_system.get_device().create_command_executor();
+				auto l_command_executor = p_render_system.get_device().create_command_executor();
 
 				_bc_render_thread_entry l_entry;
-				l_entry.m_thread.reset(std::move(l_render_pipeline), std::move(l_command_executer));
+				l_entry.m_thread.reset(std::move(l_render_pipeline), std::move(l_command_executor));
 
 				m_threads.push_back(std::move(l_entry));
 			}
@@ -94,10 +94,11 @@ namespace black_cat
 			return m_available_thread_count.load(core_platform::bc_memory_order::relaxed);
 		}
 
-		bc_render_thread_wrapper bc_render_thread_manager::get_available_thread() const
+		bc_render_thread_guard bc_render_thread_manager::get_available_thread() const
 		{
-			core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_threads_mutex);
 			{
+				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_threads_mutex);
+				
 				for (_bc_render_thread_entry& l_entry : m_threads)
 				{
 					if (!l_entry.m_is_available)
@@ -110,14 +111,14 @@ namespace black_cat
 
 					bcAssert(l_count >= 0);
 
-					return bc_render_thread_wrapper(const_cast<bc_render_thread_manager&>(*this), &l_entry.m_thread);
+					return bc_render_thread_guard(const_cast<bc_render_thread_manager&>(*this), &l_entry.m_thread);
 				}
 			}
 
-			return bc_render_thread_wrapper(const_cast<bc_render_thread_manager&>(*this), nullptr);
+			return bc_render_thread_guard(const_cast<bc_render_thread_manager&>(*this), nullptr);
 		}
 
-		bc_render_thread_wrapper bc_render_thread_manager::get_available_thread_wait() const
+		bc_render_thread_guard bc_render_thread_manager::get_available_thread_wait() const
 		{
 			auto l_thread = get_available_thread();
 
@@ -128,12 +129,11 @@ namespace black_cat
 
 			{
 				core_platform::bc_unique_lock< core_platform::bc_mutex > l_guard(m_threads_mutex);
+				
+				m_threads_cv.wait(l_guard, [this]()
 				{
-					m_threads_cv.wait(l_guard, [this]()
-						{
-							return m_available_thread_count.load(core_platform::bc_memory_order::relaxed) > 0;
-						});
-				}
+					return m_available_thread_count.load(core_platform::bc_memory_order::relaxed) > 0;
+				});
 			}
 
 			return get_available_thread_wait();
@@ -141,8 +141,9 @@ namespace black_cat
 
 		void bc_render_thread_manager::set_available_thread(bc_render_thread& p_thread)
 		{
-			core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_threads_mutex);
 			{
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_threads_mutex);
+				
 				for (_bc_render_thread_entry& l_entry : m_threads)
 				{
 					if(&l_entry.m_thread != &p_thread)

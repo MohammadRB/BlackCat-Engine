@@ -2,6 +2,7 @@
 
 #include "PhysicsImp/PhysicsImpPCH.h"
 #include "PhysicsImp/bcExport.h"
+#include "PhysicsImp/Fundation/bcTransform.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "PhysicsImp/bcUtility.h"
 
@@ -104,6 +105,34 @@ namespace black_cat
 		void bc_platform_bound_box< g_api_physx >::scale(bcFLOAT p_scale) noexcept
 		{
 			m_pack.m_bound.scaleFast(p_scale);
+		}
+
+		template< >
+		BC_PHYSICSIMP_DLL
+		bool bc_platform_bound_box< g_api_physx >::is_empty() const noexcept
+		{
+			return m_pack.m_bound.isEmpty();
+		}
+
+		template< >
+		BC_PHYSICSIMP_DLL
+		void bc_platform_bound_box< g_api_physx >::set_empty() noexcept
+		{
+			m_pack.m_bound = m_pack.m_bound.empty();
+		}
+
+		template< >
+		BC_PHYSICSIMP_DLL
+		void bc_platform_bound_box< g_api_physx >::transform(const bc_transform& p_transform) noexcept
+		{
+			m_pack.m_bound = physx::PxBounds3::transformSafe(const_cast<bc_transform&>(p_transform).get_platform_pack().m_px_transform, m_pack.m_bound);
+		}
+
+		template< >
+		BC_PHYSICSIMP_DLL
+		void bc_platform_bound_box< g_api_physx >::transform(const core::bc_matrix3f& p_transform) noexcept
+		{
+			m_pack.m_bound = physx::PxBounds3::transformSafe(bc_to_right_hand(p_transform), m_pack.m_bound);
 		}
 	}
 }

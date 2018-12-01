@@ -3,7 +3,7 @@
 #include "Game/GamePCH.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcRenderThread.h"
-#include "Game/Object/Scene/bcScenceGraph.h"
+#include "Game/Object/Scene/SceneGraph/bcScenceGraph.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"

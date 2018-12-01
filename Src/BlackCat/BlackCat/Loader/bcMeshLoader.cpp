@@ -21,9 +21,9 @@
 #include "PhysicsImp/Fundation/bcMemoryBuffer.h"
 #include "Game/System/Render/bcVertexLayout.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/System/Physics/bcPhysicsShapeUtility.h"
 #include "BlackCat/Loader/bcMeshColliderLoader.h"
 #include "BlackCat/Loader/bcMeshLoader.h"
-#include "BlackCat/bcUtility.h"
 
 namespace black_cat
 {
@@ -249,6 +249,12 @@ namespace black_cat
 		p_mesh.m_cbuffer = std::move(l_cbuffer);
 		p_mesh.m_vertex_buffer = std::move(l_vertex_buffer);
 		p_mesh.m_index_buffer = std::move(l_index_buffer);
+		p_mesh.m_bound_box = game::bc_extract_box_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
+		(
+			&p_mesh.m_vertices[0].m_position,
+			sizeof(game::bc_vertex_pos_tex_nor_tan),
+			p_mesh.m_vertices.size()
+		));
 		p_mesh_render_state = p_render_system.create_render_state
 		(
 			graphic::bc_primitive::trianglelist,

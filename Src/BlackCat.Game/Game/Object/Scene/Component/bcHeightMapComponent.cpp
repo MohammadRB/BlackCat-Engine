@@ -6,7 +6,6 @@
 #include "Game/Object/Scene/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/System/Render/bcRenderInstance.h"
-#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {

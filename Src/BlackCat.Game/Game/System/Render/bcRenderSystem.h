@@ -28,7 +28,7 @@
 #include "Game/System/Render/bcRenderSystemParameter.h"
 #include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/bcRenderPass.h"
-#include "Game/Object/Scene/bcScenceGraph.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/System/Input/bcCamera.h"
 
 namespace black_cat

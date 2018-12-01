@@ -3,7 +3,9 @@
 #pragma once
 
 #include "Core/Math/bcVector3f.h"
+#include "Core/Math/bcMatrix3f.h"
 #include "Physics/bcPhysicsApi.h"
+#include "Physics/Fundation/bcTransform.h"
 
 namespace black_cat
 {
@@ -46,6 +48,14 @@ namespace black_cat
 			bool contain(const bc_platform_bound_box& p_box) noexcept;
 
 			void scale(bcFLOAT p_scale) noexcept;
+
+			bool is_empty() const noexcept;
+
+			void set_empty() noexcept;
+
+			void transform(const bc_transform& p_transform) noexcept;
+
+			void transform(const core::bc_matrix3f& p_transform) noexcept;
 
 			platform_pack& get_platform_pack()
 			{

@@ -3,7 +3,10 @@
 #pragma once
 
 #include "CorePlatformImp/Utility/bcClock.h"
+#include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcVector.h"
+#include "PhysicsImp/Fundation/bcTransform.h"
+#include "PhysicsImp/Shape/bcShapeBox.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/bcActor.hpp"
 

@@ -5,7 +5,7 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "PhysicsImp/Fundation/bcScene.h"
 #include "Game/bcExport.h"
-#include "Game/Object/Scene/bcScenceGraph.h"
+#include "Game/Object/Scene/SceneGraph/bcScenceGraph.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
 
 namespace black_cat

@@ -62,7 +62,7 @@ namespace black_cat
 
 			/**
 			 * \brief Bind render states to given device pipeline and apply changes
-			 * Apply InputAssemberStage for primitive topology, vertex buffer and index buffer
+			 * Apply InputAssemblerStage for primitive topology, vertex buffer and index buffer
 			 * Apply ProgrammableStates for parameters
 			 * \param p_render_state 
 			 */

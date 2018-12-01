@@ -32,18 +32,18 @@ namespace black_cat
 		};
 
 		/**
-		 * \brief RAII class for render threads that bc_render_thread_manager returns.
+		 * \brief RAII class for render threads
 		 */
-		class bc_render_thread_wrapper
+		class bc_render_thread_guard
 		{
 		public:
-			bc_render_thread_wrapper(bc_render_thread_manager& p_thread_manager, bc_render_thread* p_thread);
+			bc_render_thread_guard(bc_render_thread_manager& p_thread_manager, bc_render_thread* p_thread);
 
-			bc_render_thread_wrapper(bc_render_thread_wrapper&&) noexcept;
+			bc_render_thread_guard(bc_render_thread_guard&&) noexcept;
 
-			~bc_render_thread_wrapper();
+			~bc_render_thread_guard();
 
-			bc_render_thread_wrapper& operator=(bc_render_thread_wrapper&&) noexcept;
+			bc_render_thread_guard& operator=(bc_render_thread_guard&&) noexcept;
 
 			bool is_valid() const;
 
@@ -74,16 +74,16 @@ namespace black_cat
 			/**
 			 * \brief Try to get a render thread or if there is no thread available return invalid wrapper
 			 * \ThreadSafe
-			 * \return null if there is no thread availalbe
+			 * \return null if there is no thread available
 			 */
-			bc_render_thread_wrapper get_available_thread() const;
+			bc_render_thread_guard get_available_thread() const;
 
 			/**
 			 * \brief Get a render thread or if there is no thread available wait until one become available
 			 * \ThreadSafe
 			 * \return First thread that is free
 			 */
-			bc_render_thread_wrapper get_available_thread_wait() const;
+			bc_render_thread_guard get_available_thread_wait() const;
 
 			/**
 			 * \brief Give back a render thread to set it as available thread

@@ -87,12 +87,10 @@ namespace black_cat
 			for(physics::bc_updated_actor& l_px_actor : l_px_actors)
 			{
 				auto l_rigid_body = l_px_actor.m_actor.is_rigid_body();
-
 				if(l_rigid_body.is_valid())
 				{
 					bc_actor l_actor = p_physics.get_game_actor(l_rigid_body);
 					auto* l_mesh_component = l_actor.get_component<bc_mesh_component>();
-
 					if(l_mesh_component)
 					{
 						l_mesh_component->set_world_pos(l_px_actor.m_global_pose.get_matrix4());
