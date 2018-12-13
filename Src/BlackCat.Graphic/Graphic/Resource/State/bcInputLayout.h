@@ -13,7 +13,7 @@ namespace black_cat
 	{
 		struct bc_input_element_desc
 		{
-			bcCHAR* m_semantic_name;
+			const bcCHAR* m_semantic_name;
 			bcUINT m_semantic_index;
 			bc_format m_format;
 			bcUINT m_input_slot;

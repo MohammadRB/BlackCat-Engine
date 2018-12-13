@@ -12,7 +12,7 @@
 #include "Core/Math/bcMatrix4f.h"
 #include "Graphic/bcRenderApiInfo.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
-#include "PhysicsImp/Shape/bcShapeBox.h"
+#include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/bcVertexLayout.h"
 #include "Game/System/Render/bcRenderState.h"
@@ -44,7 +44,7 @@ namespace black_cat
 			graphic::bc_buffer_ptr m_vertex_buffer;
 			graphic::bc_buffer_ptr m_index_buffer;
 
-			physics::bc_shape_box m_bound_box {0,0,0};
+			physics::bc_bound_box m_bound_box;
 		};
 
 		class BC_GAME_DLL bc_mesh_node : public core_platform::bc_no_copy
@@ -128,7 +128,7 @@ namespace black_cat
 
 			const bc_render_state* get_node_mesh_render_state(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
-			const physics::bc_shape_box* get_node_mesh_bound_box(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+			const physics::bc_bound_box* get_node_mesh_bound_box(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_mesh_part_collider* get_node_mesh_colliders(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 

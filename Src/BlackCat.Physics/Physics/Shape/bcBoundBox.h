@@ -4,6 +4,7 @@
 
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix3f.h"
+#include "Core/Container/bcArray.h"
 #include "Physics/bcPhysicsApi.h"
 #include "Physics/Fundation/bcTransform.h"
 
@@ -35,7 +36,7 @@ namespace black_cat
 
 			core::bc_vector3f get_center() const noexcept;
 
-			core::bc_vector3f get_extend() const noexcept;
+			core::bc_vector3f get_half_extend() const noexcept;
 
 			void expand(const core::bc_vector3f& p_point) noexcept;
 
@@ -55,7 +56,15 @@ namespace black_cat
 
 			void transform(const bc_transform& p_transform) noexcept;
 
+			void transform(const core::bc_matrix4f& p_transform) noexcept;
+
 			void transform(const core::bc_matrix3f& p_transform) noexcept;
+
+			/**
+			 * \brief Get 8 points of box. Start from -x,+z counter clockwise to +x,+z, from +y to -y
+			 * \param p_result 
+			 */
+			void get_points(core::bc_array<core::bc_vector3f, 8>& p_result) const noexcept;
 
 			platform_pack& get_platform_pack()
 			{

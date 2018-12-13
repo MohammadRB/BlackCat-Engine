@@ -37,52 +37,50 @@ namespace black_cat
 			m_bound_box_transform()
 		{
 			core::bc_vector3f l_bound_box_position = p_parent.m_bound_box_transform.get_position();
-			const auto l_half_x = l_bound_box_position.x / 4;
-			const auto l_half_y = l_bound_box_position.y / 4;
-			const auto l_half_z = l_bound_box_position.z / 4;
+			core::bc_vector3f l_half_extend = p_parent.m_bound_box.get_half_extends() / 2;
 			const auto l_z_sign = graphic::bc_render_api_info::is_left_handed() ? +1 : -1;
 
 			switch (p_my_position)
 			{
 			case bc_octal_tree_node_position::top_left_back:
-				l_bound_box_position.x -= l_half_x;
-				l_bound_box_position.y += l_half_y;
-				l_bound_box_position.z += (l_half_z * l_z_sign);
+				l_bound_box_position.x -= l_half_extend.x;
+				l_bound_box_position.y += l_half_extend.y;
+				l_bound_box_position.z += (l_half_extend.z * l_z_sign);
 				break;
 			case bc_octal_tree_node_position::top_left_front:
-				l_bound_box_position.x -= l_half_x;
-				l_bound_box_position.y += l_half_y;
-				l_bound_box_position.z -= (l_half_z * l_z_sign);
+				l_bound_box_position.x -= l_half_extend.x;
+				l_bound_box_position.y += l_half_extend.y;
+				l_bound_box_position.z -= (l_half_extend.z * l_z_sign);
 				break;
 			case bc_octal_tree_node_position::top_right_front:
-				l_bound_box_position.x += l_half_x;
-				l_bound_box_position.y += l_half_y;
-				l_bound_box_position.z -= (l_half_z * l_z_sign);
+				l_bound_box_position.x += l_half_extend.x;
+				l_bound_box_position.y += l_half_extend.y;
+				l_bound_box_position.z -= (l_half_extend.z * l_z_sign);
 				break;
 			case bc_octal_tree_node_position::top_right_back:
-				l_bound_box_position.x += l_half_x;
-				l_bound_box_position.y += l_half_y;
-				l_bound_box_position.z += (l_half_z * l_z_sign);
+				l_bound_box_position.x += l_half_extend.x;
+				l_bound_box_position.y += l_half_extend.y;
+				l_bound_box_position.z += (l_half_extend.z * l_z_sign);
 				break;
 			case bc_octal_tree_node_position::bottom_left_back:
-				l_bound_box_position.x -= l_half_x;
-				l_bound_box_position.y -= l_half_y;
-				l_bound_box_position.z += (l_half_z * l_z_sign);
+				l_bound_box_position.x -= l_half_extend.x;
+				l_bound_box_position.y -= l_half_extend.y;
+				l_bound_box_position.z += (l_half_extend.z * l_z_sign);
 				break;
 			case bc_octal_tree_node_position::bottom_left_front:
-				l_bound_box_position.x -= l_half_x;
-				l_bound_box_position.y -= l_half_y;
-				l_bound_box_position.z -= (l_half_z * l_z_sign);
+				l_bound_box_position.x -= l_half_extend.x;
+				l_bound_box_position.y -= l_half_extend.y;
+				l_bound_box_position.z -= (l_half_extend.z * l_z_sign);
 				break;
 			case bc_octal_tree_node_position::bottom_right_front:
-				l_bound_box_position.x += l_half_x;
-				l_bound_box_position.y -= l_half_y;
-				l_bound_box_position.z -= (l_half_z * l_z_sign);
+				l_bound_box_position.x += l_half_extend.x;
+				l_bound_box_position.y -= l_half_extend.y;
+				l_bound_box_position.z -= (l_half_extend.z * l_z_sign);
 				break;
 			case bc_octal_tree_node_position::bottom_right_back:
-				l_bound_box_position.x += l_half_x;
-				l_bound_box_position.y -= l_half_y;
-				l_bound_box_position.z += (l_half_z * l_z_sign);
+				l_bound_box_position.x += l_half_extend.x;
+				l_bound_box_position.y -= l_half_extend.y;
+				l_bound_box_position.z += (l_half_extend.z * l_z_sign);
 				break;
 			}
 

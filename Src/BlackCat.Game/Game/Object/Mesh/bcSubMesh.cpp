@@ -41,8 +41,8 @@ namespace black_cat
 			}
 		}
 
-		bc_sub_mesh::bc_sub_mesh(const bc_sub_mesh& p_other)
-			: m_mesh(p_other.m_mesh),
+		bc_sub_mesh::bc_sub_mesh(bc_sub_mesh&& p_other) noexcept
+			: m_mesh(std::move(p_other.m_mesh)),
 			m_node(p_other.m_node)
 		{
 		}
@@ -51,9 +51,9 @@ namespace black_cat
 		{
 		}
 
-		bc_sub_mesh& bc_sub_mesh::operator=(const bc_sub_mesh& p_other)
+		bc_sub_mesh& bc_sub_mesh::operator=(bc_sub_mesh&& p_other) noexcept
 		{
-			m_mesh = p_other.m_mesh;
+			m_mesh = std::move(p_other.m_mesh);
 			m_node = p_other.m_node;
 
 			return *this;
@@ -89,22 +89,22 @@ namespace black_cat
 			{
 				const bc_mesh_node* l_node = p_begin;
 
-				auto l_transformation = *m_mesh->get_node_transformation(l_node) * p_parent_transformation;
-				p_result.m_transformations.push_back(l_transformation);
+				auto l_node_absolute_transformation = *m_mesh->get_node_transformation(l_node) * p_parent_transformation;
+				p_result.m_transformations.push_back(l_node_absolute_transformation);
 
 				// Update mesh bounding box based on its sub meshes
 				for (bcSIZE m = 0; m < l_node->get_mesh_count(); ++m)
 				{
-					auto* l_mesh_box = m_mesh->get_node_mesh_bound_box(l_node, m);
-					auto l_mesh_bound_box = bc_convert_shape_box_to_bound_box(*l_mesh_box, l_transformation);
+					auto l_node_mesh_box = *m_mesh->get_node_mesh_bound_box(l_node, m);
+					l_node_mesh_box.transform(l_node_absolute_transformation);
 
 					if (p_bound_box.is_empty())
 					{
-						p_bound_box = l_mesh_bound_box;
+						p_bound_box = l_node_mesh_box;
 					}
 					else
 					{
-						p_bound_box.expand(l_mesh_bound_box);
+						p_bound_box.expand(l_node_mesh_box);
 					}
 				}
 
@@ -116,7 +116,7 @@ namespace black_cat
 
 					_calculate_absolute_transformations
 					(
-						l_transformation,
+						l_node_absolute_transformation,
 						l_begin,
 						l_end,
 						p_result,

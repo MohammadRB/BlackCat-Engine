@@ -30,6 +30,7 @@
 #include "Game/System/Render/bcRenderPass.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/System/Input/bcCamera.h"
+#include "Game/System/Render/bcShapeDrawer.h"
 
 namespace black_cat
 {
@@ -107,7 +108,12 @@ namespace black_cat
 
 			bc_material_manager& get_material_manager() noexcept
 			{
-				return *m_material_manager.get();
+				return *m_material_manager;
+			}
+
+			bc_shape_drawer& get_shape_drawer() noexcept
+			{
+				return m_shape_drawer;
 			}
 
 			/**
@@ -235,7 +241,7 @@ namespace black_cat
 			void destroy_compute_state(bc_compute_state* p_compute_state);
 
 			template< typename TPass >
-			void add_render_pass(bcUINT p_location, core::bc_unique_ptr< TPass >&& p_pass);
+			void add_render_pass(bcUINT p_location, TPass&& p_pass);
 
 			template< typename T >
 			T* get_render_pass();
@@ -278,29 +284,31 @@ namespace black_cat
 			bool _event_handler(core::bc_ievent& p_event);
 
 			core::bc_content_stream_manager* m_content_stream;
-			graphic::bc_device m_device;
 			core::bc_unique_ptr< bc_render_thread_manager > m_thread_manager;
 			core::bc_unique_ptr< bc_material_manager > m_material_manager;
 
 			core::bc_event_listener_handle m_window_resize_handle;
 			core::bc_event_listener_handle m_device_listener_handle;
-
-			bc_render_pass_manager m_render_pass_manager;
+			core::bc_event_listener_handle m_frame_render_finish_handle;
 
 			core_platform::bc_mutex m_render_states_mutex;
-			core::bc_vector_movale< core::bc_nullable< bc_render_pass_state > > m_render_pass_states;
-			core::bc_vector_movale< render_state_entry > m_render_states;
-			core::bc_vector_movale< core::bc_nullable< bc_compute_state > > m_compute_states;
+			core::bc_vector< core::bc_nullable< bc_render_pass_state > > m_render_pass_states;
+			core::bc_vector< render_state_entry > m_render_states;
+			core::bc_vector< core::bc_nullable< bc_compute_state > > m_compute_states;
 
 			update_param m_last_update_params;
+			graphic::bc_device m_device;
 			graphic::bc_buffer_ptr m_global_cbuffer;
 			graphic::bc_buffer_ptr m_per_object_cbuffer;
 			graphic::bc_constant_buffer_parameter m_global_cbuffer_parameter;
 			graphic::bc_constant_buffer_parameter m_per_object_cbuffer_parameter;
+
+			bc_render_pass_manager m_render_pass_manager;
+			bc_shape_drawer m_shape_drawer;
 		};
 
 		template< typename TPass >
-		void bc_render_system::add_render_pass(bcUINT p_location, core::bc_unique_ptr<TPass>&& p_pass)
+		void bc_render_system::add_render_pass(bcUINT p_location, TPass&& p_pass)
 		{
 			m_render_pass_manager.add_pass(p_location, std::move(p_pass));
 

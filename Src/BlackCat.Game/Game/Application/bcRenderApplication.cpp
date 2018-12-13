@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "Core/Utility/bcLogger.h"
+#include "Core/bcEvent.h"
 #include "Game/Application/bcRenderApplication.h"
 
 namespace black_cat
@@ -54,6 +55,7 @@ namespace black_cat
 
 		bcINT32 bc_render_application::run()
 		{
+			auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
 			core_platform::bc_clock::small_delta_time l_update_elapsing = 1000.0f / m_min_update_rate;
 			core_platform::bc_clock::small_delta_time l_local_elapsed = 0;
 
@@ -72,8 +74,8 @@ namespace black_cat
 
 					m_clock->update();
 
-					core_platform::bc_clock::small_delta_time l_elapsed = m_clock->get_elapsed();
-					core_platform::bc_clock::big_delta_time l_total_elapsed = m_clock->get_total_elapsed();
+					auto l_elapsed = m_clock->get_elapsed();
+					auto l_total_elapsed = m_clock->get_total_elapsed();
 
 #ifdef BC_DEBUG
 					if (l_elapsed > 1000.0f)
@@ -85,11 +87,23 @@ namespace black_cat
 					l_local_elapsed += l_elapsed;
 					while (l_local_elapsed >= l_update_elapsing)
 					{
+						core::bc_event_frame_update_start l_event_frame_start;
+						l_event_manager->process_event(l_event_frame_start);
+
 						app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_update_elapsing));
 						l_local_elapsed -= l_update_elapsing;
+
+						core::bc_event_frame_update_finish l_event_frame_finish;
+						l_event_manager->process_event(l_event_frame_finish);
 					}
 
+					core::bc_event_frame_render_start l_event_frame_start;
+					l_event_manager->process_event(l_event_frame_start);
+
 					app_render(core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed));
+
+					core::bc_event_frame_render_finish l_event_frame_finish;
+					l_event_manager->process_event(l_event_frame_finish);
 
 					if (m_render_rate != -1) // Fixed render rate
 					{
@@ -113,8 +127,6 @@ namespace black_cat
 			}
 			catch (std::exception& l_exception)
 			{
-				core::bc_event_manager* l_event_manager = core::bc_service_manager::get().get_service< core::bc_event_manager >();
-
 				core::bc_app_event_error m_event(l_exception.what());
 				l_event_manager->process_event(m_event);
 
@@ -230,20 +242,16 @@ namespace black_cat
 		void bc_render_application::_initialize(bc_engine_application_parameter& p_parameters)
 		{
 			app_start_engine_components(p_parameters.m_engine_parameters);
-
-			auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
-
 			m_app = core::bc_make_unique< platform::bc_application >(core::bc_alloc_type::program, p_parameters.m_app_parameters);
 
 			if (p_parameters.m_app_parameters.m_output_window == nullptr)
 			{
 				m_default_output_window = core::bc_make_unique< bc_render_application_basic_output_window >(create_basic_render_window
 				(
-					core::bc_to_estring_frame(p_parameters.m_app_parameters.m_app_name).c_str(),
+					core::bc_to_estring(p_parameters.m_app_parameters.m_app_name),
 					800,
 					450
 				));
-
 				p_parameters.m_app_parameters.m_output_window = m_default_output_window.get();
 			}
 
@@ -261,6 +269,7 @@ namespace black_cat
 			m_current_time_delta_sample = 0;
 			m_fps = 0;
 
+			auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
 			m_event_handle_window_resizing = l_event_manager->register_event_listener< platform::bc_app_event_window_resizing >
 			(
 				core::bc_event_manager::delegate_type(this, &bc_render_application::app_event)

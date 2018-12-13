@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Math/bcVector3f.h"
+#include "Core/Container/bcArray.h"
 #include "Physics/bcPhysicsApi.h"
 #include "Physics/Shape/bcShapeGeometry.h"
 
@@ -41,6 +42,8 @@ namespace black_cat
 			bc_platform_shape_box& operator=(const bc_platform_shape_box&);
 
 			core::bc_vector3f get_half_extends() const noexcept;
+
+			void get_points(core::bc_array<core::bc_vector3f, 8>& p_result) const noexcept;
 
 			bc_shape_type get_type() const noexcept override
 			{

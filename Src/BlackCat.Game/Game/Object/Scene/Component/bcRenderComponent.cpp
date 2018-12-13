@@ -5,7 +5,6 @@
 #include "Game/Object/Scene/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
-#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {
@@ -42,11 +41,16 @@ namespace black_cat
 
 		void bc_render_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
 		{
-			m_render_system = &core::bc_service_manager::get().get_service< game::bc_game_system >()->get_render_system();
+			m_render_system = &core::bc_service_manager::get().get_service< bc_game_system >()->get_render_system();
 		}
 
 		void bc_render_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
+		}
+
+		void bc_render_component::render_box(const physics::bc_bound_box& p_box) const
+		{
+			m_render_system->get_shape_drawer().draw_wired_box(p_box);
 		}
 
 		void bc_render_component::render(const bc_render_state* p_render_state, const bc_render_instance& p_render_instance) const

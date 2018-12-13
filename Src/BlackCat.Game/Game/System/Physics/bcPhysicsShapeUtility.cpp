@@ -49,6 +49,32 @@ namespace black_cat
 			return physics::bc_shape_box((l_max_x - l_min_x) / 2, (l_max_y - l_min_y) / 2, (l_max_z - l_min_z) / 2);
 		}
 
+		physics::bc_bound_box bc_extract_bound_box_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f > p_vertices)
+		{
+			bcFLOAT l_min_x, l_min_y, l_min_z;
+			bcFLOAT l_max_x, l_max_y, l_max_z;
+			l_min_x = l_min_y = l_min_z = std::numeric_limits< bcFLOAT >::max();
+			l_max_x = l_max_y = l_max_z = std::numeric_limits< bcFLOAT >::min();
+
+			for (bcUINT32 l_index = 0; l_index < p_vertices.m_count; ++l_index)
+			{
+				auto& l_vertex = p_vertices.at(l_index);
+
+				l_min_x = std::min(l_min_x, l_vertex.x);
+				l_min_y = std::min(l_min_y, l_vertex.y);
+				l_min_z = std::min(l_min_z, l_vertex.z);
+				l_max_x = std::max(l_max_x, l_vertex.x);
+				l_max_y = std::max(l_max_y, l_vertex.y);
+				l_max_z = std::max(l_max_z, l_vertex.z);
+			}
+
+			return physics::bc_bound_box
+			(
+				core::bc_vector3f((l_max_x + l_min_x) / 2, (l_max_y + l_min_y) / 2, (l_max_z + l_min_z) / 2),
+				core::bc_vector3f((l_max_x - l_min_x) / 2, (l_max_y - l_min_y) / 2, (l_max_z - l_min_z) / 2)
+			);
+		}
+
 		physics::bc_shape_capsule bc_extract_capsule_from_points(physics::bc_bounded_strided_typed_data<core::bc_vector3f> p_vertices)
 		{
 			bcFLOAT l_min_x, l_min_y;
@@ -94,23 +120,12 @@ namespace black_cat
 
 		physics::bc_bound_box bc_convert_shape_box_to_bound_box(const physics::bc_shape_box& p_shape, const core::bc_matrix4f& p_shape_transform)
 		{
-			const auto l_z_sign = graphic::bc_render_api_info::is_left_handed() ? +1 : -1;
-			const core::bc_vector3f l_box_extends = p_shape.get_half_extends();
+			core::bc_array< core::bc_vector3f, 8> l_points;
+			p_shape.get_points(l_points);
 
-			core::bc_array< core::bc_vector4f, 8> l_points
+			std::transform(std::begin(l_points), std::end(l_points), std::begin(l_points), [&](const core::bc_vector3f& p_point)
 			{
-				core::bc_vector4f(-l_box_extends.x, l_box_extends.y, l_box_extends.z * l_z_sign, 0),
-				core::bc_vector4f(-l_box_extends.x, l_box_extends.y, -l_box_extends.z * l_z_sign, 0),
-				core::bc_vector4f(l_box_extends.x, l_box_extends.y, l_box_extends.z * l_z_sign, 0),
-				core::bc_vector4f(l_box_extends.x, l_box_extends.y, -l_box_extends.z * l_z_sign, 0),
-				core::bc_vector4f(-l_box_extends.x, -l_box_extends.y, l_box_extends.z * l_z_sign, 0),
-				core::bc_vector4f(-l_box_extends.x, -l_box_extends.y, -l_box_extends.z * l_z_sign, 0),
-				core::bc_vector4f(l_box_extends.x, -l_box_extends.y, l_box_extends.z * l_z_sign, 0),
-				core::bc_vector4f(l_box_extends.x, -l_box_extends.y, -l_box_extends.z * l_z_sign, 0)
-			};
-			std::transform(std::begin(l_points), std::end(l_points), std::begin(l_points), [&](const core::bc_vector4f& p_point)
-			{
-				return p_shape_transform * p_point;
+				return (p_shape_transform * core::bc_vector4f(p_point, 1)).xyz();
 			});
 
 			bcFLOAT l_min_x, l_min_y, l_min_z;
@@ -118,10 +133,8 @@ namespace black_cat
 			l_min_x = l_min_y = l_min_z = std::numeric_limits< bcFLOAT >::max();
 			l_max_x = l_max_y = l_max_z = std::numeric_limits< bcFLOAT >::min();
 
-			for (bcUINT32 l_index = 0; l_index < l_points.size(); ++l_index)
+			for (auto& l_vertex : l_points)
 			{
-				auto& l_vertex = l_points.at(l_index);
-
 				l_min_x = std::min(l_min_x, l_vertex.x);
 				l_min_y = std::min(l_min_y, l_vertex.y);
 				l_min_z = std::min(l_min_z, l_vertex.z);
@@ -132,16 +145,9 @@ namespace black_cat
 
 			return physics::bc_bound_box
 			(
-				p_shape_transform.get_translation(),
+				core::bc_vector3f((l_max_x + l_min_x) / 2, (l_max_y + l_min_y) / 2, (l_max_z + l_min_z) / 2),
 				core::bc_vector3f((l_max_x - l_min_x) / 2, (l_max_y - l_min_y) / 2, (l_max_z - l_min_z) / 2)
 			);
-			/*auto l_result = physics::bc_bound_box
-			(
-				p_shape_transform.get_translation(), 
-				core::bc_vector3f((l_max_x - l_min_x) / 2, (l_max_y - l_min_y) / 2, (l_max_z - l_min_z) / 2)
-			);*/
-			//l_result.transform(p_shape_transform.get_rotation());
-			//return l_result;
 		}
 	}
 }

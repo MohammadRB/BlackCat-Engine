@@ -53,14 +53,14 @@ namespace black_cat
 			// Return true if reference count reach zero
 			bool dec_ref() noexcept
 			{
-				const auto l_ref_count = static_cast<bcINT32>(m_ref_count.fetch_sub(1U, core_platform::bc_memory_order::relaxed)) - 1;
+				const auto l_ref_count = m_ref_count.fetch_sub(1U, core_platform::bc_memory_order::relaxed) - 1;
 				bcAssert(l_ref_count >= 0);
 
 				return l_ref_count == 0;
 			}
 
 		private:
-			core_platform::bc_atomic<bcUINT32> m_ref_count;
+			core_platform::bc_atomic<bcINT32> m_ref_count;
 		};
 
 		/**

@@ -77,7 +77,7 @@ namespace black_cat
 			}
 
 			std::string l_entity_name = m_entity_name.toStdString();
-			game::bc_actor l_actor = p_context.m_game_system.get_service<game::bc_entity_manager>()->create_entity(l_entity_name.c_str());
+			game::bc_actor l_actor = core::bc_get_service<game::bc_entity_manager>()->create_entity(l_entity_name.c_str());
 			
 			auto* l_rigid_body_component = l_actor.get_component<game::bc_rigid_body_component>();
 			if(l_rigid_body_component != nullptr)

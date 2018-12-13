@@ -122,7 +122,7 @@ namespace black_cat
 			return m_render_states[p_node->m_first_mesh_index + p_mesh_index].get();
 		}
 
-		const physics::bc_shape_box* bc_mesh::get_node_mesh_bound_box(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
+		const physics::bc_bound_box* bc_mesh::get_node_mesh_bound_box(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
 		{
 			if (p_mesh_index >= p_node->m_mesh_count)
 			{

@@ -11,7 +11,7 @@ namespace black_cat
 	namespace core
 	{
 		/**
-		* \brief Sent when an unexpected error has been occured in application
+		* \brief Sent when an unexpected error occur in application
 		*/
 		class bc_app_event_error : public bc_app_event
 		{
@@ -105,6 +105,90 @@ namespace black_cat
 
 		private:
 			bc_string m_message;
+		};
+
+		class bc_event_frame_update_start : public bc_event
+		{
+			BC_EVENT(frame_update_start)
+
+		public:
+			bc_event_frame_update_start()
+				: bc_event(event_name())
+			{
+			}
+
+			bc_event_frame_update_start(const bc_event_frame_update_start&) = default;
+
+			~bc_event_frame_update_start() = default;
+
+			bc_event_frame_update_start& operator=(const bc_event_frame_update_start&) = default;
+
+		protected:
+
+		private:
+		};
+
+		class bc_event_frame_update_finish : public bc_event
+		{
+			BC_EVENT(frame_update_finish)
+
+		public:
+			bc_event_frame_update_finish()
+				: bc_event(event_name())
+			{
+			}
+
+			bc_event_frame_update_finish(const bc_event_frame_update_finish&) = default;
+
+			~bc_event_frame_update_finish() = default;
+
+			bc_event_frame_update_finish& operator=(const bc_event_frame_update_finish&) = default;
+
+		protected:
+
+		private:
+		};
+
+		class bc_event_frame_render_start : public bc_event
+		{
+			BC_EVENT(frame_render_start)
+
+		public:
+			bc_event_frame_render_start()
+				: bc_event(event_name())
+			{
+			}
+
+			bc_event_frame_render_start(const bc_event_frame_render_start&) = default;
+
+			~bc_event_frame_render_start() = default;
+
+			bc_event_frame_render_start& operator=(const bc_event_frame_render_start&) = default;
+
+		protected:
+
+		private:
+		};
+
+		class bc_event_frame_render_finish : public bc_event
+		{
+			BC_EVENT(frame_render_finish)
+
+		public:
+			bc_event_frame_render_finish()
+				: bc_event(event_name())
+			{
+			}
+
+			bc_event_frame_render_finish(const bc_event_frame_render_finish&) = default;
+
+			~bc_event_frame_render_finish() = default;
+
+			bc_event_frame_render_finish& operator=(const bc_event_frame_render_finish&) = default;
+
+		protected:
+
+		private:
 		};
 	}
 }

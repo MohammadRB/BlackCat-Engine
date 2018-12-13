@@ -14,11 +14,11 @@
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcRenderPassResourceShare.h"
 #include "Game/Object/Scene/bcScene.h"
-#include "BlackCat/RenderPass/bcBackBufferOutputPass.h"
+#include "BlackCat/RenderPass/bcMeshDrawPass.h"
 
 namespace black_cat
 {
-	void bc_back_buffer_output_pass::initialize_resources(game::bc_render_system& p_render_system)
+	void bc_mesh_draw_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
 		graphic::bc_texture2d l_back_buffer_texture = l_device.get_back_buffer_texture();
@@ -59,17 +59,17 @@ namespace black_cat
 		after_reset(p_render_system, l_device, l_old_parameters, l_new_parameters);
 	}
 
-	void bc_back_buffer_output_pass::update(const game::bc_render_system_update_param& p_update_param)
+	void bc_mesh_draw_pass::update(const game::bc_render_system_update_param& p_update_param)
 	{
 	}
 
-	void bc_back_buffer_output_pass::initialize_frame(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
+	void bc_mesh_draw_pass::initialize_frame(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
 	{
 		p_thread.start(m_command_list.get());
 		p_thread.bind_render_pass_state(m_render_pass_state.get());
 	}
 
-	void bc_back_buffer_output_pass::execute(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
+	void bc_mesh_draw_pass::execute(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
 	{
 		p_scene.render_meshes(p_render_system, p_thread, false);
 
@@ -79,7 +79,7 @@ namespace black_cat
 		m_command_list->reset();
 	}
 
-	void bc_back_buffer_output_pass::before_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
+	void bc_mesh_draw_pass::before_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
 	{
 		if
 		(
@@ -91,7 +91,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_back_buffer_output_pass::after_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
+	void bc_mesh_draw_pass::after_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
 	{
 		if
 		(
@@ -121,7 +121,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_back_buffer_output_pass::destroy(graphic::bc_device& p_device)
+	void bc_mesh_draw_pass::destroy(graphic::bc_device& p_device)
 	{
 		m_command_list.reset();
 		m_pipeline_state.reset();

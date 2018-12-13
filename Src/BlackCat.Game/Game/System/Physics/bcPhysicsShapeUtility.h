@@ -32,6 +32,13 @@ namespace black_cat
 		physics::bc_shape_box BC_GAME_DLL bc_extract_box_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f > p_vertices);
 
 		/**
+		 * \brief Extract surrounding bound box for a given set of points. Points must be defined with identity transformation.
+		 * \param p_vertices
+		 * \return
+		 */
+		physics::bc_bound_box BC_GAME_DLL bc_extract_bound_box_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f > p_vertices);
+
+		/**
 		* \brief Extract surrounding capsule for a given set of points. Points must be defined with identity transformation.
 		* \param p_vertices
 		* \return

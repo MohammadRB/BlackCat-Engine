@@ -161,9 +161,10 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcPixelShaderLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcTextureLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferOutputPass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcMeshDrawPass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcInitializePass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTerrainPassDx11.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcShapeDrawPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Application\bcRenderApplication.cpp" />
@@ -181,8 +182,9 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcPixelShaderLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcTextureLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferOutputPass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcMeshDrawPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcInitializePass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcShapeDrawPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTerrainPassDx11.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -207,6 +209,10 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcMeshShader.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcShapeDraw.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>

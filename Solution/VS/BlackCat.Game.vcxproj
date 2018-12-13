@@ -221,7 +221,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMaterial.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMesh.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshCollider.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshGenerator.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcShapeGenerator.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshPartCollider.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcSubMesh.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcActor.h" />
@@ -267,6 +267,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderTask.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderThread.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderThreadManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcShapeDrawer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcStateConfigs.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcVertexLayout.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcDefaultGameConsole.h" />
@@ -314,6 +315,8 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderSystem.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderThread.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderThreadManager.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcShapeDrawer.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcStateConfigs.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Script\bcDefaultGameConsole.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Script\bcGameConsole.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptSystem.cpp" />
@@ -322,7 +325,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMaterial.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMesh.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshCollider.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshGenerator.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcShapeGenerator.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcSubMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -341,9 +344,6 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ProjectReference Include="BlackCat.Platform.Win32.vcxproj">
       <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

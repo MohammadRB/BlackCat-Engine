@@ -56,11 +56,11 @@ namespace black_cat
 
 			bc_sub_mesh(bc_mesh_ptr p_mesh, const bcCHAR* p_node);
 
-			bc_sub_mesh(const bc_sub_mesh&);
+			bc_sub_mesh(bc_sub_mesh&&) noexcept;
 
 			~bc_sub_mesh();
 
-			bc_sub_mesh& operator=(const bc_sub_mesh&);
+			bc_sub_mesh& operator=(bc_sub_mesh&&) noexcept;
 
 			bc_mesh_ptr get_mesh() const;
 
@@ -76,7 +76,7 @@ namespace black_cat
 
 			const bc_render_state* get_node_mesh_render_state(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
-			const physics::bc_shape_box* get_node_mesh_bound_box(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+			const physics::bc_bound_box* get_node_mesh_bound_box(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_mesh_part_collider* get_node_mesh_colliders(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
@@ -132,7 +132,7 @@ namespace black_cat
 			return m_mesh->get_node_mesh_render_state(p_node, p_mesh_index);
 		}
 
-		inline const physics::bc_shape_box* bc_sub_mesh::get_node_mesh_bound_box(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
+		inline const physics::bc_bound_box* bc_sub_mesh::get_node_mesh_bound_box(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
 		{
 			return m_mesh->get_node_mesh_bound_box(p_node, p_mesh_index);
 		}

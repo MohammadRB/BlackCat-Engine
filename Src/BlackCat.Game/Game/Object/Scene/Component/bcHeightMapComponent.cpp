@@ -50,8 +50,7 @@ namespace black_cat
 
 		void bc_height_map_component::render(const bc_render_component& p_render_component) const
 		{
-			bc_render_instance l_instance;
-			l_instance.set_world(core::bc_matrix4f::identity());
+			bc_render_instance l_instance(core::bc_matrix4f::identity());
 
 			p_render_component.render(m_height_map->get_render_state(), l_instance);
 		}

@@ -67,7 +67,9 @@ namespace black_cat
 			mutable bc_event_hash m_hash;
 		};
 
-		// Base class for application level events
+		/**
+		 * \brief Base class for application level events
+		 */
 		class BC_CORE_DLL bc_app_event : public bc_event
 		{
 		public:

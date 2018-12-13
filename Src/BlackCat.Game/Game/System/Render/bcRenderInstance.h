@@ -8,11 +8,16 @@ namespace black_cat
 {
 	namespace game
 	{
-		// This object represent part of device pipeline state configs that must be set for every instance
+		/**
+		 * \brief This object represent part of device pipeline state configs that must be set for every instance
+		 */
 		class bc_render_instance
 		{
 		public:
-			bc_render_instance() = default;
+			explicit bc_render_instance(const core::bc_matrix4f& p_world)
+				: m_world(p_world)
+			{
+			}
 
 			bc_render_instance(const bc_render_instance&) = default;
 

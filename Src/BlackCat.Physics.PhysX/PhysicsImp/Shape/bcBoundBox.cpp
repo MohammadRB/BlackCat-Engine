@@ -59,7 +59,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		core::bc_vector3f bc_platform_bound_box< g_api_physx >::get_extend() const noexcept
+		core::bc_vector3f bc_platform_bound_box< g_api_physx >::get_half_extend() const noexcept
 		{
 			auto l_vec3 = m_pack.m_bound.getExtents();
 			return core::bc_vector3f(l_vec3.x, l_vec3.y, l_vec3.z);
@@ -130,9 +130,34 @@ namespace black_cat
 
 		template< >
 		BC_PHYSICSIMP_DLL
+		void bc_platform_bound_box< g_api_physx >::transform(const core::bc_matrix4f& p_transform) noexcept
+		{
+			transform(bc_transform(p_transform));
+		}
+
+		template< >
+		BC_PHYSICSIMP_DLL
 		void bc_platform_bound_box< g_api_physx >::transform(const core::bc_matrix3f& p_transform) noexcept
 		{
 			m_pack.m_bound = physx::PxBounds3::transformSafe(bc_to_right_hand(p_transform), m_pack.m_bound);
+		}
+
+		template< >
+		BC_PHYSICSIMP_DLL
+		void bc_platform_bound_box< g_api_physx >::get_points(core::bc_array<core::bc_vector3f, 8>& p_result) const noexcept
+		{
+			const auto l_z_sign = graphic::bc_render_api_info::is_left_handed() ? +1 : -1;
+			const auto l_position = get_center();
+			const auto l_half_extend = get_half_extend();
+
+			p_result[0] = l_position + core::bc_vector3f(-l_half_extend.x, l_half_extend.y, l_half_extend.z * l_z_sign);
+			p_result[1] = l_position + core::bc_vector3f(-l_half_extend.x, l_half_extend.y, -l_half_extend.z * l_z_sign);
+			p_result[2] = l_position + core::bc_vector3f(l_half_extend.x, l_half_extend.y, -l_half_extend.z * l_z_sign);
+			p_result[3] = l_position + core::bc_vector3f(l_half_extend.x, l_half_extend.y, l_half_extend.z * l_z_sign);
+			p_result[4] = l_position + core::bc_vector3f(-l_half_extend.x, -l_half_extend.y, l_half_extend.z * l_z_sign);
+			p_result[5] = l_position + core::bc_vector3f(-l_half_extend.x, -l_half_extend.y, -l_half_extend.z * l_z_sign);
+			p_result[6] = l_position + core::bc_vector3f(l_half_extend.x, -l_half_extend.y, -l_half_extend.z * l_z_sign);
+			p_result[7] = l_position + core::bc_vector3f(l_half_extend.x, -l_half_extend.y, l_half_extend.z * l_z_sign);
 		}
 	}
 }

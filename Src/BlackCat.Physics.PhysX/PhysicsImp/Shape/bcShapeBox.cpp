@@ -1,6 +1,8 @@
 // [12/20/2016 MRB]
 
 #include "PhysicsImp/PhysicsImpPCH.h"
+
+#include "GraphicImp/bcRenderApiInfo.h"
 #include "PhysicsImp/bcExport.h"
 #include "PhysicsImp/Shape/bcShapeBox.h"
 
@@ -66,6 +68,25 @@ namespace black_cat
 				m_pack.m_px_geometry.halfExtents.y, 
 				m_pack.m_px_geometry.halfExtents.z
 			);
+		}
+
+		template< >
+		BC_PHYSICSIMP_DLL
+		void bc_platform_shape_box<g_api_physx>::get_points(core::bc_array<core::bc_vector3f, 8>& p_result) const noexcept
+		{
+			const auto l_z_sign = graphic::bc_render_api_info::is_left_handed() ? +1 : -1;
+			const auto l_half_x = m_pack.m_px_geometry.halfExtents.x;
+			const auto l_half_y = m_pack.m_px_geometry.halfExtents.y;
+			const auto l_half_z = m_pack.m_px_geometry.halfExtents.z;
+
+			p_result[0] = core::bc_vector3f(-l_half_x, l_half_y, l_half_z * l_z_sign);
+			p_result[1] = core::bc_vector3f(-l_half_x, l_half_y, -l_half_z * l_z_sign);
+			p_result[2] = core::bc_vector3f(l_half_x, l_half_y, l_half_z * l_z_sign);
+			p_result[3] = core::bc_vector3f(l_half_x, l_half_y, -l_half_z * l_z_sign);
+			p_result[4] = core::bc_vector3f(-l_half_x, -l_half_y, l_half_z * l_z_sign);
+			p_result[5] = core::bc_vector3f(-l_half_x, -l_half_y, -l_half_z * l_z_sign);
+			p_result[6] = core::bc_vector3f(l_half_x, -l_half_y, l_half_z * l_z_sign);
+			p_result[7] = core::bc_vector3f(l_half_x, -l_half_y, -l_half_z * l_z_sign);
 		}
 	}
 }

@@ -41,7 +41,7 @@ namespace black_cat
 			bc_render_pass_manager& operator=(bc_render_pass_manager&&) = default;
 
 			template< typename T >
-			void add_pass(bcUINT32 p_location, core::bc_unique_ptr< T >&& p_pass);
+			void add_pass(bcUINT32 p_location, T&& p_pass);
 
 			template< typename T >
 			T* get_pass();
@@ -79,14 +79,14 @@ namespace black_cat
 		};
 
 		template< typename T >
-		void bc_render_pass_manager::add_pass(bcUINT32 p_location, core::bc_unique_ptr<T>&& p_pass)
+		void bc_render_pass_manager::add_pass(bcUINT32 p_location, T&& p_pass)
 		{
 			static_assert(std::is_base_of_v<bc_irender_pass, T>, "T must inherite from bc_irender_pass");
 
 			_bc_pass_entry l_entry;
 			l_entry.m_position = p_location;
 			l_entry.m_name = bc_render_pass_trait<T>::render_pass_name();
-			l_entry.m_pass = std::move(p_pass);
+			l_entry.m_pass = core::bc_make_unique<T>(core::bc_alloc_type::program, std::move(p_pass));
 
 			_add_pass(std::move(l_entry));
 		}

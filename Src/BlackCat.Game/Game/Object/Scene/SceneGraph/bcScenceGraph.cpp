@@ -101,7 +101,6 @@ namespace black_cat
 			}
 
 			p_render_system.render_all_instances(p_render_thread);
-
 			if(!p_preserve_render_instances)
 			{
 				p_render_system.clear_render_instances();

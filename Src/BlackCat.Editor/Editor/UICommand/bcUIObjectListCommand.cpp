@@ -29,7 +29,7 @@ namespace black_cat
 
 		bool bc_ui_object_list_command::update(update_context& p_context)
 		{
-			const auto l_entity_names = p_context.m_game_system.get_service<game::bc_entity_manager>()->get_entity_names();
+			const auto l_entity_names = core::bc_get_service<game::bc_entity_manager>()->get_entity_names();
 			
 			std::transform
 			(

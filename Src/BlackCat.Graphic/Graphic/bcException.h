@@ -4,6 +4,8 @@
 
 #include <exception>
 #include "CorePlatform/bcType.h"
+#include "CorePlatform/bcException.h"
+#include "Core/bcException.h"
 #include "Core/Container/bcString.h"
 
 namespace black_cat
@@ -69,5 +71,5 @@ namespace black_cat
 	inline const bcCHAR* bc_graphic_exception::what() const
 	{
 		return m_string.c_str();
-	};
+	}
 }

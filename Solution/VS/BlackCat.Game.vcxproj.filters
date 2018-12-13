@@ -189,9 +189,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshCollider.h">
       <Filter>Game\Object\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshGenerator.h">
-      <Filter>Game\Object\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcSubMesh.h">
       <Filter>Game\Object\Mesh</Filter>
     </ClInclude>
@@ -209,6 +206,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsShapeUtility.h">
       <Filter>Game\System\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcShapeGenerator.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcShapeDrawer.h">
+      <Filter>Game\System\Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -308,9 +311,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshCollider.cpp">
       <Filter>Game\Object\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshGenerator.cpp">
-      <Filter>Game\Object\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcSubMesh.cpp">
       <Filter>Game\Object\Mesh</Filter>
     </ClCompile>
@@ -332,8 +332,14 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsShapeUtility.cpp">
       <Filter>Game\System\Physics</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcShapeGenerator.cpp">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcShapeDrawer.cpp">
+      <Filter>Game\System\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcStateConfigs.cpp">
+      <Filter>Game\System\Render</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

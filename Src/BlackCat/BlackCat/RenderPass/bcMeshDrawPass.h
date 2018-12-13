@@ -14,18 +14,18 @@
 
 namespace black_cat
 {
-	class BC_BLACKCAT_DLL bc_back_buffer_output_pass : public game::bc_irender_pass
+	class BC_BLACKCAT_DLL bc_mesh_draw_pass : public game::bc_irender_pass
 	{
 		BC_RENDER_PASS(back_buffer_output_pass)
 
 	public:
-		bc_back_buffer_output_pass() = default;
+		bc_mesh_draw_pass() = default;
 
-		~bc_back_buffer_output_pass() = default;
+		~bc_mesh_draw_pass() = default;
 
-		bc_back_buffer_output_pass(bc_back_buffer_output_pass&&) = default;
+		bc_mesh_draw_pass(bc_mesh_draw_pass&&) = default;
 
-		bc_back_buffer_output_pass& operator=(const bc_back_buffer_output_pass&) = default;
+		bc_mesh_draw_pass& operator=(const bc_mesh_draw_pass&) = default;
 
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 

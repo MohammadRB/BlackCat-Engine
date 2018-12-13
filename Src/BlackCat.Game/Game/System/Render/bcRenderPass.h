@@ -4,6 +4,7 @@
 
 #include "CorePlatform/Utility/bcNoCopy.h"
 #include "CorePlatformImp/Utility/bcClock.h"
+#include "Core/bcConstant.h"
 #include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/bcRenderPassResourceShare.h"
 
@@ -38,7 +39,11 @@ namespace black_cat
 		public:
 			bc_irender_pass() = default;
 
+			bc_irender_pass(bc_irender_pass&&) = default;
+
 			virtual ~bc_irender_pass() = default;
+
+			bc_irender_pass& operator=(bc_irender_pass&&) = default;
 
 			/**
 			 * \brief This function will be called during app initialization
@@ -55,15 +60,17 @@ namespace black_cat
 			/**
 			 * \brief This function will be called in start of frame.
 			 * Threading: This function will be executed by a cpu worker thread concurrency.
-			 * \param p_render_system 
+			 * \param p_render_system
+			 * \param p_scene 
 			 * \param p_thread 
 			 */
 			virtual void initialize_frame(bc_render_system& p_render_system, bc_scene& p_scene, bc_render_thread& p_thread) = 0;
 
 			/**
-			 * \brief This function will be called in draw frme phase.
+			 * \brief This function will be called in draw frame phase.
 			 * Threading: This function will be executed by a cpu worker thread concurrency.
-			 * \param p_render_system 
+			 * \param p_render_system
+			 * \param p_scene 
 			 * \param p_thread 
 			 */
 			virtual void execute(bc_render_system& p_render_system, bc_scene& p_scene, bc_render_thread& p_thread) = 0;

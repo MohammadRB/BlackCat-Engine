@@ -2,10 +2,16 @@
 
 #include "Editor/EditorPCH.h"
 #include "Platform/bcEvent.h"
+#include "PhysicsImp/Body/bcRigidDynamic.h"
 #include "Game/System/Input/bcFreeCamera.h"
+#include "Game/Object/Scene/bcEntityManager.h"
+#include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
+#include "Game/Object/Scene/bcActor.hpp"
+#include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "BlackCat/RenderPass/bcInitializePass.h"
 #include "BlackCat/RenderPass/bcTerrainPassDx11.h"
-#include "BlackCat/RenderPass/bcBackBufferOutputPass.h"
+#include "BlackCat/RenderPass/bcMeshDrawPass.h"
+#include "BlackCat/RenderPass/bcShapeDrawPass.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
 #include "Editor/Application/bcEditorRenderApplication.h"
 #include "Editor/Application/bcUICommandService.h"
@@ -34,8 +40,8 @@ namespace black_cat
 		{
 			game::bc_render_system& l_render_system = m_game_system->get_render_system();
 
-			bcFLOAT l_back_buffer_width = l_render_system.get_device().get_back_buffer_width();
-			bcFLOAT l_back_buffer_height = l_render_system.get_device().get_back_buffer_height();
+			const bcFLOAT l_back_buffer_width = l_render_system.get_device().get_back_buffer_width();
+			const bcFLOAT l_back_buffer_height = l_render_system.get_device().get_back_buffer_height();
 			m_game_system->get_input_system().register_camera(core::bc_make_unique< game::bc_free_camera >
 			(
 				l_back_buffer_width / l_back_buffer_height,
@@ -43,15 +49,15 @@ namespace black_cat
 				0.3,
 				3000
 			));
-			l_render_system.add_render_pass(0, core::bc_make_unique< bc_initialize_pass >());
-			l_render_system.add_render_pass(1, core::bc_make_unique< bc_terrain_pass_dx11 >());
-			l_render_system.add_render_pass(2, core::bc_make_unique< bc_back_buffer_output_pass >());
-
 			m_game_system->get_input_system().get_camera().set_position_lookat(core::bc_vector3f(0, 500, -1024), core::bc_vector3f(0, 0, 0));
 
-			m_shape_throw_key_handle = core::bc_get_service< core::bc_event_manager >()->register_event_listener
+			l_render_system.add_render_pass(0, bc_initialize_pass());
+			l_render_system.add_render_pass(1, bc_terrain_pass_dx11());
+			l_render_system.add_render_pass(2, bc_mesh_draw_pass());
+			l_render_system.add_render_pass(3, bc_shape_draw_pass());
+
+			m_shape_throw_key_handle = core::bc_get_service< core::bc_event_manager >()->register_event_listener<platform::bc_app_event_key>
 			(
-				platform::bc_app_event_key::event_name(),
 				[this, l_counter = 0](const core::bc_ievent& p_event) mutable
 				{
 					const platform::bc_app_event_key& l_key_event = static_cast< const platform::bc_app_event_key& >(p_event);
@@ -122,8 +128,17 @@ namespace black_cat
 			l_ui_command_manager->load_content();
 
 			auto l_terrain = l_entity_manager->create_entity("crysis_heightmap");
+			auto l_train = l_entity_manager->create_entity("train");
+
+			core::bc_vector3f l_train_position(0, 250, -768);
+			core::bc_matrix4f l_train_matrix;
+			l_train_matrix.translate(l_train_position.x, l_train_position.y, l_train_position.z);
+
+			l_train.get_component<game::bc_rigid_body_component>()->get_body().set_global_pose(l_train_position);
+			l_train.get_component<game::bc_mesh_component>()->set_world_pos(l_train_matrix);
 
 			l_scene->add_object(l_terrain);
+			l_scene->add_object(l_train);
 		}
 
 		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param)

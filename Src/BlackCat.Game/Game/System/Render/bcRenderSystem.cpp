@@ -9,6 +9,7 @@
 #include "Core/Event/bcEventManager.h"
 #include "Core/Utility/bcEnumOperand.h"
 #include "Core/Utility/bcLogger.h"
+#include "Core/bcEvent.h"
 #include "Platform/bcEvent.h"
 #include "Graphic/bcEvent.h"
 #include "Core/Math/bcMatrix4f.h"
@@ -181,8 +182,9 @@ namespace black_cat
 				l_cbuffer_parameter.set_register_index(l_parameter_register++);
 			}
 
-			core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
 			{
+				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
+
 				auto l_first_empty = std::find_if(std::begin(m_render_pass_states), std::end(m_render_pass_states), [](const core::bc_nullable< bc_render_pass_state >& p_item)
 				{
 					return !p_item.is_set();
@@ -201,7 +203,6 @@ namespace black_cat
 				}
 
 				auto l_first_empty_index = std::distance(std::begin(m_render_pass_states), l_first_empty);
-
 				return bc_render_pass_state_ptr(_bc_render_state_handle(l_first_empty_index), _bc_render_pass_state_handle_deleter(this));
 			}
 		}
@@ -270,7 +271,6 @@ namespace black_cat
 				}
 
 				auto l_first_empty_index = std::distance(std::begin(m_render_states), l_first_empty);
-
 				return bc_render_state_ptr(_bc_render_state_handle(l_first_empty_index), _bc_render_state_handle_deleter(this));
 			}
 		}
@@ -328,8 +328,9 @@ namespace black_cat
 				l_cbuffer_parameter.set_register_index(l_parameter_register++);
 			}
 
-			core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
 			{
+				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
+				
 				auto l_first_empty = std::find_if(std::begin(m_compute_states), std::end(m_compute_states), [](const core::bc_nullable< bc_compute_state >& p_item)
 				{
 					return !p_item.is_set();
@@ -356,8 +357,9 @@ namespace black_cat
 
 		void bc_render_system::destroy_render_pass_state(bc_render_pass_state* p_render_pass_state)
 		{
-			core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
 			{
+				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
+				
 				auto l_item = std::find_if(std::begin(m_render_pass_states), std::end(m_render_pass_states), [p_render_pass_state](const core::bc_nullable< bc_render_pass_state >& p_item)
 				{
 					return p_item.is_set() && &p_item.get() == p_render_pass_state;
@@ -376,8 +378,9 @@ namespace black_cat
 
 		void bc_render_system::destroy_render_state(bc_render_state* p_render_state)
 		{
-			core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
 			{
+				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
+				
 				auto l_item = std::find_if(std::begin(m_render_states), std::end(m_render_states), [p_render_state](const render_state_entry& p_item)
 				{
 					return p_item.first.is_set() && &p_item.first.get() == p_render_state;
@@ -561,6 +564,10 @@ namespace black_cat
 			(
 				core::bc_event_manager::delegate_type(this, &bc_render_system::_event_handler)
 			);
+			m_frame_render_finish_handle = l_event_manager->register_event_listener< core::bc_event_frame_render_finish >
+			(
+				core::bc_event_manager::delegate_type(this, &bc_render_system::_event_handler)
+			);
 
 			auto l_global_cbuffer_config = graphic::bc_graphic_resource_configure()
 				.as_resource()
@@ -615,22 +622,28 @@ namespace black_cat
 			 
 			m_device_listener_handle.reset();
 			m_window_resize_handle.reset();
+			m_frame_render_finish_handle.reset();
 
+			m_shape_drawer.destroy_buffers();
 			m_render_pass_manager.pass_destroy(m_device);
 
-#ifdef BC_DEBUG // All states must be release upon render system destruction
+#ifdef BC_DEBUG // All states must be released upon render system destruction
 			auto l_render_pass_states_count = 0;
 			auto l_render_states_count = 0;
 
 			for (auto& l_item : m_render_pass_states)
 			{
 				if (l_item != nullptr)
+				{
 					++l_render_pass_states_count;
+				}
 			}
 			for (auto& l_item : m_render_states)
 			{
 				if (l_item.first != nullptr)
+				{
 					++l_render_states_count;
+				}
 			}
 
 			bcAssert(l_render_pass_states_count + l_render_states_count == 0);
@@ -672,6 +685,13 @@ namespace black_cat
 				{
 					m_render_pass_manager.after_reset(*this, l_device_reset_event.m_device, l_device_reset_event.m_old_parameters, l_device_reset_event.m_new_parameters);
 				}
+
+				return true;
+			}
+
+			if (core::bc_ievent::event_is<core::bc_event_frame_render_finish>(p_event))
+			{
+				m_shape_drawer.clear_buffers();
 
 				return true;
 			}

@@ -71,7 +71,7 @@ namespace black_cat
 		protected:
 
 		private:
-			core::bc_vector_movale< core::bc_nullable< TComponent > > m_components;
+			core::bc_vector< core::bc_nullable< TComponent > > m_components;
 		};
 
 		template< class TComponent >

@@ -1,7 +1,42 @@
 // [11/22/2018 MRB]
 
 #include "BlackCat/BlackCatPCH.h"
+
+#include "PlatformImp/bc_ide_logger.h"
+#include "Core/Memory/bcMemoryManagment.h"
+#include "Core/Utility/bcLogger.h"
+#include "Core/Utility/bcExpressionParameterManager.h"
+#include "Core/Concurrency/bcThreadManager.h"
+#include "Core/Event/bcEventManager.h"
+#include "Core/File/bcContentManager.h"
+#include "Core/File/bcContentStreamManager.h"
+#include "Core/File/bcLazyContent.h"
+#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/bcEntityManager.h"
+#include "Game/System/Script/bcScriptBinding.h"
+#include "Game/System/Render/bcRenderPassManager.h"
+#include "Game/System/Render/bcMaterialManager.h"
+#include "Game/System/Script/bcScriptSystem.h"
+#include "Game/Object/Scene/Component/bcRenderComponent.h"
+#include "Game/Object/Scene/Component/bcMeshComponent.h"
+#include "Game/Object/Scene/Component/bcHierarchyComponent.h"
+#include "Game/Object/Scene/Component/bcHeightMapComponent.h"
+#include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
+#include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
+#include "Game/Object/Scene/Component/bcNameComponent.h"
+#include "GraphicImp/Device/bcDevice.h"
+#include "GraphicImp/Device/bcDevicePipeline.h"
+#include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "BlackCat/Application/bcRenderApplication.h"
+#include "BlackCat/Loader/bcMeshLoader.h"
+#include "BlackCat/Loader/bcTextureLoader.h"
+#include "BlackCat/Loader/bcVertexShaderLoader.h"
+#include "BlackCat/Loader/bcHullShaderLoader.h"
+#include "BlackCat/Loader/bcDomainShaderLoader.h"
+#include "BlackCat/Loader/bcGeometryShaderLoader.h"
+#include "BlackCat/Loader/bcPixelShaderLoader.h"
+#include "BlackCat/Loader/bcComputeShaderLoader.h"
+#include "BlackCat/Loader/bcMeshColliderLoader.h"
 
 namespace black_cat
 {
@@ -157,11 +192,6 @@ namespace black_cat
 
 	void bc_render_application::app_initialize(const bcCHAR* p_commandline)
 	{
-		auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
-		auto* l_entity_manager = m_service_manager->get_service< game::bc_entity_manager >();
-		auto& l_script_system = m_game_system->get_script_system();
-		auto l_script_binder = l_script_system.get_script_binder();
-
 		m_game_system->initialize
 		(
 			game::bc_game_system_parameter(game::bc_render_system_parameter
@@ -173,9 +203,15 @@ namespace black_cat
 			))
 		);
 
+		auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
+		auto* l_entity_manager = m_service_manager->get_service< game::bc_entity_manager >();
+		auto& l_material_manager = m_game_system->get_render_system().get_material_manager();
+		auto& l_script_system = m_game_system->get_script_system();
+		auto l_script_binder = l_script_system.get_script_binder();
+
 		l_content_stream_manager->read_stream_file(m_game_system->get_file_system().get_content_data_path(bcL("ContentStream.json")).c_str());
 		l_entity_manager->read_entity_file(m_game_system->get_file_system().get_content_data_path(bcL("EntityType.json")).c_str());
-		m_game_system->get_render_system().get_material_manager().read_material_file(m_game_system->get_file_system().get_content_data_path(bcL("Material.json")).c_str());
+		l_material_manager.read_material_file(m_game_system->get_file_system().get_content_data_path(bcL("Material.json")).c_str());
 
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_shaders");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_resources");
