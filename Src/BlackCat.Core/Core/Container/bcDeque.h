@@ -21,9 +21,6 @@ namespace black_cat
 		using bc_deque_program = bc_deque_a< T, bc_allocator_program >;
 
 		template< typename T >
-		using bc_deque_level = bc_deque_a< T, bc_allocator_level >;
-
-		template< typename T >
 		using bc_deque_frame = bc_deque_a< T, bc_allocator_frame >;
 
 		/*template< typename T >

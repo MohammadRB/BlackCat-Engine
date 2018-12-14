@@ -256,9 +256,6 @@ namespace black_cat
 		using bc_allocator_program = bc_allocator_base< T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::program >;
 
 		template< typename T >
-		using bc_allocator_level = bc_allocator_base< T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::level >;
-
-		template< typename T >
 		using bc_allocator_frame = bc_allocator_base< T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::frame >;
 
 		template< typename T >
@@ -269,9 +266,6 @@ namespace black_cat
 
 		template< typename T, bcUINT32 TAlign >
 		using bc_aligned_allocator_program = bc_allocator_base< T, TAlign, bc_alloc_type::program >;
-
-		template< typename T, bcUINT32 TAlign >
-		using bc_aligned_allocator_level = bc_allocator_base< T, TAlign, bc_alloc_type::level >;
 
 		template< typename T, bcUINT32 TAlign >
 		using bc_aligned_allocator_frame = bc_allocator_base< T, TAlign, bc_alloc_type::frame >;

@@ -496,9 +496,6 @@ namespace black_cat
 		using bc_vector_program = bc_vector_a< T, bc_allocator_program >;
 
 		template< typename T >
-		using bc_vector_level = bc_vector_a< T, bc_allocator_level >;
-
-		template< typename T >
 		using bc_vector_frame = bc_vector_a< T, bc_allocator_frame >;
 
 		template< typename T >

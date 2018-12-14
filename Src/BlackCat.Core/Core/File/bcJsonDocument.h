@@ -164,8 +164,6 @@ namespace black_cat
 
 			void _parse(bc_string_program& p_value, bc_json_parse_object& p_json_value);
 
-			void _parse(bc_string_level& p_value, bc_json_parse_object& p_json_value);
-
 			void _parse(bc_string_frame& p_value, bc_json_parse_object& p_json_value);
 
 			void _parse(bc_expression_parameter& p_value, bc_json_parse_object& p_json_value);
@@ -267,7 +265,6 @@ namespace black_cat
 				std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
-				std::is_same< bc_string_level, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
 				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
@@ -466,17 +463,6 @@ namespace black_cat
 
 		template< typename T >
 		void bc_json_value< T >::_parse(bc_string_program& p_value, bc_json_parse_object& p_json_value)
-		{
-			if (!p_json_value.IsString())
-			{
-				throw bc_io_exception("bad json format");
-			}
-
-			p_value = p_json_value.GetString();
-		}
-
-		template< typename T >
-		void bc_json_value< T >::_parse(bc_string_level& p_value, bc_json_parse_object& p_json_value)
 		{
 			if (!p_json_value.IsString())
 			{
@@ -764,7 +750,6 @@ namespace black_cat
 				std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
-				std::is_same< bc_string_level, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
 				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
@@ -789,7 +774,6 @@ namespace black_cat
 				std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
-				std::is_same< bc_string_level, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
 				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
@@ -831,7 +815,6 @@ namespace black_cat
 				std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
-				std::is_same< bc_string_level, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
 				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
@@ -852,7 +835,6 @@ namespace black_cat
 				std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
-				std::is_same< bc_string_level, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
 				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
@@ -873,7 +855,6 @@ namespace black_cat
 				std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
-				std::is_same< bc_string_level, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
 				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
@@ -894,7 +875,6 @@ namespace black_cat
 				std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
-				std::is_same< bc_string_level, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
 				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value

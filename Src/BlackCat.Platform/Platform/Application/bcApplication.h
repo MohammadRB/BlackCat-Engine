@@ -2,10 +2,6 @@
 
 #pragma once
 
-#include "Core/Utility/bcSingleton.h"
-#include "Core/Concurrency/bcThreadManager.h"
-#include "Core/Event/bcEventManager.h"
-#include "Core/File/bcContentStreamManager.h"
 #include "Platform/PlatformPCH.h"
 #include "Platform/bcEvent.h"
 #include "Platform/Application/bcBasicWindow.h"

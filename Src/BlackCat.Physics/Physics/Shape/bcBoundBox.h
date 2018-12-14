@@ -36,7 +36,7 @@ namespace black_cat
 
 			core::bc_vector3f get_center() const noexcept;
 
-			core::bc_vector3f get_half_extend() const noexcept;
+			core::bc_vector3f get_half_extends() const noexcept;
 
 			void expand(const core::bc_vector3f& p_point) noexcept;
 

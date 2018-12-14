@@ -20,9 +20,6 @@ namespace black_cat
 		using bc_queue_program = bc_queue_a< T, bc_allocator_program >;
 
 		template< typename T >
-		using bc_queue_level = bc_queue_a< T, bc_allocator_level >;
-
-		template< typename T >
 		using bc_queue_frame = bc_queue_a< T, bc_allocator_frame >;
 
 		/*template< typename T >

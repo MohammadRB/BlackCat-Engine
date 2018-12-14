@@ -458,12 +458,10 @@ namespace black_cat
 
 		using bc_string_program = bc_string_a< bc_allocator_program >;
 
-		using bc_string_level = bc_string_a< bc_allocator_level >;
-
 		using bc_string_frame = bc_string_a< bc_allocator_frame >;
 
 		/*template<template<typename> typename TAllocator >
-		using bc_string_movale = bc_string_a< bc_allocator_movable >;*/
+		using bc_string_movable = bc_string_a< bc_allocator_movable >;*/
 
 		using bc_wstring = bc_basic_string< bcWCHAR, std::char_traits< bcWCHAR >, bc_allocator< bcECHAR > >;
 
@@ -472,12 +470,10 @@ namespace black_cat
 
 		using bc_wstring_program = bc_wstring_a< bc_allocator_program >;
 
-		using bc_wstring_level = bc_wstring_a< bc_allocator_level >;
-
 		using bc_wstring_frame = bc_wstring_a< bc_allocator_frame >;
 
 		/*template<template<typename> typename TAllocator >
-		using bc_wstring_movale = bc_wstring_a< bc_allocator_movable >;*/
+		using bc_wstring_movable = bc_wstring_a< bc_allocator_movable >;*/
 
 #ifdef BC_UNICODE
 		using bc_estring = bc_wstring;
@@ -492,8 +488,6 @@ namespace black_cat
 #endif
 
 		using bc_estring_program = bc_estring_a< bc_allocator_program >;
-
-		using bc_estring_level = bc_estring_a< bc_allocator_level >;
 
 		using bc_estring_frame = bc_estring_a< bc_allocator_frame >;
 		
@@ -1081,7 +1075,7 @@ namespace black_cat
 			return l_ans;
 		}
 
-#define TO_STRING_BUFF 2 * 32
+#define TO_STRING_BUFF (2 * 32)
 		
 		inline void _bc_to_string(bcINT p_value, bcCHAR* p_buf)
 		{
@@ -1249,11 +1243,6 @@ namespace black_cat
 			return _bc_to_string<bc_allocator_program, bc_allocator>(p_str);
 		}
 
-		inline bc_string bc_to_string(const bc_wstring_level& p_str)
-		{
-			return _bc_to_string<bc_allocator_level, bc_allocator>(p_str);
-		}
-
 		inline bc_string bc_to_string(const bc_wstring_frame& p_str)
 		{
 			return _bc_to_string<bc_allocator_frame, bc_allocator>(p_str);
@@ -1270,11 +1259,6 @@ namespace black_cat
 		}
 
 		inline bc_string bc_to_string(const bc_string_program& p_str)
-		{
-			return bc_string(p_str.c_str());
-		}
-
-		inline bc_string bc_to_string(const bc_string_level& p_str)
 		{
 			return bc_string(p_str.c_str());
 		}
@@ -1376,11 +1360,6 @@ namespace black_cat
 			return _bc_to_string<bc_allocator_program, bc_allocator_program>(p_str);
 		}
 
-		inline bc_string_program bc_to_string_program(const bc_wstring_level& p_str)
-		{
-			return _bc_to_string<bc_allocator_level, bc_allocator_program>(p_str);
-		}
-
 		inline bc_string_program bc_to_string_program(const bc_wstring_frame& p_str)
 		{
 			return _bc_to_string<bc_allocator_frame, bc_allocator_program>(p_str);
@@ -1399,11 +1378,6 @@ namespace black_cat
 		inline bc_string_program bc_to_string_program(const bc_string_program& p_str)
 		{
 			return p_str;
-		}
-
-		inline bc_string_program bc_to_string_program(const bc_string_level& p_str)
-		{
-			return bc_string_program(p_str.c_str());
 		}
 
 		inline bc_string_program bc_to_string_program(const bc_string_frame& p_str)
@@ -1521,11 +1495,6 @@ namespace black_cat
 			return _bc_to_string<bc_allocator_program, bc_allocator_frame>(p_str);
 		}
 
-		inline bc_string_frame bc_to_string_frame(const bc_wstring_level& p_str)
-		{
-			return _bc_to_string<bc_allocator_level, bc_allocator_frame>(p_str);
-		}
-
 		inline bc_string_frame bc_to_string_frame(const bc_wstring_frame& p_str)
 		{
 			return _bc_to_string<bc_allocator_frame, bc_allocator_frame>(p_str);
@@ -1542,11 +1511,6 @@ namespace black_cat
 		}
 
 		inline bc_string_frame bc_to_string_frame(const bc_string_program& p_str)
-		{
-			return bc_string_frame(p_str.c_str());
-		}
-
-		inline bc_string_frame bc_to_string_frame(const bc_string_level& p_str)
 		{
 			return bc_string_frame(p_str.c_str());
 		}
@@ -1722,11 +1686,6 @@ namespace black_cat
 			return _bc_to_wstring<bc_allocator_program, bc_allocator>(p_str);
 		}
 
-		inline bc_wstring bc_to_wstring(const bc_string_level& p_str)
-		{
-			return _bc_to_wstring<bc_allocator_level, bc_allocator>(p_str);
-		}
-
 		inline bc_wstring bc_to_wstring(const bc_string_frame& p_str)
 		{
 			return _bc_to_wstring<bc_allocator_frame, bc_allocator>(p_str);
@@ -1743,11 +1702,6 @@ namespace black_cat
 		}
 
 		inline bc_wstring bc_to_wstring(const bc_wstring_program& p_str)
-		{
-			return bc_wstring(p_str.c_str());
-		}
-
-		inline bc_wstring bc_to_wstring(const bc_wstring_level& p_str)
 		{
 			return bc_wstring(p_str.c_str());
 		}
@@ -1858,11 +1812,6 @@ namespace black_cat
 			return _bc_to_wstring<bc_allocator_program, bc_allocator_program>(p_str);
 		}
 
-		inline bc_wstring_program bc_to_wstring_program(const bc_string_level& p_str)
-		{
-			return _bc_to_wstring<bc_allocator_level, bc_allocator_program>(p_str);
-		}
-
 		inline bc_wstring_program bc_to_wstring_program(const bc_string_frame& p_str)
 		{
 			return _bc_to_wstring<bc_allocator_frame, bc_allocator_program>(p_str);
@@ -1881,11 +1830,6 @@ namespace black_cat
 		inline bc_wstring_program bc_to_wstring_program(const bc_wstring_program& p_str)
 		{
 			return p_str;
-		}
-
-		inline bc_wstring_program bc_to_wstring_program(const bc_wstring_level& p_str)
-		{
-			return bc_wstring_program(p_str.c_str());
 		}
 
 		inline bc_wstring_program bc_to_wstring_program(const bc_wstring_frame& p_str)
@@ -1994,11 +1938,6 @@ namespace black_cat
 			return _bc_to_wstring<bc_allocator_program, bc_allocator_frame>(p_str);
 		}
 
-		inline bc_wstring_frame bc_to_wstring_frame(const bc_string_level& p_str)
-		{
-			return _bc_to_wstring<bc_allocator_level, bc_allocator_frame>(p_str);
-		}
-
 		inline bc_wstring_frame bc_to_wstring_frame(const bc_string_frame& p_str)
 		{
 			return _bc_to_wstring<bc_allocator_frame, bc_allocator_frame>(p_str);
@@ -2015,11 +1954,6 @@ namespace black_cat
 		}
 
 		inline bc_wstring_frame bc_to_wstring_frame(const bc_wstring_program& p_str)
-		{
-			return bc_wstring_frame(p_str.c_str());
-		}
-
-		inline bc_wstring_frame bc_to_wstring_frame(const bc_wstring_level& p_str)
 		{
 			return bc_wstring_frame(p_str.c_str());
 		}
@@ -2292,19 +2226,6 @@ namespace std
 	};
 
 	template<>
-	struct hash< black_cat::core::bc_string_level >
-	{
-	public:
-		using argument_type = black_cat::core::bc_string_level;
-		using result_type = std::size_t;
-
-		result_type operator ()(const argument_type& p_arg) const
-		{
-			return black_cat::core::bc_string_hash(p_arg.c_str());
-		}
-	};
-
-	template<>
 	struct hash< black_cat::core::bc_string_frame >
 	{
 	public:
@@ -2334,19 +2255,6 @@ namespace std
 	{
 	public:
 		using argument_type = black_cat::core::bc_wstring_program;
-		using result_type = std::size_t;
-
-		result_type operator ()(const argument_type& p_arg) const
-		{
-			return black_cat::core::bc_wstring_hash(p_arg.c_str());
-		}
-	};
-
-	template<>
-	struct hash< black_cat::core::bc_wstring_level >
-	{
-	public:
-		using argument_type = black_cat::core::bc_wstring_level;
 		using result_type = std::size_t;
 
 		result_type operator ()(const argument_type& p_arg) const

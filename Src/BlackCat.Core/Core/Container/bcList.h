@@ -475,9 +475,6 @@ namespace black_cat
 		using bc_list_program = bc_list_a< T, bc_allocator_program >;
 
 		template< typename T >
-		using bc_list_level = bc_list_a< T, bc_allocator_level >;
-
-		template< typename T >
 		using bc_list_frame = bc_list_a< T, bc_allocator_frame >;
 
 		template< typename T >

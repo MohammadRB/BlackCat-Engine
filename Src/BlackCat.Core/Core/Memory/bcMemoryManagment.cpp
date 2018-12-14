@@ -19,7 +19,6 @@ namespace black_cat
 			m_initialized(false),
 			m_fsa_allocators(nullptr),
 			m_per_program_stack(nullptr),
-			m_per_level_stack(nullptr),
 			m_per_frame_stack(nullptr),
 			m_super_heap(nullptr),
 			m_crt_allocator(nullptr)
@@ -38,7 +37,6 @@ namespace black_cat
 			bcUINT32 p_fsa_step_size,
 			bcUINT32 p_fsa_num_allocations,
 			bcUINT32 p_per_prg_heap_size,
-			bcUINT32 p_per_lvl_heap_size,
 			bcUINT32 p_per_frm_heap_size,
 			bcUINT32 p_super_heap_size)
 		{
@@ -78,8 +76,6 @@ namespace black_cat
 
 				m_per_program_stack = new bc_memory_stack();
 				m_per_program_stack->initialize(p_per_prg_heap_size, "PerProgramStack");
-				m_per_level_stack = new bc_memory_stack();
-				m_per_level_stack->initialize(p_per_lvl_heap_size, "PerLevelStack");
 				m_per_frame_stack = new bc_memory_stack();
 				m_per_frame_stack->initialize(p_per_frm_heap_size, "PerFrameStack");
 
@@ -107,7 +103,6 @@ namespace black_cat
 		{
 			delete[] (m_fsa_allocators);
 			delete (m_per_program_stack);
-			delete (m_per_level_stack);
 			delete (m_per_frame_stack);
 			delete (m_super_heap);
 			delete (m_crt_allocator);
@@ -123,7 +118,6 @@ namespace black_cat
 			bcUINT32 p_fsa_step_size,
 			bcUINT32 p_fsa_num_allocations,
 			bcUINT32 p_per_prg_heap_size,
-			bcUINT32 p_per_lvl_heap_size,
 			bcUINT32 p_per_frm_heap_size,
 			bcUINT32 p_super_heap_size)
 		{		
@@ -133,7 +127,6 @@ namespace black_cat
 				p_fsa_step_size,
 				p_fsa_num_allocations,
 				p_per_prg_heap_size,
-				p_per_lvl_heap_size,
 				p_per_frm_heap_size,
 				p_super_heap_size);
 		}
@@ -169,11 +162,6 @@ namespace black_cat
 					l_result = (m_fsa_allocators + l_fsa_index)->alloc(&l_block);
 					l_allocator = (m_fsa_allocators + l_fsa_index);
 				}
-				break;
-
-			case bc_alloc_type::level:
-				l_result = m_per_level_stack->alloc(&l_block);
-				l_allocator = m_per_level_stack;
 				break;
 
 			case bc_alloc_type::program:
@@ -291,11 +279,6 @@ namespace black_cat
 					l_result = (m_fsa_allocators + _get_fsa_index(l_size))->alloc(&l_block);
 					l_allocator = (m_fsa_allocators + _get_fsa_index(l_size));
 				}
-				break;
-
-			case bc_alloc_type::level:
-				l_result = m_per_level_stack->alloc(&l_block);
-				l_allocator = m_per_level_stack;
 				break;
 
 			case bc_alloc_type::program:
@@ -419,7 +402,6 @@ namespace black_cat
 			}
 
 			l_total_size += m_per_program_stack->tracer().total_size();
-			l_total_size += m_per_level_stack->tracer().total_size();
 			l_total_size += m_per_frame_stack->tracer().total_size();
 			l_total_size += m_super_heap->tracer().total_size();
 
@@ -437,7 +419,6 @@ namespace black_cat
 				l_used_size += m_fsa_allocators[i].tracer().used_size();
 
 			l_used_size += m_per_program_stack->tracer().used_size();
-			l_used_size += m_per_level_stack->tracer().used_size();
 			l_used_size += m_per_frame_stack->tracer().used_size();
 			l_used_size += m_super_heap->tracer().used_size();
 
@@ -455,7 +436,6 @@ namespace black_cat
 				l_wasted_size += m_fsa_allocators[i].tracer().overhead_size();
 
 			l_wasted_size += m_per_program_stack->tracer().overhead_size();
-			l_wasted_size += m_per_level_stack->tracer().overhead_size();
 			l_wasted_size += m_per_frame_stack->tracer().overhead_size();
 			l_wasted_size += m_super_heap->tracer().overhead_size();
 
@@ -473,7 +453,6 @@ namespace black_cat
 				l_max_used_size += m_fsa_allocators[i].tracer().max_used_size();
 
 			l_max_used_size += m_per_program_stack->tracer().max_used_size();
-			l_max_used_size += m_per_level_stack->tracer().max_used_size();
 			l_max_used_size += m_per_frame_stack->tracer().max_used_size();
 			l_max_used_size += m_super_heap->tracer().max_used_size();
 

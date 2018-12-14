@@ -26,10 +26,9 @@ namespace black_cat
 		enum class bc_alloc_type : bcUBYTE
 		{
 			program,				// Alloc in program stack
-			level,				// Alloc in level stack
-			frame,				// Alloc in frame stack
+			frame,					// Alloc in frame stack
 			unknown,				// Try to alloc in fixed size allocators, otherwise alloc in crt memory
-			unknown_movable,		// Try to alloc in fixed size allocators, then in super heap that is defragmentable, otherwise in crt memory
+			unknown_movable,		// Try to alloc in fixed size allocators, then in super heap that is defragmentable , otherwise in crt memory
 		};
 
 #ifdef BC_MEMORY_ENABLE
@@ -49,7 +48,6 @@ namespace black_cat
 				bcUINT32 p_fsa_step_size,
 				bcUINT32 p_fsa_num_allocations,
 				bcUINT32 p_per_prg_heap_size,
-				bcUINT32 p_per_lvl_heap_size,
 				bcUINT32 p_per_frm_heap_size,
 				bcUINT32 p_super_heap_size);
 
@@ -60,7 +58,6 @@ namespace black_cat
 				bcUINT32 p_fsa_step_size,
 				bcUINT32 p_fsa_num_allocations,
 				bcUINT32 p_per_prg_heap_size,
-				bcUINT32 p_per_lvl_heap_size,
 				bcUINT32 p_per_frm_heap_size,
 				bcUINT32 p_super_heap_size);
 
@@ -142,7 +139,6 @@ namespace black_cat
 			bool m_initialized;
 			bc_memory_extender<bc_memory_fixed_size>* m_fsa_allocators;
 			bc_memory_stack* m_per_program_stack;
-			bc_memory_stack* m_per_level_stack;
 			bc_memory_stack* m_per_frame_stack;
 			bc_memory_heap* m_super_heap;
 			bc_memory_crt* m_crt_allocator;

@@ -3,8 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcVector.h"
-#include "PhysicsImp/Shape/bcShapeBox.h"
-#include "PhysicsImp/Fundation/bcTransform.h"
+#include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/bcActor.h"
 
@@ -23,7 +22,7 @@ namespace black_cat
 
 			virtual void remove_actor(bc_actor p_actor) = 0;
 
-			virtual void get_bound_box(physics::bc_shape_box& p_box, physics::bc_transform& p_box_transform) = 0;
+			virtual void get_bound_box(physics::bc_bound_box& p_box, physics::bc_transform& p_box_transform) = 0;
 		};
 
 		enum class bc_octal_tree_node_position
@@ -41,7 +40,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_octal_tree_graph_node : bc_iscene_graph_node
 		{
 		public:
-			explicit bc_octal_tree_graph_node(physics::bc_shape_box p_box);
+			explicit bc_octal_tree_graph_node(physics::bc_bound_box p_box);
 
 			bc_octal_tree_graph_node(const bc_octal_tree_graph_node& p_parent, bc_octal_tree_node_position p_my_position);
 
@@ -72,9 +71,8 @@ namespace black_cat
 			core::bc_unique_ptr<bc_octal_tree_graph_node> m_bottom_right_front;
 			core::bc_unique_ptr<bc_octal_tree_graph_node> m_bottom_right_back;
 
-			physics::bc_shape_box m_bound_box;
-			physics::bc_transform m_bound_box_transform;
-			core::bc_vector<bc_actor> m_actors;
+			physics::bc_bound_box m_bound_box;
+			core::bc_vector_movale<bc_actor>* m_actors;
 		};
 	}
 }

@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 
+#include "CorePlatformImp/Concurrency/bcThread.h"
 #include "Core/Utility/bcLogger.h"
 #include "Core/bcEvent.h"
 #include "Game/Application/bcRenderApplication.h"

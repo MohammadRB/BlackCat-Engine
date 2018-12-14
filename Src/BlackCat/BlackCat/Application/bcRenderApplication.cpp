@@ -61,7 +61,6 @@ namespace black_cat
 			p_engine_components.m_memmng_fsa_step_size,
 			p_engine_components.m_memmng_fsa_allocation_count,
 			p_engine_components.m_memmng_program_stack_size,
-			p_engine_components.m_memmng_level_stack_size,
 			p_engine_components.m_memmng_frame_stack_size,
 			p_engine_components.m_memmng_super_heap_size
 		);

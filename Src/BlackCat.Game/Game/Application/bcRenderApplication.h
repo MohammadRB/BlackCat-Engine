@@ -19,7 +19,6 @@ namespace black_cat
 				bcSIZE p_memmng_fsa_step_size,
 				bcSIZE p_memmng_fsa_allocation_count,
 				bcSIZE p_memmng_program_stack_size,
-				bcSIZE p_memmng_level_stack_size,
 				bcSIZE p_memmng_frame_stack_size,
 				bcSIZE p_memmng_super_heap_size,
 				bcSIZE p_thread_manager_thread_count,
@@ -29,7 +28,6 @@ namespace black_cat
 				m_memmng_fsa_step_size(p_memmng_fsa_step_size),
 				m_memmng_fsa_allocation_count(p_memmng_fsa_allocation_count),
 				m_memmng_program_stack_size(p_memmng_program_stack_size),
-				m_memmng_level_stack_size(p_memmng_level_stack_size),
 				m_memmng_frame_stack_size(p_memmng_frame_stack_size),
 				m_memmng_super_heap_size(p_memmng_super_heap_size),
 				m_thread_manager_thread_count(p_thread_manager_thread_count),
@@ -42,7 +40,6 @@ namespace black_cat
 			bcSIZE m_memmng_fsa_step_size;
 			bcSIZE m_memmng_fsa_allocation_count;
 			bcSIZE m_memmng_program_stack_size;
-			bcSIZE m_memmng_level_stack_size;
 			bcSIZE m_memmng_frame_stack_size;
 			bcSIZE m_memmng_super_heap_size;
 			bcSIZE m_thread_manager_thread_count;

@@ -34,12 +34,6 @@ namespace black_cat
 			typename TValue,
 			class THash = std::hash< TKey >,
 			class TKeyEqual = std::equal_to< TKey > >
-		using bc_unordered_map_level = bc_unordered_map_a< TKey, TValue, THash, TKeyEqual, bc_allocator_level >;
-
-		template< typename TKey,
-			typename TValue,
-			class THash = std::hash< TKey >,
-			class TKeyEqual = std::equal_to< TKey > >
 		using bc_unordered_map_frame = bc_unordered_map_a< TKey, TValue, THash, TKeyEqual, bc_allocator_frame >;
 
 		/*template< typename TKey,
