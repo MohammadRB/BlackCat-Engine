@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/Object/Scene/SceneGraph/bcOctalTreeSceneGraphNode.h"
 
 namespace black_cat
 {
@@ -32,7 +33,7 @@ namespace black_cat
 
 		void bc_game_system::render()
 		{
-			m_render_system.render(*m_scene.get());
+			m_render_system.render(*m_scene);
 		}
 
 		void bc_game_system::update(core_platform::bc_clock::update_param p_clock_update_param)
@@ -67,7 +68,7 @@ namespace black_cat
 			auto l_px_scene_builder = std::move(physics::bc_scene_builder()
 				.enable_ccd());
 			auto l_px_scene = m_physics_system.get_physics().create_scene(std::move(l_px_scene_builder));
-			auto l_scene_graph = bc_scene_graph();
+			auto l_scene_graph = bc_scene_graph(std::move(p_parameter.m_scene_graph));
 
 			m_scene = core::bc_make_unique<bc_scene>(std::move(l_scene_graph), std::move(l_px_scene));
 		}

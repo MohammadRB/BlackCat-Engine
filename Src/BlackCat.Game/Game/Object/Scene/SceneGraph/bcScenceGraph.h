@@ -9,6 +9,7 @@
 #include "PhysicsImp/Shape/bcShapeBox.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/bcActor.hpp"
+#include "bcSceneGraphNode.h"
 
 namespace black_cat
 {
@@ -21,7 +22,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_scene_graph
 		{
 		public:
-			bc_scene_graph();
+			bc_scene_graph(core::bc_unique_ptr<bc_iscene_graph_node> p_scene_graph);
 
 			bc_scene_graph(bc_scene_graph&&) = default;
 
@@ -29,11 +30,13 @@ namespace black_cat
 
 			bc_scene_graph& operator=(bc_scene_graph&&) = default;
 
-			void add_object(bc_actor p_actor);
+			void add_actor(bc_actor& p_actor);
 
-			bc_actor remove_object(bc_actor p_actor);
+			void update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box);
 
-			core::bc_vector_frame< bc_actor > get_heightmaps() const;
+			void remove_actor(bc_actor& p_actor);
+
+			core::bc_vector_frame< bc_actor > get_height_maps() const;
 
 			void update(core_platform::bc_clock::update_param p_clock_update_param);
 
@@ -46,7 +49,7 @@ namespace black_cat
 		protected:
 
 		private:
-			core::bc_vector< bc_actor > m_objects;
+			core::bc_unique_ptr<bc_iscene_graph_node> m_graph_node;
 		};
 	}
 }

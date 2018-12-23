@@ -15,6 +15,7 @@
 #include "Game/System/Script/bcScriptSystem.h"
 #include "Game/System/Script/bcGameConsole.h"
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/Object/Scene/SceneGraph/bcSceneGraphNode.h"
 
 namespace black_cat
 {
@@ -22,12 +23,14 @@ namespace black_cat
 	{
 		struct bc_game_system_parameter
 		{
-			explicit bc_game_system_parameter(bc_render_system_parameter&& p_render_system_parameter)
-				: m_render_system_parameter(std::move(p_render_system_parameter))
+			explicit bc_game_system_parameter(bc_render_system_parameter&& p_render_system_parameter, core::bc_unique_ptr<bc_iscene_graph_node> p_scene_graph)
+				: m_render_system_parameter(std::move(p_render_system_parameter)),
+				m_scene_graph(std::move(p_scene_graph))
 			{
 			}
 
 			bc_render_system_parameter m_render_system_parameter;
+			core::bc_unique_ptr<bc_iscene_graph_node> m_scene_graph;
 		};
 
 		class BC_GAME_DLL bc_game_system : public core::bc_iservice, public core::bc_initializable< bc_game_system_parameter >

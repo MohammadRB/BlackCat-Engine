@@ -5,7 +5,6 @@
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix3f.h"
 #include "Core/Math/bcMatrix4f.h"
-#include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/bcActor.h"
 #include "Game/Object/Scene/bcActorComponent.h"
@@ -29,7 +28,7 @@ namespace black_cat
 
 			bc_mesh_component& operator=(bc_mesh_component&&) noexcept;
 
-			const bc_sub_mesh& get_sub_mesh() const
+			const bc_sub_mesh& get_mesh() const
 			{
 				return m_sub_mesh;
 			}
@@ -47,14 +46,13 @@ namespace black_cat
 
 			void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
 
-			void render(const bc_render_component& p_render_component) const;
+			void render(const bc_actor& p_actor, const bc_render_component& p_render_component) const;
 
 		protected:
 
 		private:
 			bc_sub_mesh m_sub_mesh;
 			bc_sub_mesh_transformation m_mesh_part_transformation;
-			physics::bc_bound_box m_bound_box;
 		};
 	}
 }

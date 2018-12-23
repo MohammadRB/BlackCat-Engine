@@ -11,6 +11,7 @@
 #include "Game/Object/Scene/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcNameComponent.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
 
 namespace black_cat
 {
@@ -149,6 +150,7 @@ namespace black_cat
 			}
 
 			bc_actor l_actor = m_actor_component_manager->create_actor();
+			l_actor.create_component<bc_mediate_component>();
 			l_actor.create_component<bc_name_component>();
 			l_actor.get_component<bc_name_component>()->set_entity_name(l_entity_entry->second.m_entity_name.c_str());
 

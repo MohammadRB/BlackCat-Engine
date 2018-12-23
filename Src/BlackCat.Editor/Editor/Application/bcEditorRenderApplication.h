@@ -15,10 +15,12 @@ namespace black_cat
 			bc_editor_render_app();
 
 			~bc_editor_render_app();
+		protected:
 
-			void application_start_engine_components(game::bc_engine_component_parameter& p_engine_components, core::bc_service_manager& p_service_manager) override;
+		private:
+			void application_start_engine_components(game::bc_engine_application_parameter& p_parameters) override;
 
-			void application_initialize(const bcCHAR* p_commandline) override;
+			void application_initialize(game::bc_engine_application_parameter& p_parameters) override;
 
 			void application_load_content(core::bc_content_stream_manager* p_stream_manager) override;
 
@@ -33,9 +35,7 @@ namespace black_cat
 			void application_destroy() override;
 
 			void application_close_engine_components() override;
-		protected:
 
-		private:
 			core::bc_event_listener_handle m_shape_throw_key_handle;
 		};
 	}

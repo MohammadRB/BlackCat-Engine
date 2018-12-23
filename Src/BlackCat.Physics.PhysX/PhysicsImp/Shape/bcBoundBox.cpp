@@ -81,7 +81,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bool bc_platform_bound_box< g_api_physx >::intersect(const bc_platform_bound_box& p_box) noexcept
+		bool bc_platform_bound_box< g_api_physx >::intersect(const bc_platform_bound_box& p_box) const noexcept
 		{
 			return m_pack.m_bound.intersects(const_cast<bc_platform_bound_box&>(p_box).get_platform_pack().m_bound);
 		}
@@ -95,9 +95,9 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bool bc_platform_bound_box< g_api_physx >::contain(const bc_platform_bound_box& p_box) noexcept
+		bool bc_platform_bound_box< g_api_physx >::contains(const bc_platform_bound_box& p_box) const noexcept
 		{
-			return m_pack.m_bound.isInside(const_cast<bc_platform_bound_box&>(p_box).get_platform_pack().m_bound);
+			return const_cast<bc_platform_bound_box&>(p_box).get_platform_pack().m_bound.isInside(m_pack.m_bound);
 		}
 
 		template<>

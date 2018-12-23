@@ -17,13 +17,14 @@
 #include "Game/System/Render/bcRenderPassManager.h"
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/System/Script/bcScriptSystem.h"
+#include "Game/Object/Scene/Component/bcNameComponent.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcHierarchyComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
-#include "Game/Object/Scene/Component/bcNameComponent.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
@@ -51,18 +52,18 @@ namespace black_cat
 	{
 	}
 
-	void bc_render_application::app_start_engine_components(game::bc_engine_component_parameter& p_engine_components)
+	void bc_render_application::app_start_engine_components(game::bc_engine_application_parameter& p_parameters)
 	{
 #ifdef BC_MEMORY_ENABLE
 		core::bc_memmng::startup
 		(
-			p_engine_components.m_memmng_fsa_start_size,
-			p_engine_components.m_memmng_fsa_count,
-			p_engine_components.m_memmng_fsa_step_size,
-			p_engine_components.m_memmng_fsa_allocation_count,
-			p_engine_components.m_memmng_program_stack_size,
-			p_engine_components.m_memmng_frame_stack_size,
-			p_engine_components.m_memmng_super_heap_size
+			p_parameters.m_engine_parameters.m_memmng_fsa_start_size,
+			p_parameters.m_engine_parameters.m_memmng_fsa_count,
+			p_parameters.m_engine_parameters.m_memmng_fsa_step_size,
+			p_parameters.m_engine_parameters.m_memmng_fsa_allocation_count,
+			p_parameters.m_engine_parameters.m_memmng_program_stack_size,
+			p_parameters.m_engine_parameters.m_memmng_frame_stack_size,
+			p_parameters.m_engine_parameters.m_memmng_super_heap_size
 		);
 #endif
 		core::bc_service_manager::start_up();
@@ -80,8 +81,8 @@ namespace black_cat
 		(
 			core::bc_make_service< core::bc_thread_manager >
 			(
-				p_engine_components.m_thread_manager_thread_count,
-				p_engine_components.m_thread_manager_reserve_thread_count
+				p_parameters.m_engine_parameters.m_thread_manager_thread_count,
+				p_parameters.m_engine_parameters.m_thread_manager_reserve_thread_count
 			)
 		);
 		auto* l_expression_parameter_manager = m_service_manager->register_service< core::bc_expression_parameter_manager >
@@ -174,6 +175,7 @@ namespace black_cat
 		l_entity_manager->register_component_types
 		<
 			game::bc_name_component,
+			game::bc_mediate_component,
 			game::bc_mesh_component,
 			game::bc_hierarchy_component,
 			game::bc_rigid_static_component,
@@ -183,23 +185,27 @@ namespace black_cat
 		>();
 		l_entity_manager->register_abstract_component_types
 		<
-			game::bc_abstract_component<game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component>
+			game::bc_abstract_component< game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component >
 		>();
 
-		application_start_engine_components(p_engine_components, *m_service_manager);
+		application_start_engine_components(p_parameters);
 	}
 
-	void bc_render_application::app_initialize(const bcCHAR* p_commandline)
+	void bc_render_application::app_initialize(game::bc_engine_application_parameter& p_parameters)
 	{
 		m_game_system->initialize
 		(
-			game::bc_game_system_parameter(game::bc_render_system_parameter
+			game::bc_game_system_parameter
 			(
-				game::bc_render_application::get_output_window().get_width(),
-				game::bc_render_application::get_output_window().get_height(),
-				graphic::bc_format::R8G8B8A8_UNORM,
-				game::bc_render_application::get_output_window().get_device_output()
-			))
+				game::bc_render_system_parameter
+				(
+					game::bc_render_application::get_output_window().get_width(),
+					game::bc_render_application::get_output_window().get_height(),
+					graphic::bc_format::R8G8B8A8_UNORM,
+					game::bc_render_application::get_output_window().get_device_output()
+				), 
+				p_parameters.m_app_parameters.m_scene_graph_factory()
+			)
 		);
 
 		auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
@@ -219,7 +225,7 @@ namespace black_cat
 
 		l_script_system.set_script_binder(std::move(l_script_binder));
 
-		application_initialize(p_commandline);
+		application_initialize(p_parameters);
 	}
 
 	void bc_render_application::app_load_content()
@@ -229,6 +235,7 @@ namespace black_cat
 
 	void bc_render_application::app_update(core_platform::bc_clock::update_param p_clock_update_param)
 	{
+		m_service_manager->update(p_clock_update_param);
 		application_update(p_clock_update_param);
 	}
 
@@ -239,10 +246,7 @@ namespace black_cat
 
 	bool bc_render_application::app_event(core::bc_ievent& p_event)
 	{
-		bool l_result = false;
-
-		l_result = l_result || game::bc_render_application::app_event(p_event);
-		l_result = l_result || application_event(p_event);
+		const bool l_result = application_event(p_event);
 
 		return l_result;
 	}

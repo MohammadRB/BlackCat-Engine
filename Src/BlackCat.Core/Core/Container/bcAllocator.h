@@ -39,46 +39,46 @@ namespace black_cat
 			};
 
 		public:
-			bcInline static pointer allocate(allocator_type& p_allocator, size_type p_count)
+			static pointer allocate(allocator_type& p_allocator, size_type p_count)
 			{
 				return p_allocator.allocate(p_count);
 			}
 
-			bcInline static void deallocate(allocator_type& p_allocator, pointer p_pointer)
+			static void deallocate(allocator_type& p_allocator, pointer p_pointer)
 			{
 				p_allocator.deallocate(p_pointer);
 			}
 
 			template< typename ...TArgs >
-			bcInline static void construct(allocator_type& p_allocator, value_type* p_pointer, TArgs&&... p_args)
+			static void construct(allocator_type& p_allocator, value_type* p_pointer, TArgs&&... p_args)
 				noexcept(std::is_nothrow_constructible<value_type, TArgs...>::value)
 			{
 				p_allocator.construct(p_pointer, std::forward< TArgs >(p_args)...);
 			}
 
-			bcInline static void destroy(allocator_type& p_allocator, value_type* p_pointer)
+			static void destroy(allocator_type& p_allocator, value_type* p_pointer)
 			{
 				p_allocator.destroy(p_pointer);
 			}
 
-			bcInline static void register_pointer(allocator_type& p_allocator, pointer* p_pointer)
+			static void register_pointer(allocator_type& p_allocator, pointer* p_pointer)
 			{
 				_register_pointer(p_allocator, p_pointer, is_movable_type());
 			}
 
-			bcInline static void unregister_pointer(allocator_type& p_allocator, pointer* p_pointer)
+			static void unregister_pointer(allocator_type& p_allocator, pointer* p_pointer)
 			{
 				_unregister_pointer(p_allocator, p_pointer, is_movable_type());
 			}
 
 			template< typename TOther >
-			bcInline static bool equal(const this_type& p_first, const typename rebind_alloc< TOther >::other& p_second)
+			static bool equal(const this_type& p_first, const typename rebind_alloc< TOther >::other& p_second)
 			{
 				return p_first == p_second;
 			}
 
 			template< typename TOther >
-			bcInline static bool not_equal(const this_type& p_first, const typename rebind_alloc< TOther >::other& p_second)
+			static bool not_equal(const this_type& p_first, const typename rebind_alloc< TOther >::other& p_second)
 			{
 				return p_first != p_second;
 			}

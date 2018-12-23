@@ -21,7 +21,7 @@ namespace black_cat
 		class bc_scene;
 		struct bc_render_system_update_param;
 
-		struct _bc_pass_entry
+		struct _bc_render_pass_entry
 		{
 		public:
 			bcUINT32 m_position;
@@ -68,13 +68,13 @@ namespace black_cat
 		protected:
 
 		private:
-			void _add_pass(_bc_pass_entry&& p_entry);
+			void _add_pass(_bc_render_pass_entry&& p_entry);
 
 			bool _remove_pass(const bcCHAR* p_name);
 
 			bc_irender_pass* _get_pass(const bcCHAR* p_name);
 
-			core::bc_vector< _bc_pass_entry > m_passes;
+			core::bc_vector< _bc_render_pass_entry > m_passes;
 			bc_render_pass_resource_share m_state_share;
 		};
 
@@ -83,7 +83,7 @@ namespace black_cat
 		{
 			static_assert(std::is_base_of_v<bc_irender_pass, T>, "T must inherite from bc_irender_pass");
 
-			_bc_pass_entry l_entry;
+			_bc_render_pass_entry l_entry;
 			l_entry.m_position = p_location;
 			l_entry.m_name = bc_render_pass_trait<T>::render_pass_name();
 			l_entry.m_pass = core::bc_make_unique<T>(core::bc_alloc_type::program, std::move(p_pass));

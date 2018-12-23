@@ -1,6 +1,8 @@
 // [11/22/2018 MRB]
 
 #include "Editor/EditorPCH.h"
+
+#include "Game/Object/Scene/SceneGraph/bcOctalTreeSceneGraphNode.h"
 #include "Editor/Application/bcEditorRenderApplicationThread.h"
 #include "Editor/Application/bcEditorRenderApplication.h"
 
@@ -36,7 +38,16 @@ namespace black_cat
 			game::bc_render_application_parameter l_render_app_parameters
 			(
 				l_app_parameters,
-				m_output_window
+				m_output_window,
+				[]()
+				{
+					return core::bc_make_unique< game::bc_octal_tree_graph_node >
+					(
+						physics::bc_bound_box(core::bc_vector3f(), core::bc_vector3f(1024, 1024, 1024)),
+						10,
+						128
+					);
+				}
 			);
 			game::bc_engine_component_parameter l_engine_component_parameters
 			(
@@ -53,7 +64,7 @@ namespace black_cat
 			game::bc_engine_application_parameter l_engine_app_parameters
 			(
 				l_engine_component_parameters,
-				l_render_app_parameters
+				std::move(l_render_app_parameters)
 			);
 
 			bc_editor_render_app l_app;

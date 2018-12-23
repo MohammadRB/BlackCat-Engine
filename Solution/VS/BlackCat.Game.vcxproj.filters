@@ -213,6 +213,15 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcShapeDrawer.h">
       <Filter>Game\System\Render</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcOctalTreeSceneGraphNode.h">
+      <Filter>Game\Object\Scene\SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcEngineApplicationParameter.h">
+      <Filter>Game\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcMediateComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -323,9 +332,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcScenceGraph.cpp">
       <Filter>Game\Object\Scene\SceneGraph</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcSceneGraphNode.cpp">
-      <Filter>Game\Object\Scene\SceneGraph</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\bcGameSystem.cpp">
       <Filter>Game\System</Filter>
     </ClCompile>
@@ -340,6 +346,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcStateConfigs.cpp">
       <Filter>Game\System\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcOctalTreeSceneGraphNode.cpp">
+      <Filter>Game\Object\Scene\SceneGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcMediateComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

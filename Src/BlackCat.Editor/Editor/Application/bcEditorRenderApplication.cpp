@@ -24,19 +24,19 @@ namespace black_cat
 
 		bc_editor_render_app::~bc_editor_render_app() = default;
 
-		void bc_editor_render_app::application_start_engine_components(game::bc_engine_component_parameter& p_engine_components, core::bc_service_manager& p_service_manager)
+		void bc_editor_render_app::application_start_engine_components(game::bc_engine_application_parameter& p_parameters)
 		{
-			auto* l_game_system = p_service_manager.get_service<game::bc_game_system>();
-			auto* l_content_stream_manager = p_service_manager.get_service< core::bc_content_stream_manager >();
+			auto* l_game_system = m_service_manager->get_service<game::bc_game_system>();
+			auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
 
-			p_service_manager.register_service(core::bc_make_service<bc_ui_command_service>(*l_content_stream_manager, *l_game_system));
+			m_service_manager->register_service(core::bc_make_service<bc_ui_command_service>(*l_content_stream_manager, *l_game_system));
 			l_content_stream_manager->register_loader< game::bc_height_map, bc_editor_height_map_loader_dx11 >
 			(
 				core::bc_make_loader< bc_editor_height_map_loader_dx11 >()
 			);
 		}
 
-		void bc_editor_render_app::application_initialize(const bcCHAR* p_commandline)
+		void bc_editor_render_app::application_initialize(game::bc_engine_application_parameter& p_parameters)
 		{
 			game::bc_render_system& l_render_system = m_game_system->get_render_system();
 
@@ -143,7 +143,6 @@ namespace black_cat
 
 		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param)
 		{
-			m_service_manager->update(p_clock_update_param);
 		}
 
 		void bc_editor_render_app::application_render(core_platform::bc_clock::update_param p_clock_update_param)

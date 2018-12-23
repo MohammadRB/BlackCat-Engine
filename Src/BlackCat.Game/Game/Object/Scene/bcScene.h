@@ -43,13 +43,13 @@ namespace black_cat
 				return m_px_scene.get();
 			}
 
-			core::bc_vector_frame< bc_actor > get_heightmaps() const;
+			core::bc_vector_frame< bc_actor > get_height_maps() const;
 
 			void add_object(bc_actor p_actor);
 
-			bc_actor remove_object(bc_actor p_actor);
+			void remove_object(bc_actor p_actor);
 
-			void render_heightmaps(bc_render_system& p_render_system, bc_render_thread& p_render_thread);
+			void render_height_maps(bc_render_system& p_render_system, bc_render_thread& p_render_thread);
 
 			void render_meshes(bc_render_system& p_render_system, bc_render_thread& p_render_thread, bool p_preserve_render_instances);
 

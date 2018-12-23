@@ -96,7 +96,7 @@ namespace black_cat
 			bc_script_global_prototype_builder create_global_prototype_builder();
 			
 			/**
-			 * \brief Set global object prototype that contain global property and function definitions.
+			 * \brief Set global object prototype that contains global property and function definitions.
 			 * This function must be called only one time to set global object.
 			 * \param p_global_prototype Global object prototype
 			 */

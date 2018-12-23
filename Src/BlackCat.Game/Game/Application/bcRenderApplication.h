@@ -7,70 +7,12 @@
 #include "PlatformImp/Application/bcApplication.h"
 #include "Game/bcExport.h"
 #include "Game/Application/bcIRenderApplicationOutputWindow.h"
+#include "Game/Application/bcEngineApplicationParameter.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		struct bc_engine_component_parameter
-		{
-			bc_engine_component_parameter(bcSIZE p_memmng_fsa_start_size,
-				bcSIZE p_memmng_fsa_count,
-				bcSIZE p_memmng_fsa_step_size,
-				bcSIZE p_memmng_fsa_allocation_count,
-				bcSIZE p_memmng_program_stack_size,
-				bcSIZE p_memmng_frame_stack_size,
-				bcSIZE p_memmng_super_heap_size,
-				bcSIZE p_thread_manager_thread_count,
-				bcSIZE p_thread_manager_reserve_thread_count)
-				: m_memmng_fsa_start_size(p_memmng_fsa_start_size),
-				m_memmng_fsa_count(p_memmng_fsa_count),
-				m_memmng_fsa_step_size(p_memmng_fsa_step_size),
-				m_memmng_fsa_allocation_count(p_memmng_fsa_allocation_count),
-				m_memmng_program_stack_size(p_memmng_program_stack_size),
-				m_memmng_frame_stack_size(p_memmng_frame_stack_size),
-				m_memmng_super_heap_size(p_memmng_super_heap_size),
-				m_thread_manager_thread_count(p_thread_manager_thread_count),
-				m_thread_manager_reserve_thread_count(p_thread_manager_reserve_thread_count)
-			{
-			}
-
-			bcSIZE m_memmng_fsa_start_size;
-			bcSIZE m_memmng_fsa_count;
-			bcSIZE m_memmng_fsa_step_size;
-			bcSIZE m_memmng_fsa_allocation_count;
-			bcSIZE m_memmng_program_stack_size;
-			bcSIZE m_memmng_frame_stack_size;
-			bcSIZE m_memmng_super_heap_size;
-			bcSIZE m_thread_manager_thread_count;
-			bcSIZE m_thread_manager_reserve_thread_count;
-		};
-
-		struct bc_render_application_parameter : public platform::bc_application_parameter
-		{
-			bc_render_application_parameter(platform::bc_application_parameter& p_app_parameters,
-				bc_irender_application_output_window* p_output_window)
-				: platform::bc_application_parameter(p_app_parameters),
-				m_output_window(p_output_window)
-			{
-			}
-
-			bc_irender_application_output_window* m_output_window;
-		};
-
-		struct bc_engine_application_parameter
-		{
-			bc_engine_application_parameter(bc_engine_component_parameter& p_engine_parameters,
-				bc_render_application_parameter& p_app_parameters)
-				: m_engine_parameters(p_engine_parameters),
-				m_app_parameters(p_app_parameters)
-			{
-			}
-
-			bc_engine_component_parameter m_engine_parameters;
-			bc_render_application_parameter m_app_parameters;
-		};
-
 		class BC_GAME_DLL bc_render_application : public core::bc_initializable< bc_engine_application_parameter& >
 		{
 		public:
@@ -117,17 +59,20 @@ namespace black_cat
 			*/
 			platform::bc_console_window create_console_window(core::bc_estring p_caption);
 
+		protected:
+
+		private:
 			/**
 			 * \brief Initialize required engine components
-			 * \param p_engine_components 
+			 * \param p_parameters
 			 */
-			virtual void app_start_engine_components(bc_engine_component_parameter& p_engine_components) = 0;
+			virtual void app_start_engine_components(bc_engine_application_parameter& p_parameters) = 0;
 
 			/**
 			 * \brief Do required initialization for app
-			 * \param p_commandline 
+			 * \param p_parameters
 			 */
-			virtual void app_initialize(const bcCHAR* p_commandline) = 0;
+			virtual void app_initialize(bc_engine_application_parameter& p_parameters) = 0;
 
 			/**
 			 * \brief Load required contents
@@ -136,22 +81,22 @@ namespace black_cat
 
 			/**
 			 * \brief Update app
-			 * \param p_clock_update_param 
+			 * \param p_clock_update_param
 			 */
 			virtual void app_update(core_platform::bc_clock::update_param p_clock_update_param) = 0;
 
 			/**
 			 * \brief Render app
-			 * \param p_clock_update_param 
+			 * \param p_clock_update_param
 			 */
 			virtual void app_render(core_platform::bc_clock::update_param p_clock_update_param) = 0;
 
 			/**
 			 * \brief Handle app events
-			 * \param p_event 
-			 * \return 
+			 * \param p_event
+			 * \return
 			 */
-			virtual bool app_event(core::bc_ievent& p_event);
+			virtual bool app_event(core::bc_ievent& p_event) = 0;
 
 			/**
 			 * \brief Cleanup loaded contents
@@ -168,12 +113,12 @@ namespace black_cat
 			 */
 			virtual void app_close_engine_components() = 0;
 
-		protected:
 			void _initialize(bc_engine_application_parameter& p_platform_parameters) override;
 
 			void _destroy() override;
 
-		private:
+			bool _app_event(core::bc_ievent& p_event);
+
 			void _calculate_fps(core_platform::bc_clock::small_delta_time p_delta);
 
 			core::bc_unique_ptr< platform::bc_application > m_app;

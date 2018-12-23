@@ -42,11 +42,11 @@ namespace black_cat
 
 			void expand(const bc_platform_bound_box& p_box) noexcept;
 
-			bool intersect(const bc_platform_bound_box& p_box) noexcept;
+			bool intersect(const bc_platform_bound_box& p_box) const noexcept;
 
-			bool contains(const core::bc_vector3f& p_point) const noexcept;
+			bool contains(const core::bc_vector3f& p_point)  const noexcept;
 
-			bool contain(const bc_platform_bound_box& p_box) noexcept;
+			bool contains(const bc_platform_bound_box& p_box) const noexcept;
 
 			void scale(bcFLOAT p_scale) noexcept;
 
