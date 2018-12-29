@@ -9,7 +9,6 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcArray.h"
 #include "Core/Event/bcEvent.h"
-#include "Core/File/bcContentStreamManager.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "GraphicImp/Device/bcDevice.h"
@@ -34,6 +33,11 @@
 
 namespace black_cat
 {
+	namespace core
+	{
+		class bc_content_stream_manager;
+	}
+
 	namespace game
 	{
 		class bc_irender_task;
@@ -62,23 +66,13 @@ namespace black_cat
 
 		struct bc_render_system_update_param : public core_platform::bc_clock::update_param
 		{
-			bc_render_system_update_param(const core_platform::bc_clock::update_param& p_clock_update,
-				const core::bc_vector3f p_camera_position,
-				const core::bc_matrix4f& p_view,
-				const core::bc_matrix4f& p_projection,
-				const bc_icamera::extend& p_camera_extends)
+			bc_render_system_update_param(const core_platform::bc_clock::update_param& p_clock_update, const bc_icamera& p_camera)
 				: update_param(p_clock_update),
-				m_camera_position(p_camera_position),
-				m_view_matrix(p_view),
-				m_projection_matrix(p_projection),
-				m_camera_extends(p_camera_extends)
+				m_active_camera(p_camera)
 			{
 			}
 
-			core::bc_vector3f m_camera_position;
-			core::bc_matrix4f m_view_matrix;
-			core::bc_matrix4f m_projection_matrix;
-			bc_icamera::extend m_camera_extends;
+			const bc_icamera& m_active_camera;
 		};
 
 		class BC_GAME_DLL bc_render_system : public core::bc_initializable< core::bc_content_stream_manager&, bc_render_system_parameter >
@@ -101,20 +95,53 @@ namespace black_cat
 
 			bc_render_system& operator=(bc_render_system&&) = default;
 
-			graphic::bc_device& get_device()
-			{
-				return m_device;
-			}
+			graphic::bc_device& get_device() noexcept;
 
-			bc_material_manager& get_material_manager() noexcept
-			{
-				return *m_material_manager;
-			}
+			bc_material_manager& get_material_manager() noexcept;
 
-			bc_shape_drawer& get_shape_drawer() noexcept
-			{
-				return m_shape_drawer;
-			}
+			bc_shape_drawer& get_shape_drawer() noexcept;
+
+			template< typename T >
+			T* get_render_pass();
+
+			template< typename TPass >
+			void add_render_pass(bcUINT p_location, TPass&& p_pass);
+
+			bool remove_render_pass(bcUINT p_location);
+
+			template< typename TPass >
+			bool remove_render_pass();
+
+			/**
+			 * \brief Update global state cbuffers
+			 * \param p_camera
+			 * \param p_render_thread
+			 * \param p_clock 
+			 */
+			void update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera);
+
+			/**
+			 * \brief Add a render instance to render queue
+			 * \param p_state
+			 * \param p_instance
+			 */
+			void add_render_instance(const bc_render_state* p_state, const bc_render_instance& p_instance);
+
+			/**
+			 * \brief Render all instances in render queue
+			 */
+			void render_all_instances(bc_render_thread& p_render_thread);
+
+			/**
+			 * \brief Clear render queue. After rendering instances this function must be called
+			 */
+			void clear_render_instances();
+
+			void update(const update_param& p_update_params);
+
+			void render(bc_scene& p_scene);
+
+			void add_render_task(bc_irender_task& p_task);
 
 			/**
 			 * \brief Thread safe function
@@ -240,40 +267,6 @@ namespace black_cat
 			 */
 			void destroy_compute_state(bc_compute_state* p_compute_state);
 
-			template< typename TPass >
-			void add_render_pass(bcUINT p_location, TPass&& p_pass);
-
-			template< typename T >
-			T* get_render_pass();
-
-			bool remove_render_pass(bcUINT p_location);
-
-			template< typename TPass >
-			bool remove_render_pass();
-
-			/**
-			 * \brief Add a render instance to render queue
-			 * \param p_state 
-			 * \param p_instance 
-			 */
-			void add_render_instance(const bc_render_state* p_state, const bc_render_instance& p_instance);
-
-			/**
-			 * \brief Render all instances in render queue
-			 */
-			void render_all_instances(bc_render_thread& p_render_thread);
-
-			/**
-			 * \brief Clear render queue. After rendering instances this function must be called
-			 */
-			void clear_render_instances();
-
-			void update(const update_param& p_update_params);
-
-			void render(bc_scene& p_scene);
-
-			void add_render_task(bc_irender_task& p_task);
-
 		protected:
 
 		private:
@@ -296,7 +289,6 @@ namespace black_cat
 			core::bc_vector< render_state_entry > m_render_states;
 			core::bc_vector< core::bc_nullable< bc_compute_state > > m_compute_states;
 
-			update_param m_last_update_params;
 			graphic::bc_device m_device;
 			graphic::bc_buffer_ptr m_global_cbuffer;
 			graphic::bc_buffer_ptr m_per_object_cbuffer;
@@ -307,6 +299,27 @@ namespace black_cat
 			bc_shape_drawer m_shape_drawer;
 		};
 
+		inline graphic::bc_device& bc_render_system::get_device() noexcept
+		{
+			return m_device;
+		}
+
+		inline bc_material_manager& bc_render_system::get_material_manager() noexcept
+		{
+			return *m_material_manager;
+		}
+
+		inline bc_shape_drawer& bc_render_system::get_shape_drawer() noexcept
+		{
+			return m_shape_drawer;
+		}
+
+		template< typename T >
+		T* bc_render_system::get_render_pass()
+		{
+			return m_render_pass_manager.get_pass< T >();
+		}
+
 		template< typename TPass >
 		void bc_render_system::add_render_pass(bcUINT p_location, TPass&& p_pass)
 		{
@@ -315,12 +328,6 @@ namespace black_cat
 			auto l_pass = m_render_pass_manager.get_pass(p_location);
 
 			l_pass->initialize_resources(*this);
-		}
-
-		template< typename T >
-		T* bc_render_system::get_render_pass()
-		{
-			return m_render_pass_manager.get_pass< T >();
 		}
 
 		template< typename TPass >

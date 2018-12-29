@@ -83,13 +83,12 @@ namespace black_cat
 			return get_manager()->component_get_actor(*this);
 		}
 
-		void bc_mesh_component::set_world_pos(const core::bc_matrix4f& p_pos)
+		void bc_mesh_component::set_world_transform(const core::bc_matrix4f& p_transform)
 		{
 			physics::bc_bound_box l_bound_box;
-			m_sub_mesh.calculate_absolute_transformations(p_pos, m_mesh_part_transformation, l_bound_box);
+			m_sub_mesh.calculate_absolute_transformations(p_transform, m_mesh_part_transformation, l_bound_box);
 
-			auto* l_mediate = get_actor().get_component<bc_mediate_component>();
-			l_mediate->set_bound_box(l_bound_box);
+			get_actor().get_component<bc_mediate_component>()->set_bound_box(l_bound_box);
 		}
 
 		void bc_mesh_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
@@ -99,7 +98,7 @@ namespace black_cat
 
 			m_sub_mesh = l_sub_mesh_name ? bc_sub_mesh(l_mesh, l_sub_mesh_name->c_str()) : bc_sub_mesh(l_mesh);
 
-			set_world_pos(core::bc_matrix4f::identity());
+			set_world_transform(core::bc_matrix4f::identity());
 		}
 
 		void bc_mesh_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)

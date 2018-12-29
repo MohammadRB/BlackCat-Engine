@@ -114,7 +114,7 @@ namespace black_cat
 
 			node_type* iterator_increment(node_type* p_node) const noexcept
 			{
-				if(p_node->m_next == m_head) // Don't let iterators circular iterate over list
+				if(p_node->m_next == m_head) // Don't let iterators iterate circularly
 				{
 					return nullptr;
 				}
@@ -123,7 +123,7 @@ namespace black_cat
 
 			node_type* iterator_decrement(node_type* p_node) const noexcept
 			{
-				if (p_node == m_head) // Don't let iterators circular iterate over list
+				if (p_node == m_head) // Don't let iterators iterate circularly
 				{
 					return nullptr;
 				}
@@ -139,11 +139,27 @@ namespace black_cat
 			node_type* _new_head(TArgs&&... p_args)
 			{
 				m_head = bc_allocator_traits< internal_allocator_type >::allocate(m_allocator, 1);
-				bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &m_head);
 				bc_allocator_traits< internal_allocator_type >::construct(m_allocator, m_head, std::forward<TArgs>(p_args)...);
 
 				m_head->m_next = m_head;
 				m_head->m_prev = m_head;
+
+				bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &m_head);
+				bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &m_head->m_next);
+				bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &m_head->m_prev);
+
+				return m_head;
+			}
+
+			node_type* _new_head(node_type* p_new_node)
+			{
+				m_head = p_new_node;
+				m_head->m_next = m_head;
+				m_head->m_prev = m_head;
+
+				bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &m_head);
+				bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &m_head->m_next);
+				bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &m_head->m_prev);
 
 				return m_head;
 			}
@@ -193,26 +209,49 @@ namespace black_cat
 			node_type* _new_node(node_type* p_position, this_type& p_other, node_type* p_new_node)
 			{
 				// Free new node
+				if (p_other.m_head == p_new_node)
+				{
+					node_type* l_new_node_next = p_other.iterator_increment(p_new_node);
+
+					bc_allocator_traits< internal_allocator_type >::unregister_pointer(p_other.m_allocator, &p_other.m_head);
+					p_other.m_head = l_new_node_next;
+					if (p_other.m_head)
+					{
+						bc_allocator_traits< internal_allocator_type >::register_pointer(p_other.m_allocator, &p_other.m_head);
+					}
+				}
+
 				bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_new_node->m_next);
 				bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_new_node->m_prev);
-				bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_new_node->m_prev->m_next);
-				bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_new_node->m_next->m_prev);
-				p_new_node->m_prev->m_next = p_new_node->m_next;
-				p_new_node->m_next->m_prev = p_new_node->m_prev;
-				bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_new_node->m_prev->m_next);
-				bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_new_node->m_next->m_prev);
+
+				if (p_other.m_size != 1)
+				{
+					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_new_node->m_prev->m_next);
+					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_new_node->m_next->m_prev);
+					p_new_node->m_prev->m_next = p_new_node->m_next;
+					p_new_node->m_next->m_prev = p_new_node->m_prev;
+					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_new_node->m_prev->m_next);
+					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_new_node->m_next->m_prev);
+				}
 
 				// Assign new node
-				p_new_node->m_next = p_position->m_next;
-				p_new_node->m_prev = p_position;
-				bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_new_node->m_next);
-				bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_new_node->m_prev);
-				bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_position->m_next->m_prev);
-				p_position->m_next->m_prev = p_new_node;
-				bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_position->m_next->m_prev);
-				bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_position->m_next);
-				p_position->m_next = p_new_node;
-				bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_position->m_next);
+				if (p_position)
+				{
+					p_new_node->m_next = p_position->m_next;
+					p_new_node->m_prev = p_position;
+					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_new_node->m_next);
+					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_new_node->m_prev);
+					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_position->m_next->m_prev);
+					p_position->m_next->m_prev = p_new_node;
+					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_position->m_next->m_prev);
+					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_position->m_next);
+					p_position->m_next = p_new_node;
+					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_position->m_next);
+				}
+				else
+				{
+					_new_head(p_new_node);
+				}
 
 				base_type::m_size += 1;
 				p_other.m_size -= 1;
@@ -227,7 +266,7 @@ namespace black_cat
 				node_type* l_first_inserted = nullptr;
 				node_type* l_last_inserted = p_position;
 
-				std::for_each(p_first, p_last, [=, &l_last_inserted](typename std::iterator_traits<TInputIterator>::value_type& p_value)->void
+				std::for_each(p_first, p_last, [=, &l_first_inserted, &l_last_inserted](typename std::iterator_traits<TInputIterator>::value_type& p_value)->void
 				{
 					l_last_inserted = _new_node(l_last_inserted, 1, p_value);
 					if (!l_first_inserted)
@@ -282,24 +321,32 @@ namespace black_cat
 
 					if (m_head == p_position)
 					{
+						bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &m_head);
 						m_head = l_next;
+						if(m_head)
+						{
+							bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &m_head);
+						}
 					}
 
 					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_position->m_next);
 					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_position->m_prev);
-					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_position->m_prev->m_next);
-					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_position->m_next->m_prev);
 
-					p_position->m_prev->m_next = p_position->m_next;
-					p_position->m_next->m_prev = p_position->m_prev;
-
-					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_position->m_prev->m_next);
-					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_position->m_next->m_prev);
+					if(base_type::m_size != 1)
+					{
+						bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_position->m_prev->m_next);
+						bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_position->m_next->m_prev);
+						p_position->m_prev->m_next = p_position->m_next;
+						p_position->m_next->m_prev = p_position->m_prev;
+						bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_position->m_prev->m_next);
+						bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_position->m_next->m_prev);
+					}
 
 					bc_allocator_traits< internal_allocator_type >::destroy(m_allocator, p_position);
 					bc_allocator_traits< internal_allocator_type >::deallocate(m_allocator, p_position);
 
 					p_position = l_next;
+					--base_type::m_size;
 				}
 
 				return l_next;
@@ -317,7 +364,7 @@ namespace black_cat
 			bc_make_iterators_friend(bc_list)
 
 		public:
-			using this_type = bc_list;
+			using this_type = bc_list<T, TAllocator>;
 			using base_type = bc_list_base< T, TAllocator >;
 			using value_type = typename base_type::value_type;
 			using allocator_type = typename base_type::allocator_type;
@@ -964,7 +1011,26 @@ namespace black_cat
 
 			std::swap(base_type::m_size, p_other.m_size);
 			swap(base_type::m_allocator, p_other.m_allocator);
-			swap(base_type::m_head, p_other.m_head);
+
+			if(p_other.m_head)
+			{
+				bc_allocator_traits< internal_allocator_type >::unregister_pointer(p_other.m_allocator, &p_other.m_head);
+			}
+			if(base_type::m_head)
+			{
+				bc_allocator_traits< internal_allocator_type >::unregister_pointer(base_type::m_allocator, &(base_type::m_head));
+			}
+
+			std::swap(base_type::m_head, p_other.m_head);
+
+			if (p_other.m_head)
+			{
+				bc_allocator_traits< internal_allocator_type >::register_pointer(p_other.m_allocator, &p_other.m_head);
+			}
+			if (base_type::m_head)
+			{
+				bc_allocator_traits< internal_allocator_type >::register_pointer(base_type::m_allocator, &(base_type::m_head));
+			}
 		}
 
 		template< typename T, class TAllocator >
@@ -1000,9 +1066,16 @@ namespace black_cat
 		template< typename T, class TAllocator >
 		void bc_list<T, TAllocator>::splice(const_iterator p_pos, this_type&& p_other, const_iterator p_first, const_iterator p_last)
 		{
-			for(;p_first != p_last; ++p_first)
+			auto l_position_to_insert = p_pos.get_node();
+
+			for(;p_first != p_last;)
 			{
-				base_type::_new_node(p_pos.get_node(), p_other, p_first.get_node());
+				auto l_next = p_first;
+				++l_next;
+
+				l_position_to_insert = base_type::_new_node(l_position_to_insert, p_other, p_first.get_node()); // TODO can be improved by bulk add
+
+				p_first = l_next;
 			}
 		}
 
@@ -1024,7 +1097,7 @@ namespace black_cat
 
 				l_node = l_node->m_next;
 			}
-			while (l_node != base_type::m_head);
+			while (l_node && l_node != base_type::m_head);
 		}
 
 		template< typename T, class TAllocator >
@@ -1042,7 +1115,7 @@ namespace black_cat
 				base_type::m_allocator = p_other.m_allocator;
 			}
 
-			_new_node(base_type::m_first, std::begin(p_other), std::end(p_other), std::bidirectional_iterator_tag());
+			base_type::_new_node(base_type::m_head, std::begin(p_other), std::end(p_other), std::bidirectional_iterator_tag());
 		}
 
 		template< typename T, class TAllocator >
@@ -1066,7 +1139,7 @@ namespace black_cat
 			}
 
 			base_type::m_size = p_other.m_size;
-			base_type::m_head = std::move(p_other.m_head);
+			base_type::m_head = p_other.m_head;
 
 			if(base_type::m_head)
 			{

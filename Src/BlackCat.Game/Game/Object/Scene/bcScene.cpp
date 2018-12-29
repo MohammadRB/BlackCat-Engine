@@ -43,23 +43,26 @@ namespace black_cat
 			return m_scene_graph.get_height_maps();
 		}
 
-		void bc_scene::add_object(bc_actor p_actor)
+		void bc_scene::add_actor(bc_actor& p_actor)
 		{
-			bc_rigid_body_component* l_rigid_component = p_actor.get_component<bc_rigid_body_component>();
+			const bool l_added = m_scene_graph.add_actor(p_actor);
+			if(!l_added)
+			{
+				p_actor.destroy();
+				return;
+			}
 
-			if(l_rigid_component)
+			auto* l_rigid_component = p_actor.get_component<bc_rigid_body_component>();
+			if (l_rigid_component)
 			{
 				physics::bc_rigid_body l_rigid_body = l_rigid_component->get_body();
 				m_px_scene->add_actor(l_rigid_body);
 			}
-
-			m_scene_graph.add_actor(p_actor);
 		}
 
-		void bc_scene::remove_object(bc_actor p_actor)
+		void bc_scene::remove_actor(bc_actor& p_actor)
 		{
-			bc_rigid_body_component* l_rigid_component = p_actor.get_component<bc_rigid_body_component>();
-
+			auto* l_rigid_component = p_actor.get_component<bc_rigid_body_component>();
 			if (l_rigid_component)
 			{
 				physics::bc_rigid_body l_rigid_body = l_rigid_component->get_body();
@@ -79,6 +82,11 @@ namespace black_cat
 			m_scene_graph.render_meshes(p_render_system, p_render_thread, p_preserve_render_instances);
 		}
 
+		void bc_scene::render_debug_shapes(bc_shape_drawer& p_shape_drawer) const
+		{
+			m_scene_graph.render_debug_shapes(p_shape_drawer);
+		}
+
 		void bc_scene::update(bc_physics_system& p_physics, core_platform::bc_clock::update_param p_time)
 		{
 			m_px_scene->update(p_time);
@@ -91,13 +99,17 @@ namespace black_cat
 				if(l_rigid_body.is_valid())
 				{
 					bc_actor l_actor = p_physics.get_game_actor(l_rigid_body);
-					auto* l_mesh_component = l_actor.get_component<bc_mesh_component>();
-					if(l_mesh_component)
-					{
-						auto& l_actor_bound_box = l_actor.get_component<bc_mediate_component>()->get_bound_box();
-						l_mesh_component->set_world_pos(l_px_actor.m_global_pose.get_matrix4());
+					auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
 
-						m_scene_graph.update_actor(l_actor, l_actor_bound_box);
+					physics::bc_bound_box l_actor_prev_bound_box = l_mediate_component->get_bound_box();
+					l_mediate_component->set_world_transform(l_px_actor.m_global_pose.get_matrix4());
+
+					const bool l_updated = m_scene_graph.update_actor(l_actor, l_actor_prev_bound_box);
+					if(!l_updated)
+					{
+						l_mediate_component->set_bound_box(l_actor_prev_bound_box);
+						remove_actor(l_actor);
+						l_actor.destroy();
 					}
 				}
 			}

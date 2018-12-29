@@ -76,8 +76,8 @@ namespace black_cat
 		{
 			for(auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->initialize_frame(p_render_system, p_scene, p_thread);
-				l_entry.m_pass->execute(p_render_system, p_scene, p_thread);
+				l_entry.m_pass->initialize_frame(p_render_system, p_thread, p_scene);
+				l_entry.m_pass->execute(p_render_system, p_thread, p_scene);
 			}
 		}
 

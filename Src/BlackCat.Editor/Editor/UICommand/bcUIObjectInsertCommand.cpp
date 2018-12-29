@@ -73,7 +73,7 @@ namespace black_cat
 					m_point_top
 				);
 
-				l_position = l_ray.m_origin + (l_ray.m_dir * 100);
+				l_position = l_ray.m_origin + (l_ray.m_dir * 70);
 			}
 
 			std::string l_entity_name = m_entity_name.toStdString();
@@ -91,10 +91,10 @@ namespace black_cat
 				core::bc_matrix4f l_mat;
 				l_mat.translate(l_position.x, l_position.y, l_position.z);
 
-				l_mesh_component->set_world_pos(core::bc_matrix4f(l_mat));
+				l_mesh_component->set_world_transform(core::bc_matrix4f(l_mat));
 			}
 
-			p_context.m_game_system.get_scene()->add_object(l_actor);
+			p_context.m_game_system.get_scene()->add_actor(l_actor);
 
 			return false;
 		}

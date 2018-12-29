@@ -19,9 +19,9 @@ namespace black_cat
 
 		void update(const game::bc_render_system_update_param& p_update_param) override;
 		
-		void initialize_frame(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread) override;
+		void initialize_frame(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene) override;
 
-		void execute(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread) override;
+		void execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene) override;
 
 		void before_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) override;
 
@@ -37,5 +37,7 @@ namespace black_cat
 		graphic::bc_texture2d_ptr m_depth_buffer;
 		graphic::bc_depth_stencil_view_ptr m_depth_stencil_view;
 		graphic::bc_render_target_view_ptr m_render_target_view;
+		core_platform::bc_clock::update_param m_last_clock{0, 0};
+		const game::bc_icamera* m_last_camera = nullptr;
 	};
 }

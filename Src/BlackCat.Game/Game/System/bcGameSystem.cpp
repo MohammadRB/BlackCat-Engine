@@ -38,26 +38,12 @@ namespace black_cat
 
 		void bc_game_system::update(core_platform::bc_clock::update_param p_clock_update_param)
 		{
-			bc_icamera::extend l_camera_extends;
-
 			m_input_system.update(p_clock_update_param);
-
-			m_input_system.get_camera().get_extend_points(l_camera_extends);
-			auto l_render_system_update_params = bc_render_system::update_param
-			(
-				p_clock_update_param,
-				m_input_system.get_camera().get_position(),
-				m_input_system.get_camera().get_view(),
-				m_input_system.get_camera().get_projection(),
-				l_camera_extends
-			);
-
 			m_physics_system.update(p_clock_update_param);
-			m_script_system.update(p_clock_update_param);
-			m_render_system.update(l_render_system_update_params);
-			m_console.update(p_clock_update_param);
-
 			m_scene->update(m_physics_system, p_clock_update_param);
+			m_script_system.update(p_clock_update_param);
+			m_console.update(p_clock_update_param);
+			m_render_system.update(bc_render_system::update_param(p_clock_update_param, m_input_system.get_camera()));
 		}
 
 		void bc_game_system::_initialize(bc_game_system_parameter p_parameter)

@@ -29,7 +29,8 @@ namespace black_cat
 			m_bottom_right_front(nullptr),
 			m_bottom_right_back(nullptr),
 			m_bound_box(p_box),
-			m_actors()
+			m_actors(),
+			m_my_position(bc_octal_tree_node_position::null)
 		{
 			const auto l_half_extends = p_box.get_half_extends();
 			const bool l_is_power_of_two = bc_is_power_of_two(l_half_extends.x) &&
@@ -58,7 +59,8 @@ namespace black_cat
 			m_bottom_right_front(nullptr),
 			m_bottom_right_back(nullptr),
 			m_bound_box(),
-			m_actors()
+			m_actors(),
+			m_my_position(p_my_position)
 		{
 			core::bc_vector3f l_bound_box_center = p_parent.m_bound_box.get_center();
 			const core::bc_vector3f l_half_extends = p_parent.m_bound_box.get_half_extends() / 2;
@@ -106,6 +108,8 @@ namespace black_cat
 				l_bound_box_center.y -= l_half_extends.y;
 				l_bound_box_center.z += (l_half_extends.z * l_z_sign);
 				break;
+			default:
+				bcAssert(false);
 			}
 
 			m_bound_box = physics::bc_bound_box(l_bound_box_center, l_half_extends);
@@ -117,17 +121,35 @@ namespace black_cat
 
 		bc_iscene_graph_node::iterator bc_octal_tree_graph_node::begin() noexcept
 		{
-			return iterator(this, &*m_actors.begin());
+			bc_octal_tree_graph_node* l_min_node = _get_min_node();
+
+			if (!l_min_node->m_actors.empty())
+			{
+				return iterator(this, &*l_min_node->m_actors.begin());
+			}
+
+			bc_octal_tree_graph_node* l_next_node = l_min_node->_get_next_sibling_node();
+			while (l_next_node != nullptr && l_next_node->m_actors.empty())
+			{
+				l_next_node = l_next_node->_get_next_sibling_node();
+			}
+
+			if (l_next_node)
+			{
+				return iterator(l_next_node, &*l_next_node->m_actors.begin());
+			}
+
+			return iterator(this, nullptr);
 		}
 
 		bc_iscene_graph_node::const_iterator bc_octal_tree_graph_node::begin() const noexcept
 		{
-			return const_iterator(this, &*m_actors.begin());
+			return begin();
 		}
 
 		bc_iscene_graph_node::const_iterator bc_octal_tree_graph_node::cbegin() const noexcept
 		{
-			return const_iterator(this, &*m_actors.begin());
+			return begin();
 		}
 
 		bc_iscene_graph_node::iterator bc_octal_tree_graph_node::end() noexcept
@@ -150,90 +172,13 @@ namespace black_cat
 			return m_bound_box;
 		}
 
-		void bc_octal_tree_graph_node::add_actor(bc_actor& p_actor)
-		{
-			if(!contains_actor(p_actor))
-			{
-				return;
-			}
-
-			m_actors_count++;
-
-			if(!is_leaf_node())
-			{
-				m_top_left_back->add_actor(p_actor);
-				m_top_left_front->add_actor(p_actor);
-				m_top_right_front->add_actor(p_actor);
-				m_top_right_back->add_actor(p_actor);
-				m_bottom_left_back->add_actor(p_actor);
-				m_bottom_left_front->add_actor(p_actor);
-				m_bottom_right_front->add_actor(p_actor);
-				m_bottom_right_back->add_actor(p_actor);
-			}
-			else
-			{
-				m_actors.push_back(bc_octal_tree_graph_node_entry(p_actor));
-
-				auto l_iterator = m_actors.rbegin();
-				l_iterator->set_internal_iterator(l_iterator.base());
-
-				if (m_actors_count == m_max_actors_count)
-				{
-					_split();
-				}
-			}
-		}
-
-		void bc_octal_tree_graph_node::update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box)
-		{
-			core::bc_vector_frame<bc_octal_tree_graph_node*> l_intersecting_nodes;
-			_find_intersecting_nodes(p_previous_box, l_intersecting_nodes);
-
-			for(bc_octal_tree_graph_node* l_node : l_intersecting_nodes)
-			{
-				const physics::bc_bound_box& l_actor_bound_box = _get_actor_bound_box(p_actor);
-				auto& l_containing_node = l_node->_find_containing_node(l_actor_bound_box);
-
-				if(&l_containing_node != l_node)
-				{
-					l_containing_node.remove_actor(p_actor);
-					l_containing_node.add_actor(p_actor);
-				}
-			}
- 		}
-
-		void bc_octal_tree_graph_node::remove_actor(bc_actor& p_actor)
-		{
-			if(!contains_actor(p_actor))
-			{
-				return;
-			}
-
-			--m_actors_count;
-
-			if(!is_leaf_node())
-			{
-				m_top_left_back->remove_actor(p_actor);
-				m_top_left_front->remove_actor(p_actor);
-				m_top_right_front->remove_actor(p_actor);
-				m_top_right_back->remove_actor(p_actor);
-				m_bottom_left_back->remove_actor(p_actor);
-				m_bottom_left_front->remove_actor(p_actor);
-				m_bottom_right_front->remove_actor(p_actor);
-				m_bottom_right_back->remove_actor(p_actor);
-
-				if (m_actors_count <= m_max_actors_count)
-				{
-					_merge();
-				}
-			}
-			else
-			{
-				m_actors.remove(bc_octal_tree_graph_node_entry(p_actor));
-			}
-		}
-
 		bool bc_octal_tree_graph_node::contains_actor(bc_actor& p_actor) const noexcept
+		{
+			const physics::bc_bound_box& l_actor_mesh_bound_box = _get_actor_bound_box(p_actor);
+			return m_bound_box.contains(l_actor_mesh_bound_box);
+		}
+
+		bool bc_octal_tree_graph_node::intersects_actor(bc_actor& p_actor) const noexcept
 		{
 			const physics::bc_bound_box& l_actor_mesh_bound_box = _get_actor_bound_box(p_actor);
 			return m_bound_box.intersect(l_actor_mesh_bound_box);
@@ -244,13 +189,139 @@ namespace black_cat
 			return m_top_left_back == nullptr;
 		}
 
+		bool bc_octal_tree_graph_node::add_actor(bc_actor& p_actor)
+		{
+			bool l_added = false;
+
+			if (!contains_actor(p_actor))
+			{
+				return l_added;
+			}
+
+			if (!is_leaf_node())
+			{
+				l_added = m_top_left_back->add_actor(p_actor);
+				l_added = l_added || m_top_left_front->add_actor(p_actor);
+				l_added = l_added || m_top_right_front->add_actor(p_actor);
+				l_added = l_added || m_top_right_back->add_actor(p_actor);
+				l_added = l_added || m_bottom_left_back->add_actor(p_actor);
+				l_added = l_added || m_bottom_left_front->add_actor(p_actor);
+				l_added = l_added || m_bottom_right_front->add_actor(p_actor);
+				l_added = l_added || m_bottom_right_back->add_actor(p_actor);
+			}
+
+			if(!l_added)
+			{
+				m_actors.push_back(_bc_octal_tree_graph_node_entry(p_actor, this));
+				l_added = true;
+
+				auto l_iterator = m_actors.rbegin();
+				l_iterator->set_internal_iterator(l_iterator.base());
+			}
+
+			if(l_added)
+			{
+				++m_actors_count;
+				if (m_actors_count > m_max_actors_count && is_leaf_node())
+				{
+					_split();
+				}
+			}
+
+			return l_added;
+		}
+
+		bool bc_octal_tree_graph_node::update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box)
+		{
+			bool l_updated = false;
+			bc_octal_tree_graph_node* l_prev_containing_node = _find_containing_node(p_previous_box);
+			bc_octal_tree_graph_node* l_containing_node = _find_containing_node(_get_actor_bound_box(p_actor));
+
+			if(!l_containing_node)
+			{
+				l_updated = false;
+				return l_updated;
+			}
+
+			if(l_prev_containing_node == l_containing_node)
+			{
+				l_updated = true;
+				return l_updated;
+			}
+
+			auto* l_actor_mediate_component = p_actor.get_component<bc_mediate_component>();
+			auto l_actor_bound_box = l_actor_mediate_component->get_bound_box();
+
+			l_actor_mediate_component->set_bound_box(p_previous_box);
+			remove_actor(p_actor);
+
+			l_actor_mediate_component->set_bound_box(l_actor_bound_box);
+			l_updated = add_actor(p_actor);
+
+			//if(!l_containing_node)
+			//{
+			//	l_updated = false;
+			//	return l_updated;
+			//}
+
+			//if(l_prev_containing_node != l_containing_node)
+			//{
+			//	const bool l_added = l_containing_node->add_actor(p_actor);
+			//	const bool l_removed = l_prev_containing_node->remove_actor(p_actor);
+			//	bcAssert(l_removed);
+			//	bcAssert(l_added);
+			//}
+			//else
+			//{
+			//	l_updated = true;
+			//}
+
+			return l_updated;
+		}
+
+		bool bc_octal_tree_graph_node::remove_actor(bc_actor& p_actor)
+		{
+			bool l_removed = false;
+
+			if (!contains_actor(p_actor))
+			{
+				return l_removed;
+			}
+
+			const auto l_exist = std::find(std::cbegin(m_actors), std::cend(m_actors), _bc_octal_tree_graph_node_entry(p_actor, this));
+			if(l_exist != std::cend(m_actors))
+			{
+				m_actors.erase(l_exist);
+				l_removed = true;
+			}
+
+			if(!l_removed && !is_leaf_node())
+			{
+				l_removed = m_top_left_back->remove_actor(p_actor);
+				l_removed = l_removed || m_top_left_front->remove_actor(p_actor);
+				l_removed = l_removed || m_top_right_front->remove_actor(p_actor);
+				l_removed = l_removed || m_top_right_back->remove_actor(p_actor);
+				l_removed = l_removed || m_bottom_left_back->remove_actor(p_actor);
+				l_removed = l_removed || m_bottom_left_front->remove_actor(p_actor);
+				l_removed = l_removed || m_bottom_right_front->remove_actor(p_actor);
+				l_removed = l_removed || m_bottom_right_back->remove_actor(p_actor);
+			}
+
+			if(l_removed)
+			{
+				--m_actors_count;
+				if (m_actors_count <= m_max_actors_count && !is_leaf_node())
+				{
+					_merge();
+				}
+			}
+
+			return l_removed;
+		}
+
 		void bc_octal_tree_graph_node::clear()
 		{
-			if(is_leaf_node())
-			{
-				m_actors.clear();
-			}
-			else
+			if(!is_leaf_node())
 			{
 				m_top_left_back->clear();
 				m_top_left_front->clear();
@@ -260,7 +331,38 @@ namespace black_cat
 				m_bottom_left_front->clear();
 				m_bottom_right_front->clear();
 				m_bottom_right_back->clear();
+
+				m_top_left_back.reset();
+				m_top_left_front.reset();
+				m_top_right_front.reset();
+				m_top_right_back.reset();
+				m_bottom_left_back.reset();
+				m_bottom_left_front.reset();
+				m_bottom_right_front.reset();
+				m_bottom_right_back.reset();
 			}
+
+			m_actors.clear();
+			m_actors_count = 0;
+		}
+
+		void bc_octal_tree_graph_node::render_bound_boxes(bc_shape_drawer& p_shape_drawer) const
+		{
+			p_shape_drawer.draw_wired_box(m_bound_box);
+
+			if(is_leaf_node())
+			{
+				return;
+			}
+
+			m_top_left_back->render_bound_boxes(p_shape_drawer);
+			m_top_left_front->render_bound_boxes(p_shape_drawer);
+			m_top_right_front->render_bound_boxes(p_shape_drawer);
+			m_top_right_back->render_bound_boxes(p_shape_drawer);
+			m_bottom_left_back->render_bound_boxes(p_shape_drawer);
+			m_bottom_left_front->render_bound_boxes(p_shape_drawer);
+			m_bottom_right_front->render_bound_boxes(p_shape_drawer);
+			m_bottom_right_back->render_bound_boxes(p_shape_drawer);
 		}
 
 		bool bc_octal_tree_graph_node::iterator_validate(const node_type* p_node) const noexcept
@@ -280,8 +382,8 @@ namespace black_cat
 
 		bc_iscene_graph_node::node_type* bc_octal_tree_graph_node::iterator_increment(node_type* p_node) const noexcept
 		{
-			auto* l_octal_tree_node = static_cast<bc_octal_tree_graph_node_entry*>(p_node);
-			auto l_next_internal_iterator = l_octal_tree_node->m_internal_iterator;
+			auto* l_octal_tree_node_entry = static_cast<_bc_octal_tree_graph_node_entry*>(p_node);
+			auto l_next_internal_iterator = l_octal_tree_node_entry->m_internal_iterator;
 			++l_next_internal_iterator;
 
 			if(std::end(m_actors) != l_next_internal_iterator)
@@ -289,13 +391,13 @@ namespace black_cat
 				return &*l_next_internal_iterator;
 			}
 
-			bc_octal_tree_graph_node* l_sibling_node = nullptr;
-			while (l_sibling_node != nullptr && !l_sibling_node->is_leaf_node()) // find a leaf sibling node
+			bc_octal_tree_graph_node* l_sibling_node = l_octal_tree_node_entry->m_graph_node->_get_next_sibling_node();
+			while (l_sibling_node != nullptr && l_sibling_node->m_actors.empty())
 			{
-				l_sibling_node = _get_next_sibling_node();
+				l_sibling_node = l_sibling_node->_get_next_sibling_node();
 			}
 
-			if(l_sibling_node == nullptr)
+			if (l_sibling_node == nullptr)
 			{
 				return nullptr;
 			}
@@ -305,8 +407,8 @@ namespace black_cat
 
 		bc_iscene_graph_node::node_type* bc_octal_tree_graph_node::iterator_decrement(node_type* p_node) const noexcept
 		{
-			auto* l_octal_tree_node = static_cast<bc_octal_tree_graph_node_entry*>(p_node);
-			auto l_next_internal_iterator = l_octal_tree_node->m_internal_iterator;
+			auto* l_octal_tree_node_entry = static_cast<_bc_octal_tree_graph_node_entry*>(p_node);
+			auto l_next_internal_iterator = l_octal_tree_node_entry->m_internal_iterator;
 			--l_next_internal_iterator;
 
 			if (std::end(m_actors) != l_next_internal_iterator)
@@ -314,10 +416,10 @@ namespace black_cat
 				return &*l_next_internal_iterator;
 			}
 
-			bc_octal_tree_graph_node* l_sibling_node = nullptr;
-			while (l_sibling_node != nullptr && !l_sibling_node->is_leaf_node()) // find a leaf sibling node
+			bc_octal_tree_graph_node* l_sibling_node = l_octal_tree_node_entry->m_graph_node->_get_prev_sibling_node();
+			while (l_sibling_node != nullptr && l_sibling_node->m_actors.empty())
 			{
-				l_sibling_node = _get_prev_sibling_node();
+				l_sibling_node = l_sibling_node->_get_prev_sibling_node();
 			}
 
 			if (l_sibling_node == nullptr)
@@ -393,31 +495,48 @@ namespace black_cat
 				m_min_size
 			);
 
-			for(bc_iscene_graph_node_entry& l_entry : m_actors)
-			{
-				m_top_left_back->add_actor(l_entry.m_actor);
-				m_top_left_front->add_actor(l_entry.m_actor);
-				m_top_right_front->add_actor(l_entry.m_actor);
-				m_top_right_back->add_actor(l_entry.m_actor);
-				m_bottom_left_back->add_actor(l_entry.m_actor);
-				m_bottom_left_front->add_actor(l_entry.m_actor);
-				m_bottom_right_front->add_actor(l_entry.m_actor);
-				m_bottom_right_back->add_actor(l_entry.m_actor);
-			}
+			core::bc_list<_bc_octal_tree_graph_node_entry> l_actors;
+			m_actors.swap(l_actors);
+			m_actors_count = 0;
 
-			m_actors.clear();
+			for(bc_iscene_graph_node_entry& l_entry : l_actors)
+			{
+				add_actor(l_entry.m_actor);
+			}
 		}
 
 		void bc_octal_tree_graph_node::_merge()
 		{
-			m_actors.splice(std::rbegin(m_actors).base(), m_top_left_back->m_actors);
-			m_actors.splice(std::rbegin(m_actors).base(), m_top_left_front->m_actors);
-			m_actors.splice(std::rbegin(m_actors).base(), m_top_right_front->m_actors);
-			m_actors.splice(std::rbegin(m_actors).base(), m_top_right_back->m_actors);
-			m_actors.splice(std::rbegin(m_actors).base(), m_bottom_left_back->m_actors);
-			m_actors.splice(std::rbegin(m_actors).base(), m_bottom_left_front->m_actors);
-			m_actors.splice(std::rbegin(m_actors).base(), m_bottom_right_front->m_actors);
-			m_actors.splice(std::rbegin(m_actors).base(), m_bottom_right_back->m_actors);
+			core::bc_array<bc_octal_tree_graph_node*, 8> l_children
+			{
+				&*m_top_left_back,
+				&*m_top_left_front,
+				&*m_top_right_front,
+				&*m_top_right_back,
+				&*m_bottom_left_back,
+				&*m_bottom_left_front,
+				&*m_bottom_right_front,
+				&*m_bottom_right_back
+			};
+
+			for(bc_octal_tree_graph_node* l_child : l_children)
+			{
+				auto l_child_actor_count = l_child->m_actors.size();
+				if(l_child_actor_count == 0)
+				{
+					continue;
+				}
+
+				m_actors.splice(std::rbegin(m_actors).base(), l_child->m_actors);
+
+				auto l_last_entry = std::rbegin(m_actors);
+				while(l_child_actor_count-- > 0)
+				{
+					l_last_entry->m_graph_node = this;
+					l_last_entry->m_internal_iterator = l_last_entry.base();
+					++l_last_entry;
+				}
+			}
 
 			m_top_left_back.reset();
 			m_top_left_front.reset();
@@ -429,27 +548,55 @@ namespace black_cat
 			m_bottom_right_back.reset();
 		}
 
-		void bc_octal_tree_graph_node::_find_intersecting_nodes(const physics::bc_bound_box& p_box, core::bc_vector_frame<bc_octal_tree_graph_node*>& p_result)
+		bc_octal_tree_graph_node* bc_octal_tree_graph_node::_get_min_node() const
 		{
-			if(!m_bound_box.intersect(p_box))
+			bc_octal_tree_graph_node* l_node = const_cast<bc_octal_tree_graph_node*>(this);
+			while(l_node->m_top_left_back)
 			{
-				return;
+				l_node = l_node->m_top_left_back.get();
 			}
 
-			if(m_top_left_back == nullptr)
+			return l_node;
+		}
+
+		bc_octal_tree_graph_node* bc_octal_tree_graph_node::_get_max_node() const
+		{
+			bc_octal_tree_graph_node* l_node = const_cast<bc_octal_tree_graph_node*>(this);
+			while (l_node->m_bottom_right_back)
 			{
-				p_result.push_back(this);
-				return;
+				l_node = l_node->m_bottom_right_back.get();
 			}
 
-			m_top_left_back->_find_intersecting_nodes(p_box, p_result);
-			m_top_left_front->_find_intersecting_nodes(p_box, p_result);
-			m_top_right_front->_find_intersecting_nodes(p_box, p_result);
-			m_top_right_back->_find_intersecting_nodes(p_box, p_result);
-			m_bottom_left_back->_find_intersecting_nodes(p_box, p_result);
-			m_bottom_left_front->_find_intersecting_nodes(p_box, p_result);
-			m_bottom_right_front->_find_intersecting_nodes(p_box, p_result);
-			m_bottom_right_back->_find_intersecting_nodes(p_box, p_result);
+			return l_node;
+		}
+
+		bc_octal_tree_graph_node* bc_octal_tree_graph_node::_find_containing_node(const physics::bc_bound_box& p_box) const
+		{
+			bc_octal_tree_graph_node* l_node = nullptr;
+
+			if (!m_bound_box.contains(p_box))
+			{
+				return l_node;
+			}
+
+			if (!is_leaf_node())
+			{
+				l_node = m_top_left_back->_find_containing_node(p_box);
+				l_node = l_node != nullptr ? l_node : m_top_left_front->_find_containing_node(p_box);
+				l_node = l_node != nullptr ? l_node : m_top_right_front->_find_containing_node(p_box);
+				l_node = l_node != nullptr ? l_node : m_top_right_back->_find_containing_node(p_box);
+				l_node = l_node != nullptr ? l_node : m_bottom_left_back->_find_containing_node(p_box);
+				l_node = l_node != nullptr ? l_node : m_bottom_left_front->_find_containing_node(p_box);
+				l_node = l_node != nullptr ? l_node : m_bottom_right_front->_find_containing_node(p_box);
+				l_node = l_node != nullptr ? l_node : m_bottom_right_back->_find_containing_node(p_box);
+			}
+
+			if (!l_node)
+			{
+				l_node = const_cast<bc_octal_tree_graph_node*>(this);
+			}
+
+			return l_node;
 		}
 
 		bc_octal_tree_graph_node* bc_octal_tree_graph_node::_get_next_sibling_node() const
@@ -461,35 +608,35 @@ namespace black_cat
 
 			if(this == m_parent->m_top_left_back.get())
 			{
-				return m_parent->m_top_left_front.get();
+				return m_parent->m_top_left_front->_get_min_node();
 			}
 			if (this == m_parent->m_top_left_front.get())
 			{
-				return m_parent->m_top_right_front.get();
+				return m_parent->m_top_right_front->_get_min_node();
 			}
 			if (this == m_parent->m_top_right_front.get())
 			{
-				return m_parent->m_top_right_back.get();
+				return m_parent->m_top_right_back->_get_min_node();
 			}
 			if (this == m_parent->m_top_right_back.get())
 			{
-				return m_parent->m_bottom_left_back.get();
+				return m_parent->m_bottom_left_back->_get_min_node();
 			}
 			if (this == m_parent->m_bottom_left_back.get())
 			{
-				return m_parent->m_bottom_left_front.get();
+				return m_parent->m_bottom_left_front->_get_min_node();
 			}
 			if (this == m_parent->m_bottom_left_front.get())
 			{
-				return m_parent->m_bottom_right_front.get();
+				return m_parent->m_bottom_right_front->_get_min_node();
 			}
 			if (this == m_parent->m_bottom_right_front.get())
 			{
-				return m_parent->m_bottom_right_back.get();
+				return m_parent->m_bottom_right_back->_get_min_node();
 			}
 			if (this == m_parent->m_bottom_right_back.get())
 			{
-				return m_parent->_get_next_sibling_node();
+				return m_parent;
 			}
 
 			bcAssert(false);
@@ -505,51 +652,39 @@ namespace black_cat
 
 			if (this == m_parent->m_bottom_right_back.get())
 			{
-				return m_parent->m_bottom_right_front.get();
+				return m_parent->m_bottom_right_front->_get_max_node();
 			}
 			if (this == m_parent->m_bottom_right_front.get())
 			{
-				return m_parent->m_bottom_left_front.get();
+				return m_parent->m_bottom_left_front->_get_max_node();
 			}
 			if (this == m_parent->m_bottom_left_front.get())
 			{
-				return m_parent->m_bottom_left_back.get();
+				return m_parent->m_bottom_left_back->_get_max_node();
 			}
 			if (this == m_parent->m_bottom_left_back.get())
 			{
-				return m_parent->m_top_right_back.get();
+				return m_parent->m_top_right_back->_get_max_node();
 			}
 			if (this == m_parent->m_top_right_back.get())
 			{
-				return m_parent->m_top_right_front.get();
+				return m_parent->m_top_right_front->_get_max_node();
 			}
 			if (this == m_parent->m_top_right_front.get())
 			{
-				return m_parent->m_top_left_front.get();
+				return m_parent->m_top_left_front->_get_max_node();
 			}
 			if (this == m_parent->m_top_left_front.get())
 			{
-				return m_parent->m_top_left_back.get();
+				return m_parent->m_top_left_back->_get_max_node();
 			}
 			if (this == m_parent->m_top_left_back.get())
 			{
-				return m_parent->_get_next_sibling_node();
+				return m_parent;
 			}
 
 			bcAssert(false);
 			return nullptr;
-		}
-
-		bc_octal_tree_graph_node& bc_octal_tree_graph_node::_find_containing_node(const physics::bc_bound_box& p_box)
-		{
-			if(m_bound_box.contains(p_box))
-			{
-				return *this;
-			}
-
-			bcAssert(m_parent != nullptr);
-
-			return m_parent->_find_containing_node(p_box);
 		}
 
 		const physics::bc_bound_box& bc_octal_tree_graph_node::_get_actor_bound_box(bc_actor& p_actor) const

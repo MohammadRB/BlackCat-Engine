@@ -40,7 +40,7 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			void set_world_pos(const core::bc_matrix4f& p_pos);
+			void set_world_transform(const core::bc_matrix4f& p_transform);
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/Math/bcVector3f.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/bcActorComponent.h"
@@ -23,11 +24,15 @@ namespace black_cat
 
 			bc_mediate_component& operator=(bc_mediate_component&&) = default;
 
+			bc_actor get_actor() const noexcept override;
+
 			const physics::bc_bound_box& get_bound_box() const;
 
 			void set_bound_box(const physics::bc_bound_box& p_bound_box);
 
-			bc_actor get_actor() const noexcept override;
+			void set_world_position(const core::bc_vector3f& p_position);
+
+			void set_world_transform(const core::bc_matrix4f& p_transform);
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 

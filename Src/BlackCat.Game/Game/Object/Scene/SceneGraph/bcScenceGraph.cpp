@@ -25,19 +25,19 @@ namespace black_cat
 			}
 		}
 
-		void bc_scene_graph::add_actor(bc_actor& p_actor)
+		bool bc_scene_graph::add_actor(bc_actor& p_actor)
 		{
-			m_graph_node->add_actor(p_actor);
+			return m_graph_node->add_actor(p_actor);
 		}
 
-		void bc_scene_graph::update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box)
+		bool bc_scene_graph::update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box)
 		{
-			m_graph_node->update_actor(p_actor, p_previous_box);
+			return m_graph_node->update_actor(p_actor, p_previous_box);
 		}
 
-		void bc_scene_graph::remove_actor(bc_actor& p_actor)
+		bool bc_scene_graph::remove_actor(bc_actor& p_actor)
 		{
-			m_graph_node->remove_actor(p_actor);
+			return m_graph_node->remove_actor(p_actor);
 		}
 
 		core::bc_vector_frame<bc_actor> bc_scene_graph::get_height_maps() const
@@ -110,6 +110,11 @@ namespace black_cat
 			{
 				p_render_system.clear_render_instances();
 			}
+		}
+
+		void bc_scene_graph::render_debug_shapes(bc_shape_drawer& p_shape_drawer) const
+		{
+			m_graph_node->render_bound_boxes(p_shape_drawer);
 		}
 
 		void bc_scene_graph::clear()

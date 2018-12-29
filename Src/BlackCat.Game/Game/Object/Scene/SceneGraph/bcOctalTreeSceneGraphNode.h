@@ -11,13 +11,16 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_octal_tree_graph_node_entry : public bc_iscene_graph_node_entry
+		class bc_octal_tree_graph_node;
+
+		class _bc_octal_tree_graph_node_entry : public bc_iscene_graph_node_entry
 		{
-			using internal_iterator = core::bc_list<bc_octal_tree_graph_node_entry>::iterator;
+			using internal_iterator = core::bc_list<_bc_octal_tree_graph_node_entry>::iterator;
 
 		public:
-			explicit bc_octal_tree_graph_node_entry(bc_actor p_actor)
+			explicit _bc_octal_tree_graph_node_entry(const bc_actor& p_actor, const bc_octal_tree_graph_node* p_graph_node)
 				: bc_iscene_graph_node_entry(p_actor),
+				m_graph_node(p_graph_node),
 				m_internal_iterator(nullptr, nullptr)
 			{
 			}
@@ -27,21 +30,23 @@ namespace black_cat
 				m_internal_iterator = p_iterator;
 			}
 
-			bool operator==(const bc_octal_tree_graph_node_entry& p_other) const noexcept
+			bool operator==(const _bc_octal_tree_graph_node_entry& p_other) const noexcept
 			{
 				return m_actor == p_other.m_actor;
 			}
 
-			bool operator!=(const bc_octal_tree_graph_node_entry& p_other) const noexcept
+			bool operator!=(const _bc_octal_tree_graph_node_entry& p_other) const noexcept
 			{
 				return m_actor != p_other.m_actor;
 			}
 
+			const bc_octal_tree_graph_node* m_graph_node;
 			internal_iterator m_internal_iterator;
 		};
 
 		enum class bc_octal_tree_node_position
 		{
+			null,
 			top_left_back,
 			top_left_front,
 			top_right_front,
@@ -82,17 +87,21 @@ namespace black_cat
 
 			physics::bc_bound_box get_bound_box() const noexcept override;
 
-			void add_actor(bc_actor& p_actor) override;
-
-			void update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box) override;
-
-			void remove_actor(bc_actor& p_actor) override;
-
 			bool contains_actor(bc_actor& p_actor) const noexcept override;
+
+			bool intersects_actor(bc_actor& p_actor) const noexcept override;
 
 			bool is_leaf_node() const noexcept;
 
+			bool add_actor(bc_actor& p_actor) override;
+
+			bool update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box) override;
+
+			bool remove_actor(bc_actor& p_actor) override;
+
 			void clear() override;
+
+			void render_bound_boxes(bc_shape_drawer& p_shape_drawer) const override;
 
 		protected:
 			bool iterator_validate(const node_type* p_node) const noexcept override;
@@ -112,16 +121,19 @@ namespace black_cat
 
 			void _merge();
 
-			void _find_intersecting_nodes(const physics::bc_bound_box& p_box, core::bc_vector_frame<bc_octal_tree_graph_node*>& p_result);
+			bc_octal_tree_graph_node* _get_min_node() const;
+
+			bc_octal_tree_graph_node* _get_max_node() const;
+
+			bc_octal_tree_graph_node* _find_containing_node(const physics::bc_bound_box& p_box) const;
 
 			bc_octal_tree_graph_node* _get_next_sibling_node() const;
 
 			bc_octal_tree_graph_node* _get_prev_sibling_node() const;
 
-			bc_octal_tree_graph_node& _find_containing_node(const physics::bc_bound_box& p_box);
-
 			const physics::bc_bound_box& _get_actor_bound_box(bc_actor& p_actor) const;
 
+		private:
 			bcSIZE m_max_actors_count;
 			bcSIZE m_min_size;
 			bcSIZE m_actors_count;
@@ -137,7 +149,8 @@ namespace black_cat
 			core::bc_unique_ptr<bc_octal_tree_graph_node> m_bottom_right_back;
 
 			physics::bc_bound_box m_bound_box;
-			core::bc_list<bc_octal_tree_graph_node_entry> m_actors;
+			core::bc_list<_bc_octal_tree_graph_node_entry> m_actors;
+			bc_octal_tree_node_position m_my_position;
 		};
 	}
 }

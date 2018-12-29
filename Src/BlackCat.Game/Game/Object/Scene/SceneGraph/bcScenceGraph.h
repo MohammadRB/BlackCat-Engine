@@ -30,11 +30,11 @@ namespace black_cat
 
 			bc_scene_graph& operator=(bc_scene_graph&&) = default;
 
-			void add_actor(bc_actor& p_actor);
+			bool add_actor(bc_actor& p_actor);
 
-			void update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box);
+			bool update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box);
 
-			void remove_actor(bc_actor& p_actor);
+			bool remove_actor(bc_actor& p_actor);
 
 			core::bc_vector_frame< bc_actor > get_height_maps() const;
 
@@ -43,6 +43,8 @@ namespace black_cat
 			void render_heightmaps(bc_render_system& p_render_system, bc_render_thread& p_render_thread);
 
 			void render_meshes(bc_render_system& p_render_system, bc_render_thread& p_render_thread, bool p_preserve_render_instances);
+
+			void render_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
 			void clear();
 
