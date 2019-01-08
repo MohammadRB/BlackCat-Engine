@@ -12,22 +12,8 @@ namespace black_cat
 		{
 		}
 
-		bc_expression_parameter_manager::bc_expression_parameter_manager(bc_expression_parameter_manager&& p_other)
-			: m_context_expression(std::move(p_other.m_context_expression)),
-			m_local_result(std::move(p_other.m_local_result))
-		{
-		}
-
 		bc_expression_parameter_manager::~bc_expression_parameter_manager()
 		{
-		}
-
-		bc_expression_parameter_manager& bc_expression_parameter_manager::operator=(bc_expression_parameter_manager&& p_other)
-		{
-			m_context_expression = std::move(p_other.m_context_expression);
-			m_local_result = std::move(p_other.m_local_result);
-
-			return *this;
 		}
 
 		void bc_expression_parameter_manager::register_resolver(const bcCHAR* p_parameter, bc_expr_param_func_pack_void&& p_callback)

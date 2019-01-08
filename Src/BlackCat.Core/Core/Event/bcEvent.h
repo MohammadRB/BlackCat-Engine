@@ -43,6 +43,17 @@ namespace black_cat
 			{
 				return get_hash(bc_event_traits<TEvent>::event_name()) == p_event.get_event_hash();
 			}
+
+			template< class TEvent >
+			static TEvent* event_as(bc_ievent& p_event)
+			{
+				if(event_is<TEvent>(p_event))
+				{
+					return static_cast<TEvent*>(&p_event);
+				}
+
+				return nullptr;
+			}
 		};
 
 		class BC_CORE_DLL bc_event : public bc_ievent

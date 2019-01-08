@@ -57,9 +57,11 @@ namespace black_cat
 
 			~bc_concurrent_queue_base()
 			{
-				bc_allocator_traits< internal_allocator_type >::deallocate(
+				bc_allocator_traits< internal_allocator_type >::deallocate
+				(
 					m_allocator, 
-					m_head.load(core_platform::bc_memory_order::relaxed));
+					m_head.load(core_platform::bc_memory_order::relaxed)
+				);
 			};
 
 			this_type& operator =(const this_type&) = delete;
@@ -131,12 +133,16 @@ namespace black_cat
 		private:
 			void _assign(this_type&& p_other)
 			{
-				m_tail.store(
+				m_tail.store
+				(
 					p_other.m_tail.load(core_platform::bc_memory_order::relaxed), 
-					core_platform::bc_memory_order::relaxed);
-				m_head.store(
+					core_platform::bc_memory_order::relaxed
+				);
+				m_head.store
+				(
 					p_other.m_head.load(core_platform::bc_memory_order::relaxed),
-					core_platform::bc_memory_order::relaxed);
+					core_platform::bc_memory_order::relaxed
+				);
 
 				p_other.m_tail.store(nullptr, core_platform::bc_memory_order::relaxed);
 				p_other.m_head.store(nullptr, core_platform::bc_memory_order::relaxed);
@@ -231,6 +237,12 @@ namespace black_cat
 
 			~bc_concurrent_queue()
 			{
+				// In case if container has move head and tail are null
+				if(!base_type::m_head.load(core_platform::bc_memory_order::relaxed))
+				{
+					return;
+				}
+
 				node_type* l_node = nullptr;
 				while ((l_node = base_type::_dequeue(nullptr)))
 				{

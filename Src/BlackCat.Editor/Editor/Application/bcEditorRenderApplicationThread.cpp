@@ -15,6 +15,7 @@ namespace black_cat
 			m_instance = p_instance;
 			m_cmd_line = p_cmd_line;
 			m_output_window = p_output_window;
+			m_result_code = s_default_result_code;
 
 			QThread::start();
 		}
@@ -22,6 +23,16 @@ namespace black_cat
 		void bc_editor_render_app_thread::wait_for_initialization() const
 		{
 			while (m_initialized.load() == 0) {}
+		}
+
+		std::int32_t bc_editor_render_app_thread::is_still_running() const noexcept
+		{
+			return m_result_code.load() == s_default_result_code;
+		}
+
+		std::int32_t bc_editor_render_app_thread::get_result_code() const noexcept
+		{
+			return m_result_code.load();
 		}
 
 		void bc_editor_render_app_thread::run()
@@ -74,10 +85,9 @@ namespace black_cat
 			m_initialized.store(1);
 
 			const bcINT32 l_code = l_app.run();
-			l_app.destroy();
 
 			m_result_code.store(l_code);
+			l_app.destroy();
 		}
-
 	}
 }

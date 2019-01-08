@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcList.h"
-#include "Core/Container/bcVector.h"
+#include "Core/Utility/bcObjectPoolAllocator.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphNode.h"
 #include "Game/bcExport.h"
 
@@ -15,7 +15,10 @@ namespace black_cat
 
 		class _bc_octal_tree_graph_node_entry : public bc_iscene_graph_node_entry
 		{
-			using internal_iterator = core::bc_list<_bc_octal_tree_graph_node_entry>::iterator;
+		public:
+			using graph_node_entry_allocator = core::bc_memory_pool_allocator<_bc_octal_tree_graph_node_entry>;
+			using graph_node_entry_list = core::bc_list<_bc_octal_tree_graph_node_entry, graph_node_entry_allocator>;
+			using internal_iterator = graph_node_entry_list::iterator;
 
 		public:
 			explicit _bc_octal_tree_graph_node_entry(const bc_actor& p_actor, const bc_octal_tree_graph_node* p_graph_node)
@@ -59,6 +62,10 @@ namespace black_cat
 
 		class BC_GAME_DLL bc_octal_tree_graph_node : public bc_iscene_graph_node
 		{
+		public:
+			using graph_node_entry_allocator = _bc_octal_tree_graph_node_entry::graph_node_entry_allocator;
+			using graph_node_entry_list = _bc_octal_tree_graph_node_entry::graph_node_entry_list;
+
 		public:
 			bc_octal_tree_graph_node(physics::bc_bound_box p_box, bcSIZE p_max_actors_count, bcSIZE p_min_size);
 
@@ -133,7 +140,6 @@ namespace black_cat
 
 			const physics::bc_bound_box& _get_actor_bound_box(bc_actor& p_actor) const;
 
-		private:
 			bcSIZE m_max_actors_count;
 			bcSIZE m_min_size;
 			bcSIZE m_actors_count;
@@ -148,9 +154,10 @@ namespace black_cat
 			core::bc_unique_ptr<bc_octal_tree_graph_node> m_bottom_right_front;
 			core::bc_unique_ptr<bc_octal_tree_graph_node> m_bottom_right_back;
 
-			physics::bc_bound_box m_bound_box;
-			core::bc_list<_bc_octal_tree_graph_node_entry> m_actors;
 			bc_octal_tree_node_position m_my_position;
+			physics::bc_bound_box m_bound_box;
+			core::bc_concurrent_memory_pool* m_entry_pool;
+			graph_node_entry_list m_actors;
 		};
 	}
 }

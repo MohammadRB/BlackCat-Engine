@@ -267,6 +267,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcQueue.h">
       <Filter>Core\Container</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectPoolAllocator.h">
+      <Filter>Core\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.cpp">

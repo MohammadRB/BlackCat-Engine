@@ -69,46 +69,25 @@ namespace black_cat
 		core::bc_service_manager::start_up();
 		m_service_manager = &core::bc_service_manager::get();
 
-		auto* l_logger_manager = m_service_manager->register_service< core::bc_logger >
+		m_service_manager->register_service(core::bc_make_service<core::bc_logger>());
+		m_service_manager->register_service(core::bc_make_service<core::bc_event_manager>());
+		m_service_manager->register_service(core::bc_make_service<core::bc_thread_manager>
 		(
-			core::bc_make_service< core::bc_logger >()
-		);
-		m_service_manager->register_service< core::bc_event_manager >
-		(
-			core::bc_make_service< core::bc_event_manager >()
-		);
-		m_service_manager->register_service< core::bc_thread_manager >
-		(
-			core::bc_make_service< core::bc_thread_manager >
-			(
-				p_parameters.m_engine_parameters.m_thread_manager_thread_count,
-				p_parameters.m_engine_parameters.m_thread_manager_reserve_thread_count
-			)
-		);
-		auto* l_expression_parameter_manager = m_service_manager->register_service< core::bc_expression_parameter_manager >
-		(
-			core::bc_make_service< core::bc_expression_parameter_manager >()
-		);
-		auto* l_content_manager = m_service_manager->register_service< core::bc_content_manager >
-		(
-			core::bc_make_service< core::bc_content_manager >()
-		);
-		auto* l_content_stream_manager = m_service_manager->register_service< core::bc_content_stream_manager >
-		(
-			core::bc_make_service< core::bc_content_stream_manager >(*l_content_manager)
-		);
-		m_service_manager->register_service< game::bc_actor_component_manager >
-		(
-			core::bc_make_service< game::bc_actor_component_manager >()
-		);
-		auto* l_entity_manager = m_service_manager->register_service< game::bc_entity_manager >
-		(
-			core::bc_make_service< game::bc_entity_manager >()
-		);
-		m_game_system = m_service_manager->register_service< game::bc_game_system >
-		(
-			core::bc_make_service< game::bc_game_system >()
-		);
+			p_parameters.m_engine_parameters.m_thread_manager_thread_count,
+			p_parameters.m_engine_parameters.m_thread_manager_reserve_thread_count
+		));
+		m_service_manager->register_service(core::bc_make_service<core::bc_expression_parameter_manager>());
+		m_service_manager->register_service(core::bc_make_service<core::bc_content_manager>());
+		m_service_manager->register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
+		m_service_manager->register_service(core::bc_make_service<game::bc_actor_component_manager>());
+		m_service_manager->register_service(core::bc_make_service<game::bc_entity_manager>(*core::bc_get_service<game::bc_actor_component_manager>()));
+		m_service_manager->register_service(core::bc_make_service<game::bc_game_system>());
+
+		auto* l_logger_manager = core::bc_get_service<core::bc_logger>();
+		auto* l_expression_parameter_manager = core::bc_get_service<core::bc_expression_parameter_manager>();
+		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
+		auto* l_entity_manager = core::bc_get_service<game::bc_entity_manager>();
+		m_game_system = core::bc_get_service<game::bc_game_system>();
 
 #ifdef BC_DEBUG
 		l_logger_manager->register_listener

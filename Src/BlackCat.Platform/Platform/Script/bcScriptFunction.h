@@ -13,8 +13,6 @@ namespace black_cat
 {
 	namespace platform
 	{
-		// == FunctionBase =====================================================================================
-
 		template< typename ...TA >
 		using bc_script_var_pack = core::bc_array< bc_script_variable, sizeof...(TA) >;
 
@@ -55,8 +53,6 @@ namespace black_cat
 		private:
 			platform_pack m_pack;
 		};
-
-		// == Function ========================================================================================
 
 		/**
 		 * \brief Wrap a script function.
@@ -198,7 +194,7 @@ namespace black_cat
 		template< typename TCallable >
 		TR bc_platform_script_function< TPlatform, TR(TA...) >::_call_callback(TCallable p_callable, bc_script_variable* p_args, bcUINT32 p_arg_count)
 		{
-			// TODO Make a chiose for more and less argument count than expected
+			// TODO Make a choose for more and less argument count than expected
 			bcAssert(sizeof...(TA) == p_arg_count);
 
 			bcUINT32 l_counter = 0;

@@ -97,20 +97,17 @@ namespace black_cat
 
 		inline bool bc_input_system::_event_handler(core::bc_ievent& p_event)
 		{
-			bool l_is_device_reset = core::bc_ievent::event_is<graphic::bc_app_event_device_reset>(p_event);
-
-			if (l_is_device_reset)
+			auto* l_device_reset_event = core::bc_ievent::event_as<graphic::bc_app_event_device_reset>(p_event);
+			if (l_device_reset_event)
 			{
-				auto& l_device_reset_event = static_cast<graphic::bc_app_event_device_reset&>(p_event);
-
-				if (!l_device_reset_event.m_before_reset)
+				if (!l_device_reset_event->m_before_reset)
 				{
 					if(m_camera)
 					{
 						m_camera->set_projection
 						(
-							l_device_reset_event.m_new_parameters.m_width,
-							l_device_reset_event.m_new_parameters.m_height,
+							l_device_reset_event->m_new_parameters.m_width,
+							l_device_reset_event->m_new_parameters.m_height,
 							m_camera->get_near_clip(),
 							m_camera->get_far_clip()
 						);

@@ -75,8 +75,7 @@ namespace black_cat
 
 		bc_material_manager::bc_material_manager(bc_material_manager&& p_other) noexcept
 			: m_content_stream_manager(p_other.m_content_stream_manager),
-			m_render_system(p_other.m_render_system),
-			m_default_normal_map(std::move(p_other.m_default_normal_map))
+			m_render_system(p_other.m_render_system)
 		{
 			operator=(std::move(p_other));
 		}
@@ -90,6 +89,7 @@ namespace black_cat
 			m_material_descriptions = std::move(p_other.m_material_descriptions);
 			m_materials = std::move(p_other.m_materials);
 			m_default_texture_config = p_other.m_default_texture_config;
+			m_default_diffuse_map = std::move(p_other.m_default_diffuse_map);
 			m_default_normal_map = std::move(p_other.m_default_normal_map);
 			m_default_diffuse_maps = std::move(p_other.m_default_diffuse_maps);
 

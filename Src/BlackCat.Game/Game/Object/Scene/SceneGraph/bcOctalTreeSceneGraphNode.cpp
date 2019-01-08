@@ -28,9 +28,10 @@ namespace black_cat
 			m_bottom_left_front(nullptr),
 			m_bottom_right_front(nullptr),
 			m_bottom_right_back(nullptr),
+			m_my_position(bc_octal_tree_node_position::null),
 			m_bound_box(p_box),
-			m_actors(),
-			m_my_position(bc_octal_tree_node_position::null)
+			m_entry_pool(bcNew(core::bc_concurrent_memory_pool(), core::bc_alloc_type::unknown)),
+			m_actors(graph_node_entry_allocator(*m_entry_pool))
 		{
 			const auto l_half_extends = p_box.get_half_extends();
 			const bool l_is_power_of_two = bc_is_power_of_two(l_half_extends.x) &&
@@ -40,6 +41,9 @@ namespace black_cat
 			{
 				throw bc_invalid_argument_exception("size of scene bound box must be power of two");
 			}
+
+			// TODO get size of list internal node
+			m_entry_pool->initialize(1000, sizeof(_bc_octal_tree_graph_node_entry) + sizeof(void*) * 2, core::bc_alloc_type::unknown);
 		}
 
 		bc_octal_tree_graph_node::bc_octal_tree_graph_node(bc_octal_tree_graph_node& p_parent, 
@@ -58,9 +62,10 @@ namespace black_cat
 			m_bottom_left_front(nullptr),
 			m_bottom_right_front(nullptr),
 			m_bottom_right_back(nullptr),
+			m_my_position(p_my_position),
 			m_bound_box(),
-			m_actors(),
-			m_my_position(p_my_position)
+			m_entry_pool(p_parent.m_entry_pool),
+			m_actors(graph_node_entry_allocator(*m_entry_pool))
 		{
 			core::bc_vector3f l_bound_box_center = p_parent.m_bound_box.get_center();
 			const core::bc_vector3f l_half_extends = p_parent.m_bound_box.get_half_extends() / 2;
@@ -117,6 +122,10 @@ namespace black_cat
 
 		bc_octal_tree_graph_node::~bc_octal_tree_graph_node()
 		{
+			if(!m_parent)
+			{
+				bcDelete(m_entry_pool);
+			}
 		}
 
 		bc_iscene_graph_node::iterator bc_octal_tree_graph_node::begin() noexcept
@@ -257,24 +266,6 @@ namespace black_cat
 
 			l_actor_mediate_component->set_bound_box(l_actor_bound_box);
 			l_updated = add_actor(p_actor);
-
-			//if(!l_containing_node)
-			//{
-			//	l_updated = false;
-			//	return l_updated;
-			//}
-
-			//if(l_prev_containing_node != l_containing_node)
-			//{
-			//	const bool l_added = l_containing_node->add_actor(p_actor);
-			//	const bool l_removed = l_prev_containing_node->remove_actor(p_actor);
-			//	bcAssert(l_removed);
-			//	bcAssert(l_added);
-			//}
-			//else
-			//{
-			//	l_updated = true;
-			//}
 
 			return l_updated;
 		}
@@ -495,7 +486,7 @@ namespace black_cat
 				m_min_size
 			);
 
-			core::bc_list<_bc_octal_tree_graph_node_entry> l_actors;
+ 			graph_node_entry_list l_actors{ graph_node_entry_allocator(*m_entry_pool) };
 			m_actors.swap(l_actors);
 			m_actors_count = 0;
 

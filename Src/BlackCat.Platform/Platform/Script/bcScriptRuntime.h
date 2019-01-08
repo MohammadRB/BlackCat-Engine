@@ -4,7 +4,6 @@
 
 #include "CorePlatform/bcPlatform.h"
 #include "Core/Container/bcList.h"
-#include "Core/Utility/bcInitializable.h"
 #include "Core/Utility/bcParameterPack.h"
 
 namespace black_cat
@@ -36,7 +35,7 @@ namespace black_cat
 		 * \tparam TPlatform 
 		 */
 		template< core_platform::bc_platform TPlatform >
-		class bc_platform_script_runtime : public core::bc_initializable<>
+		class bc_platform_script_runtime
 		{
 		public:
 			using platform_pack = bc_platform_script_runtime_pack< TPlatform >;
@@ -44,11 +43,11 @@ namespace black_cat
 		public:
 			bc_platform_script_runtime() noexcept;
 
-			bc_platform_script_runtime(bc_platform_script_runtime&&) noexcept;
+			bc_platform_script_runtime(bc_platform_script_runtime&&) = delete;
 
 			~bc_platform_script_runtime();
 
-			bc_platform_script_runtime& operator=(bc_platform_script_runtime&&) noexcept;
+			bc_platform_script_runtime& operator=(bc_platform_script_runtime&&) = delete;
 
 			bc_script_context create_context();
 
@@ -79,16 +78,16 @@ namespace black_cat
 			bc_script_variable run_script(bc_script_bytecode& p_script);
 
 			/**
-			 * \brief Interupt execuation of script with an exception. 
+			 * \brief Interrupt execution of script with an exception. 
 			 * A running script will be terminated with an uncatchable exception as soon as possible.
 			 * Can be called in a thread other than the one that runtime is running on.
 			 */
-			void interupt_script_execuation();
+			void interrupt_script_execution();
 
 			///**
 			// * \brief If runtime is in suspend state, put it in normal state
 			// */
-			//void enable_execuation();
+			//void enable_execution();
 
 			/**
 			 * \brief Hint runtime to run it's garbage collector
@@ -115,19 +114,16 @@ namespace black_cat
 
 				l_meta_data.set_value(bc_script_external_object<T>::meta_data());
 
-				m_external_object_meta_datas.push_back(std::move(l_meta_data));
+				m_external_object_meta_data.push_back(std::move(l_meta_data));
 
-				return m_external_object_meta_datas.rbegin()->as< typename bc_script_external_object<T>::meta_data>();
+				return m_external_object_meta_data.rbegin()->as< typename bc_script_external_object<T>::meta_data>();
 			}
 
 		protected:
-			void _initialize() override;
-
-			void _destroy() override;
 
 		private:
 			// Hold all external object meta data in one place so when runtime destroyed we can clear these data
-			core::bc_list_program< core::bc_any > m_external_object_meta_datas;
+			core::bc_list_program< core::bc_any > m_external_object_meta_data;
 			platform_pack m_pack;
 		};
 

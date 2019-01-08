@@ -108,11 +108,11 @@ namespace black_cat
 		public:
 			bc_actor_component_manager() = default;
 
-			bc_actor_component_manager(bc_actor_component_manager&&) noexcept = default;
+			bc_actor_component_manager(bc_actor_component_manager&&) noexcept = delete;
 
-			~bc_actor_component_manager() = default;
+			~bc_actor_component_manager();
 
-			bc_actor_component_manager& operator=(bc_actor_component_manager&&) noexcept = default;
+			bc_actor_component_manager& operator=(bc_actor_component_manager&&) noexcept = delete;
 
 			bc_actor create_actor(const bc_actor* p_parent = nullptr);
 
@@ -171,6 +171,17 @@ namespace black_cat
 			actor_container_type m_actors;
 			component_map_type m_components;
 		};
+
+		inline bc_actor_component_manager::~bc_actor_component_manager()
+		{
+			bcAssert
+			(
+				std::count_if(std::cbegin(m_actors), std::cend(m_actors), [](core::bc_nullable< _bc_actor_entry >& p_entry)
+				{
+					return p_entry.is_set();
+				}) == 0
+			);
+		}
 
 		inline bc_actor bc_actor_component_manager::create_actor(const bc_actor* p_parent)
 		{

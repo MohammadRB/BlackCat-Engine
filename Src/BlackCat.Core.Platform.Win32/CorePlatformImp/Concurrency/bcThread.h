@@ -16,8 +16,6 @@ namespace black_cat
 		template<>
 		struct bc_platform_thread_pack< bc_platform::win32 >
 		{
-			std::thread m_thread;
-
 			bc_platform_thread_pack()
 			{
 			}
@@ -32,18 +30,20 @@ namespace black_cat
 				: m_thread(std::forward< Callable >(p_func), std::forward< Args >(p_args)...)
 			{
 			}
+
+			std::thread m_thread;
 		};
 
 		template<>
-		inline bc_platform_thread< bc_platform::win32 >::bc_platform_thread() noexcept(true)
+		inline bc_platform_thread< bc_platform::win32 >::bc_platform_thread() noexcept
 		{
-		};
+		}
 
 		template<>
-		inline bc_platform_thread< bc_platform::win32 >::bc_platform_thread(this_type&& p_other) noexcept(true)
+		inline bc_platform_thread< bc_platform::win32 >::bc_platform_thread(this_type&& p_other) noexcept
 			: m_pack(std::move(p_other.m_pack.m_thread))
 		{
-		};
+		}
 
 		template<>
 		template< typename Callable, typename ...Args >
@@ -52,66 +52,71 @@ namespace black_cat
 		{
 		}
 
-		template< bc_platform TP >
-		typename bc_platform_thread< TP >::this_type& bc_platform_thread< TP >::operator=(this_type&& p_other) noexcept(true)
+		template<>
+		inline bc_platform_thread< bc_platform::win32 >::~bc_platform_thread()
 		{
-			m_pack.m_pack.m_thread = std::move(p_other.m_pack.m_pack.m_thread);
-
-			return *this;
-		};
+		}
 
 		template<>
-		inline void bc_platform_thread< bc_platform::win32 >::swap(this_type& p_other) noexcept(true)
+		inline bc_platform_thread< bc_platform::win32 >::this_type& bc_platform_thread< bc_platform::win32 >::operator=(this_type&& p_other) noexcept
+		{
+			m_pack.m_thread = std::move(p_other.m_pack.m_thread);
+
+			return *this;
+		}
+
+		template<>
+		inline void bc_platform_thread< bc_platform::win32 >::swap(this_type& p_other) noexcept
 		{
 			m_pack.m_thread.swap(p_other.m_pack.m_thread);
-		};
+		}
 
 		template<>
 		inline void bc_platform_thread< bc_platform::win32 >::join()
 		{
 			m_pack.m_thread.join();
-		};
+		}
 
 		template<>
 		inline void bc_platform_thread< bc_platform::win32 >::detach()
 		{
 			m_pack.m_thread.detach();
-		};
+		}
 
 		template<>
-		inline bool bc_platform_thread< bc_platform::win32 >::joinable() const noexcept(true)
+		inline bool bc_platform_thread< bc_platform::win32 >::joinable() const noexcept
 		{
 			return m_pack.m_thread.joinable();
-		};
+		}
 
 		template<>
-		inline bc_platform_thread<bc_platform::win32>::id bc_platform_thread< bc_platform::win32 >::get_id() const noexcept(true)
+		inline bc_platform_thread<bc_platform::win32>::id bc_platform_thread< bc_platform::win32 >::get_id() const noexcept
 		{
 			return std::hash< std::thread::id >()(m_pack.m_thread.get_id());
-		};
+		}
 
 		template<>
-		inline bc_platform_thread<bc_platform::win32>::id bc_platform_thread< bc_platform::win32 >::current_thread_id() noexcept(true)
+		inline bc_platform_thread<bc_platform::win32>::id bc_platform_thread< bc_platform::win32 >::current_thread_id() noexcept
 		{
 			return std::hash<std::thread::id>()(std::this_thread::get_id());
-		};
+		}
 
 		template<>
 		inline void bc_platform_thread< bc_platform::win32 >::current_thread_sleep_for(bcUINT64 p_nano)
 		{
 			std::this_thread::sleep_for(std::chrono::nanoseconds(p_nano));
-		};
+		}
 
 		template<>
-		inline void bc_platform_thread< bc_platform::win32 >::current_thread_yield() noexcept(true)
+		inline void bc_platform_thread< bc_platform::win32 >::current_thread_yield() noexcept
 		{
 			YieldProcessor();
-		};
+		}
 
 		template<>
-		inline void bc_platform_thread< bc_platform::win32 >::current_thread_yield_switch() noexcept(true)
+		inline void bc_platform_thread< bc_platform::win32 >::current_thread_yield_switch() noexcept
 		{
 			SwitchToThread();
-		};
+		}
 	}
 }

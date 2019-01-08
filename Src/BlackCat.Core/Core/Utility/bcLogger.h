@@ -80,11 +80,11 @@ namespace black_cat
 		public:
 			bc_logger() = default;
 
-			bc_logger(bc_logger&&) = default;
+			bc_logger(bc_logger&&) noexcept = delete;
 
 			~bc_logger() = default;
 
-			bc_logger& operator=(bc_logger&&) = default;
+			bc_logger& operator=(bc_logger&&) noexcept = delete;
 
 			/**
 			 * \brief 

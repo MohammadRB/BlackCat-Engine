@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CorePlatform/bcType.h"
-#include "Core/Utility/bcInitializable.h"
 #include "PlatformImp/Script/bcScriptRef.h"
 #include "PlatformImp/Script/bcScriptRuntime.h"
 #include "PlatformImp/Script/bcScriptContext.hpp"
@@ -13,10 +12,10 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_script_ui_context : public core::bc_initializable< platform::bc_script_runtime& >
+		class BC_GAME_DLL bc_script_ui_context
 		{
 		public:
-			bc_script_ui_context();
+			bc_script_ui_context(platform::bc_script_runtime& p_runtime);
 
 			bc_script_ui_context(bc_script_ui_context&&) noexcept;
 
@@ -32,10 +31,6 @@ namespace black_cat
 		protected:
 
 		private:
-			void _initialize(platform::bc_script_runtime& p_runtime) override;
-
-			void _destroy() override;
-
 			platform::bc_script_context_ref m_context;
 		};
 	}

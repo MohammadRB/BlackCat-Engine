@@ -89,7 +89,7 @@ namespace black_cat
 		{
 			policy_none = bc_enum::value(0),				// Push task in local task queue of current thread
 			policy_fairness = bc_enum::value(1),			// Push task in global task queue
-			lifetime_exceed_frame = bc_enum::value(2)	// Lifetime of task exceed frame
+			lifetime_exceed_frame = bc_enum::value(2)		// Lifetime of task exceed frame
 		};
 
 		class BC_CORE_DLL bc_thread_manager : public bc_iservice
@@ -101,17 +101,17 @@ namespace black_cat
 			class _thread_data;
 
 		public:
-			bc_thread_manager(bcSIZE p_thread_count, bcSIZE p_additional_thread_count) noexcept(true);
+			bc_thread_manager(bcSIZE p_thread_count, bcSIZE p_additional_thread_count) noexcept;
 
 			bc_thread_manager(const bc_thread_manager&) = delete;
 
-			bc_thread_manager(bc_thread_manager&& p_other) noexcept;
+			bc_thread_manager(bc_thread_manager&& p_other) noexcept = delete;
 
 			~bc_thread_manager();
 
 			bc_thread_manager& operator=(const bc_thread_manager&) = delete;
 
-			bc_thread_manager& operator=(bc_thread_manager&& p_other) noexcept;
+			bc_thread_manager& operator=(bc_thread_manager&& p_other) noexcept = delete;
 
 			bcSIZE thread_count() const;
 
@@ -129,7 +129,9 @@ namespace black_cat
 		private:
 			void _initialize(bcSIZE p_thread_count, bcSIZE p_additional_thread_count);
 
-			void _destroy();
+			void _restart_workers();
+
+			void _stop_workers();
 
 			static void _thread_data_cleanup(_thread_data*)
 			{
@@ -147,7 +149,6 @@ namespace black_cat
 
 			void _worker_spin(bcUINT32 p_my_index);
 
-		private:
 			static const bcSIZE s_worker_switch_threshold = 10;
 			static const bcSIZE s_new_thread_threshold = 10;
 			static const bcSIZE s_num_thread_in_spin = 1;
@@ -160,7 +161,7 @@ namespace black_cat
 			core_platform::bc_mutex m_cvariable_mutex;
 			core_platform::bc_condition_variable m_cvariable;
 
-			bc_vector_a< bc_unique_ptr<_thread_data>, bc_allocator_program > m_threads;
+			bc_vector_program< bc_unique_ptr<_thread_data> > m_threads;
 			//bc_concurrent_queue_frame< task_wrapper_type > m_global_queue; TODO
 			bc_concurrent_queue< task_type > m_global_queue;
 			core_platform::bc_thread_local< _thread_data > m_my_data;
@@ -169,6 +170,8 @@ namespace black_cat
 
 		class bc_thread_manager::_thread_data
 		{
+			friend class bc_thread_manager;
+
 		public:
 			_thread_data(bcUINT32 p_my_index, core_platform::bc_thread&& p_thread)
 				: m_my_index(p_my_index),

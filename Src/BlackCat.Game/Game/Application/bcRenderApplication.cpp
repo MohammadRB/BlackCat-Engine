@@ -132,6 +132,10 @@ namespace black_cat
 				l_event_manager->process_event(m_event);
 
 				m_termination_code = -1;
+
+#ifdef BC_MEMORY_ENABLE
+				core::bc_memmng::get().end_of_frame();
+#endif
 			}
 
 			return m_termination_code;

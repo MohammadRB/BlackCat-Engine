@@ -89,11 +89,11 @@ namespace black_cat
 		public:
 			bc_render_system();
 
-			bc_render_system(bc_render_system&&) = default;
+			bc_render_system(bc_render_system&&) noexcept;
 
 			~bc_render_system();
 
-			bc_render_system& operator=(bc_render_system&&) = default;
+			bc_render_system& operator=(bc_render_system&&) noexcept;
 
 			graphic::bc_device& get_device() noexcept;
 

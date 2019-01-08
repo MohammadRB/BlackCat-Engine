@@ -37,10 +37,13 @@ namespace black_cat
 		{
 		}
 
+
 		template<>
 		inline bc_platform_script_context< core_platform::g_api_win32 >::bc_platform_script_context(const bc_platform_script_context& p_other) noexcept
+			: bc_platform_script_reference(p_other)
 		{
-			operator=(p_other);
+			m_runtime = p_other.m_runtime;
+			m_pack.m_js_context = p_other.m_pack.m_js_context;
 		}
 
 		template<>
@@ -207,7 +210,6 @@ namespace black_cat
 		void bc_platform_script_context< TPlatform >::register_prototype(bcWCHAR* p_object_name, bc_script_prototype< T >& p_object_prototype)
 		{
 			bc_chakra_call l_call(*this);
-			JsValueRef l_global;
 			JsPropertyIdRef l_prototype_name;
 
 			if (p_object_prototype.get_platform_pack().m_js_ctor_function == JS_INVALID_REFERENCE)
@@ -215,7 +217,7 @@ namespace black_cat
 				throw bc_invalid_operation_exception("Prototype doesn't include constructor function signature");
 			}
 
-			l_global = get_global().get_platform_pack().m_js_object;
+			JsValueRef l_global = get_global().get_platform_pack().m_js_object;
 
 			l_call = JsGetPropertyIdFromName(p_object_name, &l_prototype_name);
 			l_call.throw_if_faild();

@@ -44,7 +44,7 @@ namespace black_cat
 
 			bc_platform_script_ref& operator=(bc_platform_script_ref&&) noexcept;
 
-			bc_platform_script_ref& operator=(type& p_object);
+			bc_platform_script_ref& operator=(const type& p_object);
 
 			type* operator->() noexcept;
 

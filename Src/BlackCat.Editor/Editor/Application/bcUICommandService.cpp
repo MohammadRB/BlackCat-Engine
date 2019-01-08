@@ -19,26 +19,8 @@ namespace black_cat
 		{
 		}
 
-		bc_ui_command_service::bc_ui_command_service(bc_ui_command_service&& p_other) noexcept
-			: m_content_stream(p_other.m_content_stream),
-			m_game_system(p_other.m_game_system)
-		{
-			operator=(std::move(p_other));
-		}
-
 		bc_ui_command_service::~bc_ui_command_service() = default;
-
-		bc_ui_command_service& bc_ui_command_service::operator=(bc_ui_command_service&& p_other) noexcept
-		{
-			m_commands_to_execute = std::move(p_other.m_commands_to_execute);
-			m_reversible_commands = std::move(p_other.m_reversible_commands);
-			m_executed_commands = std::move(p_other.m_executed_commands);
-			m_commands_to_undo = p_other.m_commands_to_undo;
-			m_command_states = std::move(p_other.m_command_states);
-
-			return *this;
-		}
-
+		
 		void bc_ui_command_service::load_content()
 		{
 			m_content_stream.read_stream_file(m_game_system.get_file_system().get_content_data_path(bcL("EditorContentStream.json")).c_str());

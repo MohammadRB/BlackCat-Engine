@@ -121,7 +121,6 @@ namespace black_cat
 			l_ui_command_manager->load_content();
 
 			auto l_terrain = l_entity_manager->create_entity("crysis_heightmap");
-			auto l_train = l_entity_manager->create_entity("train");
 
 			l_scene->add_actor(l_terrain);
 		}

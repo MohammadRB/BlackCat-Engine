@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CorePlatformImp/Utility/bcClock.h"
+#include "Core/Utility/bcInitializable.h"
 #include "Core/Container/bcString.h"
+#include "Core/Memory/bcPtr.h"
 #include "PlatformImp/Script/bcScriptRef.h"
 #include "PlatformImp/Script/bcScriptRuntime.h"
 #include "PlatformImp/Script/bcScriptContext.hpp"
@@ -16,8 +18,8 @@
 #include "PlatformImp/Script/bcScriptError.h"
 #include "PlatformImp/Script/bcScriptPrototype.h"
 #include "PlatformImp/Script/bcScriptPrototypeBuilder.h"
-#include "Game/bcExport.h"
 #include "Game/System/Script/bcScriptUIContext.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
@@ -31,7 +33,7 @@ namespace black_cat
 			_count = 1
 		};
 
-		class BC_GAME_DLL bc_script_system
+		class BC_GAME_DLL bc_script_system : public core::bc_initializable<bool>
 		{
 		public:
 			bc_script_system();
@@ -44,7 +46,7 @@ namespace black_cat
 
 			bc_script_ui_context& get_ui_context()
 			{
-				return m_ui_context;
+				return *m_ui_context;
 			}
 
 			bc_script_binding get_script_binder() const noexcept;
@@ -109,14 +111,20 @@ namespace black_cat
 				switch (p_context)
 				{
 				case bc_script_context::ui:
-					return m_ui_context.get_context();
+					return m_ui_context->get_context();
 				default: 
 					throw bc_invalid_argument_exception("Invalid script context");
 				}
 			}
 
-			platform::bc_script_runtime m_script_runtime;
-			bc_script_ui_context m_ui_context;
+		protected:
+			void _initialize(bool) override;
+
+			void _destroy() override;
+
+		private:
+			core::bc_unique_ptr<platform::bc_script_runtime> m_script_runtime;
+			core::bc_unique_ptr<bc_script_ui_context> m_ui_context;
 			platform::bc_script_function_ref< platform::bc_script_string(platform::bc_script_variable) > m_stringify_function;
 		};
 	}

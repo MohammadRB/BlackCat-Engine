@@ -28,6 +28,7 @@ namespace black_cat
 		bc_scene::~bc_scene()
 		{
 			m_scene_graph.clear();
+			m_px_scene.reset();
 		}
 
 		bc_scene& bc_scene::operator=(bc_scene&& p_other) noexcept

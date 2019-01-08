@@ -48,12 +48,43 @@ namespace black_cat
 		{
 		}
 
+		bc_render_system::bc_render_system(bc_render_system&& p_other) noexcept
+		{
+			operator=(std::move(p_other));
+		}
+
 		bc_render_system::~bc_render_system()
 		{
 			if(m_initialized)
 			{
 				destroy();
 			}
+		}
+
+		bc_render_system& bc_render_system::operator=(bc_render_system&& p_other) noexcept
+		{
+			m_content_stream = p_other.m_content_stream;
+			m_thread_manager = std::move(p_other.m_thread_manager);
+			m_material_manager = std::move(p_other.m_material_manager);
+
+			m_window_resize_handle = std::move(p_other.m_window_resize_handle);
+			m_device_listener_handle = std::move(p_other.m_device_listener_handle);
+			m_frame_render_finish_handle = std::move(p_other.m_frame_render_finish_handle);
+
+			m_render_pass_states = std::move(p_other.m_render_pass_states);
+			m_render_states = std::move(p_other.m_render_states);
+			m_compute_states = std::move(p_other.m_compute_states);
+
+			m_device = std::move(p_other.m_device);
+			m_global_cbuffer = std::move(p_other.m_global_cbuffer);
+			m_per_object_cbuffer = std::move(p_other.m_per_object_cbuffer);
+			m_global_cbuffer_parameter = std::move(p_other.m_global_cbuffer_parameter);
+			m_per_object_cbuffer_parameter = std::move(p_other.m_per_object_cbuffer_parameter);
+
+			m_render_pass_manager = std::move(p_other.m_render_pass_manager);
+			m_shape_drawer = std::move(p_other.m_shape_drawer);
+
+			return *this;
 		}
 
 		bool bc_render_system::remove_render_pass(bcUINT p_location)
@@ -320,7 +351,8 @@ namespace black_cat
 				return bc_render_pass_state_ptr(_bc_render_state_handle(l_first_empty_index), _bc_render_pass_state_handle_deleter(this));
 			}
 		}
-
+		
+		int render_state_count = 0;
 		bc_render_state_ptr bc_render_system::create_render_state(graphic::bc_primitive p_primitive,
 			graphic::bc_buffer p_vertex_buffer, 
 			bcUINT32 p_vertex_buffer_stride,
@@ -362,6 +394,7 @@ namespace black_cat
 
 			{
 				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
+				++render_state_count;
 
 				auto l_first_empty = std::find_if(std::begin(m_render_states), std::end(m_render_states), [](const render_state_entry& p_item)
 				{
@@ -494,6 +527,7 @@ namespace black_cat
 		{
 			{
 				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
+				--render_state_count;
 				
 				auto l_item = std::find_if(std::begin(m_render_states), std::end(m_render_states), [p_render_state](const render_state_entry& p_item)
 				{
@@ -635,12 +669,15 @@ namespace black_cat
 					++l_render_pass_states_count;
 				}
 			}
+			int counter = 0;
 			for (auto& l_item : m_render_states)
 			{
 				if (l_item.first != nullptr)
 				{
 					++l_render_states_count;
 				}
+
+				++counter;
 			}
 
 			bcAssert(l_render_pass_states_count + l_render_states_count == 0);

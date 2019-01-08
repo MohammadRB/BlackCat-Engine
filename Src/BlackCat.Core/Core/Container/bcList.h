@@ -358,7 +358,7 @@ namespace black_cat
 		private:
 		};
 
-		template < typename T, class TAllocator = bc_allocator< T > >
+		template< typename T, class TAllocator = bc_allocator< T > >
 		class bc_list : public bc_list_base< T, TAllocator >
 		{
 			bc_make_iterators_friend(bc_list)

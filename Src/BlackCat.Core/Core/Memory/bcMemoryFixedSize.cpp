@@ -31,66 +31,10 @@ namespace black_cat
 
 		bc_memory_fixed_size::this_type& bc_memory_fixed_size::operator =(this_type&& p_other) noexcept
 		{
-			bc_memory::operator =(std::move(p_other));
 			_move(std::move(p_other));
+			bc_memory::operator =(std::move(p_other));
 
 			return *this;
-		}
-
-		void bc_memory_fixed_size::_initialize(bcUINT32 p_num_block, bcUINT32 p_block_size, const bcCHAR* p_tag)
-		{
-			m_num_block = p_num_block;
-			m_block_size = p_block_size;
-
-			if (m_num_block % s_bitblock_size == 0)
-			{
-				m_num_bitblocks = m_num_block / s_bitblock_size;
-			}
-			else
-			{
-				m_num_block = ((m_num_block / s_bitblock_size) + 1) * s_bitblock_size;
-				m_num_bitblocks = m_num_block / s_bitblock_size;
-			}
-			m_allocated_block.store(0U);
-
-			m_blocks = static_cast< core_platform::bc_atomic< bitblock_type >* >
-			(
-				core_platform::bc_mem_aligned_alloc(m_num_bitblocks * sizeof(core_platform::bc_atomic< bitblock_type >), BC_MEMORY_MIN_ALIGN)
-			);
-
-			if (!m_blocks)
-			{
-				throw std::bad_alloc();
-			}
-
-			for (bcUINT32 i = 0; i < m_num_bitblocks; ++i)
-			{
-				m_blocks[i].store(0U);
-			}
-
-			// We alloc m_heap by min align defined in CorePCH because we want all of our allocations have MIN_Align /
-			m_heap = static_cast<bcUBYTE*>
-			(
-				core_platform::bc_mem_aligned_alloc((m_block_size * m_num_block) * sizeof(bcUBYTE), BC_MEMORY_MIN_ALIGN)
-			);
-
-			if (!m_heap)
-			{
-				bc_mem_aligned_free(m_blocks);
-				throw std::bad_alloc();
-			}
-
-			m_tracer.initialize((m_block_size * m_num_block) * sizeof(bcUBYTE));
-			if (p_tag) 
-			{
-				tag(p_tag);
-			}
-		}
-
-		void bc_memory_fixed_size::_destroy() noexcept
-		{
-			core_platform::bc_mem_aligned_free(m_blocks);
-			core_platform::bc_mem_aligned_free(m_heap);
 		}
 
 		void* bc_memory_fixed_size::alloc(bc_memblock* p_mem_block) noexcept
@@ -198,6 +142,80 @@ namespace black_cat
 			m_tracer.accept_clear();
 		}
 
+		void bc_memory_fixed_size::_initialize(bcUINT32 p_num_block, bcUINT32 p_block_size, const bcCHAR* p_tag)
+		{
+			m_num_block = p_num_block;
+			m_block_size = p_block_size;
+
+			if (m_num_block % s_bitblock_size == 0)
+			{
+				m_num_bitblocks = m_num_block / s_bitblock_size;
+			}
+			else
+			{
+				m_num_block = ((m_num_block / s_bitblock_size) + 1) * s_bitblock_size;
+				m_num_bitblocks = m_num_block / s_bitblock_size;
+			}
+			m_allocated_block.store(0U);
+
+			m_blocks = static_cast< core_platform::bc_atomic< bitblock_type >* >
+			(
+				core_platform::bc_mem_aligned_alloc(m_num_bitblocks * sizeof(core_platform::bc_atomic< bitblock_type >), BC_MEMORY_MIN_ALIGN)
+			);
+
+			if (!m_blocks)
+			{
+				throw std::bad_alloc();
+			}
+
+			for (bcUINT32 i = 0; i < m_num_bitblocks; ++i)
+			{
+				m_blocks[i].store(0U);
+			}
+
+			// We alloc m_heap by min align defined in CorePCH because we want all of our allocations have MIN_Align /
+			m_heap = static_cast< bcUBYTE* >
+			(
+				core_platform::bc_mem_aligned_alloc((m_block_size * m_num_block) * sizeof(bcUBYTE), BC_MEMORY_MIN_ALIGN)
+			);
+
+			if (!m_heap)
+			{
+				bc_mem_aligned_free(m_blocks);
+				throw std::bad_alloc();
+			}
+
+			m_tracer.initialize((m_block_size * m_num_block) * sizeof(bcUBYTE));
+			if (p_tag)
+			{
+				tag(p_tag);
+			}
+		}
+
+		void bc_memory_fixed_size::_destroy() noexcept
+		{
+			core_platform::bc_mem_aligned_free(m_blocks);
+			core_platform::bc_mem_aligned_free(m_heap);
+		}
+
+		void bc_memory_fixed_size::_move(this_type&& p_other)
+		{
+			bcUINT32 l_allocated_block = p_other.m_allocated_block.load(core_platform::bc_memory_order::acquire);
+
+			m_num_block = p_other.m_num_block;
+			m_block_size = p_other.m_block_size;
+			m_num_bitblocks = p_other.m_num_bitblocks;
+			m_blocks = p_other.m_blocks;
+			m_heap = p_other.m_heap;
+
+			p_other.m_num_block = 0;
+			p_other.m_block_size = 0;
+			p_other.m_num_bitblocks = 0;
+			p_other.m_blocks = nullptr;
+			p_other.m_heap = nullptr;
+
+			m_allocated_block.store(l_allocated_block, core_platform::bc_memory_order::release);
+		}
 #endif
 	}
 }

@@ -11,7 +11,11 @@ namespace black_cat
 	namespace core
 	{
 		// TODO instead of using template argument use bc_object_allocator or use parameter
-		// Same as core_platform::bc_thread_local but provide auto initialization. if type is an integral it will initialize to zero
+		/**
+		 * \brief Same as core_platform::bc_thread_local but provide auto initialization. if type is an integral it will initialize to zero
+		 * \tparam T 
+		 * \tparam t_alloc_type 
+		 */
 		template<typename T, bc_alloc_type t_alloc_type = bc_alloc_type::unknown>
 		class bc_thread_local
 		{
@@ -25,23 +29,21 @@ namespace black_cat
 				static_assert(t_alloc_type != bc_alloc_type::unknown_movable, "movable pointers are not allowed");
 			}
 
-			bc_thread_local(this_type&& p_other)
-			{
-				_assign(std::move(p_other));
-			}
-
-			~bc_thread_local()
+			bc_thread_local(this_type&& p_other) noexcept
+				: m_local(std::move(p_other.m_local))
 			{
 			}
 
-			this_type& operator =(this_type&& p_other)
+			~bc_thread_local() = default;
+
+			this_type& operator =(this_type&& p_other) noexcept
 			{
-				_assign(std::move(p_other));
+				m_local = std::move(m_local);
 
 				return *this;
 			}
 
-			bcInline type* get() const noexcept(true)
+			type* get() const noexcept
 			{
 				type* l_pointer = m_local.get();
 
@@ -54,22 +56,22 @@ namespace black_cat
 				return l_pointer;
 			}
 
-			bcInline bool set(type* p_pointer) noexcept(true)
+			bool set(type* p_pointer) noexcept
 			{
 				return m_local.set(p_pointer);
 			}
 
-			bcInline type* operator ->() const noexcept(true)
+			type* operator ->() const noexcept
 			{
 				return get();
 			}
 
-			bcInline type& operator *() const noexcept(true)
+			type& operator *() const noexcept
 			{
 				return *get();
 			}
 
-			bcInline type* release() noexcept(true)
+			type* release() noexcept
 			{
 				return m_local.release();
 			}
@@ -82,19 +84,14 @@ namespace black_cat
 				bcDelete(p_pointer);
 			}
 
-			bcInline void _assign(this_type&& p_other)
-			{
-				m_local = std::move(m_local);
-			}
-
 			template< typename T >
-			bcInline typename std::enable_if< std::is_integral< T >::value, T* >::type _create() const
+			typename std::enable_if< std::is_integral< T >::value, T* >::type _create() const
 			{
 				return bcNew(T(0), t_alloc_type);
 			}
 
 			template< typename T >
-			bcInline typename std::enable_if< !std::is_integral< T >::value, T* >::type _create() const
+			typename std::enable_if< !std::is_integral< T >::value, T* >::type _create() const
 			{
 				return bcNew(T(), t_alloc_type);
 			}

@@ -120,14 +120,15 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_ref< TPlatform, T >& bc_platform_script_ref< TPlatform, T >::operator=(bc_platform_script_ref&& p_other) noexcept
 		{
-			reset(p_other.m_pack.m_value);
+			reset();
+			m_pack.m_value = p_other.m_pack.m_value;
 			p_other.m_pack.m_value = type();
 
 			return *this;
 		}
 
 		template< core_platform::bc_platform TPlatform, typename T >
-		bc_platform_script_ref<TPlatform, T>& bc_platform_script_ref<TPlatform, T>::operator=(type& p_object)
+		bc_platform_script_ref<TPlatform, T>& bc_platform_script_ref<TPlatform, T>::operator=(const type& p_object)
 		{
 			reset(p_object);
 

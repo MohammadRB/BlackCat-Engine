@@ -5,6 +5,7 @@
 #include "Platform/bcEvent.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Script/bcGameConsole.h"
+#include "Game/System/Script/bcIGameConsoleImp.h"
 
 namespace black_cat
 {
@@ -68,7 +69,7 @@ namespace black_cat
 
 		bc_game_console::bc_game_console(bc_game_console&& p_other) noexcept
 			: m_script_system(p_other.m_script_system),
-			m_imp(std::move(p_other.m_imp)),
+			m_imp(p_other.m_imp),
 			m_log_types(p_other.m_log_types),
 			m_logs(std::move(p_other.m_logs)),
 			m_scripts(std::move(p_other.m_scripts)),
@@ -80,9 +81,10 @@ namespace black_cat
 		{
 			if(m_bound_console->is_valid())
 			{
-				platform::bc_script_context::scope l_scope(*m_bound_context);
-
-				m_bound_console.reset();
+				{
+					platform::bc_script_context::scope l_scope(*m_bound_context);
+					m_bound_console.reset();
+				}
 			}
 
 			core::bc_get_service< core::bc_logger >()->unregister_listener(this);
@@ -90,7 +92,7 @@ namespace black_cat
 
 		bc_game_console& bc_game_console::operator=(bc_game_console&& p_other) noexcept
 		{
-			m_imp = std::move(p_other.m_imp);
+			m_imp = p_other.m_imp;
 			m_log_types = p_other.m_log_types;
 			m_logs = std::move(p_other.m_logs);
 			m_scripts = std::move(p_other.m_scripts);

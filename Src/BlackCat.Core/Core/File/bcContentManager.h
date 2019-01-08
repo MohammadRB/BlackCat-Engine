@@ -92,11 +92,11 @@ namespace black_cat
 		public:
 			bc_content_manager();
 
-			bc_content_manager(bc_content_manager&&) noexcept;
+			bc_content_manager(bc_content_manager&&) noexcept = delete;
 
 			~bc_content_manager();
 
-			bc_content_manager& operator=(bc_content_manager&&) noexcept;
+			bc_content_manager& operator=(bc_content_manager&&) noexcept = delete;
 
 			template< class TContent, class TLoader >
 			void register_loader(bc_cloader_ptr< TLoader >&& p_loader);
@@ -186,19 +186,7 @@ namespace black_cat
 
 		inline bc_content_manager::bc_content_manager() = default;
 
-		inline bc_content_manager::bc_content_manager(bc_content_manager&& p_other) noexcept
-			: m_contents(move(p_other.m_contents))
-		{
-		}
-
 		inline bc_content_manager::~bc_content_manager() = default;
-
-		inline bc_content_manager& bc_content_manager::operator=(bc_content_manager&& p_other) noexcept
-		{
-			m_contents = move(p_other.m_contents);
-
-			return *this;
-		}
 
 		inline void bc_content_manager::destroy_content(bc_icontent* p_content)
 		{
