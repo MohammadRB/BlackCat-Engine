@@ -12,27 +12,12 @@ namespace black_cat
 	namespace game
 	{
 		bc_script_system::bc_script_system()
-			: m_script_runtime(),
-			m_ui_context(),
-			m_stringify_function()
 		{
-			m_script_runtime.initialize();
-			m_ui_context.initialize(m_script_runtime);
-			
-			{
-				platform::bc_script_context::scope l_context_scope(_get_context(bc_script_context::ui));
-
-				m_stringify_function = l_context_scope.get_context()
-					.get_global()
-					.get_property(L"JSON")
-					.as_object()
-					.get_property(L"stringify")
-					.as_function< platform::bc_script_string, platform::bc_script_variable >();
-			}
 		}
 
 		bc_script_system::bc_script_system(bc_script_system&& p_other) noexcept
-			: m_script_runtime(std::move(p_other.m_script_runtime)),
+			: core::bc_initializable<bool>(std::move(p_other)),
+			m_script_runtime(std::move(p_other.m_script_runtime)),
 			m_ui_context(std::move(p_other.m_ui_context)),
 			m_stringify_function(std::move(p_other.m_stringify_function))
 		{
@@ -41,18 +26,12 @@ namespace black_cat
 
 		bc_script_system::~bc_script_system()
 		{
-			{
-				platform::bc_script_context::scope l_context_scope(_get_context(bc_script_context::ui));
-
-				m_stringify_function.reset();
-			}
-
-			m_ui_context.destroy();
-			m_script_runtime.destroy();
+			destroy();
 		}
 
 		bc_script_system& bc_script_system::operator=(bc_script_system&& p_other) noexcept
 		{
+			core::bc_initializable<bool>::operator=(std::move(p_other));
 			m_script_runtime = std::move(p_other.m_script_runtime);
 			m_ui_context = std::move(p_other.m_ui_context);
 			m_stringify_function = std::move(p_other.m_stringify_function);
@@ -92,7 +71,7 @@ namespace black_cat
 
 			{
 				platform::bc_script_context::scope l_context_scope(_get_context(p_context));
-				platform::bc_script_bytecode l_bytecode = m_script_runtime.compile_script(l_script_file_content.c_str());
+				platform::bc_script_bytecode l_bytecode = m_script_runtime->compile_script(l_script_file_content.c_str());
 
 				if (l_context_scope.get_context().has_exception())
 				{
@@ -112,7 +91,7 @@ namespace black_cat
 			{
 				platform::bc_script_context::scope l_context_scope(_get_context(p_context));
 			
-				platform::bc_script_bytecode l_bytecode = m_script_runtime.compile_script(p_script);
+				platform::bc_script_bytecode l_bytecode = m_script_runtime->compile_script(p_script);
 
 				if (l_context_scope.get_context().has_exception())
 				{
@@ -130,7 +109,7 @@ namespace black_cat
 			{
 				platform::bc_script_context::scope l_context_scope(_get_context(p_context));
 
-				platform::bc_script_variable l_result = m_script_runtime.run_script(p_script);
+				platform::bc_script_variable l_result = m_script_runtime->run_script(p_script);
 
 				if (l_context_scope.get_context().has_exception())
 				{
@@ -148,7 +127,7 @@ namespace black_cat
 			{
 				platform::bc_script_context::scope l_context_scope(_get_context(p_context));
 
-				platform::bc_script_bytecode l_bytecode = m_script_runtime.compile_script(p_script);
+				platform::bc_script_bytecode l_bytecode = m_script_runtime->compile_script(p_script);
 
 				if (l_context_scope.get_context().has_exception())
 				{
@@ -218,21 +197,52 @@ namespace black_cat
 
 		void bc_script_system::interrupt_script_execution()
 		{
-			m_script_runtime.interupt_script_execuation();
+			m_script_runtime->interrupt_script_execution();
 		}
 
 		void bc_script_system::collect_garbage()
 		{
-			m_script_runtime.collect_garbage();
+			m_script_runtime->collect_garbage();
 		}
 
 		bcSIZE bc_script_system::memory_usage() const
 		{
-			return m_script_runtime.memory_usage();
+			return m_script_runtime->memory_usage();
 		}
 
 		void bc_script_system::update(core_platform::bc_clock::update_param p_clock_update_param)
 		{
+		}
+
+		void bc_script_system::_initialize(bool)
+		{
+			m_script_runtime = core::bc_make_unique<platform::bc_script_runtime>(core::bc_alloc_type::program);
+			m_ui_context = core::bc_make_unique<bc_script_ui_context>(core::bc_alloc_type::program, *m_script_runtime);
+
+			{
+				platform::bc_script_context::scope l_context_scope(_get_context(bc_script_context::ui));
+
+				m_stringify_function = l_context_scope.get_context()
+					.get_global()
+					.get_property(L"JSON")
+					.as_object()
+					.get_property(L"stringify")
+					.as_function< platform::bc_script_string, platform::bc_script_variable >();
+			}
+		}
+
+		void bc_script_system::_destroy()
+		{
+			if (m_stringify_function->is_valid())
+			{
+				{
+					platform::bc_script_context::scope l_context_scope(_get_context(bc_script_context::ui));
+					m_stringify_function.reset();
+				}
+			}
+
+			m_ui_context.reset();
+			m_script_runtime.reset();
 		}
 	}
 }

@@ -49,17 +49,11 @@ namespace black_cat
 		public:
 			bc_content_stream_manager(bc_content_manager& p_content_manager) noexcept;
 
-			bc_content_stream_manager(bc_content_stream_manager&&) noexcept(
-				std::is_nothrow_move_constructible< content_types_map_type >::value &&
-				std::is_nothrow_move_constructible< streams_map_type >::value &&
-				std::is_nothrow_move_constructible< contents_map_type >::value);
+			bc_content_stream_manager(bc_content_stream_manager&&) noexcept = delete;
 
 			~bc_content_stream_manager();
 
-			bc_content_stream_manager& operator=(bc_content_stream_manager&&) noexcept(
-				std::is_nothrow_move_assignable< content_types_map_type >::value &&
-				std::is_nothrow_move_assignable< streams_map_type >::value &&
-				std::is_nothrow_move_assignable< contents_map_type >::value);
+			bc_content_stream_manager& operator=(bc_content_stream_manager&&) noexcept = delete;
 
 			bc_content_manager& get_content_manager() const noexcept
 			{

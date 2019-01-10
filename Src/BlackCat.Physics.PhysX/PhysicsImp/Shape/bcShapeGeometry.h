@@ -13,11 +13,11 @@ namespace black_cat
 		struct bc_platform_shape_geometry_pack< g_api_physx >
 		{
 			explicit bc_platform_shape_geometry_pack(physx::PxGeometry& p_geometry)
-				: m_px_geometry(p_geometry)
+				: m_px_geometry(&p_geometry)
 			{
 			}
 
-			physx::PxGeometry& m_px_geometry;
+			physx::PxGeometry* m_px_geometry;
 		};
 	}
 }

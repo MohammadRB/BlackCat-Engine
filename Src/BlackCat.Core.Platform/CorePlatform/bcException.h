@@ -25,17 +25,23 @@ namespace black_cat
 
 	inline const std::error_category& bc_platform_category() noexcept
 	{
-		static bc_platform_error_category s_graphic_category;
+		static bc_platform_error_category s_platform_category;
 
-		return s_graphic_category;
-	};
+		return s_platform_category;
+	}
 
 	class bc_platform_exception : public std::system_error
 	{
 	public:
-		explicit bc_platform_exception(bcINT p_code, const bcCHAR* p_message);
+		explicit bc_platform_exception(bcINT p_code, const bcCHAR* p_message) 
+			: system_error(p_code, bc_platform_category(), p_message)
+		{
+		}
 
-		explicit bc_platform_exception(bcINT p_code, std::string p_message);
+		explicit bc_platform_exception(bcINT p_code, std::string p_message)
+			: system_error(p_code, bc_platform_category(), p_message)
+		{
+		}
 
 		bc_platform_exception(const bc_platform_exception&) = default;
 
@@ -47,27 +53,15 @@ namespace black_cat
 
 		bc_platform_exception& operator=(bc_platform_exception&&) = default;
 
-		const bcCHAR* what() const override;
+		const bcCHAR* what() const override
+		{
+			return std::system_error::what();
+		}
 
 	protected:
 
 	private:
 	};
-
-	inline bc_platform_exception::bc_platform_exception(bcINT p_code, const bcCHAR* p_message)
-		: system_error(p_code, bc_platform_category(), p_message)
-	{
-	}
-
-	inline bc_platform_exception::bc_platform_exception(bcINT p_code, std::string p_message)
-		: system_error(p_code, bc_platform_category(), p_message)
-	{
-	}
-
-	inline const bcCHAR* bc_platform_exception::what() const
-	{
-		return std::system_error::what();
-	}
 
 	class bc_thread_resource_exception : public std::runtime_error
 	{
@@ -115,4 +109,5 @@ namespace black_cat
 	using bc_invalid_argument_exception = std::invalid_argument;
 	using bc_out_of_range_exception = std::out_of_range;
 	using bc_key_not_found_exception = std::runtime_error;
+	using bc_bad_alloc_exception = std::bad_alloc;
 }

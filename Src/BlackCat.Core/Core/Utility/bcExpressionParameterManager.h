@@ -32,11 +32,11 @@ namespace black_cat
 		public:
 			bc_expression_parameter_manager();
 
-			bc_expression_parameter_manager(bc_expression_parameter_manager&&);
+			bc_expression_parameter_manager(bc_expression_parameter_manager&&) noexcept = delete;
 
 			~bc_expression_parameter_manager();
 
-			bc_expression_parameter_manager& operator=(bc_expression_parameter_manager&&);
+			bc_expression_parameter_manager& operator=(bc_expression_parameter_manager&&) noexcept = delete;
 
 			void register_resolver(const bcCHAR* p_parameter, bc_expr_param_func_pack_void&& p_callback);
 

@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CorePlatform/bcPlatform.h"
-#include "CorePlatform/Utility/bcNoCopy.h"
 #include "Core/Container/bcString.h"
 #include "Platform/Script/bcScriptRef.h"
 #include "Platform/Script/bcScriptReference.h"
 #include "Platform/Script/bcScriptRuntime.h"
+#include "Platform/Script/bcScriptContextScope.h"
 
 namespace black_cat
 {
@@ -96,7 +96,7 @@ namespace black_cat
 			bc_script_global_prototype_builder create_global_prototype_builder();
 			
 			/**
-			 * \brief Set global object prototype that contain global property and function definitions.
+			 * \brief Set global object prototype that contains global property and function definitions.
 			 * This function must be called only one time to set global object.
 			 * \param p_global_prototype Global object prototype
 			 */
@@ -195,33 +195,5 @@ namespace black_cat
 
 		using bc_script_context = bc_platform_script_context< core_platform::g_current_platform >;
 		using bc_script_context_ref = bc_script_ref< bc_script_context >;
-
-		template< core_platform::bc_platform TPlatform >
-		class bc_script_context_scope : public core_platform::bc_no_copy
-		{
-		public:
-			bc_script_context_scope(bc_script_context& p_context) noexcept
-				: m_context(p_context),
-				m_prev_context(*m_context.m_runtime->get_active_context())
-			{
-				m_context.m_runtime->set_active_context(&p_context);
-			}
-
-			~bc_script_context_scope()
-			{
-				m_context.m_runtime->set_active_context(&m_prev_context);
-			}
-
-			bc_script_context& get_context() const noexcept
-			{
-				return m_context;
-			}
-
-		protected:
-
-		private:
-			bc_script_context& m_context;
-			bc_script_context& m_prev_context;
-		};
 	}
 }

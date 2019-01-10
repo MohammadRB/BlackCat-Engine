@@ -157,7 +157,7 @@ namespace black_cat
 			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
 				m_pack.m_px_physics->createShape
 				(
-					const_cast< bc_shape_geometry& >(p_geometry).get_platform_pack().m_px_geometry,
+					*const_cast< bc_shape_geometry& >(p_geometry).get_platform_pack().m_px_geometry,
 					*reinterpret_cast< physx::PxMaterial* >(static_cast< bc_physics_reference& >(const_cast< bc_material& >(p_material)).get_platform_pack().m_px_object),
 					p_is_exclusive,
 					static_cast< physx::PxShapeFlag::Enum >(p_shape_flags)
@@ -206,7 +206,7 @@ namespace black_cat
 			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
 				m_pack.m_px_physics->createShape
 				(
-					const_cast< bc_shape_geometry& >(p_geometry).get_platform_pack().m_px_geometry,
+					*const_cast< bc_shape_geometry& >(p_geometry).get_platform_pack().m_px_geometry,
 					l_px_material_buffer,
 					p_material_count,
 					p_is_exclusive,

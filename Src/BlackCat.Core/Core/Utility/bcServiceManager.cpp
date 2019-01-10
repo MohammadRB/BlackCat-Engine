@@ -10,29 +10,18 @@ namespace black_cat
 	{
 		template BC_CORE_DLL class bc_singleton< bc_service_manager() >;
 
+		bc_iservice::~bc_iservice()
+		{
+		}
+
 		void bc_iservice::update(core_platform::bc_clock::update_param p_clock_update_param)
 		{
 		}
 
-		_bc_service_container::_bc_service_container(bc_service_ptr< bc_iservice >&& p_service, bcSIZE p_priority) 
+		_bc_service_container::_bc_service_container(bc_service_ptr< bc_iservice > p_service, bcSIZE p_priority) 
 			: m_service(std::move(p_service)),
 			m_priority(p_priority)
 		{
-		}
-
-		_bc_service_container::_bc_service_container(_bc_service_container&& p_other) noexcept
-			: m_service(std::move(p_other.m_service)),
-			m_priority(p_other.m_priority)
-		{
-			p_other.m_service = nullptr;
-		}
-
-		_bc_service_container& _bc_service_container::operator=(_bc_service_container&& p_other) noexcept
-		{
-			m_service = std::move(p_other.m_service);
-			m_priority = p_other.m_priority;
-
-			return *this;
 		}
 
 		bc_service_manager::bc_service_manager()
@@ -87,6 +76,38 @@ namespace black_cat
 			{
 				m_services.erase(l_service);
 			}
+		}
+
+		bc_iservice* bc_service_manager::_get_service(const bcCHAR* p_service_name)
+		{
+			bc_iservice* l_result = nullptr;
+			const auto l_service_hash = string_hash()(p_service_name);
+			const auto l_ite = m_services.find(l_service_hash);
+
+			if (l_ite != std::end(m_services))
+			{
+				l_result = l_ite->second.m_service.get();
+			}
+
+			return l_result;
+		}
+
+		bc_iservice* bc_service_manager::_register_service(const bcCHAR* p_service_name, bc_service_ptr<bc_iservice> p_service)
+		{
+			bcSIZE l_service_priority = m_services.size();
+
+			const auto l_service_hash = string_hash()(p_service_name);
+			auto l_ite = m_services.lower_bound(l_service_hash);
+			if (l_ite == m_services.end() || m_services.key_comp()(l_service_hash, l_ite->first))
+			{
+				l_ite = m_services.emplace_hint(l_ite, l_service_hash, _bc_service_container(std::move(p_service), l_service_priority));
+			}
+			else
+			{
+				l_ite->second = _bc_service_container(std::move(p_service), l_service_priority);
+			}
+
+			return l_ite->second.m_service.get();
 		}
 	}
 }

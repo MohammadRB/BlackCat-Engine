@@ -80,6 +80,7 @@ namespace black_cat
 		bc_render_thread_manager& bc_render_thread_manager::operator=(bc_render_thread_manager&& p_other) noexcept
 		{
 			m_threads = std::move(p_other.m_threads);
+			m_available_thread_count.store(p_other.m_available_thread_count.load());
 
 			return *this;
 		}

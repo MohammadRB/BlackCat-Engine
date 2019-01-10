@@ -17,13 +17,14 @@ namespace black_cat
 		}
 
 		bc_concurrent_memory_pool::bc_concurrent_memory_pool(bc_concurrent_memory_pool&& p_other) noexcept
+			: bc_initializable(std::move(p_other))
 		{
 			operator=(std::move(p_other));
 		}
 
 		bc_concurrent_memory_pool::~bc_concurrent_memory_pool()
 		{
-			if (m_heap)
+			if (m_initialized)
 			{
 				destroy();
 			}
@@ -31,6 +32,7 @@ namespace black_cat
 
 		bc_concurrent_memory_pool& bc_concurrent_memory_pool::operator=(bc_concurrent_memory_pool&& p_other) noexcept
 		{
+			bc_initializable::operator=(std::move(p_other));
 			bcUINT32 l_allocated_block = p_other.m_allocated_block.load(core_platform::bc_memory_order::acquire);
 
 			m_num_block = p_other.m_num_block;
@@ -50,79 +52,31 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_concurrent_memory_pool::initialize(bcUINT32 p_num_block, bcUINT32 p_block_size, bc_alloc_type p_alloc_type)
-		{
-			m_num_block = p_num_block;
-			m_block_size = p_block_size;
-
-			if (m_num_block % s_bit_block_size != 0)
-			{
-				m_num_block = ((m_num_block / s_bit_block_size) + 1) * s_bit_block_size;
-			}
-
-			m_num_bit_blocks = m_num_block / s_bit_block_size;
-			m_allocated_block.store(0U);
-
-			m_blocks = static_cast< core_platform::bc_atomic< bit_block_type >* >
-			(
-				bcAlloc(m_num_bit_blocks * sizeof(core_platform::bc_atomic< bit_block_type >), p_alloc_type)
-			);
-			if (!m_blocks)
-			{
-				throw std::bad_alloc();
-			}
-
-			for (bcUINT32 i = 0; i < m_num_bit_blocks; ++i)
-			{
-				m_blocks[i].store(0U);
-			}
-
-			m_heap = static_cast<bcUBYTE*>(bcAlloc((m_block_size * m_num_block) * sizeof(bcUBYTE), p_alloc_type));
-
-			if (!m_heap)
-			{
-				_aligned_free(m_blocks);
-				throw std::bad_alloc();
-			}
-		}
-
-		void bc_concurrent_memory_pool::destroy() noexcept
-		{
-			bcFree(m_blocks);
-			bcFree(m_heap);
-
-			m_num_block = 0;
-			m_blocks = nullptr;
-			m_heap = nullptr;
-		}
-
 		void* bc_concurrent_memory_pool::alloc() noexcept
 		{
-			// Search for a free block /
-			bcINT32 l_block = -1;
 			void* l_result = nullptr;
-
-			bool l_reach_end = false;
-			// TODO
+			bool l_reached_end = false;
+			bcINT32 l_block = -1;
 			bcUINT32 l_allocated_block = m_allocated_block.load(core_platform::bc_memory_order::seqcst);
-			for (bcUINT32 i = l_allocated_block; (i != l_allocated_block || !l_reach_end); ++i)
+
+			for (bcUINT32 i = l_allocated_block; (i != l_allocated_block || !l_reached_end); ++i)
 			{
 				if (i >= m_num_bit_blocks)
 				{
 					i = 0;
-					l_reach_end = true;
+					l_reached_end = true;
 				}
 				bit_block_type l_current_block = m_blocks[i].load(core_platform::bc_memory_order::seqcst);
 
-				// any free blocks in this chunk? /
+				// any free blocks in this chunk?
 				if (s_bit_block_mask != l_current_block)
 				{
-					// find a free entry in this chunk then allocate it and set the proper block index /
-					for (int j = 0; j < s_bit_block_size; ++j)
+					// find a free entry in this chunk then allocate it and set the proper block index
+					for (bcUINT32 j = 0; j < s_bit_block_size; ++j)
 					{
 						if (bit_block_type(0) == (l_current_block & (bit_block_type(1) << j)))
 						{
-							bit_block_type l_current_block_changed = l_current_block | (bit_block_type(1) << j);
+							const bit_block_type l_current_block_changed = l_current_block | (bit_block_type(1) << j);
 							if (m_blocks[i].compare_exchange_strong
 								(
 									&l_current_block,
@@ -147,8 +101,8 @@ namespace black_cat
 				}
 			}
 
-			// A free block were found /
-			if (-1 != l_block || l_block <= m_num_block)
+			// A free block were found
+			if (l_block != -1 || l_block <= m_num_block)
 			{
 				l_result = reinterpret_cast<void*>(reinterpret_cast<bcUINT32>(m_heap)+(l_block * m_block_size));
 			}
@@ -170,7 +124,7 @@ namespace black_cat
 			const bcINT32 l_chunk_index = l_block / s_bit_block_size;
 			const bcINT32 l_bit_index = l_block % s_bit_block_size;
 
-			m_blocks[l_chunk_index].fetch_add(~(bit_block_type(1) << l_bit_index), core_platform::bc_memory_order::seqcst);
+			m_blocks[l_chunk_index].fetch_and(~(bit_block_type(1) << l_bit_index), core_platform::bc_memory_order::seqcst);
 
 #ifdef BC_MEMORY_DEBUG
 			std::memset(reinterpret_cast<void*>(l_pointer), 0, m_block_size);
@@ -188,6 +142,70 @@ namespace black_cat
 			{
 				m_blocks[i].store(0U);
 			}
+		}
+
+		void bc_concurrent_memory_pool::_initialize(bcUINT32 p_object_count, bcUINT32 p_object_size, bc_alloc_type p_alloc_type)
+		{
+			m_num_block = p_object_count;
+			m_block_size = p_object_size;
+
+			if (m_num_block % s_bit_block_size != 0)
+			{
+				m_num_block = ((m_num_block / s_bit_block_size) + 1) * s_bit_block_size;
+			}
+
+			m_num_bit_blocks = m_num_block / s_bit_block_size;
+			m_allocated_block.store(0U);
+
+			m_blocks = static_cast< core_platform::bc_atomic< bit_block_type >* >
+			(
+				bcAlloc(m_num_bit_blocks * sizeof(core_platform::bc_atomic< bit_block_type >), p_alloc_type)
+			);
+			if (!m_blocks)
+			{
+				throw std::bad_alloc();
+			}
+
+			for (bcUINT32 i = 0; i < m_num_bit_blocks; ++i)
+			{
+				m_blocks[i].store(0U);
+			}
+
+			m_heap = static_cast<bcUBYTE*>(bcAlignedAlloc((m_block_size * m_num_block) * sizeof(bcUBYTE), BC_MEMORY_MIN_ALIGN, p_alloc_type));
+
+			if (!m_heap)
+			{
+				_aligned_free(m_blocks);
+				throw std::bad_alloc();
+			}
+		}
+
+		void bc_concurrent_memory_pool::_destroy()
+		{
+#if defined(BC_DEBUG)
+			bcSIZE l_num_alive_objects = 0;
+			for (bcUINT32 l_i = 0; l_i < m_num_bit_blocks; ++l_i)
+			{
+				const auto l_current_block = m_blocks[l_i].load(core_platform::bc_memory_order::relaxed);
+				for (bcUINT32 l_j = 0; l_j < s_bit_block_size; ++l_j)
+				{
+					const bool l_is_alive = l_current_block & (bit_block_type(1) << l_j);
+					if (l_is_alive)
+					{
+						++l_num_alive_objects;
+					}
+				}
+			}
+
+			bcAssert(l_num_alive_objects == 0);
+#endif
+
+			bcFree(m_blocks);
+			bcAlignedFree(m_heap);
+
+			m_num_block = 0;
+			m_blocks = nullptr;
+			m_heap = nullptr;
 		}
 	}
 }

@@ -39,46 +39,46 @@ namespace black_cat
 			};
 
 		public:
-			bcInline static pointer allocate(allocator_type& p_allocator, size_type p_count)
+			static pointer allocate(allocator_type& p_allocator, size_type p_count)
 			{
 				return p_allocator.allocate(p_count);
 			}
 
-			bcInline static void deallocate(allocator_type& p_allocator, pointer p_pointer)
+			static void deallocate(allocator_type& p_allocator, pointer p_pointer)
 			{
 				p_allocator.deallocate(p_pointer);
 			}
 
 			template< typename ...TArgs >
-			bcInline static void construct(allocator_type& p_allocator, value_type* p_pointer, TArgs&&... p_args)
+			static void construct(allocator_type& p_allocator, value_type* p_pointer, TArgs&&... p_args)
 				noexcept(std::is_nothrow_constructible<value_type, TArgs...>::value)
 			{
 				p_allocator.construct(p_pointer, std::forward< TArgs >(p_args)...);
 			}
 
-			bcInline static void destroy(allocator_type& p_allocator, value_type* p_pointer)
+			static void destroy(allocator_type& p_allocator, value_type* p_pointer)
 			{
 				p_allocator.destroy(p_pointer);
 			}
 
-			bcInline static void register_pointer(allocator_type& p_allocator, pointer* p_pointer)
+			static void register_pointer(allocator_type& p_allocator, pointer* p_pointer)
 			{
 				_register_pointer(p_allocator, p_pointer, is_movable_type());
 			}
 
-			bcInline static void unregister_pointer(allocator_type& p_allocator, pointer* p_pointer)
+			static void unregister_pointer(allocator_type& p_allocator, pointer* p_pointer)
 			{
 				_unregister_pointer(p_allocator, p_pointer, is_movable_type());
 			}
 
 			template< typename TOther >
-			bcInline static bool equal(const this_type& p_first, const typename rebind_alloc< TOther >::other& p_second)
+			static bool equal(const this_type& p_first, const typename rebind_alloc< TOther >::other& p_second)
 			{
 				return p_first == p_second;
 			}
 
 			template< typename TOther >
-			bcInline static bool not_equal(const this_type& p_first, const typename rebind_alloc< TOther >::other& p_second)
+			static bool not_equal(const this_type& p_first, const typename rebind_alloc< TOther >::other& p_second)
 			{
 				return p_first != p_second;
 			}
@@ -130,35 +130,35 @@ namespace black_cat
 			};
 
 		public:
-			bc_allocator_base() noexcept(true) = default;
+			bc_allocator_base() noexcept = default;
 
-			bc_allocator_base(const this_type&) noexcept(true) = default;
+			bc_allocator_base(const this_type&) noexcept = default;
 
 			template< typename TOther >
-			bc_allocator_base(const bc_allocator_base< TOther, TAlignment, TAllocType >&) noexcept(true)
+			bc_allocator_base(const bc_allocator_base< TOther, TAlignment, TAllocType >&) noexcept
 			{
 			}
 
-			bc_allocator_base(this_type&&) noexcept(true) = default;
+			bc_allocator_base(this_type&&) noexcept = default;
 
 			~bc_allocator_base() = default;
 
-			this_type& operator =(const this_type&) noexcept(true) = default;
+			this_type& operator =(const this_type&) noexcept = default;
 
 			template< typename TOther >
-			this_type& operator =(const bc_allocator_base< TOther, TAlignment, TAllocType >&) noexcept(true)
+			this_type& operator =(const bc_allocator_base< TOther, TAlignment, TAllocType >&) noexcept
 			{
 				return *this;
 			}
 
-			this_type& operator =(this_type&&) noexcept(true) = default;
+			this_type& operator =(this_type&&) noexcept = default;
 
-			pointer address(reference p_object) const noexcept(true)
+			pointer address(reference p_object) const noexcept
 			{
 				return std::addressof(p_object);
 			}
 
-			const_pointer address(const_reference p_object) const noexcept(true)
+			const_pointer address(const_reference p_object) const noexcept
 			{
 				return std::addressof(p_object);
 			}
@@ -166,15 +166,19 @@ namespace black_cat
 			pointer allocate(size_type p_count, std::allocator<void>::const_pointer p_hint = nullptr)
 			{
 				if (TAlignment <= BC_MEMORY_MIN_ALIGN)
+				{
 					return static_cast<pointer>(bcAllocThrow(sizeof(value_type)* p_count, TAllocType));
+				}
 				return static_cast<pointer>(bcAlignedAllocThrow(sizeof(value_type)* p_count, TAlignment, TAllocType));
 			}
 
 			// Parameter n is for compatibility with std allocators
-			void deallocate(pointer p_pointer, size_type n = 0) noexcept(true)
+			void deallocate(pointer p_pointer, size_type n = 0) noexcept
 			{
 				if (TAlignment <= BC_MEMORY_MIN_ALIGN)
+				{
 					return bcFree(p_pointer);
+				}
 				return bcAlignedFree(p_pointer);
 			}
 
@@ -190,22 +194,20 @@ namespace black_cat
 				p_pointer->~TU();
 			}
 
-			size_type max_size() const noexcept(true)
+			size_type max_size() const noexcept
 			{
 				return (std::numeric_limits<size_type>::max)();
 			}
 
-			void register_pointer(pointer* p_pointer) noexcept(true)
+			void register_pointer(pointer* p_pointer) noexcept
 			{
 				_register_pointer(p_pointer, is_movable_type());
 			}
 
-			void unregister_pointer(pointer* p_pointer) noexcept(true)
+			void unregister_pointer(pointer* p_pointer) noexcept
 			{
 				_unregister_pointer(p_pointer, is_movable_type());
 			}
-
-		protected:
 
 		private:
 			void _register_pointer(pointer* p_pointer, std::true_type)
@@ -225,29 +227,32 @@ namespace black_cat
 			void _unregister_pointer(pointer* p_pointer, std::false_type)
 			{
 			}
-
 		};
 
-		template< typename T1,
+		template
+		< 
+			typename T1,
 			bcUINT32 TAlignment1,
 			bc_alloc_type TAllocType1,
 			typename T2,
 			bcUINT32 TAlignment2,
-			bc_alloc_type TAllocType2 >
-		bool operator ==(const bc_allocator_base< T1, TAlignment1, TAllocType1 >&,
-			const bc_allocator_base< T2, TAlignment2, TAllocType2 >&)
+			bc_alloc_type TAllocType2 
+		>
+		bool operator ==(const bc_allocator_base< T1, TAlignment1, TAllocType1 >&, const bc_allocator_base< T2, TAlignment2, TAllocType2 >&)
 		{
 			return true;
 		}
 
-		template< typename T1,
+		template
+		< 
+			typename T1,
 			bcUINT32 TAlignment1,
 			bc_alloc_type TAllocType1,
 			typename T2,
 			bcUINT32 TAlignment2,
-			bc_alloc_type TAllocType2 >
-			bool operator !=(const bc_allocator_base< T1, TAlignment1, TAllocType1 >&,
-			const bc_allocator_base< T2, TAlignment2, TAllocType2 >&)
+			bc_alloc_type TAllocType2 
+		>
+		bool operator !=(const bc_allocator_base< T1, TAlignment1, TAllocType1 >&, const bc_allocator_base< T2, TAlignment2, TAllocType2 >&)
 		{
 			return false;
 		}
@@ -349,12 +354,12 @@ namespace black_cat
 				m_alignment = p_alignment;
 			}
 
-			pointer address(reference p_object) const noexcept(true)
+			pointer address(reference p_object) const noexcept
 			{
 				return std::addressof(p_object);
 			}
 
-			const_pointer address(const_reference p_object) const noexcept(true)
+			const_pointer address(const_reference p_object) const noexcept
 			{
 				return std::addressof(p_object);
 			}
@@ -365,14 +370,15 @@ namespace black_cat
 				{
 					return static_cast<pointer>(bcAllocThrow(sizeof(value_type)* p_count, m_alloc_type));
 				}
-
 				return static_cast<pointer>(bcAlignedAllocThrow(sizeof(value_type)* p_count, m_alignment, m_alloc_type));
 			}
 
-			void deallocate(pointer p_pointer, size_type n = 0) noexcept(true)
+			void deallocate(pointer p_pointer, size_type n = 0) noexcept
 			{
 				if (m_alignment <= BC_MEMORY_MIN_ALIGN)
+				{
 					return bcFree(p_pointer);
+				}
 				return bcAlignedFree(p_pointer);
 			}
 
@@ -388,24 +394,26 @@ namespace black_cat
 				p_pointer->~TU();
 			}
 
-			size_type max_size() const noexcept(true)
+			size_type max_size() const noexcept
 			{
 				return (std::numeric_limits<size_type>::max)();
 			}
 
-			void register_pointer(pointer* p_pointer) noexcept(true)
+			void register_pointer(pointer* p_pointer) noexcept
 			{
 				if(m_alloc_type == bc_alloc_type::unknown_movable)
+				{
 					register_movable_pointer(reinterpret_cast<void**>(p_pointer));
+				}
 			}
 
-			void unregister_pointer(pointer* p_pointer) noexcept(true)
+			void unregister_pointer(pointer* p_pointer) noexcept
 			{
 				if (m_alloc_type == bc_alloc_type::unknown_movable)
-					unregister_movable_pointer(reinterpret_cast< void** >(p_pointer));
+				{
+					unregister_movable_pointer(reinterpret_cast<void**>(p_pointer));
+				}
 			}
-
-		protected:
 
 		private:
 			bc_alloc_type m_alloc_type;
@@ -419,10 +427,6 @@ namespace black_cat
 		 */
 		class bc_object_allocator
 		{
-		public:
-			/*template<typename T>
-			using ptr = bc_unique_ptr<T, void(*)(T*)>;*/
-
 		public:
 			explicit bc_object_allocator(bc_alloc_type p_alloc_type = bc_alloc_type::unknown, bcUINT p_alignment = BC_MEMORY_MIN_ALIGN)
 				: m_alloc_type(p_alloc_type),

@@ -25,21 +25,21 @@ namespace black_cat
 	{
 		enum class bc_shape_notify_flag
 		{
-			notify_touch = core::bc_enum::value(0),		// Enable collision notification callback 
-			notify_modify = core::bc_enum::value(1),	// Enable collision modify callback		
+			notify_touch = core::bc_enum::value(0),			// Enable collision notification callback 
+			notify_modify = core::bc_enum::value(1),		// Enable collision modify callback		
 		};
 
 		enum class bc_shape_query_flag
 		{
-			blocking,	// Treat as blocking object.By default shapes are blocking
-			touching	// Treat as touching object
+			blocking,										// Treat as blocking object.By default shapes are blocking
+			touching										// Treat as touching object
 		};
 
 		enum class bc_shape_flag
 		{
-			simulation = core::bc_enum::value(0),		// The shape will partake in collision in the physical simulation.
+			simulation = core::bc_enum::value(0),			// The shape will partake in collision in the physical simulation.
 			query = core::bc_enum::value(1),				// The shape will partake in scene queries.
-			trigger = core::bc_enum::value(2),			// The shape is a trigger which can send reports whenever other shapes enter/leave its volume.
+			trigger = core::bc_enum::value(2),				// The shape is a trigger which can send reports whenever other shapes enter/leave its volume.
 			visualization = core::bc_enum::value(3),		// The shape will be visualized
 			default = simulation | query | visualization
 		};

@@ -41,33 +41,8 @@ namespace black_cat
 		{
 		}
 
-		bc_content_stream_manager::bc_content_stream_manager(bc_content_stream_manager&& p_other) noexcept
-		(
-			std::is_nothrow_move_constructible< content_types_map_type >::value &&
-			std::is_nothrow_move_constructible< streams_map_type >::value &&
-			std::is_nothrow_move_constructible< contents_map_type >::value
-		)
-			: m_content_manager(p_other.m_content_manager),
-			m_content_types(std::move(p_other.m_content_types)),
-			m_streams(std::move(p_other.m_streams)),
-			m_contents(std::move(p_other.m_contents))
-		{
-		}
-
 		bc_content_stream_manager::~bc_content_stream_manager()
 		{
-		}
-
-		bc_content_stream_manager& bc_content_stream_manager::operator=(bc_content_stream_manager&& p_other) noexcept(
-			std::is_nothrow_move_assignable< content_types_map_type >::value &&
-			std::is_nothrow_move_assignable< streams_map_type >::value &&
-			std::is_nothrow_move_assignable< contents_map_type >::value)
-		{
-			m_content_types = std::move(p_other.m_content_types);
-			m_streams = std::move(p_other.m_streams);
-			m_contents = std::move(p_other.m_contents);
-
-			return *this;
 		}
 
 		void bc_content_stream_manager::read_stream_file(const bcECHAR* p_json_file_path)

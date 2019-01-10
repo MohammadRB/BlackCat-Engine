@@ -22,6 +22,6 @@ namespace black_cat
 		using bc_map_frame = bc_map_a< TK, T, TCompare, bc_allocator_frame >;
 
 		template< class TK, typename T, class TCompare = std::less< TK > >
-		using bc_map_movale = bc_map_a< TK, T, TCompare, bc_allocator_movable >;
+		using bc_map_movable = bc_map_a< TK, T, TCompare, bc_allocator_movable >;
 	}
 }

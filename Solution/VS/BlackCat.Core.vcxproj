@@ -176,6 +176,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcLogger.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcNullable.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectPool.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectPoolAllocator.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcParameterPack.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcRefCountPtr.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcServiceManager.h" />

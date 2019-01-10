@@ -38,56 +38,70 @@ namespace black_cat
 				_platform_initialize();
 			}
 
-			bc_platform_thread_local(this_type&& p_other)
+			bc_platform_thread_local(this_type&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 			}
 
-			~bc_platform_thread_local() noexcept(true)
+			~bc_platform_thread_local() noexcept
 			{
 				_cleanup();
 				_platform_cleanup();
-			};
+			}
 
-			this_type& operator =(this_type&& p_other)
+			this_type& operator =(this_type&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 
 				return *this;
 			}
 
-			// return thread local pointer, or in case of any error return null
-			bcInline type* get() const noexcept(true)
+			/**
+			 * \brief Return thread local pointer, or in case of any error return null
+			 * \return 
+			 */
+			type* get() const noexcept
 			{
 				return _platform_get();
 			}
 
-			// set thread local pointer and cleanup previous pointer and return true in case of success otherwise false
-			bcInline bool set(type* p_pointer) noexcept(true)
+			/**
+			 * \brief Set thread local pointer and cleanup previous pointer and return true in case of success otherwise false
+			 * \param p_pointer 
+			 * \return 
+			 */
+			bool set(type* p_pointer) noexcept
 			{
 				type* l_pointer = get();
 				if (!l_pointer)
-					// Bug we neen to unregister this function when this object get destroyed and resource get released
+				{
+					// Bug we need to unregister this function when this object get destroyed and resource get released
 					// otherwise we will have a function that point to a destroyed object
 					bc_thread::current_thread_on_exit(std::bind(&bc_platform_thread_local::_cleanup, this));
+				}
 				else
+				{
 					m_cleanup_function(l_pointer);
+				}
 
 				return _platform_set(p_pointer);
 			}
 
-			bcInline type* operator ->() const noexcept(true)
+			type* operator ->() const noexcept
 			{
 				return get();
 			}
 
-			bcInline type& operator *() const noexcept(true)
+			type& operator *() const noexcept
 			{
 				return *get();
 			}
 
-			// set thread local pointer to null and return current value
-			bcInline type* release() noexcept(true)
+			/**
+			 * \brief set thread local pointer to null and return current value
+			 * \return 
+			 */
+			type* release() noexcept
 			{
 				type* l_pointer = get();
 				set(nullptr);
@@ -105,14 +119,17 @@ namespace black_cat
 
 			void _assign(this_type&& p_other)
 			{
+				_cleanup();
+
 				m_cleanup_function = p_other.m_cleanup_function;
+				p_other.m_cleanup_function = nullptr;
 				_platform_assign(std::move(p_other));
 			}
 
 			void _cleanup()
 			{
 				type* l_pointer = get();
-				if (l_pointer) // if resource wasn't released
+				if (l_pointer)
 				{
 					m_cleanup_function(l_pointer);
 				}

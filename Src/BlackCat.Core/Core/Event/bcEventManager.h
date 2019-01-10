@@ -78,7 +78,11 @@ namespace black_cat
 		public:
 			bc_event_manager();
 
+			bc_event_manager(bc_event_manager&&) noexcept = delete;
+
 			~bc_event_manager();
+
+			bc_event_manager& operator=(bc_event_manager&&) noexcept = delete;
 
 			template< class TEvent >
 			bc_event_listener_handle register_event_listener(delegate_type&& p_listener)

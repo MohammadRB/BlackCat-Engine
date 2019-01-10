@@ -17,36 +17,46 @@ namespace black_cat
 		BC_PLATFORMIMP_DLL
 		bc_platform_script_runtime< core_platform::g_api_win32 >::bc_platform_script_runtime() noexcept
 		{
-			m_pack.m_js_runtime = JS_INVALID_RUNTIME_HANDLE;
 			m_pack.m_active_context = nullptr;
+			auto l_code = JsCreateRuntime(JsRuntimeAttributeDispatchSetExceptionsToDebugger, nullptr, &m_pack.m_js_runtime);
+			if (l_code != JsNoError)
+			{
+				throw bc_platform_exception(static_cast<bcINT>(l_code), "Faild to create chakra runtime");
+			}
 		}
 
-		template<>
+		/*template<>
 		BC_PLATFORMIMP_DLL
 		bc_platform_script_runtime< core_platform::g_api_win32 >::bc_platform_script_runtime(bc_platform_script_runtime&& p_other) noexcept
 		{
 			operator=(std::move(p_other));
-		}
+		}*/
 
 		template<>
 		BC_PLATFORMIMP_DLL
 		bc_platform_script_runtime< core_platform::g_api_win32 >::~bc_platform_script_runtime()
 		{
-			if(m_initialized)
+			m_external_object_meta_data.clear();
+
+			const auto l_code = JsDisposeRuntime(m_pack.m_js_runtime);
+			if (l_code != JsNoError)
 			{
-				destroy();
+				throw bc_platform_exception(static_cast<bcINT>(l_code), "Failed to dispose Chakra runtime");
 			}
 		}
 
-		template<>
+		/*template<>
 		BC_PLATFORMIMP_DLL
 		bc_platform_script_runtime< core_platform::g_api_win32 >& bc_platform_script_runtime< core_platform::g_api_win32 >::operator=(bc_platform_script_runtime&& p_other) noexcept
 		{
-			m_external_object_meta_datas = std::move(p_other.m_external_object_meta_datas);
-			m_pack = std::move(p_other.m_pack);
+			m_external_object_meta_data = std::move(p_other.m_external_object_meta_data);
+			m_pack.m_js_runtime = p_other.m_pack.m_js_runtime;
+			m_pack.m_active_context = p_other.m_pack.m_active_context;
+			p_other.m_pack.m_js_runtime = JS_INVALID_RUNTIME_HANDLE;
+			p_other.m_pack.m_active_context = nullptr;
 
 			return *this;
-		}
+		}*/
 
 		template<>
 		BC_PLATFORMIMP_DLL
@@ -55,10 +65,9 @@ namespace black_cat
 			bc_script_context l_context(*this);
 
 			auto l_code = JsCreateContext(m_pack.m_js_runtime, &l_context.get_platform_pack().m_js_context);
-
 			if (l_code != JsNoError)
 			{
-				throw bc_platform_exception(static_cast<bcINT>(l_code), "Faild to create chakra context");
+				throw bc_platform_exception(static_cast<bcINT>(l_code), "Failed to create Chakra context");
 			}
 
 			return l_context;
@@ -81,7 +90,7 @@ namespace black_cat
 
 			if (l_code != JsNoError)
 			{
-				throw bc_platform_exception(static_cast<bcINT>(l_code), "Faild to set chakra active context");
+				throw bc_platform_exception(static_cast<bcINT>(l_code), "Failed to set Chakra active context");
 			}
 
 			m_pack.m_active_context = p_context;
@@ -144,7 +153,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_runtime< core_platform::g_api_win32 >::interupt_script_execuation()
+		void bc_platform_script_runtime< core_platform::g_api_win32 >::interrupt_script_execution()
 		{
 			bc_chakra_call l_call(*m_pack.m_active_context);
 
@@ -171,30 +180,6 @@ namespace black_cat
 			l_call = JsGetRuntimeMemoryUsage(m_pack.m_js_runtime, &l_usage);
 
 			return l_usage;
-		}
-
-		template<>
-		void bc_platform_script_runtime< core_platform::g_api_win32 >::_initialize()
-		{
-			auto l_code = JsCreateRuntime(JsRuntimeAttributeDispatchSetExceptionsToDebugger, nullptr, &m_pack.m_js_runtime);
-
-			if(l_code != JsNoError)
-			{
-				throw bc_platform_exception(static_cast<bcINT>(l_code), "Faild to create chakra runtime");
-			}
-		}
-
-		template<>
-		void bc_platform_script_runtime< core_platform::g_api_win32 >::_destroy()
-		{
-			m_external_object_meta_datas.clear();
-
-			auto l_code = JsDisposeRuntime(m_pack.m_js_runtime);
-
-			if (l_code != JsNoError)
-			{
-				throw bc_platform_exception(static_cast<bcINT>(l_code), "Faild to dispose chakra runtime");
-			}
 		}
 	}
 }

@@ -12,34 +12,39 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_scene_graph::bc_scene_graph()
+		bc_scene_graph::bc_scene_graph(core::bc_unique_ptr<bc_iscene_graph_node> p_scene_graph)
+			: m_graph_node(std::move(p_scene_graph))
 		{
 		}
 
 		bc_scene_graph::~bc_scene_graph()
 		{
-			clear();
+			if(m_graph_node)
+			{
+				clear();
+			}
 		}
 
-		void bc_scene_graph::add_object(bc_actor p_actor)
+		bool bc_scene_graph::add_actor(bc_actor& p_actor)
 		{
-			m_objects.push_back(p_actor);
+			return m_graph_node->add_actor(p_actor);
 		}
 
-		bc_actor bc_scene_graph::remove_object(bc_actor p_actor)
+		bool bc_scene_graph::update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box)
 		{
-			auto l_object = std::find(std::cbegin(m_objects), std::cend(m_objects), p_actor);
-
-			m_objects.erase(l_object);
-
-			return *l_object;
+			return m_graph_node->update_actor(p_actor, p_previous_box);
 		}
 
-		core::bc_vector_frame<bc_actor> bc_scene_graph::get_heightmaps() const
+		bool bc_scene_graph::remove_actor(bc_actor& p_actor)
+		{
+			return m_graph_node->remove_actor(p_actor);
+		}
+
+		core::bc_vector_frame<bc_actor> bc_scene_graph::get_height_maps() const
 		{
 			core::bc_vector_frame<bc_actor> l_result;
 
-			for (auto& l_actor : m_objects)
+			for (bc_actor l_actor : *m_graph_node)
 			{
 				if(l_actor.has_component<bc_height_map_component>())
 				{
@@ -56,7 +61,7 @@ namespace black_cat
 
 		void bc_scene_graph::render_heightmaps(bc_render_system& p_render_system, bc_render_thread& p_render_thread)
 		{
-			for (auto& l_actor : m_objects)
+			for (bc_actor l_actor : *m_graph_node)
 			{
 				auto* l_height_map_component = l_actor.get_component< bc_height_map_component >();
 
@@ -81,7 +86,7 @@ namespace black_cat
 
 		void bc_scene_graph::render_meshes(bc_render_system& p_render_system, bc_render_thread& p_render_thread, bool p_preserve_render_instances)
 		{
-			for(auto& l_actor : m_objects)
+			for(bc_actor l_actor : *m_graph_node)
 			{
 				auto* l_mesh_component = l_actor.get_component< bc_mesh_component >();
 
@@ -97,7 +102,7 @@ namespace black_cat
 					continue;
 				}
 
-				l_mesh_component->render(*l_render_component);
+				l_mesh_component->render(l_actor, *l_render_component);
 			}
 
 			p_render_system.render_all_instances(p_render_thread);
@@ -107,15 +112,21 @@ namespace black_cat
 			}
 		}
 
+		void bc_scene_graph::render_debug_shapes(bc_shape_drawer& p_shape_drawer) const
+		{
+			m_graph_node->render_bound_boxes(p_shape_drawer);
+		}
+
 		void bc_scene_graph::clear()
 		{
-			for (auto& l_actor : m_objects)
+			bcAssert(m_graph_node);
+
+			for (auto& l_actor : *m_graph_node)
 			{
 				l_actor.destroy();
 			}
 
-			m_objects.clear();
-			m_objects.shrink_to_fit();
+			m_graph_node->clear();
 		}
 	}
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
+#include "Core/Utility/bcInitializable.h"
 #include "Core/CorePCH.h"
 #include "Core/bcExport.h"
 #include "Core/Memory/bcAlloc.h"
@@ -14,27 +15,23 @@ namespace black_cat
 		template< typename T >
 		class bc_concurrent_object_pool;
 
-		class BC_CORE_DLL bc_concurrent_memory_pool
+		class BC_CORE_DLL bc_concurrent_memory_pool : public bc_initializable<bcUINT32, bcUINT32, bc_alloc_type>
 		{
 			template< typename T >
 			friend class bc_concurrent_object_pool;
 
 		public:
-			bc_concurrent_memory_pool();;
+			bc_concurrent_memory_pool();
 
 			bc_concurrent_memory_pool(bc_concurrent_memory_pool&& p_other) noexcept;
 
-			~bc_concurrent_memory_pool();;
+			~bc_concurrent_memory_pool();
 
 			bc_concurrent_memory_pool& operator =(bc_concurrent_memory_pool&& p_other) noexcept;
 
-			void initialize(bcUINT32 p_num_block, bcUINT32 p_block_size, bc_alloc_type p_alloc_type);
+			bcUINT32 block_size() const noexcept { return m_block_size; }
 
-			void destroy() noexcept;
-
-			bcUINT32 block_size() const noexcept { return m_block_size; };
-
-			bcUINT32 num_block() const noexcept { return m_num_block; };
+			bcUINT32 num_block() const noexcept { return m_num_block; }
 
 			/**
 			 * \brief Return null pointer in case of allocation failure
@@ -51,20 +48,24 @@ namespace black_cat
 		protected:
 			
 		private:
+			void _initialize(bcUINT32 p_object_count, bcUINT32 p_object_size, bc_alloc_type p_alloc_type) override;
+
+			void _destroy() override;
+
 			using bit_block_type = bcUINT32;
 			static const bit_block_type s_bit_block_mask = 0xffffffff;
-			static const bcSIZE s_bit_block_size = sizeof(bit_block_type);
+			static const bcSIZE s_bit_block_size = sizeof(bit_block_type) * 8;
 
 			bcUINT32 m_num_block;
 			bcUINT32 m_block_size;
 			bcUINT32 m_num_bit_blocks;
 			core_platform::bc_atomic< bcUINT32 > m_allocated_block;	// An index that searching for free block will continue from this place
-			core_platform::bc_atomic< bit_block_type >* m_blocks;	// bit-vector indicating if a block is allocated or not
+			core_platform::bc_atomic< bit_block_type >* m_blocks;
 			bcUBYTE* m_heap;
 		};
 
 		template< typename T >
-		class bc_concurrent_object_pool
+		class bc_concurrent_object_pool : public bc_initializable<bcUINT32, bc_alloc_type>
 		{
 		public:
 			bc_concurrent_object_pool();
@@ -74,10 +75,6 @@ namespace black_cat
 			~bc_concurrent_object_pool();
 
 			bc_concurrent_object_pool& operator=(bc_concurrent_object_pool&& p_other) noexcept;
-
-			void initialize(bcUINT32 p_num_cached_objects, bc_alloc_type p_alloc_type);
-
-			void destroy() noexcept(true);
 
 			bcUINT32 block_size() const;;
 
@@ -94,7 +91,11 @@ namespace black_cat
 		protected:
 
 		private:
-			void _destruct_objects();
+			void _initialize(bcUINT32 p_objects_count, bc_alloc_type p_alloc_type);
+
+			void _destroy() override;
+
+			void _destruct_objects() const;
 
 			bc_alloc_type m_alloc_type;
 			bc_concurrent_memory_pool m_memory_pool;
@@ -105,7 +106,8 @@ namespace black_cat
 
 		template< typename T >
 		bc_concurrent_object_pool< T >::bc_concurrent_object_pool(bc_concurrent_object_pool&& p_other) noexcept
-			: m_alloc_type(p_other.m_alloc_type),
+			: bc_initializable(std::move(p_other)),
+			m_alloc_type(p_other.m_alloc_type),
 			m_memory_pool(std::move(p_other.m_memory_pool))
 		{
 		}
@@ -113,7 +115,7 @@ namespace black_cat
 		template< typename T >
 		bc_concurrent_object_pool< T >::~bc_concurrent_object_pool()
 		{
-			if (m_memory_pool.m_heap)
+			if (m_initialized)
 			{
 				destroy();
 			}
@@ -122,24 +124,11 @@ namespace black_cat
 		template< typename T >
 		bc_concurrent_object_pool< T >& bc_concurrent_object_pool< T >::operator=(bc_concurrent_object_pool&& p_other) noexcept
 		{
+			bc_initializable::operator=(std::move(p_other));
 			m_alloc_type = p_other.m_alloc_type;
 			m_memory_pool = std::move(p_other.m_memory_pool);
 
 			return *this;
-		}
-
-		template< typename T >
-		void bc_concurrent_object_pool< T >::initialize(bcUINT32 p_num_cached_objects, bc_alloc_type p_alloc_type)
-		{
-			m_alloc_type = p_alloc_type;
-			m_memory_pool.initialize(p_num_cached_objects, sizeof(T), p_alloc_type);
-		}
-
-		template< typename T >
-		void bc_concurrent_object_pool< T >::destroy() noexcept
-		{
-			_destruct_objects();
-			m_memory_pool.destroy();
 		}
 
 		template< typename T >
@@ -160,11 +149,11 @@ namespace black_cat
 		{
 			static_assert(std::is_constructible< T, TArgs... >::value, "class T is not constructible with parameters");
 
-			T* l_result = m_memory_pool.alloc();
+			T* l_result = static_cast<T*>(m_memory_pool.alloc());
 
 			if (!l_result)
 			{
-				l_result = bcAllocThrow(sizeof(T), m_alloc_type);
+				l_result = static_cast<T*>(bcAllocThrow(sizeof(T), m_alloc_type));
 			}
 
 			new(l_result)T(std::forward< TArgs >(p_args)...);
@@ -195,14 +184,28 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_concurrent_object_pool< T >::_destruct_objects()
+		void bc_concurrent_object_pool< T >::_initialize(bcUINT32 p_objects_count, bc_alloc_type p_alloc_type)
+		{
+			m_alloc_type = p_alloc_type;
+			m_memory_pool.initialize(p_objects_count, sizeof(T), p_alloc_type);
+		}
+
+		template< typename T >
+		void bc_concurrent_object_pool< T >::_destroy()
+		{
+			_destruct_objects();
+			m_memory_pool.destroy();
+		}
+
+		template< typename T >
+		void bc_concurrent_object_pool< T >::_destruct_objects() const
 		{
 			for (bcUINT32 l_i = 0; l_i < m_memory_pool.m_num_bit_blocks; ++l_i)
 			{
-				bc_concurrent_memory_pool::bit_block_type l_current_block = m_memory_pool.m_blocks[l_i].load(core_platform::bc_memory_order::relaxed);
+				const auto l_current_block = m_memory_pool.m_blocks[l_i].load(core_platform::bc_memory_order::relaxed);
 				for (bcUINT32 l_j = 0; l_j < bc_concurrent_memory_pool::s_bit_block_size; ++l_j)
 				{
-					const bool l_is_alive = l_current_block & 1 << l_j;
+					const bool l_is_alive = l_current_block & (bc_concurrent_memory_pool::bit_block_type(1) << l_j);
 					if (l_is_alive)
 					{
 						const bcSIZE l_object_pos = l_i * bc_concurrent_memory_pool::s_bit_block_size + l_j;

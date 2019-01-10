@@ -59,7 +59,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_platform_shape_convex_mesh< g_api_physx >& bc_platform_shape_convex_mesh< g_api_physx >::operator=(const bc_platform_shape_convex_mesh& p_other)
 		{
-			//bc_platform_shape_geometry::operator=(p_other);
+			bc_platform_shape_geometry::operator=(p_other);
 			m_pack.m_px_geometry = p_other.m_pack.m_px_geometry;
 
 			return *this;

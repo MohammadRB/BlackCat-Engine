@@ -4,8 +4,10 @@
 
 #include "Core/bcConstant.h"
 #include "Core/File/bcLazyContent.h"
+#include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/Object/Scene/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/System/Physics/bcPhysicsShapeUtility.h"
 
@@ -59,8 +61,7 @@ namespace black_cat
 		bc_mesh_component::bc_mesh_component(bc_mesh_component&& p_other) noexcept
 			: bc_iactor_component(std::move(p_other)),
 			m_sub_mesh(std::move(p_other.m_sub_mesh)),
-			m_mesh_part_transformation(std::move(p_other.m_mesh_part_transformation)),
-			m_bound_box(p_other.m_bound_box)
+			m_mesh_part_transformation(std::move(p_other.m_mesh_part_transformation))
 		{
 		}
 
@@ -72,7 +73,6 @@ namespace black_cat
 		{
 			m_sub_mesh = std::move(p_other.m_sub_mesh);
 			m_mesh_part_transformation = std::move(p_other.m_mesh_part_transformation);
-			m_bound_box = p_other.m_bound_box;
 			bc_iactor_component::operator=(std::move(p_other));
 
 			return *this;
@@ -83,9 +83,12 @@ namespace black_cat
 			return get_manager()->component_get_actor(*this);
 		}
 
-		void bc_mesh_component::set_world_pos(const core::bc_matrix4f& p_pos)
+		void bc_mesh_component::set_world_transform(const core::bc_matrix4f& p_transform)
 		{
-			m_sub_mesh.calculate_absolute_transformations(p_pos, m_mesh_part_transformation, m_bound_box);
+			physics::bc_bound_box l_bound_box;
+			m_sub_mesh.calculate_absolute_transformations(p_transform, m_mesh_part_transformation, l_bound_box);
+
+			get_actor().get_component<bc_mediate_component>()->set_bound_box(l_bound_box);
 		}
 
 		void bc_mesh_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
@@ -95,19 +98,20 @@ namespace black_cat
 
 			m_sub_mesh = l_sub_mesh_name ? bc_sub_mesh(l_mesh, l_sub_mesh_name->c_str()) : bc_sub_mesh(l_mesh);
 
-			set_world_pos(core::bc_matrix4f::identity());
+			set_world_transform(core::bc_matrix4f::identity());
 		}
 
 		void bc_mesh_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 
-		void bc_mesh_component::render(const bc_render_component& p_render_component) const
+		void bc_mesh_component::render(const bc_actor& p_actor, const bc_render_component& p_render_component) const
 		{
 			const bc_mesh_node* l_node = m_sub_mesh.get_node();
+			const auto& l_bound_box = p_actor.get_component< bc_mediate_component >()->get_bound_box();
 
 			core::bc_array< const bc_mesh_node*, 1 > l_nodes = {l_node};
-			_render_mesh_node(p_render_component, m_sub_mesh, m_mesh_part_transformation, m_bound_box, std::begin(l_nodes), std::end(l_nodes));
+			_render_mesh_node(p_render_component, m_sub_mesh, m_mesh_part_transformation, l_bound_box, std::begin(l_nodes), std::end(l_nodes));
 		}
 	}
 }

@@ -212,6 +212,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcEngineApplicationParameter.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\bcException.h" />
@@ -233,12 +234,14 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcScene.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcHeightMapComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcHierarchyComponent.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcMediateComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcMeshComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcNameComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRenderComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidBodyComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidDynamicComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidStaticComponent.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcOctalTreeSceneGraphNode.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcScenceGraph.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcSceneGraphNode.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\bcGameSystem.h">
@@ -272,6 +275,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcVertexLayout.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcDefaultGameConsole.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcGameConsole.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcIGameConsoleImp.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptBinding.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptSystem.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptUIContext.h" />
@@ -288,6 +292,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcScene.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcHeightMapComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcHierarchyComponent.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcMediateComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcMeshComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcNameComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRenderComponent.cpp" />
@@ -295,7 +300,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidDynamicComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidStaticComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcScenceGraph.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcSceneGraphNode.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcOctalTreeSceneGraphNode.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\bcGameSystem.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </ExcludedFromBuild>

@@ -29,19 +29,29 @@ namespace black_cat
 			}
 
 		protected:
-			bc_initializable()
-				: m_initialized(false)
+			bc_initializable() = default;
+
+			bc_initializable(bc_initializable&& p_other) noexcept
 			{
+				operator=(std::move(p_other));
 			}
 
 			~bc_initializable() = default;
+
+			bc_initializable& operator=(bc_initializable&& p_other) noexcept
+			{
+				m_initialized = p_other.m_initialized;
+				p_other.m_initialized = false;
+
+				return *this;
+			}
 
 			virtual void _initialize(TArgs... pArgs) = 0;
 
 			virtual void _destroy() = 0;
 
 		protected:
-			bool m_initialized;
+			bool m_initialized = false;
 
 		private:
 		};

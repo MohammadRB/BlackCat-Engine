@@ -16,10 +16,16 @@ namespace black_cat
 
 			void wait_for_initialization() const;
 
+			std::int32_t is_still_running() const noexcept;
+
+			std::int32_t get_result_code() const noexcept;
+
 		protected:
 			void run() override;
 
 		private:
+			const std::int32_t s_default_result_code = std::numeric_limits<std::int32_t>::max();
+
 			HINSTANCE m_instance;
 			const char* m_cmd_line;
 			game::bc_irender_application_output_window* m_output_window;

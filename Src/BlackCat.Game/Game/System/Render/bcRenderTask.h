@@ -14,8 +14,8 @@ namespace black_cat
 
 		/**
 		 * \brief 
-		 * Represent a rendering task that can execute commands on hardware device without bc_render_pass 
-		 * and will be executed on different cpu and render thread.
+		 * Represent a rendering task that can execute commands on hardware device without bc_render_pass.
+		 * Task will be executed on different cpu and render thread from the thread which has added task.
 		 */
 		class bc_irender_task
 		{

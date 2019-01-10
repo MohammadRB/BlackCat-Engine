@@ -24,7 +24,8 @@ namespace black_cat
 			m_indices(std::move(p_other.m_indices)),
 			m_vb(std::move(p_other.m_vb)),
 			m_ib(std::move(p_other.m_ib)),
-			m_last_frame_indices_count(p_other.m_last_frame_indices_count)
+			m_last_frame_indices_count(p_other.m_last_frame_indices_count),
+			m_render_state(std::move(p_other.m_render_state))
 		{
 		}
 
@@ -39,6 +40,7 @@ namespace black_cat
 			m_vb = std::move(p_other.m_vb);
 			m_ib = std::move(p_other.m_ib);
 			m_last_frame_indices_count = p_other.m_last_frame_indices_count;
+			m_render_state = std::move(p_other.m_render_state);
 
 			return *this;
 		}

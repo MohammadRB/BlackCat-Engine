@@ -44,16 +44,13 @@ namespace black_cat
 		extern graphic::bc_pipeline_stage _convert_shader_type_to_pipeline_stage(graphic::bc_shader_type p_shader_types);
 
 		bc_render_system::bc_render_system()
-			: m_content_stream(nullptr),
-			m_last_update_params
-			(
-				core_platform::bc_clock::update_param(0, 0),
-				core::bc_vector3f(),
-				core::bc_matrix4f(),
-				core::bc_matrix4f(),
-				bc_icamera::extend()
-			)
+			: m_content_stream(nullptr)
 		{
+		}
+
+		bc_render_system::bc_render_system(bc_render_system&& p_other) noexcept
+		{
+			operator=(std::move(p_other));
 		}
 
 		bc_render_system::~bc_render_system()
@@ -62,6 +59,154 @@ namespace black_cat
 			{
 				destroy();
 			}
+		}
+
+		bc_render_system& bc_render_system::operator=(bc_render_system&& p_other) noexcept
+		{
+			m_content_stream = p_other.m_content_stream;
+			m_thread_manager = std::move(p_other.m_thread_manager);
+			m_material_manager = std::move(p_other.m_material_manager);
+
+			m_window_resize_handle = std::move(p_other.m_window_resize_handle);
+			m_device_listener_handle = std::move(p_other.m_device_listener_handle);
+			m_frame_render_finish_handle = std::move(p_other.m_frame_render_finish_handle);
+
+			m_render_pass_states = std::move(p_other.m_render_pass_states);
+			m_render_states = std::move(p_other.m_render_states);
+			m_compute_states = std::move(p_other.m_compute_states);
+
+			m_device = std::move(p_other.m_device);
+			m_global_cbuffer = std::move(p_other.m_global_cbuffer);
+			m_per_object_cbuffer = std::move(p_other.m_per_object_cbuffer);
+			m_global_cbuffer_parameter = std::move(p_other.m_global_cbuffer_parameter);
+			m_per_object_cbuffer_parameter = std::move(p_other.m_per_object_cbuffer_parameter);
+
+			m_render_pass_manager = std::move(p_other.m_render_pass_manager);
+			m_shape_drawer = std::move(p_other.m_shape_drawer);
+
+			return *this;
+		}
+
+		bool bc_render_system::remove_render_pass(bcUINT p_location)
+		{
+			bc_irender_pass* l_pass = m_render_pass_manager.get_pass(p_location);
+
+			if (!l_pass)
+			{
+				return false;
+			}
+
+			l_pass->destroy(m_device);
+
+			return m_render_pass_manager.remove_pass(p_location);
+		}
+
+		void bc_render_system::update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera)
+		{
+			bc_icamera::extend l_camera_extends;
+			p_camera.get_extend_points(l_camera_extends);
+
+			_bc_render_system_global_state_cbuffer l_global_state;
+			l_global_state.m_view = p_camera.get_view().transpose();
+			l_global_state.m_projection = p_camera.get_projection().transpose();
+			l_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection()).transpose();
+			l_global_state.m_camera_position = p_camera.get_position();
+			l_global_state.m_elapsed = p_clock.m_elapsed;
+			l_global_state.m_total_elapsed = p_clock.m_total_elapsed;
+			l_global_state.m_elapsed_second = p_clock.m_elapsed_second;
+
+			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
+			p_render_thread.update_subresource(l_buffer, 0, &l_global_state, 0, 0);
+		}
+
+		void bc_render_system::add_render_instance(const bc_render_state* p_state, const bc_render_instance& p_instance)
+		{
+			// Bug this function isn't thread-safe
+			const auto l_render_states_entry_size = sizeof(render_state_entry);
+			const auto l_render_states_first = reinterpret_cast<bcUINTPTR>(&*m_render_states.begin());
+			const auto l_render_state = reinterpret_cast<bcUINTPTR>(p_state);
+			const auto l_state_index = (l_render_state - l_render_states_first) / l_render_states_entry_size;
+
+			bcAssert(m_render_states.at(l_state_index).first.is_set());
+
+			m_render_states.at(l_state_index).second.push_back(p_instance);
+		}
+
+		void bc_render_system::render_all_instances(bc_render_thread& p_render_thread)
+		{
+			p_render_thread.bind_ps_constant_buffer_parameter(m_global_cbuffer_parameter);
+			p_render_thread.pipeline_apply_states(_convert_shader_type_to_pipeline_stage(m_global_cbuffer_parameter.get_shader_types()));
+
+			const graphic::bc_pipeline_stage l_per_object_cbuffer_stages = _convert_shader_type_to_pipeline_stage(m_per_object_cbuffer_parameter.get_shader_types());
+
+			for (render_state_entry& l_render_state : m_render_states)
+			{
+				if (l_render_state.first.is_set() && l_render_state.second.size() > 0)
+				{
+					auto* l_render_state_ptr = &l_render_state.first.get();
+					p_render_thread.bind_render_state(l_render_state_ptr);
+
+					for (bc_render_instance& l_instance : l_render_state.second)
+					{
+						auto l_transposed_world = l_instance.get_world().transpose();
+
+						graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
+						p_render_thread.update_subresource(l_buffer, 0, &l_transposed_world, 0, 0);
+
+						p_render_thread.bind_ps_constant_buffer_parameter(m_per_object_cbuffer_parameter);
+						p_render_thread.pipeline_apply_states(l_per_object_cbuffer_stages);
+
+						p_render_thread.draw_indexed
+						(
+							l_render_state.first->get_index_buffer_offset(),
+							l_render_state.first->get_index_count(),
+							l_render_state.first->get_vertex_buffer_offset()
+						);
+					}
+
+					p_render_thread.unbind_render_state(l_render_state_ptr);
+				}
+			}
+		}
+
+		void bc_render_system::clear_render_instances()
+		{
+			// Clear all instances and free their memory
+			for (render_state_entry& l_render_state : m_render_states)
+			{
+				l_render_state.second.clear();
+				l_render_state.second.shrink_to_fit();
+			}
+		}
+
+		void bc_render_system::update(const update_param& p_update_params)
+		{
+			m_render_pass_manager.pass_update(p_update_params);
+		}
+
+		void bc_render_system::render(bc_scene& p_scene)
+		{
+			auto bc_render_thread_guard = m_thread_manager->get_available_thread_wait();
+			auto& l_render_thread = *bc_render_thread_guard.get_thread();
+			
+			m_render_pass_manager.pass_execute(*this, p_scene, l_render_thread);
+
+			clear_render_instances();
+
+			m_device.present();
+		}
+
+		void bc_render_system::add_render_task(bc_irender_task& p_task)
+		{
+			core::bc_task<void> l_cpu_task = core::bc_concurreny::start_task<void>([this, &p_task]()
+			{
+				auto l_render_thread_wrapper = m_thread_manager->get_available_thread_wait();
+				auto& l_render_thread = *l_render_thread_wrapper.get_thread();
+
+				p_task.execute(*this, l_render_thread);
+			});
+
+			p_task._set_cpu_task(std::move(l_cpu_task));
 		}
 
 		graphic::bc_device_pipeline_state_ptr bc_render_system::create_device_pipeline_state(const bcCHAR* p_vertex_shader_name,
@@ -206,7 +351,8 @@ namespace black_cat
 				return bc_render_pass_state_ptr(_bc_render_state_handle(l_first_empty_index), _bc_render_pass_state_handle_deleter(this));
 			}
 		}
-
+		
+		int render_state_count = 0;
 		bc_render_state_ptr bc_render_system::create_render_state(graphic::bc_primitive p_primitive,
 			graphic::bc_buffer p_vertex_buffer, 
 			bcUINT32 p_vertex_buffer_stride,
@@ -248,6 +394,7 @@ namespace black_cat
 
 			{
 				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
+				++render_state_count;
 
 				auto l_first_empty = std::find_if(std::begin(m_render_states), std::end(m_render_states), [](const render_state_entry& p_item)
 				{
@@ -380,6 +527,7 @@ namespace black_cat
 		{
 			{
 				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
+				--render_state_count;
 				
 				auto l_item = std::find_if(std::begin(m_render_states), std::end(m_render_states), [p_render_state](const render_state_entry& p_item)
 				{
@@ -415,123 +563,6 @@ namespace black_cat
 				// We set object to null because we can use null objects again 
 				(*l_item).reset(nullptr);
 			}
-		}
-
-		bool bc_render_system::remove_render_pass(bcUINT p_location)
-		{
-			bc_irender_pass* l_pass = m_render_pass_manager.get_pass(p_location);
-
-			if (!l_pass)
-			{
-				return false;
-			}
-
-			l_pass->destroy(m_device);
-
-			return m_render_pass_manager.remove_pass(p_location);
-		}
-
-		void bc_render_system::add_render_instance(const bc_render_state* p_state, const bc_render_instance& p_instance)
-		{
-			// Bug this function isn't thread-safe
-			const auto l_render_states_entry_size = sizeof(render_state_entry);
-			const auto l_render_states_first = reinterpret_cast< bcUINTPTR >(&*m_render_states.begin());
-			const auto l_render_state = reinterpret_cast<bcUINTPTR>(p_state);
-			const auto l_state_index = (l_render_state - l_render_states_first) / l_render_states_entry_size;
-
-			bcAssert(m_render_states.at(l_state_index).first.is_set());
-
-			m_render_states.at(l_state_index).second.push_back(p_instance);
-		}
-
-		void bc_render_system::render_all_instances(bc_render_thread& p_render_thread)
-		{
-			p_render_thread.bind_ps_constant_buffer_parameter(m_global_cbuffer_parameter);
-			p_render_thread.pipeline_apply_states(_convert_shader_type_to_pipeline_stage(m_global_cbuffer_parameter.get_shader_types()));
-
-			const graphic::bc_pipeline_stage l_per_object_cbuffer_stages = _convert_shader_type_to_pipeline_stage(m_per_object_cbuffer_parameter.get_shader_types());
-
-			for (render_state_entry& l_render_state : m_render_states)
-			{
-				if (l_render_state.first.is_set() && l_render_state.second.size() > 0)
-				{
-					auto* l_render_state_ptr = &l_render_state.first.get();
-					p_render_thread.bind_render_state(l_render_state_ptr);
-
-					for (bc_render_instance& l_instance : l_render_state.second)
-					{
-						auto l_transposed_world = l_instance.get_world().transpose();
-
-						graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
-						p_render_thread.update_subresource(l_buffer, 0, &l_transposed_world, 0, 0);
-
-						p_render_thread.bind_ps_constant_buffer_parameter(m_per_object_cbuffer_parameter);
-						p_render_thread.pipeline_apply_states(l_per_object_cbuffer_stages);
-
-						p_render_thread.draw_indexed
-						(
-							l_render_state.first->get_index_buffer_offset(),
-							l_render_state.first->get_index_count(),
-							l_render_state.first->get_vertex_buffer_offset()
-						);
-					}
-
-					p_render_thread.unbind_render_state(l_render_state_ptr);
-				}
-			}
-		}
-
-		void bc_render_system::clear_render_instances()
-		{
-			// Clear all instances and free their memory
-			for (render_state_entry& l_render_state : m_render_states)
-			{
-				l_render_state.second.clear();
-				l_render_state.second.shrink_to_fit();
-			}
-		}
-
-		void bc_render_system::update(const update_param& p_update_params)
-		{
-			m_last_update_params = p_update_params;
-			m_render_pass_manager.pass_update(p_update_params);
-		}
-
-		void bc_render_system::render(bc_scene& p_scene)
-		{
-			auto l_render_thread_wrapper = m_thread_manager->get_available_thread_wait();
-			auto& l_render_thread = *l_render_thread_wrapper.get_thread();
-
-			_bc_render_system_global_state_cbuffer l_global_state;
-			l_global_state.m_view = m_last_update_params.m_view_matrix.transpose();
-			l_global_state.m_projection = m_last_update_params.m_projection_matrix.transpose();
-			l_global_state.m_view_projection = (m_last_update_params.m_view_matrix * m_last_update_params.m_projection_matrix).transpose();
-			l_global_state.m_camera_position = m_last_update_params.m_camera_position;
-			l_global_state.m_elapsed = m_last_update_params.m_elapsed;
-			l_global_state.m_total_elapsed = m_last_update_params.m_total_elapsed;
-			l_global_state.m_elapsed_second = m_last_update_params.m_elapsed_second;
-
-			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
-			l_render_thread.update_subresource(l_buffer, 0, &l_global_state, 0, 0);
-
-			m_render_pass_manager.pass_execute(*this, p_scene, l_render_thread);
-			
-			clear_render_instances();
-
-			m_device.present();
-		}
-
-		void bc_render_system::add_render_task(bc_irender_task& p_task)
-		{
-			core::bc_task<void> l_cpu_task = core::bc_concurreny::start_task<void>([this, &p_task]()
-			{
-				auto l_render_thread_wrapper = m_thread_manager->get_available_thread_wait();
-				auto& l_render_thread = *l_render_thread_wrapper.get_thread();
-
-				p_task.execute(*this, l_render_thread);
-			});
-
-			p_task._set_cpu_task(std::move(l_cpu_task));
 		}
 
 		void bc_render_system::_initialize(core::bc_content_stream_manager& p_content_stream, bc_render_system_parameter p_parameter)
@@ -638,12 +669,15 @@ namespace black_cat
 					++l_render_pass_states_count;
 				}
 			}
+			int counter = 0;
 			for (auto& l_item : m_render_states)
 			{
 				if (l_item.first != nullptr)
 				{
 					++l_render_states_count;
 				}
+
+				++counter;
 			}
 
 			bcAssert(l_render_pass_states_count + l_render_states_count == 0);

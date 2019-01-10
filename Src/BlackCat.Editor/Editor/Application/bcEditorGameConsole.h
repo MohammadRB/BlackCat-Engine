@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Game/System/Script/bcGameConsole.h"
+#include "Game/System/Script/bcIGameConsoleImp.h"
 #include "Editor/Widget/bcConsoleWidget.h"
 
 #include <QtCore/QObject>

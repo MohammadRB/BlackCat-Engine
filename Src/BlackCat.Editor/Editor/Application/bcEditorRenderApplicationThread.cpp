@@ -1,6 +1,8 @@
 // [11/22/2018 MRB]
 
 #include "Editor/EditorPCH.h"
+
+#include "Game/Object/Scene/SceneGraph/bcOctalTreeSceneGraphNode.h"
 #include "Editor/Application/bcEditorRenderApplicationThread.h"
 #include "Editor/Application/bcEditorRenderApplication.h"
 
@@ -13,6 +15,7 @@ namespace black_cat
 			m_instance = p_instance;
 			m_cmd_line = p_cmd_line;
 			m_output_window = p_output_window;
+			m_result_code = s_default_result_code;
 
 			QThread::start();
 		}
@@ -20,6 +23,16 @@ namespace black_cat
 		void bc_editor_render_app_thread::wait_for_initialization() const
 		{
 			while (m_initialized.load() == 0) {}
+		}
+
+		std::int32_t bc_editor_render_app_thread::is_still_running() const noexcept
+		{
+			return m_result_code.load() == s_default_result_code;
+		}
+
+		std::int32_t bc_editor_render_app_thread::get_result_code() const noexcept
+		{
+			return m_result_code.load();
 		}
 
 		void bc_editor_render_app_thread::run()
@@ -36,7 +49,16 @@ namespace black_cat
 			game::bc_render_application_parameter l_render_app_parameters
 			(
 				l_app_parameters,
-				m_output_window
+				m_output_window,
+				[]()
+				{
+					return core::bc_make_unique< game::bc_octal_tree_graph_node >
+					(
+						physics::bc_bound_box(core::bc_vector3f(), core::bc_vector3f(1024, 1024, 1024)),
+						10,
+						128
+					);
+				}
 			);
 			game::bc_engine_component_parameter l_engine_component_parameters
 			(
@@ -53,7 +75,7 @@ namespace black_cat
 			game::bc_engine_application_parameter l_engine_app_parameters
 			(
 				l_engine_component_parameters,
-				l_render_app_parameters
+				std::move(l_render_app_parameters)
 			);
 
 			bc_editor_render_app l_app;
@@ -63,10 +85,9 @@ namespace black_cat
 			m_initialized.store(1);
 
 			const bcINT32 l_code = l_app.run();
-			l_app.destroy();
 
 			m_result_code.store(l_code);
+			l_app.destroy();
 		}
-
 	}
 }

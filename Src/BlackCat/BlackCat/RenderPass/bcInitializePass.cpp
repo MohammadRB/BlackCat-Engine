@@ -35,14 +35,16 @@ namespace black_cat
 
 	void bc_initialize_pass::update(const game::bc_render_system_update_param& p_update_param)
 	{
+		m_last_clock = static_cast<const core_platform::bc_clock::update_param&>(p_update_param);
+		m_last_camera = &p_update_param.m_active_camera;
 	}
 
-	void bc_initialize_pass::initialize_frame(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
+	void bc_initialize_pass::initialize_frame(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
 	{
-
+		p_render_system.update_global_cbuffer(p_thread, m_last_clock, *m_last_camera);
 	}
 
-	void bc_initialize_pass::execute(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
+	void bc_initialize_pass::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
 	{
 	}
 

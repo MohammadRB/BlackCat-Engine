@@ -64,7 +64,7 @@ namespace black_cat
 			 * \param p_scene 
 			 * \param p_thread 
 			 */
-			virtual void initialize_frame(bc_render_system& p_render_system, bc_scene& p_scene, bc_render_thread& p_thread) = 0;
+			virtual void initialize_frame(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_scene& p_scene) = 0;
 
 			/**
 			 * \brief This function will be called in draw frame phase.
@@ -73,7 +73,7 @@ namespace black_cat
 			 * \param p_scene 
 			 * \param p_thread 
 			 */
-			virtual void execute(bc_render_system& p_render_system, bc_scene& p_scene, bc_render_thread& p_thread) = 0;
+			virtual void execute(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_scene& p_scene) = 0;
 
 			/**
 			 * \brief This function will be called when device duo to some parameter changes and buffer resize need reset

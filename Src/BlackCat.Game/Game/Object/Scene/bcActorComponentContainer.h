@@ -7,7 +7,6 @@
 #include "Core/Utility/bcNullable.h"
 #include "Game/Object/Scene/bcActorComponent.h"
 #include "PlatformImp/bc_ide_logger.h"
-#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {
@@ -106,14 +105,15 @@ namespace black_cat
 		bc_actor_component_index bc_actor_component_container<TComponent>::create()
 		{
 			bc_actor_component_index l_index = 0;
-			bool l_has_setted = false;
+			bool l_has_set = false;
 
 			for (core::bc_nullable< TComponent >& l_component : m_components) // TODO use fast free space lookup
 			{
 				if (!l_component.is_set())
 				{
 					l_component.reset(TComponent(l_index));
-					l_has_setted = true;
+					l_has_set = true;
+					break;
 				}
 				else
 				{
@@ -121,7 +121,7 @@ namespace black_cat
 				}
 			}
 
-			if (!l_has_setted)
+			if (!l_has_set)
 			{
 				m_components.push_back(core::bc_nullable< TComponent >(TComponent(l_index)));
 			}
@@ -133,7 +133,7 @@ namespace black_cat
 		bc_actor_component_index bc_actor_component_container<TComponent>::create_after(bc_actor_component_index p_parent_index)
 		{
 			bc_actor_component_index l_index = 0;
-			bool l_has_setted = false;
+			bool l_has_set = false;
 
 			auto l_begin = std::begin(m_components) + p_parent_index + 1;
 			auto l_end = std::end(m_components);
@@ -144,7 +144,7 @@ namespace black_cat
 				if (!l_component.is_set())
 				{
 					l_component.reset(TComponent(l_index));
-					l_has_setted = true;
+					l_has_set = true;
 				}
 				else
 				{
@@ -152,7 +152,7 @@ namespace black_cat
 				}
 			}
 
-			if (!l_has_setted)
+			if (!l_has_set)
 			{
 				m_components.push_back(core::bc_nullable< TComponent >(TComponent(l_index)));
 			}

@@ -16,7 +16,7 @@ namespace black_cat
 			bc_mesh_component& p_mesh_component)
 		{
 			auto& l_physics = p_physics_system.get_physics();
-			const bc_sub_mesh& l_mesh_part = p_mesh_component.get_sub_mesh();
+			const bc_sub_mesh& l_mesh_part = p_mesh_component.get_mesh();
 			core::bc_vector_frame<const bc_mesh_part_collider_entry*> l_colliders;
 
 			_get_mesh_colliders(l_mesh_part, l_mesh_part.get_node(), l_colliders);

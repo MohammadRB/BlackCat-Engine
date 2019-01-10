@@ -46,11 +46,11 @@ namespace black_cat
 		public:
 			bc_expression();
 
-			bc_expression(bc_expression&&);
+			bc_expression(bc_expression&&) noexcept;
 
 			~bc_expression();
 
-			bc_expression& operator=(bc_expression&&);
+			bc_expression& operator=(bc_expression&&) noexcept;
 
 			_bc_expression_setter add_constant(const bcCHAR* p_name, bc_expr_numeric_type p_value);
 

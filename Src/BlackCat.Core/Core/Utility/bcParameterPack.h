@@ -75,8 +75,8 @@ namespace black_cat
 		};
 
 		/**
-		 * \brief This class can hold any data type, (for small data types it use an internal buffer and for large data,
-		 * memory will be allocated from frame allocator)
+		 * \brief This class can hold any data type, which for small data types it use an internal buffer and for large data,
+		 * memory will be allocated from frame allocator.
 		 * You can use both copy and movable objects but if you use movable only object and try to copy this object
 		 * a logic exception will be thrown
 		 */
@@ -127,17 +127,17 @@ namespace black_cat
 			 * \tparam T
 			 * \return
 			 */
-			template < typename T >
+			template< typename T >
 			T* as_throw();
 
-			template < typename T >
+			template< typename T >
 			const T* as_throw() const;
 
 			/**
 			 * \brief Return pointer to underlying buffer. Throw bad_cast exception if there is no state
 			 * \return
 			 */
-			template <>
+			template<>
 			const void* as_throw< void >() const;
 
 			template<typename T>
@@ -162,7 +162,9 @@ namespace black_cat
 			_bc_parameter_pack_base* m_object;
 		};
 
-		// Same as bc_parameter_pack but doesn't use frame allocator.
+		/**
+		 * \brief Same as bc_parameter_pack but doesn't use frame allocator.
+		 */
 		class bc_any : public bc_parameter_pack
 		{
 		public:

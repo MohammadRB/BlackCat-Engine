@@ -97,16 +97,16 @@ namespace black_cat
 
 	void bc_terrain_pass_dx11::update(const game::bc_render_system_update_param& p_update_param)
 	{
-		m_camera_extends = p_update_param.m_camera_extends;
+		p_update_param.m_active_camera.get_extend_points(m_camera_extends);
 	}
 
-	void bc_terrain_pass_dx11::initialize_frame(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
+	void bc_terrain_pass_dx11::initialize_frame(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
 	{
 		if (m_run_chunk_info_shader)
 		{
 			p_thread.start(m_command_list.get());
 
-			auto l_height_maps = p_scene.get_heightmaps();
+			auto l_height_maps = p_scene.get_height_maps();
 
 			for (auto& l_actor : l_height_maps)
 			{
@@ -147,9 +147,9 @@ namespace black_cat
 		p_thread.clear_buffers(core::bc_vector4f(0, 0, 255, 0), 1, 0);
 	}
 
-	void bc_terrain_pass_dx11::execute(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
+	void bc_terrain_pass_dx11::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
 	{
-		p_scene.render_heightmaps(p_render_system, p_thread);
+		p_scene.render_height_maps(p_render_system, p_thread);
 
 		p_thread.unbind_render_pass_state(m_render_pass_state.get());
 		p_thread.finish();

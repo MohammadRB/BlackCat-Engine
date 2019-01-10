@@ -11,6 +11,7 @@
 #include "Game/Object/Scene/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcNameComponent.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
 
 namespace black_cat
 {
@@ -33,29 +34,13 @@ namespace black_cat
 			BC_JSON_ARRAY(_bc_json_entity, entities);
 		};
 
-		bc_entity_manager::bc_entity_manager()
-			: m_actor_component_manager(core::bc_service_manager::get().get_service< bc_actor_component_manager >())
-		{
-		}
-
-		bc_entity_manager::bc_entity_manager(bc_entity_manager&& p_other)
-			: m_actor_component_manager(p_other.m_actor_component_manager),
-			m_components(std::move(p_other.m_components)),
-			m_entities(std::move(p_other.m_entities))
+		bc_entity_manager::bc_entity_manager(bc_actor_component_manager& p_actor_manager)
+			: m_actor_component_manager(p_actor_manager)
 		{
 		}
 
 		bc_entity_manager::~bc_entity_manager()
 		{
-		}
-
-		bc_entity_manager& bc_entity_manager::operator=(bc_entity_manager&& p_other)
-		{
-			m_actor_component_manager= p_other.m_actor_component_manager;
-			m_components = std::move(p_other.m_components);
-			m_entities = std::move(p_other.m_entities);
-
-			return *this;
 		}
 
 		void bc_entity_manager::read_entity_file(const bcECHAR* p_json_file_path)
@@ -148,7 +133,8 @@ namespace black_cat
 				throw bc_invalid_argument_exception("Invalid entity name");
 			}
 
-			bc_actor l_actor = m_actor_component_manager->create_actor();
+			bc_actor l_actor = m_actor_component_manager.create_actor();
+			l_actor.create_component<bc_mediate_component>();
 			l_actor.create_component<bc_name_component>();
 			l_actor.get_component<bc_name_component>()->set_entity_name(l_entity_entry->second.m_entity_name.c_str());
 
@@ -165,7 +151,7 @@ namespace black_cat
 
 		void bc_entity_manager::remove_entity(const bc_actor& p_entity)
 		{
-			m_actor_component_manager->remove_actor(p_entity);
+			m_actor_component_manager.remove_actor(p_entity);
 		}
 	}
 }

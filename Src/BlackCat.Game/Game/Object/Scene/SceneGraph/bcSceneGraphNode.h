@@ -2,77 +2,83 @@
 
 #pragma once
 
-#include "Core/Container/bcVector.h"
+#include "Core/Container/bcIterator.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
-#include "Game/bcExport.h"
 #include "Game/Object/Scene/bcActor.h"
+#include "Game/System/Render/bcShapeDrawer.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		class bc_iscene_graph_node_entry
+		{
+		public:
+			explicit bc_iscene_graph_node_entry(const bc_actor& p_actor)
+				: m_actor(p_actor)
+			{
+			}
+
+			bc_actor m_actor;
+		};
+
 		class bc_iscene_graph_node
 		{
+			bc_make_iterators_friend(bc_iscene_graph_node)
+
+		public:
+			using this_type = bc_iscene_graph_node;
+			using value_type = bc_actor;
+			using node_type = bc_iscene_graph_node_entry;
+			using pointer = value_type*;
+			using reference = value_type&;
+			using difference_type = bcSIZE;
+			using iterator = core::bc_bidirectional_iterator<this_type>;
+			using const_iterator = core::bc_const_bidirectional_iterator<this_type>;
+
 		public:
 			virtual ~bc_iscene_graph_node() = default;
 
-			virtual void add_actor(bc_actor p_actor) = 0;
+			virtual iterator begin() noexcept = 0;
 
-			virtual void update_actor(bc_actor p_actor) = 0;
+			virtual const_iterator begin() const noexcept = 0;
 
-			virtual void remove_actor(bc_actor p_actor) = 0;
+			virtual const_iterator cbegin() const noexcept = 0;
 
-			virtual void get_bound_box(physics::bc_bound_box& p_box, physics::bc_transform& p_box_transform) = 0;
-		};
+			virtual iterator end() noexcept = 0;
 
-		enum class bc_octal_tree_node_position
-		{
-			top_left_back,
-			top_left_front,
-			top_right_front,
-			top_right_back,
-			bottom_left_back,
-			bottom_left_front,
-			bottom_right_front,
-			bottom_right_back
-		};
+			virtual const_iterator end() const noexcept = 0;
 
-		class BC_GAME_DLL bc_octal_tree_graph_node : bc_iscene_graph_node
-		{
-		public:
-			explicit bc_octal_tree_graph_node(physics::bc_bound_box p_box);
+			virtual const_iterator cend() const noexcept = 0;
 
-			bc_octal_tree_graph_node(const bc_octal_tree_graph_node& p_parent, bc_octal_tree_node_position p_my_position);
+			virtual physics::bc_bound_box get_bound_box() const noexcept = 0;
 
-			bc_octal_tree_graph_node(bc_octal_tree_graph_node&&) = default;
+			virtual bool contains_actor(bc_actor& p_actor) const noexcept = 0;
 
-			~bc_octal_tree_graph_node() = default;
+			virtual bool intersects_actor(bc_actor& p_actor) const noexcept = 0;
 
-			bc_octal_tree_graph_node& operator=(bc_octal_tree_graph_node&&) = default;
+			virtual bool add_actor(bc_actor& p_actor) = 0;
 
-			void add_actor(bc_actor p_actor) override;
+			virtual bool update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box) = 0;
 
-			void update_actor(bc_actor p_actor) override;
+			virtual bool remove_actor(bc_actor& p_actor) = 0;
 
-			void remove_actor(bc_actor p_actor) override;
+			virtual void clear() = 0;
+
+			virtual void render_bound_boxes(bc_shape_drawer& p_shape_drawer) const = 0;
 
 		protected:
+			virtual bool iterator_validate(const node_type* p_node) const noexcept = 0;
 
-		private:
-			void _split();
+			virtual bcINT32 iterator_compare(const node_type* p_first, const node_type* p_second) const noexcept = 0;
 
-			const bc_octal_tree_graph_node* m_parent;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_top_left_back;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_top_left_front;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_top_right_front;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_top_right_back;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_bottom_left_back;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_bottom_left_front;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_bottom_right_front;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_bottom_right_back;
+			virtual value_type* iterator_dereference(node_type* p_node) const noexcept = 0;
 
-			physics::bc_bound_box m_bound_box;
-			core::bc_vector_movale<bc_actor>* m_actors;
+			virtual node_type* iterator_increment(node_type* p_node) const noexcept = 0;
+
+			virtual node_type* iterator_decrement(node_type* p_node) const noexcept = 0;
+
+			virtual void iterator_swap(node_type** p_first, node_type** p_second) const noexcept = 0;
 		};
 	}
 }

@@ -21,9 +21,14 @@ namespace black_cat
 
 		virtual ~bc_render_application();
 
-		virtual void application_start_engine_components(game::bc_engine_component_parameter& p_engine_components, core::bc_service_manager& p_service_manager) = 0;
+	protected:
+		core::bc_service_manager* m_service_manager;
+		game::bc_game_system* m_game_system;
 
-		virtual void application_initialize(const bcCHAR* p_commandline) = 0;
+	private:
+		virtual void application_start_engine_components(game::bc_engine_application_parameter& p_parameters) = 0;
+
+		virtual void application_initialize(game::bc_engine_application_parameter& p_parameters) = 0;
 
 		virtual void application_load_content(core::bc_content_stream_manager* p_stream_manager) = 0;
 
@@ -39,14 +44,9 @@ namespace black_cat
 
 		virtual void application_close_engine_components() = 0;
 
-	protected:
-		core::bc_service_manager* m_service_manager;
-		game::bc_game_system* m_game_system;
+		void app_start_engine_components(game::bc_engine_application_parameter& p_parameters) override final;
 
-	private:
-		void app_start_engine_components(game::bc_engine_component_parameter& p_engine_components) override final;
-
-		void app_initialize(const bcCHAR* p_commandline) override final;
+		void app_initialize(game::bc_engine_application_parameter& p_parameters) override final;
 
 		void app_load_content() override final;
 

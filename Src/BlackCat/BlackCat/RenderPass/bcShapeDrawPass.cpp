@@ -52,14 +52,16 @@ namespace black_cat
 	{
 	}
 
-	void bc_shape_draw_pass::initialize_frame(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
+	void bc_shape_draw_pass::initialize_frame(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
 	{
 		p_thread.start(m_command_list.get());
 		p_thread.bind_render_pass_state(m_render_pass_state.get());
 	}
 
-	void bc_shape_draw_pass::execute(game::bc_render_system& p_render_system, game::bc_scene& p_scene, game::bc_render_thread& p_thread)
+	void bc_shape_draw_pass::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
 	{
+		p_scene.render_debug_shapes(p_render_system.get_shape_drawer());
+
 		p_render_system.get_shape_drawer().render(p_render_system, p_thread);
 
 		p_render_system.render_all_instances(p_thread);

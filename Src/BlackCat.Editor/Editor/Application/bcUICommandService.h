@@ -34,11 +34,11 @@ namespace black_cat
 		public:
 			bc_ui_command_service(core::bc_content_stream_manager& p_content_stream, game::bc_game_system& p_game_system);
 
-			bc_ui_command_service(bc_ui_command_service&&) noexcept;
+			bc_ui_command_service(bc_ui_command_service&&) noexcept = delete;
 
 			~bc_ui_command_service();
 
-			bc_ui_command_service& operator=(bc_ui_command_service&&) noexcept;
+			bc_ui_command_service& operator=(bc_ui_command_service&&) noexcept = delete;
 
 			void load_content();
 

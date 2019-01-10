@@ -4,6 +4,7 @@
 
 #include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatform/bcPlatform.h"
+#include "CorePlatform/Concurrency/bcConcurrencyDef.h"
 #include "CorePlatform/Utility/bcNoCopy.h"
 
 namespace black_cat
@@ -30,21 +31,21 @@ namespace black_cat
 
 			~bc_platform_atomic_flag() noexcept(true);
 
-			bcInline bool test_and_set() volatile noexcept(true);
+			bool test_and_set() volatile noexcept(true);
 
-			bcInline bool test_and_set() noexcept(true);
+			bool test_and_set() noexcept(true);
 
-			bcInline bool test_and_set(bc_memory_order p_order) volatile noexcept(true);
+			bool test_and_set(bc_memory_order p_order) volatile noexcept(true);
 
-			bcInline bool test_and_set(bc_memory_order p_order) noexcept(true);
+			bool test_and_set(bc_memory_order p_order) noexcept(true);
 
-			bcInline void clear() volatile noexcept(true);
+			void clear() volatile noexcept(true);
 
-			bcInline void clear() noexcept(true);
+			void clear() noexcept(true);
 
-			bcInline void clear(bc_memory_order p_order) volatile noexcept(true);
+			void clear(bc_memory_order p_order) volatile noexcept(true);
 
-			bcInline void clear(bc_memory_order p_order) noexcept(true);
+			void clear(bc_memory_order p_order) noexcept(true);
 
 		protected:
 
@@ -66,98 +67,98 @@ namespace black_cat
 
 			bc_platform_atomic(T p_value) noexcept(true);
 
-			bcInline bool is_lock_free() const volatile noexcept(true);
+			bool is_lock_free() const volatile noexcept(true);
 
-			bcInline bool is_lock_free() const noexcept(true);
+			bool is_lock_free() const noexcept(true);
 
-			bcInline T exchange(T p_value) volatile noexcept(true);
+			T exchange(T p_value) volatile noexcept(true);
 
-			bcInline T exchange(T p_value) noexcept(true);
+			T exchange(T p_value) noexcept(true);
 
-			bcInline T exchange(T p_value, bc_memory_order p_order) volatile noexcept(true);
+			T exchange(T p_value, bc_memory_order p_order) volatile noexcept(true);
 
-			bcInline T exchange(T p_value, bc_memory_order p_order) noexcept(true);
+			T exchange(T p_value, bc_memory_order p_order) noexcept(true);
 
-			bcInline void store(T p_value) volatile noexcept(true);
+			void store(T p_value) volatile noexcept(true);
 
-			bcInline void store(T p_value) noexcept(true);
+			void store(T p_value) noexcept(true);
 
-			bcInline void store(T p_value, bc_memory_order p_order) volatile noexcept(true);
+			void store(T p_value, bc_memory_order p_order) volatile noexcept(true);
 
-			bcInline void store(T p_value, bc_memory_order p_order) noexcept(true);
+			void store(T p_value, bc_memory_order p_order) noexcept(true);
 
-			bcInline T load() const volatile noexcept(true);
+			T load() const volatile noexcept(true);
 
-			bcInline T load() const noexcept(true);
+			T load() const noexcept(true);
 
-			bcInline T load(bc_memory_order p_order) const volatile noexcept(true);
+			T load(bc_memory_order p_order) const volatile noexcept(true);
 
-			bcInline T load(bc_memory_order p_order) const noexcept(true);
+			T load(bc_memory_order p_order) const noexcept(true);
 
-			bcInline T fetch_add(T p_to_add) volatile noexcept(true);
+			T fetch_add(T p_to_add) volatile noexcept(true);
 
-			bcInline T fetch_add(T p_to_add) noexcept(true);
+			T fetch_add(T p_to_add) noexcept(true);
 
-			bcInline T fetch_add(T p_to_add, bc_memory_order p_order) volatile noexcept(true);
+			T fetch_add(T p_to_add, bc_memory_order p_order) volatile noexcept(true);
 
-			bcInline T fetch_add(T p_to_add, bc_memory_order p_order) noexcept(true);
+			T fetch_add(T p_to_add, bc_memory_order p_order) noexcept(true);
 
-			bcInline T fetch_sub(T p_to_sub) volatile noexcept(true);
+			T fetch_sub(T p_to_sub) volatile noexcept(true);
 
-			bcInline T fetch_sub(T p_to_sub) noexcept(true);
+			T fetch_sub(T p_to_sub) noexcept(true);
 
-			bcInline T fetch_sub(T p_to_sub, bc_memory_order p_order) volatile noexcept(true);
+			T fetch_sub(T p_to_sub, bc_memory_order p_order) volatile noexcept(true);
 
-			bcInline T fetch_sub(T p_to_sub, bc_memory_order p_order) noexcept(true);
+			T fetch_sub(T p_to_sub, bc_memory_order p_order) noexcept(true);
 
-			bcInline T fetch_and(T p_to_and) volatile noexcept(true);
+			T fetch_and(T p_to_and) volatile noexcept(true);
 
-			bcInline T fetch_and(T p_to_and) noexcept(true);
+			T fetch_and(T p_to_and) noexcept(true);
 
-			bcInline T fetch_and(T p_to_and, bc_memory_order p_order) volatile noexcept(true);
+			T fetch_and(T p_to_and, bc_memory_order p_order) volatile noexcept(true);
 
-			bcInline T fetch_and(T p_to_and, bc_memory_order p_order) noexcept(true);
+			T fetch_and(T p_to_and, bc_memory_order p_order) noexcept(true);
 
-			bcInline T fetch_or(T p_to_or) volatile noexcept(true);
+			T fetch_or(T p_to_or) volatile noexcept(true);
 
-			bcInline T fetch_or(T p_to_or) noexcept(true);
+			T fetch_or(T p_to_or) noexcept(true);
 
-			bcInline T fetch_or(T p_to_or, bc_memory_order p_order) volatile noexcept(true);
+			T fetch_or(T p_to_or, bc_memory_order p_order) volatile noexcept(true);
 
-			bcInline T fetch_or(T p_to_or, bc_memory_order p_order) noexcept(true);
+			T fetch_or(T p_to_or, bc_memory_order p_order) noexcept(true);
 
-			bcInline bool compare_exchange_strong(T* p_expected_value, T p_new_value) volatile noexcept(true);
+			bool compare_exchange_strong(T* p_expected_value, T p_new_value) volatile noexcept(true);
 
-			bcInline bool compare_exchange_strong(T* p_expected_value, T p_new_value) noexcept(true);
+			bool compare_exchange_strong(T* p_expected_value, T p_new_value) noexcept(true);
 
-			bcInline bool compare_exchange_strong(T* p_expected_value, T p_new_value, bc_memory_order p_order) volatile noexcept(true);
+			bool compare_exchange_strong(T* p_expected_value, T p_new_value, bc_memory_order p_order) volatile noexcept(true);
 
-			bcInline bool compare_exchange_strong(T* p_expected_value, T p_new_value, bc_memory_order p_order) noexcept(true);
+			bool compare_exchange_strong(T* p_expected_value, T p_new_value, bc_memory_order p_order) noexcept(true);
 
-			bcInline bool compare_exchange_strong(T* p_expected_value,
+			bool compare_exchange_strong(T* p_expected_value,
 				T p_new_value,
 				bc_memory_order p_success_order,
 				bc_memory_order p_failure_order) volatile noexcept(true);
 
-			bcInline bool compare_exchange_strong(T* p_expected_value,
+			bool compare_exchange_strong(T* p_expected_value,
 				T p_new_value,
 				bc_memory_order p_success_order,
 				bc_memory_order p_failure_order) noexcept(true);
 
-			bcInline bool compare_exchange_weak(T* p_expected_value, T p_new_value) volatile noexcept(true);
+			bool compare_exchange_weak(T* p_expected_value, T p_new_value) volatile noexcept(true);
 
-			bcInline bool compare_exchange_weak(T* p_expected_value, T p_new_value) noexcept(true);
+			bool compare_exchange_weak(T* p_expected_value, T p_new_value) noexcept(true);
 
-			bcInline bool compare_exchange_weak(T* p_expected_value, T p_new_value, bc_memory_order p_order) volatile noexcept(true);
+			bool compare_exchange_weak(T* p_expected_value, T p_new_value, bc_memory_order p_order) volatile noexcept(true);
 
-			bcInline bool compare_exchange_weak(T* p_expected_value, T p_new_value, bc_memory_order p_order) noexcept(true);
+			bool compare_exchange_weak(T* p_expected_value, T p_new_value, bc_memory_order p_order) noexcept(true);
 
-			bcInline bool compare_exchange_weak(T* p_expected_value,
+			bool compare_exchange_weak(T* p_expected_value,
 				T p_new_value,
 				bc_memory_order p_success_order,
 				bc_memory_order p_failure_order) volatile noexcept(true);
 
-			bcInline bool compare_exchange_weak(T* p_expected_value,
+			bool compare_exchange_weak(T* p_expected_value,
 				T p_new_value,
 				bc_memory_order p_success_order,
 				bc_memory_order p_failure_order) noexcept(true);

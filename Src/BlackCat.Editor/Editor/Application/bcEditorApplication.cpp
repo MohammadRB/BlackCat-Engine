@@ -4,6 +4,7 @@
 #include "Editor/Application/bcEditorApplication.h"
 #include "Editor/Application/bcEditorRenderApplication.h"
 #include "Editor/Application/bcUICommandService.h"
+#include "QtWidgets/QMessageBox"
 
 namespace black_cat
 {
@@ -12,6 +13,7 @@ namespace black_cat
 		bc_editor_app::bc_editor_app(HINSTANCE p_instance, QWidget *parent)
 			: QMainWindow(parent)
 		{
+			setAttribute(Qt::WA_QuitOnClose);
 			ui.setupUi(this);
 			_load_style();
 			
@@ -184,6 +186,15 @@ namespace black_cat
 
 		void bc_editor_app::timerTimeout()
 		{
+			if(!m_render_app_thread.is_still_running())
+			{
+				auto l_exit_code = m_render_app_thread.get_result_code();
+				QMessageBox::information(this, "Exit Code", QString("Engine has exited with code %1").arg(QString::number(l_exit_code)));
+
+				close();
+				return;
+			}
+
 			bc_iui_command::update_ui_context l_context(*m_form_object, *m_form_object_insert);
 			m_ui_command_service->update_ui(l_context);
 		}

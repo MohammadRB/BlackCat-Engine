@@ -76,8 +76,8 @@ namespace black_cat
 		{
 			for(auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->initialize_frame(p_render_system, p_scene, p_thread);
-				l_entry.m_pass->execute(p_render_system, p_scene, p_thread);
+				l_entry.m_pass->initialize_frame(p_render_system, p_thread, p_scene);
+				l_entry.m_pass->execute(p_render_system, p_thread, p_scene);
 			}
 		}
 
@@ -105,13 +105,13 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_pass_manager::_add_pass(_bc_pass_entry&& p_entry)
+		void bc_render_pass_manager::_add_pass(_bc_render_pass_entry&& p_entry)
 		{
 			p_entry.m_pass->_set_pass_resource_share(&m_state_share);
 
 			m_passes.push_back(std::move(p_entry));
 
-			std::sort(std::begin(m_passes), std::end(m_passes), [](_bc_pass_entry& p_first, _bc_pass_entry& p_second)
+			std::sort(std::begin(m_passes), std::end(m_passes), [](_bc_render_pass_entry& p_first, _bc_render_pass_entry& p_second)
 			{
 				return p_first.m_position < p_second.m_position;
 			});

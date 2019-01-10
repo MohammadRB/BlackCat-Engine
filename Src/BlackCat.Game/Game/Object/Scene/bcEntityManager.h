@@ -37,13 +37,13 @@ namespace black_cat
 			using entity_map_type = core::bc_unordered_map_program< string_hash::result_type, _bc_entity_data >;
 
 		public:
-			explicit bc_entity_manager();
+			explicit bc_entity_manager(bc_actor_component_manager& p_actor_manager);
 
-			bc_entity_manager(bc_entity_manager&&);
+			bc_entity_manager(bc_entity_manager&&) noexcept = delete;
 
 			~bc_entity_manager();
 
-			bc_entity_manager& operator=(bc_entity_manager&&);
+			bc_entity_manager& operator=(bc_entity_manager&&) noexcept = delete;
 
 			void read_entity_file(const bcECHAR* p_json_file_path);
 
@@ -77,8 +77,7 @@ namespace black_cat
 			template< class TComponent >
 			void _actor_component_initialization(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) const;
 
-			bc_actor_component_manager* m_actor_component_manager;
-
+			bc_actor_component_manager& m_actor_component_manager;
 			component_map_type m_components;
 			entity_map_type m_entities;
 		};
@@ -104,7 +103,7 @@ namespace black_cat
 		template< class ...TComponent >
 		void bc_entity_manager::register_component_types()
 		{
-			m_actor_component_manager->register_component_types< TComponent... >();
+			m_actor_component_manager.register_component_types< TComponent... >();
 
 			auto l_expansion_list =
 			{
@@ -121,7 +120,7 @@ namespace black_cat
 		template< class ...TComponent >
 		void bc_entity_manager::register_abstract_component_types()
 		{
-			m_actor_component_manager->register_abstract_component_types<TComponent...>();
+			m_actor_component_manager.register_abstract_component_types<TComponent...>();
 		}
 
 		template< class TComponent >

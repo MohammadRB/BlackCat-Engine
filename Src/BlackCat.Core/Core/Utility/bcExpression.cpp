@@ -151,7 +151,7 @@ namespace black_cat
 			m_pack->m_expression.register_symbol_table(m_pack->m_symbol_table);
 		}
 
-		bc_expression::bc_expression(bc_expression&& p_other)
+		bc_expression::bc_expression(bc_expression&& p_other) noexcept
 			: m_pack(std::move(p_other.m_pack))
 		{	
 		}
@@ -160,7 +160,7 @@ namespace black_cat
 		{
 		}
 
-		bc_expression& bc_expression::operator=(bc_expression&& p_other) 
+		bc_expression& bc_expression::operator=(bc_expression&& p_other) noexcept
 		{
 			m_pack = std::move(p_other.m_pack);
 

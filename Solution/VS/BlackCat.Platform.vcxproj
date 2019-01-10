@@ -29,6 +29,7 @@
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Script\bcScriptArray.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Script\bcScriptByteCode.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Script\bcScriptContext.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Script\bcScriptContextScope.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Script\bcScriptError.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Script\bcScriptExternalObject.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Script\bcScriptFunction.h" />

@@ -8,6 +8,7 @@
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 #include "Game/Object/Scene/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "BlackCat/RenderPass/bcInitializePass.h"
 #include "BlackCat/RenderPass/bcTerrainPassDx11.h"
 #include "BlackCat/RenderPass/bcMeshDrawPass.h"
@@ -24,19 +25,19 @@ namespace black_cat
 
 		bc_editor_render_app::~bc_editor_render_app() = default;
 
-		void bc_editor_render_app::application_start_engine_components(game::bc_engine_component_parameter& p_engine_components, core::bc_service_manager& p_service_manager)
+		void bc_editor_render_app::application_start_engine_components(game::bc_engine_application_parameter& p_parameters)
 		{
-			auto* l_game_system = p_service_manager.get_service<game::bc_game_system>();
-			auto* l_content_stream_manager = p_service_manager.get_service< core::bc_content_stream_manager >();
+			auto* l_game_system = m_service_manager->get_service<game::bc_game_system>();
+			auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
 
-			p_service_manager.register_service(core::bc_make_service<bc_ui_command_service>(*l_content_stream_manager, *l_game_system));
+			m_service_manager->register_service(core::bc_make_service<bc_ui_command_service>(*l_content_stream_manager, *l_game_system));
 			l_content_stream_manager->register_loader< game::bc_height_map, bc_editor_height_map_loader_dx11 >
 			(
 				core::bc_make_loader< bc_editor_height_map_loader_dx11 >()
 			);
 		}
 
-		void bc_editor_render_app::application_initialize(const bcCHAR* p_commandline)
+		void bc_editor_render_app::application_initialize(game::bc_engine_application_parameter& p_parameters)
 		{
 			game::bc_render_system& l_render_system = m_game_system->get_render_system();
 
@@ -49,7 +50,7 @@ namespace black_cat
 				0.3,
 				3000
 			));
-			m_game_system->get_input_system().get_camera().set_position_lookat(core::bc_vector3f(0, 500, -1024), core::bc_vector3f(0, 0, 0));
+			m_game_system->get_input_system().get_camera().set_position_lookat(core::bc_vector3f(0, 400, -1000), core::bc_vector3f(0, 0, 0));
 
 			l_render_system.add_render_pass(0, bc_initialize_pass());
 			l_render_system.add_render_pass(1, bc_terrain_pass_dx11());
@@ -87,28 +88,20 @@ namespace black_cat
 						}
 						++l_counter;
 
+						const auto l_position = m_game_system->get_input_system().get_camera().get_position();
+						l_actor.get_component<game::bc_mediate_component>()->set_world_position(l_position);
+
 						auto* l_rigid_component = l_actor.get_component<game::bc_rigid_body_component>();
 						auto l_rigid = l_rigid_component->get_body();
-
-						auto l_position = m_game_system->get_input_system().get_camera().get_position();
-						l_rigid.set_global_pose(physics::bc_transform(l_position));
-
 						if(l_rigid.is_rigid_dynamic().is_valid())
 						{
-							auto l_direction = m_game_system->get_input_system().get_camera().get_forward();
+							const auto l_direction = m_game_system->get_input_system().get_camera().get_forward();
 							
 							l_rigid.update_mass_inertia(10);
 							l_rigid.set_linear_velocity(l_direction * 70);
 						}
-						else
-						{
-							core::bc_matrix4f l_mat;
-							l_mat.translate(l_position.x, l_position.y, l_position.z);
 
-							l_actor.get_component<game::bc_mesh_component>()->set_world_pos(l_mat);
-						}
-
-						l_scene->add_object(l_actor);
+						l_scene->add_actor(l_actor);
 					}
 
 					return true;
@@ -128,22 +121,12 @@ namespace black_cat
 			l_ui_command_manager->load_content();
 
 			auto l_terrain = l_entity_manager->create_entity("crysis_heightmap");
-			auto l_train = l_entity_manager->create_entity("train");
 
-			core::bc_vector3f l_train_position(0, 250, -768);
-			core::bc_matrix4f l_train_matrix;
-			l_train_matrix.translate(l_train_position.x, l_train_position.y, l_train_position.z);
-
-			l_train.get_component<game::bc_rigid_body_component>()->get_body().set_global_pose(l_train_position);
-			l_train.get_component<game::bc_mesh_component>()->set_world_pos(l_train_matrix);
-
-			l_scene->add_object(l_terrain);
-			l_scene->add_object(l_train);
+			l_scene->add_actor(l_terrain);
 		}
 
 		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param)
 		{
-			m_service_manager->update(p_clock_update_param);
 		}
 
 		void bc_editor_render_app::application_render(core_platform::bc_clock::update_param p_clock_update_param)
