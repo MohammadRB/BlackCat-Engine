@@ -95,7 +95,7 @@ namespace black_cat
 
 			void _destroy() override;
 
-			void _destruct_objects();
+			void _destruct_objects() const;
 
 			bc_alloc_type m_alloc_type;
 			bc_concurrent_memory_pool m_memory_pool;
@@ -106,7 +106,8 @@ namespace black_cat
 
 		template< typename T >
 		bc_concurrent_object_pool< T >::bc_concurrent_object_pool(bc_concurrent_object_pool&& p_other) noexcept
-			: m_alloc_type(p_other.m_alloc_type),
+			: bc_initializable(std::move(p_other)),
+			m_alloc_type(p_other.m_alloc_type),
 			m_memory_pool(std::move(p_other.m_memory_pool))
 		{
 		}
@@ -114,7 +115,7 @@ namespace black_cat
 		template< typename T >
 		bc_concurrent_object_pool< T >::~bc_concurrent_object_pool()
 		{
-			if (m_memory_pool.m_heap)
+			if (m_initialized)
 			{
 				destroy();
 			}
@@ -123,6 +124,7 @@ namespace black_cat
 		template< typename T >
 		bc_concurrent_object_pool< T >& bc_concurrent_object_pool< T >::operator=(bc_concurrent_object_pool&& p_other) noexcept
 		{
+			bc_initializable::operator=(std::move(p_other));
 			m_alloc_type = p_other.m_alloc_type;
 			m_memory_pool = std::move(p_other.m_memory_pool);
 
@@ -147,11 +149,11 @@ namespace black_cat
 		{
 			static_assert(std::is_constructible< T, TArgs... >::value, "class T is not constructible with parameters");
 
-			T* l_result = m_memory_pool.alloc();
+			T* l_result = static_cast<T*>(m_memory_pool.alloc());
 
 			if (!l_result)
 			{
-				l_result = bcAllocThrow(sizeof(T), m_alloc_type);
+				l_result = static_cast<T*>(bcAllocThrow(sizeof(T), m_alloc_type));
 			}
 
 			new(l_result)T(std::forward< TArgs >(p_args)...);
@@ -196,14 +198,14 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_concurrent_object_pool< T >::_destruct_objects()
+		void bc_concurrent_object_pool< T >::_destruct_objects() const
 		{
 			for (bcUINT32 l_i = 0; l_i < m_memory_pool.m_num_bit_blocks; ++l_i)
 			{
-				bc_concurrent_memory_pool::bit_block_type l_current_block = m_memory_pool.m_blocks[l_i].load(core_platform::bc_memory_order::relaxed);
+				const auto l_current_block = m_memory_pool.m_blocks[l_i].load(core_platform::bc_memory_order::relaxed);
 				for (bcUINT32 l_j = 0; l_j < bc_concurrent_memory_pool::s_bit_block_size; ++l_j)
 				{
-					const bool l_is_alive = l_current_block & 1 << l_j;
+					const bool l_is_alive = l_current_block & (bc_concurrent_memory_pool::bit_block_type(1) << l_j);
 					if (l_is_alive)
 					{
 						const bcSIZE l_object_pos = l_i * bc_concurrent_memory_pool::s_bit_block_size + l_j;

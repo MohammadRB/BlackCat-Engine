@@ -26,35 +26,20 @@ namespace black_cat
 			explicit bc_platform_shape_plane(platform_pack& p_pack);
 
 			bc_platform_shape_plane(const core::bc_vector3f& p_normal, bcFLOAT p_distance);
-			//	: m_normal(p_normal),
-			//	m_distance(p_distance)
-			//{
-			//}
 
 			bc_platform_shape_plane(const core::bc_vector3f& p_normal, const core::bc_vector3f& p_point_on_plane);
-			/*	: m_normal(p_normal),
-				m_distance(-p_point_on_plane.dot(m_normal))
-			{
-			}*/
 
 			bc_platform_shape_plane(const core::bc_vector3f& p_point0,
 				const core::bc_vector3f& p_point1,
 				const core::bc_vector3f& p_point2);
-				/*: m_normal(core::bc_vector3f::normalize((p_point1 - p_point0).cross(p_point2 - p_point0))),
-				m_distance(p_point0.dot(m_normal))
-			{
-			}*/
 
 			bc_platform_shape_plane(const bc_platform_shape_plane&);
 
 			~bc_platform_shape_plane();
 
-			bc_platform_shape_plane& operator=(const bc_platform_shape_plane&) ;
+			bc_platform_shape_plane& operator=(const bc_platform_shape_plane&);
 
 			bcFLOAT distance(const core::bc_vector3f& p_point) const noexcept;
-			//{
-			//	return p_point.dot(m_normal) + m_distance;
-			//}
 
 			core::bc_vector3f get_normal() const noexcept;
 

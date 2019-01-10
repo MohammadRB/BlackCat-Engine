@@ -52,7 +52,7 @@ namespace black_cat
 
 			using bitblock_type = bcUINT32;
 			static const bitblock_type s_bitblock_mask = 0xffffffff;
-			static const bcSIZE s_bitblock_size = sizeof(bitblock_type);
+			static const bcSIZE s_bitblock_size = sizeof(bitblock_type) * 8;
 
 			bcUINT32 m_num_block;
 			bcUINT32 m_block_size;

@@ -145,18 +145,19 @@ namespace black_cat
 			bcSIZE m_actors_count;
 
 			bc_octal_tree_graph_node* m_parent;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_top_left_back;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_top_left_front;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_top_right_front;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_top_right_back;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_bottom_left_back;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_bottom_left_front;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_bottom_right_front;
-			core::bc_unique_ptr<bc_octal_tree_graph_node> m_bottom_right_back;
+			bc_octal_tree_graph_node* m_top_left_back;
+			bc_octal_tree_graph_node* m_top_left_front;
+			bc_octal_tree_graph_node* m_top_right_front;
+			bc_octal_tree_graph_node* m_top_right_back;
+			bc_octal_tree_graph_node* m_bottom_left_back;
+			bc_octal_tree_graph_node* m_bottom_left_front;
+			bc_octal_tree_graph_node* m_bottom_right_front;
+			bc_octal_tree_graph_node* m_bottom_right_back;
 
 			bc_octal_tree_node_position m_my_position;
 			physics::bc_bound_box m_bound_box;
 			core::bc_concurrent_memory_pool* m_entry_pool;
+			core::bc_concurrent_object_pool<bc_octal_tree_graph_node>* m_child_node_pool;
 			graph_node_entry_list m_actors;
 		};
 	}

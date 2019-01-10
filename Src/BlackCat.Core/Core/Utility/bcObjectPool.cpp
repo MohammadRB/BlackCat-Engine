@@ -17,13 +17,14 @@ namespace black_cat
 		}
 
 		bc_concurrent_memory_pool::bc_concurrent_memory_pool(bc_concurrent_memory_pool&& p_other) noexcept
+			: bc_initializable(std::move(p_other))
 		{
 			operator=(std::move(p_other));
 		}
 
 		bc_concurrent_memory_pool::~bc_concurrent_memory_pool()
 		{
-			if (m_heap)
+			if (m_initialized)
 			{
 				destroy();
 			}
@@ -31,6 +32,7 @@ namespace black_cat
 
 		bc_concurrent_memory_pool& bc_concurrent_memory_pool::operator=(bc_concurrent_memory_pool&& p_other) noexcept
 		{
+			bc_initializable::operator=(std::move(p_other));
 			bcUINT32 l_allocated_block = p_other.m_allocated_block.load(core_platform::bc_memory_order::acquire);
 
 			m_num_block = p_other.m_num_block;
@@ -180,6 +182,24 @@ namespace black_cat
 
 		void bc_concurrent_memory_pool::_destroy()
 		{
+#if defined(BC_DEBUG)
+			bcSIZE l_num_alive_objects = 0;
+			for (bcUINT32 l_i = 0; l_i < m_num_bit_blocks; ++l_i)
+			{
+				const auto l_current_block = m_blocks[l_i].load(core_platform::bc_memory_order::relaxed);
+				for (bcUINT32 l_j = 0; l_j < s_bit_block_size; ++l_j)
+				{
+					const bool l_is_alive = l_current_block & (bit_block_type(1) << l_j);
+					if (l_is_alive)
+					{
+						++l_num_alive_objects;
+					}
+				}
+			}
+
+			bcAssert(l_num_alive_objects == 0);
+#endif
+
 			bcFree(m_blocks);
 			bcAlignedFree(m_heap);
 

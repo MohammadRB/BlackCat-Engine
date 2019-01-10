@@ -324,7 +324,7 @@ namespace black_cat
 
 			return m_pack.m_data->m_px_scene->sweep
 			(
-				const_cast<bc_shape_geometry&>(p_geometry).get_platform_pack().m_px_geometry,
+				*const_cast<bc_shape_geometry&>(p_geometry).get_platform_pack().m_px_geometry,
 				const_cast< bc_transform& >(p_pose).get_platform_pack().m_px_transform,
 				l_dir,
 				p_max_dist,
@@ -353,7 +353,7 @@ namespace black_cat
 
 			return m_pack.m_data->m_px_scene->overlap
 			(
-				const_cast<bc_shape_geometry&>(p_geometry).get_platform_pack().m_px_geometry,
+				*const_cast<bc_shape_geometry&>(p_geometry).get_platform_pack().m_px_geometry,
 				const_cast< bc_transform& >(p_pose).get_platform_pack().m_px_transform,
 				p_buffer.get_platform_pack().m_px_query,
 				l_px_filter_data

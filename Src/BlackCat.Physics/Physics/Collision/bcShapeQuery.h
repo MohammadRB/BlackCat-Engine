@@ -28,13 +28,13 @@ namespace black_cat
 			normal = core::bc_enum::value(1),			// "normal" member of #PxQueryHit is valid
 			distance = core::bc_enum::value(2),			// "distance" member of #PxQueryHit is valid
 			//eASSUME_NO_INITIAL_OVERLAP = (1 << 4),	// Performance hint flag for sweeps when it is known upfront there's no initial overlap.
-			//									// NOTE: using this flag may cause undefined results if shapes are initially overlapping.
+														// NOTE: using this flag may cause undefined results if shapes are initially overlapping.
 			mesh_multiple = core::bc_enum::value(5),	// Report all hits for meshes rather than just the first. Not applicable to sweep queries.
 			mesh_any = core::bc_enum::value(6),			// Report any first hit for meshes. If neither eMESH_MULTIPLE nor eMESH_ANY is specified, a single closest hit will be reported for meshes.
 			mesh_both_side = core::bc_enum::value(7),	// Report hits with back faces of mesh triangles.
-			//ePRECISE_SWEEP = (1 << 8), // Use more accurate but slower narrow phase sweep tests.
-			//									// May provide better compatibility with PhysX 3.2 sweep behavior. Ignored on SPU.
-			//eMTD = (1 << 9), // Report the minimum translation depth, normal and contact point. Ignored on SPU.
+			//ePRECISE_SWEEP = (1 << 8),				// Use more accurate but slower narrow phase sweep tests.
+														// May provide better compatibility with PhysX 3.2 sweep behavior. Ignored on SPU.
+			//eMTD = (1 << 9),							// Report the minimum translation depth, normal and contact point. Ignored on SPU.
 			hit_info = position | normal | distance,
 			///** \brief Only this subset of flags can be modified by pre-filter. Other modifications will be discarded. */
 			//eMODIFIABLE_FLAGS = eMESH_MULTIPLE | eMESH_BOTH_SIDES | eASSUME_NO_INITIAL_OVERLAP | ePRECISE_SWEEP

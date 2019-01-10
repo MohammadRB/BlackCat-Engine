@@ -31,10 +31,11 @@ namespace black_cat
 			m_my_position(bc_octal_tree_node_position::null),
 			m_bound_box(p_box),
 			m_entry_pool(bcNew(core::bc_concurrent_memory_pool(), core::bc_alloc_type::unknown)),
+			m_child_node_pool(bcNew(core::bc_concurrent_object_pool<bc_octal_tree_graph_node>(), core::bc_alloc_type::unknown)),
 			m_actors(graph_node_entry_allocator(*m_entry_pool))
 		{
 			const auto l_half_extends = p_box.get_half_extends();
-			const bool l_is_power_of_two = bc_is_power_of_two(l_half_extends.x) &&
+			bool l_is_power_of_two = bc_is_power_of_two(l_half_extends.x) &&
 				bc_is_power_of_two(l_half_extends.y) &&
 				bc_is_power_of_two(l_half_extends.z);
 			if(!l_is_power_of_two)
@@ -42,8 +43,20 @@ namespace black_cat
 				throw bc_invalid_argument_exception("size of scene bound box must be power of two");
 			}
 
+			l_is_power_of_two = bc_is_power_of_two(p_min_size);
+			if (!l_is_power_of_two)
+			{
+				throw bc_invalid_argument_exception("bound box min size must be power of two");
+			}
+
 			// TODO get size of list internal node
 			m_entry_pool->initialize(1000, sizeof(_bc_octal_tree_graph_node_entry) + sizeof(void*) * 2, core::bc_alloc_type::unknown);
+
+			const auto l_max_size = (std::max)((std::max)(l_half_extends.x, l_half_extends.y), l_half_extends.z) * 2;
+			const auto l_children_depth = static_cast<bcSIZE>(log2(l_max_size) - log2(m_min_size));
+			auto l_max_children_count = 1U;
+			[&](bcSIZE p_depth, bcSIZE& p_result) { while (p_depth--) p_result *= 8; }(l_children_depth, l_max_children_count);
+			m_child_node_pool->initialize(l_max_children_count / 4, core::bc_alloc_type::unknown);
 		}
 
 		bc_octal_tree_graph_node::bc_octal_tree_graph_node(bc_octal_tree_graph_node& p_parent, 
@@ -65,6 +78,7 @@ namespace black_cat
 			m_my_position(p_my_position),
 			m_bound_box(),
 			m_entry_pool(p_parent.m_entry_pool),
+			m_child_node_pool(p_parent.m_child_node_pool),
 			m_actors(graph_node_entry_allocator(*m_entry_pool))
 		{
 			core::bc_vector3f l_bound_box_center = p_parent.m_bound_box.get_center();
@@ -122,9 +136,22 @@ namespace black_cat
 
 		bc_octal_tree_graph_node::~bc_octal_tree_graph_node()
 		{
+			if(!is_leaf_node())
+			{
+				m_child_node_pool->free(m_top_left_back);
+				m_child_node_pool->free(m_top_left_front);
+				m_child_node_pool->free(m_top_right_front);
+				m_child_node_pool->free(m_top_right_back);
+				m_child_node_pool->free(m_bottom_left_back);
+				m_child_node_pool->free(m_bottom_left_front);
+				m_child_node_pool->free(m_bottom_right_front);
+				m_child_node_pool->free(m_bottom_right_back);
+			}
+
 			if(!m_parent)
 			{
 				bcDelete(m_entry_pool);
+				bcDelete(m_child_node_pool);
 			}
 		}
 
@@ -323,14 +350,23 @@ namespace black_cat
 				m_bottom_right_front->clear();
 				m_bottom_right_back->clear();
 
-				m_top_left_back.reset();
-				m_top_left_front.reset();
-				m_top_right_front.reset();
-				m_top_right_back.reset();
-				m_bottom_left_back.reset();
-				m_bottom_left_front.reset();
-				m_bottom_right_front.reset();
-				m_bottom_right_back.reset();
+				m_child_node_pool->free(m_top_left_back);
+				m_child_node_pool->free(m_top_left_front);
+				m_child_node_pool->free(m_top_right_front);
+				m_child_node_pool->free(m_top_right_back);
+				m_child_node_pool->free(m_bottom_left_back);
+				m_child_node_pool->free(m_bottom_left_front);
+				m_child_node_pool->free(m_bottom_right_front);
+				m_child_node_pool->free(m_bottom_right_back);
+
+				m_top_left_back = nullptr;
+				m_top_left_front = nullptr;
+				m_top_right_front = nullptr;
+				m_top_right_back = nullptr;
+				m_bottom_left_back = nullptr;
+				m_bottom_left_front = nullptr;
+				m_bottom_right_front = nullptr;
+				m_bottom_right_back = nullptr;
 			}
 
 			m_actors.clear();
@@ -429,56 +465,56 @@ namespace black_cat
 
 		void bc_octal_tree_graph_node::_split()
 		{
-			m_top_left_back = core::bc_make_unique< bc_octal_tree_graph_node >
+			m_top_left_back = m_child_node_pool->alloc
 			(
 				*this,
 				bc_octal_tree_node_position::top_left_back,
 				m_max_actors_count,
 				m_min_size
 			);
-			m_top_left_front = core::bc_make_unique< bc_octal_tree_graph_node >
+			m_top_left_front = m_child_node_pool->alloc
 			(
 				*this,
 				bc_octal_tree_node_position::top_left_front,
 				m_max_actors_count,
 				m_min_size
 			);
-			m_top_right_front = core::bc_make_unique< bc_octal_tree_graph_node >
+			m_top_right_front = m_child_node_pool->alloc
 			(
 				*this,
 				bc_octal_tree_node_position::top_right_front,
 				m_max_actors_count,
 				m_min_size
 			);
-			m_top_right_back = core::bc_make_unique< bc_octal_tree_graph_node >
+			m_top_right_back = m_child_node_pool->alloc
 			(
 				*this,
 				bc_octal_tree_node_position::top_right_back,
 				m_max_actors_count,
 				m_min_size
 			);
-			m_bottom_left_back = core::bc_make_unique< bc_octal_tree_graph_node >
+			m_bottom_left_back = m_child_node_pool->alloc
 			(
 				*this,
 				bc_octal_tree_node_position::bottom_left_back,
 				m_max_actors_count,
 				m_min_size
 			);
-			m_bottom_left_front = core::bc_make_unique< bc_octal_tree_graph_node >
+			m_bottom_left_front = m_child_node_pool->alloc
 			(
 				*this,
 				bc_octal_tree_node_position::bottom_left_front,
 				m_max_actors_count,
 				m_min_size
 			);
-			m_bottom_right_front = core::bc_make_unique< bc_octal_tree_graph_node >
+			m_bottom_right_front = m_child_node_pool->alloc
 			(
 				*this,
 				bc_octal_tree_node_position::bottom_right_front,
 				m_max_actors_count,
 				m_min_size
 			);
-			m_bottom_right_back = core::bc_make_unique< bc_octal_tree_graph_node >
+			m_bottom_right_back = m_child_node_pool->alloc
 			(
 				*this,
 				bc_octal_tree_node_position::bottom_right_back,
@@ -529,14 +565,23 @@ namespace black_cat
 				}
 			}
 
-			m_top_left_back.reset();
-			m_top_left_front.reset();
-			m_top_right_front.reset();
-			m_top_right_back.reset();
-			m_bottom_left_back.reset();
-			m_bottom_left_front.reset();
-			m_bottom_right_front.reset();
-			m_bottom_right_back.reset();
+			m_child_node_pool->free(m_top_left_back);
+			m_child_node_pool->free(m_top_left_front);
+			m_child_node_pool->free(m_top_right_front);
+			m_child_node_pool->free(m_top_right_back);
+			m_child_node_pool->free(m_bottom_left_back);
+			m_child_node_pool->free(m_bottom_left_front);
+			m_child_node_pool->free(m_bottom_right_front);
+			m_child_node_pool->free(m_bottom_right_back);
+
+			m_top_left_back = nullptr;
+			m_top_left_front = nullptr;
+			m_top_right_front = nullptr;
+			m_top_right_back = nullptr;
+			m_bottom_left_back = nullptr;
+			m_bottom_left_front = nullptr;
+			m_bottom_right_front = nullptr;
+			m_bottom_right_back = nullptr;
 		}
 
 		bc_octal_tree_graph_node* bc_octal_tree_graph_node::_get_min_node() const
@@ -544,7 +589,7 @@ namespace black_cat
 			bc_octal_tree_graph_node* l_node = const_cast<bc_octal_tree_graph_node*>(this);
 			while(l_node->m_top_left_back)
 			{
-				l_node = l_node->m_top_left_back.get();
+				l_node = l_node->m_top_left_back;
 			}
 
 			return l_node;
@@ -555,7 +600,7 @@ namespace black_cat
 			bc_octal_tree_graph_node* l_node = const_cast<bc_octal_tree_graph_node*>(this);
 			while (l_node->m_bottom_right_back)
 			{
-				l_node = l_node->m_bottom_right_back.get();
+				l_node = l_node->m_bottom_right_back;
 			}
 
 			return l_node;
@@ -597,35 +642,35 @@ namespace black_cat
 				return nullptr;
 			}
 
-			if(this == m_parent->m_top_left_back.get())
+			if(this == m_parent->m_top_left_back)
 			{
 				return m_parent->m_top_left_front->_get_min_node();
 			}
-			if (this == m_parent->m_top_left_front.get())
+			if (this == m_parent->m_top_left_front)
 			{
 				return m_parent->m_top_right_front->_get_min_node();
 			}
-			if (this == m_parent->m_top_right_front.get())
+			if (this == m_parent->m_top_right_front)
 			{
 				return m_parent->m_top_right_back->_get_min_node();
 			}
-			if (this == m_parent->m_top_right_back.get())
+			if (this == m_parent->m_top_right_back)
 			{
 				return m_parent->m_bottom_left_back->_get_min_node();
 			}
-			if (this == m_parent->m_bottom_left_back.get())
+			if (this == m_parent->m_bottom_left_back)
 			{
 				return m_parent->m_bottom_left_front->_get_min_node();
 			}
-			if (this == m_parent->m_bottom_left_front.get())
+			if (this == m_parent->m_bottom_left_front)
 			{
 				return m_parent->m_bottom_right_front->_get_min_node();
 			}
-			if (this == m_parent->m_bottom_right_front.get())
+			if (this == m_parent->m_bottom_right_front)
 			{
 				return m_parent->m_bottom_right_back->_get_min_node();
 			}
-			if (this == m_parent->m_bottom_right_back.get())
+			if (this == m_parent->m_bottom_right_back)
 			{
 				return m_parent;
 			}
@@ -641,35 +686,35 @@ namespace black_cat
 				return nullptr;
 			}
 
-			if (this == m_parent->m_bottom_right_back.get())
+			if (this == m_parent->m_bottom_right_back)
 			{
 				return m_parent->m_bottom_right_front->_get_max_node();
 			}
-			if (this == m_parent->m_bottom_right_front.get())
+			if (this == m_parent->m_bottom_right_front)
 			{
 				return m_parent->m_bottom_left_front->_get_max_node();
 			}
-			if (this == m_parent->m_bottom_left_front.get())
+			if (this == m_parent->m_bottom_left_front)
 			{
 				return m_parent->m_bottom_left_back->_get_max_node();
 			}
-			if (this == m_parent->m_bottom_left_back.get())
+			if (this == m_parent->m_bottom_left_back)
 			{
 				return m_parent->m_top_right_back->_get_max_node();
 			}
-			if (this == m_parent->m_top_right_back.get())
+			if (this == m_parent->m_top_right_back)
 			{
 				return m_parent->m_top_right_front->_get_max_node();
 			}
-			if (this == m_parent->m_top_right_front.get())
+			if (this == m_parent->m_top_right_front)
 			{
 				return m_parent->m_top_left_front->_get_max_node();
 			}
-			if (this == m_parent->m_top_left_front.get())
+			if (this == m_parent->m_top_left_front)
 			{
 				return m_parent->m_top_left_back->_get_max_node();
 			}
-			if (this == m_parent->m_top_left_back.get())
+			if (this == m_parent->m_top_left_back)
 			{
 				return m_parent;
 			}

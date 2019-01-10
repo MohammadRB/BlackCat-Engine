@@ -229,7 +229,7 @@ namespace black_cat
 			(
 				bc_to_right_hand(p_ray.m_origin),
 				bc_to_right_hand(p_ray.m_dir),
-				const_cast< bc_shape_geometry& >(p_shape).get_platform_pack().m_px_geometry,
+				*const_cast< bc_shape_geometry& >(p_shape).get_platform_pack().m_px_geometry,
 				const_cast< bc_transform& >(p_shape_pose).get_platform_pack().m_px_transform,
 				p_ray.m_length,
 				static_cast< physx::PxHitFlag::Enum >(p_flags),
@@ -259,9 +259,9 @@ namespace black_cat
 			(
 				bc_to_right_hand(p_unit_dir),
 				p_max_dist,
-				const_cast<bc_shape_geometry&>(p_geom0).get_platform_pack().m_px_geometry,
+				*const_cast<bc_shape_geometry&>(p_geom0).get_platform_pack().m_px_geometry,
 				const_cast<bc_transform&>(p_pose0).get_platform_pack().m_px_transform,
-				const_cast<bc_shape_geometry&>(p_geom1).get_platform_pack().m_px_geometry,
+				*const_cast<bc_shape_geometry&>(p_geom1).get_platform_pack().m_px_geometry,
 				const_cast<bc_transform&>(p_pose1).get_platform_pack().m_px_transform,
 				p_hit.get_platform_pack().m_px_hit,
 				static_cast< physx::PxHitFlag::Enum >(p_flags),
@@ -278,9 +278,9 @@ namespace black_cat
 		{
 			bool l_result = physx::PxGeometryQuery::overlap
 			(
-				const_cast<bc_shape_geometry&>(p_geom0).get_platform_pack().m_px_geometry,
+				*const_cast<bc_shape_geometry&>(p_geom0).get_platform_pack().m_px_geometry,
 				const_cast< bc_transform& >(p_pose0).get_platform_pack().m_px_transform,
-				const_cast<bc_shape_geometry&>(p_geom1).get_platform_pack().m_px_geometry,
+				*const_cast<bc_shape_geometry&>(p_geom1).get_platform_pack().m_px_geometry,
 				const_cast< bc_transform& >(p_pose1).get_platform_pack().m_px_transform
 			);
 
@@ -299,9 +299,9 @@ namespace black_cat
 			(
 				l_direction,
 				p_depth,
-				const_cast<bc_shape_geometry&>(p_geom0).get_platform_pack().m_px_geometry,
+				*const_cast<bc_shape_geometry&>(p_geom0).get_platform_pack().m_px_geometry,
 				const_cast< bc_transform& >(p_pose0).get_platform_pack().m_px_transform,
-				const_cast<bc_shape_geometry&>(p_geom1).get_platform_pack().m_px_geometry,
+				*const_cast<bc_shape_geometry&>(p_geom1).get_platform_pack().m_px_geometry,
 				const_cast< bc_transform& >(p_pose1).get_platform_pack().m_px_transform
 			);
 
@@ -320,7 +320,7 @@ namespace black_cat
 			bcFLOAT l_result = physx::PxGeometryQuery::pointDistance
 			(
 				bc_to_right_hand(p_point),
-				const_cast<bc_shape_geometry&>(p_geom).get_platform_pack().m_px_geometry,
+				*const_cast<bc_shape_geometry&>(p_geom).get_platform_pack().m_px_geometry,
 				const_cast< bc_transform& >(p_pose).get_platform_pack().m_px_transform,
 				&l_closest_point
 			);
@@ -338,7 +338,7 @@ namespace black_cat
 
 			l_result.get_platform_pack().m_bound = physx::PxGeometryQuery::getWorldBounds
 			(
-				const_cast<bc_shape_geometry&>(p_geom).get_platform_pack().m_px_geometry,
+				*const_cast<bc_shape_geometry&>(p_geom).get_platform_pack().m_px_geometry,
 				const_cast< bc_transform& >(p_pose).get_platform_pack().m_px_transform,
 				p_inflation
 			);
