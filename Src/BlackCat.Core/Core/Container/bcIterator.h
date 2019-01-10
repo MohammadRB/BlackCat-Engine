@@ -16,12 +16,12 @@ namespace black_cat
 			using value_type = typename provider_type::value_type;
 			using node_type = typename provider_type::node_type;
 
-			static bool validate(const provider_type& p_provider, const node_type* p_node) noexcept(true)
+			static bool validate(const provider_type& p_provider, const node_type* p_node) noexcept
 			{
 				return p_provider.iterator_validate(p_node);
 			}
 
-			static bcINT32 compare(const provider_type& p_provider, const node_type* p_first, const node_type* p_second) noexcept(true)
+			static bcINT32 compare(const provider_type& p_provider, const node_type* p_first, const node_type* p_second) noexcept
 			{
 				return p_provider.iterator_compare(p_first, p_second);
 			}
@@ -36,7 +36,7 @@ namespace black_cat
 				return p_provider.iterator_increment(p_node);
 			}
 
-			static void swap(const provider_type& p_provider, node_type** p_first, node_type** p_second) noexcept(true)
+			static void swap(const provider_type& p_provider, node_type** p_first, node_type** p_second) noexcept
 			{
 				p_provider.iterator_swap(p_first, p_second);
 			}
@@ -50,6 +50,11 @@ namespace black_cat
 		template< typename TProvider >
 		struct bc_bidirectional_iterator_provider_traits : public bc_forward_iterator_provider_traits< TProvider >
 		{
+		public:
+			using provider_type = TProvider;
+			using value_type = typename provider_type::value_type;
+			using node_type = typename provider_type::node_type;
+
 			static node_type* decrement(const provider_type& p_provider, node_type* p_node)
 			{
 				return p_provider.iterator_decrement(p_node);
@@ -59,6 +64,9 @@ namespace black_cat
 		template< typename TProvider >
 		struct bc_random_access_iterator_provider_traits : public bc_bidirectional_iterator_provider_traits< TProvider >
 		{
+			using provider_type = TProvider;
+			using value_type = typename provider_type::value_type;
+			using node_type = typename provider_type::node_type;
 			using difference_type = typename provider_type::difference_type;
 			using bc_bidirectional_iterator_provider_traits< TProvider >::increment;
 			using bc_bidirectional_iterator_provider_traits< TProvider >::decrement;
@@ -75,11 +83,14 @@ namespace black_cat
 		};
 
 		template< typename TProvider >
-		class bc_input_iterator : public std::iterator< std::input_iterator_tag,
+		class bc_input_iterator : public std::iterator
+		< 
+			std::input_iterator_tag,
 			typename TProvider::value_type,
 			typename TProvider::difference_type,
 			typename TProvider::pointer,
-			typename TProvider::reference >
+			typename TProvider::reference 
+		>
 		{
 		public:
 			using this_type = bc_input_iterator;
@@ -88,13 +99,13 @@ namespace black_cat
 			using node_type = typename bc_input_iterator_provider_traits< provider_type >::node_type;
 
 		public:
-			bc_input_iterator(const provider_type* p_provider, node_type* p_node) noexcept(true)
+			bc_input_iterator(const provider_type* p_provider, node_type* p_node) noexcept
 				:m_provider(p_provider),
 				 m_node(p_node)
 			{
 			}
 
-			bc_input_iterator(const this_type& p_other) noexcept(true)
+			bc_input_iterator(const this_type& p_other) noexcept
 				:m_provider(p_other.m_provider),
 				 m_node(p_other.m_node)
 			{
@@ -104,7 +115,7 @@ namespace black_cat
 			{
 			}
 
-			this_type& operator =(const this_type& p_other) noexcept(true)
+			this_type& operator =(const this_type& p_other) noexcept
 			{
 				m_provider = p_other.m_provider;
 				m_node = p_other.m_node;
@@ -112,12 +123,12 @@ namespace black_cat
 				return *this;
 			}
 
-			bool operator ==(const this_type& p_other) const noexcept(true)
+			bool operator ==(const this_type& p_other) const noexcept
 			{
 				return bc_input_iterator_provider_traits< provider_type >::compare(*m_provider, m_node, p_other.m_node) == 0;
 			}
 
-			bool operator !=(const this_type& p_other) const noexcept(true)
+			bool operator !=(const this_type& p_other) const noexcept
 			{
 				return bc_input_iterator_provider_traits< provider_type >::compare(*m_provider, m_node, p_other.m_node) != 0;
 			}
@@ -129,7 +140,7 @@ namespace black_cat
 				return *bc_input_iterator_provider_traits< provider_type >::dereference(*m_provider, m_node);
 			}
 
-			pointer operator ->() const noexcept(true)
+			pointer operator ->() const noexcept
 			{
 				bcAssert(bc_input_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
@@ -156,12 +167,12 @@ namespace black_cat
 				return l_old;
 			}
 
-			void swap(this_type& p_other) noexcept(true)
+			void swap(this_type& p_other) noexcept
 			{
 				bc_input_iterator_provider_traits< provider_type >::swap(*m_provider, &m_node, &p_other.m_node);
 			}
 
-			node_type* get_node() const noexcept(true)
+			node_type* get_node() const noexcept
 			{
 				return m_node;
 			}
@@ -187,13 +198,13 @@ namespace black_cat
 			using node_type = typename bc_forward_iterator_provider_traits< provider_type >::node_type;
 
 		public:
-			bc_const_forward_iterator(const provider_type* p_provider, node_type* p_node) noexcept(true)
+			bc_const_forward_iterator(const provider_type* p_provider, node_type* p_node) noexcept
 				:m_provider(p_provider),
 				m_node(p_node)
 			{
 			}
 
-			bc_const_forward_iterator(const this_type& p_other) noexcept(true)
+			bc_const_forward_iterator(const this_type& p_other) noexcept
 				:m_provider(p_other.m_provider),
 				m_node(p_other.m_node)
 			{
@@ -203,7 +214,7 @@ namespace black_cat
 			{
 			}
 
-			this_type& operator =(const this_type& p_other) noexcept(true)
+			this_type& operator =(const this_type& p_other) noexcept
 			{
 				m_provider = p_other.m_provider;
 				m_node = p_other.m_node;
@@ -211,12 +222,12 @@ namespace black_cat
 				return *this;
 			}
 
-			bool operator ==(const this_type& p_other) const noexcept(true)
+			bool operator ==(const this_type& p_other) const noexcept
 			{
 				return bc_forward_iterator_provider_traits< provider_type >::compare(*m_provider, m_node, p_other.m_node) == 0;
 			}
 
-			bool operator !=(const this_type& p_other) const noexcept(true)
+			bool operator !=(const this_type& p_other) const noexcept
 			{
 				return bc_forward_iterator_provider_traits< provider_type >::compare(*m_provider, m_node, p_other.m_node) != 0;
 			}
@@ -228,7 +239,7 @@ namespace black_cat
 				return *bc_forward_iterator_provider_traits< provider_type >::dereference(*m_provider, m_node);
 			}
 
-			const pointer operator ->() const noexcept(true)
+			const pointer operator ->() const noexcept
 			{
 				bcAssert(bc_forward_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
@@ -255,12 +266,12 @@ namespace black_cat
 				return l_old;
 			}
 
-			void swap(this_type& p_other) noexcept(true)
+			void swap(this_type& p_other) noexcept
 			{
 				bc_forward_iterator_provider_traits< provider_type >::swap(*m_provider, &m_node, &p_other.m_node);
 			}
 
-			node_type* get_node() const noexcept(true)
+			node_type* get_node() const noexcept
 			{
 				return m_node;
 			}
@@ -283,12 +294,12 @@ namespace black_cat
 			using node_type = typename bc_forward_iterator_provider_traits< provider_type >::node_type;
 
 		public:
-			bc_forward_iterator(const provider_type* p_provider, node_type* p_node) noexcept(true)
+			bc_forward_iterator(const provider_type* p_provider, node_type* p_node) noexcept
 				: bc_const_forward_iterator(p_provider, p_node)
 			{
 			}
 
-			bc_forward_iterator(const this_type& p_other) noexcept(true)
+			bc_forward_iterator(const this_type& p_other) noexcept
 				: bc_const_forward_iterator(p_other)
 			{
 			}
@@ -297,19 +308,19 @@ namespace black_cat
 			{
 			}
 
-			this_type& operator =(const this_type& p_other) noexcept(true)
+			this_type& operator =(const this_type& p_other) noexcept
 			{
 				base_type::operator =(p_other);
 
 				return *this;
 			}
 
-			bool operator ==(const this_type& p_other) const noexcept(true)
+			bool operator ==(const this_type& p_other) const noexcept
 			{
 				return base_type::operator ==(p_other);
 			}
 
-			bool operator !=(const this_type& p_other) const noexcept(true)
+			bool operator !=(const this_type& p_other) const noexcept
 			{
 				return base_type::operator !=(p_other);
 			}
@@ -319,7 +330,7 @@ namespace black_cat
 				return const_cast<reference>(base_type::operator*());
 			}
 
-			pointer operator ->() const noexcept(true)
+			pointer operator ->() const noexcept
 			{
 				return const_cast<pointer>(base_type::operator->());
 			}
@@ -340,7 +351,7 @@ namespace black_cat
 				return l_old;
 			}
 
-			void swap(this_type& p_other) noexcept(true)
+			void swap(this_type& p_other) noexcept
 			{
 				base_type::swap(p_other);
 			}
@@ -364,13 +375,13 @@ namespace black_cat
 			using node_type = typename bc_bidirectional_iterator_provider_traits< provider_type >::node_type;
 
 		public:
-			bc_const_bidirectional_iterator(const provider_type* p_provider, node_type* p_node) noexcept(true)
+			bc_const_bidirectional_iterator(const provider_type* p_provider, node_type* p_node) noexcept
 				:m_provider(p_provider),
 				m_node(p_node)
 			{
 			}
 
-			bc_const_bidirectional_iterator(const this_type& p_other) noexcept(true)
+			bc_const_bidirectional_iterator(const this_type& p_other) noexcept
 				:m_provider(p_other.m_provider),
 				m_node(p_other.m_node)
 			{
@@ -380,7 +391,7 @@ namespace black_cat
 			{
 			}
 
-			this_type& operator =(const this_type& p_other) noexcept(true)
+			this_type& operator =(const this_type& p_other) noexcept
 			{
 				m_provider = p_other.m_provider;
 				m_node = p_other.m_node;
@@ -388,12 +399,12 @@ namespace black_cat
 				return *this;
 			}
 
-			bool operator ==(const this_type& p_other) const noexcept(true)
+			bool operator ==(const this_type& p_other) const noexcept
 			{
 				return bc_bidirectional_iterator_provider_traits< provider_type >::compare(*m_provider, m_node, p_other.m_node) == 0;
 			}
 
-			bool operator !=(const this_type& p_other) const noexcept(true)
+			bool operator !=(const this_type& p_other) const noexcept
 			{
 				return bc_bidirectional_iterator_provider_traits< provider_type >::compare(*m_provider, m_node, p_other.m_node) != 0;
 			}
@@ -405,7 +416,7 @@ namespace black_cat
 				return *bc_bidirectional_iterator_provider_traits< provider_type >::dereference(*m_provider, m_node);
 			}
 
-			const pointer operator ->() const noexcept(true)
+			const pointer operator ->() const noexcept
 			{
 				bcAssert(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
@@ -452,12 +463,12 @@ namespace black_cat
 				return l_old;
 			}
 
-			void swap(this_type& p_other) noexcept(true)
+			void swap(this_type& p_other) noexcept
 			{
 				bc_bidirectional_iterator_provider_traits< provider_type >::swap(*m_provider, &m_node, &p_other.m_node);
 			}
 
-			node_type* get_node() const noexcept(true)
+			node_type* get_node() const noexcept
 			{
 				return m_node;
 			}
@@ -480,12 +491,12 @@ namespace black_cat
 			using node_type = typename bc_bidirectional_iterator_provider_traits< provider_type >::node_type;
 
 		public:
-			bc_bidirectional_iterator(const provider_type* p_provider, node_type* p_node) noexcept(true)
+			bc_bidirectional_iterator(const provider_type* p_provider, node_type* p_node) noexcept
 				: bc_const_bidirectional_iterator(p_provider, p_node)
 			{
 			}
 
-			bc_bidirectional_iterator(const this_type& p_other) noexcept(true)
+			bc_bidirectional_iterator(const this_type& p_other) noexcept
 				: bc_const_bidirectional_iterator(p_other)
 			{
 			}
@@ -494,19 +505,19 @@ namespace black_cat
 			{
 			}
 
-			this_type& operator =(const this_type& p_other) noexcept(true)
+			this_type& operator =(const this_type& p_other) noexcept
 			{
 				base_type::operator =(p_other);
 
 				return *this;
 			}
 
-			bool operator ==(const this_type& p_other) const noexcept(true)
+			bool operator ==(const this_type& p_other) const noexcept
 			{
 				return base_type::operator ==(p_other);
 			}
 
-			bool operator !=(const this_type& p_other) const noexcept(true)
+			bool operator !=(const this_type& p_other) const noexcept
 			{
 				return base_type::operator !=(p_other);
 			}
@@ -516,7 +527,7 @@ namespace black_cat
 				return const_cast<reference>(base_type::operator*());
 			}
 
-			pointer operator ->() const noexcept(true)
+			pointer operator ->() const noexcept
 			{
 				return const_cast<pointer>(base_type::operator->());
 			}
@@ -553,7 +564,7 @@ namespace black_cat
 				return l_old;
 			}
 
-			void swap(this_type& p_other) noexcept(true)
+			void swap(this_type& p_other) noexcept
 			{
 				base_type::swap(p_other);
 			}
@@ -577,13 +588,13 @@ namespace black_cat
 			using node_type = typename bc_random_access_iterator_provider_traits< provider_type >::node_type;
 
 		public:
-			bc_const_random_access_iterator(const provider_type* p_provider, node_type* p_node) noexcept(true)
+			bc_const_random_access_iterator(const provider_type* p_provider, node_type* p_node) noexcept
 				:m_provider(p_provider),
 				m_node(p_node)
 			{
 			}
 
-			bc_const_random_access_iterator(const this_type& p_other) noexcept(true)
+			bc_const_random_access_iterator(const this_type& p_other) noexcept
 				:m_provider(p_other.m_provider),
 				m_node(p_other.m_node)
 			{
@@ -593,7 +604,7 @@ namespace black_cat
 			{
 			}
 
-			this_type& operator =(const this_type& p_other) noexcept(true)
+			this_type& operator =(const this_type& p_other) noexcept
 			{
 				m_provider = p_other.m_provider;
 				m_node = p_other.m_node;
@@ -601,12 +612,12 @@ namespace black_cat
 				return *this;
 			}
 
-			bool operator ==(const this_type& p_other) const noexcept(true)
+			bool operator ==(const this_type& p_other) const noexcept
 			{
 				return bc_random_access_iterator_provider_traits< provider_type >::compare(*m_provider, m_node, p_other.m_node) == 0;
 			}
 
-			bool operator !=(const this_type& p_other) const noexcept(true)
+			bool operator !=(const this_type& p_other) const noexcept
 			{
 				return bc_random_access_iterator_provider_traits< provider_type >::compare(*m_provider, m_node, p_other.m_node) != 0;
 			}
@@ -618,7 +629,7 @@ namespace black_cat
 				return *bc_random_access_iterator_provider_traits< provider_type >::dereference(*m_provider, m_node);
 			}
 
-			const pointer operator ->() const noexcept(true)
+			const pointer operator ->() const noexcept
 			{
 				bcAssert(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
@@ -708,32 +719,32 @@ namespace black_cat
 				return m_node - p_other.m_node;
 			}
 
-			bool operator <(const this_type& p_other) const noexcept(true)
+			bool operator <(const this_type& p_other) const noexcept
 			{
 				return bc_random_access_iterator_provider_traits< provider_type >::compare(*m_provider, m_node, p_other.m_node) < 0;
 			}
 
-			bool operator <=(const this_type& p_other) const noexcept(true)
+			bool operator <=(const this_type& p_other) const noexcept
 			{
 				return bc_random_access_iterator_provider_traits< provider_info >::compare(*m_provider, m_node, p_other.m_node) <= 0;
 			}
 
-			bool operator >(const this_type& p_other) const noexcept(true)
+			bool operator >(const this_type& p_other) const noexcept
 			{
 				return bc_random_access_iterator_provider_traits< provider_info >::compare(*m_provider, m_node, p_other.m_node) > 0;
 			}
 
-			bool operator >=(const this_type& p_other) const noexcept(true)
+			bool operator >=(const this_type& p_other) const noexcept
 			{
 				return bc_random_access_iterator_provider_traits< provider_info >::compare(*m_provider, m_node, p_other.m_node) >= 0;
 			}
 
-			void swap(this_type& p_other) noexcept(true)
+			void swap(this_type& p_other) noexcept
 			{
 				bc_random_access_iterator_provider_traits< provider_type >::swap(*m_provider, &m_node, &p_other.m_node);
 			}
 
-			node_type* get_node() const noexcept(true)
+			node_type* get_node() const noexcept
 			{
 				return m_node;
 			}
@@ -756,12 +767,12 @@ namespace black_cat
 			using node_type = typename bc_bidirectional_iterator_provider_traits< provider_type >::node_type;
 
 		public:
-			bc_random_access_iterator(const provider_type* p_provider, node_type* p_node) noexcept(true)
+			bc_random_access_iterator(const provider_type* p_provider, node_type* p_node) noexcept
 				: bc_const_random_access_iterator(p_provider, p_node)
 			{
 			}
 
-			bc_random_access_iterator(const this_type& p_other) noexcept(true)
+			bc_random_access_iterator(const this_type& p_other) noexcept
 				: bc_const_random_access_iterator(p_other)
 			{
 			}
@@ -770,19 +781,19 @@ namespace black_cat
 			{
 			}
 
-			this_type& operator =(const this_type& p_other) noexcept(true)
+			this_type& operator =(const this_type& p_other) noexcept
 			{
 				base_type::operator =(p_other);
 
 				return *this;
 			}
 
-			bool operator ==(const this_type& p_other) const noexcept(true)
+			bool operator ==(const this_type& p_other) const noexcept
 			{
 				return base_type::operator ==(p_other);
 			}
 
-			bool operator !=(const this_type& p_other) const noexcept(true)
+			bool operator !=(const this_type& p_other) const noexcept
 			{
 				return base_type::operator !=(p_other);
 			}
@@ -792,7 +803,7 @@ namespace black_cat
 				return const_cast<reference>(base_type::operator*());
 			}
 
-			pointer operator ->() const noexcept(true)
+			pointer operator ->() const noexcept
 			{
 				return const_cast<pointer>(base_type::operator->());
 			}
@@ -864,27 +875,27 @@ namespace black_cat
 				return base_type::operator-(p_other);
 			}
 
-			bool operator <(const this_type& p_other) const noexcept(true)
+			bool operator <(const this_type& p_other) const noexcept
 			{
 				return base_type::operator<(p_other);
 			}
 
-			bool operator <=(const this_type& p_other) const noexcept(true)
+			bool operator <=(const this_type& p_other) const noexcept
 			{
 				return base_type::operator<=(p_other);
 			}
 
-			bool operator >(const this_type& p_other) const noexcept(true)
+			bool operator >(const this_type& p_other) const noexcept
 			{
 				return base_type::operator>(p_other);
 			}
 
-			bool operator >=(const this_type& p_other) const noexcept(true)
+			bool operator >=(const this_type& p_other) const noexcept
 			{
 				return base_type::operator>=(p_other);
 			}
 
-			void swap(this_type& p_other) noexcept(true)
+			void swap(this_type& p_other) noexcept
 			{
 				base_type::swap(p_other);
 			}
@@ -914,13 +925,10 @@ namespace black_cat
 			return l_temp;
 		}
 
-#define bc_make_iterators_friend(TProvider) \
-	friend class bc_input_iterator_provider_traits<TProvider>; \
-	friend class bc_forward_iterator_provider_traits<TProvider>; \
-	friend class bc_bidirectional_iterator_provider_traits<TProvider>; \
-	friend class bc_random_access_iterator_provider_traits<TProvider>;
-
-		// Unlike std::reverse_iterator this iterator does not point to one-past-the-end iterator
+		/**
+		 * \brief Unlike std::reverse_iterator this iterator does not point to one-past-the-end iterator
+		 * \tparam TIterator 
+		 */
 		template< typename TIterator >
 		class bc_reverse_iterator : public std::iterator< typename std::iterator_traits<TIterator>::iterator_category,
 			typename std::iterator_traits<TIterator>::value_type,
@@ -935,12 +943,12 @@ namespace black_cat
 			using reference = typename std::iterator_traits<TIterator>::reference;
 
 		public:
-			explicit bc_reverse_iterator(TIterator p_iterator) noexcept(true)
+			explicit bc_reverse_iterator(TIterator p_iterator) noexcept
 				: m_iterator(p_iterator)
 			{
 			}
 
-			bc_reverse_iterator(const this_type& p_other) noexcept(true)
+			bc_reverse_iterator(const this_type& p_other) noexcept
 				: m_iterator(p_other.m_iterator)
 			{
 			}
@@ -949,18 +957,18 @@ namespace black_cat
 			{
 			}
 
-			this_type& operator =(const this_type& p_other) noexcept(true)
+			this_type& operator =(const this_type& p_other) noexcept
 			{
 				m_iterator = p_other.m_iterator;
 				return *this;
 			}
 
-			bool operator ==(const this_type& p_other) const noexcept(true)
+			bool operator ==(const this_type& p_other) const noexcept
 			{
 				return m_iterator == p_other.m_iterator;
 			}
 
-			bool operator !=(const this_type& p_other) const noexcept(true)
+			bool operator !=(const this_type& p_other) const noexcept
 			{
 				return m_iterator != p_other.m_iterator;
 			}
@@ -970,7 +978,7 @@ namespace black_cat
 				return m_iterator.operator*();
 			}
 
-			pointer operator ->() const noexcept(true)
+			pointer operator ->() const noexcept
 			{
 				return m_iterator.operator->();
 			}
@@ -1042,32 +1050,32 @@ namespace black_cat
 				return m_iterator - p_other.m_iterator;
 			}
 
-			bool operator <(const this_type& p_other) noexcept(true)
+			bool operator <(const this_type& p_other) noexcept
 			{
 				return m_iterator < p_other.m_iterator;
 			}
 
-			bool operator <=(const this_type& p_other) noexcept(true)
+			bool operator <=(const this_type& p_other) noexcept
 			{
 				return m_iterator <= p_other.m_iterator;
 			}
 
-			bool operator >(const this_type& p_other) noexcept(true)
+			bool operator >(const this_type& p_other) noexcept
 			{
 				return m_iterator > p_other.m_iterator;
 			}
 
-			bool operator >=(const this_type& p_other) noexcept(true)
+			bool operator >=(const this_type& p_other) noexcept
 			{
 				return m_iterator >= p_other.m_iterator;
 			}
 
-			void swap(this_type& p_other) noexcept(true)
+			void swap(this_type& p_other) noexcept
 			{
 				m_iterator.swap(p_other.m_iterator);
 			}
 
-			TIterator base() const noexcept(true)
+			TIterator base() const noexcept
 			{
 				return m_iterator;
 			}
@@ -1077,5 +1085,11 @@ namespace black_cat
 		private:
 			TIterator m_iterator;
 		};
+
+#define bc_make_iterators_friend(TProvider) \
+		friend struct black_cat::core::bc_input_iterator_provider_traits<TProvider>; \
+		friend struct black_cat::core::bc_forward_iterator_provider_traits<TProvider>; \
+		friend struct black_cat::core::bc_bidirectional_iterator_provider_traits<TProvider>; \
+		friend struct black_cat::core::bc_random_access_iterator_provider_traits<TProvider>;
 	}
 }

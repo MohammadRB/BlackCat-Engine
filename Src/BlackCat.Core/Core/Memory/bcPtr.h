@@ -220,6 +220,8 @@ namespace black_cat
 				{
 					reset(static_cast<T*>(p_other.release()));
 					m_deleter = static_cast< deleter_type >(p_other.get_deleter());
+
+					p_other.m_pointer = nullptr;
 				}
 			}
 
