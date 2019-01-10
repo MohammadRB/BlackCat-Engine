@@ -45,7 +45,7 @@ namespace black_cat
 		{
 		public:
 			using abstract_component_t = TAbstract;
-			template< template<typename, typename...> typename T >
+			template< template<typename, typename...> class T >
 			using apply = T<TAbstract, TDerived, TDeriveds...>;
 		};
 
@@ -53,7 +53,7 @@ namespace black_cat
 		class _bc_abstract_component
 		{
 		public:
-			_bc_abstract_component(bc_actor_component_manager& p_component_manager)
+			explicit _bc_abstract_component(bc_actor_component_manager& p_component_manager)
 				: m_component_manager(p_component_manager)
 			{
 			}
@@ -70,7 +70,7 @@ namespace black_cat
 		struct _bc_actor_entry
 		{
 		public:
-			_bc_actor_entry(const bc_actor& p_actor, bc_actor_index p_parent_index = bc_actor::invalid_index)
+			explicit _bc_actor_entry(const bc_actor& p_actor, bc_actor_index p_parent_index = bc_actor::invalid_index)
 				: m_actor(p_actor),
 				m_parent_index(p_parent_index)
 			{
@@ -106,13 +106,13 @@ namespace black_cat
 			using component_map_type = core::bc_unordered_map_program< bc_actor_component_hash, _bc_actor_component_entry >;
 
 		public:
-			bc_actor_component_manager();
+			bc_actor_component_manager() = default;
 
-			bc_actor_component_manager(bc_actor_component_manager&&);
+			bc_actor_component_manager(bc_actor_component_manager&&) noexcept = delete;
 
 			~bc_actor_component_manager();
 
-			bc_actor_component_manager& operator=(bc_actor_component_manager&&);
+			bc_actor_component_manager& operator=(bc_actor_component_manager&&) noexcept = delete;
 
 			bc_actor create_actor(const bc_actor* p_parent = nullptr);
 
@@ -172,13 +172,16 @@ namespace black_cat
 			component_map_type m_components;
 		};
 
-		inline bc_actor_component_manager::bc_actor_component_manager() = default;
-
-		inline bc_actor_component_manager::bc_actor_component_manager(bc_actor_component_manager&&) = default;
-
-		inline bc_actor_component_manager::~bc_actor_component_manager() = default;
-
-		inline bc_actor_component_manager& bc_actor_component_manager::operator=(bc_actor_component_manager&&) = default;
+		inline bc_actor_component_manager::~bc_actor_component_manager()
+		{
+			bcAssert
+			(
+				std::count_if(std::cbegin(m_actors), std::cend(m_actors), [](core::bc_nullable< _bc_actor_entry >& p_entry)
+				{
+					return p_entry.is_set();
+				}) == 0
+			);
+		}
 
 		inline bc_actor bc_actor_component_manager::create_actor(const bc_actor* p_parent)
 		{
@@ -191,6 +194,7 @@ namespace black_cat
 				{
 					l_actor.reset(_bc_actor_entry(bc_actor(l_index), p_parent ? p_parent->get_index() : bc_actor::invalid_index));
 					l_has_value = true;
+					break;
 				}
 				else
 				{
@@ -222,7 +226,7 @@ namespace black_cat
 				// It's an abstract component
 				if(l_component_entry.m_component_priority == _bc_actor_component_entry::s_invalid_priority_value)
 				{
-					continue;;
+					continue;
 				}
 
 				bc_actor_component_index l_component_index = l_component_entry.m_actor_to_component_index_map[l_actor_index];
@@ -464,7 +468,7 @@ namespace black_cat
 			bcAssert(l_actor_index != bc_actor::invalid_index);
 
 			bcINT32 l_actor_to_component = l_component_entry->second.m_actor_to_component_index_map[l_actor_index];
-			// Actor has not this type of component
+			// Actor does not has this type of component
 			if (l_actor_to_component == g_actor_component_invalid_index)
 			{
 				return nullptr;
