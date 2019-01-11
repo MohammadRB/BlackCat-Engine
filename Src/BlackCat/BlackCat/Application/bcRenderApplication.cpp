@@ -5,7 +5,6 @@
 #include "PlatformImp/bc_ide_logger.h"
 #include "Core/Memory/bcMemoryManagment.h"
 #include "Core/Utility/bcLogger.h"
-#include "Core/Utility/bcExpressionParameterManager.h"
 #include "Core/Concurrency/bcThreadManager.h"
 #include "Core/Event/bcEventManager.h"
 #include "Core/File/bcContentManager.h"
@@ -76,7 +75,6 @@ namespace black_cat
 			p_parameters.m_engine_parameters.m_thread_manager_thread_count,
 			p_parameters.m_engine_parameters.m_thread_manager_reserve_thread_count
 		));
-		m_service_manager->register_service(core::bc_make_service<core::bc_expression_parameter_manager>());
 		m_service_manager->register_service(core::bc_make_service<core::bc_content_manager>());
 		m_service_manager->register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
 		m_service_manager->register_service(core::bc_make_service<game::bc_actor_component_manager>());
@@ -84,7 +82,6 @@ namespace black_cat
 		m_service_manager->register_service(core::bc_make_service<game::bc_game_system>());
 
 		auto* l_logger_manager = core::bc_get_service<core::bc_logger>();
-		auto* l_expression_parameter_manager = core::bc_get_service<core::bc_expression_parameter_manager>();
 		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
 		auto* l_entity_manager = core::bc_get_service<game::bc_entity_manager>();
 		m_game_system = core::bc_get_service<game::bc_game_system>();
@@ -96,23 +93,6 @@ namespace black_cat
 			core::bc_make_unique< platform::bc_ide_logger >(core::bc_alloc_type::program)
 		);
 #endif
-
-		l_expression_parameter_manager->register_resolver
-		(
-			core::g_param_rsv_mesh,
-			core::bc_expr_param_func_pack_string([this](const core::bc_string& p_mesh_name)
-			{
-				return core::bc_parameter_pack(core::bc_lazy_content(p_mesh_name));
-			})
-		);
-		l_expression_parameter_manager->register_resolver
-		(
-			core::g_param_rsv_heightmap,
-			core::bc_expr_param_func_pack_string([this](const core::bc_string& p_heightmap_name)
-			{
-				return core::bc_parameter_pack(core::bc_lazy_content(p_heightmap_name));
-			})
-		);
 
 		l_content_stream_manager->register_loader< graphic::bc_texture2d_content, bc_texture_loader >
 		(

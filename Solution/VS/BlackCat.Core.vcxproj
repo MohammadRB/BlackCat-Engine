@@ -167,9 +167,18 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcDataDrivenParameter.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcDelegate.hpp" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcEnumOperand.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpression.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpressionParameter.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpressionParameterManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpression.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpressionParameter.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpressionParameterManager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcInitializable.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcJsonParse.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcLazy.h" />
@@ -241,8 +250,14 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector3f.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector4f.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryHeap.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpression.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpressionParameterManager.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpression.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpressionParameterManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcLogger.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectPool.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcServiceManager.cpp" />

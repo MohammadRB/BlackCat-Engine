@@ -10,7 +10,6 @@
 #include "Core/File/bcContentManager.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Core/Utility/bcParameterPack.h"
-#include "Core/Utility/bcExpressionParameter.h"
 #include "Core/bcException.h"
 
 namespace black_cat
@@ -91,19 +90,7 @@ namespace black_cat
 						std::end(l_content_params->m_key_values),
 						[&l_stream_file](bc_json_key_value::key_value_array_t::value_type& p_parameter)
 						{
-							bc_any l_value;
-
-							auto* l_exp_param = p_parameter.second.as< bc_expression_parameter >();
-							if (l_exp_param != nullptr)
-							{
-								l_value = l_exp_param->evaluate();
-							}
-							else
-							{
-								l_value = p_parameter.second;
-							}
-
-							l_stream_file.m_parameters.add_value(p_parameter.first.c_str(), std::move(l_value));
+							l_stream_file.m_parameters.add_value(p_parameter.first.c_str(), std::move(p_parameter.second));
 						}
 					);
 

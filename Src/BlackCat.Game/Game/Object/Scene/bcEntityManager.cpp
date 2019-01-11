@@ -86,19 +86,7 @@ namespace black_cat
 						std::end(l_exp_params->m_key_values),
 						[&](core::bc_json_key_value::key_value_array_t::value_type& p_parameter)
 						{
-							core::bc_any l_value;
-
-							auto* l_exp_param = p_parameter.second.as< core::bc_expression_parameter >();
-							if (l_exp_param != nullptr)
-							{
-								l_value = l_exp_param->evaluate();
-							}
-							else
-							{
-								l_value = p_parameter.second;
-							}
-
-							l_component_data.m_component_parameters.add_value(p_parameter.first.c_str(), std::move(l_value));
+							l_component_data.m_component_parameters.add_value(p_parameter.first.c_str(), std::move(p_parameter.second));
 						}
 					);
 

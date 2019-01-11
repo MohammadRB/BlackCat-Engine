@@ -6,7 +6,7 @@
         {
           "name": "cmp_height_map",
           "parameters": {
-            "heightmap": "expr: get_heightmap('crysis_heightmap')"
+            "heightmap": "crysis_heightmap"
           }
         },
         {
@@ -25,7 +25,7 @@
         {
           "name": "cmp_mesh",
           "parameters": {
-            "mesh": "expr: get_mesh('m16A2')"
+            "mesh": "m16A2"
           }
         },
         {
@@ -40,7 +40,7 @@
         {
           "name": "cmp_mesh",
           "parameters": {
-            "mesh": "expr: get_mesh('ship')"
+            "mesh": "ship"
           }
         },
         {
@@ -55,7 +55,7 @@
         {
           "name": "cmp_mesh",
           "parameters": {
-            "mesh": "expr: get_mesh('box')"
+            "mesh": "box"
           }
         },
         {
@@ -74,7 +74,7 @@
         {
           "name": "cmp_mesh",
           "parameters": {
-            "mesh": "expr: get_mesh('sphere')"
+            "mesh": "sphere"
           }
         },
         {
@@ -93,7 +93,7 @@
         {
           "name": "cmp_mesh",
           "parameters": {
-            "mesh": "expr: get_mesh('convex')"
+            "mesh": "convex"
           }
         },
         {
@@ -112,7 +112,7 @@
         {
           "name": "cmp_mesh",
           "parameters": {
-            "mesh": "expr: get_mesh('train')"
+            "mesh": "train"
           }
         },
         {

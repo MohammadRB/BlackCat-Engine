@@ -42,7 +42,8 @@ namespace black_cat
 
 		void bc_height_map_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
 		{
-			m_height_map = p_parameters.get_value_throw< core::bc_lazy_content >(core::g_param_heightmap).get_content< bc_height_map >();
+			auto& l_height_map_name = p_parameters.get_value_throw< core::bc_string >(core::g_param_heightmap);
+			m_height_map = core::bc_lazy_content::get_content<bc_height_map>(l_height_map_name.c_str());
 			auto* l_mediate = p_actor.get_component<bc_mediate_component>();
 
 			l_mediate->set_bound_box

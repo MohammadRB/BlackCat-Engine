@@ -8,7 +8,6 @@
 #include "Core/Container/bcList.h"
 #include "Core/bcException.h"
 #include "Core/Utility/bcParameterPack.h"
-#include "Core/Utility/bcExpressionParameter.h"
 #include "Core/File/bcJsonParse.h"
 
 #include "3rdParty/RapidJSON/include/rapidjson/document.h"
@@ -17,13 +16,13 @@ namespace black_cat
 {
 	namespace core
 	{
-#define BC_JSON_VALUE(type, name)		black_cat::core::bc_json_value< type > m_##name { #name, this }
+#define BC_JSON_VALUE(type, name)			black_cat::core::bc_json_value< type > m_##name { #name, this }
 #define BC_JSON_VALUE_OP(type, name)		black_cat::core::bc_json_value< type > m_##name { #name, this, true }
-#define BC_JSON_OBJECT(type, name)		black_cat::core::bc_json_object< type > m_##name { #name, this }
-#define BC_JSON_OBJECT_OP(type, name)	black_cat::core::bc_json_object< type > m_##name { #name, this, true }
-#define BC_JSON_ARRAY(type, name)		black_cat::core::bc_json_array< type > m_##name { #name, this }
+#define BC_JSON_OBJECT(type, name)			black_cat::core::bc_json_object< type > m_##name { #name, this }
+#define BC_JSON_OBJECT_OP(type, name)		black_cat::core::bc_json_object< type > m_##name { #name, this, true }
+#define BC_JSON_ARRAY(type, name)			black_cat::core::bc_json_array< type > m_##name { #name, this }
 #define BC_JSON_ARRAY_OP(type, name)		black_cat::core::bc_json_array< type > m_##name { #name, this, true }
-#define BC_JSON_STRUCTURE(name)			struct name : public black_cat::core::bc_ijson_structure
+#define BC_JSON_STRUCTURE(name)				struct name : public black_cat::core::bc_ijson_structure
 
 		using bc_json_parse_object = rapidjson::Document::ValueType;
 
@@ -166,8 +165,6 @@ namespace black_cat
 
 			void _parse(bc_string_frame& p_value, bc_json_parse_object& p_json_value);
 
-			void _parse(bc_expression_parameter& p_value, bc_json_parse_object& p_json_value);
-
 			void _parse(bc_parameter_pack& p_value, bc_json_parse_object& p_json_value);
 
 			void _parse(bc_any& p_value, bc_json_parse_object& p_json_value);
@@ -266,7 +263,6 @@ namespace black_cat
 				std::is_same< bc_string, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
-				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
 			>::type
 		> : public bc_ijson_value
@@ -484,17 +480,6 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_parse(bc_expression_parameter& p_value, bc_json_parse_object& p_json_value)
-		{
-			if (!p_json_value.IsString())
-			{
-				throw bc_io_exception("bad json format");
-			}
-
-			p_value.compile(p_json_value.GetString());
-		}
-
-		template< typename T >
 		void bc_json_value< T >::_parse(bc_parameter_pack& p_value, bc_json_parse_object& p_json_value)
 		{
 			if (p_json_value.IsBool())
@@ -527,17 +512,7 @@ namespace black_cat
 			}
 			else if (p_json_value.IsString())
 			{
-				if(bc_expression_parameter::is_expression_parameter(p_json_value.GetString()))
-				{
-					bc_expression_parameter l_expression;
-					l_expression.compile(p_json_value.GetString());
-
-					p_value.set_value(std::move(l_expression));
-				}
-				else
-				{
 					p_value.set_value(bc_string(p_json_value.GetString()));
-				}
 			}
 			else if(p_json_value.IsObject())
 			{
@@ -751,7 +726,6 @@ namespace black_cat
 				std::is_same< bc_string, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
-				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
 			>::type
 		>
@@ -775,7 +749,6 @@ namespace black_cat
 				std::is_same< bc_string, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
-				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
 			>::type
 		>
@@ -816,7 +789,6 @@ namespace black_cat
 				std::is_same< bc_string, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
-				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
 			>::type
 		>
@@ -836,7 +808,6 @@ namespace black_cat
 				std::is_same< bc_string, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
-				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
 			>::type
 		>
@@ -856,7 +827,6 @@ namespace black_cat
 				std::is_same< bc_string, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
-				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
 			>::type
 		>
@@ -876,7 +846,6 @@ namespace black_cat
 				std::is_same< bc_string, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
 				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
-				std::is_same< bc_expression_parameter, typename std::decay< T >::type >::value ||
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value
 			>::type
 		>

@@ -93,8 +93,9 @@ namespace black_cat
 
 		void bc_mesh_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
 		{
-			const bc_mesh_ptr l_mesh = p_parameters.get_value_throw< core::bc_lazy_content >(core::g_param_mesh).get_content< bc_mesh >();
-			core::bc_string* l_sub_mesh_name = p_parameters.get_value< core::bc_string >(core::g_param_sub_mesh);
+			auto& l_mesh_name = p_parameters.get_value_throw< core::bc_string >(core::g_param_mesh);
+			const bc_mesh_ptr l_mesh = core::bc_lazy_content::get_content<bc_mesh>(l_mesh_name.c_str());
+			auto* l_sub_mesh_name = p_parameters.get_value< core::bc_string >(core::g_param_sub_mesh);
 
 			m_sub_mesh = l_sub_mesh_name ? bc_sub_mesh(l_mesh, l_sub_mesh_name->c_str()) : bc_sub_mesh(l_mesh);
 
