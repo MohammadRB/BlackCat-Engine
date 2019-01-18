@@ -12,7 +12,7 @@ namespace black_cat
 
 		bc_memmng bc_memmng::m_instance;
 
-		bc_memmng::bc_memmng() noexcept(true)
+		bc_memmng::bc_memmng() noexcept
 			: m_fsa_allocators_start_size(0),
 			m_fsa_num_allocators(0),
 			m_fsa_step_size(0),
@@ -99,7 +99,7 @@ namespace black_cat
 			m_initialized = true;
 		}
 
-		void bc_memmng::destroy() noexcept(true)
+		void bc_memmng::destroy() noexcept
 		{
 			delete[] (m_fsa_allocators);
 			delete (m_per_program_stack);
@@ -131,12 +131,12 @@ namespace black_cat
 				p_super_heap_size);
 		}
 		
-		void bc_memmng::close() noexcept(true)
+		void bc_memmng::close() noexcept
 		{
 			bc_memmng::m_instance.destroy();
 		}
 		
-		void* bc_memmng::alloc(bcSIZE p_size, bc_alloc_type p_allocType, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true)
+		void* bc_memmng::alloc(bcSIZE p_size, bc_alloc_type p_allocType, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 			bcAssert(m_initialized);
 
@@ -207,7 +207,7 @@ namespace black_cat
 			return l_result;
 		}
 		
-		void bc_memmng::free(void* p_pointer) noexcept(true)
+		void bc_memmng::free(void* p_pointer) noexcept
 		{
 			if (!p_pointer)
 			{
@@ -229,7 +229,7 @@ namespace black_cat
 #endif
 		}
 		
-		void* bc_memmng::realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true)
+		void* bc_memmng::realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 			bc_memblock* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 
@@ -252,9 +252,9 @@ namespace black_cat
 			free(p_pointer);
 
 			return l_new_pointer;
-		};
+		}
 		
-		void* bc_memmng::aligned_alloc(bcSIZE p_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true)
+		void* bc_memmng::aligned_alloc(bcSIZE p_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 			bcAssert(m_initialized);
 
@@ -322,9 +322,9 @@ namespace black_cat
 #endif
 
 			return l_result;
-		};
+		}
 		
-		void bc_memmng::aligned_free(void* p_pointer) noexcept(true)
+		void bc_memmng::aligned_free(void* p_pointer) noexcept
 		{
 			if (!p_pointer) 
 			{
@@ -344,9 +344,9 @@ namespace black_cat
 #ifdef BC_MEMORY_LEAK_DETECTION
 			m_leak_allocator->remove(l_pointer);
 #endif
-		};
+		}
 		
-		void* bc_memmng::aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true)
+		void* bc_memmng::aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 			bc_memblock* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 
@@ -365,9 +365,9 @@ namespace black_cat
 			free(p_pointer);
 
 			return l_new_pointer;
-		};
+		}
 
-		void bc_memmng::end_of_frame() noexcept(true)
+		void bc_memmng::end_of_frame() noexcept
 		{
 #ifdef BC_MEMORY_DEFRAG
 			bcUINT32 l_num_fragment = m_super_heap->fragmentation_count();
@@ -389,7 +389,7 @@ namespace black_cat
 
 			bcAssert(m_per_frame_stack->tracer().alloc_count() == 0);
 			m_per_frame_stack->clear();
-		};
+		}
 
 		bcSIZE bc_memmng::get_total_size() const
 		{
@@ -408,7 +408,7 @@ namespace black_cat
 			return l_total_size;
 #endif
 			return 0;
-		};
+		}
 		
 		bcSIZE bc_memmng::get_used_size() const
 		{
@@ -425,7 +425,7 @@ namespace black_cat
 			return l_used_size;
 #endif
 			return 0;
-		};
+		}
 		
 		bcSIZE bc_memmng::get_overhead_size() const
 		{
@@ -442,7 +442,7 @@ namespace black_cat
 			return l_wasted_size;
 #endif
 			return 0;
-		};
+		}
 		
 		bcSIZE bc_memmng::get_max_used_size() const
 		{
@@ -459,7 +459,7 @@ namespace black_cat
 			return l_max_used_size;
 #endif
 			return 0;
-		};
+		}
 
 #ifdef BC_MEMORY_LEAK_DETECTION
 		bcUINT32 bc_memmng::report_memory_leaks() const
@@ -472,7 +472,7 @@ namespace black_cat
 			});
 
 			return l_leak_count;
-		};
+		}
 #endif
 
 #endif

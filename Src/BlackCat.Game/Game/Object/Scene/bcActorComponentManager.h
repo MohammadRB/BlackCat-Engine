@@ -41,7 +41,7 @@ namespace black_cat
 		};
 
 		template< class TAbstract, class TDerived, class ...TDeriveds >
-		class bc_abstract_component
+		class bc_abstract_component_register
 		{
 		public:
 			using abstract_component_t = TAbstract;
@@ -49,22 +49,14 @@ namespace black_cat
 			using apply = T<TAbstract, TDerived, TDeriveds...>;
 		};
 
-		template<class TAbstract, class ...TDeriveds>
-		class _bc_abstract_component
+		template< class TAbstract, class ...TDeriveds >
+		class _bc_abstract_component_registrar
 		{
 		public:
-			explicit _bc_abstract_component(bc_actor_component_manager& p_component_manager)
-				: m_component_manager(p_component_manager)
+			void operator()(bc_actor_component_manager& p_component_manager) const
 			{
+				p_component_manager._register_abstract_component_type< TAbstract, TDeriveds... >();
 			}
-
-			void operator()() const
-			{
-				m_component_manager._register_abstract_component_type<TAbstract, TDeriveds...>();
-			}
-
-		private:
-			bc_actor_component_manager& m_component_manager;
 		};
 
 		struct _bc_actor_entry
@@ -100,7 +92,7 @@ namespace black_cat
 
 		private:
 			template<class TAbstract, class ...TDeriveds>
-			friend class _bc_abstract_component;
+			friend class _bc_abstract_component_registrar;
 
 			using actor_container_type = core::bc_vector_movale< core::bc_nullable< _bc_actor_entry > >;
 			using component_map_type = core::bc_unordered_map_program< bc_actor_component_hash, _bc_actor_component_entry >;
@@ -323,6 +315,7 @@ namespace black_cat
 		template< class TComponent >
 		TComponent* bc_actor_component_manager::actor_get_component(const bc_actor& p_actor)
 		{
+			static_assert(std::is_base_of_v<bc_iactor_component, TComponent>, "TComponent parameter is not a component");
 			return _actor_get_component<TComponent>(p_actor, std::integral_constant<bool, bc_actor_component_traits<TComponent>::component_is_abstract()>());
 		}
 
@@ -420,9 +413,8 @@ namespace black_cat
 				(
 					[this, l_actor]()
 					{
-						using expanded_type = typename TComponent::template apply< _bc_abstract_component >;
-						expanded_type l_expanded_object(*this);
-						l_expanded_object();
+						using expanded_type = typename TComponent::template apply< _bc_abstract_component_registrar >;
+						expanded_type()(*this);
 
 						this->actor_get_component<typename TComponent::abstract_component_t>(l_actor);
 
@@ -518,8 +510,8 @@ namespace black_cat
 			_bc_actor_component_entry l_data
 			{
 				_bc_actor_component_entry::s_invalid_priority_value,
-				core::bc_vector_movale< bcINT32 >(),
-				core::bc_vector_movale< bcINT32 >(),
+				core::bc_vector_movale< bc_actor_component_index >(),
+				core::bc_vector_movale< bc_actor_index >(),
 				nullptr,
 				core::bc_vector_movale< _bc_actor_component_entry::deriveds_component_get_delegate >
 				(

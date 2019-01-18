@@ -20,6 +20,7 @@
 #include "Game/System/Render/bcRenderTask.h"
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/System/Render/bcRenderThreadManager.h"
+#include "Game/Object/Scene/bcScene.h"
 
 namespace black_cat
 {
@@ -189,7 +190,7 @@ namespace black_cat
 			auto bc_render_thread_guard = m_thread_manager->get_available_thread_wait();
 			auto& l_render_thread = *bc_render_thread_guard.get_thread();
 			
-			m_render_pass_manager.pass_execute(*this, p_scene, l_render_thread);
+			m_render_pass_manager.pass_execute(*this, l_render_thread, p_scene);
 
 			clear_render_instances();
 

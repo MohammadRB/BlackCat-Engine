@@ -39,7 +39,7 @@ namespace black_cat
 		class BC_CORE_DLL bc_memmng : core_platform::bc_no_copy
 		{
 		public:
-			bc_memmng() noexcept(true);
+			bc_memmng() noexcept;
 
 			~bc_memmng();
 
@@ -51,7 +51,7 @@ namespace black_cat
 				bcUINT32 p_per_frm_heap_size,
 				bcUINT32 p_super_heap_size);
 
-			void destroy() noexcept(true);
+			void destroy() noexcept;
 
 			static void startup(bcUINT32 p_fsa_start_size,
 				bcUINT32 p_fsa_num,
@@ -61,27 +61,27 @@ namespace black_cat
 				bcUINT32 p_per_frm_heap_size,
 				bcUINT32 p_super_heap_size);
 
-			static void close() noexcept(true);
+			static void close() noexcept;
 
-			static bc_memmng& get() noexcept(true)
+			static bc_memmng& get() noexcept
 			{
 				return bc_memmng::m_instance;
 			}
 
-			void* alloc(bcSIZE p_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true);
+			void* alloc(bcSIZE p_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept;
 
-			void free(void* p_pointer) noexcept(true);
+			void free(void* p_pointer) noexcept;
 
-			void* realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true);
+			void* realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept;
 
-			void* aligned_alloc(bcSIZE p_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true);
+			void* aligned_alloc(bcSIZE p_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept;
 
-			void aligned_free(void* p_pointer) noexcept(true);
+			void aligned_free(void* p_pointer) noexcept;
 			
-			void* aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true);
+			void* aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept;
 
 #ifdef BC_MEMORY_DEFRAG
-			void register_pointer_in_movable_allocators(void** p_pointer) noexcept(true)
+			void register_pointer_in_movable_allocators(void** p_pointer) noexcept
 			{
 				if (m_super_heap->contain_pointer(*p_pointer))
 				{
@@ -91,7 +91,7 @@ namespace black_cat
 				}
 			}
 
-			void unregister_pointer_in_movable_allocators(void** p_pointer) noexcept(true)
+			void unregister_pointer_in_movable_allocators(void** p_pointer) noexcept
 			{
 				if (m_super_heap->contain_pointer(*p_pointer))
 				{
@@ -102,7 +102,7 @@ namespace black_cat
 			}
 #endif
 
-			void end_of_frame() noexcept(true);
+			void end_of_frame() noexcept;
 
 			bcSIZE get_total_size() const;
 

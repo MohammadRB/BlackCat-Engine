@@ -220,6 +220,61 @@ namespace black_cat
 			return m_bound_box.intersect(l_actor_mesh_bound_box);
 		}
 
+		void bc_octal_tree_graph_node::get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const
+		{
+			if(!m_actors.empty())
+			{
+				for (_bc_octal_tree_graph_node_entry& l_entry : m_actors)
+				{
+					auto* l_mediate_component = l_entry.m_actor.get_component<bc_mediate_component>();
+					auto& l_bound_box = l_mediate_component->get_bound_box();
+
+					if (p_camera_frustum.intersects(l_bound_box))
+					{
+						p_buffer.add_actor(l_entry.m_actor);
+					}
+				}
+			}
+
+			if(is_leaf_node())
+			{
+				return;
+			}
+
+			if(p_camera_frustum.intersects(m_top_left_back->m_bound_box))
+			{
+				m_top_left_back->get_actors(p_camera_frustum, p_buffer);
+			}
+			if (p_camera_frustum.intersects(m_top_left_front->m_bound_box))
+			{
+				m_top_left_front->get_actors(p_camera_frustum, p_buffer);
+			}
+			if (p_camera_frustum.intersects(m_top_right_front->m_bound_box))
+			{
+				m_top_right_front->get_actors(p_camera_frustum, p_buffer);
+			}
+			if (p_camera_frustum.intersects(m_top_right_back->m_bound_box))
+			{
+				m_top_right_back->get_actors(p_camera_frustum, p_buffer);
+			}
+			if (p_camera_frustum.intersects(m_bottom_left_back->m_bound_box))
+			{
+				m_bottom_left_back->get_actors(p_camera_frustum, p_buffer);
+			}
+			if (p_camera_frustum.intersects(m_bottom_left_front->m_bound_box))
+			{
+				m_bottom_left_front->get_actors(p_camera_frustum, p_buffer);
+			}
+			if (p_camera_frustum.intersects(m_bottom_right_front->m_bound_box))
+			{
+				m_bottom_right_front->get_actors(p_camera_frustum, p_buffer);
+			}
+			if (p_camera_frustum.intersects(m_bottom_right_back->m_bound_box))
+			{
+				m_bottom_right_back->get_actors(p_camera_frustum, p_buffer);
+			}
+		}
+
 		bool bc_octal_tree_graph_node::is_leaf_node() const noexcept
 		{
 			return m_top_left_back == nullptr;
@@ -375,7 +430,7 @@ namespace black_cat
 
 		void bc_octal_tree_graph_node::render_bound_boxes(bc_shape_drawer& p_shape_drawer) const
 		{
-			p_shape_drawer.draw_wired_box(m_bound_box);
+			p_shape_drawer.render_wired_box(m_bound_box);
 
 			if(is_leaf_node())
 			{

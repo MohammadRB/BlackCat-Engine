@@ -5,14 +5,6 @@
 #include "CorePlatform/bcType.h"
 #include "Core/Math/bcCoordinate.h"
 #include "GraphicImp/bcRenderApiInfo.h"
-//#include "Physics/Shape/bcShapeGeometry.h"
-//#include "Physics/Shape/bcShapeSphere.h"
-//#include "Physics/Shape/bcShapeBox.h"
-//#include "Physics/Shape/bcShapeCapsule.h"
-//#include "Physics/Shape/bcShapePlane.h"
-//#include "Physics/Shape/bcShapeConvexMesh.h"
-//#include "Physics/Shape/bcShapeTriangleMesh.h"
-//#include "Physics/Shape/bcShapeHeightField.h"
 #include "Physics/bcUtility.h"
 #include "PhysicsImp/PhysicsImpPCH.h"
 #include "PhysicsImp/Shape/bcConvexMesh.h"
@@ -23,6 +15,7 @@ namespace black_cat
 {
 	namespace physics
 	{
+		// TODO replace with another approach
 		template< class TBcType, class TPxType, class TInitializer >
 		void bc_overwrite_output_array(TBcType* p_buffer, bcUINT32 p_element_count, TInitializer p_initializer)
 		{

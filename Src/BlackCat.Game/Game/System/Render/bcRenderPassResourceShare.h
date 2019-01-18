@@ -11,6 +11,7 @@ namespace black_cat
 	{
 		enum class bc_render_pass_resource_variable
 		{
+			actor_list,
 			depth_stencil_texture,
 			depth_stencil_view,
 			render_target_view

@@ -70,7 +70,7 @@ namespace black_cat
 			core::bc_vector3f get_left() const noexcept;
 
 			/**
-			 * \brief Get 8 point that describe camera frustum. First four point lay on near clip and two four on far clip 
+			 * \brief Get 8 point that describe camera frustum. First four points lay on near clip and two four points on far clip 
 			 * ordered by lower-left upper-left upper-right lower-right
 			 * \param p_points 
 			 */

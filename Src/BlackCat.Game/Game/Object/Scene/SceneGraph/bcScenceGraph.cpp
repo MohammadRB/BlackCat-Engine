@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcRenderThread.h"
+#include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/Object/Scene/SceneGraph/bcScenceGraph.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
@@ -25,6 +26,36 @@ namespace black_cat
 			}
 		}
 
+		bc_scene_graph::iterator bc_scene_graph::begin() noexcept
+		{
+			return m_graph_node->begin();
+		}
+
+		bc_scene_graph::const_iterator bc_scene_graph::begin() const noexcept
+		{
+			return m_graph_node->begin();
+		}
+
+		bc_scene_graph::const_iterator bc_scene_graph::cbegin() const noexcept
+		{
+			return m_graph_node->cbegin();
+		}
+
+		bc_scene_graph::iterator bc_scene_graph::end() noexcept
+		{
+			return m_graph_node->end();
+		}
+
+		bc_scene_graph::const_iterator bc_scene_graph::end() const noexcept
+		{
+			return m_graph_node->end();
+		}
+
+		bc_scene_graph::const_iterator bc_scene_graph::cend() const noexcept
+		{
+			return m_graph_node->cend();
+		}
+
 		bool bc_scene_graph::add_actor(bc_actor& p_actor)
 		{
 			return m_graph_node->add_actor(p_actor);
@@ -40,76 +71,16 @@ namespace black_cat
 			return m_graph_node->remove_actor(p_actor);
 		}
 
-		core::bc_vector_frame<bc_actor> bc_scene_graph::get_height_maps() const
+		bc_scene_graph_buffer bc_scene_graph::get_actors(const bc_camera_frustum& p_camera_frustum) const
 		{
-			core::bc_vector_frame<bc_actor> l_result;
-
-			for (bc_actor l_actor : *m_graph_node)
-			{
-				if(l_actor.has_component<bc_height_map_component>())
-				{
-					l_result.push_back(l_actor);
-				}
-			}
+			bc_scene_graph_buffer l_result;
+			m_graph_node->get_actors(p_camera_frustum, l_result);
 
 			return l_result;
 		}
 
 		void bc_scene_graph::update(core_platform::bc_clock::update_param p_clock_update_param)
 		{
-		}
-
-		void bc_scene_graph::render_heightmaps(bc_render_system& p_render_system, bc_render_thread& p_render_thread)
-		{
-			for (bc_actor l_actor : *m_graph_node)
-			{
-				auto* l_height_map_component = l_actor.get_component< bc_height_map_component >();
-
-				if (!l_height_map_component)
-				{
-					continue;
-				}
-
-				auto* l_render_component = l_actor.get_component< bc_render_component >();
-
-				if (!l_render_component)
-				{
-					continue;
-				}
-
-				l_height_map_component->render(*l_render_component);
-			}
-
-			p_render_system.render_all_instances(p_render_thread);
-			p_render_system.clear_render_instances();
-		}
-
-		void bc_scene_graph::render_meshes(bc_render_system& p_render_system, bc_render_thread& p_render_thread, bool p_preserve_render_instances)
-		{
-			for(bc_actor l_actor : *m_graph_node)
-			{
-				auto* l_mesh_component = l_actor.get_component< bc_mesh_component >();
-
-				if (!l_mesh_component)
-				{
-					continue;
-				}
-
-				auto* l_render_component = l_actor.get_component< bc_render_component >();
-
-				if(!l_render_component)
-				{
-					continue;
-				}
-
-				l_mesh_component->render(l_actor, *l_render_component);
-			}
-
-			p_render_system.render_all_instances(p_render_thread);
-			if(!p_preserve_render_instances)
-			{
-				p_render_system.clear_render_instances();
-			}
 		}
 
 		void bc_scene_graph::render_debug_shapes(bc_shape_drawer& p_shape_drawer) const

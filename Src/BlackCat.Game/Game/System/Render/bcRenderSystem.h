@@ -27,7 +27,6 @@
 #include "Game/System/Render/bcRenderSystemParameter.h"
 #include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/bcRenderPass.h"
-#include "Game/Object/Scene/bcScene.h"
 #include "Game/System/Input/bcCamera.h"
 #include "Game/System/Render/bcShapeDrawer.h"
 
@@ -44,6 +43,7 @@ namespace black_cat
 		class bc_file_system;
 		class bc_render_thread_manager;
 		class bc_material_manager;
+		class bc_scene;
 		
 		struct bc_render_system_parameter
 		{

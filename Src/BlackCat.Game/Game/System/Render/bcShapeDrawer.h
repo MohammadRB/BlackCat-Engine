@@ -32,7 +32,7 @@ namespace black_cat
 			 * \brief Thread-Safe function
 			 * \param p_box 
 			 */
-			void draw_wired_box(const physics::bc_bound_box& p_box);
+			void render_wired_box(const physics::bc_bound_box& p_box);
 
 			void update_buffers(bc_render_system& p_render_system, bc_render_thread& p_thread);
 

@@ -3,6 +3,7 @@
 #include "BlackCat/BlackCatPCH.h"
 
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "BlackCat/RenderPass/bcShapeDrawPass.h"
 
 namespace black_cat
@@ -60,9 +61,10 @@ namespace black_cat
 
 	void bc_shape_draw_pass::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
 	{
-		p_scene.render_debug_shapes(p_render_system.get_shape_drawer());
+		auto& l_shape_drawer = p_render_system.get_shape_drawer();
 
-		p_render_system.get_shape_drawer().render(p_render_system, p_thread);
+		p_scene.render_debug_shapes(l_shape_drawer);
+		l_shape_drawer.render(p_render_system, p_thread);
 
 		p_render_system.render_all_instances(p_thread);
 		p_render_system.clear_render_instances();

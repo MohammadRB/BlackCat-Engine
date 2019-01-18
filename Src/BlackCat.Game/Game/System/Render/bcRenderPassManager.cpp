@@ -72,12 +72,17 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_pass_manager::pass_execute(bc_render_system& p_render_system, bc_scene& p_scene, bc_render_thread& p_thread)
+		void bc_render_pass_manager::pass_execute(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_scene& p_scene)
 		{
 			for(auto& l_entry : m_passes)
 			{
 				l_entry.m_pass->initialize_frame(p_render_system, p_thread, p_scene);
 				l_entry.m_pass->execute(p_render_system, p_thread, p_scene);
+			}
+
+			for (auto& l_entry : m_passes)
+			{
+				l_entry.m_pass->cleanup_frame(p_render_system, p_thread, p_scene);
 			}
 		}
 

@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 
+#include "Core/Utility/bcEnumOperand.h"
 #include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/bcRenderSystem.h"
 

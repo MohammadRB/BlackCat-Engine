@@ -11,9 +11,9 @@
 #include "Game/Object/Mesh/bcHeightMap.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
-#include "BlackCat/bcException.h"
 #include "BlackCat/RenderPass/bcTerrainPassDx11.h"
 #include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
+#include "BlackCat/bcException.h"
 
 namespace black_cat
 {
@@ -106,8 +106,7 @@ namespace black_cat
 		{
 			p_thread.start(m_command_list.get());
 
-			auto l_height_maps = p_scene.get_height_maps();
-
+			auto l_height_maps = p_scene.get_actors<game::bc_height_map_component>();
 			for (auto& l_actor : l_height_maps)
 			{
 				const game::bc_height_map* l_height_map = l_actor.get_component< game::bc_height_map_component >()->get_height_map();
@@ -149,7 +148,11 @@ namespace black_cat
 
 	void bc_terrain_pass_dx11::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
 	{
-		p_scene.render_height_maps(p_render_system, p_thread);
+		auto l_height_maps = p_scene.get_actors<game::bc_height_map_component>();
+		l_height_maps.render_actors(p_render_system);
+
+		p_render_system.render_all_instances(p_thread);
+		p_render_system.clear_render_instances();
 
 		p_thread.unbind_render_pass_state(m_render_pass_state.get());
 		p_thread.finish();

@@ -39,9 +39,9 @@ namespace black_cat
 			return *this;
 		}
 
-		core::bc_vector_frame<bc_actor> bc_scene::get_height_maps() const
+		bc_scene_graph_buffer bc_scene::get_actors(const bc_camera_frustum& p_camera_frustum) const
 		{
-			return m_scene_graph.get_height_maps();
+			return m_scene_graph.get_actors(p_camera_frustum);
 		}
 
 		void bc_scene::add_actor(bc_actor& p_actor)
@@ -71,16 +71,6 @@ namespace black_cat
 			}
 
 			m_scene_graph.remove_actor(p_actor);
-		}
-
-		void bc_scene::render_height_maps(bc_render_system& p_render_system, bc_render_thread& p_render_thread)
-		{
-			m_scene_graph.render_heightmaps(p_render_system, p_render_thread);
-		}
-
-		void bc_scene::render_meshes(bc_render_system& p_render_system, bc_render_thread& p_render_thread, bool p_preserve_render_instances)
-		{
-			m_scene_graph.render_meshes(p_render_system, p_render_thread, p_preserve_render_instances);
 		}
 
 		void bc_scene::render_debug_shapes(bc_shape_drawer& p_shape_drawer) const

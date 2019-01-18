@@ -25,9 +25,9 @@ namespace black_cat
 			using const_reference = const value_type&;
 			using difference_type = bcPTRDIFF;
 			using size_type = bcSIZE;
-			using propagate_on_container_copy_assignment = std::false_type;
-			using propagate_on_container_move_assignment = std::false_type;
-			using propagate_on_container_swap = std::false_type;
+			using propagate_on_container_copy_assignment = std::true_type;
+			using propagate_on_container_move_assignment = std::true_type;
+			using propagate_on_container_swap = std::true_type;
 			using is_movable_type = std::false_type;
 
 			template< typename TOther >

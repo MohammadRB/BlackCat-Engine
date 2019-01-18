@@ -57,7 +57,7 @@ namespace black_cat
 
 			void pass_update(const bc_render_system_update_param& p_clock_update_param);
 
-			void pass_execute(bc_render_system& p_render_system, bc_scene& p_scene, bc_render_thread& p_thread);
+			void pass_execute(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_scene& p_scene);
 
 			void before_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters);
 

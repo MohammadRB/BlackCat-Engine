@@ -77,7 +77,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_platform_transform<g_api_physx>& bc_platform_transform<g_api_physx>::operator*=(const bc_platform_transform& p_other) noexcept
 		{
-			m_pack.m_px_transform * p_other.m_pack.m_px_transform;
+			m_pack.m_px_transform = m_pack.m_px_transform * p_other.m_pack.m_px_transform;
 
 			return *this;
 		}

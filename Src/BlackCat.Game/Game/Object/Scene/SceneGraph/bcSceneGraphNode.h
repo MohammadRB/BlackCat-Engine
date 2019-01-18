@@ -5,7 +5,9 @@
 #include "Core/Container/bcIterator.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/Object/Scene/bcActor.h"
+#include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "Game/System/Render/bcShapeDrawer.h"
+#include "Game/System/Input/bcCameraFrustum.h"
 
 namespace black_cat
 {
@@ -56,6 +58,8 @@ namespace black_cat
 			virtual bool contains_actor(bc_actor& p_actor) const noexcept = 0;
 
 			virtual bool intersects_actor(bc_actor& p_actor) const noexcept = 0;
+
+			virtual void get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const = 0;
 
 			virtual bool add_actor(bc_actor& p_actor) = 0;
 

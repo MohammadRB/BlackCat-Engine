@@ -6,6 +6,7 @@
 #include "Core/Math/bcVector3f.h"
 #include "Physics/bcPhysicsApi.h"
 #include "Physics/Shape/bcShapeGeometry.h"
+#include "Physics/Fundation/bcTransform.h"
 
 namespace black_cat
 {
@@ -44,6 +45,8 @@ namespace black_cat
 			core::bc_vector3f get_normal() const noexcept;
 
 			bcFLOAT get_distance() const noexcept;
+
+			bc_transform as_transform() const noexcept;
 
 			bc_shape_type get_type() const noexcept override
 			{

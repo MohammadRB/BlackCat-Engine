@@ -98,6 +98,8 @@ namespace black_cat
 
 			bool intersects_actor(bc_actor& p_actor) const noexcept override;
 
+			void get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const override;
+
 			bool is_leaf_node() const noexcept;
 
 			bool add_actor(bc_actor& p_actor) override;
@@ -140,6 +142,7 @@ namespace black_cat
 
 			const physics::bc_bound_box& _get_actor_bound_box(bc_actor& p_actor) const;
 
+		private:
 			bcSIZE m_max_actors_count;
 			bcSIZE m_min_size;
 			bcSIZE m_actors_count;

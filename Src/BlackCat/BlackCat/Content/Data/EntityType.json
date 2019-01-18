@@ -10,10 +10,6 @@
           }
         },
         {
-          "name": "cmp_render",
-          "parameters": { }
-        },
-        {
           "name": "cmp_rigid_static",
           "parameters": {}
         }
@@ -27,10 +23,6 @@
           "parameters": {
             "mesh": "m16A2"
           }
-        },
-        {
-          "name": "cmp_render",
-          "parameters": {}
         }
       ]
     },
@@ -42,10 +34,6 @@
           "parameters": {
             "mesh": "ship"
           }
-        },
-        {
-          "name": "cmp_render",
-          "parameters": { }
         }
       ]
     },
@@ -57,10 +45,6 @@
           "parameters": {
             "mesh": "box"
           }
-        },
-        {
-          "name": "cmp_render",
-          "parameters": { }
         },
         {
           "name": "cmp_rigid_dynamic",
@@ -78,10 +62,6 @@
           }
         },
         {
-          "name": "cmp_render",
-          "parameters": { }
-        },
-        {
           "name": "cmp_rigid_dynamic",
           "parameters": { }
         }
@@ -97,10 +77,6 @@
           }
         },
         {
-          "name": "cmp_render",
-          "parameters": { }
-        },
-        {
           "name": "cmp_rigid_dynamic",
           "parameters": { }
         }
@@ -114,10 +90,6 @@
           "parameters": {
             "mesh": "train"
           }
-        },
-        {
-          "name": "cmp_render",
-          "parameters": { }
         },
         {
           "name": "cmp_rigid_static",

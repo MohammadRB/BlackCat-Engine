@@ -139,12 +139,12 @@ namespace black_cat
 			game::bc_hierarchy_component,
 			game::bc_rigid_static_component,
 			game::bc_rigid_dynamic_component,
-			game::bc_render_component,
 			game::bc_height_map_component
 		>();
 		l_entity_manager->register_abstract_component_types
 		<
-			game::bc_abstract_component< game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component >
+			game::bc_abstract_component_register< game::bc_render_component, game::bc_mesh_component, game::bc_height_map_component >,
+			game::bc_abstract_component_register< game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component >
 		>();
 
 		application_start_engine_components(p_parameters);

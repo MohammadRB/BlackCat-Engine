@@ -6,6 +6,7 @@
 #include "Game/Object/Scene/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcRenderInstance.h"
 
 namespace black_cat
@@ -13,12 +14,12 @@ namespace black_cat
 	namespace game
 	{
 		bc_height_map_component::bc_height_map_component(bc_actor_component_index p_index)
-			: bc_iactor_component(p_index)
+			: bc_render_component(p_index)
 		{
 		}
 
 		bc_height_map_component::bc_height_map_component(bc_height_map_component&& p_other) noexcept
-			: bc_iactor_component(std::move(p_other)),
+			: bc_render_component(std::move(p_other)),
 			m_height_map(std::move(p_other.m_height_map))
 		{
 		}
@@ -30,7 +31,7 @@ namespace black_cat
 		bc_height_map_component& bc_height_map_component::operator=(bc_height_map_component&& p_other) noexcept
 		{
 			m_height_map = std::move(p_other.m_height_map);
-			bc_iactor_component::operator=(std::move(p_other));
+			bc_render_component::operator=(std::move(p_other));
 
 			return *this;
 		}
@@ -65,11 +66,10 @@ namespace black_cat
 		{
 		}
 
-		void bc_height_map_component::render(const bc_render_component& p_render_component) const
+		void bc_height_map_component::render(bc_render_system& p_render_system) const
 		{
 			bc_render_instance l_instance(core::bc_matrix4f::identity());
-
-			p_render_component.render(m_height_map->get_render_state(), l_instance);
+			p_render_system.add_render_instance(m_height_map->get_render_state(), l_instance);
 		}
 	}
 }

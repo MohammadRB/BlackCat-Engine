@@ -14,6 +14,8 @@
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcRenderPassResourceShare.h"
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
+#include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "BlackCat/RenderPass/bcMeshDrawPass.h"
 
 namespace black_cat
@@ -71,7 +73,11 @@ namespace black_cat
 
 	void bc_mesh_draw_pass::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
 	{
-		p_scene.render_meshes(p_render_system, p_thread, false);
+		game::bc_scene_graph_buffer* l_actors = get_shared_resource<game::bc_scene_graph_buffer>(game::bc_render_pass_resource_variable::actor_list);
+
+		l_actors->render_actors<game::bc_mesh_component>(p_render_system);
+		p_render_system.render_all_instances(p_thread);
+		p_render_system.clear_render_instances();
 
 		p_thread.unbind_render_pass_state(m_render_pass_state.get());
 		p_thread.finish();

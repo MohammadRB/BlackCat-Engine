@@ -45,7 +45,7 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_shape_drawer::draw_wired_box(const physics::bc_bound_box& p_box)
+		void bc_shape_drawer::render_wired_box(const physics::bc_bound_box& p_box)
 		{
 			{
 				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_mutex);

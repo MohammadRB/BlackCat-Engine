@@ -7,6 +7,7 @@
 #include "Core/bcConstant.h"
 #include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/bcRenderPassResourceShare.h"
+#include "Game/System/Input/bcCamera.h"
 
 namespace black_cat
 {
@@ -58,22 +59,30 @@ namespace black_cat
 			virtual void update(const bc_render_system_update_param& p_update_param) = 0;
 
 			/**
-			 * \brief This function will be called in start of frame.
-			 * Threading: This function will be executed by a cpu worker thread concurrency.
+			 * \brief This function will be called in the start of frame draw phase.
+			 * Threading: This function will be executed concurrent by a cpu worker thread.
 			 * \param p_render_system
-			 * \param p_scene 
 			 * \param p_thread 
+			 * \param p_scene
 			 */
 			virtual void initialize_frame(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_scene& p_scene) = 0;
 
 			/**
-			 * \brief This function will be called in draw frame phase.
-			 * Threading: This function will be executed by a cpu worker thread concurrency.
+			 * \brief This function will be called in frame draw phase.
+			 * Threading: This function will be executed concurrent by a cpu worker thread.
 			 * \param p_render_system
 			 * \param p_scene 
 			 * \param p_thread 
 			 */
 			virtual void execute(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_scene& p_scene) = 0;
+
+			/**
+			 * \brief This function will be called in the end of frame draw phase.
+			 * \param p_render_system 
+			 * \param p_thread 
+			 * \param p_scene 
+			 */
+			virtual void cleanup_frame(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_scene& p_scene);
 
 			/**
 			 * \brief This function will be called when device duo to some parameter changes and buffer resize need reset
@@ -114,6 +123,11 @@ namespace black_cat
 		private:
 			bc_render_pass_resource_share* m_resource_share;
 		};
+
+		inline void bc_irender_pass::cleanup_frame(bc_render_system& p_render_system, bc_render_thread& p_thread,
+			bc_scene& p_scene)
+		{
+		}
 
 		inline void bc_irender_pass::_set_pass_resource_share(bc_render_pass_resource_share* p_state_share)
 		{

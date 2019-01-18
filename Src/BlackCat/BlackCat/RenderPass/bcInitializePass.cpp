@@ -4,6 +4,8 @@
 
 #include "GraphicImp/Resource/bcResourceConfig.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Input/bcCameraFrustum.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "BlackCat/RenderPass/bcInitializePass.h"
 
 namespace black_cat
@@ -42,10 +44,20 @@ namespace black_cat
 	void bc_initialize_pass::initialize_frame(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
 	{
 		p_render_system.update_global_cbuffer(p_thread, m_last_clock, *m_last_camera);
+
+		game::bc_camera_frustum l_frustum(*m_last_camera);
+		game::bc_scene_graph_buffer l_actors = p_scene.get_actors(l_frustum);
+
+		share_resource(game::bc_render_pass_resource_variable::actor_list, std::move(l_actors));
 	}
 
 	void bc_initialize_pass::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
 	{
+	}
+
+	void bc_initialize_pass::cleanup_frame(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
+	{
+		unshare_resource(game::bc_render_pass_resource_variable::actor_list);
 	}
 
 	void bc_initialize_pass::before_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)

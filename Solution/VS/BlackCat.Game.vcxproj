@@ -243,6 +243,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidStaticComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcOctalTreeSceneGraphNode.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcScenceGraph.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcSceneGraphBuffer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcSceneGraphNode.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\bcGameSystem.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -251,6 +252,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       </ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcCamera.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcCameraFrustum.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFileSystem.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFreeCamera.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcInputSystem.h" />
@@ -308,6 +310,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcCamera.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcCameraFrustum.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFileSystem.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFreeCamera.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsSystem.cpp" />
