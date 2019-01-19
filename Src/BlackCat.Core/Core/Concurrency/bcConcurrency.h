@@ -14,7 +14,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		class bc_concurreny
+		class bc_concurrency
 		{
 		public:
 			static void check_for_interruption();
@@ -36,7 +36,7 @@ namespace black_cat
 			/**
 			 * \brief 
 			 * \tparam										TIte Iterator type
-			 * \tparam TInitFunc	<TLocal(void)>			Function that initialzie local data
+			 * \tparam TInitFunc	<TLocal(void)>			Function that initialize local data
 			 * \tparam TBodyFunc	<TLocal(TLocal, Ite)>	Function that execute as for loop body
 			 * \tparam TFinalFunc	<void(TLocal)>			Function that will be called by all started threads to accumulate results
 			 * \param p_begin 
@@ -68,24 +68,24 @@ namespace black_cat
 			}
 		};
 
-		inline void bc_concurreny::check_for_interruption()
+		inline void bc_concurrency::check_for_interruption()
 		{
 			_get_thread_manager()->check_for_interruption();
 		}
 
-		inline bcUINT32 bc_concurreny::worker_count()
+		inline bcUINT32 bc_concurrency::worker_count()
 		{
 			return _get_thread_manager()->thread_count();
 		}
 
 		template< typename T >
-		bc_task<T> bc_concurreny::start_task(bc_delegate<T()>&& p_delegate, bc_task_creation_option p_option)
+		bc_task<T> bc_concurrency::start_task(bc_delegate<T()>&& p_delegate, bc_task_creation_option p_option)
 		{
 			return _get_thread_manager()->start_new_task(std::move(p_delegate), p_option);
 		}
 
 		template< typename ...T >
-		void bc_concurreny::when_all(bc_task<T>&... p_tasks)
+		void bc_concurrency::when_all(bc_task<T>&... p_tasks)
 		{
 			[&](...) {}
 			(
@@ -100,7 +100,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_concurreny::when_all(std::initializer_list<bc_task<T>&> p_tasks)
+		void bc_concurrency::when_all(std::initializer_list<bc_task<T>&> p_tasks)
 		{
 			std::for_each(std::begin(p_tasks), std::end(p_tasks), [](const bc_task<T>& p_task)
 			{
@@ -109,7 +109,7 @@ namespace black_cat
 		}
 
 		template< typename TIte, typename >
-		void bc_concurreny::when_all(TIte p_begin, TIte p_end)
+		void bc_concurrency::when_all(TIte p_begin, TIte p_end)
 		{
 			std::for_each(p_begin, p_end, [](const typename std::iterator_traits< TIte >::value_type& p_task)
 			{
@@ -118,13 +118,13 @@ namespace black_cat
 		}
 
 		template< typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc >
-		void bc_concurreny::concurrent_for_each(TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer)
+		void bc_concurrency::concurrent_for_each(TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer)
 		{
 			concurrent_for_each(_get_thread_manager()->thread_count(), p_begin, p_end, p_init_func, p_body_func, p_finalizer);
 		}
 
 		template< typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc >
-		void bc_concurreny::concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer)
+		void bc_concurrency::concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer)
 		{
 			static_assert
 				(
@@ -206,7 +206,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		T* bc_concurreny::double_check_lock(core_platform::bc_atomic< T* >& p_pointer, bc_delegate< T*() >& p_initializer)
+		T* bc_concurrency::double_check_lock(core_platform::bc_atomic< T* >& p_pointer, bc_delegate< T*() >& p_initializer)
 		{
 			T* l_pointer;
 			static core_platform::bc_mutex s_mutex;
@@ -226,7 +226,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bool bc_concurreny::double_check_lock(core_platform::bc_atomic< T* >& p_pointer)
+		bool bc_concurrency::double_check_lock(core_platform::bc_atomic< T* >& p_pointer)
 		{
 			static core_platform::bc_mutex s_mutex;
 

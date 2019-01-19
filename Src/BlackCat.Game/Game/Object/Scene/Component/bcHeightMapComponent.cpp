@@ -2,7 +2,7 @@
 
 #include "Game/GamePCH.h"
 
-#include "Core/File/bcLazyContent.h"
+#include "Core/Content/bcLazyContent.h"
 #include "Game/Object/Scene/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"

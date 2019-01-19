@@ -4,7 +4,7 @@
 
 #define THREAD_GROUP_SIZE 32
 #define SMOOTH_RADIUS 1
-#define SMOOTH_MAX 5
+#define SMOOTH_MAX 6
 
 // == Resource ===================================================================================
 
@@ -59,13 +59,12 @@ void main(uint3 p_group_id : SV_GroupID,
         return;
     }
 
-    float l_heights = 0;
-
     uint l_min_x = max(0, l_global_coord.x - SMOOTH_RADIUS);
     uint l_min_z = max(0, l_global_coord.y - SMOOTH_RADIUS);
     uint l_max_x = min(g_width, l_global_coord.x + SMOOTH_RADIUS);
     uint l_max_z = min(g_height, l_global_coord.y + SMOOTH_RADIUS);
     uint l_num_sample = 0;
+	float l_computed_height = 0;
 
     for (int x = l_min_x; x <= l_max_x; ++x)
     {
@@ -73,16 +72,16 @@ void main(uint3 p_group_id : SV_GroupID,
         {
             uint2 l_texcoord = uint2(x, z);
 
-            l_heights += get_height(l_texcoord);
+			l_computed_height += get_height(l_texcoord);
 
             ++l_num_sample;
         }
     }
 
-    l_heights /= l_num_sample;
+	l_computed_height /= l_num_sample;
     float l_source_height = get_height(l_global_coord);
     float l_smooth_ratio = (SMOOTH_MAX - g_tool_smooth * 1.0f) / SMOOTH_MAX;
-    float l_final_height = (l_heights * (1 - l_smooth_ratio)) + (l_source_height * l_smooth_ratio);
+    float l_final_height = (l_computed_height * (1 - l_smooth_ratio)) + (l_source_height * l_smooth_ratio);
 
     set_height(l_global_coord, l_final_height);
 }

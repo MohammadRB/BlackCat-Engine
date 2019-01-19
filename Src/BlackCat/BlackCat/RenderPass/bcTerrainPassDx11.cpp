@@ -148,8 +148,8 @@ namespace black_cat
 
 	void bc_terrain_pass_dx11::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
 	{
-		auto l_height_maps = p_scene.get_actors<game::bc_height_map_component>();
-		l_height_maps.render_actors(p_render_system);
+		auto l_height_maps_buffer = p_scene.get_actors<game::bc_height_map_component>();
+		l_height_maps_buffer.render_actors(p_render_system);
 
 		p_render_system.render_all_instances(p_thread);
 		p_render_system.clear_render_instances();

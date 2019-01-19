@@ -5,7 +5,7 @@
 #include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatformImp/Utility/bcHardwareInfo.h"
 #include "Core/Concurrency/bcConcurrency.h"
-#include "Core/File/bcContentStreamManager.h"
+#include "Core/Content/bcContentStreamManager.h"
 #include "Core/Event/bcEventManager.h"
 #include "Core/Utility/bcEnumOperand.h"
 #include "Core/Utility/bcLogger.h"
@@ -199,7 +199,7 @@ namespace black_cat
 
 		void bc_render_system::add_render_task(bc_irender_task& p_task)
 		{
-			core::bc_task<void> l_cpu_task = core::bc_concurreny::start_task<void>([this, &p_task]()
+			core::bc_task<void> l_cpu_task = core::bc_concurrency::start_task<void>([this, &p_task]()
 			{
 				auto l_render_thread_wrapper = m_thread_manager->get_available_thread_wait();
 				auto& l_render_thread = *l_render_thread_wrapper.get_thread();

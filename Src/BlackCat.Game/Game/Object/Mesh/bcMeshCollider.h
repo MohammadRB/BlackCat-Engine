@@ -4,7 +4,7 @@
 
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcUnorderedMap.h"
-#include "Core/File/bcContent.h"
+#include "Core/Content/bcContent.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Mesh/bcMeshPartCollider.h"
 

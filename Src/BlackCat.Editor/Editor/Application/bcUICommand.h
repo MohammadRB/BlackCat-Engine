@@ -5,7 +5,7 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcString.h"
-#include "Core/File/bcContentStreamManager.h"
+#include "Core/Content/bcContentStreamManager.h"
 #include "PhysicsImp/Collision/bcSceneQuery.h"
 #include "Game/System/Physics/bcPxWrap.h"
 #include "Editor/UI/bcFormObject.h"

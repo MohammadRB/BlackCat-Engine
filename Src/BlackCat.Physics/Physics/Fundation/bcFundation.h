@@ -114,7 +114,7 @@ namespace black_cat
 		public:
 			void add_task(bc_task&& p_task) override
 			{
-				core::bc_concurreny::start_task< void >
+				core::bc_concurrency::start_task< void >
 				(
 					[t = std::move(p_task)]() mutable
 					{
@@ -126,7 +126,7 @@ namespace black_cat
 
 			bcSIZE worker_count() const noexcept override
 			{
-				return core::bc_concurreny::worker_count();
+				return core::bc_concurrency::worker_count();
 			}
 
 		protected:

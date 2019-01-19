@@ -485,10 +485,9 @@ namespace black_cat
 
 			// Initialize components container
 			auto l_hash = bc_actor_component_traits< TComponent >::component_hash();
-			auto l_priority = p_priority;
 			_bc_actor_component_entry l_data
 			{
-				l_priority,
+				p_priority,
 				core::bc_vector_movale< bcINT32 >(),
 				core::bc_vector_movale< bcINT32 >(),
 				core::bc_make_unique< bc_actor_component_container< TComponent > >(core::bc_alloc_type::program)

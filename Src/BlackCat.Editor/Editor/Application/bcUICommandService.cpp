@@ -2,7 +2,7 @@
 
 #include "Editor/EditorPCH.h"
 
-#include "Core/File/bcContentStreamManager.h"
+#include "Core/Content/bcContentStreamManager.h"
 #include "Game/System/bcGameSystem.h"
 #include "Editor/Application/bcUICommandService.h"
 

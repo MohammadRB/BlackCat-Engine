@@ -16,8 +16,8 @@
 #include "Core/File/bcPath.h"
 #include "Core/File/bcStream.h"
 #include "Core/File/bcFileStream.h"
-#include "Core/File/bcContent.h"
-#include "Core/File/bcContentLoader.h"
+#include "Core/Content/bcContent.h"
+#include "Core/Content/bcContentLoader.h"
 #include "Core/bcException.h"
 
 namespace black_cat
@@ -269,7 +269,7 @@ namespace black_cat
 		template< class TContent >
 		bc_task<bc_content_ptr<TContent>> bc_content_manager::load_async(bc_alloc_type p_alloc_type, const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter)
 		{
-			auto l_task = bc_concurreny::start_task
+			auto l_task = bc_concurrency::start_task
 			(
 				[=]()
 				{
@@ -290,8 +290,8 @@ namespace black_cat
 
 			{
 				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > m_guard(m_contents_mutex);
-				auto l_content_ite = m_contents.find(p_content._get_hash());
 
+				auto l_content_ite = m_contents.find(p_content._get_hash());
 				if (l_content_ite == m_contents.end())
 				{
 					throw bc_invalid_argument_exception("Content is not valid");
@@ -333,7 +333,7 @@ namespace black_cat
 		template< class TContent >
 		bc_task<void> bc_content_manager::save_async(TContent& p_content)
 		{
-			auto l_task = bc_concurreny::start_task<void>
+			auto l_task = bc_concurrency::start_task<void>
 			(
 				[&]()
 				{

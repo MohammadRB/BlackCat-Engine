@@ -5,7 +5,7 @@
 #include "CorePlatform/bcType.h"
 #include "Core/bcConstant.h"
 #include "Core/Container/bcString.h"
-#include "Core/File/bcContentStreamManager.h"
+#include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Game/bcExport.h"
 #include "Game/System/Input/bcInputSystem.h"
@@ -23,7 +23,7 @@ namespace black_cat
 	{
 		struct bc_game_system_parameter
 		{
-			explicit bc_game_system_parameter(bc_render_system_parameter&& p_render_system_parameter, core::bc_unique_ptr<bc_iscene_graph_node> p_scene_graph)
+			bc_game_system_parameter(bc_render_system_parameter&& p_render_system_parameter, core::bc_unique_ptr<bc_iscene_graph_node> p_scene_graph)
 				: m_render_system_parameter(std::move(p_render_system_parameter)),
 				m_scene_graph(std::move(p_scene_graph))
 			{

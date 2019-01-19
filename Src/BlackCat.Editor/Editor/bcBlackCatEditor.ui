@@ -171,7 +171,7 @@
          <item>
           <widget class="QToolBox" name="rightToolBox">
            <property name="currentIndex">
-            <number>0</number>
+            <number>2</number>
            </property>
            <property name="fontAwesome" stdset="0">
             <string>handpointero,cubes,areachart</string>
@@ -181,8 +181,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>338</width>
-              <height>708</height>
+              <width>98</width>
+              <height>28</height>
              </rect>
             </property>
             <attribute name="label">
@@ -220,8 +220,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>338</width>
-              <height>708</height>
+              <width>101</width>
+              <height>101</height>
              </rect>
             </property>
             <attribute name="label">
@@ -302,7 +302,7 @@
                 <number>1</number>
                </property>
                <property name="maximum">
-                <number>5</number>
+                <number>6</number>
                </property>
                <property name="pageStep">
                 <number>1</number>

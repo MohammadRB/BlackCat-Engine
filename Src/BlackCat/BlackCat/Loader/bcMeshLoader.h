@@ -3,8 +3,8 @@
 #pragma once
 
 #include "Core/Container/bcString.h"
-#include "Core/File/bcContent.h"
-#include "Core/File/bcContentLoader.h"
+#include "Core/Content/bcContent.h"
+#include "Core/Content/bcContentLoader.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/Object/Mesh/bcMesh.h"
 #include "BlackCat/bcExport.h"

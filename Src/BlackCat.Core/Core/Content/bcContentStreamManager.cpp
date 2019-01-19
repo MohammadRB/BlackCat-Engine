@@ -5,9 +5,9 @@
 #include "Core/Container/bcList.h"
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/File/bcFileStream.h"
-#include "Core/File/bcContentStreamManager.h"
-#include "Core/File/bcContent.h"
-#include "Core/File/bcContentManager.h"
+#include "Core/Content/bcContentStreamManager.h"
+#include "Core/Content/bcContent.h"
+#include "Core/Content/bcContentManager.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Core/Utility/bcParameterPack.h"
 #include "Core/bcException.h"
@@ -116,7 +116,7 @@ namespace black_cat
 
 			auto& l_contents = l_stream_entry->second;
 
-			bc_concurreny::concurrent_for_each
+			bc_concurrency::concurrent_for_each
 			(
 				std::begin(l_contents),
 				std::end(l_contents),
@@ -185,7 +185,7 @@ namespace black_cat
 
 		bc_task< void > bc_content_stream_manager::load_content_stream_async(bc_alloc_type p_alloc_type, const bcCHAR* p_stream_name)
 		{
-			return bc_concurreny::start_task< void >([this, p_alloc_type, p_stream_name]()
+			return bc_concurrency::start_task< void >([this, p_alloc_type, p_stream_name]()
 				{
 					this->load_content_stream(p_alloc_type, p_stream_name);
 				});

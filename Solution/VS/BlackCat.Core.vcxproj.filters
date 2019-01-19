@@ -25,6 +25,9 @@
     <Filter Include="Core\File">
       <UniqueIdentifier>{9f943238-4749-4434-8381-65ea7b8dd4d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Content">
+      <UniqueIdentifier>{b60d423a-2359-42ae-b694-1537c4ab62af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\_bcLockFreeMemMng.h">
@@ -231,18 +234,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\bcExport.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcContent.h">
-      <Filter>Core\File</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcContentLoader.h">
-      <Filter>Core\File</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcContentManager.h">
-      <Filter>Core\File</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcContentStreamManager.h">
-      <Filter>Core\File</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcFileStream.h">
       <Filter>Core\File</Filter>
     </ClInclude>
@@ -250,9 +241,6 @@
       <Filter>Core\File</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcJsonParse.h">
-      <Filter>Core\File</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcLazyContent.h">
       <Filter>Core\File</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcPath.h">
@@ -269,6 +257,21 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectPoolAllocator.h">
       <Filter>Core\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcContent.h">
+      <Filter>Core\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcContentLoader.h">
+      <Filter>Core\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcContentManager.h">
+      <Filter>Core\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcContentStreamManager.h">
+      <Filter>Core\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcLazyContent.h">
+      <Filter>Core\Content</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -332,15 +335,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcServiceManager.cpp">
       <Filter>Core\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcContent.cpp">
-      <Filter>Core\File</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcContentLoader.cpp">
-      <Filter>Core\File</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcContentStreamManager.cpp">
-      <Filter>Core\File</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcPath.cpp">
       <Filter>Core\File</Filter>
     </ClCompile>
@@ -394,6 +388,15 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectPool.cpp">
       <Filter>Core\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Content\bcContent.cpp">
+      <Filter>Core\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Content\bcContentLoader.cpp">
+      <Filter>Core\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Content\bcContentStreamManager.cpp">
+      <Filter>Core\Content</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

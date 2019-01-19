@@ -73,11 +73,13 @@ namespace black_cat
 			auto* l_dx11_height_map = static_cast< const bc_editor_height_map_dx11* >(l_height_map_component->get_height_map());
 			auto l_px_height_map = l_dx11_height_map->get_px_height_field();
 
-			bc_ui_terrain_smooth_command_parameter_cbuffer l_cbuffer_parameters;
-			l_cbuffer_parameters.m_tool_center_x = p_context.m_tool_center_x;
-			l_cbuffer_parameters.m_tool_center_z = p_context.m_tool_center_z;
-			l_cbuffer_parameters.m_tool_smooth = m_smooth;
-			l_cbuffer_parameters.m_tool_radius = m_radius;
+			const bc_ui_terrain_smooth_command_parameter_cbuffer l_cbuffer_parameters
+			{
+				p_context.m_tool_center_x,
+				p_context.m_tool_center_z,
+				m_radius,
+				m_smooth
+			};
 
 			bc_ui_terrain_smooth_command_render_task l_render_task
 			(
@@ -87,52 +89,51 @@ namespace black_cat
 			);
 			p_context.m_game_system.get_render_system().add_render_task(l_render_task);
 
-			bcINT32 l_diameter = l_cbuffer_parameters.m_tool_radius * 2;
-			bcUINT32 l_sample_count = l_diameter * l_diameter;
+			const bcINT32 l_diameter = l_cbuffer_parameters.m_tool_radius * 2;
+			const bcUINT32 l_sample_count = l_diameter * l_diameter;
 			core::bc_unique_ptr< bcINT16 > l_sample_buffer(static_cast< bcINT16* >(bcAlloc(l_sample_count * sizeof(bcINT16), core::bc_alloc_type::frame)));
 			bcINT16* l_samples = l_sample_buffer.get();
 
-			core::bc_vector2f l_tool_center(l_cbuffer_parameters.m_tool_center_x, l_cbuffer_parameters.m_tool_center_z);
-			core::bc_vector2f l_circle_coord;
-			core::bc_vector2f l_global_coord;
+			const core::bc_vector2f l_tool_center(l_cbuffer_parameters.m_tool_center_x, l_cbuffer_parameters.m_tool_center_z);
+			core::bc_vector2f l_circle_coords;
+			core::bc_vector2f l_global_coords;
 			for (bcINT32 l_z = 0; l_z < l_diameter; ++l_z)
 			{
 				for (bcINT32 l_x = 0; l_x < l_diameter; ++l_x)
 				{
 					bcUINT32 l_sample_index = l_z * l_diameter + l_x;
-					l_circle_coord.x = l_x - m_radius;
-					l_circle_coord.y = l_z - m_radius;
-					l_global_coord = l_tool_center + l_circle_coord;
-					bcFLOAT l_center_distance = (l_tool_center - l_global_coord).magnitude();
+					l_circle_coords.x = l_x - m_radius;
+					l_circle_coords.y = l_z - m_radius;
+					l_global_coords = l_tool_center + l_circle_coords;
+					bcFLOAT l_center_distance = (l_tool_center - l_global_coords).magnitude();
 
 					if (l_center_distance > m_radius)
 					{
-						l_samples[l_sample_index] = l_px_height_map.get_height(l_global_coord.x, l_global_coord.y);
+						l_samples[l_sample_index] = l_px_height_map.get_height(l_global_coords.x, l_global_coords.y);
 						continue;
 					}
 
-					bcFLOAT l_heights = 0;
-
-					bcUINT32 l_min_x = std::max(0U, static_cast< bcUINT32 >(l_global_coord.x) - s_smooth_radius);
-					bcUINT32 l_min_z = std::max(0U, static_cast< bcUINT32 >(l_global_coord.y) - s_smooth_radius);
-					bcUINT32 l_max_x = std::min(static_cast< bcUINT32 >(l_dx11_height_map->get_width()), static_cast< bcUINT32 >(l_global_coord.x) + s_smooth_radius);
-					bcUINT32 l_max_z = std::min(static_cast< bcUINT32 >(l_dx11_height_map->get_height()), static_cast< bcUINT32 >(l_global_coord.y) + s_smooth_radius);
+					bcUINT32 l_min_x = std::max(0U, static_cast< bcUINT32 >(l_global_coords.x) - s_smooth_radius);
+					bcUINT32 l_min_z = std::max(0U, static_cast< bcUINT32 >(l_global_coords.y) - s_smooth_radius);
+					bcUINT32 l_max_x = std::min(static_cast< bcUINT32 >(l_dx11_height_map->get_width()), static_cast< bcUINT32 >(l_global_coords.x) + s_smooth_radius);
+					bcUINT32 l_max_z = std::min(static_cast< bcUINT32 >(l_dx11_height_map->get_height()), static_cast< bcUINT32 >(l_global_coords.y) + s_smooth_radius);
 					bcUINT32 l_num_sample = 0;
+					bcFLOAT l_computed_height = 0;
 
 					for (bcUINT32 l_x1 = l_min_x; l_x1 <= l_max_x; ++l_x1)
 					{
 						for (bcUINT32 l_z1 = l_min_z; l_z1 <= l_max_z; ++l_z1)
 						{
-							l_heights += l_px_height_map.get_height(l_x1, l_z1) * l_dx11_height_map->get_y_multiplier();
+							l_computed_height += l_px_height_map.get_height(l_x1, l_z1) * l_dx11_height_map->get_y_multiplier();
 
 							++l_num_sample;
 						}
 					}
 
-					l_heights /= l_num_sample;
-					bcFLOAT l_source_height = l_px_height_map.get_height(l_global_coord.x, l_global_coord.y) * l_dx11_height_map->get_y_multiplier();
+					l_computed_height /= l_num_sample;
+					bcFLOAT l_source_height = l_px_height_map.get_height(l_global_coords.x, l_global_coords.y) * l_dx11_height_map->get_y_multiplier();
 					bcFLOAT l_smooth_ratio = (s_smooth_max - l_cbuffer_parameters.m_tool_smooth * 1.0f) / s_smooth_max;
-					bcFLOAT l_final_height = (l_heights * (1 - l_smooth_ratio)) + (l_source_height * l_smooth_ratio);
+					bcFLOAT l_final_height = (l_computed_height * (1 - l_smooth_ratio)) + (l_source_height * l_smooth_ratio);
 
 					l_samples[l_sample_index] = l_final_height / l_dx11_height_map->get_y_multiplier();
 				}

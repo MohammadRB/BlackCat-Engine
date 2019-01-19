@@ -3,7 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "Core/bcConstant.h"
-#include "Core/File/bcLazyContent.h"
+#include "Core/Content/bcLazyContent.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/Object/Scene/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"

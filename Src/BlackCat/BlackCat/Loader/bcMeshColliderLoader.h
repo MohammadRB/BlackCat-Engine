@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Core/File/bcContentLoader.h"
+#include "Core/Content/bcContentLoader.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/Object/Mesh/bcMeshCollider.h"
 #include "BlackCat/bcExport.h"

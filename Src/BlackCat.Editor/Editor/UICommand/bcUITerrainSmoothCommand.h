@@ -48,7 +48,7 @@ namespace black_cat
 			bool update(terrain_update_context& p_context) override;
 
 		private:
-			static constexpr bcINT32 s_smooth_max = 5;
+			static constexpr bcINT32 s_smooth_max = 6;
 			static constexpr bcINT32 s_smooth_radius = 1;
 
 			bcUINT16 m_smooth;

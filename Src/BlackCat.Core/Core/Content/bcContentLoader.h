@@ -11,7 +11,7 @@
 #include "Core/Utility/bcNullable.h"
 #include "Core/Container/bcVector.h"
 #include "Core/File/bcStream.h"
-#include "Core/File/bcContent.h"
+#include "Core/Content/bcContent.h"
 
 namespace black_cat
 {
@@ -113,11 +113,11 @@ namespace black_cat
 				m_result.reset(bc_content_loader_result(std::move(p_exception)));
 			}
 
-			bc_estring_frame m_file_path;						// Used to give access loader to content and offline content file path
-			bc_nullable< bc_stream > m_file;						// Used to give access loader to content and offline content file
+			bc_estring_frame m_file_path;							// Used to give loader access to content and offline content file path
+			bc_nullable< bc_stream > m_file;						// Used to give loader access to content and offline content file
 			bc_content_loader_parameter m_parameter;				// Used to pass additional parameters to loader
-			bc_vector_frame<bcBYTE> m_data;						// Used to pass stream data around within loader functions
-			bc_nullable< bc_content_loader_result > m_result;	// Used to pass result from loader to caller
+			bc_vector_frame<bcBYTE> m_data;							// Used to pass stream data around within loader functions
+			bc_nullable< bc_content_loader_result > m_result;		// Used to pass result from loader to caller
 		protected:
 
 		private:
@@ -134,9 +134,9 @@ namespace black_cat
 
 			bc_content_saving_context& operator=(bc_content_saving_context&&) = default;
 
-			bc_estring_frame m_file_path;					// Used to give access saver to content file path
-			bc_nullable< bc_stream > m_file;					// Used to give access saver to content file
-			bc_icontent* m_content;							// Used to give access saver to content
+			bc_estring_frame m_file_path;							// Used to give saver access to content file path
+			bc_nullable< bc_stream > m_file;						// Used to give saver access to content file
+			bc_icontent* m_content;									// Used to give saver access to content
 		};
 
 		/**

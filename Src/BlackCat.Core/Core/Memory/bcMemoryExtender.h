@@ -66,12 +66,12 @@ namespace black_cat
 
 			memory_type* get_memory()
 			{
-				return bc_concurreny::double_check_lock(m_memory, m_memory_initializer);
+				return bc_concurrency::double_check_lock(m_memory, m_memory_initializer);
 			}
 
 			_bc_memory_extender_bucket* get_next()
 			{
-				return bc_concurreny::double_check_lock(m_next, m_bucket_initializer);
+				return bc_concurrency::double_check_lock(m_next, m_bucket_initializer);
 			}
 
 			void destroy()
