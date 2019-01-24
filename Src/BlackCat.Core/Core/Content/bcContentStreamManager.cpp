@@ -64,7 +64,7 @@ namespace black_cat
 			}
 
 			bc_json_document< _bc_content_stream_json > l_content_stream;
-			l_content_stream.parse(l_buffer.c_str());
+			l_content_stream.load(l_buffer.c_str());
 
 			for (bc_json_object< _bc_content_stream >& l_stream : *l_content_stream->m_streams)
 			{
