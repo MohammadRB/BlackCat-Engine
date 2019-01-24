@@ -7,7 +7,7 @@
 #include "Core/Math/bcVector4f.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Core/File/bcFileStream.h"
-#include "Core/File/bcContentStreamManager.h"
+#include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcJsonParse.h"
 #include "GraphicImp/Resource/bcResourceConfig.h"
 #include "Game/System/Render/bcRenderSystem.h"
@@ -45,6 +45,7 @@ namespace black_cat
 		bc_material_manager::bc_material_manager(core::bc_content_stream_manager& p_content_stream, bc_render_system& p_render_system)
 			: m_content_stream_manager(p_content_stream),
 			m_render_system(p_render_system),
+			m_default_texture_config(),
 			m_default_normal_map()
 		{
 			m_default_texture_config = graphic::bc_graphic_resource_configure().as_resource()
@@ -116,7 +117,7 @@ namespace black_cat
 			}
 
 			core::bc_json_document< _bc_material_json > l_material_json;
-			l_material_json.parse(l_buffer.c_str());
+			l_material_json.load(l_buffer.c_str());
 
 			for(core::bc_json_object<_bc_material_desc>& l_material_desc : *l_material_json->m_materials)
 			{

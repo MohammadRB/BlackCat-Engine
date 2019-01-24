@@ -1,8 +1,8 @@
 // [04/04/2016 MRB]
 
 #include "Core/CorePCH.h"
-#include "Core/File/bcContent.h"
-#include "Core/File/bcContentManager.h"
+#include "Core/Content/bcContent.h"
+#include "Core/Content/bcContentManager.h"
 
 namespace black_cat
 {

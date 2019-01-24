@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcString.h"
-#include "Core/File/bcContent.h"
+#include "Core/Content/bcContent.h"
 #include "Graphic/bcDeviceRef.h"
 
 namespace black_cat

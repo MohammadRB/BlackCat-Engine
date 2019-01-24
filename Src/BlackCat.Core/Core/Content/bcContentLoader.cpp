@@ -1,7 +1,7 @@
 // [04/11/2016 MRB]
 
 #include "Core/CorePCH.h"
-#include "Core/File/bcContentLoader.h"
+#include "Core/Content/bcContentLoader.h"
 
 namespace black_cat
 {

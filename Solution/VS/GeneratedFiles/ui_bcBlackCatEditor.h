@@ -176,7 +176,7 @@ public:
         rightToolBox->setObjectName(QStringLiteral("rightToolBox"));
         rightToolBoxObjectSelect = new QWidget();
         rightToolBoxObjectSelect->setObjectName(QStringLiteral("rightToolBoxObjectSelect"));
-        rightToolBoxObjectSelect->setGeometry(QRect(0, 0, 338, 708));
+        rightToolBoxObjectSelect->setGeometry(QRect(0, 0, 98, 28));
         entityNameLabel = new QLabel(rightToolBoxObjectSelect);
         entityNameLabel->setObjectName(QStringLiteral("entityNameLabel"));
         entityNameLabel->setGeometry(QRect(10, 10, 81, 16));
@@ -186,7 +186,7 @@ public:
         rightToolBox->addItem(rightToolBoxObjectSelect, QStringLiteral("ObjectSelection"));
         rightToolBoxObjectInsert = new QWidget();
         rightToolBoxObjectInsert->setObjectName(QStringLiteral("rightToolBoxObjectInsert"));
-        rightToolBoxObjectInsert->setGeometry(QRect(0, 0, 338, 708));
+        rightToolBoxObjectInsert->setGeometry(QRect(0, 0, 101, 101));
         horizontalLayout_2 = new QHBoxLayout(rightToolBoxObjectInsert);
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -234,7 +234,7 @@ public:
         terrainSmoothSlider = new QSlider(rightToolBoxTerrain);
         terrainSmoothSlider->setObjectName(QStringLiteral("terrainSmoothSlider"));
         terrainSmoothSlider->setMinimum(1);
-        terrainSmoothSlider->setMaximum(5);
+        terrainSmoothSlider->setMaximum(6);
         terrainSmoothSlider->setPageStep(1);
         terrainSmoothSlider->setOrientation(Qt::Horizontal);
 
@@ -411,7 +411,7 @@ public:
         QObject::connect(terrainRadiusSlider, SIGNAL(valueChanged(int)), terrainRadiusValue, SLOT(setNum(int)));
 
         leftBottomTab->setCurrentIndex(0);
-        rightToolBox->setCurrentIndex(0);
+        rightToolBox->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(bcBlackCatEditorClass);

@@ -228,7 +228,7 @@ namespace black_cat
 
 				return l_pointer;*/
 
-				return bc_concurreny::double_check_lock(m_pointer, m_initializer);
+				return bc_concurrency::double_check_lock(m_pointer, m_initializer);
 			}
 
 			bool is_set() const noexcept

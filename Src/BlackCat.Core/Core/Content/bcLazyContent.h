@@ -4,8 +4,8 @@
 
 #include "Core/bcException.h"
 #include "Core/Container/bcString.h"
-#include "Core/File/bcContent.h"
-#include "Core/File/bcContentStreamManager.h"
+#include "Core/Content/bcContent.h"
+#include "Core/Content/bcContentStreamManager.h"
 
 namespace black_cat
 {

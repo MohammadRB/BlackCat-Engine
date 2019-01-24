@@ -57,11 +57,11 @@ namespace black_cat
 			}
 
 			core::bc_json_document< _bc_entity_json > l_json;
-			l_json.parse(l_buffer.c_str());
+			l_json.load(l_buffer.c_str());
 
 			for (auto& l_entity : *l_json->m_entities)
 			{
-				core::bc_string_frame& l_entity_name = *l_entity->m_name;
+				const core::bc_string_frame& l_entity_name = *l_entity->m_name;
 				auto l_entity_name_hash = string_hash()(l_entity_name.c_str());
 				entity_map_type::value_type::second_type l_entity_components;
 
@@ -71,7 +71,7 @@ namespace black_cat
 
 				for (auto& l_component : *l_entity->m_components)
 				{
-					core::bc_string_frame& l_component_name = *l_component->m_name;
+					const core::bc_string_frame& l_component_name = *l_component->m_name;
 					// We have used this function in component name hashing
 					const auto l_component_name_hash = bc_run_time_string_hash(l_component_name.c_str(), l_component_name.size());
 

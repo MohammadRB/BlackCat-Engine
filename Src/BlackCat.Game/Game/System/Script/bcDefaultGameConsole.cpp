@@ -141,7 +141,7 @@ namespace black_cat
 			}
 
 			m_console.reset(m_application.create_console_window(bcL("BlackCat Console")));
-			m_input_spin_task = core::bc_concurreny::start_task
+			m_input_spin_task = core::bc_concurrency::start_task
 			(
 				core::bc_delegate< void() >(this, &bc_default_game_console::_input_spin),
 				core::bc_enum::or({ core::bc_task_creation_option::policy_none, core::bc_task_creation_option::lifetime_exceed_frame })
@@ -182,7 +182,7 @@ namespace black_cat
 			{
 				std::cin.get(l_char);
 
-				core::bc_concurreny::check_for_interruption();
+				core::bc_concurrency::check_for_interruption();
 
 				{
 					core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_input_mutex);

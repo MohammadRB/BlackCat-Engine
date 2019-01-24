@@ -7,7 +7,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcUnorderedMap.h"
-#include "Core/File/bcContent.h"
+#include "Core/Content/bcContent.h"
 #include "Core/Math/bcVector4f.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "Graphic/bcRenderApiInfo.h"

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Core/File/bcContentLoader.h"
+#include "Core/Content/bcContentLoader.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"

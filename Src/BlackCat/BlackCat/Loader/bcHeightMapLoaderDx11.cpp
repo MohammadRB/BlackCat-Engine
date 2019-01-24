@@ -4,7 +4,7 @@
 
 #include "CorePlatformImp/File/bcFileInfo.h"
 #include "Core/Utility/bcUtility.h"
-#include "Core/File/bcContentManager.h"
+#include "Core/Content/bcContentManager.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Core/bcConstant.h"

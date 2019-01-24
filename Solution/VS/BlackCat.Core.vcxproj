@@ -78,6 +78,7 @@ copy ..\..\Src\BlackCat.Core\Core\Memory\*.h ..\..\BC_SDK\Include\Core\Memory
 copy ..\..\Src\BlackCat.Core\Core\Event\*.h ..\..\BC_SDK\Include\Core\Event
 copy ..\..\Src\BlackCat.Core\Core\Utility\*.h ..\..\BC_SDK\Include\Core\Utility
 copy ..\..\Src\BlackCat.Core\Core\File\*.h ..\..\BC_SDK\Include\Core\File
+copy ..\..\Src\BlackCat.Core\Core\Content\*.h ..\..\BC_SDK\Include\Core\Content
 copy ..\..\Src\BlackCat.Core\Core\Math\*.h ..\..\BC_SDK\Include\Core\Math
 copy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core
 
@@ -85,9 +86,7 @@ copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
-
-</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
     </PostBuildEvent>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -121,6 +120,7 @@ copy ..\..\Src\BlackCat.Core\Core\Memory\*.h ..\..\BC_SDK\Include\Core\Memory
 copy ..\..\Src\BlackCat.Core\Core\Event\*.h ..\..\BC_SDK\Include\Core\Event
 copy ..\..\Src\BlackCat.Core\Core\Utility\*.h ..\..\BC_SDK\Include\Core\Utility
 copy ..\..\Src\BlackCat.Core\Core\File\*.h ..\..\BC_SDK\Include\Core\File
+copy ..\..\Src\BlackCat.Core\Core\Content\*.h ..\..\BC_SDK\Include\Core\Content
 copy ..\..\Src\BlackCat.Core\Core\Math\*.h ..\..\BC_SDK\Include\Core\Math
 copy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core
 
@@ -145,14 +145,14 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcDeque.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcQueue.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcUnorderedMap.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcContent.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcContentLoader.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcContentManager.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcContentStreamManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcContent.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcContentLoader.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcContentManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcContentStreamManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcLazyContent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcFileStream.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcJsonDocument.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcJsonParse.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcLazyContent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcPath.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcStream.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcCoordinate.h" />
@@ -233,15 +233,15 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Container\bcString.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Container\bcBitVector.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Content\bcContent.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Content\bcContentLoader.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Content\bcContentStreamManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\CorePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Core/CorePCH.h</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Event\bcEvent.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcContent.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcContentLoader.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcContentStreamManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcPath.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcStream.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcMatrix3f.cpp" />

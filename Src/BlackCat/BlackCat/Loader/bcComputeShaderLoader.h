@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Core/File/bcContentLoader.h"
+#include "Core/Content/bcContentLoader.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "BlackCat/bcExport.h"
 
