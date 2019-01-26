@@ -55,7 +55,7 @@ namespace black_cat
 					core::bc_vector3f
 					(
 						(m_height_map->get_width() * m_height_map->get_xz_multiplier()) / 2,
-						1024 / 2, // TODO Get actual terrain height
+						1024.0 / 2, // TODO Get actual terrain height
 						(m_height_map->get_height() * m_height_map->get_xz_multiplier()) / 2
 					)
 				)

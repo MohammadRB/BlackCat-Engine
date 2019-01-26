@@ -3,7 +3,7 @@
 #include "BlackCat/BlackCatPCH.h"
 
 #include "Core/Container/bcVector.h"
-#include "Core/File/bcContentStreamManager.h"
+#include "Core/Content/bcContentStreamManager.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/bcResourceConfig.h"

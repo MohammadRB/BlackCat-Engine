@@ -95,8 +95,8 @@ namespace black_cat
 		graphic::bc_texture2d_ptr l_result = l_device.create_texture2d
 		(
 			*l_config,
-			p_context.m_data.data(),
-			p_context.m_data.size(),
+			p_context.m_buffer.data(),
+			p_context.m_buffer.size(),
 			l_format
 		);
 

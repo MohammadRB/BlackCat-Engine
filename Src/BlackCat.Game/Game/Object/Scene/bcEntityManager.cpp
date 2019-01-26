@@ -78,13 +78,13 @@ namespace black_cat
 					_bc_entity_component_data l_component_data;
 					l_component_data.m_component_hash = l_component_name_hash;
 
-					auto* l_exp_params = &*l_component->m_parameters;
+					auto& l_exp_params = *l_component->m_parameters;
 
 					std::for_each
 					(
-						std::begin(l_exp_params->m_key_values),
-						std::end(l_exp_params->m_key_values),
-						[&](core::bc_json_key_value::key_value_array_t::value_type& p_parameter)
+						std::begin(l_exp_params),
+						std::end(l_exp_params),
+						[&](core::bc_json_key_value::value_type& p_parameter)
 						{
 							l_component_data.m_component_parameters.add_value(p_parameter.first.c_str(), std::move(p_parameter.second));
 						}

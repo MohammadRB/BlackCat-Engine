@@ -8,6 +8,7 @@
 #include "Core/Container/bcList.h"
 #include "Core/bcException.h"
 #include "Core/Utility/bcParameterPack.h"
+#include "Core/Utility/bcTemplateMetaType.h"
 #include "Core/File/bcJsonParse.h"
 
 #include "3rdParty/RapidJSON/include/rapidjson/document.h"
@@ -141,10 +142,76 @@ namespace black_cat
 		struct bc_json_key_value
 		{
 		public:
-			using key_value_array_t = bc_vector< std::pair< bc_string, bc_any > >;
+			using key_value_array = bc_vector< std::pair< bc_string, bc_any > >;
+			using value_type = key_value_array::value_type;
+			using pointer = key_value_array::pointer;
+			using const_pointer = key_value_array::const_pointer;
+			using reference = key_value_array::reference;
+			using const_reference = key_value_array::const_reference;
+			using difference_type = key_value_array::difference_type;
+			using size_type = key_value_array::size_type;
+			using iterator = key_value_array::iterator;
+			using const_iterator = key_value_array::const_iterator;
 
-		public:
-			key_value_array_t m_key_values;
+			bc_json_key_value() = default;
+
+			bc_json_key_value(const bc_json_key_value&) noexcept(bc_type_traits<key_value_array>::is_no_throw_copy) = default;
+
+			bc_json_key_value(bc_json_key_value&&) noexcept(bc_type_traits<key_value_array>::is_no_throw_move) = default;
+
+			~bc_json_key_value() = default;
+
+			bc_json_key_value& operator=(const bc_json_key_value&) noexcept(bc_type_traits<key_value_array>::is_no_throw_copy) = default;
+
+			bc_json_key_value& operator=(bc_json_key_value&&) noexcept(bc_type_traits<key_value_array>::is_no_throw_move) = default;
+
+			iterator begin()
+			{
+				return m_key_values.begin();
+			}
+
+			const_iterator begin() const
+			{
+				return m_key_values.begin();
+			}
+
+			const_iterator cbegin() const
+			{
+				return m_key_values.cbegin();
+			}
+
+			iterator end()
+			{
+				return m_key_values.end();
+			}
+
+			const_iterator end() const
+			{
+				return m_key_values.end();
+			}
+
+			const_iterator cend() const
+			{
+				return m_key_values.cend();
+			}
+
+			void add(value_type p_value)
+			{
+				m_key_values.push_back(std::move(p_value));
+			}
+
+			void clear()
+			{
+				m_key_values.clear();
+			}
+
+			void reserve(size_type p_new_capacity)
+			{
+				m_key_values.reserve(p_new_capacity);
+			}
+
+		private:
+			key_value_array m_key_values;
 		};
 
 		/**
@@ -798,7 +865,7 @@ namespace black_cat
 		{
 			if (p_json_value.IsObject())
 			{
-				p_value.m_key_values.reserve(p_json_value.GetObjectW().MemberCount());
+				p_value.reserve(p_json_value.GetObjectW().MemberCount());
 
 				for (auto& l_object_member : p_json_value.GetObjectW())
 				{
@@ -807,7 +874,7 @@ namespace black_cat
 
 					_load(l_object_member.value, l_value);
 
-					p_value.m_key_values.push_back(std::make_pair(std::move(l_key), std::move(l_value)));
+					p_value.add(std::make_pair(std::move(l_key), std::move(l_value)));
 				}
 			}
 			else
@@ -821,7 +888,7 @@ namespace black_cat
 		{
 			p_json_value.SetObject(); // Mark json value as an object
 
-			for (std::pair< bc_string, bc_any >& l_value : p_value.m_key_values)
+			for (std::pair< bc_string, bc_any >& l_value : p_value)
 			{
 				auto* l_json_value = set_json_field(p_document, p_json_value, l_value.first.c_str());
 				_save(p_document, *l_json_value, l_value.second);

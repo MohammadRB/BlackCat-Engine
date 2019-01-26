@@ -82,13 +82,13 @@ namespace black_cat
 						bc_estring_program(bc_to_estring_program(*l_stream_content->m_content_file)),
 					};
 
-					auto* l_content_params = &*l_stream_content->m_content_parameter;
+					auto& l_content_params = *l_stream_content->m_content_parameter;
 
 					std::for_each
 					(
-						std::begin(l_content_params->m_key_values),
-						std::end(l_content_params->m_key_values),
-						[&l_stream_file](bc_json_key_value::key_value_array_t::value_type& p_parameter)
+						std::begin(l_content_params),
+						std::end(l_content_params),
+						[&l_stream_file](bc_json_key_value::value_type& p_parameter)
 						{
 							l_stream_file.m_parameters.add_value(p_parameter.first.c_str(), std::move(p_parameter.second));
 						}

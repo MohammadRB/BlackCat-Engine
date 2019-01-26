@@ -32,23 +32,23 @@ namespace black_cat
 		{
 			auto l_file_size = p_context.m_file->length();
 
-			p_context.m_data = bc_vector_frame<bcBYTE>(l_file_size);
+			p_context.m_buffer = bc_vector_frame<bcBYTE>(l_file_size);
 
-			p_context.m_file->read(p_context.m_data.data(), l_file_size);
+			p_context.m_file->read(p_context.m_buffer.data(), l_file_size);
 		}
 
 		void bc_base_content_loader::content_offline_saving(bc_content_loading_context& p_context) const
 		{
-			p_context.m_file->write(p_context.m_data.data(), p_context.m_data.size());
+			p_context.m_file->write(p_context.m_buffer.data(), p_context.m_buffer.size());
 		}
 
 		void bc_base_content_loader::content_file_open_succeeded(bc_content_loading_context& p_context) const
 		{
 			auto l_file_size = p_context.m_file->length();
 
-			p_context.m_data = bc_vector_frame<bcBYTE>(l_file_size); // Use this method of initialization to change size of vector
+			p_context.m_buffer = bc_vector_frame<bcBYTE>(l_file_size); // Use this method of initialization to change size of vector
 
-			p_context.m_file->read(p_context.m_data.data(), l_file_size);
+			p_context.m_file->read(p_context.m_buffer.data(), l_file_size);
 		}
 
 		void bc_base_content_loader::content_file_open_failed(bc_content_loading_context& p_context) const
@@ -70,7 +70,7 @@ namespace black_cat
 		void bc_base_content_loader::content_processing(bc_content_saving_context& p_context) const
 		{
 			auto l_file_name = bc_to_exclusive_string(p_context.m_file_path.c_str());
-			auto l_error_msg = bc_string_frame("Content saving not supported: ") + l_file_name.c_str();
+			auto l_error_msg = bc_string_frame("Content saving is not supported: ") + l_file_name.c_str();
 
 			throw bc_io_exception(l_error_msg.c_str());
 		}
@@ -97,8 +97,8 @@ namespace black_cat
 
 			p_context.m_file.reset();
 			p_context.m_parameter.reset();
-			p_context.m_data.clear();
-			p_context.m_data.shrink_to_fit();
+			p_context.m_buffer.clear();
+			p_context.m_buffer.shrink_to_fit();
 			p_context.m_result.reset();
 		}
 

@@ -234,8 +234,8 @@ namespace black_cat
 
 		physics::bc_memory_buffer l_serialized_buffer = l_physics.serialize(l_serialize_buffer);
 
-		p_context.m_data = core::bc_vector_frame<bcBYTE>(l_serialized_buffer.get_buffer_size());
-		std::memcpy(p_context.m_data.data(), l_serialized_buffer.get_buffer_pointer(), l_serialized_buffer.get_buffer_size());
+		p_context.m_buffer = core::bc_vector_frame<bcBYTE>(l_serialized_buffer.get_buffer_size());
+		std::memcpy(p_context.m_buffer.data(), l_serialized_buffer.get_buffer_pointer(), l_serialized_buffer.get_buffer_size());
 	}
 
 	void bc_height_map_loader_dx11::content_processing(core::bc_content_loading_context& p_context) const
@@ -247,7 +247,7 @@ namespace black_cat
 		auto* l_device = &l_render_system.get_device();
 		auto* l_physics = &l_physics_system.get_physics();
 		
-		physics::bc_memory_buffer l_px_serialized_buffer = l_physics->read_to_memory_buffer(p_context.m_data.data(), p_context.m_data.size());
+		physics::bc_memory_buffer l_px_serialized_buffer = l_physics->read_to_memory_buffer(p_context.m_buffer.data(), p_context.m_buffer.size());
 		physics::bc_serialize_buffer l_px_deserialized_buffer = l_physics->deserialize(l_px_serialized_buffer);
 		physics::bc_height_field_ref l_px_height_map;
 
@@ -327,22 +327,22 @@ namespace black_cat
 				std::back_inserter(l_material_names),
 				[](const core::bc_any& p_material)
 				{
-					auto l_key_value = p_material.as<core::bc_json_key_value>();
+					auto& l_key_value = *p_material.as<core::bc_json_key_value>();
 
 					auto l_name_ite = std::find_if
 					(
-						std::cbegin(l_key_value->m_key_values),
-						std::cend(l_key_value->m_key_values),
-						[&](const core::bc_json_key_value::key_value_array_t::value_type& p_item)
+						std::cbegin(l_key_value),
+						std::cend(l_key_value),
+						[&](const core::bc_json_key_value::key_value_array::value_type& p_item)
 						{
 							return p_item.first == "name";
 						}
 					);
 					auto l_scale_ite = std::find_if
 					(
-						std::cbegin(l_key_value->m_key_values),
-						std::cend(l_key_value->m_key_values),
-						[&](const core::bc_json_key_value::key_value_array_t::value_type& p_item)
+						std::cbegin(l_key_value),
+						std::cend(l_key_value),
+						[&](const core::bc_json_key_value::key_value_array::value_type& p_item)
 						{
 							return p_item.first == "scale";
 						}
@@ -351,11 +351,11 @@ namespace black_cat
 					core::bc_string l_name;
 					bcUINT32 l_scale = 1;
 
-					if (l_name_ite != std::cend(l_key_value->m_key_values))
+					if (l_name_ite != std::cend(l_key_value))
 					{
 						l_name = *l_name_ite->second.as< core::bc_string >();
 					}
-					if (l_scale_ite != std::cend(l_key_value->m_key_values))
+					if (l_scale_ite != std::cend(l_key_value))
 					{
 						l_scale = *l_scale_ite->second.as< bcINT >();
 					}

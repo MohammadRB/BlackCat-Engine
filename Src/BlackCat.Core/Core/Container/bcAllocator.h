@@ -469,8 +469,7 @@ namespace black_cat
 			}
 
 		protected:
-			// Allocate memory for an object and construct it. return type of this function is a unique pointer 
-			// that will call deallocate function and there is no need to use deallocate manually
+			// Allocate memory for an object and construct it
 			template<typename T, typename ...TArgs>
 			bc_unique_ptr<T> allocate(TArgs&&... p_args) const
 			{

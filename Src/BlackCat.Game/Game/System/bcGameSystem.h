@@ -111,7 +111,7 @@ namespace black_cat
 				return m_scene.get();
 			}
 
-			bc_scene* get_scene() const
+			const bc_scene* get_scene() const
 			{
 				return m_scene.get();
 			}

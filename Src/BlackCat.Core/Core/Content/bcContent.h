@@ -54,12 +54,19 @@ namespace black_cat
 			public core_platform::bc_no_copy
 		{
 		public:
-			template< class T, class TDeleter >
-			friend class bc_ref_count_ptr;
+			friend class bc_content_manager;
 
 		public:
 			virtual ~bc_icontent() = default;
 
+		protected:
+			bc_icontent() = default;
+
+			bc_icontent(bc_icontent&&) = default;
+
+			bc_icontent& operator=(bc_icontent&&) = default;
+
+		private:
 			bc_content_hash_t::result_type _get_hash() const
 			{
 				return m_hash;
@@ -70,15 +77,7 @@ namespace black_cat
 				m_hash = p_hash;
 			}
 
-		protected:
-			bc_icontent() = default;
-
-			bc_icontent(bc_icontent&&) = default;
-
-			bc_icontent& operator=(bc_icontent&&) = default;
-
-		private:
-			bc_content_hash_t::result_type m_hash;
+			bc_content_hash_t::result_type m_hash = 0;
 		};
 
 		using bc_icontent_ptr = bc_content_ptr< bc_icontent >;

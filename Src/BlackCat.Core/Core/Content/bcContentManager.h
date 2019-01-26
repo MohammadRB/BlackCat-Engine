@@ -236,8 +236,7 @@ namespace black_cat
 		{
 			static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherite from bc_icontent");
 
-			// Make hash, combination of both file path and content name because some contents like shaders load 
-			// from same file
+			// Make hash, combination of both file path and content name because some contents like shaders load from same file
 			bc_estring_frame l_offline_file_path = _get_offline_file_path<TContent>(p_file);
 			auto l_hash = std::hash< bc_estring_frame >()(l_offline_file_path);
 
@@ -408,7 +407,7 @@ namespace black_cat
 			core_platform::bc_file_info::get_basic_info(l_file_path.c_str(), &l_file_info);
 			core_platform::bc_file_info::get_basic_info(l_offline_file_path.c_str(), &l_offline_file_info);
 
-			const bool l_need_to_offline_processing = !l_offline_file_info.m_exist ||
+			const bool l_need_offline_processing = !l_offline_file_info.m_exist ||
 				l_offline_file_info.m_last_write_time.m_total_milliseconds < l_file_info.m_last_write_time.m_total_milliseconds;
 
 			bc_file_stream l_file_stream;
@@ -423,7 +422,7 @@ namespace black_cat
 			{
 				_bc_content_loader_guard< TContent > l_guard(*p_loader, l_context);
 
-				if (l_need_to_offline_processing)
+				if (l_need_offline_processing)
 				{
 					if (!l_file_stream.open_read(l_file_path.c_str()))
 					{

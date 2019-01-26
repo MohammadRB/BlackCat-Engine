@@ -253,7 +253,7 @@ namespace black_cat
 			bc_actor_component_index l_component_index = g_actor_component_invalid_index;
 
 			// If actor has parent and it's parent has this component type we must create actor component
-			// after parent component in sorting order of container so parent component get updated earlier
+			// after parent component in sorting order of container so parent component update earlier
 			if(l_parent_actor_index != bc_actor::invalid_index)
 			{
 				const bc_actor& l_parent = m_actors[l_parent_actor_index]->m_actor;
