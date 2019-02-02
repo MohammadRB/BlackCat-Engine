@@ -37,6 +37,7 @@
 #include "BlackCat/Loader/bcPixelShaderLoader.h"
 #include "BlackCat/Loader/bcComputeShaderLoader.h"
 #include "BlackCat/Loader/bcMeshColliderLoader.h"
+#include "BlackCat/Loader/bcSceneLoader.h"
 
 namespace black_cat
 {
@@ -130,6 +131,10 @@ namespace black_cat
 		(
 			core::bc_make_loader< bc_mesh_loader >()
 		);
+		l_content_stream_manager->register_loader< game::bc_scene, bc_scene_loader >
+		(
+			core::bc_make_loader< bc_scene_loader >(std::move(p_parameters.m_app_parameters.m_scene_graph_factory))
+		);
 
 		l_entity_manager->register_component_types
 		<
@@ -162,8 +167,7 @@ namespace black_cat
 					game::bc_render_application::get_output_window().get_height(),
 					graphic::bc_format::R8G8B8A8_UNORM,
 					game::bc_render_application::get_output_window().get_device_output()
-				), 
-				p_parameters.m_app_parameters.m_scene_graph_factory()
+				)
 			)
 		);
 

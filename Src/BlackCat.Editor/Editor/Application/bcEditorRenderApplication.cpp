@@ -113,16 +113,15 @@ namespace black_cat
 		{
 			auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
 			auto* l_ui_command_manager = core::bc_get_service< bc_ui_command_service >();
-			auto* l_scene = m_game_system->get_scene();
-
-			p_stream_manager->load_content_stream(core::bc_alloc_type::program, "terrain_textures");
-			p_stream_manager->load_content_stream(core::bc_alloc_type::program, "main");
 
 			l_ui_command_manager->load_content();
 
-			auto l_terrain = l_entity_manager->create_entity("crysis_heightmap");
-
-			l_scene->add_actor(l_terrain);
+			auto l_crysis_scene = core::bc_get_service< core::bc_content_manager >()->load< game::bc_scene >
+			(
+				bcL("Content\\Scene\\CrysisHeightMap.json"),
+				core::bc_content_loader_parameter()
+			);
+			m_game_system->set_scene(l_crysis_scene);
 		}
 
 		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param)
@@ -145,8 +144,6 @@ namespace black_cat
 
 			m_game_system->set_scene(nullptr);
 			l_ui_command_manager->unload_content();
-			p_stream_manager->unload_content_stream("main");
-			p_stream_manager->unload_content_stream("terrain_textures");
 		}
 
 		void bc_editor_render_app::application_destroy()

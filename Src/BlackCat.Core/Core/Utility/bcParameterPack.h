@@ -39,7 +39,7 @@ namespace black_cat
 			template< typename = typename std::enable_if< !std::is_copy_constructible< T >::value >::type >
 			explicit _bc_parameter_pack_imp(T& p_data)
 			{
-				throw bc_logic_exception("You are trying to copy a non copiable object");
+				throw bc_logic_exception("You are trying to copy a non copyable object");
 			}
 
 			explicit _bc_parameter_pack_imp(T&& p_data)
@@ -176,7 +176,15 @@ namespace black_cat
 
 			bc_any(bc_any&& p_other);
 
-			template< typename T, typename = typename std::enable_if< !std::is_same< typename std::decay<T>::type, bc_parameter_pack >::value >::type >
+			template
+			<
+				typename T,
+				typename = std::enable_if_t
+				<
+					!std::is_same_v< std::decay_t< T >, bc_parameter_pack > &&
+					!std::is_same_v< std::decay_t< T >, bc_any >
+				>
+			>
 			explicit bc_any(T&& p_value);
 
 			~bc_any();

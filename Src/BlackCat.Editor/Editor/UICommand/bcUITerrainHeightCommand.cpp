@@ -73,8 +73,8 @@ namespace black_cat
 		{
 			auto* l_rigid_component = p_context.m_terrain.get_component<game::bc_rigid_static_component>();
 			auto* l_height_map_component = p_context.m_terrain.get_component<game::bc_height_map_component>();
-			auto* l_dx11_height_map = static_cast<const bc_editor_height_map_dx11*>(l_height_map_component->get_height_map());
-			auto l_px_height_map = l_dx11_height_map->get_px_height_field();
+			auto& l_dx11_height_map = static_cast<const bc_editor_height_map_dx11&>(l_height_map_component->get_height_map());
+			auto l_px_height_map = l_dx11_height_map.get_px_height_field();
 
 			bc_ui_terrain_height_command_parameter_cbuffer l_cbuffer_parameters;
 			l_cbuffer_parameters.m_tool_center_x = p_context.m_tool_center_x;
@@ -84,7 +84,7 @@ namespace black_cat
 
 			bc_ui_terrain_height_command_render_task l_render_task
 			(
-				*l_dx11_height_map, 
+				l_dx11_height_map, 
 				*static_cast< bc_ui_terrain_height_command_state* >(p_context.m_state), 
 				l_cbuffer_parameters
 			);
@@ -115,10 +115,10 @@ namespace black_cat
 					}
 
 					const bcFLOAT l_height_ratio = 1 - std::pow(l_center_distance / m_radius, 2);
-					bcFLOAT l_height = l_px_height_map.get_height(l_global_coords.x, l_global_coords.y) * l_dx11_height_map->get_y_multiplier();
+					bcFLOAT l_height = l_px_height_map.get_height(l_global_coords.x, l_global_coords.y) * l_dx11_height_map.get_y_multiplier();
 
 					l_height += l_height_ratio * l_cbuffer_parameters.m_tool_height;
-					l_samples[l_sample_index] = l_height / l_dx11_height_map->get_y_multiplier();
+					l_samples[l_sample_index] = l_height / l_dx11_height_map.get_y_multiplier();
 				}
 			}
 

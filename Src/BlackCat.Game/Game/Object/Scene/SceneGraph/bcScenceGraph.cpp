@@ -90,14 +90,15 @@ namespace black_cat
 
 		void bc_scene_graph::clear()
 		{
-			bcAssert(m_graph_node);
-
-			for (auto& l_actor : *m_graph_node)
+			if(m_graph_node)
 			{
-				l_actor.destroy();
-			}
+				for (auto& l_actor : *m_graph_node)
+				{
+					l_actor.destroy();
+				}
 
-			m_graph_node->clear();
+				m_graph_node->clear();
+			}
 		}
 	}
 }

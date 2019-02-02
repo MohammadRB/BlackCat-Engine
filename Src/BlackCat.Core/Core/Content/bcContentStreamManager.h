@@ -32,8 +32,8 @@ namespace black_cat
 		};
 
 		/**
-		 * \brief Make bcContentManager data driven
-		 * \ThreadSafe
+		 * \brief Make bcContentManager data driven.
+		 * ThreadSafe
 		 */
 		class BC_CORE_DLL bc_content_stream_manager : public bc_iservice
 		{

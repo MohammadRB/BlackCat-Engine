@@ -39,7 +39,7 @@ namespace black_cat
 
 			void load(bc_json_value_object& p_json_value);
 
-			void save(bc_json_document_object& p_document, bc_json_value_object& p_json_value);
+			void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value);
 
 			void _add_json_value(bc_ijson_value* p_parser);
 
@@ -56,7 +56,7 @@ namespace black_cat
 
 			virtual void load(bc_json_value_object& p_json_value) = 0;
 
-			virtual void save(bc_json_document_object& p_document, bc_json_value_object& p_json_value) = 0;
+			virtual void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) = 0;
 
 		protected:
 			explicit bc_ijson_value(bc_ijson_structure* p_structure, bool p_optional);
@@ -76,11 +76,11 @@ namespace black_cat
 			}
 		}
 
-		inline void bc_ijson_structure::save(bc_json_document_object& p_document, bc_json_value_object& p_json_value)
+		inline void bc_ijson_structure::write(bc_json_document_object& p_document, bc_json_value_object& p_json_value)
 		{
 			for (auto l_field : m_json_fields)
 			{
-				l_field->save(p_document, p_json_value);
+				l_field->write(p_document, p_json_value);
 			}
 		}
 
@@ -195,6 +195,25 @@ namespace black_cat
 				return m_key_values.cend();
 			}
 
+			iterator find(const bcCHAR* p_key)
+			{
+				iterator l_current = std::begin(m_key_values), l_end = std::end(m_key_values);
+				for(;l_current != l_end; ++l_current)
+				{
+					if(l_current->first == p_key)
+					{
+						break;
+					}
+				}
+
+				return l_current;
+			}
+
+			const_iterator find(const bcCHAR* p_key) const
+			{
+				return const_cast<bc_json_key_value*>(this)->find(p_key);
+			}
+
 			void add(value_type p_value)
 			{
 				m_key_values.push_back(std::move(p_value));
@@ -237,13 +256,11 @@ namespace black_cat
 
 			void load(bc_json_value_object& p_json_value) override;
 
-			void save(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override;
+			void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override;
 
 			T& get() noexcept;
 
 			const T& get() const noexcept;
-
-			void set(const T& p_json_value) noexcept;
 
 			T* operator->() noexcept;
 
@@ -258,49 +275,49 @@ namespace black_cat
 		private:
 			void _load(bc_json_value_object& p_json_value, bool& p_value);
 
-			void _save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bool& p_value);
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bool& p_value);
 
 			void _load(bc_json_value_object& p_json_value, bcINT& p_value);
 
-			void _save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcINT& p_value);
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcINT& p_value);
 
 			void _load(bc_json_value_object& p_json_value, bcUINT& p_value);
 
-			void _save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcUINT& p_value);
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcUINT& p_value);
 
 			void _load(bc_json_value_object& p_json_value, bcFLOAT& p_value);
 
-			void _save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcFLOAT& p_value);
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcFLOAT& p_value);
 
 			void _load(bc_json_value_object& p_json_value, bc_string& p_value);
 
-			void _save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string& p_value);
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string& p_value);
 
 			void _load(bc_json_value_object& p_json_value, bc_string_program& p_value);
 
-			void _save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string_program& p_value);
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string_program& p_value);
 
 			void _load(bc_json_value_object& p_json_value, bc_string_frame& p_value);
 
-			void _save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string_frame& p_value);
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string_frame& p_value);
 
 			void _load(bc_json_value_object& p_json_value, bc_parameter_pack& p_value);
 
-			void _save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_parameter_pack& p_value);
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_parameter_pack& p_value);
 
 			void _load(bc_json_value_object& p_json_value, bc_any& p_value);
 
-			void _save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_any& p_value);
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_any& p_value);
 
 			void _load(bc_json_value_object& p_json_value, bc_json_key_value& p_value);
 
-			void _save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_json_key_value& p_value);
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_json_key_value& p_value);
 
 			template<typename T1>
 			void _load(bc_json_value_object& p_json_value, T1& p_value);
 
 			template<typename T1>
-			void _save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, T1& p_value);
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, T1& p_value);
 
 		private:
 			const bcCHAR* m_name;
@@ -325,13 +342,11 @@ namespace black_cat
 
 			void load(bc_json_value_object& p_json_value) override;
 
-			void save(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override;
+			void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override;
 
 			T& get() noexcept;
 
 			const T& get() const noexcept;
-
-			void set(const T& p_value) noexcept;
 
 			T* operator->() noexcept;
 
@@ -348,7 +363,7 @@ namespace black_cat
 			T m_value;
 		};
 
-		template< typename T, typename T1 = T >
+		template< typename T, typename T1 = void >
 		class bc_json_array : public bc_ijson_value
 		{
 		public:
@@ -366,7 +381,7 @@ namespace black_cat
 
 			void load(bc_json_value_object& p_json_value) override;
 
-			void save(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override;
+			void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override;
 
 			bc_list< bc_json_object< T > >& get();
 
@@ -384,7 +399,7 @@ namespace black_cat
 
 		private:
 			const bcCHAR* m_name;
-			bc_list< bc_json_object< T > > m_value; // Because json objects are non-copy and movable we have used list instead of vector
+			bc_list< bc_json_object< T > > m_value; // Because json objects are not copyable and movable we have used list instead of vector
 		};
 
 		template< typename T >
@@ -420,11 +435,11 @@ namespace black_cat
 
 			void load(bc_json_value_object& p_json_value) override;
 
-			void save(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override;
+			void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override;
 
-			bc_list< bc_json_object< T > >& get();
+			bc_list< bc_json_value< T > >& get();
 
-			const bc_list< bc_json_object< T > >& get() const;
+			const bc_list< bc_json_value< T > >& get() const;
 
 			bc_list< bc_json_value< T > >* operator->() noexcept;
 
@@ -438,7 +453,7 @@ namespace black_cat
 
 		private:
 			const bcCHAR* m_name;
-			bc_list< bc_json_value< T > > m_value; // Because json objects are not copyable and movable we used list instead of vector
+			bc_list< bc_json_value< T > > m_value; // Because json objects are not copyable and movable we have used list instead of vector
 		};
 
 		template< typename T >
@@ -459,7 +474,7 @@ namespace black_cat
 
 			void load(const bcCHAR* p_json);
 
-			bc_string_frame save();
+			bc_string_frame write();
 
 			T& get() noexcept;
 
@@ -504,7 +519,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value<T>::save(bc_json_document_object& p_document, bc_json_value_object& p_json_value)
+		void bc_json_value<T>::write(bc_json_document_object& p_document, bc_json_value_object& p_json_value)
 		{
 			// If we use json value within json array m_name will be null
 			auto* l_json = m_name != nullptr ? set_json_field(p_document, p_json_value, m_name) : &p_json_value;
@@ -513,7 +528,7 @@ namespace black_cat
 				return;
 			}
 
-			_save(p_document, *l_json, m_value);
+			_write(p_document, *l_json, m_value);
 		}
 
 		template< typename T >
@@ -526,12 +541,6 @@ namespace black_cat
 		const T& bc_json_value< T >::get() const noexcept
 		{
 			return m_value;
-		}
-
-		template< typename T >
-		void bc_json_value< T >::set(const T& p_value) noexcept
-		{
-			m_value = p_value;
 		}
 
 		template< typename T >
@@ -570,7 +579,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bool& p_value)
+		void bc_json_value<T>::_write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bool& p_value)
 		{
 			/*if (!p_json_value.IsBool())
 			{
@@ -592,7 +601,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcINT& p_value)
+		void bc_json_value<T>::_write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcINT& p_value)
 		{
 			/*if (!p_json_value.IsNumber())
 			{
@@ -614,7 +623,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcUINT& p_value)
+		void bc_json_value<T>::_write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcUINT& p_value)
 		{
 			/*if (!p_json_value.IsNumber())
 			{
@@ -636,7 +645,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcFLOAT& p_value)
+		void bc_json_value<T>::_write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcFLOAT& p_value)
 		{
 			/*if (!p_json_value.IsNumber())
 			{
@@ -658,7 +667,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string& p_value)
+		void bc_json_value<T>::_write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string& p_value)
 		{
 			/*if (!p_json_value.IsString())
 			{
@@ -680,7 +689,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string_program& p_value)
+		void bc_json_value<T>::_write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string_program& p_value)
 		{
 			/*if (!p_json_value.IsString())
 			{
@@ -702,7 +711,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string_frame& p_value)
+		void bc_json_value<T>::_write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string_frame& p_value)
 		{
 			/*if (!p_json_value.IsString())
 			{
@@ -779,7 +788,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_parameter_pack& p_value)
+		void bc_json_value<T>::_write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_parameter_pack& p_value)
 		{
 			if (p_value.is<bool>())
 			{
@@ -827,7 +836,7 @@ namespace black_cat
 			else if (p_value.is<bc_json_key_value>())
 			{
 				auto* l_value = p_value.as<bc_json_key_value>();
-				_save(p_document, p_json_value, *l_value);
+				_write(p_document, p_json_value, *l_value);
 			}
 			else if (p_value.is<bc_vector<bc_any>>())
 			{
@@ -837,7 +846,7 @@ namespace black_cat
 				for (auto& l_value : *l_values)
 				{
 					bc_json_value_object l_json_value;
-					_save(p_document, l_json_value, l_value);
+					_write(p_document, l_json_value, l_value);
 
 					p_json_value.PushBack(l_json_value, p_document.GetAllocator());
 				}
@@ -855,9 +864,9 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_any& p_value)
+		void bc_json_value<T>::_write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_any& p_value)
 		{
-			_save(p_document, p_json_value, static_cast<bc_parameter_pack&>(p_value));
+			_write(p_document, p_json_value, static_cast<bc_parameter_pack&>(p_value));
 		}
 
 		template< typename T >
@@ -884,14 +893,14 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_json_value<T>::_save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_json_key_value& p_value)
+		void bc_json_value<T>::_write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_json_key_value& p_value)
 		{
 			p_json_value.SetObject(); // Mark json value as an object
 
 			for (std::pair< bc_string, bc_any >& l_value : p_value)
 			{
 				auto* l_json_value = set_json_field(p_document, p_json_value, l_value.first.c_str());
-				_save(p_document, *l_json_value, l_value.second);
+				_write(p_document, *l_json_value, l_value.second);
 			}
 		}
 
@@ -904,9 +913,9 @@ namespace black_cat
 
 		template< typename T >
 		template< typename T1 >
-		void bc_json_value<T>::_save(bc_json_document_object& p_document, bc_json_value_object& p_json_value, T1& p_value)
+		void bc_json_value<T>::_write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, T1& p_value)
 		{
-			json_parse::bc_save(p_document, p_json_value, p_value);
+			json_parse::bc_write(p_document, p_json_value, p_value);
 		}
 
 		// -- Json object --------------------------------------------------------------------------------
@@ -938,7 +947,7 @@ namespace black_cat
 		}
 
 		template< class T >
-		void bc_json_object<T>::save(bc_json_document_object& p_document, bc_json_value_object& p_json_value)
+		void bc_json_object<T>::write(bc_json_document_object& p_document, bc_json_value_object& p_json_value)
 		{
 			// If we use json object within json array m_name will be null
 			auto* l_json = m_name != nullptr ? set_json_field(p_document, p_json_value, m_name) : &p_json_value;
@@ -947,7 +956,7 @@ namespace black_cat
 				return;
 			}
 
-			m_value.save(p_document, *l_json);
+			m_value.write(p_document, *l_json);
 		}
 
 		template< class T >
@@ -960,12 +969,6 @@ namespace black_cat
 		const T& bc_json_object<T>::get() const noexcept
 		{
 			return m_value;
-		}
-
-		template< class T >
-		void bc_json_object< T >::set(const T& p_value) noexcept
-		{
-			m_value = p_value;
 		}
 
 		template< class T >
@@ -1028,7 +1031,7 @@ namespace black_cat
 		}
 
 		template< typename T, typename T1 >
-		void bc_json_array<T, T1>::save(bc_json_document_object& p_document, bc_json_value_object& p_json_value)
+		void bc_json_array<T, T1>::write(bc_json_document_object& p_document, bc_json_value_object& p_json_value)
 		{
 			auto* l_json_value = set_json_field(p_document, p_json_value, m_name);
 			l_json_value->SetArray(); // Mark this json object as an array
@@ -1036,7 +1039,7 @@ namespace black_cat
 			for (auto& l_value : m_value)
 			{
 				bc_json_value_object l_json_item(rapidjson::kObjectType);
-				l_value.save(p_document, l_json_item);
+				l_value.write(p_document, l_json_item);
 
 				l_json_value->PushBack(l_json_item, p_document.GetAllocator());
 			}
@@ -1160,7 +1163,7 @@ namespace black_cat
 				std::is_same< bc_any, typename std::decay< T >::type >::value
 			>::type
 		>
-		::save(bc_json_document_object& p_document, bc_json_value_object& p_json_value)
+		::write(bc_json_document_object& p_document, bc_json_value_object& p_json_value)
 		{
 			auto* l_json_value = set_json_field(p_document, p_json_value, m_name);
 			l_json_value->SetArray(); // Mark this json object as an array
@@ -1168,14 +1171,14 @@ namespace black_cat
 			for (auto& l_value : m_value)
 			{
 				bc_json_value_object l_json_item;
-				l_value.save(p_document, l_json_item);
+				l_value.write(p_document, l_json_item);
 
 				l_json_value->PushBack(l_json_item, p_document.GetAllocator());
 			}
 		}
 
 		template< typename T >
-		bc_list< bc_json_object< T > >& bc_json_array
+		bc_list< bc_json_value< T > >& bc_json_array
 		<
 			T,
 			typename std::enable_if
@@ -1197,7 +1200,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		const bc_list< bc_json_object< T > >& bc_json_array
+		const bc_list< bc_json_value< T > >& bc_json_array
 		<
 			T,
 			typename std::enable_if
@@ -1315,10 +1318,10 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_string_frame bc_json_document<T>::save()
+		bc_string_frame bc_json_document<T>::write()
 		{
 			bc_json_document_object l_json_document(rapidjson::kObjectType);
-			m_value.save(l_json_document, l_json_document);
+			m_value.write(l_json_document, l_json_document);
 
 			rapidjson::StringBuffer l_json_buffer;
 #ifdef BC_DEBUG

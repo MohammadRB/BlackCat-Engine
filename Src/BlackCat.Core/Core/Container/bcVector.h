@@ -244,25 +244,25 @@ namespace black_cat
 				base_type::m_size += p_count;
 
 				return p_position;
-			};
+			}
 
 			template< typename TInputIterator >
 			node_type* _new_node(node_type* p_position, TInputIterator p_first, TInputIterator p_last, std::input_iterator_tag&)
 			{
+				using input_iterator_reference = typename std::iterator_traits<TInputIterator>::reference;
+
 				bcAssert(p_position >= m_first && p_position <= _get_end());
 
-				base_type::template _check_iterator< TInputIterator >();
+				base_type::template check_iterator< TInputIterator >();
 
 				size_type l_count = 0;
 				node_type* l_last_inserted = p_position;
 
-				std::for_each(p_first, p_last, [=, &l_last_inserted, &l_count](typename std::iterator_traits<TInputIterator>::value_type& p_value)
+				std::for_each(p_first, p_last, [=, &l_last_inserted, &l_count](input_iterator_reference p_value)
 				{
-
-					l_last_inserted = _new_node(l_last_inserted, 1, p_value);
+					l_last_inserted = _new_node(l_last_inserted, 1, std::forward<input_iterator_reference>(p_value));
 					++l_last_inserted;
 					++l_count;
-
 				});
 
 				base_type::m_size += l_count;
@@ -273,16 +273,18 @@ namespace black_cat
 			template< typename TInputIterator >
 			node_type* _new_node(node_type* p_position, TInputIterator p_first, TInputIterator p_last, std::forward_iterator_tag&)
 			{
+				using input_iterator_reference = typename std::iterator_traits<TInputIterator>::reference;
+
 				bcAssert(p_position >= m_first && p_position <= _get_end());
 
-				base_type::template _check_iterator< TInputIterator >();
+				base_type::template check_iterator< TInputIterator >();
 
 				difference_type l_count = std::distance(p_first, p_last);
 				node_type* l_first = m_first;
 
 				_increase_capacity(l_count);
 
-				// _increase_capacity method may change pointers, so if it occur we correct p_position
+				// _increase_capacity method may change pointers, so if it has occurred we must correct p_position
 				p_position = m_first + (p_position - l_first);
 				node_type* l_position = p_position;
 
@@ -291,9 +293,12 @@ namespace black_cat
 					_move_elements(l_position + l_count, l_position, (_get_end() - l_position));
 				}
 
-				std::for_each(p_first, p_last, [=, &l_position](const typename std::iterator_traits<TInputIterator>::value_type& p_value)
+				std::for_each(p_first, p_last, [=, &l_position](input_iterator_reference p_value)
 				{
-					bc_allocator_traits< internal_allocator_type >::template construct(m_allocator, l_position++, p_value);
+					bc_allocator_traits< internal_allocator_type >::template construct
+					(
+						m_allocator, l_position++, std::forward<input_iterator_reference>(p_value)
+					);
 				});
 
 				base_type::m_size += l_count;

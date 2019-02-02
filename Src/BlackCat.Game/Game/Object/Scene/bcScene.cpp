@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "PhysicsImp/Body/bcRigidBody.h"
+#include "Core/Content/bcContentStreamManager.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
@@ -14,25 +15,44 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_scene::bc_scene(bc_scene_graph&& p_scene_graph, physics::bc_scene_ref&& p_px_scene)
-			: m_scene_graph(std::move(p_scene_graph)),
+		bc_scene::bc_scene(core::bc_string p_name,
+			core::bc_vector<core::bc_string> p_loaded_streams,
+			bc_scene_graph p_scene_graph, 
+			physics::bc_scene_ref p_px_scene)
+			: m_name(std::move(p_name)),
+			m_loaded_streams(std::move(p_loaded_streams)),
+			m_scene_graph(std::move(p_scene_graph)),
 			m_px_scene(std::move(p_px_scene))
 		{
 		}
 
 		bc_scene::bc_scene(bc_scene&& p_other) noexcept
-			: bc_scene(std::move(p_other.m_scene_graph), std::move(p_other.m_px_scene))
-		{	
+			: bc_scene
+			(
+				std::move(p_other.m_name),
+				std::move(p_other.m_loaded_streams),
+				std::move(p_other.m_scene_graph),
+				std::move(p_other.m_px_scene)
+			)
+		{
 		}
 
 		bc_scene::~bc_scene()
 		{
 			m_scene_graph.clear();
 			m_px_scene.reset();
+
+			auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
+			for (auto& l_stream : m_loaded_streams)
+			{
+				l_content_stream_manager->unload_content_stream(l_stream.c_str());
+			}
 		}
 
 		bc_scene& bc_scene::operator=(bc_scene&& p_other) noexcept
 		{
+			m_name = std::move(p_other.m_name);
+			m_loaded_streams = std::move(p_other.m_loaded_streams);
 			m_scene_graph = std::move(p_other.m_scene_graph);
 			m_px_scene = std::move(p_other.m_px_scene);
 

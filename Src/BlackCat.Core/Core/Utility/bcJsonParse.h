@@ -25,7 +25,7 @@ namespace black_cat
 			p_value.y = l_jarray.Size() > 1 ? l_jarray[1].GetFloat() : 0;
 		}
 
-		inline void bc_save(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, core::bc_vector2f& p_value)
+		inline void bc_write(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, core::bc_vector2f& p_value)
 		{
 			p_jvalue.SetArray();
 
@@ -46,7 +46,7 @@ namespace black_cat
 			p_value.y = l_jarray.Size() > 1 ? l_jarray[1].GetInt() : 0;
 		}
 
-		inline void bc_save(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, core::bc_vector2i& p_value)
+		inline void bc_write(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, core::bc_vector2i& p_value)
 		{
 			p_jvalue.SetArray();
 
@@ -68,7 +68,7 @@ namespace black_cat
 			p_value.z = l_jarray.Size() > 2 ? l_jarray[2].GetFloat() : 0;
 		}
 
-		inline void bc_save(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, core::bc_vector3f& p_value)
+		inline void bc_write(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, core::bc_vector3f& p_value)
 		{
 			p_jvalue.SetArray();
 
@@ -91,7 +91,7 @@ namespace black_cat
 			p_value.z = l_jarray.Size() > 3 ? l_jarray[3].GetInt() : 0;
 		}
 
-		inline void bc_save(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, core::bc_vector3i& p_value)
+		inline void bc_write(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, core::bc_vector3i& p_value)
 		{
 			p_jvalue.SetArray();
 
@@ -115,7 +115,7 @@ namespace black_cat
 			p_value.w = l_jarray.Size() > 3 ? l_jarray[3].GetFloat() : 0;
 		}
 
-		inline void bc_save(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, core::bc_vector4f& p_value)
+		inline void bc_write(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, core::bc_vector4f& p_value)
 		{
 			p_jvalue.SetArray();
 
@@ -140,7 +140,7 @@ namespace black_cat
 			p_value.w = l_jarray.Size() > 3 ? l_jarray[3].GetInt() : 0;
 		}
 
-		inline void bc_save(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, core::bc_vector4i& p_value)
+		inline void bc_write(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, core::bc_vector4i& p_value)
 		{
 			p_jvalue.SetArray();
 

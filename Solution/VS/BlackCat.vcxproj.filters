@@ -84,6 +84,9 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcMeshDrawPass.h">
       <Filter>BlackCat\RenderPass</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -133,6 +136,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcMeshDrawPass.cpp">
       <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

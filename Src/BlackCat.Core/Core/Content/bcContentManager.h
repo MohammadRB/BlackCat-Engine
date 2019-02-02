@@ -466,7 +466,8 @@ namespace black_cat
 						bc_path l_offline_file(l_offline_file_path.c_str());
 						l_offline_file.delete_path();
 
-						std::abort();
+						bc_string_frame l_message = bc_string_frame("Error in loading content file: ") + bc_to_exclusive_string(l_offline_file_path).c_str();
+						throw bc_io_exception(l_message.c_str());
 					}
 					
 					l_context.m_file.reset(bc_stream(l_offline_file_stream));

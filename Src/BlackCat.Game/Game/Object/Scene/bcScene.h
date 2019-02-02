@@ -3,6 +3,10 @@
 #pragma once
 
 #include "CorePlatformImp/Utility/bcClock.h"
+#include "Core/Container/bcString.h"
+#include "Core/Container/bcVector.h"
+#include "Core/Content/bcContent.h"
+#include "Core/bcConstant.h"
 #include "PhysicsImp/Fundation/bcScene.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/SceneGraph/bcScenceGraph.h"
@@ -14,10 +18,15 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_scene
+		class BC_GAME_DLL bc_scene : public core::bc_icontent
 		{
+			BC_CONTENT(scene)
+
 		public:
-			bc_scene(bc_scene_graph&& p_scene_graph, physics::bc_scene_ref&& p_px_scene);
+			bc_scene(core::bc_string p_name,
+				core::bc_vector<core::bc_string> p_loaded_streams,
+				bc_scene_graph p_scene_graph, 
+				physics::bc_scene_ref p_px_scene);
 
 			bc_scene(bc_scene&&) noexcept;
 
@@ -61,9 +70,13 @@ namespace black_cat
 		protected:
 
 		private:
+			core::bc_string m_name;
+			core::bc_vector<core::bc_string> m_loaded_streams;
 			bc_scene_graph m_scene_graph;
 			physics::bc_scene_ref m_px_scene;
 		};
+
+		using bc_scene_ptr = core::bc_content_ptr<bc_scene>;
 
 		template< typename TComponent >
 		bc_scene_graph_buffer bc_scene::get_actors() const

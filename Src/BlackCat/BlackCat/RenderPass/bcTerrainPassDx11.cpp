@@ -109,19 +109,19 @@ namespace black_cat
 			auto l_height_maps = p_scene.get_actors<game::bc_height_map_component>();
 			for (auto& l_actor : l_height_maps)
 			{
-				const game::bc_height_map* l_height_map = l_actor.get_component< game::bc_height_map_component >()->get_height_map();
-				const bc_height_map_dx11* l_height_map_dx11 = static_cast<const bc_height_map_dx11*>(l_height_map);
+				const game::bc_height_map& l_height_map = l_actor.get_component< game::bc_height_map_component >()->get_height_map();
+				const bc_height_map_dx11& l_height_map_dx11 = static_cast<const bc_height_map_dx11&>(l_height_map);
 
 				auto l_compute_state = p_render_system.create_compute_state
 				(
 					m_device_compute_state.get(),
-					l_height_map_dx11->get_width() / s_shader_thread_group_size,
-					l_height_map_dx11->get_height() / s_shader_thread_group_size,
+					l_height_map_dx11.get_width() / s_shader_thread_group_size,
+					l_height_map_dx11.get_height() / s_shader_thread_group_size,
 					1,
 					{},
-					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11->get_height_map_view()) },
-					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11->get_chunk_info_unordered_view()) },
-					{ graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11->get_parameter_cbuffer()) }
+					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11.get_height_map_view()) },
+					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11.get_chunk_info_unordered_view()) },
+					{ graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11.get_parameter_cbuffer()) }
 				);
 
 				p_thread.run_compute_shader(l_compute_state.get());

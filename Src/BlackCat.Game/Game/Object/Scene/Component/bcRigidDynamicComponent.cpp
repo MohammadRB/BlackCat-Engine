@@ -68,7 +68,7 @@ namespace black_cat
 				return;
 			}
 
-			throw bc_invalid_operation_exception("Rigid dynamic component need mesh component.");
+			throw bc_invalid_operation_exception("Rigid dynamic component needs mesh component.");
 		}
 
 		void bc_rigid_dynamic_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)

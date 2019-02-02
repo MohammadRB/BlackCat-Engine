@@ -84,5 +84,13 @@ namespace black_cat
 
 			virtual void iterator_swap(node_type** p_first, node_type** p_second) const noexcept = 0;
 		};
+
+		struct bc_scene_graph_node_factory_parameter
+		{
+			core::bc_vector3f m_center;
+			core::bc_vector3f m_half_extends;
+		};
+
+		using bc_iscene_graph_node_factory = core::bc_delegate<core::bc_unique_ptr<bc_iscene_graph_node>(bc_scene_graph_node_factory_parameter)>;
 	}
 }

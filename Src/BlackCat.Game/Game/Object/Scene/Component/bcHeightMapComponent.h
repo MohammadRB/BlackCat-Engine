@@ -25,9 +25,9 @@ namespace black_cat
 
 			bc_height_map_component& operator=(bc_height_map_component&&) noexcept;
 
-			const bc_height_map* get_height_map() const
+			const bc_height_map& get_height_map() const
 			{
-				return m_height_map.get();
+				return *m_height_map;
 			}
 
 			bc_actor get_actor() const noexcept override;

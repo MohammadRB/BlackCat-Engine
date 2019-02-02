@@ -68,7 +68,7 @@ namespace black_cat
 		bool bc_ui_terrain_material_command::update(terrain_update_context& p_context)
 		{
 			auto* l_height_map_component = p_context.m_terrain.get_component< game::bc_height_map_component >();
-			auto* l_dx11_height_map = static_cast< const bc_editor_height_map_dx11* >(l_height_map_component->get_height_map());
+			auto& l_dx11_height_map = static_cast< const bc_editor_height_map_dx11& >(l_height_map_component->get_height_map());
 
 			bc_ui_terrain_material_command_parameter_cbuffer l_cbuffer_parameters;
 			l_cbuffer_parameters.m_tool_center_x = p_context.m_tool_center_x;
@@ -78,7 +78,7 @@ namespace black_cat
 
 			bc_ui_terrain_material_command_render_task l_render_task
 			(
-				*l_dx11_height_map,
+				l_dx11_height_map,
 				*static_cast< bc_ui_terrain_material_commnad_state* >(p_context.m_state),
 				l_cbuffer_parameters
 			);

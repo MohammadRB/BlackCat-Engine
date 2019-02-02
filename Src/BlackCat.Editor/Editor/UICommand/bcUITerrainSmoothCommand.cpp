@@ -70,8 +70,8 @@ namespace black_cat
 		{
 			auto* l_rigid_component = p_context.m_terrain.get_component< game::bc_rigid_static_component >();
 			auto* l_height_map_component = p_context.m_terrain.get_component< game::bc_height_map_component >();
-			auto* l_dx11_height_map = static_cast< const bc_editor_height_map_dx11* >(l_height_map_component->get_height_map());
-			auto l_px_height_map = l_dx11_height_map->get_px_height_field();
+			auto& l_dx11_height_map = static_cast< const bc_editor_height_map_dx11& >(l_height_map_component->get_height_map());
+			auto l_px_height_map = l_dx11_height_map.get_px_height_field();
 
 			const bc_ui_terrain_smooth_command_parameter_cbuffer l_cbuffer_parameters
 			{
@@ -83,7 +83,7 @@ namespace black_cat
 
 			bc_ui_terrain_smooth_command_render_task l_render_task
 			(
-				*l_dx11_height_map,
+				l_dx11_height_map,
 				*static_cast< bc_ui_terrain_smooth_commnad_state* >(p_context.m_state),
 				l_cbuffer_parameters
 			);
@@ -115,8 +115,8 @@ namespace black_cat
 
 					bcUINT32 l_min_x = std::max(0U, static_cast< bcUINT32 >(l_global_coords.x) - s_smooth_radius);
 					bcUINT32 l_min_z = std::max(0U, static_cast< bcUINT32 >(l_global_coords.y) - s_smooth_radius);
-					bcUINT32 l_max_x = std::min(static_cast< bcUINT32 >(l_dx11_height_map->get_width()), static_cast< bcUINT32 >(l_global_coords.x) + s_smooth_radius);
-					bcUINT32 l_max_z = std::min(static_cast< bcUINT32 >(l_dx11_height_map->get_height()), static_cast< bcUINT32 >(l_global_coords.y) + s_smooth_radius);
+					bcUINT32 l_max_x = std::min(static_cast< bcUINT32 >(l_dx11_height_map.get_width()), static_cast< bcUINT32 >(l_global_coords.x) + s_smooth_radius);
+					bcUINT32 l_max_z = std::min(static_cast< bcUINT32 >(l_dx11_height_map.get_height()), static_cast< bcUINT32 >(l_global_coords.y) + s_smooth_radius);
 					bcUINT32 l_num_sample = 0;
 					bcFLOAT l_computed_height = 0;
 
@@ -124,18 +124,18 @@ namespace black_cat
 					{
 						for (bcUINT32 l_z1 = l_min_z; l_z1 <= l_max_z; ++l_z1)
 						{
-							l_computed_height += l_px_height_map.get_height(l_x1, l_z1) * l_dx11_height_map->get_y_multiplier();
+							l_computed_height += l_px_height_map.get_height(l_x1, l_z1) * l_dx11_height_map.get_y_multiplier();
 
 							++l_num_sample;
 						}
 					}
 
 					l_computed_height /= l_num_sample;
-					bcFLOAT l_source_height = l_px_height_map.get_height(l_global_coords.x, l_global_coords.y) * l_dx11_height_map->get_y_multiplier();
+					bcFLOAT l_source_height = l_px_height_map.get_height(l_global_coords.x, l_global_coords.y) * l_dx11_height_map.get_y_multiplier();
 					bcFLOAT l_smooth_ratio = (s_smooth_max - l_cbuffer_parameters.m_tool_smooth * 1.0f) / s_smooth_max;
 					bcFLOAT l_final_height = (l_computed_height * (1 - l_smooth_ratio)) + (l_source_height * l_smooth_ratio);
 
-					l_samples[l_sample_index] = l_final_height / l_dx11_height_map->get_y_multiplier();
+					l_samples[l_sample_index] = l_final_height / l_dx11_height_map.get_y_multiplier();
 				}
 			}
 

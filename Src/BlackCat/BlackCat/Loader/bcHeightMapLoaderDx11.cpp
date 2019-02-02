@@ -329,24 +329,8 @@ namespace black_cat
 				{
 					auto& l_key_value = *p_material.as<core::bc_json_key_value>();
 
-					auto l_name_ite = std::find_if
-					(
-						std::cbegin(l_key_value),
-						std::cend(l_key_value),
-						[&](const core::bc_json_key_value::key_value_array::value_type& p_item)
-						{
-							return p_item.first == "name";
-						}
-					);
-					auto l_scale_ite = std::find_if
-					(
-						std::cbegin(l_key_value),
-						std::cend(l_key_value),
-						[&](const core::bc_json_key_value::key_value_array::value_type& p_item)
-						{
-							return p_item.first == "scale";
-						}
-					);
+					auto l_name_ite = l_key_value.find("name");
+					auto l_scale_ite = l_key_value.find("scale");
 
 					core::bc_string l_name;
 					bcUINT32 l_scale = 1;
