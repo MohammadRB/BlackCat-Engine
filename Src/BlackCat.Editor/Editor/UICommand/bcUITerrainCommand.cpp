@@ -71,7 +71,7 @@ namespace black_cat
 			const auto* l_height_map_component = l_terrain.get_component< game::bc_height_map_component >();
 			const auto& l_dx11_height_map = static_cast< const bc_editor_height_map_dx11& >(l_height_map_component->get_height_map());
 
-			const auto l_hit_position = l_hit.get_position() - l_dx11_height_map.get_position();
+			const auto l_hit_position = l_hit.get_position() - l_height_map_component->get_position();
 
 			const bcUINT16 l_half_width = l_dx11_height_map.get_width() * l_dx11_height_map.get_xz_multiplier() / 2;
 			const bcUINT16 l_half_height = l_dx11_height_map.get_height() * l_dx11_height_map.get_xz_multiplier() / 2;

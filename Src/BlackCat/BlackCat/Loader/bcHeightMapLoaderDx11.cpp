@@ -104,8 +104,7 @@ namespace black_cat
 		core::bc_unique_ptr<bcUBYTE> m_texture_buffer;
 	};
 
-	bc_height_map_dx11::bc_height_map_dx11(const core::bc_vector3f& p_position,
-		bcUINT16 p_xz_multiplier,
+	bc_height_map_dx11::bc_height_map_dx11(bcUINT16 p_xz_multiplier,
 		bcFLOAT p_y_multiplier,
 		bcUINT16 p_distance_detail,
 		bcUINT16 p_height_detail,
@@ -126,7 +125,6 @@ namespace black_cat
 		void* p_px_height_map_deserialize_buffer)
 		: bc_height_map
 		(
-			p_position,
 			p_height_map->get_width(),
 			p_height_map->get_height(),
 			p_xz_multiplier,
@@ -295,21 +293,12 @@ namespace black_cat
 			)
 		);
 
-		auto* l_x_pos_value = p_context.m_parameter.get_value< bcINT >("x_pos");
-		auto* l_y_pos_value = p_context.m_parameter.get_value< bcINT >("y_pos");
-		auto* l_z_pos_value = p_context.m_parameter.get_value< bcINT >("z_pos");
 		auto* l_xz_multiplier_value = p_context.m_parameter.get_value< bcINT >("xz_multiplier");
 		auto* l_y_multiplier_value = p_context.m_parameter.get_value< bcINT >("y_multiplier");
 		auto* l_distance_detail_value = p_context.m_parameter.get_value< bcINT >("distance_detail");
 		auto* l_height_detail_value = p_context.m_parameter.get_value< bcINT >("height_detail");
 		auto* l_material_names_value = p_context.m_parameter.get_value< core::bc_vector< core::bc_any > >("materials");
 		
-		auto l_position = core::bc_vector3f
-		(
-			bc_null_default(l_x_pos_value, 0),
-			bc_null_default(l_y_pos_value, 0),
-			bc_null_default(l_z_pos_value, 0)
-		);
 		bcUINT16 l_xz_multiplier = bc_null_default(l_xz_multiplier_value, 1);
 		bcFLOAT l_y_multiplier = bc_null_default(l_y_multiplier_value, 512);
 		bcUINT16 l_distance_detail = bc_null_default(l_distance_detail_value, 100);
@@ -366,9 +355,9 @@ namespace black_cat
 
 				l_vertex.m_position = core::bc_vector3f
 				(
-					x * s_chunk_size * l_xz_multiplier + l_position.x,
+					x * s_chunk_size * l_xz_multiplier,
 					0,
-					z * s_chunk_size * l_xz_multiplier + l_position.z
+					z * s_chunk_size * l_xz_multiplier
 				);
 				l_vertex.m_texcoord = core::bc_vector2f
 				(
@@ -577,7 +566,6 @@ namespace black_cat
 
 		auto l_height_map = bc_height_map_dx11
 		(
-			l_position,
 			l_xz_multiplier,
 			l_physics_system.get_height_field_y_scale(),
 			l_distance_detail,

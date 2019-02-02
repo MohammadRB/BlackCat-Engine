@@ -17,8 +17,7 @@ namespace black_cat
 			BC_CONTENT(height_map)
 
 		public:
-			bc_height_map(const core::bc_vector3f& p_position,
-				bcUINT16 p_width,
+			bc_height_map(bcUINT16 p_width,
 				bcUINT16 p_height,
 				bcUINT16 p_xz_multiplier,
 				bcFLOAT p_y_multiplier,
@@ -33,12 +32,7 @@ namespace black_cat
 			virtual ~bc_height_map();
 
 			bc_height_map& operator=(bc_height_map&& p_other) noexcept;
-
-			const core::bc_vector3f& get_position() const
-			{
-				return m_position;
-			}
-
+			
 			bcUINT16 get_width() const
 			{
 				return m_width;
@@ -82,7 +76,6 @@ namespace black_cat
 		protected:
 
 		private:
-			core::bc_vector3f m_position;
 			bcUINT16 m_width;
 			bcUINT16 m_height;
 			bcUINT16 m_xz_multiplier;

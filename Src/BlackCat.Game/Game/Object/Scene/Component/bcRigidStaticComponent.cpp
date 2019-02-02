@@ -58,8 +58,8 @@ namespace black_cat
 		{
 			auto& l_physics_system = core::bc_get_service<bc_game_system>()->get_physics_system();
 			auto& l_physics = l_physics_system.get_physics();
-			auto* l_mesh_component = p_actor.get_component<bc_mesh_component>();
 
+			auto* l_mesh_component = p_actor.get_component<bc_mesh_component>();
 			if(l_mesh_component)
 			{
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform::identity());
@@ -69,7 +69,6 @@ namespace black_cat
 			}
 
 			auto* l_height_map_component = p_actor.get_component<bc_height_map_component>();
-
 			if(l_height_map_component)
 			{
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform::identity());
@@ -95,11 +94,6 @@ namespace black_cat
 			auto l_height_field_material = l_physics.create_material(1, 1, 0.1);
 
 			p_rigid_static.create_shape(l_height_field_shape, l_height_field_material.get());
-
-			auto l_half_width = (l_height_map.get_width() * l_height_map.get_xz_multiplier()) / 2;
-			auto l_half_height = (l_height_map.get_height() * l_height_map.get_xz_multiplier()) / 2;
-			auto l_position = l_height_map.get_position() + core::bc_vector3f(-l_half_width, 0, l_half_height);
-			p_rigid_static.set_global_pose(physics::bc_transform(l_position));
 			p_rigid_static.set_query_group(static_cast<physics::bc_query_group>(bc_query_group::terrain));
 
 			p_physics_system.connect_px_actor_to_game_actor(p_rigid_static, p_actor);

@@ -94,7 +94,7 @@ namespace black_cat
 				return p_value->c_str();
 			}
 		);
-
+		
 		auto l_scene = game::bc_scene
 		(
 			core::bc_string(l_json->m_name->c_str()), 

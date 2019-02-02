@@ -41,6 +41,11 @@ namespace black_cat
 			return get_manager()->component_get_actor(*this);
 		}
 
+		void bc_height_map_component::set_world_transform(const core::bc_matrix4f& p_transform)
+		{
+			m_transform = p_transform;
+		}
+
 		void bc_height_map_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
 		{
 			auto& l_height_map_name = p_parameters.get_value_throw< core::bc_string >(core::g_param_heightmap);
@@ -51,7 +56,7 @@ namespace black_cat
 			(
 				physics::bc_bound_box
 				(
-					m_height_map->get_position(),
+					m_transform.get_translation(),
 					core::bc_vector3f
 					(
 						(m_height_map->get_width() * m_height_map->get_xz_multiplier()) / 2,
@@ -68,7 +73,7 @@ namespace black_cat
 
 		void bc_height_map_component::render(bc_render_system& p_render_system) const
 		{
-			bc_render_instance l_instance(core::bc_matrix4f::identity());
+			bc_render_instance l_instance(m_transform);
 			p_render_system.add_render_instance(m_height_map->get_render_state(), l_instance);
 		}
 	}

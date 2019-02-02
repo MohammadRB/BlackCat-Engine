@@ -16,8 +16,7 @@ namespace black_cat
 	class bc_height_map_dx11 : public game::bc_height_map
 	{
 	public:
-		bc_height_map_dx11(const core::bc_vector3f& p_position,
-			bcUINT16 p_xz_multiplier,
+		bc_height_map_dx11(bcUINT16 p_xz_multiplier,
 			bcFLOAT p_y_multiplier,
 			bcUINT16 p_distance_detail,
 			bcUINT16 p_height_detail,
