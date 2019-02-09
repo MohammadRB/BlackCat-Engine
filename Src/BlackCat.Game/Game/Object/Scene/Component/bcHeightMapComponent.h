@@ -26,7 +26,7 @@ namespace black_cat
 
 			bc_height_map_component& operator=(bc_height_map_component&&) noexcept;
 
-			core::bc_vector3f get_position() const
+			core::bc_vector3f get_world_position() const
 			{
 				return m_transform.get_translation();
 			}

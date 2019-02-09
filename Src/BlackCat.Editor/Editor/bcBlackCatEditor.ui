@@ -80,7 +80,7 @@
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>400</height>
+              <height>550</height>
              </size>
             </property>
             <property name="frameShape">
@@ -181,8 +181,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
-              <height>28</height>
+              <width>338</width>
+              <height>708</height>
              </rect>
             </property>
             <attribute name="label">
@@ -220,8 +220,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>101</width>
-              <height>101</height>
+              <width>338</width>
+              <height>708</height>
              </rect>
             </property>
             <attribute name="label">
@@ -420,7 +420,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menuBar">
+  <widget class="QMenuBar" name="mainMenuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -429,6 +429,15 @@
      <height>23</height>
     </rect>
    </property>
+   <widget class="QMenu" name="fileMenu">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="newSceneMenu"/>
+    <addaction name="loadSceneMenu"/>
+    <addaction name="saveSceneMenu"/>
+   </widget>
+   <addaction name="fileMenu"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="sizePolicy">
@@ -462,7 +471,14 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
   <widget class="QDockWidget" name="toolsDock">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -685,6 +701,21 @@
     </layout>
    </widget>
   </widget>
+  <action name="newSceneMenu">
+   <property name="text">
+    <string>NewScene</string>
+   </property>
+  </action>
+  <action name="loadSceneMenu">
+   <property name="text">
+    <string>LoadScene</string>
+   </property>
+  </action>
+  <action name="saveSceneMenu">
+   <property name="text">
+    <string>SaveScene</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

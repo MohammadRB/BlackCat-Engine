@@ -59,7 +59,7 @@ namespace black_cat
 
 			bcSIZE read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read) override;
 
-			bcSIZE write(bcBYTE* p_buffer, bcSIZE p_bytes_to_write) override;
+			bcSIZE write(const bcBYTE* p_buffer, bcSIZE p_bytes_to_write) override;
 
 			bcUINT64 length() const noexcept override;
 
@@ -236,7 +236,7 @@ namespace black_cat
 			return m_file.read(p_buffer, p_bytes_to_read);
 		}
 
-		inline bcSIZE bc_file_stream::write(bcBYTE* p_buffer, bcSIZE p_bytes_to_write)
+		inline bcSIZE bc_file_stream::write(const bcBYTE* p_buffer, bcSIZE p_bytes_to_write)
 		{
 			return m_file.write(p_buffer, p_bytes_to_write);
 		}

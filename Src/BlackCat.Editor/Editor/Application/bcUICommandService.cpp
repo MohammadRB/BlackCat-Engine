@@ -93,7 +93,7 @@ namespace black_cat
 			{
 				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_commands_lock);
 
-				if(!m_executed_commands.empty())
+				while(!m_executed_commands.empty())
 				{
 					bc_iui_command& l_command = *m_executed_commands.front();
 					l_command.update_ui(p_context);

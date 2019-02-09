@@ -23,7 +23,8 @@ namespace black_cat
 			BC_CONTENT(scene)
 
 		public:
-			bc_scene(core::bc_string p_name,
+			bc_scene(core::bc_estring p_path,
+				core::bc_string p_name,
 				core::bc_vector<core::bc_string> p_loaded_streams,
 				bc_scene_graph p_scene_graph, 
 				physics::bc_scene_ref p_px_scene);
@@ -33,6 +34,21 @@ namespace black_cat
 			~bc_scene();
 
 			bc_scene& operator=(bc_scene&&) noexcept;
+
+			const core::bc_estring& get_path() const
+			{
+				return m_path;
+			}
+
+			const core::bc_string& get_name() const
+			{
+				return m_name;
+			}
+
+			const core::bc_vector<core::bc_string>& get_loaded_streams() const
+			{
+				return m_loaded_streams;
+			}
 
 			bc_scene_graph& get_scene_graph()
 			{
@@ -70,6 +86,7 @@ namespace black_cat
 		protected:
 
 		private:
+			core::bc_estring m_path;
 			core::bc_string m_name;
 			core::bc_vector<core::bc_string> m_loaded_streams;
 			bc_scene_graph m_scene_graph;

@@ -66,14 +66,14 @@ namespace black_cat
 			bc_json_document< _bc_content_stream_json > l_content_stream;
 			l_content_stream.load(l_buffer.c_str());
 
-			for (bc_json_object< _bc_content_stream >& l_stream : *l_content_stream->m_streams)
+			for (bc_json_object< _bc_content_stream >& l_stream : l_content_stream->m_streams)
 			{
 				string_hash::result_type l_stream_hash = string_hash()(l_stream->m_stream_name->c_str());
 				bc_vector_program< _bc_content_stream_file > l_stream_files;
 
-				l_stream_files.reserve(l_stream->m_stream_content->size());
+				l_stream_files.reserve(l_stream->m_stream_content.size());
 
-				for (bc_json_object< _bc_content_stream_content >& l_stream_content : *l_stream->m_stream_content)
+				for (bc_json_object< _bc_content_stream_content >& l_stream_content : l_stream->m_stream_content)
 				{
 					_bc_content_stream_file l_stream_file
 					{

@@ -119,7 +119,7 @@ namespace black_cat
 			core::bc_json_document< _bc_material_json > l_material_json;
 			l_material_json.load(l_buffer.c_str());
 
-			for(core::bc_json_object<_bc_material_desc>& l_material_desc : *l_material_json->m_materials)
+			for(core::bc_json_object<_bc_material_desc>& l_material_desc : l_material_json->m_materials)
 			{
 				_bc_material_description l_material_description;
 				l_material_description.m_diffuse_color = *l_material_desc->m_diffuse_color;

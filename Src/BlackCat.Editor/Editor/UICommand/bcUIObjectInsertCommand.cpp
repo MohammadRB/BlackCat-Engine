@@ -2,8 +2,7 @@
 
 #include "Editor/EditorPCH.h"
 
-#include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
-#include "Game/Object/Scene/Component/bcMeshComponent.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/System/Physics/bcPxWrap.h"
 #include "Editor/UICommand/bcUIObjectInsertCommand.h"
@@ -79,19 +78,10 @@ namespace black_cat
 			std::string l_entity_name = m_entity_name.toStdString();
 			game::bc_actor l_actor = core::bc_get_service<game::bc_entity_manager>()->create_entity(l_entity_name.c_str());
 			
-			auto* l_rigid_body_component = l_actor.get_component<game::bc_rigid_body_component>();
-			if(l_rigid_body_component != nullptr)
+			auto* l_mediate_component = l_actor.get_component<game::bc_mediate_component>();
+			if(l_mediate_component != nullptr)
 			{
-				l_rigid_body_component->get_body().set_global_pose(physics::bc_transform(l_position));
-			}
-
-			auto* l_mesh_component = l_actor.get_component<game::bc_mesh_component>();
-			if(l_mesh_component != nullptr)
-			{
-				core::bc_matrix4f l_mat;
-				l_mat.translate(l_position.x, l_position.y, l_position.z);
-
-				l_mesh_component->set_world_transform(core::bc_matrix4f(l_mat));
+				l_mediate_component->set_world_position(l_position);
 			}
 
 			p_context.m_game_system.get_scene()->add_actor(l_actor);

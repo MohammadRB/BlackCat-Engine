@@ -21,6 +21,32 @@ namespace black_cat
 			return get_manager()->component_get_actor(*this);
 		}
 
+		core::bc_vector3f bc_mediate_component::get_world_position() const
+		{
+			auto l_actor = get_actor();
+			auto* l_rigid_body_component = l_actor.get_component<bc_rigid_body_component>();
+			
+			if(l_rigid_body_component)
+			{
+				return l_rigid_body_component->get_body().get_global_pose().get_position();
+			}
+
+			auto* l_mesh_component = l_actor.get_component<bc_mesh_component>();
+			if(l_mesh_component)
+			{
+				return l_mesh_component->get_world_position();
+			}
+
+			auto* l_height_map_component = l_actor.get_component<bc_height_map_component>();
+			if(l_height_map_component)
+			{
+				return l_height_map_component->get_world_position();
+			}
+
+			bcAssert(false);
+			return core::bc_vector3f();
+		}
+
 		void bc_mediate_component::set_world_position(const core::bc_vector3f& p_position)
 		{
 			core::bc_matrix4f l_transform;
@@ -63,7 +89,7 @@ namespace black_cat
 
 			if (l_mesh_component)
 			{
-				l_mesh_component->set_world_transform(p_transform);
+				l_mesh_component->set_world_transform(*this, p_transform);
 			}
 
 			if(l_height_map_component)

@@ -59,17 +59,17 @@ namespace black_cat
 			core::bc_json_document< _bc_entity_json > l_json;
 			l_json.load(l_buffer.c_str());
 
-			for (auto& l_entity : *l_json->m_entities)
+			for (auto& l_entity : l_json->m_entities)
 			{
 				const core::bc_string_frame& l_entity_name = *l_entity->m_name;
 				auto l_entity_name_hash = string_hash()(l_entity_name.c_str());
 				entity_map_type::value_type::second_type l_entity_components;
 
 				// Because we used program heap we must reserve needed memory
-				l_entity_components.m_components.reserve(l_entity->m_components->size());
+				l_entity_components.m_components.reserve(l_entity->m_components.size());
 				l_entity_components.m_entity_name = l_entity_name.c_str();
 
-				for (auto& l_component : *l_entity->m_components)
+				for (auto& l_component : l_entity->m_components)
 				{
 					const core::bc_string_frame& l_component_name = *l_component->m_name;
 					// We have used this function in component name hashing

@@ -12,6 +12,9 @@
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/SceneGraph/bcScenceGraph.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/bcNameComponent.h"
+#include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
+#include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "BlackCat/Loader/bcSceneLoader.h"
@@ -61,12 +64,12 @@ namespace black_cat
 		auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
 
 		core::bc_vector_frame< core::bc_task< void > > l_stream_tasks;
-		l_stream_tasks.reserve(l_json->m_streams->size());
+		l_stream_tasks.reserve(l_json->m_streams.size());
 
 		std::transform
 		(
-			std::begin(*l_json->m_streams),
-			std::end(*l_json->m_streams),
+			std::begin(l_json->m_streams),
+			std::end(l_json->m_streams),
 			std::back_inserter(l_stream_tasks),
 			[=](const core::bc_json_value< core::bc_string_frame >& p_stream)
 			{
@@ -86,8 +89,8 @@ namespace black_cat
 		core::bc_vector< core::bc_string > l_stream_names;
 		std::transform
 		(
-			std::cbegin(*l_json->m_streams),
-			std::cend(*l_json->m_streams),
+			std::cbegin(l_json->m_streams),
+			std::cend(l_json->m_streams),
 			std::back_inserter(l_stream_names),
 			[](const core::bc_json_value< core::bc_string_frame >& p_value)
 			{
@@ -97,6 +100,7 @@ namespace black_cat
 		
 		auto l_scene = game::bc_scene
 		(
+			core::bc_estring(p_context.m_file_path.c_str()),
 			core::bc_string(l_json->m_name->c_str()), 
 			l_stream_names,
 			std::move(l_scene_graph), 
@@ -104,7 +108,7 @@ namespace black_cat
 		);
 
 		core::bc_vector< game::bc_iactor_component* > l_actor_components;
-		for (auto& l_json_actor : *l_json->m_actors)
+		for (auto& l_json_actor : l_json->m_actors)
 		{
 			game::bc_actor l_actor = l_entity_manager->create_entity(l_json_actor->m_entity_name->c_str());
 			game::bc_mediate_component* l_mediate_component = l_actor.get_component< game::bc_mediate_component >();
@@ -126,5 +130,40 @@ namespace black_cat
 
 	void bc_scene_loader::content_processing(core::bc_content_saving_context& p_context) const
 	{
+		auto* l_scene = static_cast<game::bc_scene*>(p_context.m_content);
+
+		core::bc_json_document< _bc_scene_json > l_json_document;
+
+		*l_json_document->m_name = l_scene->get_name().c_str();
+		*l_json_document->m_scene_graph->m_center = l_scene->get_scene_graph().get_bound_box().get_center();
+		*l_json_document->m_scene_graph->m_half_extends = l_scene->get_scene_graph().get_bound_box().get_half_extends();
+		
+		for (auto& l_stream : l_scene->get_loaded_streams())
+		{
+			auto& l_stream_entry = l_json_document->m_streams.new_entry();
+			*l_stream_entry = l_stream.c_str();
+		}
+
+		core::bc_vector< game::bc_iactor_component* > l_actor_components;
+		for (auto& l_actor : l_scene->get_scene_graph())
+		{
+			auto* l_name_component = l_actor.get_component< game::bc_name_component >();
+			auto* l_mediate_component = l_actor.get_component< game::bc_mediate_component >();
+			l_actor.get_components(std::back_inserter(l_actor_components));
+
+			auto& l_actor_entry = l_json_document->m_actors.new_entry();
+
+			*l_actor_entry->m_entity_name = l_name_component->get_entity_name();
+			*l_actor_entry->m_position = l_mediate_component->get_world_position();
+			for (auto& l_component : l_actor_components)
+			{
+				l_component->write_instance(l_actor, *l_actor_entry->m_parameters);
+			}
+
+			l_actor_components.clear();
+		}
+
+		auto l_json = l_json_document.write();
+		p_context.m_file->write(l_json.c_str(), l_json.size());
 	}
 }

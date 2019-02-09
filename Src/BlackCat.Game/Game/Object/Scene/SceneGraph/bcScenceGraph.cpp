@@ -26,6 +26,11 @@ namespace black_cat
 			}
 		}
 
+		physics::bc_bound_box bc_scene_graph::get_bound_box() const
+		{
+			return m_graph_node->get_bound_box();
+		}
+
 		bc_scene_graph::iterator bc_scene_graph::begin() noexcept
 		{
 			return m_graph_node->begin();

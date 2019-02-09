@@ -13,8 +13,8 @@ namespace black_cat
 
 		bc_mesh_node::bc_mesh_node(core::bc_string p_name,
 			bc_mesh_node* p_parent,
-			node_indexing p_transformation,
-			node_indexing p_first_mesh,
+			node_index p_transformation,
+			node_index p_first_mesh,
 			bcUINT32 p_mesh_count)
 			: m_name(std::move(p_name)),
 			m_parent(p_parent),
@@ -24,12 +24,12 @@ namespace black_cat
 		{
 		}
 
-		bc_mesh_node::node_indexing bc_mesh_node::get_transformation_index() const
+		bc_mesh_node::node_index bc_mesh_node::get_transformation_index() const
 		{
 			return m_transformation_index;
 		}
 
-		bc_mesh_node::node_indexing bc_mesh_node::get_mesh_count() const
+		bc_mesh_node::node_index bc_mesh_node::get_mesh_count() const
 		{
 			return m_mesh_count;
 		}

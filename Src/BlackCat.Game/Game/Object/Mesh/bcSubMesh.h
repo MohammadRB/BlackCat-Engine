@@ -22,7 +22,7 @@ namespace black_cat
 			{
 			}
 
-			explicit bc_sub_mesh_transformation(bc_mesh_node::node_indexing p_root_node_index)
+			explicit bc_sub_mesh_transformation(bc_mesh_node::node_index p_root_node_index)
 				: m_root_node_index(p_root_node_index)
 			{
 			}
@@ -37,10 +37,25 @@ namespace black_cat
 
 			bc_sub_mesh_transformation& operator=(bc_sub_mesh_transformation&&) = default;
 
+			bc_mesh_node::node_index get_root_node_index() const
+			{
+				return m_root_node_index;
+			}
+
+			core::bc_vector3f get_node_translation(bc_mesh_node::node_index p_index) const
+			{
+				return m_transformations[p_index].get_translation();
+			}
+
+			core::bc_matrix4f get_node_transform(bc_mesh_node::node_index p_index) const
+			{
+				return m_transformations[p_index];
+			}
+
 		protected:
 
 		private:
-			bc_mesh_node::node_indexing m_root_node_index;
+			bc_mesh_node::node_index m_root_node_index;
 			core::bc_vector_movale<core::bc_matrix4f> m_transformations;
 		};
 

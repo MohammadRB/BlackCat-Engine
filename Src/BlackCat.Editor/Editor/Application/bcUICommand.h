@@ -8,8 +8,6 @@
 #include "Core/Content/bcContentStreamManager.h"
 #include "PhysicsImp/Collision/bcSceneQuery.h"
 #include "Game/System/Physics/bcPxWrap.h"
-#include "Editor/UI/bcFormObject.h"
-#include "Editor/UI/bcFormObjectInsert.h"
 
 namespace black_cat
 {
@@ -25,6 +23,9 @@ namespace black_cat
 
 	namespace editor
 	{
+		class bc_form_main_menu;
+		class bc_form_object_insert;
+		class bc_form_object;
 		class bc_ui_command_service;
 
 		class bc_iui_command_state
@@ -67,14 +68,18 @@ namespace black_cat
 		class bc_ui_command_update_ui_context
 		{
 		public:
-			bc_ui_command_update_ui_context(bc_form_object& p_form_object, bc_form_object_insert& p_form_object_insert)
+			bc_ui_command_update_ui_context(bc_form_object& p_form_object, 
+				bc_form_object_insert& p_form_object_insert,
+				bc_form_main_menu& p_form_main_menu)
 				: m_form_object(p_form_object),
-				m_form_object_insert(p_form_object_insert)
+				m_form_object_insert(p_form_object_insert),
+				m_form_main_menu(p_form_main_menu)
 			{
 			}
 
 			bc_form_object& m_form_object;
 			bc_form_object_insert& m_form_object_insert;
+			bc_form_main_menu& m_form_main_menu;
 		};
 
 		class bc_iui_command
@@ -101,7 +106,7 @@ namespace black_cat
 			 * \param p_context 
 			 * \return 
 			 */
-			virtual state_ptr create_state(state_context& p_context) const = 0;
+			virtual state_ptr create_state(state_context& p_context) const;
 
 			/**
 			 * \brief Update command logic.

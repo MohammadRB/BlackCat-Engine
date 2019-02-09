@@ -8,6 +8,7 @@
 #include "Editor/Widget/bcD3DOutputWidget.h"
 #include "Editor/Widget/bcConsoleWidget.h"
 #include "Editor/QtAwesome/QtAwesome.h"
+#include "Editor/UI/bcFormMainMenu.h"
 #include "Editor/UI/bcFormTools.h"
 #include "Editor/UI/bcFormTerrain.h"
 #include "Editor/UI/bcFormObject.h"
@@ -67,6 +68,7 @@ namespace black_cat
 			std::unique_ptr< bc_console_widget > m_console_widget;
 			std::unique_ptr< bc_editor_game_console > m_editor_game_console;
 
+			std::unique_ptr< bc_form_main_menu > m_form_main_menu;
 			std::unique_ptr< bc_form_tools > m_form_tools;
 			std::unique_ptr< bc_form_terrain > m_form_terrain;
 			std::unique_ptr< bc_form_object > m_form_object;

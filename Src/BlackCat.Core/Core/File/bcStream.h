@@ -63,7 +63,7 @@ namespace black_cat
 
 			virtual bcSIZE read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read) = 0;
 
-			virtual bcSIZE write(bcBYTE* p_buffer, bcSIZE p_bytes_to_write) = 0;
+			virtual bcSIZE write(const bcBYTE* p_buffer, bcSIZE p_bytes_to_write) = 0;
 
 			virtual bcUINT64 length() const noexcept = 0;
 
@@ -117,7 +117,7 @@ namespace black_cat
 			bcSIZE read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read);
 
 			// Return number of bytes that has been written
-			bcSIZE write(bcBYTE* p_buffer, bcSIZE p_bytes_to_write);
+			bcSIZE write(const bcBYTE* p_buffer, bcSIZE p_bytes_to_write);
 
 			bcUINT64 length() const noexcept;
 
@@ -210,7 +210,7 @@ namespace black_cat
 			return m_stream->read(p_buffer, p_bytes_to_read);
 		}
 
-		inline bcSIZE bc_stream::write(bcBYTE* p_buffer, bcSIZE p_bytes_to_write)
+		inline bcSIZE bc_stream::write(const bcBYTE* p_buffer, bcSIZE p_bytes_to_write)
 		{
 			return m_stream->write(p_buffer, p_bytes_to_write);
 		}

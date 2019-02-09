@@ -26,7 +26,7 @@ namespace black_cat
 			{
 				const bc_mesh_node* l_node = *p_begin;
 				
-				for(bc_mesh_node::node_indexing l_mesh_index= 0, l_mesh_count = l_node->get_mesh_count(); l_mesh_index < l_mesh_count; ++l_mesh_index)
+				for(bc_mesh_node::node_index l_mesh_index= 0, l_mesh_count = l_node->get_mesh_count(); l_mesh_index < l_mesh_count; ++l_mesh_index)
 				{
 					auto* l_node_mesh_render_state = p_mesh_part.get_node_mesh_render_state(l_node, l_mesh_index);
 					if (l_node_mesh_render_state)
@@ -80,23 +80,33 @@ namespace black_cat
 			return get_manager()->component_get_actor(*this);
 		}
 
-		void bc_mesh_component::set_world_transform(const core::bc_matrix4f& p_transform)
+		core::bc_vector3f bc_mesh_component::get_world_position() const
+		{
+			return m_mesh_part_transformation.get_node_translation(m_mesh_part_transformation.get_root_node_index());
+		}
+
+		core::bc_matrix4f bc_mesh_component::get_world_transform() const
+		{
+			return m_mesh_part_transformation.get_node_transform(m_mesh_part_transformation.get_root_node_index());
+		}
+
+		void bc_mesh_component::set_world_transform(bc_mediate_component& p_mediate_component, const core::bc_matrix4f& p_transform)
 		{
 			physics::bc_bound_box l_bound_box;
 			m_sub_mesh.calculate_absolute_transformations(p_transform, m_mesh_part_transformation, l_bound_box);
 
-			get_actor().get_component<bc_mediate_component>()->set_bound_box(l_bound_box);
+			p_mediate_component.set_bound_box(l_bound_box);
 		}
 
 		void bc_mesh_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
 		{
 			auto& l_mesh_name = p_parameters.get_value_throw< core::bc_string >(core::g_param_mesh);
-			const bc_mesh_ptr l_mesh = core::bc_lazy_content::get_content<bc_mesh>(l_mesh_name.c_str());
 			auto* l_sub_mesh_name = p_parameters.get_value< core::bc_string >(core::g_param_sub_mesh);
+			const bc_mesh_ptr l_mesh = core::bc_lazy_content::get_content<bc_mesh>(l_mesh_name.c_str());
 
 			m_sub_mesh = l_sub_mesh_name ? bc_sub_mesh(l_mesh, l_sub_mesh_name->c_str()) : bc_sub_mesh(l_mesh);
 
-			set_world_transform(core::bc_matrix4f::identity());
+			set_world_transform(*p_actor.get_component<bc_mediate_component>(), core::bc_matrix4f::identity());
 		}
 
 		void bc_mesh_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)

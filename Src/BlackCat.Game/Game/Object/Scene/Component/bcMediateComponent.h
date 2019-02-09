@@ -30,6 +30,8 @@ namespace black_cat
 
 			void set_bound_box(const physics::bc_bound_box& p_bound_box);
 
+			core::bc_vector3f get_world_position() const;
+
 			void set_world_position(const core::bc_vector3f& p_position);
 
 			void set_world_transform(const core::bc_matrix4f& p_transform);

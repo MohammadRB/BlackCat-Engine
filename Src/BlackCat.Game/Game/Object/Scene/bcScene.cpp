@@ -9,17 +9,18 @@
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
-#include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		bc_scene::bc_scene(core::bc_string p_name,
+		bc_scene::bc_scene(core::bc_estring p_path,
+			core::bc_string p_name,
 			core::bc_vector<core::bc_string> p_loaded_streams,
 			bc_scene_graph p_scene_graph, 
 			physics::bc_scene_ref p_px_scene)
-			: m_name(std::move(p_name)),
+			: m_path(std::move(p_path)),
+			m_name(std::move(p_name)),
 			m_loaded_streams(std::move(p_loaded_streams)),
 			m_scene_graph(std::move(p_scene_graph)),
 			m_px_scene(std::move(p_px_scene))
@@ -29,6 +30,7 @@ namespace black_cat
 		bc_scene::bc_scene(bc_scene&& p_other) noexcept
 			: bc_scene
 			(
+				std::move(p_other.m_path),
 				std::move(p_other.m_name),
 				std::move(p_other.m_loaded_streams),
 				std::move(p_other.m_scene_graph),
@@ -51,6 +53,7 @@ namespace black_cat
 
 		bc_scene& bc_scene::operator=(bc_scene&& p_other) noexcept
 		{
+			m_path = std::move(p_other.m_path);
 			m_name = std::move(p_other.m_name);
 			m_loaded_streams = std::move(p_other.m_loaded_streams);
 			m_scene_graph = std::move(p_other.m_scene_graph);

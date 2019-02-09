@@ -37,6 +37,7 @@ namespace black_cat
 			m_editor_game_console->connect_widget(m_console_widget.get());
 
 			m_ui_command_service = core::bc_get_service<bc_ui_command_service>();
+			m_form_main_menu = std::make_unique<bc_form_main_menu>(*menuBar(), *m_ui_command_service);
 			m_form_terrain = std::make_unique< bc_form_terrain >(*centralWidget());
 			m_form_object = std::make_unique< bc_form_object >(*centralWidget());
 			m_form_object_insert = std::make_unique< bc_form_object_insert >(*centralWidget());
@@ -195,7 +196,7 @@ namespace black_cat
 				return;
 			}
 
-			bc_iui_command::update_ui_context l_context(*m_form_object, *m_form_object_insert);
+			bc_iui_command::update_ui_context l_context(*m_form_object, *m_form_object_insert, *m_form_main_menu);
 			m_ui_command_service->update_ui(l_context);
 		}
 	}

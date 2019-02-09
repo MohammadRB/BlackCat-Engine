@@ -87,7 +87,7 @@ namespace black_cat
 			// Open an existing file or create a new file for writing(open_create mode)
 			bool open_write(const bcECHAR* p_file) noexcept;
 
-			// Move file pointer by offset(bytes) and return new location from begining of file
+			// Move file pointer by offset(bytes) and return new location from beginning of file
 			bcUINT64 set_pointer(bc_file_seek p_seek_location, bcINT64 p_offset);
 
 			// Get current file pointer
@@ -100,7 +100,7 @@ namespace black_cat
 			bcSIZE read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read);
 
 			// Return number of bytes that has been written
-			bcSIZE write(bcBYTE* p_buffer, bcSIZE p_bytes_to_write);
+			bcSIZE write(const bcBYTE* p_buffer, bcSIZE p_bytes_to_write);
 
 			// Return size of file in bytes
 			bcUINT64 size() const;

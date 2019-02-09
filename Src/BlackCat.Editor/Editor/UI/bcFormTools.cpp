@@ -9,6 +9,7 @@
 #include "Editor/UICommand/bcUIObjectSelectCommand.h"
 #include "Editor/UICommand/bcUIObjectListCommand.h"
 #include "Editor/UICommand/bcUIObjectInsertCommand.h"
+#include "Editor/UI/bcFormObjectInsert.h"
 
 namespace black_cat
 {
