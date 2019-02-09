@@ -111,14 +111,11 @@ namespace black_cat
 
 		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager* p_stream_manager)
 		{
-			auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
-			auto* l_ui_command_manager = core::bc_get_service< bc_ui_command_service >();
+			core::bc_get_service< bc_ui_command_service >()->load_content();
 
-			l_ui_command_manager->load_content();
-
-			auto l_crysis_scene = core::bc_get_service< core::bc_content_manager >()->load< game::bc_scene >
+			const auto l_crysis_scene = core::bc_get_service< core::bc_content_manager >()->load< game::bc_scene >
 			(
-				bcL("Content\\Scene\\CrysisHeightMap.json"),
+				m_game_system->get_file_system().get_content_path(bcL("Scene\\CrysisHeightMap.json")).c_str(),
 				core::bc_content_loader_parameter()
 			);
 			m_game_system->set_scene(l_crysis_scene);

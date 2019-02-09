@@ -150,8 +150,8 @@ namespace black_cat
 		class bc_delegate;
 		
 		// Delegate class that use internal buffer for it's allocations and never call dynamic memory
-		// allocation functions. in case of large functor objects that doesn't fit in this class use
-		// bc_function_wrapper class
+		// allocation functions. In case of large functor objects that doesn't fit in this class use
+		// make_from_big_object method
 		template< typename TR, typename ...TA >
 		class bc_delegate< TR(TA...) >
 		{

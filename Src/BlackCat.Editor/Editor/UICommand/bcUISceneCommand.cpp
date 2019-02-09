@@ -10,22 +10,19 @@ namespace black_cat
 	{
 		bc_ui_scene_command::bc_ui_scene_command(command_type p_type, core::bc_estring p_scene_path)
 			: m_type(p_type),
-			m_scene_path(std::move(p_scene_path)),
-			m_scene(nullptr)
+			m_scene_path(std::move(p_scene_path))
 		{
 		}
 
 		bc_ui_scene_command::bc_ui_scene_command(command_type p_type, game::bc_scene* p_scene)
 			: m_type(p_type),
-			m_scene_path(),
-			m_scene(p_scene)
+			m_scene_path()
 		{
 		}
 
 		bc_ui_scene_command::bc_ui_scene_command(command_type p_type, core::bc_estring p_scene_path, game::bc_scene* p_scene)
 			: m_type(p_type),
-			m_scene_path(std::move(p_scene_path)),
-			m_scene(p_scene)
+			m_scene_path(std::move(p_scene_path))
 		{
 		}
 
@@ -44,11 +41,14 @@ namespace black_cat
 			switch (m_type)
 			{
 			case bc_ui_scene_command_type::get_scene:
-				m_scene = p_context.m_game_system.get_scene();
+				p_context.m_result.set_value(p_context.m_game_system.get_scene());
 				break;
 			case bc_ui_scene_command_type::new_scene:
 				break;
 			case bc_ui_scene_command_type::load_scene:
+				p_context.m_game_system.get_file_system()
+				         .get_content_manager()
+				         .load< game::bc_scene >(m_scene_path.c_str(), core::bc_content_loader_parameter());
 				break;
 			case bc_ui_scene_command_type::save_scene:
 				break;
@@ -57,14 +57,6 @@ namespace black_cat
 			default:;
 			}
 			return false;
-		}
-
-		void bc_ui_scene_command::update_ui(update_ui_context& p_context)
-		{
-			if(m_type == command_type::get_scene)
-			{
-				p_context.m_form_main_menu.set_scene(m_scene);
-			}
 		}
 
 		bc_ui_scene_command bc_ui_scene_command::for_get_scene()

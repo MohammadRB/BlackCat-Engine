@@ -41,8 +41,6 @@ namespace black_cat
 
 			bool update(update_context& p_context) override;
 
-			void update_ui(update_ui_context& p_context) override;
-
 			static bc_ui_scene_command for_get_scene();
 
 			static bc_ui_scene_command for_new_scene();
@@ -63,7 +61,6 @@ namespace black_cat
 		private:
 			command_type m_type;
 			core::bc_estring m_scene_path;
-			game::bc_scene* m_scene;
 		};
 	}
 }

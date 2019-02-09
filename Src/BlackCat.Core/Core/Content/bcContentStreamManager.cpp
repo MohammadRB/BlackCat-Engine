@@ -5,10 +5,11 @@
 #include "Core/Container/bcList.h"
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/File/bcFileStream.h"
+#include "Core/File/bcJsonDocument.h"
+#include "Core/File/bcPath.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Content/bcContent.h"
 #include "Core/Content/bcContentManager.h"
-#include "Core/File/bcJsonDocument.h"
 #include "Core/Utility/bcParameterPack.h"
 #include "Core/bcException.h"
 
@@ -75,11 +76,13 @@ namespace black_cat
 
 				for (bc_json_object< _bc_content_stream_content >& l_stream_content : l_stream->m_stream_content)
 				{
+					auto l_file_path = bc_path::get_absolute_path(bc_to_estring_frame(*l_stream_content->m_content_file).c_str());
+
 					_bc_content_stream_file l_stream_file
 					{
 						bc_string_program(l_stream_content->m_content_title->c_str()),
 						bc_string_program(l_stream_content->m_content_name->c_str()),
-						bc_estring_program(bc_to_estring_program(*l_stream_content->m_content_file)),
+						bc_estring_program(l_file_path.c_str()),
 					};
 
 					auto& l_content_params = *l_stream_content->m_content_parameter;

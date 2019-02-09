@@ -9,7 +9,7 @@ namespace black_cat
 	{
 		bc_game_system::bc_game_system()
 			: m_input_system(),
-			m_file_system(),
+			m_file_system(*core::bc_get_service<core::bc_content_manager>(), *core::bc_get_service<core::bc_content_stream_manager>()),
 			m_physics_system(),
 			m_script_system(),
 			m_render_system(),

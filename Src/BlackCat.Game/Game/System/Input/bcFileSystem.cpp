@@ -11,7 +11,9 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_file_system::bc_file_system()
+		bc_file_system::bc_file_system(core::bc_content_manager& p_content_manager, core::bc_content_stream_manager& p_content_stream_manager)
+			: m_content_manager(p_content_manager),
+			m_content_stream_manager(p_content_stream_manager)
 		{
 			core::bc_path l_execute_path(core::bc_path(core::bc_path::get_program_path().c_str()).get_directory().c_str());
 			m_execute_path = l_execute_path.get_path();
@@ -48,7 +50,9 @@ namespace black_cat
 			m_content_script_path = l_temp.get_path();
 		}
 
-		bc_file_system::bc_file_system(bc_file_system&& p_other) noexcept	
+		bc_file_system::bc_file_system(bc_file_system&& p_other) noexcept
+			: m_content_manager(p_other.m_content_manager),
+			m_content_stream_manager(p_other.m_content_stream_manager)
 		{
 			operator=(std::move(p_other));
 		}
@@ -69,9 +73,17 @@ namespace black_cat
 			return *this;
 		}
 
-		const bcECHAR* bc_file_system::get_content_base_path() const
+		const bcECHAR* bc_file_system::get_content_path() const
 		{
 			return m_content_base_path.c_str();
+		}
+
+		core::bc_estring bc_file_system::get_content_path(const bcECHAR* p_path) const
+		{
+			core::bc_path l_path(get_content_path());
+			l_path.combine(core::bc_path(p_path));
+
+			return l_path.get_path();
 		}
 
 		const bcECHAR* bc_file_system::get_content_data_path() const

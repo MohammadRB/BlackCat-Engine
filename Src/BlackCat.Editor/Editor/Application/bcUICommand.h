@@ -6,6 +6,7 @@
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcString.h"
 #include "Core/Content/bcContentStreamManager.h"
+#include "Core/Utility/bcParameterPack.h"
 #include "PhysicsImp/Collision/bcSceneQuery.h"
 #include "Game/System/Physics/bcPxWrap.h"
 
@@ -56,13 +57,15 @@ namespace black_cat
 				bc_iui_command_state* p_state)
 				: m_elapsed(p_elapsed),
 				m_game_system(p_game_system),
-				m_state(p_state)
+				m_state(p_state),
+				m_result()
 			{
 			}
 
 			const core_platform::bc_clock::update_param& m_elapsed;
 			game::bc_game_system& m_game_system;
 			bc_iui_command_state* m_state;
+			core::bc_any m_result;
 		};
 
 		class bc_ui_command_update_ui_context
@@ -82,6 +85,23 @@ namespace black_cat
 			bc_form_main_menu& m_form_main_menu;
 		};
 
+		class bc_ui_command_undo_context
+		{
+		public:
+			bc_ui_command_undo_context(const core_platform::bc_clock::update_param& p_elapsed,
+				game::bc_game_system& p_game_system,
+				bc_iui_command_state* p_state)
+				: m_elapsed(p_elapsed),
+				m_game_system(p_game_system),
+				m_state(p_state)
+			{
+			}
+
+			const core_platform::bc_clock::update_param& m_elapsed;
+			game::bc_game_system& m_game_system;
+			bc_iui_command_state* m_state;
+		};
+
 		class bc_iui_command
 		{
 		public:
@@ -90,6 +110,7 @@ namespace black_cat
 			using state_context = bc_ui_command_state_context;
 			using update_context = bc_ui_command_update_context;
 			using update_ui_context = bc_ui_command_update_ui_context;
+			using undo_context = bc_ui_command_undo_context;
 
 		public:
 			virtual ~bc_iui_command() = default;
@@ -150,7 +171,7 @@ namespace black_cat
 			 * \brief This method will be called from engine main thread.
 			 * \param p_context 
 			 */
-			virtual void rollback(update_context& p_context) = 0;
+			virtual void undo(undo_context& p_context) = 0;
 		};
 	}
 }
