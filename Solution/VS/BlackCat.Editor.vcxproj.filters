@@ -182,6 +182,15 @@
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectInsertCommand.cpp">
       <Filter>Editor\UICommand</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_bcFormMainMenu.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_bcFormMainMenu.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUISceneCommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_bcBlackCatEditor.h">
@@ -238,6 +247,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectInsertCommand.h">
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUISceneCommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorApplication.h">
@@ -271,6 +283,9 @@
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObject.h">
+      <Filter>Editor\UI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainMenu.h">
       <Filter>Editor\UI</Filter>
     </CustomBuild>
   </ItemGroup>
