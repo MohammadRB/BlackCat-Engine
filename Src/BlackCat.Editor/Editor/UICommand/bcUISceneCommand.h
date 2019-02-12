@@ -61,6 +61,7 @@ namespace black_cat
 		private:
 			command_type m_type;
 			core::bc_estring m_scene_path;
+			game::bc_scene* m_scene;
 		};
 	}
 }

@@ -144,21 +144,22 @@ namespace black_cat
 			*l_stream_entry = l_stream.c_str();
 		}
 
-		core::bc_vector< game::bc_iactor_component* > l_actor_components;
+		core::bc_vector_frame< game::bc_iactor_component* > l_actor_components;
 		for (auto& l_actor : l_scene->get_scene_graph())
 		{
-			auto* l_name_component = l_actor.get_component< game::bc_name_component >();
-			auto* l_mediate_component = l_actor.get_component< game::bc_mediate_component >();
-			l_actor.get_components(std::back_inserter(l_actor_components));
-
 			auto& l_actor_entry = l_json_document->m_actors.new_entry();
 
-			*l_actor_entry->m_entity_name = l_name_component->get_entity_name();
-			*l_actor_entry->m_position = l_mediate_component->get_world_position();
+			l_actor.get_components(std::back_inserter(l_actor_components));
 			for (auto& l_component : l_actor_components)
 			{
 				l_component->write_instance(l_actor, *l_actor_entry->m_parameters);
 			}
+
+			*l_actor_entry->m_entity_name = *l_actor_entry->m_parameters->find(game::bc_name_component::s_entity_name_json_key)->second.as_throw<const bcCHAR*>();
+			*l_actor_entry->m_position = *l_actor_entry->m_parameters->find(game::bc_mediate_component::s_position_json_key)->second.as_throw<core::bc_vector3f>();
+
+			l_actor_entry->m_parameters->remove(game::bc_name_component::s_entity_name_json_key);
+			l_actor_entry->m_parameters->remove(game::bc_mediate_component::s_position_json_key);
 
 			l_actor_components.clear();
 		}

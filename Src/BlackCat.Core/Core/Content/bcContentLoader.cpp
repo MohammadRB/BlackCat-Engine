@@ -46,7 +46,7 @@ namespace black_cat
 		{
 			auto l_file_size = p_context.m_file->length();
 
-			p_context.m_buffer = bc_vector_frame<bcBYTE>(l_file_size); // Use this method of initialization to change size of vector
+			p_context.m_buffer = bc_vector_frame<bcBYTE>(l_file_size);
 
 			p_context.m_file->read(p_context.m_buffer.data(), l_file_size);
 		}

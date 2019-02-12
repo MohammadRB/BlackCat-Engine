@@ -6,6 +6,7 @@
 #include "CorePlatformImp/Concurrency/bcThread.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcDelegate.hpp"
+#include "Core/Utility/bcLogger.h"
 
 namespace black_cat
 {
@@ -107,7 +108,18 @@ namespace black_cat
 
 			void operator ()(core_platform::bc_thread::id p_thread_id)
 			{
-				_call(p_thread_id, std::is_same< typename std::remove_reference< value_type >::type, void >::type());
+				try
+				{
+					_call(p_thread_id, std::is_same< typename std::remove_reference< value_type >::type, void >::type());
+				}
+				catch (...)
+				{
+					auto l_current_exception = std::current_exception();
+					m_promise.set_exception(l_current_exception);
+
+					bc_estring_frame l_debug_msg = bcL("Task with thread id ") + bc_to_estring_frame(p_thread_id) + bcL(" exited with error.");
+					core::bc_get_service<bc_logger>()->log_debug(l_debug_msg.c_str());
+				}
 			}
 
 			bc_task<value_type> get_task()
@@ -125,32 +137,18 @@ namespace black_cat
 		private:
 			void _call(core_platform::bc_thread::id p_thread_id, std::true_type)
 			{
-				try
-				{
-					// Set executor thread id so in bcTask we can access to this id
-					m_thread_id_promise.set_value(p_thread_id);
-					m_del();
-					m_promise.set_value();
-				}
-				catch (...)
-				{
-					m_promise.set_exception(std::current_exception());
-				}
+				// Set executor thread id so in bcTask we can access to this id
+				m_thread_id_promise.set_value(p_thread_id);
+				m_del();
+				m_promise.set_value();
 			}
 
 			void _call(core_platform::bc_thread::id p_thread_id, std::false_type)
 			{
-				try
-				{
-					// Set executor thread id so in bcTask we can access to this id
-					m_thread_id_promise.set_value(p_thread_id);
-					value_type lResult = m_del();
-					m_promise.set_value(lResult);
-				}
-				catch (...)
-				{
-					m_promise.set_exception(std::current_exception());
-				}
+				// Set executor thread id so in bcTask we can access to this id
+				m_thread_id_promise.set_value(p_thread_id);
+				value_type lResult = m_del();
+				m_promise.set_value(lResult);
 			}
 
 			task_delegate_type m_del;

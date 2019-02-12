@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "Core/Content/bcLazyContent.h"
+#include "Core/Content/bcContentManager.h"
 #include "Game/Object/Scene/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
@@ -75,6 +76,12 @@ namespace black_cat
 		{
 			bc_render_instance l_instance(m_transform);
 			p_render_system.add_render_instance(m_height_map->get_render_state(), l_instance);
+		}
+
+		void bc_height_map_component::write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters)
+		{
+			auto* l_content_manager = core::bc_get_service<core::bc_content_manager>();
+			l_content_manager->save(*m_height_map);
 		}
 	}
 }

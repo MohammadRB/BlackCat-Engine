@@ -302,7 +302,7 @@ public:
         if (QIcon::hasThemeIcon(iconThemeName)) {
             icon = QIcon::fromTheme(iconThemeName);
         } else {
-            icon.addFile(QStringLiteral("."), QSize(), QIcon::Normal, QIcon::Off);
+            icon.addFile(QStringLiteral("C:/Users/moham/.designer/backup"), QSize(), QIcon::Normal, QIcon::Off);
         }
         rightToolBox->addItem(rightToolBoxTerrain, icon, QStringLiteral("Terrain"));
 
@@ -435,7 +435,7 @@ public:
         QObject::connect(terrainRadiusSlider, SIGNAL(valueChanged(int)), terrainRadiusValue, SLOT(setNum(int)));
 
         leftBottomTab->setCurrentIndex(0);
-        rightToolBox->setCurrentIndex(2);
+        rightToolBox->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(bcBlackCatEditorClass);

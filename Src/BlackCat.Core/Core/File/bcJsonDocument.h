@@ -219,6 +219,20 @@ namespace black_cat
 				m_key_values.push_back(std::move(p_value));
 			}
 
+			void remove(const bcCHAR* p_key)
+			{
+				iterator l_current = std::begin(m_key_values), l_end = std::end(m_key_values);
+				for (; l_current != l_end; ++l_current)
+				{
+					if (l_current->first == p_key)
+					{
+						break;
+					}
+				}
+
+				m_key_values.erase(l_current);
+			}
+
 			void clear()
 			{
 				m_key_values.clear();
@@ -276,10 +290,10 @@ namespace black_cat
 			{
 				// If we use json value within json array m_name will be null
 				auto* l_json = m_name != nullptr ? set_json_field(p_document, p_json_value, m_name) : &p_json_value;
-				if (!l_json)
+				/*if (!l_json)
 				{
 					return;
-				}
+				}*/
 
 				_write(p_document, *l_json, m_value);
 			}
@@ -703,10 +717,11 @@ namespace black_cat
 			{
 				// If we use json object within json array m_name will be null
 				auto* l_json = m_name != nullptr ? set_json_field(p_document, p_json_value, m_name) : &p_json_value;
-				if (!l_json)
+				/*if (!l_json)
 				{
 					return;
-				}
+				}*/
+				l_json->SetObject(); // Mark this json object as an object
 
 				m_value.write(p_document, *l_json);
 			}

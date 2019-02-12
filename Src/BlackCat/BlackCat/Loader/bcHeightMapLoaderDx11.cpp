@@ -152,21 +152,21 @@ namespace black_cat
 
 	void bc_height_map_loader_dx11::content_offline_processing(core::bc_content_loading_context& p_context) const
 	{
-		auto* l_content_loader = core::bc_get_service< core::bc_content_manager >();
-		auto* l_game_system = core::bc_get_service< game::bc_game_system >();
-		auto& l_render_system = l_game_system->get_render_system();
-		auto& l_physics_system = l_game_system->get_physics_system();
+		auto& l_game_system = *core::bc_get_service< game::bc_game_system >();
+		auto& l_content_manager = l_game_system.get_file_system().get_content_manager();
+		auto& l_render_system = l_game_system.get_render_system();
+		auto& l_physics_system = l_game_system.get_physics_system();
 		auto& l_physics = l_physics_system.get_physics();
 
-		auto l_height_map_texture = l_content_loader->load< graphic::bc_texture2d_content >
+		auto l_height_map_texture = l_content_manager.load< graphic::bc_texture2d_content >
 		(
 			p_context.get_allocator_alloc_type(),
 			p_context.m_file_path.c_str(),
 			core::bc_content_loader_parameter(p_context.m_parameter)
 		);
 
-		auto l_width = l_height_map_texture->get_resource().get_width();
-		auto l_height = l_height_map_texture->get_resource().get_height();
+		const auto l_width = l_height_map_texture->get_resource().get_width();
+		const auto l_height = l_height_map_texture->get_resource().get_height();
 
 		if (!bc_is_power_of_two(l_width) || !bc_is_power_of_two(l_height))
 		{
@@ -183,8 +183,7 @@ namespace black_cat
 
 		auto l_texture_map_file_path = core::bc_path(p_context.m_file_path.c_str());
 		l_texture_map_file_path.set_filename((l_texture_map_file_path.get_filename_without_extension() + bcL("_texture_map")).c_str()).set_file_extension(bcL("dds"));
-		auto l_texture_map_file_relative = l_texture_map_file_path.get_path();
-		auto l_texture_map_file_absolute = core::bc_path::get_absolute_path(l_texture_map_file_relative.c_str());
+		auto l_texture_map_file_absolute = l_texture_map_file_path.get_path();
 
 		core_platform::bc_basic_file_info l_texture_map_file_info;
 		core_platform::bc_file_info::get_basic_info(l_texture_map_file_absolute.c_str(), &l_texture_map_file_info);
@@ -197,7 +196,7 @@ namespace black_cat
 			l_render_system.get_device().save_texture2d(l_texture_map.get(), graphic::bc_image_format::dds, l_texture_map_file_absolute.c_str());
 		}
 
-		bcUINT32 l_sample_count = l_width * l_height;
+		const bcUINT32 l_sample_count = l_width * l_height;
 		core::bc_unique_ptr<bcINT16> l_heights(reinterpret_cast<bcINT16*>(bcAlloc(sizeof(bcINT16) * l_sample_count, core::bc_alloc_type::frame)));
 
 		l_height_map_copy_task.wait();
@@ -592,19 +591,19 @@ namespace black_cat
 
 	void bc_height_map_loader_dx11::content_processing(core::bc_content_saving_context& p_context) const
 	{
-		auto* l_content_loader = core::bc_get_service< core::bc_content_manager >();
-		auto* l_game_system = core::bc_get_service< game::bc_game_system >();
-		auto& l_physics = l_game_system->get_physics_system().get_physics();
+		auto& l_game_system = *core::bc_get_service< game::bc_game_system >();
+		auto& l_content_loader = l_game_system.get_file_system().get_content_manager();
+		auto& l_physics = l_game_system.get_physics_system().get_physics();
 		auto* l_height_map_dx11 = static_cast< bc_height_map_dx11* >(p_context.m_content);
 
 		physics::bc_height_field l_px_height_field = l_height_map_dx11->get_px_height_field();
-		graphic::bc_texture2d_content l_texture_map(graphic::bc_texture2d_ptr(l_height_map_dx11->get_texture_map()));
+		graphic::bc_texture2d_content& l_texture_map = l_height_map_dx11->get_texture_map_content();
 
 		physics::bc_serialize_buffer l_px_serialize_buffer = l_physics.create_serialize_buffer();
 		l_px_serialize_buffer.add(l_px_height_field);
 		physics::bc_memory_buffer l_px_serialized_buffer = l_physics.serialize(l_px_serialize_buffer);
 
-		core::bc_task<void> l_texture_map_task = l_content_loader->save_async(l_texture_map);
+		core::bc_task<void> l_texture_map_task = l_content_loader.save_async(l_texture_map);
 		p_context.m_file->write(reinterpret_cast< bcBYTE* >(l_px_serialized_buffer.get_buffer_pointer()), l_px_serialized_buffer.get_buffer_size());
 
 		l_texture_map_task.wait();

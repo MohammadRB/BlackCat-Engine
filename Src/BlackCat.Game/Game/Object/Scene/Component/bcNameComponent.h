@@ -17,6 +17,9 @@ namespace  black_cat
 			BC_COMPONENT(name)
 
 		public:
+			static constexpr const bcCHAR* s_entity_name_json_key = "entity_name";
+
+		public:
 			bc_name_component(bc_actor_component_index p_index);
 
 			bc_name_component(bc_name_component&& p_other) noexcept;
@@ -34,6 +37,8 @@ namespace  black_cat
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
 			void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+
+			void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters) override;
 
 		protected:
 

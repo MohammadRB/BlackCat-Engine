@@ -16,6 +16,9 @@ namespace black_cat
 			BC_COMPONENT(mediate)
 
 		public:
+			static constexpr const bcCHAR* s_position_json_key = "position";
+
+		public:
 			explicit bc_mediate_component(bc_actor_component_index p_index);
 
 			bc_mediate_component(bc_mediate_component&&) = default;
@@ -39,6 +42,8 @@ namespace black_cat
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
 			void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+
+			void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters) override;
 
 		protected:
 

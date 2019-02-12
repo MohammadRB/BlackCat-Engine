@@ -86,18 +86,16 @@ namespace black_cat
 
 		inline void bc_form_main_menu::onSaveSceneClicked() const
 		{
-			bc_ui_scene_command l_command = bc_ui_scene_command::for_get_scene();
-			auto l_task = m_command_service.queue_command(std::move(l_command));
+			auto l_task = m_command_service.queue_command(bc_ui_scene_command::for_get_scene());
 			auto* l_scene = *l_task.get().as_throw<game::bc_scene*>();
 			if(!l_scene)
 			{
 				return;
 			}
 
-			const auto l_executing_path_qt = _get_executing_path();
-
-			if(l_scene->get_path().empty())
+			/*if(l_scene->get_path().empty())
 			{
+				const auto l_executing_path_qt = _get_executing_path();
 				auto l_file_name = QFileDialog::getSaveFileName
 				(
 					static_cast<QWidget*>(QObject::parent()),
@@ -113,7 +111,7 @@ namespace black_cat
 				bc_ui_scene_command l_command = bc_ui_scene_command::for_save_as_scene(l_scene, l_file_name.toStdWString().c_str());
 				m_command_service.queue_command(std::move(l_command));
 			}
-			else
+			else*/
 			{
 				bc_ui_scene_command l_command = bc_ui_scene_command::for_save_scene(l_scene);
 				m_command_service.queue_command(std::move(l_command));

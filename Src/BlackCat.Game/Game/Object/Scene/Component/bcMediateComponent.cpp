@@ -24,23 +24,31 @@ namespace black_cat
 		core::bc_vector3f bc_mediate_component::get_world_position() const
 		{
 			auto l_actor = get_actor();
+
 			auto* l_rigid_body_component = l_actor.get_component<bc_rigid_body_component>();
+			auto* l_height_map_component = l_actor.get_component<bc_height_map_component>();
 			
 			if(l_rigid_body_component)
 			{
-				return l_rigid_body_component->get_body().get_global_pose().get_position();
+				auto l_position = l_rigid_body_component->get_body().get_global_pose().get_position();
+
+				if (l_height_map_component) // TODO
+				{
+					const auto& l_height_map = l_height_map_component->get_height_map();
+					const auto l_half_width = (l_height_map.get_width() * l_height_map.get_xz_multiplier()) / 2;
+					const auto l_half_height = (l_height_map.get_height() * l_height_map.get_xz_multiplier()) / 2;
+
+					l_position.x += l_half_width;
+					l_position.z -= l_half_height;
+				}
+
+				return l_position;
 			}
 
 			auto* l_mesh_component = l_actor.get_component<bc_mesh_component>();
-			if(l_mesh_component)
+			if (l_mesh_component)
 			{
 				return l_mesh_component->get_world_position();
-			}
-
-			auto* l_height_map_component = l_actor.get_component<bc_height_map_component>();
-			if(l_height_map_component)
-			{
-				return l_height_map_component->get_world_position();
 			}
 
 			bcAssert(false);
@@ -66,7 +74,7 @@ namespace black_cat
 			{
 				physics::bc_transform l_transform;
 
-				if(l_height_map_component)
+				if(l_height_map_component) // TODO
 				{
 					const auto& l_height_map = l_height_map_component->get_height_map();
 					const auto l_half_width = (l_height_map.get_width() * l_height_map.get_xz_multiplier()) / 2;
@@ -104,6 +112,11 @@ namespace black_cat
 
 		void bc_mediate_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
+		}
+
+		void bc_mediate_component::write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters)
+		{
+			p_parameters.add(std::make_pair(core::bc_string(s_position_json_key), core::bc_any(get_world_position())));
 		}
 	}
 }

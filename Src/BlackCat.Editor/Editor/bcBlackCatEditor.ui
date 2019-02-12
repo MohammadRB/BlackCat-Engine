@@ -171,7 +171,7 @@
          <item>
           <widget class="QToolBox" name="rightToolBox">
            <property name="currentIndex">
-            <number>2</number>
+            <number>0</number>
            </property>
            <property name="fontAwesome" stdset="0">
             <string>handpointero,cubes,areachart</string>
@@ -244,7 +244,7 @@
             </property>
             <attribute name="icon">
              <iconset theme="areaChart">
-              <normaloff>.</normaloff>.</iconset>
+              <normaloff>C:/Users/moham/.designer/backup</normaloff>C:/Users/moham/.designer/backup</iconset>
             </attribute>
             <attribute name="label">
              <string>Terrain</string>

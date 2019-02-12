@@ -46,6 +46,8 @@ namespace black_cat
 
 			void render(bc_render_system& p_render_system) const override;
 
+			void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters) override;
+
 		protected:
 
 		private:

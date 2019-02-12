@@ -24,8 +24,8 @@ namespace black_cat
 		};
 
 		/**
-		 * \brief Interface for log listeners. Calls to `on_log` method can be called from different threads
-		 * so clients must take care of thread saftly in their implementations.
+		 * \brief Interface for log listeners. Calls to `on_log` method can be called from different threads so
+		 * clients must take care of threads in their implementations.
 		 */
 		class bc_ilog_listener
 		{

@@ -57,6 +57,11 @@ namespace black_cat
 			return m_texture_map->get_resource();
 		}
 
+		graphic::bc_texture2d_content& get_texture_map_content() const
+		{
+			return *m_texture_map;
+		}
+
 		graphic::bc_resource_view get_texture_map_view() const
 		{
 			return m_texture_map_view.get();

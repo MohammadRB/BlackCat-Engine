@@ -58,27 +58,27 @@ namespace black_cat
 		// Bug tolower operate only on single byte chars
 		std::transform(std::begin(l_extension), std::end(l_extension), std::begin(l_extension), tolower);
 
-		if (l_extension.compare(bcL(".dds")) == 0)
+		if (l_extension == bcL(".dds"))
 		{
 			l_format = graphic::bc_image_format::dds;
 		}
-		else if (l_extension.compare(bcL(".bmp")) == 0)
+		else if (l_extension == bcL(".bmp"))
 		{
 			l_format = graphic::bc_image_format::bmp;
 		}
-		else if (l_extension.compare(bcL(".png")) == 0)
+		else if (l_extension == bcL(".png"))
 		{
 			l_format = graphic::bc_image_format::png;
 		}
-		else if (l_extension.compare(bcL(".gif")) == 0)
+		else if (l_extension == bcL(".gif"))
 		{
 			l_format = graphic::bc_image_format::gif;
 		}
-		else if (l_extension.compare(bcL(".tiff")) == 0)
+		else if (l_extension == bcL(".tiff"))
 		{
 			l_format = graphic::bc_image_format::tiff;
 		}
-		else if (l_extension.compare(bcL(".jpg")) == 0)
+		else if (l_extension == bcL(".jpg"))
 		{
 			l_format = graphic::bc_image_format::jpg;
 		}
