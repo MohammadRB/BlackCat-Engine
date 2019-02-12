@@ -13,6 +13,11 @@ namespace black_cat
 			return false;
 		}
 
+		bc_iui_command::state_ptr bc_iui_command::create_state(state_context& p_context) const
+		{
+			return nullptr;
+		}
+
 		void bc_iui_command::update_ui(update_ui_context& p_context)
 		{
 		}

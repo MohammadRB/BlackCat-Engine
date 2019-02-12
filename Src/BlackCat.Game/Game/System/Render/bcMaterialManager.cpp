@@ -7,6 +7,7 @@
 #include "Core/Math/bcVector4f.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Core/File/bcFileStream.h"
+#include "Core/File/bcPath.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcJsonParse.h"
 #include "GraphicImp/Resource/bcResourceConfig.h"
@@ -68,7 +69,7 @@ namespace black_cat
 			m_default_diffuse_map = m_content_stream_manager.get_content_manager().load< graphic::bc_texture2d_content >
 			(
 				core::bc_alloc_type::program,
-				bcL("Content\\Texture\\Default.jpg"),
+				core::bc_path::get_absolute_path(bcL("Content\\Texture\\Default.jpg")).c_str(),
 				core::bc_content_loader_parameter()
 			);
 			m_default_normal_map = m_content_stream_manager.get_content_manager().store_content("material_default_normal_map", std::move(l_default_normal_map));
@@ -119,7 +120,7 @@ namespace black_cat
 			core::bc_json_document< _bc_material_json > l_material_json;
 			l_material_json.load(l_buffer.c_str());
 
-			for(core::bc_json_object<_bc_material_desc>& l_material_desc : *l_material_json->m_materials)
+			for(core::bc_json_object<_bc_material_desc>& l_material_desc : l_material_json->m_materials)
 			{
 				_bc_material_description l_material_description;
 				l_material_description.m_diffuse_color = *l_material_desc->m_diffuse_color;

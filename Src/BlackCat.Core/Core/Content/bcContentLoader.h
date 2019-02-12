@@ -116,7 +116,7 @@ namespace black_cat
 			bc_estring_frame m_file_path;							// Used to give loader access to content and offline content file path
 			bc_nullable< bc_stream > m_file;						// Used to give loader access to content and offline content file
 			bc_content_loader_parameter m_parameter;				// Used to pass additional parameters to loader
-			bc_vector_frame<bcBYTE> m_data;							// Used to pass stream data around within loader functions
+			bc_vector_frame<bcBYTE> m_buffer;						// Used to pass stream data around within loader functions
 			bc_nullable< bc_content_loader_result > m_result;		// Used to pass result from loader to caller
 		protected:
 

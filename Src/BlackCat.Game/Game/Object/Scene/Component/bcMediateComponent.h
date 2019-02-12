@@ -16,6 +16,9 @@ namespace black_cat
 			BC_COMPONENT(mediate)
 
 		public:
+			static constexpr const bcCHAR* s_position_json_key = "position";
+
+		public:
 			explicit bc_mediate_component(bc_actor_component_index p_index);
 
 			bc_mediate_component(bc_mediate_component&&) = default;
@@ -30,6 +33,8 @@ namespace black_cat
 
 			void set_bound_box(const physics::bc_bound_box& p_bound_box);
 
+			core::bc_vector3f get_world_position() const;
+
 			void set_world_position(const core::bc_vector3f& p_position);
 
 			void set_world_transform(const core::bc_matrix4f& p_transform);
@@ -37,6 +42,8 @@ namespace black_cat
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
 			void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+
+			void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters) override;
 
 		protected:
 

@@ -7,7 +7,7 @@
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcArray.h"
-#include "Core/File/bcContentManager.h"
+#include "Core/Content/bcContentManager.h"
 #include "Core/Math/bcVector2f.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
@@ -340,8 +340,8 @@ namespace black_cat
 
 		const aiScene* l_scene = l_importer.ReadFileFromMemory
 		(
-			p_context.m_data.data(),
-			p_context.m_data.size(),
+			p_context.m_buffer.data(),
+			p_context.m_buffer.size(),
 			aiProcess_GenSmoothNormals |
 			aiProcess_CalcTangentSpace |
 			aiProcess_Triangulate |

@@ -343,15 +343,14 @@ namespace black_cat
 			template< typename TInputIterator >
 			node_type* _new_node(node_type*& p_root, TInputIterator p_first, TInputIterator p_last, std::input_iterator_tag&)
 			{
-				base_type::template _check_iterator< TInputIterator >();
+				using input_iterator_reference = typename std::iterator_traits<TInputIterator>::reference;
+
+				base_type::template check_iterator< TInputIterator >();
 
 				node_type* l_last_inserted = nullptr;
-
-				std::for_each(p_first, p_last, [=](typename std::iterator_traits<TInputIterator>::value_type& p_value)->void
+				std::for_each(p_first, p_last, [=](input_iterator_reference p_value)->void
 				{
-
-					_new_node(p_root, &l_last_inserted, p_value);
-
+					_new_node(p_root, &l_last_inserted, std::forward<input_iterator_reference>(p_value));
 				});
 
 				return l_last_inserted;
@@ -551,7 +550,7 @@ namespace black_cat
 				return l_curr_node;
 			};
 
-			bcInline void _node_rotate_left(node_type*& p_root, node_type* p_node)
+			void _node_rotate_left(node_type*& p_root, node_type* p_node)
 			{
 				node_type* l_right = p_node->m_right;
 
@@ -596,7 +595,7 @@ namespace black_cat
 				bc_allocator_traits<internal_allocator_type>::register_pointer(m_allocator, &p_node->m_parent);
 			};
 			
-			bcInline void _node_rotate_right(node_type*& p_root, node_type* p_node)
+			void _node_rotate_right(node_type*& p_root, node_type* p_node)
 			{
 				node_type* l_left = p_node->m_left;
 
@@ -641,7 +640,7 @@ namespace black_cat
 				bc_allocator_traits<internal_allocator_type>::unregister_pointer(m_allocator, &p_node->m_parent);
 			};
 
-			bcInline static node_type* _node_successor(node_type* p_node)
+			static node_type* _node_successor(node_type* p_node)
 			{
 				node_type* l_curr_node = p_node;
 				node_type* l_p_node;
@@ -660,7 +659,7 @@ namespace black_cat
 				return l_p_node;
 			};
 			
-			bcInline static node_type* _node_pre_decessor(node_type* p_node)
+			static node_type* _node_pre_decessor(node_type* p_node)
 			{
 				node_type* l_curr_node = p_node;
 				node_type* l_p_node;
@@ -679,7 +678,7 @@ namespace black_cat
 				return l_p_node;
 			};
 
-			bcInline static node_type* _node_max(node_type* p_node)
+			static node_type* _node_max(node_type* p_node)
 			{
 				node_type* l_node = p_node;
 
@@ -692,7 +691,7 @@ namespace black_cat
 				return l_node;
 			};
 			
-			bcInline static node_type* _node_min(node_type* p_node)
+			static node_type* _node_min(node_type* p_node)
 			{
 				node_type* l_node = p_node;
 

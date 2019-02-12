@@ -104,8 +104,7 @@ namespace black_cat
 		core::bc_unique_ptr<bcUBYTE> m_texture_buffer;
 	};
 
-	bc_height_map_dx11::bc_height_map_dx11(const core::bc_vector3f& p_position,
-		bcUINT16 p_xz_multiplier,
+	bc_height_map_dx11::bc_height_map_dx11(bcUINT16 p_xz_multiplier,
 		bcFLOAT p_y_multiplier,
 		bcUINT16 p_distance_detail,
 		bcUINT16 p_height_detail,
@@ -126,7 +125,6 @@ namespace black_cat
 		void* p_px_height_map_deserialize_buffer)
 		: bc_height_map
 		(
-			p_position,
 			p_height_map->get_width(),
 			p_height_map->get_height(),
 			p_xz_multiplier,
@@ -154,21 +152,21 @@ namespace black_cat
 
 	void bc_height_map_loader_dx11::content_offline_processing(core::bc_content_loading_context& p_context) const
 	{
-		auto* l_content_loader = core::bc_get_service< core::bc_content_manager >();
-		auto* l_game_system = core::bc_get_service< game::bc_game_system >();
-		auto& l_render_system = l_game_system->get_render_system();
-		auto& l_physics_system = l_game_system->get_physics_system();
+		auto& l_game_system = *core::bc_get_service< game::bc_game_system >();
+		auto& l_content_manager = l_game_system.get_file_system().get_content_manager();
+		auto& l_render_system = l_game_system.get_render_system();
+		auto& l_physics_system = l_game_system.get_physics_system();
 		auto& l_physics = l_physics_system.get_physics();
 
-		auto l_height_map_texture = l_content_loader->load< graphic::bc_texture2d_content >
+		auto l_height_map_texture = l_content_manager.load< graphic::bc_texture2d_content >
 		(
 			p_context.get_allocator_alloc_type(),
 			p_context.m_file_path.c_str(),
 			core::bc_content_loader_parameter(p_context.m_parameter)
 		);
 
-		auto l_width = l_height_map_texture->get_resource().get_width();
-		auto l_height = l_height_map_texture->get_resource().get_height();
+		const auto l_width = l_height_map_texture->get_resource().get_width();
+		const auto l_height = l_height_map_texture->get_resource().get_height();
 
 		if (!bc_is_power_of_two(l_width) || !bc_is_power_of_two(l_height))
 		{
@@ -185,8 +183,7 @@ namespace black_cat
 
 		auto l_texture_map_file_path = core::bc_path(p_context.m_file_path.c_str());
 		l_texture_map_file_path.set_filename((l_texture_map_file_path.get_filename_without_extension() + bcL("_texture_map")).c_str()).set_file_extension(bcL("dds"));
-		auto l_texture_map_file_relative = l_texture_map_file_path.get_path();
-		auto l_texture_map_file_absolute = core::bc_path::get_absolute_path(l_texture_map_file_relative.c_str());
+		auto l_texture_map_file_absolute = l_texture_map_file_path.get_path();
 
 		core_platform::bc_basic_file_info l_texture_map_file_info;
 		core_platform::bc_file_info::get_basic_info(l_texture_map_file_absolute.c_str(), &l_texture_map_file_info);
@@ -199,7 +196,7 @@ namespace black_cat
 			l_render_system.get_device().save_texture2d(l_texture_map.get(), graphic::bc_image_format::dds, l_texture_map_file_absolute.c_str());
 		}
 
-		bcUINT32 l_sample_count = l_width * l_height;
+		const bcUINT32 l_sample_count = l_width * l_height;
 		core::bc_unique_ptr<bcINT16> l_heights(reinterpret_cast<bcINT16*>(bcAlloc(sizeof(bcINT16) * l_sample_count, core::bc_alloc_type::frame)));
 
 		l_height_map_copy_task.wait();
@@ -234,8 +231,8 @@ namespace black_cat
 
 		physics::bc_memory_buffer l_serialized_buffer = l_physics.serialize(l_serialize_buffer);
 
-		p_context.m_data = core::bc_vector_frame<bcBYTE>(l_serialized_buffer.get_buffer_size());
-		std::memcpy(p_context.m_data.data(), l_serialized_buffer.get_buffer_pointer(), l_serialized_buffer.get_buffer_size());
+		p_context.m_buffer = core::bc_vector_frame<bcBYTE>(l_serialized_buffer.get_buffer_size());
+		std::memcpy(p_context.m_buffer.data(), l_serialized_buffer.get_buffer_pointer(), l_serialized_buffer.get_buffer_size());
 	}
 
 	void bc_height_map_loader_dx11::content_processing(core::bc_content_loading_context& p_context) const
@@ -247,7 +244,7 @@ namespace black_cat
 		auto* l_device = &l_render_system.get_device();
 		auto* l_physics = &l_physics_system.get_physics();
 		
-		physics::bc_memory_buffer l_px_serialized_buffer = l_physics->read_to_memory_buffer(p_context.m_data.data(), p_context.m_data.size());
+		physics::bc_memory_buffer l_px_serialized_buffer = l_physics->read_to_memory_buffer(p_context.m_buffer.data(), p_context.m_buffer.size());
 		physics::bc_serialize_buffer l_px_deserialized_buffer = l_physics->deserialize(l_px_serialized_buffer);
 		physics::bc_height_field_ref l_px_height_map;
 
@@ -295,21 +292,12 @@ namespace black_cat
 			)
 		);
 
-		auto* l_x_pos_value = p_context.m_parameter.get_value< bcINT >("x_pos");
-		auto* l_y_pos_value = p_context.m_parameter.get_value< bcINT >("y_pos");
-		auto* l_z_pos_value = p_context.m_parameter.get_value< bcINT >("z_pos");
 		auto* l_xz_multiplier_value = p_context.m_parameter.get_value< bcINT >("xz_multiplier");
 		auto* l_y_multiplier_value = p_context.m_parameter.get_value< bcINT >("y_multiplier");
 		auto* l_distance_detail_value = p_context.m_parameter.get_value< bcINT >("distance_detail");
 		auto* l_height_detail_value = p_context.m_parameter.get_value< bcINT >("height_detail");
 		auto* l_material_names_value = p_context.m_parameter.get_value< core::bc_vector< core::bc_any > >("materials");
 		
-		auto l_position = core::bc_vector3f
-		(
-			bc_null_default(l_x_pos_value, 0),
-			bc_null_default(l_y_pos_value, 0),
-			bc_null_default(l_z_pos_value, 0)
-		);
 		bcUINT16 l_xz_multiplier = bc_null_default(l_xz_multiplier_value, 1);
 		bcFLOAT l_y_multiplier = bc_null_default(l_y_multiplier_value, 512);
 		bcUINT16 l_distance_detail = bc_null_default(l_distance_detail_value, 100);
@@ -327,35 +315,19 @@ namespace black_cat
 				std::back_inserter(l_material_names),
 				[](const core::bc_any& p_material)
 				{
-					auto l_key_value = p_material.as<core::bc_json_key_value>();
+					auto& l_key_value = *p_material.as<core::bc_json_key_value>();
 
-					auto l_name_ite = std::find_if
-					(
-						std::cbegin(l_key_value->m_key_values),
-						std::cend(l_key_value->m_key_values),
-						[&](const core::bc_json_key_value::key_value_array_t::value_type& p_item)
-						{
-							return p_item.first == "name";
-						}
-					);
-					auto l_scale_ite = std::find_if
-					(
-						std::cbegin(l_key_value->m_key_values),
-						std::cend(l_key_value->m_key_values),
-						[&](const core::bc_json_key_value::key_value_array_t::value_type& p_item)
-						{
-							return p_item.first == "scale";
-						}
-					);
+					auto l_name_ite = l_key_value.find("name");
+					auto l_scale_ite = l_key_value.find("scale");
 
 					core::bc_string l_name;
 					bcUINT32 l_scale = 1;
 
-					if (l_name_ite != std::cend(l_key_value->m_key_values))
+					if (l_name_ite != std::cend(l_key_value))
 					{
 						l_name = *l_name_ite->second.as< core::bc_string >();
 					}
-					if (l_scale_ite != std::cend(l_key_value->m_key_values))
+					if (l_scale_ite != std::cend(l_key_value))
 					{
 						l_scale = *l_scale_ite->second.as< bcINT >();
 					}
@@ -382,9 +354,9 @@ namespace black_cat
 
 				l_vertex.m_position = core::bc_vector3f
 				(
-					x * s_chunk_size * l_xz_multiplier + l_position.x,
+					x * s_chunk_size * l_xz_multiplier,
 					0,
-					z * s_chunk_size * l_xz_multiplier + l_position.z
+					z * s_chunk_size * l_xz_multiplier
 				);
 				l_vertex.m_texcoord = core::bc_vector2f
 				(
@@ -593,7 +565,6 @@ namespace black_cat
 
 		auto l_height_map = bc_height_map_dx11
 		(
-			l_position,
 			l_xz_multiplier,
 			l_physics_system.get_height_field_y_scale(),
 			l_distance_detail,
@@ -620,19 +591,19 @@ namespace black_cat
 
 	void bc_height_map_loader_dx11::content_processing(core::bc_content_saving_context& p_context) const
 	{
-		auto* l_content_loader = core::bc_get_service< core::bc_content_manager >();
-		auto* l_game_system = core::bc_get_service< game::bc_game_system >();
-		auto& l_physics = l_game_system->get_physics_system().get_physics();
+		auto& l_game_system = *core::bc_get_service< game::bc_game_system >();
+		auto& l_content_loader = l_game_system.get_file_system().get_content_manager();
+		auto& l_physics = l_game_system.get_physics_system().get_physics();
 		auto* l_height_map_dx11 = static_cast< bc_height_map_dx11* >(p_context.m_content);
 
 		physics::bc_height_field l_px_height_field = l_height_map_dx11->get_px_height_field();
-		graphic::bc_texture2d_content l_texture_map(graphic::bc_texture2d_ptr(l_height_map_dx11->get_texture_map()));
+		graphic::bc_texture2d_content& l_texture_map = l_height_map_dx11->get_texture_map_content();
 
 		physics::bc_serialize_buffer l_px_serialize_buffer = l_physics.create_serialize_buffer();
 		l_px_serialize_buffer.add(l_px_height_field);
 		physics::bc_memory_buffer l_px_serialized_buffer = l_physics.serialize(l_px_serialize_buffer);
 
-		core::bc_task<void> l_texture_map_task = l_content_loader->save_async(l_texture_map);
+		core::bc_task<void> l_texture_map_task = l_content_loader.save_async(l_texture_map);
 		p_context.m_file->write(reinterpret_cast< bcBYTE* >(l_px_serialized_buffer.get_buffer_pointer()), l_px_serialized_buffer.get_buffer_size());
 
 		l_texture_map_task.wait();

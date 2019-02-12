@@ -173,9 +173,6 @@
           "content_name": "cnt_height_map",
           "content_file": "content\\texture\\CrysisHM1-1024.bmp",
           "content_parameter": {
-            "x_pos": 0,
-            "y_pos": 0,
-            "z_pos": 0,
             "xz_multiplier": 2,
             "y_multiplier": 512,
             "distance_detail": 100,

@@ -4,6 +4,7 @@
 
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Editor/UICommand/bcUIObjectListCommand.h"
+#include "Editor/UI/bcFormObjectInsert.h"
 
 namespace black_cat
 {

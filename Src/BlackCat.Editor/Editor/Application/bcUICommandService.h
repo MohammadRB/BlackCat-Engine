@@ -7,6 +7,8 @@
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcQueue.h"
 #include "Core/Container/bcUnorderedMap.h"
+#include "Core/Concurrency/bcTask.h"
+#include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Editor/Application/bcUICommand.h"
 
@@ -24,6 +26,30 @@ namespace black_cat
 
 	namespace editor
 	{
+		class _bc_ui_command_entry
+		{
+		public:
+			_bc_ui_command_entry(core::bc_unique_ptr<bc_iui_command> p_command);
+
+			core::bc_task<core::bc_any> get_task();
+
+			bc_iui_command& get_command();
+
+			bool command_update(bc_iui_command::update_context& p_context);
+
+			void command_update_ui(bc_iui_command::update_ui_context& p_context);
+
+			void command_undo(bc_iui_command::undo_context& p_context);
+
+		private:
+			core::bc_any _execute_task();
+
+			core::bc_unique_ptr<bc_iui_command> m_command;
+			core::bc_task_link<core::bc_any> m_task_link;
+			bc_iui_command::update_context* m_update_context;
+			bool m_command_result;
+		};
+
 		class bc_ui_command_service : public core::bc_iservice
 		{
 		private:
@@ -47,7 +73,7 @@ namespace black_cat
 			bcUINT32 command_count() const;
 
 			template<typename T>
-			void execute_command(T&& p_command);
+			core::bc_task<core::bc_any> queue_command(T&& p_command);
 
 			void undo();
 
@@ -66,35 +92,39 @@ namespace black_cat
 			mutable core_platform::bc_mutex m_commands_lock;
 			core_platform::bc_clock::big_clock m_last_update_clock;
 			core_platform::bc_clock::big_clock m_last_execute_clock;
-			core::bc_queue<core::bc_shared_ptr<bc_iui_command>> m_commands_to_execute;
-			core::bc_queue<core::bc_shared_ptr<bc_iui_command>> m_reversible_commands;
-			core::bc_queue<core::bc_shared_ptr<bc_iui_command>> m_executed_commands;
+			core::bc_queue<core::bc_shared_ptr<_bc_ui_command_entry>> m_commands_to_execute;
+			core::bc_queue<core::bc_shared_ptr<_bc_ui_command_entry>> m_executed_commands;
+			core::bc_queue<core::bc_shared_ptr<_bc_ui_command_entry>> m_reversible_commands;
 			bcUINT32 m_commands_to_undo;
 
 			command_state_container m_command_states;
 		};
 
 		template< typename T >
-		void bc_ui_command_service::execute_command(T&& p_command)
+		core::bc_task<core::bc_any> bc_ui_command_service::queue_command(T&& p_command)
 		{
 			static_assert(std::is_base_of_v<bc_iui_command, T>, "T must inherit from bc_iui_command");
-
+			
 			{
 				core_platform::bc_lock_guard<core_platform::bc_mutex> m_guard(m_commands_lock);
 				
 				if(m_last_execute_clock == m_last_update_clock) // Only allow one command per frame
 				{
-					return;
+					return core::bc_task<core::bc_any>();
 				}
 				m_last_execute_clock = m_last_update_clock;
 
-				auto l_command = core::bc_make_shared<T>(std::move(p_command));
-				m_commands_to_execute.push(l_command);
+				auto l_command = core::bc_make_unique<T>(std::move(p_command));
+				auto l_command_entry = core::bc_make_shared<_bc_ui_command_entry>(std::move(l_command));
+
+				m_commands_to_execute.push(l_command_entry);
 				
-				if(l_command->is_reversible())
+				if(l_command_entry->get_command().is_reversible())
 				{
-					m_reversible_commands.push(l_command);
+					m_reversible_commands.push(l_command_entry);
 				}
+
+				return l_command_entry->get_task();
 			}
 		}
 	}

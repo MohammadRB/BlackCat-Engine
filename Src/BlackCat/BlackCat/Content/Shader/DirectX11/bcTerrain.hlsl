@@ -246,7 +246,7 @@ bc_vs_output vs(bc_vs_input p_input, uint p_vertex_id : SV_VertexID)
 {
     bc_vs_output l_output;
 
-    l_output.m_position = p_input.m_position;
+    l_output.m_position = mul(float4(p_input.m_position, 1), g_world).xyz;
     l_output.m_texcoord = p_input.m_texcoord;
     //l_output.m_texcoord.y = 1 - l_output.m_texcoord.y;
 
@@ -376,7 +376,7 @@ bc_ds_output ds(bc_constant_hs_output p_input, float2 UV : SV_DomainLocation, co
     float2 l_texcoord2 = lerp(p_quad[3].m_texcoord, p_quad[2].m_texcoord, UV.y);
     float2 l_final_texcoord = lerp(l_texcoord1, l_texcoord2, UV.x);
 
-    l_final_pos.y = get_height(l_final_texcoord);
+    l_final_pos.y += get_height(l_final_texcoord);
 
     l_output.m_position = mul(float4(l_final_pos, 1), g_viewprojection);
     l_output.m_pos_w = l_final_pos;

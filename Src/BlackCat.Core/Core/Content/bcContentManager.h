@@ -103,7 +103,7 @@ namespace black_cat
 
 			/**
 			 * \brief Load specified content from file or if it's loaded earlier return a pointer to it.
-			 * file name must be relative
+			 * file name must be absolute path
 			 * \tparam TContent 
 			 * \param p_file 
 			 * \param p_parameter 
@@ -114,7 +114,7 @@ namespace black_cat
 
 			/**
 			 * \brief Load specified content from file or if it's loaded earlier return a pointer to it.
-			 * file name must be relative
+			 * file name must be absolute path
 			 * \tparam TContent 
 			 * \param p_alloc_type 
 			 * \param p_file 
@@ -236,8 +236,7 @@ namespace black_cat
 		{
 			static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherite from bc_icontent");
 
-			// Make hash, combination of both file path and content name because some contents like shaders load 
-			// from same file
+			// Make hash, combination of both file path and content name because some contents like shaders load from same file
 			bc_estring_frame l_offline_file_path = _get_offline_file_path<TContent>(p_file);
 			auto l_hash = std::hash< bc_estring_frame >()(l_offline_file_path);
 
@@ -301,7 +300,6 @@ namespace black_cat
 			}
 
 			auto l_offline_file_path = _get_offline_file_path<TContent>(l_file_path);
-			auto l_absolute_offline_file_path = bc_path::get_absolute_path(l_offline_file_path.c_str());
 
 			bc_file_stream l_offline_file_stream;
 			bc_icontent_loader* l_loader = _get_loader<TContent>();
@@ -312,7 +310,7 @@ namespace black_cat
 			{
 				_bc_content_loader_guard< TContent > l_guard(*l_loader, l_context);
 
-				if (!l_offline_file_stream.open_write(l_absolute_offline_file_path.c_str()))
+				if (!l_offline_file_stream.open_write(l_offline_file_path.c_str()))
 				{
 					l_context.m_file.reset(bc_stream(std::move(l_offline_file_stream)));
 					l_loader->content_file_open_failed(l_context);
@@ -401,14 +399,12 @@ namespace black_cat
 			bc_content_loader_parameter&& p_parameter, 
 			bc_icontent_loader* p_loader)
 		{
-			bc_estring l_file_path = bc_path::get_absolute_path(p_file);
-			bc_estring l_offline_file_path = bc_path::get_absolute_path(p_offline_file);
 			core_platform::bc_basic_file_info l_file_info;
 			core_platform::bc_basic_file_info l_offline_file_info;
-			core_platform::bc_file_info::get_basic_info(l_file_path.c_str(), &l_file_info);
-			core_platform::bc_file_info::get_basic_info(l_offline_file_path.c_str(), &l_offline_file_info);
+			core_platform::bc_file_info::get_basic_info(p_file, &l_file_info);
+			core_platform::bc_file_info::get_basic_info(p_offline_file, &l_offline_file_info);
 
-			const bool l_need_to_offline_processing = !l_offline_file_info.m_exist ||
+			const bool l_need_offline_processing = !l_offline_file_info.m_exist ||
 				l_offline_file_info.m_last_write_time.m_total_milliseconds < l_file_info.m_last_write_time.m_total_milliseconds;
 
 			bc_file_stream l_file_stream;
@@ -423,9 +419,9 @@ namespace black_cat
 			{
 				_bc_content_loader_guard< TContent > l_guard(*p_loader, l_context);
 
-				if (l_need_to_offline_processing)
+				if (l_need_offline_processing)
 				{
-					if (!l_file_stream.open_read(l_file_path.c_str()))
+					if (!l_file_stream.open_read(p_file))
 					{
 						l_context.m_file.reset(bc_stream(std::move(l_file_stream)));
 						p_loader->content_file_open_failed(l_context);
@@ -441,7 +437,7 @@ namespace black_cat
 
 					if (!l_offline_file_stream.open
 						(
-							l_offline_file_path.c_str(),
+							p_offline_file,
 							core_platform::bc_file_mode::create_overwrite,
 							core_platform::bc_file_access::write,
 							core_platform::bc_file_sharing::none
@@ -464,10 +460,11 @@ namespace black_cat
 					{
 						l_offline_file_stream.close();
 
-						bc_path l_offline_file(l_offline_file_path.c_str());
+						bc_path l_offline_file(p_offline_file);
 						l_offline_file.delete_path();
 
-						std::abort();
+						bc_string_frame l_message = bc_string_frame("Error in loading content file: ") + bc_to_exclusive_string(p_offline_file).c_str();
+						throw bc_io_exception(l_message.c_str());
 					}
 					
 					l_context.m_file.reset(bc_stream(l_offline_file_stream));
@@ -476,7 +473,7 @@ namespace black_cat
 					l_context.m_file->close();
 				}
 
-				if (!l_offline_file_stream.open_read(l_offline_file_path.c_str()))
+				if (!l_offline_file_stream.open_read(p_offline_file))
 				{
 					l_context.m_file.reset(bc_stream(std::move(l_offline_file_stream)));
 					p_loader->content_file_open_failed(l_context);

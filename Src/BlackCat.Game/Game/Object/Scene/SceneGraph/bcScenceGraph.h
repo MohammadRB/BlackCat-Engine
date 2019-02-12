@@ -37,6 +37,8 @@ namespace black_cat
 
 			bc_scene_graph& operator=(bc_scene_graph&&) = default;
 
+			physics::bc_bound_box get_bound_box() const;
+
 			iterator begin() noexcept;
 
 			const_iterator begin() const noexcept;

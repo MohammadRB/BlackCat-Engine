@@ -69,15 +69,15 @@ namespace black_cat
 			game::bc_actor l_terrain = l_hit.get_actor();
 
 			const auto* l_height_map_component = l_terrain.get_component< game::bc_height_map_component >();
-			const auto* l_dx11_height_map = static_cast< const bc_editor_height_map_dx11* >(l_height_map_component->get_height_map());
+			const auto& l_dx11_height_map = static_cast< const bc_editor_height_map_dx11& >(l_height_map_component->get_height_map());
 
-			const auto l_hit_position = l_hit.get_position() - l_dx11_height_map->get_position();
+			const auto l_hit_position = l_hit.get_position() - l_height_map_component->get_world_position();
 
-			const bcUINT16 l_half_width = l_dx11_height_map->get_width() * l_dx11_height_map->get_xz_multiplier() / 2;
-			const bcUINT16 l_half_height = l_dx11_height_map->get_height() * l_dx11_height_map->get_xz_multiplier() / 2;
+			const bcUINT16 l_half_width = l_dx11_height_map.get_width() * l_dx11_height_map.get_xz_multiplier() / 2;
+			const bcUINT16 l_half_height = l_dx11_height_map.get_height() * l_dx11_height_map.get_xz_multiplier() / 2;
 
-			const bcUINT32 l_tool_center_x = (static_cast< bcINT32 >(l_hit_position.x) + l_half_width) / l_dx11_height_map->get_xz_multiplier();
-			const bcUINT32 l_tool_center_z = l_dx11_height_map->get_height() - ((static_cast< bcINT32 >(l_hit_position.z) + l_half_height) / l_dx11_height_map->get_xz_multiplier());
+			const bcUINT32 l_tool_center_x = (static_cast< bcINT32 >(l_hit_position.x) + l_half_width) / l_dx11_height_map.get_xz_multiplier();
+			const bcUINT32 l_tool_center_z = l_dx11_height_map.get_height() - ((static_cast< bcINT32 >(l_hit_position.z) + l_half_height) / l_dx11_height_map.get_xz_multiplier());
 
 			terrain_update_context l_context(p_context, l_terrain, l_hit_position, l_tool_center_x, l_tool_center_z);
 

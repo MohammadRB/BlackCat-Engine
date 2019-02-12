@@ -59,17 +59,17 @@ namespace black_cat
 			core::bc_json_document< _bc_entity_json > l_json;
 			l_json.load(l_buffer.c_str());
 
-			for (auto& l_entity : *l_json->m_entities)
+			for (auto& l_entity : l_json->m_entities)
 			{
 				const core::bc_string_frame& l_entity_name = *l_entity->m_name;
 				auto l_entity_name_hash = string_hash()(l_entity_name.c_str());
 				entity_map_type::value_type::second_type l_entity_components;
 
 				// Because we used program heap we must reserve needed memory
-				l_entity_components.m_components.reserve(l_entity->m_components->size());
+				l_entity_components.m_components.reserve(l_entity->m_components.size());
 				l_entity_components.m_entity_name = l_entity_name.c_str();
 
-				for (auto& l_component : *l_entity->m_components)
+				for (auto& l_component : l_entity->m_components)
 				{
 					const core::bc_string_frame& l_component_name = *l_component->m_name;
 					// We have used this function in component name hashing
@@ -78,13 +78,13 @@ namespace black_cat
 					_bc_entity_component_data l_component_data;
 					l_component_data.m_component_hash = l_component_name_hash;
 
-					auto* l_exp_params = &*l_component->m_parameters;
+					auto& l_exp_params = *l_component->m_parameters;
 
 					std::for_each
 					(
-						std::begin(l_exp_params->m_key_values),
-						std::end(l_exp_params->m_key_values),
-						[&](core::bc_json_key_value::key_value_array_t::value_type& p_parameter)
+						std::begin(l_exp_params),
+						std::end(l_exp_params),
+						[&](core::bc_json_key_value::value_type& p_parameter)
 						{
 							l_component_data.m_component_parameters.add_value(p_parameter.first.c_str(), std::move(p_parameter.second));
 						}

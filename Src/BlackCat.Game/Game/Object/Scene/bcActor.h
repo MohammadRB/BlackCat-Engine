@@ -47,6 +47,9 @@ namespace black_cat
 			template< class TComponent >
 			const TComponent* get_component() const;
 
+			template< class TIterator >
+			void get_components(TIterator p_destination) const;
+
 			void destroy();
 
 			bool operator==(const bc_actor& p_other) const noexcept;

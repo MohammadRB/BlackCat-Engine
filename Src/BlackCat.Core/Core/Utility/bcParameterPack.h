@@ -11,62 +11,62 @@ namespace black_cat
 {
 	namespace core
 	{
-		class _bc_parameter_pack_base
+		class _bc_parameter_pack_object
 		{
 		public:
-			_bc_parameter_pack_base() = default;
+			_bc_parameter_pack_object() = default;
 
-			virtual ~_bc_parameter_pack_base() = default;
+			virtual ~_bc_parameter_pack_object() = default;
 
 			virtual bcSIZE size() const = 0;
 
-			virtual _bc_parameter_pack_base* copy(void* p_memory) = 0;
+			virtual _bc_parameter_pack_object* copy(void* p_memory) = 0;
 
-			virtual _bc_parameter_pack_base* move(void* p_memory) = 0;
+			virtual _bc_parameter_pack_object* move(void* p_memory) = 0;
 		};
 
 		template< typename T >
-		class _bc_parameter_pack_imp : public _bc_parameter_pack_base
+		class _bc_parameter_pack_concrete_object : public _bc_parameter_pack_object
 		{
 		public:
 			template< typename = typename std::enable_if< std::is_copy_constructible< T >::value >::type >
-			explicit _bc_parameter_pack_imp(const T& p_data)
-				: _bc_parameter_pack_base(),
+			explicit _bc_parameter_pack_concrete_object(const T& p_data)
+				: _bc_parameter_pack_object(),
 				m_value(p_data)
 			{
 			}
 
 			template< typename = typename std::enable_if< !std::is_copy_constructible< T >::value >::type >
-			explicit _bc_parameter_pack_imp(T& p_data)
+			explicit _bc_parameter_pack_concrete_object(T& p_data)
 			{
-				throw bc_logic_exception("You are trying to copy a non copiable object");
+				throw bc_logic_exception("You are trying to copy a non copyable object");
 			}
 
-			explicit _bc_parameter_pack_imp(T&& p_data)
-				: _bc_parameter_pack_base(),
+			explicit _bc_parameter_pack_concrete_object(T&& p_data)
+				: _bc_parameter_pack_object(),
 				m_value(std::move(p_data))
 			{
 			}
 
-			~_bc_parameter_pack_imp() = default;
+			~_bc_parameter_pack_concrete_object() = default;
 
 			bcSIZE size() const override
 			{
-				return sizeof(_bc_parameter_pack_imp<T>);
+				return sizeof(_bc_parameter_pack_concrete_object<T>);
 			}
 
-			_bc_parameter_pack_base* copy(void* p_memory) override
+			_bc_parameter_pack_object* copy(void* p_memory) override
 			{
-				_bc_parameter_pack_imp* l_pointer = reinterpret_cast<_bc_parameter_pack_imp*>(p_memory);
-				new (l_pointer) _bc_parameter_pack_imp(m_value);
+				_bc_parameter_pack_concrete_object* l_pointer = reinterpret_cast<_bc_parameter_pack_concrete_object*>(p_memory);
+				new (l_pointer) _bc_parameter_pack_concrete_object(m_value);
 
 				return l_pointer;
 			}
 
-			_bc_parameter_pack_base* move(void* p_memory) override
+			_bc_parameter_pack_object* move(void* p_memory) override
 			{
-				_bc_parameter_pack_imp* l_pointer = reinterpret_cast<_bc_parameter_pack_imp*>(p_memory);
-				new (l_pointer) _bc_parameter_pack_imp(std::move(m_value));
+				_bc_parameter_pack_concrete_object* l_pointer = reinterpret_cast<_bc_parameter_pack_concrete_object*>(p_memory);
+				new (l_pointer) _bc_parameter_pack_concrete_object(std::move(m_value));
 
 				return l_pointer;
 			}
@@ -159,7 +159,7 @@ namespace black_cat
 
 			bool m_used_internal_buffer;
 			bcUINT m_buffer[s_buffer_size];
-			_bc_parameter_pack_base* m_object;
+			_bc_parameter_pack_object* m_object;
 		};
 
 		/**
@@ -176,7 +176,15 @@ namespace black_cat
 
 			bc_any(bc_any&& p_other);
 
-			template< typename T, typename = typename std::enable_if< !std::is_same< typename std::decay<T>::type, bc_parameter_pack >::value >::type >
+			template
+			<
+				typename T,
+				typename = std::enable_if_t
+				<
+					!std::is_same_v< std::decay_t< T >, bc_parameter_pack > &&
+					!std::is_same_v< std::decay_t< T >, bc_any >
+				>
+			>
 			explicit bc_any(T&& p_value);
 
 			~bc_any();
@@ -228,6 +236,11 @@ namespace black_cat
 		{
 			reset();
 
+			if(!p_other.has_value())
+			{
+				return *this;
+			}
+
 			if (p_other.m_used_internal_buffer)
 			{
 				m_object = p_other.m_object->copy(&m_buffer);
@@ -246,6 +259,11 @@ namespace black_cat
 		inline bc_parameter_pack& bc_parameter_pack::operator=(bc_parameter_pack&& p_other)
 		{
 			reset();
+
+			if (!p_other.has_value())
+			{
+				return *this;
+			}
 
 			if (p_other.m_used_internal_buffer)
 			{
@@ -272,15 +290,15 @@ namespace black_cat
 
 			reset();
 
-			if (sizeof(_bc_parameter_pack_imp<T1>) <= s_buffer_size)
+			if (sizeof(_bc_parameter_pack_concrete_object<T1>) <= s_buffer_size)
 			{
-				new (&m_buffer) _bc_parameter_pack_imp<T1>(std::forward<T>(p_data));
-				m_object = reinterpret_cast<_bc_parameter_pack_base*>(&m_buffer);
+				new (&m_buffer) _bc_parameter_pack_concrete_object<T1>(std::forward<T>(p_data));
+				m_object = reinterpret_cast<_bc_parameter_pack_object*>(&m_buffer);
 				m_used_internal_buffer = true;
 			}
 			else
 			{
-				m_object = allocate<_bc_parameter_pack_imp<T1>>(std::forward<T>(p_data)).release();
+				m_object = allocate<_bc_parameter_pack_concrete_object<T1>>(std::forward<T>(p_data)).release();
 				m_used_internal_buffer = false;
 			}
 		}
@@ -291,7 +309,7 @@ namespace black_cat
 			if (!has_value())
 				return false;
 
-			return dynamic_cast<_bc_parameter_pack_imp<T>*>(m_object) != nullptr;
+			return dynamic_cast<_bc_parameter_pack_concrete_object<T>*>(m_object) != nullptr;
 		}
 
 		template < typename T >
@@ -302,8 +320,7 @@ namespace black_cat
 				return nullptr;
 			}
 
-			auto* l_imp = dynamic_cast<_bc_parameter_pack_imp<T>*>(m_object);
-
+			auto* l_imp = dynamic_cast<_bc_parameter_pack_concrete_object<T>*>(m_object);
 			if (l_imp)
 			{
 				return &l_imp->m_value;
@@ -339,7 +356,7 @@ namespace black_cat
 				throw bc_bad_cast_exception();
 			}
 
-			return &l_value->m_value;
+			return l_value;
 		}
 
 		template< typename T >
@@ -379,7 +396,7 @@ namespace black_cat
 			// Only destruct constructed object in internal buffer
 			else if (m_object && m_used_internal_buffer)
 			{
-				m_object->~_bc_parameter_pack_base();
+				m_object->~_bc_parameter_pack_object();
 			}
 
 			m_used_internal_buffer = false;

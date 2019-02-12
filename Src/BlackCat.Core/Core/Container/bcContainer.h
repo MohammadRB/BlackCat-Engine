@@ -68,7 +68,7 @@ namespace black_cat
 
 		protected:
 			template< typename TInputIterator >
-			void _check_iterator()
+			void check_iterator()
 			{
 				static_assert(std::is_convertible< typename std::iterator_traits<TInputIterator>::value_type, value_type>::value, "Types must be convertible");
 			}

@@ -188,7 +188,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bcSIZE bc_platform_file<core_platform::g_api_win32>::write(bcBYTE* p_buffer, bcSIZE p_bytes_to_write)
+		bcSIZE bc_platform_file<core_platform::g_api_win32>::write(const bcBYTE* p_buffer, bcSIZE p_bytes_to_write)
 		{
 			_check_file_is_open(m_pack.m_file, m_pack.m_error_code);
 

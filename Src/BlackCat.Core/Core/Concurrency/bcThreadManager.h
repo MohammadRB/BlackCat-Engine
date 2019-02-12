@@ -122,7 +122,7 @@ namespace black_cat
 			void check_for_interruption() const;
 
 			template<typename T>
-			bc_task< T > start_new_task(bc_delegate< T(void) >&& p_delegate, bc_task_creation_option p_option = bc_task_creation_option::policy_none);
+			bc_task< T > start_new_task(bc_delegate< T() >&& p_delegate, bc_task_creation_option p_option = bc_task_creation_option::policy_none);
 
 		protected:
 

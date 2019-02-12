@@ -64,7 +64,7 @@ namespace black_cat
 			auto l_root_node_index = p_transformations.m_root_node_index;
 			auto l_node_index = p_node->get_transformation_index();
 
-			bcAssert(l_root_node_index != bc_mesh_node::node_indexing(-1) && l_node_index >= l_root_node_index);
+			bcAssert(l_root_node_index != bc_mesh_node::node_index(-1) && l_node_index >= l_root_node_index);
 
 			return &p_transformations.m_transformations[l_node_index - l_root_node_index];
 		}

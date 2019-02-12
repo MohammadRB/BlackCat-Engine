@@ -5,6 +5,7 @@
 #include "CorePlatform/bcType.h"
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/bcConstant.h"
+#include "Core/File/bcJsonDocument.h"
 #include "Core/Utility/bcDataDrivenParameter.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/bcActor.h"
@@ -16,11 +17,11 @@ namespace black_cat
 		class bc_actor_component_manager;
 		using bc_actor_component_hash = bcUINT32;
 		using bc_actor_component_index = bcINT32;
-		constexpr bc_actor_component_index g_actor_component_invalid_index = bc_actor_component_index(-1);
-
+		
 		class BC_GAME_DLL bc_iactor_component
 		{
-		private:
+		public:
+			constexpr static bc_actor_component_index invalid_index = bc_actor_component_index(-1);
 			friend class bc_actor_component_manager;
 
 		public:
@@ -35,6 +36,10 @@ namespace black_cat
 			 * \param p_parameters 
 			 */
 			virtual void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) = 0;
+
+			virtual void load_instance(bc_actor& p_actor, const core::bc_json_key_value& p_parameters);
+
+			virtual void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters);
 
 			virtual void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) = 0;
 

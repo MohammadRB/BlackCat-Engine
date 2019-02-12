@@ -261,14 +261,16 @@ namespace black_cat
 			template< typename TInputIterator >
 			node_type* _new_node(node_type* p_position, TInputIterator p_first, TInputIterator p_last, std::input_iterator_tag&)
 			{
-				base_type::template _check_iterator< TInputIterator >();
+				using input_iterator_reference = typename std::iterator_traits<TInputIterator>::reference;
+
+				base_type::template check_iterator< TInputIterator >();
 
 				node_type* l_first_inserted = nullptr;
 				node_type* l_last_inserted = p_position;
 
-				std::for_each(p_first, p_last, [=, &l_first_inserted, &l_last_inserted](typename std::iterator_traits<TInputIterator>::value_type& p_value)->void
+				std::for_each(p_first, p_last, [=, &l_first_inserted, &l_last_inserted](input_iterator_reference p_value)->void
 				{
-					l_last_inserted = _new_node(l_last_inserted, 1, p_value);
+					l_last_inserted = _new_node(l_last_inserted, 1, std::forward<input_iterator_reference>(p_value));
 					if (!l_first_inserted)
 					{
 						l_first_inserted = l_last_inserted;

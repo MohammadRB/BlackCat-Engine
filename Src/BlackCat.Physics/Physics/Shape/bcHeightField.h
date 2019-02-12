@@ -86,10 +86,10 @@ namespace black_cat
 			core::bc_vector3f get_triangle_normal(bcUINT32 p_triangle_index);
 
 			/**
-			 * \brief Replaces a rectangular subfield in the sample data array.
-			 * Source samples that are out of range of target heightfield will be clipped with no error.
-			 * \param p_row First row in the destination heightfield to be modified.Can be negative.
-			 * \param p_column First cell in the destination heightfield to be modified.Can be negative.
+			 * \brief Replaces a rectangular sub-field in the sample data array.
+			 * Source samples that are out of range of target height-field will be clipped with no error.
+			 * \param p_row First row in the destination height-field to be modified.Can be negative.
+			 * \param p_column First cell in the destination height-field to be modified.Can be negative.
 			 * \param p_desc
 			 * \param p_height_field_shapes Shapes that are created with this height field.
 			 * \param p_shape_count Number of shapes associated with this height field.

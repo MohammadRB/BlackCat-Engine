@@ -23,14 +23,12 @@ namespace black_cat
 	{
 		struct bc_game_system_parameter
 		{
-			bc_game_system_parameter(bc_render_system_parameter&& p_render_system_parameter, core::bc_unique_ptr<bc_iscene_graph_node> p_scene_graph)
-				: m_render_system_parameter(std::move(p_render_system_parameter)),
-				m_scene_graph(std::move(p_scene_graph))
+			explicit bc_game_system_parameter(bc_render_system_parameter&& p_render_system_parameter)
+				: m_render_system_parameter(std::move(p_render_system_parameter))
 			{
 			}
 
 			bc_render_system_parameter m_render_system_parameter;
-			core::bc_unique_ptr<bc_iscene_graph_node> m_scene_graph;
 		};
 
 		class BC_GAME_DLL bc_game_system : public core::bc_iservice, public core::bc_initializable< bc_game_system_parameter >
@@ -111,12 +109,12 @@ namespace black_cat
 				return m_scene.get();
 			}
 
-			bc_scene* get_scene() const
+			const bc_scene* get_scene() const
 			{
 				return m_scene.get();
 			}
 
-			void set_scene(core::bc_unique_ptr<bc_scene> p_scene);
+			void set_scene(bc_scene_ptr p_scene);
 
 			void render();
 
@@ -134,7 +132,7 @@ namespace black_cat
 			bc_script_system m_script_system;
 			bc_render_system m_render_system;
 			core::bc_unique_ptr<bc_game_console> m_console;
-			core::bc_unique_ptr<bc_scene> m_scene;
+			bc_scene_ptr m_scene;
 		};
 	}
 }

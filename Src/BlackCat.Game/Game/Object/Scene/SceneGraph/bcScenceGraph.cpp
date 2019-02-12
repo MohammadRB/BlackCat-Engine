@@ -26,6 +26,11 @@ namespace black_cat
 			}
 		}
 
+		physics::bc_bound_box bc_scene_graph::get_bound_box() const
+		{
+			return m_graph_node->get_bound_box();
+		}
+
 		bc_scene_graph::iterator bc_scene_graph::begin() noexcept
 		{
 			return m_graph_node->begin();
@@ -90,14 +95,15 @@ namespace black_cat
 
 		void bc_scene_graph::clear()
 		{
-			bcAssert(m_graph_node);
-
-			for (auto& l_actor : *m_graph_node)
+			if(m_graph_node)
 			{
-				l_actor.destroy();
-			}
+				for (auto& l_actor : *m_graph_node)
+				{
+					l_actor.destroy();
+				}
 
-			m_graph_node->clear();
+				m_graph_node->clear();
+			}
 		}
 	}
 }

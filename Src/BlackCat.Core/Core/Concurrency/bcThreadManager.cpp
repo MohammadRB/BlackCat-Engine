@@ -6,8 +6,6 @@ namespace black_cat
 {
 	namespace core
 	{
-		//template BC_C_DLL class bc_singleton< bc_thread_manager(bcSIZE, bcSIZE) >;
-
 		void bc_task_stealing_queue::push(delegate_type&& p_task)
 		{
 			{
@@ -98,6 +96,7 @@ namespace black_cat
 		{
 			_stop_workers();
 		}
+
 		bcSIZE bc_thread_manager::thread_count() const
 		{
 			{

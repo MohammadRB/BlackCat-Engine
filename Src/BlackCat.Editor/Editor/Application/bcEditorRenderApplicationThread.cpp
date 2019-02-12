@@ -50,11 +50,11 @@ namespace black_cat
 			(
 				l_app_parameters,
 				m_output_window,
-				[]()
+				[](game::bc_scene_graph_node_factory_parameter p_parameter)
 				{
 					return core::bc_make_unique< game::bc_octal_tree_graph_node >
 					(
-						physics::bc_bound_box(core::bc_vector3f(), core::bc_vector3f(1024, 1024, 1024)),
+						physics::bc_bound_box(p_parameter.m_center, p_parameter.m_half_extends),
 						10,
 						128
 					);

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/Math/bcMatrix4f.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/bcActor.h"
 #include "Game/Object/Scene/bcActorComponent.h"
@@ -25,12 +26,19 @@ namespace black_cat
 
 			bc_height_map_component& operator=(bc_height_map_component&&) noexcept;
 
-			const bc_height_map* get_height_map() const
+			core::bc_vector3f get_world_position() const
 			{
-				return m_height_map.get();
+				return m_transform.get_translation();
+			}
+
+			const bc_height_map& get_height_map() const
+			{
+				return *m_height_map;
 			}
 
 			bc_actor get_actor() const noexcept override;
+
+			void set_world_transform(const core::bc_matrix4f& p_transform);
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
@@ -38,10 +46,13 @@ namespace black_cat
 
 			void render(bc_render_system& p_render_system) const override;
 
+			void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters) override;
+
 		protected:
 
 		private:
 			bc_height_map_ptr m_height_map;
+			core::bc_matrix4f m_transform;
 		};
 	}
 }

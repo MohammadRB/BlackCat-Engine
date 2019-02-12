@@ -7,6 +7,7 @@
 #include "Game/Object/Scene/bcActor.h"
 #include "Game/Object/Scene/Component/bcNameComponent.h"
 #include "Editor/UICommand/bcUIObjectSelectCommand.h"
+#include "Editor/UI/bcFormObject.h"
 
 namespace black_cat
 {

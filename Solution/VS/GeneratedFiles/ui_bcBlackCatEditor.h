@@ -10,6 +10,7 @@
 #define UI_BCBLACKCATEDITOR_H
 
 #include <QtCore/QVariant>
+#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDockWidget>
@@ -19,6 +20,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QSplitter>
@@ -35,6 +37,9 @@ QT_BEGIN_NAMESPACE
 class Ui_bcBlackCatEditorClass
 {
 public:
+    QAction *newSceneMenu;
+    QAction *loadSceneMenu;
+    QAction *saveSceneMenu;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QHBoxLayout *mainLayout;
@@ -68,7 +73,8 @@ public:
     QSlider *terrainRadiusSlider;
     QLabel *terrainRadiusLable;
     QLabel *terrainRadiusValue;
-    QMenuBar *menuBar;
+    QMenuBar *mainMenuBar;
+    QMenu *fileMenu;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
     QDockWidget *toolsDock;
@@ -93,6 +99,12 @@ public:
         bcBlackCatEditorClass->setSizePolicy(sizePolicy);
         bcBlackCatEditorClass->setMinimumSize(QSize(1600, 900));
         bcBlackCatEditorClass->setBaseSize(QSize(1200, 750));
+        newSceneMenu = new QAction(bcBlackCatEditorClass);
+        newSceneMenu->setObjectName(QStringLiteral("newSceneMenu"));
+        loadSceneMenu = new QAction(bcBlackCatEditorClass);
+        loadSceneMenu->setObjectName(QStringLiteral("loadSceneMenu"));
+        saveSceneMenu = new QAction(bcBlackCatEditorClass);
+        saveSceneMenu->setObjectName(QStringLiteral("saveSceneMenu"));
         centralWidget = new QWidget(bcBlackCatEditorClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -126,7 +138,7 @@ public:
         sizePolicy2.setVerticalStretch(0);
         sizePolicy2.setHeightForWidth(leftRenderFrame->sizePolicy().hasHeightForWidth());
         leftRenderFrame->setSizePolicy(sizePolicy2);
-        leftRenderFrame->setMinimumSize(QSize(0, 400));
+        leftRenderFrame->setMinimumSize(QSize(0, 550));
         leftRenderFrame->setFrameShape(QFrame::StyledPanel);
         leftRenderFrame->setFrameShadow(QFrame::Raised);
         splitter->addWidget(leftRenderFrame);
@@ -176,7 +188,7 @@ public:
         rightToolBox->setObjectName(QStringLiteral("rightToolBox"));
         rightToolBoxObjectSelect = new QWidget();
         rightToolBoxObjectSelect->setObjectName(QStringLiteral("rightToolBoxObjectSelect"));
-        rightToolBoxObjectSelect->setGeometry(QRect(0, 0, 98, 28));
+        rightToolBoxObjectSelect->setGeometry(QRect(0, 0, 338, 708));
         entityNameLabel = new QLabel(rightToolBoxObjectSelect);
         entityNameLabel->setObjectName(QStringLiteral("entityNameLabel"));
         entityNameLabel->setGeometry(QRect(10, 10, 81, 16));
@@ -186,7 +198,7 @@ public:
         rightToolBox->addItem(rightToolBoxObjectSelect, QStringLiteral("ObjectSelection"));
         rightToolBoxObjectInsert = new QWidget();
         rightToolBoxObjectInsert->setObjectName(QStringLiteral("rightToolBoxObjectInsert"));
-        rightToolBoxObjectInsert->setGeometry(QRect(0, 0, 101, 101));
+        rightToolBoxObjectInsert->setGeometry(QRect(0, 0, 338, 708));
         horizontalLayout_2 = new QHBoxLayout(rightToolBoxObjectInsert);
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -290,7 +302,7 @@ public:
         if (QIcon::hasThemeIcon(iconThemeName)) {
             icon = QIcon::fromTheme(iconThemeName);
         } else {
-            icon.addFile(QStringLiteral("."), QSize(), QIcon::Normal, QIcon::Off);
+            icon.addFile(QStringLiteral("C:/Users/moham/.designer/backup"), QSize(), QIcon::Normal, QIcon::Off);
         }
         rightToolBox->addItem(rightToolBoxTerrain, icon, QStringLiteral("Terrain"));
 
@@ -303,10 +315,12 @@ public:
         horizontalLayout->addLayout(mainLayout);
 
         bcBlackCatEditorClass->setCentralWidget(centralWidget);
-        menuBar = new QMenuBar(bcBlackCatEditorClass);
-        menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1600, 23));
-        bcBlackCatEditorClass->setMenuBar(menuBar);
+        mainMenuBar = new QMenuBar(bcBlackCatEditorClass);
+        mainMenuBar->setObjectName(QStringLiteral("mainMenuBar"));
+        mainMenuBar->setGeometry(QRect(0, 0, 1600, 23));
+        fileMenu = new QMenu(mainMenuBar);
+        fileMenu->setObjectName(QStringLiteral("fileMenu"));
+        bcBlackCatEditorClass->setMenuBar(mainMenuBar);
         mainToolBar = new QToolBar(bcBlackCatEditorClass);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
         QSizePolicy sizePolicy4(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -321,14 +335,19 @@ public:
         bcBlackCatEditorClass->addToolBar(Qt::TopToolBarArea, mainToolBar);
         statusBar = new QStatusBar(bcBlackCatEditorClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));
+        QSizePolicy sizePolicy5(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(0);
+        sizePolicy5.setHeightForWidth(statusBar->sizePolicy().hasHeightForWidth());
+        statusBar->setSizePolicy(sizePolicy5);
         bcBlackCatEditorClass->setStatusBar(statusBar);
         toolsDock = new QDockWidget(bcBlackCatEditorClass);
         toolsDock->setObjectName(QStringLiteral("toolsDock"));
-        QSizePolicy sizePolicy5(QSizePolicy::Maximum, QSizePolicy::Preferred);
-        sizePolicy5.setHorizontalStretch(0);
-        sizePolicy5.setVerticalStretch(0);
-        sizePolicy5.setHeightForWidth(toolsDock->sizePolicy().hasHeightForWidth());
-        toolsDock->setSizePolicy(sizePolicy5);
+        QSizePolicy sizePolicy6(QSizePolicy::Maximum, QSizePolicy::Preferred);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(toolsDock->sizePolicy().hasHeightForWidth());
+        toolsDock->setSizePolicy(sizePolicy6);
         toolsDock->setMinimumSize(QSize(55, 914));
         toolsDock->setMaximumSize(QSize(55, 524287));
         toolsDock->setFloating(false);
@@ -344,11 +363,11 @@ public:
         verticalLayout_3->setContentsMargins(5, 0, 5, 600);
         objectSelectButton = new QToolButton(toolsDockContents);
         objectSelectButton->setObjectName(QStringLiteral("objectSelectButton"));
-        QSizePolicy sizePolicy6(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy6.setHorizontalStretch(0);
-        sizePolicy6.setVerticalStretch(0);
-        sizePolicy6.setHeightForWidth(objectSelectButton->sizePolicy().hasHeightForWidth());
-        objectSelectButton->setSizePolicy(sizePolicy6);
+        QSizePolicy sizePolicy7(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy7.setHorizontalStretch(0);
+        sizePolicy7.setVerticalStretch(0);
+        sizePolicy7.setHeightForWidth(objectSelectButton->sizePolicy().hasHeightForWidth());
+        objectSelectButton->setSizePolicy(sizePolicy7);
         objectSelectButton->setCheckable(true);
         objectSelectButton->setAutoExclusive(true);
 
@@ -356,8 +375,8 @@ public:
 
         objectInsertButton = new QToolButton(toolsDockContents);
         objectInsertButton->setObjectName(QStringLiteral("objectInsertButton"));
-        sizePolicy6.setHeightForWidth(objectInsertButton->sizePolicy().hasHeightForWidth());
-        objectInsertButton->setSizePolicy(sizePolicy6);
+        sizePolicy7.setHeightForWidth(objectInsertButton->sizePolicy().hasHeightForWidth());
+        objectInsertButton->setSizePolicy(sizePolicy7);
         objectInsertButton->setCheckable(true);
         objectInsertButton->setAutoExclusive(true);
 
@@ -365,8 +384,8 @@ public:
 
         terrainHeightButton = new QToolButton(toolsDockContents);
         terrainHeightButton->setObjectName(QStringLiteral("terrainHeightButton"));
-        sizePolicy6.setHeightForWidth(terrainHeightButton->sizePolicy().hasHeightForWidth());
-        terrainHeightButton->setSizePolicy(sizePolicy6);
+        sizePolicy7.setHeightForWidth(terrainHeightButton->sizePolicy().hasHeightForWidth());
+        terrainHeightButton->setSizePolicy(sizePolicy7);
         terrainHeightButton->setMinimumSize(QSize(0, 0));
         terrainHeightButton->setSizeIncrement(QSize(0, 0));
         terrainHeightButton->setBaseSize(QSize(0, 0));
@@ -377,8 +396,8 @@ public:
 
         terrainSmoothButton = new QToolButton(toolsDockContents);
         terrainSmoothButton->setObjectName(QStringLiteral("terrainSmoothButton"));
-        sizePolicy6.setHeightForWidth(terrainSmoothButton->sizePolicy().hasHeightForWidth());
-        terrainSmoothButton->setSizePolicy(sizePolicy6);
+        sizePolicy7.setHeightForWidth(terrainSmoothButton->sizePolicy().hasHeightForWidth());
+        terrainSmoothButton->setSizePolicy(sizePolicy7);
         terrainSmoothButton->setCheckable(true);
         terrainSmoothButton->setAutoExclusive(true);
 
@@ -386,8 +405,8 @@ public:
 
         terrainMaterialButton = new QToolButton(toolsDockContents);
         terrainMaterialButton->setObjectName(QStringLiteral("terrainMaterialButton"));
-        sizePolicy6.setHeightForWidth(terrainMaterialButton->sizePolicy().hasHeightForWidth());
-        terrainMaterialButton->setSizePolicy(sizePolicy6);
+        sizePolicy7.setHeightForWidth(terrainMaterialButton->sizePolicy().hasHeightForWidth());
+        terrainMaterialButton->setSizePolicy(sizePolicy7);
         terrainMaterialButton->setCheckable(true);
         terrainMaterialButton->setAutoExclusive(true);
 
@@ -395,8 +414,8 @@ public:
 
         terrainMaterialSmoothButton = new QToolButton(toolsDockContents);
         terrainMaterialSmoothButton->setObjectName(QStringLiteral("terrainMaterialSmoothButton"));
-        sizePolicy6.setHeightForWidth(terrainMaterialSmoothButton->sizePolicy().hasHeightForWidth());
-        terrainMaterialSmoothButton->setSizePolicy(sizePolicy6);
+        sizePolicy7.setHeightForWidth(terrainMaterialSmoothButton->sizePolicy().hasHeightForWidth());
+        terrainMaterialSmoothButton->setSizePolicy(sizePolicy7);
         terrainMaterialSmoothButton->setCheckable(true);
         terrainMaterialSmoothButton->setAutoExclusive(true);
 
@@ -405,13 +424,18 @@ public:
         toolsDock->setWidget(toolsDockContents);
         bcBlackCatEditorClass->addDockWidget(static_cast<Qt::DockWidgetArea>(1), toolsDock);
 
+        mainMenuBar->addAction(fileMenu->menuAction());
+        fileMenu->addAction(newSceneMenu);
+        fileMenu->addAction(loadSceneMenu);
+        fileMenu->addAction(saveSceneMenu);
+
         retranslateUi(bcBlackCatEditorClass);
         QObject::connect(terrainHeightSlider, SIGNAL(valueChanged(int)), terrainHeightValue, SLOT(setNum(int)));
         QObject::connect(terrainSmoothSlider, SIGNAL(valueChanged(int)), terrainSmoothValue, SLOT(setNum(int)));
         QObject::connect(terrainRadiusSlider, SIGNAL(valueChanged(int)), terrainRadiusValue, SLOT(setNum(int)));
 
         leftBottomTab->setCurrentIndex(0);
-        rightToolBox->setCurrentIndex(2);
+        rightToolBox->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(bcBlackCatEditorClass);
@@ -420,6 +444,9 @@ public:
     void retranslateUi(QMainWindow *bcBlackCatEditorClass)
     {
         bcBlackCatEditorClass->setWindowTitle(QApplication::translate("bcBlackCatEditorClass", "BlackCatEditor", nullptr));
+        newSceneMenu->setText(QApplication::translate("bcBlackCatEditorClass", "NewScene", nullptr));
+        loadSceneMenu->setText(QApplication::translate("bcBlackCatEditorClass", "LoadScene", nullptr));
+        saveSceneMenu->setText(QApplication::translate("bcBlackCatEditorClass", "SaveScene", nullptr));
         leftBottomTab->setTabText(leftBottomTab->indexOf(consoleTab), QApplication::translate("bcBlackCatEditorClass", "Console", nullptr));
         rightToolBox->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "handpointero,cubes,areachart", nullptr)));
         entityNameLabel->setText(QApplication::translate("bcBlackCatEditorClass", "EntityName:", nullptr));
@@ -443,6 +470,7 @@ public:
         terrainRadiusLable->setText(QApplication::translate("bcBlackCatEditorClass", "Radius: ", nullptr));
         terrainRadiusValue->setText(QApplication::translate("bcBlackCatEditorClass", "25", nullptr));
         rightToolBox->setItemText(rightToolBox->indexOf(rightToolBoxTerrain), QApplication::translate("bcBlackCatEditorClass", "Terrain", nullptr));
+        fileMenu->setTitle(QApplication::translate("bcBlackCatEditorClass", "File", nullptr));
 #ifndef QT_NO_TOOLTIP
         objectSelectButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Object selection", nullptr));
 #endif // QT_NO_TOOLTIP

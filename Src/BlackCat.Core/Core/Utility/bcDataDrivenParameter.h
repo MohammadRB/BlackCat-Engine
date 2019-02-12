@@ -4,18 +4,21 @@
 
 #include "Core/bcException.h"
 #include "Core/Container/bcString.h"
-#include "Core/Container/bcMap.h"
+#include "Core/Container/bcUnorderedMap.h"
 #include "Core/Utility/bcParameterPack.h"
 
 namespace black_cat
 {
 	namespace core
 	{
+		/**
+		 * \brief This class contains parameters from data driven sources, eg. json files, which these parameters are constant throughout program lifetime.
+		 */
 		class bc_data_driven_parameter
 		{
 		private:
 			using key_hash = std::hash< const bcCHAR* >;
-			using map_type = bc_map_program< key_hash::result_type, bc_any >;
+			using map_type = bc_unordered_map_program< key_hash::result_type, bc_any >;
 
 		public:
 			bc_data_driven_parameter() = default;
@@ -76,10 +79,10 @@ namespace black_cat
 			 * \return 
 			 */
 			template< typename T >
-			T* get_value(const bcCHAR* p_name) const
+			T* get_value(const bcCHAR* p_name)
 			{
-				auto l_hash = key_hash()(p_name);
-				auto l_value = m_values.find(l_hash);
+				const auto l_hash = key_hash()(p_name);
+				const auto l_value = m_values.find(l_hash);
 
 				if (l_value == std::end(m_values))
 				{
@@ -89,6 +92,12 @@ namespace black_cat
 				return l_value->second.as<T>();
 			}
 
+			template< typename T >
+			const T* get_value(const bcCHAR* p_name) const
+			{
+				return const_cast<bc_data_driven_parameter*>(this)->get_value<T>(p_name);
+			}
+
 			/**
 			 * \brief Throw exception if parameter isn't presented
 			 * \tparam T 
@@ -96,7 +105,7 @@ namespace black_cat
 			 * \return 
 			 */
 			template< typename T >
-			T& get_value_throw(const bcCHAR* p_name) const
+			T& get_value_throw(const bcCHAR* p_name)
 			{
 				T* l_value = get_value<T>(p_name);
 
@@ -107,6 +116,12 @@ namespace black_cat
 				}
 
 				return *l_value;
+			}
+
+			template< typename T >
+			const T& get_value_throw(const bcCHAR* p_name) const
+			{
+				return const_cast<bc_data_driven_parameter*>(this)->get_value_throw<T>(p_name);
 			}
 
 			void reset()

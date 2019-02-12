@@ -38,7 +38,7 @@ namespace black_cat
 		protected:
 
 		private:
-			void _initialize_from_height_map(bc_physics_system& p_physics_system, bc_actor& p_actor, bc_height_map_component& p_component);
+			void _initialize_from_height_map(bc_physics_system& p_physics_system, bc_actor& p_actor, physics::bc_rigid_static& p_rigid_static, bc_height_map_component& p_component);
 
 			physics::bc_rigid_static_ref m_px_actor_ref;
 		};

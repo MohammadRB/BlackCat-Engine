@@ -23,7 +23,7 @@ namespace black_cat
 
 			virtual bc_actor_component_index create() = 0;
 
-			virtual bc_actor_component_index create_after(bc_actor_component_index p_parent_index = g_actor_component_invalid_index) = 0;
+			virtual bc_actor_component_index create_after(bc_actor_component_index p_parent_index = bc_iactor_component::invalid_index) = 0;
 
 			virtual void remove(bc_actor_component_index p_index) = 0;
 

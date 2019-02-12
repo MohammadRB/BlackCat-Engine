@@ -62,6 +62,12 @@ namespace black_cat
 			return const_cast<bc_actor*>(this)->get_component<TComponent>();
 		}
 
+		template< class TIterator >
+		void bc_actor::get_components(TIterator p_destination) const
+		{
+			_get_manager()->actor_get_components(*this, p_destination);
+		}
+
 		inline void bc_actor::destroy()
 		{
 			_get_manager()->remove_actor(*this);

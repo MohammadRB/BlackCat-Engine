@@ -51,13 +51,13 @@ namespace black_cat
 		{
 		public:
 			friend class bc_mesh;
-			using node_indexing = core::bc_vector< void* >::size_type;
+			using node_index = core::bc_vector< void* >::size_type;
 
 		public:
 			bc_mesh_node(core::bc_string p_name,
 				bc_mesh_node* p_parent,
-				node_indexing p_transformation,
-				node_indexing p_first_mesh,
+				node_index p_transformation,
+				node_index p_first_mesh,
 				bcUINT32 p_mesh_count);
 
 			bc_mesh_node(bc_mesh_node&&) = default;
@@ -66,9 +66,9 @@ namespace black_cat
 
 			bc_mesh_node& operator=(bc_mesh_node&&) = default;
 
-			node_indexing get_transformation_index() const;
+			node_index get_transformation_index() const;
 
-			node_indexing get_mesh_count() const;
+			node_index get_mesh_count() const;
 
 			bcUINT32 get_children_count() const;
 
@@ -82,8 +82,8 @@ namespace black_cat
 			core::bc_string m_name;
 			bc_mesh_node* m_parent;
 			core::bc_vector< bc_mesh_node* > m_children;
-			node_indexing m_transformation_index;
-			node_indexing m_first_mesh_index;
+			node_index m_transformation_index;
+			node_index m_first_mesh_index;
 			bcUINT32 m_mesh_count;
 		};
 
@@ -95,7 +95,7 @@ namespace black_cat
 			friend class bc_mesh_node;
 
 		private:
-			using node_indexing = bc_mesh_node::node_indexing;
+			using node_indexing = bc_mesh_node::node_index;
 			using hash_t = std::hash< const bcCHAR* >;
 
 		public:

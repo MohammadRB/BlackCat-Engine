@@ -9,6 +9,7 @@
 #include "Editor/UICommand/bcUIObjectSelectCommand.h"
 #include "Editor/UICommand/bcUIObjectListCommand.h"
 #include "Editor/UICommand/bcUIObjectInsertCommand.h"
+#include "Editor/UI/bcFormObjectInsert.h"
 
 namespace black_cat
 {
@@ -71,7 +72,7 @@ namespace black_cat
 
 			m_state = state::object_insert;
 			m_tool_properties_container.setCurrentIndex(1);
-			m_ui_command_service.execute_command(bc_ui_object_list_command());
+			m_ui_command_service.queue_command(bc_ui_object_list_command());
 		}
 
 		void bc_form_tools::terrainHeightToggled(bool p_toggled)
@@ -161,7 +162,7 @@ namespace black_cat
 						p_event->x(),
 						p_event->y()
 					);
-					m_ui_command_service.execute_command(std::move(l_command));
+					m_ui_command_service.queue_command(std::move(l_command));
 				}
 				break;
 			case state::object_insert:
@@ -180,7 +181,7 @@ namespace black_cat
 						p_event->x(),
 						p_event->y()
 					);
-					m_ui_command_service.execute_command(std::move(l_command));
+					m_ui_command_service.queue_command(std::move(l_command));
 				}
 				break;
 			case state::terrain_height:
@@ -194,7 +195,7 @@ namespace black_cat
 						m_terrain_form.get_radius(),
 						m_terrain_form.get_height()
 					);
-					m_ui_command_service.execute_command(std::move(l_command));
+					m_ui_command_service.queue_command(std::move(l_command));
 				}
 				break;
 			case state::terrain_smooth:
@@ -208,7 +209,7 @@ namespace black_cat
 						m_terrain_form.get_radius(),
 						m_terrain_form.get_smooth()
 					);
-					m_ui_command_service.execute_command(std::move(l_command));
+					m_ui_command_service.queue_command(std::move(l_command));
 				}
 				break;
 			case state::terrain_material:
@@ -222,7 +223,7 @@ namespace black_cat
 						m_terrain_form.get_radius(),
 						m_terrain_form.get_material()
 					);
-					m_ui_command_service.execute_command(std::move(l_command));
+					m_ui_command_service.queue_command(std::move(l_command));
 				}
 				break;
 			case bc_form_tools_state::terrain_material_smooth:
@@ -236,7 +237,7 @@ namespace black_cat
 						m_terrain_form.get_radius(),
 						m_terrain_form.get_smooth()
 					);
-					m_ui_command_service.execute_command(std::move(l_command));
+					m_ui_command_service.queue_command(std::move(l_command));
 				}
 				break;
 			case state::none:

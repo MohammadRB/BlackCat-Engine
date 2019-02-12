@@ -49,7 +49,7 @@ namespace black_cat
 		{
 			bc_render_application_parameter(platform::bc_application_parameter& p_app_parameters,
 				bc_irender_application_output_window* p_output_window,
-				core::bc_delegate<core::bc_unique_ptr<bc_iscene_graph_node>()> p_scene_graph_factory)
+				bc_iscene_graph_node_factory p_scene_graph_factory)
 				: platform::bc_application_parameter(p_app_parameters),
 				m_output_window(p_output_window),
 				m_scene_graph_factory(std::move(p_scene_graph_factory))
@@ -63,7 +63,7 @@ namespace black_cat
 			bc_render_application_parameter& operator=(bc_render_application_parameter&&) = default;
 
 			bc_irender_application_output_window* m_output_window;
-			core::bc_delegate<core::bc_unique_ptr<bc_iscene_graph_node>()> m_scene_graph_factory;
+			bc_iscene_graph_node_factory m_scene_graph_factory;
 		};
 
 		struct bc_engine_application_parameter

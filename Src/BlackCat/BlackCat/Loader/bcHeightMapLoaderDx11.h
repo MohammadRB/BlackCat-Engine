@@ -16,8 +16,7 @@ namespace black_cat
 	class bc_height_map_dx11 : public game::bc_height_map
 	{
 	public:
-		bc_height_map_dx11(const core::bc_vector3f& p_position,
-			bcUINT16 p_xz_multiplier,
+		bc_height_map_dx11(bcUINT16 p_xz_multiplier,
 			bcFLOAT p_y_multiplier,
 			bcUINT16 p_distance_detail,
 			bcUINT16 p_height_detail,
@@ -56,6 +55,11 @@ namespace black_cat
 		graphic::bc_texture2d get_texture_map() const
 		{
 			return m_texture_map->get_resource();
+		}
+
+		graphic::bc_texture2d_content& get_texture_map_content() const
+		{
+			return *m_texture_map;
 		}
 
 		graphic::bc_resource_view get_texture_map_view() const

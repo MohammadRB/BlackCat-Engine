@@ -37,17 +37,17 @@ namespace black_cat
 
 			graphic::bc_compiled_shader_ptr l_compiled_shader = l_device.compile_geometry_shader
 			(
-				p_context.m_data.data(),
-				p_context.m_data.size(),
+				p_context.m_buffer.data(),
+				p_context.m_buffer.size(),
 				l_function.c_str(),
 				l_file_path.c_str()
 			);
 
-			p_context.m_data = core::bc_vector_frame< bcBYTE >(l_compiled_shader->get_platform_pack().m_blob->GetBufferSize());
+			p_context.m_buffer = core::bc_vector_frame< bcBYTE >(l_compiled_shader->get_platform_pack().m_blob->GetBufferSize());
 
 			std::memcpy
 			(
-				p_context.m_data.data(),
+				p_context.m_buffer.data(),
 				l_compiled_shader->get_platform_pack().m_blob->GetBufferPointer(),
 				l_compiled_shader->get_platform_pack().m_blob->GetBufferSize()
 			);
@@ -60,8 +60,8 @@ namespace black_cat
 
 			graphic::bc_geometry_shader_ptr l_result = l_device.create_geometry_shader
 				(
-					p_context.m_data.data(), 
-					p_context.m_data.size(), 
+					p_context.m_buffer.data(), 
+					p_context.m_buffer.size(), 
 					l_function.c_str()
 				);
 

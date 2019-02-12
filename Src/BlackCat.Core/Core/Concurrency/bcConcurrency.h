@@ -17,6 +17,8 @@ namespace black_cat
 		class bc_concurrency
 		{
 		public:
+			static core_platform::bc_thread::id current_thread_id();
+
 			static void check_for_interruption();
 
 			static bcUINT32 worker_count();
@@ -67,6 +69,11 @@ namespace black_cat
 				return s_thread_manager;
 			}
 		};
+
+		inline core_platform::bc_thread::id bc_concurrency::current_thread_id()
+		{
+			return core_platform::bc_thread::current_thread_id();
+		}
 
 		inline void bc_concurrency::check_for_interruption()
 		{

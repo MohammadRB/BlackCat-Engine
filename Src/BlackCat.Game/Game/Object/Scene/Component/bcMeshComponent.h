@@ -15,6 +15,8 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_mediate_component;
+
 		class BC_GAME_DLL bc_mesh_component : public bc_render_component
 		{
 			BC_COMPONENT(mesh)
@@ -33,14 +35,18 @@ namespace black_cat
 				return m_sub_mesh;
 			}
 
-			const bc_sub_mesh_transformation& get_mesh_part_transformation() const
+			const bc_sub_mesh_transformation& get_mesh_transformation() const
 			{
 				return m_mesh_part_transformation;
 			}
 
 			bc_actor get_actor() const noexcept override;
 
-			void set_world_transform(const core::bc_matrix4f& p_transform);
+			core::bc_vector3f get_world_position() const;
+
+			core::bc_matrix4f get_world_transform() const;
+
+			void set_world_transform(bc_mediate_component& p_mediate_component, const core::bc_matrix4f& p_transform);
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 

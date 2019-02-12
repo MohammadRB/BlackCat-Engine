@@ -44,8 +44,8 @@ namespace black_cat
 		{
 			l_scene = l_importer.ReadFileFromMemory
 			(
-				p_context.m_data.data(),
-				p_context.m_data.size(),
+				p_context.m_buffer.data(),
+				p_context.m_buffer.size(),
 				aiProcess_GenSmoothNormals |
 				aiProcess_CalcTangentSpace |
 				aiProcess_Triangulate |
