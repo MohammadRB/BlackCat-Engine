@@ -47,15 +47,16 @@ namespace black_cat
 		m_scene_graph_factory = p_scene_graph_factory;
 	}
 
-	void bc_scene_loader::content_offline_processing(core::bc_content_loading_context& p_context) const
+	bool bc_scene_loader::support_offline_processing() const
 	{
+		return false;
 	}
 
 	void bc_scene_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
 		core::bc_json_document< _bc_scene_json > l_json;
-		core::bc_string_frame l_json_str(p_context.m_buffer.size() + 1, '\0');
-		std::memcpy(const_cast< bcCHAR* >(l_json_str.data()), p_context.m_buffer.data(), p_context.m_buffer.size());
+		core::bc_string_frame l_json_str(p_context.m_file_buffer_size + 1, '\0');
+		std::memcpy(const_cast< bcCHAR* >(l_json_str.data()), p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
 
 		l_json.load(l_json_str.data());
 

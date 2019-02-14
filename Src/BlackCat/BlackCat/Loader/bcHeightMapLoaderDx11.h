@@ -108,6 +108,8 @@ namespace black_cat
 	class BC_BLACKCAT_DLL bc_height_map_loader_dx11 : public core::bc_base_content_loader
 	{
 	public:
+		bool support_offline_processing() const override;
+
 		void content_offline_processing(core::bc_content_loading_context& p_context) const override;
 
 		void content_processing(core::bc_content_loading_context& p_context) const override;

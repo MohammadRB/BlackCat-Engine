@@ -31,8 +31,9 @@ namespace black_cat
 		return l_node_name.compare(0, std::strlen(l_px_str), l_px_str) == 0;
 	}
 
-	void bc_mesh_collider_loader::content_offline_processing(core::bc_content_loading_context& p_context) const
+	bool bc_mesh_collider_loader::support_offline_processing() const
 	{
+		return false;
 	}
 
 	void bc_mesh_collider_loader::content_processing(core::bc_content_loading_context& p_context) const
@@ -44,8 +45,8 @@ namespace black_cat
 		{
 			l_scene = l_importer.ReadFileFromMemory
 			(
-				p_context.m_buffer.data(),
-				p_context.m_buffer.size(),
+				p_context.m_file_buffer.get(),
+				p_context.m_file_buffer_size,
 				aiProcess_GenSmoothNormals |
 				aiProcess_CalcTangentSpace |
 				aiProcess_Triangulate |

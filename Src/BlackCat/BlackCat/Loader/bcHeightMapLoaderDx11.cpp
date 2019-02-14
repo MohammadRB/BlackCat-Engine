@@ -150,6 +150,11 @@ namespace black_cat
 	{
 	}
 
+	bool bc_height_map_loader_dx11::support_offline_processing() const
+	{
+		return true;
+	}
+
 	void bc_height_map_loader_dx11::content_offline_processing(core::bc_content_loading_context& p_context) const
 	{
 		auto& l_game_system = *core::bc_get_service< game::bc_game_system >();
@@ -231,8 +236,11 @@ namespace black_cat
 
 		physics::bc_memory_buffer l_serialized_buffer = l_physics.serialize(l_serialize_buffer);
 
-		p_context.m_buffer = core::bc_vector_frame<bcBYTE>(l_serialized_buffer.get_buffer_size());
-		std::memcpy(p_context.m_buffer.data(), l_serialized_buffer.get_buffer_pointer(), l_serialized_buffer.get_buffer_size());
+		p_context.m_file->write
+		(
+			reinterpret_cast< bcBYTE* >(l_serialized_buffer.get_buffer_pointer()),
+			l_serialized_buffer.get_buffer_size()
+		);
 	}
 
 	void bc_height_map_loader_dx11::content_processing(core::bc_content_loading_context& p_context) const
@@ -244,7 +252,7 @@ namespace black_cat
 		auto* l_device = &l_render_system.get_device();
 		auto* l_physics = &l_physics_system.get_physics();
 		
-		physics::bc_memory_buffer l_px_serialized_buffer = l_physics->read_to_memory_buffer(p_context.m_buffer.data(), p_context.m_buffer.size());
+		physics::bc_memory_buffer l_px_serialized_buffer = l_physics->read_to_memory_buffer(p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
 		physics::bc_serialize_buffer l_px_deserialized_buffer = l_physics->deserialize(l_px_serialized_buffer);
 		physics::bc_height_field_ref l_px_height_map;
 

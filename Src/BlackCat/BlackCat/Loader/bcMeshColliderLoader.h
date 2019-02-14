@@ -24,7 +24,7 @@ namespace black_cat
 
 		bool static is_px_node(const aiNode& p_node);
 
-		void content_offline_processing(core::bc_content_loading_context& p_context) const override;
+		bool support_offline_processing() const override;
 
 		void content_processing(core::bc_content_loading_context& p_context) const override;
 
@@ -45,6 +45,7 @@ namespace black_cat
 			bool p_generate_high_detail_query_shape,
 			game::bc_mesh_collider& p_result) const;
 
+	protected:
 		bool m_high_detail_query_shape;
 	};
 }

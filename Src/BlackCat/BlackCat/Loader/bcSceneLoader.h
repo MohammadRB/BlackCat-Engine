@@ -14,7 +14,7 @@ namespace black_cat
 	public:
 		explicit bc_scene_loader(game::bc_iscene_graph_node_factory p_scene_graph_factory);
 
-		void content_offline_processing(core::bc_content_loading_context& p_context) const override;
+		bool support_offline_processing() const override;
 
 		void content_processing(core::bc_content_loading_context& p_context) const override;
 

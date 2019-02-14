@@ -45,8 +45,9 @@ namespace black_cat
 		return *this;
 	}
 
-	void bc_texture_loader::content_offline_processing(core::bc_content_loading_context& p_context) const
+	bool bc_texture_loader::support_offline_processing() const
 	{
+		return false;
 	}
 
 	void bc_texture_loader::content_processing(core::bc_content_loading_context& p_context) const
@@ -95,8 +96,8 @@ namespace black_cat
 		graphic::bc_texture2d_ptr l_result = l_device.create_texture2d
 		(
 			*l_config,
-			p_context.m_buffer.data(),
-			p_context.m_buffer.size(),
+			p_context.m_file_buffer.get(),
+			p_context.m_file_buffer_size,
 			l_format
 		);
 
@@ -108,6 +109,8 @@ namespace black_cat
 		auto* l_game_system = core::bc_get_service< game::bc_game_system >();
 		auto& l_device = l_game_system->get_render_system().get_device();
 		auto* l_texture_content = static_cast<graphic::bc_texture2d_content*>(p_context.m_content);
+
+		p_context.m_file->close(); // Close file so DX can write to the file
 
 		l_device.save_texture2d(l_texture_content->get_resource(), graphic::bc_image_format::dds, p_context.m_file_path.c_str());
 	}

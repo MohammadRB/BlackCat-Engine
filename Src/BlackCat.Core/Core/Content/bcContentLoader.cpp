@@ -30,25 +30,26 @@ namespace black_cat
 
 		void bc_base_content_loader::content_offline_file_open_succeeded(bc_content_loading_context& p_context) const
 		{
-			auto l_file_size = p_context.m_file->length();
+			p_context.m_file_buffer_size = p_context.m_file->length();
+			p_context.m_file_buffer.reset(reinterpret_cast<bcBYTE*>(bcAlloc(p_context.m_file_buffer_size, bc_alloc_type::frame)));
 
-			p_context.m_buffer = bc_vector_frame<bcBYTE>(l_file_size);
-
-			p_context.m_file->read(p_context.m_buffer.data(), l_file_size);
+			p_context.m_file->read(p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
 		}
 
-		void bc_base_content_loader::content_offline_saving(bc_content_loading_context& p_context) const
+		void bc_base_content_loader::content_offline_processing(bc_content_loading_context& p_context) const
 		{
-			p_context.m_file->write(p_context.m_buffer.data(), p_context.m_buffer.size());
+			auto l_file_name = bc_to_exclusive_string(p_context.m_file_path.c_str());
+			auto l_error_msg = bc_string_frame("Content offline processing is not supported: ") + l_file_name.c_str();
+
+			throw bc_io_exception(l_error_msg.c_str());
 		}
 
 		void bc_base_content_loader::content_file_open_succeeded(bc_content_loading_context& p_context) const
 		{
-			auto l_file_size = p_context.m_file->length();
+			p_context.m_file_buffer_size = p_context.m_file->length();
+			p_context.m_file_buffer.reset(reinterpret_cast<bcBYTE*>(bcAlloc(p_context.m_file_buffer_size, bc_alloc_type::frame)));
 
-			p_context.m_buffer = bc_vector_frame<bcBYTE>(l_file_size);
-
-			p_context.m_file->read(p_context.m_buffer.data(), l_file_size);
+			p_context.m_file->read(p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
 		}
 
 		void bc_base_content_loader::content_file_open_failed(bc_content_loading_context& p_context) const
@@ -97,8 +98,7 @@ namespace black_cat
 
 			p_context.m_file.reset();
 			p_context.m_parameter.reset();
-			p_context.m_buffer.clear();
-			p_context.m_buffer.shrink_to_fit();
+			p_context.m_file_buffer.reset();
 			p_context.m_result.reset();
 		}
 

@@ -299,29 +299,29 @@ namespace black_cat
 				l_file_path = l_content_ite->second.m_file_path.c_str();
 			}
 
-			auto l_offline_file_path = _get_offline_file_path<TContent>(l_file_path);
-
-			bc_file_stream l_offline_file_stream;
+			bc_file_stream l_file_stream;
 			bc_icontent_loader* l_loader = _get_loader<TContent>();
 			bc_content_saving_context l_context;
 			l_context.m_file_path = l_file_path;
 			l_context.m_content = &p_content;
+			
+			bc_estring_frame l_file_to_open = l_loader->support_offline_processing() ? _get_offline_file_path<TContent>(l_file_path) : l_file_path;
 
 			{
 				_bc_content_loader_guard< TContent > l_guard(*l_loader, l_context);
 
-				if (!l_offline_file_stream.open_write(l_offline_file_path.c_str()))
+				if (!l_file_stream.open_write(l_file_to_open.c_str()))
 				{
-					l_context.m_file.reset(bc_stream(std::move(l_offline_file_stream)));
+					l_context.m_file.reset(bc_stream(std::move(l_file_stream)));
 					l_loader->content_file_open_failed(l_context);
 
-					auto l_file_name = bc_to_exclusive_string(l_context.m_file_path.c_str());
+					auto l_file_name = bc_to_exclusive_string(l_file_to_open.c_str());
 					auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
 
 					throw bc_io_exception(l_error_msg.c_str());
 				}
 
-				l_context.m_file.reset(bc_stream(std::move(l_offline_file_stream)));
+				l_context.m_file.reset(bc_stream(std::move(l_file_stream)));
 				l_loader->content_processing(l_context);
 
 				l_context.m_file->close();
@@ -404,11 +404,12 @@ namespace black_cat
 			core_platform::bc_file_info::get_basic_info(p_file, &l_file_info);
 			core_platform::bc_file_info::get_basic_info(p_offline_file, &l_offline_file_info);
 
-			const bool l_need_offline_processing = !l_offline_file_info.m_exist ||
-				l_offline_file_info.m_last_write_time.m_total_milliseconds < l_file_info.m_last_write_time.m_total_milliseconds;
+			const bool l_need_offline_processing = p_loader->support_offline_processing() &&
+			(
+				!l_offline_file_info.m_exist ||
+				l_offline_file_info.m_last_write_time.m_total_milliseconds < l_file_info.m_last_write_time.m_total_milliseconds
+			);
 
-			bc_file_stream l_file_stream;
-			bc_file_stream l_offline_file_stream;
 			bc_content_loading_context l_context;
 			bc_unique_ptr< TContent > l_result;
 
@@ -421,12 +422,15 @@ namespace black_cat
 
 				if (l_need_offline_processing)
 				{
+					bc_file_stream l_file_stream;
+					bc_file_stream l_offline_file_stream;
+
 					if (!l_file_stream.open_read(p_file))
 					{
 						l_context.m_file.reset(bc_stream(std::move(l_file_stream)));
 						p_loader->content_file_open_failed(l_context);
 						
-						auto l_file_name = bc_to_exclusive_string(l_context.m_file_path.c_str());
+						auto l_file_name = bc_to_exclusive_string(p_file);
 						auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
 
 						throw bc_io_exception(l_error_msg.c_str());
@@ -446,7 +450,7 @@ namespace black_cat
 						l_context.m_file.reset(bc_stream(std::move(l_offline_file_stream)));
 						p_loader->content_file_open_failed(l_context);
 
-						auto l_file_name = bc_to_exclusive_string(l_context.m_file_path.c_str());
+						auto l_file_name = bc_to_exclusive_string(p_offline_file);
 						auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
 
 						throw bc_io_exception(l_error_msg.c_str());
@@ -454,6 +458,7 @@ namespace black_cat
 
 					try
 					{
+						l_context.m_file.reset(bc_stream(l_offline_file_stream));
 						p_loader->content_offline_processing(l_context);
 					}
 					catch (...)
@@ -467,25 +472,33 @@ namespace black_cat
 						throw bc_io_exception(l_message.c_str());
 					}
 					
-					l_context.m_file.reset(bc_stream(l_offline_file_stream));
-					p_loader->content_offline_saving(l_context);
-
 					l_context.m_file->close();
 				}
 
-				if (!l_offline_file_stream.open_read(p_offline_file))
+				const bcECHAR* l_file_to_open = p_loader->support_offline_processing() ? p_offline_file : p_file;
+				bc_file_stream l_file_stream;
+
+				if (!l_file_stream.open_read(l_file_to_open))
 				{
-					l_context.m_file.reset(bc_stream(std::move(l_offline_file_stream)));
+					l_context.m_file.reset(bc_stream(std::move(l_file_stream)));
 					p_loader->content_file_open_failed(l_context);
 					
-					auto l_file_name = bc_to_exclusive_string(l_context.m_file_path.c_str());
+					auto l_file_name = bc_to_exclusive_string(l_file_to_open);
 					auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
 
 					throw bc_io_exception(l_error_msg.c_str());
 				}
 
-				l_context.m_file.reset(bc_stream(std::move(l_offline_file_stream)));
-				p_loader->content_offline_file_open_succeeded(l_context);
+				l_context.m_file.reset(bc_stream(std::move(l_file_stream)));
+				if(p_loader->support_offline_processing())
+				{
+					p_loader->content_offline_file_open_succeeded(l_context);
+				}
+				else
+				{
+					p_loader->content_file_open_succeeded(l_context);
+				}
+				
 				p_loader->content_processing(l_context);
 
 				l_context.m_file->close();

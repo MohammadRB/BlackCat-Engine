@@ -19,6 +19,8 @@ namespace black_cat
 
 		bc_hull_shader_loader& operator=(bc_hull_shader_loader&&) noexcept;
 
+		bool support_offline_processing() const override;
+
 		void content_offline_processing(core::bc_content_loading_context& p_context) const override;
 
 		void content_processing(core::bc_content_loading_context& p_context) const override;

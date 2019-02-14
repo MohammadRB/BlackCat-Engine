@@ -47,7 +47,7 @@ namespace black_cat
 			game::bc_mesh& p_mesh,
 			game::bc_mesh_node* p_parent);
 
-		void content_offline_processing(core::bc_content_loading_context& p_context) const override;
+		bool support_offline_processing() const override;
 
 		void content_processing(core::bc_content_loading_context& p_context) const override;
 

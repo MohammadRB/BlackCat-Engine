@@ -115,8 +115,9 @@ namespace black_cat
 
 			bc_estring_frame m_file_path;							// Used to give loader access to content and offline content file path
 			bc_nullable< bc_stream > m_file;						// Used to give loader access to content and offline content file
+			bc_unique_ptr<bcBYTE> m_file_buffer;					// Used to give loader access to file content
+			bcSIZE m_file_buffer_size;								// Used to give loader access to file content size
 			bc_content_loader_parameter m_parameter;				// Used to pass additional parameters to loader
-			bc_vector_frame<bcBYTE> m_buffer;						// Used to pass stream data around within loader functions
 			bc_nullable< bc_content_loader_result > m_result;		// Used to pass result from loader to caller
 		protected:
 
@@ -148,6 +149,8 @@ namespace black_cat
 		public:
 			virtual ~bc_icontent_loader() = default;
 
+			virtual bool support_offline_processing() const = 0;
+
 			/**
 			 * \brief Will be called when offline content file opened for processing
 			 * \param p_context 
@@ -159,12 +162,6 @@ namespace black_cat
 			 * \param p_context 
 			 */
 			virtual void content_offline_processing(bc_content_loading_context& p_context) const = 0;
-
-			/**
-			 * \brief Will be called when offline file processing finish and it's time to save offline file
-			 * \param p_context 
-			 */
-			virtual void content_offline_saving(bc_content_loading_context& p_context) const = 0;
 
 			/**
 			 * \brief Will be called when content file opened for offline processing
@@ -229,19 +226,19 @@ namespace black_cat
 			virtual ~bc_base_content_loader();
 
 			/**
-			 * \brief Load file in bc_vector_frame<bcBYTE>
+			 * \brief Read file into specified buffer
 			 * \param p_context 
 			 */
 			void content_offline_file_open_succeeded(bc_content_loading_context& p_context) const override;
 
 			/**
-			 * \brief Write bc_vector_frame<bcBYTE> to file
-			 * \param p_context 
-			 */
-			void content_offline_saving(bc_content_loading_context& p_context) const override;
+			* \brief Throw exception
+			* \param p_context
+			*/
+			void content_offline_processing(bc_content_loading_context& p_context) const override;
 
 			/**
-			 * \brief Load file in bc_vector_frame<bcBYTE>
+			 * \brief Read file into specified buffer
 			 * \param p_context 
 			 */
 			void content_file_open_succeeded(bc_content_loading_context& p_context) const override;
@@ -276,7 +273,7 @@ namespace black_cat
 			bc_base_content_loader(bc_base_content_loader&& p_other) noexcept;
 
 			bc_base_content_loader& operator=(bc_base_content_loader&& p_other) noexcept;
-			
+
 		private:
 		};
 

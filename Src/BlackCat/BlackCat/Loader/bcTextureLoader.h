@@ -22,7 +22,7 @@ namespace black_cat
 
 		bc_texture_loader& operator=(bc_texture_loader&&) noexcept;
 
-		void content_offline_processing(core::bc_content_loading_context& p_context) const override;
+		bool support_offline_processing() const override;
 
 		void content_processing(core::bc_content_loading_context& p_context) const override;
 

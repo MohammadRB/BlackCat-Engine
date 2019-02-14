@@ -330,18 +330,19 @@ namespace black_cat
 		}
 	}
 
-	void bc_mesh_loader::content_offline_processing(core::bc_content_loading_context& p_context) const
+	bool bc_mesh_loader::support_offline_processing() const
 	{
+		return false;
 	}
-
+	
 	void bc_mesh_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
 		Assimp::Importer l_importer;
 
 		const aiScene* l_scene = l_importer.ReadFileFromMemory
 		(
-			p_context.m_buffer.data(),
-			p_context.m_buffer.size(),
+			reinterpret_cast< void* >(p_context.m_file_buffer.get()),
+			p_context.m_file_buffer_size,
 			aiProcess_GenSmoothNormals |
 			aiProcess_CalcTangentSpace |
 			aiProcess_Triangulate |

@@ -58,25 +58,25 @@ namespace black_cat
 			};
 
 		public:
-			constexpr bc_unique_ptr() noexcept(true)
+			constexpr bc_unique_ptr() noexcept
 				: m_pointer(nullptr),
 				m_deleter()
 			{
 			}
 			
-			constexpr bc_unique_ptr(std::nullptr_t) noexcept(true)
+			constexpr bc_unique_ptr(std::nullptr_t) noexcept
 				: bc_unique_ptr()
 			{
 			}
 			
-			explicit bc_unique_ptr(pointer p_pointer) noexcept(true)
+			explicit bc_unique_ptr(pointer p_pointer) noexcept
 				: m_pointer(nullptr),
 				m_deleter()
 			{
  				_construct(p_pointer);
 			}
 
-			bc_unique_ptr(pointer p_pointer, deleter_type p_deleter) noexcept(true)
+			bc_unique_ptr(pointer p_pointer, deleter_type p_deleter) noexcept
 				: m_pointer(nullptr),
 				m_deleter(p_deleter)
 			{
@@ -85,7 +85,7 @@ namespace black_cat
 
 			bc_unique_ptr(const this_type& p_other) = delete;
 
-			bc_unique_ptr(this_type&& p_other) noexcept(true)
+			bc_unique_ptr(this_type&& p_other) noexcept
 				: m_pointer(nullptr),
 				m_deleter()
 			{
@@ -93,7 +93,7 @@ namespace black_cat
 			}
 
 			template< typename T1, typename TDeleter1 >
-			bc_unique_ptr(bc_unique_ptr<T1, TDeleter1>&& p_other) noexcept(true)
+			bc_unique_ptr(bc_unique_ptr<T1, TDeleter1>&& p_other) noexcept
 				: m_pointer(nullptr),
 				m_deleter()
 			{
@@ -107,7 +107,7 @@ namespace black_cat
 
 			this_type& operator =(const this_type& p_other) = delete;
 
-			this_type& operator =(this_type&& p_other) noexcept(true)
+			this_type& operator =(this_type&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 
@@ -115,14 +115,14 @@ namespace black_cat
 			}
 
 			template< typename T1, typename TDeleter1 >
-			this_type& operator =(bc_unique_ptr<T1, TDeleter1>&& p_other) noexcept(true)
+			this_type& operator =(bc_unique_ptr<T1, TDeleter1>&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 
 				return *this;
 			}
 
-			this_type& operator =(std::nullptr_t) noexcept(true)
+			this_type& operator =(std::nullptr_t) noexcept
 			{
 				_destruct();
 				m_pointer = nullptr;
@@ -130,7 +130,7 @@ namespace black_cat
 				return *this;
 			}
 
-			T* release() noexcept(true)
+			T* release() noexcept
 			{
 				T* lPointer = get();
 				_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
@@ -139,18 +139,18 @@ namespace black_cat
 				return lPointer;
 			}
 
-			void reset() noexcept(true)
+			void reset() noexcept
 			{
 				_destruct();
 			}
 
-			void reset(T* p_pointer) noexcept(true)
+			void reset(T* p_pointer) noexcept
 			{
 				_destruct();
 				_construct(p_pointer);
 			}
 
-			void swap(this_type& p_other) noexcept(true)
+			void swap(this_type& p_other) noexcept
 			{
 				using std::swap;
 
@@ -164,17 +164,17 @@ namespace black_cat
 				_register_pointer(reinterpret_cast< void** >(&p_other.m_pointer));
 			}
 
-			T* get() const noexcept(true)
+			T* get() const noexcept
 			{
 				return m_pointer;
 			}
 
-			deleter_type get_deleter() const noexcept(true)
+			deleter_type get_deleter() const noexcept
 			{
 				return m_deleter;
 			}
 
-			explicit operator bool() const noexcept(true)
+			explicit operator bool() const noexcept
 			{
 				return m_pointer != nullptr;
 			}
@@ -184,7 +184,7 @@ namespace black_cat
 				return *m_pointer;
 			}
 
-			T* operator ->() const noexcept(true)
+			T* operator ->() const noexcept
 			{
 				return m_pointer;
 			}
@@ -366,13 +366,13 @@ namespace black_cat
 			};
 
 		public:
-			constexpr bc_shared_ptr() noexcept(true)
+			constexpr bc_shared_ptr() noexcept
 				: m_pointer(nullptr),
 				m_meta(nullptr)
 			{
 			}
 
-			constexpr bc_shared_ptr(std::nullptr_t) noexcept(true)
+			constexpr bc_shared_ptr(std::nullptr_t) noexcept
 				: bc_shared_ptr()
 			{
 			}
@@ -410,27 +410,27 @@ namespace black_cat
 				_construct(static_cast<T*>(p_pointer), p_deleter);
 			}
 
-			bc_shared_ptr(const this_type& p_other) noexcept(true)
+			bc_shared_ptr(const this_type& p_other) noexcept
 				: m_pointer(nullptr)
 			{
 				_assign(p_other);
 			}
 
 			template<typename T1>
-			bc_shared_ptr(const bc_shared_ptr<T1>& p_other) noexcept(true)
+			bc_shared_ptr(const bc_shared_ptr<T1>& p_other) noexcept
 				: m_pointer(nullptr)
 			{
 				_assign(p_other);
 			}
 
-			bc_shared_ptr(this_type&& p_other) noexcept(true)
+			bc_shared_ptr(this_type&& p_other) noexcept
 				: m_pointer(nullptr)
 			{
 				_assign(std::move(p_other));
 			}
 			
 			template<typename T1>
-			bc_shared_ptr(bc_shared_ptr<T1>&& p_other) noexcept(true)
+			bc_shared_ptr(bc_shared_ptr<T1>&& p_other) noexcept
 				: m_pointer(nullptr)
 			{
 				_assign(std::move(p_other));
@@ -448,7 +448,7 @@ namespace black_cat
 				_destruct();
 			}
 
-			this_type& operator =(const this_type& p_other) noexcept(true)
+			this_type& operator =(const this_type& p_other) noexcept
 			{
 				_assign(p_other);
 
@@ -456,14 +456,14 @@ namespace black_cat
 			}
 
 			template<typename T1>
-			this_type& operator =(const bc_shared_ptr<T1>& p_other) noexcept(true)
+			this_type& operator =(const bc_shared_ptr<T1>& p_other) noexcept
 			{
 				_assign(p_other);
 
 				return *this;
 			}
 
-			this_type& operator =(this_type&& p_other) noexcept(true)
+			this_type& operator =(this_type&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 
@@ -471,7 +471,7 @@ namespace black_cat
 			}
 
 			template<typename T1>
-			this_type& operator =(bc_shared_ptr<T1>&& p_other) noexcept(true)
+			this_type& operator =(bc_shared_ptr<T1>&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 
@@ -488,7 +488,7 @@ namespace black_cat
 				return *this;
 			}
 
-			void reset() noexcept(true)
+			void reset() noexcept
 			{
 				_destruct();
 			}
@@ -507,7 +507,7 @@ namespace black_cat
 				_construct(p_pointer, p_deleter);
 			}
 
-			void swap(this_type& p_other) noexcept(true)
+			void swap(this_type& p_other) noexcept
 			{
 				_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
 				_unregister_pointer(reinterpret_cast< void** >(&p_other.m_pointer));
@@ -519,7 +519,7 @@ namespace black_cat
 				_register_pointer(reinterpret_cast< void** >(&p_other.m_pointer));
 			}
 
-			pointer get() const noexcept(true)
+			pointer get() const noexcept
 			{
 				return m_pointer;
 			}
@@ -529,12 +529,12 @@ namespace black_cat
 				return *m_pointer;
 			}
 
-			pointer operator ->() const noexcept(true)
+			pointer operator ->() const noexcept
 			{
 				return m_pointer;
 			}
 
-			bcUINT32 use_count() const noexcept(true)
+			bcUINT32 use_count() const noexcept
 			{
 				if (m_meta)
 					return m_meta->ref_count();
@@ -542,12 +542,12 @@ namespace black_cat
 				return 0;
 			}
 
-			bool unique() const noexcept(true)
+			bool unique() const noexcept
 			{
 				return use_count() == 1;
 			}
 
-			explicit operator bool() const noexcept(true)
+			explicit operator bool() const noexcept
 			{
 				return m_pointer != nullptr;
 			}
@@ -689,24 +689,24 @@ namespace black_cat
 
 			virtual ~meta_data() = default;
 			
-			bcSIZE inc_ref_count() noexcept(true)
+			bcSIZE inc_ref_count() noexcept
 			{
 				bcSIZE l_count = m_ref_count.fetch_add(1, core_platform::bc_memory_order::relaxed);
 				return l_count + 1;
 			}
 
-			bcSIZE dec_ref_count() noexcept(true)
+			bcSIZE dec_ref_count() noexcept
 			{
 				bcSIZE l_count = m_ref_count.fetch_sub(1, core_platform::bc_memory_order::relaxed);
 				return l_count - 1;
 			}
 
-			bcSIZE ref_count() const noexcept(true)
+			bcSIZE ref_count() const noexcept
 			{
 				return m_ref_count.load(core_platform::bc_memory_order::relaxed);
 			}
 
-			bool is_shared() const noexcept(true)
+			bool is_shared() const noexcept
 			{
 				return m_is_shared;
 			}
@@ -880,49 +880,49 @@ namespace black_cat
 			};
 
 		public:
-			constexpr bc_handle_ptr() noexcept(true)
+			constexpr bc_handle_ptr() noexcept
 				: m_pointer(nullptr)
 			{
 			}
 
-			constexpr bc_handle_ptr(std::nullptr_t) noexcept(true)
+			constexpr bc_handle_ptr(std::nullptr_t) noexcept
 				: bc_handle_ptr()
 			{
 			}
 
-			bc_handle_ptr(T* p_pointer) noexcept(true)
+			bc_handle_ptr(T* p_pointer) noexcept
 				: m_pointer(nullptr)
 			{
 				_construct(p_pointer);
 			}
 
 			template< typename T1 >
-			bc_handle_ptr(T1* p_pointer) noexcept(true)
+			bc_handle_ptr(T1* p_pointer) noexcept
 				: bc_handle_ptr(static_cast<T*>(p_pointer))
 			{
 			}
 
-			bc_handle_ptr(const bc_handle_ptr<T>& p_other) noexcept(true)
+			bc_handle_ptr(const bc_handle_ptr<T>& p_other) noexcept
 				: m_pointer(nullptr)
 			{
 				_construct(p_other.get());
 			}
 
-			bc_handle_ptr(bc_handle_ptr<T>&& p_other) noexcept(true)
+			bc_handle_ptr(bc_handle_ptr<T>&& p_other) noexcept
 				: m_pointer(nullptr)
 			{
 				_assign(std::move(p_other));
 			}
 
 			template<typename T1>
-			bc_handle_ptr(const bc_handle_ptr<T1>& p_other) noexcept(true)
+			bc_handle_ptr(const bc_handle_ptr<T1>& p_other) noexcept
 				: m_pointer(nullptr)
 			{
 				_construct(static_cast<T*>(p_other.get()));
 			}
 
 			template<typename T1>
-			bc_handle_ptr(bc_handle_ptr<T1>&& p_other) noexcept(true)
+			bc_handle_ptr(bc_handle_ptr<T1>&& p_other) noexcept
 				: m_pointer(nullptr)
 			{
 				_assign(std::move(p_other));
@@ -933,21 +933,21 @@ namespace black_cat
 				_destruct();
 			}
 
-			bc_handle_ptr<T>& operator =(std::nullptr_t) noexcept(true)
+			bc_handle_ptr<T>& operator =(std::nullptr_t) noexcept
 			{
 				_destruct();
 
 				return *this;
 			}
 
-			bc_handle_ptr<T>& operator =(const bc_handle_ptr<T>& p_other) noexcept(true)
+			bc_handle_ptr<T>& operator =(const bc_handle_ptr<T>& p_other) noexcept
 			{
 				_assign(p_other);
 
 				return *this;
 			}
 
-			bc_handle_ptr<T>& operator =(bc_handle_ptr<T>&& p_other) noexcept(true)
+			bc_handle_ptr<T>& operator =(bc_handle_ptr<T>&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 
@@ -955,7 +955,7 @@ namespace black_cat
 			}
 
 			template<typename T1>
-			bc_handle_ptr<T>& operator =(const bc_handle_ptr<T1>& p_other) noexcept(true)
+			bc_handle_ptr<T>& operator =(const bc_handle_ptr<T1>& p_other) noexcept
 			{
 				_assign(p_other);
 
@@ -963,14 +963,14 @@ namespace black_cat
 			}
 
 			template<typename T1>
-			bc_handle_ptr<T>& operator =(bc_handle_ptr<T1>&& p_other) noexcept(true)
+			bc_handle_ptr<T>& operator =(bc_handle_ptr<T1>&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 
 				return *this;
 			}
 
-			T* release() noexcept(true)
+			T* release() noexcept
 			{
 				T* l_pointer = get();
 
@@ -980,13 +980,13 @@ namespace black_cat
 			}
 
 			template< typename T1 >
-			void reset(T1* p_pointer) noexcept(true)
+			void reset(T1* p_pointer) noexcept
 			{
 				_destruct();
 				_construct(static_cast<T*>(p_pointer));
 			}
 
-			void swap(bc_handle_ptr<T>& p_other) noexcept(true)
+			void swap(bc_handle_ptr<T>& p_other) noexcept
 			{
 				_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
 				_unregister_pointer(reinterpret_cast< void** >(&p_other.m_pointer));
@@ -997,7 +997,7 @@ namespace black_cat
 				_register_pointer(reinterpret_cast< void** >(&p_other.m_pointer));
 			}
 
-			T* get() const noexcept(true)
+			T* get() const noexcept
 			{
 				return m_pointer;
 			}
@@ -1007,17 +1007,17 @@ namespace black_cat
 				return *m_pointer;
 			}
 
-			T* operator ->() const noexcept(true)
+			T* operator ->() const noexcept
 			{
 				return m_pointer;
 			}
 				
-			operator T*() const noexcept(true)
+			operator T*() const noexcept
 			{
 				return get();
 			}
 
-			explicit operator bool() const noexcept(true)
+			explicit operator bool() const noexcept
 			{
 				return m_pointer != nullptr;
 			}
