@@ -18,6 +18,7 @@ namespace black_cat
 	public:
 		bc_height_map_dx11(bcUINT16 p_xz_multiplier,
 			bcFLOAT p_y_multiplier,
+			bcFLOAT p_physics_y_scale,
 			bcUINT16 p_distance_detail,
 			bcUINT16 p_height_detail,
 			game::bc_render_state_ptr p_render_state,

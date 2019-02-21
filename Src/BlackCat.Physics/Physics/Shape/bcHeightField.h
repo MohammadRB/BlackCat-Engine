@@ -39,7 +39,7 @@ namespace black_cat
 			const bcUINT32 m_num_row;
 			const bcUINT32 m_num_column;
 			/**
-			 * \brief must have be m_num_row * m_num_column sample that each one map to a bcINT16.
+			 * \brief must have m_num_row * m_num_column sample that each one map to a bcINT16.
 			 */
 			const bc_bounded_strided_typed_data<bcINT16> m_samples;
 			/**

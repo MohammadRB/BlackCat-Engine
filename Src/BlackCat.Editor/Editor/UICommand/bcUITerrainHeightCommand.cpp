@@ -115,10 +115,10 @@ namespace black_cat
 					}
 
 					const bcFLOAT l_height_ratio = 1 - std::pow(l_center_distance / m_radius, 2);
-					bcFLOAT l_height = l_px_height_map.get_height(l_global_coords.x, l_global_coords.y) * l_dx11_height_map.get_y_multiplier();
+					bcFLOAT l_height = l_px_height_map.get_height(l_global_coords.x, l_global_coords.y) * l_dx11_height_map.get_physics_y_scale();
 
 					l_height += l_height_ratio * l_cbuffer_parameters.m_tool_height;
-					l_samples[l_sample_index] = l_height / l_dx11_height_map.get_y_multiplier();
+					l_samples[l_sample_index] = l_height / l_dx11_height_map.get_physics_y_scale();
 				}
 			}
 

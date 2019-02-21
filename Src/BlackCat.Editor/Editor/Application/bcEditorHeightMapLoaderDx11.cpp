@@ -54,7 +54,7 @@ namespace black_cat
 					p_height,
 					false,
 					1,
-					graphic::bc_format::R32_SINT,
+					graphic::bc_format::R32_FLOAT,
 					graphic::bc_resource_usage::gpu_rw,
 					core::bc_enum::or({ graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered })
 				)

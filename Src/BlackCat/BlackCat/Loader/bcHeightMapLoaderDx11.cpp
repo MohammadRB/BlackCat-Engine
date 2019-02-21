@@ -33,6 +33,7 @@ namespace black_cat
 		bcUINT32 m_xz_multiplier;
 		BC_CBUFFER_ALIGN
 		bcFLOAT m_y_multiplier;
+		bcFLOAT m_physics_y_scale;
 		bcUINT32 m_distance_detail;
 		bcUINT32 m_height_detail;
 	};
@@ -106,6 +107,7 @@ namespace black_cat
 
 	bc_height_map_dx11::bc_height_map_dx11(bcUINT16 p_xz_multiplier,
 		bcFLOAT p_y_multiplier,
+		bcFLOAT p_physics_y_scale,
 		bcUINT16 p_distance_detail,
 		bcUINT16 p_height_detail,
 		game::bc_render_state_ptr p_render_state,
@@ -129,6 +131,7 @@ namespace black_cat
 			p_height_map->get_height(),
 			p_xz_multiplier,
 			p_y_multiplier,
+			p_physics_y_scale,
 			p_render_state,
 			std::move(p_vertex_buffer),
 			std::move(p_index_buffer),
@@ -230,7 +233,7 @@ namespace black_cat
 		physics::bc_height_field_desc l_px_desc(l_width, l_height, l_samples_data, l_samples_material);
 		physics::bc_memory_buffer l_height_field_buffer = l_physics.create_height_field(l_px_desc);
 		physics::bc_height_field_ref l_height_field = l_physics.create_height_field(l_height_field_buffer);
-
+		
 		physics::bc_serialize_buffer l_serialize_buffer = l_physics.create_serialize_buffer();
 		l_serialize_buffer.add(l_height_field.get());
 
@@ -267,17 +270,17 @@ namespace black_cat
 		auto& l_texture_map_texture_config = l_texture_map_config.first;
 		auto& l_texture_map_view_config = l_texture_map_config.second;
 
-		bool l_16bit_sample = l_height_map_texture_config.get_format() == graphic::bc_format::R16_SINT;
+		bool l_16bit_sample = l_height_map_texture_config.get_format() == graphic::bc_format::R16_FLOAT;
 		bcUINT32 l_sample_size = l_16bit_sample ? 2 : 4;
 
-		core::bc_unique_ptr<bcINT32> l_samples(static_cast<bcINT32*>(bcAlloc(l_width * l_height * l_sample_size, core::bc_alloc_type::frame)));
-		bcINT32* l_dest = l_samples.get();
+		core::bc_unique_ptr<bcFLOAT> l_samples(static_cast<bcFLOAT*>(bcAlloc(l_width * l_height * l_sample_size, core::bc_alloc_type::frame)));
+		bcFLOAT* l_dest = l_samples.get();
 
 		for (bcUINT32 l_z = 0; l_z < l_width; ++l_z)
 		{
 			for(bcUINT32 l_x = 0; l_x < l_height; ++l_x)
 			{
-				l_dest[l_z * l_width + l_x] = l_px_height_map->get_height(l_x, l_z);
+				l_dest[l_z * l_width + l_x] = l_px_height_map->get_height(l_x, l_z) * l_physics_system.get_height_field_y_scale();
 			}
 		}
 
@@ -408,7 +411,8 @@ namespace black_cat
 		l_parameter.m_height = l_height;
 		l_parameter.m_chunk_size = s_chunk_size;
 		l_parameter.m_xz_multiplier = l_xz_multiplier;
-		l_parameter.m_y_multiplier = l_physics_system.get_height_field_y_scale();
+		l_parameter.m_y_multiplier = l_y_multiplier;
+		l_parameter.m_physics_y_scale = l_physics_system.get_height_field_y_scale();
 		l_parameter.m_distance_detail = l_distance_detail;
 		l_parameter.m_height_detail = l_height_detail;
 
@@ -574,6 +578,7 @@ namespace black_cat
 		auto l_height_map = bc_height_map_dx11
 		(
 			l_xz_multiplier,
+			l_y_multiplier,
 			l_physics_system.get_height_field_y_scale(),
 			l_distance_detail,
 			l_height_detail, 
@@ -627,7 +632,7 @@ namespace black_cat
 				p_height,
 				false,
 				1,
-				graphic::bc_format::R16_SINT,
+				graphic::bc_format::R16_FLOAT,
 				graphic::bc_resource_usage::gpu_r,
 				core::bc_enum::or({ graphic::bc_resource_view_type::shader })
 			)

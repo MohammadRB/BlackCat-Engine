@@ -21,6 +21,7 @@ namespace black_cat
 				bcUINT16 p_height,
 				bcUINT16 p_xz_multiplier,
 				bcFLOAT p_y_multiplier,
+				bcFLOAT p_physics_y_scale,
 				bc_render_state_ptr p_render_state,
 				graphic::bc_buffer_ptr p_vertex_buffer,
 				graphic::bc_buffer_ptr p_index_buffer,
@@ -53,6 +54,11 @@ namespace black_cat
 				return m_y_multiplier;
 			}
 
+			bcFLOAT get_physics_y_scale() const
+			{
+				return m_physics_y_scale;
+			}
+
 			const bc_render_state* get_render_state() const
 			{
 				return m_render_state.get();
@@ -80,6 +86,7 @@ namespace black_cat
 			bcUINT16 m_height;
 			bcUINT16 m_xz_multiplier;
 			bcFLOAT m_y_multiplier;
+			bcFLOAT m_physics_y_scale;
 
 			bc_render_state_ptr m_render_state;
 			graphic::bc_buffer_ptr m_vertex_buffer;

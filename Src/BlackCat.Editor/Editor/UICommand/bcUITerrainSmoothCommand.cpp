@@ -124,18 +124,18 @@ namespace black_cat
 					{
 						for (bcUINT32 l_z1 = l_min_z; l_z1 <= l_max_z; ++l_z1)
 						{
-							l_computed_height += l_px_height_map.get_height(l_x1, l_z1) * l_dx11_height_map.get_y_multiplier();
+							l_computed_height += l_px_height_map.get_height(l_x1, l_z1) * l_dx11_height_map.get_physics_y_scale();
 
 							++l_num_sample;
 						}
 					}
 
 					l_computed_height /= l_num_sample;
-					bcFLOAT l_source_height = l_px_height_map.get_height(l_global_coords.x, l_global_coords.y) * l_dx11_height_map.get_y_multiplier();
+					bcFLOAT l_source_height = l_px_height_map.get_height(l_global_coords.x, l_global_coords.y) * l_dx11_height_map.get_physics_y_scale();
 					bcFLOAT l_smooth_ratio = (s_smooth_max - l_cbuffer_parameters.m_tool_smooth * 1.0f) / s_smooth_max;
 					bcFLOAT l_final_height = (l_computed_height * (1 - l_smooth_ratio)) + (l_source_height * l_smooth_ratio);
 
-					l_samples[l_sample_index] = l_final_height / l_dx11_height_map.get_y_multiplier();
+					l_samples[l_sample_index] = l_final_height / l_dx11_height_map.get_physics_y_scale();
 				}
 			}
 
