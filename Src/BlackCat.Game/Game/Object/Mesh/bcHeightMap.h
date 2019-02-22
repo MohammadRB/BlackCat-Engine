@@ -6,7 +6,7 @@
 #include "Core/Math/bcVector3f.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "PhysicsImp/Shape/bcHeightField.h"
-#include "Game/System/Render/bcRenderState.h"
+#include "Game/System/Render/State/bcRenderState.h"
 
 namespace black_cat
 {

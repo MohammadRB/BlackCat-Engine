@@ -6,7 +6,7 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/bcConstant.h"
 #include "Game/System/Render/bcRenderThread.h"
-#include "Game/System/Render/bcRenderPassResourceShare.h"
+#include "Game/System/Render/Pass/bcRenderPassResourceShare.h"
 #include "Game/System/Input/bcCamera.h"
 
 namespace black_cat

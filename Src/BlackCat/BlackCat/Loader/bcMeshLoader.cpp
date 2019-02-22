@@ -19,7 +19,7 @@
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "PhysicsImp/Fundation/bcPhysics.h"
 #include "PhysicsImp/Fundation/bcMemoryBuffer.h"
-#include "Game/System/Render/bcVertexLayout.h"
+#include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Physics/bcPhysicsShapeUtility.h"
 #include "BlackCat/Loader/bcMeshColliderLoader.h"

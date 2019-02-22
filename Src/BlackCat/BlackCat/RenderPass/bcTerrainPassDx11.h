@@ -8,7 +8,7 @@
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
-#include "Game/System/Render/bcRenderPass.h"
+#include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "BlackCat/bcExport.h"
 

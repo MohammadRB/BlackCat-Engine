@@ -16,7 +16,7 @@
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/Resource/bcResourceConfig.h"
 #include "Game/System/Render/bcRenderSystem.h"
-#include "Game/System/Render/bcRenderState.h"
+#include "Game/System/Render/State/bcRenderState.h"
 #include "Game/System/Render/bcRenderTask.h"
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/System/Render/bcRenderThreadManager.h"

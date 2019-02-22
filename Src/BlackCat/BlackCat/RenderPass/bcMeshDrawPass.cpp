@@ -12,7 +12,7 @@
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "GraphicImp/Resource/View/bcDepthStencilView.h"
 #include "Game/System/Render/bcRenderSystem.h"
-#include "Game/System/Render/bcRenderPassResourceShare.h"
+#include "Game/System/Render/Pass/bcRenderPassResourceShare.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"

@@ -9,7 +9,7 @@
 #include "Graphic/Resource/State/bcViewPort.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
 #include "Game/bcExport.h"
-#include "Game/System/Render/bcVertexLayout.h"
+#include "Game/System/Render/State/bcVertexLayout.h"
 
 namespace black_cat
 {

@@ -8,7 +8,7 @@
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "Game/bcExport.h"
-#include "Game/System/Render/bcRenderState.h"
+#include "Game/System/Render/State/bcRenderState.h"
 #include "Game/System/Render/bcRenderSystemParameter.h"
 
 namespace black_cat

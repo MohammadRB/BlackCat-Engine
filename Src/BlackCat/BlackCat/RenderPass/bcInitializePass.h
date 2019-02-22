@@ -5,7 +5,7 @@
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "GraphicImp/Resource/View/bcDepthStencilView.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
-#include "Game/System/Render/bcRenderPass.h"
+#include "Game/System/Render/Pass/bcRenderPass.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat

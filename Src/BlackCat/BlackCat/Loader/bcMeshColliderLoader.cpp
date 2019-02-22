@@ -5,7 +5,7 @@
 #include "Core/Utility/bcUtility.h"
 #include "PhysicsImp/Fundation/bcMemoryBuffer.h"
 #include "PhysicsImp/Shape/bcShape.h"
-#include "Game/System/Render/bcVertexLayout.h"
+#include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Physics/bcPhysicsShapeUtility.h"
 #include "BlackCat/Loader/bcMeshLoader.h"

@@ -4,7 +4,7 @@
 
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
-#include "Game/System/Render/bcRenderPass.h"
+#include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "BlackCat/bcExport.h"
 

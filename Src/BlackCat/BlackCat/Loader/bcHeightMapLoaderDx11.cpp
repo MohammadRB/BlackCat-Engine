@@ -15,7 +15,7 @@
 #include "PhysicsImp/Fundation/bcSerializeBuffer.h"
 #include "PhysicsImp/Shape/bcHeightField.h"
 #include "Game/System/bcGameSystem.h"
-#include "Game/System/Render/bcVertexLayout.h"
+#include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/System/Render/bcRenderTask.h"
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
@@ -632,7 +632,7 @@ namespace black_cat
 				p_height,
 				false,
 				1,
-				graphic::bc_format::R16_FLOAT,
+				graphic::bc_format::R32_FLOAT,
 				graphic::bc_resource_usage::gpu_r,
 				core::bc_enum::or({ graphic::bc_resource_view_type::shader })
 			)

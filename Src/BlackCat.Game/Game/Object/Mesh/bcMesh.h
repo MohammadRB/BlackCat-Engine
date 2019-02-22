@@ -14,8 +14,8 @@
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/bcExport.h"
-#include "Game/System/Render/bcVertexLayout.h"
-#include "Game/System/Render/bcRenderState.h"
+#include "Game/System/Render/State/bcVertexLayout.h"
+#include "Game/System/Render/State/bcRenderState.h"
 #include "Game/Object/Mesh/bcMeshCollider.h"
 #include "Game/Object/Mesh/bcMaterial.h"
 

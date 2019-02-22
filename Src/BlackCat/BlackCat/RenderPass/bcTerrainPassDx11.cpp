@@ -7,7 +7,7 @@
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/bcResourceConfig.h"
-#include "Game/System/Render/bcVertexLayout.h"
+#include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
