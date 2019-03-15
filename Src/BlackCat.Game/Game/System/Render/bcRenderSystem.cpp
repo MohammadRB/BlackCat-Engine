@@ -20,6 +20,7 @@
 #include "Game/System/Render/bcRenderTask.h"
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/System/Render/bcRenderThreadManager.h"
+#include "Game/System/Render/Light/bcLightManager.h"
 #include "Game/Object/Scene/bcScene.h"
 
 namespace black_cat
@@ -40,6 +41,14 @@ namespace black_cat
 			bcDOUBLE m_total_elapsed;
 			bcFLOAT m_elapsed;
 			bcFLOAT m_elapsed_second;
+		};
+
+		struct _bc_render_system_per_object_cbuffer
+		{
+			BC_CBUFFER_ALIGN
+			core::bc_matrix4f m_world_view_projection;
+			BC_CBUFFER_ALIGN
+			core::bc_matrix4f m_world;
 		};
 
 		extern graphic::bc_pipeline_stage _convert_shader_type_to_pipeline_stage(graphic::bc_shader_type p_shader_types);
@@ -90,7 +99,7 @@ namespace black_cat
 
 		bool bc_render_system::remove_render_pass(bcUINT p_location)
 		{
-			bc_irender_pass* l_pass = m_render_pass_manager.get_pass(p_location);
+			bc_irender_pass* l_pass = m_render_pass_manager->get_pass(p_location);
 
 			if (!l_pass)
 			{
@@ -99,25 +108,7 @@ namespace black_cat
 
 			l_pass->destroy(m_device);
 
-			return m_render_pass_manager.remove_pass(p_location);
-		}
-
-		void bc_render_system::update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera)
-		{
-			bc_icamera::extend l_camera_extends;
-			p_camera.get_extend_points(l_camera_extends);
-
-			_bc_render_system_global_state_cbuffer l_global_state;
-			l_global_state.m_view = p_camera.get_view().transpose();
-			l_global_state.m_projection = p_camera.get_projection().transpose();
-			l_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection()).transpose();
-			l_global_state.m_camera_position = p_camera.get_position();
-			l_global_state.m_elapsed = p_clock.m_elapsed;
-			l_global_state.m_total_elapsed = p_clock.m_total_elapsed;
-			l_global_state.m_elapsed_second = p_clock.m_elapsed_second;
-
-			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
-			p_render_thread.update_subresource(l_buffer, 0, &l_global_state, 0, 0);
+			return m_render_pass_manager->remove_pass(p_location);
 		}
 
 		void bc_render_system::add_render_instance(const bc_render_state* p_state, const bc_render_instance& p_instance)
@@ -133,8 +124,12 @@ namespace black_cat
 			m_render_states.at(l_state_index).second.push_back(p_instance);
 		}
 
-		void bc_render_system::render_all_instances(bc_render_thread& p_render_thread)
+		void bc_render_system::render_all_instances(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera)
 		{
+			auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
+
+			_update_global_cbuffer(p_render_thread, p_clock, p_camera);
+
 			p_render_thread.bind_ps_constant_buffer_parameter(m_global_cbuffer_parameter);
 			p_render_thread.pipeline_apply_states(_convert_shader_type_to_pipeline_stage(m_global_cbuffer_parameter.get_shader_types()));
 
@@ -149,10 +144,14 @@ namespace black_cat
 
 					for (bc_render_instance& l_instance : l_render_state.second)
 					{
-						auto l_transposed_world = l_instance.get_world().transpose();
+						_bc_render_system_per_object_cbuffer l_per_object_cbuffer
+						{
+							(l_instance.get_world() * l_view_proj).transpose(),
+							l_instance.get_world().transpose()
+						};
 
 						graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
-						p_render_thread.update_subresource(l_buffer, 0, &l_transposed_world, 0, 0);
+						p_render_thread.update_subresource(l_buffer, 0, &l_per_object_cbuffer, 0, 0);
 
 						p_render_thread.bind_ps_constant_buffer_parameter(m_per_object_cbuffer_parameter);
 						p_render_thread.pipeline_apply_states(l_per_object_cbuffer_stages);
@@ -182,15 +181,15 @@ namespace black_cat
 
 		void bc_render_system::update(const update_param& p_update_params)
 		{
-			m_render_pass_manager.pass_update(p_update_params);
+			m_render_pass_manager->pass_update(bc_render_pass_update_param(p_update_params.m_clock, p_update_params.m_active_camera));
 		}
 
-		void bc_render_system::render(bc_scene& p_scene)
+		void bc_render_system::render(const render_param& p_render_param)
 		{
 			auto bc_render_thread_guard = m_thread_manager->get_available_thread_wait();
 			auto& l_render_thread = *bc_render_thread_guard.get_thread();
 			
-			m_render_pass_manager.pass_execute(*this, l_render_thread, p_scene);
+			m_render_pass_manager->pass_execute(bc_render_pass_render_param(p_render_param.m_clock, *this, l_render_thread, p_render_param.m_camera, p_render_param.m_scene));
 
 			clear_render_instances();
 
@@ -581,25 +580,12 @@ namespace black_cat
 			core_platform::bc_basic_hardware_info l_hw_info;
 			core_platform::bc_hardware_info::get_basic_info(&l_hw_info);
 
-			m_thread_manager = core::bc_make_unique<bc_render_thread_manager>(*this, std::max(1U, l_hw_info.proccessor_count / 2));
-			m_material_manager = core::bc_make_unique<bc_material_manager>(p_content_stream, *this);
+			m_thread_manager = core::bc_make_unique< bc_render_thread_manager >(*this, std::max(1U, l_hw_info.proccessor_count / 2));
+			m_material_manager = core::bc_make_unique< bc_material_manager >(p_content_stream, *this);
+			m_render_pass_manager = core::bc_make_unique< bc_render_pass_manager >();
+			m_light_manager = core::bc_make_unique< bc_light_manager >();
 
 			m_device.set_allocator_alloc_type(l_alloc_type);
-
-			auto* l_event_manager = core::bc_service_manager::get().get_service< core::bc_event_manager >();
-
-			m_window_resize_handle = l_event_manager->register_event_listener< platform::bc_app_event_window_resize >
-			(
-				core::bc_event_manager::delegate_type(this, &bc_render_system::_event_handler)
-			);
-			m_device_listener_handle = l_event_manager->register_event_listener< graphic::bc_app_event_device_reset >
-			(
-				core::bc_event_manager::delegate_type(this, &bc_render_system::_event_handler)
-			);
-			m_frame_render_finish_handle = l_event_manager->register_event_listener< core::bc_event_frame_render_finish >
-			(
-				core::bc_event_manager::delegate_type(this, &bc_render_system::_event_handler)
-			);
 
 			auto l_global_cbuffer_config = graphic::bc_graphic_resource_configure()
 				.as_resource()
@@ -616,7 +602,7 @@ namespace black_cat
 				.as_buffer
 				(
 					1,
-					sizeof(core::bc_matrix4f),
+					sizeof(_bc_render_system_per_object_cbuffer),
 					graphic::bc_resource_usage::gpu_rw,
 					graphic::bc_resource_view_type::none
 				)
@@ -640,24 +626,44 @@ namespace black_cat
 			m_per_object_cbuffer_parameter = graphic::bc_constant_buffer_parameter
 			(
 				g_render_state_constant_buffer_min_index - 1,
-				core::bc_enum::or({ graphic::bc_shader_type::vertex }),
+				core::bc_enum::or({ graphic::bc_shader_type::vertex, graphic::bc_shader_type::hull, graphic::bc_shader_type::domain }),
 				m_per_object_cbuffer.get()
+			);
+			
+			auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
+
+			m_window_resize_handle = l_event_manager->register_event_listener< platform::bc_app_event_window_resize >
+			(
+				core::bc_event_manager::delegate_type(this, &bc_render_system::_event_handler)
+			);
+			m_device_listener_handle = l_event_manager->register_event_listener< graphic::bc_app_event_device_reset >
+			(
+				core::bc_event_manager::delegate_type(this, &bc_render_system::_event_handler)
+			);
+			m_frame_render_finish_handle = l_event_manager->register_event_listener< core::bc_event_frame_render_finish >
+			(
+				core::bc_event_manager::delegate_type(this, &bc_render_system::_event_handler)
 			);
 		}
 
 		void bc_render_system::_destroy()
 		{
-			m_global_cbuffer.reset();
-			m_per_object_cbuffer.reset();
-			m_global_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
-			m_per_object_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
-			 
 			m_device_listener_handle.reset();
 			m_window_resize_handle.reset();
 			m_frame_render_finish_handle.reset();
 
+			m_global_cbuffer.reset();
+			m_per_object_cbuffer.reset();
+			m_global_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
+			m_per_object_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
+
 			m_shape_drawer.destroy_buffers();
-			m_render_pass_manager.pass_destroy(m_device);
+			m_render_pass_manager->pass_destroy(m_device);
+
+			m_light_manager.reset();
+			m_render_pass_manager.reset();
+			m_material_manager.reset();
+			m_thread_manager.reset();
 
 #ifdef BC_DEBUG // All states must be released upon render system destruction
 			auto l_render_pass_states_count = 0;
@@ -684,9 +690,22 @@ namespace black_cat
 			bcAssert(l_render_pass_states_count + l_render_states_count == 0);
 #endif
 
-			m_material_manager.reset();
-			m_thread_manager.reset();
 			m_device.destroy();
+		}
+
+		void bc_render_system::_update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera)
+		{
+			_bc_render_system_global_state_cbuffer l_global_state;
+			l_global_state.m_view = p_camera.get_view().transpose();
+			l_global_state.m_projection = p_camera.get_projection().transpose();
+			l_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection()).transpose();
+			l_global_state.m_camera_position = p_camera.get_position();
+			l_global_state.m_elapsed = p_clock.m_elapsed;
+			l_global_state.m_total_elapsed = p_clock.m_total_elapsed;
+			l_global_state.m_elapsed_second = p_clock.m_elapsed_second;
+
+			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
+			p_render_thread.update_subresource(l_buffer, 0, &l_global_state, 0, 0);
 		}
 
 		bool bc_render_system::_event_handler(core::bc_ievent& p_event)
@@ -714,11 +733,11 @@ namespace black_cat
 
 				if (l_device_reset_event.m_before_reset)
 				{
-					m_render_pass_manager.before_reset(*this, l_device_reset_event.m_device, l_device_reset_event.m_old_parameters, l_device_reset_event.m_new_parameters);
+					m_render_pass_manager->before_reset(bc_render_pass_reset_param(*this, l_device_reset_event.m_device, l_device_reset_event.m_old_parameters, l_device_reset_event.m_new_parameters));
 				}
 				else
 				{
-					m_render_pass_manager.after_reset(*this, l_device_reset_event.m_device, l_device_reset_event.m_old_parameters, l_device_reset_event.m_new_parameters);
+					m_render_pass_manager->after_reset(bc_render_pass_reset_param(*this, l_device_reset_event.m_device, l_device_reset_event.m_old_parameters, l_device_reset_event.m_new_parameters));
 				}
 
 				return true;

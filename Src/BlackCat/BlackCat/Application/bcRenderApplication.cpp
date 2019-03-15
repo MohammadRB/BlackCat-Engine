@@ -24,6 +24,7 @@
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
+#include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
@@ -144,7 +145,8 @@ namespace black_cat
 			game::bc_hierarchy_component,
 			game::bc_rigid_static_component,
 			game::bc_rigid_dynamic_component,
-			game::bc_height_map_component
+			game::bc_height_map_component,
+			game::bc_light_component
 		>();
 		l_entity_manager->register_abstract_component_types
 		<

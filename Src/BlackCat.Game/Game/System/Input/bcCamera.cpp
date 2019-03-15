@@ -36,34 +36,12 @@ namespace black_cat
 		{
 		}
 
-		void bc_icamera::set_far_clip(bcFLOAT p_far_clip) noexcept
+		core::bc_vector3f bc_icamera::get_direction() const noexcept
 		{
-			m_far = p_far_clip;
-			create_projection_matrix();
-		}
+			auto l_direction = (m_lookat - m_position);
+			l_direction.normalize();
 
-		void bc_icamera::set_near_clip(bcFLOAT p_near_clip) noexcept
-		{
-			m_near = p_near_clip;
-			create_projection_matrix();
-		}
-
-		void bc_icamera::set_position(core::bc_vector3f p_position) noexcept
-		{
-			m_position = p_position;
-			create_view_matrix();
-		}
-
-		void bc_icamera::set_lookat(core::bc_vector3f p_lookat) noexcept
-		{
-			m_lookat = p_lookat;
-			create_view_matrix();
-		}
-
-		void bc_icamera::set_position_lookat(const core::bc_vector3f& p_position, const core::bc_vector3f& p_lookat)
-		{
-			set_position(p_position);
-			set_lookat(p_lookat);
+			return l_direction;
 		}
 
 		core::bc_vector3f bc_icamera::get_forward() const noexcept
@@ -106,6 +84,19 @@ namespace black_cat
 		core::bc_vector3f bc_icamera::get_left() const noexcept
 		{
 			return get_right() * -1;
+		}
+
+		void bc_icamera::set_look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_lookat, const core::bc_vector3f& p_up) noexcept
+		{
+			m_position = p_position;
+			m_lookat = p_lookat;
+
+			create_view_matrix(p_up);
+		}
+
+		void bc_icamera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height) noexcept
+		{
+			set_projection(p_back_buffer_width, p_back_buffer_height, m_near, m_far);
 		}
 
 		core::bc_vector3f bc_icamera::project_clip_point_to_3d_ray(bcUINT16 p_screen_width, bcUINT16 p_screen_height, bcUINT16 p_left, bcUINT16 p_top) const
@@ -168,31 +159,7 @@ namespace black_cat
 
 			return l_ray;
 		}
-
-		core::bc_vector3f bc_icamera::get_direction() const noexcept
-		{
-			auto l_direction = (m_lookat - m_position);
-			l_direction.normalize();
-
-			return l_direction;
-		}
-
-		void bc_icamera::set_direction(core::bc_vector3f p_direction) noexcept
-		{
-			p_direction.normalize();
-			m_lookat = m_position + p_direction;
-
-			create_view_matrix();
-		}
-
-		void bc_icamera::look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_lookat, const core::bc_vector3f& up)
-		{
-			m_position = p_position;
-			m_lookat = p_lookat;
-
-			create_view_matrix();
-		}
-
+		
 		void bc_icamera::create_view_matrix(const core::bc_vector3f& p_up)
 		{
 			if(graphic::bc_render_api_info::is_left_handed())
@@ -207,50 +174,21 @@ namespace black_cat
 
 		// -- bc_orthographic_camera --------------------------------------------------------------------------------
 
-		bc_orthographic_camera::bc_orthographic_camera(bcFLOAT p_min_x,
-			bcFLOAT p_min_y,
-			bcFLOAT p_max_x,
-			bcFLOAT p_max_y,
+		bc_orthographic_camera::bc_orthographic_camera(bcUINT16 p_back_buffer_width,
+			bcUINT16 p_back_buffer_height,
 			bcFLOAT p_near_clip,
 			bcFLOAT p_far_clip)
-			: bc_icamera(p_far_clip, p_near_clip), 
-			m_min_x(p_min_x),
-			m_max_x(p_min_y),
-			m_min_y(p_max_x),
-			m_max_y(p_max_y)
+			: bc_icamera(p_far_clip, p_near_clip)
 		{
-			create_projection_matrix();
-		}
-
-		void bc_orthographic_camera::set_min_x(bcFLOAT p_min_x) noexcept
-		{
-			m_min_x = p_min_x;
-			create_projection_matrix();
-		}
-
-		void bc_orthographic_camera::set_max_x(bcFLOAT p_max_x) noexcept
-		{
-			m_max_x = p_max_x;
-			create_projection_matrix();
-		}
-
-		void bc_orthographic_camera::set_min_y(bcFLOAT p_min_y) noexcept
-		{
-			m_min_y = p_min_y;
-			create_projection_matrix();
-		}
-
-		void bc_orthographic_camera::set_max_y(bcFLOAT p_max_y) noexcept
-		{
-			m_max_y = p_max_y;
-			create_projection_matrix();
+			set_projection(p_back_buffer_width, p_back_buffer_height, p_near_clip, p_far_clip);
 		}
 
 		void bc_orthographic_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
 		{
-			set_near_clip(p_near_clip);
-			set_far_clip(p_far_clip);
-
+			m_screen_width = p_back_buffer_width;
+			m_screen_height = p_back_buffer_height;
+			m_near = p_near_clip;
+			m_far = p_far_clip;
 			m_min_x = 0;
 			m_max_x = p_back_buffer_width;
 			m_min_y = 0;
@@ -272,34 +210,17 @@ namespace black_cat
 				l_proj = core::bc_matrix4f::orthographic_matrix_rh(get_near_clip(), get_far_clip(), m_max_x - m_min_x, m_max_y - m_min_y);
 			}
 
-			set_projection(l_proj);
+			m_projection = l_proj;
 		}
 
 		// -- bc_perspective_camera --------------------------------------------------------------------------------
 
-		bc_perspective_camera::bc_perspective_camera(bcFLOAT p_aspect_ratio, 
-			bcFLOAT p_height_fov,
-			bcFLOAT p_near_clip, 
-			bcFLOAT p_far_clip)
-			: bc_icamera(p_near_clip, p_far_clip),
-			m_aspect_ratio(p_aspect_ratio),
-			m_field_of_view(p_height_fov)
+		bc_perspective_camera::bc_perspective_camera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip)
+			: bc_icamera(p_near_clip, p_far_clip)
 		{
-			create_projection_matrix();
+			set_projection(p_back_buffer_width, p_back_buffer_height, p_height_fov, p_near_clip, p_far_clip);
 		}
-
-		void bc_perspective_camera::set_aspect_ratio(bcFLOAT p_aspect_ratio) noexcept
-		{
-			m_aspect_ratio = p_aspect_ratio;
-			create_projection_matrix();
-		}
-
-		void bc_perspective_camera::set_field_of_view(bcFLOAT p_field_of_view) noexcept
-		{
-			m_field_of_view = p_field_of_view;
-			create_projection_matrix();
-		}
-
+		
 		void bc_perspective_camera::get_extend_points(extend& p_points) const
 		{
 			auto l_fov_tan = 2 * std::tanf(m_field_of_view / 2);
@@ -323,11 +244,19 @@ namespace black_cat
 
 		void bc_perspective_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
 		{
-			set_near_clip(p_near_clip);
-			set_far_clip(p_far_clip);
+			m_screen_width = p_back_buffer_width;
+			m_screen_height = p_back_buffer_height;
+			m_near = p_near_clip;
+			m_far = p_far_clip;
 			m_aspect_ratio = bcFLOAT(p_back_buffer_width) / p_back_buffer_height;
 
 			create_projection_matrix();
+		}
+
+		void bc_perspective_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
+		{
+			m_field_of_view = p_height_fov;
+			set_projection(p_back_buffer_width, p_back_buffer_height, p_near_clip, p_far_clip);
 		}
 
 		void bc_perspective_camera::create_projection_matrix()
@@ -343,7 +272,7 @@ namespace black_cat
 				l_proj = core::bc_matrix4f::perspective_fov_matrix_rh(m_field_of_view, m_aspect_ratio, get_near_clip(), get_far_clip());
 			}
 
-			set_projection(l_proj);
+			m_projection = l_proj;
 		}
 	}
 }

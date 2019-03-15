@@ -43,6 +43,9 @@
     <Filter Include="Game\System\Render\Pass">
       <UniqueIdentifier>{8d9e08fd-b4a0-446c-96b6-097d20694a20}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\System\Render\Light">
+      <UniqueIdentifier>{3e48dad4-a25e-439a-a987-3f0c4c372a87}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h">
@@ -237,6 +240,24 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassState.h">
       <Filter>Game\System\Render\Pass</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcDirectLight.h">
+      <Filter>Game\System\Render\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcPointLight.h">
+      <Filter>Game\System\Render\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcSpotLight.h">
+      <Filter>Game\System\Render\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLight.h">
+      <Filter>Game\System\Render\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightManager.h">
+      <Filter>Game\System\Render\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcLightComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -370,6 +391,15 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassState.cpp">
       <Filter>Game\System\Render\Pass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLight.cpp">
+      <Filter>Game\System\Render\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightManager.cpp">
+      <Filter>Game\System\Render\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcLightComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

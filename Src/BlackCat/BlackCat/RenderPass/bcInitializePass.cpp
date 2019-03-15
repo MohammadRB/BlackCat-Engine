@@ -32,50 +32,46 @@ namespace black_cat
 			l_back_buffer_texture.get_sample_count()
 		);
 
-		after_reset(p_render_system, l_device, l_old_parameters, l_new_parameters);
+		after_reset(game::bc_render_pass_reset_param(p_render_system, l_device, l_old_parameters, l_new_parameters));
 	}
 
-	void bc_initialize_pass::update(const game::bc_render_system_update_param& p_update_param)
+	void bc_initialize_pass::update(const game::bc_render_pass_update_param& p_update_param)
 	{
-		m_last_clock = static_cast<const core_platform::bc_clock::update_param&>(p_update_param);
-		m_last_camera = &p_update_param.m_active_camera;
 	}
 
-	void bc_initialize_pass::initialize_frame(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
+	void bc_initialize_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		p_render_system.update_global_cbuffer(p_thread, m_last_clock, *m_last_camera);
-
-		game::bc_camera_frustum l_frustum(*m_last_camera);
-		game::bc_scene_graph_buffer l_actors = p_scene.get_actors(l_frustum);
+		game::bc_camera_frustum l_frustum(p_param.m_camera);
+		game::bc_scene_graph_buffer l_actors = p_param.m_scene.get_actors(l_frustum);
 
 		share_resource(game::bc_render_pass_resource_variable::actor_list, std::move(l_actors));
 	}
 
-	void bc_initialize_pass::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
+	void bc_initialize_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
 	}
 
-	void bc_initialize_pass::cleanup_frame(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
+	void bc_initialize_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
 	{
 		unshare_resource(game::bc_render_pass_resource_variable::actor_list);
 	}
 
-	void bc_initialize_pass::before_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
+	void bc_initialize_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
 	{
-		destroy(p_device);
+		destroy(p_param.m_device);
 	}
 
-	void bc_initialize_pass::after_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
+	void bc_initialize_pass::after_reset(const game::bc_render_pass_reset_param& p_param)
 	{
 		graphic::bc_graphic_resource_configure l_resource_configure;
 
-		m_render_target_format = p_new_parameters.m_format;
+		m_render_target_format = p_param.m_new_parameters.m_format;
 
-		auto l_back_buffer_texture = p_device.get_back_buffer_texture();
+		auto l_back_buffer_texture = p_param.m_device.get_back_buffer_texture();
 		auto l_depth_buffer_config = l_resource_configure.as_resource().as_texture2d
 			(
-				p_new_parameters.m_width,
-				p_new_parameters.m_height,
+				p_param.m_new_parameters.m_width,
+				p_param.m_new_parameters.m_height,
 				false,
 				1,
 				m_depth_stencil_format,
@@ -92,20 +88,20 @@ namespace black_cat
 			.as_texture_view(m_render_target_format)
 			.as_tex2d_render_target_view(0);
 
-		m_depth_buffer = p_device.create_texture2d(l_depth_buffer_config, nullptr);
-		m_depth_stencil_view = p_device.create_depth_stencil_view(m_depth_buffer.get(), l_depth_view_config);
-		m_render_target_view = p_device.create_render_target_view(l_back_buffer_texture, l_render_target_config);
+		m_depth_buffer = p_param.m_device.create_texture2d(l_depth_buffer_config, nullptr);
+		m_depth_stencil_view = p_param.m_device.create_depth_stencil_view(m_depth_buffer.get(), l_depth_view_config);
+		m_render_target_view = p_param.m_device.create_render_target_view(l_back_buffer_texture, l_render_target_config);
 
 		share_resource(game::bc_render_pass_resource_variable::depth_stencil_texture, m_depth_buffer.get());
 		share_resource(game::bc_render_pass_resource_variable::depth_stencil_view, m_depth_stencil_view.get());
-		share_resource(game::bc_render_pass_resource_variable::render_target_view, m_render_target_view.get());
+		share_resource(game::bc_render_pass_resource_variable::render_target_view_1, m_render_target_view.get());
 	}
 
 	void bc_initialize_pass::destroy(graphic::bc_device& p_device)
 	{
 		unshare_resource(game::bc_render_pass_resource_variable::depth_stencil_texture);
 		unshare_resource(game::bc_render_pass_resource_variable::depth_stencil_view);
-		unshare_resource(game::bc_render_pass_resource_variable::render_target_view);
+		unshare_resource(game::bc_render_pass_resource_variable::render_target_view_1);
 
 		m_depth_buffer.reset();
 		m_depth_stencil_view.reset();

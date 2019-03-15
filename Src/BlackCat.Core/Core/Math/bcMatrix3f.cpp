@@ -120,7 +120,7 @@ namespace black_cat
 			*this = l_rot1;
 		}
 		
-		void bc_matrix3f::rotation_zyx_lh(bc_vector3f& p_rot)
+		void bc_matrix3f::rotation_zyx_lh(const bc_vector3f& p_rot)
 		{
 			bc_matrix3f l_rot1;
 			bc_matrix3f l_rot2;
@@ -133,7 +133,7 @@ namespace black_cat
 			*this = l_rot1;
 		}
 		
-		void bc_matrix3f::rotation_euler_lh(bc_vector3f& p_axis, bcFLOAT p_angle)
+		void bc_matrix3f::rotation_euler_lh(const bc_vector3f& p_axis, bcFLOAT p_angle)
 		{
 			bcFLOAT l_s = sinf(p_angle);
 			bcFLOAT l_c = cosf(p_angle);
@@ -176,7 +176,7 @@ namespace black_cat
 			m_entry[3] = -m_entry[3];
 		}
 
-		void bc_matrix3f::rotation_rh(bc_vector3f& p_rot)
+		void bc_matrix3f::rotation_rh(const bc_vector3f& p_rot)
 		{
 			bc_matrix3f l_rot1;
 			bc_matrix3f l_rot2;
@@ -189,7 +189,7 @@ namespace black_cat
 			*this = l_rot1;
 		}
 
-		void bc_matrix3f::rotation_zyx_rh(bc_vector3f& p_rot)
+		void bc_matrix3f::rotation_zyx_rh(const bc_vector3f& p_rot)
 		{
 			bc_matrix3f l_rot1;
 			bc_matrix3f l_rot2;
@@ -202,7 +202,7 @@ namespace black_cat
 			*this = l_rot1;
 		}
 
-		void bc_matrix3f::rotation_euler_rh(bc_vector3f& p_axis, bcFLOAT p_angle)
+		void bc_matrix3f::rotation_euler_rh(const bc_vector3f& p_axis, bcFLOAT p_angle)
 		{
 			rotation_euler_lh(p_axis, p_angle);
 

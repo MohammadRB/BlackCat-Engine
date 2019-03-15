@@ -14,7 +14,14 @@ namespace black_cat
 			actor_list,
 			depth_stencil_texture,
 			depth_stencil_view,
-			render_target_view
+			render_target_texture_1,
+			render_target_view_1,
+			render_target_texture_2,
+			render_target_view_2,
+			render_target_texture_3,
+			render_target_view_3,
+			render_target_texture_4,
+			render_target_view_4,
 		};
 
 		class bc_render_pass_resource_share

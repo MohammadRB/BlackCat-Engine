@@ -89,30 +89,29 @@ namespace black_cat
 			l_back_buffer_texture.get_sample_count()
 		);
 
-		after_reset(p_render_system, l_device, l_old_parameters, l_new_parameters);
+		after_reset(game::bc_render_pass_reset_param(p_render_system, l_device, l_old_parameters, l_new_parameters));
 
 		m_device_compute_state = p_render_system.create_device_compute_state("terrain_chunk_info");
 		m_run_chunk_info_shader = true;
 	}
 
-	void bc_terrain_pass_dx11::update(const game::bc_render_system_update_param& p_update_param)
+	void bc_terrain_pass_dx11::update(const game::bc_render_pass_update_param& p_update_param)
 	{
-		p_update_param.m_active_camera.get_extend_points(m_camera_extends);
 	}
 
-	void bc_terrain_pass_dx11::initialize_frame(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
+	void bc_terrain_pass_dx11::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
 		if (m_run_chunk_info_shader)
 		{
-			p_thread.start(m_command_list.get());
+			p_param.m_render_thread.start(m_command_list.get());
 
-			auto l_height_maps = p_scene.get_actors<game::bc_height_map_component>();
+			auto l_height_maps = p_param.m_scene.get_actors<game::bc_height_map_component>();
 			for (auto& l_actor : l_height_maps)
 			{
 				const game::bc_height_map& l_height_map = l_actor.get_component< game::bc_height_map_component >()->get_height_map();
 				const bc_height_map_dx11& l_height_map_dx11 = static_cast<const bc_height_map_dx11&>(l_height_map);
 
-				auto l_compute_state = p_render_system.create_compute_state
+				auto l_compute_state = p_param.m_render_system.create_compute_state
 				(
 					m_device_compute_state.get(),
 					l_height_map_dx11.get_width() / s_shader_thread_group_size,
@@ -124,74 +123,77 @@ namespace black_cat
 					{ graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11.get_parameter_cbuffer()) }
 				);
 
-				p_thread.run_compute_shader(l_compute_state.get());
+				p_param.m_render_thread.run_compute_shader(l_compute_state.get());
 			}
 
-			p_thread.finish();
+			p_param.m_render_thread.finish();
 			m_run_chunk_info_shader = false;
 		}
 
-		p_thread.start(m_command_list.get());
+		p_param.m_render_thread.start(m_command_list.get());
+
+		game::bc_icamera::extend l_camera_extends;
+		p_param.m_camera.get_extend_points(l_camera_extends);
 
 		_bc_parameter_buffer l_parameter;
-		l_parameter.m_frustum_planes[0] = _plane_from_3_point(m_camera_extends[0], m_camera_extends[1], m_camera_extends[2]);
-		l_parameter.m_frustum_planes[1] = _plane_from_3_point(m_camera_extends[6], m_camera_extends[5], m_camera_extends[4]);
-		l_parameter.m_frustum_planes[2] = _plane_from_3_point(m_camera_extends[0], m_camera_extends[4], m_camera_extends[5]);
-		l_parameter.m_frustum_planes[3] = _plane_from_3_point(m_camera_extends[1], m_camera_extends[5], m_camera_extends[6]);
-		l_parameter.m_frustum_planes[4] = _plane_from_3_point(m_camera_extends[2], m_camera_extends[6], m_camera_extends[7]);
-		l_parameter.m_frustum_planes[5] = _plane_from_3_point(m_camera_extends[7], m_camera_extends[4], m_camera_extends[0]);
+		l_parameter.m_frustum_planes[0] = _plane_from_3_point(l_camera_extends[0], l_camera_extends[1], l_camera_extends[2]);
+		l_parameter.m_frustum_planes[1] = _plane_from_3_point(l_camera_extends[6], l_camera_extends[5], l_camera_extends[4]);
+		l_parameter.m_frustum_planes[2] = _plane_from_3_point(l_camera_extends[0], l_camera_extends[4], l_camera_extends[5]);
+		l_parameter.m_frustum_planes[3] = _plane_from_3_point(l_camera_extends[1], l_camera_extends[5], l_camera_extends[6]);
+		l_parameter.m_frustum_planes[4] = _plane_from_3_point(l_camera_extends[2], l_camera_extends[6], l_camera_extends[7]);
+		l_parameter.m_frustum_planes[5] = _plane_from_3_point(l_camera_extends[7], l_camera_extends[4], l_camera_extends[0]);
 
-		p_thread.update_subresource(m_parameter_cbuffer.get(), 0, &l_parameter, 0, 0);
-		p_thread.bind_render_pass_state(m_render_pass_state.get());
-		p_thread.clear_buffers(core::bc_vector4f(0, 0, 255, 0), 1, 0);
+		p_param.m_render_thread.update_subresource(m_parameter_cbuffer.get(), 0, &l_parameter, 0, 0);
+		p_param.m_render_thread.bind_render_pass_state(m_render_pass_state.get());
+		p_param.m_render_thread.clear_buffers(core::bc_vector4f(0, 0, 255, 0), 1, 0);
 	}
 
-	void bc_terrain_pass_dx11::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
+	void bc_terrain_pass_dx11::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		auto l_height_maps_buffer = p_scene.get_actors<game::bc_height_map_component>();
-		l_height_maps_buffer.render_actors(p_render_system);
+		auto l_height_maps_buffer = p_param.m_scene.get_actors<game::bc_height_map_component>();
+		l_height_maps_buffer.render_actors(p_param.m_render_system);
 
-		p_render_system.render_all_instances(p_thread);
-		p_render_system.clear_render_instances();
+		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
+		p_param.m_render_system.clear_render_instances();
 
-		p_thread.unbind_render_pass_state(m_render_pass_state.get());
-		p_thread.finish();
+		p_param.m_render_thread.unbind_render_pass_state(m_render_pass_state.get());
+		p_param.m_render_thread.finish();
 
 		m_command_list->reset();
 	}
 
-	void bc_terrain_pass_dx11::before_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
+	void bc_terrain_pass_dx11::before_reset(const game::bc_render_pass_reset_param& p_param)
 	{
 		if
 		(
-			p_old_parameters.m_width != p_new_parameters.m_width ||
-			p_old_parameters.m_height != p_new_parameters.m_height
+			p_param.m_old_parameters.m_width != p_param.m_new_parameters.m_width ||
+			p_param.m_old_parameters.m_height != p_param.m_new_parameters.m_height
 		)
 		{
 			m_render_pass_state.reset();
 		}
 	}
 
-	void bc_terrain_pass_dx11::after_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
+	void bc_terrain_pass_dx11::after_reset(const game::bc_render_pass_reset_param& p_param)
 	{
 		if
 		(
-			p_old_parameters.m_width != p_new_parameters.m_width ||
-			p_old_parameters.m_height != p_new_parameters.m_height
+			p_param.m_old_parameters.m_width != p_param.m_new_parameters.m_width ||
+			p_param.m_old_parameters.m_height != p_param.m_new_parameters.m_height
 		)
 		{
-			graphic::bc_texture2d l_back_buffer_texture = p_device.get_back_buffer_texture();
+			graphic::bc_texture2d l_back_buffer_texture = p_param.m_device.get_back_buffer_texture();
 
 			auto l_height_map_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_clamp_clamp_clamp);
 			auto l_texture_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_wrap_wrap_wrap);
 
 			const auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(game::bc_render_pass_resource_variable::depth_stencil_view);
-			const auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(game::bc_render_pass_resource_variable::render_target_view);
+			const auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(game::bc_render_pass_resource_variable::render_target_view_1);
 			const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
-			m_height_map_sampler = p_device.create_sampler_state(l_height_map_sampler_config);
-			m_texture_sampler = p_device.create_sampler_state(l_texture_sampler_config);
+			m_height_map_sampler = p_param.m_device.create_sampler_state(l_height_map_sampler_config);
+			m_texture_sampler = p_param.m_device.create_sampler_state(l_texture_sampler_config);
 
-			m_render_pass_state = p_render_system.create_render_pass_state
+			m_render_pass_state = p_param.m_render_system.create_render_pass_state
 			(
 				m_pipeline_state.get(),
 				l_viewport,

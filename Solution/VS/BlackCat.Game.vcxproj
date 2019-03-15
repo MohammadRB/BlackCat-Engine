@@ -119,7 +119,9 @@ copy ..\..\Src\BlackCat.Game\Game\System\Input\*.h ..\..\BC_SDK\Include\Game\Sys
 copy ..\..\Src\BlackCat.Game\Game\System\Script\*.h ..\..\BC_SDK\Include\Game\System\Script
 copy ..\..\Src\BlackCat.Game\Game\System\Physics\*.h ..\..\BC_SDK\Include\Game\System\Physics
 copy ..\..\Src\BlackCat.Game\Game\System\Render\*.h ..\..\BC_SDK\Include\Game\System\Render
+copy ..\..\Src\BlackCat.Game\Game\System\Render\Pass\*.h ..\..\BC_SDK\Include\Game\System\Render\Pass
 copy ..\..\Src\BlackCat.Game\Game\System\Render\State\*.h ..\..\BC_SDK\Include\Game\System\Render\State
+copy ..\..\Src\BlackCat.Game\Game\System\Render\Light\*.h ..\..\BC_SDK\Include\Game\System\Render\Light
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
@@ -183,7 +185,9 @@ copy ..\..\Src\BlackCat.Game\Game\System\Input\*.h ..\..\BC_SDK\Include\Game\Sys
 copy ..\..\Src\BlackCat.Game\Game\System\Script\*.h ..\..\BC_SDK\Include\Game\System\Script
 copy ..\..\Src\BlackCat.Game\Game\System\Physics\*.h ..\..\BC_SDK\Include\Game\System\Physics
 copy ..\..\Src\BlackCat.Game\Game\System\Render\*.h ..\..\BC_SDK\Include\Game\System\Render
+copy ..\..\Src\BlackCat.Game\Game\System\Render\Pass\*.h ..\..\BC_SDK\Include\Game\System\Render\Pass
 copy ..\..\Src\BlackCat.Game\Game\System\Render\State\*.h ..\..\BC_SDK\Include\Game\System\Render\State
+copy ..\..\Src\BlackCat.Game\Game\System\Render\Light\*.h ..\..\BC_SDK\Include\Game\System\Render\Light
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
@@ -236,6 +240,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcScene.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcHeightMapComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcHierarchyComponent.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcLightComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcMediateComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcMeshComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcNameComponent.h" />
@@ -261,6 +266,11 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsSystem.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPxWrap.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsShapeUtility.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcDirectLight.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLight.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcPointLight.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcSpotLight.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcComputeState.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcMaterialManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderInstance.h" />
@@ -296,6 +306,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcScene.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcHeightMapComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcHierarchyComponent.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcLightComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcMediateComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcMeshComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcNameComponent.cpp" />
@@ -317,6 +328,8 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFreeCamera.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsSystem.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsShapeUtility.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLight.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcComputeState.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcMaterialManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassManager.cpp" />

@@ -43,6 +43,7 @@ namespace black_cat
 		class bc_file_system;
 		class bc_render_thread_manager;
 		class bc_material_manager;
+		class bc_light_manager;
 		class bc_scene;
 		
 		struct bc_render_system_parameter
@@ -64,15 +65,30 @@ namespace black_cat
 			graphic::bc_device_output m_render_output;
 		};
 
-		struct bc_render_system_update_param : public core_platform::bc_clock::update_param
+		struct bc_render_system_update_param
 		{
-			bc_render_system_update_param(const core_platform::bc_clock::update_param& p_clock_update, const bc_icamera& p_camera)
-				: update_param(p_clock_update),
+			bc_render_system_update_param(const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera)
+				: m_clock(p_clock),
 				m_active_camera(p_camera)
 			{
 			}
 
+			core_platform::bc_clock::update_param m_clock;
 			const bc_icamera& m_active_camera;
+		};
+
+		struct bc_render_system_render_param
+		{
+			bc_render_system_render_param(const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera, const bc_scene& p_scene)
+				: m_clock(p_clock),
+				m_camera(p_camera),
+				m_scene(p_scene)
+			{
+			}
+
+			core_platform::bc_clock::update_param m_clock;
+			const bc_icamera& m_camera;
+			const bc_scene& m_scene;
 		};
 
 		class BC_GAME_DLL bc_render_system : public core::bc_initializable< core::bc_content_stream_manager&, bc_render_system_parameter >
@@ -85,6 +101,7 @@ namespace black_cat
 
 		public:
 			using update_param = bc_render_system_update_param;
+			using render_param = bc_render_system_render_param;
 
 		public:
 			bc_render_system();
@@ -98,6 +115,8 @@ namespace black_cat
 			graphic::bc_device& get_device() noexcept;
 
 			bc_material_manager& get_material_manager() noexcept;
+
+			bc_light_manager& get_light_manager() noexcept;
 
 			bc_shape_drawer& get_shape_drawer() noexcept;
 
@@ -113,14 +132,6 @@ namespace black_cat
 			bool remove_render_pass();
 
 			/**
-			 * \brief Update global state cbuffers
-			 * \param p_camera
-			 * \param p_render_thread
-			 * \param p_clock 
-			 */
-			void update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera);
-
-			/**
 			 * \brief Add a render instance to render queue
 			 * \param p_state
 			 * \param p_instance
@@ -130,7 +141,7 @@ namespace black_cat
 			/**
 			 * \brief Render all instances in render queue
 			 */
-			void render_all_instances(bc_render_thread& p_render_thread);
+			void render_all_instances(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera);
 
 			/**
 			 * \brief Clear render queue. After rendering instances this function must be called
@@ -139,7 +150,7 @@ namespace black_cat
 
 			void update(const update_param& p_update_params);
 
-			void render(bc_scene& p_scene);
+			void render(const render_param& p_render_param);
 
 			void add_render_task(bc_irender_task& p_task);
 
@@ -274,11 +285,21 @@ namespace black_cat
 
 			void _destroy() override;
 
+			void _update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera);
+
 			bool _event_handler(core::bc_ievent& p_event);
+
+			graphic::bc_device m_device;
+			graphic::bc_buffer_ptr m_global_cbuffer;
+			graphic::bc_buffer_ptr m_per_object_cbuffer;
+			graphic::bc_constant_buffer_parameter m_global_cbuffer_parameter;
+			graphic::bc_constant_buffer_parameter m_per_object_cbuffer_parameter;
 
 			core::bc_content_stream_manager* m_content_stream;
 			core::bc_unique_ptr< bc_render_thread_manager > m_thread_manager;
 			core::bc_unique_ptr< bc_material_manager > m_material_manager;
+			core::bc_unique_ptr< bc_render_pass_manager > m_render_pass_manager;
+			core::bc_unique_ptr< bc_light_manager > m_light_manager;
 
 			core::bc_event_listener_handle m_window_resize_handle;
 			core::bc_event_listener_handle m_device_listener_handle;
@@ -289,13 +310,6 @@ namespace black_cat
 			core::bc_vector< render_state_entry > m_render_states;
 			core::bc_vector< core::bc_nullable< bc_compute_state > > m_compute_states;
 
-			graphic::bc_device m_device;
-			graphic::bc_buffer_ptr m_global_cbuffer;
-			graphic::bc_buffer_ptr m_per_object_cbuffer;
-			graphic::bc_constant_buffer_parameter m_global_cbuffer_parameter;
-			graphic::bc_constant_buffer_parameter m_per_object_cbuffer_parameter;
-
-			bc_render_pass_manager m_render_pass_manager;
 			bc_shape_drawer m_shape_drawer;
 		};
 
@@ -309,6 +323,11 @@ namespace black_cat
 			return *m_material_manager;
 		}
 
+		inline bc_light_manager& bc_render_system::get_light_manager() noexcept
+		{
+			return *m_light_manager;
+		}
+
 		inline bc_shape_drawer& bc_render_system::get_shape_drawer() noexcept
 		{
 			return m_shape_drawer;
@@ -317,15 +336,15 @@ namespace black_cat
 		template< typename T >
 		T* bc_render_system::get_render_pass()
 		{
-			return m_render_pass_manager.get_pass< T >();
+			return m_render_pass_manager->get_pass< T >();
 		}
 
 		template< typename TPass >
 		void bc_render_system::add_render_pass(bcUINT p_location, TPass&& p_pass)
 		{
-			m_render_pass_manager.add_pass(p_location, std::move(p_pass));
+			m_render_pass_manager->add_pass(p_location, std::move(p_pass));
 
-			auto l_pass = m_render_pass_manager.get_pass(p_location);
+			auto l_pass = m_render_pass_manager->get_pass(p_location);
 
 			l_pass->initialize_resources(*this);
 		}
@@ -333,7 +352,7 @@ namespace black_cat
 		template< typename TPass >
 		bool bc_render_system::remove_render_pass()
 		{
-			auto* l_pass = m_render_pass_manager.get_pass<TPass>();
+			auto* l_pass = m_render_pass_manager->get_pass<TPass>();
 
 			if (!l_pass)
 			{
@@ -342,7 +361,7 @@ namespace black_cat
 
 			l_pass->destroy(m_device);
 
-			return m_render_pass_manager.remove_pass<TPass>();
+			return m_render_pass_manager->remove_pass<TPass>();
 		}
 	}
 }

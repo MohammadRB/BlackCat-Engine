@@ -64,41 +64,41 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_pass_manager::pass_update(const bc_render_system_update_param& p_clock_update_param)
+		void bc_render_pass_manager::pass_update(const bc_render_pass_update_param& p_param)
 		{
 			for (auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->update(p_clock_update_param);
+				l_entry.m_pass->update(p_param);
 			}
 		}
 
-		void bc_render_pass_manager::pass_execute(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_scene& p_scene)
+		void bc_render_pass_manager::pass_execute(const bc_render_pass_render_param& p_param)
 		{
 			for(auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->initialize_frame(p_render_system, p_thread, p_scene);
-				l_entry.m_pass->execute(p_render_system, p_thread, p_scene);
+				l_entry.m_pass->initialize_frame(p_param);
+				l_entry.m_pass->execute(p_param);
 			}
 
 			for (auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->cleanup_frame(p_render_system, p_thread, p_scene);
-			}
-		}
-
-		void bc_render_pass_manager::before_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
-		{
-			for (auto& l_entry : m_passes)
-			{
-				l_entry.m_pass->before_reset(p_render_system, p_device, p_old_parameters, p_new_parameters);
+				l_entry.m_pass->cleanup_frame(p_param);
 			}
 		}
 
-		void bc_render_pass_manager::after_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
+		void bc_render_pass_manager::before_reset(const bc_render_pass_reset_param& p_param)
 		{
 			for (auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->after_reset(p_render_system, p_device, p_old_parameters, p_new_parameters);
+				l_entry.m_pass->before_reset(p_param);
+			}
+		}
+
+		void bc_render_pass_manager::after_reset(const bc_render_pass_reset_param& p_param)
+		{
+			for (auto& l_entry : m_passes)
+			{
+				l_entry.m_pass->after_reset(p_param);
 			}
 		}
 

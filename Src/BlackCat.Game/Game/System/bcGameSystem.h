@@ -116,10 +116,10 @@ namespace black_cat
 
 			void set_scene(bc_scene_ptr p_scene);
 
-			void render();
+			void render(const core_platform::bc_clock::update_param& p_clock_update_param);
 
 		protected:
-			void update(core_platform::bc_clock::update_param p_clock_update_param) override;
+			void update(const core_platform::bc_clock::update_param& p_clock_update_param) override;
 
 		private:
 			void _initialize(bc_game_system_parameter) override;

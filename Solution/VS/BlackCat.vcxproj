@@ -162,6 +162,8 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcTextureLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferInitializePass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferPass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcMeshDrawPass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcInitializePass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTerrainPassDx11.h" />
@@ -184,6 +186,8 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcTextureLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferInitializePass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcMeshDrawPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcInitializePass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcShapeDrawPass.cpp" />
@@ -210,6 +214,14 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcMeshGBuffer.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcMeshShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>

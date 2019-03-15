@@ -91,6 +91,12 @@ namespace black_cat
 
 			static bc_vector3 random();
 
+			static const bc_vector3& up();
+
+			static const bc_vector3& right();
+
+			static const bc_vector3& forward();
+
 		public:
 			T x;
 			T y;
@@ -489,6 +495,27 @@ namespace black_cat
 			l_random.normalize();
 
 			return (l_random);
+		}
+
+		template< typename T >
+		const bc_vector3<T>& bc_vector3<T>::up()
+		{
+			static bc_vector3<T> s_up{ 0,1,0 };
+			return s_up;
+		}
+
+		template< typename T >
+		const bc_vector3<T>& bc_vector3<T>::right()
+		{
+			static bc_vector3<T> s_right{ 1,0,0 };
+			return s_right;
+		}
+
+		template< typename T >
+		const bc_vector3<T>& bc_vector3<T>::forward()
+		{
+			static bc_vector3<T> s_forward{ 0,0,1 };
+			return s_forward;
 		}
 	}
 }

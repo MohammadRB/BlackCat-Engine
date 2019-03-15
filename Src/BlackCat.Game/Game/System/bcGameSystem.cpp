@@ -31,15 +31,15 @@ namespace black_cat
 			m_scene = std::move(p_scene);
 		}
 
-		void bc_game_system::render()
+		void bc_game_system::render(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 			if(m_scene)
 			{
-				m_render_system.render(*m_scene);
+				m_render_system.render(bc_render_system::render_param(p_clock_update_param, m_input_system.get_camera(), *m_scene));
 			}
 		}
 
-		void bc_game_system::update(core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_game_system::update(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 			m_input_system.update(p_clock_update_param);
 			m_script_system.update(p_clock_update_param);

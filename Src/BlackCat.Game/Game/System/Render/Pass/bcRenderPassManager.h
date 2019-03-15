@@ -55,13 +55,13 @@ namespace black_cat
 
 			void pass_initialize_resources(bc_render_system& p_render_system);
 
-			void pass_update(const bc_render_system_update_param& p_clock_update_param);
+			void pass_update(const bc_render_pass_update_param& p_param);
 
-			void pass_execute(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_scene& p_scene);
+			void pass_execute(const bc_render_pass_render_param& p_param);
 
-			void before_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters);
+			void before_reset(const bc_render_pass_reset_param& p_param);
 
-			void after_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters);
+			void after_reset(const bc_render_pass_reset_param& p_param);
 
 			void pass_destroy(graphic::bc_device& p_device);
 

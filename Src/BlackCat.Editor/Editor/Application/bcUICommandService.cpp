@@ -6,6 +6,7 @@
 #include "Core/Content/bcContentStreamManager.h"
 #include "Game/System/bcGameSystem.h"
 #include "Editor/Application/bcUICommandService.h"
+#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {
@@ -90,7 +91,7 @@ namespace black_cat
 			}
 		}
 		
-		void bc_ui_command_service::update(core_platform::bc_clock::update_param p_elapsed)
+		void bc_ui_command_service::update(const core_platform::bc_clock::update_param& p_elapsed)
 		{
 			{
 				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_commands_lock);

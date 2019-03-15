@@ -32,6 +32,63 @@ namespace black_cat
 			}
 		};
 
+		class bc_render_pass_update_param
+		{
+		public:
+			bc_render_pass_update_param(const core_platform::bc_clock::update_param& p_clock,
+				const bc_icamera& p_camera)
+				: m_clock(p_clock),
+				m_camera(p_camera)
+			{
+			}
+
+			core_platform::bc_clock::update_param m_clock;
+			const bc_icamera& m_camera;
+		};
+
+		class bc_render_pass_render_param
+		{
+		public:
+			bc_render_pass_render_param(const core_platform::bc_clock::update_param& p_clock,
+				bc_render_system& p_render_system,
+				bc_render_thread& p_render_thread,
+				const bc_icamera& p_camera,
+				const bc_scene& p_scene)
+				: m_clock(p_clock),
+				m_render_system(p_render_system),
+				m_render_thread(p_render_thread),
+				m_camera(p_camera),
+				m_scene(p_scene)
+			{
+			}
+
+			core_platform::bc_clock::update_param m_clock;
+			bc_render_system& m_render_system;
+			bc_render_thread& m_render_thread;
+			const bc_icamera& m_camera;
+			const bc_scene& m_scene;
+		};
+
+		class bc_render_pass_reset_param
+		{
+		public:
+			bc_render_pass_reset_param(bc_render_system& p_render_system,
+				graphic::bc_device& p_device,
+				graphic::bc_device_parameters& p_old_parameters,
+				graphic::bc_device_parameters& p_new_parameters)
+				: m_render_system(p_render_system),
+				m_device(p_device),
+				m_old_parameters(p_old_parameters),
+				m_new_parameters(p_new_parameters)
+			{
+			}
+
+			bc_render_system& m_render_system;
+			graphic::bc_device& m_device;
+			graphic::bc_device_parameters& m_old_parameters;
+			graphic::bc_device_parameters& m_new_parameters;
+		};
+
 		/**
 		 * \brief Represent a whole rendering pass that do all tasks that required to render a scene with a specified configuration 
 		 */
@@ -54,53 +111,41 @@ namespace black_cat
 
 			/**
 			 * \brief This function will be called during app update phase
-			 * \param p_update_param 
+			 * \param p_param 
 			 */
-			virtual void update(const bc_render_system_update_param& p_update_param) = 0;
+			virtual void update(const bc_render_pass_update_param& p_param) = 0;
 
 			/**
 			 * \brief This function will be called in the start of frame draw phase.
 			 * Threading: This function will be executed concurrent by a cpu worker thread.
-			 * \param p_render_system
-			 * \param p_thread 
-			 * \param p_scene
+			 * \param p_param
 			 */
-			virtual void initialize_frame(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_scene& p_scene) = 0;
+			virtual void initialize_frame(const bc_render_pass_render_param& p_param) = 0;
 
 			/**
 			 * \brief This function will be called in frame draw phase.
 			 * Threading: This function will be executed concurrent by a cpu worker thread.
-			 * \param p_render_system
-			 * \param p_scene 
-			 * \param p_thread 
+			 * \param p_param
 			 */
-			virtual void execute(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_scene& p_scene) = 0;
+			virtual void execute(const bc_render_pass_render_param& p_param) = 0;
 
 			/**
 			 * \brief This function will be called in the end of frame draw phase.
-			 * \param p_render_system 
-			 * \param p_thread 
-			 * \param p_scene 
+			 * \param p_param
 			 */
-			virtual void cleanup_frame(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_scene& p_scene);
+			virtual void cleanup_frame(const bc_render_pass_render_param& p_param);
 
 			/**
 			 * \brief This function will be called when device duo to some parameter changes and buffer resize need reset
-			 * \param p_render_system 
-			 * \param p_device 
-			 * \param p_old_parameters 
-			 * \param p_new_parameters 
+			 * \param p_param
 			 */
-			virtual void before_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) = 0;
+			virtual void before_reset(const bc_render_pass_reset_param& p_param) = 0;
 
 			/**
 			 * \brief This function will be called when device duo to some parameter changes and buffer resize need reset
-			 * \param p_render_system 
-			 * \param p_device 
-			 * \param p_old_parameters 
-			 * \param p_new_parameters 
+			 * \param p_param
 			 */
-			virtual void after_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) = 0;
+			virtual void after_reset(const bc_render_pass_reset_param& p_param) = 0;
 
 			/**
 			 * \brief This function will be called when pass is going to be destroy.
@@ -124,8 +169,7 @@ namespace black_cat
 			bc_render_pass_resource_share* m_resource_share;
 		};
 
-		inline void bc_irender_pass::cleanup_frame(bc_render_system& p_render_system, bc_render_thread& p_thread,
-			bc_scene& p_scene)
+		inline void bc_irender_pass::cleanup_frame(const bc_render_pass_render_param& p_param)
 		{
 		}
 

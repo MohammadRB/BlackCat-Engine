@@ -90,21 +90,22 @@
 #define BC_COMPUTE_STATE_CB7 b7
 
 // Bound to vertex, hull, domain, geometry, pixel shader
-cbuffer g_cb_global_state       : register(BC_RENDER_PASS_STATE_CB0)
+cbuffer g_cb_global_state				: register(BC_RENDER_PASS_STATE_CB0)
 {
-    float4x4 g_view             : packoffset(c0);
-    float4x4 g_projection       : packoffset(c4);
-    float4x4 g_viewprojection   : packoffset(c8);
-    float3 g_camera_position    : packoffset(c12);
-    double g_total_elapsed      : packoffset(c13.x);
-    float g_elapsed             : packoffset(c13.z);
-    float g_elapsed_second      : packoffset(c13.w);
+    float4x4 g_view						: packoffset(c0);
+    float4x4 g_projection				: packoffset(c4);
+    float4x4 g_viewprojection			: packoffset(c8);
+    float3 g_camera_position			: packoffset(c12);
+    double g_total_elapsed				: packoffset(c13.x);
+    float g_elapsed						: packoffset(c13.z);
+    float g_elapsed_second				: packoffset(c13.w);
 }
 
 // Bound to vertex shader
-cbuffer g_cb_object_state       : register(BC_RENDER_STATE_CB0)
+cbuffer g_cb_object_state				: register(BC_RENDER_STATE_CB0)
 {
-    float4x4 g_world            : packoffset(c0);
+	float4x4 g_world_view_projection	: packoffset(c0);
+    float4x4 g_world					: packoffset(c4);
 }
 
 // Temp variables

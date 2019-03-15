@@ -695,7 +695,7 @@ namespace black_cat
 		{
 			bcAssert(base_type::m_size > 0);
 
-			return *base_type::m_head;
+			return base_type::m_head->m_value;
 		}
 
 		template< typename T, class TAllocator >
@@ -703,7 +703,7 @@ namespace black_cat
 		{
 			bcAssert(base_type::m_size > 0);
 
-			return *base_type::m_head;
+			return base_type::m_head->m_value;
 		}
 
 		template< typename T, class TAllocator >
@@ -711,7 +711,7 @@ namespace black_cat
 		{
 			bcAssert(base_type::m_size > 0);
 
-			return *base_type::m_head->m_prev;
+			return base_type::m_head->m_prev->m_value;
 		}
 
 		template< typename T, class TAllocator >
@@ -719,7 +719,7 @@ namespace black_cat
 		{
 			bcAssert(base_type::m_size > 0);
 
-			return *base_type::m_head->m_prev;
+			return *base_type::m_head->m_prev->m_value;
 		}
 
 		template< typename T, class TAllocator >
@@ -1100,6 +1100,27 @@ namespace black_cat
 				l_node = l_node->m_next;
 			}
 			while (l_node && l_node != base_type::m_head);
+		}
+
+		template< typename T, class TAllocator >
+		template< class TUnaryPredicate >
+		void bc_list<T, TAllocator>::remove_if(TUnaryPredicate p_predicate)
+		{
+			if (!base_type::m_head)
+			{
+				return;
+			}
+
+			node_type* l_node = base_type::m_head;
+			do
+			{
+				if (p_predicate(l_node->m_value))
+				{
+					base_type::_free_node(l_node, 1);
+				}
+
+				l_node = l_node->m_next;
+			} while (l_node && l_node != base_type::m_head);
 		}
 
 		template< typename T, class TAllocator >

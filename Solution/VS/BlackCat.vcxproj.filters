@@ -87,6 +87,12 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneLoader.h">
       <Filter>BlackCat\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferInitializePass.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferPass.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -140,6 +146,12 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneLoader.cpp">
       <Filter>BlackCat\Loader</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferInitializePass.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferPass.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcMeshShader.hlsl">
@@ -152,6 +164,9 @@
       <Filter>BlackCat\Content\Shader\DirectX11</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcShapeDraw.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcMeshGBuffer.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11</Filter>
     </FxCompile>
   </ItemGroup>

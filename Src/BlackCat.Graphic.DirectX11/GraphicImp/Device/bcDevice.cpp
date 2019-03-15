@@ -614,7 +614,7 @@ namespace black_cat
 		 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_sampler_state_ptr bc_platform_device< g_api_dx11 >::create_sampler_state(bc_sampler_state_config& p_config)
+		bc_sampler_state_ptr bc_platform_device< g_api_dx11 >::create_sampler_state(const bc_sampler_state_config& p_config)
 		{
 			ID3D11SamplerState* l_dx_sampler;
 			D3D11_SAMPLER_DESC l_dx_sampler_desc;

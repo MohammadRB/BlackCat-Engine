@@ -119,7 +119,7 @@ namespace black_cat
 			bcUINT32 process_event_queue(core_platform::bc_clock::big_clock p_current_time);
 
 		protected:
-			void update(core_platform::bc_clock::update_param p_clock_update_param) override;
+			void update(const core_platform::bc_clock::update_param& p_clock_update_param) override;
 
 			void queue_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::small_delta_time p_millisecond);
 

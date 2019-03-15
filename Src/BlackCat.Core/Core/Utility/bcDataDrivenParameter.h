@@ -111,7 +111,7 @@ namespace black_cat
 
 				if (!l_value)
 				{
-					bc_string_frame l_msg = bc_string_frame("No parameter with given name has been found: ") + p_name;
+					bc_string_frame l_msg = bc_string_frame("No parameter with given name was found: ") + p_name;
 					throw bc_key_not_found_exception(l_msg.c_str());
 				}
 

@@ -2,10 +2,12 @@
 
 #include "Game/GamePCH.h"
 #include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
+#include "Game/Object/Scene/Component/bcLightComponent.h"
 
 namespace black_cat
 {
@@ -66,9 +68,10 @@ namespace black_cat
 		void bc_mediate_component::set_world_transform(const core::bc_matrix4f& p_transform)
 		{
 			auto l_actor = get_actor();
-			auto* l_rigid_body_component = l_actor.get_component<bc_rigid_body_component>();
-			auto* l_mesh_component = l_actor.get_component<bc_mesh_component>();
-			auto* l_height_map_component = l_actor.get_component<bc_height_map_component>();
+			auto* l_rigid_body_component = l_actor.get_component< bc_rigid_body_component >();
+			auto* l_mesh_component = l_actor.get_component< bc_mesh_component >();
+			auto* l_height_map_component = l_actor.get_component< bc_height_map_component >();
+			auto* l_light_component = l_actor.get_component< bc_light_component >();
 
 			if (l_rigid_body_component)
 			{
@@ -103,6 +106,11 @@ namespace black_cat
 			if(l_height_map_component)
 			{
 				l_height_map_component->set_world_transform(p_transform);
+			}
+
+			if(l_light_component)
+			{
+				l_light_component->set_world_transform(p_transform);
 			}
 		}
 

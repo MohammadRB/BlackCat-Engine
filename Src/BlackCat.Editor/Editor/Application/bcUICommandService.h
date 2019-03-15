@@ -11,6 +11,7 @@
 #include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Editor/Application/bcUICommand.h"
+#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {
@@ -77,7 +78,7 @@ namespace black_cat
 
 			void undo();
 
-			void update(core_platform::bc_clock::update_param p_elapsed) override;
+			void update(const core_platform::bc_clock::update_param& p_elapsed) override;
 
 			void update_ui(bc_iui_command::update_ui_context& p_context);
 

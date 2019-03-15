@@ -24,7 +24,7 @@ namespace black_cat
 			bc_mediate_component(bc_mediate_component&&) = default;
 
 			~bc_mediate_component() = default;
-
+			
 			bc_mediate_component& operator=(bc_mediate_component&&) = default;
 
 			bc_actor get_actor() const noexcept override;
