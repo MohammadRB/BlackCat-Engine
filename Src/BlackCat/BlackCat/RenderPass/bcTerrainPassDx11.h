@@ -31,7 +31,7 @@ namespace black_cat
 
 		void after_reset(const game::bc_render_pass_reset_param& p_param) override;
 
-		void destroy(graphic::bc_device& p_device) override;
+		void destroy(game::bc_render_system& p_render_system) override;
 
 		void update_chunk_infos();
 

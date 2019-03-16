@@ -150,9 +150,9 @@ namespace black_cat
 			/**
 			 * \brief This function will be called when pass is going to be destroy.
 			 * Before device destruction this function must be called.
-			 * \param p_device 
+			 * \param p_render_system 
 			 */
-			virtual void destroy(graphic::bc_device& p_device) = 0;
+			virtual void destroy(bc_render_system& p_render_system) = 0;
 
 			void _set_pass_resource_share(bc_render_pass_resource_share* p_state_share);
 

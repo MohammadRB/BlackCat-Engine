@@ -102,11 +102,11 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_pass_manager::pass_destroy(graphic::bc_device& p_device)
+		void bc_render_pass_manager::pass_destroy(bc_render_system& p_render_system)
 		{
 			for (auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->destroy(p_device);
+				l_entry.m_pass->destroy(p_render_system);
 			}
 		}
 

@@ -58,7 +58,7 @@ namespace black_cat
 
 	void bc_initialize_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
 	{
-		destroy(p_param.m_device);
+		destroy(p_param.m_render_system);
 	}
 
 	void bc_initialize_pass::after_reset(const game::bc_render_pass_reset_param& p_param)
@@ -97,7 +97,7 @@ namespace black_cat
 		share_resource(game::bc_render_pass_resource_variable::render_target_view_1, m_render_target_view.get());
 	}
 
-	void bc_initialize_pass::destroy(graphic::bc_device& p_device)
+	void bc_initialize_pass::destroy(game::bc_render_system& p_render_system)
 	{
 		unshare_resource(game::bc_render_pass_resource_variable::depth_stencil_texture);
 		unshare_resource(game::bc_render_pass_resource_variable::depth_stencil_view);

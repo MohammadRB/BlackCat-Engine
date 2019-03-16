@@ -85,7 +85,7 @@ namespace black_cat
 		protected:
 
 		private:
-			graphic::bc_texture2d_content_ptr _add_get_default_diffuse_map(core::bc_vector4i p_diffuse);
+			graphic::bc_texture2d_content_ptr _create_texture_from_color(core::bc_vector4i p_color);
 
 			core::bc_content_stream_manager& m_content_stream_manager;
 			bc_render_system& m_render_system;
@@ -97,7 +97,7 @@ namespace black_cat
 			graphic::bc_texture_config m_default_texture_config;
 			graphic::bc_texture2d_content_ptr m_default_diffuse_map;
 			graphic::bc_texture2d_content_ptr m_default_normal_map;
-			default_diffuse_map m_default_diffuse_maps;
+			default_diffuse_map m_color_textures;
 		};
 	}
 }

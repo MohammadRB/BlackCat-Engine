@@ -114,7 +114,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_shape_draw_pass::destroy(graphic::bc_device& p_device)
+	void bc_shape_draw_pass::destroy(game::bc_render_system& p_render_system)
 	{
 		m_render_pass_state.reset();
 		m_pipeline_state.reset();

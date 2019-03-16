@@ -29,22 +29,24 @@ struct bc_vs_output
 	float2 m_texcoord	: TEXCOORD0;
 	float3 m_normal     : NORMAL0;
 	float3 m_tangent    : TANGENT0;
+	float3 m_binormal	: BINORMAL0;
 };
 
 struct bc_ps_output
 {
-	float4 m_color		: SV_Target;
+	float4 m_diffuse	: SV_Target0;
+	float4 m_normal		: SV_Target1;
 };
 
 bc_vs_output gbuffer_vs(bc_vs_input p_input)
 {
 	bc_vs_output l_output;
 
-	float4x4 l_world_view_projection = mul(g_world, g_viewprojection);
-	l_output.m_position = mul(float4(p_input.m_position, 1), l_world_view_projection);
+	l_output.m_position = mul(float4(p_input.m_position, 1), g_world_view_projection);
 	l_output.m_texcoord = p_input.m_texcoord;
 	l_output.m_normal = mul(p_input.m_normal, (float3x3)g_world);
 	l_output.m_tangent = mul(p_input.m_tangent, (float3x3) g_world);
+	l_output.m_binormal = mul(l_output.m_normal, l_output.m_tangent)
 
 	return l_output;
 }
@@ -54,14 +56,18 @@ bc_ps_output gbuffer_ps(bc_vs_output p_input)
 	bc_ps_output l_output;
 
 	float4 l_diffuse = g_tex2d_diffuse.Sample(g_sam_sampler, p_input.m_texcoord);
+	float4 l_normal = g_tex2d_normal.Sample(g_sam_sampler, p_input.m_texcooed);
+	float4 l_specular = g_tex2d_specular.Sample(g_sam_sampler, p_input.m_texcoord);
 
-	float3 l_light_dir = -g_light_dir;
-	float3 l_normal = p_input.m_normal;
+	float3x3 l_tbn;
+	l_tbn[0] = p_input.m_tangent;
+	l_tbn[1] = p_input.m_binormal;
+	l_tbn[2] = p_input.m_normal;
 
-	float l_ndl = max(0, dot(l_normal, l_light_dir));
-	l_diffuse.xyz = l_ndl * g_light_color;
+	float3 l_final_normal = (mul(l_normal, l_tbn) + 1) / 2.0f;
 
-	l_output.m_color = float4(l_diffuse.xyz, 1);
+	l_output.m_diffuse = float4(l_diffuse.xyz, l_specular);
+	l_output.m_normal = float4(l_final_normal, g_specular_power);
 
 	return l_output;
 }

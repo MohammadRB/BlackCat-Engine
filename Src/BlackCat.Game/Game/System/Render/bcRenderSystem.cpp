@@ -106,7 +106,7 @@ namespace black_cat
 				return false;
 			}
 
-			l_pass->destroy(m_device);
+			l_pass->destroy(*this);
 
 			return m_render_pass_manager->remove_pass(p_location);
 		}
@@ -658,7 +658,7 @@ namespace black_cat
 			m_per_object_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
 
 			m_shape_drawer.destroy_buffers();
-			m_render_pass_manager->pass_destroy(m_device);
+			m_render_pass_manager->pass_destroy(*this);
 
 			m_light_manager.reset();
 			m_render_pass_manager.reset();

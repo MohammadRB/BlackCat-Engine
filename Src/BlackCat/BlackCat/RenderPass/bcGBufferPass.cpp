@@ -114,7 +114,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_gbuffer_pass::destroy(graphic::bc_device& p_device)
+	void bc_gbuffer_pass::destroy(game::bc_render_system& p_render_system)
 	{
 		m_render_pass_state.reset();
 		m_sampler_state.reset();

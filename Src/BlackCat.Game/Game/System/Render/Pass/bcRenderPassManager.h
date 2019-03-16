@@ -63,7 +63,7 @@ namespace black_cat
 
 			void after_reset(const bc_render_pass_reset_param& p_param);
 
-			void pass_destroy(graphic::bc_device& p_device);
+			void pass_destroy(bc_render_system& p_render_system);
 
 		protected:
 

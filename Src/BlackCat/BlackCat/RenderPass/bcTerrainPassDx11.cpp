@@ -211,7 +211,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_terrain_pass_dx11::destroy(graphic::bc_device& p_device)
+	void bc_terrain_pass_dx11::destroy(game::bc_render_system& p_render_system)
 	{
 		m_device_compute_state.reset();
 		m_pipeline_state.reset();

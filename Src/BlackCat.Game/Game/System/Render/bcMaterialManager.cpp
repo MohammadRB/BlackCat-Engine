@@ -93,7 +93,7 @@ namespace black_cat
 			m_default_texture_config = p_other.m_default_texture_config;
 			m_default_diffuse_map = std::move(p_other.m_default_diffuse_map);
 			m_default_normal_map = std::move(p_other.m_default_normal_map);
-			m_default_diffuse_maps = std::move(p_other.m_default_diffuse_maps);
+			m_color_textures = std::move(p_other.m_color_textures);
 
 			return *this;
 		}
@@ -156,8 +156,7 @@ namespace black_cat
 				}
 			}
 
-			auto l_description_entry = m_material_descriptions.find(l_hash);
-
+			const auto l_description_entry = m_material_descriptions.find(l_hash);
 			if (l_description_entry == std::cend(m_material_descriptions))
 			{
 				return nullptr;
@@ -180,7 +179,7 @@ namespace black_cat
 			}
 			else
 			{
-				l_diffuse_map = _add_get_default_diffuse_map(l_description_entry->second.m_diffuse_color);
+				l_diffuse_map = _create_texture_from_color(l_description_entry->second.m_diffuse_color);
 			}
 
 			if (!l_description_entry->second.m_normal_map_name.empty())
@@ -263,42 +262,42 @@ namespace black_cat
 			}
 		}
 
-		graphic::bc_texture2d_content_ptr bc_material_manager::_add_get_default_diffuse_map(core::bc_vector4i p_diffuse)
+		graphic::bc_texture2d_content_ptr bc_material_manager::_create_texture_from_color(core::bc_vector4i p_color)
 		{
 			constexpr bcUBYTE l_color_step_tolerance = 10;
 
 			bcINT32 l_step_min;
 			bcINT32 l_step_max;
 
-			l_step_min = (p_diffuse.x / l_color_step_tolerance) * l_color_step_tolerance;
-			l_step_max = ((p_diffuse.x / l_color_step_tolerance) + 1) * l_color_step_tolerance;
-			p_diffuse.x = p_diffuse.x - l_step_min <= l_color_step_tolerance / 2 ? l_step_min : l_step_max;
+			l_step_min = (p_color.x / l_color_step_tolerance) * l_color_step_tolerance;
+			l_step_max = ((p_color.x / l_color_step_tolerance) + 1) * l_color_step_tolerance;
+			p_color.x = p_color.x - l_step_min <= l_color_step_tolerance / 2 ? l_step_min : l_step_max;
 
-			l_step_min = (p_diffuse.y / l_color_step_tolerance) * l_color_step_tolerance;
-			l_step_max = ((p_diffuse.y / l_color_step_tolerance) + 1) * l_color_step_tolerance;
-			p_diffuse.y = p_diffuse.y - l_step_min <= l_color_step_tolerance / 2 ? l_step_min : l_step_max;
+			l_step_min = (p_color.y / l_color_step_tolerance) * l_color_step_tolerance;
+			l_step_max = ((p_color.y / l_color_step_tolerance) + 1) * l_color_step_tolerance;
+			p_color.y = p_color.y - l_step_min <= l_color_step_tolerance / 2 ? l_step_min : l_step_max;
 
-			l_step_min = (p_diffuse.z / l_color_step_tolerance) * l_color_step_tolerance;
-			l_step_max = ((p_diffuse.z / l_color_step_tolerance) + 1) * l_color_step_tolerance;
-			p_diffuse.z = p_diffuse.z - l_step_min <= l_color_step_tolerance / 2 ? l_step_min : l_step_max;
+			l_step_min = (p_color.z / l_color_step_tolerance) * l_color_step_tolerance;
+			l_step_max = ((p_color.z / l_color_step_tolerance) + 1) * l_color_step_tolerance;
+			p_color.z = p_color.z - l_step_min <= l_color_step_tolerance / 2 ? l_step_min : l_step_max;
 
-			l_step_min = (p_diffuse.w / l_color_step_tolerance) * l_color_step_tolerance;
-			l_step_max = ((p_diffuse.w / l_color_step_tolerance) + 1) * l_color_step_tolerance;
-			p_diffuse.w = p_diffuse.w - l_step_min <= l_color_step_tolerance / 2 ? l_step_min : l_step_max;
+			l_step_min = (p_color.w / l_color_step_tolerance) * l_color_step_tolerance;
+			l_step_max = ((p_color.w / l_color_step_tolerance) + 1) * l_color_step_tolerance;
+			p_color.w = p_color.w - l_step_min <= l_color_step_tolerance / 2 ? l_step_min : l_step_max;
 
-			auto l_hash = p_diffuse.to_rgba();
-			auto l_diffuse_map_entry = m_default_diffuse_maps.find(l_hash);
+			auto l_hash = p_color.to_rgba();
+			auto l_diffuse_map_entry = m_color_textures.find(l_hash);
 
-			if(l_diffuse_map_entry != std::cend(m_default_diffuse_maps))
+			if(l_diffuse_map_entry != std::cend(m_color_textures))
 			{
 				return l_diffuse_map_entry->second;
 			}
 
-			graphic::bc_subresource_data l_normal_map_init_data(&p_diffuse, sizeof(core::bc_vector4f), 0);
+			graphic::bc_subresource_data l_diffuse_map_init_data(&p_color, sizeof(core::bc_vector4f), 0);
 			auto l_diffuse_texture = graphic::bc_texture2d_content(m_render_system.get_device().create_texture2d
 			(
 				m_default_texture_config,
-				&l_normal_map_init_data
+				&l_diffuse_map_init_data
 			));
 
 			core::bc_string_frame l_diffuse_content_name = "material_default_diffuse_map_";
@@ -310,7 +309,7 @@ namespace black_cat
 				l_diffuse_content_name.c_str(),
 				std::move(l_diffuse_texture)
 			);
-			l_diffuse_map_entry = m_default_diffuse_maps.insert(default_diffuse_map::value_type(l_hash, std::move(l_diffuse_texture_ptr))).first;
+			l_diffuse_map_entry = m_color_textures.insert(default_diffuse_map::value_type(l_hash, std::move(l_diffuse_texture_ptr))).first;
 
 			return l_diffuse_map_entry->second;
 		}
