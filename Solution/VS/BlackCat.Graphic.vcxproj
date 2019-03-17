@@ -167,22 +167,48 @@
       <AdditionalLibraryDirectories>$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Graphycs\Graphic\*.h ..\..\BC_SDK\Include\Graphic
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Device\*.h ..\..\BC_SDK\Include\Graphic\Device
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Device\Command\*.h ..\..\BC_SDK\Include\Graphic\Device\Command
-copy ..\..\Src\BlackCat.Graphycs\Graphic\PipelineStage\*.h ..\..\BC_SDK\Include\Graphic\PipelineStage
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\*.h ..\..\BC_SDK\Include\Graphic\Graphic\Resource
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\Buffer\*.h ..\..\BC_SDK\Include\Graphic\Resource\Buffer
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\State\*.h ..\..\BC_SDK\Include\Graphic\Resource\State
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\Texture\*.h ..\..\BC_SDK\Include\Graphic\Resource\Texture
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\View\*.h ..\..\BC_SDK\Include\Graphic\Resource\View
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Shader\*.h ..\..\BC_SDK\Include\Graphic\Shader
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Shader\Parameter\*.h ..\..\BC_SDK\Include\Graphic\Shader\Parameter
+      <Command>copy ..\..\Src\BlackCat.Graphic
+\Graphic\*.h ..\..\BC_SDK\Include\Graphic
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Device\*.h ..\..\BC_SDK\Include\Graphic\Device
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Device\Command\*.h ..\..\BC_SDK\Include\Graphic\Device\Command
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\PipelineStage\*.h ..\..\BC_SDK\Include\Graphic\PipelineStage
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Resource\*.h ..\..\BC_SDK\Include\Graphic\Graphic\Resource
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Resource\Buffer\*.h ..\..\BC_SDK\Include\Graphic\Resource\Buffer
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Resource\State\*.h ..\..\BC_SDK\Include\Graphic\Resource\State
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Resource\Texture\*.h ..\..\BC_SDK\Include\Graphic\Resource\Texture
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Resource\View\*.h ..\..\BC_SDK\Include\Graphic\Resource\View
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Shader\*.h ..\..\BC_SDK\Include\Graphic\Shader
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Shader\Parameter\*.h ..\..\BC_SDK\Include\Graphic\Shader\Parameter
+
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
     </PostBuildEvent>
     <Bscmake>
@@ -211,22 +237,48 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <AdditionalLibraryDirectories>$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Graphycs\Graphic\*.h ..\..\BC_SDK\Include\Graphic
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Device\*.h ..\..\BC_SDK\Include\Graphic\Device
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Device\Command\*.h ..\..\BC_SDK\Include\Graphic\Device\Command
-copy ..\..\Src\BlackCat.Graphycs\Graphic\PipelineStage\*.h ..\..\BC_SDK\Include\Graphic\PipelineStage
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\*.h ..\..\BC_SDK\Include\Graphic\Graphic\Resource
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\Buffer\*.h ..\..\BC_SDK\Include\Graphic\Resource\Buffer
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\State\*.h ..\..\BC_SDK\Include\Graphic\Resource\State
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\Texture\*.h ..\..\BC_SDK\Include\Graphic\Resource\Texture
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Resource\View\*.h ..\..\BC_SDK\Include\Graphic\Resource\View
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Shader\*.h ..\..\BC_SDK\Include\Graphic\Shader
-copy ..\..\Src\BlackCat.Graphycs\Graphic\Shader\Parameter\*.h ..\..\BC_SDK\Include\Graphic\Shader\Parameter
+      <Command>copy ..\..\Src\BlackCat.Graphic
+\Graphic\*.h ..\..\BC_SDK\Include\Graphic
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Device\*.h ..\..\BC_SDK\Include\Graphic\Device
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Device\Command\*.h ..\..\BC_SDK\Include\Graphic\Device\Command
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\PipelineStage\*.h ..\..\BC_SDK\Include\Graphic\PipelineStage
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Resource\*.h ..\..\BC_SDK\Include\Graphic\Graphic\Resource
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Resource\Buffer\*.h ..\..\BC_SDK\Include\Graphic\Resource\Buffer
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Resource\State\*.h ..\..\BC_SDK\Include\Graphic\Resource\State
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Resource\Texture\*.h ..\..\BC_SDK\Include\Graphic\Resource\Texture
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Resource\View\*.h ..\..\BC_SDK\Include\Graphic\Resource\View
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Shader\*.h ..\..\BC_SDK\Include\Graphic\Shader
+
+copy ..\..\Src\BlackCat.Graphic
+\Graphic\Shader\Parameter\*.h ..\..\BC_SDK\Include\Graphic\Shader\Parameter
+
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

@@ -102,18 +102,25 @@
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Concurrency\*.h ..\..\BC_SDK\Include\CorePlatformImp\Concurrency
+
 copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Memory\*.h ..\..\BC_SDK\Include\CorePlatformImp\Memory
+
 copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Utility\*.h ..\..\BC_SDK\Include\CorePlatformImp\Utility
+
 copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\File\*.h ..\..\BC_SDK\Include\CorePlatformImp\File
+
 copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\*.h ..\..\BC_SDK\Include\CorePlatformImp
 
-copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
-copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
-copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
-copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
 
-</Command>
+copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+
+copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+
+copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+
+copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
     </PostBuildEvent>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -142,15 +149,24 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Concurrency\*.h ..\..\BC_SDK\Include\CorePlatformImp\Concurrency
+
 copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Memory\*.h ..\..\BC_SDK\Include\CorePlatformImp\Memory
+
 copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Utility\*.h ..\..\BC_SDK\Include\CorePlatformImp\Utility
+
 copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\File\*.h ..\..\BC_SDK\Include\CorePlatformImp\File
+
 copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\*.h ..\..\BC_SDK\Include\CorePlatformImp
 
+
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

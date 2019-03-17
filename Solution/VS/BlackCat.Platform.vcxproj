@@ -121,13 +121,20 @@
     <PostBuildEvent>
       <Command>copy ..\..\Src\BlackCat.Platform\Platform\*.h ..\..\BC_SDK\Include\Platform
 copy ..\..\Src\BlackCat.Platform\Platform\Application\*.h ..\..\BC_SDK\Include\Platform\Application
+
 copy ..\..\Src\BlackCat.Platform\Platform\File\*.h ..\..\BC_SDK\Include\Platform\File
+
 copy ..\..\Src\BlackCat.Platform\Platform\Script\*.h ..\..\BC_SDK\Include\Platform\Script
 
+
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
     </PostBuildEvent>
     <Bscmake>
@@ -158,13 +165,20 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <PostBuildEvent>
       <Command>copy ..\..\Src\BlackCat.Platform\Platform\*.h ..\..\BC_SDK\Include\Platform
 copy ..\..\Src\BlackCat.Platform\Platform\Application\*.h ..\..\BC_SDK\Include\Platform\Application
+
 copy ..\..\Src\BlackCat.Platform\Platform\File\*.h ..\..\BC_SDK\Include\Platform\File
+
 copy ..\..\Src\BlackCat.Platform\Platform\Script\*.h ..\..\BC_SDK\Include\Platform\Script
 
+
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

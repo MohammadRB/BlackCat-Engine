@@ -344,15 +344,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Event\bcEvent.cpp">
       <Filter>Core\Event</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcContent.cpp">
-      <Filter>Core\File</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcContentLoader.cpp">
-      <Filter>Core\File</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcContentStreamManager.cpp">
-      <Filter>Core\File</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcPath.cpp">
       <Filter>Core\File</Filter>
     </ClCompile>

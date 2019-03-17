@@ -138,14 +138,21 @@
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\*.h ..\..\BC_SDK\Include\PlatformImp
+
 copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\*.h ..\..\BC_SDK\Include\PlatformImp\Application
+
 copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\File\*.h ..\..\BC_SDK\Include\PlatformImp\File
+
 copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\*.h ..\..\BC_SDK\Include\PlatformImp\Script
 
+
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
     </PostBuildEvent>
     <Bscmake>
@@ -176,14 +183,21 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\*.h ..\..\BC_SDK\Include\PlatformImp
+
 copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\*.h ..\..\BC_SDK\Include\PlatformImp\Application
+
 copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\File\*.h ..\..\BC_SDK\Include\PlatformImp\File
+
 copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\*.h ..\..\BC_SDK\Include\PlatformImp\Script
 
+
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

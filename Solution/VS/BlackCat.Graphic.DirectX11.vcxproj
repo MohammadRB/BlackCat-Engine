@@ -185,27 +185,46 @@
       <AdditionalDependencies>3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\*.h ..\..\BC_SDK\Include\GraphicImp
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Device\*.h ..\..\BC_SDK\Include\GraphicImp\Device
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Device\Command\*.h ..\..\BC_SDK\Include\GraphicImp\Device\Command
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Device\Loader\*.h ..\..\BC_SDK\Include\GraphicImp\Loader
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\PipelineStage\*.h ..\..\BC_SDK\Include\GraphicImp\PipelineStage
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Resource\*.h ..\..\BC_SDK\Include\GraphicImp\Resource
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Resource\Buffer\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\Buffer
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Resource\State\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\State
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Resource\Texture\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\Texture
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Resource\View\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\View
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Shader\*.h ..\..\BC_SDK\Include\GraphicImp\Shader
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Shader\Parameter\*.h ..\..\BC_SDK\Include\GraphicImp\Shader\Parameter
+      <Command>copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\*.h ..\..\BC_SDK\Include\GraphicImp
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\*.h ..\..\BC_SDK\Include\GraphicImp\Device
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\*.h ..\..\BC_SDK\Include\GraphicImp\Device\Command
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Loader\*.h ..\..\BC_SDK\Include\GraphicImp\Loader
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\PipelineStage\*.h ..\..\BC_SDK\Include\GraphicImp\PipelineStage
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\*.h ..\..\BC_SDK\Include\GraphicImp\Resource
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\Buffer\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\Buffer
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\State\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\State
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\Texture\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\Texture
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\View\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\View
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\*.h ..\..\BC_SDK\Include\GraphicImp\Shader
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\Parameter\*.h ..\..\BC_SDK\Include\GraphicImp\Shader\Parameter
+
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
 
+
 copy ..\..\3rdParty\3rdParty\DirectXTK-master\Inc\*.h ..\..\BC_SDK\Include\3rdParty\DirectXTK
+
 copy ..\..\3rdParty\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.lib ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)
+
 copy ..\..\3rdParty\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.pdb ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)</Command>
     </PostBuildEvent>
     <Bscmake>
@@ -235,27 +254,46 @@ copy ..\..\3rdParty\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Con
       <AdditionalDependencies>3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\*.h ..\..\BC_SDK\Include\GraphicImp
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Device\*.h ..\..\BC_SDK\Include\GraphicImp\Device
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Device\Command\*.h ..\..\BC_SDK\Include\GraphicImp\Device\Command
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Device\Loader\*.h ..\..\BC_SDK\Include\GraphicImp\Loader
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\PipelineStage\*.h ..\..\BC_SDK\Include\GraphicImp\PipelineStage
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Resource\*.h ..\..\BC_SDK\Include\GraphicImp\Resource
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Resource\Buffer\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\Buffer
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Resource\State\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\State
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Resource\Texture\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\Texture
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Resource\View\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\View
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Shader\*.h ..\..\BC_SDK\Include\GraphicImp\Shader
-copy ..\..\Src\BlackCat.Graphycs.DirectX11\GraphicImp\Shader\Parameter\*.h ..\..\BC_SDK\Include\GraphicImp\Shader\Parameter
+      <Command>copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\*.h ..\..\BC_SDK\Include\GraphicImp
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\*.h ..\..\BC_SDK\Include\GraphicImp\Device
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\*.h ..\..\BC_SDK\Include\GraphicImp\Device\Command
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Loader\*.h ..\..\BC_SDK\Include\GraphicImp\Loader
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\PipelineStage\*.h ..\..\BC_SDK\Include\GraphicImp\PipelineStage
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\*.h ..\..\BC_SDK\Include\GraphicImp\Resource
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\Buffer\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\Buffer
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\State\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\State
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\Texture\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\Texture
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\View\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\View
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\*.h ..\..\BC_SDK\Include\GraphicImp\Shader
+
+copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\Parameter\*.h ..\..\BC_SDK\Include\GraphicImp\Shader\Parameter
+
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
 
+
 copy ..\..\3rdParty\3rdParty\DirectXTK-master\Inc\*.h ..\..\BC_SDK\Include\3rdParty\DirectXTK
+
 copy ..\..\3rdParty\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.lib ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)
+
 copy ..\..\3rdParty\3rdParty\DirectXTK-master\Bin\Desktop_2015\$(Platform)\$(Configuration)\DirectXTK.pdb ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
