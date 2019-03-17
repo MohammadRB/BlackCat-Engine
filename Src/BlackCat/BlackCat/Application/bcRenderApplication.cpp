@@ -13,7 +13,7 @@
 #include "Game/Object/Scene/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/System/Script/bcScriptBinding.h"
-#include "Game/System/Render/bcRenderPassManager.h"
+#include "Game/System/Render/Pass/bcRenderPassManager.h"
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/System/Script/bcScriptSystem.h"
 #include "Game/Object/Scene/Component/bcNameComponent.h"

@@ -8,8 +8,8 @@
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "GraphicImp/Resource/View/bcDepthStencilView.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
-#include "Game/System/Render/bcRenderPass.h"
-#include "Game/System/Render/bcRenderPassState.h"
+#include "Game/System/Render/Pass/bcRenderPass.h"
+#include "Game/System/Render/Pass/bcRenderPassState.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat

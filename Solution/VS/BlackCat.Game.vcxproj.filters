@@ -37,6 +37,12 @@
     <Filter Include="Game\Object\Scene\SceneGraph">
       <UniqueIdentifier>{57a57c24-c593-4f84-b2a5-7a1ad0ed5ee6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\System\Render\State">
+      <UniqueIdentifier>{1606374e-f37a-496a-8268-ebfb3f110714}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\System\Render\Pass">
+      <UniqueIdentifier>{8d9e08fd-b4a0-446c-96b6-097d20694a20}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h">
@@ -102,28 +108,10 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcInputSystem.h">
       <Filter>Game\System\Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcComputeState.h">
-      <Filter>Game\System\Render</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcMaterialManager.h">
       <Filter>Game\System\Render</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderInstance.h">
-      <Filter>Game\System\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderPass.h">
-      <Filter>Game\System\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderPassManager.h">
-      <Filter>Game\System\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderPassResourceShare.h">
-      <Filter>Game\System\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderPassState.h">
-      <Filter>Game\System\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderState.h">
       <Filter>Game\System\Render</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderSystem.h">
@@ -139,12 +127,6 @@
       <Filter>Game\System\Render</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderThreadManager.h">
-      <Filter>Game\System\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcStateConfigs.h">
-      <Filter>Game\System\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcVertexLayout.h">
       <Filter>Game\System\Render</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcDefaultGameConsole.h">
@@ -231,6 +213,30 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcSceneGraphBuffer.h">
       <Filter>Game\Object\Scene\SceneGraph</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcComputeState.h">
+      <Filter>Game\System\Render\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcRenderState.h">
+      <Filter>Game\System\Render\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcStateConfigs.h">
+      <Filter>Game\System\Render\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcVertexLayout.h">
+      <Filter>Game\System\Render\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPass.h">
+      <Filter>Game\System\Render\Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassManager.h">
+      <Filter>Game\System\Render\Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Pass\System\Render\bcRenderPassResourceShare.h">
+      <Filter>Game\System\Render\Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassState.h">
+      <Filter>Game\System\Render\Pass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -278,19 +284,7 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFreeCamera.cpp">
       <Filter>Game\System\Input</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcComputeState.cpp">
-      <Filter>Game\System\Render</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcMaterialManager.cpp">
-      <Filter>Game\System\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderPassManager.cpp">
-      <Filter>Game\System\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderPassState.cpp">
-      <Filter>Game\System\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderState.cpp">
       <Filter>Game\System\Render</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderSystem.cpp">
@@ -353,9 +347,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcShapeDrawer.cpp">
       <Filter>Game\System\Render</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcStateConfigs.cpp">
-      <Filter>Game\System\Render</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcOctalTreeSceneGraphNode.cpp">
       <Filter>Game\Object\Scene\SceneGraph</Filter>
     </ClCompile>
@@ -364,6 +355,21 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcCameraFrustum.cpp">
       <Filter>Game\System\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcComputeState.cpp">
+      <Filter>Game\System\Render\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcRenderState.cpp">
+      <Filter>Game\System\Render\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcStateConfigs.cpp">
+      <Filter>Game\System\Render\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassManager.cpp">
+      <Filter>Game\System\Render\Pass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassState.cpp">
+      <Filter>Game\System\Render\Pass</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

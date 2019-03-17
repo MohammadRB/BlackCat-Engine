@@ -7,7 +7,7 @@
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
-#include "Game/System/Render/bcVertexLayout.h"
+#include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/System/Render/bcRenderSystemParameter.h"
 #include "Game/bcExport.h"
 

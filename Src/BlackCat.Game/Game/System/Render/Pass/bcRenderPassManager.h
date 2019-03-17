@@ -9,9 +9,9 @@
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "Game/bcExport.h"
-#include "Game/System/Render/bcRenderPass.h"
+#include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/bcRenderThread.h"
-#include "Game/System/Render/bcRenderPassResourceShare.h"
+#include "Game/System/Render/Pass/bcRenderPassResourceShare.h"
 
 namespace black_cat
 {
