@@ -221,9 +221,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy ..\..\3rdParty\3rdParty\DirectXTK-master\Inc\*.h ..\..\BC_SDK\Include\3rdParty\DirectXTK
 
-copy ..\..\3rdParty\3rdParty\DirectXTK-master\Lib\$(Platform)_$(Configuration)\DirectXTK.lib ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)
-
-copy ..\..\3rdParty\3rdParty\DirectXTK-master\Lib\$(Platform)_$(Configuration)\DirectXTK.pdb ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)</Command>
+copy ..\..\3rdParty\3rdParty\DirectXTK-master\Lib\$(Platform)_$(Configuration)\DirectXTK.lib ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)</Command>
     </PostBuildEvent>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -288,9 +286,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy ..\..\3rdParty\3rdParty\DirectXTK-master\Inc\*.h ..\..\BC_SDK\Include\3rdParty\DirectXTK
 
-copy ..\..\3rdParty\3rdParty\DirectXTK-master\Lib\$(Platform)_$(Configuration)\DirectXTK.lib ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)
-
-copy ..\..\3rdParty\3rdParty\DirectXTK-master\Lib\$(Platform)_$(Configuration)\DirectXTK.pdb ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)</Command>
+copy ..\..\3rdParty\3rdParty\DirectXTK-master\Lib\$(Platform)_$(Configuration)\DirectXTK.lib ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
