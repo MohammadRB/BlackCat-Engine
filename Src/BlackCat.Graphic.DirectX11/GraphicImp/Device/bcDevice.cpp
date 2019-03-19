@@ -36,11 +36,10 @@
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 
-#include "3rdParty/DirectXTK-master/Inc/DDSTextureLoader.h"
-#include "3rdParty/DirectXTK-master/Inc/WICTextureLoader.h"
-#include "3rdParty/DirectXTK-master/Inc/ScreenGrab.h"
+#include "3rdParty/DirectXTK-master/Include/DDSTextureLoader.h"
+#include "3rdParty/DirectXTK-master/Include/WICTextureLoader.h"
+#include "3rdParty/DirectXTK-master/Include/ScreenGrab.h"
 #include <wincodec.h>
-#include "Graphic/Device/bcDevice.h"
 
 using namespace Microsoft::WRL;
 

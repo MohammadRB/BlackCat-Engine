@@ -101,7 +101,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>3rdParty\PhysX\Lib\x86_debug\PhysX3CommonDEBUG_x86.lib;3rdParty\PhysX\Lib\x86_debug\PhysX3DEBUG_x86.lib;3rdParty\PhysX\Lib\x86_debug\PhysX3CookingDEBUG_x86.lib;3rdParty\PhysX\Lib\x86_debug\PhysX3ExtensionsDEBUG.lib;3rdParty\PhysX\Lib\x86_debug\PhysXProfileSDKDEBUG.lib;3rdParty\PhysX\Lib\x86_debug\PhysXVisualDebuggerSDKDEBUG.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CommonDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3DEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CookingDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3ExtensionsDEBUG.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysXProfileSDKDEBUG.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysXVisualDebuggerSDKDEBUG.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\PhysicsImp
@@ -177,7 +177,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>3rdParty\PhysX\Lib\x86_release\PhysX3Common_x86.lib;3rdParty\PhysX\Lib\x86_release\PhysX3_x86.lib;3rdParty\PhysX\Lib\x86_release\PhysX3Cooking_x86.lib;3rdParty\PhysX\Lib\x86_release\PhysX3Extensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Common_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Cooking_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Extensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\PhysicsImp

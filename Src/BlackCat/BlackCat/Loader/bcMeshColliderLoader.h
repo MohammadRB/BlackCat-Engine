@@ -7,7 +7,7 @@
 #include "Game/Object/Mesh/bcMeshCollider.h"
 #include "BlackCat/bcExport.h"
 
-#include "3rdParty/Assimp/include/assimp/scene.h"
+#include "3rdParty/Assimp/Include/scene.h"
 
 namespace black_cat
 {

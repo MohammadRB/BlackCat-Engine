@@ -105,7 +105,7 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
 </Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/lib/$(Configuration)/assimp-vc130-mtd.lib</AdditionalDependencies>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/Lib/$(Platform)_$(Configuration)/assimp-vc130-mtd.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(Configuration)\;..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <ProjectReference>
@@ -166,7 +166,7 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
 </Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/lib/$(Configuration)/assimp-vc130-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/Lib/$(Platform)_$(Configuration)/assimp-vc130-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(Configuration)\;..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>

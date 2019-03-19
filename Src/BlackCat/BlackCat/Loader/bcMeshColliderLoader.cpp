@@ -11,8 +11,8 @@
 #include "BlackCat/Loader/bcMeshLoader.h"
 #include "BlackCat/Loader/bcMeshColliderLoader.h"
 
-#include "3rdParty/Assimp/include/assimp/postprocess.h"
-#include "3rdParty/Assimp/include/assimp/Importer.hpp"
+#include "3rdParty/Assimp/Include/postprocess.h"
+#include "3rdParty/Assimp/Include/Importer.hpp"
 
 namespace black_cat
 {
