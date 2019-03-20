@@ -100,18 +100,21 @@
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\Concurrency\*.h ..\..\BC_SDK\Include\CorePlatform\Concurrency
+
 copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\Memory\*.h ..\..\BC_SDK\Include\CorePlatform\Memory
+
 copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\Utility\*.h ..\..\BC_SDK\Include\CorePlatform\Utility
+
 copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\File\*.h ..\..\BC_SDK\Include\CorePlatform\File
+
 copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\*.h ..\..\BC_SDK\Include\CorePlatform
 
-copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
-copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
-copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
-copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
 
-</Command>
+copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+
+copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
     </PostBuildEvent>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -140,15 +143,20 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\Concurrency\*.h ..\..\BC_SDK\Include\CorePlatform\Concurrency
+
 copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\Memory\*.h ..\..\BC_SDK\Include\CorePlatform\Memory
+
 copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\Utility\*.h ..\..\BC_SDK\Include\CorePlatform\Utility
+
 copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\File\*.h ..\..\BC_SDK\Include\CorePlatform\File
+
 copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\*.h ..\..\BC_SDK\Include\CorePlatform
 
+
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
-copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
-copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

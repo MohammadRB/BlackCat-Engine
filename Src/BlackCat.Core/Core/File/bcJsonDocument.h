@@ -11,9 +11,9 @@
 #include "Core/Utility/bcTemplateMetaType.h"
 #include "Core/File/bcJsonParse.h"
 
-#include "3rdParty/RapidJSON/include/rapidjson/document.h"
-#include "3rdParty/RapidJSON/include/rapidjson/writer.h"
-#include "3rdParty/RapidJSON/include/rapidjson/prettywriter.h"
+#include "3rdParty/RapidJSON/Include/document.h"
+#include "3rdParty/RapidJSON/Include/writer.h"
+#include "3rdParty/RapidJSON/Include/prettywriter.h"
 
 namespace black_cat
 {
