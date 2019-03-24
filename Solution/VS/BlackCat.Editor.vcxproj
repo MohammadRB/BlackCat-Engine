@@ -61,6 +61,7 @@
     <PostBuildEvent>
       <Command>copy ..\..\Src\BlackCat.Editor\Editor\Content\Data\*.json $(Configuration)\Content\Data
 copy ..\..\Src\BlackCat.Editor\Editor\Content\Scene\*.json $(Configuration)\Content\Scene
+copy ..\..\Src\BlackCat.Editor\Editor\Content\Model\*.* $(Configuration)\Content\Model
 copy ..\..\Src\BlackCat.Editor\Editor\Content\Shader\DirectX11\*.hlsli $(Configuration)\Content\Shader\DirectX11
 
 copy ..\..\Src\BlackCat.Editor\Editor\Content\Shader\DirectX11\*.hlsl $(Configuration)\Content\Shader\DirectX11</Command>
@@ -88,6 +89,7 @@ copy ..\..\Src\BlackCat.Editor\Editor\Content\Shader\DirectX11\*.hlsl $(Configur
     <PostBuildEvent>
       <Command>copy ..\..\Src\BlackCat.Editor\Editor\Content\Data\*.json $(Configuration)\Content\Data
 copy ..\..\Src\BlackCat.Editor\Editor\Content\Scene\*.json $(Configuration)\Content\Scene
+copy ..\..\Src\BlackCat.Editor\Editor\Content\Model\*.* $(Configuration)\Content\Model
 copy ..\..\Src\BlackCat.Editor\Editor\Content\Shader\DirectX11\*.hlsli $(Configuration)\Content\Shader\DirectX11
 
 copy ..\..\Src\BlackCat.Editor\Editor\Content\Shader\DirectX11\*.hlsl $(Configuration)\Content\Shader\DirectX11</Command>
