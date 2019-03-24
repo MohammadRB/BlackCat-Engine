@@ -9,6 +9,7 @@
 #include "Editor/UICommand/bcUITerrainCommand.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
 #include "BlackCat/RenderPass/bcTerrainPassDx11.h"
+#include "BlackCat/RenderPass/bcGBufferTerrainPassDx11.h"
 
 namespace black_cat
 {
@@ -83,7 +84,8 @@ namespace black_cat
 
 			const bool l_result = update(l_context);
 
-			p_context.m_game_system.get_render_system().get_render_pass<bc_terrain_pass_dx11>()->update_chunk_infos();
+			//p_context.m_game_system.get_render_system().get_render_pass<bc_terrain_pass_dx11>()->update_chunk_infos();
+			p_context.m_game_system.get_render_system().get_render_pass<bc_gbuffer_terrain_pass_dx11>()->update_chunk_infos();
 
 			return l_result;
 		}

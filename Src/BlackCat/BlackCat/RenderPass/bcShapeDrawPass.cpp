@@ -63,7 +63,7 @@ namespace black_cat
 	{
 		auto& l_shape_drawer = p_param.m_render_system.get_shape_drawer();
 
-		p_param.m_scene.render_debug_shapes(l_shape_drawer);
+		p_param.m_scene.add_debug_shapes(l_shape_drawer);
 		l_shape_drawer.render(p_param.m_render_system, p_param.m_render_thread);
 
 		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);

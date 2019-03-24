@@ -44,8 +44,8 @@ namespace black_cat
 {
 	bc_render_application::bc_render_application()
 		: game::bc_render_application(),
-		m_service_manager(nullptr),
-		m_game_system(nullptr)
+		m_game_system(nullptr),
+		m_service_manager(nullptr)
 	{
 	}
 
@@ -70,26 +70,26 @@ namespace black_cat
 		core::bc_service_manager::start_up();
 		m_service_manager = &core::bc_service_manager::get();
 
-		m_service_manager->register_service(core::bc_make_service<core::bc_logger>());
-		m_service_manager->register_service(core::bc_make_service<core::bc_event_manager>());
-		m_service_manager->register_service(core::bc_make_service<core::bc_thread_manager>
+		core::bc_register_service(core::bc_make_service<core::bc_logger>());
+		core::bc_register_service(core::bc_make_service<core::bc_event_manager>());
+		core::bc_register_service(core::bc_make_service<core::bc_thread_manager>
 		(
 			p_parameters.m_engine_parameters.m_thread_manager_thread_count,
 			p_parameters.m_engine_parameters.m_thread_manager_reserve_thread_count
 		));
-		m_service_manager->register_service(core::bc_make_service<core::bc_content_manager>());
-		m_service_manager->register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
-		m_service_manager->register_service(core::bc_make_service<game::bc_actor_component_manager>());
-		m_service_manager->register_service(core::bc_make_service<game::bc_entity_manager>(*core::bc_get_service<game::bc_actor_component_manager>()));
-		m_service_manager->register_service(core::bc_make_service<game::bc_game_system>());
+		core::bc_register_service(core::bc_make_service<core::bc_content_manager>());
+		core::bc_register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
+		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>());
+		core::bc_register_service(core::bc_make_service<game::bc_entity_manager>(*core::bc_get_service<game::bc_actor_component_manager>()));
+		core::bc_register_service(core::bc_make_service<game::bc_game_system>());
 
-		auto* l_logger_manager = core::bc_get_service<core::bc_logger>();
+		auto* l_log_manager = core::bc_get_service<core::bc_logger>();
 		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
 		auto* l_entity_manager = core::bc_get_service<game::bc_entity_manager>();
 		m_game_system = core::bc_get_service<game::bc_game_system>();
 
 #ifdef BC_DEBUG
-		l_logger_manager->register_listener
+		l_log_manager->register_listener
 		(
 			core::bc_enum:: or ({ core::bc_log_type::debug, core::bc_log_type::error }),
 			core::bc_make_unique< platform::bc_ide_logger >(core::bc_alloc_type::program)
@@ -173,8 +173,8 @@ namespace black_cat
 			)
 		);
 
-		auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
-		auto* l_entity_manager = m_service_manager->get_service< game::bc_entity_manager >();
+		auto* l_content_stream_manager = core::bc_get_service< core::bc_content_stream_manager >();
+		auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
 		auto& l_material_manager = m_game_system->get_render_system().get_material_manager();
 		auto& l_script_system = m_game_system->get_script_system();
 		auto l_script_binder = l_script_system.get_script_binder();
@@ -195,7 +195,7 @@ namespace black_cat
 
 	void bc_render_application::app_load_content()
 	{
-		application_load_content(m_service_manager->get_service< core::bc_content_stream_manager >());
+		application_load_content(core::bc_get_service< core::bc_content_stream_manager >());
 	}
 
 	void bc_render_application::app_update(core_platform::bc_clock::update_param p_clock_update_param)
@@ -218,7 +218,7 @@ namespace black_cat
 
 	void bc_render_application::app_unload_content()
 	{
-		auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
+		auto* l_content_stream_manager = core::bc_get_service< core::bc_content_stream_manager >();
 
 		application_unload_content(l_content_stream_manager);
 

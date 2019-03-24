@@ -28,6 +28,9 @@
     <Filter Include="BlackCat\Content\Shader\DirectX11">
       <UniqueIdentifier>{5ffddde4-c01d-47e1-99b4-0016f04a463c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BlackCat\Content\Shader\DirectX11\DeferredRendering">
+      <UniqueIdentifier>{fedec527-ffe6-4dfa-bae6-98f8930fccaf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.h">
@@ -96,6 +99,9 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferFinalPass.h">
       <Filter>BlackCat\RenderPass</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferTerrainPassDx11.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -158,6 +164,9 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferFinalPass.cpp">
       <Filter>BlackCat\RenderPass</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferTerrainPassDx11.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcMeshShader.hlsl">
@@ -172,8 +181,11 @@
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcShapeDraw.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcMeshGBuffer.hlsl">
-      <Filter>BlackCat\Content\Shader\DirectX11</Filter>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcMeshGBuffer.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\DeferredRendering</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcGBufferComposition.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\DeferredRendering</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

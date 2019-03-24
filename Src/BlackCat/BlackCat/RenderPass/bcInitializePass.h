@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "GraphicImp/Resource/View/bcDepthStencilView.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
@@ -34,6 +35,7 @@ namespace black_cat
 	protected:
 
 	private:
+		//graphic::bc_device_command_list_ptr m_command_list;
 		graphic::bc_format m_depth_stencil_format;
 		graphic::bc_format m_render_target_format;
 		graphic::bc_texture2d_ptr m_depth_buffer;

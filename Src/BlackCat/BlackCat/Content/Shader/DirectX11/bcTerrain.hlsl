@@ -90,6 +90,12 @@ struct bc_ps_output
 	float4 m_color      : SV_Target0;
 };
 
+struct bc_ps_gbuffer_output
+{
+	float4 m_diffuse	: SV_Target0;
+	float4 m_normal		: SV_Target1;
+};
+
 // == Helper =======================================================================================
 
 float get_height(float2 p_texcoord)
@@ -412,6 +418,38 @@ bc_ps_output ps(bc_ds_output p_input)
 	float3 l_color = l_diffuse + l_ndl * g_light_color;
 
 	l_output.m_color = float4(l_color, 1);
+
+	return l_output;
+}
+
+bc_ps_gbuffer_output gbuffer_ps(bc_vs_output p_input)
+{
+	bc_ps_gbuffer_output l_output;
+
+	float2x3 l_textures = get_texture(p_input.m_texcoord);
+	float3 l_diffuse = l_textures[0];
+	float3 l_normal = normalize(l_textures[1]) * 2.0f - 1.0f;
+
+	float2 l_texel_space = float2(1, 1) / float2(g_width + 1, g_height + 1);
+	float2 l_left_tex = p_input.m_texcoord + float2(-l_texel_space.x, 0.0f);
+	float2 l_right_tex = p_input.m_texcoord + float2(l_texel_space.x, 0.0f);
+	float2 l_bottom_tex = p_input.m_texcoord + float2(0.0f, l_texel_space.y);
+	float2 l_top_tex = p_input.m_texcoord + float2(0.0f, -l_texel_space.y);
+
+	float l_left_height = get_height_linear(l_left_tex);
+	float l_right_height = get_height_linear(l_right_tex);
+	float l_bottom_height = get_height_linear(l_bottom_tex);
+	float l_top_height = get_height_linear(l_top_tex);
+
+	float3x3 l_tbn;
+	l_tbn[0] = normalize(float3(2.0f * g_xz_multiplier, l_right_height - l_left_height, 0.0f));
+	l_tbn[1] = normalize(float3(0.0f, l_bottom_height - l_top_height, -2.0f * g_xz_multiplier));
+	l_tbn[2] = normalize(cross(l_tbn[0], l_tbn[1]));
+
+	float3 l_final_normal = (mul(l_normal, l_tbn) + 1) / 2.0f;
+
+	l_output.m_diffuse = float4(l_diffuse.xyz, 1);
+	l_output.m_normal = float4(l_final_normal, 1);
 
 	return l_output;
 }

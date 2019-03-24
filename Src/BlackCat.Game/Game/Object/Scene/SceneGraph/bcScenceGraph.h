@@ -64,7 +64,7 @@ namespace black_cat
 
 			void update(core_platform::bc_clock::update_param p_clock_update_param);
 
-			void render_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
+			void add_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
 			void clear();
 

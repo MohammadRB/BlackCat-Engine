@@ -49,6 +49,10 @@ namespace black_cat
 
 	void bc_initialize_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
+		/*p_param.m_render_thread.start(m_command_list.get());
+		p_param.m_render_thread.clear_buffers(core::bc_vector4f(0, 0, 255, 0), 1, 0);
+		p_param.m_render_thread.finish();
+		m_command_list->reset();*/
 	}
 
 	void bc_initialize_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
@@ -88,6 +92,7 @@ namespace black_cat
 			.as_texture_view(m_render_target_format)
 			.as_tex2d_render_target_view(0);
 
+		//m_command_list = p_param.m_device.create_command_list();
 		m_depth_buffer = p_param.m_device.create_texture2d(l_depth_buffer_config, nullptr);
 		m_depth_stencil_view = p_param.m_device.create_depth_stencil_view(m_depth_buffer.get(), l_depth_view_config);
 		m_render_target_view = p_param.m_device.create_render_target_view(l_back_buffer_texture, l_render_target_config);
@@ -103,6 +108,7 @@ namespace black_cat
 		unshare_resource(game::bc_render_pass_resource_variable::depth_stencil_view);
 		unshare_resource(game::bc_render_pass_resource_variable::render_target_view_1);
 
+		//m_command_list.reset();
 		m_depth_buffer.reset();
 		m_depth_stencil_view.reset();
 		m_render_target_view.reset();

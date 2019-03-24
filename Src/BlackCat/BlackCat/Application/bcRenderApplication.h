@@ -22,7 +22,6 @@ namespace black_cat
 		virtual ~bc_render_application();
 
 	protected:
-		core::bc_service_manager* m_service_manager;
 		game::bc_game_system* m_game_system;
 
 	private:
@@ -61,5 +60,7 @@ namespace black_cat
 		void app_destroy() override final;
 
 		void app_close_engine_components() override final;
+
+		core::bc_service_manager* m_service_manager;
 	};
 }

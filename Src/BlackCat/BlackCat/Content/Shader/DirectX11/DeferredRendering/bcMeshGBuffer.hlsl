@@ -1,6 +1,6 @@
 // [03/10/2019 MRB]
 
-#include "bcRegister.hlsli"
+#include "..\bcRegister.hlsli"
 
 SamplerState g_sam_sampler      : register(BC_RENDER_PASS_STATE_S0);
 

@@ -57,6 +57,13 @@ namespace black_cat
 		}
 
 		template< class TService >
+		TService* bc_register_service(bc_service_ptr<TService> p_service)
+		{
+			static bc_service_manager& s_instance = bc_service_manager::get();
+			return s_instance.register_service(std::move(p_service));
+		}
+
+		template< class TService >
 		TService* bc_get_service()
 		{
 			static bc_service_manager& s_instance = bc_service_manager::get();

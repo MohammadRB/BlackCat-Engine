@@ -60,6 +60,9 @@
     <Filter Include="Editor\Content\Data">
       <UniqueIdentifier>{5f31b520-2838-4b62-88ae-32a0e300fcf2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Editor\Content\Scene">
+      <UniqueIdentifier>{d226d214-d4d6-4b70-b0db-7a1d9fae9309}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\qrc_bcBlackCatEditor.cpp">
@@ -414,6 +417,18 @@
     </None>
     <None Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\style.qss">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap.json">
+      <Filter>Editor\Content\Scene</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap_ContentStream.json">
+      <Filter>Editor\Content\Scene</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap_EntityType.json">
+      <Filter>Editor\Content\Scene</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap_Material.json">
+      <Filter>Editor\Content\Scene</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
