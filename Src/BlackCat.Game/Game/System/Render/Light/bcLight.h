@@ -8,6 +8,7 @@
 #include "Game/System/Render/Light/bcDirectLight.h"
 #include "Game/System/Render/Light/bcPointLight.h"
 #include "Game/System/Render/Light/bcSpotLight.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
@@ -16,7 +17,7 @@ namespace black_cat
 		class bc_light;
 		class bc_light_manager;
 
-		class _bc_light_ptr_deleter
+		class BC_GAME_DLL _bc_light_ptr_deleter
 		{
 		public:
 			_bc_light_ptr_deleter();
@@ -36,7 +37,7 @@ namespace black_cat
 			spot
 		};
 
-		class bc_light : core::bc_ref_count, core_platform::bc_no_copy
+		class BC_GAME_DLL bc_light : core::bc_ref_count, core_platform::bc_no_copy
 		{
 			friend class bc_light_manager;
 

@@ -63,9 +63,6 @@
     <Filter Include="Editor\Content\Scene">
       <UniqueIdentifier>{d226d214-d4d6-4b70-b0db-7a1d9fae9309}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Editor\Content\Model">
-      <UniqueIdentifier>{cf62d927-1524-435e-a9f0-e74ee30470dc}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\qrc_bcBlackCatEditor.cpp">

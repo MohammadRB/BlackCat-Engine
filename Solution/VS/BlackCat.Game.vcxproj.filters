@@ -392,14 +392,14 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassState.cpp">
       <Filter>Game\System\Render\Pass</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLight.cpp">
-      <Filter>Game\System\Render\Light</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightManager.cpp">
       <Filter>Game\System\Render\Light</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcLightComponent.cpp">
       <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLight.cpp">
+      <Filter>Game\System\Render\Light</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

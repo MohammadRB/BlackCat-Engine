@@ -79,8 +79,21 @@ namespace black_cat
 		class bc_stream : core_platform::bc_no_copy
 		{
 		public:
-			// Initialize stream with an actual stream object
-			template< class TStreamAdapter >
+			/**
+			 * \brief Initialize stream with an actual stream object
+			 * \tparam TStreamAdapter 
+			 * \param p_stream 
+			 */
+			template
+			< 
+				class TStreamAdapter,
+				typename = std::enable_if_t
+				<
+					!std::is_lvalue_reference_v< TStreamAdapter > 
+					&&
+					!std::is_same_v< std::decay_t< TStreamAdapter >, bc_stream > 
+				> 
+			>
 			explicit bc_stream(TStreamAdapter&& p_stream);
 
 			bc_stream(bc_stream&& p_other) noexcept;
@@ -107,16 +120,34 @@ namespace black_cat
 
 			void set_timeout(bcUINT32 p_millisecond);
 
-			// Get stream pointer from beginning of stream
+			/**
+			 * \brief Get stream pointer from beginning of stream
+			 * \return 
+			 */
 			bcUINT64 get_position() const;
 
-			// Move stream pointer by offset(bytes) and return new location from beginning of stream
+			/**
+			 * \brief Move stream pointer by offset(bytes) and return new location from beginning of stream
+			 * \param p_seek_location 
+			 * \param p_offset 
+			 * \return 
+			 */
 			bcUINT64 set_position(bc_stream_seek p_seek_location, bcINT64 p_offset);
 
-			// Return number of bytes that has been read
+			/**
+			 * \brief Return number of bytes that has been read
+			 * \param p_buffer 
+			 * \param p_bytes_to_read 
+			 * \return 
+			 */
 			bcSIZE read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read);
 
-			// Return number of bytes that has been written
+			/**
+			 * \brief Return number of bytes that has been written
+			 * \param p_buffer 
+			 * \param p_bytes_to_write 
+			 * \return 
+			 */
 			bcSIZE write(const bcBYTE* p_buffer, bcSIZE p_bytes_to_write);
 
 			bcUINT64 length() const noexcept;
@@ -135,7 +166,7 @@ namespace black_cat
 			bc_unique_ptr< bc_istream_adapter > m_stream;
 		};
 
-		template< class TStreamAdapter >
+		template< class TStreamAdapter, typename >
 		bc_stream::bc_stream(TStreamAdapter&& p_stream)
 		{
 			using stream_adapter_t = std::remove_reference_t< TStreamAdapter >;

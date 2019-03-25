@@ -74,7 +74,7 @@ namespace black_cat
 				1,
 				graphic::bc_format::D32_FLOAT,
 				graphic::bc_resource_usage::gpu_rw,
-				graphic::bc_resource_view_type::depth_stencil
+				core::bc_enum:: or ({ graphic::bc_resource_view_type::depth_stencil, graphic::bc_resource_view_type::shader })
 			).as_depth_stencil_texture();
 		auto l_diffuse_map_config = l_resource_configure
 			.as_resource()
@@ -86,7 +86,7 @@ namespace black_cat
 				1,
 				graphic::bc_format::R8G8B8A8_UNORM,
 				graphic::bc_resource_usage::gpu_rw,
-				graphic::bc_resource_view_type::render_target
+				core::bc_enum:: or ({ graphic::bc_resource_view_type::render_target, graphic::bc_resource_view_type::shader })
 			).as_render_target_texture();
 		auto l_normal_map_config = l_resource_configure
 			.as_resource()
@@ -98,7 +98,7 @@ namespace black_cat
 				1,
 				graphic::bc_format::R8G8B8A8_UNORM,
 				graphic::bc_resource_usage::gpu_rw,
-				graphic::bc_resource_view_type::render_target
+				core::bc_enum:: or ({ graphic::bc_resource_view_type::render_target, graphic::bc_resource_view_type::shader })
 			).as_render_target_texture();
 
 		auto l_depth_stencil_view_config = l_resource_configure
@@ -107,11 +107,11 @@ namespace black_cat
 			.as_tex2d_depth_stencil_view(0);
 		auto l_diffuse_map_view_config = l_resource_configure
 			.as_resource_view()
-			.as_texture_view(graphic::bc_format::R8G8B8A8_UNORM)
+			.as_texture_view(l_diffuse_map_config.get_format())
 			.as_tex2d_render_target_view(0);
 		auto l_normal_map_view_config = l_resource_configure
 			.as_resource_view()
-			.as_texture_view(graphic::bc_format::R8G8B8A8_UNORM)
+			.as_texture_view(l_normal_map_config.get_format())
 			.as_tex2d_render_target_view(0);
 
 		m_depth_stencil = p_param.m_device.create_texture2d(l_depth_stencil_config, nullptr);
@@ -119,7 +119,7 @@ namespace black_cat
 		m_normal_map = p_param.m_device.create_texture2d(l_normal_map_config, nullptr);
 		m_depth_stencil_view = p_param.m_device.create_depth_stencil_view(m_depth_stencil.get(), l_depth_stencil_view_config);
 		m_diffuse_map_view = p_param.m_device.create_render_target_view(m_diffuse_map.get(), l_diffuse_map_view_config);
-		m_normal_map_view = p_param.m_device.create_render_target_view(m_normal_map.get(), l_diffuse_map_view_config);
+		m_normal_map_view = p_param.m_device.create_render_target_view(m_normal_map.get(), l_normal_map_view_config);
 
 		share_resource(game::bc_render_pass_resource_variable::depth_stencil_texture, m_depth_stencil.get());
 		share_resource(game::bc_render_pass_resource_variable::depth_stencil_view, m_depth_stencil_view.get());

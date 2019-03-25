@@ -458,17 +458,20 @@ namespace black_cat
 
 					try
 					{
-						l_context.m_file.reset(bc_stream(l_offline_file_stream));
+						l_context.m_file.reset(bc_stream(std::move(l_offline_file_stream)));
 						p_loader->content_offline_processing(l_context);
 					}
-					catch (...)
+					catch (const std::exception& p_exception)
 					{
-						l_offline_file_stream.close();
+						l_context.m_file->close();
 
 						bc_path l_offline_file(p_offline_file);
 						l_offline_file.delete_path();
 
-						bc_string_frame l_message = bc_string_frame("Error in loading content file: ") + bc_to_exclusive_string(p_offline_file).c_str();
+						bc_string_frame l_message = bc_string_frame("Error in loading content file: ") + 
+							bc_to_exclusive_string(p_offline_file).c_str() + 
+							". " + 
+							p_exception.what();
 						throw bc_io_exception(l_message.c_str());
 					}
 					

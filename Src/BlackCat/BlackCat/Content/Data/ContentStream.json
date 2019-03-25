@@ -70,6 +70,12 @@
           "content_parameter": { "function": "gbuffer_ps" }
         },
         {
+          "content_title": "terrain_gbuffer_ps",
+          "content_name": "cnt_pixel_shader",
+          "content_file": "content\\shader\\directx11\\bcTerrain.hlsl",
+          "content_parameter": { "function": "gbuffer_ps" }
+        },
+        {
           "content_title": "gbuffer_composition",
           "content_name": "cnt_compute_shader",
           "content_file": "content\\shader\\directx11\\deferredrendering\\bcGBufferComposition.hlsl",

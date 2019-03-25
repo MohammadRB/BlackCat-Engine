@@ -60,8 +60,8 @@ namespace black_cat
 			(
 				m_num_direct_lights,
 				sizeof(_bc_direct_light_cbuffer),
-				graphic::bc_resource_usage::gpu_r_cpu_w,
-				graphic::bc_resource_view_type::unordered
+				graphic::bc_resource_usage::gpu_rw,
+				graphic::bc_resource_view_type::shader
 			)
 			.as_structured_buffer(sizeof(_bc_direct_light_cbuffer));
 		auto l_point_lights_buffer_config = l_resource_configure.as_resource()
@@ -69,8 +69,8 @@ namespace black_cat
 			(
 				m_num_point_lights,
 				sizeof(_bc_point_light_cbuffer),
-				graphic::bc_resource_usage::gpu_r_cpu_w,
-				graphic::bc_resource_view_type::unordered
+				graphic::bc_resource_usage::gpu_rw,
+				graphic::bc_resource_view_type::shader
 			)
 			.as_structured_buffer(sizeof(_bc_point_light_cbuffer));
 		auto l_spot_lights_buffer_config = l_resource_configure.as_resource()
@@ -78,8 +78,8 @@ namespace black_cat
 			(
 				m_num_spot_lights,
 				sizeof(_bc_spot_light_cbuffer),
-				graphic::bc_resource_usage::gpu_r_cpu_w,
-				graphic::bc_resource_view_type::unordered
+				graphic::bc_resource_usage::gpu_rw,
+				graphic::bc_resource_view_type::shader
 			)
 			.as_structured_buffer(sizeof(_bc_spot_light_cbuffer));
 
@@ -103,6 +103,23 @@ namespace black_cat
 		m_direct_lights_buffer_view = l_device.create_resource_view(m_direct_lights_buffer.get(), l_direct_lights_buffer_view_config);
 		m_point_lights_buffer_view = l_device.create_resource_view(m_point_lights_buffer.get(), l_point_lights_buffer_view_config);
 		m_spot_lights_buffer_view = l_device.create_resource_view(m_spot_lights_buffer.get(), l_spot_lights_buffer_view_config);
+
+		graphic::bc_device_parameters l_old_parameters
+		(
+			0,
+			0,
+			graphic::bc_format::unknown,
+			graphic::bc_texture_ms_config(1, 0)
+		);
+		graphic::bc_device_parameters l_new_parameters
+		(
+			l_device.get_back_buffer_width(),
+			l_device.get_back_buffer_height(),
+			l_device.get_back_buffer_format(),
+			l_device.get_back_buffer_texture().get_sample_count()
+		);
+
+		after_reset(game::bc_render_pass_reset_param(p_render_system, l_device, l_old_parameters, l_new_parameters));
 	}
 
 	void bc_gbuffer_final_pass::update(const game::bc_render_pass_update_param& p_param)
@@ -181,10 +198,20 @@ namespace black_cat
 		p_param.m_render_thread.update_subresource(m_direct_lights_buffer.get(), 0, l_direct_lights.data(), 0, 0);
 		p_param.m_render_thread.update_subresource(m_point_lights_buffer.get(), 0, l_point_lights.data(), 0, 0);
 		p_param.m_render_thread.update_subresource(m_spot_lights_buffer.get(), 0, l_spot_lights.data(), 0, 0);
+
+		auto l_light = p_param.m_render_system.get_light_manager().add_light(game::bc_direct_light
+		(
+			core::bc_vector3f(0, -0.3, 1),
+			core::bc_vector3f(203 / 255.0f, 199 / 255.0f, 175 / 255.0f),
+			1,
+			core::bc_vector3f(203 / 255.0f, 199 / 255.0f, 175 / 255.0f),
+			1
+		));
 	}
 
 	void bc_gbuffer_final_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
+		p_param.m_render_thread.run_compute_shader(m_compute_state.get());
 		p_param.m_render_thread.finish();
 	}
 
@@ -212,7 +239,7 @@ namespace black_cat
 
 		auto l_depth_resource_view_config = l_resource_configure
 			.as_resource_view()
-			.as_texture_view(l_depth_stencil->get_format())
+			.as_texture_view(graphic::bc_format::R32_FLOAT)
 			.as_tex2d_shader_view(0, 1)
 			.on_texture2d();
 		auto l_diffuse_map_view_config = l_resource_configure
@@ -230,7 +257,7 @@ namespace black_cat
 		m_diffuse_map_view = p_param.m_device.create_resource_view(*l_diffuse_map, l_diffuse_map_view_config);
 		m_normal_map_view = p_param.m_device.create_resource_view(*l_normal_map, l_normal_map_view_config);
 
-		/*auto l_output_texture_config = l_resource_configure
+		auto l_output_texture_config = l_resource_configure
 			.as_resource()
 			.as_texture2d
 			(
@@ -249,15 +276,7 @@ namespace black_cat
 			.on_texture2d();
 
 		m_output_texture = p_param.m_device.create_texture2d(l_output_texture_config, nullptr);
-		m_output_texture_view = p_param.m_device.create_resource_view(m_output_texture.get(), l_output_texture_view_config);*/
-
-		auto l_back_buffer_texture = p_param.m_device.get_back_buffer_texture();
-		auto l_output_texture_view_config = l_resource_configure
-			.as_resource_view()
-			.as_texture_view(l_back_buffer_texture.get_format())
-			.as_tex2d_unordered_shader_view(0)
-			.on_texture2d();
-		m_output_texture_view = p_param.m_device.create_resource_view(l_back_buffer_texture, l_output_texture_view_config);
+		m_output_texture_view = p_param.m_device.create_resource_view(m_output_texture.get(), l_output_texture_view_config);
 
 		m_compute_state = p_param.m_render_system.create_compute_state
 		(
