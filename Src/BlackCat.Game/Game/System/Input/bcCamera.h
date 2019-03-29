@@ -105,7 +105,7 @@ namespace black_cat
 				const platform::bc_key_device& p_key_device) = 0;
 
 		protected:
-			bc_icamera(bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
+			bc_icamera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
 
 			bc_icamera(bc_icamera&&) = default;
 

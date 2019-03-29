@@ -96,10 +96,13 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferPass.h">
       <Filter>BlackCat\RenderPass</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferFinalPass.h">
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferTerrainPassDx11.h">
       <Filter>BlackCat\RenderPass</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferTerrainPassDx11.h">
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferWritePass.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferCompositionPass.h">
       <Filter>BlackCat\RenderPass</Filter>
     </ClInclude>
   </ItemGroup>
@@ -161,10 +164,13 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferPass.cpp">
       <Filter>BlackCat\RenderPass</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferFinalPass.cpp">
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferTerrainPassDx11.cpp">
       <Filter>BlackCat\RenderPass</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferTerrainPassDx11.cpp">
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferWritePass.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferCompositionPass.cpp">
       <Filter>BlackCat\RenderPass</Filter>
     </ClCompile>
   </ItemGroup>
@@ -186,6 +192,9 @@
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcGBufferComposition.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\DeferredRendering</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcBBWrite.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

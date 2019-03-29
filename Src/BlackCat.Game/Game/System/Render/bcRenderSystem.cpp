@@ -35,6 +35,11 @@ namespace black_cat
 			core::bc_matrix4f m_projection;
 			BC_CBUFFER_ALIGN 
 			core::bc_matrix4f m_view_projection;
+			BC_CBUFFER_ALIGN
+			bcUINT32 m_screen_width;
+			bcUINT32 m_screen_height;
+			bcFLOAT m_near_plan;
+			bcFLOAT m_far_plan;
 			BC_CBUFFER_ALIGN 
 			core::bc_vector3f m_camera_position;
 			BC_CBUFFER_ALIGN 
@@ -124,11 +129,30 @@ namespace black_cat
 			m_render_states.at(l_state_index).second.push_back(p_instance);
 		}
 
+		void bc_render_system::update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera)
+		{
+			_bc_render_system_global_state_cbuffer l_global_state;
+			l_global_state.m_view = p_camera.get_view().transpose();
+			l_global_state.m_projection = p_camera.get_projection().transpose();
+			l_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection()).transpose();
+			l_global_state.m_screen_width = p_camera.get_screen_width();
+			l_global_state.m_screen_height = p_camera.get_screen_height();
+			l_global_state.m_near_plan = p_camera.get_near_clip();
+			l_global_state.m_far_plan = p_camera.get_far_clip();
+			l_global_state.m_camera_position = p_camera.get_position();
+			l_global_state.m_elapsed = p_clock.m_elapsed;
+			l_global_state.m_total_elapsed = p_clock.m_total_elapsed;
+			l_global_state.m_elapsed_second = p_clock.m_elapsed_second;
+
+			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
+			p_render_thread.update_subresource(l_buffer, 0, &l_global_state, 0, 0);
+		}
+
 		void bc_render_system::render_all_instances(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera)
 		{
 			auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
 
-			_update_global_cbuffer(p_render_thread, p_clock, p_camera);
+			update_global_cbuffer(p_render_thread, p_clock, p_camera);
 
 			p_render_thread.bind_ps_constant_buffer_parameter(m_global_cbuffer_parameter);
 			p_render_thread.pipeline_apply_states(_convert_shader_type_to_pipeline_stage(m_global_cbuffer_parameter.get_shader_types()));
@@ -352,7 +376,6 @@ namespace black_cat
 			}
 		}
 		
-		int render_state_count = 0;
 		bc_render_state_ptr bc_render_system::create_render_state(graphic::bc_primitive p_primitive,
 			graphic::bc_buffer p_vertex_buffer, 
 			bcUINT32 p_vertex_buffer_stride,
@@ -394,7 +417,6 @@ namespace black_cat
 
 			{
 				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
-				++render_state_count;
 
 				auto l_first_empty = std::find_if(std::begin(m_render_states), std::end(m_render_states), [](const render_state_entry& p_item)
 				{
@@ -527,7 +549,6 @@ namespace black_cat
 		{
 			{
 				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
-				--render_state_count;
 				
 				auto l_item = std::find_if(std::begin(m_render_states), std::end(m_render_states), [p_render_state](const render_state_entry& p_item)
 				{
@@ -619,7 +640,8 @@ namespace black_cat
 					graphic::bc_shader_type::hull,
 					graphic::bc_shader_type::domain,
 					graphic::bc_shader_type::geometry,
-					graphic::bc_shader_type::pixel
+					graphic::bc_shader_type::pixel,
+					graphic::bc_shader_type::compute
 				}),
 				m_global_cbuffer.get()
 			);
@@ -692,22 +714,7 @@ namespace black_cat
 
 			m_device.destroy();
 		}
-
-		void bc_render_system::_update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera)
-		{
-			_bc_render_system_global_state_cbuffer l_global_state;
-			l_global_state.m_view = p_camera.get_view().transpose();
-			l_global_state.m_projection = p_camera.get_projection().transpose();
-			l_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection()).transpose();
-			l_global_state.m_camera_position = p_camera.get_position();
-			l_global_state.m_elapsed = p_clock.m_elapsed;
-			l_global_state.m_total_elapsed = p_clock.m_total_elapsed;
-			l_global_state.m_elapsed_second = p_clock.m_elapsed_second;
-
-			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
-			p_render_thread.update_subresource(l_buffer, 0, &l_global_state, 0, 0);
-		}
-
+		
 		bool bc_render_system::_event_handler(core::bc_ievent& p_event)
 		{
 			if(core::bc_ievent::event_is<platform::bc_app_event_window_resize>(p_event))

@@ -9,7 +9,7 @@
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/Light/bcLightManager.h"
-#include "BlackCat/RenderPass/bcGBufferFinalPass.h"
+#include "BlackCat/RenderPass/bcGBufferCompositionPass.h"
 
 namespace black_cat
 {
@@ -46,7 +46,7 @@ namespace black_cat
 		bcFLOAT m_intensity;
 	};
 
-	void bc_gbuffer_final_pass::initialize_resources(game::bc_render_system& p_render_system)
+	void bc_gbuffer_composition_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
 
@@ -122,11 +122,11 @@ namespace black_cat
 		after_reset(game::bc_render_pass_reset_param(p_render_system, l_device, l_old_parameters, l_new_parameters));
 	}
 
-	void bc_gbuffer_final_pass::update(const game::bc_render_pass_update_param& p_param)
+	void bc_gbuffer_composition_pass::update(const game::bc_render_pass_update_param& p_param)
 	{
 	}
 
-	void bc_gbuffer_final_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_composition_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
 		core::bc_vector_frame<_bc_direct_light_cbuffer> l_direct_lights;
 		core::bc_vector_frame<_bc_point_light_cbuffer> l_point_lights;
@@ -198,28 +198,21 @@ namespace black_cat
 		p_param.m_render_thread.update_subresource(m_direct_lights_buffer.get(), 0, l_direct_lights.data(), 0, 0);
 		p_param.m_render_thread.update_subresource(m_point_lights_buffer.get(), 0, l_point_lights.data(), 0, 0);
 		p_param.m_render_thread.update_subresource(m_spot_lights_buffer.get(), 0, l_spot_lights.data(), 0, 0);
-
-		auto l_light = p_param.m_render_system.get_light_manager().add_light(game::bc_direct_light
-		(
-			core::bc_vector3f(0, -0.3, 1),
-			core::bc_vector3f(203 / 255.0f, 199 / 255.0f, 175 / 255.0f),
-			1,
-			core::bc_vector3f(203 / 255.0f, 199 / 255.0f, 175 / 255.0f),
-			1
-		));
 	}
 
-	void bc_gbuffer_final_pass::execute(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_composition_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
 		p_param.m_render_thread.run_compute_shader(m_compute_state.get());
 		p_param.m_render_thread.finish();
+
+		m_command_list->reset();
 	}
 
-	void bc_gbuffer_final_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_gbuffer_composition_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
 	{
 	}
 
-	void bc_gbuffer_final_pass::after_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_gbuffer_composition_pass::after_reset(const game::bc_render_pass_reset_param& p_param)
 	{
 		if
 		(
@@ -276,7 +269,7 @@ namespace black_cat
 			.on_texture2d();
 
 		m_output_texture = p_param.m_device.create_texture2d(l_output_texture_config, nullptr);
-		m_output_texture_view = p_param.m_device.create_resource_view(m_output_texture.get(), l_output_texture_view_config);
+		m_output_texture_unordered_view = p_param.m_device.create_resource_view(m_output_texture.get(), l_output_texture_view_config);
 
 		m_compute_state = p_param.m_render_system.create_compute_state
 		(
@@ -294,20 +287,21 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(5, graphic::bc_shader_type::compute, m_spot_lights_buffer_view.get())
 			},
 			{
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_output_texture_view.get())
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_output_texture_unordered_view.get())
 			},
-			{
-			}
+			{}
 		);
+
+		share_resource(game::bc_render_pass_resource_variable::intermediate_texture_1, m_output_texture.get());
 	}
 
-	void bc_gbuffer_final_pass::destroy(game::bc_render_system& p_render_system)
+	void bc_gbuffer_composition_pass::destroy(game::bc_render_system& p_render_system)
 	{
 		m_compute_state.reset();
 		m_device_compute_state.reset();
 		m_command_list.reset();
 
-		m_output_texture_view.reset();
+		m_output_texture_unordered_view.reset();
 		m_output_texture.reset();
 
 		m_direct_lights_buffer.reset();

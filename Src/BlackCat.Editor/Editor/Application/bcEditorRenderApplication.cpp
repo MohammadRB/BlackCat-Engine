@@ -17,7 +17,8 @@
 #include "BlackCat/RenderPass/bcGBufferInitializePass.h"
 #include "BlackCat/RenderPass/bcGBufferTerrainPassDx11.h"
 #include "BlackCat/RenderPass/bcGBufferPass.h"
-#include "BlackCat/RenderPass/bcGBufferFinalPass.h"
+#include "BlackCat/RenderPass/bcGBufferCompositionPass.h"
+#include "BlackCat/RenderPass/bcBackBufferWritePass.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
 #include "Editor/Application/bcEditorRenderApplication.h"
 #include "Editor/Application/bcUICommandService.h"
@@ -63,7 +64,8 @@ namespace black_cat
 			l_render_system.add_render_pass(0, bc_gbuffer_initialize_pass());
 			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
 			l_render_system.add_render_pass(2, bc_gbuffer_pass());
-			l_render_system.add_render_pass(3, bc_gbuffer_final_pass());
+			l_render_system.add_render_pass(3, bc_gbuffer_composition_pass());
+			l_render_system.add_render_pass(4, bc_back_buffer_write_pass(game::bc_render_pass_resource_variable::intermediate_texture_1));
 
 			m_shape_throw_key_handle = core::bc_get_service< core::bc_event_manager >()->register_event_listener<platform::bc_app_event_key>
 			(

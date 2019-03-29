@@ -44,9 +44,9 @@ bc_vs_output gbuffer_vs(bc_vs_input p_input)
 
 	l_output.m_position = mul(float4(p_input.m_position, 1), g_world_view_projection);
 	l_output.m_texcoord = p_input.m_texcoord;
-	l_output.m_normal = mul(p_input.m_normal, (float3x3)g_world);
-	l_output.m_tangent = mul(p_input.m_tangent, (float3x3) g_world);
-	l_output.m_binormal = mul(l_output.m_normal, l_output.m_tangent);
+    l_output.m_normal = normalize(mul(p_input.m_normal, (float3x3) g_world));
+    l_output.m_tangent = normalize(mul(p_input.m_tangent, (float3x3) g_world));
+    l_output.m_binormal = normalize(mul(l_output.m_normal, l_output.m_tangent));
 
 	return l_output;
 }

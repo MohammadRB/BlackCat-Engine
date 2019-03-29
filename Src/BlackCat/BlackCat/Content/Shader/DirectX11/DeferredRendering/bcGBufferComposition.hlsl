@@ -47,9 +47,9 @@ StructuredBuffer<spot_light> g_spot_lights			: register(BC_COMPUTE_STATE_T5);
 
 RWTexture2D<float4> g_output_texture				: register(BC_COMPUTE_STATE_U0);
 
-float4 read_buffer(Texture2D<float4> p_buffer, int2 p_texcoord)
+float4 read_texture(Texture2D<float4> p_texture, int2 p_texcoord)
 {
-    return p_buffer.Load(int3(p_texcoord, 0));
+    return p_texture.Load(int3(p_texcoord, 0));
 }
 
 void write_output(int2 p_texcoord, float4 p_output)
@@ -62,6 +62,12 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 {
 	int2 l_global_texcoord = p_dispatch_thread_id.xy;
 
-	float l_depth = read_buffer(g_depth_map, l_global_texcoord).x;
+    float l_depth = read_texture(g_depth_map, l_global_texcoord).x;
+    float4 l_diffuse = read_texture(g_diffuse_map, l_global_texcoord);
+    float4 l_normal = read_texture(g_normal_map, l_global_texcoord);
+
+    l_depth = (g_near_plan * g_far_plan) / (g_far_plan - l_depth * (g_far_plan - g_near_plan));
+
     write_output(l_global_texcoord, float4(l_depth, l_depth, l_depth, l_depth));
+    //write_output(l_global_texcoord, l_normal);
 }

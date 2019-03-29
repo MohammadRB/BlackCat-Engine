@@ -90,12 +90,15 @@ namespace black_cat
 
 			switch (m_config.get_platform_pack().m_desc.Format)
 			{
+			case DXGI_FORMAT_R16_TYPELESS:
 			case DXGI_FORMAT_D16_UNORM:
 				l_new_format = DXGI_FORMAT_R16_TYPELESS;
 				break;
+			case DXGI_FORMAT_R24G8_TYPELESS:
 			case DXGI_FORMAT_D24_UNORM_S8_UINT:
 				l_new_format = DXGI_FORMAT_R24G8_TYPELESS;
 				break;
+			case DXGI_FORMAT_R32_TYPELESS:
 			case DXGI_FORMAT_D32_FLOAT:
 				l_new_format = DXGI_FORMAT_R32_TYPELESS;
 				break;

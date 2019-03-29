@@ -22,6 +22,14 @@ namespace black_cat
 			render_target_view_3,
 			render_target_texture_4,
 			render_target_view_4,
+			intermediate_texture_1,
+			intermediate_texture_view_1,
+			intermediate_texture_2,
+			intermediate_texture_view_2,
+			intermediate_texture_3,
+			intermediate_texture_view_3,
+			intermediate_texture_4,
+			intermediate_texture_view_4
 		};
 
 		class bc_render_pass_resource_share

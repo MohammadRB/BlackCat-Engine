@@ -12,8 +12,10 @@ namespace black_cat
 	{
 		// -- bc_icamera --------------------------------------------------------------------------------
 
-		bc_icamera::bc_icamera(bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
-			: m_near(p_near_clip),
+		bc_icamera::bc_icamera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
+			: m_screen_width(p_back_buffer_width),
+			m_screen_height(p_back_buffer_height),
+			m_near(p_near_clip),
 			m_far(p_far_clip),
 			m_position(core::bc_vector3f(0, 0, 0)),
 			m_lookat(core::bc_vector3f(0, 0, 1))
@@ -178,7 +180,7 @@ namespace black_cat
 			bcUINT16 p_back_buffer_height,
 			bcFLOAT p_near_clip,
 			bcFLOAT p_far_clip)
-			: bc_icamera(p_far_clip, p_near_clip)
+			: bc_icamera(p_back_buffer_width, p_back_buffer_height, p_far_clip, p_near_clip)
 		{
 			set_projection(p_back_buffer_width, p_back_buffer_height, p_near_clip, p_far_clip);
 		}
@@ -215,8 +217,12 @@ namespace black_cat
 
 		// -- bc_perspective_camera --------------------------------------------------------------------------------
 
-		bc_perspective_camera::bc_perspective_camera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip)
-			: bc_icamera(p_near_clip, p_far_clip)
+		bc_perspective_camera::bc_perspective_camera(bcUINT16 p_back_buffer_width, 
+			bcUINT16 p_back_buffer_height, 
+			bcFLOAT p_height_fov, 
+			bcFLOAT p_near_clip, 
+			bcFLOAT p_far_clip)
+			: bc_icamera(p_back_buffer_width, p_back_buffer_height, p_near_clip, p_far_clip)
 		{
 			set_projection(p_back_buffer_width, p_back_buffer_height, p_height_fov, p_near_clip, p_far_clip);
 		}

@@ -12,9 +12,9 @@
 
 namespace black_cat
 {
-	class BC_BLACKCAT_DLL bc_gbuffer_final_pass : public game::bc_irender_pass
+	class BC_BLACKCAT_DLL bc_gbuffer_composition_pass : public game::bc_irender_pass
 	{
-		BC_RENDER_PASS(gbuffer_final_pass)
+		BC_RENDER_PASS(gbuffer_composition_pass)
 
 	public:
 		void initialize_resources(game::bc_render_system& p_render_system) override;
@@ -49,7 +49,7 @@ namespace black_cat
 		graphic::bc_resource_view_ptr m_spot_lights_buffer_view;
 
 		graphic::bc_texture2d_ptr m_output_texture;
-		graphic::bc_resource_view_ptr m_output_texture_view;
+		graphic::bc_resource_view_ptr m_output_texture_unordered_view;
 
 		graphic::bc_device_command_list_ptr m_command_list;
 		graphic::bc_device_compute_state_ptr m_device_compute_state;

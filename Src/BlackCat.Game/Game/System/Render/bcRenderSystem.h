@@ -138,6 +138,8 @@ namespace black_cat
 			 */
 			void add_render_instance(const bc_render_state* p_state, const bc_render_instance& p_instance);
 
+			void update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera);
+
 			/**
 			 * \brief Render all instances in render queue
 			 */
@@ -284,8 +286,6 @@ namespace black_cat
 			void _initialize(core::bc_content_stream_manager& p_content_stream, bc_render_system_parameter p_parameter) override;
 
 			void _destroy() override;
-
-			void _update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera);
 
 			bool _event_handler(core::bc_ievent& p_event);
 

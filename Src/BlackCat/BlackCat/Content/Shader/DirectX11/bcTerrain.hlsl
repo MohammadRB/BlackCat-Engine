@@ -422,7 +422,7 @@ bc_ps_output ps(bc_ds_output p_input)
 	return l_output;
 }
 
-bc_ps_gbuffer_output gbuffer_ps(bc_vs_output p_input)
+bc_ps_gbuffer_output gbuffer_ps(bc_ds_output p_input)
 {
 	bc_ps_gbuffer_output l_output;
 
