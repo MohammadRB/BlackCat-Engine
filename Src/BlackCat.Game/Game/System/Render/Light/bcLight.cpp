@@ -27,20 +27,22 @@ namespace black_cat
 
 		bc_light::bc_light(const bc_direct_light& p_light)
 			: m_direct_light(p_light),
-			m_type(bc_light_type::direct)
+			m_type(bc_light_type::direct),
+			m_transformation(core::bc_matrix4f::identity())
 		{
-
 		}
 
 		bc_light::bc_light(const bc_point_light& p_light)
 			: m_point_light(p_light),
-			m_type(bc_light_type::point)
+			m_type(bc_light_type::point),
+			m_transformation(core::bc_matrix4f::identity())
 		{
 		}
 
 		bc_light::bc_light(const bc_spot_light& p_light)
 			: m_spot_light(p_light),
-			m_type(bc_light_type::spot)
+			m_type(bc_light_type::spot),
+			m_transformation(core::bc_matrix4f::identity())
 		{
 		}
 
@@ -66,7 +68,50 @@ namespace black_cat
 				break;
 			}
 
+			m_transformation = p_other.m_transformation;
+
 			return *this;
+		}
+
+		physics::bc_bound_box bc_light::get_bound_box() const
+		{
+			const auto l_type = get_type();
+			physics::bc_bound_box l_box;
+
+			switch (l_type)
+			{
+			case bc_light_type::direct:
+				{
+					l_box = physics::bc_bound_box(m_transformation.get_translation(), core::bc_vector3f(.5, .5, .5));
+					break;
+				}
+			case bc_light_type::point:
+				{
+					const auto l_point_light = as_point_light();
+
+					l_box = physics::bc_bound_box
+					(
+						m_transformation.get_translation() + l_point_light->get_position(),
+						core::bc_vector3f(l_point_light->get_radius())
+					);
+					break;
+				}
+			case bc_light_type::spot:
+				{
+					const auto l_spot_light = as_spot_light();
+					const auto l_position = m_transformation.get_translation() + l_spot_light->get_position();
+					const auto l_center = l_position + (l_spot_light->get_direction() * (l_spot_light->get_length() / 2));
+
+					l_box = physics::bc_bound_box
+					(
+						l_center,
+						core::bc_vector3f(l_spot_light->get_length() / 2)
+					);
+					break;
+				}
+			}
+
+			return l_box;
 		}
 
 		bc_direct_light* bc_light::as_direct_light()

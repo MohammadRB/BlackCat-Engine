@@ -122,9 +122,9 @@
           "content_parameter": { "function": "gbuffer_ps" }
         },
         {
-          "content_title": "gbuffer_composition",
+          "content_title": "gbuffer_light_map",
           "content_name": "cnt_compute_shader",
-          "content_file": "content\\shader\\directx11\\deferredrendering\\bcGBufferComposition.hlsl",
+          "content_file": "content\\shader\\directx11\\deferredrendering\\bcGBufferLightMap.hlsl",
           "content_parameter": { "function": "main" }
         }
       ]

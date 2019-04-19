@@ -13,6 +13,7 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_bound_box< g_api_physx >::bc_platform_bound_box() noexcept
+			: bc_platform_bound_box(core::bc_vector3f(0,0,0), core::bc_vector3f(0,0,0))
 		{
 		}
 

@@ -163,8 +163,12 @@ namespace black_cat
 			graphic::bc_depth_stencil_view(),
 			{ graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler_state.get()) },
 			{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, m_input_texture_view.get()) },
-			{}
+			{
+				p_param.m_render_system.get_global_cbuffer()
+			}
 		);
+
+		share_resource(game::bc_render_pass_resource_variable::back_buffer_view, m_back_buffer_view.get());
 	}
 
 	void bc_back_buffer_write_pass::destroy(game::bc_render_system& p_render_system)

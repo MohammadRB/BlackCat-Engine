@@ -92,27 +92,30 @@ namespace black_cat
 	{
 		if
 		(
-			p_param.m_old_parameters.m_width != p_param.m_new_parameters.m_width ||
-			p_param.m_old_parameters.m_height != p_param.m_new_parameters.m_height
+			p_param.m_old_parameters.m_width == p_param.m_new_parameters.m_width && p_param.m_old_parameters.m_height == p_param.m_new_parameters.m_height
 		)
 		{
-			const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(game::bc_render_pass_resource_variable::depth_stencil_view);
-			const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(game::bc_render_pass_resource_variable::render_target_view_1);
-			const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(game::bc_render_pass_resource_variable::render_target_view_2);
-			const auto l_viewport = graphic::bc_viewport::default_config(p_param.m_device.get_back_buffer_width(), p_param.m_device.get_back_buffer_height());
-			m_sampler_state = p_param.m_device.create_sampler_state(game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_wrap_wrap_wrap));
-
-			m_render_pass_state = p_param.m_render_system.create_render_pass_state
-			(
-				m_pipeline_state.get(),
-				l_viewport,
-				{ *l_diffuse_map_view, *l_normal_map_view },
-				*l_depth_stencil_view,
-				{ graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler_state.get()) },
-				{},
-				{}
-			);
+			return;
 		}
+
+		const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(game::bc_render_pass_resource_variable::depth_stencil_view);
+		const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(game::bc_render_pass_resource_variable::render_target_view_1);
+		const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(game::bc_render_pass_resource_variable::render_target_view_2);
+		const auto l_viewport = graphic::bc_viewport::default_config(p_param.m_device.get_back_buffer_width(), p_param.m_device.get_back_buffer_height());
+		m_sampler_state = p_param.m_device.create_sampler_state(game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_wrap_wrap_wrap));
+
+		m_render_pass_state = p_param.m_render_system.create_render_pass_state
+		(
+			m_pipeline_state.get(),
+			l_viewport,
+			{ *l_diffuse_map_view, *l_normal_map_view },
+			*l_depth_stencil_view,
+			{ graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler_state.get()) },
+			{},
+			{
+				p_param.m_render_system.get_global_cbuffer()
+			}
+		);
 	}
 
 	void bc_gbuffer_pass::destroy(game::bc_render_system& p_render_system)

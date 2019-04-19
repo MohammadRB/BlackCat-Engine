@@ -183,9 +183,9 @@ namespace black_cat
 		l_entity_manager->read_entity_file(m_game_system->get_file_system().get_content_data_path(bcL("EntityType.json")).c_str());
 		l_material_manager.read_material_file(m_game_system->get_file_system().get_content_data_path(bcL("Material.json")).c_str());
 
+		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_resources");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_shaders");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "deferred_rendering_shaders");
-		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_resources");
 
 		l_script_binder.bind<game::bc_game_console>(game::bc_script_context::ui, m_game_system->get_console());
 

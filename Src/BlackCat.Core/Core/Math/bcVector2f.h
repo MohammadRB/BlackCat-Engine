@@ -23,7 +23,9 @@ namespace black_cat
 		public:
 			bc_vector2();
 
-			bc_vector2(T x, T y);
+			explicit bc_vector2(T p_number);
+
+			bc_vector2(T p_x, T p_y);
 
 			bc_vector2(const bc_vector2& p_other);
 
@@ -77,6 +79,13 @@ namespace black_cat
 		bc_vector2< T >::bc_vector2()
 			: x(0),
 			y(0)
+		{
+		}
+
+		template< typename T >
+		bc_vector2<T>::bc_vector2(T p_number)
+			: x(p_number),
+			y(p_number)
 		{
 		}
 

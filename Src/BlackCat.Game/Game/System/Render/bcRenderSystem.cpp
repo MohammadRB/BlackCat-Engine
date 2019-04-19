@@ -152,10 +152,10 @@ namespace black_cat
 		{
 			auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
 
-			update_global_cbuffer(p_render_thread, p_clock, p_camera);
-
-			p_render_thread.bind_ps_constant_buffer_parameter(m_global_cbuffer_parameter);
-			p_render_thread.pipeline_apply_states(_convert_shader_type_to_pipeline_stage(m_global_cbuffer_parameter.get_shader_types()));
+			//update_global_cbuffer(p_render_thread, p_clock, p_camera);
+			
+			/*p_render_thread.bind_ps_constant_buffer_parameter(m_global_cbuffer_parameter);
+			p_render_thread.pipeline_apply_states(_convert_shader_type_to_pipeline_stage(m_global_cbuffer_parameter.get_shader_types()));*/
 
 			const graphic::bc_pipeline_stage l_per_object_cbuffer_stages = _convert_shader_type_to_pipeline_stage(m_per_object_cbuffer_parameter.get_shader_types());
 
@@ -177,8 +177,8 @@ namespace black_cat
 						graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
 						p_render_thread.update_subresource(l_buffer, 0, &l_per_object_cbuffer, 0, 0);
 
-						p_render_thread.bind_ps_constant_buffer_parameter(m_per_object_cbuffer_parameter);
-						p_render_thread.pipeline_apply_states(l_per_object_cbuffer_stages);
+						/*p_render_thread.bind_ps_constant_buffer_parameter(m_per_object_cbuffer_parameter);
+						p_render_thread.pipeline_apply_states(l_per_object_cbuffer_stages);*/
 
 						p_render_thread.draw_indexed
 						(
@@ -633,7 +633,7 @@ namespace black_cat
 
 			m_global_cbuffer_parameter = graphic::bc_constant_buffer_parameter
 			(
-				g_render_pass_state_constant_buffer_min_index - 1,
+				g_render_pass_state_constant_buffer_min_index,
 				core::bc_enum::or
 				({
 					graphic::bc_shader_type::vertex,
@@ -647,7 +647,7 @@ namespace black_cat
 			);
 			m_per_object_cbuffer_parameter = graphic::bc_constant_buffer_parameter
 			(
-				g_render_state_constant_buffer_min_index - 1,
+				g_render_state_constant_buffer_min_index,
 				core::bc_enum::or({ graphic::bc_shader_type::vertex, graphic::bc_shader_type::hull, graphic::bc_shader_type::domain }),
 				m_per_object_cbuffer.get()
 			);

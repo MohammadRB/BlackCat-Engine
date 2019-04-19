@@ -12,6 +12,10 @@ namespace black_cat
 		core::bc_vector3f project_point_to_screen_space(const bc_icamera& p_camera, const core::bc_matrix4f& p_view_proj, const core::bc_vector3f& p_point)
 		{
 			auto l_point = p_view_proj * core::bc_vector4f(p_point, 1);
+			l_point.x /= l_point.w;
+			l_point.y /= l_point.w;
+			l_point.z /= l_point.w;
+
 			l_point.x *= p_camera.get_screen_width();
 			l_point.y *= p_camera.get_screen_height();
 			l_point.z *= p_camera.get_far_clip() - p_camera.get_near_clip();

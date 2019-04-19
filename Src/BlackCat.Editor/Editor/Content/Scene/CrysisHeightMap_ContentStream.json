@@ -114,14 +114,38 @@
             "distance_detail": 100,
             "height_detail": 20,
             "materials": [
-              { "name": "terrain_material_1", "scale": 1 },
-              { "name": "terrain_material_2", "scale": 40 },
-              { "name": "terrain_material_3", "scale": 1 },
-              { "name": "terrain_material_4", "scale": 1 },
-              { "name": "terrain_material_5", "scale": 1 },
-              { "name": "terrain_material_6", "scale": 1 },
-              { "name": "terrain_material_7", "scale": 1 },
-              { "name": "terrain_material_8", "scale": 1 }
+              {
+                "name": "terrain_material_1",
+                "scale": 1
+              },
+              {
+                "name": "terrain_material_2",
+                "scale": 40
+              },
+              {
+                "name": "terrain_material_3",
+                "scale": 1
+              },
+              {
+                "name": "terrain_material_4",
+                "scale": 1
+              },
+              {
+                "name": "terrain_material_5",
+                "scale": 1
+              },
+              {
+                "name": "terrain_material_6",
+                "scale": 1
+              },
+              {
+                "name": "terrain_material_7",
+                "scale": 1
+              },
+              {
+                "name": "terrain_material_8",
+                "scale": 1
+              }
             ]
           }
         },

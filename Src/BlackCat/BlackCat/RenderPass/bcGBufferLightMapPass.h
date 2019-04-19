@@ -12,7 +12,7 @@
 
 namespace black_cat
 {
-	class BC_BLACKCAT_DLL bc_gbuffer_composition_pass : public game::bc_irender_pass
+	class BC_BLACKCAT_DLL bc_gbuffer_light_map_pass : public game::bc_irender_pass
 	{
 		BC_RENDER_PASS(gbuffer_composition_pass)
 
@@ -40,6 +40,8 @@ namespace black_cat
 		graphic::bc_resource_view_ptr m_depth_stencil_view;
 		graphic::bc_resource_view_ptr m_diffuse_map_view;
 		graphic::bc_resource_view_ptr m_normal_map_view;
+
+		graphic::bc_buffer_ptr m_parameters_cbuffer;
 
 		graphic::bc_buffer_ptr m_direct_lights_buffer;
 		graphic::bc_resource_view_ptr m_direct_lights_buffer_view;

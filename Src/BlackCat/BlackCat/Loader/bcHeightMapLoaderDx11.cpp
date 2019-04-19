@@ -527,8 +527,8 @@ namespace black_cat
 				p_context.get_allocator_alloc_type(), std::get<core::bc_string>(l_material_name).c_str()
 			);
 
-			graphic::bc_texture2d l_diffuse_map = l_material->m_diffuse_map->get_resource();
-			graphic::bc_texture2d l_normal_map = l_material->m_normal_map->get_resource();
+			/*graphic::bc_texture2d l_diffuse_map = l_material->get_diffuse_map();
+			graphic::bc_texture2d l_normal_map = l_material->get_normal_map();
 
 			auto l_diffuse_map_view_config = l_resource_configure
 				.as_resource_view()
@@ -542,10 +542,10 @@ namespace black_cat
 				.on_texture2d();
 
 			l_material->m_diffuse_map_view = l_render_system.get_device().create_resource_view(l_diffuse_map, l_diffuse_map_view_config);
-			l_material->m_normal_map_view = l_render_system.get_device().create_resource_view(l_normal_map, l_normal_map_view_config);
+			l_material->m_normal_map_view = l_render_system.get_device().create_resource_view(l_normal_map, l_normal_map_view_config);*/
 
-			l_render_state_resource_view_array[l_resource_view_count++] = graphic::bc_resource_view_parameter(l_resource_view_count, graphic::bc_shader_type::pixel, l_material->m_diffuse_map_view.get());
-			l_render_state_resource_view_array[l_resource_view_count++] = graphic::bc_resource_view_parameter(l_resource_view_count + 1, graphic::bc_shader_type::pixel, l_material->m_normal_map_view.get());
+			l_render_state_resource_view_array[l_resource_view_count++] = graphic::bc_resource_view_parameter(l_resource_view_count, graphic::bc_shader_type::pixel, l_material->get_diffuse_map_view());
+			l_render_state_resource_view_array[l_resource_view_count++] = graphic::bc_resource_view_parameter(l_resource_view_count + 1, graphic::bc_shader_type::pixel, l_material->get_normal_map_view());
 
 			l_materials.push_back(std::move(l_material));
 		}
@@ -564,6 +564,7 @@ namespace black_cat
 			0,
 			std::move(l_render_state_resource_view_array),
 			{
+				l_render_system.get_per_object_cbuffer(),
 				graphic::bc_constant_buffer_parameter(0, core::bc_enum::or
 				({
 					graphic::bc_shader_type::vertex,

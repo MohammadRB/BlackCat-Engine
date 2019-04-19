@@ -24,21 +24,34 @@ namespace black_cat
 		class bc_file_system;
 		class bc_render_system;
 
-		class _bc_material_description
+		class _bc_render_material_file_description
 		{
 		public:
-			core::bc_vector4i m_diffuse_color;
+			core::bc_vector4f m_diffuse_color;
 			bcFLOAT m_specular_intensity;
 			bcFLOAT m_specular_power;
 			core::bc_string m_diffuse_map_name;
 			core::bc_string m_normal_map_name;
+			core::bc_string m_specular_map_name;
+		};
+
+		class bc_render_material_description
+		{
+		public:
+			core::bc_vector4f m_diffuse;
+			bcFLOAT m_specular_intensity;
+			bcFLOAT m_specular_power;
+
+			graphic::bc_texture2d_content_ptr m_diffuse_map;
+			graphic::bc_texture2d_content_ptr m_normal_map;
+			graphic::bc_texture2d_content_ptr m_specular_map;
 		};
 
 		class BC_GAME_DLL bc_material_manager
 		{
 		private:
 			using string_hash = std::hash< const bcCHAR* >;
-			using material_desc_map = core::bc_unordered_map_program< string_hash::result_type, _bc_material_description >;
+			using material_desc_map = core::bc_unordered_map_program< string_hash::result_type, _bc_render_material_file_description >;
 			using material_map = core::bc_unordered_map< string_hash::result_type, core::bc_unique_ptr< bc_render_material > >;
 			using default_diffuse_map = core::bc_unordered_map_program< bcUINT32, graphic::bc_texture2d_content_ptr >;
 
@@ -61,31 +74,37 @@ namespace black_cat
 			 * \brief Try to found associated material description and load material from it's descriptor.
 			 * If material has already loaded return pointer to it.
 			 * \ThreadSafe
-			 * \param p_material 
+			 * \param p_name 
 			 * \return null_ptr if material descriptor not found.
 			 */
-			bc_render_material_ptr load_material(const bcCHAR* p_material) noexcept;
+			bc_render_material_ptr load_material(const bcCHAR* p_name) noexcept;
 
-			bc_render_material_ptr load_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_material) noexcept;
+			bc_render_material_ptr load_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_name) noexcept;
 
 			/**
 			* \brief Found associated material description and load material from it's descriptor.
 			* If material has already loaded return pointer to it.
 			* Throw exception if material descriptor not found.
 			* \ThreadSafe
-			* \param p_material
+			* \param p_name
 			* \return
 			*/
-			bc_render_material_ptr load_material_throw(const bcCHAR* p_material);
+			bc_render_material_ptr load_material_throw(const bcCHAR* p_name);
 
-			bc_render_material_ptr load_material_throw(core::bc_alloc_type p_alloc_type, const bcCHAR* p_material);
+			bc_render_material_ptr load_material_throw(core::bc_alloc_type p_alloc_type, const bcCHAR* p_name);
+
+			bc_render_material_ptr store_material(const bcCHAR* p_name, bc_render_material_description p_material);
+
+			bc_render_material_ptr store_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_name, bc_render_material_description p_material);
 
 			void destroy_material(bc_render_material* p_material);
 
 		protected:
 
 		private:
-			graphic::bc_texture2d_content_ptr _create_texture_from_color(core::bc_vector4i p_color);
+			graphic::bc_texture2d_content_ptr _create_texture_from_color(core::bc_vector4f p_color);
+
+			bc_render_material_ptr _store_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_name, bc_render_material p_material);
 
 			core::bc_content_stream_manager& m_content_stream_manager;
 			bc_render_system& m_render_system;
@@ -97,7 +116,8 @@ namespace black_cat
 			graphic::bc_texture_config m_default_texture_config;
 			graphic::bc_texture2d_content_ptr m_default_diffuse_map;
 			graphic::bc_texture2d_content_ptr m_default_normal_map;
-			default_diffuse_map m_color_textures;
+			graphic::bc_texture2d_content_ptr m_default_specular_map;
+			default_diffuse_map m_default_color_textures;
 		};
 	}
 }

@@ -1,39 +1,13 @@
 {
   "entities": [
     {
-      "name": "sun_light",
+      "name": "sponza",
       "components": [
         {
-          "name": "cmp_light",
+          "name": "cmp_mesh",
           "parameters": {
-            "type": "direct",
-            "direction_x": 0.0,
-            "direction_y": -0.3,
-            "direction_z": 1.0,
-            "color_r": 0.79,
-            "color_g": 0.78,
-            "color_b": 0.68,
-            "intensity": 1.0,
-            "ambient_color_r": 0.71,
-            "ambient_color_g": 0.68,
-            "ambient_color_b": 0.78,
-            "ambient_intensity": 1.0
+            "mesh": "sponza"
           }
-        }
-      ]
-    },
-    {
-      "name": "crysis_heightmap",
-      "components": [
-        {
-          "name": "cmp_height_map",
-          "parameters": {
-            "heightmap": "crysis_heightmap"
-          }
-        },
-        {
-          "name": "cmp_rigid_static",
-          "parameters": {}
         }
       ]
     },

@@ -23,6 +23,8 @@ namespace black_cat
 		public:
 			bc_vector3();
 
+			explicit bc_vector3(T p_number);
+
 			bc_vector3(T p_x, T p_y, T p_z);
 
 			bc_vector3(const bc_vector3& p_other);
@@ -112,6 +114,15 @@ namespace black_cat
 			y(0),
 			z(0)
 		{
+		}
+
+		template< typename T >
+		bc_vector3<T>::bc_vector3(T p_number)
+			: x(p_number),
+			y(p_number),
+			z(p_number)
+		{
+
 		}
 
 		template< typename T >

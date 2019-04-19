@@ -14,6 +14,7 @@ namespace black_cat
 			actor_list,
 			depth_stencil_texture,
 			depth_stencil_view,
+			back_buffer_view,
 			render_target_texture_1,
 			render_target_view_1,
 			render_target_texture_2,

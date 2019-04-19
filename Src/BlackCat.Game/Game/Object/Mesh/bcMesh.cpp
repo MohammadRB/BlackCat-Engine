@@ -109,7 +109,7 @@ namespace black_cat
 				throw bc_out_of_range_exception("Invalid mesh index");
 			}
 
-			return &m_meshes[p_node->m_first_mesh_index + p_mesh_index].m_material;
+			return m_meshes[p_node->m_first_mesh_index + p_mesh_index].m_material.get();
 		}
 
 		const bc_render_state* bc_mesh::get_node_mesh_render_state(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const

@@ -1,6 +1,7 @@
  // [03/13/2016 MRB]
 
 #include "Game/GamePCH.h"
+#include "Game/bcException.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/Pass/bcRenderPassManager.h"
 
@@ -114,6 +115,16 @@ namespace black_cat
 		{
 			p_entry.m_pass->_set_pass_resource_share(&m_state_share);
 
+			auto l_entry_with_same_position = std::find_if(std::cbegin(m_passes), std::cend(m_passes), [&](decltype(m_passes)::const_reference p_item)
+			{
+				return p_entry.m_position == p_item.m_position;
+			});
+
+			if(l_entry_with_same_position != std::cend(m_passes))
+			{
+				throw bc_invalid_operation_exception("an entry with same position has been already added");
+			}
+			
 			m_passes.push_back(std::move(p_entry));
 
 			std::sort(std::begin(m_passes), std::end(m_passes), [](_bc_render_pass_entry& p_first, _bc_render_pass_entry& p_second)

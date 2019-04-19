@@ -15,6 +15,8 @@ namespace black_cat
 		BC_RENDER_PASS(shape_draw_pass)
 
 	public:
+		explicit bc_shape_draw_pass(game::bc_render_pass_resource_variable p_render_target_view);
+
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 
 		void update(const game::bc_render_pass_update_param& p_update_param) override;
@@ -32,6 +34,8 @@ namespace black_cat
 	protected:
 
 	private:
+		game::bc_render_pass_resource_variable m_render_target_view_variable;
+
 		graphic::bc_device_command_list_ptr m_command_list;
 		graphic::bc_device_pipeline_state_ptr m_pipeline_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;

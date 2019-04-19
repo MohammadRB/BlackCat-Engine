@@ -120,6 +120,10 @@ namespace black_cat
 
 			bc_shape_drawer& get_shape_drawer() noexcept;
 
+			const graphic::bc_constant_buffer_parameter& get_global_cbuffer() const;
+
+			const graphic::bc_constant_buffer_parameter& get_per_object_cbuffer() const;
+
 			template< typename T >
 			T* get_render_pass();
 
@@ -331,6 +335,16 @@ namespace black_cat
 		inline bc_shape_drawer& bc_render_system::get_shape_drawer() noexcept
 		{
 			return m_shape_drawer;
+		}
+
+		inline const graphic::bc_constant_buffer_parameter& bc_render_system::get_global_cbuffer() const
+		{
+			return m_global_cbuffer_parameter;
+		}
+
+		inline const graphic::bc_constant_buffer_parameter& bc_render_system::get_per_object_cbuffer() const
+		{
+			return m_per_object_cbuffer_parameter;
 		}
 
 		template< typename T >

@@ -153,6 +153,8 @@ namespace black_cat
 
 	void bc_gbuffer_terrain_pass_dx11::execute(const game::bc_render_pass_render_param& p_param)
 	{
+		p_param.m_render_system.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
+
 		auto l_height_maps_buffer = p_param.m_scene.get_actors<game::bc_height_map_component>();
 		l_height_maps_buffer.render_actors(p_param.m_render_system);
 
@@ -209,7 +211,8 @@ namespace black_cat
 				},
 				{},
 				{
-					graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::hull, m_parameter_cbuffer.get())
+					p_param.m_render_system.get_global_cbuffer(),
+					graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::hull, m_parameter_cbuffer.get())
 				}
 			);
 		}

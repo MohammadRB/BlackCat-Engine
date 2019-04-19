@@ -79,7 +79,7 @@ namespace black_cat
 
 			void remove_actor(bc_actor& p_actor);
 
-			void add_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
+			void add_debug_shapes(bc_shape_drawer& p_shape_drawer, const bc_scene_graph_buffer& p_buffer) const;
 
 			void update(bc_physics_system& p_physics, core_platform::bc_clock::update_param p_time);
 

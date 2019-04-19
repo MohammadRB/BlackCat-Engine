@@ -36,11 +36,10 @@ namespace black_cat
 		{
 		public:
 			core::bc_string m_name;
-			bc_render_material m_material;
+			bc_render_material_ptr m_material;
 			core::bc_vector_movale< bc_vertex_pos_tex_nor_tan > m_vertices;
 			core::bc_vector_movale< bcBYTE > m_indices;
 
-			graphic::bc_buffer_ptr m_cbuffer;
 			graphic::bc_buffer_ptr m_vertex_buffer;
 			graphic::bc_buffer_ptr m_index_buffer;
 

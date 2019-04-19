@@ -5,6 +5,7 @@
 #include "CorePlatform/Utility/bcNoCopy.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "Core/Utility/bcRefCountPtr.h"
+#include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/System/Render/Light/bcDirectLight.h"
 #include "Game/System/Render/Light/bcPointLight.h"
 #include "Game/System/Render/Light/bcSpotLight.h"
@@ -62,6 +63,8 @@ namespace black_cat
 			{
 				return m_type;
 			}
+
+			physics::bc_bound_box get_bound_box() const;
 
 			bc_direct_light* as_direct_light();
 
