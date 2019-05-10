@@ -19,12 +19,12 @@
   "actors": [
     {
       "entity_name": "sun_light",
-      "position": [0, 0, 0],
+      "position": [ 0, 0, 0 ],
       "parameters": {}
     },
     {
       "entity_name": "crysis_heightmap",
-      "position": [0, 0, 0],
+      "position": [ 0, 0, 0 ],
       "parameters": {}
     }
   ]

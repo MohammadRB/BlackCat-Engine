@@ -15,13 +15,39 @@ namespace black_cat
 			l_point.x /= l_point.w;
 			l_point.y /= l_point.w;
 			l_point.z /= l_point.w;
-
-			l_point.x *= p_camera.get_screen_width();
-			l_point.y *= p_camera.get_screen_height();
-			l_point.z *= p_camera.get_far_clip() - p_camera.get_near_clip();
-			l_point.z += p_camera.get_near_clip();
+			l_point.z = (p_camera.get_near_clip() * p_camera.get_far_clip()) / 
+				(p_camera.get_far_clip() - l_point.z * (p_camera.get_far_clip() - p_camera.get_near_clip())) / 
+				(p_camera.get_far_clip() - p_camera.get_near_clip());
 
 			return { l_point.x, l_point.y, l_point.z };
+		}
+
+		bc_light_instance get_light_bounds(const bc_light& p_light)
+		{
+			const auto l_light_box = p_light.get_bound_box();
+			core::bc_array<core::bc_vector3f, 8> l_light_box_points;
+
+			l_light_box.get_points(l_light_box_points);
+
+			bcFLOAT l_min_x = std::numeric_limits<bcFLOAT>::max(), l_min_y = std::numeric_limits<bcFLOAT>::max(), l_min_z = std::numeric_limits<bcFLOAT>::max();
+			bcFLOAT	l_max_x = std::numeric_limits<bcFLOAT>::lowest(), l_max_y = std::numeric_limits<bcFLOAT>::lowest(), l_max_z = std::numeric_limits<bcFLOAT>::lowest();
+
+			for(auto& l_point : l_light_box_points)
+			{
+				l_min_x = std::min(l_min_x, l_point.x);
+				l_min_y = std::min(l_min_y, l_point.y);
+				l_min_z = std::min(l_min_z, l_point.z);
+				l_max_x = std::max(l_max_x, l_point.x);
+				l_max_y = std::max(l_max_y, l_point.y);
+				l_max_z = std::max(l_max_z, l_point.z);
+			}
+
+			return bc_light_instance
+			(
+				p_light,
+				core::bc_vector3f(l_min_x, l_min_y, l_min_z),
+				core::bc_vector3f(l_max_x, l_max_y, l_max_z)
+			);
 		}
 
 		bc_light_manager::bc_light_manager()
@@ -74,29 +100,8 @@ namespace black_cat
 
 			for (bc_light& l_light : m_lights)
 			{
-				switch (l_light.get_type())
-				{
-				case bc_light_type::direct:
-					{
-						auto l_direct_light = _get_light_bounds(p_camera, l_light, *l_light.as_direct_light());
-						l_lights.push_back(l_direct_light);
-						break;
-					}
-				case bc_light_type::point:
-					{
-						auto l_point_light = _get_light_bounds(p_camera, l_light, *l_light.as_point_light());
-						l_lights.push_back(l_point_light);
-						break;
-					}
-				case bc_light_type::spot:
-					{
-						auto l_spot_light = _get_light_bounds(p_camera, l_light, *l_light.as_spot_light());
-						l_lights.push_back(l_spot_light);
-						break;
-					}
-				default:
-					bcAssert(false);
-				}
+				auto l_light_instance = get_light_bounds(l_light);
+				l_lights.push_back(l_light_instance);
 			}
 
 			return l_lights;
@@ -126,26 +131,29 @@ namespace black_cat
 
 		bc_light_instance bc_light_manager::_get_light_bounds(const bc_icamera& p_camera, const bc_light& p_light, const bc_point_light& p_point_light)
 		{
-			const auto l_center = p_point_light.get_position() + p_light.get_transformation().get_translation();
+			const auto l_center = p_point_light.get_position(p_light.get_transformation());
 			const auto l_right_extend = l_center + (p_camera.get_right() * p_point_light.get_radius());
+			const auto l_forward_extend = l_center + (p_camera.get_forward() * p_point_light.get_radius());
 
 			const auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
 			const auto l_center_proj = project_point_to_screen_space(p_camera, l_view_proj, l_center);
 			const auto l_right_extend_proj = project_point_to_screen_space(p_camera, l_view_proj, l_right_extend);
+			const auto l_forward_extend_proj = project_point_to_screen_space(p_camera, l_view_proj, l_forward_extend);
 			const auto l_ss_radius = std::abs(l_center_proj.x - l_right_extend_proj.x);
+			const auto l_depth_radius = std::abs(l_center_proj.z - l_forward_extend_proj.z);
 
 			return bc_light_instance
 			(
 				p_light,
-				core::bc_vector3f(l_center_proj.x - l_ss_radius, l_center_proj.y - l_ss_radius, l_center_proj.z - p_point_light.get_radius()),
-				core::bc_vector3f(l_center_proj.x + l_ss_radius, l_center_proj.y + l_ss_radius, l_center_proj.z + p_point_light.get_radius())
+				core::bc_vector3f(l_center_proj.x - l_ss_radius, l_center_proj.y - l_ss_radius, l_center_proj.z - l_depth_radius),
+				core::bc_vector3f(l_center_proj.x + l_ss_radius, l_center_proj.y + l_ss_radius, l_center_proj.z + l_depth_radius)
 			);
 		}
 
 		bc_light_instance bc_light_manager::_get_light_bounds(const bc_icamera& p_camera, const bc_light& p_light, const bc_spot_light& p_spot_light)
 		{
-			const auto l_position = p_spot_light.get_position() + p_light.get_transformation().get_translation();
-			const auto l_direction = (p_light.get_transformation().get_rotation() * p_spot_light.get_direction());
+			const auto l_position = p_spot_light.get_position(p_light.get_transformation());
+			const auto l_direction = p_spot_light.get_direction(p_light.get_transformation());
 
 			const auto l_right = core::bc_vector3f::cross(l_direction, core::bc_vector3f::up());
 			core::bc_matrix3f l_up_rotation;

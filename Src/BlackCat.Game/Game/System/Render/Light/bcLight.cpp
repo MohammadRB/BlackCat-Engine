@@ -91,7 +91,7 @@ namespace black_cat
 
 					l_box = physics::bc_bound_box
 					(
-						m_transformation.get_translation() + l_point_light->get_position(),
+						l_point_light->get_position(m_transformation),
 						core::bc_vector3f(l_point_light->get_radius())
 					);
 					break;
@@ -99,8 +99,8 @@ namespace black_cat
 			case bc_light_type::spot:
 				{
 					const auto l_spot_light = as_spot_light();
-					const auto l_position = m_transformation.get_translation() + l_spot_light->get_position();
-					const auto l_center = l_position + (l_spot_light->get_direction() * (l_spot_light->get_length() / 2));
+					const auto l_position = l_spot_light->get_position(m_transformation);
+					const auto l_center = l_position + (l_spot_light->get_direction(m_transformation) * (l_spot_light->get_length() / 2));
 
 					l_box = physics::bc_bound_box
 					(

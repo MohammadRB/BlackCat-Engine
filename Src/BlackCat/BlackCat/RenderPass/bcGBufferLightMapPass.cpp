@@ -16,8 +16,8 @@ namespace black_cat
 {
 	struct _bc_light_cbuffer_base
 	{
-		core::bc_vector3f m_top_left_min_z;
-		core::bc_vector3f m_bottom_right_max_z;
+		core::bc_vector3f m_min_bound;
+		core::bc_vector3f m_max_bound;
 	};
 
 	struct _bc_direct_light_cbuffer : _bc_light_cbuffer_base
@@ -51,9 +51,9 @@ namespace black_cat
 	struct _bc_parameters_cbuffer
 	{
 		BC_CBUFFER_ALIGN
-		int m_direct_lights_num;
-		int m_point_lights_num;
-		int m_spot_lights_num;
+		bcUINT32 m_direct_lights_num;
+		bcUINT32 m_point_lights_num;
+		bcUINT32 m_spot_lights_num;
 		BC_CBUFFER_ALIGN
 		core::bc_matrix4f m_view_proj_inv;
 	};
@@ -147,56 +147,62 @@ namespace black_cat
 		l_direct_lights.reserve(m_num_direct_lights);
 		l_point_lights.reserve(m_num_point_lights);
 		l_spot_lights.reserve(m_num_spot_lights);
-
+		
 		core::bc_vector_frame< game::bc_light_instance > l_light_instances = p_param.m_render_system
 			.get_light_manager()
 			.get_light_instances(p_param.m_camera);
-
+		
 		for (game::bc_light_instance& l_light : l_light_instances)
 		{
 			switch (l_light.m_instance.get_type())
 			{
 			case game::bc_light_type::direct:
 				{
-					_bc_direct_light_cbuffer l_direct_light;
-					l_direct_light.m_top_left_min_z = l_light.m_top_left_min_z;
-					l_direct_light.m_bottom_right_max_z = l_light.m_bottom_right_max_z;
-					l_direct_light.m_direction = l_light.m_instance.as_direct_light()->get_direction();
-					l_direct_light.m_color = l_light.m_instance.as_direct_light()->get_color();
-					l_direct_light.m_intensity = l_light.m_instance.as_direct_light()->get_intensity();
-					l_direct_light.m_ambient_color = l_light.m_instance.as_direct_light()->get_ambient_color();
-					l_direct_light.m_ambient_intensity = l_light.m_instance.as_direct_light()->get_ambient_intensity();
+					auto* l_direct_light = l_light.m_instance.as_direct_light();
+					_bc_direct_light_cbuffer l_direct_light_cbuffer;
 
-					l_direct_lights.push_back(l_direct_light);
+					l_direct_light_cbuffer.m_min_bound = l_light.m_min_bound;
+					l_direct_light_cbuffer.m_max_bound = l_light.m_max_bound;
+					l_direct_light_cbuffer.m_direction = l_direct_light->get_direction();
+					l_direct_light_cbuffer.m_color = l_direct_light->get_color();
+					l_direct_light_cbuffer.m_intensity = l_direct_light->get_intensity();
+					l_direct_light_cbuffer.m_ambient_color = l_direct_light->get_ambient_color();
+					l_direct_light_cbuffer.m_ambient_intensity = l_direct_light->get_ambient_intensity();
+
+					l_direct_lights.push_back(l_direct_light_cbuffer);
 					break;
 				}
 			case game::bc_light_type::point:
 				{
-					_bc_point_light_cbuffer l_point_light;
-					l_point_light.m_top_left_min_z = l_light.m_top_left_min_z;
-					l_point_light.m_bottom_right_max_z = l_light.m_bottom_right_max_z;
-					l_point_light.m_position = l_light.m_instance.as_point_light()->get_position();
-					l_point_light.m_radius = l_light.m_instance.as_point_light()->get_radius();
-					l_point_light.m_color = l_light.m_instance.as_point_light()->get_color();
-					l_point_light.m_intensity = l_light.m_instance.as_point_light()->get_intensity();
+					auto l_point_light = l_light.m_instance.as_point_light();
+					_bc_point_light_cbuffer l_point_light_cbuffer;
 
-					l_point_lights.push_back(l_point_light);
+					l_point_light_cbuffer.m_min_bound = l_light.m_min_bound;
+					l_point_light_cbuffer.m_max_bound = l_light.m_max_bound;
+					l_point_light_cbuffer.m_position = l_point_light->get_position(l_light.m_instance.get_transformation());
+					l_point_light_cbuffer.m_radius = l_point_light->get_radius();
+					l_point_light_cbuffer.m_color = l_point_light->get_color();
+					l_point_light_cbuffer.m_intensity = l_point_light->get_intensity();
+
+					l_point_lights.push_back(l_point_light_cbuffer);
 					break;
 				}
 			case game::bc_light_type::spot:
 				{
-					_bc_spot_light_cbuffer l_spot_light;
-					l_spot_light.m_top_left_min_z = l_light.m_top_left_min_z;
-					l_spot_light.m_bottom_right_max_z = l_light.m_bottom_right_max_z;
-					l_spot_light.m_position = l_light.m_instance.as_spot_light()->get_position();
-					l_spot_light.m_angle = l_light.m_instance.as_spot_light()->get_angle();
-					l_spot_light.m_direction = l_light.m_instance.as_spot_light()->get_direction();
-					l_spot_light.m_length = l_light.m_instance.as_spot_light()->get_length();
-					l_spot_light.m_color = l_light.m_instance.as_spot_light()->get_color();
-					l_spot_light.m_intensity = l_light.m_instance.as_spot_light()->get_intensity();
-					l_spot_light.m_angle_cos = std::cos(core::bc_to_radian(l_spot_light.m_angle / 2));
+				auto l_spot_light = l_light.m_instance.as_spot_light();
+					_bc_spot_light_cbuffer l_spot_light_cbuffer;
 
-					l_spot_lights.push_back(l_spot_light);
+					l_spot_light_cbuffer.m_min_bound = l_light.m_min_bound;
+					l_spot_light_cbuffer.m_max_bound = l_light.m_max_bound;
+					l_spot_light_cbuffer.m_position = l_spot_light->get_position(l_light.m_instance.get_transformation());
+					l_spot_light_cbuffer.m_angle = l_spot_light->get_angle();
+					l_spot_light_cbuffer.m_direction = l_spot_light->get_direction(l_light.m_instance.get_transformation());
+					l_spot_light_cbuffer.m_length = l_spot_light->get_length();
+					l_spot_light_cbuffer.m_color = l_spot_light->get_color();
+					l_spot_light_cbuffer.m_intensity = l_spot_light->get_intensity();
+					l_spot_light_cbuffer.m_angle_cos = std::cos(core::bc_to_radian(l_spot_light_cbuffer.m_angle / 2));
+
+					l_spot_lights.push_back(l_spot_light_cbuffer);
 					break;
 				}
 			}
@@ -215,7 +221,7 @@ namespace black_cat
 			l_spot_lights.size(),
 			(p_param.m_camera.get_view() * p_param.m_camera.get_projection()).inverse().transpose()
 		};
-
+		
 		p_param.m_render_thread.update_subresource(m_parameters_cbuffer.get(), 0, &l_parameters_cbuffer_data, 0, 0);
 		p_param.m_render_thread.update_subresource(m_direct_lights_buffer.get(), 0, l_direct_lights.data(), 0, 0);
 		p_param.m_render_thread.update_subresource(m_point_lights_buffer.get(), 0, l_point_lights.data(), 0, 0);

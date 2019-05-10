@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Math/bcVector3f.h"
+#include "Core/Math/bcMatrix4f.h"
 
 namespace black_cat
 {
@@ -24,11 +25,11 @@ namespace black_cat
 
 			bc_spot_light& operator=(const bc_spot_light&) = default;
 
-			const core::bc_vector3f& get_position() const noexcept;
+			core::bc_vector3f get_position(const core::bc_matrix4f& p_transformation) const noexcept;
 
 			void set_position(const core::bc_vector3f& p_position) noexcept;
 
-			const core::bc_vector3f& get_direction() const noexcept;
+			core::bc_vector3f get_direction(const core::bc_matrix4f& p_transformation) const noexcept;
 
 			void set_direction(const core::bc_vector3f& p_direction) noexcept;
 
@@ -73,9 +74,9 @@ namespace black_cat
 			m_direction.normalize();
 		}
 
-		inline const core::bc_vector3f& bc_spot_light::get_position() const noexcept
+		inline core::bc_vector3f bc_spot_light::get_position(const core::bc_matrix4f& p_transformation) const noexcept
 		{
-			return m_position;
+			return m_position + p_transformation.get_translation();
 		}
 
 		inline void bc_spot_light::set_position(const core::bc_vector3f& p_position) noexcept
@@ -83,9 +84,9 @@ namespace black_cat
 			m_position = p_position;
 		}
 
-		inline const core::bc_vector3f& bc_spot_light::get_direction() const noexcept
+		inline core::bc_vector3f bc_spot_light::get_direction(const core::bc_matrix4f& p_transformation) const noexcept
 		{
-			return m_direction;
+			return (p_transformation * core::bc_vector4f(m_direction, 0)).xyz();
 		}
 
 		inline void bc_spot_light::set_direction(const core::bc_vector3f& p_direction) noexcept

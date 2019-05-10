@@ -16,18 +16,21 @@ namespace black_cat
 {
 	namespace game
 	{
+		/**
+		 * \brief Represent a bounding box around the light object
+		 */
 		struct bc_light_instance
 		{
-			bc_light_instance(const bc_light& p_light, const core::bc_vector3f& p_top_left_min_z, const core::bc_vector3f& p_bottom_right_max_z)
+			bc_light_instance(const bc_light& p_light, const core::bc_vector3f& p_min_bound, const core::bc_vector3f& p_max_bound)
 				: m_instance(p_light),
-				m_top_left_min_z(p_top_left_min_z),
-				m_bottom_right_max_z(p_bottom_right_max_z)
+				m_min_bound(p_min_bound),
+				m_max_bound(p_max_bound)
 			{
 			}
 
 			const bc_light& m_instance;
-			core::bc_vector3f m_top_left_min_z;
-			core::bc_vector3f m_bottom_right_max_z;
+			core::bc_vector3f m_min_bound;
+			core::bc_vector3f m_max_bound;
 		};
 
 		class BC_GAME_DLL bc_light_manager

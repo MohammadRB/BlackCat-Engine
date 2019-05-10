@@ -8,18 +8,27 @@ float3 bc_to_decoded_normal(float3 p_normal)
     return (p_normal - 0.5) * 2;
 }
 
+float2 bc_to_screen_space_texcoord(int2 p_texcoord, uint p_screen_width, uint p_screen_height)
+{
+    float2 l_coordinate = float2(p_texcoord.x * (1.0 / p_screen_width), p_texcoord.y * (1.0 / p_screen_height));
+    l_coordinate.x = l_coordinate.x * 2.0f - 1.0f;
+    l_coordinate.y = -(l_coordinate.y * 2.0f - 1.0f);
+
+    return l_coordinate;
+}
+
 float bc_convert_to_linear_depth(float p_depth, float p_near_plane, float p_far_plane)
 {
     float l_depth = (p_near_plane * p_far_plane) / (p_far_plane - p_depth * (p_far_plane - p_near_plane)) / (p_far_plane - p_near_plane);
     return l_depth;
 }
 
-float4 bc_reconstruct_world_space(float2 p_ss_texcoord, float p_depth, float4x4 p_view_proj_inv)
+float3 bc_reconstruct_world_space(float2 p_ss_texcoord, float p_depth, float4x4 p_view_proj_inv)
 {
     // compute screen-space position
     float4 l_position = 1.0f;
-    l_position.x = p_ss_texcoord.x * 2.0f - 1.0f;
-    l_position.y = -(p_ss_texcoord.y * 2.0f - 1.0f);
+    l_position.x = p_ss_texcoord.x;
+    l_position.y = p_ss_texcoord.y;
     l_position.z = p_depth;
     l_position.w = 1.0f;
 
@@ -27,5 +36,5 @@ float4 bc_reconstruct_world_space(float2 p_ss_texcoord, float p_depth, float4x4 
     l_position = mul(l_position, p_view_proj_inv);
     l_position /= l_position.w;
 
-    return l_position;
+    return l_position.xyz;
 }

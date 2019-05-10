@@ -30,9 +30,9 @@ bc_vs_output bb_write_vs(bc_vs_input p_input)
     l_output.m_position = float4(p_input.m_position, 1);
     l_output.m_texcoord = p_input.m_texcoord;
 
-    // Offset the position by half a pixel to correctly align texels to pixels
-    l_output.m_position.x = l_output.m_position.x - (1.0f / g_screen_width);
-    l_output.m_position.y = l_output.m_position.y + (1.0f / g_screen_height);
+    //// Offset the position by half a pixel to correctly align texels to pixels
+    //l_output.m_position.x = l_output.m_position.x - (1.0f / g_screen_width);
+    //l_output.m_position.y = l_output.m_position.y + (1.0f / g_screen_height);
 
     return l_output;
 }

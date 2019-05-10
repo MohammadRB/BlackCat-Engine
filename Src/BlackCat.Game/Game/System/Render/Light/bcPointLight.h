@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Math/bcVector3f.h"
+#include "Core/Math/bcMatrix4f.h"
 
 namespace black_cat
 {
@@ -19,7 +20,7 @@ namespace black_cat
 
 			bc_point_light& operator=(const bc_point_light&) = default;
 
-			const core::bc_vector3f& get_position() const noexcept;
+			core::bc_vector3f get_position(const core::bc_matrix4f& p_transformation) const noexcept;
 
 			void set_position(const core::bc_vector3f& p_position) noexcept;
 
@@ -53,9 +54,9 @@ namespace black_cat
 		{
 		}
 
-		inline const core::bc_vector3f& bc_point_light::get_position() const noexcept
+		inline core::bc_vector3f bc_point_light::get_position(const core::bc_matrix4f& p_transformation) const noexcept
 		{
-			return m_position;
+			return m_position + p_transformation.get_translation();
 		}
 
 		inline void bc_point_light::set_position(const core::bc_vector3f& p_position) noexcept
