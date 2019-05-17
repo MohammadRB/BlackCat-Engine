@@ -19,7 +19,7 @@ namespace black_cat
 		core::bc_vector3f m_min_bound;
 		core::bc_vector3f m_max_bound;
 	};
-
+	
 	struct _bc_direct_light_cbuffer : _bc_light_cbuffer_base
 	{
 		core::bc_vector3f m_direction;
@@ -36,7 +36,7 @@ namespace black_cat
 		core::bc_vector3f m_color;
 		bcFLOAT m_intensity;
 	};
-
+	
 	struct _bc_spot_light_cbuffer : _bc_light_cbuffer_base
 	{
 		core::bc_vector3f m_position;

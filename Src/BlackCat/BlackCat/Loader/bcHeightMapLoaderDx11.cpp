@@ -41,7 +41,11 @@ namespace black_cat
 	struct _bc_material_properties
 	{
 		BC_CBUFFER_ALIGN
-		bcUINT32 m_scales[8];
+		bcFLOAT m_specular_intensity[8]{ 0,0,0,0,0,0,0,0 };
+		BC_CBUFFER_ALIGN
+		bcFLOAT m_specular_power[8]{ 0,0,0,0,0,0,0,0 };
+		BC_CBUFFER_ALIGN
+		bcUINT32 m_scale[8]{ 0,0,0,0,0,0,0,0 };
 	};
 
 	class bc_height_map_texture_read_task : public game::bc_irender_task
@@ -415,14 +419,26 @@ namespace black_cat
 		l_parameter.m_physics_y_scale = l_physics_system.get_height_field_y_scale();
 		l_parameter.m_distance_detail = l_distance_detail;
 		l_parameter.m_height_detail = l_height_detail;
-
+		
+		core::bc_vector<game::bc_render_material_ptr> l_materials;
 		_bc_material_properties l_material_properties;
 
+		l_materials.reserve(l_material_names.size());
 		l_counter = 0;
 
 		for (auto& l_material_name : l_material_names)
 		{
-			l_material_properties.m_scales[l_counter++] = std::get<1>(l_material_name);
+			game::bc_render_material_ptr l_material = l_render_system.get_material_manager().load_material_throw
+			(
+				p_context.get_allocator_alloc_type(), std::get<core::bc_string>(l_material_name).c_str()
+			);
+
+			l_material_properties.m_specular_intensity[l_counter] = l_material->get_specular_intensity();
+			l_material_properties.m_specular_power[l_counter] = l_material->get_specular_power();
+			l_material_properties.m_scale[l_counter] = std::get<1>(l_material_name);
+			l_counter++;
+
+			l_materials.push_back(std::move(l_material));
 		}
 
 		auto l_resource_configure = graphic::bc_graphic_resource_configure();
@@ -516,38 +532,21 @@ namespace black_cat
 			graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::hull, l_chunk_info_view.get()),
 			graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::pixel, l_texture_map_view.get())
 		};
-		core::bc_vector<game::bc_render_material_ptr> l_materials;
-		l_materials.reserve(l_material_names.size());
 
+		l_counter = 0;
 		bcUINT32 l_resource_view_count = 3;
 		for(auto& l_material_name : l_material_names)
 		{
-			game::bc_render_material_ptr l_material = l_render_system.get_material_manager().load_material_throw
-			(
-				p_context.get_allocator_alloc_type(), std::get<core::bc_string>(l_material_name).c_str()
-			);
+			auto& l_material = l_materials[l_counter];
 
-			/*graphic::bc_texture2d l_diffuse_map = l_material->get_diffuse_map();
-			graphic::bc_texture2d l_normal_map = l_material->get_normal_map();
-
-			auto l_diffuse_map_view_config = l_resource_configure
-				.as_resource_view()
-				.as_texture_view(l_diffuse_map.get_format())
-				.as_tex2d_shader_view(0, -1)
-				.on_texture2d();
-			auto l_normal_map_view_config = l_resource_configure
-				.as_resource_view()
-				.as_texture_view(l_normal_map.get_format())
-				.as_tex2d_shader_view(0, -1)
-				.on_texture2d();
-
-			l_material->m_diffuse_map_view = l_render_system.get_device().create_resource_view(l_diffuse_map, l_diffuse_map_view_config);
-			l_material->m_normal_map_view = l_render_system.get_device().create_resource_view(l_normal_map, l_normal_map_view_config);*/
-
-			l_render_state_resource_view_array[l_resource_view_count++] = graphic::bc_resource_view_parameter(l_resource_view_count, graphic::bc_shader_type::pixel, l_material->get_diffuse_map_view());
-			l_render_state_resource_view_array[l_resource_view_count++] = graphic::bc_resource_view_parameter(l_resource_view_count + 1, graphic::bc_shader_type::pixel, l_material->get_normal_map_view());
+			auto l_diffuse_map_parameter = graphic::bc_resource_view_parameter(l_resource_view_count, graphic::bc_shader_type::pixel, l_material->get_diffuse_map_view());
+			auto l_normal_map_parameter = graphic::bc_resource_view_parameter(l_resource_view_count + 1, graphic::bc_shader_type::pixel, l_material->get_normal_map_view());
+			
+			l_render_state_resource_view_array[l_resource_view_count++] = l_diffuse_map_parameter;
+			l_render_state_resource_view_array[l_resource_view_count++] = l_normal_map_parameter;
 
 			l_materials.push_back(std::move(l_material));
+			++l_counter;
 		}
 
 		//l_device->set_allocator_alloc_type(l_device_alloc_type);

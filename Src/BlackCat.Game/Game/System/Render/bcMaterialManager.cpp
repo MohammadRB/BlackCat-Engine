@@ -25,8 +25,8 @@ namespace black_cat
 		public:
 			BC_JSON_VALUE(core::bc_string, name);
 			BC_JSON_VALUE_OP(core::bc_vector4f, diffuse_color);
-			BC_JSON_VALUE_OP(bcUINT32, specular_intensity);
-			BC_JSON_VALUE_OP(bcUINT32, specular_power);
+			BC_JSON_VALUE_OP(bcFLOAT, specular_intensity);
+			BC_JSON_VALUE_OP(bcFLOAT, specular_power);
 			BC_JSON_VALUE_OP(core::bc_string, diffuse_map);
 			BC_JSON_VALUE_OP(core::bc_string, normal_map);
 			BC_JSON_VALUE_OP(core::bc_string, specular_map);
