@@ -96,9 +96,15 @@ namespace black_cat
 			m_scene_graph.remove_actor(p_actor);
 		}
 
-		void bc_scene::render_debug_shapes(bc_shape_drawer& p_shape_drawer) const
+		void bc_scene::add_debug_shapes(bc_shape_drawer& p_shape_drawer, const bc_scene_graph_buffer& p_buffer) const
 		{
-			m_scene_graph.render_debug_shapes(p_shape_drawer);
+			m_scene_graph.add_debug_shapes(p_shape_drawer);
+
+			for (const bc_actor& l_actor : p_buffer)
+			{
+				const auto& l_bound_box = l_actor.get_component< bc_mediate_component >()->get_bound_box();
+				p_shape_drawer.render_wired_box(l_bound_box);
+			}
 		}
 
 		void bc_scene::update(bc_physics_system& p_physics, core_platform::bc_clock::update_param p_time)

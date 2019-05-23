@@ -1,6 +1,7 @@
  // [03/13/2016 MRB]
 
 #include "Game/GamePCH.h"
+#include "Game/bcException.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/Pass/bcRenderPassManager.h"
 
@@ -64,49 +65,49 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_pass_manager::pass_update(const bc_render_system_update_param& p_clock_update_param)
+		void bc_render_pass_manager::pass_update(const bc_render_pass_update_param& p_param)
 		{
 			for (auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->update(p_clock_update_param);
+				l_entry.m_pass->update(p_param);
 			}
 		}
 
-		void bc_render_pass_manager::pass_execute(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_scene& p_scene)
+		void bc_render_pass_manager::pass_execute(const bc_render_pass_render_param& p_param)
 		{
 			for(auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->initialize_frame(p_render_system, p_thread, p_scene);
-				l_entry.m_pass->execute(p_render_system, p_thread, p_scene);
+				l_entry.m_pass->initialize_frame(p_param);
+				l_entry.m_pass->execute(p_param);
 			}
 
 			for (auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->cleanup_frame(p_render_system, p_thread, p_scene);
-			}
-		}
-
-		void bc_render_pass_manager::before_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
-		{
-			for (auto& l_entry : m_passes)
-			{
-				l_entry.m_pass->before_reset(p_render_system, p_device, p_old_parameters, p_new_parameters);
+				l_entry.m_pass->cleanup_frame(p_param);
 			}
 		}
 
-		void bc_render_pass_manager::after_reset(bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
+		void bc_render_pass_manager::before_reset(const bc_render_pass_reset_param& p_param)
 		{
 			for (auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->after_reset(p_render_system, p_device, p_old_parameters, p_new_parameters);
+				l_entry.m_pass->before_reset(p_param);
 			}
 		}
 
-		void bc_render_pass_manager::pass_destroy(graphic::bc_device& p_device)
+		void bc_render_pass_manager::after_reset(const bc_render_pass_reset_param& p_param)
 		{
 			for (auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->destroy(p_device);
+				l_entry.m_pass->after_reset(p_param);
+			}
+		}
+
+		void bc_render_pass_manager::pass_destroy(bc_render_system& p_render_system)
+		{
+			for (auto& l_entry : m_passes)
+			{
+				l_entry.m_pass->destroy(p_render_system);
 			}
 		}
 
@@ -114,6 +115,16 @@ namespace black_cat
 		{
 			p_entry.m_pass->_set_pass_resource_share(&m_state_share);
 
+			auto l_entry_with_same_position = std::find_if(std::cbegin(m_passes), std::cend(m_passes), [&](decltype(m_passes)::const_reference p_item)
+			{
+				return p_entry.m_position == p_item.m_position;
+			});
+
+			if(l_entry_with_same_position != std::cend(m_passes))
+			{
+				throw bc_invalid_operation_exception("an entry with same position has been already added");
+			}
+			
 			m_passes.push_back(std::move(p_entry));
 
 			std::sort(std::begin(m_passes), std::end(m_passes), [](_bc_render_pass_entry& p_first, _bc_render_pass_entry& p_second)

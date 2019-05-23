@@ -117,7 +117,7 @@ namespace black_cat
 			return l_processed_event_count;
 		}
 
-		void bc_event_manager::update(core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_event_manager::update(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 			process_event_queue(p_clock_update_param.m_total_elapsed);
 		}

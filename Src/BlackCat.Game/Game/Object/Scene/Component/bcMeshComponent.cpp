@@ -120,9 +120,6 @@ namespace black_cat
 
 			core::bc_array< const bc_mesh_node*, 1 > l_nodes = { l_node };
 			_render_mesh_node(p_render_system, m_sub_mesh, m_mesh_part_transformation, std::begin(l_nodes), std::end(l_nodes));
-
-			const auto& l_bound_box = l_actor.get_component< bc_mediate_component >()->get_bound_box();
-			p_render_system.get_shape_drawer().render_wired_box(l_bound_box);
 		}
 	}
 }

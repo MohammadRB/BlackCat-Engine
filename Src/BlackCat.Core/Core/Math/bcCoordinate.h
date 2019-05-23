@@ -10,6 +10,18 @@ namespace black_cat
 {
 	namespace core
 	{
+		const bcFLOAT g_pi = 3.14159265358979323846;
+
+		inline bcFLOAT bc_to_radian(bcFLOAT p_degree)
+		{
+			return (p_degree * g_pi) / 180;
+		}
+
+		inline bcFLOAT bc_to_degree(bcFLOAT p_radian)
+		{
+			return (p_radian * 180) / g_pi;
+		}
+
 		inline void bc_to_right_hand(bc_vector3f& p_vector)
 		{
 			p_vector.z = -p_vector.z;

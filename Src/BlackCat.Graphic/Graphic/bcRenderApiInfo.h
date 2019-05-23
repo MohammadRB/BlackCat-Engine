@@ -142,6 +142,7 @@ namespace black_cat
 		template< >
 		constexpr bcSIZE bc_platform_render_api_info<g_api_dx11>::required_cbuffer_align() noexcept
 		{
+			// D3D11_COMMONSHADER_CONSTANT_BUFFER_PARTIAL_UPDATE_EXTENTS_BYTE_ALIGNMENT ?
 			return 16;
 		}
 	}

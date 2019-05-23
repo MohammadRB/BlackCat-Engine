@@ -14,17 +14,17 @@ namespace black_cat
 
 			bc_bit_vector(const bc_bit_vector& p_other);
 
-			bc_bit_vector(bc_bit_vector&& p_other);
+			bc_bit_vector(bc_bit_vector&& p_other) noexcept;
 
 			~bc_bit_vector();
 
 			bc_bit_vector& operator =(const bc_bit_vector& p_other);
 
-			bc_bit_vector& operator =(bc_bit_vector&& p_other);
+			bc_bit_vector& operator =(bc_bit_vector&& p_other) noexcept;
 
 			void resize(bcUINT32 p_size, bc_alloc_type p_alloc_type = bc_alloc_type::unknown);
 
-			bool operator[](bcUINT32 p_index);
+			bool operator[](bcUINT32 p_index) const;
 
 			void set(bcUINT32 p_index, bool p_value);
 
@@ -32,7 +32,7 @@ namespace black_cat
 
 			void true_all();
 
-			bcUINT32 size()
+			bcUINT32 size() const
 			{
 				return m_size;
 			}

@@ -12,8 +12,8 @@ Texture2D g_text2d_specular		: register(BC_RENDER_STATE_T2);
 
 cbuffer g_cb_material			: register(BC_RENDER_STATE_CB1)
 {
-	float4 g_diffuse				: packoffset(c0);
-	float g_specular_intency		: packoffset(c1.x);
+	float4 g_diffuse			: packoffset(c0);
+	float g_specular_intency	: packoffset(c1.x);
 	float g_specular_power		: packoffset(c1.y);
 };
 
@@ -24,7 +24,7 @@ struct bc_vs_input
 	float3 m_position	: POSITION0;
 	float2 m_texcoord	: TEXCOORD0;
 	float3 m_normal		: NORMAL0;
-	float3 m_tangent		: TANGENT0;
+	float3 m_tangent	: TANGENT0;
 };
 
 struct bc_vs_output
@@ -46,8 +46,7 @@ bc_vs_output vs(bc_vs_input p_input)
 {
 	bc_vs_output l_output;
 
-	float4x4 l_world_view_projection = mul(g_world, g_viewprojection);
-	l_output.m_position = mul(float4(p_input.m_position, 1), l_world_view_projection);
+	l_output.m_position = mul(float4(p_input.m_position, 1), g_world_view_projection);
 	l_output.m_texcoord = p_input.m_texcoord;
     l_output.m_normal = mul(p_input.m_normal, (float3x3)g_world);
     l_output.m_tangent = mul(p_input.m_tangent, (float3x3) g_world);

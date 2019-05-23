@@ -487,13 +487,13 @@ namespace black_cat
 				{
 					p_value.set_value(p_json_value.GetBool());
 				}
-				else if (p_json_value.IsDouble())
-				{
-					p_value.set_value(p_json_value.GetDouble());
-				}
 				else if (p_json_value.IsFloat())
 				{
 					p_value.set_value(p_json_value.GetFloat());
+				}
+				else if (p_json_value.IsDouble())
+				{
+					p_value.set_value(p_json_value.GetDouble());
 				}
 				else if (p_json_value.IsInt())
 				{
@@ -552,13 +552,13 @@ namespace black_cat
 				{
 					p_json_value.SetBool(*p_value.as<bool>());
 				}
-				else if (p_value.is<bcDOUBLE>())
-				{
-					p_json_value.SetDouble(*p_value.as<bcDOUBLE>());
-				}
 				else if (p_value.is<bcFLOAT>())
 				{
 					p_json_value.SetFloat(*p_value.as<bcFLOAT>());
+				}
+				else if (p_value.is<bcDOUBLE>())
+				{
+					p_json_value.SetDouble(*p_value.as<bcDOUBLE>());
 				}
 				else if (p_value.is<bcINT32>())
 				{

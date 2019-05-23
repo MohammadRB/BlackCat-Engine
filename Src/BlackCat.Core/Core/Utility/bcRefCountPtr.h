@@ -23,7 +23,7 @@ namespace black_cat
 			template< class T, class TDeleter >
 			friend class bc_ref_count_handle;
 
-		public:
+		protected:
 			bc_ref_count()
 				: m_ref_count(0)
 			{
@@ -34,7 +34,7 @@ namespace black_cat
 				operator=(std::move(p_other));
 			}
 
-			virtual ~bc_ref_count() = default;
+			~bc_ref_count() = default;
 
 			bc_ref_count& operator=(bc_ref_count&& p_other) noexcept
 			{
@@ -44,13 +44,15 @@ namespace black_cat
 				return *this;
 			}
 
-		protected:
 			void add_ref() noexcept
 			{
 				m_ref_count.fetch_add(1U, core_platform::bc_memory_order::relaxed);
 			}
 
-			// Return true if reference count reach zero
+			/**
+			 * \brief Return true if reference count reach zero
+			 * \return 
+			 */
 			bool dec_ref() noexcept
 			{
 				const auto l_ref_count = m_ref_count.fetch_sub(1U, core_platform::bc_memory_order::relaxed) - 1;
@@ -80,54 +82,54 @@ namespace black_cat
 			friend class bc_ref_count_ptr;
 
 		public:
-			bc_ref_count_ptr() noexcept(true);
+			bc_ref_count_ptr() noexcept;
 
-			bc_ref_count_ptr(std::nullptr_t) noexcept(true);
+			bc_ref_count_ptr(std::nullptr_t) noexcept;
 
-			bc_ref_count_ptr(element_ptr p_pointer, TDeleter p_deleter) noexcept(true);
-
-			template< class TOther >
-			bc_ref_count_ptr(TOther* p_pointer, TDeleter p_deleter) noexcept(true);
-
-			bc_ref_count_ptr(const bc_ref_count_ptr& p_other) noexcept(true);
-
-			bc_ref_count_ptr(bc_ref_count_ptr&& p_other) noexcept(true);
+			bc_ref_count_ptr(element_ptr p_pointer, TDeleter p_deleter) noexcept;
 
 			template< class TOther >
-			bc_ref_count_ptr(const bc_ref_count_ptr< TOther, TDeleter >& p_other) noexcept(true);
+			bc_ref_count_ptr(TOther* p_pointer, TDeleter p_deleter) noexcept;
+
+			bc_ref_count_ptr(const bc_ref_count_ptr& p_other) noexcept;
+
+			bc_ref_count_ptr(bc_ref_count_ptr&& p_other) noexcept;
 
 			template< class TOther >
-			bc_ref_count_ptr(bc_ref_count_ptr< TOther, TDeleter >&& p_other) noexcept(true);
+			bc_ref_count_ptr(const bc_ref_count_ptr< TOther, TDeleter >& p_other) noexcept;
+
+			template< class TOther >
+			bc_ref_count_ptr(bc_ref_count_ptr< TOther, TDeleter >&& p_other) noexcept;
 
 			~bc_ref_count_ptr();
 
-			bc_ref_count_ptr& operator=(std::nullptr_t) noexcept(true);
+			bc_ref_count_ptr& operator=(std::nullptr_t) noexcept;
 
-			bc_ref_count_ptr& operator=(const bc_ref_count_ptr& p_other) noexcept(true);
+			bc_ref_count_ptr& operator=(const bc_ref_count_ptr& p_other) noexcept;
 
-			bc_ref_count_ptr& operator=(bc_ref_count_ptr&& p_other) noexcept(true);
-
-			template< class TOther >
-			bc_ref_count_ptr& operator=(const bc_ref_count_ptr< TOther, TDeleter >& p_other) noexcept(true);
+			bc_ref_count_ptr& operator=(bc_ref_count_ptr&& p_other) noexcept;
 
 			template< class TOther >
-			bc_ref_count_ptr& operator=(bc_ref_count_ptr< TOther, TDeleter >&& p_other) noexcept(true);
+			bc_ref_count_ptr& operator=(const bc_ref_count_ptr< TOther, TDeleter >& p_other) noexcept;
 
-			void reset() noexcept(true);
+			template< class TOther >
+			bc_ref_count_ptr& operator=(bc_ref_count_ptr< TOther, TDeleter >&& p_other) noexcept;
 
-			void reset(element_ptr p_pointer) noexcept(true);
+			void reset() noexcept;
 
-			void reset(bc_ref_count_ptr& p_other) noexcept(true);
+			void reset(element_ptr p_pointer) noexcept;
 
-			void swap(bc_ref_count_ptr& p_other) noexcept(true);
+			void reset(bc_ref_count_ptr& p_other) noexcept;
 
-			element_ptr get() const noexcept(true);
+			void swap(bc_ref_count_ptr& p_other) noexcept;
+
+			element_ptr get() const noexcept;
 
 			bcUINT32 ref_count() const noexcept;
 
 			element_type& operator*() const;
 
-			element_ptr operator->() const noexcept(true);
+			element_ptr operator->() const noexcept;
 
 			bool operator==(std::nullptr_t) const noexcept;
 
@@ -170,51 +172,51 @@ namespace black_cat
 			friend class bc_ref_count_handle;
 
 		public:
-			bc_ref_count_handle() noexcept(true);
+			bc_ref_count_handle() noexcept;
 
-			bc_ref_count_handle(std::nullptr_t) noexcept(true);
+			bc_ref_count_handle(std::nullptr_t) noexcept;
 
-			bc_ref_count_handle(handle_t p_pointer, TDeleter p_deleter) noexcept(true);
+			bc_ref_count_handle(handle_t p_pointer, TDeleter p_deleter) noexcept;
 
-			bc_ref_count_handle(const bc_ref_count_handle& p_other) noexcept(true);
+			bc_ref_count_handle(const bc_ref_count_handle& p_other) noexcept;
 
-			bc_ref_count_handle(bc_ref_count_handle&& p_other) noexcept(true);
-
-			template< class TOther >
-			bc_ref_count_handle(const bc_ref_count_handle< TOther, TDeleter >& p_other) noexcept(true);
+			bc_ref_count_handle(bc_ref_count_handle&& p_other) noexcept;
 
 			template< class TOther >
-			bc_ref_count_handle(bc_ref_count_handle< TOther, TDeleter >&& p_other) noexcept(true);
+			bc_ref_count_handle(const bc_ref_count_handle< TOther, TDeleter >& p_other) noexcept;
+
+			template< class TOther >
+			bc_ref_count_handle(bc_ref_count_handle< TOther, TDeleter >&& p_other) noexcept;
 
 			~bc_ref_count_handle();
 
-			bc_ref_count_handle& operator=(std::nullptr_t) noexcept(true);
+			bc_ref_count_handle& operator=(std::nullptr_t) noexcept;
 
-			bc_ref_count_handle& operator=(const bc_ref_count_handle& p_other) noexcept(true);
+			bc_ref_count_handle& operator=(const bc_ref_count_handle& p_other) noexcept;
 
-			bc_ref_count_handle& operator=(bc_ref_count_handle&& p_other) noexcept(true);
-
-			template< class TOther >
-			bc_ref_count_handle& operator=(const bc_ref_count_handle< TOther, TDeleter >& p_other) noexcept(true);
+			bc_ref_count_handle& operator=(bc_ref_count_handle&& p_other) noexcept;
 
 			template< class TOther >
-			bc_ref_count_handle& operator=(bc_ref_count_handle< TOther, TDeleter >&& p_other) noexcept(true);
+			bc_ref_count_handle& operator=(const bc_ref_count_handle< TOther, TDeleter >& p_other) noexcept;
 
-			void reset() noexcept(true);
+			template< class TOther >
+			bc_ref_count_handle& operator=(bc_ref_count_handle< TOther, TDeleter >&& p_other) noexcept;
 
-			void reset(handle_t p_handle) noexcept(true);
+			void reset() noexcept;
 
-			void swap(bc_ref_count_handle& p_other) noexcept(true);
+			void reset(handle_t p_handle) noexcept;
 
-			element_t* get() const noexcept(true);
+			void swap(bc_ref_count_handle& p_other) noexcept;
 
-			handle_t get_handle() const noexcept(true);
+			element_t* get() const noexcept;
+
+			handle_t get_handle() const noexcept;
 
 			bcUINT32 ref_count() const noexcept;
 
 			element_t& operator*() const;
 
-			element_t* operator->() const noexcept(true);
+			element_t* operator->() const noexcept;
 
 			bool operator==(std::nullptr_t) const noexcept;
 
@@ -242,52 +244,52 @@ namespace black_cat
 		// -- bc_ref_count_ptr --------------------------------------------------------------------------------
 
 		template< class T, class TDeleter >
-		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr() noexcept(true)
+		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr() noexcept
 			: m_pointer(nullptr)
 		{
 		}
 
 		template< class T, class TDeleter >
-		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr(std::nullptr_t) noexcept(true)
+		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr(std::nullptr_t) noexcept
 			: bc_ref_count_ptr()
 		{
 		}
 
 		template< class T, class TDeleter >
-		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr(element_ptr p_pointer, TDeleter p_deleter) noexcept(true)
+		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr(element_ptr p_pointer, TDeleter p_deleter) noexcept
 		{
 			_construct(static_cast< element_ptr >(p_pointer), p_deleter);
 		}
 
 		template< class T, class TDeleter >
 		template< class TOther >
-		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr(TOther* p_pointer, TDeleter p_deleter) noexcept(true)
+		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr(TOther* p_pointer, TDeleter p_deleter) noexcept
 		{
 			_construct(static_cast< element_ptr >(p_pointer), p_deleter);
 		}
 
 		template< class T, class TDeleter >
-		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr(const bc_ref_count_ptr& p_other) noexcept(true)
+		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr(const bc_ref_count_ptr& p_other) noexcept
 		{
 			_assign(p_other);
 		}
 
 		template< class T, class TDeleter >
-		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr(bc_ref_count_ptr&& p_other) noexcept(true)
+		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr(bc_ref_count_ptr&& p_other) noexcept
 		{
 			_assign(std::move(p_other));
 		}
 
 		template< class T, class TDeleter >
 		template< class TOther >
-		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr(const bc_ref_count_ptr< TOther, TDeleter >& p_other) noexcept(true)
+		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr(const bc_ref_count_ptr< TOther, TDeleter >& p_other) noexcept
 		{
 			_assign(p_other);
 		}
 
 		template< class T, class TDeleter >
 		template< class TOther >
-		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr(bc_ref_count_ptr< TOther, TDeleter >&& p_other) noexcept(true)
+		bc_ref_count_ptr< T, TDeleter >::bc_ref_count_ptr(bc_ref_count_ptr< TOther, TDeleter >&& p_other) noexcept
 		{
 			_assign(std::move(p_other));
 		}
@@ -299,7 +301,7 @@ namespace black_cat
 		}
 
 		template< class T, class TDeleter >
-		bc_ref_count_ptr< T, TDeleter >& bc_ref_count_ptr< T, TDeleter >::operator=(std::nullptr_t) noexcept(true)
+		bc_ref_count_ptr< T, TDeleter >& bc_ref_count_ptr< T, TDeleter >::operator=(std::nullptr_t) noexcept
 		{
 			reset(nullptr);
 
@@ -307,7 +309,7 @@ namespace black_cat
 		}
 
 		template< class T, class TDeleter >
-		bc_ref_count_ptr< T, TDeleter >& bc_ref_count_ptr< T, TDeleter >::operator=(const bc_ref_count_ptr& p_other) noexcept(true)
+		bc_ref_count_ptr< T, TDeleter >& bc_ref_count_ptr< T, TDeleter >::operator=(const bc_ref_count_ptr& p_other) noexcept
 		{
 			if (this != &p_other)
 			{
@@ -318,7 +320,7 @@ namespace black_cat
 		}
 
 		template< class T, class TDeleter >
-		bc_ref_count_ptr< T, TDeleter >& bc_ref_count_ptr< T, TDeleter >::operator=(bc_ref_count_ptr&& p_other) noexcept(true)
+		bc_ref_count_ptr< T, TDeleter >& bc_ref_count_ptr< T, TDeleter >::operator=(bc_ref_count_ptr&& p_other) noexcept
 		{
 			if (this != &p_other)
 			{
@@ -330,7 +332,7 @@ namespace black_cat
 
 		template< class T, class TDeleter >
 		template< class TOther >
-		bc_ref_count_ptr< T, TDeleter >& bc_ref_count_ptr< T, TDeleter >::operator=(const bc_ref_count_ptr< TOther, TDeleter >& p_other) noexcept(true)
+		bc_ref_count_ptr< T, TDeleter >& bc_ref_count_ptr< T, TDeleter >::operator=(const bc_ref_count_ptr< TOther, TDeleter >& p_other) noexcept
 		{
 			if (m_pointer != p_other.m_pointer)
 			{
@@ -342,7 +344,7 @@ namespace black_cat
 
 		template< class T, class TDeleter >
 		template< class TOther >
-		bc_ref_count_ptr< T, TDeleter >& bc_ref_count_ptr< T, TDeleter >::operator=(bc_ref_count_ptr< TOther, TDeleter >&& p_other) noexcept(true)
+		bc_ref_count_ptr< T, TDeleter >& bc_ref_count_ptr< T, TDeleter >::operator=(bc_ref_count_ptr< TOther, TDeleter >&& p_other) noexcept
 		{
 			if (m_pointer != p_other.m_pointer)
 			{
@@ -353,34 +355,34 @@ namespace black_cat
 		}
 
 		template< class T, class TDeleter >
-		void bc_ref_count_ptr<T, TDeleter>::reset() noexcept(true)
+		void bc_ref_count_ptr<T, TDeleter>::reset() noexcept
 		{
 			_destruct();
 		}
 
 		template< class T, class TDeleter >
-		void bc_ref_count_ptr< T, TDeleter >::reset(element_ptr p_pointer) noexcept(true)
+		void bc_ref_count_ptr< T, TDeleter >::reset(element_ptr p_pointer) noexcept
 		{
 			_destruct();
 			_construct(p_pointer, m_deleter);
 		}
 
 		template< class T, class TDeleter >
-		void bc_ref_count_ptr< T, TDeleter >::reset(bc_ref_count_ptr& p_other) noexcept(true)
+		void bc_ref_count_ptr< T, TDeleter >::reset(bc_ref_count_ptr& p_other) noexcept
 		{
 			_destruct();
 			_construct(p_other.m_pointer, p_other.m_deleter);
 		}
 
 		template< class T, class TDeleter >
-		void bc_ref_count_ptr< T, TDeleter >::swap(bc_ref_count_ptr& p_other) noexcept(true)
+		void bc_ref_count_ptr< T, TDeleter >::swap(bc_ref_count_ptr& p_other) noexcept
 		{
 			using std::swap;
 			swap(m_pointer, p_other.m_pointer);
 		}
 
 		template< class T, class TDeleter >
-		typename bc_ref_count_ptr< T, TDeleter >::element_ptr bc_ref_count_ptr< T, TDeleter >::get() const noexcept(true)
+		typename bc_ref_count_ptr< T, TDeleter >::element_ptr bc_ref_count_ptr< T, TDeleter >::get() const noexcept
 		{
 			return m_pointer;
 		}
@@ -403,7 +405,7 @@ namespace black_cat
 		}
 
 		template< class T, class TDeleter >
-		typename bc_ref_count_ptr< T, TDeleter >::element_ptr bc_ref_count_ptr< T, TDeleter >::operator->() const noexcept(true)
+		typename bc_ref_count_ptr< T, TDeleter >::element_ptr bc_ref_count_ptr< T, TDeleter >::operator->() const noexcept
 		{
 			return m_pointer;
 		}
@@ -480,45 +482,45 @@ namespace black_cat
 		// -- bc_ref_count_handle --------------------------------------------------------------------------------
 
 		template< class T, class TDeleter >
-		bc_ref_count_handle< T, TDeleter >::bc_ref_count_handle() noexcept(true)
+		bc_ref_count_handle< T, TDeleter >::bc_ref_count_handle() noexcept
 			: m_handle(nullptr)
 		{
 		}
 
 		template< class T, class TDeleter >
-		bc_ref_count_handle< T, TDeleter >::bc_ref_count_handle(std::nullptr_t) noexcept(true)
+		bc_ref_count_handle< T, TDeleter >::bc_ref_count_handle(std::nullptr_t) noexcept
 			: bc_ref_count_handle()
 		{
 		}
 
 		template< class T, class TDeleter >
-		bc_ref_count_handle< T, TDeleter >::bc_ref_count_handle(handle_t p_handle, TDeleter p_deleter) noexcept(true)
+		bc_ref_count_handle< T, TDeleter >::bc_ref_count_handle(handle_t p_handle, TDeleter p_deleter) noexcept
 		{
 			_construct(p_handle, p_deleter);
 		}
 
 		template< class T, class TDeleter >
-		bc_ref_count_handle< T, TDeleter >::bc_ref_count_handle(const bc_ref_count_handle& p_other) noexcept(true)
+		bc_ref_count_handle< T, TDeleter >::bc_ref_count_handle(const bc_ref_count_handle& p_other) noexcept
 		{
 			_assign(p_other);
 		}
 
 		template< class T, class TDeleter >
-		bc_ref_count_handle< T, TDeleter >::bc_ref_count_handle(bc_ref_count_handle&& p_other) noexcept(true)
+		bc_ref_count_handle< T, TDeleter >::bc_ref_count_handle(bc_ref_count_handle&& p_other) noexcept
 		{
 			_assign(std::move(p_other));
 		}
 
 		template< class T, class TDeleter >
 		template< class TOther >
-		bc_ref_count_handle< T, TDeleter >::bc_ref_count_handle(const bc_ref_count_handle< TOther, TDeleter >& p_other) noexcept(true)
+		bc_ref_count_handle< T, TDeleter >::bc_ref_count_handle(const bc_ref_count_handle< TOther, TDeleter >& p_other) noexcept
 		{
 			_assign(p_other);
 		}
 
 		template< class T, class TDeleter >
 		template< class TOther >
-		bc_ref_count_handle< T, TDeleter >::bc_ref_count_handle(bc_ref_count_handle< TOther, TDeleter >&& p_other) noexcept(true)
+		bc_ref_count_handle< T, TDeleter >::bc_ref_count_handle(bc_ref_count_handle< TOther, TDeleter >&& p_other) noexcept
 		{
 			_assign(std::move(p_other));
 		}
@@ -530,7 +532,7 @@ namespace black_cat
 		}
 
 		template< class T, class TDeleter >
-		bc_ref_count_handle< T, TDeleter >& bc_ref_count_handle< T, TDeleter >::operator=(std::nullptr_t) noexcept(true)
+		bc_ref_count_handle< T, TDeleter >& bc_ref_count_handle< T, TDeleter >::operator=(std::nullptr_t) noexcept
 		{
 			reset(nullptr);
 
@@ -538,7 +540,7 @@ namespace black_cat
 		}
 
 		template< class T, class TDeleter >
-		bc_ref_count_handle< T, TDeleter >& bc_ref_count_handle< T, TDeleter >::operator=(const bc_ref_count_handle& p_other) noexcept(true)
+		bc_ref_count_handle< T, TDeleter >& bc_ref_count_handle< T, TDeleter >::operator=(const bc_ref_count_handle& p_other) noexcept
 		{
 			if (this != &p_other)
 			{
@@ -549,7 +551,7 @@ namespace black_cat
 		}
 
 		template< class T, class TDeleter >
-		bc_ref_count_handle< T, TDeleter >& bc_ref_count_handle< T, TDeleter >::operator=(bc_ref_count_handle&& p_other) noexcept(true)
+		bc_ref_count_handle< T, TDeleter >& bc_ref_count_handle< T, TDeleter >::operator=(bc_ref_count_handle&& p_other) noexcept
 		{
 			if (this != &p_other)
 			{
@@ -561,7 +563,7 @@ namespace black_cat
 
 		template< class T, class TDeleter >
 		template< class TOther >
-		bc_ref_count_handle< T, TDeleter >& bc_ref_count_handle< T, TDeleter >::operator=(const bc_ref_count_handle< TOther, TDeleter >& p_other) noexcept(true)
+		bc_ref_count_handle< T, TDeleter >& bc_ref_count_handle< T, TDeleter >::operator=(const bc_ref_count_handle< TOther, TDeleter >& p_other) noexcept
 		{
 			if (this != &p_other)
 			{
@@ -573,7 +575,7 @@ namespace black_cat
 
 		template< class T, class TDeleter >
 		template< class TOther >
-		bc_ref_count_handle< T, TDeleter >& bc_ref_count_handle< T, TDeleter >::operator=(bc_ref_count_handle< TOther, TDeleter >&& p_other) noexcept(true)
+		bc_ref_count_handle< T, TDeleter >& bc_ref_count_handle< T, TDeleter >::operator=(bc_ref_count_handle< TOther, TDeleter >&& p_other) noexcept
 		{
 			if (this != &p_other)
 			{
@@ -584,27 +586,27 @@ namespace black_cat
 		}
 
 		template< class T, class TDeleter >
-		void bc_ref_count_handle<T, TDeleter>::reset() noexcept(true)
+		void bc_ref_count_handle<T, TDeleter>::reset() noexcept
 		{
 			_destruct();
 		}
 
 		template< class T, class TDeleter >
-		void bc_ref_count_handle< T, TDeleter >::reset(handle_t p_handle) noexcept(true)
+		void bc_ref_count_handle< T, TDeleter >::reset(handle_t p_handle) noexcept
 		{
 			_destruct();
 			_construct(p_handle, m_deleter);
 		}
 
 		template< class T, class TDeleter >
-		void bc_ref_count_handle< T, TDeleter >::swap(bc_ref_count_handle& p_other) noexcept(true)
+		void bc_ref_count_handle< T, TDeleter >::swap(bc_ref_count_handle& p_other) noexcept
 		{
 			using std::swap;
 			swap(m_handle, p_other.m_handle);
 		}
 
 		template< class T, class TDeleter >
-		typename bc_ref_count_handle< T, TDeleter >::element_t* bc_ref_count_handle< T, TDeleter >::get() const noexcept(true)
+		typename bc_ref_count_handle< T, TDeleter >::element_t* bc_ref_count_handle< T, TDeleter >::get() const noexcept
 		{
 			if(m_handle != nullptr)
 			{
@@ -615,7 +617,7 @@ namespace black_cat
 		}
 
 		template< class T, class TDeleter >
-		typename bc_ref_count_handle<T, TDeleter>::handle_t bc_ref_count_handle<T, TDeleter>::get_handle() const noexcept(true)
+		typename bc_ref_count_handle<T, TDeleter>::handle_t bc_ref_count_handle<T, TDeleter>::get_handle() const noexcept
 		{
 			return m_handle;
 		}
@@ -638,7 +640,7 @@ namespace black_cat
 		}
 
 		template< class T, class TDeleter >
-		typename bc_ref_count_handle< T, TDeleter >::element_t* bc_ref_count_handle< T, TDeleter >::operator->() const noexcept(true)
+		typename bc_ref_count_handle< T, TDeleter >::element_t* bc_ref_count_handle< T, TDeleter >::operator->() const noexcept
 		{
 			return get();
 		}

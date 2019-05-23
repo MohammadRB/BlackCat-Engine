@@ -1,0 +1,29 @@
+{
+    "name": "Sponza",
+    "streams": [
+        "models"
+    ],
+    "scene_graph": {
+        "center": [
+            0.0,
+            0.0,
+            -0.0
+        ],
+      "half_extends": [
+        4096.0,
+        4096.0,
+        4096.0
+      ]
+    },
+    "actors": [
+        {
+            "entity_name": "sponza",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "parameters": {}
+        }
+    ]
+}

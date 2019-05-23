@@ -15,23 +15,27 @@ namespace black_cat
 		BC_RENDER_PASS(shape_draw_pass)
 
 	public:
+		explicit bc_shape_draw_pass(game::bc_render_pass_resource_variable p_render_target_view);
+
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 
-		void update(const game::bc_render_system_update_param& p_update_param) override;
+		void update(const game::bc_render_pass_update_param& p_update_param) override;
 
-		void initialize_frame(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene) override;
+		void initialize_frame(const game::bc_render_pass_render_param& p_param) override;
 
-		void execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene) override;
+		void execute(const game::bc_render_pass_render_param& p_param) override;
 		
-		void before_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) override;
+		void before_reset(const game::bc_render_pass_reset_param& p_param) override;
 		
-		void after_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters) override;
+		void after_reset(const game::bc_render_pass_reset_param& p_param) override;
 		
-		void destroy(graphic::bc_device& p_device) override;
+		void destroy(game::bc_render_system& p_render_system) override;
 
 	protected:
 
 	private:
+		game::bc_render_pass_resource_variable m_render_target_view_variable;
+
 		graphic::bc_device_command_list_ptr m_command_list;
 		graphic::bc_device_pipeline_state_ptr m_pipeline_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;

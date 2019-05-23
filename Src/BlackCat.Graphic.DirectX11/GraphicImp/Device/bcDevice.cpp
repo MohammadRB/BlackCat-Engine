@@ -40,6 +40,8 @@
 #include "3rdParty/DirectXTK-master/Include/WICTextureLoader.h"
 #include "3rdParty/DirectXTK-master/Include/ScreenGrab.h"
 #include <wincodec.h>
+#include <locale>
+#include <cwctype>
 
 using namespace Microsoft::WRL;
 
@@ -613,7 +615,7 @@ namespace black_cat
 		 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_sampler_state_ptr bc_platform_device< g_api_dx11 >::create_sampler_state(bc_sampler_state_config& p_config)
+		bc_sampler_state_ptr bc_platform_device< g_api_dx11 >::create_sampler_state(const bc_sampler_state_config& p_config)
 		{
 			ID3D11SamplerState* l_dx_sampler;
 			D3D11_SAMPLER_DESC l_dx_sampler_desc;
@@ -1358,8 +1360,35 @@ namespace black_cat
 			ComPtr< IDXGIAdapter > l_current_adapter;
 			core::bc_vector_frame< ComPtr< IDXGIAdapter > > l_adapters;
 
+			core::bc_wstring_frame l_nvidia(L"nvidia");
+			core::bc_wstring_frame l_amd(L"amd");
 			while (l_factory->EnumAdapters(l_adapter_num++, l_current_adapter.ReleaseAndGetAddressOf()) != DXGI_ERROR_NOT_FOUND)
 			{
+				DXGI_ADAPTER_DESC l_adapter_desc;
+				l_current_adapter->GetDesc(&l_adapter_desc);
+
+				core::bc_wstring_frame l_adapter_title = l_adapter_desc.Description;
+				
+				auto l_nvidia_pos = std::search(std::begin(l_adapter_title), std::end(l_adapter_title), std::begin(l_nvidia), std::end(l_nvidia), [](bcWCHAR p_1, bcWCHAR p_2)
+				{
+					return std::towlower(p_1) == std::towlower(p_2);
+				});
+				if(l_nvidia_pos != std::end(l_adapter_title))
+				{
+					l_adapters.insert(std::begin(l_adapters), l_current_adapter);
+					continue;
+				}
+
+				auto l_amd_pos = std::search(std::begin(l_adapter_title), std::end(l_adapter_title), std::begin(l_amd), std::end(l_amd), [](bcWCHAR p_1, bcWCHAR p_2)
+				{
+					return std::towlower(p_1) == std::towlower(p_2);
+				});
+				if (l_amd_pos != std::end(l_adapter_title))
+				{
+					l_adapters.insert(std::begin(l_adapters), l_current_adapter);
+					continue;
+				}
+
 				l_adapters.push_back(l_current_adapter);
 			}
 

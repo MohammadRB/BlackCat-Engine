@@ -201,11 +201,8 @@ namespace black_cat
 			}
 			catch (std::exception& p_exception)
 			{
-				auto* l_event_manager = bc_service_manager::get().get_service< bc_event_manager >();
-
-				bc_app_event_error l_error_event(p_exception.what());
-
-				l_event_manager->process_event(l_error_event);
+				bc_app_event_error l_error_event(bc_string("Concurrent for_each task exited with error: ") + p_exception.what());
+				bc_get_service< bc_event_manager >()->process_event(l_error_event);
 
 				throw p_exception;
 			}

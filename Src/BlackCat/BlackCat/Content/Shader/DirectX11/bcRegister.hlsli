@@ -89,26 +89,25 @@
 #define BC_COMPUTE_STATE_CB6 b6
 #define BC_COMPUTE_STATE_CB7 b7
 
-// Bound to vertex, hull, domain, geometry, pixel shader
-cbuffer g_cb_global_state       : register(BC_RENDER_PASS_STATE_CB0)
+// Bound to vertex, hull, domain, geometry, pixel and compute shader
+cbuffer g_cb_global_state				: register(BC_RENDER_PASS_STATE_CB0)
 {
-    float4x4 g_view             : packoffset(c0);
-    float4x4 g_projection       : packoffset(c4);
-    float4x4 g_viewprojection   : packoffset(c8);
-    float3 g_camera_position    : packoffset(c12);
-    double g_total_elapsed      : packoffset(c13.x);
-    float g_elapsed             : packoffset(c13.z);
-    float g_elapsed_second      : packoffset(c13.w);
+    float4x4 g_view						: packoffset(c0);
+    float4x4 g_projection				: packoffset(c4);
+    float4x4 g_viewprojection			: packoffset(c8);
+    int g_screen_width			        : packoffset(c12.x);
+    int g_screen_height			        : packoffset(c12.y);
+    float g_near_plan                   : packoffset(c12.z);
+    float g_far_plan                    : packoffset(c12.w);
+    float3 g_camera_position			: packoffset(c13);
+    double g_total_elapsed				: packoffset(c14.x);
+    float g_elapsed						: packoffset(c14.z);
+    float g_elapsed_second				: packoffset(c14.w);
 }
 
 // Bound to vertex shader
-cbuffer g_cb_object_state       : register(BC_RENDER_STATE_CB0)
+cbuffer g_cb_object_state				: register(BC_RENDER_STATE_CB0)
 {
-    float4x4 g_world            : packoffset(c0);
+	float4x4 g_world_view_projection	: packoffset(c0);
+    float4x4 g_world					: packoffset(c4);
 }
-
-// Temp variables
-static float3 g_light_dir = normalize(float3(0, -0.3, 1));
-static float3 g_light_color = normalize(float3(203 / 255.0f, 199 / 255.0f, 175 / 255.0f));
-static float3 g_terrain_color = normalize(float3(205 / 255.0f, 205 / 255.0f, 205 / 255.0f));
-static float3 g_mesh_color = normalize(float3(180 / 255.0f, 180 / 255.0f, 180 / 255.0f));

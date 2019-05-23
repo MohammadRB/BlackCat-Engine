@@ -4,6 +4,23 @@
       "stream_name": "engine_shaders",
       "stream_content": [
         {
+          "content_title": "shape_draw_vs",
+          "content_name": "cnt_vertex_shader",
+          "content_file": "content\\shader\\directx11\\bcShapeDraw.hlsl",
+          "content_parameter": { "function": "vs" }
+        },
+        {
+          "content_title": "shape_draw_ps",
+          "content_name": "cnt_pixel_shader",
+          "content_file": "content\\shader\\directx11\\bcShapeDraw.hlsl",
+          "content_parameter": { "function": "ps" }
+        }
+      ]
+    },
+    {
+      "stream_name": "forward_rendering_shaders",
+      "stream_content": [
+        {
           "content_title": "mesh_vs",
           "content_name": "cnt_vertex_shader",
           "content_file": "content\\shader\\directx11\\bcMeshShader.hlsl",
@@ -44,191 +61,77 @@
           "content_name": "cnt_compute_shader",
           "content_file": "content\\shader\\directx11\\bcTerrainChunkInfo.hlsl",
           "content_parameter": { "function": "main" }
-        },
+        }
+      ]
+    },
+    {
+      "stream_name": "deferred_rendering_shaders",
+      "stream_content": [
         {
-          "content_title": "shape_draw_vs",
+          "content_title": "terrain_vs",
           "content_name": "cnt_vertex_shader",
-          "content_file": "content\\shader\\directx11\\bcShapeDraw.hlsl",
+          "content_file": "content\\shader\\directx11\\bcTerrain.hlsl",
           "content_parameter": { "function": "vs" }
         },
         {
-          "content_title": "shape_draw_ps",
+          "content_title": "terrain_hs",
+          "content_name": "cnt_hull_shader",
+          "content_file": "content\\shader\\directx11\\bcTerrain.hlsl",
+          "content_parameter": { "function": "hs" }
+        },
+        {
+          "content_title": "terrain_ds",
+          "content_name": "cnt_domain_shader",
+          "content_file": "content\\shader\\directx11\\bcTerrain.hlsl",
+          "content_parameter": { "function": "ds" }
+        },
+        {
+          "content_title": "terrain_gbuffer_ps",
           "content_name": "cnt_pixel_shader",
-          "content_file": "content\\shader\\directx11\\bcShapeDraw.hlsl",
-          "content_parameter": { "function": "ps" }
+          "content_file": "content\\shader\\directx11\\bcTerrain.hlsl",
+          "content_parameter": { "function": "gbuffer_ps" }
+        },
+        {
+          "content_title": "terrain_chunk_info",
+          "content_name": "cnt_compute_shader",
+          "content_file": "content\\shader\\directx11\\bcTerrainChunkInfo.hlsl",
+          "content_parameter": { "function": "main" }
+        },
+        {
+          "content_title": "bb_write_vs",
+          "content_name": "cnt_vertex_shader",
+          "content_file": "content\\shader\\directx11\\bcBBWrite.hlsl",
+          "content_parameter": { "function": "bb_write_vs" }
+        },
+        {
+          "content_title": "bb_write_ps",
+          "content_name": "cnt_pixel_shader",
+          "content_file": "content\\shader\\directx11\\bcBBWrite.hlsl",
+          "content_parameter": { "function": "bb_write_ps" }
+        },
+        {
+          "content_title": "gbuffer_vs",
+          "content_name": "cnt_vertex_shader",
+          "content_file": "content\\shader\\directx11\\deferredrendering\\bcMeshGBuffer.hlsl",
+          "content_parameter": { "function": "gbuffer_vs" }
+        },
+        {
+          "content_title": "gbuffer_ps",
+          "content_name": "cnt_pixel_shader",
+          "content_file": "content\\shader\\directx11\\deferredrendering\\bcMeshGBuffer.hlsl",
+          "content_parameter": { "function": "gbuffer_ps" }
+        },
+        {
+          "content_title": "gbuffer_light_map",
+          "content_name": "cnt_compute_shader",
+          "content_file": "content\\shader\\directx11\\deferredrendering\\bcGBufferLightMap.hlsl",
+          "content_parameter": { "function": "main" }
         }
       ]
     },
     {
       "stream_name": "engine_resources",
       "stream_content": [
-      ]
-    },
-    {
-      "stream_name": "terrain_textures",
-      "stream_content": [
-        {
-          "content_title": "beach_white_sand_fine",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\beach_white_sand_fine.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "beach_white_sand_fine_nrm",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\beach_white_sand_fine_nrm.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "cliff_is2",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\cliff_is2.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "cliff_is2_nrm",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\cliff_is2_nrm.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "field_earth",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\field_earth.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "field_earth_nrm",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\field_earth_nrm.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "plains_dry_grass_fern",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\plains_dry_grass_fern.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "plains_dry_grass_fern_nrm",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\plains_dry_grass_fern_nrm.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "plains_ferns_green",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\plains_ferns_green.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "plains_ferns_green_nrm",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\plains_ferns_green_nrm.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "plains_pepples_a",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\plains_pepples_a.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "plains_pepples_a_nrm",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\plains_pepples_a_nrm.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "ground_earth_village_var",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\ground_earth_village_var.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "ground_earth_village_var_nrm",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\ground_earth_village_var_nrm.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "plains_dry_grass_detailed_highpassed",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\plains_dry_grass_detailed_highpassed.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "plains_dry_grass_detailed_highpassed_nrm",
-          "content_name": "cnt_texture2d",
-          "content_file": "content\\Texture\\TerrainTextures\\plains_dry_grass_detailed_highpassed_nrm.dds",
-          "content_parameter": {}
-        }
-      ]
-    },
-    {
-      "stream_name": "main",
-      "stream_content": [
-        {
-          "content_title": "crysis_heightmap",
-          "content_name": "cnt_height_map",
-          "content_file": "content\\texture\\CrysisHM1-1024.bmp",
-          "content_parameter": {
-            "xz_multiplier": 2,
-            "y_multiplier": 512,
-            "distance_detail": 100,
-            "height_detail": 20,
-            "materials": [
-              { "name": "terrain_material_1", "scale": 1 },
-              { "name": "terrain_material_2", "scale": 40 },
-              { "name": "terrain_material_3", "scale": 1 },
-              { "name": "terrain_material_4", "scale": 1 },
-              { "name": "terrain_material_5", "scale": 1 },
-              { "name": "terrain_material_6", "scale": 1 },
-              { "name": "terrain_material_7", "scale": 1 },
-              { "name": "terrain_material_8", "scale": 1 }
-            ]
-          }
-        },
-        {
-          "content_title": "m16A2",
-          "content_name": "cnt_mesh",
-          "content_file": "content\\model\\m16-A2\\m16-A2.3ds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "ship",
-          "content_name": "cnt_mesh",
-          "content_file": "content\\model\\ship.x",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "box",
-          "content_name": "cnt_mesh",
-          "content_file": "content\\model\\box.fbx",
-          "content_parameter": {
-            "high_detail_query_shape": false
-          }
-        },
-        {
-          "content_title": "sphere",
-          "content_name": "cnt_mesh",
-          "content_file": "content\\model\\sphere.fbx",
-          "content_parameter": {
-            "high_detail_query_shape": false
-          }
-        },
-        {
-          "content_title": "convex",
-          "content_name": "cnt_mesh",
-          "content_file": "content\\model\\convex.fbx",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "train",
-          "content_name": "cnt_mesh",
-          "content_file": "content\\model\\train.fbx",
-          "content_parameter": {}
-        }
       ]
     }
   ]

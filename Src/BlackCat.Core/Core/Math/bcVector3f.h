@@ -23,6 +23,8 @@ namespace black_cat
 		public:
 			bc_vector3();
 
+			explicit bc_vector3(T p_number);
+
 			bc_vector3(T p_x, T p_y, T p_z);
 
 			bc_vector3(const bc_vector3& p_other);
@@ -91,6 +93,12 @@ namespace black_cat
 
 			static bc_vector3 random();
 
+			static const bc_vector3& up();
+
+			static const bc_vector3& right();
+
+			static const bc_vector3& forward();
+
 		public:
 			T x;
 			T y;
@@ -106,6 +114,15 @@ namespace black_cat
 			y(0),
 			z(0)
 		{
+		}
+
+		template< typename T >
+		bc_vector3<T>::bc_vector3(T p_number)
+			: x(p_number),
+			y(p_number),
+			z(p_number)
+		{
+
 		}
 
 		template< typename T >
@@ -489,6 +506,27 @@ namespace black_cat
 			l_random.normalize();
 
 			return (l_random);
+		}
+
+		template< typename T >
+		const bc_vector3<T>& bc_vector3<T>::up()
+		{
+			static bc_vector3<T> s_up{ 0,1,0 };
+			return s_up;
+		}
+
+		template< typename T >
+		const bc_vector3<T>& bc_vector3<T>::right()
+		{
+			static bc_vector3<T> s_right{ 1,0,0 };
+			return s_right;
+		}
+
+		template< typename T >
+		const bc_vector3<T>& bc_vector3<T>::forward()
+		{
+			static bc_vector3<T> s_forward{ 0,0,1 };
+			return s_forward;
 		}
 	}
 }

@@ -9,13 +9,14 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_free_camera::bc_free_camera(bcFLOAT p_aspect_ratio,
+		bc_free_camera::bc_free_camera(bcUINT16 p_back_buffer_width,
+			bcUINT16 p_back_buffer_height,
 			bcFLOAT p_height_fov,
 			bcFLOAT p_near_clip,
 			bcFLOAT p_far_clip,
 			bcFLOAT p_move_speed,
 			bcFLOAT p_rotate_speed)
-			: bc_perspective_camera(p_aspect_ratio, p_height_fov, p_near_clip, p_far_clip),
+			: bc_perspective_camera(p_back_buffer_width, p_back_buffer_height, p_height_fov, p_near_clip, p_far_clip),
 			m_move_speed(p_move_speed),
 			m_rotate_speed(p_rotate_speed),
 			m_w_pressed(false),
@@ -110,7 +111,7 @@ namespace black_cat
 
 			auto l_lookat = l_position + l_direction;
 
-			look_at(l_position, l_lookat, core::bc_vector3f(0, 1, 0));
+			set_look_at(l_position, l_lookat, core::bc_vector3f(0, 1, 0));
 
 			m_dx = 0;
 			m_dy = 0;

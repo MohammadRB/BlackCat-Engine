@@ -6,6 +6,7 @@
 #include "Core/Content/bcContent.h"
 #include "Core/Content/bcContentLoader.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcMaterialManager.h"
 #include "Game/Object/Mesh/bcMesh.h"
 #include "BlackCat/bcExport.h"
 
@@ -30,7 +31,7 @@ namespace black_cat
 
 		static void convert_aimatrix(const aiMatrix4x4& p_aimatrix, core::bc_matrix4f& p_matrix);
 
-		static void convert_aimaterial(core::bc_content_loading_context& p_context, const aiMaterial& p_aimaterial, game::bc_render_material& p_material);
+		static void convert_aimaterial(core::bc_content_loading_context& p_context, const aiMaterial& p_aimaterial, game::bc_render_material_description& p_material);
 
 		static void convert_aimesh(game::bc_render_system& p_render_system,
 			core::bc_content_loading_context& p_context,

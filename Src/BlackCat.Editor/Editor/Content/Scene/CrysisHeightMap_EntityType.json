@@ -1,0 +1,143 @@
+{
+  "entities": [
+    {
+      "name": "sun_light",
+      "components": [
+        {
+          "name": "cmp_light",
+          "parameters": {
+            "type": "direct",
+            "direction_x": 0.4,
+            "direction_y": -0.3,
+            "direction_z": -0.5,
+            "color_r": 0.79,
+            "color_g": 0.78,
+            "color_b": 0.68,
+            "intensity": 1.2,
+            "ambient_color_r": 0.66,
+            "ambient_color_g": 0.68,
+            "ambient_color_b": 0.70,
+            "ambient_intensity": 0.8
+          }
+        }
+      ]
+    },
+    {
+      "name": "point_light_1",
+      "components": [
+        {
+          "name": "cmp_light",
+          "parameters": {
+            "type": "point",
+            "position_x": 0.0,
+            "position_y": 1.0,
+            "position_z": 0.0,
+            "radius": 6.0,
+            "color_r": 0.79,
+            "color_g": 0.28,
+            "color_b": 0.18,
+            "intensity": 2.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "spot_light_1",
+      "components": [
+        {
+          "name": "cmp_light",
+          "parameters": {
+            "type": "spot",
+            "position_x": 0.0,
+            "position_y": 1.0,
+            "position_z": 0.0,
+            "direction_x": 0.0,
+            "direction_y": -0.05,
+            "direction_z": 0.9,
+            "length": 12.0,
+            "angle": 60.0,
+            "color_r": 0.39,
+            "color_g": 0.78,
+            "color_b": 0.48,
+            "intensity": 2.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "crysis_heightmap",
+      "components": [
+        {
+          "name": "cmp_height_map",
+          "parameters": {
+            "heightmap": "crysis_heightmap"
+          }
+        },
+        {
+          "name": "cmp_rigid_static",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "box",
+      "components": [
+        {
+          "name": "cmp_mesh",
+          "parameters": {
+            "mesh": "box"
+          }
+        },
+        {
+          "name": "cmp_rigid_dynamic",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "sphere",
+      "components": [
+        {
+          "name": "cmp_mesh",
+          "parameters": {
+            "mesh": "sphere"
+          }
+        },
+        {
+          "name": "cmp_rigid_dynamic",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "convex",
+      "components": [
+        {
+          "name": "cmp_mesh",
+          "parameters": {
+            "mesh": "convex"
+          }
+        },
+        {
+          "name": "cmp_rigid_dynamic",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "train",
+      "components": [
+        {
+          "name": "cmp_mesh",
+          "parameters": {
+            "mesh": "train"
+          }
+        },
+        {
+          "name": "cmp_rigid_static",
+          "parameters": {}
+        }
+      ]
+    }
+  ]
+}

@@ -217,7 +217,7 @@ namespace black_cat
 
 			void save_texture2d(bc_texture2d p_texture, bc_image_format p_format, const bcECHAR* p_path);
 
-			bc_sampler_state_ptr create_sampler_state(bc_sampler_state_config& p_config);
+			bc_sampler_state_ptr create_sampler_state(const bc_sampler_state_config& p_config);
 
 			bc_compiled_shader_ptr compile_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file);
 

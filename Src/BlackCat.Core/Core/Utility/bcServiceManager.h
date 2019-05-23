@@ -44,7 +44,7 @@ namespace black_cat
 		protected:
 			bc_iservice() = default;
 
-			virtual void update(core_platform::bc_clock::update_param p_clock_update_param);
+			virtual void update(const core_platform::bc_clock::update_param& p_clock_update_param);
 		};
 
 		template< class TService >
@@ -54,6 +54,13 @@ namespace black_cat
 		bc_service_ptr< TService > bc_make_service(TArgs&&... p_args)
 		{
 			return bc_make_unique< TService >(bc_alloc_type::program, std::forward<TArgs>(p_args)...);
+		}
+
+		template< class TService >
+		TService* bc_register_service(bc_service_ptr<TService> p_service)
+		{
+			static bc_service_manager& s_instance = bc_service_manager::get();
+			return s_instance.register_service(std::move(p_service));
 		}
 
 		template< class TService >

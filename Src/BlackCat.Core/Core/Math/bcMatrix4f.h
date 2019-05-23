@@ -75,10 +75,6 @@ namespace black_cat
 
 			void make_transpose();
 
-			static bc_matrix4f zero();
-
-			static bc_matrix4f identity();
-
 			bc_matrix4f transpose() const;
 			
 			void set_row(bcINT p_row, const bc_vector4f& p_vector);
@@ -125,7 +121,7 @@ namespace black_cat
 
 			bc_matrix4f& operator/= (bcFLOAT p_scalar);
 
-			bc_vector4f operator* (const bc_vector4f& p_other) const;
+			bc_vector4f operator* (const bc_vector4f& p_vector) const;
 
 			static bc_matrix4f rotation_matrix_xyz_lh(bcFLOAT p_radians_x, bcFLOAT p_radians_y, bcFLOAT p_radians_z);
 
@@ -162,6 +158,10 @@ namespace black_cat
 			static bc_matrix4f perspective_fov_matrix_rh(bcFLOAT p_fovy, bcFLOAT p_aspect, bcFLOAT p_zn, bcFLOAT p_zf);
 
 			static bc_matrix4f orthographic_matrix_rh(bcFLOAT p_zn, bcFLOAT p_zf, bcFLOAT p_width, bcFLOAT p_height);
+
+			static bc_matrix4f zero();
+
+			static bc_matrix4f identity();
 
 			static const bcINT m11 = 0;
 			static const bcINT m12 = 1;

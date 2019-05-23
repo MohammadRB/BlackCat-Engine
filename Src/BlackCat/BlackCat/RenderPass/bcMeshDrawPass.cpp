@@ -58,63 +58,63 @@ namespace black_cat
 			l_back_buffer_texture.get_sample_count()
 		);
 
-		after_reset(p_render_system, l_device, l_old_parameters, l_new_parameters);
+		after_reset(game::bc_render_pass_reset_param(p_render_system, l_device, l_old_parameters, l_new_parameters));
 	}
 
-	void bc_mesh_draw_pass::update(const game::bc_render_system_update_param& p_update_param)
+	void bc_mesh_draw_pass::update(const game::bc_render_pass_update_param& p_update_param)
 	{
 	}
 
-	void bc_mesh_draw_pass::initialize_frame(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
+	void bc_mesh_draw_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		p_thread.start(m_command_list.get());
-		p_thread.bind_render_pass_state(m_render_pass_state.get());
+		p_param.m_render_thread.start(m_command_list.get());
+		p_param.m_render_thread.bind_render_pass_state(m_render_pass_state.get());
 	}
 
-	void bc_mesh_draw_pass::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_thread, game::bc_scene& p_scene)
+	void bc_mesh_draw_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
 		game::bc_scene_graph_buffer* l_actors = get_shared_resource<game::bc_scene_graph_buffer>(game::bc_render_pass_resource_variable::actor_list);
 
-		l_actors->render_actors<game::bc_mesh_component>(p_render_system);
-		p_render_system.render_all_instances(p_thread);
-		p_render_system.clear_render_instances();
+		l_actors->render_actors<game::bc_mesh_component>(p_param.m_render_system);
+		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
+		p_param.m_render_system.clear_render_instances();
 
-		p_thread.unbind_render_pass_state(m_render_pass_state.get());
-		p_thread.finish();
+		p_param.m_render_thread.unbind_render_pass_state(m_render_pass_state.get());
+		p_param.m_render_thread.finish();
 
 		m_command_list->reset();
 	}
 
-	void bc_mesh_draw_pass::before_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
+	void bc_mesh_draw_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
 	{
 		if
 		(
-			p_old_parameters.m_width != p_new_parameters.m_width ||
-			p_old_parameters.m_height != p_new_parameters.m_height
+			p_param.m_old_parameters.m_width != p_param.m_new_parameters.m_width ||
+			p_param.m_old_parameters.m_height != p_param.m_new_parameters.m_height
 		)
 		{
 			m_render_pass_state.reset();
 		}
 	}
 
-	void bc_mesh_draw_pass::after_reset(game::bc_render_system& p_render_system, graphic::bc_device& p_device, graphic::bc_device_parameters& p_old_parameters, graphic::bc_device_parameters& p_new_parameters)
+	void bc_mesh_draw_pass::after_reset(const game::bc_render_pass_reset_param& p_param)
 	{
 		if
 		(
-			p_old_parameters.m_width != p_new_parameters.m_width ||
-			p_old_parameters.m_height != p_new_parameters.m_height
+			p_param.m_old_parameters.m_width != p_param.m_new_parameters.m_width ||
+			p_param.m_old_parameters.m_height != p_param.m_new_parameters.m_height
 		)
 		{
-			graphic::bc_texture2d l_back_buffer_texture = p_device.get_back_buffer_texture();
+			graphic::bc_texture2d l_back_buffer_texture = p_param.m_device.get_back_buffer_texture();
 
 			auto l_linear_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_wrap_wrap_wrap);
 
 			const auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(game::bc_render_pass_resource_variable::depth_stencil_view);
-			const auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(game::bc_render_pass_resource_variable::render_target_view);
+			const auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(game::bc_render_pass_resource_variable::render_target_view_1);
 			const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
-			m_sampler_state = p_device.create_sampler_state(l_linear_sampler_config);
+			m_sampler_state = p_param.m_device.create_sampler_state(l_linear_sampler_config);
 
-			m_render_pass_state = p_render_system.create_render_pass_state
+			m_render_pass_state = p_param.m_render_system.create_render_pass_state
 			(
 				m_pipeline_state.get(),
 				l_viewport,
@@ -127,7 +127,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_mesh_draw_pass::destroy(graphic::bc_device& p_device)
+	void bc_mesh_draw_pass::destroy(game::bc_render_system& p_render_system)
 	{
 		m_command_list.reset();
 		m_pipeline_state.reset();

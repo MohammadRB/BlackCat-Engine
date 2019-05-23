@@ -28,6 +28,8 @@ namespace black_cat
 		public:
 			bc_vector4();
 
+			explicit bc_vector4(T p_number);
+
 			bc_vector4(T p_x, T p_y, T p_z, T p_w);
 
 			bc_vector4(const bc_vector3< T >& p_vector, T w);
@@ -105,6 +107,15 @@ namespace black_cat
 			y(0),
 			z(0),
 			w(0)
+		{
+		}
+
+		template< typename T >
+		bc_vector4<T>::bc_vector4(T p_number)
+			: x(p_number),
+			y(p_number),
+			z(p_number),
+			w(p_number)
 		{
 		}
 
@@ -448,13 +459,14 @@ namespace black_cat
 		bcUINT32 bc_vector4< T >::to_argb()
 		{
 			bcUINT32 l_result = 0;
+			bc_vector4< T > l_temp = *this;
 
-			clamp();
+			l_temp.clamp();
 
-			l_result += static_cast< bcUINT32 >(255 * z);
-			l_result += (static_cast< bcUINT32 >(255 * y) << 8);
-			l_result += (static_cast< bcUINT32 >(255 * x) << 16);
-			l_result += (static_cast< bcUINT32 >(255 * w) << 24);
+			l_result += static_cast< bcUINT32 >(255 * l_temp.z);
+			l_result += (static_cast< bcUINT32 >(255 * l_temp.y) << 8);
+			l_result += (static_cast< bcUINT32 >(255 * l_temp.x) << 16);
+			l_result += (static_cast< bcUINT32 >(255 * l_temp.w) << 24);
 
 			return l_result;
 		}
@@ -462,14 +474,15 @@ namespace black_cat
 		template< typename T >
 		bcUINT32 bc_vector4< T >::to_rgba()
 		{
-			unsigned int l_result = 0;
+			bcUINT32 l_result = 0;
+			bc_vector4< T > l_temp = *this;
 
-			clamp();
+			l_temp.clamp();
 
-			l_result += static_cast< bcUINT32 >(255 * w);
-			l_result += (static_cast< bcUINT32 >(255 * z) << 8);
-			l_result += (static_cast< bcUINT32 >(255 * y) << 16);
-			l_result += (static_cast< bcUINT32 >(255 * x) << 24);
+			l_result += static_cast< bcUINT32 >(255 * l_temp.w);
+			l_result += (static_cast< bcUINT32 >(255 * l_temp.z) << 8);
+			l_result += (static_cast< bcUINT32 >(255 * l_temp.y) << 16);
+			l_result += (static_cast< bcUINT32 >(255 * l_temp.x) << 24);
 
 			return l_result;
 		}

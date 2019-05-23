@@ -88,9 +88,9 @@ namespace black_cat
 		{
 		}
 
-		void bc_scene_graph::render_debug_shapes(bc_shape_drawer& p_shape_drawer) const
+		void bc_scene_graph::add_debug_shapes(bc_shape_drawer& p_shape_drawer) const
 		{
-			m_graph_node->render_bound_boxes(p_shape_drawer);
+			m_graph_node->add_debug_shapes(p_shape_drawer);
 		}
 
 		void bc_scene_graph::clear()

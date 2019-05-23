@@ -67,7 +67,7 @@ namespace black_cat
 		void bc_hierarchy_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
 		{
 			auto& l_child_entity_names = p_parameters.get_value_throw< core::bc_string >(core::g_param_child_actor);
-			auto* l_entity_manager = core::bc_service_manager::get().get_service< bc_entity_manager >();
+			auto* l_entity_manager = core::bc_get_service< bc_entity_manager >();
 
 			core::bc_string::size_type l_last_pos = 0;
 			core::bc_string::size_type l_pos = 0;

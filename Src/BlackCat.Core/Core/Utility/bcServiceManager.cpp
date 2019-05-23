@@ -14,7 +14,7 @@ namespace black_cat
 		{
 		}
 
-		void bc_iservice::update(core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_iservice::update(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 

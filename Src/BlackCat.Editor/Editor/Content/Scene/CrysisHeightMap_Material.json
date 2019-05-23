@@ -1,0 +1,68 @@
+{
+  "materials": [
+    {
+      "name": "terrain_material_1",
+      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "specular_intensity": 0.3,
+      "specular_power": 0.3,
+      "diffuse_map": "beach_white_sand_fine",
+      "normal_map": "beach_white_sand_fine_nrm"
+    },
+    {
+      "name": "terrain_material_2",
+      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "specular_intensity": 0.2,
+      "specular_power": 0.2,
+      "diffuse_map": "cliff_is2",
+      "normal_map": "cliff_is2_nrm"
+    },
+    {
+      "name": "terrain_material_3",
+      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.2,
+      "diffuse_map": "field_earth",
+      "normal_map": "field_earth_nrm"
+    },
+    {
+      "name": "terrain_material_4",
+      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.2,
+      "diffuse_map": "plains_dry_grass_fern",
+      "normal_map": "plains_dry_grass_fern_nrm"
+    },
+    {
+      "name": "terrain_material_5",
+      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "specular_intensity": 0.2,
+      "specular_power": 0.2,
+      "diffuse_map": "plains_ferns_green",
+      "normal_map": "plains_ferns_green_nrm"
+    },
+    {
+      "name": "terrain_material_6",
+      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.2,
+      "diffuse_map": "plains_pepples_a",
+      "normal_map": "plains_pepples_a_nrm"
+    },
+    {
+      "name": "terrain_material_7",
+      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.2,
+      "diffuse_map": "ground_earth_village_var",
+      "normal_map": "ground_earth_village_var_nrm"
+    },
+    {
+      "name": "terrain_material_8",
+      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.2,
+      "diffuse_map": "plains_dry_grass_detailed_highpassed",
+      "normal_map": "plains_dry_grass_detailed_highpassed_nrm"
+    }
+  ]
+}

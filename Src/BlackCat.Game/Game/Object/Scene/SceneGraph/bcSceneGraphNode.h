@@ -69,7 +69,7 @@ namespace black_cat
 
 			virtual void clear() = 0;
 
-			virtual void render_bound_boxes(bc_shape_drawer& p_shape_drawer) const = 0;
+			virtual void add_debug_shapes(bc_shape_drawer& p_shape_drawer) const = 0;
 
 		protected:
 			virtual bool iterator_validate(const node_type* p_node) const noexcept = 0;

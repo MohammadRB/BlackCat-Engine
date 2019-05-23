@@ -1,0 +1,75 @@
+{
+  "entities": [
+    {
+      "name": "sponza",
+      "components": [
+        {
+          "name": "cmp_mesh",
+          "parameters": {
+            "mesh": "sponza"
+          }
+        }
+      ]
+    },
+    {
+      "name": "box",
+      "components": [
+        {
+          "name": "cmp_mesh",
+          "parameters": {
+            "mesh": "box"
+          }
+        },
+        {
+          "name": "cmp_rigid_dynamic",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "sphere",
+      "components": [
+        {
+          "name": "cmp_mesh",
+          "parameters": {
+            "mesh": "sphere"
+          }
+        },
+        {
+          "name": "cmp_rigid_dynamic",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "convex",
+      "components": [
+        {
+          "name": "cmp_mesh",
+          "parameters": {
+            "mesh": "convex"
+          }
+        },
+        {
+          "name": "cmp_rigid_dynamic",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "train",
+      "components": [
+        {
+          "name": "cmp_mesh",
+          "parameters": {
+            "mesh": "train"
+          }
+        },
+        {
+          "name": "cmp_rigid_static",
+          "parameters": {}
+        }
+      ]
+    }
+  ]
+}

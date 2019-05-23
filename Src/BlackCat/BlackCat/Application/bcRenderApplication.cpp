@@ -24,6 +24,7 @@
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
+#include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
@@ -43,8 +44,8 @@ namespace black_cat
 {
 	bc_render_application::bc_render_application()
 		: game::bc_render_application(),
-		m_service_manager(nullptr),
-		m_game_system(nullptr)
+		m_game_system(nullptr),
+		m_service_manager(nullptr)
 	{
 	}
 
@@ -69,26 +70,26 @@ namespace black_cat
 		core::bc_service_manager::start_up();
 		m_service_manager = &core::bc_service_manager::get();
 
-		m_service_manager->register_service(core::bc_make_service<core::bc_logger>());
-		m_service_manager->register_service(core::bc_make_service<core::bc_event_manager>());
-		m_service_manager->register_service(core::bc_make_service<core::bc_thread_manager>
+		core::bc_register_service(core::bc_make_service<core::bc_logger>());
+		core::bc_register_service(core::bc_make_service<core::bc_event_manager>());
+		core::bc_register_service(core::bc_make_service<core::bc_thread_manager>
 		(
 			p_parameters.m_engine_parameters.m_thread_manager_thread_count,
 			p_parameters.m_engine_parameters.m_thread_manager_reserve_thread_count
 		));
-		m_service_manager->register_service(core::bc_make_service<core::bc_content_manager>());
-		m_service_manager->register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
-		m_service_manager->register_service(core::bc_make_service<game::bc_actor_component_manager>());
-		m_service_manager->register_service(core::bc_make_service<game::bc_entity_manager>(*core::bc_get_service<game::bc_actor_component_manager>()));
-		m_service_manager->register_service(core::bc_make_service<game::bc_game_system>());
+		core::bc_register_service(core::bc_make_service<core::bc_content_manager>());
+		core::bc_register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
+		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>());
+		core::bc_register_service(core::bc_make_service<game::bc_entity_manager>(*core::bc_get_service<game::bc_actor_component_manager>()));
+		core::bc_register_service(core::bc_make_service<game::bc_game_system>());
 
-		auto* l_logger_manager = core::bc_get_service<core::bc_logger>();
+		auto* l_log_manager = core::bc_get_service<core::bc_logger>();
 		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
 		auto* l_entity_manager = core::bc_get_service<game::bc_entity_manager>();
 		m_game_system = core::bc_get_service<game::bc_game_system>();
 
 #ifdef BC_DEBUG
-		l_logger_manager->register_listener
+		l_log_manager->register_listener
 		(
 			core::bc_enum:: or ({ core::bc_log_type::debug, core::bc_log_type::error }),
 			core::bc_make_unique< platform::bc_ide_logger >(core::bc_alloc_type::program)
@@ -144,7 +145,8 @@ namespace black_cat
 			game::bc_hierarchy_component,
 			game::bc_rigid_static_component,
 			game::bc_rigid_dynamic_component,
-			game::bc_height_map_component
+			game::bc_height_map_component,
+			game::bc_light_component
 		>();
 		l_entity_manager->register_abstract_component_types
 		<
@@ -171,8 +173,8 @@ namespace black_cat
 			)
 		);
 
-		auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
-		auto* l_entity_manager = m_service_manager->get_service< game::bc_entity_manager >();
+		auto* l_content_stream_manager = core::bc_get_service< core::bc_content_stream_manager >();
+		auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
 		auto& l_material_manager = m_game_system->get_render_system().get_material_manager();
 		auto& l_script_system = m_game_system->get_script_system();
 		auto l_script_binder = l_script_system.get_script_binder();
@@ -181,8 +183,9 @@ namespace black_cat
 		l_entity_manager->read_entity_file(m_game_system->get_file_system().get_content_data_path(bcL("EntityType.json")).c_str());
 		l_material_manager.read_material_file(m_game_system->get_file_system().get_content_data_path(bcL("Material.json")).c_str());
 
-		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_shaders");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_resources");
+		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_shaders");
+		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "deferred_rendering_shaders");
 
 		l_script_binder.bind<game::bc_game_console>(game::bc_script_context::ui, m_game_system->get_console());
 
@@ -193,7 +196,7 @@ namespace black_cat
 
 	void bc_render_application::app_load_content()
 	{
-		application_load_content(m_service_manager->get_service< core::bc_content_stream_manager >());
+		application_load_content(core::bc_get_service< core::bc_content_stream_manager >());
 	}
 
 	void bc_render_application::app_update(core_platform::bc_clock::update_param p_clock_update_param)
@@ -216,11 +219,12 @@ namespace black_cat
 
 	void bc_render_application::app_unload_content()
 	{
-		auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
+		auto* l_content_stream_manager = core::bc_get_service< core::bc_content_stream_manager >();
 
 		application_unload_content(l_content_stream_manager);
 
 		l_content_stream_manager->unload_content_stream("engine_shaders");
+		l_content_stream_manager->unload_content_stream("deferred_rendering_shaders");
 		l_content_stream_manager->unload_content_stream("engine_resources");
 	}
 

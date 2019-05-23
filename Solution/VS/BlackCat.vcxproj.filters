@@ -28,6 +28,9 @@
     <Filter Include="BlackCat\Content\Shader\DirectX11">
       <UniqueIdentifier>{5ffddde4-c01d-47e1-99b4-0016f04a463c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BlackCat\Content\Shader\DirectX11\DeferredRendering">
+      <UniqueIdentifier>{fedec527-ffe6-4dfa-bae6-98f8930fccaf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.h">
@@ -87,6 +90,21 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneLoader.h">
       <Filter>BlackCat\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferInitializePass.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferPass.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferTerrainPassDx11.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferWritePass.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferLightMapPass.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -140,6 +158,21 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneLoader.cpp">
       <Filter>BlackCat\Loader</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferInitializePass.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferPass.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferTerrainPassDx11.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferWritePass.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferLightMapPass.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcMeshShader.hlsl">
@@ -153,6 +186,18 @@
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcShapeDraw.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcMeshGBuffer.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\DeferredRendering</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcBBWrite.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcHelper.hlsli">
+      <Filter>BlackCat\Content\Shader\DirectX11</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcGBufferLightMap.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\DeferredRendering</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

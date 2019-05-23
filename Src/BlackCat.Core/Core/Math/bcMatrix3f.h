@@ -41,9 +41,9 @@ namespace black_cat
 
 			void rotation_lh(bc_vector3f& p_rot);
 
-			void rotation_zyx_lh(bc_vector3f& p_rot);
+			void rotation_zyx_lh(const bc_vector3f& p_rot);
 
-			void rotation_euler_lh(bc_vector3f& p_axis, bcFLOAT p_angle);
+			void rotation_euler_lh(const bc_vector3f& p_axis, bcFLOAT p_angle);
 
 			void rotation_x_rh(bcFLOAT p_radians);
 
@@ -51,11 +51,11 @@ namespace black_cat
 
 			void rotation_z_rh(bcFLOAT p_radians);
 
-			void rotation_rh(bc_vector3f& p_rot);
+			void rotation_rh(const bc_vector3f& p_rot);
 
-			void rotation_zyx_rh(bc_vector3f& p_rot);
+			void rotation_zyx_rh(const bc_vector3f& p_rot);
 
-			void rotation_euler_rh(bc_vector3f& p_axis, bcFLOAT p_angle);
+			void rotation_euler_rh(const bc_vector3f& p_axis, bcFLOAT p_angle);
 
 			void orthonormalize();
 

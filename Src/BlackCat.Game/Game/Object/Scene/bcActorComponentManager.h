@@ -13,6 +13,8 @@
 #include "Game/Object/Scene/bcActor.h"
 #include "Game/Object/Scene/bcActorComponent.h"
 #include "Game/Object/Scene/bcActorComponentContainer.h"
+#include "PlatformImp/bc_ide_logger.h"
+#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {
@@ -132,7 +134,7 @@ namespace black_cat
 			template< class TComponent >
 			bc_actor component_get_actor(const TComponent& p_component) const noexcept;
 
-			void update(core_platform::bc_clock::update_param p_clock_update_param) override;
+			void update(const core_platform::bc_clock::update_param& p_clock_update_param) override;
 
 			template< class ...TComponent >
 			void register_component_types();
@@ -361,7 +363,7 @@ namespace black_cat
 			return m_actors[l_component_to_actor].get().m_actor;
 		}
 
-		inline void bc_actor_component_manager::update(core_platform::bc_clock::update_param p_clock_update_param)
+		inline void bc_actor_component_manager::update(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 			core::bc_vector_frame< _bc_actor_component_entry* > l_components;
 			l_components.reserve(m_components.size());

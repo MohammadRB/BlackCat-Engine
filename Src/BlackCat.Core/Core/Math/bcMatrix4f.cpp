@@ -353,31 +353,6 @@ namespace black_cat
 			std::memcpy(m_entry, l_transpose.m_entry, 4 * 4 * sizeof(bcFLOAT));
 		}
 
-		bc_matrix4f bc_matrix4f::zero()
-		{
-			bc_matrix4f l_return = bc_matrix4f(true);
-
-			return(l_return);
-		}
-
-		bc_matrix4f bc_matrix4f::identity()
-		{
-			bc_matrix4f l_ident;
-
-			for (bcINT l_row = 0; l_row < 4; l_row++)
-			{
-				for (bcINT l_col = 0; l_col < 4; l_col++)
-				{
-					if (l_row == l_col)
-						l_ident.m_entry[I(l_row, l_col)] = 1.0f;
-					else
-						l_ident.m_entry[I(l_row, l_col)] = 0.0f;
-				}
-			}
-
-			return(l_ident);
-		}
-
 		bc_matrix4f bc_matrix4f::transpose() const
 		{
 			bc_matrix4f l_transpose;
@@ -597,14 +572,14 @@ namespace black_cat
 			return(*this);
 		}
 		
-		bc_vector4f bc_matrix4f::operator* (const bc_vector4f& Vector) const
+		bc_vector4f bc_matrix4f::operator* (const bc_vector4f& p_vector) const
 		{
 			bc_vector4f l_prod;
 			for (bcINT l_col = 0; l_col < 4; l_col++)
 			{
 				l_prod[l_col] = 0.0f;
 				for (bcINT l_row = 0; l_row < 4; l_row++)
-					l_prod[l_col] += m_entry[I(l_row, l_col)] * Vector[l_row];
+					l_prod[l_col] += m_entry[I(l_row, l_col)] * p_vector[l_row];
 			}
 			return(l_prod);
 		}
@@ -939,6 +914,31 @@ namespace black_cat
 			l_ret.m_entry[15] = 1.0f;
 
 			return l_ret;
+		}
+
+		bc_matrix4f bc_matrix4f::zero()
+		{
+			bc_matrix4f l_return = bc_matrix4f(true);
+
+			return(l_return);
+		}
+
+		bc_matrix4f bc_matrix4f::identity()
+		{
+			bc_matrix4f l_ident;
+
+			for (bcINT l_row = 0; l_row < 4; l_row++)
+			{
+				for (bcINT l_col = 0; l_col < 4; l_col++)
+				{
+					if (l_row == l_col)
+						l_ident.m_entry[I(l_row, l_col)] = 1.0f;
+					else
+						l_ident.m_entry[I(l_row, l_col)] = 0.0f;
+				}
+			}
+
+			return(l_ident);
 		}
 
 		bcINT bc_matrix4f::I(bcINT iRow, bcINT iCol)

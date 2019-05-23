@@ -110,7 +110,7 @@ namespace black_cat
 
 			void clear() override;
 
-			void render_bound_boxes(bc_shape_drawer& p_shape_drawer) const override;
+			void add_debug_shapes(bc_shape_drawer& p_shape_drawer) const override;
 
 		protected:
 			bool iterator_validate(const node_type* p_node) const noexcept override;

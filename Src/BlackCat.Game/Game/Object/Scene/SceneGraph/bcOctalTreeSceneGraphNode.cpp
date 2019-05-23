@@ -428,7 +428,7 @@ namespace black_cat
 			m_actors_count = 0;
 		}
 
-		void bc_octal_tree_graph_node::render_bound_boxes(bc_shape_drawer& p_shape_drawer) const
+		void bc_octal_tree_graph_node::add_debug_shapes(bc_shape_drawer& p_shape_drawer) const
 		{
 			p_shape_drawer.render_wired_box(m_bound_box);
 
@@ -437,14 +437,14 @@ namespace black_cat
 				return;
 			}
 
-			m_top_left_back->render_bound_boxes(p_shape_drawer);
-			m_top_left_front->render_bound_boxes(p_shape_drawer);
-			m_top_right_front->render_bound_boxes(p_shape_drawer);
-			m_top_right_back->render_bound_boxes(p_shape_drawer);
-			m_bottom_left_back->render_bound_boxes(p_shape_drawer);
-			m_bottom_left_front->render_bound_boxes(p_shape_drawer);
-			m_bottom_right_front->render_bound_boxes(p_shape_drawer);
-			m_bottom_right_back->render_bound_boxes(p_shape_drawer);
+			m_top_left_back->add_debug_shapes(p_shape_drawer);
+			m_top_left_front->add_debug_shapes(p_shape_drawer);
+			m_top_right_front->add_debug_shapes(p_shape_drawer);
+			m_top_right_back->add_debug_shapes(p_shape_drawer);
+			m_bottom_left_back->add_debug_shapes(p_shape_drawer);
+			m_bottom_left_front->add_debug_shapes(p_shape_drawer);
+			m_bottom_right_front->add_debug_shapes(p_shape_drawer);
+			m_bottom_right_back->add_debug_shapes(p_shape_drawer);
 		}
 
 		bool bc_octal_tree_graph_node::iterator_validate(const node_type* p_node) const noexcept

@@ -35,6 +35,7 @@ namespace black_cat
 
 		enum class bc_depth_stencil_type
 		{
+			depth_off_stencil_pff,
 			depth_less_stencil_off
 		};
 

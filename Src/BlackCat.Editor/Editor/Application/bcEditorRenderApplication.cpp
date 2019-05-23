@@ -4,6 +4,7 @@
 #include "Platform/bcEvent.h"
 #include "PhysicsImp/Body/bcRigidDynamic.h"
 #include "Game/System/Input/bcFreeCamera.h"
+#include "Game/System/Render/bcMaterialManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 #include "Game/Object/Scene/bcActor.hpp"
@@ -13,6 +14,11 @@
 #include "BlackCat/RenderPass/bcTerrainPassDx11.h"
 #include "BlackCat/RenderPass/bcMeshDrawPass.h"
 #include "BlackCat/RenderPass/bcShapeDrawPass.h"
+#include "BlackCat/RenderPass/bcGBufferInitializePass.h"
+#include "BlackCat/RenderPass/bcGBufferTerrainPassDx11.h"
+#include "BlackCat/RenderPass/bcGBufferPass.h"
+#include "BlackCat/RenderPass/bcGBufferLightMapPass.h"
+#include "BlackCat/RenderPass/bcBackBufferWritePass.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
 #include "Editor/Application/bcEditorRenderApplication.h"
 #include "Editor/Application/bcUICommandService.h"
@@ -27,10 +33,10 @@ namespace black_cat
 
 		void bc_editor_render_app::application_start_engine_components(game::bc_engine_application_parameter& p_parameters)
 		{
-			auto* l_game_system = m_service_manager->get_service<game::bc_game_system>();
-			auto* l_content_stream_manager = m_service_manager->get_service< core::bc_content_stream_manager >();
+			auto* l_content_stream_manager = core::bc_get_service< core::bc_content_stream_manager >();
 
-			m_service_manager->register_service(core::bc_make_service<bc_ui_command_service>(*l_content_stream_manager, *l_game_system));
+			core::bc_register_service(core::bc_make_service<bc_ui_command_service>(*l_content_stream_manager, *m_game_system));
+			
 			l_content_stream_manager->register_loader< game::bc_height_map, bc_editor_height_map_loader_dx11 >
 			(
 				core::bc_make_loader< bc_editor_height_map_loader_dx11 >()
@@ -40,22 +46,27 @@ namespace black_cat
 		void bc_editor_render_app::application_initialize(game::bc_engine_application_parameter& p_parameters)
 		{
 			game::bc_render_system& l_render_system = m_game_system->get_render_system();
-
-			const bcFLOAT l_back_buffer_width = l_render_system.get_device().get_back_buffer_width();
-			const bcFLOAT l_back_buffer_height = l_render_system.get_device().get_back_buffer_height();
+			
 			m_game_system->get_input_system().register_camera(core::bc_make_unique< game::bc_free_camera >
 			(
-				l_back_buffer_width / l_back_buffer_height,
+				l_render_system.get_device().get_back_buffer_width(),
+				l_render_system.get_device().get_back_buffer_height(),
 				1.2,
 				0.3,
 				3000
 			));
-			m_game_system->get_input_system().get_camera().set_position_lookat(core::bc_vector3f(0, 400, -1000), core::bc_vector3f(0, 0, 0));
+			m_game_system->get_input_system().get_camera().set_look_at(core::bc_vector3f(0, 400, -1000), core::bc_vector3f(0, 0, 0));
 
-			l_render_system.add_render_pass(0, bc_initialize_pass());
+			/*l_render_system.add_render_pass(0, bc_initialize_pass());
 			l_render_system.add_render_pass(1, bc_terrain_pass_dx11());
 			l_render_system.add_render_pass(2, bc_mesh_draw_pass());
-			l_render_system.add_render_pass(3, bc_shape_draw_pass());
+			l_render_system.add_render_pass(3, bc_shape_draw_pass());*/
+			l_render_system.add_render_pass(0, bc_gbuffer_initialize_pass());
+			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
+			l_render_system.add_render_pass(2, bc_gbuffer_pass());
+			l_render_system.add_render_pass(3, bc_gbuffer_light_map_pass());
+			l_render_system.add_render_pass(4, bc_back_buffer_write_pass(game::bc_render_pass_resource_variable::intermediate_texture_1));
+			l_render_system.add_render_pass(5, bc_shape_draw_pass(game::bc_render_pass_resource_variable::back_buffer_view));
 
 			m_shape_throw_key_handle = core::bc_get_service< core::bc_event_manager >()->register_event_listener<platform::bc_app_event_key>
 			(
@@ -113,11 +124,20 @@ namespace black_cat
 		{
 			core::bc_get_service< bc_ui_command_service >()->load_content();
 
-			const auto l_crysis_scene = core::bc_get_service< core::bc_content_manager >()->load< game::bc_scene >
+			auto* l_content_manager = core::bc_get_service< core::bc_content_manager >();
+			auto* l_content_stream_manager = core::bc_get_service< core::bc_content_stream_manager >();
+			auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
+			auto& l_material_manager = m_game_system->get_render_system().get_material_manager();
+
+			l_content_stream_manager->read_stream_file(m_game_system->get_file_system().get_content_path(bcL("Scene\\CrysisHeightMap_ContentStream.json")).c_str());
+			l_entity_manager->read_entity_file(m_game_system->get_file_system().get_content_path(bcL("Scene\\CrysisHeightMap_EntityType.json")).c_str());
+			l_material_manager.read_material_file(m_game_system->get_file_system().get_content_path(bcL("Scene\\CrysisHeightMap_Material.json")).c_str());
+			const auto l_crysis_scene = l_content_manager->load< game::bc_scene >
 			(
 				m_game_system->get_file_system().get_content_path(bcL("Scene\\CrysisHeightMap.json")).c_str(),
 				core::bc_content_loader_parameter()
 			);
+
 			m_game_system->set_scene(l_crysis_scene);
 		}
 
@@ -127,7 +147,7 @@ namespace black_cat
 
 		void bc_editor_render_app::application_render(core_platform::bc_clock::update_param p_clock_update_param)
 		{
-			m_game_system->render();
+			m_game_system->render(p_clock_update_param);
 		}
 
 		bool bc_editor_render_app::application_event(core::bc_ievent& p_event)
