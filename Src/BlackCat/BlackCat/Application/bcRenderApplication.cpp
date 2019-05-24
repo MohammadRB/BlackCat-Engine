@@ -58,6 +58,7 @@ namespace black_cat
 #ifdef BC_MEMORY_ENABLE
 		core::bc_memmng::startup
 		(
+			p_parameters.m_engine_parameters.m_thread_manager_thread_count + p_parameters.m_engine_parameters.m_thread_manager_reserve_thread_count,
 			p_parameters.m_engine_parameters.m_memmng_fsa_start_size,
 			p_parameters.m_engine_parameters.m_memmng_fsa_count,
 			p_parameters.m_engine_parameters.m_memmng_fsa_step_size,

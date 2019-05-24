@@ -156,7 +156,7 @@ namespace black_cat
 				return l_return_pointer;
 			}
 
-			// Check if we must divide our free block then do it /
+			// Check if we must divide our free block then do it
 			if (l_curr_block->size() - l_require_size >= m_remaining_free_space_limit)
 			{
 				_bc_heap_memblock* l_new_heap_block = reinterpret_cast< _bc_heap_memblock* >(reinterpret_cast<bcBYTE*>(l_curr_block) + l_require_size);
@@ -203,7 +203,7 @@ namespace black_cat
 			// We always have next block
 			l_next = _get_next(l_block, m_heap, m_heap_size);
 			
-			// Try to lock next and next next(if required) block so that avoid deadlock
+			// Try to lock next and next next(if required) block so avoid deadlock
 			while (true)
 			{
 				l_next->lock(core_platform::bc_lock_operation::light);

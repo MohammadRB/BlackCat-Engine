@@ -31,8 +31,8 @@ namespace black_cat
 
 		bc_memory_fixed_size::this_type& bc_memory_fixed_size::operator =(this_type&& p_other) noexcept
 		{
-			_move(std::move(p_other));
 			bc_memory::operator =(std::move(p_other));
+			_move(std::move(p_other));
 
 			return *this;
 		}

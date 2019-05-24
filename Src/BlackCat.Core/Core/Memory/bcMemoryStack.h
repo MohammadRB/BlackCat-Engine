@@ -28,12 +28,9 @@ namespace black_cat
 
 			void* m_address;
 			bcSIZE m_size;
-		protected:
-
-		private:
 		};
 
-		class BC_CORE_DLL bc_memory_stack : public bc_memory, public bc_initializable<bcUINT32, const bcCHAR*>
+		class BC_CORE_DLL bc_memory_stack : public bc_memory, public bc_initializable<bcSIZE, bcSIZE, const bcCHAR*>
 		{
 		public:
 			using this_type = bc_memory_stack;
@@ -48,7 +45,7 @@ namespace black_cat
 
 			this_type& operator =(this_type&& p_other) noexcept;
 
-			bcUINT32 size() const noexcept { return m_size; }
+			bcSIZE size() const noexcept { return m_size; }
 
 			void* push(bc_memblock* p_mem_block) noexcept;
 
@@ -65,7 +62,7 @@ namespace black_cat
 		protected:
 
 		private:
-			void _initialize(bcUINT32 p_size, const bcCHAR* p_tag) override;
+			void _initialize(bcSIZE p_max_num_thread, bcSIZE p_size, const bcCHAR* p_tag) override;
 
 			void _destroy() noexcept(true) override;
 
@@ -75,11 +72,12 @@ namespace black_cat
 
 			void _move(this_type&& p_other);
 
-			bcUINT32 m_size;
+			bcSIZE m_max_num_thread;
+			bcSIZE m_size;
 			bcUBYTE* m_heap;
 			core_platform::bc_atomic< bcUBYTE* > m_top;
-			core_platform::bc_atomic< bcUINT32 > m_pop_thread_count;
-			core_platform::bc_atomic< bcUINT32 > m_free_block_count;
+			core_platform::bc_atomic< bcSIZE > m_pop_thread_count;
+			core_platform::bc_atomic< bcSIZE > m_free_block_count;
 			core_platform::bc_shared_mutex m_free_block_mutex;
 		};
 

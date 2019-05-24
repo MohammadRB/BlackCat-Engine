@@ -53,6 +53,12 @@ namespace black_cat
 				return l_mesh_component->get_world_position();
 			}
 
+			auto* l_light_component = l_actor.get_component<bc_light_component>();
+			if(l_light_component)
+			{
+				return l_light_component->get_world_position();
+			}
+
 			bcAssert(false);
 			return core::bc_vector3f();
 		}

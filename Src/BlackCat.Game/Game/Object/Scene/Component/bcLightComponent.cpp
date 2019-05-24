@@ -21,6 +21,16 @@ namespace black_cat
 			return get_manager()->component_get_actor(*this);
 		}
 
+		core::bc_vector3f bc_light_component::get_world_position() const
+		{
+			return m_light->get_transformation().get_translation();
+		}
+
+		core::bc_matrix4f bc_light_component::get_world_transform() const
+		{
+			return m_light->get_transformation();
+		}
+
 		void bc_light_component::set_world_transform(const core::bc_matrix4f& p_transform)
 		{
 			// TODO what if light is part of a mesh

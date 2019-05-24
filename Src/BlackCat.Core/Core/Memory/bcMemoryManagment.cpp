@@ -32,13 +32,14 @@ namespace black_cat
 
 		bc_memmng::~bc_memmng() = default;
 
-		void bc_memmng::initialize(bcUINT32 p_fsa_start_size,
-			bcUINT32 p_fsa_num,
-			bcUINT32 p_fsa_step_size,
-			bcUINT32 p_fsa_num_allocations,
-			bcUINT32 p_per_prg_heap_size,
-			bcUINT32 p_per_frm_heap_size,
-			bcUINT32 p_super_heap_size)
+		void bc_memmng::initialize(bcSIZE p_max_num_thread,
+			bcSIZE p_fsa_start_size,
+			bcSIZE p_fsa_num,
+			bcSIZE p_fsa_step_size,
+			bcSIZE p_fsa_num_allocations,
+			bcSIZE p_per_prg_heap_size,
+			bcSIZE p_per_frm_heap_size,
+			bcSIZE p_super_heap_size)
 		{
 			m_fsa_allocators_start_size = p_fsa_start_size;
 			m_fsa_num_allocators = p_fsa_num;
@@ -75,9 +76,9 @@ namespace black_cat
 				}
 
 				m_per_program_stack = new bc_memory_stack();
-				m_per_program_stack->initialize(p_per_prg_heap_size, "PerProgramStack");
+				m_per_program_stack->initialize(p_max_num_thread, p_per_prg_heap_size, "PerProgramStack");
 				m_per_frame_stack = new bc_memory_stack();
-				m_per_frame_stack->initialize(p_per_frm_heap_size, "PerFrameStack");
+				m_per_frame_stack->initialize(p_max_num_thread, p_per_frm_heap_size, "PerFrameStack");
 
 				m_super_heap = new bc_memory_heap();
 				m_super_heap->initialize(p_super_heap_size, "SuperHeap");
@@ -113,16 +114,17 @@ namespace black_cat
 			m_initialized = false;
 		}
 
-		void bc_memmng::startup(bcUINT32 p_fsa_start_size,
-			bcUINT32 p_fsa_num,
-			bcUINT32 p_fsa_step_size,
-			bcUINT32 p_fsa_num_allocations,
-			bcUINT32 p_per_prg_heap_size,
-			bcUINT32 p_per_frm_heap_size,
-			bcUINT32 p_super_heap_size)
-		{		
-						
-			bc_memmng::m_instance.initialize(p_fsa_start_size,
+		void bc_memmng::startup(bcSIZE p_max_num_thread,
+			bcSIZE p_fsa_start_size,
+			bcSIZE p_fsa_num,
+			bcSIZE p_fsa_step_size,
+			bcSIZE p_fsa_num_allocations,
+			bcSIZE p_per_prg_heap_size,
+			bcSIZE p_per_frm_heap_size,
+			bcSIZE p_super_heap_size)
+		{
+			bc_memmng::m_instance.initialize(p_max_num_thread,
+				p_fsa_start_size,
 				p_fsa_num,
 				p_fsa_step_size,
 				p_fsa_num_allocations,

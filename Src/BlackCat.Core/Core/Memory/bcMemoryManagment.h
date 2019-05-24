@@ -43,23 +43,25 @@ namespace black_cat
 
 			~bc_memmng();
 
-			void initialize(bcUINT32 p_fsa_start_size,
-				bcUINT32 p_fsa_num,
-				bcUINT32 p_fsa_step_size,
-				bcUINT32 p_fsa_num_allocations,
-				bcUINT32 p_per_prg_heap_size,
-				bcUINT32 p_per_frm_heap_size,
-				bcUINT32 p_super_heap_size);
+			void initialize(bcSIZE p_max_num_thread,
+				bcSIZE p_fsa_start_size,
+				bcSIZE p_fsa_num,
+				bcSIZE p_fsa_step_size,
+				bcSIZE p_fsa_num_allocations,
+				bcSIZE p_per_prg_heap_size,
+				bcSIZE p_per_frm_heap_size,
+				bcSIZE p_super_heap_size);
 
 			void destroy() noexcept;
 
-			static void startup(bcUINT32 p_fsa_start_size,
-				bcUINT32 p_fsa_num,
-				bcUINT32 p_fsa_step_size,
-				bcUINT32 p_fsa_num_allocations,
-				bcUINT32 p_per_prg_heap_size,
-				bcUINT32 p_per_frm_heap_size,
-				bcUINT32 p_super_heap_size);
+			static void startup(bcSIZE p_max_num_thread,
+				bcSIZE p_fsa_start_size,
+				bcSIZE p_fsa_num,
+				bcSIZE p_fsa_step_size,
+				bcSIZE p_fsa_num_allocations,
+				bcSIZE p_per_prg_heap_size,
+				bcSIZE p_per_frm_heap_size,
+				bcSIZE p_super_heap_size);
 
 			static void close() noexcept;
 
@@ -133,9 +135,9 @@ namespace black_cat
 			// We don't use static pointer because it is possible after we free pointer on exit, some call to free be called
 			static bc_memmng m_instance;
 
-			bcUINT32 m_fsa_allocators_start_size;
-			bcUINT32 m_fsa_num_allocators;
-			bcUINT32 m_fsa_step_size;
+			bcSIZE m_fsa_allocators_start_size;
+			bcSIZE m_fsa_num_allocators;
+			bcSIZE m_fsa_step_size;
 			bool m_initialized;
 			bc_memory_extender<bc_memory_fixed_size>* m_fsa_allocators;
 			bc_memory_stack* m_per_program_stack;

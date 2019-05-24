@@ -66,8 +66,8 @@ namespace black_cat
 				20,
 				BC_MEMORY_MIN_ALIGN,
 				64,
+				static_cast<bcUINT32>(core::bc_mem_size::mb) * 30,
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 25,
-				static_cast<bcUINT32>(core::bc_mem_size::mb) * 15,
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 100,
 				l_hardware_info.proccessor_count,
 				l_hardware_info.proccessor_count / 4
