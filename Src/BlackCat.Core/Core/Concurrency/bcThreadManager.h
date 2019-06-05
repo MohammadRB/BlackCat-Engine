@@ -69,20 +69,24 @@ namespace black_cat
 
 			bc_interrupt_flag(bool pFlag);
 
-			bc_interrupt_flag(const bc_interrupt_flag& p_other);
+			bc_interrupt_flag(const bc_interrupt_flag& p_other) = delete;
+
+			bc_interrupt_flag(bc_interrupt_flag&& p_other) = delete;
 
 			~bc_interrupt_flag();
 
-			bc_interrupt_flag& operator =(const bc_interrupt_flag& p_other);
+			bc_interrupt_flag& operator =(const bc_interrupt_flag& p_other) = delete;
 
-			void set();
+			bc_interrupt_flag& operator =(bc_interrupt_flag&& p_other) = delete;
 
-			bool test_clear();
+			bool test_and_set();
+
+			void clear();
 
 		protected:
 
 		private:
-			core_platform::bc_atomic<bool> m_flag;
+			core_platform::bc_atomic_flag m_flag;
 		};
 
 		enum class bc_task_creation_option : bcUBYTE
@@ -151,13 +155,13 @@ namespace black_cat
 
 			static const bcSIZE s_worker_switch_threshold = 10;
 			static const bcSIZE s_new_thread_threshold = 10;
-			static const bcSIZE s_num_thread_in_spin = 1;
+			static const bcSIZE s_num_thread_in_spin = 0;
 
 			bcSIZE m_thread_count;
 			bcSIZE m_additional_thread_count;
 			core_platform::bc_atomic< bool > m_done;
-			core_platform::bc_atomic< bcINT32 > m_task_count;
-			core_platform::bc_atomic< bcINT32 > m_num_thread_in_spin;
+			core_platform::bc_atomic< bcUINT32 > m_task_count;
+			core_platform::bc_atomic< bcUINT32 > m_num_thread_in_spin;
 			core_platform::bc_mutex m_cvariable_mutex;
 			core_platform::bc_condition_variable m_cvariable;
 
@@ -242,6 +246,8 @@ namespace black_cat
 			task_type l_task_wrapper(task_type::make_from_big_object(l_alloc_type, std::move(l_task_link))); // TODO
 			_thread_data* l_my_data = m_my_data.get();
 
+			const auto l_task_count = m_task_count.fetch_add(1, core_platform::bc_memory_order::seqcst);
+
 			// If current thread is not main thread
 			if (l_my_data && l_policy_none)
 			{
@@ -252,10 +258,12 @@ namespace black_cat
 				m_global_queue.push(std::move(l_task_wrapper));
 			}
 
-			bcINT32 l_task_count = m_task_count.fetch_add(1, core_platform::bc_memory_order::seqcst);
+			if(s_num_thread_in_spin == 0)		// If number of steady threads in work spin method is higher than zero
+			{									// there is no need to notify a thread
+				m_cvariable.notify_one();
+			}
 
-			// Task count can be negative, so cast to signed int to prevent incorrect comparison
-			if (l_task_count >= static_cast<bcINT32>(s_new_thread_threshold))
+			if (l_task_count >= s_new_thread_threshold)
 			{
 				_push_worker();
 			}

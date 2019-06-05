@@ -28,12 +28,12 @@ namespace black_cat
 			auto l_actor = get_actor();
 
 			auto* l_rigid_body_component = l_actor.get_component<bc_rigid_body_component>();
-			auto* l_height_map_component = l_actor.get_component<bc_height_map_component>();
-			
+						
 			if(l_rigid_body_component)
 			{
 				auto l_position = l_rigid_body_component->get_body().get_global_pose().get_position();
 
+				auto* l_height_map_component = l_actor.get_component<bc_height_map_component>();
 				if (l_height_map_component) // TODO
 				{
 					const auto& l_height_map = l_height_map_component->get_height_map();

@@ -50,7 +50,13 @@ namespace black_cat
 
 			static id current_thread_id() noexcept;
 
-			static void current_thread_sleep_for(bcUINT64 p_nano);
+			static void current_thread_sleep_for(const std::chrono::nanoseconds& p_duration);
+
+			static void current_thread_sleep_for(const std::chrono::microseconds& p_duration);
+
+			static void current_thread_sleep_for(const std::chrono::milliseconds& p_duration);
+
+			static void current_thread_sleep_for(const std::chrono::seconds& p_duration);
 
 			/**
 			 * \brief make the processor available to other logical processors in a hyper threading enabled processor 

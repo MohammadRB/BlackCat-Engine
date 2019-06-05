@@ -31,6 +31,9 @@
     <Filter Include="BlackCat\Content\Shader\DirectX11\DeferredRendering">
       <UniqueIdentifier>{fedec527-ffe6-4dfa-bae6-98f8930fccaf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BlackCat\Content\Shader\DirectX11\Terrain">
+      <UniqueIdentifier>{1570a4a2-fbd6-40e3-9e4d-3b1bf2e07319}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.h">
@@ -178,12 +181,6 @@
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcMeshShader.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcTerrain.hlsl">
-      <Filter>BlackCat\Content\Shader\DirectX11</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcTerrainChunkInfo.hlsl">
-      <Filter>BlackCat\Content\Shader\DirectX11</Filter>
-    </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcShapeDraw.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11</Filter>
     </FxCompile>
@@ -198,6 +195,12 @@
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcGBufferLightMap.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\DeferredRendering</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\bcTerrain.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\bcTerrainChunkInfo.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Terrain</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

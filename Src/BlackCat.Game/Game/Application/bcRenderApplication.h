@@ -143,7 +143,7 @@ namespace black_cat
 			core::bc_event_listener_handle m_event_handle_app_active;
 			core::bc_event_listener_handle m_event_handle_app_exit;
 			core::bc_event_listener_handle m_event_error_handle;
-			core::bc_event_listener_handle m_event_warning_handle;
+			core::bc_event_listener_handle m_event_debug_handle;
 		};
 	}
 }

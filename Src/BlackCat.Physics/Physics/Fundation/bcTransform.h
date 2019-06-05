@@ -26,9 +26,9 @@ namespace black_cat
 		public:
 			bc_platform_transform() noexcept;
 
-			bc_platform_transform(const core::bc_vector3f& p_position) noexcept;
+			explicit bc_platform_transform(const core::bc_vector3f& p_position) noexcept;
 
-			bc_platform_transform(const core::bc_matrix4f& p_rotation) noexcept;
+			explicit bc_platform_transform(const core::bc_matrix4f& p_rotation) noexcept;
 
 			bc_platform_transform(const core::bc_vector3f& p_position, const core::bc_matrix3f& p_rotation) noexcept;
 

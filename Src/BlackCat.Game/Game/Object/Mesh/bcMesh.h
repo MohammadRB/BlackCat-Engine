@@ -23,6 +23,7 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_sub_mesh_transformation;
 		class bc_mesh;
 
 		struct bc_mesh_part_cbuffer
@@ -51,13 +52,14 @@ namespace black_cat
 		public:
 			friend class bc_mesh;
 			using node_index = core::bc_vector< void* >::size_type;
+			const static node_index s_invalid_index = node_index(-1);
 
 		public:
 			bc_mesh_node(core::bc_string p_name,
 				bc_mesh_node* p_parent,
-				node_index p_transformation,
+				node_index p_transformation_index,
 				node_index p_first_mesh,
-				bcUINT32 p_mesh_count);
+				bcSIZE p_mesh_count);
 
 			bc_mesh_node(bc_mesh_node&&) = default;
 
@@ -69,21 +71,23 @@ namespace black_cat
 
 			node_index get_mesh_count() const;
 
-			bcUINT32 get_children_count() const;
+			bcSIZE get_children_count() const;
+
+			bcSIZE get_all_children_count() const;
 
 			const core::bc_string& get_name() const;
 
 		protected:
 
 		private:
-			void _add_child(bc_mesh_node* p_mesh_part);
+			void _add_child(bc_mesh_node* p_mesh_node);
 
 			core::bc_string m_name;
 			bc_mesh_node* m_parent;
 			core::bc_vector< bc_mesh_node* > m_children;
 			node_index m_transformation_index;
 			node_index m_first_mesh_index;
-			bcUINT32 m_mesh_count;
+			bcSIZE m_mesh_count;
 		};
 
 		class BC_GAME_DLL bc_mesh : public core::bc_icontent
@@ -94,7 +98,7 @@ namespace black_cat
 			friend class bc_mesh_node;
 
 		private:
-			using node_indexing = bc_mesh_node::node_index;
+			using node_index = bc_mesh_node::node_index;
 			using hash_t = std::hash< const bcCHAR* >;
 
 		public:
@@ -121,15 +125,17 @@ namespace black_cat
 
 			const core::bc_vector< bc_mesh_node* >& get_node_children(const bc_mesh_node* p_node) const;
 
-			const core::bc_matrix4f* get_node_transformation(const bc_mesh_node* p_node) const;
+			const core::bc_matrix4f& get_node_transformation(const bc_mesh_node* p_node) const;
 
-			const bc_render_material* get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+			const bc_render_material& get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
-			const bc_render_state* get_node_mesh_render_state(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+			const bc_render_state& get_node_mesh_render_state(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
-			const physics::bc_bound_box* get_node_mesh_bound_box(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+			const physics::bc_bound_box& get_node_mesh_bound_box(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
-			const bc_mesh_part_collider* get_node_mesh_colliders(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+			const bc_mesh_part_collider& get_node_mesh_colliders(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+
+			void calculate_absolute_transformations(const core::bc_matrix4f& p_world, bc_sub_mesh_transformation& p_result, physics::bc_bound_box& p_bound_box) const;
 
 			/**
 			 * \brief Add a mesh part to node hierarchy of mesh. Adding a node with null parent will override root node of mesh
@@ -144,18 +150,27 @@ namespace black_cat
 				core::bc_matrix4f& p_transformation,
 				const core::bc_vector_frame<std::tuple<bc_mesh_part_data, bc_render_state_ptr>>& p_meshes);
 
+			void _apply_auto_scale(bcFLOAT p_scale);
+
 		protected:
 
 		private:
+			void _calculate_absolute_transformations(const core::bc_matrix4f& p_parent_transformation,
+				const bc_mesh_node* p_begin,
+				const bc_mesh_node* p_end,
+				bc_sub_mesh_transformation& p_result,
+				physics::bc_bound_box& p_bound_box) const;
+
 			core::bc_string m_name;
 			bc_mesh_node* m_root;
 			core::bc_vector< bc_mesh_node > m_nodes;								// Don't use movable memory due to raw pointers in bc_mesh_node
-			core::bc_vector< bc_render_state_ptr > m_render_states;				// Place render states along with nodes
+			core::bc_vector< bc_render_state_ptr > m_render_states;					// Place render states along with nodes
 			core::bc_vector_movale< core::bc_matrix4f > m_transformations;
 			bc_mesh_collider_ptr m_colliders;
-			core::bc_vector<const bc_mesh_part_collider*> m_colliders_map;		// Used to fetch mesh colliders without need to hash looking in bc_mesh_collider
+			core::bc_vector<const bc_mesh_part_collider*> m_colliders_map;			// Used to fetch mesh colliders without need to hash looking in bc_mesh_collider
 			core::bc_unordered_map< hash_t::result_type, bc_mesh_node* > m_nodes_map;
 			core::bc_vector< bc_mesh_part_data > m_meshes;
+			bcFLOAT m_scale;
 		};
 
 		using bc_mesh_ptr = core::bc_content_ptr< bc_mesh >;

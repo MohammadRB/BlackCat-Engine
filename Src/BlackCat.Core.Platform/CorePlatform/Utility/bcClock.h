@@ -28,58 +28,70 @@ namespace black_cat
 
 			struct update_param
 			{
-				update_param(big_clock p_total_elapsed, small_delta_time p_elapsed)
+				update_param(big_delta_time p_total_elapsed, small_delta_time p_elapsed)
 					: m_total_elapsed(p_total_elapsed),
 					m_elapsed(p_elapsed),
 					m_elapsed_second(p_elapsed / 1000)
 				{
 				}
 
-				big_clock m_total_elapsed;
+				big_delta_time m_total_elapsed;
 				small_delta_time m_elapsed;
 				small_delta_time m_elapsed_second;
 			};
 
 		public:
-			bc_platform_clock() noexcept(true);
+			bc_platform_clock() noexcept;
 
-			~bc_platform_clock() noexcept(true);
+			~bc_platform_clock() noexcept;
 
-			// Number of cpu cycles that has been elapsed since clock startup
-			big_clock get_clocks() const noexcept(true)
+			/**
+			 * \brief Number of cpu cycles that has been elapsed since clock startup
+			 * \return 
+			 */
+			big_clock get_clocks() const noexcept
 			{
 				return m_clocks;
 			}
 
-			// Total elapsed time by millisecond since clock startup(This is a real value)
-			big_delta_time get_total_elapsed() const noexcept(true)
+			/**
+			 * \brief Total elapsed time by millisecond since clock startup(This is a real value)
+			 * \return 
+			 */
+			big_delta_time get_total_elapsed() const noexcept
 			{
 				return _clocks_to_milliseconds(m_clocks - m_start_up_clocks);
 			}
 
-			// Elapsed time by millisecond from last update(This can be scaled or limited)
-			small_delta_time get_elapsed() const noexcept(true)
+			/**
+			 * \brief Elapsed time by millisecond from last update(This can be scaled or limited)
+			 * \return 
+			 */
+			small_delta_time get_elapsed() const noexcept
 			{
 				return m_elapsed;
 			}
 
-			// Scale up/down clock progress
-			void set_scale(small_delta_time p_scale) noexcept(true)
+			/**
+			 * \brief Scale up/down clock progress
+			 * \param p_scale 
+			 */
+			void set_scale(small_delta_time p_scale) noexcept
 			{
 				m_scale = p_scale;
 			}
 
-			small_delta_time get_scale() const noexcept(true)
+			small_delta_time get_scale() const noexcept
 			{
 				return m_scale;
 			}
 
-			bool get_pause() const noexcept(true)
+			bool get_pause() const noexcept
 			{
 				return m_paused;
 			}
 
-			void pause() noexcept(true)
+			void pause() noexcept
 			{
 				m_paused = true;
 			}
@@ -90,33 +102,45 @@ namespace black_cat
 				m_paused = false;
 			}
 
-			// Specify a fixed step time by millisecond
-			void fixed_step(small_delta_time p_delta) noexcept(true)
+			/**
+			 * \brief Specify a fixed step time by millisecond
+			 * \param p_delta 
+			 */
+			void fixed_step(small_delta_time p_delta) noexcept
 			{
 				if (p_delta < 0)
+				{
 					p_delta = -1;
+				}
 
 				m_fixed_step = p_delta;
 			}
 
-			// Fixed step time by millisecond if clock is in fixed step mode otherwise -1
-			small_delta_time fixed_step() const noexcept(true)
+			/**
+			 * \brief Fixed step time by millisecond if clock is in fixed step mode otherwise -1
+			 * \return 
+			 */
+			small_delta_time fixed_step() const noexcept
 			{
 				return m_fixed_step;
 			}
 
-			// Time difference between two clock by millisecond
+			/**
+			 * \brief Time difference between two clock by millisecond
+			 * \param p_other 
+			 * \return 
+			 */
 			small_delta_time get_delta_time(const bc_platform_clock& p_other)
 			{
-				return _clocks_to_milliseconds(m_clocks - p_other.m_clocks);
+				return static_cast<small_delta_time>(_clocks_to_milliseconds(m_clocks - p_other.m_clocks));
 			}
 
-			small_delta_time operator -(const bc_platform_clock& p_other) noexcept(true)
+			small_delta_time operator -(const bc_platform_clock& p_other) noexcept
 			{
 				return get_delta_time(p_other);
 			}
 
-			void update() noexcept(true);
+			void update() noexcept;
 
 		protected:
 
@@ -130,10 +154,9 @@ namespace black_cat
 				return static_cast< big_clock >(p_seconds * m_clock_per_millisecond);
 			}
 
-			// Use for short period of time
-			inline small_delta_time _clocks_to_milliseconds(big_clock p_clocks) const
+			inline big_delta_time _clocks_to_milliseconds(big_clock p_clocks) const
 			{
-				return static_cast< small_delta_time >(p_clocks) / m_clock_per_millisecond;
+				return static_cast<big_delta_time>(p_clocks / m_clock_per_millisecond);
 			}
 
 			big_clock m_clock_per_millisecond;
@@ -148,7 +171,7 @@ namespace black_cat
 		using bc_clock = bc_platform_clock< g_current_platform >;
 
 		template< bc_platform TPlatform >
-		bc_platform_clock< TPlatform >::bc_platform_clock() noexcept(true)
+		bc_platform_clock< TPlatform >::bc_platform_clock() noexcept
 		{
 			m_clock_per_millisecond = _query_clock_per_millisecond();
 			m_clocks = _query_elapsed_clocks();
@@ -159,23 +182,24 @@ namespace black_cat
 		}
 
 		template< bc_platform TPlatform >
-		bc_platform_clock< TPlatform >::~bc_platform_clock() noexcept(true)
+		bc_platform_clock< TPlatform >::~bc_platform_clock() noexcept
 		{
 		}
 
 		template< bc_platform TPlatform >
-		void bc_platform_clock< TPlatform >::update() noexcept(true)
+		void bc_platform_clock< TPlatform >::update() noexcept
 		{
-			if (m_paused) return;
+			if (m_paused) 
+			{
+				return;
+			}
 
-			bool l_is_fixed = m_fixed_step != -1;
-			big_clock l_current_clock;
-
-			l_current_clock = _query_elapsed_clocks();
+			const bool l_is_fixed = m_fixed_step != -1;
+			big_clock l_current_clock = _query_elapsed_clocks();
 
 			if (!l_is_fixed)
 			{
-				m_elapsed = _clocks_to_milliseconds((l_current_clock - m_clocks)) * m_scale;
+				m_elapsed = static_cast<small_delta_time>(_clocks_to_milliseconds((l_current_clock - m_clocks)) * m_scale);
 			}
 			else
 			{

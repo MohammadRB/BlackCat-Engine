@@ -62,31 +62,19 @@ namespace black_cat
 		{
 		}
 
-		bc_interrupt_flag::bc_interrupt_flag(const bc_interrupt_flag& p_other)
-		{
-			m_flag.store(p_other.m_flag.load(core_platform::bc_memory_order::seqcst), core_platform::bc_memory_order::seqcst);
-		}
-
 		bc_interrupt_flag::~bc_interrupt_flag() = default;
-
-		bc_interrupt_flag& bc_interrupt_flag::operator=(const bc_interrupt_flag& p_other)
+		
+		bool bc_interrupt_flag::test_and_set()
 		{
-			m_flag.store(p_other.m_flag.load(core_platform::bc_memory_order::seqcst), core_platform::bc_memory_order::seqcst);
-
-			return *this;
+			return m_flag.test_and_set(core_platform::bc_memory_order::relaxed);
 		}
 
-		void bc_interrupt_flag::set()
+		void bc_interrupt_flag::clear()
 		{
-			m_flag.store(true, core_platform::bc_memory_order::seqcst);
+			m_flag.clear(core_platform::bc_memory_order::relaxed);
 		}
 
-		bool bc_interrupt_flag::test_clear()
-		{
-			return m_flag.exchange(false);
-		}
-
-		bc_thread_manager::bc_thread_manager(bcSIZE p_thread_count, bcSIZE p_additional_thread_count) noexcept(true)
+		bc_thread_manager::bc_thread_manager(bcSIZE p_thread_count, bcSIZE p_additional_thread_count) noexcept
 			: m_my_data(&_thread_data_cleanup)
 		{
 			_initialize(p_thread_count, p_additional_thread_count);
@@ -120,7 +108,7 @@ namespace black_cat
 					_thread_data* l_current = m_threads[l_i].get();
 					if (l_current->thread().get_id() == p_thread_id)
 					{
-						l_current->interrupt_flag().set();
+						l_current->interrupt_flag().test_and_set();
 						return;
 					}
 				}
@@ -132,11 +120,15 @@ namespace black_cat
 		void bc_thread_manager::check_for_interruption() const
 		{
 			_thread_data* l_my_data = m_my_data.get();
+			bc_interrupt_flag& l_flag = l_my_data->interrupt_flag();
 
-			if (l_my_data->interrupt_flag().test_clear())
+			if (l_flag.test_and_set())
 			{
+				l_flag.clear();
 				throw bc_thread_interrupted_exception();
 			}
+
+			l_flag.clear();
 		}
 
 		void bc_thread_manager::_initialize(bcSIZE p_thread_count, bcSIZE p_additional_thread_count)
@@ -159,7 +151,6 @@ namespace black_cat
 			catch (...)
 			{
 				_stop_workers();
-
 				throw;
 			}
 		}
@@ -194,6 +185,7 @@ namespace black_cat
 				bcUINT32 l_my_index = m_threads.size();
 				if (l_my_index >= m_thread_count + m_additional_thread_count)
 				{
+					bcAssert(false);
 					return;
 				}
 
@@ -269,14 +261,21 @@ namespace black_cat
 
 			while (!m_done.load())
 			{
-				if (_pop_task_from_local_queue(l_task) ||
+				if 
+				(
+					_pop_task_from_local_queue(l_task) ||
 					_pop_task_from_global_queue(l_task) ||
-					_pop_task_from_others_queue(l_task))
+					_pop_task_from_others_queue(l_task)
+				)
 				{
 					l_without_task = 0;
 					m_task_count.fetch_sub(1);
 					m_num_thread_in_spin.fetch_sub(1);
-					m_cvariable.notify_one();
+
+					if(s_num_thread_in_spin != 0)	// If number of steady threads in worker spin method is zero
+					{								// there is no need to notify another thread
+						m_cvariable.notify_one();
+					}
 
 					l_task(core_platform::bc_thread::current_thread_id());
 					l_task.reset();

@@ -75,7 +75,7 @@ namespace black_cat
 		void bc_height_map_component::render(bc_render_system& p_render_system) const
 		{
 			bc_render_instance l_instance(m_transform);
-			p_render_system.add_render_instance(m_height_map->get_render_state(), l_instance);
+			p_render_system.add_render_instance(*m_height_map->get_render_state(), l_instance);
 		}
 
 		void bc_height_map_component::write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters)

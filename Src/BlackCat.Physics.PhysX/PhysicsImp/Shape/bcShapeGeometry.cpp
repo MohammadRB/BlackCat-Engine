@@ -23,16 +23,9 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_geometry< g_api_physx >::bc_platform_shape_geometry(const bc_platform_shape_geometry& p_other)
-			: m_pack(p_other.m_pack)
+		bc_platform_shape_geometry<g_api_physx>& bc_platform_shape_geometry<g_api_physx>::operator=(platform_pack p_pack)
 		{
-		}
-
-		template<>
-		BC_PHYSICSIMP_DLL
-		bc_platform_shape_geometry<g_api_physx>& bc_platform_shape_geometry<g_api_physx>::operator=(const bc_platform_shape_geometry& p_other)
-		{
-			m_pack.m_px_geometry = p_other.m_pack.m_px_geometry;
+			m_pack = p_pack;
 
 			return *this;
 		}

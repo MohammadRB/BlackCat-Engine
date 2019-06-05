@@ -57,10 +57,6 @@ namespace black_cat
 			));
 			m_game_system->get_input_system().get_camera().set_look_at(core::bc_vector3f(0, 400, -1000), core::bc_vector3f(0, 0, 0));
 
-			/*l_render_system.add_render_pass(0, bc_initialize_pass());
-			l_render_system.add_render_pass(1, bc_terrain_pass_dx11());
-			l_render_system.add_render_pass(2, bc_mesh_draw_pass());
-			l_render_system.add_render_pass(3, bc_shape_draw_pass());*/
 			l_render_system.add_render_pass(0, bc_gbuffer_initialize_pass());
 			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
 			l_render_system.add_render_pass(2, bc_gbuffer_pass());
@@ -129,12 +125,14 @@ namespace black_cat
 			auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
 			auto& l_material_manager = m_game_system->get_render_system().get_material_manager();
 
-			l_content_stream_manager->read_stream_file(m_game_system->get_file_system().get_content_path(bcL("Scene\\CrysisHeightMap_ContentStream.json")).c_str());
-			l_entity_manager->read_entity_file(m_game_system->get_file_system().get_content_path(bcL("Scene\\CrysisHeightMap_EntityType.json")).c_str());
-			l_material_manager.read_material_file(m_game_system->get_file_system().get_content_path(bcL("Scene\\CrysisHeightMap_Material.json")).c_str());
+			auto& l_file_system = m_game_system->get_file_system();
+
+			l_content_stream_manager->read_stream_file(l_file_system.get_content_path(bcL("Scene\\CrysisHeightMap_ContentStream.json")).c_str());
+			l_entity_manager->read_entity_file(l_file_system.get_content_path(bcL("Scene\\CrysisHeightMap_EntityType.json")).c_str());
+			l_material_manager.read_material_file(l_file_system.get_content_path(bcL("Scene\\CrysisHeightMap_Material.json")).c_str());
 			const auto l_crysis_scene = l_content_manager->load< game::bc_scene >
 			(
-				m_game_system->get_file_system().get_content_path(bcL("Scene\\CrysisHeightMap.json")).c_str(),
+				l_file_system.get_content_path(bcL("Scene\\CrysisHeightMap.json")).c_str(),
 				core::bc_content_loader_parameter()
 			);
 

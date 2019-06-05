@@ -28,7 +28,7 @@ namespace black_cat
 
 			core::bc_vector3f get_world_position() const;
 
-			core::bc_matrix4f get_world_transform() const;
+			const core::bc_matrix4f& get_world_transform() const;
 
 			void set_world_transform(const core::bc_matrix4f& p_transform);
 

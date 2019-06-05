@@ -45,7 +45,7 @@ namespace black_cat
 		BC_CBUFFER_ALIGN
 		bcFLOAT m_specular_power[8]{ 0,0,0,0,0,0,0,0 };
 		BC_CBUFFER_ALIGN
-		bcUINT32 m_scale[8]{ 0,0,0,0,0,0,0,0 };
+		bcFLOAT m_scale[8]{ 0,0,0,0,0,0,0,0 };
 	};
 
 	class bc_height_map_texture_read_task : public game::bc_irender_task
@@ -317,7 +317,7 @@ namespace black_cat
 		bcFLOAT l_y_multiplier = bc_null_default(l_y_multiplier_value, 512);
 		bcUINT16 l_distance_detail = bc_null_default(l_distance_detail_value, 100);
 		bcUINT16 l_height_detail = bc_null_default(l_height_detail_value, 20);
-		core::bc_vector< std::tuple< core::bc_string, bcUINT32 > > l_material_names; // Name, Scale
+		core::bc_vector< std::tuple< core::bc_string, bcFLOAT > > l_material_names; // Name, Scale
 
 		if (l_material_names_value != nullptr)
 		{
@@ -336,7 +336,7 @@ namespace black_cat
 					auto l_scale_ite = l_key_value.find("scale");
 
 					core::bc_string l_name;
-					bcUINT32 l_scale = 1;
+					bcFLOAT l_scale = 1;
 
 					if (l_name_ite != std::cend(l_key_value))
 					{
@@ -344,7 +344,7 @@ namespace black_cat
 					}
 					if (l_scale_ite != std::cend(l_key_value))
 					{
-						l_scale = *l_scale_ite->second.as< bcINT >();
+						l_scale = *l_scale_ite->second.as< bcFLOAT >();
 					}
 
 					return std::make_tuple(std::move(l_name), l_scale);
@@ -435,7 +435,7 @@ namespace black_cat
 
 			l_material_properties.m_specular_intensity[l_counter] = l_material->get_specular_intensity();
 			l_material_properties.m_specular_power[l_counter] = l_material->get_specular_power();
-			l_material_properties.m_scale[l_counter] = std::get<1>(l_material_name);
+			l_material_properties.m_scale[l_counter] = std::get<bcFLOAT>(l_material_name);
 			l_counter++;
 
 			l_materials.push_back(std::move(l_material));
@@ -533,11 +533,11 @@ namespace black_cat
 			graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::pixel, l_texture_map_view.get())
 		};
 
-		l_counter = 0;
+		//l_counter = 0;
 		bcUINT32 l_resource_view_count = 3;
-		for(auto& l_material_name : l_material_names)
+		for(auto& l_material : l_materials)
 		{
-			auto& l_material = l_materials[l_counter];
+			//auto& l_material = l_materials[l_counter];
 
 			auto l_diffuse_map_parameter = graphic::bc_resource_view_parameter(l_resource_view_count, graphic::bc_shader_type::pixel, l_material->get_diffuse_map_view());
 			auto l_normal_map_parameter = graphic::bc_resource_view_parameter(l_resource_view_count + 1, graphic::bc_shader_type::pixel, l_material->get_normal_map_view());
@@ -545,8 +545,8 @@ namespace black_cat
 			l_render_state_resource_view_array[l_resource_view_count++] = l_diffuse_map_parameter;
 			l_render_state_resource_view_array[l_resource_view_count++] = l_normal_map_parameter;
 
-			l_materials.push_back(std::move(l_material));
-			++l_counter;
+			//l_materials.push_back(std::move(l_material));
+			//++l_counter;
 		}
 
 		//l_device->set_allocator_alloc_type(l_device_alloc_type);

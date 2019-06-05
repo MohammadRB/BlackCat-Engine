@@ -263,6 +263,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcShapeGenerator.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshPartCollider.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcSubMesh.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcSubMeshTransformation.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcActor.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcActor.hpp" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcActorComponent.h" />

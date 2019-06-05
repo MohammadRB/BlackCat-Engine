@@ -288,7 +288,7 @@ namespace black_cat
 
 			l_meshes.push_back(std::make_tuple(std::move(l_mesh_data), l_mesh_render_state));
 		}
-
+		
 		game::bc_mesh_node* l_added_node = p_mesh._add_node
 		(
 			p_ainode.mName.C_Str(),
@@ -300,7 +300,6 @@ namespace black_cat
 		for (bcUINT l_child_index = 0; l_child_index < p_ainode.mNumChildren; ++l_child_index)
 		{
 			aiNode* l_child = p_ainode.mChildren[l_child_index];
-
 			convert_ainodes(p_render_system, p_context, p_aiscene, *l_child, p_mesh, l_added_node);
 		}
 	}
@@ -337,7 +336,7 @@ namespace black_cat
 			return;
 		}
 
-		game::bc_mesh_collider_ptr l_mesh_colliders = core::bc_get_service< core::bc_content_manager >()->load< game::bc_mesh_collider >
+		const game::bc_mesh_collider_ptr l_mesh_colliders = core::bc_get_service< core::bc_content_manager >()->load< game::bc_mesh_collider >
 		(
 			p_context.get_allocator_alloc_type(),
 			p_context.m_file_path.c_str(),
@@ -354,6 +353,12 @@ namespace black_cat
 		game::bc_mesh l_mesh(core::bc_to_exclusive_string(l_mesh_name), l_node_count, l_mesh_count, l_mesh_colliders);
 
 		convert_ainodes(l_game_system.get_render_system(), p_context, *l_scene, *l_scene->mRootNode, l_mesh, nullptr);
+
+		bcFLOAT* l_auto_scale = p_context.m_parameter.get_value<bcFLOAT>("auto_scale");
+		if(l_auto_scale)
+		{
+			l_mesh._apply_auto_scale(*l_auto_scale);
+		}
 
 		p_context.set_result(std::move(l_mesh));
 	}

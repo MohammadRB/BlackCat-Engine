@@ -13,7 +13,7 @@ namespace black_cat
 		: m_input_texture(p_input_texture)
 	{
 	}
-
+	
 	void bc_back_buffer_write_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
@@ -106,8 +106,8 @@ namespace black_cat
 	{
 		p_param.m_render_thread.start(m_command_list.get());
 		p_param.m_render_thread.bind_render_pass_state(m_render_pass_state.get());
-
-		p_param.m_render_system.add_render_instance(m_render_state.get(), game::bc_render_instance(core::bc_matrix4f::identity()));
+		
+		p_param.m_render_system.add_render_instance(*m_render_state.get(), game::bc_render_instance(core::bc_matrix4f::identity()));
 		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
 		p_param.m_render_system.clear_render_instances();
 

@@ -26,7 +26,7 @@ namespace black_cat
 			return m_light->get_transformation().get_translation();
 		}
 
-		core::bc_matrix4f bc_light_component::get_world_transform() const
+		const core::bc_matrix4f& bc_light_component::get_world_transform() const
 		{
 			return m_light->get_transformation();
 		}

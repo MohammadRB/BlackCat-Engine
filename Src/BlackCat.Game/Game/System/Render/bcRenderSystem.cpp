@@ -116,12 +116,12 @@ namespace black_cat
 			return m_render_pass_manager->remove_pass(p_location);
 		}
 
-		void bc_render_system::add_render_instance(const bc_render_state* p_state, const bc_render_instance& p_instance)
+		void bc_render_system::add_render_instance(const bc_render_state& p_state, const bc_render_instance& p_instance)
 		{
 			// Bug this function isn't thread-safe
 			const auto l_render_states_entry_size = sizeof(render_state_entry);
 			const auto l_render_states_first = reinterpret_cast<bcUINTPTR>(&*m_render_states.begin());
-			const auto l_render_state = reinterpret_cast<bcUINTPTR>(p_state);
+			const auto l_render_state = reinterpret_cast<bcUINTPTR>(&p_state);
 			const auto l_state_index = (l_render_state - l_render_states_first) / l_render_states_entry_size;
 
 			bcAssert(m_render_states.at(l_state_index).first.is_set());
@@ -152,11 +152,6 @@ namespace black_cat
 		{
 			auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
 
-			//update_global_cbuffer(p_render_thread, p_clock, p_camera);
-			
-			/*p_render_thread.bind_ps_constant_buffer_parameter(m_global_cbuffer_parameter);
-			p_render_thread.pipeline_apply_states(_convert_shader_type_to_pipeline_stage(m_global_cbuffer_parameter.get_shader_types()));*/
-
 			const graphic::bc_pipeline_stage l_per_object_cbuffer_stages = _convert_shader_type_to_pipeline_stage(m_per_object_cbuffer_parameter.get_shader_types());
 
 			for (render_state_entry& l_render_state : m_render_states)
@@ -176,10 +171,7 @@ namespace black_cat
 
 						graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
 						p_render_thread.update_subresource(l_buffer, 0, &l_per_object_cbuffer, 0, 0);
-
-						/*p_render_thread.bind_ps_constant_buffer_parameter(m_per_object_cbuffer_parameter);
-						p_render_thread.pipeline_apply_states(l_per_object_cbuffer_stages);*/
-
+						
 						p_render_thread.draw_indexed
 						(
 							l_render_state.first->get_index_buffer_offset(),

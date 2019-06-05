@@ -6,7 +6,8 @@
 #include "CorePlatformImp/Concurrency/bcThread.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcDelegate.hpp"
-#include "Core/Utility/bcLogger.h"
+#include "Core/Event/bcEventManager.h"
+#include "Core/bcEvent.h"
 
 namespace black_cat
 {
@@ -52,10 +53,25 @@ namespace black_cat
 			{
 				m_future.wait();
 			}
-
-			core_platform::bc_future_status wait_for(const bcUINT64 p_nano) const noexcept(core_platform::bc_future<value_type>::wait_for)
+			
+			core_platform::bc_future_status wait_for(const std::chrono::nanoseconds& p_duration) const noexcept(core_platform::bc_future<value_type>::wait_for)
 			{
-				return m_future.wait_for(std::chrono::nanoseconds(p_nano));
+				return m_future.wait_for(p_duration);
+			}
+
+			core_platform::bc_future_status wait_for(const std::chrono::microseconds& p_duration) const noexcept(core_platform::bc_future<value_type>::wait_for)
+			{
+				return m_future.wait_for(p_duration);
+			}
+
+			core_platform::bc_future_status wait_for(const std::chrono::milliseconds& p_duration) const noexcept(core_platform::bc_future<value_type>::wait_for)
+			{
+				return m_future.wait_for(p_duration);
+			}
+
+			core_platform::bc_future_status wait_for(const std::chrono::seconds& p_duration) const noexcept(core_platform::bc_future<value_type>::wait_for)
+			{
+				return m_future.wait_for(p_duration);
 			}
 
 			/**
@@ -117,8 +133,8 @@ namespace black_cat
 					auto l_current_exception = std::current_exception();
 					m_promise.set_exception(l_current_exception);
 
-					bc_estring_frame l_debug_msg = bcL("Task with thread id ") + bc_to_estring_frame(p_thread_id) + bcL(" exited with error.");
-					core::bc_get_service<bc_logger>()->log_debug(l_debug_msg.c_str());
+					bc_app_event_debug l_debug_event(bc_string("Task with thread id " + bc_to_string(p_thread_id) + " exited with error."));
+					bc_get_service< bc_event_manager >()->process_event(l_debug_event);
 				}
 			}
 

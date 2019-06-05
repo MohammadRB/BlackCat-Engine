@@ -26,16 +26,14 @@ namespace black_cat
 			{
 				const bc_mesh_node* l_node = *p_begin;
 				
-				for(bc_mesh_node::node_index l_mesh_index= 0, l_mesh_count = l_node->get_mesh_count(); l_mesh_index < l_mesh_count; ++l_mesh_index)
+				for(bc_mesh_node::node_index l_mesh_index = 0, l_mesh_count = l_node->get_mesh_count(); l_mesh_index < l_mesh_count; ++l_mesh_index)
 				{
-					auto* l_node_mesh_render_state = p_mesh_part.get_node_mesh_render_state(l_node, l_mesh_index);
-					if (l_node_mesh_render_state)
-					{
-						auto* l_node_transformation = p_mesh_part.get_node_absolute_transformation(l_node, p_transformations);
-						bc_render_instance l_instance(*l_node_transformation);
+					auto& l_node_mesh_render_state = p_mesh_part.get_node_mesh_render_state(l_node, l_mesh_index);
+					
+					auto& l_node_transformation = p_mesh_part.get_node_absolute_transformation(l_node, p_transformations);
+					bc_render_instance l_instance(l_node_transformation);
 
-						p_render_system.add_render_instance(l_node_mesh_render_state, l_instance);
-					}
+					p_render_system.add_render_instance(l_node_mesh_render_state, l_instance);
 				}
 
 				_render_mesh_node
@@ -51,7 +49,8 @@ namespace black_cat
 
 		bc_mesh_component::bc_mesh_component(bc_actor_component_index p_index)
 			: bc_render_component(p_index),
-			m_sub_mesh()
+			m_sub_mesh(),
+			m_mesh_part_transformation()
 		{
 		}
 
@@ -82,12 +81,12 @@ namespace black_cat
 
 		core::bc_vector3f bc_mesh_component::get_world_position() const
 		{
-			return m_mesh_part_transformation.get_node_translation(m_mesh_part_transformation.get_root_node_index());
+			return m_mesh_part_transformation.get_node_translation(*m_sub_mesh.get_root_node());
 		}
 
 		core::bc_matrix4f bc_mesh_component::get_world_transform() const
 		{
-			return m_mesh_part_transformation.get_node_transform(m_mesh_part_transformation.get_root_node_index());
+			return m_mesh_part_transformation.get_node_transform(*m_sub_mesh.get_root_node());
 		}
 
 		void bc_mesh_component::set_world_transform(bc_mediate_component& p_mediate_component, const core::bc_matrix4f& p_transform)
@@ -105,6 +104,7 @@ namespace black_cat
 			const bc_mesh_ptr l_mesh = core::bc_lazy_content::get_content<bc_mesh>(l_mesh_name.c_str());
 
 			m_sub_mesh = l_sub_mesh_name ? bc_sub_mesh(l_mesh, l_sub_mesh_name->c_str()) : bc_sub_mesh(l_mesh);
+			m_mesh_part_transformation = bc_sub_mesh_transformation(*m_sub_mesh.get_root_node());
 
 			set_world_transform(*p_actor.get_component<bc_mediate_component>(), core::bc_matrix4f::identity());
 		}
@@ -115,7 +115,7 @@ namespace black_cat
 
 		void bc_mesh_component::render(bc_render_system& p_render_system) const
 		{
-			const bc_mesh_node* l_node = m_sub_mesh.get_node();
+			const bc_mesh_node* l_node = m_sub_mesh.get_root_node();
 			bc_actor l_actor = get_actor();
 
 			core::bc_array< const bc_mesh_node*, 1 > l_nodes = { l_node };

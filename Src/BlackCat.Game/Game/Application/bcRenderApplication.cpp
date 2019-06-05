@@ -56,10 +56,10 @@ namespace black_cat
 
 		bcINT32 bc_render_application::run()
 		{
-			auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
-			core_platform::bc_clock::small_delta_time l_update_elapsing = 1000.0f / m_min_update_rate;
+			auto* const l_event_manager = core::bc_get_service< core::bc_event_manager >();
+			const core_platform::bc_clock::small_delta_time l_update_elapsing = 1000.0f / m_min_update_rate;
 			core_platform::bc_clock::small_delta_time l_local_elapsed = 0;
-
+			
 			try
 			{
 				while (!m_is_terminated)
@@ -69,7 +69,7 @@ namespace black_cat
 
 					if (m_paused)
 					{
-						core_platform::bc_thread::current_thread_sleep_for(100000000);
+						core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(100));
 						continue;
 					}
 
@@ -108,12 +108,12 @@ namespace black_cat
 
 					if (m_render_rate != -1) // Fixed render rate
 					{
-						core_platform::bc_clock::small_delta_time l_render_elapsing = 1000.0f / m_render_rate;
+						const core_platform::bc_clock::small_delta_time l_render_elapsing = 1000.0f / m_render_rate;
 
 						if(l_elapsed < l_render_elapsing)
 						{
-							auto l_diff = l_render_elapsing - l_elapsed;
-							core_platform::bc_thread::current_thread_sleep_for(l_diff * 1000000);
+							const auto l_diff = static_cast<std::chrono::milliseconds::rep>(l_render_elapsing - l_elapsed);
+							core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(l_diff));
 
 							l_elapsed = l_render_elapsing;
 						}
@@ -207,7 +207,7 @@ namespace black_cat
 			(
 				core::bc_event_manager::delegate_type(this, &bc_render_application::_app_event)
 			);
-			m_event_warning_handle = l_event_manager->register_event_listener< core::bc_app_event_warning >
+			m_event_debug_handle = l_event_manager->register_event_listener< core::bc_app_event_debug >
 			(
 				core::bc_event_manager::delegate_type(this, &bc_render_application::_app_event)
 			);
@@ -225,7 +225,7 @@ namespace black_cat
 			m_event_handle_window_close.reset();
 			m_event_handle_app_active.reset();
 			m_event_handle_app_exit.reset();
-			m_event_warning_handle.reset();
+			m_event_debug_handle.reset();
 			m_event_error_handle.reset();
 
 			m_clock.reset(nullptr);
@@ -312,18 +312,18 @@ namespace black_cat
 				return true;
 			}
 
-			if (core::bc_ievent::event_is< core::bc_app_event_warning >(p_event))
+			if (core::bc_ievent::event_is< core::bc_app_event_debug >(p_event))
 			{
 				core::bc_get_service< core::bc_logger >()->log
 				(
-					core::bc_log_type::info,
-					core::bc_to_estring_frame(static_cast<core::bc_app_event_warning&>(p_event).get_message()).c_str()
+					core::bc_log_type::debug,
+					core::bc_to_estring_frame(static_cast<core::bc_app_event_debug&>(p_event).get_message()).c_str()
 				);
 
 				return true;
 			}
 
-			return false;
+			return app_event(p_event);
 		}
 
 		void bc_render_application::_calculate_fps(core_platform::bc_clock::small_delta_time p_delta)

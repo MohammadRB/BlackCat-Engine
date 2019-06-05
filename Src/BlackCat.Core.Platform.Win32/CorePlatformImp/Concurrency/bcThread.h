@@ -102,9 +102,27 @@ namespace black_cat
 		}
 
 		template<>
-		inline void bc_platform_thread< bc_platform::win32 >::current_thread_sleep_for(bcUINT64 p_nano)
+		inline void bc_platform_thread< bc_platform::win32 >::current_thread_sleep_for(const std::chrono::nanoseconds& p_duration)
 		{
-			std::this_thread::sleep_for(std::chrono::nanoseconds(p_nano));
+			std::this_thread::sleep_for(p_duration);
+		}
+
+		template<>
+		inline void bc_platform_thread< bc_platform::win32 >::current_thread_sleep_for(const std::chrono::microseconds& p_duration)
+		{
+			std::this_thread::sleep_for(p_duration);
+		}
+
+		template< bc_platform TP >
+		void bc_platform_thread<TP>::current_thread_sleep_for(const std::chrono::milliseconds& p_duration)
+		{
+			std::this_thread::sleep_for(p_duration);
+		}
+
+		template< bc_platform TP >
+		void bc_platform_thread<TP>::current_thread_sleep_for(const std::chrono::seconds& p_duration)
+		{
+			std::this_thread::sleep_for(p_duration);
 		}
 
 		template<>

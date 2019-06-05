@@ -313,7 +313,7 @@ namespace black_cat
 
 				if (l_iteration < l_half_iteration_count && l_iteration > 0)
 				{
-					bc_thread::current_thread_sleep_for(0);
+					bc_thread::current_thread_sleep_for(std::chrono::nanoseconds(0));
 					continue;
 				}
 

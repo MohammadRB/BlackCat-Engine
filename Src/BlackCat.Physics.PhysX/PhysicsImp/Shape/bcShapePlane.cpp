@@ -59,7 +59,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_platform_shape_plane<g_api_physx>& bc_platform_shape_plane<g_api_physx>::operator=(const bc_platform_shape_plane& p_other)
 		{
-			bc_platform_shape_geometry::operator=(p_other);
+			bc_platform_shape_geometry::operator=(bc_platform_shape_geometry::platform_pack(m_pack.m_px_geometry));
 			m_pack = p_other.m_pack;
 
 			return *this;

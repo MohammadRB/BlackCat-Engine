@@ -128,21 +128,7 @@ namespace black_cat
 		{
 			m_pack.m_bound = physx::PxBounds3::transformSafe(const_cast<bc_transform&>(p_transform).get_platform_pack().m_px_transform, m_pack.m_bound);
 		}
-
-		template< >
-		BC_PHYSICSIMP_DLL
-		void bc_platform_bound_box< g_api_physx >::transform(const core::bc_matrix4f& p_transform) noexcept
-		{
-			transform(bc_transform(p_transform));
-		}
-
-		template< >
-		BC_PHYSICSIMP_DLL
-		void bc_platform_bound_box< g_api_physx >::transform(const core::bc_matrix3f& p_transform) noexcept
-		{
-			m_pack.m_bound = physx::PxBounds3::transformSafe(bc_to_right_hand(p_transform), m_pack.m_bound);
-		}
-
+		
 		template< >
 		BC_PHYSICSIMP_DLL
 		void bc_platform_bound_box< g_api_physx >::get_points(core::bc_array<core::bc_vector3f, 8>& p_result) const noexcept

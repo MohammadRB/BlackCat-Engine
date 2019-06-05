@@ -316,6 +316,6 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
     float4 l_shaded_diffuse = 1;
     l_shaded_diffuse.xyz = (l_diffuse.xyz * l_final_light_map.xyz);
     l_shaded_diffuse.xyz += l_final_light_map.w;
-
+    
     write_output(l_global_texcoord, l_shaded_diffuse);
 }

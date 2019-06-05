@@ -60,7 +60,13 @@ namespace black_cat
 
 			void wait() const noexcept;
 
-			bc_future_status wait_for(const bcUINT64 p_nano) const;
+			bc_future_status wait_for(const std::chrono::nanoseconds& p_duration) const;
+
+			bc_future_status wait_for(const std::chrono::microseconds& p_duration) const;
+
+			bc_future_status wait_for(const std::chrono::milliseconds& p_duration) const;
+
+			bc_future_status wait_for(const std::chrono::seconds& p_duration) const;
 
 		protected:
 
@@ -98,8 +104,14 @@ namespace black_cat
 			type get() const;
 
 			void wait() const noexcept;
+			
+			bc_future_status wait_for(const std::chrono::nanoseconds& p_duration) const;
 
-			bc_future_status wait_for(const bcUINT64 p_nano) const;
+			bc_future_status wait_for(const std::chrono::microseconds& p_duration) const;
+
+			bc_future_status wait_for(const std::chrono::milliseconds& p_duration) const;
+
+			bc_future_status wait_for(const std::chrono::seconds& p_duration) const;
 
 		protected:
 

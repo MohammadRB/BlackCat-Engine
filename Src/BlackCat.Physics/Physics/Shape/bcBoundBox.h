@@ -56,10 +56,6 @@ namespace black_cat
 
 			void transform(const bc_transform& p_transform) noexcept;
 
-			void transform(const core::bc_matrix4f& p_transform) noexcept;
-
-			void transform(const core::bc_matrix3f& p_transform) noexcept;
-
 			/**
 			 * \brief Get 8 points of box. Start from -x,+z counter clockwise to +x,+z, from +y to -y
 			 * \param p_result 

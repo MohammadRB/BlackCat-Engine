@@ -151,7 +151,7 @@ namespace black_cat
 			}
 
 			const bc_render_instance l_instance(core::bc_matrix4f::identity());
-			p_render_system.add_render_instance(m_render_state.get(), l_instance);
+			p_render_system.add_render_instance(*m_render_state.get(), l_instance);
 		}
 
 		void bc_shape_drawer::clear_buffers()

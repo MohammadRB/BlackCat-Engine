@@ -43,9 +43,11 @@ namespace black_cat
 		protected:
 			bc_platform_shape_geometry(platform_pack p_pack);
 
-			bc_platform_shape_geometry(const bc_platform_shape_geometry&);
+			bc_platform_shape_geometry(const bc_platform_shape_geometry&) = delete;
 
-			bc_platform_shape_geometry& operator=(const bc_platform_shape_geometry&);
+			bc_platform_shape_geometry& operator=(const bc_platform_shape_geometry&) = delete;
+
+			bc_platform_shape_geometry& operator=(platform_pack);
 
 		private:
 			platform_pack m_pack;

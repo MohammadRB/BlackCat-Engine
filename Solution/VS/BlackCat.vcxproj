@@ -74,39 +74,23 @@
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\Src\BlackCat\BlackCat\*.h ..\..\BC_SDK\Include\BlackCat
-
 copy ..\..\Src\BlackCat\BlackCat\Application\*.h ..\..\BC_SDK\Include\BlackCat\Application
-
 copy ..\..\Src\BlackCat\BlackCat\Loader\*.h ..\..\BC_SDK\Include\BlackCat\Loader
-
 copy ..\..\Src\BlackCat\BlackCat\RenderPass\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass
-
-
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11
-
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11
-\DeferredRendering
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\DeferredRendering
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\DeferredRendering
-
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\Terrain
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\Terrain
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli $(Configuration)\Content\Shader\DirectX11
-
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl $(Configuration)\Content\Shader\DirectX11
-
-
-
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsli $(Configuration)\Content\Shader\DirectX11\DeferredRendering
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsl $(Configuration)\Content\Shader\DirectX11\DeferredRendering
 copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json ..\..\BC_SDK\Content\Data
-
 copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json $(Configuration)\Content\Data
-
-
 copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js ..\..\BC_SDK\Content\Script
-
 copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js $(Configuration)\Content\Script
-
-
 copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
 </Command>
     </PostBuildEvent>
@@ -141,39 +125,23 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\Src\BlackCat\BlackCat\*.h ..\..\BC_SDK\Include\BlackCat
-
 copy ..\..\Src\BlackCat\BlackCat\Application\*.h ..\..\BC_SDK\Include\BlackCat\Application
-
 copy ..\..\Src\BlackCat\BlackCat\Loader\*.h ..\..\BC_SDK\Include\BlackCat\Loader
-
 copy ..\..\Src\BlackCat\BlackCat\RenderPass\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass
-
-
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11
-
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11
-\DeferredRendering
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\DeferredRendering
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\DeferredRendering
-
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\Terrain
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\Terrain
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli $(Configuration)\Content\Shader\DirectX11
-
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl $(Configuration)\Content\Shader\DirectX11
-
-
-
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsli $(Configuration)\Content\Shader\DirectX11\DeferredRendering
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsl $(Configuration)\Content\Shader\DirectX11\DeferredRendering
 copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json ..\..\BC_SDK\Content\Data
-
 copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json $(Configuration)\Content\Data
-
-
 copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js ..\..\BC_SDK\Content\Script
-
 copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js $(Configuration)\Content\Script
-
-
 copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
 </Command>
     </PostBuildEvent>
@@ -280,20 +248,6 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcTerrain.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcTerrainChunkInfo.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcGBufferLightMap.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
@@ -303,6 +257,14 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcMeshGBuffer.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\bcTerrain.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\bcTerrainChunkInfo.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>

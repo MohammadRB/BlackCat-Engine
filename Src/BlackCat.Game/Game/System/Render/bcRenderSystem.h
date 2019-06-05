@@ -140,7 +140,7 @@ namespace black_cat
 			 * \param p_state
 			 * \param p_instance
 			 */
-			void add_render_instance(const bc_render_state* p_state, const bc_render_instance& p_instance);
+			void add_render_instance(const bc_render_state& p_state, const bc_render_instance& p_instance);
 
 			void update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera);
 

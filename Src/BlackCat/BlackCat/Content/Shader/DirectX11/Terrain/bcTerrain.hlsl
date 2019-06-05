@@ -1,6 +1,6 @@
 // [09/02/2016 MRB]
 
-#include "bcRegister.hlsli"
+#include "..\\bcRegister.hlsli"
 
 #define NUM_TEXTURE 8
 
@@ -51,7 +51,7 @@ cbuffer g_cb_materials                      : register(BC_RENDER_STATE_CB2)
 {
     float4 g_material_specular_intensity[2] : packoffset(c0);
     float4 g_material_specular_power[2]     : packoffset(c2);
-    uint4 g_material_scale[2]               : packoffset(c4);
+    float4 g_material_scale[2]               : packoffset(c4);
 }
 
 // == Input / Output ==============================================================================
@@ -102,7 +102,7 @@ struct bc_material_property
 {
     float m_specular_intensity;
     float m_specular_power;
-    uint m_scale;
+    float m_scale;
 };
 
 struct bc_texture_data
@@ -145,7 +145,7 @@ bc_texture_data get_texture(float2 p_texcoord)
 	const float l_multiplier = 256 * 256;
 
 	uint2 l_texcoord = int2(p_texcoord.x * g_width, p_texcoord.y * g_height);
-	uint4 l_texturemap = g_texturemap.Load(int3(l_texcoord, 0));
+    uint4 l_texturemap = g_texturemap.Load(int3(l_texcoord, 0));
 	float l_texturemap_values[8];
 
     bc_texture_data l_result;
@@ -167,7 +167,7 @@ bc_texture_data get_texture(float2 p_texcoord)
     float l_texture_coefficent;
 
     l_texture_coefficent = l_texturemap_values[0];
-    if (l_texture_coefficent > 0)
+    if (l_texture_coefficent > 0.0)
 	{
         bc_material_property l_material = get_material_properties(0);
         float l_scale = l_wdith / l_material.m_scale;
@@ -179,7 +179,7 @@ bc_texture_data get_texture(float2 p_texcoord)
     }
 
     l_texture_coefficent = l_texturemap_values[1];
-    if (l_texture_coefficent > 0)
+    if (l_texture_coefficent > 0.0)
 	{
         bc_material_property l_material = get_material_properties(1);
         float l_scale = l_wdith / l_material.m_scale;
@@ -191,7 +191,7 @@ bc_texture_data get_texture(float2 p_texcoord)
     }
 
     l_texture_coefficent = l_texturemap_values[2];
-    if (l_texture_coefficent > 0)
+    if (l_texture_coefficent > 0.0)
 	{
         bc_material_property l_material = get_material_properties(2);
         float l_scale = l_wdith / l_material.m_scale;
@@ -203,7 +203,7 @@ bc_texture_data get_texture(float2 p_texcoord)
     }
 
     l_texture_coefficent = l_texturemap_values[3];
-    if (l_texture_coefficent > 0)
+    if (l_texture_coefficent > 0.0)
 	{
         bc_material_property l_material = get_material_properties(3);
         float l_scale = l_wdith / l_material.m_scale;
@@ -215,7 +215,7 @@ bc_texture_data get_texture(float2 p_texcoord)
     }
 
     l_texture_coefficent = l_texturemap_values[4];
-    if (l_texture_coefficent > 0)
+    if (l_texture_coefficent > 0.0)
 	{
         bc_material_property l_material = get_material_properties(4);
         float l_scale = l_wdith / l_material.m_scale;
@@ -227,7 +227,7 @@ bc_texture_data get_texture(float2 p_texcoord)
     }
 
     l_texture_coefficent = l_texturemap_values[5];
-    if (l_texture_coefficent > 0)
+    if (l_texture_coefficent > 0.0)
 	{
         bc_material_property l_material = get_material_properties(5);
         float l_scale = l_wdith / l_material.m_scale;
@@ -239,7 +239,7 @@ bc_texture_data get_texture(float2 p_texcoord)
     }
 
     l_texture_coefficent = l_texturemap_values[6];
-    if (l_texture_coefficent > 0)
+    if (l_texture_coefficent > 0.0)
 	{
         bc_material_property l_material = get_material_properties(6);
         float l_scale = l_wdith / l_material.m_scale;
@@ -251,7 +251,7 @@ bc_texture_data get_texture(float2 p_texcoord)
     }
 
     l_texture_coefficent = l_texturemap_values[7];
-    if (l_texture_coefficent > 0)
+    if (l_texture_coefficent > 0.0)
 	{
         bc_material_property l_material = get_material_properties(7);
         float l_scale = l_wdith / l_material.m_scale;
@@ -526,7 +526,7 @@ bc_ps_gbuffer_output gbuffer_ps(bc_ds_output p_input)
 	l_tbn[2] = normalize(cross(l_tbn[0], l_tbn[1]));
 
 	float3 l_final_normal = (mul(l_normal, l_tbn) + 1) / 2.0f;
-
+    
     l_output.m_diffuse = float4(l_diffuse.xyz, l_specular_intensity);
     l_output.m_normal = float4(l_final_normal, l_specular_power);
 

@@ -60,36 +60,36 @@ namespace black_cat
 			bc_string m_message;
 		};
 
-		class bc_app_event_warning : public bc_app_event
+		class bc_app_event_debug : public bc_app_event
 		{
 			BC_EVENT(app_warning)
 
 		public:
-			explicit bc_app_event_warning(const bcCHAR* p_message)
+			explicit bc_app_event_debug(const bcCHAR* p_message)
 				: bc_app_event(event_name()),
 				m_message(p_message)
 			{
 			}
 
-			explicit bc_app_event_warning(bc_string p_message)
+			explicit bc_app_event_debug(bc_string p_message)
 				: bc_app_event(event_name()),
 				m_message(std::move(p_message))
 			{
 			}
 
-			bc_app_event_warning(const bc_app_event_warning&) = default;
+			bc_app_event_debug(const bc_app_event_debug&) = default;
 
-			bc_app_event_warning(bc_app_event_warning&& p_other) noexcept(std::is_nothrow_move_constructible< bc_string >::value)
+			bc_app_event_debug(bc_app_event_debug&& p_other) noexcept(std::is_nothrow_move_constructible< bc_string >::value)
 				: bc_app_event(p_other),
 				m_message(std::move(p_other.m_message))
 			{
 			}
 
-			~bc_app_event_warning() = default;
+			~bc_app_event_debug() = default;
 
-			bc_app_event_warning& operator =(const bc_app_event_warning&) = default;
+			bc_app_event_debug& operator =(const bc_app_event_debug&) = default;
 
-			bc_app_event_warning& operator =(bc_app_event_warning&& p_other) noexcept(std::is_nothrow_move_assignable< bc_string >::value)
+			bc_app_event_debug& operator =(bc_app_event_debug&& p_other) noexcept(std::is_nothrow_move_assignable< bc_string >::value)
 			{
 				m_message = std::move(p_other.m_message);
 
