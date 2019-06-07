@@ -6,9 +6,10 @@
         {
           "content_title": "sponza",
           "content_name": "cnt_mesh",
-          "content_file": "content\\model\\sponza\\sponza.obj",
+          "content_file": "content\\model\\sponza\\sponza.x",
           "content_parameter": {
-            "high_detail_query_shape": true
+            "high_detail_query_shape": false,
+            "auto_scale": 300.0
           }
         },
         {
@@ -16,7 +17,8 @@
           "content_name": "cnt_mesh",
           "content_file": "content\\model\\box.fbx",
           "content_parameter": {
-            "high_detail_query_shape": false
+            "high_detail_query_shape": false,
+            "auto_scale": 1.0
           }
         },
         {
@@ -24,20 +26,27 @@
           "content_name": "cnt_mesh",
           "content_file": "content\\model\\sphere.fbx",
           "content_parameter": {
-            "high_detail_query_shape": false
+            "high_detail_query_shape": false,
+            "auto_scale": 1.0
           }
         },
         {
           "content_title": "convex",
           "content_name": "cnt_mesh",
           "content_file": "content\\model\\convex.fbx",
-          "content_parameter": {}
+          "content_parameter": {
+            "high_detail_query_shape": false,
+            "auto_scale": 1.0
+          }
         },
         {
           "content_title": "train",
           "content_name": "cnt_mesh",
           "content_file": "content\\model\\train.fbx",
-          "content_parameter": {}
+          "content_parameter": {
+            "high_detail_query_shape": true,
+            "auto_scale": 4.0
+          }
         }
       ]
     }

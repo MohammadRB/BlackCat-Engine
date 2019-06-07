@@ -28,7 +28,7 @@ namespace black_cat
 			core::bc_unique_ptr<bc_px_simulation_callback> m_simulation_callback;
 			core::bc_unique_ptr<bc_px_contact_filter_callback> m_contact_filter_callback;
 			core::bc_unique_ptr<bc_px_contact_modify_callback> m_contact_modify_callback;
-			core::bc_unique_ptr< bc_px_fitler_shader_data > m_filter_shader_data;
+			core::bc_unique_ptr< bc_px_filter_shader_data > m_filter_shader_data;
 		};
 
 		template<>

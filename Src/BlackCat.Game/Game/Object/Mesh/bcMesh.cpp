@@ -15,12 +15,12 @@ namespace black_cat
 		bc_mesh_node::bc_mesh_node(core::bc_string p_name,
 			bc_mesh_node* p_parent,
 			node_index p_transformation_index,
-			node_index p_first_mesh,
+			node_index p_first_mesh_index,
 			bcSIZE p_mesh_count)
 			: m_name(std::move(p_name)),
 			m_parent(p_parent),
 			m_transformation_index(p_transformation_index),
-			m_first_mesh_index(p_first_mesh),
+			m_first_mesh_index(p_first_mesh_index),
 			m_mesh_count(p_mesh_count)
 		{
 		}
@@ -173,9 +173,11 @@ namespace black_cat
 			if(!p_parent)
 			{
 				m_nodes.clear();
+				m_nodes_map.clear();
 				m_transformations.clear();
 				m_meshes.clear();
 				m_render_states.clear();
+				m_colliders_map.clear();
 			}
 
 			auto l_node_hash = hash_t()(p_name.c_str());
@@ -229,12 +231,6 @@ namespace black_cat
 			) * 2;
 
 			m_scale = p_scale / l_largest_side;
-			//auto l_scale_matrix = core::bc_matrix4f::scale_matrix(l_real_scale);
-
-			/*for (auto& l_transformation : m_transformations)
-			{
-				l_transformation *= l_scale_matrix;
-			}*/
 
 			for(auto& l_mesh_part_data : m_meshes)
 			{

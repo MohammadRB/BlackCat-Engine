@@ -13,9 +13,7 @@ namespace black_cat
 {
 	namespace editor
 	{
-		class bc_editor_game_console :
-			public QObject,
-			public game::bc_igame_console_imp
+		class bc_editor_game_console : public QObject, public game::bc_igame_console_imp
 		{
 			Q_OBJECT;
 

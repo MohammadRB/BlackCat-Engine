@@ -23,6 +23,16 @@ namespace black_cat
 		template< typename T >
 		class bc_task;
 
+		class bc_content_stream_manager;
+
+		template< class TContent, class TLoader >
+		void bc_register_loader(bc_cloader_ptr<TLoader>&& p_loader)
+		{
+			static auto* s_content_stream_manager = core::bc_get_service<bc_content_stream_manager>();
+
+			s_content_stream_manager->register_loader<TContent, TLoader>(std::move(p_loader));
+		}
+
 		struct _bc_content_stream_file
 		{
 			bc_string_program m_title;

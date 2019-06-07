@@ -33,21 +33,16 @@ namespace black_cat
 
 		void bc_editor_render_app::application_start_engine_components(game::bc_engine_application_parameter& p_parameters)
 		{
-			auto* l_content_stream_manager = core::bc_get_service< core::bc_content_stream_manager >();
-
-			core::bc_register_service(core::bc_make_service<bc_ui_command_service>(*l_content_stream_manager, *m_game_system));
-			
-			l_content_stream_manager->register_loader< game::bc_height_map, bc_editor_height_map_loader_dx11 >
-			(
-				core::bc_make_loader< bc_editor_height_map_loader_dx11 >()
-			);
+			core::bc_register_service(core::bc_make_service<bc_ui_command_service>(*core::bc_get_service<core::bc_content_stream_manager>(), *m_game_system));
+			core::bc_register_loader< game::bc_height_map, bc_editor_height_map_loader_dx11 >(core::bc_make_loader< bc_editor_height_map_loader_dx11 >());
 		}
 
 		void bc_editor_render_app::application_initialize(game::bc_engine_application_parameter& p_parameters)
 		{
 			game::bc_render_system& l_render_system = m_game_system->get_render_system();
-			
-			m_game_system->get_input_system().register_camera(core::bc_make_unique< game::bc_free_camera >
+			game::bc_input_system& l_input_system = m_game_system->get_input_system();
+
+			l_input_system.register_camera(core::bc_make_unique< game::bc_free_camera >
 			(
 				l_render_system.get_device().get_back_buffer_width(),
 				l_render_system.get_device().get_back_buffer_height(),
@@ -55,7 +50,7 @@ namespace black_cat
 				0.3,
 				3000
 			));
-			m_game_system->get_input_system().get_camera().set_look_at(core::bc_vector3f(0, 400, -1000), core::bc_vector3f(0, 0, 0));
+			l_input_system.get_camera().set_look_at(core::bc_vector3f(0, 400, -1000), core::bc_vector3f(0, 0, 0));
 
 			l_render_system.add_render_pass(0, bc_gbuffer_initialize_pass());
 			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
@@ -72,6 +67,7 @@ namespace black_cat
 
 					if(l_key_event.get_key_state() == platform::bc_key_state::pressing && l_key_event.get_key() == platform::bc_key::kb_space)
 					{
+						game::bc_input_system& l_input_system = m_game_system->get_input_system();
 						auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
 						auto* l_scene = m_game_system->get_scene();
 
@@ -95,14 +91,14 @@ namespace black_cat
 						}
 						++l_counter;
 
-						const auto l_position = m_game_system->get_input_system().get_camera().get_position();
+						const auto l_position = l_input_system.get_camera().get_position();
 						l_actor.get_component<game::bc_mediate_component>()->set_world_position(l_position);
 
 						auto* l_rigid_component = l_actor.get_component<game::bc_rigid_body_component>();
 						auto l_rigid = l_rigid_component->get_body();
 						if(l_rigid.is_rigid_dynamic().is_valid())
 						{
-							const auto l_direction = m_game_system->get_input_system().get_camera().get_forward();
+							const auto l_direction = l_input_system.get_camera().get_forward();
 							
 							l_rigid.update_mass_inertia(10);
 							l_rigid.set_linear_velocity(l_direction * 70);

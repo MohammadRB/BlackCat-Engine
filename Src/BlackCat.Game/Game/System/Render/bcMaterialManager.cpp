@@ -285,18 +285,21 @@ namespace black_cat
 			l_material.m_parameters.m_specular_intensity = p_material.m_specular_intensity;
 			l_material.m_parameters.m_specular_power = p_material.m_specular_power;
 			l_material.m_parameters.m_has_normal_map = p_material.m_normal_map != nullptr;
+			l_material.m_diffuse_map = p_material.m_diffuse_map;
+			l_material.m_normal_map = p_material.m_normal_map;
+			l_material.m_specular_map = p_material.m_specular_map;
 
-			if(p_material.m_diffuse_map == nullptr)
+			if(l_material.m_diffuse_map == nullptr)
 			{
 				l_material.m_diffuse_map = _create_texture_from_color(p_material.m_diffuse);
 			}
 
-			if(p_material.m_normal_map == nullptr)
+			if(l_material.m_normal_map == nullptr)
 			{
 				l_material.m_normal_map = m_default_normal_map;
 			}
 
-			if(p_material.m_specular_map == nullptr)
+			if(l_material.m_specular_map == nullptr)
 			{
 				const core::bc_vector4f l_specular
 				(

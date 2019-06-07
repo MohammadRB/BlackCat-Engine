@@ -17,10 +17,10 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_platform_scene_builder< g_api_physx >::bc_platform_scene_builder()
 		{
-			m_pack.m_fitler_shader_data = core::bc_make_unique<bc_px_fitler_shader_data>();
+			m_pack.m_fitler_shader_data = core::bc_make_unique<bc_px_filter_shader_data>();
 
 			m_pack.m_px_desc.filterShaderData = m_pack.m_fitler_shader_data.get();
-			m_pack.m_px_desc.filterShaderDataSize = sizeof(bc_px_fitler_shader_data);
+			m_pack.m_px_desc.filterShaderDataSize = sizeof(bc_px_filter_shader_data);
 			m_pack.m_px_desc.filterShader = &bc_px_filter_shader;
 
 			m_pack.m_px_desc.flags |= physx::PxSceneFlag::eENABLE_ACTIVETRANSFORMS;

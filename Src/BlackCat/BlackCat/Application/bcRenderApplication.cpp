@@ -97,46 +97,16 @@ namespace black_cat
 		);
 #endif
 
-		l_content_stream_manager->register_loader< graphic::bc_texture2d_content, bc_texture_loader >
-		(
-			core::bc_make_loader< bc_texture_loader >()
-		);
-		l_content_stream_manager->register_loader< graphic::bc_vertex_shader_content, bc_vertex_shader_loader >
-		(
-			core::bc_make_loader< bc_vertex_shader_loader >()
-		);
-		l_content_stream_manager->register_loader< graphic::bc_hull_shader_content, bc_hull_shader_loader >
-		(
-			core::bc_make_loader< bc_hull_shader_loader >()
-		);
-		l_content_stream_manager->register_loader< graphic::bc_domain_shader_content, bc_domain_shader_loader >
-		(
-			core::bc_make_loader< bc_domain_shader_loader >()
-		);
-		l_content_stream_manager->register_loader< graphic::bc_geometry_shader_content, bc_geometry_shader_loader >
-		(
-			core::bc_make_loader< bc_geometry_shader_loader >()
-		);
-		l_content_stream_manager->register_loader< graphic::bc_pixel_shader_content, bc_pixel_shader_loader >
-		(
-			core::bc_make_loader< bc_pixel_shader_loader >()
-		);
-		l_content_stream_manager->register_loader< graphic::bc_compute_shader_content, bc_compute_shader_loader >
-		(
-			core::bc_make_loader< bc_compute_shader_loader >()
-		);
-		l_content_stream_manager->register_loader< game::bc_mesh_collider, bc_mesh_collider_loader >
-		(
-			core::bc_make_loader< bc_mesh_collider_loader >(true)
-		);
-		l_content_stream_manager->register_loader< game::bc_mesh, bc_mesh_loader >
-		(
-			core::bc_make_loader< bc_mesh_loader >()
-		);
-		l_content_stream_manager->register_loader< game::bc_scene, bc_scene_loader >
-		(
-			core::bc_make_loader< bc_scene_loader >(std::move(p_parameters.m_app_parameters.m_scene_graph_factory))
-		);
+		core::bc_register_loader< graphic::bc_texture2d_content, bc_texture_loader >(core::bc_make_loader< bc_texture_loader >());
+		core::bc_register_loader< graphic::bc_vertex_shader_content, bc_vertex_shader_loader >(core::bc_make_loader< bc_vertex_shader_loader >());
+		core::bc_register_loader< graphic::bc_hull_shader_content, bc_hull_shader_loader >(core::bc_make_loader< bc_hull_shader_loader >());
+		core::bc_register_loader< graphic::bc_domain_shader_content, bc_domain_shader_loader >(core::bc_make_loader< bc_domain_shader_loader >());
+		core::bc_register_loader< graphic::bc_geometry_shader_content, bc_geometry_shader_loader >(core::bc_make_loader< bc_geometry_shader_loader >());
+		core::bc_register_loader< graphic::bc_pixel_shader_content, bc_pixel_shader_loader >(core::bc_make_loader< bc_pixel_shader_loader >());
+		core::bc_register_loader< graphic::bc_compute_shader_content, bc_compute_shader_loader >(core::bc_make_loader< bc_compute_shader_loader >());
+		core::bc_register_loader< game::bc_mesh_collider, bc_mesh_collider_loader >(core::bc_make_loader< bc_mesh_collider_loader >(true));
+		core::bc_register_loader< game::bc_mesh, bc_mesh_loader >(core::bc_make_loader< bc_mesh_loader >());
+		core::bc_register_loader< game::bc_scene, bc_scene_loader >(core::bc_make_loader< bc_scene_loader >(std::move(p_parameters.m_app_parameters.m_scene_graph_factory)));
 
 		l_entity_manager->register_component_types
 		<

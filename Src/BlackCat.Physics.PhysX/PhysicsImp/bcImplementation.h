@@ -17,10 +17,10 @@ namespace black_cat
 {
 	namespace physics
 	{
-		class bc_px_fitler_shader_data
+		class bc_px_filter_shader_data
 		{
 		public:
-			bc_px_fitler_shader_data()
+			bc_px_filter_shader_data()
 				: m_use_ccd(false),
 				m_use_filter_callback(false)
 			{

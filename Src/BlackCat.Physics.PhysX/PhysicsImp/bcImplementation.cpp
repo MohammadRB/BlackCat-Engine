@@ -287,7 +287,7 @@ namespace black_cat
 		{
 			p_pair_flags |= physx::PxPairFlag::eNOTIFY_CONTACT_POINTS;
 
-			auto* l_constant_block = reinterpret_cast< const bc_px_fitler_shader_data* >(p_constant_block);
+			auto* l_constant_block = reinterpret_cast< const bc_px_filter_shader_data* >(p_constant_block);
 
 			// If filter callback is required so let callback be invoked
 			if (l_constant_block->m_use_filter_callback)

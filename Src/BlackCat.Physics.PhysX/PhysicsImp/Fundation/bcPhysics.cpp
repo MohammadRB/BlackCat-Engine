@@ -63,14 +63,18 @@ namespace black_cat
 		bc_platform_physics< g_api_physx >& bc_platform_physics< g_api_physx >::operator=(bc_platform_physics&& p_other) noexcept
 		{
 			m_pack.m_px_foundation = p_other.m_pack.m_px_foundation;
+#ifdef BC_DEBUG
 			m_pack.m_px_profile = p_other.m_pack.m_px_profile;
+#endif
 			m_pack.m_px_physics = p_other.m_pack.m_px_physics;
 			m_pack.m_px_cooking = p_other.m_pack.m_px_cooking;
 			m_pack.m_allocator = std::move(p_other.m_pack.m_allocator);
 			m_pack.m_logger = std::move(p_other.m_pack.m_logger);
 
 			p_other.m_pack.m_px_foundation = nullptr;
+#ifdef BC_DEBUG
 			p_other.m_pack.m_px_profile = nullptr;
+#endif
 			p_other.m_pack.m_px_physics = nullptr;
 			p_other.m_pack.m_px_cooking = nullptr;
 

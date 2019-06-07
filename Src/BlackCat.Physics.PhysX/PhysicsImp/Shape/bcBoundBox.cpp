@@ -105,7 +105,9 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		void bc_platform_bound_box< g_api_physx >::scale(bcFLOAT p_scale) noexcept
 		{
-			m_pack.m_bound.scaleFast(p_scale);
+			//m_pack.m_bound.scaleFast(p_scale);
+			m_pack.m_bound.minimum *= p_scale;
+			m_pack.m_bound.maximum *= p_scale;
 		}
 
 		template< >
@@ -126,7 +128,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		void bc_platform_bound_box< g_api_physx >::transform(const bc_transform& p_transform) noexcept
 		{
-			m_pack.m_bound = physx::PxBounds3::transformSafe(const_cast<bc_transform&>(p_transform).get_platform_pack().m_px_transform, m_pack.m_bound);
+			m_pack.m_bound = physx::PxBounds3::transformFast(const_cast<bc_transform&>(p_transform).get_platform_pack().m_px_transform, m_pack.m_bound);
 		}
 		
 		template< >

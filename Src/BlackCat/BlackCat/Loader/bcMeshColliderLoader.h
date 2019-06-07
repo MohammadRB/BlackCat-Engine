@@ -28,7 +28,7 @@ namespace black_cat
 
 		void content_processing(core::bc_content_loading_context& p_context) const override;
 
-	protected:
+	private:
 		aiNode* find_px_node(const aiNode& p_ainode, const aiMesh& p_ainode_mesh) const;
 
 		game::bc_mesh_part_collider convert_px_node(physics::bc_physics& p_physics,
@@ -45,7 +45,6 @@ namespace black_cat
 			bool p_generate_high_detail_query_shape,
 			game::bc_mesh_collider& p_result) const;
 
-	protected:
 		bool m_high_detail_query_shape;
 	};
 }

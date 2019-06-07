@@ -150,6 +150,15 @@
           }
         },
         {
+          "content_title": "sponza",
+          "content_name": "cnt_mesh",
+          "content_file": "content\\model\\sponza\\sponza.x",
+          "content_parameter": {
+            "high_detail_query_shape": false,
+            "auto_scale": 220.0
+          }
+        },
+        {
           "content_title": "box",
           "content_name": "cnt_mesh",
           "content_file": "content\\model\\box.fbx",

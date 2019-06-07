@@ -75,9 +75,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcResourceViewParameter.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcSamplerParameter.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameter.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameterManager.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcVectorParameter.h" />
   </ItemGroup>
   <ItemGroup>
@@ -91,9 +88,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcProgrammableStage.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcRasterizerStage.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcStreamOutputStage.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameterManager.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="BlackCat.Core.Platform.Win32.vcxproj">

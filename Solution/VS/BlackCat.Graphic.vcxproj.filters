@@ -168,9 +168,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameter.h">
       <Filter>Graphic\Shader\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameterManager.h">
-      <Filter>Graphic\Shader\Parameter</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcVectorParameter.h">
       <Filter>Graphic\Shader\Parameter</Filter>
     </ClInclude>
@@ -250,9 +247,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcStreamOutputStage.cpp">
       <Filter>Graphic\PipelineStage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameterManager.cpp">
-      <Filter>Graphic\Shader\Parameter</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\bcResourcePtr.cpp">
       <Filter>Graphic</Filter>

@@ -58,7 +58,7 @@ namespace black_cat
 			bc_mesh_node(core::bc_string p_name,
 				bc_mesh_node* p_parent,
 				node_index p_transformation_index,
-				node_index p_first_mesh,
+				node_index p_first_mesh_index,
 				bcSIZE p_mesh_count);
 
 			bc_mesh_node(bc_mesh_node&&) = default;

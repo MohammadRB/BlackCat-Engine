@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/Container/bcString.h"
 #include "Platform/PlatformPCH.h"
 
 namespace black_cat
@@ -53,7 +54,7 @@ namespace black_cat
 
 			void set_file_extension(core::bc_estring p_file_extension);
 
-			// If second path is fully qualfied, it will be replaced with current path 
+			// If second path is fully qualified, it will be replaced with current path 
 			void combine(bc_platform_path& p_other);
 
 			bool is_relative() const;

@@ -138,6 +138,21 @@
           "parameters": {}
         }
       ]
+    },
+    {
+      "name": "sponza",
+      "components": [
+        {
+          "name": "cmp_mesh",
+          "parameters": {
+            "mesh": "sponza"
+          }
+        },
+        {
+          "name": "cmp_rigid_static",
+          "parameters": {}
+        }
+      ]
     }
   ]
 }

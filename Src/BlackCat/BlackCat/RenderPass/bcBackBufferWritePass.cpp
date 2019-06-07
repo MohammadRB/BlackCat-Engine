@@ -101,7 +101,7 @@ namespace black_cat
 	void bc_back_buffer_write_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
 	}
-
+	
 	void bc_back_buffer_write_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
 		p_param.m_render_thread.start(m_command_list.get());
