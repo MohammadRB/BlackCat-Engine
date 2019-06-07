@@ -10,7 +10,7 @@
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/Light/bcLightManager.h"
-#include "BlackCat/RenderPass/bcGBufferLightMapPass.h"
+#include "BlackCat/RenderPass/DeferredRendering/bcGBufferLightMapPass.h"
 
 namespace black_cat
 {

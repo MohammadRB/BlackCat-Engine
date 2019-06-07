@@ -106,7 +106,7 @@ namespace black_cat
 		core::bc_vector<game::bc_render_material_ptr> m_materials;
 	};
 
-	class BC_BLACKCAT_DLL bc_height_map_loader_dx11 : public core::bc_base_content_loader
+	class BC_DLL bc_height_map_loader_dx11 : public core::bc_base_content_loader
 	{
 	public:
 		bool support_offline_processing() const override;

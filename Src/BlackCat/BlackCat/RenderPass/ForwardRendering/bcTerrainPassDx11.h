@@ -14,7 +14,7 @@
 
 namespace black_cat
 {
-	class BC_BLACKCAT_DLL bc_terrain_pass_dx11 : public game::bc_irender_pass
+	class BC_DLL bc_terrain_pass_dx11 : public game::bc_irender_pass
 	{
 		BC_RENDER_PASS(terrain_pass)
 

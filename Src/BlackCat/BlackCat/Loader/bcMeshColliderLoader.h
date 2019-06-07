@@ -11,7 +11,7 @@
 
 namespace black_cat
 {
-	class BC_BLACKCAT_DLL bc_mesh_collider_loader : public core::bc_base_content_loader
+	class BC_DLL bc_mesh_collider_loader : public core::bc_base_content_loader
 	{
 	public:
 		explicit bc_mesh_collider_loader(bool p_high_detail_collision_shape);

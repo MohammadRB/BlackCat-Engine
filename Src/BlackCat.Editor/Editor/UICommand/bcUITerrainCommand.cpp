@@ -8,8 +8,8 @@
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Editor/UICommand/bcUITerrainCommand.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
-#include "BlackCat/RenderPass/bcTerrainPassDx11.h"
-#include "BlackCat/RenderPass/bcGBufferTerrainPassDx11.h"
+#include "BlackCat/RenderPass/ForwardRendering/bcTerrainPassDx11.h"
+#include "BlackCat/RenderPass/DeferredRendering/bcGBufferTerrainPassDx11.h"
 
 namespace black_cat
 {

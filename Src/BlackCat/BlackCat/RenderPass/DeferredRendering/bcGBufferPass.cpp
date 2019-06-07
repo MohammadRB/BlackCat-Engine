@@ -5,7 +5,7 @@
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
-#include "BlackCat/RenderPass/bcGBufferPass.h"
+#include "BlackCat/RenderPass/DeferredRendering/bcGBufferPass.h"
 
 namespace black_cat
 {

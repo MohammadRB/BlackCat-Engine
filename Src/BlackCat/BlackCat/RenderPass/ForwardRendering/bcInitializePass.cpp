@@ -6,7 +6,7 @@
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/Object/Scene/bcScene.h"
-#include "BlackCat/RenderPass/bcInitializePass.h"
+#include "BlackCat/RenderPass/ForwardRendering/bcInitializePass.h"
 
 namespace black_cat
 {

@@ -7,7 +7,7 @@
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/System/Render/bcRenderSystem.h"
-#include "BlackCat/RenderPass/bcGBufferInitializePass.h"
+#include "BlackCat/RenderPass/DeferredRendering/bcGBufferInitializePass.h"
 
 namespace black_cat
 {

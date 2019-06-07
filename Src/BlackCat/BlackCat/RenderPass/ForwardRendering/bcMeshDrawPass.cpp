@@ -16,7 +16,7 @@
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
-#include "BlackCat/RenderPass/bcMeshDrawPass.h"
+#include "BlackCat/RenderPass/ForwardRendering/bcMeshDrawPass.h"
 
 namespace black_cat
 {

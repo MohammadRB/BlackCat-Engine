@@ -1,23 +1,22 @@
-// [03/09/2019 MRB]
+// [06/07/2019 MRB]
 
 #pragma once
 
-#include "GraphicImp/Device/bcDevicePipelineState.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandList.h"
+#include "Core/Container/bcVector.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
-#include "Game/System/Render/Pass/bcRenderPassState.h"
+#include "Game/System/Input/bcCameraFrustum.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
 {
-	class BC_BLACKCAT_DLL bc_gbuffer_pass : public game::bc_irender_pass
+	class BC_DLL bc_cascaded_shadow_map_pass : game::bc_irender_pass
 	{
-		BC_RENDER_PASS(gbuffer_pass)
-
 	public:
+		bc_cascaded_shadow_map_pass(std::initializer_list<bcSIZE> p_cascade_sizes);
+
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 
-		void update(const game::bc_render_pass_update_param& p_update_param) override;
+		void update(const game::bc_render_pass_update_param& p_param) override;
 
 		void initialize_frame(const game::bc_render_pass_render_param& p_param) override;
 
@@ -30,9 +29,7 @@ namespace black_cat
 		void destroy(game::bc_render_system& p_render_system) override;
 
 	private:
-		graphic::bc_device_command_list_ptr m_command_list;
-		graphic::bc_device_pipeline_state_ptr m_pipeline_state;
-		graphic::bc_sampler_state_ptr m_sampler_state;
-		game::bc_render_pass_state_ptr m_render_pass_state;
+		core::bc_vector_program<bcSIZE> m_cascade_sizes;
+		core::bc_vector_frame<game::bc_camera_frustum> m_cascade_frustums;
 	};
 }

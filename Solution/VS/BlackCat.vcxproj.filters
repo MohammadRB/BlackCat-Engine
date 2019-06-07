@@ -34,6 +34,18 @@
     <Filter Include="BlackCat\Content\Shader\DirectX11\Terrain">
       <UniqueIdentifier>{1570a4a2-fbd6-40e3-9e4d-3b1bf2e07319}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BlackCat\RenderPass\DeferredRendering">
+      <UniqueIdentifier>{11351fa6-41e9-41f7-9990-ed38a045d677}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\RenderPass\ForwardRendering">
+      <UniqueIdentifier>{1bbc007f-4c06-4f5a-baca-4f6e220e1917}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Content\Shader\DirectX11\ShadowMap">
+      <UniqueIdentifier>{3422575b-c78c-402d-8f1b-5412f27964a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\RenderPass\ShadowMap">
+      <UniqueIdentifier>{c72d1f99-b4e0-4ab4-8f62-f492d470eb71}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.h">
@@ -63,12 +75,6 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.h">
       <Filter>BlackCat\Loader</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcInitializePass.h">
-      <Filter>BlackCat\RenderPass</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTerrainPassDx11.h">
-      <Filter>BlackCat\RenderPass</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\bcException.h">
       <Filter>BlackCat</Filter>
     </ClInclude>
@@ -87,26 +93,35 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcShapeDrawPass.h">
       <Filter>BlackCat\RenderPass</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcMeshDrawPass.h">
-      <Filter>BlackCat\RenderPass</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneLoader.h">
       <Filter>BlackCat\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferInitializePass.h">
-      <Filter>BlackCat\RenderPass</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferPass.h">
-      <Filter>BlackCat\RenderPass</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferTerrainPassDx11.h">
-      <Filter>BlackCat\RenderPass</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferWritePass.h">
       <Filter>BlackCat\RenderPass</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferLightMapPass.h">
-      <Filter>BlackCat\RenderPass</Filter>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferInitializePass.h">
+      <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferLightMapPass.h">
+      <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferPass.h">
+      <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferTerrainPassDx11.h">
+      <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcInitializePass.h">
+      <Filter>BlackCat\RenderPass\ForwardRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcMeshDrawPass.h">
+      <Filter>BlackCat\RenderPass\ForwardRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcTerrainPassDx11.h">
+      <Filter>BlackCat\RenderPass\ForwardRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcCascadedShadowMapPass.h">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -137,12 +152,6 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.cpp">
       <Filter>BlackCat\Loader</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcInitializePass.cpp">
-      <Filter>BlackCat\RenderPass</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTerrainPassDx11.cpp">
-      <Filter>BlackCat\RenderPass</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\BlackCatPCH.cpp">
       <Filter>BlackCat</Filter>
     </ClCompile>
@@ -155,26 +164,35 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcShapeDrawPass.cpp">
       <Filter>BlackCat\RenderPass</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcMeshDrawPass.cpp">
-      <Filter>BlackCat\RenderPass</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneLoader.cpp">
       <Filter>BlackCat\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferInitializePass.cpp">
-      <Filter>BlackCat\RenderPass</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferPass.cpp">
-      <Filter>BlackCat\RenderPass</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferTerrainPassDx11.cpp">
-      <Filter>BlackCat\RenderPass</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferWritePass.cpp">
       <Filter>BlackCat\RenderPass</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferLightMapPass.cpp">
-      <Filter>BlackCat\RenderPass</Filter>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferInitializePass.cpp">
+      <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferLightMapPass.cpp">
+      <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferPass.cpp">
+      <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferTerrainPassDx11.cpp">
+      <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcInitializePass.cpp">
+      <Filter>BlackCat\RenderPass\ForwardRendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcMeshDrawPass.cpp">
+      <Filter>BlackCat\RenderPass\ForwardRendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcTerrainPassDx11.cpp">
+      <Filter>BlackCat\RenderPass\ForwardRendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcCascadedShadowMapPass.cpp">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -2,11 +2,11 @@
 
 #pragma once
 
-#ifdef BC_BLACKCAT_DLL
+#ifdef BC_DLL
 
 #ifdef _MSC_VER
 
-#define BC_BLACKCAT_DLL __declspec(dllexport)
+#define BC_DLL __declspec(dllexport)
 
 #else
 
@@ -16,7 +16,7 @@
 
 #ifdef _MSC_VER
 
-#define BC_BLACKCAT_DLL __declspec(dllimport)
+#define BC_DLL __declspec(dllimport)
 
 #else
 

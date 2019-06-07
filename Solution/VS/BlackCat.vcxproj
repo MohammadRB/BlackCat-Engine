@@ -58,7 +58,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;BC_BLACKCAT_DLL;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BC_DLL;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../Src/BlackCat;../../Src/BlackCat.Core;../../Src/BlackCat.Core.Platform;../../Src/BlackCat.Core.Platform.Win32;../../Src/BlackCat.Platform;../../Src/BlackCat.Platform.Win32;../../Src/BlackCat.Graphic;../../Src/BlackCat.Graphic.DirectX11;../../Src/BlackCat.Game;../../Src/BlackCat.Physics;../../Src/BlackCat.Physics.PhysX;../../3rdParty</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>BlackCat/BlackCatPCH.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -77,20 +77,34 @@
 copy ..\..\Src\BlackCat\BlackCat\Application\*.h ..\..\BC_SDK\Include\BlackCat\Application
 copy ..\..\Src\BlackCat\BlackCat\Loader\*.h ..\..\BC_SDK\Include\BlackCat\Loader
 copy ..\..\Src\BlackCat\BlackCat\RenderPass\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass
+copy ..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass\ShadowMap
+copy ..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass\DeferredRendering
+copy ..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass\ForwardRendering
+
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\DeferredRendering
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\DeferredRendering
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\ShadowMap
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\ShadowMap
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\Terrain
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\Terrain
+
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli $(Configuration)\Content\Shader\DirectX11
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl $(Configuration)\Content\Shader\DirectX11
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsli $(Configuration)\Content\Shader\DirectX11\DeferredRendering
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsl $(Configuration)\Content\Shader\DirectX11\DeferredRendering
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsli $(Configuration)\Content\Shader\DirectX11\ShadowMap
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsl $(Configuration)\Content\Shader\DirectX11\ShadowMap
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsli $(Configuration)\Content\Shader\DirectX11\Terrain
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsl $(Configuration)\Content\Shader\DirectX11\Terrain
+
 copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json ..\..\BC_SDK\Content\Data
 copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json $(Configuration)\Content\Data
+
 copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js ..\..\BC_SDK\Content\Script
 copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js $(Configuration)\Content\Script
+
 copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
 </Command>
     </PostBuildEvent>
@@ -112,7 +126,7 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;BC_BLACKCAT_DLL;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BC_DLL;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../Src/BlackCat;../../Src/BlackCat.Core;../../Src/BlackCat.Core.Platform;../../Src/BlackCat.Core.Platform.Win32;../../Src/BlackCat.Platform;../../Src/BlackCat.Platform.Win32;../../Src/BlackCat.Graphic;../../Src/BlackCat.Graphic.DirectX11;../../Src/BlackCat.Game;../../Src/BlackCat.Physics;../../Src/BlackCat.Physics.PhysX;../../3rdParty</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>BlackCat/BlackCatPCH.h</PrecompiledHeaderFile>
@@ -128,20 +142,34 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
 copy ..\..\Src\BlackCat\BlackCat\Application\*.h ..\..\BC_SDK\Include\BlackCat\Application
 copy ..\..\Src\BlackCat\BlackCat\Loader\*.h ..\..\BC_SDK\Include\BlackCat\Loader
 copy ..\..\Src\BlackCat\BlackCat\RenderPass\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass
+copy ..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass\ShadowMap
+copy ..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass\DeferredRendering
+copy ..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass\ForwardRendering
+
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\DeferredRendering
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\DeferredRendering
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\ShadowMap
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\ShadowMap
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\Terrain
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\Terrain
+
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli $(Configuration)\Content\Shader\DirectX11
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl $(Configuration)\Content\Shader\DirectX11
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsli $(Configuration)\Content\Shader\DirectX11\DeferredRendering
 copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsl $(Configuration)\Content\Shader\DirectX11\DeferredRendering
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsli $(Configuration)\Content\Shader\DirectX11\ShadowMap
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsl $(Configuration)\Content\Shader\DirectX11\ShadowMap
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsli $(Configuration)\Content\Shader\DirectX11\Terrain
+copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsl $(Configuration)\Content\Shader\DirectX11\Terrain
+
 copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json ..\..\BC_SDK\Content\Data
 copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json $(Configuration)\Content\Data
+
 copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js ..\..\BC_SDK\Content\Script
 copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js $(Configuration)\Content\Script
+
 copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
 </Command>
     </PostBuildEvent>
@@ -167,14 +195,15 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcTextureLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferWritePass.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferLightMapPass.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferInitializePass.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferPass.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferTerrainPassDx11.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcMeshDrawPass.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcInitializePass.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTerrainPassDx11.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferLightMapPass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferInitializePass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferPass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferTerrainPassDx11.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcMeshDrawPass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcInitializePass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcTerrainPassDx11.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcShapeDrawPass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcCascadedShadowMapPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Application\bcRenderApplication.cpp" />
@@ -194,14 +223,15 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcTextureLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferWritePass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferLightMapPass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferInitializePass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferPass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcGBufferTerrainPassDx11.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcMeshDrawPass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcInitializePass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferLightMapPass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferInitializePass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferPass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferTerrainPassDx11.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcMeshDrawPass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcInitializePass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcShapeDrawPass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTerrainPassDx11.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcTerrainPassDx11.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcCascadedShadowMapPass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="BlackCat.Core.Platform.Win32.vcxproj">
