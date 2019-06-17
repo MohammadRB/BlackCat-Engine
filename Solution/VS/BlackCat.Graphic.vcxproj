@@ -104,21 +104,21 @@
     <ProjectGuid>{7B267E54-9DA2-435D-BE52-4388E78A1661}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>BlackCatGraphic</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -161,39 +161,8 @@
       <AdditionalLibraryDirectories>$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Graphic
-\Graphic\*.h ..\..\BC_SDK\Include\Graphic
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Device\*.h ..\..\BC_SDK\Include\Graphic\Device
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Device\Command\*.h ..\..\BC_SDK\Include\Graphic\Device\Command
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\PipelineStage\*.h ..\..\BC_SDK\Include\Graphic\PipelineStage
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Resource\*.h ..\..\BC_SDK\Include\Graphic\Graphic\Resource
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Resource\Buffer\*.h ..\..\BC_SDK\Include\Graphic\Resource\Buffer
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Resource\State\*.h ..\..\BC_SDK\Include\Graphic\Resource\State
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Resource\Texture\*.h ..\..\BC_SDK\Include\Graphic\Resource\Texture
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Resource\View\*.h ..\..\BC_SDK\Include\Graphic\Resource\View
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Shader\*.h ..\..\BC_SDK\Include\Graphic\Shader
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Shader\Parameter\*.h ..\..\BC_SDK\Include\Graphic\Shader\Parameter
-
+      <Command>if not exist ..\..\BC_SDK\Include\Graphic\ mkdir ..\..\BC_SDK\Include\Graphic\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -203,7 +172,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Graphic\Graphic\*.h ..\..\BC_SDK\Include\Graphic\ /E /Y</Command>
     </PostBuildEvent>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -231,39 +202,8 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <AdditionalLibraryDirectories>$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Graphic
-\Graphic\*.h ..\..\BC_SDK\Include\Graphic
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Device\*.h ..\..\BC_SDK\Include\Graphic\Device
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Device\Command\*.h ..\..\BC_SDK\Include\Graphic\Device\Command
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\PipelineStage\*.h ..\..\BC_SDK\Include\Graphic\PipelineStage
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Resource\*.h ..\..\BC_SDK\Include\Graphic\Graphic\Resource
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Resource\Buffer\*.h ..\..\BC_SDK\Include\Graphic\Resource\Buffer
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Resource\State\*.h ..\..\BC_SDK\Include\Graphic\Resource\State
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Resource\Texture\*.h ..\..\BC_SDK\Include\Graphic\Resource\Texture
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Resource\View\*.h ..\..\BC_SDK\Include\Graphic\Resource\View
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Shader\*.h ..\..\BC_SDK\Include\Graphic\Shader
-
-copy ..\..\Src\BlackCat.Graphic
-\Graphic\Shader\Parameter\*.h ..\..\BC_SDK\Include\Graphic\Shader\Parameter
-
+      <Command>if not exist ..\..\BC_SDK\Include\Graphic\ mkdir ..\..\BC_SDK\Include\Graphic\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -273,7 +213,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Graphic\Graphic\*.h ..\..\BC_SDK\Include\Graphic\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

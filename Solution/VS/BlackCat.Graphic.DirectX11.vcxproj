@@ -121,21 +121,21 @@
     <ProjectGuid>{D176029E-3B2C-4599-986C-3C8685F35F6F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>BlackCatDirectX11</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -185,28 +185,8 @@
       <AdditionalDependencies>3rdParty\DirectXTK-master\Lib\$(Platform)_$(Configuration)\DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\*.h ..\..\BC_SDK\Include\GraphicImp
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\*.h ..\..\BC_SDK\Include\GraphicImp\Device
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\*.h ..\..\BC_SDK\Include\GraphicImp\Device\Command
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\PipelineStage\*.h ..\..\BC_SDK\Include\GraphicImp\PipelineStage
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\*.h ..\..\BC_SDK\Include\GraphicImp\Resource
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\Buffer\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\Buffer
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\State\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\State
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\Texture\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\Texture
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\View\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\View
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\*.h ..\..\BC_SDK\Include\GraphicImp\Shader
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\Parameter\*.h ..\..\BC_SDK\Include\GraphicImp\Shader\Parameter
-
+      <Command>if not exist ..\..\BC_SDK\Include\GraphicImp\ mkdir ..\..\BC_SDK\Include\GraphicImp\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -218,6 +198,9 @@ copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
 
+
+
+xcopy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\*.h ..\..\BC_SDK\Include\GraphicImp\ /E /Y
 
 copy ..\..\3rdParty\3rdParty\DirectXTK-master\Inc\*.h ..\..\BC_SDK\Include\3rdParty\DirectXTK
 
@@ -250,28 +233,8 @@ copy ..\..\3rdParty\3rdParty\DirectXTK-master\Lib\$(Platform)_$(Configuration)\D
       <AdditionalDependencies>3rdParty\DirectXTK-master\Lib\$(Platform)_$(Configuration)\DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\*.h ..\..\BC_SDK\Include\GraphicImp
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\*.h ..\..\BC_SDK\Include\GraphicImp\Device
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\*.h ..\..\BC_SDK\Include\GraphicImp\Device\Command
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\PipelineStage\*.h ..\..\BC_SDK\Include\GraphicImp\PipelineStage
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\*.h ..\..\BC_SDK\Include\GraphicImp\Resource
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\Buffer\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\Buffer
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\State\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\State
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\Texture\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\Texture
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\View\*.h ..\..\BC_SDK\Include\GraphicImp\Resource\View
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\*.h ..\..\BC_SDK\Include\GraphicImp\Shader
-
-copy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\Parameter\*.h ..\..\BC_SDK\Include\GraphicImp\Shader\Parameter
-
+      <Command>if not exist ..\..\BC_SDK\Include\GraphicImp\ mkdir ..\..\BC_SDK\Include\GraphicImp\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -283,6 +246,9 @@ copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
 
+
+
+xcopy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\*.h ..\..\BC_SDK\Include\GraphicImp\ /E /Y
 
 copy ..\..\3rdParty\3rdParty\DirectXTK-master\Inc\*.h ..\..\BC_SDK\Include\3rdParty\DirectXTK
 

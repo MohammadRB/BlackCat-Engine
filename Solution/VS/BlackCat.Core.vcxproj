@@ -14,21 +14,21 @@
     <ProjectGuid>{E4A77CC4-66C0-49B1-BFCF-A92173763741}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>BlackCatCore</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -72,24 +72,8 @@
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Core\Core\Concurrency\*.h ..\..\BC_SDK\Include\Core\Concurrency
-
-copy ..\..\Src\BlackCat.Core\Core\Container\*.h ..\..\BC_SDK\Include\Core\Container
-
-copy ..\..\Src\BlackCat.Core\Core\Memory\*.h ..\..\BC_SDK\Include\Core\Memory
-
-copy ..\..\Src\BlackCat.Core\Core\Event\*.h ..\..\BC_SDK\Include\Core\Event
-
-copy ..\..\Src\BlackCat.Core\Core\Utility\*.h ..\..\BC_SDK\Include\Core\Utility
-
-copy ..\..\Src\BlackCat.Core\Core\File\*.h ..\..\BC_SDK\Include\Core\File
-
-copy ..\..\Src\BlackCat.Core\Core\Content\*.h ..\..\BC_SDK\Include\Core\Content
-
-copy ..\..\Src\BlackCat.Core\Core\Math\*.h ..\..\BC_SDK\Include\Core\Math
-
-copy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core
-
+      <Command>if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
+if not exist ..\..\BC_SDK\Include\Core\ mkdir ..\..\BC_SDK\Include\Core\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -99,7 +83,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command>
     </PostBuildEvent>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -127,24 +113,8 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Core\Core\Concurrency\*.h ..\..\BC_SDK\Include\Core\Concurrency
-
-copy ..\..\Src\BlackCat.Core\Core\Container\*.h ..\..\BC_SDK\Include\Core\Container
-
-copy ..\..\Src\BlackCat.Core\Core\Memory\*.h ..\..\BC_SDK\Include\Core\Memory
-
-copy ..\..\Src\BlackCat.Core\Core\Event\*.h ..\..\BC_SDK\Include\Core\Event
-
-copy ..\..\Src\BlackCat.Core\Core\Utility\*.h ..\..\BC_SDK\Include\Core\Utility
-
-copy ..\..\Src\BlackCat.Core\Core\File\*.h ..\..\BC_SDK\Include\Core\File
-
-copy ..\..\Src\BlackCat.Core\Core\Content\*.h ..\..\BC_SDK\Include\Core\Content
-
-copy ..\..\Src\BlackCat.Core\Core\Math\*.h ..\..\BC_SDK\Include\Core\Math
-
-copy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core
-
+      <Command>if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
+if not exist ..\..\BC_SDK\Include\Core\ mkdir ..\..\BC_SDK\Include\Core\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -154,7 +124,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

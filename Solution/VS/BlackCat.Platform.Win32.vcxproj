@@ -79,21 +79,21 @@
     <ProjectGuid>{854BD395-C225-4C15-A88F-26DFB81D8C58}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>BlackCatWin32</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -137,14 +137,8 @@
       <AdditionalDependencies>3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\*.h ..\..\BC_SDK\Include\PlatformImp
-
-copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\*.h ..\..\BC_SDK\Include\PlatformImp\Application
-
-copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\File\*.h ..\..\BC_SDK\Include\PlatformImp\File
-
-copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\*.h ..\..\BC_SDK\Include\PlatformImp\Script
-
+      <Command>if not exist ..\..\BC_SDK\Include\PlatformImp\ mkdir ..\..\BC_SDK\Include\PlatformImp\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -153,7 +147,9 @@ copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\*.h ..\..\BC_SDK\Include\PlatformImp\ /E /Y</Command>
     </PostBuildEvent>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -182,14 +178,8 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <AdditionalDependencies>3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\*.h ..\..\BC_SDK\Include\PlatformImp
-
-copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\*.h ..\..\BC_SDK\Include\PlatformImp\Application
-
-copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\File\*.h ..\..\BC_SDK\Include\PlatformImp\File
-
-copy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\*.h ..\..\BC_SDK\Include\PlatformImp\Script
-
+      <Command>if not exist ..\..\BC_SDK\Include\PlatformImp\ mkdir ..\..\BC_SDK\Include\PlatformImp\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -198,7 +188,9 @@ copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\*.h ..\..\BC_SDK\Include\PlatformImp\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

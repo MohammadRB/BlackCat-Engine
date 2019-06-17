@@ -19,7 +19,7 @@ namespace black_cat
 			setAttribute(Qt::WA_NativeWindow, true);
 			setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 			setFocusPolicy(Qt::ClickFocus);
-
+			
 			QHBoxLayout* l_horizontal_layout = new QHBoxLayout(p_parent);
 			l_horizontal_layout->setMargin(0);
 			l_horizontal_layout->setSpacing(0);
