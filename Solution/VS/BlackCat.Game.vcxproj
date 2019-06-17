@@ -107,43 +107,16 @@
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game
-
-copy ..\..\Src\BlackCat.Game\Game\Application\*.h ..\..\BC_SDK\Include\Game\Application
-
-copy ..\..\Src\BlackCat.Game\Game\Object\*.h ..\..\BC_SDK\Include\Game\Object
-
-copy ..\..\Src\BlackCat.Game\Game\Object\Mesh\*.h ..\..\BC_SDK\Include\Game\Object\Mesh
-
-copy ..\..\Src\BlackCat.Game\Game\Object\Scene\*.h ..\..\BC_SDK\Include\Game\Object\Scene
-
-copy ..\..\Src\BlackCat.Game\Game\Object\Scene\Component\*.h ..\..\BC_SDK\Include\Game\Object\Scene\Component
-
-copy ..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\*.h ..\..\BC_SDK\Include\Game\Object\Scene\SceneGraph
-
-copy ..\..\Src\BlackCat.Game\Game\System\*.h ..\..\BC_SDK\Include\Game\System
-
-copy ..\..\Src\BlackCat.Game\Game\System\Input\*.h ..\..\BC_SDK\Include\Game\System\Input
-
-copy ..\..\Src\BlackCat.Game\Game\System\Physics\*.h ..\..\BC_SDK\Include\Game\System\Physics
-
-
-copy ..\..\Src\BlackCat.Game\Game\System\Render\*.h ..\..\BC_SDK\Include\Game\System\Render
-copy ..\..\Src\BlackCat.Game\Game\System\Render\Pass\*.h ..\..\BC_SDK\Include\Game\System\Render\Pass
-copy ..\..\Src\BlackCat.Game\Game\System\Render\State\*.h ..\..\BC_SDK\Include\Game\System\Render\State
-copy ..\..\Src\BlackCat.Game\Game\System\Render\Light\*.h ..\..\BC_SDK\Include\Game\System\Render\Light
-
-copy ..\..\Src\BlackCat.Game\Game\System\Script\*.h ..\..\BC_SDK\Include\Game\System\Script
+      <Command>if not exist ..\..\BC_SDK\Include\Game\ mkdir ..\..\BC_SDK\Include\Game\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
-
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
-
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
-
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command>
     </PostBuildEvent>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -189,43 +162,16 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game
-
-copy ..\..\Src\BlackCat.Game\Game\Application\*.h ..\..\BC_SDK\Include\Game\Application
-
-copy ..\..\Src\BlackCat.Game\Game\Object\*.h ..\..\BC_SDK\Include\Game\Object
-
-copy ..\..\Src\BlackCat.Game\Game\Object\Mesh\*.h ..\..\BC_SDK\Include\Game\Object\Mesh
-
-copy ..\..\Src\BlackCat.Game\Game\Object\Scene\*.h ..\..\BC_SDK\Include\Game\Object\Scene
-
-copy ..\..\Src\BlackCat.Game\Game\Object\Scene\Component\*.h ..\..\BC_SDK\Include\Game\Object\Scene\Component
-
-copy ..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\*.h ..\..\BC_SDK\Include\Game\Object\Scene\SceneGraph
-
-copy ..\..\Src\BlackCat.Game\Game\System\*.h ..\..\BC_SDK\Include\Game\System
-
-copy ..\..\Src\BlackCat.Game\Game\System\Input\*.h ..\..\BC_SDK\Include\Game\System\Input
-
-copy ..\..\Src\BlackCat.Game\Game\System\Physics\*.h ..\..\BC_SDK\Include\Game\System\Physics
-
-
-copy ..\..\Src\BlackCat.Game\Game\System\Render\*.h ..\..\BC_SDK\Include\Game\System\Render
-copy ..\..\Src\BlackCat.Game\Game\System\Render\Pass\*.h ..\..\BC_SDK\Include\Game\System\Render\Pass
-copy ..\..\Src\BlackCat.Game\Game\System\Render\State\*.h ..\..\BC_SDK\Include\Game\System\Render\State
-copy ..\..\Src\BlackCat.Game\Game\System\Render\Light\*.h ..\..\BC_SDK\Include\Game\System\Render\Light
-
-copy ..\..\Src\BlackCat.Game\Game\System\Script\*.h ..\..\BC_SDK\Include\Game\System\Script
+      <Command>if not exist ..\..\BC_SDK\Include\Game\ mkdir ..\..\BC_SDK\Include\Game\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
-
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
-
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
-
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command>
     </PostBuildEvent>
     <FxCompile>
       <EntryPointName />

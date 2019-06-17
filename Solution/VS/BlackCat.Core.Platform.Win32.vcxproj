@@ -101,16 +101,8 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Concurrency\*.h ..\..\BC_SDK\Include\CorePlatformImp\Concurrency
-
-copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Memory\*.h ..\..\BC_SDK\Include\CorePlatformImp\Memory
-
-copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Utility\*.h ..\..\BC_SDK\Include\CorePlatformImp\Utility
-
-copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\File\*.h ..\..\BC_SDK\Include\CorePlatformImp\File
-
-copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\*.h ..\..\BC_SDK\Include\CorePlatformImp
-
+      <Command>if not exist ..\..\BC_SDK\Include\CorePlatformImp\ mkdir ..\..\BC_SDK\Include\CorePlatformImp\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -120,7 +112,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
-</Command>
+
+
+xcopy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\*.h ..\..\BC_SDK\Include\CorePlatformImp\ /E /Y</Command>
     </PostBuildEvent>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -148,16 +142,8 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <AdditionalLibraryDirectories>$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Concurrency\*.h ..\..\BC_SDK\Include\CorePlatformImp\Concurrency
-
-copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Memory\*.h ..\..\BC_SDK\Include\CorePlatformImp\Memory
-
-copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Utility\*.h ..\..\BC_SDK\Include\CorePlatformImp\Utility
-
-copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\File\*.h ..\..\BC_SDK\Include\CorePlatformImp\File
-
-copy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\*.h ..\..\BC_SDK\Include\CorePlatformImp
-
+      <Command>if not exist ..\..\BC_SDK\Include\CorePlatformImp\ mkdir ..\..\BC_SDK\Include\CorePlatformImp\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -167,7 +153,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
-</Command>
+
+
+xcopy ..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\*.h ..\..\BC_SDK\Include\CorePlatformImp\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

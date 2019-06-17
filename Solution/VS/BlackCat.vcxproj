@@ -73,40 +73,16 @@
       </AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat\BlackCat\*.h ..\..\BC_SDK\Include\BlackCat
-copy ..\..\Src\BlackCat\BlackCat\Application\*.h ..\..\BC_SDK\Include\BlackCat\Application
-copy ..\..\Src\BlackCat\BlackCat\Loader\*.h ..\..\BC_SDK\Include\BlackCat\Loader
-copy ..\..\Src\BlackCat\BlackCat\RenderPass\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass
-copy ..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass\ShadowMap
-copy ..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass\DeferredRendering
-copy ..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass\ForwardRendering
+      <Command>if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
+if not exist ..\..\BC_SDK\Include\BlackCat\ mkdir ..\..\BC_SDK\Include\BlackCat\
+if not exist ..\..\BC_SDK\Content\ mkdir ..\..\BC_SDK\Include\Content\
+if not exist $(Configuration)\Content\ mkdir $(Configuration)\Content\
 
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\DeferredRendering
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\DeferredRendering
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\ShadowMap
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\ShadowMap
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\Terrain
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\Terrain
+copy $(Configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)
 
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli $(Configuration)\Content\Shader\DirectX11
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl $(Configuration)\Content\Shader\DirectX11
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsli $(Configuration)\Content\Shader\DirectX11\DeferredRendering
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsl $(Configuration)\Content\Shader\DirectX11\DeferredRendering
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsli $(Configuration)\Content\Shader\DirectX11\ShadowMap
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsl $(Configuration)\Content\Shader\DirectX11\ShadowMap
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsli $(Configuration)\Content\Shader\DirectX11\Terrain
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsl $(Configuration)\Content\Shader\DirectX11\Terrain
-
-copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json ..\..\BC_SDK\Content\Data
-copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json $(Configuration)\Content\Data
-
-copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js ..\..\BC_SDK\Content\Script
-copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js $(Configuration)\Content\Script
-
-copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
-</Command>
+xcopy ..\..\Src\BlackCat\BlackCat\*.h ..\..\BC_SDK\Include\BlackCat\ /E /Y
+xcopy ..\..\Src\BlackCat\BlackCat\Content\*.* ..\..\BC_SDK\Content\ /E /Y
+xcopy ..\..\Src\BlackCat\BlackCat\Content\*.* $(Configuration)\Content\ /E /Y</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/Lib/$(Platform)_$(Configuration)/assimp-vc130-mtd.lib;</AdditionalDependencies>
@@ -138,40 +114,16 @@ copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat\BlackCat\*.h ..\..\BC_SDK\Include\BlackCat
-copy ..\..\Src\BlackCat\BlackCat\Application\*.h ..\..\BC_SDK\Include\BlackCat\Application
-copy ..\..\Src\BlackCat\BlackCat\Loader\*.h ..\..\BC_SDK\Include\BlackCat\Loader
-copy ..\..\Src\BlackCat\BlackCat\RenderPass\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass
-copy ..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass\ShadowMap
-copy ..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass\DeferredRendering
-copy ..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\*.h ..\..\BC_SDK\Include\BlackCat\RenderPass\ForwardRendering
+      <Command>if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
+if not exist ..\..\BC_SDK\Include\BlackCat\ mkdir ..\..\BC_SDK\Include\BlackCat\
+if not exist ..\..\BC_SDK\Content\ mkdir ..\..\BC_SDK\Include\Content\
+if not exist $(Configuration)\Content\ mkdir $(Configuration)\Content\
 
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\DeferredRendering
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\DeferredRendering
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\ShadowMap
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\ShadowMap
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsli ..\..\BC_SDK\Content\Shader\DirectX11\Terrain
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsl ..\..\BC_SDK\Content\Shader\DirectX11\Terrain
+copy $(Configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)
 
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsli $(Configuration)\Content\Shader\DirectX11
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\*.hlsl $(Configuration)\Content\Shader\DirectX11
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsli $(Configuration)\Content\Shader\DirectX11\DeferredRendering
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\*.hlsl $(Configuration)\Content\Shader\DirectX11\DeferredRendering
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsli $(Configuration)\Content\Shader\DirectX11\ShadowMap
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\*.hlsl $(Configuration)\Content\Shader\DirectX11\ShadowMap
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsli $(Configuration)\Content\Shader\DirectX11\Terrain
-copy ..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\*.hlsl $(Configuration)\Content\Shader\DirectX11\Terrain
-
-copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json ..\..\BC_SDK\Content\Data
-copy ..\..\Src\BlackCat\BlackCat\Content\Data\*.json $(Configuration)\Content\Data
-
-copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js ..\..\BC_SDK\Content\Script
-copy ..\..\Src\BlackCat\BlackCat\Content\Script\*.js $(Configuration)\Content\Script
-
-copy $(configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(configuration)
-</Command>
+xcopy ..\..\Src\BlackCat\BlackCat\*.h ..\..\BC_SDK\Include\BlackCat\ /E /Y
+xcopy ..\..\Src\BlackCat\BlackCat\Content\*.* ..\..\BC_SDK\Content\ /E /Y
+xcopy ..\..\Src\BlackCat\BlackCat\Content\*.* $(Configuration)\Content\ /E /Y</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/Lib/$(Platform)_$(Configuration)/assimp-vc130-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>

@@ -104,18 +104,8 @@
       <AdditionalDependencies>3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CommonDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3DEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CookingDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3ExtensionsDEBUG.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysXProfileSDKDEBUG.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysXVisualDebuggerSDKDEBUG.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\PhysicsImp
-
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\*.h ..\..\BC_SDK\Include\PhysicsImp\Body
-
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\*.h ..\..\BC_SDK\Include\PhysicsImp\Collision
-
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\*.h ..\..\BC_SDK\Include\PhysicsImp\Fundation
-
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\*.h ..\..\BC_SDK\Include\PhysicsImp\Joint
-
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\*.h ..\..\BC_SDK\Include\PhysicsImp\Shape
-
+      <Command>if not exist ..\..\BC_SDK\Include\PhysicsImp\ mkdir ..\..\BC_SDK\Include\PhysicsImp\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -125,7 +115,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\PhysicsImp\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -181,18 +173,8 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <AdditionalDependencies>3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Common_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Cooking_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Extensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\PhysicsImp
-
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\*.h ..\..\BC_SDK\Include\PhysicsImp\Body
-
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\*.h ..\..\BC_SDK\Include\PhysicsImp\Collision
-
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\*.h ..\..\BC_SDK\Include\PhysicsImp\Fundation
-
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\*.h ..\..\BC_SDK\Include\PhysicsImp\Joint
-
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\*.h ..\..\BC_SDK\Include\PhysicsImp\Shape
-
+      <Command>if not exist ..\..\BC_SDK\Include\PhysicsImp\ mkdir ..\..\BC_SDK\Include\PhysicsImp\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -202,7 +184,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\PhysicsImp\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

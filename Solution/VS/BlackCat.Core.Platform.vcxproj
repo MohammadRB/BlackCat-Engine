@@ -99,22 +99,16 @@
       <AdditionalLibraryDirectories>$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\Concurrency\*.h ..\..\BC_SDK\Include\CorePlatform\Concurrency
-
-copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\Memory\*.h ..\..\BC_SDK\Include\CorePlatform\Memory
-
-copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\Utility\*.h ..\..\BC_SDK\Include\CorePlatform\Utility
-
-copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\File\*.h ..\..\BC_SDK\Include\CorePlatform\File
-
-copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\*.h ..\..\BC_SDK\Include\CorePlatform
-
+      <Command>if not exist ..\..\BC_SDK\Include\CorePlatform\ mkdir ..\..\BC_SDK\Include\CorePlatform\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Core.Platform\CorePlatform\*.h ..\..\BC_SDK\Include\CorePlatform\ /E /Y</Command>
     </PostBuildEvent>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -142,22 +136,16 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <AdditionalLibraryDirectories>$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\Concurrency\*.h ..\..\BC_SDK\Include\CorePlatform\Concurrency
-
-copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\Memory\*.h ..\..\BC_SDK\Include\CorePlatform\Memory
-
-copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\Utility\*.h ..\..\BC_SDK\Include\CorePlatform\Utility
-
-copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\File\*.h ..\..\BC_SDK\Include\CorePlatform\File
-
-copy ..\..\Src\BlackCat.Core.Platform\CorePlatform\*.h ..\..\BC_SDK\Include\CorePlatform
-
+      <Command>if not exist ..\..\BC_SDK\Include\CorePlatform\ mkdir ..\..\BC_SDK\Include\CorePlatform\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
 copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Core.Platform\CorePlatform\*.h ..\..\BC_SDK\Include\CorePlatform\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

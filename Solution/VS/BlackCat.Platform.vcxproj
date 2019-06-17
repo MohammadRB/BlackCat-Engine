@@ -119,13 +119,8 @@
       <AdditionalLibraryDirectories>$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Platform\Platform\*.h ..\..\BC_SDK\Include\Platform
-copy ..\..\Src\BlackCat.Platform\Platform\Application\*.h ..\..\BC_SDK\Include\Platform\Application
-
-copy ..\..\Src\BlackCat.Platform\Platform\File\*.h ..\..\BC_SDK\Include\Platform\File
-
-copy ..\..\Src\BlackCat.Platform\Platform\Script\*.h ..\..\BC_SDK\Include\Platform\Script
-
+      <Command>if not exist ..\..\BC_SDK\Include\Platform\ mkdir ..\..\BC_SDK\Include\Platform\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -135,7 +130,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Platform\Platform\*.h ..\..\BC_SDK\Include\Platform\ /E /Y</Command>
     </PostBuildEvent>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -163,13 +160,8 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <AdditionalLibraryDirectories>$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Platform\Platform\*.h ..\..\BC_SDK\Include\Platform
-copy ..\..\Src\BlackCat.Platform\Platform\Application\*.h ..\..\BC_SDK\Include\Platform\Application
-
-copy ..\..\Src\BlackCat.Platform\Platform\File\*.h ..\..\BC_SDK\Include\Platform\File
-
-copy ..\..\Src\BlackCat.Platform\Platform\Script\*.h ..\..\BC_SDK\Include\Platform\Script
-
+      <Command>if not exist ..\..\BC_SDK\Include\Platform\ mkdir ..\..\BC_SDK\Include\Platform\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -179,7 +171,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Platform\Platform\*.h ..\..\BC_SDK\Include\Platform\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
