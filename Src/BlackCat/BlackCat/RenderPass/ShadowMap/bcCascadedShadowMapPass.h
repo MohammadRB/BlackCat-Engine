@@ -37,6 +37,10 @@ namespace black_cat
 			set_look_at(p_position, p_look_at);
 		}
 
+		_bc_cascaded_shadow_map_camera(_bc_cascaded_shadow_map_camera&&) noexcept = default;
+
+		_bc_cascaded_shadow_map_camera& operator=(_bc_cascaded_shadow_map_camera&&) noexcept = default;
+
 		void update(core_platform::bc_clock::update_param p_clock_update_param,
 			const platform::bc_pointing_device& p_pointing_device,
 			const platform::bc_key_device& p_key_device) noexcept override

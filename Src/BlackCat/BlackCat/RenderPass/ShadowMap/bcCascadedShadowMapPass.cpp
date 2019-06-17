@@ -161,7 +161,7 @@ namespace black_cat
 			*get_shared_resource<graphic::bc_depth_stencil_view>(game::bc_render_pass_resource_variable::depth_stencil_view),
 			{},
 			{},
-			{ graphic::bc_constant_buffer_parameter(0, m_parameters_cbuffer.get()) }
+			{ graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::pixel, m_parameters_cbuffer.get()) }
 		);
 
 		return l_instance;
@@ -176,7 +176,7 @@ namespace black_cat
 		l_cascade_break_points.push_back(p_camera.get_near_clip());
 		l_cascade_break_points.assign(std::begin(m_cascade_sizes), std::end(m_cascade_sizes));
 
-		core::bc_vector_frame<std::tuple<core::bc_matrix4f, core::bc_matrix4f>> l_cascade_cameras;
+		core::bc_vector_frame<_bc_cascaded_shadow_map_camera> l_cascade_cameras;
 
 		const auto l_lower_left_ray = l_camera_frustum_corners[4] - l_camera_frustum_corners[0];
 		const auto l_upper_left_ray = l_camera_frustum_corners[5] - l_camera_frustum_corners[1];
@@ -231,11 +231,7 @@ namespace black_cat
 			const auto l_camera_pos = l_frustum_center + (-p_light.get_direction() * (l_frustum_height + 300));
 			const auto l_frustum_far_plan = (l_camera_pos - l_frustum_center).magnitude() + l_frustum_height;
 
-			l_cascade_cameras.push_back(std::make_tuple
-			(
-				core::bc_matrix4f::look_at_matrix_lh(l_camera_pos, l_frustum_center, core::bc_vector3f::up()),
-				core::bc_matrix4f::orthographic_matrix_lh(0.1, l_frustum_far_plan, l_max.x - l_min.x, l_max.y - l_min.y)
-			));
+			l_cascade_cameras.push_back(_bc_cascaded_shadow_map_camera(l_camera_pos, l_frustum_center, l_max.x - l_min.x, l_max.y - l_min.y, 0.1, l_frustum_far_plan));
 		}
 
 		return l_cascade_cameras;
