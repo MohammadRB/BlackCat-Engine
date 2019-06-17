@@ -71,7 +71,7 @@ namespace black_cat
 
 			void render_actors(bc_render_system& p_render_system);
 
-			template<typename TComponent>
+			template<typename TRenderComponent>
 			void render_actors(bc_render_system& p_render_system);
 
 		protected:
@@ -180,7 +180,7 @@ namespace black_cat
 		{
 			for (bc_actor& l_actor : m_actors)
 			{
-				auto* l_component = l_actor.get_component<TComponent>();
+				auto* l_component = static_cast<bc_render_component*>(l_actor.get_component<TComponent>());
 				if (l_component)
 				{
 					l_component->render(p_render_system);

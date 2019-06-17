@@ -26,11 +26,13 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			core::bc_vector3f get_world_position() const;
+			core::bc_vector3f get_world_position() const noexcept;
 
-			const core::bc_matrix4f& get_world_transform() const;
+			const core::bc_matrix4f& get_world_transform() const noexcept;
 
-			void set_world_transform(const core::bc_matrix4f& p_transform);
+			void set_world_transform(const core::bc_matrix4f& p_transform) noexcept;
+
+			const bc_light* get_light() const noexcept;
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 

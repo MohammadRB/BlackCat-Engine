@@ -220,6 +220,9 @@
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\bcTerrainChunkInfo.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\Terrain</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\bcCascadedShadowMap.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\ShadowMap</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\ContentStream.json">

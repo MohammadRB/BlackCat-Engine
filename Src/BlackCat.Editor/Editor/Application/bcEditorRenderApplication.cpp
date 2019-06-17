@@ -53,7 +53,7 @@ namespace black_cat
 			l_render_system.add_render_pass(0, bc_gbuffer_initialize_pass());
 			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
 			l_render_system.add_render_pass(2, bc_gbuffer_pass());
-			l_render_system.add_render_pass(3, bc_cascaded_shadow_map_pass());
+			l_render_system.add_render_pass(3, bc_cascaded_shadow_map_pass(1024, {20, 60, 100}));
 			l_render_system.add_render_pass(4, bc_gbuffer_light_map_pass());
 			l_render_system.add_render_pass(5, bc_back_buffer_write_pass(game::bc_render_pass_resource_variable::intermediate_texture_1));
 			l_render_system.add_render_pass(6, bc_shape_draw_pass(game::bc_render_pass_resource_variable::back_buffer_view));

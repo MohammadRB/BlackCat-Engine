@@ -159,7 +159,7 @@ namespace black_cat
 		p_param.m_render_thread.unbind_render_pass_state(m_render_pass_state.get());
 		p_param.m_render_thread.finish();
 
-		m_command_list->reset();
+		m_command_list->finished();
 	}
 
 	void bc_terrain_pass_dx11::before_reset(const game::bc_render_pass_reset_param& p_param)

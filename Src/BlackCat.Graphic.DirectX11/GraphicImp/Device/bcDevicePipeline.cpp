@@ -1006,7 +1006,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline< g_api_dx11 >::finish_command_list(bc_device_command_list& p_command_list)
 		{
-			p_command_list.reset();
+			p_command_list.finished();
 			dx_call(m_pack.m_pipeline_proxy->m_context->FinishCommandList
 			(
 				false, 

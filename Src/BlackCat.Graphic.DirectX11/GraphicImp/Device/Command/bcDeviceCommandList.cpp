@@ -48,7 +48,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_command_list< g_api_dx11 >::reset()
+		void bc_platform_device_command_list< g_api_dx11 >::finished()
 		{
 			if(is_valid() && m_pack.m_command_list_proxy->m_command_list)
 			{

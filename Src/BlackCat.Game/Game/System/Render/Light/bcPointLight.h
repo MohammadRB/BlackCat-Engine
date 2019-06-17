@@ -24,9 +24,9 @@ namespace black_cat
 
 			void set_position(const core::bc_vector3f& p_position) noexcept;
 
-			bcFLOAT get_radius() const;
+			bcFLOAT get_radius() const noexcept;
 
-			void set_radius(bcFLOAT p_radius);
+			void set_radius(bcFLOAT p_radius) noexcept;
 
 			const core::bc_vector3f& get_color() const noexcept;
 
@@ -64,12 +64,12 @@ namespace black_cat
 			m_position = p_position;
 		}
 
-		inline bcFLOAT bc_point_light::get_radius() const
+		inline bcFLOAT bc_point_light::get_radius() const noexcept
 		{
 			return m_radius;
 		}
 
-		inline void bc_point_light::set_radius(bcFLOAT p_radius)
+		inline void bc_point_light::set_radius(bcFLOAT p_radius) noexcept
 		{
 			m_radius = p_radius;
 		}

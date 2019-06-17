@@ -49,34 +49,34 @@ namespace black_cat
 
 			bc_light& operator=(bc_light&& p_other) noexcept;
 
-			const core::bc_matrix4f& get_transformation() const
+			const core::bc_matrix4f& get_transformation() const noexcept
 			{
 				return m_transformation;
 			}
 
-			void set_transformation(const core::bc_matrix4f& p_transformation)
+			void set_transformation(const core::bc_matrix4f& p_transformation) noexcept
 			{
 				m_transformation = p_transformation;
 			}
 
-			bc_light_type get_type() const
+			bc_light_type get_type() const noexcept
 			{
 				return m_type;
 			}
 
-			physics::bc_bound_box get_bound_box() const;
+			physics::bc_bound_box get_bound_box() const noexcept;
 
-			bc_direct_light* as_direct_light();
+			bc_direct_light* as_direct_light() noexcept;
 
-			const bc_direct_light* as_direct_light() const;
+			const bc_direct_light* as_direct_light() const noexcept;
 
-			bc_point_light* as_point_light();
+			bc_point_light* as_point_light() noexcept;
 
-			const bc_point_light* as_point_light() const;
+			const bc_point_light* as_point_light() const noexcept;
 
-			bc_spot_light* as_spot_light();
+			bc_spot_light* as_spot_light() noexcept;
 
-			const bc_spot_light* as_spot_light() const;
+			const bc_spot_light* as_spot_light() const noexcept;
 
 		private:
 			explicit bc_light(const bc_direct_light& p_light);

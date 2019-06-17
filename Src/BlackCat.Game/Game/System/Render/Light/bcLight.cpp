@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 #include "Game/System/Render/Light/bcLight.h"
 #include "Game/System/Render/Light/bcLightManager.h"
+#include "Physics/Body/bcActor.h"
 
 namespace black_cat
 {
@@ -73,7 +74,7 @@ namespace black_cat
 			return *this;
 		}
 
-		physics::bc_bound_box bc_light::get_bound_box() const
+		physics::bc_bound_box bc_light::get_bound_box() const noexcept
 		{
 			const auto l_type = get_type();
 			physics::bc_bound_box l_box;
@@ -114,7 +115,7 @@ namespace black_cat
 			return l_box;
 		}
 
-		bc_direct_light* bc_light::as_direct_light()
+		bc_direct_light* bc_light::as_direct_light() noexcept
 		{
 			if (get_type() != bc_light_type::direct)
 			{
@@ -124,12 +125,12 @@ namespace black_cat
 			return &m_direct_light;
 		}
 
-		const bc_direct_light* bc_light::as_direct_light() const
+		const bc_direct_light* bc_light::as_direct_light() const noexcept
 		{
 			return const_cast<bc_light&>(*this).as_direct_light();
 		}
 
-		bc_point_light* bc_light::as_point_light()
+		bc_point_light* bc_light::as_point_light() noexcept
 		{
 			if (get_type() != bc_light_type::point)
 			{
@@ -139,12 +140,12 @@ namespace black_cat
 			return &m_point_light;
 		}
 
-		const bc_point_light* bc_light::as_point_light() const
+		const bc_point_light* bc_light::as_point_light() const noexcept
 		{
 			return const_cast<bc_light&>(*this).as_point_light();
 		}
 
-		bc_spot_light* bc_light::as_spot_light()
+		bc_spot_light* bc_light::as_spot_light() noexcept
 		{
 			if (get_type() != bc_light_type::spot)
 			{
@@ -154,7 +155,7 @@ namespace black_cat
 			return &m_spot_light;
 		}
 
-		const bc_spot_light* bc_light::as_spot_light() const
+		const bc_spot_light* bc_light::as_spot_light() const noexcept
 		{
 			return const_cast<bc_light&>(*this).as_spot_light();
 		}
