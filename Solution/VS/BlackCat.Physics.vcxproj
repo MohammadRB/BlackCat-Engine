@@ -92,32 +92,32 @@
     <ProjectGuid>{C329908A-5112-4F75-88AF-652768D7C510}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>BlackCatPhysics</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -173,18 +173,8 @@
       <AdditionalLibraryDirectories>$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Physics\Physics\*.h ..\..\BC_SDK\Include\Physics
-
-copy ..\..\Src\BlackCat.Physics\Physics\Body\*.h ..\..\BC_SDK\Include\Physics\Body
-
-copy ..\..\Src\BlackCat.Physics\Physics\Collision\*.h ..\..\BC_SDK\Include\Physics\Collision
-
-copy ..\..\Src\BlackCat.Physics\Physics\Fundation\*.h ..\..\BC_SDK\Include\Physics\Fundation
-
-copy ..\..\Src\BlackCat.Physics\Physics\Joint\*.h ..\..\BC_SDK\Include\Physics\Joint
-
-copy ..\..\Src\BlackCat.Physics\Physics\Shape\*.h ..\..\BC_SDK\Include\Physics\Shape
-
+      <Command>if not exist ..\..\BC_SDK\Include\Physics\ mkdir ..\..\BC_SDK\Include\Physics\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -194,7 +184,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Physics\Physics\*.h ..\..\BC_SDK\Include\Physics\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -249,18 +241,8 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <AdditionalLibraryDirectories>$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Physics\Physics\*.h ..\..\BC_SDK\Include\Physics
-
-copy ..\..\Src\BlackCat.Physics\Physics\Body\*.h ..\..\BC_SDK\Include\Physics\Body
-
-copy ..\..\Src\BlackCat.Physics\Physics\Collision\*.h ..\..\BC_SDK\Include\Physics\Collision
-
-copy ..\..\Src\BlackCat.Physics\Physics\Fundation\*.h ..\..\BC_SDK\Include\Physics\Fundation
-
-copy ..\..\Src\BlackCat.Physics\Physics\Joint\*.h ..\..\BC_SDK\Include\Physics\Joint
-
-copy ..\..\Src\BlackCat.Physics\Physics\Shape\*.h ..\..\BC_SDK\Include\Physics\Shape
-
+      <Command>if not exist ..\..\BC_SDK\Include\Physics\ mkdir ..\..\BC_SDK\Include\Physics\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -270,7 +252,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Physics\Physics\*.h ..\..\BC_SDK\Include\Physics\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
