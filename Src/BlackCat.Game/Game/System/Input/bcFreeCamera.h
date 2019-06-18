@@ -22,20 +22,20 @@ namespace black_cat
 				bcFLOAT p_move_speed = 25,
 				bcFLOAT p_rotate_speed = 1);
 
-			bc_free_camera(bc_free_camera&&) = default;
+			bc_free_camera(bc_free_camera&&) noexcept = default;
 
 			~bc_free_camera() = default;
 
-			bc_free_camera& operator=(bc_free_camera&&) = default;
+			bc_free_camera& operator=(bc_free_camera&&) noexcept = default;
 
 			void update(core_platform::bc_clock::update_param p_clock_update_param,
 				const platform::bc_pointing_device& p_pointing_device,
-				const platform::bc_key_device& p_key_device) override;
+				const platform::bc_key_device& p_key_device) noexcept override;
 
 		protected:
-			bool on_key(core::bc_ievent& p_key_event) override;
+			bool on_key(core::bc_ievent& p_key_event) noexcept override;
 
-			bool on_pointing(core::bc_ievent& p_pointing_event) override;
+			bool on_pointing(core::bc_ievent& p_pointing_event) noexcept override;
 
 		private:
 			bcFLOAT m_move_speed;

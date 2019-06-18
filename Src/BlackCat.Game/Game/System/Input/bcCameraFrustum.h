@@ -15,7 +15,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_camera_frustum
 		{
 		public:
-			bc_camera_frustum(const bc_icamera& p_camera);
+			explicit bc_camera_frustum(const bc_icamera& p_camera);
 
 			bc_camera_frustum(bc_camera_frustum&&) noexcept;
 

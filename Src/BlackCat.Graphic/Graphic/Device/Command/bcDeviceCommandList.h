@@ -32,7 +32,7 @@ namespace black_cat
 
 			bc_platform_device_command_list& operator=(const bc_platform_device_command_list&);
 
-			void reset();
+			void finished();
 
 			bool is_valid() const noexcept override;
 

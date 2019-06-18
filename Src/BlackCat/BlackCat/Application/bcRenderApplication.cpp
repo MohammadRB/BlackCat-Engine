@@ -193,9 +193,9 @@ namespace black_cat
 		auto* l_content_stream_manager = core::bc_get_service< core::bc_content_stream_manager >();
 
 		application_unload_content(l_content_stream_manager);
-
-		l_content_stream_manager->unload_content_stream("engine_shaders");
+		
 		l_content_stream_manager->unload_content_stream("deferred_rendering_shaders");
+		l_content_stream_manager->unload_content_stream("engine_shaders");
 		l_content_stream_manager->unload_content_stream("engine_resources");
 	}
 

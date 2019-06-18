@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		// -- bc_icamera --------------------------------------------------------------------------------
+		// -- bc_icamera ------------------------------------------------------------------------------------------
 
 		bc_icamera::bc_icamera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
 			: m_screen_width(p_back_buffer_width),
@@ -34,7 +34,7 @@ namespace black_cat
 			);
 		}
 
-		bc_icamera::~bc_icamera()
+		bc_icamera::~bc_icamera() noexcept
 		{
 		}
 
@@ -101,7 +101,7 @@ namespace black_cat
 			set_projection(p_back_buffer_width, p_back_buffer_height, m_near, m_far);
 		}
 
-		core::bc_vector3f bc_icamera::project_clip_point_to_3d_ray(bcUINT16 p_screen_width, bcUINT16 p_screen_height, bcUINT16 p_left, bcUINT16 p_top) const
+		core::bc_vector3f bc_icamera::project_clip_point_to_3d_ray(bcUINT16 p_screen_width, bcUINT16 p_screen_height, bcUINT16 p_left, bcUINT16 p_top) const noexcept
 		{
 			//auto l_view = get_view();
 			//auto l_proj = get_projection();
@@ -162,7 +162,7 @@ namespace black_cat
 			return l_ray;
 		}
 		
-		void bc_icamera::create_view_matrix(const core::bc_vector3f& p_up)
+		void bc_icamera::create_view_matrix(const core::bc_vector3f& p_up) noexcept
 		{
 			if(graphic::bc_render_api_info::is_left_handed())
 			{
@@ -174,15 +174,35 @@ namespace black_cat
 			}
 		}
 
-		// -- bc_orthographic_camera --------------------------------------------------------------------------------
+		// -- bc_orthographic_camera -------------------------------------------------------------------------------
 
 		bc_orthographic_camera::bc_orthographic_camera(bcUINT16 p_back_buffer_width,
 			bcUINT16 p_back_buffer_height,
 			bcFLOAT p_near_clip,
-			bcFLOAT p_far_clip)
+			bcFLOAT p_far_clip) noexcept
 			: bc_icamera(p_back_buffer_width, p_back_buffer_height, p_far_clip, p_near_clip)
 		{
 			set_projection(p_back_buffer_width, p_back_buffer_height, p_near_clip, p_far_clip);
+		}
+
+		void bc_orthographic_camera::get_extend_points(extend& p_points) const noexcept
+		{
+			const auto l_near_clip_height = m_max_y - m_min_y;
+			const auto l_near_clip_width = m_max_x - m_min_x;
+			const auto l_far_clip_height = l_near_clip_height;
+			const auto l_far_clip_width = l_near_clip_width;
+
+			const auto l_near_clip_center = get_position() + get_forward() * get_near_clip();
+			const auto l_far_clip_center = get_position() + get_forward() * get_far_clip();
+
+			p_points[0] = l_near_clip_center + get_left() * (l_near_clip_width / 2) + get_down() * (l_near_clip_height / 2);
+			p_points[1] = l_near_clip_center + get_left() * (l_near_clip_width / 2) + get_up() * (l_near_clip_height / 2);
+			p_points[2] = l_near_clip_center + get_right() * (l_near_clip_width / 2) + get_up() * (l_near_clip_height / 2);
+			p_points[3] = l_near_clip_center + get_right() * (l_near_clip_width / 2) + get_down() * (l_near_clip_height / 2);
+			p_points[4] = l_far_clip_center + get_left() * (l_far_clip_width / 2) + get_down() * (l_far_clip_height / 2);
+			p_points[5] = l_far_clip_center + get_left() * (l_far_clip_width / 2) + get_up() * (l_far_clip_height / 2);
+			p_points[6] = l_far_clip_center + get_right() * (l_far_clip_width / 2) + get_up() * (l_far_clip_height / 2);
+			p_points[7] = l_far_clip_center + get_right() * (l_far_clip_width / 2) + get_down() * (l_far_clip_height / 2);
 		}
 
 		void bc_orthographic_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
@@ -199,7 +219,7 @@ namespace black_cat
 			create_projection_matrix();
 		}
 
-		void bc_orthographic_camera::create_projection_matrix()
+		void bc_orthographic_camera::create_projection_matrix() noexcept
 		{
 			core::bc_matrix4f l_proj;
 
@@ -221,22 +241,22 @@ namespace black_cat
 			bcUINT16 p_back_buffer_height, 
 			bcFLOAT p_height_fov, 
 			bcFLOAT p_near_clip, 
-			bcFLOAT p_far_clip)
+			bcFLOAT p_far_clip) noexcept
 			: bc_icamera(p_back_buffer_width, p_back_buffer_height, p_near_clip, p_far_clip)
 		{
 			set_projection(p_back_buffer_width, p_back_buffer_height, p_height_fov, p_near_clip, p_far_clip);
 		}
 		
-		void bc_perspective_camera::get_extend_points(extend& p_points) const
+		void bc_perspective_camera::get_extend_points(extend& p_points) const noexcept
 		{
-			auto l_fov_tan = 2 * std::tanf(m_field_of_view / 2);
-			auto l_near_clip_height = l_fov_tan * get_near_clip();
-			auto l_near_clip_width = l_near_clip_height * m_aspect_ratio;
-			auto l_far_clip_height = l_fov_tan * get_far_clip();
-			auto l_far_clip_width = l_far_clip_height * m_aspect_ratio;
+			const auto l_fov_tan = 2 * std::tanf(m_field_of_view / 2);
+			const auto l_near_clip_height = l_fov_tan * get_near_clip();
+			const auto l_near_clip_width = l_near_clip_height * m_aspect_ratio;
+			const auto l_far_clip_height = l_fov_tan * get_far_clip();
+			const auto l_far_clip_width = l_far_clip_height * m_aspect_ratio;
 
-			auto l_near_clip_center = get_position() + get_forward() * get_near_clip();
-			auto l_far_clip_center = get_position() + get_forward() * get_far_clip();
+			const auto l_near_clip_center = get_position() + get_forward() * get_near_clip();
+			const auto l_far_clip_center = get_position() + get_forward() * get_far_clip();
 
 			p_points[0] = l_near_clip_center + get_left() * (l_near_clip_width / 2) + get_down() * (l_near_clip_height / 2);
 			p_points[1] = l_near_clip_center + get_left() * (l_near_clip_width / 2) + get_up() * (l_near_clip_height / 2);
@@ -265,7 +285,7 @@ namespace black_cat
 			set_projection(p_back_buffer_width, p_back_buffer_height, p_near_clip, p_far_clip);
 		}
 
-		void bc_perspective_camera::create_projection_matrix()
+		void bc_perspective_camera::create_projection_matrix() noexcept
 		{
 			core::bc_matrix4f l_proj;
 

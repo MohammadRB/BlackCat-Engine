@@ -35,7 +35,7 @@ namespace black_cat
 
 		void bc_free_camera::update(core_platform::bc_clock::update_param p_clock_update_param,
 			const platform::bc_pointing_device& p_pointing_device,
-			const platform::bc_key_device& p_key_device)
+			const platform::bc_key_device& p_key_device) noexcept
 		{
 			core::bc_vector3f l_position = get_position();
 			bcFLOAT l_move_speed = m_shift_pressed ? m_move_speed * 6 : m_ctrl_pressed ? m_move_speed * 0.25 : m_move_speed;
@@ -117,7 +117,7 @@ namespace black_cat
 			m_dy = 0;
 		}
 
-		bool bc_free_camera::on_key(core::bc_ievent& p_key_event)
+		bool bc_free_camera::on_key(core::bc_ievent& p_key_event) noexcept
 		{
 			bcAssert(core::bc_ievent::event_is<platform::bc_app_event_key>(p_key_event));
 
@@ -226,7 +226,7 @@ namespace black_cat
 			return true;
 		}
 
-		bool bc_free_camera::on_pointing(core::bc_ievent& p_pointing_event)
+		bool bc_free_camera::on_pointing(core::bc_ievent& p_pointing_event) noexcept
 		{
 			bcAssert(core::bc_ievent::event_is<platform::bc_app_event_pointing>(p_pointing_event));
 

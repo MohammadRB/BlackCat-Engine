@@ -15,20 +15,26 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_orthographic_camera;
+		class bc_perspective_camera;
+
 		class BC_GAME_DLL bc_icamera
 		{
+			friend class bc_orthographic_camera;
+			friend class bc_perspective_camera;
+
 		public:
 			using extend = core::bc_array<core::bc_vector3f, 8>;
 
 		public:
-			virtual ~bc_icamera();
+			virtual ~bc_icamera() noexcept;
 
-			bcUINT16 get_screen_width() const
+			bcUINT16 get_screen_width() const noexcept
 			{
 				return m_screen_width;
 			}
 
-			bcUINT16 get_screen_height() const
+			bcUINT16 get_screen_height() const noexcept
 			{
 				return m_screen_height;
 			}
@@ -82,7 +88,7 @@ namespace black_cat
 			 * ordered by lower-left upper-left upper-right lower-right
 			 * \param p_points
 			 */
-			virtual void get_extend_points(extend& p_points) const = 0;
+			virtual void get_extend_points(extend& p_points) const noexcept = 0;
 
 			void set_look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_lookat, const core::bc_vector3f& p_up = core::bc_vector3f(0, 1, 0)) noexcept;
 
@@ -98,27 +104,28 @@ namespace black_cat
 			 * \param p_top point offset from the top of screen
 			 * \return
 			 */
-			core::bc_vector3f project_clip_point_to_3d_ray(bcUINT16 p_screen_width, bcUINT16 p_screen_height, bcUINT16 p_left, bcUINT16 p_top) const;
+			core::bc_vector3f project_clip_point_to_3d_ray(bcUINT16 p_screen_width, bcUINT16 p_screen_height, bcUINT16 p_left, bcUINT16 p_top) const noexcept;
 
 			virtual void update(core_platform::bc_clock::update_param p_clock_update_param,
 				const platform::bc_pointing_device& p_pointing_device,
-				const platform::bc_key_device& p_key_device) = 0;
+				const platform::bc_key_device& p_key_device) noexcept = 0;
 
 		protected:
 			bc_icamera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
 
-			bc_icamera(bc_icamera&&) = default;
+			bc_icamera(bc_icamera&&) noexcept = default;
 
-			bc_icamera& operator=(bc_icamera&&) = default;
+			bc_icamera& operator=(bc_icamera&&) noexcept = default;
 
-			void create_view_matrix(const core::bc_vector3f& p_up = core::bc_vector3f(0, 1, 0));
+			void create_view_matrix(const core::bc_vector3f& p_up = core::bc_vector3f(0, 1, 0)) noexcept;
 
-			virtual void create_projection_matrix() = 0;
+			virtual void create_projection_matrix() noexcept = 0;
 
-			virtual bool on_key(core::bc_ievent& p_key_event) = 0;
+			virtual bool on_key(core::bc_ievent& p_key_event) noexcept = 0;
 
-			virtual bool on_pointing(core::bc_ievent& p_pointing_event) = 0;
-
+			virtual bool on_pointing(core::bc_ievent& p_pointing_event) noexcept = 0;
+						
+		private:
 			bcUINT16 m_screen_width;
 			bcUINT16 m_screen_height;
 			bcFLOAT m_near;
@@ -128,7 +135,6 @@ namespace black_cat
 			core::bc_matrix4f m_view;
 			core::bc_matrix4f m_projection;
 
-		private:
 			core::bc_event_listener_handle m_key_listener_handle;
 			core::bc_event_listener_handle m_pointing_listener_handle;
 		};
@@ -158,16 +164,18 @@ namespace black_cat
 				return m_max_y;
 			}
 
+			void get_extend_points(extend& p_points) const noexcept override;
+
 			void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept override final;
 
 		protected:
-			bc_orthographic_camera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip);
+			bc_orthographic_camera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
 
-			bc_orthographic_camera(bc_orthographic_camera&&) = default;
+			bc_orthographic_camera(bc_orthographic_camera&&) noexcept = default;
 
-			bc_orthographic_camera& operator=(bc_orthographic_camera&&) = default;
+			bc_orthographic_camera& operator=(bc_orthographic_camera&&) noexcept = default;
 
-			void create_projection_matrix() override final;
+			void create_projection_matrix() noexcept override final;
 
 		private:
 			bcFLOAT m_min_x;
@@ -191,20 +199,20 @@ namespace black_cat
 				return m_field_of_view;
 			}
 
-			void get_extend_points(extend& p_points) const override final;
+			void get_extend_points(extend& p_points) const noexcept override final;
 
 			void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept override final;
 
 			void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
 
 		protected:
-			bc_perspective_camera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip);
+			bc_perspective_camera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
 
-			bc_perspective_camera(bc_perspective_camera&&) = default;
+			bc_perspective_camera(bc_perspective_camera&&) noexcept = default;
 
-			bc_perspective_camera& operator=(bc_perspective_camera&&) = default;
+			bc_perspective_camera& operator=(bc_perspective_camera&&) noexcept = default;
 
-			void create_projection_matrix() override final;
+			void create_projection_matrix() noexcept override final;
 
 		private:
 			bcFLOAT m_aspect_ratio;

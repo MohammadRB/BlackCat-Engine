@@ -70,9 +70,12 @@ namespace black_cat
 				return m_px_scene.get();
 			}
 
+			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;
+
 			template<typename TComponent>
 			bc_scene_graph_buffer get_actors() const;
 
+			template<typename TComponent>
 			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;
 
 			void add_actor(bc_actor& p_actor);
@@ -99,6 +102,12 @@ namespace black_cat
 		bc_scene_graph_buffer bc_scene::get_actors() const
 		{
 			return m_scene_graph.get_actors<TComponent>();
+		}
+
+		template< typename TComponent >
+		bc_scene_graph_buffer bc_scene::get_actors(const bc_camera_frustum& p_camera_frustum) const
+		{
+			return  m_scene_graph.get_actors<TComponent>(p_camera_frustum);
 		}
 	}
 }

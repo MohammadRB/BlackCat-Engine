@@ -21,23 +21,28 @@ namespace black_cat
 			return get_manager()->component_get_actor(*this);
 		}
 
-		core::bc_vector3f bc_light_component::get_world_position() const
+		core::bc_vector3f bc_light_component::get_world_position() const noexcept
 		{
 			return m_light->get_transformation().get_translation();
 		}
 
-		const core::bc_matrix4f& bc_light_component::get_world_transform() const
+		const core::bc_matrix4f& bc_light_component::get_world_transform() const noexcept
 		{
 			return m_light->get_transformation();
 		}
 
-		void bc_light_component::set_world_transform(const core::bc_matrix4f& p_transform)
+		void bc_light_component::set_world_transform(const core::bc_matrix4f& p_transform) noexcept
 		{
 			// TODO what if light is part of a mesh
 			m_light->set_transformation(p_transform);
 
 			const auto l_bound_box = m_light->get_bound_box();
 			get_actor().get_component<bc_mediate_component>()->set_bound_box(l_bound_box);
+		}
+
+		const bc_light* bc_light_component::get_light() const noexcept
+		{
+			return m_light.get();
 		}
 
 		void bc_light_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)

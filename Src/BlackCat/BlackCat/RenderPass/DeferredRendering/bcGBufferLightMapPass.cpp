@@ -233,7 +233,7 @@ namespace black_cat
 		p_param.m_render_thread.run_compute_shader(m_compute_state.get());
 		p_param.m_render_thread.finish();
 
-		m_command_list->reset();
+		m_command_list->finished();
 	}
 
 	void bc_gbuffer_light_map_pass::before_reset(const game::bc_render_pass_reset_param& p_param)

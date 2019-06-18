@@ -57,9 +57,12 @@ namespace black_cat
 
 			bool remove_actor(bc_actor& p_actor);
 
+			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;
+
 			template< typename TComponent >
 			bc_scene_graph_buffer get_actors() const;
 
+			template< typename TComponent >
 			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;
 
 			void update(core_platform::bc_clock::update_param p_clock_update_param);
@@ -80,6 +83,23 @@ namespace black_cat
 			bc_scene_graph_buffer l_result;
 
 			for (const bc_actor& l_actor : *m_graph_node)
+			{
+				if (l_actor.has_component<TComponent>())
+				{
+					l_result.add_actor(l_actor);
+				}
+			}
+
+			return l_result;
+		}
+
+		template< typename TComponent >
+		bc_scene_graph_buffer bc_scene_graph::get_actors(const bc_camera_frustum& p_camera_frustum) const
+		{
+			bc_scene_graph_buffer l_in_view_actors = get_actors(p_camera_frustum);
+			bc_scene_graph_buffer l_result;
+
+			for (const bc_actor& l_actor : l_in_view_actors)
 			{
 				if (l_actor.has_component<TComponent>())
 				{

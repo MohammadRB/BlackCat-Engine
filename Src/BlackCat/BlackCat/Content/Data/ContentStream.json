@@ -14,6 +14,18 @@
           "content_name": "cnt_pixel_shader",
           "content_file": "content\\shader\\directx11\\bcShapeDraw.hlsl",
           "content_parameter": { "function": "ps" }
+        },
+        {
+          "content_title": "csm_vs",
+          "content_name": "cnt_vertex_shader",
+          "content_file": "content\\shader\\directx11\\ShadowMap\\bcCascadedShadowMap.hlsl",
+          "content_parameter": { "function": "csm_vs" }
+        },
+        {
+          "content_title": "csm_ps",
+          "content_name": "cnt_pixel_shader",
+          "content_file": "content\\shader\\directx11\\ShadowMap\\bcCascadedShadowMap.hlsl",
+          "content_parameter": { "function": "csm_ps" }
         }
       ]
     },
