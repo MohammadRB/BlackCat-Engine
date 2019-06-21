@@ -201,11 +201,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 
 
-xcopy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\*.h ..\..\BC_SDK\Include\GraphicImp\ /E /Y
-
-copy ..\..\3rdParty\3rdParty\DirectXTK-master\Inc\*.h ..\..\BC_SDK\Include\3rdParty\DirectXTK
-
-copy ..\..\3rdParty\3rdParty\DirectXTK-master\Lib\$(Platform)_$(Configuration)\DirectXTK.lib ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)</Command>
+xcopy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\*.h ..\..\BC_SDK\Include\GraphicImp\ /E /Y</Command>
     </PostBuildEvent>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -250,11 +246,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 
 
-xcopy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\*.h ..\..\BC_SDK\Include\GraphicImp\ /E /Y
-
-copy ..\..\3rdParty\3rdParty\DirectXTK-master\Inc\*.h ..\..\BC_SDK\Include\3rdParty\DirectXTK
-
-copy ..\..\3rdParty\3rdParty\DirectXTK-master\Lib\$(Platform)_$(Configuration)\DirectXTK.lib ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)</Command>
+xcopy ..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\*.h ..\..\BC_SDK\Include\GraphicImp\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

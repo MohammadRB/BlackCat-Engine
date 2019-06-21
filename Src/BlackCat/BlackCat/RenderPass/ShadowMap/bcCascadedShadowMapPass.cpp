@@ -115,13 +115,14 @@ namespace black_cat
 
 			if(l_light_ite == 0)
 			{
-				p_param.m_render_thread.clear_buffers(core::bc_vector4f(0));
+				p_param.m_render_thread.clear_buffers(core::bc_vector4f(1));
 			}
 
 			auto l_light_cascade_cameras = _get_light_cascades(p_param.m_camera, l_light);
+			auto l_cascade_ite = 0U;
 			for(auto& l_light_cascade_camera : l_light_cascade_cameras)
 			{
-				bc_parameters_cbuffer l_parameters{ m_shadow_map_size, m_cascade_sizes.size(), l_light_ite };
+				bc_parameters_cbuffer l_parameters{ m_shadow_map_size, m_cascade_sizes.size(), l_cascade_ite };
 				p_param.m_render_thread.update_subresource(m_parameters_cbuffer.get(), 0, &l_parameters, 0, 0);
 				
 				game::bc_camera_frustum l_camera_frustum(l_light_cascade_camera);
@@ -129,8 +130,10 @@ namespace black_cat
 
 				l_scene_buffer.render_actors(p_param.m_render_system);
 				
-				p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
+				p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, l_light_cascade_camera);
 				p_param.m_render_system.clear_render_instances();
+
+				++l_cascade_ite;
 			}
 			
 			p_param.m_render_thread.unbind_render_pass_state(l_light_render_pass_state);
@@ -189,7 +192,10 @@ namespace black_cat
 			m_depth_buffer_view.get(),
 			{},
 			{},
-			{ graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::pixel, m_parameters_cbuffer.get()) }
+			{ 
+				p_render_system.get_global_cbuffer(),
+				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::vertex, m_parameters_cbuffer.get()) 
+			}
 		);
 
 		return l_instance;
