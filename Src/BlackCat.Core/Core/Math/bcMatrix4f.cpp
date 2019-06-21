@@ -15,17 +15,17 @@ namespace black_cat
 {
 	namespace core
 	{
-		bc_matrix4f::bc_matrix4f()
+		bc_matrix4f::bc_matrix4f() noexcept
 		{
 		}
 		
-		bc_matrix4f::bc_matrix4f(bool p_zero)
+		bc_matrix4f::bc_matrix4f(bool p_zero) noexcept
 		{
 			if (p_zero)
 				std::memset(m_entry, 0, 4 * 4 * sizeof(bcFLOAT));
 		}
 		
-		bc_matrix4f::bc_matrix4f(const bc_matrix4f& p_matrix)
+		bc_matrix4f::bc_matrix4f(const bc_matrix4f& p_matrix) noexcept
 		{
 			std::memcpy(m_entry, reinterpret_cast<const void*>(&p_matrix), 16 * sizeof(bcFLOAT));
 		}
@@ -33,7 +33,7 @@ namespace black_cat
 		bc_matrix4f::bc_matrix4f(bcFLOAT p_m11, bcFLOAT p_m12, bcFLOAT p_m13, bcFLOAT p_m14,
 			bcFLOAT p_m21, bcFLOAT p_m22, bcFLOAT p_m23, bcFLOAT p_m24,
 			bcFLOAT p_m31, bcFLOAT p_m32, bcFLOAT p_m33, bcFLOAT p_m34,
-			bcFLOAT p_m41, bcFLOAT p_m42, bcFLOAT p_m43, bcFLOAT p_m44)
+			bcFLOAT p_m41, bcFLOAT p_m42, bcFLOAT p_m43, bcFLOAT p_m44) noexcept
 		{
 			m_entry[0] = p_m11;
 			m_entry[1] = p_m12;
@@ -56,13 +56,13 @@ namespace black_cat
 			m_entry[15] = p_m44;
 		}
 		
-		bc_matrix4f& bc_matrix4f::operator= (const bc_matrix4f& p_other)
+		bc_matrix4f& bc_matrix4f::operator= (const bc_matrix4f& p_other) noexcept
 		{
 			std::memcpy(m_entry, p_other.m_entry, 16 * sizeof(bcFLOAT));
 			return(*this);
 		}
 		
-		void bc_matrix4f::rotation_x_lh(bcFLOAT p_radians)
+		void bc_matrix4f::rotation_x_lh(bcFLOAT p_radians) noexcept
 		{
 			bcFLOAT l_sin = sinf(p_radians);
 			bcFLOAT l_cos = cosf(p_radians);
@@ -88,7 +88,7 @@ namespace black_cat
 			m_entry[15] = 1.0f;
 		}
 		
-		void bc_matrix4f::rotation_y_lh(bcFLOAT p_radians)
+		void bc_matrix4f::rotation_y_lh(bcFLOAT p_radians) noexcept
 		{
 			bcFLOAT l_sin = sinf(p_radians);
 			bcFLOAT l_cos = cosf(p_radians);
@@ -114,7 +114,7 @@ namespace black_cat
 			m_entry[15] = 1.0f;
 		}
 		
-		void bc_matrix4f::rotation_z_lh(bcFLOAT p_radians)
+		void bc_matrix4f::rotation_z_lh(bcFLOAT p_radians) noexcept
 		{
 			bcFLOAT l_sin = sinf(p_radians);
 			bcFLOAT l_cos = cosf(p_radians);
@@ -140,7 +140,7 @@ namespace black_cat
 			m_entry[15] = 1.0f;
 		}
 
-		void bc_matrix4f::rotation_x_rh(bcFLOAT p_radians)
+		void bc_matrix4f::rotation_x_rh(bcFLOAT p_radians) noexcept
 		{
 			rotation_x_lh(p_radians);
 
@@ -148,7 +148,7 @@ namespace black_cat
 			m_entry[9] = -m_entry[9];
 		}
 
-		void bc_matrix4f::rotation_y_rh(bcFLOAT p_radians)
+		void bc_matrix4f::rotation_y_rh(bcFLOAT p_radians) noexcept
 		{
 			rotation_y_lh(p_radians);
 
@@ -156,7 +156,7 @@ namespace black_cat
 			m_entry[8] = -m_entry[8];
 		}
 
-		void bc_matrix4f::rotation_z_rh(bcFLOAT p_radians)
+		void bc_matrix4f::rotation_z_rh(bcFLOAT p_radians) noexcept
 		{
 			rotation_z_lh(p_radians);
 
@@ -164,7 +164,7 @@ namespace black_cat
 			m_entry[4] = -m_entry[4];
 		}
 
-		void bc_matrix4f::scale(bcFLOAT p_scale)
+		void bc_matrix4f::scale(bcFLOAT p_scale) noexcept
 		{
 			m_entry[0] = p_scale;
 			m_entry[1] = 0.0f;
@@ -187,7 +187,7 @@ namespace black_cat
 			m_entry[15] = 1.0f;
 		}
 		
-		void bc_matrix4f::translate(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z)
+		void bc_matrix4f::translate(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z) noexcept
 		{
 			m_entry[0] = 1.0f;
 			m_entry[1] = 0.0f;
@@ -210,7 +210,7 @@ namespace black_cat
 			m_entry[15] = 1.0f;
 		}
 		
-		bc_vector3f bc_matrix4f::get_basis_x() const
+		bc_vector3f bc_matrix4f::get_basis_x() const noexcept
 		{
 			bc_vector3f l_basis;
 
@@ -220,7 +220,7 @@ namespace black_cat
 			return(l_basis);
 		}
 		
-		bc_vector3f bc_matrix4f::get_basis_y() const
+		bc_vector3f bc_matrix4f::get_basis_y() const noexcept
 		{
 			bc_vector3f l_basis;
 
@@ -230,7 +230,7 @@ namespace black_cat
 			return(l_basis);
 		}
 		
-		bc_vector3f bc_matrix4f::get_basis_z() const
+		bc_vector3f bc_matrix4f::get_basis_z() const noexcept
 		{
 			bc_vector3f l_basis;
 
@@ -240,7 +240,7 @@ namespace black_cat
 			return(l_basis);
 		}
 		
-		bc_vector3f bc_matrix4f::get_translation() const
+		bc_vector3f bc_matrix4f::get_translation() const noexcept
 		{
 			bc_vector3f l_pos;
 
@@ -250,7 +250,7 @@ namespace black_cat
 			return(l_pos);
 		}
 
-		bc_matrix3f bc_matrix4f::get_rotation() const
+		bc_matrix3f bc_matrix4f::get_rotation() const noexcept
 		{
 			bc_matrix3f mRet;
 
@@ -261,20 +261,20 @@ namespace black_cat
 			return(mRet);
 		}
 				
-		void bc_matrix4f::set_rotation(const bc_matrix3f& p_rot)
+		void bc_matrix4f::set_rotation(const bc_matrix3f& p_rot) noexcept
 		{
 			for (bcINT i = 0; i < 3; i++)
 				for (bcINT j = 0; j < 3; j++)
 					m_entry[I(i, j)] = p_rot[(3 * i + j)];
 		}
 
-		void bc_matrix4f::set_translation(const bc_vector3f& p_trans)
+		void bc_matrix4f::set_translation(const bc_vector3f& p_trans) noexcept
 		{
 			for (bcINT i = 0; i < 3; i++)
 				m_entry[I(3, i)] = p_trans[i];
 		}
 
-		bc_matrix4f bc_matrix4f::inverse() const
+		bc_matrix4f bc_matrix4f::inverse() const noexcept
 		{
 			bcFLOAT l_a0 = m_entry[0] * m_entry[5] - m_entry[1] * m_entry[4];
 			bcFLOAT l_a1 = m_entry[0] * m_entry[6] - m_entry[2] * m_entry[4];
@@ -321,12 +321,12 @@ namespace black_cat
 			return(l_inv);
 		}
 		
-		void bc_matrix4f::make_zero()
+		void bc_matrix4f::make_zero() noexcept
 		{
 			std::memset(m_entry, 0, 4 * 4 * sizeof(bcFLOAT));
 		}
 
-		void bc_matrix4f::make_identity()
+		void bc_matrix4f::make_identity() noexcept
 		{
 			for (bcINT l_row = 0; l_row < 4; l_row++)
 			{
@@ -340,7 +340,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_matrix4f::make_transpose()
+		void bc_matrix4f::make_transpose() noexcept
 		{
 			bc_matrix4f l_transpose;
 
@@ -353,7 +353,7 @@ namespace black_cat
 			std::memcpy(m_entry, l_transpose.m_entry, 4 * 4 * sizeof(bcFLOAT));
 		}
 
-		bc_matrix4f bc_matrix4f::transpose() const
+		bc_matrix4f bc_matrix4f::transpose() const noexcept
 		{
 			bc_matrix4f l_transpose;
 
@@ -367,19 +367,19 @@ namespace black_cat
 
 		}
 
-		void bc_matrix4f::set_row(bcINT p_row, const bc_vector4f& p_vector)
+		void bc_matrix4f::set_row(bcINT p_row, const bc_vector4f& p_vector) noexcept
 		{
 			for (bcINT l_col = 0; l_col < 4; l_col++)
 				m_entry[I(p_row, l_col)] = p_vector[l_col];
 		}
 
-		void bc_matrix4f::set_row(bcINT p_row, const bc_vector3f& p_vector)
+		void bc_matrix4f::set_row(bcINT p_row, const bc_vector3f& p_vector) noexcept
 		{
 			for (bcINT l_col = 0; l_col < 3; l_col++)
 				m_entry[I(p_row, l_col)] = p_vector[l_col];
 		}
 
-		bc_vector4f bc_matrix4f::get_row(bcINT p_row) const
+		bc_vector4f bc_matrix4f::get_row(bcINT p_row) const noexcept
 		{
 			bc_vector4f l_row;
 			for (bcINT iCol = 0; iCol < 4; iCol++)
@@ -388,13 +388,13 @@ namespace black_cat
 			return(l_row);
 		}
 
-		void bc_matrix4f::set_column(bcINT p_col, const bc_vector4f& p_vector)
+		void bc_matrix4f::set_column(bcINT p_col, const bc_vector4f& p_vector) noexcept
 		{
 			for (bcINT l_row = 0; l_row < 4; l_row++)
 				m_entry[I(l_row, p_col)] = p_vector[l_row];
 		}
 
-		bc_vector4f bc_matrix4f::get_column(bcINT p_col) const
+		bc_vector4f bc_matrix4f::get_column(bcINT p_col) const noexcept
 		{
 			bc_vector4f l_col;
 			for (bcINT l_row = 0; l_row < 4; l_row++)
@@ -403,37 +403,37 @@ namespace black_cat
 			return(l_col);
 		}
 
-		bcFLOAT bc_matrix4f::operator() (bcINT p_row, bcINT p_col) const
+		bcFLOAT bc_matrix4f::operator() (bcINT p_row, bcINT p_col) const noexcept
 		{
 			return(m_entry[I(p_row, p_col)]);
 		}
 
-		bcFLOAT& bc_matrix4f::operator() (bcINT p_row, bcINT p_col)
+		bcFLOAT& bc_matrix4f::operator() (bcINT p_row, bcINT p_col) noexcept
 		{
 			return(m_entry[I(p_row, p_col)]);
 		}
 
-		bcFLOAT bc_matrix4f::operator[] (bcINT p_pos) const
+		bcFLOAT bc_matrix4f::operator[] (bcINT p_pos) const noexcept
 		{
 			return(m_entry[p_pos]);
 		}
 		
-		bcFLOAT& bc_matrix4f::operator[] (bcINT p_pos)
+		bcFLOAT& bc_matrix4f::operator[] (bcINT p_pos) noexcept
 		{
 			return(m_entry[p_pos]);
 		}
 		
-		bool bc_matrix4f::operator== (const bc_matrix4f& p_other) const
+		bool bc_matrix4f::operator== (const bc_matrix4f& p_other) const noexcept
 		{
 			return(std::memcmp(m_entry, p_other.m_entry, 4 * 4 * sizeof(bcFLOAT)) == 0);
 		}
 		
-		bool bc_matrix4f::operator!= (const bc_matrix4f& p_other) const
+		bool bc_matrix4f::operator!= (const bc_matrix4f& p_other) const noexcept
 		{
 			return(std::memcmp(m_entry, p_other.m_entry, 4 * 4 * sizeof(bcFLOAT)) != 0);
 		}
 		
-		bc_matrix4f bc_matrix4f::operator* (const bc_matrix4f& p_other) const
+		bc_matrix4f bc_matrix4f::operator* (const bc_matrix4f& p_other) const noexcept
 		{
 			bc_matrix4f l_prod;
 
@@ -453,7 +453,7 @@ namespace black_cat
 			return(l_prod);
 		}
 		
-		bc_matrix4f bc_matrix4f::operator+ (const bc_matrix4f& p_other) const
+		bc_matrix4f bc_matrix4f::operator+ (const bc_matrix4f& p_other) const noexcept
 		{
 			bc_matrix4f l_sum;
 
@@ -463,7 +463,7 @@ namespace black_cat
 			return(l_sum);
 		}
 		
-		bc_matrix4f bc_matrix4f::operator- (const bc_matrix4f& p_other) const
+		bc_matrix4f bc_matrix4f::operator- (const bc_matrix4f& p_other) const noexcept
 		{
 			bc_matrix4f l_diff;
 
@@ -473,7 +473,7 @@ namespace black_cat
 			return(l_diff);
 		}
 		
-		bc_matrix4f bc_matrix4f::operator* (bcFLOAT p_scalar) const
+		bc_matrix4f bc_matrix4f::operator* (bcFLOAT p_scalar) const noexcept
 		{
 			bc_matrix4f l_prod;
 
@@ -483,7 +483,7 @@ namespace black_cat
 			return(l_prod);
 		}
 		
-		bc_matrix4f bc_matrix4f::operator/ (bcFLOAT p_scalar) const
+		bc_matrix4f bc_matrix4f::operator/ (bcFLOAT p_scalar) const noexcept
 		{
 			bc_matrix4f l_quot;
 			if (p_scalar != 0.0f)
@@ -501,7 +501,7 @@ namespace black_cat
 			return(l_quot);
 		}
 		
-		bc_matrix4f bc_matrix4f::operator- () const
+		bc_matrix4f bc_matrix4f::operator- () const noexcept
 		{
 			bc_matrix4f l_neg;
 
@@ -511,7 +511,7 @@ namespace black_cat
 			return(l_neg);
 		}
 		
-		bc_matrix4f& bc_matrix4f::operator+= (const bc_matrix4f& p_other)
+		bc_matrix4f& bc_matrix4f::operator+= (const bc_matrix4f& p_other) noexcept
 		{
 			for (bcINT i = 0; i < 4 * 4; i++)
 				m_entry[i] += p_other.m_entry[i];
@@ -519,7 +519,7 @@ namespace black_cat
 			return(*this);
 		}
 		
-		bc_matrix4f& bc_matrix4f::operator-= (const bc_matrix4f& p_other)
+		bc_matrix4f& bc_matrix4f::operator-= (const bc_matrix4f& p_other) noexcept
 		{
 			for (bcINT i = 0; i < 4 * 4; i++)
 				m_entry[i] -= p_other.m_entry[i];
@@ -527,7 +527,7 @@ namespace black_cat
 			return(*this);
 		}
 		
-		bc_matrix4f& bc_matrix4f::operator*= (bcFLOAT p_scalar)
+		bc_matrix4f& bc_matrix4f::operator*= (bcFLOAT p_scalar) noexcept
 		{
 			for (bcINT i = 0; i < 4 * 4; i++)
 				m_entry[i] *= p_scalar;
@@ -535,7 +535,7 @@ namespace black_cat
 			return(*this);
 		}
 		
-		bc_matrix4f& bc_matrix4f::operator*= (const bc_matrix4f& p_other)
+		bc_matrix4f& bc_matrix4f::operator*= (const bc_matrix4f& p_other) noexcept
 		{
 			bc_matrix4f l_prod = *this;
 
@@ -555,7 +555,7 @@ namespace black_cat
 			return(*this);
 		}
 		
-		bc_matrix4f& bc_matrix4f::operator/= (bcFLOAT p_scalar)
+		bc_matrix4f& bc_matrix4f::operator/= (bcFLOAT p_scalar) noexcept
 		{
 			if (p_scalar != 0.0f)
 			{
@@ -572,7 +572,7 @@ namespace black_cat
 			return(*this);
 		}
 		
-		bc_vector4f bc_matrix4f::operator* (const bc_vector4f& p_vector) const
+		bc_vector4f bc_matrix4f::operator* (const bc_vector4f& p_vector) const noexcept
 		{
 			bc_vector4f l_prod;
 			for (bcINT l_col = 0; l_col < 4; l_col++)
@@ -584,12 +584,12 @@ namespace black_cat
 			return(l_prod);
 		}
 
-		bc_matrix4f bc_matrix4f::rotation_matrix_xyz_lh(bcFLOAT p_radians_x, bcFLOAT p_radians_y, bcFLOAT p_radians_z)
+		bc_matrix4f bc_matrix4f::rotation_matrix_xyz_lh(bcFLOAT p_radians_x, bcFLOAT p_radians_y, bcFLOAT p_radians_z) noexcept
 		{
 			return bc_matrix4f::rotation_matrix_z_lh(p_radians_z) * bc_matrix4f::rotation_matrix_x_lh(p_radians_x) * bc_matrix4f::rotation_matrix_y_lh(p_radians_y);
 		}
 
-		bc_matrix4f bc_matrix4f::rotation_matrix_x_lh(bcFLOAT p_radians)
+		bc_matrix4f bc_matrix4f::rotation_matrix_x_lh(bcFLOAT p_radians) noexcept
 		{
 			bc_matrix4f l_ret;
 			l_ret.rotation_x_lh(p_radians);
@@ -597,7 +597,7 @@ namespace black_cat
 			return l_ret;
 		}
 
-		bc_matrix4f bc_matrix4f::rotation_matrix_y_lh(bcFLOAT p_radians)
+		bc_matrix4f bc_matrix4f::rotation_matrix_y_lh(bcFLOAT p_radians) noexcept
 		{
 			bc_matrix4f l_ret;
 			l_ret.rotation_y_lh(p_radians);
@@ -605,7 +605,7 @@ namespace black_cat
 			return l_ret;
 		}
 
-		bc_matrix4f bc_matrix4f::rotation_matrix_z_lh(bcFLOAT p_radians)
+		bc_matrix4f bc_matrix4f::rotation_matrix_z_lh(bcFLOAT p_radians) noexcept
 		{
 			bc_matrix4f l_ret;
 			l_ret.rotation_z_lh(p_radians);
@@ -613,12 +613,12 @@ namespace black_cat
 			return l_ret;
 		}
 
-		bc_matrix4f bc_matrix4f::rotation_matrix_xyz_rh(bcFLOAT p_radians_x, bcFLOAT p_radians_y, bcFLOAT p_radians_z)
+		bc_matrix4f bc_matrix4f::rotation_matrix_xyz_rh(bcFLOAT p_radians_x, bcFLOAT p_radians_y, bcFLOAT p_radians_z) noexcept
 		{
 			return bc_matrix4f::rotation_matrix_z_rh(p_radians_z) * bc_matrix4f::rotation_matrix_x_rh(p_radians_x) * bc_matrix4f::rotation_matrix_y_rh(p_radians_y);
 		}
 
-		bc_matrix4f bc_matrix4f::rotation_matrix_x_rh(bcFLOAT p_radians)
+		bc_matrix4f bc_matrix4f::rotation_matrix_x_rh(bcFLOAT p_radians) noexcept
 		{
 			bc_matrix4f l_ret;
 			l_ret.rotation_x_rh(p_radians);
@@ -626,7 +626,7 @@ namespace black_cat
 			return l_ret;
 		}
 
-		bc_matrix4f bc_matrix4f::rotation_matrix_y_rh(bcFLOAT p_radians)
+		bc_matrix4f bc_matrix4f::rotation_matrix_y_rh(bcFLOAT p_radians) noexcept
 		{
 			bc_matrix4f l_ret;
 			l_ret.rotation_y_rh(p_radians);
@@ -634,7 +634,7 @@ namespace black_cat
 			return l_ret;
 		}
 
-		bc_matrix4f bc_matrix4f::rotation_matrix_z_rh(bcFLOAT p_radians)
+		bc_matrix4f bc_matrix4f::rotation_matrix_z_rh(bcFLOAT p_radians) noexcept
 		{
 			bc_matrix4f l_ret;
 			l_ret.rotation_z_rh(p_radians);
@@ -642,14 +642,14 @@ namespace black_cat
 			return l_ret;
 		}
 
-		bc_matrix4f bc_matrix4f::scale_matrix(bcFLOAT p_scale)
+		bc_matrix4f bc_matrix4f::scale_matrix(bcFLOAT p_scale) noexcept
 		{
 			bc_matrix4f l_ret;
 			l_ret.scale(p_scale);
 			return(l_ret);
 		}
 
-		bc_matrix4f bc_matrix4f::scale_matrix(const bc_vector3f& p_scale)
+		bc_matrix4f bc_matrix4f::scale_matrix(const bc_vector3f& p_scale) noexcept
 		{
 			bc_matrix4f l_ret;
 
@@ -676,7 +676,7 @@ namespace black_cat
 			return(l_ret);
 		}
 
-		bc_matrix4f bc_matrix4f::scale_matrix_xyz(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z)
+		bc_matrix4f bc_matrix4f::scale_matrix_xyz(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z) noexcept
 		{
 			bc_matrix4f l_ret;
 
@@ -703,14 +703,14 @@ namespace black_cat
 			return(l_ret);
 		}
 
-		bc_matrix4f bc_matrix4f::translation_matrix(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z)
+		bc_matrix4f bc_matrix4f::translation_matrix(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z) noexcept
 		{
 			bc_matrix4f l_ret;
 			l_ret.translate(p_x, p_y, p_z);
 			return(l_ret);
 		}
 
-		bc_matrix4f bc_matrix4f::look_at_matrix_lh(const bc_vector3f& p_eye, const bc_vector3f& p_at, const bc_vector3f& p_up)
+		bc_matrix4f bc_matrix4f::look_at_matrix_lh(const bc_vector3f& p_eye, const bc_vector3f& p_at, const bc_vector3f& p_up) noexcept
 		{
 			// This method is based on the method of the same name from the D3DX library.
 
@@ -747,7 +747,7 @@ namespace black_cat
 			return l_ret;
 		}
 
-		bc_matrix4f bc_matrix4f::perspective_fov_matrix_lh(bcFLOAT p_fovy, bcFLOAT p_aspect, bcFLOAT p_zn, bcFLOAT p_zf)
+		bc_matrix4f bc_matrix4f::perspective_fov_matrix_lh(bcFLOAT p_fovy, bcFLOAT p_aspect, bcFLOAT p_zn, bcFLOAT p_zf) noexcept
 		{
 			// This method is based on the method of the same name from the D3DX library.
 
@@ -783,7 +783,7 @@ namespace black_cat
 			return l_ret;
 		}
 
-		bc_matrix4f bc_matrix4f::orthographic_matrix_lh(bcFLOAT p_zn, bcFLOAT p_zf, bcFLOAT p_width, bcFLOAT p_height)
+		bc_matrix4f bc_matrix4f::orthographic_matrix_lh(bcFLOAT p_zn, bcFLOAT p_zf, bcFLOAT p_width, bcFLOAT p_height) noexcept
 		{
 			// This method is based on the method of the same name from the D3DX library.
 
@@ -816,7 +816,7 @@ namespace black_cat
 			return l_ret;
 		}
 
-		bc_matrix4f bc_matrix4f::look_at_matrix_rh(const bc_vector3f& p_eye, const bc_vector3f& p_at, const bc_vector3f& p_up)
+		bc_matrix4f bc_matrix4f::look_at_matrix_rh(const bc_vector3f& p_eye, const bc_vector3f& p_at, const bc_vector3f& p_up) noexcept
 		{
 			bc_matrix4f l_ret;
 
@@ -851,7 +851,7 @@ namespace black_cat
 			return l_ret;
 		}
 
-		bc_matrix4f bc_matrix4f::perspective_fov_matrix_rh(bcFLOAT p_fovy, bcFLOAT p_aspect, bcFLOAT p_zn, bcFLOAT p_zf)
+		bc_matrix4f bc_matrix4f::perspective_fov_matrix_rh(bcFLOAT p_fovy, bcFLOAT p_aspect, bcFLOAT p_zn, bcFLOAT p_zf) noexcept
 		{
 			bc_matrix4f l_ret;
 
@@ -885,7 +885,7 @@ namespace black_cat
 			return l_ret;
 		}
 
-		bc_matrix4f bc_matrix4f::orthographic_matrix_rh(bcFLOAT p_zn, bcFLOAT p_zf, bcFLOAT p_width, bcFLOAT p_height)
+		bc_matrix4f bc_matrix4f::orthographic_matrix_rh(bcFLOAT p_zn, bcFLOAT p_zf, bcFLOAT p_width, bcFLOAT p_height) noexcept
 		{
 			bc_matrix4f l_ret;
 
@@ -916,14 +916,14 @@ namespace black_cat
 			return l_ret;
 		}
 
-		bc_matrix4f bc_matrix4f::zero()
+		bc_matrix4f bc_matrix4f::zero() noexcept
 		{
 			bc_matrix4f l_return = bc_matrix4f(true);
 
 			return(l_return);
 		}
 
-		bc_matrix4f bc_matrix4f::identity()
+		bc_matrix4f bc_matrix4f::identity() noexcept
 		{
 			bc_matrix4f l_ident;
 

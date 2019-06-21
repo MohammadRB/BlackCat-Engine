@@ -15,24 +15,24 @@ namespace black_cat
 {
 	namespace core
 	{
-		bc_matrix3f::bc_matrix3f()
+		bc_matrix3f::bc_matrix3f() noexcept
 		{
 		}
 		
-		bc_matrix3f::bc_matrix3f(bool p_zero)
+		bc_matrix3f::bc_matrix3f(bool p_zero) noexcept
 		{
 			if (p_zero)
 				std::memset(m_entry, 0, 3 * 3 * sizeof(bcFLOAT));
 		}
 		
-		bc_matrix3f::bc_matrix3f(const bc_matrix3f& p_other)
+		bc_matrix3f::bc_matrix3f(const bc_matrix3f& p_other) noexcept
 		{
 			std::memcpy(m_entry, static_cast<void*>(const_cast<bc_matrix3f*>(&p_other)), 9 * sizeof(bcFLOAT));
 		}
 		
 		bc_matrix3f::bc_matrix3f(bcFLOAT p_m11, bcFLOAT p_m12, bcFLOAT p_m13,
 			bcFLOAT p_m21, bcFLOAT p_m22, bcFLOAT p_m23,
-			bcFLOAT p_m31, bcFLOAT p_m32, bcFLOAT p_m33)
+			bcFLOAT p_m31, bcFLOAT p_m32, bcFLOAT p_m33) noexcept
 		{
 			m_entry[0] = p_m11;
 			m_entry[1] = p_m12;
@@ -47,13 +47,13 @@ namespace black_cat
 			m_entry[8] = p_m33;
 		}
 		
-		bc_matrix3f& bc_matrix3f::operator= (const bc_matrix3f& p_other)
+		bc_matrix3f& bc_matrix3f::operator= (const bc_matrix3f& p_other) noexcept
 		{
 			std::memcpy(m_entry, p_other.m_entry, 9 * sizeof(bcFLOAT));
 			return *this;
 		}
 		
-		void bc_matrix3f::rotation_x_lh(bcFLOAT p_radians)
+		void bc_matrix3f::rotation_x_lh(bcFLOAT p_radians) noexcept
 		{
 			bcFLOAT l_sin = sinf(p_radians);
 			bcFLOAT l_cos = cosf(p_radians);
@@ -71,7 +71,7 @@ namespace black_cat
 			m_entry[8] = l_cos;
 		}
 		
-		void bc_matrix3f::rotation_y_lh(bcFLOAT p_radians)
+		void bc_matrix3f::rotation_y_lh(bcFLOAT p_radians) noexcept
 		{
 			bcFLOAT l_sin = sinf(p_radians);
 			bcFLOAT l_cos = cosf(p_radians);
@@ -89,7 +89,7 @@ namespace black_cat
 			m_entry[8] = l_cos;
 		}
 		
-		void bc_matrix3f::rotation_z_lh(bcFLOAT p_radians)
+		void bc_matrix3f::rotation_z_lh(bcFLOAT p_radians) noexcept
 		{
 			bcFLOAT l_sin = sinf(p_radians);
 			bcFLOAT l_cos = cosf(p_radians);
@@ -107,7 +107,7 @@ namespace black_cat
 			m_entry[8] = 1.0f;
 		}
 		
-		void bc_matrix3f::rotation_lh(bc_vector3f& p_rot)
+		void bc_matrix3f::rotation_lh(bc_vector3f& p_rot) noexcept
 		{
 			bc_matrix3f l_rot1;
 			bc_matrix3f l_rot2;
@@ -120,7 +120,7 @@ namespace black_cat
 			*this = l_rot1;
 		}
 		
-		void bc_matrix3f::rotation_zyx_lh(const bc_vector3f& p_rot)
+		void bc_matrix3f::rotation_zyx_lh(const bc_vector3f& p_rot) noexcept
 		{
 			bc_matrix3f l_rot1;
 			bc_matrix3f l_rot2;
@@ -133,7 +133,7 @@ namespace black_cat
 			*this = l_rot1;
 		}
 		
-		void bc_matrix3f::rotation_euler_lh(const bc_vector3f& p_axis, bcFLOAT p_angle)
+		void bc_matrix3f::rotation_euler_lh(const bc_vector3f& p_axis, bcFLOAT p_angle) noexcept
 		{
 			bcFLOAT l_s = sinf(p_angle);
 			bcFLOAT l_c = cosf(p_angle);
@@ -152,7 +152,7 @@ namespace black_cat
 			m_entry[8] = l_t*p_axis.z*p_axis.z + l_c;
 		}
 
-		void bc_matrix3f::rotation_x_rh(bcFLOAT p_radians)
+		void bc_matrix3f::rotation_x_rh(bcFLOAT p_radians) noexcept
 		{
 			rotation_x_lh(p_radians);
 
@@ -160,7 +160,7 @@ namespace black_cat
 			m_entry[7] = -m_entry[7];
 		}
 
-		void bc_matrix3f::rotation_y_rh(bcFLOAT p_radians)
+		void bc_matrix3f::rotation_y_rh(bcFLOAT p_radians) noexcept
 		{
 			rotation_y_lh(p_radians);
 
@@ -168,7 +168,7 @@ namespace black_cat
 			m_entry[6] = -m_entry[6];
 		}
 
-		void bc_matrix3f::rotation_z_rh(bcFLOAT p_radians)
+		void bc_matrix3f::rotation_z_rh(bcFLOAT p_radians) noexcept
 		{
 			rotation_z_lh(p_radians);
 
@@ -176,7 +176,7 @@ namespace black_cat
 			m_entry[3] = -m_entry[3];
 		}
 
-		void bc_matrix3f::rotation_rh(const bc_vector3f& p_rot)
+		void bc_matrix3f::rotation_rh(const bc_vector3f& p_rot) noexcept
 		{
 			bc_matrix3f l_rot1;
 			bc_matrix3f l_rot2;
@@ -189,7 +189,7 @@ namespace black_cat
 			*this = l_rot1;
 		}
 
-		void bc_matrix3f::rotation_zyx_rh(const bc_vector3f& p_rot)
+		void bc_matrix3f::rotation_zyx_rh(const bc_vector3f& p_rot) noexcept
 		{
 			bc_matrix3f l_rot1;
 			bc_matrix3f l_rot2;
@@ -202,7 +202,7 @@ namespace black_cat
 			*this = l_rot1;
 		}
 
-		void bc_matrix3f::rotation_euler_rh(const bc_vector3f& p_axis, bcFLOAT p_angle)
+		void bc_matrix3f::rotation_euler_rh(const bc_vector3f& p_axis, bcFLOAT p_angle) noexcept
 		{
 			rotation_euler_lh(p_axis, p_angle);
 
@@ -214,7 +214,7 @@ namespace black_cat
 			m_entry[7] = -m_entry[7];
 		}
 
-		void bc_matrix3f::orthonormalize()
+		void bc_matrix3f::orthonormalize() noexcept
 		{
 			// This method is taken from the Wild Magic library v3.11, available at
 			// http://www.geometrictools.com.
@@ -273,12 +273,12 @@ namespace black_cat
 			m_entry[8] *= l_inv_length;
 		}
 				
-		void bc_matrix3f::make_zero()
+		void bc_matrix3f::make_zero() noexcept
 		{
 			std::memset(m_entry, 0, 3 * 3 * sizeof(bcFLOAT));
 		}
 		
-		void bc_matrix3f::make_identity()
+		void bc_matrix3f::make_identity() noexcept
 		{
 			for (bcINT l_row = 0; l_row < 3; l_row++)
 			{
@@ -292,7 +292,7 @@ namespace black_cat
 			}
 		}
 		
-		void bc_matrix3f::make_transpose()
+		void bc_matrix3f::make_transpose() noexcept
 		{
 			bc_matrix3f l_transpose;
 
@@ -305,22 +305,7 @@ namespace black_cat
 			std::memcpy(m_entry, l_transpose.m_entry, 3 * 3 * sizeof(bcFLOAT));
 		}
 		
-		bc_matrix3f bc_matrix3f::zero()
-		{
-			bc_matrix3f l_return = bc_matrix3f(true);
-
-			return l_return;
-		}
-		
-		bc_matrix3f bc_matrix3f::identity()
-		{
-			bc_matrix3f l_ident;
-			l_ident.make_identity();
-			
-			return l_ident;
-		}
-		
-		bc_matrix3f bc_matrix3f::transpose()
+		bc_matrix3f bc_matrix3f::transpose() const noexcept
 		{
 			bc_matrix3f l_transpose;
 
@@ -332,12 +317,7 @@ namespace black_cat
 			return(l_transpose);
 		}
 		
-		bcINT bc_matrix3f::I(bcINT p_row, bcINT p_col)
-		{
-			return(3 * p_row + p_col);
-		}
-		
-		bc_vector3f bc_matrix3f::operator* (const bc_vector3f& p_vector) const
+		bc_vector3f bc_matrix3f::operator* (const bc_vector3f& p_vector) const noexcept
 		{
 			bc_vector3f l_prod;
 			for (bcINT l_col = 0; l_col < 3; l_col++)
@@ -349,13 +329,13 @@ namespace black_cat
 			return(l_prod);
 		}
 		
-		void bc_matrix3f::set_row(bcINT p_row, const bc_vector3f& p_vector)
+		void bc_matrix3f::set_row(bcINT p_row, const bc_vector3f& p_vector) noexcept
 		{
 			for (bcINT l_col = 0; l_col < 3; l_col++)
 				m_entry[I(p_row, l_col)] = p_vector[l_col];
 		}
 		
-		bc_vector3f bc_matrix3f::get_row(bcINT p_row) const
+		bc_vector3f bc_matrix3f::get_row(bcINT p_row) const noexcept
 		{
 			bc_vector3f l_row;
 			for (bcINT l_col = 0; l_col < 3; l_col++)
@@ -364,13 +344,13 @@ namespace black_cat
 			return(l_row);
 		}
 		
-		void bc_matrix3f::set_column(bcINT p_col, const bc_vector3f& p_vector)
+		void bc_matrix3f::set_column(bcINT p_col, const bc_vector3f& p_vector) noexcept
 		{
 			for (bcINT l_row = 0; l_row < 3; l_row++)
 				m_entry[I(l_row, p_col)] = p_vector[l_row];
 		}
 		
-		bc_vector3f bc_matrix3f::get_column(bcINT p_col) const
+		bc_vector3f bc_matrix3f::get_column(bcINT p_col) const noexcept
 		{
 			bc_vector3f l_col;
 			for (bcINT l_row = 0; l_row < 3; l_row++)
@@ -379,37 +359,37 @@ namespace black_cat
 			return(l_col);
 		}
 
-		bcFLOAT bc_matrix3f::operator[] (bcINT p_pos) const
+		bcFLOAT bc_matrix3f::operator[] (bcINT p_pos) const noexcept
 		{
 			return(m_entry[p_pos]);
 		}
 		
-		bcFLOAT& bc_matrix3f::operator[] (bcINT p_pos)
+		bcFLOAT& bc_matrix3f::operator[] (bcINT p_pos) noexcept
 		{
 			return(m_entry[p_pos]);
 		}
 		
-		bcFLOAT bc_matrix3f::operator() (bcINT p_row, bcINT p_col) const
+		bcFLOAT bc_matrix3f::operator() (bcINT p_row, bcINT p_col) const noexcept
 		{
 			return(m_entry[I(p_row, p_col)]);
 		}
 		
-		bcFLOAT& bc_matrix3f::operator() (bcINT p_row, bcINT p_col)
+		bcFLOAT& bc_matrix3f::operator() (bcINT p_row, bcINT p_col) noexcept
 		{
 			return(m_entry[I(p_row, p_col)]);
 		}
 		
-		bool bc_matrix3f::operator== (const bc_matrix3f& p_other) const
+		bool bc_matrix3f::operator== (const bc_matrix3f& p_other) const noexcept
 		{
 			return(std::memcmp(m_entry, p_other.m_entry, 3 * 3 * sizeof(bcFLOAT)) == 0);
 		}
 
-		bool bc_matrix3f::operator!= (const bc_matrix3f& p_other) const
+		bool bc_matrix3f::operator!= (const bc_matrix3f& p_other) const noexcept
 		{
 			return(std::memcmp(m_entry, p_other.m_entry, 3 * 3 * sizeof(bcFLOAT)) != 0);
 		}
 
-		bc_matrix3f bc_matrix3f::operator* (const bc_matrix3f& p_other) const
+		bc_matrix3f bc_matrix3f::operator* (const bc_matrix3f& p_other) const noexcept
 		{
 			bc_matrix3f l_prod;
 
@@ -429,7 +409,7 @@ namespace black_cat
 			return(l_prod);
 		}
 
-		bc_matrix3f bc_matrix3f::operator+ (const bc_matrix3f& p_other) const
+		bc_matrix3f bc_matrix3f::operator+ (const bc_matrix3f& p_other) const noexcept
 		{
 			bc_matrix3f l_sum;
 
@@ -439,7 +419,7 @@ namespace black_cat
 			return(l_sum);
 		}
 
-		bc_matrix3f bc_matrix3f::operator- (const bc_matrix3f& p_other) const
+		bc_matrix3f bc_matrix3f::operator- (const bc_matrix3f& p_other) const noexcept
 		{
 			bc_matrix3f l_diff;
 
@@ -449,7 +429,7 @@ namespace black_cat
 			return(l_diff);
 		}
 
-		bc_matrix3f bc_matrix3f::operator* (bcFLOAT p_scalar) const
+		bc_matrix3f bc_matrix3f::operator* (bcFLOAT p_scalar) const noexcept
 		{
 			bc_matrix3f l_prod;
 
@@ -459,7 +439,7 @@ namespace black_cat
 			return(l_prod);
 		}
 
-		bc_matrix3f bc_matrix3f::operator/ (bcFLOAT p_scalar) const
+		bc_matrix3f bc_matrix3f::operator/ (bcFLOAT p_scalar) const noexcept
 		{
 			bc_matrix3f l_quot;
 			if (p_scalar != 0.0f)
@@ -477,7 +457,7 @@ namespace black_cat
 			return(l_quot);
 		}
 
-		bc_matrix3f bc_matrix3f::operator- () const
+		bc_matrix3f bc_matrix3f::operator- () const noexcept
 		{
 			bc_matrix3f l_neg;
 
@@ -487,7 +467,7 @@ namespace black_cat
 			return(l_neg);
 		}
 
-		bc_matrix3f& bc_matrix3f::operator+= (const bc_matrix3f& p_other)
+		bc_matrix3f& bc_matrix3f::operator+= (const bc_matrix3f& p_other) noexcept
 		{
 			for (bcINT i = 0; i < 3 * 3; i++)
 				m_entry[i] += p_other.m_entry[i];
@@ -495,7 +475,7 @@ namespace black_cat
 			return(*this);
 		}
 
-		bc_matrix3f& bc_matrix3f::operator-= (const bc_matrix3f& p_other)
+		bc_matrix3f& bc_matrix3f::operator-= (const bc_matrix3f& p_other) noexcept
 		{
 			for (bcINT i = 0; i < 3 * 3; i++)
 				m_entry[i] -= p_other.m_entry[i];
@@ -503,7 +483,7 @@ namespace black_cat
 			return(*this);
 		}
 
-		bc_matrix3f& bc_matrix3f::operator*= (bcFLOAT p_scalar)
+		bc_matrix3f& bc_matrix3f::operator*= (bcFLOAT p_scalar) noexcept
 		{
 			for (bcINT i = 0; i < 3 * 3; i++)
 				m_entry[i] *= p_scalar;
@@ -511,7 +491,7 @@ namespace black_cat
 			return(*this);
 		}
 
-		bc_matrix3f& bc_matrix3f::operator*= (const bc_matrix3f& p_matrix)
+		bc_matrix3f& bc_matrix3f::operator*= (const bc_matrix3f& p_matrix) noexcept
 		{
 			bc_matrix3f l_prod = *this;
 
@@ -531,7 +511,7 @@ namespace black_cat
 			return(*this);
 		}
 
-		bc_matrix3f& bc_matrix3f::operator/= (bcFLOAT p_scalar)
+		bc_matrix3f& bc_matrix3f::operator/= (bcFLOAT p_scalar) noexcept
 		{
 			if (p_scalar != 0.0f)
 			{
@@ -546,6 +526,26 @@ namespace black_cat
 			}
 
 			return(*this);
+		}
+
+		bc_matrix3f bc_matrix3f::zero() noexcept
+		{
+			bc_matrix3f l_return = bc_matrix3f(true);
+
+			return l_return;
+		}
+
+		bc_matrix3f bc_matrix3f::identity() noexcept
+		{
+			bc_matrix3f l_ident;
+			l_ident.make_identity();
+
+			return l_ident;
+		}
+
+		bcINT bc_matrix3f::I(bcINT p_row, bcINT p_col)
+		{
+			return(3 * p_row + p_col);
 		}
 	}
 }

@@ -113,9 +113,9 @@ namespace black_cat
 		protected:
 			bc_icamera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
 
-			bc_icamera(bc_icamera&&) noexcept = default;
+			bc_icamera(bc_icamera&& p_other) noexcept;
 
-			bc_icamera& operator=(bc_icamera&&) noexcept = default;
+			bc_icamera& operator=(bc_icamera&& p_other) noexcept;
 
 			void create_view_matrix(const core::bc_vector3f& p_up = core::bc_vector3f(0, 1, 0)) noexcept;
 
@@ -124,7 +124,7 @@ namespace black_cat
 			virtual bool on_key(core::bc_ievent& p_key_event) noexcept = 0;
 
 			virtual bool on_pointing(core::bc_ievent& p_pointing_event) noexcept = 0;
-						
+			
 		private:
 			bcUINT16 m_screen_width;
 			bcUINT16 m_screen_height;
@@ -171,9 +171,9 @@ namespace black_cat
 		protected:
 			bc_orthographic_camera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
 
-			bc_orthographic_camera(bc_orthographic_camera&&) noexcept = default;
+			bc_orthographic_camera(bc_orthographic_camera&& p_other) noexcept;
 
-			bc_orthographic_camera& operator=(bc_orthographic_camera&&) noexcept = default;
+			bc_orthographic_camera& operator=(bc_orthographic_camera&& p_other) noexcept;
 
 			void create_projection_matrix() noexcept override final;
 
@@ -208,9 +208,9 @@ namespace black_cat
 		protected:
 			bc_perspective_camera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
 
-			bc_perspective_camera(bc_perspective_camera&&) noexcept = default;
+			bc_perspective_camera(bc_perspective_camera&& p_other) noexcept;
 
-			bc_perspective_camera& operator=(bc_perspective_camera&&) noexcept = default;
+			bc_perspective_camera& operator=(bc_perspective_camera&& p_other) noexcept;
 
 			void create_projection_matrix() noexcept override final;
 

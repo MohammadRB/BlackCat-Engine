@@ -2,7 +2,12 @@
 
 #include "..\bcRegister.hlsli"
 
-
+cbuffer g_bc_parameters					: register(BC_RENDER_PASS_STATE_CB1)
+{
+	uint m_shadow_map_size				: packoffset(c0.x);
+	uint m_shadow_map_cascade_count		: packoffset(c0.y);
+	uint m_shadow_map_current_cascade	: packoffset(c0.z);
+};
 
 struct bc_vs_input
 {
@@ -20,7 +25,7 @@ struct bc_vs_output
 
 struct bc_ps_output
 {
-	float m_depth		: SV_TARGET0
+	float m_depth		: SV_TARGET0;
 };
 
 bc_vs_output csm_vs(bc_vs_input p_input)
@@ -28,6 +33,8 @@ bc_vs_output csm_vs(bc_vs_input p_input)
 	bc_vs_output l_output;
 
 	l_output.m_position = mul(float4(p_input.m_position, 1), g_world_view_projection);
+	l_output.m_position.x /= m_shadow_map_cascade_count;
+	l_output.m_position.x += (m_shadow_map_current_cascade * (1.0 / m_shadow_map_cascade_count));
 	l_output.m_depth = l_output.m_position.w;
 
 	return l_output;

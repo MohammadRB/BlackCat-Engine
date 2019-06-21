@@ -82,7 +82,9 @@ copy $(Configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)
 
 xcopy ..\..\Src\BlackCat\BlackCat\*.h ..\..\BC_SDK\Include\BlackCat\ /E /Y
 xcopy ..\..\Src\BlackCat\BlackCat\Content\*.* ..\..\BC_SDK\Content\ /E /Y
-xcopy ..\..\Src\BlackCat\BlackCat\Content\*.* $(Configuration)\Content\ /E /Y</Command>
+xcopy ..\..\Src\BlackCat\BlackCat\Content\*.* $(Configuration)\Content\ /E /Y
+
+xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/Lib/$(Platform)_$(Configuration)/assimp-vc130-mtd.lib;</AdditionalDependencies>
@@ -123,7 +125,9 @@ copy $(Configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)
 
 xcopy ..\..\Src\BlackCat\BlackCat\*.h ..\..\BC_SDK\Include\BlackCat\ /E /Y
 xcopy ..\..\Src\BlackCat\BlackCat\Content\*.* ..\..\BC_SDK\Content\ /E /Y
-xcopy ..\..\Src\BlackCat\BlackCat\Content\*.* $(Configuration)\Content\ /E /Y</Command>
+xcopy ..\..\Src\BlackCat\BlackCat\Content\*.* $(Configuration)\Content\ /E /Y
+
+xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/Lib/$(Platform)_$(Configuration)/assimp-vc130-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>

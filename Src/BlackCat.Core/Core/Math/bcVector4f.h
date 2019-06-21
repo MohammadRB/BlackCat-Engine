@@ -26,71 +26,71 @@ namespace black_cat
 		class bc_vector4
 		{
 		public:
-			bc_vector4();
+			bc_vector4() noexcept;
 
-			explicit bc_vector4(T p_number);
+			explicit bc_vector4(T p_number) noexcept;
 
-			bc_vector4(T p_x, T p_y, T p_z, T p_w);
+			bc_vector4(T p_x, T p_y, T p_z, T p_w) noexcept;
 
-			bc_vector4(const bc_vector3< T >& p_vector, T w);
+			bc_vector4(const bc_vector3< T >& p_vector, T p_w) noexcept;
 
-			bc_vector4(const bc_vector4& p_vector);
+			bc_vector4(const bc_vector4& p_vector) noexcept;
 
-			void clamp();
+			bc_vector4& operator=(const bc_vector4& p_other) noexcept;
 
-			bcFLOAT dot(bc_vector4& p_other) const;
+			void clamp() noexcept;
 
-			void normalize();
+			bcFLOAT dot(bc_vector4& p_other) const noexcept;
 
-			bcFLOAT magnitude() const;
+			void normalize() noexcept;
 
-			void make_zero();
+			bcFLOAT magnitude() const noexcept;
 
-			bc_vector4& operator=(const bc_vector4& p_other);
+			void make_zero() noexcept;
 
-			T operator[](bcUINT32 p_pos) const;
+			T operator[](bcUINT32 p_pos) const noexcept;
 
-			T& operator[](bcUINT32 p_pos);
+			T& operator[](bcUINT32 p_pos) noexcept;
 
-			bool operator==(const bc_vector4& p_other) const;
+			bool operator==(const bc_vector4& p_other) const noexcept;
 
-			bool operator!=(const bc_vector4& p_other) const;
+			bool operator!=(const bc_vector4& p_other) const noexcept;
 
-			bc_vector4 operator+(const bc_vector4& p_other) const;
+			bc_vector4 operator+(const bc_vector4& p_other) const noexcept;
 
-			bc_vector4 operator-(const bc_vector4& p_other) const;
+			bc_vector4 operator-(const bc_vector4& p_other) const noexcept;
 
-			bc_vector4 operator*(T p_scalar) const;
+			bc_vector4 operator*(T p_scalar) const noexcept;
 
-			bc_vector4 operator*(const bc_vector4& p_other) const;
+			bc_vector4 operator*(const bc_vector4& p_other) const noexcept;
 
-			bc_vector4 operator/(T p_scalar) const;
+			bc_vector4 operator/(T p_scalar) const noexcept;
 
-			bc_vector4 operator/(const bc_vector4& p_other) const;
+			bc_vector4 operator/(const bc_vector4& p_other) const noexcept;
 
-			bc_vector4 operator-() const;
+			bc_vector4 operator-() const noexcept;
 
-			bc_vector4& operator+=(const bc_vector4& p_other);
+			bc_vector4& operator+=(const bc_vector4& p_other) noexcept;
 
-			bc_vector4& operator-=(const bc_vector4& p_other);
+			bc_vector4& operator-=(const bc_vector4& p_other) noexcept;
 
-			bc_vector4& operator*=(T p_scalar);
+			bc_vector4& operator*=(T p_scalar) noexcept;
 
-			bc_vector4& operator*=(const bc_vector4& p_other);
+			bc_vector4& operator*=(const bc_vector4& p_other) noexcept;
 
-			bc_vector4& operator/=(T p_scalar);
+			bc_vector4& operator/=(T p_scalar) noexcept;
 
-			bc_vector4& operator/=(const bc_vector4& p_other);
+			bc_vector4& operator/=(const bc_vector4& p_other) noexcept;
 
-			bcUINT32 to_argb();
+			bcUINT32 to_argb() const noexcept;
 
-			bcUINT32 to_rgba();
+			bcUINT32 to_rgba() const noexcept;
 
-			void from_argb(bcUINT32 color);
+			void from_argb(bcUINT32 color) noexcept;
 
-			bc_vector3< T > xyz() const;
+			bc_vector3< T > xyz() const noexcept;
 
-			bc_vector2< T > xy() const;
+			bc_vector2< T > xy() const noexcept;
 
 			T x;
 			T y;
@@ -102,7 +102,7 @@ namespace black_cat
 		using bc_vector4i = bc_vector4< bcINT32 >;
 
 		template< typename T >
-		bc_vector4< T >::bc_vector4()
+		bc_vector4< T >::bc_vector4() noexcept
 			: x(0),
 			y(0),
 			z(0),
@@ -111,7 +111,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4<T>::bc_vector4(T p_number)
+		bc_vector4<T>::bc_vector4(T p_number) noexcept
 			: x(p_number),
 			y(p_number),
 			z(p_number),
@@ -120,7 +120,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T >::bc_vector4(T p_x, T p_y, T p_z, T p_w)
+		bc_vector4< T >::bc_vector4(T p_x, T p_y, T p_z, T p_w) noexcept
 		{
 			x = p_x;
 			y = p_y;
@@ -129,7 +129,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T >::bc_vector4(const bc_vector3< T >& p_vector, T p_w)
+		bc_vector4< T >::bc_vector4(const bc_vector3< T >& p_vector, T p_w) noexcept
 		{
 			x = p_vector.x;
 			y = p_vector.y;
@@ -138,7 +138,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T >::bc_vector4(const bc_vector4< T >& p_vector)
+		bc_vector4< T >::bc_vector4(const bc_vector4< T >& p_vector) noexcept
 		{
 			x = p_vector.x;
 			y = p_vector.y;
@@ -147,18 +147,18 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T >& bc_vector4< T >::operator=(const bc_vector4& p_vector)
+		bc_vector4< T >& bc_vector4< T >::operator=(const bc_vector4& p_other) noexcept
 		{
-			x = p_vector.x;
-			y = p_vector.y;
-			z = p_vector.z;
-			w = p_vector.w;
+			x = p_other.x;
+			y = p_other.y;
+			z = p_other.z;
+			w = p_other.w;
 
 			return *this;
 		}
 
 		template< typename T >
-		void bc_vector4< T >::clamp()
+		void bc_vector4< T >::clamp() noexcept
 		{
 			if (x > 1.0f) x = 1.0f;
 			if (x < 0.0f) x = 0.0f;
@@ -174,7 +174,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bcFLOAT bc_vector4< T >::dot(bc_vector4< T >& p_other) const
+		bcFLOAT bc_vector4< T >::dot(bc_vector4< T >& p_other) const noexcept
 		{
 			bcFLOAT l_ret = 0.0f;
 
@@ -187,7 +187,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_vector4< T >::normalize()
+		void bc_vector4< T >::normalize() noexcept
 		{
 			bcFLOAT l_inv_mag = (1.0f / magnitude());
 
@@ -198,7 +198,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bcFLOAT bc_vector4< T >::magnitude() const
+		bcFLOAT bc_vector4< T >::magnitude() const noexcept
 		{
 			bcFLOAT l_length = 0.0f;
 
@@ -211,7 +211,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_vector4< T >::make_zero()
+		void bc_vector4< T >::make_zero() noexcept
 		{
 			x = 0.0f;
 			y = 0.0f;
@@ -220,7 +220,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		T bc_vector4< T >::operator[](bcUINT32 p_pos) const
+		T bc_vector4< T >::operator[](bcUINT32 p_pos) const noexcept
 		{
 			if (p_pos == 0)
 			{
@@ -238,7 +238,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		T& bc_vector4< T >::operator[](bcUINT32 p_pos)
+		T& bc_vector4< T >::operator[](bcUINT32 p_pos) noexcept
 		{
 			if (p_pos == 0)
 			{
@@ -256,7 +256,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bool bc_vector4< T >::operator==(const bc_vector4< T >& p_other) const
+		bool bc_vector4< T >::operator==(const bc_vector4< T >& p_other) const noexcept
 		{
 			if ((x - p_other.x) * (x - p_other.x) > 0.01f)
 			{
@@ -279,13 +279,13 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bool bc_vector4< T >::operator!=(const bc_vector4< T >& p_other) const
+		bool bc_vector4< T >::operator!=(const bc_vector4< T >& p_other) const noexcept
 		{
 			return (!(*this == p_other));
 		}
 
 		template< typename T >
-		bc_vector4< T > bc_vector4< T >::operator+(const bc_vector4< T >& p_other) const
+		bc_vector4< T > bc_vector4< T >::operator+(const bc_vector4< T >& p_other) const noexcept
 		{
 			bc_vector4< T > l_sum;
 
@@ -298,7 +298,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T > bc_vector4< T >::operator-(const bc_vector4< T >& p_other) const
+		bc_vector4< T > bc_vector4< T >::operator-(const bc_vector4< T >& p_other) const noexcept
 		{
 			bc_vector4< T > l_diff;
 
@@ -311,7 +311,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T > bc_vector4< T >::operator*(T p_scalar) const
+		bc_vector4< T > bc_vector4< T >::operator*(T p_scalar) const noexcept
 		{
 			bc_vector4< T > l_prod;
 
@@ -324,7 +324,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T > bc_vector4< T >::operator*(const bc_vector4< T >& p_other) const
+		bc_vector4< T > bc_vector4< T >::operator*(const bc_vector4< T >& p_other) const noexcept
 		{
 			bc_vector4< T > l_prod;
 
@@ -337,7 +337,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T > bc_vector4< T >::operator/(T p_scalar) const
+		bc_vector4< T > bc_vector4< T >::operator/(T p_scalar) const noexcept
 		{
 			bc_vector4< T > l_quot;
 			if (p_scalar != 0.0f)
@@ -357,7 +357,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T > bc_vector4< T >::operator/(const bc_vector4< T >& p_other) const
+		bc_vector4< T > bc_vector4< T >::operator/(const bc_vector4< T >& p_other) const noexcept
 		{
 			bc_vector4< T > l_quot;
 			l_quot.x = p_other.x != 0.0f ? x / p_other.x : 0.0f;
@@ -369,7 +369,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T > bc_vector4< T >::operator-() const
+		bc_vector4< T > bc_vector4< T >::operator-() const noexcept
 		{
 			bc_vector4< T > l_neg;
 
@@ -382,7 +382,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T >& bc_vector4< T >::operator+=(const bc_vector4& p_other)
+		bc_vector4< T >& bc_vector4< T >::operator+=(const bc_vector4& p_other) noexcept
 		{
 			x += p_other.x;
 			y += p_other.y;
@@ -393,7 +393,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T >& bc_vector4< T >::operator-=(const bc_vector4& p_other)
+		bc_vector4< T >& bc_vector4< T >::operator-=(const bc_vector4& p_other) noexcept
 		{
 			x -= p_other.x;
 			y -= p_other.y;
@@ -404,7 +404,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T >& bc_vector4< T >::operator*=(T p_scalar)
+		bc_vector4< T >& bc_vector4< T >::operator*=(T p_scalar) noexcept
 		{
 			x *= p_scalar;
 			y *= p_scalar;
@@ -415,7 +415,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T >& bc_vector4< T >::operator*=(const bc_vector4& p_other)
+		bc_vector4< T >& bc_vector4< T >::operator*=(const bc_vector4& p_other) noexcept
 		{
 			x *= p_other.x;
 			y *= p_other.y;
@@ -426,7 +426,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T >& bc_vector4< T >::operator/=(T p_scalar)
+		bc_vector4< T >& bc_vector4< T >::operator/=(T p_scalar) noexcept
 		{
 			if (p_scalar != 0.0f)
 			{
@@ -445,7 +445,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector4< T >& bc_vector4< T >::operator/=(const bc_vector4& p_other)
+		bc_vector4< T >& bc_vector4< T >::operator/=(const bc_vector4& p_other) noexcept
 		{
 			x = p_other.x != 0.0f ? x / p_other.x : 0.0f;
 			y = p_other.y != 0.0f ? y / p_other.y : 0.0f;
@@ -456,7 +456,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bcUINT32 bc_vector4< T >::to_argb()
+		bcUINT32 bc_vector4< T >::to_argb() const noexcept
 		{
 			bcUINT32 l_result = 0;
 			bc_vector4< T > l_temp = *this;
@@ -472,7 +472,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bcUINT32 bc_vector4< T >::to_rgba()
+		bcUINT32 bc_vector4< T >::to_rgba() const noexcept
 		{
 			bcUINT32 l_result = 0;
 			bc_vector4< T > l_temp = *this;
@@ -488,7 +488,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_vector4< T >::from_argb(bcUINT32 color)
+		void bc_vector4< T >::from_argb(bcUINT32 color) noexcept
 		{
 			x = static_cast< float >((color & 0x00ff0000) >> 16) / 255.0f; // red channel
 			y = static_cast< float >((color & 0x0000ff00) >> 8) / 255.0f; // green channel
@@ -497,13 +497,13 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector3< T > bc_vector4< T >::xyz() const
+		bc_vector3< T > bc_vector4< T >::xyz() const noexcept
 		{
 			return bc_vector3f(x, y, z);
 		}
 
 		template< typename T >
-		bc_vector2< T > bc_vector4< T >::xy() const
+		bc_vector2< T > bc_vector4< T >::xy() const noexcept
 		{
 			return bc_vector2f(x, y);
 		}

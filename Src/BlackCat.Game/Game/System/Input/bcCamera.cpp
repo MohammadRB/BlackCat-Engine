@@ -34,6 +34,36 @@ namespace black_cat
 			);
 		}
 
+		bc_icamera::bc_icamera(bc_icamera&& p_other) noexcept
+			: m_screen_width(p_other.m_screen_width),
+			m_screen_height(p_other.m_screen_height),
+			m_near(p_other.m_near),
+			m_far(p_other.m_far),
+			m_position(p_other.m_position),
+			m_lookat(p_other.m_lookat),
+			m_view(p_other.m_view),
+			m_projection(p_other.m_projection),
+			m_key_listener_handle(std::move(p_other.m_key_listener_handle)),
+			m_pointing_listener_handle(std::move(p_other.m_pointing_listener_handle))
+		{
+		}
+
+		bc_icamera& bc_icamera::operator=(bc_icamera&& p_other) noexcept
+		{
+			m_screen_width = p_other.m_screen_width;
+			m_screen_height = p_other.m_screen_height;
+			m_near = p_other.m_near;
+			m_far = p_other.m_far;
+			m_position = p_other.m_position;
+			m_lookat = p_other.m_lookat;
+			m_view = p_other.m_view;
+			m_projection = p_other.m_projection;
+			m_key_listener_handle = std::move(p_other.m_key_listener_handle);
+			m_pointing_listener_handle = std::move(p_other.m_pointing_listener_handle);
+
+			return *this;
+		}
+
 		bc_icamera::~bc_icamera() noexcept
 		{
 		}
@@ -185,6 +215,26 @@ namespace black_cat
 			set_projection(p_back_buffer_width, p_back_buffer_height, p_near_clip, p_far_clip);
 		}
 
+		bc_orthographic_camera::bc_orthographic_camera(bc_orthographic_camera&& p_other) noexcept
+			: bc_icamera(std::move(p_other))
+			, m_min_x(p_other.m_min_x),
+			m_max_x(p_other.m_max_x),
+			m_min_y(p_other.m_min_y),
+			m_max_y(p_other.m_max_y)
+		{
+		}
+
+		bc_orthographic_camera& bc_orthographic_camera::operator=(bc_orthographic_camera&& p_other) noexcept
+		{
+			bc_icamera::operator=(std::move(p_other));
+			m_min_x = p_other.m_min_x;
+			m_max_x = p_other.m_max_x;
+			m_min_y = p_other.m_min_y;
+			m_max_y = p_other.m_max_y;
+
+			return *this;
+		}
+
 		void bc_orthographic_camera::get_extend_points(extend& p_points) const noexcept
 		{
 			const auto l_near_clip_height = m_max_y - m_min_y;
@@ -246,7 +296,23 @@ namespace black_cat
 		{
 			set_projection(p_back_buffer_width, p_back_buffer_height, p_height_fov, p_near_clip, p_far_clip);
 		}
-		
+
+		bc_perspective_camera::bc_perspective_camera(bc_perspective_camera&& p_other) noexcept
+			: bc_icamera(std::move(p_other)),
+			m_aspect_ratio(p_other.m_aspect_ratio),
+			m_field_of_view(p_other.m_field_of_view)
+		{
+		}
+
+		bc_perspective_camera& bc_perspective_camera::operator=(bc_perspective_camera&& p_other) noexcept
+		{
+			bc_icamera::operator=(std::move(p_other));
+			m_aspect_ratio = p_other.m_aspect_ratio;
+			m_field_of_view = p_other.m_field_of_view;
+
+			return *this;
+		}
+
 		void bc_perspective_camera::get_extend_points(extend& p_points) const noexcept
 		{
 			const auto l_fov_tan = 2 * std::tanf(m_field_of_view / 2);

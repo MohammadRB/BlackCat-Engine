@@ -23,7 +23,7 @@ namespace black_cat
 		game::bc_render_pass_state_ptr m_render_pass_state;
 	};
 
-	class _bc_cascaded_shadow_map_camera final : public game::bc_orthographic_camera
+	class _bc_cascaded_shadow_map_camera : public game::bc_orthographic_camera
 	{
 	public:
 		_bc_cascaded_shadow_map_camera(const core::bc_vector3f& p_position,
@@ -37,9 +37,16 @@ namespace black_cat
 			set_look_at(p_position, p_look_at);
 		}
 
-		_bc_cascaded_shadow_map_camera(_bc_cascaded_shadow_map_camera&&) noexcept = default;
+		_bc_cascaded_shadow_map_camera(_bc_cascaded_shadow_map_camera&& p_other) noexcept
+			: bc_orthographic_camera(std::move(p_other))
+		{
+		}
 
-		_bc_cascaded_shadow_map_camera& operator=(_bc_cascaded_shadow_map_camera&&) noexcept = default;
+		_bc_cascaded_shadow_map_camera& operator=(_bc_cascaded_shadow_map_camera&& p_other) noexcept
+		{
+			bc_orthographic_camera::operator=(std::move(p_other));
+			return *this;
+		}
 
 		void update(core_platform::bc_clock::update_param p_clock_update_param,
 			const platform::bc_pointing_device& p_pointing_device,
@@ -85,12 +92,15 @@ namespace black_cat
 
 		core::bc_vector_frame<_bc_cascaded_shadow_map_camera> _get_light_cascades(const game::bc_icamera& p_camera, const game::bc_direct_light& p_light);
 
+		const bcSIZE m_cascade_cameras_distance = 300;
 		bcSIZE m_shadow_map_size;
 		core::bc_vector_program<bcSIZE> m_cascade_sizes;
 
 		graphic::bc_device_command_list_ptr m_command_list;
 		graphic::bc_device_pipeline_state_ptr m_device_pipeline;
 
+		graphic::bc_texture2d_ptr m_depth_buffer;
+		graphic::bc_depth_stencil_view_ptr m_depth_buffer_view;
 		graphic::bc_buffer_ptr m_parameters_cbuffer;
 
 		core::bc_vector_program<_bc_cascaded_shadow_map_light_state> m_light_instance_states;

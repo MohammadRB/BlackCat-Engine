@@ -21,51 +21,51 @@ namespace black_cat
 		class bc_vector2
 		{
 		public:
-			bc_vector2();
+			bc_vector2() noexcept;
 
-			explicit bc_vector2(T p_number);
+			explicit bc_vector2(T p_number) noexcept;
 
-			bc_vector2(T p_x, T p_y);
+			bc_vector2(T p_x, T p_y) noexcept;
 
-			bc_vector2(const bc_vector2& p_other);
+			bc_vector2(const bc_vector2& p_other) noexcept;
 
-			void clamp();
+			bc_vector2& operator=(const bc_vector2& p_other) noexcept;
 
-			void normalize();
+			void clamp() noexcept;
 
-			bcFLOAT magnitude();
+			void normalize() noexcept;
 
-			void make_zero();
+			bcFLOAT magnitude() const noexcept;
 
-			bc_vector2& operator=(const bc_vector2& p_other);
+			void make_zero() noexcept;
 
-			T operator[](int p_pos) const;
+			T operator[](int p_pos) const noexcept;
 
-			T& operator[](int p_pos);
+			T& operator[](int p_pos) noexcept;
 
-			bool operator==(const bc_vector2& p_other) const;
+			bool operator==(const bc_vector2& p_other) const noexcept;
 
-			bool operator!=(const bc_vector2& p_other) const;
+			bool operator!=(const bc_vector2& p_other) const noexcept;
 
-			bc_vector2 operator+(const bc_vector2& p_other) const;
+			bc_vector2 operator+(const bc_vector2& p_other) const noexcept;
 
-			bc_vector2 operator-(const bc_vector2& p_other) const;
+			bc_vector2 operator-(const bc_vector2& p_other) const noexcept;
 
-			bc_vector2 operator*(const bc_vector2& p_other) const;
+			bc_vector2 operator*(const bc_vector2& p_other) const noexcept;
 
-			bc_vector2 operator*(T p_scalar) const;
+			bc_vector2 operator*(T p_scalar) const noexcept;
 
-			bc_vector2 operator/(T p_scalar) const;
+			bc_vector2 operator/(T p_scalar) const noexcept;
 
-			bc_vector2 operator-() const;
+			bc_vector2 operator-() const noexcept;
 
-			bc_vector2& operator+=(const bc_vector2& p_other);
+			bc_vector2& operator+=(const bc_vector2& p_other) noexcept;
 
-			bc_vector2& operator-=(const bc_vector2& p_other);
+			bc_vector2& operator-=(const bc_vector2& p_other) noexcept;
 
-			bc_vector2& operator*=(T p_scalar);
+			bc_vector2& operator*=(T p_scalar) noexcept;
 
-			bc_vector2& operator/=(T p_scalar);
+			bc_vector2& operator/=(T p_scalar) noexcept;
 
 		public:
 			T x;
@@ -76,44 +76,44 @@ namespace black_cat
 		using bc_vector2i = bc_vector2< bcINT32 >;
 
 		template< typename T >
-		bc_vector2< T >::bc_vector2()
+		bc_vector2< T >::bc_vector2() noexcept
 			: x(0),
 			y(0)
 		{
 		}
 
 		template< typename T >
-		bc_vector2<T>::bc_vector2(T p_number)
+		bc_vector2<T>::bc_vector2(T p_number) noexcept
 			: x(p_number),
 			y(p_number)
 		{
 		}
 
 		template< typename T >
-		bc_vector2< T >::bc_vector2(T p_x, T p_y)
+		bc_vector2< T >::bc_vector2(T p_x, T p_y) noexcept
 		{
 			x = p_x;
 			y = p_y;
 		}
 
 		template< typename T >
-		bc_vector2< T >::bc_vector2(const bc_vector2< T >& p_vector)
+		bc_vector2< T >::bc_vector2(const bc_vector2< T >& p_other) noexcept
 		{
-			x = p_vector.x;
-			y = p_vector.y;
+			x = p_other.x;
+			y = p_other.y;
 		}
 
 		template< typename T >
-		bc_vector2< T >& bc_vector2< T >::operator=(const bc_vector2& p_vector)
+		bc_vector2< T >& bc_vector2< T >::operator=(const bc_vector2& p_other) noexcept
 		{
-			x = p_vector.x;
-			y = p_vector.y;
+			x = p_other.x;
+			y = p_other.y;
 
 			return (*this);
 		}
 
 		template< typename T >
-		void bc_vector2< T >::clamp()
+		void bc_vector2< T >::clamp() noexcept
 		{
 			if (x > 1.0f) x = 1.0f;
 			if (x < 0.0f) x = 0.0f;
@@ -123,7 +123,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_vector2< T >::normalize()
+		void bc_vector2< T >::normalize() noexcept
 		{
 			T l_inv_mag = (1.0f / magnitude());
 
@@ -132,7 +132,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bcFLOAT bc_vector2< T >::magnitude()
+		bcFLOAT bc_vector2< T >::magnitude() const noexcept
 		{
 			bcFLOAT l_length = 0.0f;
 
@@ -143,14 +143,14 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_vector2< T >::make_zero()
+		void bc_vector2< T >::make_zero() noexcept
 		{
 			x = 0.0f;
 			y = 0.0f;
 		}
 
 		template< typename T >
-		T bc_vector2< T >::operator[](int p_pos) const
+		T bc_vector2< T >::operator[](int p_pos) const noexcept
 		{
 			if (p_pos == 0)
 			{
@@ -161,7 +161,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		T& bc_vector2< T >::operator[](int p_pos)
+		T& bc_vector2< T >::operator[](int p_pos) noexcept
 		{
 			if (p_pos == 0)
 			{
@@ -172,13 +172,13 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bool bc_vector2< T >::operator==(const bc_vector2< T >& p_vector) const
+		bool bc_vector2< T >::operator==(const bc_vector2< T >& p_other) const noexcept
 		{
-			if ((x - p_vector.x) * (x - p_vector.x) > 0.01f)
+			if ((x - p_other.x) * (x - p_other.x) > 0.01f)
 			{
 				return false;
 			}
-			if ((y - p_vector.y) * (y - p_vector.y) > 0.01f)
+			if ((y - p_other.y) * (y - p_other.y) > 0.01f)
 			{
 				return false;
 			}
@@ -187,46 +187,46 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bool bc_vector2< T >::operator!=(const bc_vector2< T >& p_vector) const
+		bool bc_vector2< T >::operator!=(const bc_vector2< T >& p_other) const noexcept
 		{
-			return !(*this == p_vector);
+			return !(*this == p_other);
 		}
 
 		template< typename T >
-		bc_vector2< T > bc_vector2< T >::operator+(const bc_vector2< T >& p_vector) const
+		bc_vector2< T > bc_vector2< T >::operator+(const bc_vector2< T >& p_other) const noexcept
 		{
 			bc_vector2< T > l_sum;
 
-			l_sum.x = x + p_vector.x;
-			l_sum.y = y + p_vector.y;
+			l_sum.x = x + p_other.x;
+			l_sum.y = y + p_other.y;
 
 			return l_sum;
 		}
 
 		template< typename T >
-		bc_vector2< T > bc_vector2< T >::operator-(const bc_vector2< T >& p_vector) const
+		bc_vector2< T > bc_vector2< T >::operator-(const bc_vector2< T >& p_other) const noexcept
 		{
 			bc_vector2< T > l_diff;
 
-			l_diff.x = x - p_vector.x;
-			l_diff.y = y - p_vector.y;
+			l_diff.x = x - p_other.x;
+			l_diff.y = y - p_other.y;
 
 			return l_diff;
 		}
 
 		template< typename T >
-		bc_vector2< T > bc_vector2< T >::operator*(const bc_vector2< T >& p_vector) const
+		bc_vector2< T > bc_vector2< T >::operator*(const bc_vector2< T >& p_other) const noexcept
 		{
 			bc_vector2< T > l_prod;
 
-			l_prod.x = x * p_vector.x;
-			l_prod.y = y * p_vector.y;
+			l_prod.x = x * p_other.x;
+			l_prod.y = y * p_other.y;
 
 			return l_prod;
 		}
 
 		template< typename T >
-		bc_vector2< T > bc_vector2< T >::operator*(T p_scalar) const
+		bc_vector2< T > bc_vector2< T >::operator*(T p_scalar) const noexcept
 		{
 			bc_vector2< T > l_prod;
 
@@ -237,7 +237,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector2< T > bc_vector2< T >::operator/(T p_scalar) const
+		bc_vector2< T > bc_vector2< T >::operator/(T p_scalar) const noexcept
 		{
 			bc_vector2< T > l_quot;
 			if (p_scalar != 0.0f)
@@ -255,7 +255,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector2< T > bc_vector2< T >::operator-() const
+		bc_vector2< T > bc_vector2< T >::operator-() const noexcept
 		{
 			bc_vector2< T > l_neg;
 
@@ -266,25 +266,25 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector2< T >& bc_vector2< T >::operator+=(const bc_vector2& p_vector)
+		bc_vector2< T >& bc_vector2< T >::operator+=(const bc_vector2& p_other) noexcept
 		{
-			x += p_vector.x;
-			y += p_vector.y;
+			x += p_other.x;
+			y += p_other.y;
 
 			return *this;
 		}
 
 		template< typename T >
-		bc_vector2< T >& bc_vector2< T >::operator-=(const bc_vector2& p_vector)
+		bc_vector2< T >& bc_vector2< T >::operator-=(const bc_vector2& p_other) noexcept
 		{
-			x -= p_vector.x;
-			y -= p_vector.y;
+			x -= p_other.x;
+			y -= p_other.y;
 
 			return *this;
 		}
 
 		template< typename T >
-		bc_vector2< T >& bc_vector2< T >::operator*=(T p_scalar)
+		bc_vector2< T >& bc_vector2< T >::operator*=(T p_scalar) noexcept
 		{
 			x *= p_scalar;
 			y *= p_scalar;
@@ -293,7 +293,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_vector2< T >& bc_vector2< T >::operator/=(T p_scalar)
+		bc_vector2< T >& bc_vector2< T >::operator/=(T p_scalar) noexcept
 		{
 			if (p_scalar != 0.0f)
 			{

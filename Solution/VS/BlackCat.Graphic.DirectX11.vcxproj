@@ -187,6 +187,7 @@
     <PostBuildEvent>
       <Command>if not exist ..\..\BC_SDK\Include\GraphicImp\ mkdir ..\..\BC_SDK\Include\GraphicImp\
 if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
+if not exist ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -235,6 +236,7 @@ copy ..\..\3rdParty\3rdParty\DirectXTK-master\Lib\$(Platform)_$(Configuration)\D
     <PostBuildEvent>
       <Command>if not exist ..\..\BC_SDK\Include\GraphicImp\ mkdir ..\..\BC_SDK\Include\GraphicImp\
 if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
+if not exist ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\3rdParty\DirectXTK\$(Platform)_$(Configuration)
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
