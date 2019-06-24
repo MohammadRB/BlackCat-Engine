@@ -250,13 +250,36 @@ namespace black_cat
 				l_max.y = std::max(l_frustum_point.y, l_max.y);
 				l_max.z = std::max(l_frustum_point.z, l_max.z);
 			}
-
+			
 			const auto l_frustum_center = (l_min + l_max) / 2;
-			const auto l_frustum_height = l_max.y - l_min.y;
-			const auto l_camera_pos = l_frustum_center + (-p_light.get_direction() * (l_frustum_height + m_cascade_cameras_distance));
-			const auto l_frustum_far_plan = (l_camera_pos - l_frustum_center).magnitude() + l_frustum_height;
+			const auto l_camera_pos = l_frustum_center + (-p_light.get_direction() * m_cascade_cameras_distance);
 
-			l_cascade_cameras.push_back(_bc_cascaded_shadow_map_camera(l_camera_pos, l_frustum_center, l_max.x - l_min.x, l_max.y - l_min.y, 0.1, l_frustum_far_plan));
+			auto l_cascade_view_matrix = core::bc_matrix4f::look_at_matrix_lh(l_camera_pos, l_frustum_center, core::bc_vector3f::up());
+			core::bc_array<core::bc_vector3f, 8> l_frustum_points_vs
+			{
+				(l_cascade_view_matrix * core::bc_vector4f(l_frustum_points[0], 1)).xyz(),
+				(l_cascade_view_matrix * core::bc_vector4f(l_frustum_points[1], 1)).xyz(),
+				(l_cascade_view_matrix * core::bc_vector4f(l_frustum_points[2], 1)).xyz(),
+				(l_cascade_view_matrix * core::bc_vector4f(l_frustum_points[3], 1)).xyz(),
+				(l_cascade_view_matrix * core::bc_vector4f(l_frustum_points[4], 1)).xyz(),
+				(l_cascade_view_matrix * core::bc_vector4f(l_frustum_points[5], 1)).xyz(),
+				(l_cascade_view_matrix * core::bc_vector4f(l_frustum_points[6], 1)).xyz(),
+				(l_cascade_view_matrix * core::bc_vector4f(l_frustum_points[7], 1)).xyz(),
+			};
+
+			core::bc_vector3f l_min_vs(std::numeric_limits<bcFLOAT>::max());
+			core::bc_vector3f l_max_vs(std::numeric_limits<bcFLOAT>::lowest());
+			for (auto& l_frustum_point : l_frustum_points_vs)
+			{
+				l_min_vs.x = std::min(l_frustum_point.x, l_min_vs.x);
+				l_min_vs.y = std::min(l_frustum_point.y, l_min_vs.y);
+				l_min_vs.z = std::min(l_frustum_point.z, l_min_vs.z);
+				l_max_vs.x = std::max(l_frustum_point.x, l_max_vs.x);
+				l_max_vs.y = std::max(l_frustum_point.y, l_max_vs.y);
+				l_max_vs.z = std::max(l_frustum_point.z, l_max_vs.z);
+			}
+
+			l_cascade_cameras.push_back(_bc_cascaded_shadow_map_camera(l_camera_pos, l_frustum_center, l_max_vs.x - l_min_vs.x, l_max_vs.y - l_min_vs.y, 0.1, l_max_vs.z));
 		}
 
 		return l_cascade_cameras;
