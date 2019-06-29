@@ -15,7 +15,11 @@ namespace black_cat
 	public:
 		bcSIZE size() const noexcept;
 
-		graphic::bc_resource_view get(const core::bc_vector3f& p_light_direction) const noexcept;
+		core::bc_vector3f get_light(bcSIZE p_index) const noexcept;
+
+		graphic::bc_resource_view get_buffer(const core::bc_vector3f& p_light_direction) const noexcept;
+
+		core::bc_vector_frame<graphic::bc_resource_view> get_buffers() const;
 
 		void add(const core::bc_vector3f& p_light_direction, const graphic::bc_resource_view& p_buffer);
 
@@ -30,7 +34,12 @@ namespace black_cat
 		return m_depth_buffers.size();
 	}
 
-	inline graphic::bc_resource_view bc_cascaded_shadow_map_buffer_container::get(const core::bc_vector3f& p_light_direction) const noexcept
+	inline core::bc_vector3f bc_cascaded_shadow_map_buffer_container::get_light(bcSIZE p_index) const noexcept
+	{
+		return std::get<core::bc_vector3f>(m_depth_buffers[p_index]);
+	}
+
+	inline graphic::bc_resource_view bc_cascaded_shadow_map_buffer_container::get_buffer(const core::bc_vector3f& p_light_direction) const noexcept
 	{
 		const auto l_iterator = std::find_if(std::cbegin(m_depth_buffers), std::cend(m_depth_buffers), [&](const entry& p_entry)
 		{
@@ -43,6 +52,19 @@ namespace black_cat
 		}
 
 		return std::get<graphic::bc_resource_view>(*l_iterator);
+	}
+
+	inline core::bc_vector_frame<graphic::bc_resource_view> bc_cascaded_shadow_map_buffer_container::get_buffers() const
+	{
+		core::bc_vector_frame<graphic::bc_resource_view> l_result;
+		l_result.reserve(m_depth_buffers.size());
+
+		std::transform(std::cbegin(m_depth_buffers), std::cend(m_depth_buffers), std::begin(l_result), [](const entry& p_entry)
+		{
+			return std::get<graphic::bc_resource_view>(p_entry);
+		});
+
+		return l_result;
 	}
 
 	inline void bc_cascaded_shadow_map_buffer_container::add(const core::bc_vector3f& p_light_direction, const graphic::bc_resource_view& p_buffer)

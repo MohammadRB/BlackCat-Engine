@@ -35,6 +35,7 @@ namespace black_cat
 
 	private:
 		const bcSIZE m_shader_thread_group_size = 16;
+		const bcSIZE m_shader_depth_map_count = 4;
 		const bcSIZE m_num_direct_lights = 2;
 		const bcSIZE m_num_point_lights = 100;
 		const bcSIZE m_num_spot_lights = 100;

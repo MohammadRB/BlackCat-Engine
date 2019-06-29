@@ -103,9 +103,14 @@ namespace black_cat
 			}
 		}
 
-		if(l_direct_lights.size() > m_light_instance_states.size())
+		while(m_light_instance_states.size() < l_direct_lights.size())
 		{
 			m_light_instance_states.push_back(_create_light_instance(p_param.m_render_system));
+		}
+
+		while(m_light_instance_states.size() > l_direct_lights.size())
+		{
+			m_light_instance_states.pop_back();
 		}
 
 		for(bcSIZE l_light_ite = 0; l_light_ite < l_direct_lights.size(); ++l_light_ite)

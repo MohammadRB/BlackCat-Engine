@@ -15,22 +15,23 @@
 
 namespace black_cat
 {
-	struct _bc_light_cbuffer_base
+	struct _bc_base_light_struct
 	{
 		core::bc_vector3f m_min_bound;
 		core::bc_vector3f m_max_bound;
 	};
 	
-	struct _bc_direct_light_cbuffer : _bc_light_cbuffer_base
+	struct _bc_direct_light_struct : _bc_base_light_struct
 	{
 		core::bc_vector3f m_direction;
 		core::bc_vector3f m_color;
 		bcFLOAT m_intensity;
 		core::bc_vector3f m_ambient_color;
 		bcFLOAT m_ambient_intensity;
+		bcINT32 m_depth_map_index;
 	};
 
-	struct _bc_point_light_cbuffer : _bc_light_cbuffer_base
+	struct _bc_point_light_struct : _bc_base_light_struct
 	{
 		core::bc_vector3f m_position;
 		bcFLOAT m_radius;
@@ -38,7 +39,7 @@ namespace black_cat
 		bcFLOAT m_intensity;
 	};
 	
-	struct _bc_spot_light_cbuffer : _bc_light_cbuffer_base
+	struct _bc_spot_light_struct : _bc_base_light_struct
 	{
 		core::bc_vector3f m_position;
 		bcFLOAT m_angle;
@@ -78,29 +79,29 @@ namespace black_cat
 			.as_buffer
 			(
 				m_num_direct_lights,
-				sizeof(_bc_direct_light_cbuffer),
+				sizeof(_bc_direct_light_struct),
 				graphic::bc_resource_usage::gpu_rw,
 				graphic::bc_resource_view_type::shader
 			)
-			.as_structured_buffer(sizeof(_bc_direct_light_cbuffer));
+			.as_structured_buffer(sizeof(_bc_direct_light_struct));
 		auto l_point_lights_buffer_config = l_resource_configure.as_resource()
 			.as_buffer
 			(
 				m_num_point_lights,
-				sizeof(_bc_point_light_cbuffer),
+				sizeof(_bc_point_light_struct),
 				graphic::bc_resource_usage::gpu_rw,
 				graphic::bc_resource_view_type::shader
 			)
-			.as_structured_buffer(sizeof(_bc_point_light_cbuffer));
+			.as_structured_buffer(sizeof(_bc_point_light_struct));
 		auto l_spot_lights_buffer_config = l_resource_configure.as_resource()
 			.as_buffer
 			(
 				m_num_spot_lights,
-				sizeof(_bc_spot_light_cbuffer),
+				sizeof(_bc_spot_light_struct),
 				graphic::bc_resource_usage::gpu_rw,
 				graphic::bc_resource_view_type::shader
 			)
-			.as_structured_buffer(sizeof(_bc_spot_light_cbuffer));
+			.as_structured_buffer(sizeof(_bc_spot_light_struct));
 
 		auto l_direct_lights_buffer_view_config = l_resource_configure.as_resource_view()
 			.as_buffer_view(graphic::bc_format::unknown)
@@ -147,9 +148,9 @@ namespace black_cat
 
 	void bc_gbuffer_light_map_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		core::bc_vector_frame<_bc_direct_light_cbuffer> l_direct_lights;
-		core::bc_vector_frame<_bc_point_light_cbuffer> l_point_lights;
-		core::bc_vector_frame<_bc_spot_light_cbuffer> l_spot_lights;
+		core::bc_vector_frame<_bc_direct_light_struct> l_direct_lights;
+		core::bc_vector_frame<_bc_point_light_struct> l_point_lights;
+		core::bc_vector_frame<_bc_spot_light_struct> l_spot_lights;
 
 		l_direct_lights.reserve(m_num_direct_lights);
 		l_point_lights.reserve(m_num_point_lights);
@@ -166,7 +167,7 @@ namespace black_cat
 			case game::bc_light_type::direct:
 				{
 					auto* l_direct_light = l_light.m_instance.as_direct_light();
-					_bc_direct_light_cbuffer l_direct_light_cbuffer;
+					_bc_direct_light_struct l_direct_light_cbuffer;
 
 					l_direct_light_cbuffer.m_min_bound = l_light.m_min_bound;
 					l_direct_light_cbuffer.m_max_bound = l_light.m_max_bound;
@@ -175,6 +176,7 @@ namespace black_cat
 					l_direct_light_cbuffer.m_intensity = l_direct_light->get_intensity();
 					l_direct_light_cbuffer.m_ambient_color = l_direct_light->get_ambient_color();
 					l_direct_light_cbuffer.m_ambient_intensity = l_direct_light->get_ambient_intensity();
+					l_direct_light_cbuffer.m_depth_map_index = -1;
 
 					l_direct_lights.push_back(l_direct_light_cbuffer);
 					break;
@@ -182,7 +184,7 @@ namespace black_cat
 			case game::bc_light_type::point:
 				{
 					auto l_point_light = l_light.m_instance.as_point_light();
-					_bc_point_light_cbuffer l_point_light_cbuffer;
+					_bc_point_light_struct l_point_light_cbuffer;
 
 					l_point_light_cbuffer.m_min_bound = l_light.m_min_bound;
 					l_point_light_cbuffer.m_max_bound = l_light.m_max_bound;
@@ -197,7 +199,7 @@ namespace black_cat
 			case game::bc_light_type::spot:
 				{
 				auto l_spot_light = l_light.m_instance.as_spot_light();
-					_bc_spot_light_cbuffer l_spot_light_cbuffer;
+					_bc_spot_light_struct l_spot_light_cbuffer;
 					
 					l_spot_light_cbuffer.m_min_bound = l_light.m_min_bound;
 					l_spot_light_cbuffer.m_max_bound = l_light.m_max_bound;
@@ -219,7 +221,27 @@ namespace black_cat
 		bcAssert(l_point_lights.size() <= m_num_point_lights);
 		bcAssert(l_spot_lights.size() <= m_num_spot_lights);
 
+		// Associate light depth maps to their structures
+		bcSIZE l_shader_depth_map_count = 0;
 		auto* l_csm_buffer_container = get_shared_resource<bc_cascaded_shadow_map_buffer_container>(m_csm_buffers_container_share_slot);
+
+		if(l_csm_buffer_container != nullptr)
+		{
+			for (bcSIZE l_index = 0, l_end = l_csm_buffer_container->size(); l_index < l_end; ++l_index)
+			{
+				auto l_direct_light_ite = std::find_if(std::cbegin(l_direct_lights), std::cend(l_direct_lights), [&](const _bc_direct_light_struct& p_direct_light)
+				{
+					return p_direct_light.m_direction == l_csm_buffer_container->get_light(l_index);
+				});
+
+				bcAssert(l_direct_light_ite != std::cend(l_direct_lights));
+
+				l_direct_light_ite->m_depth_map_index = l_index;
+				l_shader_depth_map_count++;
+			}
+		}
+
+		bcAssert(l_shader_depth_map_count <= m_shader_depth_map_count);
 
 		p_param.m_render_thread.start(m_command_list.get());
 		

@@ -47,6 +47,11 @@ StructuredBuffer<direct_light> g_direct_lights		: register(BC_COMPUTE_STATE_T3);
 StructuredBuffer<point_light> g_point_lights			: register(BC_COMPUTE_STATE_T4);
 StructuredBuffer<spot_light> g_spot_lights			: register(BC_COMPUTE_STATE_T5);
 
+Texture2D<float4> g_light_depth_map_1				: register(BC_COMPUTE_STATE_T6);
+Texture2D<float4> g_light_depth_map_2				: register(BC_COMPUTE_STATE_T7);
+Texture2D<float4> g_light_depth_map_3				: register(BC_COMPUTE_STATE_T8);
+Texture2D<float4> g_light_depth_map_4				: register(BC_COMPUTE_STATE_T9);
+
 RWTexture2D<float4> g_output_texture                : register(BC_COMPUTE_STATE_U0);
 
 cbuffer g_cb_parameters                             : register(BC_COMPUTE_STATE_CB1)
