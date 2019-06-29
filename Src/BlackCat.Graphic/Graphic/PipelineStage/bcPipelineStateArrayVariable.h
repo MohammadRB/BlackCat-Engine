@@ -111,11 +111,17 @@ namespace black_cat
 			if (!l_is_same)
 			{
 				if (!m_update_needed)
+				{
 					m_dirty_start = m_dirty_end = p_slot;
+				}
 				else if (p_slot < m_dirty_start)
+				{
 					m_dirty_start = p_slot;
+				}
 				else if (p_slot > m_dirty_end)
+				{
 					m_dirty_end = p_slot;
+				}
 
 				m_states[p_slot] = p_state;
 				m_update_needed = true;
@@ -148,7 +154,9 @@ namespace black_cat
 		bcUINT32 bc_pipeline_state_array_variable< TState, TNum >::get_dirty_start() const noexcept
 		{
 			if (!update_needed())
+			{
 				return 0;
+			}
 			return m_dirty_start;
 		}
 
@@ -156,15 +164,19 @@ namespace black_cat
 		bcUINT32 bc_pipeline_state_array_variable< TState, TNum >::get_dirty_end() const noexcept
 		{
 			if (!update_needed())
+			{
 				return 0;
+			}
 			return m_dirty_end;
 		}
 
 		template< typename TState, bcUINT32 TNum >
 		bcUINT32 bc_pipeline_state_array_variable< TState, TNum >::get_dirty_count() const noexcept
 		{
-			if (!update_needed()) 
+			if (!update_needed())
+			{
 				return 0;
+			}
 			return get_dirty_end() - get_dirty_start() + 1;
 		}
 

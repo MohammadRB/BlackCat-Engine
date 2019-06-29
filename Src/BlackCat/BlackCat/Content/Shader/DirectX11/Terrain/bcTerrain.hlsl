@@ -14,7 +14,7 @@ cbuffer g_cb_render_pass_parameter          : register(BC_RENDER_PASS_STATE_CB1)
 	float4 g_frustum_planes[6]              : packoffset(c0.x);
 };
 
-Texture2D<float> g_heightmap			    : register(BC_RENDER_STATE_T0);
+Texture2D<float> g_heightmap					: register(BC_RENDER_STATE_T0);
 StructuredBuffer<int3> g_chunk_info         : register(BC_RENDER_STATE_T1);
 Texture2D<uint4> g_texturemap               : register(BC_RENDER_STATE_T2);
 

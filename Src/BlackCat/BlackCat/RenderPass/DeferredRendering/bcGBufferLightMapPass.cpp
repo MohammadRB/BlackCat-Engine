@@ -198,7 +198,7 @@ namespace black_cat
 				{
 				auto l_spot_light = l_light.m_instance.as_spot_light();
 					_bc_spot_light_cbuffer l_spot_light_cbuffer;
-
+					
 					l_spot_light_cbuffer.m_min_bound = l_light.m_min_bound;
 					l_spot_light_cbuffer.m_max_bound = l_light.m_max_bound;
 					l_spot_light_cbuffer.m_position = l_spot_light->get_position(l_light.m_instance.get_transformation());
@@ -220,7 +220,6 @@ namespace black_cat
 		bcAssert(l_spot_lights.size() <= m_num_spot_lights);
 
 		auto* l_csm_buffer_container = get_shared_resource<bc_cascaded_shadow_map_buffer_container>(m_csm_buffers_container_share_slot);
-
 
 		p_param.m_render_thread.start(m_command_list.get());
 		

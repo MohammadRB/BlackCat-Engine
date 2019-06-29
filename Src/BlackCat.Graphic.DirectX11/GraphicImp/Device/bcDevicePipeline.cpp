@@ -274,12 +274,12 @@ namespace black_cat
 		{
 			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_shader_constant_buffer());
 
-			bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
-			bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
-			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
-			bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
-			bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
-			bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
+			const bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
+			const bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
+			const bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
+			const bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
+			const bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
+			const bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
 
 			bc_buffer l_buffer = p_parameter.get_buffer();
 
@@ -333,12 +333,12 @@ namespace black_cat
 		{
 			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_shader_constant_buffer());
 
-			bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
-			bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
-			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
-			bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
-			bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
-			bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
+			const bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
+			const bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
+			const bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
+			const bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
+			const bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
+			const bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
 
 			if (l_vertex_shader)
 			{
@@ -390,12 +390,12 @@ namespace black_cat
 		{
 			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_shader_sampler());
 
-			bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
-			bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
-			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
-			bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
-			bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
-			bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
+			const bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
+			const bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
+			const bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
+			const bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
+			const bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
+			const bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
 
 			bc_sampler_state l_sampler = p_parameter.get_sampler();
 
@@ -449,12 +449,12 @@ namespace black_cat
 		{
 			bcAssert(p_parameter.get_register_index() <= bc_render_api_info::number_of_shader_sampler());
 
-			bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
-			bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
-			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
-			bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
-			bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
-			bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
+			const bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
+			const bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
+			const bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
+			const bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
+			const bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
+			const bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
 
 			if (l_vertex_shader)
 			{
@@ -504,7 +504,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline< g_api_dx11 >::bind_ps_shader_view_parameter(const bc_resource_view_parameter& p_parameter)
 		{
-			bc_resource_view l_resource = p_parameter.get_resource_view();
+			const bc_resource_view l_resource = p_parameter.get_resource_view();
 
 			bcAssert
 			(
@@ -513,12 +513,12 @@ namespace black_cat
 				p_parameter.get_register_index() <= bc_render_api_info::number_of_ps_cs_uav_resource()
 			);
 
-			bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
-			bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
-			bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
-			bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
-			bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
-			bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
+			const bool l_vertex_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::vertex);
+			const bool l_hull_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::hull);
+			const bool l_domain_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::domain);
+			const bool l_geometry_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::geometry);
+			const bool l_pixel_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::pixel);
+			const bool l_compute_shader = core::bc_enum::has(p_parameter.get_shader_types(), bc_shader_type::compute);
 
 			if (l_vertex_shader)
 			{

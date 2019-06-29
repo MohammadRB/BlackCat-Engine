@@ -6,19 +6,19 @@
 
 // == Resource ===================================================================================
 
-Texture2D<float> g_heightmap				: register(BC_COMPUTE_STATE_T0);
+Texture2D<float> g_heightmap					: register(BC_COMPUTE_STATE_T0);
 RWStructuredBuffer<int3> g_chunk_info		: register(BC_COMPUTE_STATE_U0);
 
 cbuffer g_cb_parameter						: register(BC_COMPUTE_STATE_CB0)
 {
-    uint g_width							: packoffset(c0.x);
+    uint g_width								: packoffset(c0.x);
     uint g_height							: packoffset(c0.y);
     uint g_chunk_size						: packoffset(c0.z);
-    uint g_xz_multiplier					: packoffset(c0.w);
-    float g_y_multiplier					: packoffset(c1.x);
+    uint g_xz_multiplier						: packoffset(c0.w);
+    float g_y_multiplier						: packoffset(c1.x);
 	float g_physics_y_scale					: packoffset(c1.y);
     uint g_distance_detail					: packoffset(c1.z);		// Distance from camera that render will happen with full detail
-    uint g_height_detail					: packoffset(c1.w);		// Lower values result in higher details
+    uint g_height_detail						: packoffset(c1.w);		// Lower values result in higher details
 };
 
 // == Helper ======================================================================================

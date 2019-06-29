@@ -120,7 +120,7 @@ namespace black_cat
 			{
 				p_thread.update_subresource(m_ib.get(), 0, l_indices_data, 0, 0);
 			}
-
+			
 			if (l_requires_render_state_update)
 			{
 				m_render_state = p_render_system.create_render_state

@@ -88,8 +88,10 @@ namespace black_cat
 		void bc_render_thread::bind_render_pass_state(bc_render_pass_state* p_render_pass_state)
 		{
 			bcSIZE l_render_target_count = 0;
-			core::bc_array< graphic::bc_render_target_view, g_render_pass_state_render_target_view_count > l_render_targets;
+
+			bc_render_pass_state_render_target_view_array l_render_targets;
 			graphic::bc_depth_stencil_view l_depth_stencil = p_render_pass_state->m_shader_depth;
+			
 			std::transform
 			(
 				std::cbegin(p_render_pass_state->m_shader_targets),
