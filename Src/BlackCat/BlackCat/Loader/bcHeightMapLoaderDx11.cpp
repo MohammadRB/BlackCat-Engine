@@ -7,7 +7,6 @@
 #include "Core/Content/bcContentManager.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/File/bcJsonDocument.h"
-#include "Core/bcConstant.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/Resource/bcResourceConfig.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
@@ -20,6 +19,7 @@
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
 #include "Game/Object/Mesh/bcMaterial.h"
+#include "BlackCat/bcConstant.h"
 #include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
 
 namespace black_cat
@@ -303,7 +303,7 @@ namespace black_cat
 			std::move
 			(
 				core::bc_content_loader_parameter(p_context.m_parameter)
-				.add_value(core::g_param_texture_config, l_texture_map_texture_config)
+				.add_value(constant::g_param_texture_config, l_texture_map_texture_config)
 			)
 		);
 

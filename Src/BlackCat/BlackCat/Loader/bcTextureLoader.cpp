@@ -2,12 +2,12 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
-#include "Core/bcConstant.h"
 #include "Core/bcException.h"
 #include "Core/Container/bcVector.h"
 #include "Core/File/bcPath.h"
 #include "GraphicImp/Resource/bcResourceConfig.h"
 #include "Game/System/bcGameSystem.h"
+#include "BlackCat/bcConstant.h"
 #include "BlackCat/Loader/bcTextureLoader.h"
 
 namespace black_cat
@@ -89,7 +89,7 @@ namespace black_cat
 		}
 
 		graphic::bc_device& l_device = core::bc_get_service< game::bc_game_system >()->get_render_system().get_device();
-		graphic::bc_texture_config* l_config = p_context.m_parameter.get_value<graphic::bc_texture_config>(core::g_param_texture_config);
+		graphic::bc_texture_config* l_config = p_context.m_parameter.get_value<graphic::bc_texture_config>(constant::g_param_texture_config);
 
 		l_config = l_config ? l_config : &s_default_config;
 

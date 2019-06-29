@@ -9,7 +9,7 @@
 
 namespace black_cat
 {
-	bc_back_buffer_write_pass::bc_back_buffer_write_pass(game::bc_render_pass_resource_variable p_input_texture)
+	bc_back_buffer_write_pass::bc_back_buffer_write_pass(constant::bc_render_pass_variable_t p_input_texture)
 		: m_input_texture(p_input_texture)
 	{
 	}
@@ -33,7 +33,7 @@ namespace black_cat
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0x1,
 			{ l_device.get_back_buffer_format() },
-			get_shared_resource<graphic::bc_texture2d>(game::bc_render_pass_resource_variable::depth_stencil_texture)->get_format(),
+			get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
 			game::bc_multi_sample_type::c1_q1
 		);
 
@@ -168,7 +168,7 @@ namespace black_cat
 			}
 		);
 
-		share_resource(game::bc_render_pass_resource_variable::back_buffer_view, m_back_buffer_view.get());
+		share_resource(constant::g_rpass_back_buffer_view, m_back_buffer_view.get());
 	}
 
 	void bc_back_buffer_write_pass::destroy(game::bc_render_system& p_render_system)

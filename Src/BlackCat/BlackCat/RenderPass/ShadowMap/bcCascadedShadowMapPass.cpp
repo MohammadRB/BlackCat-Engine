@@ -20,9 +20,10 @@ namespace black_cat
 		bcUINT32 m_shadow_map_current_cascade;
 	};
 
-	bc_cascaded_shadow_map_pass::bc_cascaded_shadow_map_pass(bcSIZE p_shadow_map_size, std::initializer_list<bcSIZE> p_cascade_sizes)
+	bc_cascaded_shadow_map_pass::bc_cascaded_shadow_map_pass(constant::bc_render_pass_variable_t p_output_depth_buffers, bcSIZE p_shadow_map_size, std::initializer_list<bcSIZE> p_cascade_sizes)
 		: m_shadow_map_size(p_shadow_map_size),
-		m_cascade_sizes(p_cascade_sizes)
+		m_cascade_sizes(p_cascade_sizes),
+		m_depth_buffers_share_slot(p_output_depth_buffers)
 	{
 	}
 
@@ -35,20 +36,20 @@ namespace black_cat
 			nullptr,
 			nullptr,
 			nullptr,
-			"csm_ps",
+			nullptr, //"csm_ps",
 			game::bc_vertex_type::pos_tex_nor_tan,
 			game::bc_blend_type::opaque,
 			game::bc_depth_stencil_type::depth_less_stencil_off,
 			game::bc_rasterizer_type::fill_solid_cull_back,
 			0x01,
 			{
-				graphic::bc_format::D32_FLOAT
+				//graphic::bc_format::D32_FLOAT
 			},
-			get_shared_resource<graphic::bc_texture2d>(game::bc_render_pass_resource_variable::depth_stencil_texture)->get_format(),
+			graphic::bc_format::D32_FLOAT,
 			game::bc_multi_sample_type::c1_q1
 		);
 
-		auto l_depth_stencil_config = graphic::bc_graphic_resource_configure()
+		/*auto l_depth_stencil_config = graphic::bc_graphic_resource_configure()
 			.as_resource()
 			.as_texture2d
 			(
@@ -66,13 +67,15 @@ namespace black_cat
 			.as_tex2d_depth_stencil_view(0);
 
 		m_depth_buffer = p_render_system.get_device().create_texture2d(l_depth_stencil_config, nullptr);
-		m_depth_buffer_view = p_render_system.get_device().create_depth_stencil_view(m_depth_buffer.get(), l_depth_stencil_view_config);
+		m_depth_buffer_view = p_render_system.get_device().create_depth_stencil_view(m_depth_buffer.get(), l_depth_stencil_view_config);*/
 
 		auto l_parameters_cbuffer_config = graphic::bc_graphic_resource_configure()
 			.as_resource()
 			.as_buffer(1, sizeof(bc_parameters_cbuffer), graphic::bc_resource_usage::gpu_rw)
 			.as_constant_buffer();
 		m_parameters_cbuffer = p_render_system.get_device().create_buffer(l_parameters_cbuffer_config, nullptr);
+
+		share_resource(m_depth_buffers_share_slot, m_depth_buffers_container);
 	}
 
 	void bc_cascaded_shadow_map_pass::update(const game::bc_render_pass_update_param& p_param)
@@ -137,10 +140,17 @@ namespace black_cat
 			}
 			
 			p_param.m_render_thread.unbind_render_pass_state(l_light_render_pass_state);
+
+			m_depth_buffers_container.add(l_light.get_direction(), l_light_state.m_depth_buffer_resource_view.get());
 		}
 		
 		p_param.m_render_thread.finish();
 		m_command_list->finished();
+	}
+
+	void bc_cascaded_shadow_map_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
+	{
+		m_depth_buffers_container.clear();
 	}
 
 	void bc_cascaded_shadow_map_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
@@ -153,20 +163,23 @@ namespace black_cat
 
 	void bc_cascaded_shadow_map_pass::destroy(game::bc_render_system& p_render_system)
 	{
+		m_depth_buffers_container.clear();
 		m_light_instance_states.clear();
 		m_parameters_cbuffer.reset();
-		m_depth_buffer_view.reset();
-		m_depth_buffer.reset();
+		//m_depth_buffer_view.reset();
+		//m_depth_buffer.reset();
 		m_device_pipeline.reset();
 		m_command_list.reset();
+
+		unshare_resource(m_depth_buffers_share_slot);
 	}
 
 	_bc_cascaded_shadow_map_light_state bc_cascaded_shadow_map_pass::_create_light_instance(game::bc_render_system& p_render_system)
 	{
 		_bc_cascaded_shadow_map_light_state l_instance;
 
-		auto l_resource_configure = graphic::bc_graphic_resource_configure();
-		auto l_shadow_map_config = l_resource_configure.as_resource()
+		//auto l_resource_configure = graphic::bc_graphic_resource_configure();
+		/*auto l_shadow_map_config = l_resource_configure.as_resource()
 			.as_texture2d
 			(
 				m_shadow_map_size * m_cascade_sizes.size(),
@@ -180,9 +193,9 @@ namespace black_cat
 			.as_render_target_texture();
 		auto l_render_target_config = l_resource_configure.as_resource_view()
 			.as_texture_view(graphic::bc_format::R32_FLOAT)
-			.as_tex2d_render_target_view(0);
+			.as_tex2d_render_target_view(0);*/
 
-		l_instance.m_shadow_map = p_render_system.get_device().create_texture2d(l_shadow_map_config, nullptr);
+		/*l_instance.m_shadow_map = p_render_system.get_device().create_texture2d(l_shadow_map_config, nullptr);
 		l_instance.m_render_target = p_render_system.get_device().create_render_target_view(l_instance.m_shadow_map.get(), l_render_target_config);
 		l_instance.m_render_pass_state = p_render_system.create_render_pass_state
 		(
@@ -196,7 +209,45 @@ namespace black_cat
 				p_render_system.get_global_cbuffer(),
 				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::vertex, m_parameters_cbuffer.get()) 
 			}
-		);
+		);*/
+		auto l_depth_buffer_config = graphic::bc_graphic_resource_configure()
+			.as_resource()
+			.as_texture2d
+			(
+				m_shadow_map_size * m_cascade_sizes.size(),
+				m_shadow_map_size,
+				false,
+				1,
+				graphic::bc_format::D32_FLOAT,
+				graphic::bc_resource_usage::gpu_rw,
+				core::bc_enum:: or ({ graphic::bc_resource_view_type::depth_stencil, graphic::bc_resource_view_type::shader })
+			).as_depth_stencil_texture();
+		auto l_depth_buffer_view_config = graphic::bc_graphic_resource_configure()
+			.as_resource_view()
+			.as_texture_view(graphic::bc_format::D32_FLOAT)
+			.as_tex2d_depth_stencil_view(0);
+		auto l_depth_buffer_resource_view_config = graphic::bc_graphic_resource_configure()
+			.as_resource_view()
+			.as_texture_view(graphic::bc_format::D32_FLOAT)
+			.as_tex2d_shader_view(0, 1)
+			.on_depth_stencil_texture2d();
+
+		l_instance.m_depth_buffer = p_render_system.get_device().create_texture2d(l_depth_buffer_config, nullptr);
+		l_instance.m_depth_buffer_view = p_render_system.get_device().create_depth_stencil_view(l_instance.m_depth_buffer.get(), l_depth_buffer_view_config);
+		l_instance.m_depth_buffer_resource_view = p_render_system.get_device().create_resource_view(l_instance.m_depth_buffer.get(), l_depth_buffer_resource_view_config);
+		l_instance.m_render_pass_state = p_render_system.create_render_pass_state
+		(
+			m_device_pipeline.get(),
+			graphic::bc_viewport::default_config(l_depth_buffer_config.get_width(), l_depth_buffer_config.get_height()),
+			{ },
+			l_instance.m_depth_buffer_view.get(),
+			{},
+			{},
+			{
+				p_render_system.get_global_cbuffer(),
+				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::vertex, m_parameters_cbuffer.get())
+			}
+			);
 
 		return l_instance;
 	}

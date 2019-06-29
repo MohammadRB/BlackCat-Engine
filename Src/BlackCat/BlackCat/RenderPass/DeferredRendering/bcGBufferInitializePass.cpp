@@ -3,6 +3,7 @@
 #include "BlackCat/BlackCatPCH.h"
 
 #include "GraphicImp/Resource/bcResourceConfig.h"
+#include "Game/bcConstant.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "Game/System/Input/bcCameraFrustum.h"
@@ -43,7 +44,7 @@ namespace black_cat
 		game::bc_camera_frustum l_frustum(p_param.m_camera);
 		game::bc_scene_graph_buffer l_actors = p_param.m_scene.get_actors(l_frustum);
 
-		share_resource(game::bc_render_pass_resource_variable::actor_list, std::move(l_actors));
+		share_resource(constant::g_rpass_actor_list, std::move(l_actors));
 	}
 
 	void bc_gbuffer_initialize_pass::execute(const game::bc_render_pass_render_param& p_param)
@@ -52,7 +53,7 @@ namespace black_cat
 
 	void bc_gbuffer_initialize_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		unshare_resource(game::bc_render_pass_resource_variable::actor_list);
+		unshare_resource(constant::g_rpass_actor_list);
 	}
 
 	void bc_gbuffer_initialize_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
@@ -121,22 +122,22 @@ namespace black_cat
 		m_diffuse_map_view = p_param.m_device.create_render_target_view(m_diffuse_map.get(), l_diffuse_map_view_config);
 		m_normal_map_view = p_param.m_device.create_render_target_view(m_normal_map.get(), l_normal_map_view_config);
 
-		share_resource(game::bc_render_pass_resource_variable::depth_stencil_texture, m_depth_stencil.get());
-		share_resource(game::bc_render_pass_resource_variable::depth_stencil_view, m_depth_stencil_view.get());
-		share_resource(game::bc_render_pass_resource_variable::render_target_texture_1, m_diffuse_map.get());
-		share_resource(game::bc_render_pass_resource_variable::render_target_view_1, m_diffuse_map_view.get());
-		share_resource(game::bc_render_pass_resource_variable::render_target_texture_2, m_normal_map.get());
-		share_resource(game::bc_render_pass_resource_variable::render_target_view_2, m_normal_map_view.get());
+		share_resource(constant::g_rpass_depth_stencil_texture, m_depth_stencil.get());
+		share_resource(constant::g_rpass_depth_stencil_view, m_depth_stencil_view.get());
+		share_resource(constant::g_rpass_render_target_texture_1, m_diffuse_map.get());
+		share_resource(constant::g_rpass_render_target_view_1, m_diffuse_map_view.get());
+		share_resource(constant::g_rpass_render_target_texture_2, m_normal_map.get());
+		share_resource(constant::g_rpass_render_target_view_2, m_normal_map_view.get());
 	}
 
 	void bc_gbuffer_initialize_pass::destroy(game::bc_render_system& p_render_system)
 	{
-		unshare_resource(game::bc_render_pass_resource_variable::depth_stencil_texture);
-		unshare_resource(game::bc_render_pass_resource_variable::depth_stencil_view);
-		unshare_resource(game::bc_render_pass_resource_variable::render_target_texture_1);
-		unshare_resource(game::bc_render_pass_resource_variable::render_target_view_1);
-		unshare_resource(game::bc_render_pass_resource_variable::render_target_texture_2);
-		unshare_resource(game::bc_render_pass_resource_variable::render_target_view_2);
+		unshare_resource(constant::g_rpass_depth_stencil_texture);
+		unshare_resource(constant::g_rpass_depth_stencil_view);
+		unshare_resource(constant::g_rpass_render_target_texture_1);
+		unshare_resource(constant::g_rpass_render_target_view_1);
+		unshare_resource(constant::g_rpass_render_target_texture_2);
+		unshare_resource(constant::g_rpass_render_target_view_2);
 
 		m_depth_stencil_view.reset();
 		m_diffuse_map.reset();

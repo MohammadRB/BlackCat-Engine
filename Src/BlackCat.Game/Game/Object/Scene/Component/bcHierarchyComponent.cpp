@@ -2,13 +2,12 @@
 
 #include "Game/GamePCH.h"
 
-#include "Core/bcConstant.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcParameterPack.h"
+#include "Game/bcConstant.h"
 #include "Game/Object/Scene/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcHierarchyComponent.h"
-#include "PlatformImp/bc_ide_logger.h"
 
 namespace black_cat
 {
@@ -66,7 +65,7 @@ namespace black_cat
 
 		void bc_hierarchy_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
 		{
-			auto& l_child_entity_names = p_parameters.get_value_throw< core::bc_string >(core::g_param_child_actor);
+			auto& l_child_entity_names = p_parameters.get_value_throw< core::bc_string >(constant::g_param_child_actor);
 			auto* l_entity_manager = core::bc_get_service< bc_entity_manager >();
 
 			core::bc_string::size_type l_last_pos = 0;

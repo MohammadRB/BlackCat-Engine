@@ -8,7 +8,7 @@
 
 namespace black_cat
 {
-	bc_shape_draw_pass::bc_shape_draw_pass(game::bc_render_pass_resource_variable p_render_target_view)
+	bc_shape_draw_pass::bc_shape_draw_pass(constant::bc_render_pass_variable_t p_render_target_view)
 		: m_render_target_view_variable(p_render_target_view)
 	{
 	}
@@ -67,7 +67,7 @@ namespace black_cat
 	void bc_shape_draw_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
 		auto& l_shape_drawer = p_param.m_render_system.get_shape_drawer();
-		game::bc_scene_graph_buffer* l_actors = get_shared_resource<game::bc_scene_graph_buffer>(game::bc_render_pass_resource_variable::actor_list);
+		game::bc_scene_graph_buffer* l_actors = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
 
 		p_param.m_scene.add_debug_shapes(l_shape_drawer, *l_actors);
 		l_shape_drawer.render(p_param.m_render_system, p_param.m_render_thread);
@@ -103,7 +103,7 @@ namespace black_cat
 		{
 			graphic::bc_texture2d l_back_buffer_texture = p_param.m_device.get_back_buffer_texture();
 
-			const auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(game::bc_render_pass_resource_variable::depth_stencil_view);
+			const auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(constant::g_rpass_depth_stencil_view);
 			const auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(m_render_target_view_variable);
 			const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
 			

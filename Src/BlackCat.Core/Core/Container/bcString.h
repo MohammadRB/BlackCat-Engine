@@ -2180,7 +2180,7 @@ namespace std
 		using argument_type = const black_cat::bcCHAR*;
 		using result_type = std::size_t;
 
-		result_type operator ()(const argument_type& p_arg) const
+		result_type operator ()(const argument_type& p_arg) const noexcept
 		{
 			return black_cat::core::bc_string_hash(p_arg);
 		}
@@ -2193,7 +2193,7 @@ namespace std
 		using argument_type = const black_cat::bcWCHAR*;
 		using result_type = std::size_t;
 
-		result_type operator ()(const argument_type& p_arg) const
+		result_type operator ()(const argument_type& p_arg) const noexcept
 		{
 			return black_cat::core::bc_wstring_hash(p_arg);
 		}
@@ -2206,7 +2206,7 @@ namespace std
 		using argument_type = black_cat::core::bc_string;
 		using result_type = std::size_t;
 
-		result_type operator ()(const argument_type& p_arg) const
+		result_type operator ()(const argument_type& p_arg) const noexcept
 		{
 			return black_cat::core::bc_string_hash(p_arg.c_str());
 		}
@@ -2219,7 +2219,7 @@ namespace std
 		using argument_type = black_cat::core::bc_string_program;
 		using result_type = std::size_t;
 
-		result_type operator ()(const argument_type& p_arg) const
+		result_type operator ()(const argument_type& p_arg) const noexcept
 		{
 			return black_cat::core::bc_string_hash(p_arg.c_str());
 		}
@@ -2232,7 +2232,7 @@ namespace std
 		using argument_type = black_cat::core::bc_string_frame;
 		using result_type = std::size_t;
 
-		result_type operator ()(const argument_type& p_arg) const
+		result_type operator ()(const argument_type& p_arg) const noexcept
 		{
 			return black_cat::core::bc_string_hash(p_arg.c_str());
 		}
@@ -2244,7 +2244,7 @@ namespace std
 		using argument_type = black_cat::core::bc_wstring;
 		using result_type = std::size_t;
 
-		result_type operator ()(const argument_type& p_arg) const
+		result_type operator ()(const argument_type& p_arg) const noexcept
 		{
 			return black_cat::core::bc_wstring_hash(p_arg.c_str());
 		}
@@ -2257,7 +2257,7 @@ namespace std
 		using argument_type = black_cat::core::bc_wstring_program;
 		using result_type = std::size_t;
 
-		result_type operator ()(const argument_type& p_arg) const
+		result_type operator ()(const argument_type& p_arg) const noexcept
 		{
 			return black_cat::core::bc_wstring_hash(p_arg.c_str());
 		}
@@ -2270,7 +2270,7 @@ namespace std
 		using argument_type = black_cat::core::bc_wstring_frame;
 		using result_type = std::size_t;
 
-		result_type operator ()(const argument_type& p_arg) const
+		result_type operator ()(const argument_type& p_arg) const noexcept
 		{
 			return black_cat::core::bc_wstring_hash(p_arg.c_str());
 		}

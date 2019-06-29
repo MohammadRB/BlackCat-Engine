@@ -4,7 +4,7 @@
 
 #include "CorePlatform/Utility/bcNoCopy.h"
 #include "CorePlatformImp/Utility/bcClock.h"
-#include "Core/bcConstant.h"
+#include "Game/bcConstant.h"
 #include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/Pass/bcRenderPassResourceShare.h"
 #include "Game/System/Input/bcCamera.h"
@@ -158,12 +158,12 @@ namespace black_cat
 
 		protected:
 			template< typename T >
-			void share_resource(bc_render_pass_resource_variable p_variable, T&& p_value);
+			void share_resource(constant::bc_render_pass_variable_t p_variable, T&& p_value);
 
-			void unshare_resource(bc_render_pass_resource_variable p_variable);
+			void unshare_resource(constant::bc_render_pass_variable_t p_variable);
 
 			template< typename T >
-			T* get_shared_resource(bc_render_pass_resource_variable p_variable) const noexcept;
+			T* get_shared_resource(constant::bc_render_pass_variable_t p_variable) const noexcept;
 
 		private:
 			bc_render_pass_resource_share* m_resource_share;
@@ -179,18 +179,18 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_irender_pass::share_resource(bc_render_pass_resource_variable p_variable, T&& p_value)
+		void bc_irender_pass::share_resource(constant::bc_render_pass_variable_t p_variable, T&& p_value)
 		{
 			m_resource_share->share_resource(p_variable, std::forward<T>(p_value));
 		}
 
-		inline void bc_irender_pass::unshare_resource(bc_render_pass_resource_variable p_variable)
+		inline void bc_irender_pass::unshare_resource(constant::bc_render_pass_variable_t p_variable)
 		{
 			m_resource_share->unshare_resource(p_variable);
 		}
 
 		template< typename T >
-		T* bc_irender_pass::get_shared_resource(bc_render_pass_resource_variable p_variable) const noexcept
+		T* bc_irender_pass::get_shared_resource(constant::bc_render_pass_variable_t p_variable) const noexcept
 		{
 			return m_resource_share->get_resource< T >(p_variable);
 		}

@@ -10,6 +10,7 @@
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/Light/bcLightManager.h"
+#include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapBufferContainer.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferLightMapPass.h"
 
 namespace black_cat
@@ -57,6 +58,12 @@ namespace black_cat
 		BC_CBUFFER_ALIGN
 		core::bc_matrix4f m_view_proj_inv;
 	};
+
+	bc_gbuffer_light_map_pass::bc_gbuffer_light_map_pass(constant::bc_render_pass_variable_t p_csm_buffers_container, constant::bc_render_pass_variable_t p_output_texture)
+		: m_output_texture_share_slot(p_output_texture),
+		m_csm_buffers_container_share_slot(p_csm_buffers_container)
+	{
+	}
 
 	void bc_gbuffer_light_map_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
@@ -211,7 +218,10 @@ namespace black_cat
 		bcAssert(l_direct_lights.size() <= m_num_direct_lights);
 		bcAssert(l_point_lights.size() <= m_num_point_lights);
 		bcAssert(l_spot_lights.size() <= m_num_spot_lights);
-		
+
+		auto* l_csm_buffer_container = get_shared_resource<bc_cascaded_shadow_map_buffer_container>(m_csm_buffers_container_share_slot);
+
+
 		p_param.m_render_thread.start(m_command_list.get());
 		
 		_bc_parameters_cbuffer l_parameters_cbuffer_data
@@ -251,10 +261,10 @@ namespace black_cat
 		{
 			return;
 		}
-
-		auto* l_depth_stencil = get_shared_resource<graphic::bc_texture2d>(game::bc_render_pass_resource_variable::depth_stencil_texture);
-		auto* l_diffuse_map = get_shared_resource<graphic::bc_texture2d>(game::bc_render_pass_resource_variable::render_target_texture_1);
-		auto* l_normal_map = get_shared_resource<graphic::bc_texture2d>(game::bc_render_pass_resource_variable::render_target_texture_2);
+		
+		auto* l_depth_stencil = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
+		auto* l_diffuse_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1);
+		auto* l_normal_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2);
 
 		auto l_resource_configure = graphic::bc_graphic_resource_configure();
 
@@ -329,7 +339,7 @@ namespace black_cat
 			}
 		);
 
-		share_resource(game::bc_render_pass_resource_variable::intermediate_texture_1, m_output_texture.get());
+		share_resource(m_output_texture_share_slot, m_output_texture.get());
 	}
 
 	void bc_gbuffer_light_map_pass::destroy(game::bc_render_system& p_render_system)

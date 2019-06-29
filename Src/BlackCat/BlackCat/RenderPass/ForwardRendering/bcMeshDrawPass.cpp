@@ -73,7 +73,7 @@ namespace black_cat
 
 	void bc_mesh_draw_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		game::bc_scene_graph_buffer* l_actors = get_shared_resource<game::bc_scene_graph_buffer>(game::bc_render_pass_resource_variable::actor_list);
+		game::bc_scene_graph_buffer* l_actors = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
 
 		l_actors->render_actors<game::bc_mesh_component>(p_param.m_render_system);
 		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
@@ -109,8 +109,8 @@ namespace black_cat
 
 			auto l_linear_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_wrap_wrap_wrap);
 
-			const auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(game::bc_render_pass_resource_variable::depth_stencil_view);
-			const auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(game::bc_render_pass_resource_variable::render_target_view_1);
+			const auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(constant::g_rpass_depth_stencil_view);
+			const auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(constant::g_rpass_render_target_view_1);
 			const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
 			m_sampler_state = p_param.m_device.create_sampler_state(l_linear_sampler_config);
 

@@ -27,10 +27,10 @@ namespace black_cat
 			game::bc_rasterizer_type::fill_solid_cull_back,
 			0x1,
 			{
-				get_shared_resource<graphic::bc_texture2d>(game::bc_render_pass_resource_variable::render_target_texture_1)->get_format(),
-				get_shared_resource<graphic::bc_texture2d>(game::bc_render_pass_resource_variable::render_target_texture_2)->get_format()
+				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1)->get_format(),
+				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2)->get_format()
 			},
-			get_shared_resource<graphic::bc_texture2d>(game::bc_render_pass_resource_variable::depth_stencil_texture)->get_format(),
+			get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
 			game::bc_multi_sample_type::c1_q1
 		);
 
@@ -64,7 +64,7 @@ namespace black_cat
 
 	void bc_gbuffer_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		game::bc_scene_graph_buffer* l_actors = get_shared_resource<game::bc_scene_graph_buffer>(game::bc_render_pass_resource_variable::actor_list);
+		game::bc_scene_graph_buffer* l_actors = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
 
 		l_actors->render_actors<game::bc_mesh_component>(p_param.m_render_system);
 		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
@@ -98,9 +98,9 @@ namespace black_cat
 			return;
 		}
 
-		const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(game::bc_render_pass_resource_variable::depth_stencil_view);
-		const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(game::bc_render_pass_resource_variable::render_target_view_1);
-		const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(game::bc_render_pass_resource_variable::render_target_view_2);
+		const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_view);
+		const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_view_1);
+		const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_view_2);
 		const auto l_viewport = graphic::bc_viewport::default_config(p_param.m_device.get_back_buffer_width(), p_param.m_device.get_back_buffer_height());
 		m_sampler_state = p_param.m_device.create_sampler_state(game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_wrap_wrap_wrap));
 

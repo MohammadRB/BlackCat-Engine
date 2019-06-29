@@ -56,10 +56,10 @@ namespace black_cat
 			game::bc_rasterizer_type::fill_solid_cull_back,
 			0x1,
 			{
-				get_shared_resource<graphic::bc_texture2d>(game::bc_render_pass_resource_variable::render_target_texture_1)->get_format(),
-				get_shared_resource<graphic::bc_texture2d>(game::bc_render_pass_resource_variable::render_target_texture_2)->get_format()
+				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1)->get_format(),
+				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2)->get_format()
 			},
-			get_shared_resource<graphic::bc_texture2d>(game::bc_render_pass_resource_variable::depth_stencil_texture)->get_format(),
+			get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
 			game::bc_multi_sample_type::c1_q1
 		);
 
@@ -189,12 +189,12 @@ namespace black_cat
 		{
 			graphic::bc_texture2d l_back_buffer_texture = p_param.m_device.get_back_buffer_texture();
 
-			auto l_height_map_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_clamp_clamp_clamp);
-			auto l_texture_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_wrap_wrap_wrap);
+			const auto l_height_map_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_clamp_clamp_clamp);
+			const auto l_texture_sampler_config = game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_wrap_wrap_wrap);
 
-			const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(game::bc_render_pass_resource_variable::depth_stencil_view);
-			const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(game::bc_render_pass_resource_variable::render_target_view_1);
-			const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(game::bc_render_pass_resource_variable::render_target_view_2);
+			const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_view);
+			const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_view_1);
+			const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_view_2);
 			const auto l_viewport = graphic::bc_viewport::default_config(p_param.m_device.get_back_buffer_width(), p_param.m_device.get_back_buffer_height());
 			m_height_map_sampler = p_param.m_device.create_sampler_state(l_height_map_sampler_config);
 			m_texture_sampler = p_param.m_device.create_sampler_state(l_texture_sampler_config);
