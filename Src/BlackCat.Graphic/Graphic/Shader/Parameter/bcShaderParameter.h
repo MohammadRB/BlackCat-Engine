@@ -4,22 +4,12 @@
 
 #include "CorePlatform/bcType.h"
 #include "Graphic/Shader/bcShader.h"
+#include "Graphic/Shader/Parameter/bcShaderParameterLink.h"
 
 namespace black_cat
 {
 	namespace graphic
 	{
-		enum class bc_shader_parameter_type
-		{
-			vector,
-			matrix,
-			matrix_array,
-			shader_view,
-			unordered_view,
-			cbuffer,
-			sampler
-		};
-
 		class bc_ishader_parameter
 		{
 		public:
@@ -44,26 +34,37 @@ namespace black_cat
 
 			bc_ishader_parameter(bcINT p_register_index, bc_shader_type p_shader_types);
 
+			explicit bc_ishader_parameter(const bc_shader_parameter_link* p_link);
+
 			bc_ishader_parameter(const bc_ishader_parameter& p_other) = default;
 
 			bc_ishader_parameter& operator=(const bc_ishader_parameter& p_other) = default;
 
 			bcINT16 m_register_index;
 			bc_shader_type m_shader_types;
+			const bc_shader_parameter_link* m_link;
 
 		private:
 		};
 
 		inline bc_ishader_parameter::bc_ishader_parameter()
 			: m_register_index(-1),
-			m_shader_types()
+			m_shader_types(),
+			m_link(nullptr)
 		{
 		}
 
-		inline bc_ishader_parameter::bc_ishader_parameter(bcINT p_register_index, bc_shader_type p_shader_types) 
+		inline bc_ishader_parameter::bc_ishader_parameter(bcINT p_register_index, bc_shader_type p_shader_types)
 			: m_register_index(p_register_index),
-			m_shader_types(p_shader_types)
+			m_shader_types(p_shader_types),
+			m_link(nullptr)
 		{
+		}
+
+		inline bc_ishader_parameter::bc_ishader_parameter(const bc_shader_parameter_link* p_link)
+			: bc_ishader_parameter()
+		{
+			m_link = p_link;
 		}
 
 		inline bc_ishader_parameter::~bc_ishader_parameter()

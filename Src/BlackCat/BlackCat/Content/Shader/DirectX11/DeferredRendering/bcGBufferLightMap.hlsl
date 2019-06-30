@@ -9,6 +9,7 @@ struct direct_light
 {
 	float3	m_min_bound;
 	float3	m_max_bound;
+	int		m_depth_map_index;
 	float3	m_direction;
 	float3	m_color;
 	float	m_intensity;
@@ -20,6 +21,7 @@ struct point_light
 {
 	float3	m_min_bound;
 	float3	m_max_bound;
+	int		m_depth_map_index;
 	float3	m_position;
 	float	m_radius;
 	float3	m_color;
@@ -30,6 +32,7 @@ struct spot_light
 {
 	float3	m_min_bound;
 	float3	m_max_bound;
+	int		m_depth_map_index;
 	float3	m_position;
 	float	m_angle;
 	float3	m_direction;

@@ -156,9 +156,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcConstantBufferParameter.h">
       <Filter>Graphic\Shader\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcMatrix4fParameter.h">
-      <Filter>Graphic\Shader\Parameter</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcResourceViewParameter.h">
       <Filter>Graphic\Shader\Parameter</Filter>
     </ClInclude>
@@ -166,9 +163,6 @@
       <Filter>Graphic\Shader\Parameter</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameter.h">
-      <Filter>Graphic\Shader\Parameter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcVectorParameter.h">
       <Filter>Graphic\Shader\Parameter</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcComputeShader.h">
@@ -230,6 +224,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Command\bcDeviceCommandExecutor.h">
       <Filter>Graphic\Device\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameterLink.h">
+      <Filter>Graphic\Shader\Parameter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

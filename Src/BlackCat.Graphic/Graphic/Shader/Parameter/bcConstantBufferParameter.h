@@ -17,8 +17,6 @@ namespace black_cat
 
 			bc_constant_buffer_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_buffer p_buffer);
 
-			//bc_constant_buffer_parameter(bcINT p_register, bc_shader_type p_shader_types, const bc_buffer_ptr& p_buffer);
-
 			bc_constant_buffer_parameter(const bc_constant_buffer_parameter&) = default;
 
 			~bc_constant_buffer_parameter();
@@ -26,8 +24,6 @@ namespace black_cat
 			bc_constant_buffer_parameter& operator=(const bc_constant_buffer_parameter&) = default;
 
 			bc_buffer get_buffer() const;
-
-			//const bc_buffer get_buffer() const;
 
 			void set_buffer(bc_buffer p_buffer);
 
@@ -49,17 +45,10 @@ namespace black_cat
 		}
 
 		inline bc_constant_buffer_parameter::bc_constant_buffer_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_buffer p_buffer)
-			//: bc_constant_buffer_parameter(p_register, p_shader_types, p_buffer)
 			: bc_ishader_parameter(p_register, p_shader_types),
 			m_buffer(p_buffer)
 		{
 		}
-
-		/*inline bc_constant_buffer_parameter::bc_constant_buffer_parameter(bcINT p_register, bc_shader_type p_shader_types, const bc_buffer_ptr& p_buffer)
-			: bc_ishader_parameter(p_register, p_shader_types),
-			m_buffer(p_buffer)
-		{
-		}*/
 
 		inline bc_constant_buffer_parameter::~bc_constant_buffer_parameter()
 		{
@@ -67,13 +56,12 @@ namespace black_cat
 
 		inline bc_buffer bc_constant_buffer_parameter::get_buffer() const
 		{
-			return m_buffer;
+			return m_buffer.is_valid()
+				       ? m_buffer
+				       : m_link
+					         ? m_link->get_as_cbuffer()
+					         : bc_buffer();
 		}
-
-		/*inline const bc_buffer bc_constant_buffer_parameter::get_buffer() const
-		{
-			return m_buffer;
-		}*/
 
 		inline void bc_constant_buffer_parameter::set_buffer(bc_buffer p_buffer)
 		{
@@ -92,7 +80,7 @@ namespace black_cat
 
 		inline bool bc_constant_buffer_parameter::is_valid() const
 		{
-			return m_register_index != -1 && m_buffer != nullptr;
+			return m_register_index != -1 && get_buffer().is_valid();
 		}
 	}
 }

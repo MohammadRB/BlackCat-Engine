@@ -42,6 +42,7 @@ namespace black_cat
 
 		constant::bc_render_pass_variable_t m_output_texture_share_slot;
 		constant::bc_render_pass_variable_t m_csm_buffers_container_share_slot;
+		core::bc_vector<graphic::bc_resource_view> m_last_frame_depth_maps;
 
 		graphic::bc_resource_view_ptr m_depth_stencil_view;
 		graphic::bc_resource_view_ptr m_diffuse_map_view;

@@ -51,7 +51,11 @@ namespace black_cat
 
 		inline bc_sampler_state bc_sampler_parameter::get_sampler() const
 		{
-			return m_sampler;
+			return m_sampler.is_valid()
+				       ? m_sampler
+				       : m_link
+					         ? m_link->get_as_sampler()
+					         : bc_sampler_state();
 		}
 
 		inline void bc_sampler_parameter::set_sampler(bc_sampler_state p_sampler)
@@ -71,7 +75,7 @@ namespace black_cat
 
 		inline bool bc_sampler_parameter::is_valid() const
 		{
-			return m_register_index != -1 && m_sampler != nullptr;
+			return m_register_index != -1 && get_sampler().is_valid();
 		}
 	}
 }

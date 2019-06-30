@@ -19,6 +19,7 @@ namespace black_cat
 	{
 		core::bc_vector3f m_min_bound;
 		core::bc_vector3f m_max_bound;
+		bcINT32 m_depth_map_index;
 	};
 	
 	struct _bc_direct_light_struct : _bc_base_light_struct
@@ -28,7 +29,6 @@ namespace black_cat
 		bcFLOAT m_intensity;
 		core::bc_vector3f m_ambient_color;
 		bcFLOAT m_ambient_intensity;
-		bcINT32 m_depth_map_index;
 	};
 
 	struct _bc_point_light_struct : _bc_base_light_struct
@@ -168,15 +168,15 @@ namespace black_cat
 				{
 					auto* l_direct_light = l_light.m_instance.as_direct_light();
 					_bc_direct_light_struct l_direct_light_cbuffer;
-
+					
 					l_direct_light_cbuffer.m_min_bound = l_light.m_min_bound;
 					l_direct_light_cbuffer.m_max_bound = l_light.m_max_bound;
+					l_direct_light_cbuffer.m_depth_map_index = -1;
 					l_direct_light_cbuffer.m_direction = l_direct_light->get_direction();
 					l_direct_light_cbuffer.m_color = l_direct_light->get_color();
 					l_direct_light_cbuffer.m_intensity = l_direct_light->get_intensity();
 					l_direct_light_cbuffer.m_ambient_color = l_direct_light->get_ambient_color();
 					l_direct_light_cbuffer.m_ambient_intensity = l_direct_light->get_ambient_intensity();
-					l_direct_light_cbuffer.m_depth_map_index = -1;
 
 					l_direct_lights.push_back(l_direct_light_cbuffer);
 					break;
@@ -188,6 +188,7 @@ namespace black_cat
 
 					l_point_light_cbuffer.m_min_bound = l_light.m_min_bound;
 					l_point_light_cbuffer.m_max_bound = l_light.m_max_bound;
+					l_point_light_cbuffer.m_depth_map_index = -1;
 					l_point_light_cbuffer.m_position = l_point_light->get_position(l_light.m_instance.get_transformation());
 					l_point_light_cbuffer.m_radius = l_point_light->get_radius();
 					l_point_light_cbuffer.m_color = l_point_light->get_color();
@@ -203,6 +204,7 @@ namespace black_cat
 					
 					l_spot_light_cbuffer.m_min_bound = l_light.m_min_bound;
 					l_spot_light_cbuffer.m_max_bound = l_light.m_max_bound;
+					l_spot_light_cbuffer.m_depth_map_index = -1;
 					l_spot_light_cbuffer.m_position = l_spot_light->get_position(l_light.m_instance.get_transformation());
 					l_spot_light_cbuffer.m_angle = l_spot_light->get_angle();
 					l_spot_light_cbuffer.m_direction = l_spot_light->get_direction(l_light.m_instance.get_transformation());

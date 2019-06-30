@@ -71,11 +71,10 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcShader.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcVertexShader.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcConstantBufferParameter.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcMatrix4fParameter.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcResourceViewParameter.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcSamplerParameter.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameter.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcVectorParameter.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcShaderParameterLink.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\bcResourcePtr.cpp" />

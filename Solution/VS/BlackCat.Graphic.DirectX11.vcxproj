@@ -62,6 +62,7 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\Parameter\bcResourceViewParameter.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\Parameter\bcSamplerParameter.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\Parameter\bcShaderParameter.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\Parameter\bcShaderParameterLink.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\bcDeviceRef.cpp" />

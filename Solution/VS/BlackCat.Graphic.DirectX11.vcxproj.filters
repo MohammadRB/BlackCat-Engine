@@ -305,5 +305,8 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandExecutor.h">
       <Filter>GraphicImp\Device\Command</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\Parameter\bcShaderParameterLink.h">
+      <Filter>GraphicImp\Shader\Parameter</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

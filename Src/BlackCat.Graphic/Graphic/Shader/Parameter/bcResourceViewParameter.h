@@ -16,11 +16,11 @@ namespace black_cat
 
 			bc_resource_view_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_resource_view p_shader_resource);
 
-			bc_resource_view_parameter(bc_resource_view_parameter&) = default;
+			bc_resource_view_parameter(const bc_resource_view_parameter&) = default;
 
 			~bc_resource_view_parameter() = default;
 
-			bc_resource_view_parameter& operator=(bc_resource_view_parameter&) = default;
+			bc_resource_view_parameter& operator=(const bc_resource_view_parameter&) = default;
 
 			bc_resource_view get_resource_view() const;
 
@@ -51,7 +51,11 @@ namespace black_cat
 
 		inline bc_resource_view bc_resource_view_parameter::get_resource_view() const
 		{
-			return m_shader_resource;
+			return m_shader_resource.is_valid()
+				       ? m_shader_resource
+				       : m_link
+					         ? m_link->get_as_resource_view()
+					         : bc_resource_view();
 		}
 
 		inline void bc_resource_view_parameter::set_resource_view(bc_resource_view p_shader_resource)
@@ -61,7 +65,8 @@ namespace black_cat
 
 		inline bc_shader_parameter_type bc_resource_view_parameter::get_parameter_type() const
 		{
-			if (m_shader_resource != nullptr && m_shader_resource.get_view_type() == bc_resource_view_type::unordered)
+			const auto l_shader_resource = get_resource_view();
+			if (l_shader_resource.is_valid() && l_shader_resource.get_view_type() == bc_resource_view_type::unordered)
 			{
 				return bc_shader_parameter_type::unordered_view;
 			}
@@ -76,7 +81,7 @@ namespace black_cat
 
 		inline bool bc_resource_view_parameter::is_valid() const
 		{
-			return m_register_index != -1 && m_shader_resource != nullptr;
+			return m_register_index != -1 && get_resource_view().is_valid();
 		}
 	}
 }
