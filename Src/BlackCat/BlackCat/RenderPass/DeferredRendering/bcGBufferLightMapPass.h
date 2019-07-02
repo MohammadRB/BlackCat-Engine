@@ -6,6 +6,7 @@
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
+#include "GraphicImp/Shader/Parameter/bcShaderParameter.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/State/bcComputeState.h"
 #include "BlackCat/bcExport.h"
@@ -42,7 +43,6 @@ namespace black_cat
 
 		constant::bc_render_pass_variable_t m_output_texture_share_slot;
 		constant::bc_render_pass_variable_t m_csm_buffers_container_share_slot;
-		core::bc_vector<graphic::bc_resource_view> m_last_frame_depth_maps;
 
 		graphic::bc_resource_view_ptr m_depth_stencil_view;
 		graphic::bc_resource_view_ptr m_diffuse_map_view;
@@ -56,6 +56,11 @@ namespace black_cat
 		graphic::bc_resource_view_ptr m_point_lights_buffer_view;
 		graphic::bc_buffer_ptr m_spot_lights_buffer;
 		graphic::bc_resource_view_ptr m_spot_lights_buffer_view;
+
+		graphic::bc_shader_parameter_link m_depth_map_1_parameter;
+		graphic::bc_shader_parameter_link m_depth_map_2_parameter;
+		graphic::bc_shader_parameter_link m_depth_map_3_parameter;
+		graphic::bc_shader_parameter_link m_depth_map_4_parameter;
 
 		graphic::bc_texture2d_ptr m_output_texture;
 		graphic::bc_resource_view_ptr m_output_texture_unordered_view;

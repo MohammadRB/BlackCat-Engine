@@ -351,7 +351,11 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::compute, m_normal_map_view.get()),
 				graphic::bc_resource_view_parameter(3, graphic::bc_shader_type::compute, m_direct_lights_buffer_view.get()),
 				graphic::bc_resource_view_parameter(4, graphic::bc_shader_type::compute, m_point_lights_buffer_view.get()),
-				graphic::bc_resource_view_parameter(5, graphic::bc_shader_type::compute, m_spot_lights_buffer_view.get())
+				graphic::bc_resource_view_parameter(5, graphic::bc_shader_type::compute, m_spot_lights_buffer_view.get()),
+				graphic::bc_resource_view_parameter(6, graphic::bc_shader_type::compute, &m_depth_map_1_parameter),
+				graphic::bc_resource_view_parameter(6, graphic::bc_shader_type::compute, &m_depth_map_2_parameter),
+				graphic::bc_resource_view_parameter(6, graphic::bc_shader_type::compute, &m_depth_map_3_parameter),
+				graphic::bc_resource_view_parameter(6, graphic::bc_shader_type::compute, &m_depth_map_4_parameter)
 			},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_output_texture_unordered_view.get())

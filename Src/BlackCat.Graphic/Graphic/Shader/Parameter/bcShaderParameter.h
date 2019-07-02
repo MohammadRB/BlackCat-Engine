@@ -34,7 +34,7 @@ namespace black_cat
 
 			bc_ishader_parameter(bcINT p_register_index, bc_shader_type p_shader_types);
 
-			explicit bc_ishader_parameter(const bc_shader_parameter_link* p_link);
+			bc_ishader_parameter(bcINT p_register_index, bc_shader_type p_shader_types, const bc_shader_parameter_link* p_link);
 
 			bc_ishader_parameter(const bc_ishader_parameter& p_other) = default;
 
@@ -61,8 +61,8 @@ namespace black_cat
 		{
 		}
 
-		inline bc_ishader_parameter::bc_ishader_parameter(const bc_shader_parameter_link* p_link)
-			: bc_ishader_parameter()
+		inline bc_ishader_parameter::bc_ishader_parameter(bcINT p_register_index, bc_shader_type p_shader_types, const bc_shader_parameter_link* p_link)
+			: bc_ishader_parameter(p_register_index, p_shader_types)
 		{
 			m_link = p_link;
 		}
