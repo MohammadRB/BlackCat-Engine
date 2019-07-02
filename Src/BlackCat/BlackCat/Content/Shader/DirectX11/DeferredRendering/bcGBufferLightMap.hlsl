@@ -47,7 +47,7 @@ Texture2D<float4> g_diffuse_map						: register(BC_COMPUTE_STATE_T1);
 Texture2D<float4> g_normal_map						: register(BC_COMPUTE_STATE_T2);
 
 StructuredBuffer<direct_light> g_direct_lights		: register(BC_COMPUTE_STATE_T3);
-StructuredBuffer<point_light> g_point_lights		: register(BC_COMPUTE_STATE_T4);
+StructuredBuffer<point_light> g_point_lights			: register(BC_COMPUTE_STATE_T4);
 StructuredBuffer<spot_light> g_spot_lights			: register(BC_COMPUTE_STATE_T5);
 
 Texture2D<float4> g_light_depth_map_1				: register(BC_COMPUTE_STATE_T6);

@@ -57,10 +57,7 @@ namespace black_cat
 		graphic::bc_buffer_ptr m_spot_lights_buffer;
 		graphic::bc_resource_view_ptr m_spot_lights_buffer_view;
 
-		graphic::bc_shader_parameter_link m_depth_map_1_parameter;
-		graphic::bc_shader_parameter_link m_depth_map_2_parameter;
-		graphic::bc_shader_parameter_link m_depth_map_3_parameter;
-		graphic::bc_shader_parameter_link m_depth_map_4_parameter;
+		graphic::bc_shader_parameter_link m_depth_map_parameters[4];
 
 		graphic::bc_texture2d_ptr m_output_texture;
 		graphic::bc_resource_view_ptr m_output_texture_unordered_view;

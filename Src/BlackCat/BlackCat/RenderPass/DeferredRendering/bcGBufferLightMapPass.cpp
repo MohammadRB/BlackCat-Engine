@@ -231,14 +231,16 @@ namespace black_cat
 		{
 			for (bcSIZE l_index = 0, l_end = l_csm_buffer_container->size(); l_index < l_end; ++l_index)
 			{
+				auto l_csm_light_dir = l_csm_buffer_container->get_light(l_index);
 				auto l_direct_light_ite = std::find_if(std::cbegin(l_direct_lights), std::cend(l_direct_lights), [&](const _bc_direct_light_struct& p_direct_light)
 				{
-					return p_direct_light.m_direction == l_csm_buffer_container->get_light(l_index);
+					return p_direct_light.m_direction == l_csm_light_dir;
 				});
 
 				bcAssert(l_direct_light_ite != std::cend(l_direct_lights));
 
 				l_direct_light_ite->m_depth_map_index = l_index;
+				m_depth_map_parameters[l_index].set_as_resource_view(l_csm_buffer_container->get_buffer(l_csm_light_dir));
 				l_shader_depth_map_count++;
 			}
 		}
@@ -352,10 +354,10 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(3, graphic::bc_shader_type::compute, m_direct_lights_buffer_view.get()),
 				graphic::bc_resource_view_parameter(4, graphic::bc_shader_type::compute, m_point_lights_buffer_view.get()),
 				graphic::bc_resource_view_parameter(5, graphic::bc_shader_type::compute, m_spot_lights_buffer_view.get()),
-				graphic::bc_resource_view_parameter(6, graphic::bc_shader_type::compute, &m_depth_map_1_parameter),
-				graphic::bc_resource_view_parameter(6, graphic::bc_shader_type::compute, &m_depth_map_2_parameter),
-				graphic::bc_resource_view_parameter(6, graphic::bc_shader_type::compute, &m_depth_map_3_parameter),
-				graphic::bc_resource_view_parameter(6, graphic::bc_shader_type::compute, &m_depth_map_4_parameter)
+				graphic::bc_resource_view_parameter(6, graphic::bc_shader_type::compute, &m_depth_map_parameters[0]),
+				graphic::bc_resource_view_parameter(6, graphic::bc_shader_type::compute, &m_depth_map_parameters[1]),
+				graphic::bc_resource_view_parameter(6, graphic::bc_shader_type::compute, &m_depth_map_parameters[2]),
+				graphic::bc_resource_view_parameter(6, graphic::bc_shader_type::compute, &m_depth_map_parameters[3])
 			},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_output_texture_unordered_view.get())
