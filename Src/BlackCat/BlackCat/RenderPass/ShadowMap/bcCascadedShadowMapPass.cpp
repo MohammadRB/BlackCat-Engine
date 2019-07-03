@@ -75,7 +75,7 @@ namespace black_cat
 			.as_constant_buffer();
 		m_parameters_cbuffer = p_render_system.get_device().create_buffer(l_parameters_cbuffer_config, nullptr);
 
-		share_resource(m_depth_buffers_share_slot, m_depth_buffers_container);
+		share_resource(m_depth_buffers_share_slot, bc_cascaded_shadow_map_buffer_container());
 	}
 
 	void bc_cascaded_shadow_map_pass::update(const game::bc_render_pass_update_param& p_param)
@@ -146,7 +146,8 @@ namespace black_cat
 			
 			p_param.m_render_thread.unbind_render_pass_state(l_light_render_pass_state);
 
-			m_depth_buffers_container.add(l_light.get_direction(), l_light_state.m_depth_buffer_resource_view.get());
+			auto* l_depth_maps_container = get_shared_resource<bc_cascaded_shadow_map_buffer_container>(m_depth_buffers_share_slot);
+			l_depth_maps_container->add(l_light.get_direction(), l_light_state.m_depth_buffer_resource_view.get());
 		}
 		
 		p_param.m_render_thread.finish();
@@ -155,7 +156,7 @@ namespace black_cat
 
 	void bc_cascaded_shadow_map_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		m_depth_buffers_container.clear();
+		get_shared_resource<bc_cascaded_shadow_map_buffer_container>(m_depth_buffers_share_slot)->clear();
 	}
 
 	void bc_cascaded_shadow_map_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
@@ -168,7 +169,7 @@ namespace black_cat
 
 	void bc_cascaded_shadow_map_pass::destroy(game::bc_render_system& p_render_system)
 	{
-		m_depth_buffers_container.clear();
+		get_shared_resource<bc_cascaded_shadow_map_buffer_container>(m_depth_buffers_share_slot)->clear();
 		m_light_instance_states.clear();
 		m_parameters_cbuffer.reset();
 		//m_depth_buffer_view.reset();

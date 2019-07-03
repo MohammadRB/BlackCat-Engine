@@ -112,6 +112,5 @@ namespace black_cat
 		core::bc_vector_program<_bc_cascaded_shadow_map_light_state> m_light_instance_states;
 
 		constant::bc_render_pass_variable_t m_depth_buffers_share_slot;
-		bc_cascaded_shadow_map_buffer_container m_depth_buffers_container;
 	};
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcVector.h"
+#include "Core/Math/bcMatrix4f.h"
 #include "Core/Math/bcVector3f.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
 
@@ -10,7 +11,11 @@ namespace black_cat
 {
 	class bc_cascaded_shadow_map_buffer_container
 	{
-		using entry = std::tuple<core::bc_vector3f, graphic::bc_resource_view>;
+	public:
+		struct value_type;
+
+	private:
+		using entry = std::tuple<core::bc_vector3f, value_type>;
 
 	public:
 		bcSIZE size() const noexcept;
@@ -27,6 +32,12 @@ namespace black_cat
 
 	private:
 		core::bc_vector<entry> m_depth_buffers;
+	};
+
+	struct bc_cascaded_shadow_map_buffer_container::value_type
+	{
+		bcSIZE m_shadow_map_size;
+		graphic::bc_resource_view m_buffer;
 	};
 
 	inline bcSIZE bc_cascaded_shadow_map_buffer_container::size() const noexcept
