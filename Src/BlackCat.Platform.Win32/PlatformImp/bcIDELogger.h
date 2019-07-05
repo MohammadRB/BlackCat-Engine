@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Platform/bc_ide_logger.h"
+#include "Platform/bcIDELogger.h"
 
 namespace black_cat
 {

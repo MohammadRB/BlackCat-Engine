@@ -8,7 +8,7 @@
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/System/bcGameSystem.h"
-#include "PlatformImp/bc_ide_logger.h"
+#include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
 {

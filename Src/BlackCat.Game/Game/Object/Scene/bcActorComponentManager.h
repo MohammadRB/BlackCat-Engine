@@ -13,8 +13,7 @@
 #include "Game/Object/Scene/bcActor.h"
 #include "Game/Object/Scene/bcActorComponent.h"
 #include "Game/Object/Scene/bcActorComponentContainer.h"
-#include "PlatformImp/bc_ide_logger.h"
-#include "PlatformImp/bc_ide_logger.h"
+#include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
 {

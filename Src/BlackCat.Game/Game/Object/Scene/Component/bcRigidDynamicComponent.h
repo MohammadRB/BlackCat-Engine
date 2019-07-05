@@ -5,7 +5,7 @@
 #include "PhysicsImp/Body/bcRigidDynamic.h"
 #include "Game/Object/Mesh/bcSubMesh.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
-#include "PlatformImp/bc_ide_logger.h"
+#include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
 {

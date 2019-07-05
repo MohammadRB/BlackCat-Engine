@@ -90,7 +90,7 @@
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\PlatformImpPCH.h">
       <Filter>PlatformImp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bc_ide_logger.h">
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcIDELogger.h">
       <Filter>PlatformImp</Filter>
     </ClInclude>
   </ItemGroup>

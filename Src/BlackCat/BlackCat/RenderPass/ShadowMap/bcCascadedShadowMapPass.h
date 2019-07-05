@@ -11,6 +11,7 @@
 #include "Game/System/Render/Light/bcDirectLight.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "BlackCat/bcExport.h"
+#include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapCamera.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapBufferContainer.h"
 
 namespace black_cat
@@ -25,49 +26,6 @@ namespace black_cat
 		graphic::bc_resource_view_ptr m_depth_buffer_resource_view;
 
 		game::bc_render_pass_state_ptr m_render_pass_state;
-	};
-
-	class _bc_cascaded_shadow_map_camera : public game::bc_orthographic_camera
-	{
-	public:
-		_bc_cascaded_shadow_map_camera(const core::bc_vector3f& p_position,
-			const core::bc_vector3f& p_look_at,
-			bcSIZE p_width,
-			bcSIZE p_height,
-			bcFLOAT p_near_clip,
-			bcFLOAT p_far_clip)
-			: bc_orthographic_camera(p_width, p_height, p_near_clip, p_far_clip)
-		{
-			set_look_at(p_position, p_look_at);
-		}
-
-		_bc_cascaded_shadow_map_camera(_bc_cascaded_shadow_map_camera&& p_other) noexcept
-			: bc_orthographic_camera(std::move(p_other))
-		{
-		}
-
-		_bc_cascaded_shadow_map_camera& operator=(_bc_cascaded_shadow_map_camera&& p_other) noexcept
-		{
-			bc_orthographic_camera::operator=(std::move(p_other));
-			return *this;
-		}
-
-		void update(core_platform::bc_clock::update_param p_clock_update_param,
-			const platform::bc_pointing_device& p_pointing_device,
-			const platform::bc_key_device& p_key_device) noexcept override
-		{
-		}
-
-	protected:
-		bool on_key(core::bc_ievent& p_key_event) noexcept override
-		{
-			return false;
-		}
-
-		bool on_pointing(core::bc_ievent& p_pointing_event) noexcept override
-		{
-			return false;
-		}
 	};
 	
 	class BC_DLL bc_cascaded_shadow_map_pass : public game::bc_irender_pass
@@ -96,7 +54,7 @@ namespace black_cat
 	private:
 		_bc_cascaded_shadow_map_light_state _create_light_instance(game::bc_render_system& p_render_system);
 
-		core::bc_vector_frame<_bc_cascaded_shadow_map_camera> _get_light_cascades(const game::bc_icamera& p_camera, const game::bc_direct_light& p_light);
+		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_cascades(const game::bc_icamera& p_camera, const game::bc_direct_light& p_light);
 
 		const bcSIZE m_cascade_cameras_distance = 300;
 		bcSIZE m_shadow_map_size;

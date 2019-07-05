@@ -6,7 +6,7 @@
 #include "Core/Content/bcContentStreamManager.h"
 #include "Game/System/bcGameSystem.h"
 #include "Editor/Application/bcUICommandService.h"
-#include "PlatformImp/bc_ide_logger.h"
+#include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
 {

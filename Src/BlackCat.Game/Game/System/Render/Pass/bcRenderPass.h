@@ -8,6 +8,7 @@
 #include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/Pass/bcRenderPassResourceShare.h"
 #include "Game/System/Input/bcCamera.h"
+#include "Game/bcException.h"
 
 namespace black_cat
 {
@@ -165,6 +166,9 @@ namespace black_cat
 			template< typename T >
 			T* get_shared_resource(constant::bc_render_pass_variable_t p_variable) const noexcept;
 
+			template< typename T >
+			T& get_shared_resource_throw(constant::bc_render_pass_variable_t p_variable) const;
+
 		private:
 			bc_render_pass_resource_share* m_resource_share;
 		};
@@ -193,6 +197,18 @@ namespace black_cat
 		T* bc_irender_pass::get_shared_resource(constant::bc_render_pass_variable_t p_variable) const noexcept
 		{
 			return m_resource_share->get_resource< T >(p_variable);
+		}
+
+		template< typename T >
+		T& bc_irender_pass::get_shared_resource_throw(constant::bc_render_pass_variable_t p_variable) const
+		{
+			auto* l_resource = get_shared_resource<T>(p_variable);
+			if(l_resource)
+			{
+				return *l_resource;
+			}
+
+			throw bc_key_not_found_exception("No resource were found with given key");
 		}
 	}
 }

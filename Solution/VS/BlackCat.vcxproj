@@ -161,6 +161,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcTerrainPassDx11.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcShapeDrawPass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcCascadedShadowMapBufferContainer.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcCascadedShadowMapCamera.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcCascadedShadowMapPass.h" />
   </ItemGroup>
   <ItemGroup>

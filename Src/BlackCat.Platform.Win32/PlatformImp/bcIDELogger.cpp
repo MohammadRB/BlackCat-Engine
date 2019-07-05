@@ -2,7 +2,7 @@
 
 #include "PlatformImp/PlatformImpPCH.h"
 #include "PlatformImp/bcExport.h"
-#include "PlatformImp/bc_ide_logger.h"
+#include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
 {
@@ -18,7 +18,13 @@ namespace black_cat
 
 		void bc_ide_logger::on_log(core::bc_log_type p_type, const bcECHAR* p_log)
 		{
-			if(p_type == core::bc_log_type::debug)
+			if(p_type == core::bc_log_type::info)
+			{
+				OutputDebugString(bcL("BlackCat Info: "));
+				OutputDebugString(p_log);
+				OutputDebugString(bcL("\n"));
+			}
+			else if(p_type == core::bc_log_type::debug)
 			{
 				OutputDebugString(bcL("BlackCat Debug: "));
 				OutputDebugString(p_log);

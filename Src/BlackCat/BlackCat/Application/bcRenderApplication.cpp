@@ -2,7 +2,7 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
-#include "PlatformImp/bc_ide_logger.h"
+#include "PlatformImp/bcIDELogger.h"
 #include "Core/Memory/bcMemoryManagment.h"
 #include "Core/Utility/bcLogger.h"
 #include "Core/Concurrency/bcThreadManager.h"

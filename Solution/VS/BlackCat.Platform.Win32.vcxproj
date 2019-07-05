@@ -19,7 +19,7 @@
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcPointingDevice.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcWindow.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcExport.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bc_ide_logger.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcIDELogger.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\File\bcPath.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>

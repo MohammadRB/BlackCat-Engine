@@ -11,7 +11,7 @@
 #include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Editor/Application/bcUICommand.h"
-#include "PlatformImp/bc_ide_logger.h"
+#include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
 {

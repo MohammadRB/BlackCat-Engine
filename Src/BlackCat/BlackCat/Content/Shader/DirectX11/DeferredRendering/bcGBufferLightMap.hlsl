@@ -4,12 +4,13 @@
 #include "..\bcHelper.hlsli"
 
 #define THREAD_GROUP_SIZE 16
+#define SHADER_SHADOW_MAP_MATRIX_COUNT 4
 
 struct direct_light
 {
 	float3	m_min_bound;
 	float3	m_max_bound;
-	int		m_depth_map_index;
+	int		m_shadow_map_index;
 	float3	m_direction;
 	float3	m_color;
 	float	m_intensity;
@@ -21,7 +22,7 @@ struct point_light
 {
 	float3	m_min_bound;
 	float3	m_max_bound;
-	int		m_depth_map_index;
+	int		m_shadow_map_index;
 	float3	m_position;
 	float	m_radius;
 	float3	m_color;
@@ -32,7 +33,7 @@ struct spot_light
 {
 	float3	m_min_bound;
 	float3	m_max_bound;
-	int		m_depth_map_index;
+	int		m_shadow_map_index;
 	float3	m_position;
 	float	m_angle;
 	float3	m_direction;
@@ -42,18 +43,26 @@ struct spot_light
     float   m_angle_cos;
 };
 
+struct shadow_map
+{
+	uint m_shadow_map_size;
+	uint m_shadow_map_count;
+	uint m_cascade_sizes[SHADER_SHADOW_MAP_MATRIX_COUNT];
+	float4x4 m_view_projections[SHADER_SHADOW_MAP_MATRIX_COUNT];
+};
+
 Texture2D<float4> g_depth_map						: register(BC_COMPUTE_STATE_T0);
 Texture2D<float4> g_diffuse_map						: register(BC_COMPUTE_STATE_T1);
 Texture2D<float4> g_normal_map						: register(BC_COMPUTE_STATE_T2);
 
 StructuredBuffer<direct_light> g_direct_lights		: register(BC_COMPUTE_STATE_T3);
-StructuredBuffer<point_light> g_point_lights		: register(BC_COMPUTE_STATE_T4);
+StructuredBuffer<point_light> g_point_lights			: register(BC_COMPUTE_STATE_T4);
 StructuredBuffer<spot_light> g_spot_lights			: register(BC_COMPUTE_STATE_T5);
+StructuredBuffer<shadow_map> g_shadow_maps			: register(BC_COMPUTE_STATE_T6);
 
-Texture2D<float4> g_light_depth_map_1				: register(BC_COMPUTE_STATE_T6);
-Texture2D<float4> g_light_depth_map_2				: register(BC_COMPUTE_STATE_T7);
-Texture2D<float4> g_light_depth_map_3				: register(BC_COMPUTE_STATE_T8);
-Texture2D<float4> g_light_depth_map_4				: register(BC_COMPUTE_STATE_T9);
+Texture2D<float4> g_light_shadow_map_1				: register(BC_COMPUTE_STATE_T7);
+Texture2D<float4> g_light_shadow_map_2				: register(BC_COMPUTE_STATE_T8);
+Texture2D<float4> g_light_shadow_map_3				: register(BC_COMPUTE_STATE_T9);
 
 RWTexture2D<float4> g_output_texture                : register(BC_COMPUTE_STATE_U0);
 
@@ -138,6 +147,47 @@ bool is_pixel_in_light_range(float3 p_position, float3 p_light_min_bound, float3
     (p_position.z <= p_light_max_bound.z);
 
     return l_is_in_light_box;
+}
+
+Texture2D<float4> get_light_shadow_map(uint p_shadow_map_index)
+{
+	switch (p_shadow_map_index)
+	{
+	case 0:
+		return g_light_shadow_map_1;
+	case 1:
+		return g_light_shadow_map_2;
+	case 2:
+		return g_light_shadow_map_3;
+	}
+
+	return g_light_shadow_map_1;
+}
+
+float direct_light_shadow_map(direct_light p_light, float3 p_camera_pos, float3 p_position, float p_linear_depth)
+{
+	Texture2D<float4> l_shadow_map = get_light_shadow_map(p_light.m_shadow_map_index);
+	shadow_map l_shadow_map_data = g_shadow_maps[p_light.m_shadow_map_index];
+
+	float l_depth = p_linear_depth * g_far_plan + g_near_plan;
+	uint l_cascade_index = l_shadow_map_data.m_shadow_map_count;
+
+	for (uint i = 0; i < l_shadow_map_data.m_shadow_map_count; ++i)
+	{
+		if (l_depth <= l_shadow_map_data.m_cascade_sizes[i])
+		{
+			l_cascade_index = i;
+			break;
+		}
+	}
+
+	float4 l_cascade_projection = mul(float4(p_position, 1), l_shadow_map_data.m_view_projections[l_cascade_index]);
+	float2 l_cascade_texcoord = (l_cascade_projection.xy + 1) / 2.0;
+	l_cascade_texcoord.x /= l_shadow_map_data.m_shadow_map_count;
+	l_cascade_texcoord.x += (l_cascade_index * (1.0 / l_shadow_map_data.m_shadow_map_count));
+	float l_cascade_depth_value = read_texture(l_shadow_map, l_cascade_texcoord);
+
+	return l_cascade_index * 1.0f / l_shadow_map_data.m_shadow_map_count;
 }
 
 float4 direct_light_shading(direct_light p_light, float3 p_camera_pos, float3 p_position, float3 p_normal, float p_specular_intensity, float p_specular_power)
@@ -283,11 +333,20 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 
     float4 l_light_map = 0;
     float3 l_ambient_map = 0;
+	float l_linear_depth = bc_convert_to_linear_depth(l_depth, g_near_plan, g_far_plan);
 
     for (uint l_d = 0; l_d < g_direct_lights_count; ++l_d)
     {
         direct_light l_light = g_direct_lights[l_d];
-        l_light_map += direct_light_shading(l_light, g_camera_position, l_world_position, l_normal, l_specular_intensity, l_specular_power);
+
+		float l_shadow_map = direct_light_shadow_map(l_light, g_camera_position, l_world_position, l_linear_depth) + .1;
+		l_shadow_map = saturate(l_shadow_map);
+
+		//if (l_shadow_map != 0)
+		//{
+			l_light_map += l_shadow_map * direct_light_shading(l_light, g_camera_position, l_world_position, l_normal, l_specular_intensity, l_specular_power);
+		//}
+
         l_ambient_map += (l_light.m_ambient_color * l_light.m_ambient_intensity);
     }
 

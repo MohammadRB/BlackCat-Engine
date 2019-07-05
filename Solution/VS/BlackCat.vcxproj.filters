@@ -129,6 +129,9 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\bcConstant.h">
       <Filter>BlackCat</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcCascadedShadowMapCamera.h">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">

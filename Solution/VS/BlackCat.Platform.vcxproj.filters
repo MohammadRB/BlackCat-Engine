@@ -99,11 +99,11 @@
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\PlatformPCH.h">
       <Filter>Platform</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\bc_ide_logger.h">
-      <Filter>Platform</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Script\bcScriptContextScope.h">
       <Filter>Platform\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\bcIDELogger.h">
+      <Filter>Platform</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

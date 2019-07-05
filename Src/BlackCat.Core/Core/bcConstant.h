@@ -11,7 +11,7 @@ namespace black_cat
 	{
 		using bc_render_pass_variable_t = const bcCHAR*;
 
-#define BC_PARAMETER_RESOLVER(p_name, p_value)	constexpr const bcCHAR* g_param_rsv_##p_name = p_value
+#define BC_CONST(p_type, p_name, p_value)		constexpr p_type g_##p_name = p_value;
 
 #define BC_PARAMETER(p_name, p_value)			constexpr const bcCHAR* g_param_##p_name = p_value
 

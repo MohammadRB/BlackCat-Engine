@@ -21,7 +21,7 @@
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\bcEvent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\bcException.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\bcExport.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\bc_ide_logger.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\bcIDELogger.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\File\bcPath.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
