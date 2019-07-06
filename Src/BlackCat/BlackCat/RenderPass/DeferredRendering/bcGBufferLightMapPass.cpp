@@ -278,12 +278,12 @@ namespace black_cat
 					std::end(l_csm_buffer_entry.second.m_cascade_sizes),
 					std::begin(l_shadow_map_struct.m_cascade_sizes)
 				);
-				std::transform
+				std::transform // TODO use copy
 				(
 					std::begin(l_csm_buffer_entry.second.m_view_projections),
 					std::end(l_csm_buffer_entry.second.m_view_projections),
 					std::begin(l_shadow_map_struct.m_view_projections),
-					[](const core::bc_matrix4f& p_entry) { return p_entry.transpose(); }
+					[](const core::bc_matrix4f& p_entry) { return p_entry; }
 				);
 				
 				l_direct_light_ite->m_shadow_map_index = l_csm_buffer_ite;
