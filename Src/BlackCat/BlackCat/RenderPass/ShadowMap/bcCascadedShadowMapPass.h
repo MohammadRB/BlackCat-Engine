@@ -63,8 +63,6 @@ namespace black_cat
 		graphic::bc_device_command_list_ptr m_command_list;
 		graphic::bc_device_pipeline_state_ptr m_device_pipeline;
 
-		/*graphic::bc_texture2d_ptr m_depth_buffer;
-		graphic::bc_depth_stencil_view_ptr m_depth_buffer_view;*/
 		graphic::bc_buffer_ptr m_parameters_cbuffer;
 
 		core::bc_vector_program<_bc_cascaded_shadow_map_light_state> m_light_instance_states;

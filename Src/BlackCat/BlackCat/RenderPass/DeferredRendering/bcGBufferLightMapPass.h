@@ -37,7 +37,7 @@ namespace black_cat
 
 	private:
 		constexpr static bcSIZE m_shader_thread_group_size = 16;
-		constexpr static bcSIZE m_shader_shadow_map_matrix_count = 4;
+		constexpr static bcSIZE m_shader_shadow_map_cascade_count = 4;
 		constexpr static bcSIZE m_shader_shadow_map_count = 3;
 		constexpr static bcSIZE m_num_direct_lights = 2;
 		constexpr static bcSIZE m_num_point_lights = 100;

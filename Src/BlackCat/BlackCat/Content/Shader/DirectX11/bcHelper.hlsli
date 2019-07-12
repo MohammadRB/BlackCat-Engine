@@ -17,6 +17,14 @@ float2 bc_to_screen_space_texcoord(int2 p_texcoord, uint p_screen_width, uint p_
     return l_coordinate;
 }
 
+float2 bc_clip_space_to_texcoord(float4 p_input, float2 p_half_pixle)
+{
+	float2 l_uv = float2(0.5f, -0.5f) * (p_input.xy / p_input.w) + 0.5f;
+	l_uv -= p_half_pixle;
+
+	return l_uv;
+}
+
 float bc_convert_to_linear_depth(float p_depth, float p_near_plane, float p_far_plane)
 {
     float l_depth = (p_near_plane * p_far_plane) / (p_far_plane - p_depth * (p_far_plane - p_near_plane)) / (p_far_plane - p_near_plane);

@@ -150,7 +150,7 @@ namespace black_cat
 
 		void bc_render_system::render_all_instances(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera)
 		{
-			auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
+			const auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
 
 			const graphic::bc_pipeline_stage l_per_object_cbuffer_stages = _convert_shader_type_to_pipeline_stage(m_per_object_cbuffer_parameter.get_shader_types());
 

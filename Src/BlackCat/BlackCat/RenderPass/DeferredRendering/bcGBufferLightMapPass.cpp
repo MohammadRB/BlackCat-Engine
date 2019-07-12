@@ -52,10 +52,10 @@ namespace black_cat
 
 	struct _bc_shadow_map_struct
 	{
+		core::bc_array<core::bc_matrix4f, 4> m_view_projections;
 		bcSIZE m_shadow_map_size;
 		bcSIZE m_shadow_map_count;
 		core::bc_array<bcSIZE, 4> m_cascade_sizes;
-		core::bc_array<core::bc_matrix4f, 4> m_view_projections;
 	};
 
 	struct _bc_parameters_cbuffer
@@ -259,8 +259,8 @@ namespace black_cat
 			{
 				auto& l_csm_buffer_entry = l_csm_buffer_container->get(l_csm_buffer_ite);
 
-				bcAssert(l_csm_buffer_entry.second.m_cascade_sizes.size() <= m_shader_shadow_map_matrix_count);
-				bcAssert(l_csm_buffer_entry.second.m_view_projections.size() <= m_shader_shadow_map_matrix_count);
+				bcAssert(l_csm_buffer_entry.second.m_cascade_sizes.size() <= m_shader_shadow_map_cascade_count);
+				bcAssert(l_csm_buffer_entry.second.m_view_projections.size() <= m_shader_shadow_map_cascade_count);
 
 				auto l_direct_light_ite = std::find_if(std::cbegin(l_direct_lights), std::cend(l_direct_lights), [&](const _bc_direct_light_struct& p_direct_light)
 				{
@@ -278,12 +278,12 @@ namespace black_cat
 					std::end(l_csm_buffer_entry.second.m_cascade_sizes),
 					std::begin(l_shadow_map_struct.m_cascade_sizes)
 				);
-				std::transform // TODO use copy
+				std::transform
 				(
 					std::begin(l_csm_buffer_entry.second.m_view_projections),
 					std::end(l_csm_buffer_entry.second.m_view_projections),
 					std::begin(l_shadow_map_struct.m_view_projections),
-					[](const core::bc_matrix4f& p_entry) { return p_entry; }
+					[](const core::bc_matrix4f& p_mat) { return p_mat.transpose(); }
 				);
 				
 				l_direct_light_ite->m_shadow_map_index = l_csm_buffer_ite;
@@ -291,7 +291,7 @@ namespace black_cat
 				m_shadow_map_parameters[l_csm_buffer_ite].set_as_resource_view(l_csm_buffer_entry.second.m_resource_view);
 			}
 		}
-
+		
 		p_param.m_render_thread.start(m_command_list.get());
 		
 		_bc_parameters_cbuffer l_parameters_cbuffer_data

@@ -49,12 +49,12 @@ namespace black_cat
 				0.3,
 				3000
 			));
-			l_input_system.get_camera().set_look_at(core::bc_vector3f(0, 400, -1000), core::bc_vector3f(0, 0, 0));
+			l_input_system.get_camera().set_look_at(core::bc_vector3f(0, 200, -1000), core::bc_vector3f(0, 0, 0));
 
 			l_render_system.add_render_pass(0, bc_gbuffer_initialize_pass());
 			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
 			l_render_system.add_render_pass(2, bc_gbuffer_pass());
-			l_render_system.add_render_pass(3, bc_cascaded_shadow_map_pass(constant::g_rpass_direction_light_depth_buffers, 1024, {30, 70, 120}));
+			l_render_system.add_render_pass(3, bc_cascaded_shadow_map_pass(constant::g_rpass_direction_light_depth_buffers, 2048, {25, 70, 120}));
 			l_render_system.add_render_pass(4, bc_gbuffer_light_map_pass(constant::g_rpass_direction_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(5, bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(6, bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
