@@ -167,7 +167,7 @@ float read_light_shadow_map(uint p_shadow_map_index, int2 p_texcoord)
 	return 0;*/
 }
 
-float direct_light_shadow_map(direct_light p_light, float3 p_position, float p_linear_depth)
+float2 direct_light_shadow_map(direct_light p_light, float3 p_position, float p_linear_depth)
 {
 	float l_result = 1;
 	
@@ -192,7 +192,7 @@ float direct_light_shadow_map(direct_light p_light, float3 p_position, float p_l
 
 	if (l_cascade_index == -1) 
 	{
-		return l_result;
+		return float2(l_result, l_cascade_index);
 	}
 	
 	uint l_shadow_map_width = l_shadow_map_data.m_shadow_map_size * l_shadow_map_data.m_shadow_map_count;
@@ -216,7 +216,7 @@ float direct_light_shadow_map(direct_light p_light, float3 p_position, float p_l
 		l_result = 0;
 	}
 
-	return l_result;
+	return float2(l_result, l_cascade_index);
 }
 
 float4 direct_light_shading(direct_light p_light, float3 p_camera_pos, float3 p_position, float3 p_normal, float p_specular_intensity, float p_specular_power)
@@ -368,10 +368,22 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
     {
         direct_light l_light = g_direct_lights[l_d];
 
-		float l_shadow_map = direct_light_shadow_map(l_light, l_world_position, l_linear_depth);
+		float2 l_shadow_map = direct_light_shadow_map(l_light, l_world_position, l_linear_depth);
 
-		l_light_map += l_shadow_map * direct_light_shading(l_light, g_camera_position, l_world_position, l_normal, l_specular_intensity, l_specular_power);
+		l_light_map += l_shadow_map.x * direct_light_shading(l_light, g_camera_position, l_world_position, l_normal, l_specular_intensity, l_specular_power);
         l_ambient_map += (l_light.m_ambient_color * l_light.m_ambient_intensity);
+
+		if (l_shadow_map.y != -1)
+		{
+			float4 l_cascade_colors[] =
+			{
+				float4(.2,0,0,0),
+				float4(0,.2,0,0),
+				float4(0,0,.2,0),
+				float4(.2,.2,0,0),
+			};
+			l_light_map += l_cascade_colors[l_shadow_map.y];
+		}
     }
 
     for (uint l_p = 0; l_p < gs_number_of_visible_point_lights; ++l_p)

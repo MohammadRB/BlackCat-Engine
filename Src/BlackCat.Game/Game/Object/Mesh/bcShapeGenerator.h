@@ -6,6 +6,7 @@
 #include "Core/Math/bcVector3f.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/bcExport.h"
+#include "Game/System/Input/bcCamera.h"
 
 namespace black_cat
 {
@@ -16,9 +17,9 @@ namespace black_cat
 		public:
 			bc_shape_generator_buffer(core::bc_vector_movale< core::bc_vector3f >& p_vertices, core::bc_vector_movale< bcUINT32 >& p_indices);
 
-			bcSIZE vertices_count() const;
+			bcSIZE vertices_count() const noexcept;
 
-			bcSIZE indices_size() const;
+			bcSIZE indices_size() const noexcept;
 
 			void add_vertex(const core::bc_vector3f& p_vertex);
 
@@ -33,6 +34,8 @@ namespace black_cat
 		{
 		public:
 			static void create_wired_box(bc_shape_generator_buffer& p_buffer, const physics::bc_bound_box& p_box);
+
+			static void create_wired_frustum(bc_shape_generator_buffer& p_buffer, const game::bc_icamera& p_camera);
 		};
 	}
 }

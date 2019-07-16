@@ -114,6 +114,12 @@ namespace black_cat
 			auto l_cascade_ite = 0U;
 			auto l_light_cascade_cameras = _get_light_cascades(p_param.m_camera, l_light);
 
+			if(m_capture_cascades)
+			{
+				m_captured_cascades.clear();
+				m_captured_cascades.assign(std::begin(l_light_cascade_cameras), std::end(l_light_cascade_cameras));
+			}
+
 			for(auto& l_light_cascade_camera : l_light_cascade_cameras)
 			{
 				_bc_parameters_cbuffer l_parameters{ m_shadow_map_size, m_cascade_sizes.size(), l_cascade_ite };
@@ -142,6 +148,11 @@ namespace black_cat
 		
 		p_param.m_render_thread.finish();
 		m_command_list->finished();
+
+		for(auto& l_cascade_camera : m_captured_cascades)
+		{
+			p_param.m_render_system.get_shape_drawer().render_wired_frustum(l_cascade_camera);
+		}
 	}
 
 	void bc_cascaded_shadow_map_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
@@ -166,6 +177,11 @@ namespace black_cat
 		m_command_list.reset();
 
 		unshare_resource(m_depth_buffers_share_slot);
+	}
+
+	void bc_cascaded_shadow_map_pass::capture_frustum_states()
+	{
+		m_capture_cascades = true;
 	}
 
 	_bc_cascaded_shadow_map_light_state bc_cascaded_shadow_map_pass::_create_light_instance(game::bc_render_system& p_render_system)

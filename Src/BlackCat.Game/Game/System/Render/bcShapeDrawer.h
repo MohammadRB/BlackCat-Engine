@@ -9,6 +9,7 @@
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/State/bcRenderState.h"
+#include "Game/System/Input/bcCamera.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -33,6 +34,12 @@ namespace black_cat
 			 * \param p_box 
 			 */
 			void render_wired_box(const physics::bc_bound_box& p_box);
+
+			/**
+			 * \brief Thread-Safe function
+			 * \param p_camera 
+			 */
+			void render_wired_frustum(const game::bc_icamera& p_camera);
 
 			void update_buffers(bc_render_system& p_render_system, bc_render_thread& p_thread);
 

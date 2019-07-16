@@ -64,7 +64,7 @@ namespace black_cat
 
 	void bc_gbuffer_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		game::bc_scene_graph_buffer* l_actors = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
+		auto* l_actors = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
 
 		l_actors->render_actors<game::bc_mesh_component>(p_param.m_render_system);
 		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
