@@ -5,6 +5,7 @@
 #include "CorePlatformImp/Concurrency/bcThread.h"
 #include "Core/Utility/bcLogger.h"
 #include "Core/bcEvent.h"
+#include "Platform/bcEvent.h"
 #include "Game/Application/bcRenderApplication.h"
 
 namespace black_cat
@@ -203,11 +204,19 @@ namespace black_cat
 			(
 				core::bc_event_manager::delegate_type(this, &bc_render_application::_app_event)
 			);
-			m_event_error_handle = l_event_manager->register_event_listener< core::bc_app_event_error >
+			m_event_handle_error = l_event_manager->register_event_listener< core::bc_app_event_error >
 			(
 				core::bc_event_manager::delegate_type(this, &bc_render_application::_app_event)
 			);
-			m_event_debug_handle = l_event_manager->register_event_listener< core::bc_app_event_debug >
+			m_event_handle_debug = l_event_manager->register_event_listener< core::bc_app_event_debug >
+			(
+				core::bc_event_manager::delegate_type(this, &bc_render_application::_app_event)
+			);
+			m_event_handle_key = l_event_manager->register_event_listener< platform::bc_app_event_key >
+			(
+				core::bc_event_manager::delegate_type(this, &bc_render_application::_app_event)
+			);
+			m_event_handle_pointing = l_event_manager->register_event_listener<platform::bc_app_event_pointing>
 			(
 				core::bc_event_manager::delegate_type(this, &bc_render_application::_app_event)
 			);
@@ -225,8 +234,10 @@ namespace black_cat
 			m_event_handle_window_close.reset();
 			m_event_handle_app_active.reset();
 			m_event_handle_app_exit.reset();
-			m_event_debug_handle.reset();
-			m_event_error_handle.reset();
+			m_event_handle_debug.reset();
+			m_event_handle_error.reset();
+			m_event_handle_key.reset();
+			m_event_handle_pointing.reset();
 
 			m_clock.reset(nullptr);
 			m_output_window->close();

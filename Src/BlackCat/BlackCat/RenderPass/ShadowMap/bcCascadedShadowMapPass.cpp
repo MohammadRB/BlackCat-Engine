@@ -114,12 +114,6 @@ namespace black_cat
 			auto l_cascade_ite = 0U;
 			auto l_light_cascade_cameras = _get_light_cascades(p_param.m_camera, l_light);
 
-			if(m_capture_cascades)
-			{
-				m_captured_cascades.clear();
-				m_captured_cascades.assign(std::begin(l_light_cascade_cameras), std::end(l_light_cascade_cameras));
-			}
-
 			for(auto& l_light_cascade_camera : l_light_cascade_cameras)
 			{
 				_bc_parameters_cbuffer l_parameters{ m_shadow_map_size, m_cascade_sizes.size(), l_cascade_ite };
@@ -144,11 +138,18 @@ namespace black_cat
 				l_light.get_direction(),
 				l_csm_buffer
 			));
+
+			if (m_capture_cascades)
+			{
+				m_captured_cascades.clear();
+				m_captured_cascades.assign(std::make_move_iterator(std::begin(l_light_cascade_cameras)), std::make_move_iterator(std::end(l_light_cascade_cameras)));
+				m_capture_cascades = false;
+			}
 		}
 		
 		p_param.m_render_thread.finish();
 		m_command_list->finished();
-
+		
 		for(auto& l_cascade_camera : m_captured_cascades)
 		{
 			p_param.m_render_system.get_shape_drawer().render_wired_frustum(l_cascade_camera);

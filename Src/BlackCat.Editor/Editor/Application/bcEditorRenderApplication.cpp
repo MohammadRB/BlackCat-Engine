@@ -59,7 +59,7 @@ namespace black_cat
 			l_render_system.add_render_pass(5, bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(6, bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
 
-			m_shape_throw_key_handle = core::bc_get_service< core::bc_event_manager >()->register_event_listener<platform::bc_app_event_key>
+			/*m_shape_throw_key_handle = core::bc_get_service< core::bc_event_manager >()->register_event_listener<platform::bc_app_event_key>
 			(
 				[this, l_counter = 0](const core::bc_ievent& p_event) mutable
 				{
@@ -109,7 +109,7 @@ namespace black_cat
 
 					return true;
 				}
-			);
+			);*/
 		}
 
 		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager* p_stream_manager)
@@ -146,6 +146,54 @@ namespace black_cat
 
 		bool bc_editor_render_app::application_event(core::bc_ievent& p_event)
 		{
+			auto* l_key_event = core::bc_ievent::event_as<platform::bc_app_event_key>(p_event);
+			if (l_key_event == nullptr)
+			{
+				return false;
+			}
+
+			if (l_key_event->get_key_state() == platform::bc_key_state::pressing && l_key_event->get_key() == platform::bc_key::kb_space)
+			{
+				game::bc_input_system& l_input_system = m_game_system->get_input_system();
+				auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
+				auto* l_scene = m_game_system->get_scene();
+
+				game::bc_actor l_actor;
+
+				m_shape_throw_counter = m_shape_throw_counter % 3;
+				switch (m_shape_throw_counter)
+				{
+				case 0:
+					l_actor = l_entity_manager->create_entity("sphere");
+					break;
+				case 1:
+					l_actor = l_entity_manager->create_entity("box");
+					break;
+				case 2:
+					l_actor = l_entity_manager->create_entity("convex");
+					break;
+				case 3:
+					l_actor = l_entity_manager->create_entity("train");
+					break;
+				}
+				++m_shape_throw_counter;
+
+				const auto l_position = l_input_system.get_camera().get_position();
+				l_actor.get_component<game::bc_mediate_component>()->set_world_position(l_position);
+
+				auto* l_rigid_component = l_actor.get_component<game::bc_rigid_body_component>();
+				auto l_rigid = l_rigid_component->get_body();
+				if (l_rigid.is_rigid_dynamic().is_valid())
+				{
+					const auto l_direction = l_input_system.get_camera().get_forward();
+
+					l_rigid.update_mass_inertia(10);
+					l_rigid.set_linear_velocity(l_direction * 70);
+				}
+
+				l_scene->add_actor(l_actor);
+			}
+
 			return false;
 		}
 
@@ -159,7 +207,7 @@ namespace black_cat
 
 		void bc_editor_render_app::application_destroy()
 		{
-			m_shape_throw_key_handle.reset();
+			//m_shape_throw_key_handle.reset();
 		}
 
 		void bc_editor_render_app::application_close_engine_components()

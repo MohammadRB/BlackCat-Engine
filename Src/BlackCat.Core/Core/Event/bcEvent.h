@@ -54,6 +54,17 @@ namespace black_cat
 
 				return nullptr;
 			}
+
+			template< class TEvent >
+			static const TEvent* event_as(const bc_ievent& p_event)
+			{
+				if (event_is<TEvent>(p_event))
+				{
+					return static_cast<TEvent*>(&p_event);
+				}
+
+				return nullptr;
+			}
 		};
 
 		class BC_CORE_DLL bc_event : public bc_ievent
