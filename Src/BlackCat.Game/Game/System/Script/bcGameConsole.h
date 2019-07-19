@@ -10,6 +10,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcLogger.h"
 #include "Core/Event/bcEvent.h"
+#include "Core/Event/bcEventListenerHandle.h"
 #include "Game/bcExport.h"
 #include "Game/System/Script/bcScriptSystem.h"
 

@@ -5,12 +5,17 @@
 #include "CorePlatform/bcType.h"
 #include "Core/bcExport.h"
 #include "Core/bcConstant.h"
+#include "Core/Event/bcEventHandler.h"
 
 namespace black_cat
 {
 	namespace core
 	{
 		class bc_event_manager;
+		class bc_ievent;
+
+		using bc_event_handler_t = bc_event_handler< bool(bc_ievent&) >;
+		using bc_event_handler_delegate_t = bc_event_handler_t::delegate_type;
 		using bc_event_hash = bcUINT;
 
 		template< class TEvent >
@@ -102,33 +107,6 @@ namespace black_cat
 			virtual ~bc_app_event() = 0;
 
 			bc_app_event& operator =(const bc_app_event&) = default;
-		};
-
-		class BC_CORE_DLL bc_event_listener_handle
-		{
-		public:
-			friend class bc_event_manager;
-
-		public:
-			bc_event_listener_handle();
-
-			bc_event_listener_handle(const bcCHAR* p_event_name, bcSIZE p_event_index);
-
-			bc_event_listener_handle(bc_event_listener_handle&& p_other) noexcept;
-
-			~bc_event_listener_handle();
-
-			bc_event_listener_handle& operator=(bc_event_listener_handle&& p_other) noexcept;
-
-			void reset();
-
-			void reset(bc_event_listener_handle&& p_other);
-
-		protected:
-
-		private:
-			const bcCHAR* m_event_name;
-			bcSIZE m_event_index;
 		};
 	}
 }

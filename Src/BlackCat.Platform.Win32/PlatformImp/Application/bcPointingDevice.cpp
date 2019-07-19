@@ -60,8 +60,8 @@ namespace black_cat
 			POINT l_point;
 			core_platform::win_call(GetCursorPos(&l_point) != 0);
 
-			bcINT16 l_x = m_pack.m_state.m_x;
-			bcINT16 l_y = m_pack.m_state.m_y;
+			const bcINT16 l_x = m_pack.m_state.m_x;
+			const bcINT16 l_y = m_pack.m_state.m_y;
 
 			m_pack.m_state.m_dx = l_point.x - m_pack.m_state.m_x;
 			m_pack.m_state.m_dy = l_point.y - m_pack.m_state.m_y;

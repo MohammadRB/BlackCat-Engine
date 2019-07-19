@@ -20,10 +20,10 @@ namespace black_cat
 
 			static bcUBYTE get_accelerometer_device_count();
 
-			// Create a 'key device' that represent any device with key, like keyborad
+			// Create a 'key device' that represent any device with key, like keyboard
 			static bc_key_device create_key_device(bcUBYTE p_index);
 
-			// Creare a 'pointing device' that represent any device with the ability to point to objects
+			// Create a 'pointing device' that represent any device with the ability to point to objects
 			// like mouse or touch screens(note that mouse key events will be listened by bc_key_device)
 			static bc_pointing_device create_pointing_device(bcUBYTE p_index);
 

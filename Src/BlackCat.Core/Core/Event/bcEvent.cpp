@@ -55,57 +55,5 @@ namespace black_cat
 		bc_app_event::~bc_app_event()
 		{
 		}
-
-		bc_event_listener_handle::bc_event_listener_handle()
-			: m_event_name(nullptr),
-			m_event_index(-1)
-		{
-		}
-
-		bc_event_listener_handle::bc_event_listener_handle(const bcCHAR* p_event_name, bcSIZE p_event_index)
-			: m_event_name(p_event_name),
-			m_event_index(p_event_index)
-		{
-		}
-
-		bc_event_listener_handle::bc_event_listener_handle(bc_event_listener_handle&& p_other) noexcept
-		{
-			m_event_name = p_other.m_event_name;
-			m_event_index = p_other.m_event_index;
-			p_other.m_event_name = nullptr;
-			p_other.m_event_index = -1;
-		}
-
-		bc_event_listener_handle::~bc_event_listener_handle()
-		{
-			reset();
-		}
-
-		bc_event_listener_handle& bc_event_listener_handle::operator=(bc_event_listener_handle&& p_other) noexcept
-		{
-			reset(std::move(p_other));
-
-			return *this;
-		}
-
-		void bc_event_listener_handle::reset()
-		{
-			if (m_event_name)
-			{
-				auto* l_event_manager = bc_get_service< bc_event_manager >();
-
-				l_event_manager->unregister_event_listener(*this);
-			}
-		}
-
-		void bc_event_listener_handle::reset(bc_event_listener_handle&& p_other)
-		{
-			reset();
-
-			m_event_name = p_other.m_event_name;
-			m_event_index = p_other.m_event_index;
-			p_other.m_event_name = nullptr;
-			p_other.m_event_index = -1;
-		}
 	}
 }

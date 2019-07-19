@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CorePlatformImp/Utility/bcClock.h"
-#include "PlatformImp/Application/bcPointingDevice.h"
-#include "PlatformImp/Application/bcKeyDevice.h"
 #include "Game/System/Input/bcCamera.h"
 
 namespace black_cat
@@ -28,9 +26,7 @@ namespace black_cat
 
 			bc_free_camera& operator=(bc_free_camera&&) noexcept = default;
 
-			void update(core_platform::bc_clock::update_param p_clock_update_param,
-				const platform::bc_pointing_device& p_pointing_device,
-				const platform::bc_key_device& p_key_device) noexcept override;
+			void update(const core_platform::bc_clock::update_param& p_clock_update_param) noexcept override;
 
 		protected:
 			bool on_key(core::bc_ievent& p_key_event) noexcept override;

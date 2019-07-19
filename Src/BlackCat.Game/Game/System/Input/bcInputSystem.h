@@ -91,7 +91,7 @@ namespace black_cat
 
 			if(m_camera)
 			{
-				m_camera->update(p_clock_update_param, m_pointing_device, m_key_device);
+				m_camera->update(p_clock_update_param);
 			}
 		}
 

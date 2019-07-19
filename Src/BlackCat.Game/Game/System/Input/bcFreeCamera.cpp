@@ -33,9 +33,7 @@ namespace black_cat
 		{
 		}
 
-		void bc_free_camera::update(core_platform::bc_clock::update_param p_clock_update_param,
-			const platform::bc_pointing_device& p_pointing_device,
-			const platform::bc_key_device& p_key_device) noexcept
+		void bc_free_camera::update(const core_platform::bc_clock::update_param& p_clock_update_param) noexcept
 		{
 			core::bc_vector3f l_position = get_position();
 			bcFLOAT l_move_speed = m_shift_pressed ? m_move_speed * 6 : m_ctrl_pressed ? m_move_speed * 0.25 : m_move_speed;
@@ -109,9 +107,9 @@ namespace black_cat
 				l_direction.normalize();
 			}
 
-			auto l_lookat = l_position + l_direction;
+			const auto l_look_at = l_position + l_direction;
 
-			set_look_at(l_position, l_lookat, core::bc_vector3f(0, 1, 0));
+			set_look_at(l_position, l_look_at, core::bc_vector3f(0, 1, 0));
 
 			m_dx = 0;
 			m_dy = 0;

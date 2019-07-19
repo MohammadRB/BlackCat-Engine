@@ -1,0 +1,49 @@
+// [2/11/2015 MRB]
+
+#pragma once
+
+#include "CorePlatform/bcType.h"
+#include "CorePlatform/Utility/bcNoCopy.h"
+#include "Core/bcExport.h"
+#include "Core/Event/bcEvent.h"
+
+namespace black_cat
+{
+	namespace core
+	{
+		class bc_event_manager;
+
+		class BC_CORE_DLL bc_event_listener_handle : core_platform::bc_no_copy_move
+		{
+		public:
+			friend class bc_event_manager;
+
+		public:
+			bc_event_listener_handle();
+
+			bc_event_listener_handle(bc_event_listener_handle&& p_other) noexcept;
+
+			~bc_event_listener_handle();
+
+			bc_event_listener_handle& operator=(bc_event_listener_handle&& p_other) noexcept;
+
+			/**
+			 * \brief Must be called after move construction or assignment, so we do not ends up with dangled pointers in delegates
+			 * \param p_delegate 
+			 */
+			void reassign(bc_event_handler_delegate_t&& p_delegate);
+
+			void reset();
+
+			void reset(bc_event_listener_handle&& p_other);
+
+		protected:
+
+		private:
+			bc_event_listener_handle(const bcCHAR* p_event_name, bcSIZE p_event_index);
+
+			const bcCHAR* m_event_name;
+			bcSIZE m_event_index;
+		};
+	}
+}

@@ -9,6 +9,7 @@
 #include "Core/Memory/bcPtr.h"
 #include "Core/Event/bcEvent.h"
 #include "Core/Event/bcEventHandler.h"
+#include "Core/Event/bcEventListenerHandle.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcConcurrentQueue.h"
@@ -69,8 +70,8 @@ namespace black_cat
 			BC_SERVICE(event_manager)
 
 		public:
-			using event_handler_type = bc_event_handler< bool(bc_ievent&) >;
-			using delegate_type = event_handler_type::delegate_type;
+			using event_handler_type = bc_event_handler_t;
+			using delegate_type = bc_event_handler_delegate_t;
 
 		private:
 			using handler_map_t = bc_unordered_map< bc_event_hash, event_handler_type >;
@@ -91,6 +92,8 @@ namespace black_cat
 			}
 
 			bc_event_listener_handle register_event_listener(const bcCHAR* p_event_name, delegate_type&& p_listener);
+
+			void replace_event_listener(bc_event_listener_handle& p_listener_handle, delegate_type&& p_listener);
 
 			void unregister_event_listener(bc_event_listener_handle& p_listener_handle);
 

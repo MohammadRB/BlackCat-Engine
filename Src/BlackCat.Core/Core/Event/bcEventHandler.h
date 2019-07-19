@@ -5,7 +5,6 @@
 #include "Core/CorePCH.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcDelegate.hpp"
-#include "Core/Event/bcEvent.h"
 
 namespace black_cat
 {
@@ -25,20 +24,20 @@ namespace black_cat
 			using return_type = R;
 
 		public:
-			bc_event_handler() noexcept(true)
+			bc_event_handler() noexcept
 			{
 			}
 
-			bc_event_handler(bcUINT32 p_reserve) noexcept(true)
+			explicit bc_event_handler(bcUINT32 p_reserve) noexcept
 			{
 				m_delegates.reserve(p_reserve);
 			}
 
-			~bc_event_handler() noexcept(true)
+			~bc_event_handler() noexcept
 			{
 			}
 
-			bcUINT32 delegate_count() const noexcept(true)
+			bcUINT32 delegate_count() const noexcept
 			{
 				return m_delegates.size();
 			}
@@ -76,6 +75,11 @@ namespace black_cat
 				}
 
 				return l_index;
+			}
+
+			void replace_delegate(bc_event_handler_index p_index, delegate_type&& p_del)
+			{
+				m_delegates.at(p_index) = std::move(p_del);
 			}
 
 			void remove_delegate(bc_event_handler_index p_index)

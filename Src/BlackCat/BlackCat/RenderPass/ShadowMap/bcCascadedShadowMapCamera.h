@@ -31,9 +31,7 @@ namespace black_cat
 			return *this;
 		}
 
-		void update(core_platform::bc_clock::update_param p_clock_update_param,
-			const platform::bc_pointing_device& p_pointing_device,
-			const platform::bc_key_device& p_key_device) noexcept override
+		void update(const core_platform::bc_clock::update_param& p_clock_update_param) noexcept override
 		{
 		}
 

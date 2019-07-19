@@ -18,7 +18,7 @@ namespace black_cat
 
 		bc_event_listener_handle bc_event_manager::register_event_listener(const bcCHAR* p_event_name, delegate_type&& p_listener)
 		{
-			bcUINT32 l_hash = bc_ievent::get_hash(p_event_name);
+			const auto l_hash = bc_ievent::get_hash(p_event_name);
 			bc_event_handler_index l_index;
 
 			{
@@ -31,9 +31,23 @@ namespace black_cat
 			return bc_event_listener_handle(p_event_name, l_index);
 		}
 
+		void bc_event_manager::replace_event_listener(bc_event_listener_handle& p_listener_handle, delegate_type&& p_listener)
+		{
+			const auto l_hash = bc_ievent::get_hash(p_listener_handle.m_event_name);
+
+			{
+				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_handlers_mutex);
+
+				auto l_ite = m_handlers.find(l_hash);
+				bcAssert(l_ite != m_handlers.end());
+
+				l_ite->second.replace_delegate(p_listener_handle.m_event_index, std::move(p_listener));
+			}
+		}
+
 		void bc_event_manager::unregister_event_listener(bc_event_listener_handle& p_listener_handle)
 		{
-			bcUINT32 l_hash = bc_ievent::get_hash(p_listener_handle.m_event_name);
+			const auto l_hash = bc_ievent::get_hash(p_listener_handle.m_event_name);
 
 			{
 				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_handlers_mutex);

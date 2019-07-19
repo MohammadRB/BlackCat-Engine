@@ -18,7 +18,7 @@ namespace black_cat
 			m_near(p_near_clip),
 			m_far(p_far_clip),
 			m_position(core::bc_vector3f(0, 0, 0)),
-			m_lookat(core::bc_vector3f(0, 0, 1))
+			m_look_at(core::bc_vector3f(0, 0, 1))
 		{
 			create_view_matrix();
 
@@ -40,12 +40,14 @@ namespace black_cat
 			m_near(p_other.m_near),
 			m_far(p_other.m_far),
 			m_position(p_other.m_position),
-			m_lookat(p_other.m_lookat),
+			m_look_at(p_other.m_look_at),
 			m_view(p_other.m_view),
 			m_projection(p_other.m_projection),
 			m_key_listener_handle(std::move(p_other.m_key_listener_handle)),
 			m_pointing_listener_handle(std::move(p_other.m_pointing_listener_handle))
 		{
+			m_key_listener_handle.reassign(core::bc_event_manager::delegate_type(this, &bc_icamera::on_key));
+			m_pointing_listener_handle.reassign(core::bc_event_manager::delegate_type(this, &bc_icamera::on_pointing));
 		}
 
 		bc_icamera& bc_icamera::operator=(bc_icamera&& p_other) noexcept
@@ -55,11 +57,14 @@ namespace black_cat
 			m_near = p_other.m_near;
 			m_far = p_other.m_far;
 			m_position = p_other.m_position;
-			m_lookat = p_other.m_lookat;
+			m_look_at = p_other.m_look_at;
 			m_view = p_other.m_view;
 			m_projection = p_other.m_projection;
-			m_key_listener_handle = std::move(p_other.m_key_listener_handle);
+			m_key_listener_handle = std::move(m_key_listener_handle);
 			m_pointing_listener_handle = std::move(p_other.m_pointing_listener_handle);
+
+			m_key_listener_handle.reassign(core::bc_event_manager::delegate_type(this, &bc_icamera::on_key));
+			m_pointing_listener_handle.reassign(core::bc_event_manager::delegate_type(this, &bc_icamera::on_pointing));
 
 			return *this;
 		}
@@ -70,7 +75,7 @@ namespace black_cat
 
 		core::bc_vector3f bc_icamera::get_direction() const noexcept
 		{
-			auto l_direction = (m_lookat - m_position);
+			auto l_direction = (m_look_at - m_position);
 			l_direction.normalize();
 
 			return l_direction;
@@ -118,10 +123,10 @@ namespace black_cat
 			return get_right() * -1;
 		}
 
-		void bc_icamera::set_look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_lookat, const core::bc_vector3f& p_up) noexcept
+		void bc_icamera::set_look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_look_at, const core::bc_vector3f& p_up) noexcept
 		{
 			m_position = p_position;
-			m_lookat = p_lookat;
+			m_look_at = p_look_at;
 
 			create_view_matrix(p_up);
 		}
@@ -196,11 +201,11 @@ namespace black_cat
 		{
 			if(graphic::bc_render_api_info::is_left_handed())
 			{
-				m_view = core::bc_matrix4f::look_at_matrix_lh(m_position, m_lookat, p_up);
+				m_view = core::bc_matrix4f::look_at_matrix_lh(m_position, m_look_at, p_up);
 			}
 			else
 			{
-				m_view = core::bc_matrix4f::look_at_matrix_rh(m_position, m_lookat, p_up);
+				m_view = core::bc_matrix4f::look_at_matrix_rh(m_position, m_look_at, p_up);
 			}
 		}
 

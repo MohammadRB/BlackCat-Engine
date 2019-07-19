@@ -5,10 +5,10 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcArray.h"
 #include "Core/Event/bcEvent.h"
+#include "Core/Event/bcEventListenerHandle.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix3f.h"
 #include "Core/Math/bcMatrix4f.h"
-#include "PlatformImp/Application/bcHumanInterfaceDevice.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -56,9 +56,9 @@ namespace black_cat
 
 			core::bc_vector3f get_direction() const noexcept;
 
-			core::bc_vector3f get_lookat() const noexcept
+			core::bc_vector3f get_look_at() const noexcept
 			{
-				return m_lookat;
+				return m_look_at;
 			}
 			
 			core::bc_vector3f get_forward() const noexcept;
@@ -90,7 +90,7 @@ namespace black_cat
 			 */
 			virtual void get_extend_points(extend& p_points) const noexcept = 0;
 
-			void set_look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_lookat, const core::bc_vector3f& p_up = core::bc_vector3f(0, 1, 0)) noexcept;
+			void set_look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_look_at, const core::bc_vector3f& p_up = core::bc_vector3f(0, 1, 0)) noexcept;
 
 			void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height) noexcept;
 
@@ -106,9 +106,7 @@ namespace black_cat
 			 */
 			core::bc_vector3f project_clip_point_to_3d_ray(bcUINT16 p_screen_width, bcUINT16 p_screen_height, bcUINT16 p_left, bcUINT16 p_top) const noexcept;
 
-			virtual void update(core_platform::bc_clock::update_param p_clock_update_param,
-				const platform::bc_pointing_device& p_pointing_device,
-				const platform::bc_key_device& p_key_device) noexcept = 0;
+			virtual void update(const core_platform::bc_clock::update_param& p_clock_update_param) noexcept = 0;
 
 		protected:
 			bc_icamera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
@@ -131,7 +129,7 @@ namespace black_cat
 			bcFLOAT m_near;
 			bcFLOAT m_far;
 			core::bc_vector3f m_position;
-			core::bc_vector3f m_lookat;
+			core::bc_vector3f m_look_at;
 			core::bc_matrix4f m_view;
 			core::bc_matrix4f m_projection;
 
