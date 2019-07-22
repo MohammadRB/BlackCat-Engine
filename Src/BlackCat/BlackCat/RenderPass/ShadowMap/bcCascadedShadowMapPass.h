@@ -49,7 +49,7 @@ namespace black_cat
 
 		void destroy(game::bc_render_system& p_render_system) override;
 
-		void capture_frustum_states();
+		void capture_debug_shapes();
 
 	private:
 		_bc_cascaded_shadow_map_light_state _create_light_instance(game::bc_render_system& p_render_system);
@@ -68,7 +68,8 @@ namespace black_cat
 
 		constant::bc_render_pass_variable_t m_depth_buffers_share_slot;
 
-		bool m_capture_cascades = false;
+		bool m_capture_debug_shapes = false;
 		core::bc_vector<bc_cascaded_shadow_map_camera> m_captured_cascades;
+		core::bc_vector<physics::bc_bound_box> m_captured_boxes;
 	};
 }
