@@ -9,7 +9,7 @@
 #include "Game/System/Render/Pass/bcRenderPassState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/Light/bcDirectLight.h"
-#include "Game/System/Input/bcCameraFrustum.h"
+#include "Game/System/Input/bcFreeCamera.h"
 #include "BlackCat/bcExport.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapCamera.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapBufferContainer.h"
@@ -70,5 +70,6 @@ namespace black_cat
 
 		bool m_capture_cascades = false;
 		core::bc_vector<bc_cascaded_shadow_map_camera> m_captured_cascades;
+		game::bc_free_camera m_captured_camera;
 	};
 }

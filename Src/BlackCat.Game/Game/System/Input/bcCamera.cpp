@@ -60,7 +60,7 @@ namespace black_cat
 			m_look_at = p_other.m_look_at;
 			m_view = p_other.m_view;
 			m_projection = p_other.m_projection;
-			m_key_listener_handle = std::move(m_key_listener_handle);
+			m_key_listener_handle = std::move(p_other.m_key_listener_handle);
 			m_pointing_listener_handle = std::move(p_other.m_pointing_listener_handle);
 
 			m_key_listener_handle.reassign(core::bc_event_manager::delegate_type(this, &bc_icamera::on_key));

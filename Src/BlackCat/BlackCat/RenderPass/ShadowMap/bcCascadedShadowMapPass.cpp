@@ -5,6 +5,7 @@
 #include "Core/Container/bcArray.h"
 #include "GraphicImp/Resource/bcResourceConfig.h"
 #include "Game/System/Input/bcCamera.h"
+#include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
@@ -23,7 +24,8 @@ namespace black_cat
 	bc_cascaded_shadow_map_pass::bc_cascaded_shadow_map_pass(constant::bc_render_pass_variable_t p_output_depth_buffers, bcSIZE p_shadow_map_size, std::initializer_list<bcSIZE> p_cascade_sizes)
 		: m_shadow_map_size(p_shadow_map_size),
 		m_cascade_sizes(p_cascade_sizes),
-		m_depth_buffers_share_slot(p_output_depth_buffers)
+		m_depth_buffers_share_slot(p_output_depth_buffers),
+		m_captured_camera(1,1,1,1,1)
 	{
 	}
 
@@ -141,18 +143,34 @@ namespace black_cat
 
 			if (m_capture_cascades)
 			{
+				const auto& l_perspective_camera = static_cast<const game::bc_perspective_camera&>(p_param.m_camera);
+				
 				m_captured_cascades.clear();
 				m_captured_cascades.assign(std::make_move_iterator(std::begin(l_light_cascade_cameras)), std::make_move_iterator(std::end(l_light_cascade_cameras)));
+				m_captured_camera = game::bc_free_camera
+				(
+					l_perspective_camera.get_screen_width(),
+					l_perspective_camera.get_screen_height(),
+					l_perspective_camera.get_field_of_view(),
+					l_perspective_camera.get_near_clip(),
+					l_perspective_camera.get_far_clip()
+				);
+				m_captured_camera.set_look_at(l_perspective_camera.get_position(), l_perspective_camera.get_look_at(), core::bc_vector3f::up());
+
 				m_capture_cascades = false;
 			}
 		}
 		
 		p_param.m_render_thread.finish();
 		m_command_list->finished();
-		
-		for(auto& l_cascade_camera : m_captured_cascades)
+
+		if(m_captured_cascades.size())
 		{
-			p_param.m_render_system.get_shape_drawer().render_wired_frustum(l_cascade_camera);
+			for (auto& l_cascade_camera : m_captured_cascades)
+			{
+				p_param.m_render_system.get_shape_drawer().render_wired_frustum(l_cascade_camera);
+			}
+			p_param.m_render_system.get_shape_drawer().render_wired_frustum(m_captured_camera);
 		}
 	}
 
