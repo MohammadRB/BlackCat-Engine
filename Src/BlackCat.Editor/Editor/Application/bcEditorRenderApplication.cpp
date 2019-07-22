@@ -154,7 +154,7 @@ namespace black_cat
 
 			if(l_key_event->get_key_state() == platform::bc_key_state::releasing && l_key_event->get_key() == platform::bc_key::kb_F)
 			{
-				m_game_system->get_render_system().get_render_pass<bc_cascaded_shadow_map_pass>()->capture_frustum_states();
+				m_game_system->get_render_system().get_render_pass<bc_cascaded_shadow_map_pass>()->capture_debug_shapes();
 			}
 
 			if (l_key_event->get_key_state() == platform::bc_key_state::pressing && l_key_event->get_key() == platform::bc_key::kb_space)

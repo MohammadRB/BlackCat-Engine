@@ -148,5 +148,26 @@ namespace black_cat
 			p_result[6] = l_position + core::bc_vector3f(l_half_extend.x, -l_half_extend.y, -l_half_extend.z * l_z_sign);
 			p_result[7] = l_position + core::bc_vector3f(l_half_extend.x, -l_half_extend.y, l_half_extend.z * l_z_sign);
 		}
+
+		template< >
+		BC_PHYSICSIMP_DLL
+		bc_platform_bound_box<g_api_physx> bc_platform_bound_box<g_api_physx>::from_center_extends(const core::bc_vector3f& p_center, const core::bc_vector3f& p_half_extend)
+		{
+			return bc_platform_bound_box(p_center, p_half_extend);
+		}
+
+		template< >
+		BC_PHYSICSIMP_DLL
+		bc_platform_bound_box<g_api_physx> bc_platform_bound_box<g_api_physx>::from_min_max(const core::bc_vector3f& p_min, const core::bc_vector3f& p_max)
+		{
+			bc_platform_bound_box l_box;
+			l_box.m_pack.m_bound = physx::PxBounds3
+			(
+				bc_to_right_hand(p_min),
+				bc_to_right_hand(p_max)
+			);
+
+			return l_box;
+		}
 	}
 }

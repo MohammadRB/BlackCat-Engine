@@ -141,11 +141,10 @@ namespace black_cat
 				l_csm_buffer
 			));
 
-			if (m_capture_cascades)
+			if (m_capture_debug_shapes)
 			{
 				const auto& l_perspective_camera = static_cast<const game::bc_perspective_camera&>(p_param.m_camera);
 				
-				m_captured_cascades.clear();
 				m_captured_cascades.assign(std::make_move_iterator(std::begin(l_light_cascade_cameras)), std::make_move_iterator(std::end(l_light_cascade_cameras)));
 				m_captured_camera = game::bc_free_camera
 				(
@@ -157,21 +156,22 @@ namespace black_cat
 				);
 				m_captured_camera.set_look_at(l_perspective_camera.get_position(), l_perspective_camera.get_look_at(), core::bc_vector3f::up());
 
-				m_capture_cascades = false;
+				m_capture_debug_shapes = false;
 			}
 		}
 		
 		p_param.m_render_thread.finish();
 		m_command_list->finished();
-
-		if(m_captured_cascades.size())
+		
+		for(auto& l_captured_camera : m_captured_cascades)
 		{
-			for (auto& l_cascade_camera : m_captured_cascades)
-			{
-				p_param.m_render_system.get_shape_drawer().render_wired_frustum(l_cascade_camera);
-			}
-			p_param.m_render_system.get_shape_drawer().render_wired_frustum(m_captured_camera);
+			//p_param.m_render_system.get_shape_drawer().render_wired_frustum(l_captured_camera);
 		}
+		for(auto& l_captured_box : m_captured_boxes)
+		{
+			p_param.m_render_system.get_shape_drawer().render_wired_box(l_captured_box);
+		}
+		//p_param.m_render_system.get_shape_drawer().render_wired_frustum(m_captured_camera);
 	}
 
 	void bc_cascaded_shadow_map_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
@@ -198,9 +198,11 @@ namespace black_cat
 		unshare_resource(m_depth_buffers_share_slot);
 	}
 
-	void bc_cascaded_shadow_map_pass::capture_frustum_states()
+	void bc_cascaded_shadow_map_pass::capture_debug_shapes()
 	{
-		m_capture_cascades = true;
+		m_capture_debug_shapes = true;
+		m_captured_cascades.clear();
+		m_captured_boxes.clear();
 	}
 
 	_bc_cascaded_shadow_map_light_state bc_cascaded_shadow_map_pass::_create_light_instance(game::bc_render_system& p_render_system)
@@ -260,7 +262,7 @@ namespace black_cat
 
 		core::bc_vector_frame<bc_cascaded_shadow_map_camera> l_cascade_cameras;
 
-		const auto l_camera_planes_distance = p_camera.get_far_clip() - p_camera.get_near_clip();
+		const auto l_camera_planes_distance = p_camera.get_far_clip();
 		const auto l_lower_left_ray = l_camera_frustum_corners[4] - l_camera_frustum_corners[0];
 		const auto l_upper_left_ray = l_camera_frustum_corners[5] - l_camera_frustum_corners[1];
 		const auto l_upper_right_ray = l_camera_frustum_corners[6] - l_camera_frustum_corners[2];
@@ -328,6 +330,11 @@ namespace black_cat
 			}
 
 			l_cascade_cameras.push_back(bc_cascaded_shadow_map_camera(l_camera_pos, l_frustum_center, l_max_vs.x - l_min_vs.x, l_max_vs.y - l_min_vs.y, 0.1, l_max_vs.z));
+
+			if(m_capture_debug_shapes)
+			{
+				m_captured_boxes.push_back(physics::bc_bound_box::from_min_max(l_min, l_max));
+			}
 		}
 
 		return l_cascade_cameras;

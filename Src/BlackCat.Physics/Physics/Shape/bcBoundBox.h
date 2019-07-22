@@ -62,6 +62,10 @@ namespace black_cat
 			 */
 			void get_points(core::bc_array<core::bc_vector3f, 8>& p_result) const noexcept;
 
+			static bc_platform_bound_box from_center_extends(const core::bc_vector3f& p_center, const core::bc_vector3f& p_half_extend);
+
+			static bc_platform_bound_box from_min_max(const core::bc_vector3f& p_min, const core::bc_vector3f& p_max);
+
 			platform_pack& get_platform_pack()
 			{
 				return m_pack;
