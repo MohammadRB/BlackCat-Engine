@@ -69,8 +69,8 @@ namespace black_cat
 		constant::bc_render_pass_variable_t m_depth_buffers_share_slot;
 
 		bool m_capture_debug_shapes = false;
-		core::bc_vector<bc_cascaded_shadow_map_camera> m_captured_cascades;
-		game::bc_free_camera m_captured_camera;
-		core::bc_vector<physics::bc_bound_box> m_captured_boxes;
+		game::bc_icamera::extend m_captured_camera;
+		core::bc_vector_movale<game::bc_icamera::extend> m_captured_cascades;
+		core::bc_vector_movale<physics::bc_bound_box> m_captured_boxes;
 	};
 }

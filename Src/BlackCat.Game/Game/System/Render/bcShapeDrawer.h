@@ -37,9 +37,9 @@ namespace black_cat
 
 			/**
 			 * \brief Thread-Safe function
-			 * \param p_camera 
+			 * \param p_camera_extend
 			 */
-			void render_wired_frustum(const game::bc_icamera& p_camera);
+			void render_wired_frustum(const bc_icamera::extend& p_camera_extend);
 
 			void update_buffers(bc_render_system& p_render_system, bc_render_thread& p_thread);
 

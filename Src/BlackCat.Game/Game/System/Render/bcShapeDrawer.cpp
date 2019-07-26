@@ -55,13 +55,13 @@ namespace black_cat
 			}
 		}
 
-		void bc_shape_drawer::render_wired_frustum(const game::bc_icamera& p_camera)
+		void bc_shape_drawer::render_wired_frustum(const bc_icamera::extend& p_camera_extend)
 		{
 			{
 				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_mutex);
 
 				bc_shape_generator_buffer l_buffer(m_vertices, m_indices);
-				bc_shape_generator::create_wired_frustum(l_buffer, p_camera);
+				bc_shape_generator::create_wired_frustum(l_buffer, p_camera_extend);
 			}
 		}
 

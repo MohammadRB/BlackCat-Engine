@@ -178,7 +178,7 @@ float2 direct_light_shadow_map(direct_light p_light, float3 p_position, float p_
 
 	shadow_map l_shadow_map_data = g_shadow_maps[p_light.m_shadow_map_index];
 
-	float l_depth = p_linear_depth * g_far_plan + g_near_plan;
+	float l_depth = p_linear_depth * (g_far_plan - g_near_plan);
 	int l_cascade_index = -1;
 
 	for (uint i = 0; i < l_shadow_map_data.m_shadow_map_count; ++i)

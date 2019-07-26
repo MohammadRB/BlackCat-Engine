@@ -35,7 +35,7 @@ namespace black_cat
 		public:
 			static void create_wired_box(bc_shape_generator_buffer& p_buffer, const physics::bc_bound_box& p_box);
 
-			static void create_wired_frustum(bc_shape_generator_buffer& p_buffer, const game::bc_icamera& p_camera);
+			static void create_wired_frustum(bc_shape_generator_buffer& p_buffer, const bc_icamera::extend& p_camera_extend);
 		};
 	}
 }

@@ -328,15 +328,25 @@ namespace black_cat
 
 			const auto l_near_clip_center = get_position() + get_forward() * get_near_clip();
 			const auto l_far_clip_center = get_position() + get_forward() * get_far_clip();
+			
+			const auto l_near_clip_half_width = l_near_clip_width / 2;
+			const auto l_near_clip_half_height = l_near_clip_height / 2;
+			const auto l_far_clip_half_width = l_far_clip_width / 2;
+			const auto l_far_clip_half_height = l_far_clip_height / 2;
 
-			p_points[0] = l_near_clip_center + get_left() * (l_near_clip_width / 2) + get_down() * (l_near_clip_height / 2);
-			p_points[1] = l_near_clip_center + get_left() * (l_near_clip_width / 2) + get_up() * (l_near_clip_height / 2);
-			p_points[2] = l_near_clip_center + get_right() * (l_near_clip_width / 2) + get_up() * (l_near_clip_height / 2);
-			p_points[3] = l_near_clip_center + get_right() * (l_near_clip_width / 2) + get_down() * (l_near_clip_height / 2);
-			p_points[4] = l_far_clip_center + get_left() * (l_far_clip_width / 2) + get_down() * (l_far_clip_height / 2);
-			p_points[5] = l_far_clip_center + get_left() * (l_far_clip_width / 2) + get_up() * (l_far_clip_height / 2);
-			p_points[6] = l_far_clip_center + get_right() * (l_far_clip_width / 2) + get_up() * (l_far_clip_height / 2);
-			p_points[7] = l_far_clip_center + get_right() * (l_far_clip_width / 2) + get_down() * (l_far_clip_height / 2);
+			const auto l_left = get_left();
+			const auto l_right = get_right();
+			const auto l_down = get_down();
+			const auto l_up = get_up();
+
+			p_points[0] = l_near_clip_center + l_left * l_near_clip_half_width + l_down * l_near_clip_half_height;
+			p_points[1] = l_near_clip_center + l_left * l_near_clip_half_width + l_up * l_near_clip_half_height;
+			p_points[2] = l_near_clip_center + l_right * l_near_clip_half_width + l_up * l_near_clip_half_height;
+			p_points[3] = l_near_clip_center + l_right * l_near_clip_half_width + l_down * l_near_clip_half_height;
+			p_points[4] = l_far_clip_center + l_left * l_far_clip_half_width + l_down * l_far_clip_half_height;
+			p_points[5] = l_far_clip_center + l_left * l_far_clip_half_width + l_up * l_far_clip_half_height;
+			p_points[6] = l_far_clip_center + l_right * l_far_clip_half_width + l_up * l_far_clip_half_height;
+			p_points[7] = l_far_clip_center + l_right * l_far_clip_half_width + l_down * l_far_clip_half_height;
 		}
 
 		void bc_perspective_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept

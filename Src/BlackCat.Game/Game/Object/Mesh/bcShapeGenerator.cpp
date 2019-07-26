@@ -74,20 +74,18 @@ namespace black_cat
 			p_buffer.add_index(l_start_index + 7);
 		}
 
-		void bc_shape_generator::create_wired_frustum(bc_shape_generator_buffer& p_buffer, const game::bc_icamera& p_camera)
+		void bc_shape_generator::create_wired_frustum(bc_shape_generator_buffer& p_buffer, const bc_icamera::extend& p_camera_extend)
 		{
 			const auto l_start_index = p_buffer.vertices_count();
-			game::bc_icamera::extend l_points;
-			p_camera.get_extend_points(l_points);
-
-			p_buffer.add_vertex(l_points[0]);
-			p_buffer.add_vertex(l_points[1]);
-			p_buffer.add_vertex(l_points[2]);
-			p_buffer.add_vertex(l_points[3]);
-			p_buffer.add_vertex(l_points[4]);
-			p_buffer.add_vertex(l_points[5]);
-			p_buffer.add_vertex(l_points[6]);
-			p_buffer.add_vertex(l_points[7]);
+			
+			p_buffer.add_vertex(p_camera_extend[0]);
+			p_buffer.add_vertex(p_camera_extend[1]);
+			p_buffer.add_vertex(p_camera_extend[2]);
+			p_buffer.add_vertex(p_camera_extend[3]);
+			p_buffer.add_vertex(p_camera_extend[4]);
+			p_buffer.add_vertex(p_camera_extend[5]);
+			p_buffer.add_vertex(p_camera_extend[6]);
+			p_buffer.add_vertex(p_camera_extend[7]);
 
 			p_buffer.add_index(l_start_index + 0);
 			p_buffer.add_index(l_start_index + 1);

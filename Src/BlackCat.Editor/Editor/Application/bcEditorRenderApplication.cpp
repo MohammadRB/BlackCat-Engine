@@ -49,7 +49,7 @@ namespace black_cat
 				0.3,
 				3000
 			));
-			l_input_system.get_camera().set_look_at(core::bc_vector3f(0, 200, -1000), core::bc_vector3f(0, 0, 0));
+			l_input_system.get_camera().set_look_at(core::bc_vector3f(0, 200, -1000), core::bc_vector3f(0, 200, 0));
 
 			l_render_system.add_render_pass(0, bc_gbuffer_initialize_pass());
 			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
