@@ -136,6 +136,11 @@ namespace black_cat
 			set_projection(p_back_buffer_width, p_back_buffer_height, m_near, m_far);
 		}
 
+		void bc_icamera::set_projection(const core::bc_matrix4f& p_projection) noexcept
+		{
+			m_projection = p_projection;
+		}
+
 		core::bc_vector3f bc_icamera::project_clip_point_to_3d_ray(bcUINT16 p_screen_width, bcUINT16 p_screen_height, bcUINT16 p_left, bcUINT16 p_top) const noexcept
 		{
 			//auto l_view = get_view();
@@ -355,7 +360,7 @@ namespace black_cat
 			m_screen_height = p_back_buffer_height;
 			m_near = p_near_clip;
 			m_far = p_far_clip;
-			m_aspect_ratio = bcFLOAT(p_back_buffer_width) / p_back_buffer_height;
+			m_aspect_ratio = bcFLOAT(p_back_buffer_width) / bcFLOAT(p_back_buffer_height);
 
 			create_projection_matrix();
 		}

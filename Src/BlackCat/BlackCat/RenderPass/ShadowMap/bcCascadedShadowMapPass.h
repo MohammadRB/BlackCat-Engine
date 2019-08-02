@@ -56,6 +56,8 @@ namespace black_cat
 
 		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_cascades(const game::bc_icamera& p_camera, const game::bc_direct_light& p_light);
 
+		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_stabilized_cascades(const game::bc_icamera& p_camera, const game::bc_direct_light& p_light);
+
 		const bcSIZE m_cascade_cameras_distance = 300;
 		bcSIZE m_shadow_map_size;
 		core::bc_vector_program<bcSIZE> m_cascade_sizes;

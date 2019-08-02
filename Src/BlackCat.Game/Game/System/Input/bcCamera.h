@@ -96,6 +96,8 @@ namespace black_cat
 
 			virtual void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept = 0;
 
+			void set_projection(const core::bc_matrix4f& p_projection) noexcept;
+
 			/**
 			 * \brief Convert a point from screen space to a normalized ray in 3d space
 			 * \param p_screen_width
@@ -139,6 +141,9 @@ namespace black_cat
 
 		class BC_GAME_DLL bc_orthographic_camera : public bc_icamera
 		{
+		public:
+			using bc_icamera::set_projection;
+
 		public:
 			virtual ~bc_orthographic_camera() = default;
 
@@ -184,6 +189,9 @@ namespace black_cat
 
 		class BC_GAME_DLL bc_perspective_camera : public bc_icamera
 		{
+		public:
+			using bc_icamera::set_projection;
+
 		public:
 			virtual ~bc_perspective_camera() = default;
 			

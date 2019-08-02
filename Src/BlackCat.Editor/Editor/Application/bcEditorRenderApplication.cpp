@@ -54,7 +54,7 @@ namespace black_cat
 			l_render_system.add_render_pass(0, bc_gbuffer_initialize_pass());
 			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
 			l_render_system.add_render_pass(2, bc_gbuffer_pass());
-			l_render_system.add_render_pass(3, bc_cascaded_shadow_map_pass(constant::g_rpass_direction_light_depth_buffers, 1500, {15, 45, 100, 180}));
+			l_render_system.add_render_pass(3, bc_cascaded_shadow_map_pass(constant::g_rpass_direction_light_depth_buffers, 1500, {15, 35, 90, 170}));
 			l_render_system.add_render_pass(4, bc_gbuffer_light_map_pass(constant::g_rpass_direction_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(5, bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(6, bc_shape_draw_pass(constant::g_rpass_back_buffer_view));

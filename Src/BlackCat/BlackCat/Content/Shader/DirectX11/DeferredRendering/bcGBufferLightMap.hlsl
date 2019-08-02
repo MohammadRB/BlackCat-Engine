@@ -6,7 +6,7 @@
 #define THREAD_GROUP_SIZE 16
 #define SHADER_SHADOW_MAP_CASCADE_COUNT 4
 
-static const float BIAS[SHADER_SHADOW_MAP_CASCADE_COUNT] = { 0.0005f,0.0008f,0.001f,0.003f };
+static const float BIAS[SHADER_SHADOW_MAP_CASCADE_COUNT] = { 0.0005f,0.0008f,0.001f,0.002f };
 
 struct direct_light
 {
