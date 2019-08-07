@@ -2,7 +2,7 @@
 
 #include "Game/GamePCH.h"
 #include "Game/Object/Mesh/bcShapeGenerator.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 
 namespace black_cat
 {

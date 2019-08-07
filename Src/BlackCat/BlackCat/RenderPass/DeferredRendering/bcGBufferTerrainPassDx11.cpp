@@ -6,7 +6,7 @@
 #include "Core/Content/bcContentStreamManager.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
 #include "Game/Object/Scene/bcScene.h"
@@ -63,7 +63,7 @@ namespace black_cat
 			game::bc_multi_sample_type::c1_q1
 		);
 
-		auto l_resource_configure = graphic::bc_graphic_resource_configure();
+		auto l_resource_configure = graphic::bc_graphic_resource_builder();
 
 		auto l_parameter_cbuffer_config = l_resource_configure
 			.as_resource()

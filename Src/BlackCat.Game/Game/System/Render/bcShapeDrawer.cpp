@@ -3,7 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "GraphicImp/Resource/Buffer/bcBufferConfig.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/Object/Mesh/bcShapeGenerator.h"
@@ -98,7 +98,7 @@ namespace black_cat
 
 			if (l_vb_size < l_vertices_count * sizeof(core::bc_vector3f))
 			{
-				graphic::bc_buffer_config l_vb_config = graphic::bc_resource_configure().as_buffer
+				graphic::bc_buffer_config l_vb_config = graphic::bc_resource_builder().as_buffer
 				(
 					l_vertices_capacity,
 					sizeof(core::bc_vector3f),
@@ -115,7 +115,7 @@ namespace black_cat
 
 			if (l_ib_size < l_indices_count * sizeof(bcUINT32))
 			{
-				graphic::bc_buffer_config l_ib_config = graphic::bc_resource_configure().as_buffer
+				graphic::bc_buffer_config l_ib_config = graphic::bc_resource_builder().as_buffer
 				(
 					l_indices_capacity,
 					sizeof(bcUINT32),

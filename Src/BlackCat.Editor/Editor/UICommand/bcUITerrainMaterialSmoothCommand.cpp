@@ -47,7 +47,7 @@ namespace black_cat
 		{
 			auto& l_render_system = p_context.m_game_system.get_render_system();
 
-			auto l_cb_config = graphic::bc_graphic_resource_configure().as_resource()
+			auto l_cb_config = graphic::bc_graphic_resource_builder().as_resource()
 				.as_buffer
 				(
 					1,
@@ -105,7 +105,7 @@ namespace black_cat
 			const auto l_tool_diameter = m_shader_parameter.m_tool_radius * 2;
 			const auto l_thread_group_count = (l_tool_diameter / 32) + 1;
 
-			auto l_temp_texture_config = graphic::bc_graphic_resource_configure()
+			auto l_temp_texture_config = graphic::bc_graphic_resource_builder()
 				.as_resource()
 				.as_texture2d
 				(
@@ -118,7 +118,7 @@ namespace black_cat
 					graphic::bc_resource_view_type::shader
 				)
 				.as_normal_texture();
-			auto l_temp_texture_view_config = graphic::bc_graphic_resource_configure()
+			auto l_temp_texture_view_config = graphic::bc_graphic_resource_builder()
 				.as_resource_view()
 				.as_texture_view(m_height_map.get_texture_map().get_format())
 				.as_tex2d_shader_view(0, 1)

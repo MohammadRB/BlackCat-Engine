@@ -14,7 +14,7 @@
 #include "Graphic/bcEvent.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "GraphicImp/bcRenderApiInfo.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/State/bcRenderState.h"
 #include "Game/System/Render/bcRenderTask.h"
@@ -600,7 +600,7 @@ namespace black_cat
 
 			m_device.set_allocator_alloc_type(l_alloc_type);
 
-			auto l_global_cbuffer_config = graphic::bc_graphic_resource_configure()
+			auto l_global_cbuffer_config = graphic::bc_graphic_resource_builder()
 				.as_resource()
 				.as_buffer
 				(
@@ -610,7 +610,7 @@ namespace black_cat
 					graphic::bc_resource_view_type::none
 				)
 				.as_constant_buffer();
-			auto l_per_object_cbuffer_config = graphic::bc_graphic_resource_configure()
+			auto l_per_object_cbuffer_config = graphic::bc_graphic_resource_builder()
 				.as_resource()
 				.as_buffer
 				(

@@ -2,7 +2,7 @@
 
 #include "BlackCat/BlackCatPCH.h"
 #include "Core/Utility/bcEnumOperand.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"

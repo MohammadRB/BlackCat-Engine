@@ -3,7 +3,7 @@
 #include "Editor/EditorPCH.h"
 
 #include "Core/Utility/bcLogger.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "PhysicsImp/Shape/bcHeightField.h"
 #include "Game/System/Physics/bcPxWrap.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
@@ -51,7 +51,7 @@ namespace black_cat
 		{
 			auto& l_render_system = p_context.m_game_system.get_render_system();
 
-			auto l_cb_config = graphic::bc_graphic_resource_configure().as_resource()
+			auto l_cb_config = graphic::bc_graphic_resource_builder().as_resource()
 				.as_buffer
 				(
 					1,

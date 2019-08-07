@@ -16,7 +16,7 @@
 #include "Graphic/bcEvent.h"
 #include "GraphicImp/bcUtility.h"
 #include "GraphicImp/Resource/bcResource.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"

@@ -8,7 +8,7 @@
 #include "Core/Math/bcVector3f.h"
 #include "Core/File/bcJsonDocument.h"
 #include "GraphicImp/bcRenderApiInfo.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "PhysicsImp/Fundation/bcMemoryBuffer.h"
 #include "PhysicsImp/Fundation/bcSerializeBuffer.h"
@@ -63,7 +63,7 @@ namespace black_cat
 			const auto l_width = m_height_map.get_width();
 			const auto l_height = m_height_map.get_height();
 			
-			auto l_texture_config = graphic::bc_graphic_resource_configure().as_resource()
+			auto l_texture_config = graphic::bc_graphic_resource_builder().as_resource()
 				.as_texture2d
 				(
 					l_width,
@@ -441,7 +441,7 @@ namespace black_cat
 			l_materials.push_back(std::move(l_material));
 		}
 
-		auto l_resource_configure = graphic::bc_graphic_resource_configure();
+		auto l_resource_configure = graphic::bc_graphic_resource_builder();
 
 		auto l_vbuffer_config = l_resource_configure
 			.as_resource()
@@ -624,7 +624,7 @@ namespace black_cat
 
 	std::pair< graphic::bc_texture_config, graphic::bc_resource_view_config > bc_height_map_loader_dx11::get_height_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const
 	{
-		auto l_texture_config = graphic::bc_graphic_resource_configure()
+		auto l_texture_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_texture2d
 			(
@@ -637,7 +637,7 @@ namespace black_cat
 				core::bc_enum::or({ graphic::bc_resource_view_type::shader })
 			)
 			.as_normal_texture();
-		auto l_view_config = graphic::bc_graphic_resource_configure()
+		auto l_view_config = graphic::bc_graphic_resource_builder()
 			.as_resource_view()
 			.as_texture_view(l_texture_config.get_format())
 			.as_tex2d_shader_view(0, 1)
@@ -648,7 +648,7 @@ namespace black_cat
 
 	std::pair< graphic::bc_texture_config, graphic::bc_resource_view_config > bc_height_map_loader_dx11::get_texture_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const
 	{
-		auto l_texture_config = graphic::bc_graphic_resource_configure()
+		auto l_texture_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_texture2d
 			(
@@ -661,7 +661,7 @@ namespace black_cat
 				core::bc_enum::or({ graphic::bc_resource_view_type::shader })
 			)
 			.as_normal_texture();
-		auto l_view_config = graphic::bc_graphic_resource_configure()
+		auto l_view_config = graphic::bc_graphic_resource_builder()
 			.as_resource_view()
 			.as_texture_view(l_texture_config.get_format())
 			.as_tex2d_shader_view(0, 1)

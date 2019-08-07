@@ -3,7 +3,7 @@
 #include "BlackCat/BlackCatPCH.h"
 
 #include "Core/Container/bcArray.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Input/bcCamera.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/Object/Scene/bcScene.h"
@@ -49,7 +49,7 @@ namespace black_cat
 			game::bc_multi_sample_type::c1_q1
 		);
 
-		auto l_parameters_cbuffer_config = graphic::bc_graphic_resource_configure()
+		auto l_parameters_cbuffer_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_buffer(1, sizeof(_bc_parameters_cbuffer), graphic::bc_resource_usage::gpu_rw)
 			.as_constant_buffer();
@@ -207,7 +207,7 @@ namespace black_cat
 	{
 		_bc_cascaded_shadow_map_light_state l_instance;
 
-		auto l_depth_buffer_config = graphic::bc_graphic_resource_configure()
+		auto l_depth_buffer_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_texture2d
 			(
@@ -219,11 +219,11 @@ namespace black_cat
 				graphic::bc_resource_usage::gpu_rw,
 				core::bc_enum:: or ({ graphic::bc_resource_view_type::depth_stencil, graphic::bc_resource_view_type::shader })
 			).as_depth_stencil_texture();
-		auto l_depth_buffer_view_config = graphic::bc_graphic_resource_configure()
+		auto l_depth_buffer_view_config = graphic::bc_graphic_resource_builder()
 			.as_resource_view()
 			.as_texture_view(graphic::bc_format::D32_FLOAT)
 			.as_tex2d_depth_stencil_view(0);
-		auto l_depth_buffer_resource_view_config = graphic::bc_graphic_resource_configure()
+		auto l_depth_buffer_resource_view_config = graphic::bc_graphic_resource_builder()
 			.as_resource_view()
 			.as_texture_view(graphic::bc_format::D32_FLOAT)
 			.as_tex2d_shader_view(0, 1)
@@ -416,19 +416,19 @@ namespace black_cat
 
 			if (m_capture_debug_shapes)
 			{
-				core::bc_vector3f l_min(std::numeric_limits<bcFLOAT>::max());
-				core::bc_vector3f l_max(std::numeric_limits<bcFLOAT>::lowest());
+				core::bc_vector3f l_box_min(std::numeric_limits<bcFLOAT>::max());
+				core::bc_vector3f l_box_max(std::numeric_limits<bcFLOAT>::lowest());
 				for (auto& l_frustum_point : l_frustum_points)
 				{
-					l_min.x = std::min(l_frustum_point.x, l_min.x);
-					l_min.y = std::min(l_frustum_point.y, l_min.y);
-					l_min.z = std::min(l_frustum_point.z, l_min.z);
-					l_max.x = std::max(l_frustum_point.x, l_max.x);
-					l_max.y = std::max(l_frustum_point.y, l_max.y);
-					l_max.z = std::max(l_frustum_point.z, l_max.z);
+					l_box_min.x = std::min(l_frustum_point.x, l_min.x);
+					l_box_min.y = std::min(l_frustum_point.y, l_min.y);
+					l_box_min.z = std::min(l_frustum_point.z, l_min.z);
+					l_box_max.x = std::max(l_frustum_point.x, l_max.x);
+					l_box_max.y = std::max(l_frustum_point.y, l_max.y);
+					l_box_max.z = std::max(l_frustum_point.z, l_max.z);
 				}
 
-				m_captured_boxes.push_back(physics::bc_bound_box::from_min_max(l_min, l_max));
+				m_captured_boxes.push_back(physics::bc_bound_box::from_min_max(l_box_min, l_box_max));
 				//m_captured_cascades.push_back(l_frustum_points);
 			}
 		}

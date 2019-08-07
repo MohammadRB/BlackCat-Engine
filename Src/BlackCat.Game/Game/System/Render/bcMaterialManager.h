@@ -8,7 +8,7 @@
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Utility/bcRefCountPtr.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/Object/Mesh/bcMaterial.h"
 #include "Game/bcExport.h"
 

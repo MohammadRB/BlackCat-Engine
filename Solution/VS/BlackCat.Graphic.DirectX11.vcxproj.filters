@@ -108,9 +108,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResource.cpp">
       <Filter>GraphicImp\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResourceConfig.cpp">
-      <Filter>GraphicImp\Resource</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\bcComputeShader.cpp">
       <Filter>GraphicImp\Shader</Filter>
     </ClCompile>
@@ -149,6 +146,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandExecutor.cpp">
       <Filter>GraphicImp\Device\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResourceBuilder.cpp">
+      <Filter>GraphicImp\Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -242,9 +242,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResource.h">
       <Filter>GraphicImp\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResourceConfig.h">
-      <Filter>GraphicImp\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\Parameter\bcConstantBufferParameter.h">
       <Filter>GraphicImp\Shader\Parameter</Filter>
     </ClInclude>
@@ -307,6 +304,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\Parameter\bcShaderParameterLink.h">
       <Filter>GraphicImp\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResourceBuilder.h">
+      <Filter>GraphicImp\Resource</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

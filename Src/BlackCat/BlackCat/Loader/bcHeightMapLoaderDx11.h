@@ -6,7 +6,7 @@
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
 #include "Game/Object/Mesh/bcMaterial.h"
 #include "BlackCat/bcExport.h"

@@ -13,7 +13,7 @@
 #include "Core/Math/bcMatrix4f.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/Device/bcDevice.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
@@ -128,7 +128,7 @@ namespace black_cat
 		auto& l_device = p_render_system.get_device();
 		core::bc_vector_movale< game::bc_vertex_pos_tex_nor_tan > l_vertices;
 		core::bc_vector_movale< bcBYTE > l_indices;
-		graphic::bc_graphic_resource_configure l_resource_configure;
+		graphic::bc_graphic_resource_builder l_resource_configure;
 		graphic::bc_buffer_ptr l_vertex_buffer;
 		graphic::bc_buffer_ptr l_index_buffer;
 		bcSIZE l_index_count = 0;

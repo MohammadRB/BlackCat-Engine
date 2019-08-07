@@ -10,7 +10,7 @@
 #include "Core/File/bcPath.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcJsonParse.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/System/Input/bcFileSystem.h"
@@ -61,7 +61,7 @@ namespace black_cat
 		{
 			auto& l_content_manager = m_content_stream_manager.get_content_manager();
 
-			m_default_texture_config = graphic::bc_graphic_resource_configure().as_resource()
+			m_default_texture_config = graphic::bc_graphic_resource_builder().as_resource()
 				.as_texture2d
 				(
 					1,
@@ -394,17 +394,17 @@ namespace black_cat
 			auto l_normal_map = l_material->m_normal_map.get()->get_resource();
 			auto l_specular_map = l_material->m_specular_map.get()->get_resource();
 
-			auto m_diffuse_map_view_config = graphic::bc_graphic_resource_configure()
+			auto m_diffuse_map_view_config = graphic::bc_graphic_resource_builder()
 				.as_resource_view()
 				.as_texture_view(l_diffuse_map.get_format())
 				.as_tex2d_shader_view(0, -1)
 				.on_texture2d();
-			auto m_normal_map_view_config = graphic::bc_graphic_resource_configure()
+			auto m_normal_map_view_config = graphic::bc_graphic_resource_builder()
 				.as_resource_view()
 				.as_texture_view(l_normal_map.get_format())
 				.as_tex2d_shader_view(0, -1)
 				.on_texture2d();
-			auto m_specular_map_view_config = graphic::bc_graphic_resource_configure()
+			auto m_specular_map_view_config = graphic::bc_graphic_resource_builder()
 				.as_resource_view()
 				.as_texture_view(l_specular_map.get_format())
 				.as_tex2d_shader_view(0, -1)
@@ -414,7 +414,7 @@ namespace black_cat
 			l_material->m_normal_map_view = m_render_system.get_device().create_resource_view(l_normal_map, m_normal_map_view_config);
 			l_material->m_specular_map_view = m_render_system.get_device().create_resource_view(l_specular_map, m_specular_map_view_config);
 
-			auto l_parameters_cbuffer_config = graphic::bc_graphic_resource_configure()
+			auto l_parameters_cbuffer_config = graphic::bc_graphic_resource_builder()
 				.as_resource()
 				.as_buffer(1, sizeof(bc_render_material_parameter), graphic::bc_resource_usage::gpu_r, graphic::bc_resource_view_type::shader)
 				.as_constant_buffer();

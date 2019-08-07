@@ -3,7 +3,7 @@
 #include "BlackCat/BlackCatPCH.h"
 
 #include "Core/Container/bcArray.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "BlackCat/RenderPass/bcBackBufferWritePass.h"
 
@@ -49,11 +49,11 @@ namespace black_cat
 			0, 1, 2, 1, 3, 2
 		};
 
-		auto l_vertices_buffer_config = graphic::bc_graphic_resource_configure()
+		auto l_vertices_buffer_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_buffer(6, sizeof(game::bc_vertex_pos_tex), graphic::bc_resource_usage::gpu_r)
 			.as_vertex_buffer();
-		auto l_indices_buffer_config = graphic::bc_graphic_resource_configure()
+		auto l_indices_buffer_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_buffer(6, sizeof(game::bc_vertex_pos_tex), graphic::bc_resource_usage::gpu_r)
 			.as_index_buffer();
@@ -136,7 +136,7 @@ namespace black_cat
 			return;
 		}
 
-		auto l_resource_configure = graphic::bc_graphic_resource_configure();
+		auto l_resource_configure = graphic::bc_graphic_resource_builder();
 
 		auto l_input_texture = *get_shared_resource<graphic::bc_texture2d>(m_input_texture);
 		auto l_back_buffer = p_param.m_device.get_back_buffer_texture();

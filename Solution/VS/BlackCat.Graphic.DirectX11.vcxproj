@@ -38,7 +38,7 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\PipelineStage\bcStreamOutputStage.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\PipelineStage\bcVertexStage.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResource.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResourceConfig.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResourceBuilder.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\Buffer\bcBuffer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\Buffer\bcBufferConfig.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\State\bcSamplerState.h" />
@@ -90,7 +90,7 @@
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\PipelineStage\bcStreamOutputStage.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\PipelineStage\bcVertexStage.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResource.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResourceConfig.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResourceBuilder.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\Buffer\bcBuffer.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\Buffer\bcBufferConfig.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\Texture\bcTexture2d.cpp" />

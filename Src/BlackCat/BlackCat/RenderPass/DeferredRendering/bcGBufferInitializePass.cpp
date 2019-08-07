@@ -2,7 +2,7 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/bcConstant.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
@@ -63,7 +63,7 @@ namespace black_cat
 
 	void bc_gbuffer_initialize_pass::after_reset(const game::bc_render_pass_reset_param& p_param)
 	{
-		graphic::bc_graphic_resource_configure l_resource_configure;
+		graphic::bc_graphic_resource_builder l_resource_configure;
 
 		auto l_depth_stencil_config = l_resource_configure
 			.as_resource()

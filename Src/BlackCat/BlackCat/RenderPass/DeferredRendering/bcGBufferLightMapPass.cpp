@@ -6,7 +6,7 @@
 #include "Core/Math/bcCoordinate.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/Light/bcLightManager.h"
@@ -81,7 +81,7 @@ namespace black_cat
 		m_command_list = l_device.create_command_list();
 		m_device_compute_state = p_render_system.create_device_compute_state("gbuffer_light_map");
 
-		auto l_resource_configure = graphic::bc_graphic_resource_configure();
+		auto l_resource_configure = graphic::bc_graphic_resource_builder();
 
 		auto l_direct_lights_buffer_config = l_resource_configure.as_resource()
 			.as_buffer
@@ -337,7 +337,7 @@ namespace black_cat
 		auto* l_diffuse_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1);
 		auto* l_normal_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2);
 
-		auto l_resource_configure = graphic::bc_graphic_resource_configure();
+		auto l_resource_configure = graphic::bc_graphic_resource_builder();
 
 		auto l_parameters_cbuffer_config = l_resource_configure
 			.as_resource()

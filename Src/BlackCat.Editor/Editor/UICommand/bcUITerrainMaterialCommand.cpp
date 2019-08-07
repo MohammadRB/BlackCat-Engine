@@ -47,7 +47,7 @@ namespace black_cat
 		{
 			auto& l_render_system = p_context.m_game_system.get_render_system();
 
-			auto l_cb_config = graphic::bc_graphic_resource_configure().as_resource()
+			auto l_cb_config = graphic::bc_graphic_resource_builder().as_resource()
 				.as_buffer
 				(
 					1,

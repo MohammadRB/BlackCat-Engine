@@ -2,7 +2,7 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/Object/Scene/bcScene.h"
@@ -67,7 +67,7 @@ namespace black_cat
 
 	void bc_initialize_pass::after_reset(const game::bc_render_pass_reset_param& p_param)
 	{
-		graphic::bc_graphic_resource_configure l_resource_configure;
+		graphic::bc_graphic_resource_builder l_resource_configure;
 
 		m_render_target_format = p_param.m_new_parameters.m_format;
 

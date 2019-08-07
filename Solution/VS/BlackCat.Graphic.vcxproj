@@ -45,7 +45,7 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcStreamOutputStage.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcVertexStage.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\bcResource.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\bcResourceConfig.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\bcResourceBuilder.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\Buffer\bcBuffer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\Buffer\bcBufferConfig.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\State\bcBlendState.h" />

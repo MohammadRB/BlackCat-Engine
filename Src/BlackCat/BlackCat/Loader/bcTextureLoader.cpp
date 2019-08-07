@@ -5,14 +5,14 @@
 #include "Core/bcException.h"
 #include "Core/Container/bcVector.h"
 #include "Core/File/bcPath.h"
-#include "GraphicImp/Resource/bcResourceConfig.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/bcGameSystem.h"
 #include "BlackCat/bcConstant.h"
 #include "BlackCat/Loader/bcTextureLoader.h"
 
 namespace black_cat
 {
-	graphic::bc_texture_config bc_texture_loader::s_default_config = graphic::bc_graphic_resource_configure().as_resource().as_texture2d
+	graphic::bc_texture_config bc_texture_loader::s_default_config = graphic::bc_graphic_resource_builder().as_resource().as_texture2d
 	(
 		0,
 		0,
