@@ -8,61 +8,6 @@ namespace black_cat
 {
 	namespace game
 	{
-		graphic::bc_sampler_state_config bc_graphic_state_configs::bc_sampler_config(bc_sampler_type p_value)
-		{
-			graphic::bc_sampler_state_config l_config = graphic::bc_sampler_state_config::default_config();
-
-			switch (p_value)
-			{
-			case bc_sampler_type::filter_linear_linear_linear_address_wrap_wrap_wrap:
-				l_config.m_filter = graphic::bc_filter::min_mag_mip_linear;
-				l_config.m_address_u = graphic::bc_texture_address_mode::wrap;
-				l_config.m_address_v = graphic::bc_texture_address_mode::wrap;
-				l_config.m_address_w = graphic::bc_texture_address_mode::wrap;
-
-				break;
-			case bc_sampler_type::filter_linear_linear_linear_address_clamp_clamp_clamp:
-				l_config.m_filter = graphic::bc_filter::min_mag_mip_linear;
-				l_config.m_address_u = graphic::bc_texture_address_mode::clamp;
-				l_config.m_address_v = graphic::bc_texture_address_mode::clamp;
-				l_config.m_address_w = graphic::bc_texture_address_mode::clamp;
-
-				break;
-			case bc_sampler_type::filter_linear_linear_linear_address_mirror_mirror_mirror:
-				l_config.m_filter = graphic::bc_filter::min_mag_mip_linear;
-				l_config.m_address_u = graphic::bc_texture_address_mode::mirror;
-				l_config.m_address_v = graphic::bc_texture_address_mode::mirror;
-				l_config.m_address_w = graphic::bc_texture_address_mode::mirror;
-
-				break;
-			case bc_sampler_type::filter_point_point_point_address_wrap_wrap_wrap:
-				l_config.m_filter = graphic::bc_filter::min_mag_mip_point;
-				l_config.m_address_u = graphic::bc_texture_address_mode::wrap;
-				l_config.m_address_v = graphic::bc_texture_address_mode::wrap;
-				l_config.m_address_w = graphic::bc_texture_address_mode::wrap;
-
-				break;
-			case bc_sampler_type::filter_point_point_point_address_clamp_clamp_clamp:
-				l_config.m_filter = graphic::bc_filter::min_mag_mip_point;
-				l_config.m_address_u = graphic::bc_texture_address_mode::clamp;
-				l_config.m_address_v = graphic::bc_texture_address_mode::clamp;
-				l_config.m_address_w = graphic::bc_texture_address_mode::clamp;
-
-				break;
-			case bc_sampler_type::filter_point_point_point_address_mirror_mirror_mirror:
-				l_config.m_filter = graphic::bc_filter::min_mag_mip_point;
-				l_config.m_address_u = graphic::bc_texture_address_mode::mirror;
-				l_config.m_address_v = graphic::bc_texture_address_mode::mirror;
-				l_config.m_address_w = graphic::bc_texture_address_mode::mirror;
-
-				break;
-			default:
-				throw bc_invalid_argument_exception("Invalid sampler state");
-			}
-
-			return l_config;
-		}
-
 		graphic::bc_blend_state_config bc_graphic_state_configs::bc_blend_config(bc_blend_type p_value)
 		{
 			graphic::bc_blend_state_config l_config;
@@ -97,7 +42,7 @@ namespace black_cat
 
 			switch (p_value)
 			{
-			case bc_depth_stencil_type::depth_off_stencil_pff:
+			case bc_depth_stencil_type::depth_off_stencil_off:
 			case bc_depth_stencil_type::depth_less_stencil_off:
 			{
 				l_config.m_stencil_enable = false;
@@ -123,7 +68,7 @@ namespace black_cat
 						l_config.m_depth_func = graphic::bc_comparison_func::less;
 						break;
 					}
-					case bc_depth_stencil_type::depth_off_stencil_pff:
+					case bc_depth_stencil_type::depth_off_stencil_off:
 					{
 						l_config.m_depth_enable = false;
 						l_config.m_depth_write_mask = graphic::bc_depth_write_mask::zero;

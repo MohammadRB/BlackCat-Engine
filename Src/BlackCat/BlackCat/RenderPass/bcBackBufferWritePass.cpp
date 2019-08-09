@@ -17,9 +17,16 @@ namespace black_cat
 	void bc_back_buffer_write_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
+		const auto l_sampler_config = graphic::bc_graphic_resource_builder().as_resource().as_sampler_state
+		(
+			graphic::bc_filter::min_mag_mip_point,
+			graphic::bc_texture_address_mode::wrap,
+			graphic::bc_texture_address_mode::wrap,
+			graphic::bc_texture_address_mode::wrap
+		).as_sampler_state();
 
 		m_command_list = l_device.create_command_list();
-		m_sampler_state = l_device.create_sampler_state(game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_point_point_point_address_wrap_wrap_wrap));
+		m_sampler_state = l_device.create_sampler_state(l_sampler_config);
 		m_pipeline_state = p_render_system.create_device_pipeline_state
 		(
 			"bb_write_vs",
@@ -29,7 +36,7 @@ namespace black_cat
 			"bb_write_ps",
 			game::bc_vertex_type::pos_tex,
 			game::bc_blend_type::opaque,
-			game::bc_depth_stencil_type::depth_off_stencil_pff,
+			game::bc_depth_stencil_type::depth_off_stencil_off,
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0x1,
 			{ l_device.get_back_buffer_format() },

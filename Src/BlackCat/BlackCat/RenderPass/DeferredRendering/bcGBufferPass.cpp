@@ -2,6 +2,7 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
@@ -102,8 +103,15 @@ namespace black_cat
 		const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_view_1);
 		const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_view_2);
 		const auto l_viewport = graphic::bc_viewport::default_config(p_param.m_device.get_back_buffer_width(), p_param.m_device.get_back_buffer_height());
-		m_sampler_state = p_param.m_device.create_sampler_state(game::bc_graphic_state_configs::bc_sampler_config(game::bc_sampler_type::filter_linear_linear_linear_address_wrap_wrap_wrap));
+		const auto l_sampler_config = graphic::bc_graphic_resource_builder().as_resource().as_sampler_state
+		(
+			graphic::bc_filter::min_mag_mip_linear,
+			graphic::bc_texture_address_mode::wrap,
+			graphic::bc_texture_address_mode::wrap,
+			graphic::bc_texture_address_mode::wrap
+		).as_sampler_state();
 
+		m_sampler_state = p_param.m_device.create_sampler_state(l_sampler_config);
 		m_render_pass_state = p_param.m_render_system.create_render_pass_state
 		(
 			m_pipeline_state.get(),

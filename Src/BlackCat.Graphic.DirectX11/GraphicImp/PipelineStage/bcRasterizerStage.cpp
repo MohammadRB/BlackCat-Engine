@@ -59,10 +59,10 @@ namespace black_cat
 					{
 						l_viewports[i] = D3D11_VIEWPORT
 						{
-							l_viewport->m_top_left_x,
-							l_viewport->m_top_left_y,
-							l_viewport->m_width,
-							l_viewport->m_height,
+							static_cast< bcFLOAT >(l_viewport->m_top_left_x),
+							static_cast< bcFLOAT >(l_viewport->m_top_left_y),
+							static_cast< bcFLOAT >(l_viewport->m_width),
+							static_cast< bcFLOAT >(l_viewport->m_height),
 							l_viewport->m_min_depth,
 							l_viewport->m_max_depth
 						};
@@ -73,13 +73,13 @@ namespace black_cat
 			}
 
 			m_required_state.reset_tracking();
-		};
+		}
 
 		template < >
 		BC_GRAPHICIMP_DLL
 		void bc_platform_rasterizer_stage<g_api_dx11>::set_to_default_state(bc_device_pipeline* p_pipeline)
 		{
 			m_required_state.set_to_initial_state();
-		};
+		}
 	}
 }

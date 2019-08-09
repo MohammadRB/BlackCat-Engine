@@ -594,7 +594,7 @@ namespace black_cat
 						.set(p_parameter.get_register_index(), l_resource);
 				}
 			}
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -690,7 +690,7 @@ namespace black_cat
 						.set(p_parameter.get_register_index(), bc_resource_view());
 				}
 			}
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -856,14 +856,14 @@ namespace black_cat
 		void bc_platform_device_pipeline< g_api_dx11 >::draw(bcUINT p_start_vertex, bcUINT p_vertex_count)
 		{
 			m_pack.m_pipeline_proxy->m_context->Draw(p_vertex_count, p_start_vertex);
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline< g_api_dx11 >::draw_indexed(bcUINT p_start_index, bcUINT p_index_count, bcINT p_vertex_offset)
 		{
 			m_pack.m_pipeline_proxy->m_context->DrawIndexed(p_index_count, p_start_index, p_vertex_offset);
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -878,34 +878,34 @@ namespace black_cat
 				p_start_index_location,
 				p_base_vertex_location,
 				p_start_instance_location);
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline< g_api_dx11 >::draw_indexed_instanced_indirect(bc_buffer p_args_buffer, bcUINT p_offset)
 		{
 			m_pack.m_pipeline_proxy->m_context->DrawIndexedInstancedIndirect(p_args_buffer.get_platform_pack().m_buffer, p_offset);
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline< g_api_dx11 >::dispatch(bcUINT p_x, bcUINT p_y, bcUINT p_z)
 		{
 			m_pack.m_pipeline_proxy->m_context->Dispatch(p_x, p_y, p_z);
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline< g_api_dx11 >::dispatch_indirect(bc_buffer p_args, bcUINT p_offset)
 		{
 			m_pack.m_pipeline_proxy->m_context->DispatchIndirect(p_args.get_platform_pack().m_buffer, p_offset);
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline< g_api_dx11 >::clear_buffers(core::bc_vector4f p_color, bcFLOAT p_depth, bcUINT p_stencil)
 		{
-			const bcUINT32 l_target_count = bc_render_api_info::number_of_om_render_target_slots();
+			constexpr bcUINT32 l_target_count = bc_render_api_info::number_of_om_render_target_slots();
 			ComPtr< ID3D11RenderTargetView > l_target_views[l_target_count];
 			ComPtr< ID3D11DepthStencilView > l_depth_view;
 
@@ -925,7 +925,7 @@ namespace black_cat
 			{
 				m_pack.m_pipeline_proxy->m_context->ClearDepthStencilView(l_depth_view.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, p_depth, p_stencil);
 			}
-		};	
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -940,7 +940,7 @@ namespace black_cat
 				p_src_row_pitch,
 				p_src_depth_pitch
 			);
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -957,7 +957,7 @@ namespace black_cat
 				p_src_subresource,
 				nullptr
 			);
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -968,7 +968,7 @@ namespace black_cat
 				p_dest_resource.get_platform_pack().m_resource,
 				p_src_resource.get_platform_pack().m_resource
 			);
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -982,7 +982,7 @@ namespace black_cat
 				p_offset,
 				p_unordered_resource.get_platform_pack().m_unordered_shader_view
 			);
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -1000,7 +1000,7 @@ namespace black_cat
 				p_src_subresource,
 				bc_graphic_cast(p_format)
 			);
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -1023,14 +1023,14 @@ namespace black_cat
 			m_pack.m_pipeline_proxy->m_geometry_shader_stage.set_to_default_state(this);
 			m_pack.m_pipeline_proxy->m_pixel_shader_stage.set_to_default_state(this);
 			m_pack.m_pipeline_proxy->m_compute_shader_stage.set_to_default_state(this);
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline< g_api_dx11 >::start_monitoring_pipeline()
 		{
 			m_pack.m_pipeline_proxy->m_context->Begin(m_pack.m_pipeline_proxy->m_query);
-		};
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL

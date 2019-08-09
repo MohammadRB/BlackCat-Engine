@@ -21,12 +21,37 @@ namespace black_cat
 		bcUINT32 m_shadow_map_current_cascade;
 	};
 
-	bc_cascaded_shadow_map_pass::bc_cascaded_shadow_map_pass(constant::bc_render_pass_variable_t p_output_depth_buffers, bcSIZE p_shadow_map_size, std::initializer_list<bcSIZE> p_cascade_sizes)
+	bc_cascaded_shadow_map_pass::bc_cascaded_shadow_map_pass(constant::bc_render_pass_variable_t p_output_depth_buffers, bcSIZE p_shadow_map_size, std::initializer_list<std::tuple<bcSIZE, bcUBYTE>> p_cascade_sizes)
 		: m_shadow_map_size(p_shadow_map_size),
-		m_cascade_sizes(p_cascade_sizes),
+		m_cascade_sizes(),
+		m_cascade_update_intervals(),
 		m_depth_buffers_share_slot(p_output_depth_buffers),
 		m_captured_camera()
 	{
+
+		m_cascade_sizes.assign(p_cascade_sizes.size(), 0);
+		m_cascade_update_intervals.assign(p_cascade_sizes.size(), { 0,0 });
+		
+		std::transform
+		(
+			std::cbegin(p_cascade_sizes), 
+			std::cend(p_cascade_sizes), 
+			std::begin(m_cascade_sizes),
+			[](const std::tuple< bcSIZE, bcUBYTE >& p_cascade_size)
+			{
+				return std::get< bcSIZE >(p_cascade_size);
+			}
+		);
+		std::transform
+		(
+			std::cbegin(p_cascade_sizes),
+			std::cend(p_cascade_sizes),
+			std::begin(m_cascade_update_intervals),
+			[](const std::tuple< bcSIZE, bcUBYTE >& p_cascade_size)
+			{
+				return std::make_tuple(std::get< bcUBYTE >(p_cascade_size), std::get< bcUBYTE >(p_cascade_size));
+			}
+		);
 	}
 
 	void bc_cascaded_shadow_map_pass::initialize_resources(game::bc_render_system& p_render_system)
@@ -101,12 +126,6 @@ namespace black_cat
 
 			p_param.m_render_thread.bind_render_pass_state(l_light_render_pass_state);
 
-			if(l_light_ite == 0)
-			{
-				p_param.m_render_thread.clear_buffers(core::bc_vector4f(1));
-			}
-
-			auto& l_depth_maps_container = get_shared_resource_throw<bc_cascaded_shadow_map_buffer_container>(m_depth_buffers_share_slot);
 			bc_cascaded_shadow_map_buffer_container::entry l_csm_buffer;
 			l_csm_buffer.m_shadow_map_size = m_shadow_map_size;
 			l_csm_buffer.m_shadow_map_count = m_cascade_sizes.size();
@@ -118,6 +137,26 @@ namespace black_cat
 
 			for(auto& l_light_cascade_camera : l_light_cascade_cameras)
 			{
+				if (l_cascade_ite == 0) // TODO clear depth based on intervals
+				{
+					p_param.m_render_thread.clear_buffers(core::bc_vector4f(1));
+				}
+
+				auto& l_update_interval = --std::get<1>(m_cascade_update_intervals[l_cascade_ite]);
+				
+				if(l_update_interval != 0)
+				{
+					l_csm_buffer.m_view_projections.push_back(l_light_state.m_last_view_projections[l_cascade_ite]);
+					continue;
+				}
+				else
+				{
+					l_update_interval = std::get<0>(m_cascade_update_intervals[l_cascade_ite]);
+
+					l_light_state.m_last_view_projections[l_cascade_ite] = l_light_cascade_camera.get_view() * l_light_cascade_camera.get_projection();
+					l_csm_buffer.m_view_projections.push_back(l_light_state.m_last_view_projections[l_cascade_ite]);
+				}
+
 				_bc_parameters_cbuffer l_parameters{ m_shadow_map_size, m_cascade_sizes.size(), l_cascade_ite };
 				p_param.m_render_thread.update_subresource(m_parameters_cbuffer.get(), 0, &l_parameters, 0, 0);
 				
@@ -129,13 +168,13 @@ namespace black_cat
 				p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, l_light_cascade_camera);
 				p_param.m_render_system.clear_render_instances();
 
-				l_csm_buffer.m_view_projections.push_back(l_light_cascade_camera.get_view() * l_light_cascade_camera.get_projection());
 				++l_cascade_ite;
 			}
 			
 			p_param.m_render_thread.unbind_render_pass_state(l_light_render_pass_state);
 
-			l_depth_maps_container.add(std::make_pair
+			auto& l_shadow_maps_container = get_shared_resource_throw<bc_cascaded_shadow_map_buffer_container>(m_depth_buffers_share_slot);
+			l_shadow_maps_container.add(std::make_pair
 			(
 				l_light.get_direction(),
 				l_csm_buffer
@@ -229,6 +268,7 @@ namespace black_cat
 			.as_tex2d_shader_view(0, 1)
 			.on_depth_stencil_texture2d();
 
+		l_instance.m_last_view_projections.assign(m_cascade_sizes.size(), core::bc_matrix4f::identity());
 		l_instance.m_depth_buffer = p_render_system.get_device().create_texture2d(l_depth_buffer_config, nullptr);
 		l_instance.m_depth_buffer_view = p_render_system.get_device().create_depth_stencil_view(l_instance.m_depth_buffer.get(), l_depth_buffer_view_config);
 		l_instance.m_depth_buffer_resource_view = p_render_system.get_device().create_resource_view(l_instance.m_depth_buffer.get(), l_depth_buffer_resource_view_config);
@@ -244,7 +284,7 @@ namespace black_cat
 				p_render_system.get_global_cbuffer(),
 				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::vertex, m_parameters_cbuffer.get())
 			}
-			);
+		);
 
 		return l_instance;
 	}
@@ -386,7 +426,6 @@ namespace black_cat
 			};
 
 			const auto l_frustum_center = p_camera.get_position() + p_camera.get_direction() * l_mid_z;
-			const auto l_cascade_camera_pos = l_frustum_center + (-p_light.get_direction() * m_cascade_cameras_distance);
 
 			auto l_frustum_sphere_radius = 0.0f;
 			for(const auto& l_frustum_point : l_frustum_points)
@@ -397,9 +436,12 @@ namespace black_cat
 
 			const auto l_max = core::bc_vector3f(l_frustum_sphere_radius);
 			const auto l_min = -l_max;
-			const auto l_far_plane = m_cascade_cameras_distance + l_frustum_sphere_radius;
+			const auto l_cascade_camera_pos = l_frustum_center + (-p_light.get_direction() * -l_min.z);
+			const auto l_width = (l_max.x - l_min.x) * .92f;
+			const auto l_height = (l_max.y - l_min.y) * .92f;
+			const auto l_far_plane = l_max.z - l_min.z;
 
-			auto l_cascade_camera = bc_cascaded_shadow_map_camera(l_cascade_camera_pos, l_frustum_center, l_max.x - l_min.x, l_max.y - l_min.y, 0.1, l_far_plane);
+			auto l_cascade_camera = bc_cascaded_shadow_map_camera(l_cascade_camera_pos, l_frustum_center, l_width, l_height, 0.1, l_far_plane);
 			
 			const auto l_cascade_camera_view_proj = l_cascade_camera.get_view() * l_cascade_camera.get_projection();
 			const auto l_origin = (l_cascade_camera_view_proj * core::bc_vector4f(0, 0, 0, 1)) * (m_shadow_map_size / 2.0f);
@@ -416,19 +458,19 @@ namespace black_cat
 
 			if (m_capture_debug_shapes)
 			{
-				core::bc_vector3f l_box_min(std::numeric_limits<bcFLOAT>::max());
-				core::bc_vector3f l_box_max(std::numeric_limits<bcFLOAT>::lowest());
+				core::bc_vector3f l_frustum_min(std::numeric_limits<bcFLOAT>::max());
+				core::bc_vector3f l_frustum_max(std::numeric_limits<bcFLOAT>::lowest());
 				for (auto& l_frustum_point : l_frustum_points)
 				{
-					l_box_min.x = std::min(l_frustum_point.x, l_min.x);
-					l_box_min.y = std::min(l_frustum_point.y, l_min.y);
-					l_box_min.z = std::min(l_frustum_point.z, l_min.z);
-					l_box_max.x = std::max(l_frustum_point.x, l_max.x);
-					l_box_max.y = std::max(l_frustum_point.y, l_max.y);
-					l_box_max.z = std::max(l_frustum_point.z, l_max.z);
+					l_frustum_min.x = std::min(l_frustum_point.x, l_frustum_min.x);
+					l_frustum_min.y = std::min(l_frustum_point.y, l_frustum_min.y);
+					l_frustum_min.z = std::min(l_frustum_point.z, l_frustum_min.z);
+					l_frustum_max.x = std::max(l_frustum_point.x, l_frustum_max.x);
+					l_frustum_max.y = std::max(l_frustum_point.y, l_frustum_max.y);
+					l_frustum_max.z = std::max(l_frustum_point.z, l_frustum_max.z);
 				}
 
-				m_captured_boxes.push_back(physics::bc_bound_box::from_min_max(l_box_min, l_box_max));
+				m_captured_boxes.push_back(physics::bc_bound_box::from_min_max(l_frustum_min, l_frustum_max));
 				//m_captured_cascades.push_back(l_frustum_points);
 			}
 		}

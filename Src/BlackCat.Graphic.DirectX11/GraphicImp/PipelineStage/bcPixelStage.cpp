@@ -47,7 +47,7 @@ namespace black_cat
 		void bc_platform_pixel_stage<g_api_dx11>::apply_shader_program(bc_device_pipeline* p_pipeline)
 		{
 			// shader programs are in pipeline state
-		};
+		}
 
 		template < >
 		BC_GRAPHICIMP_DLL
@@ -71,7 +71,7 @@ namespace black_cat
 
 				l_context->PSSetConstantBuffers(l_dirty_slot_start, l_dirty_slot_num, &l_constant_buffers[l_dirty_slot_start]);
 			}
-		};
+		}
 
 		template < >
 		BC_GRAPHICIMP_DLL
@@ -95,7 +95,7 @@ namespace black_cat
 
 				l_context->PSSetSamplers(l_dirty_slot_start, l_dirty_slot_num, &l_sampler_states[l_dirty_slot_start]);
 			}
-		};
+		}
 
 		template < >
 		BC_GRAPHICIMP_DLL
@@ -119,12 +119,12 @@ namespace black_cat
 
 				l_context->PSSetShaderResources(l_dirty_slot_start, l_dirty_slot_num, &l_views[l_dirty_slot_start]);
 			}
-		};
+		}
 
 		//template < >
 		//void bc_platform_pixel_stage<g_api_dx11>::apply_unordered_access_views(bc_device_pipeline& p_pipeline)
 		//{
 		//	// UAVs set in output merger stage
-		//};
+		//}
 	}
 }

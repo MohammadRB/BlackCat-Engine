@@ -17,8 +17,10 @@ namespace black_cat
 		
 		bc_buffer_config bc_buffer_builder::as_vertex_buffer() noexcept
 		{
-			bool l_is_stream_output = m_config.get_platform_pack().m_desc.BindFlags & 
-				static_cast<bcUINT>(D3D11_BIND_STREAM_OUTPUT) == static_cast<bcUINT>(D3D11_BIND_STREAM_OUTPUT);
+			const bool l_is_stream_output =
+			(
+				m_config.get_platform_pack().m_desc.BindFlags & static_cast< bcUINT >(D3D11_BIND_STREAM_OUTPUT)
+			) == static_cast< bcUINT >(D3D11_BIND_STREAM_OUTPUT);
 			
 			m_config.get_platform_pack().m_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER |
 				(l_is_stream_output ? D3D11_BIND_STREAM_OUTPUT : 0);

@@ -17,17 +17,6 @@ namespace black_cat
 	{
 		using bc_surface_format_type = graphic::bc_format;
 
-		// Filtering modes order: min, mag, mip		Addressing modes order: u, v, w
-		enum class bc_sampler_type
-		{
-			filter_linear_linear_linear_address_wrap_wrap_wrap,
-			filter_linear_linear_linear_address_clamp_clamp_clamp,
-			filter_linear_linear_linear_address_mirror_mirror_mirror,
-			filter_point_point_point_address_wrap_wrap_wrap,
-			filter_point_point_point_address_clamp_clamp_clamp,
-			filter_point_point_point_address_mirror_mirror_mirror
-		};
-
 		enum class bc_blend_type
 		{
 			opaque
@@ -35,7 +24,7 @@ namespace black_cat
 
 		enum class bc_depth_stencil_type
 		{
-			depth_off_stencil_pff,
+			depth_off_stencil_off,
 			depth_less_stencil_off
 		};
 
@@ -57,8 +46,6 @@ namespace black_cat
 		class BC_GAME_DLL bc_graphic_state_configs
 		{
 		public:
-			static graphic::bc_sampler_state_config bc_sampler_config(bc_sampler_type p_value);
-
 			static graphic::bc_blend_state_config bc_blend_config(bc_blend_type p_value);
 
 			static graphic::bc_depth_stencil_state_config bc_depth_stencil_config(bc_depth_stencil_type p_value);

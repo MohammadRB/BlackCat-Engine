@@ -20,7 +20,7 @@ float2 bc_to_screen_space_texcoord(int2 p_texcoord, uint p_screen_width, uint p_
 float2 bc_clip_space_to_texcoord(float4 p_input, float2 p_half_pixle)
 {
 	float2 l_uv = float2(0.5f, -0.5f) * (p_input.xy / p_input.w) + 0.5f;
-	l_uv -= p_half_pixle;
+	//l_uv -= p_half_pixle;
 
 	return l_uv;
 }

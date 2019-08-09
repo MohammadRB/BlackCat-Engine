@@ -43,12 +43,14 @@ namespace black_cat
 		constexpr static bcSIZE m_num_point_lights = 100;
 		constexpr static bcSIZE m_num_spot_lights = 100;
 
-		constant::bc_render_pass_variable_t m_output_texture_share_slot;
 		constant::bc_render_pass_variable_t m_csm_buffers_container_share_slot;
+		constant::bc_render_pass_variable_t m_output_texture_share_slot;
 
 		graphic::bc_resource_view_ptr m_depth_stencil_view;
 		graphic::bc_resource_view_ptr m_diffuse_map_view;
 		graphic::bc_resource_view_ptr m_normal_map_view;
+
+		graphic::bc_sampler_state_ptr m_pcf_sampler;
 
 		graphic::bc_buffer_ptr m_parameters_cbuffer;
 

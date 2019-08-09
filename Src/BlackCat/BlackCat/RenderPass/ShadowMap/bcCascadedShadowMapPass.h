@@ -19,6 +19,8 @@ namespace black_cat
 	class _bc_cascaded_shadow_map_light_state
 	{
 	public:
+		core::bc_vector_movale<core::bc_matrix4f> m_last_view_projections;
+
 		graphic::bc_texture2d_ptr m_depth_buffer;
 		graphic::bc_depth_stencil_view_ptr m_depth_buffer_view;
 		graphic::bc_resource_view_ptr m_depth_buffer_resource_view;
@@ -31,7 +33,7 @@ namespace black_cat
 		BC_RENDER_PASS(cascaded_shadow_map)
 
 	public:
-		bc_cascaded_shadow_map_pass(constant::bc_render_pass_variable_t p_output_depth_buffers, bcSIZE p_shadow_map_size, std::initializer_list<bcSIZE> p_cascade_sizes);
+		bc_cascaded_shadow_map_pass(constant::bc_render_pass_variable_t p_output_depth_buffers, bcSIZE p_shadow_map_size, std::initializer_list<std::tuple<bcSIZE, bcUBYTE>> p_cascade_sizes);
 
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 
@@ -59,16 +61,16 @@ namespace black_cat
 		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_stabilized_cascades(const game::bc_icamera& p_camera, const game::bc_direct_light& p_light);
 
 		const bcSIZE m_cascade_cameras_distance = 300;
+		constant::bc_render_pass_variable_t m_depth_buffers_share_slot;
 		bcSIZE m_shadow_map_size;
 		core::bc_vector_program<bcSIZE> m_cascade_sizes;
+		core::bc_vector_program<std::tuple<bcUBYTE, bcUBYTE>> m_cascade_update_intervals;
 
 		graphic::bc_device_command_list_ptr m_command_list;
 		graphic::bc_device_pipeline_state_ptr m_device_pipeline;
 		graphic::bc_buffer_ptr m_parameters_cbuffer;
 
 		core::bc_vector_program<_bc_cascaded_shadow_map_light_state> m_light_instance_states;
-
-		constant::bc_render_pass_variable_t m_depth_buffers_share_slot;
 
 		bool m_capture_debug_shapes = false;
 		game::bc_icamera::extend m_captured_camera;

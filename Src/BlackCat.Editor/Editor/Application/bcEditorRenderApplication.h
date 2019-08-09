@@ -37,7 +37,6 @@ namespace black_cat
 			void application_close_engine_components() override;
 
 			bcSIZE m_shape_throw_counter = 0;
-			//core::bc_event_listener_handle m_shape_throw_key_handle;
 		};
 	}
 }

@@ -21,7 +21,7 @@ namespace black_cat
 			typename TValue,
 			class THash = std::hash< TKey >,
 			class TKeyEqual = std::equal_to< TKey >,
-			template< typename > class TAllocator >
+			template< typename > class TAllocator = bc_allocator >
 		using bc_unordered_map_a = bc_unordered_map< TKey, TValue, THash, TKeyEqual, TAllocator< std::pair< const TKey, TValue > > >;
 
 		template< typename TKey,

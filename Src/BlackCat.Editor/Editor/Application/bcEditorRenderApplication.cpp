@@ -54,62 +54,10 @@ namespace black_cat
 			l_render_system.add_render_pass(0, bc_gbuffer_initialize_pass());
 			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
 			l_render_system.add_render_pass(2, bc_gbuffer_pass());
-			l_render_system.add_render_pass(3, bc_cascaded_shadow_map_pass(constant::g_rpass_direction_light_depth_buffers, 1500, {15, 35, 90, 170}));
+			l_render_system.add_render_pass(3, bc_cascaded_shadow_map_pass(constant::g_rpass_direction_light_depth_buffers, 1500, { {15, 1}, {35, 1}, {90, 1}, {170, 1} }));
 			l_render_system.add_render_pass(4, bc_gbuffer_light_map_pass(constant::g_rpass_direction_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(5, bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(6, bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
-
-			/*m_shape_throw_key_handle = core::bc_get_service< core::bc_event_manager >()->register_event_listener<platform::bc_app_event_key>
-			(
-				[this, l_counter = 0](const core::bc_ievent& p_event) mutable
-				{
-					const platform::bc_app_event_key& l_key_event = static_cast< const platform::bc_app_event_key& >(p_event);
-
-					if(l_key_event.get_key_state() == platform::bc_key_state::pressing && l_key_event.get_key() == platform::bc_key::kb_space)
-					{
-						game::bc_input_system& l_input_system = m_game_system->get_input_system();
-						auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
-						auto* l_scene = m_game_system->get_scene();
-
-						game::bc_actor l_actor;
-
-						l_counter = l_counter % 3;
-						switch (l_counter)
-						{
-						case 0:
-							l_actor = l_entity_manager->create_entity("sphere");
-							break;
-						case 1:
-							l_actor = l_entity_manager->create_entity("box");
-							break;
-						case 2:
-							l_actor = l_entity_manager->create_entity("convex");
-							break;
-						case 3:
-							l_actor = l_entity_manager->create_entity("train");
-							break;
-						}
-						++l_counter;
-
-						const auto l_position = l_input_system.get_camera().get_position();
-						l_actor.get_component<game::bc_mediate_component>()->set_world_position(l_position);
-
-						auto* l_rigid_component = l_actor.get_component<game::bc_rigid_body_component>();
-						auto l_rigid = l_rigid_component->get_body();
-						if(l_rigid.is_rigid_dynamic().is_valid())
-						{
-							const auto l_direction = l_input_system.get_camera().get_forward();
-							
-							l_rigid.update_mass_inertia(10);
-							l_rigid.set_linear_velocity(l_direction * 70);
-						}
-
-						l_scene->add_actor(l_actor);
-					}
-
-					return true;
-				}
-			);*/
 		}
 
 		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager* p_stream_manager)
@@ -152,10 +100,10 @@ namespace black_cat
 				return false;
 			}
 
-			if(l_key_event->get_key_state() == platform::bc_key_state::releasing && l_key_event->get_key() == platform::bc_key::kb_F)
+			/*if(l_key_event->get_key_state() == platform::bc_key_state::releasing && l_key_event->get_key() == platform::bc_key::kb_F)
 			{
 				m_game_system->get_render_system().get_render_pass<bc_cascaded_shadow_map_pass>()->capture_debug_shapes();
-			}
+			}*/
 
 			if (l_key_event->get_key_state() == platform::bc_key_state::pressing && l_key_event->get_key() == platform::bc_key::kb_space)
 			{
@@ -212,7 +160,6 @@ namespace black_cat
 
 		void bc_editor_render_app::application_destroy()
 		{
-			//m_shape_throw_key_handle.reset();
 		}
 
 		void bc_editor_render_app::application_close_engine_components()

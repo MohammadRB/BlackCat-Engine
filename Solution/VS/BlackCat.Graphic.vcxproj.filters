@@ -230,21 +230,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcInputAssemblerStage.cpp">
-      <Filter>Graphic\PipelineStage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcOutputMergerStage.cpp">
-      <Filter>Graphic\PipelineStage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcProgrammableStage.cpp">
-      <Filter>Graphic\PipelineStage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcRasterizerStage.cpp">
-      <Filter>Graphic\PipelineStage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcStreamOutputStage.cpp">
-      <Filter>Graphic\PipelineStage</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\bcResourcePtr.cpp">
       <Filter>Graphic</Filter>
     </ClCompile>

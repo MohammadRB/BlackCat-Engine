@@ -69,8 +69,8 @@ namespace black_cat
 	};
 
 	bc_gbuffer_light_map_pass::bc_gbuffer_light_map_pass(constant::bc_render_pass_variable_t p_csm_buffers_container, constant::bc_render_pass_variable_t p_output_texture)
-		: m_output_texture_share_slot(p_output_texture),
-		m_csm_buffers_container_share_slot(p_csm_buffers_container)
+		: m_csm_buffers_container_share_slot(p_csm_buffers_container),
+		m_output_texture_share_slot(p_output_texture)
 	{
 	}
 
@@ -365,6 +365,16 @@ namespace black_cat
 		m_diffuse_map_view = p_param.m_device.create_resource_view(*l_diffuse_map, l_diffuse_map_view_config);
 		m_normal_map_view = p_param.m_device.create_resource_view(*l_normal_map, l_normal_map_view_config);
 
+		auto l_pcf_sampler_config = l_resource_configure.as_resource().as_sampler_state
+		(
+			graphic::bc_filter::comparison_min_mag_linear_mip_point,
+			graphic::bc_texture_address_mode::clamp,
+			graphic::bc_texture_address_mode::clamp,
+			graphic::bc_texture_address_mode::clamp
+		).with_comparison(graphic::bc_comparison_func::less).as_sampler_state();
+
+		m_pcf_sampler = p_param.m_device.create_sampler_state(l_pcf_sampler_config);
+
 		auto l_output_texture_config = l_resource_configure
 			.as_resource()
 			.as_texture2d
@@ -392,7 +402,9 @@ namespace black_cat
 			(p_param.m_new_parameters.m_width / m_shader_thread_group_size) + 1,
 			(p_param.m_new_parameters.m_height / m_shader_thread_group_size) + 1,
 			1,
-			{},
+			{
+				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::compute, m_pcf_sampler.get())
+			},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_depth_stencil_view.get()),
 				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::compute, m_diffuse_map_view.get()),
@@ -401,9 +413,9 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(4, graphic::bc_shader_type::compute, m_point_lights_buffer_view.get()),
 				graphic::bc_resource_view_parameter(5, graphic::bc_shader_type::compute, m_spot_lights_buffer_view.get()),
 				graphic::bc_resource_view_parameter(6, graphic::bc_shader_type::compute, m_shadow_maps_buffer_view.get()),
-				graphic::bc_resource_view_parameter(7, graphic::bc_shader_type::compute, &m_shadow_map_parameters[0]),
-				graphic::bc_resource_view_parameter(8, graphic::bc_shader_type::compute, &m_shadow_map_parameters[1]),
-				graphic::bc_resource_view_parameter(9, graphic::bc_shader_type::compute, &m_shadow_map_parameters[2])
+				graphic::bc_resource_view_parameter(7, graphic::bc_shader_type::compute, m_shadow_map_parameters[0]),
+				graphic::bc_resource_view_parameter(8, graphic::bc_shader_type::compute, m_shadow_map_parameters[1]),
+				graphic::bc_resource_view_parameter(9, graphic::bc_shader_type::compute, m_shadow_map_parameters[2])
 			},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_output_texture_unordered_view.get())
@@ -432,6 +444,12 @@ namespace black_cat
 		m_point_lights_buffer_view.reset();
 		m_spot_lights_buffer.reset();
 		m_spot_lights_buffer_view.reset();
+		m_shadow_maps_buffer.reset();
+		m_shadow_maps_buffer_view.reset();
+
+		m_parameters_cbuffer.reset();
+
+		m_pcf_sampler.reset();
 
 		m_normal_map_view.reset();
 		m_diffuse_map_view.reset();
