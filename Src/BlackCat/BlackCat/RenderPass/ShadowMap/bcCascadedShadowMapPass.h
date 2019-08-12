@@ -22,10 +22,9 @@ namespace black_cat
 		core::bc_vector_movale<core::bc_matrix4f> m_last_view_projections;
 
 		graphic::bc_texture2d_ptr m_depth_buffer;
-		graphic::bc_depth_stencil_view_ptr m_depth_buffer_view;
 		graphic::bc_resource_view_ptr m_depth_buffer_resource_view;
-
-		game::bc_render_pass_state_ptr m_render_pass_state;
+		core::bc_vector<graphic::bc_depth_stencil_view_ptr> m_depth_buffer_views;
+		core::bc_vector<game::bc_render_pass_state_ptr> m_render_pass_states;
 	};
 	
 	class BC_DLL bc_cascaded_shadow_map_pass : public game::bc_irender_pass
@@ -60,7 +59,7 @@ namespace black_cat
 
 		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_stabilized_cascades(const game::bc_icamera& p_camera, const game::bc_direct_light& p_light);
 
-		const bcSIZE m_cascade_cameras_distance = 300;
+		const bcFLOAT m_cascade_cameras_distance = 100;
 		constant::bc_render_pass_variable_t m_depth_buffers_share_slot;
 		bcSIZE m_shadow_map_size;
 		core::bc_vector_program<bcSIZE> m_cascade_sizes;
@@ -68,7 +67,7 @@ namespace black_cat
 
 		graphic::bc_device_command_list_ptr m_command_list;
 		graphic::bc_device_pipeline_state_ptr m_device_pipeline;
-		graphic::bc_buffer_ptr m_parameters_cbuffer;
+		//graphic::bc_buffer_ptr m_parameters_cbuffer;
 
 		core::bc_vector_program<_bc_cascaded_shadow_map_light_state> m_light_instance_states;
 

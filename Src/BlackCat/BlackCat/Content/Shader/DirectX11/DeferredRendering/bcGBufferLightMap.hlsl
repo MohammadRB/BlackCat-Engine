@@ -6,7 +6,7 @@
 #define THREAD_GROUP_SIZE 16
 #define SHADER_SHADOW_MAP_CASCADE_COUNT 4
 
-static const float BIAS_SCALE[SHADER_SHADOW_MAP_CASCADE_COUNT] = { .99f,.85f,.50f,.35f };
+static const float BIAS_SCALE[SHADER_SHADOW_MAP_CASCADE_COUNT] = { .95f,.85f,.50f,.35f };
 static const float POISSON_DISK_SCALE[SHADER_SHADOW_MAP_CASCADE_COUNT] = { .85f,.70f,.35f,.10f };
 static const float2 POISSON_DISK[4] =
 {
@@ -53,7 +53,7 @@ struct spot_light
     float   m_angle_cos;
 };
 
-struct shadow_map
+struct cascade_shadow_map
 {
 	float4x4 m_view_projections[SHADER_SHADOW_MAP_CASCADE_COUNT];
 	uint m_shadow_map_size;
@@ -68,9 +68,9 @@ Texture2D<float4> g_normal_map						: register(BC_COMPUTE_STATE_T2);
 StructuredBuffer<direct_light> g_direct_lights		: register(BC_COMPUTE_STATE_T3);
 StructuredBuffer<point_light> g_point_lights			: register(BC_COMPUTE_STATE_T4);
 StructuredBuffer<spot_light> g_spot_lights			: register(BC_COMPUTE_STATE_T5);
-StructuredBuffer<shadow_map> g_shadow_maps			: register(BC_COMPUTE_STATE_T6);
+StructuredBuffer<cascade_shadow_map> g_shadow_maps	: register(BC_COMPUTE_STATE_T6);
 
-Texture2D<float4> g_light_shadow_map_1				: register(BC_COMPUTE_STATE_T7);
+Texture2DArray<float4> g_light_shadow_map_1			: register(BC_COMPUTE_STATE_T7);
 Texture2D<float4> g_light_shadow_map_2				: register(BC_COMPUTE_STATE_T8);
 Texture2D<float4> g_light_shadow_map_3				: register(BC_COMPUTE_STATE_T9);
 
@@ -86,7 +86,7 @@ cbuffer g_cb_parameters                             : register(BC_COMPUTE_STATE_
     float4x4 g_view_proj_inv                        : packoffset(c1.x);
 };
 
-float4 read_texture(Texture2D<float4> p_texture, int2 p_texcoord)
+float4 load_texture(Texture2D<float4> p_texture, int2 p_texcoord)
 {
     return p_texture.Load(int3(p_texcoord, 0));
 }
@@ -161,23 +161,23 @@ bool is_pixel_in_light_range(float3 p_position, float3 p_light_min_bound, float3
     return l_is_in_light_box;
 }
 
-float read_light_shadow_map(uint p_shadow_map_index, int2 p_texcoord)
+float read_light_shadow_map(uint p_shadow_map_index, int3 p_texcoord)
 {
-	//return read_texture(g_light_shadow_map_1, p_texcoord).x;
+	//return load_texture(g_light_shadow_map_1, p_texcoord).x;
     switch (p_shadow_map_index)
     {
         case 0:
-            return read_texture(g_light_shadow_map_1, p_texcoord).x;
+            return g_light_shadow_map_1.Load(int4(p_texcoord, 0)).x;
         case 1:
-            return read_texture(g_light_shadow_map_2, p_texcoord).x;
+            return g_light_shadow_map_2.Load(int3(p_texcoord.xy, 0)).x;
         case 2:
-            return read_texture(g_light_shadow_map_3, p_texcoord).x;
+            return g_light_shadow_map_3.Load(int3(p_texcoord.xy, 0)).x;
     }
 
     return 0;
 }
 
-float read_pcf_light_shadow_map(uint p_shadow_map_index, SamplerComparisonState p_pcf_sampler, float2 p_texcoord, float p_compare_value)
+float read_pcf_light_shadow_map(uint p_shadow_map_index, SamplerComparisonState p_pcf_sampler, float3 p_texcoord, float p_compare_value)
 {
     //return g_light_shadow_map_1.SampleCmpLevelZero(p_pcf_sampler, p_texcoord, p_compare_value).x;
     switch (p_shadow_map_index)
@@ -185,22 +185,23 @@ float read_pcf_light_shadow_map(uint p_shadow_map_index, SamplerComparisonState 
         case 0:
             return g_light_shadow_map_1.SampleCmpLevelZero(p_pcf_sampler, p_texcoord, p_compare_value).x;
         case 1:
-            return g_light_shadow_map_2.SampleCmpLevelZero(p_pcf_sampler, p_texcoord, p_compare_value).x;
+            return g_light_shadow_map_2.SampleCmpLevelZero(p_pcf_sampler, p_texcoord.xy, p_compare_value).x;
         case 2:
-            return g_light_shadow_map_3.SampleCmpLevelZero(p_pcf_sampler, p_texcoord, p_compare_value).x;
+            return g_light_shadow_map_3.SampleCmpLevelZero(p_pcf_sampler, p_texcoord.xy, p_compare_value).x;
     }
 
     return 0;
 }
 
-float read_poison_disk_shadow_map(uint p_shadow_map_index, SamplerComparisonState p_pcf_sampler, float2 p_texcoord, float p_sample_radius, float p_compare_value)
+float read_poison_disk_shadow_map(uint p_shadow_map_index, SamplerComparisonState p_pcf_sampler, float3 p_texcoord, float p_sample_radius, float p_compare_value)
 {
     float l_visibility = 0.0f;
 
 	[unroll]
     for (int i = 0; i < 4; i++)
     {
-        float2 l_texcoord = p_texcoord + POISSON_DISK[i] / p_sample_radius;
+        float3 l_texcoord = p_texcoord;
+        l_texcoord.xy = p_texcoord.xy + POISSON_DISK[i] / p_sample_radius;
         l_visibility += read_pcf_light_shadow_map(p_shadow_map_index, p_pcf_sampler, l_texcoord, p_compare_value) * (1.0 / 4.0);
     }
 
@@ -211,7 +212,7 @@ float calculate_shadow_bias(float3 p_light_dir, float3 p_normal)
 {
     float l_cos_theta = saturate(dot(-p_light_dir, p_normal));
     float l_bias = 0.005 * tan(acos(l_cos_theta));
-    l_bias = clamp(l_bias, 0, 0.006);
+    l_bias = clamp(l_bias, 0, 0.002);
 
     return l_bias;
 }
@@ -225,7 +226,7 @@ float2 direct_light_shadow_map(direct_light p_light, float3 p_position, float p_
 		return l_result;
 	}
 
-	shadow_map l_shadow_map_data = g_shadow_maps[p_light.m_shadow_map_index];
+	cascade_shadow_map l_shadow_map_data = g_shadow_maps[p_light.m_shadow_map_index];
 
 	float l_depth = p_linear_depth * (g_far_plan - g_near_plan);
 	int l_cascade_index = -1;
@@ -244,19 +245,16 @@ float2 direct_light_shadow_map(direct_light p_light, float3 p_position, float p_
 		return float2(l_result, l_cascade_index);
 	}
 	
-	uint l_shadow_map_width = l_shadow_map_data.m_shadow_map_size * l_shadow_map_data.m_shadow_map_count;
-	uint l_shadow_map_height = l_shadow_map_data.m_shadow_map_size;
-
 	float4x4 l_cascade_view_projection = l_shadow_map_data.m_view_projections[l_cascade_index];
 	float4 l_cascade_projection = mul(float4(p_position, 1), l_cascade_view_projection);
-	float2 l_cascade_texcoord_normal = bc_clip_space_to_texcoord(l_cascade_projection, float2(.5 / l_shadow_map_width, .5 / l_shadow_map_height));
+	float2 l_cascade_texcoord_normal = bc_clip_space_to_texcoord(l_cascade_projection);
 	float l_cascade_projection_z = l_cascade_projection.z / l_cascade_projection.w;
-	l_cascade_texcoord_normal.x /= l_shadow_map_data.m_shadow_map_count;
-	l_cascade_texcoord_normal.x += (l_cascade_index * (1.0 / l_shadow_map_data.m_shadow_map_count));
+	//l_cascade_texcoord_normal.x /= l_shadow_map_data.m_shadow_map_count;
+	//l_cascade_texcoord_normal.x += (l_cascade_index * (1.0 / l_shadow_map_data.m_shadow_map_count));
 
     float l_bias = BIAS_SCALE[l_cascade_index] * p_shadow_bias;
     float l_poisson_disk_sample_radius = l_shadow_map_data.m_shadow_map_size / POISSON_DISK_SCALE[l_cascade_index];
-    l_result = read_poison_disk_shadow_map(p_light.m_shadow_map_index, g_pcf_sampler, l_cascade_texcoord_normal, l_poisson_disk_sample_radius, l_cascade_projection_z - l_bias);
+    l_result = read_poison_disk_shadow_map(p_light.m_shadow_map_index, g_pcf_sampler, float3(l_cascade_texcoord_normal, l_cascade_index), l_poisson_disk_sample_radius, l_cascade_projection_z - l_bias);
 
 	return float2(l_result, l_cascade_index);
 }
@@ -340,9 +338,9 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 {
 	int2 l_global_texcoord = p_dispatch_thread_id.xy;
 
-    float l_depth = read_texture(g_depth_map, l_global_texcoord).x;
-    float4 l_diffuse_map = read_texture(g_diffuse_map, l_global_texcoord);
-    float4 l_normal_map = read_texture(g_normal_map, l_global_texcoord);
+    float l_depth = load_texture(g_depth_map, l_global_texcoord).x;
+    float4 l_diffuse_map = load_texture(g_diffuse_map, l_global_texcoord);
+    float4 l_normal_map = load_texture(g_normal_map, l_global_texcoord);
 
     float3 l_world_position = bc_reconstruct_world_space(bc_to_screen_space_texcoord(l_global_texcoord, g_screen_width, g_screen_height), l_depth, g_view_proj_inv);
     float3 l_diffuse = l_diffuse_map.xyz;
@@ -416,17 +414,17 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 		l_light_map += l_shadow_map.x * direct_light_shading(l_light, g_camera_position, l_world_position, l_normal, l_specular_intensity, l_specular_power);
         l_ambient_map += (l_light.m_ambient_color * l_light.m_ambient_intensity);
 
-		//if (l_shadow_map.y != -1)
-		//{
-		//	float4 l_cascade_colors[] =
-		//	{
-		//		float4(.2,0,0,0),
-		//		float4(0,.2,0,0),
-		//		float4(0,0,.2,0),
-		//		float4(.2,.2,0,0),
-		//	};
-		//	l_light_map += l_cascade_colors[l_shadow_map.y];
-		//}
+    //    if (l_shadow_map.y != -1)
+    //    {
+    //        float4 l_cascade_colors[] =
+    //        {
+    //            float4(.2, 0, 0, 0),
+				//float4(0, .2, 0, 0),
+				//float4(0, 0, .2, 0),
+				//float4(.2, .2, 0, 0),
+    //        };
+    //        l_light_map += l_cascade_colors[l_shadow_map.y];
+    //    }
     }
 
     for (uint l_p = 0; l_p < gs_number_of_visible_point_lights; ++l_p)

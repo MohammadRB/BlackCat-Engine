@@ -144,15 +144,13 @@ namespace black_cat
 
 			bc_texture_view_builder_modifier as_tex2d_unordered_shader_view(bcUINT p_mip_slice) noexcept;
 
-			bc_texture_view_builder_modifier as_tex2d_array_unordered_shader_view(bcUINT p_mip_slice,
-				bcUINT p_first_array_slice,
-				bcUINT p_array_size) noexcept;
+			bc_texture_view_builder_modifier as_tex2d_array_unordered_shader_view(bcUINT p_mip_slice, bcUINT p_first_array_slice, bcUINT p_array_size) noexcept;
 
 			bc_resource_view_config as_texcube_shader_view(bcUINT p_most_detailed_mip, bcUINT p_mip_levels) noexcept;
 
 			bc_render_target_view_config as_tex2d_render_target_view(bcUINT p_mip_slice) noexcept;
 
-			bc_resource_view_config as_tex2d_array_render_target_view(bcUINT p_mip_slice, bcUINT p_first_array_slice, bcUINT p_array_size) noexcept;
+			bc_render_target_view_config as_tex2d_array_render_target_view(bcUINT p_mip_slice, bcUINT p_first_array_slice, bcUINT p_array_size) noexcept;
 
 			bc_render_target_view_config as_tex2dms_render_target_view() noexcept;
 
@@ -160,7 +158,7 @@ namespace black_cat
 
 			bc_depth_stencil_view_config as_tex2d_depth_stencil_view(bcUINT p_mip_slice) noexcept;
 
-			bc_resource_view_config as_tex2d_array_depth_stencil_view(bcUINT p_mip_slice, bcUINT p_first_array_slice, bcUINT p_array_size) noexcept;
+			bc_depth_stencil_view_config as_tex2d_array_depth_stencil_view(bcUINT p_mip_slice, bcUINT p_first_array_slice, bcUINT p_array_size) noexcept;
 
 			bc_depth_stencil_view_config as_tex2dms_depth_stencil_view() noexcept;
 

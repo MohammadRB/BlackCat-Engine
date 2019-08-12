@@ -327,7 +327,24 @@ namespace black_cat
 
 			return l_resource_view_config;
 		}
-				
+
+		bc_texture_view_builder_modifier bc_texture_view_builder::as_tex2d_array_shader_view(bcUINT p_most_detailed_mip,
+			bcUINT p_mip_levels, 
+			bcUINT p_first_array_slice, 
+			bcUINT p_array_size) noexcept
+		{
+			bc_texture_view_builder_modifier l_resource_view_config = as_tex2d_shader_view(p_most_detailed_mip, p_mip_levels);
+			D3D11_SHADER_RESOURCE_VIEW_DESC& l_srv_desc = l_resource_view_config.m_config.get_platform_pack().m_shader_view_desc;
+
+			l_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+			l_srv_desc.Texture2DArray.MostDetailedMip = p_most_detailed_mip;
+			l_srv_desc.Texture2DArray.MipLevels = p_mip_levels;
+			l_srv_desc.Texture2DArray.FirstArraySlice = p_first_array_slice;
+			l_srv_desc.Texture2DArray.ArraySize = p_array_size;
+
+			return l_resource_view_config;
+		}
+
 		bc_texture_view_builder_modifier bc_texture_view_builder::as_tex2d_unordered_shader_view(bcUINT p_mip_slice) noexcept
 		{
 			bc_resource_view_config l_resource_view_config;
@@ -343,7 +360,20 @@ namespace black_cat
 
 			return bc_texture_view_builder_modifier(l_resource_view_config);
 		}
-				
+
+		bc_texture_view_builder_modifier bc_texture_view_builder::as_tex2d_array_unordered_shader_view(bcUINT p_mip_slice, bcUINT p_first_array_slice, bcUINT p_array_size) noexcept
+		{
+			bc_texture_view_builder_modifier l_resource_view_config = as_tex2d_unordered_shader_view(p_mip_slice);
+			D3D11_UNORDERED_ACCESS_VIEW_DESC& l_uav_desc = l_resource_view_config.m_config.get_platform_pack().m_unordered_shader_view_desc;
+
+			l_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2DARRAY;
+			l_uav_desc.Texture2DArray.MipSlice = p_mip_slice;
+			l_uav_desc.Texture2DArray.FirstArraySlice = p_first_array_slice;
+			l_uav_desc.Texture2DArray.ArraySize = p_array_size;
+
+			return l_resource_view_config;
+		}
+
 		bc_render_target_view_config bc_texture_view_builder::as_tex2d_render_target_view(bcUINT p_mip_slice) noexcept
 		{
 			bc_render_target_view_config l_resource_view_config;
@@ -357,7 +387,20 @@ namespace black_cat
 
 			return l_resource_view_config;
 		}
-				
+
+		bc_render_target_view_config bc_texture_view_builder::as_tex2d_array_render_target_view(bcUINT p_mip_slice, bcUINT p_first_array_slice, bcUINT p_array_size) noexcept
+		{
+			bc_render_target_view_config l_resource_view_config = as_tex2d_render_target_view(p_mip_slice);
+			D3D11_RENDER_TARGET_VIEW_DESC& l_srv_desc = l_resource_view_config.get_platform_pack().m_render_target_view_desc;
+
+			l_srv_desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
+			l_srv_desc.Texture2DArray.MipSlice = p_mip_slice;
+			l_srv_desc.Texture2DArray.FirstArraySlice = p_first_array_slice;
+			l_srv_desc.Texture2DArray.ArraySize = p_array_size;
+
+			return l_resource_view_config;
+		}
+
 		bc_render_target_view_config bc_texture_view_builder::as_tex2dms_render_target_view() noexcept
 		{
 			bc_render_target_view_config l_resource_view_config = as_tex2d_render_target_view(0);
@@ -379,7 +422,20 @@ namespace black_cat
 
 			return l_resource_view_config;
 		}
-				
+
+		bc_depth_stencil_view_config bc_texture_view_builder::as_tex2d_array_depth_stencil_view(bcUINT p_mip_slice,  bcUINT p_first_array_slice, bcUINT p_array_size) noexcept
+		{
+			bc_depth_stencil_view_config l_resource_view_config = as_tex2d_depth_stencil_view(p_mip_slice);
+			D3D11_DEPTH_STENCIL_VIEW_DESC& l_dsv_desc = l_resource_view_config.get_platform_pack().m_depth_stencil_view_desc;
+
+			l_dsv_desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+			l_dsv_desc.Texture2DArray.MipSlice = p_mip_slice;
+			l_dsv_desc.Texture2DArray.FirstArraySlice = p_first_array_slice;
+			l_dsv_desc.Texture2DArray.ArraySize = p_array_size;
+
+			return l_resource_view_config;
+		}
+
 		bc_depth_stencil_view_config bc_texture_view_builder::as_tex2dms_depth_stencil_view() noexcept
 		{
 			bc_depth_stencil_view_config l_resource_view_config = as_tex2d_depth_stencil_view(0);
@@ -434,7 +490,7 @@ namespace black_cat
 			bcUINT p_array_size) noexcept
 		{
 			bc_texture_config l_texture_config;
-			D3D11_TEXTURE2D_DESC& l_dxtexture_desc = l_texture_config.get_platform_pack().m_desc;
+			D3D11_TEXTURE2D_DESC& l_dx_texture_desc = l_texture_config.get_platform_pack().m_desc;
 
 			bool l_has_shader_view = (static_cast<bcINT>(p_view_types) &
 				static_cast<bcINT>(bc_resource_view_type::shader)) ==
@@ -449,26 +505,26 @@ namespace black_cat
 				static_cast<bcINT>(bc_resource_view_type::depth_stencil)) ==
 				static_cast<bcINT>(bc_resource_view_type::depth_stencil);
 
-			l_dxtexture_desc.Width = p_width;
-			l_dxtexture_desc.Height = p_height;
-			l_dxtexture_desc.MipLevels = p_mip_levels;
-			l_dxtexture_desc.ArraySize = p_array_size;
-			l_dxtexture_desc.Format = bc_graphic_cast(p_format);
-			l_dxtexture_desc.SampleDesc.Count = p_sample_count;
-			l_dxtexture_desc.SampleDesc.Quality = p_sample_quality;
-			l_dxtexture_desc.Usage = bc_graphic_cast(p_usage);
-			l_dxtexture_desc.BindFlags =
+			l_dx_texture_desc.Width = p_width;
+			l_dx_texture_desc.Height = p_height;
+			l_dx_texture_desc.MipLevels = p_mip_levels;
+			l_dx_texture_desc.ArraySize = p_array_size;
+			l_dx_texture_desc.Format = bc_graphic_cast(p_format);
+			l_dx_texture_desc.SampleDesc.Count = p_sample_count;
+			l_dx_texture_desc.SampleDesc.Quality = p_sample_quality;
+			l_dx_texture_desc.Usage = bc_graphic_cast(p_usage);
+			l_dx_texture_desc.BindFlags =
 				(l_has_shader_view ? D3D11_BIND_SHADER_RESOURCE : 0) |
 				(l_has_unordered_view ? D3D11_BIND_UNORDERED_ACCESS : 0) |
 				(l_has_render_target_view ? D3D11_BIND_RENDER_TARGET : 0) |
 				(l_has_depth_stencil_view ? D3D11_BIND_DEPTH_STENCIL : 0);
-			l_dxtexture_desc.CPUAccessFlags =
+			l_dx_texture_desc.CPUAccessFlags =
 				p_usage == bc_resource_usage::gpu_r_cpu_w ?
 				D3D11_CPU_ACCESS_WRITE :
 				p_usage == bc_resource_usage::gpu_r_cpu_r ?
 				D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE :
 				0;
-			l_dxtexture_desc.MiscFlags = p_mip_generation && (p_mip_levels == 0 || p_mip_levels > 1) ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0;
+			l_dx_texture_desc.MiscFlags = p_mip_generation && (p_mip_levels == 0 || p_mip_levels > 1) ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0;
 
 			return bc_texture_builder(l_texture_config);
 		}
