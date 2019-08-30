@@ -140,21 +140,21 @@ namespace black_cat
 						typename std::iterator_traits< TIte >::iterator_category,
 						std::random_access_iterator_tag
 					>::value,
-					"Iterator must random access iterator type"
+					"Iterator must be random access iterator type"
 				);
 
-			bcUINT32 l_num_thread = std::max(p_num_thread, 1U);
-			bcUINT32 l_num = std::distance(p_begin, p_end);
-			bcUINT32 l_chund_size = std::ceil((l_num * 1.f) / l_num_thread);
+			const bcUINT32 l_num_thread = std::max(p_num_thread, 1U);
+			const bcUINT32 l_num = std::distance(p_begin, p_end);
+			const bcUINT32 l_chunk_size = std::ceil((l_num * 1.f) / l_num_thread);
 
 			bc_vector_frame< bc_task< void > > l_tasks;
 			l_tasks.reserve(l_num_thread);
 
 			for (bcUINT32 l_thread = 0; l_thread < l_num_thread; ++l_thread)
 			{
-				bcUINT32 l_begin_index = l_thread * l_chund_size;
-				bcUINT32 l_end_index = (l_thread + 1) * l_chund_size;
-				l_end_index = l_end_index > l_num ? l_num : l_end_index;
+				bcUINT32 l_begin_index = l_thread * l_chunk_size;
+				bcUINT32 l_end_index = (l_thread + 1) * l_chunk_size;
+				l_end_index = std::min(l_end_index, l_num);
 
 				if(l_begin_index >= l_end_index)
 				{
@@ -201,10 +201,10 @@ namespace black_cat
 			}
 			catch (std::exception& p_exception)
 			{
-				bc_app_event_error l_error_event(bc_string("Concurrent for_each task exited with error: ") + p_exception.what());
+				bc_app_event_debug l_error_event(bc_string("Concurrent for_each task exited with error: ") + p_exception.what());
 				bc_get_service< bc_event_manager >()->process_event(l_error_event);
 
-				throw p_exception;
+				throw;
 			}
 #endif
 		}

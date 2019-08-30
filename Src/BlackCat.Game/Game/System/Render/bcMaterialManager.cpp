@@ -132,6 +132,7 @@ namespace black_cat
 			while (core::bc_get_line(l_json_file, l_line))
 			{
 				l_buffer.append(l_line);
+				l_line.clear();
 			}
 
 			core::bc_json_document< _bc_material_json > l_material_json;

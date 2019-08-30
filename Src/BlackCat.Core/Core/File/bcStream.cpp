@@ -37,11 +37,6 @@ namespace black_cat
 
 			l_read = l_first_read = bc_get_char(p_stream, &l_char);
 
-			if(l_first_read)
-			{
-				p_line.clear();
-			}
-
 			while (l_read)
 			{
 				p_line.push_back(l_char);
@@ -64,11 +59,6 @@ namespace black_cat
 			bool l_read;
 
 			l_read = l_first_read = bc_get_wchar(p_stream, &l_char);
-
-			if (l_first_read)
-			{
-				p_line.clear();
-			}
 
 			while (l_read)
 			{

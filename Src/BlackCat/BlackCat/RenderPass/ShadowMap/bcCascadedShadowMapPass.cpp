@@ -20,7 +20,7 @@ namespace black_cat
 		bcUINT32 m_shadow_map_cascade_count;
 		bcUINT32 m_shadow_map_current_cascade;
 	};
-
+	
 	bc_cascaded_shadow_map_pass::bc_cascaded_shadow_map_pass(constant::bc_render_pass_variable_t p_output_depth_buffers, bcSIZE p_shadow_map_size, std::initializer_list<std::tuple<bcSIZE, bcUBYTE>> p_cascade_sizes)
 		: m_shadow_map_size(p_shadow_map_size),
 		m_cascade_sizes(),
@@ -28,7 +28,6 @@ namespace black_cat
 		m_depth_buffers_share_slot(p_output_depth_buffers),
 		m_captured_camera()
 	{
-
 		m_cascade_sizes.assign(p_cascade_sizes.size(), 0);
 		m_cascade_update_intervals.assign(p_cascade_sizes.size(), { 0,0 });
 		
@@ -82,7 +81,7 @@ namespace black_cat
 
 		share_resource(m_depth_buffers_share_slot, bc_cascaded_shadow_map_buffer_container());
 	}
-
+	
 	void bc_cascaded_shadow_map_pass::update(const game::bc_render_pass_update_param& p_param)
 	{
 	}
@@ -298,7 +297,7 @@ namespace black_cat
 
 		return l_instance;
 	}
-
+	
 	core::bc_vector_frame<bc_cascaded_shadow_map_camera> bc_cascaded_shadow_map_pass::_get_light_cascades(const game::bc_icamera& p_camera, const game::bc_direct_light& p_light)
 	{
 		game::bc_icamera::extend l_camera_frustum_corners;

@@ -492,16 +492,16 @@ namespace black_cat
 			bc_texture_config l_texture_config;
 			D3D11_TEXTURE2D_DESC& l_dx_texture_desc = l_texture_config.get_platform_pack().m_desc;
 
-			bool l_has_shader_view = (static_cast<bcINT>(p_view_types) &
+			const bool l_has_shader_view = (static_cast<bcINT>(p_view_types) &
 				static_cast<bcINT>(bc_resource_view_type::shader)) ==
 				static_cast<bcINT>(bc_resource_view_type::shader);
-			bool l_has_unordered_view = (static_cast<bcINT>(p_view_types) &
+			const bool l_has_unordered_view = (static_cast<bcINT>(p_view_types) &
 				static_cast<bcINT>(bc_resource_view_type::unordered)) ==
 				static_cast<bcINT>(bc_resource_view_type::unordered);
-			bool l_has_render_target_view = (static_cast<bcINT>(p_view_types) &
+			const bool l_has_render_target_view = (static_cast<bcINT>(p_view_types) &
 				static_cast<bcINT>(bc_resource_view_type::render_target)) ==
 				static_cast<bcINT>(bc_resource_view_type::render_target);
-			bool l_has_depth_stencil_view = (static_cast<bcINT>(p_view_types) &
+			const bool l_has_depth_stencil_view = (static_cast<bcINT>(p_view_types) &
 				static_cast<bcINT>(bc_resource_view_type::depth_stencil)) ==
 				static_cast<bcINT>(bc_resource_view_type::depth_stencil);
 

@@ -35,6 +35,8 @@ namespace black_cat
 		class bc_platform_file_info
 		{
 		public:
+			static bool exist(const bcECHAR* p_file_name);
+
 			static bool get_basic_info(const bcECHAR* p_file_name, bc_basic_file_info* p_info);
 		};
 

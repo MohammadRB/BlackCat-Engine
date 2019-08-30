@@ -30,7 +30,7 @@
           "parameters": {
             "type": "point",
             "position_x": 0.0,
-            "position_y": 1.0,
+            "position_y": 2.0,
             "position_z": 0.0,
             "radius": 6.0,
             "color_r": 0.79,
@@ -49,11 +49,11 @@
           "parameters": {
             "type": "spot",
             "position_x": 0.0,
-            "position_y": 1.0,
+            "position_y": 4.0,
             "position_z": 0.0,
             "direction_x": 0.0,
-            "direction_y": -0.05,
-            "direction_z": 0.9,
+            "direction_y": -0.6,
+            "direction_z": 0.7,
             "length": 12.0,
             "angle": 60.0,
             "color_r": 0.39,
@@ -140,12 +140,27 @@
       ]
     },
     {
-      "name": "sponza",
+      "name": "Palm_Tree_Large_d",
       "components": [
         {
           "name": "cmp_mesh",
           "parameters": {
-            "mesh": "sponza"
+            "mesh": "Palm_Tree_Large_d"
+          }
+        },
+        {
+          "name": "cmp_rigid_static",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "Green_Fern_Bush_a",
+      "components": [
+        {
+          "name": "cmp_mesh",
+          "parameters": {
+            "mesh": "Green_Fern_Bush_a"
           }
         },
         {

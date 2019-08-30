@@ -427,6 +427,8 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
     //    }
     }
 
+    uint l_number_of_visible_lights = 0;
+
     for (uint l_p = 0; l_p < gs_number_of_visible_point_lights; ++l_p)
     {
         uint l_point_light_index = gs_visible_point_light_indices[l_p];
@@ -438,6 +440,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
         }
 
         l_light_map += point_light_shading(l_light, g_camera_position, l_world_position, l_normal, l_specular_intensity, l_specular_power);
+        l_number_of_visible_lights++;
     }
 
     for (uint l_s = 0; l_s < gs_number_of_visible_spot_lights; ++l_s)
@@ -451,6 +454,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
         }
 
         l_light_map += spot_light_shading(l_light, g_camera_position, l_world_position, l_normal, l_specular_intensity, l_specular_power);
+        l_number_of_visible_lights++;
     }
 
     float4 l_final_light_map = 0;
@@ -461,5 +465,6 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
     l_shaded_diffuse.xyz = (l_diffuse.xyz * l_final_light_map.xyz);
     l_shaded_diffuse.xyz += l_final_light_map.w;
     
+    //float l_scaled_number_of_visible_lights = l_number_of_visible_lights * 1.0f / 20;
     write_output(l_global_texcoord, l_shaded_diffuse);
 }

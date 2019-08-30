@@ -183,6 +183,24 @@
           "content_parameter": {
             "high_detail_query_shape": true
           }
+        },
+        {
+          "content_title": "Palm_Tree_Large_d",
+          "content_name": "cnt_mesh",
+          "content_file": "content\\model\\nature\\palm_tree\\Palm_Tree_Large_d.FBX",
+          "content_parameter": {
+            "high_detail_query_shape": true,
+            "auto_scale": 20.0
+          }
+        },
+        {
+          "content_title": "Green_Fern_Bush_a",
+          "content_name": "cnt_mesh",
+          "content_file": "content\\model\\nature\\Green_Fern_Bush_a\\Green_Fern_Bush_a.FBX",
+          "content_parameter": {
+            "high_detail_query_shape": true,
+            "auto_scale": 20.0
+          }
         }
       ]
     }

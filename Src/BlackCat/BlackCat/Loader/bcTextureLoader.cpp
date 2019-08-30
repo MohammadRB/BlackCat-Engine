@@ -52,12 +52,11 @@ namespace black_cat
 
 	void bc_texture_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
-		core::bc_path l_path(p_context.m_file_path.c_str());
+		const core::bc_path l_path(p_context.m_file_path.c_str());
 		core::bc_estring l_extension = l_path.get_file_extension();
 		graphic::bc_image_format l_format;
 
-		// Bug tolower operate only on single byte chars
-		std::transform(std::begin(l_extension), std::end(l_extension), std::begin(l_extension), tolower);
+		std::transform(std::begin(l_extension), std::end(l_extension), std::begin(l_extension), towlower);
 
 		if (l_extension == bcL(".dds"))
 		{

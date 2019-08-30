@@ -163,11 +163,11 @@ namespace black_cat
 
 			core::bc_string m_name;
 			bc_mesh_node* m_root;
-			core::bc_vector< bc_mesh_node > m_nodes;								// Don't use movable memory due to raw pointers in bc_mesh_node
-			core::bc_vector< bc_render_state_ptr > m_render_states;					// Place render states along with nodes
+			core::bc_vector< bc_mesh_node > m_nodes;										// Don't use movable memory due to raw pointers in bc_mesh_node
+			core::bc_vector< bc_render_state_ptr > m_render_states;						// Place render states along with nodes
 			core::bc_vector_movale< core::bc_matrix4f > m_transformations;
 			bc_mesh_collider_ptr m_colliders;
-			core::bc_vector<const bc_mesh_part_collider*> m_colliders_map;			// Used to fetch mesh colliders without need to hash looking in bc_mesh_collider
+			core::bc_vector<const bc_mesh_part_collider*> m_colliders_map;				// Used to fetch mesh colliders without need to hash looking in bc_mesh_collider
 			core::bc_unordered_map< hash_t::result_type, bc_mesh_node* > m_nodes_map;
 			core::bc_vector< bc_mesh_part_data > m_meshes;
 			bcFLOAT m_scale;

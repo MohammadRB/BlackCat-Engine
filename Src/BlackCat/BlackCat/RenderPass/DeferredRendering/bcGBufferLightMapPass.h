@@ -34,7 +34,7 @@ namespace black_cat
 		void after_reset(const game::bc_render_pass_reset_param& p_param) override;
 
 		void destroy(game::bc_render_system& p_render_system) override;
-
+		
 	private:
 		constexpr static bcSIZE m_shader_thread_group_size = 16;
 		constexpr static bcSIZE m_shader_shadow_map_cascade_count = 4;

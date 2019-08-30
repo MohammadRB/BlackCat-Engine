@@ -128,12 +128,18 @@ namespace black_cat
 				{
 					_call(p_thread_id, std::is_same< typename std::remove_reference< value_type >::type, void >::type());
 				}
+				catch (const std::exception& p_exp)
+				{
+					m_promise.set_exception(std::current_exception());
+
+					bc_app_event_debug l_debug_event(bc_string("Task with thread id " + bc_to_string(p_thread_id) + " exited with error: ") + p_exp.what());
+					bc_get_service< bc_event_manager >()->process_event(l_debug_event);
+				}
 				catch (...)
 				{
-					auto l_current_exception = std::current_exception();
-					m_promise.set_exception(l_current_exception);
+					m_promise.set_exception(std::current_exception());
 
-					bc_app_event_debug l_debug_event(bc_string("Task with thread id " + bc_to_string(p_thread_id) + " exited with error."));
+					bc_app_event_debug l_debug_event(bc_string("Task with thread id " + bc_to_string(p_thread_id) + " exited with unknown error."));
 					bc_get_service< bc_event_manager >()->process_event(l_debug_event);
 				}
 			}

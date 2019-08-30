@@ -288,7 +288,7 @@ namespace black_cat
 		bool BC_CORE_DLL bc_get_wchar(bc_istream_adapter& p_stream, bcWCHAR* p_char);
 
 		/**
-		 * \brief Read a line from stream and replace in p_line string if stream is readable and stream position isn't at end
+		 * \brief Read a line from stream if stream is readable and stream position isn't at end
 		 * \param p_stream 
 		 * \param p_line 
 		 * \return 
@@ -296,7 +296,7 @@ namespace black_cat
 		bool BC_CORE_DLL bc_get_line(bc_istream_adapter& p_stream, bc_string_frame& p_line);
 
 		/**
-		 * \brief Read a line from stream and replace in p_line string if stream is readable and stream position isn't at end
+		 * \brief Read a line from stream if stream is readable and stream position isn't at end
 		 * \param p_stream 
 		 * \param p_line 
 		 * \return 

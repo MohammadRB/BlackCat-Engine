@@ -54,6 +54,7 @@ namespace black_cat
 			while (core::bc_get_line(l_json_file, l_line))
 			{
 				l_buffer.append(l_line);
+				l_line.clear();
 			}
 
 			core::bc_json_document< _bc_entity_json > l_json;
@@ -122,16 +123,25 @@ namespace black_cat
 			}
 
 			bc_actor l_actor = m_actor_component_manager.create_actor();
-			l_actor.create_component<bc_mediate_component>();
-			l_actor.create_component<bc_name_component>();
-			l_actor.get_component<bc_name_component>()->set_entity_name(l_entity_entry->second.m_entity_name.c_str());
-
-			for (auto& l_entity_component_data : l_entity_entry->second.m_components)
+			
+			try
 			{
-				auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
+				l_actor.create_component<bc_mediate_component>();
+				l_actor.create_component<bc_name_component>();
+				l_actor.get_component<bc_name_component>()->set_entity_name(l_entity_entry->second.m_entity_name.c_str());
 
-				l_entity_component_entry->second.m_create_delegate(l_actor);
-				l_entity_component_entry->second.m_initialize_delegate(l_actor, l_entity_component_data.m_component_parameters);
+				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
+				{
+					auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
+
+					l_entity_component_entry->second.m_create_delegate(l_actor);
+					l_entity_component_entry->second.m_initialize_delegate(l_actor, l_entity_component_data.m_component_parameters);
+				}
+			}
+			catch (...)
+			{
+				m_actor_component_manager.remove_actor(l_actor);
+				throw;
 			}
 
 			return l_actor;

@@ -2,8 +2,10 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
-#include "Core/File/bcPath.h"
+#include "CorePlatformImp/File/bcFileInfo.h"
 #include "Core/bcConstant.h"
+#include "Core/File/bcPath.h"
+#include "Core/Utility/bcNullable.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcArray.h"
@@ -85,33 +87,69 @@ namespace black_cat
 		p_material.m_specular_intensity = l_specular_intensity;
 		p_material.m_specular_power = l_specular_power;
 
+		const auto l_root_path = core::bc_path(p_context.m_file_path.c_str()).set_filename(bcL(""));
+		core::bc_nullable<core::bc_path> l_diffuse_file_name;
 		aiString l_aistr;
-		const core::bc_path l_file_path = core::bc_path(p_context.m_file_path.c_str()).set_filename(bcL(""));
 
 		if (p_aimaterial.GetTexture(aiTextureType_DIFFUSE, 0, &l_aistr) == aiReturn_SUCCESS)
 		{
+			l_diffuse_file_name = core::bc_path(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str());
 			p_material.m_diffuse_map = l_content_manager->load< graphic::bc_texture2d_content >
 			(
 				p_context.get_allocator_alloc_type(),
-				core::bc_path(l_file_path).set_filename(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str()).get_path().c_str(),
+				core::bc_path(l_root_path).set_filename(l_diffuse_file_name->get_path().c_str()).get_path().c_str(),
 				core::bc_content_loader_parameter(p_context.m_parameter)
 			);
 		}
+
+		core::bc_estring l_normal_map_path;
+		core::bc_estring l_specular_map_path;
+
 		if (p_aimaterial.GetTexture(aiTextureType_NORMALS, 0, &l_aistr) == aiReturn_SUCCESS)
+		{
+			l_normal_map_path = core::bc_path(l_root_path).set_filename(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str()).get_path();
+		}
+		else if(l_diffuse_file_name != nullptr)
+		{
+			const auto l_conventional_normal_map_name = l_diffuse_file_name->get_filename_without_extension() + L"_NRM" + l_diffuse_file_name->get_file_extension();
+			auto l_normal_map = core::bc_path(l_root_path).set_filename(l_conventional_normal_map_name.c_str()).get_path();
+			
+			if(core_platform::bc_file_info::exist(l_normal_map.c_str()))
+			{
+				l_normal_map_path = std::move(l_normal_map);
+			}
+		}
+
+		if (p_aimaterial.GetTexture(aiTextureType_SPECULAR, 0, &l_aistr) == aiReturn_SUCCESS)
+		{
+			l_specular_map_path = core::bc_path(l_root_path).set_filename(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str()).get_path();
+		}
+		else if (l_diffuse_file_name != nullptr)
+		{
+			const auto l_conventional_specular_map_name = l_diffuse_file_name->get_filename_without_extension() + L"_SPEC" + l_diffuse_file_name->get_file_extension();
+			auto l_specular_map = core::bc_path(l_root_path).set_filename(l_conventional_specular_map_name.c_str()).get_path();
+
+			if (core_platform::bc_file_info::exist(l_specular_map.c_str()))
+			{
+				l_specular_map_path = std::move(l_specular_map);
+			}
+		}
+
+		if (!l_normal_map_path.empty())
 		{
 			p_material.m_normal_map = l_content_manager->load< graphic::bc_texture2d_content >
 			(
 				p_context.get_allocator_alloc_type(),
-				core::bc_path(l_file_path).set_filename(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str()).get_path().c_str(),
+				l_normal_map_path.c_str(),
 				core::bc_content_loader_parameter(p_context.m_parameter)
 			);
 		}
-		if (p_aimaterial.GetTexture(aiTextureType_SPECULAR, 0, &l_aistr) == aiReturn_SUCCESS)
+		if (!l_specular_map_path.empty())
 		{
 			p_material.m_specular_map = l_content_manager->load< graphic::bc_texture2d_content >
 			(
 				p_context.get_allocator_alloc_type(),
-				core::bc_path(l_file_path).set_filename(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str()).get_path().c_str(),
+				l_specular_map_path.c_str(),
 				core::bc_content_loader_parameter(p_context.m_parameter)
 			);
 		}
@@ -324,13 +362,16 @@ namespace black_cat
 			aiProcess_SortByPType |
 			(graphic::bc_render_api_info::is_left_handed() ? aiProcess_ConvertToLeftHanded : 0)
 		);
-
 		if (!l_scene || !l_scene->HasMeshes())
 		{
-			auto l_error_msg =
-				core::bc_string_frame("Content file doesn't include mesh data")
+			const auto l_error_msg =
+				core::bc_string_frame("Content file loading error: ")
 				+
-				core::bc_to_exclusive_string(p_context.m_file_path.c_str()).c_str();
+				core::bc_to_exclusive_string(p_context.m_file_path.c_str()).c_str()
+				+
+				", "
+				+
+				l_importer.GetErrorString();
 			p_context.set_result(bc_io_exception(l_error_msg.c_str()));
 
 			return;

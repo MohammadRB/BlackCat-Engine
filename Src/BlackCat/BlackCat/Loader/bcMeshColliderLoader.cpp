@@ -58,8 +58,16 @@ namespace black_cat
 
 		if (!l_scene || !l_scene->HasMeshes())
 		{
-			auto l_error_msg = core::bc_string_frame("Content file doesn't include mesh data. ") + core::bc_to_exclusive_string(p_context.m_file_path.c_str()).c_str();
+			const auto l_error_msg =
+				core::bc_string_frame("Content file loading error: ")
+				+
+				core::bc_to_exclusive_string(p_context.m_file_path.c_str()).c_str()
+				+
+				", "
+				+
+				l_importer.GetErrorString();
 			p_context.set_result(bc_io_exception(l_error_msg.c_str()));
+
 			return;
 		}
 
@@ -173,21 +181,11 @@ namespace black_cat
 			else if (l_mesh_name == "mesh")
 			{
 				core::bc_vector_frame< bcBYTE > l_intermediate_buffer;
-				physics::bc_triangle_mesh_desc l_px_triangle_desc1 = _bc_extract_triangle_mesh(l_aimesh, l_intermediate_buffer);
-				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(l_px_triangle_desc1);
+				physics::bc_triangle_mesh_desc l_px_triangle_desc = _bc_extract_triangle_mesh(l_aimesh, l_intermediate_buffer);
+				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(l_px_triangle_desc);
 				physics::bc_triangle_mesh_ref l_triangle_mesh = p_physics.create_triangle_mesh(l_triangle_buffer);
 
 				l_result.add_px_shape(std::move(l_triangle_mesh), physics::bc_transform(l_node_absolute_transformation), l_shape_flag);
-			}
-
-			if (p_generate_high_detail_query_shape)
-			{
-				core::bc_vector_frame< bcBYTE > p_intermediate_buffer;
-				physics::bc_triangle_mesh_desc l_px_triangle_desc1 = _bc_extract_triangle_mesh(l_aimesh, p_intermediate_buffer);
-				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(l_px_triangle_desc1);
-				physics::bc_triangle_mesh_ref l_triangle_mesh = p_physics.create_triangle_mesh(l_triangle_buffer);
-
-				l_result.add_px_shape(std::move(l_triangle_mesh), physics::bc_transform(l_node_absolute_transformation), physics::bc_shape_flag::query);
 			}
 		}
 
@@ -224,6 +222,16 @@ namespace black_cat
 			{
 				l_mesh_colliders = convert_px_node(p_physics, p_aiscene, *l_px_node, l_node_absolute_transformation, p_generate_high_detail_query_shape);
 				l_mesh_colliders.shrink_to_fit();
+			}
+
+			if (p_generate_high_detail_query_shape)
+			{
+				core::bc_vector_frame< bcBYTE > p_intermediate_buffer;
+				physics::bc_triangle_mesh_desc l_px_triangle_desc = _bc_extract_triangle_mesh(l_aimesh, p_intermediate_buffer);
+				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(l_px_triangle_desc);
+				physics::bc_triangle_mesh_ref l_triangle_mesh = p_physics.create_triangle_mesh(l_triangle_buffer);
+
+				l_mesh_colliders.add_px_shape(std::move(l_triangle_mesh), physics::bc_transform(l_node_absolute_transformation), physics::bc_shape_flag::query);
 			}
 
 			p_result.add_mesh_colliders(l_aimesh->mName.C_Str(), std::move(l_mesh_colliders));
