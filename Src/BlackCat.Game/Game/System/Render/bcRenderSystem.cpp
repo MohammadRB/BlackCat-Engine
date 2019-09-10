@@ -120,13 +120,13 @@ namespace black_cat
 		{
 			// Bug this function isn't thread-safe
 			const auto l_render_states_entry_size = sizeof(render_state_entry);
-			const auto l_render_states_first = reinterpret_cast<bcUINTPTR>(&*m_render_states.begin());
-			const auto l_render_state = reinterpret_cast<bcUINTPTR>(&p_state);
-			const auto l_state_index = (l_render_state - l_render_states_first) / l_render_states_entry_size;
+			const auto l_render_states_begin = reinterpret_cast<bcUINTPTR>(&*m_render_states.begin());
+			const auto l_render_state_ptr = reinterpret_cast<bcUINTPTR>(&p_state);
+			const auto l_render_state_index = (l_render_state_ptr - l_render_states_begin) / l_render_states_entry_size;
 
-			bcAssert(m_render_states.at(l_state_index).first.is_set());
+			bcAssert(m_render_states.at(l_render_state_index).first.is_set());
 
-			m_render_states.at(l_state_index).second.push_back(p_instance);
+			m_render_states.at(l_render_state_index).second.push_back(p_instance);
 		}
 
 		void bc_render_system::update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera)

@@ -513,8 +513,8 @@ namespace black_cat
 			_bc_actor_component_entry l_data
 			{
 				p_priority,
-				core::bc_vector_movale< bcINT32 >(),
-				core::bc_vector_movale< bcINT32 >(),
+				core::bc_vector_movale< bc_actor_component_index >(),
+				core::bc_vector_movale< bc_actor_index >(),
 				core::bc_make_unique< bc_actor_component_container< TComponent > >(core::bc_alloc_type::program)
 			};
 

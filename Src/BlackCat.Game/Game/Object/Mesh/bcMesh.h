@@ -127,6 +127,8 @@ namespace black_cat
 
 			const core::bc_matrix4f& get_node_transformation(const bc_mesh_node* p_node) const;
 
+			const core::bc_string& get_node_mesh_name(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+
 			const bc_render_material& get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_render_state& get_node_mesh_render_state(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;

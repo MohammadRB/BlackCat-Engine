@@ -19,8 +19,8 @@ namespace black_cat
 
 		class BC_GAME_DLL bc_mesh_component : public bc_render_component
 		{
-			BC_COMPONENT(mesh)
-
+			BC_ABSTRACT_COMPONENT(mesh)
+			
 		public:
 			explicit bc_mesh_component(bc_actor_component_index p_index);
 
@@ -40,7 +40,7 @@ namespace black_cat
 				return m_mesh_part_transformation;
 			}
 
-			bc_actor get_actor() const noexcept override;
+			//bc_actor get_actor() const noexcept override;
 
 			core::bc_vector3f get_world_position() const;
 

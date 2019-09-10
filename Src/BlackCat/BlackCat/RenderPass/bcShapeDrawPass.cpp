@@ -70,7 +70,7 @@ namespace black_cat
 		game::bc_scene_graph_buffer* l_actors = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
 
 		p_param.m_scene.add_debug_shapes(l_shape_drawer, *l_actors);
-		//l_shape_drawer.render(p_param.m_render_system, p_param.m_render_thread);
+		l_shape_drawer.render(p_param.m_render_system, p_param.m_render_thread);
 
 		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
 		p_param.m_render_system.clear_render_instances();

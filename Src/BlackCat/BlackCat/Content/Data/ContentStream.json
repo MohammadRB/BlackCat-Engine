@@ -132,6 +132,24 @@
           "content_name": "cnt_compute_shader",
           "content_file": "content\\shader\\directx11\\deferredrendering\\bcGBufferLightMap.hlsl",
           "content_parameter": { "function": "main" }
+        },
+        {
+          "content_title": "gbuffer_vegetable_leaf_vs",
+          "content_name": "cnt_vertex_shader",
+          "content_file": "content\\shader\\directx11\\deferredrendering\\bcVegetableLeafGBuffer.hlsl",
+          "content_parameter": { "function": "gbuffer_vegetable_leaf_vs" }
+        },
+        {
+          "content_title": "gbuffer_vegetable_leaf_ps",
+          "content_name": "cnt_pixel_shader",
+          "content_file": "content\\shader\\directx11\\deferredrendering\\bcVegetableLeafGBuffer.hlsl",
+          "content_parameter": { "function": "gbuffer_vegetable_leaf_ps" }
+        },
+        {
+          "content_title": "gbuffer_vegetable_trunk_vs",
+          "content_name": "cnt_vertex_shader",
+          "content_file": "content\\shader\\directx11\\deferredrendering\\bcVegetableTrunkGBuffer.hlsl",
+          "content_parameter": { "function": "gbuffer_vegetable_trunk_vs" }
         }
       ]
     },

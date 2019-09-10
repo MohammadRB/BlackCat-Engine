@@ -7,7 +7,7 @@
 #include "Game/System/Input/bcCamera.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/Object/Scene/bcScene.h"
-#include "Game/Object/Scene/Component/bcMeshComponent.h"
+#include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapPass.h"
 
@@ -90,7 +90,7 @@ namespace black_cat
 	{
 		p_param.m_render_thread.start(m_command_list.get());
 	}
-
+	
 	void bc_cascaded_shadow_map_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
 		core::bc_vector_frame<game::bc_direct_light> l_direct_lights;
@@ -154,7 +154,7 @@ namespace black_cat
 					p_param.m_render_thread.update_subresource(m_parameters_cbuffer.get(), 0, &l_parameters, 0, 0);*/
 
 					game::bc_camera_frustum l_camera_frustum(l_light_cascade_camera);
-					auto l_scene_buffer = p_param.m_scene.get_actors<game::bc_mesh_component>(l_camera_frustum);
+					auto l_scene_buffer = p_param.m_scene.get_actors<game::bc_simple_mesh_component>(l_camera_frustum);
 
 					l_scene_buffer.render_actors(p_param.m_render_system);
 
