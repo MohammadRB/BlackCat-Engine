@@ -185,7 +185,6 @@ namespace black_cat
 				bcUINT32 l_my_index = m_threads.size();
 				if (l_my_index >= m_thread_count + m_additional_thread_count)
 				{
-					bcAssert(false);
 					return;
 				}
 

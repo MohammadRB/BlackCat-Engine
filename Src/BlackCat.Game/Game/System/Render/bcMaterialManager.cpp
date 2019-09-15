@@ -246,6 +246,7 @@ namespace black_cat
 			l_material.m_parameters.m_diffuse = l_description_entry->second.m_diffuse_color;
 			l_material.m_parameters.m_specular_intensity = l_description_entry->second.m_specular_intensity;
 			l_material.m_parameters.m_specular_power = l_description_entry->second.m_specular_power;
+			l_material.m_parameters.m_has_normal_map = l_normal_map != nullptr && l_normal_map != m_default_normal_map;
 			l_material.m_diffuse_map = l_diffuse_map;
 			l_material.m_normal_map = l_normal_map;
 			l_material.m_specular_map = l_specular_map;
@@ -388,6 +389,7 @@ namespace black_cat
 
 		bc_render_material_ptr bc_material_manager::_store_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_name, bc_render_material p_material)
 		{
+			auto& l_device = m_render_system.get_device();
 			auto l_hash = string_hash()(p_name);
 			auto l_material = core::bc_make_unique< _bc_material_manager_material >(p_alloc_type, l_hash, std::move(p_material));
 
@@ -411,17 +413,17 @@ namespace black_cat
 				.as_tex2d_shader_view(0, -1)
 				.on_texture2d();
 
-			l_material->m_diffuse_map_view = m_render_system.get_device().create_resource_view(l_diffuse_map, m_diffuse_map_view_config);
-			l_material->m_normal_map_view = m_render_system.get_device().create_resource_view(l_normal_map, m_normal_map_view_config);
-			l_material->m_specular_map_view = m_render_system.get_device().create_resource_view(l_specular_map, m_specular_map_view_config);
+			l_material->m_diffuse_map_view = l_device.create_resource_view(l_diffuse_map, m_diffuse_map_view_config);
+			l_material->m_normal_map_view = l_device.create_resource_view(l_normal_map, m_normal_map_view_config);
+			l_material->m_specular_map_view = l_device.create_resource_view(l_specular_map, m_specular_map_view_config);
 
 			auto l_parameters_cbuffer_config = graphic::bc_graphic_resource_builder()
 				.as_resource()
 				.as_buffer(1, sizeof(bc_render_material_parameter), graphic::bc_resource_usage::gpu_r, graphic::bc_resource_view_type::shader)
 				.as_constant_buffer();
-			auto l_parameters_cbuffer_data = graphic::bc_subresource_data(&l_material->m_parameters, sizeof(bc_render_material_parameter), 1);
+			auto l_parameters_cbuffer_data = graphic::bc_subresource_data(&l_material->m_parameters, sizeof(bc_render_material_parameter), 0);
 
-			l_material->m_parameter_cbuffer = m_render_system.get_device().create_buffer(l_parameters_cbuffer_config, &l_parameters_cbuffer_data);
+			l_material->m_parameter_cbuffer = l_device.create_buffer(l_parameters_cbuffer_config, &l_parameters_cbuffer_data);
 
 			{
 				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_materials_mutex);

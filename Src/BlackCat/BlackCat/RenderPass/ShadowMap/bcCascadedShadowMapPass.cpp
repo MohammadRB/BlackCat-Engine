@@ -204,7 +204,7 @@ namespace black_cat
 		}
 		//p_param.m_render_system.get_shape_drawer().render_wired_frustum(m_captured_camera);
 	}
-
+	
 	void bc_cascaded_shadow_map_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
 	{
 		get_shared_resource_throw<bc_cascaded_shadow_map_buffer_container>(m_depth_buffers_share_slot).clear();

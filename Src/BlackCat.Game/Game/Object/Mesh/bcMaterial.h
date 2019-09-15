@@ -33,9 +33,10 @@ namespace black_cat
 			BC_CBUFFER_ALIGN
 			core::bc_vector4f m_diffuse;
 			BC_CBUFFER_ALIGN
-			bcFLOAT m_specular_intensity;
-			bcFLOAT m_specular_power;
-			bool m_has_normal_map;
+			bcFLOAT m_specular_intensity = 1;
+			bcFLOAT m_specular_power = 1;
+			BC_CBUFFER_ALIGN
+			bool m_has_normal_map = false;
 		};
 
 		struct bc_render_material : public core::bc_ref_count

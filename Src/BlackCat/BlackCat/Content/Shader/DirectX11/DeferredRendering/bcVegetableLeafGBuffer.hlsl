@@ -13,7 +13,7 @@ cbuffer g_cb_material				: register(BC_RENDER_STATE_CB1)
     float4 g_diffuse					: packoffset(c0);
     float g_specular_intency			: packoffset(c1.x);
     float g_specular_power			: packoffset(c1.y);
-    bool g_has_normal_map			: packoffset(c1.z);
+    bool g_has_normal_map			: packoffset(c2);
 };
 
 struct bc_vs_input
