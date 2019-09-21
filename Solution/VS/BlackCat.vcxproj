@@ -157,9 +157,6 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferPass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferTerrainPassDx11.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferVegetablePass.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcMeshDrawPass.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcInitializePass.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcTerrainPassDx11.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcShapeDrawPass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcCascadedShadowMapBufferContainer.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcCascadedShadowMapCamera.h" />
@@ -188,10 +185,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferTerrainPassDx11.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferVegetablePass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcMeshDrawPass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcInitializePass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcShapeDrawPass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcTerrainPassDx11.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcCascadedShadowMapPass.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -228,10 +222,6 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcMeshShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
@@ -282,6 +272,10 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\EntityType.json" />
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\Material.json" />
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcRegister.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcVegetableAnimation.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </None>

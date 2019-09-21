@@ -741,16 +741,16 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline< g_api_dx11 >::bind_om_blend_factors(core::bc_vector4f l_factors)
+		void bc_platform_device_pipeline< g_api_dx11 >::bind_om_blend_factors(core::bc_vector4f p_factors)
 		{
-			m_pack.m_pipeline_proxy->m_output_merger_stage.get_required_state().m_blend_factors.set(l_factors);
+			m_pack.m_pipeline_proxy->m_output_merger_stage.get_required_state().m_blend_factors.set(p_factors);
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline< g_api_dx11 >::bind_om_stencil_ref(bcUINT32 l_stencil_ref)
+		void bc_platform_device_pipeline< g_api_dx11 >::bind_om_stencil_ref(bcUINT32 p_stencil_ref)
 		{
-			m_pack.m_pipeline_proxy->m_output_merger_stage.get_required_state().m_stencil_ref.set(l_stencil_ref);
+			m_pack.m_pipeline_proxy->m_output_merger_stage.get_required_state().m_stencil_ref.set(p_stencil_ref);
 		}
 
 		template<>

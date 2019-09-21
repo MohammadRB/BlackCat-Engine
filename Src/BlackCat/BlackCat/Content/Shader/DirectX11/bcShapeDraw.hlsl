@@ -27,7 +27,7 @@ bc_vs_output vs(bc_vs_input p_input)
 {
 	bc_vs_output l_output;
 
-	l_output.m_position = mul(float4(p_input.m_position, 1), g_viewprojection);
+	l_output.m_position = mul(float4(p_input.m_position, 1), g_view_projection);
 
 	return l_output;
 }

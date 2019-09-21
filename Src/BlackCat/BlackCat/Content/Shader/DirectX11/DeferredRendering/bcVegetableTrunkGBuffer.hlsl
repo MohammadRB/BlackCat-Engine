@@ -1,6 +1,7 @@
 // [09/09/2019 MRB]
 
 #include "..\bcRegister.hlsli"
+#include "bcVegetableAnimation.hlsli"
 
 SamplerState g_sam_sampler			: register(BC_RENDER_PASS_STATE_S0);
 
@@ -33,17 +34,13 @@ struct bc_vs_output
     float3 m_binormal	: BINORMAL0;
 };
 
-struct bc_ps_output
-{
-    float4 m_diffuse		: SV_Target0;
-    float4 m_normal		: SV_Target1;
-};
-
 bc_vs_output gbuffer_vegetable_trunk_vs(bc_vs_input p_input)
 {
     bc_vs_output l_output;
-
-    l_output.m_position = mul(float4(p_input.m_position, 1), g_world_view_projection);
+	
+    float3 l_position = bc_do_vegetable_animation(p_input.m_position, g_world, g_vegetable_max_height, false, g_wind_dir, g_wind_power, g_total_elapsed_second);
+	
+    l_output.m_position = mul(float4(l_position, 1), g_view_projection);
     l_output.m_texcoord = p_input.m_texcoord;
     l_output.m_normal = normalize(mul(p_input.m_normal, (float3x3) g_world));
 

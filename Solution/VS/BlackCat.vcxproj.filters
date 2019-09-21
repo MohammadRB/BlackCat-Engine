@@ -37,9 +37,6 @@
     <Filter Include="BlackCat\RenderPass\DeferredRendering">
       <UniqueIdentifier>{11351fa6-41e9-41f7-9990-ed38a045d677}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BlackCat\RenderPass\ForwardRendering">
-      <UniqueIdentifier>{1bbc007f-4c06-4f5a-baca-4f6e220e1917}</UniqueIdentifier>
-    </Filter>
     <Filter Include="BlackCat\Content\Shader\DirectX11\ShadowMap">
       <UniqueIdentifier>{3422575b-c78c-402d-8f1b-5412f27964a7}</UniqueIdentifier>
     </Filter>
@@ -110,15 +107,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferTerrainPassDx11.h">
       <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcInitializePass.h">
-      <Filter>BlackCat\RenderPass\ForwardRendering</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcMeshDrawPass.h">
-      <Filter>BlackCat\RenderPass\ForwardRendering</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcTerrainPassDx11.h">
-      <Filter>BlackCat\RenderPass\ForwardRendering</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcCascadedShadowMapPass.h">
       <Filter>BlackCat\RenderPass\ShadowMap</Filter>
@@ -194,15 +182,6 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferTerrainPassDx11.cpp">
       <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcInitializePass.cpp">
-      <Filter>BlackCat\RenderPass\ForwardRendering</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcMeshDrawPass.cpp">
-      <Filter>BlackCat\RenderPass\ForwardRendering</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ForwardRendering\bcTerrainPassDx11.cpp">
-      <Filter>BlackCat\RenderPass\ForwardRendering</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcCascadedShadowMapPass.cpp">
       <Filter>BlackCat\RenderPass\ShadowMap</Filter>
     </ClCompile>
@@ -211,9 +190,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcMeshShader.hlsl">
-      <Filter>BlackCat\Content\Shader\DirectX11</Filter>
-    </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcShapeDraw.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11</Filter>
     </FxCompile>
@@ -257,6 +233,9 @@
     </None>
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcRegister.hlsli">
       <Filter>BlackCat\Content\Shader\DirectX11</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcVegetableAnimation.hlsli">
+      <Filter>BlackCat\Content\Shader\DirectX11\DeferredRendering</Filter>
     </None>
   </ItemGroup>
 </Project>

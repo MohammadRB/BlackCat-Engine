@@ -34,6 +34,15 @@
                 0.0
             ],
             "parameters": {}
+        },
+        {
+          "entity_name": "Palm_Tree_Large_d",
+          "position": [
+            29.1959228515625,
+            48.100006103515628,
+            -732.553955078125
+          ],
+          "parameters": {}
         }
     ]
 }

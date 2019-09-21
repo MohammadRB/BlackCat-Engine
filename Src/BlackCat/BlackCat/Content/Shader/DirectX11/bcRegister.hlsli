@@ -106,18 +106,19 @@ cbuffer g_cb_global_state				: register(BC_RENDER_PASS_STATE_CB0)
 {
     float4x4 g_view						: packoffset(c0);
     float4x4 g_projection				: packoffset(c4);
-    float4x4 g_viewprojection			: packoffset(c8);
+    float4x4 g_view_projection			: packoffset(c8);
     int g_screen_width			        : packoffset(c12.x);
     int g_screen_height			        : packoffset(c12.y);
     float g_near_plan                   : packoffset(c12.z);
     float g_far_plan                    : packoffset(c12.w);
     float3 g_camera_position				: packoffset(c13);
     double g_total_elapsed				: packoffset(c14.x);
-    float g_elapsed						: packoffset(c14.z);
-    float g_elapsed_second				: packoffset(c14.w);
+    double g_total_elapsed_second		: packoffset(c14.z);
+    float g_elapsed						: packoffset(c15.x);
+    float g_elapsed_second				: packoffset(c16.y);
 }
 
-// Bound to vertex shader
+// Bound to vertex, hull, domain shader
 cbuffer g_cb_object_state				: register(BC_RENDER_STATE_CB0)
 {
 	float4x4 g_world_view_projection		: packoffset(c0);

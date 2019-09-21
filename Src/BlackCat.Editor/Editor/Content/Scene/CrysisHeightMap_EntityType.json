@@ -168,6 +168,21 @@
           "parameters": {}
         }
       ]
+    },
+    {
+      "name": "thin_leave_tree_big_bright_green",
+      "components": [
+        {
+          "name": "cmp_vegetable_mesh",
+          "parameters": {
+            "mesh": "thin_leave_tree_big_bright_green"
+          }
+        },
+        {
+          "name": "cmp_rigid_static",
+          "parameters": {}
+        }
+      ]
     }
   ]
 }

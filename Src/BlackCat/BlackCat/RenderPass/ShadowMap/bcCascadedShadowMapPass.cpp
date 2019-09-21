@@ -133,9 +133,6 @@ namespace black_cat
 
 			for(auto& l_light_cascade_camera : l_light_cascade_cameras)
 			{
-				auto* l_light_cascade_render_pass_state = l_light_state.m_render_pass_states[l_cascade_ite].get();
-				p_param.m_render_thread.bind_render_pass_state(l_light_cascade_render_pass_state);
-
 				auto& l_update_interval = --std::get<1>(m_cascade_update_intervals[l_cascade_ite]);
 				if(l_update_interval != 0)
 				{
@@ -147,6 +144,9 @@ namespace black_cat
 
 					l_light_state.m_last_view_projections[l_cascade_ite] = l_light_cascade_camera.get_view() * l_light_cascade_camera.get_projection();
 					l_csm_buffer.m_view_projections.push_back(l_light_state.m_last_view_projections[l_cascade_ite]);
+
+					auto* l_light_cascade_render_pass_state = l_light_state.m_render_pass_states[l_cascade_ite].get();
+					p_param.m_render_thread.bind_render_pass_state(*l_light_cascade_render_pass_state);
 
 					p_param.m_render_thread.clear_buffers(core::bc_vector4f(1));
 
@@ -160,9 +160,9 @@ namespace black_cat
 
 					p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, l_light_cascade_camera);
 					p_param.m_render_system.clear_render_instances();
-				}
 
-				p_param.m_render_thread.unbind_render_pass_state(l_light_cascade_render_pass_state);
+					p_param.m_render_thread.unbind_render_pass_state(*l_light_cascade_render_pass_state);
+				}
 
 				++l_cascade_ite;
 			}

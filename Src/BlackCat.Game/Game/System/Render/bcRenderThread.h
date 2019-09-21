@@ -56,9 +56,9 @@ namespace black_cat
 			 * Apply ProgrammableStates for parameters
 			 * \param p_render_pass_state 
 			 */
-			void bind_render_pass_state(bc_render_pass_state* p_render_pass_state);
+			void bind_render_pass_state(bc_render_pass_state& p_render_pass_state);
 
-			void unbind_render_pass_state(bc_render_pass_state* p_render_pass_state);
+			void unbind_render_pass_state(bc_render_pass_state& p_render_pass_state);
 
 			/**
 			 * \brief Bind render states to given device pipeline and apply changes
@@ -66,16 +66,16 @@ namespace black_cat
 			 * Apply ProgrammableStates for parameters
 			 * \param p_render_state 
 			 */
-			void bind_render_state(bc_render_state* p_render_state);
+			void bind_render_state(bc_render_state& p_render_state);
 
-			void unbind_render_state(bc_render_state* p_render_state);
+			void unbind_render_state(bc_render_state& p_render_state);
 
 			/**
 			 * \brief Bind compute states to given device pipeline and apply changes
 			 * Apply ComputeStage for compute shader and parameters
 			 * \param p_compute_state 
 			 */
-			void run_compute_shader(bc_compute_state* p_compute_state);
+			void run_compute_shader(bc_compute_state& p_compute_state);
 
 			/*void bind_ia_primitive_topology(graphic::bc_primitive p_primitive);
 
@@ -107,9 +107,9 @@ namespace black_cat
 
 			void unbind_rs_viewports();*/
 
-			void bind_om_blend_factors(core::bc_vector4f l_factors);
+			void bind_om_blend_factors(core::bc_vector4f p_factors);
 
-			void bind_om_stencil_ref(bcUINT32 l_stencil_ref);
+			void bind_om_stencil_ref(bcUINT32 p_stencil_ref);
 
 			/*void bind_om_render_targets(bcUINT p_target_count, graphic::bc_render_target_view* p_targets, graphic::bc_depth_stencil_view* p_depth);
 

@@ -186,7 +186,7 @@ namespace black_cat
 				0, 
 				0
 			);
-			p_render_thread.run_compute_shader(l_compute_state.get());
+			p_render_thread.run_compute_shader(*l_compute_state.get());
 
 			p_render_thread.finish();
 			m_command_state.m_device_command_list->finished();

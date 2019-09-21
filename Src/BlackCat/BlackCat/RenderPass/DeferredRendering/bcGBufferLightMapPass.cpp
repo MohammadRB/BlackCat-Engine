@@ -181,6 +181,7 @@ namespace black_cat
 		l_spot_lights.reserve(m_num_spot_lights);
 		l_shadow_maps.reserve(m_shader_shadow_map_count);
 		
+		// TODO get only visible lights
 		core::bc_vector_frame< game::bc_light_instance > l_light_instances = p_param.m_render_system
 			.get_light_manager()
 			.get_light_instances(p_param.m_camera);
@@ -312,7 +313,7 @@ namespace black_cat
 
 	void bc_gbuffer_light_map_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		p_param.m_render_thread.run_compute_shader(m_compute_state.get());
+		p_param.m_render_thread.run_compute_shader(*m_compute_state.get());
 		p_param.m_render_thread.finish();
 
 		m_command_list->finished();

@@ -60,7 +60,7 @@ namespace black_cat
 	void bc_gbuffer_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
 		p_param.m_render_thread.start(m_command_list.get());
-		p_param.m_render_thread.bind_render_pass_state(m_render_pass_state.get());
+		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
 	}
 
 	void bc_gbuffer_pass::execute(const game::bc_render_pass_render_param& p_param)
@@ -71,7 +71,7 @@ namespace black_cat
 		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
 		p_param.m_render_system.clear_render_instances();
 
-		p_param.m_render_thread.unbind_render_pass_state(m_render_pass_state.get());
+		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.finish();
 
 		m_command_list->finished();

@@ -99,9 +99,9 @@ namespace black_cat
 
 			void unbind_rs_viewports();
 
-			void bind_om_blend_factors(core::bc_vector4f l_factors);
+			void bind_om_blend_factors(core::bc_vector4f p_factors);
 
-			void bind_om_stencil_ref(bcUINT32 l_stencil_ref);
+			void bind_om_stencil_ref(bcUINT32 p_stencil_ref);
 
 			void bind_om_render_targets(bcUINT p_target_count, bc_render_target_view* p_targets, bc_depth_stencil_view p_depth);
 

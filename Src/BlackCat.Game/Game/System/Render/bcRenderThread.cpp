@@ -85,17 +85,17 @@ namespace black_cat
 			return l_command_list;
 		}
 
-		void bc_render_thread::bind_render_pass_state(bc_render_pass_state* p_render_pass_state)
+		void bc_render_thread::bind_render_pass_state(bc_render_pass_state& p_render_pass_state)
 		{
 			bcSIZE l_render_target_count = 0;
 
 			bc_render_pass_state_render_target_view_array l_render_targets;
-			graphic::bc_depth_stencil_view l_depth_stencil = p_render_pass_state->m_shader_depth;
+			graphic::bc_depth_stencil_view l_depth_stencil = p_render_pass_state.m_shader_depth;
 			
 			std::transform
 			(
-				std::cbegin(p_render_pass_state->m_shader_targets),
-				std::cend(p_render_pass_state->m_shader_targets),
+				std::cbegin(p_render_pass_state.m_shader_targets),
+				std::cend(p_render_pass_state.m_shader_targets),
 				std::begin(l_render_targets),
 				[&l_render_target_count](const graphic::bc_render_target_view& p_target)
 				{
@@ -114,13 +114,13 @@ namespace black_cat
 				graphic::bc_pipeline_stage::output_merger_stage
 			});
 
-			m_pipeline->bind_pipeline_state(p_render_pass_state->m_pipeline_state);
-			m_pipeline->bind_rs_viewports(1, &p_render_pass_state->m_viewport);
+			m_pipeline->bind_pipeline_state(p_render_pass_state.m_pipeline_state);
+			m_pipeline->bind_rs_viewports(1, &p_render_pass_state.m_viewport);
 			m_pipeline->bind_om_render_targets(l_render_target_count, l_render_targets.data(), l_depth_stencil);
 
 			graphic::bc_shader_type l_shader_types = core::bc_enum::none< graphic::bc_shader_type >();
 
-			for (auto& l_sampler_parameter : p_render_pass_state->m_shader_samplers)
+			for (auto& l_sampler_parameter : p_render_pass_state.m_shader_samplers)
 			{
 				if (l_sampler_parameter.is_valid())
 				{
@@ -129,7 +129,7 @@ namespace black_cat
 					m_pipeline->bind_ps_sampler_parameter(l_sampler_parameter);
 				}
 			}
-			for (auto& l_view_parameter : p_render_pass_state->m_resource_views)
+			for (auto& l_view_parameter : p_render_pass_state.m_resource_views)
 			{
 				if (l_view_parameter.is_valid())
 				{
@@ -138,7 +138,7 @@ namespace black_cat
 					m_pipeline->bind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_buffer_parameter : p_render_pass_state->m_shader_cbuffers)
+			for (auto& l_buffer_parameter : p_render_pass_state.m_shader_cbuffers)
 			{
 				if (l_buffer_parameter.is_valid())
 				{
@@ -153,7 +153,7 @@ namespace black_cat
 			m_pipeline->pipeline_apply_states(l_pipeline_stages);
 		}
 
-		void bc_render_thread::unbind_render_pass_state(bc_render_pass_state* p_render_pass_state)
+		void bc_render_thread::unbind_render_pass_state(bc_render_pass_state& p_render_pass_state)
 		{
 			m_pipeline->unbind_pipeline_state();
 			m_pipeline->unbind_rs_viewports();
@@ -166,7 +166,7 @@ namespace black_cat
 			});
 			graphic::bc_shader_type l_shader_types = core::bc_enum::none< graphic::bc_shader_type >();
 
-			for (auto& l_sampler_parameter : p_render_pass_state->m_shader_samplers)
+			for (auto& l_sampler_parameter : p_render_pass_state.m_shader_samplers)
 			{
 				if (l_sampler_parameter.is_valid())
 				{
@@ -175,7 +175,7 @@ namespace black_cat
 					m_pipeline->unbind_ps_sampler_parameter(l_sampler_parameter);
 				}
 			}
-			for (auto& l_view_parameter : p_render_pass_state->m_resource_views)
+			for (auto& l_view_parameter : p_render_pass_state.m_resource_views)
 			{
 				if (l_view_parameter.is_valid())
 				{
@@ -184,7 +184,7 @@ namespace black_cat
 					m_pipeline->unbind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_buffer_parameter : p_render_pass_state->m_shader_cbuffers)
+			for (auto& l_buffer_parameter : p_render_pass_state.m_shader_cbuffers)
 			{
 				if (l_buffer_parameter.is_valid())
 				{
@@ -199,27 +199,27 @@ namespace black_cat
 			m_pipeline->pipeline_apply_states(l_pipeline_stages);
 		}
 
-		void bc_render_thread::bind_render_state(bc_render_state* p_render_state)
+		void bc_render_thread::bind_render_state(bc_render_state& p_render_state)
 		{
-			m_pipeline->bind_ia_primitive_topology(p_render_state->get_primitive());
+			m_pipeline->bind_ia_primitive_topology(p_render_state.get_primitive());
 			m_pipeline->bind_ia_vertex_buffers
 			(
 				0,
 				1,
-				(core::bc_array< graphic::bc_buffer, 1 >() = { p_render_state->get_vertex_buffer() }).data(),
-				(core::bc_array< bcUINT, 1 >() = { p_render_state->get_vertex_buffer_stride() }).data(),
+				(core::bc_array< graphic::bc_buffer, 1 >() = { p_render_state.get_vertex_buffer() }).data(),
+				(core::bc_array< bcUINT, 1 >() = { p_render_state.get_vertex_buffer_stride() }).data(),
 				(core::bc_array< bcUINT, 1 >() = { 0 }).data()
 			);
 			m_pipeline->bind_ia_index_buffer
 			(
-				p_render_state->get_index_buffer(),
-				p_render_state->get_index_type() == i32bit ? graphic::bc_format::R32_UINT : graphic::bc_format::R16_UINT
+				p_render_state.get_index_buffer(),
+				p_render_state.get_index_type() == i32bit ? graphic::bc_format::R32_UINT : graphic::bc_format::R16_UINT
 			);
 
 			graphic::bc_pipeline_stage l_pipeline_stages = graphic::bc_pipeline_stage::input_assembler_stage;
 			graphic::bc_shader_type l_shader_types = core::bc_enum::none< graphic::bc_shader_type >();
 
-			for (auto& l_view_parameter : p_render_state->get_shader_views())
+			for (auto& l_view_parameter : p_render_state.get_shader_views())
 			{
 				if (l_view_parameter.is_valid())
 				{
@@ -227,7 +227,7 @@ namespace black_cat
 					m_pipeline->bind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_buffer_parameter : p_render_state->get_shader_buffers())
+			for (auto& l_buffer_parameter : p_render_state.get_shader_buffers())
 			{
 				if (l_buffer_parameter.is_valid())
 				{
@@ -241,7 +241,7 @@ namespace black_cat
 			m_pipeline->pipeline_apply_states(l_pipeline_stages);
 		}
 
-		void bc_render_thread::unbind_render_state(bc_render_state* p_render_state)
+		void bc_render_thread::unbind_render_state(bc_render_state& p_render_state)
 		{
 			m_pipeline->unbind_ia_vertex_buffers(0, 1);
 			m_pipeline->unbind_ia_index_buffer();
@@ -249,7 +249,7 @@ namespace black_cat
 			graphic::bc_pipeline_stage l_pipeline_stages = graphic::bc_pipeline_stage::input_assembler_stage;
 			graphic::bc_shader_type l_shader_types = core::bc_enum::none< graphic::bc_shader_type >();
 
-			for (auto& l_view_parameter : p_render_state->get_shader_views())
+			for (auto& l_view_parameter : p_render_state.get_shader_views())
 			{
 				if (l_view_parameter.is_valid())
 				{
@@ -257,7 +257,7 @@ namespace black_cat
 					m_pipeline->unbind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_buffer_parameter : p_render_state->get_shader_buffers())
+			for (auto& l_buffer_parameter : p_render_state.get_shader_buffers())
 			{
 				if (l_buffer_parameter.is_valid())
 				{
@@ -271,32 +271,32 @@ namespace black_cat
 			m_pipeline->pipeline_apply_states(l_pipeline_stages);
 		}
 
-		void bc_render_thread::run_compute_shader(bc_compute_state* p_compute_state)
+		void bc_render_thread::run_compute_shader(bc_compute_state& p_compute_state)
 		{
-			m_pipeline->bind_compute_state(p_compute_state->m_compute_state);
+			m_pipeline->bind_compute_state(p_compute_state.m_compute_state);
 
-			for (auto& l_sampler_parameter : p_compute_state->m_samplers)
+			for (auto& l_sampler_parameter : p_compute_state.m_samplers)
 			{
 				if (l_sampler_parameter.is_valid())
 				{
 					m_pipeline->bind_ps_sampler_parameter(l_sampler_parameter);
 				}
 			}
-			for (auto& l_view_parameter : p_compute_state->m_resource_views)
+			for (auto& l_view_parameter : p_compute_state.m_resource_views)
 			{
 				if (l_view_parameter.is_valid())
 				{
 					m_pipeline->bind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_view_parameter : p_compute_state->m_unordered_views)
+			for (auto& l_view_parameter : p_compute_state.m_unordered_views)
 			{
 				if (l_view_parameter.is_valid())
 				{
 					m_pipeline->bind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_buffer_parameter : p_compute_state->m_cbuffers)
+			for (auto& l_buffer_parameter : p_compute_state.m_cbuffers)
 			{
 				if (l_buffer_parameter.is_valid())
 				{
@@ -306,7 +306,7 @@ namespace black_cat
 
 			m_pipeline->pipeline_apply_states(graphic::bc_pipeline_stage::compute_stage);
 
-			m_pipeline->dispatch(p_compute_state->m_dispatch_x, p_compute_state->m_dispatch_y, p_compute_state->m_dispatch_z);
+			m_pipeline->dispatch(p_compute_state.m_dispatch_x, p_compute_state.m_dispatch_y, p_compute_state.m_dispatch_z);
 		}
 
 		/*void bc_render_thread::bind_ia_primitive_topology(graphic::bc_primitive p_primitive)
@@ -384,14 +384,14 @@ namespace black_cat
 			m_pipeline->unbind_rs_viewports();
 		}*/
 
-		void bc_render_thread::bind_om_blend_factors(core::bc_vector4f l_factors)
+		void bc_render_thread::bind_om_blend_factors(core::bc_vector4f p_factors)
 		{
-			m_pipeline->bind_om_blend_factors(l_factors);
+			m_pipeline->bind_om_blend_factors(p_factors);
 		}
 
-		void bc_render_thread::bind_om_stencil_ref(bcUINT32 l_stencil_ref)
+		void bc_render_thread::bind_om_stencil_ref(bcUINT32 p_stencil_ref)
 		{
-			m_pipeline->bind_om_stencil_ref(l_stencil_ref);
+			m_pipeline->bind_om_stencil_ref(p_stencil_ref);
 		}
 
 		/*void bc_render_thread::bind_om_render_targets(bcUINT p_target_count, graphic::bc_render_target_view* p_targets, graphic::bc_depth_stencil_view* p_depth)
