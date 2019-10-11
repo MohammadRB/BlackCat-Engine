@@ -56,9 +56,9 @@ namespace black_cat
 			 * Apply ProgrammableStates for parameters
 			 * \param p_render_pass_state 
 			 */
-			void bind_render_pass_state(bc_render_pass_state& p_render_pass_state);
+			void bind_render_pass_state(const bc_render_pass_state& p_render_pass_state);
 
-			void unbind_render_pass_state(bc_render_pass_state& p_render_pass_state);
+			void unbind_render_pass_state(const bc_render_pass_state& p_render_pass_state);
 
 			/**
 			 * \brief Bind render states to given device pipeline and apply changes
@@ -66,16 +66,16 @@ namespace black_cat
 			 * Apply ProgrammableStates for parameters
 			 * \param p_render_state 
 			 */
-			void bind_render_state(bc_render_state& p_render_state);
+			void bind_render_state(const bc_render_state& p_render_state);
 
-			void unbind_render_state(bc_render_state& p_render_state);
+			void unbind_render_state(const bc_render_state& p_render_state);
 
 			/**
 			 * \brief Bind compute states to given device pipeline and apply changes
 			 * Apply ComputeStage for compute shader and parameters
 			 * \param p_compute_state 
 			 */
-			void run_compute_shader(bc_compute_state& p_compute_state);
+			void run_compute_shader(const bc_compute_state& p_compute_state);
 
 			/*void bind_ia_primitive_topology(graphic::bc_primitive p_primitive);
 
@@ -107,7 +107,7 @@ namespace black_cat
 
 			void unbind_rs_viewports();*/
 
-			void bind_om_blend_factors(core::bc_vector4f p_factors);
+			void bind_om_blend_factors(const core::bc_vector4f& p_factors);
 
 			void bind_om_stencil_ref(bcUINT32 p_stencil_ref);
 
@@ -131,7 +131,7 @@ namespace black_cat
 
 			void dispatch_indirect(graphic::bc_buffer p_args, bcUINT p_offset);
 
-			void clear_buffers(core::bc_vector4f p_color, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
+			void clear_buffers(const core::bc_vector4f& p_color, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
 
 			/*graphic::bc_mapped_resource map_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource, graphic::bc_resource_map p_map_type);
 

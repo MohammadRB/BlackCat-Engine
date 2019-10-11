@@ -242,7 +242,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline< g_api_dx11 >::bind_ia_vertex_buffers(bcUINT p_start_slot, bcUINT p_buffer_count, bc_buffer* p_buffers, bcUINT* p_strides, bcUINT* p_offsets)
+		void bc_platform_device_pipeline< g_api_dx11 >::bind_ia_vertex_buffers(bcUINT p_start_slot, bcUINT p_buffer_count, const bc_buffer* p_buffers, bcUINT* p_strides, bcUINT* p_offsets)
 		{
 			bcAssert(p_start_slot + p_buffer_count <= bc_render_api_info::number_of_ia_vertex_buffers());
 
@@ -694,7 +694,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline< g_api_dx11 >::bind_os_stream_outputs(bcUINT p_buffer_count, bc_buffer* p_buffers, bcUINT* p_offsets)
+		void bc_platform_device_pipeline< g_api_dx11 >::bind_os_stream_outputs(bcUINT p_buffer_count, const bc_buffer* p_buffers, bcUINT* p_offsets)
 		{
 			bcAssert(p_buffer_count <= bc_render_api_info::number_of_so_streams());
 
@@ -718,7 +718,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline< g_api_dx11 >::bind_rs_viewports(bcUINT p_count, bc_viewport* p_viewports)
+		void bc_platform_device_pipeline< g_api_dx11 >::bind_rs_viewports(bcUINT p_count, const bc_viewport* p_viewports)
 		{
 			bcAssert(p_count <= bc_render_api_info::number_of_rs_viewport_scissorrect());
 
@@ -741,7 +741,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline< g_api_dx11 >::bind_om_blend_factors(core::bc_vector4f p_factors)
+		void bc_platform_device_pipeline< g_api_dx11 >::bind_om_blend_factors(const core::bc_vector4f& p_factors)
 		{
 			m_pack.m_pipeline_proxy->m_output_merger_stage.get_required_state().m_blend_factors.set(p_factors);
 		}
@@ -755,7 +755,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline< g_api_dx11 >::bind_om_render_targets(bcUINT p_target_count, bc_render_target_view* p_targets, bc_depth_stencil_view p_depth)
+		void bc_platform_device_pipeline< g_api_dx11 >::bind_om_render_targets(bcUINT p_target_count, const bc_render_target_view* p_targets, bc_depth_stencil_view p_depth)
 		{
 			bcAssert(p_target_count <= bc_render_api_info::number_of_om_render_target_slots());
 

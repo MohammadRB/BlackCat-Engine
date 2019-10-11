@@ -250,47 +250,47 @@ namespace black_cat
 		bcAssert(l_spot_lights.size() <= m_num_spot_lights);
 
 		// Associate light depth maps to their structures
-		auto* l_csm_buffer_container = get_shared_resource<bc_cascaded_shadow_map_buffer_container>(m_csm_buffers_container_share_slot);
+		auto* l_shadow_map_buffer_container = get_shared_resource<bc_cascaded_shadow_map_buffer_container>(m_csm_buffers_container_share_slot);
 
-		if(l_csm_buffer_container != nullptr)
+		if(l_shadow_map_buffer_container != nullptr)
 		{
-			bcAssert(l_csm_buffer_container->size() <= m_shader_shadow_map_array_count);
+			bcAssert(l_shadow_map_buffer_container->size() <= m_shader_shadow_map_array_count);
 
-			for (bcSIZE l_csm_buffer_ite = 0, l_end = l_csm_buffer_container->size(); l_csm_buffer_ite < l_end; ++l_csm_buffer_ite)
+			for (bcSIZE l_shadow_map_buffer_ite = 0, l_end = l_shadow_map_buffer_container->size(); l_shadow_map_buffer_ite < l_end; ++l_shadow_map_buffer_ite)
 			{
-				auto& l_csm_buffer_entry = l_csm_buffer_container->get(l_csm_buffer_ite);
+				auto& l_shadow_map_buffer_entry = l_shadow_map_buffer_container->get(l_shadow_map_buffer_ite);
 				
-				bcAssert(l_csm_buffer_entry.second.m_cascade_sizes.size() <= m_shader_shadow_map_cascade_count);
-				bcAssert(l_csm_buffer_entry.second.m_view_projections.size() <= m_shader_shadow_map_cascade_count);
+				bcAssert(l_shadow_map_buffer_entry.second.m_cascade_sizes.size() <= m_shader_shadow_map_cascade_count);
+				bcAssert(l_shadow_map_buffer_entry.second.m_view_projections.size() <= m_shader_shadow_map_cascade_count);
 
 				auto l_direct_light_ite = std::find_if(std::cbegin(l_direct_lights), std::cend(l_direct_lights), [&](const _bc_direct_light_struct& p_direct_light)
 				{
-					return p_direct_light.m_direction == l_csm_buffer_entry.first;
+					return p_direct_light.m_direction == l_shadow_map_buffer_entry.first;
 				});
 
 				bcAssert(l_direct_light_ite != std::cend(l_direct_lights));
 
-				l_direct_light_ite->m_shadow_map_index = l_csm_buffer_ite;
+				l_direct_light_ite->m_shadow_map_index = l_shadow_map_buffer_ite;
 
 				_bc_cascade_shadow_map_struct l_shadow_map_struct;
-				l_shadow_map_struct.m_shadow_map_size = l_csm_buffer_entry.second.m_shadow_map_size;
-				l_shadow_map_struct.m_shadow_map_count = l_csm_buffer_entry.second.m_shadow_map_count;
+				l_shadow_map_struct.m_shadow_map_size = l_shadow_map_buffer_entry.second.m_shadow_map_size;
+				l_shadow_map_struct.m_shadow_map_count = l_shadow_map_buffer_entry.second.m_shadow_map_count;
 				std::copy
 				(
-					std::begin(l_csm_buffer_entry.second.m_cascade_sizes),
-					std::end(l_csm_buffer_entry.second.m_cascade_sizes),
+					std::begin(l_shadow_map_buffer_entry.second.m_cascade_sizes),
+					std::end(l_shadow_map_buffer_entry.second.m_cascade_sizes),
 					std::begin(l_shadow_map_struct.m_cascade_sizes)
 				);
 				std::transform
 				(
-					std::begin(l_csm_buffer_entry.second.m_view_projections),
-					std::end(l_csm_buffer_entry.second.m_view_projections),
+					std::begin(l_shadow_map_buffer_entry.second.m_view_projections),
+					std::end(l_shadow_map_buffer_entry.second.m_view_projections),
 					std::begin(l_shadow_map_struct.m_view_projections),
 					[](const core::bc_matrix4f& p_mat) { return p_mat.transpose(); }
 				);
 				
 				l_shadow_maps.push_back(std::move(l_shadow_map_struct));
-				m_shadow_map_parameters[l_csm_buffer_ite].set_as_resource_view(l_csm_buffer_entry.second.m_resource_view);
+				m_shadow_map_parameters[l_shadow_map_buffer_ite].set_as_resource_view(l_shadow_map_buffer_entry.second.m_resource_view);
 			}
 		}
 		

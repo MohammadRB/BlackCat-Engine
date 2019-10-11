@@ -17,15 +17,19 @@ namespace black_cat
 		using value_type = std::pair<core::bc_vector3f, entry>;
 
 	public:
+		bcSIZE size() const noexcept;
+		
+		value_type& get(bcSIZE p_index);
+		
 		const value_type& get(bcSIZE p_index) const;
 
+		value_type& get(const core::bc_vector3f& p_light_direction);
+		
 		const value_type& get(const core::bc_vector3f& p_light_direction) const;
 
 		void add(value_type&& p_item);
 
 		void clear();
-
-		bcSIZE size() const noexcept;
 
 	private:
 		core::bc_vector<value_type> m_depth_buffers;
@@ -40,24 +44,39 @@ namespace black_cat
 		graphic::bc_resource_view m_resource_view;
 	};
 
-	inline const bc_cascaded_shadow_map_buffer_container::value_type& bc_cascaded_shadow_map_buffer_container::get(bcSIZE p_index) const
+	inline bcSIZE bc_cascaded_shadow_map_buffer_container::size() const noexcept
+	{
+		return m_depth_buffers.size();
+	}
+
+	inline bc_cascaded_shadow_map_buffer_container::value_type& bc_cascaded_shadow_map_buffer_container::get(bcSIZE p_index)
 	{
 		return m_depth_buffers.at(p_index);
 	}
 
-	inline const bc_cascaded_shadow_map_buffer_container::value_type& bc_cascaded_shadow_map_buffer_container::get(const core::bc_vector3f& p_light_direction) const
+	inline const bc_cascaded_shadow_map_buffer_container::value_type& bc_cascaded_shadow_map_buffer_container::get(bcSIZE p_index) const
+	{
+		return const_cast<bc_cascaded_shadow_map_buffer_container&>(*this).get(p_index);
+	}
+
+	inline bc_cascaded_shadow_map_buffer_container::value_type& bc_cascaded_shadow_map_buffer_container::get(const core::bc_vector3f& p_light_direction)
 	{
 		const auto l_iterator = std::find_if(std::cbegin(m_depth_buffers), std::cend(m_depth_buffers), [&](const value_type& p_entry)
-		{
-			return p_entry.first == p_light_direction;
-		});
+			{
+				return p_entry.first == p_light_direction;
+			});
 
-		if(l_iterator == std::cend(m_depth_buffers))
+		if (l_iterator == std::cend(m_depth_buffers))
 		{
 			throw bc_key_not_found_exception("No entry were found with given light direction");
 		}
 
 		return *l_iterator;
+	}
+
+	inline const bc_cascaded_shadow_map_buffer_container::value_type& bc_cascaded_shadow_map_buffer_container::get(const core::bc_vector3f& p_light_direction) const
+	{
+		return const_cast<bc_cascaded_shadow_map_buffer_container&>(*this).get(p_light_direction);
 	}
 
 	inline void bc_cascaded_shadow_map_buffer_container::add(value_type&& p_item)
@@ -68,10 +87,5 @@ namespace black_cat
 	inline void bc_cascaded_shadow_map_buffer_container::clear()
 	{
 		m_depth_buffers.clear();
-	}
-
-	inline bcSIZE bc_cascaded_shadow_map_buffer_container::size() const noexcept
-	{
-		return m_depth_buffers.size();
 	}
 }

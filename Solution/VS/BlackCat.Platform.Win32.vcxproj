@@ -110,12 +110,16 @@
     <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
     <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
     <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -129,6 +133,7 @@
       <PrecompiledHeaderFile>PlatformImp/PlatformImpPCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -168,6 +173,7 @@ xcopy ..\..\Src\BlackCat.Platform.Win32\PlatformImp\*.h ..\..\BC_SDK\Include\Pla
       <AdditionalIncludeDirectories>..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Platform;..\..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>PlatformImp/PlatformImpPCH.h</PrecompiledHeaderFile>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

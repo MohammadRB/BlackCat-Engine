@@ -74,6 +74,8 @@
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
     <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -83,6 +85,8 @@
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
     <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -99,6 +103,7 @@
       <PrecompiledHeaderFile>Game/GamePCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,6 +157,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
       <AdditionalIncludeDirectories>..\..\Src\BlackCat.Game;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\3rdParty</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>Game/GamePCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

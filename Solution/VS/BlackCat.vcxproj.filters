@@ -123,6 +123,12 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferVegetablePass.h">
       <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcBaseCascadedShadowMapPass.h">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcVegetableCascadedShadowMapPass.h">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -188,6 +194,12 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferVegetablePass.cpp">
       <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcBaseCascadedShadowMapPass.cpp">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcVegetableCascadedShadowMapPass.cpp">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcShapeDraw.hlsl">
@@ -211,14 +223,20 @@
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\bcTerrainChunkInfo.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\Terrain</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\bcCascadedShadowMap.hlsl">
-      <Filter>BlackCat\Content\Shader\DirectX11\ShadowMap</Filter>
-    </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcVegetableLeafGBuffer.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\DeferredRendering</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcVegetableTrunkGBuffer.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\DeferredRendering</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\bcVegetableLeafShadowMap.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\ShadowMap</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\bcVegetableTrunkShadowMap.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\ShadowMap</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\bcMeshShadowMap.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\ShadowMap</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

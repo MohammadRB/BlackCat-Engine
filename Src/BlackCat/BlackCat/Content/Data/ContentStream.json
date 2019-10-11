@@ -16,10 +16,22 @@
           "content_parameter": { "function": "ps" }
         },
         {
-          "content_title": "csm_vs",
+          "content_title": "mesh_shadow_map_vs",
           "content_name": "cnt_vertex_shader",
-          "content_file": "content\\shader\\directx11\\ShadowMap\\bcCascadedShadowMap.hlsl",
-          "content_parameter": { "function": "csm_vs" }
+          "content_file": "content\\shader\\directx11\\ShadowMap\\bcMeshShadowMap.hlsl",
+          "content_parameter": { "function": "vs" }
+        },
+        {
+          "content_title": "vegetable_leaf_shadow_map_vs",
+          "content_name": "cnt_vertex_shader",
+          "content_file": "content\\shader\\directx11\\ShadowMap\\bcVegetableLeafShadowMap.hlsl",
+          "content_parameter": { "function": "vs" }
+        },
+        {
+          "content_title": "vegetable_trunk_shadow_map_vs",
+          "content_name": "cnt_vertex_shader",
+          "content_file": "content\\shader\\directx11\\ShadowMap\\bcVegetableTrunkShadowMap.hlsl",
+          "content_parameter": { "function": "vs" }
         }
       ]
     },

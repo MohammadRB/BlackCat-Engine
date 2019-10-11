@@ -8,7 +8,7 @@ namespace black_cat
 {
 	namespace constant
 	{
-		BC_RENDER_PASS_VARIABLE(direction_light_depth_buffers);
+		BC_RENDER_PASS_VARIABLE(direct_light_depth_buffers);
 		BC_RENDER_PASS_VARIABLE(deferred_rendering_g_buffer_output);
 	}
 }

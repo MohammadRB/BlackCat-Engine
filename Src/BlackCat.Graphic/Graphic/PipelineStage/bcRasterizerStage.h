@@ -41,7 +41,7 @@ namespace black_cat
 
 			//bc_pipeline_state_variable< bc_rasterizer_stage_state* > m_rasterizer_state;
 			bc_pipeline_state_variable< bcUINT > m_viewport_count;
-			bc_pipeline_state_array_variable< bc_viewport*, bc_render_api_info::number_of_rs_viewport_scissorrect() > m_viewports;
+			bc_pipeline_state_array_variable< const bc_viewport*, bc_render_api_info::number_of_rs_viewport_scissorrect() > m_viewports;
 			/*bc_pipeline_state_variable< int > m_scissor_rect_count;
 			bc_pipeline_state_array_variable< D3D11_RECT > m_scissor_rects;*/
 

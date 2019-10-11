@@ -208,7 +208,7 @@ namespace black_cat
 				return *l_resource;
 			}
 
-			throw bc_key_not_found_exception("No resource were found with given key");
+			throw bc_key_not_found_exception("No shared resource were found in render passes with the given key");
 		}
 	}
 }

@@ -33,10 +33,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -50,6 +54,7 @@
       <PrecompiledHeaderFile>Editor/EditorPCH.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -75,6 +80,7 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
       <PrecompiledHeaderFile>Editor/EditorPCH.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

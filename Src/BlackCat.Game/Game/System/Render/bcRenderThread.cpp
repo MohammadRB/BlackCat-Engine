@@ -85,7 +85,7 @@ namespace black_cat
 			return l_command_list;
 		}
 
-		void bc_render_thread::bind_render_pass_state(bc_render_pass_state& p_render_pass_state)
+		void bc_render_thread::bind_render_pass_state(const bc_render_pass_state& p_render_pass_state)
 		{
 			bcSIZE l_render_target_count = 0;
 
@@ -153,7 +153,7 @@ namespace black_cat
 			m_pipeline->pipeline_apply_states(l_pipeline_stages);
 		}
 
-		void bc_render_thread::unbind_render_pass_state(bc_render_pass_state& p_render_pass_state)
+		void bc_render_thread::unbind_render_pass_state(const bc_render_pass_state& p_render_pass_state)
 		{
 			m_pipeline->unbind_pipeline_state();
 			m_pipeline->unbind_rs_viewports();
@@ -199,7 +199,7 @@ namespace black_cat
 			m_pipeline->pipeline_apply_states(l_pipeline_stages);
 		}
 
-		void bc_render_thread::bind_render_state(bc_render_state& p_render_state)
+		void bc_render_thread::bind_render_state(const bc_render_state& p_render_state)
 		{
 			m_pipeline->bind_ia_primitive_topology(p_render_state.get_primitive());
 			m_pipeline->bind_ia_vertex_buffers
@@ -241,7 +241,7 @@ namespace black_cat
 			m_pipeline->pipeline_apply_states(l_pipeline_stages);
 		}
 
-		void bc_render_thread::unbind_render_state(bc_render_state& p_render_state)
+		void bc_render_thread::unbind_render_state(const bc_render_state& p_render_state)
 		{
 			m_pipeline->unbind_ia_vertex_buffers(0, 1);
 			m_pipeline->unbind_ia_index_buffer();
@@ -271,7 +271,7 @@ namespace black_cat
 			m_pipeline->pipeline_apply_states(l_pipeline_stages);
 		}
 
-		void bc_render_thread::run_compute_shader(bc_compute_state& p_compute_state)
+		void bc_render_thread::run_compute_shader(const bc_compute_state& p_compute_state)
 		{
 			m_pipeline->bind_compute_state(p_compute_state.m_compute_state);
 
@@ -384,7 +384,7 @@ namespace black_cat
 			m_pipeline->unbind_rs_viewports();
 		}*/
 
-		void bc_render_thread::bind_om_blend_factors(core::bc_vector4f p_factors)
+		void bc_render_thread::bind_om_blend_factors(const core::bc_vector4f& p_factors)
 		{
 			m_pipeline->bind_om_blend_factors(p_factors);
 		}
@@ -444,7 +444,7 @@ namespace black_cat
 			m_pipeline->dispatch_indirect(p_args, p_offset);
 		}
 
-		void bc_render_thread::clear_buffers(core::bc_vector4f p_color, bcFLOAT p_depth, bcUINT p_stencil)
+		void bc_render_thread::clear_buffers(const core::bc_vector4f& p_color, bcFLOAT p_depth, bcUINT p_stencil)
 		{
 			m_pipeline->clear_buffers(p_color, p_depth, p_stencil);
 		}

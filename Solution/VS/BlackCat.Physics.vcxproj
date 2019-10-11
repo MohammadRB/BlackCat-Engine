@@ -143,6 +143,8 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -151,6 +153,8 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -166,6 +170,7 @@
       <AdditionalIncludeDirectories>..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -232,6 +237,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <PrecompiledHeaderFile>Physics/PhysicsPCH.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
