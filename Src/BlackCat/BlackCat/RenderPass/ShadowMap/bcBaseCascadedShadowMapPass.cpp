@@ -61,7 +61,7 @@ namespace black_cat
 			}
 		);
 	}
-
+	
 	void bc_base_cascaded_shadow_map_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		m_state->m_command_list = p_render_system.get_device().create_command_list();
@@ -164,11 +164,14 @@ namespace black_cat
 				auto& l_update_interval = std::get<1>(m_state->m_cascade_update_intervals[l_cascade_ite]);
 				if (l_update_interval == 0)
 				{
-					if(m_my_index == m_state->m_instance_count - 1) // If this is the last instance
+					if (m_my_index == m_state->m_instance_count - 1) // If this is the last instance
 					{
 						l_update_interval = std::get<0>(m_state->m_cascade_update_intervals[l_cascade_ite]);
 					}
 					
+					// Update global cbuffer with cascade camera
+					p_param.m_render_system.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, l_light_cascade_camera);
+
 					bc_cascaded_shadow_map_pass_render_param l_param
 					(
 						p_param,
@@ -198,6 +201,9 @@ namespace black_cat
 				m_state->m_capture_debug_shapes = false;
 			}
 		}
+
+		// Restore global cbuffer to its default state
+		p_param.m_render_system.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
 
 		p_param.m_render_thread.finish();
 		m_state->m_command_list->finished();

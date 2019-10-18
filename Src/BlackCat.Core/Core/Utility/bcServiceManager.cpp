@@ -97,10 +97,10 @@ namespace black_cat
 			bcSIZE l_service_priority = m_services.size();
 
 			const auto l_service_hash = string_hash()(p_service_name);
-			auto l_ite = m_services.lower_bound(l_service_hash);
-			if (l_ite == m_services.end() || m_services.key_comp()(l_service_hash, l_ite->first))
+			auto l_ite = m_services.find(l_service_hash);
+			if (l_ite == std::end(m_services))
 			{
-				l_ite = m_services.emplace_hint(l_ite, l_service_hash, _bc_service_container(std::move(p_service), l_service_priority));
+				l_ite = m_services.insert({ l_service_hash, _bc_service_container(std::move(p_service), l_service_priority) }).first;
 			}
 			else
 			{

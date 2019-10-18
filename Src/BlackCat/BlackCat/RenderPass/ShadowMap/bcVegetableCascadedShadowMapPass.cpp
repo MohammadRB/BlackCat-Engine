@@ -1,6 +1,8 @@
 // [10/04/2019 MRB]
 
 #include "BlackCat/BlackCatPCH.h"
+
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
 #include "BlackCat/RenderPass/ShadowMap/bcVegetableCascadedShadowMapPass.h"
@@ -27,7 +29,7 @@ namespace black_cat
 			nullptr,
 			nullptr,
 			nullptr,
-			nullptr,
+			"vegetable_leaf_shadow_map_ps",
 			game::bc_vertex_type::pos_tex_nor_tan,
 			game::bc_blend_type::opaque,
 			game::bc_depth_stencil_type::depth_less_stencil_off,
@@ -53,6 +55,15 @@ namespace black_cat
 			graphic::bc_format::D16_UNORM,
 			game::bc_multi_sample_type::c1_q1
 		);
+
+		const auto l_sampler_config = graphic::bc_graphic_resource_builder().as_resource().as_sampler_state
+		(
+			graphic::bc_filter::min_mag_mip_linear,
+			graphic::bc_texture_address_mode::wrap,
+			graphic::bc_texture_address_mode::wrap,
+			graphic::bc_texture_address_mode::wrap
+		).as_sampler_state();
+		m_sampler_state = p_render_system.get_device().create_sampler_state(l_sampler_config);
 	}
 
 	void bc_vegetable_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_param& p_param)
@@ -100,7 +111,7 @@ namespace black_cat
 	{
 		core::bc_vector<game::bc_render_pass_state_ptr> l_result;
 		l_result.reserve(p_depth_views.size() * 2);
-
+		
 		for (auto& l_depth_view : p_depth_views)
 		{
 			const auto l_leaf_render_state = p_render_system.create_render_pass_state
@@ -109,7 +120,7 @@ namespace black_cat
 				graphic::bc_viewport::default_config(p_depth.get_width(), p_depth.get_height()),
 				{},
 				l_depth_view.get(),
-				{},
+				{ graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler_state.get()) },
 				{},
 				{
 					p_render_system.get_global_cbuffer(),

@@ -70,9 +70,13 @@ bc_ps_output gbuffer_vegetable_leaf_ps(bc_vs_output p_input)
     float4 l_specular_map = g_tex2d_specular.Sample(g_sam_sampler, p_input.m_texcoord);
     float3 l_normal = p_input.m_normal;
 
+    float2 l_ddx = ddx(p_input.m_texcoord);
+    float2 l_ddy = ddy(p_input.m_texcoord);
+
+	[branch]
     if (g_has_normal_map)
     {
-        float4 l_normal_map = g_tex2d_normal.Sample(g_sam_sampler, p_input.m_texcoord);
+        float4 l_normal_map = g_tex2d_normal.SampleGrad(g_sam_sampler, p_input.m_texcoord, l_ddx, l_ddy);
 
         float3x3 l_tbn;
         l_tbn[0] = p_input.m_tangent;
