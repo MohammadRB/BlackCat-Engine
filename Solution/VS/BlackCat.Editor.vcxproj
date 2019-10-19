@@ -32,13 +32,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)\</IntDir>
     <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)</IntDir>
+    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)\</IntDir>
     <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
@@ -138,32 +138,50 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcD3DOutputWidget.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_bcConsoleWidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_bcD3DOutputWidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_bcEditorApplication.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_bcEditorGameConsole.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_bcFormMainMenu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_bcFormObject.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_bcFormTools.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_QtAwesome.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_QtAwesomeAnim.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_bcBlackCatEditor.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -200,11 +218,11 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_QtAwesome.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_QtAwesomeAnim.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -344,11 +362,11 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\style.qrc">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(FullPath);.\Editor\qdarkstyle\rc\up_arrow_disabled.png;.\Editor\qdarkstyle\rc\Hmovetoolbar.png;.\Editor\qdarkstyle\rc\stylesheet-branch-end.png;.\Editor\qdarkstyle\rc\branch_closed-on.png;.\Editor\qdarkstyle\rc\stylesheet-vline.png;.\Editor\qdarkstyle\rc\branch_closed.png;.\Editor\qdarkstyle\rc\branch_open-on.png;.\Editor\qdarkstyle\rc\transparent.png;.\Editor\qdarkstyle\rc\right_arrow_disabled.png;.\Editor\qdarkstyle\rc\sizegrip.png;.\Editor\qdarkstyle\rc\close.png;.\Editor\qdarkstyle\rc\close-hover.png;.\Editor\qdarkstyle\rc\close-pressed.png;.\Editor\qdarkstyle\rc\down_arrow.png;.\Editor\qdarkstyle\rc\Vmovetoolbar.png;.\Editor\qdarkstyle\rc\left_arrow.png;.\Editor\qdarkstyle\rc\stylesheet-branch-more.png;.\Editor\qdarkstyle\rc\up_arrow.png;.\Editor\qdarkstyle\rc\right_arrow.png;.\Editor\qdarkstyle\rc\left_arrow_disabled.png;.\Editor\qdarkstyle\rc\Hsepartoolbar.png;.\Editor\qdarkstyle\rc\branch_open.png;.\Editor\qdarkstyle\rc\Vsepartoolbar.png;.\Editor\qdarkstyle\rc\down_arrow_disabled.png;.\Editor\qdarkstyle\rc\undock.png;.\Editor\qdarkstyle\rc\checkbox_checked_disabled.png;.\Editor\qdarkstyle\rc\checkbox_checked_focus.png;.\Editor\qdarkstyle\rc\checkbox_checked.png;.\Editor\qdarkstyle\rc\checkbox_indeterminate.png;.\Editor\qdarkstyle\rc\checkbox_indeterminate_focus.png;.\Editor\qdarkstyle\rc\checkbox_unchecked_disabled.png;.\Editor\qdarkstyle\rc\checkbox_unchecked_focus.png;.\Editor\qdarkstyle\rc\checkbox_unchecked.png;.\Editor\qdarkstyle\rc\radio_checked_disabled.png;.\Editor\qdarkstyle\rc\radio_checked_focus.png;.\Editor\qdarkstyle\rc\radio_checked.png;.\Editor\qdarkstyle\rc\radio_unchecked_disabled.png;.\Editor\qdarkstyle\rc\radio_unchecked_focus.png;.\Editor\qdarkstyle\rc\radio_unchecked.png;.\Editor\qdarkstyle\style.qss;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(FullPath);..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\up_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Hmovetoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-branch-end.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_closed-on.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-vline.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_closed.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_open-on.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\transparent.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\right_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\sizegrip.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close-hover.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close-pressed.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\down_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Vmovetoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\left_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-branch-more.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\up_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\right_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\left_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Hsepartoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_open.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Vsepartoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\down_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\undock.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_indeterminate.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_indeterminate_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\style.qss;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Rcc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(FullPath);.\Editor\qdarkstyle\rc\up_arrow_disabled.png;.\Editor\qdarkstyle\rc\Hmovetoolbar.png;.\Editor\qdarkstyle\rc\stylesheet-branch-end.png;.\Editor\qdarkstyle\rc\branch_closed-on.png;.\Editor\qdarkstyle\rc\stylesheet-vline.png;.\Editor\qdarkstyle\rc\branch_closed.png;.\Editor\qdarkstyle\rc\branch_open-on.png;.\Editor\qdarkstyle\rc\transparent.png;.\Editor\qdarkstyle\rc\right_arrow_disabled.png;.\Editor\qdarkstyle\rc\sizegrip.png;.\Editor\qdarkstyle\rc\close.png;.\Editor\qdarkstyle\rc\close-hover.png;.\Editor\qdarkstyle\rc\close-pressed.png;.\Editor\qdarkstyle\rc\down_arrow.png;.\Editor\qdarkstyle\rc\Vmovetoolbar.png;.\Editor\qdarkstyle\rc\left_arrow.png;.\Editor\qdarkstyle\rc\stylesheet-branch-more.png;.\Editor\qdarkstyle\rc\up_arrow.png;.\Editor\qdarkstyle\rc\right_arrow.png;.\Editor\qdarkstyle\rc\left_arrow_disabled.png;.\Editor\qdarkstyle\rc\Hsepartoolbar.png;.\Editor\qdarkstyle\rc\branch_open.png;.\Editor\qdarkstyle\rc\Vsepartoolbar.png;.\Editor\qdarkstyle\rc\down_arrow_disabled.png;.\Editor\qdarkstyle\rc\undock.png;.\Editor\qdarkstyle\rc\checkbox_checked_disabled.png;.\Editor\qdarkstyle\rc\checkbox_checked_focus.png;.\Editor\qdarkstyle\rc\checkbox_checked.png;.\Editor\qdarkstyle\rc\checkbox_indeterminate.png;.\Editor\qdarkstyle\rc\checkbox_indeterminate_focus.png;.\Editor\qdarkstyle\rc\checkbox_unchecked_disabled.png;.\Editor\qdarkstyle\rc\checkbox_unchecked_focus.png;.\Editor\qdarkstyle\rc\checkbox_unchecked.png;.\Editor\qdarkstyle\rc\radio_checked_disabled.png;.\Editor\qdarkstyle\rc\radio_checked_focus.png;.\Editor\qdarkstyle\rc\radio_checked.png;.\Editor\qdarkstyle\rc\radio_unchecked_disabled.png;.\Editor\qdarkstyle\rc\radio_unchecked_focus.png;.\Editor\qdarkstyle\rc\radio_unchecked.png;.\Editor\qdarkstyle\style.qss;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(FullPath);..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\up_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Hmovetoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-branch-end.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_closed-on.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-vline.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_closed.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_open-on.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\transparent.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\right_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\sizegrip.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close-hover.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close-pressed.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\down_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Vmovetoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\left_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-branch-more.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\up_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\right_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\left_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Hsepartoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_open.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Vsepartoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\down_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\undock.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_indeterminate.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_indeterminate_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\style.qss;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rcc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
@@ -563,7 +581,7 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties MocDir=".\GeneratedFiles\$(ConfigurationName)" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" lupdateOptions="" lupdateOnBuild="0" lreleaseOptions="" Qt5Version_x0020_Win32="$(DefaultQtVersion)" MocOptions="" />
+      <UserProperties MocDir=".\GeneratedFiles\$(ConfigurationName)" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" lupdateOptions="" lupdateOnBuild="0" lreleaseOptions="" Qt5Version_x0020_Win32="5.11.2" MocOptions="" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
