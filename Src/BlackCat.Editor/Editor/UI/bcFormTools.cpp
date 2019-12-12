@@ -16,7 +16,7 @@ namespace black_cat
 	namespace editor
 	{
 		bc_form_tools::bc_form_tools(bc_ui_command_service& p_ui_command_service,
-			bc_d3d_output_widget& p_render_widget,
+			bc_widget_d3d_output& p_render_widget,
 			QDockWidget& p_container,
 			QToolBox& p_tool_properties_container,
 			bc_form_terrain& p_terrain_form,

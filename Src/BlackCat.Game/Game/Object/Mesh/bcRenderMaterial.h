@@ -35,11 +35,10 @@ namespace black_cat
 			BC_CBUFFER_ALIGN
 			bcFLOAT m_specular_intensity = 1;
 			bcFLOAT m_specular_power = 1;
-			BC_CBUFFER_ALIGN
-			bool m_has_normal_map = false;
+			bcINT32 m_has_normal_map = false;
 		};
 
-		struct bc_render_material : public core::bc_ref_count
+		class bc_render_material : public core::bc_ref_count
 		{
 			friend class bc_material_manager;
 
@@ -49,6 +48,12 @@ namespace black_cat
 				m_parameters.m_specular_intensity = 1;
 				m_parameters.m_specular_power = 1;
 			}
+
+			bc_render_material(bc_render_material&&) = default;
+
+			~bc_render_material() = default;
+
+			bc_render_material& operator=(bc_render_material&&) = default;
 
 			const core::bc_vector4f& get_diffuse() const
 			{

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Game/Application/bcIRenderApplicationOutputWindow.h"
-#include "Editor/Widget/bcD3DOutputWidget.h"
+#include "Editor/Widget/bcWidgetD3DOutput.h"
 
 namespace black_cat
 {
@@ -12,7 +12,7 @@ namespace black_cat
 		class bc_render_application_d3dwidget_output_window : public game::bc_irender_application_output_window
 		{
 		public:
-			bc_render_application_d3dwidget_output_window(bc_d3d_output_widget* p_d3d_widget);
+			bc_render_application_d3dwidget_output_window(bc_widget_d3d_output* p_d3d_widget);
 
 			bc_render_application_d3dwidget_output_window(bc_render_application_d3dwidget_output_window&&) noexcept;
 
@@ -20,7 +20,7 @@ namespace black_cat
 
 			bc_render_application_d3dwidget_output_window& operator=(bc_render_application_d3dwidget_output_window&&) noexcept;
 
-			bc_d3d_output_widget* get_widget() noexcept;
+			bc_widget_d3d_output* get_widget() noexcept;
 
 			platform::bc_window_id get_id() const noexcept override;
 
@@ -37,10 +37,10 @@ namespace black_cat
 		protected:
 
 		private:
-			bc_d3d_output_widget* m_d3d_widget;
+			bc_widget_d3d_output* m_d3d_widget;
 		};
 
-		inline bc_render_application_d3dwidget_output_window::bc_render_application_d3dwidget_output_window(bc_d3d_output_widget* p_d3d_widget)
+		inline bc_render_application_d3dwidget_output_window::bc_render_application_d3dwidget_output_window(bc_widget_d3d_output* p_d3d_widget)
 			: m_d3d_widget(p_d3d_widget)
 		{
 		}
@@ -51,7 +51,7 @@ namespace black_cat
 
 		inline bc_render_application_d3dwidget_output_window& bc_render_application_d3dwidget_output_window::operator=(bc_render_application_d3dwidget_output_window&&) noexcept = default;
 
-		inline bc_d3d_output_widget* bc_render_application_d3dwidget_output_window::get_widget() noexcept
+		inline bc_widget_d3d_output* bc_render_application_d3dwidget_output_window::get_widget() noexcept
 		{
 			return m_d3d_widget;
 		}

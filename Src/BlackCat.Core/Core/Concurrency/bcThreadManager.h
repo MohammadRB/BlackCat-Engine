@@ -91,8 +91,8 @@ namespace black_cat
 
 		enum class bc_task_creation_option : bcUBYTE
 		{
-			policy_none = bc_enum::value(0),				// Push task in local task queue of current thread
-			policy_fairness = bc_enum::value(1),			// Push task in global task queue
+			policy_none = bc_enum::value(0),					// Push task in local task queue of current thread
+			policy_fairness = bc_enum::value(1),				// Push task in global task queue
 			lifetime_exceed_frame = bc_enum::value(2)		// Lifetime of task exceed frame
 		};
 
@@ -105,7 +105,7 @@ namespace black_cat
 			class _thread_data;
 
 		public:
-			bc_thread_manager(bcSIZE p_thread_count, bcSIZE p_additional_thread_count) noexcept;
+			bc_thread_manager(bcSIZE p_thread_count, bcSIZE p_reserved_thread_count) noexcept;
 
 			bc_thread_manager(const bc_thread_manager&) = delete;
 
@@ -131,7 +131,7 @@ namespace black_cat
 		protected:
 
 		private:
-			void _initialize(bcSIZE p_thread_count, bcSIZE p_additional_thread_count);
+			void _initialize(bcSIZE p_thread_count, bcSIZE p_reserved_thread_count);
 
 			void _restart_workers();
 
@@ -158,7 +158,7 @@ namespace black_cat
 			static const bcSIZE s_num_thread_in_spin = 0;
 
 			bcSIZE m_thread_count;
-			bcSIZE m_additional_thread_count;
+			bcSIZE m_reserved_thread_count;
 			core_platform::bc_atomic< bool > m_done;
 			core_platform::bc_atomic< bcUINT32 > m_task_count;
 			core_platform::bc_atomic< bcUINT32 > m_num_thread_in_spin;

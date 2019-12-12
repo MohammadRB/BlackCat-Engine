@@ -9,10 +9,8 @@ namespace black_cat
 {
 	namespace editor
 	{
-		class bc_form_object : public QObject
+		class bc_form_object
 		{
-			Q_OBJECT;
-
 		public:
 			explicit bc_form_object(QWidget& p_parent)
 			{

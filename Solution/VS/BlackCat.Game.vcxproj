@@ -210,7 +210,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\bcExport.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\GamePCH.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcHeightMap.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMaterial.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcRenderMaterial.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMesh.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshCollider.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcShapeGenerator.h" />
@@ -335,7 +335,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptSystem.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptUIContext.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcHeightMap.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMaterial.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcRenderMaterial.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMesh.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshCollider.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcShapeGenerator.cpp" />

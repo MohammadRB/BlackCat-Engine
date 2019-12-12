@@ -87,6 +87,7 @@ namespace black_cat
 				core::bc_path::get_absolute_path(bcL("Content\\Texture\\Default.jpg")).c_str(),
 				core::bc_content_loader_parameter()
 			);
+
 			m_default_normal_map = l_content_manager.store_content("default_material_normal_map", std::move(l_default_normal_map));
 			m_default_specular_map = l_content_manager.store_content("default_material_specular_map", std::move(l_default_specular_map));
 		}
@@ -283,6 +284,8 @@ namespace black_cat
 		bc_render_material_ptr bc_material_manager::store_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_name, bc_render_material_description p_material)
 		{
 			bc_render_material l_material;
+			std::memset(&l_material.m_parameters, 0, sizeof(bc_render_material_parameter));
+
 			l_material.m_parameters.m_diffuse = p_material.m_diffuse;
 			l_material.m_parameters.m_specular_intensity = p_material.m_specular_intensity;
 			l_material.m_parameters.m_specular_power = p_material.m_specular_power;
@@ -359,32 +362,42 @@ namespace black_cat
 			p_color = core::bc_vector4f(l_color.x / 255.0, l_color.y / 255.0, l_color.z / 255.0, l_color.w / 255.0);
 
 			auto l_hash = p_color.to_rgba();
-			auto l_color_map_entry = m_default_color_textures.find(l_hash);
+			default_diffuse_map::iterator l_color_map_entry;
 
-			if(l_color_map_entry != std::cend(m_default_color_textures))
 			{
+				// We need to put all of these operations in one mutex block because after we found out that we do not
+				// have this texture, creation and storing of texture must occure atomically
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_materials_mutex);
+
+				l_color_map_entry = m_default_color_textures.find(l_hash);
+				if (l_color_map_entry != std::cend(m_default_color_textures))
+				{
+					return l_color_map_entry->second;
+				}
+
+				graphic::bc_subresource_data l_color_map_init_data(&p_color, sizeof(core::bc_vector4f), 0);
+				graphic::bc_texture2d_ptr l_color_map_texture;
+
+				l_color_map_texture = m_render_system.get_device().create_texture2d
+				(
+					m_default_texture_config,
+					&l_color_map_init_data
+				);
+
+				core::bc_string_frame l_content_name = "material_color_map_";
+				l_content_name += core::bc_to_string_frame(l_hash);
+
+				auto l_color_map_texture_content = m_content_stream_manager.get_content_manager().store_content
+				(
+					core::bc_alloc_type::program,
+					l_content_name.c_str(),
+					graphic::bc_texture2d_content(std::move(l_color_map_texture))
+				);
+
+				l_color_map_entry = m_default_color_textures.insert(default_diffuse_map::value_type(l_hash, std::move(l_color_map_texture_content))).first;
+
 				return l_color_map_entry->second;
 			}
-
-			graphic::bc_subresource_data l_color_map_init_data(&p_color, sizeof(core::bc_vector4f), 0);
-			auto l_color_map_texture = graphic::bc_texture2d_content(m_render_system.get_device().create_texture2d
-			(
-				m_default_texture_config,
-				&l_color_map_init_data
-			));
-
-			core::bc_string_frame l_content_name = "material_color_map_";
-			l_content_name += core::bc_to_string_frame(l_hash);
-
-			auto l_diffuse_texture_ptr = m_content_stream_manager.get_content_manager().store_content
-			(
-				core::bc_alloc_type::program,
-				l_content_name.c_str(),
-				std::move(l_color_map_texture)
-			);
-			l_color_map_entry = m_default_color_textures.insert(default_diffuse_map::value_type(l_hash, std::move(l_diffuse_texture_ptr))).first;
-
-			return l_color_map_entry->second;
 		}
 
 		bc_render_material_ptr bc_material_manager::_store_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_name, bc_render_material p_material)
@@ -393,9 +406,9 @@ namespace black_cat
 			auto l_hash = string_hash()(p_name);
 			auto l_material = core::bc_make_unique< _bc_material_manager_material >(p_alloc_type, l_hash, std::move(p_material));
 
-			auto l_diffuse_map = l_material->m_diffuse_map.get()->get_resource();
-			auto l_normal_map = l_material->m_normal_map.get()->get_resource();
-			auto l_specular_map = l_material->m_specular_map.get()->get_resource();
+			auto l_diffuse_map = l_material->get_diffuse_map();
+			auto l_normal_map = l_material->get_normal_map();
+			auto l_specular_map = l_material->get_specular_map();
 
 			auto m_diffuse_map_view_config = graphic::bc_graphic_resource_builder()
 				.as_resource_view()
@@ -421,7 +434,7 @@ namespace black_cat
 				.as_resource()
 				.as_buffer(1, sizeof(bc_render_material_parameter), graphic::bc_resource_usage::gpu_r, graphic::bc_resource_view_type::shader)
 				.as_constant_buffer();
-			auto l_parameters_cbuffer_data = graphic::bc_subresource_data(&l_material->m_parameters, sizeof(bc_render_material_parameter), 0);
+			auto l_parameters_cbuffer_data = graphic::bc_subresource_data(&l_material->m_parameters, 0, 0);
 
 			l_material->m_parameter_cbuffer = l_device.create_buffer(l_parameters_cbuffer_config, &l_parameters_cbuffer_data);
 

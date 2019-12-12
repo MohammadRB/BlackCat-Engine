@@ -17,14 +17,14 @@ namespace black_cat
 			ui.setupUi(this);
 			_load_style();
 			
-			m_d3d_widget = std::make_unique< bc_d3d_output_widget >(centralWidget()->findChild<QFrame*>("leftRenderFrame"));
-			m_d3d_output_window = std::make_unique<bc_render_application_d3dwidget_output_window>(m_d3d_widget.get());
+			m_d3d_widget = new bc_widget_d3d_output(centralWidget()->findChild<QFrame*>("leftRenderFrame"));
+			m_d3d_output_window = std::make_unique<bc_render_application_d3dwidget_output_window>(m_d3d_widget);
 
 			m_render_app_thread.start(p_instance, nullptr, m_d3d_output_window.get());
 
 			m_awesome = std::make_unique< QtAwesome >(this);
 			m_awesome->initFontAwesome();
-			m_console_widget = std::make_unique< bc_console_widget >(m_awesome.get(), centralWidget()->findChild<QWidget*>("consoleTab"));
+			m_console_widget = new bc_widget_console(m_awesome.get(), centralWidget()->findChild<QWidget*>("consoleTab"));
 
 			_load_icons();
 			
@@ -32,12 +32,12 @@ namespace black_cat
 
 			// Now that game is available initialize console
 			game::bc_game_console& l_game_console = core::bc_get_service< game::bc_game_system >()->get_console();
-			m_editor_game_console = std::make_unique< bc_editor_game_console >(l_game_console, m_console_widget.get());
+			m_editor_game_console = std::make_unique< bc_editor_game_console >(l_game_console, m_console_widget);
 			m_editor_game_console->connect_widget(this);
-			m_editor_game_console->connect_widget(m_console_widget.get());
+			m_editor_game_console->connect_widget(m_console_widget);
 
 			m_ui_command_service = core::bc_get_service<bc_ui_command_service>();
-			m_form_main_menu = std::make_unique<bc_form_main_menu>(*menuBar(), *m_ui_command_service);
+			m_form_main_menu = std::make_unique< bc_form_main_menu >(*menuBar(), *m_ui_command_service);
 			m_form_terrain = std::make_unique< bc_form_terrain >(*centralWidget());
 			m_form_object = std::make_unique< bc_form_object >(*centralWidget());
 			m_form_object_insert = std::make_unique< bc_form_object_insert >(*centralWidget());

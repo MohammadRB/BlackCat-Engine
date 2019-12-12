@@ -73,10 +73,13 @@ namespace black_cat
 			D3D11_TEXTURE2D_DESC& l_texture_desc = p_config->get_platform_pack().m_desc;
 			D3D11_SUBRESOURCE_DATA l_data;
 
-			bcAssert(l_texture_desc.SampleDesc.Count > 1 ?
+			bcAssert
+			(
+				l_texture_desc.SampleDesc.Count > 1 ?
 				!(l_texture_desc.MiscFlags & D3D11_RESOURCE_MISC_GENERATE_MIPS) :
 				true,
-				"Multisampled texture cann't generate mip levels");
+				"Multisampled texture can not have generated mip levels"
+			);
 			/*bcAssert(l_texture_desc.SampleDesc.Count == 1 ?
 				(l_texture_desc.BindFlags & D3D11_BIND_SHADER_RESOURCE) || (l_texture_desc.BindFlags & D3D11_BIND_UNORDERED_ACCESS) :
 				true);*/

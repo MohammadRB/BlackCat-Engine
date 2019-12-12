@@ -21,7 +21,7 @@ namespace black_cat
 				bcSIZE p_memmng_frame_stack_size,
 				bcSIZE p_memmng_super_heap_size,
 				bcSIZE p_thread_manager_thread_count,
-				bcSIZE p_thread_manager_reserve_thread_count)
+				bcSIZE p_thread_manager_reserved_thread_count)
 				: m_memmng_fsa_start_size(p_memmng_fsa_start_size),
 				m_memmng_fsa_count(p_memmng_fsa_count),
 				m_memmng_fsa_step_size(p_memmng_fsa_step_size),
@@ -30,7 +30,7 @@ namespace black_cat
 				m_memmng_frame_stack_size(p_memmng_frame_stack_size),
 				m_memmng_super_heap_size(p_memmng_super_heap_size),
 				m_thread_manager_thread_count(p_thread_manager_thread_count),
-				m_thread_manager_reserve_thread_count(p_thread_manager_reserve_thread_count)
+				m_thread_manager_reserved_thread_count(p_thread_manager_reserved_thread_count)
 			{
 			}
 
@@ -42,7 +42,7 @@ namespace black_cat
 			bcSIZE m_memmng_frame_stack_size;
 			bcSIZE m_memmng_super_heap_size;
 			bcSIZE m_thread_manager_thread_count;
-			bcSIZE m_thread_manager_reserve_thread_count;
+			bcSIZE m_thread_manager_reserved_thread_count;
 		};
 
 		struct bc_render_application_parameter : public platform::bc_application_parameter

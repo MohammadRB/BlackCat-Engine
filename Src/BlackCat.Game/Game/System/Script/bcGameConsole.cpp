@@ -54,6 +54,7 @@ namespace black_cat
 			m_imp(),
 			m_log_types({true, true, true, true}),
 			m_logs(),
+			m_bound_context(nullptr),
 			m_bound_console()
 		{
 			core::bc_get_service< core::bc_logger >()->register_listener
@@ -73,6 +74,7 @@ namespace black_cat
 			m_log_types(p_other.m_log_types),
 			m_logs(std::move(p_other.m_logs)),
 			m_scripts(std::move(p_other.m_scripts)),
+			m_bound_context(p_other.m_bound_context),
 			m_bound_console(std::move(p_other.m_bound_console))
 		{
 		}
@@ -220,14 +222,15 @@ namespace black_cat
 					.function(L"disableOutput", &bc_game_console_bind::disable_output)
 					.function(L"clear", &bc_game_console_bind::clear_output);
 
-				auto l_console_prototype = p_context.create_prototype(l_console_builder);
-				p_instance.m_bound_console = platform::bc_script_object_ref(p_context.create_object(l_console_prototype, bc_game_console_bind(p_instance)));
+				/*auto l_console_prototype = p_context.create_prototype(l_console_builder);
+				auto l_console_object = platform::bc_script_object_ref(p_context.create_object(l_console_prototype, bc_game_console_bind(p_instance)));
 
-				platform::bc_script_property_descriptor< platform::bc_script_object > l_console_descriptor(&p_instance.m_bound_console.get(), false);
+				platform::bc_script_property_descriptor< platform::bc_script_object > l_console_descriptor(&l_console_object.get(), false);
 
 				p_global_prototype.property(L"console", l_console_descriptor);
 
 				p_instance.m_bound_context = &p_context;
+				p_instance.m_bound_console = std::move(l_console_object);*/
 			}
 		}
 

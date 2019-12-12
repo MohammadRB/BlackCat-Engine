@@ -7,7 +7,7 @@ namespace black_cat
 {
 	namespace editor
 	{
-		bc_editor_game_console::bc_editor_game_console(game::bc_game_console& p_game_console, bc_console_widget* p_widget)
+		bc_editor_game_console::bc_editor_game_console(game::bc_game_console& p_game_console, bc_widget_console* p_widget)
 			: game::bc_igame_console_imp(p_game_console)
 		{
 			qRegisterMetaType<game::bc_console_output_type>("game::bc_console_output_type");

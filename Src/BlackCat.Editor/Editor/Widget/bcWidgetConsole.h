@@ -10,16 +10,16 @@ namespace black_cat
 {
 	namespace editor
 	{
-		class bc_console_widget : public QWidget
+		class bc_widget_console : public QWidget
 		{
 		public:
 			Q_OBJECT
-			Q_DISABLE_COPY(bc_console_widget)
+			Q_DISABLE_COPY(bc_widget_console)
 
 		public:
-			explicit bc_console_widget(QtAwesome* p_awesome, QWidget* p_parent = nullptr);
+			explicit bc_widget_console(QtAwesome* p_awesome, QWidget* p_parent = nullptr);
 
-			~bc_console_widget();
+			~bc_widget_console();
 
 		protected:
 
@@ -55,16 +55,16 @@ namespace black_cat
 			QColor m_error_color;
 			QColor m_script_color;
 
-			std::unique_ptr< QVBoxLayout > m_main_layout;
-			std::unique_ptr< QHBoxLayout > m_toolbar_layout;
-			std::unique_ptr< QFrame > m_toolbar;
-			std::unique_ptr< QPushButton > m_toolbar_info;
-			std::unique_ptr< QPushButton > m_toolbar_debug;
-			std::unique_ptr< QPushButton > m_toolbar_error;
-			std::unique_ptr< QPushButton > m_toolbar_script;
-			std::unique_ptr< QPushButton > m_toolbar_clear;
-			std::unique_ptr< QListWidget > m_console_list;
-			std::unique_ptr< QLineEdit > m_console_input;
+			QVBoxLayout* m_main_layout;
+			QHBoxLayout* m_toolbar_layout;
+			QFrame* m_toolbar;
+			QPushButton* m_toolbar_info;
+			QPushButton* m_toolbar_debug;
+			QPushButton* m_toolbar_error;
+			QPushButton* m_toolbar_script;
+			QPushButton* m_toolbar_clear;
+			QListWidget* m_console_list;
+			QLineEdit* m_console_input;
 		};
 	}
 }

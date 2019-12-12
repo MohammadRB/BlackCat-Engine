@@ -5,8 +5,8 @@
 #include "Editor/Application/bcEditorGameConsole.h"
 #include "Editor/Application/bcRenderApplicationD3DWidgetOutputWindow.h"
 #include "Editor/Application/bcEditorRenderApplicationThread.h"
-#include "Editor/Widget/bcD3DOutputWidget.h"
-#include "Editor/Widget/bcConsoleWidget.h"
+#include "Editor/Widget/bcWidgetD3DOutput.h"
+#include "Editor/Widget/bcWidgetConsole.h"
 #include "Editor/QtAwesome/QtAwesome.h"
 #include "Editor/UI/bcFormMainMenu.h"
 #include "Editor/UI/bcFormTools.h"
@@ -63,12 +63,12 @@ namespace black_cat
 			std::unique_ptr< QtAwesome > m_awesome;
 
 			bc_ui_command_service* m_ui_command_service;
-			std::unique_ptr< bc_d3d_output_widget > m_d3d_widget;
+			bc_widget_d3d_output* m_d3d_widget;
+			bc_widget_console* m_console_widget;
 			std::unique_ptr< bc_render_application_d3dwidget_output_window > m_d3d_output_window;
-			std::unique_ptr< bc_console_widget > m_console_widget;
 			std::unique_ptr< bc_editor_game_console > m_editor_game_console;
 
-			std::unique_ptr< bc_form_main_menu > m_form_main_menu;
+			std::unique_ptr < bc_form_main_menu > m_form_main_menu;
 			std::unique_ptr< bc_form_tools > m_form_tools;
 			std::unique_ptr< bc_form_terrain > m_form_terrain;
 			std::unique_ptr< bc_form_object > m_form_object;

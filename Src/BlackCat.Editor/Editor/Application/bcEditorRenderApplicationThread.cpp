@@ -70,7 +70,7 @@ namespace black_cat
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 25,
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 100,
 				l_hardware_info.proccessor_count,
-				l_hardware_info.proccessor_count / 4
+				l_hardware_info.proccessor_count
 			);
 			game::bc_engine_application_parameter l_engine_app_parameters
 			(
@@ -84,9 +84,8 @@ namespace black_cat
 
 			m_initialized.store(1);
 
-			const bcINT32 l_code = l_app.run();
+			m_result_code.store(l_app.run());
 
-			m_result_code.store(l_code);
 			l_app.destroy();
 		}
 	}

@@ -273,6 +273,7 @@ namespace black_cat
 			const auto l_blend_state_config = bc_graphic_state_configs::bc_blend_config(p_blend);
 			const auto l_depth_stencil_state_config = bc_graphic_state_configs::bc_depth_stencil_config(p_depth_stencil);
 			const auto l_rasterizer_state_config = bc_graphic_state_configs::bc_rasterizer_config(p_rasterizer);
+			const auto l_sample_state_config = bc_graphic_state_configs::bc_texture_multi_sample(p_ms_config);
 
 			graphic::bc_device_pipeline_state_config l_pipeline_config;
 
@@ -289,7 +290,7 @@ namespace black_cat
 			l_pipeline_config.m_num_render_target = p_render_target_formats.size();
 			std::copy(std::begin(p_render_target_formats), std::end(p_render_target_formats), std::begin(l_pipeline_config.m_render_target_format));
 			l_pipeline_config.m_depth_stencil_format = p_depth_stencil_format;
-			l_pipeline_config.m_sample_config = bc_graphic_state_configs::bc_texture_multi_sample(p_ms_config);
+			l_pipeline_config.m_sample_config = l_sample_state_config;
 			
 			return m_device.create_pipeline_state(l_pipeline_config);
 		}

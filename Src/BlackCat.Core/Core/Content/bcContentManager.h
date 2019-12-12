@@ -194,20 +194,19 @@ namespace black_cat
 
 			{
 				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > m_guard(m_contents_mutex);
+				
+				auto l_item = m_contents.find(p_content->_get_hash());
+
+				if (l_item == end(m_contents))
 				{
-					auto l_item = m_contents.find(p_content->_get_hash());
-
-					if (l_item == end(m_contents))
-					{
-						bcAssert(false, "Content not found");
-						return;
-					}
-
-					// Move value from container because some times content have inner content and destroying
-					// content while lock is acquired cause deadlock
-					l_value = std::move(l_item->second);
-					m_contents.erase(l_item);
+					bcAssert(false, "Content not found");
+					return;
 				}
+
+				// Move value from container because some times content have inner content and destroying
+				// content while lock is acquired cause deadlock
+				l_value = std::move(l_item->second);
+				m_contents.erase(l_item);
 			}
 
 			l_value.m_content.reset(nullptr);
@@ -525,8 +524,13 @@ namespace black_cat
 			{
 				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_contents_mutex);
 
-				_bc_content_entry l_entry(p_content_file, std::move(l_pointer));
-				m_contents.insert(map_type::value_type(p_content_hash, std::move(l_entry)));
+				auto l_entry = _bc_content_entry(p_content_file, std::move(l_pointer));
+				auto l_insertion_result = m_contents.insert(map_type::value_type(p_content_hash, std::move(l_entry)));
+
+				if (!l_insertion_result.second)
+				{
+					throw bc_invalid_operation_exception("Content with the same hash already exist in the contents map");
+				}
 			}
 
 			return bc_content_ptr<TContent>(l_content_ptr, _bc_content_ptr_deleter(this));

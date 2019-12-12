@@ -27,7 +27,7 @@ namespace black_cat
 	{
 		m_state->m_instance_count++;
 	}
-
+	
 	bc_base_cascaded_shadow_map_pass::bc_base_cascaded_shadow_map_pass(constant::bc_render_pass_variable_t p_output_depth_buffers, 
 		bcSIZE p_shadow_map_size,
 		std::initializer_list<std::tuple<bcSIZE, bcUBYTE>> p_cascade_sizes)
@@ -73,7 +73,7 @@ namespace black_cat
 			share_resource(m_state->m_output_depth_buffers_share_slot, bc_cascaded_shadow_map_buffer_container());
 		}
 	}
-
+	
 	void bc_base_cascaded_shadow_map_pass::update(const game::bc_render_pass_update_param& p_param)
 	{
 	}
@@ -240,16 +240,16 @@ namespace black_cat
 
 	void bc_base_cascaded_shadow_map_pass::destroy(game::bc_render_system& p_render_system)
 	{
-		get_shared_resource<bc_cascaded_shadow_map_buffer_container>(m_state->m_output_depth_buffers_share_slot)->clear();
+		if (m_my_index == 0)
+		{
+			get_shared_resource<bc_cascaded_shadow_map_buffer_container>(m_state->m_output_depth_buffers_share_slot)->clear();
+			unshare_resource(m_state->m_output_depth_buffers_share_slot);
+		}
+		
 		m_state->m_light_instance_states.clear();
 		m_state->m_command_list.reset();
 
 		destroy_pass(p_render_system);
-
-		if(m_my_index == 0)
-		{
-			unshare_resource(m_state->m_output_depth_buffers_share_slot);
-		}
 
 		m_state.reset();
 	}

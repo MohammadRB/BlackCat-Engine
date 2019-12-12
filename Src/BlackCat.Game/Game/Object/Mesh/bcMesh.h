@@ -17,7 +17,7 @@
 #include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/System/Render/State/bcRenderState.h"
 #include "Game/Object/Mesh/bcMeshCollider.h"
-#include "Game/Object/Mesh/bcMaterial.h"
+#include "Game/Object/Mesh/bcRenderMaterial.h"
 
 namespace black_cat
 {

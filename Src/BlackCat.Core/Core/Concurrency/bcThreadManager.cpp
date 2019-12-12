@@ -74,10 +74,10 @@ namespace black_cat
 			m_flag.clear(core_platform::bc_memory_order::relaxed);
 		}
 
-		bc_thread_manager::bc_thread_manager(bcSIZE p_thread_count, bcSIZE p_additional_thread_count) noexcept
+		bc_thread_manager::bc_thread_manager(bcSIZE p_thread_count, bcSIZE p_reserved_thread_count) noexcept
 			: m_my_data(&_thread_data_cleanup)
 		{
-			_initialize(p_thread_count, p_additional_thread_count);
+			_initialize(p_thread_count, p_reserved_thread_count);
 		}
 
 		bc_thread_manager::~bc_thread_manager()
@@ -131,19 +131,19 @@ namespace black_cat
 			l_flag.clear();
 		}
 
-		void bc_thread_manager::_initialize(bcSIZE p_thread_count, bcSIZE p_additional_thread_count)
+		void bc_thread_manager::_initialize(bcSIZE p_thread_count, bcSIZE p_reserved_thread_count)
 		{
-			m_thread_count = p_thread_count;
-			m_additional_thread_count = p_additional_thread_count;
+			m_thread_count = std::max(p_thread_count, 4U);
+			m_reserved_thread_count = std::max(p_reserved_thread_count, m_thread_count);
 			m_done.store(false);
 			m_task_count.store(0, core_platform::bc_memory_order::relaxed);
 			m_num_thread_in_spin.store(0, core_platform::bc_memory_order::relaxed);
 
 			try
 			{
-				m_threads.reserve(p_thread_count + p_additional_thread_count);
+				m_threads.reserve(m_thread_count + m_reserved_thread_count);
 
-				for (bcUINT32 l_i = 0; l_i < p_thread_count; ++l_i)
+				for (bcUINT32 l_i = 0; l_i < m_thread_count; ++l_i)
 				{
 					_push_worker();
 				}
@@ -183,7 +183,7 @@ namespace black_cat
 				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_threads_mutex);
 
 				bcUINT32 l_my_index = m_threads.size();
-				if (l_my_index >= m_thread_count + m_additional_thread_count)
+				if (l_my_index >= m_thread_count + m_reserved_thread_count)
 				{
 					return;
 				}

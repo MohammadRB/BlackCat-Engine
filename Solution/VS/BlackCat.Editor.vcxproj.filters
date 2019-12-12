@@ -152,12 +152,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainSmoothCommand.cpp">
       <Filter>Editor\UICommand</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcConsoleWidget.cpp">
-      <Filter>Editor\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcD3DOutputWidget.cpp">
-      <Filter>Editor\Widget</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\EditorPCH.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
@@ -193,6 +187,24 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUISceneCommand.cpp">
       <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_bcWidgetConsole.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_bcWidgetConsole.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetConsole.cpp">
+      <Filter>Editor\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_bcWidgetD3DOutput.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_bcWidgetD3DOutput.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetD3DOutput.cpp">
+      <Filter>Editor\Widget</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -270,12 +282,6 @@
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormTools.h">
       <Filter>Editor\UI</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcConsoleWidget.h">
-      <Filter>Editor\Widget</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcD3DOutputWidget.h">
-      <Filter>Editor\Widget</Filter>
-    </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\bcBlackCatEditor.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
@@ -290,6 +296,12 @@
     </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainMenu.h">
       <Filter>Editor\UI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetConsole.h">
+      <Filter>Editor\Widget</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetD3DOutput.h">
+      <Filter>Editor\Widget</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

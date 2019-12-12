@@ -60,7 +60,7 @@ namespace black_cat
 #ifdef BC_MEMORY_ENABLE
 		core::bc_memmng::startup
 		(
-			p_parameters.m_engine_parameters.m_thread_manager_thread_count + p_parameters.m_engine_parameters.m_thread_manager_reserve_thread_count,
+			p_parameters.m_engine_parameters.m_thread_manager_thread_count + p_parameters.m_engine_parameters.m_thread_manager_reserved_thread_count,
 			p_parameters.m_engine_parameters.m_memmng_fsa_start_size,
 			p_parameters.m_engine_parameters.m_memmng_fsa_count,
 			p_parameters.m_engine_parameters.m_memmng_fsa_step_size,
@@ -78,7 +78,7 @@ namespace black_cat
 		core::bc_register_service(core::bc_make_service<core::bc_thread_manager>
 		(
 			p_parameters.m_engine_parameters.m_thread_manager_thread_count,
-			p_parameters.m_engine_parameters.m_thread_manager_reserve_thread_count
+			p_parameters.m_engine_parameters.m_thread_manager_reserved_thread_count
 		));
 		core::bc_register_service(core::bc_make_service<core::bc_content_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));

@@ -18,7 +18,7 @@
 #include "Game/System/Render/bcRenderTask.h"
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
-#include "Game/Object/Mesh/bcMaterial.h"
+#include "Game/Object/Mesh/bcRenderMaterial.h"
 #include "BlackCat/bcConstant.h"
 #include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
 
