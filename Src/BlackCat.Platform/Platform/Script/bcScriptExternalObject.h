@@ -79,23 +79,19 @@ namespace black_cat
 				return m_object;
 			}
 
+			static meta_data* get_meta_data()
+			{
+				return s_object_meta_data;
+			}
+
 			static void set_meta_data_ptr(meta_data* p_meta_data)
 			{
 				s_object_meta_data = p_meta_data;
 			}
 
-			template< typename TM >
-			static bcUINT32 set_member_variable_ptr(member_variable_ptr_t<TM> p_member_variable)
+			static bc_script_prototype<T> get_prototype()
 			{
-				s_object_meta_data->m_member_variables.push_back(reinterpret_cast< _member_variable_ptr_t >(p_member_variable));
-				return s_object_meta_data->m_member_variables.size() - 1;
-			}
-
-			template< typename TR, typename ...TA >
-			static bcUINT32 set_member_function_ptr(member_function_ptr_t<TR, TA...> p_member_function)
-			{
-				s_object_meta_data->m_member_functions.push_back(reinterpret_cast< _member_function_ptr_t >(p_member_function));
-				return s_object_meta_data->m_member_functions.size() - 1;
+				return s_object_meta_data->m_script_prototype;
 			}
 
 			static void set_prototype(bc_script_prototype<T> p_prototype)
@@ -103,17 +99,12 @@ namespace black_cat
 				s_object_meta_data->m_script_prototype = p_prototype;
 			}
 
-			static meta_data* get_meta_data()
-			{
-				return s_object_meta_data;
-			}
-
 			template< typename TM >
 			TM get_member_variable(bcUINT32 p_variable_index)
 			{
 				static_assert(sizeof(member_variable_ptr_t< TM >) == sizeof(_member_variable_ptr_t), "Ops");
 
-				auto l_member_variable_pointer = reinterpret_cast< member_variable_ptr_t< TM > >
+				auto l_member_variable_pointer = reinterpret_cast<member_variable_ptr_t< TM >>
 				(
 					s_object_meta_data->m_member_variables.at(p_variable_index)
 				);
@@ -125,11 +116,18 @@ namespace black_cat
 			{
 				static_assert(sizeof(member_variable_ptr_t< TM >) == sizeof(_member_variable_ptr_t), "Ops");
 
-				auto l_member_variable_pointer = reinterpret_cast< member_variable_ptr_t< TM > >
+				auto l_member_variable_pointer = reinterpret_cast<member_variable_ptr_t< TM >>
 				(
 					s_object_meta_data->m_member_variables.at(p_variable_index)
 				);
 				m_object.*l_member_variable_pointer = p_variable;
+			}
+
+			template< typename TM >
+			static bcUINT32 set_member_variable_ptr(member_variable_ptr_t<TM> p_member_variable)
+			{
+				s_object_meta_data->m_member_variables.push_back(reinterpret_cast< _member_variable_ptr_t >(p_member_variable));
+				return s_object_meta_data->m_member_variables.size() - 1;
 			}
 
 			template< typename TR, typename ...TA >
@@ -137,16 +135,18 @@ namespace black_cat
 			{
 				static_assert(sizeof(member_function_ptr_t< TR, TA... >) == sizeof(_member_function_ptr_t), "Ops");
 
-				auto l_member_function_pointer = reinterpret_cast< member_function_ptr_t< TR, TA... > >
+				auto l_member_function_pointer = reinterpret_cast<member_function_ptr_t< TR, TA... >>
 				(
 					s_object_meta_data->m_member_functions.at(p_function_index)
 				);
 				return (m_object.*l_member_function_pointer)(p_args...);
 			}
 
-			bc_script_prototype<T> get_prototype()
+			template< typename TR, typename ...TA >
+			static bcUINT32 set_member_function_ptr(member_function_ptr_t<TR, TA...> p_member_function)
 			{
-				return s_object_meta_data->m_script_prototype;
+				s_object_meta_data->m_member_functions.push_back(reinterpret_cast< _member_function_ptr_t >(p_member_function));
+				return s_object_meta_data->m_member_functions.size() - 1;
 			}
 
 		protected:

@@ -8,6 +8,7 @@
 #include "PlatformImp/Script/bcScriptPrototype.h"
 
 #include "Platform/Script/bcScriptObject.h"
+#include "Platform/Script/bcScriptRuntime.hpp"
 #include "PlatformImp/PlatformImpPCH.h"
 #include "PlatformImp/Script/bcScriptError.h"
 
@@ -15,6 +16,12 @@ namespace black_cat
 {
 	namespace platform
 	{
+		template< typename T >
+		void CHAKRA_CALLBACK _js_object_finalizer(void* p_object)
+		{
+			bc_script_runtime::destroy_native(reinterpret_cast<bc_script_external_object< T >*>(p_object));
+		}
+
 		template<>
 		struct bc_platform_script_object_pack< core_platform::g_api_win32 >
 		{
@@ -35,7 +42,7 @@ namespace black_cat
 
 			l_native_object = bc_script_runtime::create_native< T, T&& >(std::move(p_native_object));
 
-			l_call = JsCreateExternalObject(l_native_object, reinterpret_cast< JsFinalizeCallback >(&_js_object_finalizer< T >), &m_pack.m_js_object);
+			l_call = JsCreateExternalObject(l_native_object, &_js_object_finalizer<T>, &m_pack.m_js_object);
 			l_call = JsSetPrototype(m_pack.m_js_object, p_prototype.get_platform_pack().m_js_prototype);
 		}
 	}

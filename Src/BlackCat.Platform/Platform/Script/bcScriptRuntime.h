@@ -110,13 +110,11 @@ namespace black_cat
 			template< typename T >
 			typename bc_script_external_object<T>::meta_data* _create_external_object_meta_data()
 			{
-				core::bc_any l_meta_data;
+				m_external_object_meta_data.push_back(core::bc_any(bc_script_external_object<T>::meta_data()));
 
-				l_meta_data.set_value(bc_script_external_object<T>::meta_data());
+				auto* l_meta_data = m_external_object_meta_data.rbegin()->as< typename bc_script_external_object<T>::meta_data >();
 
-				m_external_object_meta_data.push_back(std::move(l_meta_data));
-
-				return m_external_object_meta_data.rbegin()->as< typename bc_script_external_object<T>::meta_data>();
+				return l_meta_data;
 			}
 
 		protected:

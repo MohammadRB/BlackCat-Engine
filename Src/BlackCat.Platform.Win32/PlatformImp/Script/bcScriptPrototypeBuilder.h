@@ -20,9 +20,9 @@ namespace black_cat
 	namespace platform
 	{
 		template< typename T >
-		void _js_object_finalizer(bc_script_external_object< T >* p_object)
+		void CHAKRA_CALLBACK _js_object_ctor_finalizer(void* p_object)
 		{
-			bc_script_runtime::destroy_native(p_object);
+			bc_script_runtime::destroy_native(reinterpret_cast<bc_script_external_object< T >*>(p_object));
 		}
 
 		template< typename T, typename ...TA >
@@ -51,19 +51,14 @@ namespace black_cat
 				}
 			);
 
-			auto l_native_create_callable = [=](const TA&... p_args)
-			{
-				return bc_script_runtime::create_native< T >(p_args...);
-			};
-
 			l_native_object = bc_script_function< bc_script_external_object< T >*(TA ...) >::_call_callback
 			(
-				l_native_create_callable,
+				&bc_script_runtime::create_native< T >,
 				l_pack.data(),
 				l_pack.size()
 			);
 
-			l_call = JsCreateExternalObject(l_native_object, reinterpret_cast< JsFinalizeCallback >(&_js_object_finalizer<T>), &l_script_object);
+			l_call = JsCreateExternalObject(l_native_object, &_js_object_ctor_finalizer<T>, &l_script_object);
 			l_call = JsSetPrototype(l_script_object, l_native_object->get_prototype().get_platform_pack().m_js_prototype);
 
 			return l_script_object;

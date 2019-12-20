@@ -13,9 +13,6 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template< typename T >
-		extern void _js_object_finalizer(bc_script_external_object< T >* p_object);
-
 		template<>
 		BC_PLATFORMIMP_DLL
 		bc_platform_script_object< core_platform::g_api_win32 >::bc_platform_script_object()
