@@ -54,7 +54,7 @@ namespace black_cat
 
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_rs_viewport_scissorrect(); ++i)
 				{
-					bc_viewport* l_viewport = l_required_state.m_viewports.get(i);
+					const bc_viewport* l_viewport = l_required_state.m_viewports.get(i);
 					if(l_viewport)
 					{
 						l_viewports[i] = D3D11_VIEWPORT

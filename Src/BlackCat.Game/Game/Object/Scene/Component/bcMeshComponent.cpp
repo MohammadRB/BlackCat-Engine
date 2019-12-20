@@ -15,35 +15,51 @@ namespace black_cat
 {
 	namespace game
 	{
-		template< typename TIterator >
 		void _render_mesh_node(bc_render_system& p_render_system,
 			const bc_sub_mesh& p_mesh_part,
 			const bc_sub_mesh_transformation& p_transformations,
-			TIterator p_begin,
-			TIterator p_end)
+			const bc_mesh_node* p_begin,
+			const bc_mesh_node* p_end,
+			const bcCHAR* p_mesh_prefix)
 		{
 			for (; p_begin != p_end; ++p_begin)
 			{
-				const bc_mesh_node* l_node = *p_begin;
-				
-				for(bc_mesh_node::node_index l_mesh_index = 0, l_mesh_count = l_node->get_mesh_count(); l_mesh_index < l_mesh_count; ++l_mesh_index)
-				{
-					auto& l_node_mesh_render_state = p_mesh_part.get_node_mesh_render_state(l_node, l_mesh_index);
-					
-					auto& l_node_transformation = p_mesh_part.get_node_absolute_transformation(l_node, p_transformations);
-					bc_render_instance l_instance(l_node_transformation);
+				const bc_mesh_node* l_node = p_begin;
 
+				for (bc_mesh_node::node_index l_mesh_index = 0, l_mesh_count = l_node->get_mesh_count(); l_mesh_index < l_mesh_count; ++l_mesh_index)
+				{
+					if (p_mesh_prefix != nullptr)
+					{
+						const auto& l_mesh_name = p_mesh_part.get_node_mesh_name(l_node, l_mesh_index);
+						const bool l_starts_with_prefix = l_mesh_name.compare(0, std::strlen(p_mesh_prefix), p_mesh_prefix) == 0;
+
+						if (!l_starts_with_prefix)
+						{
+							continue;
+						}
+					}
+
+					auto& l_node_mesh_render_state = p_mesh_part.get_node_mesh_render_state(l_node, l_mesh_index);
+					auto& l_node_transformation = p_mesh_part.get_node_absolute_transformation(l_node, p_transformations);
+
+					bc_render_instance l_instance(l_node_transformation);
 					p_render_system.add_render_instance(l_node_mesh_render_state, l_instance);
 				}
 
-				_render_mesh_node
-				(
-					p_render_system,
-					p_mesh_part,
-					p_transformations,
-					std::begin(p_mesh_part.get_node_children(l_node)),
-					std::end(p_mesh_part.get_node_children(l_node))
-				);
+				const auto& l_node_children = p_mesh_part.get_node_children(l_node);
+
+				if (!l_node_children.empty())
+				{
+					_render_mesh_node
+					(
+						p_render_system,
+						p_mesh_part,
+						p_transformations,
+						*std::begin(l_node_children),
+						*std::begin(l_node_children) + l_node_children.size(),
+						p_mesh_prefix
+					);
+				}
 			}
 		}
 
@@ -74,10 +90,10 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_actor bc_mesh_component::get_actor() const noexcept
+		/*bc_actor bc_mesh_component::get_actor() const noexcept
 		{
 			return get_manager()->component_get_actor(*this);
-		}
+		}*/
 
 		core::bc_vector3f bc_mesh_component::get_world_position() const
 		{
@@ -116,10 +132,8 @@ namespace black_cat
 		void bc_mesh_component::render(bc_render_system& p_render_system) const
 		{
 			const bc_mesh_node* l_node = m_sub_mesh.get_root_node();
-			bc_actor l_actor = get_actor();
-
-			core::bc_array< const bc_mesh_node*, 1 > l_nodes = { l_node };
-			_render_mesh_node(p_render_system, m_sub_mesh, m_mesh_part_transformation, std::begin(l_nodes), std::end(l_nodes));
+			
+			_render_mesh_node(p_render_system, m_sub_mesh, m_mesh_part_transformation, l_node, l_node + 1, nullptr);
 		}
 	}
 }

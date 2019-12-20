@@ -22,7 +22,7 @@ struct bc_vs_output
 	float4 m_position	: SV_POSITION;
 };
 
-bc_vs_output csm_vs(bc_vs_input p_input)
+bc_vs_output vs(bc_vs_input p_input)
 {
 	bc_vs_output l_output;
 

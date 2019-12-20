@@ -16,57 +16,28 @@
           "content_parameter": { "function": "ps" }
         },
         {
-          "content_title": "csm_vs",
+          "content_title": "mesh_shadow_map_vs",
           "content_name": "cnt_vertex_shader",
-          "content_file": "content\\shader\\directx11\\ShadowMap\\bcCascadedShadowMap.hlsl",
-          "content_parameter": { "function": "csm_vs" }
-        }
-      ]
-    },
-    {
-      "stream_name": "forward_rendering_shaders",
-      "stream_content": [
-        {
-          "content_title": "mesh_vs",
-          "content_name": "cnt_vertex_shader",
-          "content_file": "content\\shader\\directx11\\bcMeshShader.hlsl",
+          "content_file": "content\\shader\\directx11\\ShadowMap\\bcMeshShadowMap.hlsl",
           "content_parameter": { "function": "vs" }
         },
         {
-          "content_title": "mesh_ps",
-          "content_name": "cnt_pixel_shader",
-          "content_file": "content\\shader\\directx11\\bcMeshShader.hlsl",
-          "content_parameter": { "function": "ps" }
-        },
-        {
-          "content_title": "terrain_vs",
+          "content_title": "vegetable_leaf_shadow_map_vs",
           "content_name": "cnt_vertex_shader",
-          "content_file": "content\\shader\\directx11\\Terrain\\bcTerrain.hlsl",
+          "content_file": "content\\shader\\directx11\\ShadowMap\\bcVegetableLeafShadowMap.hlsl",
           "content_parameter": { "function": "vs" }
         },
         {
-          "content_title": "terrain_hs",
-          "content_name": "cnt_hull_shader",
-          "content_file": "content\\shader\\directx11\\Terrain\\bcTerrain.hlsl",
-          "content_parameter": { "function": "hs" }
-        },
-        {
-          "content_title": "terrain_ds",
-          "content_name": "cnt_domain_shader",
-          "content_file": "content\\shader\\directx11\\Terrain\\bcTerrain.hlsl",
-          "content_parameter": { "function": "ds" }
-        },
-        {
-          "content_title": "terrain_ps",
+          "content_title": "vegetable_leaf_shadow_map_ps",
           "content_name": "cnt_pixel_shader",
-          "content_file": "content\\shader\\directx11\\Terrain\\bcTerrain.hlsl",
+          "content_file": "content\\shader\\directx11\\ShadowMap\\bcVegetableLeafShadowMap.hlsl",
           "content_parameter": { "function": "ps" }
         },
         {
-          "content_title": "terrain_chunk_info",
-          "content_name": "cnt_compute_shader",
-          "content_file": "content\\shader\\directx11\\Terrain\\bcTerrainChunkInfo.hlsl",
-          "content_parameter": { "function": "main" }
+          "content_title": "vegetable_trunk_shadow_map_vs",
+          "content_name": "cnt_vertex_shader",
+          "content_file": "content\\shader\\directx11\\ShadowMap\\bcVegetableTrunkShadowMap.hlsl",
+          "content_parameter": { "function": "vs" }
         }
       ]
     },
@@ -132,6 +103,24 @@
           "content_name": "cnt_compute_shader",
           "content_file": "content\\shader\\directx11\\deferredrendering\\bcGBufferLightMap.hlsl",
           "content_parameter": { "function": "main" }
+        },
+        {
+          "content_title": "gbuffer_vegetable_leaf_vs",
+          "content_name": "cnt_vertex_shader",
+          "content_file": "content\\shader\\directx11\\deferredrendering\\bcVegetableLeafGBuffer.hlsl",
+          "content_parameter": { "function": "gbuffer_vegetable_leaf_vs" }
+        },
+        {
+          "content_title": "gbuffer_vegetable_leaf_ps",
+          "content_name": "cnt_pixel_shader",
+          "content_file": "content\\shader\\directx11\\deferredrendering\\bcVegetableLeafGBuffer.hlsl",
+          "content_parameter": { "function": "gbuffer_vegetable_leaf_ps" }
+        },
+        {
+          "content_title": "gbuffer_vegetable_trunk_vs",
+          "content_name": "cnt_vertex_shader",
+          "content_file": "content\\shader\\directx11\\deferredrendering\\bcVegetableTrunkGBuffer.hlsl",
+          "content_parameter": { "function": "gbuffer_vegetable_trunk_vs" }
         }
       ]
     },

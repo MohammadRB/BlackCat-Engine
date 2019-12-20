@@ -30,12 +30,14 @@ namespace black_cat
 			{
 				update_param(big_delta_time p_total_elapsed, small_delta_time p_elapsed)
 					: m_total_elapsed(p_total_elapsed),
+					m_total_elapsed_second(p_total_elapsed / 1000),
 					m_elapsed(p_elapsed),
 					m_elapsed_second(p_elapsed / 1000)
 				{
 				}
 
 				big_delta_time m_total_elapsed;
+				big_delta_time m_total_elapsed_second;
 				small_delta_time m_elapsed;
 				small_delta_time m_elapsed_second;
 			};

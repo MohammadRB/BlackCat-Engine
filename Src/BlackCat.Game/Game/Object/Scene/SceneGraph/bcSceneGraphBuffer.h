@@ -74,6 +74,9 @@ namespace black_cat
 			template<typename TRenderComponent>
 			void render_actors(bc_render_system& p_render_system);
 
+			template<typename TRenderComponent, typename ...TArgs>
+			void render_actors(bc_render_system& p_render_system, TArgs&&... p_args);
+
 		protected:
 
 		private:
@@ -175,15 +178,32 @@ namespace black_cat
 			}
 		}
 
-		template< typename TComponent >
+		template< typename TRenderComponent >
 		void bc_scene_graph_buffer::render_actors(bc_render_system& p_render_system)
 		{
+			static_assert(std::is_base_of_v<bc_render_component, TRenderComponent>, "TComponent must inherite from bc_render_component");
+
 			for (bc_actor& l_actor : m_actors)
 			{
-				auto* l_component = static_cast<bc_render_component*>(l_actor.get_component<TComponent>());
+				auto* l_component = static_cast<bc_render_component*>(l_actor.get_component<TRenderComponent>());
 				if (l_component)
 				{
 					l_component->render(p_render_system);
+				}
+			}
+		}
+
+		template< typename TRenderComponent, typename ... TArgs >
+		void bc_scene_graph_buffer::render_actors(bc_render_system& p_render_system, TArgs&&... p_args)
+		{
+			static_assert(std::is_base_of_v<bc_render_component, TRenderComponent>, "TComponent must inherite from bc_render_component");
+
+			for (bc_actor& l_actor : m_actors)
+			{
+				auto* l_component = l_actor.get_component<TRenderComponent>();
+				if (l_component)
+				{
+					l_component->render(p_render_system, std::forward<TArgs>(p_args)...);
 				}
 			}
 		}

@@ -4,7 +4,7 @@
 
 #include "Game/System/bcGameSystem.h"
 #include "Editor/Application/bcUICommandService.h"
-#include "Editor/Widget/bcD3DOutputWidget.h"
+#include "Editor/Widget/bcWidgetD3DOutput.h"
 #include "Editor/UI/bcFormTerrain.h"
 
 #include <QtWidgets/QWidget>
@@ -32,7 +32,7 @@ namespace black_cat
 
 		public:
 			bc_form_tools(bc_ui_command_service& p_ui_command_service,
-				bc_d3d_output_widget& p_render_widget,
+				bc_widget_d3d_output& p_render_widget,
 				QDockWidget& p_container,
 				QToolBox& p_tool_properties_container,
 				bc_form_terrain& p_terrain_form,
@@ -64,7 +64,7 @@ namespace black_cat
 
 			bc_ui_command_service& m_ui_command_service;
 
-			bc_d3d_output_widget& m_render_widget;
+			bc_widget_d3d_output& m_render_widget;
 			bc_form_terrain& m_terrain_form;
 			bc_form_object_insert& m_object_insert_form;
 

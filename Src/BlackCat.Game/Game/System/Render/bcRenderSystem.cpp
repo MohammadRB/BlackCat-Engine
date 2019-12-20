@@ -44,6 +44,8 @@ namespace black_cat
 			core::bc_vector3f m_camera_position;
 			BC_CBUFFER_ALIGN 
 			bcDOUBLE m_total_elapsed;
+			bcDOUBLE m_total_elapsed_second;
+			BC_CBUFFER_ALIGN
 			bcFLOAT m_elapsed;
 			bcFLOAT m_elapsed_second;
 		};
@@ -120,13 +122,13 @@ namespace black_cat
 		{
 			// Bug this function isn't thread-safe
 			const auto l_render_states_entry_size = sizeof(render_state_entry);
-			const auto l_render_states_first = reinterpret_cast<bcUINTPTR>(&*m_render_states.begin());
-			const auto l_render_state = reinterpret_cast<bcUINTPTR>(&p_state);
-			const auto l_state_index = (l_render_state - l_render_states_first) / l_render_states_entry_size;
+			const auto l_render_states_begin = reinterpret_cast<bcUINTPTR>(&*m_render_states.begin());
+			const auto l_render_state_ptr = reinterpret_cast<bcUINTPTR>(&p_state);
+			const auto l_render_state_index = (l_render_state_ptr - l_render_states_begin) / l_render_states_entry_size;
 
-			bcAssert(m_render_states.at(l_state_index).first.is_set());
+			bcAssert(m_render_states.at(l_render_state_index).first.is_set());
 
-			m_render_states.at(l_state_index).second.push_back(p_instance);
+			m_render_states.at(l_render_state_index).second.push_back(p_instance);
 		}
 
 		void bc_render_system::update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera)
@@ -140,8 +142,9 @@ namespace black_cat
 			l_global_state.m_near_plan = p_camera.get_near_clip();
 			l_global_state.m_far_plan = p_camera.get_far_clip();
 			l_global_state.m_camera_position = p_camera.get_position();
-			l_global_state.m_elapsed = p_clock.m_elapsed;
 			l_global_state.m_total_elapsed = p_clock.m_total_elapsed;
+			l_global_state.m_total_elapsed_second = p_clock.m_total_elapsed_second;
+			l_global_state.m_elapsed = p_clock.m_elapsed;
 			l_global_state.m_elapsed_second = p_clock.m_elapsed_second;
 
 			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
@@ -152,16 +155,14 @@ namespace black_cat
 		{
 			const auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
 
-			const graphic::bc_pipeline_stage l_per_object_cbuffer_stages = _convert_shader_type_to_pipeline_stage(m_per_object_cbuffer_parameter.get_shader_types());
-
-			for (render_state_entry& l_render_state : m_render_states)
+			for (render_state_entry& l_render_state_entry : m_render_states)
 			{
-				if (l_render_state.first.is_set() && l_render_state.second.size() > 0)
+				if (l_render_state_entry.first.is_set() && l_render_state_entry.second.size() > 0)
 				{
-					auto* l_render_state_ptr = &l_render_state.first.get();
-					p_render_thread.bind_render_state(l_render_state_ptr);
+					auto& l_render_state = l_render_state_entry.first.get();
+					p_render_thread.bind_render_state(l_render_state);
 
-					for (bc_render_instance& l_instance : l_render_state.second)
+					for (bc_render_instance& l_instance : l_render_state_entry.second)
 					{
 						_bc_render_system_per_object_cbuffer l_per_object_cbuffer
 						{
@@ -174,13 +175,13 @@ namespace black_cat
 						
 						p_render_thread.draw_indexed
 						(
-							l_render_state.first->get_index_buffer_offset(),
-							l_render_state.first->get_index_count(),
-							l_render_state.first->get_vertex_buffer_offset()
+							l_render_state_entry.first->get_index_buffer_offset(),
+							l_render_state_entry.first->get_index_count(),
+							l_render_state_entry.first->get_vertex_buffer_offset()
 						);
 					}
 
-					p_render_thread.unbind_render_state(l_render_state_ptr);
+					p_render_thread.unbind_render_state(l_render_state);
 				}
 			}
 		}
@@ -272,6 +273,7 @@ namespace black_cat
 			const auto l_blend_state_config = bc_graphic_state_configs::bc_blend_config(p_blend);
 			const auto l_depth_stencil_state_config = bc_graphic_state_configs::bc_depth_stencil_config(p_depth_stencil);
 			const auto l_rasterizer_state_config = bc_graphic_state_configs::bc_rasterizer_config(p_rasterizer);
+			const auto l_sample_state_config = bc_graphic_state_configs::bc_texture_multi_sample(p_ms_config);
 
 			graphic::bc_device_pipeline_state_config l_pipeline_config;
 
@@ -288,7 +290,7 @@ namespace black_cat
 			l_pipeline_config.m_num_render_target = p_render_target_formats.size();
 			std::copy(std::begin(p_render_target_formats), std::end(p_render_target_formats), std::begin(l_pipeline_config.m_render_target_format));
 			l_pipeline_config.m_depth_stencil_format = p_depth_stencil_format;
-			l_pipeline_config.m_sample_config = bc_graphic_state_configs::bc_texture_multi_sample(p_ms_config);
+			l_pipeline_config.m_sample_config = l_sample_state_config;
 			
 			return m_device.create_pipeline_state(l_pipeline_config);
 		}
@@ -588,7 +590,7 @@ namespace black_cat
 				p_parameter.m_device_backbuffer_format,
 				std::move(p_parameter.m_render_output)
 			);
-			auto l_alloc_type = m_device.set_allocator_alloc_type(core::bc_alloc_type::program);
+			const auto l_alloc_type = m_device.set_allocator_alloc_type(core::bc_alloc_type::program);
 
 			core_platform::bc_basic_hardware_info l_hw_info;
 			core_platform::bc_hardware_info::get_basic_info(&l_hw_info);
@@ -662,22 +664,27 @@ namespace black_cat
 
 		void bc_render_system::_destroy()
 		{
+			m_render_pass_manager->pass_destroy(*this);
+
+			m_shape_drawer.destroy_buffers();
+
+			m_render_pass_states.clear();
+			m_render_states.clear();
+			m_compute_states.clear();
+
 			m_device_listener_handle.reset();
 			m_window_resize_handle.reset();
 			m_frame_render_finish_handle.reset();
-
-			m_global_cbuffer.reset();
-			m_per_object_cbuffer.reset();
-			m_global_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
-			m_per_object_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
-
-			m_shape_drawer.destroy_buffers();
-			m_render_pass_manager->pass_destroy(*this);
 
 			m_light_manager.reset();
 			m_render_pass_manager.reset();
 			m_material_manager.reset();
 			m_thread_manager.reset();
+
+			m_global_cbuffer.reset();
+			m_per_object_cbuffer.reset();
+			m_global_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
+			m_per_object_cbuffer_parameter = graphic::bc_constant_buffer_parameter();
 
 #ifdef BC_DEBUG // All states must be released upon render system destruction
 			auto l_render_pass_states_count = 0;

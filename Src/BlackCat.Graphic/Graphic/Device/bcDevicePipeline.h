@@ -75,7 +75,7 @@ namespace black_cat
 
 			void unbind_ia_index_buffer();
 
-			void bind_ia_vertex_buffers(bcUINT p_start_slot, bcUINT p_buffer_count, bc_buffer* p_buffers, bcUINT* p_strides, bcUINT* p_offsets);
+			void bind_ia_vertex_buffers(bcUINT p_start_slot, bcUINT p_buffer_count, const bc_buffer* p_buffers, bcUINT* p_strides, bcUINT* p_offsets);
 
 			void unbind_ia_vertex_buffers(bcUINT p_start_slot, bcUINT p_buffer_count);
 
@@ -91,19 +91,19 @@ namespace black_cat
 
 			void unbind_ps_shader_view_parameter(const bc_resource_view_parameter& p_parameter);
 
-			void bind_os_stream_outputs(bcUINT p_buffer_count, bc_buffer* p_buffers, bcUINT* p_offsets);
+			void bind_os_stream_outputs(bcUINT p_buffer_count, const bc_buffer* p_buffers, bcUINT* p_offsets);
 
 			void unbind_os_stream_outputs();
 
-			void bind_rs_viewports(bcUINT p_count, bc_viewport* p_viewports);
+			void bind_rs_viewports(bcUINT p_count, const bc_viewport* p_viewports);
 
 			void unbind_rs_viewports();
 
-			void bind_om_blend_factors(core::bc_vector4f l_factors);
+			void bind_om_blend_factors(const core::bc_vector4f& p_factors);
 
-			void bind_om_stencil_ref(bcUINT32 l_stencil_ref);
+			void bind_om_stencil_ref(bcUINT32 p_stencil_ref);
 
-			void bind_om_render_targets(bcUINT p_target_count, bc_render_target_view* p_targets, bc_depth_stencil_view p_depth);
+			void bind_om_render_targets(bcUINT p_target_count, const bc_render_target_view* p_targets, bc_depth_stencil_view p_depth);
 
 			void unbind_om_render_targets();
 

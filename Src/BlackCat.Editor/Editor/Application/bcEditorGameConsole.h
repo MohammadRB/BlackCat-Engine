@@ -4,7 +4,7 @@
 
 #include "Game/System/Script/bcGameConsole.h"
 #include "Game/System/Script/bcIGameConsoleImp.h"
-#include "Editor/Widget/bcConsoleWidget.h"
+#include "Editor/Widget/bcWidgetConsole.h"
 
 #include <QtCore/QObject>
 #include <QtConcurrent/QtConcurrent>
@@ -18,7 +18,7 @@ namespace black_cat
 			Q_OBJECT;
 
 		public:
-			bc_editor_game_console(game::bc_game_console& p_game_console, bc_console_widget* p_widget);
+			bc_editor_game_console(game::bc_game_console& p_game_console, bc_widget_console* p_widget);
 			
 			bc_editor_game_console(bc_editor_game_console&&) noexcept;
 

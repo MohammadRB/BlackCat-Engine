@@ -77,9 +77,9 @@ namespace black_cat
 
 			_bc_service_container(_bc_service_container&& p_other) noexcept = default;
 
-			_bc_service_container& operator =(_bc_service_container&& p_other) noexcept = default;
-
 			~_bc_service_container() = default;
+
+			_bc_service_container& operator =(_bc_service_container&& p_other) noexcept = default;
 
 			bc_service_ptr< bc_iservice > m_service;
 			bcSIZE m_priority;

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/CorePCH.h"
 #include "Core/Utility/bcTemplateMetaType.h"
 #include "Core/Memory/bcAlloc.h"
@@ -428,44 +429,73 @@ namespace black_cat
 		class bc_object_allocator
 		{
 		public:
-			explicit bc_object_allocator(bc_alloc_type p_alloc_type = bc_alloc_type::unknown, bcUINT p_alignment = BC_MEMORY_MIN_ALIGN)
-				: m_alloc_type(p_alloc_type),
-				m_alignment(p_alignment)
-			{	
+			explicit bc_object_allocator(bc_alloc_type p_alloc_type = bc_alloc_type::unknown, bcUINT16 p_alignment = BC_MEMORY_MIN_ALIGN)
+				: m_flags(0)
+			{
+				set_allocator_alloc_type(p_alloc_type);
+				set_allocator_alignment(p_alignment);
 			}
 
-			bc_object_allocator(const bc_object_allocator& p_other) = default;
+			bc_object_allocator(const bc_object_allocator& p_other)
+			{
+				set_allocator_alloc_type(p_other.get_allocator_alloc_type());
+				set_allocator_alignment(p_other.get_allocator_alignment());
+			}
 
-			bc_object_allocator(bc_object_allocator&& p_other) = default;
+			bc_object_allocator(bc_object_allocator&& p_other) noexcept
+			{
+				set_allocator_alloc_type(p_other.get_allocator_alloc_type());
+				set_allocator_alignment(p_other.get_allocator_alignment());
+			}
 
 			~bc_object_allocator() = default;
 
-			bc_object_allocator& operator=(const bc_object_allocator& p_other) = default;
-
-			bc_object_allocator& operator=(bc_object_allocator&& p_other) = default;
-
-			bc_alloc_type get_allocator_alloc_type()const
+			bc_object_allocator& operator=(const bc_object_allocator& p_other)
 			{
-				return m_alloc_type;
+				set_allocator_alloc_type(p_other.get_allocator_alloc_type());
+				set_allocator_alignment(p_other.get_allocator_alignment());
+
+				return *this;
+			}
+
+			bc_object_allocator& operator=(bc_object_allocator&& p_other) noexcept
+			{
+				set_allocator_alloc_type(p_other.get_allocator_alloc_type());
+				set_allocator_alignment(p_other.get_allocator_alignment());
+
+				return *this;
+			}
+
+			bc_alloc_type get_allocator_alloc_type() const
+			{
+				return static_cast<bc_alloc_type>(m_flags.load(core_platform::bc_memory_order::relaxed) & s_alloc_type_mask);
 			}
 
 			bc_alloc_type set_allocator_alloc_type(bc_alloc_type p_alloc_type)
 			{
-				bc_alloc_type l_temp = m_alloc_type;
-				m_alloc_type = p_alloc_type;
-				return l_temp;
+				bc_alloc_type l_alloc_type = get_allocator_alloc_type();
+				bcUINT16 l_alignment = get_allocator_alignment();
+				bcUINT32 l_value_to_store = static_cast<bcUINT32>((l_alignment << 8) | static_cast<bcUINT32>(p_alloc_type));
+
+				m_flags.store(l_value_to_store, core_platform::bc_memory_order::relaxed);
+				
+				return l_alloc_type;
 			}
 
-			bcUINT get_allocator_alignment() const
+			bcUINT16 get_allocator_alignment() const
 			{
-				return m_alignment;
+				return static_cast<bcUINT16>((m_flags.load(core_platform::bc_memory_order::relaxed) & s_alignment_mask) >> 8);
 			}
 
-			bcUINT set_allocator_alignment(bcUINT p_alignment)
+			bcUINT16 set_allocator_alignment(bcUINT16 p_alignment)
 			{
-				bcUINT l_temp = m_alignment;
-				m_alignment = p_alignment;
-				return l_temp;
+				bc_alloc_type l_alloc_type = get_allocator_alloc_type();
+				bcUINT16 l_alignment = get_allocator_alignment();
+				bcUINT32 l_value_to_store = static_cast<bcUINT32>((p_alignment << 8) | static_cast<bcUINT32>(l_alloc_type));
+
+				m_flags.store(l_value_to_store, core_platform::bc_memory_order::relaxed);
+
+				return l_alignment;
 			}
 
 		protected:
@@ -473,20 +503,26 @@ namespace black_cat
 			template<typename T, typename ...TArgs>
 			bc_unique_ptr<T> allocate(TArgs&&... p_args) const
 			{
-				return bc_make_unique<T>(m_alloc_type, m_alignment, std::forward<TArgs>(p_args)...);
+				bc_alloc_type l_alloc_type = get_allocator_alloc_type();
+				bcUINT16 l_alignment = get_allocator_alignment();
+
+				return bc_make_unique<T>(l_alloc_type, l_alignment, std::forward<TArgs>(p_args)...);
 			}
 
 			// Used to allocate raw memory
 			bc_unique_ptr<bcBYTE> allocate_raw(bcUINT p_num) const
 			{
+				bc_alloc_type l_alloc_type = get_allocator_alloc_type();
+				bcUINT16 l_alignment = get_allocator_alignment();
 				void* l_memory;
-				if(m_alignment > BC_MEMORY_MIN_ALIGN)
+
+				if(get_allocator_alignment() > BC_MEMORY_MIN_ALIGN)
 				{
-					l_memory = bcAlignedAlloc(p_num, m_alignment, m_alloc_type);
+					l_memory = bcAlignedAlloc(p_num, l_alignment, l_alloc_type);
 				}
 				else
 				{
-					l_memory = bcAlloc(p_num, m_alloc_type);
+					l_memory = bcAlloc(p_num, l_alloc_type);
 				}
 
 				return bc_unique_ptr<bcBYTE>(reinterpret_cast<bcBYTE*>(l_memory));
@@ -506,8 +542,10 @@ namespace black_cat
 			}
 
 		private:
-			bc_alloc_type m_alloc_type;
-			bcUINT16 m_alignment;
+			static constexpr bcUINT32 s_alloc_type_mask = 0x000000ff;
+			static constexpr bcUINT32 s_alignment_mask = 0x00ffff00;
+
+			core_platform::bc_atomic<bcUINT32> m_flags;
 		};
 	}
 }

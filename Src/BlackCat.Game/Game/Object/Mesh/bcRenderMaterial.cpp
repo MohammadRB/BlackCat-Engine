@@ -1,7 +1,7 @@
 // [03/07/2017 MRB]
 
 #include "Game/GamePCH.h"
-#include "Game/Object/Mesh/bcMaterial.h"
+#include "Game/Object/Mesh/bcRenderMaterial.h"
 #include "Game/System/Render/bcMaterialManager.h"
 
 namespace black_cat

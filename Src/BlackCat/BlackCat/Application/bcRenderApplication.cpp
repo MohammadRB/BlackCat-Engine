@@ -20,6 +20,8 @@
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
+#include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
+#include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
 #include "Game/Object/Scene/Component/bcHierarchyComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
@@ -58,7 +60,7 @@ namespace black_cat
 #ifdef BC_MEMORY_ENABLE
 		core::bc_memmng::startup
 		(
-			p_parameters.m_engine_parameters.m_thread_manager_thread_count + p_parameters.m_engine_parameters.m_thread_manager_reserve_thread_count,
+			p_parameters.m_engine_parameters.m_thread_manager_thread_count + p_parameters.m_engine_parameters.m_thread_manager_reserved_thread_count,
 			p_parameters.m_engine_parameters.m_memmng_fsa_start_size,
 			p_parameters.m_engine_parameters.m_memmng_fsa_count,
 			p_parameters.m_engine_parameters.m_memmng_fsa_step_size,
@@ -76,7 +78,7 @@ namespace black_cat
 		core::bc_register_service(core::bc_make_service<core::bc_thread_manager>
 		(
 			p_parameters.m_engine_parameters.m_thread_manager_thread_count,
-			p_parameters.m_engine_parameters.m_thread_manager_reserve_thread_count
+			p_parameters.m_engine_parameters.m_thread_manager_reserved_thread_count
 		));
 		core::bc_register_service(core::bc_make_service<core::bc_content_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
@@ -112,7 +114,8 @@ namespace black_cat
 		<
 			game::bc_name_component,
 			game::bc_mediate_component,
-			game::bc_mesh_component,
+			game::bc_simple_mesh_component,
+			game::bc_vegetable_mesh_component,
 			game::bc_hierarchy_component,
 			game::bc_rigid_static_component,
 			game::bc_rigid_dynamic_component,
@@ -121,6 +124,7 @@ namespace black_cat
 		>();
 		l_entity_manager->register_abstract_component_types
 		<
+			game::bc_abstract_component_register< game::bc_mesh_component, game::bc_simple_mesh_component, game::bc_vegetable_mesh_component >,
 			game::bc_abstract_component_register< game::bc_render_component, game::bc_mesh_component, game::bc_height_map_component >,
 			game::bc_abstract_component_register< game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component >
 		>();

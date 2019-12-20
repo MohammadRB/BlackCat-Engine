@@ -264,40 +264,31 @@ float4 direct_light_shading(direct_light p_light, float3 p_camera_pos, float3 p_
     float3 l_light_vector = -normalize(p_light.m_direction);
     float l_dot = max(0.0f, dot(p_normal, l_light_vector));
     float3 l_diffuse_light = p_light.m_color * l_dot;
-    
+	
     float3 l_reflection_vector = normalize(reflect(-l_light_vector, p_normal));
-    // camera-to-surface vector
     float3 l_direction_to_camera = normalize(p_camera_pos - p_position);
-    // compute specular light
     float l_specular_light = p_specular_intensity * saturate(pow(dot(l_reflection_vector, l_direction_to_camera), p_specular_power));
-
-    // output the two lights
+	
     return p_light.m_intensity * float4(l_diffuse_light, l_specular_light);
 }
 
 float4 point_light_shading(point_light p_light, float3 p_camera_pos, float3 p_position, float3 p_normal, float p_specular_intensity, float p_specular_power)
 {
-    // surface-to-light vector
     float3 l_light_vector = normalize(p_light.m_position - p_position);
     float l_dot = max(0.0f, dot(p_normal, l_light_vector));
     float3 l_diffuse_light = p_light.m_color * l_dot;
     
     float3 l_reflection_vector = normalize(reflect(-l_light_vector, p_normal));
-    // camera-to-surface vector
     float3 l_direction_to_camera = normalize(p_camera_pos - p_position);
-    // compute specular light
     float l_specular_light = p_specular_intensity * saturate(pow(dot(l_reflection_vector, l_direction_to_camera), p_specular_power));
-
-    // compute attenuation based on distance - linear attenuation
+	
     float l_attenuation = 1.0f - saturate(length(p_light.m_position - p_position) / p_light.m_radius);
-
-    // output the two lights
+	
     return l_attenuation * p_light.m_intensity * float4(l_diffuse_light, l_specular_light);
 }
 
 float4 spot_light_shading(spot_light p_light, float3 p_camera_pos, float3 p_position, float3 p_normal, float p_specular_intensity, float p_specular_power)
 {
-    // surface-to-light vector
     float3 l_light_vector = normalize(p_light.m_position - p_position);
     float l_light_surface_angle = max(0.0f, dot(p_light.m_direction, -l_light_vector));
 
@@ -308,19 +299,15 @@ float4 spot_light_shading(spot_light p_light, float3 p_camera_pos, float3 p_posi
         float3 l_diffuse_light = p_light.m_color * l_dot;
     
         float3 l_reflection_vector = normalize(reflect(-l_light_vector, p_normal));
-        // camera-to-surface vector
         float3 l_direction_to_camera = normalize(p_camera_pos - p_position);
-        // compute specular light
         float l_specular_light = p_specular_intensity * saturate(pow(dot(l_reflection_vector, l_direction_to_camera), p_specular_power));
-
-        // compute attenuation based on distance - linear attenuation
+		
         float l_attenuation = 1.0f - saturate(length(p_light.m_position - p_position) / p_light.m_length);
         float l_angle_attenuation = l_light_surface_angle - p_light.m_angle_cos;
         l_angle_attenuation *= (1.0 / (1 - p_light.m_angle_cos));
         l_angle_attenuation = pow(l_angle_attenuation, 1.5);
         
         l_shading = l_attenuation * l_angle_attenuation * p_light.m_intensity * float4(l_diffuse_light, l_specular_light);
-
     }
 
     return l_shading;
@@ -341,7 +328,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
     float l_depth = load_texture(g_depth_map, l_global_texcoord).x;
     float4 l_diffuse_map = load_texture(g_diffuse_map, l_global_texcoord);
     float4 l_normal_map = load_texture(g_normal_map, l_global_texcoord);
-
+	
     float3 l_world_position = bc_reconstruct_world_space(bc_to_screen_space_texcoord(l_global_texcoord, g_screen_width, g_screen_height), l_depth, g_view_proj_inv);
     float3 l_diffuse = l_diffuse_map.xyz;
     float3 l_normal = bc_to_decoded_normal(l_normal_map.xyz);
@@ -362,7 +349,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
     uint l_point_light_serving_count = (g_point_lights_count + l_thread_count - 1) / l_thread_count;
     uint l_spot_light_serving_count = (g_spot_lights_count + l_thread_count - 1) / l_thread_count;
 
-    for (uint l_p; l_p < l_point_light_serving_count; ++l_p)
+    for (uint l_p = 0; l_p < l_point_light_serving_count; ++l_p)
     {
         uint l_light_index = l_p + (p_group_index * l_point_light_serving_count);
         if(l_light_index >= g_point_lights_count)
@@ -380,7 +367,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
         }
     }
 
-    for (uint l_s; l_s < l_spot_light_serving_count; ++l_s)
+    for (uint l_s = 0; l_s < l_spot_light_serving_count; ++l_s)
     {
         uint l_light_index = l_s + (p_group_index * l_spot_light_serving_count);
         if (l_light_index >= g_spot_lights_count)
@@ -411,7 +398,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
         float l_shadow_bias = calculate_shadow_bias(l_light.m_direction, l_normal);
         float2 l_shadow_map = direct_light_shadow_map(l_light, l_world_position, l_linear_depth, l_shadow_bias);
 
-		l_light_map += l_shadow_map.x * direct_light_shading(l_light, g_camera_position, l_world_position, l_normal, l_specular_intensity, l_specular_power);
+        l_light_map += l_shadow_map.x * direct_light_shading(l_light, g_camera_position, l_world_position, l_normal, l_specular_intensity, l_specular_power);
         l_ambient_map += (l_light.m_ambient_color * l_light.m_ambient_intensity);
 
     //    if (l_shadow_map.y != -1)
@@ -426,9 +413,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
     //        l_light_map += l_cascade_colors[l_shadow_map.y];
     //    }
     }
-
-    uint l_number_of_visible_lights = 0;
-
+	
     for (uint l_p = 0; l_p < gs_number_of_visible_point_lights; ++l_p)
     {
         uint l_point_light_index = gs_visible_point_light_indices[l_p];
@@ -440,7 +425,6 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
         }
 
         l_light_map += point_light_shading(l_light, g_camera_position, l_world_position, l_normal, l_specular_intensity, l_specular_power);
-        l_number_of_visible_lights++;
     }
 
     for (uint l_s = 0; l_s < gs_number_of_visible_spot_lights; ++l_s)
@@ -454,7 +438,6 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
         }
 
         l_light_map += spot_light_shading(l_light, g_camera_position, l_world_position, l_normal, l_specular_intensity, l_specular_power);
-        l_number_of_visible_lights++;
     }
 
     float4 l_final_light_map = 0;
@@ -467,4 +450,5 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
     
     //float l_scaled_number_of_visible_lights = l_number_of_visible_lights * 1.0f / 20;
     write_output(l_global_texcoord, l_shaded_diffuse);
+    //write_output(l_global_texcoord, l_normal_map);
 }

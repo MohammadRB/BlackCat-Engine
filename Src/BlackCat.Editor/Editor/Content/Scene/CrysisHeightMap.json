@@ -36,13 +36,13 @@
             "parameters": {}
         },
         {
-            "entity_name": "Palm_Tree_Large_d",
-            "position": [
-                2.427001953125,
-                47.69999694824219,
-                -722.271240234375
-            ],
-            "parameters": {}
+          "entity_name": "Palm_Tree_Large_d",
+          "position": [
+            29.1959228515625,
+            48.100006103515628,
+            -732.553955078125
+          ],
+          "parameters": {}
         }
     ]
 }

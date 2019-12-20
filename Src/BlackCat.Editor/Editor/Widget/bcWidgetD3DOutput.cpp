@@ -4,13 +4,13 @@
 
 #include "Core/Event/bcEventManager.h"
 #include "Platform/bcEvent.h"
-#include "Editor/Widget/bcD3DOutputWidget.h"
+#include "Editor/Widget/bcWidgetD3DOutput.h"
 
 namespace black_cat
 {
 	namespace editor
 	{
-		bc_d3d_output_widget::bc_d3d_output_widget(QWidget* p_parent)
+		bc_widget_d3d_output::bc_widget_d3d_output(QWidget* p_parent)
 			: QWidget(p_parent),
 			m_last_mouse_x(0),
 			m_last_mouse_y(0)
@@ -28,19 +28,19 @@ namespace black_cat
 			m_win_id = reinterpret_cast<HWND>(winId());
 		}
 
-		bc_d3d_output_widget::~bc_d3d_output_widget() = default;
+		bc_widget_d3d_output::~bc_widget_d3d_output() = default;
 
-		QPaintEngine* bc_d3d_output_widget::paintEngine() const
+		QPaintEngine* bc_widget_d3d_output::paintEngine() const
 		{
 			return nullptr;
 		}
 
-		graphic::bc_device_output bc_d3d_output_widget::get_device_output() const
+		graphic::bc_device_output bc_widget_d3d_output::get_device_output() const
 		{
 			return graphic::bc_device_output(graphic::bc_device_output::platform_pack(m_win_id));
 		}
 
-		void bc_d3d_output_widget::mousePressEvent(QMouseEvent* p_event)
+		void bc_widget_d3d_output::mousePressEvent(QMouseEvent* p_event)
 		{
 			platform::bc_key l_key;
 
@@ -65,7 +65,7 @@ namespace black_cat
 			emit mousePressed(p_event);
 		}
 
-		void bc_d3d_output_widget::mouseReleaseEvent(QMouseEvent* p_event)
+		void bc_widget_d3d_output::mouseReleaseEvent(QMouseEvent* p_event)
 		{
 			platform::bc_key l_key;
 
@@ -90,7 +90,7 @@ namespace black_cat
 			emit mouseReleased(p_event);
 		}
 
-		void bc_d3d_output_widget::mouseMoveEvent(QMouseEvent* p_event)
+		void bc_widget_d3d_output::mouseMoveEvent(QMouseEvent* p_event)
 		{
 			platform::bc_pointing_device_state l_pointing_state;
 			l_pointing_state.m_x = p_event->globalX();
@@ -107,7 +107,7 @@ namespace black_cat
 			emit mouseMoved(p_event);
 		}
 
-		void bc_d3d_output_widget::keyPressEvent(QKeyEvent* p_event)
+		void bc_widget_d3d_output::keyPressEvent(QKeyEvent* p_event)
 		{
 			platform::bc_app_event_key l_event = platform::bc_app_event_key
 			(
@@ -117,7 +117,7 @@ namespace black_cat
 			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
 		}
 
-		void bc_d3d_output_widget::keyReleaseEvent(QKeyEvent* p_event)
+		void bc_widget_d3d_output::keyReleaseEvent(QKeyEvent* p_event)
 		{
 			if(p_event->isAutoRepeat())
 			{
@@ -132,7 +132,7 @@ namespace black_cat
 			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
 		}
 
-		void bc_d3d_output_widget::resizeEvent(QResizeEvent* p_resize)
+		void bc_widget_d3d_output::resizeEvent(QResizeEvent* p_resize)
 		{
 			platform::bc_app_event_window_resize l_event = platform::bc_app_event_window_resize
 			(
@@ -144,7 +144,7 @@ namespace black_cat
 			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
 		}
 
-		void bc_d3d_output_widget::focus_event(QFocusEvent* p_event)
+		void bc_widget_d3d_output::focus_event(QFocusEvent* p_event)
 		{
 			platform::bc_app_event_window_focus l_event
 			(
@@ -154,7 +154,7 @@ namespace black_cat
 			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
 		}
 
-		void bc_d3d_output_widget::window_state_change_event(QWindowStateChangeEvent* p_event, Qt::WindowStates p_window_state)
+		void bc_widget_d3d_output::window_state_change_event(QWindowStateChangeEvent* p_event, Qt::WindowStates p_window_state)
 		{
 			QWindowStateChangeEvent* l_window_state_event = static_cast<QWindowStateChangeEvent*>(p_event);
 			platform::bc_app_event_window_resize::state l_state = platform::bc_app_event_window_resize::state::resize;
@@ -178,7 +178,7 @@ namespace black_cat
 			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
 		}
 
-		void bc_d3d_output_widget::close_event(QCloseEvent* event)
+		void bc_widget_d3d_output::close_event(QCloseEvent* event)
 		{
 			platform::bc_app_event_window_close l_event(reinterpret_cast<platform::bc_window_id>(m_win_id));
 			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);

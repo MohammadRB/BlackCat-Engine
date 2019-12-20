@@ -9,7 +9,7 @@
 #include "Core/Utility/bcRefCountPtr.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
-#include "Game/Object/Mesh/bcMaterial.h"
+#include "Game/Object/Mesh/bcRenderMaterial.h"
 #include "Game/bcExport.h"
 
 namespace black_cat

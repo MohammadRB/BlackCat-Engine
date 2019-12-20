@@ -457,44 +457,9 @@ bc_ds_output ds(bc_constant_hs_output p_input, float2 UV : SV_DomainLocation, co
 
 	l_final_pos.y += get_height(l_final_texcoord);
 
-	l_output.m_position = mul(float4(l_final_pos, 1), g_viewprojection);
+	l_output.m_position = mul(float4(l_final_pos, 1), g_view_projection);
 	l_output.m_pos_w = l_final_pos;
 	l_output.m_texcoord = l_final_texcoord;
-
-	return l_output;
-}
-
-bc_ps_output ps(bc_ds_output p_input)
-{
-	bc_ps_output l_output = (bc_ps_output)0;
-
-    bc_texture_data l_textures = get_texture(p_input.m_texcoord);
-    float3 l_diffuse = l_textures.m_diffuse;
-    float3 l_normal = normalize(l_textures.m_normal) * 2.0f - 1.0f;
-
-	float2 l_texel_space = float2(1, 1) / float2(g_width + 1, g_height + 1);
-	float2 l_left_tex = p_input.m_texcoord + float2(-l_texel_space.x, 0.0f);
-	float2 l_right_tex = p_input.m_texcoord + float2(l_texel_space.x, 0.0f);
-	float2 l_bottom_tex = p_input.m_texcoord + float2(0.0f, l_texel_space.y);
-	float2 l_top_tex = p_input.m_texcoord + float2(0.0f, -l_texel_space.y);
-
-	float l_left_height = get_height_linear(l_left_tex);
-	float l_right_height = get_height_linear(l_right_tex);
-	float l_bottom_height = get_height_linear(l_bottom_tex);
-	float l_top_height = get_height_linear(l_top_tex);
-
-	float3x3 l_tbn;
-	l_tbn[0] = normalize(float3(2.0f * g_xz_multiplier, l_right_height - l_left_height, 0.0f));
-	l_tbn[1] = normalize(float3(0.0f, l_bottom_height - l_top_height, -2.0f * g_xz_multiplier));
-	l_tbn[2] = normalize(cross(l_tbn[0], l_tbn[1]));
-
-	l_normal = mul(l_normal, l_tbn);
-
-    float3 l_light_dir = float3(0, 0, 1);
-	float l_ndl = max(0, dot(l_normal, l_light_dir));
-    float3 l_color = l_diffuse + l_ndl * float3(1, 1, 1);
-
-	l_output.m_color = float4(l_color, 1);
 
 	return l_output;
 }

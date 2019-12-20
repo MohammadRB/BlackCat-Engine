@@ -12,17 +12,17 @@ namespace black_cat
 	{
 		class bc_editor_app;
 
-		class bc_d3d_output_widget : public QWidget
+		class bc_widget_d3d_output : public QWidget
 		{
 		public:
 			Q_OBJECT
-			Q_DISABLE_COPY(bc_d3d_output_widget)
+			Q_DISABLE_COPY(bc_widget_d3d_output)
 			friend class bc_editor_app;
 
 		public:
-			explicit bc_d3d_output_widget(QWidget* p_parent = nullptr);
+			explicit bc_widget_d3d_output(QWidget* p_parent = nullptr);
 
-			~bc_d3d_output_widget();
+			~bc_widget_d3d_output();
 
 			QPaintEngine* paintEngine() const override;
 

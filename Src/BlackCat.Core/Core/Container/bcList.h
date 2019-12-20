@@ -325,7 +325,7 @@ namespace black_cat
 					{
 						bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &m_head);
 						m_head = l_next;
-						if(m_head)
+						if (m_head)
 						{
 							bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &m_head);
 						}
@@ -1116,10 +1116,8 @@ namespace black_cat
 			{
 				if (p_predicate(l_node->m_value))
 				{
-					base_type::_free_node(l_node, 1);
+					l_node = base_type::_free_node(l_node, 1);
 				}
-
-				l_node = l_node->m_next;
 			} while (l_node && l_node != base_type::m_head);
 		}
 

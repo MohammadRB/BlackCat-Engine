@@ -83,7 +83,7 @@
       "name": "box",
       "components": [
         {
-          "name": "cmp_mesh",
+          "name": "cmp_simple_mesh",
           "parameters": {
             "mesh": "box"
           }
@@ -98,7 +98,7 @@
       "name": "sphere",
       "components": [
         {
-          "name": "cmp_mesh",
+          "name": "cmp_simple_mesh",
           "parameters": {
             "mesh": "sphere"
           }
@@ -113,7 +113,7 @@
       "name": "convex",
       "components": [
         {
-          "name": "cmp_mesh",
+          "name": "cmp_simple_mesh",
           "parameters": {
             "mesh": "convex"
           }
@@ -128,7 +128,7 @@
       "name": "train",
       "components": [
         {
-          "name": "cmp_mesh",
+          "name": "cmp_simple_mesh",
           "parameters": {
             "mesh": "train"
           }
@@ -143,7 +143,7 @@
       "name": "Palm_Tree_Large_d",
       "components": [
         {
-          "name": "cmp_mesh",
+          "name": "cmp_vegetable_mesh",
           "parameters": {
             "mesh": "Palm_Tree_Large_d"
           }
@@ -158,9 +158,24 @@
       "name": "Green_Fern_Bush_a",
       "components": [
         {
-          "name": "cmp_mesh",
+          "name": "cmp_vegetable_mesh",
           "parameters": {
             "mesh": "Green_Fern_Bush_a"
+          }
+        },
+        {
+          "name": "cmp_rigid_static",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "thin_leave_tree_big_bright_green",
+      "components": [
+        {
+          "name": "cmp_vegetable_mesh",
+          "parameters": {
+            "mesh": "thin_leave_tree_big_bright_green"
           }
         },
         {

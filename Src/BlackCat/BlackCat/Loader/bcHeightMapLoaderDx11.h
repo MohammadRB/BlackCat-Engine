@@ -8,7 +8,7 @@
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
-#include "Game/Object/Mesh/bcMaterial.h"
+#include "Game/Object/Mesh/bcRenderMaterial.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat

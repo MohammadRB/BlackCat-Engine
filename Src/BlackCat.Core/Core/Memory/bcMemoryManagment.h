@@ -23,10 +23,10 @@ namespace black_cat
 			mb = 1048576
 		};
 
-		enum class bc_alloc_type : bcUBYTE
+		enum class bc_alloc_type : bcUINT8
 		{
 			program,				// Alloc in program stack
-			frame,					// Alloc in frame stack
+			frame,				// Alloc in frame stack
 			unknown,				// Try to alloc in fixed size allocators, otherwise alloc in crt memory
 			unknown_movable,		// Try to alloc in fixed size allocators, then in super heap that is defragmentable , otherwise in crt memory
 		};

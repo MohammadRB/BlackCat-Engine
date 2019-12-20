@@ -126,7 +126,7 @@ namespace black_cat
 					{ graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11.get_parameter_cbuffer()) }
 				);
 
-				p_param.m_render_thread.run_compute_shader(l_compute_state.get());
+				p_param.m_render_thread.run_compute_shader(*l_compute_state.get());
 			}
 
 			p_param.m_render_thread.finish();
@@ -147,7 +147,7 @@ namespace black_cat
 		l_parameter.m_frustum_planes[5] = _plane_from_3_point(l_camera_extends[7], l_camera_extends[4], l_camera_extends[0]);
 
 		p_param.m_render_thread.update_subresource(m_parameter_cbuffer.get(), 0, &l_parameter, 0, 0);
-		p_param.m_render_thread.bind_render_pass_state(m_render_pass_state.get());
+		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.clear_buffers(core::bc_vector4f(0, 0, 255, 0), 1, 0);
 	}
 
@@ -161,7 +161,7 @@ namespace black_cat
 		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
 		p_param.m_render_system.clear_render_instances();
 
-		p_param.m_render_thread.unbind_render_pass_state(m_render_pass_state.get());
+		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.finish();
 
 		m_command_list->finished();

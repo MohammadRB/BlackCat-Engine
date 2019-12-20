@@ -20,7 +20,7 @@ namespace black_cat
 			Q_OBJECT;
 
 		public:
-			bc_form_main_menu(QWidget& p_parent, bc_ui_command_service& p_command_service);
+			bc_form_main_menu(QWidget& p_menu_bar, bc_ui_command_service& p_command_service);
 
 		private slots:
 			void onNewSceneClicked() const;
@@ -35,11 +35,11 @@ namespace black_cat
 			bc_ui_command_service& m_command_service;
 		};
 
-		inline bc_form_main_menu::bc_form_main_menu(QWidget& p_parent, bc_ui_command_service& p_command_service)
-			: QObject(&p_parent),
+		inline bc_form_main_menu::bc_form_main_menu(QWidget& p_menu_bar, bc_ui_command_service& p_command_service)
+			: QObject(),
 			m_command_service(p_command_service)
 		{
-			QMenu* l_file_menu = p_parent.findChild< QMenu* >("fileMenu");
+			QMenu* l_file_menu = p_menu_bar.findChild< QMenu* >("fileMenu");
 			
 			for (QAction* l_action : l_file_menu->actions())
 			{

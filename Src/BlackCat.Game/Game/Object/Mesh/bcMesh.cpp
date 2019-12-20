@@ -116,6 +116,16 @@ namespace black_cat
 			return m_transformations.at(p_node->m_transformation_index);
 		}
 
+		const core::bc_string& bc_mesh::get_node_mesh_name(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
+		{
+			if (p_mesh_index >= p_node->m_mesh_count)
+			{
+				throw bc_out_of_range_exception("Invalid mesh index");
+			}
+
+			return m_meshes[p_node->m_first_mesh_index + p_mesh_index].m_name;
+		}
+
 		const bc_render_material& bc_mesh::get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
 		{
 			if(p_mesh_index >= p_node->m_mesh_count)

@@ -284,7 +284,12 @@ namespace black_cat
 			},
 			{
 				p_render_system.get_per_object_cbuffer(),
-				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::pixel, p_mesh.m_material->get_parameters_cbuffer())
+				graphic::bc_constant_buffer_parameter
+				(
+					1, 
+					core::bc_enum::or({graphic::bc_shader_type::vertex, graphic::bc_shader_type::pixel}), 
+					p_mesh.m_material->get_parameters_cbuffer()
+				)
 			}
 		);
 	}

@@ -2,18 +2,18 @@
 
 #include "..\bcRegister.hlsli"
 
-SamplerState g_sam_sampler      : register(BC_RENDER_PASS_STATE_S0);
+SamplerState g_sam_sampler			: register(BC_RENDER_PASS_STATE_S0);
 
-Texture2D g_tex2d_diffuse		: register(BC_RENDER_STATE_T0);
-Texture2D g_tex2d_normal			: register(BC_RENDER_STATE_T1);
-Texture2D g_tex2d_specular		: register(BC_RENDER_STATE_T2);
+Texture2D g_tex2d_diffuse			: register(BC_RENDER_STATE_T0);
+Texture2D g_tex2d_normal				: register(BC_RENDER_STATE_T1);
+Texture2D g_tex2d_specular			: register(BC_RENDER_STATE_T2);
 
-cbuffer g_cb_material			: register(BC_RENDER_STATE_CB1)
+cbuffer g_cb_material				: register(BC_RENDER_STATE_CB1)
 {
-	float4 g_diffuse				: packoffset(c0);
-	float g_specular_intency		: packoffset(c1.x);
-	float g_specular_power		: packoffset(c1.y);
-    bool g_has_normal_map       : packoffset(c1.z);
+	float4 g_diffuse					: packoffset(c0);
+	float g_specular_intency			: packoffset(c1.x);
+	float g_specular_power			: packoffset(c1.y);
+    bool g_has_normal_map			: packoffset(c1.z);
 };
 
 struct bc_vs_input
@@ -59,14 +59,18 @@ bc_vs_output gbuffer_vs(bc_vs_input p_input)
 bc_ps_output gbuffer_ps(bc_vs_output p_input)
 {
 	bc_ps_output l_output;
-
+	
 	float4 l_diffuse_map = g_tex2d_diffuse.Sample(g_sam_sampler, p_input.m_texcoord);
 	float4 l_specular_map = g_tex2d_specular.Sample(g_sam_sampler, p_input.m_texcoord);
     float3 l_normal = p_input.m_normal;
+	
+    float2 l_ddx = ddx(p_input.m_texcoord);
+    float2 l_ddy = ddy(p_input.m_texcoord);
 
-    if(g_has_normal_map)
+	[branch]
+    if (g_has_normal_map)
     {
-        float4 l_normal_map = g_tex2d_normal.Sample(g_sam_sampler, p_input.m_texcoord);
+        float4 l_normal_map = g_tex2d_normal.SampleGrad(g_sam_sampler, p_input.m_texcoord, l_ddx, l_ddy);
 
         float3x3 l_tbn;
         l_tbn[0] = p_input.m_tangent;

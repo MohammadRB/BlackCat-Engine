@@ -15,8 +15,10 @@
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferInitializePass.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferTerrainPassDx11.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferPass.h"
+#include "BlackCat/RenderPass/DeferredRendering/bcGBufferVegetablePass.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferLightMapPass.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapPass.h"
+#include "BlackCat/RenderPass/ShadowMap/bcVegetableCascadedShadowMapPass.h"
 #include "BlackCat/RenderPass/bcBackBufferWritePass.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
 #include "Editor/Application/bcEditorRenderApplication.h"
@@ -50,14 +52,16 @@ namespace black_cat
 				3000
 			));
 			l_input_system.get_camera().set_look_at(core::bc_vector3f(0, 200, -1000), core::bc_vector3f(0, 200, 0));
-
+			
 			l_render_system.add_render_pass(0, bc_gbuffer_initialize_pass());
 			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
 			l_render_system.add_render_pass(2, bc_gbuffer_pass());
-			l_render_system.add_render_pass(3, bc_cascaded_shadow_map_pass(constant::g_rpass_direction_light_depth_buffers, 1500, { {15, 1}, {35, 2}, {90, 3}, {170, 4} }));
-			l_render_system.add_render_pass(4, bc_gbuffer_light_map_pass(constant::g_rpass_direction_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
-			l_render_system.add_render_pass(5, bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
-			l_render_system.add_render_pass(6, bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
+			l_render_system.add_render_pass(3, bc_gbuffer_vegetable_pass());
+			l_render_system.add_render_pass(4, bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 2048, { {15, 1}, {35, 2}, {90, 3}, {170, 4} }));
+			l_render_system.add_render_pass(5, bc_vegetable_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
+			l_render_system.add_render_pass(6, bc_gbuffer_light_map_pass(constant::g_rpass_direct_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
+			l_render_system.add_render_pass(7, bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
+			l_render_system.add_render_pass(8, bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
 		}
 
 		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager* p_stream_manager)
