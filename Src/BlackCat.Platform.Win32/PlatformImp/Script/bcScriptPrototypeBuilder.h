@@ -26,7 +26,7 @@ namespace black_cat
 		}
 
 		template< typename T, typename ...TA >
-		JsValueRef CALLBACK _js_object_ctor(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
+		JsValueRef CHAKRA_CALLBACK _js_object_ctor(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			bcAssert(p_is_construct_call);
 			// TODO Make a chiose for more and less argument count than expected
@@ -65,7 +65,7 @@ namespace black_cat
 		}
 
 		template< typename TM >
-		JsValueRef CALLBACK _js_getter_default(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
+		JsValueRef CHAKRA_CALLBACK _js_getter_default(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
 			bcAssert(p_argument_count == 1);
@@ -82,7 +82,7 @@ namespace black_cat
 		}
 
 		template< typename T, typename TM >
-		JsValueRef CALLBACK _js_object_getter_default(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
+		JsValueRef CHAKRA_CALLBACK _js_object_getter_default(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
 			bcAssert(p_argument_count == 1);
@@ -103,7 +103,7 @@ namespace black_cat
 		}
 
 		template< typename TM >
-		JsValueRef CALLBACK _js_setter_default(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
+		JsValueRef CHAKRA_CALLBACK _js_setter_default(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
 			bcAssert(p_argument_count == 2);
@@ -125,7 +125,7 @@ namespace black_cat
 		}
 
 		template< typename T, typename TM >
-		JsValueRef CALLBACK _js_object_setter_default(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
+		JsValueRef CHAKRA_CALLBACK _js_object_setter_default(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
 			bcAssert(p_argument_count == 2);
@@ -150,7 +150,7 @@ namespace black_cat
 		}
 
 		template< typename TM >
-		JsValueRef CALLBACK _js_getter(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
+		JsValueRef CHAKRA_CALLBACK _js_getter(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
 			bcAssert(p_argument_count == 1);
@@ -170,7 +170,7 @@ namespace black_cat
 		}
 
 		template< typename T, typename TM >
-		JsValueRef CALLBACK _js_object_getter(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
+		JsValueRef CHAKRA_CALLBACK _js_object_getter(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
 			bcAssert(p_argument_count == 1);
@@ -191,7 +191,7 @@ namespace black_cat
 		}
 
 		template< typename TM >
-		JsValueRef CALLBACK _js_setter(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
+		JsValueRef CHAKRA_CALLBACK _js_setter(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
 			bcAssert(p_argument_count == 2);
@@ -214,7 +214,7 @@ namespace black_cat
 		}
 
 		template< typename T, typename TM >
-		JsValueRef CALLBACK _js_object_setter(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
+		JsValueRef CHAKRA_CALLBACK _js_object_setter(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
 			bcAssert(p_argument_count == 2);
@@ -239,7 +239,7 @@ namespace black_cat
 		}
 
 		template< typename TR, typename ...TA >
-		JsValueRef CALLBACK _js_function(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
+		JsValueRef CHAKRA_CALLBACK _js_function(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
 			bcAssert(p_argument_count == sizeof...(TA) + 1);
@@ -318,7 +318,7 @@ namespace black_cat
 		}
 
 		template< typename T, typename TR, typename ...TA >
-		JsValueRef CALLBACK _js_object_function(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
+		JsValueRef CHAKRA_CALLBACK _js_object_function(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
 			bcAssert(p_argument_count == sizeof...(TA) + 1);

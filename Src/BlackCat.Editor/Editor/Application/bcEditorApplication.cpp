@@ -32,8 +32,7 @@ namespace black_cat
 
 			// Now that game is available initialize console
 			game::bc_game_console& l_game_console = core::bc_get_service< game::bc_game_system >()->get_console();
-			m_editor_game_console = std::make_unique< bc_editor_game_console >(l_game_console, m_console_widget);
-			m_editor_game_console->connect_widget(this);
+			m_editor_game_console = std::make_unique< bc_editor_game_console >(l_game_console, *m_console_widget);
 			m_editor_game_console->connect_widget(m_console_widget);
 
 			m_ui_command_service = core::bc_get_service<bc_ui_command_service>();

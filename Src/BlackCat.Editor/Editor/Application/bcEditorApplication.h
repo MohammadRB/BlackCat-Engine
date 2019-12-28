@@ -45,9 +45,6 @@ namespace black_cat
 
 			void timerTimeout();
 
-		signals:
-			void executeUIScript(const QString& p_string);
-
 		private:
 			void _load_style() const;
 

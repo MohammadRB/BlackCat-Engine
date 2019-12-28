@@ -70,7 +70,7 @@ namespace black_cat
 
 		void bc_widget_console::_returnPressed()
 		{
-			emit returnPressed(m_console_input->text());
+			emit executeUIScript(m_console_input->text());
 			m_console_input->clear();
 		}
 

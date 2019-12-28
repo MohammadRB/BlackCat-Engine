@@ -7,20 +7,20 @@ namespace black_cat
 {
 	namespace editor
 	{
-		bc_editor_game_console::bc_editor_game_console(game::bc_game_console& p_game_console, bc_widget_console* p_widget)
+		bc_editor_game_console::bc_editor_game_console(game::bc_game_console& p_game_console, bc_widget_console& p_widget)
 			: game::bc_igame_console_imp(p_game_console)
 		{
 			qRegisterMetaType<game::bc_console_output_type>("game::bc_console_output_type");
+			
 			QObject::connect
 			(
 				this,
 				SIGNAL(logRecieved(game::bc_console_output_type, const QString&)),
-				p_widget,
+				&p_widget,
 				SLOT(onLog(game::bc_console_output_type, const QString&)),
 				Qt::QueuedConnection
 			);
-			QObject::connect(this, SIGNAL(clearRecievied()), p_widget, SLOT(onClear()), Qt::QueuedConnection);
-			QObject::connect(p_widget, SIGNAL(returnPressed(const QString&)), this, SLOT(onScript(const QString&)));
+			QObject::connect(this, SIGNAL(clearRecievied()), &p_widget, SLOT(onClear()), Qt::QueuedConnection);
 		}
 
 		bc_editor_game_console::bc_editor_game_console(bc_editor_game_console&& p_other) noexcept
@@ -84,7 +84,7 @@ namespace black_cat
 		{
 			auto l_wstring = p_ui_script.toStdWString();
 
-			m_game_console.run_script(l_wstring.c_str(), false);
+			m_game_console.run_script(l_wstring.c_str(), true);
 
 			emit scriptExecuted(p_ui_script);
 		}

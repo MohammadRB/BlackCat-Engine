@@ -18,7 +18,7 @@ namespace black_cat
 			Q_OBJECT;
 
 		public:
-			bc_editor_game_console(game::bc_game_console& p_game_console, bc_widget_console* p_widget);
+			bc_editor_game_console(game::bc_game_console& p_game_console, bc_widget_console& p_widget);
 			
 			bc_editor_game_console(bc_editor_game_console&&) noexcept;
 
@@ -37,10 +37,10 @@ namespace black_cat
 			void update(core_platform::bc_clock::update_param p_clock_update_param) override;
 
 			bool is_visible() override;
-
+			
 			/**
 			 * \brief Make a widget able to run script through console.
-			 * This function connect widget executeUIScript signal to it's slot. 
+			 * This function connect widget's executeUIScript signal to it's slot. 
 			 * \param p_widget 
 			 */
 			void connect_widget(QWidget* p_widget);

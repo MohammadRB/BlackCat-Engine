@@ -41,8 +41,6 @@ namespace black_cat
 			void _clearClicked();
 
 		signals:
-			void returnPressed(const QString& p_string);
-
 			void executeUIScript(const QString& p_string);
 
 		private:

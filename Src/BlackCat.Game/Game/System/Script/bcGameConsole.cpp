@@ -225,12 +225,11 @@ namespace black_cat
 				auto l_console_prototype = p_context.create_prototype(l_console_builder);
 				auto l_console_object = platform::bc_script_object_ref(p_context.create_object(l_console_prototype, bc_game_console_bind(p_instance)));
 
-				platform::bc_script_property_descriptor< platform::bc_script_object > l_console_descriptor(&l_console_object.get(), false);
-
-				p_global_prototype.property(L"console", l_console_descriptor);
-
 				p_instance.m_bound_context = &p_context;
 				p_instance.m_bound_console = std::move(l_console_object);
+
+				platform::bc_script_property_descriptor< platform::bc_script_object > l_console_descriptor(&p_instance.m_bound_console.get(), false);
+				p_global_prototype.property(L"console", l_console_descriptor);
 			}
 		}
 
