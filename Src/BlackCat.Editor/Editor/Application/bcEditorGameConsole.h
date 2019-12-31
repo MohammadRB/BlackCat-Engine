@@ -48,9 +48,7 @@ namespace black_cat
 		protected:
 
 		private slots:
-			void executeScript(const QString& p_script);
-			
-			void executeUIScript(const QString& p_ui_script);
+			void executeScript(const QString& p_ui_script, bool p_output_console);
 
 		signals:
 			void logRecieved(game::bc_console_output_type p_log_type, const QString& p_log);

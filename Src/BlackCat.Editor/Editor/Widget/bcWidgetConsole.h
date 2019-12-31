@@ -41,7 +41,7 @@ namespace black_cat
 			void _clearClicked();
 
 		signals:
-			void executeUIScript(const QString& p_string);
+			void executeScript(const QString& p_string, bool p_output_console);
 
 		private:
 			void _setup_ui();

@@ -70,7 +70,7 @@ namespace black_cat
 
 		void bc_widget_console::_returnPressed()
 		{
-			emit executeUIScript(m_console_input->text());
+			emit executeScript(m_console_input->text(), true);
 			m_console_input->clear();
 		}
 
@@ -78,11 +78,11 @@ namespace black_cat
 		{
 			if (p_toggle)
 			{
-				emit executeUIScript("console.enableOutput(console.outputInfo)");
+				emit executeScript("console.enableOutput(console.outputInfo)", false);
 			}
 			else
 			{
-				emit executeUIScript("console.disableOutput(console.outputInfo)");
+				emit executeScript("console.disableOutput(console.outputInfo)", false);
 			}
 		}
 
@@ -90,11 +90,11 @@ namespace black_cat
 		{
 			if (p_toggle)
 			{
-				emit executeUIScript("console.enableOutput(console.outputDebug)");
+				emit executeScript("console.enableOutput(console.outputDebug)", false);
 			}
 			else
 			{
-				emit executeUIScript("console.disableOutput(console.outputDebug)");
+				emit executeScript("console.disableOutput(console.outputDebug)", false);
 			}
 		}
 
@@ -102,11 +102,11 @@ namespace black_cat
 		{
 			if (p_toggle)
 			{
-				emit executeUIScript("console.enableOutput(console.outputError)");
+				emit executeScript("console.enableOutput(console.outputError)", false);
 			}
 			else
 			{
-				emit executeUIScript("console.disableOutput(console.outputError)");
+				emit executeScript("console.disableOutput(console.outputError)", false);
 			}
 		}
 
@@ -114,17 +114,17 @@ namespace black_cat
 		{
 			if (p_toggle)
 			{
-				emit executeUIScript("console.enableOutput(console.outputScript)");
+				emit executeScript("console.enableOutput(console.outputScript)", false);
 			}
 			else
 			{
-				emit executeUIScript("console.disableOutput(console.outputScript)");
+				emit executeScript("console.disableOutput(console.outputScript)", false);
 			}
 		}
 
 		void bc_widget_console::_clearClicked()
 		{
-			emit executeUIScript("console.clear()");
+			emit executeScript("console.clear()", false);
 		}
 
 		void bc_widget_console::_setup_ui()
