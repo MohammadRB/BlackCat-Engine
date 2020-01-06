@@ -151,6 +151,5 @@ namespace black_cat
 		};
 
 #endif
-
 	}
 }

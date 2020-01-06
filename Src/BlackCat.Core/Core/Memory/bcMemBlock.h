@@ -57,7 +57,7 @@ namespace black_cat
 
 			void allocators_extra(void* p_val) { m_allocators_extra = p_val; }
 
-			bcInline static constexpr bcSIZE get_aligned_size(bcSIZE p_size, bcSIZE p_alignment)
+			static constexpr bcSIZE get_aligned_size(bcSIZE p_size, bcSIZE p_alignment)
 			{
 				return (p_size % p_alignment == 0) ? p_size : (p_size - (p_size % p_alignment)) + p_alignment;
 			}
@@ -67,15 +67,19 @@ namespace black_cat
 			 * \param p_pointer
 			 * \return
 			 */
-			bcInline static bc_memblock* retrieve_mem_block(const void* p_pointer)
+			static bc_memblock* retrieve_mem_block(const void* p_pointer)
 			{
 				if (p_pointer != nullptr)
+				{
 					return reinterpret_cast<bc_memblock*>(reinterpret_cast<bcUINTPTR>(p_pointer) - sizeof(bc_memblock));
+				}
 				else
+				{
 					return nullptr;
+				}
 			}
 
-			bcInline static bcSIZE get_required_size(bcSIZE p_data_size, bcSIZE p_alignment)
+			static bcSIZE get_required_size(bcSIZE p_data_size, bcSIZE p_alignment)
 			{
 				bcSIZE l_extra_alignment = std::max(0, static_cast<bcINT32>(p_alignment) - BC_MEMORY_MIN_ALIGN);
 
@@ -91,10 +95,9 @@ namespace black_cat
 			 * \param p_alignment
 			 * \return
 			 */
-			bcInline static bcSIZE get_required_offset_for_data(const void* p_pointer, bcSIZE p_alignment)
+			static bcSIZE get_required_offset_for_data(const void* p_pointer, bcSIZE p_alignment)
 			{
-				bcSIZE l_mem_block_offset = reinterpret_cast<bcUINTPTR>(p_pointer) +
-					get_aligned_size(sizeof(bc_memblock), BC_MEMORY_MIN_ALIGN);
+				bcSIZE l_mem_block_offset = reinterpret_cast<bcUINTPTR>(p_pointer) + get_aligned_size(sizeof(bc_memblock), BC_MEMORY_MIN_ALIGN);
 				bcSIZE l_mis_alignment = l_mem_block_offset % p_alignment;
 
 				if (l_mis_alignment > 0)
@@ -105,13 +108,12 @@ namespace black_cat
 				return l_mem_block_offset - reinterpret_cast<bcUINTPTR>(p_pointer);
 			}
 
-			bcInline static bcSIZE get_required_offset_for_mem_block(const void* p_pointer, bcSIZE p_alignment)
+			static bcSIZE get_required_offset_for_mem_block(const void* p_pointer, bcSIZE p_alignment)
 			{
-				return (get_required_offset_for_data(p_pointer, p_alignment) - sizeof(bc_memblock)) -
-					reinterpret_cast<bcUINTPTR>(p_pointer);
+				return (get_required_offset_for_data(p_pointer, p_alignment) - sizeof(bc_memblock)) - reinterpret_cast<bcUINTPTR>(p_pointer);
 			}
 
-			bcInline static void initialize_mem_block_before_allocation(bcSIZE p_size, bcSIZE p_alignment, bc_memblock* p_block)
+			static void initialize_mem_block_before_allocation(bcSIZE p_size, bcSIZE p_alignment, bc_memblock* p_block)
 			{
 				p_block->size(get_required_size(p_size, p_alignment));
 				p_block->alignment(p_alignment);
@@ -130,7 +132,7 @@ namespace black_cat
 			 * \param p_extra
 			 * \param p_block
 			 */
-			bcInline static void initialize_mem_block_after_allocation(void** p_pointer,
+			static void initialize_mem_block_after_allocation(void** p_pointer,
 				bool p_movable,
 				void* p_extra,
 				bc_memblock* p_block)
@@ -151,12 +153,12 @@ namespace black_cat
 			 * \param p_pointer
 			 * \param p_block
 			 */
-			bcInline static void store_mem_block(const void* p_pointer, const bc_memblock* p_block)
+			static void store_mem_block(const void* p_pointer, const bc_memblock* p_block)
 			{
 				*(reinterpret_cast<bc_memblock*>((reinterpret_cast<bcUINTPTR>(p_pointer) - sizeof(bc_memblock)))) = *p_block;
 			}
 
-			bcInline static void free_mem_block(const void* p_pointer) {}
+			static void free_mem_block(const void* p_pointer) {}
 
 		protected:
 

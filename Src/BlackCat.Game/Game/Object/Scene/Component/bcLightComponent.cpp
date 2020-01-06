@@ -2,7 +2,7 @@
 
 #include "Game/GamePCH.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/System/Render/Light/bcLightManager.h"
 #include "Game/System/bcGameSystem.h"

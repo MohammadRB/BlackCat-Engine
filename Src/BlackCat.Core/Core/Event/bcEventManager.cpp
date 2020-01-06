@@ -16,21 +16,6 @@ namespace black_cat
 		{
 		}
 
-		bc_event_listener_handle bc_event_manager::register_event_listener(const bcCHAR* p_event_name, delegate_type&& p_listener)
-		{
-			const auto l_hash = bc_ievent::get_hash(p_event_name);
-			bc_event_handler_index l_index;
-
-			{
-				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_handlers_mutex);
-
-				auto& l_event_handle = m_handlers[l_hash];
-				l_index = l_event_handle.add_delegate(std::move(p_listener));
-			}
-
-			return bc_event_listener_handle(p_event_name, l_index);
-		}
-
 		void bc_event_manager::replace_event_listener(bc_event_listener_handle& p_listener_handle, delegate_type&& p_listener)
 		{
 			const auto l_hash = bc_ievent::get_hash(p_listener_handle.m_event_name);
@@ -91,11 +76,6 @@ namespace black_cat
 			return l_handled;
 		}
 
-		void bc_event_manager::queue_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::small_delta_time p_millisecond)
-		{
-			m_global_queue.push(_bc_queued_event(std::move(p_event), p_millisecond));
-		}
-
 		bcUINT32 bc_event_manager::process_event_queue(core_platform::bc_clock::big_clock p_current_time)
 		{
 			bcUINT32 l_processed_event_count = 0;
@@ -134,6 +114,26 @@ namespace black_cat
 		void bc_event_manager::update(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 			process_event_queue(p_clock_update_param.m_total_elapsed);
+		}
+
+		bc_event_listener_handle bc_event_manager::_register_event_listener(const bcCHAR* p_event_name, delegate_type&& p_listener)
+		{
+			const auto l_hash = bc_ievent::get_hash(p_event_name);
+			bc_event_handler_index l_index;
+
+			{
+				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_handlers_mutex);
+
+				auto& l_event_handle = m_handlers[l_hash];
+				l_index = l_event_handle.add_delegate(std::move(p_listener));
+			}
+
+			return bc_event_listener_handle(p_event_name, l_index);
+		}
+
+		void bc_event_manager::_queue_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::small_delta_time p_millisecond)
+		{
+			m_global_queue.push(_bc_queued_event(std::move(p_event), p_millisecond));
 		}
 	}
 }

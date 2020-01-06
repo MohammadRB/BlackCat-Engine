@@ -4,7 +4,7 @@
 
 #include "Core/Container/bcVector.h"
 #include "Game/bcExport.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/System/bcGameSystem.h"

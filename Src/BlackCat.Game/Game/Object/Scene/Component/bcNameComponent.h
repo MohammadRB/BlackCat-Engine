@@ -4,8 +4,8 @@
 
 #include "Core/Container/bcString.h"
 #include "Game/bcExport.h"
-#include "Game/Object/Scene/bcActor.h"
-#include "Game/Object/Scene/bcActorComponent.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "PlatformImp/bcIDELogger.h"
 
 namespace  black_cat

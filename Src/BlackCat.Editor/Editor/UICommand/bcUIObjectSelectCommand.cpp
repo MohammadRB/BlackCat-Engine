@@ -4,7 +4,7 @@
 
 #include "Core/Utility/bcLogger.h"
 #include "Game/System/Physics/bcPxWrap.h"
-#include "Game/Object/Scene/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/Component/bcNameComponent.h"
 #include "Editor/UICommand/bcUIObjectSelectCommand.h"
 #include "Editor/UI/bcFormObject.h"

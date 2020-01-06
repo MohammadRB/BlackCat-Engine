@@ -5,7 +5,7 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Memory/bcPtr.h"
 #include "Game/bcExport.h"
-#include "Game/Object/Scene/bcActor.hpp"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphNode.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 

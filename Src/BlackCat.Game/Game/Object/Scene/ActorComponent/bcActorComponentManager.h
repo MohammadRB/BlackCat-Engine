@@ -10,9 +10,9 @@
 #include "Core/Utility/bcNullable.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcEnumOperand.h"
-#include "Game/Object/Scene/bcActor.h"
-#include "Game/Object/Scene/bcActorComponent.h"
-#include "Game/Object/Scene/bcActorComponentContainer.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentContainer.h"
 #include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
@@ -145,10 +145,10 @@ namespace black_cat
 
 		private:
 			template< class TComponent >
-			TComponent* _actor_get_component(const bc_actor& p_actor, std::true_type);
+			bc_iactor_component* _actor_get_component(const bc_actor& p_actor, std::true_type);
 
 			template< class TComponent >
-			TComponent* _actor_get_component(const bc_actor& p_actor, std::false_type);
+			bc_iactor_component* _actor_get_component(const bc_actor& p_actor, std::false_type);
 
 			template< class TComponent >
 			void _register_component_type(bcSIZE p_priority);
@@ -320,7 +320,12 @@ namespace black_cat
 		TComponent* bc_actor_component_manager::actor_get_component(const bc_actor& p_actor)
 		{
 			static_assert(std::is_base_of_v<bc_iactor_component, TComponent>, "TComponent parameter is not a component");
-			return _actor_get_component<TComponent>(p_actor, std::integral_constant<bool, bc_actor_component_traits<TComponent>::component_is_abstract()>());
+			
+			return static_cast<TComponent*>(_actor_get_component<TComponent>
+			(
+				p_actor, 
+				std::integral_constant<bool, bc_actor_component_traits<TComponent>::component_is_abstract()>()
+			));
 		}
 
 		template< class TComponent >
@@ -385,7 +390,7 @@ namespace black_cat
 
 			for (auto l_component_data : l_components)
 			{
-				l_component_data->m_container->update(this, p_clock_update_param);
+				l_component_data->m_container->update(*this, p_clock_update_param);
 			}
 		}
 
@@ -452,7 +457,7 @@ namespace black_cat
 		}
 
 		template< class TComponent >
-		TComponent* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::true_type)
+		bc_iactor_component* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::true_type)
 		{
 			static component_map_type::value_type* l_component_entry = _get_component_entry< TComponent >();
 
@@ -465,7 +470,7 @@ namespace black_cat
 
 				if(l_derived_component != nullptr)
 				{
-					return static_cast< TComponent* >(l_derived_component); // Return type of get delegate is bc_iactor_component*
+					return l_derived_component;
 				}
 			}
 
@@ -473,7 +478,7 @@ namespace black_cat
 		}
 
 		template< class TComponent >
-		TComponent* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::false_type)
+		bc_iactor_component* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::false_type)
 		{
 			static component_map_type::value_type* l_component_entry = _get_component_entry< TComponent >();
 
@@ -493,8 +498,7 @@ namespace black_cat
 
 			// Cast to concrete container to avoid virtual calls
 			auto* l_concrete_container = static_cast<bc_actor_component_container< TComponent >*>(l_component_entry->second.m_container.get());
-
-			TComponent* l_component = static_cast< TComponent* >(l_concrete_container->get(l_actor_to_component));
+			auto* l_component = l_concrete_container->get(l_actor_to_component);
 
 			return l_component;
 		}
@@ -542,11 +546,14 @@ namespace black_cat
 					{
 						_bc_actor_component_entry::deriveds_component_get_delegate
 						(
-							this,
-							reinterpret_cast< bc_iactor_component*(bc_actor_component_manager::*)(const bc_actor&) >
-							(
-								static_cast<TDeriveds*(bc_actor_component_manager::*)(const bc_actor&)>(&bc_actor_component_manager::actor_get_component< TDeriveds >)
-							)
+							[&](const bc_actor& p_actor)
+							{
+								return this->_actor_get_component<TDeriveds>
+								(
+									p_actor,
+									std::integral_constant<bool, bc_actor_component_traits<TDeriveds>::component_is_abstract()>()
+								);
+							}
 						)...
 					}
 				)
@@ -560,7 +567,7 @@ namespace black_cat
 		{
 			static_assert(std::is_base_of< bc_iactor_component, TComponent >::value, "TComponent must inherit from bc_iactor_component");
 
-			bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
+			constexpr bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
 			auto l_entry = m_components.find(l_hash);
 
 			if (l_entry == std::end(m_components))

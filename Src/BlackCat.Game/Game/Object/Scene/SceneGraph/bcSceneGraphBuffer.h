@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcVector.h"
-#include "Game/Object/Scene/bcActor.hpp"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/bcExport.h"

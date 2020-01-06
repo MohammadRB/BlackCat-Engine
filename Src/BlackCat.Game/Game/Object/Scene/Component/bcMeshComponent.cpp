@@ -5,7 +5,7 @@
 #include "Core/Content/bcLazyContent.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/bcConstant.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/System/Render/bcRenderInstance.h"

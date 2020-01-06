@@ -7,7 +7,7 @@
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
-#include "Game/Object/Scene/bcActor.hpp"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "BlackCat/bcConstant.h"

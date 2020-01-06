@@ -3,7 +3,7 @@
 #include "Game/GamePCH.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcRenderInstance.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
 
 namespace black_cat

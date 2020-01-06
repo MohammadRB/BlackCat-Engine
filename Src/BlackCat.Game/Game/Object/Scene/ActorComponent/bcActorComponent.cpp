@@ -1,8 +1,8 @@
 // [01/19/2017 MRB]
 
 #include "Game/GamePCH.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
-#include "Game/Object/Scene/bcActorComponent.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 
 namespace black_cat
 {

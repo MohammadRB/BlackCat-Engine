@@ -2,7 +2,7 @@
 
 #include "Game/GamePCH.h"
 #include "Game/Object/Scene/Component/bcNameComponent.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat

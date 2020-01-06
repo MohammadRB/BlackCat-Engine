@@ -1,8 +1,8 @@
 // [12/22/2018 MRB]
 
 #include "Game/GamePCH.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
-#include "Game/Object/Scene/bcActor.hpp"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"

@@ -4,7 +4,7 @@
 
 #include "Core/Container/bcIterator.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
-#include "Game/Object/Scene/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/System/Input/bcCameraFrustum.h"

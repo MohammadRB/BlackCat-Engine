@@ -10,8 +10,8 @@
 #include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcDataDrivenParameter.h"
 #include "Game/bcExport.h"
-#include "Game/Object/Scene/bcActor.hpp"
-#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 
 namespace black_cat
 {

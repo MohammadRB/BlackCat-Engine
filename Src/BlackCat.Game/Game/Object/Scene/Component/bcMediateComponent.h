@@ -5,7 +5,7 @@
 #include "Core/Math/bcVector3f.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/bcExport.h"
-#include "Game/Object/Scene/bcActorComponent.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 
 namespace black_cat
 {

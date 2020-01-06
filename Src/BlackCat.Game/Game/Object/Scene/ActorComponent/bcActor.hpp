@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "Game/Object/Scene/bcActor.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 
 namespace black_cat
 {

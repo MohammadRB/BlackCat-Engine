@@ -6,7 +6,7 @@
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/bcException.h"
 #include "Game/Object/Scene/SceneGraph/bcOctalTreeSceneGraphNode.h"
-#include "Game/Object/Scene/bcActor.hpp"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 
 namespace black_cat

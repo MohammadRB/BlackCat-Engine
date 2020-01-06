@@ -4,7 +4,7 @@
 
 #include "Core/Content/bcLazyContent.h"
 #include "Core/Content/bcContentManager.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/System/Render/bcRenderSystem.h"
