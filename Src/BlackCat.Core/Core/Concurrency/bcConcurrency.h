@@ -82,7 +82,7 @@ namespace black_cat
 
 		inline bcUINT32 bc_concurrency::worker_count()
 		{
-			return _get_thread_manager()->thread_count();
+			return _get_thread_manager()->spawned_thread_count();
 		}
 
 		template< typename T >
@@ -127,7 +127,7 @@ namespace black_cat
 		template< typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc >
 		void bc_concurrency::concurrent_for_each(TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer)
 		{
-			concurrent_for_each(_get_thread_manager()->thread_count(), p_begin, p_end, p_init_func, p_body_func, p_finalizer);
+			concurrent_for_each(_get_thread_manager()->spawned_thread_count(), p_begin, p_end, p_init_func, p_body_func, p_finalizer);
 		}
 
 		template< typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc >

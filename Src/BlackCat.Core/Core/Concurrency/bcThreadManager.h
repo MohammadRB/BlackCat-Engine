@@ -117,7 +117,9 @@ namespace black_cat
 
 			bc_thread_manager& operator=(bc_thread_manager&& p_other) noexcept = delete;
 
-			bcSIZE thread_count() const;
+			bcSIZE max_thread_count() const;
+
+			bcSIZE spawned_thread_count() const;
 
 			bcSIZE task_count() const;
 

@@ -85,7 +85,12 @@ namespace black_cat
 			_stop_workers();
 		}
 
-		bcSIZE bc_thread_manager::thread_count() const
+		bcSIZE bc_thread_manager::max_thread_count() const
+		{
+			return m_thread_count + m_reserved_thread_count;
+		}
+
+		bcSIZE bc_thread_manager::spawned_thread_count() const
 		{
 			{
 				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_guard(m_threads_mutex);

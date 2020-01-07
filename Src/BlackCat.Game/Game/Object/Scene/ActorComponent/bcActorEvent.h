@@ -14,7 +14,9 @@ namespace black_cat
 		public:
 			virtual ~bc_actor_event() = 0;
 
-			bc_actor_event* get_next() const;
+			bc_actor_event* get_next() const noexcept;
+
+			void set_next(bc_actor_event* p_event) noexcept;
 
 		protected:
 			bc_actor_event(const bcCHAR* p_name, bc_actor_event* p_next);
@@ -24,12 +26,12 @@ namespace black_cat
 			bc_actor_event& operator=(const bc_actor_event& p_other) = default;
 
 		private:
-			bc_actor_event* p_next;
+			bc_actor_event* m_next;
 		};
 
 		inline bc_actor_event::bc_actor_event(const bcCHAR* p_name, bc_actor_event* p_next)
 			: core::bc_event(p_name),
-			p_next(p_next)
+			m_next(p_next)
 		{
 		}
 
@@ -37,9 +39,14 @@ namespace black_cat
 		{
 		}
 
-		inline bc_actor_event* bc_actor_event::get_next() const
+		inline bc_actor_event* bc_actor_event::get_next() const noexcept
 		{
-			return p_next;
+			return m_next;
+		}
+
+		inline void bc_actor_event::set_next(bc_actor_event* p_event) noexcept
+		{
+			m_next = p_event;
 		}
 	}
 }
