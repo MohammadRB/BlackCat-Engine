@@ -44,17 +44,26 @@ namespace black_cat
 		template<typename T, typename ...TArgs>
 		inline T* bc_concurrent_object_stack_pool::alloc(TArgs&&... p_parameters)
 		{
-			void* l_memory = _alloc(sizeof(T));
-			new (l_memory) T(std::forward<T>(p_parameters)...);
+			// TODO default alignment is not preserved
+			void* l_memory = _alloc(sizeof(bcSIZE) + sizeof(T));
+			void* l_memory_object = reinterpret_cast<bcBYTE*>(l_memory) + sizeof(bcSIZE);
+			bcSIZE* l_memory_size = reinterpret_cast<bcSIZE*>(l_memory);
 
-			return reinterpret_cast<T*>(l_memory);
+			*l_memory_size = sizeof(T);
+			new (l_memory_object) T(std::forward<T>(p_parameters)...);
+
+			return reinterpret_cast<T*>(l_memory_object);
 		}
 		
 		template<typename T>
 		inline void bc_concurrent_object_stack_pool::free(T* p_object) noexcept
 		{
 			p_object->~T();
-			_free(p_object, sizeof(T));
+
+			void* l_memory = reinterpret_cast<bcBYTE*>(p_object) - sizeof(bcSIZE);
+			bcSIZE l_memory_size = *reinterpret_cast<bcSIZE*>(l_memory);
+
+			_free(l_memory, l_memory_size);
 		}
 	}
 }

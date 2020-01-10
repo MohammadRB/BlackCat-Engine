@@ -9,6 +9,9 @@ namespace black_cat
 {
 	namespace game
 	{
+		/**
+		* \brief Base class for actor events
+		*/
 		class BC_GAME_DLL bc_actor_event : public core::bc_event
 		{
 		public:
@@ -19,21 +22,15 @@ namespace black_cat
 			void set_next(bc_actor_event* p_event) noexcept;
 
 		protected:
-			bc_actor_event(const bcCHAR* p_name, bc_actor_event* p_next);
+			bc_actor_event(const bcCHAR* p_name, bc_actor_event* p_next = nullptr) noexcept;
 
-			bc_actor_event(const bc_actor_event& p_other) = default;
+			bc_actor_event(const bc_actor_event& p_other) noexcept;
 
-			bc_actor_event& operator=(const bc_actor_event& p_other) = default;
+			bc_actor_event& operator=(const bc_actor_event& p_other) noexcept;
 
 		private:
 			bc_actor_event* m_next;
 		};
-
-		inline bc_actor_event::bc_actor_event(const bcCHAR* p_name, bc_actor_event* p_next)
-			: core::bc_event(p_name),
-			m_next(p_next)
-		{
-		}
 
 		inline bc_actor_event::~bc_actor_event()
 		{
@@ -48,5 +45,15 @@ namespace black_cat
 		{
 			m_next = p_event;
 		}
+
+		inline bc_actor_event::bc_actor_event(const bcCHAR* p_name, bc_actor_event* p_next) noexcept
+			: core::bc_event(p_name),
+			m_next(p_next)
+		{
+		}
+
+		inline bc_actor_event::bc_actor_event(const bc_actor_event& p_other) = default;
+
+		inline bc_actor_event& bc_actor_event::operator=(const bc_actor_event& p_other) = default;
 	}
 }

@@ -44,50 +44,37 @@ namespace black_cat
 			static bc_event_hash get_hash(const bcCHAR* p_name) noexcept;
 
 			template< class TEvent >
-			static bool event_is(const bc_ievent& p_event)
-			{
-				return get_hash(bc_event_traits<TEvent>::event_name()) == p_event.get_event_hash();
-			}
+			static bool event_is(const bc_ievent& p_event);
 
 			template< class TEvent >
-			static TEvent* event_as(bc_ievent& p_event)
-			{
-				if(event_is<TEvent>(p_event))
-				{
-					return static_cast<TEvent*>(&p_event);
-				}
-
-				return nullptr;
-			}
+			static TEvent* event_as(bc_ievent& p_event);
 
 			template< class TEvent >
-			static const TEvent* event_as(const bc_ievent& p_event)
-			{
-				if (event_is<TEvent>(p_event))
-				{
-					return static_cast<TEvent*>(&p_event);
-				}
+			static const TEvent* event_as(const bc_ievent& p_event);
 
-				return nullptr;
-			}
+		protected:
+			bc_ievent() = default;
+
+			bc_ievent(const bc_ievent&) = default;
+
+			bc_ievent& operator=(const bc_ievent&) = default;
 		};
 
 		class BC_CORE_DLL bc_event : public bc_ievent
 		{
 		public:
-			explicit bc_event(const bcCHAR* p_name) noexcept;
-
-			bc_event(const bc_event&) = default;
-
 			virtual ~bc_event() = 0;
-
-			bc_event& operator =(const bc_event&) = default;
 
 			const bcCHAR* get_event_name() const noexcept override;
 
 			bc_event_hash get_event_hash() const noexcept override;
 
 		protected:
+			explicit bc_event(const bcCHAR* p_name) noexcept;
+
+			bc_event(const bc_event&) = default;
+
+			bc_event& operator =(const bc_event&) = default;
 
 		private:
 			const bcCHAR* m_name;
@@ -100,13 +87,42 @@ namespace black_cat
 		class BC_CORE_DLL bc_app_event : public bc_event
 		{
 		public:
+			virtual ~bc_app_event() = 0;
+
+		protected:
 			explicit bc_app_event(const bcCHAR* p_name) noexcept;
 
 			bc_app_event(const bc_app_event&) = default;
 
-			virtual ~bc_app_event() = 0;
-
 			bc_app_event& operator =(const bc_app_event&) = default;
 		};
+
+		template< class TEvent >
+		static bool bc_ievent::event_is(const bc_ievent& p_event)
+		{
+			return get_hash(bc_event_traits<TEvent>::event_name()) == p_event.get_event_hash();
+		}
+
+		template< class TEvent >
+		static TEvent* bc_ievent::event_as(bc_ievent& p_event)
+		{
+			if (event_is<TEvent>(p_event))
+			{
+				return static_cast<TEvent*>(&p_event);
+			}
+
+			return nullptr;
+		}
+
+		template< class TEvent >
+		static const TEvent* bc_ievent::event_as(const bc_ievent& p_event)
+		{
+			if (event_is<TEvent>(p_event))
+			{
+				return static_cast<TEvent*>(&p_event);
+			}
+
+			return nullptr;
+		}
 	}
 }

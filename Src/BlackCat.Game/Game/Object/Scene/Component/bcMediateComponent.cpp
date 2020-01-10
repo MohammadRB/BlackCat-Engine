@@ -20,7 +20,7 @@ namespace black_cat
 
 		bc_actor bc_mediate_component::get_actor() const noexcept
 		{
-			return get_manager()->component_get_actor(*this);
+			return get_manager().component_get_actor(*this);
 		}
 
 		core::bc_vector3f bc_mediate_component::get_world_position() const
@@ -124,13 +124,17 @@ namespace black_cat
 		{
 		}
 
+		void bc_mediate_component::write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters)
+		{
+			p_parameters.add(std::make_pair(core::bc_string(s_position_json_key), core::bc_any(get_world_position())));
+		}
+
 		void bc_mediate_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 
-		void bc_mediate_component::write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters)
+		void bc_mediate_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
 		{
-			p_parameters.add(std::make_pair(core::bc_string(s_position_json_key), core::bc_any(get_world_position())));
 		}
 	}
 }

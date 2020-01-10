@@ -9,6 +9,7 @@
 #include "Core/Utility/bcDataDrivenParameter.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
 
 namespace black_cat
 {
@@ -21,8 +22,8 @@ namespace black_cat
 		class BC_GAME_DLL bc_iactor_component
 		{
 		public:
+			//friend class bc_actor_component_manager;
 			constexpr static bc_actor_component_index invalid_index = bc_actor_component_index(-1);
-			friend class bc_actor_component_manager;
 
 		public:
 			virtual ~bc_iactor_component();
@@ -41,7 +42,7 @@ namespace black_cat
 
 			virtual void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters);
 
-			virtual void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) = 0;
+			void update(const bc_actor& p_actor, const bc_actor_event* p_events, const core_platform::bc_clock::update_param& p_clock_update_param);
 
 		protected:
 			explicit bc_iactor_component(bc_actor_component_index p_index) noexcept;
@@ -52,9 +53,13 @@ namespace black_cat
 
 			bc_actor_component_index get_index() const noexcept;
 
-			static bc_actor_component_manager* get_manager() noexcept;
+			static bc_actor_component_manager& get_manager() noexcept;
 
 		private:
+			virtual void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) = 0;
+
+			virtual void handle_event(const bc_actor& p_actor, const bc_actor_event& p_event) = 0;
+
 			bc_actor_component_index m_index;
 		};
 

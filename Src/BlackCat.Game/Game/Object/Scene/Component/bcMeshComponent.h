@@ -40,8 +40,6 @@ namespace black_cat
 				return m_mesh_part_transformation;
 			}
 
-			//bc_actor get_actor() const noexcept override;
-
 			core::bc_vector3f get_world_position() const;
 
 			core::bc_matrix4f get_world_transform() const;
@@ -49,8 +47,6 @@ namespace black_cat
 			void set_world_transform(bc_mediate_component& p_mediate_component, const core::bc_matrix4f& p_transform);
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
-
-			void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
 
 			void render(bc_render_system& p_render_system) const override;
 

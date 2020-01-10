@@ -42,15 +42,17 @@ namespace black_cat
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
-			void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters) override;
 
 			void render(bc_render_system& p_render_system) const override;
-
-			void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters) override;
 
 		protected:
 
 		private:
+			void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+
+			void handle_event(const bc_actor& p_actor, const bc_actor_event& p_event) override;
+
 			bc_height_map_ptr m_height_map;
 			core::bc_matrix4f m_transform;
 		};

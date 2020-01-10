@@ -13,7 +13,7 @@ namespace black_cat
 		{		
 		}
 
-		bc_event_hash bc_ievent::get_hash(const bcCHAR* p_name) noexcept(true)
+		bc_event_hash bc_ievent::get_hash(const bcCHAR* p_name) noexcept
 		{
 			bc_event_hash l_hash = std::hash<const bcCHAR*>()(p_name);
 
@@ -22,7 +22,7 @@ namespace black_cat
 			return l_hash;
 		}
 
-		bc_event::bc_event(const bcCHAR* p_name) noexcept(true)
+		bc_event::bc_event(const bcCHAR* p_name) noexcept
 			: m_name(p_name),
 			m_hash(0)
 		{
@@ -32,12 +32,12 @@ namespace black_cat
 		{
 		}
 
-		const bcCHAR* bc_event::get_event_name() const noexcept(true)
+		const bcCHAR* bc_event::get_event_name() const noexcept
 		{
 			return m_name;
 		}
 
-		bc_event_hash bc_event::get_event_hash() const noexcept(true)
+		bc_event_hash bc_event::get_event_hash() const noexcept
 		{
 			if (m_hash == 0)
 			{
@@ -47,7 +47,7 @@ namespace black_cat
 			return m_hash;
 		}
 
-		bc_app_event::bc_app_event(const bcCHAR* p_name) noexcept(true)
+		bc_app_event::bc_app_event(const bcCHAR* p_name) noexcept
 			: bc_event(p_name)
 		{
 		}

@@ -105,7 +105,6 @@ namespace black_cat
 		private:
 			template<class TAbstract, class ...TDeriveds>
 			friend class _bc_abstract_component_registrar;
-
 			using actor_container_type = core::bc_vector_movale< core::bc_nullable< _bc_actor_entry > >;
 			using component_container_type = core::bc_unordered_map_program< bc_actor_component_hash, _bc_actor_component_entry >;
 
@@ -123,7 +122,9 @@ namespace black_cat
 			void remove_actor(const bc_actor& p_actor);
 
 			template<typename TEvent>
-			void actor_add_event(TEvent&& p_event);
+			void actor_add_event(const bc_actor& p_actor, TEvent&& p_event);
+
+			bc_actor_event* actor_get_events(const bc_actor& p_actor) const;
 
 			// Create uninitialized component for actor
 			template< class TComponent >
@@ -204,14 +205,14 @@ namespace black_cat
 		inline bc_actor bc_actor_component_manager::create_actor(const bc_actor* p_parent)
 		{
 			bc_actor_index l_index = 0;
-			bool l_has_value = false;
+			bool l_inserted = false;
 
 			for (core::bc_nullable< _bc_actor_entry >& l_actor : m_actors) // TODO use fast free space lookup
 			{
 				if (!l_actor.is_set())
 				{
 					l_actor.reset(_bc_actor_entry(bc_actor(l_index), p_parent ? p_parent->get_index() : bc_actor::invalid_index));
-					l_has_value = true;
+					l_inserted = true;
 					break;
 				}
 				else
@@ -220,7 +221,7 @@ namespace black_cat
 				}
 			}
 
-			if (!l_has_value)
+			if (!l_inserted)
 			{
 				m_actors.push_back(core::bc_nullable< _bc_actor_entry >
 				(
@@ -259,6 +260,21 @@ namespace black_cat
 			}
 
 			m_actors[p_actor.get_index()].reset();
+		}
+
+		inline bc_actor_event* bc_actor_component_manager::actor_get_events(const bc_actor& p_actor) const
+		{
+			auto& l_actor_entry = m_actors[p_actor.get_index()].get();
+			return l_actor_entry.m_events;
+		}
+
+		template<typename TEvent>
+		inline void bc_actor_component_manager::actor_add_event(const bc_actor& p_actor, TEvent&& p_event)
+		{
+			auto& l_actor_entry = m_actors[p_actor.get_index()].get();
+			auto* l_event = m_events_pool.alloc<TEvent>(std::move(p_event));
+
+			l_actor_entry.add_event(l_event);
 		}
 
 		template< class TComponent >
@@ -406,13 +422,21 @@ namespace black_cat
 			}
 
 			std::sort(std::begin(l_components), std::end(l_components), [](const _bc_actor_component_entry* p_first, const _bc_actor_component_entry* p_second)
-				{
-					return p_first->m_component_priority < p_second->m_component_priority;
-				});
+			{
+				return p_first->m_component_priority < p_second->m_component_priority;
+			});
 
+			bcSIZE l_component_index = 0;
 			for (auto l_component_data : l_components)
 			{
-				l_component_data->m_container->update(*this, p_clock_update_param);
+				core::bc_concurrent_object_stack_pool* l_events_pool;
+
+				if (++l_component_index == l_components.size())
+				{
+					l_events_pool = &m_events_pool;
+				}
+
+				l_component_data->m_container->update(*this, p_clock_update_param, l_events_pool);
 			}
 		}
 
@@ -465,8 +489,7 @@ namespace black_cat
 				(
 					[this, l_actor]()
 					{
-						using expanded_type = typename TComponent::template apply< _bc_abstract_component_registrar >;
-						expanded_type()(*this);
+						typename TComponent::template apply< _bc_abstract_component_registrar >()(*this);
 
 						this->actor_get_component<typename TComponent::abstract_component_t>(l_actor);
 
@@ -589,7 +612,7 @@ namespace black_cat
 		{
 			static_assert(std::is_base_of< bc_iactor_component, TComponent >::value, "TComponent must inherit from bc_iactor_component");
 
-			constexpr bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
+			bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
 			auto l_entry = m_components.find(l_hash);
 
 			if (l_entry == std::end(m_components))

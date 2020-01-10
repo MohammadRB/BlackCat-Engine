@@ -37,7 +37,7 @@ namespace black_cat
 
 		bc_actor bc_vegetable_mesh_component::get_actor() const noexcept
 		{
-			return get_manager()->component_get_actor(*this);
+			return get_manager().component_get_actor(*this);
 		}
 
 		void bc_vegetable_mesh_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
@@ -59,6 +59,14 @@ namespace black_cat
 			const auto* l_root_node = l_mesh.get_root_node();
 
 			_render_mesh_node(p_render_system, l_mesh, l_mesh_transformation, l_root_node, l_root_node + 1, l_mesh_prefix);
+		}
+
+		void bc_vegetable_mesh_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		{
+		}
+
+		void bc_vegetable_mesh_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
+		{
 		}
 	}
 }

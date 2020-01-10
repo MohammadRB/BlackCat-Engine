@@ -90,11 +90,6 @@ namespace black_cat
 			return *this;
 		}
 
-		/*bc_actor bc_mesh_component::get_actor() const noexcept
-		{
-			return get_manager()->component_get_actor(*this);
-		}*/
-
 		core::bc_vector3f bc_mesh_component::get_world_position() const
 		{
 			return m_mesh_part_transformation.get_node_translation(*m_sub_mesh.get_root_node());
@@ -123,10 +118,6 @@ namespace black_cat
 			m_mesh_part_transformation = bc_sub_mesh_transformation(*m_sub_mesh.get_root_node());
 
 			set_world_transform(*p_actor.get_component<bc_mediate_component>(), core::bc_matrix4f::identity());
-		}
-
-		void bc_mesh_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
-		{
 		}
 
 		void bc_mesh_component::render(bc_render_system& p_render_system) const

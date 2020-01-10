@@ -5,6 +5,7 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcObjectStackPool.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "PlatformImp/bcIDELogger.h"
 
@@ -27,7 +28,9 @@ namespace black_cat
 
 			virtual void remove(bc_actor_component_index p_index) = 0;
 
-			virtual void update(const bc_actor_component_manager& p_manager, const core_platform::bc_clock::update_param& p_clock_update_param) = 0;
+			virtual void update(const bc_actor_component_manager& p_manager, 
+				const core_platform::bc_clock::update_param& p_clock_update_param,
+				core::bc_concurrent_object_stack_pool* p_events_pool) = 0;
 
 			virtual bcSIZE size() = 0;
 
@@ -61,7 +64,9 @@ namespace black_cat
 
 			void remove(bc_actor_component_index p_index) override;
 
-			void update(const bc_actor_component_manager& p_manager, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			void update(const bc_actor_component_manager& p_manager, 
+				const core_platform::bc_clock::update_param& p_clock_update_param,
+				core::bc_concurrent_object_stack_pool* p_events_pool) override;
 
 			bcSIZE size() override;
 
@@ -167,15 +172,28 @@ namespace black_cat
 		}
 
 		template< class TComponent >
-		void bc_actor_component_container<TComponent>::update(const bc_actor_component_manager& p_manager, const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_actor_component_container<TComponent>::update(const bc_actor_component_manager& p_manager, 
+			const core_platform::bc_clock::update_param& p_clock_update_param, 
+			core::bc_concurrent_object_stack_pool* p_events_pool)
 		{
 			for(auto& l_component : m_components)
 			{
-				if(l_component.is_set())
+				if(l_component.is_set()) // TODO find a way to skip this if
 				{
 					bc_actor l_actor = p_manager.component_get_actor< TComponent >(l_component.get());
+					bc_actor_event* l_events = p_manager.actor_get_events(l_actor);
 					
-					l_component->update(l_actor, p_clock_update_param);
+					l_component->update(l_actor, l_events, p_clock_update_param);
+
+					if (p_events_pool)
+					{
+						while (l_events)
+						{
+							bc_actor_event* l_next = l_events->get_next();
+							p_events_pool->free(l_events);
+							l_events = l_next;
+						}
+					}
 				}
 			}
 		}

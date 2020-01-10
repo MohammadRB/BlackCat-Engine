@@ -31,7 +31,7 @@ namespace black_cat
 
 			p_physics_system.connect_px_actor_to_game_actor(p_px_actor, p_actor);
 		}
-
+		
 		void bc_rigid_body_component::_get_mesh_colliders(const bc_sub_mesh& p_mesh,
 			const bc_mesh_node* p_mesh_node,
 			core::bc_vector_frame<const bc_mesh_part_collider::entry*>& p_result)

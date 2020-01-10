@@ -34,10 +34,11 @@ namespace black_cat
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
-			void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
-		protected:
-
 		private:
+			void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+
+			void handle_event(const bc_actor& p_actor, const bc_actor_event& p_event) override;
+
 			void _initialize_from_height_map(bc_physics_system& p_physics_system, bc_actor& p_actor, physics::bc_rigid_static& p_rigid_static, bc_height_map_component& p_component);
 
 			physics::bc_rigid_static_ref m_px_actor_ref;
