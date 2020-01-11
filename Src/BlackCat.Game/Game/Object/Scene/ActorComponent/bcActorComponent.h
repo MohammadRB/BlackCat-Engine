@@ -42,8 +42,10 @@ namespace black_cat
 
 			virtual void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters);
 
-			void update(const bc_actor& p_actor, const bc_actor_event* p_events, const core_platform::bc_clock::update_param& p_clock_update_param);
+			virtual void handle_event(const bc_actor& p_actor, const bc_actor_event& p_event) = 0;
 
+			virtual void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) = 0;
+					   
 		protected:
 			explicit bc_iactor_component(bc_actor_component_index p_index) noexcept;
 
@@ -56,10 +58,6 @@ namespace black_cat
 			static bc_actor_component_manager& get_manager() noexcept;
 
 		private:
-			virtual void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) = 0;
-
-			virtual void handle_event(const bc_actor& p_actor, const bc_actor_event& p_event) = 0;
-
 			bc_actor_component_index m_index;
 		};
 

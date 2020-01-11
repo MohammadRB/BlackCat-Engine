@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/bcExport.h"
 #include "Core/Memory/bcMemoryStack.h"
 #include "Core/Utility/bcInitializable.h"
@@ -39,6 +40,7 @@ namespace black_cat
 			void _free(void* p_pointer, bcSIZE p_size);
 
 			bc_memory_stack m_stack_allocator;
+			core_platform::bc_atomic<bcSIZE> m_size;
 		};
 		
 		template<typename T, typename ...TArgs>

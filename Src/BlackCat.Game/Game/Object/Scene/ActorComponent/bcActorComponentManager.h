@@ -179,14 +179,20 @@ namespace black_cat
 
 			void _resize_actor_to_component_index_maps();
 
+			const bcSIZE s_events_pool_capacity = 10 * 1024;
+
 			actor_container_type m_actors;
 			component_container_type m_components;
-			core::bc_concurrent_object_stack_pool m_events_pool;
+			core::bc_concurrent_object_stack_pool m_events_pool1;
+			core::bc_concurrent_object_stack_pool m_events_pool2;
+			core::bc_concurrent_object_stack_pool* m_active_events_pool;
 		};
 
 		inline bc_actor_component_manager::bc_actor_component_manager()
 		{
-			m_events_pool.initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), 10 * 1024);
+			m_events_pool1.initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
+			m_events_pool2.initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
+			m_active_events_pool = &m_events_pool1;
 		}
 
 		inline bc_actor_component_manager::~bc_actor_component_manager()
@@ -272,7 +278,7 @@ namespace black_cat
 		inline void bc_actor_component_manager::actor_add_event(const bc_actor& p_actor, TEvent&& p_event)
 		{
 			auto& l_actor_entry = m_actors[p_actor.get_index()].get();
-			auto* l_event = m_events_pool.alloc<TEvent>(std::move(p_event));
+			auto* l_event = m_active_events_pool->alloc<TEvent>(std::move(p_event));
 
 			l_actor_entry.add_event(l_event);
 		}
@@ -426,18 +432,25 @@ namespace black_cat
 				return p_first->m_component_priority < p_second->m_component_priority;
 			});
 
-			bcSIZE l_component_index = 0;
-			for (auto l_component_data : l_components)
+			core::bc_concurrent_object_stack_pool* l_processing_events_pool;
+			do
 			{
-				core::bc_concurrent_object_stack_pool* l_events_pool;
+				m_active_events_pool = m_active_events_pool == &m_events_pool1 ? &m_events_pool2 : &m_events_pool1;
+				l_processing_events_pool = m_active_events_pool == &m_events_pool1 ? &m_events_pool2 : &m_events_pool1;
 
-				if (++l_component_index == l_components.size())
+				bcSIZE l_component_index = 0;
+				for (auto l_component_data : l_components)
 				{
-					l_events_pool = &m_events_pool;
+					if (++l_component_index != l_components.size())
+					{
+						l_component_data->m_container->handle_events(*this, nullptr);
+					}
+					else
+					{
+						l_component_data->m_container->handle_events(*this, l_processing_events_pool);
+					}
 				}
-
-				l_component_data->m_container->update(*this, p_clock_update_param, l_events_pool);
-			}
+			} while (l_processing_events_pool->);
 		}
 
 		template< class ...TComponent >

@@ -95,18 +95,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_QtAwesomeAnim.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bcConsoleWidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bcConsoleWidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bcD3DOutputWidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bcD3DOutputWidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_bcFormTools.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -163,12 +151,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectSelectCommand.cpp">
       <Filter>Editor\UICommand</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bcFormObject.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bcFormObject.cpp">
-      <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorRenderApplicationThread.cpp">
       <Filter>Editor\Application</Filter>
