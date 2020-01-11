@@ -69,19 +69,24 @@ namespace black_cat
 			explicit _bc_actor_entry(const bc_actor& p_actor, bc_actor_index p_parent_index = bc_actor::invalid_index)
 				: m_actor(p_actor),
 				m_parent_index(p_parent_index),
-				m_events(nullptr)
+				m_events{ nullptr, nullptr }
 			{
 			}
 
-			void add_event(bc_actor_event* p_event)
+			void add_event(bcUINT32 p_active_event_pool, bc_actor_event* p_event) noexcept
 			{
-				p_event->set_next(m_events);
-				m_events = p_event;
+				p_event->set_next(m_events[p_active_event_pool]);
+				m_events[p_active_event_pool] = p_event;
+			}
+
+			bc_actor_event* get_events(bcUINT32 p_active_event_pool) const noexcept
+			{
+				return m_events[p_active_event_pool];
 			}
 
 			bc_actor m_actor;
 			bc_actor_index m_parent_index;
-			bc_actor_event* m_events;
+			bc_actor_event* m_events[2];
 		};
 
 		struct _bc_actor_component_entry
@@ -183,16 +188,17 @@ namespace black_cat
 
 			actor_container_type m_actors;
 			component_container_type m_components;
-			core::bc_concurrent_object_stack_pool m_events_pool1;
-			core::bc_concurrent_object_stack_pool m_events_pool2;
-			core::bc_concurrent_object_stack_pool* m_active_events_pool;
+			bcUINT32 m_read_event_pool;
+			bcUINT32 m_write_event_pool;
+			core::bc_concurrent_object_stack_pool m_events_pool[2];
 		};
 
 		inline bc_actor_component_manager::bc_actor_component_manager()
 		{
-			m_events_pool1.initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
-			m_events_pool2.initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
-			m_active_events_pool = &m_events_pool1;
+			m_events_pool[0].initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
+			m_events_pool[1].initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
+			m_read_event_pool = 0U;
+			m_write_event_pool = 0U;
 		}
 
 		inline bc_actor_component_manager::~bc_actor_component_manager()
@@ -205,7 +211,8 @@ namespace black_cat
 				}) == 0
 			);
 
-			m_events_pool.destroy();
+			m_events_pool[0].destroy();
+			m_events_pool[1].destroy();
 		}
 
 		inline bc_actor bc_actor_component_manager::create_actor(const bc_actor* p_parent)
@@ -271,16 +278,16 @@ namespace black_cat
 		inline bc_actor_event* bc_actor_component_manager::actor_get_events(const bc_actor& p_actor) const
 		{
 			auto& l_actor_entry = m_actors[p_actor.get_index()].get();
-			return l_actor_entry.m_events;
+			return l_actor_entry.get_events(m_read_event_pool);
 		}
 
 		template<typename TEvent>
-		inline void bc_actor_component_manager::actor_add_event(const bc_actor& p_actor, TEvent&& p_event)
+		void bc_actor_component_manager::actor_add_event(const bc_actor& p_actor, TEvent&& p_event)
 		{
 			auto& l_actor_entry = m_actors[p_actor.get_index()].get();
-			auto* l_event = m_active_events_pool->alloc<TEvent>(std::move(p_event));
+			auto* l_event = m_events_pool[m_write_event_pool].alloc<TEvent>(std::move(p_event));
 
-			l_actor_entry.add_event(l_event);
+			l_actor_entry.add_event(m_write_event_pool, l_event);
 		}
 
 		template< class TComponent >
@@ -432,11 +439,10 @@ namespace black_cat
 				return p_first->m_component_priority < p_second->m_component_priority;
 			});
 
-			core::bc_concurrent_object_stack_pool* l_processing_events_pool;
 			do
 			{
-				m_active_events_pool = m_active_events_pool == &m_events_pool1 ? &m_events_pool2 : &m_events_pool1;
-				l_processing_events_pool = m_active_events_pool == &m_events_pool1 ? &m_events_pool2 : &m_events_pool1;
+				m_read_event_pool = m_write_event_pool;
+				m_write_event_pool = (m_write_event_pool + 1) % 2;
 
 				bcSIZE l_component_index = 0;
 				for (auto l_component_data : l_components)
@@ -447,10 +453,16 @@ namespace black_cat
 					}
 					else
 					{
-						l_component_data->m_container->handle_events(*this, l_processing_events_pool);
+						l_component_data->m_container->handle_events(*this, &m_events_pool[m_read_event_pool]);
 					}
 				}
-			} while (l_processing_events_pool->);
+			} while (m_events_pool[m_write_event_pool].size());
+
+			// Update components
+			for(auto l_component_data : l_components)
+			{
+				l_component_data->m_container->update(*this, p_clock_update_param);
+			}
 		}
 
 		template< class ...TComponent >

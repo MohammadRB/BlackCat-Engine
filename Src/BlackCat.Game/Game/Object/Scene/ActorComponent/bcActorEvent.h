@@ -32,9 +32,7 @@ namespace black_cat
 			bc_actor_event* m_next;
 		};
 
-		inline bc_actor_event::~bc_actor_event()
-		{
-		}
+		inline bc_actor_event::~bc_actor_event() = default;
 
 		inline bc_actor_event* bc_actor_event::get_next() const noexcept
 		{
@@ -52,8 +50,8 @@ namespace black_cat
 		{
 		}
 
-		inline bc_actor_event::bc_actor_event(const bc_actor_event& p_other) = default;
+		inline bc_actor_event::bc_actor_event(const bc_actor_event& p_other) noexcept = default;
 
-		inline bc_actor_event& bc_actor_event::operator=(const bc_actor_event& p_other) = default;
+		inline bc_actor_event& bc_actor_event::operator=(const bc_actor_event& p_other) noexcept = default;
 	}
 }

@@ -29,9 +29,11 @@ namespace black_cat
 
 			this_type& operator =(this_type&& p_other) noexcept;
 
-			bcUINT32 block_size() const noexcept { return m_block_size; };
+			bcSIZE capacity() const noexcept { return block_size() * num_block(); }
+			
+			bcSIZE block_size() const noexcept { return m_block_size; }
 
-			bcUINT32 num_block() const noexcept { return m_num_block; };
+			bcSIZE num_block() const noexcept { return m_num_block; }
 
 			void* alloc(bc_memblock* p_mem_block) noexcept override;
 

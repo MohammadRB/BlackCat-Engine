@@ -28,6 +28,8 @@ namespace black_cat
 		public:
 			virtual ~bc_iactor_component();
 
+			bc_actor_component_index get_index() const noexcept;
+			
 			virtual bc_actor get_actor() const noexcept = 0; // TODO provide default implementation
 
 			/**
@@ -42,9 +44,9 @@ namespace black_cat
 
 			virtual void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters);
 
-			virtual void handle_event(const bc_actor& p_actor, const bc_actor_event& p_event) = 0;
+			virtual void handle_event(const bc_actor& p_actor, const bc_actor_event& p_event);
 
-			virtual void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) = 0;
+			virtual void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param);
 					   
 		protected:
 			explicit bc_iactor_component(bc_actor_component_index p_index) noexcept;
@@ -52,8 +54,6 @@ namespace black_cat
 			bc_iactor_component(bc_iactor_component&& p_other) noexcept;
 
 			bc_iactor_component& operator=(bc_iactor_component&& p_other) noexcept;
-
-			bc_actor_component_index get_index() const noexcept;
 
 			static bc_actor_component_manager& get_manager() noexcept;
 
@@ -63,6 +63,11 @@ namespace black_cat
 
 		inline bc_iactor_component::~bc_iactor_component() = default;
 
+		inline bc_actor_component_index bc_iactor_component::get_index() const noexcept
+		{
+			return m_index;
+		}
+		
 		inline bc_iactor_component::bc_iactor_component(bc_actor_component_index p_index) noexcept
 			: m_index(p_index)
 		{
@@ -78,11 +83,6 @@ namespace black_cat
 			m_index = p_other.m_index;
 
 			return *this;
-		}
-
-		inline bc_actor_component_index bc_iactor_component::get_index() const noexcept
-		{
-			return m_index;
 		}
 	}
 }

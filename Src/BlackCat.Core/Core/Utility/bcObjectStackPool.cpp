@@ -10,15 +10,31 @@ namespace black_cat
 	{
 		bc_concurrent_object_stack_pool::bc_concurrent_object_stack_pool() noexcept = default;
 
-		bc_concurrent_object_stack_pool::bc_concurrent_object_stack_pool(bc_concurrent_object_stack_pool&& p_other) noexcept = default;
+		bc_concurrent_object_stack_pool::bc_concurrent_object_stack_pool(bc_concurrent_object_stack_pool&& p_other) noexcept
+			: m_stack_allocator(std::move(p_other.m_stack_allocator)),
+			m_size(p_other.m_size.load(core_platform::bc_memory_order::relaxed))
+		{
+			
+		}
 
 		bc_concurrent_object_stack_pool::~bc_concurrent_object_stack_pool() = default;
 
-		bc_concurrent_object_stack_pool& bc_concurrent_object_stack_pool::operator=(bc_concurrent_object_stack_pool&& p_other) noexcept = default;
+		bc_concurrent_object_stack_pool& bc_concurrent_object_stack_pool::operator=(bc_concurrent_object_stack_pool&& p_other) noexcept
+		{
+			m_stack_allocator = std::move(p_other.m_stack_allocator);
+			m_size.store(p_other.m_size.load(core_platform::bc_memory_order::relaxed), core_platform::bc_memory_order::relaxed);
 
+			return *this;
+		}
+		
 		bcSIZE bc_concurrent_object_stack_pool::capacity() const noexcept
 		{
-			return m_stack_allocator.size();
+			return m_stack_allocator.capacity();
+		}
+
+		bcSIZE bc_concurrent_object_stack_pool::size() const noexcept
+		{
+			return m_size.load(core_platform::bc_memory_order::relaxed);
 		}
 
 		void black_cat::core::bc_concurrent_object_stack_pool::_initialize(bcSIZE p_max_num_thread, bcSIZE p_capacity)

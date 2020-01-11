@@ -210,7 +210,7 @@ namespace black_cat
 
 			this_type& operator =(this_type&& p_other) noexcept;
 
-			bcSIZE size() const noexcept
+			bcSIZE capacity() const noexcept
 			{
 				return m_heap_size;
 			}

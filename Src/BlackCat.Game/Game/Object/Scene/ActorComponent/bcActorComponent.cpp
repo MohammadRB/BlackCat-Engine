@@ -17,10 +17,17 @@ namespace black_cat
 		{
 		}
 
+		void bc_iactor_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
+		{
+		}
+
+		void bc_iactor_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		{
+		}
+
 		bc_actor_component_manager& bc_iactor_component::get_manager() noexcept
 		{
 			static bc_actor_component_manager* s_manager = core::bc_get_service<bc_actor_component_manager>();
-
 			return *s_manager;
 		}
 	}
