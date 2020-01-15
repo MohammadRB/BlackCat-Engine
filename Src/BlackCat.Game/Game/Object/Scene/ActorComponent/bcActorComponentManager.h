@@ -458,7 +458,6 @@ namespace black_cat
 				}
 			} while (m_events_pool[m_write_event_pool].size());
 
-			// Update components
 			for(auto l_component_data : l_components)
 			{
 				l_component_data->m_container->update(*this, p_clock_update_param);

@@ -9,6 +9,10 @@ namespace black_cat
 {
 	namespace game
 	{
+		void bc_iactor_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
+		{
+		}
+
 		void bc_iactor_component::load_instance(bc_actor& p_actor, const core::bc_json_key_value& p_parameters)
 		{
 		}

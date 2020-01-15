@@ -34,11 +34,11 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
-		void bc_simple_mesh_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_simple_mesh_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
 		{
 		}
-
-		void bc_simple_mesh_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
+		
+		void bc_simple_mesh_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 	}

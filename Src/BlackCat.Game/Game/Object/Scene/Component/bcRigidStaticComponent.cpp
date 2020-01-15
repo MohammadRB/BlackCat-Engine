@@ -80,11 +80,11 @@ namespace black_cat
 			throw bc_invalid_operation_exception("Rigid static component needs either mesh or height map component.");
 		}
 
-		void bc_rigid_static_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_rigid_static_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
 		{
 		}
-
-		void bc_rigid_static_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
+		
+		void bc_rigid_static_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 

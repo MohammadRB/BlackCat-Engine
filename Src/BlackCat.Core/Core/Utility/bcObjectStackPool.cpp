@@ -8,13 +8,15 @@ namespace black_cat
 {
 	namespace core 
 	{
-		bc_concurrent_object_stack_pool::bc_concurrent_object_stack_pool() noexcept = default;
+		bc_concurrent_object_stack_pool::bc_concurrent_object_stack_pool() noexcept
+			: m_size(0)
+		{
+		}
 
 		bc_concurrent_object_stack_pool::bc_concurrent_object_stack_pool(bc_concurrent_object_stack_pool&& p_other) noexcept
 			: m_stack_allocator(std::move(p_other.m_stack_allocator)),
 			m_size(p_other.m_size.load(core_platform::bc_memory_order::relaxed))
-		{
-			
+		{	
 		}
 
 		bc_concurrent_object_stack_pool::~bc_concurrent_object_stack_pool() = default;
@@ -37,12 +39,12 @@ namespace black_cat
 			return m_size.load(core_platform::bc_memory_order::relaxed);
 		}
 
-		void black_cat::core::bc_concurrent_object_stack_pool::_initialize(bcSIZE p_max_num_thread, bcSIZE p_capacity)
+		void bc_concurrent_object_stack_pool::_initialize(bcSIZE p_max_num_thread, bcSIZE p_capacity)
 		{
 			m_stack_allocator.initialize(p_max_num_thread, p_capacity, "bc_concurrent_object_stack_pool");
 		}
 
-		void black_cat::core::bc_concurrent_object_stack_pool::_destroy()
+		void bc_concurrent_object_stack_pool::_destroy()
 		{
 			m_stack_allocator.destroy();
 		}

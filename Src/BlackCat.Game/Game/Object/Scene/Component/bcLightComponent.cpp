@@ -126,11 +126,11 @@ namespace black_cat
 			set_world_transform(core::bc_matrix4f::identity());
 		}
 
-		void bc_light_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_light_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
 		{
 		}
-
-		void bc_light_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
+		
+		void bc_light_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 	}

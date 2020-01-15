@@ -61,11 +61,11 @@ namespace black_cat
 			_render_mesh_node(p_render_system, l_mesh, l_mesh_transformation, l_root_node, l_root_node + 1, l_mesh_prefix);
 		}
 
-		void bc_vegetable_mesh_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_vegetable_mesh_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
 		{
 		}
-
-		void bc_vegetable_mesh_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
+		
+		void bc_vegetable_mesh_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 	}

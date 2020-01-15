@@ -22,7 +22,6 @@ namespace black_cat
 		class BC_GAME_DLL bc_iactor_component
 		{
 		public:
-			//friend class bc_actor_component_manager;
 			constexpr static bc_actor_component_index invalid_index = bc_actor_component_index(-1);
 
 		public:
@@ -38,7 +37,7 @@ namespace black_cat
 			 * \param p_actor
 			 * \param p_parameters 
 			 */
-			virtual void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) = 0;
+			virtual void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters);
 
 			virtual void load_instance(bc_actor& p_actor, const core::bc_json_key_value& p_parameters);
 

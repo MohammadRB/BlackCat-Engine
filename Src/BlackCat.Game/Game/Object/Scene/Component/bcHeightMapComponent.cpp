@@ -73,19 +73,19 @@ namespace black_cat
 			auto* l_content_manager = core::bc_get_service<core::bc_content_manager>();
 			l_content_manager->save(*m_height_map);
 		}
+
+		void bc_height_map_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
+		{
+		}
+
+		void bc_height_map_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		{
+		}
 		
 		void bc_height_map_component::render(bc_render_system& p_render_system) const
 		{
 			bc_render_instance l_instance(m_transform);
 			p_render_system.add_render_instance(*m_height_map->get_render_state(), l_instance);
-		}
-		
-		void bc_height_map_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
-		{
-		}
-
-		void bc_height_map_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
-		{
 		}
 	}
 }

@@ -49,6 +49,9 @@
     <Filter Include="Game\Object\Scene\ActorComponent">
       <UniqueIdentifier>{47ec6f99-94e4-4109-abf0-5cf5eb8779f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Object\Scene\Component\Event">
+      <UniqueIdentifier>{2e1f337a-a135-4f86-b9e1-a582deb039fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h">
@@ -276,8 +279,14 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorEvent.h">
       <Filter>Game\Object\Scene\ActorComponent</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcActorEventWorldTransform.h">
-      <Filter>Game\Object\Scene\Component</Filter>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcActorEventWorldTransform.h">
+      <Filter>Game\Object\Scene\Component\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcActorEventBoundBoxChanged.h">
+      <Filter>Game\Object\Scene\Component\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcActorEventAddedToScene.h">
+      <Filter>Game\Object\Scene\Component\Event</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

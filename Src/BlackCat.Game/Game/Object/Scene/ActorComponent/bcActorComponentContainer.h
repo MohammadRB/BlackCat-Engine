@@ -184,7 +184,7 @@ namespace black_cat
 
 					while (l_current_event)
 					{
-						l_component.handle_event(l_actor, *l_current_event);
+						l_component->handle_event(l_actor, *l_current_event);
 						l_current_event = l_current_event->get_next();
 					}
 					
