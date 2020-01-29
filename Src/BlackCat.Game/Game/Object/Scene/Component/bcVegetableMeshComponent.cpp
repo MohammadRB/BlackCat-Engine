@@ -5,6 +5,7 @@
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 
 namespace black_cat
 {
@@ -61,11 +62,16 @@ namespace black_cat
 			_render_mesh_node(p_render_system, l_mesh, l_mesh_transformation, l_root_node, l_root_node + 1, l_mesh_prefix);
 		}
 
-		void bc_vegetable_mesh_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
+		void bc_vegetable_mesh_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
+			auto* l_world_transform_event = core::bc_event::event_as<bc_actor_event_world_transform>(p_event);
+			if (l_world_transform_event)
+			{
+				bc_mesh_component::set_world_transform(p_actor, l_world_transform_event->get_transform());
+			}
 		}
 		
-		void bc_vegetable_mesh_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_vegetable_mesh_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 	}

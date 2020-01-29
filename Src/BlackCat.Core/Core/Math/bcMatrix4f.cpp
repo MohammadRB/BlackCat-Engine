@@ -16,13 +16,17 @@ namespace black_cat
 	namespace core
 	{
 		bc_matrix4f::bc_matrix4f() noexcept
+			: m_entry{}
 		{
 		}
-		
+
 		bc_matrix4f::bc_matrix4f(bool p_zero) noexcept
+			: m_entry{}
 		{
 			if (p_zero)
+			{
 				std::memset(m_entry, 0, 4 * 4 * sizeof(bcFLOAT));
+			}
 		}
 		
 		bc_matrix4f::bc_matrix4f(const bc_matrix4f& p_matrix) noexcept
@@ -56,7 +60,7 @@ namespace black_cat
 			m_entry[15] = p_m44;
 		}
 		
-		bc_matrix4f& bc_matrix4f::operator= (const bc_matrix4f& p_other) noexcept
+		bc_matrix4f& bc_matrix4f::operator=(const bc_matrix4f& p_other) noexcept
 		{
 			std::memcpy(m_entry, p_other.m_entry, 16 * sizeof(bcFLOAT));
 			return(*this);
@@ -209,7 +213,12 @@ namespace black_cat
 			m_entry[14] = p_z;
 			m_entry[15] = 1.0f;
 		}
-		
+
+		void bc_matrix4f::translate(const bc_vector3f& p_translate) noexcept
+		{
+			translate(p_translate.x, p_translate.y, p_translate.z);
+		}
+
 		bc_vector3f bc_matrix4f::get_basis_x() const noexcept
 		{
 			bc_vector3f l_basis;
@@ -707,6 +716,13 @@ namespace black_cat
 		{
 			bc_matrix4f l_ret;
 			l_ret.translate(p_x, p_y, p_z);
+			return(l_ret);
+		}
+
+		bc_matrix4f bc_matrix4f::translation_matrix(const bc_vector3f& p_translation) noexcept
+		{
+			bc_matrix4f l_ret;
+			l_ret.translate(p_translation);
 			return(l_ret);
 		}
 

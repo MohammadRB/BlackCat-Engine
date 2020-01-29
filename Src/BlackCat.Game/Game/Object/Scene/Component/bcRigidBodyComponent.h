@@ -11,7 +11,6 @@ namespace black_cat
 	namespace game
 	{
 		class bc_physics_system;
-		struct bc_mesh_collider_shape;
 		class bc_mesh_node;
 		class bc_sub_mesh;
 		class bc_mesh_component;

@@ -35,7 +35,7 @@ namespace black_cat
 				bcFLOAT p_m31, bcFLOAT p_m32, bcFLOAT p_m33, bcFLOAT p_m34,
 				bcFLOAT p_m41, bcFLOAT p_m42, bcFLOAT p_m43, bcFLOAT p_m44) noexcept;
 
-			bc_matrix4f& operator= (const bc_matrix4f& p_matrix) noexcept;
+			bc_matrix4f& operator= (const bc_matrix4f& p_other) noexcept;
 			
 			void rotation_x_lh(bcFLOAT p_radians) noexcept;
 
@@ -52,6 +52,8 @@ namespace black_cat
 			void scale(bcFLOAT p_scale) noexcept;
 
 			void translate(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z) noexcept;
+			
+			void translate(const bc_vector3f& p_translate) noexcept;
 
 			bc_vector3f get_basis_x() const noexcept;
 
@@ -146,6 +148,8 @@ namespace black_cat
 			static bc_matrix4f scale_matrix_xyz(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z) noexcept;
 
 			static bc_matrix4f translation_matrix(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z) noexcept;
+			
+			static bc_matrix4f translation_matrix(const bc_vector3f& p_translation) noexcept;
 
 			static bc_matrix4f look_at_matrix_lh(const bc_vector3f& p_eye, const bc_vector3f& p_at, const bc_vector3f& p_up) noexcept;
 

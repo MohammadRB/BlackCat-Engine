@@ -12,7 +12,7 @@ namespace black_cat
 	{
 		class BC_GAME_DLL bc_actor_event_added_to_scene : public bc_actor_event
 		{
-			BC_EVENT("actor_event_added_to_scene")
+			BC_EVENT(actor_event_added_to_scene)
 			
 		public:
 			explicit bc_actor_event_added_to_scene(bc_scene& p_scene);

@@ -6,8 +6,8 @@
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
-#include "Game/Object/Mesh/bcHeightMap.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
+#include "Game/Object/Mesh/bcHeightMap.h"
 
 namespace black_cat
 {
@@ -38,15 +38,13 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			void set_world_transform(const core::bc_matrix4f& p_transform);
-
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
 			void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters) override;
 
-			void handle_event(const bc_actor& p_actor, const bc_actor_event& p_event) override;
+			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 			
-			void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
 
 			void render(bc_render_system& p_render_system) const override;
 			

@@ -1,14 +1,11 @@
 // [01/07/2017 MRB]
 
 #include "Game/GamePCH.h"
-
-#include "Core/Container/bcVector.h"
-#include "Game/bcExport.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
-#include "Game/System/bcGameSystem.h"
-#include "PlatformImp/bcIDELogger.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 
 namespace black_cat
 {
@@ -37,6 +34,11 @@ namespace black_cat
 			return *this;
 		}
 
+		bc_actor bc_rigid_dynamic_component::get_actor() const noexcept
+		{
+			return get_manager().component_get_actor(*this);
+		}
+		
 		physics::bc_rigid_body bc_rigid_dynamic_component::get_body() noexcept
 		{
 			return m_px_actor_ref.get();
@@ -45,11 +47,6 @@ namespace black_cat
 		physics::bc_rigid_dynamic bc_rigid_dynamic_component::get_dynamic_body() const noexcept
 		{
 			return m_px_actor_ref.get();
-		}
-
-		bc_actor bc_rigid_dynamic_component::get_actor() const noexcept
-		{
-			return get_manager().component_get_actor(*this);
 		}
 
 		void bc_rigid_dynamic_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
@@ -62,7 +59,6 @@ namespace black_cat
 				auto& l_physics = l_physics_system.get_physics();
 
 				m_px_actor_ref = l_physics.create_rigid_dynamic(physics::bc_transform::identity());
-
 				initialize_from_mesh(l_physics_system, p_actor, m_px_actor_ref.get(), *l_mesh_component);
 
 				return;
@@ -71,11 +67,16 @@ namespace black_cat
 			throw bc_invalid_operation_exception("Rigid dynamic component needs mesh component.");
 		}
 
-		void bc_rigid_dynamic_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
+		void bc_rigid_dynamic_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
+			auto* l_world_transform_event = core::bc_event::event_as< bc_actor_event_world_transform >(p_event);
+			if(l_world_transform_event)
+			{
+				m_px_actor_ref->set_global_pose(physics::bc_transform(l_world_transform_event->get_transform()));
+			}
 		}
 		
-		void bc_rigid_dynamic_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_rigid_dynamic_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 	}

@@ -4,6 +4,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "bcActorComponent.h"
+#include "bcActorComponent.h"
 
 namespace black_cat
 {
@@ -21,11 +22,11 @@ namespace black_cat
 		{
 		}
 
-		void bc_iactor_component::handle_event(const bc_actor& p_actor, const bc_actor_event& p_event)
+		void bc_iactor_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
 		}
 
-		void bc_iactor_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_iactor_component::update(::black_cat::game::bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 

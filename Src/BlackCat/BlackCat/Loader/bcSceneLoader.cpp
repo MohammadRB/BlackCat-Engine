@@ -12,9 +12,7 @@
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/SceneGraph/bcScenceGraph.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
-#include "Game/Object/Scene/Component/bcNameComponent.h"
-#include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
-#include "Game/Object/Scene/Component/bcMeshComponent.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "BlackCat/Loader/bcSceneLoader.h"
@@ -99,34 +97,32 @@ namespace black_cat
 			}
 		);
 		
-		auto l_scene = game::bc_scene
+		p_context.set_result(game::bc_scene
 		(
 			core::bc_estring(p_context.m_file_path.c_str()),
-			core::bc_string(l_json->m_name->c_str()), 
+			core::bc_string(l_json->m_name->c_str()),
 			l_stream_names,
-			std::move(l_scene_graph), 
+			std::move(l_scene_graph),
 			std::move(l_px_scene)
-		);
+		));
 
+		auto& l_scene = *p_context.m_result->get_result<game::bc_scene>();
+		
 		core::bc_vector< game::bc_iactor_component* > l_actor_components;
 		for (auto& l_json_actor : l_json->m_actors)
 		{
 			game::bc_actor l_actor = l_entity_manager->create_entity(l_json_actor->m_entity_name->c_str());
-			game::bc_mediate_component* l_mediate_component = l_actor.get_component< game::bc_mediate_component >();
-			l_mediate_component->set_world_position(*l_json_actor->m_position);
-
 			l_actor.get_components(std::back_inserter(l_actor_components));
-
+			
 			for (auto l_actor_component : l_actor_components)
 			{
 				l_actor_component->load_instance(l_actor, *l_json_actor->m_parameters);
 			}
 
-			l_actor_components.clear();
+			l_actor.add_event(game::bc_actor_event_world_transform(*l_json_actor->m_position));
 			l_scene.add_actor(l_actor);
+			l_actor_components.clear();
 		}
-
-		p_context.set_result(std::move(l_scene));
 	}
 
 	void bc_scene_loader::content_processing(core::bc_content_saving_context& p_context) const
@@ -156,16 +152,16 @@ namespace black_cat
 				l_component->write_instance(l_actor, *l_actor_entry->m_parameters);
 			}
 
-			*l_actor_entry->m_entity_name = *l_actor_entry->m_parameters->find(game::bc_name_component::s_entity_name_json_key)->second.as_throw<const bcCHAR*>();
+			*l_actor_entry->m_entity_name = *l_actor_entry->m_parameters->find(game::bc_mediate_component::s_entity_name_json_key)->second.as_throw<const bcCHAR*>();
 			*l_actor_entry->m_position = *l_actor_entry->m_parameters->find(game::bc_mediate_component::s_position_json_key)->second.as_throw<core::bc_vector3f>();
 
-			l_actor_entry->m_parameters->remove(game::bc_name_component::s_entity_name_json_key);
+			l_actor_entry->m_parameters->remove(game::bc_mediate_component::s_entity_name_json_key);
 			l_actor_entry->m_parameters->remove(game::bc_mediate_component::s_position_json_key);
 
 			l_actor_components.clear();
 		}
 
-		auto l_json = l_json_document.write();
+		const auto l_json = l_json_document.write();
 		p_context.m_file->write(l_json.c_str(), l_json.size());
 	}
 }

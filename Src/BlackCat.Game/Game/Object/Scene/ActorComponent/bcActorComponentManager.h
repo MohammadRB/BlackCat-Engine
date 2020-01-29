@@ -16,12 +16,12 @@
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentContainer.h"
-#include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		class bc_mediate_component;
 		class bc_actor_component_manager;
 
 		template< class TComponent >
@@ -84,6 +84,11 @@ namespace black_cat
 				return m_events[p_active_event_pool];
 			}
 
+			void clear_events(bcUINT32 p_active_event_pool) noexcept
+			{
+				m_events[p_active_event_pool] = nullptr;
+			}
+
 			bc_actor m_actor;
 			bc_actor_index m_parent_index;
 			bc_actor_event* m_events[2];
@@ -129,8 +134,10 @@ namespace black_cat
 			template<typename TEvent>
 			void actor_add_event(const bc_actor& p_actor, TEvent&& p_event);
 
-			bc_actor_event* actor_get_events(const bc_actor& p_actor) const;
+			bc_actor_event* actor_get_events(const bc_actor& p_actor) const noexcept;
 
+			void actor_clear_events(const bc_actor& p_actor) noexcept;
+			
 			// Create uninitialized component for actor
 			template< class TComponent >
 			void create_component(const bc_actor& p_actor);
@@ -184,7 +191,7 @@ namespace black_cat
 
 			void _resize_actor_to_component_index_maps();
 
-			const bcSIZE s_events_pool_capacity = 10 * 1024;
+			const bcSIZE s_events_pool_capacity = 100 * 1024;
 
 			actor_container_type m_actors;
 			component_container_type m_components;
@@ -275,12 +282,6 @@ namespace black_cat
 			m_actors[p_actor.get_index()].reset();
 		}
 
-		inline bc_actor_event* bc_actor_component_manager::actor_get_events(const bc_actor& p_actor) const
-		{
-			auto& l_actor_entry = m_actors[p_actor.get_index()].get();
-			return l_actor_entry.get_events(m_read_event_pool);
-		}
-
 		template<typename TEvent>
 		void bc_actor_component_manager::actor_add_event(const bc_actor& p_actor, TEvent&& p_event)
 		{
@@ -288,6 +289,18 @@ namespace black_cat
 			auto* l_event = m_events_pool[m_write_event_pool].alloc<TEvent>(std::move(p_event));
 
 			l_actor_entry.add_event(m_write_event_pool, l_event);
+		}
+
+		inline bc_actor_event* bc_actor_component_manager::actor_get_events(const bc_actor& p_actor) const noexcept
+		{
+			auto& l_actor_entry = m_actors[p_actor.get_index()].get();
+			return l_actor_entry.get_events(m_read_event_pool);
+		}
+
+		inline void bc_actor_component_manager::actor_clear_events(const bc_actor& p_actor) noexcept
+		{
+			auto& l_actor_entry = m_actors[p_actor.get_index()].get();
+			l_actor_entry.clear_events(m_read_event_pool);
 		}
 
 		template< class TComponent >
@@ -444,6 +457,11 @@ namespace black_cat
 				m_read_event_pool = m_write_event_pool;
 				m_write_event_pool = (m_write_event_pool + 1) % 2;
 
+				if(!m_events_pool[m_read_event_pool].size())
+				{
+					break;
+				}
+				
 				bcSIZE l_component_index = 0;
 				for (auto l_component_data : l_components)
 				{
@@ -467,14 +485,18 @@ namespace black_cat
 		template< class ...TComponent >
 		void bc_actor_component_manager::register_component_types()
 		{
-			bcSIZE l_counter = 0;
+			bcSIZE l_counter = m_components.size();
 
 			auto l_expansion_list =
 			{
 				(
 					[this, &l_counter]()
-					{						
-						this->_register_component_type< TComponent >(l_counter++);
+					{
+						// Register mediate component as last component
+						const bcSIZE l_priority = std::is_same_v< TComponent, bc_mediate_component >
+							                          ? _bc_actor_component_entry::s_invalid_priority_value - 1
+							                          : l_counter++;
+						this->_register_component_type< TComponent >(l_priority);
 
 						return true;
 					}()

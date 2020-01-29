@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
 #include "Game/bcExport.h"
@@ -12,10 +13,12 @@ namespace black_cat
 	{
 		class BC_GAME_DLL bc_actor_event_world_transform : public bc_actor_event
 		{
-			BC_EVENT("actor_event_world_transform")
+			BC_EVENT(actor_event_world_transform)
 
 		public:
-			bc_actor_event_world_transform(const core::bc_matrix4f& p_transform);
+			explicit bc_actor_event_world_transform(const core::bc_vector3f& p_translation);
+			
+			explicit bc_actor_event_world_transform(const core::bc_matrix4f& p_transform);
 
 			bc_actor_event_world_transform(const bc_actor_event_world_transform& p_other);
 
@@ -28,6 +31,13 @@ namespace black_cat
 		private:
 			core::bc_matrix4f m_transform;
 		};
+
+		inline bc_actor_event_world_transform::bc_actor_event_world_transform(const core::bc_vector3f& p_translation)
+			: bc_actor_event(event_name()),
+			m_transform()
+		{
+			m_transform.translate(p_translation);
+		}
 
 		inline bc_actor_event_world_transform::bc_actor_event_world_transform(const core::bc_matrix4f& p_transform)
 			: bc_actor_event(event_name()),

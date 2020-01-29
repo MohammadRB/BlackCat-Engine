@@ -5,7 +5,7 @@
 #include "Core/Utility/bcLogger.h"
 #include "Game/System/Physics/bcPxWrap.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
-#include "Game/Object/Scene/Component/bcNameComponent.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Editor/UICommand/bcUIObjectSelectCommand.h"
 #include "Editor/UI/bcFormObject.h"
 
@@ -20,7 +20,9 @@ namespace black_cat
 			: m_screen_width(p_screen_width),
 			m_screen_height(p_screen_height),
 			m_point_left(p_point_left),
-			m_point_top(p_point_top)
+			m_point_top(p_point_top),
+			m_selected_actor_index(game::bc_actor::invalid_index),
+			m_selected_actor_entity_name(nullptr)
 		{
 		}
 
@@ -63,10 +65,10 @@ namespace black_cat
 
 			game::bc_ray_hit l_hit = l_query_buffer.get_block();
 			game::bc_actor l_actor = l_hit.get_actor();
-			game::bc_name_component* l_name = l_actor.get_component<game::bc_name_component>();
+			game::bc_mediate_component* l_mediate_component = l_actor.get_component<game::bc_mediate_component>();
 
 			m_selected_actor_index = l_actor.get_index();
-			m_selected_actor_entity_name = l_name->get_entity_name();
+			m_selected_actor_entity_name = l_mediate_component->get_entity_name();
 
 			return false;
 		}

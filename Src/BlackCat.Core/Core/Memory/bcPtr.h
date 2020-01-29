@@ -238,110 +238,110 @@ namespace black_cat
 		bool operator ==(const bc_unique_ptr<T1, D1>& p_first, const bc_unique_ptr<T2, D2>& p_second)
 		{
 			return p_first.get() == p_second.get();
-		};
+		}
 
 		template<class T1, class D1, class T2, class D2>
 		bool operator !=(const bc_unique_ptr<T1, D1>& p_first, const bc_unique_ptr<T2, D2>& p_second)
 		{
 			return p_first.get() != p_second.get();
-		};
+		}
 
 		template<class T1, class D1, class T2, class D2>
 		bool operator <(const bc_unique_ptr<T1, D1>& p_first, const bc_unique_ptr<T2, D2>& p_second)
 		{
 			return p_first.get() < p_second.get();
-		};
+		}
 
 		template<class T1, class D1, class T2, class D2>
 		bool operator <=(const bc_unique_ptr<T1, D1>& p_first, const bc_unique_ptr<T2, D2>& p_second)
 		{
 			return p_first.get() <= p_second.get();
-		};
+		}
 		
 		template<class T1, class D1, class T2, class D2>
 		bool operator >(const bc_unique_ptr<T1, D1>& p_first, const bc_unique_ptr<T2, D2>& p_second)
 		{
 			return p_first.get() > p_second.get();
-		};
+		}
 		
 		template<class T1, class D1, class T2, class D2>
 		bool operator >=(const bc_unique_ptr<T1, D1>& p_first, const bc_unique_ptr<T2, D2>& p_second)
 		{
 			return p_first.get() >= p_second.get();
-		};
+		}
 
 		template <class T, class D>
 		bool operator ==(const bc_unique_ptr<T, D>& p_first, std::nullptr_t)
 		{
 			return p_first.get() == nullptr;
-		};
+		}
 
 		template <class T, class D>
 		bool operator ==(std::nullptr_t, const bc_unique_ptr<T, D>& p_first)
 		{
 			return p_first.get() == nullptr;
-		};
+		}
 
 		template <class T, class D>
 		bool operator !=(const bc_unique_ptr<T, D>& p_first, std::nullptr_t)
 		{
 			return p_first.get() != nullptr;
-		};
+		}
 
 		template <class T, class D>
 		bool operator !=(std::nullptr_t, const bc_unique_ptr<T, D>& p_first)
 		{
 			return p_first.get() != nullptr;
-		};
+		}
 
 		template <class T, class D>
 		bool operator <(const bc_unique_ptr<T, D>& p_first, std::nullptr_t)
 		{
 			return p_first.get() < nullptr;
-		};
+		}
 
 		template <class T, class D>
 		bool operator <(std::nullptr_t, const bc_unique_ptr<T, D>& p_first)
 		{
 			return p_first.get() < nullptr;
-		};
+		}
 
 		template <class T, class D>
 		bool operator <=(const bc_unique_ptr<T, D>& p_first, std::nullptr_t)
 		{
 			return p_first.get() <= nullptr;
-		};
+		}
 
 		template <class T, class D>
 		bool operator <=(nullptr_t, const bc_unique_ptr<T, D>& p_first)
 		{
 			return p_first.get() <= nullptr;
-		};
+		}
 
 		template <class T, class D>
 		bool operator >(const bc_unique_ptr<T, D>& p_first, std::nullptr_t)
 		{
 			return p_first.get() > nullptr;
-		};
+		}
 
 		template <class T, class D>
 		bool operator >(std::nullptr_t, const bc_unique_ptr<T, D>& p_first)
 		{
 			return p_first.get() > nullptr;
-		};
+		}
 
 		template <class T, class D>
 		bool operator >=(const bc_unique_ptr<T, D>& p_first, std::nullptr_t)
 		{
 			return p_first.get() >= nullptr;
-		};
+		}
 
 		template <class T, class D>
 		bool operator >=(std::nullptr_t, const bc_unique_ptr<T, D>& p_first)
 		{
 			return p_first.get() >= nullptr;
-		};
-		
+		}
+
 #pragma endregion
 
 #pragma region bcSharedPtr
@@ -1262,20 +1262,37 @@ namespace black_cat
 		bc_shared_ptr<T> static_pointer_cast(const bc_shared_ptr<U>& r)
 		{
 			return bc_shared_ptr<T>(static_cast<T*>(r.get()));
-		};
+		}
+
+		template< class T, class U, class TDeleter >
+		bc_unique_ptr<T, TDeleter> static_pointer_cast(bc_unique_ptr<U, TDeleter>& r)
+		{
+			return bc_unique_ptr<T, TDeleter>(static_cast<T*>(r.release()));
+		}
 
 		template< class T, class U >
 		bc_shared_ptr<T> dynamic_pointer_cast(const bc_shared_ptr<U>& r)
 		{
 			return bc_shared_ptr<T>(dynamic_cast<T*>(r.get()));
-		};
+		}
+
+		template< class T, class U, class TDeleter >
+		bc_unique_ptr<T, TDeleter> dynamic_pointer_cast(bc_unique_ptr<U, TDeleter>& r)
+		{
+			return bc_unique_ptr<T, TDeleter>(dynamic_cast<T*>(r.release()));
+		}
 
 		template< class T, class U >
 		bc_shared_ptr<T> const_pointer_cast(const bc_shared_ptr<U>& r)
 		{
 			return bc_shared_ptr<T>(const_cast<T*>(r.get()));
-		};
+		}
 
+		template< class T, class U, class TDeleter >
+		bc_unique_ptr<T, TDeleter> const_pointer_cast(bc_unique_ptr<U, TDeleter>& r)
+		{
+			return bc_unique_ptr<T, TDeleter>(const_cast<T*>(r.release()));
+		}
 	}
 }
 

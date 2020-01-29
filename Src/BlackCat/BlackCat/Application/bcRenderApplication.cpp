@@ -16,7 +16,6 @@
 #include "Game/System/Render/Pass/bcRenderPassManager.h"
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/System/Script/bcScriptSystem.h"
-#include "Game/Object/Scene/Component/bcNameComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
@@ -112,7 +111,6 @@ namespace black_cat
 
 		l_entity_manager->register_component_types
 		<
-			game::bc_name_component,
 			game::bc_mediate_component,
 			game::bc_simple_mesh_component,
 			game::bc_vegetable_mesh_component,

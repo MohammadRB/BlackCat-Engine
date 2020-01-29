@@ -45,6 +45,11 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
+		const core::bc_vector< bc_actor >& bc_hierarchy_component::get_actors() const
+		{
+			return m_actors;
+		}
+
 		void bc_hierarchy_component::add_actor(const bc_actor& p_actor)
 		{
 			m_actors.push_back(p_actor);

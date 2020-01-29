@@ -38,7 +38,7 @@ namespace black_cat
 			_get_manager().actor_add_event(*this, std::move(p_event));
 		}
 
-		inline bc_actor_event* bc_actor::get_events()
+		inline const bc_actor_event* bc_actor::get_events() const
 		{
 			return _get_manager().actor_get_events(*this);
 		}

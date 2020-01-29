@@ -35,7 +35,7 @@ namespace black_cat
 	} \
 	static constexpr bcUINT32 service_hash() \
 	{ \
-		return bc_compile_time_string_hash(BC_SERVICE_NAME(p_name)); \
+		return BC_COMPILE_TIME_STRING_HASH(BC_SERVICE_NAME(p_name)); \
 	} \
 
 #define BC_CONTENT(p_name) \
@@ -46,7 +46,7 @@ namespace black_cat
 	} \
 	static constexpr bcUINT32 content_hash() \
 	{ \
-		return bc_compile_time_string_hash(BC_CONTENT_NAME(p_name)); \
+		return BC_COMPILE_TIME_STRING_HASH(BC_CONTENT_NAME(p_name)); \
 	} \
 
 #define BC_COMPONENT(p_name) \
@@ -61,7 +61,7 @@ namespace black_cat
 	} \
 	static constexpr bcUINT32 component_hash() \
 	{ \
-		return bc_compile_time_string_hash(BC_COMPONENT_NAME(p_name)); \
+		return BC_COMPILE_TIME_STRING_HASH(BC_COMPONENT_NAME(p_name)); \
 	} \
 
 #define BC_ABSTRACT_COMPONENT(p_name) \
@@ -76,7 +76,7 @@ namespace black_cat
 	} \
 	static constexpr bcUINT32 component_hash() \
 	{ \
-		return bc_compile_time_string_hash(BC_COMPONENT_NAME(p_name)); \
+		return BC_COMPILE_TIME_STRING_HASH(BC_COMPONENT_NAME(p_name)); \
 	} \
 
 #define BC_EVENT(p_name) \
@@ -87,7 +87,7 @@ namespace black_cat
 	} \
 	static constexpr bcUINT32 event_hash() \
 	{ \
-		return bc_compile_time_string_hash(BC_EVENT_NAME(p_name)); \
+		return BC_COMPILE_TIME_STRING_HASH(BC_EVENT_NAME(p_name)); \
 	} \
 
 #define BC_RENDER_PASS(p_name) \
@@ -98,7 +98,7 @@ namespace black_cat
 	} \
 	static constexpr bcUINT32 render_pass_hash() \
 	{ \
-		return bc_compile_time_string_hash(BC_RENDER_PASS_NAME(p_name)); \
+		return BC_COMPILE_TIME_STRING_HASH(BC_RENDER_PASS_NAME(p_name)); \
 	}
 	}
 }

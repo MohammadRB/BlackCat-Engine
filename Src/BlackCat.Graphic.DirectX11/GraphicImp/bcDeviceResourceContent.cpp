@@ -28,7 +28,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		constexpr bcUINT32 bc_device_resource_content< bc_texture2d >::content_hash()
 		{
-			return bc_compile_time_string_hash(BC_CONTENT_NAME(texture2d));
+			return BC_COMPILE_TIME_STRING_HASH(BC_CONTENT_NAME(texture2d));
 		}
 
 		template<>
@@ -42,7 +42,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		constexpr bcUINT32 bc_device_resource_content< bc_vertex_shader >::content_hash()
 		{
-			return bc_compile_time_string_hash(BC_CONTENT_NAME(vertex_shader));
+			return BC_COMPILE_TIME_STRING_HASH(BC_CONTENT_NAME(vertex_shader));
 		}
 
 		template<>
@@ -56,7 +56,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		constexpr bcUINT32 bc_device_resource_content< bc_hull_shader >::content_hash()
 		{
-			return bc_compile_time_string_hash(BC_CONTENT_NAME(hull_shader));
+			return BC_COMPILE_TIME_STRING_HASH(BC_CONTENT_NAME(hull_shader));
 		}
 
 		template<>
@@ -70,7 +70,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		constexpr bcUINT32 bc_device_resource_content< bc_domain_shader >::content_hash()
 		{
-			return bc_compile_time_string_hash(BC_CONTENT_NAME(domain_shader));
+			return BC_COMPILE_TIME_STRING_HASH(BC_CONTENT_NAME(domain_shader));
 		}
 
 		template<>
@@ -84,7 +84,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		constexpr bcUINT32 bc_device_resource_content< bc_geometry_shader >::content_hash()
 		{
-			return bc_compile_time_string_hash(BC_CONTENT_NAME(geometry_shader));
+			return BC_COMPILE_TIME_STRING_HASH(BC_CONTENT_NAME(geometry_shader));
 		}
 
 		template<>
@@ -98,7 +98,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		constexpr bcUINT32 bc_device_resource_content< bc_pixel_shader >::content_hash()
 		{
-			return bc_compile_time_string_hash(BC_CONTENT_NAME(pixel_shader));
+			return BC_COMPILE_TIME_STRING_HASH(BC_CONTENT_NAME(pixel_shader));
 		}
 
 		template<>
@@ -112,7 +112,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		constexpr bcUINT32 bc_device_resource_content< bc_compute_shader >::content_hash()
 		{
-			return bc_compile_time_string_hash(BC_CONTENT_NAME(compute_shader));
+			return BC_COMPILE_TIME_STRING_HASH(BC_CONTENT_NAME(compute_shader));
 		}
 	}
 }

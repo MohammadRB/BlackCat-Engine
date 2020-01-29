@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Core/Math/bcVector3f.h"
-#include "Core/Math/bcMatrix3f.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
@@ -30,31 +29,34 @@ namespace black_cat
 
 			bc_mesh_component& operator=(bc_mesh_component&&) noexcept;
 
-			const bc_sub_mesh& get_mesh() const
-			{
-				return m_sub_mesh;
-			}
+			const bc_sub_mesh& get_mesh() const;
 
-			const bc_sub_mesh_transformation& get_mesh_transformation() const
-			{
-				return m_mesh_part_transformation;
-			}
+			const bc_sub_mesh_transformation& get_mesh_transformation() const;
 
 			core::bc_vector3f get_world_position() const;
 
 			core::bc_matrix4f get_world_transform() const;
-
-			void set_world_transform(bc_mediate_component& p_mediate_component, const core::bc_matrix4f& p_transform);
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
 			void render(bc_render_system& p_render_system) const override;
 
 		protected:
-
+			void set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform);
+			
 		private:
 			bc_sub_mesh m_sub_mesh;
 			bc_sub_mesh_transformation m_mesh_part_transformation;
 		};
+
+		inline const bc_sub_mesh& bc_mesh_component::get_mesh() const
+		{
+			return m_sub_mesh;
+		}
+
+		inline const bc_sub_mesh_transformation& bc_mesh_component::get_mesh_transformation() const
+		{
+			return m_mesh_part_transformation;
+		}
 	}
 }

@@ -63,7 +63,7 @@ namespace black_cat
 
 			virtual bool add_actor(bc_actor& p_actor) = 0;
 
-			virtual bool update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box) = 0;
+			virtual bool update_actor(bc_actor& p_actor) = 0;
 
 			virtual bool remove_actor(bc_actor& p_actor) = 0;
 

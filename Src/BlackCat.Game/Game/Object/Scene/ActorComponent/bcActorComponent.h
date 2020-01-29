@@ -43,10 +43,10 @@ namespace black_cat
 
 			virtual void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters);
 
-			virtual void handle_event(const bc_actor& p_actor, const bc_actor_event& p_event);
+			virtual void handle_event(bc_actor& p_actor, const bc_actor_event& p_event);
 
-			virtual void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param);
-					   
+			virtual void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param);
+			
 		protected:
 			explicit bc_iactor_component(bc_actor_component_index p_index) noexcept;
 

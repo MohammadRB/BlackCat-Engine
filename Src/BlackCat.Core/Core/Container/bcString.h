@@ -1126,7 +1126,7 @@ namespace black_cat
 		{
 			std::mbstate_t l_state = std::mbstate_t();
 			std::wcsrtombs(p_dest, &p_src, p_len, &l_state);
-		};
+		}
 
 		template< template< typename > typename TInputAllocator, template< typename > typename TOutputAllocator >
 		inline bc_string_a<TOutputAllocator> _bc_to_string(const bc_wstring_a<TInputAllocator>& p_str)
@@ -2162,12 +2162,13 @@ namespace black_cat
 				return 0xFFFFFFFF;
 			}
 
-			return (__str_crc32(p_str, p_idx - 1) >> 8) ^ _crc_table[(__str_crc32(p_str, p_idx - 1) ^ p_str[p_idx]) & 0x000000FF];
+			const bcUINT32 l_prev_crc = __str_crc32(p_str, p_idx - 1); // TODO make function non recursive
+			return (l_prev_crc >> 8) ^ _crc_table[(l_prev_crc ^ p_str[p_idx]) & 0x000000FF];
 		}
 
 		// This doesn't take into account the nul char
-#define bc_compile_time_string_hash(str) (black_cat::core::_str_crc32<sizeof(str) - 2>(str) ^ 0xFFFFFFFF)
-#define bc_run_time_string_hash(str, length) (black_cat::core::__str_crc32(str, length - 1) ^ 0xFFFFFFFF)
+#define BC_COMPILE_TIME_STRING_HASH(str) (black_cat::core::_str_crc32<sizeof(str) - 2>(str) ^ 0xFFFFFFFF)
+#define BC_RUN_TIME_STRING_HASH(str, length) (black_cat::core::__str_crc32(str, (length) - 1) ^ 0xFFFFFFFF)
 	}
 }
 

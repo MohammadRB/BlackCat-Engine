@@ -1,6 +1,7 @@
 // [2/11/2015 MRB]
 
 #include "Core/CorePCH.h"
+#include "Core/bcConstant.h"
 #include "Core/Event/bcEvent.h"
 #include "Core/Event/bcEventManager.h"
 #include "Core/Container/bcString.h"
@@ -15,7 +16,8 @@ namespace black_cat
 
 		bc_event_hash bc_ievent::get_hash(const bcCHAR* p_name) noexcept
 		{
-			bc_event_hash l_hash = std::hash<const bcCHAR*>()(p_name);
+			// Use counterpart function of the hashing function which is used in event name hashing
+			const bc_event_hash l_hash = BC_RUN_TIME_STRING_HASH(p_name, std::strlen(p_name));
 
 			bcAssert(l_hash != 0);
 

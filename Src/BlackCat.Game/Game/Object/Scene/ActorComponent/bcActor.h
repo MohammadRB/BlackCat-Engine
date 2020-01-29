@@ -36,7 +36,7 @@ namespace black_cat
 			template<typename TEvent>
 			void add_event(TEvent&& p_event);
 
-			bc_actor_event* get_events();
+			const bc_actor_event* get_events() const;
 
 			template< class TComponent >
 			void create_component();

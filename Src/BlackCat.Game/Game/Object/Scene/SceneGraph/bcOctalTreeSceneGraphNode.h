@@ -74,11 +74,11 @@ namespace black_cat
 				bcSIZE p_max_actors_count,
 				bcSIZE p_min_size);
 
-			bc_octal_tree_graph_node(bc_octal_tree_graph_node&&) = default;
+			bc_octal_tree_graph_node(bc_octal_tree_graph_node&&) noexcept = default;
 
 			~bc_octal_tree_graph_node();
 
-			bc_octal_tree_graph_node& operator=(bc_octal_tree_graph_node&&) = default;
+			bc_octal_tree_graph_node& operator=(bc_octal_tree_graph_node&&) noexcept = default;
 
 			iterator begin() noexcept override;
 
@@ -104,7 +104,7 @@ namespace black_cat
 
 			bool add_actor(bc_actor& p_actor) override;
 
-			bool update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box) override;
+			bool update_actor(bc_actor& p_actor) override;
 
 			bool remove_actor(bc_actor& p_actor) override;
 
@@ -126,6 +126,10 @@ namespace black_cat
 			void iterator_swap(node_type** p_first, node_type** p_second) const noexcept override;
 
 		private:
+			bool _add_actor(bc_actor& p_actor, const physics::bc_bound_box& p_actor_bound_box);
+
+			bool _remove_actor(bc_actor& p_actor, const physics::bc_bound_box& p_actor_bound_box);
+			
 			void _split();
 
 			void _merge();
@@ -142,7 +146,6 @@ namespace black_cat
 
 			const physics::bc_bound_box& _get_actor_bound_box(bc_actor& p_actor) const;
 
-		private:
 			bcSIZE m_max_actors_count;
 			bcSIZE m_min_size;
 			bcSIZE m_actors_count;
@@ -159,8 +162,8 @@ namespace black_cat
 
 			bc_octal_tree_node_position m_my_position;
 			physics::bc_bound_box m_bound_box;
-			core::bc_concurrent_memory_pool* m_entry_pool;
 			core::bc_concurrent_object_pool<bc_octal_tree_graph_node>* m_child_node_pool;
+			core::bc_concurrent_memory_pool* m_entry_pool;
 			graph_node_entry_list m_actors;
 		};
 	}

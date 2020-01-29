@@ -12,7 +12,7 @@ namespace black_cat
 	{
 		class BC_GAME_DLL bc_actor_event_bound_box_changed : public bc_actor_event
 		{
-			BC_EVENT("actor_event_bound_box_changed")
+			BC_EVENT(actor_event_bound_box_changed)
 			
 		public:
 			explicit bc_actor_event_bound_box_changed(const physics::bc_bound_box& p_bound_box);

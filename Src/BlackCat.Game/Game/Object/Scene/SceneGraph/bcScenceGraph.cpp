@@ -66,9 +66,9 @@ namespace black_cat
 			return m_graph_node->add_actor(p_actor);
 		}
 
-		bool bc_scene_graph::update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box)
+		bool bc_scene_graph::update_actor(bc_actor& p_actor)
 		{
-			return m_graph_node->update_actor(p_actor, p_previous_box);
+			return m_graph_node->update_actor(p_actor);
 		}
 
 		bool bc_scene_graph::remove_actor(bc_actor& p_actor)

@@ -35,40 +35,19 @@ namespace black_cat
 
 			bc_scene& operator=(bc_scene&&) noexcept;
 
-			const core::bc_estring& get_path() const
-			{
-				return m_path;
-			}
+			const core::bc_estring& get_path() const;
 
-			const core::bc_string& get_name() const
-			{
-				return m_name;
-			}
+			const core::bc_string& get_name() const;
 
-			const core::bc_vector<core::bc_string>& get_loaded_streams() const
-			{
-				return m_loaded_streams;
-			}
+			const core::bc_vector<core::bc_string>& get_loaded_streams() const;
 
-			bc_scene_graph& get_scene_graph()
-			{
-				return m_scene_graph;
-			}
+			bc_scene_graph& get_scene_graph();
 
-			const bc_scene_graph& get_scene_graph() const
-			{
-				return m_scene_graph;
-			}
+			const bc_scene_graph& get_scene_graph() const;
 
-			physics::bc_scene& get_px_scene()
-			{
-				return m_px_scene.get();
-			}
+			physics::bc_scene& get_px_scene();
 
-			const physics::bc_scene& get_px_scene() const
-			{
-				return m_px_scene.get();
-			}
+			const physics::bc_scene& get_px_scene() const;
 
 			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;
 
@@ -80,13 +59,13 @@ namespace black_cat
 
 			void add_actor(bc_actor& p_actor);
 
+			bool update_actor(bc_actor& p_actor);
+
 			void remove_actor(bc_actor& p_actor);
 
 			void add_debug_shapes(bc_shape_drawer& p_shape_drawer, const bc_scene_graph_buffer& p_buffer) const;
 
 			void update(bc_physics_system& p_physics, core_platform::bc_clock::update_param p_time);
-
-		protected:
 
 		private:
 			core::bc_estring m_path;
@@ -98,6 +77,41 @@ namespace black_cat
 
 		using bc_scene_ptr = core::bc_content_ptr<bc_scene>;
 
+		inline const core::bc_estring& bc_scene::get_path() const
+		{
+			return m_path;
+		}
+
+		inline const core::bc_string& bc_scene::get_name() const
+		{
+			return m_name;
+		}
+
+		inline const core::bc_vector<core::bc_string>& bc_scene::get_loaded_streams() const
+		{
+			return m_loaded_streams;
+		}
+
+		inline bc_scene_graph& bc_scene::get_scene_graph()
+		{
+			return m_scene_graph;
+		}
+
+		inline const bc_scene_graph& bc_scene::get_scene_graph() const
+		{
+			return m_scene_graph;
+		}
+
+		inline physics::bc_scene& bc_scene::get_px_scene()
+		{
+			return m_px_scene.get();
+		}
+		
+		inline const physics::bc_scene& bc_scene::get_px_scene() const
+		{
+			return m_px_scene.get();
+		}
+		
 		template< typename TComponent >
 		bc_scene_graph_buffer bc_scene::get_actors() const
 		{

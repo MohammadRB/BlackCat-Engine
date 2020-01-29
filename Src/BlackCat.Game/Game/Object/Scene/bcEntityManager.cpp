@@ -10,7 +10,6 @@
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
-#include "Game/Object/Scene/Component/bcNameComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 
 namespace black_cat
@@ -74,7 +73,7 @@ namespace black_cat
 				{
 					const core::bc_string_frame& l_component_name = *l_component->m_name;
 					// We have used this function in component name hashing
-					const auto l_component_name_hash = bc_run_time_string_hash(l_component_name.c_str(), l_component_name.size());
+					const auto l_component_name_hash = BC_RUN_TIME_STRING_HASH(l_component_name.c_str(), l_component_name.size());
 
 					_bc_entity_component_data l_component_data;
 					l_component_data.m_component_hash = l_component_name_hash;
@@ -127,8 +126,7 @@ namespace black_cat
 			try
 			{
 				l_actor.create_component<bc_mediate_component>();
-				l_actor.create_component<bc_name_component>();
-				l_actor.get_component<bc_name_component>()->set_entity_name(l_entity_entry->second.m_entity_name.c_str());
+				l_actor.get_component<bc_mediate_component>()->set_entity_name(l_entity_entry->second.m_entity_name.c_str());
 
 				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
 				{

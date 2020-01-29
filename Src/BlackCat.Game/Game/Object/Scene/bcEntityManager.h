@@ -68,8 +68,6 @@ namespace black_cat
 			template< class ...TComponent >
 			void register_abstract_component_types();
 
-		protected:
-
 		private:
 			template< class TComponent >
 			void _register_component_type();
