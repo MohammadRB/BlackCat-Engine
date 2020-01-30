@@ -5,11 +5,13 @@
 #include "Core/Content/bcLazyContent.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/bcConstant.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
-#include "Game/Object/Scene/Component/bcMeshComponent.h"
-#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/Component/bcMeshComponent.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 
 namespace black_cat
 {
@@ -89,12 +91,7 @@ namespace black_cat
 
 			return *this;
 		}
-
-		/*bc_actor bc_mesh_component::get_actor() const noexcept
-		{
-			return get_manager()->component_get_actor(*this);
-		}*/
-
+		
 		core::bc_vector3f bc_mesh_component::get_world_position() const
 		{
 			return m_mesh_part_transformation.get_node_translation(*m_sub_mesh.get_root_node());
@@ -105,14 +102,6 @@ namespace black_cat
 			return m_mesh_part_transformation.get_node_transform(*m_sub_mesh.get_root_node());
 		}
 
-		void bc_mesh_component::set_world_transform(bc_mediate_component& p_mediate_component, const core::bc_matrix4f& p_transform)
-		{
-			physics::bc_bound_box l_bound_box;
-			m_sub_mesh.calculate_absolute_transformations(p_transform, m_mesh_part_transformation, l_bound_box);
-
-			p_mediate_component.set_bound_box(l_bound_box);
-		}
-
 		void bc_mesh_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
 		{
 			auto& l_mesh_name = p_parameters.get_value_throw< core::bc_string >(constant::g_param_mesh);
@@ -121,12 +110,6 @@ namespace black_cat
 
 			m_sub_mesh = l_sub_mesh_name ? bc_sub_mesh(l_mesh, l_sub_mesh_name->c_str()) : bc_sub_mesh(l_mesh);
 			m_mesh_part_transformation = bc_sub_mesh_transformation(*m_sub_mesh.get_root_node());
-
-			set_world_transform(*p_actor.get_component<bc_mediate_component>(), core::bc_matrix4f::identity());
-		}
-
-		void bc_mesh_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
-		{
 		}
 
 		void bc_mesh_component::render(bc_render_system& p_render_system) const
@@ -134,6 +117,14 @@ namespace black_cat
 			const bc_mesh_node* l_node = m_sub_mesh.get_root_node();
 			
 			_render_mesh_node(p_render_system, m_sub_mesh, m_mesh_part_transformation, l_node, l_node + 1, nullptr);
+		}
+
+		void bc_mesh_component::set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform)
+		{
+			physics::bc_bound_box l_bound_box;
+			m_sub_mesh.calculate_absolute_transformations(p_transform, m_mesh_part_transformation, l_bound_box);
+
+			p_actor.add_event(bc_actor_event_bound_box_changed(l_bound_box));
 		}
 	}
 }

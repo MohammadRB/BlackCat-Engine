@@ -9,6 +9,8 @@
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventAddedToScene.h"
 
 namespace black_cat
 {
@@ -82,6 +84,20 @@ namespace black_cat
 				physics::bc_rigid_body l_rigid_body = l_rigid_component->get_body();
 				m_px_scene->add_actor(l_rigid_body);
 			}
+
+			p_actor.add_event(bc_actor_event_added_to_scene(*this));
+		}
+
+		bool bc_scene::update_actor(bc_actor& p_actor)
+		{
+			const bool l_updated = m_scene_graph.update_actor(p_actor);
+			if (!l_updated)
+			{
+				remove_actor(p_actor);
+				p_actor.destroy();
+			}
+
+			return l_updated;
 		}
 
 		void bc_scene::remove_actor(bc_actor& p_actor)
@@ -115,23 +131,8 @@ namespace black_cat
 			auto l_px_actors = m_px_scene->get_active_actors();
 			for(physics::bc_updated_actor& l_px_actor : l_px_actors)
 			{
-				auto l_rigid_body = l_px_actor.m_actor.is_rigid_body();
-				if(l_rigid_body.is_valid())
-				{
-					bc_actor l_actor = p_physics.get_game_actor(l_rigid_body);
-					auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
-
-					physics::bc_bound_box l_actor_prev_bound_box = l_mediate_component->get_bound_box();
-					l_mediate_component->set_world_transform(l_px_actor.m_global_pose.get_matrix4());
-
-					const bool l_updated = m_scene_graph.update_actor(l_actor, l_actor_prev_bound_box);
-					if(!l_updated)
-					{
-						l_mediate_component->set_bound_box(l_actor_prev_bound_box);
-						remove_actor(l_actor);
-						l_actor.destroy();
-					}
-				}
+				bc_actor l_actor = p_physics.get_game_actor(l_px_actor.m_actor);
+				l_actor.add_event(bc_actor_event_world_transform(l_px_actor.m_global_pose.get_matrix4()));
 			}
 
 			m_scene_graph.update(p_time);

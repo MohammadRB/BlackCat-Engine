@@ -7,9 +7,10 @@
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
-#include "Game/Object/Scene/bcActor.hpp"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 #include "BlackCat/bcConstant.h"
 #include "BlackCat/RenderPass/bcShapeDrawPass.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferInitializePass.h"
@@ -136,7 +137,7 @@ namespace black_cat
 				++m_shape_throw_counter;
 
 				const auto l_position = l_input_system.get_camera().get_position();
-				l_actor.get_component<game::bc_mediate_component>()->set_world_position(l_position);
+				l_actor.add_event(game::bc_actor_event_world_transform(l_position));
 
 				auto* l_rigid_component = l_actor.get_component<game::bc_rigid_body_component>();
 				auto l_rigid = l_rigid_component->get_body();

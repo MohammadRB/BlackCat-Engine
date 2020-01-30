@@ -107,13 +107,13 @@ namespace black_cat
 			bc_string m_message;
 		};
 
-		class bc_event_frame_update_start : public bc_event
+		class bc_event_frame_update_start : public bc_app_event
 		{
 			BC_EVENT(frame_update_start)
 
 		public:
 			bc_event_frame_update_start()
-				: bc_event(event_name())
+				: bc_app_event(event_name())
 			{
 			}
 
@@ -128,13 +128,13 @@ namespace black_cat
 		private:
 		};
 
-		class bc_event_frame_update_finish : public bc_event
+		class bc_event_frame_update_finish : public bc_app_event
 		{
 			BC_EVENT(frame_update_finish)
 
 		public:
 			bc_event_frame_update_finish()
-				: bc_event(event_name())
+				: bc_app_event(event_name())
 			{
 			}
 
@@ -149,13 +149,13 @@ namespace black_cat
 		private:
 		};
 
-		class bc_event_frame_render_start : public bc_event
+		class bc_event_frame_render_start : public bc_app_event
 		{
 			BC_EVENT(frame_render_start)
 
 		public:
 			bc_event_frame_render_start()
-				: bc_event(event_name())
+				: bc_app_event(event_name())
 			{
 			}
 
@@ -170,13 +170,13 @@ namespace black_cat
 		private:
 		};
 
-		class bc_event_frame_render_finish : public bc_event
+		class bc_event_frame_render_finish : public bc_app_event
 		{
 			BC_EVENT(frame_render_finish)
 
 		public:
 			bc_event_frame_render_finish()
-				: bc_event(event_name())
+				: bc_app_event(event_name())
 			{
 			}
 

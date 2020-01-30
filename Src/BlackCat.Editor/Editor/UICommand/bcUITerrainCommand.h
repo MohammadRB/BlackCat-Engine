@@ -6,7 +6,7 @@
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
-#include "Game/Object/Scene/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Editor/Application/bcUICommand.h"
 
 namespace black_cat

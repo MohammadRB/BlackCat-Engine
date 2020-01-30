@@ -29,9 +29,11 @@ namespace black_cat
 
 			this_type& operator =(this_type&& p_other) noexcept;
 
-			bcUINT32 block_size() const noexcept { return m_block_size; };
+			bcSIZE capacity() const noexcept { return block_size() * num_block(); }
+			
+			bcSIZE block_size() const noexcept { return m_block_size; }
 
-			bcUINT32 num_block() const noexcept { return m_num_block; };
+			bcSIZE num_block() const noexcept { return m_num_block; }
 
 			void* alloc(bc_memblock* p_mem_block) noexcept override;
 
@@ -58,8 +60,8 @@ namespace black_cat
 			bcUINT32 m_block_size;
 			bcUINT32 m_num_bitblocks;
 			core_platform::bc_atomic< bcUINT32 > m_allocated_block;		// An index that searching for free block will continue from this place
-			core_platform::bc_atomic< bitblock_type >* m_blocks;		// bit-vector indicating if a block is allocated or not
-			bcUBYTE* m_heap;											// block of data
+			core_platform::bc_atomic< bitblock_type >* m_blocks;			// bit-vector indicating if a block is allocated or not
+			bcUBYTE* m_heap;												// block of data
 		};
 
 #endif

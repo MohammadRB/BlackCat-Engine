@@ -17,10 +17,6 @@ namespace black_cat
 		~bc_thread_interrupted_exception() = default;
 
 		bc_thread_interrupted_exception& operator =(const bc_thread_interrupted_exception&) = default;
-
-	protected:
-
-	private:
 	};
 
 	class bc_io_exception : public std::runtime_error
@@ -39,9 +35,6 @@ namespace black_cat
 		bc_io_exception& operator=(const bc_io_exception&) = default;
 
 		bc_io_exception& operator=(bc_io_exception&&) = default;
-	protected:
-
-	private:
 	};
 
 	inline bc_io_exception::bc_io_exception(const bcCHAR* p_message)

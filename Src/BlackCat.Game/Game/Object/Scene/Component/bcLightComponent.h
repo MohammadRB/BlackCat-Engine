@@ -3,9 +3,10 @@
 #pragma once
 
 #include "Game/bcExport.h"
-#include "Game/Object/Scene/bcActor.h"
-#include "Game/Object/Scene/bcActorComponent.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/System/Render/Light/bcLight.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 
 namespace black_cat
 {
@@ -30,14 +31,14 @@ namespace black_cat
 
 			const core::bc_matrix4f& get_world_transform() const noexcept;
 
-			void set_world_transform(const core::bc_matrix4f& p_transform) noexcept;
-
 			const bc_light* get_light() const noexcept;
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
-			void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
-
+			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
+			
+			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			
 		protected:
 
 		private:

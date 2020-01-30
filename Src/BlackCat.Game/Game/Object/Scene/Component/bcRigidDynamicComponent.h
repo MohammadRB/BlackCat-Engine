@@ -3,9 +3,7 @@
 #pragma once
 
 #include "PhysicsImp/Body/bcRigidDynamic.h"
-#include "Game/Object/Mesh/bcSubMesh.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
-#include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
 {
@@ -24,16 +22,18 @@ namespace black_cat
 
 			bc_rigid_dynamic_component& operator=(bc_rigid_dynamic_component&&) noexcept;
 
+			bc_actor get_actor() const noexcept override;
+			
 			physics::bc_rigid_body get_body() noexcept override;
 
 			physics::bc_rigid_dynamic get_dynamic_body() const noexcept;
 
-			bc_actor get_actor() const noexcept override;
-
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
-			void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 
+			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			
 		protected:
 
 		private:

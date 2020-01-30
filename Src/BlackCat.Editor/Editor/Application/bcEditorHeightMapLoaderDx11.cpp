@@ -17,7 +17,7 @@ namespace black_cat
 
 			bc_height_map_loader_dx11::content_processing(p_context);
 
-			auto l_loaded_height_map = p_context.m_result.get().get_result<bc_height_map_dx11>();
+			auto l_loaded_height_map = p_context.m_result.get().release_result<bc_height_map_dx11>();
 			auto l_height_map = l_loaded_height_map->get_height_map();
 			auto l_texture_map = l_loaded_height_map->get_texture_map();
 

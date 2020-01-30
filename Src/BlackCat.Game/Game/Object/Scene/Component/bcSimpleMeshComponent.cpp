@@ -2,8 +2,9 @@
 
 #include "Game/GamePCH.h"
 
-#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 
 namespace black_cat
 {
@@ -31,7 +32,20 @@ namespace black_cat
 
 		bc_actor bc_simple_mesh_component::get_actor() const noexcept
 		{
-			return get_manager()->component_get_actor(*this);
+			return get_manager().component_get_actor(*this);
+		}
+
+		void bc_simple_mesh_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		{
+			auto* l_world_transform_event = core::bc_event::event_as<bc_actor_event_world_transform>(p_event);
+			if(l_world_transform_event)
+			{
+				bc_mesh_component::set_world_transform(p_actor, l_world_transform_event->get_transform());
+			}
+		}
+		
+		void bc_simple_mesh_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		{
 		}
 	}
 }

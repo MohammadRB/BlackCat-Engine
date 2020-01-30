@@ -1,11 +1,13 @@
 // [03/01/2019 MRB]
 
 #include "Game/GamePCH.h"
-#include "Game/Object/Scene/Component/bcLightComponent.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
-#include "Game/Object/Scene/Component/bcMediateComponent.h"
-#include "Game/System/Render/Light/bcLightManager.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/System/Render/Light/bcLightManager.h"
+#include "Game/Object/Scene/Component/bcLightComponent.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 
 namespace black_cat
 {
@@ -18,7 +20,7 @@ namespace black_cat
 
 		bc_actor bc_light_component::get_actor() const noexcept
 		{
-			return get_manager()->component_get_actor(*this);
+			return get_manager().component_get_actor(*this);
 		}
 
 		core::bc_vector3f bc_light_component::get_world_position() const noexcept
@@ -29,15 +31,6 @@ namespace black_cat
 		const core::bc_matrix4f& bc_light_component::get_world_transform() const noexcept
 		{
 			return m_light->get_transformation();
-		}
-
-		void bc_light_component::set_world_transform(const core::bc_matrix4f& p_transform) noexcept
-		{
-			// TODO what if light is part of a mesh
-			m_light->set_transformation(p_transform);
-
-			const auto l_bound_box = m_light->get_bound_box();
-			get_actor().get_component<bc_mediate_component>()->set_bound_box(l_bound_box);
 		}
 
 		const bc_light* bc_light_component::get_light() const noexcept
@@ -122,11 +115,22 @@ namespace black_cat
 			{
 				bcAssert(false);
 			}
-			
-			set_world_transform(core::bc_matrix4f::identity());
 		}
 
-		void bc_light_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_light_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		{
+			auto* l_world_transform_event = core::bc_event::event_as<bc_actor_event_world_transform>(p_event);
+			if(l_world_transform_event)
+			{
+				// TODO what if light is part of a mesh
+				m_light->set_transformation(l_world_transform_event->get_transform());
+
+				const auto l_bound_box = m_light->get_bound_box();
+				p_actor.add_event(bc_actor_event_bound_box_changed(l_bound_box));
+			}
+		}
+		
+		void bc_light_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 	}

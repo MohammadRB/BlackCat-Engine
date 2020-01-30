@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "Game/Object/Scene/bcActor.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 
 namespace black_cat
 {
@@ -32,28 +32,39 @@ namespace black_cat
 			return m_index;
 		}
 
+		template<typename TEvent>
+		inline void bc_actor::add_event(TEvent&& p_event)
+		{
+			_get_manager().actor_add_event(*this, std::move(p_event));
+		}
+
+		inline const bc_actor_event* bc_actor::get_events() const
+		{
+			return _get_manager().actor_get_events(*this);
+		}
+
 		template< class TComponent >
 		void bc_actor::create_component()
 		{
-			_get_manager()->create_component< TComponent >(*this);
+			_get_manager().create_component< TComponent >(*this);
 		}
 
 		template< class TComponent >
 		void bc_actor::remove_component()
 		{
-			_get_manager()->remove_component< TComponent >(*this);
+			_get_manager().remove_component< TComponent >(*this);
 		}
 
 		template< class TComponent >
 		bool bc_actor::has_component() const
 		{
-			return _get_manager()->actor_has_component< TComponent >(*this);
+			return _get_manager().actor_has_component< TComponent >(*this);
 		}
 
 		template< class TComponent >
 		TComponent* bc_actor::get_component()
 		{
-			return _get_manager()->actor_get_component< TComponent >(*this);
+			return _get_manager().actor_get_component< TComponent >(*this);
 		}
 
 		template< class TComponent >
@@ -65,12 +76,12 @@ namespace black_cat
 		template< class TIterator >
 		void bc_actor::get_components(TIterator p_destination) const
 		{
-			_get_manager()->actor_get_components(*this, p_destination);
+			_get_manager().actor_get_components(*this, p_destination);
 		}
 
 		inline void bc_actor::destroy()
 		{
-			_get_manager()->remove_actor(*this);
+			_get_manager().remove_actor(*this);
 			m_index = invalid_index;
 		}
 
@@ -84,11 +95,11 @@ namespace black_cat
 			return m_index != p_other.m_index;
 		}
 
-		inline bc_actor_component_manager* bc_actor::_get_manager() noexcept
+		inline bc_actor_component_manager& bc_actor::_get_manager() noexcept
 		{
 			static bc_actor_component_manager* s_manager = core::bc_get_service< bc_actor_component_manager >();
 
-			return s_manager;
+			return *s_manager;
 		}
 	}
 }

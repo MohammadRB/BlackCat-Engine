@@ -4,14 +4,13 @@
 
 #include "PhysicsImp/Body/bcRigidBody.h"
 #include "Game/Object/Mesh/bcMeshCollider.h"
-#include "Game/Object/Scene/bcActorComponent.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 
 namespace black_cat
 {
 	namespace game
 	{
 		class bc_physics_system;
-		struct bc_mesh_collider_shape;
 		class bc_mesh_node;
 		class bc_sub_mesh;
 		class bc_mesh_component;

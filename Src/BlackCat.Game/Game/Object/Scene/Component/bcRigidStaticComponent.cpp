@@ -3,14 +3,13 @@
 #include "Game/GamePCH.h"
 
 #include "PhysicsImp/Shape/bcShapeHeightField.h"
-#include "Game/bcExport.h"
 #include "Game/bcException.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Physics/bcPxWrap.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
-#include "PlatformImp/bcIDELogger.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 
 namespace black_cat
 {
@@ -39,6 +38,11 @@ namespace black_cat
 			return *this;
 		}
 
+		bc_actor bc_rigid_static_component::get_actor() const noexcept
+		{
+			return get_manager().component_get_actor(*this);
+		}
+		
 		physics::bc_rigid_body bc_rigid_static_component::get_body() noexcept
 		{
 			return m_px_actor_ref.get();
@@ -47,11 +51,6 @@ namespace black_cat
 		physics::bc_rigid_static bc_rigid_static_component::get_static_body() const noexcept
 		{
 			return m_px_actor_ref.get();
-		}
-
-		bc_actor bc_rigid_static_component::get_actor() const noexcept
-		{
-			return get_manager()->component_get_actor(*this);
 		}
 
 		void bc_rigid_static_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
@@ -80,11 +79,44 @@ namespace black_cat
 			throw bc_invalid_operation_exception("Rigid static component needs either mesh or height map component.");
 		}
 
-		void bc_rigid_static_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_rigid_static_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		{
+			auto* l_world_transform_event = core::bc_event::event_as< bc_actor_event_world_transform >(p_event);
+			if (l_world_transform_event)
+			{
+				auto& l_transform = l_world_transform_event->get_transform();
+				physics::bc_transform l_px_transform;
+				
+				auto* l_height_map_component = p_actor.get_component<bc_height_map_component>();
+				if (l_height_map_component) // TODO
+				{
+					const auto& l_height_map = l_height_map_component->get_height_map();
+					const auto l_half_width = (l_height_map.get_width() * l_height_map.get_xz_multiplier()) / 2;
+					const auto l_half_height = (l_height_map.get_height() * l_height_map.get_xz_multiplier()) / 2;
+					const auto l_position = l_transform.get_translation() + core::bc_vector3f(-l_half_width, 0, l_half_height);
+
+					core::bc_matrix4f l_new_transform = l_transform;
+					l_new_transform.set_translation(l_position);
+
+					l_px_transform = physics::bc_transform(l_new_transform);
+				}
+				else
+				{
+					l_px_transform = physics::bc_transform(l_transform);
+				}
+				
+				m_px_actor_ref->set_global_pose(l_px_transform);
+			}
+		}
+		
+		void bc_rigid_static_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 
-		void bc_rigid_static_component::_initialize_from_height_map(bc_physics_system& p_physics_system, bc_actor& p_actor, physics::bc_rigid_static& p_rigid_static, bc_height_map_component& p_component)
+		void bc_rigid_static_component::_initialize_from_height_map(bc_physics_system& p_physics_system, 
+			bc_actor& p_actor, 
+			physics::bc_rigid_static& p_rigid_static,
+			bc_height_map_component& p_component)
 		{
 			auto& l_physics = p_physics_system.get_physics();
 			auto& l_height_map = p_component.get_height_map();

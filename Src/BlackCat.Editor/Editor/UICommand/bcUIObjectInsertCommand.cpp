@@ -2,6 +2,7 @@
 
 #include "Editor/EditorPCH.h"
 
+#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/System/Physics/bcPxWrap.h"
@@ -58,12 +59,12 @@ namespace black_cat
 			core::bc_vector3f l_position;
 			if (l_query_result)
 			{
-				game::bc_ray_hit l_hit = l_query_buffer.get_block();
+				const game::bc_ray_hit l_hit = l_query_buffer.get_block();
 				l_position = l_hit.get_position();
 			}
 			else
 			{
-				auto l_ray = get_pointer_ray
+				const physics::bc_ray l_ray = get_pointer_ray
 				(
 					p_context,
 					m_screen_width,
@@ -75,15 +76,10 @@ namespace black_cat
 				l_position = l_ray.m_origin + (l_ray.m_dir * 70);
 			}
 
-			std::string l_entity_name = m_entity_name.toStdString();
+			const std::string l_entity_name = m_entity_name.toStdString();
 			game::bc_actor l_actor = core::bc_get_service<game::bc_entity_manager>()->create_entity(l_entity_name.c_str());
+			l_actor.add_event(game::bc_actor_event_world_transform(l_position));
 			
-			auto* l_mediate_component = l_actor.get_component<game::bc_mediate_component>();
-			if(l_mediate_component != nullptr)
-			{
-				l_mediate_component->set_world_position(l_position);
-			}
-
 			p_context.m_game_system.get_scene()->add_actor(l_actor);
 
 			return false;

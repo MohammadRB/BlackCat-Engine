@@ -3,8 +3,9 @@
 #include "Game/GamePCH.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcRenderInstance.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 
 namespace black_cat
 {
@@ -37,7 +38,7 @@ namespace black_cat
 
 		bc_actor bc_vegetable_mesh_component::get_actor() const noexcept
 		{
-			return get_manager()->component_get_actor(*this);
+			return get_manager().component_get_actor(*this);
 		}
 
 		void bc_vegetable_mesh_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
@@ -59,6 +60,19 @@ namespace black_cat
 			const auto* l_root_node = l_mesh.get_root_node();
 
 			_render_mesh_node(p_render_system, l_mesh, l_mesh_transformation, l_root_node, l_root_node + 1, l_mesh_prefix);
+		}
+
+		void bc_vegetable_mesh_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		{
+			auto* l_world_transform_event = core::bc_event::event_as<bc_actor_event_world_transform>(p_event);
+			if (l_world_transform_event)
+			{
+				bc_mesh_component::set_world_transform(p_actor, l_world_transform_event->get_transform());
+			}
+		}
+		
+		void bc_vegetable_mesh_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		{
 		}
 	}
 }

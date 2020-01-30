@@ -60,9 +60,24 @@ namespace black_cat
 			}
 
 			template< class TContent >
-			bc_unique_ptr< TContent > get_result()
+			TContent* get_result()
 			{
-				static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherite from bc_icontent");
+				static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
+				
+				if (!m_succeeded)
+				{
+					throw m_exception;
+				}
+
+				bcAssert(m_result != nullptr);
+
+				return static_cast<TContent*>(m_result.get());
+			}
+			
+			template< class TContent >
+			bc_unique_ptr< TContent > release_result()
+			{
+				static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
 
 				if (!m_succeeded)
 				{
@@ -71,10 +86,8 @@ namespace black_cat
 
 				bcAssert(m_result != nullptr);
 
-				return bc_unique_ptr<TContent>(static_cast<TContent*>(m_result.release()));
+				return static_pointer_cast<TContent>(m_result);
 			}
-
-		protected:
 
 		private:
 			bool m_succeeded;

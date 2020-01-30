@@ -5,7 +5,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcParameterPack.h"
 #include "Game/bcConstant.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcHierarchyComponent.h"
 
@@ -42,7 +42,12 @@ namespace black_cat
 
 		bc_actor bc_hierarchy_component::get_actor() const noexcept
 		{
-			return get_manager()->component_get_actor(*this);
+			return get_manager().component_get_actor(*this);
+		}
+
+		const core::bc_vector< bc_actor >& bc_hierarchy_component::get_actors() const
+		{
+			return m_actors;
 		}
 
 		void bc_hierarchy_component::add_actor(const bc_actor& p_actor)
@@ -80,10 +85,6 @@ namespace black_cat
 
 				add_actor(l_child_actor);
 			}
-		}
-
-		void bc_hierarchy_component::update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
-		{
 		}
 	}
 }

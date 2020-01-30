@@ -16,13 +16,17 @@ namespace black_cat
 	namespace core
 	{
 		bc_matrix3f::bc_matrix3f() noexcept
+			: m_entry{  }
 		{
 		}
 		
 		bc_matrix3f::bc_matrix3f(bool p_zero) noexcept
+			: m_entry{  }
 		{
 			if (p_zero)
+			{
 				std::memset(m_entry, 0, 3 * 3 * sizeof(bcFLOAT));
+			}
 		}
 		
 		bc_matrix3f::bc_matrix3f(const bc_matrix3f& p_other) noexcept

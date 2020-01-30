@@ -88,10 +88,8 @@ namespace black_cat
 			template< class TEvent >
 			bc_event_listener_handle register_event_listener(delegate_type&& p_listener)
 			{
-				return register_event_listener(bc_event_traits< TEvent >::event_name(), std::move(p_listener));
+				return _register_event_listener(bc_event_traits< TEvent >::event_name(), std::move(p_listener));
 			}
-
-			bc_event_listener_handle register_event_listener(const bcCHAR* p_event_name, delegate_type&& p_listener);
 
 			void replace_event_listener(bc_event_listener_handle& p_listener_handle, delegate_type&& p_listener);
 
@@ -124,9 +122,11 @@ namespace black_cat
 		protected:
 			void update(const core_platform::bc_clock::update_param& p_clock_update_param) override;
 
-			void queue_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::small_delta_time p_millisecond);
-
 		private:
+			bc_event_listener_handle _register_event_listener(const bcCHAR* p_event_name, delegate_type&& p_listener);
+
+			void _queue_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::small_delta_time p_millisecond);
+
 			core_platform::bc_shared_mutex m_handlers_mutex;
 			handler_map_t m_handlers;
 
@@ -139,7 +139,7 @@ namespace black_cat
 		void bc_event_manager::queue_event(TEvent&& p_event, core_platform::bc_clock::small_delta_time p_millisecond)
 		{
 			auto l_event = static_cast<bc_event_ptr<bc_ievent>>(bc_make_event(std::forward<TEvent>(p_event)));
-			queue_event(std::move(l_event), p_millisecond);
+			_queue_event(std::move(l_event), p_millisecond);
 		}
 	}
 }

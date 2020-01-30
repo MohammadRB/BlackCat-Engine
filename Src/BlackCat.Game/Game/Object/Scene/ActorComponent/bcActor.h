@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CorePlatform/bcType.h"
+#include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
 
 namespace black_cat
 {
@@ -32,6 +33,11 @@ namespace black_cat
 
 			bc_actor_index get_index() const noexcept;
 
+			template<typename TEvent>
+			void add_event(TEvent&& p_event);
+
+			const bc_actor_event* get_events() const;
+
 			template< class TComponent >
 			void create_component();
 
@@ -59,7 +65,7 @@ namespace black_cat
 		protected:
 
 		private:
-			static bc_actor_component_manager* _get_manager() noexcept;
+			static bc_actor_component_manager& _get_manager() noexcept;
 
 			bc_actor_index m_index;
 		};		

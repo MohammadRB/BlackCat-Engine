@@ -6,7 +6,7 @@
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/bcException.h"
 #include "Game/Object/Scene/SceneGraph/bcOctalTreeSceneGraphNode.h"
-#include "Game/Object/Scene/bcActor.hpp"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 
 namespace black_cat
@@ -30,8 +30,8 @@ namespace black_cat
 			m_bottom_right_back(nullptr),
 			m_my_position(bc_octal_tree_node_position::null),
 			m_bound_box(p_box),
-			m_entry_pool(bcNew(core::bc_concurrent_memory_pool(), core::bc_alloc_type::unknown)),
 			m_child_node_pool(bcNew(core::bc_concurrent_object_pool<bc_octal_tree_graph_node>(), core::bc_alloc_type::unknown)),
+			m_entry_pool(bcNew(core::bc_concurrent_memory_pool(), core::bc_alloc_type::unknown)),
 			m_actors(graph_node_entry_allocator(*m_entry_pool))
 		{
 			const auto l_half_extends = p_box.get_half_extends();
@@ -77,8 +77,8 @@ namespace black_cat
 			m_bottom_right_back(nullptr),
 			m_my_position(p_my_position),
 			m_bound_box(),
-			m_entry_pool(p_parent.m_entry_pool),
 			m_child_node_pool(p_parent.m_child_node_pool),
+			m_entry_pool(p_parent.m_entry_pool),
 			m_actors(graph_node_entry_allocator(*m_entry_pool))
 		{
 			core::bc_vector3f l_bound_box_center = p_parent.m_bound_box.get_center();
@@ -282,51 +282,19 @@ namespace black_cat
 
 		bool bc_octal_tree_graph_node::add_actor(bc_actor& p_actor)
 		{
-			bool l_added = false;
-
-			if (!contains_actor(p_actor))
-			{
-				return l_added;
-			}
-
-			if (!is_leaf_node())
-			{
-				l_added = m_top_left_back->add_actor(p_actor);
-				l_added = l_added || m_top_left_front->add_actor(p_actor);
-				l_added = l_added || m_top_right_front->add_actor(p_actor);
-				l_added = l_added || m_top_right_back->add_actor(p_actor);
-				l_added = l_added || m_bottom_left_back->add_actor(p_actor);
-				l_added = l_added || m_bottom_left_front->add_actor(p_actor);
-				l_added = l_added || m_bottom_right_front->add_actor(p_actor);
-				l_added = l_added || m_bottom_right_back->add_actor(p_actor);
-			}
-
-			if(!l_added)
-			{
-				m_actors.push_back(_bc_octal_tree_graph_node_entry(p_actor, this));
-				l_added = true;
-
-				auto l_iterator = m_actors.rbegin();
-				l_iterator->set_internal_iterator(l_iterator.base());
-			}
-
-			if(l_added)
-			{
-				++m_actors_count;
-				if (m_actors_count > m_max_actors_count && is_leaf_node())
-				{
-					_split();
-				}
-			}
-
-			return l_added;
+			return _add_actor(p_actor, _get_actor_bound_box(p_actor));
 		}
 
-		bool bc_octal_tree_graph_node::update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box)
+		bool bc_octal_tree_graph_node::update_actor(bc_actor& p_actor)
 		{
 			bool l_updated = false;
-			bc_octal_tree_graph_node* l_prev_containing_node = _find_containing_node(p_previous_box);
-			bc_octal_tree_graph_node* l_containing_node = _find_containing_node(_get_actor_bound_box(p_actor));
+
+			auto* l_actor_mediate_component = p_actor.get_component<bc_mediate_component>();
+			auto& l_actor_prev_bound_box = l_actor_mediate_component->get_bound_box();
+			auto& l_actor_bound_box = l_actor_mediate_component->get_bound_box();
+			
+			bc_octal_tree_graph_node* l_prev_containing_node = _find_containing_node(l_actor_prev_bound_box);
+			bc_octal_tree_graph_node* l_containing_node = _find_containing_node(l_actor_bound_box);
 
 			if(!l_containing_node)
 			{
@@ -340,56 +308,15 @@ namespace black_cat
 				return l_updated;
 			}
 
-			auto* l_actor_mediate_component = p_actor.get_component<bc_mediate_component>();
-			auto l_actor_bound_box = l_actor_mediate_component->get_bound_box();
-
-			l_actor_mediate_component->set_bound_box(p_previous_box);
-			remove_actor(p_actor);
-
-			l_actor_mediate_component->set_bound_box(l_actor_bound_box);
-			l_updated = add_actor(p_actor);
+			_remove_actor(p_actor, l_actor_prev_bound_box);
+			l_updated = _add_actor(p_actor, l_actor_bound_box);
 
 			return l_updated;
 		}
 
 		bool bc_octal_tree_graph_node::remove_actor(bc_actor& p_actor)
 		{
-			bool l_removed = false;
-
-			if (!contains_actor(p_actor))
-			{
-				return l_removed;
-			}
-
-			const auto l_exist = std::find(std::cbegin(m_actors), std::cend(m_actors), _bc_octal_tree_graph_node_entry(p_actor, this));
-			if(l_exist != std::cend(m_actors))
-			{
-				m_actors.erase(l_exist);
-				l_removed = true;
-			}
-
-			if(!l_removed && !is_leaf_node())
-			{
-				l_removed = m_top_left_back->remove_actor(p_actor);
-				l_removed = l_removed || m_top_left_front->remove_actor(p_actor);
-				l_removed = l_removed || m_top_right_front->remove_actor(p_actor);
-				l_removed = l_removed || m_top_right_back->remove_actor(p_actor);
-				l_removed = l_removed || m_bottom_left_back->remove_actor(p_actor);
-				l_removed = l_removed || m_bottom_left_front->remove_actor(p_actor);
-				l_removed = l_removed || m_bottom_right_front->remove_actor(p_actor);
-				l_removed = l_removed || m_bottom_right_back->remove_actor(p_actor);
-			}
-
-			if(l_removed)
-			{
-				--m_actors_count;
-				if (m_actors_count <= m_max_actors_count && !is_leaf_node())
-				{
-					_merge();
-				}
-			}
-
-			return l_removed;
+			return _remove_actor(p_actor, _get_actor_bound_box(p_actor));
 		}
 
 		void bc_octal_tree_graph_node::clear()
@@ -516,6 +443,88 @@ namespace black_cat
 		{
 			using std::swap;
 			swap(*p_first, *p_second);
+		}
+
+		bool bc_octal_tree_graph_node::_add_actor(bc_actor& p_actor, const physics::bc_bound_box& p_actor_bound_box)
+		{
+			bool l_added = false;
+
+			if (!m_bound_box.contains(p_actor_bound_box))
+			{
+				return l_added;
+			}
+
+			if (!is_leaf_node())
+			{
+				l_added = m_top_left_back->_add_actor(p_actor, p_actor_bound_box);
+				l_added = l_added || m_top_left_front->_add_actor(p_actor, p_actor_bound_box);
+				l_added = l_added || m_top_right_front->_add_actor(p_actor, p_actor_bound_box);
+				l_added = l_added || m_top_right_back->_add_actor(p_actor, p_actor_bound_box);
+				l_added = l_added || m_bottom_left_back->_add_actor(p_actor, p_actor_bound_box);
+				l_added = l_added || m_bottom_left_front->_add_actor(p_actor, p_actor_bound_box);
+				l_added = l_added || m_bottom_right_front->_add_actor(p_actor, p_actor_bound_box);
+				l_added = l_added || m_bottom_right_back->_add_actor(p_actor, p_actor_bound_box);
+			}
+
+			if (!l_added)
+			{
+				m_actors.push_back(_bc_octal_tree_graph_node_entry(p_actor, this));
+				l_added = true;
+
+				auto l_iterator = m_actors.rbegin();
+				l_iterator->set_internal_iterator(l_iterator.base());
+			}
+
+			if (l_added)
+			{
+				++m_actors_count;
+				if (m_actors_count > m_max_actors_count&& is_leaf_node())
+				{
+					_split();
+				}
+			}
+
+			return l_added;
+		}
+
+		bool bc_octal_tree_graph_node::_remove_actor(bc_actor& p_actor, const physics::bc_bound_box& p_actor_bound_box)
+		{
+			bool l_removed = false;
+
+			if (!m_bound_box.contains(p_actor_bound_box))
+			{
+				return l_removed;
+			}
+
+			const auto l_exist = std::find(std::cbegin(m_actors), std::cend(m_actors), _bc_octal_tree_graph_node_entry(p_actor, this));
+			if (l_exist != std::cend(m_actors))
+			{
+				m_actors.erase(l_exist);
+				l_removed = true;
+			}
+
+			if (!l_removed && !is_leaf_node())
+			{
+				l_removed = m_top_left_back->_remove_actor(p_actor, p_actor_bound_box);
+				l_removed = l_removed || m_top_left_front->_remove_actor(p_actor, p_actor_bound_box);
+				l_removed = l_removed || m_top_right_front->_remove_actor(p_actor, p_actor_bound_box);
+				l_removed = l_removed || m_top_right_back->_remove_actor(p_actor, p_actor_bound_box);
+				l_removed = l_removed || m_bottom_left_back->_remove_actor(p_actor, p_actor_bound_box);
+				l_removed = l_removed || m_bottom_left_front->_remove_actor(p_actor, p_actor_bound_box);
+				l_removed = l_removed || m_bottom_right_front->_remove_actor(p_actor, p_actor_bound_box);
+				l_removed = l_removed || m_bottom_right_back->_remove_actor(p_actor, p_actor_bound_box);
+			}
+
+			if (l_removed)
+			{
+				--m_actors_count;
+				if (m_actors_count <= m_max_actors_count && !is_leaf_node())
+				{
+					_merge();
+				}
+			}
+
+			return l_removed;
 		}
 
 		void bc_octal_tree_graph_node::_split()
@@ -673,13 +682,13 @@ namespace black_cat
 			if (!is_leaf_node())
 			{
 				l_node = m_top_left_back->_find_containing_node(p_box);
-				l_node = l_node != nullptr ? l_node : m_top_left_front->_find_containing_node(p_box);
-				l_node = l_node != nullptr ? l_node : m_top_right_front->_find_containing_node(p_box);
-				l_node = l_node != nullptr ? l_node : m_top_right_back->_find_containing_node(p_box);
-				l_node = l_node != nullptr ? l_node : m_bottom_left_back->_find_containing_node(p_box);
-				l_node = l_node != nullptr ? l_node : m_bottom_left_front->_find_containing_node(p_box);
-				l_node = l_node != nullptr ? l_node : m_bottom_right_front->_find_containing_node(p_box);
-				l_node = l_node != nullptr ? l_node : m_bottom_right_back->_find_containing_node(p_box);
+				l_node || ((l_node = m_top_left_front->_find_containing_node(p_box)));
+				l_node || ((l_node = m_top_right_front->_find_containing_node(p_box)));
+				l_node || ((l_node = m_top_right_back->_find_containing_node(p_box)));
+				l_node || ((l_node = m_bottom_left_back->_find_containing_node(p_box)));
+				l_node || ((l_node = m_bottom_left_front->_find_containing_node(p_box)));
+				l_node || ((l_node = m_bottom_right_front->_find_containing_node(p_box)));
+				l_node || ((l_node = m_bottom_right_back->_find_containing_node(p_box)));
 			}
 
 			if (!l_node)

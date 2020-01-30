@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Game/Object/Scene/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Editor/Application/bcUICommand.h"
 
 namespace black_cat

@@ -4,7 +4,6 @@
 
 #include "PhysicsImp/Body/bcRigidStatic.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
-#include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
 {
@@ -26,19 +25,23 @@ namespace black_cat
 
 			bc_rigid_static_component& operator=(bc_rigid_static_component&&) noexcept;
 
+			bc_actor get_actor() const noexcept override;
+			
 			physics::bc_rigid_body get_body() noexcept override;
 
 			physics::bc_rigid_static get_static_body() const noexcept;
 
-			bc_actor get_actor() const noexcept override;
-
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
-			void update(const bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
-		protected:
+			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 
+			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			
 		private:
-			void _initialize_from_height_map(bc_physics_system& p_physics_system, bc_actor& p_actor, physics::bc_rigid_static& p_rigid_static, bc_height_map_component& p_component);
+			void _initialize_from_height_map(bc_physics_system& p_physics_system, 
+				bc_actor& p_actor, 
+				physics::bc_rigid_static& p_rigid_static, 
+				bc_height_map_component& p_component);
 
 			physics::bc_rigid_static_ref m_px_actor_ref;
 		};

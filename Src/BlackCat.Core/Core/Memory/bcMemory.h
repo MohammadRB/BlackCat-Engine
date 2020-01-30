@@ -17,14 +17,14 @@ namespace black_cat
 			using this_type = bc_memory;
 
 		public:
-			bc_memory() {}
+			bc_memory() = default;
 
 			bc_memory(this_type&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 			}
 
-			virtual ~bc_memory() {}
+			virtual ~bc_memory() = default;
 
 			this_type& operator =(this_type&& p_other) noexcept
 			{
@@ -79,14 +79,14 @@ namespace black_cat
 			using defrag_callback = bc_delegate<void(void*,void*)>;
 
 		public:
-			bc_memory_movable() {}
+			bc_memory_movable() = default;
 
 			bc_memory_movable(this_type&& p_other) noexcept
 				: bc_memory(std::move(p_other))
 			{
 			}
 
-			virtual ~bc_memory_movable() {}
+			virtual ~bc_memory_movable() = default;
 
 			this_type& operator =(this_type&& p_other) noexcept
 			{

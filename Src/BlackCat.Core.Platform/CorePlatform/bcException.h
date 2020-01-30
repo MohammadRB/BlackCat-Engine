@@ -38,7 +38,7 @@ namespace black_cat
 		{
 		}
 
-		explicit bc_platform_exception(bcINT p_code, std::string p_message)
+		explicit bc_platform_exception(bcINT p_code, const std::string& p_message)
 			: system_error(p_code, bc_platform_category(), p_message)
 		{
 		}
@@ -57,50 +57,41 @@ namespace black_cat
 		{
 			return std::system_error::what();
 		}
-
-	protected:
-
-	private:
 	};
 
 	class bc_thread_resource_exception : public std::runtime_error
 	{
 	public:
-		explicit bc_thread_resource_exception(const bcCHAR* p_message) : std::runtime_error(p_message)
+		explicit bc_thread_resource_exception(const bcCHAR* p_message)
+			: std::runtime_error(p_message)
 		{
 		}
 
-		bc_thread_resource_exception(const bc_thread_resource_exception& p_other) : std::runtime_error(p_other)
-		{
-		}
+		bc_thread_resource_exception(const bc_thread_resource_exception&) = default;
 
 		~bc_thread_resource_exception() = default;
 
-	protected:
-
-	private:
+		bc_thread_resource_exception& operator=(const bc_thread_resource_exception&) = default;
 	};
 
 	class bc_invalid_operation_exception : public std::runtime_error
 	{
 	public:
-		explicit bc_invalid_operation_exception(const bcCHAR* p_message) : std::runtime_error(p_message)
+		explicit bc_invalid_operation_exception(const bcCHAR* p_message)
+			: std::runtime_error(p_message)
 		{
 		}
 
-		explicit bc_invalid_operation_exception(const std::string& p_message) : std::runtime_error(p_message)
+		explicit bc_invalid_operation_exception(const std::string& p_message)
+			: std::runtime_error(p_message)
 		{
 		}
 
-		bc_invalid_operation_exception(const bc_invalid_operation_exception& p_other) : std::runtime_error(p_other)
-		{
-		}
+		bc_invalid_operation_exception(const bc_invalid_operation_exception& p_other) = default;
 
 		~bc_invalid_operation_exception() = default;
 
-	protected:
-
-	private:
+		bc_invalid_operation_exception& operator=(const bc_invalid_operation_exception&) = default;
 	};
 
 	using bc_bad_cast_exception = std::bad_cast;

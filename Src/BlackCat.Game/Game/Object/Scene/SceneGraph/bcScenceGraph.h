@@ -5,7 +5,7 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Memory/bcPtr.h"
 #include "Game/bcExport.h"
-#include "Game/Object/Scene/bcActor.hpp"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphNode.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 
@@ -51,10 +51,25 @@ namespace black_cat
 
 			const_iterator cend() const noexcept;
 
+			/**
+			 * \brief Try to add actor to scene
+			 * \param p_actor 
+			 * \return True if the actor was added and False if actor was out of bound of scene graph
+			 */
 			bool add_actor(bc_actor& p_actor);
 
-			bool update_actor(bc_actor& p_actor, const physics::bc_bound_box& p_previous_box);
+			/**
+			 * \brief Update actor in scene graph
+			 * \param p_actor 
+			 * \return True if the actor was updated and False if actor went out of bound of scene graph
+			 */
+			bool update_actor(bc_actor& p_actor);
 
+			/**
+			 * \brief Try to remove actor from scene
+			 * \param p_actor 
+			 * \return True if the actor was removed and False if actor was not found
+			 */
 			bool remove_actor(bc_actor& p_actor);
 
 			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;

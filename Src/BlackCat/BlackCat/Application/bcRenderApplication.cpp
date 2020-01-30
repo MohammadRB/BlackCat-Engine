@@ -10,13 +10,12 @@
 #include "Core/Content/bcContentManager.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Content/bcLazyContent.h"
-#include "Game/Object/Scene/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/System/Script/bcScriptBinding.h"
 #include "Game/System/Render/Pass/bcRenderPassManager.h"
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/System/Script/bcScriptSystem.h"
-#include "Game/Object/Scene/Component/bcNameComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
@@ -82,9 +81,9 @@ namespace black_cat
 		));
 		core::bc_register_service(core::bc_make_service<core::bc_content_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
+		core::bc_register_service(core::bc_make_service<game::bc_game_system>());
 		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>());
 		core::bc_register_service(core::bc_make_service<game::bc_entity_manager>(*core::bc_get_service<game::bc_actor_component_manager>()));
-		core::bc_register_service(core::bc_make_service<game::bc_game_system>());
 
 		auto* l_log_manager = core::bc_get_service<core::bc_logger>();
 		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
@@ -112,7 +111,6 @@ namespace black_cat
 
 		l_entity_manager->register_component_types
 		<
-			game::bc_name_component,
 			game::bc_mediate_component,
 			game::bc_simple_mesh_component,
 			game::bc_vegetable_mesh_component,

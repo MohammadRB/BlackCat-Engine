@@ -5,7 +5,8 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcNullable.h"
-#include "Game/Object/Scene/bcActorComponent.h"
+#include "Core/Utility/bcObjectStackPool.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
@@ -27,7 +28,9 @@ namespace black_cat
 
 			virtual void remove(bc_actor_component_index p_index) = 0;
 
-			virtual void update(const bc_actor_component_manager* p_manager, const core_platform::bc_clock::update_param& p_clock_update_param) = 0;
+			virtual void handle_events(bc_actor_component_manager& p_manager, core::bc_concurrent_object_stack_pool* p_events_pool) = 0;
+
+			virtual void update(bc_actor_component_manager& p_manager, const core_platform::bc_clock::update_param& p_clock_update_param) = 0;
 
 			virtual bcSIZE size() = 0;
 
@@ -61,13 +64,13 @@ namespace black_cat
 
 			void remove(bc_actor_component_index p_index) override;
 
-			void update(const bc_actor_component_manager* p_manager, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			void handle_events(bc_actor_component_manager& p_manager, core::bc_concurrent_object_stack_pool* p_events_pool) override;
+
+			void update(bc_actor_component_manager& p_manager, const core_platform::bc_clock::update_param& p_clock_update_param) override;
 
 			bcSIZE size() override;
 
 			bcSIZE capacity() override;
-
-		protected:
 
 		private:
 			core::bc_vector< core::bc_nullable< TComponent > > m_components;
@@ -166,14 +169,49 @@ namespace black_cat
 			m_components[p_index].reset();
 		}
 
+		template <class TComponent>
+		void bc_actor_component_container<TComponent>::handle_events(bc_actor_component_manager& p_manager, core::bc_concurrent_object_stack_pool* p_events_pool)
+		{
+			for (auto& l_component_entry : m_components)
+			{
+				if (l_component_entry.is_set()) // TODO find a way to skip this if
+				{
+					TComponent& l_component = l_component_entry.get();
+					bc_actor l_actor = p_manager.component_get_actor< TComponent >(l_component);
+					bc_actor_event* l_events = p_manager.actor_get_events(l_actor);
+					bc_actor_event* l_current_event = l_events;
+
+					while (l_current_event)
+					{
+						l_component.handle_event(l_actor, *l_current_event);
+						l_current_event = l_current_event->get_next();
+					}
+					
+					if(p_events_pool)
+					{
+						l_current_event = l_events;
+
+						while (l_current_event)
+						{
+							bc_actor_event* l_next = l_current_event->get_next();
+							p_events_pool->free(l_current_event);
+							l_current_event = l_next;
+						}
+
+						p_manager.actor_clear_events(l_actor);
+					}
+				}
+			}
+		}
+
 		template< class TComponent >
-		void bc_actor_component_container<TComponent>::update(const bc_actor_component_manager* p_manager, const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_actor_component_container<TComponent>::update(bc_actor_component_manager& p_manager, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 			for(auto& l_component : m_components)
 			{
-				if(l_component.is_set())
+				if(l_component.is_set()) // TODO find a way to skip this if
 				{
-					bc_actor l_actor = p_manager->component_get_actor< TComponent >(l_component.get());
+					bc_actor l_actor = p_manager.component_get_actor< TComponent >(l_component.get());
 					
 					l_component->update(l_actor, p_clock_update_param);
 				}

@@ -505,7 +505,7 @@ namespace black_cat
 
 				l_context.m_file->close();
 
-				l_result = p_loader->finish(l_context).get_result<TContent>();
+				l_result = p_loader->finish(l_context).release_result<TContent>();
 			}
 
 			return l_result;

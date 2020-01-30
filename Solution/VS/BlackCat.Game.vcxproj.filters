@@ -46,6 +46,12 @@
     <Filter Include="Game\System\Render\Light">
       <UniqueIdentifier>{3e48dad4-a25e-439a-a987-3f0c4c372a87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Object\Scene\ActorComponent">
+      <UniqueIdentifier>{47ec6f99-94e4-4109-abf0-5cf5eb8779f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Scene\Component\Event">
+      <UniqueIdentifier>{2e1f337a-a135-4f86-b9e1-a582deb039fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h">
@@ -71,21 +77,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidStaticComponent.h">
       <Filter>Game\Object\Scene\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcActor.h">
-      <Filter>Game\Object\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcActor.hpp">
-      <Filter>Game\Object\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcActorComponent.h">
-      <Filter>Game\Object\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcActorComponentContainer.h">
-      <Filter>Game\Object\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcActorComponentManager.h">
-      <Filter>Game\Object\Scene</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcEntityManager.h">
       <Filter>Game\Object\Scene</Filter>
@@ -177,9 +168,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshPartCollider.h">
       <Filter>Game\Object\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcNameComponent.h">
-      <Filter>Game\Object\Scene\Component</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcSceneGraphNode.h">
       <Filter>Game\Object\Scene\SceneGraph</Filter>
     </ClInclude>
@@ -270,6 +258,33 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcRenderMaterial.h">
       <Filter>Game\Object\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActor.h">
+      <Filter>Game\Object\Scene\ActorComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActor.hpp">
+      <Filter>Game\Object\Scene\ActorComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponent.h">
+      <Filter>Game\Object\Scene\ActorComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentContainer.h">
+      <Filter>Game\Object\Scene\ActorComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentManager.h">
+      <Filter>Game\Object\Scene\ActorComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorEvent.h">
+      <Filter>Game\Object\Scene\ActorComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcActorEventWorldTransform.h">
+      <Filter>Game\Object\Scene\Component\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcActorEventBoundBoxChanged.h">
+      <Filter>Game\Object\Scene\Component\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcActorEventAddedToScene.h">
+      <Filter>Game\Object\Scene\Component\Event</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -295,9 +310,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidStaticComponent.cpp">
       <Filter>Game\Object\Scene\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcActorComponent.cpp">
-      <Filter>Game\Object\Scene</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcEntityManager.cpp">
       <Filter>Game\Object\Scene</Filter>
@@ -359,9 +371,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshPartCollider.cpp">
       <Filter>Game\Object\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcNameComponent.cpp">
-      <Filter>Game\Object\Scene\Component</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcScenceGraph.cpp">
       <Filter>Game\Object\Scene\SceneGraph</Filter>
     </ClCompile>
@@ -418,6 +427,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcRenderMaterial.cpp">
       <Filter>Game\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponent.cpp">
+      <Filter>Game\Object\Scene\ActorComponent</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

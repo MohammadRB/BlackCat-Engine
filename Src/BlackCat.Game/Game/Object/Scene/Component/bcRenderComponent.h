@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Game/bcExport.h"
-#include "Game/Object/Scene/bcActorComponent.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 
 namespace black_cat
 {
