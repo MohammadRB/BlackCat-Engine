@@ -49,16 +49,17 @@ namespace black_cat
 		T* bc_concurrent_object_stack_pool::alloc(TArgs&&... p_parameters)
 		{
 			// TODO default alignment is not preserved
-			void* l_memory = _alloc(sizeof(bcSIZE) + sizeof(T));
-			void* l_memory_object = reinterpret_cast<bcBYTE*>(l_memory) + sizeof(bcSIZE);
-			bcSIZE* l_memory_size = reinterpret_cast<bcSIZE*>(l_memory);
+			const bcSIZE l_needed_memory = sizeof(bcSIZE) + sizeof(T);
+			void* l_allocated_memory = _alloc(l_needed_memory);
+			void* l_object_ptr = reinterpret_cast<bcBYTE*>(l_allocated_memory) + sizeof(bcSIZE);
+			bcSIZE* l_memory_size_ptr = reinterpret_cast<bcSIZE*>(l_allocated_memory);
 
-			*l_memory_size = sizeof(T);
-			new (l_memory_object) T(std::forward<T>(p_parameters)...);
+			new (l_object_ptr) T(std::forward<T>(p_parameters)...);
+			*l_memory_size_ptr = l_needed_memory;
 
 			m_size.fetch_add(1, core_platform::bc_memory_order::relaxed);
 			
-			return reinterpret_cast<T*>(l_memory_object);
+			return reinterpret_cast<T*>(l_object_ptr);
 		}
 		
 		template<typename T>
@@ -66,10 +67,10 @@ namespace black_cat
 		{
 			p_object->~T();
 
-			void* l_memory = reinterpret_cast<bcBYTE*>(p_object) - sizeof(bcSIZE);
-			const bcSIZE l_memory_size = *reinterpret_cast<bcSIZE*>(l_memory);
+			void* l_allocated_memory = reinterpret_cast<bcBYTE*>(p_object) - sizeof(bcSIZE);
+			const bcSIZE l_memory_size = *reinterpret_cast<bcSIZE*>(l_allocated_memory);
 
-			_free(l_memory, l_memory_size);
+			_free(l_allocated_memory, l_memory_size);
 
 			m_size.fetch_sub(1, core_platform::bc_memory_order::relaxed);
 		}
