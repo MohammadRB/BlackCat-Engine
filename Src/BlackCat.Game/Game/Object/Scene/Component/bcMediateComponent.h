@@ -18,7 +18,7 @@ namespace black_cat
 		 */
 		class BC_GAME_DLL bc_mediate_component : public bc_iactor_component
 		{
-			BC_COMPONENT(mediate)
+			BC_COMPONENT(mediate, true, true)
 
 		public:
 			static constexpr const bcCHAR* s_position_json_key = "position";

@@ -49,11 +49,19 @@ namespace black_cat
 		return BC_COMPILE_TIME_STRING_HASH(BC_CONTENT_NAME(p_name)); \
 	} \
 
-#define BC_COMPONENT(p_name) \
+#define BC_COMPONENT_DEFINITION(p_name, p_is_abstract, p_require_event, p_require_update) \
 	public: \
 	static constexpr bool component_is_abstract() \
 	{ \
-		return false; \
+		return p_is_abstract; \
+	} \
+	static constexpr bool component_require_event() \
+	{ \
+		return p_require_event; \
+	} \
+	static constexpr bool component_require_update() \
+	{ \
+		return p_require_update; \
 	} \
 	static constexpr const bcCHAR* component_name() \
 	{ \
@@ -63,21 +71,10 @@ namespace black_cat
 	{ \
 		return BC_COMPILE_TIME_STRING_HASH(BC_COMPONENT_NAME(p_name)); \
 	} \
+	
+#define BC_COMPONENT(p_name, p_require_event, p_require_update) BC_COMPONENT_DEFINITION(p_name, false, p_require_event, p_require_update)
 
-#define BC_ABSTRACT_COMPONENT(p_name) \
-	public: \
-	static constexpr bool component_is_abstract() \
-	{ \
-		return true; \
-	} \
-	static constexpr const bcCHAR* component_name() \
-	{ \
-		return BC_COMPONENT_NAME(p_name); \
-	} \
-	static constexpr bcUINT32 component_hash() \
-	{ \
-		return BC_COMPILE_TIME_STRING_HASH(BC_COMPONENT_NAME(p_name)); \
-	} \
+#define BC_ABSTRACT_COMPONENT(p_name) BC_COMPONENT_DEFINITION(p_name, true, false, false)
 
 #define BC_EVENT(p_name) \
 	public: \

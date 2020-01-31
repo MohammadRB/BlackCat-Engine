@@ -15,7 +15,7 @@ namespace black_cat
 	{
 		class BC_GAME_DLL bc_height_map_component : public bc_render_component
 		{
-			BC_COMPONENT(height_map)
+			BC_COMPONENT(height_map, true, false)
 
 		public:
 			explicit bc_height_map_component(bc_actor_component_index p_index);

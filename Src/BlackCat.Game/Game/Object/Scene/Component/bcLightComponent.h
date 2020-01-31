@@ -6,7 +6,6 @@
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/System/Render/Light/bcLight.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 
 namespace black_cat
 {
@@ -14,7 +13,7 @@ namespace black_cat
 	{
 		class BC_GAME_DLL bc_light_component : public bc_iactor_component
 		{
-			BC_COMPONENT(light)
+			BC_COMPONENT(light, true, false)
 
 		public:
 			explicit bc_light_component(bc_actor_component_index p_index);

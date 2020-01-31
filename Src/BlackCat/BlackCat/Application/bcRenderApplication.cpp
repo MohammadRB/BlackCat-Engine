@@ -86,7 +86,6 @@ namespace black_cat
 		core::bc_register_service(core::bc_make_service<game::bc_entity_manager>(*core::bc_get_service<game::bc_actor_component_manager>()));
 
 		auto* l_log_manager = core::bc_get_service<core::bc_logger>();
-		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
 		auto* l_entity_manager = core::bc_get_service<game::bc_entity_manager>();
 		m_game_system = core::bc_get_service<game::bc_game_system>();
 
@@ -213,7 +212,7 @@ namespace black_cat
 		core::bc_service_manager::close();
 #ifdef BC_MEMORY_ENABLE
 #ifdef BC_MEMORY_LEAK_DETECTION
-		bcUINT32 l_leak_counts = core::bc_memmng::get().report_memory_leaks();
+		const bcUINT32 l_leak_counts = core::bc_memmng::get().report_memory_leaks();
 		if (l_leak_counts > 0)
 		{
 			bcAssert(false);

@@ -33,6 +33,16 @@ namespace black_cat
 				return TComponent::component_is_abstract();
 			}
 
+			static constexpr bool component_require_event()
+			{
+				return TComponent::component_require_event();
+			}
+
+			static constexpr bool component_require_update()
+			{
+				return TComponent::component_require_update();
+			}
+
 			static constexpr const bcCHAR* component_name()
 			{
 				return TComponent::component_name();
@@ -101,6 +111,9 @@ namespace black_cat
 
 		public:
 			static constexpr bcUINT32 s_invalid_priority_value = -1;
+			bool m_is_abstract;
+			bool m_require_event;
+			bool m_require_update;
 			bcUINT32 m_component_priority;
 			core::bc_vector_movale< bc_actor_component_index > m_actor_to_component_index_map;
 			core::bc_vector_movale< bc_actor_index > m_component_to_actor_index_map;
@@ -438,8 +451,7 @@ namespace black_cat
 
 			for (auto& l_entry : m_components)
 			{
-				// It's an abstract component
-				if(l_entry.second.m_component_priority == _bc_actor_component_entry::s_invalid_priority_value)
+				if(l_entry.second.m_is_abstract)
 				{
 					continue;
 				}
@@ -465,7 +477,14 @@ namespace black_cat
 				bcSIZE l_component_index = 0;
 				for (auto l_component_data : l_components)
 				{
-					if (++l_component_index != l_components.size())
+					++l_component_index;
+					
+					if(!l_component_data->m_require_event)
+					{
+						continue;
+					}
+					
+					if (l_component_index != l_components.size())
 					{
 						l_component_data->m_container->handle_events(*this, nullptr);
 					}
@@ -478,6 +497,11 @@ namespace black_cat
 
 			for(auto l_component_data : l_components)
 			{
+				if(!l_component_data->m_require_update)
+				{
+					continue;
+				}
+				
 				l_component_data->m_container->update(*this, p_clock_update_param);
 			}
 		}
@@ -607,6 +631,9 @@ namespace black_cat
 			auto l_hash = bc_actor_component_traits< TComponent >::component_hash();
 			_bc_actor_component_entry l_data
 			{
+				bc_actor_component_traits<TComponent>::component_is_abstract(),
+				bc_actor_component_traits<TComponent>::component_require_event(),
+				bc_actor_component_traits<TComponent>::component_require_update(),
 				p_priority,
 				core::bc_vector_movale< bc_actor_component_index >(),
 				core::bc_vector_movale< bc_actor_index >(),
@@ -628,6 +655,9 @@ namespace black_cat
 			auto l_hash = bc_actor_component_traits< TComponent >::component_hash();
 			_bc_actor_component_entry l_data
 			{
+				bc_actor_component_traits<TComponent>::component_is_abstract(),
+				bc_actor_component_traits<TComponent>::component_require_event(),
+				bc_actor_component_traits<TComponent>::component_require_update(),
 				_bc_actor_component_entry::s_invalid_priority_value,
 				core::bc_vector_movale< bc_actor_component_index >(),
 				core::bc_vector_movale< bc_actor_index >(),

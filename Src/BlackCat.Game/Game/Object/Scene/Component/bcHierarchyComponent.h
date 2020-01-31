@@ -14,7 +14,7 @@ namespace black_cat
 	{
 		class BC_GAME_DLL bc_hierarchy_component : public bc_iactor_component
 		{
-			BC_COMPONENT(hierarchy)
+			BC_COMPONENT(hierarchy, false, false)
 
 		public:
 			explicit bc_hierarchy_component(bc_actor_component_index p_index);
