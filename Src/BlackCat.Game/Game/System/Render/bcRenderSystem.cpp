@@ -203,7 +203,7 @@ namespace black_cat
 
 		void bc_render_system::render(const render_param& p_render_param)
 		{
-			auto bc_render_thread_guard = m_thread_manager->get_available_thread_wait();
+			const auto bc_render_thread_guard = m_thread_manager->get_available_thread_wait();
 			auto& l_render_thread = *bc_render_thread_guard.get_thread();
 			
 			m_render_pass_manager->pass_execute(bc_render_pass_render_param(p_render_param.m_clock, *this, l_render_thread, p_render_param.m_camera, p_render_param.m_scene));
@@ -217,8 +217,8 @@ namespace black_cat
 		{
 			core::bc_task<void> l_cpu_task = core::bc_concurrency::start_task<void>([this, &p_task]()
 			{
-				auto l_render_thread_wrapper = m_thread_manager->get_available_thread_wait();
-				auto& l_render_thread = *l_render_thread_wrapper.get_thread();
+				const auto l_render_thread_guard = m_thread_manager->get_available_thread_wait();
+				auto& l_render_thread = *l_render_thread_guard.get_thread();
 
 				p_task.execute(*this, l_render_thread);
 			});

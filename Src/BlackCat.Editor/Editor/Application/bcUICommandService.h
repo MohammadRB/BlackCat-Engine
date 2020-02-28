@@ -82,8 +82,6 @@ namespace black_cat
 
 			void update_ui(bc_iui_command::update_ui_context& p_context);
 
-		protected:
-
 		private:
 			bc_iui_command::state* _get_command_state(const bc_iui_command& p_command);
 

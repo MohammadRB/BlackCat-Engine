@@ -25,8 +25,6 @@ namespace black_cat
 
 			bool intersects(const physics::bc_bound_box& p_box) const noexcept;
 
-		protected:
-
 		private:
 			// Ordered by: near, far, left, top, right, bottom
 			core::bc_vector<physics::bc_shape_plane> m_planes;

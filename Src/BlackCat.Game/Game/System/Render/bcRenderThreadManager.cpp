@@ -8,10 +8,16 @@ namespace black_cat
 {
 	namespace game
 	{
-		_bc_render_thread_entry::_bc_render_thread_entry()
+		_bc_render_thread_entry::_bc_render_thread_entry() noexcept
 			: m_is_available(true)
 		{
 		}
+
+		_bc_render_thread_entry::_bc_render_thread_entry(_bc_render_thread_entry&& p_other) noexcept = default;
+
+		_bc_render_thread_entry::~_bc_render_thread_entry() noexcept = default;
+
+		_bc_render_thread_entry& _bc_render_thread_entry::operator=(_bc_render_thread_entry&& p_other) noexcept = default;
 
 		bc_render_thread_guard::bc_render_thread_guard(bc_render_thread_manager& p_thread_manager, bc_render_thread* p_thread)
 			: m_thread_manager(p_thread_manager),
@@ -20,7 +26,8 @@ namespace black_cat
 		}
 
 		bc_render_thread_guard::bc_render_thread_guard(bc_render_thread_guard&& p_other) noexcept
-			: m_thread_manager(p_other.m_thread_manager)
+			: m_thread_manager(p_other.m_thread_manager),
+			m_thread(nullptr)
 		{
 			operator=(std::move(p_other));
 		}
@@ -73,14 +80,12 @@ namespace black_cat
 			operator=(std::move(p_other));
 		}
 
-		bc_render_thread_manager::~bc_render_thread_manager()
-		{
-		}
+		bc_render_thread_manager::~bc_render_thread_manager() = default;
 
 		bc_render_thread_manager& bc_render_thread_manager::operator=(bc_render_thread_manager&& p_other) noexcept
 		{
-			m_threads = std::move(p_other.m_threads);
 			m_available_thread_count.store(p_other.m_available_thread_count.load());
+			m_threads = std::move(p_other.m_threads);
 
 			return *this;
 		}
@@ -108,7 +113,7 @@ namespace black_cat
 					}
 
 					l_entry.m_is_available = false;
-					auto l_count = m_available_thread_count.fetch_sub(1, core_platform::bc_memory_order::relaxed) - 1;
+					const auto l_count = m_available_thread_count.fetch_sub(1, core_platform::bc_memory_order::relaxed) - 1;
 
 					bcAssert(l_count >= 0);
 
@@ -153,7 +158,7 @@ namespace black_cat
 					}
 
 					l_entry.m_is_available = true;
-					auto l_count = m_available_thread_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1;
+					const auto l_count = m_available_thread_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1;
 
 					bcAssert(l_count <= m_threads.size());
 

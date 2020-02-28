@@ -58,11 +58,28 @@ namespace black_cat
 			return l_pipeline_stages;
 		}
 
-		bc_render_thread::bc_render_thread()
-			: m_pipeline(),
-			m_executor(),
-			m_command_list()
+		bc_render_thread::bc_render_thread() noexcept
 		{
+		}
+
+		bc_render_thread::bc_render_thread(bc_render_thread&& p_other) noexcept
+			: m_pipeline(std::move(p_other.m_pipeline)),
+			m_executor(std::move(p_other.m_executor)),
+			m_command_list(p_other.m_command_list)
+		{
+		}
+
+		bc_render_thread::~bc_render_thread() noexcept
+		{
+		}
+
+		bc_render_thread& bc_render_thread::operator=(bc_render_thread&& p_other) noexcept
+		{
+			m_pipeline = std::move(p_other.m_pipeline);
+			m_executor = std::move(p_other.m_executor);
+			m_command_list = p_other.m_command_list;
+
+			return *this;
 		}
 
 		void bc_render_thread::start(graphic::bc_device_command_list p_command_list) noexcept

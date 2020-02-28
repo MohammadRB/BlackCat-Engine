@@ -20,8 +20,8 @@ namespace black_cat
 			m_is_terminated(false),
 			m_paused(false),
 			m_termination_code(0),
-			m_min_update_rate(60),
-			m_render_rate(m_min_update_rate),
+			m_min_update_rate(0),
+			m_render_rate(0),
 			m_time_delta_buffer{},
 			m_current_time_delta_sample(0),
 			m_fps(0)
@@ -58,7 +58,7 @@ namespace black_cat
 		bcINT32 bc_render_application::run()
 		{
 			auto* const l_event_manager = core::bc_get_service< core::bc_event_manager >();
-			const core_platform::bc_clock::small_delta_time l_update_elapsing = 1000.0f / m_min_update_rate;
+			const core_platform::bc_clock::small_delta_time l_min_update_elapsed = 1000.0f / m_min_update_rate;
 			core_platform::bc_clock::small_delta_time l_local_elapsed = 0;
 			
 			try
@@ -82,18 +82,18 @@ namespace black_cat
 #ifdef BC_DEBUG
 					if (l_elapsed > 1000.0f)
 					{
-						l_elapsed = l_update_elapsing;
+						l_elapsed = l_min_update_elapsed;
 					}
 #endif
 
 					l_local_elapsed += l_elapsed;
-					while (l_local_elapsed >= l_update_elapsing)
+					while (l_local_elapsed >= l_min_update_elapsed)
 					{
 						core::bc_event_frame_update_start l_event_frame_start;
 						l_event_manager->process_event(l_event_frame_start);
 
-						app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_update_elapsing));
-						l_local_elapsed -= l_update_elapsing;
+						app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_min_update_elapsed));
+						l_local_elapsed -= l_min_update_elapsed;
 
 						core::bc_event_frame_update_finish l_event_frame_finish;
 						l_event_manager->process_event(l_event_frame_finish);

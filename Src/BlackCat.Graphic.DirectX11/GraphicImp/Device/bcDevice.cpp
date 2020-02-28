@@ -1459,7 +1459,7 @@ namespace black_cat
 			{
 				DWORD l_error_code;
 				core_platform::win32_from_hresult(l_result, &l_error_code);
-				throw bc_graphic_exception(static_cast< bcINT >(l_error_code), "Faild to create DirectX11 SwapChain");
+				throw bc_graphic_exception(static_cast< bcINT >(l_error_code), "Failed to create DirectX11 SwapChain");
 			}
 
 			set_vsync(true);

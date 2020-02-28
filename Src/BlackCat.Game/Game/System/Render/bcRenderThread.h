@@ -19,13 +19,13 @@ namespace black_cat
 		class BC_GAME_DLL bc_render_thread
 		{
 		public:
-			bc_render_thread();
+			bc_render_thread() noexcept;
 
-			bc_render_thread(bc_render_thread&&) = default;
+			bc_render_thread(bc_render_thread&&) noexcept;
 
-			~bc_render_thread() = default;
+			~bc_render_thread() noexcept;
 
-			bc_render_thread& operator=(bc_render_thread&&) = default;
+			bc_render_thread& operator=(bc_render_thread&&) noexcept;
 
 			graphic::bc_device_pipeline get_pipeline() noexcept
 			{
@@ -154,8 +154,6 @@ namespace black_cat
 			void reset();
 
 			void reset(graphic::bc_device_pipeline_ptr p_pipeline, graphic::bc_device_command_executor_ptr p_command_executor);
-
-		protected:
 
 		private:
 			graphic::bc_device_pipeline_ptr m_pipeline;

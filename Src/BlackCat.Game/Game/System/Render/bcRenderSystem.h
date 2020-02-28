@@ -284,8 +284,6 @@ namespace black_cat
 			 */
 			void destroy_compute_state(bc_compute_state* p_compute_state);
 
-		protected:
-
 		private:
 			void _initialize(core::bc_content_stream_manager& p_content_stream, bc_render_system_parameter p_parameter) override;
 

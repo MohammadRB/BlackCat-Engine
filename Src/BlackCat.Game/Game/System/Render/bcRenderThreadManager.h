@@ -19,13 +19,13 @@ namespace black_cat
 		class _bc_render_thread_entry
 		{
 		public:
-			_bc_render_thread_entry();
+			_bc_render_thread_entry() noexcept;
 			 
-			_bc_render_thread_entry(_bc_render_thread_entry&&) = default;
+			_bc_render_thread_entry(_bc_render_thread_entry&&) noexcept;
 
-			~_bc_render_thread_entry() = default;
+			~_bc_render_thread_entry() noexcept;
 
-			_bc_render_thread_entry& operator=(_bc_render_thread_entry&&) = default;
+			_bc_render_thread_entry& operator=(_bc_render_thread_entry&&) noexcept;
 
 			bc_render_thread m_thread;
 			bool m_is_available;
@@ -48,8 +48,6 @@ namespace black_cat
 			bool is_valid() const;
 
 			bc_render_thread* get_thread() const;
-
-		protected:
 
 		private:
 			bc_render_thread_manager& m_thread_manager;
@@ -91,14 +89,12 @@ namespace black_cat
 			 * \param p_thread 
 			 */
 			void set_available_thread(bc_render_thread& p_thread);
-
-		protected:
-
+		
 		private:
 			mutable core_platform::bc_mutex m_threads_mutex;
 			mutable core_platform::bc_condition_variable m_threads_cv;
-			core::bc_vector<_bc_render_thread_entry> m_threads;
 			mutable core_platform::bc_atomic<bcINT32> m_available_thread_count;
+			core::bc_vector<_bc_render_thread_entry> m_threads;
 		};
 	}
 }

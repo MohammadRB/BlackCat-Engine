@@ -9,9 +9,7 @@
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
-#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 
 namespace black_cat
 {

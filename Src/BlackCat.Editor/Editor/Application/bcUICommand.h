@@ -121,7 +121,7 @@ namespace black_cat
 
 			/**
 			 * \brief Create a state object that will hold required data for executing an instance of this command.
-			 * This states will be stored and passed to the update method of command every time a new instance of 
+			 * This state will be stored and passed to the update method of command every time a new instance of 
 			 * command is executing.
 			 * This method will be called from engine main thread
 			 * \param p_context 

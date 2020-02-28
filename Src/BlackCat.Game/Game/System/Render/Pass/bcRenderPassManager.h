@@ -81,7 +81,7 @@ namespace black_cat
 		template< typename T >
 		void bc_render_pass_manager::add_pass(bcUINT32 p_location, T&& p_pass)
 		{
-			static_assert(std::is_base_of_v<bc_irender_pass, T>, "T must inherite from bc_irender_pass");
+			static_assert(std::is_base_of_v<bc_irender_pass, T>, "T must inherit from bc_irender_pass");
 
 			_bc_render_pass_entry l_entry;
 			l_entry.m_position = p_location;

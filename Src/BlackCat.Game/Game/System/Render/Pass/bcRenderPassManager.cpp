@@ -115,14 +115,14 @@ namespace black_cat
 		{
 			p_entry.m_pass->_set_pass_resource_share(&m_state_share);
 
-			auto l_entry_with_same_position = std::find_if(std::cbegin(m_passes), std::cend(m_passes), [&](decltype(m_passes)::const_reference p_item)
+			const auto l_entry_with_same_position = std::find_if(std::cbegin(m_passes), std::cend(m_passes), [&](decltype(m_passes)::const_reference p_item)
 			{
 				return p_entry.m_position == p_item.m_position;
 			});
 
 			if(l_entry_with_same_position != std::cend(m_passes))
 			{
-				throw bc_invalid_operation_exception("an entry with same position has been already added");
+				throw bc_invalid_operation_exception("a render pass with same position has been already added");
 			}
 			
 			m_passes.push_back(std::move(p_entry));
