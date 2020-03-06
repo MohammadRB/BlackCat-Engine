@@ -104,7 +104,7 @@ namespace black_cat
 				{
 					throw bc_invalid_operation_exception("Uninitialized memory pool");
 				}
-				if (m_memory_pool->block_size() != sizeof(T))
+				if (m_memory_pool->block_size() != sizeof(value_type))
 				{
 					throw bc_invalid_operation_exception("Memory pool with different size than one that is expected");
 				}

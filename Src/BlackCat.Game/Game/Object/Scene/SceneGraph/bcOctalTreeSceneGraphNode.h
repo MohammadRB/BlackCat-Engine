@@ -69,10 +69,7 @@ namespace black_cat
 		public:
 			bc_octal_tree_graph_node(physics::bc_bound_box p_box, bcSIZE p_max_actors_count, bcSIZE p_min_size);
 
-			bc_octal_tree_graph_node(bc_octal_tree_graph_node& p_parent,
-				bc_octal_tree_node_position p_my_position,
-				bcSIZE p_max_actors_count,
-				bcSIZE p_min_size);
+			bc_octal_tree_graph_node(bc_octal_tree_graph_node& p_parent, bc_octal_tree_node_position p_my_position);
 
 			bc_octal_tree_graph_node(bc_octal_tree_graph_node&&) noexcept = default;
 
@@ -162,8 +159,8 @@ namespace black_cat
 
 			bc_octal_tree_node_position m_my_position;
 			physics::bc_bound_box m_bound_box;
-			core::bc_concurrent_object_pool<bc_octal_tree_graph_node>* m_child_node_pool;
-			core::bc_concurrent_memory_pool* m_entry_pool;
+			core::bc_concurrent_object_pool<bc_octal_tree_graph_node>* m_child_nodes_pool;
+			core::bc_concurrent_memory_pool* m_actors_pool;
 			graph_node_entry_list m_actors;
 		};
 	}

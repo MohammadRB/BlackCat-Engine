@@ -12,7 +12,9 @@
 #include "Core/Event/bcEventListenerHandle.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcList.h"
 #include "Core/Container/bcConcurrentQueue.h"
+#include "Core/Utility/bcObjectPoolAllocator.h"
 #include "Core/Utility/bcServiceManager.h"
 
 namespace black_cat
@@ -38,13 +40,13 @@ namespace black_cat
 			{
 			}
 
-			_bc_queued_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::big_delta_time p_process_time) noexcept(true)
+			_bc_queued_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::big_delta_time p_process_time) noexcept
 				: m_event(std::move(p_event)),
 				m_process_time(p_process_time)
 			{
 			}
 
-			_bc_queued_event(_bc_queued_event&& p_other) noexcept(true)
+			_bc_queued_event(_bc_queued_event&& p_other) noexcept
 				: m_event(std::move(p_other.m_event)),
 				m_process_time(p_other.m_process_time)
 			{
@@ -52,7 +54,7 @@ namespace black_cat
 
 			~_bc_queued_event() = default;
 
-			_bc_queued_event& operator =(_bc_queued_event&& p_other) noexcept(true)
+			_bc_queued_event& operator =(_bc_queued_event&& p_other) noexcept
 			{
 				m_event = std::move(p_other.m_event);
 				m_process_time = p_other.m_process_time;
@@ -64,14 +66,13 @@ namespace black_cat
 			core_platform::bc_clock::big_delta_time m_process_time;
 		};
 
-		// Pushing and queueing events are threat safe operations
 		class BC_CORE_DLL bc_event_manager : public bc_iservice
 		{
 			BC_SERVICE(event_manager)
 
 		public:
-			using event_handler_type = bc_event_handler_t;
-			using delegate_type = bc_event_handler_delegate_t;
+			using event_handler_type = bc_event_handler< bool(bc_ievent&) >;
+			using delegate_type = event_handler_type::delegate_type;
 
 		private:
 			using handler_map_t = bc_unordered_map< bc_event_hash, event_handler_type >;
@@ -104,7 +105,7 @@ namespace black_cat
 
 			/**
 			 * \brief Queue event for processing in a specific time in future that will be indicated by millisecond.
-			 * This function is thread safe and can be called with multiple threads.
+			 * \ThreadSafe
 			 * \param p_event 
 			 * \param p_millisecond 
 			 */
@@ -130,7 +131,8 @@ namespace black_cat
 			core_platform::bc_shared_mutex m_handlers_mutex;
 			handler_map_t m_handlers;
 
-			bc_vector< _bc_queued_event > m_local_queue;
+			bc_concurrent_memory_pool m_local_queue_pool;
+			bc_list< _bc_queued_event, bc_memory_pool_allocator< _bc_queued_event > > m_local_queue;
 			bc_concurrent_queue< _bc_queued_event > m_global_queue;
 			core_platform::bc_clock::big_clock m_total_elapsed;
 		};

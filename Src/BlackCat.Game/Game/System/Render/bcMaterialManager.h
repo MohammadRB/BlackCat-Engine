@@ -93,14 +93,19 @@ namespace black_cat
 
 			bc_render_material_ptr load_material_throw(core::bc_alloc_type p_alloc_type, const bcCHAR* p_name);
 
+			/**
+			 * \brief Store a pre-made material which can be loaded later
+			 * \ThreadSafe
+			 * \param p_name 
+			 * \param p_material 
+			 * \return 
+			 */
 			bc_render_material_ptr store_material(const bcCHAR* p_name, bc_render_material_description p_material);
 
 			bc_render_material_ptr store_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_name, bc_render_material_description p_material);
 
 			void destroy_material(bc_render_material* p_material);
-
-		protected:
-
+			
 		private:
 			graphic::bc_texture2d_content_ptr _create_texture_from_color(core::bc_vector4f p_color);
 

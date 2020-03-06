@@ -45,8 +45,6 @@ namespace black_cat
 
 			void clear() noexcept;
 
-		protected:
-			
 		private:
 			void _initialize(bcUINT32 p_object_count, bcUINT32 p_object_size, bc_alloc_type p_alloc_type) override;
 
@@ -147,7 +145,7 @@ namespace black_cat
 		template< typename ... TArgs >
 		T* bc_concurrent_object_pool< T >::alloc(TArgs&&... p_args) noexcept(std::is_nothrow_constructible< T, TArgs... >::value)
 		{
-			static_assert(std::is_constructible< T, TArgs... >::value, "class T is not constructible with parameters");
+			static_assert(std::is_constructible< T, TArgs... >::value, "class T is not constructable with provided parameters");
 
 			T* l_result = static_cast<T*>(m_memory_pool.alloc());
 

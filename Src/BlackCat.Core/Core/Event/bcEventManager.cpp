@@ -8,8 +8,10 @@ namespace black_cat
 	namespace core
 	{
 		bc_event_manager::bc_event_manager()
-			: m_total_elapsed(0)
+			: m_local_queue(bc_memory_pool_allocator<_bc_queued_event>(m_local_queue_pool)),
+			m_total_elapsed(0)
 		{
+			m_local_queue_pool.initialize(250, sizeof(_bc_queued_event) + sizeof(void*) * 2, bc_alloc_type::unknown);
 		}
 
 		bc_event_manager::~bc_event_manager()
@@ -85,7 +87,7 @@ namespace black_cat
 			{
 				l_event.m_process_time += m_total_elapsed;
 
-				auto l_lower_bound = std::lower_bound
+				const auto l_lower_bound = std::lower_bound
 				(
 					std::cbegin(m_local_queue),
 					std::cend(m_local_queue),

@@ -34,9 +34,7 @@ namespace black_cat
 			{
 				m_world = p_world;
 			}
-
-		protected:
-
+			
 		private:
 			core::bc_matrix4f m_world;
 		};

@@ -5,7 +5,6 @@
 #include "CorePlatform/bcType.h"
 #include "Core/bcExport.h"
 #include "Core/bcConstant.h"
-#include "Core/Event/bcEventHandler.h"
 
 namespace black_cat
 {
@@ -14,10 +13,8 @@ namespace black_cat
 		class bc_event_manager;
 		class bc_ievent;
 
-		using bc_event_handler_t = bc_event_handler< bool(bc_ievent&) >;
-		using bc_event_handler_delegate_t = bc_event_handler_t::delegate_type;
 		using bc_event_hash = bcUINT;
-
+		
 		template< class TEvent >
 		struct bc_event_traits
 		{

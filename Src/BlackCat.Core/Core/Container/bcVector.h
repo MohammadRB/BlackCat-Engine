@@ -226,7 +226,7 @@ namespace black_cat
 
 				_increase_capacity(p_count);
 
-				// _increase_capacity method may change pointers, so if it occur we correct p_position
+				// _increase_capacity method may change pointers, so if it has occured we should correct p_position
 				p_position = m_first + (p_position - l_first);
 				node_type* l_position = p_position;
 				size_type l_count = p_count;

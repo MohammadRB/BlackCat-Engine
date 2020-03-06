@@ -38,7 +38,7 @@ namespace black_cat
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		void bc_platform_mutex< bc_platform::win32 >::unlock() noexcept(true)
+		void bc_platform_mutex< bc_platform::win32 >::unlock() noexcept
 		{
 			m_pack.m_flag.clear(bc_memory_order::relaxed);
 
@@ -47,9 +47,9 @@ namespace black_cat
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		bool bc_platform_mutex< bc_platform::win32 >::try_lock() noexcept(true)
+		bool bc_platform_mutex< bc_platform::win32 >::try_lock() noexcept
 		{
-			bool l_result = TryEnterCriticalSection(&m_pack.m_critical_section);
+			const bool l_result = TryEnterCriticalSection(&m_pack.m_critical_section);
 
 			if (l_result)
 			{
@@ -79,21 +79,21 @@ namespace black_cat
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		void bc_platform_timed_mutex< bc_platform::win32 >::unlock() noexcept(true)
+		void bc_platform_timed_mutex< bc_platform::win32 >::unlock() noexcept
 		{
 			m_pack.m_mutex.unlock();
 		}
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		bool bc_platform_timed_mutex< bc_platform::win32 >::try_lock() noexcept(true)
+		bool bc_platform_timed_mutex< bc_platform::win32 >::try_lock() noexcept
 		{
 			return m_pack.m_mutex.try_lock();
 		}
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		bool bc_platform_timed_mutex< bc_platform::win32 >::try_lock_for(const bcUINT64 p_nano)
+		bool bc_platform_timed_mutex< bc_platform::win32 >::try_lock_for(bcUINT64 p_nano)
 		{
 			return m_pack.m_mutex.try_lock_for(std::chrono::nanoseconds(p_nano));
 		}
@@ -121,14 +121,14 @@ namespace black_cat
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		void bc_platform_recursive_mutex< bc_platform::win32 >::unlock() noexcept(true)
+		void bc_platform_recursive_mutex< bc_platform::win32 >::unlock() noexcept
 		{
 			LeaveCriticalSection(&m_pack.m_critical_section);
 		}
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		bool bc_platform_recursive_mutex< bc_platform::win32 >::try_lock() noexcept(true)
+		bool bc_platform_recursive_mutex< bc_platform::win32 >::try_lock() noexcept
 		{
 			return TryEnterCriticalSection(&m_pack.m_critical_section);
 		}
@@ -150,21 +150,21 @@ namespace black_cat
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		void bc_platform_recursive_timed_mutex< bc_platform::win32 >::unlock() noexcept(true)
+		void bc_platform_recursive_timed_mutex< bc_platform::win32 >::unlock() noexcept
 		{
 			m_pack.m_mutex.unlock();
 		}
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		bool bc_platform_recursive_timed_mutex< bc_platform::win32 >::try_lock() noexcept(true)
+		bool bc_platform_recursive_timed_mutex< bc_platform::win32 >::try_lock() noexcept
 		{
 			return m_pack.m_mutex.try_lock();
 		}
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		bool bc_platform_recursive_timed_mutex< bc_platform::win32 >::try_lock_for(const bcUINT64 p_nano)
+		bool bc_platform_recursive_timed_mutex< bc_platform::win32 >::try_lock_for(bcUINT64 p_nano)
 		{
 			return m_pack.m_mutex.try_lock_for(std::chrono::nanoseconds(p_nano));
 		}
@@ -227,7 +227,7 @@ namespace black_cat
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		bool bc_platform_shared_mutex< bc_platform::win32 >::try_lock_for(const bcUINT64 p_nano)
+		bool bc_platform_shared_mutex< bc_platform::win32 >::try_lock_for(bcUINT64 p_nano)
 		{
 			bcAssert(false);
 
@@ -236,7 +236,7 @@ namespace black_cat
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		bool bc_platform_shared_mutex< bc_platform::win32 >::try_lock_shared_for(const bcUINT64 p_nano)
+		bool bc_platform_shared_mutex< bc_platform::win32 >::try_lock_shared_for(bcUINT64 p_nano)
 		{
 			bcAssert(false);
 
@@ -324,7 +324,7 @@ namespace black_cat
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		void bc_platform_hybrid_mutex< bc_platform::win32 >::unlock() noexcept(true)
+		void bc_platform_hybrid_mutex< bc_platform::win32 >::unlock() noexcept
 		{
 #ifdef BC_DEBUG
 			// only those thread that acquired the lock can unlock it
@@ -336,14 +336,14 @@ namespace black_cat
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		bool bc_platform_hybrid_mutex< bc_platform::win32 >::try_lock() noexcept(true)
+		bool bc_platform_hybrid_mutex< bc_platform::win32 >::try_lock() noexcept
 		{
 			return try_lock(bc_lock_operation::medium);
 		}
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		bool bc_platform_hybrid_mutex< bc_platform::win32 >::try_lock(bc_lock_operation p_lock_operation) noexcept(true)
+		bool bc_platform_hybrid_mutex< bc_platform::win32 >::try_lock(bc_lock_operation p_lock_operation) noexcept
 		{
 			bcINT32 l_new_iteration_count = static_cast< bcINT32 >(p_lock_operation);
 			bcINT32 l_expected = 0;

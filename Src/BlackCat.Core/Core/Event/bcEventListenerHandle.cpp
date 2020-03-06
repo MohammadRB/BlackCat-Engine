@@ -40,7 +40,7 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_event_listener_handle::reassign(bc_event_handler_delegate_t&& p_delegate)
+		void bc_event_listener_handle::reassign(delegate_type&& p_delegate)
 		{
 			bc_get_service< bc_event_manager >()->replace_event_listener(*this, std::move(p_delegate));
 		}

@@ -30,9 +30,9 @@ namespace black_cat
 			m_bottom_right_back(nullptr),
 			m_my_position(bc_octal_tree_node_position::null),
 			m_bound_box(p_box),
-			m_child_node_pool(bcNew(core::bc_concurrent_object_pool<bc_octal_tree_graph_node>(), core::bc_alloc_type::unknown)),
-			m_entry_pool(bcNew(core::bc_concurrent_memory_pool(), core::bc_alloc_type::unknown)),
-			m_actors(graph_node_entry_allocator(*m_entry_pool))
+			m_child_nodes_pool(bcNew(core::bc_concurrent_object_pool<bc_octal_tree_graph_node>(), core::bc_alloc_type::unknown)),
+			m_actors_pool(bcNew(core::bc_concurrent_memory_pool(), core::bc_alloc_type::unknown)),
+			m_actors(graph_node_entry_allocator(*m_actors_pool))
 		{
 			const auto l_half_extends = p_box.get_half_extends();
 			bool l_is_power_of_two = bc_is_power_of_two(l_half_extends.x) &&
@@ -50,21 +50,18 @@ namespace black_cat
 			}
 
 			// TODO get size of list internal node
-			m_entry_pool->initialize(1000, sizeof(_bc_octal_tree_graph_node_entry) + sizeof(void*) * 2, core::bc_alloc_type::unknown);
+			m_actors_pool->initialize(1000, sizeof(_bc_octal_tree_graph_node_entry) + sizeof(void*) * 2, core::bc_alloc_type::unknown);
 
 			const auto l_max_size = (std::max)((std::max)(l_half_extends.x, l_half_extends.y), l_half_extends.z) * 2;
 			const auto l_children_depth = static_cast<bcSIZE>(log2(l_max_size) - log2(m_min_size));
 			auto l_max_children_count = 1U;
 			[&](bcSIZE p_depth, bcSIZE& p_result) { while (p_depth--) p_result *= 8; }(l_children_depth, l_max_children_count);
-			m_child_node_pool->initialize(l_max_children_count / 4, core::bc_alloc_type::unknown);
+			m_child_nodes_pool->initialize(l_max_children_count / 4, core::bc_alloc_type::unknown);
 		}
 
-		bc_octal_tree_graph_node::bc_octal_tree_graph_node(bc_octal_tree_graph_node& p_parent, 
-			bc_octal_tree_node_position p_my_position, 
-			bcSIZE p_max_actors_count,
-			bcSIZE p_min_size)
-			: m_max_actors_count(p_max_actors_count),
-			m_min_size(p_min_size),
+		bc_octal_tree_graph_node::bc_octal_tree_graph_node(bc_octal_tree_graph_node& p_parent, bc_octal_tree_node_position p_my_position)
+			: m_max_actors_count(p_parent.m_max_actors_count),
+			m_min_size(p_parent.m_min_size),
 			m_actors_count(0),
 			m_parent(&p_parent),
 			m_top_left_back(nullptr),
@@ -77,9 +74,9 @@ namespace black_cat
 			m_bottom_right_back(nullptr),
 			m_my_position(p_my_position),
 			m_bound_box(),
-			m_child_node_pool(p_parent.m_child_node_pool),
-			m_entry_pool(p_parent.m_entry_pool),
-			m_actors(graph_node_entry_allocator(*m_entry_pool))
+			m_child_nodes_pool(p_parent.m_child_nodes_pool),
+			m_actors_pool(p_parent.m_actors_pool),
+			m_actors(graph_node_entry_allocator(*m_actors_pool))
 		{
 			core::bc_vector3f l_bound_box_center = p_parent.m_bound_box.get_center();
 			const core::bc_vector3f l_half_extends = p_parent.m_bound_box.get_half_extends() / 2;
@@ -138,20 +135,20 @@ namespace black_cat
 		{
 			if(!is_leaf_node())
 			{
-				m_child_node_pool->free(m_top_left_back);
-				m_child_node_pool->free(m_top_left_front);
-				m_child_node_pool->free(m_top_right_front);
-				m_child_node_pool->free(m_top_right_back);
-				m_child_node_pool->free(m_bottom_left_back);
-				m_child_node_pool->free(m_bottom_left_front);
-				m_child_node_pool->free(m_bottom_right_front);
-				m_child_node_pool->free(m_bottom_right_back);
+				m_child_nodes_pool->free(m_top_left_back);
+				m_child_nodes_pool->free(m_top_left_front);
+				m_child_nodes_pool->free(m_top_right_front);
+				m_child_nodes_pool->free(m_top_right_back);
+				m_child_nodes_pool->free(m_bottom_left_back);
+				m_child_nodes_pool->free(m_bottom_left_front);
+				m_child_nodes_pool->free(m_bottom_right_front);
+				m_child_nodes_pool->free(m_bottom_right_back);
 			}
 
 			if(!m_parent)
 			{
-				bcDelete(m_entry_pool);
-				bcDelete(m_child_node_pool);
+				bcDelete(m_actors_pool);
+				bcDelete(m_child_nodes_pool);
 			}
 		}
 
@@ -332,14 +329,14 @@ namespace black_cat
 				m_bottom_right_front->clear();
 				m_bottom_right_back->clear();
 
-				m_child_node_pool->free(m_top_left_back);
-				m_child_node_pool->free(m_top_left_front);
-				m_child_node_pool->free(m_top_right_front);
-				m_child_node_pool->free(m_top_right_back);
-				m_child_node_pool->free(m_bottom_left_back);
-				m_child_node_pool->free(m_bottom_left_front);
-				m_child_node_pool->free(m_bottom_right_front);
-				m_child_node_pool->free(m_bottom_right_back);
+				m_child_nodes_pool->free(m_top_left_back);
+				m_child_nodes_pool->free(m_top_left_front);
+				m_child_nodes_pool->free(m_top_right_front);
+				m_child_nodes_pool->free(m_top_right_back);
+				m_child_nodes_pool->free(m_bottom_left_back);
+				m_child_nodes_pool->free(m_bottom_left_front);
+				m_child_nodes_pool->free(m_bottom_right_front);
+				m_child_nodes_pool->free(m_bottom_right_back);
 
 				m_top_left_back = nullptr;
 				m_top_left_front = nullptr;
@@ -478,7 +475,7 @@ namespace black_cat
 			if (l_added)
 			{
 				++m_actors_count;
-				if (m_actors_count > m_max_actors_count&& is_leaf_node())
+				if (m_actors_count > m_max_actors_count && is_leaf_node())
 				{
 					_split();
 				}
@@ -529,64 +526,48 @@ namespace black_cat
 
 		void bc_octal_tree_graph_node::_split()
 		{
-			m_top_left_back = m_child_node_pool->alloc
+			m_top_left_back = m_child_nodes_pool->alloc
 			(
 				*this,
-				bc_octal_tree_node_position::top_left_back,
-				m_max_actors_count,
-				m_min_size
+				bc_octal_tree_node_position::top_left_back
 			);
-			m_top_left_front = m_child_node_pool->alloc
+			m_top_left_front = m_child_nodes_pool->alloc
 			(
 				*this,
-				bc_octal_tree_node_position::top_left_front,
-				m_max_actors_count,
-				m_min_size
+				bc_octal_tree_node_position::top_left_front
 			);
-			m_top_right_front = m_child_node_pool->alloc
+			m_top_right_front = m_child_nodes_pool->alloc
 			(
 				*this,
-				bc_octal_tree_node_position::top_right_front,
-				m_max_actors_count,
-				m_min_size
+				bc_octal_tree_node_position::top_right_front
 			);
-			m_top_right_back = m_child_node_pool->alloc
+			m_top_right_back = m_child_nodes_pool->alloc
 			(
 				*this,
-				bc_octal_tree_node_position::top_right_back,
-				m_max_actors_count,
-				m_min_size
+				bc_octal_tree_node_position::top_right_back
 			);
-			m_bottom_left_back = m_child_node_pool->alloc
+			m_bottom_left_back = m_child_nodes_pool->alloc
 			(
 				*this,
-				bc_octal_tree_node_position::bottom_left_back,
-				m_max_actors_count,
-				m_min_size
+				bc_octal_tree_node_position::bottom_left_back
 			);
-			m_bottom_left_front = m_child_node_pool->alloc
+			m_bottom_left_front = m_child_nodes_pool->alloc
 			(
 				*this,
-				bc_octal_tree_node_position::bottom_left_front,
-				m_max_actors_count,
-				m_min_size
+				bc_octal_tree_node_position::bottom_left_front
 			);
-			m_bottom_right_front = m_child_node_pool->alloc
+			m_bottom_right_front = m_child_nodes_pool->alloc
 			(
 				*this,
-				bc_octal_tree_node_position::bottom_right_front,
-				m_max_actors_count,
-				m_min_size
+				bc_octal_tree_node_position::bottom_right_front
 			);
-			m_bottom_right_back = m_child_node_pool->alloc
+			m_bottom_right_back = m_child_nodes_pool->alloc
 			(
 				*this,
-				bc_octal_tree_node_position::bottom_right_back,
-				m_max_actors_count,
-				m_min_size
+				bc_octal_tree_node_position::bottom_right_back
 			);
 
- 			graph_node_entry_list l_actors{ graph_node_entry_allocator(*m_entry_pool) };
+ 			graph_node_entry_list l_actors{ graph_node_entry_allocator(*m_actors_pool) };
 			m_actors.swap(l_actors);
 			m_actors_count = 0;
 
@@ -629,14 +610,14 @@ namespace black_cat
 				}
 			}
 
-			m_child_node_pool->free(m_top_left_back);
-			m_child_node_pool->free(m_top_left_front);
-			m_child_node_pool->free(m_top_right_front);
-			m_child_node_pool->free(m_top_right_back);
-			m_child_node_pool->free(m_bottom_left_back);
-			m_child_node_pool->free(m_bottom_left_front);
-			m_child_node_pool->free(m_bottom_right_front);
-			m_child_node_pool->free(m_bottom_right_back);
+			m_child_nodes_pool->free(m_top_left_back);
+			m_child_nodes_pool->free(m_top_left_front);
+			m_child_nodes_pool->free(m_top_right_front);
+			m_child_nodes_pool->free(m_top_right_back);
+			m_child_nodes_pool->free(m_bottom_left_back);
+			m_child_nodes_pool->free(m_bottom_left_front);
+			m_child_nodes_pool->free(m_bottom_right_front);
+			m_child_nodes_pool->free(m_bottom_right_back);
 
 			m_top_left_back = nullptr;
 			m_top_left_front = nullptr;

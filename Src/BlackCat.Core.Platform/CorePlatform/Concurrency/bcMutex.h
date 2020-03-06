@@ -54,13 +54,11 @@ namespace black_cat
 
 			~bc_platform_mutex();
 
-			bcInline void lock();
+			void lock();
 
-			bcInline void unlock() noexcept(true);
+			void unlock() noexcept;
 
-			bcInline bool try_lock() noexcept(true);
-
-		protected:
+			bool try_lock() noexcept;
 
 		private:
 			platform_pack m_pack;
@@ -77,15 +75,13 @@ namespace black_cat
 
 			~bc_platform_timed_mutex();
 
-			bcInline void lock();
+			void lock();
 
-			bcInline void unlock() noexcept(true);
+			void unlock() noexcept;
 
-			bcInline bool try_lock() noexcept(true);
+			bool try_lock() noexcept;
 
-			bcInline bool try_lock_for(const bcUINT64 p_nano);
-
-		protected:
+			bool try_lock_for(bcUINT64 p_nano);
 
 		private:
 			platform_pack m_pack;
@@ -102,13 +98,11 @@ namespace black_cat
 
 			~bc_platform_recursive_mutex();
 
-			bcInline void lock();
+			void lock();
 
-			bcInline void unlock() noexcept(true);
+			void unlock() noexcept;
 
-			bcInline bool try_lock() noexcept(true);
-
-		protected:
+			bool try_lock() noexcept;
 
 		private:
 			platform_pack m_pack;
@@ -125,15 +119,13 @@ namespace black_cat
 
 			~bc_platform_recursive_timed_mutex();
 
-			bcInline void lock();
+			void lock();
 
-			bcInline void unlock() noexcept(true);
+			void unlock() noexcept;
 
-			bcInline bool try_lock() noexcept(true);
+			bool try_lock() noexcept;
 
-			bcInline bool try_lock_for(const bcUINT64 p_nano);
-
-		protected:
+			bool try_lock_for(bcUINT64 p_nano);
 
 		private:
 			platform_pack m_pack;
@@ -150,23 +142,21 @@ namespace black_cat
 
 			~bc_platform_shared_mutex();
 
-			bcInline void lock();
+			void lock();
 
-			bcInline void lock_shared();
+			void lock_shared();
 
-			bcInline void unlock();
+			void unlock();
 
-			bcInline void unlock_shared();
+			void unlock_shared();
 
-			bcInline bool try_lock();
+			bool try_lock();
 
-			bcInline bool try_lock_shared();
+			bool try_lock_shared();
 
-			bcInline bool try_lock_for(const bcUINT64 p_nano);
+			bool try_lock_for(bcUINT64 p_nano);
 
-			bcInline bool try_lock_shared_for(const bcUINT64 p_nano);
-
-		protected:
+			bool try_lock_shared_for(bcUINT64 p_nano);
 
 		private:
 			platform_pack m_pack;
@@ -183,17 +173,15 @@ namespace black_cat
 
 			~bc_platform_hybrid_mutex();
 
-			bcInline void lock();
+			void lock();
 
-			bcInline void lock(bc_lock_operation p_lock_operation);
+			void lock(bc_lock_operation p_lock_operation);
 
-			bcInline void unlock() noexcept(true);
+			void unlock() noexcept;
 
-			bcInline bool try_lock() noexcept(true);
+			bool try_lock() noexcept;
 
-			bcInline bool try_lock(bc_lock_operation p_lock_operation) noexcept(true);
-
-		protected:
+			bool try_lock(bc_lock_operation p_lock_operation) noexcept;
 
 		private:
 			platform_pack m_pack;
@@ -219,7 +207,7 @@ namespace black_cat
 				m_lock->lock();
 			}
 
-			bc_lock_guard(mutex_type& p_lockable, bc_lock_property p_lock_properties) noexcept(true)
+			bc_lock_guard(mutex_type& p_lockable, bc_lock_property p_lock_properties) noexcept
 				: m_lock(&p_lockable)
 			{
 				bcAssert(p_lock_properties == bc_lock_property::adapt);
@@ -228,8 +216,6 @@ namespace black_cat
 			bc_lock_guard(mutex_type& p_lockable, bc_lock_operation p_lock_operation)
 				: m_lock(&p_lockable)
 			{
-				//bc_template_is< bc_Ihybrid_lockable, Type >::assert();
-
 				m_lock->lock(p_lock_operation);
 			}
 
@@ -238,11 +224,8 @@ namespace black_cat
 				m_lock->unlock();
 			}
 
-		protected:
-
 		private:
 			mutex_type* m_lock;
-
 		};
 
 		template< typename T >
@@ -252,7 +235,7 @@ namespace black_cat
 			using mutex_type = T;
 
 		public:
-			bc_unique_lock() noexcept(true)
+			bc_unique_lock() noexcept
 				: m_lock(nullptr),
 				m_owns(false)
 			{
@@ -268,14 +251,12 @@ namespace black_cat
 
 			bc_unique_lock(mutex_type& p_lockable, bc_lock_operation p_lock_operation)
 			{
-				//bc_template_is< bc_Ihybrid_lockable, Type >::assert();
-
 				m_lock = &p_lockable;
 				m_lock->lock(p_lock_operation);
 				m_owns = true;
 			}
 
-			bc_unique_lock(mutex_type& p_lockable, bc_lock_property p_lock_properties) noexcept(true)
+			bc_unique_lock(mutex_type& p_lockable, bc_lock_property p_lock_properties) noexcept
 			{
 				m_lock = &p_lockable;
 				switch (p_lock_properties)
@@ -294,7 +275,7 @@ namespace black_cat
 				}
 			}
 
-			bc_unique_lock(mutex_type& p_lockable, bc_lock_property p_lock_properties, bc_lock_operation p_lock_operation) noexcept(true)
+			bc_unique_lock(mutex_type& p_lockable, bc_lock_property p_lock_properties, bc_lock_operation p_lock_operation) noexcept
 			{
 				m_lock = &p_lockable;
 				switch (p_lock_properties)
@@ -315,13 +296,11 @@ namespace black_cat
 
 			bc_unique_lock(mutex_type& p_lockable, const bcINT64 p_nano)
 			{
-				//bc_template_is< bc_Itimed_lockable, Type >::assert();
-
 				m_lock = &p_lockable;
 				m_owns = m_lock->try_lock_for(p_nano);
 			}
 
-			bc_unique_lock(bc_unique_lock&& p_other) noexcept(true)
+			bc_unique_lock(bc_unique_lock&& p_other) noexcept
 			{
 				m_lock = p_other.m_lock;
 				m_owns = p_other.m_owns;
@@ -329,18 +308,22 @@ namespace black_cat
 				p_other.m_owns = false;
 			}
 
-			~bc_unique_lock() noexcept(true)
+			~bc_unique_lock() noexcept
 			{
 				if (m_owns)
+				{
 					m_lock->unlock();
+				}
 			}
 
-			bc_unique_lock& operator=(bc_unique_lock&& p_other) noexcept(true)
+			bc_unique_lock& operator=(bc_unique_lock&& p_other) noexcept
 			{
 				if (this != &p_other)
 				{
 					if (m_owns)
+					{
 						m_lock->unlock();
+					}
 					m_lock = p_other.m_lock;
 					m_owns = p_other.m_owns;
 					p_other.m_lock = nullptr;
@@ -349,68 +332,64 @@ namespace black_cat
 				return *this;
 			}
 
-			bcInline void swap(bc_unique_lock& p_other) noexcept(true)
+			void swap(bc_unique_lock& p_other) noexcept
 			{
 				std::swap(m_lock, p_other.m_lock);
 				std::swap(m_owns, p_other.m_owns);
 			}
 
-			bcInline void lock()
+			void lock()
 			{
 				m_lock->lock();
 				m_owns = true;
 			}
 
-			bcInline void lock(bc_lock_operation p_lock_operation)
+			void lock(bc_lock_operation p_lock_operation)
 			{
-				//bc_template_is< bc_Ihybrid_lockable, Type >::assert();
-
 				m_lock->lock(p_lock_operation);
 				m_owns = true;
 			}
 
-			bcInline bool try_lock()
+			bool try_lock()
 			{
 				m_owns = m_lock->try_lock();
 				return m_owns;
 			}
 
-			bcInline bool try_lock(bc_lock_operation p_lock_operation)
+			bool try_lock(bc_lock_operation p_lock_operation)
 			{
 				m_owns = m_lock->try_lock(p_lock_operation);
 				return m_owns;
 			}
 
-			bcInline bool try_lock_for(const bcINT64 p_nano)
+			bool try_lock_for(bcINT64 p_nano)
 			{
-				//bc_template_is< bc_Itimed_lockable, Type >::assert();
-
 				m_owns = m_lock->try_lock_for(p_nano);
 				return m_owns;
 			}
 
-			bcInline void unlock()
+			void unlock()
 			{
 				m_lock->unlock();
 				m_owns = false;
 			}
 
-			bcInline explicit operator bool() const noexcept(true)
+			explicit operator bool() const noexcept
 			{
 				return m_owns;
 			}
 
-			bcInline bool owns_lock() const noexcept(true)
+			bool owns_lock() const noexcept
 			{
 				return m_owns;
 			}
 
-			bcInline mutex_type* get() const noexcept(true)
+			mutex_type* get() const noexcept
 			{
 				return m_lock;
 			}
 
-			bcInline mutex_type* release() noexcept(true)
+			mutex_type* release() noexcept
 			{
 				mutex_type* l_lock = m_lock;
 				m_lock = nullptr;
@@ -418,12 +397,9 @@ namespace black_cat
 				return l_lock;
 			}
 
-		protected:
-
 		private:
 			mutex_type* m_lock;
 			bool m_owns;
-
 		};
 
 		template< typename T >
@@ -433,13 +409,13 @@ namespace black_cat
 			using mutex_type = T;
 
 		public:
-			bc_shared_lock() noexcept(true)
+			bc_shared_lock() noexcept
 				: m_mutex(nullptr),
 				m_owns(false)
 			{
 			}
 
-			bc_shared_lock(bc_shared_lock&& p_other) noexcept(true)
+			bc_shared_lock(bc_shared_lock&& p_other) noexcept
 				: m_mutex(p_other.m_mutex),
 				m_owns(p_other.m_owns)
 			{
@@ -473,7 +449,7 @@ namespace black_cat
 				}
 			}
 
-			bc_shared_lock(mutex_type& p_mutex, const bcUINT64 p_nano)
+			bc_shared_lock(mutex_type& p_mutex, bcUINT64 p_nano)
 			{
 				m_mutex = &p_mutex;
 				m_owns = m_mutex->try_lock_shared_for(p_nano);
@@ -482,10 +458,12 @@ namespace black_cat
 			~bc_shared_lock()
 			{
 				if (m_mutex && m_owns)
+				{
 					m_mutex->unlock_shared();
+				}
 			}
 
-			bc_shared_lock& operator =(bc_shared_lock&& p_other)
+			bc_shared_lock& operator =(bc_shared_lock&& p_other) noexcept
 			{
 				m_mutex = p_other.m_mutex;
 				m_owns = p_other.m_owns;
@@ -516,13 +494,13 @@ namespace black_cat
 				m_mutex->unlock_shared();
 			}
 
-			void swap(bc_shared_lock& p_other) noexcept(true)
+			void swap(bc_shared_lock& p_other) noexcept
 			{
 				std::swap(m_mutex, p_other.m_mutex);
 				std::swap(m_owns, p_other.m_owns);
 			}
 
-			mutex_type* release() noexcept(true)
+			mutex_type* release() noexcept
 			{
 				mutex_type* l_result = m_mutex;
 
@@ -532,22 +510,20 @@ namespace black_cat
 				return l_result;
 			}
 
-			mutex_type* mutex() const noexcept(true)
+			mutex_type* mutex() const noexcept
 			{
 				return m_mutex;
 			}
 
-			bool owns_lock() const noexcept(true)
+			bool owns_lock() const noexcept
 			{
 				return m_owns;
 			}
 
-			explicit operator bool() const noexcept(true)
+			explicit operator bool() const noexcept
 			{
 				return m_owns;
 			}
-
-		protected:
 
 		private:
 			mutex_type* m_mutex;
@@ -555,13 +531,13 @@ namespace black_cat
 		};
 
 		template< class TMutex >
-		void swap(bc_unique_lock<TMutex>& p_first, bc_unique_lock<TMutex>& p_second) noexcept(true)
+		void swap(bc_unique_lock<TMutex>& p_first, bc_unique_lock<TMutex>& p_second) noexcept
 		{
 			p_first.swap(p_second);
 		}
 
 		template< class TMutex >
-		void swap(bc_shared_lock<TMutex>& p_first, bc_shared_lock<TMutex>& p_second) noexcept(true)
+		void swap(bc_shared_lock<TMutex>& p_first, bc_shared_lock<TMutex>& p_second) noexcept
 		{
 			p_first.swap(p_second);
 		}
@@ -572,8 +548,6 @@ namespace black_cat
 		template< typename ...T >
 		bool bc_try_lock(T&... p_locks)
 		{
-			//bc_template_is< bc_Ilockable, T>::assert();
-
 			const bcUINT32 l_count = sizeof...(p_locks);
 			T& l_locks[l_count] = { p_locks... };
 
@@ -604,16 +578,14 @@ namespace black_cat
 				return false;
 			}
 			return true;
-		};
+		}
 
 		template< typename ...T >
-		bool bc_try_lock(T&... p_locks, core_platform::bc_lock_operation p_lock_operation);
+		bool bc_try_lock(T&... p_locks, bc_lock_operation p_lock_operation);
 
 		template< typename ...T >
-		bool bc_try_lock(T&... p_locks, core_platform::bc_lock_operation p_lock_operation)
+		bool bc_try_lock(T&... p_locks, bc_lock_operation p_lock_operation)
 		{
-			//bc_template_is< bc_Ihybrid_lockable, T >::assert();
-
 			const bcUINT32 l_count = sizeof...(p_locks);
 			T& l_locks[l_count] = { p_locks... };
 
@@ -644,7 +616,7 @@ namespace black_cat
 				return false;
 			}
 			return true;
-		};
+		}
 
 		template< typename ...T >
 		void bc_lock(T&... p_locks);
@@ -654,19 +626,17 @@ namespace black_cat
 		{
 			while (!bc_try_lock(p_locks...))
 			{
-
 			}
 		}
 
 		template< typename ...T >
-		void bc_lock(T&... p_locks, core_platform::bc_lock_operation p_lock_operation);
+		void bc_lock(T&... p_locks, bc_lock_operation p_lock_operation);
 
 		template< typename ...T >
-		void bc_lock(T&... p_locks, core_platform::bc_lock_operation p_lock_operation)
+		void bc_lock(T&... p_locks, bc_lock_operation p_lock_operation)
 		{
 			while (!bc_try_lock(p_locks..., p_lock_operation))
 			{
-
 			}
 		}
 
@@ -676,8 +646,6 @@ namespace black_cat
 		template< typename ...T >
 		void bc_unlock(T&... p_locks)
 		{
-			//bc_template_is< bc_Ilockable, T>::assert();
-
 			const bcUINT32 l_count = sizeof...(p_locks);
 			T& l_locks[l_count] = { p_locks... };
 
@@ -685,6 +653,6 @@ namespace black_cat
 			{
 				l_locks[i].unlock();
 			}
-		};
+		}
 	}
 }

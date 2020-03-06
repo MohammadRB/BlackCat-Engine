@@ -30,13 +30,15 @@ namespace black_cat
 			bc_shape_drawer& operator=(bc_shape_drawer&& p_other) noexcept;
 
 			/**
-			 * \brief Thread-Safe function
+			 * \brief
+			 * \ThreadSafe
 			 * \param p_box 
 			 */
 			void render_wired_box(const physics::bc_bound_box& p_box);
 
 			/**
-			 * \brief Thread-Safe function
+			 * \brief
+			 * \ThreadSafe
 			 * \param p_camera_extend
 			 */
 			void render_wired_frustum(const bc_icamera::extend& p_camera_extend);
@@ -48,8 +50,6 @@ namespace black_cat
 			void clear_buffers();
 
 			void destroy_buffers();
-
-		protected:
 
 		private:
 			core_platform::bc_mutex m_mutex;

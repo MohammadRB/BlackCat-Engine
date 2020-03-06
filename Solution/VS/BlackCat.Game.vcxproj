@@ -257,6 +257,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsSystem.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPxWrap.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsShapeUtility.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcFrameRenderState.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcDirectLight.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLight.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightManager.h" />
