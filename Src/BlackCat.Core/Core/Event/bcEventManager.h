@@ -11,7 +11,6 @@
 #include "Core/Event/bcEventHandler.h"
 #include "Core/Event/bcEventListenerHandle.h"
 #include "Core/Container/bcUnorderedMap.h"
-#include "Core/Container/bcVector.h"
 #include "Core/Container/bcList.h"
 #include "Core/Container/bcConcurrentQueue.h"
 #include "Core/Utility/bcObjectPoolAllocator.h"

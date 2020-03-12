@@ -163,41 +163,74 @@ namespace black_cat
 				return m_head;
 			}
 
-			template< typename ...TArgs >
-			node_type* _new_node(node_type* p_position, size_type p_count, TArgs&&... p_args)
+			node_type* _swap_head(node_type* p_new_head)
 			{
-				node_type* l_first_inserted = nullptr;
-				node_type* l_last_inserted = p_position;
-				size_type l_count = 0;
+				node_type* l_current_head = m_head;
+				
+				bc_allocator_traits<internal_allocator_type>::unregister_pointer(m_allocator, &m_head);
+				m_head = p_new_head;
+				bc_allocator_traits<internal_allocator_type>::register_pointer(m_allocator, &m_head);
 
-				if(!p_position)
+				return l_current_head;
+			}
+			
+			template< typename ...TArgs >
+			node_type* _new_node(node_type* p_prev, node_type* p_next, size_type p_count, TArgs&&... p_args)
+			{
+				bcAssert(p_prev == nullptr || p_next == nullptr);
+
+				const bool l_swap_head = p_next == m_head;
+				
+				if(!p_prev && p_next)
 				{
-					l_last_inserted = _new_head(std::forward<TArgs>(p_args)...);
-					l_first_inserted = l_last_inserted;
-					++l_count;
+					p_prev = p_next->m_prev;
 				}
 
+				if(!p_next && p_prev)
+				{
+					p_next = p_prev->m_next;
+				}
+
+				node_type* l_first_inserted = nullptr;
+				size_type l_count = 0;
+
+				if(!p_prev && !p_next && !m_head)
+				{
+					l_first_inserted = p_prev = p_next = _new_head(std::forward<TArgs>(p_args)...);
+					++l_count;
+				}
+				else if(!p_prev && !p_next && m_head)
+				{
+					p_prev = m_head->m_prev;
+					p_next = p_prev->m_next;
+				}
+				
 				for (; l_count < p_count; ++l_count)
 				{
-					node_type* l_node = bc_allocator_traits< internal_allocator_type >::allocate(m_allocator, 1);
-					bc_allocator_traits< internal_allocator_type >::construct(m_allocator, l_node, std::forward<TArgs>(p_args)...);
+					node_type* l_new_node = bc_allocator_traits< internal_allocator_type >::allocate(m_allocator, 1);
+					bc_allocator_traits< internal_allocator_type >::construct(m_allocator, l_new_node, std::forward<TArgs>(p_args)...);
 
-					l_node->m_next = l_last_inserted->m_next;
-					l_node->m_prev = l_last_inserted;
-					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &l_node->m_next);
-					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &l_node->m_prev);
-					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &l_last_inserted->m_next->m_prev);
-					l_last_inserted->m_next->m_prev = l_node;
-					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &l_last_inserted->m_next->m_prev);
-					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &l_last_inserted->m_next);
-					l_last_inserted->m_next = l_node;
-					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &l_last_inserted->m_next);
+					l_new_node->m_next = p_next;
+					l_new_node->m_prev = p_prev;
+					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &l_new_node->m_next);
+					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &l_new_node->m_prev);
+					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_next->m_prev);
+					p_next->m_prev = l_new_node;
+					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_next->m_prev);
+					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_prev->m_next);
+					p_prev->m_next = l_new_node;
+					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_prev->m_next);
 
-					l_last_inserted = l_node;
+					p_prev = l_new_node;
 					if(!l_first_inserted)
 					{
-						l_first_inserted = l_last_inserted;
+						l_first_inserted = l_new_node;
 					}
+				}
+
+				if(l_swap_head)
+				{
+					_swap_head(l_first_inserted);
 				}
 
 				base_type::m_size += l_count;
@@ -205,9 +238,13 @@ namespace black_cat
 				return l_first_inserted;
 			}
 
-			node_type* _new_node(node_type* p_position, this_type& p_other, node_type* p_new_node)
+			node_type* _new_node(node_type* p_prev, node_type* p_next, this_type& p_other, node_type* p_new_node)
 			{
-				// Free new node
+				bcAssert(p_prev == nullptr || p_next == nullptr);
+
+				const bool l_swap_head = p_next == m_head;
+				
+				// update other head if it is required
 				if (p_other.m_head == p_new_node)
 				{
 					node_type* l_new_node_next = p_other.iterator_increment(p_new_node);
@@ -233,43 +270,64 @@ namespace black_cat
 					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_new_node->m_next->m_prev);
 				}
 
-				// Assign new node
-				if (p_position)
+				if (!p_prev && p_next)
 				{
-					p_new_node->m_next = p_position->m_next;
-					p_new_node->m_prev = p_position;
-					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_new_node->m_next);
-					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_new_node->m_prev);
-					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_position->m_next->m_prev);
-					p_position->m_next->m_prev = p_new_node;
-					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_position->m_next->m_prev);
-					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_position->m_next);
-					p_position->m_next = p_new_node;
-					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_position->m_next);
+					p_prev = p_next->m_prev;
+				}
+
+				if (!p_next && p_prev)
+				{
+					p_next = p_prev->m_next;
+				}
+				
+				// Assign new node
+				if (!p_prev && !p_next && !m_head)
+				{
+					_new_head(p_new_node);
+				}
+				else if (!p_prev && !p_next && m_head)
+				{
+					p_prev = m_head->m_prev;
+					p_next = p_prev->m_next;
 				}
 				else
 				{
-					_new_head(p_new_node);
+					p_new_node->m_next = p_next;
+					p_new_node->m_prev = p_prev;
+					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_new_node->m_next);
+					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_new_node->m_prev);
+					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_next->m_prev);
+					p_next->m_prev = p_new_node;
+					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_next->m_prev);
+					bc_allocator_traits< internal_allocator_type >::unregister_pointer(m_allocator, &p_prev->m_next);
+					p_prev->m_next = p_new_node;
+					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_prev->m_next);
+				}
+
+				if(l_swap_head)
+				{
+					_swap_head(p_new_node);
 				}
 
 				base_type::m_size += 1;
 				p_other.m_size -= 1;
+				
 				return p_new_node;
 			}
 
 			template< typename TInputIterator >
-			node_type* _new_node(node_type* p_position, TInputIterator p_first, TInputIterator p_last, std::input_iterator_tag&)
+			node_type* _new_node(node_type* p_prev, node_type* p_next, TInputIterator p_first, TInputIterator p_last, std::input_iterator_tag&)
 			{
 				using input_iterator_reference = typename std::iterator_traits<TInputIterator>::reference;
 
 				base_type::template check_iterator< TInputIterator >();
 
 				node_type* l_first_inserted = nullptr;
-				node_type* l_last_inserted = p_position;
+				node_type* l_last_inserted = nullptr;
 
 				std::for_each(p_first, p_last, [=, &l_first_inserted, &l_last_inserted](input_iterator_reference p_value)->void
 				{
-					l_last_inserted = _new_node(l_last_inserted, 1, std::forward<input_iterator_reference>(p_value));
+					l_last_inserted = _new_node(p_prev, p_next, 1, std::forward<input_iterator_reference>(p_value));
 					if (!l_first_inserted)
 					{
 						l_first_inserted = l_last_inserted;
@@ -539,14 +597,14 @@ namespace black_cat
 		bc_list<T, TAllocator>::bc_list(size_type p_count, const allocator_type& p_allocator)
 			: bc_list_base(p_allocator)
 		{
-			base_type::_new_node(base_type::m_head, p_count);
+			base_type::_new_node(nullptr, nullptr, p_count);
 		}
 
 		template< typename T, class TAllocator >
 		bc_list<T, TAllocator>::bc_list(size_type p_count, const value_type& p_value, const allocator_type& p_allocator)
 			:bc_list_base(p_allocator)
 		{
-			base_type::_new_node(base_type::m_head, p_count, p_value);
+			base_type::_new_node(nullptr, nullptr, p_count, p_value);
 		}
 
 		template< typename T, class TAllocator >
@@ -554,17 +612,21 @@ namespace black_cat
 		bc_list<T, TAllocator>::bc_list(TInputIterator p_first, TInputIterator p_last, const allocator_type p_allocator)
 			:bc_list_base(p_allocator)
 		{
-			base_type::_new_node(base_type::m_head, p_first, p_last, std::iterator_traits<TInputIterator>::iterator_category());
+			base_type::_new_node(nullptr, nullptr, p_first, p_last, std::iterator_traits<TInputIterator>::iterator_category());
 		}
 
 		template< typename T, class TAllocator >
 		bc_list<T, TAllocator>::bc_list(std::initializer_list<value_type> p_initializer, const allocator_type& p_allocator)
 			:bc_list_base(p_allocator)
 		{
-			base_type::_new_node(base_type::m_head, 
+			base_type::_new_node
+			(
+				nullptr,
+				nullptr,
 				std::begin(p_initializer), 
 				std::end(p_initializer), 
-				typename std::iterator_traits< typename std::initializer_list< value_type >::iterator >::iterator_category());
+				typename std::iterator_traits< typename std::initializer_list< value_type >::iterator >::iterator_category()
+			);
 		}
 
 		template< typename T, class TAllocator >
@@ -618,10 +680,14 @@ namespace black_cat
 		{
 			clear();
 
-			base_type::_new_node(base_type::m_head,
+			base_type::_new_node
+			(
+				nullptr,
+				nullptr,
 				std::begin(p_initializer),
 				std::end(p_initializer),
-				typename std::iterator_traits< typename std::initializer_list< value_type >::iterator >::iterator_category());
+				typename std::iterator_traits< typename std::initializer_list< value_type >::iterator >::iterator_category()
+			);
 
 			return *this;
 		}
@@ -631,7 +697,7 @@ namespace black_cat
 		{
 			clear();
 
-			base_type::_new_node(base_type::m_head, p_count, p_value);
+			base_type::_new_node(nullptr, nullptr, p_count, p_value);
 		}
 
 		template< typename T, class TAllocator >
@@ -640,7 +706,7 @@ namespace black_cat
 		{
 			clear();
 
-			base_type::_new_node(base_type::m_head, p_first, p_last, typename std::iterator_traits< TInputIterator >::iterator_category());
+			base_type::_new_node(nullptr, nullptr, p_first, p_last, typename std::iterator_traits< TInputIterator >::iterator_category());
 		}
 
 		template< typename T, class TAllocator >
@@ -648,10 +714,14 @@ namespace black_cat
 		{
 			clear();
 
-			base_type::_new_node(base_type::m_head,
+			base_type::_new_node
+			(
+				nullptr,
+				nullptr,
 				std::begin(p_initializer),
 				std::end(p_initializer),
-				typename std::iterator_traits< typename std::initializer_list<value_type>::iterator >::iterator_category());
+				typename std::iterator_traits< typename std::initializer_list<value_type>::iterator >::iterator_category()
+			);
 		}
 
 		template< typename T, class TAllocator >
@@ -794,7 +864,7 @@ namespace black_cat
 		template< typename T, class TAllocator >
 		typename bc_list<T, TAllocator>::iterator bc_list<T, TAllocator>::insert(const_iterator p_position, const value_type& p_value)
 		{
-			node_type* l_node = base_type::_new_node(p_position.get_node(), 1, p_value);
+			node_type* l_node = base_type::_new_node(nullptr, p_position.get_node(), 1, p_value);
 
 			return iterator(this, l_node);
 		}
@@ -802,7 +872,7 @@ namespace black_cat
 		template< typename T, class TAllocator >
 		typename bc_list<T, TAllocator>::iterator bc_list<T, TAllocator>::insert(const_iterator p_position, value_type&& p_value)
 		{
-			node_type* l_node = base_type::_new_node(p_position.get_node(), 1, std::move(p_value));
+			node_type* l_node = base_type::_new_node(nullptr, p_position.get_node(), 1, std::move(p_value));
 
 			return iterator(this, l_node);
 		}
@@ -810,7 +880,7 @@ namespace black_cat
 		template< typename T, class TAllocator >
 		typename bc_list<T, TAllocator>::iterator bc_list<T, TAllocator>::insert(const_iterator p_position, size_type p_count, value_type&& p_value)
 		{
-			node_type* l_node = base_type::_new_node(p_position.get_node(), p_count, std::move(p_value));
+			node_type* l_node = base_type::_new_node(nullptr, p_position.get_node(), p_count, std::move(p_value));
 
 			return iterator(this, l_node);
 		}
@@ -819,7 +889,7 @@ namespace black_cat
 		template< typename TInputIterator >
 		typename bc_list<T, TAllocator>::iterator bc_list<T, TAllocator>::insert(const_iterator p_position, TInputIterator p_first, TInputIterator p_last)
 		{
-			node_type* l_node = base_type::_new_node(p_position.get_node(), p_first, p_last, std::bidirectional_iterator_tag());
+			node_type* l_node = base_type::_new_node(nullptr, p_position.get_node(), p_first, p_last, std::bidirectional_iterator_tag());
 
 			return iterator(this, l_node);
 		}
@@ -827,10 +897,14 @@ namespace black_cat
 		template< typename T, class TAllocator >
 		typename bc_list<T, TAllocator>::iterator bc_list<T, TAllocator>::insert(const_iterator p_position, std::initializer_list<value_type> p_initializer)
 		{
-			node_type* l_node = base_type::_new_node(p_position.get_node(),
+			node_type* l_node = base_type::_new_node
+			(
+				nullptr,
+				p_position.get_node(),
 				std::begin(p_initializer),
 				std::end(p_initializer),
-				typename std::iterator_traits< typename std::initializer_list< value_type >::iterator >::iterator_category());
+				typename std::iterator_traits< typename std::initializer_list< value_type >::iterator >::iterator_category()
+			);
 
 			return iterator(this, l_node);
 		}
@@ -839,7 +913,7 @@ namespace black_cat
 		template< typename ... TArgs >
 		typename bc_list<T, TAllocator>::iterator bc_list<T, TAllocator>::emplace(const_iterator p_position, TArgs&&... p_args)
 		{
-			node_type* l_node = base_type::_new_node(p_position.get_node(), 1, std::forward<TArgs>(p_args)...);
+			node_type* l_node = base_type::_new_node(nullptr, p_position.get_node(), 1, std::forward<TArgs>(p_args)...);
 
 			return iterator(this, l_node);
 		}
@@ -867,11 +941,11 @@ namespace black_cat
 		{
 			if(base_type::m_head)
 			{
-				base_type::_new_node(base_type::m_head->m_prev, 1, p_value);
+				base_type::_new_node(base_type::m_head->m_prev, nullptr, 1, p_value);
 			}
 			else
 			{
-				base_type::_new_node(base_type::m_head, 1, p_value);
+				base_type::_new_node(nullptr, nullptr, 1, p_value);
 			}
 		}
 
@@ -880,11 +954,11 @@ namespace black_cat
 		{
 			if (base_type::m_head)
 			{
-				base_type::_new_node(base_type::m_head->m_prev, 1, std::move(p_value));
+				base_type::_new_node(base_type::m_head->m_prev, nullptr, 1, std::move(p_value));
 			}
 			else
 			{
-				base_type::_new_node(base_type::m_head, 1, std::move(p_value));
+				base_type::_new_node(nullptr, nullptr, 1, std::move(p_value));
 			}
 		}
 
@@ -894,11 +968,11 @@ namespace black_cat
 		{
 			if (base_type::m_head)
 			{
-				base_type::_new_node(base_type::m_head->m_prev, 1, std::forward<TArgs>(p_args)...);
+				base_type::_new_node(base_type::m_head->m_prev, nullptr, 1, std::forward<TArgs>(p_args)...);
 			}
 			else
 			{
-				base_type::_new_node(base_type::m_head, 1, std::forward<TArgs>(p_args)...);
+				base_type::_new_node(nullptr, nullptr, 1, std::forward<TArgs>(p_args)...);
 			}
 		}
 
@@ -918,20 +992,20 @@ namespace black_cat
 		template< typename T, class TAllocator >
 		void bc_list<T, TAllocator>::push_front(const value_type& p_value)
 		{
-			base_type::_new_node(base_type::m_head, p_value);
+			base_type::_new_node(nullptr, base_type::m_head, 1, p_value);
 		}
 
 		template< typename T, class TAllocator >
 		void bc_list<T, TAllocator>::push_front(value_type&& p_value)
 		{
-			base_type::_new_node(base_type::m_head, std::move(p_value));
+			base_type::_new_node(nullptr, base_type::m_head, 1, std::move(p_value));
 		}
 
 		template< typename T, class TAllocator >
 		template< class ...TArgs >
 		void bc_list<T, TAllocator>::emplace_front(TArgs&&... p_args)
 		{
-			base_type::_new_node(base_type::m_head, 1, std::forward<TArgs>(p_args)...);
+			base_type::_new_node(nullptr, base_type::m_head, 1, std::forward<TArgs>(p_args)...);
 		}
 
 		template< typename T, class TAllocator >
@@ -1026,7 +1100,7 @@ namespace black_cat
 		template< typename T, class TAllocator >
 		void bc_list<T, TAllocator>::splice(const_iterator p_pos, this_type&& p_other, const_iterator p_iterator)
 		{
-			base_type::_new_node(p_pos.get_node(), p_other, p_iterator.get_node());
+			base_type::_new_node(nullptr, p_pos.get_node(), p_other, p_iterator.get_node());
 		}
 
 		template< typename T, class TAllocator >
@@ -1045,7 +1119,7 @@ namespace black_cat
 				auto l_next = p_first;
 				++l_next;
 
-				l_position_to_insert = base_type::_new_node(l_position_to_insert, p_other, p_first.get_node()); // TODO can be improved by bulk add
+				base_type::_new_node(nullptr, l_position_to_insert, p_other, p_first.get_node()); // TODO can be improved by bulk add
 
 				p_first = l_next;
 			}
@@ -1106,7 +1180,7 @@ namespace black_cat
 				base_type::m_allocator = p_other.m_allocator;
 			}
 
-			base_type::_new_node(base_type::m_head, std::begin(p_other), std::end(p_other), std::bidirectional_iterator_tag());
+			base_type::_new_node(nullptr, base_type::m_head, std::begin(p_other), std::end(p_other), std::bidirectional_iterator_tag());
 		}
 
 		template< typename T, class TAllocator >

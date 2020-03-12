@@ -1,6 +1,8 @@
 // [03/24/2015 MRB]
 
 #include "PlatformImp/PlatformImpPCH.h"
+
+#include "Platform/bcEvent.h"
 #include "PlatformImp/bcExport.h"
 #include "PlatformImp/Application/bcBasicWindow.h"
 #include "PlatformImp/Application/bcApplication.h"

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Platform/PlatformPCH.h"
+#include "Platform/bcExport.h"
 #include "Platform/Application/bcWindow.h"
 #include "Platform/Application/bcKeyDevice.h"
 #include "Platform/Application/bcPointingDevice.h"
@@ -11,9 +12,6 @@ namespace black_cat
 {
 	namespace platform
 	{
-		/**
-		 * \brief Sent when application get exit request
-		 */
 		class bc_app_event_exit : public core::bc_app_event
 		{
 			BC_EVENT(app_exit)
@@ -36,23 +34,18 @@ namespace black_cat
 				return m_exit_code;
 			}
 
-		protected:
-
 		private:
 			bcINT32 m_exit_code;
 		};
 
-		/**
-		* \brief Sent to indicate that application is in a state that is not active
-		*/
 		class bc_app_event_active : public core::bc_app_event
 		{
 			BC_EVENT(app_active)
 
 		public:
-			explicit bc_app_event_active(bool active)
+			explicit bc_app_event_active(bool p_active)
 				: bc_app_event(event_name()),
-				m_active(active)
+				m_active(p_active)
 			{
 			}
 
@@ -67,15 +60,10 @@ namespace black_cat
 				return m_active;
 			}
 
-		protected:
-
 		private:
 			bool m_active;
 		};
 
-		/**
-		* \brief Sent when window get or lost focus
-		*/
 		class bc_app_event_window_focus : public core::bc_app_event
 		{
 			BC_EVENT(app_window_focus)
@@ -98,8 +86,6 @@ namespace black_cat
 			{
 				return p_focus;
 			}
-
-		protected:
 
 		private:
 			bc_window_id m_window_id;
@@ -141,9 +127,7 @@ namespace black_cat
 			{
 				return !m_started_to_resizing;
 			}
-
-		protected:
-
+			
 		private:
 			bc_window_id m_window_id;
 			bool m_started_to_resizing;
@@ -200,8 +184,6 @@ namespace black_cat
 				return m_height;
 			}
 
-		protected:
-
 		private:
 			bc_window_id m_window_id;
 			bcUINT32 m_width, m_height;
@@ -232,8 +214,6 @@ namespace black_cat
 			{
 				return m_window_id;
 			}
-
-		protected:
 
 		private:
 			bc_window_id m_window_id;
@@ -267,8 +247,6 @@ namespace black_cat
 				return m_state;
 			}
 
-		protected:
-
 		private:
 			bc_key m_key;
 			bc_key_state m_state;
@@ -295,8 +273,6 @@ namespace black_cat
 			{
 				return m_state;
 			}
-
-		protected:
 
 		private:
 			bc_pointing_device_state m_state;

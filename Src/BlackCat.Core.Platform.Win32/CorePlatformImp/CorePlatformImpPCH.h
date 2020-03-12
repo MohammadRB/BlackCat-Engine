@@ -30,15 +30,11 @@
 //#define _WIN32_IE 0x0700
 //#endif
 //
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+#define WIN32_LEAN_AND_MEAN         // Exclude rarely-used stuff from Windows headers
 #define NOMINMAX						// Suppress min-max macroes
 //#define STRICT						// Use strict declarations for Windows types
 
-// Windows Header Files:
 #include <windows.h>
-//#include <Synchapi.h>
-//#include <commctrl.h>
-//#include <psapi.h>
 
 #include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatform/bcType.h"

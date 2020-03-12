@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Platform/PlatformPCH.h"
-#include "Platform/bcEvent.h"
 #include "Platform/Application/bcBasicWindow.h"
 #include "Platform/Application/bcConsoleWindow.h"
 
