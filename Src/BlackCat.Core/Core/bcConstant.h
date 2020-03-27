@@ -23,7 +23,11 @@ namespace black_cat
 
 #define BC_COMPONENT_NAME(p_name)				"cmp_" ## #p_name
 
-#define BC_EVENT_NAME(p_name)					"evt_" ## #p_name
+#define BC_MESSAGE_NAME(p_name)					"msg_" ## #p_name
+		
+#define BC_EVENT_NAME(p_name)					"evt_" BC_MESSAGE_NAME(p_name)
+
+#define BC_QUERY_NAME(p_name)					"qur_" BC_MESSAGE_NAME(p_name)
 
 #define BC_RENDER_PASS_NAME(p_name)				"rpass_" ## #p_name
 
@@ -85,6 +89,17 @@ namespace black_cat
 	static constexpr bcUINT32 event_hash() \
 	{ \
 		return BC_COMPILE_TIME_STRING_HASH(BC_EVENT_NAME(p_name)); \
+	} \
+
+#define BC_QUERY(p_name) \
+	public: \
+	static constexpr const bcCHAR* message_name() \
+	{ \
+		return BC_QUERY_NAME(p_name); \
+	} \
+	static constexpr bcUINT32 message_hash() \
+	{ \
+		return BC_COMPILE_TIME_STRING_HASH(BC_QUERY_NAME(p_name)); \
 	} \
 
 #define BC_RENDER_PASS(p_name) \

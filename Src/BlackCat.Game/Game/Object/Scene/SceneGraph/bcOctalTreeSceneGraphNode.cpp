@@ -49,8 +49,7 @@ namespace black_cat
 				throw bc_invalid_argument_exception("bound box min size must be power of two");
 			}
 
-			// TODO get size of list internal node
-			m_actors_pool->initialize(1000, sizeof(_bc_octal_tree_graph_node_entry) + sizeof(void*) * 2, core::bc_alloc_type::unknown);
+			m_actors_pool->initialize(1000, sizeof(graph_node_entry_list::node_type), core::bc_alloc_type::unknown);
 
 			const auto l_max_size = (std::max)((std::max)(l_half_extends.x, l_half_extends.y), l_half_extends.z) * 2;
 			const auto l_children_depth = static_cast<bcSIZE>(log2(l_max_size) - log2(m_min_size));

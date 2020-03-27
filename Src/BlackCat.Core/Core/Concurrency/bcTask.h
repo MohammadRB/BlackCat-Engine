@@ -53,6 +53,11 @@ namespace black_cat
 			{
 				m_future.wait();
 			}
+
+			bool is_ready() const noexcept(core_platform::bc_future<value_type>::wait_for)
+			{
+				return wait_for(std::chrono::seconds(0)) == core_platform::bc_future_status::ready;
+			}
 			
 			core_platform::bc_future_status wait_for(const std::chrono::nanoseconds& p_duration) const noexcept(core_platform::bc_future<value_type>::wait_for)
 			{
@@ -82,8 +87,6 @@ namespace black_cat
 				core_platform::bc_thread::id l_executor_thread_id = m_thread_id_future.get();
 				bc_get_service< bc_thread_manager >()->interrupt_thread(l_executor_thread_id);
 			}
-
-		protected:
 
 		private:
 			core_platform::bc_future<value_type> m_future;
@@ -153,8 +156,6 @@ namespace black_cat
 
 				return l_task;
 			}
-
-		protected:
 
 		private:
 			void _call(core_platform::bc_thread::id p_thread_id, std::true_type)

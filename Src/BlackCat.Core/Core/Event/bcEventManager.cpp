@@ -11,7 +11,7 @@ namespace black_cat
 			: m_local_queue(bc_memory_pool_allocator<_bc_queued_event>(m_local_queue_pool)),
 			m_total_elapsed(0)
 		{
-			m_local_queue_pool.initialize(250, sizeof(_bc_queued_event) + sizeof(void*) * 2, bc_alloc_type::unknown);
+			m_local_queue_pool.initialize(250, sizeof(decltype(m_local_queue)::node_type), bc_alloc_type::unknown);
 		}
 
 		bc_event_manager::~bc_event_manager()
@@ -50,9 +50,6 @@ namespace black_cat
 					m_handlers.erase(l_ite);
 				}
 			}
-
-			p_listener_handle.m_event_name = nullptr;
-			p_listener_handle.m_event_index = -1;
 		}
 		
 		bool bc_event_manager::process_event(bc_ievent& p_event)
@@ -77,45 +74,10 @@ namespace black_cat
 
 			return l_handled;
 		}
-
-		bcUINT32 bc_event_manager::process_event_queue(core_platform::bc_clock::big_clock p_current_time)
-		{
-			bcUINT32 l_processed_event_count = 0;
-			_bc_queued_event l_event(nullptr, 0);
-
-			while (m_global_queue.pop(l_event))
-			{
-				l_event.m_process_time += m_total_elapsed;
-
-				const auto l_lower_bound = std::lower_bound
-				(
-					std::cbegin(m_local_queue),
-					std::cend(m_local_queue),
-					l_event,
-					[](const _bc_queued_event& p_first, const _bc_queued_event& p_second)-> bool
-					{
-						return p_first.m_process_time >= p_second.m_process_time;
-					}
-				);
-				m_local_queue.insert(l_lower_bound, std::move(l_event));
-			}
-			
-			while (!m_local_queue.empty() && m_local_queue.back().m_process_time <= p_current_time)
-			{
-				process_event(*m_local_queue.back().m_event);
-
-				m_local_queue.pop_back();
-				++l_processed_event_count;
-			}
-
-			m_total_elapsed = p_current_time;
-
-			return l_processed_event_count;
-		}
-
+		
 		void bc_event_manager::update(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
-			process_event_queue(p_clock_update_param.m_total_elapsed);
+			_process_event_queue(p_clock_update_param.m_total_elapsed);
 		}
 
 		bc_event_listener_handle bc_event_manager::_register_event_listener(const bcCHAR* p_event_name, delegate_type&& p_listener)
@@ -136,6 +98,41 @@ namespace black_cat
 		void bc_event_manager::_queue_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::small_delta_time p_millisecond)
 		{
 			m_global_queue.push(_bc_queued_event(std::move(p_event), p_millisecond));
+		}
+
+		bcUINT32 bc_event_manager::_process_event_queue(core_platform::bc_clock::big_clock p_current_time)
+		{
+			bcUINT32 l_processed_event_count = 0;
+			_bc_queued_event l_event(nullptr, 0);
+
+			while (m_global_queue.pop(l_event))
+			{
+				l_event.m_process_time += m_total_elapsed;
+
+				const auto l_lower_bound = std::lower_bound
+				(
+					std::cbegin(m_local_queue),
+					std::cend(m_local_queue),
+					l_event,
+					[](const _bc_queued_event& p_first, const _bc_queued_event& p_second)-> bool
+					{
+						return p_first.m_process_time >= p_second.m_process_time;
+					}
+				);
+				m_local_queue.insert(l_lower_bound, std::move(l_event));
+			}
+
+			while (!m_local_queue.empty() && m_local_queue.back().m_process_time <= p_current_time)
+			{
+				process_event(*m_local_queue.back().m_event);
+
+				m_local_queue.pop_back();
+				++l_processed_event_count;
+			}
+
+			m_total_elapsed = p_current_time;
+
+			return l_processed_event_count;
 		}
 	}
 }

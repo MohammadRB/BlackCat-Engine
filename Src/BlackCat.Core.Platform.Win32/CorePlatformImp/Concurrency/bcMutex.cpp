@@ -267,7 +267,7 @@ namespace black_cat
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_hybrid_mutex< bc_platform::win32 >::lock(bc_lock_operation p_lock_operation)
 		{
-			bcINT32 l_new_iteration_count = static_cast< bcINT32 >(p_lock_operation);
+			const bcINT32 l_new_iteration_count = static_cast< bcINT32 >(p_lock_operation);
 			bcINT32 l_expected = 0;
 			bcINT32 l_iteration_count = 0;
 			bcINT32 l_half_iteration_count = 0;
@@ -294,7 +294,7 @@ namespace black_cat
 					return;
 				}
 
-				// update state variables if new thread has acquired lock
+				// update state variables if another thread has acquired lock
 				if (l_iteration_count != l_expected)
 				{
 					l_iteration = std::abs(l_iteration + (l_expected - l_iteration_count));

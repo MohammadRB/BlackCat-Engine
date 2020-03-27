@@ -9,6 +9,7 @@
 #include "Core/Event/bcEventManager.h"
 #include "Core/Content/bcContentManager.h"
 #include "Core/Content/bcContentStreamManager.h"
+#include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Content/bcLazyContent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
@@ -84,6 +85,7 @@ namespace black_cat
 		core::bc_register_service(core::bc_make_service<game::bc_game_system>());
 		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>());
 		core::bc_register_service(core::bc_make_service<game::bc_entity_manager>(*core::bc_get_service<game::bc_actor_component_manager>()));
+		core::bc_register_service(core::bc_make_service<core::bc_query_manager>());
 
 		auto* l_log_manager = core::bc_get_service<core::bc_logger>();
 		auto* l_entity_manager = core::bc_get_service<game::bc_entity_manager>();

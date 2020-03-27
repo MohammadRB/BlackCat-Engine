@@ -41,8 +41,6 @@ namespace black_cat
 				return (*m_func)(std::forward<TA>(p_args)...);
 			}
 
-		protected:
-
 		private:
 			void _assign(const this_type& p_other)
 			{
@@ -84,8 +82,6 @@ namespace black_cat
 			{
 				return (m_obj->*m_func)(std::forward<TA>(p_args)...);
 			}
-
-		protected:
 
 		private:
 			void _assign(const this_type& p_other)
@@ -130,8 +126,6 @@ namespace black_cat
 			{
 				return (m_obj->*m_func)(std::forward<TA>(p_args)...);
 			}
-
-		protected:
 
 		private:
 			void _assign(const this_type& p_other)
@@ -271,6 +265,22 @@ namespace black_cat
 				std::swap(*this, p_other);
 			}
 
+			void reset() noexcept
+			{
+				if (*this != nullptr)
+				{
+					m_stub_action(m_buffer, nullptr, 2);
+
+					m_stub_call = nullptr;
+					m_stub_action = nullptr;
+				}
+			}
+
+			bool is_valid() const noexcept
+			{
+				return *this != nullptr;
+			}
+			
 			TR operator()(TA... p_args) const 
 			{
 				bcAssert(*this != nullptr);
@@ -288,24 +298,11 @@ namespace black_cat
 				return !operator ==(nullptr);
 			}
 
-			void reset() noexcept
-			{
-				if (*this != nullptr)
-				{
-					m_stub_action(m_buffer, nullptr, 2);
-
-					m_stub_call = nullptr;
-					m_stub_action = nullptr;
-				}
-			}
-
 			template< typename TFunctor >
 			static this_type make_from_big_object(bc_alloc_type p_alloc_type, TFunctor&& p_functor);
 
 			template< typename TFunctor >
 			static this_type make_from_big_object(TFunctor&& p_functor);
-
-		protected:
 
 		private:
 			using _stub_call_type = TR(*)(void*, TA...);

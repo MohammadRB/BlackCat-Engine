@@ -42,13 +42,13 @@ namespace black_cat
 		void bc_game_system::update(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 			m_input_system.update(p_clock_update_param);
-			m_script_system.update(p_clock_update_param);
-			m_console->update(p_clock_update_param);
 			m_physics_system.update(p_clock_update_param);
 			if(m_scene)
 			{
 				m_scene->update(m_physics_system, p_clock_update_param);
 			}
+			m_script_system.update(p_clock_update_param);
+			m_console->update(p_clock_update_param);
 			m_render_system.update(bc_render_system::update_param(p_clock_update_param, m_input_system.get_camera()));
 		}
 

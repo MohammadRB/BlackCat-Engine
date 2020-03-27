@@ -173,8 +173,6 @@ namespace black_cat
 			template< class TComponent >
 			bc_actor component_get_actor(const TComponent& p_component) const noexcept;
 
-			void update(const core_platform::bc_clock::update_param& p_clock_update_param) override;
-
 			template< class ...TComponent >
 			void register_component_types();
 
@@ -182,7 +180,8 @@ namespace black_cat
 			void register_abstract_component_types();
 
 		protected:
-
+			void update(const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			
 		private:
 			template< class TComponent >
 			bc_iactor_component* _actor_get_component(const bc_actor& p_actor, std::true_type);
@@ -444,68 +443,6 @@ namespace black_cat
 			return m_actors[l_component_to_actor].get().m_actor;
 		}
 
-		inline void bc_actor_component_manager::update(const core_platform::bc_clock::update_param& p_clock_update_param)
-		{
-			core::bc_vector_frame< _bc_actor_component_entry* > l_components;
-			l_components.reserve(m_components.size());
-
-			for (auto& l_entry : m_components)
-			{
-				if(l_entry.second.m_is_abstract)
-				{
-					continue;
-				}
-
-				l_components.push_back(&l_entry.second);
-			}
-
-			std::sort(std::begin(l_components), std::end(l_components), [](const _bc_actor_component_entry* p_first, const _bc_actor_component_entry* p_second)
-			{
-				return p_first->m_component_priority < p_second->m_component_priority;
-			});
-
-			do
-			{
-				m_read_event_pool = m_write_event_pool;
-				m_write_event_pool = (m_write_event_pool + 1) % 2;
-
-				if(!m_events_pool[m_read_event_pool].size())
-				{
-					break;
-				}
-				
-				bcSIZE l_component_index = 0;
-				for (auto l_component_data : l_components)
-				{
-					++l_component_index;
-					
-					if(!l_component_data->m_require_event)
-					{
-						continue;
-					}
-					
-					if (l_component_index != l_components.size())
-					{
-						l_component_data->m_container->handle_events(*this, nullptr);
-					}
-					else
-					{
-						l_component_data->m_container->handle_events(*this, &m_events_pool[m_read_event_pool]);
-					}
-				}
-			} while (m_events_pool[m_write_event_pool].size());
-
-			for(auto l_component_data : l_components)
-			{
-				if(!l_component_data->m_require_update)
-				{
-					continue;
-				}
-				
-				l_component_data->m_container->update(*this, p_clock_update_param);
-			}
-		}
-
 		template< class ...TComponent >
 		void bc_actor_component_manager::register_component_types()
 		{
@@ -571,6 +508,68 @@ namespace black_cat
 			remove_actor(l_actor);
 		}
 
+		inline void bc_actor_component_manager::update(const core_platform::bc_clock::update_param& p_clock_update_param)
+		{
+			core::bc_vector_frame< _bc_actor_component_entry* > l_components;
+			l_components.reserve(m_components.size());
+
+			for (auto& l_entry : m_components)
+			{
+				if (l_entry.second.m_is_abstract)
+				{
+					continue;
+				}
+
+				l_components.push_back(&l_entry.second);
+			}
+
+			std::sort(std::begin(l_components), std::end(l_components), [](const _bc_actor_component_entry* p_first, const _bc_actor_component_entry* p_second)
+				{
+					return p_first->m_component_priority < p_second->m_component_priority;
+				});
+
+			do
+			{
+				m_read_event_pool = m_write_event_pool;
+				m_write_event_pool = (m_write_event_pool + 1) % 2;
+
+				if (!m_events_pool[m_read_event_pool].size())
+				{
+					break;
+				}
+
+				bcSIZE l_component_index = 0;
+				for (auto l_component_data : l_components)
+				{
+					++l_component_index;
+
+					if (!l_component_data->m_require_event)
+					{
+						continue;
+					}
+
+					if (l_component_index != l_components.size())
+					{
+						l_component_data->m_container->handle_events(*this, nullptr);
+					}
+					else
+					{
+						l_component_data->m_container->handle_events(*this, &m_events_pool[m_read_event_pool]);
+					}
+				}
+			} while (m_events_pool[m_write_event_pool].size());
+
+			for (auto l_component_data : l_components)
+			{
+				if (!l_component_data->m_require_update)
+				{
+					continue;
+				}
+
+				l_component_data->m_container->update(*this, p_clock_update_param);
+			}
+		}
+		
 		template< class TComponent >
 		bc_iactor_component* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::true_type)
 		{

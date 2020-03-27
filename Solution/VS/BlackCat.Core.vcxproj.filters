@@ -28,6 +28,12 @@
     <Filter Include="Core\Content">
       <UniqueIdentifier>{b60d423a-2359-42ae-b694-1537c4ab62af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Messaging">
+      <UniqueIdentifier>{E738B3B0-F371-435C-BDD9-6D881C465781}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Messaging\Query">
+      <UniqueIdentifier>{bdf639a2-8173-467b-b4f7-81c2cbc29942}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\_bcLockFreeMemMng.h">
@@ -279,6 +285,27 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectStackPool.h">
       <Filter>Core\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\bcMessage.h">
+      <Filter>Core\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQuery.h">
+      <Filter>Core\Messaging\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryContext.h">
+      <Filter>Core\Messaging\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryManager.h">
+      <Filter>Core\Messaging\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\bcMessageHandle.h">
+      <Filter>Core\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryProviderHandle.h">
+      <Filter>Core\Messaging\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryResult.h">
+      <Filter>Core\Messaging\Query</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.cpp">
@@ -400,6 +427,18 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectStackPool.cpp">
       <Filter>Core\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\bcMessage.cpp">
+      <Filter>Core\Messaging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQuery.cpp">
+      <Filter>Core\Messaging\Query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryProviderHandle.cpp">
+      <Filter>Core\Messaging\Query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryManager.cpp">
+      <Filter>Core\Messaging\Query</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

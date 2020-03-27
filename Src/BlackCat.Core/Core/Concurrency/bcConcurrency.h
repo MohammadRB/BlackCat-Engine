@@ -133,16 +133,6 @@ namespace black_cat
 		template< typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc >
 		void bc_concurrency::concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer)
 		{
-			static_assert
-				(
-					std::is_same
-					<
-						typename std::iterator_traits< TIte >::iterator_category,
-						std::random_access_iterator_tag
-					>::value,
-					"Iterator must be random access iterator type"
-				);
-
 			const bcUINT32 l_num_thread = std::max(p_num_thread, 1U);
 			const bcUINT32 l_num = std::distance(p_begin, p_end);
 			const bcUINT32 l_chunk_size = std::ceil((l_num * 1.f) / l_num_thread);
@@ -161,8 +151,10 @@ namespace black_cat
 					break;
 				}
 
-				TIte l_begin = p_begin + l_begin_index;
-				TIte l_end = p_begin + l_end_index;
+				TIte l_begin = p_begin;
+				TIte l_end = p_begin;
+				std::advance(l_begin, l_begin_index);
+				std::advance(l_end, l_end_index);
 
 				bc_task< void > l_task = start_task
 					(

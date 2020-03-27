@@ -92,8 +92,6 @@ namespace black_cat
 				m_delegates.clear();
 			}
 
-		protected:
-
 		private:
 			bc_vector< delegate_type > m_delegates;
 		};

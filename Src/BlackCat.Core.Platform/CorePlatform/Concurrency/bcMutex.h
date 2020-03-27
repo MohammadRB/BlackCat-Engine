@@ -477,21 +477,23 @@ namespace black_cat
 			void lock()
 			{
 				m_mutex->lock_shared();
+				m_owns = true;
 			}
 
 			bool try_lock()
 			{
-				return m_mutex->try_lock_shared();
+				return m_owns = m_mutex->try_lock_shared();
 			}
 
 			bool try_lock_for(bcUINT64 p_nano)
 			{
-				return m_mutex->try_lock_shared_for(p_nano);
+				return m_owns = m_mutex->try_lock_shared_for(p_nano);
 			}
 
 			void unlock()
 			{
 				m_mutex->unlock_shared();
+				m_owns = false;
 			}
 
 			void swap(bc_shared_lock& p_other) noexcept

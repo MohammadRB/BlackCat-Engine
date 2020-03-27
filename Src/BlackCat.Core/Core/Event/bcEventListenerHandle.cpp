@@ -50,6 +50,8 @@ namespace black_cat
 			if (m_event_name)
 			{
 				bc_get_service< bc_event_manager >()->unregister_event_listener(*this);
+				m_event_name = nullptr;
+				m_event_index = -1;
 			}
 		}
 

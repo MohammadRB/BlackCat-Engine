@@ -26,7 +26,6 @@ namespace black_cat
 
 		protected:
 			struct node;
-
 			using node_type = node;
 			using node_pointer = typename std::pointer_traits< pointer_type >::template rebind< node_type >;
 			using internal_allocator_type = typename bc_allocator_traits< allocator_type >::template rebind_alloc< node_type >::other;
@@ -404,6 +403,7 @@ namespace black_cat
 			using const_reference = typename base_type::const_reference;
 			using difference_type = typename base_type::difference_type;
 			using size_type = typename base_type::size_type;
+			using node_type = typename base_type::node_type;
 			using iterator = bc_bidirectional_iterator< this_type >;
 			using const_iterator = bc_const_bidirectional_iterator< this_type >;
 			using reverse_iterator = bc_reverse_iterator<iterator>;
@@ -565,8 +565,6 @@ namespace black_cat
 
 			template< class TCompare >
 			void sort(TCompare p_comp);
-
-		protected:
 
 		private:
 			void _assign(const this_type& p_other, const allocator_type* p_allocator);
@@ -1094,7 +1092,7 @@ namespace black_cat
 		template< typename T, class TAllocator >
 		void bc_list<T, TAllocator>::splice(const_iterator p_pos, this_type& p_other, const_iterator p_iterator)
 		{
-			this_type::splice(p_pos.get_node(), p_other, p_iterator);
+			this_type::splice(p_pos, std::move(p_other), p_iterator);
 		}
 
 		template< typename T, class TAllocator >
