@@ -26,11 +26,9 @@ namespace black_cat
 		class bc_content_stream_manager;
 
 		template< class TContent, class TLoader >
-		void bc_register_loader(bc_cloader_ptr<TLoader>&& p_loader)
+		void bc_register_loader(const bcCHAR* p_data_driven_name, bc_cloader_ptr< TLoader >&& p_loader)
 		{
-			static auto* s_content_stream_manager = core::bc_get_service<bc_content_stream_manager>();
-
-			s_content_stream_manager->register_loader<TContent, TLoader>(std::move(p_loader));
+			core::bc_get_service< bc_content_stream_manager >()->register_loader< TContent, TLoader >(p_data_driven_name, std::move(p_loader));
 		}
 
 		struct _bc_content_stream_file
@@ -47,14 +45,14 @@ namespace black_cat
 		 */
 		class BC_CORE_DLL bc_content_stream_manager : public bc_iservice
 		{
-			BC_SERVICE(content_stream_manager)
+			BC_SERVICE(c_s_mng)
 
 		private:
 			using string_hash = std::hash< const bcCHAR* >;
 			using content_load_delegate = bc_delegate< bc_icontent_ptr(bc_alloc_type, const bcECHAR*, bc_content_loader_parameter&&) >;
-			using content_types_map_type = bc_unordered_map_program< string_hash::result_type, content_load_delegate >;
-			using streams_map_type = bc_unordered_map_program< string_hash::result_type, bc_vector_program< _bc_content_stream_file >>;
-			using contents_map_type = bc_unordered_map_program< string_hash::result_type, bc_vector< bc_icontent_ptr > >;
+			using content_loader_map_type = bc_unordered_map_program< string_hash::result_type, content_load_delegate >;
+			using content_stream_map_type = bc_unordered_map_program< string_hash::result_type, bc_vector_program< _bc_content_stream_file >>;
+			using content_map_type = bc_unordered_map_program< string_hash::result_type, bc_vector< bc_icontent_ptr > >;
 
 		public:
 			bc_content_stream_manager(bc_content_manager& p_content_manager) noexcept;
@@ -71,7 +69,7 @@ namespace black_cat
 			}
 
 			template< class TContent, class TLoader >
-			void register_loader(bc_cloader_ptr< TLoader >&& p_loader);
+			void register_loader(const bcCHAR* p_data_driven_name, bc_cloader_ptr< TLoader >&& p_loader);
 
 			/**
 			 * \brief Read content streams from a non-unicode json file
@@ -119,42 +117,36 @@ namespace black_cat
 			template< class TContent >
 			bc_content_ptr< TContent > find_content_throw(const bcCHAR* p_content_name) const;
 
-		protected:
-
 		private:
 			template< class TContent >
-			void _register_content_type();
+			void _register_content_loader(const bcCHAR* p_data_driven_name);
 
 			bc_content_manager& m_content_manager;
 
+			content_loader_map_type m_content_loader_delegates;
+			content_stream_map_type m_streams;
 			mutable core_platform::bc_shared_mutex m_contents_mutex;
-
-			content_types_map_type m_content_types;
-			streams_map_type m_streams;
-			contents_map_type m_contents;
+			content_map_type m_contents;
 		};
 
 		template< class TContent, class TLoader >
-		void bc_content_stream_manager::register_loader(bc_cloader_ptr<TLoader>&& p_loader)
+		void bc_content_stream_manager::register_loader(const bcCHAR* p_data_driven_name, bc_cloader_ptr<TLoader>&& p_loader)
 		{
-			_register_content_type<TContent>();
+			_register_content_loader<TContent>(p_data_driven_name);
 
-			bc_content_manager* l_content_manager = bc_get_service< bc_content_manager >();
-			l_content_manager->register_loader<TContent, TLoader>(std::move(p_loader));
+			m_content_manager.register_loader<TContent, TLoader>(std::move(p_loader));
 		}
 
 		template< class TContent >
-		void bc_content_stream_manager::_register_content_type()
+		void bc_content_stream_manager::_register_content_loader(const bcCHAR* p_data_driven_name)
 		{
-			auto* l_content_manager = bc_get_service< bc_content_manager >();
-
-			auto l_hash = string_hash()(bc_content_traits< TContent >::content_name());
-			content_load_delegate l_load_delegate([l_content_manager](bc_alloc_type p_alloc_type, const bcECHAR* p_file_name, bc_content_loader_parameter&& p_parameters)
+			auto l_data_driven_hash = string_hash()(p_data_driven_name);
+			content_load_delegate l_load_delegate([this](bc_alloc_type p_alloc_type, const bcECHAR* p_file_name, bc_content_loader_parameter&& p_parameters)
 			{
-				return l_content_manager->load< TContent >(p_alloc_type, p_file_name, std::move(p_parameters));
+				return m_content_manager.load< TContent >(p_alloc_type, p_file_name, std::move(p_parameters));
 			});
 
-			m_content_types.insert(content_types_map_type::value_type(l_hash, std::move(l_load_delegate)));
+			m_content_loader_delegates.insert(content_loader_map_type::value_type(l_data_driven_hash, std::move(l_load_delegate)));
 		}
 
 		template< class TContent >

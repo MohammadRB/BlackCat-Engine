@@ -26,11 +26,11 @@ namespace black_cat
 
 			m_key_listener_handle = l_event_manager->register_event_listener< platform::bc_app_event_key >
 			(
-				core::bc_event_manager::delegate_type(this, &bc_icamera::on_key)
+				core::bc_event_manager::delegate_type(*this, &bc_icamera::on_key)
 			);
 			m_pointing_listener_handle = l_event_manager->register_event_listener< platform::bc_app_event_pointing >
 			(
-				core::bc_event_manager::delegate_type(this, &bc_icamera::on_pointing)
+				core::bc_event_manager::delegate_type(*this, &bc_icamera::on_pointing)
 			);
 		}
 
@@ -46,8 +46,8 @@ namespace black_cat
 			m_key_listener_handle(std::move(p_other.m_key_listener_handle)),
 			m_pointing_listener_handle(std::move(p_other.m_pointing_listener_handle))
 		{
-			m_key_listener_handle.reassign(core::bc_event_manager::delegate_type(this, &bc_icamera::on_key));
-			m_pointing_listener_handle.reassign(core::bc_event_manager::delegate_type(this, &bc_icamera::on_pointing));
+			m_key_listener_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_icamera::on_key));
+			m_pointing_listener_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_icamera::on_pointing));
 		}
 
 		bc_icamera& bc_icamera::operator=(bc_icamera&& p_other) noexcept
@@ -63,8 +63,8 @@ namespace black_cat
 			m_key_listener_handle = std::move(p_other.m_key_listener_handle);
 			m_pointing_listener_handle = std::move(p_other.m_pointing_listener_handle);
 
-			m_key_listener_handle.reassign(core::bc_event_manager::delegate_type(this, &bc_icamera::on_key));
-			m_pointing_listener_handle.reassign(core::bc_event_manager::delegate_type(this, &bc_icamera::on_pointing));
+			m_key_listener_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_icamera::on_key));
+			m_pointing_listener_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_icamera::on_pointing));
 
 			return *this;
 		}

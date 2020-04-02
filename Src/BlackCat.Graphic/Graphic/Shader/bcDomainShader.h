@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/bcConstant.h"
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcRenderApi.h"
 #include "Graphic/bcDeviceReference.h"
@@ -52,16 +53,14 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-
 		private:
 			platform_pack m_pack;
-
 		};
 
+		constexpr bcCHAR g_domain_shader_content_name[] = BC_CONTENT_NAME(dmn_shd);
 		using bc_domain_shader = bc_platform_domain_shader< g_current_render_api >;
 		using bc_domain_shader_ptr = bc_device_ref< bc_domain_shader >;
-		using bc_domain_shader_content = bc_device_resource_content< bc_domain_shader >;
+		using bc_domain_shader_content = bc_device_resource_content< bc_domain_shader, g_domain_shader_content_name >;
 		using bc_domain_shader_content_ptr = core::bc_content_ptr<bc_domain_shader_content>;
 	}
 }

@@ -46,14 +46,11 @@ namespace black_cat
 {
 	bc_render_application::bc_render_application()
 		: game::bc_render_application(),
-		m_game_system(nullptr),
-		m_service_manager(nullptr)
+		m_game_system(nullptr)
 	{
 	}
 
-	bc_render_application::~bc_render_application()
-	{
-	}
+	bc_render_application::~bc_render_application() = default;
 
 	void bc_render_application::app_start_engine_components(game::bc_engine_application_parameter& p_parameters)
 	{
@@ -71,63 +68,59 @@ namespace black_cat
 		);
 #endif
 		core::bc_service_manager::start_up();
-		m_service_manager = &core::bc_service_manager::get();
 
 		core::bc_register_service(core::bc_make_service<core::bc_logger>());
-		core::bc_register_service(core::bc_make_service<core::bc_event_manager>());
-		core::bc_register_service(core::bc_make_service<core::bc_thread_manager>
+#ifdef BC_DEBUG
+			core::bc_get_service<core::bc_logger>()->register_listener
+			(
+				core::bc_enum:: or ({ core::bc_log_type::debug, core::bc_log_type::error }),
+				core::bc_make_unique< platform::bc_ide_logger >(core::bc_alloc_type::program)
+			);
+#endif
+		core::bc_register_service(core::bc_make_service< core::bc_thread_manager >
 		(
 			p_parameters.m_engine_parameters.m_thread_manager_thread_count,
 			p_parameters.m_engine_parameters.m_thread_manager_reserved_thread_count
 		));
+		core::bc_register_service(core::bc_make_service<core::bc_event_manager>());
+		core::bc_register_service(core::bc_make_service<core::bc_query_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
-		core::bc_register_service(core::bc_make_service<game::bc_game_system>());
 		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>());
 		core::bc_register_service(core::bc_make_service<game::bc_entity_manager>(*core::bc_get_service<game::bc_actor_component_manager>()));
-		core::bc_register_service(core::bc_make_service<core::bc_query_manager>());
+		core::bc_register_service(core::bc_make_service<game::bc_game_system>());
 
-		auto* l_log_manager = core::bc_get_service<core::bc_logger>();
-		auto* l_entity_manager = core::bc_get_service<game::bc_entity_manager>();
-		m_game_system = core::bc_get_service<game::bc_game_system>();
+		core::bc_register_loader< graphic::bc_texture2d_content, bc_texture_loader >("texture2d", core::bc_make_loader< bc_texture_loader >());
+		core::bc_register_loader< graphic::bc_vertex_shader_content, bc_vertex_shader_loader >("vertex_shader", core::bc_make_loader< bc_vertex_shader_loader >());
+		core::bc_register_loader< graphic::bc_hull_shader_content, bc_hull_shader_loader >("hull_shader", core::bc_make_loader< bc_hull_shader_loader >());
+		core::bc_register_loader< graphic::bc_domain_shader_content, bc_domain_shader_loader >("domain_shader", core::bc_make_loader< bc_domain_shader_loader >());
+		core::bc_register_loader< graphic::bc_geometry_shader_content, bc_geometry_shader_loader >("geometry_shader", core::bc_make_loader< bc_geometry_shader_loader >());
+		core::bc_register_loader< graphic::bc_pixel_shader_content, bc_pixel_shader_loader >("pixel_shader", core::bc_make_loader< bc_pixel_shader_loader >());
+		core::bc_register_loader< graphic::bc_compute_shader_content, bc_compute_shader_loader >("compute_shader", core::bc_make_loader< bc_compute_shader_loader >());
+		core::bc_register_loader< game::bc_mesh_collider, bc_mesh_collider_loader >("mesh_collider", core::bc_make_loader< bc_mesh_collider_loader >(true));
+		core::bc_register_loader< game::bc_mesh, bc_mesh_loader >("mesh", core::bc_make_loader< bc_mesh_loader >());
+		core::bc_register_loader< game::bc_scene, bc_scene_loader >("scene", core::bc_make_loader< bc_scene_loader >(std::move(p_parameters.m_app_parameters.m_scene_graph_factory)));
 
-#ifdef BC_DEBUG
-		l_log_manager->register_listener
+		game::bc_register_component_types
 		(
-			core::bc_enum:: or ({ core::bc_log_type::debug, core::bc_log_type::error }),
-			core::bc_make_unique< platform::bc_ide_logger >(core::bc_alloc_type::program)
+			game::bc_component_register< game::bc_mediate_component >("mediate"),
+			game::bc_component_register< game::bc_simple_mesh_component >("simple_mesh"),
+			game::bc_component_register< game::bc_vegetable_mesh_component >("vegetable_mesh"),
+			game::bc_component_register< game::bc_hierarchy_component >("hierarchy"),
+			game::bc_component_register< game::bc_rigid_static_component >("rigid_static"),
+			game::bc_component_register< game::bc_rigid_dynamic_component >("rigid_dynamic"),
+			game::bc_component_register< game::bc_height_map_component >("height_map"),
+			game::bc_component_register< game::bc_light_component >("light")
 		);
-#endif
+		game::bc_register_abstract_component_types
+		(
+			game::bc_abstract_component_register< game::bc_mesh_component, game::bc_simple_mesh_component, game::bc_vegetable_mesh_component >(),
+			game::bc_abstract_component_register< game::bc_render_component, game::bc_mesh_component, game::bc_height_map_component >(),
+			game::bc_abstract_component_register< game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component >()
+		);
 
-		core::bc_register_loader< graphic::bc_texture2d_content, bc_texture_loader >(core::bc_make_loader< bc_texture_loader >());
-		core::bc_register_loader< graphic::bc_vertex_shader_content, bc_vertex_shader_loader >(core::bc_make_loader< bc_vertex_shader_loader >());
-		core::bc_register_loader< graphic::bc_hull_shader_content, bc_hull_shader_loader >(core::bc_make_loader< bc_hull_shader_loader >());
-		core::bc_register_loader< graphic::bc_domain_shader_content, bc_domain_shader_loader >(core::bc_make_loader< bc_domain_shader_loader >());
-		core::bc_register_loader< graphic::bc_geometry_shader_content, bc_geometry_shader_loader >(core::bc_make_loader< bc_geometry_shader_loader >());
-		core::bc_register_loader< graphic::bc_pixel_shader_content, bc_pixel_shader_loader >(core::bc_make_loader< bc_pixel_shader_loader >());
-		core::bc_register_loader< graphic::bc_compute_shader_content, bc_compute_shader_loader >(core::bc_make_loader< bc_compute_shader_loader >());
-		core::bc_register_loader< game::bc_mesh_collider, bc_mesh_collider_loader >(core::bc_make_loader< bc_mesh_collider_loader >(true));
-		core::bc_register_loader< game::bc_mesh, bc_mesh_loader >(core::bc_make_loader< bc_mesh_loader >());
-		core::bc_register_loader< game::bc_scene, bc_scene_loader >(core::bc_make_loader< bc_scene_loader >(std::move(p_parameters.m_app_parameters.m_scene_graph_factory)));
-
-		l_entity_manager->register_component_types
-		<
-			game::bc_mediate_component,
-			game::bc_simple_mesh_component,
-			game::bc_vegetable_mesh_component,
-			game::bc_hierarchy_component,
-			game::bc_rigid_static_component,
-			game::bc_rigid_dynamic_component,
-			game::bc_height_map_component,
-			game::bc_light_component
-		>();
-		l_entity_manager->register_abstract_component_types
-		<
-			game::bc_abstract_component_register< game::bc_mesh_component, game::bc_simple_mesh_component, game::bc_vegetable_mesh_component >,
-			game::bc_abstract_component_register< game::bc_render_component, game::bc_mesh_component, game::bc_height_map_component >,
-			game::bc_abstract_component_register< game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component >
-		>();
-
+		m_game_system = core::bc_get_service<game::bc_game_system>();
+		
 		application_start_engine_components(p_parameters);
 	}
 
@@ -175,8 +168,8 @@ namespace black_cat
 
 	void bc_render_application::app_update(core_platform::bc_clock::update_param p_clock_update_param)
 	{
-		m_service_manager->update(p_clock_update_param);
 		application_update(p_clock_update_param);
+		core::bc_service_manager::get().update(p_clock_update_param);
 	}
 
 	void bc_render_application::app_render(core_platform::bc_clock::update_param p_clock_update_param)

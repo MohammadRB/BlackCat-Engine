@@ -17,7 +17,7 @@ namespace black_cat
 
 		class bc_rigid_body_component : public bc_iactor_component
 		{
-			BC_ABSTRACT_COMPONENT(rigid_body)
+			BC_ABSTRACT_COMPONENT(rgd_bdy)
 
 		public:
 			virtual ~bc_rigid_body_component();

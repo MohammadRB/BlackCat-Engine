@@ -60,7 +60,8 @@ namespace black_cat
 		template< class TMessage >
 		bool bc_imessage::is(const bc_imessage& p_message)
 		{
-			return bc_message_traits<TMessage>::message_hash() == p_message.get_hash();
+			constexpr auto l_hash = bc_message_traits<TMessage>::message_hash();
+			return l_hash == p_message.get_hash();
 		}
 
 		template< class TMessage >
@@ -77,7 +78,7 @@ namespace black_cat
 		template< class TMessage >
 		const TMessage* bc_imessage::as(const bc_imessage& p_message)
 		{
-			return as<TMessage*>(const_cast<bc_imessage&>(p_message));
+			return as<TMessage>(const_cast<bc_imessage&>(p_message));
 		}
 	}
 }

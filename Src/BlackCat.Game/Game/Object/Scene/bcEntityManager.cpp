@@ -2,11 +2,11 @@
 
 #include "Game/GamePCH.h"
 
-#include "CorePlatform/bcException.h"
 #include "Core/Container/bcString.h"
 #include "Core/File/bcFileStream.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Core/Utility/bcParameterPack.h"
+#include "Game/bcException.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
@@ -61,29 +61,27 @@ namespace black_cat
 
 			for (auto& l_entity : l_json->m_entities)
 			{
-				const core::bc_string_frame& l_entity_name = *l_entity->m_name;
+				const auto& l_entity_name = *l_entity->m_name;
 				auto l_entity_name_hash = string_hash()(l_entity_name.c_str());
 				entity_map_type::value_type::second_type l_entity_components;
 
 				// Because we used program heap we must reserve needed memory
-				l_entity_components.m_components.reserve(l_entity->m_components.size());
 				l_entity_components.m_entity_name = l_entity_name.c_str();
+				l_entity_components.m_components.reserve(l_entity->m_components.size());
 
 				for (auto& l_component : l_entity->m_components)
 				{
-					const core::bc_string_frame& l_component_name = *l_component->m_name;
-					// We have used this function in component name hashing
-					const auto l_component_name_hash = BC_RUN_TIME_STRING_HASH(l_component_name.c_str(), l_component_name.size());
+					const auto& l_component_name = *l_component->m_name;
+					const auto l_component_name_hash = string_hash()(l_component_name.c_str());
+					auto& l_component_parameters = *l_component->m_parameters;
 
 					_bc_entity_component_data l_component_data;
 					l_component_data.m_component_hash = l_component_name_hash;
 
-					auto& l_exp_params = *l_component->m_parameters;
-
 					std::for_each
 					(
-						std::begin(l_exp_params),
-						std::end(l_exp_params),
+						std::begin(l_component_parameters),
+						std::end(l_component_parameters),
 						[&](core::bc_json_key_value::value_type& p_parameter)
 						{
 							l_component_data.m_component_parameters.add_value(p_parameter.first.c_str(), std::move(p_parameter.second));
@@ -131,6 +129,10 @@ namespace black_cat
 				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
 				{
 					auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
+					if(l_entity_component_entry == std::end(m_components))
+					{
+						throw bc_key_not_found_exception("There is no component registered with specified name");
+					}
 
 					l_entity_component_entry->second.m_create_delegate(l_actor);
 					l_entity_component_entry->second.m_initialize_delegate(l_actor, l_entity_component_data.m_component_parameters);

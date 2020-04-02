@@ -67,7 +67,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\bcDeviceRef.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\bcDeviceReference.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\bcDeviceResourceContent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\bcUtility.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDevice.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceOutput.cpp" />

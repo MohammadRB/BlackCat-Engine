@@ -15,7 +15,7 @@ namespace black_cat
 		*/
 		class bc_app_event_error : public bc_app_event
 		{
-			BC_EVENT(app_error)
+			BC_EVENT(app_err)
 
 		public:
 			explicit bc_app_event_error(const bcCHAR* p_message)
@@ -49,12 +49,10 @@ namespace black_cat
 				return *this;
 			}
 
-			const bc_string& get_message() const noexcept(true)
+			const bc_string& get_message() const noexcept
 			{
 				return m_message;
 			}
-
-		protected:
 
 		private:
 			bc_string m_message;
@@ -62,7 +60,7 @@ namespace black_cat
 
 		class bc_app_event_debug : public bc_app_event
 		{
-			BC_EVENT(app_warning)
+			BC_EVENT(app_wrn)
 
 		public:
 			explicit bc_app_event_debug(const bcCHAR* p_message)
@@ -96,12 +94,10 @@ namespace black_cat
 				return *this;
 			}
 
-			const bc_string& get_message() const noexcept(true)
+			const bc_string& get_message() const noexcept
 			{
 				return m_message;
 			}
-
-		protected:
 
 		private:
 			bc_string m_message;
@@ -109,7 +105,7 @@ namespace black_cat
 
 		class bc_event_frame_update_start : public bc_app_event
 		{
-			BC_EVENT(frame_update_start)
+			BC_EVENT(fr_up_s)
 
 		public:
 			bc_event_frame_update_start()
@@ -122,15 +118,11 @@ namespace black_cat
 			~bc_event_frame_update_start() = default;
 
 			bc_event_frame_update_start& operator=(const bc_event_frame_update_start&) = default;
-
-		protected:
-
-		private:
 		};
 
 		class bc_event_frame_update_finish : public bc_app_event
 		{
-			BC_EVENT(frame_update_finish)
+			BC_EVENT(fr_up_e)
 
 		public:
 			bc_event_frame_update_finish()
@@ -143,15 +135,11 @@ namespace black_cat
 			~bc_event_frame_update_finish() = default;
 
 			bc_event_frame_update_finish& operator=(const bc_event_frame_update_finish&) = default;
-
-		protected:
-
-		private:
 		};
 
 		class bc_event_frame_render_start : public bc_app_event
 		{
-			BC_EVENT(frame_render_start)
+			BC_EVENT(fr_rn_s)
 
 		public:
 			bc_event_frame_render_start()
@@ -164,15 +152,11 @@ namespace black_cat
 			~bc_event_frame_render_start() = default;
 
 			bc_event_frame_render_start& operator=(const bc_event_frame_render_start&) = default;
-
-		protected:
-
-		private:
 		};
 
 		class bc_event_frame_render_finish : public bc_app_event
 		{
-			BC_EVENT(frame_render_finish)
+			BC_EVENT(fr_rn_e)
 
 		public:
 			bc_event_frame_render_finish()
@@ -185,10 +169,6 @@ namespace black_cat
 			~bc_event_frame_render_finish() = default;
 
 			bc_event_frame_render_finish& operator=(const bc_event_frame_render_finish&) = default;
-
-		protected:
-
-		private:
 		};
 	}
 }

@@ -14,7 +14,7 @@ namespace black_cat
 	{
 		class BC_GAME_DLL bc_height_map : public core::bc_icontent
 		{
-			BC_CONTENT(height_map)
+			BC_CONTENT(hgt_map)
 
 		public:
 			bc_height_map(bcUINT16 p_width,

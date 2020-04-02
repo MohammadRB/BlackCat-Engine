@@ -27,7 +27,7 @@ namespace black_cat
 			_bc_memory_extender_bucket(initializer_type& p_initializer, cleanup_type& p_cleanup)
 				: m_memory_initializer(p_initializer),
 				m_memory_cleanup(p_cleanup),
-				m_bucket_initializer(this, &_bc_memory_extender_bucket::_bucket_initializer),
+				m_bucket_initializer(*this, &_bc_memory_extender_bucket::_bucket_initializer),
 				m_memory(nullptr),
 				m_next(nullptr)
 			{

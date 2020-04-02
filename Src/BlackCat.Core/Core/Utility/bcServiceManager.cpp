@@ -1,6 +1,7 @@
 // [03/20/2015 MRB]
 
 #include "Core/CorePCH.h"
+#include "Core/bcException.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Container/bcVector.h"
 
@@ -10,9 +11,7 @@ namespace black_cat
 	{
 		template BC_CORE_DLL class bc_singleton< bc_service_manager() >;
 
-		bc_iservice::~bc_iservice()
-		{
-		}
+		bc_iservice::~bc_iservice() = default;
 
 		void bc_iservice::update(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
@@ -24,15 +23,11 @@ namespace black_cat
 		{
 		}
 
-		bc_service_manager::bc_service_manager()
-		{
-		}
+		bc_service_manager::bc_service_manager() = default;
 
-		bc_service_manager::~bc_service_manager()
-		{
-		}
+		bc_service_manager::~bc_service_manager() = default;
 
-		void bc_service_manager::update(core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_service_manager::update(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 			bc_vector_frame< map_t::const_iterator > l_services;
 			l_services.reserve(m_services.size());
@@ -78,11 +73,10 @@ namespace black_cat
 			}
 		}
 
-		bc_iservice* bc_service_manager::_get_service(const bcCHAR* p_service_name)
+		bc_iservice* bc_service_manager::_get_service(bcUINT32 p_service_hash)
 		{
 			bc_iservice* l_result = nullptr;
-			const auto l_service_hash = string_hash()(p_service_name);
-			const auto l_ite = m_services.find(l_service_hash);
+			const auto l_ite = m_services.find(p_service_hash);
 
 			if (l_ite != std::end(m_services))
 			{
@@ -92,19 +86,19 @@ namespace black_cat
 			return l_result;
 		}
 
-		bc_iservice* bc_service_manager::_register_service(const bcCHAR* p_service_name, bc_service_ptr<bc_iservice> p_service)
+		bc_iservice* bc_service_manager::_register_service(const bcCHAR* p_name, bcUINT32 p_hash, bc_service_ptr<bc_iservice> p_service)
 		{
-			bcSIZE l_service_priority = m_services.size();
+			const bcSIZE l_service_priority = m_services.size();
 
-			const auto l_service_hash = string_hash()(p_service_name);
-			auto l_ite = m_services.find(l_service_hash);
+			auto l_ite = m_services.find(p_hash);
 			if (l_ite == std::end(m_services))
 			{
-				l_ite = m_services.insert({ l_service_hash, _bc_service_container(std::move(p_service), l_service_priority) }).first;
+				l_ite = m_services.insert({ p_hash, _bc_service_container(std::move(p_service), l_service_priority) }).first;
 			}
 			else
 			{
-				l_ite->second = _bc_service_container(std::move(p_service), l_service_priority);
+				throw bc_invalid_operation_exception("A service with the same name has already registered");
+				//l_ite->second = _bc_service_container(std::move(p_service), l_service_priority);
 			}
 
 			return l_ite->second.m_service.get();

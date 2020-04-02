@@ -83,10 +83,6 @@ namespace black_cat
 
 			bc_service_ptr< bc_iservice > m_service;
 			bcSIZE m_priority;
-		protected:
-
-		private:
-			
 		};
 
 		class BC_CORE_DLL bc_service_manager : public bc_singleton< bc_service_manager() >
@@ -106,18 +102,16 @@ namespace black_cat
 			template< class TService >
 			TService* register_service(bc_service_ptr<TService> p_service);
 
-			void update(core_platform::bc_clock::update_param p_clock_update_param);
-
-		protected:
+			void update(const core_platform::bc_clock::update_param& p_clock_update_param);
 
 		private:
 			void _initialize() override;
 
 			void _destroy() override;
 
-			bc_iservice* _get_service(const bcCHAR* p_service_name);
+			bc_iservice* _get_service(bcUINT32 p_service_hash);
 
-			bc_iservice* _register_service(const bcCHAR* p_service_name, bc_service_ptr<bc_iservice> p_service);
+			bc_iservice* _register_service(const bcCHAR* p_name, bcUINT32 p_hash, bc_service_ptr<bc_iservice> p_service);
 
 			map_t m_services;
 		};
@@ -125,17 +119,18 @@ namespace black_cat
 		template< class TService >
 		TService* bc_service_manager::get_service()
 		{
-			auto* l_service_name = bc_service_traits< TService >::service_name();
-			return static_cast<TService*>(_get_service(l_service_name));
+			constexpr auto l_service_hash = bc_service_traits< TService >::service_hash();
+			return static_cast<TService*>(_get_service(l_service_hash));
 		}
 
 		template< class TService >
 		TService* bc_service_manager::register_service(bc_service_ptr<TService> p_service)
 		{
-			static_assert(std::is_base_of<bc_iservice, TService>::value, "services must inherite from bc_iservice");
+			static_assert(std::is_base_of<bc_iservice, TService>::value, "services must inherit from bc_iservice");
 
-			auto* l_service_name = bc_service_traits< TService >::service_name();
-			return static_cast<TService*>(_register_service(l_service_name, std::move(p_service)));
+			constexpr auto* l_service_name = bc_service_traits< TService >::service_name();
+			constexpr auto l_service_hash = bc_service_traits< TService >::service_hash();
+			return static_cast<TService*>(_register_service(l_service_name, l_service_hash, std::move(p_service)));
 		}
 	}
 }

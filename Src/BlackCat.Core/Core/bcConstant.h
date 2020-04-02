@@ -22,14 +22,12 @@ namespace black_cat
 #define BC_CONTENT_NAME(p_name)					"cnt_" ## #p_name
 
 #define BC_COMPONENT_NAME(p_name)				"cmp_" ## #p_name
+				
+#define BC_EVENT_NAME(p_name)					"evt_" ## #p_name
 
-#define BC_MESSAGE_NAME(p_name)					"msg_" ## #p_name
-		
-#define BC_EVENT_NAME(p_name)					"evt_" BC_MESSAGE_NAME(p_name)
+#define BC_QUERY_NAME(p_name)					"qur_" ## #p_name
 
-#define BC_QUERY_NAME(p_name)					"qur_" BC_MESSAGE_NAME(p_name)
-
-#define BC_RENDER_PASS_NAME(p_name)				"rpass_" ## #p_name
+#define BC_RENDER_PASS_NAME(p_name)				"rps_" ## #p_name
 
 #define BC_SERVICE(p_name) \
 	public: \

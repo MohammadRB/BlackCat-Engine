@@ -54,7 +54,7 @@ namespace black_cat
 		class bc_ui_command_service : public core::bc_iservice
 		{
 		private:
-			BC_SERVICE(bc_ui_command_service)
+			BC_SERVICE(uic_srv)
 			using command_hash_t = std::hash<core::bc_string>;
 			using command_state_container = core::bc_unordered_map_program<command_hash_t::result_type, bc_iui_command::state_ptr>;
 

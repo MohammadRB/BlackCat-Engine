@@ -101,7 +101,7 @@ namespace black_cat
 					l_stream_files.push_back(std::move(l_stream_file));
 				}
 
-				m_streams.insert(streams_map_type::value_type(l_stream_hash, std::move(l_stream_files)));
+				m_streams.insert(content_stream_map_type::value_type(l_stream_hash, std::move(l_stream_files)));
 			}
 		}
 
@@ -126,13 +126,13 @@ namespace black_cat
 				std::end(l_contents),
 				[]()
 				{
-					return bc_list_frame<contents_map_type::value_type>();
+					return bc_list_frame<content_map_type::value_type>();
 				},
-				[this, p_alloc_type](bc_list_frame<contents_map_type::value_type>& p_local, _bc_content_stream_file& l_content_file)
+				[this, p_alloc_type](bc_list_frame<content_map_type::value_type>& p_local, _bc_content_stream_file& l_content_file)
 				{
 					auto l_content_hash = string_hash()(l_content_file.m_title.c_str());
-					contents_map_type::iterator l_content_entry;
-					contents_map_type::iterator l_content_end;
+					content_map_type::iterator l_content_entry;
+					content_map_type::iterator l_content_end;
 
 					{
 						core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
@@ -152,9 +152,9 @@ namespace black_cat
 					}
 
 					const auto l_loader_hash = string_hash()(l_content_file.m_name.c_str());
-					auto l_loader_entry = m_content_types.find(l_loader_hash);
+					const auto l_loader_entry = m_content_loader_delegates.find(l_loader_hash);
 
-					if(l_loader_entry == std::end(m_content_types))
+					if(l_loader_entry == std::end(m_content_loader_delegates))
 					{
 						throw bc_key_not_found_exception(("There isn't any registered loader for " + l_content_file.m_name).c_str());
 					}
@@ -168,12 +168,12 @@ namespace black_cat
 						std::move(l_loader_parameter)
 					);
 
-					contents_map_type::value_type l_new_content_entry = contents_map_type::value_type(l_content_hash, contents_map_type::value_type::second_type());
+					content_map_type::value_type l_new_content_entry = content_map_type::value_type(l_content_hash, content_map_type::value_type::second_type());
 					l_new_content_entry.second.push_back(std::move(l_content));
 
 					p_local.push_back(std::move(l_new_content_entry));
 				},
-				[this](bc_list_frame<contents_map_type::value_type>& p_locals)
+				[this](bc_list_frame<content_map_type::value_type>& p_locals)
 				{
 					{
 						core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
@@ -214,8 +214,8 @@ namespace black_cat
 				// TODO remove content pointer to decrease reference count or explicitly unload via content manager
 
 				auto l_content_hash = string_hash()(l_content_file.m_title.c_str());
-				contents_map_type::iterator l_content_entry;
-				contents_map_type::iterator l_content_end;
+				content_map_type::iterator l_content_entry;
+				content_map_type::iterator l_content_end;
 
 				{
 					core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
@@ -226,12 +226,12 @@ namespace black_cat
 
 				if (l_content_entry != l_content_end)
 				{
-					bcAssert(l_content_entry->second.size() > 0);
+					bcAssert(!l_content_entry->second.empty());
 
 					l_content_entry->second.pop_back();
 
 					// Remove content entry if it's references reach zero
-					if (l_content_entry->second.size() == 0)
+					if (l_content_entry->second.empty())
 					{
 						{
 							core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
@@ -246,8 +246,8 @@ namespace black_cat
 		bc_icontent_ptr bc_content_stream_manager::find_content(const bcCHAR* p_content_name) const
 		{
 			const auto l_content_hash = string_hash()(p_content_name);
-			contents_map_type::const_iterator l_content_entry;
-			contents_map_type::const_iterator l_content_end;
+			content_map_type::const_iterator l_content_entry;
+			content_map_type::const_iterator l_content_end;
 
 			{
 				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
@@ -258,7 +258,7 @@ namespace black_cat
 
 			if (l_content_entry != l_content_end)
 			{
-				bcAssert(l_content_entry->second.size() > 0);
+				bcAssert(!l_content_entry->second.empty());
 
 				return *std::begin(l_content_entry->second);
 			}

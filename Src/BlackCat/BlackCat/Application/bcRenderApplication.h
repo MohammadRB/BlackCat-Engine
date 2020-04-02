@@ -60,7 +60,5 @@ namespace black_cat
 		void app_destroy() override final;
 
 		void app_close_engine_components() override final;
-
-		core::bc_service_manager* m_service_manager;
 	};
 }

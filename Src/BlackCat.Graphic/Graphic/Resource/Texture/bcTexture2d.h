@@ -2,13 +2,13 @@
 
 #pragma once
 
+#include "Core/bcConstant.h"
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcRenderApi.h"
 #include "Graphic/bcDeviceReference.h"
 #include "Graphic/bcDeviceRef.h"
 #include "Graphic/bcDeviceResourceContent.h"
 #include "Graphic/Resource/bcResource.h"
-#include "Graphic/Resource/Texture/bcTextureConfig.h"
 
 namespace black_cat
 {
@@ -68,15 +68,14 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-
 		private:
 			platform_pack m_pack;
 		};
 
+		constexpr bcCHAR g_texture_content_name[] = BC_CONTENT_NAME(tex_2d);
 		using bc_texture2d = bc_platform_texture2d< g_current_render_api >;
 		using bc_texture2d_ptr = bc_device_ref< bc_texture2d >;
-		using bc_texture2d_content = bc_device_resource_content< bc_texture2d >;
+		using bc_texture2d_content = bc_device_resource_content< bc_texture2d, g_texture_content_name >;
 		using bc_texture2d_content_ptr = core::bc_content_ptr<bc_texture2d_content>;
 	}
 }

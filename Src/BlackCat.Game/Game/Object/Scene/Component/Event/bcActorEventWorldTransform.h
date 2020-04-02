@@ -13,7 +13,7 @@ namespace black_cat
 	{
 		class BC_GAME_DLL bc_actor_event_world_transform : public bc_actor_event
 		{
-			BC_EVENT(actor_event_world_transform)
+			BC_EVENT(a_w_t)
 
 		public:
 			explicit bc_actor_event_world_transform(const core::bc_vector3f& p_translation);

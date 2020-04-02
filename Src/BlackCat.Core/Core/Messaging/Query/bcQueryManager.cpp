@@ -36,19 +36,8 @@ namespace black_cat
 				m_providers.erase(p_provider_handle.m_context_hash);
 			}
 		}
-
-		void bc_query_manager::_mark_shared_state(const _bc_query_shared_state& p_shared_state)
-		{
-			const auto& l_query_entry = static_cast<const _query_entry&>(p_shared_state);
-
-			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_executed_queries_lock);
-
-				m_executed_queries.erase(l_query_entry.m_iterator);
-			}
-		}
-
-		void bc_query_manager::update(const core_platform::bc_clock::update_param& p_clock_update_param)
+		
+		void bc_query_manager::process_query_queue(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 			{
 				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_providers_guard(m_providers_lock);
@@ -94,6 +83,17 @@ namespace black_cat
 					},
 					[=](bool){}
 				);
+			}
+		}
+
+		void bc_query_manager::_mark_shared_state(const _bc_query_shared_state& p_shared_state)
+		{
+			const auto& l_query_entry = static_cast<const _query_entry&>(p_shared_state);
+
+			{
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_executed_queries_lock);
+
+				m_executed_queries.erase(l_query_entry.m_iterator);
 			}
 		}
 

@@ -59,8 +59,6 @@ namespace black_cat
 			*/
 			platform::bc_console_window create_console_window(core::bc_estring p_caption);
 
-		protected:
-
 		private:
 			/**
 			 * \brief Initialize required engine components

@@ -54,6 +54,20 @@ namespace black_cat
 			}
 		};
 
+		template<typename TComponent>
+		class bc_component_register
+		{
+		public:
+			using component_t = TComponent;
+			
+			bc_component_register(const bcCHAR* p_data_driven_name)
+				: m_data_driven_name(p_data_driven_name)
+			{
+			}
+
+			const bcCHAR* m_data_driven_name;
+		};
+		
 		template< class TAbstract, class TDerived, class ...TDeriveds >
 		class bc_abstract_component_register
 		{
@@ -61,15 +75,10 @@ namespace black_cat
 			using abstract_component_t = TAbstract;
 			template< template<typename, typename...> class T >
 			using apply = T<TAbstract, TDerived, TDeriveds...>;
-		};
 
-		template< class TAbstract, class ...TDeriveds >
-		class _bc_abstract_component_registrar
-		{
-		public:
 			void operator()(bc_actor_component_manager& p_component_manager) const
 			{
-				p_component_manager._register_abstract_component_type< TAbstract, TDeriveds... >();
+				p_component_manager._register_abstract_component_type< TAbstract, TDerived, TDeriveds... >();
 			}
 		};
 
@@ -123,11 +132,11 @@ namespace black_cat
 
 		class bc_actor_component_manager : public core::bc_iservice
 		{
-			BC_SERVICE(actor_component_manager)
+			BC_SERVICE(ac_mng)
 
 		private:
-			template<class TAbstract, class ...TDeriveds>
-			friend class _bc_abstract_component_registrar;
+			template< class TAbstract, class TDerived, class ...TDeriveds >
+			friend class bc_abstract_component_register;
 			using actor_container_type = core::bc_vector_movale< core::bc_nullable< _bc_actor_entry > >;
 			using component_container_type = core::bc_unordered_map_program< bc_actor_component_hash, _bc_actor_component_entry >;
 
@@ -173,14 +182,13 @@ namespace black_cat
 			template< class TComponent >
 			bc_actor component_get_actor(const TComponent& p_component) const noexcept;
 
-			template< class ...TComponent >
-			void register_component_types();
+			template< class ...TCAdapter >
+			void register_component_types(TCAdapter... p_components);
 
-			template< class ...TComponent >
-			void register_abstract_component_types();
+			template< class ...TCAdapter >
+			void register_abstract_component_types(TCAdapter... p_components);
 
-		protected:
-			void update(const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			void update_actors(const core_platform::bc_clock::update_param& p_clock_update_param);
 			
 		private:
 			template< class TComponent >
@@ -443,8 +451,8 @@ namespace black_cat
 			return m_actors[l_component_to_actor].get().m_actor;
 		}
 
-		template< class ...TComponent >
-		void bc_actor_component_manager::register_component_types()
+		template< class ...TCAdapter >
+		void bc_actor_component_manager::register_component_types(TCAdapter... p_components)
 		{
 			bcSIZE l_counter = m_components.size();
 
@@ -454,10 +462,10 @@ namespace black_cat
 					[this, &l_counter]()
 					{
 						// Register mediate component as last component
-						const bcSIZE l_priority = std::is_same_v< TComponent, bc_mediate_component >
+						const bcSIZE l_priority = std::is_same_v< typename TCAdapter::component_t, bc_mediate_component >
 							                          ? _bc_actor_component_entry::s_invalid_priority_value - 1
 							                          : l_counter++;
-						this->_register_component_type< TComponent >(l_priority);
+						this->_register_component_type< typename TCAdapter::component_t >(l_priority);
 
 						return true;
 					}()
@@ -473,10 +481,10 @@ namespace black_cat
 				(
 					[this, l_actor]()
 					{
-						this->create_component< TComponent >(l_actor);
-						TComponent* l_component = this->actor_get_component< TComponent >(l_actor);
+						this->create_component< typename TCAdapter::component_t >(l_actor);
+						typename TCAdapter::component_t* l_component = this->actor_get_component< typename TCAdapter::component_t >(l_actor);
 						l_component->get_actor();
-						this->remove_component< TComponent >(l_actor);
+						this->remove_component< typename TCAdapter::component_t >(l_actor);
 
 						return true;
 					}()
@@ -486,19 +494,19 @@ namespace black_cat
 			remove_actor(l_actor);
 		}
 
-		template< class ...TComponent >
-		void bc_actor_component_manager::register_abstract_component_types()
+		template< class ...TCAdapter >
+		void bc_actor_component_manager::register_abstract_component_types(TCAdapter... p_components)
 		{
 			bc_actor l_actor = create_actor();
 
 			auto l_expansion_list =
 			{
 				(
-					[this, l_actor]()
+					[this, l_actor, p_components]()
 					{
-						typename TComponent::template apply< _bc_abstract_component_registrar >()(*this);
-
-						this->actor_get_component<typename TComponent::abstract_component_t>(l_actor);
+						p_components(*this);
+					
+						this->actor_get_component< typename TCAdapter::abstract_component_t >(l_actor);
 
 						return true;
 					}()
@@ -508,7 +516,7 @@ namespace black_cat
 			remove_actor(l_actor);
 		}
 
-		inline void bc_actor_component_manager::update(const core_platform::bc_clock::update_param& p_clock_update_param)
+		inline void bc_actor_component_manager::update_actors(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 			core::bc_vector_frame< _bc_actor_component_entry* > l_components;
 			l_components.reserve(m_components.size());

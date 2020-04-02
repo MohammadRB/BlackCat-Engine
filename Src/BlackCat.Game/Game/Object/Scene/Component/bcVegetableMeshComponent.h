@@ -11,7 +11,7 @@ namespace black_cat
 	{
 		class BC_GAME_DLL bc_vegetable_mesh_component : public bc_mesh_component
 		{
-			BC_COMPONENT(vegetable_mesh, true, false)
+			BC_COMPONENT(veg_msh, true, false)
 
 		public:
 			explicit bc_vegetable_mesh_component(bc_actor_component_index p_index);

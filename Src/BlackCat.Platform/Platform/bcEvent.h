@@ -14,7 +14,7 @@ namespace black_cat
 	{
 		class bc_app_event_exit : public core::bc_app_event
 		{
-			BC_EVENT(app_exit)
+			BC_EVENT(app_ext)
 
 		public:
 			explicit bc_app_event_exit(bcINT32 p_exit_code)
@@ -40,7 +40,7 @@ namespace black_cat
 
 		class bc_app_event_active : public core::bc_app_event
 		{
-			BC_EVENT(app_active)
+			BC_EVENT(app_acv)
 
 		public:
 			explicit bc_app_event_active(bool p_active)
@@ -66,7 +66,7 @@ namespace black_cat
 
 		class bc_app_event_window_focus : public core::bc_app_event
 		{
-			BC_EVENT(app_window_focus)
+			BC_EVENT(app_fcs)
 
 		public:
 			explicit bc_app_event_window_focus(bc_window_id p_window_id, bool p_focus)
@@ -97,7 +97,7 @@ namespace black_cat
 		*/
 		class bc_app_event_window_resizing : public core::bc_app_event
 		{
-			BC_EVENT(app_window_resizing)
+			BC_EVENT(app_rsz)
 
 		public:
 			bc_app_event_window_resizing(bc_window_id p_window_id, bool p_started_to_resizing)
@@ -138,7 +138,7 @@ namespace black_cat
 		 */
 		class bc_app_event_window_resize : public core::bc_app_event
 		{
-			BC_EVENT(app_window_resize)
+			BC_EVENT(app_rzd)
 
 		public:
 			enum class state : bcBYTE
@@ -195,7 +195,7 @@ namespace black_cat
 		 */
 		class bc_app_event_window_close : public core::bc_app_event
 		{
-			BC_EVENT(app_window_close)
+			BC_EVENT(app_cls)
 
 		public:
 			explicit bc_app_event_window_close(bc_window_id p_window_id) noexcept
@@ -254,7 +254,7 @@ namespace black_cat
 
 		class bc_app_event_pointing : public core::bc_app_event
 		{
-			BC_EVENT(app_pointing)
+			BC_EVENT(app_pnt)
 
 		public:
 			explicit bc_app_event_pointing(bc_pointing_device_state p_state)

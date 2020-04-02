@@ -650,15 +650,15 @@ namespace black_cat
 
 			m_window_resize_handle = l_event_manager->register_event_listener< platform::bc_app_event_window_resize >
 			(
-				core::bc_event_manager::delegate_type(this, &bc_render_system::_event_handler)
+				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
 			);
 			m_device_listener_handle = l_event_manager->register_event_listener< graphic::bc_app_event_device_reset >
 			(
-				core::bc_event_manager::delegate_type(this, &bc_render_system::_event_handler)
+				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
 			);
 			m_frame_render_finish_handle = l_event_manager->register_event_listener< core::bc_event_frame_render_finish >
 			(
-				core::bc_event_manager::delegate_type(this, &bc_render_system::_event_handler)
+				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
 			);
 		}
 

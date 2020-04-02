@@ -14,7 +14,7 @@ namespace black_cat
 
 		class BC_GAME_DLL bc_rigid_static_component : public bc_rigid_body_component
 		{
-			BC_COMPONENT(rigid_static, true, false)
+			BC_COMPONENT(rgd_stc, true, false)
 
 		public:
 			explicit bc_rigid_static_component(bc_actor_component_index p_index) noexcept;

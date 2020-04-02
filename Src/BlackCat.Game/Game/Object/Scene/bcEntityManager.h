@@ -20,13 +20,26 @@ namespace black_cat
 		struct _bc_entity_data;
 		struct _bc_entity_component_data;
 		struct _bc_entity_component_callbacks;
+		class bc_entity_manager;
+		
+		template< class ...TCAdapter >
+		void bc_register_component_types(TCAdapter... p_components)
+		{
+			core::bc_get_service< bc_entity_manager >()->register_component_types(p_components...);
+		}
 
+		template< class ...TCAdapter >
+		void bc_register_abstract_component_types(TCAdapter... p_components)
+		{
+			core::bc_get_service< bc_entity_manager >()->register_abstract_component_types(p_components...);
+		}
+		
 		/**
 		 * \brief Make bcActorComponentManager data driven
 		 */
 		class BC_GAME_DLL bc_entity_manager : public core::bc_iservice
 		{
-			BC_SERVICE(entity_manager)
+			BC_SERVICE(ent_mng)
 
 		private:
 			friend struct _bc_entity_component_callbacks;
@@ -62,15 +75,15 @@ namespace black_cat
 			 */
 			void remove_entity(const bc_actor& p_entity);
 
-			template< class ...TComponent >
-			void register_component_types();
+			template< class ...TCAdapter >
+			void register_component_types(TCAdapter... p_components);
 
-			template< class ...TComponent >
-			void register_abstract_component_types();
+			template< class ...TCAdapter >
+			void register_abstract_component_types(TCAdapter... p_components);
 
 		private:
 			template< class TComponent >
-			void _register_component_type();
+			void _register_component_type(const bcCHAR* p_data_driven_name);
 
 			template< class TComponent >
 			void _actor_component_initialization(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) const;
@@ -98,43 +111,41 @@ namespace black_cat
 			bc_entity_manager::actor_component_initialize_delegate m_initialize_delegate;
 		};
 
-		template< class ...TComponent >
-		void bc_entity_manager::register_component_types()
+		template< class ...TCAdapter >
+		void bc_entity_manager::register_component_types(TCAdapter... p_components)
 		{
-			m_actor_component_manager.register_component_types< TComponent... >();
+			m_actor_component_manager.register_component_types(p_components...);
 
 			auto l_expansion_list =
 			{
 				(
-					[this]()
+					[this, p_components]()
 					{
-						this->_register_component_type< TComponent >();
+						this->_register_component_type< typename TCAdapter::component_t >(p_components.m_data_driven_name);
 						return true;
 					}()
 				)...
 			};
 		}
 
-		template< class ...TComponent >
-		void bc_entity_manager::register_abstract_component_types()
+		template< class ...TCAdapter >
+		void bc_entity_manager::register_abstract_component_types(TCAdapter... p_components)
 		{
-			m_actor_component_manager.register_abstract_component_types<TComponent...>();
+			m_actor_component_manager.register_abstract_component_types(p_components...);
 		}
 
 		template< class TComponent >
-		void bc_entity_manager::_register_component_type()
+		void bc_entity_manager::_register_component_type(const bcCHAR* p_data_driven_name)
 		{
-			auto* l_actor_component_manager = core::bc_get_service< bc_actor_component_manager >();
-
-			bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
-			actor_component_create_delegate l_creation_delegate(l_actor_component_manager, &bc_actor_component_manager::create_component< TComponent >);
-			actor_component_initialize_delegate l_initialization_delegate(this, &bc_entity_manager::_actor_component_initialization< TComponent >);
+			bc_actor_component_hash l_data_driven_hash = string_hash()(p_data_driven_name);
+			actor_component_create_delegate l_creation_delegate(m_actor_component_manager, &bc_actor_component_manager::create_component< TComponent >);
+			actor_component_initialize_delegate l_initialization_delegate(*this, &bc_entity_manager::_actor_component_initialization< TComponent >);
 
 			_bc_entity_component_callbacks l_component_callbacks;
 			l_component_callbacks.m_create_delegate = std::move(l_creation_delegate);
 			l_component_callbacks.m_initialize_delegate = std::move(l_initialization_delegate);
 
-			m_components.insert(component_map_type::value_type(l_hash, std::move(l_component_callbacks)));
+			m_components.insert(component_map_type::value_type(l_data_driven_hash, std::move(l_component_callbacks)));
 		}
 
 		template< class TComponent >

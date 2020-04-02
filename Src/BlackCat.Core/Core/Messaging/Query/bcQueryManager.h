@@ -23,7 +23,7 @@ namespace black_cat
 	{
 		class BC_CORE_DLL bc_query_manager final : public bc_iservice
 		{
-			BC_SERVICE(query_manager)
+			BC_SERVICE(qur_mng)
 
 		public:
 			using provider_delegate_t = bc_delegate< bc_query_context_ptr() >;
@@ -54,10 +54,9 @@ namespace black_cat
 			template< class TQuery >
 			bc_query_result<TQuery> queue_query(const TQuery& p_query);
 
-			void _mark_shared_state(const _bc_query_shared_state& p_shared_state);
-			
-		protected:
-			void update(const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			void process_query_queue(const core_platform::bc_clock::update_param& p_clock_update_param);
+
+			void _mark_shared_state(const _bc_query_shared_state& p_shared_state); // TODO handle not executed query deletion
 
 		private:
 			bc_query_provider_handle _register_query_provider(bc_query_context_hash p_context_hash, provider_delegate_t&& p_delegate);

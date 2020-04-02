@@ -18,19 +18,19 @@ namespace black_cat
 			using func_type = TR(*)(TA...);
 
 		public:
-			_functor_func(func_type p_func) noexcept(true)
+			_functor_func(func_type p_func) noexcept
 				: m_func(p_func)
 			{
 			}
 
-			_functor_func(const this_type& p_other) noexcept(true)
+			_functor_func(const this_type& p_other) noexcept
 			{
 				_assign(p_other);
 			}
 
 			~_functor_func() = default;
 
-			this_type& operator =(const this_type& p_other) noexcept(true)
+			this_type& operator =(const this_type& p_other) noexcept
 			{
 				_assign(p_other);
 				return *this;
@@ -59,20 +59,20 @@ namespace black_cat
 			using func_type = TR(TClass::*)(TA...);
 
 		public:
-			_functor_member_func(TClass* p_obj, func_type p_func) noexcept(true)
+			_functor_member_func(TClass* p_obj, func_type p_func) noexcept
 				: m_obj(p_obj),
 				m_func(p_func)
 			{
 			}
 
-			_functor_member_func(const this_type& p_other) noexcept(true)
+			_functor_member_func(const this_type& p_other) noexcept
 			{
 				_assign(p_other);
 			}
 
 			~_functor_member_func() = default;
 
-			this_type& operator =(const this_type& p_other) noexcept(true)
+			this_type& operator =(const this_type& p_other) noexcept
 			{
 				_assign(p_other);
 				return *this;
@@ -103,20 +103,20 @@ namespace black_cat
 			using func_type = TR(TClass::*)(TA...) const;
 
 		public:
-			_functor_const_member_func(const TClass* p_obj, func_type p_func) noexcept(true)
+			_functor_const_member_func(const TClass* p_obj, func_type p_func) noexcept
 				: m_obj(p_obj),
 				m_func(p_func)
 			{
 			}
 
-			_functor_const_member_func(const this_type& p_other) noexcept(true)
+			_functor_const_member_func(const this_type& p_other) noexcept
 			{
 				_assign(p_other);
 			}
 
 			~_functor_const_member_func() = default;
 
-			this_type& operator =(const this_type& p_other) noexcept(true)
+			this_type& operator =(const this_type& p_other) noexcept
 			{
 				_assign(p_other);
 				return *this;
@@ -167,15 +167,15 @@ namespace black_cat
 			}
 
 			template<typename TObj>
-			bc_delegate(TObj* p_obj_ptr, member_func_type<TObj> p_func) noexcept
+			bc_delegate(TObj& p_obj, member_func_type<TObj> p_func) noexcept
 			{
-				_bind(p_obj_ptr, p_func);
+				_bind(p_obj, p_func);
 			}
 
 			template< typename TObj >
-			bc_delegate(const TObj* p_obj_ptr, const_member_func_type<TObj> p_func) noexcept
+			bc_delegate(const TObj& p_obj, const_member_func_type<TObj> p_func) noexcept
 			{
-				_bind(p_obj_ptr, p_func);
+				_bind(p_obj, p_func);
 			}
 
 			explicit bc_delegate(func_type p_func_ptr) noexcept
@@ -333,16 +333,16 @@ namespace black_cat
 
 			// bind to member function
 			template< typename TObj >
-			void _bind(TObj* p_obj_ptr, TR(TObj::*p_func)(TA...))
+			void _bind(TObj& p_obj, member_func_type<TObj> p_func)
 			{
-				_bind(_functor_member_func<TObj, TR, TA...>(p_obj_ptr, p_func));
+				_bind(_functor_member_func<TObj, TR, TA...>(&p_obj, p_func));
 			}
 
 			// bind to const member function
 			template< typename TObj >
-			void _bind(const TObj* p_obj_ptr, const_member_func_type<TObj> p_func)
+			void _bind(const TObj& p_obj, const_member_func_type<TObj> p_func)
 			{
-				_bind(_functor_const_member_func<TObj, TR, TA...>(p_obj_ptr, p_func));
+				_bind(_functor_const_member_func<TObj, TR, TA...>(&p_obj, p_func));
 			}
 
 			// bind to static member function & free functions

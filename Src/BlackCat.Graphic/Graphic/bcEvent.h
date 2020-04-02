@@ -11,7 +11,7 @@ namespace black_cat
 	{
 		class bc_app_event_device_reset : public core::bc_app_event
 		{
-			BC_EVENT(app_device_reset)
+			BC_EVENT(dvc_rst)
 
 		public:
 			bc_app_event_device_reset(bc_device& p_device,
@@ -37,9 +37,6 @@ namespace black_cat
 			bc_device_parameters& m_old_parameters;
 			bc_device_parameters& m_new_parameters;
 			bool m_before_reset;
-		protected:
-
-		private:
 		};
 	}
 }

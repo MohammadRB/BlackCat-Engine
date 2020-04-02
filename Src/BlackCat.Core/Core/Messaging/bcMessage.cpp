@@ -27,7 +27,7 @@ namespace black_cat
 
 		bc_message_hash bc_imessage::get_hash(const bcCHAR* p_name) noexcept
 		{
-			const bc_message_hash l_hash = BC_RUN_TIME_STRING_HASH(p_name, std::strlen(p_name));
+			const bc_message_hash l_hash = BC_RUN_TIME_STRING_HASH(p_name);
 
 			bcAssert(l_hash != 0);
 

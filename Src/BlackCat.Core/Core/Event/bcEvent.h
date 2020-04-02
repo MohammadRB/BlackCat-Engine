@@ -97,7 +97,8 @@ namespace black_cat
 		template< class TEvent >
 		bool bc_ievent::event_is(const bc_ievent& p_event)
 		{
-			return get_hash(bc_event_traits<TEvent>::event_name()) == p_event.get_event_hash();
+			constexpr auto l_hash = bc_event_traits<TEvent>::event_hash();
+			return l_hash == p_event.get_event_hash();
 		}
 
 		template< class TEvent >
@@ -114,12 +115,7 @@ namespace black_cat
 		template< class TEvent >
 		const TEvent* bc_ievent::event_as(const bc_ievent& p_event)
 		{
-			if (event_is<TEvent>(p_event))
-			{
-				return static_cast<const TEvent*>(&p_event);
-			}
-
-			return nullptr;
+			return event_as<TEvent>(const_cast<bc_ievent&>(p_event));
 		}
 	}
 }

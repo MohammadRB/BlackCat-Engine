@@ -15,7 +15,7 @@ namespace black_cat
 {
 	class BC_DLL bc_back_buffer_write_pass : public game::bc_irender_pass
 	{
-		BC_RENDER_PASS(back_buffer_write)
+		BC_RENDER_PASS(bb_wrt)
 
 	public:
 		explicit bc_back_buffer_write_pass(constant::bc_render_pass_variable_t p_input_texture);

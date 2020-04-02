@@ -14,7 +14,7 @@ namespace black_cat
 	{
 		_bc_ui_command_entry::_bc_ui_command_entry(core::bc_unique_ptr<bc_iui_command> p_command)
 			: m_command(std::move(p_command)),
-			m_task_link(core::bc_delegate< core::bc_any() >(this, &_bc_ui_command_entry::_execute_task)),
+			m_task_link(core::bc_delegate< core::bc_any() >(*this, &_bc_ui_command_entry::_execute_task)),
 			m_update_context(nullptr),
 			m_command_result(false)
 		{

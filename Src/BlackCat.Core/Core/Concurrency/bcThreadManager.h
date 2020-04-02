@@ -98,7 +98,7 @@ namespace black_cat
 
 		class BC_CORE_DLL bc_thread_manager : public bc_iservice
 		{
-			BC_SERVICE(thread_manager)
+			BC_SERVICE(trd_mng)
 
 		private:
 			using task_type = bc_delegate<void(core_platform::bc_thread::id)>;

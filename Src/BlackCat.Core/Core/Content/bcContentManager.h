@@ -83,7 +83,7 @@ namespace black_cat
 		 */
 		class bc_content_manager : public bc_iservice, protected bc_object_allocator
 		{
-			BC_SERVICE(content_manager)
+			BC_SERVICE(cnt_mng)
 
 		private:
 			using string_hash = std::hash< const bcCHAR* >;
@@ -159,8 +159,6 @@ namespace black_cat
 
 			void destroy_content(bc_icontent* p_content);
 
-		protected:
-
 		private:
 			template< class TContent >
 			bc_icontent_loader* _get_loader();
@@ -215,8 +213,8 @@ namespace black_cat
 		template< class TContent, class TLoader >
 		void bc_content_manager::register_loader(bc_cloader_ptr< TLoader >&& p_loader)
 		{
-			static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherite from bc_icontent");
-			static_assert(std::is_base_of< bc_icontent_loader, TLoader >::value, "Content loader must inherite from bc_icontent_loader");
+			static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
+			static_assert(std::is_base_of< bc_icontent_loader, TLoader >::value, "Content loader must inherit from bc_icontent_loader");
 
 			bc_service_manager::get().register_service< _content_wrapper< TContent > >
 			(
@@ -233,15 +231,15 @@ namespace black_cat
 		template< class TContent >
 		bc_content_ptr< TContent > bc_content_manager::load(bc_alloc_type p_alloc_type, const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter)
 		{
-			static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherite from bc_icontent");
+			static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
 
 			// Make hash, combination of both file path and content name because some contents like shaders load from same file
-			bc_estring_frame l_offline_file_path = _get_offline_file_path<TContent>(p_file);
+			const bc_estring_frame l_offline_file_path = _get_offline_file_path<TContent>(p_file);
 			auto l_hash = std::hash< bc_estring_frame >()(l_offline_file_path);
 
 			{
 				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > m_guard(m_contents_mutex);
-				auto l_content_ite = m_contents.find(l_hash);
+				const auto l_content_ite = m_contents.find(l_hash);
 
 				if (l_content_ite != m_contents.end()) // Content has already loaded
 				{
@@ -282,7 +280,7 @@ namespace black_cat
 		template< class TContent >
 		void bc_content_manager::save(TContent& p_content)
 		{
-			static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherite from bc_icontent");
+			static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
 
 			const bcECHAR* l_file_path;
 
@@ -303,8 +301,8 @@ namespace black_cat
 			bc_content_saving_context l_context;
 			l_context.m_file_path = l_file_path;
 			l_context.m_content = &p_content;
-			
-			bc_estring_frame l_file_to_open = l_loader->support_offline_processing() ? _get_offline_file_path<TContent>(l_file_path) : l_file_path;
+
+			const bc_estring_frame l_file_to_open = l_loader->support_offline_processing() ? _get_offline_file_path<TContent>(l_file_path) : l_file_path;
 
 			{
 				_bc_content_loader_guard< TContent > l_guard(*l_loader, l_context);
@@ -314,8 +312,8 @@ namespace black_cat
 					l_context.m_file.reset(bc_stream(std::move(l_file_stream)));
 					l_loader->content_file_open_failed(l_context);
 
-					auto l_file_name = bc_to_exclusive_string(l_file_to_open.c_str());
-					auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
+					const auto l_file_name = bc_to_exclusive_string(l_file_to_open.c_str());
+					const auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
 
 					throw bc_io_exception(l_error_msg.c_str());
 				}

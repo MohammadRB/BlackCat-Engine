@@ -15,7 +15,6 @@
 #include "Game/System/Script/bcScriptSystem.h"
 #include "Game/System/Script/bcGameConsole.h"
 #include "Game/Object/Scene/bcScene.h"
-#include "Game/Object/Scene/SceneGraph/bcSceneGraphNode.h"
 
 namespace black_cat
 {
@@ -33,7 +32,7 @@ namespace black_cat
 
 		class BC_GAME_DLL bc_game_system : public core::bc_iservice, public core::bc_initializable< bc_game_system_parameter >
 		{
-			BC_SERVICE(game_system)
+			BC_SERVICE(gme_sys)
 
 		public:
 			bc_game_system();
@@ -115,19 +114,26 @@ namespace black_cat
 			}
 
 			void set_scene(bc_scene_ptr p_scene);
-
-			void render(const core_platform::bc_clock::update_param& p_clock_update_param);
-
-		protected:
-			void update(const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			
+			/**
+			 * \brief Start game core update logic
+			 * \param p_clock_update_param 
+			 */
+			void update_game(const core_platform::bc_clock::update_param& p_clock_update_param);
+			
+			/**
+			 * \brief Start game core render logic
+			 * \param p_clock_update_param 
+			 */
+			void render_game(const core_platform::bc_clock::update_param& p_clock_update_param);
 
 		private:
 			void _initialize(bc_game_system_parameter) override;
 
 			void _destroy() override;
 
-			bc_input_system m_input_system;
 			bc_file_system m_file_system;
+			bc_input_system m_input_system;
 			bc_physics_system m_physics_system;
 			bc_script_system m_script_system;
 			bc_render_system m_render_system;

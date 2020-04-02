@@ -67,7 +67,7 @@ namespace black_cat
 
 		class BC_CORE_DLL bc_event_manager : public bc_iservice
 		{
-			BC_SERVICE(event_manager)
+			BC_SERVICE(evt_mng)
 
 		public:
 			using event_handler_type = bc_event_handler< bool(bc_ievent&) >;
@@ -111,15 +111,12 @@ namespace black_cat
 			template< class TEvent >
 			void queue_event(TEvent&& p_event, core_platform::bc_clock::small_delta_time p_millisecond);
 
-		protected:
-			void update(const core_platform::bc_clock::update_param& p_clock_update_param) override;
-
+			bcUINT32 process_event_queue(const core_platform::bc_clock::update_param& p_clock_update_param);
+			
 		private:
 			bc_event_listener_handle _register_event_listener(const bcCHAR* p_event_name, delegate_type&& p_listener);
 
 			void _queue_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::small_delta_time p_millisecond);
-
-			bcUINT32 _process_event_queue(core_platform::bc_clock::big_clock p_current_time);
 
 			core_platform::bc_shared_mutex m_handlers_mutex;
 			handler_map_t m_handlers;

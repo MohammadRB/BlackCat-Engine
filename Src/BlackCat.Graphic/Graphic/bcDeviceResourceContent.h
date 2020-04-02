@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/Container/bcString.h"
 #include "Core/Content/bcContent.h"
 #include "Graphic/bcDeviceRef.h"
 
@@ -12,9 +11,10 @@ namespace black_cat
 	{
 		/**
 		 * \brief Wrap device resource pointers and make required interface for content manager.
-		 * \tparam TResource 
+		 * \tparam TResource
+		 * \tparam TContentName
 		 */
-		template< class TResource >
+		template< class TResource, const bcCHAR TContentName[] >
 		class bc_device_resource_content : public core::bc_icontent
 		{
 		public:
@@ -34,11 +34,15 @@ namespace black_cat
 				return m_resource.get();
 			}
 
-			static constexpr bcCHAR* content_name();
+			static constexpr const bcCHAR* content_name()
+			{
+				return TContentName;
+			}
 
-			static constexpr bcUINT32 content_hash();
-
-		protected:
+			static constexpr bcUINT32 content_hash()
+			{
+				return BC_COMPILE_TIME_STRING_HASH(content_name());
+			}
 
 		private:
 			bc_device_ref<TResource> m_resource;

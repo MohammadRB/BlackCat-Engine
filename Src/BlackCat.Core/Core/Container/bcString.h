@@ -2142,10 +2142,16 @@ namespace black_cat
 			0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D
 		};
 
+		constexpr bcSIZE bc_compile_time_str_len(const bcCHAR* p_str)
+		{
+			return *p_str ? 1 + bc_compile_time_str_len(p_str + 1) : 0;
+		}
+		
 		// http://stackoverflow.com/questions/2111667/compile-time-string-hashing
 		template< bcSIZE TIdx >
 		constexpr bcUINT32 _str_crc32(const bcCHAR* p_str)
 		{
+			static_assert(TIdx + 1 <= 11, "Length of compile time string must be equal-lower than 11");
 			return (_str_crc32< TIdx - 1 >(p_str) >> 8) ^ _crc_table[(_str_crc32< TIdx - 1 >(p_str) ^ p_str[TIdx]) & 0x000000FF];
 		}
 
@@ -2166,9 +2172,8 @@ namespace black_cat
 			return (l_prev_crc >> 8) ^ _crc_table[(l_prev_crc ^ p_str[p_idx]) & 0x000000FF];
 		}
 
-		// This doesn't take into account the nul char
-#define BC_COMPILE_TIME_STRING_HASH(str) (black_cat::core::_str_crc32<sizeof(str) - 2>(str) ^ 0xFFFFFFFF)
-#define BC_RUN_TIME_STRING_HASH(str, length) (black_cat::core::__str_crc32(str, (length) - 1) ^ 0xFFFFFFFF)
+#define BC_COMPILE_TIME_STRING_HASH(str) (black_cat::core::_str_crc32<black_cat::core::bc_compile_time_str_len(str) - 1>(str) ^ 0xFFFFFFFF)
+#define BC_RUN_TIME_STRING_HASH(str) (black_cat::core::__str_crc32(str, std::strlen(str) - 1) ^ 0xFFFFFFFF)
 	}
 }
 

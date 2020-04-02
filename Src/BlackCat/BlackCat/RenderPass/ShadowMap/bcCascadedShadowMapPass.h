@@ -13,7 +13,7 @@ namespace black_cat
 {
 	class BC_DLL bc_cascaded_shadow_map_pass final : public bc_base_cascaded_shadow_map_pass
 	{
-		BC_RENDER_PASS(cascaded_shadow_map)
+		BC_RENDER_PASS(csm)
 
 	public:
 		bc_cascaded_shadow_map_pass(const bc_base_cascaded_shadow_map_pass& p_other_instance);

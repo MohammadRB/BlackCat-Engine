@@ -1,6 +1,10 @@
 // [04/29/2016 MRB]
 
 #include "Game/GamePCH.h"
+
+#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Query/bcQueryManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/System/bcGameSystem.h"
 
 namespace black_cat
@@ -8,8 +12,8 @@ namespace black_cat
 	namespace game
 	{
 		bc_game_system::bc_game_system()
-			: m_input_system(),
-			m_file_system(*core::bc_get_service<core::bc_content_manager>(), *core::bc_get_service<core::bc_content_stream_manager>()),
+			: m_file_system(*core::bc_get_service<core::bc_content_manager>(), *core::bc_get_service<core::bc_content_stream_manager>()),
+			m_input_system(),
 			m_physics_system(),
 			m_script_system(),
 			m_render_system(),
@@ -31,25 +35,35 @@ namespace black_cat
 			m_scene = std::move(p_scene);
 		}
 
-		void bc_game_system::render(const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_game_system::update_game(const core_platform::bc_clock::update_param& p_clock_update_param)
+		{
+			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
+			auto* l_actor_component_manager = core::bc_get_service<bc_actor_component_manager>();
+			auto* l_query_manager = core::bc_get_service<core::bc_query_manager>();
+
+			l_event_manager->process_event_queue(p_clock_update_param);
+
+			m_input_system.update(p_clock_update_param);
+			m_physics_system.update(p_clock_update_param);
+			if (m_scene)
+			{
+				m_scene->update(m_physics_system, p_clock_update_param);
+			}
+
+			l_actor_component_manager->update_actors(p_clock_update_param);
+			l_query_manager->process_query_queue(p_clock_update_param);
+
+			m_script_system.update(p_clock_update_param);
+			m_console->update(p_clock_update_param);
+			m_render_system.update(bc_render_system::update_param(p_clock_update_param, m_input_system.get_camera()));
+		}
+		
+		void bc_game_system::render_game(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 			if(m_scene)
 			{
 				m_render_system.render(bc_render_system::render_param(p_clock_update_param, m_input_system.get_camera(), *m_scene));
 			}
-		}
-
-		void bc_game_system::update(const core_platform::bc_clock::update_param& p_clock_update_param)
-		{
-			m_input_system.update(p_clock_update_param);
-			m_physics_system.update(p_clock_update_param);
-			if(m_scene)
-			{
-				m_scene->update(m_physics_system, p_clock_update_param);
-			}
-			m_script_system.update(p_clock_update_param);
-			m_console->update(p_clock_update_param);
-			m_render_system.update(bc_render_system::update_param(p_clock_update_param, m_input_system.get_camera()));
 		}
 
 		void bc_game_system::_initialize(bc_game_system_parameter p_parameter)

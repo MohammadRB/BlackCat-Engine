@@ -69,7 +69,7 @@ namespace black_cat
 			m_device_reset_listener_handle = core::bc_get_service< core::bc_event_manager >()
 				->register_event_listener< graphic::bc_app_event_device_reset >
 				(
-					core::bc_event_manager::delegate_type(this, &bc_input_system::_event_handler)
+					core::bc_event_manager::delegate_type(*this, &bc_input_system::_event_handler)
 				);
 		}
 

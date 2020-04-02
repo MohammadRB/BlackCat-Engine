@@ -135,9 +135,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\bcDeviceReference.cpp">
       <Filter>GraphicImp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\bcDeviceResourceContent.cpp">
-      <Filter>GraphicImp</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\bcUtility.cpp">
       <Filter>GraphicImp</Filter>
     </ClCompile>

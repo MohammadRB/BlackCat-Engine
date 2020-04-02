@@ -64,7 +64,7 @@ namespace black_cat
 			);
 			m_key_event_handle = core::bc_get_service< core::bc_event_manager >()->register_event_listener< platform::bc_app_event_key >
 			(
-				core::bc_event_manager::delegate_type(this, &bc_game_console::_on_key)
+				core::bc_event_manager::delegate_type(*this, &bc_game_console::_on_key)
 			);
 		}
 

@@ -143,7 +143,7 @@ namespace black_cat
 			m_console.reset(m_application.create_console_window(bcL("BlackCat Console")));
 			m_input_spin_task = core::bc_concurrency::start_task
 			(
-				core::bc_delegate< void() >(this, &bc_default_game_console::_input_spin),
+				core::bc_delegate< void() >(*this, &bc_default_game_console::_input_spin),
 				core::bc_enum::or({ core::bc_task_creation_option::policy_none, core::bc_task_creation_option::lifetime_exceed_frame })
 			);
 		}

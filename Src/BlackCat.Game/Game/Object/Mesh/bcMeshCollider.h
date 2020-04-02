@@ -14,7 +14,7 @@ namespace black_cat
 	{
 		class BC_GAME_DLL bc_mesh_collider : public core::bc_icontent
 		{
-			BC_CONTENT(mesh_physics)
+			BC_CONTENT(msh_cld)
 
 		private:
 			using colliders_container_t = core::bc_unordered_map<core::bc_string, bc_mesh_part_collider>;

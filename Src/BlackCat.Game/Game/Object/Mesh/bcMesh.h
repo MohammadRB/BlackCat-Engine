@@ -154,8 +154,6 @@ namespace black_cat
 
 			void _apply_auto_scale(bcFLOAT p_scale);
 
-		protected:
-
 		private:
 			void _calculate_absolute_transformations(const core::bc_matrix4f& p_parent_transformation,
 				const bc_mesh_node* p_begin,

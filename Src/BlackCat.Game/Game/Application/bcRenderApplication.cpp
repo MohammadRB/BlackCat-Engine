@@ -190,35 +190,35 @@ namespace black_cat
 			auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
 			m_event_handle_window_resizing = l_event_manager->register_event_listener< platform::bc_app_event_window_resizing >
 			(
-				core::bc_event_manager::delegate_type(this, &bc_render_application::_app_event)
+				core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
 			);
 			m_event_handle_window_close = l_event_manager->register_event_listener< platform::bc_app_event_window_close >
 			(
-				core::bc_event_manager::delegate_type(this, &bc_render_application::_app_event)
+				core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
 			);
 			m_event_handle_app_active = l_event_manager->register_event_listener< platform::bc_app_event_active >
 			(
-				core::bc_event_manager::delegate_type(this, &bc_render_application::_app_event)
+				core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
 			);
 			m_event_handle_app_exit = l_event_manager->register_event_listener< platform::bc_app_event_exit >
 			(
-				core::bc_event_manager::delegate_type(this, &bc_render_application::_app_event)
+				core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
 			);
 			m_event_handle_error = l_event_manager->register_event_listener< core::bc_app_event_error >
 			(
-				core::bc_event_manager::delegate_type(this, &bc_render_application::_app_event)
+				core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
 			);
 			m_event_handle_debug = l_event_manager->register_event_listener< core::bc_app_event_debug >
 			(
-				core::bc_event_manager::delegate_type(this, &bc_render_application::_app_event)
+				core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
 			);
 			m_event_handle_key = l_event_manager->register_event_listener< platform::bc_app_event_key >
 			(
-				core::bc_event_manager::delegate_type(this, &bc_render_application::_app_event)
+				core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
 			);
 			m_event_handle_pointing = l_event_manager->register_event_listener<platform::bc_app_event_pointing>
 			(
-				core::bc_event_manager::delegate_type(this, &bc_render_application::_app_event)
+				core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
 			);
 
 			app_initialize(p_parameters);

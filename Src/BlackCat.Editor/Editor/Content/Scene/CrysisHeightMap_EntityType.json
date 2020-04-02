@@ -4,7 +4,7 @@
       "name": "sun_light",
       "components": [
         {
-          "name": "cmp_light",
+          "name": "light",
           "parameters": {
             "type": "direct",
             "direction_x": 0.4,
@@ -26,7 +26,7 @@
       "name": "point_light_1",
       "components": [
         {
-          "name": "cmp_light",
+          "name": "light",
           "parameters": {
             "type": "point",
             "position_x": 0.0,
@@ -45,7 +45,7 @@
       "name": "spot_light_1",
       "components": [
         {
-          "name": "cmp_light",
+          "name": "light",
           "parameters": {
             "type": "spot",
             "position_x": 0.0,
@@ -68,13 +68,13 @@
       "name": "crysis_heightmap",
       "components": [
         {
-          "name": "cmp_height_map",
+          "name": "height_map",
           "parameters": {
             "heightmap": "crysis_heightmap"
           }
         },
         {
-          "name": "cmp_rigid_static",
+          "name": "rigid_static",
           "parameters": {}
         }
       ]
@@ -83,13 +83,13 @@
       "name": "box",
       "components": [
         {
-          "name": "cmp_simple_mesh",
+          "name": "simple_mesh",
           "parameters": {
             "mesh": "box"
           }
         },
         {
-          "name": "cmp_rigid_dynamic",
+          "name": "rigid_dynamic",
           "parameters": {}
         }
       ]
@@ -98,13 +98,13 @@
       "name": "sphere",
       "components": [
         {
-          "name": "cmp_simple_mesh",
+          "name": "simple_mesh",
           "parameters": {
             "mesh": "sphere"
           }
         },
         {
-          "name": "cmp_rigid_dynamic",
+          "name": "rigid_dynamic",
           "parameters": {}
         }
       ]
@@ -113,13 +113,13 @@
       "name": "convex",
       "components": [
         {
-          "name": "cmp_simple_mesh",
+          "name": "simple_mesh",
           "parameters": {
             "mesh": "convex"
           }
         },
         {
-          "name": "cmp_rigid_dynamic",
+          "name": "rigid_dynamic",
           "parameters": {}
         }
       ]
@@ -128,13 +128,13 @@
       "name": "train",
       "components": [
         {
-          "name": "cmp_simple_mesh",
+          "name": "simple_mesh",
           "parameters": {
             "mesh": "train"
           }
         },
         {
-          "name": "cmp_rigid_static",
+          "name": "rigid_static",
           "parameters": {}
         }
       ]
@@ -143,13 +143,13 @@
       "name": "Palm_Tree_Large_d",
       "components": [
         {
-          "name": "cmp_vegetable_mesh",
+          "name": "vegetable_mesh",
           "parameters": {
             "mesh": "Palm_Tree_Large_d"
           }
         },
         {
-          "name": "cmp_rigid_static",
+          "name": "rigid_static",
           "parameters": {}
         }
       ]
@@ -158,13 +158,13 @@
       "name": "Green_Fern_Bush_a",
       "components": [
         {
-          "name": "cmp_vegetable_mesh",
+          "name": "vegetable_mesh",
           "parameters": {
             "mesh": "Green_Fern_Bush_a"
           }
         },
         {
-          "name": "cmp_rigid_static",
+          "name": "rigid_static",
           "parameters": {}
         }
       ]
@@ -173,13 +173,13 @@
       "name": "thin_leave_tree_big_bright_green",
       "components": [
         {
-          "name": "cmp_vegetable_mesh",
+          "name": "vegetable_mesh",
           "parameters": {
             "mesh": "thin_leave_tree_big_bright_green"
           }
         },
         {
-          "name": "cmp_rigid_static",
+          "name": "rigid_static",
           "parameters": {}
         }
       ]
