@@ -41,9 +41,10 @@ namespace black_cat
 			auto* l_actor_component_manager = core::bc_get_service<bc_actor_component_manager>();
 			auto* l_query_manager = core::bc_get_service<core::bc_query_manager>();
 
+			m_input_system.update(p_clock_update_param);
+			
 			l_event_manager->process_event_queue(p_clock_update_param);
 
-			m_input_system.update(p_clock_update_param);
 			m_physics_system.update(p_clock_update_param);
 			if (m_scene)
 			{

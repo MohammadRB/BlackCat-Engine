@@ -170,7 +170,10 @@ namespace black_cat
 		{
 		};
 
-		// Thread safe class
+		/**
+		 * \brief ThreadSafe 
+		 * \tparam TRenderApi 
+		 */
 		template< bc_render_api TRenderApi >
 		class bc_platform_device 
 			: public core::bc_initializable<bcUINT, bcUINT, bc_format, bc_device_output>,

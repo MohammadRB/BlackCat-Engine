@@ -130,10 +130,10 @@ namespace black_cat
 			template< typename TPass >
 			void add_render_pass(bcUINT p_location, TPass&& p_pass);
 
-			bool remove_render_pass(bcUINT p_location);
-
 			template< typename TPass >
 			bool remove_render_pass();
+			
+			bool remove_render_pass(bcUINT p_location);
 
 			/**
 			 * \brief Add a render instance to render queue
@@ -158,10 +158,14 @@ namespace black_cat
 
 			void render(const render_param& p_render_param);
 
+			/**
+			 * \brief ThreadSafe
+			 * \param p_task 
+			 */
 			void add_render_task(bc_irender_task& p_task);
 
 			/**
-			 * \brief Thread safe function
+			 * \brief ThreadSafe function
 			 * \param p_vertex_shader_name 
 			 * \param p_hull_shader_name 
 			 * \param p_domain_shader_name 
@@ -192,7 +196,7 @@ namespace black_cat
 				bc_multi_sample_type p_ms_config);
 
 			/**
-			 * \brief Thread safe function
+			 * \brief ThreadSafe function
 			 * \param p_compute_shader_name 
 			 * \return 
 			 */
@@ -200,7 +204,7 @@ namespace black_cat
 
 			/**
 			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
-			 * Thread safe function
+			 * ThreadSafe function
 			 * \param p_pipeline_state 
 			 * \param p_viewport 
 			 * \param p_shader_targets 
@@ -220,7 +224,7 @@ namespace black_cat
 
 			/**
 			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
-			 * Thread safe function
+			 * ThreadSafe function
 			 * \param p_primitive 
 			 * \param p_vertex_buffer
 			 * \param p_vertex_buffer_stride 
@@ -246,7 +250,7 @@ namespace black_cat
 
 			/**
 			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
-			 * Thread safe function
+			 * ThreadSafe function
 			 * \param p_compute_state 
 			 * \param p_dispatch_x 
 			 * \param p_dispatch_y 
@@ -267,19 +271,19 @@ namespace black_cat
 				bc_compute_state_constant_buffer_array&& p_cbuffers);
 
 			/**
-			 * \brief Thread safe function
+			 * \brief ThreadSafe function
 			 * \param p_render_pass_state 
 			 */
 			void destroy_render_pass_state(bc_render_pass_state* p_render_pass_state);
 
 			/**
-			 * \brief Thread safe function
+			 * \brief ThreadSafe function
 			 * \param p_render_state 
 			 */
 			void destroy_render_state(bc_render_state* p_render_state);
 
 			/**
-			 * \brief Thread safe function
+			 * \brief ThreadSafe function
 			 * \param p_compute_state 
 			 */
 			void destroy_compute_state(bc_compute_state* p_compute_state);

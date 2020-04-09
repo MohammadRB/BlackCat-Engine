@@ -18,7 +18,7 @@ namespace black_cat
 		public:
 			virtual ~bc_iquery() = 0;
 
-			virtual void execute(const bc_query_context& p_context) = 0;
+			virtual void execute(const bc_query_context& p_context) noexcept = 0;
 
 		protected:
 			bc_iquery(const bcCHAR* p_name);
@@ -37,9 +37,9 @@ namespace black_cat
 		public:
 			virtual ~bc_query() = 0;
 
-			void execute(const bc_query_context& p_context) override final;
-			
-			virtual void execute(const TContext& p_context) = 0;
+			void execute(const bc_query_context& p_context) noexcept override final;
+
+			void execute(const TContext& p_context) noexcept override = 0;
 
 		protected:
 			bc_query(const bcCHAR* p_name);
@@ -64,7 +64,7 @@ namespace black_cat
 		bc_query<TContext>::~bc_query() = default;
 
 		template< class TContext >
-		void bc_query<TContext>::execute(const bc_query_context& p_context)
+		void bc_query<TContext>::execute(const bc_query_context& p_context) noexcept
 		{
 			execute(static_cast<const TContext&>(p_context));
 		}

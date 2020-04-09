@@ -48,6 +48,7 @@ namespace black_cat
 				for (auto& l_provider : m_providers)
 				{
 					l_provider.second.m_provided_context = l_provider.second.m_provider_delegate();
+					l_provider.second.m_provided_context->m_clock = p_clock_update_param;
 					
 					{
 						core_platform::bc_lock_guard<core_platform::bc_mutex> l_queries_guard(l_provider.second.m_queries_lock);
@@ -66,7 +67,15 @@ namespace black_cat
 
 						while(l_inserted_query != std::end(m_executed_queries))
 						{
+							auto l_query_state = l_inserted_query->m_state.load(core_platform::bc_memory_order::relaxed);
+							if(l_query_state == _bc_query_shared_state::state::deleted)
+							{
+								l_inserted_query = m_executed_queries.erase(l_inserted_query);
+								continue;
+							}
+							
 							l_inserted_query->m_iterator = l_inserted_query;
+							l_inserted_query->m_state.store(_bc_query_shared_state::state::activated, core_platform::bc_memory_order::relaxed);
 							++l_inserted_query;
 						}
 					}
@@ -76,24 +85,34 @@ namespace black_cat
 				(
 					l_first_inserted_query,
 					std::end(m_executed_queries),
-					[=]() {return false; },
+					[=]() { return false; },
 					[=](bool, _query_entry& p_query)
 					{
 						p_query.m_query->execute(*p_query.m_provider.m_provided_context);
+						// use release memory order so memory changes become available for calling thread
+						p_query.m_state.store(_bc_query_shared_state::state::executed, core_platform::bc_memory_order::release);
 					},
 					[=](bool){}
 				);
 			}
 		}
 
-		void bc_query_manager::_mark_shared_state(const _bc_query_shared_state& p_shared_state)
+		void bc_query_manager::_mark_shared_state(_bc_query_shared_state& p_shared_state)
 		{
-			const auto& l_query_entry = static_cast<const _query_entry&>(p_shared_state);
+			auto& l_query_entry = static_cast<_query_entry&>(p_shared_state);
 
 			{
 				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_executed_queries_lock);
 
-				m_executed_queries.erase(l_query_entry.m_iterator);
+				const auto l_query_state = l_query_entry.m_state.load(core_platform::bc_memory_order::relaxed);
+				if(l_query_state != _bc_query_shared_state::state::queued)
+				{
+					m_executed_queries.erase(l_query_entry.m_iterator);
+				}
+				else
+				{
+					l_query_entry.m_state.store(_bc_query_shared_state::state::deleted, core_platform::bc_memory_order::relaxed);
+				}
 			}
 		}
 

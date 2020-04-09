@@ -56,7 +56,7 @@ namespace black_cat
 
 			void process_query_queue(const core_platform::bc_clock::update_param& p_clock_update_param);
 
-			void _mark_shared_state(const _bc_query_shared_state& p_shared_state); // TODO handle not executed query deletion
+			void _mark_shared_state(_bc_query_shared_state& p_shared_state);
 
 		private:
 			bc_query_provider_handle _register_query_provider(bc_query_context_hash p_context_hash, provider_delegate_t&& p_delegate);

@@ -71,11 +71,11 @@ namespace black_cat
 
 		core::bc_register_service(core::bc_make_service<core::bc_logger>());
 #ifdef BC_DEBUG
-			core::bc_get_service<core::bc_logger>()->register_listener
-			(
-				core::bc_enum:: or ({ core::bc_log_type::debug, core::bc_log_type::error }),
-				core::bc_make_unique< platform::bc_ide_logger >(core::bc_alloc_type::program)
-			);
+		core::bc_get_service<core::bc_logger>()->register_listener
+		(
+			core::bc_enum:: or ({ core::bc_log_type::debug, core::bc_log_type::error }),
+			core::bc_make_unique< platform::bc_ide_logger >(core::bc_alloc_type::program)
+		);
 #endif
 		core::bc_register_service(core::bc_make_service< core::bc_thread_manager >
 		(

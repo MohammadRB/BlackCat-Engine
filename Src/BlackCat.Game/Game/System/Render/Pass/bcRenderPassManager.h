@@ -34,11 +34,11 @@ namespace black_cat
 		public:
 			bc_render_pass_manager();
 
+			bc_render_pass_manager(bc_render_pass_manager&&) noexcept = default;
+			
 			~bc_render_pass_manager();
 
-			bc_render_pass_manager(bc_render_pass_manager&&) = default;
-
-			bc_render_pass_manager& operator=(bc_render_pass_manager&&) = default;
+			bc_render_pass_manager& operator=(bc_render_pass_manager&&) noexcept = default;
 
 			template< typename T >
 			void add_pass(bcUINT32 p_location, T&& p_pass);
@@ -64,8 +64,6 @@ namespace black_cat
 			void after_reset(const bc_render_pass_reset_param& p_param);
 
 			void pass_destroy(bc_render_system& p_render_system);
-
-		protected:
 
 		private:
 			void _add_pass(_bc_render_pass_entry&& p_entry);
