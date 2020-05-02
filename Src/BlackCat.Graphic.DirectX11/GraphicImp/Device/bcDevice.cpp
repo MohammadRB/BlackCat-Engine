@@ -4,7 +4,6 @@
 #include "CorePlatform/CorePlatformPCH.h"
 #include "Core/Container/bcAllocator.h"
 #include "Core/Utility/bcServiceManager.h"
-#include "Core/Event/bcEventManager.h"
 #include "CorePlatformImp/bcUtility.h"
 #include "Platform/bcEvent.h"
 #include "GraphicImp/bcExport.h"
@@ -1224,14 +1223,6 @@ namespace black_cat
 				dx_call(m_pack.m_swap_chain->ResizeTarget(&l_best_mode_desc));
 			}
 
-			bc_device_parameters l_new_parameters(p_width, p_height, p_format, bc_texture_ms_config(1, 0));
-			bc_device_parameters l_old_parameters(l_back_buffer.get_width(), l_back_buffer.get_height(), l_back_buffer.get_format(), bc_texture_ms_config(1, 0));
-
-			auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
-			bc_app_event_device_reset l_reset_event(*this, l_old_parameters, l_new_parameters, true);
-
-			l_event_manager->process_event(l_reset_event);
-
 			if (l_back_buffer.get_width() != p_width ||
 				l_back_buffer.get_height() != p_height)
 			{
@@ -1244,9 +1235,6 @@ namespace black_cat
 					DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH
 				));
 			}
-
-			l_reset_event.m_before_reset = false;
-			l_event_manager->process_event(l_reset_event);
 		}
 
 		template<>

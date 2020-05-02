@@ -59,17 +59,18 @@ namespace black_cat
 
 	void bc_gbuffer_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		p_param.m_render_thread.start(m_command_list.get());
-		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
 	}
 
 	void bc_gbuffer_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		auto* l_actors = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
+		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
+		auto* l_scene_buffer = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
 
-		l_actors->render_actors<game::bc_simple_mesh_component>(p_param.m_render_system);
-		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
-		p_param.m_render_system.clear_render_instances();
+		p_param.m_render_thread.start(m_command_list.get());
+		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
+		
+		l_scene_buffer->render_actors<game::bc_simple_mesh_component>(l_render_state_buffer);
+		p_param.m_frame_renderer.render_buffer(l_render_state_buffer, p_param.m_render_thread, p_param.m_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.finish();

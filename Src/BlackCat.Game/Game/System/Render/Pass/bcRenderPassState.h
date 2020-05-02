@@ -33,8 +33,6 @@ namespace black_cat
 
 			void operator ()(bc_render_pass_state* p_render_state) const;
 
-		protected:
-
 		private:
 			bc_render_system* m_render_system;
 		};
@@ -92,8 +90,6 @@ namespace black_cat
 			{
 				return m_shader_cbuffers;
 			}
-
-		protected:
 
 		private:
 			bc_render_pass_state(graphic::bc_device_pipeline_state p_pipeline_state,

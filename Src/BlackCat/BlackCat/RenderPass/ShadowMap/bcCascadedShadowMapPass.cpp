@@ -3,6 +3,8 @@
 #include "BlackCat/BlackCatPCH.h"
 
 #include "Game/System/Input/bcCameraFrustum.h"
+#include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/State/bcStateConfigs.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapPass.h"
@@ -43,23 +45,23 @@ namespace black_cat
 
 	void bc_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_param& p_param)
 	{
-		const auto& l_light_cascade_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index];
-		p_param.m_render_thread.bind_render_pass_state(l_light_cascade_render_pass_state);
+		const auto& l_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index];
+		p_param.m_render_thread.bind_render_pass_state(l_render_pass_state);
 
 		if(my_index() == 0)
 		{
 			p_param.m_render_thread.clear_buffers(core::bc_vector4f(1));
 		}
 
-		const game::bc_camera_frustum l_camera_frustum(p_param.m_cascade_camera);
-		auto l_scene_buffer = p_param.m_scene.get_actors<game::bc_simple_mesh_component>(l_camera_frustum);
+		const auto l_camera_frustum = game::bc_camera_frustum(p_param.m_cascade_camera);
+		auto l_scene_buffer = p_param.m_scene.get_actors< game::bc_simple_mesh_component >(l_camera_frustum);
+		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
 
-		l_scene_buffer.render_actors(p_param.m_render_system);
+		l_scene_buffer.render_actors(l_render_state_buffer);
 
-		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_cascade_camera);
-		p_param.m_render_system.clear_render_instances();
+		p_param.m_frame_renderer.render_buffer(l_render_state_buffer, p_param.m_render_thread, p_param.m_cascade_camera);
 
-		p_param.m_render_thread.unbind_render_pass_state(l_light_cascade_render_pass_state);
+		p_param.m_render_thread.unbind_render_pass_state(l_render_pass_state);
 	}
 
 	void bc_cascaded_shadow_map_pass::destroy_pass(game::bc_render_system& p_render_system)
@@ -76,7 +78,7 @@ namespace black_cat
 
 		for (auto& l_depth_view : p_depth_views)
 		{
-			const auto l_render_state = p_render_system.create_render_pass_state
+			auto l_render_state = p_render_system.create_render_pass_state
 			(
 				m_device_pipeline.get(),
 				graphic::bc_viewport::default_config(p_depth.get_width(), p_depth.get_height()),

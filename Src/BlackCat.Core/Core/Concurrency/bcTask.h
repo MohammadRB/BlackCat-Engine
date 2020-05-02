@@ -19,7 +19,7 @@ namespace black_cat
 		class bc_thread_manager;
 
 		template<typename T>
-		class bc_task : private core_platform::bc_no_copy
+		class bc_task : core_platform::bc_no_copy
 		{
 			using value_type = T;
 			using this_type = bc_task< T >;
@@ -49,14 +49,14 @@ namespace black_cat
 				return m_future.get();
 			}
 
-			void wait() const noexcept(noexcept(std::declval<core_platform::bc_future<value_type>>().wait()))
-			{
-				m_future.wait();
-			}
-
 			bool is_ready() const noexcept(core_platform::bc_future<value_type>::wait_for)
 			{
 				return wait_for(std::chrono::seconds(0)) == core_platform::bc_future_status::ready;
+			}
+			
+			void wait() const noexcept(noexcept(std::declval<core_platform::bc_future<value_type>>().wait()))
+			{
+				m_future.wait();
 			}
 			
 			core_platform::bc_future_status wait_for(const std::chrono::nanoseconds& p_duration) const noexcept(core_platform::bc_future<value_type>::wait_for)
@@ -94,7 +94,7 @@ namespace black_cat
 		};
 
 		template<typename T>
-		class bc_task_link : private core_platform::bc_no_copy
+		class bc_task_link : core_platform::bc_no_copy
 		{
 		private:
 			using value_type = T;

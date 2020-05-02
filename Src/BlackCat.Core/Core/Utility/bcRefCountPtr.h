@@ -44,13 +44,18 @@ namespace black_cat
 				return *this;
 			}
 
+			bcUINT32 get_ref_count() const noexcept
+			{
+				return m_ref_count.load(core_platform::bc_memory_order::relaxed);
+			}
+			
 			void add_ref() noexcept
 			{
 				m_ref_count.fetch_add(1U, core_platform::bc_memory_order::relaxed);
 			}
 
 			/**
-			 * \brief Return true if reference count reach zero
+			 * \brief Return true if reference count reaches zero
 			 * \return 
 			 */
 			bool dec_ref() noexcept
@@ -60,7 +65,7 @@ namespace black_cat
 
 				return l_ref_count == 0;
 			}
-
+			
 		private:
 			core_platform::bc_atomic<bcINT32> m_ref_count;
 		};
@@ -136,8 +141,6 @@ namespace black_cat
 			bool operator!=(std::nullptr_t) const noexcept;
 
 			operator bool() const noexcept;
-
-		protected:
 
 		private:
 			void _construct(element_ptr p_pointer, const TDeleter& p_deleter);
@@ -223,8 +226,6 @@ namespace black_cat
 			bool operator!=(std::nullptr_t) const noexcept;
 
 			operator bool() const noexcept;
-
-		protected:
 
 		private:
 			void _construct(handle_t p_handle, const TDeleter& p_deleter);
@@ -392,7 +393,7 @@ namespace black_cat
 		{
 			if(m_pointer)
 			{
-				return static_cast<bc_ref_count*>(m_pointer)->m_ref_count.load(core_platform::bc_memory_order::relaxed);
+				return static_cast<bc_ref_count*>(m_pointer)->get_ref_count();
 			}
 
 			return 0;
@@ -627,7 +628,7 @@ namespace black_cat
 		{
 			if(m_handle)
 			{
-				return static_cast<bc_ref_count*>(get())->m_ref_count.load(core_platform::bc_memory_order::relaxed);
+				return static_cast<bc_ref_count*>(get())->get_ref_count();
 			}
 
 			return 0;
@@ -666,7 +667,7 @@ namespace black_cat
 		template< class T, class TDeleter >
 		void bc_ref_count_handle< T, TDeleter >::_construct(handle_t p_handle, const TDeleter& p_deleter)
 		{
-			static_assert(std::is_base_of< bc_ref_count, T >::value, "Pointer class must inherite from bc_ref_count");
+			static_assert(std::is_base_of< bc_ref_count, T >::value, "Pointer class must inherit from bc_ref_count");
 
 			m_handle = p_handle;
 			m_deleter = p_deleter;
@@ -682,9 +683,11 @@ namespace black_cat
 		{
 			if (m_handle != nullptr)
 			{
-				if (static_cast< bc_ref_count* >(get())->dec_ref())
+				element_t* l_ptr = get();
+				
+				if (static_cast< bc_ref_count* >(l_ptr)->dec_ref())
 				{
-					m_deleter(get());
+					m_deleter(l_ptr);
 				}
 
 				m_handle = nullptr;

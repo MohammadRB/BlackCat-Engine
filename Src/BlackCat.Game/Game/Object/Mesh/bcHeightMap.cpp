@@ -1,7 +1,6 @@
 // [04/15/2017 MRB]
 
 #include "Game/GamePCH.h"
-#include "Game/bcExport.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
 
 namespace black_cat
@@ -60,6 +59,56 @@ namespace black_cat
 			p_other.m_px_height_map_deserialize_buffer = nullptr;
 
 			return *this;
+		}
+
+		bcUINT16 bc_height_map::get_width() const
+		{
+			return m_width;
+		}
+
+		bcUINT16 bc_height_map::get_height() const
+		{
+			return m_height;
+		}
+
+		bcUINT16 bc_height_map::get_xz_multiplier() const
+		{
+			return m_xz_multiplier;
+		}
+
+		bcFLOAT bc_height_map::get_y_multiplier() const
+		{
+			return m_y_multiplier;
+		}
+
+		bcFLOAT bc_height_map::get_physics_y_scale() const
+		{
+			return m_physics_y_scale;
+		}
+
+		const bc_render_state* bc_height_map::get_render_state() const
+		{
+			return m_render_state.get();
+		}
+
+		bc_render_state_ptr bc_height_map::get_render_state_ptr() const
+		{
+			return m_render_state;
+		}
+
+		graphic::bc_buffer bc_height_map::get_vertex_buffer() const
+		{
+			return m_vertex_buffer.get();
+		}
+
+		graphic::bc_buffer bc_height_map::get_index_buffer() const
+		{
+			return m_index_buffer.get();
+		}
+
+		physics::bc_height_field bc_height_map::get_px_height_field() const
+		{
+			return m_px_height_map.get();
 		}
 	}
 }

@@ -26,7 +26,7 @@ namespace black_cat
 
 		public:
 			_bc_render_state_handle()
-				: m_index(-1)
+				: m_handle(-1)
 			{
 			}
 
@@ -36,7 +36,7 @@ namespace black_cat
 			}
 
 			_bc_render_state_handle(handle_type p_handle)
-				: m_index(p_handle)
+				: m_handle(p_handle)
 			{
 			}
 
@@ -48,13 +48,13 @@ namespace black_cat
 
 			_bc_render_state_handle& operator=(std::nullptr_t)
 			{
-				m_index = -1;
+				m_handle = -1;
 				return *this;
 			}
 
 			bool operator==(std::nullptr_t) const
 			{
-				return m_index == -1;
+				return m_handle == -1;
 			}
 
 			bool operator!=(std::nullptr_t) const
@@ -62,7 +62,7 @@ namespace black_cat
 				return !operator==(nullptr);
 			}
 
-			handle_type m_index;
+			handle_type m_handle;
 		};
 
 		class BC_GAME_DLL _bc_render_state_handle_deleter
@@ -78,8 +78,6 @@ namespace black_cat
 			bc_render_state* operator()(handle_t p_handle) const;
 
 			void operator ()(bc_render_state* p_render_state) const;
-
-		protected:
 
 		private:
 			bc_render_system* m_render_system;
@@ -153,8 +151,6 @@ namespace black_cat
 			{
 				return m_shader_cbuffers;
 			}
-
-		protected:
 
 		private:
 			bc_render_state(graphic::bc_primitive p_primitive,

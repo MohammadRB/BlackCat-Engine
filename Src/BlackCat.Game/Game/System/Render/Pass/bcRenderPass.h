@@ -15,8 +15,8 @@ namespace black_cat
 	namespace game
 	{
 		class bc_render_system;
+		class bc_frame_renderer;
 		class bc_scene;
-		struct bc_render_system_update_param;
 
 		template<typename TPass>
 		struct bc_render_pass_trait
@@ -52,11 +52,13 @@ namespace black_cat
 		public:
 			bc_render_pass_render_param(const core_platform::bc_clock::update_param& p_clock,
 				bc_render_system& p_render_system,
+				bc_frame_renderer& p_frame_renderer,
 				bc_render_thread& p_render_thread,
 				const bc_icamera& p_camera,
 				const bc_scene& p_scene)
 				: m_clock(p_clock),
 				m_render_system(p_render_system),
+				m_frame_renderer(p_frame_renderer),
 				m_render_thread(p_render_thread),
 				m_camera(p_camera),
 				m_scene(p_scene)
@@ -65,6 +67,7 @@ namespace black_cat
 
 			core_platform::bc_clock::update_param m_clock;
 			bc_render_system& m_render_system;
+			bc_frame_renderer& m_frame_renderer;
 			bc_render_thread& m_render_thread;
 			const bc_icamera& m_camera;
 			const bc_scene& m_scene;

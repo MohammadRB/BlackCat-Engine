@@ -5,6 +5,8 @@
 #include "Core/Container/bcArray.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcFrameRenderer.h"
+#include "Game/System/Render/bcRenderStateBuffer.h"
 #include "BlackCat/RenderPass/bcBackBufferWritePass.h"
 
 namespace black_cat
@@ -112,13 +114,13 @@ namespace black_cat
 	void bc_back_buffer_write_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
 		p_param.m_render_thread.start(m_command_list.get());
-		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
-		
-		p_param.m_render_system.add_render_instance(*m_render_state.get(), game::bc_render_instance(core::bc_matrix4f::identity()));
-		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
-		p_param.m_render_system.clear_render_instances();
+		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state);
+		p_param.m_render_thread.bind_render_state(*m_render_state);
 
-		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
+		p_param.m_render_thread.draw_indexed(0, 6, 0);
+
+		p_param.m_render_thread.unbind_render_state(*m_render_state);
+		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state);
 		p_param.m_render_thread.finish();
 
 		m_command_list->finished();

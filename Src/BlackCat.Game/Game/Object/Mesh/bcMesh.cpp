@@ -62,7 +62,7 @@ namespace black_cat
 			m_children.push_back(p_mesh_node);
 		}
 
-		// -- bc_mesh --------------------------------------------------------------------------------
+		// -- bc_mesh -------------------------------------------------------------------------------------
 
 		bc_mesh::bc_mesh(core::bc_string p_name, bcSIZE p_node_count, bcSIZE p_mesh_count, bc_mesh_collider_ptr p_colliders)
 			: m_name(std::move(p_name)),
@@ -101,69 +101,79 @@ namespace black_cat
 			return l_entry->second;
 		}
 
-		const bc_mesh_node* bc_mesh::get_node_parent(const bc_mesh_node* p_node) const
+		const bc_mesh_node* bc_mesh::get_node_parent(const bc_mesh_node& p_node) const
 		{
-			return p_node->m_parent;
+			return p_node.m_parent;
 		}
 
-		const core::bc_vector<bc_mesh_node*>& bc_mesh::get_node_children(const bc_mesh_node* p_node) const
+		const core::bc_vector<bc_mesh_node*>& bc_mesh::get_node_children(const bc_mesh_node& p_node) const
 		{
-			return p_node->m_children;
+			return p_node.m_children;
 		}
 
-		const core::bc_matrix4f& bc_mesh::get_node_transformation(const bc_mesh_node* p_node) const
+		const core::bc_matrix4f& bc_mesh::get_node_transformation(const bc_mesh_node& p_node) const
 		{
-			return m_transformations.at(p_node->m_transformation_index);
+			return m_transformations.at(p_node.m_transformation_index);
 		}
 
-		const core::bc_string& bc_mesh::get_node_mesh_name(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
+		const core::bc_string& bc_mesh::get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
 		{
-			if (p_mesh_index >= p_node->m_mesh_count)
+			if (p_mesh_index >= p_node.m_mesh_count)
 			{
 				throw bc_out_of_range_exception("Invalid mesh index");
 			}
 
-			return m_meshes[p_node->m_first_mesh_index + p_mesh_index].m_name;
+			return m_meshes[p_node.m_first_mesh_index + p_mesh_index].m_name;
 		}
 
-		const bc_render_material& bc_mesh::get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
+		const bc_render_material& bc_mesh::get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
 		{
-			if(p_mesh_index >= p_node->m_mesh_count)
+			if(p_mesh_index >= p_node.m_mesh_count)
 			{
 				throw bc_out_of_range_exception("Invalid mesh index");
 			}
 
-			return *m_meshes[p_node->m_first_mesh_index + p_mesh_index].m_material;
+			return *m_meshes[p_node.m_first_mesh_index + p_mesh_index].m_material;
 		}
 
-		const bc_render_state& bc_mesh::get_node_mesh_render_state(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
+		const bc_render_state& bc_mesh::get_node_mesh_render_state(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
 		{
-			if (p_mesh_index >= p_node->m_mesh_count)
+			if (p_mesh_index >= p_node.m_mesh_count)
 			{
 				throw bc_out_of_range_exception("Invalid mesh index");
 			}
 
-			return *m_render_states[p_node->m_first_mesh_index + p_mesh_index];
+			return *m_render_states[p_node.m_first_mesh_index + p_mesh_index];
 		}
 
-		const physics::bc_bound_box& bc_mesh::get_node_mesh_bound_box(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
+		bc_render_state_ptr bc_mesh::get_node_mesh_render_state_ptr(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
 		{
-			if (p_mesh_index >= p_node->m_mesh_count)
+			if (p_mesh_index >= p_node.m_mesh_count)
 			{
 				throw bc_out_of_range_exception("Invalid mesh index");
 			}
 
-			return m_meshes[p_node->m_first_mesh_index + p_mesh_index].m_bound_box;
+			return m_render_states[p_node.m_first_mesh_index + p_mesh_index];
 		}
 
-		const bc_mesh_part_collider& bc_mesh::get_node_mesh_colliders(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const
+		const physics::bc_bound_box& bc_mesh::get_node_mesh_bound_box(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
 		{
-			if (p_mesh_index >= p_node->m_mesh_count)
+			if (p_mesh_index >= p_node.m_mesh_count)
 			{
 				throw bc_out_of_range_exception("Invalid mesh index");
 			}
 
-			return *m_colliders_map[p_node->m_first_mesh_index + p_mesh_index];;
+			return m_meshes[p_node.m_first_mesh_index + p_mesh_index].m_bound_box;
+		}
+
+		const bc_mesh_part_collider& bc_mesh::get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
+		{
+			if (p_mesh_index >= p_node.m_mesh_count)
+			{
+				throw bc_out_of_range_exception("Invalid mesh index");
+			}
+
+			return *m_colliders_map[p_node.m_first_mesh_index + p_mesh_index];;
 		}
 
 		void bc_mesh::calculate_absolute_transformations(const core::bc_matrix4f& p_world, bc_sub_mesh_transformation& p_result, physics::bc_bound_box& p_bound_box) const
@@ -317,7 +327,7 @@ namespace black_cat
 			{
 				const bc_mesh_node* l_node = p_begin;
 
-				auto l_node_absolute_transformation = get_node_transformation(l_node) * p_parent_transformation;
+				auto l_node_absolute_transformation = get_node_transformation(*l_node) * p_parent_transformation;
 				p_result.set_node_transformation
 				(
 					*l_node,
@@ -329,7 +339,7 @@ namespace black_cat
 				// Update mesh bounding box based on its sub meshes
 				for (bcSIZE m = 0; m < l_node->get_mesh_count(); ++m)
 				{
-					auto l_node_mesh_box = get_node_mesh_bound_box(l_node, m);
+					auto l_node_mesh_box = get_node_mesh_bound_box(*l_node, m);
 					l_node_mesh_box.transform(physics::bc_transform(l_node_absolute_transformation));
 
 					if (p_bound_box.is_empty())
@@ -342,7 +352,7 @@ namespace black_cat
 					}
 				}
 
-				const auto& l_node_children = get_node_children(l_node);
+				const auto& l_node_children = get_node_children(*l_node);
 				if (!l_node_children.empty())
 				{
 					const bc_mesh_node* l_begin = *l_node_children.begin();

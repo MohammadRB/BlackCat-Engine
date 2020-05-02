@@ -22,21 +22,14 @@ namespace black_cat
 		{
 			bcAssert(m_render_system != nullptr);
 
-			auto& l_render_state = m_render_system->m_render_pass_states.at(p_handle.m_index);
-
-			if (l_render_state.is_set())
-			{
-				return &l_render_state.get();
-			}
-
-			return nullptr;
+			return m_render_system->_get_render_pass_state(p_handle);
 		}
 
 		void _bc_render_pass_state_handle_deleter::operator()(bc_render_pass_state* p_render_state) const
 		{
 			bcAssert(m_render_system != nullptr);
 
-			m_render_system->destroy_render_pass_state(p_render_state);
+			m_render_system->_destroy_render_pass_state(p_render_state);
 		}
 
 		bc_render_pass_state::bc_render_pass_state(bc_render_pass_state&& p_other) noexcept

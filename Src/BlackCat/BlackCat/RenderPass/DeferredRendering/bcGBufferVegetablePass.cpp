@@ -83,25 +83,25 @@ namespace black_cat
 
 	void bc_gbuffer_vegetable_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		auto* l_actors = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
+		auto* l_scene_buffer = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
+		auto l_leaf_render_state_buffer = p_param.m_frame_renderer.create_buffer();
+		auto l_trunk_render_state_buffer = p_param.m_frame_renderer.create_buffer();
 
 		p_param.m_render_thread.start(m_command_list.get());
 		
 		// Render vegetable leafs
 		p_param.m_render_thread.bind_render_pass_state(*m_leaf_render_pass_state.get());
 		
-		l_actors->render_actors<game::bc_vegetable_mesh_component>(p_param.m_render_system, true);
-		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
-		p_param.m_render_system.clear_render_instances();
+		l_scene_buffer->render_actors<game::bc_vegetable_mesh_component>(l_leaf_render_state_buffer, true);
+		p_param.m_frame_renderer.render_buffer(l_leaf_render_state_buffer, p_param.m_render_thread, p_param.m_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_leaf_render_pass_state.get());
 
 		// Render vegetable trunks
 		p_param.m_render_thread.bind_render_pass_state(*m_trunk_render_pass_state.get());
 				
-		l_actors->render_actors<game::bc_vegetable_mesh_component>(p_param.m_render_system, false);
-		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
-		p_param.m_render_system.clear_render_instances();
+		l_scene_buffer->render_actors<game::bc_vegetable_mesh_component>(l_trunk_render_state_buffer, false);
+		p_param.m_frame_renderer.render_buffer(l_trunk_render_state_buffer, p_param.m_render_thread, p_param.m_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_trunk_render_pass_state.get());
 

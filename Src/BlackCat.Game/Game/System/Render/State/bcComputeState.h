@@ -29,8 +29,6 @@ namespace black_cat
 
 			void operator ()(bc_compute_state* p_compute_state) const;
 
-		protected:
-
 		private:
 			bc_render_system* m_render_system;
 		};
@@ -53,8 +51,6 @@ namespace black_cat
 
 			bc_compute_state& operator=(bc_compute_state&&) noexcept;
 			
-		protected:
-
 		private:
 			bc_compute_state(graphic::bc_device_compute_state p_compute_state,
 				bcUINT32 p_dispatch_x,

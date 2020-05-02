@@ -84,12 +84,10 @@ namespace black_cat
 
 			void shrink_to_fit();
 
-		protected:
-			
 		private:
-			core::bc_vector<bc_mesh_part_collider_entry> m_shapes;
-			core::bc_vector<physics::bc_convex_mesh_ref> m_convexes;
-			core::bc_vector<physics::bc_triangle_mesh_ref> m_triangles;
+			core::bc_vector< bc_mesh_part_collider_entry > m_shapes;
+			core::bc_vector< physics::bc_convex_mesh_ref > m_convexes;
+			core::bc_vector< physics::bc_triangle_mesh_ref > m_triangles;
 		};
 	}
 }

@@ -4,6 +4,7 @@
 
 #include "Core/Container/bcArray.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Input/bcCamera.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/Object/Scene/bcScene.h"
@@ -116,7 +117,7 @@ namespace black_cat
 			auto& l_light_state = m_state->m_light_instance_states[l_light_ite];
 			auto& l_shadow_maps_container = get_shared_resource_throw< bc_cascaded_shadow_map_buffer_container >(m_state->m_output_depth_buffers_share_slot);
 
-			// Create instance render pass states 
+			// Create render pass state instance
 			if(l_light_state.m_render_pass_states.size() < m_my_index + 1 || l_light_state.m_render_pass_states[m_my_index].empty())
 			{
 				l_light_state.m_render_pass_states.resize(std::max(m_my_index + 1, l_light_state.m_render_pass_states.size()));
@@ -170,7 +171,7 @@ namespace black_cat
 					}
 					
 					// Update global cbuffer with cascade camera
-					p_param.m_render_system.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, l_light_cascade_camera);
+					p_param.m_frame_renderer.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, l_light_cascade_camera);
 
 					bc_cascaded_shadow_map_pass_render_param l_param
 					(
@@ -203,7 +204,7 @@ namespace black_cat
 		}
 
 		// Restore global cbuffer to its default state
-		p_param.m_render_system.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
+		p_param.m_frame_renderer.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
 
 		p_param.m_render_thread.finish();
 		m_state->m_command_list->finished();

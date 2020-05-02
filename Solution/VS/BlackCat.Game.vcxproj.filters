@@ -288,6 +288,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcFrameRenderer.h">
       <Filter>Game\System\Render</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderStateBuffer.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -435,6 +438,9 @@
       <Filter>Game\Object\Scene\ActorComponent</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcFrameRenderer.cpp">
+      <Filter>Game\System\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderStateBuffer.cpp">
       <Filter>Game\System\Render</Filter>
     </ClCompile>
   </ItemGroup>

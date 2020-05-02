@@ -59,6 +59,7 @@ namespace black_cat
 			(
 				p_render_param.m_clock,
 				p_render_param.m_render_system,
+				p_render_param.m_frame_renderer,
 				p_render_param.m_render_thread,
 				p_render_param.m_camera,
 				p_render_param.m_scene

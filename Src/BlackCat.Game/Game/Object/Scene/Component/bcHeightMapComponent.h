@@ -44,12 +44,8 @@ namespace black_cat
 
 			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 			
-			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
-
-			void render(bc_render_system& p_render_system) const override;
+			void render(bc_render_state_buffer& p_buffer) const override;
 			
-		protected:
-
 		private:
 			bc_height_map_ptr m_height_map;
 			core::bc_matrix4f m_transform;

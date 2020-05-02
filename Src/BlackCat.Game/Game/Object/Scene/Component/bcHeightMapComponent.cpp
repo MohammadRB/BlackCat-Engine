@@ -4,13 +4,14 @@
 
 #include "Core/Content/bcLazyContent.h"
 #include "Core/Content/bcContentManager.h"
+#include "Game/bcConstant.h"
+#include "Game/System/Render/bcRenderInstance.h"
+#include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
-#include "Game/System/Render/bcRenderSystem.h"
-#include "Game/System/Render/bcRenderInstance.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 
 namespace black_cat
 {
@@ -79,14 +80,10 @@ namespace black_cat
 			}
 		}
 
-		void bc_height_map_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
-		{
-		}
-		
-		void bc_height_map_component::render(bc_render_system& p_render_system) const
+		void bc_height_map_component::render(bc_render_state_buffer& p_buffer) const
 		{
 			const bc_render_instance l_instance(m_transform);
-			p_render_system.add_render_instance(*m_height_map->get_render_state(), l_instance);
+			p_buffer.add_render_instance(m_height_map->get_render_state_ptr(), l_instance);
 		}
 	}
 }

@@ -38,7 +38,7 @@ namespace black_cat
 
 		private:
 			void _get_mesh_colliders(const bc_sub_mesh& p_mesh, 
-				const bc_mesh_node* p_mesh_node, 
+				const bc_mesh_node& p_mesh_node, 
 				core::bc_vector_frame<const bc_mesh_part_collider::entry*>& p_result);
 		};
 

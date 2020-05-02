@@ -26,13 +26,11 @@ namespace black_cat
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
-			void render(bc_render_system& p_render_system) const override;
-
-			void render(bc_render_system& p_render_system, bool p_render_leaf) const;
-
 			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 
-			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			void render(bc_render_state_buffer& p_buffer) const override;
+
+			void render(bc_render_state_buffer& p_buffer, bool p_render_leaf) const;
 		};
 	}
 }

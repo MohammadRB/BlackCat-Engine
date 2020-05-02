@@ -29,6 +29,7 @@
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Input/bcCamera.h"
 #include "Game/System/Render/bcShapeDrawer.h"
+#include "Game/System/Render/bcFrameRenderer.h"
 
 namespace black_cat
 {
@@ -94,10 +95,9 @@ namespace black_cat
 		class BC_GAME_DLL bc_render_system : public core::bc_initializable< core::bc_content_stream_manager&, bc_render_system_parameter >
 		{
 		private:
-			friend class _bc_render_state_handle_deleter;
 			friend class _bc_render_pass_state_handle_deleter;
+			friend class _bc_render_state_handle_deleter;
 			friend class _bc_compute_state_handle_deleter;
-			using render_state_entry = std::pair< core::bc_nullable< bc_render_state >, core::bc_vector_frame< bc_render_instance > >;
 
 		public:
 			using update_param = bc_render_system_update_param;
@@ -134,25 +134,6 @@ namespace black_cat
 			bool remove_render_pass();
 			
 			bool remove_render_pass(bcUINT p_location);
-
-			/**
-			 * \brief Add a render instance to render queue
-			 * \param p_state
-			 * \param p_instance
-			 */
-			void add_render_instance(const bc_render_state& p_state, const bc_render_instance& p_instance);
-
-			void update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera);
-
-			/**
-			 * \brief Render all instances in render queue
-			 */
-			void render_all_instances(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera);
-
-			/**
-			 * \brief Clear render queue. After rendering instances this function must be called
-			 */
-			void clear_render_instances();
 
 			void update(const update_param& p_update_params);
 
@@ -269,54 +250,56 @@ namespace black_cat
 				bc_compute_state_resource_view_array&& p_resource_views,
 				bc_compute_state_unordered_view_array&& p_unordered_views,
 				bc_compute_state_constant_buffer_array&& p_cbuffers);
-
-			/**
-			 * \brief ThreadSafe function
-			 * \param p_render_pass_state 
-			 */
-			void destroy_render_pass_state(bc_render_pass_state* p_render_pass_state);
-
-			/**
-			 * \brief ThreadSafe function
-			 * \param p_render_state 
-			 */
-			void destroy_render_state(bc_render_state* p_render_state);
-
-			/**
-			 * \brief ThreadSafe function
-			 * \param p_compute_state 
-			 */
-			void destroy_compute_state(bc_compute_state* p_compute_state);
-
-		private:
+			
+		private:			
 			void _initialize(core::bc_content_stream_manager& p_content_stream, bc_render_system_parameter p_parameter) override;
 
 			void _destroy() override;
 
 			bool _event_handler(core::bc_ievent& p_event);
 
-			graphic::bc_device m_device;
-			graphic::bc_buffer_ptr m_global_cbuffer;
-			graphic::bc_buffer_ptr m_per_object_cbuffer;
-			graphic::bc_constant_buffer_parameter m_global_cbuffer_parameter;
-			graphic::bc_constant_buffer_parameter m_per_object_cbuffer_parameter;
+			bc_render_pass_state* _get_render_pass_state(const _bc_render_state_handle& p_handle);
 
+			bc_render_state* _get_render_state(const _bc_render_state_handle& p_handle);
+
+			bc_compute_state* _get_compute_state(const _bc_render_state_handle& p_handle);
+
+			/**
+			 * \brief ThreadSafe function
+			 * \param p_render_pass_state
+			 */
+			void _destroy_render_pass_state(const bc_render_pass_state* p_render_pass_state);
+
+			/**
+			 * \brief ThreadSafe function
+			 * \param p_render_state
+			 */
+			void _destroy_render_state(const bc_render_state* p_render_state);
+
+			/**
+			 * \brief ThreadSafe function
+			 * \param p_compute_state
+			 */
+			void _destroy_compute_state(const bc_compute_state* p_compute_state);
+
+			graphic::bc_device m_device;
+			
+			core_platform::bc_mutex m_render_states_mutex;
+			core::bc_vector< core::bc_nullable< bc_render_pass_state > > m_render_pass_states;
+			core::bc_vector< core::bc_nullable< bc_render_state > > m_render_states;
+			core::bc_vector< core::bc_nullable< bc_compute_state > > m_compute_states;
+			
 			core::bc_content_stream_manager* m_content_stream;
 			core::bc_unique_ptr< bc_render_thread_manager > m_thread_manager;
 			core::bc_unique_ptr< bc_material_manager > m_material_manager;
 			core::bc_unique_ptr< bc_render_pass_manager > m_render_pass_manager;
 			core::bc_unique_ptr< bc_light_manager > m_light_manager;
+			core::bc_unique_ptr< bc_shape_drawer > m_shape_drawer;
+			core::bc_unique_ptr< bc_frame_renderer > m_frame_renderer;
 
 			core::bc_event_listener_handle m_window_resize_handle;
-			core::bc_event_listener_handle m_device_listener_handle;
+			core::bc_event_listener_handle m_device_reset_handle;
 			core::bc_event_listener_handle m_frame_render_finish_handle;
-
-			core_platform::bc_mutex m_render_states_mutex;
-			core::bc_vector< core::bc_nullable< bc_render_pass_state > > m_render_pass_states;
-			core::bc_vector< render_state_entry > m_render_states;
-			core::bc_vector< core::bc_nullable< bc_compute_state > > m_compute_states;
-
-			bc_shape_drawer m_shape_drawer;
 		};
 
 		inline graphic::bc_device& bc_render_system::get_device() noexcept
@@ -336,17 +319,17 @@ namespace black_cat
 
 		inline bc_shape_drawer& bc_render_system::get_shape_drawer() noexcept
 		{
-			return m_shape_drawer;
+			return *m_shape_drawer;
 		}
 
 		inline const graphic::bc_constant_buffer_parameter& bc_render_system::get_global_cbuffer() const
 		{
-			return m_global_cbuffer_parameter;
+			return m_frame_renderer->get_global_cbuffer();
 		}
 
 		inline const graphic::bc_constant_buffer_parameter& bc_render_system::get_per_object_cbuffer() const
 		{
-			return m_per_object_cbuffer_parameter;
+			return m_frame_renderer->get_per_object_cbuffer();
 		}
 
 		template< typename T >

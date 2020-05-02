@@ -33,7 +33,6 @@ namespace black_cat
 			void set_parameter_data(void* p_data) override;
 
 			bool is_valid() const override;
-		protected:
 
 		private:
 			bc_resource_view m_shader_resource;

@@ -17,6 +17,7 @@ namespace black_cat
 	namespace game
 	{
 		class bc_render_system;
+		class bc_render_state_buffer;
 
 		class BC_GAME_DLL bc_shape_drawer
 		{
@@ -45,13 +46,13 @@ namespace black_cat
 
 			void update_buffers(bc_render_system& p_render_system, bc_render_thread& p_thread);
 
-			void render(bc_render_system& p_render_system, bc_render_thread& p_thread);
+			void render(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_render_state_buffer& p_buffer);
 
 			void clear_buffers();
 
-			void destroy_buffers();
-
 		private:
+			void _destroy_buffers();
+			
 			core_platform::bc_mutex m_mutex;
 			core::bc_vector_movale<core::bc_vector3f> m_vertices;
 			core::bc_vector_movale<bcUINT32> m_indices;

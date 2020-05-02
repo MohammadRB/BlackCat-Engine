@@ -33,53 +33,26 @@ namespace black_cat
 			virtual ~bc_height_map();
 
 			bc_height_map& operator=(bc_height_map&& p_other) noexcept;
-			
-			bcUINT16 get_width() const
-			{
-				return m_width;
-			}
 
-			bcUINT16 get_height() const
-			{
-				return m_height;
-			}
+			bcUINT16 get_width() const;
 
-			bcUINT16 get_xz_multiplier() const
-			{
-				return m_xz_multiplier;
-			}
+			bcUINT16 get_height() const;
 
-			bcFLOAT get_y_multiplier() const
-			{
-				return m_y_multiplier;
-			}
+			bcUINT16 get_xz_multiplier() const;
 
-			bcFLOAT get_physics_y_scale() const
-			{
-				return m_physics_y_scale;
-			}
+			bcFLOAT get_y_multiplier() const;
 
-			const bc_render_state* get_render_state() const
-			{
-				return m_render_state.get();
-			}
+			bcFLOAT get_physics_y_scale() const;
 
-			graphic::bc_buffer get_vertex_buffer() const
-			{
-				return m_vertex_buffer.get();
-			}
+			const bc_render_state* get_render_state() const;
 
-			graphic::bc_buffer get_index_buffer() const
-			{
-				return m_index_buffer.get();
-			}
+			bc_render_state_ptr get_render_state_ptr() const;
 
-			physics::bc_height_field get_px_height_field() const
-			{
-				return m_px_height_map.get();
-			}
+			graphic::bc_buffer get_vertex_buffer() const;
 
-		protected:
+			graphic::bc_buffer get_index_buffer() const;
+
+			physics::bc_height_field get_px_height_field() const;
 
 		private:
 			bcUINT16 m_width;

@@ -34,8 +34,7 @@ namespace black_cat
 			void set_parameter_data(void* p_data) override;
 
 			bool is_valid() const override;
-		protected:
-
+			
 		private:
 			bc_buffer m_buffer;
 		};

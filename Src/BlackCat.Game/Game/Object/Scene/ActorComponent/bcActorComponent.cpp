@@ -3,8 +3,6 @@
 #include "Game/GamePCH.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
-#include "bcActorComponent.h"
-#include "bcActorComponent.h"
 
 namespace black_cat
 {
@@ -26,7 +24,7 @@ namespace black_cat
 		{
 		}
 
-		void bc_iactor_component::update(::black_cat::game::bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_iactor_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 

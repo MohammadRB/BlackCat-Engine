@@ -43,8 +43,6 @@ namespace black_cat
 			bcINT16 m_register_index;
 			bc_shader_type m_shader_types;
 			const bc_shader_parameter_link* m_link;
-
-		private:
 		};
 
 		inline bc_ishader_parameter::bc_ishader_parameter()

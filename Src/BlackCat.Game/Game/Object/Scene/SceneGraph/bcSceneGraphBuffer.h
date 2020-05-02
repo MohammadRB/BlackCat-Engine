@@ -5,8 +5,9 @@
 #include "Core/Container/bcVector.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
-#include "Game/System/Render/bcRenderSystem.h"
-#include "Game/bcExport.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/System/Render/bcRenderStateBuffer.h"
+#include "Game/System/Render/bcShapeDrawer.h"
 
 namespace black_cat
 {
@@ -69,15 +70,15 @@ namespace black_cat
 
 			void add_actor(const bc_actor& p_actor);
 
-			void render_actors(bc_render_system& p_render_system);
+			void render_actors(bc_render_state_buffer& p_buffer);
 
 			template<typename TRenderComponent>
-			void render_actors(bc_render_system& p_render_system);
+			void render_actors(bc_render_state_buffer& p_buffer);
 
 			template<typename TRenderComponent, typename ...TArgs>
-			void render_actors(bc_render_system& p_render_system, TArgs&&... p_args);
+			void render_actors(bc_render_state_buffer& p_buffer, TArgs&&... p_args);
 
-		protected:
+			void add_debug_shapes(bc_shape_drawer& p_shape_drawer);
 
 		private:
 			container_type m_actors;
@@ -166,45 +167,54 @@ namespace black_cat
 			m_actors.push_back(p_actor);
 		}
 
-		inline void bc_scene_graph_buffer::render_actors(bc_render_system& p_render_system)
+		inline void bc_scene_graph_buffer::render_actors(bc_render_state_buffer& p_buffer)
 		{
 			for(bc_actor& l_actor : m_actors)
 			{
-				auto* l_render_component = l_actor.get_component<bc_render_component>();
-				if(l_render_component)
+				auto* l_component = l_actor.get_component<bc_render_component>();
+				if(l_component)
 				{
-					l_render_component->render(p_render_system);
+					l_component->render(p_buffer);
 				}
 			}
 		}
 
 		template< typename TRenderComponent >
-		void bc_scene_graph_buffer::render_actors(bc_render_system& p_render_system)
+		void bc_scene_graph_buffer::render_actors(bc_render_state_buffer& p_buffer)
 		{
-			static_assert(std::is_base_of_v<bc_render_component, TRenderComponent>, "TComponent must inherite from bc_render_component");
+			static_assert(std::is_base_of_v<bc_render_component, TRenderComponent>, "TComponent must inherit from bc_render_component");
 
 			for (bc_actor& l_actor : m_actors)
 			{
 				auto* l_component = static_cast<bc_render_component*>(l_actor.get_component<TRenderComponent>());
 				if (l_component)
 				{
-					l_component->render(p_render_system);
+					l_component->render(p_buffer);
 				}
 			}
 		}
 
 		template< typename TRenderComponent, typename ... TArgs >
-		void bc_scene_graph_buffer::render_actors(bc_render_system& p_render_system, TArgs&&... p_args)
+		void bc_scene_graph_buffer::render_actors(bc_render_state_buffer& p_buffer, TArgs&&... p_args)
 		{
-			static_assert(std::is_base_of_v<bc_render_component, TRenderComponent>, "TComponent must inherite from bc_render_component");
+			static_assert(std::is_base_of_v<bc_render_component, TRenderComponent>, "TComponent must inherit from bc_render_component");
 
 			for (bc_actor& l_actor : m_actors)
 			{
 				auto* l_component = l_actor.get_component<TRenderComponent>();
 				if (l_component)
 				{
-					l_component->render(p_render_system, std::forward<TArgs>(p_args)...);
+					l_component->render(p_buffer, std::forward<TArgs>(p_args)...);
 				}
+			}
+		}
+
+		inline void bc_scene_graph_buffer::add_debug_shapes(bc_shape_drawer& p_shape_drawer)
+		{
+			for (const bc_actor& l_actor : *this)
+			{
+				const auto& l_bound_box = l_actor.get_component< bc_mediate_component >()->get_bound_box();
+				p_shape_drawer.render_wired_box(l_bound_box);
 			}
 		}
 	}

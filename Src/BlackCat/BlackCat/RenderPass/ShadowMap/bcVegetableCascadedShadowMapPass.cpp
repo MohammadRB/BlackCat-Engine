@@ -3,6 +3,8 @@
 #include "BlackCat/BlackCatPCH.h"
 
 #include "GraphicImp/Resource/bcResourceBuilder.h"
+#include "Game/System/Render/State/bcStateConfigs.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
 #include "BlackCat/RenderPass/ShadowMap/bcVegetableCascadedShadowMapPass.h"
@@ -80,10 +82,10 @@ namespace black_cat
 			p_param.m_render_thread.clear_buffers(core::bc_vector4f(1));
 		}
 
-		l_scene_buffer.render_actors<game::bc_vegetable_mesh_component>(p_param.m_render_system, true);
+		auto l_leaf_render_state_buffer = p_param.m_frame_renderer.create_buffer();
+		l_scene_buffer.render_actors<game::bc_vegetable_mesh_component>(l_leaf_render_state_buffer, true);
 
-		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_cascade_camera);
-		p_param.m_render_system.clear_render_instances();
+		p_param.m_frame_renderer.render_buffer(l_leaf_render_state_buffer, p_param.m_render_thread, p_param.m_cascade_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(l_leaf_render_pass_state);
 
@@ -91,10 +93,10 @@ namespace black_cat
 		const auto& l_trunk_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index * 2 + 1];
 		p_param.m_render_thread.bind_render_pass_state(l_trunk_render_pass_state);
 
-		l_scene_buffer.render_actors<game::bc_vegetable_mesh_component>(p_param.m_render_system, false);
+		auto l_trunk_render_state_buffer = p_param.m_frame_renderer.create_buffer();
+		l_scene_buffer.render_actors<game::bc_vegetable_mesh_component>(l_trunk_render_state_buffer, false);
 
-		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_cascade_camera);
-		p_param.m_render_system.clear_render_instances();
+		p_param.m_frame_renderer.render_buffer(l_trunk_render_state_buffer, p_param.m_render_thread, p_param.m_cascade_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(l_trunk_render_pass_state);
 	}

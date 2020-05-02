@@ -132,9 +132,10 @@ namespace black_cat
 			p_param.m_render_thread.finish();
 			m_run_chunk_info_shader = false;
 		}
+	}
 
-		p_param.m_render_thread.start(m_command_list.get());
-
+	void bc_gbuffer_terrain_pass_dx11::execute(const game::bc_render_pass_render_param& p_param)
+	{
 		game::bc_icamera::extend l_camera_extends;
 		p_param.m_camera.get_extend_points(l_camera_extends);
 
@@ -145,21 +146,20 @@ namespace black_cat
 		l_parameter.m_frustum_planes[3] = _plane_from_3_point(l_camera_extends[1], l_camera_extends[5], l_camera_extends[6]);
 		l_parameter.m_frustum_planes[4] = _plane_from_3_point(l_camera_extends[2], l_camera_extends[6], l_camera_extends[7]);
 		l_parameter.m_frustum_planes[5] = _plane_from_3_point(l_camera_extends[7], l_camera_extends[4], l_camera_extends[0]);
+		
+		p_param.m_render_thread.start(m_command_list.get());
 
+		p_param.m_frame_renderer.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
 		p_param.m_render_thread.update_subresource(m_parameter_cbuffer.get(), 0, &l_parameter, 0, 0);
+		
 		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.clear_buffers(core::bc_vector4f(0, 0, 255, 0), 1, 0);
-	}
 
-	void bc_gbuffer_terrain_pass_dx11::execute(const game::bc_render_pass_render_param& p_param)
-	{
-		p_param.m_render_system.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
+		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
+		auto l_scene_buffer = p_param.m_scene.get_actors<game::bc_height_map_component>();
+		l_scene_buffer.render_actors(l_render_state_buffer);
 
-		auto l_height_maps_buffer = p_param.m_scene.get_actors<game::bc_height_map_component>();
-		l_height_maps_buffer.render_actors(p_param.m_render_system);
-
-		p_param.m_render_system.render_all_instances(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
-		p_param.m_render_system.clear_render_instances();
+		p_param.m_frame_renderer.render_buffer(l_render_state_buffer, p_param.m_render_thread, p_param.m_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.finish();

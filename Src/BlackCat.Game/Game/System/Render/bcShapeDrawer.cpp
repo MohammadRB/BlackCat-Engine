@@ -6,6 +6,7 @@
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/Object/Mesh/bcShapeGenerator.h"
 
 namespace black_cat
@@ -31,6 +32,7 @@ namespace black_cat
 
 		bc_shape_drawer::~bc_shape_drawer()
 		{
+			_destroy_buffers();
 		}
 
 		bc_shape_drawer& bc_shape_drawer::operator=(bc_shape_drawer&& p_other) noexcept
@@ -150,7 +152,7 @@ namespace black_cat
 			m_last_frame_indices_count = l_indices_count;
 		}
 
-		void bc_shape_drawer::render(bc_render_system& p_render_system, bc_render_thread& p_thread)
+		void bc_shape_drawer::render(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_render_state_buffer& p_buffer)
 		{
 			update_buffers(p_render_system, p_thread);
 
@@ -160,7 +162,7 @@ namespace black_cat
 			}
 
 			const bc_render_instance l_instance(core::bc_matrix4f::identity());
-			p_render_system.add_render_instance(*m_render_state.get(), l_instance);
+			p_buffer.add_render_instance(m_render_state, l_instance);
 		}
 
 		void bc_shape_drawer::clear_buffers()
@@ -169,7 +171,7 @@ namespace black_cat
 			m_indices.clear();
 		}
 
-		void bc_shape_drawer::destroy_buffers()
+		void bc_shape_drawer::_destroy_buffers()
 		{
 			clear_buffers();
 			m_vertices.shrink_to_fit();

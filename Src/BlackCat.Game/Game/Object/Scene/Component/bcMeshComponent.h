@@ -14,8 +14,6 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_mediate_component;
-
 		class BC_GAME_DLL bc_mesh_component : public bc_render_component
 		{
 			BC_ABSTRACT_COMPONENT(mesh)
@@ -39,7 +37,7 @@ namespace black_cat
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
-			void render(bc_render_system& p_render_system) const override;
+			void render(bc_render_state_buffer& p_buffer) const override;
 
 		protected:
 			void set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform);

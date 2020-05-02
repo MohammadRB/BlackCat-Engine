@@ -121,21 +121,23 @@ namespace black_cat
 			 */
 			const bc_mesh_node* find_node(const bcCHAR* p_name) const;
 
-			const bc_mesh_node* get_node_parent(const bc_mesh_node* p_node) const;
+			const bc_mesh_node* get_node_parent(const bc_mesh_node& p_node) const;
 
-			const core::bc_vector< bc_mesh_node* >& get_node_children(const bc_mesh_node* p_node) const;
+			const core::bc_vector< bc_mesh_node* >& get_node_children(const bc_mesh_node& p_node) const;
 
-			const core::bc_matrix4f& get_node_transformation(const bc_mesh_node* p_node) const;
+			const core::bc_matrix4f& get_node_transformation(const bc_mesh_node& p_node) const;
 
-			const core::bc_string& get_node_mesh_name(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+			const core::bc_string& get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			const bc_render_material& get_node_mesh_material(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+			const bc_render_material& get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			const bc_render_state& get_node_mesh_render_state(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+			const bc_render_state& get_node_mesh_render_state(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			const physics::bc_bound_box& get_node_mesh_bound_box(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+			bc_render_state_ptr get_node_mesh_render_state_ptr(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			const bc_mesh_part_collider& get_node_mesh_colliders(const bc_mesh_node* p_node, bcUINT32 p_mesh_index) const;
+			const physics::bc_bound_box& get_node_mesh_bound_box(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+
+			const bc_mesh_part_collider& get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
 			void calculate_absolute_transformations(const core::bc_matrix4f& p_world, bc_sub_mesh_transformation& p_result, physics::bc_bound_box& p_bound_box) const;
 
@@ -167,7 +169,7 @@ namespace black_cat
 			core::bc_vector< bc_render_state_ptr > m_render_states;						// Place render states along with nodes
 			core::bc_vector_movale< core::bc_matrix4f > m_transformations;
 			bc_mesh_collider_ptr m_colliders;
-			core::bc_vector<const bc_mesh_part_collider*> m_colliders_map;				// Used to fetch mesh colliders without need to hash looking in bc_mesh_collider
+			core::bc_vector< const bc_mesh_part_collider* > m_colliders_map;				// Used to fetch mesh colliders without need to hash looking in bc_mesh_collider
 			core::bc_unordered_map< hash_t::result_type, bc_mesh_node* > m_nodes_map;
 			core::bc_vector< bc_mesh_part_data > m_meshes;
 			bcFLOAT m_scale;

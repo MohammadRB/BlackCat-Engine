@@ -9,14 +9,14 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_render_system;
+		class bc_render_state_buffer;
 
 		class BC_GAME_DLL bc_render_component : public bc_iactor_component
 		{
 			BC_ABSTRACT_COMPONENT(render)
 
 		public:
-			virtual void render(bc_render_system& p_render_system) const = 0;
+			virtual void render(bc_render_state_buffer& p_buffer) const = 0;
 
 		protected:
 			explicit bc_render_component(bc_actor_component_index p_index);

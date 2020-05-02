@@ -6,7 +6,7 @@
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/bcConstant.h"
 #include "Game/System/Render/bcRenderInstance.h"
-#include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
@@ -15,7 +15,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		void _render_mesh_node(bc_render_system& p_render_system,
+		void _render_mesh_node(bc_render_state_buffer& p_buffer,
 			const bc_sub_mesh& p_mesh_part,
 			const bc_sub_mesh_transformation& p_transformations,
 			const bc_mesh_node* p_begin,
@@ -30,7 +30,7 @@ namespace black_cat
 				{
 					if (p_mesh_prefix != nullptr)
 					{
-						const auto& l_mesh_name = p_mesh_part.get_node_mesh_name(l_node, l_mesh_index);
+						const auto& l_mesh_name = p_mesh_part.get_node_mesh_name(*l_node, l_mesh_index);
 						const bool l_starts_with_prefix = l_mesh_name.compare(0, std::strlen(p_mesh_prefix), p_mesh_prefix) == 0;
 
 						if (!l_starts_with_prefix)
@@ -39,20 +39,20 @@ namespace black_cat
 						}
 					}
 
-					auto& l_node_mesh_render_state = p_mesh_part.get_node_mesh_render_state(l_node, l_mesh_index);
-					auto& l_node_transformation = p_mesh_part.get_node_absolute_transformation(l_node, p_transformations);
+					auto l_node_mesh_render_state = p_mesh_part.get_node_mesh_render_state_ptr(*l_node, l_mesh_index);
+					auto& l_node_transformation = p_mesh_part.get_node_absolute_transformation(*l_node, p_transformations);
 
 					bc_render_instance l_instance(l_node_transformation);
-					p_render_system.add_render_instance(l_node_mesh_render_state, l_instance);
+					p_buffer.add_render_instance(std::move(l_node_mesh_render_state), l_instance);
 				}
 
-				const auto& l_node_children = p_mesh_part.get_node_children(l_node);
+				const auto& l_node_children = p_mesh_part.get_node_children(*l_node);
 
 				if (!l_node_children.empty())
 				{
 					_render_mesh_node
 					(
-						p_render_system,
+						p_buffer,
 						p_mesh_part,
 						p_transformations,
 						*std::begin(l_node_children),
@@ -77,9 +77,7 @@ namespace black_cat
 		{
 		}
 
-		bc_mesh_component::~bc_mesh_component()
-		{
-		}
+		bc_mesh_component::~bc_mesh_component() = default;
 
 		bc_mesh_component& bc_mesh_component::operator=(bc_mesh_component&& p_other) noexcept
 		{
@@ -110,11 +108,11 @@ namespace black_cat
 			m_mesh_part_transformation = bc_sub_mesh_transformation(*m_sub_mesh.get_root_node());
 		}
 
-		void bc_mesh_component::render(bc_render_system& p_render_system) const
+		void bc_mesh_component::render(bc_render_state_buffer& p_buffer) const
 		{
 			const bc_mesh_node* l_node = m_sub_mesh.get_root_node();
 			
-			_render_mesh_node(p_render_system, m_sub_mesh, m_mesh_part_transformation, l_node, l_node + 1, nullptr);
+			_render_mesh_node(p_buffer, m_sub_mesh, m_mesh_part_transformation, l_node, l_node + 1, nullptr);
 		}
 
 		void bc_mesh_component::set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform)

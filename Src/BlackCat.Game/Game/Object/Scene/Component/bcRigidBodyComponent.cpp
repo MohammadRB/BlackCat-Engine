@@ -19,7 +19,7 @@ namespace black_cat
 			const bc_sub_mesh& l_mesh = p_mesh_component.get_mesh();
 			core::bc_vector_frame<const bc_mesh_part_collider_entry*> l_colliders;
 
-			_get_mesh_colliders(l_mesh, l_mesh.get_root_node(), l_colliders);
+			_get_mesh_colliders(l_mesh, *l_mesh.get_root_node(), l_colliders);
 
 			auto l_px_material = l_physics.create_material(1, 1, 0.1);
 
@@ -33,10 +33,10 @@ namespace black_cat
 		}
 		
 		void bc_rigid_body_component::_get_mesh_colliders(const bc_sub_mesh& p_mesh,
-			const bc_mesh_node* p_mesh_node,
+			const bc_mesh_node& p_mesh_node,
 			core::bc_vector_frame<const bc_mesh_part_collider::entry*>& p_result)
 		{
-			for (bcUINT32 l_mesh_index = 0, l_end = p_mesh_node->get_mesh_count(); l_mesh_index < l_end; ++l_mesh_index)
+			for (bcUINT32 l_mesh_index = 0, l_end = p_mesh_node.get_mesh_count(); l_mesh_index < l_end; ++l_mesh_index)
 			{
 				const bc_mesh_part_collider& l_mesh_colliders = p_mesh.get_node_mesh_colliders(p_mesh_node, l_mesh_index);
 				
@@ -49,7 +49,7 @@ namespace black_cat
 			auto& l_node_children = p_mesh.get_node_children(p_mesh_node);
 			for (bcUINT32 l_child = 0, l_end = l_node_children.size(); l_child < l_end; ++l_child)
 			{
-				_get_mesh_colliders(p_mesh, l_node_children[l_child], p_result);
+				_get_mesh_colliders(p_mesh, *l_node_children[l_child], p_result);
 			}
 		}
 	}
