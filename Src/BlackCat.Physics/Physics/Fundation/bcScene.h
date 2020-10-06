@@ -154,7 +154,7 @@ namespace black_cat
 
 			/**
 			 * \brief Advances the simulation by an elapsed time.
-			 * This function run simulation async and return immediatly.
+			 * This function run simulation async and return immediately.
 			 * \param p_elapsed_time Amount of time to advance simulation by.
 			 */
 			void update(core_platform::bc_clock::update_param p_elapsed_time);
@@ -218,8 +218,8 @@ namespace black_cat
 
 			/**
 			 * \brief Performs a sweep test against objects in the scene.
-			 * \note	Touching hits are not ordered.
-			 * \note	If a shape from the scene is already overlapping with the query shape in its starting position, the hit is returned.
+			 * \note Touching hits are not ordered.
+			 * \note If a shape from the scene is already overlapping with the query shape in its starting position, the hit is returned.
 			 * \param[in] p_geometry Geometry of object to sweep (supported types are: box, sphere, capsule, convex).
 			 * \param[in] p_pose Pose of the sweep object.
 			 * \param[in] p_unit_dir Normalized direction of the sweep.

@@ -42,7 +42,7 @@ namespace black_cat
 
 	bc_scene_loader::bc_scene_loader(game::bc_iscene_graph_node_factory p_scene_graph_factory)
 	{
-		m_scene_graph_factory = p_scene_graph_factory;
+		m_scene_graph_factory = std::move(p_scene_graph_factory);
 	}
 
 	bool bc_scene_loader::support_offline_processing() const

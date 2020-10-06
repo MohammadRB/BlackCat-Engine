@@ -86,8 +86,6 @@ namespace black_cat
 
 			void clear();
 
-		protected:
-
 		private:
 			core::bc_unique_ptr<bc_iscene_graph_node> m_graph_node;
 		};

@@ -30,9 +30,7 @@ namespace black_cat
 		void after_reset(const game::bc_render_pass_reset_param& p_param) override;
 		
 		void destroy(game::bc_render_system& p_render_system) override;
-
-	protected:
-
+		
 	private:
 		constant::bc_render_pass_variable_t m_render_target_view_variable;
 

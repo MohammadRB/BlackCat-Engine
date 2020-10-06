@@ -116,7 +116,6 @@ namespace black_cat
 			graphic::bc_texture2d p_depth,
 			const core::bc_vector<graphic::bc_depth_stencil_view_ptr>& p_depth_views) = 0;
 
-	private:
 		_bc_cascaded_shadow_map_light_state _create_light_instance(game::bc_render_system& p_render_system);
 
 		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_cascades(const game::bc_icamera& p_camera, const game::bc_direct_light& p_light);

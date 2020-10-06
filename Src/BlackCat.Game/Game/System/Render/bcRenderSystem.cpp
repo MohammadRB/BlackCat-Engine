@@ -88,12 +88,12 @@ namespace black_cat
 
 		void bc_render_system::update(const update_param& p_update_params)
 		{
-			m_frame_renderer->update(bc_frame_renderer_update_param(p_update_params.m_clock, p_update_params.m_active_camera));
+			m_frame_renderer->update(bc_frame_renderer_update_param(p_update_params.m_clock, bc_camera_instance(p_update_params.m_active_camera)));
 		}
 
 		void bc_render_system::render(const render_param& p_render_param)
 		{
-			m_frame_renderer->render(bc_frame_renderer_render_param(p_render_param.m_clock, *this, p_render_param.m_camera, p_render_param.m_scene));
+			m_frame_renderer->render(bc_frame_renderer_render_param(p_render_param.m_clock, bc_camera_instance(p_render_param.m_camera), *this));
 
 			m_device.present();
 		}

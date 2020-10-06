@@ -25,6 +25,10 @@ namespace black_cat
 
 			bc_query_provider_handle& operator=(bc_query_provider_handle&&) noexcept;
 
+			/**
+			 * \brief Must be called after move construction or assignment, so we do not end up with dangled pointers in delegates
+			 * \param p_delegate
+			 */
 			void reassign(delegate_t&& p_delegate) override;
 			
 			void reset() override;

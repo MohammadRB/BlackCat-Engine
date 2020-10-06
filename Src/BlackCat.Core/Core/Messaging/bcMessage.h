@@ -11,17 +11,17 @@ namespace black_cat
 	{
 		using bc_message_hash = bcUINT32;
 
-		template< class TEvent >
+		template< class TMessage >
 		struct bc_message_traits
 		{
 			static constexpr const bcCHAR* message_name()
 			{
-				return TEvent::message_name();
+				return TMessage::message_name();
 			}
 
 			static constexpr bcUINT32 message_hash()
 			{
-				return TEvent::message_hash();
+				return TMessage::message_hash();
 			}
 		};
 		

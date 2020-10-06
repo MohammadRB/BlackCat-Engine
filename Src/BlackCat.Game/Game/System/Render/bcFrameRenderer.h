@@ -5,6 +5,7 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Concurrency/bcTask.h"
 #include "GraphicImp/Device/bcDevice.h"
+#include "Game/System/Render/bcCameraInstance.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -19,34 +20,28 @@ namespace black_cat
 
 		struct bc_frame_renderer_update_param
 		{
-			bc_frame_renderer_update_param(const core_platform::bc_clock::update_param& p_clock, 
-				const bc_icamera& p_camera)
+			bc_frame_renderer_update_param(const core_platform::bc_clock::update_param& p_clock,  const bc_camera_instance& p_camera)
 				: m_clock(p_clock),
-				m_active_camera(p_camera)
+				m_camera(p_camera)
 			{
 			}
 
 			core_platform::bc_clock::update_param m_clock;
-			const bc_icamera& m_active_camera;
+			bc_camera_instance m_camera;
 		};
 
 		struct bc_frame_renderer_render_param
 		{
-			bc_frame_renderer_render_param(const core_platform::bc_clock::update_param& p_clock,
-				bc_render_system& p_render_system,
-				const bc_icamera& p_camera, 
-				const bc_scene& p_scene)
+			bc_frame_renderer_render_param(const core_platform::bc_clock::update_param& p_clock, const bc_camera_instance& p_camera, bc_render_system& p_render_system)
 				: m_clock(p_clock),
-				p_render_system(p_render_system),
 				m_camera(p_camera),
-				m_scene(p_scene)
+				m_render_system(p_render_system)
 			{
 			}
 
 			core_platform::bc_clock::update_param m_clock;
-			bc_render_system& p_render_system;
-			const bc_icamera& m_camera;
-			const bc_scene& m_scene;
+			bc_camera_instance m_camera;
+			bc_render_system& m_render_system;
 		};
 		
 		class BC_GAME_DLL bc_frame_renderer

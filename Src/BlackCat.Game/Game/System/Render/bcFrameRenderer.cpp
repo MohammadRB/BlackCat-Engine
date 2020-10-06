@@ -188,7 +188,7 @@ namespace black_cat
 		
 		void bc_frame_renderer::update(const bc_frame_renderer_update_param& p_update_param)
 		{
-			m_render_pass_manager->pass_update(bc_render_pass_update_param(p_update_param.m_clock, p_update_param.m_active_camera));
+			m_render_pass_manager->pass_update(bc_render_pass_update_param(p_update_param.m_clock, p_update_param.m_camera));
 		}
 
 		core::bc_task<void> bc_frame_renderer::render(const bc_frame_renderer_render_param& p_render_param)
@@ -198,12 +198,11 @@ namespace black_cat
 
 			m_render_pass_manager->pass_execute(bc_render_pass_render_param
 			(
-				p_render_param.m_clock, 
-				p_render_param.p_render_system,
+				p_render_param.m_clock,
+				p_render_param.m_camera,
+				p_render_param.m_render_system,
 				*this,
-				l_render_thread,
-				p_render_param.m_camera, 
-				p_render_param.m_scene)
+				l_render_thread)
 			);
 
 			return core::bc_task<void>();

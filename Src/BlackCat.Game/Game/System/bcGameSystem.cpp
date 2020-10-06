@@ -42,15 +42,13 @@ namespace black_cat
 			auto* l_query_manager = core::bc_get_service<core::bc_query_manager>();
 
 			m_input_system.update(p_clock_update_param);
-			
-			l_event_manager->process_event_queue(p_clock_update_param);
-
 			m_physics_system.update(p_clock_update_param);
 			if (m_scene)
 			{
 				m_scene->update(m_physics_system, p_clock_update_param);
 			}
 
+			l_event_manager->process_event_queue(p_clock_update_param);
 			l_actor_component_manager->update_actors(p_clock_update_param);
 			l_query_manager->process_query_queue(p_clock_update_param);
 
@@ -63,7 +61,7 @@ namespace black_cat
 		{
 			if(m_scene)
 			{
-				m_render_system.render(bc_render_system::render_param(p_clock_update_param, m_input_system.get_camera(), *m_scene));
+				m_render_system.render(bc_render_system::render_param(p_clock_update_param, m_input_system.get_camera()));
 			}
 		}
 

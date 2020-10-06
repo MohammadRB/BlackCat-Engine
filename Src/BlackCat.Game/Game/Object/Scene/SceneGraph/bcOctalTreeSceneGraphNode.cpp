@@ -286,7 +286,7 @@ namespace black_cat
 			bool l_updated = false;
 
 			auto* l_actor_mediate_component = p_actor.get_component<bc_mediate_component>();
-			auto& l_actor_prev_bound_box = l_actor_mediate_component->get_bound_box();
+			auto& l_actor_prev_bound_box = l_actor_mediate_component->get_prev_bound_box();
 			auto& l_actor_bound_box = l_actor_mediate_component->get_bound_box();
 			
 			bc_octal_tree_graph_node* l_prev_containing_node = _find_containing_node(l_actor_prev_bound_box);
@@ -566,7 +566,7 @@ namespace black_cat
 				bc_octal_tree_node_position::bottom_right_back
 			);
 
- 			graph_node_entry_list l_actors{ graph_node_entry_allocator(*m_actors_pool) };
+ 			graph_node_entry_list l_actors{graph_node_entry_allocator(*m_actors_pool)};
 			m_actors.swap(l_actors);
 			m_actors_count = 0;
 

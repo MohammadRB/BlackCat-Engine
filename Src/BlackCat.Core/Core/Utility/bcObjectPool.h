@@ -86,8 +86,6 @@ namespace black_cat
 
 			void clear() noexcept;
 
-		protected:
-
 		private:
 			void _initialize(bcUINT32 p_objects_count, bc_alloc_type p_alloc_type);
 

@@ -208,6 +208,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\bcConstant.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\bcException.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\bcExport.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\bcQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\GamePCH.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcHeightMap.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcRenderMaterial.h" />
@@ -257,6 +258,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsSystem.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPxWrap.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsShapeUtility.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcCameraInstance.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcFrameRenderer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderStateBuffer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcDirectLight.h" />

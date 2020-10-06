@@ -7,7 +7,7 @@
 #include "Game/bcConstant.h"
 #include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/Pass/bcRenderPassResourceShare.h"
-#include "Game/System/Input/bcCamera.h"
+#include "Game/System/Render/bcCameraInstance.h"
 #include "Game/bcException.h"
 
 namespace black_cat
@@ -37,40 +37,37 @@ namespace black_cat
 		{
 		public:
 			bc_render_pass_update_param(const core_platform::bc_clock::update_param& p_clock,
-				const bc_icamera& p_camera)
+				const bc_camera_instance& p_camera)
 				: m_clock(p_clock),
 				m_camera(p_camera)
 			{
 			}
 
 			core_platform::bc_clock::update_param m_clock;
-			const bc_icamera& m_camera;
+			bc_camera_instance m_camera;
 		};
 
 		class bc_render_pass_render_param
 		{
 		public:
 			bc_render_pass_render_param(const core_platform::bc_clock::update_param& p_clock,
+				const bc_camera_instance& p_camera,
 				bc_render_system& p_render_system,
 				bc_frame_renderer& p_frame_renderer,
-				bc_render_thread& p_render_thread,
-				const bc_icamera& p_camera,
-				const bc_scene& p_scene)
+				bc_render_thread& p_render_thread)
 				: m_clock(p_clock),
+				m_camera(p_camera),
 				m_render_system(p_render_system),
 				m_frame_renderer(p_frame_renderer),
-				m_render_thread(p_render_thread),
-				m_camera(p_camera),
-				m_scene(p_scene)
+				m_render_thread(p_render_thread)
 			{
 			}
 
 			core_platform::bc_clock::update_param m_clock;
+			bc_camera_instance m_camera;
 			bc_render_system& m_render_system;
 			bc_frame_renderer& m_frame_renderer;
 			bc_render_thread& m_render_thread;
-			const bc_icamera& m_camera;
-			const bc_scene& m_scene;
 		};
 
 		class bc_render_pass_reset_param
@@ -121,14 +118,14 @@ namespace black_cat
 
 			/**
 			 * \brief This function will be called in the start of frame draw phase.
-			 * Threading: This function will be executed concurrent by a cpu worker thread.
+			 * Threading: This function will be executed concurrently by a cpu worker thread.
 			 * \param p_param
 			 */
 			virtual void initialize_frame(const bc_render_pass_render_param& p_param) = 0;
 
 			/**
 			 * \brief This function will be called in frame draw phase.
-			 * Threading: This function will be executed concurrent by a cpu worker thread.
+			 * Threading: This function will be executed concurrently by a cpu worker thread.
 			 * \param p_param
 			 */
 			virtual void execute(const bc_render_pass_render_param& p_param) = 0;

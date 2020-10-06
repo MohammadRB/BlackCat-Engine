@@ -21,7 +21,6 @@ namespace black_cat
 		BC_RENDER_PASS_VARIABLE(render_target_texture_4);
 		BC_RENDER_PASS_VARIABLE(render_target_view_4);
 
-		BC_PARAMETER(device, "device");
 		BC_PARAMETER(shader_function, "function");
 		BC_PARAMETER(mesh, "mesh");
 		BC_PARAMETER(sub_mesh, "sub_mesh");

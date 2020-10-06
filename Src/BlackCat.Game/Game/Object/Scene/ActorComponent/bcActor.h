@@ -62,8 +62,6 @@ namespace black_cat
 
 			bool operator!=(const bc_actor& p_other) const noexcept;
 
-		protected:
-
 		private:
 			static bc_actor_component_manager& _get_manager() noexcept;
 
