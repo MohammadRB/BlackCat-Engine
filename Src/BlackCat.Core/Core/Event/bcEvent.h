@@ -94,6 +94,22 @@ namespace black_cat
 			bc_app_event& operator =(const bc_app_event&) = default;
 		};
 
+		/**
+		 * \brief Base class for application level events which will be executed in render thread context
+		 */
+		class BC_CORE_DLL bc_app_render_event : public bc_event
+		{
+		public:
+			virtual ~bc_app_render_event();
+
+		protected:
+			explicit bc_app_render_event(const bcCHAR* p_name) noexcept;
+
+			bc_app_render_event(const bc_app_render_event&) = default;
+
+			bc_app_render_event& operator =(const bc_app_render_event&) = default;
+		};
+
 		template< class TEvent >
 		bool bc_ievent::event_is(const bc_ievent& p_event)
 		{

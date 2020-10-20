@@ -4,13 +4,16 @@
 
 #include "Core/Container/bcVector.h"
 #include "Core/Content/bcContentStreamManager.h"
+#include "Core/Messaging/Query/bcQueryManager.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/State/bcVertexLayout.h"
+#include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
+#include "Game/bcQuery.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferTerrainPassDx11.h"
 #include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
 #include "BlackCat/bcException.h"
@@ -21,12 +24,12 @@ namespace black_cat
 		const core::bc_vector3f& p_second,
 		const core::bc_vector3f& p_third)
 	{
-		auto l_vector1 = p_second - p_first;
-		auto l_vector2 = p_third - p_first;
+		const auto l_vector1 = p_second - p_first;
+		const auto l_vector2 = p_third - p_first;
 
 		auto l_normal = l_vector1.cross(l_vector2);
 		l_normal.normalize();
-		auto l_distance = l_normal.dot(p_first);
+		const auto l_distance = l_normal.dot(p_first);
 
 		return core::bc_vector4f(l_normal, -l_distance);
 	}
@@ -104,12 +107,21 @@ namespace black_cat
 
 	void bc_gbuffer_terrain_pass_dx11::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
+		if(m_scene_query.is_executed())
+		{
+			m_scene_query_result = m_scene_query.get().get_scene_buffer();
+		}
+		
 		if (m_run_chunk_info_shader)
 		{
+			if(m_scene_query_result.size() == 0)
+			{
+				return;
+			}
+			
 			p_param.m_render_thread.start(m_command_list.get());
 
-			auto l_height_maps = p_param.m_scene.get_actors<game::bc_height_map_component>();
-			for (auto& l_actor : l_height_maps)
+			for (auto& l_actor : m_scene_query_result)
 			{
 				const game::bc_height_map& l_height_map = l_actor.get_component< game::bc_height_map_component >()->get_height_map();
 				const bc_height_map_dx11& l_height_map_dx11 = static_cast<const bc_height_map_dx11&>(l_height_map);
@@ -136,8 +148,12 @@ namespace black_cat
 
 	void bc_gbuffer_terrain_pass_dx11::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		game::bc_icamera::extend l_camera_extends;
-		p_param.m_camera.get_extend_points(l_camera_extends);
+		if(m_scene_query_result.size() == 0)
+		{
+			return;
+		}
+		
+		game::bc_icamera::extend l_camera_extends = p_param.m_camera.get_extends();
 
 		_bc_parameter_buffer l_parameter;
 		l_parameter.m_frustum_planes[0] = _plane_from_3_point(l_camera_extends[0], l_camera_extends[1], l_camera_extends[2]);
@@ -156,8 +172,7 @@ namespace black_cat
 		p_param.m_render_thread.clear_buffers(core::bc_vector4f(0, 0, 255, 0), 1, 0);
 
 		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
-		auto l_scene_buffer = p_param.m_scene.get_actors<game::bc_height_map_component>();
-		l_scene_buffer.render_actors(l_render_state_buffer);
+		m_scene_query_result.render_actors(l_render_state_buffer);
 
 		p_param.m_frame_renderer.render_buffer(l_render_state_buffer, p_param.m_render_thread, p_param.m_camera);
 
@@ -165,6 +180,15 @@ namespace black_cat
 		p_param.m_render_thread.finish();
 
 		m_command_list->finished();
+	}
+
+	void bc_gbuffer_terrain_pass_dx11::cleanup_frame(const game::bc_render_pass_render_param& p_param)
+	{
+		const game::bc_camera_frustum l_frustum(p_param.m_camera);
+		m_scene_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+		(
+			game::bc_scene_graph_query().only<game::bc_height_map_component>()
+		);
 	}
 
 	void bc_gbuffer_terrain_pass_dx11::before_reset(const game::bc_render_pass_reset_param& p_param)

@@ -84,10 +84,6 @@ namespace black_cat
 			return l_result;
 		}
 
-		void bc_scene_graph::update(core_platform::bc_clock::update_param p_clock_update_param)
-		{
-		}
-
 		void bc_scene_graph::add_debug_shapes(bc_shape_drawer& p_shape_drawer) const
 		{
 			m_graph_node->add_debug_shapes(p_shape_drawer);

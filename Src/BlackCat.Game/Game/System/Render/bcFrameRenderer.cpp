@@ -124,7 +124,7 @@ namespace black_cat
 			return m_per_object_cbuffer_parameter;
 		}
 
-		void bc_frame_renderer::update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera)
+		void bc_frame_renderer::update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_camera_instance& p_camera)
 		{
 			_bc_render_system_global_state_cbuffer l_global_state;
 			l_global_state.m_view = p_camera.get_view().transpose();
@@ -149,7 +149,7 @@ namespace black_cat
 			return bc_render_state_buffer();
 		}
 
-		void bc_frame_renderer::render_buffer(const bc_render_state_buffer& p_buffer, bc_render_thread& p_render_thread, const bc_icamera& p_camera)
+		void bc_frame_renderer::render_buffer(const bc_render_state_buffer& p_buffer, bc_render_thread& p_render_thread, const bc_camera_instance& p_camera)
 		{
 			const auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
 

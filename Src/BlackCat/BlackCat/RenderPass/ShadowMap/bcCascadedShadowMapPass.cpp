@@ -2,11 +2,13 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
+#include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/State/bcStateConfigs.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
+#include "Game/System/Input/bcCameraFrustum.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapPass.h"
 
 namespace black_cat
@@ -45,6 +47,21 @@ namespace black_cat
 
 	void bc_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_param& p_param)
 	{
+		const auto l_cascade_absolute_index = p_param.m_light_index * p_param.m_cascade_count + p_param.m_cascade_index;
+		if(m_scene_queries.size() < l_cascade_absolute_index)
+		{
+			m_scene_queries.push_back(core::bc_get_service<core::bc_query_manager>()->queue_query
+			(
+				game::bc_scene_graph_query().with(game::bc_camera_frustum(p_param.m_cascade_camera))
+				                            .only< game::bc_simple_mesh_component >()
+			));
+		}
+		
+		if(!m_scene_queries[l_cascade_absolute_index].is_executed())
+		{
+			return;
+		}
+		
 		const auto& l_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index];
 		p_param.m_render_thread.bind_render_pass_state(l_render_pass_state);
 
@@ -53,8 +70,7 @@ namespace black_cat
 			p_param.m_render_thread.clear_buffers(core::bc_vector4f(1));
 		}
 
-		const auto l_camera_frustum = game::bc_camera_frustum(p_param.m_cascade_camera);
-		auto l_scene_buffer = p_param.m_scene.get_actors< game::bc_simple_mesh_component >(l_camera_frustum);
+		auto l_scene_buffer = m_scene_queries[l_cascade_absolute_index].get().get_scene_buffer();
 		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
 
 		l_scene_buffer.render_actors(l_render_state_buffer);
@@ -62,6 +78,12 @@ namespace black_cat
 		p_param.m_frame_renderer.render_buffer(l_render_state_buffer, p_param.m_render_thread, p_param.m_cascade_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(l_render_pass_state);
+
+		m_scene_queries[l_cascade_absolute_index] = core::bc_get_service< core::bc_query_manager >()->queue_query
+		(
+			game::bc_scene_graph_query().with(game::bc_camera_frustum(p_param.m_cascade_camera))
+			                            .only< game::bc_simple_mesh_component >()
+		);
 	}
 
 	void bc_cascaded_shadow_map_pass::destroy_pass(game::bc_render_system& p_render_system)

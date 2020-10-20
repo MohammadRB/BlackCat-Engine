@@ -37,10 +37,10 @@ namespace black_cat
 
 			/**
 			 * \brief 
-			 * \tparam										TIte Iterator type
+			 * \tparam TIte								Iterator type
 			 * \tparam TInitFunc	<TLocal(void)>			Function that initialize local data
 			 * \tparam TBodyFunc	<TLocal(TLocal, Ite)>	Function that execute as for loop body
-			 * \tparam TFinalFunc	<void(TLocal)>			Function that will be called by all started threads to accumulate results
+			 * \tparam TFinalFunc	<void(TLocal)>		Function that will be called by all started threads to accumulate results
 			 * \param p_begin 
 			 * \param p_end 
 			 * \param p_init_func 
@@ -56,18 +56,11 @@ namespace black_cat
 			template< typename T >
 			static T* double_check_lock(core_platform::bc_atomic< T* >& p_pointer, bc_delegate< T*() >& p_initializer);
 
-			template< typename T >
-			static bool double_check_lock(core_platform::bc_atomic< T* >& p_pointer);
-
-		protected:
-
 		private:
-			static bc_thread_manager* _get_thread_manager()
-			{
-				static bc_thread_manager* s_thread_manager = bc_get_service< bc_thread_manager >();
-
-				return s_thread_manager;
-			}
+			template<typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc>
+			static void _concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer);
+			
+			static bc_thread_manager* _get_thread_manager();
 		};
 
 		inline core_platform::bc_thread::id bc_concurrency::current_thread_id()
@@ -127,85 +120,31 @@ namespace black_cat
 		template< typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc >
 		void bc_concurrency::concurrent_for_each(TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer)
 		{
-			concurrent_for_each(_get_thread_manager()->spawned_thread_count(), p_begin, p_end, p_init_func, p_body_func, p_finalizer);
+			_concurrent_for_each(_get_thread_manager()->spawned_thread_count(), p_begin, p_end, p_init_func, p_body_func, p_finalizer);
 		}
 
 		template< typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc >
 		void bc_concurrency::concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer)
 		{
-			const bcUINT32 l_num_thread = std::max(p_num_thread, 1U);
-			const bcUINT32 l_num = std::distance(p_begin, p_end);
-			const bcUINT32 l_chunk_size = std::ceil((l_num * 1.f) / l_num_thread);
-
-			bc_vector_frame< bc_task< void > > l_tasks;
-			l_tasks.reserve(l_num_thread);
-
-			for (bcUINT32 l_thread = 0; l_thread < l_num_thread; ++l_thread)
+			if(p_num_thread > 1)
 			{
-				bcUINT32 l_begin_index = l_thread * l_chunk_size;
-				bcUINT32 l_end_index = (l_thread + 1) * l_chunk_size;
-				l_end_index = std::min(l_end_index, l_num);
-
-				if(l_begin_index >= l_end_index)
-				{
-					break;
-				}
-
-				TIte l_begin = p_begin;
-				TIte l_end = p_begin;
-				std::advance(l_begin, l_begin_index);
-				std::advance(l_end, l_end_index);
-
-				bc_task< void > l_task = start_task
-					(
-						bc_delegate< void() >::make_from_big_object
-						(
-							bc_alloc_type::frame,
-							[l_begin, l_end, &p_init_func, &p_body_func, &p_finalizer]()
-							{
-								auto l_init = p_init_func();
-
-								std::for_each(l_begin, l_end, [l_begin, l_end, &l_init, &p_body_func](typename std::iterator_traits< TIte >::reference p_item)
-									{
-										p_body_func(l_init, p_item);
-									});
-
-								p_finalizer(l_init);
-							}
-						),
-						bc_task_creation_option::policy_fairness
-					);
-
-				l_tasks.push_back(std::move(l_task));
+				_concurrent_for_each(p_num_thread, p_begin, p_end, p_init_func, p_body_func, p_finalizer);
+				return;
 			}
 
-			when_all(std::begin(l_tasks), std::end(l_tasks));
-			
-#ifdef BC_DEBUG
-			try
+			auto l_init = p_init_func();
+			std::for_each(p_begin, p_end, [&l_init, &p_body_func](typename std::iterator_traits<TIte>::reference p_item)
 			{
-#endif
-				for (bc_task< void >& l_task : l_tasks) // Call get to find if tasks has thrown any exception 
-				{
-					l_task.get();
-				}
-#ifdef BC_DEBUG
-			}
-			catch (std::exception& p_exception)
-			{
-				bc_app_event_debug l_error_event(bc_string("Concurrent for_each task exited with error: ") + p_exception.what());
-				bc_get_service< bc_event_manager >()->process_event(l_error_event);
-
-				throw;
-			}
-#endif
+				p_body_func(l_init, p_item);
+			});
+			p_finalizer(l_init);
 		}
-
+		
 		template< typename T >
 		T* bc_concurrency::double_check_lock(core_platform::bc_atomic< T* >& p_pointer, bc_delegate< T*() >& p_initializer)
 		{
 			T* l_pointer;
-			static core_platform::bc_mutex s_mutex;
+			static core_platform::bc_mutex s_mutex; // TODO fix this
 
 			if ((l_pointer = p_pointer.load(core_platform::bc_memory_order::acquire)) == nullptr)
 			{
@@ -221,22 +160,87 @@ namespace black_cat
 			return l_pointer;
 		}
 
-		template< typename T >
-		bool bc_concurrency::double_check_lock(core_platform::bc_atomic< T* >& p_pointer)
+		template< typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc >
+		void bc_concurrency::_concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer)
 		{
-			static core_platform::bc_mutex s_mutex;
+			const bcUINT32 l_num_thread = std::max(p_num_thread, 1U);
+			const bcUINT32 l_num = std::distance(p_begin, p_end);
+			const bcUINT32 l_chunk_size = std::ceil((l_num * 1.f) / l_num_thread);
 
-			if (p_pointer.load(core_platform::bc_memory_order::acquire) == nullptr)
+			bc_vector_frame< bc_task< void > > l_tasks;
+			l_tasks.reserve(l_num_thread);
+
+			for (bcUINT32 l_thread = 0; l_thread < l_num_thread; ++l_thread)
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(s_mutex);
+				bcUINT32 l_begin_index = l_thread * l_chunk_size;
+				bcUINT32 l_end_index = (l_thread + 1) * l_chunk_size;
+				l_end_index = std::min(l_end_index, l_num);
 
-				if (p_pointer.load(core_platform::bc_memory_order::relaxed) == nullptr)
+				if (l_begin_index >= l_end_index)
 				{
-					return true;
+					break;
 				}
+
+				TIte l_begin = p_begin;
+				TIte l_end = p_begin;
+				std::advance(l_begin, l_begin_index);
+				std::advance(l_end, l_end_index);
+
+				bc_task< void > l_task = start_task
+				(
+					bc_delegate< void() >::make_from_big_object
+					(
+						bc_alloc_type::frame,
+						[l_begin, l_end, &p_init_func, &p_body_func, &p_finalizer]()
+						{
+							auto l_init = p_init_func();
+
+							std::for_each
+							(
+								l_begin,
+								l_end,
+								[&l_init, &p_body_func](typename std::iterator_traits< TIte >::reference p_item)
+								{
+									p_body_func(l_init, p_item);
+								}
+							);
+
+							p_finalizer(l_init);
+						}
+					),
+					bc_task_creation_option::policy_fairness
+				);
+
+				l_tasks.push_back(std::move(l_task));
 			}
 
-			return false;
+			when_all(std::begin(l_tasks), std::end(l_tasks));
+
+#ifdef BC_DEBUG
+			try
+			{
+#endif
+				for (bc_task< void >& l_task : l_tasks) // Call get to find if tasks has thrown any exception 
+				{
+					l_task.get();
+				}
+#ifdef BC_DEBUG
+			}
+			catch (std::exception & p_exception)
+			{
+				bc_app_event_debug l_error_event(bc_string("Concurrent for_each task exited with error: ") + p_exception.what());
+				bc_get_service< bc_event_manager >()->process_event(l_error_event);
+
+				throw;
+			}
+#endif
+		}
+		
+		inline bc_thread_manager* bc_concurrency::_get_thread_manager()
+		{
+			static auto* s_thread_manager = bc_get_service< bc_thread_manager >();
+
+			return s_thread_manager;
 		}
 	}
 }

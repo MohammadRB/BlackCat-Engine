@@ -44,29 +44,31 @@ namespace black_cat
 
 			bc_scene_graph_buffer& operator=(bc_scene_graph_buffer&&) noexcept;
 
-			iterator begin();
+			iterator begin() noexcept;
 
-			const_iterator begin() const;
+			const_iterator begin() const noexcept;
 
-			const_iterator cbegin() const;
+			const_iterator cbegin() const noexcept;
 
-			iterator end();
+			iterator end() noexcept;
 
-			const_iterator end() const;
+			const_iterator end() const noexcept;
 
-			const_iterator cend() const;
+			const_iterator cend() const noexcept;
 
-			reverse_iterator rbegin();
+			reverse_iterator rbegin() noexcept;
 
-			const_reverse_iterator rbegin() const;
+			const_reverse_iterator rbegin() const noexcept;
 
-			const_reverse_iterator crbegin() const;
+			const_reverse_iterator crbegin() const noexcept;
 
-			reverse_iterator rend();
+			reverse_iterator rend() noexcept;
 
-			const_reverse_iterator rend() const;
+			const_reverse_iterator rend() const noexcept;
 
-			const_reverse_iterator crend() const;
+			const_reverse_iterator crend() const noexcept;
+
+			size_type size() const noexcept;
 
 			void add_actor(const bc_actor& p_actor);
 
@@ -102,64 +104,69 @@ namespace black_cat
 
 		inline bc_scene_graph_buffer& bc_scene_graph_buffer::operator=(bc_scene_graph_buffer&& p_other) noexcept = default;
 
-		inline bc_scene_graph_buffer::iterator bc_scene_graph_buffer::begin()
+		inline bc_scene_graph_buffer::iterator bc_scene_graph_buffer::begin() noexcept
 		{
 			return m_actors.begin();
 		}
 
-		inline bc_scene_graph_buffer::const_iterator bc_scene_graph_buffer::begin() const
+		inline bc_scene_graph_buffer::const_iterator bc_scene_graph_buffer::begin() const noexcept
 		{
 			return m_actors.begin();
 		}
 
-		inline bc_scene_graph_buffer::const_iterator bc_scene_graph_buffer::cbegin() const
+		inline bc_scene_graph_buffer::const_iterator bc_scene_graph_buffer::cbegin() const noexcept
 		{
 			return m_actors.cbegin();
 		}
 
-		inline bc_scene_graph_buffer::iterator bc_scene_graph_buffer::end()
+		inline bc_scene_graph_buffer::iterator bc_scene_graph_buffer::end() noexcept
 		{
 			return m_actors.end();
 		}
 
-		inline bc_scene_graph_buffer::const_iterator bc_scene_graph_buffer::end() const
+		inline bc_scene_graph_buffer::const_iterator bc_scene_graph_buffer::end() const noexcept
 		{
 			return m_actors.end();
 		}
 
-		inline bc_scene_graph_buffer::const_iterator bc_scene_graph_buffer::cend() const
+		inline bc_scene_graph_buffer::const_iterator bc_scene_graph_buffer::cend() const noexcept
 		{
 			return m_actors.cend();
 		}
 
-		inline bc_scene_graph_buffer::reverse_iterator bc_scene_graph_buffer::rbegin()
+		inline bc_scene_graph_buffer::reverse_iterator bc_scene_graph_buffer::rbegin() noexcept
 		{
 			return m_actors.rbegin();
 		}
 
-		inline bc_scene_graph_buffer::const_reverse_iterator bc_scene_graph_buffer::rbegin() const
+		inline bc_scene_graph_buffer::const_reverse_iterator bc_scene_graph_buffer::rbegin() const noexcept
 		{
 			return m_actors.rbegin();
 		}
 
-		inline bc_scene_graph_buffer::const_reverse_iterator bc_scene_graph_buffer::crbegin() const
+		inline bc_scene_graph_buffer::const_reverse_iterator bc_scene_graph_buffer::crbegin() const noexcept
 		{
 			return m_actors.crbegin();
 		}
 
-		inline bc_scene_graph_buffer::reverse_iterator bc_scene_graph_buffer::rend()
+		inline bc_scene_graph_buffer::reverse_iterator bc_scene_graph_buffer::rend() noexcept
 		{
 			return m_actors.rend();
 		}
 
-		inline bc_scene_graph_buffer::const_reverse_iterator bc_scene_graph_buffer::rend() const
+		inline bc_scene_graph_buffer::const_reverse_iterator bc_scene_graph_buffer::rend() const noexcept
 		{
 			return m_actors.rend();
 		}
 
-		inline bc_scene_graph_buffer::const_reverse_iterator bc_scene_graph_buffer::crend() const
+		inline bc_scene_graph_buffer::const_reverse_iterator bc_scene_graph_buffer::crend() const noexcept
 		{
 			return m_actors.crend();
+		}
+
+		inline bc_scene_graph_buffer::size_type bc_scene_graph_buffer::size() const noexcept
+		{
+			return m_actors.size();
 		}
 
 		inline void bc_scene_graph_buffer::add_actor(const bc_actor& p_actor)

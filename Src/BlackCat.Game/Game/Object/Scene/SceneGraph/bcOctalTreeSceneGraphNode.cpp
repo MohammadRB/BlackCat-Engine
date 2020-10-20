@@ -348,7 +348,7 @@ namespace black_cat
 			}
 
 			m_actors.clear();
-			m_actors_count = 0;
+			m_actors_count.store(0, core_platform::bc_memory_order::relaxed);
 		}
 
 		void bc_octal_tree_graph_node::add_debug_shapes(bc_shape_drawer& p_shape_drawer) const
@@ -462,21 +462,25 @@ namespace black_cat
 				l_added = l_added || m_bottom_right_back->_add_actor(p_actor, p_actor_bound_box);
 			}
 
-			if (!l_added)
 			{
-				m_actors.push_back(_bc_octal_tree_graph_node_entry(p_actor, this));
-				l_added = true;
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_lock(m_lock);
 
-				auto l_iterator = m_actors.rbegin();
-				l_iterator->set_internal_iterator(l_iterator.base());
-			}
-
-			if (l_added)
-			{
-				++m_actors_count;
-				if (m_actors_count > m_max_actors_count && is_leaf_node())
+				if (!l_added)
 				{
-					_split();
+					m_actors.push_back(_bc_octal_tree_graph_node_entry(p_actor, this));
+					l_added = true;
+
+					auto l_iterator = m_actors.rbegin();
+					l_iterator->set_internal_iterator(l_iterator.base());
+				}
+
+				if (l_added)
+				{
+					const auto l_actors_count = m_actors_count.fetch_add(1U, core_platform::bc_memory_order::relaxed) + 1;
+					if (l_actors_count > m_max_actors_count&& is_leaf_node())
+					{
+						_split();
+					}
 				}
 			}
 
@@ -492,11 +496,15 @@ namespace black_cat
 				return l_removed;
 			}
 
-			const auto l_exist = std::find(std::cbegin(m_actors), std::cend(m_actors), _bc_octal_tree_graph_node_entry(p_actor, this));
-			if (l_exist != std::cend(m_actors))
 			{
-				m_actors.erase(l_exist);
-				l_removed = true;
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_lock(m_lock);
+				
+				const auto l_exist = std::find(std::cbegin(m_actors), std::cend(m_actors), _bc_octal_tree_graph_node_entry(p_actor, this));
+				if (l_exist != std::cend(m_actors))
+				{
+					m_actors.erase(l_exist);
+					l_removed = true;
+				}
 			}
 
 			if (!l_removed && !is_leaf_node())
@@ -513,10 +521,14 @@ namespace black_cat
 
 			if (l_removed)
 			{
-				--m_actors_count;
-				if (m_actors_count <= m_max_actors_count && !is_leaf_node())
+				const auto l_actors_count = m_actors_count.fetch_sub(1U, core_platform::bc_memory_order::relaxed) - 1;
+				if (l_actors_count <= m_max_actors_count && !is_leaf_node())
 				{
-					_merge();
+					{
+						core_platform::bc_lock_guard<core_platform::bc_mutex> l_lock(m_lock);
+
+						_merge();
+					}
 				}
 			}
 
@@ -568,7 +580,7 @@ namespace black_cat
 
  			graph_node_entry_list l_actors{graph_node_entry_allocator(*m_actors_pool)};
 			m_actors.swap(l_actors);
-			m_actors_count = 0;
+			m_actors_count.store(0, core_platform::bc_memory_order::relaxed);
 
 			for(bc_iscene_graph_node_entry& l_entry : l_actors)
 			{
@@ -630,7 +642,7 @@ namespace black_cat
 
 		bc_octal_tree_graph_node* bc_octal_tree_graph_node::_get_min_node() const
 		{
-			bc_octal_tree_graph_node* l_node = const_cast<bc_octal_tree_graph_node*>(this);
+			auto* l_node = const_cast<bc_octal_tree_graph_node*>(this);
 			while(l_node->m_top_left_back)
 			{
 				l_node = l_node->m_top_left_back;
@@ -641,7 +653,7 @@ namespace black_cat
 
 		bc_octal_tree_graph_node* bc_octal_tree_graph_node::_get_max_node() const
 		{
-			bc_octal_tree_graph_node* l_node = const_cast<bc_octal_tree_graph_node*>(this);
+			auto* l_node = const_cast<bc_octal_tree_graph_node*>(this);
 			while (l_node->m_bottom_right_back)
 			{
 				l_node = l_node->m_bottom_right_back;
@@ -767,7 +779,7 @@ namespace black_cat
 			return nullptr;
 		}
 
-		const physics::bc_bound_box& bc_octal_tree_graph_node::_get_actor_bound_box(bc_actor& p_actor) const
+		const physics::bc_bound_box& bc_octal_tree_graph_node::_get_actor_bound_box(bc_actor& p_actor)
 		{
 			auto* l_mediate_component = p_actor.get_component<bc_mediate_component>();
 			const auto& l_bound_box = l_mediate_component->get_bound_box();

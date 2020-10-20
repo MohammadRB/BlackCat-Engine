@@ -105,33 +105,50 @@ namespace black_cat
 			/**
 			 * \brief Queue event for processing in a specific time in future that will be indicated by millisecond.
 			 * \ThreadSafe
-			 * \param p_event 
-			 * \param p_millisecond 
+			 * \param p_event
+			 * \param p_millisecond
 			 */
 			template< class TEvent >
 			void queue_event(TEvent&& p_event, core_platform::bc_clock::small_delta_time p_millisecond);
 
-			bcUINT32 process_event_queue(const core_platform::bc_clock::update_param& p_clock_update_param);
+			bcUINT32 process_event_queue(const core_platform::bc_clock::update_param& p_clock);
+
+			bcUINT32 process_render_event_queue(const core_platform::bc_clock::update_param& p_clock);
 			
 		private:
 			bc_event_listener_handle _register_event_listener(const bcCHAR* p_event_name, delegate_type&& p_listener);
 
-			void _queue_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::small_delta_time p_millisecond);
+			bcUINT32 _process_events_in_queue(const core_platform::bc_clock::update_param& p_clock,
+				core_platform::bc_clock::big_clock& p_last_elapsed,
+				bc_concurrent_queue< _bc_queued_event >& p_global_queue,
+				bc_list< _bc_queued_event, bc_memory_pool_allocator< _bc_queued_event > >& p_local_queue);
 
 			core_platform::bc_shared_mutex m_handlers_mutex;
 			handler_map_t m_handlers;
 
-			bc_concurrent_memory_pool m_local_queue_pool;
+			bc_concurrent_memory_pool m_queue_pool;
 			bc_list< _bc_queued_event, bc_memory_pool_allocator< _bc_queued_event > > m_local_queue;
+			bc_list< _bc_queued_event, bc_memory_pool_allocator< _bc_queued_event > > m_render_local_queue;
 			bc_concurrent_queue< _bc_queued_event > m_global_queue;
-			core_platform::bc_clock::big_clock m_total_elapsed;
+			bc_concurrent_queue< _bc_queued_event > m_render_global_queue;
+			core_platform::bc_clock::big_clock m_last_elapsed;
+			core_platform::bc_clock::big_clock m_render_last_elapsed;
 		};
-
+		
 		template< class TEvent >
 		void bc_event_manager::queue_event(TEvent&& p_event, core_platform::bc_clock::small_delta_time p_millisecond)
 		{
 			auto l_event = static_cast<bc_event_ptr<bc_ievent>>(bc_make_event(std::forward<TEvent>(p_event)));
-			_queue_event(std::move(l_event), p_millisecond);
+			constexpr bool l_is_app_event = std::is_base_of_v<bc_app_event, std::decay_t<TEvent>>;
+			
+			if(l_is_app_event)
+			{
+				m_global_queue.push(_bc_queued_event(std::move(l_event), p_millisecond));
+			}
+			else
+			{
+				m_render_global_queue.push(_bc_queued_event(std::move(l_event), p_millisecond));
+			}
 		}
 	}
 }

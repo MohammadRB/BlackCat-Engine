@@ -248,7 +248,7 @@ namespace black_cat
 			task_type l_task_wrapper(task_type::make_from_big_object(l_alloc_type, std::move(l_task_link))); // TODO
 			_thread_data* l_my_data = m_my_data.get();
 
-			const auto l_task_count = m_task_count.fetch_add(1, core_platform::bc_memory_order::seqcst);
+			const auto l_task_count = m_task_count.fetch_add(1, core_platform::bc_memory_order::seqcst) + 1;
 
 			// If current thread is not main thread
 			if (l_my_data && l_policy_none)

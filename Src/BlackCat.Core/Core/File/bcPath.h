@@ -61,7 +61,7 @@ namespace black_cat
 			bool is_relative() const;
 
 			/**
-			 * \brief If path doesn't exist, it will return false
+			 * \brief If path does not exist, it will return false
 			 * \return 
 			 */
 			bool is_file() const;

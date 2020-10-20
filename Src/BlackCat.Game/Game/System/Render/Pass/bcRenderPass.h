@@ -4,10 +4,10 @@
 
 #include "CorePlatform/Utility/bcNoCopy.h"
 #include "CorePlatformImp/Utility/bcClock.h"
+#include "Graphic/bcEvent.h"
 #include "Game/bcConstant.h"
-#include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/Pass/bcRenderPassResourceShare.h"
-#include "Game/System/Render/bcCameraInstance.h"
+#include "Game/System/Input/bcCameraInstance.h"
 #include "Game/bcException.h"
 
 namespace black_cat
@@ -16,6 +16,7 @@ namespace black_cat
 	{
 		class bc_render_system;
 		class bc_frame_renderer;
+		class bc_render_thread;
 		class bc_scene;
 
 		template<typename TPass>

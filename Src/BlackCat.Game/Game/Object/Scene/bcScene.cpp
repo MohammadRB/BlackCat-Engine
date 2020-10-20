@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "PhysicsImp/Body/bcRigidBody.h"
+#include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
@@ -64,15 +65,109 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_scene_graph_buffer bc_scene::get_actors(const bc_camera_frustum& p_camera_frustum) const
-		{
-			return m_scene_graph.get_actors(p_camera_frustum);
-		}
-
 		void bc_scene::add_actor(bc_actor& p_actor)
 		{
+			{
+				core_platform::bc_lock_guard<core_platform::bc_hybrid_mutex> l_lock_guard
+				(
+					m_new_actors_lock, core_platform::bc_lock_operation::light
+				);
+				m_new_actors.push_back(std::make_tuple(_bc_scene_actor_operation::add, p_actor));
+			}
+		}
+
+		void bc_scene::update_actor(bc_actor& p_actor)
+		{
+			{
+				core_platform::bc_lock_guard<core_platform::bc_hybrid_mutex> l_lock_guard
+				(
+					m_new_actors_lock, core_platform::bc_lock_operation::light
+				);
+				m_new_actors.push_back(std::make_tuple(_bc_scene_actor_operation::update, p_actor));
+			}
+		}
+
+		void bc_scene::remove_actor(bc_actor& p_actor)
+		{
+			{
+				core_platform::bc_lock_guard<core_platform::bc_hybrid_mutex> l_lock_guard
+				(
+					m_new_actors_lock, core_platform::bc_lock_operation::light
+				);
+				m_new_actors.push_back(std::make_tuple(_bc_scene_actor_operation::remove, p_actor));
+			}
+		}
+
+		void bc_scene::add_debug_shapes(bc_shape_drawer& p_shape_drawer) const
+		{
+			m_scene_graph.add_debug_shapes(p_shape_drawer);
+		}
+
+		void bc_scene::update_px(bc_physics_system& p_physics, core_platform::bc_clock::update_param p_time)
+		{
+			m_px_scene->update(p_time);
+			m_px_scene->wait();
+
+			auto l_px_actors = m_px_scene->get_active_actors();
+			const auto l_num_thread = std::max(core::bc_concurrency::worker_count(), l_px_actors.size() / 100);
+
+			core::bc_concurrency::concurrent_for_each
+			(
+				l_num_thread,
+				std::begin(l_px_actors),
+				std::end(l_px_actors),
+				[]() {return true; },
+				[&](bool, physics::bc_updated_actor& p_px_actor)
+				{
+					bc_actor l_actor = p_physics.get_game_actor(p_px_actor.m_actor);
+					l_actor.add_event(bc_actor_event_world_transform(p_px_actor.m_global_pose.get_matrix4()));
+				},
+				[](bool) {}
+			);
+		}
+
+		void bc_scene::update_graph()
+		{
+			{
+				core_platform::bc_lock_guard<core_platform::bc_hybrid_mutex> l_lock
+				(
+					m_new_actors_lock, core_platform::bc_lock_operation::heavy
+				);
+
+				const auto l_num_thread = std::max(core::bc_concurrency::worker_count(), m_new_actors.size() / 10);
+				
+				core::bc_concurrency::concurrent_for_each
+				(
+					l_num_thread,
+					std::begin(m_new_actors),
+					std::end(m_new_actors),
+					[]() { return true; },
+					[&](bool, decltype(m_new_actors)::reference p_actor)
+					{
+						switch (std::get<_bc_scene_actor_operation>(p_actor))
+						{
+						case _bc_scene_actor_operation::add:
+							_add_actor(std::get<bc_actor>(p_actor));
+							break;
+						case _bc_scene_actor_operation::update:
+							_add_actor(std::get<bc_actor>(p_actor));
+							break;
+						case _bc_scene_actor_operation::remove:
+							_add_actor(std::get<bc_actor>(p_actor));
+							break;
+						default:
+							bcAssert(false);
+						}
+					},
+					[](bool) {}
+				);
+			}
+		}
+
+		void bc_scene::_add_actor(bc_actor& p_actor)
+		{
 			const bool l_added = m_scene_graph.add_actor(p_actor);
-			if(!l_added)
+			if (!l_added)
 			{
 				p_actor.destroy();
 				return;
@@ -88,7 +183,7 @@ namespace black_cat
 			p_actor.add_event(bc_actor_event_added_to_scene(*this));
 		}
 
-		bool bc_scene::update_actor(bc_actor& p_actor)
+		void bc_scene::_update_actor(bc_actor& p_actor)
 		{
 			const bool l_updated = m_scene_graph.update_actor(p_actor);
 			if (!l_updated)
@@ -96,11 +191,9 @@ namespace black_cat
 				remove_actor(p_actor);
 				p_actor.destroy();
 			}
-
-			return l_updated;
 		}
 
-		void bc_scene::remove_actor(bc_actor& p_actor)
+		void bc_scene::_remove_actor(bc_actor& p_actor)
 		{
 			auto* l_rigid_component = p_actor.get_component<bc_rigid_body_component>();
 			if (l_rigid_component)
@@ -110,26 +203,6 @@ namespace black_cat
 			}
 
 			m_scene_graph.remove_actor(p_actor);
-		}
-
-		void bc_scene::add_debug_shapes(bc_shape_drawer& p_shape_drawer) const
-		{
-			m_scene_graph.add_debug_shapes(p_shape_drawer);
-		}
-
-		void bc_scene::update(bc_physics_system& p_physics, core_platform::bc_clock::update_param p_time)
-		{
-			m_px_scene->update(p_time);
-			m_px_scene->wait();
-
-			auto l_px_actors = m_px_scene->get_active_actors();
-			for(physics::bc_updated_actor& l_px_actor : l_px_actors)
-			{
-				bc_actor l_actor = p_physics.get_game_actor(l_px_actor.m_actor);
-				l_actor.add_event(bc_actor_event_world_transform(l_px_actor.m_global_pose.get_matrix4()));
-			}
-
-			m_scene_graph.update(p_time);
 		}
 	}
 }

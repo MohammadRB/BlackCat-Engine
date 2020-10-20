@@ -137,13 +137,13 @@ namespace black_cat
 			bc_event_frame_update_finish& operator=(const bc_event_frame_update_finish&) = default;
 		};
 
-		class bc_event_frame_render_start : public bc_app_event
+		class bc_event_frame_render_start : public bc_app_render_event
 		{
 			BC_EVENT(fr_rn_s)
 
 		public:
 			bc_event_frame_render_start()
-				: bc_app_event(event_name())
+				: bc_app_render_event(event_name())
 			{
 			}
 
@@ -154,13 +154,13 @@ namespace black_cat
 			bc_event_frame_render_start& operator=(const bc_event_frame_render_start&) = default;
 		};
 
-		class bc_event_frame_render_finish : public bc_app_event
+		class bc_event_frame_render_finish : public bc_app_render_event
 		{
 			BC_EVENT(fr_rn_e)
 
 		public:
 			bc_event_frame_render_finish()
-				: bc_app_event(event_name())
+				: bc_app_render_event(event_name())
 			{
 			}
 

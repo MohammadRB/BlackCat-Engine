@@ -117,15 +117,15 @@ namespace black_cat
 			
 			/**
 			 * \brief Start game core update logic
-			 * \param p_clock_update_param 
+			 * \param p_clock 
 			 */
-			void update_game(const core_platform::bc_clock::update_param& p_clock_update_param);
+			void update_game(const core_platform::bc_clock::update_param& p_clock);
 			
 			/**
 			 * \brief Start game core render logic
-			 * \param p_clock_update_param 
+			 * \param p_clock 
 			 */
-			void render_game(const core_platform::bc_clock::update_param& p_clock_update_param);
+			void render_game(const core_platform::bc_clock::update_param& p_clock);
 
 		private:
 			void _initialize(bc_game_system_parameter) override;

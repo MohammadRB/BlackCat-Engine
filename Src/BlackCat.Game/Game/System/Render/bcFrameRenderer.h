@@ -5,7 +5,7 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Concurrency/bcTask.h"
 #include "GraphicImp/Device/bcDevice.h"
-#include "Game/System/Render/bcCameraInstance.h"
+#include "Game/System/Input/bcCameraInstance.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -59,11 +59,11 @@ namespace black_cat
 
 			const graphic::bc_constant_buffer_parameter& get_per_object_cbuffer() const;
 
-			void update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera);
+			void update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_camera_instance& p_camera);
 			
 			bc_render_state_buffer create_buffer() const;
 
-			void render_buffer(const bc_render_state_buffer& p_buffer, bc_render_thread& p_render_thread, const bc_icamera& p_camera);
+			void render_buffer(const bc_render_state_buffer& p_buffer, bc_render_thread& p_render_thread, const bc_camera_instance& p_camera);
 			
 			void update(const bc_frame_renderer_update_param& p_update_param);
 

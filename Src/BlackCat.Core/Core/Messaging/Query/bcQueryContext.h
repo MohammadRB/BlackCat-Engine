@@ -17,10 +17,10 @@ namespace black_cat
 		public:
 			virtual ~bc_query_context() = 0;
 
-			core_platform::bc_clock::update_param m_clock;
+			core_platform::bc_clock::update_param m_clock { 0, 0 };
 
 		protected:
-			explicit bc_query_context(const core_platform::bc_clock::update_param& p_clock);
+			bc_query_context();
 			
 			bc_query_context(const bc_query_context&);
 
@@ -31,10 +31,7 @@ namespace black_cat
 		
 		inline bc_query_context::~bc_query_context() = default;
 
-		inline bc_query_context::bc_query_context(const core_platform::bc_clock::update_param& p_clock)
-			: m_clock(p_clock)
-		{
-		}
+		inline bc_query_context::bc_query_context() = default;
 
 		inline bc_query_context::bc_query_context(const bc_query_context&) = default;
 

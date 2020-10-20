@@ -2,6 +2,7 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
+#include "Core/Messaging/Query/bcQueryManager.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/State/bcStateConfigs.h"
 #include "Game/System/Render/bcRenderSystem.h"
@@ -70,8 +71,22 @@ namespace black_cat
 
 	void bc_vegetable_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_param& p_param)
 	{
-		const game::bc_camera_frustum l_camera_frustum(p_param.m_cascade_camera);
-		auto l_scene_buffer = p_param.m_scene.get_actors<game::bc_vegetable_mesh_component>(l_camera_frustum);
+		const auto l_cascade_absolute_index = p_param.m_light_index * p_param.m_cascade_count + p_param.m_cascade_index;
+		if (m_scene_queries.size() < l_cascade_absolute_index)
+		{
+			m_scene_queries.push_back(core::bc_get_service<core::bc_query_manager>()->queue_query
+			(
+				game::bc_scene_graph_query().with(game::bc_camera_frustum(p_param.m_cascade_camera))
+				.only< game::bc_vegetable_mesh_component >()
+			));
+		}
+
+		if (!m_scene_queries[l_cascade_absolute_index].is_executed())
+		{
+			return;
+		}
+		
+		auto l_scene_buffer = m_scene_queries[l_cascade_absolute_index].get().get_scene_buffer();
 
 		// Render vegetable leafs
 		const auto& l_leaf_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index * 2];
@@ -99,6 +114,12 @@ namespace black_cat
 		p_param.m_frame_renderer.render_buffer(l_trunk_render_state_buffer, p_param.m_render_thread, p_param.m_cascade_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(l_trunk_render_pass_state);
+
+		m_scene_queries[l_cascade_absolute_index] = core::bc_get_service< core::bc_query_manager >()->queue_query
+		(
+			game::bc_scene_graph_query().with(game::bc_camera_frustum(p_param.m_cascade_camera))
+			.only< game::bc_vegetable_mesh_component >()
+		);
 	}
 
 	void bc_vegetable_cascaded_shadow_map_pass::destroy_pass(game::bc_render_system& p_render_system)

@@ -3,6 +3,8 @@
 #pragma once
 
 #include "Core/Container/bcVector.h"
+#include "Core/Messaging/Query/bcQueryResult.h"
+#include "Core/Utility/bcNullable.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
@@ -10,8 +12,7 @@
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/Light/bcDirectLight.h"
 #include "Game/System/Input/bcFreeCamera.h"
-#include "Game/System/Input/bcCameraFrustum.h"
-#include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
+#include "Game/bcQuery.h"
 #include "BlackCat/bcExport.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapCamera.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapBufferContainer.h"
@@ -42,6 +43,9 @@ namespace black_cat
 		graphic::bc_device_command_list_ptr m_command_list;
 		core::bc_vector_program<_bc_cascaded_shadow_map_light_state> m_light_instance_states;
 
+		core::bc_query_result<game::bc_scene_graph_query> m_scene_query;
+		core::bc_nullable<game::bc_scene_graph_buffer> m_scene_query_result;
+		
 		bool m_capture_debug_shapes = false;
 		game::bc_icamera::extend m_captured_camera;
 		core::bc_vector_movale<game::bc_icamera::extend> m_captured_cascades;
@@ -53,26 +57,31 @@ namespace black_cat
 	public:
 		bc_cascaded_shadow_map_pass_render_param(const game::bc_render_pass_render_param& p_render_param,
 			const core::bc_vector< game::bc_render_pass_state_ptr >& p_render_states,
-			const game::bc_icamera& p_cascade_camera,
-			bcUINT32 p_cascade_index)
+			const game::bc_camera_instance& p_cascade_camera,
+			bcSIZE p_light_index,
+			bcSIZE p_cascade_index,
+			bcSIZE p_cascade_count)
 			: game::bc_render_pass_render_param
 			(
 				p_render_param.m_clock,
+				p_render_param.m_camera,
 				p_render_param.m_render_system,
 				p_render_param.m_frame_renderer,
-				p_render_param.m_render_thread,
-				p_render_param.m_camera,
-				p_render_param.m_scene
+				p_render_param.m_render_thread
 			),
 			m_render_pass_states(p_render_states),
 			m_cascade_camera(p_cascade_camera),
-			m_cascade_index(p_cascade_index)
+			m_light_index(p_light_index),
+			m_cascade_index(p_cascade_index),
+			m_cascade_count(p_cascade_count)
 		{
 		}
 
 		const core::bc_vector<game::bc_render_pass_state_ptr>& m_render_pass_states;
-		const game::bc_icamera& m_cascade_camera;
-		bcUINT32 m_cascade_index;
+		const game::bc_camera_instance& m_cascade_camera;
+		bcSIZE m_light_index;
+		bcSIZE m_cascade_index;
+		bcSIZE m_cascade_count;
 	};
 
 	class BC_DLL bc_base_cascaded_shadow_map_pass : public game::bc_irender_pass
@@ -120,7 +129,7 @@ namespace black_cat
 
 		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_cascades(const game::bc_icamera& p_camera, const game::bc_direct_light& p_light);
 
-		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_stabilized_cascades(const game::bc_icamera& p_camera, const game::bc_direct_light& p_light);
+		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_stabilized_cascades(const game::bc_camera_instance& p_camera, const game::bc_direct_light& p_light);
 
 		const bcSIZE m_my_index;
 		core::bc_shared_ptr<_bc_cascaded_shadow_map_pass_state> m_state;

@@ -12,8 +12,8 @@ namespace black_cat
 		
 		/**
 		 * \brief 
-		 * Wrap a non-nullable object (a class that doesn't support uninitialized state).
-		 * This class doesn't use dynamic memory
+		 * Wrap a non-nullable object (a class that does not support uninitialized state).
+		 * This class does not use dynamic memory
 		 * \tparam T 
 		 */
 		template< typename T >

@@ -80,19 +80,22 @@ namespace black_cat
 						}
 					}
 				}
-				
+
+				const bcUINT32 l_num_queries = std::distance(l_first_inserted_query, std::end(m_executed_queries));
+				const auto l_num_thread = std::max(bc_concurrency::worker_count(), l_num_queries / 5);
 				bc_concurrency::concurrent_for_each
 				(
+					l_num_thread,
 					l_first_inserted_query,
 					std::end(m_executed_queries),
-					[=]() { return false; },
+					[=]() {return true; },
 					[=](bool, _query_entry& p_query)
 					{
 						p_query.m_query->execute(*p_query.m_provider.m_provided_context);
 						// use release memory order so memory changes become available for calling thread
 						p_query.m_state.store(_bc_query_shared_state::state::executed, core_platform::bc_memory_order::release);
 					},
-					[=](bool){}
+					[=](bool) {}
 				);
 			}
 		}
@@ -192,6 +195,7 @@ namespace black_cat
 
 		bc_query_manager::_provider_entry::_provider_entry(_provider_entry&& p_other) noexcept
 			: m_provider_delegate(std::move(p_other.m_provider_delegate)),
+			m_provided_context(std::move(p_other.m_provided_context)),
 			m_queries(std::move(p_other.m_queries))
 		{
 		}
@@ -201,6 +205,7 @@ namespace black_cat
 		bc_query_manager::_provider_entry& bc_query_manager::_provider_entry::operator=(_provider_entry&& p_other) noexcept
 		{
 			m_provider_delegate = std::move(p_other.m_provider_delegate);
+			m_provided_context = std::move(p_other.m_provided_context);
 			m_queries = std::move(p_other.m_queries);
 			
 			return *this;

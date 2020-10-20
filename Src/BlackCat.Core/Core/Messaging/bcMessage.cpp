@@ -10,12 +10,12 @@ namespace black_cat
 	{
 		bc_imessage::~bc_imessage() = default;
 
-		const bcCHAR* bc_imessage::get_name() const noexcept
+		const bcCHAR* bc_imessage::get_message_name() const noexcept
 		{
 			return m_name;
 		}
 
-		bc_message_hash bc_imessage::get_hash() const noexcept
+		bc_message_hash bc_imessage::get_message_hash() const noexcept
 		{
 			if (m_hash == 0)
 			{

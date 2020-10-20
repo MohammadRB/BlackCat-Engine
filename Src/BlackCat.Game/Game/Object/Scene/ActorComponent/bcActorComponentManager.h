@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "CorePlatformImp/Concurrency/bcMutex.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/bcConstant.h"
 #include "Core/Container/bcString.h"
@@ -92,25 +94,59 @@ namespace black_cat
 			{
 			}
 
+			_bc_actor_entry(const _bc_actor_entry& p_other)
+			{
+				operator=(p_other);
+			}
+
+			~_bc_actor_entry() = default;
+
+			_bc_actor_entry& operator=(const _bc_actor_entry& p_other)
+			{
+				m_actor = p_other.m_actor;
+				m_parent_index = p_other.m_parent_index;
+				m_events[0].store(p_other.m_events[0].load(core_platform::bc_memory_order::relaxed), core_platform::bc_memory_order::relaxed);
+				m_events[1].store(p_other.m_events[1].load(core_platform::bc_memory_order::relaxed), core_platform::bc_memory_order::relaxed);
+
+				return *this;
+			}
+			
 			void add_event(bcUINT32 p_active_event_pool, bc_actor_event* p_event) noexcept
 			{
-				p_event->set_next(m_events[p_active_event_pool]);
-				m_events[p_active_event_pool] = p_event;
+				auto* l_events = m_events[p_active_event_pool].load(core_platform::bc_memory_order::relaxed);
+				
+				while (true)
+				{
+					p_event->set_next(l_events);
+
+					const auto l_changed = m_events[p_active_event_pool].compare_exchange_weak
+					(
+						&l_events,
+						p_event,
+						core_platform::bc_memory_order::relaxed,
+						core_platform::bc_memory_order::relaxed
+					);
+
+					if(l_changed)
+					{
+						break;
+					}
+				}
 			}
 
 			bc_actor_event* get_events(bcUINT32 p_active_event_pool) const noexcept
 			{
-				return m_events[p_active_event_pool];
+				return m_events[p_active_event_pool].load(core_platform::bc_memory_order::relaxed);
 			}
 
 			void clear_events(bcUINT32 p_active_event_pool) noexcept
 			{
-				m_events[p_active_event_pool] = nullptr;
+				m_events[p_active_event_pool].store(nullptr, core_platform::bc_memory_order::relaxed);
 			}
 
 			bc_actor m_actor;
 			bc_actor_index m_parent_index;
-			bc_actor_event* m_events[2];
+			core_platform::bc_atomic<bc_actor_event*> m_events[2];
 		};
 
 		struct _bc_actor_component_entry
@@ -128,6 +164,7 @@ namespace black_cat
 			core::bc_vector_movale< bc_actor_index > m_component_to_actor_index_map;
 			core::bc_unique_ptr< bc_iactor_component_container > m_container;
 			core::bc_vector_movale< deriveds_component_get_delegate > m_deriveds;
+			mutable core_platform::bc_shared_mutex m_lock;
 		};
 
 		class bc_actor_component_manager : public core::bc_iservice
@@ -213,6 +250,7 @@ namespace black_cat
 
 			const bcSIZE s_events_pool_capacity = 100 * 1024;
 
+			mutable core_platform::bc_shared_mutex m_actors_lock;
 			actor_container_type m_actors;
 			component_container_type m_components;
 			bcUINT32 m_read_event_pool;
@@ -246,27 +284,33 @@ namespace black_cat
 		{
 			bc_actor_index l_index = 0;
 			bool l_inserted = false;
-
-			for (core::bc_nullable< _bc_actor_entry >& l_actor : m_actors) // TODO use fast free space lookup
+			
 			{
-				if (!l_actor.is_set())
+				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_lock(m_actors_lock);
+
+				for (core::bc_nullable< _bc_actor_entry >& l_actor : m_actors) // TODO use fast free space lookup
 				{
-					l_actor.reset(_bc_actor_entry(bc_actor(l_index), p_parent ? p_parent->get_index() : bc_actor::invalid_index));
-					l_inserted = true;
-					break;
-				}
-				else
-				{
+					if (!l_actor.is_set())
+					{
+						l_actor.reset(_bc_actor_entry(bc_actor(l_index), p_parent ? p_parent->get_index() : bc_actor::invalid_index));
+						l_inserted = true;
+						break;
+					}
+					
 					++l_index;
 				}
 			}
 
 			if (!l_inserted)
 			{
-				m_actors.push_back(core::bc_nullable< _bc_actor_entry >
-				(
-					_bc_actor_entry(bc_actor(l_index), p_parent ? p_parent->get_index() : bc_actor::invalid_index)
-				));
+				{
+					core_platform::bc_lock_guard<core_platform::bc_shared_mutex> l_lock(m_actors_lock);
+
+					m_actors.push_back(core::bc_nullable< _bc_actor_entry >
+					(
+						_bc_actor_entry(bc_actor(l_index), p_parent ? p_parent->get_index() : bc_actor::invalid_index)
+					));
+				}
 
 				_resize_actor_to_component_index_maps();
 			}
@@ -276,7 +320,7 @@ namespace black_cat
 
 		inline void bc_actor_component_manager::remove_actor(const bc_actor& p_actor)
 		{
-			bc_actor_index l_actor_index = p_actor.get_index();
+			const auto l_actor_index = p_actor.get_index();
 
 			for(auto& l_component : m_components)
 			{
@@ -288,84 +332,117 @@ namespace black_cat
 					continue;
 				}
 
-				bc_actor_component_index l_component_index = l_component_entry.m_actor_to_component_index_map[l_actor_index];
-				
-				// This actor has this component type
-				if(l_component_index != bc_iactor_component::invalid_index)
 				{
-					l_component_entry.m_container->remove(l_component_index);
-					l_component_entry.m_component_to_actor_index_map[l_component_index] = bc_actor::invalid_index;
-					l_component_entry.m_actor_to_component_index_map[l_actor_index] = bc_iactor_component::invalid_index;
+					core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock(l_component_entry.m_lock);
+
+					const auto l_component_index = l_component_entry.m_actor_to_component_index_map[l_actor_index];
+
+					// This actor has this component type
+					if (l_component_index != bc_iactor_component::invalid_index)
+					{
+						l_component_entry.m_container->remove(l_component_index);
+						l_component_entry.m_component_to_actor_index_map[l_component_index] = bc_actor::invalid_index;
+						l_component_entry.m_actor_to_component_index_map[l_actor_index] = bc_iactor_component::invalid_index;
+					}
 				}
 			}
 
-			m_actors[p_actor.get_index()].reset();
+			{
+				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_lock(m_actors_lock);
+				m_actors[p_actor.get_index()].reset();
+			}
 		}
 
 		template<typename TEvent>
 		void bc_actor_component_manager::actor_add_event(const bc_actor& p_actor, TEvent&& p_event)
 		{
-			auto& l_actor_entry = m_actors[p_actor.get_index()].get();
 			auto* l_event = m_events_pool[m_write_event_pool].alloc<TEvent>(std::move(p_event));
 
-			l_actor_entry.add_event(m_write_event_pool, l_event);
+			{
+				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_lock(m_actors_lock);
+
+				auto& l_actor_entry = m_actors[p_actor.get_index()].get();
+				l_actor_entry.add_event(m_write_event_pool, l_event);
+			}
 		}
 
 		inline bc_actor_event* bc_actor_component_manager::actor_get_events(const bc_actor& p_actor) const noexcept
 		{
-			auto& l_actor_entry = m_actors[p_actor.get_index()].get();
-			return l_actor_entry.get_events(m_read_event_pool);
+			{
+				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_lock(m_actors_lock);
+				
+				auto& l_actor_entry = m_actors[p_actor.get_index()].get();
+				return l_actor_entry.get_events(m_read_event_pool);
+			}
 		}
 
 		inline void bc_actor_component_manager::actor_clear_events(const bc_actor& p_actor) noexcept
 		{
-			auto& l_actor_entry = m_actors[p_actor.get_index()].get();
-			l_actor_entry.clear_events(m_read_event_pool);
+			{
+				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock(m_actors_lock);
+
+				auto& l_actor_entry = m_actors[p_actor.get_index()].get();
+				l_actor_entry.clear_events(m_read_event_pool);
+			}
 		}
 
 		template< class TComponent >
 		void bc_actor_component_manager::create_component(const bc_actor& p_actor)
 		{
-			static component_container_type::value_type* l_component_entry = _get_component_entry< TComponent >();
+			static component_container_type::value_type* l_s_component_entry = _get_component_entry< TComponent >();
 
-			bcAssert(l_component_entry != nullptr);
-
-			// Cast to concrete container to avoid virtual calls
-			auto* l_concrete_container = static_cast<bc_actor_component_container< TComponent >*>(l_component_entry->second.m_container.get());
-
-			const bc_actor_index l_actor_index = p_actor.get_index();
-
+			const auto l_actor_index = p_actor.get_index();
+			auto* l_parent = static_cast< bc_actor* >(nullptr);
+			
 			bcAssert(l_actor_index != bc_actor::invalid_index);
-
-			bc_actor_index l_parent_actor_index = m_actors[l_actor_index]->m_parent_index;
-			bc_actor_component_index l_component_index = bc_iactor_component::invalid_index;
-
-			// If actor has parent and it's parent has this component type we must create actor component
-			// after parent component in sorting order of container so parent component update earlier
-			if(l_parent_actor_index != bc_actor::invalid_index)
+			
 			{
-				const bc_actor& l_parent = m_actors[l_parent_actor_index]->m_actor;
-				const TComponent* l_parent_component = l_parent.get_component<TComponent>();
+				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_lock(m_actors_lock);
 
-				if(l_parent_component)
+				const auto l_parent_actor_index = m_actors[l_actor_index]->m_parent_index;
+				if (l_parent_actor_index != bc_actor::invalid_index)
 				{
-					bc_actor_component_index l_parent_component_index = l_parent_component->get_index();
-					l_component_index = l_concrete_container->create_after(l_parent_component_index);
+					l_parent = &m_actors[l_parent_actor_index]->m_actor;
 				}
 			}
 			
-			if(l_component_index == bc_iactor_component::invalid_index)
+			auto l_component_index = bc_iactor_component::invalid_index;
+			auto l_parent_component_index = bc_iactor_component::invalid_index;
+
+			// If actor has parent and it's parent has this component type we must create actor component
+			// after parent component in sorting order of container so parent component update earlier
+			if(l_parent)
 			{
-				l_component_index = l_concrete_container->create();
+				const TComponent* l_parent_component = l_parent->get_component<TComponent>();
+				if(l_parent_component)
+				{
+					l_parent_component_index = l_parent_component->get_index();
+				}
 			}
 
-			if (l_component_entry->second.m_component_to_actor_index_map.size() < l_component_index + 1)
 			{
-				l_component_entry->second.m_component_to_actor_index_map.resize(l_concrete_container->capacity(), bc_actor::invalid_index);
-			}
+				core_platform::bc_lock_guard<core_platform::bc_shared_mutex> l_lock(l_s_component_entry->second.m_lock);
+				
+				// Cast to concrete container to avoid virtual calls
+				auto* l_concrete_container = static_cast<bc_actor_component_container< TComponent >*>(l_s_component_entry->second.m_container.get());
 
-			l_component_entry->second.m_component_to_actor_index_map[l_component_index] = l_actor_index;
-			l_component_entry->second.m_actor_to_component_index_map[l_actor_index] = l_component_index;
+				if(l_parent_component_index == bc_iactor_component::invalid_index)
+				{
+					l_component_index = l_concrete_container->create();
+				}
+				else
+				{
+					l_component_index = l_concrete_container->create_after(l_parent_component_index);
+				}
+
+				if (l_s_component_entry->second.m_component_to_actor_index_map.size() < l_component_index + 1)
+				{
+					l_s_component_entry->second.m_component_to_actor_index_map.resize(l_concrete_container->capacity(), bc_actor::invalid_index);
+				}
+
+				l_s_component_entry->second.m_component_to_actor_index_map[l_component_index] = l_actor_index;
+				l_s_component_entry->second.m_actor_to_component_index_map[l_actor_index] = l_component_index;
+			}
 		}
 
 		template< class TComponent >
@@ -373,25 +450,29 @@ namespace black_cat
 		{
 			static component_container_type::value_type* l_component_entry = _get_component_entry< TComponent >();
 
-			bc_actor_index l_actor_index = p_actor.get_index();
+			const auto l_actor_index = p_actor.get_index();
 
 			bcAssert(l_actor_index != bc_actor::invalid_index);
 
-			bcINT32 l_component_index = l_component_entry->second.m_actor_to_component_index_map[l_actor_index];
-			// Actor has not this type of component
-			if (l_component_index == bc_iactor_component::invalid_index)
 			{
-				bcAssert(false);
-				return;
+				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_lock(l_component_entry->second.m_lock);
+
+				auto l_component_index = l_component_entry->second.m_actor_to_component_index_map[l_actor_index];
+				// Actor has not this type of component
+				if (l_component_index == bc_iactor_component::invalid_index)
+				{
+					bcAssert(false);
+					return;
+				}
+
+				// Cast to concrete container to avoid virtual calls
+				auto* l_concrete_container = static_cast<bc_actor_component_container< TComponent >*>(l_component_entry->second.m_container.get());
+
+				l_concrete_container->remove(l_component_index);
+
+				l_component_entry->second.m_component_to_actor_index_map[l_component_index] = bc_actor::invalid_index;
+				l_component_entry->second.m_actor_to_component_index_map[l_actor_index] = bc_iactor_component::invalid_index;
 			}
-
-			// Cast to concrete container to avoid virtual calls
-			auto* l_concrete_container = static_cast<bc_actor_component_container< TComponent >*>(l_component_entry->second.m_container.get());
-
-			l_concrete_container->remove(l_component_index);
-
-			l_component_entry->second.m_component_to_actor_index_map[l_component_index] = bc_actor::invalid_index;
-			l_component_entry->second.m_actor_to_component_index_map[l_actor_index] = bc_iactor_component::invalid_index;
 		}
 
 		template< class TComponent >
@@ -423,18 +504,22 @@ namespace black_cat
 		{
 			const auto l_actor_index = p_actor.get_index();
 
-			for (auto& l_component : m_components)
+			for (auto& l_component_entry : m_components)
 			{
-				if(l_component.second.m_component_priority == bc_iactor_component::invalid_index)
+				if(l_component_entry.second.m_component_priority == bc_iactor_component::invalid_index)
 				{
 					continue; // It is an abstract component
 				}
 
-				const auto l_component_index = l_component.second.m_actor_to_component_index_map[l_actor_index];
-				if(l_component_index != bc_iactor_component::invalid_index)
 				{
-					*p_destination = l_component.second.m_container->get(l_component_index);
-					++p_destination;
+					core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_lock(l_component_entry.second.m_lock);
+
+					const auto l_component_index = l_component_entry.second.m_actor_to_component_index_map[l_actor_index];
+					if (l_component_index != bc_iactor_component::invalid_index)
+					{
+						*p_destination = l_component_entry.second.m_container->get(l_component_index);
+						++p_destination;
+					}
 				}
 			}
 		}
@@ -447,8 +532,14 @@ namespace black_cat
 			static const component_container_type::value_type* l_component_entry = _get_component_entry< TComponent >();
 
 			const bc_actor_component_index l_component_index = p_component.get_index();
-			const bcINT32 l_component_to_actor = l_component_entry->second.m_component_to_actor_index_map[l_component_index];
-			return m_actors[l_component_to_actor].get().m_actor;
+
+			{
+				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_actors_lock(m_actors_lock);
+				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_component_lock(l_component_entry->second.m_lock);
+
+				const auto l_component_to_actor = l_component_entry->second.m_component_to_actor_index_map[l_component_index];
+				return m_actors[l_component_to_actor].get().m_actor;
+			}
 		}
 
 		template< class ...TCAdapter >
@@ -531,10 +622,15 @@ namespace black_cat
 				l_components.push_back(&l_entry.second);
 			}
 
-			std::sort(std::begin(l_components), std::end(l_components), [](const _bc_actor_component_entry* p_first, const _bc_actor_component_entry* p_second)
+			std::sort
+			(
+				std::begin(l_components),
+				std::end(l_components),
+				[](const _bc_actor_component_entry* p_first, const _bc_actor_component_entry* p_second)
 				{
 					return p_first->m_component_priority < p_second->m_component_priority;
-				});
+				}
+			);
 
 			do
 			{
@@ -547,22 +643,22 @@ namespace black_cat
 				}
 
 				bcSIZE l_component_index = 0;
-				for (auto l_component_data : l_components)
+				for (auto l_entry : l_components)
 				{
 					++l_component_index;
 
-					if (!l_component_data->m_require_event)
+					if (!l_entry->m_require_event)
 					{
 						continue;
 					}
 
 					if (l_component_index != l_components.size())
 					{
-						l_component_data->m_container->handle_events(*this, nullptr);
+						l_entry->m_container->handle_events(*this, nullptr);
 					}
 					else
 					{
-						l_component_data->m_container->handle_events(*this, &m_events_pool[m_read_event_pool]);
+						l_entry->m_container->handle_events(*this, &m_events_pool[m_read_event_pool]);
 					}
 				}
 			} while (m_events_pool[m_write_event_pool].size());
@@ -607,22 +703,26 @@ namespace black_cat
 			// Isn't it abstract
 			bcAssert(l_component_entry->second.m_component_priority != _bc_actor_component_entry::s_invalid_priority_value);
 
-			const bc_actor_index l_actor_index = p_actor.get_index();
+			const auto l_actor_index = p_actor.get_index();
 
 			bcAssert(l_actor_index != bc_actor::invalid_index);
 
-			bcINT32 l_actor_to_component = l_component_entry->second.m_actor_to_component_index_map[l_actor_index];
-			// Actor does not has this type of component
-			if (l_actor_to_component == bc_iactor_component::invalid_index)
 			{
-				return nullptr;
+				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_lock(l_component_entry->second.m_lock);
+
+				auto l_actor_to_component = l_component_entry->second.m_actor_to_component_index_map[l_actor_index];
+				// Actor does not has this type of component
+				if (l_actor_to_component == bc_iactor_component::invalid_index)
+				{
+					return nullptr;
+				}
+
+				// Cast to concrete container to avoid virtual calls
+				auto* l_concrete_container = static_cast<bc_actor_component_container< TComponent >*>(l_component_entry->second.m_container.get());
+				auto* l_component = l_concrete_container->get(l_actor_to_component);
+
+				return l_component;
 			}
-
-			// Cast to concrete container to avoid virtual calls
-			auto* l_concrete_container = static_cast<bc_actor_component_container< TComponent >*>(l_component_entry->second.m_container.get());
-			auto* l_component = l_concrete_container->get(l_actor_to_component);
-
-			return l_component;
 		}
 
 		template< class TComponent >
@@ -635,7 +735,7 @@ namespace black_cat
 			);
 
 			// Initialize components container
-			auto l_hash = bc_actor_component_traits< TComponent >::component_hash();
+			const bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
 			_bc_actor_component_entry l_data
 			{
 				bc_actor_component_traits<TComponent>::component_is_abstract(),
@@ -647,7 +747,12 @@ namespace black_cat
 				core::bc_make_unique< bc_actor_component_container< TComponent > >(core::bc_alloc_type::program)
 			};
 
-			m_components.insert(component_container_type::value_type(l_hash, std::move(l_data)));
+			component_container_type::value_type l_entry = std::make_pair<const bc_actor_component_hash, _bc_actor_component_entry>
+			(
+				bc_actor_component_traits< TComponent >::component_hash(), 
+				std::move(l_data)
+			);
+			m_components.insert(std::move(l_entry));
 		}
 
 		template< class TComponent, class ...TDeriveds >
@@ -659,7 +764,7 @@ namespace black_cat
 				"TComponent is not an abstract component."
 			);
 
-			auto l_hash = bc_actor_component_traits< TComponent >::component_hash();
+			bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
 			_bc_actor_component_entry l_data
 			{
 				bc_actor_component_traits<TComponent>::component_is_abstract(),
@@ -687,7 +792,12 @@ namespace black_cat
 				)
 			};
 
-			m_components.insert(component_container_type::value_type(l_hash, std::move(l_data)));
+			component_container_type::value_type l_entry = std::make_pair<const bc_actor_component_hash, _bc_actor_component_entry>
+			(
+				bc_actor_component_traits< TComponent >::component_hash(),
+				std::move(l_data)
+			);
+			m_components.insert(std::move(l_entry));
 		}
 
 		template< class TComponent >
@@ -695,8 +805,8 @@ namespace black_cat
 		{
 			static_assert(std::is_base_of< bc_iactor_component, TComponent >::value, "TComponent must inherit from bc_iactor_component");
 
-			bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
-			auto l_entry = m_components.find(l_hash);
+			const bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
+			const auto l_entry = m_components.find(l_hash);
 
 			if (l_entry == std::end(m_components))
 			{
@@ -722,10 +832,14 @@ namespace black_cat
 					continue;
 				}
 
-				// If component type haven't enough index map
-				if (l_component_entry.second.m_actor_to_component_index_map.size() < m_actors.size())
 				{
-					l_component_entry.second.m_actor_to_component_index_map.resize(m_actors.capacity(), bc_iactor_component::invalid_index);
+					core_platform::bc_lock_guard<core_platform::bc_shared_mutex> l_lock(l_component_entry.second.m_lock);
+
+					// If component type doesn't have enough space in index map
+					if (l_component_entry.second.m_actor_to_component_index_map.size() < m_actors.size())
+					{
+						l_component_entry.second.m_actor_to_component_index_map.resize(m_actors.capacity(), bc_iactor_component::invalid_index);
+					}
 				}
 			}
 		}

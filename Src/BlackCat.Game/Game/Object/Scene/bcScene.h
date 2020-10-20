@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
@@ -18,6 +19,11 @@ namespace black_cat
 {
 	namespace game
 	{
+		enum class _bc_scene_actor_operation
+		{
+			add, update, remove
+		};
+		
 		class BC_GAME_DLL bc_scene : public core::bc_icontent
 		{
 			BC_CONTENT(scene)
@@ -48,31 +54,46 @@ namespace black_cat
 			physics::bc_scene& get_px_scene();
 
 			const physics::bc_scene& get_px_scene() const;
-
-			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;
-
-			template<typename TComponent>
-			bc_scene_graph_buffer get_actors() const;
-
-			template<typename TComponent>
-			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;
-
+				
+			/**
+			 * \brief ThreadSafe
+			 * \param p_actor 
+			 */
 			void add_actor(bc_actor& p_actor);
 
-			bool update_actor(bc_actor& p_actor);
+			/**
+			 * \brief ThreadSafe
+			 * \param p_actor
+			 */
+			void update_actor(bc_actor& p_actor);
 
+			/**
+			 * \brief ThreadSafe
+			 * \param p_actor
+			 */
 			void remove_actor(bc_actor& p_actor);
 
 			void add_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
-			void update(bc_physics_system& p_physics, core_platform::bc_clock::update_param p_time);
+			void update_px(bc_physics_system& p_physics, core_platform::bc_clock::update_param p_time);
 
+			void update_graph();
+			
 		private:
+			void _add_actor(bc_actor& p_actor);
+
+			void _update_actor(bc_actor& p_actor);
+
+			void _remove_actor(bc_actor& p_actor);
+			
 			core::bc_estring m_path;
 			core::bc_string m_name;
 			core::bc_vector<core::bc_string> m_loaded_streams;
 			bc_scene_graph m_scene_graph;
 			physics::bc_scene_ref m_px_scene;
+
+			core_platform::bc_hybrid_mutex m_new_actors_lock;
+			core::bc_vector<std::tuple<_bc_scene_actor_operation, bc_actor>> m_new_actors;
 		};
 
 		using bc_scene_ptr = core::bc_content_ptr<bc_scene>;
@@ -110,18 +131,6 @@ namespace black_cat
 		inline const physics::bc_scene& bc_scene::get_px_scene() const
 		{
 			return m_px_scene.get();
-		}
-		
-		template< typename TComponent >
-		bc_scene_graph_buffer bc_scene::get_actors() const
-		{
-			return m_scene_graph.get_actors<TComponent>();
-		}
-
-		template< typename TComponent >
-		bc_scene_graph_buffer bc_scene::get_actors(const bc_camera_frustum& p_camera_frustum) const
-		{
-			return  m_scene_graph.get_actors<TComponent>(p_camera_frustum);
 		}
 	}
 }

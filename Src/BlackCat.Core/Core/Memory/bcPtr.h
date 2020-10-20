@@ -691,13 +691,13 @@ namespace black_cat
 			
 			bcSIZE inc_ref_count() noexcept
 			{
-				bcSIZE l_count = m_ref_count.fetch_add(1, core_platform::bc_memory_order::relaxed);
+				const bcSIZE l_count = m_ref_count.fetch_add(1, core_platform::bc_memory_order::relaxed);
 				return l_count + 1;
 			}
 
 			bcSIZE dec_ref_count() noexcept
 			{
-				bcSIZE l_count = m_ref_count.fetch_sub(1, core_platform::bc_memory_order::relaxed);
+				const bcSIZE l_count = m_ref_count.fetch_sub(1, core_platform::bc_memory_order::relaxed);
 				return l_count - 1;
 			}
 

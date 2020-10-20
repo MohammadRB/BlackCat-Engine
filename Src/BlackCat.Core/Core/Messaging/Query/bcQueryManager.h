@@ -23,7 +23,7 @@ namespace black_cat
 	{
 		class BC_CORE_DLL bc_query_manager final : public bc_iservice
 		{
-			BC_SERVICE(qur_mng)
+			BC_SERVICE(qr_mng)
 
 		public:
 			using provider_delegate_t = bc_delegate< bc_query_context_ptr() >;
@@ -52,7 +52,7 @@ namespace black_cat
 			void unregister_query_provider(bc_query_provider_handle& p_provider_handle);
 			
 			template< class TQuery >
-			bc_query_result<TQuery> queue_query(const TQuery& p_query);
+			bc_query_result<std::decay_t< TQuery >> queue_query(TQuery&& p_query);
 
 			void process_query_queue(const core_platform::bc_clock::update_param& p_clock_update_param);
 
@@ -113,16 +113,17 @@ namespace black_cat
 		}
 
 		template< class TQuery >
-		bc_query_result<TQuery> bc_query_manager::queue_query(const TQuery& p_query)
+		bc_query_result< std::decay_t< TQuery > > bc_query_manager::queue_query(TQuery&& p_query)
 		{
-			static_assert(std::is_base_of_v<bc_iquery, TQuery>, "TQuery must be derived from bc_iquery");
-			
-			auto l_query = std::make_unique<TQuery>(std::move(p_query));
-			auto& l_context_type_info = typeid(typename TQuery::context_t);
-			
+			using query_t = std::decay_t< TQuery >;
+			static_assert(std::is_base_of_v< bc_iquery, query_t >, "TQuery must be derived from bc_iquery");
+
+			auto l_query = core::bc_make_unique< query_t >(std::forward< query_t >(p_query));
+			auto& l_context_type_info = typeid(typename query_t::context_t);
+
 			auto& l_shared_state = _queue_query(l_context_type_info.hash_code(), std::move(l_query));
 
-			return bc_query_result<TQuery>(*this, l_shared_state);
+			return bc_query_result< query_t >(*this, l_shared_state);
 		}
 	}
 }

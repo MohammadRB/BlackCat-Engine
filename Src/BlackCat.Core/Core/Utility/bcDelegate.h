@@ -212,7 +212,7 @@ namespace black_cat
 			~bc_delegate()
 			{
 				reset();
-			};
+			}
 
 			this_type& operator=(const this_type& p_other) noexcept
 			{
@@ -323,7 +323,7 @@ namespace black_cat
 				{
 					TFunctor* l_other = static_cast<TFunctor*>(p_other);
 					new (p_buffer)TFunctor(std::move(*l_other));		// Try to move functor object because it's possible 												
-				}													// functor object not be copyable
+				}													// functor object does not be copyable
 				else
 				{
 					TFunctor* l_functor = static_cast<TFunctor*>(p_buffer);

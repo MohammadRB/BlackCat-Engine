@@ -10,7 +10,7 @@
 #include "Core/Container/bcVector.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/Light/bcLight.h"
-#include "Game/System/Input/bcCamera.h"
+#include "Game/System/Input/bcCameraInstance.h"
 
 namespace black_cat
 {
@@ -50,18 +50,18 @@ namespace black_cat
 
 			bc_light_ptr add_light(const bc_spot_light& p_light);
 
-			core::bc_vector_frame<bc_light_instance> get_light_instances(const bc_icamera& p_camera);
+			core::bc_vector_frame<bc_light_instance> get_light_instances(const bc_camera_instance& p_camera);
 
 			void update(const core_platform::bc_clock::update_param& p_clock);
 
 			void destroy_light(bc_light* p_light);
 
 		private:
-			bc_light_instance _get_light_bounds(const bc_icamera& p_camera, const bc_light& p_light, const bc_direct_light& p_direct_light);
+			bc_light_instance _get_light_bounds(const bc_camera_instance& p_camera, const bc_light& p_light, const bc_direct_light& p_direct_light);
 
-			bc_light_instance _get_light_bounds(const bc_icamera& p_camera, const bc_light& p_light, const bc_point_light& p_point_light);
+			bc_light_instance _get_light_bounds(const bc_camera_instance& p_camera, const bc_light& p_light, const bc_point_light& p_point_light);
 
-			bc_light_instance _get_light_bounds(const bc_icamera& p_camera, const bc_light& p_light, const bc_spot_light& p__spot_light);
+			bc_light_instance _get_light_bounds(const bc_camera_instance& p_camera, const bc_light& p_light, const bc_spot_light& p__spot_light);
 
 			core::bc_concurrent_memory_pool m_pool;
 			core::bc_list<bc_light, core::bc_memory_pool_allocator<bc_light>> m_lights;

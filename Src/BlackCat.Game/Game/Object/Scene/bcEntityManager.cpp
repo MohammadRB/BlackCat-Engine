@@ -65,7 +65,7 @@ namespace black_cat
 				auto l_entity_name_hash = string_hash()(l_entity_name.c_str());
 				entity_map_type::value_type::second_type l_entity_components;
 
-				// Because we used program heap we must reserve needed memory
+				// Because we have used program heap we must reserve needed memory
 				l_entity_components.m_entity_name = l_entity_name.c_str();
 				l_entity_components.m_components.reserve(l_entity->m_components.size());
 

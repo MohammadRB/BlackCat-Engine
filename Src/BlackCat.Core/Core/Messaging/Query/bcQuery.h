@@ -39,7 +39,7 @@ namespace black_cat
 
 			void execute(const bc_query_context& p_context) noexcept override final;
 
-			void execute(const TContext& p_context) noexcept override = 0;
+			virtual void execute(const TContext& p_context) noexcept = 0;
 
 		protected:
 			bc_query(const bcCHAR* p_name);

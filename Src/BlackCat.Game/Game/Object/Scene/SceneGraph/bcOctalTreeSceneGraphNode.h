@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/Container/bcList.h"
 #include "Core/Utility/bcObjectPoolAllocator.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphNode.h"
@@ -141,11 +143,11 @@ namespace black_cat
 
 			bc_octal_tree_graph_node* _get_prev_sibling_node() const;
 
-			const physics::bc_bound_box& _get_actor_bound_box(bc_actor& p_actor) const;
+			static const physics::bc_bound_box& _get_actor_bound_box(bc_actor& p_actor);
 
 			bcSIZE m_max_actors_count;
 			bcSIZE m_min_size;
-			bcSIZE m_actors_count;
+			core_platform::bc_atomic<bcSIZE> m_actors_count;
 
 			bc_octal_tree_graph_node* m_parent;
 			bc_octal_tree_graph_node* m_top_left_back;
@@ -162,6 +164,8 @@ namespace black_cat
 			core::bc_concurrent_object_pool<bc_octal_tree_graph_node>* m_child_nodes_pool;
 			core::bc_concurrent_memory_pool* m_actors_pool;
 			graph_node_entry_list m_actors;
+
+			mutable core_platform::bc_mutex m_lock;
 		};
 	}
 }

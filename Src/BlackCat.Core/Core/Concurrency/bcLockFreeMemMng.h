@@ -23,12 +23,12 @@ namespace black_cat
 				p_container.reclaim_node(p_node);
 			}
 
-			static node_pointer next(const container_type& p_container, node_type* p_node) noexcept(true)
+			static node_pointer next(const container_type& p_container, node_type* p_node) noexcept
 			{
 				return p_container.next(p_node);
 			}
 
-			static void next(const container_type& p_container, node_type* p_node, node_type* p_next) noexcept(true)
+			static void next(const container_type& p_container, node_type* p_node, node_type* p_next) noexcept
 			{
 				return p_container.next(p_node, p_next);
 			}
@@ -43,7 +43,7 @@ namespace black_cat
 			using node_pointer = typename bc_lockfree_memmng_container_traits< container_type >::node_pointer;
 
 		public:
-			bc_lockfree_memmng() noexcept(true)
+			bc_lockfree_memmng() noexcept
 				: m_num_thread(0),
 				m_to_delete(nullptr)
 			{
@@ -51,30 +51,28 @@ namespace black_cat
 
 			bc_lockfree_memmng(const this_type&) = delete;
 
-			bc_lockfree_memmng(this_type&& p_other) noexcept(true)
+			bc_lockfree_memmng(this_type&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 			}
 
-			~bc_lockfree_memmng()
-			{
-			}
+			~bc_lockfree_memmng() = default;
 
 			this_type& operator =(const this_type&) = delete;
 
-			this_type& operator =(this_type&& p_other) noexcept(true)
+			this_type& operator =(this_type&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 
 				return *this;
 			}
 
-			bcUINT32 enter_pop() noexcept(true)
+			bcUINT32 enter_pop() noexcept
 			{
-				return m_num_thread.fetch_add(1, core_platform::bc_memory_order::relaxed);
+				return m_num_thread.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1;
 			}
 
-			void exist_pop_without_reclaim() noexcept(true)
+			void exist_pop_without_reclaim() noexcept
 			{
 				m_num_thread.fetch_sub(1, core_platform::bc_memory_order::relaxed);
 			}
@@ -102,7 +100,7 @@ namespace black_cat
 				}
 			}
 
-			void swap(this_type& p_other) noexcept(true)
+			void swap(this_type& p_other) noexcept
 			{
 				const bcUINT32 l_num_thread = m_num_thread.load(core_platform::bc_memory_order::relaxed);
 				node_type* l_to_delete = m_to_delete.load(core_platform::bc_memory_order::relaxed);
@@ -146,7 +144,7 @@ namespace black_cat
 				}
 			}
 
-			void _chain_pending_nodes(container_type& p_container, node_pointer p_nodes) noexcept(true)
+			void _chain_pending_nodes(container_type& p_container, node_pointer p_nodes) noexcept
 			{
 				node_pointer l_last = p_nodes;
 				while (node_pointer const l_next = bc_lockfree_memmng_container_traits< container_type >::next(p_container, l_last))
@@ -157,7 +155,7 @@ namespace black_cat
 				_chain_pending_nodes(p_container, p_nodes, l_last);
 			}
 
-			void _chain_pending_nodes(container_type& p_container, node_pointer p_first, node_pointer p_last) noexcept(true)
+			void _chain_pending_nodes(container_type& p_container, node_pointer p_first, node_pointer p_last) noexcept
 			{
 				node_pointer l_to_delete = m_to_delete.load(core_platform::bc_memory_order::seqcst);
 
@@ -178,7 +176,7 @@ namespace black_cat
 				));
 			}
 
-			void _chain_pending_node(container_type& p_traits, node_pointer p_node) noexcept(true)
+			void _chain_pending_node(container_type& p_traits, node_pointer p_node) noexcept
 			{
 				_chain_pending_nodes(p_traits, p_node, p_node);
 			}

@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		core::bc_vector3f project_point_to_screen_space(const bc_icamera& p_camera, const core::bc_matrix4f& p_view_proj, const core::bc_vector3f& p_point)
+		core::bc_vector3f project_point_to_screen_space(const bc_camera_instance& p_camera, const core::bc_matrix4f& p_view_proj, const core::bc_vector3f& p_point)
 		{
 			auto l_point = p_view_proj * core::bc_vector4f(p_point, 1);
 			l_point.x /= l_point.w;
@@ -93,7 +93,7 @@ namespace black_cat
 			return bc_light_ptr(&m_lights.back(), _bc_light_ptr_deleter(this));
 		}
 
-		core::bc_vector_frame< bc_light_instance > bc_light_manager::get_light_instances(const bc_icamera& p_camera)
+		core::bc_vector_frame< bc_light_instance > bc_light_manager::get_light_instances(const bc_camera_instance& p_camera)
 		{
 			core::bc_vector_frame<bc_light_instance> l_lights;
 			l_lights.reserve(m_lights.size());
@@ -119,7 +119,7 @@ namespace black_cat
 			});
 		}
 
-		bc_light_instance bc_light_manager::_get_light_bounds(const bc_icamera& p_camera, const bc_light& p_light, const bc_direct_light& p_direct_light)
+		bc_light_instance bc_light_manager::_get_light_bounds(const bc_camera_instance& p_camera, const bc_light& p_light, const bc_direct_light& p_direct_light)
 		{
 			return bc_light_instance
 			(
@@ -129,7 +129,7 @@ namespace black_cat
 			);
 		}
 
-		bc_light_instance bc_light_manager::_get_light_bounds(const bc_icamera& p_camera, const bc_light& p_light, const bc_point_light& p_point_light)
+		bc_light_instance bc_light_manager::_get_light_bounds(const bc_camera_instance& p_camera, const bc_light& p_light, const bc_point_light& p_point_light)
 		{
 			const auto l_center = p_point_light.get_position(p_light.get_transformation());
 			const auto l_right_extend = l_center + (p_camera.get_right() * p_point_light.get_radius());
@@ -150,7 +150,7 @@ namespace black_cat
 			);
 		}
 
-		bc_light_instance bc_light_manager::_get_light_bounds(const bc_icamera& p_camera, const bc_light& p_light, const bc_spot_light& p_spot_light)
+		bc_light_instance bc_light_manager::_get_light_bounds(const bc_camera_instance& p_camera, const bc_light& p_light, const bc_spot_light& p_spot_light)
 		{
 			const auto l_position = p_spot_light.get_position(p_light.get_transformation());
 			const auto l_direction = p_spot_light.get_direction(p_light.get_transformation());

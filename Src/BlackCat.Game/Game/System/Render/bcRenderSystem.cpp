@@ -523,15 +523,11 @@ namespace black_cat
 							l_device_back_buffer.get_sample_count()
 						);
 
-						auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
-						auto l_reset_event = graphic::bc_app_event_device_reset(m_device, l_old_parameters, l_new_parameters, true);
-
-						l_event_manager->process_event(l_reset_event);
-						
-						m_device.resize_back_buffer(l_resize_event.width(), l_resize_event.height());
-						
-						l_reset_event.m_before_reset = false;
-						l_event_manager->process_event(l_reset_event);
+						core::bc_get_service< core::bc_event_manager >()->queue_event
+						(
+							graphic::bc_app_event_device_reset(m_device, l_old_parameters, l_new_parameters, true), 
+							0
+						);
 					}
 				}
 
@@ -542,14 +538,22 @@ namespace black_cat
 			{
 				auto& l_device_reset_event = static_cast<graphic::bc_app_event_device_reset&>(p_event);
 
-				if (l_device_reset_event.m_before_reset)
-				{
-					m_render_pass_manager->before_reset(bc_render_pass_reset_param(*this, l_device_reset_event.m_device, l_device_reset_event.m_old_parameters, l_device_reset_event.m_new_parameters));
-				}
-				else
-				{
-					m_render_pass_manager->after_reset(bc_render_pass_reset_param(*this, l_device_reset_event.m_device, l_device_reset_event.m_old_parameters, l_device_reset_event.m_new_parameters));
-				}
+				m_device.resize_back_buffer(l_device_reset_event.m_new_parameters.m_width, l_device_reset_event.m_new_parameters.m_height);
+				
+				m_render_pass_manager->before_reset(bc_render_pass_reset_param
+				(
+					*this, 
+					*l_device_reset_event.m_device, 
+					l_device_reset_event.m_old_parameters, 
+					l_device_reset_event.m_new_parameters
+				));
+				m_render_pass_manager->after_reset(bc_render_pass_reset_param
+				(
+					*this, 
+					*l_device_reset_event.m_device, 
+					l_device_reset_event.m_old_parameters, 
+					l_device_reset_event.m_new_parameters
+				));
 
 				return true;
 			}

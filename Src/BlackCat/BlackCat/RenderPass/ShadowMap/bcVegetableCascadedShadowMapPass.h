@@ -2,9 +2,12 @@
 
 #pragma once
 
+#include "Core/Container/bcVector.h"
+#include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
 #include "Game/System/Render/Pass/bcRenderPassState.h"
+#include "Game/bcQuery.h"
 #include "BlackCat/RenderPass/ShadowMap/bcBaseCascadedShadowMapPass.h"
 #include "BlackCat/bcExport.h"
 
@@ -35,5 +38,6 @@ namespace black_cat
 		graphic::bc_device_pipeline_state_ptr m_leaf_pipeline_state;
 		graphic::bc_device_pipeline_state_ptr m_trunk_pipeline_state;
 		graphic::bc_sampler_state_ptr m_sampler_state;
+		core::bc_vector<core::bc_query_result<game::bc_scene_graph_query>> m_scene_queries;
 	};
 }

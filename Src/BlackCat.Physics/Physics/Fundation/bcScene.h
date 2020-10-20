@@ -103,6 +103,7 @@ namespace black_cat
 			* \param[in] p_types Combination of actor types to retrieve.
 			* \param[out] p_buffer The buffer to receive actor pointers.
 			* \param[in] p_buffer_size Size of provided user buffer.
+			* \param p_start_index
 			* \return Number of actors written to the buffer.
 			*/
 			bcUINT32 get_actors(bc_actor_type p_types, bc_actor* p_buffer, bcUINT32 p_buffer_size, bcUINT32 p_start_index = 0) const;
@@ -134,6 +135,7 @@ namespace black_cat
 			* \brief Retrieve all the aggregates in the scene.
 			* \param[out] p_buffer The buffer to receive aggregates pointers.
 			* \param[in] p_buffer_size Size of provided user buffer.
+			* \param p_start_index
 			* \return Number of aggregates written to the buffer.
 			*/
 			bcUINT32 get_aggregates(bc_aggregate* p_buffer, bcUINT32 p_buffer_size, bcUINT32 p_start_index = 0) const;
@@ -148,6 +150,7 @@ namespace black_cat
 			 * \brief Retrieve all the constraints in the scene.
 			 * \param[out] p_buffer The buffer to receive constraint shader pointers.
 			 * \param[in] p_buffer_size Size of provided user buffer.
+			 * \param p_start_index
 			 * \return Number of constraints written to the buffer.
 			 */
 			bcUINT32 get_joints(bc_joint* p_buffer, bcUINT32 p_buffer_size, bcUINT32 p_start_index = 0) const;

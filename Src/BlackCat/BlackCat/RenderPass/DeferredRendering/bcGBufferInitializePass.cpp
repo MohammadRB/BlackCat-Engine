@@ -2,6 +2,7 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
+#include "Core/Messaging/Query/bcQueryManager.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/bcConstant.h"
 #include "Game/Object/Scene/bcScene.h"
@@ -15,7 +16,7 @@ namespace black_cat
 	void bc_gbuffer_initialize_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
-		auto l_back_buffer_texture = l_device.get_back_buffer_texture();
+		const auto l_back_buffer_texture = l_device.get_back_buffer_texture();
 
 		graphic::bc_device_parameters l_old_parameters
 		(
@@ -41,10 +42,10 @@ namespace black_cat
 
 	void bc_gbuffer_initialize_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		game::bc_camera_frustum l_frustum(p_param.m_camera);
-		game::bc_scene_graph_buffer l_actors = p_param.m_scene.get_actors(l_frustum);
-
-		share_resource(constant::g_rpass_actor_list, std::move(l_actors));
+		if(m_scene_query.is_executed())
+		{
+			share_resource(constant::g_rpass_actor_list, m_scene_query.get().get_scene_buffer());
+		}
 	}
 
 	void bc_gbuffer_initialize_pass::execute(const game::bc_render_pass_render_param& p_param)
@@ -53,6 +54,12 @@ namespace black_cat
 
 	void bc_gbuffer_initialize_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
 	{
+		const game::bc_camera_frustum l_frustum(p_param.m_camera);
+		m_scene_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+		(
+			game::bc_scene_graph_query().with(l_frustum)
+		);
+		
 		unshare_resource(constant::g_rpass_actor_list);
 	}
 

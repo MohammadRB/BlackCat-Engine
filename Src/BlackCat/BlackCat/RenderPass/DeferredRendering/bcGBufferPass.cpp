@@ -63,8 +63,13 @@ namespace black_cat
 
 	void bc_gbuffer_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
 		auto* l_scene_buffer = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
+		if(l_scene_buffer == nullptr)
+		{
+			return;
+		}
+		
+		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
 
 		p_param.m_render_thread.start(m_command_list.get());
 		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());

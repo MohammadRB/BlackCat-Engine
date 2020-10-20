@@ -4,6 +4,7 @@
 #include "CorePlatformImp/bcExport.h"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Concurrency/bcThread.h"
+#include <array>
 
 namespace black_cat
 {
@@ -267,11 +268,10 @@ namespace black_cat
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_hybrid_mutex< bc_platform::win32 >::lock(bc_lock_operation p_lock_operation)
 		{
-			const bcINT32 l_new_iteration_count = static_cast< bcINT32 >(p_lock_operation);
+			const bcINT32 l_new_iteration_count = std::array<INT32, 3>{1000, 500, 100}[static_cast<bcINT32>(p_lock_operation)];
 			bcINT32 l_expected = 0;
-			bcINT32 l_iteration_count = 0;
-			bcINT32 l_half_iteration_count = 0;
-			bcINT32 l_iteration = 0;
+			bcINT32 l_expected_iteration = 0;
+			bcINT32 l_iterator = 0;
 
 #ifdef BC_DEBUG
 			// prevent double lock on same thread
@@ -280,6 +280,7 @@ namespace black_cat
 
 			while (true)
 			{
+				l_expected = 0;
 				if (m_pack.m_flag.compare_exchange_strong
 				(
 					&l_expected,
@@ -295,30 +296,25 @@ namespace black_cat
 				}
 
 				// update state variables if another thread has acquired lock
-				if (l_iteration_count != l_expected)
+				if (l_expected_iteration != l_expected)
 				{
-					l_iteration = std::abs(l_iteration + (l_expected - l_iteration_count));
-					l_iteration_count = l_expected;
-					l_half_iteration_count = l_iteration_count / 3;
+					l_iterator = l_expected;
+					l_expected_iteration = l_expected;
 				}
-				l_expected = 0;
 
-				--l_iteration;
+				--l_iterator;
 
-				if (l_iteration >= l_half_iteration_count)
+				if (l_iterator % 5 == 0)
 				{
 					bc_thread::current_thread_yield();
 					continue;
 				}
 
-				if (l_iteration < l_half_iteration_count && l_iteration > 0)
+				if(l_iterator == 0)
 				{
-					bc_thread::current_thread_sleep_for(std::chrono::nanoseconds(0));
-					continue;
+					bc_thread::current_thread_yield_switch();
+					l_iterator = l_expected_iteration;
 				}
-
-				bc_thread::current_thread_yield_switch();
-				l_iteration = l_iteration_count;
 			}
 		}
 

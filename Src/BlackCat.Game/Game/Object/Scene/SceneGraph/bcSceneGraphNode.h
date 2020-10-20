@@ -61,10 +61,25 @@ namespace black_cat
 
 			virtual void get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const = 0;
 
+			/**
+			 * \brief ThreadSafe
+			 * \param p_actor 
+			 * \return 
+			 */
 			virtual bool add_actor(bc_actor& p_actor) = 0;
 
+			/**
+			 * \brief ThreadSafe
+			 * \param p_actor 
+			 * \return 
+			 */
 			virtual bool update_actor(bc_actor& p_actor) = 0;
 
+			/**
+			 * \brief ThreadSafe
+			 * \param p_actor 
+			 * \return 
+			 */
 			virtual bool remove_actor(bc_actor& p_actor) = 0;
 
 			virtual void clear() = 0;

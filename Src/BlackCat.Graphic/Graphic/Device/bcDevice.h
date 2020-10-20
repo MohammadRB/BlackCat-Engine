@@ -144,27 +144,7 @@ namespace black_cat
 		class bc_platform_render_target_view;
 		using bc_render_target_view = bc_platform_render_target_view< g_current_render_api >;
 		using bc_render_target_view_ptr = bc_device_ref<bc_render_target_view>;
-
-		struct bc_device_parameters
-		{
-		public:
-			bc_device_parameters(bcUINT p_width,
-				bcUINT p_height,
-				bc_format p_format,
-				bc_texture_ms_config p_multi_sample)
-				: m_width(p_width),
-				m_height(p_height),
-				m_format(p_format),
-				m_multi_sample(p_multi_sample)
-			{
-			}
-
-			bcUINT m_width;
-			bcUINT m_height;
-			bc_format m_format;
-			bc_texture_ms_config m_multi_sample;
-		};
-
+		
 		template< bc_render_api TRenderApi >
 		struct bc_platform_device_pack
 		{

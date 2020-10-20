@@ -30,9 +30,9 @@ namespace black_cat
 		public:
 			virtual ~bc_imessage();
 
-			virtual const bcCHAR* get_name() const noexcept;
+			const bcCHAR* get_message_name() const noexcept;
 
-			virtual bc_message_hash get_hash() const noexcept;
+			bc_message_hash get_message_hash() const noexcept;
 
 			static bc_message_hash get_hash(const bcCHAR* p_name) noexcept;
 
@@ -61,7 +61,7 @@ namespace black_cat
 		bool bc_imessage::is(const bc_imessage& p_message)
 		{
 			constexpr auto l_hash = bc_message_traits<TMessage>::message_hash();
-			return l_hash == p_message.get_hash();
+			return l_hash == p_message.get_message_hash();
 		}
 
 		template< class TMessage >

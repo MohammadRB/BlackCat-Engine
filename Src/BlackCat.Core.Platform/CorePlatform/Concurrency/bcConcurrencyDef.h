@@ -10,9 +10,9 @@ namespace black_cat
 	{
 		enum class bc_lock_operation
 		{
-			light = 40,
-			medium = 20,
-			heavy = 1
+			light = 0,
+			medium = 1,
+			heavy = 2
 		};
 
 		enum class bc_mutex_type

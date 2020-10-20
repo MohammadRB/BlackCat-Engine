@@ -57,5 +57,14 @@ namespace black_cat
 		bc_app_event::~bc_app_event()
 		{
 		}
+
+		bc_app_render_event::bc_app_render_event(const bcCHAR* p_name) noexcept
+			: bc_event(p_name)
+		{
+		}
+
+		bc_app_render_event::~bc_app_render_event()
+		{
+		}
 	}
 }

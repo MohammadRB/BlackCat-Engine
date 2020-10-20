@@ -2,12 +2,25 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
+#include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/bcQuery.h"
 #include "BlackCat/RenderPass/bcShapeDrawPass.h"
 
 namespace black_cat
 {
+	bc_scene_debug_shape_query::bc_scene_debug_shape_query(game::bc_shape_drawer& p_shape_drawer) noexcept
+		: bc_query(message_name()),
+		m_shape_drawer(&p_shape_drawer)
+	{
+	}
+
+	void bc_scene_debug_shape_query::execute(const game::bc_scene_query_context& p_context) noexcept
+	{
+		p_context.m_scene.add_debug_shapes(*m_shape_drawer);
+	}
+	
 	bc_shape_draw_pass::bc_shape_draw_pass(constant::bc_render_pass_variable_t p_render_target_view)
 		: m_render_target_view_variable(p_render_target_view)
 	{
@@ -71,7 +84,6 @@ namespace black_cat
 		auto* l_scene_graph_buffer = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
 		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
 
-		p_param.m_scene.add_debug_shapes(l_shape_drawer);
 		l_scene_graph_buffer->add_debug_shapes(l_shape_drawer);
 		
 		l_shape_drawer.render(p_param.m_render_system, p_param.m_render_thread, l_render_state_buffer);
@@ -81,6 +93,14 @@ namespace black_cat
 		p_param.m_render_thread.finish();
 
 		m_command_list->finished();
+	}
+
+	void bc_shape_draw_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
+	{
+		m_scene_debug_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+		(
+			bc_scene_debug_shape_query(p_param.m_render_system.get_shape_drawer())
+		);
 	}
 
 	void bc_shape_draw_pass::before_reset(const game::bc_render_pass_reset_param& p_param)

@@ -76,8 +76,8 @@ namespace black_cat
 			while (true)
 			{
 				// Always keep size of n free-blocks unallocated so threads in pop method can do their job by adding new free-blocks
-				bcSIZE l_free_blocks_size = (m_free_block_count.load(core_platform::bc_memory_order::seqcst) + m_max_num_thread) * sizeof(_bc_memory_stack_block);
-				bcSIZE l_bytes_free = std::max
+				const bcSIZE l_free_blocks_size = (m_free_block_count.load(core_platform::bc_memory_order::seqcst) + m_max_num_thread) * sizeof(_bc_memory_stack_block);
+				const bcSIZE l_bytes_free = std::max
 				(
 					(m_heap + m_size - l_local_top) - static_cast<bcINT32>(l_free_blocks_size),
 					0
@@ -205,7 +205,7 @@ namespace black_cat
 
 		void bc_memory_stack::_add_free_block(void* p_pointer, bc_memblock* p_memblock)
 		{
-			auto l_free_block_count = m_free_block_count.fetch_add(1U, core_platform::bc_memory_order::relaxed) + 1;
+			const auto l_free_block_count = m_free_block_count.fetch_add(1U, core_platform::bc_memory_order::relaxed) + 1;
 			auto* l_free_block_top = reinterpret_cast< _bc_memory_stack_block* >(m_heap + m_size) - l_free_block_count;
 
 			*l_free_block_top = _bc_memory_stack_block(p_pointer, p_memblock->size());
