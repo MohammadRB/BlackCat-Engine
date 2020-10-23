@@ -6,6 +6,7 @@
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/bcQuery.h"
 
 namespace black_cat
 {
@@ -65,8 +66,7 @@ namespace black_cat
 		
 		void bc_game_system::render_game(const core_platform::bc_clock::update_param& p_clock)
 		{
-			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
-			l_event_manager->process_render_event_queue(p_clock);
+			core::bc_get_service<core::bc_event_manager>()->process_render_event_queue(p_clock);
 			
 			if(m_scene)
 			{
@@ -80,10 +80,22 @@ namespace black_cat
 			m_script_system.initialize(true);
 			m_render_system.initialize(*core::bc_get_service<core::bc_content_stream_manager>(), std::move(p_parameter.m_render_system_parameter));
 			m_console = core::bc_make_unique<bc_game_console>(core::bc_alloc_type::program, m_script_system);
+
+			m_scene_query_context_provider = core::bc_get_service< core::bc_query_manager >()->register_query_provider<bc_scene_query_context>
+			(
+				[=]()
+				{
+					auto l_context = core::bc_make_unique<bc_scene_query_context>();
+					l_context->m_scene = m_scene.get();
+					return l_context;
+				}
+			);
 		}
 
 		void bc_game_system::_destroy()
 		{
+			m_scene_query_context_provider.reset();
+			
 			m_scene.reset();
 			m_console.reset();
 			m_render_system.destroy();

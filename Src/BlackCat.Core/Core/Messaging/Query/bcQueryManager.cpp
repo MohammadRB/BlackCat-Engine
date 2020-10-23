@@ -10,6 +10,7 @@ namespace black_cat
 	namespace core
 	{
 		bc_query_manager::bc_query_manager()
+			: m_executed_queries(m_query_list_pool)
 		{
 			m_query_list_pool.initialize(1000, sizeof(query_list_t::node_type), bc_alloc_type::unknown);
 		}
@@ -53,17 +54,21 @@ namespace black_cat
 					{
 						core_platform::bc_lock_guard<core_platform::bc_mutex> l_queries_guard(l_provider.second.m_queries_lock);
 
-						auto l_inserted_query = std::begin(l_provider.second.m_queries);
-						if(l_first_inserted_query == std::end(m_executed_queries))
-						{
-							l_first_inserted_query = l_inserted_query;
-						}
-						
+						const auto l_num_query_to_insert = l_provider.second.m_queries.size();
 						m_executed_queries.splice
 						(
 							std::end(m_executed_queries),
 							l_provider.second.m_queries
 						);
+
+						auto l_last_inserted = m_executed_queries.rbegin();
+						std::advance(l_last_inserted, std::max(0, static_cast<bcINT32>(l_num_query_to_insert) - 1));
+						auto l_inserted_query = l_last_inserted.base();
+						
+						if (l_first_inserted_query == std::end(m_executed_queries))
+						{
+							l_first_inserted_query = l_inserted_query;
+						}
 
 						while(l_inserted_query != std::end(m_executed_queries))
 						{
@@ -82,13 +87,14 @@ namespace black_cat
 				}
 
 				const bcUINT32 l_num_queries = std::distance(l_first_inserted_query, std::end(m_executed_queries));
-				const auto l_num_thread = std::max(bc_concurrency::worker_count(), l_num_queries / 5);
+				const auto l_num_thread = std::min(bc_concurrency::worker_count(), l_num_queries / 5);
+
 				bc_concurrency::concurrent_for_each
 				(
 					l_num_thread,
 					l_first_inserted_query,
 					std::end(m_executed_queries),
-					[=]() {return true; },
+					[=]() { return true; },
 					[=](bool, _query_entry& p_query)
 					{
 						p_query.m_query->execute(*p_query.m_provider.m_provided_context);

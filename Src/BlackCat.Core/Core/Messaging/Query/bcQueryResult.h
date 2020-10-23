@@ -108,13 +108,16 @@ namespace black_cat
 		}
 
 		template< class TQuery >
-		bc_query_result<TQuery>::bc_query_result(bc_query_result&&) noexcept = default;
+		bc_query_result<TQuery>::bc_query_result(bc_query_result&& p_other) noexcept
+		{
+			operator=(std::move(p_other));
+		}
 
 		template< class TQuery >
 		template< class TQuery1 >
 		bc_query_result<TQuery>::bc_query_result(bc_query_result<TQuery1>&& p_other) noexcept
 		{
-			operator=(p_other);
+			operator=(std::move(p_other));
 		}
 
 		template< class TQuery >
@@ -127,7 +130,15 @@ namespace black_cat
 		}
 
 		template< class TQuery >
-		bc_query_result<TQuery>& bc_query_result<TQuery>::operator=(bc_query_result&&) noexcept = default;
+		bc_query_result<TQuery>& bc_query_result<TQuery>::operator=(bc_query_result&& p_other) noexcept
+		{
+			m_query_manager = p_other.m_query_manager;
+			m_shared_state = p_other.m_shared_state;
+			p_other.m_query_manager = nullptr;
+			p_other.m_shared_state = nullptr;
+
+			return *this;
+		}
 
 		template< class TQuery >
 		template< class TQuery1 >
@@ -137,6 +148,8 @@ namespace black_cat
 			
 			m_query_manager = p_other.m_query_manager;
 			m_shared_state = p_other.m_shared_state;
+			p_other.m_query_manager = nullptr;
+			p_other.m_shared_state = nullptr;
 
 			return *this;
 		}

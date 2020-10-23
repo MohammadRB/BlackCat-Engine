@@ -184,7 +184,6 @@ namespace black_cat
 
 	void bc_gbuffer_terrain_pass_dx11::cleanup_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		const game::bc_camera_frustum l_frustum(p_param.m_camera);
 		m_scene_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
 			game::bc_scene_graph_query().only<game::bc_height_map_component>()

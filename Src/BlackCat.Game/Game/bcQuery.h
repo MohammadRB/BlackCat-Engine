@@ -14,10 +14,10 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_scene_query_context : core::bc_query_context
+		class bc_scene_query_context : public core::bc_query_context
 		{
 		public:
-			const bc_scene& m_scene;
+			const bc_scene* m_scene;
 		};
 
 		class bc_scene_graph_query : public core::bc_query<bc_scene_query_context>
@@ -102,7 +102,7 @@ namespace black_cat
 			{
 				if (m_frustum)
 				{
-					m_scene_buffer = p_context.m_scene.get_scene_graph().get_actors(*m_frustum);
+					m_scene_buffer = p_context.m_scene->get_scene_graph().get_actors(*m_frustum);
 				}
 			}
 		}
@@ -112,11 +112,11 @@ namespace black_cat
 		{
 			if(p_this.m_frustum)
 			{
-				p_this.m_scene_buffer = p_context.m_scene.get_scene_graph().get_actors<TComponent>(*p_this.m_frustum);
+				p_this.m_scene_buffer = p_context.m_scene->get_scene_graph().get_actors<TComponent>(*p_this.m_frustum);
 			}
 			else
 			{
-				p_this.m_scene_buffer = p_context.m_scene.get_scene_graph().get_actors<TComponent>();
+				p_this.m_scene_buffer = p_context.m_scene->get_scene_graph().get_actors<TComponent>();
 			}
 		}
 	}

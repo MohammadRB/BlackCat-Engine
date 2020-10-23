@@ -9,16 +9,31 @@ namespace black_cat
 {
 	namespace core
 	{
-		bc_query_provider_handle::bc_query_provider_handle(bc_message_hash p_context_hash)
+		bc_query_provider_handle::bc_query_provider_handle()
+			: m_context_hash(-1)
+		{
+		}
+		
+		bc_query_provider_handle::bc_query_provider_handle(bc_query_context_hash p_context_hash)
 			: m_context_hash(p_context_hash)
 		{
 		}
 
-		bc_query_provider_handle::bc_query_provider_handle(bc_query_provider_handle&&) noexcept = default;
+		bc_query_provider_handle::bc_query_provider_handle(bc_query_provider_handle&& p_other) noexcept
+		{
+			reset(std::move(p_other));
+		}
 
-		bc_query_provider_handle::~bc_query_provider_handle() = default;
+		bc_query_provider_handle::~bc_query_provider_handle()
+		{
+			reset();
+		}
 
-		bc_query_provider_handle& bc_query_provider_handle::operator=(bc_query_provider_handle&&) noexcept = default;
+		bc_query_provider_handle& bc_query_provider_handle::operator=(bc_query_provider_handle&& p_other) noexcept
+		{
+			reset(std::move(p_other));
+			return *this;
+		}
 
 		void bc_query_provider_handle::reassign(delegate_t&& p_delegate)
 		{
@@ -27,10 +42,10 @@ namespace black_cat
 
 		void bc_query_provider_handle::reset()
 		{
-			if(m_context_hash != 0)
+			if(m_context_hash != -1U)
 			{
 				bc_get_service<bc_query_manager>()->unregister_query_provider(*this);
-				m_context_hash = 0;
+				m_context_hash = -1;
 			}
 		}
 
@@ -39,7 +54,7 @@ namespace black_cat
 			reset();
 
 			m_context_hash = p_other.m_context_hash;
-			p_other.m_context_hash = 0;
+			p_other.m_context_hash = -1;
 		}
 	}
 }

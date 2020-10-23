@@ -109,7 +109,7 @@ namespace black_cat
 			m_px_scene->wait();
 
 			auto l_px_actors = m_px_scene->get_active_actors();
-			const auto l_num_thread = std::max(core::bc_concurrency::worker_count(), l_px_actors.size() / 100);
+			const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), l_px_actors.size() / 100);
 
 			core::bc_concurrency::concurrent_for_each
 			(
@@ -134,7 +134,7 @@ namespace black_cat
 					m_new_actors_lock, core_platform::bc_lock_operation::heavy
 				);
 
-				const auto l_num_thread = std::max(core::bc_concurrency::worker_count(), m_new_actors.size() / 10);
+				const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), m_new_actors.size() / 10);
 				
 				core::bc_concurrency::concurrent_for_each
 				(
@@ -150,10 +150,10 @@ namespace black_cat
 							_add_actor(std::get<bc_actor>(p_actor));
 							break;
 						case _bc_scene_actor_operation::update:
-							_add_actor(std::get<bc_actor>(p_actor));
+							_update_actor(std::get<bc_actor>(p_actor));
 							break;
 						case _bc_scene_actor_operation::remove:
-							_add_actor(std::get<bc_actor>(p_actor));
+							_remove_actor(std::get<bc_actor>(p_actor));
 							break;
 						default:
 							bcAssert(false);
@@ -161,6 +161,9 @@ namespace black_cat
 					},
 					[](bool) {}
 				);
+
+				m_new_actors.clear();
+				m_new_actors.shrink_to_fit();
 			}
 		}
 

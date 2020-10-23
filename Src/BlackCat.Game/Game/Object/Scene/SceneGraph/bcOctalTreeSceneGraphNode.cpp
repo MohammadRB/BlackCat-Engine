@@ -13,8 +13,8 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_octal_tree_graph_node::bc_octal_tree_graph_node(physics::bc_bound_box p_box, 
-			bcSIZE p_max_actors_count, 
+		bc_octal_tree_graph_node::bc_octal_tree_graph_node(physics::bc_bound_box p_box,
+			bcSIZE p_max_actors_count,
 			bcSIZE p_min_size)
 			: m_max_actors_count(p_max_actors_count),
 			m_min_size(p_min_size),
@@ -38,7 +38,7 @@ namespace black_cat
 			bool l_is_power_of_two = bc_is_power_of_two(l_half_extends.x) &&
 				bc_is_power_of_two(l_half_extends.y) &&
 				bc_is_power_of_two(l_half_extends.z);
-			if(!l_is_power_of_two)
+			if (!l_is_power_of_two)
 			{
 				throw bc_invalid_argument_exception("size of scene bound box must be power of two");
 			}
@@ -132,7 +132,7 @@ namespace black_cat
 
 		bc_octal_tree_graph_node::~bc_octal_tree_graph_node()
 		{
-			if(!is_leaf_node())
+			if (!is_leaf_node())
 			{
 				m_child_nodes_pool->free(m_top_left_back);
 				m_child_nodes_pool->free(m_top_left_front);
@@ -144,7 +144,7 @@ namespace black_cat
 				m_child_nodes_pool->free(m_bottom_right_back);
 			}
 
-			if(!m_parent)
+			if (!m_parent)
 			{
 				bcDelete(m_actors_pool);
 				bcDelete(m_child_nodes_pool);
@@ -218,7 +218,7 @@ namespace black_cat
 
 		void bc_octal_tree_graph_node::get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const
 		{
-			if(!m_actors.empty())
+			if (!m_actors.empty())
 			{
 				for (_bc_octal_tree_graph_node_entry& l_entry : m_actors)
 				{
@@ -232,12 +232,12 @@ namespace black_cat
 				}
 			}
 
-			if(is_leaf_node())
+			if (is_leaf_node())
 			{
 				return;
 			}
 
-			if(p_camera_frustum.intersects(m_top_left_back->m_bound_box))
+			if (p_camera_frustum.intersects(m_top_left_back->m_bound_box))
 			{
 				m_top_left_back->get_actors(p_camera_frustum, p_buffer);
 			}
@@ -288,17 +288,17 @@ namespace black_cat
 			auto* l_actor_mediate_component = p_actor.get_component<bc_mediate_component>();
 			auto& l_actor_prev_bound_box = l_actor_mediate_component->get_prev_bound_box();
 			auto& l_actor_bound_box = l_actor_mediate_component->get_bound_box();
-			
+
 			bc_octal_tree_graph_node* l_prev_containing_node = _find_containing_node(l_actor_prev_bound_box);
 			bc_octal_tree_graph_node* l_containing_node = _find_containing_node(l_actor_bound_box);
 
-			if(!l_containing_node)
+			if (!l_containing_node)
 			{
 				l_updated = false;
 				return l_updated;
 			}
 
-			if(l_prev_containing_node == l_containing_node)
+			if (l_prev_containing_node == l_containing_node)
 			{
 				l_updated = true;
 				return l_updated;
@@ -317,7 +317,7 @@ namespace black_cat
 
 		void bc_octal_tree_graph_node::clear()
 		{
-			if(!is_leaf_node())
+			if (!is_leaf_node())
 			{
 				m_top_left_back->clear();
 				m_top_left_front->clear();
@@ -355,7 +355,7 @@ namespace black_cat
 		{
 			p_shape_drawer.render_wired_box(m_bound_box);
 
-			if(is_leaf_node())
+			if (is_leaf_node())
 			{
 				return;
 			}
@@ -391,7 +391,7 @@ namespace black_cat
 			auto l_next_internal_iterator = l_octal_tree_node_entry->m_internal_iterator;
 			++l_next_internal_iterator;
 
-			if(std::end(m_actors) != l_next_internal_iterator)
+			if (std::end(m_actors) != l_next_internal_iterator)
 			{
 				return &*l_next_internal_iterator;
 			}
@@ -463,7 +463,7 @@ namespace black_cat
 			}
 
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_lock(m_lock);
+				core_platform::bc_lock_guard<core_platform::bc_recursive_mutex> l_lock(m_lock);
 
 				if (!l_added)
 				{
@@ -477,7 +477,7 @@ namespace black_cat
 				if (l_added)
 				{
 					const auto l_actors_count = m_actors_count.fetch_add(1U, core_platform::bc_memory_order::relaxed) + 1;
-					if (l_actors_count > m_max_actors_count&& is_leaf_node())
+					if (l_actors_count > m_max_actors_count && is_leaf_node())
 					{
 						_split();
 					}
@@ -497,8 +497,8 @@ namespace black_cat
 			}
 
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_lock(m_lock);
-				
+				core_platform::bc_lock_guard<core_platform::bc_recursive_mutex> l_lock(m_lock);
+
 				const auto l_exist = std::find(std::cbegin(m_actors), std::cend(m_actors), _bc_octal_tree_graph_node_entry(p_actor, this));
 				if (l_exist != std::cend(m_actors))
 				{
@@ -525,7 +525,7 @@ namespace black_cat
 				if (l_actors_count <= m_max_actors_count && !is_leaf_node())
 				{
 					{
-						core_platform::bc_lock_guard<core_platform::bc_mutex> l_lock(m_lock);
+						core_platform::bc_lock_guard<core_platform::bc_recursive_mutex> l_lock(m_lock);
 
 						_merge();
 					}
@@ -578,11 +578,11 @@ namespace black_cat
 				bc_octal_tree_node_position::bottom_right_back
 			);
 
- 			graph_node_entry_list l_actors{graph_node_entry_allocator(*m_actors_pool)};
+			graph_node_entry_list l_actors{ graph_node_entry_allocator(*m_actors_pool) };
 			m_actors.swap(l_actors);
 			m_actors_count.store(0, core_platform::bc_memory_order::relaxed);
 
-			for(bc_iscene_graph_node_entry& l_entry : l_actors)
+			for (bc_iscene_graph_node_entry& l_entry : l_actors)
 			{
 				add_actor(l_entry.m_actor);
 			}
@@ -602,10 +602,10 @@ namespace black_cat
 				&*m_bottom_right_back
 			};
 
-			for(bc_octal_tree_graph_node* l_child : l_children)
+			for (bc_octal_tree_graph_node* l_child : l_children)
 			{
 				auto l_child_actor_count = l_child->m_actors.size();
-				if(l_child_actor_count == 0)
+				if (l_child_actor_count == 0)
 				{
 					continue;
 				}
@@ -613,7 +613,7 @@ namespace black_cat
 				m_actors.splice(std::rbegin(m_actors).base(), l_child->m_actors);
 
 				auto l_last_entry = std::rbegin(m_actors);
-				while(l_child_actor_count-- > 0)
+				while (l_child_actor_count-- > 0)
 				{
 					l_last_entry->m_graph_node = this;
 					l_last_entry->m_internal_iterator = l_last_entry.base();
@@ -643,7 +643,7 @@ namespace black_cat
 		bc_octal_tree_graph_node* bc_octal_tree_graph_node::_get_min_node() const
 		{
 			auto* l_node = const_cast<bc_octal_tree_graph_node*>(this);
-			while(l_node->m_top_left_back)
+			while (l_node->m_top_left_back)
 			{
 				l_node = l_node->m_top_left_back;
 			}
@@ -693,12 +693,12 @@ namespace black_cat
 
 		bc_octal_tree_graph_node* bc_octal_tree_graph_node::_get_next_sibling_node() const
 		{
-			if(m_parent == nullptr)
+			if (m_parent == nullptr)
 			{
 				return nullptr;
 			}
 
-			if(this == m_parent->m_top_left_back)
+			if (this == m_parent->m_top_left_back)
 			{
 				return m_parent->m_top_left_front->_get_min_node();
 			}

@@ -93,7 +93,7 @@ namespace black_cat
 			physics::bc_scene_ref m_px_scene;
 
 			core_platform::bc_hybrid_mutex m_new_actors_lock;
-			core::bc_vector<std::tuple<_bc_scene_actor_operation, bc_actor>> m_new_actors;
+			core::bc_vector_frame<std::tuple<_bc_scene_actor_operation, bc_actor>> m_new_actors;
 		};
 
 		using bc_scene_ptr = core::bc_content_ptr<bc_scene>;

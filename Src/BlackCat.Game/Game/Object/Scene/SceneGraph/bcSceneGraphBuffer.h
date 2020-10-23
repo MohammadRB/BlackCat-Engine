@@ -16,7 +16,7 @@ namespace black_cat
 		class bc_scene_graph_buffer
 		{
 		private:
-			using container_type = core::bc_vector_frame<bc_actor>;
+			using container_type = core::bc_vector<bc_actor>;
 
 		public:
 			using value_type = container_type::value_type;

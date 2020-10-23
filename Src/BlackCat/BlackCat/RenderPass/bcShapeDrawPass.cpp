@@ -18,7 +18,7 @@ namespace black_cat
 
 	void bc_scene_debug_shape_query::execute(const game::bc_scene_query_context& p_context) noexcept
 	{
-		p_context.m_scene.add_debug_shapes(*m_shape_drawer);
+		p_context.m_scene->add_debug_shapes(*m_shape_drawer);
 	}
 	
 	bc_shape_draw_pass::bc_shape_draw_pass(constant::bc_render_pass_variable_t p_render_target_view)
@@ -77,15 +77,20 @@ namespace black_cat
 
 	void bc_shape_draw_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		p_param.m_render_thread.start(m_command_list.get());
-		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
-		
 		auto& l_shape_drawer = p_param.m_render_system.get_shape_drawer();
 		auto* l_scene_graph_buffer = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
-		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
 
+		if(!l_scene_graph_buffer)
+		{
+			return;
+		}
+		
 		l_scene_graph_buffer->add_debug_shapes(l_shape_drawer);
 		
+		p_param.m_render_thread.start(m_command_list.get());
+		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
+
+		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
 		l_shape_drawer.render(p_param.m_render_system, p_param.m_render_thread, l_render_state_buffer);
 		p_param.m_frame_renderer.render_buffer(l_render_state_buffer, p_param.m_render_thread, p_param.m_camera);
 

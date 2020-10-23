@@ -269,28 +269,28 @@ namespace black_cat
 					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_new_node->m_next->m_prev);
 				}
 
-				if (!p_prev && p_next)
-				{
-					p_prev = p_next->m_prev;
-				}
-
-				if (!p_next && p_prev)
-				{
-					p_next = p_prev->m_next;
-				}
-				
-				// Assign new node
 				if (!p_prev && !p_next && !m_head)
 				{
 					_new_head(p_new_node);
 				}
-				else if (!p_prev && !p_next && m_head)
-				{
-					p_prev = m_head->m_prev;
-					p_next = p_prev->m_next;
-				}
 				else
 				{
+					if (!p_prev && p_next)
+					{
+						p_prev = p_next->m_prev;
+					}
+
+					if (!p_next && p_prev)
+					{
+						p_next = p_prev->m_next;
+					}
+
+					if (!p_prev && !p_next && m_head)
+					{
+						p_prev = m_head->m_prev;
+						p_next = p_prev->m_next;
+					}
+
 					p_new_node->m_next = p_next;
 					p_new_node->m_prev = p_prev;
 					bc_allocator_traits< internal_allocator_type >::register_pointer(m_allocator, &p_new_node->m_next);
@@ -1110,15 +1110,21 @@ namespace black_cat
 		template< typename T, class TAllocator >
 		void bc_list<T, TAllocator>::splice(const_iterator p_pos, this_type&& p_other, const_iterator p_first, const_iterator p_last)
 		{
-			auto l_position_to_insert = p_pos.get_node();
+			auto l_node_to_start_before = p_pos.get_node();
+			auto l_inserted_node = static_cast<node_type*>(nullptr);
 
 			for(;p_first != p_last;)
 			{
 				auto l_next = p_first;
 				++l_next;
 
-				base_type::_new_node(nullptr, l_position_to_insert, p_other, p_first.get_node()); // TODO can be improved by bulk add
+				auto l_prev_node = l_inserted_node;
+				auto l_next_node = l_node_to_start_before;
 
+				l_inserted_node = base_type::_new_node(l_prev_node, l_next_node, p_other, p_first.get_node()); // TODO can be improved by bulk add
+
+				l_node_to_start_before = nullptr;
+				
 				p_first = l_next;
 			}
 		}

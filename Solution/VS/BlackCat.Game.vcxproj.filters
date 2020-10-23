@@ -449,5 +449,8 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderStateBuffer.cpp">
       <Filter>Game\System\Render</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcInputSystem.cpp">
+      <Filter>Game\System\Input</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

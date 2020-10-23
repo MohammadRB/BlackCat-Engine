@@ -177,8 +177,6 @@ namespace black_cat
 				return m_node;
 			}
 
-		protected:
-
 		private:
 			const provider_type* m_provider;
 			node_type* m_node;
@@ -232,14 +230,14 @@ namespace black_cat
 				return bc_forward_iterator_provider_traits< provider_type >::compare(*m_provider, m_node, p_other.m_node) != 0;
 			}
 
-			const reference operator *() const
+			reference operator *() const
 			{
 				bcAssert(bc_forward_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return *bc_forward_iterator_provider_traits< provider_type >::dereference(*m_provider, m_node);
 			}
 
-			const pointer operator ->() const noexcept
+			pointer operator ->() const noexcept
 			{
 				bcAssert(bc_forward_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
@@ -275,8 +273,6 @@ namespace black_cat
 			{
 				return m_node;
 			}
-
-		protected:
 
 		private:
 			const provider_type* m_provider;
@@ -355,10 +351,6 @@ namespace black_cat
 			{
 				base_type::swap(p_other);
 			}
-
-		protected:
-
-		private:
 		};
 
 		template< typename TProvider >
@@ -409,14 +401,14 @@ namespace black_cat
 				return bc_bidirectional_iterator_provider_traits< provider_type >::compare(*m_provider, m_node, p_other.m_node) != 0;
 			}
 
-			const reference operator *() const
+			reference operator *() const
 			{
 				bcAssert(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return *bc_bidirectional_iterator_provider_traits< provider_type >::dereference(*m_provider, m_node);
 			}
 
-			const pointer operator ->() const noexcept
+			pointer operator ->() const noexcept
 			{
 				bcAssert(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
@@ -472,8 +464,6 @@ namespace black_cat
 			{
 				return m_node;
 			}
-
-		protected:
 
 		private:
 			const provider_type* m_provider;
@@ -568,10 +558,6 @@ namespace black_cat
 			{
 				base_type::swap(p_other);
 			}
-
-		protected:
-
-		private:
 		};
 
 		template< typename TProvider >
@@ -622,14 +608,14 @@ namespace black_cat
 				return bc_random_access_iterator_provider_traits< provider_type >::compare(*m_provider, m_node, p_other.m_node) != 0;
 			}
 
-			const reference operator *() const
+			reference operator *() const
 			{
 				bcAssert(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return *bc_random_access_iterator_provider_traits< provider_type >::dereference(*m_provider, m_node);
 			}
 
-			const pointer operator ->() const noexcept
+			pointer operator ->() const noexcept
 			{
 				bcAssert(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
@@ -748,9 +734,7 @@ namespace black_cat
 			{
 				return m_node;
 			}
-
-		protected:
-
+			
 		private:
 			const provider_type* m_provider;
 			node_type* m_node;
@@ -899,10 +883,6 @@ namespace black_cat
 			{
 				base_type::swap(p_other);
 			}
-
-		protected:
-
-		private:
 		};
 
 		template< class TProvider >
@@ -986,11 +966,10 @@ namespace black_cat
 			this_type& operator ++()
 			{
 				--m_iterator;
-
 				return *this;
 			}
 
-			const this_type operator ++(difference_type)
+			this_type operator ++(difference_type)
 			{
 				this_type l_old = *this;
 
@@ -1002,14 +981,12 @@ namespace black_cat
 			this_type& operator +=(difference_type p_count)
 			{
 				m_iterator -= p_count;
-
 				return *this;
 			}
 
 			this_type operator +(difference_type p_count)
 			{
 				this_type l_old = *this;
-
 				l_old.m_iterator -= p_count;
 
 				return l_old;
@@ -1017,10 +994,11 @@ namespace black_cat
 
 			this_type& operator --()
 			{
-				return ++m_iterator;
+				++m_iterator;
+				return *this;
 			}
 
-			const this_type operator --(difference_type)
+			this_type operator --(difference_type)
 			{
 				this_type l_old = *this;
 
@@ -1079,8 +1057,6 @@ namespace black_cat
 			{
 				return m_iterator;
 			}
-
-		protected:
 
 		private:
 			TIterator m_iterator;

@@ -537,8 +537,6 @@ namespace black_cat
 			if(core::bc_ievent::event_is<graphic::bc_app_event_device_reset>(p_event))
 			{
 				auto& l_device_reset_event = static_cast<graphic::bc_app_event_device_reset&>(p_event);
-
-				m_device.resize_back_buffer(l_device_reset_event.m_new_parameters.m_width, l_device_reset_event.m_new_parameters.m_height);
 				
 				m_render_pass_manager->before_reset(bc_render_pass_reset_param
 				(
@@ -547,6 +545,9 @@ namespace black_cat
 					l_device_reset_event.m_old_parameters, 
 					l_device_reset_event.m_new_parameters
 				));
+
+				m_device.resize_back_buffer(l_device_reset_event.m_new_parameters.m_width, l_device_reset_event.m_new_parameters.m_height);
+				
 				m_render_pass_manager->after_reset(bc_render_pass_reset_param
 				(
 					*this, 

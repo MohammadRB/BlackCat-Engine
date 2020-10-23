@@ -376,7 +376,10 @@ namespace black_cat
 				m_stub_call = p_other.m_stub_call;
 				m_stub_action = p_other.m_stub_action;
 
-				m_stub_action(m_buffer, const_cast<bcCHAR*>(p_other.m_buffer), 1);
+				if(is_valid())
+				{
+					m_stub_action(m_buffer, const_cast<bcCHAR*>(p_other.m_buffer), 1);
+				}
 			}
 
 			static const bcUINT32 s_buffer_size = sizeof(void*) * 5;

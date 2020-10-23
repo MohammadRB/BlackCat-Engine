@@ -19,6 +19,8 @@ namespace black_cat
 			friend class bc_query_manager;
 
 		public:
+			bc_query_provider_handle();
+			
 			bc_query_provider_handle(bc_query_provider_handle&&) noexcept;
 
 			~bc_query_provider_handle();

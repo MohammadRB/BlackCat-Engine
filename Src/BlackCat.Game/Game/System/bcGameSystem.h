@@ -6,6 +6,7 @@
 #include "Core/bcConstant.h"
 #include "Core/Container/bcString.h"
 #include "Core/Content/bcContentStreamManager.h"
+#include "Core/Messaging/Query/bcQueryProviderHandle.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Game/bcExport.h"
 #include "Game/System/Input/bcInputSystem.h"
@@ -139,6 +140,8 @@ namespace black_cat
 			bc_render_system m_render_system;
 			core::bc_unique_ptr<bc_game_console> m_console;
 			bc_scene_ptr m_scene;
+
+			core::bc_query_provider_handle m_scene_query_context_provider;
 		};
 	}
 }

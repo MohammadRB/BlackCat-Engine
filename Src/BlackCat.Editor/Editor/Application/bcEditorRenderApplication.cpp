@@ -1,6 +1,7 @@
 // [11/13/2016 MRB]
 
 #include "Editor/EditorPCH.h"
+#include "Core/Messaging/Query/bcQueryManager.h"
 #include "Platform/bcEvent.h"
 #include "PhysicsImp/Body/bcRigidDynamic.h"
 #include "Game/System/Input/bcFreeCamera.h"

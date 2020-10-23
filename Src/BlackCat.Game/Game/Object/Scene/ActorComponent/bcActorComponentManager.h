@@ -87,62 +87,19 @@ namespace black_cat
 		struct _bc_actor_entry
 		{
 		public:
-			explicit _bc_actor_entry(const bc_actor& p_actor, bc_actor_index p_parent_index = bc_actor::invalid_index)
-				: m_actor(p_actor),
-				m_parent_index(p_parent_index),
-				m_events{ nullptr, nullptr }
-			{
-			}
+			explicit _bc_actor_entry(const bc_actor& p_actor, bc_actor_index p_parent_index = bc_actor::invalid_index);
 
-			_bc_actor_entry(const _bc_actor_entry& p_other)
-			{
-				operator=(p_other);
-			}
+			_bc_actor_entry(const _bc_actor_entry& p_other);
 
-			~_bc_actor_entry() = default;
+			~_bc_actor_entry();
 
-			_bc_actor_entry& operator=(const _bc_actor_entry& p_other)
-			{
-				m_actor = p_other.m_actor;
-				m_parent_index = p_other.m_parent_index;
-				m_events[0].store(p_other.m_events[0].load(core_platform::bc_memory_order::relaxed), core_platform::bc_memory_order::relaxed);
-				m_events[1].store(p_other.m_events[1].load(core_platform::bc_memory_order::relaxed), core_platform::bc_memory_order::relaxed);
+			_bc_actor_entry& operator=(const _bc_actor_entry& p_other);
 
-				return *this;
-			}
-			
-			void add_event(bcUINT32 p_active_event_pool, bc_actor_event* p_event) noexcept
-			{
-				auto* l_events = m_events[p_active_event_pool].load(core_platform::bc_memory_order::relaxed);
-				
-				while (true)
-				{
-					p_event->set_next(l_events);
+			void add_event(bcUINT32 p_active_event_pool, bc_actor_event* p_event) noexcept;
 
-					const auto l_changed = m_events[p_active_event_pool].compare_exchange_weak
-					(
-						&l_events,
-						p_event,
-						core_platform::bc_memory_order::relaxed,
-						core_platform::bc_memory_order::relaxed
-					);
+			bc_actor_event* get_events(bcUINT32 p_active_event_pool) const noexcept;
 
-					if(l_changed)
-					{
-						break;
-					}
-				}
-			}
-
-			bc_actor_event* get_events(bcUINT32 p_active_event_pool) const noexcept
-			{
-				return m_events[p_active_event_pool].load(core_platform::bc_memory_order::relaxed);
-			}
-
-			void clear_events(bcUINT32 p_active_event_pool) noexcept
-			{
-				m_events[p_active_event_pool].store(nullptr, core_platform::bc_memory_order::relaxed);
-			}
+			void clear_events(bcUINT32 p_active_event_pool) noexcept;
 
 			bc_actor m_actor;
 			bc_actor_index m_parent_index;
@@ -155,6 +112,17 @@ namespace black_cat
 			using deriveds_component_get_delegate = core::bc_delegate<bc_iactor_component*(const bc_actor&)>;
 
 		public:
+			_bc_actor_component_entry(bool p_is_abstract,
+				bool p_require_event,
+				bool p_require_update,
+				bcUINT32 p_component_priority,
+				core::bc_unique_ptr<bc_iactor_component_container> p_container,
+				core::bc_vector_movale< deriveds_component_get_delegate > p_deriveds);
+			
+			_bc_actor_component_entry(_bc_actor_component_entry&& p_other) noexcept;
+
+			_bc_actor_component_entry& operator=(_bc_actor_component_entry&& p_other) noexcept;
+
 			static constexpr bcUINT32 s_invalid_priority_value = -1;
 			bool m_is_abstract;
 			bool m_require_event;
@@ -257,6 +225,106 @@ namespace black_cat
 			bcUINT32 m_write_event_pool;
 			core::bc_concurrent_object_stack_pool m_events_pool[2];
 		};
+
+		inline _bc_actor_entry::_bc_actor_entry(const bc_actor& p_actor, bc_actor_index p_parent_index): m_actor
+			(p_actor),
+			m_parent_index(p_parent_index),
+			m_events{ nullptr, nullptr }
+		{
+		}
+
+		inline _bc_actor_entry::_bc_actor_entry(const _bc_actor_entry& p_other)
+		{
+			operator=(p_other);
+		}
+
+		inline _bc_actor_entry::~_bc_actor_entry() = default;
+
+		inline _bc_actor_entry& _bc_actor_entry::operator=(const _bc_actor_entry& p_other)
+		{
+			m_actor = p_other.m_actor;
+			m_parent_index = p_other.m_parent_index;
+			m_events[0].store
+			(
+				p_other.m_events[0].load(core_platform::bc_memory_order::relaxed),
+				core_platform::bc_memory_order::relaxed
+			);
+			m_events[1].store
+			(
+				p_other.m_events[1].load(core_platform::bc_memory_order::relaxed),
+				core_platform::bc_memory_order::relaxed
+			);
+
+			return *this;
+		}
+
+		inline void _bc_actor_entry::add_event(bcUINT32 p_active_event_pool, bc_actor_event* p_event) noexcept
+		{
+			auto* l_events = m_events[p_active_event_pool].load(core_platform::bc_memory_order::relaxed);
+
+			while (true)
+			{
+				p_event->set_next(l_events);
+
+				const auto l_changed = m_events[p_active_event_pool].compare_exchange_weak
+				(
+					&l_events,
+					p_event,
+					core_platform::bc_memory_order::relaxed,
+					core_platform::bc_memory_order::relaxed
+				);
+
+				if (l_changed)
+				{
+					break;
+				}
+			}
+		}
+
+		inline bc_actor_event* _bc_actor_entry::get_events(bcUINT32 p_active_event_pool) const noexcept
+		{
+			return m_events[p_active_event_pool].load(core_platform::bc_memory_order::relaxed);
+		}
+
+		inline void _bc_actor_entry::clear_events(bcUINT32 p_active_event_pool) noexcept
+		{
+			m_events[p_active_event_pool].store(nullptr, core_platform::bc_memory_order::relaxed);
+		}
+
+		inline _bc_actor_component_entry::_bc_actor_component_entry(bool p_is_abstract,
+			bool p_require_event,
+			bool p_require_update,
+			bcUINT32 p_component_priority,
+			core::bc_unique_ptr<bc_iactor_component_container> p_container,
+			core::bc_vector_movale< deriveds_component_get_delegate > p_deriveds)
+			: m_is_abstract(p_is_abstract),
+			m_require_event(p_require_event),
+			m_require_update(p_require_update),
+			m_component_priority(p_component_priority),
+			m_actor_to_component_index_map(),
+			m_component_to_actor_index_map(),
+			m_container(std::move(p_container)),
+			m_deriveds(p_deriveds)
+		{
+		}
+
+		inline _bc_actor_component_entry::_bc_actor_component_entry(_bc_actor_component_entry&& p_other) noexcept
+		{
+			operator=(std::move(p_other));
+		}
+
+		inline _bc_actor_component_entry& _bc_actor_component_entry::operator=(_bc_actor_component_entry&& p_other) noexcept
+		{
+			m_is_abstract = p_other.m_is_abstract;
+			m_require_event = p_other.m_require_event;
+			m_require_update = p_other.m_require_update;
+			m_component_priority = p_other.m_component_priority;
+			m_actor_to_component_index_map = std::move(p_other.m_actor_to_component_index_map);
+			m_component_to_actor_index_map = std::move(p_other.m_component_to_actor_index_map);
+			m_container = std::move(p_other.m_container);
+			m_deriveds = std::move(p_other.m_deriveds);
+			return *this;
+		}
 
 		inline bc_actor_component_manager::bc_actor_component_manager()
 		{
@@ -735,24 +803,18 @@ namespace black_cat
 			);
 
 			// Initialize components container
-			const bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
+			constexpr auto l_hash = bc_actor_component_traits< TComponent >::component_hash();
 			_bc_actor_component_entry l_data
-			{
+			(
 				bc_actor_component_traits<TComponent>::component_is_abstract(),
 				bc_actor_component_traits<TComponent>::component_require_event(),
 				bc_actor_component_traits<TComponent>::component_require_update(),
 				p_priority,
-				core::bc_vector_movale< bc_actor_component_index >(),
-				core::bc_vector_movale< bc_actor_index >(),
-				core::bc_make_unique< bc_actor_component_container< TComponent > >(core::bc_alloc_type::program)
-			};
-
-			component_container_type::value_type l_entry = std::make_pair<const bc_actor_component_hash, _bc_actor_component_entry>
-			(
-				bc_actor_component_traits< TComponent >::component_hash(), 
-				std::move(l_data)
+				core::bc_make_unique< bc_actor_component_container< TComponent > >(core::bc_alloc_type::program),
+				core::bc_vector_movale< _bc_actor_component_entry::deriveds_component_get_delegate >()
 			);
-			m_components.insert(std::move(l_entry));
+
+			m_components.insert(component_container_type::value_type(l_hash, std::move(l_data)));
 		}
 
 		template< class TComponent, class ...TDeriveds >
@@ -764,15 +826,13 @@ namespace black_cat
 				"TComponent is not an abstract component."
 			);
 
-			bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
+			constexpr auto l_hash = bc_actor_component_traits< TComponent >::component_hash();
 			_bc_actor_component_entry l_data
-			{
+			(
 				bc_actor_component_traits<TComponent>::component_is_abstract(),
 				bc_actor_component_traits<TComponent>::component_require_event(),
 				bc_actor_component_traits<TComponent>::component_require_update(),
 				_bc_actor_component_entry::s_invalid_priority_value,
-				core::bc_vector_movale< bc_actor_component_index >(),
-				core::bc_vector_movale< bc_actor_index >(),
 				nullptr,
 				core::bc_vector_movale< _bc_actor_component_entry::deriveds_component_get_delegate >
 				(
@@ -790,14 +850,9 @@ namespace black_cat
 						)...
 					}
 				)
-			};
-
-			component_container_type::value_type l_entry = std::make_pair<const bc_actor_component_hash, _bc_actor_component_entry>
-			(
-				bc_actor_component_traits< TComponent >::component_hash(),
-				std::move(l_data)
 			);
-			m_components.insert(std::move(l_entry));
+
+			m_components.insert(component_container_type::value_type(l_hash, std::move(l_data)));
 		}
 
 		template< class TComponent >

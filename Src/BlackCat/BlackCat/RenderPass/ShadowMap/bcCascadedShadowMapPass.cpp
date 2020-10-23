@@ -48,13 +48,16 @@ namespace black_cat
 	void bc_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_param& p_param)
 	{
 		const auto l_cascade_absolute_index = p_param.m_light_index * p_param.m_cascade_count + p_param.m_cascade_index;
-		if(m_scene_queries.size() < l_cascade_absolute_index)
+		if(m_scene_queries.size() < l_cascade_absolute_index + 1)
 		{
-			m_scene_queries.push_back(core::bc_get_service<core::bc_query_manager>()->queue_query
+			m_scene_queries.resize(l_cascade_absolute_index + 1);
+			
+			auto l_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 			(
 				game::bc_scene_graph_query().with(game::bc_camera_frustum(p_param.m_cascade_camera))
 				                            .only< game::bc_simple_mesh_component >()
-			));
+			);
+			m_scene_queries[l_cascade_absolute_index] = std::move(l_query);
 		}
 		
 		if(!m_scene_queries[l_cascade_absolute_index].is_executed())

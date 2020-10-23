@@ -165,7 +165,7 @@ namespace black_cat
 			core::bc_concurrent_memory_pool* m_actors_pool;
 			graph_node_entry_list m_actors;
 
-			mutable core_platform::bc_mutex m_lock;
+			mutable core_platform::bc_recursive_mutex m_lock;
 		};
 	}
 }

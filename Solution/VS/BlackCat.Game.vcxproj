@@ -322,6 +322,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcCameraFrustum.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFileSystem.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFreeCamera.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcInputSystem.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsSystem.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsShapeUtility.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcFrameRenderer.cpp" />
