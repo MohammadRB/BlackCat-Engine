@@ -32,10 +32,6 @@ namespace black_cat
 
 			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 
-			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
-			
-		protected:
-
 		private:
 			physics::bc_rigid_dynamic_ref m_px_actor_ref;
 		};

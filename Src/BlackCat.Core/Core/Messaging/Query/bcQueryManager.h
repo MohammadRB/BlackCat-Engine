@@ -32,7 +32,7 @@ namespace black_cat
 			class _provider_entry;
 			class _query_entry;
 
-			using provider_map_t = bc_unordered_map< bc_query_context_hash, _provider_entry >;
+			using provider_map_t = bc_unordered_map_program< bc_query_context_hash, _provider_entry >;
 			using query_list_t = bc_list<_query_entry, bc_memory_pool_allocator<_query_entry>>;
 			
 		public:
@@ -44,6 +44,12 @@ namespace black_cat
 
 			bc_query_manager& operator=(bc_query_manager&&) noexcept = delete;
 
+			/**
+			 * \brief Context can be allocated using frame memory
+			 * \tparam TContext 
+			 * \param p_delegate 
+			 * \return 
+			 */
 			template< class TContext >
 			bc_query_provider_handle register_query_provider(provider_delegate_t&& p_delegate);
 

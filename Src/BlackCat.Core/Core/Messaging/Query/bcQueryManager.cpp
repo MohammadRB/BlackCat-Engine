@@ -103,6 +103,12 @@ namespace black_cat
 					},
 					[=](bool) {}
 				);
+
+				for (auto& l_provider : m_providers)
+				{
+					// Free context to make it possible to use memory_frame in context allocation
+					l_provider.second.m_provided_context.reset();
+				}
 			}
 		}
 

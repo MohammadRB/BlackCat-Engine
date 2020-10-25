@@ -43,9 +43,5 @@ namespace black_cat
 				bc_mesh_component::set_world_transform(p_actor, l_world_transform_event->get_transform());
 			}
 		}
-		
-		void bc_simple_mesh_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
-		{
-		}
 	}
 }

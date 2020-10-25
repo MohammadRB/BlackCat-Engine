@@ -10,6 +10,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Concurrency/bcThreadManager.h"
+#include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Utility/bcNullable.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcEnumOperand.h"
@@ -193,7 +194,7 @@ namespace black_cat
 			template< class ...TCAdapter >
 			void register_abstract_component_types(TCAdapter... p_components);
 
-			void update_actors(const core_platform::bc_clock::update_param& p_clock_update_param);
+			void update_actors(const core_platform::bc_clock::update_param& p_clock);
 			
 		private:
 			template< class TComponent >
@@ -675,10 +676,13 @@ namespace black_cat
 			remove_actor(l_actor);
 		}
 
-		inline void bc_actor_component_manager::update_actors(const core_platform::bc_clock::update_param& p_clock_update_param)
+		inline void bc_actor_component_manager::update_actors(const core_platform::bc_clock::update_param& p_clock)
 		{
-			core::bc_vector_frame< _bc_actor_component_entry* > l_components;
-			l_components.reserve(m_components.size());
+			core::bc_vector_frame< _bc_actor_component_entry* > l_components_with_event;
+			core::bc_vector_frame< _bc_actor_component_entry* > l_components_with_update;
+			
+			l_components_with_event.reserve(m_components.size());
+			l_components_with_update.reserve(m_components.size());
 
 			for (auto& l_entry : m_components)
 			{
@@ -687,19 +691,36 @@ namespace black_cat
 					continue;
 				}
 
-				l_components.push_back(&l_entry.second);
+				if(l_entry.second.m_require_event)
+				{
+					l_components_with_event.push_back(&l_entry.second);
+				}
+				
+				if(l_entry.second.m_require_update)
+				{
+					l_components_with_update.push_back(&l_entry.second);
+				}
 			}
 
 			std::sort
 			(
-				std::begin(l_components),
-				std::end(l_components),
+				std::begin(l_components_with_event),
+				std::end(l_components_with_event),
 				[](const _bc_actor_component_entry* p_first, const _bc_actor_component_entry* p_second)
 				{
 					return p_first->m_component_priority < p_second->m_component_priority;
 				}
 			);
-
+			std::sort
+			(
+				std::begin(l_components_with_update),
+				std::end(l_components_with_update),
+				[](const _bc_actor_component_entry* p_first, const _bc_actor_component_entry* p_second)
+				{
+					return p_first->m_component_priority < p_second->m_component_priority;
+				}
+			);
+			
 			do
 			{
 				m_read_event_pool = m_write_event_pool;
@@ -710,36 +731,62 @@ namespace black_cat
 					break;
 				}
 
-				bcSIZE l_component_index = 0;
-				for (auto l_entry : l_components)
+				core::bc_concurrency::concurrent_for_each
+				(
+					std::begin(l_components_with_event),
+					std::end(l_components_with_event),
+					[]() { return true; },
+					[&](bool, _bc_actor_component_entry* p_entry)
+					{
+						p_entry->m_container->handle_events(*this);
+					},
+					[](bcINT32) {}
+				);
+
 				{
-					++l_component_index;
+					core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_actors_lock(m_actors_lock);
 
-					if (!l_entry->m_require_event)
-					{
-						continue;
-					}
+					core::bc_concurrency::concurrent_for_each
+					(
+						std::begin(m_actors),
+						std::end(m_actors),
+						[]() { return true; },
+						[&](bool, actor_container_type::reference& p_actor_entry)
+						{
+							if (!p_actor_entry.is_set())
+							{
+								return;
+							}
 
-					if (l_component_index != l_components.size())
-					{
-						l_entry->m_container->handle_events(*this, nullptr);
-					}
-					else
-					{
-						l_entry->m_container->handle_events(*this, &m_events_pool[m_read_event_pool]);
-					}
+							auto* l_events_pool = &m_events_pool[m_read_event_pool];
+							auto* l_actor_events = p_actor_entry->get_events(m_read_event_pool);
+
+							while (l_actor_events)
+							{
+								bc_actor_event* l_next = l_actor_events->get_next();
+								l_events_pool->free(l_actor_events);
+								l_actor_events = l_next;
+							}
+
+							p_actor_entry->clear_events(m_read_event_pool);
+						},
+						[](bcINT32) {}
+					);
 				}
+				
 			} while (m_events_pool[m_write_event_pool].size());
 
-			for (auto l_component_data : l_components)
-			{
-				if (!l_component_data->m_require_update)
+			core::bc_concurrency::concurrent_for_each
+			(
+				std::begin(l_components_with_update),
+				std::end(l_components_with_update),
+				[]() { return true; },
+				[&](bool, _bc_actor_component_entry* p_entry)
 				{
-					continue;
-				}
-
-				l_component_data->m_container->update(*this, p_clock_update_param);
-			}
+					p_entry->m_container->update(*this, p_clock);
+				},
+				[](bcINT32) {}
+			);
 		}
 		
 		template< class TComponent >

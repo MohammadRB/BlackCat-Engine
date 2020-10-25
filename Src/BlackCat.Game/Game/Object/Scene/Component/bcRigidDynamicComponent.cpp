@@ -75,9 +75,5 @@ namespace black_cat
 				m_px_actor_ref->set_global_pose(physics::bc_transform(l_world_transform_event->get_transform()));
 			}
 		}
-		
-		void bc_rigid_dynamic_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
-		{
-		}
 	}
 }

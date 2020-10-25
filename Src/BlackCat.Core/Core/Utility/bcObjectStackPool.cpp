@@ -19,7 +19,13 @@ namespace black_cat
 		{	
 		}
 
-		bc_concurrent_object_stack_pool::~bc_concurrent_object_stack_pool() = default;
+		bc_concurrent_object_stack_pool::~bc_concurrent_object_stack_pool()
+		{
+			if(m_stack_allocator.is_initialized())
+			{
+				m_stack_allocator.destroy();
+			}
+		}
 
 		bc_concurrent_object_stack_pool& bc_concurrent_object_stack_pool::operator=(bc_concurrent_object_stack_pool&& p_other) noexcept
 		{
@@ -46,6 +52,7 @@ namespace black_cat
 
 		void bc_concurrent_object_stack_pool::_destroy()
 		{
+			bcAssert(m_size.load(core_platform::bc_memory_order::relaxed) == 0);
 			m_stack_allocator.destroy();
 		}
 

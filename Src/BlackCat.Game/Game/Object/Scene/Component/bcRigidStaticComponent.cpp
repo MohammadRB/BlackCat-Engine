@@ -109,10 +109,6 @@ namespace black_cat
 			}
 		}
 		
-		void bc_rigid_static_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
-		{
-		}
-
 		void bc_rigid_static_component::_initialize_from_height_map(bc_physics_system& p_physics_system, 
 			bc_actor& p_actor, 
 			physics::bc_rigid_static& p_rigid_static,

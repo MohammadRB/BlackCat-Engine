@@ -28,6 +28,10 @@ namespace black_cat
 			bc_iquery& operator=(const bc_iquery&);
 		};
 
+		/**
+		 * \brief Do not use memory frame for internal allocation in queries
+		 * \tparam TContext 
+		 */
 		template< class TContext >
 		class bc_query : public bc_iquery
 		{

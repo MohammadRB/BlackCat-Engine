@@ -77,6 +77,11 @@ namespace black_cat
 
 	void bc_shape_draw_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
+		if(m_scene_debug_query.is_executed())
+		{
+			m_scene_debug_query.get(); // Just to free query result	
+		}
+		
 		auto& l_shape_drawer = p_param.m_render_system.get_shape_drawer();
 		auto* l_scene_graph_buffer = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
 

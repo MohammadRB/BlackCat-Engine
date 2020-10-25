@@ -35,8 +35,6 @@ namespace black_cat
 
 			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 
-			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
-			
 		private:
 			void _initialize_from_height_map(bc_physics_system& p_physics_system, 
 				bc_actor& p_actor, 

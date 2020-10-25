@@ -3,11 +3,10 @@
 #pragma once
 
 #include "Core/bcConstant.h"
-#include "Core/Memory/bcPtr.h"
+#include "Core/Utility/bcNullable.h"
 #include "Core/Utility/bcDelegate.h"
 #include "Core/Messaging/Query/bcQuery.h"
 #include "Game/Object/Scene/bcScene.h"
-#include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 
 namespace black_cat
@@ -46,7 +45,7 @@ namespace black_cat
 			template<class TComponent>
 			static void _execute(bc_scene_graph_query& p_this, const bc_scene_query_context& p_context) noexcept;
 			
-			core::bc_unique_ptr<bc_camera_frustum> m_frustum;
+			core::bc_nullable<bc_camera_frustum> m_frustum;
 			bc_scene_graph_buffer m_scene_buffer;
 			core::bc_delegate<void(bc_scene_graph_query&, const bc_scene_query_context&)> m_execute_with_component;
 		};
@@ -76,7 +75,7 @@ namespace black_cat
 
 		inline bc_scene_graph_query& bc_scene_graph_query::with(const bc_camera_frustum& p_frustum)
 		{
-			m_frustum = core::bc_make_unique<bc_camera_frustum>(p_frustum);
+			m_frustum = p_frustum;
 			return *this;
 		}
 
@@ -100,7 +99,7 @@ namespace black_cat
 			}
 			else
 			{
-				if (m_frustum)
+				if (m_frustum.is_set())
 				{
 					m_scene_buffer = p_context.m_scene->get_scene_graph().get_actors(*m_frustum);
 				}
@@ -110,7 +109,7 @@ namespace black_cat
 		template< class TComponent >
 		void bc_scene_graph_query::_execute(bc_scene_graph_query& p_this, const bc_scene_query_context& p_context) noexcept
 		{
-			if(p_this.m_frustum)
+			if(p_this.m_frustum.is_set())
 			{
 				p_this.m_scene_buffer = p_context.m_scene->get_scene_graph().get_actors<TComponent>(*p_this.m_frustum);
 			}
