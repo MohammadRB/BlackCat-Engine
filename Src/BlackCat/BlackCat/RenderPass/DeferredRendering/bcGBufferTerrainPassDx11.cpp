@@ -111,6 +111,11 @@ namespace black_cat
 		{
 			m_scene_query_result = m_scene_query.get().get_scene_buffer();
 		}
+
+		m_scene_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+		(
+			game::bc_scene_graph_query().only<game::bc_height_map_component>()
+		);
 		
 		if (m_run_chunk_info_shader)
 		{
@@ -184,10 +189,6 @@ namespace black_cat
 
 	void bc_gbuffer_terrain_pass_dx11::cleanup_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		m_scene_query = core::bc_get_service<core::bc_query_manager>()->queue_query
-		(
-			game::bc_scene_graph_query().only<game::bc_height_map_component>()
-		);
 	}
 
 	void bc_gbuffer_terrain_pass_dx11::before_reset(const game::bc_render_pass_reset_param& p_param)

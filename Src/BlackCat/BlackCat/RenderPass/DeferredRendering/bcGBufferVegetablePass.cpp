@@ -79,6 +79,7 @@ namespace black_cat
 
 	void bc_gbuffer_vegetable_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
+		
 	}
 
 	void bc_gbuffer_vegetable_pass::execute(const game::bc_render_pass_render_param& p_param)

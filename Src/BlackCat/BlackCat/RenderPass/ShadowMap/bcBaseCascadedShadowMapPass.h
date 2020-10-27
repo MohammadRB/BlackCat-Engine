@@ -4,7 +4,6 @@
 
 #include "Core/Container/bcVector.h"
 #include "Core/Messaging/Query/bcQueryResult.h"
-#include "Core/Utility/bcNullable.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
@@ -44,7 +43,7 @@ namespace black_cat
 		core::bc_vector_program<_bc_cascaded_shadow_map_light_state> m_light_instance_states;
 
 		core::bc_query_result<game::bc_scene_graph_query> m_scene_query;
-		core::bc_nullable<game::bc_scene_graph_buffer> m_scene_query_result;
+		game::bc_scene_graph_buffer m_scene_query_result;
 		
 		bool m_capture_debug_shapes = false;
 		game::bc_icamera::extend m_captured_camera;

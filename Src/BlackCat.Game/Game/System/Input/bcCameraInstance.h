@@ -75,8 +75,8 @@ namespace black_cat
 		inline bc_camera_instance::bc_camera_instance(const bc_icamera& p_camera)
 			: m_screen_width(p_camera.get_screen_width()),
 			m_screen_height(p_camera.get_screen_height()),
-			m_near_clip(p_camera.get_far_clip()),
-			m_far_clip(p_camera.get_near_clip()),
+			m_near_clip(p_camera.get_near_clip()),
+			m_far_clip(p_camera.get_far_clip()),
 			m_position(p_camera.get_position()),
 			m_direction(p_camera.get_direction()),
 			m_look_at(p_camera.get_look_at()),

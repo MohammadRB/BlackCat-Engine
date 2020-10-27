@@ -82,23 +82,30 @@ namespace black_cat
 
 	void bc_base_cascaded_shadow_map_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
-	}
-
-	void bc_base_cascaded_shadow_map_pass::execute(const game::bc_render_pass_render_param& p_param)
-	{
-		if(m_state->m_scene_query.is_executed())
+		if (m_state->m_scene_query.is_executed())
 		{
 			m_state->m_scene_query_result = m_state->m_scene_query.get().get_scene_buffer();
 		}
 
-		if(!m_state->m_scene_query_result.is_set())
+		if (m_my_index == 0)
+		{
+			m_state->m_scene_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+			(
+				game::bc_scene_graph_query().only<game::bc_light_component>()
+			);
+		}
+	}
+
+	void bc_base_cascaded_shadow_map_pass::execute(const game::bc_render_pass_render_param& p_param)
+	{
+		if(!m_state->m_scene_query_result.size())
 		{
 			return;
 		}
 		
 		core::bc_vector_frame<game::bc_direct_light> l_direct_lights;
 
-		auto& l_light_actors = m_state->m_scene_query_result.get();
+		auto& l_light_actors = m_state->m_scene_query_result;
 		for (auto& l_actor : l_light_actors)
 		{
 			auto* l_light_component = l_actor.get_component<game::bc_light_component>();
@@ -229,7 +236,7 @@ namespace black_cat
 			{
 				p_param.m_render_system.get_shape_drawer().render_wired_box(l_captured_box);
 			}
-			//p_param.m_render_system.get_shape_drawer().render_wired_frustum(m_captured_camera);	
+			//p_param.m_render_system.get_shape_drawer().render_wired_frustum(m_state->m_captured_camera);	
 		}
 	}
 
@@ -238,12 +245,6 @@ namespace black_cat
 		if(m_my_index == 0)
 		{
 			get_shared_resource_throw<bc_cascaded_shadow_map_buffer_container>(m_state->m_output_depth_buffers_share_slot).clear();
-
-			m_state->m_scene_query = core::bc_get_service<core::bc_query_manager>()->queue_query
-			(
-				game::bc_scene_graph_query().only<game::bc_light_component>()
-			);
-			m_state->m_scene_query_result.reset();
 		}
 	}
 

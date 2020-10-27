@@ -46,6 +46,12 @@ namespace black_cat
 		{
 			share_resource(constant::g_rpass_actor_list, m_scene_query.get().get_scene_buffer());
 		}
+
+		const game::bc_camera_frustum l_frustum(p_param.m_camera);
+		m_scene_query = core::bc_get_service< core::bc_query_manager >()->queue_query
+		(
+			game::bc_scene_graph_query().with(l_frustum)
+		);
 	}
 
 	void bc_gbuffer_initialize_pass::execute(const game::bc_render_pass_render_param& p_param)
@@ -54,12 +60,6 @@ namespace black_cat
 
 	void bc_gbuffer_initialize_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		const game::bc_camera_frustum l_frustum(p_param.m_camera);
-		m_scene_query = core::bc_get_service<core::bc_query_manager>()->queue_query
-		(
-			game::bc_scene_graph_query().with(l_frustum)
-		);
-		
 		unshare_resource(constant::g_rpass_actor_list);
 	}
 

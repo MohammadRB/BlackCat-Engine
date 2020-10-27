@@ -68,12 +68,11 @@ namespace black_cat
 		{
 			return;
 		}
-		
-		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
 
 		p_param.m_render_thread.start(m_command_list.get());
 		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
-		
+
+		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
 		l_scene_buffer->render_actors<game::bc_simple_mesh_component>(l_render_state_buffer);
 		p_param.m_frame_renderer.render_buffer(l_render_state_buffer, p_param.m_render_thread, p_param.m_camera);
 

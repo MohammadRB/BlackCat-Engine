@@ -191,7 +191,7 @@ namespace black_cat
 			const bool l_updated = m_scene_graph.update_actor(p_actor);
 			if (!l_updated)
 			{
-				remove_actor(p_actor);
+				_remove_actor(p_actor);
 				p_actor.destroy();
 			}
 		}

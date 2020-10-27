@@ -73,15 +73,19 @@ namespace black_cat
 
 	void bc_shape_draw_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
-	}
-
-	void bc_shape_draw_pass::execute(const game::bc_render_pass_render_param& p_param)
-	{
-		if(m_scene_debug_query.is_executed())
+		if (m_scene_debug_query.is_executed())
 		{
 			m_scene_debug_query.get(); // Just to free query result	
 		}
 		
+		m_scene_debug_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+		(
+			bc_scene_debug_shape_query(p_param.m_render_system.get_shape_drawer())
+		);
+	}
+
+	void bc_shape_draw_pass::execute(const game::bc_render_pass_render_param& p_param)
+	{
 		auto& l_shape_drawer = p_param.m_render_system.get_shape_drawer();
 		auto* l_scene_graph_buffer = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
 
@@ -107,10 +111,6 @@ namespace black_cat
 
 	void bc_shape_draw_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		m_scene_debug_query = core::bc_get_service<core::bc_query_manager>()->queue_query
-		(
-			bc_scene_debug_shape_query(p_param.m_render_system.get_shape_drawer())
-		);
 	}
 
 	void bc_shape_draw_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
