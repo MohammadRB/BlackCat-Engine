@@ -20,6 +20,8 @@ namespace black_cat
 
 			bc_point_light& operator=(const bc_point_light&) = default;
 
+			core::bc_vector3f get_position() const noexcept;
+			
 			core::bc_vector3f get_position(const core::bc_matrix4f& p_transformation) const noexcept;
 
 			void set_position(const core::bc_vector3f& p_position) noexcept;
@@ -52,6 +54,11 @@ namespace black_cat
 			m_color(p_color),
 			m_intensity(p_intensity)
 		{
+		}
+
+		inline core::bc_vector3f bc_point_light::get_position() const noexcept
+		{
+			return m_position;
 		}
 
 		inline core::bc_vector3f bc_point_light::get_position(const core::bc_matrix4f& p_transformation) const noexcept

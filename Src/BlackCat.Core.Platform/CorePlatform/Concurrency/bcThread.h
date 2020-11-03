@@ -23,7 +23,7 @@ namespace black_cat
 		{
 		public:
 			using this_type = bc_platform_thread< TP >;
-			using id = bcUINT32;
+			using id = bcSIZE;
 			using platform_pack = bc_platform_thread_pack<TP>;
 
 		public:
@@ -47,6 +47,8 @@ namespace black_cat
 			bool joinable() const noexcept;
 
 			id get_id() const noexcept;
+
+			void set_name(const bcWCHAR* p_name) noexcept;
 
 			static id current_thread_id() noexcept;
 
@@ -91,8 +93,6 @@ namespace black_cat
 						m_exit_funcs.push(std::move(p_func));
 					}
 
-				protected:
-
 				private:
 					std::stack< std::function< void() > > m_exit_funcs;
 				};
@@ -100,16 +100,7 @@ namespace black_cat
 				thread_local static thread_exit l_exit;
 				l_exit.add(std::move(p_func));
 			}
-
-			/**
-			 * \brief Call this function when main thread is about exit, to remove it's per-thread-data
-			 */
-			static void on_main_thread_exit()
-			{
-			}
-
-		protected:
-
+			
 		private:
 			platform_pack m_pack;
 		};

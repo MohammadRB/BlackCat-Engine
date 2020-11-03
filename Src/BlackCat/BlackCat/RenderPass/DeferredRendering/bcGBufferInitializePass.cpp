@@ -9,6 +9,7 @@
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/Query/bcMainCameraSceneQuery.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferInitializePass.h"
 
 namespace black_cat
@@ -42,15 +43,10 @@ namespace black_cat
 
 	void bc_gbuffer_initialize_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		if(m_scene_query.is_executed())
-		{
-			share_resource(constant::g_rpass_actor_list, m_scene_query.get().get_scene_buffer());
-		}
-
 		const game::bc_camera_frustum l_frustum(p_param.m_camera);
-		m_scene_query = core::bc_get_service< core::bc_query_manager >()->queue_query
+		core::bc_get_service< core::bc_query_manager >()->queue_shared_query
 		(
-			game::bc_scene_graph_query().with(l_frustum)
+			game::bc_main_camera_scene_query(l_frustum)
 		);
 	}
 
@@ -60,7 +56,6 @@ namespace black_cat
 
 	void bc_gbuffer_initialize_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		unshare_resource(constant::g_rpass_actor_list);
 	}
 
 	void bc_gbuffer_initialize_pass::before_reset(const game::bc_render_pass_reset_param& p_param)

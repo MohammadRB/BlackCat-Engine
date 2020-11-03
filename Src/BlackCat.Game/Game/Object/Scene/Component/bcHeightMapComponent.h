@@ -36,6 +36,11 @@ namespace black_cat
 				return *m_height_map;
 			}
 
+			bc_height_map_ptr get_height_map_ptr() const
+			{
+				return m_height_map;
+			}
+
 			bc_actor get_actor() const noexcept override;
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;

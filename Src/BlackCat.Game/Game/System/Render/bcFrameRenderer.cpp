@@ -149,7 +149,7 @@ namespace black_cat
 			return bc_render_state_buffer();
 		}
 
-		void bc_frame_renderer::render_buffer(const bc_render_state_buffer& p_buffer, bc_render_thread& p_render_thread, const bc_camera_instance& p_camera)
+		void bc_frame_renderer::render_buffer(bc_render_thread& p_render_thread, const bc_render_state_buffer& p_buffer, const bc_camera_instance& p_camera)
 		{
 			const auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
 

@@ -11,8 +11,8 @@
 #include "GraphicImp/Resource/State/bcSamplerState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/bcRenderSystem.h"
-#include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
-#include "Game/bcQuery.h"
+#include "Game/System/Render/bcRenderStateBuffer.h"
+#include "Game/Query/bcHeightMapSceneQuery.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -54,7 +54,7 @@ namespace black_cat
 		graphic::bc_sampler_state_ptr m_texture_sampler;
 		game::bc_render_pass_state_ptr m_render_pass_state;
 
-		core::bc_query_result<game::bc_scene_graph_query> m_scene_query;
-		game::bc_scene_graph_buffer m_scene_query_result;
+		core::bc_query_result<game::bc_height_map_scene_query> m_height_maps_query;
+		game::bc_render_state_buffer m_height_maps_render_buffer;
 	};
 }

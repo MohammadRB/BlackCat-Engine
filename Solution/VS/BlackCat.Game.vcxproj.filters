@@ -52,6 +52,9 @@
     <Filter Include="Game\Object\Scene\Component\Event">
       <UniqueIdentifier>{2e1f337a-a135-4f86-b9e1-a582deb039fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Query">
+      <UniqueIdentifier>{101cc54a-71fd-43ba-a16c-23d81b6728ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h">
@@ -291,11 +294,35 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderStateBuffer.h">
       <Filter>Game\System\Render</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\bcQuery.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcCameraInstance.h">
       <Filter>Game\System\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcQueryContext.h">
+      <Filter>Game\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneGraphQuery.h">
+      <Filter>Game\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneGraphRenderStateQuery.h">
+      <Filter>Game\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraRenderStateQuery.h">
+      <Filter>Game\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcHeightMapSceneQuery.h">
+      <Filter>Game\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneLightQuery.h">
+      <Filter>Game\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraSceneQuery.h">
+      <Filter>Game\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightIteratorBuffer.h">
+      <Filter>Game\System\Render\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightInstance.h">
+      <Filter>Game\System\Render\Light</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -451,6 +478,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcInputSystem.cpp">
       <Filter>Game\System\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightInstance.cpp">
+      <Filter>Game\System\Render\Light</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -2,14 +2,16 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
-#include "Core/Utility/bcEnumOperand.h"
 #include "Core/Math/bcCoordinate.h"
+#include "Core/Messaging/Query/bcQueryManager.h"
+#include "Core/Utility/bcEnumOperand.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/Light/bcLightManager.h"
+#include "Game/System/Input/bcCameraFrustum.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapBufferContainer.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferLightMapPass.h"
 
@@ -171,6 +173,18 @@ namespace black_cat
 
 	void bc_gbuffer_light_map_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
+		if (m_lights_query.is_executed())
+		{
+			m_lights = m_lights_query.get().get_lights();
+		}
+
+		m_lights_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+		(
+			game::bc_scene_light_query
+			(
+				core::bc_enum::or({ game::bc_light_type::direct, game::bc_light_type::point, game::bc_light_type::spot })
+			).with(game::bc_camera_frustum(p_param.m_camera))
+		);
 	}
 
 	void bc_gbuffer_light_map_pass::execute(const game::bc_render_pass_render_param& p_param)
@@ -184,23 +198,18 @@ namespace black_cat
 		l_point_lights.reserve(m_num_point_lights);
 		l_spot_lights.reserve(m_num_spot_lights);
 		l_shadow_maps.reserve(m_shader_shadow_map_count);
-
-		// TODO get only visible lights
-		core::bc_vector_frame< game::bc_light_instance > l_light_instances = p_param.m_render_system
-			.get_light_manager()
-			.get_light_instances(p_param.m_camera);
-
-		for (game::bc_light_instance& l_light : l_light_instances)
+		
+		for (game::bc_light_instance& l_light : m_lights)
 		{
-			switch (l_light.m_instance.get_type())
+			switch (l_light.get_type())
 			{
 			case game::bc_light_type::direct:
 			{
-				auto* l_direct_light = l_light.m_instance.as_direct_light();
+				auto* l_direct_light = l_light.as_direct_light();
 				_bc_direct_light_struct l_direct_light_cbuffer;
 
-				l_direct_light_cbuffer.m_min_bound = l_light.m_min_bound;
-				l_direct_light_cbuffer.m_max_bound = l_light.m_max_bound;
+				l_direct_light_cbuffer.m_min_bound = l_light.get_min_bound();
+				l_direct_light_cbuffer.m_max_bound = l_light.get_max_bound();
 				l_direct_light_cbuffer.m_shadow_map_index = -1;
 				l_direct_light_cbuffer.m_direction = l_direct_light->get_direction();
 				l_direct_light_cbuffer.m_color = l_direct_light->get_color();
@@ -213,13 +222,13 @@ namespace black_cat
 			}
 			case game::bc_light_type::point:
 			{
-				auto l_point_light = l_light.m_instance.as_point_light();
+				auto l_point_light = l_light.as_point_light();
 				_bc_point_light_struct l_point_light_cbuffer;
 
-				l_point_light_cbuffer.m_min_bound = l_light.m_min_bound;
-				l_point_light_cbuffer.m_max_bound = l_light.m_max_bound;
+				l_point_light_cbuffer.m_min_bound = l_light.get_min_bound();
+				l_point_light_cbuffer.m_max_bound = l_light.get_max_bound();
 				l_point_light_cbuffer.m_shadow_map_index = -1;
-				l_point_light_cbuffer.m_position = l_point_light->get_position(l_light.m_instance.get_transformation());
+				l_point_light_cbuffer.m_position = l_point_light->get_position();
 				l_point_light_cbuffer.m_radius = l_point_light->get_radius();
 				l_point_light_cbuffer.m_color = l_point_light->get_color();
 				l_point_light_cbuffer.m_intensity = l_point_light->get_intensity();
@@ -229,15 +238,15 @@ namespace black_cat
 			}
 			case game::bc_light_type::spot:
 			{
-				auto l_spot_light = l_light.m_instance.as_spot_light();
+				auto l_spot_light = l_light.as_spot_light();
 				_bc_spot_light_struct l_spot_light_cbuffer;
 
-				l_spot_light_cbuffer.m_min_bound = l_light.m_min_bound;
-				l_spot_light_cbuffer.m_max_bound = l_light.m_max_bound;
+				l_spot_light_cbuffer.m_min_bound = l_light.get_min_bound();
+				l_spot_light_cbuffer.m_max_bound = l_light.get_max_bound();
 				l_spot_light_cbuffer.m_shadow_map_index = -1;
-				l_spot_light_cbuffer.m_position = l_spot_light->get_position(l_light.m_instance.get_transformation());
+				l_spot_light_cbuffer.m_position = l_spot_light->get_position();
 				l_spot_light_cbuffer.m_angle = l_spot_light->get_angle();
-				l_spot_light_cbuffer.m_direction = l_spot_light->get_direction(l_light.m_instance.get_transformation());
+				l_spot_light_cbuffer.m_direction = l_spot_light->get_direction();
 				l_spot_light_cbuffer.m_length = l_spot_light->get_length();
 				l_spot_light_cbuffer.m_color = l_spot_light->get_color();
 				l_spot_light_cbuffer.m_intensity = l_spot_light->get_intensity();

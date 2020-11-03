@@ -561,7 +561,7 @@ namespace black_cat
 
 			if (core::bc_ievent::event_is<core::bc_event_frame_render_finish>(p_event))
 			{
-				m_shape_drawer->clear_buffers();
+				m_shape_drawer->clear_swap_buffers();
 
 				return true;
 			}

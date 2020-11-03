@@ -6,7 +6,7 @@
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/System/bcGameSystem.h"
-#include "Game/bcQuery.h"
+#include "Game/Query/bcQueryContext.h"
 
 namespace black_cat
 {
@@ -27,7 +27,7 @@ namespace black_cat
 		{
 			if (m_initialized)
 			{
-				destroy();
+				bc_initializable::destroy();
 			}
 		}
 
@@ -38,6 +38,18 @@ namespace black_cat
 
 		void bc_game_system::update_game(const core_platform::bc_clock::update_param& p_clock)
 		{
+			const bool l_is_multiple_update = m_last_total_elapsed == p_clock.m_total_elapsed;
+			if(l_is_multiple_update)
+			{
+				m_physics_system.update(p_clock);
+				if (m_scene)
+				{
+					m_scene->update_px(m_physics_system, p_clock);
+				}
+
+				return;
+			}
+			
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 			auto* l_actor_component_manager = core::bc_get_service<bc_actor_component_manager>();
 			auto* l_query_manager = core::bc_get_service<core::bc_query_manager>();
@@ -62,6 +74,8 @@ namespace black_cat
 			m_script_system.update(p_clock);
 			m_console->update(p_clock);
 			m_render_system.update(bc_render_system::update_param(p_clock, m_input_system.get_camera()));
+
+			m_last_total_elapsed = p_clock.m_total_elapsed;
 		}
 		
 		void bc_game_system::render_game(const core_platform::bc_clock::update_param& p_clock)

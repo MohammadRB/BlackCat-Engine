@@ -141,6 +141,8 @@ namespace black_cat
 			core::bc_unique_ptr<bc_game_console> m_console;
 			bc_scene_ptr m_scene;
 
+			core_platform::bc_clock::big_delta_time m_last_total_elapsed;
+
 			core::bc_query_provider_handle m_scene_query_context_provider;
 		};
 	}

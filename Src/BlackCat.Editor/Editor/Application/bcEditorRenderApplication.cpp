@@ -91,12 +91,10 @@ namespace black_cat
 
 		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param)
 		{
-			m_game_system->update_game(p_clock_update_param);
 		}
 
 		void bc_editor_render_app::application_render(core_platform::bc_clock::update_param p_clock_update_param)
 		{
-			m_game_system->render_game(p_clock_update_param);
 		}
 
 		bool bc_editor_render_app::application_event(core::bc_ievent& p_event)
@@ -159,10 +157,8 @@ namespace black_cat
 
 		void bc_editor_render_app::application_unload_content(core::bc_content_stream_manager* p_stream_manager)
 		{
-			auto* l_ui_command_manager = core::bc_get_service< bc_ui_command_service >();
-
 			m_game_system->set_scene(nullptr);
-			l_ui_command_manager->unload_content();
+			core::bc_get_service< bc_ui_command_service >()->unload_content();
 		}
 
 		void bc_editor_render_app::application_destroy()

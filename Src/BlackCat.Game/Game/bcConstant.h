@@ -8,7 +8,7 @@ namespace black_cat
 {
 	namespace constant
 	{
-		BC_RENDER_PASS_VARIABLE(actor_list);
+		//BC_RENDER_PASS_VARIABLE(actor_list);
 		BC_RENDER_PASS_VARIABLE(depth_stencil_texture);
 		BC_RENDER_PASS_VARIABLE(depth_stencil_view);
 		BC_RENDER_PASS_VARIABLE(back_buffer_view);

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcArray.h"
+#include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
@@ -10,6 +11,7 @@
 #include "GraphicImp/Shader/Parameter/bcShaderParameter.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/State/bcComputeState.h"
+#include "Game/Query/bcSceneLightQuery.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -72,5 +74,8 @@ namespace black_cat
 		graphic::bc_device_command_list_ptr m_command_list;
 		graphic::bc_device_compute_state_ptr m_device_compute_state;
 		game::bc_compute_state_ptr m_compute_state;
+
+		core::bc_query_result<game::bc_scene_light_query> m_lights_query;
+		core::bc_vector<game::bc_light_instance> m_lights;
 	};
 }

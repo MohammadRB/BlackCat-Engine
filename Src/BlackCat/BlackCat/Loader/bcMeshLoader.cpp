@@ -164,8 +164,8 @@ namespace black_cat
 		game::bc_render_state_ptr& p_mesh_render_state)
 	{
 		auto& l_device = p_render_system.get_device();
-		core::bc_vector_movale< game::bc_vertex_pos_tex_nor_tan > l_vertices;
-		core::bc_vector_movale< bcBYTE > l_indices;
+		core::bc_vector_movable< game::bc_vertex_pos_tex_nor_tan > l_vertices;
+		core::bc_vector_movable< bcBYTE > l_indices;
 		graphic::bc_graphic_resource_builder l_resource_configure;
 		graphic::bc_buffer_ptr l_vertex_buffer;
 		graphic::bc_buffer_ptr l_index_buffer;

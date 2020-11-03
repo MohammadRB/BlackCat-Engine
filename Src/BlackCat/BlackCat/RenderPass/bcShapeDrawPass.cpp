@@ -5,7 +5,7 @@
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/Object/Scene/bcScene.h"
-#include "Game/bcQuery.h"
+#include "Game/Query/bcMainCameraSceneQuery.h"
 #include "BlackCat/RenderPass/bcShapeDrawPass.h"
 
 namespace black_cat
@@ -18,6 +18,9 @@ namespace black_cat
 
 	void bc_scene_debug_shape_query::execute(const game::bc_scene_query_context& p_context) noexcept
 	{
+		auto& l_actors_buffer = p_context.get_shared_query<game::bc_main_camera_scene_query>().get_scene_buffer();
+
+		l_actors_buffer.add_debug_shapes(*m_shape_drawer);
 		p_context.m_scene->add_debug_shapes(*m_shape_drawer);
 	}
 	
@@ -87,21 +90,13 @@ namespace black_cat
 	void bc_shape_draw_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
 		auto& l_shape_drawer = p_param.m_render_system.get_shape_drawer();
-		auto* l_scene_graph_buffer = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
-
-		if(!l_scene_graph_buffer)
-		{
-			return;
-		}
-		
-		l_scene_graph_buffer->add_debug_shapes(l_shape_drawer);
 		
 		p_param.m_render_thread.start(m_command_list.get());
 		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
 
 		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
 		l_shape_drawer.render(p_param.m_render_system, p_param.m_render_thread, l_render_state_buffer);
-		p_param.m_frame_renderer.render_buffer(l_render_state_buffer, p_param.m_render_thread, p_param.m_camera);
+		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, l_render_state_buffer, p_param.m_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.finish();

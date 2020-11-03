@@ -82,41 +82,33 @@ namespace black_cat
 
 	void bc_base_cascaded_shadow_map_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		if (m_state->m_scene_query.is_executed())
-		{
-			m_state->m_scene_query_result = m_state->m_scene_query.get().get_scene_buffer();
-		}
-
 		if (m_my_index == 0)
 		{
-			m_state->m_scene_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+			if (m_state->m_lights_query.is_executed())
+			{
+				m_state->m_lights = m_state->m_lights_query.get().get_lights();
+			}
+			
+			m_state->m_lights_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 			(
-				game::bc_scene_graph_query().only<game::bc_light_component>()
+				game::bc_scene_light_query(game::bc_light_type::direct)
 			);
 		}
 	}
 
 	void bc_base_cascaded_shadow_map_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		if(!m_state->m_scene_query_result.size())
+		if(m_state->m_lights.empty())
 		{
 			return;
 		}
 		
 		core::bc_vector_frame<game::bc_direct_light> l_direct_lights;
-
-		auto& l_light_actors = m_state->m_scene_query_result;
-		for (auto& l_actor : l_light_actors)
+		for (auto& l_light : m_state->m_lights)
 		{
-			auto* l_light_component = l_actor.get_component<game::bc_light_component>();
-			auto* l_light = l_light_component->get_light();
-
-			if (l_light->get_type() == game::bc_light_type::direct)
-			{
-				l_direct_lights.push_back(*l_light->as_direct_light());
-			}
+			l_direct_lights.push_back(*l_light.as_direct_light());
 		}
-
+		
 		while (m_state->m_light_instance_states.size() < l_direct_lights.size())
 		{
 			m_state->m_light_instance_states.push_back(_create_light_instance(p_param.m_render_system));

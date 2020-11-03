@@ -8,7 +8,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_shape_generator_buffer::bc_shape_generator_buffer(core::bc_vector_movale< core::bc_vector3f >& p_vertices, core::bc_vector_movale< bcUINT32 >& p_indices)
+		bc_shape_generator_buffer::bc_shape_generator_buffer(core::bc_vector_movable< core::bc_vector3f >& p_vertices, core::bc_vector_movable< bcUINT32 >& p_indices)
 			: m_vertices(p_vertices),
 			m_indices(p_indices)
 		{

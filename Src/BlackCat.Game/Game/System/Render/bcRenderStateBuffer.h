@@ -31,7 +31,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_render_state_buffer
 		{
 		private:
-			using map_type = core::bc_unordered_map_frame< bc_render_state_ptr, core::bc_vector_frame<bc_render_instance>, _bc_render_state_buffer_entry_hash >;
+			using map_type = core::bc_unordered_map< bc_render_state_ptr, core::bc_vector<bc_render_instance>, _bc_render_state_buffer_entry_hash >;
 			
 		public:
 			using value_type = map_type::value_type;

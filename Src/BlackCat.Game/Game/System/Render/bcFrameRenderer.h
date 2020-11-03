@@ -63,7 +63,7 @@ namespace black_cat
 			
 			bc_render_state_buffer create_buffer() const;
 
-			void render_buffer(const bc_render_state_buffer& p_buffer, bc_render_thread& p_render_thread, const bc_camera_instance& p_camera);
+			void render_buffer(bc_render_thread& p_render_thread, const bc_render_state_buffer& p_buffer, const bc_camera_instance& p_camera);
 			
 			void update(const bc_frame_renderer_update_param& p_update_param);
 

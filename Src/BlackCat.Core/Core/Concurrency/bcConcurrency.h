@@ -21,7 +21,7 @@ namespace black_cat
 
 			static void check_for_interruption();
 
-			static bcUINT32 worker_count();
+			static bcSIZE worker_count();
 
 			template< typename T >
 			static bc_task<T> start_task(bc_delegate< T(void) >&& p_delegate, bc_task_creation_option p_option = bc_task_creation_option::policy_none);
@@ -73,7 +73,7 @@ namespace black_cat
 			_get_thread_manager()->check_for_interruption();
 		}
 
-		inline bcUINT32 bc_concurrency::worker_count()
+		inline bcSIZE bc_concurrency::worker_count()
 		{
 			return _get_thread_manager()->spawned_thread_count();
 		}

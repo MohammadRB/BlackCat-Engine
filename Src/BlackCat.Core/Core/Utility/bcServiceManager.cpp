@@ -17,6 +17,10 @@ namespace black_cat
 		{
 		}
 
+		void bc_iservice::destroy()
+		{
+		}
+
 		_bc_service_container::_bc_service_container(bc_service_ptr< bc_iservice > p_service, bcSIZE p_priority) 
 			: m_service(std::move(p_service)),
 			m_priority(p_priority)
@@ -39,7 +43,7 @@ namespace black_cat
 
 			std::sort(std::begin(l_services), std::end(l_services), [](const map_t::const_iterator& p_first, const map_t::const_iterator& p_second)
 			{
-				return p_first->second.m_priority < p_second->second.m_priority;
+				return p_first->second.m_priority < p_second->second.m_priority; // Sort in order
 			});
 
 			for (auto& l_service : l_services)
@@ -69,6 +73,7 @@ namespace black_cat
 
 			for (auto& l_service : l_services)
 			{
+				l_service->second.m_service->destroy();
 				m_services.erase(l_service);
 			}
 		}
@@ -98,7 +103,6 @@ namespace black_cat
 			else
 			{
 				throw bc_invalid_operation_exception("A service with the same name has already registered");
-				//l_ite->second = _bc_service_container(std::move(p_service), l_service_priority);
 			}
 
 			return l_ite->second.m_service.get();

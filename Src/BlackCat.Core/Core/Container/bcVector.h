@@ -504,7 +504,7 @@ namespace black_cat
 		using bc_vector_frame = bc_vector_a< T, bc_allocator_frame >;
 
 		template< typename T >
-		using bc_vector_movale = bc_vector_a< T, bc_allocator_movable >;
+		using bc_vector_movable = bc_vector_a< T, bc_allocator_movable >;
 
 		template< typename T, class TAllocator >
 		bc_vector<T, TAllocator>::bc_vector(const allocator_type& p_allocator)

@@ -7,7 +7,7 @@
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/bcShapeDrawer.h"
-#include "Game/bcQuery.h"
+#include "Game/Query/bcQueryContext.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat

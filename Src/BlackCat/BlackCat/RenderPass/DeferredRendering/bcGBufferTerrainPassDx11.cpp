@@ -13,7 +13,6 @@
 #include "Game/Object/Mesh/bcHeightMap.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
-#include "Game/bcQuery.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferTerrainPassDx11.h"
 #include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
 #include "BlackCat/bcException.h"
@@ -107,29 +106,32 @@ namespace black_cat
 
 	void bc_gbuffer_terrain_pass_dx11::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		if(m_scene_query.is_executed())
+		core::bc_vector<game::bc_height_map_ptr> l_height_maps;
+		
+		if(m_height_maps_query.is_executed())
 		{
-			m_scene_query_result = m_scene_query.get().get_scene_buffer();
+			auto l_query = m_height_maps_query.get();
+			m_height_maps_render_buffer = l_query.get_render_state_buffer();
+			l_height_maps = l_query.get_height_maps();
 		}
 
-		m_scene_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+		m_height_maps_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
-			game::bc_scene_graph_query().only<game::bc_height_map_component>()
+			game::bc_height_map_scene_query(p_param.m_frame_renderer.create_buffer())
 		);
 		
 		if (m_run_chunk_info_shader)
 		{
-			if(m_scene_query_result.size() == 0)
+			if(l_height_maps.empty())
 			{
 				return;
 			}
 			
 			p_param.m_render_thread.start(m_command_list.get());
 
-			for (auto& l_actor : m_scene_query_result)
+			for (auto& l_height_map : l_height_maps)
 			{
-				const game::bc_height_map& l_height_map = l_actor.get_component< game::bc_height_map_component >()->get_height_map();
-				const bc_height_map_dx11& l_height_map_dx11 = static_cast<const bc_height_map_dx11&>(l_height_map);
+				const bc_height_map_dx11& l_height_map_dx11 = static_cast<const bc_height_map_dx11&>(*l_height_map);
 
 				auto l_compute_state = p_param.m_render_system.create_compute_state
 				(
@@ -143,7 +145,7 @@ namespace black_cat
 					{ graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11.get_parameter_cbuffer()) }
 				);
 
-				p_param.m_render_thread.run_compute_shader(*l_compute_state.get());
+				p_param.m_render_thread.run_compute_shader(*l_compute_state);
 			}
 
 			p_param.m_render_thread.finish();
@@ -153,11 +155,6 @@ namespace black_cat
 
 	void bc_gbuffer_terrain_pass_dx11::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		if(m_scene_query_result.size() == 0)
-		{
-			return;
-		}
-		
 		game::bc_icamera::extend l_camera_extends = p_param.m_camera.get_extends();
 
 		_bc_parameter_buffer l_parameter;
@@ -175,11 +172,8 @@ namespace black_cat
 		
 		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.clear_buffers(core::bc_vector4f(0, 0, 255, 0), 1, 0);
-
-		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
-		m_scene_query_result.render_actors(l_render_state_buffer);
-
-		p_param.m_frame_renderer.render_buffer(l_render_state_buffer, p_param.m_render_thread, p_param.m_camera);
+		
+		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, m_height_maps_render_buffer, p_param.m_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.finish();

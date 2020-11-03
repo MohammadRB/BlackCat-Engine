@@ -118,7 +118,7 @@ namespace black_cat
 				bool p_require_update,
 				bcUINT32 p_component_priority,
 				core::bc_unique_ptr<bc_iactor_component_container> p_container,
-				core::bc_vector_movale< deriveds_component_get_delegate > p_deriveds);
+				core::bc_vector_movable< deriveds_component_get_delegate > p_deriveds);
 			
 			_bc_actor_component_entry(_bc_actor_component_entry&& p_other) noexcept;
 
@@ -129,10 +129,10 @@ namespace black_cat
 			bool m_require_event;
 			bool m_require_update;
 			bcUINT32 m_component_priority;
-			core::bc_vector_movale< bc_actor_component_index > m_actor_to_component_index_map;
-			core::bc_vector_movale< bc_actor_index > m_component_to_actor_index_map;
+			core::bc_vector_movable< bc_actor_component_index > m_actor_to_component_index_map;
+			core::bc_vector_movable< bc_actor_index > m_component_to_actor_index_map;
 			core::bc_unique_ptr< bc_iactor_component_container > m_container;
-			core::bc_vector_movale< deriveds_component_get_delegate > m_deriveds;
+			core::bc_vector_movable< deriveds_component_get_delegate > m_deriveds;
 			mutable core_platform::bc_shared_mutex m_lock;
 		};
 
@@ -143,7 +143,7 @@ namespace black_cat
 		private:
 			template< class TAbstract, class TDerived, class ...TDeriveds >
 			friend class bc_abstract_component_register;
-			using actor_container_type = core::bc_vector_movale< core::bc_nullable< _bc_actor_entry > >;
+			using actor_container_type = core::bc_vector_movable< core::bc_nullable< _bc_actor_entry > >;
 			using component_container_type = core::bc_unordered_map_program< bc_actor_component_hash, _bc_actor_component_entry >;
 
 		public:
@@ -227,8 +227,8 @@ namespace black_cat
 			core::bc_concurrent_object_stack_pool m_events_pool[2];
 		};
 
-		inline _bc_actor_entry::_bc_actor_entry(const bc_actor& p_actor, bc_actor_index p_parent_index): m_actor
-			(p_actor),
+		inline _bc_actor_entry::_bc_actor_entry(const bc_actor& p_actor, bc_actor_index p_parent_index)
+			: m_actor(p_actor),
 			m_parent_index(p_parent_index),
 			m_events{ nullptr, nullptr }
 		{
@@ -297,7 +297,7 @@ namespace black_cat
 			bool p_require_update,
 			bcUINT32 p_component_priority,
 			core::bc_unique_ptr<bc_iactor_component_container> p_container,
-			core::bc_vector_movale< deriveds_component_get_delegate > p_deriveds)
+			core::bc_vector_movable< deriveds_component_get_delegate > p_deriveds)
 			: m_is_abstract(p_is_abstract),
 			m_require_event(p_require_event),
 			m_require_update(p_require_update),
@@ -305,7 +305,7 @@ namespace black_cat
 			m_actor_to_component_index_map(),
 			m_component_to_actor_index_map(),
 			m_container(std::move(p_container)),
-			m_deriveds(p_deriveds)
+			m_deriveds(std::move(p_deriveds))
 		{
 		}
 
@@ -418,6 +418,18 @@ namespace black_cat
 
 			{
 				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_lock(m_actors_lock);
+				
+				auto& l_actor_entry = m_actors[p_actor.get_index()];
+				auto* l_events_pool = &m_events_pool[m_write_event_pool];
+				auto* l_actor_events = l_actor_entry->get_events(m_write_event_pool);
+
+				while (l_actor_events)
+				{
+					bc_actor_event* l_next = l_actor_events->get_next();
+					l_events_pool->free(l_actor_events);
+					l_actor_events = l_next;
+				}
+				
 				m_actors[p_actor.get_index()].reset();
 			}
 		}
@@ -858,7 +870,7 @@ namespace black_cat
 				bc_actor_component_traits<TComponent>::component_require_update(),
 				p_priority,
 				core::bc_make_unique< bc_actor_component_container< TComponent > >(core::bc_alloc_type::program),
-				core::bc_vector_movale< _bc_actor_component_entry::deriveds_component_get_delegate >()
+				core::bc_vector_movable< _bc_actor_component_entry::deriveds_component_get_delegate >()
 			);
 
 			m_components.insert(component_container_type::value_type(l_hash, std::move(l_data)));
@@ -881,7 +893,7 @@ namespace black_cat
 				bc_actor_component_traits<TComponent>::component_require_update(),
 				_bc_actor_component_entry::s_invalid_priority_value,
 				nullptr,
-				core::bc_vector_movale< _bc_actor_component_entry::deriveds_component_get_delegate >
+				core::bc_vector_movable< _bc_actor_component_entry::deriveds_component_get_delegate >
 				(
 					{
 						_bc_actor_component_entry::deriveds_component_get_delegate

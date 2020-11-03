@@ -44,18 +44,19 @@ namespace black_cat
 			 */
 			void render_wired_frustum(const bc_icamera::extend& p_camera_extend);
 
-			void update_buffers(bc_render_system& p_render_system, bc_render_thread& p_thread);
-
 			void render(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_render_state_buffer& p_buffer);
 
-			void clear_buffers();
+			void clear_swap_buffers();
 
 		private:
+			void _update_buffers(bc_render_system& p_render_system, bc_render_thread& p_thread);
+			
 			void _destroy_buffers();
 			
 			core_platform::bc_mutex m_mutex;
-			core::bc_vector_movale<core::bc_vector3f> m_vertices;
-			core::bc_vector_movale<bcUINT32> m_indices;
+			bcUINT32 m_buffer_write_index, m_buffer_read_index;
+			core::bc_vector_movable<core::bc_vector3f> m_vertices[2];
+			core::bc_vector_movable<bcUINT32> m_indices[2];
 
 			graphic::bc_buffer_ptr m_vb;
 			graphic::bc_buffer_ptr m_ib;

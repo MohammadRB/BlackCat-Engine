@@ -10,9 +10,14 @@ namespace black_cat
 	namespace core
 	{
 		bc_query_manager::bc_query_manager()
-			: m_executed_queries(m_query_list_pool)
+			: m_executed_shared_queries(m_query_list_pool),
+			m_executed_queries(m_query_list_pool)
 		{
 			m_query_list_pool.initialize(1000, sizeof(query_list_t::node_type), bc_alloc_type::unknown);
+			m_null_query_context_handle = register_query_provider<bc_null_query_context>([]()
+			{
+				return core::bc_make_unique<bc_null_query_context>(bc_alloc_type::frame);
+			});
 		}
 
 		bc_query_manager::~bc_query_manager() = default;
@@ -49,12 +54,18 @@ namespace black_cat
 				for (auto& l_provider : m_providers)
 				{
 					l_provider.second.m_provided_context = l_provider.second.m_provider_delegate();
+					l_provider.second.m_provided_context->m_query_manager = this;
 					l_provider.second.m_provided_context->m_clock = p_clock_update_param;
 					
 					{
 						core_platform::bc_lock_guard<core_platform::bc_mutex> l_queries_guard(l_provider.second.m_queries_lock);
 
 						const auto l_num_query_to_insert = l_provider.second.m_queries.size();
+						if(l_num_query_to_insert == 0)
+						{
+							continue;
+						}
+						
 						m_executed_queries.splice
 						(
 							std::end(m_executed_queries),
@@ -69,9 +80,25 @@ namespace black_cat
 						{
 							l_first_inserted_query = l_inserted_query;
 						}
-
+						
 						while(l_inserted_query != std::end(m_executed_queries))
 						{
+							if(l_inserted_query->m_is_shared)
+							{
+								auto l_next = l_inserted_query;
+								++l_next;
+								
+								m_executed_shared_queries.splice
+								(
+									std::end(m_executed_shared_queries), 
+									m_executed_queries,
+									l_inserted_query
+								);
+
+								l_inserted_query = l_next;
+								continue;
+							}
+							
 							auto l_query_state = l_inserted_query->m_state.load(core_platform::bc_memory_order::relaxed);
 							if(l_query_state == _bc_query_shared_state::state::deleted)
 							{
@@ -86,22 +113,39 @@ namespace black_cat
 					}
 				}
 
-				const bcUINT32 l_num_queries = std::distance(l_first_inserted_query, std::end(m_executed_queries));
+				const auto l_num_shared_queries = m_executed_shared_queries.size();
+				const auto l_num_queries = static_cast<bcSIZE>(std::distance(l_first_inserted_query, std::end(m_executed_queries)));
+				const auto l_num_shared_threads = std::min(bc_concurrency::worker_count(), l_num_shared_queries / 5);
 				const auto l_num_thread = std::min(bc_concurrency::worker_count(), l_num_queries / 5);
 
+				bc_concurrency::concurrent_for_each
+				(
+					l_num_shared_threads,
+					std::begin(m_executed_shared_queries),
+					std::end(m_executed_shared_queries),
+					[&]() {return true; },
+					[&](bool, _query_entry& p_query)
+					{
+						p_query.m_query->execute(*p_query.m_provider->m_provided_context);
+						// use release memory order so memory changes become available for calling thread
+						p_query.m_state.store(_bc_query_shared_state::state::executed, core_platform::bc_memory_order::release);
+					},
+					[&](bool) {}
+				);
+				
 				bc_concurrency::concurrent_for_each
 				(
 					l_num_thread,
 					l_first_inserted_query,
 					std::end(m_executed_queries),
-					[=]() { return true; },
-					[=](bool, _query_entry& p_query)
+					[&]() { return true; },
+					[&](bool, _query_entry& p_query)
 					{
-						p_query.m_query->execute(*p_query.m_provider.m_provided_context);
+						p_query.m_query->execute(*p_query.m_provider->m_provided_context);
 						// use release memory order so memory changes become available for calling thread
 						p_query.m_state.store(_bc_query_shared_state::state::executed, core_platform::bc_memory_order::release);
 					},
-					[=](bool) {}
+					[&](bool) {}
 				);
 
 				for (auto& l_provider : m_providers)
@@ -109,6 +153,8 @@ namespace black_cat
 					// Free context to make it possible to use memory_frame in context allocation
 					l_provider.second.m_provided_context.reset();
 				}
+
+				m_executed_shared_queries.clear();
 			}
 		}
 
@@ -131,6 +177,12 @@ namespace black_cat
 			}
 		}
 
+		void bc_query_manager::destroy()
+		{
+			// Before service get destroyed we must unregister this handler
+			m_null_query_context_handle.reset();
+		}
+		
 		bc_query_provider_handle bc_query_manager::_register_query_provider(bc_query_context_hash p_context_hash, provider_delegate_t&& p_delegate)
 		{
 			{
@@ -144,7 +196,7 @@ namespace black_cat
 				
 				if(l_provider_entry->second.m_provider_delegate.is_valid())
 				{
-					throw bc_invalid_operation_exception("A provider has already been added");
+					throw bc_invalid_operation_exception("A provider has already been added with a same hash");
 				}
 				
 				l_provider_entry->second.m_provider_delegate = std::move(p_delegate);
@@ -153,7 +205,7 @@ namespace black_cat
 			return bc_query_provider_handle(p_context_hash);
 		}
 
-		_bc_query_shared_state& bc_query_manager::_queue_query(bc_query_context_hash p_context_hash, bc_unique_ptr<bc_iquery> p_query)
+		_bc_query_shared_state& bc_query_manager::_queue_query(bc_query_context_hash p_context_hash, bool p_is_shared, bc_unique_ptr<bc_iquery> p_query)
 		{
 			{
 				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_providers_guard(m_providers_lock);
@@ -166,18 +218,19 @@ namespace black_cat
 				{
 					core_platform::bc_lock_guard<core_platform::bc_mutex> l_queries_guard(l_provider.m_queries_lock);
 
-					l_provider.m_queries.push_back(_query_entry(l_provider, std::move(p_query)));
+					l_provider.m_queries.push_back(_query_entry(l_provider, p_is_shared, std::move(p_query)));
 
 					return *l_provider.m_queries.rbegin();
 				}
 			}
 		}
 
-		bc_query_manager::_query_entry::_query_entry(_provider_entry& p_provider, bc_unique_ptr<bc_iquery> p_query)
+		bc_query_manager::_query_entry::_query_entry(_provider_entry& p_provider, bool p_is_shared, bc_unique_ptr<bc_iquery> p_query)
 			: _bc_query_shared_state(*p_query),
-			m_provider(p_provider),
+			m_provider(&p_provider),
 			m_iterator(std::end(p_provider.m_queries)),
-			m_query(std::move(p_query))
+			m_query(std::move(p_query)),
+			m_is_shared(p_is_shared)
 		{
 		}
 
@@ -185,7 +238,8 @@ namespace black_cat
 			: _bc_query_shared_state(std::move(p_other)),
 			m_provider(p_other.m_provider),
 			m_iterator(p_other.m_iterator),
-			m_query(std::move(p_other.m_query))
+			m_query(std::move(p_other.m_query)),
+			m_is_shared(p_other.m_is_shared)
 		{
 		}
 
@@ -194,8 +248,10 @@ namespace black_cat
 		bc_query_manager::_query_entry& bc_query_manager::_query_entry::operator=(_query_entry&& p_other) noexcept
 		{
 			_bc_query_shared_state::operator=(std::move(p_other));
+			m_provider = p_other.m_provider;
 			m_iterator = p_other.m_iterator;
 			m_query = std::move(p_other.m_query);
+			m_is_shared = p_other.m_is_shared;
 			
 			return *this;
 		}

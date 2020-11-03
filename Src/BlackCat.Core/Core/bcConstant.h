@@ -89,7 +89,7 @@ namespace black_cat
 		return BC_COMPILE_TIME_STRING_HASH(BC_EVENT_NAME(p_name)); \
 	} \
 
-#define BC_QUERY(p_name) \
+#define BC_QUERY_DEFINITION(p_name, p_is_shared) \
 	public: \
 	static constexpr const bcCHAR* message_name() \
 	{ \
@@ -99,6 +99,14 @@ namespace black_cat
 	{ \
 		return BC_COMPILE_TIME_STRING_HASH(BC_QUERY_NAME(p_name)); \
 	} \
+	static constexpr bool is_shared() \
+	{ \
+		return p_is_shared; \
+	} \
+
+#define BC_QUERY(p_name) BC_QUERY_DEFINITION(p_name, false)
+		
+#define BC_SHARED_QUERY(p_name) BC_QUERY_DEFINITION(p_name, true)
 
 #define BC_RENDER_PASS(p_name) \
 	public: \

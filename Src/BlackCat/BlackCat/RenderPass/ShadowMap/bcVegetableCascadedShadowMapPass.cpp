@@ -72,22 +72,38 @@ namespace black_cat
 	void bc_vegetable_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_param& p_param)
 	{
 		const auto l_cascade_absolute_index = p_param.m_light_index * p_param.m_cascade_count + p_param.m_cascade_index;
-		if (m_scene_queries.size() < l_cascade_absolute_index + 1)
+		if (m_leaf_scene_queries.size() < l_cascade_absolute_index + 1)
 		{
-			m_scene_queries.resize(l_cascade_absolute_index + 1);
+			m_leaf_scene_queries.resize(l_cascade_absolute_index + 1);
+		}
+		if (m_trunk_scene_queries.size() < l_cascade_absolute_index + 1)
+		{
+			m_trunk_scene_queries.resize(l_cascade_absolute_index + 1);
 		}
 
-		game::bc_scene_graph_buffer l_scene_buffer;
+		game::bc_render_state_buffer l_leaf_render_buffer;
+		game::bc_render_state_buffer l_trunk_render_buffer;
 
-		if (m_scene_queries[l_cascade_absolute_index].is_executed())
+		if (m_leaf_scene_queries[l_cascade_absolute_index].is_executed())
 		{
-			l_scene_buffer = m_scene_queries[l_cascade_absolute_index].get().get_scene_buffer();
+			l_leaf_render_buffer = m_leaf_scene_queries[l_cascade_absolute_index].get().get_render_state_buffer();
+		}
+		if (m_trunk_scene_queries[l_cascade_absolute_index].is_executed())
+		{
+			l_trunk_render_buffer = m_trunk_scene_queries[l_cascade_absolute_index].get().get_render_state_buffer();
 		}
 
-		m_scene_queries[l_cascade_absolute_index] = core::bc_get_service< core::bc_query_manager >()->queue_query
+		m_leaf_scene_queries[l_cascade_absolute_index] = core::bc_get_service< core::bc_query_manager >()->queue_query
 		(
-			game::bc_scene_graph_query().with(game::bc_camera_frustum(p_param.m_cascade_camera))
-			                            .only< game::bc_vegetable_mesh_component >()
+			game::bc_scene_graph_render_state_query(p_param.m_frame_renderer.create_buffer())
+				.with(game::bc_camera_frustum(p_param.m_cascade_camera))
+				.only< game::bc_vegetable_mesh_component >(true)
+		);
+		m_trunk_scene_queries[l_cascade_absolute_index] = core::bc_get_service< core::bc_query_manager >()->queue_query
+		(
+			game::bc_scene_graph_render_state_query(p_param.m_frame_renderer.create_buffer())
+				.with(game::bc_camera_frustum(p_param.m_cascade_camera))
+				.only< game::bc_vegetable_mesh_component >(false)
 		);
 		
 		// Render vegetable leafs
@@ -99,21 +115,15 @@ namespace black_cat
 			p_param.m_render_thread.clear_buffers(core::bc_vector4f(1));
 		}
 
-		auto l_leaf_render_state_buffer = p_param.m_frame_renderer.create_buffer();
-		l_scene_buffer.render_actors<game::bc_vegetable_mesh_component>(l_leaf_render_state_buffer, true);
-
-		p_param.m_frame_renderer.render_buffer(l_leaf_render_state_buffer, p_param.m_render_thread, p_param.m_cascade_camera);
+		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, l_leaf_render_buffer, p_param.m_cascade_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(l_leaf_render_pass_state);
 
 		// Render vegetable trunks
 		const auto& l_trunk_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index * 2 + 1];
 		p_param.m_render_thread.bind_render_pass_state(l_trunk_render_pass_state);
-
-		auto l_trunk_render_state_buffer = p_param.m_frame_renderer.create_buffer();
-		l_scene_buffer.render_actors<game::bc_vegetable_mesh_component>(l_trunk_render_state_buffer, false);
-
-		p_param.m_frame_renderer.render_buffer(l_trunk_render_state_buffer, p_param.m_render_thread, p_param.m_cascade_camera);
+		
+		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, l_trunk_render_buffer, p_param.m_cascade_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(l_trunk_render_pass_state);
 	}

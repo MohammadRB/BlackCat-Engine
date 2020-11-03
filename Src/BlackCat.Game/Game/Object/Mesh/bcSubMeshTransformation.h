@@ -60,7 +60,7 @@ namespace black_cat
 
 		private:
 			bc_mesh_node::node_index m_root_node_index;
-			core::bc_vector_movale<core::bc_matrix4f> m_transformations;
+			core::bc_vector_movable<core::bc_matrix4f> m_transformations;
 		};
 	}
 }

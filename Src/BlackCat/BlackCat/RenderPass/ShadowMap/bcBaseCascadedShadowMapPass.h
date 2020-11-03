@@ -10,8 +10,8 @@
 #include "Game/System/Render/Pass/bcRenderPassState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/Light/bcDirectLight.h"
-#include "Game/System/Input/bcFreeCamera.h"
-#include "Game/bcQuery.h"
+#include "Game/System/Input/bcCameraInstance.h"
+#include "Game/Query/bcSceneLightQuery.h"
 #include "BlackCat/bcExport.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapCamera.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapBufferContainer.h"
@@ -25,7 +25,7 @@ namespace black_cat
 		graphic::bc_resource_view_ptr m_depth_buffer_resource_view;
 		core::bc_vector<graphic::bc_depth_stencil_view_ptr> m_depth_buffer_views;
 		core::bc_vector<core::bc_vector<game::bc_render_pass_state_ptr>> m_render_pass_states;
-		core::bc_vector_movale<core::bc_matrix4f> m_last_view_projections;
+		core::bc_vector_movable<core::bc_matrix4f> m_last_view_projections;
 	};
 
 	class _bc_cascaded_shadow_map_pass_state
@@ -42,13 +42,13 @@ namespace black_cat
 		graphic::bc_device_command_list_ptr m_command_list;
 		core::bc_vector_program<_bc_cascaded_shadow_map_light_state> m_light_instance_states;
 
-		core::bc_query_result<game::bc_scene_graph_query> m_scene_query;
-		game::bc_scene_graph_buffer m_scene_query_result;
+		core::bc_query_result<game::bc_scene_light_query> m_lights_query;
+		core::bc_vector<game::bc_light_instance> m_lights;
 		
 		bool m_capture_debug_shapes = false;
 		game::bc_icamera::extend m_captured_camera;
-		core::bc_vector_movale<game::bc_icamera::extend> m_captured_cascades;
-		core::bc_vector_movale<physics::bc_bound_box> m_captured_boxes;
+		core::bc_vector_movable<game::bc_icamera::extend> m_captured_cascades;
+		core::bc_vector_movable<physics::bc_bound_box> m_captured_boxes;
 	};
 
 	class bc_cascaded_shadow_map_pass_render_param : public game::bc_render_pass_render_param

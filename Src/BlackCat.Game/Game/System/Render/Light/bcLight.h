@@ -33,9 +33,9 @@ namespace black_cat
 
 		enum class bc_light_type
 		{
-			direct,
-			point,
-			spot
+			direct = 1,
+			point = 2,
+			spot = 4
 		};
 
 		class BC_GAME_DLL bc_light : core::bc_ref_count, core_platform::bc_no_copy
@@ -57,6 +57,7 @@ namespace black_cat
 			void set_transformation(const core::bc_matrix4f& p_transformation) noexcept
 			{
 				m_transformation = p_transformation;
+				_calculate_bound_box();
 			}
 
 			bc_light_type get_type() const noexcept
@@ -64,8 +65,11 @@ namespace black_cat
 				return m_type;
 			}
 
-			physics::bc_bound_box get_bound_box() const noexcept;
-
+			physics::bc_bound_box get_bound_box() const noexcept
+			{
+				return m_bound_box;
+			}
+			
 			bc_direct_light* as_direct_light() noexcept;
 
 			const bc_direct_light* as_direct_light() const noexcept;
@@ -85,6 +89,8 @@ namespace black_cat
 
 			explicit bc_light(const bc_spot_light& p_light);
 
+			void _calculate_bound_box();
+
 			union
 			{
 				bc_direct_light m_direct_light;
@@ -93,6 +99,7 @@ namespace black_cat
 			};
 			bc_light_type m_type;
 			core::bc_matrix4f m_transformation;
+			physics::bc_bound_box m_bound_box;
 		};
 
 		using bc_light_ptr = core::bc_ref_count_ptr<bc_light, _bc_light_ptr_deleter>;

@@ -53,17 +53,18 @@ namespace black_cat
 			m_scene_queries.resize(l_cascade_absolute_index + 1);
 		}
 
-		game::bc_scene_graph_buffer l_scene_buffer;
+		game::bc_render_state_buffer l_render_buffer;
 
 		if(m_scene_queries[l_cascade_absolute_index].is_executed())
 		{
-			l_scene_buffer = m_scene_queries[l_cascade_absolute_index].get().get_scene_buffer();
+			l_render_buffer = m_scene_queries[l_cascade_absolute_index].get().get_render_state_buffer();
 		}
 
 		m_scene_queries[l_cascade_absolute_index] = core::bc_get_service< core::bc_query_manager >()->queue_query
 		(
-			game::bc_scene_graph_query().with(game::bc_camera_frustum(p_param.m_cascade_camera))
-			                            .only< game::bc_simple_mesh_component >()
+			game::bc_scene_graph_render_state_query(p_param.m_frame_renderer.create_buffer())
+				.with(game::bc_camera_frustum(p_param.m_cascade_camera))
+				.only< game::bc_simple_mesh_component >()
 		);
 		
 		const auto& l_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index];
@@ -74,11 +75,7 @@ namespace black_cat
 			p_param.m_render_thread.clear_buffers(core::bc_vector4f(1));
 		}
 
-		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
-
-		l_scene_buffer.render_actors(l_render_state_buffer);
-
-		p_param.m_frame_renderer.render_buffer(l_render_state_buffer, p_param.m_render_thread, p_param.m_cascade_camera);
+		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, l_render_buffer, p_param.m_cascade_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(l_render_pass_state);
 	}

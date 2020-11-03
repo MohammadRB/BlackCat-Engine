@@ -2,10 +2,10 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
+#include "Core/Messaging/Query/bcQueryManager.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
-#include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferPass.h"
 
 namespace black_cat
@@ -59,22 +59,22 @@ namespace black_cat
 
 	void bc_gbuffer_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
+		if(m_render_states_query.is_executed())
+		{
+			m_render_states = m_render_states_query.get().get_render_state_buffer();
+		}
+		m_render_states_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+		(
+			game::bc_main_camera_render_state_query(p_param.m_frame_renderer.create_buffer()).only<game::bc_simple_mesh_component>()
+		);
 	}
 
 	void bc_gbuffer_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		auto* l_scene_buffer = get_shared_resource<game::bc_scene_graph_buffer>(constant::g_rpass_actor_list);
-		if(l_scene_buffer == nullptr)
-		{
-			return;
-		}
-
 		p_param.m_render_thread.start(m_command_list.get());
 		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
 
-		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
-		l_scene_buffer->render_actors<game::bc_simple_mesh_component>(l_render_state_buffer);
-		p_param.m_frame_renderer.render_buffer(l_render_state_buffer, p_param.m_render_thread, p_param.m_camera);
+		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, m_render_states, p_param.m_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.finish();

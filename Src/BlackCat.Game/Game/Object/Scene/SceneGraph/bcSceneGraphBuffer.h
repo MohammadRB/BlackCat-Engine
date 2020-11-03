@@ -13,10 +13,13 @@ namespace black_cat
 {
 	namespace game
 	{
+		/**
+		 * \brief This class uses frame memory
+		 */
 		class bc_scene_graph_buffer
 		{
 		private:
-			using container_type = core::bc_vector<bc_actor>;
+			using container_type = core::bc_vector_frame<bc_actor>;
 
 		public:
 			using value_type = container_type::value_type;
@@ -72,15 +75,15 @@ namespace black_cat
 
 			void add_actor(const bc_actor& p_actor);
 
-			void render_actors(bc_render_state_buffer& p_buffer);
+			void render_actors(bc_render_state_buffer& p_buffer) const;
 
 			template<typename TRenderComponent>
-			void render_actors(bc_render_state_buffer& p_buffer);
+			void render_actors(bc_render_state_buffer& p_buffer) const;
 
 			template<typename TRenderComponent, typename ...TArgs>
-			void render_actors(bc_render_state_buffer& p_buffer, TArgs&&... p_args);
+			void render_actors(bc_render_state_buffer& p_buffer, TArgs&&... p_args) const;
 
-			void add_debug_shapes(bc_shape_drawer& p_shape_drawer);
+			void add_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
 		private:
 			container_type m_actors;
@@ -174,7 +177,7 @@ namespace black_cat
 			m_actors.push_back(p_actor);
 		}
 
-		inline void bc_scene_graph_buffer::render_actors(bc_render_state_buffer& p_buffer)
+		inline void bc_scene_graph_buffer::render_actors(bc_render_state_buffer& p_buffer) const
 		{
 			for(bc_actor& l_actor : m_actors)
 			{
@@ -187,7 +190,7 @@ namespace black_cat
 		}
 
 		template< typename TRenderComponent >
-		void bc_scene_graph_buffer::render_actors(bc_render_state_buffer& p_buffer)
+		void bc_scene_graph_buffer::render_actors(bc_render_state_buffer& p_buffer) const
 		{
 			static_assert(std::is_base_of_v<bc_render_component, TRenderComponent>, "TComponent must inherit from bc_render_component");
 
@@ -202,7 +205,7 @@ namespace black_cat
 		}
 
 		template< typename TRenderComponent, typename ... TArgs >
-		void bc_scene_graph_buffer::render_actors(bc_render_state_buffer& p_buffer, TArgs&&... p_args)
+		void bc_scene_graph_buffer::render_actors(bc_render_state_buffer& p_buffer, TArgs&&... p_args) const
 		{
 			static_assert(std::is_base_of_v<bc_render_component, TRenderComponent>, "TComponent must inherit from bc_render_component");
 
@@ -216,7 +219,7 @@ namespace black_cat
 			}
 		}
 
-		inline void bc_scene_graph_buffer::add_debug_shapes(bc_shape_drawer& p_shape_drawer)
+		inline void bc_scene_graph_buffer::add_debug_shapes(bc_shape_drawer& p_shape_drawer) const
 		{
 			for (const bc_actor& l_actor : *this)
 			{

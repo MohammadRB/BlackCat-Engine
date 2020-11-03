@@ -6,7 +6,7 @@
 #include "Core/Messaging/Query/bcQueryResult.h"
 #include "Game/System/Render/Pass/bcRenderPassState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
-#include "Game/bcQuery.h"
+#include "Game/Query/bcSceneGraphRenderStateQuery.h"
 #include "BlackCat/bcExport.h"
 #include "BlackCat/RenderPass/ShadowMap/bcBaseCascadedShadowMapPass.h"
 
@@ -35,6 +35,6 @@ namespace black_cat
 			const core::bc_vector<graphic::bc_depth_stencil_view_ptr>& p_depth_views) override;
 
 		graphic::bc_device_pipeline_state_ptr m_device_pipeline;
-		core::bc_vector<core::bc_query_result<game::bc_scene_graph_query>> m_scene_queries;
+		core::bc_vector<core::bc_query_result<game::bc_scene_graph_render_state_query>> m_scene_queries;
 	};
 }

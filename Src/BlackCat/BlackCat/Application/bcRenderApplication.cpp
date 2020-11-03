@@ -168,12 +168,14 @@ namespace black_cat
 
 	void bc_render_application::app_update(core_platform::bc_clock::update_param p_clock_update_param)
 	{
-		application_update(p_clock_update_param);
+		m_game_system->update_game(p_clock_update_param);
 		core::bc_service_manager::get().update(p_clock_update_param);
+		application_update(p_clock_update_param);
 	}
 
 	void bc_render_application::app_render(core_platform::bc_clock::update_param p_clock_update_param)
 	{
+		m_game_system->render_game(p_clock_update_param);
 		application_render(p_clock_update_param);
 	}
 

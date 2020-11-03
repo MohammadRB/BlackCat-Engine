@@ -90,8 +90,6 @@ namespace black_cat
 				}
 			}
 
-		protected:
-
 		private:
 			struct local_data
 			{
@@ -102,7 +100,7 @@ namespace black_cat
 				~local_data() = default;
 			};
 
-			bcInline local_data* _get()
+			local_data* _get() const
 			{
 				return m_locals.get();
 			}

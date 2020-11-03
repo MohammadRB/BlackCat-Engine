@@ -95,6 +95,12 @@ namespace black_cat
 			return std::hash< std::thread::id >()(m_pack.m_thread.get_id());
 		}
 
+		template< bc_platform TP >
+		void bc_platform_thread<TP>::set_name(const bcWCHAR* p_name) noexcept
+		{
+			SetThreadDescription(m_pack.m_thread.native_handle(), p_name);
+		}
+
 		template<>
 		inline bc_platform_thread<bc_platform::win32>::id bc_platform_thread< bc_platform::win32 >::current_thread_id() noexcept
 		{

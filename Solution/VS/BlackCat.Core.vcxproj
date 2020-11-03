@@ -142,6 +142,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcBackOff.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcConcurrency.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcLockFreeMemMng.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcMutexTest.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcTask.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadLocal.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcAllocator.h" />

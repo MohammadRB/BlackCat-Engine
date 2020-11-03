@@ -25,10 +25,14 @@ namespace black_cat
 
 			bc_spot_light& operator=(const bc_spot_light&) = default;
 
+			core::bc_vector3f get_position() const noexcept;
+			
 			core::bc_vector3f get_position(const core::bc_matrix4f& p_transformation) const noexcept;
 
 			void set_position(const core::bc_vector3f& p_position) noexcept;
 
+			core::bc_vector3f get_direction() const noexcept;
+			
 			core::bc_vector3f get_direction(const core::bc_matrix4f& p_transformation) const noexcept;
 
 			void set_direction(const core::bc_vector3f& p_direction) noexcept;
@@ -74,6 +78,11 @@ namespace black_cat
 			m_direction.normalize();
 		}
 
+		inline core::bc_vector3f bc_spot_light::get_position() const noexcept
+		{
+			return m_position;
+		}
+
 		inline core::bc_vector3f bc_spot_light::get_position(const core::bc_matrix4f& p_transformation) const noexcept
 		{
 			return m_position + p_transformation.get_translation();
@@ -82,6 +91,11 @@ namespace black_cat
 		inline void bc_spot_light::set_position(const core::bc_vector3f& p_position) noexcept
 		{
 			m_position = p_position;
+		}
+
+		inline core::bc_vector3f bc_spot_light::get_direction() const noexcept
+		{
+			return m_direction;
 		}
 
 		inline core::bc_vector3f bc_spot_light::get_direction(const core::bc_matrix4f& p_transformation) const noexcept

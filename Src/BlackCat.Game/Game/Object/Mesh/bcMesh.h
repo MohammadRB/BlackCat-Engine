@@ -38,8 +38,8 @@ namespace black_cat
 		public:
 			core::bc_string m_name;
 			bc_render_material_ptr m_material;
-			core::bc_vector_movale< bc_vertex_pos_tex_nor_tan > m_vertices;
-			core::bc_vector_movale< bcBYTE > m_indices;
+			core::bc_vector_movable< bc_vertex_pos_tex_nor_tan > m_vertices;
+			core::bc_vector_movable< bcBYTE > m_indices;
 
 			graphic::bc_buffer_ptr m_vertex_buffer;
 			graphic::bc_buffer_ptr m_index_buffer;
@@ -167,7 +167,7 @@ namespace black_cat
 			bc_mesh_node* m_root;
 			core::bc_vector< bc_mesh_node > m_nodes;										// Don't use movable memory due to raw pointers in bc_mesh_node
 			core::bc_vector< bc_render_state_ptr > m_render_states;						// Place render states along with nodes
-			core::bc_vector_movale< core::bc_matrix4f > m_transformations;
+			core::bc_vector_movable< core::bc_matrix4f > m_transformations;
 			bc_mesh_collider_ptr m_colliders;
 			core::bc_vector< const bc_mesh_part_collider* > m_colliders_map;				// Used to fetch mesh colliders without need to hash looking in bc_mesh_collider
 			core::bc_unordered_map< hash_t::result_type, bc_mesh_node* > m_nodes_map;

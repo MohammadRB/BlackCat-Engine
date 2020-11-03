@@ -3,38 +3,28 @@
 #pragma once
 
 #include "CorePlatformImp/Utility/bcClock.h"
-#include "Core/Math/bcVector3f.h"
+#include "Core/Concurrency/bcMutexTest.h"
 #include "Core/Utility/bcObjectPool.h"
 #include "Core/Utility/bcObjectPoolAllocator.h"
 #include "Core/Container/bcList.h"
-#include "Core/Container/bcVector.h"
+#include "Core/Messaging/Query/bcQueryContext.h"
+#include "Core/Messaging/Query/bcQueryProviderHandle.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/Light/bcLight.h"
-#include "Game/System/Input/bcCameraInstance.h"
+#include "Game/System/Render/Light/bcLightIteratorBuffer.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		/**
-		 * \brief Represent a bounding box around the light object
-		 */
-		struct bc_light_instance
-		{
-			bc_light_instance(const bc_light& p_light, const core::bc_vector3f& p_min_bound, const core::bc_vector3f& p_max_bound)
-				: m_instance(p_light),
-				m_min_bound(p_min_bound),
-				m_max_bound(p_max_bound)
-			{
-			}
-
-			const bc_light& m_instance;
-			core::bc_vector3f m_min_bound;
-			core::bc_vector3f m_max_bound;
-		};
-
 		class BC_GAME_DLL bc_light_manager
 		{
+		private:
+			using container_t = core::bc_list< bc_light, core::bc_memory_pool_allocator< bc_light > >;
+
+		public:
+			using iterator_buffer = bc_light_iterator_buffer< container_t >;
+			
 		public:
 			bc_light_manager();
 
@@ -50,21 +40,20 @@ namespace black_cat
 
 			bc_light_ptr add_light(const bc_spot_light& p_light);
 
-			core::bc_vector_frame<bc_light_instance> get_light_instances(const bc_camera_instance& p_camera);
+			iterator_buffer get_iterator() const noexcept;
 
 			void update(const core_platform::bc_clock::update_param& p_clock);
 
 			void destroy_light(bc_light* p_light);
 
 		private:
-			bc_light_instance _get_light_bounds(const bc_camera_instance& p_camera, const bc_light& p_light, const bc_direct_light& p_direct_light);
-
-			bc_light_instance _get_light_bounds(const bc_camera_instance& p_camera, const bc_light& p_light, const bc_point_light& p_point_light);
-
-			bc_light_instance _get_light_bounds(const bc_camera_instance& p_camera, const bc_light& p_light, const bc_spot_light& p__spot_light);
-
+			core::bc_query_context_ptr _lights_query_context_provider() const;
+			
 			core::bc_concurrent_memory_pool m_pool;
 			core::bc_list<bc_light, core::bc_memory_pool_allocator<bc_light>> m_lights;
+			mutable core::bc_mutex_test m_lights_lock;
+
+			core::bc_query_provider_handle m_lights_query_handle;
 		};
 	}
 }

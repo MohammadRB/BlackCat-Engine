@@ -2,11 +2,14 @@
 
 #pragma once
 
+#include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
 #include "Game/System/Render/Pass/bcRenderPassState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
+#include "Game/System/Render/bcRenderStateBuffer.h"
+#include "Game/Query/bcMainCameraRenderStateQuery.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -37,5 +40,10 @@ namespace black_cat
 		graphic::bc_device_pipeline_state_ptr m_trunk_pipeline_state;
 		game::bc_render_pass_state_ptr m_leaf_render_pass_state;
 		game::bc_render_pass_state_ptr m_trunk_render_pass_state;
+
+		core::bc_query_result< game::bc_main_camera_render_state_query > m_leaf_render_states_query;
+		core::bc_query_result< game::bc_main_camera_render_state_query > m_trunk_render_states_query;
+		game::bc_render_state_buffer m_leaf_render_states;
+		game::bc_render_state_buffer m_trunk_render_states;
 	};
 }

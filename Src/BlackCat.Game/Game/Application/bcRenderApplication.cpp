@@ -77,7 +77,7 @@ namespace black_cat
 					m_clock->update();
 
 					auto l_elapsed = m_clock->get_elapsed();
-					auto l_total_elapsed = m_clock->get_total_elapsed();
+					const auto l_total_elapsed = m_clock->get_total_elapsed();
 
 #ifdef BC_DEBUG
 					if (l_elapsed > 1000.0f)
@@ -92,6 +92,7 @@ namespace black_cat
 						core::bc_event_frame_update_start l_event_frame_start;
 						l_event_manager->process_event(l_event_frame_start);
 
+						// total elapsed in multiple update call per frame loop is constant
 						app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_min_update_elapsed));
 						l_local_elapsed -= l_min_update_elapsed;
 
@@ -109,14 +110,14 @@ namespace black_cat
 
 					if (m_render_rate != -1) // Fixed render rate
 					{
-						const core_platform::bc_clock::small_delta_time l_render_elapsing = 1000.0f / m_render_rate;
+						const core_platform::bc_clock::small_delta_time l_render_rate_elapsed = 1000.0f / m_render_rate;
 
-						if(l_elapsed < l_render_elapsing)
+						if(l_elapsed < l_render_rate_elapsed)
 						{
-							const auto l_diff = static_cast<std::chrono::milliseconds::rep>(l_render_elapsing - l_elapsed);
-							core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(l_diff));
+							const auto l_diff = l_render_rate_elapsed - l_elapsed;
+							core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(static_cast<std::chrono::milliseconds::rep>(l_diff)));
 
-							l_elapsed = l_render_elapsing;
+							l_elapsed = l_render_rate_elapsed;
 						}
 					}
 
@@ -245,8 +246,6 @@ namespace black_cat
 			m_app.reset(nullptr);
 
 			app_close_engine_components();
-
-			core_platform::bc_thread::on_main_thread_exit();
 		}
 
 		bool bc_render_application::_app_event(core::bc_ievent& p_event)

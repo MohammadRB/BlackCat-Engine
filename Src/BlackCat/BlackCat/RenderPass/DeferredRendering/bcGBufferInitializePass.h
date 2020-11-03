@@ -2,12 +2,10 @@
 
 #pragma once
 
-#include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/View/bcDepthStencilView.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
-#include "Game/bcQuery.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -40,7 +38,5 @@ namespace black_cat
 		graphic::bc_depth_stencil_view_ptr m_depth_stencil_view;
 		graphic::bc_render_target_view_ptr m_diffuse_map_view;
 		graphic::bc_render_target_view_ptr m_normal_map_view;
-
-		core::bc_query_result<game::bc_scene_graph_query> m_scene_query;
 	};
 }

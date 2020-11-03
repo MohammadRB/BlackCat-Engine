@@ -44,7 +44,10 @@ namespace black_cat
 		protected:
 			bc_iservice() = default;
 
+		private:
 			virtual void update(const core_platform::bc_clock::update_param& p_clock_update_param);
+
+			virtual void destroy();
 		};
 
 		template< class TService >

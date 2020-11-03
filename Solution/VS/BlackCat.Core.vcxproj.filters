@@ -306,6 +306,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryResult.h">
       <Filter>Core\Messaging\Query</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcMutexTest.h">
+      <Filter>Core\Concurrency</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.cpp">
