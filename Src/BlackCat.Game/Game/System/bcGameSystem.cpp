@@ -52,7 +52,6 @@ namespace black_cat
 			
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 			auto* l_actor_component_manager = core::bc_get_service<bc_actor_component_manager>();
-			auto* l_query_manager = core::bc_get_service<core::bc_query_manager>();
 
 			m_input_system.update(p_clock);
 			m_physics_system.update(p_clock);
@@ -69,8 +68,6 @@ namespace black_cat
 				m_scene->update_graph();
 			}
 			
-			l_query_manager->process_query_queue(p_clock);
-
 			m_script_system.update(p_clock);
 			m_console->update(p_clock);
 			m_render_system.update(bc_render_system::update_param(p_clock, m_input_system.get_camera()));
@@ -80,12 +77,18 @@ namespace black_cat
 		
 		void bc_game_system::render_game(const core_platform::bc_clock::update_param& p_clock)
 		{
-			core::bc_get_service<core::bc_event_manager>()->process_render_event_queue(p_clock);
+			core::bc_get_service< core::bc_event_manager >()->process_render_event_queue(p_clock);
 			
 			if(m_scene)
 			{
-				m_render_system.render(bc_render_system::render_param(p_clock, m_input_system.get_camera()));
+				m_render_system.render(bc_render_system::render_param(p_clock));
 			}
+		}
+
+		void bc_game_system::swap_frame(const core_platform::bc_clock::update_param& p_clock)
+		{
+			// TODO Other queries except ones which are submitted by render thread can be executed in update phase
+			core::bc_get_service< core::bc_query_manager >()->process_query_queue(p_clock);
 		}
 
 		void bc_game_system::_initialize(bc_game_system_parameter p_parameter)

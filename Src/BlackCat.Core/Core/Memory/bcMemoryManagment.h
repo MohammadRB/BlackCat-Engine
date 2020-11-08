@@ -5,7 +5,6 @@
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/CorePCH.h"
 #include "Core/bcExport.h"
-#include "Core/Utility/bcInitializable.h"
 #include "Core/Memory/bcMemoryCRT.h"
 #include "Core/Memory/bcMemoryFixedSize.h"
 #include "Core/Memory/bcMemoryStack.h"
@@ -26,7 +25,7 @@ namespace black_cat
 		enum class bc_alloc_type : bcUINT8
 		{
 			program,				// Alloc in program stack
-			frame,				// Alloc in frame stack
+			frame,					// Alloc in frame stack
 			unknown,				// Try to alloc in fixed size allocators, otherwise alloc in crt memory
 			unknown_movable,		// Try to alloc in fixed size allocators, then in super heap that is defragmentable , otherwise in crt memory
 		};
@@ -83,25 +82,9 @@ namespace black_cat
 			void* aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept;
 
 #ifdef BC_MEMORY_DEFRAG
-			void register_pointer_in_movable_allocators(void** p_pointer) noexcept
-			{
-				if (m_super_heap->contain_pointer(*p_pointer))
-				{
-					bc_memblock* l_block = bc_memblock::retrieve_mem_block(*p_pointer);
+			void register_pointer_in_movable_allocators(void** p_pointer) noexcept;
 
-					m_super_heap->register_pointer(p_pointer, l_block);
-				}
-			}
-
-			void unregister_pointer_in_movable_allocators(void** p_pointer) noexcept
-			{
-				if (m_super_heap->contain_pointer(*p_pointer))
-				{
-					bc_memblock* l_block = bc_memblock::retrieve_mem_block(*p_pointer);
-
-					m_super_heap->unregister_pointer(p_pointer, l_block);
-				}
-			}
+			void unregister_pointer_in_movable_allocators(void** p_pointer) noexcept;
 #endif
 
 			void end_of_frame() noexcept;
@@ -118,19 +101,10 @@ namespace black_cat
 			bcUINT32 report_memory_leaks() const;
 #endif
 
-		protected:
-
 		private:
-			bcUINT32 _fsa_index_max_size(bcUINT32 p_index) const
-			{
-				return m_fsa_allocators_start_size + p_index * m_fsa_step_size;
-			}
+			bcUINT32 _fsa_index_max_size(bcUINT32 p_index) const;
 
-			bcUINT32 _get_fsa_index(bcUINT32 p_size) const
-			{
-				bcUINT32 l_index = std::ceil((p_size - m_fsa_allocators_start_size) / m_fsa_step_size);
-				return l_index;
-			}
+			bcUINT32 _get_fsa_index(bcUINT32 p_size) const;
 
 			// We don't use static pointer because it is possible after we free pointer on exit, some call to free be called
 			static bc_memmng m_instance;
@@ -149,6 +123,38 @@ namespace black_cat
 			bc_memmng_hashmap<bc_mem_block_leak_information, 15, 5>* m_leak_allocator;
 #endif
 		};
+
+#ifdef BC_MEMORY_DEFRAG
+		inline void bc_memmng::register_pointer_in_movable_allocators(void** p_pointer) noexcept
+		{
+			if (m_super_heap->contain_pointer(*p_pointer))
+			{
+				bc_memblock* l_block = bc_memblock::retrieve_mem_block(*p_pointer);
+
+				m_super_heap->register_pointer(p_pointer, l_block);
+			}
+		}
+
+		inline void bc_memmng::unregister_pointer_in_movable_allocators(void** p_pointer) noexcept
+		{
+			if (m_super_heap->contain_pointer(*p_pointer))
+			{
+				bc_memblock* l_block = bc_memblock::retrieve_mem_block(*p_pointer);
+
+				m_super_heap->unregister_pointer(p_pointer, l_block);
+			}
+		}
+#endif
+
+		inline bcUINT32 bc_memmng::_fsa_index_max_size(bcUINT32 p_index) const
+		{
+			return m_fsa_allocators_start_size + p_index * m_fsa_step_size;
+		}
+
+		inline bcUINT32 bc_memmng::_get_fsa_index(bcUINT32 p_size) const
+		{
+			return std::ceil((p_size - m_fsa_allocators_start_size) / m_fsa_step_size);
+		}
 
 #endif
 	}

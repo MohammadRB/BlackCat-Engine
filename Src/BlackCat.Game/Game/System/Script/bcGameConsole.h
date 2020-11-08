@@ -47,8 +47,6 @@ namespace black_cat
 
 			void clear_output();
 
-		protected:
-
 		private:
 			bc_game_console& m_game_console;
 		};
@@ -90,8 +88,6 @@ namespace black_cat
 			void update(core_platform::bc_clock::update_param p_clock_update_param);
 
 			static void bind(platform::bc_script_context& p_context, platform::bc_script_global_prototype_builder& p_global_prototype, bc_game_console& p_instance);
-
-		protected:
 
 		private:
 			void on_log(core::bc_log_type p_type, const bcECHAR* p_log) override;

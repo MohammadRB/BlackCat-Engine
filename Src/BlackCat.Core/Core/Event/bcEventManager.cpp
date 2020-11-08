@@ -46,7 +46,7 @@ namespace black_cat
 
 				l_ite->second.remove_delegate(p_listener_handle.m_event_index);
 
-				// If this event handle doesn't has any delegate remove it from container
+				// If this event handle doesn't have any delegate remove it from container
 				if(l_ite->second.delegate_count() == 0)
 				{
 					m_handlers.erase(l_ite);

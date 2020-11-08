@@ -6,7 +6,6 @@
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/State/bcStateConfigs.h"
-#include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferVegetablePass.h"
 
@@ -106,14 +105,14 @@ namespace black_cat
 		// Render vegetable leafs
 		p_param.m_render_thread.bind_render_pass_state(*m_leaf_render_pass_state);
 		
-		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, m_leaf_render_states, p_param.m_camera);
+		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, m_leaf_render_states, p_param.m_render_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_leaf_render_pass_state);
 
 		// Render vegetable trunks
 		p_param.m_render_thread.bind_render_pass_state(*m_trunk_render_pass_state);
 				
-		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, m_trunk_render_states, p_param.m_camera);
+		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, m_trunk_render_states, p_param.m_render_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_trunk_render_pass_state);
 

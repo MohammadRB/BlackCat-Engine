@@ -199,7 +199,7 @@ namespace black_cat
 					l_my_index,
 					core_platform::bc_thread(&bc_thread_manager::_worker_spin, this, l_my_index)
 				));
-				m_threads.back()->m_thread.set_name(L"BC_Worker");
+				m_threads.back()->m_thread.set_name(bcL("BC_Worker"));
 			}
 		}
 

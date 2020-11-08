@@ -2,11 +2,11 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
+#include "Core/Utility/bcLogger.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/bcConstant.h"
 #include "Game/Object/Scene/bcScene.h"
-#include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/Query/bcMainCameraSceneQuery.h"
@@ -43,7 +43,7 @@ namespace black_cat
 
 	void bc_gbuffer_initialize_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		const game::bc_camera_frustum l_frustum(p_param.m_camera);
+		const game::bc_camera_frustum l_frustum(p_param.m_current_camera);
 		core::bc_get_service< core::bc_query_manager >()->queue_shared_query
 		(
 			game::bc_main_camera_scene_query(l_frustum)

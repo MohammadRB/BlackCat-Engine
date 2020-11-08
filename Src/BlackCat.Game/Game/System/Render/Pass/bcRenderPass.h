@@ -52,12 +52,14 @@ namespace black_cat
 		{
 		public:
 			bc_render_pass_render_param(const core_platform::bc_clock::update_param& p_clock,
-				const bc_camera_instance& p_camera,
+				const bc_camera_instance& p_current_camera,
+				const bc_camera_instance& p_render_camera,
 				bc_render_system& p_render_system,
 				bc_frame_renderer& p_frame_renderer,
 				bc_render_thread& p_render_thread)
 				: m_clock(p_clock),
-				m_camera(p_camera),
+				m_current_camera(p_current_camera),
+				m_render_camera(p_render_camera),
 				m_render_system(p_render_system),
 				m_frame_renderer(p_frame_renderer),
 				m_render_thread(p_render_thread)
@@ -65,7 +67,8 @@ namespace black_cat
 			}
 
 			core_platform::bc_clock::update_param m_clock;
-			bc_camera_instance m_camera;
+			bc_camera_instance m_current_camera;
+			bc_camera_instance m_render_camera;
 			bc_render_system& m_render_system;
 			bc_frame_renderer& m_frame_renderer;
 			bc_render_thread& m_render_thread;

@@ -45,8 +45,6 @@ namespace black_cat
 			 */
 			void connect_widget(QWidget* p_widget);
 
-		protected:
-
 		private slots:
 			void executeScript(const QString& p_ui_script, bool p_output_console);
 

@@ -70,24 +70,22 @@ namespace black_cat
 		{
 			bc_render_system_update_param(const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera)
 				: m_clock(p_clock),
-				m_active_camera(p_camera)
-			{
-			}
-
-			core_platform::bc_clock::update_param m_clock;
-			const bc_icamera& m_active_camera;
-		};
-
-		struct bc_render_system_render_param
-		{
-			bc_render_system_render_param(const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera)
-				: m_clock(p_clock),
 				m_camera(p_camera)
 			{
 			}
 
 			core_platform::bc_clock::update_param m_clock;
 			const bc_icamera& m_camera;
+		};
+
+		struct bc_render_system_render_param
+		{
+			bc_render_system_render_param(const core_platform::bc_clock::update_param& p_clock)
+				: m_clock(p_clock)
+			{
+			}
+
+			core_platform::bc_clock::update_param m_clock;
 		};
 
 		class BC_GAME_DLL bc_render_system : public core::bc_initializable< core::bc_content_stream_manager&, bc_render_system_parameter >

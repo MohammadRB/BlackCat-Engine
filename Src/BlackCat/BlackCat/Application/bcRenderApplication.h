@@ -53,6 +53,8 @@ namespace black_cat
 
 		void app_render(core_platform::bc_clock::update_param p_clock_update_param) override final;
 
+		void app_swap_frame(core_platform::bc_clock::update_param p_clock) override;
+		
 		bool app_event(core::bc_ievent& p_event) override final;
 
 		void app_unload_content() override final;

@@ -63,7 +63,8 @@ namespace black_cat
 			: game::bc_render_pass_render_param
 			(
 				p_render_param.m_clock,
-				p_render_param.m_camera,
+				p_render_param.m_current_camera,
+				p_render_param.m_render_camera,
 				p_render_param.m_render_system,
 				p_render_param.m_frame_renderer,
 				p_render_param.m_render_thread

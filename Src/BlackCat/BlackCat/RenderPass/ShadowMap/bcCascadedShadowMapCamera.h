@@ -34,16 +34,5 @@ namespace black_cat
 		void update(const core_platform::bc_clock::update_param& p_clock_update_param) noexcept override
 		{
 		}
-
-	protected:
-		bool on_key(core::bc_ievent& p_key_event) noexcept override
-		{
-			return false;
-		}
-
-		bool on_pointing(core::bc_ievent& p_pointing_event) noexcept override
-		{
-			return false;
-		}
 	};
 }

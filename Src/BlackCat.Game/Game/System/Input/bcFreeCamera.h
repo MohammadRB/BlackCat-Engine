@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CorePlatformImp/Utility/bcClock.h"
+#include "Platform/bcEvent.h"
 #include "Game/System/Input/bcCamera.h"
 
 namespace black_cat
@@ -20,20 +21,21 @@ namespace black_cat
 				bcFLOAT p_move_speed = 25,
 				bcFLOAT p_rotate_speed = 1);
 
-			bc_free_camera(bc_free_camera&&) noexcept = default;
+			bc_free_camera(bc_free_camera&& p_other) noexcept;
 
 			~bc_free_camera() = default;
 
-			bc_free_camera& operator=(bc_free_camera&&) noexcept = default;
+			bc_free_camera& operator=(bc_free_camera&& p_other) noexcept;
 
 			void update(const core_platform::bc_clock::update_param& p_clock_update_param) noexcept override;
 
-		protected:
-			bool on_key(core::bc_ievent& p_key_event) noexcept override;
-
-			bool on_pointing(core::bc_ievent& p_pointing_event) noexcept override;
-
 		private:
+			bool _on_event(core::bc_ievent& p_event) noexcept;
+
+			bool _on_pointing(platform::bc_app_event_pointing& p_pointing_event) noexcept;
+			
+			bool _on_key(platform::bc_app_event_key& p_key_event) noexcept;
+			
 			bcFLOAT m_move_speed;
 			bcFLOAT m_rotate_speed;
 
@@ -48,6 +50,9 @@ namespace black_cat
 			bool m_rmb_pressed;
 			bcINT16 m_dx;
 			bcINT16 m_dy;
+
+			core::bc_event_listener_handle m_key_listener_handle;
+			core::bc_event_listener_handle m_pointing_listener_handle;
 		};
 	}
 }

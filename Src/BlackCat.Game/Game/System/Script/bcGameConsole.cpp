@@ -246,7 +246,7 @@ namespace black_cat
 
 			if (m_imp)
 			{
-				bool l_log_enabled = m_log_types[std::log2(static_cast<bcSIZE>(l_type))];
+				const bool l_log_enabled = m_log_types[std::log2(static_cast<bcSIZE>(l_type))];
 
 				if(l_log_enabled)
 				{
@@ -257,8 +257,6 @@ namespace black_cat
 
 		bool bc_game_console::_on_key(core::bc_ievent& p_event)
 		{
-			bcAssert(core::bc_ievent::event_is< platform::bc_app_event_key >(p_event), "");
-
 			if(!m_imp)
 			{
 				return false;

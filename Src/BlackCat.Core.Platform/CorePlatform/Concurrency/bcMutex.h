@@ -532,6 +532,20 @@ namespace black_cat
 			bool m_owns;
 		};
 
+		using bc_mutex_guard = bc_lock_guard<bc_mutex>;
+		using bc_mutex_unique_guard = bc_unique_lock<bc_mutex>;
+		using bc_timed_mutex_guard = bc_lock_guard<bc_timed_mutex>;
+		using bc_timed_mutex_unique_guard = bc_unique_lock<bc_timed_mutex>;
+		using bc_recursive_mutex_guard = bc_lock_guard<bc_recursive_mutex>;
+		using bc_recursive_mutex_unique_guard = bc_unique_lock<bc_recursive_mutex>;
+		using bc_recursive_timed_mutex_guard = bc_lock_guard<bc_recursive_timed_mutex>;
+		using bc_recursive_timed_mutex_unique_guard = bc_unique_lock<bc_recursive_timed_mutex>;
+		using bc_shared_mutex_guard = bc_lock_guard<bc_shared_mutex>;
+		using bc_shared_mutex_unique_guard = bc_unique_lock<bc_shared_mutex>;
+		using bc_shared_mutex_shared_guard = bc_shared_lock<bc_shared_mutex>;
+		using bc_hybrid_mutex_guard = bc_lock_guard<bc_hybrid_mutex>;
+		using bc_hybrid_mutex_unique_guard = bc_unique_lock<bc_hybrid_mutex>;
+
 		template< class TMutex >
 		void swap(bc_unique_lock<TMutex>& p_first, bc_unique_lock<TMutex>& p_second) noexcept
 		{

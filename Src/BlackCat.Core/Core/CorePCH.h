@@ -45,12 +45,6 @@
 
 #ifdef BC_MEMORY_ENABLE
 
-#ifdef BC_DEBUG
-#ifndef BC_MEMORY_DEBUG
-#define BC_MEMORY_DEBUG
-#endif
-#endif
-
 #ifndef BC_MEMORY_DEFRAG
 #define BC_MEMORY_DEFRAG
 #endif
@@ -63,31 +57,22 @@
 #define BC_MEMORY_MAX_ALIGN 128
 #endif
 
-//#ifndef BC_MEMORY_HANDLE_Ptr
-//#define BC_MEMORY_HANDLE_Ptr
-//#endif
-
-#ifndef BC_MEMORY_TRACING
-#define BC_MEMORY_TRACING
+#ifdef BC_DEBUG
+#ifndef BC_MEMORY_DEBUG
+#define BC_MEMORY_DEBUG
 #endif
-
-#ifdef BC_MEMORY_TRACING
 #ifndef BC_MEMORY_LEAK_DETECTION
 #define BC_MEMORY_LEAK_DETECTION
 #endif
 #endif
 
-//#ifndef BC_MEMORY_ALIGN16
-//#define BC_MEMORY_ALIGN16
-//#endif
-
-//#ifndef BC_MEMORY_AUTORESIZE_ALLOCATORS
-//#define BC_MEMORY_AUTORESIZE_ALLOCATORS
-//#endif
+#ifndef BC_MEMORY_TRACING
+#define BC_MEMORY_TRACING
+#endif
 
 #endif
 
-// == BlackCat Container Definations ======================================================================= /
+// == BlackCat Container Definitions ======================================================================= /
 
 #ifdef BC_DEBUG
 #ifndef BC_CONTAINER_DEBUG

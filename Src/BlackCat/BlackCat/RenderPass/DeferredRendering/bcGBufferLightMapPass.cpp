@@ -183,7 +183,7 @@ namespace black_cat
 			game::bc_scene_light_query
 			(
 				core::bc_enum::or({ game::bc_light_type::direct, game::bc_light_type::point, game::bc_light_type::spot })
-			).with(game::bc_camera_frustum(p_param.m_camera))
+			).with(game::bc_camera_frustum(p_param.m_current_camera))
 		);
 	}
 
@@ -314,7 +314,7 @@ namespace black_cat
 			l_direct_lights.size(),
 			l_point_lights.size(),
 			l_spot_lights.size(),
-			(p_param.m_camera.get_view() * p_param.m_camera.get_projection()).inverse().transpose()
+			(p_param.m_render_camera.get_view() * p_param.m_render_camera.get_projection()).inverse().transpose()
 		};
 
 		p_param.m_render_thread.update_subresource(m_parameters_cbuffer.get(), 0, &l_parameters_cbuffer_data, 0, 0);

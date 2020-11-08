@@ -120,10 +120,6 @@ namespace black_cat
 			void create_view_matrix(const core::bc_vector3f& p_up = core::bc_vector3f(0, 1, 0)) noexcept;
 
 			virtual void create_projection_matrix() noexcept = 0;
-
-			virtual bool on_key(core::bc_ievent& p_key_event) noexcept = 0;
-
-			virtual bool on_pointing(core::bc_ievent& p_pointing_event) noexcept = 0;
 			
 		private:
 			bcUINT16 m_screen_width;
@@ -134,9 +130,6 @@ namespace black_cat
 			core::bc_vector3f m_look_at;
 			core::bc_matrix4f m_view;
 			core::bc_matrix4f m_projection;
-
-			core::bc_event_listener_handle m_key_listener_handle;
-			core::bc_event_listener_handle m_pointing_listener_handle;
 		};
 
 		class BC_GAME_DLL bc_orthographic_camera : public bc_icamera

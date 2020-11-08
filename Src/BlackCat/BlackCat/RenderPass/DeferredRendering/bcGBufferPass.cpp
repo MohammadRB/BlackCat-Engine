@@ -74,7 +74,7 @@ namespace black_cat
 		p_param.m_render_thread.start(m_command_list.get());
 		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
 
-		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, m_render_states, p_param.m_camera);
+		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, m_render_states, p_param.m_render_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.finish();

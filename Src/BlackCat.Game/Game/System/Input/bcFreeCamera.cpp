@@ -1,7 +1,7 @@
 // [06/30/2016 MRB]
 
 #include "Game/GamePCH.h"
-#include "Platform/bcEvent.h"
+
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Input/bcFreeCamera.h"
 
@@ -31,6 +31,46 @@ namespace black_cat
 			m_dx(0),
 			m_dy(0)
 		{
+			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
+			m_key_listener_handle = l_event_manager->register_event_listener< platform::bc_app_event_key >
+			(
+				core::bc_event_manager::delegate_type(*this, &bc_free_camera::_on_event)
+			);
+			m_pointing_listener_handle = l_event_manager->register_event_listener< platform::bc_app_event_pointing >
+			(
+				core::bc_event_manager::delegate_type(*this, &bc_free_camera::_on_event)
+			);
+		}
+
+		bc_free_camera::bc_free_camera(bc_free_camera&& p_other) noexcept
+			: bc_perspective_camera(std::move(p_other))
+		{
+			operator=(std::move(p_other));
+		}
+
+		bc_free_camera& bc_free_camera::operator=(bc_free_camera&& p_other) noexcept
+		{
+			bc_perspective_camera::operator=(std::move(p_other));
+			m_move_speed = p_other.m_move_speed;
+			m_rotate_speed = p_other.m_rotate_speed;
+			m_w_pressed = p_other.m_w_pressed;
+			m_s_pressed = p_other.m_s_pressed;
+			m_a_pressed = p_other.m_a_pressed;
+			m_d_pressed = p_other.m_d_pressed;
+			m_e_pressed = p_other.m_e_pressed;
+			m_q_pressed = p_other.m_q_pressed;
+			m_shift_pressed = p_other.m_shift_pressed;
+			m_ctrl_pressed = p_other.m_ctrl_pressed;
+			m_rmb_pressed = p_other.m_rmb_pressed;
+			m_dx = p_other.m_dx;
+			m_dy = p_other.m_dy;
+			m_key_listener_handle = std::move(p_other.m_key_listener_handle);
+			m_pointing_listener_handle = std::move(p_other.m_pointing_listener_handle);
+
+			m_key_listener_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_free_camera::_on_event));
+			m_pointing_listener_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_free_camera::_on_event));
+
+			return *this;
 		}
 
 		void bc_free_camera::update(const core_platform::bc_clock::update_param& p_clock_update_param) noexcept
@@ -115,123 +155,130 @@ namespace black_cat
 			m_dy = 0;
 		}
 
-		bool bc_free_camera::on_key(core::bc_ievent& p_key_event) noexcept
+		bool bc_free_camera::_on_event(core::bc_ievent& p_event) noexcept
 		{
-			bcAssert(core::bc_ievent::event_is<platform::bc_app_event_key>(p_key_event));
-
-			auto& l_key_event = static_cast< platform::bc_app_event_key& >(p_key_event);
-
-			if (l_key_event.get_key() == platform::bc_key::kb_W)
+			if(core::bc_ievent::event_is<platform::bc_app_event_pointing>(p_event))
 			{
-				if (l_key_event.get_key_state() == platform::bc_key_state::pressing)
+				return _on_pointing(static_cast<platform::bc_app_event_pointing&>(p_event));
+			}
+
+			if(core::bc_ievent::event_is<platform::bc_app_event_key>(p_event))
+			{
+				return _on_key(static_cast<platform::bc_app_event_key&>(p_event));
+			}
+
+			return false;
+		}
+
+		bool bc_free_camera::_on_pointing(platform::bc_app_event_pointing& p_pointing_event) noexcept
+		{
+			m_dx = p_pointing_event.get_state().m_dx;
+			m_dy = p_pointing_event.get_state().m_dy;
+
+			return true;
+		}
+		
+		bool bc_free_camera::_on_key(platform::bc_app_event_key& p_key_event) noexcept
+		{
+			if (p_key_event.get_key() == platform::bc_key::kb_W)
+			{
+				if (p_key_event.get_key_state() == platform::bc_key_state::pressing)
 				{
 					m_w_pressed = true;
 				}
-				else if (l_key_event.get_key_state() == platform::bc_key_state::releasing)
+				else if (p_key_event.get_key_state() == platform::bc_key_state::releasing)
 				{
 					m_w_pressed = false;
 				}
 			}
-			else if (l_key_event.get_key() == platform::bc_key::kb_S)
+			else if (p_key_event.get_key() == platform::bc_key::kb_S)
 			{
-				if (l_key_event.get_key_state() == platform::bc_key_state::pressing)
+				if (p_key_event.get_key_state() == platform::bc_key_state::pressing)
 				{
 					m_s_pressed = true;
 				}
-				else if (l_key_event.get_key_state() == platform::bc_key_state::releasing)
+				else if (p_key_event.get_key_state() == platform::bc_key_state::releasing)
 				{
 					m_s_pressed = false;
 				}
 			}
-			else if (l_key_event.get_key() == platform::bc_key::kb_A)
+			else if (p_key_event.get_key() == platform::bc_key::kb_A)
 			{
-				if (l_key_event.get_key_state() == platform::bc_key_state::pressing)
+				if (p_key_event.get_key_state() == platform::bc_key_state::pressing)
 				{
 					m_a_pressed = true;
 				}
-				else if (l_key_event.get_key_state() == platform::bc_key_state::releasing)
+				else if (p_key_event.get_key_state() == platform::bc_key_state::releasing)
 				{
 					m_a_pressed = false;
 				}
 			}
-			else if (l_key_event.get_key() == platform::bc_key::kb_D)
+			else if (p_key_event.get_key() == platform::bc_key::kb_D)
 			{
-				if (l_key_event.get_key_state() == platform::bc_key_state::pressing)
+				if (p_key_event.get_key_state() == platform::bc_key_state::pressing)
 				{
 					m_d_pressed = true;
 				}
-				else if (l_key_event.get_key_state() == platform::bc_key_state::releasing)
+				else if (p_key_event.get_key_state() == platform::bc_key_state::releasing)
 				{
 					m_d_pressed = false;
 				}
 			}
-			else if (l_key_event.get_key() == platform::bc_key::kb_E)
+			else if (p_key_event.get_key() == platform::bc_key::kb_E)
 			{
-				if (l_key_event.get_key_state() == platform::bc_key_state::pressing)
+				if (p_key_event.get_key_state() == platform::bc_key_state::pressing)
 				{
 					m_e_pressed = true;
 				}
-				else if (l_key_event.get_key_state() == platform::bc_key_state::releasing)
+				else if (p_key_event.get_key_state() == platform::bc_key_state::releasing)
 				{
 					m_e_pressed = false;
 				}
 			}
-			else if (l_key_event.get_key() == platform::bc_key::kb_Q)
+			else if (p_key_event.get_key() == platform::bc_key::kb_Q)
 			{
-				if (l_key_event.get_key_state() == platform::bc_key_state::pressing)
+				if (p_key_event.get_key_state() == platform::bc_key_state::pressing)
 				{
 					m_q_pressed = true;
 				}
-				else if (l_key_event.get_key_state() == platform::bc_key_state::releasing)
+				else if (p_key_event.get_key_state() == platform::bc_key_state::releasing)
 				{
 					m_q_pressed = false;
 				}
 			}
-			else if (l_key_event.get_key() == platform::bc_key::kb_shift)
+			else if (p_key_event.get_key() == platform::bc_key::kb_shift)
 			{
-				if (l_key_event.get_key_state() == platform::bc_key_state::pressing)
+				if (p_key_event.get_key_state() == platform::bc_key_state::pressing)
 				{
 					m_shift_pressed = true;
 				}
-				else if (l_key_event.get_key_state() == platform::bc_key_state::releasing)
+				else if (p_key_event.get_key_state() == platform::bc_key_state::releasing)
 				{
 					m_shift_pressed = false;
 				}
 			}
-			else if (l_key_event.get_key() == platform::bc_key::kb_ctrl)
+			else if (p_key_event.get_key() == platform::bc_key::kb_ctrl)
 			{
-				if (l_key_event.get_key_state() == platform::bc_key_state::pressing)
+				if (p_key_event.get_key_state() == platform::bc_key_state::pressing)
 				{
 					m_ctrl_pressed = true;
 				}
-				else if (l_key_event.get_key_state() == platform::bc_key_state::releasing)
+				else if (p_key_event.get_key_state() == platform::bc_key_state::releasing)
 				{
 					m_ctrl_pressed = false;
 				}
 			}
-			else if (l_key_event.get_key() == platform::bc_key::ms_right_button)
+			else if (p_key_event.get_key() == platform::bc_key::ms_right_button)
 			{
-				if (l_key_event.get_key_state() == platform::bc_key_state::pressing)
+				if (p_key_event.get_key_state() == platform::bc_key_state::pressing)
 				{
 					m_rmb_pressed = true;
 				}
-				else if (l_key_event.get_key_state() == platform::bc_key_state::releasing)
+				else if (p_key_event.get_key_state() == platform::bc_key_state::releasing)
 				{
 					m_rmb_pressed = false;
 				}
 			}
-
-			return true;
-		}
-
-		bool bc_free_camera::on_pointing(core::bc_ievent& p_pointing_event) noexcept
-		{
-			bcAssert(core::bc_ievent::event_is<platform::bc_app_event_pointing>(p_pointing_event));
-
-			auto& l_pointing_event = static_cast<platform::bc_app_event_pointing&>(p_pointing_event);
-
-			m_dx = l_pointing_event.get_state().m_dx;
-			m_dy = l_pointing_event.get_state().m_dy;
 
 			return true;
 		}

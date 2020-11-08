@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CorePlatformImp/Utility/bcClock.h"
-#include "Core/Concurrency/bcTask.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "GraphicImp/Device/bcDevice.h"
+#include "Core/Utility/bcNullable.h"
 #include "Game/System/Input/bcCameraInstance.h"
+#include "Game/System/Input/bcCamera.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -20,7 +22,7 @@ namespace black_cat
 
 		struct bc_frame_renderer_update_param
 		{
-			bc_frame_renderer_update_param(const core_platform::bc_clock::update_param& p_clock,  const bc_camera_instance& p_camera)
+			bc_frame_renderer_update_param(const core_platform::bc_clock::update_param& p_clock, const bc_camera_instance& p_camera)
 				: m_clock(p_clock),
 				m_camera(p_camera)
 			{
@@ -32,15 +34,13 @@ namespace black_cat
 
 		struct bc_frame_renderer_render_param
 		{
-			bc_frame_renderer_render_param(const core_platform::bc_clock::update_param& p_clock, const bc_camera_instance& p_camera, bc_render_system& p_render_system)
+			bc_frame_renderer_render_param(const core_platform::bc_clock::update_param& p_clock, bc_render_system& p_render_system)
 				: m_clock(p_clock),
-				m_camera(p_camera),
 				m_render_system(p_render_system)
 			{
 			}
 
 			core_platform::bc_clock::update_param m_clock;
-			bc_camera_instance m_camera;
 			bc_render_system& m_render_system;
 		};
 		
@@ -67,7 +67,7 @@ namespace black_cat
 			
 			void update(const bc_frame_renderer_update_param& p_update_param);
 
-			core::bc_task<void> render(const bc_frame_renderer_render_param& p_render_param);
+			void render(const bc_frame_renderer_render_param& p_render_param);
 
 		private:
 			bc_render_thread_manager* m_thread_manager;
@@ -77,6 +77,11 @@ namespace black_cat
 			graphic::bc_buffer_ptr m_per_object_cbuffer;
 			graphic::bc_constant_buffer_parameter m_global_cbuffer_parameter;
 			graphic::bc_constant_buffer_parameter m_per_object_cbuffer_parameter;
+
+			core::bc_nullable<bc_camera_instance> m_prev_camera_instance;
+			core::bc_nullable<bc_camera_instance> m_camera_instance;
+			core_platform::bc_atomic<bc_camera_instance*> m_prev_camera;
+			core_platform::bc_atomic<bc_camera_instance*> m_camera;
 		};
 	}
 }

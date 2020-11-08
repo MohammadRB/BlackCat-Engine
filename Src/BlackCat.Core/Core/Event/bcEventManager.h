@@ -86,10 +86,7 @@ namespace black_cat
 			bc_event_manager& operator=(bc_event_manager&&) noexcept = delete;
 
 			template< class TEvent >
-			bc_event_listener_handle register_event_listener(delegate_type&& p_listener)
-			{
-				return _register_event_listener(bc_event_traits< TEvent >::event_name(), std::move(p_listener));
-			}
+			bc_event_listener_handle register_event_listener(delegate_type&& p_listener);
 
 			void replace_event_listener(bc_event_listener_handle& p_listener_handle, delegate_type&& p_listener);
 
@@ -134,7 +131,13 @@ namespace black_cat
 			core_platform::bc_clock::big_clock m_last_elapsed;
 			core_platform::bc_clock::big_clock m_render_last_elapsed;
 		};
-		
+
+		template< class TEvent >
+		bc_event_listener_handle bc_event_manager::register_event_listener(delegate_type&& p_listener)
+		{
+			return _register_event_listener(bc_event_traits< TEvent >::event_name(), std::move(p_listener));
+		}
+
 		template< class TEvent >
 		void bc_event_manager::queue_event(TEvent&& p_event, core_platform::bc_clock::small_delta_time p_millisecond)
 		{

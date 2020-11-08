@@ -2,8 +2,9 @@
 
 #include "Core/CorePCH.h"
 #include "Core/bcException.h"
-#include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Concurrency/bcConcurrency.h"
+#include "Core/Messaging/Query/bcQueryManager.h"
+#include "Core/Utility/bcLogger.h"
 
 namespace black_cat
 {
@@ -56,60 +57,61 @@ namespace black_cat
 					l_provider.second.m_provided_context = l_provider.second.m_provider_delegate();
 					l_provider.second.m_provided_context->m_query_manager = this;
 					l_provider.second.m_provided_context->m_clock = p_clock_update_param;
-					
+
+					bcSIZE l_num_query_to_insert = 0;
 					{
 						core_platform::bc_lock_guard<core_platform::bc_mutex> l_queries_guard(l_provider.second.m_queries_lock);
 
-						const auto l_num_query_to_insert = l_provider.second.m_queries.size();
-						if(l_num_query_to_insert == 0)
+						l_num_query_to_insert = l_provider.second.m_queries.size();
+						if (l_num_query_to_insert == 0)
 						{
 							continue;
 						}
-						
+
 						m_executed_queries.splice
 						(
 							std::end(m_executed_queries),
 							l_provider.second.m_queries
 						);
+					}
 
-						auto l_last_inserted = m_executed_queries.rbegin();
-						std::advance(l_last_inserted, std::max(0, static_cast<bcINT32>(l_num_query_to_insert) - 1));
-						auto l_inserted_query = l_last_inserted.base();
-						
-						if (l_first_inserted_query == std::end(m_executed_queries))
+					auto l_last_inserted = m_executed_queries.rbegin();
+					std::advance(l_last_inserted, std::max(0, static_cast<bcINT32>(l_num_query_to_insert) - 1));
+					auto l_inserted_query = l_last_inserted.base();
+					
+					if (l_first_inserted_query == std::end(m_executed_queries))
+					{
+						l_first_inserted_query = l_inserted_query;
+					}
+					
+					while(l_inserted_query != std::end(m_executed_queries))
+					{
+						if(l_inserted_query->m_is_shared)
 						{
-							l_first_inserted_query = l_inserted_query;
+							auto l_next = l_inserted_query;
+							++l_next;
+							
+							m_executed_shared_queries.splice
+							(
+								std::end(m_executed_shared_queries), 
+								m_executed_queries,
+								l_inserted_query
+							);
+
+							l_inserted_query = l_next;
+							continue;
 						}
 						
-						while(l_inserted_query != std::end(m_executed_queries))
+						auto l_query_state = l_inserted_query->m_state.load(core_platform::bc_memory_order::relaxed);
+						if(l_query_state == _bc_query_shared_state::state::deleted)
 						{
-							if(l_inserted_query->m_is_shared)
-							{
-								auto l_next = l_inserted_query;
-								++l_next;
-								
-								m_executed_shared_queries.splice
-								(
-									std::end(m_executed_shared_queries), 
-									m_executed_queries,
-									l_inserted_query
-								);
-
-								l_inserted_query = l_next;
-								continue;
-							}
-							
-							auto l_query_state = l_inserted_query->m_state.load(core_platform::bc_memory_order::relaxed);
-							if(l_query_state == _bc_query_shared_state::state::deleted)
-							{
-								l_inserted_query = m_executed_queries.erase(l_inserted_query);
-								continue;
-							}
-							
-							l_inserted_query->m_iterator = l_inserted_query;
-							l_inserted_query->m_state.store(_bc_query_shared_state::state::activated, core_platform::bc_memory_order::relaxed);
-							++l_inserted_query;
+							l_inserted_query = m_executed_queries.erase(l_inserted_query);
+							continue;
 						}
+						
+						l_inserted_query->m_iterator = l_inserted_query;
+						l_inserted_query->m_state.store(_bc_query_shared_state::state::activated, core_platform::bc_memory_order::relaxed);
+						++l_inserted_query;
 					}
 				}
 
@@ -118,6 +120,9 @@ namespace black_cat
 				const auto l_num_shared_threads = std::min(bc_concurrency::worker_count(), l_num_shared_queries / 5);
 				const auto l_num_thread = std::min(bc_concurrency::worker_count(), l_num_queries / 5);
 
+				//bcAssert((l_num_queries == 0 && l_num_shared_queries == 0) || (l_num_queries > 0 && l_num_shared_queries > 0));
+				//core::bc_get_service<core::bc_logger>()->log_debug((L"Number of shared queries: " + bc_to_estring(l_num_shared_queries)).c_str());
+				
 				bc_concurrency::concurrent_for_each
 				(
 					l_num_shared_threads,

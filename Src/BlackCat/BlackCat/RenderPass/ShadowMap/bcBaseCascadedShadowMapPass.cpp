@@ -140,7 +140,7 @@ namespace black_cat
 			}
 			
 			auto l_cascade_ite = 0U;
-			auto l_light_cascade_cameras = _get_light_stabilized_cascades(p_param.m_camera, l_light);
+			auto l_light_cascade_cameras = _get_light_stabilized_cascades(p_param.m_render_camera, l_light);
 			
 			if (m_my_index == 0)
 			{
@@ -198,7 +198,7 @@ namespace black_cat
 
 			if (m_state->m_capture_debug_shapes)
 			{
-				m_state->m_captured_camera = p_param.m_camera.get_extends();
+				m_state->m_captured_camera = p_param.m_render_camera.get_extends();
 
 				for (auto& l_cascade_camera : l_light_cascade_cameras)
 				{
@@ -213,7 +213,7 @@ namespace black_cat
 		}
 
 		// Restore global cbuffer to its default state
-		p_param.m_frame_renderer.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, p_param.m_camera);
+		p_param.m_frame_renderer.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, p_param.m_render_camera);
 
 		p_param.m_render_thread.finish();
 		m_state->m_command_list->finished();

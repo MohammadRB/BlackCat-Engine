@@ -79,16 +79,21 @@ namespace black_cat
 
 			/**
 			 * \brief Update app
-			 * \param p_clock_update_param
+			 * \param p_clock
 			 */
-			virtual void app_update(core_platform::bc_clock::update_param p_clock_update_param) = 0;
+			virtual void app_update(core_platform::bc_clock::update_param p_clock) = 0;
 
 			/**
 			 * \brief Render app
-			 * \param p_clock_update_param
+			 * \param p_clock
 			 */
-			virtual void app_render(core_platform::bc_clock::update_param p_clock_update_param) = 0;
+			virtual void app_render(core_platform::bc_clock::update_param p_clock) = 0;
 
+			/**
+			 * \brief Run when both update and render are executed and ready to start next frame
+			 */
+			virtual void app_swap_frame(core_platform::bc_clock::update_param p_clock) = 0;
+			
 			/**
 			 * \brief Handle app events
 			 * \param p_event

@@ -75,9 +75,13 @@ namespace black_cat
 
 		void bc_render_pass_manager::pass_execute(const bc_render_pass_render_param& p_param)
 		{
-			for(auto& l_entry : m_passes)
+			for (auto& l_entry : m_passes)
 			{
 				l_entry.m_pass->initialize_frame(p_param);
+			}
+			
+			for(auto& l_entry : m_passes)
+			{
 				l_entry.m_pass->execute(p_param);
 			}
 

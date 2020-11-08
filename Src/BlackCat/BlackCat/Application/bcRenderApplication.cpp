@@ -179,6 +179,11 @@ namespace black_cat
 		application_render(p_clock_update_param);
 	}
 
+	void bc_render_application::app_swap_frame(core_platform::bc_clock::update_param p_clock)
+	{
+		m_game_system->swap_frame(p_clock);
+	}
+
 	bool bc_render_application::app_event(core::bc_ievent& p_event)
 	{
 		const bool l_result = application_event(p_event);

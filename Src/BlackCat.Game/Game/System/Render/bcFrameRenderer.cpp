@@ -48,7 +48,9 @@ namespace black_cat
 		
 		bc_frame_renderer::bc_frame_renderer(graphic::bc_device& p_device, bc_render_thread_manager& p_thread_manager, bc_render_pass_manager& p_render_pass_manager) noexcept
 			: m_thread_manager(&p_thread_manager),
-			m_render_pass_manager(&p_render_pass_manager)
+			m_render_pass_manager(&p_render_pass_manager),
+			m_prev_camera(nullptr),
+			m_camera(nullptr)
 		{
 			auto l_global_cbuffer_config = graphic::bc_graphic_resource_builder()
 				.as_resource()
@@ -188,24 +190,40 @@ namespace black_cat
 		
 		void bc_frame_renderer::update(const bc_frame_renderer_update_param& p_update_param)
 		{
+			if(m_camera_instance.is_set())
+			{
+				m_prev_camera_instance.reset(m_camera_instance.get());
+				m_prev_camera.store(&m_prev_camera_instance.get(), core_platform::bc_memory_order::release);
+			}
+			
+			m_camera_instance.reset(p_update_param.m_camera);
+			m_camera.store(&m_camera_instance.get(), core_platform::bc_memory_order::release);
+			
 			m_render_pass_manager->pass_update(bc_render_pass_update_param(p_update_param.m_clock, p_update_param.m_camera));
 		}
 
-		core::bc_task<void> bc_frame_renderer::render(const bc_frame_renderer_render_param& p_render_param)
+		void bc_frame_renderer::render(const bc_frame_renderer_render_param& p_render_param)
 		{
 			const auto bc_render_thread_guard = m_thread_manager->get_available_thread_wait();
 			auto& l_render_thread = *bc_render_thread_guard.get_thread();
 
+			auto* l_prev_camera = m_prev_camera.load(core_platform::bc_memory_order::consume);
+			auto* l_camera = m_camera.load(core_platform::bc_memory_order::consume);
+
+			if(!l_prev_camera)
+			{
+				return;
+			}
+			
 			m_render_pass_manager->pass_execute(bc_render_pass_render_param
 			(
 				p_render_param.m_clock,
-				p_render_param.m_camera,
+				*l_camera,
+				*l_prev_camera,
 				p_render_param.m_render_system,
 				*this,
 				l_render_thread)
 			);
-
-			return core::bc_task<void>();
 		}
 	}
 }

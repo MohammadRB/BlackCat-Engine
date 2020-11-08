@@ -21,8 +21,6 @@ namespace black_cat
 
 			~bc_widget_console();
 
-		protected:
-
 		private slots:
 			void onLog(game::bc_console_output_type p_log_type, const QString& p_log);
 			

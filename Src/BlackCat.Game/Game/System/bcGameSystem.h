@@ -117,16 +117,18 @@ namespace black_cat
 			void set_scene(bc_scene_ptr p_scene);
 			
 			/**
-			 * \brief Start game core update logic
+			 * \brief Start updating game core logic
 			 * \param p_clock 
 			 */
 			void update_game(const core_platform::bc_clock::update_param& p_clock);
 			
 			/**
-			 * \brief Start game core render logic
+			 * \brief Start rendering game core logic
 			 * \param p_clock 
 			 */
 			void render_game(const core_platform::bc_clock::update_param& p_clock);
+
+			void swap_frame(const core_platform::bc_clock::update_param& p_clock);
 
 		private:
 			void _initialize(bc_game_system_parameter) override;

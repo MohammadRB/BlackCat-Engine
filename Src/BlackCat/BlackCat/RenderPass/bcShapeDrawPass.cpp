@@ -96,7 +96,7 @@ namespace black_cat
 
 		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
 		l_shape_drawer.render(p_param.m_render_system, p_param.m_render_thread, l_render_state_buffer);
-		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, l_render_state_buffer, p_param.m_camera);
+		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, l_render_state_buffer, p_param.m_render_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.finish();
