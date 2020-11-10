@@ -158,6 +158,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcTextureLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferWritePass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTextDrawPass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferLightMapPass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferInitializePass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferPass.h" />
@@ -188,6 +189,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcTextureLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferWritePass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTextDrawPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferLightMapPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferInitializePass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferPass.cpp" />
@@ -292,6 +294,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\ContentStream.json" />
+    <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\DX11.spritefont" />
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\EntityType.json" />
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\Material.json" />
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcRegister.hlsli">

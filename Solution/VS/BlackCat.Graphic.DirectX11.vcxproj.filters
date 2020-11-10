@@ -147,6 +147,9 @@
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResourceBuilder.cpp">
       <Filter>GraphicImp\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceTextRenderer.cpp">
+      <Filter>GraphicImp\Device</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandList.h">
@@ -304,6 +307,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResourceBuilder.h">
       <Filter>GraphicImp\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceTextRenderer.h">
+      <Filter>GraphicImp\Device</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

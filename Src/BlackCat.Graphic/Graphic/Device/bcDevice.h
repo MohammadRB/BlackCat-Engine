@@ -3,13 +3,8 @@
 #pragma once
 
 #include "CorePlatform/Utility/bcNoCopy.h"
-#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/Utility/bcInitializable.h"
 #include "Core/Container/bcAllocator.h"
-#include "Core/Container/bcVector.h"
-#include "Core/Event/bcEvent.h"
-#include "Platform/bcEvent.h"
-#include "PlatformImp/Application/bcBasicWindow.h"
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcDeviceRef.h"
 #include "Graphic/bcRenderApi.h"
@@ -144,6 +139,10 @@ namespace black_cat
 		class bc_platform_render_target_view;
 		using bc_render_target_view = bc_platform_render_target_view< g_current_render_api >;
 		using bc_render_target_view_ptr = bc_device_ref<bc_render_target_view>;
+
+		template< bc_render_api TRenderApi >
+		class bc_platform_device_text_renderer;
+		using bc_device_text_renderer = bc_platform_device_text_renderer< g_current_render_api >;
 		
 		template< bc_render_api TRenderApi >
 		struct bc_platform_device_pack
@@ -242,6 +241,8 @@ namespace black_cat
 
 			bc_device_command_executor_ptr create_command_executor();
 
+			bc_device_text_renderer create_text_renderer();
+
 			bc_mapped_resource map_resource(bc_iresource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type);
 
 			void unmap_resource(bc_iresource& p_resource, bcUINT p_subresource);
@@ -284,8 +285,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
 
 		private:
 			void _initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, bc_device_output p_output) override;

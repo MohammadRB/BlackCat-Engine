@@ -18,17 +18,15 @@ namespace black_cat
 		public:
 			bc_render_application();
 
-			bc_render_application(bc_render_application&&) = default;
+			bc_render_application(bc_render_application&&) = delete;
 
 			virtual ~bc_render_application() = default;
 
-			bc_render_application& operator=(bc_render_application&&) = default;
+			bc_render_application& operator=(bc_render_application&&) = delete;
 
 			bc_irender_application_output_window& get_output_window() const;
 
 			core_platform::bc_clock& get_clock() const;
-
-			bcUINT32 get_fps() const;
 
 			/**
 			 * \brief Specify an upper range for application fps or use a value lower than 0 for unlimited fps.
@@ -80,8 +78,9 @@ namespace black_cat
 			/**
 			 * \brief Update app
 			 * \param p_clock
+			 * \param p_is_same_frame
 			 */
-			virtual void app_update(core_platform::bc_clock::update_param p_clock) = 0;
+			virtual void app_update(core_platform::bc_clock::update_param p_clock, bool p_is_same_frame) = 0;
 
 			/**
 			 * \brief Render app
@@ -122,8 +121,6 @@ namespace black_cat
 
 			bool _app_event(core::bc_ievent& p_event);
 
-			void _calculate_fps(core_platform::bc_clock::small_delta_time p_delta);
-
 			core::bc_unique_ptr< platform::bc_application > m_app;
 			core::bc_unique_ptr< bc_render_application_basic_output_window > m_default_output_window;
 			bc_irender_application_output_window* m_output_window;
@@ -135,11 +132,6 @@ namespace black_cat
 
 			bcUINT32 m_min_update_rate;
 			bcINT32 m_render_rate;
-
-			static const bcUINT32 s_num_time_delta_samples = 64;
-			core_platform::bc_clock::small_delta_time m_time_delta_buffer[s_num_time_delta_samples];
-			bcUINT32 m_current_time_delta_sample;
-			bcUINT32 m_fps;
 
 			core::bc_event_listener_handle m_event_handle_window_resizing;
 			core::bc_event_listener_handle m_event_handle_window_close;

@@ -1077,49 +1077,49 @@ namespace black_cat
 
 #define TO_STRING_BUFF (2 * 32)
 		
-		inline void _bc_to_string(bcINT p_value, bcCHAR* p_buf)
+		inline void _bc_to_string(bcINT p_value, bcCHAR* p_buf, const bcCHAR* p_format)
 		{
-			std::snprintf(p_buf, TO_STRING_BUFF, "%d", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_string(long p_value, bcCHAR* p_buf)
+		inline void _bc_to_string(long p_value, bcCHAR* p_buf, const bcCHAR* p_format)
 		{
-			std::snprintf(p_buf, TO_STRING_BUFF, "%ld", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_string(long long p_value, bcCHAR* p_buf)
+		inline void _bc_to_string(long long p_value, bcCHAR* p_buf, const bcCHAR* p_format)
 		{
-			std::snprintf(p_buf, TO_STRING_BUFF, "%lld", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_string(bcUINT p_value, bcCHAR* p_buf)
+		inline void _bc_to_string(bcUINT p_value, bcCHAR* p_buf, const bcCHAR* p_format)
 		{
-			std::snprintf(p_buf, TO_STRING_BUFF, "%u", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_string(unsigned long p_value, bcCHAR* p_buf)
+		inline void _bc_to_string(unsigned long p_value, bcCHAR* p_buf, const bcCHAR* p_format)
 		{
-			std::snprintf(p_buf, TO_STRING_BUFF, "%lu", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_string(unsigned long long p_value, bcCHAR* p_buf)
+		inline void _bc_to_string(unsigned long long p_value, bcCHAR* p_buf, const bcCHAR* p_format)
 		{
-			std::snprintf(p_buf, TO_STRING_BUFF, "%llu", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_string(bcFLOAT p_value, bcCHAR* p_buf)
+		inline void _bc_to_string(bcFLOAT p_value, bcCHAR* p_buf, const bcCHAR* p_format)
 		{
-			std::snprintf(p_buf, TO_STRING_BUFF, "%f", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_string(bcDOUBLE p_value, bcCHAR* p_buf)
+		inline void _bc_to_string(bcDOUBLE p_value, bcCHAR* p_buf, const bcCHAR* p_format)
 		{
-			std::snprintf(p_buf, TO_STRING_BUFF, "%f", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_string(long double p_value, bcCHAR* p_buf)
+		inline void _bc_to_string(long double p_value, bcCHAR* p_buf, const bcCHAR* p_format)
 		{
-			std::snprintf(p_buf, TO_STRING_BUFF, "%Lf", p_value);
+			std::snprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
 		inline void _bc_to_string(const bcWCHAR* p_src, bcCHAR* p_dest, bcSIZE p_len)
@@ -1128,7 +1128,7 @@ namespace black_cat
 			std::wcsrtombs(p_dest, &p_src, p_len, &l_state);
 		}
 
-		template< template< typename > typename TInputAllocator, template< typename > typename TOutputAllocator >
+		template< template< typename > class TInputAllocator, template< typename > class TOutputAllocator >
 		inline bc_string_a<TOutputAllocator> _bc_to_string(const bc_wstring_a<TInputAllocator>& p_str)
 		{
 			typename bc_string_a<TOutputAllocator>::size_type l_len = p_str.size();
@@ -1142,83 +1142,83 @@ namespace black_cat
 			return std::move(l_str);
 		};
 
-		inline bc_string bc_to_string(bcINT p_value)
+		inline bc_string bc_to_string(bcINT p_value, const bcCHAR* p_format = "%d")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string(l_buf);
 		}
 
-		inline bc_string bc_to_string(long p_value)
+		inline bc_string bc_to_string(long p_value, const bcCHAR* p_format = "%ld")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string(l_buf);
 		}
 
-		inline bc_string bc_to_string(long long p_value)
+		inline bc_string bc_to_string(long long p_value, const bcCHAR* p_format = "%lld")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string(l_buf);
 		}
 
-		inline bc_string bc_to_string(bcUINT p_value)
+		inline bc_string bc_to_string(bcUINT p_value, const bcCHAR* p_format = "%u")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string(l_buf);
 		}
 
-		inline bc_string bc_to_string(unsigned long p_value)
+		inline bc_string bc_to_string(unsigned long p_value, const bcCHAR* p_format = "%lu")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string(l_buf);
 		}
 
-		inline bc_string bc_to_string(unsigned long long p_value)
+		inline bc_string bc_to_string(unsigned long long p_value, const bcCHAR* p_format = "%llu")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string(l_buf);
 		}
 
-		inline bc_string bc_to_string(bcFLOAT p_value)
+		inline bc_string bc_to_string(bcFLOAT p_value, const bcCHAR* p_format = "%f")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string(l_buf);
 		}
 
-		inline bc_string bc_to_string(bcDOUBLE p_value)
+		inline bc_string bc_to_string(bcDOUBLE p_value, const bcCHAR* p_format = "%f")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string(l_buf);
 		}
 
-		inline bc_string bc_to_string(long double p_value)
+		inline bc_string bc_to_string(long double p_value, const bcCHAR* p_format = "%lf")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string(l_buf);
 		}
@@ -1268,78 +1268,87 @@ namespace black_cat
 			return bc_string(p_str.c_str());
 		}
 
-		inline bc_string_program bc_to_string_program(bcINT p_value)
+		inline bc_string_program bc_to_string_program(bcINT p_value, const bcCHAR* p_format = "%d")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_program(l_buf);
 		}
 
-		inline bc_string_program bc_to_string_program(long p_value)
+		inline bc_string_program bc_to_string_program(long p_value, const bcCHAR* p_format = "%ld")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_program(l_buf);
 		}
 
-		inline bc_string_program bc_to_string_program(long long p_value)
+		inline bc_string_program bc_to_string_program(long long p_value, const bcCHAR* p_format = "%lld")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_program(l_buf);
 		}
 
-		inline bc_string_program bc_to_string_program(bcUINT p_value)
+		inline bc_string_program bc_to_string_program(bcUINT p_value, const bcCHAR* p_format = "%u")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_program(l_buf);
 		}
 
-		inline bc_string_program bc_to_string_program(unsigned long p_value)
+		inline bc_string_program bc_to_string_program(unsigned long p_value, const bcCHAR* p_format = "%lu")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_program(l_buf);
 		}
 
-		inline bc_string_program bc_to_string_program(unsigned long long p_value)
+		inline bc_string_program bc_to_string_program(unsigned long long p_value, const bcCHAR* p_format = "%llu")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_program(l_buf);
 		}
 
-		inline bc_string_program bc_to_string_program(bcFLOAT p_value)
+		inline bc_string_program bc_to_string_program(bcFLOAT p_value, const bcCHAR* p_format = "%f")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_program(l_buf);
 		}
 
-		inline bc_string_program bc_to_string_program(bcDOUBLE p_value)
+		inline bc_string_program bc_to_string_program(bcDOUBLE p_value, const bcCHAR* p_format = "%f")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_program(l_buf);
 		}
 
+		inline bc_string_program bc_to_string_program(long double p_value, const bcCHAR* p_format = "%lf")
+		{
+			bcCHAR l_buf[TO_STRING_BUFF];
+
+			_bc_to_string(p_value, l_buf, p_format);
+
+			return bc_string_program(l_buf);
+		}
+		
 		inline bc_string_program bc_to_string_program(const bcWCHAR* p_str)
 		{
 			auto l_str_len = std::wcslen(p_str);
@@ -1385,92 +1394,83 @@ namespace black_cat
 			return bc_string_program(p_str.c_str());
 		}
 
-		inline bc_string_program bc_to_string_program(long double p_value)
+		inline bc_string_frame bc_to_string_frame(bcINT p_value, const bcCHAR* p_format = "%d")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
-
-			return bc_string_program(l_buf);
-		}
-
-		inline bc_string_frame bc_to_string_frame(bcINT p_value)
-		{
-			bcCHAR l_buf[TO_STRING_BUFF];
-
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_frame(l_buf);
 		}
 
-		inline bc_string_frame bc_to_string_frame(long p_value)
+		inline bc_string_frame bc_to_string_frame(long p_value, const bcCHAR* p_format = "%ld")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_frame(l_buf);
 		}
 
-		inline bc_string_frame bc_to_string_frame(long long p_value)
+		inline bc_string_frame bc_to_string_frame(long long p_value, const bcCHAR* p_format = "%lld")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_frame(l_buf);
 		}
 
-		inline bc_string_frame bc_to_string_frame(bcUINT p_value)
+		inline bc_string_frame bc_to_string_frame(bcUINT p_value, const bcCHAR* p_format = "%u")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_frame(l_buf);
 		}
 
-		inline bc_string_frame bc_to_string_frame(unsigned long p_value)
+		inline bc_string_frame bc_to_string_frame(unsigned long p_value, const bcCHAR* p_format = "%lu")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_frame(l_buf);
 		}
 
-		inline bc_string_frame bc_to_string_frame(unsigned long long p_value)
+		inline bc_string_frame bc_to_string_frame(unsigned long long p_value, const bcCHAR* p_format = "%llu")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_frame(l_buf);
 		}
 
-		inline bc_string_frame bc_to_string_frame(bcFLOAT p_value)
+		inline bc_string_frame bc_to_string_frame(bcFLOAT p_value, const bcCHAR* p_format = "%f")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_frame(l_buf);
 		}
 
-		inline bc_string_frame bc_to_string_frame(bcDOUBLE p_value)
+		inline bc_string_frame bc_to_string_frame(bcDOUBLE p_value, const bcCHAR* p_format = "%f")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_frame(l_buf);
 		}
 
-		inline bc_string_frame bc_to_string_frame(long double p_value)
+		inline bc_string_frame bc_to_string_frame(long double p_value, const bcCHAR* p_format = "%lf")
 		{
 			bcCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_string(p_value, l_buf);
+			_bc_to_string(p_value, l_buf, p_format);
 
 			return bc_string_frame(l_buf);
 		}
@@ -1520,49 +1520,49 @@ namespace black_cat
 			return p_str;
 		}
 
-		inline void _bc_to_wstring(int p_value, bcWCHAR* p_buf)
+		inline void _bc_to_wstring(int p_value, bcWCHAR* p_buf, const bcWCHAR* p_format)
 		{
-			std::swprintf(p_buf, TO_STRING_BUFF, L"%d", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_wstring(long p_value, bcWCHAR* p_buf)
+		inline void _bc_to_wstring(long p_value, bcWCHAR* p_buf, const bcWCHAR* p_format)
 		{
-			std::swprintf(p_buf, TO_STRING_BUFF, L"%ld", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_wstring(long long p_value, bcWCHAR* p_buf)
+		inline void _bc_to_wstring(long long p_value, bcWCHAR* p_buf, const bcWCHAR* p_format)
 		{
-			std::swprintf(p_buf, TO_STRING_BUFF, L"%lld", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_wstring(unsigned p_value, bcWCHAR* p_buf)
+		inline void _bc_to_wstring(unsigned p_value, bcWCHAR* p_buf, const bcWCHAR* p_format)
 		{
-			std::swprintf(p_buf, TO_STRING_BUFF, L"%u", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_wstring(unsigned long p_value, bcWCHAR* p_buf)
+		inline void _bc_to_wstring(unsigned long p_value, bcWCHAR* p_buf, const bcWCHAR* p_format)
 		{
-			std::swprintf(p_buf, TO_STRING_BUFF, L"%lu", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_wstring(unsigned long long p_value, bcWCHAR* p_buf)
+		inline void _bc_to_wstring(unsigned long long p_value, bcWCHAR* p_buf, const bcWCHAR* p_format)
 		{
-			std::swprintf(p_buf, TO_STRING_BUFF, L"%llu", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_wstring(float p_value, bcWCHAR* p_buf)
+		inline void _bc_to_wstring(float p_value, bcWCHAR* p_buf, const bcWCHAR* p_format)
 		{
-			std::swprintf(p_buf, TO_STRING_BUFF, L"%f", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_wstring(double p_value, bcWCHAR* p_buf)
+		inline void _bc_to_wstring(double p_value, bcWCHAR* p_buf, const bcWCHAR* p_format)
 		{
-			std::swprintf(p_buf, TO_STRING_BUFF, L"%f", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
-		inline void _bc_to_wstring(long double p_value, bcWCHAR* p_buf)
+		inline void _bc_to_wstring(long double p_value, bcWCHAR* p_buf, const bcWCHAR* p_format)
 		{
-			std::swprintf(p_buf, TO_STRING_BUFF, L"%Lf", p_value);
+			std::swprintf(p_buf, TO_STRING_BUFF, p_format, p_value);
 		}
 
 		inline void _bc_to_wstring(const bcCHAR* p_src, bcWCHAR* p_dest, bcSIZE p_len)
@@ -1585,83 +1585,83 @@ namespace black_cat
 			return l_str;
 		};
 
-		inline bc_wstring bc_to_wstring(bcINT p_value)
+		inline bc_wstring bc_to_wstring(bcINT p_value, const bcWCHAR* p_format = L"%d")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring(l_buf);
 		}
 
-		inline bc_wstring bc_to_wstring(long p_value)
+		inline bc_wstring bc_to_wstring(long p_value, const bcWCHAR* p_format = L"%ld")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring(l_buf);
 		}
 
-		inline bc_wstring bc_to_wstring(long long p_value)
+		inline bc_wstring bc_to_wstring(long long p_value, const bcWCHAR* p_format = L"%lld")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring(l_buf);
 		}
 
-		inline bc_wstring bc_to_wstring(bcUINT p_value)
+		inline bc_wstring bc_to_wstring(bcUINT p_value, const bcWCHAR* p_format = L"%u")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring(l_buf);
 		}
 
-		inline bc_wstring bc_to_wstring(unsigned long p_value)
+		inline bc_wstring bc_to_wstring(unsigned long p_value, const bcWCHAR* p_format = L"%lu")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring(l_buf);
 		}
 
-		inline bc_wstring bc_to_wstring(unsigned long long p_value)
+		inline bc_wstring bc_to_wstring(unsigned long long p_value, const bcWCHAR* p_format = L"%llu")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring(l_buf);
 		}
 
-		inline bc_wstring bc_to_wstring(bcFLOAT p_value)
+		inline bc_wstring bc_to_wstring(bcFLOAT p_value, const bcWCHAR* p_format = L"%f")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring(l_buf);
 		}
 
-		inline bc_wstring bc_to_wstring(bcDOUBLE p_value)
+		inline bc_wstring bc_to_wstring(bcDOUBLE p_value, const bcWCHAR* p_format = L"%f")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring(l_buf);
 		}
 
-		inline bc_wstring bc_to_wstring(long double p_value)
+		inline bc_wstring bc_to_wstring(long double p_value, const bcWCHAR* p_format = L"%lf")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring(l_buf);
 		}
@@ -1711,83 +1711,83 @@ namespace black_cat
 			return bc_wstring(p_str.c_str());
 		}
 
-		inline bc_wstring_program bc_to_wstring_program(bcINT p_value)
+		inline bc_wstring_program bc_to_wstring_program(bcINT p_value, const bcWCHAR* p_format = L"%d")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_program(l_buf);
 		}
 
-		inline bc_wstring_program bc_to_wstring_program(long p_value)
+		inline bc_wstring_program bc_to_wstring_program(long p_value, const bcWCHAR* p_format = L"%ld")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_program(l_buf);
 		}
 
-		inline bc_wstring_program bc_to_wstring_program(long long p_value)
+		inline bc_wstring_program bc_to_wstring_program(long long p_value, const bcWCHAR* p_format = L"%lld")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_program(l_buf);
 		}
 
-		inline bc_wstring_program bc_to_wstring_program(bcUINT p_value)
+		inline bc_wstring_program bc_to_wstring_program(bcUINT p_value, const bcWCHAR* p_format = L"%u")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_program(l_buf);
 		}
 
-		inline bc_wstring_program bc_to_wstring_program(unsigned long p_value)
+		inline bc_wstring_program bc_to_wstring_program(unsigned long p_value, const bcWCHAR* p_format = L"%lu")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_program(l_buf);
 		}
 
-		inline bc_wstring_program bc_to_wstring_program(unsigned long long p_value)
+		inline bc_wstring_program bc_to_wstring_program(unsigned long long p_value, const bcWCHAR* p_format = L"%llu")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_program(l_buf);
 		}
 
-		inline bc_wstring_program bc_to_wstring_program(bcFLOAT p_value)
+		inline bc_wstring_program bc_to_wstring_program(bcFLOAT p_value, const bcWCHAR* p_format = L"%f")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_program(l_buf);
 		}
 
-		inline bc_wstring_program bc_to_wstring_program(bcDOUBLE p_value)
+		inline bc_wstring_program bc_to_wstring_program(bcDOUBLE p_value, const bcWCHAR* p_format = L"%f")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_program(l_buf);
 		}
 
-		inline bc_wstring_program bc_to_wstring_program(long double p_value)
+		inline bc_wstring_program bc_to_wstring_program(long double p_value, const bcWCHAR* p_format = L"%lf")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_program(l_buf);
 		}
@@ -1837,83 +1837,83 @@ namespace black_cat
 			return bc_wstring_program(p_str.c_str());
 		}
 
-		inline bc_wstring_frame bc_to_wstring_frame(bcINT p_value)
+		inline bc_wstring_frame bc_to_wstring_frame(bcINT p_value, const bcWCHAR* p_format = L"%d")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_frame(l_buf);
 		}
 
-		inline bc_wstring_frame bc_to_wstring_frame(long p_value)
+		inline bc_wstring_frame bc_to_wstring_frame(long p_value, const bcWCHAR* p_format = L"%ld")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_frame(l_buf);
 		}
 
-		inline bc_wstring_frame bc_to_wstring_frame(long long p_value)
+		inline bc_wstring_frame bc_to_wstring_frame(long long p_value, const bcWCHAR* p_format = L"%lld")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_frame(l_buf);
 		}
 
-		inline bc_wstring_frame bc_to_wstring_frame(bcUINT p_value)
+		inline bc_wstring_frame bc_to_wstring_frame(bcUINT p_value, const bcWCHAR* p_format = L"%u")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_frame(l_buf);
 		}
 
-		inline bc_wstring_frame bc_to_wstring_frame(unsigned long p_value)
+		inline bc_wstring_frame bc_to_wstring_frame(unsigned long p_value, const bcWCHAR* p_format = L"%lu")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_frame(l_buf);
 		}
 
-		inline bc_wstring_frame bc_to_wstring_frame(unsigned long long p_value)
+		inline bc_wstring_frame bc_to_wstring_frame(unsigned long long p_value, const bcWCHAR* p_format = L"%llu")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_frame(l_buf);
 		}
 
-		inline bc_wstring_frame bc_to_wstring_frame(bcFLOAT p_value)
+		inline bc_wstring_frame bc_to_wstring_frame(bcFLOAT p_value, const bcWCHAR* p_format = L"%f")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_frame(l_buf);
 		}
 
-		inline bc_wstring_frame bc_to_wstring_frame(bcDOUBLE p_value)
+		inline bc_wstring_frame bc_to_wstring_frame(bcDOUBLE p_value, const bcWCHAR* p_format = L"%f")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_frame(l_buf);
 		}
 
-		inline bc_wstring_frame bc_to_wstring_frame(long double p_value)
+		inline bc_wstring_frame bc_to_wstring_frame(long double p_value, const bcWCHAR* p_format = L"%lf")
 		{
 			bcWCHAR l_buf[TO_STRING_BUFF];
 
-			_bc_to_wstring(p_value, l_buf);
+			_bc_to_wstring(p_value, l_buf, p_format);
 
 			return bc_wstring_frame(l_buf);
 		}

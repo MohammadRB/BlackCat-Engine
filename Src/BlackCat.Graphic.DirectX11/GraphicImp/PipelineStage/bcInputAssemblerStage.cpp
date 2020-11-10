@@ -69,33 +69,33 @@ namespace black_cat
 					l_vertex_buffers[i] = l_buffer.is_valid() ? l_buffer.get_platform_pack().m_buffer : nullptr;
 				}
 
-				bcUINT l_dirty_slot_start = (std::min)
+				const bcUINT l_dirty_slot_start = (std::min)
+				(
+					(std::min)
 					(
-						(std::min)
-						(
-							l_required_state.m_vertex_buffers.get_dirty_start(),
-							l_required_state.m_vertex_buffers_offsets.get_dirty_start()
-						),
-						l_required_state.m_vertex_buffers_strides.get_dirty_start()
-					);
-				bcUINT l_dirty_slot_num = (std::max)
+						l_required_state.m_vertex_buffers.get_dirty_start(),
+						l_required_state.m_vertex_buffers_offsets.get_dirty_start()
+					),
+					l_required_state.m_vertex_buffers_strides.get_dirty_start()
+				);
+				const bcUINT l_dirty_slot_num = (std::max)
+				(
+					(std::max)
 					(
-						(std::max)
-						(
-							l_required_state.m_vertex_buffers.get_dirty_count(),
-							l_required_state.m_vertex_buffers_offsets.get_dirty_count()
-						),
-						l_required_state.m_vertex_buffers_strides.get_dirty_count()
-					);
+						l_required_state.m_vertex_buffers.get_dirty_count(),
+						l_required_state.m_vertex_buffers_offsets.get_dirty_count()
+					),
+					l_required_state.m_vertex_buffers_strides.get_dirty_count()
+				);
 
 				l_context->IASetVertexBuffers
-					(
-						l_dirty_slot_start,
-						l_dirty_slot_num - l_dirty_slot_start + 1,
-						&l_vertex_buffers[l_dirty_slot_start],
-						&l_vertex_strides[l_dirty_slot_start],
-						&l_vertex_offsets[l_dirty_slot_start]
-					);
+				(
+					l_dirty_slot_start,
+					l_dirty_slot_num - l_dirty_slot_start + 1,
+					&l_vertex_buffers[l_dirty_slot_start],
+					&l_vertex_strides[l_dirty_slot_start],
+					&l_vertex_offsets[l_dirty_slot_start]
+				);
 			}
 
 			if(l_required_state.m_index_buffer.update_needed())

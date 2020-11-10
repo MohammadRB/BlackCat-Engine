@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/bcConstant.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"

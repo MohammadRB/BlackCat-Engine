@@ -1,0 +1,74 @@
+// [11/09/2020 MRB]
+
+#include "Core/CorePCH.h"
+#include "Core/Event/bcEventManager.h"
+#include "Core/Utility/bcCounterValueManager.h"
+#include "Core/bcEvent.h"
+
+namespace black_cat
+{
+	namespace core
+	{
+		bc_counter_value_manager::bc_counter_value_manager()
+			: m_read_container(0),
+			m_write_container(1)
+		{
+			m_swap_frame_event_handle = bc_get_service<bc_event_manager>()->register_event_listener<bc_event_frame_swap>
+			(
+				bc_event_manager::delegate_type(*this, &bc_counter_value_manager::_event_handler)
+			);
+		}
+
+		bc_counter_value_manager::~bc_counter_value_manager() = default;
+
+		bc_counter_value_manager::const_iterator bc_counter_value_manager::begin() const noexcept
+		{
+			return m_container[m_read_container].begin();
+		}
+
+		bc_counter_value_manager::const_iterator bc_counter_value_manager::cbegin() const noexcept
+		{
+			return m_container[m_read_container].cbegin();
+		}
+
+		bc_counter_value_manager::const_iterator bc_counter_value_manager::end() const noexcept
+		{
+			return m_container[m_read_container].end();
+		}
+
+		bc_counter_value_manager::const_iterator bc_counter_value_manager::cend() const noexcept
+		{
+			return m_container[m_read_container].cend();
+		}
+
+		bc_counter_value_manager::size_type bc_counter_value_manager::size() const noexcept
+		{
+			return m_container[m_read_container].size();
+		}
+
+		void bc_counter_value_manager::add_counter(const bcCHAR* p_name, bc_wstring p_value)
+		{
+			m_container[m_write_container].insert(std::make_pair(p_name, std::move(p_value)));
+		}
+
+		bc_counter_value_manager::const_iterator bc_counter_value_manager::find(const bcCHAR* p_name) const noexcept
+		{
+			return m_container[m_read_container].find(p_name);
+		}
+
+		bool bc_counter_value_manager::_event_handler(bc_ievent& p_event)
+		{
+			if (bc_ievent::event_is< bc_event_frame_swap >(p_event))
+			{
+				m_container[m_read_container].clear();
+
+				m_read_container = m_write_container;
+				m_write_container = (m_read_container + 1) % 2;
+				
+				return true;
+			}
+
+			return false;
+		}
+	}
+}

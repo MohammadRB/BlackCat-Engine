@@ -80,7 +80,7 @@ namespace black_cat
 				l_required_state.m_unordered_access_views.update_needed()
 				/*l_required_state.m_uav_initial_counts.update_needed()*/)
 			{
-				bcUINT l_num_rtv = l_required_state.m_render_target_views.get_dirty_count();
+				const bcUINT l_num_rtv = l_required_state.m_render_target_views.get_dirty_count();
 				ID3D11RenderTargetView* l_render_target_views[bc_render_api_info::number_of_om_render_target_slots()];
 				ID3D11DepthStencilView* l_depth_stencil_view;
 				ID3D11UnorderedAccessView* l_unordered_views[bc_render_api_info::number_of_ps_cs_uav_resource()];
@@ -103,8 +103,8 @@ namespace black_cat
 					l_uav_initialCounts[i] = -1;
 				}
 
-				bcUINT l_uav_dirty_slot_start = l_required_state.m_unordered_access_views.get_dirty_start();
-				bcUINT l_uav_dirty_slot_num = l_required_state.m_unordered_access_views.get_dirty_count();
+				const bcUINT l_uav_dirty_slot_start = l_required_state.m_unordered_access_views.get_dirty_start();
+				const bcUINT l_uav_dirty_slot_num = l_required_state.m_unordered_access_views.get_dirty_count();
 
 				l_context->OMSetRenderTargetsAndUnorderedAccessViews
 				(

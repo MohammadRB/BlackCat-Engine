@@ -97,7 +97,7 @@ namespace black_cat
 		inline bcUINT bc_output_merger_stage_state::associated_render_target_count() const noexcept
 		{
 			bcUINT l_count = 0;
-			bcUINT l_render_target_slot_count = bc_render_api_info::number_of_om_render_target_slots();
+			constexpr bcUINT l_render_target_slot_count = bc_render_api_info::number_of_om_render_target_slots();
 
 			for (bcUINT i = 0; i < l_render_target_slot_count; ++i)
 			{

@@ -118,9 +118,10 @@ namespace black_cat
 			
 			/**
 			 * \brief Start updating game core logic
-			 * \param p_clock 
+			 * \param p_clock
+			 * \param p_is_same_frame 
 			 */
-			void update_game(const core_platform::bc_clock::update_param& p_clock);
+			void update_game(const core_platform::bc_clock::update_param& p_clock, bool p_is_same_frame);
 			
 			/**
 			 * \brief Start rendering game core logic
@@ -142,8 +143,6 @@ namespace black_cat
 			bc_render_system m_render_system;
 			core::bc_unique_ptr<bc_game_console> m_console;
 			bc_scene_ptr m_scene;
-
-			core_platform::bc_clock::big_delta_time m_last_total_elapsed;
 
 			core::bc_query_provider_handle m_scene_query_context_provider;
 		};

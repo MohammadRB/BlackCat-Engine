@@ -15,11 +15,10 @@ namespace black_cat
 	{
 		struct bc_render_loop_state
 		{
-			bc_render_loop_state(void (bc_render_application::* p_render_function)(core_platform::bc_clock::update_param), core::bc_event_manager* p_event_manager)
+			explicit bc_render_loop_state(void (bc_render_application::* p_render_function)(core_platform::bc_clock::update_param))
 				: m_terminate(false),
 				m_signal(false),
 				m_render_function(p_render_function),
-				m_event_manager(p_event_manager),
 				m_render_application_param(nullptr),
 				m_clock_param(0, 0)
 			{
@@ -28,7 +27,6 @@ namespace black_cat
 			core_platform::bc_atomic< bool > m_terminate;
 			core_platform::bc_atomic< bool > m_signal;
 			void(bc_render_application::*m_render_function)(core_platform::bc_clock::update_param);
-			core::bc_event_manager* m_event_manager;
 
 			bc_render_application* m_render_application_param;
 			core_platform::bc_clock::update_param m_clock_param;
@@ -43,10 +41,7 @@ namespace black_cat
 			m_paused(false),
 			m_termination_code(0),
 			m_min_update_rate(0),
-			m_render_rate(0),
-			m_time_delta_buffer{},
-			m_current_time_delta_sample(0),
-			m_fps(0)
+			m_render_rate(0)
 		{
 		}
 
@@ -58,11 +53,6 @@ namespace black_cat
 		core_platform::bc_clock& bc_render_application::get_clock() const
 		{
 			return *m_clock;
-		}
-
-		bcUINT32 bc_render_application::get_fps() const
-		{
-			return m_fps;
 		}
 
 		void bc_render_application::set_fps(bcUINT32 p_fps)
@@ -80,10 +70,8 @@ namespace black_cat
 		bcINT32 bc_render_application::run()
 		{
 			auto* const l_event_manager = core::bc_get_service< core::bc_event_manager >();
-			const core_platform::bc_clock::small_delta_time l_min_update_elapsed = 1000.0f / m_min_update_rate;
-			core_platform::bc_clock::small_delta_time l_local_elapsed = 0;
-
-			bc_render_loop_state l_render_thread_state(&bc_render_application::app_render, l_event_manager);
+			
+			bc_render_loop_state l_render_thread_state(&bc_render_application::app_render);
 			core_platform::bc_thread l_render_thread
 			(
 				[&](bc_render_loop_state* p_state)
@@ -95,13 +83,7 @@ namespace black_cat
 							core_platform::bc_thread::current_thread_yield();
 						}
 
-						core::bc_event_frame_render_start l_event_frame_start;
-						p_state->m_event_manager->process_event(l_event_frame_start);
-
 						(p_state->m_render_application_param->*p_state->m_render_function)(p_state->m_clock_param);
-
-						core::bc_event_frame_render_finish l_event_frame_finish;
-						p_state->m_event_manager->process_event(l_event_frame_finish);
 
 						p_state->m_signal.store(false, core_platform::bc_memory_order::release);
 					}
@@ -112,6 +94,12 @@ namespace black_cat
 			
 			try
 			{
+				const core_platform::bc_clock::small_delta_time l_min_update_elapsed = 1000.0f / m_min_update_rate;
+				core_platform::bc_clock::small_delta_time l_sleep_time = 0;
+				core_platform::bc_clock::small_delta_time l_elapsed = 0;
+				core_platform::bc_clock::small_delta_time l_local_elapsed = 0;
+				core_platform::bc_clock::big_delta_time l_total_elapsed = 0;
+				
 				while (!m_is_terminated)
 				{
 					m_output_window->update();
@@ -125,8 +113,8 @@ namespace black_cat
 
 					m_clock->update();
 
-					auto l_elapsed = m_clock->get_elapsed();
-					const auto l_total_elapsed = m_clock->get_total_elapsed();
+					l_elapsed = m_clock->get_elapsed();
+					l_total_elapsed = m_clock->get_total_elapsed();
 
 #ifdef BC_DEBUG
 					if (l_elapsed > 1000.0f)
@@ -139,19 +127,16 @@ namespace black_cat
 					l_render_thread_state.m_clock_param = core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed);
 					l_render_thread_state.m_signal.store(true, core_platform::bc_memory_order::release);
 
-					core::bc_event_frame_update_start l_event_frame_start;
-					l_event_manager->process_event(l_event_frame_start);
-					
+					bool l_is_first_update = true;
 					l_local_elapsed += l_elapsed;
 					while (l_local_elapsed >= l_min_update_elapsed)
 					{
 						// total elapsed in multiple update call per frame loop is constant
-						app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_min_update_elapsed));
-						l_local_elapsed -= l_min_update_elapsed;
-					}
+						app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_min_update_elapsed), !l_is_first_update);
 
-					core::bc_event_frame_update_finish l_event_frame_finish;
-					l_event_manager->process_event(l_event_frame_finish);
+						l_local_elapsed -= l_min_update_elapsed;
+						l_is_first_update = false;
+					}
 					
 					while (l_render_thread_state.m_signal.load(core_platform::bc_memory_order::acquire))
 					{
@@ -164,16 +149,15 @@ namespace black_cat
 					{
 						const core_platform::bc_clock::small_delta_time l_render_rate_elapsed = 1000.0f / m_render_rate;
 
-						if(l_elapsed < l_render_rate_elapsed)
+						if(l_elapsed - l_sleep_time < l_render_rate_elapsed)
 						{
-							const auto l_diff = l_render_rate_elapsed - l_elapsed;
-							core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(static_cast<std::chrono::milliseconds::rep>(l_diff)));
-
-							l_elapsed = l_render_rate_elapsed;
+							l_sleep_time = l_render_rate_elapsed - (l_elapsed - l_sleep_time);
+							core_platform::bc_thread::current_thread_sleep_for
+							(
+								std::chrono::milliseconds(static_cast<std::chrono::milliseconds::rep>(l_sleep_time))
+							);
 						}
 					}
-
-					_calculate_fps(l_elapsed);
 
 #ifdef BC_MEMORY_ENABLE
 					core::bc_memmng::get().end_of_frame();
@@ -239,10 +223,6 @@ namespace black_cat
 
 			m_min_update_rate = 60;
 			m_render_rate = m_min_update_rate;
-
-			memset(&m_time_delta_buffer, 0, sizeof(core_platform::bc_clock::small_delta_time) * s_num_time_delta_samples);
-			m_current_time_delta_sample = 0;
-			m_fps = 0;
 
 			auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
 			m_event_handle_window_resizing = l_event_manager->register_event_listener< platform::bc_app_event_window_resizing >
@@ -329,7 +309,7 @@ namespace black_cat
 
 			if (core::bc_ievent::event_is< platform::bc_app_event_active >(p_event))
 			{
-				platform::bc_app_event_active& l_active_event = static_cast<platform::bc_app_event_active&>(p_event);
+				auto& l_active_event = static_cast<platform::bc_app_event_active&>(p_event);
 				m_paused = !l_active_event.active();
 
 				if (m_paused)
@@ -346,7 +326,7 @@ namespace black_cat
 
 			if (core::bc_ievent::event_is< platform::bc_app_event_window_close >(p_event))
 			{
-				platform::bc_app_event_window_close& l_close_event = static_cast<platform::bc_app_event_window_close&>(p_event);
+				auto& l_close_event = static_cast<platform::bc_app_event_window_close&>(p_event);
 
 				if (l_close_event.get_window_id() == m_output_window->get_id())
 				{
@@ -359,7 +339,7 @@ namespace black_cat
 
 			if (core::bc_ievent::event_is< platform::bc_app_event_exit >(p_event))
 			{
-				platform::bc_app_event_exit& l_exit_event = static_cast<platform::bc_app_event_exit&>(p_event);
+				auto& l_exit_event = static_cast<platform::bc_app_event_exit&>(p_event);
 
 				m_is_terminated = true;
 				m_termination_code = l_exit_event.exit_code();
@@ -390,21 +370,6 @@ namespace black_cat
 			}
 
 			return app_event(p_event);
-		}
-
-		void bc_render_application::_calculate_fps(core_platform::bc_clock::small_delta_time p_delta)
-		{
-			m_time_delta_buffer[m_current_time_delta_sample] = p_delta;
-			m_current_time_delta_sample = (m_current_time_delta_sample + 1) % s_num_time_delta_samples;
-
-			core_platform::bc_clock::small_delta_time l_average_delta = 0;
-			for (float i : m_time_delta_buffer)
-			{
-				l_average_delta += i;
-			}
-			l_average_delta /= s_num_time_delta_samples;
-
-			m_fps = std::round(1000.0f / l_average_delta);
 		}
 	}
 }

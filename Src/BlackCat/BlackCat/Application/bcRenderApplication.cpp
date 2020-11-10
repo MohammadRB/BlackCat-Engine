@@ -4,17 +4,18 @@
 
 #include "PlatformImp/bcIDELogger.h"
 #include "Core/Memory/bcMemoryManagment.h"
-#include "Core/Utility/bcLogger.h"
 #include "Core/Concurrency/bcThreadManager.h"
 #include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Content/bcContentManager.h"
 #include "Core/Content/bcContentStreamManager.h"
-#include "Core/Messaging/Query/bcQueryManager.h"
-#include "Core/Content/bcLazyContent.h"
+#include "Core/Utility/bcServiceManager.h"
+#include "Core/Utility/bcCounterValueManager.h"
+#include "Core/Utility/bcLogger.h"
+#include "Core/bcEvent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/System/Script/bcScriptBinding.h"
-#include "Game/System/Render/Pass/bcRenderPassManager.h"
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/System/Script/bcScriptSystem.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
@@ -46,8 +47,12 @@ namespace black_cat
 {
 	bc_render_application::bc_render_application()
 		: game::bc_render_application(),
-		m_game_system(nullptr)
+		m_game_system(nullptr),
+		m_time_delta_buffer{},
+		m_current_time_delta_sample(0),
+		m_fps(0)
 	{
+		std::memset(&m_time_delta_buffer, 0, sizeof(core_platform::bc_clock::small_delta_time) * s_num_time_delta_samples);
 	}
 
 	bc_render_application::~bc_render_application() = default;
@@ -84,6 +89,7 @@ namespace black_cat
 		));
 		core::bc_register_service(core::bc_make_service<core::bc_event_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_query_manager>());
+		core::bc_register_service(core::bc_make_service<core::bc_counter_value_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
 		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>());
@@ -166,29 +172,79 @@ namespace black_cat
 		application_load_content(core::bc_get_service< core::bc_content_stream_manager >());
 	}
 
-	void bc_render_application::app_update(core_platform::bc_clock::update_param p_clock_update_param)
+	void bc_render_application::app_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_same_frame)
 	{
-		m_game_system->update_game(p_clock_update_param);
-		core::bc_service_manager::get().update(p_clock_update_param);
-		application_update(p_clock_update_param);
+		m_update_watch.start();
+		
+		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
+
+		if(!p_is_same_frame)
+		{
+			core::bc_event_frame_update_start l_event_frame_start;
+			l_event_manager->process_event(l_event_frame_start);
+		}
+		
+		m_game_system->update_game(p_clock_update_param, p_is_same_frame);
+
+		if (!p_is_same_frame)
+		{
+			core::bc_service_manager::get().update(p_clock_update_param);
+		}
+		
+		application_update(p_clock_update_param, p_is_same_frame);
+
+		if(!p_is_same_frame)
+		{
+			core::bc_event_frame_update_finish l_event_frame_finish;
+			l_event_manager->process_event(l_event_frame_finish);
+		}
+
+		m_update_watch.stop();
 	}
 
 	void bc_render_application::app_render(core_platform::bc_clock::update_param p_clock_update_param)
 	{
+		m_render_watch.start();
+		
+		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
+
+		core::bc_event_frame_render_start l_event_frame_start;
+		l_event_manager->process_event(l_event_frame_start);
+		
 		m_game_system->render_game(p_clock_update_param);
 		application_render(p_clock_update_param);
+
+		core::bc_event_frame_render_finish l_event_frame_finish;
+		l_event_manager->process_event(l_event_frame_finish);
+
+		m_render_watch.stop();
 	}
 
 	void bc_render_application::app_swap_frame(core_platform::bc_clock::update_param p_clock)
 	{
+		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
+		auto* l_counter_value_manager = core::bc_get_service<core::bc_counter_value_manager>();
+		
 		m_game_system->swap_frame(p_clock);
+
+		m_update_watch.restart();
+		m_render_watch.restart();
+		_calculate_fps(p_clock.m_elapsed);
+
+		const auto l_update_time = m_update_watch.average_total_elapsed();
+		const auto l_render_time = m_render_watch.average_total_elapsed();
+
+		l_counter_value_manager->add_counter("fps", core::bc_to_wstring(m_fps));
+		l_counter_value_manager->add_counter("update_time", core::bc_to_wstring(l_update_time, L"%.1f"));
+		l_counter_value_manager->add_counter("render_time", core::bc_to_wstring(l_render_time, L"%.1f"));
+
+		core::bc_event_frame_swap l_event_frame_swap;
+		l_event_manager->process_event(l_event_frame_swap);
 	}
 
 	bool bc_render_application::app_event(core::bc_ievent& p_event)
 	{
-		const bool l_result = application_event(p_event);
-
-		return l_result;
+		return application_event(p_event);
 	}
 
 	void bc_render_application::app_unload_content()
@@ -223,5 +279,20 @@ namespace black_cat
 
 		core::bc_memmng::close();
 #endif
+	}
+
+	void bc_render_application::_calculate_fps(core_platform::bc_clock::small_delta_time p_elapsed)
+	{
+		m_time_delta_buffer[m_current_time_delta_sample] = p_elapsed;
+		m_current_time_delta_sample = (m_current_time_delta_sample + 1) % s_num_time_delta_samples;
+
+		core_platform::bc_clock::small_delta_time l_average_delta = 0;
+		for (float i : m_time_delta_buffer)
+		{
+			l_average_delta += i;
+		}
+		l_average_delta /= s_num_time_delta_samples;
+
+		m_fps = std::round(1000.0f / l_average_delta);
 	}
 }

@@ -213,9 +213,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcRenderApiInfo.h">
       <Filter>Graphic</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcResourcePtr.h">
-      <Filter>Graphic</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\GraphicPCH.h">
       <Filter>Graphic</Filter>
     </ClInclude>
@@ -228,11 +225,11 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\bcResourceBuilder.h">
       <Filter>Graphic\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceTextRenderer.h">
+      <Filter>Graphic\Device</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\bcResourcePtr.cpp">
-      <Filter>Graphic</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Graphic\Graphic\GraphicPCH.cpp">
       <Filter>Graphic</Filter>
     </ClCompile>

@@ -4,7 +4,6 @@
 #include "Core/bcException.h"
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
-#include "Core/Utility/bcLogger.h"
 
 namespace black_cat
 {
@@ -120,9 +119,6 @@ namespace black_cat
 				const auto l_num_shared_threads = std::min(bc_concurrency::worker_count(), l_num_shared_queries / 5);
 				const auto l_num_thread = std::min(bc_concurrency::worker_count(), l_num_queries / 5);
 
-				//bcAssert((l_num_queries == 0 && l_num_shared_queries == 0) || (l_num_queries > 0 && l_num_shared_queries > 0));
-				//core::bc_get_service<core::bc_logger>()->log_debug((L"Number of shared queries: " + bc_to_estring(l_num_shared_queries)).c_str());
-				
 				bc_concurrency::concurrent_for_each
 				(
 					l_num_shared_threads,
@@ -165,6 +161,7 @@ namespace black_cat
 
 		void bc_query_manager::_mark_shared_state(_bc_query_shared_state& p_shared_state)
 		{
+			// TODO This function must be optimized to avoid locking
 			auto& l_query_entry = static_cast<_query_entry&>(p_shared_state);
 
 			{

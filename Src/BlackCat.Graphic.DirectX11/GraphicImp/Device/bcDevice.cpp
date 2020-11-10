@@ -3,16 +3,15 @@
 #include "GraphicImp/GraphicImpPCH.h"
 #include "CorePlatform/CorePlatformPCH.h"
 #include "Core/Container/bcAllocator.h"
+#include "Core/Container/bcVector.h"
+#include "Core/File/bcPath.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "CorePlatformImp/bcUtility.h"
-#include "Platform/bcEvent.h"
 #include "GraphicImp/bcExport.h"
 // Because explicit specialization of device pack must be included first and 
 // some other header files has included bcDevice.h we must put this header at 
 // top of other header files
 #include "GraphicImp/Device/bcDevice.h"
-#include "Graphic/bcResourcePtr.h"
-#include "Graphic/bcEvent.h"
 #include "GraphicImp/bcUtility.h"
 #include "GraphicImp/Resource/bcResource.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
@@ -34,6 +33,7 @@
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
+#include "GraphicImp/Device/bcDeviceTextRenderer.h"
 
 #include "3rdParty/DirectXTK-master/Include/DDSTextureLoader.h"
 #include "3rdParty/DirectXTK-master/Include/WICTextureLoader.h"
@@ -972,10 +972,10 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_device_pipeline_state_ptr bc_platform_device< g_api_dx11 >::create_pipeline_state(bc_device_pipeline_state_config& p_config)
 		{
-			ID3D11BlendState* l_dx_blend_state;
-			ID3D11DepthStencilState* l_dx_depth_stencil;
-			ID3D11RasterizerState* l_dx_rasterizer_state;
-			ID3D11InputLayout* l_dx_input_layout;
+			ID3D11BlendState* l_dx_blend_state = nullptr;
+			ID3D11DepthStencilState* l_dx_depth_stencil = nullptr;
+			ID3D11RasterizerState* l_dx_rasterizer_state = nullptr;
+			ID3D11InputLayout* l_dx_input_layout = nullptr;
 			D3D11_BLEND_DESC l_dx_blend_desc;
 			D3D11_DEPTH_STENCIL_DESC l_dx_depth_stencil_desc;
 			D3D11_RASTERIZER_DESC l_dx_rasterizer_desc;
@@ -1149,6 +1149,20 @@ namespace black_cat
 			bc_device_command_executor l_pointer(l_pack);
 
 			return bc_device_command_executor_ptr(l_pointer);
+		}
+
+		template< >
+		BC_GRAPHICIMP_DLL
+		bc_device_text_renderer bc_platform_device< g_api_dx11 >::create_text_renderer()
+		{
+			// TODO use parameter
+			auto l_sprite_path = core::bc_path::get_absolute_path(L"Content\\Data\\DX11.spritefont");
+			
+			bc_device_text_renderer::platform_pack l_pack;
+			l_pack.m_sprite_font = core::bc_make_unique<DirectX::SpriteFont>(m_pack.m_device.Get(), l_sprite_path.c_str());
+			l_pack.m_sprite_batch = core::bc_make_unique<DirectX::SpriteBatch>(m_pack.m_immediate_context.Get());
+
+			return bc_device_text_renderer(std::move(l_pack));
 		}
 
 		template<>
@@ -1450,7 +1464,7 @@ namespace black_cat
 				throw bc_graphic_exception(static_cast< bcINT >(l_error_code), "Failed to create DirectX11 SwapChain");
 			}
 
-			set_vsync(true);
+			set_vsync(false);
 			set_allocator_alloc_type(core::bc_alloc_type::unknown_movable);
 		}
 

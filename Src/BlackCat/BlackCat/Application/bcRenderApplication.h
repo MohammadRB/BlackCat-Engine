@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/bcEvent.h"
-#include "Core/Utility/bcServiceManager.h"
+#include "Core/Utility/bcStopWatch.h"
 #include "Game/Application/bcRenderApplication.h"
 #include "Game/System/bcGameSystem.h"
 #include "BlackCat/BlackCatPCH.h"
@@ -19,7 +19,11 @@ namespace black_cat
 	public:
 		bc_render_application();
 
+		bc_render_application(bc_render_application&&) = delete;
+
 		virtual ~bc_render_application();
+
+		bc_render_application& operator=(bc_render_application&&) = delete;
 
 	protected:
 		game::bc_game_system* m_game_system;
@@ -31,9 +35,9 @@ namespace black_cat
 
 		virtual void application_load_content(core::bc_content_stream_manager* p_stream_manager) = 0;
 
-		virtual void application_update(core_platform::bc_clock::update_param p_clock_update_param) = 0;
+		virtual void application_update(core_platform::bc_clock::update_param p_clock, bool p_is_same_frame) = 0;
 
-		virtual void application_render(core_platform::bc_clock::update_param p_clock_update_param) = 0;
+		virtual void application_render(core_platform::bc_clock::update_param p_clock) = 0;
 
 		virtual bool application_event(core::bc_ievent& p_event) = 0;
 
@@ -49,7 +53,7 @@ namespace black_cat
 
 		void app_load_content() override final;
 
-		void app_update(core_platform::bc_clock::update_param p_clock_update_param) override final;
+		void app_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_same_frame) override final;
 
 		void app_render(core_platform::bc_clock::update_param p_clock_update_param) override final;
 
@@ -62,5 +66,15 @@ namespace black_cat
 		void app_destroy() override final;
 
 		void app_close_engine_components() override final;
+
+		void _calculate_fps(core_platform::bc_clock::small_delta_time p_elapsed);
+
+		static const bcUINT32 s_num_time_delta_samples = 64;
+		core_platform::bc_clock::small_delta_time m_time_delta_buffer[s_num_time_delta_samples];
+		bcUINT32 m_current_time_delta_sample;
+		bcUINT32 m_fps;
+
+		core::bc_stop_watch m_update_watch;
+		core::bc_stop_watch m_render_watch;
 	};
 }

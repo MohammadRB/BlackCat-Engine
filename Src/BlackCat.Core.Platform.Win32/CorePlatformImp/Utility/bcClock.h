@@ -19,7 +19,7 @@ namespace black_cat
 		};
 
 		template< >
-		inline bc_platform_clock<bc_platform::win32>::big_clock bc_platform_clock<bc_platform::win32>::_query_clock_per_millisecond()
+		inline bc_platform_clock<bc_platform::win32>::big_clock bc_platform_clock<bc_platform::win32>::query_clock_per_millisecond()
 		{
 			big_clock l_clock_per_millisecond;
 
@@ -30,13 +30,13 @@ namespace black_cat
 		}
 
 		template< >
-		inline bc_platform_clock<bc_platform::win32>::big_clock bc_platform_clock<bc_platform::win32>::_query_elapsed_clocks()
+		inline bc_platform_clock<bc_platform::win32>::big_clock bc_platform_clock<bc_platform::win32>::query_elapsed_clocks()
 		{
 			big_clock l_clocks;
 
 			QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&l_clocks));
 
 			return l_clocks;
-		};
+		}
 	}
 }

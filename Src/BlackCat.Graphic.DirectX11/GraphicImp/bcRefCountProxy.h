@@ -21,7 +21,7 @@ namespace black_cat
 	namespace graphic
 	{
 		/**
-		 * \brief Used to simulate reference counting for objects that doesn't have native equivalent
+		 * \brief Used to simulate reference counting for objects that does not have native equivalent
 		 * \tparam T 
 		 */
 		template< typename T >
@@ -43,10 +43,6 @@ namespace black_cat
 			 * \return 
 			 */
 			bool release();
-
-		protected:
-
-		private:
 		};
 
 		template< typename T >

@@ -781,74 +781,114 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline< g_api_dx11 >::pipeline_apply_states(bc_pipeline_stage p_stages)
 		{
-			bool l_input_assembler_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::input_assembler_stage);
-			bool l_vertex_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::vertex_stage);
-			bool l_hull_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::hull_stage);
-			bool l_domain_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::domain_stage);
-			bool l_geometry_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::geometry_stage);
-			bool l_pixel_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::pixel_stage);
-			bool l_compute_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::compute_stage);
-			bool l_stream_output_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::stream_output_stage);
-			bool l_rasterizer_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::rasterizer_stage);
-			bool l_output_merger_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::output_merger_stage);
+			const bool l_input_assembler_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::input_assembler_stage);
+			const bool l_vertex_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::vertex_stage);
+			const bool l_hull_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::hull_stage);
+			const bool l_domain_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::domain_stage);
+			const bool l_geometry_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::geometry_stage);
+			const bool l_pixel_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::pixel_stage);
+			const bool l_compute_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::compute_stage);
+			const bool l_stream_output_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::stream_output_stage);
+			const bool l_rasterizer_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::rasterizer_stage);
+			const bool l_output_merger_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::output_merger_stage);
 
 			if (l_input_assembler_stage)
+			{
 				m_pack.m_pipeline_proxy->m_input_assembler_stage.apply_required_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_vertex_stage)
+			{
 				m_pack.m_pipeline_proxy->m_vertex_shader_stage.apply_required_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_hull_stage)
-				m_pack.m_pipeline_proxy->m_hull_shader_stage.apply_required_state(static_cast< bc_device_pipeline* >(this));
+			{
+				m_pack.m_pipeline_proxy->m_hull_shader_stage.apply_required_state(static_cast<bc_device_pipeline*>(this));
+			}
 			if (l_domain_stage)
+			{
 				m_pack.m_pipeline_proxy->m_domain_shader_stage.apply_required_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_geometry_stage)
+			{
 				m_pack.m_pipeline_proxy->m_geometry_shader_stage.apply_required_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_pixel_stage)
+			{
 				m_pack.m_pipeline_proxy->m_pixel_shader_stage.apply_required_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_compute_stage)
+			{
 				m_pack.m_pipeline_proxy->m_compute_shader_stage.apply_required_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_stream_output_stage)
+			{
 				m_pack.m_pipeline_proxy->m_stream_output_stage.apply_required_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_rasterizer_stage)
+			{
 				m_pack.m_pipeline_proxy->m_rasterizer_stage.apply_required_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_output_merger_stage)
+			{
 				m_pack.m_pipeline_proxy->m_output_merger_stage.apply_required_state(static_cast< bc_device_pipeline* >(this));
+			}
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline< g_api_dx11 >::pipeline_set_default_states(bc_pipeline_stage p_stages)
 		{
-			bool l_input_assembler_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::input_assembler_stage);
-			bool l_vertex_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::vertex_stage);
-			bool l_hull_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::hull_stage);
-			bool l_domain_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::domain_stage);
-			bool l_geometry_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::geometry_stage);
-			bool l_pixel_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::pixel_stage);
-			bool l_compute_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::compute_stage);
-			bool l_stream_output_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::stream_output_stage);
-			bool l_rasterizer_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::rasterizer_stage);
-			bool l_output_merger_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::output_merger_stage);
+			const bool l_input_assembler_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::input_assembler_stage);
+			const bool l_vertex_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::vertex_stage);
+			const bool l_hull_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::hull_stage);
+			const bool l_domain_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::domain_stage);
+			const bool l_geometry_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::geometry_stage);
+			const bool l_pixel_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::pixel_stage);
+			const bool l_compute_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::compute_stage);
+			const bool l_stream_output_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::stream_output_stage);
+			const bool l_rasterizer_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::rasterizer_stage);
+			const bool l_output_merger_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::output_merger_stage);
 
 			if (l_input_assembler_stage)
+			{
 				m_pack.m_pipeline_proxy->m_input_assembler_stage.set_to_default_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_vertex_stage)
+			{
 				m_pack.m_pipeline_proxy->m_vertex_shader_stage.set_to_default_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_hull_stage)
+			{
 				m_pack.m_pipeline_proxy->m_hull_shader_stage.set_to_default_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_domain_stage)
+			{
 				m_pack.m_pipeline_proxy->m_domain_shader_stage.set_to_default_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_geometry_stage)
+			{
 				m_pack.m_pipeline_proxy->m_geometry_shader_stage.set_to_default_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_pixel_stage)
+			{
 				m_pack.m_pipeline_proxy->m_pixel_shader_stage.set_to_default_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_compute_stage)
+			{
 				m_pack.m_pipeline_proxy->m_compute_shader_stage.set_to_default_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_stream_output_stage)
+			{
 				m_pack.m_pipeline_proxy->m_stream_output_stage.set_to_default_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_rasterizer_stage)
+			{
 				m_pack.m_pipeline_proxy->m_rasterizer_stage.set_to_default_state(static_cast< bc_device_pipeline* >(this));
+			}
 			if (l_output_merger_stage)
+			{
 				m_pack.m_pipeline_proxy->m_output_merger_stage.set_to_default_state(static_cast< bc_device_pipeline* >(this));
+			}
 		}
 
 		template<>

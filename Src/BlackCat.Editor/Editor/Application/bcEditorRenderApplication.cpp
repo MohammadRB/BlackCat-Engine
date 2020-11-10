@@ -22,6 +22,7 @@
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapPass.h"
 #include "BlackCat/RenderPass/ShadowMap/bcVegetableCascadedShadowMapPass.h"
 #include "BlackCat/RenderPass/bcBackBufferWritePass.h"
+#include "BlackCat/RenderPass/bcTextDrawPass.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
 #include "Editor/Application/bcEditorRenderApplication.h"
 #include "Editor/Application/bcUICommandService.h"
@@ -64,6 +65,7 @@ namespace black_cat
 			l_render_system.add_render_pass(6, bc_gbuffer_light_map_pass(constant::g_rpass_direct_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(7, bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(8, bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
+			l_render_system.add_render_pass(9, bc_text_draw_pass(constant::g_rpass_back_buffer_view));
 		}
 
 		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager* p_stream_manager)
@@ -89,7 +91,7 @@ namespace black_cat
 			m_game_system->set_scene(l_crysis_scene);
 		}
 
-		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_same_frame)
 		{
 		}
 

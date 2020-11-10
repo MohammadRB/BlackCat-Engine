@@ -24,7 +24,7 @@ namespace black_cat
 
 			void application_load_content(core::bc_content_stream_manager* p_stream_manager) override;
 
-			void application_update(core_platform::bc_clock::update_param p_clock_update_param) override;
+			void application_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_same_frame) override;
 
 			void application_render(core_platform::bc_clock::update_param p_clock_update_param) override;
 

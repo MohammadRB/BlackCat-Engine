@@ -129,6 +129,9 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcVegetableCascadedShadowMapPass.h">
       <Filter>BlackCat\RenderPass\ShadowMap</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTextDrawPass.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -200,6 +203,9 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcVegetableCascadedShadowMapPass.cpp">
       <Filter>BlackCat\RenderPass\ShadowMap</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTextDrawPass.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcShapeDraw.hlsl">
@@ -254,6 +260,9 @@
     </None>
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcVegetableAnimation.hlsli">
       <Filter>BlackCat\Content\Shader\DirectX11\DeferredRendering</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\DX11.spritefont">
+      <Filter>BlackCat\Content\Data</Filter>
     </None>
   </ItemGroup>
 </Project>

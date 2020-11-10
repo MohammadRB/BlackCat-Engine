@@ -179,6 +179,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryResult.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcDataDrivenParameter.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcDelegate.hpp" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcCounterValueManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcEnumOperand.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpression.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -203,6 +204,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcParameterPack.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcRefCountPtr.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcServiceManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcStopWatch.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcTemplateMetaType.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcUtility.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryFixedSize.h" />
@@ -269,6 +271,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQuery.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryProviderHandle.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcCounterValueManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpression.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>

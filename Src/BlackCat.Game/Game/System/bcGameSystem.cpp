@@ -36,10 +36,9 @@ namespace black_cat
 			m_scene = std::move(p_scene);
 		}
 
-		void bc_game_system::update_game(const core_platform::bc_clock::update_param& p_clock)
+		void bc_game_system::update_game(const core_platform::bc_clock::update_param& p_clock, bool p_is_same_frame)
 		{
-			const bool l_is_multiple_update = m_last_total_elapsed == p_clock.m_total_elapsed;
-			if(l_is_multiple_update)
+			if(p_is_same_frame)
 			{
 				m_physics_system.update(p_clock);
 				if (m_scene)
@@ -52,7 +51,7 @@ namespace black_cat
 			
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 			auto* l_actor_component_manager = core::bc_get_service<bc_actor_component_manager>();
-
+			
 			m_input_system.update(p_clock);
 			m_physics_system.update(p_clock);
 			if (m_scene)
@@ -71,8 +70,6 @@ namespace black_cat
 			m_script_system.update(p_clock);
 			m_console->update(p_clock);
 			m_render_system.update(bc_render_system::update_param(p_clock, m_input_system.get_camera()));
-
-			m_last_total_elapsed = p_clock.m_total_elapsed;
 		}
 		
 		void bc_game_system::render_game(const core_platform::bc_clock::update_param& p_clock)

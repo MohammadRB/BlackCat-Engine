@@ -122,7 +122,7 @@ namespace black_cat
 
 		class bc_event_frame_update_finish : public bc_app_event
 		{
-			BC_EVENT(fr_up_e)
+			BC_EVENT(fr_up_f)
 
 		public:
 			bc_event_frame_update_finish()
@@ -156,7 +156,7 @@ namespace black_cat
 
 		class bc_event_frame_render_finish : public bc_app_render_event
 		{
-			BC_EVENT(fr_rn_e)
+			BC_EVENT(fr_rn_f)
 
 		public:
 			bc_event_frame_render_finish()
@@ -169,6 +169,23 @@ namespace black_cat
 			~bc_event_frame_render_finish() = default;
 
 			bc_event_frame_render_finish& operator=(const bc_event_frame_render_finish&) = default;
+		};
+
+		class bc_event_frame_swap : public bc_app_event
+		{
+			BC_EVENT(fr_sw)
+
+		public:
+			bc_event_frame_swap()
+				: bc_app_event(event_name())
+			{
+			}
+
+			bc_event_frame_swap(const bc_event_frame_swap&) = default;
+
+			~bc_event_frame_swap() = default;
+
+			bc_event_frame_swap& operator=(const bc_event_frame_swap&) = default;
 		};
 	}
 }
