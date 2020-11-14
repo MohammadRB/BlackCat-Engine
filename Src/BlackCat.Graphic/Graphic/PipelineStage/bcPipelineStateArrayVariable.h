@@ -27,7 +27,6 @@ namespace black_cat
 
 			TState get(bcUINT32 p_slot) const noexcept;
 
-			// Get pointer to internal memory of object(all objects are in continues memory)
 			TState* get_slot(bcUINT32 p_slot) noexcept;
 
 			TState* get_first_slot() noexcept;
@@ -43,8 +42,6 @@ namespace black_cat
 			bool update_needed() const noexcept;
 
 			void reset_tracking() noexcept;
-
-		protected:
 
 		private:
 			const TState m_initial_state;
@@ -77,9 +74,7 @@ namespace black_cat
 		}
 
 		template< typename TState, bcUINT32 TNum >
-		bc_pipeline_state_array_variable< TState, TNum >::~bc_pipeline_state_array_variable()
-		{
-		}
+		bc_pipeline_state_array_variable< TState, TNum >::~bc_pipeline_state_array_variable() = default;
 
 		template< typename TState, bcUINT32 TNum >
 		bc_pipeline_state_array_variable<TState, TNum>& bc_pipeline_state_array_variable<TState, TNum>::operator=(const bc_pipeline_state_array_variable& p_other) noexcept

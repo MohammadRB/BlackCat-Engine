@@ -48,11 +48,9 @@ namespace black_cat
 	bc_render_application::bc_render_application()
 		: game::bc_render_application(),
 		m_game_system(nullptr),
-		m_time_delta_buffer{},
-		m_current_time_delta_sample(0),
+		m_fps_sampler(0),
 		m_fps(0)
 	{
-		std::memset(&m_time_delta_buffer, 0, sizeof(core_platform::bc_clock::small_delta_time) * s_num_time_delta_samples);
 	}
 
 	bc_render_application::~bc_render_application() = default;
@@ -229,7 +227,8 @@ namespace black_cat
 
 		m_update_watch.restart();
 		m_render_watch.restart();
-		_calculate_fps(p_clock.m_elapsed);
+		m_fps_sampler.add_sample(p_clock.m_elapsed);
+		m_fps = std::round(1000.0f / m_fps_sampler.average_value());
 
 		const auto l_update_time = m_update_watch.average_total_elapsed();
 		const auto l_render_time = m_render_watch.average_total_elapsed();
@@ -279,20 +278,5 @@ namespace black_cat
 
 		core::bc_memmng::close();
 #endif
-	}
-
-	void bc_render_application::_calculate_fps(core_platform::bc_clock::small_delta_time p_elapsed)
-	{
-		m_time_delta_buffer[m_current_time_delta_sample] = p_elapsed;
-		m_current_time_delta_sample = (m_current_time_delta_sample + 1) % s_num_time_delta_samples;
-
-		core_platform::bc_clock::small_delta_time l_average_delta = 0;
-		for (float i : m_time_delta_buffer)
-		{
-			l_average_delta += i;
-		}
-		l_average_delta /= s_num_time_delta_samples;
-
-		m_fps = std::round(1000.0f / l_average_delta);
 	}
 }

@@ -20,8 +20,6 @@ namespace black_cat
 		class bc_platform_device_pipeline;
 		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
 
-		// -- Programmable state --------------------------------------------------------------------------------
-
 		class bc_programmable_stage_state
 		{
 		public:
@@ -46,11 +44,6 @@ namespace black_cat
 			bc_pipeline_state_array_variable< bc_sampler_state, bc_render_api_info::number_of_shader_sampler() > m_sampler_states;
 			bc_pipeline_state_array_variable< bc_resource_view, bc_render_api_info::number_of_shader_resource()> m_shader_resource_views;
 			bc_pipeline_state_array_variable< bc_resource_view, bc_render_api_info::number_of_ps_cs_uav_resource() > m_unordered_access_views;
-			/*bc_pipeline_state_array_variable< bcUINT > m_uav_initial_counts;*/
-
-		protected:
-
-		private:
 		};
 
 		inline bc_programmable_stage_state::bc_programmable_stage_state() noexcept
@@ -63,9 +56,7 @@ namespace black_cat
 		{
 		}
 
-		inline bc_programmable_stage_state::~bc_programmable_stage_state()
-		{
-		}
+		inline bc_programmable_stage_state::~bc_programmable_stage_state() = default;
 
 		inline void bc_programmable_stage_state::set_to_initial_state() noexcept
 		{
@@ -86,8 +77,6 @@ namespace black_cat
 			m_unordered_access_views.reset_tracking();
 			/*m_uav_initial_counts.reset_tracking();*/
 		}
-
-		// -- Programmable stage --------------------------------------------------------------------------------
 
 		template< bc_render_api TRenderApi >
 		struct bc_platform_programmable_stage_pack
@@ -136,8 +125,6 @@ namespace black_cat
 
 			platform_pack m_pack;
 			bc_programmable_stage_state m_required_state;
-
-		private:
 		};
 
 		using bc_programmable_stage = bc_platform_programmable_stage<g_current_render_api>;

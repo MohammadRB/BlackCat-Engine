@@ -30,8 +30,6 @@ namespace black_cat
 
 			void reset_tracking() noexcept;
 
-		protected:
-
 		private:
 			const TState m_initial_state;
 			TState m_state;

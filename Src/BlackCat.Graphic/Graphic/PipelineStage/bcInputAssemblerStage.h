@@ -18,8 +18,6 @@ namespace black_cat
 		class bc_platform_device_pipeline;
 		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
 
-		// -- Input assembler state -----------------------------------------------------------------------------
-
 		class bc_input_assembler_stage_state
 		{
 		public:
@@ -46,10 +44,6 @@ namespace black_cat
 			bc_pipeline_state_array_variable< bcUINT, bc_render_api_info::number_of_ia_vertex_buffers() > m_vertex_buffers_offsets;
 			//bc_pipeline_state_variable< bc_input_layout* > m_input_layout;
 			bc_pipeline_state_variable< bc_primitive > m_primitive_topology;
-
-		protected:
-
-		private:
 		};
 
 		inline bc_input_assembler_stage_state::bc_input_assembler_stage_state()
@@ -64,9 +58,7 @@ namespace black_cat
 		{
 		}
 
-		inline bc_input_assembler_stage_state::~bc_input_assembler_stage_state()
-		{
-		}
+		inline bc_input_assembler_stage_state::~bc_input_assembler_stage_state() = default;
 
 		inline void bc_input_assembler_stage_state::set_to_initial_state() noexcept
 		{
@@ -89,8 +81,6 @@ namespace black_cat
 			//m_input_layout.reset_tracking();
 			m_primitive_topology.reset_tracking();
 		}
-
-		// -- Input assembler stage -----------------------------------------------------------------------------
 
 		template< bc_render_api TRenderApi >
 		struct bc_platform_input_assembler_stage_pack
@@ -125,8 +115,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
 
 		private:
 			platform_pack m_pack;

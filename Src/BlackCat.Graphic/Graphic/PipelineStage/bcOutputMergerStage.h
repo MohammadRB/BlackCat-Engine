@@ -21,8 +21,6 @@ namespace black_cat
 		class bc_platform_device_pipeline;
 		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
 
-		// -- Output merger state -----------------------------------------------------------------------------
-
 		class bc_output_merger_stage_state
 		{
 		public:
@@ -52,10 +50,6 @@ namespace black_cat
 			bc_pipeline_state_variable< bc_depth_stencil_view > m_depth_target_view;
 			bc_pipeline_state_array_variable< bc_resource_view, bc_render_api_info::number_of_ps_cs_uav_resource() > m_unordered_access_views;
 			//bc_pipeline_state_array_variable< bcUINT > m_uav_initial_counts;
-
-		protected:
-
-		private:
 		};
 
 		inline bc_output_merger_stage_state::bc_output_merger_stage_state()
@@ -102,13 +96,13 @@ namespace black_cat
 			for (bcUINT i = 0; i < l_render_target_slot_count; ++i)
 			{
 				if (m_render_target_views.get(i).is_valid())
+				{
 					++l_count;
+				}
 			}
 
 			return l_count;
 		}
-
-		// -- Output merger stage -----------------------------------------------------------------------------
 
 		template< bc_render_api TRenderApi >
 		struct bc_platform_output_merger_stage_pack
@@ -143,8 +137,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
 
 		private:
 			platform_pack m_pack;

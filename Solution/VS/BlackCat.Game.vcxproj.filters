@@ -55,6 +55,9 @@
     <Filter Include="Game\Query">
       <UniqueIdentifier>{101cc54a-71fd-43ba-a16c-23d81b6728ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\System\Render\Particle">
+      <UniqueIdentifier>{9c8133d3-9034-4fe9-a69e-82d71719f53c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h">
@@ -323,6 +326,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightInstance.h">
       <Filter>Game\System\Render\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleManager.h">
+      <Filter>Game\System\Render\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticle.h">
+      <Filter>Game\System\Render\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleBuilder.h">
+      <Filter>Game\System\Render\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

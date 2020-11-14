@@ -274,6 +274,9 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcPointLight.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcSpotLight.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticle.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleBuilder.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassResourceShare.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcComputeState.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcMaterialManager.h" />

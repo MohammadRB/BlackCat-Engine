@@ -33,9 +33,6 @@ namespace black_cat
 			void apply_shader_resource_views(bc_device_pipeline* p_pipeline) override;
 
 			/*void apply_unordered_access_views(bc_device_pipeline& p_pipeline) override;*/
-
-		private:
-
 		};
 
 		using bc_compute_stage = bc_platform_compute_stage< g_current_render_api >;

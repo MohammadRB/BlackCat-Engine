@@ -144,6 +144,10 @@ namespace black_cat
 					}
 
 					app_swap_frame(core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed));
+
+#ifdef BC_MEMORY_ENABLE
+					core::bc_memmng::get().end_of_frame();
+#endif
 					
 					if (m_render_rate != -1) // Fixed render rate
 					{
@@ -158,10 +162,6 @@ namespace black_cat
 							);
 						}
 					}
-
-#ifdef BC_MEMORY_ENABLE
-					core::bc_memmng::get().end_of_frame();
-#endif
 				}
 			}
 			catch (std::exception& l_exception)

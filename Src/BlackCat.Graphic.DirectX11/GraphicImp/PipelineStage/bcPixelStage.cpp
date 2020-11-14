@@ -16,13 +16,13 @@ namespace black_cat
 		template < >
 		BC_GRAPHICIMP_DLL
 		bc_platform_pixel_stage<g_api_dx11>::bc_platform_pixel_stage()
-			: bc_platform_programmable_stage(bc_platform_programmable_stage::platform_pack())
+			: bc_platform_programmable_stage(platform_pack())
 		{
 		}
 
 		template < >
 		BC_GRAPHICIMP_DLL
-		bc_platform_pixel_stage<g_api_dx11>::bc_platform_pixel_stage(bc_platform_pixel_stage&& p_other)
+		bc_platform_pixel_stage<g_api_dx11>::bc_platform_pixel_stage(bc_platform_pixel_stage&& p_other) noexcept
 			: bc_programmable_stage(std::move(p_other))
 		{
 		}
@@ -35,7 +35,7 @@ namespace black_cat
 
 		template < >
 		BC_GRAPHICIMP_DLL
-		bc_platform_pixel_stage<g_api_dx11>& bc_platform_pixel_stage<g_api_dx11>::operator=(bc_platform_pixel_stage&& p_other)
+		bc_platform_pixel_stage<g_api_dx11>& bc_platform_pixel_stage<g_api_dx11>::operator=(bc_platform_pixel_stage&& p_other) noexcept
 		{
 			bc_programmable_stage::operator=(std::move(p_other));
 

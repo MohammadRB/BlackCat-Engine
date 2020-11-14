@@ -16,11 +16,11 @@ namespace black_cat
 		public:
 			bc_platform_pixel_stage();
 
-			bc_platform_pixel_stage(bc_platform_pixel_stage&&);
+			bc_platform_pixel_stage(bc_platform_pixel_stage&&) noexcept;
 
 			~bc_platform_pixel_stage();
 
-			bc_platform_pixel_stage& operator=(bc_platform_pixel_stage&&);
+			bc_platform_pixel_stage& operator=(bc_platform_pixel_stage&&) noexcept;
 
 		protected:
 			void apply_shader_program(bc_device_pipeline* p_pipeline) override;
@@ -32,9 +32,6 @@ namespace black_cat
 			void apply_shader_resource_views(bc_device_pipeline* p_pipeline) override;
 
 			/*void apply_unordered_access_views(bc_device_pipeline& p_pipeline) override;*/
-
-		private:
-
 		};
 
 		using bc_pixel_stage = bc_platform_pixel_stage< g_current_render_api >;

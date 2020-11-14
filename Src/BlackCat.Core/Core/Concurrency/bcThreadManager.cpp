@@ -291,13 +291,9 @@ namespace black_cat
 				{
 					++l_without_task;
 
-					if (l_without_task < s_worker_switch_threshold)
+					if (l_without_task <= s_worker_switch_threshold)
 					{
 						core_platform::bc_thread::current_thread_yield();
-					}
-					else if (l_without_task >= s_worker_switch_threshold && l_without_task < s_worker_switch_threshold * 2)
-					{
-						core_platform::bc_thread::current_thread_yield_switch();
 					}
 					else
 					{
