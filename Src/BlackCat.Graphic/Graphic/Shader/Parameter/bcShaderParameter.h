@@ -15,7 +15,7 @@ namespace black_cat
 		public:
 			virtual ~bc_ishader_parameter() = 0;
 
-			bcINT get_register_index() const noexcept;
+			bcINT32 get_register_index() const noexcept;
 
 			void set_register_index(bcINT p_index) noexcept;
 
@@ -69,7 +69,7 @@ namespace black_cat
 		{
 		}
 
-		inline bcINT bc_ishader_parameter::get_register_index() const noexcept
+		inline bcINT32 bc_ishader_parameter::get_register_index() const noexcept
 		{
 			return m_register_index;
 		}

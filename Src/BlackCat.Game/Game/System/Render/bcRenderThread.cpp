@@ -288,7 +288,12 @@ namespace black_cat
 			m_pipeline->pipeline_apply_states(l_pipeline_stages);
 		}
 
-		void bc_render_thread::run_compute_shader(const bc_compute_state& p_compute_state)
+		void bc_render_thread::bind_compute_state(const bc_compute_state& p_compute_state)
+		{
+			bind_compute_state(p_compute_state, {-1, -1, -1, -1, -1, -1, -1, -1});
+		}
+
+		void bc_render_thread::bind_compute_state(const bc_compute_state& p_compute_state, const bc_compute_state_unordered_view_initial_count_array& p_uav_initial_counts)
 		{
 			m_pipeline->bind_compute_state(p_compute_state.m_compute_state);
 
@@ -322,8 +327,42 @@ namespace black_cat
 			}
 
 			m_pipeline->pipeline_apply_states(graphic::bc_pipeline_stage::compute_stage);
+		}
 
-			m_pipeline->dispatch(p_compute_state.m_dispatch_x, p_compute_state.m_dispatch_y, p_compute_state.m_dispatch_z);
+		void bc_render_thread::unbind_compute_state(const bc_compute_state& p_compute_state)
+		{
+			m_pipeline->unbind_compute_state();
+
+			for (auto& l_sampler_parameter : p_compute_state.m_samplers)
+			{
+				if (l_sampler_parameter.is_valid())
+				{
+					m_pipeline->unbind_ps_sampler_parameter(l_sampler_parameter);
+				}
+			}
+			for (auto& l_view_parameter : p_compute_state.m_resource_views)
+			{
+				if (l_view_parameter.is_valid())
+				{
+					m_pipeline->unbind_ps_shader_view_parameter(l_view_parameter);
+				}
+			}
+			for (auto& l_view_parameter : p_compute_state.m_unordered_views)
+			{
+				if (l_view_parameter.is_valid())
+				{
+					m_pipeline->unbind_ps_shader_view_parameter(l_view_parameter);
+				}
+			}
+			for (auto& l_buffer_parameter : p_compute_state.m_cbuffers)
+			{
+				if (l_buffer_parameter.is_valid())
+				{
+					m_pipeline->unbind_ps_constant_buffer_parameter(l_buffer_parameter);
+				}
+			}
+
+			m_pipeline->pipeline_apply_states(graphic::bc_pipeline_stage::compute_stage);
 		}
 
 		/*void bc_render_thread::bind_ia_primitive_topology(graphic::bc_primitive p_primitive)
@@ -434,6 +473,19 @@ namespace black_cat
 		void bc_render_thread::draw(bcUINT p_start_vertex, bcUINT p_vertex_count)
 		{
 			m_pipeline->draw(p_start_vertex, p_vertex_count);
+		}
+
+		void bc_render_thread::draw_instanced(bcUINT p_vertex_count_per_instance,
+			bcUINT p_instance_count,
+			bcUINT p_start_vertex_location,
+			bcUINT p_start_instance_location)
+		{
+			m_pipeline->draw_instanced(p_vertex_count_per_instance, p_instance_count, p_start_vertex_location, p_start_instance_location);
+		}
+
+		void bc_render_thread::draw_instanced_indirect(graphic::bc_buffer p_args_buffer, bcUINT p_offset)
+		{
+			m_pipeline->draw_instanced_indirect(p_args_buffer, p_offset);
 		}
 
 		void bc_render_thread::draw_indexed(bcUINT p_start_index, bcUINT p_index_count, bcINT p_vertex_offset)

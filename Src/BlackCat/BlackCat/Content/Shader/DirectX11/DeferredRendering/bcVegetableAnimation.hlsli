@@ -1,7 +1,5 @@
 static const float g_vegetable_max_wind_power = 5;
 static const float g_vegetable_max_height = 15;
-static const float3 g_wind_dir = float3(0,0,1);
-static const float g_wind_power = 2;
 
 float bc_noise(float x, float y)
 {

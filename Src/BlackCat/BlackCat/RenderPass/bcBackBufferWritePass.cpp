@@ -8,6 +8,7 @@
 #include "Game/System/Render/bcFrameRenderer.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
 #include "BlackCat/RenderPass/bcBackBufferWritePass.h"
+#include "BlackCat/bcConstant.h"
 
 namespace black_cat
 {

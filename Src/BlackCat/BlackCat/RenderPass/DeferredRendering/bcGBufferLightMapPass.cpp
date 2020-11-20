@@ -14,6 +14,7 @@
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapBufferContainer.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferLightMapPass.h"
+#include "BlackCat/bcConstant.h"
 
 namespace black_cat
 {
@@ -85,7 +86,8 @@ namespace black_cat
 
 		auto l_resource_configure = graphic::bc_graphic_resource_builder();
 
-		auto l_direct_lights_buffer_config = l_resource_configure.as_resource()
+		auto l_direct_lights_buffer_config = l_resource_configure
+			.as_resource()
 			.as_buffer
 			(
 				m_num_direct_lights,
@@ -93,8 +95,10 @@ namespace black_cat
 				graphic::bc_resource_usage::gpu_rw,
 				graphic::bc_resource_view_type::shader
 			)
-			.as_structured_buffer(sizeof(_bc_direct_light_struct));
-		auto l_point_lights_buffer_config = l_resource_configure.as_resource()
+			.with_structured_buffer(sizeof(_bc_direct_light_struct))
+			.as_buffer();
+		auto l_point_lights_buffer_config = l_resource_configure
+			.as_resource()
 			.as_buffer
 			(
 				m_num_point_lights,
@@ -102,8 +106,10 @@ namespace black_cat
 				graphic::bc_resource_usage::gpu_rw,
 				graphic::bc_resource_view_type::shader
 			)
-			.as_structured_buffer(sizeof(_bc_point_light_struct));
-		auto l_spot_lights_buffer_config = l_resource_configure.as_resource()
+			.with_structured_buffer(sizeof(_bc_point_light_struct))
+			.as_buffer();
+		auto l_spot_lights_buffer_config = l_resource_configure
+			.as_resource()
 			.as_buffer
 			(
 				m_num_spot_lights,
@@ -111,8 +117,10 @@ namespace black_cat
 				graphic::bc_resource_usage::gpu_rw,
 				graphic::bc_resource_view_type::shader
 			)
-			.as_structured_buffer(sizeof(_bc_spot_light_struct));
-		auto l_shadow_maps_buffer_config = l_resource_configure.as_resource()
+			.with_structured_buffer(sizeof(_bc_spot_light_struct))
+			.as_buffer();
+		auto l_shadow_maps_buffer_config = l_resource_configure
+			.as_resource()
 			.as_buffer
 			(
 				m_shader_shadow_map_count,
@@ -120,7 +128,8 @@ namespace black_cat
 				graphic::bc_resource_usage::gpu_rw,
 				graphic::bc_resource_view_type::shader
 			)
-			.as_structured_buffer(sizeof(_bc_cascade_shadow_map_struct));
+			.with_structured_buffer(sizeof(_bc_cascade_shadow_map_struct))
+			.as_buffer();
 
 		auto l_direct_lights_buffer_view_config = l_resource_configure.as_resource_view()
 			.as_buffer_view(graphic::bc_format::unknown)
@@ -323,7 +332,15 @@ namespace black_cat
 		p_param.m_render_thread.update_subresource(m_spot_lights_buffer.get(), 0, l_spot_lights.data(), 0, 0);
 		p_param.m_render_thread.update_subresource(m_shadow_maps_buffer.get(), 0, l_shadow_maps.data(), 0, 0);
 		
-		p_param.m_render_thread.run_compute_shader(*m_compute_state.get());
+		p_param.m_render_thread.bind_compute_state(*m_compute_state.get());
+		p_param.m_render_thread.dispatch
+		(
+			p_param.m_render_system.get_device().get_back_buffer_width() / m_shader_thread_group_size + 1,
+			p_param.m_render_system.get_device().get_back_buffer_height() / m_shader_thread_group_size + 1,
+			1
+		);
+		p_param.m_render_thread.unbind_compute_state(*m_compute_state.get());
+		
 		p_param.m_render_thread.finish();
 
 		m_command_list->finished();
@@ -433,9 +450,6 @@ namespace black_cat
 		m_compute_state = p_param.m_render_system.create_compute_state
 		(
 			m_device_compute_state.get(),
-			(p_param.m_new_parameters.m_width / m_shader_thread_group_size) + 1,
-			(p_param.m_new_parameters.m_height / m_shader_thread_group_size) + 1,
-			1,
 			{
 				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::compute, m_pcf_sampler.get())
 			},
@@ -449,6 +463,9 @@ namespace black_cat
 			}
 		);
 
+		share_resource(constant::g_rpass_depth_stencil_read_view, m_depth_stencil_view.get());
+		share_resource(constant::g_rpass_render_target_read_view_1, m_diffuse_map_view.get());
+		share_resource(constant::g_rpass_render_target_read_view_2, m_normal_map_view.get());
 		share_resource(m_output_texture_share_slot, m_output_texture.get());
 	}
 

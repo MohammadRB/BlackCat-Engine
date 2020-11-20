@@ -99,6 +99,11 @@ namespace black_cat
 			graphic::bc_constant_buffer_parameter,
 			g_compute_state_constant_buffer_count
 		>;
+		using bc_compute_state_unordered_view_initial_count_array = core::bc_array
+		<
+			bcINT32,
+			g_compute_state_unordered_view_count
+		>;
 
 		static_assert(g_render_pass_state_render_target_view_count <= graphic::bc_render_api_info::number_of_om_render_target_slots(), "Unsupported number of render target slot count");
 		static_assert(g_render_pass_state_shader_view_count + g_render_state_shader_view_count <= graphic::bc_render_api_info::number_of_shader_resource(), "Unsupported number of shader view slot count");

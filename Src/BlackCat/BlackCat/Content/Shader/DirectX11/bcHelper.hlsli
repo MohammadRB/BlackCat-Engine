@@ -44,3 +44,25 @@ float3 bc_reconstruct_world_space(float2 p_ss_texcoord, float p_depth, float4x4 
 
     return l_position.xyz;
 }
+
+uint wang_hash(uint seed)
+{
+	seed = (seed ^ 61) ^ (seed >> 16);
+	seed *= 9;
+	seed = seed ^ (seed >> 4);
+	seed *= 0x27d4eb2d;
+	seed = seed ^ (seed >> 15);
+	return seed;
+}
+
+float bc_random(uint p_seed)
+{
+	float l_rnd = wang_hash(p_seed);
+	return l_rnd * (1.f / 4294967295);
+}
+
+float bc_random(uint p_seed, float p_low, float p_high)
+{	
+	float l_rnd = bc_random(p_seed);
+	return p_low * (1.f - l_rnd) + p_high * l_rnd;
+}

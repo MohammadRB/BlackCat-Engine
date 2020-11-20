@@ -105,12 +105,9 @@ namespace black_cat
 			const auto l_tool_diameter = m_shader_parameter.m_tool_radius * 2;
 			const auto l_thread_group_count = (l_tool_diameter / 32) + 1;
 
-			auto l_compute_state = p_render_system.create_compute_state
+			const auto l_compute_state = p_render_system.create_compute_state
 			(
 				m_command_state.m_device_compute_state.get(),
-				l_thread_group_count,
-				l_thread_group_count,
-				1,
 				{},
 				{},
 				{
@@ -132,7 +129,9 @@ namespace black_cat
 				0,
 				0
 			);
-			p_render_thread.run_compute_shader(*l_compute_state.get());
+			p_render_thread.bind_compute_state(*l_compute_state.get());
+			p_render_thread.dispatch(l_thread_group_count, l_thread_group_count, 1);
+			p_render_thread.unbind_compute_state(*l_compute_state.get());
 
 			p_render_thread.finish();
 			m_command_state.m_device_command_list->finished();

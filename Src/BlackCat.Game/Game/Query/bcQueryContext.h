@@ -20,7 +20,7 @@ namespace black_cat
 		class bc_light_instances_query_context : public core::bc_query_context
 		{
 		public:
-			bc_light_instances_query_context(bc_light_manager::iterator_buffer p_iterator)
+			explicit bc_light_instances_query_context(bc_light_manager::iterator_buffer p_iterator)
 				: m_iterator(std::move(p_iterator))
 			{
 			}

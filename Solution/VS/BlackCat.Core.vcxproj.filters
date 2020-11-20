@@ -189,15 +189,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcEnumOperand.h">
       <Filter>Core\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpression.h">
-      <Filter>Core\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpressionParameter.h">
-      <Filter>Core\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpressionParameterManager.h">
-      <Filter>Core\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcInitializable.h">
       <Filter>Core\Utility</Filter>
     </ClInclude>
@@ -367,12 +358,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryHeap.cpp">
       <Filter>Core\Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpression.cpp">
-      <Filter>Core\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpressionParameterManager.cpp">
-      <Filter>Core\Utility</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcLogger.cpp">
       <Filter>Core\Utility</Filter>

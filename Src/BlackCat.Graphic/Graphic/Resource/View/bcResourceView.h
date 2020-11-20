@@ -52,8 +52,6 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-
 		private:
 			platform_pack m_pack;
 			bc_resource_view_type m_type;

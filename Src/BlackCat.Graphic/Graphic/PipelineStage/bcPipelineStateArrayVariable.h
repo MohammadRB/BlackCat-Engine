@@ -13,6 +13,9 @@ namespace black_cat
 		class bc_pipeline_state_array_variable
 		{
 		public:
+			constexpr static bcUINT32 num_slots = TNum;
+			
+		public:
 			explicit bc_pipeline_state_array_variable(TState p_initial_state) noexcept;
 
 			bc_pipeline_state_array_variable(const bc_pipeline_state_array_variable&) noexcept;

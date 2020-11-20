@@ -3,6 +3,7 @@
 #include "GraphicImp/GraphicImpPCH.h"
 #include "Core/Utility/bcEnumOperand.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
+#include "GraphicImp/bcExport.h"
 
 namespace black_cat
 {
@@ -41,35 +42,40 @@ namespace black_cat
 
 			return m_config;
 		}
-				
-		bc_buffer_config bc_buffer_builder::as_structured_buffer(bcUINT p_element_size) noexcept
+
+		bc_buffer_config bc_buffer_builder::as_buffer() noexcept
 		{
-			m_config.get_platform_pack().m_desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+			return m_config;
+		}
+
+		bc_buffer_builder& bc_buffer_builder::with_structured_buffer(bcUINT p_element_size) noexcept
+		{
+			m_config.get_platform_pack().m_desc.MiscFlags |= D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 			m_config.get_platform_pack().m_desc.StructureByteStride = p_element_size;
 
-			return m_config;
+			return *this;
 		}
 				
-		bc_buffer_config bc_buffer_builder::as_append_consume(bcUINT p_element_size) noexcept
+		bc_buffer_builder& bc_buffer_builder::with_append_consume(bcUINT p_element_size) noexcept
 		{
-			m_config.get_platform_pack().m_desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+			m_config.get_platform_pack().m_desc.MiscFlags |= D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 			m_config.get_platform_pack().m_desc.StructureByteStride = p_element_size;
 
-			return m_config;
+			return *this;
 		}
 				
-		bc_buffer_config bc_buffer_builder::as_byte_address_buffer() noexcept
+		bc_buffer_builder& bc_buffer_builder::with_byte_address_buffer() noexcept
 		{
-			m_config.get_platform_pack().m_desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;
+			m_config.get_platform_pack().m_desc.MiscFlags |= D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;
 
-			return m_config;
+			return *this;
 		}
 
-		bc_buffer_config bc_buffer_builder::as_indirect_args_buffer() noexcept
+		bc_buffer_builder& bc_buffer_builder::with_indirect_args_buffer() noexcept
 		{
-			m_config.get_platform_pack().m_desc.MiscFlags = D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS;
+			m_config.get_platform_pack().m_desc.MiscFlags |= D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS;
 
-			return m_config;
+			return *this;
 		}
 
 		// -- Texture builder -----------------------------------------------------------------------------------
@@ -457,8 +463,8 @@ namespace black_cat
 
 			std::memset(&l_dxbuffer_desc, 0, sizeof(D3D11_BUFFER_DESC));
 
-			bool l_has_shader_view = core::bc_enum::has(p_view_types, bc_resource_view_type::shader);
-			bool l_has_unordered_view = core::bc_enum::has(p_view_types, bc_resource_view_type::unordered);
+			const bool l_has_shader_view = core::bc_enum::has(p_view_types, bc_resource_view_type::shader);
+			const bool l_has_unordered_view = core::bc_enum::has(p_view_types, bc_resource_view_type::unordered);
 
 			l_dxbuffer_desc.ByteWidth = p_num_element * p_element_size;
 			l_dxbuffer_desc.MiscFlags = 0;

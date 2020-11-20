@@ -108,11 +108,17 @@ namespace black_cat
 			void unbind_om_render_targets();
 
 			void pipeline_apply_states(bc_pipeline_stage p_stages);
+			
+			void pipeline_apply_states(bc_pipeline_stage p_stages, const bc_compute_stage::initial_counts_array& p_initial_counts);
 
 			void pipeline_set_default_states(bc_pipeline_stage p_stages);
 
 			void draw(bcUINT p_start_vertex, bcUINT p_vertex_count);
 
+			void draw_instanced(bcUINT p_vertex_count_per_instance, bcUINT p_instance_count, bcUINT p_start_vertex_location, bcUINT p_start_instance_location);
+
+			void draw_instanced_indirect(bc_buffer p_args_buffer, bcUINT p_offset);
+			
 			void draw_indexed(bcUINT p_start_index, bcUINT p_index_count, bcINT p_vertex_offset);
 
 			void draw_indexed_instanced(bcUINT p_index_count_per_instance, bcUINT p_instance_count, bcUINT p_start_index_location, bcINT p_base_vertex_location, bcUINT p_start_instance_location);
@@ -163,9 +169,7 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
-
+			
 		private:
 			platform_pack m_pack;
 		};

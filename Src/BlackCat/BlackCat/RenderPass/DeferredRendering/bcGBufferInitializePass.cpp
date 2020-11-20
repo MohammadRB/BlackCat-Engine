@@ -5,12 +5,12 @@
 #include "Core/Utility/bcLogger.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
-#include "Game/bcConstant.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/Query/bcMainCameraSceneQuery.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferInitializePass.h"
+#include "BlackCat/bcConstant.h"
 
 namespace black_cat
 {
@@ -125,21 +125,21 @@ namespace black_cat
 		m_normal_map_view = p_param.m_device.create_render_target_view(m_normal_map.get(), l_normal_map_view_config);
 
 		share_resource(constant::g_rpass_depth_stencil_texture, m_depth_stencil.get());
-		share_resource(constant::g_rpass_depth_stencil_view, m_depth_stencil_view.get());
+		share_resource(constant::g_rpass_depth_stencil_render_view, m_depth_stencil_view.get());
 		share_resource(constant::g_rpass_render_target_texture_1, m_diffuse_map.get());
-		share_resource(constant::g_rpass_render_target_view_1, m_diffuse_map_view.get());
+		share_resource(constant::g_rpass_render_target_render_view_1, m_diffuse_map_view.get());
 		share_resource(constant::g_rpass_render_target_texture_2, m_normal_map.get());
-		share_resource(constant::g_rpass_render_target_view_2, m_normal_map_view.get());
+		share_resource(constant::g_rpass_render_target_render_view_2, m_normal_map_view.get());
 	}
 
 	void bc_gbuffer_initialize_pass::destroy(game::bc_render_system& p_render_system)
 	{
 		unshare_resource(constant::g_rpass_depth_stencil_texture);
-		unshare_resource(constant::g_rpass_depth_stencil_view);
+		unshare_resource(constant::g_rpass_depth_stencil_render_view);
 		unshare_resource(constant::g_rpass_render_target_texture_1);
-		unshare_resource(constant::g_rpass_render_target_view_1);
+		unshare_resource(constant::g_rpass_render_target_render_view_1);
 		unshare_resource(constant::g_rpass_render_target_texture_2);
-		unshare_resource(constant::g_rpass_render_target_view_2);
+		unshare_resource(constant::g_rpass_render_target_render_view_2);
 
 		m_depth_stencil_view.reset();
 		m_diffuse_map.reset();

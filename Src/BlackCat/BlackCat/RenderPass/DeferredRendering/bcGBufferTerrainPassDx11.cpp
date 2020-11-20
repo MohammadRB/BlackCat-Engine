@@ -16,6 +16,7 @@
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferTerrainPassDx11.h"
 #include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
 #include "BlackCat/bcException.h"
+#include "BlackCat/bcConstant.h"
 
 namespace black_cat
 {
@@ -136,16 +137,20 @@ namespace black_cat
 				auto l_compute_state = p_param.m_render_system.create_compute_state
 				(
 					m_device_compute_state.get(),
-					l_height_map_dx11.get_width() / s_shader_thread_group_size,
-					l_height_map_dx11.get_height() / s_shader_thread_group_size,
-					1,
 					{},
 					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11.get_height_map_view()) },
 					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11.get_chunk_info_unordered_view()) },
 					{ graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11.get_parameter_cbuffer()) }
 				);
 
-				p_param.m_render_thread.run_compute_shader(*l_compute_state);
+				p_param.m_render_thread.bind_compute_state(*l_compute_state);
+				p_param.m_render_thread.dispatch
+				(
+					l_height_map_dx11.get_width() / s_shader_thread_group_size,
+					l_height_map_dx11.get_height() / s_shader_thread_group_size,
+					1
+				);
+				p_param.m_render_thread.unbind_compute_state(*l_compute_state);
 			}
 
 			p_param.m_render_thread.finish();
@@ -221,9 +226,9 @@ namespace black_cat
 				graphic::bc_texture_address_mode::wrap,
 				graphic::bc_texture_address_mode::wrap
 			).as_sampler_state();
-			const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_view);
-			const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_view_1);
-			const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_view_2);
+			const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
+			const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_1);
+			const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_2);
 			const auto l_viewport = graphic::bc_viewport::default_config(p_param.m_device.get_back_buffer_width(), p_param.m_device.get_back_buffer_height());
 
 			m_height_map_sampler = p_param.m_device.create_sampler_state(l_height_map_sampler_config);

@@ -245,6 +245,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcSceneGraphNode.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcHeightMapSceneQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraSceneQuery.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcParticleEmittersQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcQueryContext.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraRenderStateQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneGraphQuery.h" />
@@ -274,7 +275,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcPointLight.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcSpotLight.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticle.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleEmitter.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleBuilder.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassResourceShare.h" />
@@ -341,6 +342,8 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLight.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightInstance.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightManager.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleBuilder.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcComputeState.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcMaterialManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassManager.cpp" />

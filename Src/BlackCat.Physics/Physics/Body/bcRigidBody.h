@@ -96,9 +96,9 @@ namespace black_cat
 			 * It is invalid to use this method if simulation is disabled for this actor.
 			 * Default: (0.0, 0.0, 0.0)
 			 * Waking: Yes
-			 * \param p_velociy 
+			 * \param p_velocity 
 			 */
-			virtual	void set_linear_velocity(const core::bc_vector3f& p_velociy) noexcept;
+			virtual	void set_linear_velocity(const core::bc_vector3f& p_velocity) noexcept;
 
 			virtual	core::bc_vector3f get_angular_velocity() const noexcept;
 
@@ -107,12 +107,12 @@ namespace black_cat
 			 * It is invalid to use this method if simulation is disabled for this actor.
 			 * Default: (0.0, 0.0, 0.0)
 			 * Waking: Yes
-			 * \param p_velociy 
+			 * \param p_velocity 
 			 */
-			virtual void set_angular_velocity(const core::bc_vector3f& p_velociy);
+			virtual void set_angular_velocity(const core::bc_vector3f& p_velocity);
 
 			/**
-			 * \brief Aplies a force (or impulse) defined in the global coordinate frame to the actor at its center of mass.
+			 * \brief Applies a force (or impulse) defined in the global coordinate frame to the actor at its center of mass.
 			 * This will not induce a torque.
 			 * It is invalid to use this method if simulation is disabled for this actor.
 			 * Waking: Yes.

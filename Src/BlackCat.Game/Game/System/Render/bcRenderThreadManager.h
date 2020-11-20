@@ -71,21 +71,21 @@ namespace black_cat
 
 			/**
 			 * \brief Try to get a render thread or if there is no thread available return invalid wrapper
-			 * \ThreadSafe
+			 * \n \b ThreadSafe
 			 * \return null if there is no thread available
 			 */
 			bc_render_thread_guard get_available_thread() const;
 
 			/**
 			 * \brief Get a render thread or if there is no thread available wait until one become available
-			 * \ThreadSafe
+			 * \n \b ThreadSafe
 			 * \return First thread that is free
 			 */
 			bc_render_thread_guard get_available_thread_wait() const;
 
 			/**
 			 * \brief Give back a render thread to set it as available thread
-			 * \ThreadSafe
+			 * \n \b ThreadSafe
 			 * \param p_thread 
 			 */
 			void set_available_thread(bc_render_thread& p_thread);

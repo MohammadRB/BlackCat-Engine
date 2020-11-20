@@ -1,3 +1,4 @@
+#include "..\..\..\BlackCat.Graphic\Graphic\PipelineStage\bcComputeStage.h"
 // [02/10/2016 MRB]
 
 #include "GraphicImp/GraphicImpPCH.h"
@@ -16,14 +17,16 @@ namespace black_cat
 		template < >
 		BC_GRAPHICIMP_DLL
 		bc_platform_compute_stage<g_api_dx11>::bc_platform_compute_stage()
-			: bc_platform_programmable_stage(bc_platform_programmable_stage::platform_pack())
+			: bc_platform_programmable_stage(platform_pack()),
+			m_initial_counts()
 		{
 		}
 
 		template < >
 		BC_GRAPHICIMP_DLL
 		bc_platform_compute_stage<g_api_dx11>::bc_platform_compute_stage(bc_platform_compute_stage&& p_other) noexcept
-			: bc_platform_programmable_stage(std::move(p_other))
+			: bc_platform_programmable_stage(std::move(p_other)),
+			m_initial_counts(p_other.m_initial_counts)
 		{
 		}
 
@@ -44,6 +47,19 @@ namespace black_cat
 
 		template < >
 		BC_GRAPHICIMP_DLL
+		void bc_platform_compute_stage<g_api_dx11>::apply_required_state(bc_device_pipeline* p_pipeline, const initial_counts_array& p_initial_counts)
+		{
+			m_initial_counts = p_initial_counts;
+			bc_programmable_stage::apply_required_state(p_pipeline);
+
+			std::for_each(std::begin(m_initial_counts), std::end(m_initial_counts), [](initial_counts_array::value_type& p_count)
+			{
+				p_count = -1;
+			});
+		}
+
+		template < >
+		BC_GRAPHICIMP_DLL
 		void bc_platform_compute_stage<g_api_dx11>::apply_shader_program(bc_device_pipeline* p_pipeline)
 		{
 			// shader programs are in pipeline state
@@ -54,7 +70,6 @@ namespace black_cat
 		void bc_platform_compute_stage<g_api_dx11>::apply_constant_buffers(bc_device_pipeline* p_pipeline)
 		{
 			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline_proxy->m_context;
-			bc_programmable_stage_state& l_required_state = m_required_state;
 
 			if (m_required_state.m_constant_buffers.update_needed())
 			{
@@ -62,12 +77,12 @@ namespace black_cat
 
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_shader_constant_buffer(); ++i)
 				{
-					bc_buffer l_buffer = l_required_state.m_constant_buffers.get(i);
+					bc_buffer l_buffer = m_required_state.m_constant_buffers.get(i);
 					l_constant_buffers[i] = l_buffer.is_valid() ? l_buffer.get_platform_pack().m_buffer : nullptr;
 				}
 
-				bcUINT l_dirty_slot_start = m_required_state.m_constant_buffers.get_dirty_start();
-				bcUINT l_dirty_slot_num = m_required_state.m_constant_buffers.get_dirty_count();
+				const bcUINT l_dirty_slot_start = m_required_state.m_constant_buffers.get_dirty_start();
+				const bcUINT l_dirty_slot_num = m_required_state.m_constant_buffers.get_dirty_count();
 
 				l_context->CSSetConstantBuffers(l_dirty_slot_start, l_dirty_slot_num, &l_constant_buffers[l_dirty_slot_start]);
 			}
@@ -78,7 +93,6 @@ namespace black_cat
 		void bc_platform_compute_stage<g_api_dx11>::apply_sampler_states(bc_device_pipeline* p_pipeline)
 		{
 			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline_proxy->m_context;
-			bc_programmable_stage_state& l_required_state = m_required_state;
 
 			if (m_required_state.m_sampler_states.update_needed())
 			{
@@ -86,12 +100,12 @@ namespace black_cat
 
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_shader_sampler(); ++i)
 				{
-					bc_sampler_state l_sampler_state = l_required_state.m_sampler_states.get(i);
+					bc_sampler_state l_sampler_state = m_required_state.m_sampler_states.get(i);
 					l_sampler_states[i] = l_sampler_state.is_valid() ? l_sampler_state.get_platform_pack().m_sampler_state : nullptr;
 				}
 
-				bcUINT l_dirty_slot_start = m_required_state.m_sampler_states.get_dirty_start();
-				bcUINT l_dirty_slot_num = m_required_state.m_sampler_states.get_dirty_count();
+				const bcUINT l_dirty_slot_start = m_required_state.m_sampler_states.get_dirty_start();
+				const bcUINT l_dirty_slot_num = m_required_state.m_sampler_states.get_dirty_count();
 
 				l_context->CSSetSamplers(l_dirty_slot_start, l_dirty_slot_num, &l_sampler_states[l_dirty_slot_start]);
 			}
@@ -102,7 +116,6 @@ namespace black_cat
 		void bc_platform_compute_stage<g_api_dx11>::apply_shader_resource_views(bc_device_pipeline* p_pipeline)
 		{
 			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline_proxy->m_context;
-			bc_programmable_stage_state& l_required_state = m_required_state;
 
 			if (m_required_state.m_shader_resource_views.update_needed())
 			{
@@ -110,12 +123,12 @@ namespace black_cat
 
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_shader_resource(); ++i)
 				{
-					bc_resource_view l_shader_view = l_required_state.m_shader_resource_views.get(i);
+					bc_resource_view l_shader_view = m_required_state.m_shader_resource_views.get(i);
 					l_views[i] = l_shader_view.is_valid() ? l_shader_view.get_platform_pack().m_shader_view : nullptr;
 				}
 
-				bcUINT l_dirty_slot_start = m_required_state.m_shader_resource_views.get_dirty_start();
-				bcUINT l_dirty_slot_num = m_required_state.m_shader_resource_views.get_dirty_count();
+				const bcUINT l_dirty_slot_start = m_required_state.m_shader_resource_views.get_dirty_start();
+				const bcUINT l_dirty_slot_num = m_required_state.m_shader_resource_views.get_dirty_count();
 
 				l_context->CSSetShaderResources(l_dirty_slot_start, l_dirty_slot_num, &l_views[l_dirty_slot_start]);
 			}
@@ -127,13 +140,13 @@ namespace black_cat
 
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_ps_cs_uav_resource(); ++i)
 				{
-					bc_resource_view l_shader_view = l_required_state.m_unordered_access_views.get(i);
+					bc_resource_view l_shader_view = m_required_state.m_unordered_access_views.get(i);
 					l_ua_views[i] = l_shader_view.is_valid() ? l_shader_view.get_platform_pack().m_unordered_shader_view : nullptr;
-					l_initial_counts[i] = -1;
+					l_initial_counts[i] = m_initial_counts[i];
 				}
 
-				bcUINT l_dirty_slot_start = m_required_state.m_unordered_access_views.get_dirty_start();
-				bcUINT l_dirty_slot_num = m_required_state.m_unordered_access_views.get_dirty_count();
+				const bcUINT l_dirty_slot_start = m_required_state.m_unordered_access_views.get_dirty_start();
+				const bcUINT l_dirty_slot_num = m_required_state.m_unordered_access_views.get_dirty_count();
 
 				l_context->CSSetUnorderedAccessViews(l_dirty_slot_start, l_dirty_slot_num, &l_ua_views[l_dirty_slot_start], l_initial_counts);
 			}

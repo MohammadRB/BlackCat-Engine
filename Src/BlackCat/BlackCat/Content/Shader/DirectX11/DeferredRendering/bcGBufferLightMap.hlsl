@@ -66,7 +66,7 @@ Texture2D<float4> g_diffuse_map						: register(BC_COMPUTE_STATE_T1);
 Texture2D<float4> g_normal_map						: register(BC_COMPUTE_STATE_T2);
 
 StructuredBuffer<direct_light> g_direct_lights		: register(BC_COMPUTE_STATE_T3);
-StructuredBuffer<point_light> g_point_lights			: register(BC_COMPUTE_STATE_T4);
+StructuredBuffer<point_light> g_point_lights		: register(BC_COMPUTE_STATE_T4);
 StructuredBuffer<spot_light> g_spot_lights			: register(BC_COMPUTE_STATE_T5);
 StructuredBuffer<cascade_shadow_map> g_shadow_maps	: register(BC_COMPUTE_STATE_T6);
 
@@ -74,7 +74,7 @@ Texture2DArray<float4> g_light_shadow_map_1			: register(BC_COMPUTE_STATE_T7);
 Texture2D<float4> g_light_shadow_map_2				: register(BC_COMPUTE_STATE_T8);
 Texture2D<float4> g_light_shadow_map_3				: register(BC_COMPUTE_STATE_T9);
 
-SamplerComparisonState g_pcf_sampler					: register(BC_COMPUTE_STATE_S0);
+SamplerComparisonState g_pcf_sampler				: register(BC_COMPUTE_STATE_S0);
 
 RWTexture2D<float4> g_output_texture                : register(BC_COMPUTE_STATE_U0);
 

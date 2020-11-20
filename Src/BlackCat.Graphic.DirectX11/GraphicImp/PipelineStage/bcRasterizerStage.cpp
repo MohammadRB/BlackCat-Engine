@@ -45,16 +45,15 @@ namespace black_cat
 		void bc_platform_rasterizer_stage<g_api_dx11>::apply_required_state(bc_device_pipeline* p_pipeline)
 		{
 			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline_proxy->m_context;
-			bc_rasterizer_stage_state& l_required_state = m_required_state;
 
-			if (l_required_state.m_viewports.update_needed() ||
-				l_required_state.m_viewport_count.update_needed())
+			if (m_required_state.m_viewports.update_needed() ||
+				m_required_state.m_viewport_count.update_needed())
 			{
 				D3D11_VIEWPORT l_viewports[bc_render_api_info::number_of_rs_viewport_scissorrect()];
 
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_rs_viewport_scissorrect(); ++i)
 				{
-					const bc_viewport* l_viewport = l_required_state.m_viewports.get(i);
+					const bc_viewport* l_viewport = m_required_state.m_viewports.get(i);
 					if(l_viewport)
 					{
 						l_viewports[i] = D3D11_VIEWPORT
@@ -69,7 +68,7 @@ namespace black_cat
 					}
 				}
 
-				l_context->RSSetViewports(l_required_state.m_viewport_count.get(), l_viewports);
+				l_context->RSSetViewports(m_required_state.m_viewport_count.get(), l_viewports);
 			}
 
 			m_required_state.reset_tracking();

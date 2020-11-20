@@ -12,7 +12,7 @@ namespace black_cat
 	{
 		template < >
 		BC_GRAPHICIMP_DLL
-		bc_platform_programmable_stage<g_api_dx11>::bc_platform_programmable_stage(platform_pack& p_pack)
+		bc_platform_programmable_stage<g_api_dx11>::bc_platform_programmable_stage(const platform_pack& p_pack)
 			: m_pack(p_pack)
 		{
 		}

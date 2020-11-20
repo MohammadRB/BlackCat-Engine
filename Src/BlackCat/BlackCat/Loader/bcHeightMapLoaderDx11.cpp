@@ -470,7 +470,8 @@ namespace black_cat
 				graphic::bc_resource_usage::gpu_rw,
 				core::bc_enum::or({graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered})
 			)
-			.as_structured_buffer(sizeof(core::bc_vector3f));
+			.with_structured_buffer(sizeof(core::bc_vector3f))
+			.as_buffer();
 		auto l_parameter_cbuffer_config = l_resource_configure
 			.as_resource()
 			.as_buffer

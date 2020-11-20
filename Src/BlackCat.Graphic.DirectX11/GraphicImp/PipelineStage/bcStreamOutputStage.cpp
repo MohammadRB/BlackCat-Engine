@@ -45,32 +45,31 @@ namespace black_cat
 		void bc_platform_stream_output_stage< g_api_dx11 >::apply_required_state(bc_device_pipeline* p_pipeline)
 		{
 			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline_proxy->m_context;
-			bc_stream_output_stage_state& l_required_state = m_required_state;
 
-			if (l_required_state.m_stream_buffers.update_needed() ||
-				l_required_state.m_stream_offsets.update_needed())
+			if (m_required_state.m_stream_buffers.update_needed() ||
+				m_required_state.m_stream_offsets.update_needed())
 			{
 				ID3D11Buffer* l_buffers[bc_render_api_info::number_of_so_streams()];
-				bcUINT* l_offsets = l_required_state.m_stream_offsets.get_first_slot();
+				bcUINT* l_offsets = m_required_state.m_stream_offsets.get_first_slot();
 
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_so_streams(); ++i)
 				{
-					bc_buffer l_buffer = l_required_state.m_stream_buffers.get(i);
+					bc_buffer l_buffer = m_required_state.m_stream_buffers.get(i);
 					l_buffers[i] = l_buffer.is_valid() ? l_buffer.get_platform_pack().m_buffer : nullptr;
 				}
 
-				bcUINT l_dirty_slot_num = (std::max)
-					(
-						l_required_state.m_stream_buffers.get_dirty_count(),
-						l_required_state.m_stream_offsets.get_dirty_count()
-					);
+				const bcUINT l_dirty_slot_num = (std::max)
+				(
+					m_required_state.m_stream_buffers.get_dirty_count(),
+					m_required_state.m_stream_offsets.get_dirty_count()
+				);
 
 				l_context->SOSetTargets
-					(
-						l_dirty_slot_num,
-						l_buffers,
-						l_offsets
-					);
+				(
+					l_dirty_slot_num,
+					l_buffers,
+					l_offsets
+				);
 			}
 
 			m_required_state.reset_tracking();

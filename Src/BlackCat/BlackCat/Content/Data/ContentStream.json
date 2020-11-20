@@ -125,6 +125,29 @@
       ]
     },
     {
+      "stream_name": "particle_shaders",
+      "stream_content": [
+        {
+          "content_title": "particle_emission",
+          "content_name": "compute_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleEmission.hlsl",
+          "content_parameter": { "function": "main" }
+        },
+        {
+          "content_title": "particle_simulation",
+          "content_name": "compute_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleSimulation.hlsl",
+          "content_parameter": { "function": "main" }
+        },
+        {
+          "content_title": "particle_sort",
+          "content_name": "compute_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleSort.hlsl",
+          "content_parameter": { "function": "main" }
+        }
+      ]
+    },
+    {
       "stream_name": "engine_resources",
       "stream_content": [
       ]

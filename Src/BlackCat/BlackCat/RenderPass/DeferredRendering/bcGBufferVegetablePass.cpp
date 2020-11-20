@@ -8,6 +8,7 @@
 #include "Game/System/Render/State/bcStateConfigs.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferVegetablePass.h"
+#include "BlackCat/bcConstant.h"
 
 namespace black_cat
 {
@@ -136,9 +137,9 @@ namespace black_cat
 			return;
 		}
 
-		const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_view);
-		const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_view_1);
-		const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_view_2);
+		const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
+		const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_1);
+		const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_2);
 		const auto l_viewport = graphic::bc_viewport::default_config(p_param.m_device.get_back_buffer_width(), p_param.m_device.get_back_buffer_height());
 		const auto l_sampler_config = graphic::bc_graphic_resource_builder().as_resource().as_sampler_state
 		(

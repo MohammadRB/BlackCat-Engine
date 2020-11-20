@@ -330,11 +330,14 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleManager.h">
       <Filter>Game\System\Render\Particle</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticle.h">
-      <Filter>Game\System\Render\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleBuilder.h">
       <Filter>Game\System\Render\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleEmitter.h">
+      <Filter>Game\System\Render\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcParticleEmittersQuery.h">
+      <Filter>Game\Query</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -493,6 +496,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightInstance.cpp">
       <Filter>Game\System\Render\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleBuilder.cpp">
+      <Filter>Game\System\Render\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleManager.cpp">
+      <Filter>Game\System\Render\Particle</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

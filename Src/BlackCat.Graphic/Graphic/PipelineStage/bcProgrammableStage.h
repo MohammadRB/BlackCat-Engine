@@ -90,7 +90,7 @@ namespace black_cat
 			using platform_pack = bc_platform_programmable_stage_pack<TRenderApi>;
 
 		public:
-			explicit bc_platform_programmable_stage(platform_pack& p_pack);
+			explicit bc_platform_programmable_stage(const platform_pack& p_pack);
 
 			bc_platform_programmable_stage(bc_platform_programmable_stage&&) noexcept;
 

@@ -26,13 +26,15 @@ namespace black_cat
 
 			bc_buffer_config as_constant_buffer() noexcept;
 
-			bc_buffer_config as_structured_buffer(bcUINT p_element_size) noexcept;
+			bc_buffer_config as_buffer() noexcept;
+			
+			bc_buffer_builder& with_structured_buffer(bcUINT p_element_size) noexcept;
 
-			bc_buffer_config as_append_consume(bcUINT p_element_size) noexcept;
+			bc_buffer_builder& with_append_consume(bcUINT p_element_size) noexcept;
 
-			bc_buffer_config as_byte_address_buffer() noexcept;
+			bc_buffer_builder& with_byte_address_buffer() noexcept;
 
-			bc_buffer_config as_indirect_args_buffer() noexcept;
+			bc_buffer_builder& with_indirect_args_buffer() noexcept;
 
 		private:
 			bc_buffer_config m_config;

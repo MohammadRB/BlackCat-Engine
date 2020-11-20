@@ -136,13 +136,13 @@ namespace black_cat
 			void render(const render_param& p_render_param);
 
 			/**
-			 * \brief ThreadSafe
+			 * \brief \b ThreadSafe
 			 * \param p_task 
 			 */
 			void add_render_task(bc_irender_task& p_task);
 
 			/**
-			 * \brief ThreadSafe function
+			 * \brief \b ThreadSafe
 			 * \param p_vertex_shader_name 
 			 * \param p_hull_shader_name 
 			 * \param p_domain_shader_name 
@@ -173,7 +173,7 @@ namespace black_cat
 				bc_multi_sample_type p_ms_config);
 
 			/**
-			 * \brief ThreadSafe function
+			 * \brief \n \b ThreadSafe
 			 * \param p_compute_shader_name 
 			 * \return 
 			 */
@@ -181,7 +181,7 @@ namespace black_cat
 
 			/**
 			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
-			 * ThreadSafe function
+			 * \n \b ThreadSafe
 			 * \param p_pipeline_state 
 			 * \param p_viewport 
 			 * \param p_shader_targets 
@@ -201,7 +201,7 @@ namespace black_cat
 
 			/**
 			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
-			 * ThreadSafe function
+			 * \n \b ThreadSafe
 			 * \param p_primitive 
 			 * \param p_vertex_buffer
 			 * \param p_vertex_buffer_stride 
@@ -227,11 +227,8 @@ namespace black_cat
 
 			/**
 			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
-			 * ThreadSafe function
+			 * \n \b ThreadSafe
 			 * \param p_compute_state 
-			 * \param p_dispatch_x 
-			 * \param p_dispatch_y 
-			 * \param p_dispatch_z 
 			 * \param p_samplers 
 			 * \param p_resource_views 
 			 * \param p_unordered_views 
@@ -239,9 +236,6 @@ namespace black_cat
 			 * \return 
 			 */
 			bc_compute_state_ptr create_compute_state(graphic::bc_device_compute_state p_compute_state,
-				bcUINT32 p_dispatch_x,
-				bcUINT32 p_dispatch_y,
-				bcUINT32 p_dispatch_z,
 				bc_compute_state_sampler_array&& p_samplers,
 				bc_compute_state_resource_view_array&& p_resource_views,
 				bc_compute_state_unordered_view_array&& p_unordered_views,

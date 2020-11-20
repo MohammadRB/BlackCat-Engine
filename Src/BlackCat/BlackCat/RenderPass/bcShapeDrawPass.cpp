@@ -7,6 +7,7 @@
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Query/bcMainCameraSceneQuery.h"
 #include "BlackCat/RenderPass/bcShapeDrawPass.h"
+#include "BlackCat/bcConstant.h"
 
 namespace black_cat
 {
@@ -130,7 +131,7 @@ namespace black_cat
 		{
 			graphic::bc_texture2d l_back_buffer_texture = p_param.m_device.get_back_buffer_texture();
 
-			const auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(constant::g_rpass_depth_stencil_view);
+			const auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(constant::g_rpass_depth_stencil_render_view);
 			const auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(m_render_target_view_variable);
 			const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
 			

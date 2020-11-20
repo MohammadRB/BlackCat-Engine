@@ -320,9 +320,6 @@ namespace black_cat
 		}
 
 		bc_compute_state_ptr bc_render_system::create_compute_state(graphic::bc_device_compute_state p_compute_state,
-			bcUINT32 p_dispatch_x,
-			bcUINT32 p_dispatch_y,
-			bcUINT32 p_dispatch_z,
 			bc_compute_state_sampler_array&& p_samplers,
 			bc_compute_state_resource_view_array&& p_resource_views,
 			bc_compute_state_unordered_view_array&& p_unordered_views,
@@ -331,9 +328,6 @@ namespace black_cat
 			bc_compute_state l_compute_state
 			(
 				p_compute_state,
-				p_dispatch_x,
-				p_dispatch_y,
-				p_dispatch_z,
 				std::move(p_samplers),
 				std::move(p_resource_views),
 				std::move(p_unordered_views),

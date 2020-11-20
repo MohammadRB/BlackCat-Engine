@@ -30,7 +30,6 @@
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "BlackCat/Application/bcRenderApplication.h"
 #include "BlackCat/Loader/bcMeshLoader.h"
 #include "BlackCat/Loader/bcTextureLoader.h"
@@ -157,6 +156,7 @@ namespace black_cat
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_resources");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_shaders");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "deferred_rendering_shaders");
+		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "particle_shaders");
 
 		l_script_binder.bind<game::bc_game_console>(game::bc_script_context::ui, m_game_system->get_console());
 
@@ -252,6 +252,7 @@ namespace black_cat
 
 		application_unload_content(l_content_stream_manager);
 		
+		l_content_stream_manager->unload_content_stream("particle_shaders");
 		l_content_stream_manager->unload_content_stream("deferred_rendering_shaders");
 		l_content_stream_manager->unload_content_stream("engine_shaders");
 		l_content_stream_manager->unload_content_stream("engine_resources");

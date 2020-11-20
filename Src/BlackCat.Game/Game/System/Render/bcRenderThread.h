@@ -75,7 +75,11 @@ namespace black_cat
 			 * Apply ComputeStage for compute shader and parameters
 			 * \param p_compute_state 
 			 */
-			void run_compute_shader(const bc_compute_state& p_compute_state);
+			void bind_compute_state(const bc_compute_state& p_compute_state);
+			
+			void bind_compute_state(const bc_compute_state& p_compute_state, const bc_compute_state_unordered_view_initial_count_array& p_uav_initial_counts);
+
+			void unbind_compute_state(const bc_compute_state& p_compute_state);
 
 			/*void bind_ia_primitive_topology(graphic::bc_primitive p_primitive);
 
@@ -121,6 +125,10 @@ namespace black_cat
 
 			void draw(bcUINT p_start_vertex, bcUINT p_vertex_count);
 
+			void draw_instanced(bcUINT p_vertex_count_per_instance, bcUINT p_instance_count, bcUINT p_start_vertex_location, bcUINT p_start_instance_location);
+
+			void draw_instanced_indirect(graphic::bc_buffer p_args_buffer, bcUINT p_offset);
+			
 			void draw_indexed(bcUINT p_start_index, bcUINT p_index_count, bcINT p_vertex_offset);
 
 			void draw_indexed_instanced(bcUINT p_index_count_per_instance, bcUINT p_instance_count, bcUINT p_start_index_location, bcINT p_base_vertex_location, bcUINT p_start_instance_location);
