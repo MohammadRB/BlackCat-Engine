@@ -6,7 +6,7 @@
 #include "CorePlatformImp/Concurrency/bcThread.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcDelegate.hpp"
-#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/bcEvent.h"
 #include "Core/bcException.h"
 

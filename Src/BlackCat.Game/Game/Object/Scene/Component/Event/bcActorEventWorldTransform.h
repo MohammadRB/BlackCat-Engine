@@ -33,14 +33,14 @@ namespace black_cat
 		};
 
 		inline bc_actor_event_world_transform::bc_actor_event_world_transform(const core::bc_vector3f& p_translation)
-			: bc_actor_event(event_name()),
+			: bc_actor_event(message_name()),
 			m_transform()
 		{
 			m_transform.translate(p_translation);
 		}
 
 		inline bc_actor_event_world_transform::bc_actor_event_world_transform(const core::bc_matrix4f& p_transform)
-			: bc_actor_event(event_name()),
+			: bc_actor_event(message_name()),
 			m_transform(p_transform)
 		{
 		}

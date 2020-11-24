@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/Utility/bcInitializable.h"
-#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "PlatformImp/Application/bcApplication.h"
 #include "Game/bcExport.h"
 #include "Game/Application/bcIRenderApplicationOutputWindow.h"

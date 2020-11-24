@@ -194,7 +194,7 @@ namespace black_cat
 		{
 			if (m_config.get_platform_pack().m_type == bc_resource_view_type::unordered)
 			{
-				m_config.get_platform_pack().m_unordered_shader_view_desc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_APPEND | D3D11_BUFFER_UAV_FLAG_COUNTER;
+				m_config.get_platform_pack().m_unordered_shader_view_desc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_APPEND;
 			}
 
 			return m_config;

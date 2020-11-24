@@ -286,7 +286,7 @@ namespace black_cat
 
 		bool bc_render_application::_app_event(core::bc_ievent& p_event)
 		{
-			if (core::bc_ievent::event_is< platform::bc_app_event_window_resizing >(p_event))
+			if (core::bc_imessage::is< platform::bc_app_event_window_resizing >(p_event))
 			{
 				auto& l_resizing_event = static_cast<platform::bc_app_event_window_resizing&>(p_event);
 
@@ -307,7 +307,7 @@ namespace black_cat
 				return true;
 			}
 
-			if (core::bc_ievent::event_is< platform::bc_app_event_active >(p_event))
+			if (core::bc_imessage::is< platform::bc_app_event_active >(p_event))
 			{
 				auto& l_active_event = static_cast<platform::bc_app_event_active&>(p_event);
 				m_paused = !l_active_event.active();
@@ -324,7 +324,7 @@ namespace black_cat
 				return true;
 			}
 
-			if (core::bc_ievent::event_is< platform::bc_app_event_window_close >(p_event))
+			if (core::bc_imessage::is< platform::bc_app_event_window_close >(p_event))
 			{
 				auto& l_close_event = static_cast<platform::bc_app_event_window_close&>(p_event);
 
@@ -337,7 +337,7 @@ namespace black_cat
 				return true;
 			}
 
-			if (core::bc_ievent::event_is< platform::bc_app_event_exit >(p_event))
+			if (core::bc_imessage::is< platform::bc_app_event_exit >(p_event))
 			{
 				auto& l_exit_event = static_cast<platform::bc_app_event_exit&>(p_event);
 
@@ -347,7 +347,7 @@ namespace black_cat
 				return true;
 			}
 
-			if (core::bc_ievent::event_is< core::bc_app_event_error >(p_event))
+			if (core::bc_imessage::is< core::bc_app_event_error >(p_event))
 			{
 				core::bc_get_service< core::bc_logger >()->log
 				(
@@ -358,7 +358,7 @@ namespace black_cat
 				return true;
 			}
 
-			if (core::bc_ievent::event_is< core::bc_app_event_debug >(p_event))
+			if (core::bc_imessage::is< core::bc_app_event_debug >(p_event))
 			{
 				core::bc_get_service< core::bc_logger >()->log
 				(

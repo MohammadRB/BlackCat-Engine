@@ -4,8 +4,8 @@
 
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcArray.h"
-#include "Core/Event/bcEvent.h"
-#include "Core/Event/bcEventListenerHandle.h"
+#include "Core/Messaging/Event/bcEvent.h"
+#include "Core/Messaging/Event/bcEventListenerHandle.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix3f.h"
 #include "Core/Math/bcMatrix4f.h"

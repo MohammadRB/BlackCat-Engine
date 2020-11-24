@@ -4,7 +4,7 @@
 
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Utility/bcClock.h"
-#include "Core/Math/bcMatrix4f.h"
+#include "Core/Math/bcVector3f.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcList.h"
 #include "Core/Container/bcUnorderedMap.h"
@@ -47,7 +47,7 @@ namespace black_cat
 
 			void register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder);
 
-			void emit(const bcCHAR* p_emitter_name, const core::bc_matrix4f& p_transformation);
+			void emit(const bcCHAR* p_emitter_name, const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir);
 			
 			void update(const core_platform::bc_clock::update_param& p_clock);
 			

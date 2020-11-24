@@ -5,7 +5,7 @@
 #include "CorePlatform/bcException.h"
 #include "CorePlatformImp/bcUtility.h"
 #include "Core/Utility/bcServiceManager.h"
-#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "PlatformImp/bcExport.h"
 #include "PlatformImp/Application/bcBasicWindow.h"
 #include "Platform/bcEvent.h"

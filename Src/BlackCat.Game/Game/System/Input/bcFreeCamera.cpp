@@ -157,12 +157,12 @@ namespace black_cat
 
 		bool bc_free_camera::_on_event(core::bc_ievent& p_event) noexcept
 		{
-			if(core::bc_ievent::event_is<platform::bc_app_event_pointing>(p_event))
+			if(core::bc_imessage::is<platform::bc_app_event_pointing>(p_event))
 			{
 				return _on_pointing(static_cast<platform::bc_app_event_pointing&>(p_event));
 			}
 
-			if(core::bc_ievent::event_is<platform::bc_app_event_key>(p_event))
+			if(core::bc_imessage::is<platform::bc_app_event_key>(p_event))
 			{
 				return _on_key(static_cast<platform::bc_app_event_key&>(p_event));
 			}

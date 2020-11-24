@@ -1,6 +1,8 @@
 // [11/15/2020 MRB]
 
 #include "Game/GamePCH.h"
+#include "Core/Math/bcMatrix3f.h"
+#include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/Query/bcParticleEmittersQuery.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 
@@ -20,7 +22,10 @@ namespace black_cat
 			: m_emitters(core::bc_memory_pool_allocator<bc_particle_emitter_trait>(m_emitters_pool))
 		{
 			m_emitters_pool.initialize(m_num_emitter_count, sizeof(_bc_particle_emitter_instance), core::bc_alloc_type::unknown_movable);
-			m_emitters_provider_handle.reassign(core::bc_query_provider_handle::delegate_t(*this, &bc_particle_manager::_emitters_query_context_provider));
+			m_emitters_provider_handle = core::bc_get_service< core::bc_query_manager >()->register_query_provider< bc_particle_emitters_query_context >
+			(
+				core::bc_query_provider_handle::delegate_t(*this, &bc_particle_manager::_emitters_query_context_provider)
+			);
 		}
 
 		bc_particle_manager::bc_particle_manager(bc_particle_manager&& p_other) noexcept
@@ -54,8 +59,10 @@ namespace black_cat
 			m_emitter_definitions.insert(std::move(l_value));
 		}
 
-		void bc_particle_manager::emit(const bcCHAR* p_emitter_name, const core::bc_matrix4f& p_transformation)
+		void bc_particle_manager::emit(const bcCHAR* p_emitter_name, const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir)
 		{
+			core::bc_matrix3f l_rotation;
+			l_rotation.rotation_between_two_vector_lh(p_dir, core::bc_vector3f(0, 1, 0));
 			const auto l_definition_ite = m_emitter_definitions.find(p_emitter_name);
 			
 			bcAssert(l_definition_ite != std::end(m_emitter_definitions));
@@ -66,10 +73,10 @@ namespace black_cat
 				for (auto& l_emitter : l_definition_ite->second)
 				{
 					m_emitters.emplace_back(l_emitter);
-					
 					auto l_ite = m_emitters.rbegin();
-					l_ite->m_position = p_transformation.get_translation();
-					l_ite->m_direction = p_transformation.get_rotation() * l_ite->m_direction;
+					
+					l_ite->m_position += p_pos;
+					l_ite->m_direction = l_rotation * l_ite->m_direction;
 					l_ite->m_lifetime += .001; // to avoid 0 lifetime and division by zero
 				}
 

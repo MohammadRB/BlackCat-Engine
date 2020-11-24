@@ -30,7 +30,7 @@ namespace black_cat
 		};
 
 		inline bc_actor_event_bound_box_changed::bc_actor_event_bound_box_changed(const physics::bc_bound_box& p_bound_box)
-			: bc_actor_event(event_name()),
+			: bc_actor_event(message_name()),
 			m_bound_box(p_bound_box)
 		{
 		}

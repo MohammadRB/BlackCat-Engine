@@ -1,7 +1,7 @@
 // [06/29/2016 MRB]
 
 #include "Game/GamePCH.h"
-#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Platform/bcEvent.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Input/bcCamera.h"

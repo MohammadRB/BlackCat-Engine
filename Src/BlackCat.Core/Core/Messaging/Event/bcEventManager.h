@@ -7,9 +7,9 @@
 #include "Core/bcExport.h"
 #include "Core/bcConstant.h"
 #include "Core/Memory/bcPtr.h"
-#include "Core/Event/bcEvent.h"
-#include "Core/Event/bcEventHandler.h"
-#include "Core/Event/bcEventListenerHandle.h"
+#include "Core/Messaging/Event/bcEvent.h"
+#include "Core/Messaging/Event/bcEventHandler.h"
+#include "Core/Messaging/Event/bcEventListenerHandle.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Container/bcList.h"
 #include "Core/Container/bcConcurrentQueue.h"
@@ -135,7 +135,7 @@ namespace black_cat
 		template< class TEvent >
 		bc_event_listener_handle bc_event_manager::register_event_listener(delegate_type&& p_listener)
 		{
-			return _register_event_listener(bc_event_traits< TEvent >::event_name(), std::move(p_listener));
+			return _register_event_listener(bc_message_traits< TEvent >::message_name(), std::move(p_listener));
 		}
 
 		template< class TEvent >

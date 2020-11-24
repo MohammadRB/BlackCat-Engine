@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Core/Event/bcEvent.h"
+#include "Core/Messaging/Event/bcEvent.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -50,8 +50,17 @@ namespace black_cat
 		{
 		}
 
-		inline bc_actor_event::bc_actor_event(const bc_actor_event& p_other) noexcept = default;
+		inline bc_actor_event::bc_actor_event(const bc_actor_event& p_other) noexcept
+			: bc_event(p_other),
+			m_next(p_other.m_next)
+		{
+		}
 
-		inline bc_actor_event& bc_actor_event::operator=(const bc_actor_event& p_other) noexcept = default;
+		inline bc_actor_event& bc_actor_event::operator=(const bc_actor_event& p_other) noexcept
+		{
+			bc_event::operator=(p_other);
+			m_next = p_other.m_next;
+			return *this;
+		}
 	}
 }

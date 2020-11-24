@@ -2,7 +2,7 @@
 
 #include "Editor/EditorPCH.h"
 
-#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Platform/bcEvent.h"
 #include "Editor/Widget/bcWidgetD3DOutput.h"
 

@@ -5,7 +5,7 @@
 #include "Core/Container/bcIterator.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Concurrency/bcThreadManager.h"
-#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Utility/bcDelegate.h"
 #include "Core/Utility/bcTemplateMetaType.h"
 #include "Core/bcEvent.h"

@@ -38,7 +38,7 @@ namespace black_cat
 
 		void bc_mediate_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
-			auto* l_bound_box_event = core::bc_event::event_as< bc_actor_event_bound_box_changed >(p_event);
+			auto* l_bound_box_event = core::bc_imessage::as< bc_actor_event_bound_box_changed >(p_event);
 			if(l_bound_box_event)
 			{
 				m_prev_bound_box = m_bound_box;
@@ -47,7 +47,7 @@ namespace black_cat
 				return;
 			}
 
-			auto* l_added_to_scene_event = core::bc_event::event_as< bc_actor_event_added_to_scene >(p_event);
+			auto* l_added_to_scene_event = core::bc_imessage::as< bc_actor_event_added_to_scene >(p_event);
 			if(l_added_to_scene_event)
 			{
 				m_scene = &l_added_to_scene_event->get_scene();

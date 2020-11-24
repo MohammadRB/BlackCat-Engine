@@ -326,7 +326,7 @@ namespace black_cat
 				}
 			}
 
-			m_pipeline->pipeline_apply_states(graphic::bc_pipeline_stage::compute_stage);
+			m_pipeline->pipeline_apply_states(graphic::bc_pipeline_stage::compute_stage, p_uav_initial_counts);
 		}
 
 		void bc_render_thread::unbind_compute_state(const bc_compute_state& p_compute_state)

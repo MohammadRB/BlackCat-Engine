@@ -155,7 +155,6 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcContentManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcContentStreamManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcLazyContent.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Event\bcEventListenerHandle.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcFileStream.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcJsonDocument.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcJsonParse.h" />
@@ -174,6 +173,10 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryProxy.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\bcMessage.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\bcMessageHandle.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEvent.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEventHandler.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEventListenerHandle.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEventManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryContext.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryManager.h" />
@@ -219,9 +222,6 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcBitVector.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\bcException.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\CorePCH.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Event\bcEvent.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Event\bcEventHandler.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Event\bcEventManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryCRT.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryHeap.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemMngHashMap.h" />
@@ -247,8 +247,6 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Core/CorePCH.h</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Event\bcEvent.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Event\bcEventListenerHandle.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcPath.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcStream.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcMatrix3f.cpp" />
@@ -258,6 +256,9 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector4f.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryHeap.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\bcMessage.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEvent.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEventListenerHandle.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEventManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQuery.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryProviderHandle.cpp" />
@@ -266,7 +267,6 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectPool.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectStackPool.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcServiceManager.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Event\bcEventManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryFixedSize.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryManagment.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryStack.cpp" />

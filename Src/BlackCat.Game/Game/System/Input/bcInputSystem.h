@@ -4,7 +4,7 @@
 
 #include "CorePlatform/Utility/bcNoCopy.h"
 #include "Core/Memory/bcPtr.h"
-#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "PlatformImp/Application/bcHumanInterfaceDevice.h"
 #include "Game/System/Input/bcCamera.h"
 #include "Game/bcExport.h"

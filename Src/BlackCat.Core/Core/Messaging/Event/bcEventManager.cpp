@@ -1,7 +1,7 @@
 // [2/11/2015 MRB]
 
 #include "Core/CorePCH.h"
-#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 
 namespace black_cat
 {
@@ -56,7 +56,7 @@ namespace black_cat
 		
 		bool bc_event_manager::process_event(bc_ievent& p_event)
 		{
-			const bcUINT32 l_hash = p_event.get_event_hash();
+			const auto l_hash = p_event.get_message_hash();
 			handler_map_t::const_iterator l_ite;
 			bool l_handled = false;
 

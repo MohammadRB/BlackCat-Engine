@@ -18,7 +18,7 @@ namespace black_cat
 
 		public:
 			explicit bc_app_event_exit(bcINT32 p_exit_code)
-				: bc_app_event(event_name()),
+				: bc_app_event(message_name()),
 				m_exit_code(p_exit_code)
 			{
 			}
@@ -44,7 +44,7 @@ namespace black_cat
 
 		public:
 			explicit bc_app_event_active(bool p_active)
-				: bc_app_event(event_name()),
+				: bc_app_event(message_name()),
 				m_active(p_active)
 			{
 			}
@@ -70,7 +70,7 @@ namespace black_cat
 
 		public:
 			explicit bc_app_event_window_focus(bc_window_id p_window_id, bool p_focus)
-				: bc_app_event(event_name()),
+				: bc_app_event(message_name()),
 				m_window_id(p_window_id),
 				p_focus(p_focus)
 			{
@@ -101,7 +101,7 @@ namespace black_cat
 
 		public:
 			bc_app_event_window_resizing(bc_window_id p_window_id, bool p_started_to_resizing)
-				: bc_app_event(event_name()),
+				: bc_app_event(message_name()),
 				m_window_id(p_window_id),
 				m_started_to_resizing(p_started_to_resizing)
 			{
@@ -150,7 +150,7 @@ namespace black_cat
 
 		public:
 			bc_app_event_window_resize(bc_window_id p_window_id, state p_state, bcUINT32 p_width, bcUINT32 p_height)
-				: bc_app_event(event_name()),
+				: bc_app_event(message_name()),
 				m_window_id(p_window_id),
 				m_width(p_width),
 				m_height(p_height),
@@ -199,7 +199,7 @@ namespace black_cat
 
 		public:
 			explicit bc_app_event_window_close(bc_window_id p_window_id) noexcept
-				: bc_app_event(event_name()),
+				: bc_app_event(message_name()),
 				m_window_id(p_window_id)
 			{
 			}
@@ -225,7 +225,7 @@ namespace black_cat
 
 		public:
 			bc_app_event_key(bc_key p_key, bc_key_state p_state)
-				: bc_app_event(event_name()),
+				: bc_app_event(message_name()),
 				m_key(p_key),
 				m_state(p_state)
 			{
@@ -258,7 +258,7 @@ namespace black_cat
 
 		public:
 			explicit bc_app_event_pointing(bc_pointing_device_state p_state)
-				: bc_app_event(event_name()),
+				: bc_app_event(message_name()),
 				m_state(p_state)
 			{
 			}

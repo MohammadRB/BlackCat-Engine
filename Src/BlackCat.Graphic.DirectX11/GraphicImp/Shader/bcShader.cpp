@@ -60,6 +60,12 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
+		void bc_platform_compiled_shader<g_api_dx11>::set_debug_name(const bcCHAR* p_name) noexcept
+		{
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
 		bc_platform_ishader< g_api_dx11 >::bc_platform_ishader()
 			: bc_platform_device_reference()
 		{

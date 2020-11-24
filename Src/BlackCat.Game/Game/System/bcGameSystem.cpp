@@ -2,7 +2,7 @@
 
 #include "Game/GamePCH.h"
 
-#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/System/bcGameSystem.h"

@@ -30,7 +30,7 @@ namespace black_cat
 		};
 
 		inline bc_actor_event_added_to_scene::bc_actor_event_added_to_scene(bc_scene& p_scene)
-			: bc_actor_event(event_name()),
+			: bc_actor_event(message_name()),
 			m_scene(&p_scene)
 		{
 		}

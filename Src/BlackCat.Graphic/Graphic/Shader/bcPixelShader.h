@@ -40,6 +40,8 @@ namespace black_cat
 
 			bool is_valid() const noexcept override;
 
+			void set_debug_name(const bcCHAR* p_name) noexcept override;
+
 			bool operator==(const bc_platform_pixel_shader& p_other) const noexcept;
 
 			bool operator!=(const bc_platform_pixel_shader& p_other) const noexcept;

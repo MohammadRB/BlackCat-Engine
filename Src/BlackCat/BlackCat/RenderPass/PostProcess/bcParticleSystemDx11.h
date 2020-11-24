@@ -49,6 +49,7 @@ namespace black_cat
 		graphic::bc_buffer_ptr m_particles_buffer;
 		graphic::bc_buffer_ptr m_alive_particles_buffer;
 		graphic::bc_buffer_ptr m_dead_particles_buffer;
+		graphic::bc_buffer_ptr m_draw_args_buffer;
 
 		graphic::bc_resource_view_ptr m_emitters_buffer_view;
 		graphic::bc_resource_view_ptr m_particles_buffer_view;

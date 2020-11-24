@@ -225,7 +225,7 @@ namespace black_cat
 		template< class TContent >
 		bc_content_ptr< TContent > bc_content_manager::load(const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter)
 		{
-			return load<TContent>(bc_alloc_type::unknown_movable, p_file, std::move(p_parameter));
+			return load<TContent>(bc_alloc_type::unknown, p_file, std::move(p_parameter));
 		}
 
 		template< class TContent >
@@ -259,7 +259,7 @@ namespace black_cat
 		template< class TContent >
 		bc_task< bc_content_ptr< TContent > > bc_content_manager::load_async(const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter)
 		{
-			return load_async<TContent>(bc_alloc_type::unknown_movable, p_file, p_parameter);
+			return load_async<TContent>(bc_alloc_type::unknown, p_file, p_parameter);
 		}
 
 		template< class TContent >

@@ -8,8 +8,8 @@
 #define PARTICLE_RANDOM_COEFFICIENT .1f
 
 StructuredBuffer<emitter> g_emitters			: register(BC_COMPUTE_STATE_T0);
-RWStructuredBuffer<particle> g_particles		: register(BC_COMPUTE_STATE_T1);
-ConsumeStructuredBuffer<uint> g_dead_indices	: register(BC_COMPUTE_STATE_T2);
+RWStructuredBuffer<particle> g_particles		: register(BC_COMPUTE_STATE_U0);
+ConsumeStructuredBuffer<uint> g_dead_indices	: register(BC_COMPUTE_STATE_U1);
 
 float randomize(float p_value, float p_rnd, float p_coefficent)
 {

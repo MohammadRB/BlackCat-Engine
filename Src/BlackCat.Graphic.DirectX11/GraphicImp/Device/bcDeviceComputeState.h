@@ -77,6 +77,15 @@ namespace black_cat
 		}
 
 		template<>
+		inline void bc_platform_device_compute_state<g_api_dx11>::set_debug_name(const bcCHAR* p_name) noexcept
+		{
+			if (is_valid())
+			{
+				m_pack.m_compute_state_proxy->m_config.m_compute_shader.set_debug_name(p_name);
+			}
+		}
+		
+		template<>
 		inline bool bc_platform_device_compute_state<g_api_dx11>::operator==(const bc_platform_device_compute_state& p_other) const noexcept
 		{
 			return m_pack.m_compute_state_proxy == p_other.m_pack.m_compute_state_proxy;

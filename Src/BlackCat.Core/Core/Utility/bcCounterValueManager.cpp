@@ -1,7 +1,7 @@
 // [11/09/2020 MRB]
 
 #include "Core/CorePCH.h"
-#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Utility/bcCounterValueManager.h"
 #include "Core/bcEvent.h"
 
@@ -58,7 +58,7 @@ namespace black_cat
 
 		bool bc_counter_value_manager::_event_handler(bc_ievent& p_event)
 		{
-			if (bc_ievent::event_is< bc_event_frame_swap >(p_event))
+			if (bc_imessage::is< bc_event_frame_swap >(p_event))
 			{
 				m_container[m_read_container].clear();
 

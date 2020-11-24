@@ -5,7 +5,6 @@
 #include "Core/bcConstant.h"
 #include "Graphic/GraphicPCH.h"
 #include "Graphic/bcRenderApi.h"
-#include "Graphic/bcDeviceReference.h"
 #include "Graphic/bcDeviceRef.h"
 #include "Graphic/bcDeviceResourceContent.h"
 #include "Graphic/Shader/bcShader.h"
@@ -40,6 +39,8 @@ namespace black_cat
 
 			bool is_valid() const noexcept override;
 
+			void set_debug_name(const bcCHAR* p_name) noexcept override;
+			
 			bool operator==(const bc_platform_hull_shader& p_other) const noexcept;
 
 			bool operator!=(const bc_platform_hull_shader& p_other) const noexcept;

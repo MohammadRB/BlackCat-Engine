@@ -119,7 +119,7 @@ namespace black_cat
 
 		void bc_light_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
-			auto* l_world_transform_event = core::bc_event::event_as<bc_actor_event_world_transform>(p_event);
+			auto* l_world_transform_event = core::bc_imessage::as<bc_actor_event_world_transform>(p_event);
 			if(l_world_transform_event)
 			{
 				// TODO what if light is part of a mesh

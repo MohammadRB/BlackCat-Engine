@@ -80,11 +80,11 @@ namespace black_cat
 
 #define BC_EVENT(p_name) \
 	public: \
-	static constexpr const bcCHAR* event_name() \
+	static constexpr const bcCHAR* message_name() \
 	{ \
 		return BC_EVENT_NAME(p_name); \
 	} \
-	static constexpr bcUINT32 event_hash() \
+	static constexpr bcUINT32 message_hash() \
 	{ \
 		return BC_COMPILE_TIME_STRING_HASH(BC_EVENT_NAME(p_name)); \
 	} \

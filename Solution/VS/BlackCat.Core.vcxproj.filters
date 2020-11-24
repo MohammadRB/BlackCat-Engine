@@ -19,9 +19,6 @@
     <Filter Include="Core\Container">
       <UniqueIdentifier>{221c83fa-ef3d-4f96-bd67-cae3f536051b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Event">
-      <UniqueIdentifier>{6083e4c9-2b35-4d98-aef5-2b17aa4d215e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core\File">
       <UniqueIdentifier>{9f943238-4749-4434-8381-65ea7b8dd4d5}</UniqueIdentifier>
     </Filter>
@@ -33,6 +30,9 @@
     </Filter>
     <Filter Include="Core\Messaging\Query">
       <UniqueIdentifier>{bdf639a2-8173-467b-b4f7-81c2cbc29942}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Messaging\Event">
+      <UniqueIdentifier>{6b5d20b1-ffa4-4168-a8f4-ed1db54e6ff4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -74,15 +74,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcVector.h">
       <Filter>Core\Container</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Event\bcEvent.h">
-      <Filter>Core\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Event\bcEventHandler.h">
-      <Filter>Core\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Event\bcEventManager.h">
-      <Filter>Core\Event</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcCoordinate.h">
       <Filter>Core\Math</Filter>
@@ -270,9 +261,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcLazyContent.h">
       <Filter>Core\Content</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Event\bcEventListenerHandle.h">
-      <Filter>Core\Event</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectStackPool.h">
       <Filter>Core\Utility</Filter>
     </ClInclude>
@@ -312,6 +300,18 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcCurve.h">
       <Filter>Core\Math</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEvent.h">
+      <Filter>Core\Messaging\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEventHandler.h">
+      <Filter>Core\Messaging\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEventListenerHandle.h">
+      <Filter>Core\Messaging\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEventManager.h">
+      <Filter>Core\Messaging\Event</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.cpp">
@@ -322,9 +322,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Container\bcString.cpp">
       <Filter>Core\Container</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Event\bcEventManager.cpp">
-      <Filter>Core\Event</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcMatrix3f.cpp">
       <Filter>Core\Math</Filter>
@@ -352,9 +349,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\CorePCH.cpp">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Event\bcEvent.cpp">
-      <Filter>Core\Event</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryHeap.cpp">
       <Filter>Core\Memory</Filter>
@@ -401,12 +395,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryHeap.cpp">
       <Filter>Core\Memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpression.cpp">
-      <Filter>Core\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcExpressionParameterManager.cpp">
-      <Filter>Core\Utility</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcLogger.cpp">
       <Filter>Core\Utility</Filter>
     </ClCompile>
@@ -421,9 +409,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Content\bcContentStreamManager.cpp">
       <Filter>Core\Content</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Event\bcEventListenerHandle.cpp">
-      <Filter>Core\Event</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectStackPool.cpp">
       <Filter>Core\Utility</Filter>
@@ -442,6 +427,15 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcCounterValueManager.cpp">
       <Filter>Core\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEvent.cpp">
+      <Filter>Core\Messaging\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEventListenerHandle.cpp">
+      <Filter>Core\Messaging\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEventManager.cpp">
+      <Filter>Core\Messaging\Event</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

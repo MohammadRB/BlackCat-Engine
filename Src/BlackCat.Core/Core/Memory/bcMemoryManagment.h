@@ -3,13 +3,14 @@
 #pragma once
 
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/CorePCH.h"
 #include "Core/bcExport.h"
 #include "Core/Memory/bcMemoryCRT.h"
 #include "Core/Memory/bcMemoryFixedSize.h"
 #include "Core/Memory/bcMemoryStack.h"
 #include "Core/Memory/bcMemoryHeap.h"
-#include "Core/Memory/bcMemMngHashMap.h"
+#include <unordered_map>
 
 namespace black_cat
 {
@@ -120,7 +121,8 @@ namespace black_cat
 			bc_memory_crt* m_crt_allocator;
 #ifdef BC_MEMORY_LEAK_DETECTION
 			core_platform::bc_atomic< bcUINT32 > m_allocation_count;
-			bc_memmng_hashmap<bc_mem_block_leak_information, 15, 5>* m_leak_allocator;
+			mutable core_platform::bc_mutex m_leak_allocator_mutex;
+			std::unordered_map<void*, bc_mem_block_leak_information>* m_leak_allocator;
 #endif
 		};
 

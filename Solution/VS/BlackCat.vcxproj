@@ -141,6 +141,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Application\bcApplicationHookFuncations.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Application\bcRenderApplication.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\bcConstant.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\bcException.h" />

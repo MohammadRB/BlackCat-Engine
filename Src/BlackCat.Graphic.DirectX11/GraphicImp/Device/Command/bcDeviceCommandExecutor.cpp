@@ -72,6 +72,12 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
+		void bc_platform_device_command_executor<g_api_dx11>::set_debug_name(const bcCHAR* p_name) noexcept
+		{
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
 		bool bc_platform_device_command_executor<g_api_dx11>::operator==(const bc_platform_device_command_executor& p_other) const noexcept
 		{
 			return true;

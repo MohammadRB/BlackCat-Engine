@@ -6,10 +6,10 @@
 
 #define THREAD_GROUP_SIZE 16
 
-RWStructuredBuffer<particle> g_particles				: register(BC_COMPUTE_STATE_T0);
-RWStructuredBuffer<alive_particle> g_alive_indices		: register(BC_COMPUTE_STATE_T1);
-AppendStructuredBuffer<uint> g_dead_indices				: register(BC_COMPUTE_STATE_T2);
-RWStructuredBuffer<uint2> g_draw_call_args				: register(BC_COMPUTE_STATE_T3);
+RWStructuredBuffer<particle> g_particles				: register(BC_COMPUTE_STATE_U0);
+RWStructuredBuffer<alive_particle> g_alive_indices		: register(BC_COMPUTE_STATE_U1);
+AppendStructuredBuffer<uint> g_dead_indices				: register(BC_COMPUTE_STATE_U2);
+//RWStructuredBuffer<uint2> g_draw_call_args				: register(BC_COMPUTE_STATE_U3);
 
 [numthreads(THREAD_GROUP_SIZE, 1, 1)]
 void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uint3 p_group_thread_id : SV_GroupThreadID, uint3 p_dispatch_thread_id : SV_DispatchThreadID)
@@ -20,7 +20,11 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	l_particle.m_age += g_elapsed;
 	if (l_particle.m_age > l_particle.m_lifetime)
 	{
-		g_dead_indices.Append(l_particle_index);
+		// If it was already dead
+		if (l_particle.m_age - g_elapsed <= l_particle.m_lifetime)
+		{
+			g_dead_indices.Append(l_particle_index);
+		}
 		return;
 	}
 
@@ -39,14 +43,14 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	uint l_alive_count = g_alive_indices.IncrementCounter() + 1;
 	g_alive_indices[l_alive_count] = l_alive_particle;
 	
-	AllMemoryBarrierWithGroupSync();
+	//DeviceMemoryBarrierWithGroupSync();
 	
-	if (l_particle_index == 0)
-	{
-		uint l_alive_count = g_alive_indices.IncrementCounter();
-		g_alive_indices.DecrementCounter();
+	//if (l_particle_index == 0)
+	//{
+	//	uint l_alive_count = g_alive_indices.IncrementCounter();
+	//	g_alive_indices.DecrementCounter();
 		
-		g_draw_call_args[0] = uint2(1, l_alive_count);
-		g_draw_call_args[1] = uint2(0, 0);
-	}
+	//	g_draw_call_args[0] = uint2(1, 0); // Number of alive particles will be written by copy_structure_count
+	//	g_draw_call_args[1] = uint2(0, 0);
+	//}
 }

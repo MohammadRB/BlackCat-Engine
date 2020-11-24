@@ -6,7 +6,7 @@
 #include "CorePlatformImp/Utility/bcHardwareInfo.h"
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Content/bcContentStreamManager.h"
-#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Utility/bcEnumOperand.h"
 #include "Core/Utility/bcLogger.h"
 #include "Core/bcEvent.h"
@@ -23,6 +23,7 @@
 #include "Game/System/Render/bcRenderThreadManager.h"
 #include "Game/System/Render/bcFrameRenderer.h"
 #include "Game/System/Render/Light/bcLightManager.h"
+#include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/Object/Scene/bcScene.h"
 
 namespace black_cat
@@ -58,6 +59,7 @@ namespace black_cat
 			m_material_manager = std::move(p_other.m_material_manager);
 			m_render_pass_manager = std::move(p_other.m_render_pass_manager);
 			m_light_manager = std::move(p_other.m_light_manager);
+			m_particle_manager = std::move(p_other.m_particle_manager);
 			m_shape_drawer = std::move(p_other.m_shape_drawer);
 			m_frame_renderer = std::move(p_other.m_frame_renderer);
 
@@ -71,7 +73,7 @@ namespace black_cat
 
 			return *this;
 		}
-
+		
 		bool bc_render_system::remove_render_pass(bcUINT p_location)
 		{
 			bc_irender_pass* l_pass = m_render_pass_manager->get_pass(p_location);
@@ -230,8 +232,9 @@ namespace black_cat
 				l_cbuffer_parameter.set_register_index(l_parameter_register++);
 			}
 
+			bcSIZE l_insert_index;
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
+				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_pass_states_mutex);
 
 				auto l_first_empty = std::find_if(std::begin(m_render_pass_states), std::end(m_render_pass_states), [](const core::bc_nullable< bc_render_pass_state >& p_item)
 				{
@@ -250,9 +253,10 @@ namespace black_cat
 					std::advance(l_first_empty, std::size(m_render_pass_states) - 1);
 				}
 
-				auto l_first_empty_index = std::distance(std::begin(m_render_pass_states), l_first_empty);
-				return bc_render_pass_state_ptr(_bc_render_state_handle(l_first_empty_index), _bc_render_pass_state_handle_deleter(this));
+				l_insert_index = std::distance(std::begin(m_render_pass_states), l_first_empty);
 			}
+
+			return bc_render_pass_state_ptr(_bc_render_state_handle(l_insert_index), _bc_render_pass_state_handle_deleter(this));
 		}
 		
 		bc_render_state_ptr bc_render_system::create_render_state(graphic::bc_primitive p_primitive,
@@ -294,6 +298,7 @@ namespace black_cat
 				l_cbuffer_parameter.set_register_index(l_parameter_register++);
 			}
 
+			bcSIZE l_insert_index;
 			{
 				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
 
@@ -314,9 +319,10 @@ namespace black_cat
 					std::advance(l_first_empty, std::size(m_render_states) - 1);
 				}
 
-				const auto l_first_empty_index = std::distance(std::begin(m_render_states), l_first_empty);
-				return bc_render_state_ptr(_bc_render_state_handle(l_first_empty_index), _bc_render_state_handle_deleter(this));
+				l_insert_index = std::distance(std::begin(m_render_states), l_first_empty);
 			}
+
+			return bc_render_state_ptr(_bc_render_state_handle(l_insert_index), _bc_render_state_handle_deleter(this));
 		}
 
 		bc_compute_state_ptr bc_render_system::create_compute_state(graphic::bc_device_compute_state p_compute_state,
@@ -366,8 +372,9 @@ namespace black_cat
 				l_cbuffer_parameter.set_register_index(l_parameter_register++);
 			}
 
+			bcSIZE l_insert_index;
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
+				core_platform::bc_mutex_guard l_guard(m_compute_states_mutex);
 				
 				auto l_first_empty = std::find_if(std::begin(m_compute_states), std::end(m_compute_states), [](const core::bc_nullable< bc_compute_state >& p_item)
 				{
@@ -386,11 +393,10 @@ namespace black_cat
 					std::advance(l_first_empty, std::size(m_compute_states) - 1);
 				}
 
-				auto l_first_empty_index = std::distance(std::begin(m_compute_states), l_first_empty);
-				auto l_ptr = bc_compute_state_ptr(_bc_render_state_handle(l_first_empty_index), _bc_compute_state_handle_deleter(this));
-
-				return l_ptr;
+				l_insert_index = std::distance(std::begin(m_compute_states), l_first_empty);
 			}
+
+			return bc_compute_state_ptr(_bc_render_state_handle(l_insert_index), _bc_compute_state_handle_deleter(this));
 		}
 
 		void bc_render_system::_initialize(core::bc_content_stream_manager& p_content_stream, bc_render_system_parameter p_parameter)
@@ -413,6 +419,7 @@ namespace black_cat
 			m_material_manager = core::bc_make_unique< bc_material_manager >(p_content_stream, *this);
 			m_render_pass_manager = core::bc_make_unique< bc_render_pass_manager >();
 			m_light_manager = core::bc_make_unique< bc_light_manager >();
+			m_particle_manager = core::bc_make_unique< bc_particle_manager >();
 			m_shape_drawer = core::bc_make_unique< bc_shape_drawer >();
 			m_frame_renderer = core::bc_make_unique< bc_frame_renderer >(m_device, *m_thread_manager, *m_render_pass_manager);
 
@@ -444,6 +451,7 @@ namespace black_cat
 
 			m_frame_renderer.reset();
 			m_shape_drawer.reset();
+			m_particle_manager.reset();
 			m_light_manager.reset();
 			m_render_pass_manager.reset();
 			m_material_manager.reset();
@@ -490,7 +498,7 @@ namespace black_cat
 		
 		bool bc_render_system::_event_handler(core::bc_ievent& p_event)
 		{
-			if(core::bc_ievent::event_is<platform::bc_app_event_window_resize>(p_event))
+			if(core::bc_imessage::is<platform::bc_app_event_window_resize>(p_event))
 			{
 				auto& l_resize_event = static_cast< platform::bc_app_event_window_resize& >(p_event);
 
@@ -528,7 +536,7 @@ namespace black_cat
 				return true;
 			}
 			
-			if(core::bc_ievent::event_is<graphic::bc_app_event_device_reset>(p_event))
+			if(core::bc_imessage::is<graphic::bc_app_event_device_reset>(p_event))
 			{
 				auto& l_device_reset_event = static_cast<graphic::bc_app_event_device_reset&>(p_event);
 				
@@ -553,7 +561,7 @@ namespace black_cat
 				return true;
 			}
 
-			if (core::bc_ievent::event_is<core::bc_event_frame_render_finish>(p_event))
+			if (core::bc_imessage::is<core::bc_event_frame_render_finish>(p_event))
 			{
 				m_shape_drawer->clear_swap_buffers();
 
@@ -589,20 +597,24 @@ namespace black_cat
 
 		bc_compute_state* bc_render_system::_get_compute_state(const _bc_render_state_handle& p_handle)
 		{
-			auto& l_compute_state = m_compute_states.at(p_handle.m_handle);
-
-			if (l_compute_state.is_set())
 			{
-				return &l_compute_state.get();
-			}
+				core_platform::bc_mutex_guard l_lock(m_compute_states_mutex);
 
-			return nullptr;
+				auto& l_compute_state = m_compute_states.at(p_handle.m_handle);
+
+				if (l_compute_state.is_set())
+				{
+					return &l_compute_state.get();
+				}
+
+				return nullptr;
+			}
 		}
 
 		void bc_render_system::_destroy_render_pass_state(const bc_render_pass_state* p_render_pass_state)
 		{
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
+				core_platform::bc_mutex_guard l_guard(m_render_pass_states_mutex);
 
 				auto l_item = std::find_if(std::begin(m_render_pass_states), std::end(m_render_pass_states), [p_render_pass_state](const core::bc_nullable< bc_render_pass_state >& p_item)
 				{
@@ -623,7 +635,7 @@ namespace black_cat
 		void bc_render_system::_destroy_render_state(const bc_render_state* p_render_state)
 		{
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
+				core_platform::bc_mutex_guard l_guard(m_render_states_mutex);
 
 				auto l_item = std::find_if(std::begin(m_render_states), std::end(m_render_states), [p_render_state](const core::bc_nullable<bc_render_state>& p_item)
 				{
@@ -643,9 +655,10 @@ namespace black_cat
 
 		void bc_render_system::_destroy_compute_state(const bc_compute_state* p_compute_state)
 		{
-			core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
 			{
-				auto l_item = std::find_if(std::begin(m_compute_states), std::end(m_compute_states), [p_compute_state](const core::bc_nullable< bc_compute_state >& p_item)
+				core_platform::bc_mutex_guard l_guard(m_compute_states_mutex);
+
+				const auto l_item = std::find_if(std::begin(m_compute_states), std::end(m_compute_states), [p_compute_state](const core::bc_nullable< bc_compute_state >& p_item)
 				{
 					return p_item.is_set() && &p_item.get() == p_compute_state;
 				});

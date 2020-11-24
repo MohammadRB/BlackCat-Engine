@@ -75,15 +75,8 @@ namespace black_cat
 			core::bc_get_service< bc_ui_command_service >()->load_content();
 
 			auto* l_content_manager = core::bc_get_service< core::bc_content_manager >();
-			auto* l_content_stream_manager = core::bc_get_service< core::bc_content_stream_manager >();
-			auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
-			auto& l_material_manager = m_game_system->get_render_system().get_material_manager();
-
 			auto& l_file_system = m_game_system->get_file_system();
 
-			l_content_stream_manager->read_stream_file(l_file_system.get_content_path(bcL("Scene\\CrysisHeightMap_ContentStream.json")).c_str());
-			l_entity_manager->read_entity_file(l_file_system.get_content_path(bcL("Scene\\CrysisHeightMap_EntityType.json")).c_str());
-			l_material_manager.read_material_file(l_file_system.get_content_path(bcL("Scene\\CrysisHeightMap_Material.json")).c_str());
 			const auto l_crysis_scene = l_content_manager->load< game::bc_scene >
 			(
 				l_file_system.get_content_path(bcL("Scene\\CrysisHeightMap.json")).c_str(),
@@ -103,7 +96,7 @@ namespace black_cat
 
 		bool bc_editor_render_app::application_event(core::bc_ievent& p_event)
 		{
-			auto* l_key_event = core::bc_ievent::event_as<platform::bc_app_event_key>(p_event);
+			auto* l_key_event = core::bc_imessage::as<platform::bc_app_event_key>(p_event);
 			if (l_key_event == nullptr)
 			{
 				return false;

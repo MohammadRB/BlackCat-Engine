@@ -4,7 +4,7 @@
 
 #include "CorePlatform/bcType.h"
 #include "CorePlatform/bcPlatform.h"
-#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 
 namespace black_cat
 {

@@ -93,6 +93,16 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
+		void bc_platform_buffer<g_api_dx11>::set_debug_name(const bcCHAR* p_name) noexcept
+		{
+			if (is_valid())
+			{
+				m_pack.m_buffer->SetPrivateData(WKPDID_D3DDebugObjectName, std::strlen(p_name), p_name);
+			}
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
 		bool bc_platform_buffer<g_api_dx11>::operator==(const bc_platform_buffer& p_other) const noexcept
 		{
 			return m_pack.m_buffer == p_other.m_pack.m_buffer;

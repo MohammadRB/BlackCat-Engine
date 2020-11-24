@@ -46,6 +46,7 @@ namespace black_cat
 
 		bc_render_pass_state& bc_render_pass_state::operator=(bc_render_pass_state&& p_other) noexcept
 		{
+			bc_ref_count::operator=(std::move(p_other));
 			m_pipeline_state = p_other.m_pipeline_state;
 			m_viewport = p_other.m_viewport;
 			m_shader_targets = std::move(p_other.m_shader_targets);
@@ -53,7 +54,6 @@ namespace black_cat
 			m_shader_samplers = std::move(p_other.m_shader_samplers);
 			m_resource_views = std::move(p_other.m_resource_views);
 			m_shader_cbuffers = std::move(p_other.m_shader_cbuffers);
-			bc_ref_count::operator=(std::move(p_other));
 
 			return *this;
 		}

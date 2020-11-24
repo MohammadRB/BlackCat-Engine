@@ -43,8 +43,6 @@ namespace black_cat
 
 			void _add_json_value(bc_ijson_value* p_parser);
 
-		protected:
-
 		private:
 			bc_vector<bc_ijson_value*> m_json_fields;
 		};
@@ -337,8 +335,6 @@ namespace black_cat
 			{
 				return &get();
 			}
-
-		protected:
 
 		private:
 			void _load(bc_json_value_object& p_json_value, bool& p_value)
@@ -766,8 +762,6 @@ namespace black_cat
 				return get();
 			}
 
-		protected:
-
 		private:
 			const bcCHAR* m_name;
 			T m_value;
@@ -884,8 +878,6 @@ namespace black_cat
 			{
 				return m_value.size();
 			}
-
-		protected:
 
 		private:
 			const bcCHAR* m_name;
@@ -1019,8 +1011,6 @@ namespace black_cat
 				return m_value.size();
 			}
 
-		protected:
-
 		private:
 			const bcCHAR* m_name;
 			list_t m_value;			// Because json objects are not copyable and movable we have used list instead of vector
@@ -1101,8 +1091,6 @@ namespace black_cat
 			{
 				return get();
 			}
-
-		protected:
 
 		private:
 			T m_value;

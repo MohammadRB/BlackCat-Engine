@@ -75,6 +75,23 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
+		void bc_platform_resource_view<g_api_dx11>::set_debug_name(const bcCHAR* p_name) noexcept
+		{
+			if (is_valid())
+			{
+				if(m_pack.m_shader_view)
+				{
+					m_pack.m_shader_view->SetPrivateData(WKPDID_D3DDebugObjectName, std::strlen(p_name), p_name);
+				}
+				if(m_pack.m_unordered_shader_view)
+				{
+					m_pack.m_unordered_shader_view->SetPrivateData(WKPDID_D3DDebugObjectName, std::strlen(p_name), p_name);
+				}
+			}
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
 			bool bc_platform_resource_view<g_api_dx11>::operator==(const bc_platform_resource_view& p_other) const noexcept
 		{
 			if (m_type != p_other.m_type)

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Core/Event/bcEvent.h"
+#include "Core/Messaging/Event/bcEvent.h"
 #include "Graphic/bcRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
 
@@ -43,7 +43,7 @@ namespace black_cat
 				bc_device_parameters& p_old_parameters,
 				bc_device_parameters& p_new_parameters,
 				bool p_before_reset)
-				: bc_app_render_event(event_name()),
+				: bc_app_render_event(message_name()),
 				m_device(&p_device),
 				m_old_parameters(p_old_parameters),
 				m_new_parameters(p_new_parameters),

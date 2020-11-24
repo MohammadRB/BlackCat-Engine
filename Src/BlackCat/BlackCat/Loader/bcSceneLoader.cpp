@@ -14,6 +14,7 @@
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
+#include "Game/System/Render/bcMaterialManager.h"
 #include "Game/System/bcGameSystem.h"
 #include "BlackCat/Loader/bcSceneLoader.h"
 
@@ -35,6 +36,9 @@ namespace black_cat
 	BC_JSON_STRUCTURE(_bc_scene_json)
 	{
 		BC_JSON_VALUE(core::bc_string_frame, name);
+		BC_JSON_ARRAY(core::bc_string_frame, stream_files);
+		BC_JSON_ARRAY(core::bc_string_frame, entity_files);
+		BC_JSON_ARRAY(core::bc_string_frame, material_files);
 		BC_JSON_ARRAY(core::bc_string_frame, streams);
 		BC_JSON_OBJECT(_bc_scene_graph_json, scene_graph);
 		BC_JSON_ARRAY(_bc_scene_actor, actors);
@@ -61,7 +65,25 @@ namespace black_cat
 		auto* l_game_system = core::bc_get_service< game::bc_game_system >();
 		auto* l_content_stream_manager = core::bc_get_service< core::bc_content_stream_manager >();
 		auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
+		auto& l_material_manager = l_game_system->get_render_system().get_material_manager();
+		auto& l_file_system = l_game_system->get_file_system();
 
+		for (core::bc_json_value< core::bc_string_frame >& l_stream_file : l_json->m_stream_files)
+		{
+			auto l_path = core::bc_to_estring_frame(l_stream_file->c_str());
+			l_content_stream_manager->read_stream_file(l_file_system.get_content_path(l_path.c_str()).c_str());
+		}
+		for (core::bc_json_value< core::bc_string_frame >& l_entity_file : l_json->m_entity_files)
+		{
+			auto l_path = core::bc_to_estring_frame(l_entity_file->c_str());
+			l_entity_manager->read_entity_file(l_file_system.get_content_path(l_path.c_str()).c_str());
+		}
+		for (core::bc_json_value< core::bc_string_frame >& l_material_file : l_json->m_material_files)
+		{
+			auto l_path = core::bc_to_estring_frame(l_material_file->c_str());
+			l_material_manager.read_material_file(l_file_system.get_content_path(l_path.c_str()).c_str());
+		}
+		
 		core::bc_vector_frame< core::bc_task< void > > l_stream_tasks;
 		l_stream_tasks.reserve(l_json->m_streams.size());
 

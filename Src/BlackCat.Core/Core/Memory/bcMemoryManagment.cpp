@@ -55,10 +55,10 @@ namespace black_cat
 					(
 						[=]()
 						{
-							const bcUINT32 l_block_size = m_fsa_allocators_start_size + i * m_fsa_step_size;
-							std::string l_tag = std::string("FSA") + std::to_string(i);
+							const bcSIZE l_block_size = m_fsa_allocators_start_size + i * m_fsa_step_size;
+							const std::string l_tag = std::string("FSA") + std::to_string(i);
 
-							bc_memory_fixed_size* l_result = new bc_memory_fixed_size();
+							auto* l_result = new bc_memory_fixed_size();
 							l_result->initialize(p_fsa_num_allocations, l_block_size, l_tag.c_str());
 
 							return l_result;
@@ -88,7 +88,7 @@ namespace black_cat
 
 #ifdef BC_MEMORY_LEAK_DETECTION
 				m_allocation_count.store(0, core_platform::bc_memory_order::relaxed);
-				m_leak_allocator = new bc_memmng_hashmap<bc_mem_block_leak_information, 15, 5>();
+				m_leak_allocator = new std::unordered_map<void*, bc_mem_block_leak_information>();
 #endif
 			}
 			catch (std::bad_alloc& ex)
@@ -146,7 +146,7 @@ namespace black_cat
 			bc_memory* l_allocator = nullptr;
 			bc_memblock l_block;
 			bc_memblock::initialize_mem_block_before_allocation(p_size, BC_MEMORY_MIN_ALIGN, &l_block);
-			bcSIZE l_size = l_block.size();
+			const bcSIZE l_size = l_block.size();
 
 			switch (p_allocType)
 			{
@@ -160,7 +160,7 @@ namespace black_cat
 				// Check request can be handled by FSAllocators
 				if (l_size <= _fsa_index_max_size(m_fsa_num_allocators - 1))
 				{
-					bcUINT32 l_fsa_index = _get_fsa_index(l_size);
+					const bcUINT32 l_fsa_index = _get_fsa_index(l_size);
 					l_result = (m_fsa_allocators + l_fsa_index)->alloc(&l_block);
 					l_allocator = (m_fsa_allocators + l_fsa_index);
 				}
@@ -192,18 +192,25 @@ namespace black_cat
 			bc_memblock::initialize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			m_leak_allocator->insert
-			(
-				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(l_result) - l_block.offset()),
-				bc_mem_block_leak_information
+			{
+				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
+
+				m_leak_allocator->insert
 				(
-					l_result,
-					m_allocation_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1,
-					p_size,
-					p_line,
-					p_file
-				)
-			);
+					std::make_pair
+					(
+						reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(l_result) - l_block.offset()),
+						bc_mem_block_leak_information
+						(
+							l_result,
+							m_allocation_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1,
+							p_size,
+							p_line,
+							p_file
+						)
+					)
+				);
+			}
 #endif
 
 			return l_result;
@@ -221,28 +228,32 @@ namespace black_cat
 
 			bcAssert(l_block);
 
-			bc_memory* l_allocator = reinterpret_cast<bc_memory*>(l_block->extra());
+			auto* l_allocator = reinterpret_cast<bc_memory*>(l_block->extra());
 			l_allocator->free(l_pointer, l_block);
 
 			bc_memblock::free_mem_block(l_pointer);
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			m_leak_allocator->remove(l_pointer);
+			{
+				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
+
+				m_leak_allocator->erase(l_pointer);
+			}
 #endif
 		}
 		
 		void* bc_memmng::realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
-			bc_memblock* l_block = bc_memblock::retrieve_mem_block(p_pointer);
+			auto* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 
-			void* l_new_pointer = alloc(p_new_size, p_alloc_type, p_file, p_line);
+			auto* l_new_pointer = alloc(p_new_size, p_alloc_type, p_file, p_line);
 			if (!l_new_pointer) 
 			{
 				return l_new_pointer;
 			}
 
-			bc_memblock* l_new_block = bc_memblock::retrieve_mem_block(l_new_pointer);
-			bcSIZE l_min_size = std::min<bcSIZE>(l_block->size() - l_block->offset(), l_new_block->size() - l_new_block->offset());
+			auto* l_new_block = bc_memblock::retrieve_mem_block(l_new_pointer);
+			const bcSIZE l_min_size = std::min<bcSIZE>(l_block->size() - l_block->offset(), l_new_block->size() - l_new_block->offset());
 
 			std::memcpy
 			(
@@ -264,7 +275,7 @@ namespace black_cat
 			bc_memory* l_allocator = nullptr;
 			bc_memblock l_block;
 			bc_memblock::initialize_mem_block_before_allocation(p_size, p_alignment, &l_block);
-			bcSIZE l_size = l_block.size();
+			const bcSIZE l_size = l_block.size();
 
 			switch (p_alloc_type)
 			{
@@ -309,18 +320,25 @@ namespace black_cat
 			bc_memblock::initialize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			m_leak_allocator->insert
-			(
-				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(l_result) - l_block.offset()),
-				bc_mem_block_leak_information
+			{
+				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
+
+				m_leak_allocator->insert
 				(
-					l_result,
-					m_allocation_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1,
-					p_size,
-					p_line,
-					p_file
-				)
-			);
+					std::make_pair
+					(
+						reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(l_result) - l_block.offset()),
+						bc_mem_block_leak_information
+						(
+							l_result,
+							m_allocation_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1,
+							p_size,
+							p_line,
+							p_file
+						)
+					)
+				);
+			}
 #endif
 
 			return l_result;
@@ -338,24 +356,28 @@ namespace black_cat
 
 			bcAssert(l_block);
 
-			bc_memory* l_allocator = reinterpret_cast<bc_memory*>(l_block->extra());
+			auto* l_allocator = reinterpret_cast<bc_memory*>(l_block->extra());
 			l_allocator->free(l_pointer, l_block);
 
 			bc_memblock::free_mem_block(l_pointer);
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			m_leak_allocator->remove(l_pointer);
+			{
+				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
+
+				m_leak_allocator->erase(l_pointer);
+			}
 #endif
 		}
 		
 		void* bc_memmng::aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
-			bc_memblock* l_block = bc_memblock::retrieve_mem_block(p_pointer);
+			auto* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 
-			void* l_new_pointer = aligned_alloc(p_new_size, p_alignment, p_alloc_type, p_file, p_line);
-			bc_memblock* l_new_block = bc_memblock::retrieve_mem_block(l_new_pointer);
+			auto* l_new_pointer = aligned_alloc(p_new_size, p_alignment, p_alloc_type, p_file, p_line);
+			auto* l_new_block = bc_memblock::retrieve_mem_block(l_new_pointer);
 
-			bcSIZE l_min_size = std::min<bcSIZE>(l_block->size() - l_block->offset(), l_new_block->size() - l_new_block->offset());
+			const bcSIZE l_min_size = std::min<bcSIZE>(l_block->size() - l_block->offset(), l_new_block->size() - l_new_block->offset());
 
 			std::memcpy
 			(
@@ -375,18 +397,26 @@ namespace black_cat
 			bcUINT32 l_num_fragment = m_super_heap->fragmentation_count();
 			l_num_fragment = l_num_fragment == 0 ? 0 : l_num_fragment / 3 + 1;
 
-			m_super_heap->defragment
-			(
-				l_num_fragment,
+			{
 #ifdef BC_MEMORY_LEAK_DETECTION
-				[this](void* p_old, void* p_new)
-				{
-					this->m_leak_allocator->relocate(p_old, p_new);
-				}
-#else
-				bc_memory_heap::defrag_callback()
+				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
 #endif
-			);
+
+				m_super_heap->defragment
+				(
+					l_num_fragment,
+#ifdef BC_MEMORY_LEAK_DETECTION
+					[this](void* p_old, void* p_new)
+					{
+						auto l_old_ite = m_leak_allocator->find(p_old);
+						m_leak_allocator->insert(std::make_pair(p_new, l_old_ite->second));
+						m_leak_allocator->erase(l_old_ite);
+					}
+#else
+					bc_memory_heap::defrag_callback()
+#endif
+				);
+			}
 #endif
 
 			bcAssert(m_per_frame_stack->tracer().alloc_count() == 0);
@@ -466,17 +496,24 @@ namespace black_cat
 #ifdef BC_MEMORY_LEAK_DETECTION
 		bcUINT32 bc_memmng::report_memory_leaks() const
 		{
-			bcSIZE l_leak_count = m_leak_allocator->count();
-			
-			m_leak_allocator->iterate_over([](void* p_key, bc_mem_block_leak_information& p_value)->void
+			{
+				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
+
+				const bcSIZE l_leak_count = m_leak_allocator->size();
+
+				for (auto& l_leak : *m_leak_allocator)
+				{
+					bc_memblock* l_memblock = bc_memblock::retrieve_mem_block(l_leak.first);
+				}
+
+				return l_leak_count;
+			}
+			/*m_leak_allocator->iterate_over([](void* p_key, bc_mem_block_leak_information& p_value)->void
 			{
 				bc_memblock* l_memblock = bc_memblock::retrieve_mem_block(p_value.m_pointer);
-			});
-
-			return l_leak_count;
+			});*/
 		}
 #endif
-
 #endif
 	}
 }

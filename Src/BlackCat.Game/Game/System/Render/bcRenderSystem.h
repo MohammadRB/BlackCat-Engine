@@ -8,7 +8,7 @@
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcArray.h"
-#include "Core/Event/bcEvent.h"
+#include "Core/Messaging/Event/bcEvent.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "GraphicImp/Device/bcDevice.h"
@@ -19,17 +19,17 @@
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/Pass/bcRenderPassManager.h"
+#include "Game/System/Render/Pass/bcRenderPassState.h"
 #include "Game/System/Render/State/bcStateConfigs.h"
 #include "Game/System/Render/State/bcRenderState.h"
-#include "Game/System/Render/Pass/bcRenderPassState.h"
 #include "Game/System/Render/State/bcComputeState.h"
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/System/Render/bcRenderSystemParameter.h"
 #include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
-#include "Game/System/Input/bcCamera.h"
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/System/Render/bcFrameRenderer.h"
+#include "Game/System/Input/bcCamera.h"
 
 namespace black_cat
 {
@@ -45,6 +45,7 @@ namespace black_cat
 		class bc_render_thread_manager;
 		class bc_material_manager;
 		class bc_light_manager;
+		class bc_particle_manager;
 		class bc_scene;
 		
 		struct bc_render_system_parameter
@@ -113,6 +114,8 @@ namespace black_cat
 			bc_material_manager& get_material_manager() noexcept;
 
 			bc_light_manager& get_light_manager() noexcept;
+
+			bc_particle_manager& get_particle_manager() noexcept;
 
 			bc_shape_drawer& get_shape_drawer() noexcept;
 
@@ -274,7 +277,9 @@ namespace black_cat
 
 			graphic::bc_device m_device;
 			
+			core_platform::bc_mutex m_render_pass_states_mutex;
 			core_platform::bc_mutex m_render_states_mutex;
+			core_platform::bc_mutex m_compute_states_mutex;
 			core::bc_vector< core::bc_nullable< bc_render_pass_state > > m_render_pass_states;
 			core::bc_vector< core::bc_nullable< bc_render_state > > m_render_states;
 			core::bc_vector< core::bc_nullable< bc_compute_state > > m_compute_states;
@@ -284,6 +289,7 @@ namespace black_cat
 			core::bc_unique_ptr< bc_material_manager > m_material_manager;
 			core::bc_unique_ptr< bc_render_pass_manager > m_render_pass_manager;
 			core::bc_unique_ptr< bc_light_manager > m_light_manager;
+			core::bc_unique_ptr< bc_particle_manager > m_particle_manager;
 			core::bc_unique_ptr< bc_shape_drawer > m_shape_drawer;
 			core::bc_unique_ptr< bc_frame_renderer > m_frame_renderer;
 
@@ -305,6 +311,11 @@ namespace black_cat
 		inline bc_light_manager& bc_render_system::get_light_manager() noexcept
 		{
 			return *m_light_manager;
+		}
+
+		inline bc_particle_manager& bc_render_system::get_particle_manager() noexcept
+		{
+			return *m_particle_manager;
 		}
 
 		inline bc_shape_drawer& bc_render_system::get_shape_drawer() noexcept

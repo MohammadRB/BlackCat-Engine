@@ -115,7 +115,7 @@ cbuffer g_cb_global_state				: register(BC_RENDER_PASS_STATE_CB0)
     double g_total_elapsed				: packoffset(c14.x);
     double g_total_elapsed_second		: packoffset(c14.z);
     float g_elapsed						: packoffset(c15.x);
-    float g_elapsed_second				: packoffset(c16.y);
+    float g_elapsed_second				: packoffset(c15.y);
 }
 
 // Bound to vertex, hull, domain shader
