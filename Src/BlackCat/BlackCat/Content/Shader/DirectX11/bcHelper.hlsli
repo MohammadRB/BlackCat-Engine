@@ -57,8 +57,8 @@ uint wang_hash(uint seed)
 
 float bc_random(uint p_seed)
 {
-	float l_rnd = wang_hash(p_seed);
-	return l_rnd * (1.f / 4294967295);
+	uint l_rnd = wang_hash(p_seed);
+	return l_rnd * (1.0f / uint(4294967295));
 }
 
 float bc_random(uint p_seed, float p_low, float p_high)

@@ -23,13 +23,13 @@ namespace black_cat
 			bc_platform_hull_stage& operator=(bc_platform_hull_stage&&) noexcept;
 
 		protected:
-			void apply_shader_program(bc_device_pipeline* p_pipeline) override;
+			void apply_shader_program(bc_device_pipeline& p_pipeline) override;
 
-			void apply_constant_buffers(bc_device_pipeline* p_pipeline) override;
+			void apply_constant_buffers(bc_device_pipeline& p_pipeline) override;
 
-			void apply_sampler_states(bc_device_pipeline* p_pipeline) override;
+			void apply_sampler_states(bc_device_pipeline& p_pipeline) override;
 
-			void apply_shader_resource_views(bc_device_pipeline* p_pipeline) override;
+			void apply_shader_resource_views(bc_device_pipeline& p_pipeline) override;
 
 			/*void apply_unordered_access_views(bc_device_pipeline& p_pipeline) override;*/
 		};

@@ -83,9 +83,9 @@ namespace black_cat
 
 			bc_platform_stream_output_stage& operator=(bc_platform_stream_output_stage&&) noexcept;
 
-			void apply_required_state(bc_device_pipeline* p_pipeline);
+			void apply_required_state(bc_device_pipeline& p_pipeline);
 
-			void set_to_default_state(bc_device_pipeline* p_pipeline);
+			void set_to_default_state(bc_device_pipeline& p_pipeline);
 
 			bc_stream_output_stage_state& get_required_state()
 			{

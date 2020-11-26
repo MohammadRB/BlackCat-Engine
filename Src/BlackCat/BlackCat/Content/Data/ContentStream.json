@@ -144,6 +144,24 @@
           "content_name": "compute_shader",
           "content_file": "content\\shader\\directx11\\particle\\bcParticleSort.hlsl",
           "content_parameter": { "function": "main" }
+        },
+        {
+          "content_title": "particle_render_vs",
+          "content_name": "vertex_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleRender.hlsl",
+          "content_parameter": { "function": "vs" }
+        },
+        {
+          "content_title": "particle_render_gs",
+          "content_name": "geometry_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleRender.hlsl",
+          "content_parameter": { "function": "gs" }
+        },
+        {
+          "content_title": "particle_render_ps",
+          "content_name": "pixel_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleRender.hlsl",
+          "content_parameter": { "function": "ps" }
         }
       ]
     },

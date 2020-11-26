@@ -44,16 +44,16 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_vertex_stage< g_api_dx11 >::apply_shader_program(bc_device_pipeline* p_pipeline)
+		void bc_platform_vertex_stage< g_api_dx11 >::apply_shader_program(bc_device_pipeline& p_pipeline)
 		{
 			// shader programs are in pipeline state
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_vertex_stage< g_api_dx11 >::apply_constant_buffers(bc_device_pipeline* p_pipeline)
+		void bc_platform_vertex_stage< g_api_dx11 >::apply_constant_buffers(bc_device_pipeline& p_pipeline)
 		{
-			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline_proxy->m_context;
+			ID3D11DeviceContext* l_context = p_pipeline.get_platform_pack().m_pipeline_proxy->m_context;
 
 			if (m_required_state.m_constant_buffers.update_needed())
 			{
@@ -74,9 +74,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_vertex_stage< g_api_dx11 >::apply_sampler_states(bc_device_pipeline* p_pipeline)
+		void bc_platform_vertex_stage< g_api_dx11 >::apply_sampler_states(bc_device_pipeline& p_pipeline)
 		{
-			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline_proxy->m_context;
+			ID3D11DeviceContext* l_context = p_pipeline.get_platform_pack().m_pipeline_proxy->m_context;
 			bc_programmable_stage_state& l_required_state = m_required_state;
 
 			if (m_required_state.m_sampler_states.update_needed())
@@ -98,9 +98,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_vertex_stage< g_api_dx11 >::apply_shader_resource_views(bc_device_pipeline* p_pipeline)
+		void bc_platform_vertex_stage< g_api_dx11 >::apply_shader_resource_views(bc_device_pipeline& p_pipeline)
 		{
-			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline_proxy->m_context;
+			ID3D11DeviceContext* l_context = p_pipeline.get_platform_pack().m_pipeline_proxy->m_context;
 			bc_programmable_stage_state& l_required_state = m_required_state;
 
 			if (m_required_state.m_shader_resource_views.update_needed())

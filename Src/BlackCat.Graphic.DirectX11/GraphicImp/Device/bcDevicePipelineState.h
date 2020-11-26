@@ -76,15 +76,18 @@ namespace black_cat
 		{
 			if (is_valid())
 			{
-				m_pack.m_pipeline_state_proxy->m_blend_state->SetPrivateData(WKPDID_D3DDebugObjectName, std::strlen(p_name), p_name);
-				m_pack.m_pipeline_state_proxy->m_depth_stencil_state->SetPrivateData(WKPDID_D3DDebugObjectName, std::strlen(p_name), p_name);
-				m_pack.m_pipeline_state_proxy->m_rasterizer_state->SetPrivateData(WKPDID_D3DDebugObjectName, std::strlen(p_name), p_name);
-				m_pack.m_pipeline_state_proxy->m_input_layout->SetPrivateData(WKPDID_D3DDebugObjectName, std::strlen(p_name), p_name);
 				m_pack.m_pipeline_state_proxy->m_config.m_vertex_shader.set_debug_name(p_name);
 				m_pack.m_pipeline_state_proxy->m_config.m_domain_shader.set_debug_name(p_name);
 				m_pack.m_pipeline_state_proxy->m_config.m_hull_shader.set_debug_name(p_name);
 				m_pack.m_pipeline_state_proxy->m_config.m_geometry_shader.set_debug_name(p_name);
 				m_pack.m_pipeline_state_proxy->m_config.m_pixel_shader.set_debug_name(p_name);
+				m_pack.m_pipeline_state_proxy->m_blend_state->SetPrivateData(WKPDID_D3DDebugObjectName, std::strlen(p_name), p_name);
+				m_pack.m_pipeline_state_proxy->m_depth_stencil_state->SetPrivateData(WKPDID_D3DDebugObjectName, std::strlen(p_name), p_name);
+				m_pack.m_pipeline_state_proxy->m_rasterizer_state->SetPrivateData(WKPDID_D3DDebugObjectName, std::strlen(p_name), p_name);
+				if(m_pack.m_pipeline_state_proxy->m_input_layout)
+				{
+					m_pack.m_pipeline_state_proxy->m_input_layout->SetPrivateData(WKPDID_D3DDebugObjectName, std::strlen(p_name), p_name);
+				}
 			}
 		}
 		

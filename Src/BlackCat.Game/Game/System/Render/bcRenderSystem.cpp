@@ -90,6 +90,7 @@ namespace black_cat
 
 		void bc_render_system::update(const update_param& p_update_params)
 		{
+			m_particle_manager->update(p_update_params.m_clock);
 			m_frame_renderer->update(bc_frame_renderer_update_param(p_update_params.m_clock, bc_camera_instance(p_update_params.m_camera)));
 		}
 
@@ -198,6 +199,7 @@ namespace black_cat
 			graphic::bc_depth_stencil_view p_shader_depth,
 			bc_render_pass_state_sampler_array&& p_shader_samplers,
 			bc_render_pass_state_resource_view_array&& p_resource_views,
+			bc_render_pass_state_unordered_view_array&& p_unordered_views,
 			bc_render_pass_state_constant_buffer_array&& p_shader_buffers)
 		{
 			bc_render_pass_state l_render_pass_state
@@ -208,6 +210,7 @@ namespace black_cat
 				p_shader_depth,
 				std::move(p_shader_samplers),
 				std::move(p_resource_views),
+				std::move(p_unordered_views),
 				std::move(p_shader_buffers)
 			);
 

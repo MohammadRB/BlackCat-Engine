@@ -6,6 +6,7 @@
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Utility/bcEnumOperand.h"
 #include "GraphicImp/Shader/Parameter/bcResourceViewParameter.h"
+#include "GraphicImp/Resource/View/bcRenderTargetViewConfig.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/Particle/bcParticleEmitter.h"
@@ -44,7 +45,7 @@ namespace black_cat
 		
 		auto l_emitters_buffer_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
-			.as_buffer(m_emitters_count, sizeof(_bc_emitter_struct), graphic::bc_resource_usage::gpu_r_cpu_w, graphic::bc_resource_view_type::shader)
+			.as_buffer(m_emitters_count, sizeof(_bc_emitter_struct), graphic::bc_resource_usage::gpu_rw, graphic::bc_resource_view_type::shader)
 			.with_structured_buffer(sizeof(_bc_emitter_struct))
 			.as_buffer();
 		auto l_particles_buffer_config = graphic::bc_graphic_resource_builder()
@@ -58,7 +59,7 @@ namespace black_cat
 			)
 			.with_structured_buffer(sizeof(_bc_particle_struct))
 			.as_buffer();
-		auto l_alive_particles_buffer = graphic::bc_graphic_resource_builder()
+		auto l_alive_particles_buffer_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_buffer
 			(
@@ -69,13 +70,13 @@ namespace black_cat
 			)
 			.with_structured_buffer(sizeof(_bc_alive_particle_struct))
 			.as_buffer();
-		auto l_dead_particles_buffer = graphic::bc_graphic_resource_builder()
+		auto l_dead_particles_buffer_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_buffer(m_particles_count, sizeof(bcUINT32), graphic::bc_resource_usage::gpu_rw, graphic::bc_resource_view_type::unordered)
 			.with_structured_buffer(sizeof(bcUINT32))
 			.with_append_consume(sizeof(bcUINT32))
 			.as_buffer();
-		auto l_draw_args_buffer = graphic::bc_graphic_resource_builder()
+		auto l_draw_args_buffer_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_buffer(4, sizeof(bcUINT32), graphic::bc_resource_usage::gpu_rw, graphic::bc_resource_view_type::shader)
 			.with_indirect_args_buffer()
@@ -94,46 +95,69 @@ namespace black_cat
 
 		m_emitters_buffer = l_device.create_buffer(l_emitters_buffer_config, nullptr);
 		m_particles_buffer = l_device.create_buffer(l_particles_buffer_config, nullptr);
-		m_alive_particles_buffer = l_device.create_buffer(l_alive_particles_buffer, nullptr);
-		m_dead_particles_buffer = l_device.create_buffer(l_dead_particles_buffer, &l_dead_particles_data);
-		m_draw_args_buffer = l_device.create_buffer(l_draw_args_buffer, &l_draw_args_data);
+		m_alive_particles_buffer = l_device.create_buffer(l_alive_particles_buffer_config, nullptr);
+		m_dead_particles_buffer = l_device.create_buffer(l_dead_particles_buffer_config, &l_dead_particles_data);
+		m_draw_args_buffer = l_device.create_buffer(l_draw_args_buffer_config, &l_draw_args_data);
 		
-		auto l_emitters_buffer_view_config = graphic::bc_graphic_resource_builder()
+		auto l_emitters_unordered_view_config = graphic::bc_graphic_resource_builder()
 			.as_resource_view()
 			.as_buffer_view(graphic::bc_format::unknown)
 			.as_shader_view(0, m_emitters_count)
 			.as_structured_buffer();
-		auto l_particles_buffer_view_config = graphic::bc_graphic_resource_builder()
+		auto l_particles_shader_view_config = graphic::bc_graphic_resource_builder()
+			.as_resource_view()
+			.as_buffer_view(graphic::bc_format::unknown)
+			.as_shader_view(0, m_particles_count)
+			.as_structured_buffer();
+		auto l_particles_unordered_view_config = graphic::bc_graphic_resource_builder()
 			.as_resource_view()
 			.as_buffer_view(graphic::bc_format::unknown)
 			.as_unordered_view(0, m_particles_count)
 			.as_structured_buffer();
-		auto l_alive_particles_buffer_view_config = graphic::bc_graphic_resource_builder()
+		auto l_alive_particles_shader_view_config = graphic::bc_graphic_resource_builder()
+			.as_resource_view()
+			.as_buffer_view(graphic::bc_format::unknown)
+			.as_shader_view(0, m_particles_count)
+			.as_structured_buffer();
+		auto l_alive_particles_unordered_view_config = graphic::bc_graphic_resource_builder()
 			.as_resource_view()
 			.as_buffer_view(graphic::bc_format::unknown)
 			.as_unordered_view(0, m_particles_count)
 			.as_structured_buffer();
-		auto l_dead_particles_buffer_view_config = graphic::bc_graphic_resource_builder()
+		auto l_dead_particles_unordered_view_config = graphic::bc_graphic_resource_builder()
 			.as_resource_view()
 			.as_buffer_view(graphic::bc_format::unknown)
 			.as_unordered_view(0, m_particles_count)
 			.as_append_consume();
-		auto l_draw_args_buffer_view_config = graphic::bc_graphic_resource_builder()
+		auto l_draw_args_unordered_view_config = graphic::bc_graphic_resource_builder()
 			.as_resource_view()
 			.as_buffer_view(graphic::bc_format::R32_UINT)
 			.as_shader_view(0, 4)
 			.as_indirect_args_buffer();
 
-		m_emitters_buffer_view = l_device.create_resource_view(m_emitters_buffer.get(), l_emitters_buffer_view_config);
-		m_particles_buffer_view = l_device.create_resource_view(m_particles_buffer.get(), l_particles_buffer_view_config);
-		m_alive_particles_buffer_view = l_device.create_resource_view(m_alive_particles_buffer.get(), l_alive_particles_buffer_view_config);
-		m_dead_particles_buffer_view = l_device.create_resource_view(m_dead_particles_buffer.get(), l_dead_particles_buffer_view_config);
-		m_draw_args_buffer_view = l_device.create_resource_view(m_draw_args_buffer.get(), l_draw_args_buffer_view_config);
+		m_emitters_shader_view = l_device.create_resource_view(m_emitters_buffer.get(), l_emitters_unordered_view_config);
+		m_particles_shader_view = l_device.create_resource_view(m_particles_buffer.get(), l_particles_shader_view_config);
+		m_particles_unordered_view = l_device.create_resource_view(m_particles_buffer.get(), l_particles_unordered_view_config);
+		m_alive_particles_shader_view = l_device.create_resource_view(m_alive_particles_buffer.get(), l_alive_particles_shader_view_config);
+		m_alive_particles_unordered_view = l_device.create_resource_view(m_alive_particles_buffer.get(), l_alive_particles_unordered_view_config);
+		m_dead_particles_unordered_view = l_device.create_resource_view(m_dead_particles_buffer.get(), l_dead_particles_unordered_view_config);
+		m_draw_args_unordered_view = l_device.create_resource_view(m_draw_args_buffer.get(), l_draw_args_unordered_view_config);
 
 		m_emission_compute_state = p_render_system.create_device_compute_state("particle_emission");
 		m_simulation_compute_state = p_render_system.create_device_compute_state("particle_simulation");
 		m_sort_compute_state = p_render_system.create_device_compute_state("particle_sort");
 
+		auto l_sampler_config = graphic::bc_graphic_resource_builder()
+			.as_resource()
+			.as_sampler_state
+			(
+				graphic::bc_filter::min_mag_mip_linear,
+				graphic::bc_texture_address_mode::border,
+				graphic::bc_texture_address_mode::border,
+				graphic::bc_texture_address_mode::border
+			).as_sampler_state();
+		m_sampler = l_device.create_sampler_state(l_sampler_config);
+		
 		graphic::bc_device_parameters l_old_parameters
 		(
 			0,
@@ -185,15 +209,23 @@ namespace black_cat
 		p_param.m_render_thread.dispatch(m_particles_count / m_simulation_shader_group_size, 1, 1);
 		p_param.m_render_thread.unbind_compute_state(*m_simulation_compute);
 
-		p_param.m_render_thread.copy_structure_count(*m_draw_args_buffer, sizeof(bcUINT32), *m_alive_particles_buffer_view);
+		p_param.m_render_thread.copy_structure_count(*m_draw_args_buffer, sizeof(bcUINT32), *m_alive_particles_unordered_view);
 		
 		p_param.m_render_thread.bind_compute_state(*m_sort_compute);
 		p_param.m_render_thread.dispatch((m_particles_count / m_sort_shader_group_size) / 2, 1, 1);
 		p_param.m_render_thread.unbind_compute_state(*m_sort_compute);
 
+		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state);
+		p_param.m_render_thread.get_pipeline().bind_ia_primitive_topology(graphic::bc_primitive::pointlist);
+		p_param.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::input_assembler_stage);
+		p_param.m_render_thread.draw_instanced_indirect(*m_draw_args_buffer, 0);
+		p_param.m_render_thread.get_pipeline().unbind_ia_primitive_topology();
+		p_param.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::input_assembler_stage);
+		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state);
+		
 		p_param.m_render_thread.finish();
 		m_command_list->finished();
-		
+
 		m_dead_particles_counter = -1;
 	}
 
@@ -209,11 +241,11 @@ namespace black_cat
 			m_emission_compute_state.get(),
 			{},
 			{
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_emitters_buffer_view.get()),
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_emitters_shader_view.get()),
 			},
 			{
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_particles_buffer_view.get()),
-				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::compute, m_dead_particles_buffer_view.get())
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_particles_unordered_view.get()),
+				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::compute, m_dead_particles_unordered_view.get())
 			},
 			{
 				p_param.m_render_system.get_global_cbuffer()
@@ -225,9 +257,9 @@ namespace black_cat
 			{},
 			{},
 			{
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_particles_buffer_view.get()),
-				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::compute, m_alive_particles_buffer_view.get()),
-				graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::compute, m_dead_particles_buffer_view.get())
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_particles_unordered_view.get()),
+				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::compute, m_alive_particles_unordered_view.get()),
+				graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::compute, m_dead_particles_unordered_view.get())
 			},
 			{
 				p_param.m_render_system.get_global_cbuffer()
@@ -239,9 +271,48 @@ namespace black_cat
 			{},
 			{},
 			{
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_alive_particles_buffer_view.get()),
-				graphic::bc_resource_view_parameter(3, graphic::bc_shader_type::compute, m_draw_args_buffer_view.get()),
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_alive_particles_unordered_view.get()),
+				graphic::bc_resource_view_parameter(3, graphic::bc_shader_type::compute, m_draw_args_unordered_view.get()),
 			},
+			{
+				p_param.m_render_system.get_global_cbuffer()
+			}
+		);
+
+		const auto l_back_buffer = p_param.m_device.get_back_buffer_texture();
+		const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer.get_width(), l_back_buffer.get_height());
+		const auto l_back_buffer_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_back_buffer_view);
+		
+		m_device_pipeline_state = p_param.m_render_system.create_device_pipeline_state
+		(
+			"particle_render_vs",
+			nullptr,
+			nullptr,
+			"particle_render_gs",
+			"particle_render_ps",
+			game::bc_vertex_type::none,
+			game::bc_blend_type::alpha,
+			game::bc_depth_stencil_type::depth_off_stencil_off,
+			game::bc_rasterizer_type::fill_wireframe_cull_none,
+			0x1,
+			{ l_back_buffer.get_format() },
+			graphic::bc_format::unknown,
+			game::bc_multi_sample_type::c1_q1
+		);
+		m_render_pass_state = p_param.m_render_system.create_render_pass_state
+		(
+			m_device_pipeline_state.get(),
+			l_viewport,
+			{ l_back_buffer_view },
+			graphic::bc_depth_stencil_view(),
+			{
+				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler.get())
+			},
+			{
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::geometry, m_particles_shader_view.get()),
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::geometry, m_alive_particles_shader_view.get())
+			},
+			{},
 			{
 				p_param.m_render_system.get_global_cbuffer()
 			}
@@ -253,6 +324,10 @@ namespace black_cat
 		m_emitters_query = core::bc_query_result<game::bc_particle_emitter_query>();
 		m_emitters_query_result.clear();
 		m_emitters_query_result.shrink_to_fit();
+
+		m_render_pass_state.reset();
+		m_device_pipeline_state.reset();
+		m_sampler.reset();
 		
 		m_sort_compute.reset();
 		m_sort_compute_state.reset();
@@ -261,11 +336,13 @@ namespace black_cat
 		m_emission_compute.reset();
 		m_emission_compute_state.reset();
 
-		m_draw_args_buffer_view.reset();
-		m_dead_particles_buffer_view.reset();
-		m_alive_particles_buffer_view.reset();
-		m_particles_buffer_view.reset();
-		m_emitters_buffer_view.reset();
+		m_draw_args_unordered_view.reset();
+		m_dead_particles_unordered_view.reset();
+		m_alive_particles_shader_view.reset();
+		m_alive_particles_unordered_view.reset();
+		m_particles_shader_view.reset();
+		m_particles_unordered_view.reset();
+		m_emitters_shader_view.reset();
 
 		m_draw_args_buffer.reset();
 		m_dead_particles_buffer.reset();

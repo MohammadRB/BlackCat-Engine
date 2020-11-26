@@ -20,32 +20,18 @@ namespace black_cat
 	void bc_back_buffer_write_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
-		const auto l_sampler_config = graphic::bc_graphic_resource_builder().as_resource().as_sampler_state
-		(
-			graphic::bc_filter::min_mag_mip_point,
-			graphic::bc_texture_address_mode::wrap,
-			graphic::bc_texture_address_mode::wrap,
-			graphic::bc_texture_address_mode::wrap
-		).as_sampler_state();
+		const auto l_sampler_config = graphic::bc_graphic_resource_builder()
+			.as_resource()
+			.as_sampler_state
+			(
+				graphic::bc_filter::min_mag_mip_point,
+				graphic::bc_texture_address_mode::wrap,
+				graphic::bc_texture_address_mode::wrap,
+				graphic::bc_texture_address_mode::wrap
+			).as_sampler_state();
 
 		m_command_list = l_device.create_command_list();
 		m_sampler_state = l_device.create_sampler_state(l_sampler_config);
-		m_pipeline_state = p_render_system.create_device_pipeline_state
-		(
-			"bb_write_vs",
-			nullptr,
-			nullptr,
-			nullptr,
-			"bb_write_ps",
-			game::bc_vertex_type::pos_tex,
-			game::bc_blend_type::opaque,
-			game::bc_depth_stencil_type::depth_off_stencil_off,
-			game::bc_rasterizer_type::fill_solid_cull_none,
-			0x1,
-			{ l_device.get_back_buffer_format() },
-			get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
-			game::bc_multi_sample_type::c1_q1
-		);
 
 		core::bc_array<game::bc_vertex_pos_tex, 4> l_vertices
 		{
@@ -165,6 +151,22 @@ namespace black_cat
 		m_back_buffer_view = p_param.m_device.create_render_target_view(l_back_buffer, l_back_buffer_view_config);
 		const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer.get_width(), l_back_buffer.get_height());
 
+		m_pipeline_state = p_param.m_render_system.create_device_pipeline_state
+		(
+			"bb_write_vs",
+			nullptr,
+			nullptr,
+			nullptr,
+			"bb_write_ps",
+			game::bc_vertex_type::pos_tex,
+			game::bc_blend_type::opaque,
+			game::bc_depth_stencil_type::depth_off_stencil_off,
+			game::bc_rasterizer_type::fill_solid_cull_none,
+			0x1,
+			{ p_param.m_device.get_back_buffer_format() },
+			get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
+			game::bc_multi_sample_type::c1_q1
+		);
 		m_render_pass_state = p_param.m_render_system.create_render_pass_state
 		(
 			m_pipeline_state.get(),
@@ -173,6 +175,7 @@ namespace black_cat
 			graphic::bc_depth_stencil_view(),
 			{ graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler_state.get()) },
 			{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, m_input_texture_view.get()) },
+			{},
 			{
 				p_param.m_render_system.get_global_cbuffer()
 			}

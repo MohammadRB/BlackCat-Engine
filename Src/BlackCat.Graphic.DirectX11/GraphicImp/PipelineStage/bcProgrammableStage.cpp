@@ -41,7 +41,7 @@ namespace black_cat
 
 		template < >
 		BC_GRAPHICIMP_DLL
-		void bc_platform_programmable_stage<g_api_dx11>::apply_required_state(bc_device_pipeline* p_pipeline)
+		void bc_platform_programmable_stage<g_api_dx11>::apply_required_state(bc_device_pipeline& p_pipeline)
 		{
 			apply_shader_program(p_pipeline);
 			apply_constant_buffers(p_pipeline);
@@ -54,7 +54,7 @@ namespace black_cat
 
 		template < >
 		BC_GRAPHICIMP_DLL
-		void bc_platform_programmable_stage<g_api_dx11>::set_to_default_state(bc_device_pipeline* p_pipeline)
+		void bc_platform_programmable_stage<g_api_dx11>::set_to_default_state(bc_device_pipeline& p_pipeline)
 		{
 			m_required_state.set_to_initial_state();
 		}

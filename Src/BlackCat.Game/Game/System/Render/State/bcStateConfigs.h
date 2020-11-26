@@ -19,7 +19,8 @@ namespace black_cat
 
 		enum class bc_blend_type
 		{
-			opaque
+			opaque,
+			alpha
 		};
 
 		enum class bc_depth_stencil_type

@@ -143,6 +143,7 @@ namespace black_cat
 				l_depth_stencil_view,
 				{},
 				{},
+				{},
 				{ p_param.m_render_system.get_global_cbuffer() }
 			);
 		}

@@ -75,16 +75,23 @@ namespace black_cat
 			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->add_ref();
 			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_blend_state->AddRef();
 			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_depth_stencil_state->AddRef();
-			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_input_layout->AddRef();
 			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_rasterizer_state->AddRef();
+			if (p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_input_layout)
+			{
+				p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_input_layout->AddRef();
+			}
 		}
 
 		void _release(bc_platform_device_pipeline_state< g_api_dx11 >& p_pipeline_state)
 		{
 			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_blend_state->Release();
 			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_depth_stencil_state->Release();
-			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_input_layout->Release();
 			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_rasterizer_state->Release();
+			if (p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_input_layout)
+			{
+				p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->m_input_layout->Release();
+			}
+			
 			p_pipeline_state.get_platform_pack().m_pipeline_state_proxy->release();
 		}
 

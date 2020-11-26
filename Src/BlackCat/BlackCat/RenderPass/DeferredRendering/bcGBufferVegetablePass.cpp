@@ -17,45 +17,6 @@ namespace black_cat
 		auto& l_device = p_render_system.get_device();
 
 		m_command_list = l_device.create_command_list();
-		m_leaf_pipeline_state = p_render_system.create_device_pipeline_state
-		(
-			"gbuffer_vegetable_leaf_vs",
-			nullptr,
-			nullptr,
-			nullptr,
-			"gbuffer_vegetable_leaf_ps",
-			game::bc_vertex_type::pos_tex_nor_tan,
-			game::bc_blend_type::opaque,
-			game::bc_depth_stencil_type::depth_less_stencil_off,
-			game::bc_rasterizer_type::fill_solid_cull_none,
-			0x1,
-			{
-				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1)->get_format(),
-				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2)->get_format()
-			},
-			get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
-			game::bc_multi_sample_type::c1_q1
-		);
-		m_trunk_pipeline_state = p_render_system.create_device_pipeline_state
-		(
-			"gbuffer_vegetable_trunk_vs",
-			nullptr,
-			nullptr,
-			nullptr,
-			"gbuffer_ps",
-			game::bc_vertex_type::pos_tex_nor_tan,
-			game::bc_blend_type::opaque,
-			game::bc_depth_stencil_type::depth_less_stencil_off,
-			game::bc_rasterizer_type::fill_solid_cull_back,
-			0x1,
-			{
-				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1)->get_format(),
-				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2)->get_format()
-			},
-			get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
-			game::bc_multi_sample_type::c1_q1
-		);
-
 		graphic::bc_device_parameters l_old_parameters
 		(
 			0,
@@ -150,6 +111,44 @@ namespace black_cat
 		).as_sampler_state();
 
 		m_sampler_state = p_param.m_device.create_sampler_state(l_sampler_config);
+		m_leaf_pipeline_state = p_param.m_render_system.create_device_pipeline_state
+		(
+			"gbuffer_vegetable_leaf_vs",
+			nullptr,
+			nullptr,
+			nullptr,
+			"gbuffer_vegetable_leaf_ps",
+			game::bc_vertex_type::pos_tex_nor_tan,
+			game::bc_blend_type::opaque,
+			game::bc_depth_stencil_type::depth_less_stencil_off,
+			game::bc_rasterizer_type::fill_solid_cull_none,
+			0x1,
+			{
+				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1)->get_format(),
+				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2)->get_format()
+			},
+			get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
+			game::bc_multi_sample_type::c1_q1
+		);
+		m_trunk_pipeline_state = p_param.m_render_system.create_device_pipeline_state
+		(
+			"gbuffer_vegetable_trunk_vs",
+			nullptr,
+			nullptr,
+			nullptr,
+			"gbuffer_ps",
+			game::bc_vertex_type::pos_tex_nor_tan,
+			game::bc_blend_type::opaque,
+			game::bc_depth_stencil_type::depth_less_stencil_off,
+			game::bc_rasterizer_type::fill_solid_cull_back,
+			0x1,
+			{
+				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1)->get_format(),
+				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2)->get_format()
+			},
+			get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
+			game::bc_multi_sample_type::c1_q1
+		);
 		m_leaf_render_pass_state = p_param.m_render_system.create_render_pass_state
 		(
 			m_leaf_pipeline_state.get(),
@@ -157,6 +156,7 @@ namespace black_cat
 			{ *l_diffuse_map_view, *l_normal_map_view },
 			*l_depth_stencil_view,
 			{ graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler_state.get()) },
+			{},
 			{},
 			{
 				p_param.m_render_system.get_global_cbuffer()
@@ -169,6 +169,7 @@ namespace black_cat
 			{ *l_diffuse_map_view, *l_normal_map_view },
 			*l_depth_stencil_view,
 			{ graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler_state.get()) },
+			{},
 			{},
 			{
 				p_param.m_render_system.get_global_cbuffer()

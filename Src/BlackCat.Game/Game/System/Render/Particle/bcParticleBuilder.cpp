@@ -30,7 +30,7 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_particle_builder& bc_particle_builder1::emit(bcUINT32 p_particles_total_count, 
+		bc_particle_builder& bc_particle_builder1::emit_particles(bcUINT32 p_particles_total_count, 
 			bcFLOAT p_particles_lifetime, 
 			bcFLOAT p_particles_force, 
 			bcFLOAT p_particles_mass)

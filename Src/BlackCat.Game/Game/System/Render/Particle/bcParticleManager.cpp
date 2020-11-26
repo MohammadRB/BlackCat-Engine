@@ -19,9 +19,9 @@ namespace black_cat
 		}
 
 		bc_particle_manager::bc_particle_manager()
-			: m_emitters(core::bc_memory_pool_allocator<bc_particle_emitter_trait>(m_emitters_pool))
+			: m_emitters(core::bc_memory_pool_allocator<_bc_particle_emitter_instance>(m_emitters_pool))
 		{
-			m_emitters_pool.initialize(m_num_emitter_count, sizeof(_bc_particle_emitter_instance), core::bc_alloc_type::unknown_movable);
+			m_emitters_pool.initialize(m_num_emitter_count, sizeof(emitters_container::node_type), core::bc_alloc_type::unknown_movable);
 			m_emitters_provider_handle = core::bc_get_service< core::bc_query_manager >()->register_query_provider< bc_particle_emitters_query_context >
 			(
 				core::bc_query_provider_handle::delegate_t(*this, &bc_particle_manager::_emitters_query_context_provider)
@@ -59,10 +59,10 @@ namespace black_cat
 			m_emitter_definitions.insert(std::move(l_value));
 		}
 
-		void bc_particle_manager::emit(const bcCHAR* p_emitter_name, const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir)
+		void bc_particle_manager::spawn_emitter(const bcCHAR* p_emitter_name, const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir)
 		{
 			core::bc_matrix3f l_rotation;
-			l_rotation.rotation_between_two_vector_lh(p_dir, core::bc_vector3f(0, 1, 0));
+			l_rotation.rotation_between_two_vector_lh(core::bc_vector3f(0, 1, 0), p_dir);
 			const auto l_definition_ite = m_emitter_definitions.find(p_emitter_name);
 			
 			bcAssert(l_definition_ite != std::end(m_emitter_definitions));
@@ -99,15 +99,15 @@ namespace black_cat
 
 				for (_bc_particle_emitter_instance& l_emitter : m_emitters)
 				{
-					l_emitter.m_age += p_clock.m_elapsed;
+					l_emitter.m_age += p_clock.m_elapsed_second;
 
 					const bcFLOAT l_acceleration = l_emitter.m_force / l_emitter.m_mass;
-					const bcFLOAT l_normalized_age = 1 - std::powf(std::max(1.f, l_emitter.m_age / l_emitter.m_lifetime), 2);
-					const bcFLOAT l_velocity_to_apply = l_normalized_age * l_acceleration;
+					const bcFLOAT l_normalized_age = 1 - std::powf(1 - std::min(1.f, l_emitter.m_age / l_emitter.m_lifetime), 2);
+					const bcFLOAT l_normalized_age_reversed = 1 - l_normalized_age;
+					const bcFLOAT l_velocity_to_apply = l_normalized_age_reversed * l_acceleration;
 					const bcUINT32 l_particles_to_spawn = l_normalized_age * l_emitter.m_particles_total_count;
 
 					l_emitter.m_position += l_emitter.m_direction * l_velocity_to_apply;
-					l_emitter.m_force *= l_normalized_age;
 					l_emitter.m_particles_count_to_spawn = l_particles_to_spawn - l_emitter.m_spawned_particles_count;
 					l_emitter.m_spawned_particles_count += l_emitter.m_particles_count_to_spawn;
 				}

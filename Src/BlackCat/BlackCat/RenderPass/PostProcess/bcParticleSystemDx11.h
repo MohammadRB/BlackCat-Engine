@@ -4,11 +4,14 @@
 
 #include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
+#include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
+#include "GraphicImp/Resource/State/bcSamplerState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/State/bcComputeState.h"
+#include "Game/System/Render/Pass/bcRenderPassState.h"
 #include "Game/Query/bcParticleEmittersQuery.h"
 #include "BlackCat/bcExport.h"
 
@@ -51,11 +54,13 @@ namespace black_cat
 		graphic::bc_buffer_ptr m_dead_particles_buffer;
 		graphic::bc_buffer_ptr m_draw_args_buffer;
 
-		graphic::bc_resource_view_ptr m_emitters_buffer_view;
-		graphic::bc_resource_view_ptr m_particles_buffer_view;
-		graphic::bc_resource_view_ptr m_alive_particles_buffer_view;
-		graphic::bc_resource_view_ptr m_dead_particles_buffer_view;
-		graphic::bc_resource_view_ptr m_draw_args_buffer_view;
+		graphic::bc_resource_view_ptr m_emitters_shader_view;
+		graphic::bc_resource_view_ptr m_particles_shader_view;
+		graphic::bc_resource_view_ptr m_particles_unordered_view;
+		graphic::bc_resource_view_ptr m_alive_particles_shader_view;
+		graphic::bc_resource_view_ptr m_alive_particles_unordered_view;
+		graphic::bc_resource_view_ptr m_dead_particles_unordered_view;
+		graphic::bc_resource_view_ptr m_draw_args_unordered_view;
 
 		graphic::bc_device_compute_state_ptr m_emission_compute_state;
 		game::bc_compute_state_ptr m_emission_compute;
@@ -63,6 +68,10 @@ namespace black_cat
 		game::bc_compute_state_ptr m_simulation_compute;
 		graphic::bc_device_compute_state_ptr m_sort_compute_state;
 		game::bc_compute_state_ptr m_sort_compute;
+
+		graphic::bc_sampler_state_ptr m_sampler;
+		graphic::bc_device_pipeline_state_ptr m_device_pipeline_state;
+		game::bc_render_pass_state_ptr m_render_pass_state;
 		
 		core::bc_query_result<game::bc_particle_emitter_query> m_emitters_query;
 		core::bc_vector_movable< game::bc_particle_emitter> m_emitters_query_result;

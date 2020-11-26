@@ -22,7 +22,7 @@ namespace black_cat
 			
 			bc_particle_builder1& with_texture(bcUINT32 p_texture_index, bcUINT32 p_sprite_index) noexcept;
 
-			bc_particle_builder& emit(bcUINT32 p_particles_total_count, bcFLOAT p_particles_lifetime, bcFLOAT p_particles_force, bcFLOAT p_particles_mass);
+			bc_particle_builder& emit_particles(bcUINT32 p_particles_total_count, bcFLOAT p_particles_lifetime, bcFLOAT p_particles_force, bcFLOAT p_particles_mass);
 
 		private:
 			bc_particle_builder& m_builder;

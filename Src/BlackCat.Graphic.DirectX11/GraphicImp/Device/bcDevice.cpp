@@ -1040,7 +1040,7 @@ namespace black_cat
 			dx_call(m_pack.m_device->CreateBlendState(&l_dx_blend_desc, &l_dx_blend_state));
 			dx_call(m_pack.m_device->CreateDepthStencilState(&l_dx_depth_stencil_desc, &l_dx_depth_stencil));
 			dx_call(m_pack.m_device->CreateRasterizerState(&l_dx_rasterizer_desc, &l_dx_rasterizer_state));
-			if (p_config.m_vertex_shader != nullptr)
+			if (p_config.m_vertex_shader != nullptr && !l_dx_input_elements.empty())
 			{
 				dx_call(m_pack.m_device->CreateInputLayout
 				(
@@ -1070,7 +1070,10 @@ namespace black_cat
 			l_pipeline_state_poxy->m_blend_state->Release();
 			l_pipeline_state_poxy->m_depth_stencil_state->Release();
 			l_pipeline_state_poxy->m_rasterizer_state->Release();
-			l_pipeline_state_poxy->m_input_layout->Release();
+			if(l_pipeline_state_poxy->m_input_layout)
+			{
+				l_pipeline_state_poxy->m_input_layout->Release();
+			}
 
 			return l_pipeline_state_ptr;
 		}

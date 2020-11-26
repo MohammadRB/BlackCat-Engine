@@ -190,7 +190,8 @@ namespace black_cat
 			 * \param p_shader_targets 
 			 * \param p_shader_depth 
 			 * \param p_shader_samplers 
-			 * \param p_resource_views 
+			 * \param p_resource_views
+			 * \param p_unordered_views 
 			 * \param p_shader_buffers 
 			 * \return 
 			 */
@@ -200,6 +201,7 @@ namespace black_cat
 				graphic::bc_depth_stencil_view p_shader_depth,
 				bc_render_pass_state_sampler_array&& p_shader_samplers,
 				bc_render_pass_state_resource_view_array&& p_resource_views,
+				bc_render_pass_state_unordered_view_array&& p_unordered_views,
 				bc_render_pass_state_constant_buffer_array&& p_shader_buffers);
 
 			/**

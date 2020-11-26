@@ -27,16 +27,16 @@ namespace black_cat
 
 			bc_platform_compute_stage& operator=(bc_platform_compute_stage&&) noexcept;
 
-			void apply_required_state(bc_device_pipeline* p_pipeline, const initial_counts_array& p_initial_counts);
+			void apply_required_state(bc_device_pipeline& p_pipeline, const initial_counts_array& p_initial_counts);
 			
 		protected:
-			void apply_shader_program(bc_device_pipeline* p_pipeline) override;
+			void apply_shader_program(bc_device_pipeline& p_pipeline) override;
 
-			void apply_constant_buffers(bc_device_pipeline* p_pipeline) override;
+			void apply_constant_buffers(bc_device_pipeline& p_pipeline) override;
 
-			void apply_sampler_states(bc_device_pipeline* p_pipeline) override;
+			void apply_sampler_states(bc_device_pipeline& p_pipeline) override;
 
-			void apply_shader_resource_views(bc_device_pipeline* p_pipeline) override;
+			void apply_shader_resource_views(bc_device_pipeline& p_pipeline) override;
 
 			/*void apply_unordered_access_views(bc_device_pipeline& p_pipeline) override;*/
 		private:

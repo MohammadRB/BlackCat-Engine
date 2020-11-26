@@ -155,6 +155,20 @@ namespace black_cat
 					m_pipeline->bind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
+			for (auto& l_view_parameter : p_render_pass_state.m_unordered_views)
+			{
+				if (l_view_parameter.is_valid())
+				{
+					l_shader_types = core::bc_enum:: or ({ l_shader_types, l_view_parameter.get_shader_types() });
+					// If there is any unordered view for pixel shader add output merger for apply changes
+					if(l_view_parameter.get_shader_types() == graphic::bc_shader_type::pixel)
+					{
+						l_pipeline_stages = core::bc_enum:: or ({ l_pipeline_stages ,graphic::bc_pipeline_stage::output_merger_stage });
+					}
+					
+					m_pipeline->bind_ps_shader_view_parameter(l_view_parameter);
+				}
+			}
 			for (auto& l_buffer_parameter : p_render_pass_state.m_shader_cbuffers)
 			{
 				if (l_buffer_parameter.is_valid())
@@ -197,6 +211,15 @@ namespace black_cat
 				if (l_view_parameter.is_valid())
 				{
 					l_shader_types = core::bc_enum::or({l_shader_types, l_view_parameter.get_shader_types()});
+
+					m_pipeline->unbind_ps_shader_view_parameter(l_view_parameter);
+				}
+			}
+			for (auto& l_view_parameter : p_render_pass_state.m_unordered_views)
+			{
+				if (l_view_parameter.is_valid())
+				{
+					l_shader_types = core::bc_enum:: or ({ l_shader_types, l_view_parameter.get_shader_types() });
 
 					m_pipeline->unbind_ps_shader_view_parameter(l_view_parameter);
 				}
@@ -260,6 +283,7 @@ namespace black_cat
 
 		void bc_render_thread::unbind_render_state(const bc_render_state& p_render_state)
 		{
+			m_pipeline->unbind_ia_primitive_topology();
 			m_pipeline->unbind_ia_vertex_buffers(0, 1);
 			m_pipeline->unbind_ia_index_buffer();
 

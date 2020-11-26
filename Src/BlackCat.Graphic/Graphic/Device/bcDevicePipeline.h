@@ -71,6 +71,8 @@ namespace black_cat
 
 			void bind_ia_primitive_topology(bc_primitive p_primitive);
 
+			void unbind_ia_primitive_topology();
+
 			void bind_ia_index_buffer(bc_buffer p_buffer, bc_format p_format);
 
 			void unbind_ia_index_buffer();

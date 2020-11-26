@@ -61,6 +61,9 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 			
 			sort(l_read_particle, l_compare_particle, l_sort_direction);
 			
+			g_alive_indices[l_read_index] = l_read_particle;
+			g_alive_indices[l_compare_index] = l_compare_particle;
+			
 			DeviceMemoryBarrierWithGroupSync();
 		}
 	}

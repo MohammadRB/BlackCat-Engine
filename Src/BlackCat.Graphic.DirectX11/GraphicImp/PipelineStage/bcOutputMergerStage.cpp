@@ -44,9 +44,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_output_merger_stage< g_api_dx11 >::apply_required_state(bc_device_pipeline* p_pipeline)
+		void bc_platform_output_merger_stage< g_api_dx11 >::apply_required_state(bc_device_pipeline& p_pipeline, bc_pixel_stage& p_pixel_stage)
 		{
-			ID3D11DeviceContext* l_context = p_pipeline->get_platform_pack().m_pipeline_proxy->m_context;
+			ID3D11DeviceContext* l_context = p_pipeline.get_platform_pack().m_pipeline_proxy->m_context;
 
 			if (m_required_state.m_blend_factors.update_needed())
 			{
@@ -76,8 +76,7 @@ namespace black_cat
 
 			if (m_required_state.m_render_target_views.update_needed() ||
 				m_required_state.m_depth_target_view.update_needed() ||
-				m_required_state.m_unordered_access_views.update_needed()
-				/*l_required_state.m_uav_initial_counts.update_needed()*/)
+				p_pixel_stage.get_required_state().m_unordered_access_views.update_needed())
 			{
 				const bcUINT l_num_rtv = m_required_state.m_render_target_views.get_dirty_count();
 				ID3D11RenderTargetView* l_render_target_views[bc_render_api_info::number_of_om_render_target_slots()];
@@ -97,13 +96,13 @@ namespace black_cat
 					                       nullptr;
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_ps_cs_uav_resource(); ++i)
 				{
-					bc_resource_view l_view = m_required_state.m_unordered_access_views.get(i);
+					bc_resource_view l_view = p_pixel_stage.get_required_state().m_unordered_access_views.get(i);
 					l_unordered_views[i] = l_view.is_valid() ? l_view.get_platform_pack().m_unordered_shader_view : nullptr;
 					l_uav_initialCounts[i] = -1;
 				}
 
-				const bcUINT l_uav_dirty_slot_start = m_required_state.m_unordered_access_views.get_dirty_start();
-				const bcUINT l_uav_dirty_slot_num = m_required_state.m_unordered_access_views.get_dirty_count();
+				const bcUINT l_uav_dirty_slot_start = p_pixel_stage.get_required_state().m_unordered_access_views.get_dirty_start();
+				const bcUINT l_uav_dirty_slot_num = p_pixel_stage.get_required_state().m_unordered_access_views.get_dirty_count();
 
 				l_context->OMSetRenderTargetsAndUnorderedAccessViews
 				(
@@ -122,7 +121,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_output_merger_stage< g_api_dx11 >::set_to_default_state(bc_device_pipeline* p_pipeline)
+		void bc_platform_output_merger_stage< g_api_dx11 >::set_to_default_state(bc_device_pipeline& p_pipeline)
 		{
 			m_required_state.set_to_initial_state();
 		}

@@ -47,7 +47,7 @@ namespace black_cat
 
 			void register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder);
 
-			void emit(const bcCHAR* p_emitter_name, const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir);
+			void spawn_emitter(const bcCHAR* p_emitter_name, const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir);
 			
 			void update(const core_platform::bc_clock::update_param& p_clock);
 			
