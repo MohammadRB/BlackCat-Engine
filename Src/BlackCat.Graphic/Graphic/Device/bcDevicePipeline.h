@@ -109,9 +109,7 @@ namespace black_cat
 
 			void unbind_om_render_targets();
 
-			void pipeline_apply_states(bc_pipeline_stage p_stages);
-			
-			void pipeline_apply_states(bc_pipeline_stage p_stages, const bc_compute_stage::initial_counts_array& p_initial_counts);
+			void pipeline_apply_states(bc_pipeline_stage p_stages, const bc_compute_stage::initial_counts_array* p_initial_counts = nullptr);
 
 			void pipeline_set_default_states(bc_pipeline_stage p_stages);
 

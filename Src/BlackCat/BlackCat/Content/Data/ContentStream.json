@@ -140,10 +140,16 @@
           "content_parameter": { "function": "main" }
         },
         {
-          "content_title": "particle_sort",
+          "content_title": "bitonic_sort",
           "content_name": "compute_shader",
           "content_file": "content\\shader\\directx11\\particle\\bcParticleSort.hlsl",
-          "content_parameter": { "function": "main" }
+          "content_parameter": { "function": "bitonic_sort" }
+        },
+        {
+          "content_title": "bitonic_matrix_transpose",
+          "content_name": "compute_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleSortTranspose.hlsl",
+          "content_parameter": { "function": "bitonic_matrix_transpose" }
         },
         {
           "content_title": "particle_render_vs",

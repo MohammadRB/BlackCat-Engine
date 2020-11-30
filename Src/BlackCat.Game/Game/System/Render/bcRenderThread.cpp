@@ -312,12 +312,7 @@ namespace black_cat
 			m_pipeline->pipeline_apply_states(l_pipeline_stages);
 		}
 
-		void bc_render_thread::bind_compute_state(const bc_compute_state& p_compute_state)
-		{
-			bind_compute_state(p_compute_state, {-1, -1, -1, -1, -1, -1, -1, -1});
-		}
-
-		void bc_render_thread::bind_compute_state(const bc_compute_state& p_compute_state, const bc_compute_state_unordered_view_initial_count_array& p_uav_initial_counts)
+		void bc_render_thread::bind_compute_state(const bc_compute_state& p_compute_state, const bc_compute_state_unordered_view_initial_count_array* p_uav_initial_counts)
 		{
 			m_pipeline->bind_compute_state(p_compute_state.m_compute_state);
 

@@ -4,7 +4,7 @@
 #include "..\bcHelper.hlsli"
 #include "bcParticle.hlsli"
 
-#define THREAD_GROUP_SIZE 16
+#define THREAD_GROUP_SIZE 64
 
 RWStructuredBuffer<particle> g_particles				: register(BC_COMPUTE_STATE_U0);
 RWStructuredBuffer<alive_particle> g_alive_indices		: register(BC_COMPUTE_STATE_U1);
@@ -15,15 +15,25 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 {
 	uint l_particle_index = p_dispatch_thread_id.x;
 	particle l_particle = g_particles[l_particle_index];
+	
+	//// Reset alive particles
+	//alive_particle l_default_alive_particle;
+	//l_default_alive_particle.m_index = 0;
+	//l_default_alive_particle.m_distance = MAX_FLOAT;
+	//g_alive_indices[l_particle_index] = l_default_alive_particle;
 
 	l_particle.m_age += g_elapsed_second;
 	if (l_particle.m_age > l_particle.m_lifetime)
 	{
 		// If it is not already dead
-		if (l_particle.m_age - g_elapsed_second <= l_particle.m_lifetime)
+		if (l_particle.m_age - g_elapsed_second < l_particle.m_lifetime)
 		{
+			l_particle.m_age = MAX_FLOAT;
+			g_particles[l_particle_index] = l_particle;
+			
 			g_dead_indices.Append(l_particle_index);
 		}
+
 		return;
 	}
 
@@ -32,7 +42,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	float l_velocity_to_apply = l_normalized_age * l_acceleration;
 	float l_velocity_to_wind_power = g_wind_power / max(l_velocity_to_apply, 1.f);
 	
-	l_particle.m_position += (l_particle.m_direction * l_velocity_to_apply) + (l_velocity_to_wind_power * g_wind_dir * g_elapsed_second);
+	l_particle.m_position += (l_particle.m_direction * l_velocity_to_apply * g_elapsed_second) + (g_wind_dir * l_velocity_to_wind_power * g_elapsed_second);
 	
 	g_particles[l_particle_index] = l_particle;
 	
@@ -40,6 +50,6 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	l_alive_particle.m_index = l_particle_index;
 	l_alive_particle.m_distance = length(l_particle.m_position - g_camera_position);
 	
-	uint l_alive_count = g_alive_indices.IncrementCounter() + 1;
-	g_alive_indices[l_alive_count] = l_alive_particle;
+	uint l_alive_index = g_alive_indices.IncrementCounter();
+	g_alive_indices[l_alive_index] = l_alive_particle;
 }

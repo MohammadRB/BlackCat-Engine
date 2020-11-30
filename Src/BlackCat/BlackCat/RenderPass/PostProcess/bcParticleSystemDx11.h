@@ -37,37 +37,52 @@ namespace black_cat
 		void destroy(game::bc_render_system& p_render_system) override;
 
 	private:
-		static const bcSIZE m_emitters_count = 128;
-		static const bcSIZE m_particles_count = 8192;
-		static const bcSIZE m_emission_shader_group_size = 1;
-		static const bcSIZE m_simulation_shader_group_size = 16;
-		static const bcSIZE m_sort_shader_group_size = 16;
-
-		bcINT32 m_dead_particles_counter = m_particles_count;
+		void _execute_sort_shader(const game::bc_render_pass_render_param& p_param);
 		
+		static const bcSIZE m_emitters_count = 128;
+		static const bcSIZE m_particles_count = 16384;
+		static const bcSIZE m_emission_shader_group_size = 1;
+		static const bcSIZE m_simulation_shader_group_size = 64;
+		static const bcSIZE m_sort_shader_group_size = 64;
+		static const bcSIZE m_sort_transpose_shader_group_size = 32;
+		static const bcSIZE m_sort_transpose_matrix_width = m_sort_shader_group_size;
+		static const bcSIZE m_sort_transpose_matrix_height = m_particles_count / m_sort_shader_group_size;
+		
+		bcINT32 m_dead_particles_counter = m_particles_count;
+
+		graphic::bc_depth_stencil_view m_depth_buffer_view;
+		graphic::bc_resource_view m_depth_buffer_shader_view;
 		graphic::bc_device_command_list_ptr m_command_list;
 		
-		graphic::bc_resource_view m_depth_buffer_view;
 		graphic::bc_buffer_ptr m_emitters_buffer;
 		graphic::bc_buffer_ptr m_particles_buffer;
-		graphic::bc_buffer_ptr m_alive_particles_buffer;
+		graphic::bc_buffer_ptr m_alive_particles_buffer1;
+		graphic::bc_buffer_ptr m_alive_particles_buffer2;
 		graphic::bc_buffer_ptr m_dead_particles_buffer;
 		graphic::bc_buffer_ptr m_draw_args_buffer;
+		graphic::bc_buffer_ptr m_sort_cbuffer;
 
 		graphic::bc_resource_view_ptr m_emitters_shader_view;
 		graphic::bc_resource_view_ptr m_particles_shader_view;
 		graphic::bc_resource_view_ptr m_particles_unordered_view;
-		graphic::bc_resource_view_ptr m_alive_particles_shader_view;
-		graphic::bc_resource_view_ptr m_alive_particles_unordered_view;
+		graphic::bc_resource_view_ptr m_alive_particles1_shader_view;
+		graphic::bc_resource_view_ptr m_alive_particles1_unordered_view;
+		graphic::bc_resource_view_ptr m_alive_particles2_shader_view;
+		graphic::bc_resource_view_ptr m_alive_particles2_unordered_view;
 		graphic::bc_resource_view_ptr m_dead_particles_unordered_view;
-		graphic::bc_resource_view_ptr m_draw_args_unordered_view;
+		graphic::bc_resource_view_ptr m_draw_args_shader_view;
 
 		graphic::bc_device_compute_state_ptr m_emission_compute_state;
 		game::bc_compute_state_ptr m_emission_compute;
 		graphic::bc_device_compute_state_ptr m_simulation_compute_state;
 		game::bc_compute_state_ptr m_simulation_compute;
 		graphic::bc_device_compute_state_ptr m_sort_compute_state;
-		game::bc_compute_state_ptr m_sort_compute;
+		game::bc_compute_state_ptr m_whole_sort_compute;
+		game::bc_compute_state_ptr m_sort1_after_transpose_compute;
+		game::bc_compute_state_ptr m_sort2_after_transpose_compute;
+		graphic::bc_device_compute_state_ptr m_sort_transpose_compute_state;
+		game::bc_compute_state_ptr m_sort_transpose1_compute;
+		game::bc_compute_state_ptr m_sort_transpose2_compute;
 
 		graphic::bc_sampler_state_ptr m_sampler;
 		graphic::bc_device_pipeline_state_ptr m_device_pipeline_state;

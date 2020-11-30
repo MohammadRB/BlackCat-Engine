@@ -73,11 +73,10 @@ namespace black_cat
 			/**
 			 * \brief Bind compute states to given device pipeline and apply changes
 			 * Apply ComputeStage for compute shader and parameters
-			 * \param p_compute_state 
+			 * \param p_compute_state
+			 * \param p_uav_initial_counts 
 			 */
-			void bind_compute_state(const bc_compute_state& p_compute_state);
-			
-			void bind_compute_state(const bc_compute_state& p_compute_state, const bc_compute_state_unordered_view_initial_count_array& p_uav_initial_counts);
+			void bind_compute_state(const bc_compute_state& p_compute_state, const bc_compute_state_unordered_view_initial_count_array* p_uav_initial_counts = nullptr);
 
 			void unbind_compute_state(const bc_compute_state& p_compute_state);
 

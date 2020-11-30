@@ -56,7 +56,16 @@ namespace black_cat
 			core::bc_vector_program<bc_particle_emitter_trait> l_emitters(std::begin(p_builder.m_emitters), std::end(p_builder.m_emitters));
 
 			auto l_value = std::make_pair(p_name, std::move(l_emitters));
-			m_emitter_definitions.insert(std::move(l_value));
+			auto l_entry = m_emitter_definitions.find(p_name);
+
+			if(l_entry == std::end(m_emitter_definitions))
+			{
+				l_entry = m_emitter_definitions.insert(std::move(l_value)).first;
+			}
+			else
+			{
+				l_entry->second = std::move(l_value.second);
+			}
 		}
 
 		void bc_particle_manager::spawn_emitter(const bcCHAR* p_emitter_name, const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir)
@@ -77,15 +86,51 @@ namespace black_cat
 					
 					l_ite->m_position += p_pos;
 					l_ite->m_direction = l_rotation * l_ite->m_direction;
-					l_ite->m_lifetime += .001; // to avoid 0 lifetime and division by zero
+					l_ite->m_lifetime += .001; // to avoid division by zero
+					l_ite->m_mass += .001; // to avoid division by zero
 				}
 
 				bcAssert(m_emitters.size() <= m_num_emitter_count);
 			}
 		}
 
+		double g_last_elapsed = 0;
 		void bc_particle_manager::update(const core_platform::bc_clock::update_param& p_clock)
 		{
+			if(g_last_elapsed == 0)
+			{
+				const auto l_test_emitter = game::bc_particle_builder()
+					.emitter(core::bc_vector3f(0), core::bc_vector3f::up(), 100, 0, 0)
+					.with_deviation(90)
+					.emit_particles(2000, 4, 2, 0.1);
+				register_emitter_definition("test_emitter", l_test_emitter);
+
+				spawn_emitter
+				(
+					"test_emitter",
+					core::bc_vector3f(29, 48, -732),
+					core::bc_vector3f::up()
+				);
+			}
+			g_last_elapsed += p_clock.m_elapsed_second;
+			/*if(g_last_elapsed >= 5)
+			{
+				g_last_elapsed -= 5;
+				
+				const auto l_test_emitter = game::bc_particle_builder()
+					.emitter(core::bc_vector3f(0), core::bc_vector3f::up())
+					.with_deviation(360)
+					.emit_particles(1000, 4, 2, 0.1);
+				register_emitter_definition("test_emitter", l_test_emitter);
+
+				spawn_emitter
+				(
+					"test_emitter",
+					core::bc_vector3f(29, 48, -732),
+					core::bc_vector3f::up()
+				);
+			}*/
+			
 			{
 				core_platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, core_platform::bc_lock_operation::heavy);
 				
@@ -107,7 +152,7 @@ namespace black_cat
 					const bcFLOAT l_velocity_to_apply = l_normalized_age_reversed * l_acceleration;
 					const bcUINT32 l_particles_to_spawn = l_normalized_age * l_emitter.m_particles_total_count;
 
-					l_emitter.m_position += l_emitter.m_direction * l_velocity_to_apply;
+					l_emitter.m_position += l_emitter.m_direction * l_velocity_to_apply * p_clock.m_elapsed_second;
 					l_emitter.m_particles_count_to_spawn = l_particles_to_spawn - l_emitter.m_spawned_particles_count;
 					l_emitter.m_spawned_particles_count += l_emitter.m_particles_count_to_spawn;
 				}
@@ -144,7 +189,7 @@ namespace black_cat
 					}
 				);
 
-				return core::bc_make_unique<bc_particle_emitters_query_context>(l_emitters);
+				return core::bc_make_query_context(bc_particle_emitters_query_context(l_emitters));
 			}
 		}
 	}

@@ -27,7 +27,7 @@ namespace black_cat
 
 			bc_platform_compute_stage& operator=(bc_platform_compute_stage&&) noexcept;
 
-			void apply_required_state(bc_device_pipeline& p_pipeline, const initial_counts_array& p_initial_counts);
+			void apply_required_state(bc_device_pipeline& p_pipeline, const initial_counts_array* p_initial_counts);
 			
 		protected:
 			void apply_shader_program(bc_device_pipeline& p_pipeline) override;

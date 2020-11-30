@@ -47,9 +47,20 @@ namespace black_cat
 
 		template < >
 		BC_GRAPHICIMP_DLL
-		void bc_platform_compute_stage<g_api_dx11>::apply_required_state(bc_device_pipeline& p_pipeline, const initial_counts_array& p_initial_counts)
+		void bc_platform_compute_stage<g_api_dx11>::apply_required_state(bc_device_pipeline& p_pipeline, const initial_counts_array* p_initial_counts)
 		{
-			m_initial_counts = p_initial_counts;
+			if(p_initial_counts)
+			{
+				m_initial_counts = *p_initial_counts;
+			}
+			else
+			{
+				std::for_each(std::begin(m_initial_counts), std::end(m_initial_counts), [](initial_counts_array::value_type& p_count)
+				{
+					p_count = -1;
+				});
+			}
+			
 			bc_programmable_stage::apply_required_state(p_pipeline);
 
 			std::for_each(std::begin(m_initial_counts), std::end(m_initial_counts), [](initial_counts_array::value_type& p_count)

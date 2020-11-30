@@ -56,7 +56,7 @@ namespace black_cat
 				0.3,
 				3000
 			));
-			l_input_system.get_camera().set_look_at(core::bc_vector3f(0, 200, -1000), core::bc_vector3f(0, 200, 0));
+			l_input_system.get_camera().set_look_at(core::bc_vector3f(29, 100, -800), core::bc_vector3f(0, 0, 0));
 			
 			l_render_system.add_render_pass(0, bc_gbuffer_initialize_pass());
 			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
@@ -69,18 +69,6 @@ namespace black_cat
 			l_render_system.add_render_pass(8, bc_particle_system_dx11());
 			l_render_system.add_render_pass(9, bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
 			l_render_system.add_render_pass(10, bc_text_draw_pass(constant::g_rpass_back_buffer_view));
-
-			const auto l_test_emitter = game::bc_particle_builder()
-				.emitter(core::bc_vector3f(0), core::bc_vector3f::up(), 10, 2, 0.8)
-				.emit_particles(10000, 5, 0.5, 0.3);
-			l_render_system.get_particle_manager().register_emitter_definition("test_emitter", l_test_emitter);
-
-			l_render_system.get_particle_manager().spawn_emitter
-			(
-				"test_emitter", 
-				core::bc_vector3f(29,48,-732),
-				core::bc_vector3f::up()
-			);
 		}
 
 		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager* p_stream_manager)

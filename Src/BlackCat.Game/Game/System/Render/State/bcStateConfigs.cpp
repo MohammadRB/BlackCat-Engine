@@ -59,6 +59,7 @@ namespace black_cat
 			{
 			case bc_depth_stencil_type::depth_off_stencil_off:
 			case bc_depth_stencil_type::depth_less_stencil_off:
+			case bc_depth_stencil_type::depth_less_no_write_stencil_off:
 			{
 				l_config.m_stencil_enable = false;
 				l_config.m_stencil_read_mask = 0xff;
@@ -88,6 +89,13 @@ namespace black_cat
 						l_config.m_depth_enable = false;
 						l_config.m_depth_write_mask = graphic::bc_depth_write_mask::zero;
 						l_config.m_depth_func = graphic::bc_comparison_func::never;
+						break;
+					}
+					case bc_depth_stencil_type::depth_less_no_write_stencil_off:
+					{
+						l_config.m_depth_enable = true;
+						l_config.m_depth_write_mask = graphic::bc_depth_write_mask::zero;
+						l_config.m_depth_func = graphic::bc_comparison_func::less;
 						break;
 					}
 				}

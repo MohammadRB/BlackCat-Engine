@@ -50,7 +50,7 @@ namespace black_cat
 			core::bc_query_context_ptr _lights_query_context_provider() const;
 			
 			core::bc_concurrent_memory_pool m_pool;
-			core::bc_list<bc_light, core::bc_memory_pool_allocator<bc_light>> m_lights;
+			container_t m_lights;
 			mutable core::bc_mutex_test m_lights_lock;
 
 			core::bc_query_provider_handle m_lights_query_handle;

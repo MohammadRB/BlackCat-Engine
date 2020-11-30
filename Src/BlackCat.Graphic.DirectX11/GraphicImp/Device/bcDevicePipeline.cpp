@@ -786,20 +786,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline< g_api_dx11 >::pipeline_apply_states(bc_pipeline_stage p_stages)
-		{
-			bc_compute_stage::initial_counts_array l_initial_counts;
-			std::for_each(std::begin(l_initial_counts), std::end(l_initial_counts), [](bc_compute_stage::initial_counts_array::value_type& p_count)
-			{
-				p_count = -1;
-			});
-
-			pipeline_apply_states(p_stages, l_initial_counts);
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline< g_api_dx11 >::pipeline_apply_states(bc_pipeline_stage p_stages, const bc_compute_stage::initial_counts_array& p_initial_counts)
+		void bc_platform_device_pipeline< g_api_dx11 >::pipeline_apply_states(bc_pipeline_stage p_stages, const bc_compute_stage::initial_counts_array* p_initial_counts)
 		{
 			const bool l_input_assembler_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::input_assembler_stage);
 			const bool l_vertex_stage = core::bc_enum::has(p_stages, bc_pipeline_stage::vertex_stage);

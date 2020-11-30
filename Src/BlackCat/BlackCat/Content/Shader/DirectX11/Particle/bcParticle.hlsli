@@ -1,5 +1,7 @@
 // [11/19/2020 MRB]
 
+#define MAX_FLOAT 3.402823466e+38F
+
 struct emitter
 {
 	float3 m_position;
