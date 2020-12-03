@@ -37,8 +37,8 @@ void gs(point vertex_output p_input[1], inout TriangleStream<geometry_output> p_
 	particle l_particle = g_particles[l_particle_index];
 	
 	float3 l_billboard_normal = normalize(g_camera_position - l_particle.m_position);
-	float3 l_billboard_right = cross(l_billboard_normal, float3(0, 1, 0));
-	float3 l_billboard_up = cross(l_billboard_right, l_billboard_normal);
+	float3 l_billboard_right = normalize(cross(l_billboard_normal, float3(0, 1, 0)));
+	float3 l_billboard_up = normalize(cross(l_billboard_right, l_billboard_normal));
 	
 	float2 l_texcoords[] = { float2(0, 0), float2(1, 0), float2(0, 1), float2(1, 1) };
 	geometry_output l_vertices[4];

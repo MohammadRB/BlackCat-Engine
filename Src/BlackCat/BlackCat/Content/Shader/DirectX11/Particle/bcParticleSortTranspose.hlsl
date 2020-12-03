@@ -4,17 +4,17 @@
 #include "..\bcHelper.hlsli"
 #include "bcParticle.hlsli"
 
-#define TRANSPOSE_BLOCK_SIZE 16
+#define TRANSPOSE_BLOCK_SIZE 32
 
-StructuredBuffer<alive_particle> g_alive_particles_r		: register(BC_COMPUTE_STATE_T1);
+StructuredBuffer<alive_particle> g_alive_particles_r		: register(BC_COMPUTE_STATE_T0);
 RWStructuredBuffer<alive_particle> g_alive_particles_w		: register(BC_COMPUTE_STATE_U0);
-cbuffer g_sort_cbuffer										: register(BC_COMPUTE_STATE_CB0)
+cbuffer g_sort_cbuffer										: register(BC_COMPUTE_STATE_CB1)
 {
 	uint g_num_particles									: packoffset(c0.x);
 	uint g_sort_array_size									: packoffset(c0.y);
-	uint g_sort_array_start									: packoffset(c0.z);
-	uint g_matrix_width										: packoffset(c0.w);
-	uint g_matrix_height									: packoffset(c1.x);
+	uint g_sort_array_size_mask								: packoffset(c0.z);
+	uint g_matrix_width										: packoffset(c1.x);
+	uint g_matrix_height									: packoffset(c1.y);
 };
 
 groupshared alive_particle transpose_shared_data[TRANSPOSE_BLOCK_SIZE * TRANSPOSE_BLOCK_SIZE];

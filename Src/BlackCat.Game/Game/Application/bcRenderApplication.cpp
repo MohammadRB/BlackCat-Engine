@@ -20,7 +20,7 @@ namespace black_cat
 				m_signal(false),
 				m_render_function(p_render_function),
 				m_render_application_param(nullptr),
-				m_clock_param(0, 0)
+				m_clock_param(0, 0, 0)
 			{
 			}
 
@@ -129,14 +129,13 @@ namespace black_cat
 
 					bool l_is_first_update = true;
 					l_local_elapsed += l_elapsed;
-					while (l_local_elapsed >= l_min_update_elapsed)
+					do
 					{
-						// total elapsed in multiple update call per frame loop is constant
-						app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_min_update_elapsed), !l_is_first_update);
+						app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed, std::min(l_elapsed, l_min_update_elapsed)), !l_is_first_update);
 
-						l_local_elapsed -= l_min_update_elapsed;
 						l_is_first_update = false;
-					}
+						l_local_elapsed = std::max(l_local_elapsed - l_min_update_elapsed, static_cast< core_platform::bc_clock::small_delta_time >(0));
+					} while (l_local_elapsed >= l_min_update_elapsed);
 					
 					while (l_render_thread_state.m_signal.load(core_platform::bc_memory_order::acquire))
 					{

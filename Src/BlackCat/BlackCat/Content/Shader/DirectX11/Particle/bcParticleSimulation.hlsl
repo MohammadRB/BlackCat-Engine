@@ -4,7 +4,7 @@
 #include "..\bcHelper.hlsli"
 #include "bcParticle.hlsli"
 
-#define THREAD_GROUP_SIZE 64
+#define THREAD_GROUP_SIZE 128
 
 RWStructuredBuffer<particle> g_particles				: register(BC_COMPUTE_STATE_U0);
 RWStructuredBuffer<alive_particle> g_alive_indices		: register(BC_COMPUTE_STATE_U1);
@@ -16,12 +16,12 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	uint l_particle_index = p_dispatch_thread_id.x;
 	particle l_particle = g_particles[l_particle_index];
 	
-	//// Reset alive particles
-	//alive_particle l_default_alive_particle;
-	//l_default_alive_particle.m_index = 0;
-	//l_default_alive_particle.m_distance = MAX_FLOAT;
-	//g_alive_indices[l_particle_index] = l_default_alive_particle;
+	// Reset alive particles
+	g_alive_indices[l_particle_index].m_index = 0;
+	g_alive_indices[l_particle_index].m_distance = MAX_FLOAT;
 
+	DeviceMemoryBarrierWithGroupSync();
+	
 	l_particle.m_age += g_elapsed_second;
 	if (l_particle.m_age > l_particle.m_lifetime)
 	{

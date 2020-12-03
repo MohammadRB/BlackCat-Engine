@@ -42,9 +42,9 @@ namespace black_cat
 		BC_CBUFFER_ALIGN
 		bcUINT32 m_num_particles;
 		bcUINT32 m_sort_array_size;
-		bcUINT32 m_sort_array_start;
-		bcUINT32 m_matrix_width;
+		bcUINT32 m_sort_array_size_mask;
 		BC_CBUFFER_ALIGN
+		bcUINT32 m_matrix_width;
 		bcUINT32 m_matrix_height;
 	};
 	
@@ -97,11 +97,11 @@ namespace black_cat
 			.as_buffer(1, sizeof(_bc_sort_cbuffer_struct), graphic::bc_resource_usage::gpu_rw)
 			.as_constant_buffer();
 
-		bcUINT32 l_dead_particle_index = 0;
+		bcUINT32 l_dead_particle_index = m_particles_count - 1;
 		core::bc_vector_frame<bcUINT32> l_dead_particle_indices(m_particles_count);
 		std::for_each(std::begin(l_dead_particle_indices), std::end(l_dead_particle_indices), [&l_dead_particle_index](bcUINT32& p_index)
 		{
-			p_index = l_dead_particle_index++;
+			p_index = l_dead_particle_index--;
 		});
 		core::bc_array<bcUINT32, 4> l_draw_args = { 1,0,0,0 };
 		
@@ -228,7 +228,7 @@ namespace black_cat
 
 		game::bc_compute_state_unordered_view_initial_count_array l_initial_count = { -1, 0, m_dead_particles_counter, -1, -1, -1, -1, -1 };
 		p_param.m_render_thread.bind_compute_state(*m_simulation_compute, &l_initial_count);
-		p_param.m_render_thread.dispatch(m_particles_count / m_simulation_shader_group_size, 1, 1);
+		p_param.m_render_thread.dispatch(std::max(1U, m_particles_count / m_simulation_shader_group_size), 1, 1);
 		p_param.m_render_thread.unbind_compute_state(*m_simulation_compute);
 
 		p_param.m_render_thread.copy_structure_count(*m_draw_args_buffer, sizeof(bcUINT32), *m_alive_particles1_unordered_view);
@@ -252,24 +252,28 @@ namespace black_cat
 	void bc_particle_system_dx11::_execute_sort_shader(const game::bc_render_pass_render_param& p_param)
 	{
 		// DX11 ComputeShaderSort11 Sample
-		
-		_bc_sort_cbuffer_struct l_cbuffer;
-		l_cbuffer.m_num_particles = m_particles_count;
-		l_cbuffer.m_sort_array_size = m_sort_shader_group_size;
-		l_cbuffer.m_sort_array_start = 2;
-		l_cbuffer.m_matrix_width = m_sort_transpose_matrix_width;
-		l_cbuffer.m_matrix_height = m_sort_transpose_matrix_height;
-		p_param.m_render_thread.update_subresource(m_sort_cbuffer.get(), 0, &l_cbuffer, 1, 1);
-		
-		p_param.m_render_thread.bind_compute_state(*m_whole_sort_compute);
-		p_param.m_render_thread.dispatch(m_particles_count / m_sort_shader_group_size, 1, 1);	
-		p_param.m_render_thread.unbind_compute_state(*m_whole_sort_compute);
 
-		/*for(bcUINT32 l_bitonic_array = m_sort_shader_group_size * 2; l_bitonic_array <= m_particles_count; l_bitonic_array *= 2)
+		_bc_sort_cbuffer_struct l_cbuffer;
+		
+		for(UINT32 l_sort_array_size = 2; l_sort_array_size <= m_sort_shader_group_size; l_sort_array_size *= 2)
+		{
+			l_cbuffer.m_num_particles = m_particles_count;
+			l_cbuffer.m_sort_array_size = l_sort_array_size;
+			l_cbuffer.m_sort_array_size_mask = l_sort_array_size;
+			l_cbuffer.m_matrix_width = m_sort_transpose_matrix_width;
+			l_cbuffer.m_matrix_height = m_sort_transpose_matrix_height;
+			p_param.m_render_thread.update_subresource(m_sort_cbuffer.get(), 0, &l_cbuffer, 1, 1);
+
+			p_param.m_render_thread.bind_compute_state(*m_sort_compute);
+			p_param.m_render_thread.dispatch(m_particles_count / m_sort_shader_group_size, 1, 1);
+			p_param.m_render_thread.unbind_compute_state(*m_sort_compute);
+		}
+
+		for(bcUINT32 l_bitonic_array = m_sort_shader_group_size * 2; l_bitonic_array <= m_particles_count; l_bitonic_array *= 2)
 		{
 			l_cbuffer.m_num_particles = m_particles_count;
 			l_cbuffer.m_sort_array_size = l_bitonic_array / m_sort_shader_group_size;
-			l_cbuffer.m_sort_array_start = l_cbuffer.m_sort_array_size;
+			l_cbuffer.m_sort_array_size_mask = (l_bitonic_array & ~m_particles_count) / m_sort_shader_group_size;
 			l_cbuffer.m_matrix_width = m_sort_transpose_matrix_width;
 			l_cbuffer.m_matrix_height = m_sort_transpose_matrix_height;
 			p_param.m_render_thread.update_subresource(m_sort_cbuffer.get(), 0, &l_cbuffer, 1, 1);
@@ -284,7 +288,7 @@ namespace black_cat
 
 			l_cbuffer.m_num_particles = m_particles_count;
 			l_cbuffer.m_sort_array_size = m_sort_shader_group_size;
-			l_cbuffer.m_sort_array_start = l_cbuffer.m_sort_array_size;
+			l_cbuffer.m_sort_array_size_mask = l_bitonic_array;
 			l_cbuffer.m_matrix_width = m_sort_transpose_matrix_height;
 			l_cbuffer.m_matrix_height = m_sort_transpose_matrix_width;
 			p_param.m_render_thread.update_subresource(m_sort_cbuffer.get(), 0, &l_cbuffer, 1, 1);
@@ -296,7 +300,7 @@ namespace black_cat
 			p_param.m_render_thread.bind_compute_state(*m_sort2_after_transpose_compute);
 			p_param.m_render_thread.dispatch(m_particles_count / m_sort_shader_group_size, 1, 1);
 			p_param.m_render_thread.unbind_compute_state(*m_sort2_after_transpose_compute);
-		}*/
+		}
 	}
 
 	void bc_particle_system_dx11::before_reset(const game::bc_render_pass_reset_param& p_param)
@@ -337,7 +341,7 @@ namespace black_cat
 				p_param.m_render_system.get_global_cbuffer()
 			}
 		);
-		m_whole_sort_compute = p_param.m_render_system.create_compute_state
+		m_sort_compute = p_param.m_render_system.create_compute_state
 		(
 			m_sort_compute_state.get(),
 			{},
@@ -425,8 +429,8 @@ namespace black_cat
 			"particle_render_gs",
 			"particle_render_ps",
 			game::bc_vertex_type::none,
-			game::bc_blend_type::opaque,
-			game::bc_depth_stencil_type::depth_less_stencil_off,
+			game::bc_blend_type::alpha,
+			game::bc_depth_stencil_type::depth_less_no_write_stencil_off,
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0x1,
 			{ l_back_buffer.get_format() },
@@ -468,7 +472,7 @@ namespace black_cat
 		m_simulation_compute_state.reset();
 		m_simulation_compute.reset();
 		m_sort_compute_state.reset();
-		m_whole_sort_compute.reset();
+		m_sort_compute.reset();
 		m_sort1_after_transpose_compute.reset();
 		m_sort2_after_transpose_compute.reset();
 		m_sort_transpose_compute_state.reset();

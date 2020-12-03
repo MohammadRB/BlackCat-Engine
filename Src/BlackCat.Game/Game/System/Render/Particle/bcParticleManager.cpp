@@ -86,15 +86,15 @@ namespace black_cat
 					
 					l_ite->m_position += p_pos;
 					l_ite->m_direction = l_rotation * l_ite->m_direction;
-					l_ite->m_lifetime += .001; // to avoid division by zero
-					l_ite->m_mass += .001; // to avoid division by zero
+					l_ite->m_lifetime += .001f; // to avoid division by zero
+					l_ite->m_mass += .001f; // to avoid division by zero
 				}
 
 				bcAssert(m_emitters.size() <= m_num_emitter_count);
 			}
 		}
-
-		double g_last_elapsed = 0;
+		
+		float g_last_elapsed = 0;
 		void bc_particle_manager::update(const core_platform::bc_clock::update_param& p_clock)
 		{
 			if(g_last_elapsed == 0)
@@ -102,7 +102,7 @@ namespace black_cat
 				const auto l_test_emitter = game::bc_particle_builder()
 					.emitter(core::bc_vector3f(0), core::bc_vector3f::up(), 100, 0, 0)
 					.with_deviation(90)
-					.emit_particles(2000, 4, 2, 0.1);
+					.emit_particles(20000, 4, 2, 0.1f);
 				register_emitter_definition("test_emitter", l_test_emitter);
 
 				spawn_emitter
@@ -120,7 +120,7 @@ namespace black_cat
 				const auto l_test_emitter = game::bc_particle_builder()
 					.emitter(core::bc_vector3f(0), core::bc_vector3f::up())
 					.with_deviation(360)
-					.emit_particles(1000, 4, 2, 0.1);
+					.emit_particles(2500, 4, 2, 0.1f);
 				register_emitter_definition("test_emitter", l_test_emitter);
 
 				spawn_emitter

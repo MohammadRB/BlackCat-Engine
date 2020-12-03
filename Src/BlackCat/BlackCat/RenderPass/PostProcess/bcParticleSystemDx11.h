@@ -39,11 +39,14 @@ namespace black_cat
 	private:
 		void _execute_sort_shader(const game::bc_render_pass_render_param& p_param);
 		
+		// The number of elements to sort is limited to an even power of 2
+		// At minimum - m_sort_shader_group_size * m_sort_transpose_shader_group_size
+		// At maximum - m_sort_shader_group_size * m_sort_shader_group_size
 		static const bcSIZE m_emitters_count = 128;
-		static const bcSIZE m_particles_count = 16384;
+		static const bcSIZE m_particles_count = 128*128;
 		static const bcSIZE m_emission_shader_group_size = 1;
-		static const bcSIZE m_simulation_shader_group_size = 64;
-		static const bcSIZE m_sort_shader_group_size = 64;
+		static const bcSIZE m_simulation_shader_group_size = 128;
+		static const bcSIZE m_sort_shader_group_size = 1024;
 		static const bcSIZE m_sort_transpose_shader_group_size = 32;
 		static const bcSIZE m_sort_transpose_matrix_width = m_sort_shader_group_size;
 		static const bcSIZE m_sort_transpose_matrix_height = m_particles_count / m_sort_shader_group_size;
@@ -77,7 +80,7 @@ namespace black_cat
 		graphic::bc_device_compute_state_ptr m_simulation_compute_state;
 		game::bc_compute_state_ptr m_simulation_compute;
 		graphic::bc_device_compute_state_ptr m_sort_compute_state;
-		game::bc_compute_state_ptr m_whole_sort_compute;
+		game::bc_compute_state_ptr m_sort_compute;
 		game::bc_compute_state_ptr m_sort1_after_transpose_compute;
 		game::bc_compute_state_ptr m_sort2_after_transpose_compute;
 		graphic::bc_device_compute_state_ptr m_sort_transpose_compute_state;

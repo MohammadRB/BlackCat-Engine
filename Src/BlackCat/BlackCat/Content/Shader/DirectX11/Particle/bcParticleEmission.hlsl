@@ -45,8 +45,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 		);
 		
 		l_new_particle.m_position = l_emitter.m_position;
-		//l_new_particle.m_lifetime = randomize(l_emitter.m_particles_lifetime, l_random_range[0], PARTICLE_RANDOM_COEFFICIENT);
-		l_new_particle.m_lifetime = l_emitter.m_particles_lifetime;
+		l_new_particle.m_lifetime = randomize(l_emitter.m_particles_lifetime, l_random_range[0], PARTICLE_RANDOM_COEFFICIENT);
 		l_new_particle.m_direction = l_new_particle_dir;
 		l_new_particle.m_age = 0;
 		l_new_particle.m_force = randomize(l_emitter.m_particles_force, l_random_range[0], PARTICLE_RANDOM_COEFFICIENT);
