@@ -87,6 +87,7 @@ namespace black_cat
 			bcAssert(!m_command_list.is_valid());
 
 			m_command_list = p_command_list;
+			m_pipeline->start_command_list();
 		}
 
 		graphic::bc_device_command_list bc_render_thread::finish() noexcept

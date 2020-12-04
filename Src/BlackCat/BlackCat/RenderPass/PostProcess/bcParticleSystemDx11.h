@@ -5,13 +5,12 @@
 #include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/State/bcComputeState.h"
-#include "Game/System/Render/Pass/bcRenderPassState.h"
+#include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/Query/bcParticleEmittersQuery.h"
 #include "BlackCat/bcExport.h"
 
@@ -43,19 +42,18 @@ namespace black_cat
 		// At minimum - m_sort_shader_group_size * m_sort_transpose_shader_group_size
 		// At maximum - m_sort_shader_group_size * m_sort_shader_group_size
 		static const bcSIZE m_emitters_count = 128;
-		static const bcSIZE m_particles_count = 128*128;
+		static const bcSIZE m_particles_count = 128 * 128;
 		static const bcSIZE m_emission_shader_group_size = 1;
-		static const bcSIZE m_simulation_shader_group_size = 128;
+		static const bcSIZE m_simulation_shader_group_size = 1024;
 		static const bcSIZE m_sort_shader_group_size = 1024;
 		static const bcSIZE m_sort_transpose_shader_group_size = 32;
 		static const bcSIZE m_sort_transpose_matrix_width = m_sort_shader_group_size;
 		static const bcSIZE m_sort_transpose_matrix_height = m_particles_count / m_sort_shader_group_size;
 		
-		bcINT32 m_dead_particles_counter = m_particles_count;
+		bcINT32 m_dead_particles_initial_count = m_particles_count;
 
 		graphic::bc_depth_stencil_view m_depth_buffer_view;
 		graphic::bc_resource_view m_depth_buffer_shader_view;
-		graphic::bc_device_command_list_ptr m_command_list;
 		
 		graphic::bc_buffer_ptr m_emitters_buffer;
 		graphic::bc_buffer_ptr m_particles_buffer;

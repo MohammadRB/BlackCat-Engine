@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Core/Messaging/Query/bcQueryResult.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/bcShapeDrawer.h"
@@ -51,7 +50,6 @@ namespace black_cat
 	private:
 		constant::bc_render_pass_variable_t m_render_target_view_variable;
 
-		graphic::bc_device_command_list_ptr m_command_list;
 		graphic::bc_device_pipeline_state_ptr m_pipeline_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;
 

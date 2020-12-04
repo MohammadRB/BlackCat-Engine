@@ -6,6 +6,7 @@
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/State/bcStateConfigs.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
 #include "BlackCat/RenderPass/ShadowMap/bcVegetableCascadedShadowMapPass.h"

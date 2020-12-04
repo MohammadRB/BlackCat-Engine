@@ -2,7 +2,7 @@
 
 #include "Game/GamePCH.h"
 #include "Game/System/Render/bcRenderSystem.h"
-#include "Game/System/Render/Pass/bcRenderPassState.h"
+#include "Game/System/Render/State/bcRenderPassState.h"
 
 namespace black_cat
 {

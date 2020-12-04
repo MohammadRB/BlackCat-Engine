@@ -225,9 +225,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassManager.h">
       <Filter>Game\System\Render\Pass</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassState.h">
-      <Filter>Game\System\Render\Pass</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcDirectLight.h">
       <Filter>Game\System\Render\Light</Filter>
     </ClInclude>
@@ -338,6 +335,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcParticleEmittersQuery.h">
       <Filter>Game\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcRenderPassState.h">
+      <Filter>Game\System\Render\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcDefaultRenderThread.h">
+      <Filter>Game\System\Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -461,9 +464,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassManager.cpp">
       <Filter>Game\System\Render\Pass</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassState.cpp">
-      <Filter>Game\System\Render\Pass</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightManager.cpp">
       <Filter>Game\System\Render\Light</Filter>
     </ClCompile>
@@ -502,6 +502,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleManager.cpp">
       <Filter>Game\System\Render\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcRenderPassState.cpp">
+      <Filter>Game\System\Render\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcDefaultRenderThread.cpp">
+      <Filter>Game\System\Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

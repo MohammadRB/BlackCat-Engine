@@ -4,7 +4,7 @@
 #include "..\bcHelper.hlsli"
 #include "bcParticle.hlsli"
 
-#define THREAD_GROUP_SIZE 128
+#define THREAD_GROUP_SIZE 1024
 
 RWStructuredBuffer<particle> g_particles				: register(BC_COMPUTE_STATE_U0);
 RWStructuredBuffer<alive_particle> g_alive_indices		: register(BC_COMPUTE_STATE_U1);

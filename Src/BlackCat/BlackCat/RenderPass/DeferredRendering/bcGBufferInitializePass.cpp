@@ -2,12 +2,12 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
-#include "Core/Utility/bcLogger.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/Query/bcMainCameraSceneQuery.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferInitializePass.h"
 #include "BlackCat/bcConstant.h"
@@ -52,6 +52,20 @@ namespace black_cat
 
 	void bc_gbuffer_initialize_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
+		graphic::bc_render_target_view l_render_targets[] = { m_diffuse_map_view.get(), m_normal_map_view.get() };
+		
+		p_param.m_render_thread.start();
+		p_param.m_frame_renderer.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, p_param.m_render_camera);
+		
+		p_param.m_render_thread.get_pipeline().bind_om_render_targets(2, &l_render_targets[0], m_depth_stencil_view.get());
+		p_param.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::output_merger_stage);
+		
+		p_param.m_render_thread.clear_buffers(core::bc_vector4f(0, 0, 255, 0), 1, 0);
+		
+		p_param.m_render_thread.get_pipeline().unbind_om_render_targets();
+		p_param.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::output_merger_stage);
+		
+		p_param.m_render_thread.finish();
 	}
 
 	void bc_gbuffer_initialize_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)

@@ -1,6 +1,8 @@
 // [01/26/2016 MRB]
 
 #include "GraphicImp/GraphicImpPCH.h"
+
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/Utility/bcEnumOperand.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "GraphicImp/bcExport.h"
@@ -1077,25 +1079,44 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline< g_api_dx11 >::start_command_list()
+		{
+			if (m_pack.m_pipeline_proxy->m_context->GetType() == D3D11_DEVICE_CONTEXT_IMMEDIATE)
+			{
+				auto& l_device_pack = m_pack.m_pipeline_proxy->m_device->get_platform_pack();
+				l_device_pack.m_immediate_context_mutex.lock();
+			}
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline< g_api_dx11 >::finish_command_list(bc_device_command_list& p_command_list)
 		{
-			p_command_list.finished();
-			dx_call(m_pack.m_pipeline_proxy->m_context->FinishCommandList
-			(
-				false, 
-				&p_command_list.get_platform_pack().m_command_list_proxy->m_command_list
-			));
+			if (m_pack.m_pipeline_proxy->m_context->GetType() == D3D11_DEVICE_CONTEXT_IMMEDIATE)
+			{
+				auto& l_device_pack = m_pack.m_pipeline_proxy->m_device->get_platform_pack();
+				l_device_pack.m_immediate_context_mutex.unlock();
+			}
+			else
+			{
+				p_command_list.finished();
+				dx_call(m_pack.m_pipeline_proxy->m_context->FinishCommandList
+				(
+					false,
+					&p_command_list.get_platform_pack().m_command_list_proxy->m_command_list
+				));
 
-			m_pack.m_pipeline_proxy->m_input_assembler_stage.set_to_default_state(*this);
-			m_pack.m_pipeline_proxy->m_stream_output_stage.set_to_default_state(*this);
-			m_pack.m_pipeline_proxy->m_rasterizer_stage.set_to_default_state(*this);
-			m_pack.m_pipeline_proxy->m_output_merger_stage.set_to_default_state(*this);
-			m_pack.m_pipeline_proxy->m_vertex_shader_stage.set_to_default_state(*this);
-			m_pack.m_pipeline_proxy->m_hull_shader_stage.set_to_default_state(*this);
-			m_pack.m_pipeline_proxy->m_domain_shader_stage.set_to_default_state(*this);
-			m_pack.m_pipeline_proxy->m_geometry_shader_stage.set_to_default_state(*this);
-			m_pack.m_pipeline_proxy->m_pixel_shader_stage.set_to_default_state(*this);
-			m_pack.m_pipeline_proxy->m_compute_shader_stage.set_to_default_state(*this);
+				m_pack.m_pipeline_proxy->m_input_assembler_stage.set_to_default_state(*this);
+				m_pack.m_pipeline_proxy->m_stream_output_stage.set_to_default_state(*this);
+				m_pack.m_pipeline_proxy->m_rasterizer_stage.set_to_default_state(*this);
+				m_pack.m_pipeline_proxy->m_output_merger_stage.set_to_default_state(*this);
+				m_pack.m_pipeline_proxy->m_vertex_shader_stage.set_to_default_state(*this);
+				m_pack.m_pipeline_proxy->m_hull_shader_stage.set_to_default_state(*this);
+				m_pack.m_pipeline_proxy->m_domain_shader_stage.set_to_default_state(*this);
+				m_pack.m_pipeline_proxy->m_geometry_shader_stage.set_to_default_state(*this);
+				m_pack.m_pipeline_proxy->m_pixel_shader_stage.set_to_default_state(*this);
+				m_pack.m_pipeline_proxy->m_compute_shader_stage.set_to_default_state(*this);
+			}
 		}
 
 		template<>
@@ -1149,7 +1170,23 @@ namespace black_cat
 				m_pack.m_pipeline_proxy->m_context->SetPrivateData(WKPDID_D3DDebugObjectName, std::strlen(p_name), p_name);
 			}
 		}
-		
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_pipeline_type bc_platform_device_pipeline<g_api_dx11>::get_type() const noexcept
+		{
+			const auto l_context_type = m_pack.m_pipeline_proxy->m_context->GetType();
+			switch (l_context_type)
+			{
+			case D3D11_DEVICE_CONTEXT_IMMEDIATE:
+				return bc_pipeline_type::default;
+			case D3D11_DEVICE_CONTEXT_DEFERRED:
+				return bc_pipeline_type::deferred;
+			default: 
+				bcAssert(false);
+			}
+		}
+
 		template<>
 		BC_GRAPHICIMP_DLL
 		bool bc_platform_device_pipeline<g_api_dx11>::operator==(const bc_platform_device_pipeline& p_other) const noexcept

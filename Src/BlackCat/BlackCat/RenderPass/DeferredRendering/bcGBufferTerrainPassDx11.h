@@ -5,7 +5,6 @@
 #include "Core/Math/bcVector3f.h"
 #include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
@@ -46,8 +45,7 @@ namespace black_cat
 
 		bool m_run_chunk_info_shader = false;
 
-		graphic::bc_device_command_list_ptr m_command_list;
-		graphic::bc_device_pipeline_state_ptr m_pipeline_state;
+		graphic::bc_device_pipeline_state_ptr m_device_pipeline_state;
 		graphic::bc_device_compute_state_ptr m_device_compute_state;
 		graphic::bc_buffer_ptr m_parameter_cbuffer;
 		graphic::bc_sampler_state_ptr m_height_map_sampler;

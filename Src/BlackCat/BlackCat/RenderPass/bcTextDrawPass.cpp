@@ -33,10 +33,6 @@ namespace black_cat
 	void bc_text_draw_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
 		auto& l_counter_value_manager = *core::bc_get_service<core::bc_counter_value_manager>();
-		
-		const auto l_fps_counter = l_counter_value_manager.find("fps");
-		const auto l_update_time = l_counter_value_manager.find("update_time");
-		const auto l_render_time = l_counter_value_manager.find("render_time");
 
 		core::bc_vector_frame<graphic::bc_device_text> l_texts;
 		const auto l_text_bound = m_text_renderer->measure_text(L"Test");
@@ -44,23 +40,20 @@ namespace black_cat
 		{
 			return core::bc_vector2i(10, 10 + i * (l_text_bound.y + 2));
 		};
-		
-		if(l_fps_counter != std::end(l_counter_value_manager))
-		{
-			const graphic::bc_device_text l_text(L"FPS: " + l_fps_counter->second, l_text_position_calculator(0));
-			l_texts.push_back(l_text);
-		}
-		if (l_update_time != std::end(l_counter_value_manager))
-		{
-			const graphic::bc_device_text l_text(L"update: " + l_update_time->second, l_text_position_calculator(1));
-			l_texts.push_back(l_text);
-		}
-		if (l_render_time != std::end(l_counter_value_manager))
-		{
-			const graphic::bc_device_text l_text(L"render: " + l_render_time->second, l_text_position_calculator(2));
-			l_texts.push_back(l_text);
-		}
 
+		for(bcUINT32 i = 0; i < m_counter_values.size(); ++i)
+		{
+			const auto* const l_counter = m_counter_values[i];
+			const auto l_counter_value = l_counter_value_manager.find(l_counter);
+			if (l_counter_value == std::end(l_counter_value_manager))
+			{
+				continue;
+			}
+
+			const graphic::bc_device_text l_text(core::bc_to_wstring(l_counter) + L": " + l_counter_value->second, l_text_position_calculator(i));
+			l_texts.push_back(l_text);
+		}
+		
 		m_text_renderer->draw_texts(p_param.m_render_system.get_device(), m_back_buffer_view, l_texts.data(), l_texts.size());
 	}
 

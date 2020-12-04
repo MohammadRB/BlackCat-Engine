@@ -53,7 +53,7 @@ namespace black_cat
 		void bc_platform_device_command_executor< g_api_dx11 >::excecute_command_list(bc_device_command_list p_command_list)
 		{
 			{
-				core_platform::bc_mutex_guard l_lock(m_pack.m_device->get_platform_pack().m_context_mutex);
+				core_platform::bc_mutex_guard l_lock(m_pack.m_device->get_platform_pack().m_immediate_context_mutex);
 
 				m_pack.m_device->get_platform_pack().m_immediate_context->ExecuteCommandList
 				(

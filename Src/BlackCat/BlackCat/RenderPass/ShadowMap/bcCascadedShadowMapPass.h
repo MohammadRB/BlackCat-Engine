@@ -4,7 +4,7 @@
 
 #include "Core/Container/bcVector.h"
 #include "Core/Messaging/Query/bcQueryResult.h"
-#include "Game/System/Render/Pass/bcRenderPassState.h"
+#include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/Query/bcSceneGraphRenderStateQuery.h"
 #include "BlackCat/bcExport.h"

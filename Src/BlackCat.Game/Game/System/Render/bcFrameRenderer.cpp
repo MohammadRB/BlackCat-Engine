@@ -116,14 +116,19 @@ namespace black_cat
 			return *this;
 		}
 
-		const graphic::bc_constant_buffer_parameter& bc_frame_renderer::get_global_cbuffer() const
+		const graphic::bc_constant_buffer_parameter& bc_frame_renderer::get_global_cbuffer() const noexcept
 		{
 			return m_global_cbuffer_parameter;
 		}
 
-		const graphic::bc_constant_buffer_parameter& bc_frame_renderer::get_per_object_cbuffer() const
+		const graphic::bc_constant_buffer_parameter& bc_frame_renderer::get_per_object_cbuffer() const noexcept
 		{
 			return m_per_object_cbuffer_parameter;
+		}
+
+		bc_render_thread_manager& bc_frame_renderer::get_thread_manager() noexcept
+		{
+			return *m_thread_manager;
 		}
 
 		void bc_frame_renderer::update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_camera_instance& p_camera)
@@ -204,9 +209,6 @@ namespace black_cat
 
 		void bc_frame_renderer::render(const bc_frame_renderer_render_param& p_render_param)
 		{
-			const auto bc_render_thread_guard = m_thread_manager->get_available_thread_wait();
-			auto& l_render_thread = *bc_render_thread_guard.get_thread();
-
 			auto* l_prev_camera = m_prev_camera.load(core_platform::bc_memory_order::consume);
 			auto* l_camera = m_camera.load(core_platform::bc_memory_order::consume);
 
@@ -222,8 +224,8 @@ namespace black_cat
 				*l_prev_camera,
 				p_render_param.m_render_system,
 				*this,
-				l_render_thread)
-			);
+				m_thread_manager->get_default_render_thread()
+			));
 		}
 	}
 }

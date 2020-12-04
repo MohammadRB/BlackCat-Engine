@@ -10,6 +10,7 @@
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/System/Render/Light/bcLightManager.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapBufferContainer.h"
@@ -81,7 +82,6 @@ namespace black_cat
 	{
 		auto& l_device = p_render_system.get_device();
 
-		m_command_list = l_device.create_command_list();
 		m_device_compute_state = p_render_system.create_device_compute_state("gbuffer_light_map");
 
 		auto l_resource_configure = graphic::bc_graphic_resource_builder();
@@ -316,7 +316,7 @@ namespace black_cat
 			}
 		}
 
-		p_param.m_render_thread.start(m_command_list.get());
+		p_param.m_render_thread.start();
 
 		_bc_parameters_cbuffer l_parameters_cbuffer_data
 		{
@@ -342,8 +342,6 @@ namespace black_cat
 		p_param.m_render_thread.unbind_compute_state(*m_compute_state.get());
 		
 		p_param.m_render_thread.finish();
-
-		m_command_list->finished();
 	}
 
 	void bc_gbuffer_light_map_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
@@ -473,7 +471,6 @@ namespace black_cat
 	{
 		m_compute_state.reset();
 		m_device_compute_state.reset();
-		m_command_list.reset();
 
 		m_output_texture_unordered_view.reset();
 		m_output_texture.reset();

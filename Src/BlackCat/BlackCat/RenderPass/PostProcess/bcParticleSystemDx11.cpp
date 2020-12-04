@@ -9,6 +9,7 @@
 #include "GraphicImp/Resource/View/bcRenderTargetViewConfig.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/System/Render/Particle/bcParticleEmitter.h"
 #include "BlackCat/RenderPass/PostProcess/bcParticleSystemDx11.h"
 #include "BlackCat/bcConstant.h"
@@ -52,8 +53,6 @@ namespace black_cat
 	{
 		auto& l_device = p_render_system.get_device();
 
-		m_command_list = l_device.create_command_list();
-		
 		auto l_emitters_buffer_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_buffer(m_emitters_count, sizeof(_bc_emitter_struct), graphic::bc_resource_usage::gpu_rw, graphic::bc_resource_view_type::shader)
@@ -215,18 +214,18 @@ namespace black_cat
 
 	void bc_particle_system_dx11::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		p_param.m_render_thread.start(m_command_list.get());
+		p_param.m_render_thread.start();
 				
 		if(!m_emitters_query_result.empty())
 		{
-			game::bc_compute_state_unordered_view_initial_count_array l_initial_count = { -1, m_dead_particles_counter, -1, -1, -1, -1, -1, -1 };
+			game::bc_compute_state_unordered_view_initial_count_array l_initial_count = { -1, m_dead_particles_initial_count, -1, -1, -1, -1, -1, -1 };
 			p_param.m_render_thread.bind_compute_state(*m_emission_compute, &l_initial_count);
 			p_param.m_render_thread.update_subresource(*m_emitters_buffer, 0, m_emitters_query_result.data(), m_emitters_query_result.size(), 1);
 			p_param.m_render_thread.dispatch(m_emitters_query_result.size(), 1, 1);
 			p_param.m_render_thread.unbind_compute_state(*m_emission_compute);
 		}
 
-		game::bc_compute_state_unordered_view_initial_count_array l_initial_count = { -1, 0, m_dead_particles_counter, -1, -1, -1, -1, -1 };
+		game::bc_compute_state_unordered_view_initial_count_array l_initial_count = { -1, 0, m_dead_particles_initial_count, -1, -1, -1, -1, -1 };
 		p_param.m_render_thread.bind_compute_state(*m_simulation_compute, &l_initial_count);
 		p_param.m_render_thread.dispatch(std::max(1U, m_particles_count / m_simulation_shader_group_size), 1, 1);
 		p_param.m_render_thread.unbind_compute_state(*m_simulation_compute);
@@ -244,9 +243,8 @@ namespace black_cat
 		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state);
 		
 		p_param.m_render_thread.finish();
-		m_command_list->finished();
 
-		m_dead_particles_counter = -1;
+		m_dead_particles_initial_count = -1;
 	}
 
 	void bc_particle_system_dx11::_execute_sort_shader(const game::bc_render_pass_render_param& p_param)
@@ -254,7 +252,8 @@ namespace black_cat
 		// DX11 ComputeShaderSort11 Sample
 
 		_bc_sort_cbuffer_struct l_cbuffer;
-		
+
+		p_param.m_render_thread.bind_compute_state(*m_sort_compute);
 		for(UINT32 l_sort_array_size = 2; l_sort_array_size <= m_sort_shader_group_size; l_sort_array_size *= 2)
 		{
 			l_cbuffer.m_num_particles = m_particles_count;
@@ -264,10 +263,9 @@ namespace black_cat
 			l_cbuffer.m_matrix_height = m_sort_transpose_matrix_height;
 			p_param.m_render_thread.update_subresource(m_sort_cbuffer.get(), 0, &l_cbuffer, 1, 1);
 
-			p_param.m_render_thread.bind_compute_state(*m_sort_compute);
 			p_param.m_render_thread.dispatch(m_particles_count / m_sort_shader_group_size, 1, 1);
-			p_param.m_render_thread.unbind_compute_state(*m_sort_compute);
 		}
+		p_param.m_render_thread.unbind_compute_state(*m_sort_compute);
 
 		for(bcUINT32 l_bitonic_array = m_sort_shader_group_size * 2; l_bitonic_array <= m_particles_count; l_bitonic_array *= 2)
 		{
@@ -346,7 +344,7 @@ namespace black_cat
 			m_sort_compute_state.get(),
 			{},
 			{
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_draw_args_shader_view.get())
+				//graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_draw_args_shader_view.get())
 			},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_alive_particles1_unordered_view.get())
@@ -376,7 +374,7 @@ namespace black_cat
 			m_sort_compute_state.get(),
 			{},
 			{
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_draw_args_shader_view.get())
+				//graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_draw_args_shader_view.get())
 			},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_alive_particles2_unordered_view.get())
@@ -406,7 +404,7 @@ namespace black_cat
 			m_sort_compute_state.get(),
 			{},
 			{
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_draw_args_shader_view.get()),
+				//graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_draw_args_shader_view.get()),
 			},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_alive_particles1_unordered_view.get())
@@ -496,7 +494,5 @@ namespace black_cat
 		m_dead_particles_buffer.reset();
 		m_draw_args_buffer.reset();
 		m_sort_cbuffer.reset();
-
-		m_command_list.reset();
 	}
 }

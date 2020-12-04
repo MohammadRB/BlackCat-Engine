@@ -235,6 +235,8 @@ namespace black_cat
 
 			bc_device_compute_state_ptr create_compute_state(bc_device_compute_state_config& p_config);
 
+			bc_device_pipeline_ptr get_default_pipeline();
+			
 			bc_device_pipeline_ptr create_pipeline();
 			
 			bc_device_command_list_ptr create_command_list();

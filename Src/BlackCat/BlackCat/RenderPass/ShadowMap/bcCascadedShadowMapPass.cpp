@@ -5,6 +5,7 @@
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/System/Render/State/bcStateConfigs.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"

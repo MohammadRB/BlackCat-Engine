@@ -6,7 +6,7 @@
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "Game/bcExport.h"
-#include "Game/System/Render/Pass/bcRenderPassState.h"
+#include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/State/bcRenderState.h"
 #include "Game/System/Render/State/bcComputeState.h"
 

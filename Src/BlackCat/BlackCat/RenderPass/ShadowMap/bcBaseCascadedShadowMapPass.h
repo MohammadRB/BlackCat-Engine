@@ -6,8 +6,7 @@
 #include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandList.h"
-#include "Game/System/Render/Pass/bcRenderPassState.h"
+#include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/Light/bcDirectLight.h"
 #include "Game/System/Input/bcCameraInstance.h"
@@ -39,7 +38,6 @@ namespace black_cat
 		core::bc_vector_program<bcSIZE> m_cascade_sizes;
 		core::bc_vector_program<std::tuple<bcUBYTE, bcUBYTE>> m_cascade_update_intervals;
 
-		graphic::bc_device_command_list_ptr m_command_list;
 		core::bc_vector_program<_bc_cascaded_shadow_map_light_state> m_light_instance_states;
 
 		core::bc_query_result<game::bc_scene_light_query> m_lights_query;

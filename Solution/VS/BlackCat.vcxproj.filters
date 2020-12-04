@@ -274,9 +274,6 @@
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticleSortTranspose.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticleSort1.hlsl">
-      <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\ContentStream.json">

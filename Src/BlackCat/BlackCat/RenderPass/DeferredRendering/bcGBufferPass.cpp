@@ -5,6 +5,7 @@
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferPass.h"
 #include "BlackCat/bcConstant.h"
@@ -15,8 +16,6 @@ namespace black_cat
 	{
 		auto& l_device = p_render_system.get_device();
 
-		m_command_list = l_device.create_command_list();
-		
 		graphic::bc_device_parameters l_old_parameters
 		(
 			0,
@@ -53,15 +52,13 @@ namespace black_cat
 
 	void bc_gbuffer_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		p_param.m_render_thread.start(m_command_list.get());
+		p_param.m_render_thread.start();
 		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
 
 		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, m_render_states, p_param.m_render_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.finish();
-
-		m_command_list->finished();
 	}
 
 	void bc_gbuffer_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
@@ -139,6 +136,5 @@ namespace black_cat
 		m_render_pass_state.reset();
 		m_sampler_state.reset();
 		m_pipeline_state.reset();
-		m_command_list.reset();
 	}
 }

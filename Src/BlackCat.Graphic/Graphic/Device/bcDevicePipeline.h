@@ -31,6 +31,11 @@ namespace black_cat
 {
 	namespace graphic
 	{
+		enum class bc_pipeline_type
+		{
+			default, deferred
+		};
+		
 		template< bc_render_api TRenderApi >
 		struct bc_platform_device_pipeline_pack
 		{
@@ -55,7 +60,7 @@ namespace black_cat
 
 			/**
 			 * \brief Bind and Apply required pipeline states.
-			 * \param p_state 
+			 * \param p_state
 			 */
 			void bind_pipeline_state(bc_device_pipeline_state p_state);
 
@@ -63,7 +68,7 @@ namespace black_cat
 
 			/**
 			 * \brief Bind and Apply required pipeline states.
-			 * \param p_state 
+			 * \param p_state
 			 */
 			void bind_compute_state(bc_device_compute_state p_state);
 
@@ -146,8 +151,13 @@ namespace black_cat
 				bc_format p_format);
 
 			/**
-			 * \brief Write commands to command list and reset pipeline state.
-			 * \param p_command_list 
+			 * \brief Start capturing command lists and put pipeline to lock state
+			 */
+			void start_command_list();
+			
+			/**
+			 * \brief Write commands to command list and reset pipeline state and lock
+			 * \param p_command_list
 			 */
 			void finish_command_list(bc_device_command_list& p_command_list);
 
@@ -159,6 +169,8 @@ namespace black_cat
 
 			void set_debug_name(const bcCHAR* p_name) noexcept override;
 
+			bc_pipeline_type get_type() const noexcept;
+			
 			bool operator==(const bc_platform_device_pipeline& p_other) const noexcept;
 
 			bool operator!=(const bc_platform_device_pipeline& p_other) const noexcept;

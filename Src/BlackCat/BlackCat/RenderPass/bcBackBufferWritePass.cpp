@@ -5,6 +5,7 @@
 #include "Core/Container/bcArray.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/System/Render/bcFrameRenderer.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
 #include "BlackCat/RenderPass/bcBackBufferWritePass.h"
@@ -30,7 +31,6 @@ namespace black_cat
 				graphic::bc_texture_address_mode::wrap
 			).as_sampler_state();
 
-		m_command_list = l_device.create_command_list();
 		m_sampler_state = l_device.create_sampler_state(l_sampler_config);
 
 		core::bc_array<game::bc_vertex_pos_tex, 4> l_vertices
@@ -100,7 +100,7 @@ namespace black_cat
 	
 	void bc_back_buffer_write_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		p_param.m_render_thread.start(m_command_list.get());
+		p_param.m_render_thread.start();
 		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state);
 		p_param.m_render_thread.bind_render_state(*m_render_state);
 
@@ -109,8 +109,6 @@ namespace black_cat
 		p_param.m_render_thread.unbind_render_state(*m_render_state);
 		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state);
 		p_param.m_render_thread.finish();
-
-		m_command_list->finished();
 	}
 
 	void bc_back_buffer_write_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
@@ -189,10 +187,12 @@ namespace black_cat
 		m_render_state.reset();
 		m_render_pass_state.reset();
 		m_pipeline_state.reset();
-		m_command_list.reset();
-		m_back_buffer_view.reset();
+
 		m_input_texture_view.reset();
+		m_back_buffer_view.reset();
 		m_sampler_state.reset();
+		
 		m_vertices_buffer.reset();
+		m_indices_buffer.reset();
 	}
 }
