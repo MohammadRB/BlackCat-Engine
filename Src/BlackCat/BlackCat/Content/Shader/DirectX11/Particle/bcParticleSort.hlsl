@@ -6,7 +6,6 @@
 
 #define THREAD_GROUP_SIZE 1024
 
-//Buffer<uint> g_draw_call_args							: register(BC_COMPUTE_STATE_T0);
 RWStructuredBuffer<alive_particle> g_alive_particles	: register(BC_COMPUTE_STATE_U0);
 cbuffer g_sort_cbuffer									: register(BC_COMPUTE_STATE_CB1)
 {

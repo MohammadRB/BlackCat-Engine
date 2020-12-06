@@ -140,6 +140,12 @@
           "content_parameter": { "function": "main" }
         },
         {
+          "content_title": "bitonic_group_sort",
+          "content_name": "compute_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleGroupSort.hlsl",
+          "content_parameter": { "function": "bitonic_group_sort" }
+        },
+        {
           "content_title": "bitonic_sort",
           "content_name": "compute_shader",
           "content_file": "content\\shader\\directx11\\particle\\bcParticleSort.hlsl",

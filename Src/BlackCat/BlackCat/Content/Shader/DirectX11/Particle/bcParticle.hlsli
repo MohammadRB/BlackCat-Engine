@@ -4,15 +4,18 @@
 
 struct emitter
 {
+	float3 m_prev_position;
 	float3 m_position;
 	float3 m_emission_direction;
 	uint m_emission_deviation;
 	uint m_texture_index;
 	uint m_sprite_index;
 	uint m_particles_count;
+	uint m_particles_curve_index;
 	float m_particles_lifetime;
 	float m_particles_force;
 	float m_particles_mass;
+	float m_particles_size;
 };
 
 struct particle
@@ -23,8 +26,11 @@ struct particle
 	float m_age;
 	float m_force;
 	float m_mass;
+	float m_size;
+	float m_current_size;
 	uint m_texture_index;
 	uint m_sprite_index;
+	uint m_curve_index;
 };
 
 struct alive_particle

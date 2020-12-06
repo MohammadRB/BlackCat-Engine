@@ -62,6 +62,7 @@ namespace black_cat
 		graphic::bc_buffer_ptr m_dead_particles_buffer;
 		graphic::bc_buffer_ptr m_draw_args_buffer;
 		graphic::bc_buffer_ptr m_sort_cbuffer;
+		graphic::bc_buffer_ptr m_curves_cbuffer;
 
 		graphic::bc_resource_view_ptr m_emitters_shader_view;
 		graphic::bc_resource_view_ptr m_particles_shader_view;
@@ -77,6 +78,8 @@ namespace black_cat
 		game::bc_compute_state_ptr m_emission_compute;
 		graphic::bc_device_compute_state_ptr m_simulation_compute_state;
 		game::bc_compute_state_ptr m_simulation_compute;
+		graphic::bc_device_compute_state_ptr m_sort_group_compute_state;
+		game::bc_compute_state_ptr m_sort_group_compute;
 		graphic::bc_device_compute_state_ptr m_sort_compute_state;
 		game::bc_compute_state_ptr m_sort_compute;
 		game::bc_compute_state_ptr m_sort1_after_transpose_compute;

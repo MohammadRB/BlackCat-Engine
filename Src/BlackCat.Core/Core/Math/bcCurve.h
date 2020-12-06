@@ -6,7 +6,6 @@
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcVector4f.h"
 #include "Core/Container/bcVector.h"
-#include "Core/bcException.h"
 #include <initializer_list>
 #include <utility>
 #include <iterator>
@@ -37,6 +36,8 @@ namespace black_cat
 
 			T sample(bcFLOAT p_time) const noexcept;
 
+			bc_vector_frame<T> sample_many(bcUINT32 p_sample_count) const noexcept;
+
 		private:
 			static T _quadratic_curve(const point_value_t& p_first, const point_value_t& p_second, const point_value_t& p_third, bcFLOAT p_time) noexcept;
 			
@@ -50,6 +51,7 @@ namespace black_cat
 			point_container m_points;
 		};
 
+		using bc_curve1f = bc_curve<bcFLOAT>;
 		using bc_curve2f = bc_curve<bc_vector2f>;
 		using bc_curve3f = bc_curve<bc_vector3f>;
 		using bc_curve4f = bc_curve<bc_vector4f>;
@@ -68,6 +70,7 @@ namespace black_cat
 			m_points.reserve(l_point_count);
 
 			bcSIZE l_counter = 0;
+			bcFLOAT l_counter_multiplier = 1.f / (l_point_count - 1);
 			std::transform
 			(
 				p_begin,
@@ -75,7 +78,7 @@ namespace black_cat
 				std::back_inserter(m_points),
 				[&](const T& p_point)
 				{
-					return std::make_pair(l_counter++ * 1.f / (l_point_count - 1), p_point);
+					return std::make_pair(l_counter++ * l_counter_multiplier, p_point);
 				}
 			);
 			
@@ -158,6 +161,22 @@ namespace black_cat
 
 			auto l_curve_point = _quadratic_curve(l_first_point, l_second_point, l_third_point, p_time);
 			return l_curve_point;
+		}
+
+		template< typename T >
+		bc_vector_frame<T> bc_curve<T>::sample_many(bcUINT32 p_sample_count) const noexcept
+		{
+			bc_vector_frame<T> l_result;
+			l_result.reserve(p_sample_count);
+
+			l_result.push_back(sample(0));
+			for (bcSIZE l_i = 1; l_i < p_sample_count - 1; ++l_i)
+			{
+				l_result.push_back(sample(static_cast<bcFLOAT>(l_i) / (static_cast<bcFLOAT>(p_sample_count) - 1)));
+			}
+			l_result.push_back(sample(1));
+
+			return l_result;
 		}
 
 		template< typename T >

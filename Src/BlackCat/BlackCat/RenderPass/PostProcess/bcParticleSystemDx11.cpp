@@ -2,6 +2,7 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
+#include "Core/Math/bcVector4f.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Utility/bcEnumOperand.h"
@@ -10,6 +11,7 @@
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcDefaultRenderThread.h"
+#include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Render/Particle/bcParticleEmitter.h"
 #include "BlackCat/RenderPass/PostProcess/bcParticleSystemDx11.h"
 #include "BlackCat/bcConstant.h"
@@ -28,8 +30,11 @@ namespace black_cat
 		bcFLOAT m_age;
 		bcFLOAT m_force;
 		bcFLOAT m_mass;
+		bcFLOAT m_size;
+		bcFLOAT m_current_size;
 		bcUINT32 m_texture_index;
 		bcUINT32 m_sprite_index;
+		bcUINT32 m_curve_index;
 	};
 
 	struct _bc_alive_particle_struct
@@ -48,7 +53,13 @@ namespace black_cat
 		bcUINT32 m_matrix_width;
 		bcUINT32 m_matrix_height;
 	};
-	
+
+	struct _bc_curve_cbuffer_struct
+	{
+		BC_CBUFFER_ALIGN
+		core::bc_vector4f m_curves[game::bc_particle_manager::curve_count][game::bc_particle_manager::curve_sample_count];
+	};
+
 	void bc_particle_system_dx11::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
@@ -95,6 +106,16 @@ namespace black_cat
 			.as_resource()
 			.as_buffer(1, sizeof(_bc_sort_cbuffer_struct), graphic::bc_resource_usage::gpu_rw)
 			.as_constant_buffer();
+		auto l_curves_cbuffer_config = graphic::bc_graphic_resource_builder()
+			.as_resource()
+			.as_buffer
+			(
+				1, 
+				sizeof(_bc_curve_cbuffer_struct),
+				graphic::bc_resource_usage::gpu_r, 
+				graphic::bc_resource_view_type::none
+			)
+			.as_constant_buffer();
 
 		bcUINT32 l_dead_particle_index = m_particles_count - 1;
 		core::bc_vector_frame<bcUINT32> l_dead_particle_indices(m_particles_count);
@@ -102,10 +123,22 @@ namespace black_cat
 		{
 			p_index = l_dead_particle_index--;
 		});
+
 		core::bc_array<bcUINT32, 4> l_draw_args = { 1,0,0,0 };
+
+		const auto& l_curves = p_render_system.get_particle_manager().get_curves();
+		_bc_curve_cbuffer_struct l_curve_cbuffer_struct;
+		for(bcSIZE l_curve_i = 0; l_curve_i < l_curves.size(); ++l_curve_i)
+		{
+			for(bcSIZE l_curve_sample_i = 0; l_curve_sample_i < l_curves[l_curve_i].size(); ++l_curve_sample_i)
+			{
+				l_curve_cbuffer_struct.m_curves[l_curve_i][l_curve_sample_i].x = l_curves[l_curve_i][l_curve_sample_i];
+			}
+		}
 		
 		graphic::bc_subresource_data l_dead_particles_data(l_dead_particle_indices.data(), 0, 0);
 		graphic::bc_subresource_data l_draw_args_data(l_draw_args.data(), 0, 0);
+		graphic::bc_subresource_data l_curves_cbuffer_data(&l_curve_cbuffer_struct, 0, 0);
 
 		m_emitters_buffer = l_device.create_buffer(l_emitters_buffer_config, nullptr);
 		m_particles_buffer = l_device.create_buffer(l_particles_buffer_config, nullptr);
@@ -114,6 +147,7 @@ namespace black_cat
 		m_dead_particles_buffer = l_device.create_buffer(l_dead_particles_buffer_config, &l_dead_particles_data);
 		m_draw_args_buffer = l_device.create_buffer(l_draw_args_buffer_config, &l_draw_args_data);
 		m_sort_cbuffer = l_device.create_buffer(l_sort_cbuffer_config, nullptr);
+		m_curves_cbuffer = l_device.create_buffer(l_curves_cbuffer_config, &l_curves_cbuffer_data);
 		
 		auto l_emitters_unordered_view_config = graphic::bc_graphic_resource_builder()
 			.as_resource_view()
@@ -163,6 +197,7 @@ namespace black_cat
 
 		m_emission_compute_state = p_render_system.create_device_compute_state("particle_emission");
 		m_simulation_compute_state = p_render_system.create_device_compute_state("particle_simulation");
+		m_sort_group_compute_state = p_render_system.create_device_compute_state("bitonic_group_sort");
 		m_sort_compute_state = p_render_system.create_device_compute_state("bitonic_sort");
 		m_sort_transpose_compute_state = p_render_system.create_device_compute_state("bitonic_matrix_transpose");
 
@@ -253,7 +288,7 @@ namespace black_cat
 
 		_bc_sort_cbuffer_struct l_cbuffer;
 
-		p_param.m_render_thread.bind_compute_state(*m_sort_compute);
+		/*p_param.m_render_thread.bind_compute_state(*m_sort_compute);
 		for(UINT32 l_sort_array_size = 2; l_sort_array_size <= m_sort_shader_group_size; l_sort_array_size *= 2)
 		{
 			l_cbuffer.m_num_particles = m_particles_count;
@@ -265,7 +300,11 @@ namespace black_cat
 
 			p_param.m_render_thread.dispatch(m_particles_count / m_sort_shader_group_size, 1, 1);
 		}
-		p_param.m_render_thread.unbind_compute_state(*m_sort_compute);
+		p_param.m_render_thread.unbind_compute_state(*m_sort_compute);*/
+		
+		p_param.m_render_thread.bind_compute_state(*m_sort_group_compute);
+		p_param.m_render_thread.dispatch(m_particles_count / m_sort_shader_group_size, 1, 1);
+		p_param.m_render_thread.unbind_compute_state(*m_sort_group_compute);
 
 		for(bcUINT32 l_bitonic_array = m_sort_shader_group_size * 2; l_bitonic_array <= m_particles_count; l_bitonic_array *= 2)
 		{
@@ -334,6 +373,19 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_particles_unordered_view.get()),
 				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::compute, m_alive_particles1_unordered_view.get()),
 				graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::compute, m_dead_particles_unordered_view.get())
+			},
+			{
+				p_param.m_render_system.get_global_cbuffer(),
+				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::compute, m_curves_cbuffer.get())
+			}
+		);
+		m_sort_group_compute = p_param.m_render_system.create_compute_state
+		(
+			m_sort_group_compute_state.get(),
+			{},
+			{},
+			{
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_alive_particles1_unordered_view.get())
 			},
 			{
 				p_param.m_render_system.get_global_cbuffer()
@@ -469,6 +521,8 @@ namespace black_cat
 		m_emission_compute.reset();
 		m_simulation_compute_state.reset();
 		m_simulation_compute.reset();
+		m_sort_group_compute_state.reset();
+		m_sort_group_compute.reset();
 		m_sort_compute_state.reset();
 		m_sort_compute.reset();
 		m_sort1_after_transpose_compute.reset();

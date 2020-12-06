@@ -30,7 +30,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	
 	for (uint i = 0; i < l_emitter.m_particles_count; ++i)
 	{
-		float l_random[] = { bc_random((i + 3) * 2 + g_total_elapsed), bc_random((i + 7) * 2 + g_total_elapsed), bc_random((i + 5) * 2 + g_total_elapsed) };
+		float l_random[] = { bc_random((i + 3) + g_total_elapsed), bc_random((i + 7) + g_total_elapsed), bc_random((i + 5) + g_total_elapsed) };
 		float l_random_range[] = { (l_random[0] - .5f) * 2, (l_random[1] - .5f) * 2, (l_random[2] - .5f) * 2 };
 		particle l_new_particle;
 		
@@ -44,14 +44,17 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 			)
 		);
 		
-		l_new_particle.m_position = l_emitter.m_position;
-		l_new_particle.m_lifetime = randomize(l_emitter.m_particles_lifetime, l_random_range[0], PARTICLE_RANDOM_COEFFICIENT);
+		l_new_particle.m_position = lerp(l_emitter.m_prev_position, l_emitter.m_position, (i + 1) / l_emitter.m_particles_count);
+		l_new_particle.m_lifetime = randomize(l_emitter.m_particles_lifetime, l_random_range[i % 3], PARTICLE_RANDOM_COEFFICIENT);
 		l_new_particle.m_direction = l_new_particle_dir;
 		l_new_particle.m_age = 0;
-		l_new_particle.m_force = randomize(l_emitter.m_particles_force, l_random_range[0], PARTICLE_RANDOM_COEFFICIENT);
-		l_new_particle.m_mass = l_emitter.m_particles_mass;
+		l_new_particle.m_force = randomize(l_emitter.m_particles_force, l_random_range[i % 3], PARTICLE_RANDOM_COEFFICIENT);
+		l_new_particle.m_mass = randomize(l_emitter.m_particles_mass, l_random_range[i % 3], PARTICLE_RANDOM_COEFFICIENT);
+		l_new_particle.m_size = randomize(l_emitter.m_particles_size, l_random_range[i % 3], PARTICLE_RANDOM_COEFFICIENT);
+		l_new_particle.m_current_size = l_new_particle.m_size /= 2;
 		l_new_particle.m_texture_index = l_emitter.m_texture_index;
 		l_new_particle.m_sprite_index = l_emitter.m_sprite_index;
+		l_new_particle.m_curve_index = l_emitter.m_particles_curve_index;
 		
 		uint l_dead_index = g_dead_indices.Consume();
 		g_particles[l_dead_index] = l_new_particle;

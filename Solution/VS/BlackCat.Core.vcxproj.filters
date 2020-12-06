@@ -312,6 +312,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEventManager.h">
       <Filter>Core\Messaging\Event</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcListPool.h">
+      <Filter>Core\Container</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.cpp">
@@ -367,9 +370,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcStream.cpp">
       <Filter>Core\File</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Event\bcEvent.cpp">
-      <Filter>Core\Event</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcPath.cpp">
       <Filter>Core\File</Filter>
