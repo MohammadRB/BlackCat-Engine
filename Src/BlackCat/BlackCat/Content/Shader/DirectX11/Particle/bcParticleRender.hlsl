@@ -67,5 +67,5 @@ void gs(point vertex_output p_input[1], inout TriangleStream<geometry_output> p_
 
 float4 ps(geometry_output p_input) : SV_Target0
 {
-	return float4(0.8, 0.5, 0.5, 0.7 * p_input.m_alpha_multiplier);
+	return float4(0.8, 0.5, 0.5, 0.2 * p_input.m_alpha_multiplier);
 }

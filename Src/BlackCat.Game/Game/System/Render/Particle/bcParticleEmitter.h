@@ -20,14 +20,16 @@ namespace black_cat
 			bcUINT32 m_deviation_angle;
 			bcUINT32 m_texture_index;
 			bcUINT32 m_sprite_index;
-			bcUINT32 m_curve_index;
+			bcUINT32 m_velocity_curve_index;
+			bcFLOAT m_velocity_curve_duration;
 			bcUINT32 m_particles_total_count;
 			bcFLOAT m_particles_lifetime;
-			bcFLOAT m_particles_energy;
+			bcFLOAT m_particles_force;
 			bcFLOAT m_particles_mass;
 			bcFLOAT m_particles_size;
 			bcUINT32 m_particles_curve_index;
-			bcINT32 m_particles_reverse_direction;
+			bcFLOAT m_particles_velocity_curve_duration;
+			bcINT32 m_particles_velocity_reverse_direction;
 		};
 
 		struct bc_particle_emitter
@@ -39,11 +41,12 @@ namespace black_cat
 			bcUINT32 m_texture_index;
 			bcUINT32 m_sprite_index;
 			bcUINT32 m_particles_count;
-			bcUINT32 m_particles_curve_index;
 			bcFLOAT m_particles_lifetime;
 			bcFLOAT m_particles_force;
 			bcFLOAT m_particles_mass;
 			bcFLOAT m_particles_size;
+			bcUINT32 m_particles_velocity_curve_index;
+			bcFLOAT m_particles_velocity_curve_duration;
 		};
 	}
 }

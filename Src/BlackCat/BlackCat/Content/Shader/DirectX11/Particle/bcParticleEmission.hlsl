@@ -5,7 +5,7 @@
 #include "bcParticle.hlsli"
 
 #define THREAD_GROUP_SIZE 1
-#define PARTICLE_RANDOM_COEFFICIENT .1f
+#define PARTICLE_RANDOM_COEFFICIENT .2f
 
 StructuredBuffer<emitter> g_emitters			: register(BC_COMPUTE_STATE_T0);
 RWStructuredBuffer<particle> g_particles		: register(BC_COMPUTE_STATE_U0);
@@ -44,7 +44,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 			)
 		);
 		
-		l_new_particle.m_position = lerp(l_emitter.m_prev_position, l_emitter.m_position, (i + 1) / l_emitter.m_particles_count);
+		l_new_particle.m_position = lerp(l_emitter.m_prev_position, l_emitter.m_position, (i + 1.f) / l_emitter.m_particles_count);
 		l_new_particle.m_lifetime = randomize(l_emitter.m_particles_lifetime, l_random_range[i % 3], PARTICLE_RANDOM_COEFFICIENT);
 		l_new_particle.m_direction = l_new_particle_dir;
 		l_new_particle.m_age = 0;
@@ -54,7 +54,8 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 		l_new_particle.m_current_size = l_new_particle.m_size /= 2;
 		l_new_particle.m_texture_index = l_emitter.m_texture_index;
 		l_new_particle.m_sprite_index = l_emitter.m_sprite_index;
-		l_new_particle.m_curve_index = l_emitter.m_particles_curve_index;
+		l_new_particle.m_velocity_curve_index = l_emitter.m_particles_velocity_curve_index;
+		l_new_particle.m_velocity_curve_duration = l_emitter.m_particles_velocity_curve_duration;
 		
 		uint l_dead_index = g_dead_indices.Consume();
 		g_particles[l_dead_index] = l_new_particle;

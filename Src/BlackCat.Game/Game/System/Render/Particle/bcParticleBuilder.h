@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/Math/bcVector2f.h"
 #include "Core/Container/bcArray.h"
 #include "Core/Container/bcVector.h"
 #include "Game/System/Render/Particle/bcParticleEmitter.h"
@@ -13,7 +14,7 @@ namespace black_cat
 	{
 		class bc_particle_manager;
 		class bc_particle_builder;
-		using bc_particle_curve = core::bc_array< bcFLOAT, 3 >;
+		using bc_particle_curve = core::bc_array< core::bc_vector2f, 3 >;
 
 		class BC_GAME_DLL bc_particle_builder1
 		{
@@ -22,15 +23,15 @@ namespace black_cat
 
 			bc_particle_builder1& with_texture(bcUINT32 p_texture_index, bcUINT32 p_sprite_index) noexcept;
 
-			bc_particle_builder1& with_curve(const bc_particle_curve& p_curve) noexcept;
+			bc_particle_builder1& with_velocity_curve(const bc_particle_curve& p_curve) noexcept;
 			
 			bc_particle_builder1& with_deviation(bcUINT32 p_angle) noexcept;
 			
-			bc_particle_builder1& with_reverse_direction() noexcept;
+			bc_particle_builder1& with_particle_reverse_direction() noexcept;
 
 			bc_particle_builder1& with_particle_size(bcFLOAT p_size) noexcept;
 
-			bc_particle_builder1& with_particle_curve(const bc_particle_curve& p_curve) noexcept;
+			bc_particle_builder1& with_particle_velocity_curve(const bc_particle_curve& p_curve, bcFLOAT p_curve_duration) noexcept;
 
 			bc_particle_builder& emit_particles(bcUINT32 p_particles_total_count,
 				bcFLOAT p_particles_lifetime,
@@ -48,13 +49,19 @@ namespace black_cat
 			friend class bc_particle_manager;
 			
 		public:
+			const static bc_particle_curve s_curve_constant;
+			const static bc_particle_curve s_curve_slow_step5;
+			const static bc_particle_curve s_curve_slow_step4;
+			const static bc_particle_curve s_curve_slow_step3;
+			const static bc_particle_curve s_curve_slow_step2;
+			const static bc_particle_curve s_curve_slow_step1;
 			const static bc_particle_curve s_curve_linear;
 			const static bc_particle_curve s_curve_fast_step1;
 			const static bc_particle_curve s_curve_fast_step2;
 			const static bc_particle_curve s_curve_fast_step3;
 			const static bc_particle_curve s_curve_fast_step4;
 			const static bc_particle_curve s_curve_fast_step5;
-			const static core::bc_array<const bc_particle_curve*, 6> s_curves;
+			const static core::bc_array<const bc_particle_curve*, 12> s_curves;
 			
 		public:
 			bc_particle_builder();

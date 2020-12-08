@@ -35,6 +35,7 @@ namespace black_cat
 		bcUINT32 m_texture_index;
 		bcUINT32 m_sprite_index;
 		bcUINT32 m_curve_index;
+		bcFLOAT m_curve_duration;
 	};
 
 	struct _bc_alive_particle_struct

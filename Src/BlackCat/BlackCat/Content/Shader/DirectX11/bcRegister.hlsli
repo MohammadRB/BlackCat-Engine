@@ -134,5 +134,7 @@ cbuffer g_cb_object_state				: register(BC_RENDER_STATE_CB0)
     float4x4 g_world					: packoffset(c4);
 }
 
+static const float3 g_gravity_dir = float3(0, -1, 0);
+static const float g_gravity_force = 9.8;
 static const float3 g_wind_dir = float3(0, 0, 1);
 static const float g_wind_power = 2;
