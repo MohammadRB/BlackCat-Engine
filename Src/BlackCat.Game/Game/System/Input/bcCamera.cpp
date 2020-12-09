@@ -20,7 +20,7 @@ namespace black_cat
 			m_position(core::bc_vector3f(0, 0, 0)),
 			m_look_at(core::bc_vector3f(0, 0, 1))
 		{
-			create_view_matrix();
+			m_view = create_view_matrix();
 		}
 
 		bc_icamera::bc_icamera(bc_icamera&& p_other) noexcept
@@ -108,17 +108,27 @@ namespace black_cat
 			m_position = p_position;
 			m_look_at = p_look_at;
 
-			create_view_matrix(p_up);
-		}
-
-		void bc_icamera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height) noexcept
-		{
-			set_projection(p_back_buffer_width, p_back_buffer_height, m_near, m_far);
+			m_view = create_view_matrix(p_up);
 		}
 
 		void bc_icamera::set_projection(const core::bc_matrix4f& p_projection) noexcept
 		{
 			m_projection = p_projection;
+		}
+		
+		void bc_icamera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height) noexcept
+		{
+			set_projection(p_back_buffer_width, p_back_buffer_height, m_near, m_far);
+		}
+
+		void bc_icamera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
+		{
+			m_screen_width = p_back_buffer_width;
+			m_screen_height = p_back_buffer_height;
+			m_near = p_near_clip;
+			m_far = p_far_clip;
+
+			m_projection = create_projection_matrix();
 		}
 
 		core::bc_vector3f bc_icamera::project_clip_point_to_3d_ray(bcUINT16 p_screen_width, bcUINT16 p_screen_height, bcUINT16 p_left, bcUINT16 p_top) const noexcept
@@ -182,15 +192,15 @@ namespace black_cat
 			return l_ray;
 		}
 		
-		void bc_icamera::create_view_matrix(const core::bc_vector3f& p_up) noexcept
+		core::bc_matrix4f bc_icamera::create_view_matrix(const core::bc_vector3f& p_up) noexcept
 		{
 			if(graphic::bc_render_api_info::is_left_handed())
 			{
-				m_view = core::bc_matrix4f::look_at_matrix_lh(m_position, m_look_at, p_up);
+				return core::bc_matrix4f::look_at_matrix_lh(m_position, m_look_at, p_up);
 			}
 			else
 			{
-				m_view = core::bc_matrix4f::look_at_matrix_rh(m_position, m_look_at, p_up);
+				return core::bc_matrix4f::look_at_matrix_rh(m_position, m_look_at, p_up);
 			}
 		}
 
@@ -224,7 +234,7 @@ namespace black_cat
 
 			return *this;
 		}
-
+		
 		void bc_orthographic_camera::get_extend_points(extend& p_points) const noexcept
 		{
 			const auto l_near_clip_height = m_max_y - m_min_y;
@@ -244,23 +254,14 @@ namespace black_cat
 			p_points[6] = l_far_clip_center + get_right() * (l_far_clip_width / 2) + get_up() * (l_far_clip_height / 2);
 			p_points[7] = l_far_clip_center + get_right() * (l_far_clip_width / 2) + get_down() * (l_far_clip_height / 2);
 		}
-
-		void bc_orthographic_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
+		
+		core::bc_matrix4f bc_orthographic_camera::create_projection_matrix() noexcept
 		{
-			m_screen_width = p_back_buffer_width;
-			m_screen_height = p_back_buffer_height;
-			m_near = p_near_clip;
-			m_far = p_far_clip;
 			m_min_x = 0;
-			m_max_x = p_back_buffer_width;
+			m_max_x = get_screen_width();
 			m_min_y = 0;
-			m_max_y = p_back_buffer_height;
-
-			create_projection_matrix();
-		}
-
-		void bc_orthographic_camera::create_projection_matrix() noexcept
-		{
+			m_max_y = get_screen_height();
+			
 			core::bc_matrix4f l_proj;
 
 			if(graphic::bc_render_api_info::is_left_handed())
@@ -272,7 +273,7 @@ namespace black_cat
 				l_proj = core::bc_matrix4f::orthographic_matrix_rh(get_near_clip(), get_far_clip(), m_max_x - m_min_x, m_max_y - m_min_y);
 			}
 
-			m_projection = l_proj;
+			return l_proj;
 		}
 
 		// -- bc_perspective_camera --------------------------------------------------------------------------------
@@ -302,6 +303,12 @@ namespace black_cat
 
 			return *this;
 		}
+		
+		void bc_perspective_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
+		{
+			m_field_of_view = p_height_fov;
+			set_projection(p_back_buffer_width, p_back_buffer_height, p_near_clip, p_far_clip);
+		}
 
 		void bc_perspective_camera::get_extend_points(extend& p_points) const noexcept
 		{
@@ -313,7 +320,7 @@ namespace black_cat
 
 			const auto l_near_clip_center = get_position() + get_forward() * get_near_clip();
 			const auto l_far_clip_center = get_position() + get_forward() * get_far_clip();
-			
+
 			const auto l_near_clip_half_width = l_near_clip_width / 2;
 			const auto l_near_clip_half_height = l_near_clip_height / 2;
 			const auto l_far_clip_half_width = l_far_clip_width / 2;
@@ -333,26 +340,11 @@ namespace black_cat
 			p_points[6] = l_far_clip_center + l_right * l_far_clip_half_width + l_up * l_far_clip_half_height;
 			p_points[7] = l_far_clip_center + l_right * l_far_clip_half_width + l_down * l_far_clip_half_height;
 		}
-
-		void bc_perspective_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
+		
+		core::bc_matrix4f bc_perspective_camera::create_projection_matrix() noexcept
 		{
-			m_screen_width = p_back_buffer_width;
-			m_screen_height = p_back_buffer_height;
-			m_near = p_near_clip;
-			m_far = p_far_clip;
-			m_aspect_ratio = bcFLOAT(p_back_buffer_width) / bcFLOAT(p_back_buffer_height);
-
-			create_projection_matrix();
-		}
-
-		void bc_perspective_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
-		{
-			m_field_of_view = p_height_fov;
-			set_projection(p_back_buffer_width, p_back_buffer_height, p_near_clip, p_far_clip);
-		}
-
-		void bc_perspective_camera::create_projection_matrix() noexcept
-		{
+			m_aspect_ratio = static_cast< bcFLOAT >(get_screen_width()) / static_cast< bcFLOAT >(get_screen_height());
+			
 			core::bc_matrix4f l_proj;
 
 			if (graphic::bc_render_api_info::is_left_handed())
@@ -364,7 +356,7 @@ namespace black_cat
 				l_proj = core::bc_matrix4f::perspective_fov_matrix_rh(m_field_of_view, m_aspect_ratio, get_near_clip(), get_far_clip());
 			}
 
-			m_projection = l_proj;
+			return l_proj;
 		}
 	}
 }

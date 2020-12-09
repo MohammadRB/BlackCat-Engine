@@ -159,7 +159,7 @@ namespace black_cat
 		void bc_matrix3f::rotation_between_two_vector_lh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept
 		{
 			const bcFLOAT l_angle = std::acos(bc_vector3f::dot(p_v1, p_v2));
-			const bc_vector3f l_cross = bc_vector3f::cross(p_v1, p_v2);
+			const bc_vector3f l_cross = bc_vector3f::normalize(bc_vector3f::cross(p_v1, p_v2));
 
 			rotation_euler_lh(l_cross, l_angle);
 		}
@@ -229,7 +229,7 @@ namespace black_cat
 		void bc_matrix3f::rotation_between_two_vector_rh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept
 		{
 			const bcFLOAT l_angle = std::acos(bc_vector3f::dot(p_v1, p_v2));
-			const bc_vector3f l_cross = bc_vector3f::cross(p_v1, p_v2);
+			const bc_vector3f l_cross = bc_vector3f::normalize(bc_vector3f::cross(p_v1, p_v2));
 
 			rotation_euler_rh(l_cross, l_angle);
 		}
