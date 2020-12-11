@@ -128,7 +128,7 @@ namespace black_cat
 
 					bcAssert(l_count >= 0);
 
-					return bc_render_thread_guard(nullptr, &l_entry.m_thread);
+					return bc_render_thread_guard(const_cast< bc_render_thread_manager* >(this), &l_entry.m_thread);
 				}
 			}
 

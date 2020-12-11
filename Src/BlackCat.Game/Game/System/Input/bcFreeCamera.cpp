@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 
+#include "Core/Math/bcCoordinate.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Input/bcFreeCamera.h"
 
@@ -97,7 +98,7 @@ namespace black_cat
 
 			if (m_rmb_pressed)
 			{
-				const bcFLOAT l_pi = 3.141592654f / 2.0f;
+				const bcFLOAT l_pi = (core::g_pi / 2.0f) - 0.01f;
 				m_pointing_angle += core::bc_vector2f(m_pointing_velocity.y, m_pointing_velocity.x);
 				m_pointing_angle.x = std::min(l_pi, m_pointing_angle.x);
 				m_pointing_angle.x = std::max(-l_pi, m_pointing_angle.x);

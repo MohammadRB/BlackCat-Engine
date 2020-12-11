@@ -25,6 +25,7 @@ namespace black_cat
 
 			core::bc_vector3f m_prev_position;
 			bcFLOAT m_age;
+			bcFLOAT m_energy;
 			bcUINT32 m_spawned_particles_count;
 			bcUINT32 m_particles_count_to_spawn;
 		};

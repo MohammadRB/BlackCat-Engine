@@ -1,6 +1,8 @@
 // [11/15/2020 MRB]
 
 #include "Game/GamePCH.h"
+
+#include "Core/Math/bcCoordinate.h"
 #include "Core/Math/bcMatrix3f.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Utility/bcLogger.h"
@@ -134,11 +136,12 @@ namespace black_cat
 			/*if(g_last_elapsed == 0)
 			{
 				const auto l_test_emitter = bc_particle_builder()
-					.emitter(core::bc_vector3f(0), core::bc_vector3f::up(), 50, 0, 0)
+					.emitter(core::bc_vector3f(0), core::bc_vector3f::up(), 100, 0, 0)
 					.with_deviation(90)
-					.with_particle_size(1.5f)
+					.with_particle_size(1.0f, 1.5f)
+					.with_particles_rotation(90)
 					.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step2, 5)
-					.emit_particles(2000, 20, 2, 0.1f);
+					.emit_particles(2500, 20, 2, 0.1f);
 				register_emitter_definition("test_emitter", l_test_emitter);
 
 				spawn_emitter
@@ -153,36 +156,38 @@ namespace black_cat
 			{
 				g_last_elapsed -= 5;
 				
-				/*const auto l_test_emitter = bc_particle_builder()
+				/*const auto l_builder = bc_particle_builder()
 					.emitter(core::bc_vector3f(0), core::bc_vector3f::up())
 					.with_deviation(180)
-					.with_particle_size(1.3f)
+					.with_particle_size(0.9f, 1.5f)
 					.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step5, 1.5)
 					.emit_particles(1000, 3, 80, 0.3f);*/
 
-				core::bc_array<core::bc_vector3f, 7> l_emitter_directions =
-				{
-					core::bc_vector3f(0, 1, 0),
-					core::bc_vector3f(-0.4, 1, -0.5),
-					core::bc_vector3f(-0.3, 1, 0.5),
-					core::bc_vector3f(0.4, 1, 0.4),
-					core::bc_vector3f(0.5, 1, -0.6),
-					core::bc_vector3f(0.1, 1, -0.7),
-					core::bc_vector3f(0.5, 1, -0.3)
-				};
 				bc_particle_builder l_builder;
 				l_builder.emitter(core::bc_vector3f(0), core::bc_vector3f::up())
-					.with_deviation(150)
-					.with_particle_size(2)
-					.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step4, 0.2)
-					.emit_particles(200, 3, 20, 0.07);
-				
-				for(auto& l_dir : l_emitter_directions)
+					.with_deviation(180)
+					.with_particle_size(2, 4)
+					.with_particles_rotation(45)
+					.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step4, 0.2f)
+					.emit_particles(150, 3, 40, 0.1f);
+
+				core::bc_array<std::tuple<core::bc_vector3f, core::bc_vector3f>, 7> l_emitter_traits =
 				{
-					l_builder.emitter(core::bc_vector3f(0), l_dir, 0.2, 800, 0.4f)
+					std::make_tuple(core::bc_vector3f(0, 0, 0), core::bc_vector3f(0, 1, 0)),
+					std::make_tuple(core::bc_vector3f(-2, 0, -2), core::bc_vector3f(-0.4, 1, -0.5)),
+					std::make_tuple(core::bc_vector3f(-2, 0, 2), core::bc_vector3f(-0.3, 1, 0.5)),
+					std::make_tuple(core::bc_vector3f(2, 0, 2), core::bc_vector3f(0.4, 1, 0.4)),
+					std::make_tuple(core::bc_vector3f(2, 0, -2), core::bc_vector3f(0.5, 1, -0.6)),
+					std::make_tuple(core::bc_vector3f(2, 0, -2), core::bc_vector3f(0.1, 1, -0.7)),
+					std::make_tuple(core::bc_vector3f(2, 0, -2), core::bc_vector3f(0.5, 1, -0.3))
+				};
+				for(auto& l_trait : l_emitter_traits)
+				{
+					l_builder.emitter(std::get<0>(l_trait), std::get<1>(l_trait), 0.2f, 800, 0.4f)
 						.with_deviation(90)
 						.with_velocity_curve(bc_particle_builder::s_curve_fast_step5)
-						.with_particle_size(1.3f)
+						.with_particle_size(0.7f, 2.5f)
+						.with_particle_size_curve(bc_particle_builder::s_curve_fast_step4)
 						.with_particle_reverse_direction()
 						.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step1, 1)
 						.emit_particles(100, 3, 0.5, 0.2f);
@@ -215,20 +220,29 @@ namespace black_cat
 					l_emitter.m_age += p_clock.m_elapsed_second;
 
 					bcFLOAT l_velocity_curve_value;
+					bcFLOAT l_energy;
 					bcFLOAT l_particle_count_multiplier;
 					if(l_emitter.m_velocity_curve_index != l_constant_curve_index)
 					{
 						const auto l_velocity_curve_sample = _sample_curve(l_emitter.m_velocity_curve_index, l_emitter.m_age / l_emitter.m_velocity_curve_duration);
 						l_velocity_curve_value = l_velocity_curve_sample;
-						l_particle_count_multiplier = 1 - l_velocity_curve_sample;
+						l_energy = l_velocity_curve_sample;
+						l_particle_count_multiplier = 1 - l_energy;
 					}
 					else
 					{
 						const auto l_velocity_curve_sample = _sample_curve(l_emitter.m_velocity_curve_index, l_emitter.m_age / l_emitter.m_velocity_curve_duration);
 						l_velocity_curve_value = l_velocity_curve_sample;
-						l_particle_count_multiplier = std::min(1.f, l_emitter.m_age / l_emitter.m_lifetime);
+						l_energy = 1 - std::min(1.f, l_emitter.m_age / l_emitter.m_lifetime);
+						l_particle_count_multiplier = 1 - l_energy;
+
+						if(l_emitter.m_lifetime <= 0.001f)
+						{
+							l_energy = 1;
+							l_particle_count_multiplier = 1;
+						}
 					}
-										
+					
 					const bcFLOAT l_acceleration = l_emitter.m_force / l_emitter.m_mass * l_velocity_curve_value;
 					const bcUINT32 l_particles_to_spawn = l_particle_count_multiplier * l_emitter.m_particles_total_count;
 										
@@ -236,6 +250,7 @@ namespace black_cat
 					l_emitter.m_position += (l_emitter.m_direction * l_acceleration * p_clock.m_elapsed_second) +
 							(core::bc_vector3f::up() * -1 * 9.8f * l_emitter.m_mass * p_clock.m_elapsed_second);
 					l_emitter.m_force = std::max(0.f, l_emitter.m_force - l_emitter.m_mass * p_clock.m_elapsed_second);
+					l_emitter.m_energy = l_energy;
 					l_emitter.m_particles_count_to_spawn = l_particles_to_spawn - l_emitter.m_spawned_particles_count;
 					l_emitter.m_spawned_particles_count += l_emitter.m_particles_count_to_spawn;
 
@@ -263,6 +278,7 @@ namespace black_cat
 						l_emitter.m_prev_position = p_emitter.m_prev_position;
 						l_emitter.m_position = p_emitter.m_position;
 						l_emitter.m_emission_direction = p_emitter.m_direction * p_emitter.m_particles_velocity_reverse_direction;
+						l_emitter.m_energy = p_emitter.m_energy;
 						l_emitter.m_emission_deviation = p_emitter.m_deviation_angle;
 						l_emitter.m_texture_index = p_emitter.m_texture_index;
 						l_emitter.m_sprite_index = p_emitter.m_sprite_index;
@@ -270,9 +286,13 @@ namespace black_cat
 						l_emitter.m_particles_lifetime = p_emitter.m_particles_lifetime;
 						l_emitter.m_particles_force = p_emitter.m_particles_force;
 						l_emitter.m_particles_mass = p_emitter.m_particles_mass;
-						l_emitter.m_particles_size = p_emitter.m_particles_size;
-						l_emitter.m_particles_velocity_curve_index = p_emitter.m_particles_curve_index;
+						l_emitter.m_particles_start_size = p_emitter.m_particles_start_size;
+						l_emitter.m_particles_end_size = p_emitter.m_particles_end_size;
+						l_emitter.m_particles_rotation = core::bc_to_radian(p_emitter.m_particles_rotation);
+						l_emitter.m_particles_velocity_curve_index = p_emitter.m_particles_velocity_curve_index;
 						l_emitter.m_particles_velocity_curve_duration = p_emitter.m_particles_velocity_curve_duration;
+						l_emitter.m_particles_size_curve_index = p_emitter.m_particles_size_curve_index;
+						l_emitter.m_particles_fade_curve_index = p_emitter.m_particles_fade_curve_index;
 
 						return l_emitter;
 					}

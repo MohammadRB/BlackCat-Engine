@@ -30,12 +30,17 @@ namespace black_cat
 		bcFLOAT m_age;
 		bcFLOAT m_force;
 		bcFLOAT m_mass;
+		bcFLOAT m_start_size;
+		bcFLOAT m_end_size;
 		bcFLOAT m_size;
-		bcFLOAT m_current_size;
+		bcFLOAT m_fade;
+		bcFLOAT m_rotation;
 		bcUINT32 m_texture_index;
 		bcUINT32 m_sprite_index;
-		bcUINT32 m_curve_index;
-		bcFLOAT m_curve_duration;
+		bcUINT32 m_velocity_curve_index;
+		bcFLOAT m_velocity_curve_duration;
+		bcUINT32 m_size_curve_index;
+		bcUINT32 m_fade_curve_index;
 	};
 
 	struct _bc_alive_particle_struct

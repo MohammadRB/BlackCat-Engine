@@ -60,16 +60,35 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_particle_builder1& bc_particle_builder1::with_particle_size(bcFLOAT p_size) noexcept
+		bc_particle_builder1& bc_particle_builder1::with_particle_size(bcFLOAT p_start_size, bcFLOAT p_end_size) noexcept
 		{
-			m_emitter.m_particles_size = p_size;
+			m_emitter.m_particles_start_size = p_start_size;
+			m_emitter.m_particles_end_size = p_end_size;
 			return *this;
 		}
 
-		bc_particle_builder1& bc_particle_builder1::with_particle_velocity_curve(const bc_particle_curve& p_curve, bcFLOAT p_curve_duration) noexcept
+		bc_particle_builder1& bc_particle_builder1::with_particles_rotation(bcFLOAT p_degree_per_second) noexcept
 		{
-			m_emitter.m_particles_curve_index = bc_particle_builder::_find_curve_index(p_curve);
-			m_emitter.m_particles_velocity_curve_duration = p_curve_duration;
+			m_emitter.m_particles_rotation = p_degree_per_second;
+			return *this;
+		}
+
+		bc_particle_builder1& bc_particle_builder1::with_particle_velocity_curve(const bc_particle_curve& p_curve, bcFLOAT p_curve_duration_second) noexcept
+		{
+			m_emitter.m_particles_velocity_curve_index = bc_particle_builder::_find_curve_index(p_curve);
+			m_emitter.m_particles_velocity_curve_duration = p_curve_duration_second;
+			return *this;
+		}
+
+		bc_particle_builder1& bc_particle_builder1::with_particle_size_curve(const bc_particle_curve& p_curve) noexcept
+		{
+			m_emitter.m_particles_size_curve_index = bc_particle_builder::_find_curve_index(p_curve);
+			return *this;
+		}
+
+		bc_particle_builder1& bc_particle_builder1::with_particle_fade_curve(const bc_particle_curve& p_curve) noexcept
+		{
+			m_emitter.m_particles_fade_curve_index = bc_particle_builder::_find_curve_index(p_curve);
 			return *this;
 		}
 
@@ -95,13 +114,13 @@ namespace black_cat
 
 		bc_particle_builder1 bc_particle_builder::emitter(const core::bc_vector3f& p_position,
 			const core::bc_vector3f& p_direction,
-			bcFLOAT p_lifetime,
+			bcFLOAT p_lifetime_seconds,
 			bcFLOAT p_force,
 			bcFLOAT p_mass) noexcept
 		{
 			bc_particle_emitter_trait l_emitter;
 			l_emitter.m_position = p_position;
-			l_emitter.m_lifetime = p_lifetime;
+			l_emitter.m_lifetime = p_lifetime_seconds;
 			l_emitter.m_direction = core::bc_vector3f::normalize(p_direction);
 			l_emitter.m_force = p_force;
 			l_emitter.m_mass = p_mass;
@@ -109,15 +128,19 @@ namespace black_cat
 			l_emitter.m_texture_index = 0;
 			l_emitter.m_sprite_index = 0;
 			l_emitter.m_velocity_curve_index = _find_curve_index(s_curve_constant);
-			l_emitter.m_velocity_curve_duration = p_lifetime;
+			l_emitter.m_velocity_curve_duration = p_lifetime_seconds;
 			l_emitter.m_particles_total_count = 0;
 			l_emitter.m_particles_lifetime = 0;
 			l_emitter.m_particles_force = 0;
 			l_emitter.m_particles_mass = 0;
-			l_emitter.m_particles_size = 1;
-			l_emitter.m_particles_curve_index = _find_curve_index(s_curve_constant);
-			l_emitter.m_particles_velocity_curve_duration = 0;
+			l_emitter.m_particles_start_size = 0.5;
+			l_emitter.m_particles_end_size = 1;
+			l_emitter.m_particles_rotation = 0;
 			l_emitter.m_particles_velocity_reverse_direction = 1;
+			l_emitter.m_particles_velocity_curve_index = _find_curve_index(s_curve_constant);
+			l_emitter.m_particles_velocity_curve_duration = 0;
+			l_emitter.m_particles_size_curve_index = _find_curve_index(s_curve_fast_step1);
+			l_emitter.m_particles_fade_curve_index = _find_curve_index(s_curve_fast_step1);
 
 			m_emitters.push_back(l_emitter);
 

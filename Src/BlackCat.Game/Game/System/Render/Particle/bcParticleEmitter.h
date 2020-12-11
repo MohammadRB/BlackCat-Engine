@@ -2,9 +2,7 @@
 
 #pragma once
 
-#include "Core/Math/bcVector2f.h"
 #include "Core/Math/bcVector3f.h"
-#include "Core/Container/bcArray.h"
 
 namespace black_cat
 {
@@ -26,10 +24,14 @@ namespace black_cat
 			bcFLOAT m_particles_lifetime;
 			bcFLOAT m_particles_force;
 			bcFLOAT m_particles_mass;
-			bcFLOAT m_particles_size;
-			bcUINT32 m_particles_curve_index;
-			bcFLOAT m_particles_velocity_curve_duration;
+			bcFLOAT m_particles_start_size;
+			bcFLOAT m_particles_end_size;
+			bcFLOAT m_particles_rotation; // degree per second
 			bcINT32 m_particles_velocity_reverse_direction;
+			bcUINT32 m_particles_velocity_curve_index;
+			bcFLOAT m_particles_velocity_curve_duration;
+			bcUINT32 m_particles_size_curve_index;
+			bcUINT32 m_particles_fade_curve_index;
 		};
 
 		struct bc_particle_emitter
@@ -37,6 +39,7 @@ namespace black_cat
 			core::bc_vector3f m_prev_position;
 			core::bc_vector3f m_position;
 			core::bc_vector3f m_emission_direction;
+			bcFLOAT m_energy;
 			bcUINT32 m_emission_deviation;
 			bcUINT32 m_texture_index;
 			bcUINT32 m_sprite_index;
@@ -44,9 +47,13 @@ namespace black_cat
 			bcFLOAT m_particles_lifetime;
 			bcFLOAT m_particles_force;
 			bcFLOAT m_particles_mass;
-			bcFLOAT m_particles_size;
+			bcFLOAT m_particles_start_size;
+			bcFLOAT m_particles_end_size;
+			bcFLOAT m_particles_rotation;
 			bcUINT32 m_particles_velocity_curve_index;
 			bcFLOAT m_particles_velocity_curve_duration;
+			bcUINT32 m_particles_size_curve_index;
+			bcUINT32 m_particles_fade_curve_index;
 		};
 	}
 }

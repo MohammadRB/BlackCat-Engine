@@ -29,9 +29,15 @@ namespace black_cat
 			
 			bc_particle_builder1& with_particle_reverse_direction() noexcept;
 
-			bc_particle_builder1& with_particle_size(bcFLOAT p_size) noexcept;
+			bc_particle_builder1& with_particle_size(bcFLOAT p_start_size, bcFLOAT p_end_size) noexcept;
 
-			bc_particle_builder1& with_particle_velocity_curve(const bc_particle_curve& p_curve, bcFLOAT p_curve_duration) noexcept;
+			bc_particle_builder1& with_particles_rotation(bcFLOAT p_degree_per_second) noexcept;
+
+			bc_particle_builder1& with_particle_velocity_curve(const bc_particle_curve& p_curve, bcFLOAT p_curve_duration_second) noexcept;
+			
+			bc_particle_builder1& with_particle_size_curve(const bc_particle_curve& p_curve) noexcept;
+			
+			bc_particle_builder1& with_particle_fade_curve(const bc_particle_curve& p_curve) noexcept;
 
 			bc_particle_builder& emit_particles(bcUINT32 p_particles_total_count,
 				bcFLOAT p_particles_lifetime,
@@ -70,7 +76,7 @@ namespace black_cat
 			
 			bc_particle_builder1 emitter(const core::bc_vector3f& p_position, 
 				const core::bc_vector3f& p_direction,
-				bcFLOAT p_lifetime,
+				bcFLOAT p_lifetime_seconds,
 				bcFLOAT p_force,
 				bcFLOAT p_mass) noexcept;
 
