@@ -418,13 +418,13 @@ namespace black_cat
 			core_platform::bc_hardware_info::get_basic_info(&l_hw_info);
 
 			m_content_stream = &p_content_stream;
-			m_thread_manager = core::bc_make_unique< bc_render_thread_manager >(*this, std::max(1U, l_hw_info.proccessor_count / 2));
-			m_material_manager = core::bc_make_unique< bc_material_manager >(p_content_stream, *this);
-			m_render_pass_manager = core::bc_make_unique< bc_render_pass_manager >();
-			m_light_manager = core::bc_make_unique< bc_light_manager >();
-			m_particle_manager = core::bc_make_unique< bc_particle_manager >();
-			m_shape_drawer = core::bc_make_unique< bc_shape_drawer >();
-			m_frame_renderer = core::bc_make_unique< bc_frame_renderer >(m_device, *m_thread_manager, *m_render_pass_manager);
+			m_thread_manager = core::bc_make_unique< bc_render_thread_manager >(core::bc_alloc_type::program , *this, std::max(1U, l_hw_info.proccessor_count / 2));
+			m_material_manager = core::bc_make_unique< bc_material_manager >(core::bc_alloc_type::program, *m_content_stream, *this);
+			m_render_pass_manager = core::bc_make_unique< bc_render_pass_manager >(core::bc_alloc_type::program);
+			m_light_manager = core::bc_make_unique< bc_light_manager >(core::bc_alloc_type::program);
+			m_particle_manager = core::bc_make_unique< bc_particle_manager >(core::bc_alloc_type::program, m_device, *m_content_stream);
+			m_shape_drawer = core::bc_make_unique< bc_shape_drawer >(core::bc_alloc_type::program);
+			m_frame_renderer = core::bc_make_unique< bc_frame_renderer >(core::bc_alloc_type::program, m_device, *m_thread_manager, *m_render_pass_manager);
 
 			m_device.set_allocator_alloc_type(l_alloc_type);
 			

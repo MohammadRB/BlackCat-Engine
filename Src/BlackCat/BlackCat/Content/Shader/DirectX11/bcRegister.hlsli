@@ -113,18 +113,25 @@
 // Bound to vertex, hull, domain, geometry, pixel and compute shader
 cbuffer g_cb_global_state				: register(BC_RENDER_PASS_STATE_CB0)
 {
-    float4x4 g_view						: packoffset(c0);
-    float4x4 g_projection				: packoffset(c4);
-    float4x4 g_view_projection			: packoffset(c8);
-    int g_screen_width			        : packoffset(c12.x);
-    int g_screen_height			        : packoffset(c12.y);
-    float g_near_plan                   : packoffset(c12.z);
-    float g_far_plan                    : packoffset(c12.w);
-    float3 g_camera_position			: packoffset(c13);
-    double g_total_elapsed				: packoffset(c14.x);
-    double g_total_elapsed_second		: packoffset(c14.z);
-    float g_elapsed						: packoffset(c15.x);
-    float g_elapsed_second				: packoffset(c15.y);
+    float4x4 g_view							: packoffset(c0);
+    float4x4 g_projection					: packoffset(c4);
+    float4x4 g_view_projection				: packoffset(c8);
+    int g_screen_width						: packoffset(c12.x);
+    int g_screen_height						: packoffset(c12.y);
+    float g_near_plane						: packoffset(c12.z);
+    float g_far_plane						: packoffset(c12.w);
+    float3 g_camera_position				: packoffset(c13);
+    double g_total_elapsed					: packoffset(c14.x);
+    double g_total_elapsed_second			: packoffset(c14.z);
+    float g_elapsed							: packoffset(c15.x);
+    float g_elapsed_second					: packoffset(c15.y);
+	float3 g_global_light_direction			: packoffset(c16);
+	float3 g_global_light_color				: packoffset(c17.x);
+	float g_global_light_intensity			: packoffset(c17.w);
+	float3 g_global_light_ambient_color		: packoffset(c18.x);
+	float g_global_light_ambient_intensity	: packoffset(c18.w);
+	float3 g_global_wind_direction			: packoffset(c19.x);
+	float g_global_wind_power				: packoffset(c19.w);
 }
 
 // Bound to vertex, hull, domain shader
@@ -136,5 +143,3 @@ cbuffer g_cb_object_state				: register(BC_RENDER_STATE_CB0)
 
 static const float3 g_gravity_dir = float3(0, -1, 0);
 static const float g_gravity_force = 9.8;
-static const float3 g_wind_dir = float3(0, 0, 1);
-static const float g_wind_power = 2;

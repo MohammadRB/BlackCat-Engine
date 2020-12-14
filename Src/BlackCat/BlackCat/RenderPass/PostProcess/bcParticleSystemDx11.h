@@ -54,6 +54,7 @@ namespace black_cat
 
 		graphic::bc_depth_stencil_view m_depth_buffer_view;
 		graphic::bc_resource_view m_depth_buffer_shader_view;
+		graphic::bc_resource_view m_default_sprites_shader_view;
 		
 		graphic::bc_buffer_ptr m_emitters_buffer;
 		graphic::bc_buffer_ptr m_particles_buffer;
@@ -87,8 +88,9 @@ namespace black_cat
 		graphic::bc_device_compute_state_ptr m_sort_transpose_compute_state;
 		game::bc_compute_state_ptr m_sort_transpose1_compute;
 		game::bc_compute_state_ptr m_sort_transpose2_compute;
-
-		graphic::bc_sampler_state_ptr m_sampler;
+		
+		graphic::bc_sampler_state_ptr m_linear_sampler;
+		graphic::bc_sampler_state_ptr m_point_sampler;
 		graphic::bc_device_pipeline_state_ptr m_device_pipeline_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;
 		

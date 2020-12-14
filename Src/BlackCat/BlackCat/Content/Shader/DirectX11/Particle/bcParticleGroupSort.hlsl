@@ -21,7 +21,7 @@ void bitonic_group_sort(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_G
 	{
 		for (uint l_bitonic_compare = l_bitonic_array_size >> 1; l_bitonic_compare > 0; l_bitonic_compare >>= 1)
 		{
-			bool l_condition1 = (sort_shared_data[p_group_index & ~l_bitonic_compare].m_distance <= sort_shared_data[p_group_index | l_bitonic_compare].m_distance);
+			bool l_condition1 = (sort_shared_data[p_group_index & ~l_bitonic_compare].m_distance >= sort_shared_data[p_group_index | l_bitonic_compare].m_distance);
 			bool l_condition2 = (bool) (l_bitonic_array_size & p_dispatch_thread_id.x);
 
 			alive_particle l_result_subset[] = { sort_shared_data[p_group_index ^ l_bitonic_compare], sort_shared_data[p_group_index] };

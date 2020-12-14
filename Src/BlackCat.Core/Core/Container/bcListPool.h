@@ -98,6 +98,7 @@ namespace black_cat
 		template< typename T >
 		bc_list_pool<T>::~bc_list_pool()
 		{
+			list_type::~list_type();
 			m_memory_pool.destroy();
 		}
 

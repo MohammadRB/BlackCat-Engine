@@ -29,6 +29,7 @@
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
+#include "Game/Object/Scene/Component/bcWindComponent.h"
 #include "BlackCat/Loader/bcMeshLoader.h"
 #include "BlackCat/Loader/bcTextureLoader.h"
 #include "BlackCat/Loader/bcVertexShaderLoader.h"
@@ -110,7 +111,8 @@ namespace black_cat
 			game::bc_component_register< game::bc_rigid_static_component >("rigid_static"),
 			game::bc_component_register< game::bc_rigid_dynamic_component >("rigid_dynamic"),
 			game::bc_component_register< game::bc_height_map_component >("height_map"),
-			game::bc_component_register< game::bc_light_component >("light")
+			game::bc_component_register< game::bc_light_component >("light"),
+			game::bc_component_register< game::bc_wind_component >("wind")
 		);
 		game::bc_register_abstract_component_types
 		(

@@ -38,8 +38,6 @@ namespace black_cat
 			
 			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
 			
-		protected:
-
 		private:
 			bc_light_ptr m_light;
 		};

@@ -36,6 +36,17 @@ namespace black_cat
 			BC_CBUFFER_ALIGN
 			bcFLOAT m_elapsed;
 			bcFLOAT m_elapsed_second;
+			BC_CBUFFER_ALIGN
+			core::bc_vector3f m_global_light_direction;
+			BC_CBUFFER_ALIGN
+			core::bc_vector3f m_global_light_color;
+			bcFLOAT m_global_light_intensity;
+			BC_CBUFFER_ALIGN
+			core::bc_vector3f m_global_light_ambient_color;
+			bcFLOAT m_global_light_ambient_intensity;
+			BC_CBUFFER_ALIGN
+			core::bc_vector3f m_global_wind_direction;
+			bcFLOAT m_global_wind_power;
 		};
 
 		struct _bc_render_system_per_object_cbuffer
@@ -45,6 +56,8 @@ namespace black_cat
 			BC_CBUFFER_ALIGN
 			core::bc_matrix4f m_world;
 		};
+
+		static _bc_render_system_global_state_cbuffer g_global_state;
 		
 		bc_frame_renderer::bc_frame_renderer(graphic::bc_device& p_device, bc_render_thread_manager& p_thread_manager, bc_render_pass_manager& p_render_pass_manager) noexcept
 			: m_thread_manager(&p_thread_manager),
@@ -131,24 +144,55 @@ namespace black_cat
 			return *m_thread_manager;
 		}
 
-		void bc_frame_renderer::update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_camera_instance& p_camera)
+		void bc_frame_renderer::update_global_cbuffer(bc_render_thread& p_render_thread,
+			const core_platform::bc_clock::update_param& p_clock,
+			const bc_camera_instance& p_camera)
 		{
-			_bc_render_system_global_state_cbuffer l_global_state;
-			l_global_state.m_view = p_camera.get_view().transpose();
-			l_global_state.m_projection = p_camera.get_projection().transpose();
-			l_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection()).transpose();
-			l_global_state.m_screen_width = p_camera.get_screen_width();
-			l_global_state.m_screen_height = p_camera.get_screen_height();
-			l_global_state.m_near_plan = p_camera.get_near_clip();
-			l_global_state.m_far_plan = p_camera.get_far_clip();
-			l_global_state.m_camera_position = p_camera.get_position();
-			l_global_state.m_total_elapsed = p_clock.m_total_elapsed;
-			l_global_state.m_total_elapsed_second = p_clock.m_total_elapsed_second;
-			l_global_state.m_elapsed = p_clock.m_elapsed;
-			l_global_state.m_elapsed_second = p_clock.m_elapsed_second;
+			g_global_state.m_view = p_camera.get_view().transpose();
+			g_global_state.m_projection = p_camera.get_projection().transpose();
+			g_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection()).transpose();
+			g_global_state.m_screen_width = p_camera.get_screen_width();
+			g_global_state.m_screen_height = p_camera.get_screen_height();
+			g_global_state.m_near_plan = p_camera.get_near_clip();
+			g_global_state.m_far_plan = p_camera.get_far_clip();
+			g_global_state.m_camera_position = p_camera.get_position();
+			g_global_state.m_total_elapsed = p_clock.m_total_elapsed;
+			g_global_state.m_total_elapsed_second = p_clock.m_total_elapsed_second;
+			g_global_state.m_elapsed = p_clock.m_elapsed;
+			g_global_state.m_elapsed_second = p_clock.m_elapsed_second;
 
 			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
-			p_render_thread.update_subresource(l_buffer, 0, &l_global_state, 0, 0);
+			p_render_thread.update_subresource(l_buffer, 0, &g_global_state, 0, 0);
+		}
+
+		void bc_frame_renderer::update_global_cbuffer(bc_render_thread& p_render_thread,
+			const core_platform::bc_clock::update_param& p_clock,
+			const bc_camera_instance& p_camera,
+			const bc_direct_light& p_global_light,
+			const bc_direct_wind& p_global_wind)
+		{
+			g_global_state.m_view = p_camera.get_view().transpose();
+			g_global_state.m_projection = p_camera.get_projection().transpose();
+			g_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection()).transpose();
+			g_global_state.m_screen_width = p_camera.get_screen_width();
+			g_global_state.m_screen_height = p_camera.get_screen_height();
+			g_global_state.m_near_plan = p_camera.get_near_clip();
+			g_global_state.m_far_plan = p_camera.get_far_clip();
+			g_global_state.m_camera_position = p_camera.get_position();
+			g_global_state.m_total_elapsed = p_clock.m_total_elapsed;
+			g_global_state.m_total_elapsed_second = p_clock.m_total_elapsed_second;
+			g_global_state.m_elapsed = p_clock.m_elapsed;
+			g_global_state.m_elapsed_second = p_clock.m_elapsed_second;
+			g_global_state.m_global_light_direction = p_global_light.get_direction();
+			g_global_state.m_global_light_color = p_global_light.get_color();
+			g_global_state.m_global_light_intensity = p_global_light.get_intensity();
+			g_global_state.m_global_light_ambient_color = p_global_light.get_ambient_color();
+			g_global_state.m_global_light_ambient_intensity = p_global_light.get_ambient_intensity();
+			g_global_state.m_global_wind_direction = p_global_wind.m_direction;
+			g_global_state.m_global_wind_power = p_global_wind.m_power;
+
+			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
+			p_render_thread.update_subresource(l_buffer, 0, &g_global_state, 0, 0);
 		}
 		
 		bc_render_state_buffer bc_frame_renderer::create_buffer() const

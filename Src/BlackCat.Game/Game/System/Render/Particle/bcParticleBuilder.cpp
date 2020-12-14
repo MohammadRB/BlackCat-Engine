@@ -34,9 +34,8 @@ namespace black_cat
 		{
 		}
 
-		bc_particle_builder1& bc_particle_builder1::with_texture(bcUINT32 p_texture_index, bcUINT32 p_sprite_index) noexcept
+		bc_particle_builder1& bc_particle_builder1::with_texture(bcUINT32 p_sprite_index) noexcept
 		{
-			m_emitter.m_texture_index = p_texture_index;
 			m_emitter.m_sprite_index = p_sprite_index;
 			return *this;
 		}
@@ -51,6 +50,13 @@ namespace black_cat
 		bc_particle_builder1& bc_particle_builder1::with_deviation(bcUINT32 p_angle) noexcept
 		{
 			m_emitter.m_deviation_angle = p_angle;
+			return *this;
+		}
+
+		bc_particle_builder1& bc_particle_builder1::with_particles_color(const core::bc_vector3f& p_color, bcFLOAT p_intensity)
+		{
+			m_emitter.m_particles_color = p_color;
+			m_emitter.m_particles_color_intensity = p_intensity;
 			return *this;
 		}
 
@@ -125,10 +131,11 @@ namespace black_cat
 			l_emitter.m_force = p_force;
 			l_emitter.m_mass = p_mass;
 			l_emitter.m_deviation_angle = 45;
-			l_emitter.m_texture_index = 0;
 			l_emitter.m_sprite_index = 0;
 			l_emitter.m_velocity_curve_index = _find_curve_index(s_curve_constant);
 			l_emitter.m_velocity_curve_duration = p_lifetime_seconds;
+			l_emitter.m_particles_color = core::bc_vector3f(0.8f);
+			l_emitter.m_particles_color_intensity = 1;
 			l_emitter.m_particles_total_count = 0;
 			l_emitter.m_particles_lifetime = 0;
 			l_emitter.m_particles_force = 0;
@@ -142,6 +149,22 @@ namespace black_cat
 			l_emitter.m_particles_size_curve_index = _find_curve_index(s_curve_fast_step1);
 			l_emitter.m_particles_fade_curve_index = _find_curve_index(s_curve_fast_step1);
 
+			m_emitters.push_back(l_emitter);
+
+			return bc_particle_builder1(*this, *m_emitters.rbegin());
+		}
+
+		bc_particle_builder1 bc_particle_builder::duplicate_last(const core::bc_vector3f& p_position, const core::bc_vector3f& p_direction) noexcept
+		{
+			if(m_emitters.empty())
+			{
+				return emitter(p_position, p_direction);
+			}
+			
+			auto l_emitter = *m_emitters.rbegin();
+			l_emitter.m_position = p_position;
+			l_emitter.m_direction = core::bc_vector3f::normalize(p_direction);
+			
 			m_emitters.push_back(l_emitter);
 
 			return bc_particle_builder1(*this, *m_emitters.rbegin());

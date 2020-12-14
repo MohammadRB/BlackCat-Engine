@@ -11,6 +11,7 @@
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcJsonParse.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/System/Input/bcFileSystem.h"
@@ -84,7 +85,7 @@ namespace black_cat
 			m_default_diffuse_map = l_content_manager.load< graphic::bc_texture2d_content >
 			(
 				core::bc_alloc_type::program,
-				core::bc_path::get_absolute_path(bcL("Content\\Texture\\Default.jpg")).c_str(),
+				core::bc_get_service<bc_game_system>()->get_file_system().get_content_texture_path(bcL("Default.dds")).c_str(),
 				core::bc_content_loader_parameter()
 			);
 

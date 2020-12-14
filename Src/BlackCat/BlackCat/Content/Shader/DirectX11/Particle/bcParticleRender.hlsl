@@ -4,21 +4,37 @@
 #include "..\bcHelper.hlsli"
 #include "bcParticle.hlsli"
 
+#define NUM_HORIZONTAL_SPRITE 4
+#define NUM_VERTICAL_SPRITE 4
+#define SOFT_PARTICLE_BIAS 2.0f
+
 StructuredBuffer<particle> g_particles				: register(BC_RENDER_PASS_STATE_T0);
 StructuredBuffer<alive_particle> g_alive_indices	: register(BC_RENDER_PASS_STATE_T1);
+Texture2D<float4> g_depth_buffer					: register(BC_RENDER_PASS_STATE_T2);
+Texture2D<float4> g_sprites							: register(BC_RENDER_PASS_STATE_T3);
+
+SamplerState g_linear_sampler						: register(BC_RENDER_PASS_STATE_S0);
+SamplerState g_point_sampler						: register(BC_RENDER_PASS_STATE_S1);
+
+static const float2 g_quad[] = { float2(-1, 1), float2(1, 1), float2(-1, -1), float2(1, -1) };
+static const float2 g_quad_tex[] = { float2(0, 0), float2(1, 0), float2(0, 1), float2(1, 1) };
 
 struct vertex_output
 {
-	uint m_instance_index : TEXCOORD0;
+	uint m_instance_index							: TEXCOORD0;
 };
 
 struct geometry_output
 {
-	float4 m_pos : SV_Position;
-	float2 m_texcoord : TEXCOORD0;
-	float m_fade : TEXCOORD1;
-	int m_texture_index : TEXCOORD2;
-	int m_sprite_index : TEXCOORD3;
+	float4 m_pos									: SV_Position;
+	float4 m_pos1									: TEXCOORD0;
+	float4 m_color									: TEXCOORD1;
+	float3 m_light_shading							: TEXCOORD2;
+	float3 m_ambient_shading						: TEXCOORD3;
+	float2 m_texcoord								: TEXCOORD4;
+	float m_linear_depth							: TEXCOORD5;
+	float m_fade									: TEXCOORD6;
+	int m_sprite_index								: TEXCOORD7;
 };
 
 vertex_output vs(uint p_instance_index : SV_InstanceID)
@@ -27,6 +43,14 @@ vertex_output vs(uint p_instance_index : SV_InstanceID)
 	l_output.m_instance_index = p_instance_index;
 	
 	return l_output;
+}
+
+float3 direct_light_shading(float3 p_normal)
+{
+	float l_dot = max(0.0f, dot(p_normal, -g_global_light_direction));
+	float3 l_diffuse_light = g_global_light_color * g_global_light_intensity * l_dot;
+	
+	return l_diffuse_light;
 }
 
 [maxvertexcount(4)]
@@ -39,33 +63,49 @@ void gs(point vertex_output p_input[1], inout TriangleStream<geometry_output> p_
 	float l_sin, l_cos;
 	sincos(l_rotation, l_sin, l_cos);
 	
-	//float3 l_up = l_cos * float3(1, 0, 0) - l_sin * float3(0, 1, 0);
-	float3 l_up = float3(l_sin, l_cos, 0);
-	float3 l_billboard_normal = g_camera_position - l_particle.m_position;
-	float3 l_billboard_right = normalize(cross(l_billboard_normal, l_up)) * l_particle.m_size;
-	float3 l_billboard_up = normalize(cross(l_billboard_right, l_billboard_normal)) * l_particle.m_size;
+	float3 l_billboard_right = normalize(float3(g_view._11, g_view._21, g_view._31));
+	float3 l_billboard_up = normalize(float3(g_view._12, g_view._22, g_view._32));
+
+	float3 l_light_shading = direct_light_shading(l_particle.m_direction);
+	float3 l_ambient_shading = g_global_light_ambient_color * g_global_light_ambient_intensity;
 	
-	const float2 l_texcoords[] = { float2(0, 0), float2(1, 0), float2(0, 1), float2(1, 1) };
-	geometry_output l_vertices[4];
-	
-	l_vertices[0].m_pos = float4(l_particle.m_position, 1) - float4(l_billboard_right, 0) + float4(l_billboard_up, 0);
-	l_vertices[1].m_pos = float4(l_particle.m_position, 1) + float4(l_billboard_right, 0) + float4(l_billboard_up, 0);
-	l_vertices[2].m_pos = float4(l_particle.m_position, 1) - float4(l_billboard_right, 0) - float4(l_billboard_up, 0);
-	l_vertices[3].m_pos = float4(l_particle.m_position, 1) + float4(l_billboard_right, 0) - float4(l_billboard_up, 0);
+	float2 l_quad[4];
+	geometry_output l_world_vertices[4];
 	
 	[unroll]
 	for (uint i = 0; i < 4; ++i)
 	{
-		l_vertices[i].m_pos = mul(l_vertices[i].m_pos, g_view_projection);
-		l_vertices[i].m_texcoord = l_texcoords[i];
-		l_vertices[i].m_fade = l_particle.m_fade;
-		l_vertices[i].m_texture_index = l_particle.m_texture_index;
-		l_vertices[i].m_sprite_index = l_particle.m_sprite_index;
-		p_stream.Append(l_vertices[i]);
+		l_quad[i].x = l_cos * g_quad[i].x - l_sin * g_quad[i].y;
+		l_quad[i].y = l_sin * g_quad[i].x + l_cos * g_quad[i].y;
+		l_quad[i] *= l_particle.m_size;
+
+		l_world_vertices[i].m_pos = float4(l_particle.m_position, 1) + float4(l_billboard_right, 0) * l_quad[i].x + float4(l_billboard_up, 0) * l_quad[i].y;
+		l_world_vertices[i].m_pos = mul(l_world_vertices[i].m_pos, g_view_projection);
+		l_world_vertices[i].m_pos1 = l_world_vertices[i].m_pos;
+		l_world_vertices[i].m_color = float4(l_particle.m_color, l_particle.m_color_intensity);
+		l_world_vertices[i].m_light_shading = l_light_shading;
+		l_world_vertices[i].m_ambient_shading = l_ambient_shading;
+		l_world_vertices[i].m_texcoord = bc_to_sprite_texcoord(g_quad_tex[i], l_particle.m_sprite_index, NUM_HORIZONTAL_SPRITE, NUM_VERTICAL_SPRITE);
+		l_world_vertices[i].m_linear_depth = bc_convert_to_linear_depth(l_world_vertices[i].m_pos.z / l_world_vertices[i].m_pos.w, g_near_plane, g_far_plane) * (g_far_plane - g_near_plane);
+		l_world_vertices[i].m_fade = l_particle.m_fade;
+		l_world_vertices[i].m_sprite_index = l_particle.m_sprite_index;
+		p_stream.Append(l_world_vertices[i]);
 	}
 }
 
 float4 ps(geometry_output p_input) : SV_Target0
 {
-	return float4(0.8, 0.5, 0.5, 0.4 * p_input.m_fade);
+	float2 l_ss_texcoord = bc_clip_space_to_texcoord(p_input.m_pos1);
+	float l_depth_buffer = g_depth_buffer.Sample(g_point_sampler, l_ss_texcoord).x;
+	clip(l_depth_buffer - (p_input.m_pos1.z / p_input.m_pos1.w));
+	
+	float l_depth_buffer_linear = bc_convert_to_linear_depth(l_depth_buffer, g_near_plane, g_far_plane) * (g_far_plane - g_near_plane);
+	float l_depth_diff = l_depth_buffer_linear - p_input.m_linear_depth;
+	float l_soft_fade = saturate(l_depth_diff / SOFT_PARTICLE_BIAS);
+
+	float l_alpha = g_sprites.Sample(g_linear_sampler, p_input.m_texcoord).x;
+	float3 l_light_shading = p_input.m_light_shading;
+	float3 l_diffuse = (p_input.m_color.xyz * p_input.m_color.w * l_light_shading) + p_input.m_ambient_shading;
+
+	return float4(l_diffuse, l_alpha * p_input.m_fade * l_soft_fade);
 }

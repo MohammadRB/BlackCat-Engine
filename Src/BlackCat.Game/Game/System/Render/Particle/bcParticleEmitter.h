@@ -16,10 +16,11 @@ namespace black_cat
 			bcFLOAT m_force;
 			bcFLOAT m_mass;
 			bcUINT32 m_deviation_angle;
-			bcUINT32 m_texture_index;
 			bcUINT32 m_sprite_index;
 			bcUINT32 m_velocity_curve_index;
 			bcFLOAT m_velocity_curve_duration;
+			core::bc_vector3f m_particles_color;
+			bcFLOAT m_particles_color_intensity;
 			bcUINT32 m_particles_total_count;
 			bcFLOAT m_particles_lifetime;
 			bcFLOAT m_particles_force;
@@ -41,8 +42,9 @@ namespace black_cat
 			core::bc_vector3f m_emission_direction;
 			bcFLOAT m_energy;
 			bcUINT32 m_emission_deviation;
-			bcUINT32 m_texture_index;
 			bcUINT32 m_sprite_index;
+			core::bc_vector3f m_particles_color;
+			bcFLOAT m_particles_color_intensity;
 			bcUINT32 m_particles_count;
 			bcFLOAT m_particles_lifetime;
 			bcFLOAT m_particles_force;

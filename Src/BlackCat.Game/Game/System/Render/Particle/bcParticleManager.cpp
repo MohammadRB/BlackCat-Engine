@@ -5,9 +5,13 @@
 #include "Core/Math/bcCoordinate.h"
 #include "Core/Math/bcMatrix3f.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
+#include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcLogger.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/Query/bcParticleEmittersQuery.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
+#include "Game/System/Input/bcFileSystem.h"
 
 namespace black_cat
 {
@@ -17,18 +21,14 @@ namespace black_cat
 			: bc_particle_emitter_trait(p_trait)
 		{
 			m_age = 0;
+			m_energy = 0;
 			m_spawned_particles_count = 0;
 			m_particles_count_to_spawn = 0;
 		}
 
-		bc_particle_manager::bc_particle_manager()
+		bc_particle_manager::bc_particle_manager(graphic::bc_device& p_device, core::bc_content_stream_manager& p_content_stream)
 			: m_emitters(s_emitter_count, core::bc_alloc_type::unknown_movable)
 		{
-			m_emitters_provider_handle = core::bc_get_service< core::bc_query_manager >()->register_query_provider< bc_particle_emitters_query_context >
-			(
-				core::bc_query_provider_handle::delegate_t(*this, &bc_particle_manager::_emitters_query_context_provider)
-			);
-
 			for(bcSIZE l_curve_i = 0; l_curve_i < bc_particle_builder::s_curves.size(); ++l_curve_i)
 			{
 				const auto* l_particle_curve = bc_particle_builder::s_curves[l_curve_i];
@@ -56,13 +56,38 @@ namespace black_cat
 				
 				m_curves[l_curve_i] = l_curve_samples_container;
 			}
+
+			m_emitters_provider_handle = core::bc_get_service< core::bc_query_manager >()
+					->register_query_provider< bc_particle_emitters_query_context >
+					(
+						core::bc_query_provider_handle::delegate_t
+						(*this, &bc_particle_manager::_emitters_query_context_provider)
+					);
+
+			const auto l_sprites_path = core::bc_get_service<bc_game_system>()->get_file_system().get_content_texture_path(bcL("Sprites.dds"));
+			m_sprites = p_content_stream.get_content_manager().load< graphic::bc_texture2d_content >
+			(
+				core::bc_alloc_type::program,
+				l_sprites_path.c_str(),
+				core::bc_content_loader_parameter()
+			);
+
+			auto l_sprites_texture = m_sprites->get_resource();
+			auto l_sprites_view_config = graphic::bc_graphic_resource_builder()
+				.as_resource_view()
+				.as_texture_view(m_sprites->get_resource().get_format())
+				.as_tex2d_shader_view(0, -1)
+				.on_texture2d();
+			m_sprites_view = p_device.create_resource_view(l_sprites_texture, l_sprites_view_config);
 		}
 
 		bc_particle_manager::bc_particle_manager(bc_particle_manager&& p_other) noexcept
 			: m_curves(p_other.m_curves),
 			m_emitter_definitions(std::move(p_other.m_emitter_definitions)),
 			m_emitters(std::move(p_other.m_emitters)),
-			m_emitters_provider_handle(std::move(p_other.m_emitters_provider_handle))
+			m_emitters_provider_handle(std::move(p_other.m_emitters_provider_handle)),
+			m_sprites(std::move(p_other.m_sprites)),
+			m_sprites_view(std::move(p_other.m_sprites_view))
 		{
 			m_emitters_provider_handle.reassign(core::bc_query_provider_handle::delegate_t(*this, &bc_particle_manager::_emitters_query_context_provider));
 		}
@@ -75,10 +100,17 @@ namespace black_cat
 			m_emitter_definitions = std::move(p_other.m_emitter_definitions);
 			m_emitters = std::move(p_other.m_emitters);
 			m_emitters_provider_handle = std::move(p_other.m_emitters_provider_handle);
+			m_sprites = std::move(p_other.m_sprites);
+			m_sprites_view = std::move(p_other.m_sprites_view);
 			
 			m_emitters_provider_handle.reassign(core::bc_query_provider_handle::delegate_t(*this, &bc_particle_manager::_emitters_query_context_provider));
 
 			return *this;
+		}
+
+		graphic::bc_resource_view bc_particle_manager::get_sprites_view() const noexcept
+		{
+			return m_sprites_view.get();
 		}
 
 		const bc_particle_manager::curves_container& bc_particle_manager::get_curves() const noexcept
@@ -137,17 +169,22 @@ namespace black_cat
 			{
 				const auto l_test_emitter = bc_particle_builder()
 					.emitter(core::bc_vector3f(0), core::bc_vector3f::up(), 100, 0, 0)
-					.with_deviation(90)
-					.with_particle_size(1.0f, 1.5f)
-					.with_particles_rotation(90)
+					.with_deviation(80)
+					.with_texture(2)
+					.with_particles_color({ 0.9f, 0.9f, 0.9f }, 1.5)
+					.with_particle_size(4.5f, 14.0f)
+					.with_particles_rotation(20)
 					.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step2, 5)
-					.emit_particles(2500, 20, 2, 0.1f);
+					.emit_particles(800, 15, 2.0f, 0.1f)
+					.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up())
+					.with_texture(0)
+					.emit_particles(850, 15, 1.8f, 0.1f);
 				register_emitter_definition("test_emitter", l_test_emitter);
 
 				spawn_emitter
 				(
 					"test_emitter",
-					core::bc_vector3f(29, 48, -732),
+					core::bc_vector3f(29, 48, -734),
 					core::bc_vector3f::up()
 				);
 			}*/
@@ -166,31 +203,40 @@ namespace black_cat
 				bc_particle_builder l_builder;
 				l_builder.emitter(core::bc_vector3f(0), core::bc_vector3f::up())
 					.with_deviation(180)
-					.with_particle_size(2, 4)
+					.with_texture(2)
+					.with_particles_color({ 0.9f, 0.9f, 0.9f }, 2)
+					.with_particle_size(4, 9)
 					.with_particles_rotation(45)
 					.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step4, 0.2f)
-					.emit_particles(150, 3, 40, 0.1f);
+					.emit_particles(100, 3, 40, 0.1f);
+					/*.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up())
+					.with_texture(4)
+					.with_particles_color({0.96f, 0.75f, 0.45f}, 8)
+					.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step5, 0.15f)
+					.emit_particles(100, 0.2f, 50, 0.05f);*/
 
 				core::bc_array<std::tuple<core::bc_vector3f, core::bc_vector3f>, 7> l_emitter_traits =
 				{
 					std::make_tuple(core::bc_vector3f(0, 0, 0), core::bc_vector3f(0, 1, 0)),
-					std::make_tuple(core::bc_vector3f(-2, 0, -2), core::bc_vector3f(-0.4, 1, -0.5)),
+					std::make_tuple(core::bc_vector3f(-2, 0, -2), core::bc_vector3f(-0.2, 1, -0.5)),
 					std::make_tuple(core::bc_vector3f(-2, 0, 2), core::bc_vector3f(-0.3, 1, 0.5)),
 					std::make_tuple(core::bc_vector3f(2, 0, 2), core::bc_vector3f(0.4, 1, 0.4)),
 					std::make_tuple(core::bc_vector3f(2, 0, -2), core::bc_vector3f(0.5, 1, -0.6)),
-					std::make_tuple(core::bc_vector3f(2, 0, -2), core::bc_vector3f(0.1, 1, -0.7)),
-					std::make_tuple(core::bc_vector3f(2, 0, -2), core::bc_vector3f(0.5, 1, -0.3))
+					std::make_tuple(core::bc_vector3f(-2, 0, 0), core::bc_vector3f(-0.4, 1, 0.0)),
+					std::make_tuple(core::bc_vector3f(2, 0, -2), core::bc_vector3f(0.4, 1, -0.1))
 				};
 				for(auto& l_trait : l_emitter_traits)
 				{
 					l_builder.emitter(std::get<0>(l_trait), std::get<1>(l_trait), 0.2f, 800, 0.4f)
 						.with_deviation(90)
 						.with_velocity_curve(bc_particle_builder::s_curve_fast_step5)
-						.with_particle_size(0.7f, 2.5f)
+						.with_texture(1)
+						.with_particles_color({ 0.9f, 0.9f, 0.9f }, 2)
+						.with_particle_size(1.0f, 3.0f)
 						.with_particle_size_curve(bc_particle_builder::s_curve_fast_step4)
 						.with_particle_reverse_direction()
 						.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step1, 1)
-						.emit_particles(100, 3, 0.5, 0.2f);
+						.emit_particles(100, 3, 1.0, 0.4f);
 				}
 				
 				register_emitter_definition("test_emitter", l_builder);
@@ -253,8 +299,6 @@ namespace black_cat
 					l_emitter.m_energy = l_energy;
 					l_emitter.m_particles_count_to_spawn = l_particles_to_spawn - l_emitter.m_spawned_particles_count;
 					l_emitter.m_spawned_particles_count += l_emitter.m_particles_count_to_spawn;
-
-					//core::bc_get_service<core::bc_logger>()->log_debug(core::bc_to_wstring_frame(l_emitter.m_particles_count_to_spawn).c_str());
 				}
 			}
 		}
@@ -280,8 +324,9 @@ namespace black_cat
 						l_emitter.m_emission_direction = p_emitter.m_direction * p_emitter.m_particles_velocity_reverse_direction;
 						l_emitter.m_energy = p_emitter.m_energy;
 						l_emitter.m_emission_deviation = p_emitter.m_deviation_angle;
-						l_emitter.m_texture_index = p_emitter.m_texture_index;
 						l_emitter.m_sprite_index = p_emitter.m_sprite_index;
+						l_emitter.m_particles_color = p_emitter.m_particles_color;
+						l_emitter.m_particles_color_intensity = p_emitter.m_particles_color_intensity;
 						l_emitter.m_particles_count = p_emitter.m_particles_count_to_spawn;
 						l_emitter.m_particles_lifetime = p_emitter.m_particles_lifetime;
 						l_emitter.m_particles_force = p_emitter.m_particles_force;

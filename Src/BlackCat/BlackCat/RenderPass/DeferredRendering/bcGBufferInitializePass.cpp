@@ -4,10 +4,11 @@
 
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
-#include "Game/Object/Scene/bcScene.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcDefaultRenderThread.h"
+#include "Game/Object/Scene/bcScene.h"
+#include "Game/Object/Scene/Component/bcWindComponent.h"
 #include "Game/Query/bcMainCameraSceneQuery.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferInitializePass.h"
 #include "BlackCat/bcConstant.h"
@@ -43,10 +44,29 @@ namespace black_cat
 
 	void bc_gbuffer_initialize_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
+		auto* l_query_manager = core::bc_get_service< core::bc_query_manager >();
 		const game::bc_camera_frustum l_frustum(p_param.m_current_camera);
-		core::bc_get_service< core::bc_query_manager >()->queue_shared_query
+
+		if(m_lights_query.is_executed())
+		{
+			m_lights_query_result = m_lights_query.get().get_lights();
+		}
+		if(m_winds_query.is_executed())
+		{
+			m_winds_query_result = m_winds_query.get().get_winds();
+		}
+		
+		l_query_manager->queue_shared_query
 		(
 			game::bc_main_camera_scene_query(l_frustum)
+		);
+		m_lights_query = l_query_manager->queue_query
+		(
+			game::bc_scene_light_query(core::bc_enum::or({ game::bc_light_type::direct }))
+		);
+		m_winds_query = l_query_manager->queue_query
+		(
+			game::bc_scene_wind_query()
 		);
 	}
 
@@ -54,8 +74,29 @@ namespace black_cat
 	{
 		graphic::bc_render_target_view l_render_targets[] = { m_diffuse_map_view.get(), m_normal_map_view.get() };
 		
+		game::bc_direct_light l_direct_light({0,0,0}, {0,0,0}, 1, {0,0,0}, 1);
+		game::bc_direct_wind l_direct_wind({0,0,0}, 1);
+
+		const auto l_light_ite = std::max_element(std::begin(m_lights_query_result), std::end(m_lights_query_result), [](const game::bc_light_instance& p_light1, const game::bc_light_instance& p_light2)
+		{
+			return p_light1.as_direct_light()->get_intensity() < p_light2.as_direct_light()->get_intensity();
+		});
+		const auto l_wind_ite = std::max_element(std::begin(m_winds_query_result), std::end(m_winds_query_result), [](const game::bc_wind& p_wind1, const game::bc_wind& p_wind2)
+		{
+			return p_wind1.as_direct_wind()->m_power < p_wind2.as_direct_wind()->m_power;
+		});
+
+		if(l_light_ite != std::end(m_lights_query_result))
+		{
+			l_direct_light = *l_light_ite->as_direct_light();
+		}
+		if(l_wind_ite != std::end(m_winds_query_result))
+		{
+			l_direct_wind = *l_wind_ite->as_direct_wind();
+		}
+		
 		p_param.m_render_thread.start();
-		p_param.m_frame_renderer.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, p_param.m_render_camera);
+		p_param.m_frame_renderer.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, p_param.m_render_camera, l_direct_light, l_direct_wind);
 		
 		p_param.m_render_thread.get_pipeline().bind_om_render_targets(2, &l_render_targets[0], m_depth_stencil_view.get());
 		p_param.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::output_merger_stage);

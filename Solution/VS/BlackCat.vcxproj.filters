@@ -49,6 +49,9 @@
     <Filter Include="BlackCat\Content\Shader\DirectX11\Particle">
       <UniqueIdentifier>{477364e8-673a-4071-aa55-ba8a431db87e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BlackCat\Content\Texture">
+      <UniqueIdentifier>{98093a72-b2e4-48af-94ef-54024abe2461}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.h">
@@ -300,5 +303,13 @@
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticle.hlsli">
       <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Default.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Sprites.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
   </ItemGroup>
 </Project>

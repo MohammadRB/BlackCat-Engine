@@ -52,7 +52,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	
 	// Reset alive particles
 	g_alive_indices[l_particle_index].m_index = 0;
-	g_alive_indices[l_particle_index].m_distance = MAX_FLOAT;
+	g_alive_indices[l_particle_index].m_distance = 0;
 
 	DeviceMemoryBarrierWithGroupSync();
 	
@@ -88,7 +88,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	float l_acceleration = l_particle.m_force / l_particle.m_mass * l_velocity_curve_value;
 
 	l_particle.m_position += (l_particle.m_direction * l_acceleration * g_elapsed_second) +
-			(g_wind_dir * g_wind_power * g_elapsed_second) +
+			(g_global_wind_direction * g_global_wind_power * g_elapsed_second) +
 			(g_gravity_dir * g_gravity_force * l_particle.m_mass * g_elapsed_second);
 	l_particle.m_force = max(0, l_particle.m_force - l_particle.m_mass * g_elapsed_second);
 	l_particle.m_size = l_size_curve_value * (l_particle.m_end_size - l_particle.m_start_size) + l_particle.m_start_size;

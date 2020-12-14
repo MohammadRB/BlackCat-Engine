@@ -9,8 +9,9 @@ struct emitter
 	float3 m_emission_direction;
 	float m_energy;
 	uint m_emission_deviation;
-	uint m_texture_index;
 	uint m_sprite_index;
+	float3 m_particles_color;
+	float m_particles_color_intensity;
 	uint m_particles_count;
 	float m_particles_lifetime;
 	float m_particles_force;
@@ -27,8 +28,10 @@ struct emitter
 struct particle
 {
 	float3 m_position;
-	float m_lifetime;
 	float3 m_direction;
+	float3 m_color;
+	float m_color_intensity;
+	float m_lifetime;
 	float m_age;
 	float m_force;
 	float m_mass;
@@ -37,7 +40,6 @@ struct particle
 	float m_size;
 	float m_fade;
 	float m_rotation;
-	uint m_texture_index;
 	uint m_sprite_index;
 	uint m_velocity_curve_index;
 	float m_velocity_curve_duration;

@@ -21,11 +21,13 @@ namespace black_cat
 		public:
 			bc_particle_builder1(bc_particle_builder& p_builder, bc_particle_emitter_trait& p_emitter) noexcept;
 
-			bc_particle_builder1& with_texture(bcUINT32 p_texture_index, bcUINT32 p_sprite_index) noexcept;
+			bc_particle_builder1& with_texture(bcUINT32 p_sprite_index) noexcept;
 
 			bc_particle_builder1& with_velocity_curve(const bc_particle_curve& p_curve) noexcept;
 			
 			bc_particle_builder1& with_deviation(bcUINT32 p_angle) noexcept;
+
+			bc_particle_builder1& with_particles_color(const core::bc_vector3f& p_color, bcFLOAT p_intensity = 1);
 			
 			bc_particle_builder1& with_particle_reverse_direction() noexcept;
 
@@ -79,6 +81,8 @@ namespace black_cat
 				bcFLOAT p_lifetime_seconds,
 				bcFLOAT p_force,
 				bcFLOAT p_mass) noexcept;
+
+			bc_particle_builder1 duplicate_last(const core::bc_vector3f& p_position, const core::bc_vector3f& p_direction) noexcept;
 
 		private:
 			static decltype(s_curves)::size_type _find_curve_index(const bc_particle_curve& p_curve) noexcept;

@@ -30,6 +30,15 @@
       "parameters": {}
     },
     {
+      "entity_name": "wind",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
       "entity_name": "crysis_heightmap",
       "position": [
         0.0,

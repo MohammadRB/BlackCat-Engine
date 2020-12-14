@@ -25,8 +25,10 @@ namespace black_cat
 	struct _bc_particle_struct
 	{
 		core::bc_vector3f m_position;
-		bcFLOAT m_lifetime;
 		core::bc_vector3f m_direction;
+		core::bc_vector3f m_color;
+		bcFLOAT m_color_intensity;
+		bcFLOAT m_lifetime;
 		bcFLOAT m_age;
 		bcFLOAT m_force;
 		bcFLOAT m_mass;
@@ -35,7 +37,6 @@ namespace black_cat
 		bcFLOAT m_size;
 		bcFLOAT m_fade;
 		bcFLOAT m_rotation;
-		bcUINT32 m_texture_index;
 		bcUINT32 m_sprite_index;
 		bcUINT32 m_velocity_curve_index;
 		bcFLOAT m_velocity_curve_duration;
@@ -207,16 +208,26 @@ namespace black_cat
 		m_sort_compute_state = p_render_system.create_device_compute_state("bitonic_sort");
 		m_sort_transpose_compute_state = p_render_system.create_device_compute_state("bitonic_matrix_transpose");
 
-		auto l_sampler_config = graphic::bc_graphic_resource_builder()
+		auto l_linear_sampler_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_sampler_state
 			(
 				graphic::bc_filter::min_mag_mip_linear,
-				graphic::bc_texture_address_mode::border,
-				graphic::bc_texture_address_mode::border,
-				graphic::bc_texture_address_mode::border
+				graphic::bc_texture_address_mode::clamp,
+				graphic::bc_texture_address_mode::clamp,
+				graphic::bc_texture_address_mode::clamp
 			).as_sampler_state();
-		m_sampler = l_device.create_sampler_state(l_sampler_config);
+		auto l_point_sampler_config = graphic::bc_graphic_resource_builder()
+			.as_resource()
+			.as_sampler_state
+			(
+				graphic::bc_filter::min_mag_mip_point,
+				graphic::bc_texture_address_mode::clamp,
+				graphic::bc_texture_address_mode::clamp,
+				graphic::bc_texture_address_mode::clamp
+			).as_sampler_state();
+		m_linear_sampler = l_device.create_sampler_state(l_linear_sampler_config);
+		m_point_sampler = l_device.create_sampler_state(l_point_sampler_config);
 		
 		graphic::bc_device_parameters l_old_parameters
 		(
@@ -354,6 +365,7 @@ namespace black_cat
 	{
 		m_depth_buffer_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
 		m_depth_buffer_shader_view = get_shared_resource_throw<graphic::bc_resource_view>(constant::g_rpass_depth_stencil_read_view);
+		m_default_sprites_shader_view = p_param.m_render_system.get_particle_manager().get_sprites_view();
 
 		m_emission_compute = p_param.m_render_system.create_compute_state
 		(
@@ -401,9 +413,7 @@ namespace black_cat
 		(
 			m_sort_compute_state.get(),
 			{},
-			{
-				//graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_draw_args_shader_view.get())
-			},
+			{},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_alive_particles1_unordered_view.get())
 			},
@@ -431,9 +441,7 @@ namespace black_cat
 		(
 			m_sort_compute_state.get(),
 			{},
-			{
-				//graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_draw_args_shader_view.get())
-			},
+			{},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_alive_particles2_unordered_view.get())
 			},
@@ -461,9 +469,7 @@ namespace black_cat
 		(
 			m_sort_compute_state.get(),
 			{},
-			{
-				//graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_draw_args_shader_view.get()),
-			},
+			{},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_alive_particles1_unordered_view.get())
 			},
@@ -486,7 +492,7 @@ namespace black_cat
 			"particle_render_ps",
 			game::bc_vertex_type::none,
 			game::bc_blend_type::alpha,
-			game::bc_depth_stencil_type::depth_less_no_write_stencil_off,
+			game::bc_depth_stencil_type::depth_off_stencil_off,
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0x1,
 			{ l_back_buffer.get_format() },
@@ -498,13 +504,16 @@ namespace black_cat
 			m_device_pipeline_state.get(),
 			l_viewport,
 			{ l_back_buffer_view },
-			m_depth_buffer_view,
+			graphic::bc_depth_stencil_view(),
 			{
-				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler.get())
+				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_linear_sampler.get()),
+				graphic::bc_sampler_parameter(1, graphic::bc_shader_type::pixel, m_point_sampler.get())
 			},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::geometry, m_particles_shader_view.get()),
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::geometry, m_alive_particles1_shader_view.get())
+				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::geometry, m_alive_particles1_shader_view.get()),
+				graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::pixel, m_depth_buffer_shader_view),
+				graphic::bc_resource_view_parameter(3, graphic::bc_shader_type::pixel, m_default_sprites_shader_view),
 			},
 			{},
 			{
@@ -519,7 +528,8 @@ namespace black_cat
 		m_emitters_query_result.clear();
 		m_emitters_query_result.shrink_to_fit();
 
-		m_sampler.reset();
+		m_linear_sampler.reset();
+		m_point_sampler.reset();
 		m_device_pipeline_state.reset();
 		m_render_pass_state.reset();
 
@@ -554,5 +564,6 @@ namespace black_cat
 		m_dead_particles_buffer.reset();
 		m_draw_args_buffer.reset();
 		m_sort_cbuffer.reset();
+		m_curves_cbuffer.reset();
 	}
 }
