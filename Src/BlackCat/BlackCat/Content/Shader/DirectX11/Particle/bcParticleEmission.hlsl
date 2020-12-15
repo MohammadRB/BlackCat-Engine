@@ -56,7 +56,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 		l_new_particle.m_lifetime = randomize(l_emitter.m_particles_lifetime, l_rnd, PARTICLE_RANDOM_COEFFICIENT);
 		l_new_particle.m_age = 0;
 		l_new_particle.m_force = randomize(l_emitter.m_particles_force, l_rnd, PARTICLE_RANDOM_COEFFICIENT);
-		l_new_particle.m_mass = randomize(l_emitter.m_particles_mass, l_rnd, PARTICLE_RANDOM_COEFFICIENT);
+		l_new_particle.m_mass = randomize(l_emitter.m_particles_mass, l_rnd, PARTICLE_RANDOM_COEFFICIENT) * (1 / l_emitter_energy);
 		l_new_particle.m_start_size = randomize(l_emitter.m_particles_start_size, l_rnd, PARTICLE_RANDOM_COEFFICIENT) * l_emitter_energy;
 		l_new_particle.m_end_size = randomize(l_emitter.m_particles_end_size, l_rnd, PARTICLE_RANDOM_COEFFICIENT) * l_emitter_energy;
 		l_new_particle.m_size = l_new_particle.m_start_size;

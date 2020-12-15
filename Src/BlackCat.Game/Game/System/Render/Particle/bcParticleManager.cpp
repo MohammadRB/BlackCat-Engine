@@ -165,20 +165,20 @@ namespace black_cat
 		float g_last_elapsed = 0;
 		void bc_particle_manager::update(const core_platform::bc_clock::update_param& p_clock)
 		{
-			/*if(g_last_elapsed == 0)
+			if(g_last_elapsed == 0)
 			{
 				const auto l_test_emitter = bc_particle_builder()
 					.emitter(core::bc_vector3f(0), core::bc_vector3f::up(), 100, 0, 0)
-					.with_deviation(80)
-					.with_texture(2)
-					.with_particles_color({ 0.9f, 0.9f, 0.9f }, 1.5)
-					.with_particle_size(4.5f, 14.0f)
+					.with_deviation(60)
+					.with_texture(4)
+					.with_particles_color({ 0.1f, 0.1f, 0.1f }, 1.0)
+					.with_particle_size(3.0f, 8.0f)
 					.with_particles_rotation(20)
 					.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step2, 5)
-					.emit_particles(800, 15, 2.0f, 0.1f)
+					.emit_particles(2800, 10, 20, 0.1f)
 					.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up())
 					.with_texture(0)
-					.emit_particles(850, 15, 1.8f, 0.1f);
+					.emit_particles(2850, 10, 20, 0.1f);
 				register_emitter_definition("test_emitter", l_test_emitter);
 
 				spawn_emitter
@@ -187,66 +187,67 @@ namespace black_cat
 					core::bc_vector3f(29, 48, -734),
 					core::bc_vector3f::up()
 				);
-			}*/
-			g_last_elapsed += p_clock.m_elapsed_second;
-			if(g_last_elapsed >= 5)
-			{
-				g_last_elapsed -= 5;
-				
-				/*const auto l_builder = bc_particle_builder()
-					.emitter(core::bc_vector3f(0), core::bc_vector3f::up())
-					.with_deviation(180)
-					.with_particle_size(0.9f, 1.5f)
-					.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step5, 1.5)
-					.emit_particles(1000, 3, 80, 0.3f);*/
-
-				bc_particle_builder l_builder;
-				l_builder.emitter(core::bc_vector3f(0), core::bc_vector3f::up())
-					.with_deviation(180)
-					.with_texture(2)
-					.with_particles_color({ 0.9f, 0.9f, 0.9f }, 2)
-					.with_particle_size(4, 9)
-					.with_particles_rotation(45)
-					.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step4, 0.2f)
-					.emit_particles(100, 3, 40, 0.1f);
-					/*.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up())
-					.with_texture(4)
-					.with_particles_color({0.96f, 0.75f, 0.45f}, 8)
-					.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step5, 0.15f)
-					.emit_particles(100, 0.2f, 50, 0.05f);*/
-
-				core::bc_array<std::tuple<core::bc_vector3f, core::bc_vector3f>, 7> l_emitter_traits =
-				{
-					std::make_tuple(core::bc_vector3f(0, 0, 0), core::bc_vector3f(0, 1, 0)),
-					std::make_tuple(core::bc_vector3f(-2, 0, -2), core::bc_vector3f(-0.2, 1, -0.5)),
-					std::make_tuple(core::bc_vector3f(-2, 0, 2), core::bc_vector3f(-0.3, 1, 0.5)),
-					std::make_tuple(core::bc_vector3f(2, 0, 2), core::bc_vector3f(0.4, 1, 0.4)),
-					std::make_tuple(core::bc_vector3f(2, 0, -2), core::bc_vector3f(0.5, 1, -0.6)),
-					std::make_tuple(core::bc_vector3f(-2, 0, 0), core::bc_vector3f(-0.4, 1, 0.0)),
-					std::make_tuple(core::bc_vector3f(2, 0, -2), core::bc_vector3f(0.4, 1, -0.1))
-				};
-				for(auto& l_trait : l_emitter_traits)
-				{
-					l_builder.emitter(std::get<0>(l_trait), std::get<1>(l_trait), 0.2f, 800, 0.4f)
-						.with_deviation(90)
-						.with_velocity_curve(bc_particle_builder::s_curve_fast_step5)
-						.with_texture(1)
-						.with_particles_color({ 0.9f, 0.9f, 0.9f }, 2)
-						.with_particle_size(1.0f, 3.0f)
-						.with_particle_size_curve(bc_particle_builder::s_curve_fast_step4)
-						.with_particle_reverse_direction()
-						.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step1, 1)
-						.emit_particles(100, 3, 1.0, 0.4f);
-				}
-				
-				register_emitter_definition("test_emitter", l_builder);
-				spawn_emitter
-				(
-					"test_emitter",
-					core::bc_vector3f(29, 48, -732),
-					core::bc_vector3f::up()
-				);
 			}
+			g_last_elapsed += p_clock.m_elapsed_second;
+			//if(g_last_elapsed >= 5)
+			//{
+			//	g_last_elapsed -= 5;
+			//	
+			//	/*const auto l_builder = bc_particle_builder()
+			//		.emitter(core::bc_vector3f(0), core::bc_vector3f::up())
+			//		.with_deviation(180)
+			//		.with_particle_size(0.9f, 1.5f)
+			//		.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step5, 1.5)
+			//		.emit_particles(1000, 3, 80, 0.3f);*/
+
+			//	bc_particle_builder l_builder;
+			//	l_builder.emitter(core::bc_vector3f(0), core::bc_vector3f::up())
+			//		.with_deviation(180)
+			//		.with_texture(2)
+			//		.with_particles_color({ 0.07f, 0.07f, 0.07f }, 0.1)
+			//		.with_particle_size(6, 9)
+			//		.with_particles_rotation(45)
+			//		.with_particle_size_curve(bc_particle_builder::s_curve_fast_step3)
+			//		.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step4, 0.4f)
+			//		.emit_particles(300, 3, 300, 0.1f);
+			//		//.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up())
+			//		//.with_texture(4)
+			//		//.with_particles_color({1.0f, 0.4f, 0.001f}, 1000)
+			//		//.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step5, 0.25f)
+			//		//.emit_particles(100, 0.5f, 50, 0.05f);
+
+			//	core::bc_array<std::tuple<core::bc_vector3f, core::bc_vector3f>, 7> l_emitter_traits =
+			//	{
+			//		std::make_tuple(core::bc_vector3f(0, 0, 0), core::bc_vector3f(0, 1, 0)),
+			//		std::make_tuple(core::bc_vector3f(-2, 0, -2), core::bc_vector3f(-0.2, 1, -0.5)),
+			//		std::make_tuple(core::bc_vector3f(-2, 0, 2), core::bc_vector3f(-0.3, 1, 0.5)),
+			//		std::make_tuple(core::bc_vector3f(2, 0, 2), core::bc_vector3f(0.4, 1, 0.4)),
+			//		std::make_tuple(core::bc_vector3f(2, 0, -2), core::bc_vector3f(0.5, 1, -0.6)),
+			//		std::make_tuple(core::bc_vector3f(-2, 0, 0), core::bc_vector3f(-0.4, 1, 0.0)),
+			//		std::make_tuple(core::bc_vector3f(2, 0, -2), core::bc_vector3f(0.4, 1, -0.1))
+			//	};
+			//	/*for(auto& l_trait : l_emitter_traits)
+			//	{
+			//		l_builder.emitter(std::get<0>(l_trait), std::get<1>(l_trait), 0.2f, 800, 0.4f)
+			//			.with_deviation(90)
+			//			.with_velocity_curve(bc_particle_builder::s_curve_fast_step5)
+			//			.with_texture(1)
+			//			.with_particles_color({ 0.8f, 0.8f, 0.8f }, 1.5)
+			//			.with_particle_size(1.0f, 3.0f)
+			//			.with_particle_size_curve(bc_particle_builder::s_curve_fast_step4)
+			//			.with_particle_reverse_direction()
+			//			.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step1, 1)
+			//			.emit_particles(100, 3, 1.0, 0.4f);
+			//	}*/
+			//	
+			//	register_emitter_definition("test_emitter", l_builder);
+			//	spawn_emitter
+			//	(
+			//		"test_emitter",
+			//		core::bc_vector3f(29, 48, -732),
+			//		core::bc_vector3f::up()
+			//	);
+			//}
 			
 			{
 				core_platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, core_platform::bc_lock_operation::heavy);

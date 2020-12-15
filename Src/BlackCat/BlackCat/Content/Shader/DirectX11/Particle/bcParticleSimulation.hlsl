@@ -55,7 +55,6 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	g_alive_indices[l_particle_index].m_distance = 0;
 
 	DeviceMemoryBarrierWithGroupSync();
-	
 	l_particle.m_age += g_elapsed_second;
 	if (l_particle.m_age > l_particle.m_lifetime)
 	{
@@ -85,10 +84,11 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	float l_velocity_curve_value = l_velocity_curve_sample.x;
 	float l_size_curve_value = 1 - l_side_fade_curve_sample.x;
 	float l_fade_curve_value = l_side_fade_curve_sample.y;
-	float l_acceleration = l_particle.m_force / l_particle.m_mass * l_velocity_curve_value;
+	float l_acceleration = l_particle.m_force * l_velocity_curve_value;
+	float l_wind_influence = 1 - min(0.9, l_particle.m_mass / 0.3f);
 
 	l_particle.m_position += (l_particle.m_direction * l_acceleration * g_elapsed_second) +
-			(g_global_wind_direction * g_global_wind_power * g_elapsed_second) +
+			(g_global_wind_direction * g_global_wind_power * l_wind_influence * g_elapsed_second) +
 			(g_gravity_dir * g_gravity_force * l_particle.m_mass * g_elapsed_second);
 	l_particle.m_force = max(0, l_particle.m_force - l_particle.m_mass * g_elapsed_second);
 	l_particle.m_size = l_size_curve_value * (l_particle.m_end_size - l_particle.m_start_size) + l_particle.m_start_size;
