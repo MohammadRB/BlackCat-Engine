@@ -24,6 +24,9 @@ namespace black_cat
 			using platform_pack = bc_platform_bound_box_pack<TApi>;
 
 		public:
+			/**
+			 * \brief Initialize as empty bound box
+			 */
 			bc_platform_bound_box() noexcept;
 
 			bc_platform_bound_box(const core::bc_vector3f& p_center, const core::bc_vector3f& p_half_extend) noexcept;
@@ -71,8 +74,6 @@ namespace black_cat
 				return m_pack;
 			}
 			
-		protected:
-
 		private:
 			platform_pack m_pack;
 		};

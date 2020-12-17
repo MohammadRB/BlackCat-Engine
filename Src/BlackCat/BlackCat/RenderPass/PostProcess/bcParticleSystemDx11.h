@@ -12,6 +12,7 @@
 #include "Game/System/Render/State/bcComputeState.h"
 #include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/Query/bcParticleEmittersQuery.h"
+#include "Game/Query/bcSceneLightQuery.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -41,16 +42,17 @@ namespace black_cat
 		// The number of elements to sort is limited to an even power of 2
 		// At minimum - m_sort_shader_group_size * m_sort_transpose_shader_group_size
 		// At maximum - m_sort_shader_group_size * m_sort_shader_group_size
-		static const bcSIZE m_emitters_count = 128;
-		static const bcSIZE m_particles_count = 128 * 128;
-		static const bcSIZE m_emission_shader_group_size = 1;
-		static const bcSIZE m_simulation_shader_group_size = 1024;
-		static const bcSIZE m_sort_shader_group_size = 1024;
-		static const bcSIZE m_sort_transpose_shader_group_size = 32;
-		static const bcSIZE m_sort_transpose_matrix_width = m_sort_shader_group_size;
-		static const bcSIZE m_sort_transpose_matrix_height = m_particles_count / m_sort_shader_group_size;
+		static const bcSIZE s_emitters_count = 128;
+		static const bcSIZE s_particles_count = 32768;
+		static const bcSIZE s_emission_shader_group_size = 1;
+		static const bcSIZE s_simulation_shader_group_size = 1024;
+		static const bcSIZE s_sort_shader_group_size = 1024;
+		static const bcSIZE s_sort_transpose_shader_group_size = 32;
+		static const bcSIZE s_sort_transpose_matrix_width = s_sort_shader_group_size;
+		static const bcSIZE s_sort_transpose_matrix_height = s_particles_count / s_sort_shader_group_size;
+		static const bcSIZE s_lights_count = 10;
 		
-		bcINT32 m_dead_particles_initial_count = m_particles_count;
+		bcINT32 m_dead_particles_initial_count = s_particles_count;
 
 		graphic::bc_depth_stencil_view m_depth_buffer_view;
 		graphic::bc_resource_view m_depth_buffer_shader_view;
@@ -64,6 +66,7 @@ namespace black_cat
 		graphic::bc_buffer_ptr m_draw_args_buffer;
 		graphic::bc_buffer_ptr m_sort_cbuffer;
 		graphic::bc_buffer_ptr m_curves_cbuffer;
+		graphic::bc_buffer_ptr m_lights_cbuffer;
 
 		graphic::bc_resource_view_ptr m_emitters_shader_view;
 		graphic::bc_resource_view_ptr m_particles_shader_view;
@@ -93,8 +96,10 @@ namespace black_cat
 		graphic::bc_sampler_state_ptr m_point_sampler;
 		graphic::bc_device_pipeline_state_ptr m_device_pipeline_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;
-		
-		core::bc_query_result<game::bc_particle_emitter_query> m_emitters_query;
-		core::bc_vector_movable< game::bc_particle_emitter> m_emitters_query_result;
+
+		core::bc_query_result< game::bc_particle_emitter_query > m_emitters_query;
+		core::bc_query_result< game::bc_scene_light_query > m_lights_query;
+		core::bc_vector_movable< game::bc_particle_emitter_state > m_emitters_query_result;
+		core::bc_vector_movable< game::bc_light_instance > m_lights_query_result;
 	};
 }

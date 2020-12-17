@@ -420,6 +420,8 @@ namespace black_cat
 				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_lock(m_actors_lock);
 				
 				auto& l_actor_entry = m_actors[p_actor.get_index()];
+				bcAssert(l_actor_entry.is_set());
+				
 				auto* l_events_pool = &m_events_pool[m_write_event_pool];
 				auto* l_actor_events = l_actor_entry->get_events(m_write_event_pool);
 

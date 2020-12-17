@@ -74,6 +74,6 @@ namespace black_cat
 		game::bc_compute_state_ptr m_compute_state;
 
 		core::bc_query_result<game::bc_scene_light_query> m_lights_query;
-		core::bc_vector<game::bc_light_instance> m_lights;
+		core::bc_vector_movable<game::bc_light_instance> m_lights;
 	};
 }

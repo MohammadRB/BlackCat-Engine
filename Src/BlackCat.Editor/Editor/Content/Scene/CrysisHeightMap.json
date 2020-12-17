@@ -1,8 +1,8 @@
 {
   "name": "CrysisHeightMap",
-  "stream_files": ["Scene\\CrysisHeightMap_ContentStream.json"],
-  "entity_files": ["Scene\\CrysisHeightMap_EntityType.json"],
-  "material_files": ["Scene\\CrysisHeightMap_Material.json"],
+  "stream_files": [ "Scene\\CrysisHeightMap_ContentStream.json" ],
+  "entity_files": [ "Scene\\CrysisHeightMap_EntityType.json" ],
+  "material_files": [ "Scene\\CrysisHeightMap_Material.json" ],
   "streams": [
     "terrain_textures",
     "models"
@@ -53,6 +53,15 @@
         29.1959228515625,
         48.100006103515628,
         -732.553955078125
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "sample_fire",
+      "position": [
+        29.299915313720704,
+        48.35887145996094,
+        -732.876953125
       ],
       "parameters": {}
     }

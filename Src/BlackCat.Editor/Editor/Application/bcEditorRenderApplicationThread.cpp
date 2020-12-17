@@ -55,7 +55,7 @@ namespace black_cat
 					return core::bc_make_unique< game::bc_octal_tree_graph_node >
 					(
 						physics::bc_bound_box(p_parameter.m_center, p_parameter.m_half_extends),
-						10,
+						20,
 						128
 					);
 				}
@@ -66,9 +66,9 @@ namespace black_cat
 				20,
 				BC_MEMORY_MIN_ALIGN,
 				64,
-				static_cast<bcUINT32>(core::bc_mem_size::mb) * 30,
-				static_cast<bcUINT32>(core::bc_mem_size::mb) * 25,
-				static_cast<bcUINT32>(core::bc_mem_size::mb) * 100,
+				static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,
+				static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,
+				static_cast<bcUINT32>(core::bc_mem_size::mb) * 128,
 				l_hardware_info.proccessor_count,
 				l_hardware_info.proccessor_count
 			);

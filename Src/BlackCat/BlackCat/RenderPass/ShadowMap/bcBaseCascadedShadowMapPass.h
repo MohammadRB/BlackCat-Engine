@@ -41,7 +41,7 @@ namespace black_cat
 		core::bc_vector_program<_bc_cascaded_shadow_map_light_state> m_light_instance_states;
 
 		core::bc_query_result<game::bc_scene_light_query> m_lights_query;
-		core::bc_vector<game::bc_light_instance> m_lights;
+		core::bc_vector_movable<game::bc_light_instance> m_lights;
 		
 		bool m_capture_debug_shapes = false;
 		game::bc_icamera::extend m_captured_camera;

@@ -49,7 +49,7 @@ namespace black_cat
 				throw bc_invalid_argument_exception("bound box min size must be power of two");
 			}
 
-			m_actors_pool->initialize(1000, sizeof(graph_node_entry_list::node_type), core::bc_alloc_type::unknown);
+			m_actors_pool->initialize(2000, sizeof(graph_node_entry_list::node_type), core::bc_alloc_type::unknown);
 
 			const auto l_max_size = (std::max)((std::max)(l_half_extends.x, l_half_extends.y), l_half_extends.z) * 2;
 			const auto l_children_depth = static_cast<bcSIZE>(log2(l_max_size) - log2(m_min_size));
@@ -223,7 +223,7 @@ namespace black_cat
 				for (_bc_octal_tree_graph_node_entry& l_entry : m_actors)
 				{
 					auto* l_mediate_component = l_entry.m_actor.get_component<bc_mediate_component>();
-					auto& l_bound_box = l_mediate_component->get_bound_box();
+					const auto& l_bound_box = l_mediate_component->get_bound_box();
 
 					if (p_camera_frustum.intersects(l_bound_box))
 					{
@@ -283,8 +283,6 @@ namespace black_cat
 
 		bool bc_octal_tree_graph_node::update_actor(bc_actor& p_actor)
 		{
-			bool l_updated = false;
-
 			auto* l_actor_mediate_component = p_actor.get_component<bc_mediate_component>();
 			auto& l_actor_prev_bound_box = l_actor_mediate_component->get_prev_bound_box();
 			auto& l_actor_bound_box = l_actor_mediate_component->get_bound_box();
@@ -294,18 +292,18 @@ namespace black_cat
 
 			if (!l_containing_node)
 			{
-				l_updated = false;
-				return l_updated;
+				return false;
 			}
 
 			if (l_prev_containing_node == l_containing_node)
 			{
-				l_updated = true;
-				return l_updated;
+				return true;
 			}
 
-			_remove_actor(p_actor, l_actor_prev_bound_box);
-			l_updated = _add_actor(p_actor, l_actor_bound_box);
+			const bool l_removed = _remove_actor(p_actor, l_actor_prev_bound_box);
+			const bool l_updated = _add_actor(p_actor, l_actor_bound_box);
+
+			bcAssert(l_removed);
 
 			return l_updated;
 		}

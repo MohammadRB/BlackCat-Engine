@@ -3,8 +3,11 @@
 #pragma once
 
 #include "Core/Math/bcVector3f.h"
+#include "Core/Math/bcMatrix4f.h"
+#include "Core/Memory/bcPtr.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/bcExport.h"
+#include "Game/Object/Scene/ActorComponent/bcActorController.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 
 namespace black_cat
@@ -35,10 +38,12 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			void set_entity_name(const bcCHAR* p_entity_name);
-
 			const bcCHAR* get_entity_name() const;
 
+			void set_entity_name(const bcCHAR* p_entity_name);
+
+			void set_controller(core::bc_unique_ptr< bc_iactor_controller > p_controller);
+			
 			const physics::bc_bound_box& get_prev_bound_box() const noexcept;
 			
 			const physics::bc_bound_box& get_bound_box() const noexcept;
@@ -51,24 +56,27 @@ namespace black_cat
 
 			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 
-			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock) override;
 			
 		private:
 			const bcCHAR* m_entity_name;
+			
 			bc_scene* m_scene;
+			core::bc_matrix4f m_transformation;
+			core::bc_unique_ptr<bc_iactor_controller> m_controller;
 			bool m_bound_box_changed;
-			physics::bc_bound_box m_bound_box;
 			physics::bc_bound_box m_prev_bound_box;
+			physics::bc_bound_box m_bound_box;
 		};
-
-		inline void bc_mediate_component::set_entity_name(const bcCHAR* p_entity_name)
-		{
-			m_entity_name = p_entity_name;
-		}
 
 		inline const bcCHAR* bc_mediate_component::get_entity_name() const
 		{
 			return m_entity_name;
+		}
+		
+		inline void bc_mediate_component::set_entity_name(const bcCHAR* p_entity_name)
+		{
+			m_entity_name = p_entity_name;
 		}
 
 		inline const physics::bc_bound_box& bc_mediate_component::get_prev_bound_box() const noexcept
@@ -83,7 +91,7 @@ namespace black_cat
 
 		inline core::bc_vector3f bc_mediate_component::get_world_position() const noexcept
 		{
-			return m_bound_box.get_center();
+			return m_transformation.get_translation();
 		}
 	}
 }

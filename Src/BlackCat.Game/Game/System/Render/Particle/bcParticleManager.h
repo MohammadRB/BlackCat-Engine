@@ -20,10 +20,13 @@
 
 namespace black_cat
 {
+	namespace core
+	{
+		class bc_content_stream_manager;
+	}
+	
 	namespace game
 	{
-		class core::bc_content_stream_manager;
-		
 		struct _bc_particle_emitter_instance : bc_particle_emitter_trait
 		{
 			_bc_particle_emitter_instance(const bc_particle_emitter_trait& p_trait);
@@ -44,7 +47,8 @@ namespace black_cat
 		private:
 			using particle_definition_container = core::bc_unordered_map_program<const bcCHAR*, core::bc_vector_program<bc_particle_emitter_trait>>;
 			using emitters_container = core::bc_list_pool<_bc_particle_emitter_instance>;
-
+			using external_emitters_container = core::bc_list_pool<bc_external_particle_emitter>;
+			
 		public:
 			static constexpr bcSIZE curve_sample_count = 10;
 			static constexpr bcSIZE curve_count = bc_particle_builder::s_curves.size();
@@ -67,9 +71,13 @@ namespace black_cat
 			void register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder);
 
 			void spawn_emitter(const bcCHAR* p_emitter_name, const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir);
+
+			bc_particle_emitter_ptr add_emitter(const bc_particle_builder& p_builder);
 			
 			void update(const core_platform::bc_clock::update_param& p_clock);
 			
+			void _destroy_emitter(bc_external_particle_emitter* p_emitter);
+
 		private:
 			core::bc_query_context_ptr _emitters_query_context_provider() const;
 
@@ -82,6 +90,7 @@ namespace black_cat
 
 			mutable core_platform::bc_hybrid_mutex m_emitters_lock;
 			emitters_container m_emitters;
+			external_emitters_container m_external_emitters;
 
 			core::bc_query_provider_handle m_emitters_provider_handle;
 

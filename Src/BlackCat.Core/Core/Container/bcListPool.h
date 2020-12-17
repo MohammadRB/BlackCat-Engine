@@ -46,6 +46,7 @@ namespace black_cat
 			using list_type::clear;
 			using list_type::insert;
 			using list_type::emplace;
+			using list_type::erase;
 			using list_type::push_back;
 			using list_type::emplace_back;
 			using list_type::pop_back;

@@ -400,7 +400,7 @@ namespace black_cat
 
 		convert_ainodes(l_game_system.get_render_system(), p_context, *l_scene, *l_scene->mRootNode, l_mesh, nullptr);
 
-		bcFLOAT* l_auto_scale = p_context.m_parameter.get_value<bcFLOAT>("auto_scale");
+		const bcFLOAT* l_auto_scale = p_context.m_parameter.get_value<bcFLOAT>("auto_scale");
 		if(l_auto_scale)
 		{
 			l_mesh._apply_auto_scale(*l_auto_scale);

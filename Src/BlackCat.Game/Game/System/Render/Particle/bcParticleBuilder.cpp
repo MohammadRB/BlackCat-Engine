@@ -126,7 +126,7 @@ namespace black_cat
 		{
 			bc_particle_emitter_trait l_emitter;
 			l_emitter.m_position = p_position;
-			l_emitter.m_lifetime = p_lifetime_seconds;
+			l_emitter.m_lifetime = std::max(0.0f, p_lifetime_seconds);
 			l_emitter.m_direction = core::bc_vector3f::normalize(p_direction);
 			l_emitter.m_force = p_force;
 			l_emitter.m_mass = p_mass;

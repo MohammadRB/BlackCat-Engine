@@ -7,7 +7,7 @@
 #define THREAD_GROUP_SIZE 1024
 #define CURVE_COUNT 11
 #define CURVE_SAMPLE_COUNT 10
-cbuffer g_curves_cbuffer : register(BC_COMPUTE_STATE_CB1)
+cbuffer g_curves_cbuffer								: register(BC_COMPUTE_STATE_CB1)
 {
 	float g_curves[CURVE_COUNT][CURVE_SAMPLE_COUNT];
 };
@@ -55,6 +55,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	g_alive_indices[l_particle_index].m_distance = 0;
 
 	DeviceMemoryBarrierWithGroupSync();
+	
 	l_particle.m_age += g_elapsed_second;
 	if (l_particle.m_age > l_particle.m_lifetime)
 	{
@@ -85,7 +86,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	float l_size_curve_value = 1 - l_side_fade_curve_sample.x;
 	float l_fade_curve_value = l_side_fade_curve_sample.y;
 	float l_acceleration = l_particle.m_force * l_velocity_curve_value;
-	float l_wind_influence = 1 - min(0.9, l_particle.m_mass / 0.3f);
+	float l_wind_influence = min(0.1, (1 - saturate(l_particle.m_mass / 0.3f)));
 
 	l_particle.m_position += (l_particle.m_direction * l_acceleration * g_elapsed_second) +
 			(g_global_wind_direction * g_global_wind_power * l_wind_influence * g_elapsed_second) +

@@ -43,7 +43,7 @@ namespace black_cat
 		graphic::bc_render_target_view_ptr m_normal_map_view;
 
 		core::bc_query_result< game::bc_scene_light_query > m_lights_query;
-		core::bc_vector< game::bc_light_instance > m_lights_query_result;
+		core::bc_vector_movable< game::bc_light_instance > m_lights_query_result;
 		core::bc_query_result< game::bc_scene_wind_query > m_winds_query;
 		core::bc_vector<game::bc_wind> m_winds_query_result;
 	};

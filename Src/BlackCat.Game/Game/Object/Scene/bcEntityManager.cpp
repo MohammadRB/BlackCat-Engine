@@ -25,6 +25,7 @@ namespace black_cat
 		BC_JSON_STRUCTURE(_bc_json_entity)
 		{
 			BC_JSON_VALUE(core::bc_string_frame, name);
+			BC_JSON_VALUE_OP(core::bc_string_frame, controller);
 			BC_JSON_ARRAY(_bc_json_entity_components, components);
 		};
 
@@ -62,11 +63,13 @@ namespace black_cat
 			for (auto& l_entity : l_json->m_entities)
 			{
 				const auto& l_entity_name = *l_entity->m_name;
+				const auto& l_controller_name = *l_entity->m_controller;
 				auto l_entity_name_hash = string_hash()(l_entity_name.c_str());
 				entity_map_type::value_type::second_type l_entity_components;
 
 				// Because we have used program heap we must reserve needed memory
 				l_entity_components.m_entity_name = l_entity_name.c_str();
+				l_entity_components.m_controller_name = l_controller_name.c_str();
 				l_entity_components.m_components.reserve(l_entity->m_components.size());
 
 				for (auto& l_component : l_entity->m_components)
@@ -124,8 +127,9 @@ namespace black_cat
 			try
 			{
 				l_actor.create_component<bc_mediate_component>();
-				l_actor.get_component<bc_mediate_component>()->set_entity_name(l_entity_entry->second.m_entity_name.c_str());
-
+				auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
+				l_mediate_component->set_entity_name(l_entity_entry->second.m_entity_name.c_str());
+				
 				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
 				{
 					auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
@@ -136,6 +140,18 @@ namespace black_cat
 
 					l_entity_component_entry->second.m_create_delegate(l_actor);
 					l_entity_component_entry->second.m_initialize_delegate(l_actor, l_entity_component_data.m_component_parameters);
+				}
+
+				if (!l_entity_entry->second.m_controller_name.empty())
+				{
+					const auto l_controller_hash = string_hash()(l_entity_entry->second.m_controller_name.c_str());
+					const auto l_controller_ite = m_controllers.find(l_controller_hash);
+					if (l_controller_ite == std::end(m_controllers))
+					{
+						throw bc_invalid_argument_exception("Invalid actor controller name");
+					}
+
+					l_mediate_component->set_controller(l_controller_ite->second());
 				}
 			}
 			catch (...)
