@@ -75,7 +75,7 @@ void gs(point vertex_output p_input[1], inout TriangleStream<geometry_output> p_
 		float4 l_light_color = g_lights[i * 2 + 1];
 		float l_light_distance = length(l_light_pos.xyz - l_particle.m_position);
 		float l_light_attenuation = 1 - min(1, l_light_distance / l_light_pos.w);
-		float l_light_intensity = pow(l_light_attenuation, 6) * l_light_color.w;
+		float l_light_intensity = pow(l_light_attenuation, 4) * l_light_color.w;
 		
 		l_lights_color += l_light_color.xyz * l_light_intensity;
 		l_lights_intensity += l_light_intensity;
@@ -88,7 +88,7 @@ void gs(point vertex_output p_input[1], inout TriangleStream<geometry_output> p_
 	float3 l_billboard_right = normalize(float3(g_view._11, g_view._21, g_view._31));
 	float3 l_billboard_up = normalize(float3(g_view._12, g_view._22, g_view._32));
 
-	float3 l_light_shading = direct_light_shading(l_particle.m_direction);
+	float3 l_direct_light_shading = direct_light_shading(l_particle.m_direction);
 	float3 l_ambient_shading = g_global_light_ambient_color * g_global_light_ambient_intensity;
 	
 	float2 l_quad[4];
@@ -106,7 +106,7 @@ void gs(point vertex_output p_input[1], inout TriangleStream<geometry_output> p_
 		l_output_vertices[i].m_cs_position = l_output_vertices[i].m_pos;
 		l_output_vertices[i].m_color = float4(l_particle.m_color * l_particle.m_color_intensity, l_particle.m_color_intensity);
 		l_output_vertices[i].m_light_shading = float4(l_lights_color, l_lights_intensity);
-		l_output_vertices[i].m_direct_light_shading = l_light_shading;
+		l_output_vertices[i].m_direct_light_shading = l_direct_light_shading;
 		l_output_vertices[i].m_ambient_shading = l_ambient_shading;
 		l_output_vertices[i].m_texcoord = bc_to_sprite_texcoord(g_quad_tex[i], l_particle.m_sprite_index, NUM_HORIZONTAL_SPRITE, NUM_VERTICAL_SPRITE);
 		l_output_vertices[i].m_linear_depth = bc_convert_to_linear_depth(l_output_vertices[i].m_pos.z / l_output_vertices[i].m_pos.w, g_near_plane, g_far_plane) * (g_far_plane - g_near_plane);

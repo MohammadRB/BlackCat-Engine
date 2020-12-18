@@ -121,7 +121,7 @@ namespace black_cat
 
 			void interrupt_thread(core_platform::bc_thread::id p_thread_id);
 
-			void check_for_interruption() const;
+			void check_for_interruption();
 
 			template<typename T>
 			bc_task< T > start_new_task(bc_delegate< T() >&& p_delegate, bc_task_creation_option p_option = bc_task_creation_option::policy_none);
@@ -132,10 +132,6 @@ namespace black_cat
 			void _restart_workers();
 
 			void _stop_workers();
-
-			static void _thread_data_cleanup(_thread_data*)
-			{
-			}
 
 			void _push_worker();
 

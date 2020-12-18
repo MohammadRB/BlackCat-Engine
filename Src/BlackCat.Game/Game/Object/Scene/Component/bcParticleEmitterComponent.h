@@ -31,7 +31,11 @@ namespace black_cat
 			
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
-			void spawn_emitters(const bc_particle_builder& p_builder);
+			void spawn_emitter();
+			
+			void spawn_emitter(const bcCHAR* p_name);
+			
+			void spawn_emitter(const bc_particle_builder& p_builder);
 
 			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 			

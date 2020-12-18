@@ -26,9 +26,8 @@ namespace black_cat
 		}*/
 
 		bc_light_manager::bc_light_manager()
-			: m_lights(core::bc_memory_pool_allocator< bc_light >(m_pool))
+			: m_lights(200)
 		{
-			m_pool.initialize(200, sizeof(container_t::node_type), core::bc_alloc_type::unknown);
 			m_lights_query_handle = core::bc_get_service< core::bc_query_manager >()->register_query_provider<bc_light_instances_query_context>
 			(
 				core::bc_query_manager::provider_delegate_t(*this, &bc_light_manager::_lights_query_context_provider)
@@ -36,8 +35,7 @@ namespace black_cat
 		}
 
 		bc_light_manager::bc_light_manager(bc_light_manager&& p_other) noexcept
-			: m_pool(std::move(p_other.m_pool)),
-			m_lights(std::move(p_other.m_lights)),
+			: m_lights(std::move(p_other.m_lights)),
 			m_lights_query_handle(std::move(p_other.m_lights_query_handle))
 		{
 			m_lights_query_handle.reassign(core::bc_query_manager::provider_delegate_t(*this, &bc_light_manager::_lights_query_context_provider));
@@ -47,7 +45,6 @@ namespace black_cat
 
 		bc_light_manager& bc_light_manager::operator=(bc_light_manager&& p_other) noexcept
 		{
-			m_pool = std::move(p_other.m_pool);
 			m_lights = std::move(p_other.m_lights);
 			m_lights_query_handle = std::move(p_other.m_lights_query_handle);
 			m_lights_query_handle.reassign(core::bc_query_manager::provider_delegate_t(*this, &bc_light_manager::_lights_query_context_provider));

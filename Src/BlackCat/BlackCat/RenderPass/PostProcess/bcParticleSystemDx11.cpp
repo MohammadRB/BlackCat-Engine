@@ -345,7 +345,7 @@ namespace black_cat
 			l_lights.m_lights[l_cbuffer_ite + 1].x = l_light.get_color().x;
 			l_lights.m_lights[l_cbuffer_ite + 1].y = l_light.get_color().y;
 			l_lights.m_lights[l_cbuffer_ite + 1].z = l_light.get_color().z;
-			l_lights.m_lights[l_cbuffer_ite + 1].w = l_light.get_intensity() * 200;
+			l_lights.m_lights[l_cbuffer_ite + 1].w = l_light.get_particle_intensity();
 		}
 
 		p_param.m_render_thread.update_subresource(m_lights_cbuffer.get(), 0, &l_lights,1, 1);

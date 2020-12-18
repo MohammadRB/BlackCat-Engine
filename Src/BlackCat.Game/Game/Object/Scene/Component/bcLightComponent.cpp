@@ -80,6 +80,7 @@ namespace black_cat
 				const auto l_color_b = p_parameters.get_value_throw< bcFLOAT >("color_b");
 				const auto l_intensity = p_parameters.get_value_throw< bcFLOAT >("intensity");
 				const auto l_particle_cast = bc_null_default(p_parameters.get_value<bool>("particle_cast"), false);
+				const auto l_particle_intensity = bc_null_default(p_parameters.get_value<bcFLOAT>("particle_intensity"), l_intensity);
 
 				m_light = l_light_manager.add_light(bc_point_light
 				(
@@ -87,7 +88,8 @@ namespace black_cat
 					l_radius, 
 					core::bc_vector3f(l_color_r, l_color_g, l_color_b),
 					l_intensity,
-					l_particle_cast
+					l_particle_cast,
+					l_particle_intensity
 				));
 			}
 			else if(l_light_type == "spot")

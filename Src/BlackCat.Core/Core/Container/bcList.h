@@ -1166,6 +1166,10 @@ namespace black_cat
 				{
 					l_node = base_type::_free_node(l_node, 1);
 				}
+				else
+				{
+					l_node = l_node->m_next;
+				}
 			} while (l_node && l_node != base_type::m_head);
 		}
 

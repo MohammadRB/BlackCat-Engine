@@ -15,8 +15,14 @@ namespace black_cat
 			bc_point_light(const core::bc_vector3f& p_position, 
 				bcFLOAT p_radius, 
 				const core::bc_vector3f& p_color, 
-				bcFLOAT p_intensity, 
-				bool p_particle_cast = false);
+				bcFLOAT p_intensity);
+
+			bc_point_light(const core::bc_vector3f& p_position, 
+				bcFLOAT p_radius, 
+				const core::bc_vector3f& p_color, 
+				bcFLOAT p_intensity,
+				bool p_particle_cast,
+				bcFLOAT p_particle_intensity);
 
 			bc_point_light(const bc_point_light&) = default;
 
@@ -45,6 +51,10 @@ namespace black_cat
 			bool get_particle_cast() const noexcept;
 
 			void set_particle_cast(bool p_particle_cast) noexcept;
+
+			bcFLOAT get_particle_intensity() const noexcept;
+
+			void set_particle_intensity(bcFLOAT p_intensity) noexcept;
 			
 		private:
 			core::bc_vector3f m_position;
@@ -52,18 +62,37 @@ namespace black_cat
 			core::bc_vector3f m_color;
 			bcFLOAT m_intensity;
 			bool m_particle_cast;
+			bcFLOAT m_particle_intensity;
 		};
 
 		inline bc_point_light::bc_point_light(const core::bc_vector3f& p_position,
 			bcFLOAT p_radius,
 			const core::bc_vector3f& p_color,
+			bcFLOAT p_intensity)
+			: bc_point_light
+			(
+				p_position,
+				p_radius,
+				p_color,
+				p_intensity,
+				false,
+				0
+			)
+		{
+		}
+
+		inline bc_point_light::bc_point_light(const core::bc_vector3f& p_position,
+			bcFLOAT p_radius,
+			const core::bc_vector3f& p_color,
 			bcFLOAT p_intensity,
-			bool p_particle_cast)
+			bool p_particle_cast,
+			bcFLOAT p_particle_intensity)
 			: m_position(p_position),
 			m_radius(p_radius),
 			m_color(p_color),
 			m_intensity(p_intensity),
-			m_particle_cast(p_particle_cast)
+			m_particle_cast(p_particle_cast),
+			m_particle_intensity(p_particle_intensity)
 		{
 		}
 
@@ -120,6 +149,16 @@ namespace black_cat
 		inline void bc_point_light::set_particle_cast(bool p_particle_cast) noexcept
 		{
 			m_particle_cast = p_particle_cast;
+		}
+
+		inline bcFLOAT bc_point_light::get_particle_intensity() const noexcept
+		{
+			return m_particle_intensity;
+		}
+
+		inline void bc_point_light::set_particle_intensity(bcFLOAT p_intensity) noexcept
+		{
+			m_particle_intensity = p_intensity;
 		}
 	}
 }

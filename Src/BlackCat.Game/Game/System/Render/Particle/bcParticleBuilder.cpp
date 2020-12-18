@@ -161,7 +161,7 @@ namespace black_cat
 				return emitter(p_position, p_direction);
 			}
 			
-			auto l_emitter = *m_emitters.rbegin();
+			auto& l_emitter = m_emitters.back();
 			l_emitter.m_position = p_position;
 			l_emitter.m_direction = core::bc_vector3f::normalize(p_direction);
 			

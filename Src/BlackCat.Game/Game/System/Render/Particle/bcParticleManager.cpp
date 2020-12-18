@@ -16,6 +16,7 @@
 
 // TODO For sample particles
 #include "Core/Utility/bcUtility.h"
+#include "Core/Utility/bcRandom.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorController.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
@@ -56,15 +57,11 @@ namespace black_cat
 					.with_particle_size(0.1f, 0.3f)
 					.emit_particles(0, 3, 25, 0.0f);
 
-				l_emitter_component->spawn_emitters(l_emitter);
+				l_emitter_component->spawn_emitter(l_emitter);
 
 				m_light_intensity = l_light_component->get_light()->as_point_light()->get_intensity();
 			}
 
-			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override
-			{
-			}
-			
 			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock) override
 			{
 				auto* l_light_component = p_actor.get_component<bc_light_component>();
@@ -88,8 +85,101 @@ namespace black_cat
 
 		private:
 			bcFLOAT m_light_intensity = 0;
-			bcUINT32 m_num_particles_per_second = 25;
+			bcUINT32 m_num_particles_per_second = 30;
 			bcUINT32 m_num_spawned_particles_in_current_second = 0;
+		};
+
+		class bc_sample_explosion_controller : public bc_iactor_controller
+		{
+		public:
+			void initialize(bc_actor& p_actor) override
+			{
+				auto* l_light_component = p_actor.get_component<bc_light_component>();
+				auto* l_emitter_component = p_actor.get_component<bc_particle_emitter_component>();
+
+				if (!l_light_component || !l_emitter_component)
+				{
+					throw bc_invalid_operation_exception("sample fire actor must have light and emitter component");
+				}
+
+				m_light_intensity = l_light_component->get_light()->as_point_light()->get_intensity();
+				m_light_particle_intensity = l_light_component->get_light()->as_point_light()->get_particle_intensity();
+				m_light_radius = l_light_component->get_light()->as_point_light()->get_radius();
+			}
+
+			void added_to_scene(bc_actor& p_actor, bc_scene& p_scene) override
+			{
+				m_scene = &p_scene;
+
+				core::bc_random l_random(0);
+				core::bc_array<core::bc_vector3f, 30> l_random_directions;
+				bc_randomize_direction
+				(
+					l_random,
+					core::bc_vector3f::up(),
+					180,
+					std::begin(l_random_directions),
+					std::end(l_random_directions)
+				);
+				
+				bc_particle_builder l_builder;
+				l_builder.emitter(core::bc_vector3f(0), core::bc_vector3f::up())
+					.with_deviation(180)
+					.with_texture(4)
+					.with_particles_color({ 0.2f,0.2f,0.2f })
+					.with_particle_size(2, 15)
+					.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step3, 0.2)
+					.emit_particles(100, 8, 400, 0.01f);
+				
+				for(auto& l_direction : l_random_directions)
+				{
+					const auto l_position = core::bc_vector3f(l_direction.x, 0, l_direction.z) * 6;
+					const auto l_emitter_energy = l_direction.y;
+					
+					l_builder.emitter(l_position, l_direction, 0.2f, 1500 * l_emitter_energy, 0.1f)
+						.with_deviation(180)
+						.with_velocity_curve(bc_particle_builder::s_curve_fast_step4)
+						.with_texture(2)
+						.with_particles_color({ 0.4f, 0.4f, 0.4f }, 1.0)
+						.with_particle_size(1.0f, 5.0f)
+						.with_particle_size_curve(bc_particle_builder::s_curve_fast_step4)
+						.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step3, 2)
+						.emit_particles(30, 5, 4.0f * l_emitter_energy, 0.1f);
+				}
+
+				core::bc_get_service<bc_game_system>()->get_render_system()
+					.get_particle_manager()
+					.register_emitter_definition("sample_explosion", l_builder);
+
+				auto* l_emitter_component = p_actor.get_component<bc_particle_emitter_component>();
+				l_emitter_component->spawn_emitter("sample_explosion");
+			}
+			
+			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock) override
+			{
+				auto* l_light_component = p_actor.get_component<bc_light_component>();
+				auto* l_point_light = l_light_component->get_light()->as_point_light();
+
+				const auto l_normal_age = pow(1 - (m_age / m_light_lifetime_second), 2);
+				l_point_light->set_intensity(m_light_intensity * l_normal_age);
+				l_point_light->set_particle_intensity(m_light_particle_intensity * l_normal_age);
+				l_point_light->set_position(l_point_light->get_position() + core::bc_vector3f::up() * m_light_rise_per_second * p_clock.m_elapsed_second);
+
+				m_age += p_clock.m_elapsed_second;
+				if(m_age > m_light_lifetime_second)
+				{
+					m_scene->remove_actor(p_actor);
+				}
+			}
+
+		private:
+			bc_scene* m_scene = nullptr;
+			bcFLOAT m_light_intensity = 0;
+			bcFLOAT m_light_particle_intensity = 0;
+			bcFLOAT m_light_radius = 0;
+			bcFLOAT m_light_rise_per_second = 40;
+			bcFLOAT m_light_lifetime_second = 0.5f;
+			bcFLOAT m_age = 0;
 		};
 		
 		_bc_particle_emitter_instance::_bc_particle_emitter_instance(const bc_particle_emitter_trait& p_trait)
@@ -155,7 +245,11 @@ namespace black_cat
 				.on_texture2d();
 			m_sprites_view = p_device.create_resource_view(l_sprites_texture, l_sprites_view_config);
 
-			core::bc_get_service<bc_entity_manager>()->register_actor_controller(bc_actor_controller_register<bc_sample_fire_controller>("sample_fire"));
+			core::bc_get_service<bc_entity_manager>()->register_actor_controller
+			(
+				bc_actor_controller_register<bc_sample_fire_controller>("sample_fire"),
+				bc_actor_controller_register<bc_sample_explosion_controller>("sample_explosion")
+			);
 		}
 
 		bc_particle_manager::bc_particle_manager(bc_particle_manager&& p_other) noexcept
@@ -228,12 +322,12 @@ namespace black_cat
 				for (auto& l_emitter : l_definition_ite->second)
 				{
 					m_emitters.emplace_back(l_emitter);
-					auto l_ite = m_emitters.rbegin();
+					auto& l_ite = m_emitters.back();
 					
-					l_ite->m_position += p_pos;
-					l_ite->m_prev_position = l_ite->m_position;
-					l_ite->m_direction = l_rotation * l_ite->m_direction;
-					l_ite->m_lifetime += .001f; // to avoid division by zero
+					l_ite.m_position += p_pos;
+					l_ite.m_prev_position = l_ite.m_position;
+					l_ite.m_direction = l_rotation * l_ite.m_direction;
+					l_ite.m_lifetime += .001f; // to avoid division by zero
 				}
 
 				bcAssert(m_emitters.size() <= s_emitter_count);
@@ -276,93 +370,8 @@ namespace black_cat
 			}
 		}
 
-		float g_last_elapsed = 0;
 		void bc_particle_manager::update(const core_platform::bc_clock::update_param& p_clock)
-		{
-			/*if(g_last_elapsed == 0)
-			{
-				const auto l_test_emitter = bc_particle_builder()
-					.emitter(core::bc_vector3f(0), core::bc_vector3f::up(), 100, 0, 0)
-					.with_deviation(60)
-					.with_texture(4)
-					.with_particles_color({ 0.1f, 0.1f, 0.1f }, 1.0)
-					.with_particle_size(2.0f, 8.0f)
-					.with_particles_rotation(20)
-					.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step2, 5)
-					.emit_particles(2800, 10, 20, 0.1f)
-					.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up())
-					.with_texture(0)
-					.emit_particles(2850, 10, 20, 0.01f);
-				register_emitter_definition("test_emitter", l_test_emitter);
-
-				spawn_emitter
-				(
-					"test_emitter",
-					core::bc_vector3f(29, 48, -734),
-					core::bc_vector3f::up()
-				);
-			}*/
-			g_last_elapsed += p_clock.m_elapsed_second;
-			//if(g_last_elapsed >= 5)
-			//{
-			//	g_last_elapsed -= 5;
-			//	
-			//	/*const auto l_builder = bc_particle_builder()
-			//		.emitter(core::bc_vector3f(0), core::bc_vector3f::up())
-			//		.with_deviation(180)
-			//		.with_particle_size(0.9f, 1.5f)
-			//		.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step5, 1.5)
-			//		.emit_particles(1000, 3, 80, 0.3f);*/
-
-			//	bc_particle_builder l_builder;
-			//	l_builder.emitter(core::bc_vector3f(0), core::bc_vector3f::up())
-			//		.with_deviation(180)
-			//		.with_texture(2)
-			//		.with_particles_color({ 0.07f, 0.07f, 0.07f }, 0.1)
-			//		.with_particle_size(6, 9)
-			//		.with_particles_rotation(45)
-			//		.with_particle_size_curve(bc_particle_builder::s_curve_fast_step3)
-			//		.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step4, 0.4f)
-			//		.emit_particles(300, 3, 300, 0.1f);
-			//		//.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up())
-			//		//.with_texture(4)
-			//		//.with_particles_color({1.0f, 0.4f, 0.001f}, 1000)
-			//		//.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step5, 0.25f)
-			//		//.emit_particles(100, 0.5f, 50, 0.05f);
-
-			//	core::bc_array<std::tuple<core::bc_vector3f, core::bc_vector3f>, 7> l_emitter_traits =
-			//	{
-			//		std::make_tuple(core::bc_vector3f(0, 0, 0), core::bc_vector3f(0, 1, 0)),
-			//		std::make_tuple(core::bc_vector3f(-2, 0, -2), core::bc_vector3f(-0.2, 1, -0.5)),
-			//		std::make_tuple(core::bc_vector3f(-2, 0, 2), core::bc_vector3f(-0.3, 1, 0.5)),
-			//		std::make_tuple(core::bc_vector3f(2, 0, 2), core::bc_vector3f(0.4, 1, 0.4)),
-			//		std::make_tuple(core::bc_vector3f(2, 0, -2), core::bc_vector3f(0.5, 1, -0.6)),
-			//		std::make_tuple(core::bc_vector3f(-2, 0, 0), core::bc_vector3f(-0.4, 1, 0.0)),
-			//		std::make_tuple(core::bc_vector3f(2, 0, -2), core::bc_vector3f(0.4, 1, -0.1))
-			//	};
-			//	/*for(auto& l_trait : l_emitter_traits)
-			//	{
-			//		l_builder.emitter(std::get<0>(l_trait), std::get<1>(l_trait), 0.2f, 1200, 0.4f)
-			//			.with_deviation(90)
-			//			.with_velocity_curve(bc_particle_builder::s_curve_fast_step5)
-			//			.with_texture(1)
-			//			.with_particles_color({ 0.8f, 0.8f, 0.8f }, 1.5)
-			//			.with_particle_size(1.0f, 3.0f)
-			//			.with_particle_size_curve(bc_particle_builder::s_curve_fast_step4)
-			//			.with_particle_reverse_direction()
-			//			.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step1, 1)
-			//			.emit_particles(100, 3, 1.0, 0.4f);
-			//	}*/
-			//	
-			//	register_emitter_definition("test_emitter", l_builder);
-			//	spawn_emitter
-			//	(
-			//		"test_emitter",
-			//		core::bc_vector3f(29, 48, -732),
-			//		core::bc_vector3f::up()
-			//	);
-			//}
-			
+		{			
 			{
 				core_platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, core_platform::bc_lock_operation::heavy);
 				

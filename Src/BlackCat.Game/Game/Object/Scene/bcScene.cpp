@@ -12,6 +12,7 @@
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventAddedToScene.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventRemovedFromScene.h"
 
 namespace black_cat
 {
@@ -217,7 +218,13 @@ namespace black_cat
 				m_px_scene->remove_actor(l_rigid_body);
 			}
 
-			m_scene_graph.remove_actor(p_actor);
+			const bool l_removed = m_scene_graph.remove_actor(p_actor);
+			if(l_removed)
+			{
+				p_actor.destroy();
+			}
+
+			bcAssert(l_removed);
 		}
 	}
 }

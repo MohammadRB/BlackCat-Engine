@@ -86,7 +86,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	float l_size_curve_value = 1 - l_side_fade_curve_sample.x;
 	float l_fade_curve_value = l_side_fade_curve_sample.y;
 	float l_acceleration = l_particle.m_force * l_velocity_curve_value;
-	float l_wind_influence = min(0.1, (1 - saturate(l_particle.m_mass / 0.3f)));
+	float l_wind_influence = max(0.1, (1 - saturate(l_particle.m_mass / 0.3f)));
 
 	l_particle.m_position += (l_particle.m_direction * l_acceleration * g_elapsed_second) +
 			(g_global_wind_direction * g_global_wind_power * l_wind_influence * g_elapsed_second) +

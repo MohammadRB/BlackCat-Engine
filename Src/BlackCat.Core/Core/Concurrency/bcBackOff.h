@@ -24,9 +24,7 @@ namespace black_cat
 			{
 			}
 
-			~bc_back_off()
-			{
-			}
+			~bc_back_off() = default;
 
 			void inc(bcINT32 p_tick_count = 1)
 			{

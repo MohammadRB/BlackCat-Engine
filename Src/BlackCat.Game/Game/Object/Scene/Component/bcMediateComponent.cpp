@@ -7,6 +7,7 @@
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventAddedToScene.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventRemovedFromScene.h"
 
 namespace black_cat
 {
@@ -73,6 +74,10 @@ namespace black_cat
 			if(l_added_to_scene_event)
 			{
 				m_scene = &l_added_to_scene_event->get_scene();
+				if(m_controller)
+				{
+					m_controller->added_to_scene(p_actor, *m_scene);
+				}
 			}
 
 			if(m_controller)

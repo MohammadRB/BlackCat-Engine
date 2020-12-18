@@ -6,7 +6,7 @@
 #include "Core/Concurrency/bcMutexTest.h"
 #include "Core/Utility/bcObjectPool.h"
 #include "Core/Utility/bcObjectPoolAllocator.h"
-#include "Core/Container/bcList.h"
+#include "Core/Container/bcListPool.h"
 #include "Core/Messaging/Query/bcQueryContext.h"
 #include "Core/Messaging/Query/bcQueryProviderHandle.h"
 #include "Game/bcExport.h"
@@ -20,7 +20,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_light_manager
 		{
 		private:
-			using container_t = core::bc_list< bc_light, core::bc_memory_pool_allocator< bc_light > >;
+			using container_t = core::bc_list_pool< bc_light >;
 
 		public:
 			using iterator_buffer = bc_light_iterator_buffer< container_t >;
@@ -49,7 +49,6 @@ namespace black_cat
 		private:
 			core::bc_query_context_ptr _lights_query_context_provider() const;
 			
-			core::bc_concurrent_memory_pool m_pool;
 			container_t m_lights;
 			mutable core::bc_mutex_test m_lights_lock;
 
