@@ -201,7 +201,7 @@
     },
     {
       "name": "sample_fire",
-      "controller": "sample_fire",
+      "controller": "fire",
       "components": [
         {
           "name": "light",
@@ -227,7 +227,7 @@
     },
     {
       "name": "sample_explosion",
-      "controller": "sample_explosion",
+      "controller": "explosion",
       "components": [
         {
           "name": "light",
@@ -236,18 +236,20 @@
             "position_x": 0.0,
             "position_y": 1.0,
             "position_z": 0.0,
-            "radius": 20.0,
-            "color_r": 1.0,
+            "radius": 30.0,
+            "color_r": 0.9,
             "color_g": 0.4,
             "color_b": 0.001,
             "intensity": 5.0,
             "particle_cast": true,
-            "particle_intensity": 5.0
+            "particle_intensity": 8.0
           }
         },
         {
           "name": "particle_emitter",
-          "parameters": {}
+          "parameters": {
+            "emitter_name": "big_explosion"
+          }
         }
       ]
     }

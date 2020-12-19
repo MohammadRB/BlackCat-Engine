@@ -14,174 +14,10 @@
 #include "Game/Query/bcParticleEmittersQuery.h"
 #include "Game/bcException.h"
 
-// TODO For sample particles
-#include "Core/Utility/bcUtility.h"
-#include "Core/Utility/bcRandom.h"
-#include "Game/Object/Scene/bcEntityManager.h"
-#include "Game/Object/Scene/ActorComponent/bcActorController.h"
-#include "Game/Object/Scene/Component/bcLightComponent.h"
-#include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
-
 namespace black_cat
 {
 	namespace game
 	{
-		class bc_sample_fire_controller : public bc_iactor_controller
-		{
-		public:
-			void initialize(bc_actor& p_actor) override
-			{
-				auto* l_light_component = p_actor.get_component<bc_light_component>();
-				auto* l_emitter_component = p_actor.get_component<bc_particle_emitter_component>();
-
-				if(!l_light_component || !l_emitter_component)
-				{
-					throw bc_invalid_operation_exception("sample fire actor must have light and emitter component");
-				}
-				
-				const auto l_emitter = bc_particle_builder()
-					.emitter(core::bc_vector3f(0), core::bc_vector3f::up(), 100, 0, 0)
-					.with_deviation(60)
-					.with_texture(4)
-					.with_particles_color({ 0.1f, 0.1f, 0.1f }, 1.0)
-					.with_particle_size(2.0f, 8.0f)
-					.with_particles_rotation(20)
-					.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step2, 5)
-					.emit_particles(0, 10, 20, -0.1f)
-					.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up())
-					.with_texture(0)
-					.emit_particles(0, 11, 19, -0.1f)
-					.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up())
-					.with_texture(10)
-					.with_particles_color({ 0.9f, 0.005f, 0.001f }, 3.0)
-					.with_particle_size(0.1f, 0.3f)
-					.emit_particles(0, 3, 25, 0.0f);
-
-				l_emitter_component->spawn_emitter(l_emitter);
-
-				m_light_intensity = l_light_component->get_light()->as_point_light()->get_intensity();
-			}
-
-			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock) override
-			{
-				auto* l_light_component = p_actor.get_component<bc_light_component>();
-				auto* l_emitter_component = p_actor.get_component<bc_particle_emitter_component>();
-
-				const bcFLOAT l_noise = (bc_noise(p_clock.m_total_elapsed_second / 5.0, 1) - 0.5f) * m_light_intensity * 0.2f;
-				auto* l_point_light = l_light_component->get_light()->as_point_light();
-				l_point_light->set_intensity(m_light_intensity + l_noise);
-				
-				const bcUINT32 l_total_particles_in_current_second = (p_clock.m_total_elapsed_second - std::floor(p_clock.m_total_elapsed_second)) * m_num_particles_per_second;
-				if(l_total_particles_in_current_second < m_num_spawned_particles_in_current_second)
-				{
-					m_num_spawned_particles_in_current_second = 0;
-				}
-				
-				const bcUINT32 l_num_particles_in_current_second = l_total_particles_in_current_second - m_num_spawned_particles_in_current_second;
-				l_emitter_component->get_emitters()->set_particle_counts(l_num_particles_in_current_second);
-
-				m_num_spawned_particles_in_current_second += l_num_particles_in_current_second;
-			}
-
-		private:
-			bcFLOAT m_light_intensity = 0;
-			bcUINT32 m_num_particles_per_second = 30;
-			bcUINT32 m_num_spawned_particles_in_current_second = 0;
-		};
-
-		class bc_sample_explosion_controller : public bc_iactor_controller
-		{
-		public:
-			void initialize(bc_actor& p_actor) override
-			{
-				auto* l_light_component = p_actor.get_component<bc_light_component>();
-				auto* l_emitter_component = p_actor.get_component<bc_particle_emitter_component>();
-
-				if (!l_light_component || !l_emitter_component)
-				{
-					throw bc_invalid_operation_exception("sample fire actor must have light and emitter component");
-				}
-
-				m_light_intensity = l_light_component->get_light()->as_point_light()->get_intensity();
-				m_light_particle_intensity = l_light_component->get_light()->as_point_light()->get_particle_intensity();
-				m_light_radius = l_light_component->get_light()->as_point_light()->get_radius();
-			}
-
-			void added_to_scene(bc_actor& p_actor, bc_scene& p_scene) override
-			{
-				m_scene = &p_scene;
-
-				core::bc_random l_random(0);
-				core::bc_array<core::bc_vector3f, 30> l_random_directions;
-				bc_randomize_direction
-				(
-					l_random,
-					core::bc_vector3f::up(),
-					180,
-					std::begin(l_random_directions),
-					std::end(l_random_directions)
-				);
-				
-				bc_particle_builder l_builder;
-				l_builder.emitter(core::bc_vector3f(0), core::bc_vector3f::up())
-					.with_deviation(180)
-					.with_texture(4)
-					.with_particles_color({ 0.2f,0.2f,0.2f })
-					.with_particle_size(2, 15)
-					.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step3, 0.2)
-					.emit_particles(100, 8, 400, 0.01f);
-				
-				for(auto& l_direction : l_random_directions)
-				{
-					const auto l_position = core::bc_vector3f(l_direction.x, 0, l_direction.z) * 6;
-					const auto l_emitter_energy = l_direction.y;
-					
-					l_builder.emitter(l_position, l_direction, 0.2f, 1500 * l_emitter_energy, 0.1f)
-						.with_deviation(180)
-						.with_velocity_curve(bc_particle_builder::s_curve_fast_step4)
-						.with_texture(2)
-						.with_particles_color({ 0.4f, 0.4f, 0.4f }, 1.0)
-						.with_particle_size(1.0f, 5.0f)
-						.with_particle_size_curve(bc_particle_builder::s_curve_fast_step4)
-						.with_particle_velocity_curve(bc_particle_builder::s_curve_fast_step3, 2)
-						.emit_particles(30, 5, 4.0f * l_emitter_energy, 0.1f);
-				}
-
-				core::bc_get_service<bc_game_system>()->get_render_system()
-					.get_particle_manager()
-					.register_emitter_definition("sample_explosion", l_builder);
-
-				auto* l_emitter_component = p_actor.get_component<bc_particle_emitter_component>();
-				l_emitter_component->spawn_emitter("sample_explosion");
-			}
-			
-			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock) override
-			{
-				auto* l_light_component = p_actor.get_component<bc_light_component>();
-				auto* l_point_light = l_light_component->get_light()->as_point_light();
-
-				const auto l_normal_age = pow(1 - (m_age / m_light_lifetime_second), 2);
-				l_point_light->set_intensity(m_light_intensity * l_normal_age);
-				l_point_light->set_particle_intensity(m_light_particle_intensity * l_normal_age);
-				l_point_light->set_position(l_point_light->get_position() + core::bc_vector3f::up() * m_light_rise_per_second * p_clock.m_elapsed_second);
-
-				m_age += p_clock.m_elapsed_second;
-				if(m_age > m_light_lifetime_second)
-				{
-					m_scene->remove_actor(p_actor);
-				}
-			}
-
-		private:
-			bc_scene* m_scene = nullptr;
-			bcFLOAT m_light_intensity = 0;
-			bcFLOAT m_light_particle_intensity = 0;
-			bcFLOAT m_light_radius = 0;
-			bcFLOAT m_light_rise_per_second = 40;
-			bcFLOAT m_light_lifetime_second = 0.5f;
-			bcFLOAT m_age = 0;
-		};
-		
 		_bc_particle_emitter_instance::_bc_particle_emitter_instance(const bc_particle_emitter_trait& p_trait)
 			: bc_particle_emitter_trait(p_trait)
 		{
@@ -244,12 +80,6 @@ namespace black_cat
 				.as_tex2d_shader_view(0, -1)
 				.on_texture2d();
 			m_sprites_view = p_device.create_resource_view(l_sprites_texture, l_sprites_view_config);
-
-			core::bc_get_service<bc_entity_manager>()->register_actor_controller
-			(
-				bc_actor_controller_register<bc_sample_fire_controller>("sample_fire"),
-				bc_actor_controller_register<bc_sample_explosion_controller>("sample_explosion")
-			);
 		}
 
 		bc_particle_manager::bc_particle_manager(bc_particle_manager&& p_other) noexcept
@@ -295,8 +125,9 @@ namespace black_cat
 		{
 			core::bc_vector_program<bc_particle_emitter_trait> l_emitters(std::begin(p_builder.m_emitters), std::end(p_builder.m_emitters));
 
-			auto l_value = std::make_pair(p_name, std::move(l_emitters));
-			auto l_entry = m_emitter_definitions.find(p_name);
+			auto l_hash = string_hash_t()(p_name);
+			auto l_value = std::make_pair(l_hash, std::move(l_emitters));
+			auto l_entry = m_emitter_definitions.find(l_hash);
 
 			if(l_entry == std::end(m_emitter_definitions))
 			{
@@ -312,7 +143,7 @@ namespace black_cat
 		{
 			core::bc_matrix3f l_rotation;
 			l_rotation.rotation_between_two_vector_lh(core::bc_vector3f(0, 1, 0), p_dir);
-			const auto l_definition_ite = m_emitter_definitions.find(p_emitter_name);
+			const auto l_definition_ite = m_emitter_definitions.find(string_hash_t()(p_emitter_name));
 			
 			bcAssert(l_definition_ite != std::end(m_emitter_definitions));
 

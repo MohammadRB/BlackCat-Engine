@@ -35,7 +35,7 @@ namespace black_cat
 			
 			void spawn_emitter(const bcCHAR* p_name);
 			
-			void spawn_emitter(const bc_particle_builder& p_builder);
+			void add_emitter(const bc_particle_builder& p_builder);
 
 			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 			

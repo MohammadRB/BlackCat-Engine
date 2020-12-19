@@ -7,7 +7,6 @@
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventAddedToScene.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventRemovedFromScene.h"
 
 namespace black_cat
 {

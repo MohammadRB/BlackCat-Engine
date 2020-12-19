@@ -58,6 +58,9 @@
     <Filter Include="Game\System\Render\Particle">
       <UniqueIdentifier>{9c8133d3-9034-4fe9-a69e-82d71719f53c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Object\Scene\Component\Controller">
+      <UniqueIdentifier>{b827ac91-0489-44e4-9dc4-498aa48c50b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h">
@@ -357,6 +360,12 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcActorEventRemovedFromScene.h">
       <Filter>Game\Object\Scene\Component\Event</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Controller\bcFireActorController.h">
+      <Filter>Game\Object\Scene\Component\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Controller\bcExplosionActorController.h">
+      <Filter>Game\Object\Scene\Component\Controller</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -532,6 +541,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcParticleEmitterComponent.cpp">
       <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Controller\bcFireActorController.cpp">
+      <Filter>Game\Object\Scene\Component\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Controller\bcExplosionActorController.cpp">
+      <Filter>Game\Object\Scene\Component\Controller</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

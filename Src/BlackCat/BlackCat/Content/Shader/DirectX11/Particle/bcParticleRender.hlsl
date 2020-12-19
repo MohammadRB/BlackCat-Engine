@@ -55,7 +55,7 @@ vertex_output vs(uint p_instance_index : SV_InstanceID)
 
 float3 direct_light_shading(float3 p_normal)
 {
-	float l_dot = max(0.0f, dot(p_normal, -g_global_light_direction));
+	float l_dot = max(0.2f, dot(p_normal, -g_global_light_direction));
 	float3 l_diffuse_light = g_global_light_color * g_global_light_intensity * l_dot;
 	
 	return l_diffuse_light;
@@ -130,9 +130,9 @@ float4 ps(geometry_output p_input) : SV_Target0
 	float l_soft_fade = saturate(l_depth_diff / SOFT_PARTICLE_BIAS);
 
 	float l_light_intensity = p_input.m_light_shading.w * l_alpha;
-	float3 l_light_diffuse = p_input.m_light_shading.xyz;
-	float3 l_color_diffuse = p_input.m_color.xyz + (p_input.m_direct_light_shading * p_input.m_ambient_shading);
+	float3 l_light_diffuse = p_input.m_light_shading.xyz * l_alpha;
+	float3 l_color_diffuse = (p_input.m_color.xyz * p_input.m_ambient_shading) + (p_input.m_direct_light_shading * p_input.m_ambient_shading);
 	float3 l_final_diffuse = lerp(l_color_diffuse, l_light_diffuse, l_light_intensity);
-
+	
 	return float4(l_final_diffuse, p_input.m_fade * l_alpha * l_soft_fade * p_input.m_color.w);
 }

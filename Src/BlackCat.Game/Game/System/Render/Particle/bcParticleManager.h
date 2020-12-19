@@ -45,7 +45,8 @@ namespace black_cat
 		class BC_GAME_DLL bc_particle_manager
 		{
 		private:
-			using particle_definition_container = core::bc_unordered_map_program<const bcCHAR*, core::bc_vector_program<bc_particle_emitter_trait>>;
+			using string_hash_t = std::hash<const bcCHAR*>;
+			using particle_definition_container = core::bc_unordered_map_program<string_hash_t::result_type, core::bc_vector_program<bc_particle_emitter_trait>>;
 			using emitters_container = core::bc_list_pool<_bc_particle_emitter_instance>;
 			using external_emitters_container = core::bc_list_pool<bc_external_particle_emitter>;
 			

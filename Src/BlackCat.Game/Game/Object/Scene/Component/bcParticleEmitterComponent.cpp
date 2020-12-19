@@ -55,7 +55,7 @@ namespace black_cat
 				.spawn_emitter(p_name, l_position, core::bc_vector3f::up());
 		}
 
-		inline void bc_particle_emitter_component::spawn_emitter(const bc_particle_builder& p_builder)
+		inline void bc_particle_emitter_component::add_emitter(const bc_particle_builder& p_builder)
 		{
 			m_emitter = core::bc_get_service<bc_game_system>()->get_render_system().get_particle_manager().add_emitter(p_builder);
 		}

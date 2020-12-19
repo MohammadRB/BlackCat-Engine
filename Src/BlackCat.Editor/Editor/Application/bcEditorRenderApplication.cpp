@@ -87,8 +87,23 @@ namespace black_cat
 			m_game_system->set_scene(l_crysis_scene);
 		}
 
+		double g_explosion_counter = 0;
 		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_same_frame)
 		{
+			if(!p_is_same_frame)
+			{
+				g_explosion_counter += p_clock_update_param.m_elapsed_second;
+				if (g_explosion_counter > 12)
+				{
+					auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
+					auto l_actor = l_entity_manager->create_entity("sample_explosion");
+					l_actor.add_event(game::bc_actor_event_world_transform({ 21, 49, -740 }));
+
+					m_game_system->get_scene()->add_actor(l_actor);
+
+					g_explosion_counter = 0;
+				}
+			}
 		}
 
 		void bc_editor_render_app::application_render(core_platform::bc_clock::update_param p_clock_update_param)

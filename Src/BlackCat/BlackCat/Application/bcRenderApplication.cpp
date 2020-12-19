@@ -55,6 +55,7 @@ namespace black_cat
 
 		bc_bind_scripts(*m_game_system);
 		bc_load_engine_resources(*m_game_system);
+		bc_register_particle_emitters(*m_game_system);
 
 		application_initialize(p_parameters);
 	}
