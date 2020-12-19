@@ -8,6 +8,7 @@
 #include "Core/Container/bcVector.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/bcRenderThread.h"
+#include "Game/System/Render/bcDefaultRenderThread.h"
 
 namespace black_cat
 {
@@ -37,7 +38,7 @@ namespace black_cat
 		class bc_render_thread_guard
 		{
 		public:
-			bc_render_thread_guard(bc_render_thread_manager& p_thread_manager, bc_render_thread* p_thread);
+			bc_render_thread_guard(bc_render_thread_manager* p_thread_manager, bc_render_thread* p_thread);
 
 			bc_render_thread_guard(bc_render_thread_guard&&) noexcept;
 
@@ -50,7 +51,7 @@ namespace black_cat
 			bc_render_thread* get_thread() const;
 
 		private:
-			bc_render_thread_manager& m_thread_manager;
+			bc_render_thread_manager* m_thread_manager;
 			bc_render_thread* m_thread;
 		};
 
@@ -65,36 +66,39 @@ namespace black_cat
 
 			bc_render_thread_manager& operator=(bc_render_thread_manager&&) noexcept;
 			
-			bcUINT32 get_thread_count() const;
+			bcUINT32 get_thread_count() const noexcept;
 
-			bcUINT32 get_available_thread_count() const;
+			bcUINT32 get_available_thread_count() const noexcept;
 
+			bc_default_render_thread& get_default_render_thread() noexcept;
+			
 			/**
 			 * \brief Try to get a render thread or if there is no thread available return invalid wrapper
-			 * \ThreadSafe
+			 * \n \b ThreadSafe
 			 * \return null if there is no thread available
 			 */
 			bc_render_thread_guard get_available_thread() const;
 
 			/**
 			 * \brief Get a render thread or if there is no thread available wait until one become available
-			 * \ThreadSafe
+			 * \n \b ThreadSafe
 			 * \return First thread that is free
 			 */
 			bc_render_thread_guard get_available_thread_wait() const;
 
 			/**
 			 * \brief Give back a render thread to set it as available thread
-			 * \ThreadSafe
+			 * \n \b ThreadSafe
 			 * \param p_thread 
 			 */
 			void set_available_thread(bc_render_thread& p_thread);
 		
 		private:
+			bc_default_render_thread m_default_render_thread;
+			core::bc_vector<_bc_render_thread_entry> m_threads;
+			mutable core_platform::bc_atomic<bcUINT32> m_available_threads_count;
 			mutable core_platform::bc_mutex m_threads_mutex;
 			mutable core_platform::bc_condition_variable m_threads_cv;
-			mutable core_platform::bc_atomic<bcINT32> m_available_thread_count;
-			core::bc_vector<_bc_render_thread_entry> m_threads;
 		};
 	}
 }

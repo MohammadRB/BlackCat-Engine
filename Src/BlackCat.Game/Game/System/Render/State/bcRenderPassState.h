@@ -37,8 +37,10 @@ namespace black_cat
 			bc_render_system* m_render_system;
 		};
 
-		// Non-mutable object that represent whole configuration that is needed for a render pass.
-		// Shader parameters will be mapped to device registers as they appear in their array
+		/**
+		 * \brief Non-mutable object that represent whole configuration that is needed for a render pass.
+		 * \n Shader parameters will be mapped to device registers as they appear in their array
+		 */
 		class BC_GAME_DLL bc_render_pass_state
 			: private core::bc_ref_count,
 			core_platform::bc_no_copy
@@ -86,6 +88,11 @@ namespace black_cat
 				return m_resource_views;
 			}
 
+			const bc_render_pass_state_unordered_view_array& get_unordered_views() const
+			{
+				return m_unordered_views;
+			}
+
 			const bc_render_pass_state_constant_buffer_array& get_cbuffers() const
 			{
 				return m_shader_cbuffers;
@@ -98,6 +105,7 @@ namespace black_cat
 				graphic::bc_depth_stencil_view p_shader_depth,
 				bc_render_pass_state_sampler_array&& p_shader_samplers,
 				bc_render_pass_state_resource_view_array&& p_shader_views,
+				bc_render_pass_state_unordered_view_array&& p_unordered_views,
 				bc_render_pass_state_constant_buffer_array&& p_shader_buffers);
 
 			graphic::bc_device_pipeline_state m_pipeline_state;
@@ -106,6 +114,7 @@ namespace black_cat
 			graphic::bc_depth_stencil_view m_shader_depth;
 			bc_render_pass_state_sampler_array m_shader_samplers;
 			bc_render_pass_state_resource_view_array m_resource_views;
+			bc_render_pass_state_unordered_view_array m_unordered_views;
 			bc_render_pass_state_constant_buffer_array m_shader_cbuffers;
 		};
 

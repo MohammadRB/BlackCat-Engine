@@ -23,7 +23,7 @@ namespace black_cat
 
 			/**
 			 * \brief Executor function.
-			 * \Threading: This function will be executed concurrent by a cpu worker thread.
+			 * \n This function will be executed concurrent by a cpu worker thread.
 			 * \param p_render_system 
 			 * \param p_render_thread 
 			 */

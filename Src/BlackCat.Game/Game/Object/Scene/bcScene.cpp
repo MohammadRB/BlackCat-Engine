@@ -12,6 +12,7 @@
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventAddedToScene.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventRemovedFromScene.h"
 
 namespace black_cat
 {
@@ -19,11 +20,17 @@ namespace black_cat
 	{
 		bc_scene::bc_scene(core::bc_estring p_path,
 			core::bc_string p_name,
+			core::bc_vector<core::bc_string> p_stream_files,
+			core::bc_vector<core::bc_string> p_entity_files,
+			core::bc_vector<core::bc_string> p_material_files,
 			core::bc_vector<core::bc_string> p_loaded_streams,
 			bc_scene_graph p_scene_graph, 
 			physics::bc_scene_ref p_px_scene)
 			: m_path(std::move(p_path)),
 			m_name(std::move(p_name)),
+			m_stream_files(std::move(p_stream_files)),
+			m_entity_files(std::move(p_entity_files)),
+			m_material_files(std::move(p_material_files)),
 			m_loaded_streams(std::move(p_loaded_streams)),
 			m_scene_graph(std::move(p_scene_graph)),
 			m_px_scene(std::move(p_px_scene))
@@ -35,6 +42,9 @@ namespace black_cat
 			(
 				std::move(p_other.m_path),
 				std::move(p_other.m_name),
+				std::move(p_other.m_stream_files),
+				std::move(p_other.m_entity_files),
+				std::move(p_other.m_material_files),
 				std::move(p_other.m_loaded_streams),
 				std::move(p_other.m_scene_graph),
 				std::move(p_other.m_px_scene)
@@ -58,6 +68,9 @@ namespace black_cat
 		{
 			m_path = std::move(p_other.m_path);
 			m_name = std::move(p_other.m_name);
+			m_stream_files = std::move(p_other.m_stream_files);
+			m_entity_files = std::move(p_other.m_entity_files);
+			m_material_files = std::move(p_other.m_material_files);
 			m_loaded_streams = std::move(p_other.m_loaded_streams);
 			m_scene_graph = std::move(p_other.m_scene_graph);
 			m_px_scene = std::move(p_other.m_px_scene);
@@ -205,7 +218,13 @@ namespace black_cat
 				m_px_scene->remove_actor(l_rigid_body);
 			}
 
-			m_scene_graph.remove_actor(p_actor);
+			const bool l_removed = m_scene_graph.remove_actor(p_actor);
+			if(l_removed)
+			{
+				p_actor.destroy();
+			}
+
+			bcAssert(l_removed);
 		}
 	}
 }

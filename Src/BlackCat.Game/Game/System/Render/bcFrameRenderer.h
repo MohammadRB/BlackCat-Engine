@@ -8,6 +8,8 @@
 #include "Core/Utility/bcNullable.h"
 #include "Game/System/Input/bcCameraInstance.h"
 #include "Game/System/Input/bcCamera.h"
+#include "Game/System/Render/Light/bcDirectLight.h"
+#include "Game/Object/Scene/Component/bcWindComponent.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -55,11 +57,21 @@ namespace black_cat
 
 			bc_frame_renderer& operator=(bc_frame_renderer&&) noexcept;
 
-			const graphic::bc_constant_buffer_parameter& get_global_cbuffer() const;
+			const graphic::bc_constant_buffer_parameter& get_global_cbuffer() const noexcept;
 
-			const graphic::bc_constant_buffer_parameter& get_per_object_cbuffer() const;
+			const graphic::bc_constant_buffer_parameter& get_per_object_cbuffer() const noexcept;
 
-			void update_global_cbuffer(bc_render_thread& p_render_thread, const core_platform::bc_clock::update_param& p_clock, const bc_camera_instance& p_camera);
+			bc_render_thread_manager& get_thread_manager() noexcept;
+
+			void update_global_cbuffer(bc_render_thread& p_render_thread,
+				const core_platform::bc_clock::update_param& p_clock,
+				const bc_camera_instance& p_camera);
+			
+			void update_global_cbuffer(bc_render_thread& p_render_thread, 
+				const core_platform::bc_clock::update_param& p_clock, 
+				const bc_camera_instance& p_camera,
+				const bc_direct_light& p_global_light,
+				const bc_direct_wind& p_global_wind);
 			
 			bc_render_state_buffer create_buffer() const;
 

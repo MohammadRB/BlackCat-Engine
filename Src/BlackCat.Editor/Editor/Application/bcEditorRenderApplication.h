@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Core/Event/bcEvent.h"
+#include "Core/Messaging/Event/bcEvent.h"
 #include "BlackCat/Application/bcRenderApplication.h"
 
 namespace black_cat

@@ -1,13 +1,7 @@
+#include "../bcHelper.hlsli"
+
 static const float g_vegetable_max_wind_power = 5;
 static const float g_vegetable_max_height = 15;
-static const float3 g_wind_dir = float3(0,0,1);
-static const float g_wind_power = 2;
-
-float bc_noise(float x, float y)
-{
-    const float pi = 3.14f;
-    return cos(x * pi) * cos(x * pi) * cos(x * 3 * pi) * cos(x * 5 * pi) * 0.5 + sin(x * 25 * pi) * y;
-}
 
 float bc_saturate_wind_power(float p_wind_power)
 {

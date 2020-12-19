@@ -24,6 +24,8 @@ namespace black_cat
 
 			virtual bool is_valid() const noexcept = 0;
 
+			virtual void set_debug_name(const bcCHAR* p_name) noexcept = 0;
+			
 			platform_pack& get_platform_pack()
 			{
 				return m_pack;

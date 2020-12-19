@@ -9,6 +9,7 @@
 #include "Graphic/bcRenderApiInfo.h"
 #include "Graphic/PipelineStage/bcPipelineStateVariable.h"
 #include "Graphic/PipelineStage/bcPipelineStateArrayVariable.h"
+#include "Graphic/PipelineStage/bcPixelStage.h"
 #include "Graphic/Resource/View/bcResourceView.h"
 #include "Graphic/Resource/View/bcRenderTargetView.h"
 #include "Graphic/Resource/View/bcDepthStencilView.h"
@@ -20,8 +21,6 @@ namespace black_cat
 		template<bc_render_api>
 		class bc_platform_device_pipeline;
 		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
-
-		// -- Output merger state -----------------------------------------------------------------------------
 
 		class bc_output_merger_stage_state
 		{
@@ -50,12 +49,7 @@ namespace black_cat
 			bc_pipeline_state_variable< bcUINT > m_stencil_ref;
 			bc_pipeline_state_array_variable< bc_render_target_view, bc_render_api_info::number_of_om_render_target_slots() > m_render_target_views;
 			bc_pipeline_state_variable< bc_depth_stencil_view > m_depth_target_view;
-			bc_pipeline_state_array_variable< bc_resource_view, bc_render_api_info::number_of_ps_cs_uav_resource() > m_unordered_access_views;
 			//bc_pipeline_state_array_variable< bcUINT > m_uav_initial_counts;
-
-		protected:
-
-		private:
 		};
 
 		inline bc_output_merger_stage_state::bc_output_merger_stage_state()
@@ -64,8 +58,7 @@ namespace black_cat
 			m_blend_factors(core::bc_vector4f(0, 0, 0, 0)),
 			m_stencil_ref(0),
 			m_render_target_views(bc_render_target_view()),
-			m_depth_target_view(bc_depth_stencil_view()),
-			m_unordered_access_views(bc_resource_view())
+			m_depth_target_view(bc_depth_stencil_view())
 			/*m_uav_initial_counts(0, bc_render_api_info::number_of_ps_cs_uav_registers())*/
 		{
 		}
@@ -81,7 +74,6 @@ namespace black_cat
 			m_stencil_ref.set_to_initial_state();
 			m_render_target_views.set_to_initial_state();
 			m_depth_target_view.set_to_initial_state();
-			m_unordered_access_views.set_to_initial_state();
 		}
 
 		inline void bc_output_merger_stage_state::reset_tracking() noexcept
@@ -91,7 +83,6 @@ namespace black_cat
 			m_stencil_ref.reset_tracking();
 			m_render_target_views.reset_tracking();
 			m_depth_target_view.reset_tracking();
-			m_unordered_access_views.reset_tracking();
 		}
 
 		inline bcUINT bc_output_merger_stage_state::associated_render_target_count() const noexcept
@@ -102,13 +93,13 @@ namespace black_cat
 			for (bcUINT i = 0; i < l_render_target_slot_count; ++i)
 			{
 				if (m_render_target_views.get(i).is_valid())
+				{
 					++l_count;
+				}
 			}
 
 			return l_count;
 		}
-
-		// -- Output merger stage -----------------------------------------------------------------------------
 
 		template< bc_render_api TRenderApi >
 		struct bc_platform_output_merger_stage_pack
@@ -130,9 +121,9 @@ namespace black_cat
 
 			bc_platform_output_merger_stage& operator=(bc_platform_output_merger_stage&&) noexcept;
 
-			void apply_required_state(bc_device_pipeline* p_pipeline);
+			void apply_required_state(bc_device_pipeline& p_pipeline, bc_pixel_stage& p_pixel_stage);
 
-			void set_to_default_state(bc_device_pipeline* p_pipeline);
+			void set_to_default_state(bc_device_pipeline& p_pipeline);
 
 			bc_output_merger_stage_state& get_required_state()
 			{
@@ -143,8 +134,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
 
 		private:
 			platform_pack m_pack;

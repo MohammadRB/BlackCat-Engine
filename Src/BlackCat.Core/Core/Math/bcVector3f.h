@@ -93,11 +93,11 @@ namespace black_cat
 
 			static bc_vector3 random() noexcept;
 
-			static const bc_vector3& up() noexcept;
+			static bc_vector3 up() noexcept;
 
-			static const bc_vector3& right() noexcept;
+			static bc_vector3 right() noexcept;
 
-			static const bc_vector3& forward() noexcept;
+			static bc_vector3 forward() noexcept;
 
 		public:
 			T x;
@@ -509,24 +509,21 @@ namespace black_cat
 		}
 
 		template< typename T >
-		const bc_vector3<T>& bc_vector3<T>::up() noexcept
+		bc_vector3<T> bc_vector3<T>::up() noexcept
 		{
-			static bc_vector3<T> s_up{ 0,1,0 };
-			return s_up;
+			return { 0,1,0 };
 		}
 
 		template< typename T >
-		const bc_vector3<T>& bc_vector3<T>::right() noexcept
+		bc_vector3<T> bc_vector3<T>::right() noexcept
 		{
-			static bc_vector3<T> s_right{ 1,0,0 };
-			return s_right;
+			return { 1,0,0 };
 		}
 
 		template< typename T >
-		const bc_vector3<T>& bc_vector3<T>::forward() noexcept
+		bc_vector3<T> bc_vector3<T>::forward() noexcept
 		{
-			static bc_vector3<T> s_forward{ 0,0,1 };
-			return s_forward;
+			return { 0,0,1 };
 		}
 	}
 }

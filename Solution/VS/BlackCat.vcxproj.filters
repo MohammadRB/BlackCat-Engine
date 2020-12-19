@@ -43,6 +43,15 @@
     <Filter Include="BlackCat\RenderPass\ShadowMap">
       <UniqueIdentifier>{c72d1f99-b4e0-4ab4-8f62-f492d470eb71}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BlackCat\RenderPass\PostProcess">
+      <UniqueIdentifier>{4dcff852-268c-492a-ab15-ced6c16b5213}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Content\Shader\DirectX11\Particle">
+      <UniqueIdentifier>{477364e8-673a-4071-aa55-ba8a431db87e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Content\Texture">
+      <UniqueIdentifier>{98093a72-b2e4-48af-94ef-54024abe2461}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.h">
@@ -132,6 +141,12 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTextDrawPass.h">
       <Filter>BlackCat\RenderPass</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\PostProcess\bcParticleSystemDx11.h">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Application\bcApplicationHookFuncations.h">
+      <Filter>BlackCat\Application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -206,6 +221,9 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTextDrawPass.cpp">
       <Filter>BlackCat\RenderPass</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\PostProcess\bcParticleSystemDx11.cpp">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcShapeDraw.hlsl">
@@ -244,6 +262,24 @@
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\bcMeshShadowMap.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\ShadowMap</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticleEmission.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticleSimulation.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticleSort.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticleRender.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticleSortTranspose.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticleGroupSort.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\ContentStream.json">
@@ -264,5 +300,16 @@
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\DX11.spritefont">
       <Filter>BlackCat\Content\Data</Filter>
     </None>
+    <None Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticle.hlsli">
+      <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Default.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Sprites.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
   </ItemGroup>
 </Project>

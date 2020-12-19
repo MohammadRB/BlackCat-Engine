@@ -136,7 +136,7 @@ namespace black_cat
 				}
 				case bc_light_type::point:
 				{
-					const auto l_point_light = as_point_light();
+					const auto* l_point_light = as_point_light();
 
 					m_bound_box = physics::bc_bound_box
 					(
@@ -147,7 +147,7 @@ namespace black_cat
 				}
 				case bc_light_type::spot:
 				{
-					const auto l_spot_light = as_spot_light();
+					const auto* l_spot_light = as_spot_light();
 					const auto l_position = l_spot_light->get_position(m_transformation);
 					const auto l_center = l_position + (l_spot_light->get_direction(m_transformation) * (l_spot_light->get_length() / 2));
 

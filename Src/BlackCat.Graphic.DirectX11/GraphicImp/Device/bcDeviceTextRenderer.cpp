@@ -69,7 +69,7 @@ namespace black_cat
 			
 			{
 				// Device context is in use in SpriteBatch
-				core_platform::bc_mutex_guard l_lock(l_device_pack.m_context_mutex);
+				core_platform::bc_mutex_guard l_lock(l_device_pack.m_immediate_context_mutex);
 
 				l_device_pack.m_immediate_context->OMSetRenderTargets(1, &p_back_buffer_view.get_platform_pack().m_render_target_view, nullptr);
 				l_device_pack.m_immediate_context->RSSetViewports(1, &l_viewport);

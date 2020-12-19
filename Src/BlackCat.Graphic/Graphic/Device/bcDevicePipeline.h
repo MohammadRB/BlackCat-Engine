@@ -31,6 +31,11 @@ namespace black_cat
 {
 	namespace graphic
 	{
+		enum class bc_pipeline_type
+		{
+			default, deferred
+		};
+		
 		template< bc_render_api TRenderApi >
 		struct bc_platform_device_pipeline_pack
 		{
@@ -55,7 +60,7 @@ namespace black_cat
 
 			/**
 			 * \brief Bind and Apply required pipeline states.
-			 * \param p_state 
+			 * \param p_state
 			 */
 			void bind_pipeline_state(bc_device_pipeline_state p_state);
 
@@ -63,13 +68,15 @@ namespace black_cat
 
 			/**
 			 * \brief Bind and Apply required pipeline states.
-			 * \param p_state 
+			 * \param p_state
 			 */
 			void bind_compute_state(bc_device_compute_state p_state);
 
 			void unbind_compute_state();
 
 			void bind_ia_primitive_topology(bc_primitive p_primitive);
+
+			void unbind_ia_primitive_topology();
 
 			void bind_ia_index_buffer(bc_buffer p_buffer, bc_format p_format);
 
@@ -107,12 +114,16 @@ namespace black_cat
 
 			void unbind_om_render_targets();
 
-			void pipeline_apply_states(bc_pipeline_stage p_stages);
+			void pipeline_apply_states(bc_pipeline_stage p_stages, const bc_compute_stage::initial_counts_array* p_initial_counts = nullptr);
 
 			void pipeline_set_default_states(bc_pipeline_stage p_stages);
 
 			void draw(bcUINT p_start_vertex, bcUINT p_vertex_count);
 
+			void draw_instanced(bcUINT p_vertex_count_per_instance, bcUINT p_instance_count, bcUINT p_start_vertex_location, bcUINT p_start_instance_location);
+
+			void draw_instanced_indirect(bc_buffer p_args_buffer, bcUINT p_offset);
+			
 			void draw_indexed(bcUINT p_start_index, bcUINT p_index_count, bcINT p_vertex_offset);
 
 			void draw_indexed_instanced(bcUINT p_index_count_per_instance, bcUINT p_instance_count, bcUINT p_start_index_location, bcINT p_base_vertex_location, bcUINT p_start_instance_location);
@@ -140,8 +151,13 @@ namespace black_cat
 				bc_format p_format);
 
 			/**
-			 * \brief Write commands to command list and reset pipeline state.
-			 * \param p_command_list 
+			 * \brief Start capturing command lists and put pipeline to lock state
+			 */
+			void start_command_list();
+			
+			/**
+			 * \brief Write commands to command list and reset pipeline state and lock
+			 * \param p_command_list
 			 */
 			void finish_command_list(bc_device_command_list& p_command_list);
 
@@ -151,6 +167,10 @@ namespace black_cat
 
 			bool is_valid() const noexcept override;
 
+			void set_debug_name(const bcCHAR* p_name) noexcept override;
+
+			bc_pipeline_type get_type() const noexcept;
+			
 			bool operator==(const bc_platform_device_pipeline& p_other) const noexcept;
 
 			bool operator!=(const bc_platform_device_pipeline& p_other) const noexcept;
@@ -163,8 +183,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
 
 		private:
 			platform_pack m_pack;

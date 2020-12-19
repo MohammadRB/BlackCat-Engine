@@ -12,7 +12,7 @@ namespace black_cat
 	namespace core
 	{
 		/**
-		 * \brief This class contains parameters from data driven sources, eg. json files, which these parameters are constant throughout program lifetime.
+		 * \brief This class contains parameters from data driven sources, e.g. json files, which are constant throughout program lifetime.
 		 */
 		class bc_data_driven_parameter
 		{
@@ -79,7 +79,7 @@ namespace black_cat
 			 * \return 
 			 */
 			template< typename T >
-			T* get_value(const bcCHAR* p_name)
+			const T* get_value(const bcCHAR* p_name)
 			{
 				const auto l_hash = key_hash()(p_name);
 				const auto l_value = m_values.find(l_hash);
@@ -105,9 +105,9 @@ namespace black_cat
 			 * \return 
 			 */
 			template< typename T >
-			T& get_value_throw(const bcCHAR* p_name)
+			const T& get_value_throw(const bcCHAR* p_name)
 			{
-				T* l_value = get_value<T>(p_name);
+				const T* l_value = get_value<T>(p_name);
 
 				if (!l_value)
 				{
@@ -128,8 +128,6 @@ namespace black_cat
 			{
 				m_values.clear();
 			}
-
-		protected:
 
 		private:
 			map_type m_values;

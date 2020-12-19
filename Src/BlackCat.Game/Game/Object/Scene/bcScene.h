@@ -31,6 +31,9 @@ namespace black_cat
 		public:
 			bc_scene(core::bc_estring p_path,
 				core::bc_string p_name,
+				core::bc_vector<core::bc_string> p_stream_files,
+				core::bc_vector<core::bc_string> p_entity_files,
+				core::bc_vector<core::bc_string> p_material_files,
 				core::bc_vector<core::bc_string> p_loaded_streams,
 				bc_scene_graph p_scene_graph, 
 				physics::bc_scene_ref p_px_scene);
@@ -45,6 +48,12 @@ namespace black_cat
 
 			const core::bc_string& get_name() const;
 
+			const core::bc_vector<core::bc_string>& get_stream_files() const;
+
+			const core::bc_vector<core::bc_string>& get_entity_files() const;
+
+			const core::bc_vector<core::bc_string>& get_material_files() const;
+			
 			const core::bc_vector<core::bc_string>& get_loaded_streams() const;
 
 			bc_scene_graph& get_scene_graph();
@@ -88,6 +97,9 @@ namespace black_cat
 			
 			core::bc_estring m_path;
 			core::bc_string m_name;
+			core::bc_vector<core::bc_string> m_stream_files;
+			core::bc_vector<core::bc_string> m_entity_files;
+			core::bc_vector<core::bc_string> m_material_files;
 			core::bc_vector<core::bc_string> m_loaded_streams;
 			bc_scene_graph m_scene_graph;
 			physics::bc_scene_ref m_px_scene;
@@ -108,6 +120,21 @@ namespace black_cat
 			return m_name;
 		}
 
+		inline const core::bc_vector<core::bc_string>& bc_scene::get_stream_files() const
+		{
+			return m_stream_files;
+		}
+
+		inline const core::bc_vector<core::bc_string>& bc_scene::get_entity_files() const
+		{
+			return m_entity_files;
+		}
+
+		inline const core::bc_vector<core::bc_string>& bc_scene::get_material_files() const
+		{
+			return m_material_files;
+		}
+		
 		inline const core::bc_vector<core::bc_string>& bc_scene::get_loaded_streams() const
 		{
 			return m_loaded_streams;

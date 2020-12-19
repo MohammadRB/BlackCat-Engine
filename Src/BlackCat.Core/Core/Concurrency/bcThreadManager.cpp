@@ -75,7 +75,7 @@ namespace black_cat
 		}
 
 		bc_thread_manager::bc_thread_manager(bcSIZE p_thread_count, bcSIZE p_reserved_thread_count) noexcept
-			: m_my_data(&_thread_data_cleanup)
+			: m_my_data()
 		{
 			_initialize(p_thread_count, p_reserved_thread_count);
 		}
@@ -122,7 +122,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_thread_manager::check_for_interruption() const
+		void bc_thread_manager::check_for_interruption()
 		{
 			_thread_data* l_my_data = m_my_data.get();
 			bc_interrupt_flag& l_flag = l_my_data->interrupt_flag();
@@ -291,13 +291,9 @@ namespace black_cat
 				{
 					++l_without_task;
 
-					if (l_without_task < s_worker_switch_threshold)
+					if (l_without_task <= s_worker_switch_threshold)
 					{
 						core_platform::bc_thread::current_thread_yield();
-					}
-					else if (l_without_task >= s_worker_switch_threshold && l_without_task < s_worker_switch_threshold * 2)
-					{
-						core_platform::bc_thread::current_thread_yield_switch();
 					}
 					else
 					{

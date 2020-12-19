@@ -6,13 +6,13 @@
 SamplerState g_sam_sampler			: register(BC_RENDER_PASS_STATE_S0);
 
 Texture2D g_tex2d_diffuse			: register(BC_RENDER_STATE_T0);
-Texture2D g_tex2d_normal				: register(BC_RENDER_STATE_T1);
+Texture2D g_tex2d_normal			: register(BC_RENDER_STATE_T1);
 Texture2D g_tex2d_specular			: register(BC_RENDER_STATE_T2);
 
 cbuffer g_cb_material				: register(BC_RENDER_STATE_CB1)
 {
-    float4 g_diffuse					: packoffset(c0);
-    float g_specular_intency			: packoffset(c1.x);
+    float4 g_diffuse				: packoffset(c0);
+    float g_specular_intency		: packoffset(c1.x);
     float g_specular_power			: packoffset(c1.y);
     bool g_has_normal_map			: packoffset(c1.z);
 };
@@ -44,7 +44,7 @@ bc_vs_output gbuffer_vegetable_leaf_vs(bc_vs_input p_input)
 {
     bc_vs_output l_output;
 
-    float3 l_position = bc_do_vegetable_animation(p_input.m_position, g_world, g_vegetable_max_height, true, g_wind_dir, g_wind_power, g_total_elapsed_second);
+    float3 l_position = bc_do_vegetable_animation(p_input.m_position, g_world, g_vegetable_max_height, true, g_global_wind_direction, g_global_wind_power, g_total_elapsed_second);
 	
     l_output.m_position = mul(float4(l_position, 1), g_view_projection);
     l_output.m_texcoord = p_input.m_texcoord;

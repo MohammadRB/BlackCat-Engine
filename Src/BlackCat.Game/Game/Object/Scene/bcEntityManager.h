@@ -11,6 +11,7 @@
 #include "Core/Utility/bcDataDrivenParameter.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
+#include "Game/Object/Scene/ActorComponent/bcActorController.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 
 namespace black_cat
@@ -21,6 +22,20 @@ namespace black_cat
 		struct _bc_entity_component_data;
 		struct _bc_entity_component_callbacks;
 		class bc_entity_manager;
+
+		template<typename TController>
+		class bc_actor_controller_register
+		{
+		public:
+			using controller_t = TController;
+
+			bc_actor_controller_register(const bcCHAR* p_data_driven_name)
+				: m_data_driven_name(p_data_driven_name)
+			{
+			}
+
+			const bcCHAR* m_data_driven_name;
+		};
 		
 		template< class ...TCAdapter >
 		void bc_register_component_types(TCAdapter... p_components)
@@ -32,6 +47,12 @@ namespace black_cat
 		void bc_register_abstract_component_types(TCAdapter... p_components)
 		{
 			core::bc_get_service< bc_entity_manager >()->register_abstract_component_types(p_components...);
+		}
+
+		template< class ...TCAdapter >
+		void bc_register_actor_controller_types(TCAdapter... p_controllers)
+		{
+			core::bc_get_service< bc_entity_manager >()->register_actor_controller(p_controllers...);
 		}
 		
 		/**
@@ -46,8 +67,10 @@ namespace black_cat
 			using string_hash = std::hash< const bcCHAR* >;
 			using actor_component_create_delegate = core::bc_delegate< void(const bc_actor&) >;
 			using actor_component_initialize_delegate = core::bc_delegate< void(bc_actor&, const core::bc_data_driven_parameter&) >;
+			using actor_controller_create_delegate = core::bc_delegate<core::bc_unique_ptr<bc_iactor_controller>()>;
 			using component_map_type = core::bc_unordered_map_program< bc_actor_component_hash, _bc_entity_component_callbacks >;
 			using entity_map_type = core::bc_unordered_map_program< string_hash::result_type, _bc_entity_data >;
+			using controller_map_type = core::bc_unordered_map_program< string_hash::result_type, actor_controller_create_delegate >;
 
 		public:
 			explicit bc_entity_manager(bc_actor_component_manager& p_actor_manager);
@@ -81,6 +104,9 @@ namespace black_cat
 			template< class ...TCAdapter >
 			void register_abstract_component_types(TCAdapter... p_components);
 
+			template< class ...TCAdapter >
+			void register_actor_controller(TCAdapter... p_controllers);
+			
 		private:
 			template< class TComponent >
 			void _register_component_type(const bcCHAR* p_data_driven_name);
@@ -91,11 +117,13 @@ namespace black_cat
 			bc_actor_component_manager& m_actor_component_manager;
 			component_map_type m_components;
 			entity_map_type m_entities;
+			controller_map_type m_controllers;
 		};
 
 		struct _bc_entity_data
 		{
 			core::bc_string_program m_entity_name;
+			core::bc_string_program m_controller_name;
 			core::bc_vector_program< _bc_entity_component_data > m_components;
 		};
 
@@ -132,6 +160,28 @@ namespace black_cat
 		void bc_entity_manager::register_abstract_component_types(TCAdapter... p_components)
 		{
 			m_actor_component_manager.register_abstract_component_types(p_components...);
+		}
+
+		template< class ... TCAdapter >
+		void bc_entity_manager::register_actor_controller(TCAdapter... p_controllers)
+		{
+			auto l_expansion_list =
+			{
+				(
+					[this, p_controllers]()
+					{
+						bc_actor_component_hash l_data_driven_hash = string_hash()(p_controllers.m_data_driven_name);
+						actor_controller_create_delegate l_create_delegate = []()
+						{
+							static_assert(std::is_default_constructible_v< typename TCAdapter::controller_t>, "actor controller must be default constructible");
+							return core::bc_make_unique< typename TCAdapter::controller_t >();
+						};
+						
+						m_controllers.insert(std::make_pair(l_data_driven_hash, std::move(l_create_delegate)));
+						return true;
+					}()
+				)...
+			};
 		}
 
 		template< class TComponent >

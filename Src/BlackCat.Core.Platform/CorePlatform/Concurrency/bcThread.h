@@ -7,7 +7,6 @@
 #include "CorePlatform/Utility/bcNoCopy.h"
 #include "CorePlatform/Concurrency/bcAtomic.h"
 #include <stack>
-#include <atomic>
 
 namespace black_cat
 {
@@ -81,20 +80,20 @@ namespace black_cat
 
 					~thread_exit()
 					{
-						while (!m_exit_funcs.empty())
+						while (!m_exit_functions.empty())
 						{
-							m_exit_funcs.top()();
-							m_exit_funcs.pop();
+							m_exit_functions.top()();
+							m_exit_functions.pop();
 						}
 					}
 
 					void add(std::function< void() > p_func)
 					{
-						m_exit_funcs.push(std::move(p_func));
+						m_exit_functions.push(std::move(p_func));
 					}
 
 				private:
-					std::stack< std::function< void() > > m_exit_funcs;
+					std::stack< std::function< void() > > m_exit_functions;
 				};
 
 				thread_local static thread_exit l_exit;

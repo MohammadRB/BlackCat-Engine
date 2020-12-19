@@ -2,7 +2,7 @@
 
 #include "Game/GamePCH.h"
 
-#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/System/bcGameSystem.h"
@@ -99,9 +99,10 @@ namespace black_cat
 			(
 				[=]()
 				{
-					auto l_context = core::bc_make_unique<bc_scene_query_context>(core::bc_alloc_type::frame);
-					l_context->m_scene = m_scene.get();
-					return l_context;
+					bc_scene_query_context l_context;
+					l_context.m_scene = m_scene.get();
+				
+					return core::bc_make_query_context(l_context);
 				}
 			);
 		}

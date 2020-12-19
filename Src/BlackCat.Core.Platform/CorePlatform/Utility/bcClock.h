@@ -29,17 +29,26 @@ namespace black_cat
 			struct update_param
 			{
 				update_param(big_delta_time p_total_elapsed, small_delta_time p_elapsed)
+					: update_param(p_total_elapsed, p_elapsed, p_elapsed)
+				{
+				}
+				
+				update_param(big_delta_time p_total_elapsed, small_delta_time p_elapsed, small_delta_time p_fixed_elapsed)
 					: m_total_elapsed(p_total_elapsed),
 					m_total_elapsed_second(p_total_elapsed / 1000),
 					m_elapsed(p_elapsed),
-					m_elapsed_second(p_elapsed / 1000)
+					m_fixed_elapsed(p_fixed_elapsed),
+					m_elapsed_second(p_elapsed / 1000),
+					m_fixed_elapsed_second(p_fixed_elapsed / 1000)
 				{
 				}
 
 				big_delta_time m_total_elapsed;
 				big_delta_time m_total_elapsed_second;
 				small_delta_time m_elapsed;
+				small_delta_time m_fixed_elapsed;
 				small_delta_time m_elapsed_second;
+				small_delta_time m_fixed_elapsed_second;
 			};
 
 		public:

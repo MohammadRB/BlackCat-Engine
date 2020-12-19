@@ -4,9 +4,11 @@
 
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Query/bcMainCameraSceneQuery.h"
 #include "BlackCat/RenderPass/bcShapeDrawPass.h"
+#include "BlackCat/bcConstant.h"
 
 namespace black_cat
 {
@@ -18,7 +20,7 @@ namespace black_cat
 
 	void bc_scene_debug_shape_query::execute(const game::bc_scene_query_context& p_context) noexcept
 	{
-		auto& l_actors_buffer = p_context.get_shared_query<game::bc_main_camera_scene_query>().get_scene_buffer();
+		const auto& l_actors_buffer = p_context.get_shared_query<game::bc_main_camera_scene_query>().get_scene_buffer();
 
 		l_actors_buffer.add_debug_shapes(*m_shape_drawer);
 		p_context.m_scene->add_debug_shapes(*m_shape_drawer);
@@ -34,7 +36,6 @@ namespace black_cat
 		auto& l_device = p_render_system.get_device();
 		graphic::bc_texture2d l_back_buffer_texture = l_device.get_back_buffer_texture();
 
-		m_command_list = l_device.create_command_list();
 		m_pipeline_state = p_render_system.create_device_pipeline_state
 		(
 			"shape_draw_vs",
@@ -91,7 +92,7 @@ namespace black_cat
 	{
 		auto& l_shape_drawer = p_param.m_render_system.get_shape_drawer();
 		
-		p_param.m_render_thread.start(m_command_list.get());
+		p_param.m_render_thread.start();
 		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
 
 		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
@@ -100,8 +101,6 @@ namespace black_cat
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.finish();
-
-		m_command_list->finished();
 	}
 
 	void bc_shape_draw_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
@@ -130,7 +129,7 @@ namespace black_cat
 		{
 			graphic::bc_texture2d l_back_buffer_texture = p_param.m_device.get_back_buffer_texture();
 
-			const auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(constant::g_rpass_depth_stencil_view);
+			const auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(constant::g_rpass_depth_stencil_render_view);
 			const auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(m_render_target_view_variable);
 			const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
 			
@@ -142,6 +141,7 @@ namespace black_cat
 				l_depth_stencil_view,
 				{},
 				{},
+				{},
 				{ p_param.m_render_system.get_global_cbuffer() }
 			);
 		}
@@ -151,6 +151,5 @@ namespace black_cat
 	{
 		m_render_pass_state.reset();
 		m_pipeline_state.reset();
-		m_command_list.reset();
 	}
 }

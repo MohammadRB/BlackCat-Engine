@@ -18,8 +18,6 @@ namespace black_cat
 		class bc_platform_device_pipeline;
 		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
 
-		// -- Stream outptu state -----------------------------------------------------------------------------
-
 		class bc_stream_output_stage_state
 		{
 		public:
@@ -41,10 +39,6 @@ namespace black_cat
 
 			bc_pipeline_state_array_variable< bc_buffer, bc_render_api_info::number_of_so_streams() >  m_stream_buffers;
 			bc_pipeline_state_array_variable< bcUINT, bc_render_api_info::number_of_so_streams()> m_stream_offsets;
-
-		protected:
-
-		private:
 		};
 
 		inline bc_stream_output_stage_state::bc_stream_output_stage_state()
@@ -69,8 +63,6 @@ namespace black_cat
 			m_stream_offsets.reset_tracking();
 		}
 
-		// -- Stream output stage -----------------------------------------------------------------------------
-
 		template< bc_render_api TRenderApi >
 		struct bc_platform_stream_output_stage_pack
 		{
@@ -91,9 +83,9 @@ namespace black_cat
 
 			bc_platform_stream_output_stage& operator=(bc_platform_stream_output_stage&&) noexcept;
 
-			void apply_required_state(bc_device_pipeline* p_pipeline);
+			void apply_required_state(bc_device_pipeline& p_pipeline);
 
-			void set_to_default_state(bc_device_pipeline* p_pipeline);
+			void set_to_default_state(bc_device_pipeline& p_pipeline);
 
 			bc_stream_output_stage_state& get_required_state()
 			{
@@ -104,8 +96,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
 
 		private:
 			platform_pack m_pack;

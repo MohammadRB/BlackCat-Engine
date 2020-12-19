@@ -59,8 +59,8 @@ namespace black_cat
 		
 		void bc_matrix3f::rotation_x_lh(bcFLOAT p_radians) noexcept
 		{
-			bcFLOAT l_sin = sinf(p_radians);
-			bcFLOAT l_cos = cosf(p_radians);
+			const bcFLOAT l_sin = sinf(p_radians);
+			const bcFLOAT l_cos = cosf(p_radians);
 
 			m_entry[0] = 1.0f;
 			m_entry[1] = 0.0f;
@@ -77,8 +77,8 @@ namespace black_cat
 		
 		void bc_matrix3f::rotation_y_lh(bcFLOAT p_radians) noexcept
 		{
-			bcFLOAT l_sin = sinf(p_radians);
-			bcFLOAT l_cos = cosf(p_radians);
+			const bcFLOAT l_sin = sinf(p_radians);
+			const bcFLOAT l_cos = cosf(p_radians);
 
 			m_entry[0] = l_cos;
 			m_entry[1] = 0.0f;
@@ -95,8 +95,8 @@ namespace black_cat
 		
 		void bc_matrix3f::rotation_z_lh(bcFLOAT p_radians) noexcept
 		{
-			bcFLOAT l_sin = sinf(p_radians);
-			bcFLOAT l_cos = cosf(p_radians);
+			const bcFLOAT l_sin = sinf(p_radians);
+			const bcFLOAT l_cos = cosf(p_radians);
 
 			m_entry[0] = l_cos;
 			m_entry[1] = l_sin;
@@ -139,21 +139,29 @@ namespace black_cat
 		
 		void bc_matrix3f::rotation_euler_lh(const bc_vector3f& p_axis, bcFLOAT p_angle) noexcept
 		{
-			bcFLOAT l_s = sinf(p_angle);
-			bcFLOAT l_c = cosf(p_angle);
-			bcFLOAT l_t = 1 - l_c;
+			const bcFLOAT l_s = sinf(p_angle);
+			const bcFLOAT l_c = cosf(p_angle);
+			const bcFLOAT l_t = 1 - l_c;
 
-			m_entry[0] = l_t*p_axis.x*p_axis.x + l_c;
-			m_entry[1] = l_t*p_axis.x*p_axis.y + l_s*p_axis.z;
-			m_entry[2] = l_t*p_axis.x*p_axis.z - l_s*p_axis.y;
+			m_entry[0] = l_t * p_axis.x * p_axis.x + l_c;
+			m_entry[1] = l_t * p_axis.x * p_axis.y + l_s * p_axis.z;
+			m_entry[2] = l_t * p_axis.x * p_axis.z - l_s * p_axis.y;
 
-			m_entry[3] = l_t*p_axis.x*p_axis.y - l_s*p_axis.z;
-			m_entry[4] = l_t*p_axis.y*p_axis.y + l_c;
-			m_entry[5] = l_t*p_axis.y*p_axis.z + l_s*p_axis.x;
+			m_entry[3] = l_t * p_axis.x * p_axis.y - l_s * p_axis.z;
+			m_entry[4] = l_t * p_axis.y * p_axis.y + l_c;
+			m_entry[5] = l_t * p_axis.y * p_axis.z + l_s * p_axis.x;
 
-			m_entry[6] = l_t*p_axis.x*p_axis.y + l_s*p_axis.y;
-			m_entry[7] = l_t*p_axis.y*p_axis.z - l_s*p_axis.x;
-			m_entry[8] = l_t*p_axis.z*p_axis.z + l_c;
+			m_entry[6] = l_t * p_axis.x * p_axis.y + l_s * p_axis.y;
+			m_entry[7] = l_t * p_axis.y * p_axis.z - l_s * p_axis.x;
+			m_entry[8] = l_t * p_axis.z * p_axis.z + l_c;
+		}
+
+		void bc_matrix3f::rotation_between_two_vector_lh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept
+		{
+			const bcFLOAT l_angle = std::acos(bc_vector3f::dot(p_v1, p_v2));
+			const bc_vector3f l_cross = bc_vector3f::normalize(bc_vector3f::cross(p_v1, p_v2));
+
+			rotation_euler_lh(l_cross, l_angle);
 		}
 
 		void bc_matrix3f::rotation_x_rh(bcFLOAT p_radians) noexcept
@@ -218,6 +226,14 @@ namespace black_cat
 			m_entry[7] = -m_entry[7];
 		}
 
+		void bc_matrix3f::rotation_between_two_vector_rh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept
+		{
+			const bcFLOAT l_angle = std::acos(bc_vector3f::dot(p_v1, p_v2));
+			const bc_vector3f l_cross = bc_vector3f::normalize(bc_vector3f::cross(p_v1, p_v2));
+
+			rotation_euler_rh(l_cross, l_angle);
+		}
+
 		void bc_matrix3f::orthonormalize() noexcept
 		{
 			// This method is taken from the Wild Magic library v3.11, available at
@@ -259,7 +275,7 @@ namespace black_cat
 			m_entry[7] *= l_inv_length;
 
 			// compute q2
-			bcFLOAT fDot1 = m_entry[1] * m_entry[2] + m_entry[4] * m_entry[5] +
+			const bcFLOAT fDot1 = m_entry[1] * m_entry[2] + m_entry[4] * m_entry[5] +
 				m_entry[7] * m_entry[8];
 
 			l_dot0 = m_entry[0] * m_entry[2] + m_entry[3] * m_entry[5] +
@@ -401,7 +417,7 @@ namespace black_cat
 			{
 				for (bcINT l_col = 0; l_col < 3; l_col++)
 				{
-					bcINT l_i = I(l_row, l_col);
+					const bcINT l_i = I(l_row, l_col);
 					l_prod.m_entry[l_i] = 0.0f;
 					for (bcINT l_mid = 0; l_mid < 3; l_mid++)
 					{
@@ -448,7 +464,7 @@ namespace black_cat
 			bc_matrix3f l_quot;
 			if (p_scalar != 0.0f)
 			{
-				bcFLOAT l_inv_scalar = 1.0f / p_scalar;
+				const bcFLOAT l_inv_scalar = 1.0f / p_scalar;
 				for (bcINT i = 0; i < 3 * 3; i++)
 					l_quot.m_entry[i] = m_entry[i] * l_inv_scalar;
 			}
@@ -503,7 +519,7 @@ namespace black_cat
 			{
 				for (bcINT l_col = 0; l_col < 3; l_col++)
 				{
-					bcINT i = I(l_row, l_col);
+					const bcINT i = I(l_row, l_col);
 					m_entry[i] = 0.0f;
 					for (bcINT l_mid = 0; l_mid < 3; l_mid++)
 					{
@@ -519,7 +535,7 @@ namespace black_cat
 		{
 			if (p_scalar != 0.0f)
 			{
-				bcFLOAT l_inv_scalar = 1.0f / p_scalar;
+				const bcFLOAT l_inv_scalar = 1.0f / p_scalar;
 				for (bcINT i = 0; i < 3 * 3; i++)
 					m_entry[i] *= l_inv_scalar;
 			}

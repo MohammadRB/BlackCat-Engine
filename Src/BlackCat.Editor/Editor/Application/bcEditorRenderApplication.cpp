@@ -12,6 +12,7 @@
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "Game/System/Render/Particle/bcParticleManager.h"
 #include "BlackCat/bcConstant.h"
 #include "BlackCat/RenderPass/bcShapeDrawPass.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferInitializePass.h"
@@ -21,6 +22,7 @@
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferLightMapPass.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapPass.h"
 #include "BlackCat/RenderPass/ShadowMap/bcVegetableCascadedShadowMapPass.h"
+#include "BlackCat/RenderPass/PostProcess/bcParticleSystemDx11.h"
 #include "BlackCat/RenderPass/bcBackBufferWritePass.h"
 #include "BlackCat/RenderPass/bcTextDrawPass.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
@@ -54,7 +56,7 @@ namespace black_cat
 				0.3,
 				3000
 			));
-			l_input_system.get_camera().set_look_at(core::bc_vector3f(0, 200, -1000), core::bc_vector3f(0, 200, 0));
+			l_input_system.get_camera().set_look_at(core::bc_vector3f(29, 100, -800), core::bc_vector3f(0, 0, 0));
 			
 			l_render_system.add_render_pass(0, bc_gbuffer_initialize_pass());
 			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
@@ -65,7 +67,8 @@ namespace black_cat
 			l_render_system.add_render_pass(6, bc_gbuffer_light_map_pass(constant::g_rpass_direct_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(7, bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(8, bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
-			l_render_system.add_render_pass(9, bc_text_draw_pass(constant::g_rpass_back_buffer_view));
+			l_render_system.add_render_pass(9, bc_particle_system_dx11());
+			l_render_system.add_render_pass(10, bc_text_draw_pass(constant::g_rpass_back_buffer_view));
 		}
 
 		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager* p_stream_manager)
@@ -73,15 +76,8 @@ namespace black_cat
 			core::bc_get_service< bc_ui_command_service >()->load_content();
 
 			auto* l_content_manager = core::bc_get_service< core::bc_content_manager >();
-			auto* l_content_stream_manager = core::bc_get_service< core::bc_content_stream_manager >();
-			auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
-			auto& l_material_manager = m_game_system->get_render_system().get_material_manager();
-
 			auto& l_file_system = m_game_system->get_file_system();
 
-			l_content_stream_manager->read_stream_file(l_file_system.get_content_path(bcL("Scene\\CrysisHeightMap_ContentStream.json")).c_str());
-			l_entity_manager->read_entity_file(l_file_system.get_content_path(bcL("Scene\\CrysisHeightMap_EntityType.json")).c_str());
-			l_material_manager.read_material_file(l_file_system.get_content_path(bcL("Scene\\CrysisHeightMap_Material.json")).c_str());
 			const auto l_crysis_scene = l_content_manager->load< game::bc_scene >
 			(
 				l_file_system.get_content_path(bcL("Scene\\CrysisHeightMap.json")).c_str(),
@@ -91,8 +87,23 @@ namespace black_cat
 			m_game_system->set_scene(l_crysis_scene);
 		}
 
+		double g_explosion_counter = 0;
 		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_same_frame)
 		{
+			if(!p_is_same_frame)
+			{
+				g_explosion_counter += p_clock_update_param.m_elapsed_second;
+				if (g_explosion_counter > 12)
+				{
+					auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
+					auto l_actor = l_entity_manager->create_entity("sample_explosion");
+					l_actor.add_event(game::bc_actor_event_world_transform({ 21, 49, -740 }));
+
+					m_game_system->get_scene()->add_actor(l_actor);
+
+					g_explosion_counter = 0;
+				}
+			}
 		}
 
 		void bc_editor_render_app::application_render(core_platform::bc_clock::update_param p_clock_update_param)
@@ -101,7 +112,7 @@ namespace black_cat
 
 		bool bc_editor_render_app::application_event(core::bc_ievent& p_event)
 		{
-			auto* l_key_event = core::bc_ievent::event_as<platform::bc_app_event_key>(p_event);
+			auto* l_key_event = core::bc_imessage::as<platform::bc_app_event_key>(p_event);
 			if (l_key_event == nullptr)
 			{
 				return false;

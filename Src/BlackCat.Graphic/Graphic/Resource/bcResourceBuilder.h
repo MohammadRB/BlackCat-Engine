@@ -26,15 +26,15 @@ namespace black_cat
 
 			bc_buffer_config as_constant_buffer() noexcept;
 
-			bc_buffer_config as_structured_buffer(bcUINT p_element_size) noexcept;
+			bc_buffer_config as_buffer() noexcept;
+			
+			bc_buffer_builder& with_structured_buffer(bcUINT p_element_size) noexcept;
 
-			bc_buffer_config as_append_consume(bcUINT p_element_size) noexcept;
+			bc_buffer_builder& with_append_consume(bcUINT p_element_size) noexcept;
 
-			bc_buffer_config as_byte_address_buffer() noexcept;
+			bc_buffer_builder& with_byte_address_buffer() noexcept;
 
-			bc_buffer_config as_indirect_args_buffer() noexcept;
-
-		protected:
+			bc_buffer_builder& with_indirect_args_buffer() noexcept;
 
 		private:
 			bc_buffer_config m_config;
@@ -51,8 +51,6 @@ namespace black_cat
 
 			bc_texture_config as_depth_stencil_texture() noexcept;
 
-		protected:
-
 		private:
 			bc_texture_config m_config;
 		};
@@ -65,8 +63,6 @@ namespace black_cat
 			bc_sampler_state_builder& with_comparison(bc_comparison_func p_comparison) noexcept;
 
 			bc_sampler_state_config as_sampler_state() noexcept;
-
-		protected:
 
 		private:
 			bc_sampler_state_config m_config;
@@ -85,8 +81,6 @@ namespace black_cat
 
 			bc_resource_view_config as_indirect_args_buffer() noexcept;
 
-		protected:
-
 		private:
 			bc_resource_view_config m_config;
 		};
@@ -99,8 +93,6 @@ namespace black_cat
 			bc_buffer_view_builder_modifier as_shader_view(bcUINT p_first_element, bcUINT p_num_elements) noexcept;
 
 			bc_buffer_view_builder_modifier as_unordered_view(bcUINT p_first_element, bcUINT p_num_elements) noexcept;
-
-		protected:
 
 		private:
 			bc_format m_format;
@@ -119,8 +111,6 @@ namespace black_cat
 			bc_resource_view_config on_depth_stencil_texture2d() noexcept;
 
 			bc_resource_view_config on_render_target_texture2d() noexcept;
-
-		protected:
 
 		private:
 			bc_resource_view_config m_config;
@@ -164,8 +154,6 @@ namespace black_cat
 
 			bc_resource_view_config as_tex2dms_array_depth_stencil_view(bcUINT p_first_array_slice, bcUINT p_array_size) noexcept;
 
-		protected:
-
 		private:
 			bc_format m_format;
 		};
@@ -202,8 +190,8 @@ namespace black_cat
 			 * \param p_format Format of texture to generate
 			 * \param p_usage Resource access usage by CPU and GPU
 			 * \param p_view_types The views that will be created on this texture
-			 * \param p_sample_count Number of samples in multisampling textures
-			 * \param p_sample_quality Quality of samples in multisampling textures
+			 * \param p_sample_count Number of samples in multi-sampling textures
+			 * \param p_sample_quality Quality of samples in multi-sampling textures
 			 * \param p_array_size Size of array in it is a texture array
 			 * \return
 			 */

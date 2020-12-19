@@ -6,6 +6,7 @@
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/State/bcStateConfigs.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
 #include "BlackCat/RenderPass/ShadowMap/bcVegetableCascadedShadowMapPass.h"
@@ -151,6 +152,7 @@ namespace black_cat
 				l_depth_view.get(),
 				{ graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler_state.get()) },
 				{},
+				{},
 				{
 					p_render_system.get_global_cbuffer(),
 				}
@@ -161,6 +163,7 @@ namespace black_cat
 				graphic::bc_viewport::default_config(p_depth.get_width(), p_depth.get_height()),
 				{},
 				l_depth_view.get(),
+				{},
 				{},
 				{},
 				{

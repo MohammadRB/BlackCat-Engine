@@ -6,7 +6,7 @@
 #include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
-#include "Game/System/Render/Pass/bcRenderPassState.h"
+#include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/Query/bcSceneGraphRenderStateQuery.h"
 #include "BlackCat/RenderPass/ShadowMap/bcBaseCascadedShadowMapPass.h"
 #include "BlackCat/bcExport.h"

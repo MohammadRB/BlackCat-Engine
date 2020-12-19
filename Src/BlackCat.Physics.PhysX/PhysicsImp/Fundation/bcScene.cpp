@@ -182,7 +182,7 @@ namespace black_cat
 
 			void* l_temp_buffer = m_pack.m_data->m_allocator->temp_allocate(l_block_size * l_num_block_to_alloc, __FILE__, __LINE__);
 
-			m_pack.m_data->m_px_scene->simulate(p_time.m_elapsed_second, nullptr, l_temp_buffer, l_block_size * l_num_block_to_alloc);
+			m_pack.m_data->m_px_scene->simulate(p_time.m_fixed_elapsed_second, nullptr, l_temp_buffer, l_block_size * l_num_block_to_alloc);
 
 			m_pack.m_data->m_allocator->temp_free(l_temp_buffer);
 		}

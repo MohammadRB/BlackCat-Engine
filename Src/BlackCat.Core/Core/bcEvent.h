@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/CorePCH.h"
-#include "Core/Event/bcEvent.h"
+#include "Core/Messaging/Event/bcEvent.h"
 #include "Core/Container/bcString.h"
 
 namespace black_cat
@@ -19,13 +19,13 @@ namespace black_cat
 
 		public:
 			explicit bc_app_event_error(const bcCHAR* p_message)
-				: bc_app_event(event_name()),
+				: bc_app_event(message_name()),
 				m_message(p_message)
 			{
 			}
 
 			explicit bc_app_event_error(bc_string p_message)
-				: bc_app_event(event_name()),
+				: bc_app_event(message_name()),
 				m_message(std::move(p_message))
 			{
 			}
@@ -64,13 +64,13 @@ namespace black_cat
 
 		public:
 			explicit bc_app_event_debug(const bcCHAR* p_message)
-				: bc_app_event(event_name()),
+				: bc_app_event(message_name()),
 				m_message(p_message)
 			{
 			}
 
 			explicit bc_app_event_debug(bc_string p_message)
-				: bc_app_event(event_name()),
+				: bc_app_event(message_name()),
 				m_message(std::move(p_message))
 			{
 			}
@@ -109,7 +109,7 @@ namespace black_cat
 
 		public:
 			bc_event_frame_update_start()
-				: bc_app_event(event_name())
+				: bc_app_event(message_name())
 			{
 			}
 
@@ -126,7 +126,7 @@ namespace black_cat
 
 		public:
 			bc_event_frame_update_finish()
-				: bc_app_event(event_name())
+				: bc_app_event(message_name())
 			{
 			}
 
@@ -143,7 +143,7 @@ namespace black_cat
 
 		public:
 			bc_event_frame_render_start()
-				: bc_app_render_event(event_name())
+				: bc_app_render_event(message_name())
 			{
 			}
 
@@ -160,7 +160,7 @@ namespace black_cat
 
 		public:
 			bc_event_frame_render_finish()
-				: bc_app_render_event(event_name())
+				: bc_app_render_event(message_name())
 			{
 			}
 
@@ -177,7 +177,7 @@ namespace black_cat
 
 		public:
 			bc_event_frame_swap()
-				: bc_app_event(event_name())
+				: bc_app_event(message_name())
 			{
 			}
 

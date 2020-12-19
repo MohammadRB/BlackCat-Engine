@@ -5,7 +5,7 @@
 #include "Core/Container/bcIterator.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Concurrency/bcThreadManager.h"
-#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Utility/bcDelegate.h"
 #include "Core/Utility/bcTemplateMetaType.h"
 #include "Core/bcEvent.h"
@@ -216,15 +216,12 @@ namespace black_cat
 
 			when_all(std::begin(l_tasks), std::end(l_tasks));
 
-#ifdef BC_DEBUG
 			try
 			{
-#endif
 				for (bc_task< void >& l_task : l_tasks) // Call get to find if tasks has thrown any exception 
 				{
 					l_task.get();
 				}
-#ifdef BC_DEBUG
 			}
 			catch (std::exception & p_exception)
 			{
@@ -233,7 +230,6 @@ namespace black_cat
 
 				throw;
 			}
-#endif
 		}
 		
 		inline bc_thread_manager* bc_concurrency::_get_thread_manager()

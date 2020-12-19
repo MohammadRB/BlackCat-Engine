@@ -1,7 +1,7 @@
 // [10/24/2016 MRB]
 
 #include "PlatformImp/PlatformImpPCH.h"
-#include "Core/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Platform/bcEvent.h"
 #include "PlatformImp/bcExport.h"
 #include "PlatformImp/Application/bcConsoleWindow.h"

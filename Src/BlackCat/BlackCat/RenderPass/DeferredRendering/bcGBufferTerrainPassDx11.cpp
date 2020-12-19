@@ -9,13 +9,14 @@
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/State/bcVertexLayout.h"
-#include "Game/System/Input/bcCameraFrustum.h"
+#include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferTerrainPassDx11.h"
 #include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
 #include "BlackCat/bcException.h"
+#include "BlackCat/bcConstant.h"
 
 namespace black_cat
 {
@@ -42,32 +43,9 @@ namespace black_cat
 	void bc_gbuffer_terrain_pass_dx11::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		graphic::bc_device& l_device = p_render_system.get_device();
-		graphic::bc_texture2d l_back_buffer_texture = l_device.get_back_buffer_texture();
+		const graphic::bc_texture2d l_back_buffer_texture = l_device.get_back_buffer_texture();
 
-		m_command_list = l_device.create_command_list();
-		m_pipeline_state = p_render_system.create_device_pipeline_state
-		(
-			"terrain_vs",
-			"terrain_hs",
-			"terrain_ds",
-			nullptr,
-			"terrain_gbuffer_ps",
-			game::bc_vertex_type::pos_tex,
-			game::bc_blend_type::opaque,
-			game::bc_depth_stencil_type::depth_less_stencil_off,
-			game::bc_rasterizer_type::fill_solid_cull_back,
-			0x1,
-			{
-				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1)->get_format(),
-				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2)->get_format()
-			},
-			get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
-			game::bc_multi_sample_type::c1_q1
-		);
-
-		auto l_resource_configure = graphic::bc_graphic_resource_builder();
-
-		auto l_parameter_cbuffer_config = l_resource_configure
+		auto l_parameter_cbuffer_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_buffer
 			(
@@ -78,7 +56,9 @@ namespace black_cat
 			.as_constant_buffer();
 
 		m_parameter_cbuffer = l_device.create_buffer(l_parameter_cbuffer_config, nullptr);
-
+		m_device_compute_state = p_render_system.create_device_compute_state("terrain_chunk_info");
+		m_run_chunk_info_shader = true;
+		
 		graphic::bc_device_parameters l_old_parameters
 		(
 			0,
@@ -95,9 +75,6 @@ namespace black_cat
 		);
 
 		after_reset(game::bc_render_pass_reset_param(p_render_system, l_device, l_old_parameters, l_new_parameters));
-
-		m_device_compute_state = p_render_system.create_device_compute_state("terrain_chunk_info");
-		m_run_chunk_info_shader = true;
 	}
 
 	void bc_gbuffer_terrain_pass_dx11::update(const game::bc_render_pass_update_param& p_update_param)
@@ -127,7 +104,7 @@ namespace black_cat
 				return;
 			}
 			
-			p_param.m_render_thread.start(m_command_list.get());
+			p_param.m_render_thread.start();
 
 			for (auto& l_height_map : l_height_maps)
 			{
@@ -136,16 +113,20 @@ namespace black_cat
 				auto l_compute_state = p_param.m_render_system.create_compute_state
 				(
 					m_device_compute_state.get(),
-					l_height_map_dx11.get_width() / s_shader_thread_group_size,
-					l_height_map_dx11.get_height() / s_shader_thread_group_size,
-					1,
 					{},
 					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11.get_height_map_view()) },
 					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11.get_chunk_info_unordered_view()) },
 					{ graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11.get_parameter_cbuffer()) }
 				);
 
-				p_param.m_render_thread.run_compute_shader(*l_compute_state);
+				p_param.m_render_thread.bind_compute_state(*l_compute_state);
+				p_param.m_render_thread.dispatch
+				(
+					l_height_map_dx11.get_width() / s_shader_thread_group_size,
+					l_height_map_dx11.get_height() / s_shader_thread_group_size,
+					1
+				);
+				p_param.m_render_thread.unbind_compute_state(*l_compute_state);
 			}
 
 			p_param.m_render_thread.finish();
@@ -165,20 +146,15 @@ namespace black_cat
 		l_parameter.m_frustum_planes[4] = _plane_from_3_point(l_camera_extends[2], l_camera_extends[6], l_camera_extends[7]);
 		l_parameter.m_frustum_planes[5] = _plane_from_3_point(l_camera_extends[7], l_camera_extends[4], l_camera_extends[0]);
 		
-		p_param.m_render_thread.start(m_command_list.get());
-
-		p_param.m_frame_renderer.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, p_param.m_render_camera);
-		p_param.m_render_thread.update_subresource(m_parameter_cbuffer.get(), 0, &l_parameter, 0, 0);
-		
+		p_param.m_render_thread.start();
 		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
-		p_param.m_render_thread.clear_buffers(core::bc_vector4f(0, 0, 255, 0), 1, 0);
+
+		p_param.m_render_thread.update_subresource(m_parameter_cbuffer.get(), 0, &l_parameter, 0, 0);
 		
 		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, m_height_maps_render_buffer, p_param.m_render_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.finish();
-
-		m_command_list->finished();
 	}
 
 	void bc_gbuffer_terrain_pass_dx11::cleanup_frame(const game::bc_render_pass_render_param& p_param)
@@ -221,16 +197,35 @@ namespace black_cat
 				graphic::bc_texture_address_mode::wrap,
 				graphic::bc_texture_address_mode::wrap
 			).as_sampler_state();
-			const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_view);
-			const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_view_1);
-			const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_view_2);
+			const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
+			const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_1);
+			const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_2);
 			const auto l_viewport = graphic::bc_viewport::default_config(p_param.m_device.get_back_buffer_width(), p_param.m_device.get_back_buffer_height());
 
 			m_height_map_sampler = p_param.m_device.create_sampler_state(l_height_map_sampler_config);
 			m_texture_sampler = p_param.m_device.create_sampler_state(l_texture_sampler_config);
+			m_device_pipeline_state = p_param.m_render_system.create_device_pipeline_state
+			(
+				"terrain_vs",
+				"terrain_hs",
+				"terrain_ds",
+				nullptr,
+				"terrain_gbuffer_ps",
+				game::bc_vertex_type::pos_tex,
+				game::bc_blend_type::opaque,
+				game::bc_depth_stencil_type::depth_less_stencil_off,
+				game::bc_rasterizer_type::fill_solid_cull_back,
+				0x1,
+				{
+					get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1)->get_format(),
+					get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2)->get_format()
+				},
+				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
+				game::bc_multi_sample_type::c1_q1
+			);
 			m_render_pass_state = p_param.m_render_system.create_render_pass_state
 			(
-				m_pipeline_state.get(),
+				m_device_pipeline_state.get(),
 				l_viewport,
 				{ *l_diffuse_map_view, *l_normal_map_view },
 				*l_depth_stencil_view,
@@ -238,6 +233,7 @@ namespace black_cat
 					graphic::bc_sampler_parameter(0, core::bc_enum:: or ({ graphic::bc_shader_type::pixel }), m_height_map_sampler.get()),
 					graphic::bc_sampler_parameter(0, core::bc_enum:: or ({ graphic::bc_shader_type::pixel }), m_texture_sampler.get())
 				},
+				{},
 				{},
 				{
 					p_param.m_render_system.get_global_cbuffer(),
@@ -249,13 +245,12 @@ namespace black_cat
 
 	void bc_gbuffer_terrain_pass_dx11::destroy(game::bc_render_system& p_render_system)
 	{
+		m_device_pipeline_state.reset();
 		m_device_compute_state.reset();
-		m_pipeline_state.reset();
 		m_render_pass_state.reset();
 		m_parameter_cbuffer.reset();
 		m_height_map_sampler.reset();
 		m_texture_sampler.reset();
-		m_command_list.reset();
 	}
 
 	void bc_gbuffer_terrain_pass_dx11::update_chunk_infos()

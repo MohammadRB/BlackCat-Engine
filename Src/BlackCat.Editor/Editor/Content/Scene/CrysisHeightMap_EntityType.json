@@ -23,6 +23,21 @@
       ]
     },
     {
+      "name": "wind",
+      "components": [
+        {
+          "name": "wind",
+          "parameters": {
+            "type": "direct",
+            "direction_x": 0.0,
+            "direction_y": 0.0,
+            "direction_z": 1.0,
+            "power": 2.0
+          }
+        }
+      ]
+    },
+    {
       "name": "point_light_1",
       "components": [
         {
@@ -181,6 +196,60 @@
         {
           "name": "rigid_static",
           "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "sample_fire",
+      "controller": "fire",
+      "components": [
+        {
+          "name": "light",
+          "parameters": {
+            "type": "point",
+            "position_x": 0.0,
+            "position_y": 1.0,
+            "position_z": 0.0,
+            "radius": 20.0,
+            "color_r": 1.0,
+            "color_g": 0.4,
+            "color_b": 0.001,
+            "intensity": 3.0,
+            "particle_cast": true,
+            "particle_intensity": 50.0
+          }
+        },
+        {
+          "name": "particle_emitter",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "sample_explosion",
+      "controller": "explosion",
+      "components": [
+        {
+          "name": "light",
+          "parameters": {
+            "type": "point",
+            "position_x": 0.0,
+            "position_y": 1.0,
+            "position_z": 0.0,
+            "radius": 30.0,
+            "color_r": 0.9,
+            "color_g": 0.4,
+            "color_b": 0.001,
+            "intensity": 5.0,
+            "particle_cast": true,
+            "particle_intensity": 8.0
+          }
+        },
+        {
+          "name": "particle_emitter",
+          "parameters": {
+            "emitter_name": "big_explosion"
+          }
         }
       ]
     }

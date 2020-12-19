@@ -33,10 +33,8 @@ namespace black_cat
 		}
 
 		bc_compute_state::bc_compute_state(bc_compute_state&& p_other) noexcept
-			: m_compute_state(p_other.m_compute_state),
-			m_dispatch_x(p_other.m_dispatch_x),
-			m_dispatch_y(p_other.m_dispatch_y),
-			m_dispatch_z(p_other.m_dispatch_z),
+			: bc_ref_count(std::move(p_other)),
+			m_compute_state(p_other.m_compute_state),
 			m_samplers(std::move(p_other.m_samplers)),
 			m_resource_views(std::move(p_other.m_resource_views)),
 			m_unordered_views(std::move(p_other.m_unordered_views)),
@@ -44,12 +42,14 @@ namespace black_cat
 		{	
 		}
 
+		bc_compute_state::~bc_compute_state()
+		{
+		}
+
 		bc_compute_state& bc_compute_state::operator=(bc_compute_state&& p_other) noexcept
 		{
+			bc_ref_count::operator=(std::move(p_other));
 			m_compute_state = p_other.m_compute_state;
-			m_dispatch_x = p_other.m_dispatch_x;
-			m_dispatch_y = p_other.m_dispatch_y;
-			m_dispatch_z = p_other.m_dispatch_z;
 			m_samplers = std::move(p_other.m_samplers);
 			m_resource_views = std::move(p_other.m_resource_views);
 			m_unordered_views = std::move(p_other.m_unordered_views);
@@ -59,17 +59,12 @@ namespace black_cat
 		}
 
 		bc_compute_state::bc_compute_state(graphic::bc_device_compute_state p_compute_state,
-			bcUINT32 p_dispatch_x,
-			bcUINT32 p_dispatch_y,
-			bcUINT32 p_dispatch_z,
 			bc_compute_state_sampler_array&& p_samplers,
 			bc_compute_state_resource_view_array&& p_shader_views,
 			bc_compute_state_unordered_view_array&& p_unordered_views,
 			bc_compute_state_constant_buffer_array&& p_cbuffers)
-			: m_compute_state(p_compute_state),
-			m_dispatch_x(p_dispatch_x),
-			m_dispatch_y(p_dispatch_y),
-			m_dispatch_z(p_dispatch_z),
+			: bc_ref_count(),
+			m_compute_state(p_compute_state),
 			m_samplers(std::move(p_samplers)),
 			m_resource_views(std::move(p_shader_views)),
 			m_unordered_views(std::move(p_unordered_views)),

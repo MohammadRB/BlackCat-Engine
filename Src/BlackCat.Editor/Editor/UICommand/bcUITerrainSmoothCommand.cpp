@@ -179,9 +179,6 @@ namespace black_cat
 			auto l_compute_state = p_render_system.create_compute_state
 			(
 				m_command_state.m_device_compute_state.get(),
-				l_thread_group_count,
-				l_thread_group_count,
-				1,
 				{},
 				{},
 				{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_height_map.get_height_map_unordered_view()) },
@@ -201,7 +198,9 @@ namespace black_cat
 				0,
 				0
 			);
-			p_render_thread.run_compute_shader(*l_compute_state.get());
+			p_render_thread.bind_compute_state(*l_compute_state.get());
+			p_render_thread.dispatch(l_thread_group_count, l_thread_group_count, 1);
+			p_render_thread.unbind_compute_state(*l_compute_state.get());
 
 			p_render_thread.finish();
 			m_command_state.m_device_command_list->finished();

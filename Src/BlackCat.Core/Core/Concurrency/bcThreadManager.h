@@ -54,8 +54,6 @@ namespace black_cat
 
 			bool try_steal(delegate_type& p_task);
 
-		protected:
-
 		private:
 			//bc_deque_frame< delegate_type > m_deque; TODO
 			bc_deque< delegate_type > m_deque;
@@ -83,8 +81,6 @@ namespace black_cat
 
 			void clear();
 
-		protected:
-
 		private:
 			core_platform::bc_atomic_flag m_flag;
 		};
@@ -93,7 +89,7 @@ namespace black_cat
 		{
 			policy_none = bc_enum::value(0),					// Push task in local task queue of current thread
 			policy_fairness = bc_enum::value(1),				// Push task in global task queue
-			lifetime_exceed_frame = bc_enum::value(2)		// Lifetime of task exceed frame
+			lifetime_exceed_frame = bc_enum::value(2)			// Lifetime of task exceed frame
 		};
 
 		class BC_CORE_DLL bc_thread_manager : public bc_iservice
@@ -125,12 +121,10 @@ namespace black_cat
 
 			void interrupt_thread(core_platform::bc_thread::id p_thread_id);
 
-			void check_for_interruption() const;
+			void check_for_interruption();
 
 			template<typename T>
 			bc_task< T > start_new_task(bc_delegate< T() >&& p_delegate, bc_task_creation_option p_option = bc_task_creation_option::policy_none);
-
-		protected:
 
 		private:
 			void _initialize(bcSIZE p_thread_count, bcSIZE p_reserved_thread_count);
@@ -138,10 +132,6 @@ namespace black_cat
 			void _restart_workers();
 
 			void _stop_workers();
-
-			static void _thread_data_cleanup(_thread_data*)
-			{
-			}
 
 			void _push_worker();
 
@@ -155,9 +145,9 @@ namespace black_cat
 
 			void _worker_spin(bcUINT32 p_my_index);
 
-			static const bcSIZE s_worker_switch_threshold = 10;
-			static const bcSIZE s_new_thread_threshold = 10;
-			static const bcSIZE s_num_thread_in_spin = 0;
+			static constexpr bcSIZE s_worker_switch_threshold = 20;
+			static constexpr bcSIZE s_new_thread_threshold = 5;
+			static constexpr bcSIZE s_num_thread_in_spin = 0;
 
 			bcSIZE m_thread_count;
 			bcSIZE m_reserved_thread_count;
@@ -167,11 +157,10 @@ namespace black_cat
 			core_platform::bc_mutex m_cvariable_mutex;
 			core_platform::bc_condition_variable m_cvariable;
 
+			mutable core_platform::bc_shared_mutex m_threads_mutex;
 			bc_vector_program< bc_unique_ptr<_thread_data> > m_threads;
-			//bc_concurrent_queue_frame< task_wrapper_type > m_global_queue; TODO
 			bc_concurrent_queue< task_type > m_global_queue;
 			core_platform::bc_thread_local< _thread_data > m_my_data;
-			mutable core_platform::bc_shared_mutex m_threads_mutex;
 		};
 
 		class bc_thread_manager::_thread_data
@@ -216,8 +205,6 @@ namespace black_cat
 			{
 				return m_thread;
 			}
-
-		protected:
 
 		private:
 			bcUINT32 m_my_index;

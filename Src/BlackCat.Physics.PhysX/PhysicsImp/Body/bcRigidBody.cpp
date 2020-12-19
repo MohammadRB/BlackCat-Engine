@@ -184,14 +184,14 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_rigid_body< g_api_physx >::set_linear_velocity(const core::bc_vector3f& p_velociy) noexcept
+		void bc_platform_rigid_body< g_api_physx >::set_linear_velocity(const core::bc_vector3f& p_velocity) noexcept
 		{
 			auto* l_px_actor = static_cast< physx::PxRigidBody* >
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_body& >(*this)).get_platform_pack().m_px_object
 			);
 
-			l_px_actor->setLinearVelocity(bc_to_right_hand(p_velociy));
+			l_px_actor->setLinearVelocity(bc_to_right_hand(p_velocity));
 		}
 
 		template<>
@@ -209,14 +209,14 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_rigid_body< g_api_physx >::set_angular_velocity(const core::bc_vector3f& p_velociy)
+		void bc_platform_rigid_body< g_api_physx >::set_angular_velocity(const core::bc_vector3f& p_velocity)
 		{
 			auto* l_px_actor = static_cast< physx::PxRigidBody* >
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_body& >(*this)).get_platform_pack().m_px_object
 			);
 
-			l_px_actor->setAngularVelocity(bc_to_right_hand(p_velociy));
+			l_px_actor->setAngularVelocity(bc_to_right_hand(p_velocity));
 		}
 
 		template<>

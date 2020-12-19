@@ -147,7 +147,7 @@ namespace black_cat
 		void _save_texture(bc_device* p_device, bc_texture2d* p_texture, bc_image_format p_format, const bcECHAR* p_file_name)
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(p_device->get_platform_pack().m_context_mutex);
+				core_platform::bc_mutex_guard l_guard(p_device->get_platform_pack().m_immediate_context_mutex);
 
 				if (p_format == bc_image_format::dds)
 				{
@@ -1040,7 +1040,7 @@ namespace black_cat
 			dx_call(m_pack.m_device->CreateBlendState(&l_dx_blend_desc, &l_dx_blend_state));
 			dx_call(m_pack.m_device->CreateDepthStencilState(&l_dx_depth_stencil_desc, &l_dx_depth_stencil));
 			dx_call(m_pack.m_device->CreateRasterizerState(&l_dx_rasterizer_desc, &l_dx_rasterizer_state));
-			if (p_config.m_vertex_shader != nullptr)
+			if (p_config.m_vertex_shader != nullptr && !l_dx_input_elements.empty())
 			{
 				dx_call(m_pack.m_device->CreateInputLayout
 				(
@@ -1070,7 +1070,10 @@ namespace black_cat
 			l_pipeline_state_poxy->m_blend_state->Release();
 			l_pipeline_state_poxy->m_depth_stencil_state->Release();
 			l_pipeline_state_poxy->m_rasterizer_state->Release();
-			l_pipeline_state_poxy->m_input_layout->Release();
+			if(l_pipeline_state_poxy->m_input_layout)
+			{
+				l_pipeline_state_poxy->m_input_layout->Release();
+			}
 
 			return l_pipeline_state_ptr;
 		}
@@ -1080,7 +1083,7 @@ namespace black_cat
 		bc_device_compute_state_ptr bc_platform_device< g_api_dx11 >::create_compute_state(bc_device_compute_state_config& p_config)
 		{
 			/*auto l_compute_state_proxy = allocate< bc_device_compute_state_proxy >();*/
-			auto l_compute_state_proxy = bcNew(bc_device_compute_state_proxy, core::bc_alloc_type::unknown);
+			auto* l_compute_state_proxy = bcNew(bc_device_compute_state_proxy, core::bc_alloc_type::unknown);
 			
 			l_compute_state_proxy->m_config = std::move(p_config);
 
@@ -1095,10 +1098,36 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
+		bc_device_pipeline_ptr bc_platform_device< g_api_dx11 >::get_default_pipeline()
+		{
+			auto* l_pipeline_proxy = bcNew(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
+
+			ID3D11Query* l_query;
+
+			D3D11_QUERY_DESC l_query_desc;
+			l_query_desc.Query = D3D11_QUERY_PIPELINE_STATISTICS;
+			l_query_desc.MiscFlags = 0;
+			dx_call(m_pack.m_device->CreateQuery(&l_query_desc, &l_query));
+
+			bc_device_pipeline::platform_pack l_pack;
+			l_pack.m_pipeline_proxy = l_pipeline_proxy;
+			l_pack.m_pipeline_proxy->m_device = this;
+			l_pack.m_pipeline_proxy->m_query = l_query;
+			l_pack.m_pipeline_proxy->m_context = m_pack.m_immediate_context.Get();
+
+			bc_device_pipeline l_pipeline(l_pack);
+			bc_device_pipeline_ptr l_pipeline_ptr(l_pipeline);
+
+			l_query->Release();
+
+			return l_pipeline_ptr;
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
 		bc_device_pipeline_ptr bc_platform_device< g_api_dx11 >::create_pipeline()
 		{
-			/*auto l_pipeline_proxy = allocate< bc_device_pipeline_proxy >();*/
-			auto l_pipeline_proxy = bcNew(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
+			auto* l_pipeline_proxy = bcNew(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
 
 			ID3D11Query* l_query;
 			ID3D11DeviceContext* l_context;
@@ -1118,8 +1147,8 @@ namespace black_cat
 			bc_device_pipeline l_pipeline(l_pack);
 			bc_device_pipeline_ptr l_pipeline_ptr(l_pipeline);
 
-			l_pack.m_pipeline_proxy->m_context->Release();
-			l_pack.m_pipeline_proxy->m_query->Release();
+			l_query->Release();
+			l_context->Release();
 
 			return l_pipeline_ptr;
 		}
@@ -1173,7 +1202,7 @@ namespace black_cat
 			D3D11_MAPPED_SUBRESOURCE l_mapped_resource;
 
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_pack.m_context_mutex);
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_pack.m_immediate_context_mutex);
 
 				dx_call(m_pack.m_immediate_context->Map
 				(
@@ -1197,7 +1226,7 @@ namespace black_cat
 		void bc_platform_device< g_api_dx11 >::unmap_resource(bc_iresource& p_resource, bcUINT p_subresource)
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_pack.m_context_mutex);
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_pack.m_immediate_context_mutex);
 
 				m_pack.m_immediate_context->Unmap(p_resource.get_platform_pack().m_resource, p_subresource);
 			}

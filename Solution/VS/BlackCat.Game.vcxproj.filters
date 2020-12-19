@@ -55,6 +55,12 @@
     <Filter Include="Game\Query">
       <UniqueIdentifier>{101cc54a-71fd-43ba-a16c-23d81b6728ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\System\Render\Particle">
+      <UniqueIdentifier>{9c8133d3-9034-4fe9-a69e-82d71719f53c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Scene\Component\Controller">
+      <UniqueIdentifier>{b827ac91-0489-44e4-9dc4-498aa48c50b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h">
@@ -222,9 +228,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassManager.h">
       <Filter>Game\System\Render\Pass</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassState.h">
-      <Filter>Game\System\Render\Pass</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcDirectLight.h">
       <Filter>Game\System\Render\Light</Filter>
     </ClInclude>
@@ -323,6 +326,45 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightInstance.h">
       <Filter>Game\System\Render\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleManager.h">
+      <Filter>Game\System\Render\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleBuilder.h">
+      <Filter>Game\System\Render\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleEmitter.h">
+      <Filter>Game\System\Render\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcParticleEmittersQuery.h">
+      <Filter>Game\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcRenderPassState.h">
+      <Filter>Game\System\Render\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcDefaultRenderThread.h">
+      <Filter>Game\System\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcWindComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneWindQuery.h">
+      <Filter>Game\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorController.h">
+      <Filter>Game\Object\Scene\ActorComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcParticleEmitterComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcActorEventRemovedFromScene.h">
+      <Filter>Game\Object\Scene\Component\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Controller\bcFireActorController.h">
+      <Filter>Game\Object\Scene\Component\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Controller\bcExplosionActorController.h">
+      <Filter>Game\Object\Scene\Component\Controller</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -446,9 +488,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassManager.cpp">
       <Filter>Game\System\Render\Pass</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassState.cpp">
-      <Filter>Game\System\Render\Pass</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightManager.cpp">
       <Filter>Game\System\Render\Light</Filter>
     </ClCompile>
@@ -481,6 +520,33 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightInstance.cpp">
       <Filter>Game\System\Render\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleBuilder.cpp">
+      <Filter>Game\System\Render\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleManager.cpp">
+      <Filter>Game\System\Render\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcRenderPassState.cpp">
+      <Filter>Game\System\Render\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcDefaultRenderThread.cpp">
+      <Filter>Game\System\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcWindComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleEmitter.cpp">
+      <Filter>Game\System\Render\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcParticleEmitterComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Controller\bcFireActorController.cpp">
+      <Filter>Game\Object\Scene\Component\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Controller\bcExplosionActorController.cpp">
+      <Filter>Game\Object\Scene\Component\Controller</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

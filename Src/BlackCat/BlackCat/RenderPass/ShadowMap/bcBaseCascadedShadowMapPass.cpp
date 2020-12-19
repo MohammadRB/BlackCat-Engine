@@ -6,6 +6,7 @@
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/System/Input/bcCamera.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/Object/Scene/bcScene.h"
@@ -66,8 +67,6 @@ namespace black_cat
 	
 	void bc_base_cascaded_shadow_map_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
-		m_state->m_command_list = p_render_system.get_device().create_command_list();
-
 		initialize_pass(p_render_system);
 
 		if(m_my_index == 0)
@@ -119,7 +118,7 @@ namespace black_cat
 			m_state->m_light_instance_states.pop_back();
 		}
 
-		p_param.m_render_thread.start(m_state->m_command_list.get());
+		p_param.m_render_thread.start();
 
 		for (bcSIZE l_light_ite = 0; l_light_ite < l_direct_lights.size(); ++l_light_ite)
 		{
@@ -216,7 +215,6 @@ namespace black_cat
 		p_param.m_frame_renderer.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, p_param.m_render_camera);
 
 		p_param.m_render_thread.finish();
-		m_state->m_command_list->finished();
 
 		if(m_my_index == 0)
 		{
@@ -257,7 +255,6 @@ namespace black_cat
 		}
 		
 		m_state->m_light_instance_states.clear();
-		m_state->m_command_list.reset();
 
 		destroy_pass(p_render_system);
 

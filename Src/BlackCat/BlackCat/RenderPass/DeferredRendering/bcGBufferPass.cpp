@@ -5,35 +5,16 @@
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferPass.h"
+#include "BlackCat/bcConstant.h"
 
 namespace black_cat
 {
 	void bc_gbuffer_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
-
-		m_command_list = l_device.create_command_list();
-		m_pipeline_state = p_render_system.create_device_pipeline_state
-		(
-			"gbuffer_vs",
-			nullptr,
-			nullptr,
-			nullptr,
-			"gbuffer_ps",
-			game::bc_vertex_type::pos_tex_nor_tan,
-			game::bc_blend_type::opaque,
-			game::bc_depth_stencil_type::depth_less_stencil_off,
-			game::bc_rasterizer_type::fill_solid_cull_back,
-			0x1,
-			{
-				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1)->get_format(),
-				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2)->get_format()
-			},
-			get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
-			game::bc_multi_sample_type::c1_q1
-		);
 
 		graphic::bc_device_parameters l_old_parameters
 		(
@@ -71,15 +52,13 @@ namespace black_cat
 
 	void bc_gbuffer_pass::execute(const game::bc_render_pass_render_param& p_param)
 	{
-		p_param.m_render_thread.start(m_command_list.get());
+		p_param.m_render_thread.start();
 		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
 
 		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, m_render_states, p_param.m_render_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.finish();
-
-		m_command_list->finished();
 	}
 
 	void bc_gbuffer_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
@@ -105,9 +84,9 @@ namespace black_cat
 			return;
 		}
 
-		const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_view);
-		const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_view_1);
-		const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_view_2);
+		const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
+		const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_1);
+		const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_2);
 		const auto l_viewport = graphic::bc_viewport::default_config(p_param.m_device.get_back_buffer_width(), p_param.m_device.get_back_buffer_height());
 		const auto l_sampler_config = graphic::bc_graphic_resource_builder().as_resource().as_sampler_state
 		(
@@ -118,6 +97,25 @@ namespace black_cat
 		).as_sampler_state();
 
 		m_sampler_state = p_param.m_device.create_sampler_state(l_sampler_config);
+		m_pipeline_state = p_param.m_render_system.create_device_pipeline_state
+		(
+			"gbuffer_vs",
+			nullptr,
+			nullptr,
+			nullptr,
+			"gbuffer_ps",
+			game::bc_vertex_type::pos_tex_nor_tan,
+			game::bc_blend_type::opaque,
+			game::bc_depth_stencil_type::depth_less_stencil_off,
+			game::bc_rasterizer_type::fill_solid_cull_back,
+			0x1,
+			{
+				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1)->get_format(),
+				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2)->get_format()
+			},
+			get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
+			game::bc_multi_sample_type::c1_q1
+		);
 		m_render_pass_state = p_param.m_render_system.create_render_pass_state
 		(
 			m_pipeline_state.get(),
@@ -125,6 +123,7 @@ namespace black_cat
 			{ *l_diffuse_map_view, *l_normal_map_view },
 			*l_depth_stencil_view,
 			{ graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler_state.get()) },
+			{},
 			{},
 			{
 				p_param.m_render_system.get_global_cbuffer()
@@ -137,6 +136,5 @@ namespace black_cat
 		m_render_pass_state.reset();
 		m_sampler_state.reset();
 		m_pipeline_state.reset();
-		m_command_list.reset();
 	}
 }

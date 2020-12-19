@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "GraphicImp/PipelineStage/bcPixelStage.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "GraphicImp/Resource/View/bcDepthStencilView.h"

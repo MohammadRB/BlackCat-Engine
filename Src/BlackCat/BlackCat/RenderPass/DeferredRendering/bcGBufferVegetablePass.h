@@ -3,10 +3,9 @@
 #pragma once
 
 #include "Core/Messaging/Query/bcQueryResult.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
-#include "Game/System/Render/Pass/bcRenderPassState.h"
+#include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/Query/bcMainCameraRenderStateQuery.h"
@@ -34,7 +33,6 @@ namespace black_cat
 		void destroy(game::bc_render_system& p_render_system) override;
 
 	private:
-		graphic::bc_device_command_list_ptr m_command_list;
 		graphic::bc_sampler_state_ptr m_sampler_state;
 		graphic::bc_device_pipeline_state_ptr m_leaf_pipeline_state;
 		graphic::bc_device_pipeline_state_ptr m_trunk_pipeline_state;

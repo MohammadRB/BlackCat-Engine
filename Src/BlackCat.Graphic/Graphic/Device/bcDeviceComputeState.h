@@ -42,6 +42,8 @@ namespace black_cat
 
 			bool is_valid() const noexcept override;
 
+			void set_debug_name(const bcCHAR* p_name) noexcept override;
+			
 			bool operator==(const bc_platform_device_compute_state& p_other) const noexcept;
 
 			bool operator!=(const bc_platform_device_compute_state& p_other) const noexcept;
@@ -54,8 +56,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
 
 		private:
 			platform_pack m_pack;

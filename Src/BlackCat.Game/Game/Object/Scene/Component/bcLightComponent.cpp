@@ -1,6 +1,8 @@
 // [03/01/2019 MRB]
 
 #include "Game/GamePCH.h"
+
+#include "Core/Utility/bcUtility.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Render/Light/bcLightManager.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
@@ -33,7 +35,7 @@ namespace black_cat
 			return m_light->get_transformation();
 		}
 
-		const bc_light* bc_light_component::get_light() const noexcept
+		bc_light* bc_light_component::get_light() noexcept
 		{
 			return m_light.get();
 		}
@@ -77,13 +79,17 @@ namespace black_cat
 				const auto l_color_g = p_parameters.get_value_throw< bcFLOAT >("color_g");
 				const auto l_color_b = p_parameters.get_value_throw< bcFLOAT >("color_b");
 				const auto l_intensity = p_parameters.get_value_throw< bcFLOAT >("intensity");
+				const auto l_particle_cast = bc_null_default(p_parameters.get_value<bool>("particle_cast"), false);
+				const auto l_particle_intensity = bc_null_default(p_parameters.get_value<bcFLOAT>("particle_intensity"), l_intensity);
 
 				m_light = l_light_manager.add_light(bc_point_light
 				(
 					core::bc_vector3f(l_position_x, l_position_y, l_position_z),
 					l_radius, 
 					core::bc_vector3f(l_color_r, l_color_g, l_color_b),
-					l_intensity
+					l_intensity,
+					l_particle_cast,
+					l_particle_intensity
 				));
 			}
 			else if(l_light_type == "spot")
@@ -119,18 +125,18 @@ namespace black_cat
 
 		void bc_light_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
-			auto* l_world_transform_event = core::bc_event::event_as<bc_actor_event_world_transform>(p_event);
+			const auto* l_world_transform_event = core::bc_imessage::as<bc_actor_event_world_transform>(p_event);
 			if(l_world_transform_event)
 			{
 				// TODO what if light is part of a mesh
 				m_light->set_transformation(l_world_transform_event->get_transform());
 
-				const auto l_bound_box = m_light->get_bound_box();
+				const auto& l_bound_box = m_light->get_bound_box();
 				p_actor.add_event(bc_actor_event_bound_box_changed(l_bound_box));
 			}
 		}
 		
-		void bc_light_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_light_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock)
 		{
 		}
 	}

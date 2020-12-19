@@ -2,10 +2,13 @@
 
 #pragma once
 
+#include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/View/bcDepthStencilView.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
+#include "Game/Query/bcSceneLightQuery.h"
+#include "Game/Query/bcSceneWindQuery.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -38,5 +41,10 @@ namespace black_cat
 		graphic::bc_depth_stencil_view_ptr m_depth_stencil_view;
 		graphic::bc_render_target_view_ptr m_diffuse_map_view;
 		graphic::bc_render_target_view_ptr m_normal_map_view;
+
+		core::bc_query_result< game::bc_scene_light_query > m_lights_query;
+		core::bc_vector_movable< game::bc_light_instance > m_lights_query_result;
+		core::bc_query_result< game::bc_scene_wind_query > m_winds_query;
+		core::bc_vector<game::bc_wind> m_winds_query_result;
 	};
 }

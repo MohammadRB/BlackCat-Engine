@@ -12,7 +12,17 @@ namespace black_cat
 		class bc_point_light
 		{
 		public:
-			bc_point_light(const core::bc_vector3f& p_position, bcFLOAT p_radius, const core::bc_vector3f& p_color, bcFLOAT p_intensity);
+			bc_point_light(const core::bc_vector3f& p_position, 
+				bcFLOAT p_radius, 
+				const core::bc_vector3f& p_color, 
+				bcFLOAT p_intensity);
+
+			bc_point_light(const core::bc_vector3f& p_position, 
+				bcFLOAT p_radius, 
+				const core::bc_vector3f& p_color, 
+				bcFLOAT p_intensity,
+				bool p_particle_cast,
+				bcFLOAT p_particle_intensity);
 
 			bc_point_light(const bc_point_light&) = default;
 
@@ -34,25 +44,55 @@ namespace black_cat
 
 			void set_color(const core::bc_vector3f& p_color) noexcept;
 
-			const bcFLOAT& get_intensity() const noexcept;
+			bcFLOAT get_intensity() const noexcept;
 
 			void set_intensity(bcFLOAT p_intensity) noexcept;
 
+			bool get_particle_cast() const noexcept;
+
+			void set_particle_cast(bool p_particle_cast) noexcept;
+
+			bcFLOAT get_particle_intensity() const noexcept;
+
+			void set_particle_intensity(bcFLOAT p_intensity) noexcept;
+			
 		private:
 			core::bc_vector3f m_position;
 			bcFLOAT m_radius;
 			core::bc_vector3f m_color;
 			bcFLOAT m_intensity;
+			bool m_particle_cast;
+			bcFLOAT m_particle_intensity;
 		};
 
 		inline bc_point_light::bc_point_light(const core::bc_vector3f& p_position,
 			bcFLOAT p_radius,
 			const core::bc_vector3f& p_color,
 			bcFLOAT p_intensity)
+			: bc_point_light
+			(
+				p_position,
+				p_radius,
+				p_color,
+				p_intensity,
+				false,
+				0
+			)
+		{
+		}
+
+		inline bc_point_light::bc_point_light(const core::bc_vector3f& p_position,
+			bcFLOAT p_radius,
+			const core::bc_vector3f& p_color,
+			bcFLOAT p_intensity,
+			bool p_particle_cast,
+			bcFLOAT p_particle_intensity)
 			: m_position(p_position),
 			m_radius(p_radius),
 			m_color(p_color),
-			m_intensity(p_intensity)
+			m_intensity(p_intensity),
+			m_particle_cast(p_particle_cast),
+			m_particle_intensity(p_particle_intensity)
 		{
 		}
 
@@ -91,7 +131,7 @@ namespace black_cat
 			m_color = p_color;
 		}
 
-		inline const bcFLOAT& bc_point_light::get_intensity() const noexcept
+		inline bcFLOAT bc_point_light::get_intensity() const noexcept
 		{
 			return m_intensity;
 		}
@@ -99,6 +139,26 @@ namespace black_cat
 		inline void bc_point_light::set_intensity(bcFLOAT p_intensity) noexcept
 		{
 			m_intensity = p_intensity;
+		}
+
+		inline bool bc_point_light::get_particle_cast() const noexcept
+		{
+			return m_particle_cast;
+		}
+
+		inline void bc_point_light::set_particle_cast(bool p_particle_cast) noexcept
+		{
+			m_particle_cast = p_particle_cast;
+		}
+
+		inline bcFLOAT bc_point_light::get_particle_intensity() const noexcept
+		{
+			return m_particle_intensity;
+		}
+
+		inline void bc_point_light::set_particle_intensity(bcFLOAT p_intensity) noexcept
+		{
+			m_particle_intensity = p_intensity;
 		}
 	}
 }

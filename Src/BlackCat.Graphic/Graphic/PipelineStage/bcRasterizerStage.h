@@ -18,8 +18,6 @@ namespace black_cat
 		class bc_platform_device_pipeline;
 		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
 
-		// -- Rasterizer state -----------------------------------------------------------------------------
-
 		class bc_rasterizer_stage_state
 		{
 		public:
@@ -44,10 +42,6 @@ namespace black_cat
 			bc_pipeline_state_array_variable< const bc_viewport*, bc_render_api_info::number_of_rs_viewport_scissorrect() > m_viewports;
 			/*bc_pipeline_state_variable< int > m_scissor_rect_count;
 			bc_pipeline_state_array_variable< D3D11_RECT > m_scissor_rects;*/
-
-		protected:
-
-		private:
 		};
 
 		inline bc_rasterizer_stage_state::bc_rasterizer_stage_state()
@@ -75,8 +69,6 @@ namespace black_cat
 			m_viewports.reset_tracking();
 		}
 
-		// -- Rasterizer stage -----------------------------------------------------------------------------
-
 		template< bc_render_api TRenderApi >
 		struct bc_platform_rasterizer_stage_pack
 		{
@@ -97,9 +89,9 @@ namespace black_cat
 
 			bc_platform_rasterizer_stage& operator=(bc_platform_rasterizer_stage&&) noexcept;
 
-			void apply_required_state(bc_device_pipeline* p_pipeline);
+			void apply_required_state(bc_device_pipeline& p_pipeline);
 
-			void set_to_default_state(bc_device_pipeline* p_pipeline);
+			void set_to_default_state(bc_device_pipeline& p_pipeline);
 
 			bc_rasterizer_stage_state& get_required_state()
 			{
@@ -110,9 +102,7 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
-
+			
 		private:
 			platform_pack m_pack;
 			bc_rasterizer_stage_state m_required_state;

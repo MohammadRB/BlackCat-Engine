@@ -4,7 +4,6 @@
 
 #include "Core/Container/bcArray.h"
 #include "Core/Messaging/Query/bcQueryResult.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
@@ -71,11 +70,10 @@ namespace black_cat
 		graphic::bc_texture2d_ptr m_output_texture;
 		graphic::bc_resource_view_ptr m_output_texture_unordered_view;
 
-		graphic::bc_device_command_list_ptr m_command_list;
 		graphic::bc_device_compute_state_ptr m_device_compute_state;
 		game::bc_compute_state_ptr m_compute_state;
 
 		core::bc_query_result<game::bc_scene_light_query> m_lights_query;
-		core::bc_vector<game::bc_light_instance> m_lights;
+		core::bc_vector_movable<game::bc_light_instance> m_lights;
 	};
 }

@@ -1,8 +1,8 @@
 // [2/11/2015 MRB]
 
 #include "Core/CorePCH.h"
-#include "Core/Event/bcEventManager.h"
-#include "Core/Event/bcEventListenerHandle.h"
+#include "Core/Messaging/Event/bcEventManager.h"
+#include "Core/Messaging/Event/bcEventListenerHandle.h"
 
 namespace black_cat
 {

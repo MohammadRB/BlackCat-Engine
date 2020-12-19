@@ -38,27 +38,27 @@ namespace black_cat
 		}
 
 		template< bc_platform TPlatform, typename T >
-		void bc_platform_thread_local<TPlatform, T>::_platform_assign(this_type&& p_other)
+		void bc_platform_thread_local<TPlatform, T>::_platform_assign(bc_platform_thread_local&& p_other)
 		{
 			m_pack.m_tls_index = p_other.m_pack.m_tls_index;
 			p_other.m_pack.m_tls_index = TLS_OUT_OF_INDEXES;
 		}
 
 		template< bc_platform TPlatform, typename T >
-		bool bc_platform_thread_local<TPlatform, T>::_platform_set(type* p_pointer)
+		bool bc_platform_thread_local<TPlatform, T>::_platform_set(value_type* p_pointer)
 		{
 			return static_cast< bool >(TlsSetValue(m_pack.m_tls_index, p_pointer));
 		}
 
 		template< bc_platform TPlatform, typename T >
-		typename bc_platform_thread_local<TPlatform, T>::type* bc_platform_thread_local<TPlatform, T>::_platform_get() const
+		typename bc_platform_thread_local<TPlatform, T>::value_type* bc_platform_thread_local<TPlatform, T>::_platform_get() const
 		{
 			if(m_pack.m_tls_index == TLS_OUT_OF_INDEXES)
 			{
 				return nullptr;
 			}
 
-			type* l_pointer = static_cast< type* >(TlsGetValue(m_pack.m_tls_index));
+			value_type* l_pointer = static_cast< value_type* >(TlsGetValue(m_pack.m_tls_index));
 			return l_pointer;
 		}
 	}

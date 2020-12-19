@@ -140,7 +140,8 @@ namespace black_cat
 		template<>
 		inline void bc_platform_thread< bc_platform::win32 >::current_thread_yield_switch() noexcept
 		{
-			SwitchToThread();
+			//SwitchToThread();
+			Sleep(0);
 		}
 	}
 }

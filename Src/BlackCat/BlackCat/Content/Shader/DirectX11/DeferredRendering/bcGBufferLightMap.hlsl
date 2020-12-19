@@ -66,7 +66,7 @@ Texture2D<float4> g_diffuse_map						: register(BC_COMPUTE_STATE_T1);
 Texture2D<float4> g_normal_map						: register(BC_COMPUTE_STATE_T2);
 
 StructuredBuffer<direct_light> g_direct_lights		: register(BC_COMPUTE_STATE_T3);
-StructuredBuffer<point_light> g_point_lights			: register(BC_COMPUTE_STATE_T4);
+StructuredBuffer<point_light> g_point_lights		: register(BC_COMPUTE_STATE_T4);
 StructuredBuffer<spot_light> g_spot_lights			: register(BC_COMPUTE_STATE_T5);
 StructuredBuffer<cascade_shadow_map> g_shadow_maps	: register(BC_COMPUTE_STATE_T6);
 
@@ -74,7 +74,7 @@ Texture2DArray<float4> g_light_shadow_map_1			: register(BC_COMPUTE_STATE_T7);
 Texture2D<float4> g_light_shadow_map_2				: register(BC_COMPUTE_STATE_T8);
 Texture2D<float4> g_light_shadow_map_3				: register(BC_COMPUTE_STATE_T9);
 
-SamplerComparisonState g_pcf_sampler					: register(BC_COMPUTE_STATE_S0);
+SamplerComparisonState g_pcf_sampler				: register(BC_COMPUTE_STATE_S0);
 
 RWTexture2D<float4> g_output_texture                : register(BC_COMPUTE_STATE_U0);
 
@@ -228,7 +228,7 @@ float2 direct_light_shadow_map(direct_light p_light, float3 p_position, float p_
 
 	cascade_shadow_map l_shadow_map_data = g_shadow_maps[p_light.m_shadow_map_index];
 
-	float l_depth = p_linear_depth * (g_far_plan - g_near_plan);
+	float l_depth = p_linear_depth * (g_far_plane - g_near_plane);
 	int l_cascade_index = -1;
 
 	for (uint i = 0; i < l_shadow_map_data.m_shadow_map_count; ++i)
@@ -389,7 +389,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 
     float4 l_light_map = 0;
     float3 l_ambient_map = 0;
-	float l_linear_depth = bc_convert_to_linear_depth(l_depth, g_near_plan, g_far_plan);
+	float l_linear_depth = bc_convert_to_linear_depth(l_depth, g_near_plane, g_far_plane);
 
     for (uint l_d = 0; l_d < g_direct_lights_count; ++l_d)
     {

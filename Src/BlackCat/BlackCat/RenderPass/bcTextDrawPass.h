@@ -4,6 +4,7 @@
 
 #include "Core/Memory/bcPtr.h"
 #include "Core/bcConstant.h"
+#include "Core/Container/bcArray.h"
 #include "GraphicImp/Device/bcDeviceTextRenderer.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "BlackCat/bcExport.h"
@@ -32,6 +33,8 @@ namespace black_cat
 		void destroy(game::bc_render_system& p_render_system) override;
 
 	private:
+		core::bc_array<const bcCHAR*, 3> m_counter_values = { "fps", "update_time", "render_time" };
+		
 		constant::bc_render_pass_variable_t m_back_buffer_view_parameter;
 		graphic::bc_render_target_view m_back_buffer_view;
 		

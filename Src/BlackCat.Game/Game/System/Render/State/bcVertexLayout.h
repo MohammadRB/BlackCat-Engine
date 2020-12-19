@@ -17,11 +17,12 @@ namespace black_cat
 		};
 
 		enum class bc_vertex_type
-		{ 
-			pos = 0,
-			pos_tex = 1,
-			pos_tex_nor = 2,
-			pos_tex_nor_tan = 3
+		{
+			none = 0,
+			pos = 1,
+			pos_tex = 2,
+			pos_tex_nor = 3,
+			pos_tex_nor_tan = 4
 		};
 
 		class bc_vertex_pos_tex

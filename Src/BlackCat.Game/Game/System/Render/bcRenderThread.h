@@ -6,7 +6,7 @@
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "Game/bcExport.h"
-#include "Game/System/Render/Pass/bcRenderPassState.h"
+#include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/State/bcRenderState.h"
 #include "Game/System/Render/State/bcComputeState.h"
 
@@ -73,9 +73,12 @@ namespace black_cat
 			/**
 			 * \brief Bind compute states to given device pipeline and apply changes
 			 * Apply ComputeStage for compute shader and parameters
-			 * \param p_compute_state 
+			 * \param p_compute_state
+			 * \param p_uav_initial_counts 
 			 */
-			void run_compute_shader(const bc_compute_state& p_compute_state);
+			void bind_compute_state(const bc_compute_state& p_compute_state, const bc_compute_state_unordered_view_initial_count_array* p_uav_initial_counts = nullptr);
+
+			void unbind_compute_state(const bc_compute_state& p_compute_state);
 
 			/*void bind_ia_primitive_topology(graphic::bc_primitive p_primitive);
 
@@ -121,6 +124,10 @@ namespace black_cat
 
 			void draw(bcUINT p_start_vertex, bcUINT p_vertex_count);
 
+			void draw_instanced(bcUINT p_vertex_count_per_instance, bcUINT p_instance_count, bcUINT p_start_vertex_location, bcUINT p_start_instance_location);
+
+			void draw_instanced_indirect(graphic::bc_buffer p_args_buffer, bcUINT p_offset);
+			
 			void draw_indexed(bcUINT p_start_index, bcUINT p_index_count, bcINT p_vertex_offset);
 
 			void draw_indexed_instanced(bcUINT p_index_count_per_instance, bcUINT p_instance_count, bcUINT p_start_index_location, bcINT p_base_vertex_location, bcUINT p_start_instance_location);

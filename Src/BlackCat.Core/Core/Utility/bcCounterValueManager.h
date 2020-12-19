@@ -4,8 +4,8 @@
 
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcUnorderedMap.h"
-#include "Core/Event/bcEvent.h"
-#include "Core/Event/bcEventListenerHandle.h"
+#include "Core/Messaging/Event/bcEvent.h"
+#include "Core/Messaging/Event/bcEventListenerHandle.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/bcExport.h"
 

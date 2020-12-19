@@ -17,6 +17,7 @@ namespace black_cat
 		class bc_render_system;
 		class bc_frame_renderer;
 		class bc_render_thread;
+		class bc_default_render_thread;
 		class bc_scene;
 
 		template<typename TPass>
@@ -56,7 +57,7 @@ namespace black_cat
 				const bc_camera_instance& p_render_camera,
 				bc_render_system& p_render_system,
 				bc_frame_renderer& p_frame_renderer,
-				bc_render_thread& p_render_thread)
+				bc_default_render_thread& p_render_thread)
 				: m_clock(p_clock),
 				m_current_camera(p_current_camera),
 				m_render_camera(p_render_camera),
@@ -71,7 +72,7 @@ namespace black_cat
 			bc_camera_instance m_render_camera;
 			bc_render_system& m_render_system;
 			bc_frame_renderer& m_frame_renderer;
-			bc_render_thread& m_render_thread;
+			bc_default_render_thread& m_render_thread;
 		};
 
 		class bc_render_pass_reset_param

@@ -125,6 +125,59 @@
       ]
     },
     {
+      "stream_name": "particle_shaders",
+      "stream_content": [
+        {
+          "content_title": "particle_emission",
+          "content_name": "compute_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleEmission.hlsl",
+          "content_parameter": { "function": "main" }
+        },
+        {
+          "content_title": "particle_simulation",
+          "content_name": "compute_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleSimulation.hlsl",
+          "content_parameter": { "function": "main" }
+        },
+        {
+          "content_title": "bitonic_group_sort",
+          "content_name": "compute_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleGroupSort.hlsl",
+          "content_parameter": { "function": "bitonic_group_sort" }
+        },
+        {
+          "content_title": "bitonic_sort",
+          "content_name": "compute_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleSort.hlsl",
+          "content_parameter": { "function": "bitonic_sort" }
+        },
+        {
+          "content_title": "bitonic_matrix_transpose",
+          "content_name": "compute_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleSortTranspose.hlsl",
+          "content_parameter": { "function": "bitonic_matrix_transpose" }
+        },
+        {
+          "content_title": "particle_render_vs",
+          "content_name": "vertex_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleRender.hlsl",
+          "content_parameter": { "function": "vs" }
+        },
+        {
+          "content_title": "particle_render_gs",
+          "content_name": "geometry_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleRender.hlsl",
+          "content_parameter": { "function": "gs" }
+        },
+        {
+          "content_title": "particle_render_ps",
+          "content_name": "pixel_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleRender.hlsl",
+          "content_parameter": { "function": "ps" }
+        }
+      ]
+    },
+    {
       "stream_name": "engine_resources",
       "stream_content": [
       ]

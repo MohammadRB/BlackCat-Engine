@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/bcEvent.h"
+#include "Core/Math/bcValueSampler.h"
 #include "Core/Utility/bcStopWatch.h"
 #include "Game/Application/bcRenderApplication.h"
 #include "Game/System/bcGameSystem.h"
@@ -67,11 +68,7 @@ namespace black_cat
 
 		void app_close_engine_components() override final;
 
-		void _calculate_fps(core_platform::bc_clock::small_delta_time p_elapsed);
-
-		static const bcUINT32 s_num_time_delta_samples = 64;
-		core_platform::bc_clock::small_delta_time m_time_delta_buffer[s_num_time_delta_samples];
-		bcUINT32 m_current_time_delta_sample;
+		core::bc_value_sampler<core_platform::bc_clock::small_delta_time, 64> m_fps_sampler;
 		bcUINT32 m_fps;
 
 		core::bc_stop_watch m_update_watch;
