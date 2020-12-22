@@ -11,10 +11,6 @@
 #include "Core/Utility/bcTemplateMetaType.h"
 #include "Core/File/bcJsonParse.h"
 
-#include "3rdParty/RapidJSON/Include/document.h"
-#include "3rdParty/RapidJSON/Include/writer.h"
-#include "3rdParty/RapidJSON/Include/prettywriter.h"
-
 namespace black_cat
 {
 	namespace core
@@ -26,9 +22,6 @@ namespace black_cat
 #define BC_JSON_ARRAY(type, name)			black_cat::core::bc_json_array< type > m_##name { #name, this }
 #define BC_JSON_ARRAY_OP(type, name)		black_cat::core::bc_json_array< type > m_##name { #name, this, true }
 #define BC_JSON_STRUCTURE(type)				struct type : public black_cat::core::bc_ijson_structure
-
-		using bc_json_document_object = rapidjson::Document;
-		using bc_json_value_object = rapidjson::Document::ValueType;
 
 		class bc_ijson_value;
 
@@ -68,7 +61,7 @@ namespace black_cat
 
 		inline void bc_ijson_structure::load(bc_json_value_object& p_json_value)
 		{
-			for (auto l_field : m_json_fields)
+			for (auto* l_field : m_json_fields)
 			{
 				l_field->load(p_json_value);
 			}
@@ -76,7 +69,7 @@ namespace black_cat
 
 		inline void bc_ijson_structure::write(bc_json_document_object& p_document, bc_json_value_object& p_json_value)
 		{
-			for (auto l_field : m_json_fields)
+			for (auto* l_field : m_json_fields)
 			{
 				l_field->write(p_document, p_json_value);
 			}
@@ -212,9 +205,10 @@ namespace black_cat
 				return const_cast<bc_json_key_value*>(this)->find(p_key);
 			}
 
-			void add(value_type p_value)
+			iterator add(value_type p_value)
 			{
 				m_key_values.push_back(std::move(p_value));
+				return m_key_values.rbegin().base();
 			}
 
 			void remove(const bcCHAR* p_key)
@@ -259,7 +253,7 @@ namespace black_cat
 				m_name(p_name),
 				m_value()
 			{
-				static_assert(std::is_default_constructible_v<T>, "T must be default constructible");
+				static_assert(std::is_default_constructible_v<T>, "T must be default constructable");
 			}
 
 			bc_json_value(const bc_json_value&) noexcept(std::is_nothrow_copy_constructible<T>::value) = delete;
@@ -341,7 +335,7 @@ namespace black_cat
 			{
 				if (!p_json_value.IsBool())
 				{
-					throw bc_io_exception("bad json format");
+					throw bc_io_exception("bad json format. expected bool value.");
 				}
 
 				p_value = p_json_value.GetBool();
@@ -349,11 +343,6 @@ namespace black_cat
 
 			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bool& p_value)
 			{
-				/*if (!p_json_value.IsBool())
-				{
-					throw bc_io_exception("bad json format");
-				}*/
-
 				p_json_value.SetBool(p_value);
 			}
 
@@ -361,7 +350,7 @@ namespace black_cat
 			{
 				if (!p_json_value.IsNumber())
 				{
-					throw bc_io_exception("bad json format");
+					throw bc_io_exception("bad json format. expected int value.");
 				}
 
 				p_value = p_json_value.GetInt();
@@ -369,11 +358,6 @@ namespace black_cat
 
 			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcINT& p_value)
 			{
-				/*if (!p_json_value.IsNumber())
-				{
-					throw bc_io_exception("bad json format");
-				}*/
-
 				p_json_value.SetInt(p_value);
 			}
 
@@ -381,7 +365,7 @@ namespace black_cat
 			{
 				if (!p_json_value.IsNumber())
 				{
-					throw bc_io_exception("bad json format");
+					throw bc_io_exception("bad json format. expected uint value.");
 				}
 
 				p_value = p_json_value.GetUint();
@@ -389,11 +373,6 @@ namespace black_cat
 
 			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcUINT& p_value)
 			{
-				/*if (!p_json_value.IsNumber())
-				{
-					throw bc_io_exception("bad json format");
-				}*/
-
 				p_json_value.SetUint(p_value);
 			}
 
@@ -401,7 +380,7 @@ namespace black_cat
 			{
 				if (!p_json_value.IsNumber())
 				{
-					throw bc_io_exception("bad json format");
+					throw bc_io_exception("bad json format. expected float value.");
 				}
 
 				p_value = p_json_value.GetFloat();
@@ -409,11 +388,6 @@ namespace black_cat
 
 			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcFLOAT& p_value)
 			{
-				/*if (!p_json_value.IsNumber())
-				{
-					throw bc_io_exception("bad json format");
-				}*/
-
 				p_json_value.SetFloat(p_value);
 			}
 
@@ -421,7 +395,7 @@ namespace black_cat
 			{
 				if (!p_json_value.IsString())
 				{
-					throw bc_io_exception("bad json format");
+					throw bc_io_exception("bad json format. expected string value.");
 				}
 
 				p_value = p_json_value.GetString();
@@ -429,11 +403,6 @@ namespace black_cat
 
 			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string& p_value)
 			{
-				/*if (!p_json_value.IsString())
-				{
-					throw bc_io_exception("bad json format");
-				}*/
-
 				p_json_value.SetString(p_value.c_str(), p_value.length());
 			}
 
@@ -441,7 +410,7 @@ namespace black_cat
 			{
 				if (!p_json_value.IsString())
 				{
-					throw bc_io_exception("bad json format");
+					throw bc_io_exception("bad json format. expected string value.");
 				}
 
 				p_value = p_json_value.GetString();
@@ -449,11 +418,6 @@ namespace black_cat
 
 			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string_program& p_value)
 			{
-				/*if (!p_json_value.IsString())
-				{
-					throw bc_io_exception("bad json format");
-				}*/
-
 				p_json_value.SetString(p_value.c_str(), p_value.length());
 			}
 
@@ -461,7 +425,7 @@ namespace black_cat
 			{
 				if (!p_json_value.IsString())
 				{
-					throw bc_io_exception("bad json format");
+					throw bc_io_exception("bad json format. expected string value.");
 				}
 
 				p_value = p_json_value.GetString();
@@ -469,11 +433,6 @@ namespace black_cat
 
 			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string_frame& p_value)
 			{
-				/*if (!p_json_value.IsString())
-				{
-					throw bc_io_exception("bad json format");
-				}*/
-
 				p_json_value.SetString(p_value.c_str(), p_value.length());
 			}
 
@@ -538,7 +497,7 @@ namespace black_cat
 				}
 				else
 				{
-					throw bc_io_exception("bad json format");
+					throw bc_io_exception("bad json format. cannot deserialize 'any' type.");
 				}
 			}
 
@@ -607,7 +566,7 @@ namespace black_cat
 				}
 				else
 				{
-					throw bc_io_exception("bad json format");
+					throw bc_io_exception("bad json format. cannot serialize 'any' type.");
 				}
 			}
 
@@ -639,7 +598,7 @@ namespace black_cat
 				}
 				else
 				{
-					throw bc_io_exception("bad json format");
+					throw bc_io_exception("bad json format. expected object value.");
 				}
 			}
 
@@ -665,8 +624,7 @@ namespace black_cat
 			{
 				json_parse::bc_write(p_document, p_json_value, p_value);
 			}
-
-		private:
+			
 			const bcCHAR* m_name;
 			T m_value;
 		};
@@ -703,7 +661,7 @@ namespace black_cat
 
 				if (!l_value->IsObject())
 				{
-					throw bc_io_exception("bad json format");
+					throw bc_io_exception("bad json format. expected object value.");
 				}
 
 				m_value.load(*l_value);
@@ -808,7 +766,7 @@ namespace black_cat
 
 				if (!l_value->IsArray())
 				{
-					throw bc_io_exception("bad json format");
+					throw bc_io_exception("bad json format. expected array value.");
 				}
 
 				auto l_array = l_value->GetArray();
@@ -940,7 +898,7 @@ namespace black_cat
 
 				if (!l_value->IsArray())
 				{
-					throw bc_io_exception("bad json format");
+					throw bc_io_exception("bad json format. expected array value.");
 				}
 
 				auto l_array = l_value->GetArray();
@@ -1037,9 +995,21 @@ namespace black_cat
 				bc_json_document_object l_json_document;
 				l_json_document.Parse(p_json);
 
+				if (l_json_document.HasParseError())
+				{
+					const auto l_parse_error = l_json_document.GetParseError();
+					const auto l_parse_error_offset = l_json_document.GetErrorOffset();
+					const auto l_parse_error_msg = "bad json format: error: " +
+						bc_to_string_frame(l_parse_error) +
+						" error location: " +
+						bc_to_string_frame(l_parse_error_offset);
+
+					throw bc_io_exception(l_parse_error_msg.c_str());
+				}
+				
 				if (!l_json_document.IsObject())
 				{
-					throw bc_io_exception("bad json format");
+					throw bc_io_exception("bad json format. expected object value.");
 				}
 
 				m_value.load(l_json_document);

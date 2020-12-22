@@ -12,8 +12,8 @@ namespace black_cat
 	namespace game
 	{
 		bc_file_system::bc_file_system(core::bc_content_manager& p_content_manager, core::bc_content_stream_manager& p_content_stream_manager)
-			: m_content_manager(p_content_manager),
-			m_content_stream_manager(p_content_stream_manager)
+			: m_content_manager(&p_content_manager),
+			m_content_stream_manager(&p_content_stream_manager)
 		{
 			core::bc_path l_execute_path(core::bc_path(core::bc_path::get_program_path().c_str()).get_directory().c_str());
 			m_execute_path = l_execute_path.get_path();
@@ -48,11 +48,11 @@ namespace black_cat
 			l_temp = l_execute_path;
 			l_temp.combine(core::bc_path(bcL("Content\\Script")));
 			m_content_script_path = l_temp.get_path();
+
+			m_global_config = core::bc_make_unique<bc_config_file>(core::bc_alloc_type::program, m_content_base_path.c_str(), bcL("config.json"));
 		}
 
 		bc_file_system::bc_file_system(bc_file_system&& p_other) noexcept
-			: m_content_manager(p_other.m_content_manager),
-			m_content_stream_manager(p_other.m_content_stream_manager)
 		{
 			operator=(std::move(p_other));
 		}
@@ -69,16 +69,40 @@ namespace black_cat
 			m_content_texture_path = std::move(p_other.m_content_texture_path);
 			m_content_model_path = std::move(p_other.m_content_model_path);
 			m_content_platform_shader_path = std::move(m_content_platform_shader_path);
+			m_global_config = std::move(p_other.m_global_config);
+
+			m_content_manager = p_other.m_content_manager;
+			m_content_stream_manager = p_other.m_content_stream_manager;
 
 			return *this;
 		}
 
-		const bcECHAR* bc_file_system::get_content_path() const
+		core::bc_content_manager& bc_file_system::get_content_manager()
+		{
+			return *m_content_manager;
+		}
+
+		const core::bc_content_manager& bc_file_system::get_content_manager() const
+		{
+			return *m_content_manager;
+		}
+
+		core::bc_content_stream_manager& bc_file_system::get_content_stream_manager()
+		{
+			return *m_content_stream_manager;
+		}
+
+		const core::bc_content_stream_manager& bc_file_system::get_content_stream_manager() const
+		{
+			return *m_content_stream_manager;
+		}
+
+		const bcECHAR* bc_file_system::get_content_path() const noexcept
 		{
 			return m_content_base_path.c_str();
 		}
 
-		core::bc_estring bc_file_system::get_content_path(const bcECHAR* p_path) const
+		core::bc_estring bc_file_system::get_content_path(const bcECHAR* p_path) const noexcept
 		{
 			core::bc_path l_path(get_content_path());
 			l_path.combine(core::bc_path(p_path));
@@ -86,12 +110,12 @@ namespace black_cat
 			return l_path.get_path();
 		}
 
-		const bcECHAR* bc_file_system::get_content_data_path() const
+		const bcECHAR* bc_file_system::get_content_data_path() const noexcept
 		{
 			return m_content_data_path.c_str();
 		}
 
-		core::bc_estring bc_file_system::get_content_data_path(const bcECHAR* p_data_path) const
+		core::bc_estring bc_file_system::get_content_data_path(const bcECHAR* p_data_path) const noexcept
 		{
 			core::bc_path l_path(get_content_data_path());
 			l_path.combine(core::bc_path(p_data_path));
@@ -99,12 +123,12 @@ namespace black_cat
 			return l_path.get_path();
 		}
 
-		const bcECHAR* bc_file_system::get_content_texture_path() const
+		const bcECHAR* bc_file_system::get_content_texture_path() const noexcept
 		{
 			return m_content_texture_path.c_str();
 		}
 
-		core::bc_estring bc_file_system::get_content_texture_path(const bcECHAR* p_texture_path) const
+		core::bc_estring bc_file_system::get_content_texture_path(const bcECHAR* p_texture_path) const noexcept
 		{
 			core::bc_path l_path(get_content_texture_path());
 			l_path.combine(core::bc_path(p_texture_path));
@@ -112,12 +136,12 @@ namespace black_cat
 			return l_path.get_path();
 		}
 
-		const bcECHAR* bc_file_system::get_content_model_path() const
+		const bcECHAR* bc_file_system::get_content_model_path() const noexcept
 		{
 			return m_content_model_path.c_str();
 		}
 
-		core::bc_estring bc_file_system::get_content_model_path(const bcECHAR* p_model_path) const
+		core::bc_estring bc_file_system::get_content_model_path(const bcECHAR* p_model_path) const noexcept
 		{
 			core::bc_path l_path(get_content_model_path());
 			l_path.combine(core::bc_path(p_model_path));
@@ -125,12 +149,12 @@ namespace black_cat
 			return l_path.get_path();
 		}
 
-		const bcECHAR* bc_file_system::get_content_platform_shader_path() const
+		const bcECHAR* bc_file_system::get_content_platform_shader_path() const noexcept
 		{
 			return m_content_platform_shader_path.c_str();
 		}
 
-		core::bc_estring bc_file_system::get_content_platform_shader_path(const bcECHAR* p_shader_path) const
+		core::bc_estring bc_file_system::get_content_platform_shader_path(const bcECHAR* p_shader_path) const noexcept
 		{
 			core::bc_path l_path(get_content_platform_shader_path());
 			l_path.combine(core::bc_path(p_shader_path));
@@ -138,17 +162,27 @@ namespace black_cat
 			return l_path.get_path();
 		}
 
-		const bcECHAR* bc_file_system::get_content_script_path() const
+		const bcECHAR* bc_file_system::get_content_script_path() const noexcept
 		{
 			return m_content_script_path.c_str();
 		}
 
-		core::bc_estring bc_file_system::get_content_script_path(const bcECHAR* p_script_path) const
+		core::bc_estring bc_file_system::get_content_script_path(const bcECHAR* p_script_path) const noexcept
 		{
 			core::bc_path l_path(get_content_script_path());
 			l_path.combine(core::bc_path(p_script_path));
 
 			return l_path.get_path();
+		}
+
+		bc_config_file& bc_file_system::get_global_config() noexcept
+		{
+			return *m_global_config;
+		}
+
+		const bc_config_file& bc_file_system::get_global_config() const noexcept
+		{
+			return *m_global_config;
 		}
 	}
 }

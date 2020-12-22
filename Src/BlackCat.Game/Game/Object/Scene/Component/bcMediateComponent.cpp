@@ -40,12 +40,6 @@ namespace black_cat
 		{
 		}
 
-		void bc_mediate_component::write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters)
-		{
-			p_parameters.add(std::make_pair(core::bc_string(s_entity_name_json_key), core::bc_any(m_entity_name)));
-			p_parameters.add(std::make_pair(core::bc_string(s_position_json_key), core::bc_any(get_world_position())));
-		}
-
 		void bc_mediate_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
 			const auto* l_transformation_event = core::bc_imessage::as< bc_actor_event_world_transform >(p_event);

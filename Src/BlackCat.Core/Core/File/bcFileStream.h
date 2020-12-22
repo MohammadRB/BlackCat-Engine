@@ -70,7 +70,6 @@ namespace black_cat
 			bc_estring get_path() const override;
 
 			bc_stream_type get_type() const noexcept override;
-		protected:
 
 		private:
 			core_platform::bc_file m_file;

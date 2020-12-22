@@ -12,7 +12,7 @@ namespace black_cat
 		class bc_random
 		{
 		public:
-			bc_random(bcUINT32 p_seed,
+			bc_random(bcUINT32 p_seed = std::random_device()(),
 				bcUINT32 p_min = std::numeric_limits<bcUINT32>::min(),
 				bcUINT32 p_max = std::numeric_limits<bcUINT32>::max());
 

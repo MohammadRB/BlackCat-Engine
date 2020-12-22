@@ -302,8 +302,6 @@ namespace black_cat
 						core::bc_get_service< core::bc_event_manager >()->process_event(l_active_event);
 					}
 				}
-
-				return true;
 			}
 
 			if (core::bc_imessage::is< platform::bc_app_event_active >(p_event))
@@ -319,8 +317,6 @@ namespace black_cat
 				{
 					m_clock->resume();
 				}
-
-				return true;
 			}
 
 			if (core::bc_imessage::is< platform::bc_app_event_window_close >(p_event))
@@ -332,8 +328,6 @@ namespace black_cat
 					platform::bc_app_event_exit l_exit_event(0);
 					core::bc_get_service< core::bc_event_manager >()->process_event(l_exit_event);
 				}
-
-				return true;
 			}
 
 			if (core::bc_imessage::is< platform::bc_app_event_exit >(p_event))
@@ -342,8 +336,6 @@ namespace black_cat
 
 				m_is_terminated = true;
 				m_termination_code = l_exit_event.exit_code();
-
-				return true;
 			}
 
 			if (core::bc_imessage::is< core::bc_app_event_error >(p_event))
@@ -353,8 +345,6 @@ namespace black_cat
 					core::bc_log_type::error,
 					core::bc_to_estring_frame(static_cast<core::bc_app_event_error&>(p_event).get_message()).c_str()
 				);
-
-				return true;
 			}
 
 			if (core::bc_imessage::is< core::bc_app_event_debug >(p_event))
@@ -364,8 +354,6 @@ namespace black_cat
 					core::bc_log_type::debug,
 					core::bc_to_estring_frame(static_cast<core::bc_app_event_debug&>(p_event).get_message()).c_str()
 				);
-
-				return true;
 			}
 
 			return app_event(p_event);

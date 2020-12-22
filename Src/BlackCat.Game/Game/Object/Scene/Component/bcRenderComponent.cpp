@@ -4,7 +4,6 @@
 #include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
-#include "Game/Object/Scene/Component/bcMeshComponent.h"
 
 namespace black_cat
 {

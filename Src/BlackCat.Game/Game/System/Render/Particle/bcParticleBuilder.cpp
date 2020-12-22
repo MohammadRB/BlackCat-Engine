@@ -47,9 +47,15 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_particle_builder1& bc_particle_builder1::with_deviation(bcUINT32 p_angle) noexcept
+		bc_particle_builder1& bc_particle_builder1::with_direction_deviation(bcUINT32 p_angle) noexcept
 		{
-			m_emitter.m_deviation_angle = p_angle;
+			m_emitter.m_direction_deviation = p_angle;
+			return *this;
+		}
+
+		bc_particle_builder1& bc_particle_builder1::with_emission_deviation(bcUINT32 p_angle) noexcept
+		{
+			m_emitter.m_emission_deviation = p_angle;
 			return *this;
 		}
 
@@ -130,7 +136,8 @@ namespace black_cat
 			l_emitter.m_direction = core::bc_vector3f::normalize(p_direction);
 			l_emitter.m_force = p_force;
 			l_emitter.m_mass = p_mass;
-			l_emitter.m_deviation_angle = 45;
+			l_emitter.m_direction_deviation = 0;
+			l_emitter.m_emission_deviation = 45;
 			l_emitter.m_sprite_index = 0;
 			l_emitter.m_velocity_curve_index = _find_curve_index(s_curve_constant);
 			l_emitter.m_velocity_curve_duration = p_lifetime_seconds;

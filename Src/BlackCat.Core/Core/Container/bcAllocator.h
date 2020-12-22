@@ -422,8 +422,7 @@ namespace black_cat
 		};
 
 		/**
-		 * \brief 
-		 * Provide an interface for classes that use memory allocation and their clients need to change allocation properties.
+		 * \brief Provide an interface for classes that use memory allocation and their clients need to change allocation properties.
 		 * (Don't use movable memory to allocate objects of this type)
 		 */
 		class bc_object_allocator
@@ -473,9 +472,9 @@ namespace black_cat
 
 			bc_alloc_type set_allocator_alloc_type(bc_alloc_type p_alloc_type)
 			{
-				bc_alloc_type l_alloc_type = get_allocator_alloc_type();
-				bcUINT16 l_alignment = get_allocator_alignment();
-				bcUINT32 l_value_to_store = static_cast<bcUINT32>((l_alignment << 8) | static_cast<bcUINT32>(p_alloc_type));
+				const bc_alloc_type l_alloc_type = get_allocator_alloc_type();
+				const bcUINT16 l_alignment = get_allocator_alignment();
+				const bcUINT32 l_value_to_store = static_cast<bcUINT32>((l_alignment << 8) | static_cast<bcUINT32>(p_alloc_type));
 
 				m_flags.store(l_value_to_store, core_platform::bc_memory_order::relaxed);
 				
@@ -489,9 +488,9 @@ namespace black_cat
 
 			bcUINT16 set_allocator_alignment(bcUINT16 p_alignment)
 			{
-				bc_alloc_type l_alloc_type = get_allocator_alloc_type();
-				bcUINT16 l_alignment = get_allocator_alignment();
-				bcUINT32 l_value_to_store = static_cast<bcUINT32>((p_alignment << 8) | static_cast<bcUINT32>(l_alloc_type));
+				const bc_alloc_type l_alloc_type = get_allocator_alloc_type();
+				const bcUINT16 l_alignment = get_allocator_alignment();
+				const bcUINT32 l_value_to_store = static_cast<bcUINT32>((p_alignment << 8) | static_cast<bcUINT32>(l_alloc_type));
 
 				m_flags.store(l_value_to_store, core_platform::bc_memory_order::relaxed);
 

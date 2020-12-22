@@ -12,6 +12,7 @@
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Messaging/Query/bcQueryProviderHandle.h"
 #include "Core/Messaging/Query/bcQueryContext.h"
+#include "Core/Utility/bcRandom.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
@@ -86,6 +87,7 @@ namespace black_cat
 			
 			constexpr static bcSIZE s_emitter_count = 300;
 
+			core::bc_random m_random;
 			curves_container m_curves{};
 			particle_definition_container m_emitter_definitions;
 

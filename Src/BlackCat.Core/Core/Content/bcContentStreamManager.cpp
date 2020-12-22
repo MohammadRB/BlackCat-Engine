@@ -48,7 +48,7 @@ namespace black_cat
 		void bc_content_stream_manager::read_stream_file(const bcECHAR* p_json_file_path)
 		{
 			bc_file_stream l_json_file;
-			bc_string_frame l_buffer;
+			bc_string_frame l_json_file_content;
 
 			if(!l_json_file.open_read(p_json_file_path))
 			{
@@ -58,15 +58,10 @@ namespace black_cat
 				throw bc_io_exception(l_msg.c_str());
 			}
 
-			bc_string_frame l_line;
-			while (core::bc_get_line(l_json_file, l_line))
-			{
-				l_buffer.append(l_line);
-				l_line.clear();
-			}
+			core::bc_read_all_lines(l_json_file, l_json_file_content);
 
 			bc_json_document< _bc_content_stream_json > l_content_stream;
-			l_content_stream.load(l_buffer.c_str());
+			l_content_stream.load(l_json_file_content.c_str());
 
 			for (bc_json_object< _bc_content_stream >& l_stream : l_content_stream->m_streams)
 			{
@@ -94,7 +89,7 @@ namespace black_cat
 						std::end(l_content_params),
 						[&l_stream_file](bc_json_key_value::value_type& p_parameter)
 						{
-							l_stream_file.m_parameters.add_value(p_parameter.first.c_str(), std::move(p_parameter.second));
+							l_stream_file.m_parameters.add_value(core::bc_to_string_frame(p_parameter.first).c_str(), std::move(p_parameter.second));
 						}
 					);
 
@@ -156,7 +151,8 @@ namespace black_cat
 
 					if(l_loader_entry == std::end(m_content_loader_delegates))
 					{
-						throw bc_key_not_found_exception(("There isn't any registered loader for " + l_content_file.m_name).c_str());
+						const auto l_error_msg = "There isn't any registered loader for " + l_content_file.m_name;
+						throw bc_key_not_found_exception(l_error_msg.c_str());
 					}
 
 					bc_content_loader_parameter l_loader_parameter = l_content_file.m_parameters;

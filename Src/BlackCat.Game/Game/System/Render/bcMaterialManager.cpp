@@ -120,7 +120,7 @@ namespace black_cat
 		void bc_material_manager::read_material_file(const bcECHAR* p_material_json_file)
 		{
 			core::bc_file_stream l_json_file;
-			core::bc_string_frame l_buffer;
+			core::bc_string_frame l_json_file_buffer;
 
 			if (!l_json_file.open_read(p_material_json_file))
 			{
@@ -130,15 +130,10 @@ namespace black_cat
 				throw bc_io_exception(l_msg.c_str());
 			}
 
-			core::bc_string_frame l_line;
-			while (core::bc_get_line(l_json_file, l_line))
-			{
-				l_buffer.append(l_line);
-				l_line.clear();
-			}
+			core::bc_read_all_lines(l_json_file, l_json_file_buffer);
 
 			core::bc_json_document< _bc_material_json > l_material_json;
-			l_material_json.load(l_buffer.c_str());
+			l_material_json.load(l_json_file_buffer.c_str());
 
 			for(core::bc_json_object<_bc_material_desc>& l_material_desc : l_material_json->m_materials)
 			{

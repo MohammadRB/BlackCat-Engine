@@ -6,7 +6,7 @@
 #include "Core/Math/bcMatrix3f.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Content/bcContentStreamManager.h"
-#include "Core/Utility/bcLogger.h"
+#include "Core/Utility/bcUtility.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
@@ -154,11 +154,13 @@ namespace black_cat
 				{
 					m_emitters.emplace_back(l_emitter);
 					auto& l_ite = m_emitters.back();
-					
+
 					l_ite.m_position += p_pos;
 					l_ite.m_prev_position = l_ite.m_position;
 					l_ite.m_direction = l_rotation * l_ite.m_direction;
 					l_ite.m_lifetime += .001f; // to avoid division by zero
+
+					bc_randomize_direction(m_random, l_ite.m_direction, l_ite.m_direction_deviation, &l_ite.m_direction, &l_ite.m_direction + 1);
 				}
 
 				bcAssert(m_emitters.size() <= s_emitter_count);
@@ -180,6 +182,8 @@ namespace black_cat
 					l_ite->m_prev_position = l_ite->m_position;
 					l_ite->m_lifetime += .001f; // to avoid division by zero
 
+					bc_randomize_direction(m_random, l_ite->m_direction, l_ite->m_direction_deviation, &l_ite->m_direction, &l_ite->m_direction + 1);
+					
 					if(l_first_emitter == std::end(m_emitters))
 					{
 						l_first_emitter = l_ite.base();
@@ -189,6 +193,7 @@ namespace black_cat
 				bcAssert(m_emitters.size() <= s_emitter_count);
 
 				bc_external_particle_emitter l_external_emitter;
+				l_external_emitter.m_emitters.reserve(p_builder.m_emitters.size());
 				while(l_first_emitter != std::end(m_emitters))
 				{
 					l_external_emitter.m_emitters.push_back(static_cast<bc_particle_emitter_trait*>(&*l_first_emitter));
@@ -326,7 +331,7 @@ namespace black_cat
 						l_emitter.m_position = p_emitter.m_position;
 						l_emitter.m_emission_direction = p_emitter.m_direction * p_emitter.m_particles_velocity_reverse_direction;
 						l_emitter.m_energy = p_emitter.m_energy;
-						l_emitter.m_emission_deviation = p_emitter.m_deviation_angle;
+						l_emitter.m_emission_deviation = p_emitter.m_emission_deviation;
 						l_emitter.m_sprite_index = p_emitter.m_sprite_index;
 						l_emitter.m_particles_color = p_emitter.m_particles_color;
 						l_emitter.m_particles_color_intensity = p_emitter.m_particles_color_intensity;

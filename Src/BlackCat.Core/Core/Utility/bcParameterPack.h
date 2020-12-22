@@ -36,12 +36,6 @@ namespace black_cat
 			{
 			}
 
-			template< typename = typename std::enable_if< !std::is_copy_constructible< T >::value >::type >
-			explicit _bc_parameter_pack_concrete_object(T& p_data)
-			{
-				throw bc_logic_exception("You are trying to copy a non copyable object");
-			}
-
 			explicit _bc_parameter_pack_concrete_object(T&& p_data)
 				: _bc_parameter_pack_object(),
 				m_value(std::move(p_data))
@@ -152,8 +146,6 @@ namespace black_cat
 
 			bool used_internal_buffer() const;
 
-		protected:
-
 		private:
 			static constexpr bcUINT s_buffer_size = 5 * sizeof(void*);
 
@@ -163,7 +155,7 @@ namespace black_cat
 		};
 
 		/**
-		 * \brief Same as bc_parameter_pack but doesn't use frame allocator.
+		 * \brief Same as bc_parameter_pack but does't use frame allocator by default.
 		 */
 		class bc_any : public bc_parameter_pack
 		{
@@ -194,10 +186,6 @@ namespace black_cat
 			bc_any& operator=(const bc_any& p_other);
 
 			bc_any& operator=(bc_any&& p_other);
-
-		protected:
-
-		private:
 		};
 
 		inline bc_parameter_pack::bc_parameter_pack()
@@ -286,7 +274,7 @@ namespace black_cat
 		void bc_parameter_pack::set_value(T&& p_data)
 		{
 			// Because function is perfect forwarded if parameter be l-value T will be deduced to T&
-			using T1 = typename std::remove_reference< T >::type;
+			using T1 = std::remove_const_t< std::remove_reference_t< T > >;
 
 			reset();
 

@@ -46,19 +46,13 @@ namespace black_cat
 		void bc_entity_manager::read_entity_file(const bcECHAR* p_json_file_path)
 		{
 			core::bc_file_stream l_json_file;
-			core::bc_string_frame l_buffer;
+			core::bc_string_frame l_json_file_buffer;
 
 			l_json_file.open_read(p_json_file_path);
-
-			core::bc_string_frame l_line;
-			while (core::bc_get_line(l_json_file, l_line))
-			{
-				l_buffer.append(l_line);
-				l_line.clear();
-			}
+			core::bc_read_all_lines(l_json_file, l_json_file_buffer);
 
 			core::bc_json_document< _bc_entity_json > l_json;
-			l_json.load(l_buffer.c_str());
+			l_json.load(l_json_file_buffer.c_str());
 
 			for (auto& l_entity : l_json->m_entities)
 			{
@@ -87,7 +81,7 @@ namespace black_cat
 						std::end(l_component_parameters),
 						[&](core::bc_json_key_value::value_type& p_parameter)
 						{
-							l_component_data.m_component_parameters.add_value(p_parameter.first.c_str(), std::move(p_parameter.second));
+							l_component_data.m_component_parameters.add_value(core::bc_to_string_frame(p_parameter.first).c_str(), std::move(p_parameter.second));
 						}
 					);
 

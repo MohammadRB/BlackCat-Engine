@@ -2047,8 +2047,8 @@ namespace black_cat
 
 		inline bcSIZE bc_string_hash(const bcCHAR* p_string)
 		{
+			const bcUINT32 l_length = std::strlen(p_string);
 			bcUINT32 l_hash = 0;
-			bcUINT32 l_length = std::strlen(p_string);
 
 			for (bcUINT32 i = 0; i < l_length; i++)
 			{
@@ -2060,8 +2060,8 @@ namespace black_cat
 
 		inline bcSIZE bc_wstring_hash(const bcWCHAR* p_string)
 		{
+			const bcUINT32 l_length = std::wcslen(p_string);
 			bcUINT32 l_hash = 0;
-			bcUINT32 l_length = std::wcslen(p_string);
 
 			for (bcUINT32 i = 0; i < l_length; i++)
 			{

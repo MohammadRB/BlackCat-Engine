@@ -5,6 +5,7 @@
 #include "Platform/bcEvent.h"
 #include "PhysicsImp/Body/bcRigidDynamic.h"
 #include "Game/System/Input/bcFreeCamera.h"
+#include "Game/System/Input/bcConfigFile.h"
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
@@ -113,56 +114,68 @@ namespace black_cat
 		bool bc_editor_render_app::application_event(core::bc_ievent& p_event)
 		{
 			auto* l_key_event = core::bc_imessage::as<platform::bc_app_event_key>(p_event);
-			if (l_key_event == nullptr)
+			if (l_key_event)
 			{
-				return false;
+				/*if(l_key_event->get_key_state() == platform::bc_key_state::releasing && l_key_event->get_key() == platform::bc_key::kb_F)
+				{
+					m_game_system->get_render_system().get_render_pass<bc_cascaded_shadow_map_pass>()->capture_debug_shapes();
+				}*/
+
+				if (l_key_event->get_key_state() == platform::bc_key_state::pressing && l_key_event->get_key() == platform::bc_key::kb_space)
+				{
+					game::bc_input_system& l_input_system = m_game_system->get_input_system();
+					auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
+					auto* l_scene = m_game_system->get_scene();
+
+					game::bc_actor l_actor;
+
+					m_shape_throw_counter = m_shape_throw_counter % 3;
+					switch (m_shape_throw_counter)
+					{
+					case 0:
+						l_actor = l_entity_manager->create_entity("sphere");
+						break;
+					case 1:
+						l_actor = l_entity_manager->create_entity("box");
+						break;
+					case 2:
+						l_actor = l_entity_manager->create_entity("convex");
+						break;
+					case 3:
+						l_actor = l_entity_manager->create_entity("train");
+						break;
+					}
+					++m_shape_throw_counter;
+
+					const auto l_position = l_input_system.get_camera().get_position();
+					l_actor.add_event(game::bc_actor_event_world_transform(l_position));
+
+					auto* l_rigid_component = l_actor.get_component<game::bc_rigid_body_component>();
+					auto l_rigid = l_rigid_component->get_body();
+					if (l_rigid.is_rigid_dynamic().is_valid())
+					{
+						const auto l_direction = l_input_system.get_camera().get_forward();
+
+						l_rigid.update_mass_inertia(10);
+						l_rigid.set_linear_velocity(l_direction * 70);
+					}
+
+					l_scene->add_actor(l_actor);
+				}
+				
+				return true;
 			}
 
-			/*if(l_key_event->get_key_state() == platform::bc_key_state::releasing && l_key_event->get_key() == platform::bc_key::kb_F)
+			auto* l_exit_event = core::bc_imessage::as<platform::bc_app_event_exit>(p_event);
+			if(l_exit_event)
 			{
-				m_game_system->get_render_system().get_render_pass<bc_cascaded_shadow_map_pass>()->capture_debug_shapes();
-			}*/
+				auto& l_global_config = m_game_system->get_file_system().get_global_config();
+				const auto l_camera_position = m_game_system->get_input_system().get_camera().get_position();
 
-			if (l_key_event->get_key_state() == platform::bc_key_state::pressing && l_key_event->get_key() == platform::bc_key::kb_space)
-			{
-				game::bc_input_system& l_input_system = m_game_system->get_input_system();
-				auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
-				auto* l_scene = m_game_system->get_scene();
-
-				game::bc_actor l_actor;
-
-				m_shape_throw_counter = m_shape_throw_counter % 3;
-				switch (m_shape_throw_counter)
-				{
-				case 0:
-					l_actor = l_entity_manager->create_entity("sphere");
-					break;
-				case 1:
-					l_actor = l_entity_manager->create_entity("box");
-					break;
-				case 2:
-					l_actor = l_entity_manager->create_entity("convex");
-					break;
-				case 3:
-					l_actor = l_entity_manager->create_entity("train");
-					break;
-				}
-				++m_shape_throw_counter;
-
-				const auto l_position = l_input_system.get_camera().get_position();
-				l_actor.add_event(game::bc_actor_event_world_transform(l_position));
-
-				auto* l_rigid_component = l_actor.get_component<game::bc_rigid_body_component>();
-				auto l_rigid = l_rigid_component->get_body();
-				if (l_rigid.is_rigid_dynamic().is_valid())
-				{
-					const auto l_direction = l_input_system.get_camera().get_forward();
-
-					l_rigid.update_mass_inertia(10);
-					l_rigid.set_linear_velocity(l_direction * 70);
-				}
-
-				l_scene->add_actor(l_actor);
+				l_global_config.add_or_update_config_key("camera_position_x", core::bc_any(l_camera_position.x))
+				               .add_or_update_config_key("camera_position_y", core::bc_any(l_camera_position.y))
+				               .add_or_update_config_key("camera_position_z", core::bc_any(l_camera_position.z));
+				l_global_config.flush_changes();
 			}
 
 			return false;

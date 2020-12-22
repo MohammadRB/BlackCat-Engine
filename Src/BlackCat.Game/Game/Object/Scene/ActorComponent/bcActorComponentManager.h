@@ -921,7 +921,7 @@ namespace black_cat
 		{
 			static_assert(std::is_base_of< bc_iactor_component, TComponent >::value, "TComponent must inherit from bc_iactor_component");
 
-			const bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
+			constexpr bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
 			const auto l_entry = m_components.find(l_hash);
 
 			if (l_entry == std::end(m_components))

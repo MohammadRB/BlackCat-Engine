@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		bool bc_get_char(bc_istream_adapter& p_stream, bcCHAR* p_char)
+		bool bc_read_char(bc_istream_adapter& p_stream, bcCHAR* p_char)
 		{
 			if(!p_stream.can_read())
 			{
@@ -19,7 +19,7 @@ namespace black_cat
 			return p_stream.read(p_char, sizeof(bcCHAR)) == sizeof(bcCHAR);
 		}
 
-		bool bc_get_wchar(bc_istream_adapter& p_stream, bcWCHAR* p_char)
+		bool bc_read_char(bc_istream_adapter& p_stream, bcWCHAR* p_char)
 		{
 			if (!p_stream.can_read())
 			{
@@ -29,13 +29,13 @@ namespace black_cat
 			return p_stream.read(reinterpret_cast< bcBYTE* >(p_char), sizeof(bcWCHAR)) == sizeof(bcWCHAR);
 		}
 
-		bool bc_get_line(bc_istream_adapter& p_stream, bc_string_frame& p_line)
+		bool bc_read_line(bc_istream_adapter& p_stream, bc_string_frame& p_line)
 		{
 			bcCHAR l_char;
 			bool l_first_read;
 			bool l_read;
 
-			l_read = l_first_read = bc_get_char(p_stream, &l_char);
+			l_read = l_first_read = bc_read_char(p_stream, &l_char);
 
 			while (l_read)
 			{
@@ -46,19 +46,19 @@ namespace black_cat
 					break;
 				}
 
-				l_read = bc_get_char(p_stream, &l_char);
+				l_read = bc_read_char(p_stream, &l_char);
 			}
 
 			return l_first_read;
 		}
 
-		bool bc_get_wline(bc_istream_adapter& p_stream, bc_wstring_frame& p_line)
+		bool bc_read_line(bc_istream_adapter& p_stream, bc_wstring_frame& p_line)
 		{
 			bcWCHAR l_char;
 			bool l_first_read;
 			bool l_read;
 
-			l_read = l_first_read = bc_get_wchar(p_stream, &l_char);
+			l_read = l_first_read = bc_read_char(p_stream, &l_char);
 
 			while (l_read)
 			{
@@ -69,10 +69,40 @@ namespace black_cat
 					break;
 				}
 
-				l_read = bc_get_wchar(p_stream, &l_char);
+				l_read = bc_read_char(p_stream, &l_char);
 			}
 
 			return l_first_read;
+		}
+
+		bool bc_read_all_lines(bc_istream_adapter& p_stream, bc_string_frame& p_content)
+		{
+			bool l_read = false;
+			bc_string_frame l_line;
+			
+			while (bc_read_line(p_stream, l_line))
+			{
+				l_read = true;
+				p_content.append(l_line);
+				l_line.clear();
+			}
+
+			return l_read;
+		}
+
+		bool bc_read_all_lines(bc_istream_adapter& p_stream, bc_wstring_frame& p_content)
+		{
+			bool l_read = false;
+			bc_wstring_frame l_line;
+			
+			while (bc_read_line(p_stream, l_line))
+			{
+				l_read = true;
+				p_content.append(l_line);
+				l_line.clear();
+			}
+
+			return l_read;
 		}
 	}
 }

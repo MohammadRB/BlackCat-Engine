@@ -174,14 +174,14 @@ namespace black_cat
 		for (auto& l_json_actor : l_json_document->m_actors)
 		{
 			game::bc_actor l_actor = l_entity_manager->create_entity(l_json_actor->m_entity_name->c_str());
-			l_actor.get_components(std::back_inserter(l_actor_components));
+			l_actor.add_event(game::bc_actor_event_world_transform(*l_json_actor->m_position));
 			
-			for (auto l_actor_component : l_actor_components)
+			l_actor.get_components(std::back_inserter(l_actor_components));
+			for (auto* l_actor_component : l_actor_components)
 			{
 				l_actor_component->load_instance(l_actor, *l_json_actor->m_parameters);
 			}
 
-			l_actor.add_event(game::bc_actor_event_world_transform(*l_json_actor->m_position));
 			l_scene.add_actor(l_actor);
 			l_actor_components.clear();
 		}
@@ -221,24 +221,22 @@ namespace black_cat
 		core::bc_vector_frame< game::bc_iactor_component* > l_actor_components;
 		for (auto& l_actor : l_scene->get_scene_graph())
 		{
-			auto& l_actor_entry = l_json_document->m_actors.new_entry();
+			auto* l_mediate_component = l_actor.get_component<game::bc_mediate_component>();
+			auto& l_json_entry = l_json_document->m_actors.new_entry();
 
 			l_actor.get_components(std::back_inserter(l_actor_components));
 			for (auto& l_component : l_actor_components)
 			{
-				l_component->write_instance(l_actor, *l_actor_entry->m_parameters);
+				l_component->write_instance(l_actor, *l_json_entry->m_parameters);
 			}
 
-			*l_actor_entry->m_entity_name = *l_actor_entry->m_parameters->find(game::bc_mediate_component::s_entity_name_json_key)->second.as_throw<const bcCHAR*>();
-			*l_actor_entry->m_position = *l_actor_entry->m_parameters->find(game::bc_mediate_component::s_position_json_key)->second.as_throw<core::bc_vector3f>();
-
-			l_actor_entry->m_parameters->remove(game::bc_mediate_component::s_entity_name_json_key);
-			l_actor_entry->m_parameters->remove(game::bc_mediate_component::s_position_json_key);
+			*l_json_entry->m_entity_name = l_mediate_component->get_entity_name();
+			*l_json_entry->m_position = l_mediate_component->get_world_position();
 
 			l_actor_components.clear();
 		}
 
 		const auto l_json = l_json_document.write();
-		p_context.m_file->write(l_json.c_str(), l_json.size());
+		p_context.m_file->write(reinterpret_cast<const bcBYTE*>(l_json.c_str()), sizeof(decltype(l_json)::value_type) * l_json.size());
 	}
 }

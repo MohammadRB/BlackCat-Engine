@@ -17,7 +17,7 @@ namespace black_cat
 		{
 			open,	// Stream is open and ready
 			close,	// Stream is closed
-			error	// Stream isn't open and error occured during file opening
+			error	// Stream isn't open and error occurred during file opening
 		};
 
 		enum class bc_stream_seek
@@ -160,8 +160,6 @@ namespace black_cat
 
 			bc_stream_type get_type() const noexcept;
 
-		protected:
-
 		private:
 			bc_unique_ptr< bc_istream_adapter > m_stream;
 		};
@@ -277,7 +275,7 @@ namespace black_cat
 		 * \param p_char 
 		 * \return 
 		 */
-		bool BC_CORE_DLL bc_get_char(bc_istream_adapter& p_stream, bcCHAR* p_char);
+		bool BC_CORE_DLL bc_read_char(bc_istream_adapter& p_stream, bcCHAR* p_char);
 		
 		/**
 		 * \brief Read a wchar from stream if stream is readable and stream position isn't at end
@@ -285,7 +283,7 @@ namespace black_cat
 		 * \param p_char 
 		 * \return 
 		 */
-		bool BC_CORE_DLL bc_get_wchar(bc_istream_adapter& p_stream, bcWCHAR* p_char);
+		bool BC_CORE_DLL bc_read_char(bc_istream_adapter& p_stream, bcWCHAR* p_char);
 
 		/**
 		 * \brief Read a line from stream if stream is readable and stream position isn't at end
@@ -293,7 +291,7 @@ namespace black_cat
 		 * \param p_line 
 		 * \return 
 		 */
-		bool BC_CORE_DLL bc_get_line(bc_istream_adapter& p_stream, bc_string_frame& p_line);
+		bool BC_CORE_DLL bc_read_line(bc_istream_adapter& p_stream, bc_string_frame& p_line);
 
 		/**
 		 * \brief Read a line from stream if stream is readable and stream position isn't at end
@@ -301,6 +299,22 @@ namespace black_cat
 		 * \param p_line 
 		 * \return 
 		 */
-		bool BC_CORE_DLL bc_get_wline(bc_istream_adapter& p_stream, bc_wstring_frame& p_line);
+		bool BC_CORE_DLL bc_read_line(bc_istream_adapter& p_stream, bc_wstring_frame& p_line);
+
+		/**
+		 * \brief Read stream to the end if stream is readable and stream position isn't at end
+		 * \param p_stream
+		 * \param p_content
+		 * \return
+		 */
+		bool BC_CORE_DLL bc_read_all_lines(bc_istream_adapter& p_stream, bc_string_frame& p_content);
+
+		/**
+		 * \brief Read stream to the end if stream is readable and stream position isn't at end
+		 * \param p_stream
+		 * \param p_content
+		 * \return
+		 */
+		bool BC_CORE_DLL bc_read_all_lines(bc_istream_adapter& p_stream, bc_wstring_frame& p_content);
 	}
 }

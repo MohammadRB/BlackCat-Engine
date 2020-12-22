@@ -24,7 +24,7 @@ namespace black_cat
 
 			const auto l_emitter = bc_particle_builder()
 			                       .emitter(core::bc_vector3f(0), core::bc_vector3f::up(), 100, 0, 0)
-			                       .with_deviation(60)
+			                       .with_emission_deviation(60)
 			                       .with_texture(4)
 			                       .with_particles_color({ 0.1f, 0.1f, 0.1f }, 1)
 			                       .with_particle_size(2.0f, 8.0f)

@@ -52,8 +52,6 @@ namespace black_cat
 
 			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
-			void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters) override;
-
 			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 
 			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock) override;
