@@ -18,13 +18,13 @@ namespace black_cat
 		void _render_mesh_node(bc_render_state_buffer& p_buffer,
 			const bc_sub_mesh& p_mesh_part,
 			const bc_sub_mesh_transformation& p_transformations,
-			const bc_mesh_node* p_begin,
-			const bc_mesh_node* p_end,
+			const bc_mesh_node* const* p_begin,
+			const bc_mesh_node* const* p_end,
 			const bcCHAR* p_mesh_prefix)
 		{
 			for (; p_begin != p_end; ++p_begin)
 			{
-				const bc_mesh_node* l_node = p_begin;
+				const bc_mesh_node* l_node = *p_begin;
 
 				for (bc_mesh_node::node_index l_mesh_index = 0, l_mesh_count = l_node->get_mesh_count(); l_mesh_index < l_mesh_count; ++l_mesh_index)
 				{
@@ -47,16 +47,18 @@ namespace black_cat
 				}
 
 				const auto& l_node_children = p_mesh_part.get_node_children(*l_node);
-
 				if (!l_node_children.empty())
 				{
+					const bc_mesh_node* const* l_begin = &l_node_children.front();
+					const bc_mesh_node* const* l_end = &l_node_children.back() + 1;
+					
 					_render_mesh_node
 					(
 						p_buffer,
 						p_mesh_part,
 						p_transformations,
-						*std::begin(l_node_children),
-						*std::begin(l_node_children) + l_node_children.size(),
+						l_begin,
+						l_end,
 						p_mesh_prefix
 					);
 				}
@@ -110,9 +112,8 @@ namespace black_cat
 
 		void bc_mesh_component::render(bc_render_state_buffer& p_buffer) const
 		{
-			const bc_mesh_node* l_node = m_sub_mesh.get_root_node();
-			
-			_render_mesh_node(p_buffer, m_sub_mesh, m_mesh_part_transformation, l_node, l_node + 1, nullptr);
+			const bc_mesh_node* l_root_pointer = m_sub_mesh.get_root_node();
+			_render_mesh_node(p_buffer, m_sub_mesh, m_mesh_part_transformation, &l_root_pointer, &l_root_pointer + 1, nullptr);
 		}
 
 		void bc_mesh_component::set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform)

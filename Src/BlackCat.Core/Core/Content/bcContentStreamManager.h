@@ -49,7 +49,7 @@ namespace black_cat
 
 		private:
 			using string_hash = std::hash< const bcCHAR* >;
-			using content_load_delegate = bc_delegate< bc_icontent_ptr(bc_alloc_type, const bcECHAR*, bc_content_loader_parameter&&) >;
+			using content_load_delegate = bc_delegate< bc_icontent_ptr(bc_alloc_type, const bcECHAR*, const bc_content_loader_parameter&) >;
 			using content_loader_map_type = bc_unordered_map_program< string_hash::result_type, content_load_delegate >;
 			using content_stream_map_type = bc_unordered_map_program< string_hash::result_type, bc_vector_program< _bc_content_stream_file >>;
 			using content_map_type = bc_unordered_map_program< string_hash::result_type, bc_vector< bc_icontent_ptr > >;
@@ -141,9 +141,9 @@ namespace black_cat
 		void bc_content_stream_manager::_register_content_loader(const bcCHAR* p_data_driven_name)
 		{
 			auto l_data_driven_hash = string_hash()(p_data_driven_name);
-			content_load_delegate l_load_delegate([this](bc_alloc_type p_alloc_type, const bcECHAR* p_file_name, bc_content_loader_parameter&& p_parameters)
+			content_load_delegate l_load_delegate([this](bc_alloc_type p_alloc_type, const bcECHAR* p_file_name, const bc_content_loader_parameter& p_parameters)
 			{
-				return m_content_manager.load< TContent >(p_alloc_type, p_file_name, std::move(p_parameters));
+				return m_content_manager.load< TContent >(p_alloc_type, p_file_name, p_parameters);
 			});
 
 			m_content_loader_delegates.insert(content_loader_map_type::value_type(l_data_driven_hash, std::move(l_load_delegate)));

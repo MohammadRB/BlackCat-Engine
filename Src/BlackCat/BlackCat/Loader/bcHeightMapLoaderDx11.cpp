@@ -173,8 +173,8 @@ namespace black_cat
 		auto l_height_map_texture = l_content_manager.load< graphic::bc_texture2d_content >
 		(
 			p_context.get_allocator_alloc_type(),
-			p_context.m_file_path.c_str(),
-			core::bc_content_loader_parameter(p_context.m_parameter)
+			p_context.m_file_path,
+			*p_context.m_parameters
 		);
 
 		const auto l_width = l_height_map_texture->get_resource().get_width();
@@ -193,7 +193,7 @@ namespace black_cat
 		bc_height_map_texture_read_task l_height_map_copy_task(l_height_map_texture->get_resource());
 		l_render_system.add_render_task(l_height_map_copy_task);
 
-		auto l_texture_map_file_path = core::bc_path(p_context.m_file_path.c_str());
+		auto l_texture_map_file_path = core::bc_path(p_context.m_file_path);
 		l_texture_map_file_path.set_filename((l_texture_map_file_path.get_filename_without_extension() + bcL("_texture_map")).c_str()).set_file_extension(bcL("dds"));
 		auto l_texture_map_file_absolute = l_texture_map_file_path.get_path();
 
@@ -216,7 +216,7 @@ namespace black_cat
 		bcUINT32 l_texel_size = l_height_map_copy_task.m_texel_size;
 		bcUBYTE* l_texture_data = l_height_map_copy_task.m_texture_buffer.get();
 		bcINT16* l_dest = l_heights.get();
-		auto* l_y_multiplier_value = p_context.m_parameter.get_value< bcINT >("y_multiplier");
+		const auto* l_y_multiplier_value = p_context.m_parameters->get_value< bcINT >("y_multiplier");
 		auto l_y_multiplier = bc_null_default(l_y_multiplier_value, 512);
 		
 		for (bcUINT32 l_i = 0, l_end = l_sample_count; l_i < l_end; ++l_i)
@@ -252,7 +252,7 @@ namespace black_cat
 
 	void bc_height_map_loader_dx11::content_processing(core::bc_content_loading_context& p_context) const
 	{
-		auto* l_content_loader = core::bc_get_service< core::bc_content_manager >();
+		auto* l_content_manager = core::bc_get_service< core::bc_content_manager >();
 		auto* l_game_system = core::bc_get_service< game::bc_game_system >();
 		auto& l_render_system = l_game_system->get_render_system();
 		auto& l_physics_system = l_game_system->get_physics_system();
@@ -291,27 +291,28 @@ namespace black_cat
 		graphic::bc_subresource_data l_height_map_texture_data(l_dest, l_width * l_sample_size, l_width * l_height * l_sample_size);
 		auto l_height_map_texture = l_render_system.get_device().create_texture2d(l_height_map_texture_config, &l_height_map_texture_data);
 
-		auto l_texture_map_file_path = core::bc_path(p_context.m_file_path.c_str());
+		auto l_texture_map_file_path = core::bc_path(p_context.m_file_path);
 		l_texture_map_file_path.set_filename((l_texture_map_file_path.get_filename_without_extension() + bcL("_texture_map")).c_str())
 			.set_file_extension(bcL("dds"));
 		auto l_texture_map_file_relative = l_texture_map_file_path.get_path();
 
-		graphic::bc_texture2d_content_ptr l_texture_map_texture = l_content_loader->load< graphic::bc_texture2d_content >
+		graphic::bc_texture2d_content_ptr l_texture_map_texture = l_content_manager->load< graphic::bc_texture2d_content >
 		(
 			p_context.get_allocator_alloc_type(),
 			l_texture_map_file_relative.c_str(),
+			*p_context.m_parameters,
 			std::move
 			(
-				core::bc_content_loader_parameter(p_context.m_parameter)
+				core::bc_content_loader_parameter(core::bc_alloc_type::frame)
 				.add_value(constant::g_param_texture_config, l_texture_map_texture_config)
 			)
 		);
 
-		auto* l_xz_multiplier_value = p_context.m_parameter.get_value< bcINT >("xz_multiplier");
-		auto* l_y_multiplier_value = p_context.m_parameter.get_value< bcINT >("y_multiplier");
-		auto* l_distance_detail_value = p_context.m_parameter.get_value< bcINT >("distance_detail");
-		auto* l_height_detail_value = p_context.m_parameter.get_value< bcINT >("height_detail");
-		auto* l_material_names_value = p_context.m_parameter.get_value< core::bc_vector< core::bc_any > >("materials");
+		const auto* l_xz_multiplier_value = p_context.m_parameters->get_value< bcINT >("xz_multiplier");
+		const auto* l_y_multiplier_value = p_context.m_parameters->get_value< bcINT >("y_multiplier");
+		const auto* l_distance_detail_value = p_context.m_parameters->get_value< bcINT >("distance_detail");
+		const auto* l_height_detail_value = p_context.m_parameters->get_value< bcINT >("height_detail");
+		const auto* l_material_names_value = p_context.m_parameters->get_value< core::bc_vector< core::bc_any > >("materials");
 		
 		bcUINT16 l_xz_multiplier = bc_null_default(l_xz_multiplier_value, 1);
 		bcFLOAT l_y_multiplier = bc_null_default(l_y_multiplier_value, 512);

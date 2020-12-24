@@ -200,6 +200,21 @@
       ]
     },
     {
+      "name": "xbot",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "xbot"
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {}
+        }
+      ]
+    },
+    {
       "name": "sample_fire",
       "controller": "fire",
       "components": [

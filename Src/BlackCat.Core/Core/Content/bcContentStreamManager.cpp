@@ -79,6 +79,7 @@ namespace black_cat
 						bc_string_program(l_stream_content->m_content_title->c_str()),
 						bc_string_program(l_stream_content->m_content_name->c_str()),
 						bc_estring_program(l_file_path.c_str()),
+						bc_data_driven_parameter()
 					};
 
 					auto& l_content_params = *l_stream_content->m_content_parameter;
@@ -89,7 +90,7 @@ namespace black_cat
 						std::end(l_content_params),
 						[&l_stream_file](bc_json_key_value::value_type& p_parameter)
 						{
-							l_stream_file.m_parameters.add_value(core::bc_to_string_frame(p_parameter.first).c_str(), std::move(p_parameter.second));
+							l_stream_file.m_parameters.add_value(p_parameter.first.c_str(), std::move(p_parameter.second));
 						}
 					);
 
@@ -130,7 +131,7 @@ namespace black_cat
 					content_map_type::iterator l_content_end;
 
 					{
-						core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
+						core_platform::bc_shared_mutex_shared_guard l_lock_guard(m_contents_mutex);
 
 						l_content_entry = m_contents.find(l_content_hash);
 						l_content_end = std::end(m_contents);
@@ -139,7 +140,7 @@ namespace black_cat
 					// Content already loaded from another stream
 					if (l_content_entry != l_content_end)
 					{
-						core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
+						core_platform::bc_shared_mutex_guard l_lock_guard(m_contents_mutex);
 
 						// Make a copy of content pointer to increase it's reference counter
 						l_content_entry->second.push_back(*std::begin(l_content_entry->second));
@@ -155,13 +156,11 @@ namespace black_cat
 						throw bc_key_not_found_exception(l_error_msg.c_str());
 					}
 
-					bc_content_loader_parameter l_loader_parameter = l_content_file.m_parameters;
-
 					bc_icontent_ptr l_content = l_loader_entry->second
 					(
 						p_alloc_type,
 						l_content_file.m_file.c_str(),
-						std::move(l_loader_parameter)
+						l_content_file.m_parameters
 					);
 
 					content_map_type::value_type l_new_content_entry = content_map_type::value_type(l_content_hash, content_map_type::value_type::second_type());
@@ -172,7 +171,7 @@ namespace black_cat
 				[this](bc_list_frame<content_map_type::value_type>& p_locals)
 				{
 					{
-						core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
+						core_platform::bc_shared_mutex_guard l_lock_guard(m_contents_mutex);
 
 						for (auto& l_content_entry : p_locals)
 						{
@@ -214,7 +213,7 @@ namespace black_cat
 				content_map_type::iterator l_content_end;
 
 				{
-					core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
+					core_platform::bc_shared_mutex_shared_guard l_lock_guard(m_contents_mutex);
 
 					l_content_entry = m_contents.find(l_content_hash);
 					l_content_end = std::end(m_contents);
@@ -230,7 +229,7 @@ namespace black_cat
 					if (l_content_entry->second.empty())
 					{
 						{
-							core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
+							core_platform::bc_shared_mutex_guard l_lock_guard(m_contents_mutex);
 
 							m_contents.erase(l_content_entry);
 						}
@@ -246,7 +245,7 @@ namespace black_cat
 			content_map_type::const_iterator l_content_end;
 
 			{
-				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock_guard(m_contents_mutex);
+				core_platform::bc_shared_mutex_shared_guard l_lock_guard(m_contents_mutex);
 				
 				l_content_entry = m_contents.find(l_content_hash);
 				l_content_end = std::end(m_contents);

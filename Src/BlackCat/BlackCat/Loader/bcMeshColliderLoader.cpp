@@ -11,8 +11,9 @@
 #include "BlackCat/Loader/bcMeshLoader.h"
 #include "BlackCat/Loader/bcMeshColliderLoader.h"
 
-#include "3rdParty/Assimp/Include/postprocess.h"
 #include "3rdParty/Assimp/Include/Importer.hpp"
+#include "3rdParty/Assimp/Include/postprocess.h"
+#include "3rdParty/Assimp/Include/scene.h"
 
 namespace black_cat
 {
@@ -25,10 +26,8 @@ namespace black_cat
 
 	bool bc_mesh_collider_loader::is_px_node(const aiNode& p_node)
 	{
-		core::bc_string_frame l_node_name(p_node.mName.data);
 		const bcCHAR* l_px_str = "px_";
-
-		return l_node_name.compare(0, std::strlen(l_px_str), l_px_str) == 0;
+		return std::strncmp(l_px_str, p_node.mName.data, std::strlen(l_px_str)) == 0;
 	}
 
 	bool bc_mesh_collider_loader::support_offline_processing() const
@@ -40,7 +39,8 @@ namespace black_cat
 	{
 		Assimp::Importer l_importer;
 
-		const aiScene* l_scene = *p_context.m_parameter.get_value<const aiScene*>("aiScene");
+		const aiScene* const * l_scene_value = p_context.m_parameters->get_value<const aiScene*>("aiScene");
+		const aiScene* l_scene = l_scene_value ? *l_scene_value : nullptr;
 		if (!l_scene)
 		{
 			l_scene = l_importer.ReadFileFromMemory
@@ -61,7 +61,7 @@ namespace black_cat
 			const auto l_error_msg =
 				core::bc_string_frame("Content file loading error: ")
 				+
-				core::bc_to_exclusive_string(p_context.m_file_path.c_str()).c_str()
+				core::bc_to_string_frame(p_context.m_file_path).c_str()
 				+
 				", "
 				+
@@ -71,7 +71,7 @@ namespace black_cat
 			return;
 		}
 
-		const bool l_generate_high_detail_query_shape = m_high_detail_query_shape && bc_null_default(p_context.m_parameter.get_value<bool>("high_detail_query_shape"), false);
+		const bool l_generate_high_detail_query_shape = m_high_detail_query_shape && bc_null_default(p_context.m_parameters->get_value<bool>("high_detail_query_shape"), false);
 		game::bc_game_system& l_game_system = *core::bc_get_service< game::bc_game_system >();
 		game::bc_mesh_collider l_result;
 

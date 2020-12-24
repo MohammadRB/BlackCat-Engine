@@ -207,7 +207,9 @@ namespace black_cat
 
 				ID3D10Blob* l_compiled_shader;
 				ComPtr< ID3D10Blob > l_error_messages;
-				HRESULT l_hr = D3DCompile(p_data,
+				const HRESULT l_hr = D3DCompile
+				(
+					p_data,
 					p_data_size,
 					p_source_file,
 					p_defines,
@@ -217,7 +219,8 @@ namespace black_cat
 					l_flags,
 					0,
 					&l_compiled_shader,
-					l_error_messages.GetAddressOf());
+					l_error_messages.GetAddressOf()
+				);
 
 				if (FAILED(l_hr))
 				{

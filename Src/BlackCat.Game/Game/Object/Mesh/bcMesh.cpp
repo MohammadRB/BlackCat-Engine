@@ -90,8 +90,8 @@ namespace black_cat
 
 		const bc_mesh_node* bc_mesh::find_node(const bcCHAR* p_name) const
 		{
-			auto l_hash = hash_t()(p_name);
-			auto l_entry = m_nodes_map.find(l_hash);
+			const auto l_hash = hash_t()(p_name);
+			const auto l_entry = m_nodes_map.find(l_hash);
 
 			if(l_entry == std::end(m_nodes_map))
 			{
@@ -180,9 +180,8 @@ namespace black_cat
 		{
 			p_bound_box.set_empty();
 
-			const bc_mesh_node* l_begin = &m_nodes[p_result.get_root_node_index()];
-
-			_calculate_absolute_transformations(p_world, l_begin, l_begin + 1, p_result, p_bound_box);
+			const bc_mesh_node* l_root_pointer = &m_nodes[p_result.get_root_node_index()];
+			_calculate_absolute_transformations(p_world, &l_root_pointer, &l_root_pointer + 1, p_result, p_bound_box);
 		}
 
 		bc_mesh_node* bc_mesh::_add_node(core::bc_string p_name,
@@ -218,7 +217,7 @@ namespace black_cat
 				m_colliders_map.push_back(l_mesh_part_colliders);
 			}
 
-			auto l_node = &(*m_nodes.rbegin());
+			auto* l_node = &m_nodes.back();
 
 			if(!p_parent)
 			{
@@ -318,15 +317,15 @@ namespace black_cat
 		}
 
 		void bc_mesh::_calculate_absolute_transformations(const core::bc_matrix4f& p_parent_transformation,
-			const bc_mesh_node* p_begin,
-			const bc_mesh_node* p_end,
+			const bc_mesh_node* const* p_begin,
+			const bc_mesh_node* const* p_end,
 			bc_sub_mesh_transformation& p_result,
 			physics::bc_bound_box& p_bound_box) const
 		{
 			for (; p_begin != p_end; ++p_begin)
 			{
-				const bc_mesh_node* l_node = p_begin;
-
+				const bc_mesh_node* l_node = *p_begin;
+				
 				auto l_node_absolute_transformation = get_node_transformation(*l_node) * p_parent_transformation;
 				p_result.set_node_transformation
 				(
@@ -355,8 +354,8 @@ namespace black_cat
 				const auto& l_node_children = get_node_children(*l_node);
 				if (!l_node_children.empty())
 				{
-					const bc_mesh_node* l_begin = *l_node_children.begin();
-					const bc_mesh_node* l_end = l_begin + l_node_children.size();
+					const bc_mesh_node* const * l_begin = &l_node_children.front();
+					const bc_mesh_node* const * l_end = &l_node_children.back() + 1;
 
 					_calculate_absolute_transformations
 					(

@@ -7,7 +7,9 @@
 #include "Game/Object/Mesh/bcMeshCollider.h"
 #include "BlackCat/bcExport.h"
 
-#include "3rdParty/Assimp/Include/scene.h"
+struct aiNode;
+struct aiScene;
+struct aiMesh;
 
 namespace black_cat
 {

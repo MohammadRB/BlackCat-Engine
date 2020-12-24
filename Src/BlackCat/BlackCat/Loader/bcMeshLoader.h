@@ -10,9 +10,12 @@
 #include "Game/Object/Mesh/bcMesh.h"
 #include "BlackCat/bcExport.h"
 
-#include "3rdParty/Assimp/Include/Importer.hpp"
-#include "3rdParty/Assimp/Include/postprocess.h"
-#include "3rdParty/Assimp/Include/scene.h"
+#include "3rdParty/Assimp/Include/matrix4x4.h"
+
+struct aiMaterial;
+struct aiNode;
+struct aiScene;
+struct aiMesh;
 
 namespace black_cat
 {
@@ -51,9 +54,5 @@ namespace black_cat
 		bool support_offline_processing() const override;
 
 		void content_processing(core::bc_content_loading_context& p_context) const override;
-
-	protected:
-
-	private:
 	};
 }

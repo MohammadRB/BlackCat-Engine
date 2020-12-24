@@ -158,7 +158,7 @@ namespace black_cat
 		
 		p_context.set_result(game::bc_scene
 		(
-			core::bc_estring(p_context.m_file_path.c_str()),
+			core::bc_estring(p_context.m_file_path),
 			core::bc_string(l_json_document->m_name->c_str()),
 			l_stream_file_names,
 			l_entity_file_names,

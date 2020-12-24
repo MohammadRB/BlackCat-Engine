@@ -329,8 +329,6 @@ namespace black_cat
 			size_type m_capacity;
 			node_pointer m_first;
 			internal_allocator_type m_allocator;
-
-		private:
 		};
 
 		template < typename T, class TAllocator = bc_allocator< T > >
@@ -479,8 +477,6 @@ namespace black_cat
 
 			void swap(this_type& p_other) noexcept;
 
-		protected:
-			
 		private:
 			void _assign(const this_type& p_other, const allocator_type* p_allocator);
 

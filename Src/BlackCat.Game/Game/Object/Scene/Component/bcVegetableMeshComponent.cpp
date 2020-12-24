@@ -14,8 +14,8 @@ namespace black_cat
 		extern void _render_mesh_node(bc_render_state_buffer& p_buffer,
 			const bc_sub_mesh& p_mesh_part,
 			const bc_sub_mesh_transformation& p_transformations,
-			const bc_mesh_node* p_begin,
-			const bc_mesh_node* p_end,
+			const bc_mesh_node* const* p_begin,
+			const bc_mesh_node* const* p_end,
 			const bcCHAR* p_mesh_prefix);
 
 		bc_vegetable_mesh_component::bc_vegetable_mesh_component(bc_actor_component_index p_index)
@@ -68,7 +68,7 @@ namespace black_cat
 			const auto& l_mesh_transformation = get_mesh_transformation();
 			const auto* l_root_node = l_mesh.get_root_node();
 
-			_render_mesh_node(p_buffer, l_mesh, l_mesh_transformation, l_root_node, l_root_node + 1, l_mesh_prefix);
+			_render_mesh_node(p_buffer, l_mesh, l_mesh_transformation, &l_root_node, &l_root_node + 1, l_mesh_prefix);
 		}
 	}
 }

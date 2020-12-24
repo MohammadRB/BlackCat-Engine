@@ -106,11 +106,12 @@ namespace black_cat
 			 * file name must be absolute path
 			 * \tparam TContent 
 			 * \param p_file 
-			 * \param p_parameter 
+			 * \param p_parameter
+			 * \param p_instance_parameters 
 			 * \return 
 			 */
 			template< class TContent >
-			bc_content_ptr< TContent > load(const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter);
+			bc_content_ptr< TContent > load(const bcECHAR* p_file, const bc_content_loader_parameter& p_parameter, bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter(bc_alloc_type::frame));
 
 			/**
 			 * \brief Load specified content from file or if it's loaded earlier return a pointer to it.
@@ -118,17 +119,18 @@ namespace black_cat
 			 * \tparam TContent 
 			 * \param p_alloc_type 
 			 * \param p_file 
-			 * \param p_parameter 
+			 * \param p_parameter
+			 * \param p_instance_parameters 
 			 * \return 
 			 */
 			template< class TContent >
-			bc_content_ptr< TContent > load(bc_alloc_type p_alloc_type, const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter);
+			bc_content_ptr< TContent > load(bc_alloc_type p_alloc_type, const bcECHAR* p_file, const bc_content_loader_parameter& p_parameter, bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter(bc_alloc_type::frame));
 
 			template< class TContent >
-			bc_task< bc_content_ptr< TContent > > load_async(const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter);
+			bc_task< bc_content_ptr< TContent > > load_async(const bcECHAR* p_file, const bc_content_loader_parameter& p_parameter, bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter(bc_alloc_type::frame));
 
 			template< class TContent >
-			bc_task< bc_content_ptr< TContent > > load_async(bc_alloc_type p_alloc_type, const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter);
+			bc_task< bc_content_ptr< TContent > > load_async(bc_alloc_type p_alloc_type, const bcECHAR* p_file, const bc_content_loader_parameter& p_parameter, bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter(bc_alloc_type::frame));
 						
 			template< class TContent >
 			void save(TContent& p_content);
@@ -170,7 +172,8 @@ namespace black_cat
 			bc_unique_ptr< TContent > _load_content(bc_alloc_type p_alloc_type,
 				const bcECHAR* p_file,
 				const bcECHAR* p_offline_file,
-				bc_content_loader_parameter&& p_parameter,
+				const bc_content_loader_parameter& p_parameter,
+				bc_content_loader_parameter p_instance_parameters,
 				bc_icontent_loader* p_loader);
 
 			template< class TContent >
@@ -223,13 +226,13 @@ namespace black_cat
 		}
 
 		template< class TContent >
-		bc_content_ptr< TContent > bc_content_manager::load(const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter)
+		bc_content_ptr< TContent > bc_content_manager::load(const bcECHAR* p_file, const bc_content_loader_parameter& p_parameter, bc_content_loader_parameter p_instance_parameters)
 		{
-			return load<TContent>(bc_alloc_type::unknown, p_file, std::move(p_parameter));
+			return load<TContent>(bc_alloc_type::unknown, p_file, std::move(p_parameter), std::move(p_instance_parameters));
 		}
 
 		template< class TContent >
-		bc_content_ptr< TContent > bc_content_manager::load(bc_alloc_type p_alloc_type, const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter)
+		bc_content_ptr< TContent > bc_content_manager::load(bc_alloc_type p_alloc_type, const bcECHAR* p_file, const bc_content_loader_parameter& p_parameter, bc_content_loader_parameter p_instance_parameters)
 		{
 			static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
 
@@ -249,7 +252,15 @@ namespace black_cat
 
 			bc_icontent_loader* l_loader = _get_loader<TContent>();
 
-			bc_unique_ptr< TContent > l_content = _load_content< TContent >(p_alloc_type, p_file, l_offline_file_path.c_str(), std::move(p_parameter), l_loader);
+			bc_unique_ptr< TContent > l_content = _load_content< TContent >
+			(
+				p_alloc_type,
+				p_file,
+				l_offline_file_path.c_str(),
+				p_parameter,
+				std::move(p_instance_parameters),
+				l_loader
+			);
 
 			bcAssert(l_content != nullptr);
 
@@ -257,19 +268,19 @@ namespace black_cat
 		}
 
 		template< class TContent >
-		bc_task< bc_content_ptr< TContent > > bc_content_manager::load_async(const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter)
+		bc_task< bc_content_ptr< TContent > > bc_content_manager::load_async(const bcECHAR* p_file, const bc_content_loader_parameter& p_parameter, bc_content_loader_parameter p_instance_parameters)
 		{
-			return load_async<TContent>(bc_alloc_type::unknown, p_file, p_parameter);
+			return load_async<TContent>(bc_alloc_type::unknown, p_file, p_parameter, std::move(p_instance_parameters));
 		}
 
 		template< class TContent >
-		bc_task<bc_content_ptr<TContent>> bc_content_manager::load_async(bc_alloc_type p_alloc_type, const bcECHAR* p_file, bc_content_loader_parameter&& p_parameter)
+		bc_task<bc_content_ptr<TContent>> bc_content_manager::load_async(bc_alloc_type p_alloc_type, const bcECHAR* p_file, const bc_content_loader_parameter& p_parameter, bc_content_loader_parameter p_instance_parameters)
 		{
 			auto l_task = bc_concurrency::start_task
 			(
 				[=]()
 				{
-					return load< TContent >(p_alloc_type, p_file, p_parameter);
+					return load< TContent >(p_alloc_type, p_file, p_parameter, std::move(p_instance_parameters));
 				},
 				bc_task_creation_option::policy_fairness
 			);
@@ -393,7 +404,8 @@ namespace black_cat
 		bc_unique_ptr< TContent > bc_content_manager::_load_content(bc_alloc_type p_alloc_type,
 			const bcECHAR* p_file, 
 			const bcECHAR* p_offline_file, 
-			bc_content_loader_parameter&& p_parameter, 
+			const bc_content_loader_parameter& p_parameter,
+			bc_content_loader_parameter p_instance_parameters,
 			bc_icontent_loader* p_loader)
 		{
 			core_platform::bc_basic_file_info l_file_info;
@@ -411,7 +423,8 @@ namespace black_cat
 			bc_unique_ptr< TContent > l_result;
 
 			l_context.m_file_path = p_file;
-			l_context.m_parameter = std::move(p_parameter);
+			l_context.m_parameters = &p_parameter;
+			l_context.m_instance_parameters = std::move(p_instance_parameters);
 			l_context.set_allocator_alloc_type(p_alloc_type);
 
 			{

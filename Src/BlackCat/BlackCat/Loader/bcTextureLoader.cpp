@@ -52,7 +52,7 @@ namespace black_cat
 
 	void bc_texture_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
-		const core::bc_path l_path(p_context.m_file_path.c_str());
+		const core::bc_path l_path(p_context.m_file_path);
 		core::bc_estring l_extension = l_path.get_file_extension();
 		graphic::bc_image_format l_format;
 
@@ -88,7 +88,7 @@ namespace black_cat
 		}
 
 		graphic::bc_device& l_device = core::bc_get_service< game::bc_game_system >()->get_render_system().get_device();
-		const graphic::bc_texture_config* l_config = p_context.m_parameter.get_value<graphic::bc_texture_config>(constant::g_param_texture_config);
+		const graphic::bc_texture_config* l_config = p_context.m_instance_parameters.get_value<graphic::bc_texture_config>(constant::g_param_texture_config);
 
 		l_config = l_config ? l_config : &s_default_config;
 
@@ -111,6 +111,6 @@ namespace black_cat
 
 		p_context.m_file->close(); // Close file so DX can write to the file
 
-		l_device.save_texture2d(l_texture_content->get_resource(), graphic::bc_image_format::dds, p_context.m_file_path.c_str());
+		l_device.save_texture2d(l_texture_content->get_resource(), graphic::bc_image_format::dds, p_context.m_file_path);
 	}
 }

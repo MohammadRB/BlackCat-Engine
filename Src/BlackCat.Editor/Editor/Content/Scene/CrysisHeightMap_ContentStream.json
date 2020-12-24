@@ -210,6 +210,15 @@
             "high_detail_query_shape": true,
             "auto_scale": 20.0
           }
+        },
+        {
+          "content_title": "xbot",
+          "content_name": "mesh",
+          "content_file": "content\\model\\xbot.fbx",
+          "content_parameter": {
+            "high_detail_query_shape": true,
+            "auto_scale": 10.0
+          }
         }
       ]
     }

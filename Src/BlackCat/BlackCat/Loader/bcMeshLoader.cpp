@@ -28,6 +28,10 @@
 #include "BlackCat/Loader/bcMeshColliderLoader.h"
 #include "BlackCat/Loader/bcMeshLoader.h"
 
+#include "3rdParty/Assimp/Include/Importer.hpp"
+#include "3rdParty/Assimp/Include/postprocess.h"
+#include "3rdParty/Assimp/Include/scene.h"
+
 namespace black_cat
 {
 	void bc_mesh_loader::calculate_node_mesh_count(const aiNode& p_node, bcSIZE& p_node_count, bcSIZE& p_mesh_count)
@@ -87,7 +91,7 @@ namespace black_cat
 		p_material.m_specular_intensity = l_specular_intensity;
 		p_material.m_specular_power = l_specular_power;
 
-		const auto l_root_path = core::bc_path(p_context.m_file_path.c_str()).set_filename(bcL(""));
+		const auto l_root_path = core::bc_path(p_context.m_file_path).set_filename(bcL(""));
 		core::bc_nullable<core::bc_path> l_diffuse_file_name;
 		aiString l_aistr;
 
@@ -98,7 +102,7 @@ namespace black_cat
 			(
 				p_context.get_allocator_alloc_type(),
 				core::bc_path(l_root_path).set_filename(l_diffuse_file_name->get_path().c_str()).get_path().c_str(),
-				core::bc_content_loader_parameter(p_context.m_parameter)
+				*p_context.m_parameters
 			);
 		}
 
@@ -141,7 +145,7 @@ namespace black_cat
 			(
 				p_context.get_allocator_alloc_type(),
 				l_normal_map_path.c_str(),
-				core::bc_content_loader_parameter(p_context.m_parameter)
+				*p_context.m_parameters
 			);
 		}
 		if (!l_specular_map_path.empty())
@@ -150,7 +154,7 @@ namespace black_cat
 			(
 				p_context.get_allocator_alloc_type(),
 				l_specular_map_path.c_str(),
-				core::bc_content_loader_parameter(p_context.m_parameter)
+				*p_context.m_parameters
 			);
 		}
 	}
@@ -358,7 +362,7 @@ namespace black_cat
 
 		const aiScene* l_scene = l_importer.ReadFileFromMemory
 		(
-			reinterpret_cast< void* >(p_context.m_file_buffer.get()),
+			p_context.m_file_buffer.get(),
 			p_context.m_file_buffer_size,
 			aiProcess_GenSmoothNormals |
 			aiProcess_CalcTangentSpace |
@@ -372,7 +376,7 @@ namespace black_cat
 			const auto l_error_msg =
 				core::bc_string_frame("Content file loading error: ")
 				+
-				core::bc_to_exclusive_string(p_context.m_file_path.c_str()).c_str()
+				core::bc_to_string_frame(p_context.m_file_path).c_str()
 				+
 				", "
 				+
@@ -385,8 +389,8 @@ namespace black_cat
 		const game::bc_mesh_collider_ptr l_mesh_colliders = core::bc_get_service< core::bc_content_manager >()->load< game::bc_mesh_collider >
 		(
 			p_context.get_allocator_alloc_type(),
-			p_context.m_file_path.c_str(),
-			std::move(core::bc_content_loader_parameter(p_context.m_parameter).add_value("aiScene", l_scene))
+			p_context.m_file_path,
+			*p_context.m_parameters
 		);
 
 		game::bc_game_system& l_game_system = *core::bc_get_service< game::bc_game_system >();
@@ -395,12 +399,12 @@ namespace black_cat
 		bcSIZE l_mesh_count = 0;
 		calculate_node_mesh_count(*l_scene->mRootNode, l_node_count, l_mesh_count);
 
-		const core::bc_estring l_mesh_name = core::bc_path(p_context.m_file_path.c_str()).get_filename();
+		const core::bc_estring l_mesh_name = core::bc_path(p_context.m_file_path).get_filename();
 		game::bc_mesh l_mesh(core::bc_to_exclusive_string(l_mesh_name), l_node_count, l_mesh_count, l_mesh_colliders);
 
 		convert_ainodes(l_game_system.get_render_system(), p_context, *l_scene, *l_scene->mRootNode, l_mesh, nullptr);
 
-		const bcFLOAT* l_auto_scale = p_context.m_parameter.get_value<bcFLOAT>("auto_scale");
+		const bcFLOAT* l_auto_scale = p_context.m_parameters->get_value<bcFLOAT>("auto_scale");
 		if(l_auto_scale)
 		{
 			l_mesh._apply_auto_scale(*l_auto_scale);

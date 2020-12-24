@@ -17,6 +17,8 @@ namespace black_cat
 {
 	namespace core
 	{
+		using bc_content_loader_parameter = bc_data_driven_parameter;
+		
 		class bc_content_loader_result
 		{
 		public:
@@ -94,19 +96,27 @@ namespace black_cat
 			bc_io_exception m_exception;
 			bc_unique_ptr<bc_icontent> m_result;
 		};
-		
-		using bc_content_loader_parameter = bc_data_driven_parameter;
 
 		class bc_content_loading_context : public bc_object_allocator
 		{
 		public:
-			bc_content_loading_context() = default;
+			bc_content_loading_context()
+				: m_file_path(nullptr),
+				m_file(nullptr),
+				m_file_buffer(nullptr),
+				m_file_buffer_size(0),
+				m_parameters(nullptr),
+				m_instance_parameters(bc_alloc_type::frame),
+				m_result(nullptr)
 
-			bc_content_loading_context(bc_content_loading_context&&) = default;
+			{
+			}
+
+			bc_content_loading_context(bc_content_loading_context&&) noexcept = default;
 
 			~bc_content_loading_context() = default;
 
-			bc_content_loading_context& operator=(bc_content_loading_context&&) = default;
+			bc_content_loading_context& operator=(bc_content_loading_context&&) noexcept = default;
 
 			template
 			<
@@ -126,11 +136,12 @@ namespace black_cat
 				m_result.reset(bc_content_loader_result(std::move(p_exception)));
 			}
 
-			bc_estring_frame m_file_path;						// Used to give loader access to content and offline content file path
+			const bcECHAR* m_file_path;							// Used to give loader access to content and offline content file path
 			bc_nullable< bc_stream > m_file;					// Used to give loader access to content and offline content file
 			bc_unique_ptr<bcBYTE> m_file_buffer;				// Used to give loader access to file content
-			bcUINT64 m_file_buffer_size;						// Used to give loader access to file content size
-			bc_content_loader_parameter m_parameter;			// Used to pass additional parameters to loader
+			bcSIZE m_file_buffer_size;							// Used to give loader access to file content size
+			const bc_content_loader_parameter* m_parameters;	// Used to pass constant parameters to loader
+			bc_content_loader_parameter m_instance_parameters;	// Used to pass instance parameters to loader
 			bc_nullable< bc_content_loader_result > m_result;	// Used to pass result from loader to caller
 		};
 
@@ -139,13 +150,13 @@ namespace black_cat
 		public:
 			bc_content_saving_context() = default;
 
-			bc_content_saving_context(bc_content_saving_context&&) = default;
+			bc_content_saving_context(bc_content_saving_context&&) noexcept = default;
 
 			~bc_content_saving_context() = default;
 
-			bc_content_saving_context& operator=(bc_content_saving_context&&) = default;
+			bc_content_saving_context& operator=(bc_content_saving_context&&) noexcept = default;
 
-			bc_estring_frame m_file_path;						// Used to give saver access to content file path
+			const bcECHAR* m_file_path;							// Used to give saver access to content file path
 			bc_nullable< bc_stream > m_file;					// Used to give saver access to content file
 			bc_icontent* m_content;								// Used to give saver access to content
 		};

@@ -158,15 +158,15 @@ namespace black_cat
 
 		private:
 			void _calculate_absolute_transformations(const core::bc_matrix4f& p_parent_transformation,
-				const bc_mesh_node* p_begin,
-				const bc_mesh_node* p_end,
+				const bc_mesh_node* const* p_begin,
+				const bc_mesh_node* const* p_end,
 				bc_sub_mesh_transformation& p_result,
 				physics::bc_bound_box& p_bound_box) const;
 
 			core::bc_string m_name;
 			bc_mesh_node* m_root;
 			core::bc_vector< bc_mesh_node > m_nodes;										// Don't use movable memory due to raw pointers in bc_mesh_node
-			core::bc_vector< bc_render_state_ptr > m_render_states;						// Place render states along with nodes
+			core::bc_vector< bc_render_state_ptr > m_render_states;							// Place render states along with nodes
 			core::bc_vector_movable< core::bc_matrix4f > m_transformations;
 			bc_mesh_collider_ptr m_colliders;
 			core::bc_vector< const bc_mesh_part_collider* > m_colliders_map;				// Used to fetch mesh colliders without need to hash looking in bc_mesh_collider

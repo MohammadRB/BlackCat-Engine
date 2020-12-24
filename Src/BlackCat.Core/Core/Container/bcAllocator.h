@@ -40,9 +40,9 @@ namespace black_cat
 			};
 
 		public:
-			static pointer allocate(allocator_type& p_allocator, size_type p_count)
+			static pointer allocate(allocator_type& p_allocator, size_type p_count, const void* p_hint = nullptr)
 			{
-				return p_allocator.allocate(p_count);
+				return p_allocator.allocate(p_count, p_hint);
 			}
 
 			static void deallocate(allocator_type& p_allocator, pointer p_pointer)
@@ -84,8 +84,6 @@ namespace black_cat
 				return p_first != p_second;
 			}
 
-		protected:
-			
 		private:
 			static void _register_pointer(allocator_type& p_allocator, pointer* p_pointer, std::true_type)
 			{
@@ -164,7 +162,7 @@ namespace black_cat
 				return std::addressof(p_object);
 			}
 
-			pointer allocate(size_type p_count, std::allocator<void>::const_pointer p_hint = nullptr)
+			pointer allocate(size_type p_count, const void* p_hint = nullptr)
 			{
 				if (TAlignment <= BC_MEMORY_MIN_ALIGN)
 				{
@@ -287,6 +285,8 @@ namespace black_cat
 		{
 		private:
 			using allocator_type = bc_allocator_base< T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::unknown >;
+			template< typename >
+			friend class bc_runtime_allocator;
 
 		public:
 			using value_type = typename allocator_type::value_type;
@@ -296,10 +296,11 @@ namespace black_cat
 			using const_reference = typename allocator_type::const_reference;
 			using difference_type = typename allocator_type::difference_type;
 			using size_type = typename allocator_type::size_type;
-			using propagate_on_container_copy_assignment = std::false_type;
-			using propagate_on_container_move_assignment = std::false_type;
-			using propagate_on_container_swap = std::false_type;
-
+			using propagate_on_container_copy_assignment = std::true_type;
+			using propagate_on_container_move_assignment = std::true_type;
+			using propagate_on_container_swap = std::true_type;
+			using is_movable_type = typename allocator_type::is_movable_type;
+			
 			template< typename TOther >
 			struct rebind
 			{
@@ -365,7 +366,7 @@ namespace black_cat
 				return std::addressof(p_object);
 			}
 
-			pointer allocate(size_type p_count, std::allocator<void>::const_pointer p_hint = nullptr)
+			pointer allocate(size_type p_count, const void* p_hint = nullptr)
 			{
 				if (m_alignment <= BC_MEMORY_MIN_ALIGN)
 				{
@@ -420,6 +421,18 @@ namespace black_cat
 			bc_alloc_type m_alloc_type;
 			bcUINT m_alignment;
 		};
+
+		template<typename T1, typename T2>
+		bool operator ==(const bc_runtime_allocator< T1 >& p_1, const bc_runtime_allocator< T2 >& p_2)
+		{
+			return p_1.get_alignment() == p_2.get_alignment() && p_1.get_alloc_type() == p_2.get_alloc_type();
+		}
+
+		template<typename T1, typename T2>
+		bool operator !=(const bc_runtime_allocator< T1 >& p_1, const bc_runtime_allocator< T2 >& p_2)
+		{
+			return !(p_1 == p_2);
+		}
 
 		/**
 		 * \brief Provide an interface for classes that use memory allocation and their clients need to change allocation properties.
