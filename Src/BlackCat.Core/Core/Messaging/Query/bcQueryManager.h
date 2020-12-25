@@ -66,6 +66,11 @@ namespace black_cat
 
 			void process_query_queue(const core_platform::bc_clock::update_param& p_clock_update_param);
 
+			/**
+			 * \brief Must be called at the end of every frame
+			 */
+			void clear_temp_states();
+			
 			template< class TQuery >
 			TQuery& _get_shared_query();
 			

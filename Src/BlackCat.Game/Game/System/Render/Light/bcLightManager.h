@@ -2,10 +2,8 @@
 
 #pragma once
 
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Utility/bcClock.h"
-#include "Core/Concurrency/bcMutexTest.h"
-#include "Core/Utility/bcObjectPool.h"
-#include "Core/Utility/bcObjectPoolAllocator.h"
 #include "Core/Container/bcListPool.h"
 #include "Core/Messaging/Query/bcQueryContext.h"
 #include "Core/Messaging/Query/bcQueryProviderHandle.h"
@@ -50,7 +48,7 @@ namespace black_cat
 			core::bc_query_context_ptr _lights_query_context_provider() const;
 			
 			container_t m_lights;
-			mutable core::bc_mutex_test m_lights_lock;
+			mutable core_platform::bc_shared_mutex m_lights_lock;
 
 			core::bc_query_provider_handle m_lights_query_handle;
 		};

@@ -133,7 +133,9 @@ namespace black_cat
 			bcUINT32 m_min_update_rate;
 			bcINT32 m_render_rate;
 
-			core::bc_event_listener_handle m_event_handle_window_resizing;
+			core::bc_event_listener_handle m_event_handle_window_state;
+			core::bc_event_listener_handle m_event_handle_window_resize;
+			core::bc_event_listener_handle m_event_handle_window_focus;
 			core::bc_event_listener_handle m_event_handle_window_close;
 			core::bc_event_listener_handle m_event_handle_app_active;
 			core::bc_event_listener_handle m_event_handle_app_exit;

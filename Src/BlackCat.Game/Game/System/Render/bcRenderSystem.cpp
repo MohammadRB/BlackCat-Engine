@@ -505,35 +505,32 @@ namespace black_cat
 			{
 				auto& l_resize_event = static_cast< platform::bc_app_event_window_resize& >(p_event);
 
-				if(l_resize_event.get_state() != platform::bc_app_event_window_resize::state::minimized)
+				// If nothing has change do not continue
+				if (l_resize_event.width() != m_device.get_back_buffer_width() ||
+					l_resize_event.height() != m_device.get_back_buffer_height())
 				{
-					// If nothing has change do not continue
-					if (l_resize_event.width() != m_device.get_back_buffer_width() ||
-						l_resize_event.height() != m_device.get_back_buffer_height())
-					{
-						const auto l_device_back_buffer = m_device.get_back_buffer_texture();
+					const auto l_device_back_buffer = m_device.get_back_buffer_texture();
 
-						graphic::bc_device_parameters l_old_parameters
-						(
-							l_device_back_buffer.get_width(),
-							l_device_back_buffer.get_height(),
-							l_device_back_buffer.get_format(),
-							l_device_back_buffer.get_sample_count()
-						);
-						graphic::bc_device_parameters l_new_parameters
-						(
-							l_resize_event.width(),
-							l_resize_event.height(),
-							l_device_back_buffer.get_format(),
-							l_device_back_buffer.get_sample_count()
-						);
+					graphic::bc_device_parameters l_old_parameters
+					(
+						l_device_back_buffer.get_width(),
+						l_device_back_buffer.get_height(),
+						l_device_back_buffer.get_format(),
+						l_device_back_buffer.get_sample_count()
+					);
+					graphic::bc_device_parameters l_new_parameters
+					(
+						l_resize_event.width(),
+						l_resize_event.height(),
+						l_device_back_buffer.get_format(),
+						l_device_back_buffer.get_sample_count()
+					);
 
-						core::bc_get_service< core::bc_event_manager >()->queue_event
-						(
-							graphic::bc_app_event_device_reset(m_device, l_old_parameters, l_new_parameters, true), 
-							0
-						);
-					}
+					core::bc_get_service< core::bc_event_manager >()->queue_event
+					(
+						graphic::bc_app_event_device_reset(m_device, l_old_parameters, l_new_parameters, true), 
+						0
+					);
 				}
 
 				return true;

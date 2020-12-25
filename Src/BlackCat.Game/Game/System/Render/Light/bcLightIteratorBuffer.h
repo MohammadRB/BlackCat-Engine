@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Core/Concurrency/bcMutexTest.h"
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 
 namespace black_cat
 {
@@ -26,7 +26,7 @@ namespace black_cat
 			using const_reverse_iterator = typename container_type::const_reverse_iterator;
 
 		public:
-			bc_light_iterator_buffer(core::bc_mutex_test& p_container_lock, const container_type& p_container);
+			bc_light_iterator_buffer(core_platform::bc_shared_mutex& p_container_lock, const container_type& p_container);
 
 			bc_light_iterator_buffer(bc_light_iterator_buffer&&) noexcept;
 
@@ -58,11 +58,11 @@ namespace black_cat
 			
 		private:
 			const container_type* m_container;
-			core::bc_mutex_test* m_container_lock;
+			core_platform::bc_shared_mutex* m_container_lock;
 		};
 
 		template< class TContainer >
-		bc_light_iterator_buffer<TContainer>::bc_light_iterator_buffer(core::bc_mutex_test& p_container_lock, const container_type& p_container)
+		bc_light_iterator_buffer<TContainer>::bc_light_iterator_buffer(core_platform::bc_shared_mutex& p_container_lock, const container_type& p_container)
 			: m_container(&p_container),
 			m_container_lock(&p_container_lock)
 		{
@@ -148,13 +148,13 @@ namespace black_cat
 		template< class TContainer >
 		void bc_light_iterator_buffer<TContainer>::lock()
 		{
-			m_container_lock->lock();
+			m_container_lock->lock_shared();
 		}
 
 		template< class TContainer >
 		void bc_light_iterator_buffer<TContainer>::unlock() noexcept
 		{
-			m_container_lock->unlock();
+			m_container_lock->unlock_shared();
 		}
 	}
 }

@@ -1132,35 +1132,18 @@ namespace black_cat
 		template< typename T, class TAllocator >
 		void bc_list<T, TAllocator>::remove(const value_type& p_value)
 		{
-			if(!base_type::m_head)
+			remove_if([p_value](const value_type& p_entry)
 			{
-				return;
-			}
-
-			node_type* l_node = base_type::m_head;
-			do
-			{
-				if(l_node->m_value == p_value)
-				{
-					base_type::_free_node(l_node, 1);
-				}
-
-				l_node = l_node->m_next;
-			}
-			while (l_node && l_node != base_type::m_head);
+				return p_entry == p_value;
+			});
 		}
 
 		template< typename T, class TAllocator >
 		template< class TUnaryPredicate >
 		void bc_list<T, TAllocator>::remove_if(TUnaryPredicate p_predicate)
 		{
-			if (!base_type::m_head)
-			{
-				return;
-			}
-
 			node_type* l_node = base_type::m_head;
-			do
+			while(l_node)
 			{
 				if (p_predicate(l_node->m_value))
 				{
@@ -1169,8 +1152,12 @@ namespace black_cat
 				else
 				{
 					l_node = l_node->m_next;
+					if(l_node == base_type::m_head)
+					{
+						l_node = nullptr;
+					}
 				}
-			} while (l_node && l_node != base_type::m_head);
+			}
 		}
 
 		template< typename T, class TAllocator >

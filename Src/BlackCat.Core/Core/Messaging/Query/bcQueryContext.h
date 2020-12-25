@@ -33,7 +33,14 @@ namespace black_cat
 				
 		using bc_query_context_hash = bcSIZE;
 		using bc_query_context_ptr = bc_unique_ptr<bc_query_context>;
-
+		
+		template<class T>
+		bc_query_context_ptr bc_make_query_context(T&& p_context)
+		{
+			using t = std::decay_t<T>;
+			return bc_make_unique<t>(bc_alloc_type::frame, std::forward<T>(p_context));
+		}
+		
 		class bc_null_query_context : public bc_query_context
 		{
 		};
@@ -50,13 +57,6 @@ namespace black_cat
 		TQuery& bc_query_context::get_shared_query() const
 		{
 			return m_query_manager->_get_shared_query<TQuery>();
-		}
-
-		template<class T>
-		bc_query_context_ptr bc_make_query_context(T&& p_context)
-		{
-			using t = std::decay_t<T>;
-			return bc_make_unique<t>(bc_alloc_type::frame, std::forward<T>(p_context));
 		}
 	}
 }

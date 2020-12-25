@@ -122,7 +122,7 @@ namespace black_cat
 			m_px_scene->wait();
 
 			auto l_px_actors = m_px_scene->get_active_actors();
-			const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), l_px_actors.size() / 25);
+			const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), l_px_actors.size() / 25U + 1);
 
 			core::bc_concurrency::concurrent_for_each
 			(
@@ -147,7 +147,7 @@ namespace black_cat
 					m_new_actors_lock, core_platform::bc_lock_operation::heavy
 				);
 
-				const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), m_new_actors.size() / 10);
+				const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), m_new_actors.size() / 10U + 1);
 				
 				core::bc_concurrency::concurrent_for_each
 				(

@@ -137,9 +137,9 @@ namespace black_cat
 			platform::bc_app_event_window_resize l_event = platform::bc_app_event_window_resize
 			(
 				reinterpret_cast<platform::bc_window_id>(m_win_id),
-				platform::bc_app_event_window_resize::state::resize,
 				p_resize->size().width(),
-				p_resize->size().height()
+				p_resize->size().height(),
+				false
 			);
 			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
 		}
@@ -156,24 +156,22 @@ namespace black_cat
 
 		void bc_widget_d3d_output::window_state_change_event(QWindowStateChangeEvent* p_event, Qt::WindowStates p_window_state)
 		{
-			QWindowStateChangeEvent* l_window_state_event = static_cast<QWindowStateChangeEvent*>(p_event);
-			platform::bc_app_event_window_resize::state l_state = platform::bc_app_event_window_resize::state::resize;
+			auto* l_window_state_event = static_cast<QWindowStateChangeEvent*>(p_event);
+			platform::bc_app_event_window_state::state l_state = platform::bc_app_event_window_state::state::restored;
 
 			if (!(l_window_state_event->oldState() & Qt::WindowMaximized) && (p_window_state & Qt::WindowMaximized))
 			{
-				l_state = platform::bc_app_event_window_resize::state::maximized;
+				l_state = platform::bc_app_event_window_state::state::maximized;
 			}
 			else if (!(l_window_state_event->oldState() & Qt::WindowMinimized) && (p_window_state & Qt::WindowMinimized))
 			{
-				l_state = platform::bc_app_event_window_resize::state::minimized;
+				l_state = platform::bc_app_event_window_state::state::minimized;
 			}
 
-			platform::bc_app_event_window_resize l_event = platform::bc_app_event_window_resize
+			platform::bc_app_event_window_state l_event = platform::bc_app_event_window_state
 			(
 				reinterpret_cast< platform::bc_window_id >(m_win_id),
-				l_state,
-				width(),
-				height()
+				l_state
 			);
 			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
 		}

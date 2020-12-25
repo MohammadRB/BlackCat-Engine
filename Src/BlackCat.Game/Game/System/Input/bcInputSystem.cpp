@@ -44,7 +44,7 @@ namespace black_cat
 
 		bool bc_input_system::_event_handler(core::bc_ievent & p_event)
 		{
-			auto* l_window_resize_event = core::bc_imessage::as<platform::bc_app_event_window_resize>(p_event);
+			auto* l_window_resize_event = core::bc_imessage::as< platform::bc_app_event_window_resize >(p_event);
 			if (l_window_resize_event)
 			{
 				if (m_camera)

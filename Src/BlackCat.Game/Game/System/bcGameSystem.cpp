@@ -51,6 +51,7 @@ namespace black_cat
 			
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 			auto* l_actor_component_manager = core::bc_get_service<bc_actor_component_manager>();
+			auto* l_query_manager = core::bc_get_service< core::bc_query_manager >();
 			
 			m_input_system.update(p_clock);
 			m_physics_system.update(p_clock);
@@ -61,6 +62,7 @@ namespace black_cat
 
 			l_event_manager->process_event_queue(p_clock);
 			l_actor_component_manager->update_actors(p_clock);
+			l_query_manager->process_query_queue(p_clock);
 
 			if(m_scene)
 			{
@@ -84,8 +86,9 @@ namespace black_cat
 
 		void bc_game_system::swap_frame(const core_platform::bc_clock::update_param& p_clock)
 		{
-			// TODO Other queries except ones which are submitted by render thread can be executed in update phase
-			core::bc_get_service< core::bc_query_manager >()->process_query_queue(p_clock);
+			auto* l_query_manager = core::bc_get_service< core::bc_query_manager >();
+			l_query_manager->process_query_queue(p_clock);
+			l_query_manager->clear_temp_states();
 		}
 
 		void bc_game_system::_initialize(bc_game_system_parameter p_parameter)

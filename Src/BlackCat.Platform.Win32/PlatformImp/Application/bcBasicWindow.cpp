@@ -14,6 +14,16 @@ namespace black_cat
 {
 	namespace platform
 	{
+		void _get_window_size(HWND p_hwnd, bcUINT32& p_width, bcUINT32& p_height)
+		{
+			RECT l_rect;
+			if (GetWindowRect(p_hwnd, &l_rect))
+			{
+				p_width = l_rect.right - l_rect.left;
+				p_height = l_rect.bottom - l_rect.top;
+			}
+		}
+		
 		LRESULT CALLBACK _window_proc(HWND p_hwnd, UINT p_msg, WPARAM p_wparam, LPARAM p_lparam)
 		{
 			auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
@@ -41,22 +51,22 @@ namespace black_cat
 				{
 					bcUINT32 l_width = LOWORD(p_lparam);
 					bcUINT32 l_height = HIWORD(p_lparam);
-					auto l_state = bc_app_event_window_resize::state::resize;
+					auto l_state = bc_app_event_window_state::state::restored;
 
 					if (p_wparam == SIZE_MINIMIZED)
 					{
-						l_state = bc_app_event_window_resize::state::minimized;
+						l_state = bc_app_event_window_state::state::minimized;
 					}
 					else if (p_wparam == SIZE_MAXIMIZED)
 					{
-						l_state = bc_app_event_window_resize::state::maximized;
+						l_state = bc_app_event_window_state::state::maximized;
 					}
 					else if (p_wparam == SIZE_RESTORED)
 					{
-						l_state = bc_app_event_window_resize::state::resize;
+						l_state = bc_app_event_window_state::state::restored;
 					}
 
-					bc_app_event_window_resize l_resize_event(reinterpret_cast< bc_window_id >(p_hwnd), l_state, l_width, l_height);
+					bc_app_event_window_state l_resize_event(reinterpret_cast< bc_window_id >(p_hwnd), l_state);
 					l_event_manager->process_event(l_resize_event);
 
 					break;
@@ -64,7 +74,10 @@ namespace black_cat
 				// WM_EXITSIZEMOVE is sent when the user grabs the resize bars.
 			case WM_ENTERSIZEMOVE:
 				{
-					bc_app_event_window_resizing l_start_event(reinterpret_cast< bc_window_id >(p_hwnd), true);
+					bcUINT32 l_width, l_height;
+					_get_window_size(p_hwnd, l_width, l_height);
+				
+					bc_app_event_window_resize l_start_event(reinterpret_cast< bc_window_id >(p_hwnd), l_width, l_height, true);
 					l_event_manager->process_event(l_start_event);
 
 					break;
@@ -72,7 +85,10 @@ namespace black_cat
 				// WM_EXITSIZEMOVE is sent when the user releases the resize bars.
 			case WM_EXITSIZEMOVE:
 				{
-					bc_app_event_window_resizing l_end_event(reinterpret_cast< bc_window_id >(p_hwnd), false);
+					bcUINT32 l_width, l_height;
+					_get_window_size(p_hwnd, l_width, l_height);
+				
+					bc_app_event_window_resize l_end_event(reinterpret_cast< bc_window_id >(p_hwnd), l_width, l_height, false);
 					l_event_manager->process_event(l_end_event);
 
 					break;
@@ -92,7 +108,7 @@ namespace black_cat
 			}
 
 			return 0;
-		};
+		}
 
 		bool _update_window_pos_size(HWND p_hwnd, bcUINT32 p_left, bcUINT32 p_top, bcUINT32 p_width, bcUINT32 p_height)
 		{
@@ -150,13 +166,13 @@ namespace black_cat
 		bc_platform_basic_window< core_platform::bc_platform::win32 >::bc_platform_basic_window(bc_platform_basic_window&& p_other) noexcept
 		{
 			operator=(std::move(p_other));
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
 		bc_platform_basic_window< core_platform::bc_platform::win32 >::~bc_platform_basic_window()
 		{
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
@@ -177,7 +193,7 @@ namespace black_cat
 		bc_platform_basic_window< core_platform::bc_platform::win32 >::id bc_platform_basic_window< core_platform::bc_platform::win32 >::get_id() const noexcept
 		{
 			return reinterpret_cast< id >(m_pack.m_handle);
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
@@ -187,14 +203,14 @@ namespace black_cat
 			GetClientRect(m_pack.m_handle, &l_rect);
 
 			return l_rect.right - l_rect.left;
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
 		void bc_platform_basic_window< core_platform::bc_platform::win32 >::set_width(bcUINT32 p_width) noexcept
 		{
 			_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), p_width, get_height());
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
@@ -204,14 +220,14 @@ namespace black_cat
 			GetClientRect(m_pack.m_handle, &l_rect);
 
 			return l_rect.bottom - l_rect.top;
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
 		void bc_platform_basic_window< core_platform::bc_platform::win32 >::set_height(bcUINT32 p_height) noexcept
 		{
 			_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), get_width(), p_height);
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
@@ -224,14 +240,14 @@ namespace black_cat
 			ClientToScreen(m_pack.m_handle, &point);
 
 			return point.x;
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
 		void bc_platform_basic_window< core_platform::bc_platform::win32 >::set_left(bcUINT32 p_left) noexcept
 		{
 			_update_window_pos_size(m_pack.m_handle, p_left, get_top(), get_width(), get_height());
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
@@ -244,35 +260,35 @@ namespace black_cat
 			ClientToScreen(m_pack.m_handle, &point);
 
 			return point.y;
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
 		void bc_platform_basic_window< core_platform::bc_platform::win32 >::set_top(bcUINT32 p_top) noexcept
 		{
 			_update_window_pos_size(m_pack.m_handle, get_left(), p_top, get_width(), get_height());
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
 		void bc_platform_basic_window< core_platform::bc_platform::win32 >::set_size(bcUINT32 p_width, bcUINT32 p_height) noexcept
 		{
 			_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), p_width, p_height);
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
 		void bc_platform_basic_window< core_platform::bc_platform::win32 >::set_position(bcUINT32 p_left, bcUINT32 p_top) noexcept
 		{
 			_update_window_pos_size(m_pack.m_handle, p_left, p_top, get_width(), get_height());
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
 		const bcECHAR* bc_platform_basic_window< core_platform::bc_platform::win32 >::get_caption() const
 		{
 			return m_pack.m_caption.c_str();
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
@@ -281,14 +297,14 @@ namespace black_cat
 			m_pack.m_caption = p_caption;
 
 			SetWindowText(m_pack.m_handle, m_pack.m_caption.c_str());
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
 		bool bc_platform_basic_window< core_platform::bc_platform::win32 >::is_minimized() const noexcept
 		{
 			return IsIconic(m_pack.m_handle);
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
@@ -297,7 +313,7 @@ namespace black_cat
 			bcINT32 l_show = p_visible ? SW_SHOW : SW_HIDE;
 
 			ShowWindow(m_pack.m_handle, l_show);
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
@@ -385,13 +401,13 @@ namespace black_cat
 			}
 
 			return l_result;
-		};
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
 		bc_messagebox_value bc_platform_basic_window< core_platform::bc_platform::win32 >::messagebox(core::bc_estring_frame p_caption, core::bc_estring_frame p_text, bc_messagebox_type p_type, bc_messagebox_buttom p_button)
 		{
 			return messagebox(p_caption.c_str(), p_text.c_str(), p_type, p_button);
-		};
+		}
 	}
 }

@@ -106,6 +106,10 @@ namespace black_cat
 					if (m_paused)
 					{
 						core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(100));
+						core::bc_get_service< core::bc_event_manager >()->process_event_queue // Let events be processed
+						(
+							core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed)
+						);
 						continue;
 					}
 
@@ -224,7 +228,15 @@ namespace black_cat
 			m_render_rate = m_min_update_rate;
 
 			auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
-			m_event_handle_window_resizing = l_event_manager->register_event_listener< platform::bc_app_event_window_resizing >
+			m_event_handle_window_state = l_event_manager->register_event_listener< platform::bc_app_event_window_state >
+			(
+				core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
+			);
+			m_event_handle_window_resize = l_event_manager->register_event_listener<platform::bc_app_event_window_resize >
+			(
+				core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
+			);
+			m_event_handle_window_focus = l_event_manager->register_event_listener< platform::bc_app_event_window_focus >
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
 			);
@@ -266,7 +278,9 @@ namespace black_cat
 			app_unload_content();
 			app_destroy();
 
-			m_event_handle_window_resizing.reset();
+			m_event_handle_window_state.reset();
+			m_event_handle_window_resize.reset();
+			m_event_handle_window_focus.reset();
 			m_event_handle_window_close.reset();
 			m_event_handle_app_active.reset();
 			m_event_handle_app_exit.reset();
@@ -285,25 +299,60 @@ namespace black_cat
 
 		bool bc_render_application::_app_event(core::bc_ievent& p_event)
 		{
-			if (core::bc_imessage::is< platform::bc_app_event_window_resizing >(p_event))
+			auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
+			
+			if(core::bc_imessage::is< platform::bc_app_event_window_state >(p_event))
 			{
-				auto& l_resizing_event = static_cast<platform::bc_app_event_window_resizing&>(p_event);
+				auto& l_resize_event = static_cast< platform::bc_app_event_window_state& >(p_event);
+				if (l_resize_event.get_window_id() == m_output_window->get_id())
+				{
+					if(l_resize_event.get_state() == platform::bc_app_event_window_state::state::minimized)
+					{
+						platform::bc_app_event_active l_active_event(false);
+						l_event_manager->process_event(l_active_event);
+					}
+					else if(l_resize_event.get_state() == platform::bc_app_event_window_state::state::restored)
+					{
+						platform::bc_app_event_active l_active_event(true);
+						l_event_manager->process_event(l_active_event);
+					}
+				}
+			}
+			
+			if (core::bc_imessage::is< platform::bc_app_event_window_resize >(p_event))
+			{
+				auto& l_resizing_event = static_cast<platform::bc_app_event_window_resize&>(p_event);
 
 				if (l_resizing_event.get_window_id() == m_output_window->get_id())
 				{
 					if (l_resizing_event.start_resizing())
 					{
 						platform::bc_app_event_active l_active_event(false);
-						core::bc_get_service< core::bc_event_manager >()->process_event(l_active_event);
+						l_event_manager->process_event(l_active_event);
 					}
 					else
 					{
 						platform::bc_app_event_active l_active_event(true);
-						core::bc_get_service< core::bc_event_manager >()->process_event(l_active_event);
+						l_event_manager->process_event(l_active_event);
 					}
 				}
 			}
 
+			if (core::bc_imessage::is< platform::bc_app_event_window_focus >(p_event))
+			{
+				auto& l_focus_event = static_cast<platform::bc_app_event_window_focus&>(p_event);
+				if(l_focus_event.get_focus())
+				{
+					platform::bc_app_event_active l_active_event(true);
+					l_event_manager->process_event(l_active_event);
+				}
+				else
+				{
+					platform::bc_app_event_active l_active_event(false);
+					l_event_manager->process_event(l_active_event);
+				}
+			}
+			
 			if (core::bc_imessage::is< platform::bc_app_event_active >(p_event))
 			{
 				auto& l_active_event = static_cast<platform::bc_app_event_active&>(p_event);
@@ -326,7 +375,7 @@ namespace black_cat
 				if (l_close_event.get_window_id() == m_output_window->get_id())
 				{
 					platform::bc_app_event_exit l_exit_event(0);
-					core::bc_get_service< core::bc_event_manager >()->process_event(l_exit_event);
+					l_event_manager->process_event(l_exit_event);
 				}
 			}
 
