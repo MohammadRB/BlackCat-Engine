@@ -63,7 +63,7 @@ namespace black_cat
 			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
 			l_render_system.add_render_pass(2, bc_gbuffer_pass());
 			l_render_system.add_render_pass(3, bc_gbuffer_vegetable_pass());
-			l_render_system.add_render_pass(4, bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 1024, { {10, 1}, {30, 2}, {90, 3} }));
+			l_render_system.add_render_pass(4, bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 2048, { {15, 1}, {35, 2}, {90, 3}, {170, 4} }));
 			l_render_system.add_render_pass(5, bc_vegetable_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
 			l_render_system.add_render_pass(6, bc_gbuffer_light_map_pass(constant::g_rpass_direct_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(7, bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
@@ -89,9 +89,9 @@ namespace black_cat
 		}
 
 		double g_explosion_counter = 0;
-		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_same_frame)
+		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_partial_update)
 		{
-			if(!p_is_same_frame)
+			if(!p_is_partial_update)
 			{
 				g_explosion_counter += p_clock_update_param.m_elapsed_second;
 				if (g_explosion_counter > 12)

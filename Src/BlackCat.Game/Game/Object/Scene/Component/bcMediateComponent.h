@@ -57,14 +57,16 @@ namespace black_cat
 			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock) override;
 			
 		private:
+			void _handle_event(bc_actor& p_actor, const bc_actor_event& p_event);
+			
 			const bcCHAR* m_entity_name;
 			
 			bc_scene* m_scene;
 			core::bc_matrix4f m_transformation;
-			core::bc_unique_ptr<bc_iactor_controller> m_controller;
 			bool m_bound_box_changed;
 			physics::bc_bound_box m_prev_bound_box;
 			physics::bc_bound_box m_bound_box;
+			core::bc_unique_ptr<bc_iactor_controller> m_controller;
 		};
 
 		inline const bcCHAR* bc_mediate_component::get_entity_name() const

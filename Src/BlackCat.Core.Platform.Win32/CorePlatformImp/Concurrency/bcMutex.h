@@ -12,10 +12,18 @@ namespace black_cat
 	namespace core_platform
 	{
 		template<>
+		struct bc_platform_spin_mutex_pack< bc_platform::win32 >
+		{
+			bc_atomic_flag m_locked;
+		};
+		
+		template<>
 		struct bc_platform_mutex_pack< bc_platform::win32 >
 		{
 			CRITICAL_SECTION m_critical_section;
+#ifdef BC_DEBUG
 			bc_atomic_flag m_flag;
+#endif
 		};
 
 		template<>

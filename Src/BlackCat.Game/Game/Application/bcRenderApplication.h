@@ -78,9 +78,9 @@ namespace black_cat
 			/**
 			 * \brief Update app
 			 * \param p_clock
-			 * \param p_is_same_frame
+			 * \param p_is_partial_update
 			 */
-			virtual void app_update(core_platform::bc_clock::update_param p_clock, bool p_is_same_frame) = 0;
+			virtual void app_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update) = 0;
 
 			/**
 			 * \brief Render app

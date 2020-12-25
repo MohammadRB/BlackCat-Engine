@@ -116,20 +116,20 @@ namespace black_cat
 			m_scene_graph.add_debug_shapes(p_shape_drawer);
 		}
 
-		void bc_scene::update_px(bc_physics_system& p_physics, core_platform::bc_clock::update_param p_time)
+		void bc_scene::update_px(bc_physics_system& p_physics, const core_platform::bc_clock::update_param& p_clock)
 		{
-			m_px_scene->update(p_time);
+			m_px_scene->update(p_clock);
 			m_px_scene->wait();
 
 			auto l_px_actors = m_px_scene->get_active_actors();
-			const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), l_px_actors.size() / 100);
+			const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), l_px_actors.size() / 25);
 
 			core::bc_concurrency::concurrent_for_each
 			(
 				l_num_thread,
 				std::begin(l_px_actors),
 				std::end(l_px_actors),
-				[]() {return true; },
+				[]() { return true; },
 				[&](bool, physics::bc_updated_actor& p_px_actor)
 				{
 					bc_actor l_actor = p_physics.get_game_actor(p_px_actor.m_actor);
@@ -204,7 +204,13 @@ namespace black_cat
 			const bool l_updated = m_scene_graph.update_actor(p_actor);
 			if (!l_updated)
 			{
-				_remove_actor(p_actor);
+				auto* l_rigid_component = p_actor.get_component<bc_rigid_body_component>();
+				if (l_rigid_component)
+				{
+					physics::bc_rigid_body l_rigid_body = l_rigid_component->get_body();
+					m_px_scene->remove_actor(l_rigid_body);
+				}
+
 				p_actor.destroy();
 			}
 		}
@@ -219,10 +225,7 @@ namespace black_cat
 			}
 
 			const bool l_removed = m_scene_graph.remove_actor(p_actor);
-			if(l_removed)
-			{
-				p_actor.destroy();
-			}
+			p_actor.destroy();
 
 			bcAssert(l_removed);
 		}

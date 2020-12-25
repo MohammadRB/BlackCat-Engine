@@ -42,37 +42,7 @@ namespace black_cat
 
 		void bc_mediate_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
-			const auto* l_transformation_event = core::bc_imessage::as< bc_actor_event_world_transform >(p_event);
-			if(l_transformation_event)
-			{
-				m_transformation = l_transformation_event->get_transform();
-			}
-			
-			const auto* l_bound_box_event = core::bc_imessage::as< bc_actor_event_bound_box_changed >(p_event);
-			if(l_bound_box_event)
-			{
-				if(m_bound_box.is_empty())
-				{
-					m_prev_bound_box = l_bound_box_event->get_bound_box();
-				}
-				else
-				{
-					m_prev_bound_box = m_bound_box;
-				}
-				m_bound_box = l_bound_box_event->get_bound_box();
-				m_bound_box_changed = true;
-			}
-
-			const auto* l_added_to_scene_event = core::bc_imessage::as< bc_actor_event_added_to_scene >(p_event);
-			if(l_added_to_scene_event)
-			{
-				m_scene = &l_added_to_scene_event->get_scene();
-				if(m_controller)
-				{
-					m_controller->added_to_scene(p_actor, *m_scene);
-				}
-			}
-
+			_handle_event(p_actor, p_event);
 			if(m_controller)
 			{
 				m_controller->handle_event(p_actor, p_event);
@@ -90,6 +60,39 @@ namespace black_cat
 			if(m_controller)
 			{
 				m_controller->update(p_actor, p_clock);
+			}
+		}
+
+		void bc_mediate_component::_handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		{
+			const auto* l_transformation_event = core::bc_imessage::as< bc_actor_event_world_transform >(p_event);
+			if (l_transformation_event)
+			{
+				m_transformation = l_transformation_event->get_transform();
+				return;
+			}
+
+			const auto* l_bound_box_event = core::bc_imessage::as< bc_actor_event_bound_box_changed >(p_event);
+			if (l_bound_box_event)
+			{
+				if(!m_bound_box_changed) // Only update prev box once in case of multiple events per frame
+				{
+					m_prev_bound_box = m_bound_box;
+				}
+				m_bound_box = l_bound_box_event->get_bound_box();
+				m_bound_box_changed = true;
+				return;
+			}
+
+			const auto* l_added_to_scene_event = core::bc_imessage::as< bc_actor_event_added_to_scene >(p_event);
+			if (l_added_to_scene_event)
+			{
+				m_scene = &l_added_to_scene_event->get_scene();
+				if (m_controller)
+				{
+					m_controller->added_to_scene(p_actor, *m_scene);
+				}
+				return;
 			}
 		}
 	}

@@ -18,7 +18,6 @@ namespace black_cat
 		
 		struct _bc_render_state_buffer_entry_hash
 		{
-		public:
 			using argument_type = bc_render_state_ptr;
 			using result_type = _bc_render_state_handle::handle_type;
 
@@ -27,11 +26,29 @@ namespace black_cat
 				return p_arg.get_handle().m_handle;
 			}
 		};
+
+		struct _bc_render_state_buffer_entry_equal
+		{
+			using result_type = _bc_render_state_handle::handle_type;
+			using first_argument_type = bc_render_state_ptr;
+			using second_argument_type = bc_render_state_ptr;
+
+			bool operator()(const first_argument_type& p_1, const second_argument_type& p_2) const
+			{
+				return p_1.get_handle().m_handle == p_2.get_handle().m_handle;
+			}
+		};
 		
 		class BC_GAME_DLL bc_render_state_buffer
 		{
 		private:
-			using map_type = core::bc_unordered_map< bc_render_state_ptr, core::bc_vector<bc_render_instance>, _bc_render_state_buffer_entry_hash >;
+			using map_type = core::bc_unordered_map
+			<
+				bc_render_state_ptr,
+				core::bc_vector< bc_render_instance >,
+				_bc_render_state_buffer_entry_hash,
+				_bc_render_state_buffer_entry_equal
+			>;
 			
 		public:
 			using value_type = map_type::value_type;

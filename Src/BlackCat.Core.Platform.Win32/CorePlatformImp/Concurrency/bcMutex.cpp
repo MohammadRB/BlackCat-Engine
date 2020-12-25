@@ -12,10 +12,54 @@ namespace black_cat
 	{
 		template<>
 		BC_COREPLATFORMIMP_DLL
+		bc_platform_spin_mutex< bc_platform::win32 >::bc_platform_spin_mutex()
+		{
+			m_pack.m_locked.clear();
+		}
+
+		template<>
+		BC_COREPLATFORMIMP_DLL
+		bc_platform_spin_mutex< bc_platform::win32 >::~bc_platform_spin_mutex()
+		{
+		}
+
+		template<>
+		BC_COREPLATFORMIMP_DLL
+		void bc_platform_spin_mutex< bc_platform::win32 >::lock()
+		{
+			bcUINT32 l_spin_count = 0;
+			while(m_pack.m_locked.test_and_set(bc_memory_order::acquire))
+			{
+				if(++l_spin_count % 100 == 0)
+				{
+					l_spin_count = 0;
+					bc_thread::current_thread_yield();
+				}
+			}
+		}
+
+		template<>
+		BC_COREPLATFORMIMP_DLL
+		void bc_platform_spin_mutex< bc_platform::win32 >::unlock() noexcept
+		{
+			m_pack.m_locked.clear(bc_memory_order::release);
+		}
+
+		template<>
+		BC_COREPLATFORMIMP_DLL
+		bool bc_platform_spin_mutex< bc_platform::win32 >::try_lock() noexcept
+		{
+			return !m_pack.m_locked.test_and_set(bc_memory_order::acquire);
+		}
+		
+		template<>
+		BC_COREPLATFORMIMP_DLL
 		bc_platform_mutex< bc_platform::win32 >::bc_platform_mutex()
 		{
 			InitializeCriticalSection(&m_pack.m_critical_section);
+#ifdef BC_DEBUG
 			m_pack.m_flag.clear(bc_memory_order::relaxed);
+#endif
 		}
 
 		template<>
@@ -31,18 +75,22 @@ namespace black_cat
 		{
 			EnterCriticalSection(&m_pack.m_critical_section);
 
+#ifdef BC_DEBUG
 			if (m_pack.m_flag.test_and_set(bc_memory_order::relaxed))
 			{
 				bcAssert(false, "Recursive call on non-recursive mutex");
 			}
+#endif
 		}
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_mutex< bc_platform::win32 >::unlock() noexcept
 		{
+#ifdef BC_DEBUG
 			m_pack.m_flag.clear(bc_memory_order::relaxed);
-
+#endif
+			
 			LeaveCriticalSection(&m_pack.m_critical_section);
 		}
 
@@ -52,6 +100,7 @@ namespace black_cat
 		{
 			const bool l_result = TryEnterCriticalSection(&m_pack.m_critical_section);
 
+#ifdef BC_DEBUG
 			if (l_result)
 			{
 				if (m_pack.m_flag.test_and_set(bc_memory_order::relaxed))
@@ -59,6 +108,7 @@ namespace black_cat
 					bcAssert(false, "Recursive call on non-recursive mutex");
 				}
 			}
+#endif
 
 			return l_result;
 		}

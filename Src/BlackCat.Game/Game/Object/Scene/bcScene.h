@@ -84,7 +84,7 @@ namespace black_cat
 
 			void add_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
-			void update_px(bc_physics_system& p_physics, core_platform::bc_clock::update_param p_time);
+			void update_px(bc_physics_system& p_physics, const core_platform::bc_clock::update_param& p_clock);
 
 			void update_graph();
 			

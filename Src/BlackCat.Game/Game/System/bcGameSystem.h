@@ -119,9 +119,9 @@ namespace black_cat
 			/**
 			 * \brief Start updating game core logic
 			 * \param p_clock
-			 * \param p_is_same_frame 
+			 * \param p_is_partial_update 
 			 */
-			void update_game(const core_platform::bc_clock::update_param& p_clock, bool p_is_same_frame);
+			void update_game(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update);
 			
 			/**
 			 * \brief Start rendering game core logic

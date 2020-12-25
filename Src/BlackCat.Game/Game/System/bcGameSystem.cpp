@@ -36,9 +36,9 @@ namespace black_cat
 			m_scene = std::move(p_scene);
 		}
 
-		void bc_game_system::update_game(const core_platform::bc_clock::update_param& p_clock, bool p_is_same_frame)
+		void bc_game_system::update_game(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
 		{
-			if(p_is_same_frame)
+			if(p_is_partial_update)
 			{
 				m_physics_system.update(p_clock);
 				if (m_scene)

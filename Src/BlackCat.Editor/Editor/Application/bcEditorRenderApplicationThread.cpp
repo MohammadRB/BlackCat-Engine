@@ -55,7 +55,7 @@ namespace black_cat
 					return core::bc_make_unique< game::bc_octal_tree_graph_node >
 					(
 						physics::bc_bound_box(p_parameter.m_center, p_parameter.m_half_extends),
-						20,
+						10,
 						128
 					);
 				}

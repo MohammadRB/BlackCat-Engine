@@ -284,14 +284,17 @@ namespace black_cat
 		bool bc_octal_tree_graph_node::update_actor(bc_actor& p_actor)
 		{
 			auto* l_actor_mediate_component = p_actor.get_component<bc_mediate_component>();
-			auto& l_actor_prev_bound_box = l_actor_mediate_component->get_prev_bound_box();
-			auto& l_actor_bound_box = l_actor_mediate_component->get_bound_box();
+			const auto& l_actor_prev_bound_box = l_actor_mediate_component->get_prev_bound_box();
+			const auto& l_actor_bound_box = l_actor_mediate_component->get_bound_box();
 
 			bc_octal_tree_graph_node* l_prev_containing_node = _find_containing_node(l_actor_prev_bound_box);
 			bc_octal_tree_graph_node* l_containing_node = _find_containing_node(l_actor_bound_box);
 
 			if (!l_containing_node)
 			{
+				const bool l_removed = _remove_actor(p_actor, l_actor_prev_bound_box);
+				bcAssert(l_removed);
+				
 				return false;
 			}
 
@@ -301,11 +304,11 @@ namespace black_cat
 			}
 
 			const bool l_removed = _remove_actor(p_actor, l_actor_prev_bound_box);
-			const bool l_updated = _add_actor(p_actor, l_actor_bound_box);
+			const bool l_added = _add_actor(p_actor, l_actor_bound_box);
 
 			bcAssert(l_removed);
 
-			return l_updated;
+			return l_added;
 		}
 
 		bool bc_octal_tree_graph_node::remove_actor(bc_actor& p_actor)

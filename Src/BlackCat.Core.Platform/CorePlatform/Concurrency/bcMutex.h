@@ -14,6 +14,11 @@ namespace black_cat
 	namespace core_platform
 	{
 		template< bc_platform TP >
+		struct bc_platform_spin_mutex_pack
+		{
+		};
+		
+		template< bc_platform TP >
 		struct bc_platform_mutex_pack
 		{
 		};
@@ -43,6 +48,27 @@ namespace black_cat
 		{
 		};
 
+		template< bc_platform TP >
+		class bc_platform_spin_mutex : private bc_no_copy
+		{
+		public:
+			using platform_pack = bc_platform_spin_mutex_pack<TP>;
+
+		public:
+			bc_platform_spin_mutex();
+
+			~bc_platform_spin_mutex();
+
+			void lock();
+
+			void unlock() noexcept;
+
+			bool try_lock() noexcept;
+
+		private:
+			platform_pack m_pack;
+		};
+		
 		template< bc_platform TP >
 		class bc_platform_mutex : private bc_no_copy
 		{
@@ -187,6 +213,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
+		using bc_spin_mutex = bc_platform_spin_mutex< g_current_platform >;
 		using bc_mutex = bc_platform_mutex< g_current_platform >;
 		using bc_timed_mutex = bc_platform_timed_mutex< g_current_platform >;
 		using bc_recursive_mutex = bc_platform_recursive_mutex< g_current_platform >;
@@ -532,6 +559,8 @@ namespace black_cat
 			bool m_owns;
 		};
 
+		using bc_spin_mutex_guard = bc_lock_guard<bc_spin_mutex>;
+		using bc_spin_mutex_unique_guard = bc_unique_lock<bc_spin_mutex>;
 		using bc_mutex_guard = bc_lock_guard<bc_mutex>;
 		using bc_mutex_unique_guard = bc_unique_lock<bc_mutex>;
 		using bc_timed_mutex_guard = bc_lock_guard<bc_timed_mutex>;

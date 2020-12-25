@@ -20,7 +20,8 @@ namespace black_cat
 		: game::bc_render_application(),
 		m_game_system(nullptr),
 		m_fps_sampler(0),
-		m_fps(0)
+		m_fps(0),
+		m_update_count(0)
 	{
 	}
 
@@ -65,28 +66,29 @@ namespace black_cat
 		application_load_content(core::bc_get_service< core::bc_content_stream_manager >());
 	}
 
-	void bc_render_application::app_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_same_frame)
+	void bc_render_application::app_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_partial_update)
 	{
+		++m_update_count;
 		m_update_watch.start();
 		
 		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 
-		if(!p_is_same_frame)
+		if(m_update_count == 1)
 		{
 			core::bc_event_frame_update_start l_event_frame_start;
 			l_event_manager->process_event(l_event_frame_start);
 		}
 		
-		m_game_system->update_game(p_clock_update_param, p_is_same_frame);
+		m_game_system->update_game(p_clock_update_param, p_is_partial_update);
 
-		if (!p_is_same_frame)
+		if (!p_is_partial_update)
 		{
 			core::bc_service_manager::get().update(p_clock_update_param);
 		}
 		
-		application_update(p_clock_update_param, p_is_same_frame);
+		application_update(p_clock_update_param, p_is_partial_update);
 
-		if(!p_is_same_frame)
+		if(!p_is_partial_update)
 		{
 			core::bc_event_frame_update_finish l_event_frame_finish;
 			l_event_manager->process_event(l_event_frame_finish);
@@ -134,6 +136,8 @@ namespace black_cat
 
 		core::bc_event_frame_swap l_event_frame_swap;
 		l_event_manager->process_event(l_event_frame_swap);
+
+		m_update_count = 0;
 	}
 
 	bool bc_render_application::app_event(core::bc_ievent& p_event)

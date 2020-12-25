@@ -19,8 +19,8 @@ namespace black_cat
 				: m_terminate(false),
 				m_signal(false),
 				m_render_function(p_render_function),
-				m_render_application_param(nullptr),
-				m_clock_param(0, 0, 0)
+				m_render_application(nullptr),
+				m_clock(0, 0, 0)
 			{
 			}
 
@@ -28,8 +28,8 @@ namespace black_cat
 			core_platform::bc_atomic< bool > m_signal;
 			void(bc_render_application::*m_render_function)(core_platform::bc_clock::update_param);
 
-			bc_render_application* m_render_application_param;
-			core_platform::bc_clock::update_param m_clock_param;
+			bc_render_application* m_render_application;
+			core_platform::bc_clock::update_param m_clock;
 		};
 		
 		bc_render_application::bc_render_application()
@@ -69,8 +69,6 @@ namespace black_cat
 
 		bcINT32 bc_render_application::run()
 		{
-			auto* const l_event_manager = core::bc_get_service< core::bc_event_manager >();
-			
 			bc_render_loop_state l_render_thread_state(&bc_render_application::app_render);
 			core_platform::bc_thread l_render_thread
 			(
@@ -83,7 +81,7 @@ namespace black_cat
 							core_platform::bc_thread::current_thread_yield();
 						}
 
-						(p_state->m_render_application_param->*p_state->m_render_function)(p_state->m_clock_param);
+						(p_state->m_render_application->*p_state->m_render_function)(p_state->m_clock);
 
 						p_state->m_signal.store(false, core_platform::bc_memory_order::release);
 					}
@@ -123,19 +121,21 @@ namespace black_cat
 					}
 #endif
 
-					l_render_thread_state.m_render_application_param = this;
-					l_render_thread_state.m_clock_param = core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed);
+					l_render_thread_state.m_render_application = this;
+					l_render_thread_state.m_clock = core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed);
 					l_render_thread_state.m_signal.store(true, core_platform::bc_memory_order::release);
 
-					bool l_is_first_update = true;
 					l_local_elapsed += l_elapsed;
-					do
-					{
-						app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed, std::min(l_elapsed, l_min_update_elapsed)), !l_is_first_update);
+					const auto l_update_call_count = std::max(static_cast<bcUINT32>(std::floor(l_local_elapsed / l_min_update_elapsed)), 1U);
+					auto l_update_call_counter = l_update_call_count;
 
-						l_is_first_update = false;
-						l_local_elapsed = std::max(l_local_elapsed - l_min_update_elapsed, static_cast< core_platform::bc_clock::small_delta_time >(0));
-					} while (l_local_elapsed >= l_min_update_elapsed);
+					while (l_update_call_counter > 0)
+					{
+						app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed, std::min(l_elapsed, l_min_update_elapsed)), l_update_call_counter > 1);
+						--l_update_call_counter;
+					}
+
+					l_local_elapsed = std::max(l_local_elapsed - l_min_update_elapsed * l_update_call_count, static_cast<core_platform::bc_clock::small_delta_time>(0));
 					
 					while (l_render_thread_state.m_signal.load(core_platform::bc_memory_order::acquire))
 					{
@@ -150,11 +150,11 @@ namespace black_cat
 					
 					if (m_render_rate != -1) // Fixed render rate
 					{
-						const core_platform::bc_clock::small_delta_time l_render_rate_elapsed = 1000.0f / m_render_rate;
+						const core_platform::bc_clock::small_delta_time l_render_rate_fixed_elapsed = 1000.0f / m_render_rate;
 
-						if(l_elapsed - l_sleep_time < l_render_rate_elapsed)
+						if(l_elapsed - l_sleep_time < l_render_rate_fixed_elapsed)
 						{
-							l_sleep_time = l_render_rate_elapsed - (l_elapsed - l_sleep_time);
+							l_sleep_time = l_render_rate_fixed_elapsed - (l_elapsed - l_sleep_time);
 							core_platform::bc_thread::current_thread_sleep_for
 							(
 								std::chrono::milliseconds(static_cast<std::chrono::milliseconds::rep>(l_sleep_time))
@@ -165,8 +165,8 @@ namespace black_cat
 			}
 			catch (std::exception& l_exception)
 			{
-				core::bc_app_event_error m_event(l_exception.what());
-				l_event_manager->process_event(m_event);
+				core::bc_app_event_error l_event(l_exception.what());
+				core::bc_get_service< core::bc_event_manager >()->process_event(l_event);
 
 				m_termination_code = -1;
 

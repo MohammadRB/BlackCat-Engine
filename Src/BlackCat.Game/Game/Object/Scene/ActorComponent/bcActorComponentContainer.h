@@ -5,7 +5,6 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcNullable.h"
-#include "Core/Utility/bcObjectStackPool.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "PlatformImp/bcIDELogger.h"
 

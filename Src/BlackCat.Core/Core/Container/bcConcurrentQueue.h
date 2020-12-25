@@ -316,8 +316,6 @@ namespace black_cat
 				swap(m_memmng, p_other.m_memmng);
 			}
 
-		protected:
-
 		private:
 			void reclaim_node(node_type* p_node)
 			{
