@@ -39,7 +39,7 @@ namespace black_cat
 	{
 		Assimp::Importer l_importer;
 
-		const aiScene* const * l_scene_value = p_context.m_parameters->get_value<const aiScene*>("aiScene");
+		const aiScene* const * l_scene_value = p_context.m_instance_parameters.get_value<const aiScene*>("aiScene");
 		const aiScene* l_scene = l_scene_value ? *l_scene_value : nullptr;
 		if (!l_scene)
 		{

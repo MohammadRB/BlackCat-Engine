@@ -45,42 +45,42 @@ namespace black_cat
 			};
 
 		protected:
-			bool iterator_validate(const node_type* p_node) const noexcept(true)
+			bool iterator_validate(const node_type* p_node) const noexcept
 			{
-				return p_node && p_node >= m_first && p_node <= _get_end();
+				return p_node && p_node >= m_first - 1 && p_node <= _get_end();
 			}
 
-			bcINT32 iterator_compare(const node_type* p_first, const node_type* p_second) const noexcept(true)
+			bcINT32 iterator_compare(const node_type* p_first, const node_type* p_second) const noexcept
 			{
 				return p_first == p_second ? 0 : p_first > p_second ? 1 : -1;
 			}
 
-			value_type* iterator_dereference(node_type* p_node) const noexcept(true)
+			value_type* iterator_dereference(node_type* p_node) const noexcept
 			{
 				return std::addressof(p_node->m_value);
 			}
 
-			node_type* iterator_increment(node_type* p_node) const noexcept(true)
+			node_type* iterator_increment(node_type* p_node) const noexcept
 			{
 				return ++p_node;
 			}
 
-			node_type* iterator_decrement(node_type* p_node) const noexcept(true)
+			node_type* iterator_decrement(node_type* p_node) const noexcept
 			{
 				return --p_node;
 			}
 
-			node_type* iterator_increment(node_type* p_node, difference_type p_step) const noexcept(true)
+			node_type* iterator_increment(node_type* p_node, difference_type p_step) const noexcept
 			{
 				return p_node + p_step;
 			}
 
-			node_type* iterator_decrement(node_type* p_node, difference_type p_step) const noexcept(true)
+			node_type* iterator_decrement(node_type* p_node, difference_type p_step) const noexcept
 			{
 				return p_node - p_step;
 			}
 
-			void iterator_swap(node_type** p_first, node_type** p_second) const noexcept(true)
+			void iterator_swap(node_type** p_first, node_type** p_second) const noexcept
 			{
 				std::swap(*p_first, *p_second);
 			}

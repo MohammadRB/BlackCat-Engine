@@ -43,8 +43,6 @@ namespace black_cat
 
 			void clear() noexcept override;
 
-		protected:
-
 		private:
 			void _initialize(bcUINT32 p_num_block, bcUINT32 p_block_size, const bcCHAR* p_tag) override;
 

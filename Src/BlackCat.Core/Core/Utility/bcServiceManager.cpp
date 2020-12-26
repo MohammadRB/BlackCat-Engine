@@ -13,7 +13,7 @@ namespace black_cat
 
 		bc_iservice::~bc_iservice() = default;
 
-		void bc_iservice::update(const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_iservice::update(const core_platform::bc_clock::update_param& p_clock)
 		{
 		}
 
@@ -21,9 +21,11 @@ namespace black_cat
 		{
 		}
 
-		_bc_service_container::_bc_service_container(bc_service_ptr< bc_iservice > p_service, bcSIZE p_priority) 
-			: m_service(std::move(p_service)),
-			m_priority(p_priority)
+		_bc_service_container::_bc_service_container(bcUINT32 p_hash, const bcCHAR* p_name, bcSIZE p_priority, bc_service_ptr< bc_iservice > p_service)
+			: m_hash(p_hash),
+			m_name(p_name),
+			m_priority(p_priority),
+			m_service(std::move(p_service))
 		{
 		}
 
@@ -33,22 +35,9 @@ namespace black_cat
 
 		void bc_service_manager::update(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
-			bc_vector_frame< map_t::const_iterator > l_services;
-			l_services.reserve(m_services.size());
-
-			for (auto l_begin = std::cbegin(m_services), l_end = std::cend(m_services); l_begin != l_end; ++l_begin)
+			for (auto* l_service : m_sorted_services)
 			{
-				l_services.push_back(l_begin);
-			}
-
-			std::sort(std::begin(l_services), std::end(l_services), [](const map_t::const_iterator& p_first, const map_t::const_iterator& p_second)
-			{
-				return p_first->second.m_priority < p_second->second.m_priority; // Sort in order
-			});
-
-			for (auto& l_service : l_services)
-			{
-				l_service->second.m_service->update(p_clock_update_param);
+				l_service->m_service->update(p_clock_update_param);
 			}
 		}
 
@@ -58,24 +47,17 @@ namespace black_cat
 
 		void bc_service_manager::_destroy()
 		{
-			bc_vector_frame< map_t::const_iterator > l_services;
-			l_services.reserve(m_services.size());
-
-			for (auto l_begin = std::cbegin(m_services), l_end = std::cend(m_services); l_begin != l_end; ++l_begin)
+			for(auto l_ite = std::rbegin(m_sorted_services), l_end = std::rend(m_sorted_services); l_ite != l_end; ++l_ite)
 			{
-				l_services.push_back(l_begin);
+				(*l_ite)->m_service->destroy();
 			}
 
-			std::sort(std::begin(l_services), std::end(l_services), [](const map_t::const_iterator& p_first, const map_t::const_iterator& p_second)
+			for (auto l_ite = std::rbegin(m_sorted_services), l_end = std::rend(m_sorted_services); l_ite != l_end; ++l_ite)
 			{
-				return p_first->second.m_priority > p_second->second.m_priority; // Sort in reverse order
-			});
-
-			for (auto& l_service : l_services)
-			{
-				l_service->second.m_service->destroy();
-				m_services.erase(l_service);
+				m_services.erase(m_services.find((*l_ite)->m_hash));
 			}
+
+			m_sorted_services.clear();
 		}
 
 		bc_iservice* bc_service_manager::_get_service(bcUINT32 p_service_hash)
@@ -91,19 +73,25 @@ namespace black_cat
 			return l_result;
 		}
 
-		bc_iservice* bc_service_manager::_register_service(const bcCHAR* p_name, bcUINT32 p_hash, bc_service_ptr<bc_iservice> p_service)
+		bc_iservice* bc_service_manager::_register_service(bcUINT32 p_hash, const bcCHAR* p_name, bc_service_ptr<bc_iservice> p_service)
 		{
-			const bcSIZE l_service_priority = m_services.size();
+			const bcSIZE l_priority = m_services.size();
 
 			auto l_ite = m_services.find(p_hash);
 			if (l_ite == std::end(m_services))
 			{
-				l_ite = m_services.insert({ p_hash, _bc_service_container(std::move(p_service), l_service_priority) }).first;
+				l_ite = m_services.insert({ p_hash, _bc_service_container(p_hash, p_name, l_priority, std::move(p_service)) }).first;
+				m_sorted_services.push_back(&l_ite->second);
 			}
 			else
 			{
 				throw bc_invalid_operation_exception("A service with the same name has already registered");
 			}
+
+			std::sort(std::begin(m_sorted_services), std::end(m_sorted_services), [](const sorted_map_t::value_type p_first, const sorted_map_t::value_type p_second)
+			{
+				return p_first->m_priority < p_second->m_priority;
+			});
 
 			return l_ite->second.m_service.get();
 		}

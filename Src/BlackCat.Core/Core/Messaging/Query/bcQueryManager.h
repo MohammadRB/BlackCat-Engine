@@ -66,10 +66,7 @@ namespace black_cat
 
 			void process_query_queue(const core_platform::bc_clock::update_param& p_clock_update_param);
 
-			/**
-			 * \brief Must be called at the end of every frame
-			 */
-			void clear_temp_states();
+			void swap_frame();
 			
 			template< class TQuery >
 			TQuery& _get_shared_query();
@@ -82,14 +79,13 @@ namespace black_cat
 			bc_query_provider_handle _register_query_provider(bc_query_context_hash p_context_hash, provider_delegate_t&& p_delegate);
 
 			_bc_query_shared_state& _queue_query(bc_query_context_hash p_context_hash, bool p_is_shared, bc_unique_ptr<bc_iquery> p_query);
-			
-		private:
+
+			bc_concurrent_memory_pool m_queries_pool;
 			core_platform::bc_shared_mutex m_providers_lock;
 			provider_map_t m_providers;
 			core_platform::bc_mutex m_executed_queries_lock;
 			query_list_t m_executed_shared_queries;
 			query_list_t m_executed_queries;
-			bc_concurrent_memory_pool m_query_list_pool;
 
 			bc_query_provider_handle m_null_query_context_handle;
 		};

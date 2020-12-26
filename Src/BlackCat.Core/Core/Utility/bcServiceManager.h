@@ -8,7 +8,7 @@
 #include "Core/bcConstant.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/Utility/bcSingleton.h"
-#include "Core/Container/bcString.h"
+#include "Core/Container/bcVector.h"
 #include "Core/Container/bcUnorderedMap.h"
 
 namespace black_cat
@@ -19,14 +19,14 @@ namespace black_cat
 		class bc_service_traits
 		{
 		public:
-			static constexpr const bcCHAR* service_name()
-			{
-				return TService::service_name();
-			}
-
 			static constexpr bcUINT32 service_hash()
 			{
 				return TService::service_hash();
+			}
+			
+			static constexpr const bcCHAR* service_name()
+			{
+				return TService::service_name();
 			}
 		};
 
@@ -45,7 +45,7 @@ namespace black_cat
 			bc_iservice() = default;
 
 		private:
-			virtual void update(const core_platform::bc_clock::update_param& p_clock_update_param);
+			virtual void update(const core_platform::bc_clock::update_param& p_clock);
 
 			virtual void destroy();
 		};
@@ -76,7 +76,7 @@ namespace black_cat
 		class BC_CORE_DLL _bc_service_container : private core_platform::bc_no_copy
 		{
 		public:
-			_bc_service_container(bc_service_ptr< bc_iservice > p_service, bcSIZE p_priority);
+			_bc_service_container(bcUINT32 p_hash, const bcCHAR* p_name, bcSIZE p_priority, bc_service_ptr< bc_iservice > p_service);
 
 			_bc_service_container(_bc_service_container&& p_other) noexcept = default;
 
@@ -84,15 +84,17 @@ namespace black_cat
 
 			_bc_service_container& operator =(_bc_service_container&& p_other) noexcept = default;
 
-			bc_service_ptr< bc_iservice > m_service;
+			bcUINT32 m_hash;
+			const bcCHAR* m_name;
 			bcSIZE m_priority;
+			bc_service_ptr< bc_iservice > m_service;
 		};
 
 		class BC_CORE_DLL bc_service_manager : public bc_singleton< bc_service_manager() >
 		{
 		private:
-			using string_hash = std::hash< const bcCHAR* >;
-			using map_t = bc_unordered_map_program<string_hash::result_type, _bc_service_container>;
+			using map_t = bc_unordered_map_program<bcUINT32, _bc_service_container>;
+			using sorted_map_t = bc_vector_movable<_bc_service_container*>;
 
 		public:
 			bc_service_manager();
@@ -114,9 +116,10 @@ namespace black_cat
 
 			bc_iservice* _get_service(bcUINT32 p_service_hash);
 
-			bc_iservice* _register_service(const bcCHAR* p_name, bcUINT32 p_hash, bc_service_ptr<bc_iservice> p_service);
+			bc_iservice* _register_service(bcUINT32 p_hash, const bcCHAR* p_name, bc_service_ptr<bc_iservice> p_service);
 
 			map_t m_services;
+			sorted_map_t m_sorted_services;
 		};
 
 		template< class TService >
@@ -131,9 +134,9 @@ namespace black_cat
 		{
 			static_assert(std::is_base_of<bc_iservice, TService>::value, "services must inherit from bc_iservice");
 
-			constexpr auto* l_service_name = bc_service_traits< TService >::service_name();
-			constexpr auto l_service_hash = bc_service_traits< TService >::service_hash();
-			return static_cast<TService*>(_register_service(l_service_name, l_service_hash, std::move(p_service)));
+			constexpr auto l_hash = bc_service_traits< TService >::service_hash();
+			constexpr auto* l_name = bc_service_traits< TService >::service_name();
+			return static_cast<TService*>(_register_service(l_hash, l_name, std::move(p_service)));
 		}
 	}
 }

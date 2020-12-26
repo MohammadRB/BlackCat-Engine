@@ -50,7 +50,7 @@ namespace black_cat
 	inline void bc_start_engine_services(game::bc_engine_application_parameter& p_parameters)
 	{
 #ifdef BC_MEMORY_ENABLE
-		core::bc_memmng::startup
+		core::bc_memory_manager::startup
 		(
 			p_parameters.m_engine_parameters.m_thread_manager_thread_count + p_parameters.m_engine_parameters.m_thread_manager_reserved_thread_count,
 			p_parameters.m_engine_parameters.m_memmng_fsa_start_size,
@@ -216,14 +216,14 @@ namespace black_cat
 		core::bc_service_manager::close();
 #ifdef BC_MEMORY_ENABLE
 #ifdef BC_MEMORY_LEAK_DETECTION
-		const bcUINT32 l_leak_counts = core::bc_memmng::get().report_memory_leaks();
+		const bcUINT32 l_leak_counts = core::bc_memory_manager::get().report_memory_leaks();
 		if (l_leak_counts > 0)
 		{
 			bcAssert(false);
 		}
 #endif
 
-		core::bc_memmng::close();
+		core::bc_memory_manager::close();
 #endif
 	}
 }

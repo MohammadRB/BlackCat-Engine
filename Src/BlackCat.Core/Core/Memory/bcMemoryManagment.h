@@ -36,12 +36,12 @@ namespace black_cat
 		template< typename TMemory >
 		class bc_memory_extender; // used forward declaration duo to dependencies between bcPtr and bcDelegate
 
-		class BC_CORE_DLL bc_memmng : core_platform::bc_no_copy
+		class BC_CORE_DLL bc_memory_manager : core_platform::bc_no_copy
 		{
 		public:
-			bc_memmng() noexcept;
+			bc_memory_manager() noexcept;
 
-			~bc_memmng();
+			~bc_memory_manager();
 
 			void initialize(bcSIZE p_max_num_thread,
 				bcSIZE p_fsa_start_size,
@@ -65,9 +65,9 @@ namespace black_cat
 
 			static void close() noexcept;
 
-			static bc_memmng& get() noexcept
+			static bc_memory_manager& get() noexcept
 			{
-				return bc_memmng::m_instance;
+				return bc_memory_manager::m_instance;
 			}
 
 			void* alloc(bcSIZE p_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept;
@@ -108,7 +108,7 @@ namespace black_cat
 			bcUINT32 _get_fsa_index(bcUINT32 p_size) const;
 
 			// We don't use static pointer because it is possible after we free pointer on exit, some call to free be called
-			static bc_memmng m_instance;
+			static bc_memory_manager m_instance;
 
 			bcSIZE m_fsa_allocators_start_size;
 			bcSIZE m_fsa_num_allocators;
@@ -127,7 +127,7 @@ namespace black_cat
 		};
 
 #ifdef BC_MEMORY_DEFRAG
-		inline void bc_memmng::register_pointer_in_movable_allocators(void** p_pointer) noexcept
+		inline void bc_memory_manager::register_pointer_in_movable_allocators(void** p_pointer) noexcept
 		{
 			if (m_super_heap->contain_pointer(*p_pointer))
 			{
@@ -137,7 +137,7 @@ namespace black_cat
 			}
 		}
 
-		inline void bc_memmng::unregister_pointer_in_movable_allocators(void** p_pointer) noexcept
+		inline void bc_memory_manager::unregister_pointer_in_movable_allocators(void** p_pointer) noexcept
 		{
 			if (m_super_heap->contain_pointer(*p_pointer))
 			{
@@ -148,12 +148,12 @@ namespace black_cat
 		}
 #endif
 
-		inline bcUINT32 bc_memmng::_fsa_index_max_size(bcUINT32 p_index) const
+		inline bcUINT32 bc_memory_manager::_fsa_index_max_size(bcUINT32 p_index) const
 		{
 			return m_fsa_allocators_start_size + p_index * m_fsa_step_size;
 		}
 
-		inline bcUINT32 bc_memmng::_get_fsa_index(bcUINT32 p_size) const
+		inline bcUINT32 bc_memory_manager::_get_fsa_index(bcUINT32 p_size) const
 		{
 			return std::ceil((p_size - m_fsa_allocators_start_size) / m_fsa_step_size);
 		}

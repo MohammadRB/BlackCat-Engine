@@ -149,7 +149,7 @@ namespace black_cat
 					app_swap_frame(core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed));
 
 #ifdef BC_MEMORY_ENABLE
-					core::bc_memmng::get().end_of_frame();
+					core::bc_memory_manager::get().end_of_frame();
 #endif
 					
 					if (m_render_rate != -1) // Fixed render rate
@@ -175,7 +175,7 @@ namespace black_cat
 				m_termination_code = -1;
 
 #ifdef BC_MEMORY_ENABLE
-				core::bc_memmng::get().end_of_frame();
+				core::bc_memory_manager::get().end_of_frame();
 #endif
 			}
 

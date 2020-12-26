@@ -1,6 +1,7 @@
 //  [8/29/2013 MRB]
 
 #include "Core/CorePCH.h"
+#include "CorePlatformImp/Memory/bcMemAlloc.h"
 #include "Core/Memory/bcMemoryHeap.h"
 
 namespace black_cat

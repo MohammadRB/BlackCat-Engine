@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CorePlatformImp/Memory/bcMemAlloc.h"
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/CorePCH.h"
@@ -91,8 +92,6 @@ namespace black_cat
 				}
 			}
 
-		protected:
-
 		private:
 			_bc_memory_extender_bucket* _bucket_initializer()
 			{
@@ -150,8 +149,6 @@ namespace black_cat
 			void clear() noexcept override;
 
 			const bc_memory_tracer& tracer();
-
-		protected:
 
 		private:
 			void _initialize(initializer_type&& p_initializer, cleanup_type&& p_cleanup) override;

@@ -469,6 +469,7 @@ namespace black_cat
 			{
 				if (l_item != nullptr)
 				{
+					auto& l_rps = *l_item;
 					++l_render_pass_states_count;
 				}
 			}
@@ -477,6 +478,7 @@ namespace black_cat
 			{
 				if (l_item != nullptr)
 				{
+					auto& l_rs = *l_item;
 					++l_render_states_count;
 				}
 			}
@@ -485,6 +487,7 @@ namespace black_cat
 			{
 				if (l_item != nullptr)
 				{
+					auto& l_cs = *l_item;
 					++l_compute_states_count;
 				}
 			}

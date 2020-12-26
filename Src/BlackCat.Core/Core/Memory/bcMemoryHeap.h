@@ -176,8 +176,6 @@ namespace black_cat
 				bcAssert(l_found);
 			}
 #endif
-		protected:
-
 		private:
 			static const bcINT32 m_free_mask = 1;
 			static const bcINT32 m_address_mask = ~m_free_mask;
@@ -235,8 +233,6 @@ namespace black_cat
 
 			void defragment(bcINT32 p_num_defrag, defrag_callback p_defrag_callback) noexcept override;
 #endif
-
-		protected:
 
 		private:
 			void _initialize(bcSIZE p_size, const bcCHAR* p_tag) override;

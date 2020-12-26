@@ -88,7 +88,7 @@ namespace black_cat
 		{
 			auto* l_query_manager = core::bc_get_service< core::bc_query_manager >();
 			l_query_manager->process_query_queue(p_clock);
-			l_query_manager->clear_temp_states();
+			l_query_manager->swap_frame();
 		}
 
 		void bc_game_system::_initialize(bc_game_system_parameter p_parameter)

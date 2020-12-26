@@ -2,7 +2,7 @@
 
 #include "Core/CorePCH.h"
 #include "CorePlatform/Concurrency/bcConcurrencyDef.h"
-#include "coreplatform/memory/bcmemalloc.h"
+#include "CorePlatformImp/Memory/bcMemAlloc.h"
 #include "CorePlatformImp/Utility/bcHardwareInfo.h"
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "CorePlatformImp/Concurrency/bcMutex.h"

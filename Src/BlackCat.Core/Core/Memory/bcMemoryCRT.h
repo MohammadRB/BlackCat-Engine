@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CorePlatform/Memory/bcMemAlloc.h"
+#include "CorePlatformImp/Memory/bcMemAlloc.h"
 #include "Core/CorePCH.h"
 #include "Core/Memory/bcMemory.h"
 #include "Core/Memory/bcMemBlock.h"
@@ -67,10 +67,6 @@ namespace black_cat
 			void clear() noexcept override
 			{
 			}
-
-		protected:
-
-		private:
 		};
 
 #endif

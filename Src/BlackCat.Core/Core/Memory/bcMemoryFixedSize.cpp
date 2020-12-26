@@ -1,7 +1,7 @@
 //  [8/23/2013 MRB]
 
 #include "Core/CorePCH.h"
-#include "CorePlatform/Memory/bcMemAlloc.h"
+#include "CorePlatformImp/Memory/bcMemAlloc.h"
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/Memory/bcMemoryFixedSize.h"
 
