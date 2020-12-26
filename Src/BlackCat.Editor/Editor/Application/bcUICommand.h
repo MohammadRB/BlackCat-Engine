@@ -52,17 +52,17 @@ namespace black_cat
 		class bc_ui_command_update_context
 		{
 		public:
-			bc_ui_command_update_context(const core_platform::bc_clock::update_param& p_elapsed, 
+			bc_ui_command_update_context(const core_platform::bc_clock::update_param& p_clock, 
 				game::bc_game_system& p_game_system, 
 				bc_iui_command_state* p_state)
-				: m_elapsed(p_elapsed),
+				: m_clock(p_clock),
 				m_game_system(p_game_system),
 				m_state(p_state),
 				m_result()
 			{
 			}
 
-			const core_platform::bc_clock::update_param& m_elapsed;
+			const core_platform::bc_clock::update_param& m_clock;
 			game::bc_game_system& m_game_system;
 			bc_iui_command_state* m_state;
 			core::bc_any m_result;
@@ -88,16 +88,16 @@ namespace black_cat
 		class bc_ui_command_undo_context
 		{
 		public:
-			bc_ui_command_undo_context(const core_platform::bc_clock::update_param& p_elapsed,
+			bc_ui_command_undo_context(const core_platform::bc_clock::update_param& p_clock,
 				game::bc_game_system& p_game_system,
 				bc_iui_command_state* p_state)
-				: m_elapsed(p_elapsed),
+				: m_clock(p_clock),
 				m_game_system(p_game_system),
 				m_state(p_state)
 			{
 			}
 
-			const core_platform::bc_clock::update_param& m_elapsed;
+			const core_platform::bc_clock::update_param& m_clock;
 			game::bc_game_system& m_game_system;
 			bc_iui_command_state* m_state;
 		};

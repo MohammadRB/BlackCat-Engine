@@ -35,14 +35,14 @@ namespace black_cat
 			 * \ThreadSafe
 			 * \param p_box 
 			 */
-			void render_wired_box(const physics::bc_bound_box& p_box);
+			void draw_wired_box(const physics::bc_bound_box& p_box);
 
 			/**
 			 * \brief
 			 * \ThreadSafe
 			 * \param p_camera_extend
 			 */
-			void render_wired_frustum(const bc_icamera::extend& p_camera_extend);
+			void draw_wired_frustum(const bc_icamera::extend& p_camera_extend);
 
 			void render(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_render_state_buffer& p_buffer);
 

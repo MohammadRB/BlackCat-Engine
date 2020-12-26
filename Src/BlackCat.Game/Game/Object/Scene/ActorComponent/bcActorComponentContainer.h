@@ -6,7 +6,6 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcNullable.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
-#include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
 {

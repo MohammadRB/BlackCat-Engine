@@ -220,11 +220,11 @@ namespace black_cat
 		{
 			for (auto& l_captured_camera : m_state->m_captured_cascades)
 			{
-				p_param.m_render_system.get_shape_drawer().render_wired_frustum(l_captured_camera);
+				p_param.m_render_system.get_shape_drawer().draw_wired_frustum(l_captured_camera);
 			}
 			for (auto& l_captured_box : m_state->m_captured_boxes)
 			{
-				p_param.m_render_system.get_shape_drawer().render_wired_box(l_captured_box);
+				p_param.m_render_system.get_shape_drawer().draw_wired_box(l_captured_box);
 			}
 			//p_param.m_render_system.get_shape_drawer().render_wired_frustum(m_state->m_captured_camera);	
 		}

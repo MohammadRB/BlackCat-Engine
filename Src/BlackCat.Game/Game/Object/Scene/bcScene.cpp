@@ -111,9 +111,9 @@ namespace black_cat
 			}
 		}
 
-		void bc_scene::add_debug_shapes(bc_shape_drawer& p_shape_drawer) const
+		void bc_scene::draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const
 		{
-			m_scene_graph.add_debug_shapes(p_shape_drawer);
+			m_scene_graph.draw_debug_shapes(p_shape_drawer);
 		}
 
 		void bc_scene::update_px(bc_physics_system& p_physics, const core_platform::bc_clock::update_param& p_clock)

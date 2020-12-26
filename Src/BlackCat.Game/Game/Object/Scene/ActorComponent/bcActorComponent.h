@@ -16,13 +16,14 @@ namespace black_cat
 	namespace game
 	{
 		class bc_actor_component_manager;
+		class bc_shape_drawer;
 		using bc_actor_component_hash = bcSIZE;
 		using bc_actor_component_index = bcINT32;
 		
 		class BC_GAME_DLL bc_iactor_component
 		{
 		public:
-			constexpr static bc_actor_component_index invalid_index = bc_actor_component_index(-1);
+			constexpr static bc_actor_component_index invalid_index = static_cast< bc_actor_component_index >(-1);
 
 		public:
 			virtual ~bc_iactor_component();
@@ -46,6 +47,8 @@ namespace black_cat
 			virtual void handle_event(bc_actor& p_actor, const bc_actor_event& p_event);
 
 			virtual void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock);
+
+			virtual void debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer);
 			
 		protected:
 			explicit bc_iactor_component(bc_actor_component_index p_index) noexcept;
@@ -65,6 +68,30 @@ namespace black_cat
 		inline bc_actor_component_index bc_iactor_component::get_index() const noexcept
 		{
 			return m_index;
+		}
+
+		inline void bc_iactor_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
+		{
+		}
+
+		inline void bc_iactor_component::load_instance(bc_actor& p_actor, const core::bc_json_key_value& p_parameters)
+		{
+		}
+
+		inline void bc_iactor_component::write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters)
+		{
+		}
+
+		inline void bc_iactor_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		{
+		}
+
+		inline void bc_iactor_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock)
+		{
+		}
+
+		inline void bc_iactor_component::debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer)
+		{
 		}
 		
 		inline bc_iactor_component::bc_iactor_component(bc_actor_component_index p_index) noexcept

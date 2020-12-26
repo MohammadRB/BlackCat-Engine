@@ -12,9 +12,10 @@
 
 namespace black_cat
 {
-	bc_scene_debug_shape_query::bc_scene_debug_shape_query(game::bc_shape_drawer& p_shape_drawer) noexcept
+	bc_scene_debug_shape_query::bc_scene_debug_shape_query(game::bc_shape_drawer& p_shape_drawer, const game::bc_actor& p_selected_actor) noexcept
 		: bc_query(message_name()),
-		m_shape_drawer(&p_shape_drawer)
+		m_shape_drawer(&p_shape_drawer),
+		m_selected_actor(p_selected_actor)
 	{
 	}
 
@@ -22,13 +23,26 @@ namespace black_cat
 	{
 		const auto& l_actors_buffer = p_context.get_shared_query<game::bc_main_camera_scene_query>().get_scene_buffer();
 
-		l_actors_buffer.add_debug_shapes(*m_shape_drawer);
-		p_context.m_scene->add_debug_shapes(*m_shape_drawer);
+		if(m_selected_actor.is_valid())
+		{
+			const auto l_ite = l_actors_buffer.find(m_selected_actor);
+			if (l_ite != std::end(l_actors_buffer))
+			{
+				l_ite->draw_debug(*m_shape_drawer);
+			}
+		}
+		
+		p_context.m_scene->draw_debug_shapes(*m_shape_drawer);
 	}
 	
 	bc_shape_draw_pass::bc_shape_draw_pass(constant::bc_render_pass_variable_t p_render_target_view)
 		: m_render_target_view_variable(p_render_target_view)
 	{
+	}
+
+	void bc_shape_draw_pass::set_selected_actor(const game::bc_actor& p_actor)
+	{
+		m_selected_actor = p_actor;
 	}
 
 	void bc_shape_draw_pass::initialize_resources(game::bc_render_system& p_render_system)
@@ -77,14 +91,9 @@ namespace black_cat
 
 	void bc_shape_draw_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
 	{
-		if (m_scene_debug_query.is_executed())
-		{
-			m_scene_debug_query.get(); // Just to free query result	
-		}
-		
 		m_scene_debug_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
-			bc_scene_debug_shape_query(p_param.m_render_system.get_shape_drawer())
+			bc_scene_debug_shape_query(p_param.m_render_system.get_shape_drawer(), m_selected_actor)
 		);
 	}
 

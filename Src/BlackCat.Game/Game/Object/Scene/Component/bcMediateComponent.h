@@ -55,10 +55,12 @@ namespace black_cat
 			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 
 			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock) override;
+
+			void debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer) override;
 			
 		private:
 			void _handle_event(bc_actor& p_actor, const bc_actor_event& p_event);
-			
+
 			const bcCHAR* m_entity_name;
 			
 			bc_scene* m_scene;

@@ -1,6 +1,7 @@
 // [12/22/2018 MRB]
 
 #include "Game/GamePCH.h"
+#include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
@@ -61,6 +62,11 @@ namespace black_cat
 			{
 				m_controller->update(p_actor, p_clock);
 			}
+		}
+
+		void bc_mediate_component::debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer)
+		{
+			p_shape_drawer.draw_wired_box(m_bound_box);
 		}
 
 		void bc_mediate_component::_handle_event(bc_actor& p_actor, const bc_actor_event& p_event)

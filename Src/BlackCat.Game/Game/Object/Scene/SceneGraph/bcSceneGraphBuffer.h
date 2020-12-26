@@ -75,6 +75,10 @@ namespace black_cat
 
 			void add_actor(const bc_actor& p_actor);
 
+			iterator find(const bc_actor& p_actor) noexcept;
+			
+			const_iterator find(const bc_actor& p_actor) const noexcept;
+			
 			void render_actors(bc_render_state_buffer& p_buffer) const;
 
 			template<typename TRenderComponent>
@@ -83,7 +87,7 @@ namespace black_cat
 			template<typename TRenderComponent, typename ...TArgs>
 			void render_actors(bc_render_state_buffer& p_buffer, TArgs&&... p_args) const;
 
-			void add_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
+			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
 		private:
 			container_type m_actors;
@@ -177,6 +181,24 @@ namespace black_cat
 			m_actors.push_back(p_actor);
 		}
 
+		inline bc_scene_graph_buffer::iterator bc_scene_graph_buffer::find(const bc_actor& p_actor) noexcept
+		{
+			for (auto l_ite = begin(), l_end = end(); l_ite != l_end; ++l_ite)
+			{
+				if(*l_ite == p_actor)
+				{
+					return l_ite;
+				}
+			}
+
+			return end();
+		}
+
+		inline bc_scene_graph_buffer::const_iterator bc_scene_graph_buffer::find(const bc_actor& p_actor) const noexcept
+		{
+			return const_cast<bc_scene_graph_buffer&>(*this).find(p_actor);
+		}
+
 		inline void bc_scene_graph_buffer::render_actors(bc_render_state_buffer& p_buffer) const
 		{
 			for(bc_actor& l_actor : m_actors)
@@ -219,12 +241,11 @@ namespace black_cat
 			}
 		}
 
-		inline void bc_scene_graph_buffer::add_debug_shapes(bc_shape_drawer& p_shape_drawer) const
+		inline void bc_scene_graph_buffer::draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const
 		{
 			for (const bc_actor& l_actor : *this)
 			{
-				const auto& l_bound_box = l_actor.get_component< bc_mediate_component >()->get_bound_box();
-				p_shape_drawer.render_wired_box(l_bound_box);
+				l_actor.draw_debug(p_shape_drawer);
 			}
 		}
 	}

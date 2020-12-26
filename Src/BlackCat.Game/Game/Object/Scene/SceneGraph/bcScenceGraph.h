@@ -80,7 +80,7 @@ namespace black_cat
 			template< typename TComponent >
 			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;
 
-			void add_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
+			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
 			void clear();
 
