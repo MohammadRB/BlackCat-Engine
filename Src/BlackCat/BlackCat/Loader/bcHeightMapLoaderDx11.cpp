@@ -243,7 +243,7 @@ namespace black_cat
 
 		physics::bc_memory_buffer l_serialized_buffer = l_physics.serialize(l_serialize_buffer);
 
-		p_context.m_file->write
+		p_context.m_file.write
 		(
 			reinterpret_cast< bcBYTE* >(l_serialized_buffer.get_buffer_pointer()),
 			l_serialized_buffer.get_buffer_size()
@@ -619,7 +619,7 @@ namespace black_cat
 		physics::bc_memory_buffer l_px_serialized_buffer = l_physics.serialize(l_px_serialize_buffer);
 
 		core::bc_task<void> l_texture_map_task = l_content_loader.save_async(l_texture_map);
-		p_context.m_file->write(reinterpret_cast< bcBYTE* >(l_px_serialized_buffer.get_buffer_pointer()), l_px_serialized_buffer.get_buffer_size());
+		p_context.m_file.write(reinterpret_cast< bcBYTE* >(l_px_serialized_buffer.get_buffer_pointer()), l_px_serialized_buffer.get_buffer_size());
 
 		l_texture_map_task.wait();
 	}

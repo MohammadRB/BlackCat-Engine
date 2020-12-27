@@ -63,7 +63,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BC_DLL;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../Src/BlackCat;../../Src/BlackCat.Core;../../Src/BlackCat.Core.Platform;../../Src/BlackCat.Core.Platform.Win32;../../Src/BlackCat.Platform;../../Src/BlackCat.Platform.Win32;../../Src/BlackCat.Graphic;../../Src/BlackCat.Graphic.DirectX11;../../Src/BlackCat.Game;../../Src/BlackCat.Physics;../../Src/BlackCat.Physics.PhysX;../../3rdParty</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../Src/BlackCat;../../Src/BlackCat.Core;../../Src/BlackCat.Core.Platform;../../Src/BlackCat.Core.Platform.Win32;../../Src/BlackCat.Platform;../../Src/BlackCat.Platform.Win32;../../Src/BlackCat.Graphic;../../Src/BlackCat.Graphic.DirectX11;../../Src/BlackCat.Game;../../Src/BlackCat.Physics;../../Src/BlackCat.Physics.PhysX;../../3rdParty;../../3rdParty/3rdParty/Ozz/Include</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>BlackCat/BlackCatPCH.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -92,8 +92,8 @@ xcopy ..\..\Src\BlackCat\BlackCat\Content\*.* $(Configuration)\Content\ /E /Y
 xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/Lib/$(Platform)_$(Configuration)/assimp-vc130-mtd.lib;</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(Configuration)\;..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/Lib/$(Platform)_$(Configuration)/assimp-vc130-mtd.lib;3rdParty/Ozz/Lib/Win32_Release/ozz_animation_offline_r.lib;3rdParty/Ozz/Lib/Win32_Release/ozz_animation_r.lib;3rdParty/Ozz/Lib/Win32_Release/ozz_base_r.lib;3rdParty/Ozz/Lib/Win32_Release/ozz_geometry_r.lib;3rdParty/Ozz/Lib/Win32_Release/ozz_options_r.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(Configuration)\;../../3rdParty/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <ProjectReference>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
@@ -110,7 +110,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>BC_DLL;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../Src/BlackCat;../../Src/BlackCat.Core;../../Src/BlackCat.Core.Platform;../../Src/BlackCat.Core.Platform.Win32;../../Src/BlackCat.Platform;../../Src/BlackCat.Platform.Win32;../../Src/BlackCat.Graphic;../../Src/BlackCat.Graphic.DirectX11;../../Src/BlackCat.Game;../../Src/BlackCat.Physics;../../Src/BlackCat.Physics.PhysX;../../3rdParty</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../Src/BlackCat;../../Src/BlackCat.Core;../../Src/BlackCat.Core.Platform;../../Src/BlackCat.Core.Platform.Win32;../../Src/BlackCat.Platform;../../Src/BlackCat.Platform.Win32;../../Src/BlackCat.Graphic;../../Src/BlackCat.Graphic.DirectX11;../../Src/BlackCat.Game;../../Src/BlackCat.Physics;../../Src/BlackCat.Physics.PhysX;../../3rdParty;../../3rdParty/3rdParty/Ozz/Include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>BlackCat/BlackCatPCH.h</PrecompiledHeaderFile>
       <EnablePREfast>true</EnablePREfast>
@@ -136,8 +136,8 @@ xcopy ..\..\Src\BlackCat\BlackCat\Content\*.* $(Configuration)\Content\ /E /Y
 xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/Lib/$(Platform)_$(Configuration)/assimp-vc130-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(Configuration)\;..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/Lib/$(Platform)_$(Configuration)/assimp-vc130-mtd.lib;3rdParty/Ozz/Lib/Win32_Release/ozz_animation_offline_r.lib;3rdParty/Ozz/Lib/Win32_Release/ozz_animation_r.lib;3rdParty/Ozz/Lib/Win32_Release/ozz_base_r.lib;3rdParty/Ozz/Lib/Win32_Release/ozz_geometry_r.lib;3rdParty/Ozz/Lib/Win32_Release/ozz_options_r.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(Configuration)\;../../3rdParty/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -156,6 +156,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshColliderLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcPixelShaderLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneLoader.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcSkinnedAnimationLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcTextureLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferWritePass.h" />
@@ -188,6 +189,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshColliderLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcPixelShaderLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneLoader.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcSkinnedAnimationLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcTextureLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferWritePass.cpp" />

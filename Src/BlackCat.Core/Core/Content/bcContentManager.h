@@ -320,7 +320,7 @@ namespace black_cat
 
 				if (!l_file_stream.open_write(l_file_to_open.c_str()))
 				{
-					l_context.m_file.reset(bc_stream(std::move(l_file_stream)));
+					l_context.m_file = bc_stream(std::move(l_file_stream));
 					l_loader->content_file_open_failed(l_context);
 
 					const auto l_file_name = bc_to_exclusive_string(l_file_to_open.c_str());
@@ -329,10 +329,10 @@ namespace black_cat
 					throw bc_io_exception(l_error_msg.c_str());
 				}
 
-				l_context.m_file.reset(bc_stream(std::move(l_file_stream)));
+				l_context.m_file = bc_stream(std::move(l_file_stream));
 				l_loader->content_processing(l_context);
 
-				l_context.m_file->close();
+				l_context.m_file.close();
 			}
 		}
 
@@ -437,7 +437,7 @@ namespace black_cat
 
 					if (!l_file_stream.open_read(p_file))
 					{
-						l_context.m_file.reset(bc_stream(std::move(l_file_stream)));
+						l_context.m_file = bc_stream(std::move(l_file_stream));
 						p_loader->content_file_open_failed(l_context);
 						
 						auto l_file_name = bc_to_exclusive_string(p_file);
@@ -446,7 +446,7 @@ namespace black_cat
 						throw bc_io_exception(l_error_msg.c_str());
 					}
 
-					l_context.m_file.reset(bc_stream(std::move(l_file_stream)));
+					l_context.m_file = bc_stream(std::move(l_file_stream));
 					p_loader->content_file_open_succeeded(l_context);
 
 					if (!l_offline_file_stream.open
@@ -457,7 +457,7 @@ namespace black_cat
 							core_platform::bc_file_sharing::none
 						))
 					{
-						l_context.m_file.reset(bc_stream(std::move(l_offline_file_stream)));
+						l_context.m_file = bc_stream(std::move(l_offline_file_stream));
 						p_loader->content_file_open_failed(l_context);
 
 						auto l_file_name = bc_to_exclusive_string(p_offline_file);
@@ -468,12 +468,12 @@ namespace black_cat
 
 					try
 					{
-						l_context.m_file.reset(bc_stream(std::move(l_offline_file_stream)));
+						l_context.m_file = bc_stream(std::move(l_offline_file_stream));
 						p_loader->content_offline_processing(l_context);
 					}
 					catch (const std::exception& p_exception)
 					{
-						l_context.m_file->close();
+						l_context.m_file.close();
 
 						bc_path l_offline_file(p_offline_file);
 						l_offline_file.delete_path();
@@ -485,7 +485,7 @@ namespace black_cat
 						throw bc_io_exception(l_message.c_str());
 					}
 					
-					l_context.m_file->close();
+					l_context.m_file.close();
 				}
 
 				const bcECHAR* l_file_to_open = p_loader->support_offline_processing() ? p_offline_file : p_file;
@@ -493,7 +493,7 @@ namespace black_cat
 
 				if (!l_file_stream.open_read(l_file_to_open))
 				{
-					l_context.m_file.reset(bc_stream(std::move(l_file_stream)));
+					l_context.m_file = bc_stream(std::move(l_file_stream));
 					p_loader->content_file_open_failed(l_context);
 					
 					auto l_file_name = bc_to_exclusive_string(l_file_to_open);
@@ -502,7 +502,7 @@ namespace black_cat
 					throw bc_io_exception(l_error_msg.c_str());
 				}
 
-				l_context.m_file.reset(bc_stream(std::move(l_file_stream)));
+				l_context.m_file = bc_stream(std::move(l_file_stream));
 				if(p_loader->support_offline_processing())
 				{
 					p_loader->content_offline_file_open_succeeded(l_context);
@@ -514,7 +514,7 @@ namespace black_cat
 				
 				p_loader->content_processing(l_context);
 
-				l_context.m_file->close();
+				l_context.m_file.close();
 
 				l_result = p_loader->finish(l_context).release_result<TContent>();
 			}

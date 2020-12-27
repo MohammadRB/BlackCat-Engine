@@ -50,7 +50,7 @@ namespace black_cat
 			l_file_path.c_str()
 		);
 
-		p_context.m_file->write
+		p_context.m_file.write
 		(
 			reinterpret_cast<bcBYTE*>(l_compiled_shader->get_platform_pack().m_blob->GetBufferPointer()),
 			l_compiled_shader->get_platform_pack().m_blob->GetBufferSize()

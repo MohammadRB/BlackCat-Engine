@@ -147,6 +147,9 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Application\bcApplicationHookFuncations.h">
       <Filter>BlackCat\Application</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcSkinnedAnimationLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -223,6 +226,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\PostProcess\bcParticleSystemDx11.cpp">
       <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcSkinnedAnimationLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

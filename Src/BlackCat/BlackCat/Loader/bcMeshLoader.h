@@ -2,11 +2,8 @@
 
 #pragma once
 
-#include "Core/Container/bcString.h"
 #include "Core/Content/bcContent.h"
 #include "Core/Content/bcContentLoader.h"
-#include "Game/System/Render/bcRenderSystem.h"
-#include "Game/System/Render/bcMaterialManager.h"
 #include "Game/Object/Mesh/bcMesh.h"
 #include "BlackCat/bcExport.h"
 
@@ -19,6 +16,11 @@ struct aiMesh;
 
 namespace black_cat
 {
+	namespace game
+	{
+		class game::bc_render_system;
+	}
+	
 	class BC_DLL bc_mesh_loader : public core::bc_base_content_loader
 	{
 	public:

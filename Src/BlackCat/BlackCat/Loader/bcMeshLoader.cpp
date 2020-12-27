@@ -23,6 +23,7 @@
 #include "PhysicsImp/Fundation/bcMemoryBuffer.h"
 #include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/System/Render/bcMaterialManager.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Physics/bcPhysicsShapeUtility.h"
 #include "BlackCat/Loader/bcMeshColliderLoader.h"
@@ -251,7 +252,7 @@ namespace black_cat
 
 		convert_aimaterial(p_context, *p_aiscene.mMaterials[p_aimesh.mMaterialIndex], l_material);
 
-		auto l_material_name = core::bc_to_exclusive_string(core::bc_path(p_context.m_file->get_path().c_str()).get_filename()) + "." + p_aimesh.mName.C_Str();
+		auto l_material_name = core::bc_to_exclusive_string(core::bc_path(p_context.m_file.get_path().c_str()).get_filename()) + "." + p_aimesh.mName.C_Str();
 		auto l_material_ptr = p_render_system.get_material_manager().store_material
 		(
 			p_context.get_allocator_alloc_type(),

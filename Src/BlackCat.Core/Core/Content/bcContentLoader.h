@@ -6,10 +6,8 @@
 #include "Core/bcException.h"
 #include "Core/Container/bcAllocator.h"
 #include "Core/Utility/bcServiceManager.h"
-#include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcDataDrivenParameter.h"
 #include "Core/Utility/bcNullable.h"
-#include "Core/Container/bcVector.h"
 #include "Core/File/bcStream.h"
 #include "Core/Content/bcContent.h"
 
@@ -137,7 +135,7 @@ namespace black_cat
 			}
 
 			const bcECHAR* m_file_path;							// Used to give loader access to content and offline content file path
-			bc_nullable< bc_stream > m_file;					// Used to give loader access to content and offline content file
+			bc_stream m_file;									// Used to give loader access to content and offline content file
 			bc_unique_ptr<bcBYTE> m_file_buffer;				// Used to give loader access to file content
 			bcSIZE m_file_buffer_size;							// Used to give loader access to file content size
 			const bc_content_loader_parameter* m_parameters;	// Used to pass constant parameters to loader
@@ -157,7 +155,7 @@ namespace black_cat
 			bc_content_saving_context& operator=(bc_content_saving_context&&) noexcept = default;
 
 			const bcECHAR* m_file_path;							// Used to give saver access to content file path
-			bc_nullable< bc_stream > m_file;					// Used to give saver access to content file
+			bc_stream m_file;									// Used to give saver access to content file
 			bc_icontent* m_content;								// Used to give saver access to content
 		};
 
