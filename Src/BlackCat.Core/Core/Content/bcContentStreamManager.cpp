@@ -20,7 +20,7 @@ namespace black_cat
 		BC_JSON_STRUCTURE(_bc_content_stream_content)
 		{
 			BC_JSON_VALUE(bc_string_frame, content_title);
-			BC_JSON_VALUE(bc_string_frame, content_name);
+			BC_JSON_VALUE(bc_string_frame, content_loader);
 			BC_JSON_VALUE(bc_string_frame, content_file);
 			BC_JSON_VALUE(bc_json_key_value, content_parameter);
 		};
@@ -77,7 +77,7 @@ namespace black_cat
 					_bc_content_stream_file l_stream_file
 					{
 						bc_string_program(l_stream_content->m_content_title->c_str()),
-						bc_string_program(l_stream_content->m_content_name->c_str()),
+						bc_string_program(l_stream_content->m_content_loader->c_str()),
 						bc_estring_program(l_file_path.c_str()),
 						bc_data_driven_parameter()
 					};
@@ -147,12 +147,12 @@ namespace black_cat
 						return;
 					}
 
-					const auto l_loader_hash = string_hash()(l_content_file.m_name.c_str());
+					const auto l_loader_hash = string_hash()(l_content_file.m_loader.c_str());
 					const auto l_loader_entry = m_content_loader_delegates.find(l_loader_hash);
 
 					if(l_loader_entry == std::end(m_content_loader_delegates))
 					{
-						const auto l_error_msg = "There isn't any registered loader for " + l_content_file.m_name;
+						const auto l_error_msg = "There isn't any registered loader for " + l_content_file.m_loader;
 						throw bc_key_not_found_exception(l_error_msg.c_str());
 					}
 

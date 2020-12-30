@@ -70,10 +70,10 @@ namespace black_cat
 			_bc_content_entry(const bcECHAR* p_file_path, bc_unique_ptr< bc_icontent >&& p_content)
 				: m_file_path(p_file_path),
 				m_content(std::move(p_content))
-			{	
+			{
 			}
 
-			bc_wstring m_file_path;
+			bc_estring m_file_path;
 			bc_unique_ptr< bc_icontent > m_content;
 		};
 
@@ -194,7 +194,7 @@ namespace black_cat
 			map_type::value_type::second_type l_value;
 
 			{
-				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > m_guard(m_contents_mutex);
+				core_platform::bc_shared_mutex_guard l_guard(m_contents_mutex);
 				
 				auto l_item = m_contents.find(p_content->_get_hash());
 
@@ -241,9 +241,9 @@ namespace black_cat
 			auto l_hash = std::hash< bc_estring_frame >()(l_offline_file_path);
 
 			{
-				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > m_guard(m_contents_mutex);
+				core_platform::bc_shared_mutex_shared_guard l_guard(m_contents_mutex);
+				
 				const auto l_content_ite = m_contents.find(l_hash);
-
 				if (l_content_ite != m_contents.end()) // Content has already loaded
 				{
 					return bc_content_ptr< TContent >(l_content_ite->second.m_content.get(), _bc_content_ptr_deleter(this));
@@ -251,7 +251,6 @@ namespace black_cat
 			}
 
 			bc_icontent_loader* l_loader = _get_loader<TContent>();
-
 			bc_unique_ptr< TContent > l_content = _load_content< TContent >
 			(
 				p_alloc_type,
@@ -296,7 +295,7 @@ namespace black_cat
 			const bcECHAR* l_file_path;
 
 			{
-				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > m_guard(m_contents_mutex);
+				core_platform::bc_shared_mutex_shared_guard l_guard(m_contents_mutex);
 
 				auto l_content_ite = m_contents.find(p_content._get_hash());
 				if (l_content_ite == m_contents.end())

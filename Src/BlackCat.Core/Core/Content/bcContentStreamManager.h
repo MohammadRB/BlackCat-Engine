@@ -34,7 +34,7 @@ namespace black_cat
 		struct _bc_content_stream_file
 		{
 			bc_string_program m_title;
-			bc_string_program m_name;
+			bc_string_program m_loader;
 			bc_estring_program m_file;
 			bc_data_driven_parameter m_parameters;
 		};

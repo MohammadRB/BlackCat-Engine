@@ -5,7 +5,6 @@
 #include "Core/bcExport.h"
 #include "Core/bcException.h"
 #include "Core/Container/bcAllocator.h"
-#include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcDataDrivenParameter.h"
 #include "Core/Utility/bcNullable.h"
 #include "Core/File/bcStream.h"
@@ -100,7 +99,7 @@ namespace black_cat
 		public:
 			bc_content_loading_context()
 				: m_file_path(nullptr),
-				m_file(nullptr),
+				m_file(),
 				m_file_buffer(nullptr),
 				m_file_buffer_size(0),
 				m_parameters(nullptr),
@@ -119,7 +118,7 @@ namespace black_cat
 			template
 			<
 				typename TContent,
-				typename = std::enable_if_t< !std::is_same_v< bc_io_exception, std::decay_t< TContent > > >
+				typename = std::enable_if_t< !std::is_same_v< std::decay_t< TContent >, bc_io_exception > >
 			>
 			void set_result(TContent&& p_result)
 			{

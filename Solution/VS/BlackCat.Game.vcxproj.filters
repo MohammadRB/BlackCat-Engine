@@ -61,6 +61,9 @@
     <Filter Include="Game\Object\Scene\Component\Controller">
       <UniqueIdentifier>{b827ac91-0489-44e4-9dc4-498aa48c50b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Object\Animation">
+      <UniqueIdentifier>{4dfe266a-e7f4-47b1-b23f-37e78d80f094}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h">
@@ -368,6 +371,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcConfigFile.h">
       <Filter>Game\System\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationSkeleton.h">
+      <Filter>Game\Object\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcSkinnedAnimation.h">
+      <Filter>Game\Object\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationManager.h">
+      <Filter>Game\Object\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

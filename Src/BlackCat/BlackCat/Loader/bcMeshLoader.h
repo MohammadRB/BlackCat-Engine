@@ -4,6 +4,7 @@
 
 #include "Core/Content/bcContent.h"
 #include "Core/Content/bcContentLoader.h"
+#include "Game/System/Render/bcMaterialManager.h"
 #include "Game/Object/Mesh/bcMesh.h"
 #include "BlackCat/bcExport.h"
 
