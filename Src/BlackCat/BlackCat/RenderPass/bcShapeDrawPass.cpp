@@ -82,14 +82,14 @@ namespace black_cat
 			l_back_buffer_texture.get_sample_count()
 		);
 
-		after_reset(game::bc_render_pass_reset_param(p_render_system, l_device, l_old_parameters, l_new_parameters));
+		after_reset(game::bc_render_pass_reset_context(p_render_system, l_device, l_old_parameters, l_new_parameters));
 	}
 
-	void bc_shape_draw_pass::update(const game::bc_render_pass_update_param& p_update_param)
+	void bc_shape_draw_pass::update(const game::bc_render_pass_update_context& p_update_param)
 	{
 	}
 
-	void bc_shape_draw_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_shape_draw_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
 	{
 		m_scene_debug_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
@@ -97,7 +97,7 @@ namespace black_cat
 		);
 	}
 
-	void bc_shape_draw_pass::execute(const game::bc_render_pass_render_param& p_param)
+	void bc_shape_draw_pass::execute(const game::bc_render_pass_render_context& p_param)
 	{
 		auto& l_shape_drawer = p_param.m_render_system.get_shape_drawer();
 		
@@ -112,11 +112,11 @@ namespace black_cat
 		p_param.m_render_thread.finish();
 	}
 
-	void bc_shape_draw_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_shape_draw_pass::cleanup_frame(const game::bc_render_pass_render_context& p_param)
 	{
 	}
 
-	void bc_shape_draw_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_shape_draw_pass::before_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 		if
 		(
@@ -128,7 +128,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_shape_draw_pass::after_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_shape_draw_pass::after_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 		if
 		(

@@ -203,14 +203,11 @@
       "name": "xbot",
       "components": [
         {
-          "name": "simple_mesh",
+          "name": "skinned_mesh",
           "parameters": {
-            "mesh": "xbot"
+            "mesh": "xbot",
+            "animations": [ "xbot-walking" ]
           }
-        },
-        {
-          "name": "rigid_static",
-          "parameters": {}
         }
       ]
     },

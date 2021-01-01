@@ -2,7 +2,7 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
-#include "Core/Utility/bcUtility.h"
+#include "Core/bcUtility.h"
 #include "PhysicsImp/Fundation/bcMemoryBuffer.h"
 #include "PhysicsImp/Shape/bcShape.h"
 #include "Game/System/Render/State/bcVertexLayout.h"
@@ -120,7 +120,7 @@ namespace black_cat
 		core::bc_string_frame l_mesh_name;
 		core::bc_matrix4f l_node_transformation;
 
-		bc_mesh_loader::convert_aimatrix(p_ainode.mTransformation, l_node_transformation);
+		bc_mesh_loader::convert_ai_matrix(p_ainode.mTransformation, l_node_transformation);
 		const core::bc_matrix4f l_node_absolute_transformation = l_node_transformation * p_parent_transformation;
 		const physics::bc_shape_flag l_shape_flag = p_generate_high_detail_query_shape ?
 			core::bc_enum::or({ physics::bc_shape_flag::simulation, physics::bc_shape_flag::visualization }) :
@@ -208,7 +208,7 @@ namespace black_cat
 		core::bc_matrix4f l_node_transformation;
 		core::bc_matrix4f l_node_absolute_transformation;
 
-		bc_mesh_loader::convert_aimatrix(p_ainode.mTransformation, l_node_transformation);
+		bc_mesh_loader::convert_ai_matrix(p_ainode.mTransformation, l_node_transformation);
 		l_node_absolute_transformation = l_node_transformation * p_parent_transformation;
 
 		for (bcUINT32 i = 0; i < p_ainode.mNumMeshes; ++i)

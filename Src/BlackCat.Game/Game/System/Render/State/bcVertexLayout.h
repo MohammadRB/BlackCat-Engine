@@ -4,6 +4,7 @@
 
 #include "Core/Math/bcVector2f.h"
 #include "Core/Math/bcVector3f.h"
+#include "Core/Math/bcVector4f.h"
 
 namespace black_cat
 {
@@ -22,7 +23,8 @@ namespace black_cat
 			pos = 1,
 			pos_tex = 2,
 			pos_tex_nor = 3,
-			pos_tex_nor_tan = 4
+			pos_tex_nor_tan = 4,
+			pos_tex_nor_tan_bon = 5
 		};
 
 		class bc_vertex_pos_tex
@@ -47,6 +49,17 @@ namespace black_cat
 			core::bc_vector2f m_texcoord;
 			core::bc_vector3f m_normal;
 			core::bc_vector3f m_tangent;
+		};
+
+		class bc_vertex_pos_tex_nor_tan_bon
+		{
+		public:
+			core::bc_vector3f m_position;
+			core::bc_vector2f m_texcoord;
+			core::bc_vector3f m_normal;
+			core::bc_vector3f m_tangent;
+			core::bc_vector4i m_bone_indices;
+			core::bc_vector4f m_bone_weights;
 		};
 	}
 }

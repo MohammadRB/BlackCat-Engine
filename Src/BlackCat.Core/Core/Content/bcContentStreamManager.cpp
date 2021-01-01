@@ -10,7 +10,6 @@
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Content/bcContent.h"
 #include "Core/Content/bcContentManager.h"
-#include "Core/Utility/bcParameterPack.h"
 #include "Core/bcException.h"
 
 namespace black_cat

@@ -49,9 +49,9 @@ namespace black_cat
 			return m_px_actor_ref.get();
 		}
 
-		void bc_rigid_dynamic_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
+		void bc_rigid_dynamic_component::initialize(bc_actor_component_initialize_context& p_context)
 		{
-			auto* l_mesh_component = p_actor.get_component<bc_mesh_component>();
+			auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>();
 
 			if (l_mesh_component)
 			{
@@ -59,7 +59,7 @@ namespace black_cat
 				auto& l_physics = l_physics_system.get_physics();
 
 				m_px_actor_ref = l_physics.create_rigid_dynamic(physics::bc_transform::identity());
-				initialize_from_mesh(l_physics_system, p_actor, m_px_actor_ref.get(), *l_mesh_component);
+				initialize_from_mesh(l_physics_system, p_context.m_actor, m_px_actor_ref.get(), *l_mesh_component);
 
 				return;
 			}

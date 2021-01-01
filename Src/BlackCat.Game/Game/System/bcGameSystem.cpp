@@ -71,7 +71,7 @@ namespace black_cat
 			
 			m_script_system.update(p_clock);
 			m_console->update(p_clock);
-			m_render_system.update(bc_render_system::update_param(p_clock, m_input_system.get_camera()));
+			m_render_system.update(bc_render_system::update_context(p_clock, m_input_system.get_camera()));
 		}
 		
 		void bc_game_system::render_game(const core_platform::bc_clock::update_param& p_clock)
@@ -80,7 +80,7 @@ namespace black_cat
 			
 			if(m_scene)
 			{
-				m_render_system.render(bc_render_system::render_param(p_clock));
+				m_render_system.render(bc_render_system::render_context(p_clock, *core::bc_get_service< core::bc_query_manager >()));
 			}
 		}
 

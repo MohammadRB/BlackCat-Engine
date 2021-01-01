@@ -26,8 +26,6 @@ namespace black_cat
 			virtual ~bc_render_component();
 
 			bc_render_component& operator=(bc_render_component&&) noexcept;
-
-		private:
 		};
 	}
 }

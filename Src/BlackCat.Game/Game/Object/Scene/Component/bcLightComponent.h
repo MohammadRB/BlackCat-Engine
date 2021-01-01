@@ -32,11 +32,9 @@ namespace black_cat
 
 			bc_light* get_light() noexcept;
 
-			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
-
-			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
+			void initialize(bc_actor_component_initialize_context& p_context) override;
 			
-			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock) override;
+			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 			
 		private:
 			bc_light_ptr m_light;

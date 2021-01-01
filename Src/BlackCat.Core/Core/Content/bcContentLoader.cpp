@@ -86,7 +86,7 @@ namespace black_cat
 				return l_result;
 			}
 
-			return bc_content_loader_result(bc_io_exception("Error in loading content"));
+			return bc_content_loader_result(bc_io_exception("Content load result is not set"));
 		}
 
 		void bc_base_content_loader::cleanup(bc_content_loading_context& p_context) const

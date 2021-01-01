@@ -166,8 +166,7 @@ namespace black_cat
 					{
 						graphic::bc_input_element_desc
 						{
-							"POSITION", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 0,
-							graphic::bc_input_classification::per_vertex_data, 0
+							"POSITION", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 0, graphic::bc_input_classification::per_vertex_data, 0
 						}
 					}
 				);
@@ -179,13 +178,11 @@ namespace black_cat
 					{
 						graphic::bc_input_element_desc
 						{
-							"POSITION", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 0,
-							graphic::bc_input_classification::per_vertex_data, 0
+							"POSITION", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 0, graphic::bc_input_classification::per_vertex_data, 0
 						},
 						graphic::bc_input_element_desc
 						{
-							"TEXCOORD", 0, graphic::bc_format::R32G32_FLOAT, 0, 12,
-							graphic::bc_input_classification::per_vertex_data, 0
+							"TEXCOORD", 0, graphic::bc_format::R32G32_FLOAT, 0, 12, graphic::bc_input_classification::per_vertex_data, 0
 						}
 					}
 				);
@@ -197,18 +194,15 @@ namespace black_cat
 					{
 						graphic::bc_input_element_desc
 						{
-							"POSITION", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 0,
-							graphic::bc_input_classification::per_vertex_data, 0
+							"POSITION", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 0, graphic::bc_input_classification::per_vertex_data, 0
 						},
 						graphic::bc_input_element_desc
 						{
-							"TEXCOORD", 0, graphic::bc_format::R32G32_FLOAT, 0, 12,
-							graphic::bc_input_classification::per_vertex_data, 0
+							"TEXCOORD", 0, graphic::bc_format::R32G32_FLOAT, 0, 12, graphic::bc_input_classification::per_vertex_data, 0
 						},
 						graphic::bc_input_element_desc
 						{
-							"NORMAL", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 20,
-							graphic::bc_input_classification::per_vertex_data, 0
+							"NORMAL", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 20, graphic::bc_input_classification::per_vertex_data, 0
 						},
 					}
 				);
@@ -219,23 +213,50 @@ namespace black_cat
 					{
 						graphic::bc_input_element_desc
 						{
-							"POSITION", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 0,
-							graphic::bc_input_classification::per_vertex_data, 0
+							"POSITION", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 0, graphic::bc_input_classification::per_vertex_data, 0
 						},
 						graphic::bc_input_element_desc
 						{
-							"TEXCOORD", 0, graphic::bc_format::R32G32_FLOAT, 0, 12,
-							graphic::bc_input_classification::per_vertex_data, 0
+							"TEXCOORD", 0, graphic::bc_format::R32G32_FLOAT, 0, 12, graphic::bc_input_classification::per_vertex_data, 0
 						},
 						graphic::bc_input_element_desc
 						{
-							"NORMAL", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 20,
-							graphic::bc_input_classification::per_vertex_data, 0
+							"NORMAL", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 20, graphic::bc_input_classification::per_vertex_data, 0
 						},
 						graphic::bc_input_element_desc
 						{
-							"TANGENT", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 32,
-							graphic::bc_input_classification::per_vertex_data, 0
+							"TANGENT", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 32, graphic::bc_input_classification::per_vertex_data, 0
+						},
+					}
+				);
+				break;
+			case bc_vertex_type::pos_tex_nor_tan_bon:
+				l_config.m_input_elements.assign
+				(
+					{
+						graphic::bc_input_element_desc
+						{
+							"POSITION", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 0, graphic::bc_input_classification::per_vertex_data, 0
+						},
+						graphic::bc_input_element_desc
+						{
+							"TEXCOORD", 0, graphic::bc_format::R32G32_FLOAT, 0, 12, graphic::bc_input_classification::per_vertex_data, 0
+						},
+						graphic::bc_input_element_desc
+						{
+							"NORMAL", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 20, graphic::bc_input_classification::per_vertex_data, 0
+						},
+						graphic::bc_input_element_desc
+						{
+							"TANGENT", 0, graphic::bc_format::R32G32B32_FLOAT, 0, 32, graphic::bc_input_classification::per_vertex_data, 0
+						},
+						graphic::bc_input_element_desc
+						{
+							"BLENDINDICES", 0, graphic::bc_format::R32G32B32A32_FLOAT, 0, 44, graphic::bc_input_classification::per_vertex_data, 0
+						},
+						graphic::bc_input_element_desc
+						{
+							"BLENDWEIGHT", 0, graphic::bc_format::R32G32B32A32_FLOAT, 0, 56, graphic::bc_input_classification::per_vertex_data, 0
 						},
 					}
 				);

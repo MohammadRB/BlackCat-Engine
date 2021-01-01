@@ -34,8 +34,9 @@ namespace black_cat
 			BC_JSON_ARRAY(_bc_json_entity, entities);
 		};
 
-		bc_entity_manager::bc_entity_manager(bc_actor_component_manager& p_actor_manager)
-			: m_actor_component_manager(p_actor_manager)
+		bc_entity_manager::bc_entity_manager(core::bc_content_stream_manager& p_content_stream_manager, bc_actor_component_manager& p_actor_manager)
+			: m_content_stream_manager(p_content_stream_manager),
+			m_actor_component_manager(p_actor_manager)
 		{
 		}
 
@@ -133,7 +134,15 @@ namespace black_cat
 					}
 
 					l_entity_component_entry->second.m_create_delegate(l_actor);
-					l_entity_component_entry->second.m_initialize_delegate(l_actor, l_entity_component_data.m_component_parameters);
+					l_entity_component_entry->second.m_initialize_delegate
+					(
+						bc_actor_component_initialize_context
+						(
+							l_actor,
+							l_entity_component_data.m_component_parameters,
+							m_content_stream_manager
+						)
+					);
 				}
 
 				if (!l_entity_entry->second.m_controller_name.empty())

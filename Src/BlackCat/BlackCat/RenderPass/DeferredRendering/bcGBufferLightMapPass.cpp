@@ -173,14 +173,14 @@ namespace black_cat
 			l_device.get_back_buffer_texture().get_sample_count()
 		);
 
-		after_reset(game::bc_render_pass_reset_param(p_render_system, l_device, l_old_parameters, l_new_parameters));
+		after_reset(game::bc_render_pass_reset_context(p_render_system, l_device, l_old_parameters, l_new_parameters));
 	}
 
-	void bc_gbuffer_light_map_pass::update(const game::bc_render_pass_update_param& p_param)
+	void bc_gbuffer_light_map_pass::update(const game::bc_render_pass_update_context& p_param)
 	{
 	}
 
-	void bc_gbuffer_light_map_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_light_map_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
 	{
 		if (m_lights_query.is_executed())
 		{
@@ -196,7 +196,7 @@ namespace black_cat
 		);
 	}
 
-	void bc_gbuffer_light_map_pass::execute(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_light_map_pass::execute(const game::bc_render_pass_render_context& p_param)
 	{
 		core::bc_vector_frame<_bc_direct_light_struct> l_direct_lights;
 		core::bc_vector_frame<_bc_point_light_struct> l_point_lights;
@@ -344,11 +344,11 @@ namespace black_cat
 		p_param.m_render_thread.finish();
 	}
 
-	void bc_gbuffer_light_map_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_gbuffer_light_map_pass::before_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 	}
 
-	void bc_gbuffer_light_map_pass::after_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_gbuffer_light_map_pass::after_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 		if
 		(

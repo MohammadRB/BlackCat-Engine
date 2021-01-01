@@ -66,8 +66,6 @@ namespace black_cat
 				return static_cast<bc_content_ptr< TContent >>(l_content);
 			}
 
-		protected:
-
 		private:
 			bc_string m_content_name;
 		};

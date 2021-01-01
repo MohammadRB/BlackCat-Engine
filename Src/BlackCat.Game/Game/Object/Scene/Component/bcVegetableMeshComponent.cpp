@@ -6,18 +6,12 @@
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "Game/bcUtility.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		extern void _render_mesh_node(bc_render_state_buffer& p_buffer,
-			const bc_sub_mesh& p_mesh_part,
-			const bc_sub_mesh_transformation& p_transformations,
-			const bc_mesh_node* const* p_begin,
-			const bc_mesh_node* const* p_end,
-			const bcCHAR* p_mesh_prefix);
-
 		bc_vegetable_mesh_component::bc_vegetable_mesh_component(bc_actor_component_index p_index)
 			: bc_mesh_component(p_index)
 		{
@@ -41,9 +35,9 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
-		void bc_vegetable_mesh_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
+		void bc_vegetable_mesh_component::initialize(bc_actor_component_initialize_context& p_context)
 		{
-			bc_mesh_component::initialize(p_actor, p_parameters);
+			bc_mesh_component::initialize(p_context);
 		}
 
 		void bc_vegetable_mesh_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
@@ -68,7 +62,7 @@ namespace black_cat
 			const auto& l_mesh_transformation = get_mesh_transformation();
 			const auto* l_root_node = l_mesh.get_root_node();
 
-			_render_mesh_node(p_buffer, l_mesh, l_mesh_transformation, &l_root_node, &l_root_node + 1, l_mesh_prefix);
+			render_mesh(p_buffer, l_mesh, l_mesh_transformation, &l_root_node, &l_root_node + 1, l_mesh_prefix);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 // [06/16/2019 MRB]
 
-#include "..\bcRegister.hlsli"
+#include "../bcRegister.hlsli"
 
 //cbuffer g_bc_parameters				: register(BC_RENDER_PASS_STATE_CB1)
 //{

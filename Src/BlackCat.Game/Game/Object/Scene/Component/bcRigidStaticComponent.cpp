@@ -53,25 +53,25 @@ namespace black_cat
 			return m_px_actor_ref.get();
 		}
 
-		void bc_rigid_static_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
+		void bc_rigid_static_component::initialize(bc_actor_component_initialize_context& p_context)
 		{
 			auto& l_physics_system = core::bc_get_service<bc_game_system>()->get_physics_system();
 			auto& l_physics = l_physics_system.get_physics();
 
-			auto* l_mesh_component = p_actor.get_component<bc_mesh_component>();
+			auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>();
 			if(l_mesh_component)
 			{
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform::identity());
-				initialize_from_mesh(l_physics_system, p_actor, m_px_actor_ref.get(), *l_mesh_component);
+				initialize_from_mesh(l_physics_system, p_context.m_actor, m_px_actor_ref.get(), *l_mesh_component);
 
 				return;
 			}
 
-			auto* l_height_map_component = p_actor.get_component<bc_height_map_component>();
+			auto* l_height_map_component = p_context.m_actor.get_component<bc_height_map_component>();
 			if(l_height_map_component)
 			{
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform::identity());
-				_initialize_from_height_map(l_physics_system, p_actor, m_px_actor_ref.get(), *l_height_map_component);
+				_initialize_from_height_map(l_physics_system, p_context.m_actor, m_px_actor_ref.get(), *l_height_map_component);
 
 				return;
 			}

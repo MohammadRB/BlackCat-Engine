@@ -75,11 +75,11 @@ namespace black_cat
 		}
 	}
 	
-	void bc_base_cascaded_shadow_map_pass::update(const game::bc_render_pass_update_param& p_param)
+	void bc_base_cascaded_shadow_map_pass::update(const game::bc_render_pass_update_context& p_param)
 	{
 	}
 
-	void bc_base_cascaded_shadow_map_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_base_cascaded_shadow_map_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
 	{
 		if (m_my_index == 0)
 		{
@@ -95,7 +95,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_base_cascaded_shadow_map_pass::execute(const game::bc_render_pass_render_param& p_param)
+	void bc_base_cascaded_shadow_map_pass::execute(const game::bc_render_pass_render_context& p_param)
 	{
 		if(m_state->m_lights.empty())
 		{
@@ -230,7 +230,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_base_cascaded_shadow_map_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_base_cascaded_shadow_map_pass::cleanup_frame(const game::bc_render_pass_render_context& p_param)
 	{
 		if(m_my_index == 0)
 		{
@@ -238,11 +238,11 @@ namespace black_cat
 		}
 	}
 
-	void bc_base_cascaded_shadow_map_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_base_cascaded_shadow_map_pass::before_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 	}
 
-	void bc_base_cascaded_shadow_map_pass::after_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_base_cascaded_shadow_map_pass::after_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 	}
 

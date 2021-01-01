@@ -25,8 +25,6 @@ namespace black_cat
 
 			void operator ()(bc_icontent* p_content) const;
 
-		protected:
-
 		private:
 			bc_content_manager* m_content_manager;
 		};

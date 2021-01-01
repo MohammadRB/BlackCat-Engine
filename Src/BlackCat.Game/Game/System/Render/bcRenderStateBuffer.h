@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcIteratorAdapter.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/System/Render/State/bcRenderState.h"
@@ -13,9 +13,6 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_icamera;
-		class bc_render_thread;
-		
 		struct _bc_render_state_buffer_entry_hash
 		{
 			using argument_type = bc_render_state_ptr;
@@ -38,28 +35,28 @@ namespace black_cat
 				return p_1.get_handle().m_handle == p_2.get_handle().m_handle;
 			}
 		};
-		
+
 		class BC_GAME_DLL bc_render_state_buffer
 		{
 		private:
-			using map_type = core::bc_unordered_map
+			using instance_map_type = core::bc_unordered_map
 			<
 				bc_render_state_ptr,
-				core::bc_vector< bc_render_instance >,
+				core::bc_vector_movable< bc_render_instance >,
+				_bc_render_state_buffer_entry_hash,
+				_bc_render_state_buffer_entry_equal
+			>;
+			using skinned_instance_map_type = core::bc_unordered_map
+			<
+				bc_render_state_ptr,
+				core::bc_vector_movable< bc_skinned_render_instance >,
 				_bc_render_state_buffer_entry_hash,
 				_bc_render_state_buffer_entry_equal
 			>;
 			
 		public:
-			using value_type = map_type::value_type;
-			using pointer = map_type::pointer;
-			using const_pointer = map_type::const_pointer;
-			using reference = map_type::reference;
-			using const_reference = map_type::const_reference;
-			using difference_type = map_type::difference_type;
-			using size_type = map_type::size_type;
-			using iterator = map_type::iterator;
-			using const_iterator = map_type::const_iterator;
+			using instance_iterator = core::bc_const_iterator_adapter< instance_map_type >;
+			using skinned_instance_iterator = core::bc_const_iterator_adapter< skinned_instance_map_type >;
 			
 		public:
 			bc_render_state_buffer();
@@ -70,22 +67,17 @@ namespace black_cat
 
 			bc_render_state_buffer& operator=(bc_render_state_buffer&&) noexcept;
 
-			iterator begin();
+			instance_iterator get_instances() const noexcept;
 
-			const_iterator begin() const;
-
-			const_iterator cbegin() const;
-
-			iterator end();
-
-			const_iterator end() const;
-
-			const_iterator cend() const;
-
+			skinned_instance_iterator get_skinned_instances() const noexcept;
+			
 			void add_render_instance(bc_render_state_ptr p_render_state, const bc_render_instance& p_instance);
 
+			void add_skinned_render_instance(bc_render_state_ptr p_render_state, bc_skinned_render_instance p_instance);
+
 		private:
-			map_type m_render_states;
+			instance_map_type m_render_states;
+			skinned_instance_map_type m_skinned_render_states;
 		};
 	}
 }

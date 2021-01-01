@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "Game/bcExport.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {

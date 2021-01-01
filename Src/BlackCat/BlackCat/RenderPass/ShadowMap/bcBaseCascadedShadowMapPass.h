@@ -49,18 +49,19 @@ namespace black_cat
 		core::bc_vector_movable<physics::bc_bound_box> m_captured_boxes;
 	};
 
-	class bc_cascaded_shadow_map_pass_render_param : public game::bc_render_pass_render_param
+	class bc_cascaded_shadow_map_pass_render_param : public game::bc_render_pass_render_context
 	{
 	public:
-		bc_cascaded_shadow_map_pass_render_param(const game::bc_render_pass_render_param& p_render_param,
+		bc_cascaded_shadow_map_pass_render_param(const game::bc_render_pass_render_context& p_render_param,
 			const core::bc_vector< game::bc_render_pass_state_ptr >& p_render_states,
 			const game::bc_camera_instance& p_cascade_camera,
 			bcSIZE p_light_index,
 			bcSIZE p_cascade_index,
 			bcSIZE p_cascade_count)
-			: game::bc_render_pass_render_param
+			: game::bc_render_pass_render_context
 			(
 				p_render_param.m_clock,
+				p_render_param.m_query_manager,
 				p_render_param.m_current_camera,
 				p_render_param.m_render_camera,
 				p_render_param.m_render_system,
@@ -87,17 +88,17 @@ namespace black_cat
 	public:
 		void initialize_resources(game::bc_render_system& p_render_system) override final;
 
-		void update(const game::bc_render_pass_update_param& p_param) override final;
+		void update(const game::bc_render_pass_update_context& p_param) override final;
 
-		void initialize_frame(const game::bc_render_pass_render_param& p_param) override final;
+		void initialize_frame(const game::bc_render_pass_render_context& p_param) override final;
 
-		void execute(const game::bc_render_pass_render_param& p_param) override final;
+		void execute(const game::bc_render_pass_render_context& p_param) override final;
 
-		void cleanup_frame(const game::bc_render_pass_render_param& p_param) override final;
+		void cleanup_frame(const game::bc_render_pass_render_context& p_param) override final;
 
-		void before_reset(const game::bc_render_pass_reset_param& p_param) override final;
+		void before_reset(const game::bc_render_pass_reset_context& p_param) override final;
 
-		void after_reset(const game::bc_render_pass_reset_param& p_param) override final;
+		void after_reset(const game::bc_render_pass_reset_context& p_param) override final;
 
 		void destroy(game::bc_render_system& p_render_system) override final;
 

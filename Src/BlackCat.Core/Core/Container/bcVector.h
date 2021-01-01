@@ -42,7 +42,7 @@ namespace black_cat
 			size_type capacity() const
 			{
 				return m_capacity;
-			};
+			}
 
 		protected:
 			bool iterator_validate(const node_type* p_node) const noexcept
@@ -197,7 +197,7 @@ namespace black_cat
 				size_type l_new_capacity = std::pow(2, std::ceil(std::log2(std::max(m_capacity + p_count_to_add, 2U))));
 				
 				_change_capacity(l_new_capacity);
-			};
+			}
 
 			void _decrease_capacity()
 			{
@@ -226,7 +226,7 @@ namespace black_cat
 
 				_increase_capacity(p_count);
 
-				// _increase_capacity method may change pointers, so if it has occured we should correct p_position
+				// _increase_capacity method may change pointers, so if it has occurred we should correct p_position
 				p_position = m_first + (p_position - l_first);
 				node_type* l_position = p_position;
 				size_type l_count = p_count;
@@ -324,7 +324,7 @@ namespace black_cat
 				base_type::m_size -= p_count;
 
 				return p_position;
-			};
+			}
 
 			size_type m_capacity;
 			node_pointer m_first;
@@ -334,7 +334,7 @@ namespace black_cat
 		template < typename T, class TAllocator = bc_allocator< T > >
 		class bc_vector : public bc_vector_base< T, TAllocator >
 		{
-			bc_make_iterators_friend(bc_vector);
+			bc_make_iterators_friend(bc_vector)
 
 		public:
 			using this_type = bc_vector;

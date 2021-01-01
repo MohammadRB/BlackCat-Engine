@@ -28,8 +28,10 @@ namespace black_cat
 
 		struct bc_mesh_part_cbuffer
 		{
-			BC_CBUFFER_ALIGN core::bc_vector4f m_diffuse;
-			BC_CBUFFER_ALIGN bcFLOAT m_specular_intensity;
+			BC_CBUFFER_ALIGN
+			core::bc_vector4f m_diffuse;
+			BC_CBUFFER_ALIGN
+			bcFLOAT m_specular_intensity;
 			bcFLOAT m_specular_power;
 		};
 
@@ -39,6 +41,7 @@ namespace black_cat
 			core::bc_string m_name;
 			bc_render_material_ptr m_material;
 			core::bc_vector_movable< bc_vertex_pos_tex_nor_tan > m_vertices;
+			core::bc_vector_movable< bc_vertex_pos_tex_nor_tan_bon > m_skinned_vertices;
 			core::bc_vector_movable< bcBYTE > m_indices;
 
 			graphic::bc_buffer_ptr m_vertex_buffer;
@@ -52,7 +55,7 @@ namespace black_cat
 		public:
 			friend class bc_mesh;
 			using node_index = core::bc_vector< void* >::size_type;
-			const static node_index s_invalid_index = node_index(-1);
+			const static node_index s_invalid_index = static_cast< node_index >(-1);
 
 		public:
 			bc_mesh_node(core::bc_string p_name,
@@ -76,8 +79,6 @@ namespace black_cat
 			bcSIZE get_all_children_count() const;
 
 			const core::bc_string& get_name() const;
-
-		protected:
 
 		private:
 			void _add_child(bc_mesh_node* p_mesh_node);

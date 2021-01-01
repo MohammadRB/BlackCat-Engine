@@ -43,9 +43,9 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
+			void initialize(bc_actor_component_initialize_context& p_context) override;
 
-			void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters) override;
+			void write_instance(bc_actor_component_write_context& p_context) override;
 
 			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 			

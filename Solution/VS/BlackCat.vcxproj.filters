@@ -150,6 +150,9 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcSkinnedAnimationLoader.h">
       <Filter>BlackCat\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferSkinnedPass.h">
+      <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -233,6 +236,9 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Application\bcApplicationHookFunctions.cpp">
       <Filter>BlackCat\Application</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferSkinnedPass.cpp">
+      <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcShapeDraw.hlsl">
@@ -288,6 +294,9 @@
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticleGroupSort.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcSkinnedMeshGBuffer.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\DeferredRendering</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

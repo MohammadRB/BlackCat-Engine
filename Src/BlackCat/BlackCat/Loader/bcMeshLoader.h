@@ -19,7 +19,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class game::bc_render_system;
+		class bc_render_system;
 	}
 	
 	class BC_DLL bc_mesh_loader : public core::bc_base_content_loader
@@ -33,24 +33,26 @@ namespace black_cat
 
 		bc_mesh_loader& operator=(bc_mesh_loader&&) = default;
 
-		static void calculate_node_mesh_count(const aiNode& p_node, bcSIZE& p_node_count, bcSIZE& p_mesh_count);
+		static void calculate_node_mesh_count(const aiNode& p_node, bcSIZE& p_node_count, bcSIZE& p_mesh_count, core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_indices);
 
-		static void convert_aimatrix(const aiMatrix4x4& p_aimatrix, core::bc_matrix4f& p_matrix);
+		static void convert_ai_matrix(const aiMatrix4x4& p_ai_matrix, core::bc_matrix4f& p_matrix);
 
-		static void convert_aimaterial(core::bc_content_loading_context& p_context, const aiMaterial& p_aimaterial, game::bc_render_material_description& p_material);
+		static void convert_ai_material(core::bc_content_loading_context& p_context, const aiMaterial& p_ai_material, game::bc_render_material_description& p_material);
 
-		static void convert_aimesh(game::bc_render_system& p_render_system,
+		static void convert_ai_mesh(game::bc_render_system& p_render_system,
 			core::bc_content_loading_context& p_context,
-			const aiScene& p_aiscene,
-			const aiNode& p_ainode,
-			const aiMesh& p_aimesh,
+			const aiScene& p_ai_scene,
+			const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_indices,
+			const aiNode& p_ai_node,
+			const aiMesh& p_ai_mesh,
 			game::bc_mesh_part_data& p_mesh,
 			game::bc_render_state_ptr& p_mesh_render_state);
 
-		static void convert_ainodes(game::bc_render_system& p_render_system,
+		static void convert_ai_nodes(game::bc_render_system& p_render_system,
 			core::bc_content_loading_context& p_context,
-			const aiScene& p_aiscene,
-			const aiNode& p_ainode,
+			const aiScene& p_ai_scene,
+			const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_indices,
+			const aiNode& p_ai_node,
 			game::bc_mesh& p_mesh,
 			game::bc_mesh_node* p_parent);
 

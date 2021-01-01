@@ -65,7 +65,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_pass_manager::pass_update(const bc_render_pass_update_param& p_param)
+		void bc_render_pass_manager::pass_update(const bc_render_pass_update_context& p_param)
 		{
 			for (auto& l_entry : m_passes)
 			{
@@ -73,7 +73,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_pass_manager::pass_execute(const bc_render_pass_render_param& p_param)
+		void bc_render_pass_manager::pass_execute(const bc_render_pass_render_context& p_param)
 		{
 			for (auto& l_entry : m_passes)
 			{
@@ -91,7 +91,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_pass_manager::before_reset(const bc_render_pass_reset_param& p_param)
+		void bc_render_pass_manager::before_reset(const bc_render_pass_reset_context& p_param)
 		{
 			for (auto& l_entry : m_passes)
 			{
@@ -99,7 +99,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_pass_manager::after_reset(const bc_render_pass_reset_param& p_param)
+		void bc_render_pass_manager::after_reset(const bc_render_pass_reset_context& p_param)
 		{
 			for (auto& l_entry : m_passes)
 			{

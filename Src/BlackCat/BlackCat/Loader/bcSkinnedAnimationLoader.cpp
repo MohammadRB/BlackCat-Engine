@@ -23,13 +23,9 @@
 
 namespace black_cat
 {
-	using namespace ozz;
-	using namespace ozz::io;
-	using namespace ozz::math;
-	using namespace ozz::animation;
-	using namespace ozz::animation::offline;
-	
-	void _build_ozz_skeleton(aiNode* const * p_ai_nodes_begin, bcSIZE p_ai_nodes_count, RawSkeleton::Joint::Children& p_ozz_skeletons)
+	void _build_ozz_skeleton(aiNode* const * p_ai_nodes_begin, 
+		bcSIZE p_ai_nodes_count, 
+		ozz::animation::offline::RawSkeleton::Joint::Children& p_ozz_skeletons)
 	{
 		p_ozz_skeletons.resize(p_ai_nodes_count);
 		
@@ -44,9 +40,9 @@ namespace black_cat
 			l_ai_node->mTransformation.Decompose(l_node_scale, l_node_rotation, l_node_translation);
 			
 			l_ozz_joint.name = l_ai_node->mName.C_Str();
-			l_ozz_joint.transform.translation = Float3(l_node_translation.x, l_node_translation.y, l_node_translation.z);
-			l_ozz_joint.transform.scale = Float3(l_node_scale.x, l_node_scale.y, l_node_scale.z);
-			l_ozz_joint.transform.rotation = Quaternion(l_node_rotation.x, l_node_rotation.y, l_node_rotation.z, l_node_rotation.w);
+			l_ozz_joint.transform.translation = ozz::math::Float3(l_node_translation.x, l_node_translation.y, l_node_translation.z);
+			l_ozz_joint.transform.scale = ozz::math::Float3(l_node_scale.x, l_node_scale.y, l_node_scale.z);
+			l_ozz_joint.transform.rotation = ozz::math::Quaternion(l_node_rotation.x, l_node_rotation.y, l_node_rotation.z, l_node_rotation.w);
 
 			if(l_ai_node->mNumChildren > 0)
 			{
@@ -55,7 +51,10 @@ namespace black_cat
 		}
 	}
 
-	void _build_ozz_animation(aiAnimation* const * p_ai_animations, bcSIZE p_ai_animation_count, const Skeleton& p_ozz_skeleton, core::bc_vector_frame<RawAnimation>& p_ozz_animations)
+	void _build_ozz_animation(aiAnimation* const * p_ai_animations, 
+		bcSIZE p_ai_animation_count, 
+		const ozz::animation::Skeleton& p_ozz_skeleton,
+		core::bc_vector_frame< ozz::animation::offline::RawAnimation >& p_ozz_animations)
 	{
 		p_ozz_animations.resize(p_ai_animation_count);
 
@@ -98,7 +97,7 @@ namespace black_cat
 					
 					auto& l_ai_position = l_ai_channel->mPositionKeys[l_ai_channel_position_ite];
 					l_ozz_track.translations[l_ai_channel_position_ite].time = static_cast<bcFLOAT>(l_ai_position.mTime / l_ai_animation->mTicksPerSecond);
-					l_ozz_track.translations[l_ai_channel_position_ite].value = Float3(l_ai_position.mValue.x, l_ai_position.mValue.y, l_ai_position.mValue.z);
+					l_ozz_track.translations[l_ai_channel_position_ite].value = ozz::math::Float3(l_ai_position.mValue.x, l_ai_position.mValue.y, l_ai_position.mValue.z);
 				}
 				for (auto l_ai_channel_scale_ite = 0U; l_ai_channel_scale_ite < l_ai_channel->mNumScalingKeys; ++l_ai_channel_scale_ite)
 				{
@@ -106,7 +105,7 @@ namespace black_cat
 					
 					auto& l_ai_scale = l_ai_channel->mScalingKeys[l_ai_channel_scale_ite];
 					l_ozz_track.scales[l_ai_channel_scale_ite].time = static_cast<bcFLOAT>(l_ai_scale.mTime / l_ai_animation->mTicksPerSecond);
-					l_ozz_track.scales[l_ai_channel_scale_ite].value = Float3(l_ai_scale.mValue.x, l_ai_scale.mValue.y, l_ai_scale.mValue.z);
+					l_ozz_track.scales[l_ai_channel_scale_ite].value = ozz::math::Float3(l_ai_scale.mValue.x, l_ai_scale.mValue.y, l_ai_scale.mValue.z);
 				}
 				for (auto l_ai_channel_rotation_ite = 0U; l_ai_channel_rotation_ite < l_ai_channel->mNumRotationKeys; ++l_ai_channel_rotation_ite)
 				{
@@ -114,18 +113,20 @@ namespace black_cat
 					
 					auto& l_ai_rotation = l_ai_channel->mRotationKeys[l_ai_channel_rotation_ite];
 					l_ozz_track.rotations[l_ai_channel_rotation_ite].time = static_cast<bcFLOAT>(l_ai_rotation.mTime / l_ai_animation->mTicksPerSecond);
-					l_ozz_track.rotations[l_ai_channel_rotation_ite].value = Quaternion(l_ai_rotation.mValue.x, l_ai_rotation.mValue.y, l_ai_rotation.mValue.z, l_ai_rotation.mValue.w);
+					l_ozz_track.rotations[l_ai_channel_rotation_ite].value = ozz::math::Quaternion(l_ai_rotation.mValue.x, l_ai_rotation.mValue.y, l_ai_rotation.mValue.z, l_ai_rotation.mValue.w);
 				}
 			}
 		}
 	}
 
-	void _write_ozz_structures(const Skeleton& p_ozz_skeleton, const core::bc_vector_frame<unique_ptr<Animation>>& p_ozz_animations, MemoryStream& p_stream)
+	void _write_ozz_structures(const ozz::animation::Skeleton& p_ozz_skeleton, 
+		const core::bc_vector_frame< ozz::unique_ptr< ozz::animation::Animation>>& p_ozz_animations,
+		ozz::io::MemoryStream& p_stream)
 	{
 		auto l_num_animations = p_ozz_animations.size();
 		p_stream.Write(&l_num_animations, sizeof(decltype(l_num_animations)));
 
-		OArchive l_ozz_archive(&p_stream);
+		ozz::io::OArchive l_ozz_archive(&p_stream);
 		l_ozz_archive << p_ozz_skeleton;
 
 		for(auto& l_ozz_animation : p_ozz_animations)
@@ -134,29 +135,30 @@ namespace black_cat
 		}
 	}
 
-	void _read_ozz_structures(Skeleton& p_ozz_skeleton, core::bc_vector_frame<core::bc_unique_ptr<Animation>>& p_ozz_animations, MemoryStream& p_stream)
+	void _read_ozz_structures(ozz::io::MemoryStream& p_stream, game::bc_animation_skeleton& p_skeleton, core::bc_vector<game::bc_skeleton_animation>& p_animations)
 	{
 		bcSIZE l_num_animations;
 		p_stream.Read(&l_num_animations, sizeof(decltype(l_num_animations)));
 
-		IArchive l_ozz_archive(&p_stream);
+		ozz::io::IArchive l_ozz_archive(&p_stream);
 		
-		if(!l_ozz_archive.TestTag<Skeleton>())
+		if(!l_ozz_archive.TestTag< ozz::animation::Skeleton>())
 		{
 			throw bc_io_exception("Cannot read animation skeleton from input file");
 		}
-		l_ozz_archive >> p_ozz_skeleton;
 
-		p_ozz_animations.resize(l_num_animations);
+		l_ozz_archive >> *p_skeleton.get_native_handle();
+		
+		p_animations.resize(l_num_animations);
+		
 		for(auto l_anim_ite = 0U; l_anim_ite < l_num_animations; ++l_anim_ite)
 		{
-			if (!l_ozz_archive.TestTag<Animation>())
+			if (!l_ozz_archive.TestTag< ozz::animation::Animation>())
 			{
 				throw bc_io_exception("Cannot read animation from input file");
 			}
 
-			p_ozz_animations[l_anim_ite] = core::bc_make_unique<Animation>();
-			l_ozz_archive >> *p_ozz_animations[l_anim_ite];
+			l_ozz_archive >> *p_animations[l_anim_ite].get_native_handle();
 		}
 	}
 	
@@ -196,16 +198,16 @@ namespace black_cat
 			return;
 		}
 
-		RawSkeleton l_ozz_raw_skeleton;
+		ozz::animation::offline::RawSkeleton l_ozz_raw_skeleton;
 		
 		_build_ozz_skeleton(&l_ai_scene->mRootNode, 1, l_ozz_raw_skeleton.roots);
 
-		const auto l_ozz_skeleton = SkeletonBuilder()(l_ozz_raw_skeleton);
-		core::bc_vector_frame<RawAnimation> l_ozz_raw_animations;
+		const auto l_ozz_skeleton = ozz::animation::offline::SkeletonBuilder()(l_ozz_raw_skeleton);
+		core::bc_vector_frame< ozz::animation::offline::RawAnimation> l_ozz_raw_animations;
 
 		_build_ozz_animation(l_ai_scene->mAnimations, l_ai_scene->mNumAnimations, *l_ozz_skeleton, l_ozz_raw_animations);
 
-		core::bc_vector_frame<unique_ptr<Animation>> l_ozz_animations;
+		core::bc_vector_frame< ozz::unique_ptr< ozz::animation::Animation>> l_ozz_animations;
 		l_ozz_animations.reserve(l_ozz_raw_animations.size());
 
 		std::transform
@@ -213,18 +215,18 @@ namespace black_cat
 			std::begin(l_ozz_raw_animations),
 			std::end(l_ozz_raw_animations),
 			std::back_inserter(l_ozz_animations),
-			[](const RawAnimation& p_ozz_raw_animation)
+			[](const ozz::animation::offline::RawAnimation& p_ozz_raw_animation)
 			{
 				bcAssert(p_ozz_raw_animation.Validate());
-				return AnimationBuilder()(p_ozz_raw_animation);
+				return ozz::animation::offline::AnimationBuilder()(p_ozz_raw_animation);
 			}
 		);
 
-		MemoryStream l_ozz_stream;		
+		ozz::io::MemoryStream l_ozz_stream;		
 		_write_ozz_structures(*l_ozz_skeleton, l_ozz_animations, l_ozz_stream);
 
 		const core::bc_unique_ptr<bcBYTE> l_buffer(static_cast<bcBYTE*>(bcAllocThrow(l_ozz_stream.Size(), core::bc_alloc_type::frame)));
-		l_ozz_stream.Seek(0, Stream::kSet);
+		l_ozz_stream.Seek(0, ozz::io::Stream::kSet);
 		l_ozz_stream.Read(l_buffer.get(), l_ozz_stream.Size());
 		
 		p_context.m_file.write(l_buffer.get(), l_ozz_stream.Size());
@@ -232,15 +234,23 @@ namespace black_cat
 
 	void bc_skinned_animation_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
-		core::bc_unique_ptr<Skeleton> l_ozz_skeleton;
-		core::bc_vector_frame<core::bc_unique_ptr<Animation>> l_ozz_animations;
-		MemoryStream l_ozz_stream;
+		ozz::io::MemoryStream l_ozz_stream;
 
 		l_ozz_stream.Write(p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
-		l_ozz_stream.Seek(0, Stream::kSet);
-		
-		_read_ozz_structures(*l_ozz_skeleton, l_ozz_animations, l_ozz_stream);
+		l_ozz_stream.Seek(0, ozz::io::Stream::kSet);
 
-		p_context.set_result(game::bc_skinned_animation("test", std::move(l_ozz_skeleton), l_ozz_animations));
+		game::bc_animation_skeleton l_skeleton;
+		core::bc_vector< game::bc_skeleton_animation > l_animations;
+
+		_read_ozz_structures(l_ozz_stream, l_skeleton, l_animations);
+
+		p_context.set_result
+		(
+			game::bc_skinned_animation
+			(
+				std::move(l_skeleton),
+				std::move(l_animations)
+			)
+		);
 	}
 }

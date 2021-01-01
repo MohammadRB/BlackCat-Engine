@@ -19,7 +19,7 @@ namespace black_cat
 	{
 		class bc_render_system;
 		class bc_scene;
-		struct bc_render_system_update_param;
+		struct bc_render_system_update_context;
 
 		struct _bc_render_pass_entry
 		{
@@ -55,13 +55,13 @@ namespace black_cat
 
 			void pass_initialize_resources(bc_render_system& p_render_system);
 
-			void pass_update(const bc_render_pass_update_param& p_param);
+			void pass_update(const bc_render_pass_update_context& p_param);
 
-			void pass_execute(const bc_render_pass_render_param& p_param);
+			void pass_execute(const bc_render_pass_render_context& p_param);
 
-			void before_reset(const bc_render_pass_reset_param& p_param);
+			void before_reset(const bc_render_pass_reset_context& p_param);
 
-			void after_reset(const bc_render_pass_reset_param& p_param);
+			void after_reset(const bc_render_pass_reset_context& p_param);
 
 			void pass_destroy(bc_render_system& p_render_system);
 

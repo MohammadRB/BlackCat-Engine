@@ -10,7 +10,10 @@ namespace black_cat
 	{
 		BC_PARAMETER(shader_function, "function");
 		BC_PARAMETER(mesh, "mesh");
+		BC_PARAMETER(mesh_skinned, "skinned");
 		BC_PARAMETER(sub_mesh, "sub_mesh");
+		BC_PARAMETER(auto_scale, "auto_scale");
+		BC_PARAMETER(animations, "animations");
 		BC_PARAMETER(child_actor, "childs");
 		BC_PARAMETER(heightmap, "heightmap");
 		BC_PARAMETER(texture_config, "config");

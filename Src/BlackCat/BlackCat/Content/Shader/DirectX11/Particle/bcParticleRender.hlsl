@@ -1,7 +1,7 @@
 // [11/25/2020 MRB]
 
-#include "..\bcRegister.hlsli"
-#include "..\bcHelper.hlsli"
+#include "../bcRegister.hlsli"
+#include "../bcHelper.hlsli"
 #include "bcParticle.hlsli"
 
 #define NUM_HORIZONTAL_SPRITE 4

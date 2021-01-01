@@ -19,7 +19,7 @@ namespace black_cat
 		public:
 			bc_sub_mesh();
 
-			bc_sub_mesh(bc_mesh_ptr p_mesh);
+			explicit bc_sub_mesh(bc_mesh_ptr p_mesh);
 
 			bc_sub_mesh(bc_mesh_ptr p_mesh, const bcCHAR* p_node);
 

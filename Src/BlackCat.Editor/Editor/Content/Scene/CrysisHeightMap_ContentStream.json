@@ -217,7 +217,8 @@
           "content_file": "content\\model\\xbot\\xbot.fbx",
           "content_parameter": {
             "high_detail_query_shape": true,
-            "auto_scale": 10.0
+            "auto_scale": 10.0,
+            "skinned": true 
           }
         },
         {

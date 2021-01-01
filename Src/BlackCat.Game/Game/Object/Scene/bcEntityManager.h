@@ -5,9 +5,9 @@
 #include "Core/bcConstant.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcUnorderedMap.h"
+#include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcDelegate.hpp"
-#include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcDataDrivenParameter.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
@@ -66,14 +66,14 @@ namespace black_cat
 			friend struct _bc_entity_component_callbacks;
 			using string_hash = std::hash< const bcCHAR* >;
 			using actor_component_create_delegate = core::bc_delegate< void(const bc_actor&) >;
-			using actor_component_initialize_delegate = core::bc_delegate< void(bc_actor&, const core::bc_data_driven_parameter&) >;
+			using actor_component_initialize_delegate = core::bc_delegate< void(bc_actor_component_initialize_context&) >;
 			using actor_controller_create_delegate = core::bc_delegate<core::bc_unique_ptr<bc_iactor_controller>()>;
 			using component_map_type = core::bc_unordered_map_program< bc_actor_component_hash, _bc_entity_component_callbacks >;
 			using entity_map_type = core::bc_unordered_map_program< string_hash::result_type, _bc_entity_data >;
 			using controller_map_type = core::bc_unordered_map_program< string_hash::result_type, actor_controller_create_delegate >;
 
 		public:
-			explicit bc_entity_manager(bc_actor_component_manager& p_actor_manager);
+			explicit bc_entity_manager(core::bc_content_stream_manager& p_content_stream_manager, bc_actor_component_manager& p_actor_manager);
 
 			bc_entity_manager(bc_entity_manager&&) noexcept = delete;
 
@@ -112,8 +112,9 @@ namespace black_cat
 			void _register_component_type(const bcCHAR* p_data_driven_name);
 
 			template< class TComponent >
-			void _actor_component_initialization(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) const;
+			void _actor_component_initialization(bc_actor_component_initialize_context& p_context) const;
 
+			core::bc_content_stream_manager& m_content_stream_manager;
 			bc_actor_component_manager& m_actor_component_manager;
 			component_map_type m_components;
 			entity_map_type m_entities;
@@ -199,13 +200,13 @@ namespace black_cat
 		}
 
 		template< class TComponent >
-		void bc_entity_manager::_actor_component_initialization(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) const
+		void bc_entity_manager::_actor_component_initialization(bc_actor_component_initialize_context& p_context) const
 		{
-			TComponent* l_component = p_actor.get_component< TComponent >();
+			TComponent* l_component = p_context.m_actor.get_component< TComponent >();
 
 			if (l_component)
 			{
-				l_component->initialize(p_actor, p_parameters);
+				l_component->initialize(bc_actor_component_initialize_context(p_context));
 			}
 		}
 	}

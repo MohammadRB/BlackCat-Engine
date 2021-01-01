@@ -133,27 +133,27 @@ namespace black_cat
 			return m_wind.is_set() ? &m_wind.get() : nullptr;
 		}
 
-		void bc_wind_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
+		void bc_wind_component::initialize(bc_actor_component_initialize_context& p_context)
 		{
-			const auto& l_wind_type = p_parameters.get_value_throw<core::bc_string>("type");
+			const auto& l_wind_type = p_context.m_parameters.get_value_throw<core::bc_string>("type");
 
 			if (l_wind_type == "direct")
 			{
-				const auto l_direction_x = p_parameters.get_value_throw< bcFLOAT >("direction_x");
-				const auto l_direction_y = p_parameters.get_value_throw< bcFLOAT >("direction_y");
-				const auto l_direction_z = p_parameters.get_value_throw< bcFLOAT >("direction_z");
-				const auto l_power = p_parameters.get_value_throw< bcFLOAT >("power");
+				const auto l_direction_x = p_context.m_parameters.get_value_throw< bcFLOAT >("direction_x");
+				const auto l_direction_y = p_context.m_parameters.get_value_throw< bcFLOAT >("direction_y");
+				const auto l_direction_z = p_context.m_parameters.get_value_throw< bcFLOAT >("direction_z");
+				const auto l_power = p_context.m_parameters.get_value_throw< bcFLOAT >("power");
 
 				const bc_direct_wind l_direct_wind({ l_direction_x, l_direction_y, l_direction_z }, l_power);
 				m_wind = bc_wind(l_direct_wind);
 			}
 			else if (l_wind_type == "point")
 			{
-				const auto l_position_x = p_parameters.get_value_throw< bcFLOAT >("position_x");
-				const auto l_position_y = p_parameters.get_value_throw< bcFLOAT >("position_y");
-				const auto l_position_z = p_parameters.get_value_throw< bcFLOAT >("position_z");
-				const auto l_power = p_parameters.get_value_throw< bcFLOAT >("power");
-				const auto l_radius = p_parameters.get_value_throw< bcFLOAT >("radius");
+				const auto l_position_x = p_context.m_parameters.get_value_throw< bcFLOAT >("position_x");
+				const auto l_position_y = p_context.m_parameters.get_value_throw< bcFLOAT >("position_y");
+				const auto l_position_z = p_context.m_parameters.get_value_throw< bcFLOAT >("position_z");
+				const auto l_power = p_context.m_parameters.get_value_throw< bcFLOAT >("power");
+				const auto l_radius = p_context.m_parameters.get_value_throw< bcFLOAT >("radius");
 
 				const bc_point_wind l_wind_point({ l_position_x, l_position_y, l_position_z }, l_power, l_radius);
 				m_wind = bc_wind(l_wind_point);
@@ -177,7 +177,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_wind_component::update(bc_actor& p_actor,const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_wind_component::update(bc_actor_component_update_content& p_context)
 		{
 		}
 	}	

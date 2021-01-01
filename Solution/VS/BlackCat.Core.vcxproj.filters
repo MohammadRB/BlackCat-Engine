@@ -210,9 +210,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcTemplateMetaType.h">
       <Filter>Core\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcUtility.h">
-      <Filter>Core\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\bcConstant.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -317,6 +314,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcRandom.h">
       <Filter>Core\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcIteratorAdapter.h">
+      <Filter>Core\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\bcUtility.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 
 #include "Game/GamePCH.h"
 
-#include "Core/Utility/bcUtility.h"
+#include "Core/bcUtility.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/bcException.h"
 #include "Game/Object/Scene/SceneGraph/bcOctalTreeSceneGraphNode.h"

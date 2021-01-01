@@ -35,6 +35,7 @@ namespace black_cat
 	namespace core
 	{
 		class bc_content_stream_manager;
+		class bc_query_manager;
 	}
 
 	namespace game
@@ -43,6 +44,7 @@ namespace black_cat
 		class bc_file_system;
 		class bc_render_thread_manager;
 		class bc_material_manager;
+		class bc_animation_manager;
 		class bc_light_manager;
 		class bc_particle_manager;
 		class bc_scene;
@@ -66,9 +68,10 @@ namespace black_cat
 			graphic::bc_device_output m_render_output;
 		};
 
-		struct bc_render_system_update_param
+		struct bc_render_system_update_context
 		{
-			bc_render_system_update_param(const core_platform::bc_clock::update_param& p_clock, const bc_icamera& p_camera)
+			bc_render_system_update_context(const core_platform::bc_clock::update_param& p_clock,
+				const bc_icamera& p_camera)
 				: m_clock(p_clock),
 				m_camera(p_camera)
 			{
@@ -78,14 +81,17 @@ namespace black_cat
 			const bc_icamera& m_camera;
 		};
 
-		struct bc_render_system_render_param
+		struct bc_render_system_render_context
 		{
-			bc_render_system_render_param(const core_platform::bc_clock::update_param& p_clock)
-				: m_clock(p_clock)
+			bc_render_system_render_context(const core_platform::bc_clock::update_param& p_clock,
+				core::bc_query_manager& p_query_manager)
+				: m_clock(p_clock),
+				m_query_manager(p_query_manager)
 			{
 			}
 
 			core_platform::bc_clock::update_param m_clock;
+			core::bc_query_manager& m_query_manager;
 		};
 
 		class BC_GAME_DLL bc_render_system : public core::bc_initializable< core::bc_content_stream_manager&, bc_render_system_parameter >
@@ -96,8 +102,8 @@ namespace black_cat
 			friend class _bc_compute_state_handle_deleter;
 
 		public:
-			using update_param = bc_render_system_update_param;
-			using render_param = bc_render_system_render_param;
+			using update_context = bc_render_system_update_context;
+			using render_context = bc_render_system_render_context;
 
 		public:
 			bc_render_system();
@@ -109,18 +115,34 @@ namespace black_cat
 			bc_render_system& operator=(bc_render_system&&) noexcept;
 
 			graphic::bc_device& get_device() noexcept;
+			
+			const graphic::bc_device& get_device() const noexcept;
 
 			bc_material_manager& get_material_manager() noexcept;
+			
+			const bc_material_manager& get_material_manager() const noexcept;
 
+			bc_animation_manager& get_animation_manager() noexcept;
+			
+			const bc_animation_manager& get_animation_manager() const noexcept;
+			
 			bc_light_manager& get_light_manager() noexcept;
+			
+			const bc_light_manager& get_light_manager() const noexcept;
 
 			bc_particle_manager& get_particle_manager() noexcept;
+			
+			const bc_particle_manager& get_particle_manager() const noexcept;
 
 			bc_shape_drawer& get_shape_drawer() noexcept;
+			
+			const bc_shape_drawer& get_shape_drawer() const noexcept;
 
 			const graphic::bc_constant_buffer_parameter& get_global_cbuffer() const;
 
 			const graphic::bc_constant_buffer_parameter& get_per_object_cbuffer() const;
+			
+			const graphic::bc_constant_buffer_parameter& get_per_skinned_object_cbuffer() const;
 
 			template< typename T >
 			T* get_render_pass();
@@ -133,9 +155,9 @@ namespace black_cat
 			
 			bool remove_render_pass(bcUINT p_location);
 
-			void update(const update_param& p_update_params);
+			void update(const update_context& p_update_params);
 
-			void render(const render_param& p_render_param);
+			void render(const render_context& p_render_param);
 
 			/**
 			 * \brief \b ThreadSafe
@@ -289,6 +311,7 @@ namespace black_cat
 			core::bc_unique_ptr< bc_render_thread_manager > m_thread_manager;
 			core::bc_unique_ptr< bc_material_manager > m_material_manager;
 			core::bc_unique_ptr< bc_render_pass_manager > m_render_pass_manager;
+			core::bc_unique_ptr< bc_animation_manager > m_animation_manager;
 			core::bc_unique_ptr< bc_light_manager > m_light_manager;
 			core::bc_unique_ptr< bc_particle_manager > m_particle_manager;
 			core::bc_unique_ptr< bc_shape_drawer > m_shape_drawer;
@@ -304,12 +327,37 @@ namespace black_cat
 			return m_device;
 		}
 
+		inline const graphic::bc_device& bc_render_system::get_device() const noexcept
+		{
+			return m_device;
+		}
+
 		inline bc_material_manager& bc_render_system::get_material_manager() noexcept
 		{
 			return *m_material_manager;
 		}
 
+		inline const bc_material_manager& bc_render_system::get_material_manager() const noexcept
+		{
+			return *m_material_manager;
+		}
+
+		inline bc_animation_manager& bc_render_system::get_animation_manager() noexcept
+		{
+			return *m_animation_manager;
+		}
+
+		inline const bc_animation_manager& bc_render_system::get_animation_manager() const noexcept
+		{
+			return *m_animation_manager;
+		}
+		
 		inline bc_light_manager& bc_render_system::get_light_manager() noexcept
+		{
+			return *m_light_manager;
+		}
+
+		inline const bc_light_manager& bc_render_system::get_light_manager() const noexcept
 		{
 			return *m_light_manager;
 		}
@@ -319,7 +367,17 @@ namespace black_cat
 			return *m_particle_manager;
 		}
 
+		inline const bc_particle_manager& bc_render_system::get_particle_manager() const noexcept
+		{
+			return *m_particle_manager;
+		}
+
 		inline bc_shape_drawer& bc_render_system::get_shape_drawer() noexcept
+		{
+			return *m_shape_drawer;
+		}
+
+		inline const bc_shape_drawer& bc_render_system::get_shape_drawer() const noexcept
 		{
 			return *m_shape_drawer;
 		}
@@ -334,6 +392,11 @@ namespace black_cat
 			return m_frame_renderer->get_per_object_cbuffer();
 		}
 
+		inline const graphic::bc_constant_buffer_parameter& bc_render_system::get_per_skinned_object_cbuffer() const
+		{
+			return m_frame_renderer->get_per_skinned_object_cbuffer();
+		}
+		
 		template< typename T >
 		T* bc_render_system::get_render_pass()
 		{

@@ -2,8 +2,8 @@
 
 #include "Game/GamePCH.h"
 
-#include "Core/Utility/bcUtility.h"
 #include "Core/Utility/bcRandom.h"
+#include "Core/bcUtility.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"

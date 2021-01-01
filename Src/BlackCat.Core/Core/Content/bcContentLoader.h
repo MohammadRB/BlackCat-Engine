@@ -69,7 +69,7 @@ namespace black_cat
 				}
 
 				bcAssert(m_result != nullptr);
-
+				
 				return static_cast<TContent*>(m_result.get());
 			}
 			
@@ -84,7 +84,7 @@ namespace black_cat
 				}
 
 				bcAssert(m_result != nullptr);
-
+				
 				return static_pointer_cast<TContent>(m_result);
 			}
 
@@ -132,7 +132,7 @@ namespace black_cat
 			{
 				m_result.reset(bc_content_loader_result(std::move(p_exception)));
 			}
-
+			
 			const bcECHAR* m_file_path;							// Used to give loader access to content and offline content file path
 			bc_stream m_file;									// Used to give loader access to content and offline content file
 			bc_unique_ptr<bcBYTE> m_file_buffer;				// Used to give loader access to file content

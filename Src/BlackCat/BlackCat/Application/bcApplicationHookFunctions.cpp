@@ -11,7 +11,7 @@
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcCounterValueManager.h"
-#include "Core/Utility/bcUtility.h"
+#include "Core/bcUtility.h"
 #include "Game/Application/bcEngineApplicationParameter.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Script/bcScriptSystem.h"
@@ -25,6 +25,7 @@
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
+#include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
 #include "Game/Object/Scene/Component/bcHierarchyComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
@@ -34,7 +35,7 @@
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
 #include "Game/Object/Scene/Component/Controller/bcExplosionActorController.h"
 #include "Game/Object/Scene/Component/Controller/bcFireActorController.h"
-#include "Game/Object/Animation/bcAnimation.h"
+#include "Game/Object/Animation/bcSkinnedAnimation.h"
 #include "BlackCat/Application/bcApplicationHookFuncations.h"
 #include "BlackCat/Loader/bcTextureLoader.h"
 #include "BlackCat/Loader/bcVertexShaderLoader.h"
@@ -81,7 +82,7 @@ namespace black_cat
 			(
 				p_parameters.m_engine_parameters.m_thread_manager_thread_count,
 				p_parameters.m_engine_parameters.m_thread_manager_reserved_thread_count
-				)
+			)
 		);
 		core::bc_register_service(core::bc_make_service<core::bc_event_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_query_manager>());
@@ -89,7 +90,7 @@ namespace black_cat
 		core::bc_register_service(core::bc_make_service<core::bc_content_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
 		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>());
-		core::bc_register_service(core::bc_make_service<game::bc_entity_manager>(*core::bc_get_service<game::bc_actor_component_manager>()));
+		core::bc_register_service(core::bc_make_service<game::bc_entity_manager>(*core::bc_get_service<core::bc_content_stream_manager>(), *core::bc_get_service<game::bc_actor_component_manager>()));
 		core::bc_register_service(core::bc_make_service<game::bc_game_system>());
 	}
 
@@ -104,7 +105,7 @@ namespace black_cat
 		core::bc_register_loader< graphic::bc_compute_shader_content, bc_compute_shader_loader >("compute_shader", core::bc_make_loader< bc_compute_shader_loader >());
 		core::bc_register_loader< game::bc_mesh_collider, bc_mesh_collider_loader >("mesh_collider", core::bc_make_loader< bc_mesh_collider_loader >(true));
 		core::bc_register_loader< game::bc_mesh, bc_mesh_loader >("mesh", core::bc_make_loader< bc_mesh_loader >());
-		core::bc_register_loader< game::bc_animation, bc_skinned_animation_loader >("animation", core::bc_make_loader< bc_skinned_animation_loader >());
+		core::bc_register_loader< game::bc_skinned_animation, bc_skinned_animation_loader >("animation", core::bc_make_loader< bc_skinned_animation_loader >());
 		core::bc_register_loader< game::bc_scene, bc_scene_loader >("scene", core::bc_make_loader< bc_scene_loader >(std::move(p_parameters.m_app_parameters.m_scene_graph_factory)));
 	}
 
@@ -115,6 +116,7 @@ namespace black_cat
 			game::bc_component_register< game::bc_mediate_component >("mediate"),
 			game::bc_component_register< game::bc_simple_mesh_component >("simple_mesh"),
 			game::bc_component_register< game::bc_vegetable_mesh_component >("vegetable_mesh"),
+			game::bc_component_register< game::bc_skinned_mesh_component >("skinned_mesh"),
 			game::bc_component_register< game::bc_hierarchy_component >("hierarchy"),
 			game::bc_component_register< game::bc_rigid_static_component >("rigid_static"),
 			game::bc_component_register< game::bc_rigid_dynamic_component >("rigid_dynamic"),

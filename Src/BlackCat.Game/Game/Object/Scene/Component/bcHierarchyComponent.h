@@ -27,16 +27,16 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			const core::bc_vector< bc_actor >& get_actors() const;
+			const core::bc_vector_movable< bc_actor >& get_actors() const;
 
 			void add_actor(const bc_actor& p_actor);
 
 			void remove_actor(const bc_actor& p_actor);
 
-			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
+			void initialize(bc_actor_component_initialize_context& p_context) override;
 
 		private:
-			core::bc_vector< bc_actor > m_actors;
+			core::bc_vector_movable< bc_actor > m_actors;
 		};
 	}
 }

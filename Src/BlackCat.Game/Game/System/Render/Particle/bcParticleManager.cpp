@@ -6,7 +6,7 @@
 #include "Core/Math/bcMatrix3f.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Content/bcContentStreamManager.h"
-#include "Core/Utility/bcUtility.h"
+#include "Core/bcUtility.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"

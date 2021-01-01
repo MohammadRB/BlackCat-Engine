@@ -20,10 +20,10 @@ namespace black_cat
 			virtual void initialize(bc_actor& p_actor);
 
 			virtual void added_to_scene(bc_actor& p_actor, bc_scene& p_scene);
-			
-			virtual void handle_event(bc_actor& p_actor, const bc_actor_event& p_event);
-			
+						
 			virtual void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock);
+
+			virtual void handle_event(bc_actor& p_actor, const bc_actor_event& p_event);
 		};
 
 		inline bc_iactor_controller::~bc_iactor_controller() = default;
@@ -36,11 +36,11 @@ namespace black_cat
 		{
 		}
 
-		inline void bc_iactor_controller::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		inline void bc_iactor_controller::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock)
 		{
 		}
-
-		inline void bc_iactor_controller::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock)
+		
+		inline void bc_iactor_controller::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
 		}
 	}

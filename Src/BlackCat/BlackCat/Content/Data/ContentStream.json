@@ -93,6 +93,12 @@
           "content_parameter": { "function": "gbuffer_vs" }
         },
         {
+          "content_title": "gbuffer_skinned_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "content\\shader\\directx11\\deferredrendering\\bcSkinnedMeshGBuffer.hlsl",
+          "content_parameter": { "function": "gbuffer_skinned_vs" }
+        },
+        {
           "content_title": "gbuffer_ps",
           "content_loader": "pixel_shader",
           "content_file": "content\\shader\\directx11\\deferredrendering\\bcMeshGBuffer.hlsl",

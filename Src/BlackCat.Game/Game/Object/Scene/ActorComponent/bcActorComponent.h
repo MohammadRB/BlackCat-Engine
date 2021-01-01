@@ -13,12 +13,72 @@
 
 namespace black_cat
 {
+	namespace core
+	{
+		class bc_content_stream_manager;
+	}
+	
 	namespace game
 	{
 		class bc_actor_component_manager;
 		class bc_shape_drawer;
+		
 		using bc_actor_component_hash = bcSIZE;
 		using bc_actor_component_index = bcINT32;
+
+		struct bc_actor_component_initialize_context
+		{
+			bc_actor_component_initialize_context(bc_actor& p_actor, 
+				const core::bc_data_driven_parameter& p_parameters,
+				const core::bc_content_stream_manager& p_stream_manager)
+				: m_actor(p_actor),
+				m_parameters(p_parameters),
+				m_stream_manager(p_stream_manager)
+			{
+			}
+
+			bc_actor& m_actor;
+			const core::bc_data_driven_parameter& m_parameters;
+			const core::bc_content_stream_manager& m_stream_manager;
+		};
+
+		struct bc_actor_component_load_context
+		{
+			bc_actor_component_load_context(bc_actor& p_actor,
+				const core::bc_json_key_value& p_parameters)
+				: m_actor(p_actor),
+				m_parameters(p_parameters)
+			{
+			}
+
+			bc_actor& m_actor;
+			const core::bc_json_key_value& m_parameters;
+		};
+
+		struct bc_actor_component_write_context
+		{
+			bc_actor_component_write_context(bc_actor& p_actor,
+				core::bc_json_key_value& p_parameters)
+				: m_actor(p_actor),
+				m_parameters(p_parameters)
+			{
+			}
+
+			bc_actor& m_actor;
+			core::bc_json_key_value& m_parameters;
+		};
+
+		struct bc_actor_component_update_content
+		{
+			bc_actor_component_update_content(bc_actor& p_actor,
+				const core_platform::bc_clock::update_param& p_clock): m_actor(p_actor),
+				m_clock(p_clock)
+			{
+			}
+
+			bc_actor& m_actor;
+			const core_platform::bc_clock::update_param& m_clock;
+		};
 		
 		class BC_GAME_DLL bc_iactor_component
 		{
@@ -35,18 +95,19 @@ namespace black_cat
 			/**
 			 * \brief Initialize component data members that are shared between instances of this component.
 			 * In other word data members that act like entity template data.
-			 * \param p_actor
-			 * \param p_parameters 
+			 * \param p_context
+			 * \param p_parameters
+			 * \param p_stream_manager 
 			 */
-			virtual void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters);
+			virtual void initialize(bc_actor_component_initialize_context& p_context);
 
-			virtual void load_instance(bc_actor& p_actor, const core::bc_json_key_value& p_parameters);
+			virtual void load_instance(bc_actor_component_load_context& p_context);
 
-			virtual void write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters);
+			virtual void write_instance(bc_actor_component_write_context& p_context);
+
+			virtual void update(bc_actor_component_update_content& p_context);
 
 			virtual void handle_event(bc_actor& p_actor, const bc_actor_event& p_event);
-
-			virtual void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock);
 
 			virtual void debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer);
 			
@@ -70,26 +131,26 @@ namespace black_cat
 			return m_index;
 		}
 
-		inline void bc_iactor_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
+		inline void bc_iactor_component::initialize(bc_actor_component_initialize_context& p_context)
 		{
 		}
 
-		inline void bc_iactor_component::load_instance(bc_actor& p_actor, const core::bc_json_key_value& p_parameters)
+		inline void bc_iactor_component::load_instance(bc_actor_component_load_context& p_context)
 		{
 		}
 
-		inline void bc_iactor_component::write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters)
+		inline void bc_iactor_component::write_instance(bc_actor_component_write_context& p_context)
+		{
+		}
+
+		inline void bc_iactor_component::update(bc_actor_component_update_content& p_context)
 		{
 		}
 
 		inline void bc_iactor_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
 		}
-
-		inline void bc_iactor_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock)
-		{
-		}
-
+		
 		inline void bc_iactor_component::debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer)
 		{
 		}

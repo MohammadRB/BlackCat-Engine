@@ -35,7 +35,7 @@ namespace black_cat
 
 			core::bc_matrix4f get_world_transform() const;
 
-			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
+			void initialize(bc_actor_component_initialize_context& p_context) override;
 
 			void render(bc_render_state_buffer& p_buffer) const override;
 
@@ -44,7 +44,7 @@ namespace black_cat
 			
 		private:
 			bc_sub_mesh m_sub_mesh;
-			bc_sub_mesh_transformation m_mesh_part_transformation;
+			bc_sub_mesh_transformation m_sub_mesh_transformation;
 		};
 
 		inline const bc_sub_mesh& bc_mesh_component::get_mesh() const
@@ -54,7 +54,7 @@ namespace black_cat
 
 		inline const bc_sub_mesh_transformation& bc_mesh_component::get_mesh_transformation() const
 		{
-			return m_mesh_part_transformation;
+			return m_sub_mesh_transformation;
 		}
 	}
 }

@@ -14,6 +14,11 @@
 
 namespace black_cat
 {
+	namespace core
+	{
+		class bc_query_manager;
+	}
+	
 	namespace game
 	{
 		class bc_icamera;
@@ -22,9 +27,10 @@ namespace black_cat
 		class bc_render_pass_manager;
 		class bc_render_state_buffer;
 
-		struct bc_frame_renderer_update_param
+		struct bc_frame_renderer_update_context
 		{
-			bc_frame_renderer_update_param(const core_platform::bc_clock::update_param& p_clock, const bc_camera_instance& p_camera)
+			bc_frame_renderer_update_context(const core_platform::bc_clock::update_param& p_clock, 
+				const bc_camera_instance& p_camera)
 				: m_clock(p_clock),
 				m_camera(p_camera)
 			{
@@ -34,20 +40,28 @@ namespace black_cat
 			bc_camera_instance m_camera;
 		};
 
-		struct bc_frame_renderer_render_param
+		struct bc_frame_renderer_render_context
 		{
-			bc_frame_renderer_render_param(const core_platform::bc_clock::update_param& p_clock, bc_render_system& p_render_system)
+			bc_frame_renderer_render_context(const core_platform::bc_clock::update_param& p_clock,
+				core::bc_query_manager& p_query_manager,
+				bc_render_system& p_render_system)
 				: m_clock(p_clock),
+				m_query_manager(p_query_manager),
 				m_render_system(p_render_system)
 			{
 			}
 
 			core_platform::bc_clock::update_param m_clock;
+			core::bc_query_manager& m_query_manager;
 			bc_render_system& m_render_system;
 		};
 		
 		class BC_GAME_DLL bc_frame_renderer
 		{
+		public:
+			using update_context = bc_frame_renderer_update_context;
+			using render_context = bc_frame_renderer_render_context;
+			
 		public:
 			bc_frame_renderer(graphic::bc_device& p_device, bc_render_thread_manager& p_thread_manager, bc_render_pass_manager& p_render_pass_manager) noexcept;
 
@@ -60,6 +74,8 @@ namespace black_cat
 			const graphic::bc_constant_buffer_parameter& get_global_cbuffer() const noexcept;
 
 			const graphic::bc_constant_buffer_parameter& get_per_object_cbuffer() const noexcept;
+			
+			const graphic::bc_constant_buffer_parameter& get_per_skinned_object_cbuffer() const noexcept;
 
 			bc_render_thread_manager& get_thread_manager() noexcept;
 
@@ -77,9 +93,11 @@ namespace black_cat
 
 			void render_buffer(bc_render_thread& p_render_thread, const bc_render_state_buffer& p_buffer, const bc_camera_instance& p_camera);
 			
-			void update(const bc_frame_renderer_update_param& p_update_param);
+			void render_skinned_buffer(bc_render_thread& p_render_thread, const bc_render_state_buffer& p_buffer, const bc_camera_instance& p_camera);
+			
+			void update(const update_context& p_update_param);
 
-			void render(const bc_frame_renderer_render_param& p_render_param);
+			void render(const render_context& p_render_param);
 
 		private:
 			bc_render_thread_manager* m_thread_manager;
@@ -95,5 +113,25 @@ namespace black_cat
 			core_platform::bc_atomic<bc_camera_instance*> m_prev_camera;
 			core_platform::bc_atomic<bc_camera_instance*> m_camera;
 		};
+
+		inline const graphic::bc_constant_buffer_parameter& bc_frame_renderer::get_global_cbuffer() const noexcept
+		{
+			return m_global_cbuffer_parameter;
+		}
+
+		inline const graphic::bc_constant_buffer_parameter& bc_frame_renderer::get_per_object_cbuffer() const noexcept
+		{
+			return m_per_object_cbuffer_parameter;
+		}
+
+		inline const graphic::bc_constant_buffer_parameter& bc_frame_renderer::get_per_skinned_object_cbuffer() const noexcept
+		{
+			return m_per_object_cbuffer_parameter;
+		}
+
+		inline bc_render_thread_manager& bc_frame_renderer::get_thread_manager() noexcept
+		{
+			return *m_thread_manager;
+		}
 	}
 }

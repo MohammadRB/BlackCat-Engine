@@ -100,11 +100,11 @@ namespace black_cat
 
 			const bc_wind* get_wind() const noexcept;
 
-			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
+			void initialize(bc_actor_component_initialize_context& p_context) override;
 
 			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 
-			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			void update(bc_actor_component_update_content& p_context) override;
 
 		private:			
 			core::bc_nullable<bc_wind> m_wind;

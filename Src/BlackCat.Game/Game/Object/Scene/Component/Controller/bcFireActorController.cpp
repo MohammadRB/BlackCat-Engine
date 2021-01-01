@@ -2,7 +2,7 @@
 
 #include "Game/GamePCH.h"
 
-#include "Core/Utility/bcUtility.h"
+#include "Core/bcUtility.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"

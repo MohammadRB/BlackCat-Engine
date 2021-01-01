@@ -45,13 +45,13 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
-		void bc_height_map_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
+		void bc_height_map_component::initialize(bc_actor_component_initialize_context& p_context)
 		{
-			auto& l_height_map_name = p_parameters.get_value_throw< core::bc_string >(constant::g_param_heightmap);
-			m_height_map = core::bc_get_service< core::bc_content_stream_manager >()->find_content_throw(l_height_map_name.c_str());
+			auto& l_height_map_name = p_context.m_parameters.get_value_throw< core::bc_string >(constant::g_param_heightmap);
+			m_height_map = p_context.m_stream_manager.find_content_throw(l_height_map_name.c_str());
 		}
 
-		void bc_height_map_component::write_instance(bc_actor& p_actor, core::bc_json_key_value& p_parameters)
+		void bc_height_map_component::write_instance(bc_actor_component_write_context& p_context)
 		{
 			auto* l_content_manager = core::bc_get_service< core::bc_content_manager >();
 			l_content_manager->save(*m_height_map);

@@ -4,6 +4,7 @@
 
 #include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatformImp/Utility/bcHardwareInfo.h"
+#include "Core/Math/bcMatrix4f.h"
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Messaging/Event/bcEventManager.h"
@@ -12,9 +13,6 @@
 #include "Core/bcEvent.h"
 #include "Platform/bcEvent.h"
 #include "Graphic/bcEvent.h"
-#include "Core/Math/bcMatrix4f.h"
-#include "GraphicImp/bcRenderApiInfo.h"
-#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/State/bcRenderState.h"
@@ -25,6 +23,7 @@
 #include "Game/System/Render/Light/bcLightManager.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/Object/Animation/bcAnimationManager.h"
 
 namespace black_cat
 {
@@ -58,6 +57,7 @@ namespace black_cat
 			m_thread_manager = std::move(p_other.m_thread_manager);
 			m_material_manager = std::move(p_other.m_material_manager);
 			m_render_pass_manager = std::move(p_other.m_render_pass_manager);
+			m_animation_manager = std::move(p_other.m_animation_manager);
 			m_light_manager = std::move(p_other.m_light_manager);
 			m_particle_manager = std::move(p_other.m_particle_manager);
 			m_shape_drawer = std::move(p_other.m_shape_drawer);
@@ -73,7 +73,7 @@ namespace black_cat
 
 			return *this;
 		}
-		
+
 		bool bc_render_system::remove_render_pass(bcUINT p_location)
 		{
 			bc_irender_pass* l_pass = m_render_pass_manager->get_pass(p_location);
@@ -88,15 +88,15 @@ namespace black_cat
 			return m_render_pass_manager->remove_pass(p_location);
 		}
 
-		void bc_render_system::update(const update_param& p_update_params)
+		void bc_render_system::update(const update_context& p_update_params)
 		{
 			m_particle_manager->update(p_update_params.m_clock);
-			m_frame_renderer->update(bc_frame_renderer_update_param(p_update_params.m_clock, bc_camera_instance(p_update_params.m_camera)));
+			m_frame_renderer->update(bc_frame_renderer_update_context(p_update_params.m_clock, bc_camera_instance(p_update_params.m_camera)));
 		}
 
-		void bc_render_system::render(const render_param& p_render_param)
+		void bc_render_system::render(const render_context& p_render_param)
 		{
-			m_frame_renderer->render(bc_frame_renderer_render_param(p_render_param.m_clock, *this));
+			m_frame_renderer->render(bc_frame_renderer_render_context(p_render_param.m_clock, p_render_param.m_query_manager, *this));
 
 			m_device.present();
 		}
@@ -421,6 +421,7 @@ namespace black_cat
 			m_thread_manager = core::bc_make_unique< bc_render_thread_manager >(core::bc_alloc_type::program , *this, std::max(1U, l_hw_info.proccessor_count / 2));
 			m_material_manager = core::bc_make_unique< bc_material_manager >(core::bc_alloc_type::program, *m_content_stream, *this);
 			m_render_pass_manager = core::bc_make_unique< bc_render_pass_manager >(core::bc_alloc_type::program);
+			m_animation_manager = core::bc_make_unique< bc_animation_manager >(core::bc_alloc_type::program);
 			m_light_manager = core::bc_make_unique< bc_light_manager >(core::bc_alloc_type::program);
 			m_particle_manager = core::bc_make_unique< bc_particle_manager >(core::bc_alloc_type::program, m_device, *m_content_stream);
 			m_shape_drawer = core::bc_make_unique< bc_shape_drawer >(core::bc_alloc_type::program);
@@ -543,7 +544,7 @@ namespace black_cat
 			{
 				auto& l_device_reset_event = static_cast<graphic::bc_app_event_device_reset&>(p_event);
 				
-				m_render_pass_manager->before_reset(bc_render_pass_reset_param
+				m_render_pass_manager->before_reset(bc_render_pass_reset_context
 				(
 					*this, 
 					*l_device_reset_event.m_device, 
@@ -553,7 +554,7 @@ namespace black_cat
 
 				m_device.resize_back_buffer(l_device_reset_event.m_new_parameters.m_width, l_device_reset_event.m_new_parameters.m_height);
 				
-				m_render_pass_manager->after_reset(bc_render_pass_reset_param
+				m_render_pass_manager->after_reset(bc_render_pass_reset_context
 				(
 					*this, 
 					*l_device_reset_event.m_device, 

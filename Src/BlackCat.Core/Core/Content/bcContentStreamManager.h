@@ -12,7 +12,6 @@
 #include "Core/Content/bcContent.h"
 #include "Core/Content/bcContentManager.h"
 #include "Core/Utility/bcServiceManager.h"
-#include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcDataDrivenParameter.h"
 #include "Core/Utility/bcDelegate.h"
 

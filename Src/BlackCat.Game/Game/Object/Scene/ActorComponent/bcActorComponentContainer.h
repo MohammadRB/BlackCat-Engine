@@ -195,7 +195,7 @@ namespace black_cat
 				{
 					bc_actor l_actor = p_manager.component_get_actor< TComponent >(l_component.get());
 					
-					l_component->update(l_actor, p_clock);
+					l_component->update(bc_actor_component_update_content(l_actor, p_clock));
 				}
 			}
 		}

@@ -15,6 +15,7 @@ namespace black_cat
 	{
 		/**
 		 * \brief This class uses frame memory
+		 * TODO use iterator buffer
 		 */
 		class bc_scene_graph_buffer
 		{

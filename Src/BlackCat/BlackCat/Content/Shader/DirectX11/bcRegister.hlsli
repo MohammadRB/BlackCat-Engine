@@ -111,7 +111,7 @@
 #define BC_COMPUTE_STATE_CB7 b7
 
 // Bound to vertex, hull, domain, geometry, pixel and compute shader
-cbuffer g_cb_global_state				: register(BC_RENDER_PASS_STATE_CB0)
+cbuffer g_cb_global_state					: register(BC_RENDER_PASS_STATE_CB0)
 {
     float4x4 g_view							: packoffset(c0);
     float4x4 g_projection					: packoffset(c4);
@@ -135,10 +135,11 @@ cbuffer g_cb_global_state				: register(BC_RENDER_PASS_STATE_CB0)
 }
 
 // Bound to vertex, hull, domain shader
-cbuffer g_cb_object_state				: register(BC_RENDER_STATE_CB0)
+cbuffer g_cb_object_state					: register(BC_RENDER_STATE_CB0)
 {
-	float4x4 g_world_view_projection	: packoffset(c0);
-    float4x4 g_world					: packoffset(c4);
+	float4x4 g_world_view_projection		: packoffset(c0);
+    float4x4 g_world						: packoffset(c4);
+	float4x4 g_bone_transforms[70]		: packoffset(c8);
 }
 
 static const float3 g_gravity_dir = float3(0, -1, 0);

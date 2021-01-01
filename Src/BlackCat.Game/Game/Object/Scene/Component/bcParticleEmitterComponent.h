@@ -28,14 +28,14 @@ namespace black_cat
 			bc_actor get_actor() const noexcept override;
 
 			bc_external_particle_emitter* get_emitters() noexcept;
-			
-			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
 
 			void spawn_emitter();
-			
+
 			void spawn_emitter(const bcCHAR* p_name);
-			
+
 			void add_emitter(const bc_particle_builder& p_builder);
+			
+			void initialize(bc_actor_component_initialize_context& p_context) override;
 
 			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 			

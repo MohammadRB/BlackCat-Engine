@@ -37,33 +37,33 @@ namespace black_cat
 			m_controller->initialize(l_actor);
 		}
 
-		void bc_mediate_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
+		void bc_mediate_component::initialize(bc_actor_component_initialize_context& p_context)
 		{
 		}
-
-		void bc_mediate_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
-		{
-			_handle_event(p_actor, p_event);
-			if(m_controller)
-			{
-				m_controller->handle_event(p_actor, p_event);
-			}
-		}
-		
-		void bc_mediate_component::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock)
+				
+		void bc_mediate_component::update(bc_actor_component_update_content& p_context)
 		{
 			if(m_scene && m_bound_box_changed)
 			{
-				m_scene->update_actor(p_actor);
+				m_scene->update_actor(p_context.m_actor);
 				m_bound_box_changed = false;
 			}
 
 			if(m_controller)
 			{
-				m_controller->update(p_actor, p_clock);
+				m_controller->update(p_context.m_actor, p_context.m_clock);
 			}
 		}
 
+		void bc_mediate_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		{
+			_handle_event(p_actor, p_event);
+			if (m_controller)
+			{
+				m_controller->handle_event(p_actor, p_event);
+			}
+		}
+		
 		void bc_mediate_component::debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer)
 		{
 			p_shape_drawer.draw_wired_box(m_bound_box);

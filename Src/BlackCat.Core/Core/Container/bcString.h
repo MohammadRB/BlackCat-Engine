@@ -2193,6 +2193,20 @@ namespace std
 	};
 
 	template<>
+	struct equal_to< const black_cat::bcCHAR* >
+	{
+	public:
+		using first_argument_type = const black_cat::bcCHAR*;
+		using second_argument_type = const black_cat::bcCHAR*;
+		using result_type = bool;
+
+		result_type operator ()(const first_argument_type& p_arg1, const second_argument_type& p_arg2) const
+		{
+			return std::strcmp(p_arg1, p_arg2) == 0;
+		}
+	};
+
+	template<>
 	struct hash< const black_cat::bcWCHAR* >
 	{
 	public:
@@ -2202,6 +2216,20 @@ namespace std
 		result_type operator ()(const argument_type& p_arg) const noexcept
 		{
 			return black_cat::core::bc_wstring_hash(p_arg);
+		}
+	};
+
+	template<>
+	struct equal_to< const black_cat::bcWCHAR* >
+	{
+	public:
+		using first_argument_type = const black_cat::bcWCHAR*;
+		using second_argument_type = const black_cat::bcWCHAR*;
+		using result_type = bool;
+
+		result_type operator ()(const first_argument_type& p_arg1, const second_argument_type& p_arg2) const
+		{
+			return std::wcscmp(p_arg1, p_arg2) == 0;
 		}
 	};
 

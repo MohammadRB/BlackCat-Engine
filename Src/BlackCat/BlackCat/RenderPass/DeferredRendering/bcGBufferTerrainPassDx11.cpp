@@ -74,14 +74,14 @@ namespace black_cat
 			l_back_buffer_texture.get_sample_count()
 		);
 
-		after_reset(game::bc_render_pass_reset_param(p_render_system, l_device, l_old_parameters, l_new_parameters));
+		after_reset(game::bc_render_pass_reset_context(p_render_system, l_device, l_old_parameters, l_new_parameters));
 	}
 
-	void bc_gbuffer_terrain_pass_dx11::update(const game::bc_render_pass_update_param& p_update_param)
+	void bc_gbuffer_terrain_pass_dx11::update(const game::bc_render_pass_update_context& p_update_param)
 	{
 	}
 
-	void bc_gbuffer_terrain_pass_dx11::initialize_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_terrain_pass_dx11::initialize_frame(const game::bc_render_pass_render_context& p_param)
 	{
 		core::bc_vector<game::bc_height_map_ptr> l_height_maps;
 		
@@ -134,7 +134,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_gbuffer_terrain_pass_dx11::execute(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_terrain_pass_dx11::execute(const game::bc_render_pass_render_context& p_param)
 	{
 		game::bc_icamera::extend l_camera_extends = p_param.m_render_camera.get_extends();
 
@@ -157,11 +157,11 @@ namespace black_cat
 		p_param.m_render_thread.finish();
 	}
 
-	void bc_gbuffer_terrain_pass_dx11::cleanup_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_terrain_pass_dx11::cleanup_frame(const game::bc_render_pass_render_context& p_param)
 	{
 	}
 
-	void bc_gbuffer_terrain_pass_dx11::before_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_gbuffer_terrain_pass_dx11::before_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 		if
 		(
@@ -173,7 +173,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_gbuffer_terrain_pass_dx11::after_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_gbuffer_terrain_pass_dx11::after_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 		if
 		(

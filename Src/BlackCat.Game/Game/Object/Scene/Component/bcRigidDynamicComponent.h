@@ -28,7 +28,7 @@ namespace black_cat
 
 			physics::bc_rigid_dynamic get_dynamic_body() const noexcept;
 
-			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
+			void initialize(bc_actor_component_initialize_context& p_context) override;
 
 			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
 
