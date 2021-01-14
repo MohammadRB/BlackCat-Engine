@@ -169,7 +169,7 @@ namespace black_cat
 							_remove_actor(std::get<bc_actor>(p_actor));
 							break;
 						default:
-							bcAssert(false);
+							BC_ASSERT(false);
 						}
 					},
 					[](bool) {}
@@ -227,7 +227,7 @@ namespace black_cat
 			const bool l_removed = m_scene_graph.remove_actor(p_actor);
 			p_actor.destroy();
 
-			bcAssert(l_removed);
+			BC_ASSERT(l_removed);
 		}
 	}
 }

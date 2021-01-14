@@ -44,8 +44,6 @@ namespace black_cat
 
 			size_t size() const;
 
-		protected:
-
 		private:
 			colliders_container_t m_mesh_colliders;
 		};

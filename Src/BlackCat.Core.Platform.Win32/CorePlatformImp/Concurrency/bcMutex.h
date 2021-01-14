@@ -129,7 +129,7 @@ namespace black_cat
 #ifdef BC_DEBUG
 			if (m_pack.m_flag.test_and_set(bc_memory_order::relaxed))
 			{
-				bcAssert(false, "Recursive call on non-recursive mutex");
+				BC_ASSERT(false, "Recursive call on non-recursive mutex");
 			}
 #endif
 		}
@@ -154,7 +154,7 @@ namespace black_cat
 			{
 				if (m_pack.m_flag.test_and_set(bc_memory_order::relaxed))
 				{
-					bcAssert(false, "Recursive call on non-recursive mutex");
+					BC_ASSERT(false, "Recursive call on non-recursive mutex");
 				}
 			}
 #endif
@@ -303,7 +303,7 @@ namespace black_cat
 		template<>
 		inline bool bc_platform_shared_mutex< bc_platform::win32 >::try_lock_for(bcUINT64 p_nano)
 		{
-			bcAssert(false);
+			BC_ASSERT(false);
 
 			return false;
 		}
@@ -311,7 +311,7 @@ namespace black_cat
 		template<>
 		inline bool bc_platform_shared_mutex< bc_platform::win32 >::try_lock_shared_for(bcUINT64 p_nano)
 		{
-			bcAssert(false);
+			BC_ASSERT(false);
 
 			return false;
 		}
@@ -338,7 +338,7 @@ namespace black_cat
 		{
 #ifdef BC_DEBUG
 			// only those thread that acquired the lock can unlock it
-			bcAssert(m_pack.m_thread_id.load(bc_memory_order::relaxed) == bc_thread::current_thread_id());
+			BC_ASSERT(m_pack.m_thread_id.load(bc_memory_order::relaxed) == bc_thread::current_thread_id());
 			m_pack.m_thread_id.store(0U, bc_memory_order::relaxed);
 #endif
 			m_pack.m_flag.store(0, bc_memory_order::release);

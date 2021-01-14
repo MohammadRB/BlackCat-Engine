@@ -6,7 +6,10 @@
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/System/bcGameSystem.h"
+
+#include "Game/Object/Animation/bcAnimationManager.h"
 #include "Game/Query/bcQueryContext.h"
+#include "Render/Particle/bcParticleManager.h"
 
 namespace black_cat
 {
@@ -49,9 +52,11 @@ namespace black_cat
 				return;
 			}
 			
-			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
-			auto* l_actor_component_manager = core::bc_get_service<bc_actor_component_manager>();
-			auto* l_query_manager = core::bc_get_service< core::bc_query_manager >();
+			auto& l_event_manager = *core::bc_get_service<core::bc_event_manager>();
+			auto& l_actor_component_manager = *core::bc_get_service<bc_actor_component_manager>();
+			auto& l_query_manager = *core::bc_get_service< core::bc_query_manager >();
+			auto& l_animation_manager = m_render_system.get_animation_manager();
+			auto& l_particle_manager = m_render_system.get_particle_manager();
 			
 			m_input_system.update(p_clock);
 			m_physics_system.update(p_clock);
@@ -60,17 +65,23 @@ namespace black_cat
 				m_scene->update_px(m_physics_system, p_clock);
 			}
 
-			l_event_manager->process_event_queue(p_clock);
-			l_actor_component_manager->update_actors(p_clock);
-			l_query_manager->process_query_queue(p_clock);
+			l_event_manager.process_event_queue(p_clock);
+			l_actor_component_manager.update_actors(p_clock);
+			l_query_manager.process_query_queue(p_clock);
 
 			if(m_scene)
 			{
 				m_scene->update_graph();
 			}
+
+			const auto l_animations_task = l_animation_manager.run_scheduled_jobs(p_clock);
 			
+			l_particle_manager.update(p_clock);
 			m_script_system.update(p_clock);
 			m_console->update(p_clock);
+
+			l_animations_task.wait();
+			
 			m_render_system.update(bc_render_system::update_context(p_clock, m_input_system.get_camera()));
 		}
 		

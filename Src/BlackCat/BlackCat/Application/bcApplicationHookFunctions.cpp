@@ -33,8 +33,9 @@
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Object/Scene/Component/bcWindComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
-#include "Game/Object/Scene/Component/Controller/bcExplosionActorController.h"
-#include "Game/Object/Scene/Component/Controller/bcFireActorController.h"
+#include "Game/Object/Scene/ActorController/bcFireActorController.h"
+#include "Game/Object/Scene/ActorController/bcExplosionActorController.h"
+#include "Game/Object/Scene/ActorController/bcXBotController.h"
 #include "Game/Object/Animation/bcSkinnedAnimation.h"
 #include "BlackCat/Application/bcApplicationHookFuncations.h"
 #include "BlackCat/Loader/bcTextureLoader.h"
@@ -134,7 +135,8 @@ namespace black_cat
 		game::bc_register_actor_controller_types
 		(
 			game::bc_actor_controller_register< game::bc_fire_actor_controller >("fire"),
-			game::bc_actor_controller_register< game::bc_explosion_actor_controller >("explosion")
+			game::bc_actor_controller_register< game::bc_explosion_actor_controller >("explosion"),
+			game::bc_actor_controller_register< game::bc_xbot_controller >("xbot")
 		);
 	}
 
@@ -225,7 +227,7 @@ namespace black_cat
 		const bcUINT32 l_leak_counts = core::bc_memory_manager::get().report_memory_leaks();
 		if (l_leak_counts > 0)
 		{
-			bcAssert(false);
+			BC_ASSERT(false);
 		}
 #endif
 

@@ -22,8 +22,8 @@ struct bc_vs_input
 	float2 m_texcoord				: TEXCOORD0;
 	float3 m_normal					: NORMAL0;
 	float3 m_tangent				: TANGENT0;
-	int4 m_bone_indices				: BLENDINDICES;
-	float4 m_bone_weights			: BLENDWEIGHT;
+	int4 m_bone_indices				: BLENDINDICES0;
+	float4 m_bone_weights			: BLENDWEIGHT0;
 };
 
 struct bc_vs_output
@@ -45,12 +45,12 @@ bc_vs_output gbuffer_skinned_vs(bc_vs_input p_input)
 {
 	bc_vs_output l_output;
 
-	l_output.m_position = mul(float4(p_input.m_position, 1), g_bone_transforms[p_input.m_bone_indices.x]) * p_input.m_bone_weights.x;
-	l_output.m_position += mul(float4(p_input.m_position, 1), g_bone_transforms[p_input.m_bone_indices.y]) * p_input.m_bone_weights.y;
-	l_output.m_position += mul(float4(p_input.m_position, 1), g_bone_transforms[p_input.m_bone_indices.z]) * p_input.m_bone_weights.z;
-	l_output.m_position += mul(float4(p_input.m_position, 1), g_bone_transforms[p_input.m_bone_indices.w]) * p_input.m_bone_weights.w;
-
-	l_output.m_position = mul(l_output.m_position, g_view_projection);
+	float4x4 l_transform = g_bone_transforms[p_input.m_bone_indices.x] * p_input.m_bone_weights[0];
+	l_transform += g_bone_transforms[p_input.m_bone_indices.y] * p_input.m_bone_weights[1];
+	l_transform += g_bone_transforms[p_input.m_bone_indices.z] * p_input.m_bone_weights[2];
+	l_transform += g_bone_transforms[p_input.m_bone_indices.w] * p_input.m_bone_weights[3];
+	
+	l_output.m_position = mul(float4(p_input.m_position.xyz, 1), mul(l_transform, g_view_projection));
 	l_output.m_texcoord = p_input.m_texcoord;
 	l_output.m_normal = normalize(mul(p_input.m_normal, (float3x3) g_world));
 

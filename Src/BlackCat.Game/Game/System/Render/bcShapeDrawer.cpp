@@ -6,6 +6,7 @@
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/Object/Mesh/bcShapeGenerator.h"
 
@@ -51,7 +52,7 @@ namespace black_cat
 		void bc_shape_drawer::draw_wired_box(const physics::bc_bound_box& p_box)
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_mutex);
+				core_platform::bc_mutex_guard l_guard(m_mutex);
 
 				bc_shape_generator_buffer l_buffer(m_vertices[m_buffer_write_index], m_indices[m_buffer_write_index]);
 				bc_shape_generator::create_wired_box(l_buffer, p_box);
@@ -61,10 +62,20 @@ namespace black_cat
 		void bc_shape_drawer::draw_wired_frustum(const bc_icamera::extend& p_camera_extend)
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_mutex);
+				core_platform::bc_mutex_guard l_guard(m_mutex);
 
 				bc_shape_generator_buffer l_buffer(m_vertices[m_buffer_write_index], m_indices[m_buffer_write_index]);
 				bc_shape_generator::create_wired_frustum(l_buffer, p_camera_extend);
+			}
+		}
+
+		void bc_shape_drawer::draw_wired_skeleton(const bc_sub_mesh& p_mesh, const bc_sub_mesh_transform& p_mesh_transform)
+		{
+			{
+				core_platform::bc_mutex_guard l_guard(m_mutex);
+
+				bc_shape_generator_buffer l_buffer(m_vertices[m_buffer_write_index], m_indices[m_buffer_write_index]);
+				bc_shape_generator::create_wired_skeleton(l_buffer, p_mesh, p_mesh_transform);
 			}
 		}
 

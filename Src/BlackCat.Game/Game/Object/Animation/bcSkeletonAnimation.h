@@ -27,7 +27,7 @@ namespace black_cat
 
 			bcUINT32 get_num_tracks() const noexcept;
 			
-			ozz::animation::Animation* get_native_handle() noexcept;
+			ozz::animation::Animation& get_native_handle() noexcept;
 			
 		private:
 			core::bc_unique_ptr<ozz::animation::Animation> m_animation;
@@ -59,9 +59,9 @@ namespace black_cat
 			return m_animation->num_tracks();
 		}
 
-		inline ozz::animation::Animation* bc_skeleton_animation::get_native_handle() noexcept
+		inline ozz::animation::Animation& bc_skeleton_animation::get_native_handle() noexcept
 		{
-			return m_animation.get();
+			return *m_animation;
 		}
 	}	
 }

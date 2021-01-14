@@ -180,7 +180,7 @@ namespace black_cat
 
 			if(!l_is_executed)
 			{
-				bcAssert(false);
+				BC_ASSERT(false);
 				throw bc_invalid_operation_exception("Query is not ready.");
 			}
 

@@ -52,7 +52,7 @@ namespace black_cat
 
 		void bc_concurrent_object_stack_pool::_destroy()
 		{
-			bcAssert(m_size.load(core_platform::bc_memory_order::relaxed) == 0);
+			BC_ASSERT(m_size.load(core_platform::bc_memory_order::relaxed) == 0);
 			m_stack_allocator.destroy();
 		}
 
@@ -64,7 +64,7 @@ namespace black_cat
 			void* l_memory = m_stack_allocator.alloc(&l_memblock);
 			if (!l_memory)
 			{
-				l_memory = bcAlloc(p_size, bc_alloc_type::unknown);
+				l_memory = BC_ALLOC(p_size, bc_alloc_type::unknown);
 			}
 			
 			return l_memory;
@@ -81,7 +81,7 @@ namespace black_cat
 			}
 			else 
 			{
-				bcFree(p_pointer);
+				BC_FREE(p_pointer);
 			}
 		}
 	}

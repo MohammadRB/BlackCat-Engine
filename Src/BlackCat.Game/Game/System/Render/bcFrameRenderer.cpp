@@ -5,6 +5,7 @@
 #include "Core/Utility/bcEnumOperand.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
+#include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcRenderThreadManager.h"
 #include "Game/System/Render/Pass/bcRenderPassManager.h"
@@ -50,7 +51,7 @@ namespace black_cat
 		};
 
 		static _bc_render_system_global_state_cbuffer g_global_state;
-		static const bcSIZE g_max_skinned_transform = 70;
+		static const bcSIZE g_max_skinned_transform = 90;
 
 		struct _bc_render_system_per_object_cbuffer
 		{
@@ -190,8 +191,9 @@ namespace black_cat
 
 		void bc_frame_renderer::render_buffer(bc_render_thread& p_render_thread, const bc_render_state_buffer& p_buffer, const bc_camera_instance& p_camera)
 		{
+			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
 			const auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
-
+			
 			for (const auto& l_render_state_entry : p_buffer.get_instances())
 			{
 				if (l_render_state_entry.second.empty())
@@ -204,10 +206,15 @@ namespace black_cat
 
 				for (auto& l_render_instance : l_render_state_entry.second)
 				{
-					_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
-					l_per_object_cbuffer.m_world_view_projection = (l_render_instance.get_transform() * l_view_proj).transpose();
-					l_per_object_cbuffer.m_world = l_render_instance.get_transform().transpose();
+					l_per_object_cbuffer.m_world_view_projection = (l_render_instance.get_transform() * l_view_proj);
+					l_per_object_cbuffer.m_world = l_render_instance.get_transform();
 
+					if(graphic::bc_render_api_info::use_column_matrix())
+					{
+						l_per_object_cbuffer.m_world_view_projection.make_transpose();
+						l_per_object_cbuffer.m_world.make_transpose();
+					}
+					
 					graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
 					p_render_thread.update_subresource(l_buffer, 0, &l_per_object_cbuffer, 0, 0); // TODO update part of buffer
 
@@ -225,6 +232,8 @@ namespace black_cat
 
 		void bc_frame_renderer::render_skinned_buffer(bc_render_thread& p_render_thread, const bc_render_state_buffer& p_buffer, const bc_camera_instance& p_camera)
 		{
+			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
+			
 			for (const auto& l_render_state_entry : p_buffer.get_skinned_instances())
 			{
 				if (l_render_state_entry.second.empty())
@@ -237,10 +246,17 @@ namespace black_cat
 
 				for (auto& l_render_instance : l_render_state_entry.second)
 				{
-					bcAssert(l_render_instance.get_num_transforms() <= g_max_skinned_transform);
-					
-					_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
+					BC_ASSERT(l_render_instance.get_num_transforms() <= g_max_skinned_transform);
+
 					std::memcpy(&l_per_object_cbuffer.m_transforms[0], l_render_instance.get_transforms(), sizeof(core::bc_matrix4f) * l_render_instance.get_num_transforms());
+
+					if (graphic::bc_render_api_info::use_column_matrix())
+					{
+						for (auto& l_transform : l_per_object_cbuffer.m_transforms)
+						{
+							l_transform.make_transpose();
+						}
+					}
 
 					graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
 					p_render_thread.update_subresource(l_buffer, 0, &l_per_object_cbuffer, 0, 0);

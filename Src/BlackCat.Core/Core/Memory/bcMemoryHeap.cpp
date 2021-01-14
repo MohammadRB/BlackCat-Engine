@@ -12,7 +12,7 @@ namespace black_cat
 
 		_bc_heap_memblock* _get_next(_bc_heap_memblock* p_block, bcBYTE* p_heap, bcSIZE p_heap_size)
 		{
-			auto l_block_size = p_block->size();
+			const auto l_block_size = p_block->size();
 			auto* l_block = reinterpret_cast<bcBYTE*>(p_block);
 			l_block += l_block_size;
 
@@ -26,7 +26,7 @@ namespace black_cat
 
 		_bc_heap_memblock* _get_prev(_bc_heap_memblock* p_block)
 		{
-			auto l_prev_block_size = p_block->prev_size();
+			const auto l_prev_block_size = p_block->prev_size();
 
 			if(l_prev_block_size == 0)
 			{
@@ -39,7 +39,7 @@ namespace black_cat
 			return reinterpret_cast< _bc_heap_memblock* >(l_block);
 		}
 
-		bc_memory_heap::bc_memory_heap() noexcept(true)
+		bc_memory_heap::bc_memory_heap() noexcept
 			: m_heap(nullptr),
 			m_heap_size(0),
 			m_remaining_free_space_limit(0),
@@ -48,13 +48,13 @@ namespace black_cat
 		{
 		}
 
-		bc_memory_heap::bc_memory_heap(bc_memory_heap::this_type&& p_other) noexcept(true)
+		bc_memory_heap::bc_memory_heap(bc_memory_heap::this_type&& p_other) noexcept
 			: bc_memory_movable(std::move(p_other))
 		{
-			_move(std::move(p_other));
+			operator=(std::move(p_other));
 		}
 
-		bc_memory_heap::~bc_memory_heap() noexcept(true)
+		bc_memory_heap::~bc_memory_heap() noexcept
 		{
 			if (m_initialized)
 			{
@@ -62,10 +62,22 @@ namespace black_cat
 			}
 		}
 
-		bc_memory_heap::this_type& bc_memory_heap::operator =(bc_memory_heap::this_type&& p_other) noexcept(true)
+		bc_memory_heap::this_type& bc_memory_heap::operator =(bc_memory_heap::this_type&& p_other) noexcept
 		{
 			bc_memory_movable::operator=(std::move(p_other));
-			_move(std::move(p_other));
+			m_heap = p_other.m_heap;
+			m_heap_size = p_other.m_heap_size;
+			m_remaining_free_space_limit = p_other.m_remaining_free_space_limit;
+			m_block_size = p_other.m_block_size;
+			m_last_block = p_other.m_last_block;
+			m_num_fragmentation.store(p_other.m_num_fragmentation.load(core_platform::bc_memory_order::relaxed), core_platform::bc_memory_order::relaxed);
+
+			p_other.m_heap = nullptr;
+			p_other.m_heap_size = 0;
+			p_other.m_remaining_free_space_limit = 0;
+			p_other.m_block_size = 0;
+			p_other.m_last_block = nullptr;
+			p_other.m_num_fragmentation.store(0, core_platform::bc_memory_order::relaxed);
 
 			return *this;
 		}
@@ -101,7 +113,7 @@ namespace black_cat
 			m_tracer.accept_overhead(m_block_size);
 		}
 
-		void bc_memory_heap::_destroy() noexcept(true)
+		void bc_memory_heap::_destroy() noexcept
 		{
 			clear();
 
@@ -113,21 +125,18 @@ namespace black_cat
 			core_platform::bc_mem_aligned_free(m_heap);
 		}
 
-		void* bc_memory_heap::alloc(bc_memblock* p_memblock) noexcept(true)
+		void* bc_memory_heap::alloc(bc_memblock* p_memblock) noexcept
 		{
 			void* l_return_pointer = nullptr;
-			bcSIZE l_size = p_memblock->size();
-			bcSIZE l_require_size = l_size + m_block_size;
+			const bcSIZE l_size = p_memblock->size();
+			const bcSIZE l_require_size = l_size + m_block_size;
 
-			bcAssert(l_require_size > 0);
+			BC_ASSERT(l_require_size > 0);
 
-			_bc_heap_memblock* l_next;
-			_bc_heap_memblock* l_curr_block;
-
-			l_next = m_last_block;
+			_bc_heap_memblock* l_next = m_last_block;
 			l_next->lock(core_platform::bc_lock_operation::light);
 
-			l_curr_block = _get_prev(l_next);
+			_bc_heap_memblock* l_curr_block = _get_prev(l_next);
 			l_curr_block->lock(core_platform::bc_lock_operation::light);
 
 			while (l_curr_block && (!l_curr_block->free() || l_curr_block->size() < l_require_size))
@@ -191,9 +200,9 @@ namespace black_cat
 			return l_return_pointer;
 		}
 
-		void bc_memory_heap::free(void* p_pointer, bc_memblock* p_memblock) noexcept(true)
+		void bc_memory_heap::free(void* p_pointer, bc_memblock* p_memblock) noexcept
 		{
-			_bc_heap_memblock* l_block = reinterpret_cast< _bc_heap_memblock* >(reinterpret_cast<bcBYTE*>(p_pointer) - m_block_size);
+			_bc_heap_memblock* l_block = reinterpret_cast< _bc_heap_memblock* >(static_cast<bcBYTE*>(p_pointer) - m_block_size);
 			_bc_heap_memblock* l_next_next;
 			_bc_heap_memblock* l_next;
 			_bc_heap_memblock* l_prev;
@@ -204,7 +213,8 @@ namespace black_cat
 			// We always have next block
 			l_next = _get_next(l_block, m_heap, m_heap_size);
 			
-			// Try to lock next and next next(if required) block so avoid deadlock
+			// Try to lock next and next next block (if required) so avoid deadlock.
+			// (We lock memory blocks in reverse order)
 			while (true)
 			{
 				l_next->lock(core_platform::bc_lock_operation::light);
@@ -316,12 +326,12 @@ namespace black_cat
 #endif
 		}
 
-		bool bc_memory_heap::contain_pointer(void* p_memory) const noexcept(true)
+		bool bc_memory_heap::contain_pointer(void* p_memory) const noexcept
 		{
 			return (p_memory >= m_heap && p_memory < m_heap + m_heap_size) ? true : false;
 		}
 
-		void bc_memory_heap::clear() noexcept(true)
+		void bc_memory_heap::clear() noexcept
 		{
 			_bc_heap_memblock* l_curr_block = _get_prev(m_last_block);
 			
@@ -352,7 +362,7 @@ namespace black_cat
 		};
 
 #ifdef BC_MEMORY_DEFRAG
-		void bc_memory_heap::register_pointer(void** p_pointer, bc_memblock* p_memblock) noexcept(true)
+		void bc_memory_heap::register_pointer(void** p_pointer, bc_memblock* p_memblock) noexcept
 		{
 			_bc_heap_memblock* l_mem_block = reinterpret_cast< _bc_heap_memblock* >
 			(
@@ -362,7 +372,7 @@ namespace black_cat
 			l_mem_block->register_new_pointer(p_pointer);
 		}
 
-		void bc_memory_heap::unregister_pointer(void** p_pointer, bc_memblock* p_memblock) noexcept(true)
+		void bc_memory_heap::unregister_pointer(void** p_pointer, bc_memblock* p_memblock) noexcept
 		{
 			_bc_heap_memblock* l_mem_block = reinterpret_cast< _bc_heap_memblock* >
 			(
@@ -372,7 +382,7 @@ namespace black_cat
 			l_mem_block->unregister_pointer(p_pointer);
 		}
 
-		void bc_memory_heap::defragment(bcINT32 p_num_defrag, defrag_callback p_defrag_callback) noexcept(true)
+		void bc_memory_heap::defragment(bcINT32 p_num_defrag, defrag_callback p_defrag_callback) noexcept
 		{
 			_bc_heap_memblock* l_last_used_block;
 			_bc_heap_memblock* l_first_used_block;

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+  <Type Name="black_cat::core::bc_vector&lt;*&gt;">
+    <DisplayString>{{size = {m_size}}}</DisplayString>
+    <Expand>
+      <Item Name="[size]">m_size</Item>
+      <Item Name="[capacity]">m_capacity</Item>
+      <ArrayItems>
+        <Size>m_size</Size>
+        <ValuePointer>&amp;(m_first->m_value)</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <Type Name="black_cat::core::bc_list&lt;*&gt;">
+    <DisplayString>{{size = {m_size}}}</DisplayString>
+    <Expand>
+      <Item Name="[size]">m_size</Item>
+      <LinkedListItems>
+        <Size>m_size</Size>
+        <HeadPointer>m_head</HeadPointer>
+        <NextPointer>m_next</NextPointer>
+        <ValueNode>m_value</ValueNode>
+      </LinkedListItems>
+    </Expand>
+  </Type>
+
+
+</AutoVisualizer>

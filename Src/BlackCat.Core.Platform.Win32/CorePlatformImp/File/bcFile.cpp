@@ -77,7 +77,7 @@ namespace black_cat
 				return bc_file_status::close;
 			}
 
-			bcAssert(false);
+			BC_ASSERT(false);
 			return bc_file_status::error;
 		}
 

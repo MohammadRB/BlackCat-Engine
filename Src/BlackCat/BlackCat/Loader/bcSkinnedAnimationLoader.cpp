@@ -71,7 +71,7 @@ namespace black_cat
 				}
 			);
 
-			bcAssert(l_joint_ite != std::end(l_ozz_joint_names));
+			BC_ASSERT(l_joint_ite != std::end(l_ozz_joint_names));
 
 			return std::distance(std::begin(l_ozz_joint_names), l_joint_ite);
 		};
@@ -147,7 +147,7 @@ namespace black_cat
 			throw bc_io_exception("Cannot read animation skeleton from input file");
 		}
 
-		l_ozz_archive >> *p_skeleton.get_native_handle();
+		l_ozz_archive >> p_skeleton.get_native_handle();
 		
 		p_animations.resize(l_num_animations);
 		
@@ -158,7 +158,7 @@ namespace black_cat
 				throw bc_io_exception("Cannot read animation from input file");
 			}
 
-			l_ozz_archive >> *p_animations[l_anim_ite].get_native_handle();
+			l_ozz_archive >> p_animations[l_anim_ite].get_native_handle();
 		}
 	}
 	
@@ -179,7 +179,7 @@ namespace black_cat
 			(
 				p_context.m_file_buffer.get(),
 				p_context.m_file_buffer_size,
-				graphic::bc_render_api_info::is_left_handed() ? aiProcess_ConvertToLeftHanded : 0
+				graphic::bc_render_api_info::use_left_handed() ? aiProcess_ConvertToLeftHanded : 0
 			);
 		}
 
@@ -217,7 +217,7 @@ namespace black_cat
 			std::back_inserter(l_ozz_animations),
 			[](const ozz::animation::offline::RawAnimation& p_ozz_raw_animation)
 			{
-				bcAssert(p_ozz_raw_animation.Validate());
+				BC_ASSERT(p_ozz_raw_animation.Validate());
 				return ozz::animation::offline::AnimationBuilder()(p_ozz_raw_animation);
 			}
 		);
@@ -225,7 +225,7 @@ namespace black_cat
 		ozz::io::MemoryStream l_ozz_stream;		
 		_write_ozz_structures(*l_ozz_skeleton, l_ozz_animations, l_ozz_stream);
 
-		const core::bc_unique_ptr<bcBYTE> l_buffer(static_cast<bcBYTE*>(bcAllocThrow(l_ozz_stream.Size(), core::bc_alloc_type::frame)));
+		const core::bc_unique_ptr<bcBYTE> l_buffer(static_cast<bcBYTE*>(BC_ALLOC_THROW(l_ozz_stream.Size(), core::bc_alloc_type::frame)));
 		l_ozz_stream.Seek(0, ozz::io::Stream::kSet);
 		l_ozz_stream.Read(l_buffer.get(), l_ozz_stream.Size());
 		
@@ -244,6 +244,13 @@ namespace black_cat
 
 		_read_ozz_structures(l_ozz_stream, l_skeleton, l_animations);
 
+		// Call get_bone_names to create its structure
+		const auto l_bone_names = l_skeleton.get_bone_names();
+		if(l_bone_names.empty())
+		{
+			throw bc_io_exception(":|"); // Just to prevent interpret bone names as unused variable
+		}
+		
 		p_context.set_result
 		(
 			game::bc_skinned_animation

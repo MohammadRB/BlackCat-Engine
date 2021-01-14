@@ -51,7 +51,7 @@ namespace black_cat
 		
 		void bc_vegetable_mesh_component::render(bc_render_state_buffer& p_buffer) const
 		{
-			bcAssert(false);
+			BC_ASSERT(false);
 		}
 
 		void bc_vegetable_mesh_component::render(bc_render_state_buffer& p_buffer, bool p_render_leaf) const
@@ -59,7 +59,7 @@ namespace black_cat
 			const bcCHAR* l_mesh_prefix = p_render_leaf ? "leaf_" : "trunk_";
 
 			const auto& l_mesh = get_mesh();
-			const auto& l_mesh_transformation = get_mesh_transformation();
+			const auto& l_mesh_transformation = get_mesh_transforms();
 			const auto* l_root_node = l_mesh.get_root_node();
 
 			render_mesh(p_buffer, l_mesh, l_mesh_transformation, &l_root_node, &l_root_node + 1, l_mesh_prefix);

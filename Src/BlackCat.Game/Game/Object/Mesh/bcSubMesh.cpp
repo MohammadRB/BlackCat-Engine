@@ -8,30 +8,24 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_sub_mesh::bc_sub_mesh()
+		bc_sub_mesh::bc_sub_mesh() noexcept
 			: m_mesh(nullptr),
 			m_root_node(nullptr)
 		{
 		}
 
-		bc_sub_mesh::bc_sub_mesh(bc_mesh_ptr p_mesh)
+		bc_sub_mesh::bc_sub_mesh(bc_mesh_ptr p_mesh) noexcept
 		{
-			if (p_mesh == nullptr)
-			{
-				throw bc_invalid_argument_exception("null argument");
-			}
-
+			BC_ASSERT(p_mesh != nullptr);
+			
 			m_mesh = p_mesh;
 			m_root_node = p_mesh->get_root();
 		}
 
 		bc_sub_mesh::bc_sub_mesh(bc_mesh_ptr p_mesh, const bcCHAR* p_node)
 		{
-			if (p_mesh == nullptr)
-			{
-				throw bc_invalid_argument_exception("null argument");
-			}
-
+			BC_ASSERT(p_mesh != nullptr);
+			
 			m_mesh = p_mesh;
 			m_root_node = p_mesh->find_node(p_node);
 

@@ -67,7 +67,7 @@ namespace black_cat
 			using string_hash = std::hash< const bcCHAR* >;
 			using actor_component_create_delegate = core::bc_delegate< void(const bc_actor&) >;
 			using actor_component_initialize_delegate = core::bc_delegate< void(bc_actor_component_initialize_context&) >;
-			using actor_controller_create_delegate = core::bc_delegate<core::bc_unique_ptr<bc_iactor_controller>()>;
+			using actor_controller_create_delegate = core::bc_delegate<core::bc_unique_ptr<bci_actor_controller>()>;
 			using component_map_type = core::bc_unordered_map_program< bc_actor_component_hash, _bc_entity_component_callbacks >;
 			using entity_map_type = core::bc_unordered_map_program< string_hash::result_type, _bc_entity_data >;
 			using controller_map_type = core::bc_unordered_map_program< string_hash::result_type, actor_controller_create_delegate >;

@@ -42,8 +42,8 @@ namespace black_cat
 			bcUINT32 l_size = p_mem_block->size();
 
 			// we can't handle allocations larger than our block size /
-			bcAssert(l_size <= m_block_size);
-			bcAssert(l_size > 0);
+			BC_ASSERT(l_size <= m_block_size);
+			BC_ASSERT(l_size > 0);
 
 			// Search for a free block /
 			bcINT32 l_block = -1;
@@ -109,7 +109,7 @@ namespace black_cat
 			bcUBYTE* l_pointer = reinterpret_cast<bcUBYTE*>(p_pointer);
 
 			// is this pointer in our heap? /
-			bcAssert((l_pointer >= m_heap) && (l_pointer < m_heap + m_block_size * m_num_block));
+			BC_ASSERT((l_pointer >= m_heap) && (l_pointer < m_heap + m_block_size * m_num_block));
 
 			// convert the pointer into a block index /
 			bcINT32 l_block = static_cast<bcINT32>(l_pointer - m_heap) / m_block_size;

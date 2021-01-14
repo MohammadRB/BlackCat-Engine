@@ -252,11 +252,11 @@ namespace black_cat
 						},
 						graphic::bc_input_element_desc
 						{
-							"BLENDINDICES", 0, graphic::bc_format::R32G32B32A32_FLOAT, 0, 44, graphic::bc_input_classification::per_vertex_data, 0
+							"BLENDINDICES", 0, graphic::bc_format::R32G32B32A32_SINT, 0, 44, graphic::bc_input_classification::per_vertex_data, 0
 						},
 						graphic::bc_input_element_desc
 						{
-							"BLENDWEIGHT", 0, graphic::bc_format::R32G32B32A32_FLOAT, 0, 56, graphic::bc_input_classification::per_vertex_data, 0
+							"BLENDWEIGHT", 0, graphic::bc_format::R32G32B32A32_FLOAT, 0, 60, graphic::bc_input_classification::per_vertex_data, 0
 						},
 					}
 				);

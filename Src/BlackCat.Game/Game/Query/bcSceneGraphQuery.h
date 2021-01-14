@@ -37,8 +37,8 @@ namespace black_cat
 
 		private:
 			core::bc_nullable<bc_camera_frustum> m_frustum;
-			bc_scene_graph_buffer m_scene_buffer;
 			core::bc_delegate<bc_scene_graph_buffer(const bc_scene_query_context&, const core::bc_nullable<bc_camera_frustum>&)> m_execute_with_component;
+			bc_scene_graph_buffer m_scene_buffer;
 		};
 
 		inline bc_scene_graph_query::bc_scene_graph_query() noexcept

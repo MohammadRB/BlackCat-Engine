@@ -20,7 +20,7 @@ namespace black_cat
 
 #ifdef BC_DEBUG
 			// prevent double lock on same thread
-			bcAssert(m_pack.m_thread_id.load(bc_memory_order::relaxed) != bc_thread::current_thread_id());
+			BC_ASSERT(m_pack.m_thread_id.load(bc_memory_order::relaxed) != bc_thread::current_thread_id());
 #endif
 
 			while (true)
@@ -71,7 +71,7 @@ namespace black_cat
 			bcINT32 l_expected = 0;
 #ifdef BC_DEBUG
 			// prevent double lock on same thread
-			bcAssert(m_pack.m_thread_id.load(bc_memory_order::relaxed) != bc_thread::current_thread_id());
+			BC_ASSERT(m_pack.m_thread_id.load(bc_memory_order::relaxed) != bc_thread::current_thread_id());
 #endif
 			bool l_result = m_pack.m_flag.compare_exchange_strong
 			(

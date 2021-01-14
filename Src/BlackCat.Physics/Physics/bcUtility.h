@@ -28,7 +28,7 @@ namespace black_cat
 			template< typename T >
 			const T& at(bcUINT32 p_index) const
 			{
-				bcAssert(m_data != nullptr);
+				BC_ASSERT(m_data != nullptr);
 				return *reinterpret_cast< const T* >(reinterpret_cast<const bcBYTE*>(m_data) + p_index * m_stride);
 			}
 
@@ -57,7 +57,7 @@ namespace black_cat
 			template< typename T >
 			const T& at(bcUINT32 p_index) const
 			{
-				bcAssert(p_index <= m_count);
+				BC_ASSERT(p_index <= m_count);
 
 				return bc_strided_data::at<T>(p_index);
 			}
@@ -84,7 +84,7 @@ namespace black_cat
 
 			const T& at(bcUINT32 p_index) const
 			{
-				bcAssert(p_index <= m_count);
+				BC_ASSERT(p_index <= m_count);
 
 				return bc_strided_data::at<T>(p_index);
 			}

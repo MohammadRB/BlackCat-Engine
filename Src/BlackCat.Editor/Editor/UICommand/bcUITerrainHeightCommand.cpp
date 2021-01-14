@@ -92,7 +92,7 @@ namespace black_cat
 
 			const bcINT32 l_diameter = l_cbuffer_parameters.m_tool_radius * 2;
 			const bcUINT32 l_sample_count = l_diameter * l_diameter;
-			core::bc_unique_ptr<bcINT16> l_sample_buffer(static_cast<bcINT16*>(bcAlloc(l_sample_count * sizeof(bcINT16), core::bc_alloc_type::frame)));
+			core::bc_unique_ptr<bcINT16> l_sample_buffer(static_cast<bcINT16*>(BC_ALLOC(l_sample_count * sizeof(bcINT16), core::bc_alloc_type::frame)));
 			bcINT16* l_samples = l_sample_buffer.get();
 
 			const core::bc_vector2f l_tool_center(l_cbuffer_parameters.m_tool_center_x, l_cbuffer_parameters.m_tool_center_z);

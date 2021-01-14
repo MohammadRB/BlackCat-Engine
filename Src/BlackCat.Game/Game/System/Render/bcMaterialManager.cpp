@@ -86,6 +86,7 @@ namespace black_cat
 			(
 				core::bc_alloc_type::program,
 				core::bc_get_service<bc_game_system>()->get_file_system().get_content_texture_path(bcL("Default.dds")).c_str(),
+				nullptr,
 				core::bc_content_loader_parameter()
 			);
 
@@ -324,7 +325,7 @@ namespace black_cat
 
 				auto l_entry = m_materials.find(l_material->m_hash);
 
-				bcAssert(l_entry != std::cend(m_materials));
+				BC_ASSERT(l_entry != std::cend(m_materials));
 
 				m_materials.erase(l_entry);
 			}

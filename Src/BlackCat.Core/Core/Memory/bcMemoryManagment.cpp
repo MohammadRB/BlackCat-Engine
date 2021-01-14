@@ -140,7 +140,7 @@ namespace black_cat
 		
 		void* bc_memory_manager::alloc(bcSIZE p_size, bc_alloc_type p_allocType, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
-			bcAssert(m_initialized);
+			BC_ASSERT(m_initialized);
 
 			void* l_result = nullptr;
 			bc_memory* l_allocator = nullptr;
@@ -226,7 +226,7 @@ namespace black_cat
 			bc_memblock* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 			void* l_pointer = reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer) - l_block->offset());
 
-			bcAssert(l_block);
+			BC_ASSERT(l_block);
 
 			auto* l_allocator = reinterpret_cast<bc_memory*>(l_block->extra());
 			l_allocator->free(l_pointer, l_block);
@@ -269,7 +269,7 @@ namespace black_cat
 		
 		void* bc_memory_manager::aligned_alloc(bcSIZE p_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
-			bcAssert(m_initialized);
+			BC_ASSERT(m_initialized);
 
 			void* l_result = nullptr;
 			bc_memory* l_allocator = nullptr;
@@ -354,7 +354,7 @@ namespace black_cat
 			bc_memblock* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 			void* l_pointer = reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer) - l_block->offset());
 
-			bcAssert(l_block);
+			BC_ASSERT(l_block);
 
 			auto* l_allocator = reinterpret_cast<bc_memory*>(l_block->extra());
 			l_allocator->free(l_pointer, l_block);
@@ -394,8 +394,8 @@ namespace black_cat
 		void bc_memory_manager::end_of_frame() noexcept
 		{
 #ifdef BC_MEMORY_DEFRAG
-			bcUINT32 l_num_fragment = m_super_heap->fragmentation_count();
-			l_num_fragment = l_num_fragment == 0 ? 0 : l_num_fragment / 3 + 1;
+			auto l_num_fragment = m_super_heap->fragmentation_count();
+			l_num_fragment = l_num_fragment ? l_num_fragment / 3 + 1 : 0;
 
 			{
 #ifdef BC_MEMORY_LEAK_DETECTION
@@ -405,21 +405,19 @@ namespace black_cat
 				m_super_heap->defragment
 				(
 					l_num_fragment,
-#ifdef BC_MEMORY_LEAK_DETECTION
 					[this](void* p_old, void* p_new)
 					{
+#ifdef BC_MEMORY_LEAK_DETECTION
 						auto l_old_ite = m_leak_allocator->find(p_old);
 						m_leak_allocator->insert(std::make_pair(p_new, l_old_ite->second));
 						m_leak_allocator->erase(l_old_ite);
-					}
-#else
-					bc_memory_heap::defrag_callback()
 #endif
+					}
 				);
 			}
 #endif
 
-			bcAssert(m_per_frame_stack->tracer().alloc_count() == 0);
+			BC_ASSERT(m_per_frame_stack->tracer().alloc_count() == 0);
 			m_per_frame_stack->clear();
 		}
 

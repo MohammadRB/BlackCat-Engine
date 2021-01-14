@@ -28,7 +28,7 @@ namespace black_cat
 				core_platform::bc_lock_guard<core_platform::bc_shared_mutex> m_guard(m_providers_lock);
 
 				auto l_provider_entry = m_providers.find(p_provider_handle.m_context_hash);
-				bcAssert(l_provider_entry != std::end(m_providers));
+				BC_ASSERT(l_provider_entry != std::end(m_providers));
 				
 				l_provider_entry->second.m_provider_delegate = std::move(p_delegate);
 			}
@@ -133,7 +133,7 @@ namespace black_cat
 					[&]() {return true; },
 					[&](bool, _query_entry& p_query)
 					{
-						bcAssert(p_query.m_state.load(core_platform::bc_memory_order::relaxed) != _bc_query_shared_state::state::executed);
+						BC_ASSERT(p_query.m_state.load(core_platform::bc_memory_order::relaxed) != _bc_query_shared_state::state::executed);
 						
 						p_query.m_query->execute(*p_query.m_provider->m_provided_context);
 						// use release memory order so memory changes become available for calling thread
@@ -150,7 +150,7 @@ namespace black_cat
 					[&]() { return true; },
 					[&](bool, _query_entry& p_query)
 					{
-						bcAssert(p_query.m_state.load(core_platform::bc_memory_order::relaxed) != _bc_query_shared_state::state::executed);
+						BC_ASSERT(p_query.m_state.load(core_platform::bc_memory_order::relaxed) != _bc_query_shared_state::state::executed);
 						
 						p_query.m_query->execute(*p_query.m_provider->m_provided_context);
 						// use release memory order so memory changes become available for calling thread
@@ -219,7 +219,7 @@ namespace black_cat
 				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_providers_guard(m_providers_lock);
 
 				auto l_provider_entry = m_providers.find(p_context_hash);
-				bcAssert(l_provider_entry != std::end(m_providers));
+				BC_ASSERT(l_provider_entry != std::end(m_providers));
 
 				auto& l_provider = l_provider_entry->second;
 				

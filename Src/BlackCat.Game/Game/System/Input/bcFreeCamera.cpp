@@ -110,7 +110,7 @@ namespace black_cat
 
 			core::bc_vector3f l_up, l_forward;
 			
-			if (graphic::bc_render_api_info::is_left_handed())
+			if (graphic::bc_render_api_info::use_left_handed())
 			{
 				l_y_rotation.rotation_euler_lh(core::bc_vector3f::up(), m_pointing_angle.y);
 				l_x_rotation.rotation_euler_lh(core::bc_vector3f::right(), m_pointing_angle.x);

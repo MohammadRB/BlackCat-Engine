@@ -69,7 +69,7 @@ namespace black_cat
 			if(bc_ref_count::dec_ref())
 			{
 				bc_refcount_proxy* l_this = this;
-				bcDelete(l_this);
+				BC_DELETE(l_this);
 				return true;
 			}
 

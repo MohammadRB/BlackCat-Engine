@@ -161,7 +161,7 @@ namespace black_cat
 					else
 						//throw Exception(L"Memory Allocation Error");
 						// TODO check for allocation fail here
-						bcAssert(false);
+						BC_ASSERT(false);
 
 					if (pInitToSequenceIndices)
 					{
@@ -180,12 +180,12 @@ namespace black_cat
 					mFreeList[mCount] = pValue;
 					++mCount;
 					
-					bcAssert(mCount <= mCapacity);
+					BC_ASSERT(mCount <= mCapacity);
 				}
 
 				bcInline Type getFreeItem() noexcept(true)
 				{
-					bcAssert(mCount > 0);
+					BC_ASSERT(mCount > 0);
 
 					Type lItem = mFreeList[mCount - 1];
 					--mCount;
@@ -224,8 +224,8 @@ namespace black_cat
 					mDLNodesFreeList(pCleanUpThreshold, pAllocator),
 					mAllocator(pAllocator)
 				{
-					bcAssert(pNumHP <= 32767);
-					bcAssert(pCleanUpThreshold <= 32767);
+					BC_ASSERT(pNumHP <= 32767);
+					BC_ASSERT(pCleanUpThreshold <= 32767);
 
 					/*mHP = new bcAtomic< NodeType* >[pNumHP];*/
 					mHP = static_cast<core_platform::bc_atomic< NodeType* >*>(mAllocator->alloc(sizeof(core_platform::bc_atomic< NodeType* >) * pNumHP));
@@ -235,7 +235,7 @@ namespace black_cat
 					{
 						//throw Exception(L"Memory Allocation Error");
 						// TODO check for allocation fail here
-						bcAssert(false);
+						BC_ASSERT(false);
 					}
 					//mDLNodes = new bcAtomic< NodeType* >[pCleanUpThreshold];
 					mDLNodes = static_cast<core_platform::bc_atomic< NodeType* >*>(mAllocator->alloc(sizeof(core_platform::bc_atomic< NodeType* >) * pCleanUpThreshold));
@@ -247,7 +247,7 @@ namespace black_cat
 						mAllocator->free(mHP);
 						//throw Exception(L"Memory Allocation Error");
 						// TODO check for allocation fail here
-						bcAssert(false);
+						BC_ASSERT(false);
 					}
 					//mDLClaims = new bcAtomic< bcINT32 >[pCleanUpThreshold];
 					mDLClaims = static_cast<core_platform::bc_atomic< bcINT32 >*>(mAllocator->alloc(sizeof(core_platform::bc_atomic< bcINT32 >) * pCleanUpThreshold));
@@ -261,7 +261,7 @@ namespace black_cat
 						mAllocator->free(mDLNodes);
 						//throw Exception(L"Memory Allocation Error");
 						// TODO check for allocation fail here
-						bcAssert(false);
+						BC_ASSERT(false);
 					}
 					//mDLDone = new bcAtomic< bool >[pCleanUpThreshold];
 					mDLDone = static_cast<core_platform::bc_atomic< bool >*>(mAllocator->alloc(sizeof(core_platform::bc_atomic< bool >) * pCleanUpThreshold));
@@ -277,7 +277,7 @@ namespace black_cat
 						mAllocator->free(mDLClaims);
 						//throw Exception(L"Memory Allocation Error");
 						// TODO check for allocation fail here
-						bcAssert(false);
+						BC_ASSERT(false);
 					}
 
 					//mDLNexts = new bcINT32[pCleanUpThreshold];
@@ -296,7 +296,7 @@ namespace black_cat
 						mAllocator->free(mDLDone);
 						//throw Exception(L"Memory Allocation Error");
 						// TODO check for allocation fail here
-						bcAssert(false);
+						BC_ASSERT(false);
 					}
 
 					bcUINT32 lNumPList = pNumThread * pNumHP;
@@ -318,7 +318,7 @@ namespace black_cat
 						mAllocator->free(mDLNexts);
 						//throw Exception(L"Memory Allocation Error");
 						// TODO check for allocation fail here
-						bcAssert(false);
+						BC_ASSERT(false);
 					}
 
 					// because sometimes in deRefLink we read nullptr, we must use another value (1) for indicating 
@@ -502,7 +502,7 @@ namespace black_cat
 				
 				if (!l_index)
 				{
-					l_index = bcNew(bc_alloc_type::unknown) bcINT32;
+					l_index = BC_NEW(bc_alloc_type::unknown) bcINT32;
 					*l_index = mLastThreadIndex.fetch_add(1U, core_platform::bc_memory_order::relaxed);
 
 					mMyIndex.set(l_index);
@@ -521,7 +521,7 @@ namespace black_cat
 			bcLockFreeMemMng(ConfigType* pConfig) 
 				: mConfig(pConfig), 
 				mLastThreadIndex(0),
-				mMyIndex([](bcINT32* p_pointer)->void { bcDelete(p_pointer); })
+				mMyIndex([](bcINT32* p_pointer)->void { BC_DELETE(p_pointer); })
 			{
 				//mThreadData = new ThreadData[mConfig->mNumThread](mConfig->mNumThread, mConfig->mNumHP, mConfig->mCleanUpThreshold);
 				//mThreadData = static_cast<ThreadData*>(std::malloc(sizeof(ThreadData) * mConfig->mNumThread));
@@ -529,7 +529,7 @@ namespace black_cat
 				if (mThreadData == nullptr)
 				{
 					// TODO check for allocation fail here
-					bcAssert(false);
+					BC_ASSERT(false);
 				}
 				for (bcUINT32 i = 0; i < mConfig->mNumThread; ++i)
 					new (&mThreadData[i]) ThreadData(mConfig->mNumThread, mConfig->mNumHP, mConfig->mCleanUpThreshold, &mAllocator);
@@ -599,7 +599,7 @@ namespace black_cat
 					}
 				}
 
-				bcAssert(false);
+				BC_ASSERT(false);
 			}
 
 			/*bcInline bool compareAndSwapRef(LinkType* pLink, NodeType* pExpected, NodeType* pNew)
@@ -652,7 +652,7 @@ namespace black_cat
 						NodeType* lNewExpected = lExpected->getNode();
 						NodeType* lNewNew = lNew->getNode();
 
-						bcAssert(lNewExpected == lExpectedNode && lNewNew == lNewNode);
+						BC_ASSERT(lNewExpected == lExpectedNode && lNewNew == lNewNode);
 						/*if(!(lNewExpected == lExpected && lNewNew == lNew))
 						{
 							bcAtomicOperation::bcAtomicStore(*lLink->getAtomicNode(), lLinkCopy, core_platform::bc_memory_order::relaxed);

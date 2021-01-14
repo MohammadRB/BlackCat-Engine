@@ -74,7 +74,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		void bc_platform_shape_box<g_api_physx>::get_points(core::bc_array<core::bc_vector3f, 8>& p_result) const noexcept
 		{
-			const auto l_z_sign = graphic::bc_render_api_info::is_left_handed() ? +1 : -1;
+			const auto l_z_sign = graphic::bc_render_api_info::use_left_handed() ? +1 : -1;
 			const auto l_half_x = m_pack.m_px_geometry.halfExtents.x;
 			const auto l_half_y = m_pack.m_px_geometry.halfExtents.y;
 			const auto l_half_z = m_pack.m_px_geometry.halfExtents.z;

@@ -84,4 +84,9 @@
       <Filter>CorePlatformImp\Memory</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\NatvisVisualizers.natvis">
+      <Filter>CorePlatformImp</Filter>
+    </Natvis>
+  </ItemGroup>
 </Project>

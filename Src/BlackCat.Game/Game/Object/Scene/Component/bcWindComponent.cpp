@@ -43,7 +43,7 @@ namespace black_cat
 				m_point = p_other.m_point;
 				break;
 			default:
-				bcAssert(false);
+				BC_ASSERT(false);
 				break;
 			}
 
@@ -113,7 +113,7 @@ namespace black_cat
 				);
 				break;
 			default:
-				bcAssert(false);
+				BC_ASSERT(false);
 				break;
 			}
 		}
@@ -160,7 +160,7 @@ namespace black_cat
 			}
 			else
 			{
-				bcAssert(false);
+				BC_ASSERT(false);
 			}
 		}
 

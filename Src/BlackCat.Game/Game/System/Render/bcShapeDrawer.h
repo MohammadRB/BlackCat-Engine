@@ -3,11 +3,10 @@
 #pragma once
 
 #include "CorePlatformImp/Concurrency/bcMutex.h"
-#include "Core/Container/bcVector.h"
 #include "Core/Math/bcVector3f.h"
+#include "Core/Container/bcVector.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
-#include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/State/bcRenderState.h"
 #include "Game/System/Input/bcCamera.h"
 #include "Game/bcExport.h"
@@ -17,7 +16,10 @@ namespace black_cat
 	namespace game
 	{
 		class bc_render_system;
+		class bc_render_thread;
 		class bc_render_state_buffer;
+		class bc_sub_mesh;
+		class bc_sub_mesh_transform;
 
 		class BC_GAME_DLL bc_shape_drawer
 		{
@@ -44,6 +46,14 @@ namespace black_cat
 			 */
 			void draw_wired_frustum(const bc_icamera::extend& p_camera_extend);
 
+			/**
+			 * \brief
+			 * \ThreadSafe
+			 * \param p_mesh 
+			 * \param p_mesh_transform 
+			 */
+			void draw_wired_skeleton(const bc_sub_mesh& p_mesh, const bc_sub_mesh_transform& p_mesh_transform);
+			
 			void render(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_render_state_buffer& p_buffer);
 
 			void clear_swap_buffers();

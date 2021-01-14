@@ -112,7 +112,7 @@ namespace black_cat
 				pointer l_pointer = static_cast< pointer >(m_memory_pool->alloc());
 				if (!l_pointer)
 				{
-					l_pointer = static_cast< pointer >(bcAllocThrow(sizeof(value_type), bc_alloc_type::unknown));
+					l_pointer = static_cast< pointer >(BC_ALLOC_THROW(sizeof(value_type), bc_alloc_type::unknown));
 				}
 
 				return l_pointer;
@@ -139,7 +139,7 @@ namespace black_cat
 				}
 				else
 				{
-					bcFree(p_pointer);
+					BC_FREE(p_pointer);
 				}
 			}
 

@@ -95,7 +95,7 @@ namespace black_cat
 				return bc_trigger_type::lost_touch;
 			}
 
-			bcAssert(false);
+			BC_ASSERT(false);
 			return bc_trigger_type::lost_touch;
 		}
 

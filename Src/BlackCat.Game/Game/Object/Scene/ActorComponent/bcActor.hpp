@@ -95,7 +95,7 @@ namespace black_cat
 
 		inline void bc_actor::destroy()
 		{
-			bcAssert(is_valid());
+			BC_ASSERT(is_valid());
 			
 			_get_manager().remove_actor(*this);
 			m_index = invalid_index;

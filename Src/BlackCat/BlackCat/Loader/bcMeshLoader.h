@@ -6,6 +6,7 @@
 #include "Core/Content/bcContentLoader.h"
 #include "Game/System/Render/bcMaterialManager.h"
 #include "Game/Object/Mesh/bcMesh.h"
+#include "Game/Object/Mesh/bcMeshBuilder.h"
 #include "BlackCat/bcExport.h"
 
 #include "3rdParty/Assimp/Include/matrix4x4.h"
@@ -33,11 +34,18 @@ namespace black_cat
 
 		bc_mesh_loader& operator=(bc_mesh_loader&&) = default;
 
-		static void calculate_node_mesh_count(const aiNode& p_node, bcSIZE& p_node_count, bcSIZE& p_mesh_count, core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_indices);
+		static void calculate_bone_mapping(const aiNode& p_node, core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_bone_mapping);
 
 		static void convert_ai_matrix(const aiMatrix4x4& p_ai_matrix, core::bc_matrix4f& p_matrix);
 
-		static void convert_ai_material(core::bc_content_loading_context& p_context, const aiMaterial& p_ai_material, game::bc_render_material_description& p_material);
+		static void fill_skinned_vertices(const aiMesh& p_ai_mesh,
+			const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_bone_mapping,
+			core::bc_vector_movable< game::bc_vertex_pos_tex_nor_tan_bon >& p_vertices,
+			game::bc_mesh_builder& p_builder);
+		
+		static void convert_ai_material(core::bc_content_loading_context& p_context, 
+			const aiMaterial& p_ai_material, 
+			game::bc_render_material_description& p_material);
 
 		static void convert_ai_mesh(game::bc_render_system& p_render_system,
 			core::bc_content_loading_context& p_context,
@@ -45,16 +53,14 @@ namespace black_cat
 			const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_indices,
 			const aiNode& p_ai_node,
 			const aiMesh& p_ai_mesh,
-			game::bc_mesh_part_data& p_mesh,
-			game::bc_render_state_ptr& p_mesh_render_state);
+			game::bc_mesh_builder& p_builder);
 
 		static void convert_ai_nodes(game::bc_render_system& p_render_system,
 			core::bc_content_loading_context& p_context,
 			const aiScene& p_ai_scene,
 			const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_indices,
 			const aiNode& p_ai_node,
-			game::bc_mesh& p_mesh,
-			game::bc_mesh_node* p_parent);
+			game::bc_mesh_builder& p_builder);
 
 		bool support_offline_processing() const override;
 

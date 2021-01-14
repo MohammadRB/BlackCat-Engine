@@ -19,14 +19,14 @@ namespace black_cat
 		bc_mesh_component::bc_mesh_component(bc_actor_component_index p_index)
 			: bc_render_component(p_index),
 			m_sub_mesh(),
-			m_sub_mesh_transformation()
+			m_sub_mesh_transforms()
 		{
 		}
 
 		bc_mesh_component::bc_mesh_component(bc_mesh_component&& p_other) noexcept
 			: bc_render_component(std::move(p_other)),
 			m_sub_mesh(std::move(p_other.m_sub_mesh)),
-			m_sub_mesh_transformation(std::move(p_other.m_sub_mesh_transformation))
+			m_sub_mesh_transforms(std::move(p_other.m_sub_mesh_transforms))
 		{
 		}
 
@@ -35,20 +35,10 @@ namespace black_cat
 		bc_mesh_component& bc_mesh_component::operator=(bc_mesh_component&& p_other) noexcept
 		{
 			m_sub_mesh = std::move(p_other.m_sub_mesh);
-			m_sub_mesh_transformation = std::move(p_other.m_sub_mesh_transformation);
+			m_sub_mesh_transforms = std::move(p_other.m_sub_mesh_transforms);
 			bc_render_component::operator=(std::move(p_other));
 
 			return *this;
-		}
-		
-		core::bc_vector3f bc_mesh_component::get_world_position() const
-		{
-			return m_sub_mesh_transformation.get_node_translation(*m_sub_mesh.get_root_node());
-		}
-
-		core::bc_matrix4f bc_mesh_component::get_world_transform() const
-		{
-			return m_sub_mesh_transformation.get_node_transform(*m_sub_mesh.get_root_node());
 		}
 
 		void bc_mesh_component::initialize(bc_actor_component_initialize_context& p_context)
@@ -58,19 +48,19 @@ namespace black_cat
 			const bc_mesh_ptr l_mesh = p_context.m_stream_manager.find_content_throw<bc_mesh>(l_mesh_name.c_str());
 
 			m_sub_mesh = l_sub_mesh_name ? bc_sub_mesh(l_mesh, l_sub_mesh_name->c_str()) : bc_sub_mesh(l_mesh);
-			m_sub_mesh_transformation = bc_sub_mesh_transformation(*m_sub_mesh.get_root_node());
+			m_sub_mesh_transforms = bc_sub_mesh_transform(*m_sub_mesh.get_root_node());
 		}
 
 		void bc_mesh_component::render(bc_render_state_buffer& p_buffer) const
 		{
 			const bc_mesh_node* l_root_pointer = m_sub_mesh.get_root_node();
-			render_mesh(p_buffer, m_sub_mesh, m_sub_mesh_transformation, &l_root_pointer, &l_root_pointer + 1, nullptr);
+			render_mesh(p_buffer, m_sub_mesh, m_sub_mesh_transforms, &l_root_pointer, &l_root_pointer + 1, nullptr);
 		}
 
 		void bc_mesh_component::set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform)
 		{
 			physics::bc_bound_box l_bound_box;
-			m_sub_mesh.calculate_absolute_transformations(p_transform, m_sub_mesh_transformation, l_bound_box);
+			m_sub_mesh.calculate_absolute_transforms(p_transform, m_sub_mesh_transforms, l_bound_box);
 
 			p_actor.add_event(bc_actor_event_bound_box_changed(l_bound_box));
 		}

@@ -139,7 +139,7 @@ cbuffer g_cb_object_state					: register(BC_RENDER_STATE_CB0)
 {
 	float4x4 g_world_view_projection		: packoffset(c0);
     float4x4 g_world						: packoffset(c4);
-	float4x4 g_bone_transforms[70]		: packoffset(c8);
+	float4x4 g_bone_transforms[90]			: packoffset(c8);
 }
 
 static const float3 g_gravity_dir = float3(0, -1, 0);

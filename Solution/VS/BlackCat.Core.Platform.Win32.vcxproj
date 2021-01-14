@@ -38,6 +38,9 @@
     <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\File\bcPath.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Memory\bcMemAlloc.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\NatvisVisualizers.natvis" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BE5CAB27-D8E0-4781-ABF8-F37FE773B65B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

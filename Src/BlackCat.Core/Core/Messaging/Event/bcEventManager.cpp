@@ -28,7 +28,7 @@ namespace black_cat
 				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_handlers_mutex);
 
 				auto l_ite = m_handlers.find(l_hash);
-				bcAssert(l_ite != m_handlers.end());
+				BC_ASSERT(l_ite != m_handlers.end());
 
 				l_ite->second.replace_delegate(p_listener_handle.m_event_index, std::move(p_listener));
 			}
@@ -42,7 +42,7 @@ namespace black_cat
 				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_handlers_mutex);
 
 				auto l_ite = m_handlers.find(l_hash);
-				bcAssert(l_ite != m_handlers.end());
+				BC_ASSERT(l_ite != m_handlers.end());
 
 				l_ite->second.remove_delegate(p_listener_handle.m_event_index);
 

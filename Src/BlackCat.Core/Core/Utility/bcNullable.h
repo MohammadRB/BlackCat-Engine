@@ -164,7 +164,7 @@ namespace black_cat
 
 			type& get() noexcept
 			{
-				bcAssert(is_set());
+				BC_ASSERT(is_set());
 
 				return *reinterpret_cast< type* >(&m_buffer);
 			}
@@ -198,8 +198,6 @@ namespace black_cat
 			{
 				_set(std::move(p_value));
 			}
-
-		protected:
 
 		private:
 			bool m_set;

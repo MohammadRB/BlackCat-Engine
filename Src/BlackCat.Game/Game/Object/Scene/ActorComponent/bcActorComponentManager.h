@@ -328,7 +328,7 @@ namespace black_cat
 
 		inline bc_actor_component_manager::~bc_actor_component_manager()
 		{
-			bcAssert
+			BC_ASSERT
 			(
 				std::count_if(std::cbegin(m_actors), std::cend(m_actors), [](core::bc_nullable< _bc_actor_entry >& p_entry)
 				{
@@ -411,7 +411,7 @@ namespace black_cat
 				core_platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
 				
 				auto& l_actor_entry = m_actors[p_actor.get_index()];
-				bcAssert(l_actor_entry.is_set());
+				BC_ASSERT(l_actor_entry.is_set());
 				
 				auto* l_events_pool = &m_events_pool[m_write_event_pool];
 				auto* l_actor_events = l_actor_entry->get_events(m_write_event_pool);
@@ -468,7 +468,7 @@ namespace black_cat
 			const auto l_actor_index = p_actor.get_index();
 			bc_actor_index l_parent_index;
 			
-			bcAssert(l_actor_index != bc_actor::invalid_index);
+			BC_ASSERT(l_actor_index != bc_actor::invalid_index);
 			
 			{
 				core_platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
@@ -521,7 +521,7 @@ namespace black_cat
 
 			const auto l_actor_index = p_actor.get_index();
 
-			bcAssert(l_actor_index != bc_actor::invalid_index);
+			BC_ASSERT(l_actor_index != bc_actor::invalid_index);
 
 			{
 				core_platform::bc_shared_mutex_shared_guard l_lock(l_component_entry->second.m_lock);
@@ -530,7 +530,7 @@ namespace black_cat
 				// Actor has not this type of component
 				if (l_component_index == bc_iactor_component::invalid_index)
 				{
-					bcAssert(false);
+					BC_ASSERT(false);
 					return;
 				}
 
@@ -795,7 +795,7 @@ namespace black_cat
 			static component_container_type::value_type* l_component_entry = _get_component_entry< TComponent >();
 
 			// Is it abstract
-			bcAssert(l_component_entry->second.m_component_priority == _bc_actor_component_entry::s_invalid_priority_value);
+			BC_ASSERT(l_component_entry->second.m_component_priority == _bc_actor_component_entry::s_invalid_priority_value);
 
 			for(auto& l_derived_get : l_component_entry->second.m_deriveds)
 			{
@@ -816,11 +816,11 @@ namespace black_cat
 			static component_container_type::value_type* l_component_entry = _get_component_entry< TComponent >();
 
 			// Isn't it abstract
-			bcAssert(l_component_entry->second.m_component_priority != _bc_actor_component_entry::s_invalid_priority_value);
+			BC_ASSERT(l_component_entry->second.m_component_priority != _bc_actor_component_entry::s_invalid_priority_value);
 
 			const auto l_actor_index = p_actor.get_index();
 
-			bcAssert(l_actor_index != bc_actor::invalid_index);
+			BC_ASSERT(l_actor_index != bc_actor::invalid_index);
 
 			{
 				core_platform::bc_shared_mutex_shared_guard l_lock(l_component_entry->second.m_lock);

@@ -159,6 +159,7 @@ namespace black_cat
 					(
 						p_alloc_type,
 						l_content_file.m_file.c_str(),
+						bc_to_estring_frame(l_content_file.m_title).c_str(),
 						l_content_file.m_parameters
 					);
 
@@ -220,7 +221,7 @@ namespace black_cat
 
 				if (l_content_entry != l_content_end)
 				{
-					bcAssert(!l_content_entry->second.empty());
+					BC_ASSERT(!l_content_entry->second.empty());
 
 					l_content_entry->second.pop_back();
 
@@ -252,7 +253,7 @@ namespace black_cat
 
 			if (l_content_entry != l_content_end)
 			{
-				bcAssert(!l_content_entry->second.empty());
+				BC_ASSERT(!l_content_entry->second.empty());
 
 				return *std::begin(l_content_entry->second);
 			}

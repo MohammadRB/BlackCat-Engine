@@ -5,6 +5,7 @@
 #include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/Query/bcQueryContext.h"

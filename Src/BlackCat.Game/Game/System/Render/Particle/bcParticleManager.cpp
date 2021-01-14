@@ -70,6 +70,7 @@ namespace black_cat
 			(
 				core::bc_alloc_type::program,
 				l_sprites_path.c_str(),
+				nullptr,
 				core::bc_content_loader_parameter()
 			);
 
@@ -145,7 +146,7 @@ namespace black_cat
 			l_rotation.rotation_between_two_vector_lh(core::bc_vector3f(0, 1, 0), p_dir);
 			const auto l_definition_ite = m_emitter_definitions.find(string_hash_t()(p_emitter_name));
 			
-			bcAssert(l_definition_ite != std::end(m_emitter_definitions));
+			BC_ASSERT(l_definition_ite != std::end(m_emitter_definitions));
 
 			{
 				core_platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, core_platform::bc_lock_operation::light);
@@ -163,7 +164,7 @@ namespace black_cat
 					bc_randomize_direction(m_random, l_ite.m_direction, l_ite.m_direction_deviation, &l_ite.m_direction, &l_ite.m_direction + 1);
 				}
 
-				bcAssert(m_emitters.size() <= s_emitter_count);
+				BC_ASSERT(m_emitters.size() <= s_emitter_count);
 			}
 		}
 
@@ -190,7 +191,7 @@ namespace black_cat
 					}
 				}
 
-				bcAssert(m_emitters.size() <= s_emitter_count);
+				BC_ASSERT(m_emitters.size() <= s_emitter_count);
 
 				bc_external_particle_emitter l_external_emitter;
 				l_external_emitter.m_emitters.reserve(p_builder.m_emitters.size());
@@ -288,7 +289,7 @@ namespace black_cat
 					}
 				);
 
-				bcAssert(l_external_emitter_entry != std::end(m_external_emitters));
+				BC_ASSERT(l_external_emitter_entry != std::end(m_external_emitters));
 
 				for (bc_particle_emitter_trait* l_external_emitter : l_external_emitter_entry->m_emitters)
 				{
@@ -302,7 +303,7 @@ namespace black_cat
 						}
 					);
 
-					bcAssert(l_emitter_entry != std::end(m_emitters));
+					BC_ASSERT(l_emitter_entry != std::end(m_emitters));
 
 					m_emitters.erase(l_emitter_entry);
 				}

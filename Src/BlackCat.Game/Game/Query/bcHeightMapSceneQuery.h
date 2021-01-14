@@ -82,7 +82,7 @@ namespace black_cat
 			m_scene_query.only<bc_height_map_component>();
 			m_scene_query.execute(p_context);
 
-			const auto l_scene_buffer = m_scene_query.get_scene_buffer();
+			auto l_scene_buffer = m_scene_query.get_scene_buffer();
 			m_height_maps.reserve(l_scene_buffer.size());
 			
 			for (auto& l_actor : l_scene_buffer)

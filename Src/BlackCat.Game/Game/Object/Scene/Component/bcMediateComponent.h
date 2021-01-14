@@ -42,7 +42,7 @@ namespace black_cat
 
 			void set_entity_name(const bcCHAR* p_entity_name);
 
-			void set_controller(core::bc_unique_ptr< bc_iactor_controller > p_controller);
+			void set_controller(core::bc_unique_ptr< bci_actor_controller > p_controller);
 			
 			const physics::bc_bound_box& get_prev_bound_box() const noexcept;
 			
@@ -68,7 +68,7 @@ namespace black_cat
 			bool m_bound_box_changed;
 			physics::bc_bound_box m_prev_bound_box;
 			physics::bc_bound_box m_bound_box;
-			core::bc_unique_ptr<bc_iactor_controller> m_controller;
+			core::bc_unique_ptr<bci_actor_controller> m_controller;
 		};
 
 		inline const bcCHAR* bc_mediate_component::get_entity_name() const

@@ -102,7 +102,7 @@ namespace black_cat
 
 			auto** l_buffer = static_cast< physx::PxMaterial** >
 			(
-				bcAlloc(sizeof(physx::PxMaterial*) * p_material_count, core::bc_alloc_type::frame)
+				BC_ALLOC(sizeof(physx::PxMaterial*) * p_material_count, core::bc_alloc_type::frame)
 			);
 
 			for (bcUINT32 i = 0; i < p_material_count; ++i)
@@ -124,7 +124,7 @@ namespace black_cat
 					static_cast< physx::PxShapeFlag::Enum >(static_cast< physx::PxShapeFlags::InternalType >(p_flags))
 				);
 
-			bcFree(l_buffer);
+			BC_FREE(l_buffer);
 
 			return l_shape;
 		}
@@ -199,7 +199,7 @@ namespace black_cat
 			auto l_buffer_size = get_shape_count();
 			auto* l_buffer = static_cast< bc_shape* >
 			(
-				bcAlloc(sizeof(bc_shape*) * l_buffer_size, core::bc_alloc_type::frame)
+				BC_ALLOC(sizeof(bc_shape*) * l_buffer_size, core::bc_alloc_type::frame)
 			);
 
 			get_shapes(l_buffer, l_buffer_size);
@@ -209,7 +209,7 @@ namespace black_cat
 				l_buffer[i].set_collision_group(p_filter);
 			}
 
-			bcFree(l_buffer);
+			BC_FREE(l_buffer);
 		}
 
 		template<>
@@ -219,7 +219,7 @@ namespace black_cat
 			auto l_buffer_size = get_shape_count();
 			auto* l_buffer = static_cast< bc_shape* >
 			(
-				bcAlloc(sizeof(bc_shape*) * l_buffer_size, core::bc_alloc_type::frame)
+				BC_ALLOC(sizeof(bc_shape*) * l_buffer_size, core::bc_alloc_type::frame)
 			);
 
 			get_shapes(l_buffer, l_buffer_size);
@@ -229,7 +229,7 @@ namespace black_cat
 				l_buffer[i].set_query_group(p_filter);
 			}
 
-			bcFree(l_buffer);
+			BC_FREE(l_buffer);
 		}
 
 		template<>
@@ -239,7 +239,7 @@ namespace black_cat
 			auto l_buffer_size = get_shape_count();
 			auto* l_buffer = static_cast< bc_shape* >
 				(
-					bcAlloc(sizeof(bc_shape*) * l_buffer_size, core::bc_alloc_type::frame)
+					BC_ALLOC(sizeof(bc_shape*) * l_buffer_size, core::bc_alloc_type::frame)
 					);
 
 			get_shapes(l_buffer, l_buffer_size);
@@ -249,7 +249,7 @@ namespace black_cat
 				l_buffer[i].set_notify_flag(p_flag, p_value);
 			}
 
-			bcFree(l_buffer);
+			BC_FREE(l_buffer);
 		}
 	}
 }

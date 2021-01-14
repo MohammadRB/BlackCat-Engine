@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "Core/Container/bcVector.h"
 #include "Core/Math/bcVector3f.h"
+#include "Core/Container/bcVector.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/bcExport.h"
 #include "Game/System/Input/bcCamera.h"
@@ -12,6 +12,9 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_sub_mesh;
+		class bc_sub_mesh_transform;
+		
 		class BC_GAME_DLL bc_shape_generator_buffer
 		{
 		public:
@@ -36,6 +39,8 @@ namespace black_cat
 			static void create_wired_box(bc_shape_generator_buffer& p_buffer, const physics::bc_bound_box& p_box);
 
 			static void create_wired_frustum(bc_shape_generator_buffer& p_buffer, const bc_icamera::extend& p_camera_extend);
+			
+			static void create_wired_skeleton(bc_shape_generator_buffer& p_buffer, const bc_sub_mesh& p_mesh, const bc_sub_mesh_transform& p_mesh_transform);
 		};
 	}
 }

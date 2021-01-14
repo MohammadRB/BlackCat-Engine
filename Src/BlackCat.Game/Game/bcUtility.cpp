@@ -10,7 +10,7 @@ namespace black_cat
 {
 	void render_mesh(game::bc_render_state_buffer& p_buffer,
 		const game::bc_sub_mesh& p_mesh_part,
-		const game::bc_sub_mesh_transformation& p_transformations,
+		const game::bc_sub_mesh_transform& p_transformations,
 		const game::bc_mesh_node* const* p_begin,
 		const game::bc_mesh_node* const* p_end,
 		const bcCHAR* p_mesh_prefix)
@@ -19,7 +19,7 @@ namespace black_cat
 		{
 			const game::bc_mesh_node* l_node = *p_begin;
 
-			for (game::bc_mesh_node::node_index l_mesh_index = 0, l_mesh_count = l_node->get_mesh_count(); l_mesh_index < l_mesh_count; ++l_mesh_index)
+			for (game::bc_mesh_node::node_index_t l_mesh_index = 0, l_mesh_count = l_node->get_mesh_count(); l_mesh_index < l_mesh_count; ++l_mesh_index)
 			{
 				if (p_mesh_prefix != nullptr)
 				{
@@ -33,7 +33,7 @@ namespace black_cat
 				}
 
 				auto l_node_mesh_render_state = p_mesh_part.get_node_mesh_render_state_ptr(*l_node, l_mesh_index);
-				const auto& l_node_transformation = p_mesh_part.get_node_absolute_transformation(*l_node, p_transformations);
+				const auto& l_node_transformation = p_mesh_part.get_node_absolute_transform(*l_node, p_transformations);
 
 				game::bc_render_instance l_instance(l_node_transformation);
 				p_buffer.add_render_instance(std::move(l_node_mesh_render_state), l_instance);
@@ -60,7 +60,7 @@ namespace black_cat
 
 	void render_skinned_mesh(game::bc_render_state_buffer& p_buffer,
 		const game::bc_sub_mesh& p_mesh_part,
-		const game::bc_sub_mesh_transformation& p_transformations,
+		const game::bc_sub_mesh_transform& p_transformations,
 		const game::bc_mesh_node* const* p_begin,
 		const game::bc_mesh_node* const* p_end)
 	{
@@ -68,7 +68,7 @@ namespace black_cat
 		{
 			const game::bc_mesh_node* l_node = *p_begin;
 
-			for (game::bc_mesh_node::node_index l_mesh_index = 0, l_mesh_count = l_node->get_mesh_count(); l_mesh_index < l_mesh_count; ++l_mesh_index)
+			for (game::bc_mesh_node::node_index_t l_mesh_index = 0, l_mesh_count = l_node->get_mesh_count(); l_mesh_index < l_mesh_count; ++l_mesh_index)
 			{
 				auto l_node_mesh_render_state = p_mesh_part.get_node_mesh_render_state_ptr(*l_node, l_mesh_index);
 				

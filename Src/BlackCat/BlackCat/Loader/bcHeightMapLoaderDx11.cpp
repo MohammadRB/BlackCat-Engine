@@ -88,7 +88,7 @@ namespace black_cat
 			
 			m_texel_size = l_mapped.m_row_pitch / l_width;
 			bcUINT32 l_buffer_size = l_width * l_height * m_texel_size;
-			m_texture_buffer.reset(static_cast< bcUBYTE* >(bcAlloc(l_buffer_size, core::bc_alloc_type::frame)));
+			m_texture_buffer.reset(static_cast< bcUBYTE* >(BC_ALLOC(l_buffer_size, core::bc_alloc_type::frame)));
 
 			void* l_src = l_mapped.m_data;
 			void* l_dest = m_texture_buffer.get();
@@ -174,6 +174,7 @@ namespace black_cat
 		(
 			p_context.get_allocator_alloc_type(),
 			p_context.m_file_path,
+			nullptr,
 			*p_context.m_parameters
 		);
 
@@ -209,7 +210,7 @@ namespace black_cat
 		}
 
 		const bcUINT32 l_sample_count = l_width * l_height;
-		core::bc_unique_ptr<bcINT16> l_heights(reinterpret_cast<bcINT16*>(bcAlloc(sizeof(bcINT16) * l_sample_count, core::bc_alloc_type::frame)));
+		core::bc_unique_ptr<bcINT16> l_heights(reinterpret_cast<bcINT16*>(BC_ALLOC(sizeof(bcINT16) * l_sample_count, core::bc_alloc_type::frame)));
 
 		l_height_map_copy_task.wait();
 
@@ -277,7 +278,7 @@ namespace black_cat
 		bool l_16bit_sample = l_height_map_texture_config.get_format() == graphic::bc_format::R16_FLOAT;
 		bcUINT32 l_sample_size = l_16bit_sample ? 2 : 4;
 
-		core::bc_unique_ptr<bcFLOAT> l_samples(static_cast<bcFLOAT*>(bcAlloc(l_width * l_height * l_sample_size, core::bc_alloc_type::frame)));
+		core::bc_unique_ptr<bcFLOAT> l_samples(static_cast<bcFLOAT*>(BC_ALLOC(l_width * l_height * l_sample_size, core::bc_alloc_type::frame)));
 		bcFLOAT* l_dest = l_samples.get();
 
 		for (bcUINT32 l_z = 0; l_z < l_width; ++l_z)
@@ -300,6 +301,7 @@ namespace black_cat
 		(
 			p_context.get_allocator_alloc_type(),
 			l_texture_map_file_relative.c_str(),
+			nullptr,
 			*p_context.m_parameters,
 			std::move
 			(
@@ -380,7 +382,7 @@ namespace black_cat
 					(static_cast< bcFLOAT >(z) + (l_height_chunk_count / 2)) / l_height_chunk_count
 				);
 
-				if(graphic::bc_render_api_info::is_top_left_texcoord())
+				if(graphic::bc_render_api_info::use_top_left_texcoord())
 				{
 					l_vertex.m_texcoord.y = 1 - l_vertex.m_texcoord.y;
 				}

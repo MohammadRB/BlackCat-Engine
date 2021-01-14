@@ -18,9 +18,11 @@ namespace black_cat
 		public:
 			constexpr static const bcCHAR* api_name() noexcept;
 
-			constexpr static bool is_left_handed() noexcept;
+			constexpr static bool use_left_handed() noexcept;
 
-			constexpr static bool is_top_left_texcoord() noexcept;
+			constexpr static bool use_top_left_texcoord() noexcept;
+
+			constexpr static bool use_column_matrix() noexcept;
 
 			constexpr static bcSIZE number_of_texture2d_pixels() noexcept;
 
@@ -43,10 +45,6 @@ namespace black_cat
 			constexpr static bcSIZE number_of_ps_cs_uav_resource() noexcept;
 
 			constexpr static bcSIZE required_cbuffer_align() noexcept;
-
-		protected:
-
-		private:
 		};
 
 		using bc_render_api_info = bc_platform_render_api_info< g_current_render_api >;
@@ -58,13 +56,19 @@ namespace black_cat
 		}
 
 		template< >
-		constexpr bool bc_platform_render_api_info<g_api_dx11>::is_left_handed() noexcept
+		constexpr bool bc_platform_render_api_info<g_api_dx11>::use_left_handed() noexcept
 		{
 			return true;
 		}
 
 		template< >
-		constexpr bool bc_platform_render_api_info<g_api_dx11>::is_top_left_texcoord() noexcept
+		constexpr bool bc_platform_render_api_info<g_api_dx11>::use_top_left_texcoord() noexcept
+		{
+			return true;
+		}
+
+		template< >
+		constexpr bool bc_platform_render_api_info<g_api_dx11>::use_column_matrix() noexcept
 		{
 			return true;
 		}

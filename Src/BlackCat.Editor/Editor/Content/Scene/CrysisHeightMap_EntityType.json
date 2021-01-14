@@ -201,12 +201,24 @@
     },
     {
       "name": "xbot",
+      "controller": "xbot",
       "components": [
         {
           "name": "skinned_mesh",
           "parameters": {
             "mesh": "xbot",
-            "animations": [ "xbot-walking" ]
+            "animations": [ "xbot-neutral-idle" ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "xbotT",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "xbotT"
           }
         }
       ]

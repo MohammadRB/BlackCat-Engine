@@ -49,7 +49,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_global, p_name, p_bool);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -59,7 +59,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_global, p_name, p_integer);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -69,7 +69,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_global, p_name, p_double);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -79,7 +79,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_global, p_name, p_string);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -89,7 +89,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_global, p_name, p_bool);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -99,7 +99,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_global, p_name, p_int);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -109,7 +109,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_global, p_name, p_double);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -119,7 +119,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_global, p_name, p_string);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -129,7 +129,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_global, p_name, p_object);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -139,7 +139,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_global, p_name, p_descriptor);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -149,7 +149,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_global, p_name, p_descriptor);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -159,7 +159,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_global, p_name, p_descriptor);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -169,7 +169,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_global, p_name, p_descriptor);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -179,7 +179,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_global, p_name, p_descriptor);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -190,7 +190,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_function(m_context, m_pack.m_js_global, p_name, p_func);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}

@@ -109,7 +109,7 @@ namespace black_cat
 				return m_pack.m_unordered_shader_view == p_other.m_pack.m_unordered_shader_view;
 			}
 
-			bcAssert(false);
+			BC_ASSERT(false);
 			return false;
 		}
 

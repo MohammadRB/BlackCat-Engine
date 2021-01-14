@@ -72,7 +72,7 @@ namespace black_cat
 			D3D11_TEXTURE2D_DESC& l_texture_desc = p_config->get_platform_pack().m_desc;
 			D3D11_SUBRESOURCE_DATA l_data;
 
-			bcAssert
+			BC_ASSERT
 			(
 				l_texture_desc.SampleDesc.Count > 1 ?
 				!(l_texture_desc.MiscFlags & D3D11_RESOURCE_MISC_GENERATE_MIPS) :
@@ -180,7 +180,7 @@ namespace black_cat
 						l_format = GUID_ContainerFormatJpeg;
 						break;
 					default:
-						bcAssert(false);
+						BC_ASSERT(false);
 						break;
 					}
 
@@ -238,12 +238,12 @@ namespace black_cat
 
 						l_full_message += l_message;
 
-						bcAssert(false);
+						BC_ASSERT(false);
 						throw bc_graphic_exception(static_cast< bcINT >(l_error_code), l_full_message);
 					}
 					else
 					{
-						bcAssert(false);
+						BC_ASSERT(false);
 						throw bc_graphic_exception(static_cast< bcINT >(l_error_code), l_full_message);
 					}
 				}
@@ -349,7 +349,7 @@ namespace black_cat
 
 		ID3D11View* _initialize_shader_view(bc_device* p_device, bc_iresource* p_resource, bc_resource_view_config* p_view_config)
 		{
-			bcAssert
+			BC_ASSERT
 			(
 				p_view_config->get_platform_pack().m_type == bc_resource_view_type::shader |
 				p_view_config->get_platform_pack().m_type == bc_resource_view_type::unordered
@@ -1056,7 +1056,7 @@ namespace black_cat
 			}
 
 			//auto l_pipeline_state_poxy = allocate< bc_device_pipeline_state_proxy >();
-			auto l_pipeline_state_poxy = bcNew(bc_device_pipeline_state_proxy, core::bc_alloc_type::unknown);
+			auto l_pipeline_state_poxy = BC_NEW(bc_device_pipeline_state_proxy, core::bc_alloc_type::unknown);
 
 			l_pipeline_state_poxy->m_config = std::move(p_config);
 			l_pipeline_state_poxy->m_blend_state = l_dx_blend_state;
@@ -1086,7 +1086,7 @@ namespace black_cat
 		bc_device_compute_state_ptr bc_platform_device< g_api_dx11 >::create_compute_state(bc_device_compute_state_config& p_config)
 		{
 			/*auto l_compute_state_proxy = allocate< bc_device_compute_state_proxy >();*/
-			auto* l_compute_state_proxy = bcNew(bc_device_compute_state_proxy, core::bc_alloc_type::unknown);
+			auto* l_compute_state_proxy = BC_NEW(bc_device_compute_state_proxy, core::bc_alloc_type::unknown);
 			
 			l_compute_state_proxy->m_config = std::move(p_config);
 
@@ -1103,7 +1103,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_device_pipeline_ptr bc_platform_device< g_api_dx11 >::get_default_pipeline()
 		{
-			auto* l_pipeline_proxy = bcNew(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
+			auto* l_pipeline_proxy = BC_NEW(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
 
 			ID3D11Query* l_query;
 
@@ -1130,7 +1130,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_device_pipeline_ptr bc_platform_device< g_api_dx11 >::create_pipeline()
 		{
-			auto* l_pipeline_proxy = bcNew(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
+			auto* l_pipeline_proxy = BC_NEW(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
 
 			ID3D11Query* l_query;
 			ID3D11DeviceContext* l_context;
@@ -1160,7 +1160,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_device_command_list_ptr bc_platform_device< g_api_dx11 >::create_command_list()
 		{
-			auto l_command_list_proxy = bcNew(bc_device_command_list_proxy, core::bc_alloc_type::unknown);
+			auto l_command_list_proxy = BC_NEW(bc_device_command_list_proxy, core::bc_alloc_type::unknown);
 
 			bc_device_command_list::platform_pack l_pack;
 			l_pack.m_command_list_proxy = l_command_list_proxy;

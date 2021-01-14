@@ -51,7 +51,7 @@ namespace black_cat
 			case bc_ui_scene_command_type::load_scene:
 				p_context.m_game_system.get_file_system()
 				         .get_content_manager()
-				         .load< game::bc_scene >(m_scene_path.c_str(), core::bc_content_loader_parameter());
+				         .load< game::bc_scene >(m_scene_path.c_str(), nullptr, core::bc_content_loader_parameter());
 				break;
 			case bc_ui_scene_command_type::save_scene:
 				p_context.m_game_system.get_file_system()

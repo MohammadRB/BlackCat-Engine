@@ -5,7 +5,7 @@
 #include "Core/Container/bcVector.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/Object/Mesh/bcMesh.h"
-#include "Game/Object/Mesh/bcSubMeshTransformation.h"
+#include "Game/Object/Mesh/bcSubMeshTransform.h"
 
 namespace black_cat
 {
@@ -17,9 +17,9 @@ namespace black_cat
 		class BC_GAME_DLL bc_sub_mesh
 		{
 		public:
-			bc_sub_mesh();
+			bc_sub_mesh() noexcept;
 
-			explicit bc_sub_mesh(bc_mesh_ptr p_mesh);
+			explicit bc_sub_mesh(bc_mesh_ptr p_mesh) noexcept;
 
 			bc_sub_mesh(bc_mesh_ptr p_mesh, const bcCHAR* p_node);
 
@@ -29,15 +29,21 @@ namespace black_cat
 
 			bc_sub_mesh& operator=(bc_sub_mesh&&) noexcept;
 
-			bc_mesh_ptr get_mesh() const;
+			const bc_mesh_ptr& get_mesh() const noexcept;
 
-			const bc_mesh_node* get_root_node() const;
+			bcFLOAT get_mesh_scale() const noexcept;
 
-			const bc_mesh_node* get_parent_node(const bc_mesh_node& p_node) const;
+			const bc_mesh_node* get_root_node() const noexcept;
 
-			const core::bc_vector< bc_mesh_node* >& get_node_children(const bc_mesh_node& p_node) const;
+			const bc_mesh_node* find_node(const bcCHAR* p_name) const noexcept;
+			
+			const bc_mesh_node* get_node_parent(const bc_mesh_node& p_node) const noexcept;
 
-			const core::bc_matrix4f& get_node_transformation(const bc_mesh_node& p_node) const;
+			const core::bc_vector< bc_mesh_node* >& get_node_children(const bc_mesh_node& p_node) const noexcept;
+
+			const core::bc_matrix4f& get_node_offset_transform(const bc_mesh_node& p_node) const noexcept;
+			
+			const core::bc_matrix4f& get_node_transform(const bc_mesh_node& p_node) const noexcept;
 
 			const core::bc_string& get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
@@ -51,38 +57,64 @@ namespace black_cat
 
 			const bc_mesh_part_collider& get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			const core::bc_matrix4f& get_node_absolute_transformation(const bc_mesh_node& p_node, const bc_sub_mesh_transformation& p_transformations) const;
+			const core::bc_matrix4f& get_node_absolute_transform(const bc_mesh_node& p_node, const bc_sub_mesh_transform& p_transforms) const noexcept;
 
-			void calculate_absolute_transformations(const core::bc_matrix4f& p_world, bc_sub_mesh_transformation& p_result, physics::bc_bound_box& p_bound_box) const;
+			void calculate_bound_box(const bc_sub_mesh_transform& p_transforms, physics::bc_bound_box& p_bound_box) const noexcept;
+			
+			void calculate_absolute_transforms(const core::bc_matrix4f& p_world, bc_sub_mesh_transform& p_transforms, physics::bc_bound_box& p_bound_box) const noexcept;
+
+			template< typename TArg, typename TCallable >
+			void iterate_over_nodes(TArg& p_arg, TCallable p_callable) const noexcept;
 			
 		private:
 			bc_mesh_ptr m_mesh;
 			const bc_mesh_node* m_root_node;
 		};
 
-		inline bc_mesh_ptr bc_sub_mesh::get_mesh() const
+		inline const bc_mesh_ptr& bc_sub_mesh::get_mesh() const noexcept
 		{
 			return m_mesh;
 		}
 
-		inline const bc_mesh_node* bc_sub_mesh::get_root_node() const
+		inline bcFLOAT bc_sub_mesh::get_mesh_scale() const noexcept
+		{
+			return m_mesh->get_scale();
+		}
+		
+		inline const bc_mesh_node* bc_sub_mesh::get_root_node() const noexcept
 		{
 			return m_root_node;
 		}
 
-		inline const bc_mesh_node* bc_sub_mesh::get_parent_node(const bc_mesh_node& p_node) const
+		inline const bc_mesh_node* bc_sub_mesh::find_node(const bcCHAR* p_name) const noexcept
+		{
+			const auto* l_mesh_node = m_mesh->find_node(p_name);
+			if(!l_mesh_node || l_mesh_node->get_transform_index() < m_root_node->get_transform_index())
+			{
+				return nullptr;
+			}
+
+			return l_mesh_node;
+		}
+		
+		inline const bc_mesh_node* bc_sub_mesh::get_node_parent(const bc_mesh_node& p_node) const noexcept
 		{
 			return m_mesh->get_node_parent(p_node);
 		}
 		
-		inline const core::bc_vector<bc_mesh_node*>& bc_sub_mesh::get_node_children(const bc_mesh_node& p_node) const
+		inline const core::bc_vector<bc_mesh_node*>& bc_sub_mesh::get_node_children(const bc_mesh_node& p_node) const noexcept
 		{
 			return m_mesh->get_node_children(p_node);
 		}
 
-		inline const core::bc_matrix4f& bc_sub_mesh::get_node_transformation(const bc_mesh_node& p_node) const
+		inline const core::bc_matrix4f& bc_sub_mesh::get_node_offset_transform(const bc_mesh_node& p_node) const noexcept
 		{
-			return m_mesh->get_node_transformation(p_node);
+			return m_mesh->get_node_offset_transform(p_node);
+		}
+
+		inline const core::bc_matrix4f& bc_sub_mesh::get_node_transform(const bc_mesh_node& p_node) const noexcept
+		{
+			return m_mesh->get_node_transform(p_node);
 		}
 
 		inline const core::bc_string& bc_sub_mesh::get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
@@ -115,14 +147,25 @@ namespace black_cat
 			return m_mesh->get_node_mesh_colliders(p_node, p_mesh_index);
 		}
 
-		inline const core::bc_matrix4f& bc_sub_mesh::get_node_absolute_transformation(const bc_mesh_node& p_node, const bc_sub_mesh_transformation& p_transformations) const
+		inline const core::bc_matrix4f& bc_sub_mesh::get_node_absolute_transform(const bc_mesh_node& p_node, const bc_sub_mesh_transform& p_transforms) const noexcept
 		{
-			return p_transformations.get_node_transform(p_node);
+			return p_transforms.get_node_transform(p_node);
 		}
 
-		inline void bc_sub_mesh::calculate_absolute_transformations(const core::bc_matrix4f& p_world, bc_sub_mesh_transformation& p_result, physics::bc_bound_box& p_bound_box) const
+		inline void bc_sub_mesh::calculate_bound_box(const bc_sub_mesh_transform& p_transforms, physics::bc_bound_box& p_bound_box) const noexcept
 		{
-			m_mesh->calculate_absolute_transformations(p_world, p_result, p_bound_box);
+			m_mesh->calculate_bound_box(p_transforms, p_bound_box);
+		}
+		
+		inline void bc_sub_mesh::calculate_absolute_transforms(const core::bc_matrix4f& p_world, bc_sub_mesh_transform& p_transforms, physics::bc_bound_box& p_bound_box) const noexcept
+		{
+			m_mesh->calculate_absolute_transforms(p_world, p_transforms, p_bound_box);
+		}
+
+		template< typename TArg, typename TCallable >
+		void bc_sub_mesh::iterate_over_nodes(TArg& p_arg, TCallable p_callable) const noexcept
+		{
+			m_mesh->iterate_over_nodes(p_arg, p_callable, m_root_node);
 		}
 	}
 }

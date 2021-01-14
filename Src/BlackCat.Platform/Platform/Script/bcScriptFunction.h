@@ -195,7 +195,7 @@ namespace black_cat
 		TR bc_platform_script_function< TPlatform, TR(TA...) >::_call_callback(TCallable p_callable, bc_script_variable* p_args, bcUINT32 p_arg_count)
 		{
 			// TODO Make a choose for more and less argument count than expected
-			bcAssert(sizeof...(TA) == p_arg_count);
+			BC_ASSERT(sizeof...(TA) == p_arg_count);
 
 			bcUINT32 l_counter = 0;
 			return p_callable

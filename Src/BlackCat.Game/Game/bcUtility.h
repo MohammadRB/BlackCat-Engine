@@ -10,20 +10,20 @@ namespace black_cat
 	{
 		class bc_mesh_node;
 		class bc_sub_mesh;
-		class bc_sub_mesh_transformation;
+		class bc_sub_mesh_transform;
 		class bc_render_state_buffer;
 	}
 
 	void render_mesh(game::bc_render_state_buffer& p_buffer,
 		const game::bc_sub_mesh& p_mesh_part,
-		const game::bc_sub_mesh_transformation& p_transformations,
+		const game::bc_sub_mesh_transform& p_transformations,
 		const game::bc_mesh_node* const* p_begin,
 		const game::bc_mesh_node* const* p_end,
 		const bcCHAR* p_mesh_prefix = nullptr);
 
 	void render_skinned_mesh(game::bc_render_state_buffer& p_buffer,
 		const game::bc_sub_mesh& p_mesh_part,
-		const game::bc_sub_mesh_transformation& p_transformations,
+		const game::bc_sub_mesh_transform& p_transformations,
 		const game::bc_mesh_node* const* p_begin,
 		const game::bc_mesh_node* const* p_end);
 }

@@ -35,7 +35,7 @@ namespace black_cat
 
 			static void start_up(A... pArgs)
 			{
-				bcAssert(m_instance == nullptr);
+				BC_ASSERT(m_instance == nullptr);
 
 				m_instance = new C(); // TODO
 				m_instance->initialize(pArgs...);
@@ -43,7 +43,7 @@ namespace black_cat
 
 			static void close()
 			{
-				bcAssert(m_instance != nullptr);
+				BC_ASSERT(m_instance != nullptr);
 
 				m_instance->destroy();
 				delete m_instance;
@@ -52,7 +52,7 @@ namespace black_cat
 
 			static C& get()
 			{
-				bcAssert(m_instance != nullptr);
+				BC_ASSERT(m_instance != nullptr);
 				return *m_instance;
 			}
 

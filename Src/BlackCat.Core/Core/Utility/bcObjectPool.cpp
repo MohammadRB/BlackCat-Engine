@@ -113,7 +113,7 @@ namespace black_cat
 		void bc_concurrent_memory_pool::free(void* p_pointer) noexcept(true)
 		{
 			// is this pointer in our heap?
-			bcAssert(contain_pointer(p_pointer));
+			BC_ASSERT(contain_pointer(p_pointer));
 
 			bcUBYTE* l_pointer = reinterpret_cast<bcUBYTE*>(p_pointer);
 
@@ -159,7 +159,7 @@ namespace black_cat
 
 			m_blocks = static_cast< core_platform::bc_atomic< bit_block_type >* >
 			(
-				bcAlloc(m_num_bit_blocks * sizeof(core_platform::bc_atomic< bit_block_type >), p_alloc_type)
+				BC_ALLOC(m_num_bit_blocks * sizeof(core_platform::bc_atomic< bit_block_type >), p_alloc_type)
 			);
 			if (!m_blocks)
 			{
@@ -171,7 +171,7 @@ namespace black_cat
 				m_blocks[i].store(0U);
 			}
 
-			m_heap = static_cast<bcUBYTE*>(bcAlignedAlloc((m_block_size * m_num_block) * sizeof(bcUBYTE), BC_MEMORY_MIN_ALIGN, p_alloc_type));
+			m_heap = static_cast<bcUBYTE*>(BC_ALIGNED_ALLOC((m_block_size * m_num_block) * sizeof(bcUBYTE), BC_MEMORY_MIN_ALIGN, p_alloc_type));
 
 			if (!m_heap)
 			{
@@ -197,11 +197,11 @@ namespace black_cat
 				}
 			}
 
-			bcAssert(l_num_alive_objects == 0);
+			BC_ASSERT(l_num_alive_objects == 0);
 #endif
 
-			bcFree(m_blocks);
-			bcAlignedFree(m_heap);
+			BC_FREE(m_blocks);
+			BC_ALIGNED_FREE(m_heap);
 
 			m_num_block = 0;
 			m_blocks = nullptr;

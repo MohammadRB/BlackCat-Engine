@@ -30,8 +30,8 @@ namespace black_cat
 			m_bottom_right_back(nullptr),
 			m_my_position(bc_octal_tree_node_position::null),
 			m_bound_box(p_box),
-			m_child_nodes_pool(bcNew(core::bc_concurrent_object_pool<bc_octal_tree_graph_node>(), core::bc_alloc_type::unknown)),
-			m_actors_pool(bcNew(core::bc_concurrent_memory_pool(), core::bc_alloc_type::unknown)),
+			m_child_nodes_pool(BC_NEW(core::bc_concurrent_object_pool<bc_octal_tree_graph_node>(), core::bc_alloc_type::unknown)),
+			m_actors_pool(BC_NEW(core::bc_concurrent_memory_pool(), core::bc_alloc_type::unknown)),
 			m_actors(graph_node_entry_allocator(*m_actors_pool))
 		{
 			const auto l_half_extends = p_box.get_half_extends();
@@ -79,7 +79,7 @@ namespace black_cat
 		{
 			core::bc_vector3f l_bound_box_center = p_parent.m_bound_box.get_center();
 			const core::bc_vector3f l_half_extends = p_parent.m_bound_box.get_half_extends() / 2;
-			const auto l_z_sign = graphic::bc_render_api_info::is_left_handed() ? +1 : -1;
+			const auto l_z_sign = graphic::bc_render_api_info::use_left_handed() ? +1 : -1;
 
 			switch (p_my_position)
 			{
@@ -124,7 +124,7 @@ namespace black_cat
 				l_bound_box_center.z += (l_half_extends.z * l_z_sign);
 				break;
 			default:
-				bcAssert(false);
+				BC_ASSERT(false);
 			}
 
 			m_bound_box = physics::bc_bound_box(l_bound_box_center, l_half_extends);
@@ -146,8 +146,8 @@ namespace black_cat
 
 			if (!m_parent)
 			{
-				bcDelete(m_actors_pool);
-				bcDelete(m_child_nodes_pool);
+				BC_DELETE(m_actors_pool);
+				BC_DELETE(m_child_nodes_pool);
 			}
 		}
 
@@ -227,7 +227,7 @@ namespace black_cat
 
 					if (p_camera_frustum.intersects(l_bound_box))
 					{
-						p_buffer.add_actor(l_entry.m_actor);
+						p_buffer.add(l_entry.m_actor);
 					}
 				}
 			}
@@ -293,7 +293,7 @@ namespace black_cat
 			if (!l_containing_node)
 			{
 				const bool l_removed = _remove_actor(p_actor, l_actor_prev_bound_box);
-				bcAssert(l_removed);
+				BC_ASSERT(l_removed);
 				
 				return false;
 			}
@@ -306,7 +306,7 @@ namespace black_cat
 			const bool l_removed = _remove_actor(p_actor, l_actor_prev_bound_box);
 			const bool l_added = _add_actor(p_actor, l_actor_bound_box);
 
-			bcAssert(l_removed);
+			BC_ASSERT(l_removed);
 
 			return l_added;
 		}
@@ -732,7 +732,7 @@ namespace black_cat
 				return m_parent;
 			}
 
-			bcAssert(false);
+			BC_ASSERT(false);
 			return nullptr;
 		}
 
@@ -776,7 +776,7 @@ namespace black_cat
 				return m_parent;
 			}
 
-			bcAssert(false);
+			BC_ASSERT(false);
 			return nullptr;
 		}
 
@@ -785,7 +785,7 @@ namespace black_cat
 			auto* l_mediate_component = p_actor.get_component<bc_mediate_component>();
 			const auto& l_bound_box = l_mediate_component->get_bound_box();
 
-			bcAssert(!l_bound_box.is_empty());
+			BC_ASSERT(!l_bound_box.is_empty());
 
 			return l_bound_box;
 		}

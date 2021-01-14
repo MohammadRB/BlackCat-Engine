@@ -84,7 +84,7 @@ namespace black_cat
 
 		void bc_render_thread::start(graphic::bc_device_command_list p_command_list) noexcept
 		{
-			bcAssert(!m_command_list.is_valid());
+			BC_ASSERT(!m_command_list.is_valid());
 
 			m_command_list = p_command_list;
 			m_pipeline->start_command_list();
@@ -92,7 +92,7 @@ namespace black_cat
 
 		graphic::bc_device_command_list bc_render_thread::finish() noexcept
 		{
-			bcAssert(m_command_list.is_valid());
+			BC_ASSERT(m_command_list.is_valid());
 
 			m_pipeline->finish_command_list(m_command_list);
 			m_executor->excecute_command_list(m_command_list);
@@ -575,7 +575,7 @@ namespace black_cat
 
 		void bc_render_thread::reset()
 		{
-			bcAssert(!m_command_list.is_valid());
+			BC_ASSERT(!m_command_list.is_valid());
 			
 			m_pipeline.reset();
 			m_executor.reset();
@@ -583,7 +583,7 @@ namespace black_cat
 
 		void bc_render_thread::reset(graphic::bc_device_pipeline_ptr p_pipeline, graphic::bc_device_command_executor_ptr p_command_executor)
 		{
-			bcAssert(!m_command_list.is_valid());
+			BC_ASSERT(!m_command_list.is_valid());
 
 			m_pipeline = std::move(p_pipeline);
 			m_executor = std::move(p_command_executor);

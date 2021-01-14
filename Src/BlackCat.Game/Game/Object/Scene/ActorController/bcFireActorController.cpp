@@ -6,7 +6,7 @@
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
-#include "Game/Object/Scene/Component/Controller/bcFireActorController.h"
+#include "Game/Object/Scene/ActorController/bcFireActorController.h"
 
 namespace black_cat
 {
@@ -50,7 +50,7 @@ namespace black_cat
 			auto* l_light_component = p_actor.get_component< bc_light_component >();
 			auto* l_emitter_component = p_actor.get_component< bc_particle_emitter_component >();
 
-			const bcFLOAT l_noise = (bc_noise(p_clock.m_total_elapsed_second / 5.0f, 1) - 0.5f) * m_light_intensity * 0.2f;
+			const bcFLOAT l_noise = (bc_noise(p_clock.m_total_elapsed_second / 7.5f, 1) - 0.5f) * m_light_intensity * 0.2f;
 			auto* l_point_light = l_light_component->get_light()->as_point_light();
 			l_point_light->set_intensity(m_light_intensity + l_noise);
 

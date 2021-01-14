@@ -157,7 +157,7 @@ namespace black_cat
 
 		void bc_game_console::run_script(const bcWCHAR* p_script, core_platform::bc_future<platform::bc_script_variable>* p_result, bool p_output_to_console)
 		{
-			bcAssert(p_result);
+			BC_ASSERT(p_result);
 
 			{
 				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_scripts_mutex);

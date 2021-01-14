@@ -197,7 +197,7 @@ namespace black_cat
 		{
 			bc_shape l_result;
 
-			physx::PxMaterial** l_px_material_buffer = reinterpret_cast< physx::PxMaterial** >(bcAlloc(sizeof(physx::PxMaterial*) * p_material_count, core::bc_alloc_type::frame));
+			physx::PxMaterial** l_px_material_buffer = reinterpret_cast< physx::PxMaterial** >(BC_ALLOC(sizeof(physx::PxMaterial*) * p_material_count, core::bc_alloc_type::frame));
 
 			for (bcUINT32 i = 0; i < p_material_count; ++i)
 			{
@@ -217,7 +217,7 @@ namespace black_cat
 					static_cast< physx::PxShapeFlag::Enum >(p_shape_flags)
 				);
 
-			bcFree(l_px_material_buffer);
+			BC_FREE(l_px_material_buffer);
 
 			return bc_shape_ref(l_result);
 		}
@@ -269,7 +269,7 @@ namespace black_cat
 			bc_memory_buffer l_result;
 			core::bc_unique_ptr< physx::PxVec3 > l_vertex_buffer(static_cast< physx::PxVec3* >
 				(
-					bcAlloc(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
+					BC_ALLOC(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
 				));
 
 			physx::PxConvexMeshDesc l_px_desc = bc_convert_to_px_convex_mesh(p_desc, l_vertex_buffer.get());
@@ -298,7 +298,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_convex_mesh_ref bc_platform_physics< g_api_physx >::create_convex_mesh(bc_memory_buffer& p_buffer)
 		{
-			bcAssert(p_buffer.is_valid());
+			BC_ASSERT(p_buffer.is_valid());
 
 			bc_convex_mesh l_result;
 
@@ -329,11 +329,11 @@ namespace black_cat
 
 			core::bc_unique_ptr< physx::PxVec3 > l_vertex_buffer(static_cast< physx::PxVec3* >
 				(
-					bcAlloc(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
+					BC_ALLOC(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
 				));
 			core::bc_unique_ptr< bcBYTE > l_index_buffer(static_cast< bcBYTE* >
 				(
-					bcAlloc(sizeof(bcBYTE) * p_desc.m_indices.m_count * (is_16_bit_index ? sizeof(bcUINT16) : sizeof(bcUINT32)), core::bc_alloc_type::frame)
+					BC_ALLOC(sizeof(bcBYTE) * p_desc.m_indices.m_count * (is_16_bit_index ? sizeof(bcUINT16) : sizeof(bcUINT32)), core::bc_alloc_type::frame)
 				));
 
 			physx::PxTriangleMeshDesc l_px_desc = bc_convert_to_px_triangle_mesh(p_desc, l_vertex_buffer.get(), l_index_buffer.get());
@@ -350,7 +350,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_triangle_mesh_ref bc_platform_physics< g_api_physx >::create_triangle_mesh(bc_memory_buffer& p_buffer)
 		{
-			bcAssert(p_buffer.is_valid());
+			BC_ASSERT(p_buffer.is_valid());
 
 			bc_triangle_mesh l_result;
 
@@ -379,7 +379,7 @@ namespace black_cat
 			bc_memory_buffer l_result;
 			core::bc_unique_ptr< physx::PxHeightFieldSample > l_sample_buffer(static_cast< physx::PxHeightFieldSample* >
 			(
-				bcAlloc(sizeof(physx::PxHeightFieldSample) * (p_desc.m_num_row * p_desc.m_num_column), core::bc_alloc_type::frame)
+				BC_ALLOC(sizeof(physx::PxHeightFieldSample) * (p_desc.m_num_row * p_desc.m_num_column), core::bc_alloc_type::frame)
 			));
 
 			physx::PxHeightFieldDesc l_px_desc = bc_convert_to_px_height_field(p_desc, l_sample_buffer.get());
@@ -396,7 +396,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_height_field_ref bc_platform_physics< g_api_physx >::create_height_field(bc_memory_buffer& p_buffer)
 		{
-			bcAssert(p_buffer.is_valid());
+			BC_ASSERT(p_buffer.is_valid());
 
 			bc_height_field l_result;
 
@@ -603,7 +603,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_serialize_buffer bc_platform_physics< g_api_physx >::deserialize(bc_memory_buffer& p_buffer)
 		{
-			void* l_aligned_buffer = bcAlignedAllocThrow(p_buffer.get_buffer_size(), 128, core::bc_alloc_type::unknown);
+			void* l_aligned_buffer = BC_ALIGNED_ALLOC_THROW(p_buffer.get_buffer_size(), 128, core::bc_alloc_type::unknown);
 			
 			std::memcpy(l_aligned_buffer, p_buffer.get_buffer_pointer(), p_buffer.get_buffer_size());
 

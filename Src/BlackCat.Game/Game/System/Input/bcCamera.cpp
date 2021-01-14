@@ -194,7 +194,7 @@ namespace black_cat
 		
 		core::bc_matrix4f bc_icamera::create_view_matrix(const core::bc_vector3f& p_up) noexcept
 		{
-			if(graphic::bc_render_api_info::is_left_handed())
+			if(graphic::bc_render_api_info::use_left_handed())
 			{
 				return core::bc_matrix4f::look_at_matrix_lh(m_position, m_look_at, p_up);
 			}
@@ -264,7 +264,7 @@ namespace black_cat
 			
 			core::bc_matrix4f l_proj;
 
-			if(graphic::bc_render_api_info::is_left_handed())
+			if(graphic::bc_render_api_info::use_left_handed())
 			{
 				l_proj = core::bc_matrix4f::orthographic_matrix_lh(get_near_clip(), get_far_clip(), m_max_x - m_min_x, m_max_y - m_min_y);
 			}
@@ -347,7 +347,7 @@ namespace black_cat
 			
 			core::bc_matrix4f l_proj;
 
-			if (graphic::bc_render_api_info::is_left_handed())
+			if (graphic::bc_render_api_info::use_left_handed())
 			{
 				l_proj = core::bc_matrix4f::perspective_fov_matrix_lh(m_field_of_view, m_aspect_ratio, get_near_clip(), get_far_clip());
 			}

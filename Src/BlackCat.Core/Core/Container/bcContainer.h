@@ -36,7 +36,7 @@ namespace black_cat
 			bc_container_node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible< value_type, TArgs... >::value)
 				: m_value(std::forward< TArgs >(p_args)...)
 			{
-				static_assert(std::is_constructible< value_type, TArgs... >::value, "container node value is not constructible with args");
+				static_assert(std::is_constructible< value_type, TArgs... >::value, "container node value is not constructable with args");
 			}
 
 			~bc_container_node() = default;

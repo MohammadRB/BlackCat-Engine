@@ -43,11 +43,15 @@ namespace black_cat
 
 			explicit bc_const_iterator_adapter(const container_type& p_container) noexcept;
 
-			bc_const_iterator_adapter(bc_const_iterator_adapter& p_other) noexcept = default;
+			bc_const_iterator_adapter(const bc_const_iterator_adapter& p_other) noexcept = default;
+			
+			bc_const_iterator_adapter(bc_const_iterator_adapter&& p_other) noexcept = default;
 
 			~bc_const_iterator_adapter() = default;
 
 			bc_const_iterator_adapter& operator=(const bc_const_iterator_adapter& p_other) noexcept = default;
+			
+			bc_const_iterator_adapter& operator=(bc_const_iterator_adapter&& p_other) noexcept = default;
 
 			const_iterator begin() const noexcept;
 
@@ -80,15 +84,25 @@ namespace black_cat
 			using container_type = TContainer;
 			using iterator = typename container_type::iterator;
 			using reverse_iterator = typename _bc_reverse_iterator_or_void< container_type >::type;
-			
+
+			// Make base functions visible
+			using bc_const_iterator_adapter< TContainer >::begin;
+			using bc_const_iterator_adapter< TContainer >::end;
+			using bc_const_iterator_adapter< TContainer >::rbegin;
+			using bc_const_iterator_adapter< TContainer >::rend;
+		
 		public:
 			explicit bc_iterator_adapter(container_type& p_container) noexcept;
 
-			bc_iterator_adapter(bc_iterator_adapter& p_other) noexcept = default;
+			bc_iterator_adapter(const bc_iterator_adapter& p_other) noexcept = default;
+			
+			bc_iterator_adapter(bc_iterator_adapter&& p_other) noexcept = default;
 
 			~bc_iterator_adapter() = default;
 
-			bc_iterator_adapter& operator=(const bc_iterator_adapter& p_other)  noexcept = default;
+			bc_iterator_adapter& operator=(const bc_iterator_adapter& p_other) noexcept = default;
+			
+			bc_iterator_adapter& operator=(bc_iterator_adapter&& p_other) noexcept = default;
 
 			iterator begin() noexcept;
 
@@ -167,7 +181,7 @@ namespace black_cat
 
 		template< class TContainer >
 		bc_iterator_adapter<TContainer>::bc_iterator_adapter(container_type& p_container) noexcept
-			: bc_const_iterator_adapter(&p_container)
+			: bc_const_iterator_adapter(p_container)
 		{
 		}
 

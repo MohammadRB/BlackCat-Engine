@@ -237,7 +237,7 @@ namespace black_cat
 			bc_lock_guard(mutex_type& p_lockable, bc_lock_property p_lock_properties) noexcept
 				: m_lock(&p_lockable)
 			{
-				bcAssert(p_lock_properties == bc_lock_property::adapt);
+				BC_ASSERT(p_lock_properties == bc_lock_property::adapt);
 			}
 
 			bc_lock_guard(mutex_type& p_lockable, bc_lock_operation p_lock_operation)

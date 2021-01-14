@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_explosion_actor_controller : public bc_iactor_controller
+		class BC_GAME_DLL bc_explosion_actor_controller : public bci_actor_controller
 		{
 		public:
 			void initialize(bc_actor& p_actor) override;

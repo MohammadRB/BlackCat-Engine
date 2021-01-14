@@ -1,8 +1,9 @@
 // [04/29/2016 MRB]
 
 #include "Game/GamePCH.h"
+#include "Game/Object/Mesh/bcSubMesh.h"
+#include "Game/Object/Mesh/bcSubMeshTransform.h"
 #include "Game/Object/Mesh/bcShapeGenerator.h"
-#include "GraphicImp/Resource/bcResourceBuilder.h"
 
 namespace black_cat
 {
@@ -31,7 +32,6 @@ namespace black_cat
 
 		void bc_shape_generator_buffer::add_index(bcUINT32 p_index)
 		{
-
 			m_indices.push_back(p_index);
 		}
 
@@ -113,6 +113,23 @@ namespace black_cat
 			p_buffer.add_index(l_start_index + 6);
 			p_buffer.add_index(l_start_index + 3);
 			p_buffer.add_index(l_start_index + 7);
+		}
+
+		void bc_shape_generator::create_wired_skeleton(bc_shape_generator_buffer& p_buffer, const bc_sub_mesh& p_mesh, const bc_sub_mesh_transform& p_mesh_transform)
+		{
+			auto l_identity = core::bc_matrix4f::identity();
+			p_mesh.iterate_over_nodes(l_identity, [&p_buffer, &p_mesh_transform](const bc_mesh_node& p_node, core::bc_matrix4f& p_parent_transform)
+			{
+				const auto l_start_index = p_buffer.vertices_count();
+				const auto& l_node_transform = p_mesh_transform.get_node_transform(p_node);
+				
+				p_buffer.add_vertex(p_parent_transform.get_translation());
+				p_buffer.add_vertex(l_node_transform.get_translation());
+				p_buffer.add_index(l_start_index + 0);
+				p_buffer.add_index(l_start_index + 1);
+
+				return l_node_transform;
+			});
 		}
 	}
 }

@@ -65,12 +65,12 @@ namespace black_cat
 				32,
 				20,
 				BC_MEMORY_MIN_ALIGN,
-				64,
+				128,
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 128,
-				l_hardware_info.proccessor_count,
-				l_hardware_info.proccessor_count
+				std::max(4U, l_hardware_info.proccessor_count),
+				std::max(4U, l_hardware_info.proccessor_count)
 			);
 			game::bc_engine_application_parameter l_engine_app_parameters
 			(

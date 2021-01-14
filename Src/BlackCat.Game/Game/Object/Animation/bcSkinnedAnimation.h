@@ -30,6 +30,8 @@ namespace black_cat
 
 			bc_skinned_animation& operator=(bc_skinned_animation&&) noexcept;
 
+			bc_animation_skeleton& get_skeleton() noexcept;
+			
 			const bc_animation_skeleton& get_skeleton() const noexcept;
 
 			animation_iterator get_animations() const noexcept;
@@ -52,6 +54,11 @@ namespace black_cat
 		inline bc_skinned_animation::~bc_skinned_animation() = default;
 
 		inline bc_skinned_animation& bc_skinned_animation::operator=(bc_skinned_animation&&) noexcept = default;
+
+		inline bc_animation_skeleton& bc_skinned_animation::get_skeleton() noexcept
+		{
+			return m_skeleton;
+		}
 
 		inline const bc_animation_skeleton& bc_skinned_animation::get_skeleton() const noexcept
 		{

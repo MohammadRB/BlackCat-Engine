@@ -68,7 +68,7 @@ namespace black_cat
 					throw m_exception;
 				}
 
-				bcAssert(m_result != nullptr);
+				BC_ASSERT(m_result != nullptr);
 				
 				return static_cast<TContent*>(m_result.get());
 			}
@@ -83,7 +83,7 @@ namespace black_cat
 					throw m_exception;
 				}
 
-				bcAssert(m_result != nullptr);
+				BC_ASSERT(m_result != nullptr);
 				
 				return static_pointer_cast<TContent>(m_result);
 			}
@@ -124,7 +124,7 @@ namespace black_cat
 			{
 				static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
 
-				bc_unique_ptr<TContent> l_content_result = allocate<TContent>(std::forward<TContent>(p_result));
+				bc_unique_ptr<TContent> l_content_result = allocate<TContent>(std::move(p_result));
 				m_result.reset(bc_content_loader_result(std::move(l_content_result)));
 			}
 

@@ -24,25 +24,25 @@ namespace black_cat
 
 		bc_mesh_collider_loader& operator=(bc_mesh_collider_loader&&) = default;
 
-		bool static is_px_node(const aiNode& p_node);
+		bool static is_px_node(const aiNode& p_ai_node);
 
 		bool support_offline_processing() const override;
 
 		void content_processing(core::bc_content_loading_context& p_context) const override;
 
 	private:
-		aiNode* find_px_node(const aiNode& p_ainode, const aiMesh& p_ainode_mesh) const;
+		aiNode* find_px_node(const aiNode& p_ai_node, const aiMesh& p_ai_node_mesh) const;
 
 		game::bc_mesh_part_collider convert_px_node(physics::bc_physics& p_physics,
-			const aiScene& p_aiscene,
-			const aiNode& p_ainode,
+			const aiScene& p_ai_scene,
+			const aiNode& p_ai_node,
 			const core::bc_matrix4f& p_parent_transformation,
 			bool p_generate_high_detail_query_shape) const;
 
 		void convert_nodes(physics::bc_physics& p_physics,
 			core::bc_content_loading_context& p_context,
-			const aiScene& p_aiscene,
-			const aiNode& p_ainode,
+			const aiScene& p_ai_scene,
+			const aiNode& p_ai_node,
 			const core::bc_matrix4f& p_parent_transformation,
 			bool p_generate_high_detail_query_shape,
 			game::bc_mesh_collider& p_result) const;

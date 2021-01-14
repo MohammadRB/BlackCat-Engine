@@ -36,74 +36,18 @@
 
 namespace black_cat
 {
-	/*bcUINT32 _find_bone_index(const core::bc_vector_frame<const bcCHAR*>& p_node_names, const bcCHAR* p_name)
-	{
-		const auto l_ite = std::find_if(std::begin(p_node_names), std::end(p_node_names), [=](const bcCHAR* p_entry)
-		{
-			return std::strcmp(p_name, p_entry) == 0;
-		});
-		return std::distance(std::begin(p_node_names), l_ite);
-	}*/
-	
-	void _fill_skinned_vertices(const aiMesh& p_ai_mesh, 
-		const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_indices, 
-		core::bc_vector_movable< game::bc_vertex_pos_tex_nor_tan_bon >& p_vertices)
-	{
-		for(auto l_bone_ite = 0U; l_bone_ite < p_ai_mesh.mNumBones; ++l_bone_ite)
-		{
-			const auto* l_ai_bone = p_ai_mesh.mBones[l_bone_ite];
-
-			for(auto l_bone_weight_ite = 0U; l_bone_weight_ite < l_ai_bone->mNumWeights; ++l_bone_weight_ite)
-			{
-				const auto& l_ai_bone_weight = l_ai_bone->mWeights[l_bone_weight_ite];
-				const auto l_bone_index = p_node_indices.find(l_ai_bone->mName.C_Str())->second;
-				const auto l_bone_weight = l_ai_bone_weight.mWeight;
-
-				auto& l_vertex_ids = p_vertices[l_ai_bone_weight.mVertexId].m_bone_indices;
-				auto& l_vertex_weights = p_vertices[l_ai_bone_weight.mVertexId].m_bone_weights;
-
-				if(l_vertex_weights.x <= 0)
-				{
-					l_vertex_ids.x = l_bone_index;
-					l_vertex_weights.x = l_bone_weight;
-				}
-				else if(l_vertex_weights.y <= 0)
-				{
-					l_vertex_ids.y = l_bone_index;
-					l_vertex_weights.y = l_bone_weight;
-				}
-				else if (l_vertex_weights.z <= 0)
-				{
-					l_vertex_ids.z = l_bone_index;
-					l_vertex_weights.z = l_bone_weight;
-				}
-				else if (l_vertex_weights.w <= 0)
-				{
-					l_vertex_ids.w = l_bone_index;
-					l_vertex_weights.w = l_bone_weight;
-				}
-				else
-				{
-					bcAssert(false);
-				}
-			}
-		}
-	}
-	
-	void bc_mesh_loader::calculate_node_mesh_count(const aiNode& p_node, bcSIZE& p_node_count, bcSIZE& p_mesh_count, core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_indices)
+	void bc_mesh_loader::calculate_bone_mapping(const aiNode& p_node, core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_bone_mapping)
 	{
 		if (bc_mesh_collider_loader::is_px_node(p_node))
 		{
 			return;
 		}
 
-		++p_node_count;
-		p_mesh_count += p_node.mNumMeshes;
-		p_node_indices.insert(std::make_pair(p_node.mName.C_Str(), p_node_count - 1));
+		p_bone_mapping.insert(std::make_pair(p_node.mName.C_Str(), p_bone_mapping.size()));
 		
 		for (bcUINT32 l_child_ite = 0; l_child_ite < p_node.mNumChildren; ++l_child_ite)
 		{
-			calculate_node_mesh_count(*p_node.mChildren[l_child_ite], p_node_count, p_mesh_count, p_node_indices);
+			calculate_bone_mapping(*p_node.mChildren[l_child_ite], p_bone_mapping);
 		}
 	}
 
@@ -129,8 +73,60 @@ namespace black_cat
 		p_matrix[14] = l_ai_matrix.d3;
 		p_matrix[15] = l_ai_matrix.d4;
 	}
+	
+	void bc_mesh_loader::fill_skinned_vertices(const aiMesh& p_ai_mesh,
+		const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_bone_mapping,
+		core::bc_vector_movable< game::bc_vertex_pos_tex_nor_tan_bon >& p_vertices,
+		game::bc_mesh_builder& p_builder)
+	{
+		for (auto l_bone_ite = 0U; l_bone_ite < p_ai_mesh.mNumBones; ++l_bone_ite)
+		{
+			const auto* l_ai_bone = p_ai_mesh.mBones[l_bone_ite];
 
-	void bc_mesh_loader::convert_ai_material(core::bc_content_loading_context& p_context, const aiMaterial& p_ai_material, game::bc_render_material_description& p_material)
+			core::bc_matrix4f l_bone_offset;
+			convert_ai_matrix(l_ai_bone->mOffsetMatrix, l_bone_offset);
+			p_builder.add_bone(l_ai_bone->mName.C_Str(), l_bone_offset);
+
+			for (auto l_bone_weight_ite = 0U; l_bone_weight_ite < l_ai_bone->mNumWeights; ++l_bone_weight_ite)
+			{
+				const auto& l_ai_bone_weight = l_ai_bone->mWeights[l_bone_weight_ite];
+				const auto l_bone_index = p_bone_mapping.find(l_ai_bone->mName.C_Str())->second;
+				const auto l_bone_weight = l_ai_bone_weight.mWeight;
+
+				auto& l_vertex_ids = p_vertices[l_ai_bone_weight.mVertexId].m_bone_indices;
+				auto& l_vertex_weights = p_vertices[l_ai_bone_weight.mVertexId].m_bone_weights;
+
+				if (l_vertex_weights.x <= 0)
+				{
+					l_vertex_ids.x = l_bone_index;
+					l_vertex_weights.x = l_bone_weight;
+				}
+				else if (l_vertex_weights.y <= 0)
+				{
+					l_vertex_ids.y = l_bone_index;
+					l_vertex_weights.y = l_bone_weight;
+				}
+				else if (l_vertex_weights.z <= 0)
+				{
+					l_vertex_ids.z = l_bone_index;
+					l_vertex_weights.z = l_bone_weight;
+				}
+				else if (l_vertex_weights.w <= 0)
+				{
+					l_vertex_ids.w = l_bone_index;
+					l_vertex_weights.w = l_bone_weight;
+				}
+				else
+				{
+					BC_ASSERT(false);
+				}
+			}
+		}
+	}
+		
+	void bc_mesh_loader::convert_ai_material(core::bc_content_loading_context& p_context,
+		const aiMaterial& p_ai_material, 
+		game::bc_render_material_description& p_material)
 	{
 		auto* l_content_manager = core::bc_get_service< core::bc_content_manager >();
 
@@ -159,6 +155,7 @@ namespace black_cat
 			(
 				p_context.get_allocator_alloc_type(),
 				core::bc_path(l_root_path).set_filename(l_diffuse_file_name->get_path().c_str()).get_path().c_str(),
+				nullptr,
 				*p_context.m_parameters
 			);
 		}
@@ -202,6 +199,7 @@ namespace black_cat
 			(
 				p_context.get_allocator_alloc_type(),
 				l_normal_map_path.c_str(),
+				nullptr,
 				*p_context.m_parameters
 			);
 		}
@@ -211,6 +209,7 @@ namespace black_cat
 			(
 				p_context.get_allocator_alloc_type(),
 				l_specular_map_path.c_str(),
+				nullptr,
 				*p_context.m_parameters
 			);
 		}
@@ -222,8 +221,7 @@ namespace black_cat
 		const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_indices,
 		const aiNode& p_ai_node,
 		const aiMesh& p_ai_mesh,
-		game::bc_mesh_part_data& p_mesh,
-		game::bc_render_state_ptr& p_mesh_render_state)
+		game::bc_mesh_builder& p_builder)
 	{
 		auto& l_device = p_render_system.get_device();
 		core::bc_vector_movable< game::bc_vertex_pos_tex_nor_tan > l_vertices;
@@ -288,7 +286,7 @@ namespace black_cat
 
 		if(l_has_skinned)
 		{
-			_fill_skinned_vertices(p_ai_mesh, p_node_indices, l_skinned_vertices);
+			fill_skinned_vertices(p_ai_mesh, p_node_indices, l_skinned_vertices, p_builder);
 		}
 
 		auto* l_16bit_indices = reinterpret_cast< bcUINT16* >(l_indices.data());
@@ -349,33 +347,20 @@ namespace black_cat
 			std::move(l_material)
 		);
 
-		p_mesh.m_name = p_ai_mesh.mName.C_Str();
-		p_mesh.m_material = std::move(l_material_ptr);
-		p_mesh.m_vertices = std::move(l_vertices);
-		p_mesh.m_skinned_vertices = std::move(l_skinned_vertices);
-		p_mesh.m_indices = std::move(l_indices);
-		p_mesh.m_vertex_buffer = std::move(l_vertex_buffer);
-		p_mesh.m_index_buffer = std::move(l_index_buffer);
-		p_mesh.m_bound_box = game::bc_extract_bound_box_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
-		(
-			&p_mesh.m_vertices[0].m_position,
-			sizeof(game::bc_vertex_pos_tex_nor_tan),
-			p_mesh.m_vertices.size()
-		));
-		p_mesh_render_state = p_render_system.create_render_state
+		auto l_mesh_render_state = p_render_system.create_render_state
 		(
 			graphic::bc_primitive::trianglelist,
-			p_mesh.m_vertex_buffer.get(),
-			sizeof(game::bc_vertex_pos_tex_nor_tan),
+			l_vertex_buffer.get(),
+			l_has_skinned ? sizeof(decltype(l_skinned_vertices)::value_type) : sizeof(decltype(l_vertices)::value_type),
 			0,
-			p_mesh.m_index_buffer.get(),
+			l_index_buffer.get(),
 			l_need_32bit_indices ? game::bc_index_type::i32bit : game::bc_index_type::i16bit,
 			l_index_count,
 			0,
 			{
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, p_mesh.m_material->get_diffuse_map_view()),
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, p_mesh.m_material->get_normal_map_view()),
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, p_mesh.m_material->get_specular_map_view()),
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_material_ptr->get_diffuse_map_view()),
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_material_ptr->get_normal_map_view()),
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_material_ptr->get_specular_map_view()),
 			},
 			{
 				l_has_skinned ? p_render_system.get_per_skinned_object_cbuffer() : p_render_system.get_per_object_cbuffer(),
@@ -383,10 +368,61 @@ namespace black_cat
 				(
 					1, 
 					core::bc_enum::or({graphic::bc_shader_type::vertex, graphic::bc_shader_type::pixel}), 
-					p_mesh.m_material->get_parameters_cbuffer()
+					l_material_ptr->get_parameters_cbuffer()
 				)
 			}
 		);
+
+		if(l_has_skinned)
+		{
+			auto l_bound_box = game::bc_extract_bound_box_from_points
+			(
+				physics::bc_bounded_strided_typed_data< core::bc_vector3f >
+				(
+					&l_skinned_vertices[0].m_position,
+					sizeof(game::bc_vertex_pos_tex_nor_tan_bon),
+					l_vertices.size()
+				)
+			);
+
+			p_builder.add_skinned_mesh_part
+			(
+				p_ai_node.mName.C_Str(),
+				p_ai_mesh.mName.C_Str(),
+				std::move(l_material_ptr),
+				std::move(l_skinned_vertices),
+				std::move(l_indices),
+				l_bound_box,
+				std::move(l_vertex_buffer),
+				std::move(l_index_buffer),
+				std::move(l_mesh_render_state)
+			);
+		}
+		else
+		{
+			auto l_bound_box = game::bc_extract_bound_box_from_points
+			(
+				physics::bc_bounded_strided_typed_data< core::bc_vector3f >
+				(
+					&l_vertices[0].m_position,
+					sizeof(game::bc_vertex_pos_tex_nor_tan),
+					l_vertices.size()
+				)
+			);
+			
+			p_builder.add_mesh_part
+			(
+				p_ai_node.mName.C_Str(),
+				p_ai_mesh.mName.C_Str(),
+				std::move(l_material_ptr),
+				std::move(l_vertices),
+				std::move(l_indices),
+				l_bound_box,
+				std::move(l_vertex_buffer),
+				std::move(l_index_buffer),
+				std::move(l_mesh_render_state)
+			);
+		}
 	}
 
 	void bc_mesh_loader::convert_ai_nodes(game::bc_render_system& p_render_system,
@@ -394,8 +430,7 @@ namespace black_cat
 		const aiScene& p_ai_scene,
 		const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_indices,
 		const aiNode& p_ai_node,
-		game::bc_mesh& p_mesh,
-		game::bc_mesh_node* p_parent)
+		game::bc_mesh_builder& p_builder)
 	{
 		if (bc_mesh_collider_loader::is_px_node(p_ai_node))
 		{
@@ -405,13 +440,15 @@ namespace black_cat
 		core::bc_matrix4f l_node_transformation;
 		convert_ai_matrix(p_ai_node.mTransformation, l_node_transformation);
 		
-		core::bc_vector_frame< std::tuple< game::bc_mesh_part_data, game::bc_render_state_ptr> > l_meshes;
-		l_meshes.reserve(p_ai_node.mNumMeshes);
-
+		p_builder.add_node
+		(
+			p_ai_node.mParent ? p_ai_node.mParent->mName.C_Str() : nullptr,
+			p_ai_node.mName.C_Str(),
+			l_node_transformation
+		);
+		
 		for (bcUINT32 i = 0; i < p_ai_node.mNumMeshes; ++i)
 		{
-			game::bc_mesh_part_data l_mesh_data;
-			game::bc_render_state_ptr l_mesh_render_state;
 			aiMesh* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[i]];
 
 			convert_ai_mesh
@@ -422,25 +459,14 @@ namespace black_cat
 				p_node_indices,
 				p_ai_node,
 				*l_ai_mesh,
-				l_mesh_data,
-				l_mesh_render_state
+				p_builder
 			);
-
-			l_meshes.push_back(std::make_tuple(std::move(l_mesh_data), l_mesh_render_state));
 		}
 		
-		game::bc_mesh_node* l_added_node = p_mesh._add_node
-		(
-			p_ai_node.mName.C_Str(),
-			p_parent,
-			l_node_transformation,
-			l_meshes
-		);
-
 		for (bcUINT l_child_index = 0; l_child_index < p_ai_node.mNumChildren; ++l_child_index)
 		{
 			aiNode* l_child = p_ai_node.mChildren[l_child_index];
-			convert_ai_nodes(p_render_system, p_context, p_ai_scene, p_node_indices, *l_child, p_mesh, l_added_node);
+			convert_ai_nodes(p_render_system, p_context, p_ai_scene, p_node_indices, *l_child, p_builder);
 		}
 	}
 
@@ -462,7 +488,7 @@ namespace black_cat
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices |
 			aiProcess_SortByPType |
-			(graphic::bc_render_api_info::is_left_handed() ? aiProcess_ConvertToLeftHanded : 0)
+			(graphic::bc_render_api_info::use_left_handed() ? aiProcess_ConvertToLeftHanded : 0)
 		);
 		if (!l_scene || !l_scene->HasMeshes())
 		{
@@ -479,32 +505,31 @@ namespace black_cat
 			return;
 		}
 
-		const game::bc_mesh_collider_ptr l_mesh_colliders = core::bc_get_service< core::bc_content_manager >()->load< game::bc_mesh_collider >
+		game::bc_game_system& l_game_system = *core::bc_get_service< game::bc_game_system >();
+		game::bc_mesh_collider_ptr l_mesh_colliders = core::bc_get_service< core::bc_content_manager >()->load< game::bc_mesh_collider >
 		(
 			p_context.get_allocator_alloc_type(),
 			p_context.m_file_path,
+			nullptr,
 			*p_context.m_parameters,
 			core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_value("aiScene", l_scene)
 		);
-
-		game::bc_game_system& l_game_system = *core::bc_get_service< game::bc_game_system >();
-
-		bcSIZE l_node_count = 0;
-		bcSIZE l_mesh_count = 0;
+		
 		core::bc_unordered_map_frame<const bcCHAR*, bcUINT32> l_node_indices;
-		calculate_node_mesh_count(*l_scene->mRootNode, l_node_count, l_mesh_count, l_node_indices);
+		calculate_bone_mapping(*l_scene->mRootNode, l_node_indices);
 
-		const core::bc_estring l_mesh_name = core::bc_path(p_context.m_file_path).get_filename();
-		game::bc_mesh l_mesh(core::bc_to_exclusive_string(l_mesh_name), l_node_count, l_mesh_count, l_mesh_colliders);
+		game::bc_mesh_builder l_builder;
 
-		convert_ai_nodes(l_game_system.get_render_system(), p_context, *l_scene, l_node_indices, *l_scene->mRootNode, l_mesh, nullptr);
+		convert_ai_nodes(l_game_system.get_render_system(), p_context, *l_scene, l_node_indices, *l_scene->mRootNode, l_builder);
 
-		const bcFLOAT* l_auto_scale = p_context.m_parameters->get_value<bcFLOAT>(constant::g_param_auto_scale);
+		const auto l_mesh_name = core::bc_to_exclusive_string(core::bc_path(p_context.m_file_path).get_filename());
+		const auto* l_auto_scale = p_context.m_parameters->get_value<bcFLOAT>(constant::g_param_auto_scale);
+
 		if(l_auto_scale)
 		{
-			l_mesh._apply_auto_scale(*l_auto_scale);
+			l_builder.with_auto_scale(*l_auto_scale);
 		}
-
-		p_context.set_result(std::move(l_mesh));
+		
+		p_context.set_result(l_builder.build(l_mesh_name.c_str(), std::move(l_mesh_colliders)));
 	}
 }

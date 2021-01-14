@@ -97,7 +97,7 @@ namespace black_cat
 			{
 				if (l_actor.has_component<TComponent>())
 				{
-					l_result.add_actor(l_actor);
+					l_result.add(l_actor);
 				}
 			}
 
@@ -114,7 +114,7 @@ namespace black_cat
 			{
 				if (l_actor.has_component<TComponent>())
 				{
-					l_result.add_actor(l_actor);
+					l_result.add(l_actor);
 				}
 			}
 

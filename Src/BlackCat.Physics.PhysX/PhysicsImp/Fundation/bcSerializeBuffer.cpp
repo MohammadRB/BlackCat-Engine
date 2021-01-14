@@ -22,7 +22,7 @@ namespace black_cat
 			m_pack.m_collection = p_pack.m_collection;
 			m_pack.m_collection_deserialize_buffer = p_pack.m_collection_deserialize_buffer;
 
-			bcAssert(reinterpret_cast<bcUINTPTR>(m_pack.m_collection_deserialize_buffer) % 128 == 0);
+			BC_ASSERT(reinterpret_cast<bcUINTPTR>(m_pack.m_collection_deserialize_buffer) % 128 == 0);
 		}
 
 		template<>
@@ -43,7 +43,7 @@ namespace black_cat
 			}
 			if(m_pack.m_collection_deserialize_buffer)
 			{
-				bcAlignedFree(m_pack.m_collection_deserialize_buffer);
+				BC_ALIGNED_FREE(m_pack.m_collection_deserialize_buffer);
 			}
 		}
 

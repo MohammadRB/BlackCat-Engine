@@ -267,7 +267,7 @@ namespace black_cat
 
 			auto* l_buffer = static_cast< physx::PxMaterial** >
 			(
-				bcAlloc(sizeof(physx::PxMaterial*) * p_count, core::bc_alloc_type::frame)
+				BC_ALLOC(sizeof(physx::PxMaterial*) * p_count, core::bc_alloc_type::frame)
 			);
 
 			for (bcUINT32 i = 0; i < p_count; ++i)
@@ -283,7 +283,7 @@ namespace black_cat
 
 			l_px_shape->setMaterials(l_buffer, p_count);
 
-			bcFree(l_buffer);
+			BC_FREE(l_buffer);
 		}
 
 		template<>

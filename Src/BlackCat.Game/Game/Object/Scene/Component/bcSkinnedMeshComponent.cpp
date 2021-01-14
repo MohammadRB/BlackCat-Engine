@@ -47,24 +47,16 @@ namespace black_cat
 			auto l_mesh = p_context.m_stream_manager.find_content_throw< bc_mesh >(l_mesh_name.c_str());
 			
 			m_mesh = bc_sub_mesh(std::move(l_mesh));
-			m_mesh_transformation = bc_sub_mesh_transformation(*m_mesh.get_root_node());
+			m_mesh_transform = bc_sub_mesh_transform(*m_mesh.get_root_node());
 			m_animations.reserve(l_animation_names.size());
-			m_all_animations.reserve(l_animation_names.size());
-			
+
 			for(auto& l_animation_name : l_animation_names)
 			{
 				auto l_skinned_animation = p_context.m_stream_manager.find_content_throw< bc_skinned_animation >(l_animation_name.as_throw<core::bc_string>()->c_str());
-
-				for(auto& l_animation : l_skinned_animation->get_animations())
-				{
-					m_all_animations.push_back(&l_animation);
-				}
-
 				m_animations.push_back(std::move(l_skinned_animation));
 			}
 
 			m_animations.shrink_to_fit();
-			m_all_animations.shrink_to_fit();
 		}
 
 		void bc_skinned_mesh_component::update(bc_actor_component_update_content& p_context)
@@ -83,20 +75,28 @@ namespace black_cat
 		void bc_skinned_mesh_component::render(bc_render_state_buffer& p_buffer) const
 		{
 			const bc_mesh_node* l_root_pointer = m_mesh.get_root_node();
-			render_skinned_mesh(p_buffer, m_mesh, m_mesh_transformation, &l_root_pointer, &l_root_pointer + 1);
+			render_skinned_mesh(p_buffer, m_mesh, m_mesh_transform, &l_root_pointer, &l_root_pointer + 1);
+		}
+
+		void bc_skinned_mesh_component::debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer)
+		{
+			p_shape_drawer.draw_wired_skeleton(m_mesh, m_mesh_transform);
 		}
 
 		void bc_skinned_mesh_component::_set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform)
 		{
 			if(m_animation_played) 
 			{
-				// TODO
+				physics::bc_bound_box l_bound_box;
+				m_mesh.calculate_bound_box(m_mesh_transform, l_bound_box);
+
+				p_actor.add_event(bc_actor_event_bound_box_changed(l_bound_box));
 			}
 			else
 			{
 				// mesh is in bind pose
 				physics::bc_bound_box l_bound_box;
-				m_mesh.calculate_absolute_transformations(p_transform, m_mesh_transformation, l_bound_box);
+				m_mesh.calculate_absolute_transforms(p_transform, m_mesh_transform, l_bound_box);
 
 				p_actor.add_event(bc_actor_event_bound_box_changed(l_bound_box));
 			}

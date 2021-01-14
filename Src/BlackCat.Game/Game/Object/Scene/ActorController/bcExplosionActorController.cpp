@@ -9,7 +9,7 @@
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
-#include "Game/Object/Scene/Component/Controller/bcExplosionActorController.h"
+#include "Game/Object/Scene/ActorController/bcExplosionActorController.h"
 
 namespace black_cat
 {

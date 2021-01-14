@@ -20,7 +20,7 @@ namespace black_cat
 
 		void _bc_content_ptr_deleter::operator()(bc_icontent* p_content) const
 		{
-			bcAssert(m_content_manager != nullptr);
+			BC_ASSERT(m_content_manager != nullptr);
 
 			m_content_manager->destroy_content(p_content);
 		}

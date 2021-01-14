@@ -119,7 +119,7 @@ namespace black_cat
 			}
 			else
 			{
-				bcAssert(false);
+				BC_ASSERT(false);
 			}
 		}
 

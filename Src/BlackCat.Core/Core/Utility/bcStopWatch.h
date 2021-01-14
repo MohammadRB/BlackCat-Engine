@@ -58,7 +58,7 @@ namespace black_cat
 
 		inline void bc_stop_watch::stop() noexcept
 		{
-			bcAssert(m_start_clock != 0);
+			BC_ASSERT(m_start_clock != 0);
 			
 			const auto l_current_clock = core_platform::bc_clock::query_elapsed_clocks();
 			const core_platform::bc_clock::big_delta_time l_elapsed_clocks = l_current_clock - m_start_clock;

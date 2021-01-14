@@ -22,7 +22,7 @@ namespace black_cat
 	void bc_scene_debug_shape_query::execute(const game::bc_scene_query_context& p_context) noexcept
 	{
 		const auto& l_actors_buffer = p_context.get_shared_query<game::bc_main_camera_scene_query>().get_scene_buffer();
-
+		
 		if(m_selected_actor.is_valid())
 		{
 			const auto l_ite = l_actors_buffer.find(m_selected_actor);
@@ -30,6 +30,11 @@ namespace black_cat
 			{
 				l_ite->draw_debug(*m_shape_drawer);
 			}
+		}
+
+		for(auto& l_actor : l_actors_buffer)
+		{
+			l_actor.draw_debug(*m_shape_drawer);
 		}
 		
 		p_context.m_scene->draw_debug_shapes(*m_shape_drawer);

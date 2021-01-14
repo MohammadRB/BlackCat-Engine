@@ -21,165 +21,44 @@ namespace black_cat
 		struct _bc_heap_memblock
 		{
 		public:
-#ifdef BC_MEMORY_DEFRAG
 			using pointer_refs = std::array< void**, 4 >;
-#endif
 
-		public:
-			_bc_heap_memblock(bcSIZE p_size, bcSIZE p_prev_size, bool p_free)
-				: m_size(p_size),
-				m_prev_size(p_prev_size),
-				m_free(p_free)
-#ifdef BC_MEMORY_DEFRAG
-				, m_pointers{{nullptr, nullptr, nullptr, nullptr}}
-#endif
-			{
-			}
+			_bc_heap_memblock(bcSIZE p_size, bcSIZE p_prev_size, bool p_free);
 
-			/*_bc_heap_memblock(const _bc_heap_memblock& p_other) noexcept
-				: m_size(p_other.m_size),
-				m_prev_size(p_other.m_prev_size),
-				m_free(p_other.m_free),
-				m_mutex(),
-				m_pointers(p_other.m_pointers)
-			{
-			}
+			bcSIZE size() const noexcept;
 
-			_bc_heap_memblock& operator=(const _bc_heap_memblock& p_other) noexcept
-			{
-				m_size = p_other.m_size;
-				m_prev_size = p_other.m_prev_size;
-				m_free = p_other.m_free;
-				m_pointers = p_other.m_pointers;
+			void size(bcSIZE val) noexcept;
 
-				return *this;
-			}*/
+			bcSIZE prev_size() const noexcept;
 
-			bcSIZE size() const noexcept
-			{
-				return m_size;
-			}
+			void prev_size(bcSIZE p_val) noexcept;
 
-			void size(bcSIZE val) noexcept
-			{
-				m_size = val;
-			}
+			bool free() const noexcept;
 
-			bcSIZE prev_size() const noexcept
-			{
-				return m_prev_size;
-			}
-
-			void prev_size(bcSIZE val) noexcept
-			{
-				m_prev_size = val;
-			}
-
-			bool free() const noexcept
-			{
-				return m_free;
-			}
-
-			void free(bool val) noexcept
-			{
-				m_free = val;
-			}
+			void free(bool p_val) noexcept;
 			
 #ifdef BC_MEMORY_DEFRAG
-			pointer_refs::iterator pointers_begin() noexcept
-			{
-				return m_pointers.begin();
-			}
+			pointer_refs::iterator pointers_begin() noexcept;
 
-			pointer_refs::iterator pointers_end() noexcept
-			{
-				return m_pointers.end();
-			}
+			pointer_refs::iterator pointers_end() noexcept;
 #endif
 
-			void lock(core_platform::bc_lock_operation p_operation) noexcept
-			{
-				m_mutex.lock(p_operation);
-			}
+			void lock(core_platform::bc_lock_operation p_operation) noexcept;
 
-			void unlock() noexcept
-			{
-				m_mutex.unlock();
-			}
+			void unlock() noexcept;
 
-			bool try_lock(core_platform::bc_lock_operation p_operation) noexcept
-			{
-				return m_mutex.try_lock(p_operation);
-			}
+			bool try_lock(core_platform::bc_lock_operation p_operation) noexcept;
 
 #ifdef BC_MEMORY_DEFRAG
 			// If any pointer exist in this block or this block is not free return MemBlock of one of it's pointers 
 			// else return nullptr that indicate this block is free /
-			bc_memblock* get_memblock() noexcept
-			{
-				void* l_pointer = nullptr;
+			bc_memblock* get_memblock() noexcept;
 
-				for (void** l_ptr : m_pointers)
-				{
-					if (*l_ptr != nullptr)
-					{
-						l_pointer = *l_ptr;
-						break;
-					}
-				}
+			void register_new_pointer(void** p_pointer) noexcept;
 
-				if (l_pointer)
-				{
-					return bc_memblock::retrieve_mem_block(l_pointer);
-				}
-					
-				return nullptr;
-			}
-
-			void register_new_pointer(void** p_pointer) noexcept
-			{
-				bool l_has_set = false;
-
-				core_platform::bc_lock_guard< core_platform::bc_hybrid_mutex > l_guard(m_mutex);
-				{
-					for (void**& l_ptr : m_pointers)
-					{
-						if (l_ptr == nullptr)
-						{
-							l_ptr = p_pointer;
-							l_has_set = true;
-							break;
-						}
-					}
-				}
-
-				bcAssert(l_has_set);
-			}
-
-			void unregister_pointer(void** p_pointer) noexcept
-			{
-				bool l_found = false;
-
-				core_platform::bc_lock_guard< core_platform::bc_hybrid_mutex > l_guard(m_mutex);
-				{
-					for (void**& l_ptr : m_pointers)
-					{
-						if (l_ptr && l_ptr == p_pointer)
-						{
-							l_ptr = nullptr;
-							l_found = true;
-							break;
-						}
-					}
-				}
-
-				bcAssert(l_found);
-			}
+			void unregister_pointer(void** p_pointer) noexcept;
 #endif
 		private:
-			static const bcINT32 m_free_mask = 1;
-			static const bcINT32 m_address_mask = ~m_free_mask;
-
 			bcSIZE m_size;
 			bcSIZE m_prev_size;
 			bool m_free;
@@ -208,15 +87,9 @@ namespace black_cat
 
 			this_type& operator =(this_type&& p_other) noexcept;
 
-			bcSIZE capacity() const noexcept
-			{
-				return m_heap_size;
-			}
+			bcSIZE capacity() const noexcept;
 
-			bcSIZE fragmentation_count() const noexcept
-			{
-				return m_num_fragmentation.load(core_platform::bc_memory_order::relaxed);
-			}
+			bcSIZE fragmentation_count() const noexcept;
 
 			void* alloc(bc_memblock* p_memblock) noexcept override;
 
@@ -237,24 +110,7 @@ namespace black_cat
 		private:
 			void _initialize(bcSIZE p_size, const bcCHAR* p_tag) override;
 
-			void _destroy() noexcept(true) override;
-
-			void _move(this_type&& p_other)
-			{
-				m_heap = p_other.m_heap;
-				m_heap_size = p_other.m_heap_size;
-				m_remaining_free_space_limit = p_other.m_remaining_free_space_limit;
-				m_block_size = p_other.m_block_size;
-				m_last_block = p_other.m_last_block;
-				m_num_fragmentation.store(p_other.m_num_fragmentation.load(core_platform::bc_memory_order::relaxed), core_platform::bc_memory_order::relaxed);
-
-				p_other.m_heap = nullptr;
-				p_other.m_heap_size = 0;
-				p_other.m_remaining_free_space_limit = 0;
-				p_other.m_block_size = 0;
-				p_other.m_last_block = nullptr;
-				p_other.m_num_fragmentation.store(0, core_platform::bc_memory_order::relaxed);
-			}
+			void _destroy() noexcept override;
 
 			bcBYTE* m_heap;
 			bcSIZE m_heap_size;
@@ -264,6 +120,151 @@ namespace black_cat
 			core_platform::bc_atomic< bcINT32 > m_num_fragmentation;
 		};
 
+		inline _bc_heap_memblock::_bc_heap_memblock(bcSIZE p_size, bcSIZE p_prev_size, bool p_free)
+			: m_size(p_size),
+			m_prev_size(p_prev_size),
+			m_free(p_free)
+#ifdef BC_MEMORY_DEFRAG
+			, m_pointers{ {nullptr, nullptr, nullptr, nullptr} }
+#endif
+		{
+		}
+
+		inline bcSIZE _bc_heap_memblock::size() const noexcept
+		{
+			return m_size;
+		}
+
+		inline void _bc_heap_memblock::size(bcSIZE val) noexcept
+		{
+			m_size = val;
+		}
+
+		inline bcSIZE _bc_heap_memblock::prev_size() const noexcept
+		{
+			return m_prev_size;
+		}
+
+		inline void _bc_heap_memblock::prev_size(bcSIZE p_val) noexcept
+		{
+			m_prev_size = p_val;
+		}
+
+		inline bool _bc_heap_memblock::free() const noexcept
+		{
+			return m_free;
+		}
+
+		inline void _bc_heap_memblock::free(bool p_val) noexcept
+		{
+			m_free = p_val;
+			if (p_val)
+			{
+				m_pointers = { nullptr, nullptr, nullptr, nullptr };
+			}
+		}
+
+#ifdef BC_MEMORY_DEFRAG
+		inline _bc_heap_memblock::pointer_refs::iterator _bc_heap_memblock::pointers_begin() noexcept
+		{
+			return m_pointers.begin();
+		}
+
+		inline _bc_heap_memblock::pointer_refs::iterator _bc_heap_memblock::pointers_end() noexcept
+		{
+			return m_pointers.end();
+		}
+#endif
+
+		inline void _bc_heap_memblock::lock(core_platform::bc_lock_operation p_operation) noexcept
+		{
+			m_mutex.lock(p_operation);
+		}
+
+		inline void _bc_heap_memblock::unlock() noexcept
+		{
+			m_mutex.unlock();
+		}
+
+		inline bool _bc_heap_memblock::try_lock(core_platform::bc_lock_operation p_operation) noexcept
+		{
+			return m_mutex.try_lock(p_operation);
+		}
+
+#ifdef BC_MEMORY_DEFRAG
+		// If any pointer exist in this block or this block is not free return MemBlock of one of it's pointers 
+		// else return nullptr that indicate this block is free /
+		inline bc_memblock* _bc_heap_memblock::get_memblock() noexcept
+		{
+			void* l_pointer = nullptr;
+
+			for (void** l_ptr : m_pointers)
+			{
+				if (*l_ptr != nullptr)
+				{
+					l_pointer = *l_ptr;
+					break;
+				}
+			}
+
+			if (l_pointer)
+			{
+				return bc_memblock::retrieve_mem_block(l_pointer);
+			}
+
+			return nullptr;
+		}
+
+		inline void _bc_heap_memblock::register_new_pointer(void** p_pointer) noexcept
+		{
+			bool l_has_set = false;
+
+			core_platform::bc_lock_guard< core_platform::bc_hybrid_mutex > l_guard(m_mutex);
+			{
+				for (void**& l_ptr : m_pointers)
+				{
+					if (l_ptr == nullptr)
+					{
+						l_ptr = p_pointer;
+						l_has_set = true;
+						break;
+					}
+				}
+			}
+
+			BC_ASSERT(l_has_set);
+		}
+
+		inline void _bc_heap_memblock::unregister_pointer(void** p_pointer) noexcept
+		{
+			bool l_found = false;
+
+			core_platform::bc_lock_guard< core_platform::bc_hybrid_mutex > l_guard(m_mutex);
+			{
+				for (void**& l_ptr : m_pointers)
+				{
+					if (l_ptr && l_ptr == p_pointer)
+					{
+						l_ptr = nullptr;
+						l_found = true;
+						break;
+					}
+				}
+			}
+
+			BC_ASSERT(l_found);
+		}
+
+#endif
+		inline bcSIZE bc_memory_heap::capacity() const noexcept
+		{
+			return m_heap_size;
+		}
+
+		inline bcSIZE bc_memory_heap::fragmentation_count() const noexcept
+		{
+			return m_num_fragmentation.load(core_platform::bc_memory_order::relaxed);
+		}
 #endif
 	}
 }

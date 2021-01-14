@@ -29,7 +29,7 @@ namespace black_cat
 		{
 			const bc_message_hash l_hash = BC_RUN_TIME_STRING_HASH(p_name);
 
-			bcAssert(l_hash != 0);
+			BC_ASSERT(l_hash != 0);
 
 			return l_hash;
 		}

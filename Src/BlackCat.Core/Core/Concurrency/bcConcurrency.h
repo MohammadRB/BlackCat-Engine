@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/Container/bcIterator.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Concurrency/bcThreadManager.h"
 #include "Core/Messaging/Event/bcEventManager.h"
@@ -45,20 +44,26 @@ namespace black_cat
 			 * \param p_end 
 			 * \param p_init_func 
 			 * \param p_body_func 
-			 * \param p_finalizer 
+			 * \param p_finalizer_func 
 			 */
 			template<typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc>
-			static void concurrent_for_each(TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer);
+			static void concurrent_for_each(TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func);
 			
 			template<typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc>
-			static void concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer);
+			static void concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func);
 
+			template<typename TIte, typename TBodyFunc>
+			static void concurrent_for_each(TIte p_begin, TIte p_end, TBodyFunc p_body_func);
+
+			template<typename TIte, typename TBodyFunc>
+			static void concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TBodyFunc p_body_func);
+			
 			template< typename T >
 			static T* double_check_lock(core_platform::bc_atomic< T* >& p_pointer, bc_delegate< T*() >& p_initializer);
 
 		private:
 			template<typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc>
-			static void _concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer);
+			static void _concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func);
 			
 			static bc_thread_manager* _get_thread_manager();
 		};
@@ -118,17 +123,25 @@ namespace black_cat
 		}
 
 		template< typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc >
-		void bc_concurrency::concurrent_for_each(TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer)
+		void bc_concurrency::concurrent_for_each(TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func)
 		{
-			_concurrent_for_each(_get_thread_manager()->spawned_thread_count(), p_begin, p_end, p_init_func, p_body_func, p_finalizer);
+			_concurrent_for_each
+			(
+				_get_thread_manager()->spawned_thread_count(),
+				p_begin,
+				p_end,
+				p_init_func,
+				p_body_func,
+				p_finalizer_func
+			);
 		}
 
 		template< typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc >
-		void bc_concurrency::concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer)
+		void bc_concurrency::concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func)
 		{
 			if(p_num_thread > 1)
 			{
-				_concurrent_for_each(p_num_thread, p_begin, p_end, p_init_func, p_body_func, p_finalizer);
+				_concurrent_for_each(p_num_thread, p_begin, p_end, p_init_func, p_body_func, p_finalizer_func);
 				return;
 			}
 
@@ -137,9 +150,53 @@ namespace black_cat
 			{
 				p_body_func(l_init, p_item);
 			});
-			p_finalizer(l_init);
+			p_finalizer_func(l_init);
 		}
-		
+
+		template< typename TIte, typename TBodyFunc >
+		void bc_concurrency::concurrent_for_each(TIte p_begin, TIte p_end, TBodyFunc p_body_func)
+		{
+			_concurrent_for_each
+			(
+				_get_thread_manager()->spawned_thread_count(),
+				p_begin,
+				p_end,
+				[]()
+				{
+					return true;
+				},
+				[&p_body_func](bool, typename std::iterator_traits< TIte >::reference p_item)
+				{
+					p_body_func(p_item);
+				},
+				[](bool)
+				{
+				}
+			);
+		}
+
+		template< typename TIte, typename TBodyFunc >
+		void bc_concurrency::concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TBodyFunc p_body_func)
+		{
+			_concurrent_for_each
+			(
+				p_num_thread,
+				p_begin,
+				p_end,
+				[]()
+				{
+					return true;
+				},
+				[&p_body_func](bool, typename std::iterator_traits< TIte >::reference p_item)
+				{
+					p_body_func(p_item);
+				},
+				[](bool)
+				{
+				}
+			);
+		}
+
 		template< typename T >
 		T* bc_concurrency::double_check_lock(core_platform::bc_atomic< T* >& p_pointer, bc_delegate< T*() >& p_initializer)
 		{
@@ -161,66 +218,93 @@ namespace black_cat
 		}
 
 		template< typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc >
-		void bc_concurrency::_concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer)
+		void bc_concurrency::_concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func)
 		{
-			const bcUINT32 l_num_thread = std::max(p_num_thread, 1U);
-			const bcUINT32 l_num = std::distance(p_begin, p_end);
-			const bcUINT32 l_chunk_size = std::ceil((l_num * 1.f) / l_num_thread);
+			struct for_each_state
+			{
+				bc_task< void > m_task;
+				TIte m_begin;
+				TIte m_end;
+				TInitFunc* m_init_func;
+				TBodyFunc* m_body_func;
+				TFinalFunc* m_finalizer_func;
 
-			bc_vector_frame< bc_task< void > > l_tasks;
-			l_tasks.reserve(l_num_thread);
+				for_each_state(TIte p_begin,
+					TIte p_end,
+					TInitFunc& p_init_func,
+					TBodyFunc& p_body_func,
+					TFinalFunc& p_finalizer_func)
+					: m_begin(p_begin),
+					m_end(p_end),
+					m_init_func(&p_init_func),
+					m_body_func(&p_body_func),
+					m_finalizer_func(&p_finalizer_func)
+				{
+				}
+
+				void wait() const
+				{
+					m_task.wait();
+				}
+			};
+			
+			const bcUINT32 l_num_thread = std::max(p_num_thread, 1U);
+			const bcUINT32 l_num_entry = std::distance(p_begin, p_end);
+			const bcUINT32 l_chunk_size = std::ceil((l_num_entry * 1.f) / l_num_thread);
+
+			bc_vector_frame< for_each_state > l_states;
+			l_states.reserve(l_num_thread);
 
 			for (bcUINT32 l_thread = 0; l_thread < l_num_thread; ++l_thread)
 			{
-				bcUINT32 l_begin_index = l_thread * l_chunk_size;
-				bcUINT32 l_end_index = (l_thread + 1) * l_chunk_size;
-				l_end_index = std::min(l_end_index, l_num);
+				auto l_begin_index = l_thread * l_chunk_size;
+				auto l_end_index = (l_thread + 1) * l_chunk_size;
+				l_end_index = std::min(l_end_index, l_num_entry);
 
 				if (l_begin_index >= l_end_index)
 				{
 					break;
 				}
 
-				TIte l_begin = p_begin;
-				TIte l_end = p_begin;
-				std::advance(l_begin, l_begin_index);
-				std::advance(l_end, l_end_index);
+				l_states.push_back(for_each_state(p_begin, p_begin, p_init_func, p_body_func, p_finalizer_func));
+				auto& l_state = l_states.back();
+				
+				std::advance(l_state.m_begin, l_begin_index);
+				std::advance(l_state.m_end, l_end_index);
 
-				bc_task< void > l_task = start_task
+				l_state.m_task = start_task
 				(
-					bc_delegate< void() >::make_from_big_object
+					bc_delegate< void() >
 					(
-						bc_alloc_type::frame,
-						[l_begin, l_end, &p_init_func, &p_body_func, &p_finalizer]()
+						[&l_state]()
 						{
-							auto l_init = p_init_func();
+							auto l_init = (*l_state.m_init_func)();
 
 							std::for_each
 							(
-								l_begin,
-								l_end,
-								[&l_init, &p_body_func](typename std::iterator_traits< TIte >::reference p_item)
+								l_state.m_begin,
+								l_state.m_end,
+								[&l_state, &l_init](typename std::iterator_traits< TIte >::reference p_item)
 								{
-									p_body_func(l_init, p_item);
+									(*l_state.m_body_func)(l_init, p_item);
 								}
 							);
 
-							p_finalizer(l_init);
+							(*l_state.m_finalizer_func)(l_init);
 						}
 					),
 					bc_task_creation_option::policy_fairness
 				);
-
-				l_tasks.push_back(std::move(l_task));
 			}
 
-			when_all(std::begin(l_tasks), std::end(l_tasks));
+			when_all(std::begin(l_states), std::end(l_states));
 
 			try
 			{
-				for (bc_task< void >& l_task : l_tasks) // Call get to find if tasks has thrown any exception 
+				for (for_each_state& l_state : l_states)
 				{
-					l_task.get();
+					// Call get to find if tasks has thrown any exception 
+					l_state.m_task.get();
 				}
 			}
 			catch (std::exception & p_exception)

@@ -166,9 +166,9 @@ namespace black_cat
 			{
 				if (TAlignment <= BC_MEMORY_MIN_ALIGN)
 				{
-					return static_cast<pointer>(bcAllocThrow(sizeof(value_type)* p_count, TAllocType));
+					return static_cast<pointer>(BC_ALLOC_THROW(sizeof(value_type)* p_count, TAllocType));
 				}
-				return static_cast<pointer>(bcAlignedAllocThrow(sizeof(value_type)* p_count, TAlignment, TAllocType));
+				return static_cast<pointer>(BC_ALIGNED_ALLOC_THROW(sizeof(value_type)* p_count, TAlignment, TAllocType));
 			}
 
 			// Parameter n is for compatibility with std allocators
@@ -176,9 +176,9 @@ namespace black_cat
 			{
 				if (TAlignment <= BC_MEMORY_MIN_ALIGN)
 				{
-					return bcFree(p_pointer);
+					return BC_FREE(p_pointer);
 				}
-				return bcAlignedFree(p_pointer);
+				return BC_ALIGNED_FREE(p_pointer);
 			}
 
 			template< class TU, class... TArgs >
@@ -370,18 +370,18 @@ namespace black_cat
 			{
 				if (m_alignment <= BC_MEMORY_MIN_ALIGN)
 				{
-					return static_cast<pointer>(bcAllocThrow(sizeof(value_type)* p_count, m_alloc_type));
+					return static_cast<pointer>(BC_ALLOC_THROW(sizeof(value_type)* p_count, m_alloc_type));
 				}
-				return static_cast<pointer>(bcAlignedAllocThrow(sizeof(value_type)* p_count, m_alignment, m_alloc_type));
+				return static_cast<pointer>(BC_ALIGNED_ALLOC_THROW(sizeof(value_type)* p_count, m_alignment, m_alloc_type));
 			}
 
 			void deallocate(pointer p_pointer, size_type n = 0) noexcept
 			{
 				if (m_alignment <= BC_MEMORY_MIN_ALIGN)
 				{
-					return bcFree(p_pointer);
+					return BC_FREE(p_pointer);
 				}
-				return bcAlignedFree(p_pointer);
+				return BC_ALIGNED_FREE(p_pointer);
 			}
 
 			template< class TU, class... TArgs >
@@ -530,11 +530,11 @@ namespace black_cat
 
 				if(get_allocator_alignment() > BC_MEMORY_MIN_ALIGN)
 				{
-					l_memory = bcAlignedAlloc(p_num, l_alignment, l_alloc_type);
+					l_memory = BC_ALIGNED_ALLOC(p_num, l_alignment, l_alloc_type);
 				}
 				else
 				{
-					l_memory = bcAlloc(p_num, l_alloc_type);
+					l_memory = BC_ALLOC(p_num, l_alloc_type);
 				}
 
 				return bc_unique_ptr<bcBYTE>(reinterpret_cast<bcBYTE*>(l_memory));
@@ -544,13 +544,13 @@ namespace black_cat
 			template<typename T>
 			static void deallocate(T* p_pointer)
 			{
-				bcDelete(p_pointer);
+				BC_DELETE(p_pointer);
 			}
 
 			// Used to deallocate raw memory
 			static void deallocate_raw(bcBYTE* p_pointer)
 			{
-				bcFree(p_pointer);
+				BC_FREE(p_pointer);
 			}
 
 		private:

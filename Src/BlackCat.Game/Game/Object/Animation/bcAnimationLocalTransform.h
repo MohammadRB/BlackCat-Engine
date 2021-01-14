@@ -16,19 +16,40 @@ namespace black_cat
 		public:
 			bc_animation_local_transform();
 
-			bc_animation_local_transform(bc_animation_local_transform&&) noexcept = default;
+			bc_animation_local_transform(bc_animation_local_transform&& p_other) noexcept;
 
-			~bc_animation_local_transform() = default;
+			~bc_animation_local_transform();
 
-			bc_animation_local_transform& operator=(bc_animation_local_transform&&) noexcept = default;
+			bc_animation_local_transform& operator=(bc_animation_local_transform&& p_other) noexcept;
 
+			void resize(bc_iterator_adapter::container_type::size_type p_size);
+		
 		private:
 			bc_iterator_adapter::container_type m_transforms;
 		};
 
 		inline bc_animation_local_transform::bc_animation_local_transform()
-			: bc_iterator_adapter(&m_transforms)
+			: bc_iterator_adapter(m_transforms)
 		{
+		}
+
+		inline bc_animation_local_transform::bc_animation_local_transform(bc_animation_local_transform&& p_other) noexcept
+			: bc_iterator_adapter(m_transforms),
+			m_transforms(std::move(p_other.m_transforms))
+		{
+		}
+
+		inline bc_animation_local_transform::~bc_animation_local_transform() = default;
+
+		inline bc_animation_local_transform& bc_animation_local_transform::operator=(bc_animation_local_transform&& p_other) noexcept
+		{
+			m_transforms = std::move(p_other.m_transforms);
+			return *this;
+		}
+
+		inline void bc_animation_local_transform::resize(bc_iterator_adapter::container_type::size_type p_size)
+		{
+			m_transforms.resize(p_size);
 		}
 	}
 }

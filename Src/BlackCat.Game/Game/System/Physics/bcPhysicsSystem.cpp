@@ -34,7 +34,7 @@ namespace black_cat
 		core::bc_unique_ptr< bcINT16 > bc_physics_system::convert_height_field_samples(bcUINT32 p_num_row, bcUINT32 p_num_column, bcFLOAT* p_samples)
 		{
 			bcUINT32 l_num_samples = p_num_row * p_num_column;
-			core::bc_unique_ptr< bcINT16 > l_buffer(static_cast< bcINT16* >(bcAlloc(sizeof(bcINT16) * l_num_samples, core::bc_alloc_type::frame)));
+			core::bc_unique_ptr< bcINT16 > l_buffer(static_cast< bcINT16* >(BC_ALLOC(sizeof(bcINT16) * l_num_samples, core::bc_alloc_type::frame)));
 			bcINT16* l_buffer_ptr = l_buffer.get();
 
 			for (bcUINT32 l_index = 0; l_index < l_num_samples; ++l_index)

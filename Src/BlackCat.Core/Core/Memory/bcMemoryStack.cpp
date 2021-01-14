@@ -69,7 +69,7 @@ namespace black_cat
 			void* l_result = nullptr;
 			bcSIZE l_size = p_mem_block->size();
 
-			bcAssert(l_size > 0);
+			BC_ASSERT(l_size > 0);
 
 			bcUBYTE* l_local_top = m_top.load(core_platform::bc_memory_order::seqcst);
 
@@ -117,7 +117,7 @@ namespace black_cat
 
 			if (l_local_top == m_heap) // it is empty
 			{
-				bcAssert(false);
+				BC_ASSERT(false);
 				return true;
 			}
 

@@ -221,7 +221,7 @@ namespace black_cat
 			template< typename ...TArgs >
 			node_type* _new_node(node_type* p_position, size_type p_count, TArgs&&... p_args)
 			{
-				bcAssert(p_position >= m_first && p_position <= _get_end());
+				BC_ASSERT(p_position >= m_first && p_position <= _get_end());
 				node_type* l_first = m_first;
 
 				_increase_capacity(p_count);
@@ -251,7 +251,7 @@ namespace black_cat
 			{
 				using input_iterator_reference = typename std::iterator_traits<TInputIterator>::reference;
 
-				bcAssert(p_position >= m_first && p_position <= _get_end());
+				BC_ASSERT(p_position >= m_first && p_position <= _get_end());
 
 				base_type::template check_iterator< TInputIterator >();
 
@@ -275,7 +275,7 @@ namespace black_cat
 			{
 				using input_iterator_reference = typename std::iterator_traits<TInputIterator>::reference;
 
-				bcAssert(p_position >= m_first && p_position <= _get_end());
+				BC_ASSERT(p_position >= m_first && p_position <= _get_end());
 
 				base_type::template check_iterator< TInputIterator >();
 
@@ -308,7 +308,7 @@ namespace black_cat
 
 			node_type* _free_node(node_type* p_position, size_type p_count)
 			{
-				bcAssert(p_position >= m_first && p_position + p_count <= _get_end());
+				BC_ASSERT(p_position >= m_first && p_position + p_count <= _get_end());
 
 				size_type l_count = p_count;
 				while (l_count-- > 0)
@@ -484,7 +484,7 @@ namespace black_cat
 
 			node_type& _get_node(size_type p_position) const
 			{
-				bcAssert(p_position >= 0 && p_position <= base_type::m_size);
+				BC_ASSERT(p_position >= 0 && p_position <= base_type::m_size);
 
 				return *(base_type::m_first + p_position);
 			}

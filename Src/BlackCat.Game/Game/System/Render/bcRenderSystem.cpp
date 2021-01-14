@@ -90,7 +90,6 @@ namespace black_cat
 
 		void bc_render_system::update(const update_context& p_update_params)
 		{
-			m_particle_manager->update(p_update_params.m_clock);
 			m_frame_renderer->update(bc_frame_renderer_update_context(p_update_params.m_clock, bc_camera_instance(p_update_params.m_camera)));
 		}
 
@@ -128,7 +127,7 @@ namespace black_cat
 			graphic::bc_format p_depth_stencil_format, 
 			bc_multi_sample_type p_ms_config)
 		{
-			bcAssert(p_render_target_formats.size() < graphic::bc_render_api_info::number_of_om_render_target_slots());
+			BC_ASSERT(p_render_target_formats.size() < graphic::bc_render_api_info::number_of_om_render_target_slots());
 
 			graphic::bc_vertex_shader_content_ptr l_vertex_shader;
 			graphic::bc_hull_shader_content_ptr l_hull_shader;
@@ -493,7 +492,7 @@ namespace black_cat
 				}
 			}
 
-			bcAssert(l_render_pass_states_count + l_render_states_count + l_compute_states_count == 0);
+			BC_ASSERT(l_render_pass_states_count + l_render_states_count + l_compute_states_count == 0);
 #endif
 			
 			m_render_pass_states.clear();
@@ -627,7 +626,7 @@ namespace black_cat
 
 				if (l_item == std::end(m_render_pass_states))
 				{
-					bcAssert(false, "Render pass state not found");
+					BC_ASSERT(false, "Render pass state not found");
 					return;
 				}
 
@@ -648,7 +647,7 @@ namespace black_cat
 
 				if (l_item == std::end(m_render_states))
 				{
-					bcAssert(false, "Render state not found");
+					BC_ASSERT(false, "Render state not found");
 					return;
 				}
 
@@ -669,7 +668,7 @@ namespace black_cat
 
 				if (l_item == std::end(m_compute_states))
 				{
-					bcAssert(false, "Compute state not found");
+					BC_ASSERT(false, "Compute state not found");
 					return;
 				}
 
