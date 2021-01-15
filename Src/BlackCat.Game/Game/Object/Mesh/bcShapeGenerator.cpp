@@ -115,13 +115,16 @@ namespace black_cat
 			p_buffer.add_index(l_start_index + 7);
 		}
 
-		void bc_shape_generator::create_wired_skeleton(bc_shape_generator_buffer& p_buffer, const bc_sub_mesh& p_mesh, const bc_sub_mesh_transform& p_mesh_transform)
+		void bc_shape_generator::create_wired_skeleton(bc_shape_generator_buffer& p_buffer, 
+			const bc_sub_mesh& p_mesh, 
+			const core::bc_matrix4f& p_world, 
+			const bc_sub_mesh_transform& p_mesh_transforms)
 		{
 			auto l_identity = core::bc_matrix4f::identity();
-			p_mesh.iterate_over_nodes(l_identity, [&p_buffer, &p_mesh_transform](const bc_mesh_node& p_node, core::bc_matrix4f& p_parent_transform)
+			p_mesh.iterate_over_nodes(l_identity, [&p_buffer, &p_world, &p_mesh_transforms](const bc_mesh_node& p_node, core::bc_matrix4f& p_parent_transform)
 			{
 				const auto l_start_index = p_buffer.vertices_count();
-				const auto& l_node_transform = p_mesh_transform.get_node_transform(p_node);
+				const auto l_node_transform = p_mesh_transforms.get_node_transform(p_node) * p_world;
 				
 				p_buffer.add_vertex(p_parent_transform.get_translation());
 				p_buffer.add_vertex(l_node_transform.get_translation());

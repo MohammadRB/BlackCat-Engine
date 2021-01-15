@@ -231,7 +231,7 @@ namespace black_cat
 			}
 
 			*l_json_entry->m_entity_name = l_mediate_component->get_entity_name();
-			*l_json_entry->m_position = l_mediate_component->get_world_position();
+			*l_json_entry->m_position = l_mediate_component->get_position();
 
 			l_actor_components.clear();
 		}

@@ -73,7 +73,7 @@ namespace black_cat
 				auto l_node_mesh_render_state = p_mesh_part.get_node_mesh_render_state_ptr(*l_node, l_mesh_index);
 				
 				game::bc_skinned_render_instance l_instance(p_transformations.size());
-				p_transformations.copy_transformations_to(l_instance.get_transforms());
+				p_transformations.copy_transforms_to(l_instance.get_transforms());
 				
 				p_buffer.add_skinned_render_instance(std::move(l_node_mesh_render_state), std::move(l_instance));
 			}

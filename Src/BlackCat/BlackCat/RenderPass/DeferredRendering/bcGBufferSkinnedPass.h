@@ -8,7 +8,6 @@
 #include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/Query/bcMainCameraRenderStateQuery.h"
-#include "Game/Query/bcSceneGraphRenderStateQuery.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -37,7 +36,7 @@ namespace black_cat
 		graphic::bc_sampler_state_ptr m_sampler_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;
 
-		core::bc_query_result< game::bc_scene_graph_render_state_query > m_render_states_query;
+		core::bc_query_result< game::bc_main_camera_render_state_query > m_render_states_query;
 		game::bc_render_state_buffer m_render_states;
 	};
 }

@@ -23,8 +23,8 @@
 
 namespace black_cat
 {
-	void _build_ozz_skeleton(aiNode* const * p_ai_nodes_begin, 
-		bcSIZE p_ai_nodes_count, 
+	void _build_ozz_skeleton(aiNode* const * p_ai_nodes_begin,
+		bcSIZE p_ai_nodes_count,
 		ozz::animation::offline::RawSkeleton::Joint::Children& p_ozz_skeletons)
 	{
 		p_ozz_skeletons.resize(p_ai_nodes_count);
@@ -51,8 +51,8 @@ namespace black_cat
 		}
 	}
 
-	void _build_ozz_animation(aiAnimation* const * p_ai_animations, 
-		bcSIZE p_ai_animation_count, 
+	void _build_ozz_animation(aiAnimation* const * p_ai_animations,
+		bcSIZE p_ai_animation_count,
 		const ozz::animation::Skeleton& p_ozz_skeleton,
 		core::bc_vector_frame< ozz::animation::offline::RawAnimation >& p_ozz_animations)
 	{
@@ -119,7 +119,7 @@ namespace black_cat
 		}
 	}
 
-	void _write_ozz_structures(const ozz::animation::Skeleton& p_ozz_skeleton, 
+	void _write_ozz_structures(const ozz::animation::Skeleton& p_ozz_skeleton,
 		const core::bc_vector_frame< ozz::unique_ptr< ozz::animation::Animation>>& p_ozz_animations,
 		ozz::io::MemoryStream& p_stream)
 	{

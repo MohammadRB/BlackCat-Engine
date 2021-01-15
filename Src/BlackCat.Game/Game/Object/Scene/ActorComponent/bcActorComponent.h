@@ -96,8 +96,6 @@ namespace black_cat
 			 * \brief Initialize component data members that are shared between instances of this component.
 			 * In other word data members that act like entity template data.
 			 * \param p_context
-			 * \param p_parameters
-			 * \param p_stream_manager 
 			 */
 			virtual void initialize(bc_actor_component_initialize_context& p_context);
 

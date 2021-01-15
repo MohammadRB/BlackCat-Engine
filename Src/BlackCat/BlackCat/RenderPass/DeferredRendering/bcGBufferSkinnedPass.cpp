@@ -46,9 +46,7 @@ namespace black_cat
 		}
 		m_render_states_query = p_param.m_query_manager.queue_query
 		(
-			// TODO
-			//game::bc_main_camera_render_state_query(p_param.m_frame_renderer.create_buffer()).only<game::bc_skinned_mesh_component>()
-			game::bc_scene_graph_render_state_query(p_param.m_frame_renderer.create_buffer()).only<game::bc_skinned_mesh_component>()
+			game::bc_main_camera_render_state_query(p_param.m_frame_renderer.create_buffer()).only<game::bc_skinned_mesh_component>()
 		);
 	}
 

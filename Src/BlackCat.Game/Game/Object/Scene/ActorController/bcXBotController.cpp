@@ -4,6 +4,7 @@
 #include "Game/Object/Scene/ActorController/bcXBotController.h"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
 #include "Game/Object/Animation/bcAnimationSkeleton.h"
 #include "Game/Object/Animation/bcSkeletonAnimation.h"
 
@@ -48,7 +49,15 @@ namespace black_cat
 				(
 					*m_sample_job,
 					l_skinned_mesh_component->get_mesh(),
-					l_skinned_mesh_component->get_mesh_transforms()
+					l_skinned_mesh_component->get_model_transforms()
+				)
+			);
+			m_model_to_skinned_job = core::bc_make_unique< bc_animation_job_model_to_skinned_transform >
+			(
+				bc_animation_job_model_to_skinned_transform
+				(
+					*m_local_to_model_job,
+					l_skinned_mesh_component->get_skinned_transforms()
 				)
 			);
 		}
@@ -57,7 +66,8 @@ namespace black_cat
 		{
 			m_idle_job = bc_animation_job_builder()
 				.start_with(*m_sample_job)
-				.end_with(*m_local_to_model_job);
+				.then(*m_local_to_model_job)
+				.end_with(*m_model_to_skinned_job);
 		}
 
 		void bc_xbot_controller::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock)
@@ -66,6 +76,8 @@ namespace black_cat
 			{
 				auto* l_skinned_mesh_component = p_actor.get_component<bc_skinned_mesh_component>();
 				l_skinned_mesh_component->add_animation_job(*m_idle_job);
+
+				p_actor.add_event(bc_actor_event_bound_box_changed(m_model_to_skinned_job->get_bound_box()));
 			}
 		}
 
@@ -74,10 +86,7 @@ namespace black_cat
 			const auto* l_world_transform_event = core::bc_imessage::as<bc_actor_event_world_transform>(p_event);
 			if(l_world_transform_event)
 			{
-				auto* l_skinned_mesh_component = p_actor.get_component<bc_skinned_mesh_component>();
-				const auto l_mesh_scale = l_skinned_mesh_component->get_mesh().get_mesh_scale();
-				//m_local_to_model_job->set_world(core::bc_matrix4f::scale_matrix(l_mesh_scale) * l_world_transform_event->get_transform());
-				m_local_to_model_job->set_world(l_world_transform_event->get_transform());
+				m_model_to_skinned_job->set_world(l_world_transform_event->get_transform());
 			}
 		}
 

@@ -31,10 +31,9 @@ namespace black_cat
 			~bc_shape_drawer();
 
 			bc_shape_drawer& operator=(bc_shape_drawer&& p_other) noexcept;
-
+						
 			/**
-			 * \brief
-			 * \ThreadSafe
+			 * \brief 
 			 * \param p_box 
 			 */
 			void draw_wired_box(const physics::bc_bound_box& p_box);
@@ -49,10 +48,11 @@ namespace black_cat
 			/**
 			 * \brief
 			 * \ThreadSafe
-			 * \param p_mesh 
-			 * \param p_mesh_transform 
+			 * \param p_mesh
+			 * \param p_world 
+			 * \param p_mesh_transforms 
 			 */
-			void draw_wired_skeleton(const bc_sub_mesh& p_mesh, const bc_sub_mesh_transform& p_mesh_transform);
+			void draw_wired_skeleton(const bc_sub_mesh& p_mesh, const core::bc_matrix4f& p_world, const bc_sub_mesh_transform& p_mesh_transforms);
 			
 			void render(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_render_state_buffer& p_buffer);
 

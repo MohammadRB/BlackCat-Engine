@@ -34,9 +34,13 @@ namespace black_cat
 
 			const bc_sub_mesh& get_mesh() const;
 			
-			bc_sub_mesh_transform& get_mesh_transforms() noexcept;
+			bc_sub_mesh_transform& get_model_transforms() noexcept;
 			
-			const bc_sub_mesh_transform& get_mesh_transforms() const noexcept;
+			const bc_sub_mesh_transform& get_model_transforms() const noexcept;
+
+			bc_sub_mesh_transform& get_skinned_transforms() noexcept;
+
+			const bc_sub_mesh_transform& get_skinned_transforms() const noexcept;
 			
 			animation_iterator get_animations() noexcept;
 			
@@ -56,7 +60,8 @@ namespace black_cat
 			void _set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform);
 
 			bc_sub_mesh m_mesh;
-			bc_sub_mesh_transform m_mesh_transform;
+			bc_sub_mesh_transform m_model_transforms;
+			bc_sub_mesh_transform m_skinned_transforms;
 			core::bc_vector<bc_skinned_animation_ptr> m_animations;
 			bool m_animation_played;
 		};
@@ -66,14 +71,24 @@ namespace black_cat
 			return m_mesh;
 		}
 		
-		inline bc_sub_mesh_transform& bc_skinned_mesh_component::get_mesh_transforms() noexcept
+		inline bc_sub_mesh_transform& bc_skinned_mesh_component::get_model_transforms() noexcept
 		{
-			return m_mesh_transform;
+			return m_model_transforms;
 		}
 
-		inline const bc_sub_mesh_transform& bc_skinned_mesh_component::get_mesh_transforms() const noexcept
+		inline const bc_sub_mesh_transform& bc_skinned_mesh_component::get_model_transforms() const noexcept
 		{
-			return m_mesh_transform;
+			return m_model_transforms;
+		}
+
+		inline bc_sub_mesh_transform& bc_skinned_mesh_component::get_skinned_transforms() noexcept
+		{
+			return m_skinned_transforms;
+		}
+
+		inline const bc_sub_mesh_transform& bc_skinned_mesh_component::get_skinned_transforms() const noexcept
+		{
+			return m_skinned_transforms;
 		}
 
 		inline bc_skinned_mesh_component::animation_iterator bc_skinned_mesh_component::get_animations() noexcept

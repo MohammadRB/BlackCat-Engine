@@ -381,7 +381,7 @@ namespace black_cat
 				(
 					&l_skinned_vertices[0].m_position,
 					sizeof(game::bc_vertex_pos_tex_nor_tan_bon),
-					l_vertices.size()
+					l_skinned_vertices.size()
 				)
 			);
 

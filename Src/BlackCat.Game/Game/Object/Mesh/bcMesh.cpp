@@ -93,9 +93,7 @@ namespace black_cat
 			auto l_identity = core::bc_matrix4f::identity();
 			iterate_over_nodes(l_identity, [this](const bc_mesh_node& p_node, core::bc_matrix4f& p_parent_transform)
 			{
-				auto l_node_absolute_transformation = m_transformations[p_node.m_transform_index] * p_parent_transform;
-				//m_inverse_bind_poses[p_node.m_transform_index] = m_transformations[m_root->m_transform_index].inverse() * l_node_absolute_transformation * m_bone_offsets[p_node.m_transform_index];
-				//m_inverse_bind_poses[p_node.m_transform_index] = p_parent_transform * m_bone_offsets[p_node.m_transform_index] * m_transformations[p_node.m_transform_index];
+				auto l_node_absolute_transformation = get_node_transform(p_node) * p_parent_transform;
 				m_inverse_bind_poses[p_node.m_transform_index] = l_node_absolute_transformation.inverse();
 
 				return l_node_absolute_transformation;
@@ -113,26 +111,6 @@ namespace black_cat
 			}
 
 			return l_entry->second;
-		}
-
-		const bc_mesh_node* bc_mesh::get_node_parent(const bc_mesh_node& p_node) const noexcept
-		{
-			return p_node.m_parent;
-		}
-
-		const core::bc_vector<bc_mesh_node*>& bc_mesh::get_node_children(const bc_mesh_node& p_node) const noexcept
-		{
-			return p_node.m_children;
-		}
-
-		const core::bc_matrix4f& bc_mesh::get_node_offset_transform(const bc_mesh_node& p_node) const noexcept
-		{
-			return m_bone_offsets[p_node.m_transform_index];
-		}
-
-		const core::bc_matrix4f& bc_mesh::get_node_transform(const bc_mesh_node& p_node) const noexcept
-		{
-			return m_transformations[p_node.m_transform_index];
 		}
 
 		const core::bc_string& bc_mesh::get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
@@ -205,9 +183,9 @@ namespace black_cat
 				const auto& l_node_transform = p_absolute_transforms.get_node_transform(p_node);
 
 				// Update mesh bounding box based on its sub meshes
-				for (bcSIZE m = 0; m < p_node.get_mesh_count(); ++m)
+				for (bcSIZE l_mesh_ite = 0; l_mesh_ite < p_node.get_mesh_count(); ++l_mesh_ite)
 				{
-					auto l_node_mesh_box = get_node_mesh_bound_box(p_node, m);
+					auto l_node_mesh_box = get_node_mesh_bound_box(p_node, l_mesh_ite);
 					l_node_mesh_box.transform(physics::bc_transform(l_node_transform));
 
 					if (p_bound_box.is_empty())
@@ -231,7 +209,7 @@ namespace black_cat
 			iterate_over_nodes(p_world, [this, &p_transforms, &p_bound_box](const bc_mesh_node& p_node, const core::bc_matrix4f& p_parent_transform)
 			{
 				const auto l_node_absolute_transformation = get_node_transform(p_node) * p_parent_transform;
-				p_transforms.set_node_transformation
+				p_transforms.set_node_transform
 				(
 					p_node,
 					m_scale == 1

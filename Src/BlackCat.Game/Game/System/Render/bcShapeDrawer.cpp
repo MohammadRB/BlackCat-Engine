@@ -69,13 +69,13 @@ namespace black_cat
 			}
 		}
 
-		void bc_shape_drawer::draw_wired_skeleton(const bc_sub_mesh& p_mesh, const bc_sub_mesh_transform& p_mesh_transform)
+		void bc_shape_drawer::draw_wired_skeleton(const bc_sub_mesh& p_mesh, const core::bc_matrix4f& p_world, const bc_sub_mesh_transform& p_mesh_transforms)
 		{
 			{
 				core_platform::bc_mutex_guard l_guard(m_mutex);
 
 				bc_shape_generator_buffer l_buffer(m_vertices[m_buffer_write_index], m_indices[m_buffer_write_index]);
-				bc_shape_generator::create_wired_skeleton(l_buffer, p_mesh, p_mesh_transform);
+				bc_shape_generator::create_wired_skeleton(l_buffer, p_mesh, p_world, p_mesh_transforms);
 			}
 		}
 

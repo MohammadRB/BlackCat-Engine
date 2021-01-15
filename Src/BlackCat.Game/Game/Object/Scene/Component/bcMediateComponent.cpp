@@ -17,10 +17,10 @@ namespace black_cat
 			: bc_iactor_component(p_index),
 			m_entity_name(nullptr),
 			m_scene(nullptr),
-			m_controller(nullptr),
 			m_bound_box_changed(false),
 			m_prev_bound_box(),
-			m_bound_box()
+			m_bound_box(),
+			m_controller(nullptr)
 		{
 		}
 
@@ -58,6 +58,7 @@ namespace black_cat
 		void bc_mediate_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
 			_handle_event(p_actor, p_event);
+
 			if (m_controller)
 			{
 				m_controller->handle_event(p_actor, p_event);
@@ -67,6 +68,11 @@ namespace black_cat
 		void bc_mediate_component::debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer)
 		{
 			p_shape_drawer.draw_wired_box(m_bound_box);
+
+			if(m_controller)
+			{
+				m_controller->debug_draw(p_actor, p_shape_drawer);
+			}
 		}
 
 		void bc_mediate_component::_handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
@@ -74,7 +80,7 @@ namespace black_cat
 			const auto* l_transformation_event = core::bc_imessage::as< bc_actor_event_world_transform >(p_event);
 			if (l_transformation_event)
 			{
-				m_transformation = l_transformation_event->get_transform();
+				m_transform = l_transformation_event->get_transform();
 				return;
 			}
 

@@ -60,12 +60,8 @@ namespace black_cat
 
 			bcFLOAT get_scale() const noexcept;
 
-			const core::bc_vector_movable< core::bc_matrix4f >& get_bone_offsets() const noexcept;
-			
-			const core::bc_vector_movable< core::bc_matrix4f >& get_inverse_bind_poses() const noexcept;
-			
 			/**
-			 * \brief Return nullptr if no node found
+			 * \brief Return nullptr if no node were found
 			 * \param p_name 
 			 * \return 
 			 */
@@ -75,9 +71,11 @@ namespace black_cat
 
 			const core::bc_vector< bc_mesh_node* >& get_node_children(const bc_mesh_node& p_node) const noexcept;
 
-			const core::bc_matrix4f& get_node_offset_transform(const bc_mesh_node& p_node) const noexcept;
-			
 			const core::bc_matrix4f& get_node_transform(const bc_mesh_node& p_node) const noexcept;
+			
+			const core::bc_matrix4f& get_node_offset_transform(const bc_mesh_node& p_node) const noexcept;
+
+			const core::bc_matrix4f& get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
 
 			const core::bc_string& get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
@@ -95,6 +93,14 @@ namespace black_cat
 			
 			void calculate_absolute_transforms(const core::bc_matrix4f& p_world, bc_sub_mesh_transform& p_transforms, physics::bc_bound_box& p_bound_box) const noexcept;
 
+			/**
+			 * \brief 
+			 * \tparam TArg
+			 * \tparam TCallable
+			 * \param p_arg Root argument
+			 * \param p_callable Callable object (const bc_mesh_node&, TArg&) -> TArg
+			 * \param p_node 
+			 */
 			template< typename TArg, typename TCallable >
 			void iterate_over_nodes(TArg& p_arg, TCallable p_callable, const bc_mesh_node* p_node = nullptr) const noexcept;
 
@@ -135,16 +141,31 @@ namespace black_cat
 			return m_scale;
 		}
 
-		inline const core::bc_vector_movable<core::bc_matrix4f>& bc_mesh::get_bone_offsets() const noexcept
+		inline const bc_mesh_node* bc_mesh::get_node_parent(const bc_mesh_node& p_node) const noexcept
 		{
-			return m_bone_offsets;
-		}
-		
-		inline const core::bc_vector_movable< core::bc_matrix4f >& bc_mesh::get_inverse_bind_poses() const noexcept
-		{
-			return m_inverse_bind_poses;
+			return p_node.m_parent;
 		}
 
+		inline const core::bc_vector<bc_mesh_node*>& bc_mesh::get_node_children(const bc_mesh_node& p_node) const noexcept
+		{
+			return p_node.m_children;
+		}
+
+		inline const core::bc_matrix4f& bc_mesh::get_node_transform(const bc_mesh_node& p_node) const noexcept
+		{
+			return m_transformations[p_node.m_transform_index];
+		}
+		
+		inline const core::bc_matrix4f& bc_mesh::get_node_offset_transform(const bc_mesh_node& p_node) const noexcept
+		{
+			return m_bone_offsets[p_node.m_transform_index];
+		}
+
+		inline const core::bc_matrix4f& bc_mesh::get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept
+		{
+			return m_inverse_bind_poses[p_node.m_transform_index];
+		}
+		
 		template< typename TArg, typename TCallable >
 		void bc_mesh::iterate_over_nodes(TArg& p_arg, TCallable p_callable, const bc_mesh_node* p_node) const noexcept
 		{

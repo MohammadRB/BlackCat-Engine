@@ -31,7 +31,7 @@ namespace black_cat
 		{
 			if (!m_emitter_name.empty())
 			{
-				const auto l_position = get_actor().get_component<bc_mediate_component>()->get_world_position();
+				const auto l_position = get_actor().get_component<bc_mediate_component>()->get_position();
 				core::bc_get_service<bc_game_system>()->get_render_system()
 					.get_particle_manager()
 					.spawn_emitter(m_emitter_name.c_str(), l_position, core::bc_vector3f::up());
@@ -40,7 +40,7 @@ namespace black_cat
 
 		void bc_particle_emitter_component::spawn_emitter(const bcCHAR* p_name)
 		{
-			const auto l_position = get_actor().get_component<bc_mediate_component>()->get_world_position();
+			const auto l_position = get_actor().get_component<bc_mediate_component>()->get_position();
 			core::bc_get_service<bc_game_system>()->get_render_system()
 				.get_particle_manager()
 				.spawn_emitter(p_name, l_position, core::bc_vector3f::up());

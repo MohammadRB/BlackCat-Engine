@@ -31,6 +31,7 @@ namespace black_cat
 			core::bc_vector_movable<bc_skeleton_animation*> m_all_animations;
 			core::bc_unique_ptr<bc_animation_job_sampling> m_sample_job;
 			core::bc_unique_ptr<bc_animation_job_local_to_model_transform> m_local_to_model_job;
+			core::bc_unique_ptr<bc_animation_job_model_to_skinned_transform> m_model_to_skinned_job;
 
 			core::bc_unique_ptr<bci_animation_job> m_idle_job;
 		};

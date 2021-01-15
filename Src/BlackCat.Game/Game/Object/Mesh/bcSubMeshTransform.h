@@ -36,11 +36,11 @@ namespace black_cat
 			
 			const core::bc_matrix4f& get_node_transform(const bc_mesh_node& p_node) const;
 
-			void set_node_transformation(const bc_mesh_node& p_node, const core::bc_matrix4f& p_transform);
+			void set_node_transform(const bc_mesh_node& p_node, const core::bc_matrix4f& p_transform);
 
-			void copy_transformations_from(const core::bc_matrix4f* p_transform);
+			void copy_transforms_from(const core::bc_matrix4f* p_transform);
 
-			void copy_transformations_to(core::bc_matrix4f* p_transform) const;
+			void copy_transforms_to(core::bc_matrix4f* p_transform) const;
 
 			bcSIZE size() const noexcept;
 			
@@ -120,17 +120,17 @@ namespace black_cat
 			return const_cast<bc_sub_mesh_transform&>(*this).get_node_transform(p_node);
 		}
 
-		inline void bc_sub_mesh_transform::set_node_transformation(const bc_mesh_node& p_node, const core::bc_matrix4f& p_transform)
+		inline void bc_sub_mesh_transform::set_node_transform(const bc_mesh_node& p_node, const core::bc_matrix4f& p_transform)
 		{
 			m_transformations.at(p_node.get_transform_index() - m_root_node_index) = p_transform;
 		}
 
-		inline void bc_sub_mesh_transform::copy_transformations_from(const core::bc_matrix4f* p_transform)
+		inline void bc_sub_mesh_transform::copy_transforms_from(const core::bc_matrix4f* p_transform)
 		{
 			std::memcpy(m_transformations.data(), p_transform, sizeof(decltype(m_transformations)::value_type) * m_transformations.size());
 		}
 
-		inline void bc_sub_mesh_transform::copy_transformations_to(core::bc_matrix4f* p_transform) const
+		inline void bc_sub_mesh_transform::copy_transforms_to(core::bc_matrix4f* p_transform) const
 		{
 			std::memcpy(p_transform, m_transformations.data(), sizeof(decltype(m_transformations)::value_type) * m_transformations.size());
 		}

@@ -41,9 +41,11 @@ namespace black_cat
 
 			const core::bc_vector< bc_mesh_node* >& get_node_children(const bc_mesh_node& p_node) const noexcept;
 
-			const core::bc_matrix4f& get_node_offset_transform(const bc_mesh_node& p_node) const noexcept;
-			
 			const core::bc_matrix4f& get_node_transform(const bc_mesh_node& p_node) const noexcept;
+
+			const core::bc_matrix4f& get_node_offset_transform(const bc_mesh_node& p_node) const noexcept;
+
+			const core::bc_matrix4f& get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
 
 			const core::bc_string& get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
@@ -110,6 +112,11 @@ namespace black_cat
 		inline const core::bc_matrix4f& bc_sub_mesh::get_node_offset_transform(const bc_mesh_node& p_node) const noexcept
 		{
 			return m_mesh->get_node_offset_transform(p_node);
+		}
+
+		inline const core::bc_matrix4f& bc_sub_mesh::get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept
+		{
+			return m_mesh->get_node_inverse_bind_pose_transform(p_node);
 		}
 
 		inline const core::bc_matrix4f& bc_sub_mesh::get_node_transform(const bc_mesh_node& p_node) const noexcept

@@ -6,6 +6,7 @@
 #include "Game/Object/Animation/bcAnimationJob.h"
 #include "Game/Object/Animation/Job/bcAnimationJobSampling.h"
 #include "Game/Object/Animation/Job/bcAnimationJobLocalToModelTransform.h"
+#include "Game/Object/Animation/Job/bcAnimationJobModelToSkinnedTransform.h"
 #include "Game/Object/Animation/Job/bcAnimationJobSequence.h"
 
 namespace black_cat

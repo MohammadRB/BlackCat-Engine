@@ -48,7 +48,9 @@ namespace black_cat
 			
 			const physics::bc_bound_box& get_bound_box() const noexcept;
 
-			core::bc_vector3f get_world_position() const noexcept;
+			const core::bc_matrix4f& get_transform() const noexcept;
+			
+			core::bc_vector3f get_position() const noexcept;
 
 			void initialize(bc_actor_component_initialize_context& p_context) override;
 			
@@ -64,7 +66,7 @@ namespace black_cat
 			const bcCHAR* m_entity_name;
 			
 			bc_scene* m_scene;
-			core::bc_matrix4f m_transformation;
+			core::bc_matrix4f m_transform;
 			bool m_bound_box_changed;
 			physics::bc_bound_box m_prev_bound_box;
 			physics::bc_bound_box m_bound_box;
@@ -91,9 +93,14 @@ namespace black_cat
 			return m_bound_box;
 		}
 
-		inline core::bc_vector3f bc_mediate_component::get_world_position() const noexcept
+		inline const core::bc_matrix4f& bc_mediate_component::get_transform() const noexcept
 		{
-			return m_transformation.get_translation();
+			return m_transform;
+		}
+		
+		inline core::bc_vector3f bc_mediate_component::get_position() const noexcept
+		{
+			return m_transform.get_translation();
 		}
 	}
 }

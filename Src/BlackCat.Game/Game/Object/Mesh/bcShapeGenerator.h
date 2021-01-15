@@ -40,7 +40,10 @@ namespace black_cat
 
 			static void create_wired_frustum(bc_shape_generator_buffer& p_buffer, const bc_icamera::extend& p_camera_extend);
 			
-			static void create_wired_skeleton(bc_shape_generator_buffer& p_buffer, const bc_sub_mesh& p_mesh, const bc_sub_mesh_transform& p_mesh_transform);
+			static void create_wired_skeleton(bc_shape_generator_buffer& p_buffer, 
+				const bc_sub_mesh& p_mesh, 
+				const core::bc_matrix4f& p_world, 
+				const bc_sub_mesh_transform& p_mesh_transforms);
 		};
 	}
 }
