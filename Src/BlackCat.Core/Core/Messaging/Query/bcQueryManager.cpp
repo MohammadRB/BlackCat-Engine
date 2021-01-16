@@ -213,7 +213,7 @@ namespace black_cat
 			return bc_query_provider_handle(p_context_hash);
 		}
 
-		_bc_query_shared_state& bc_query_manager::_queue_query(bc_query_context_hash p_context_hash, bool p_is_shared, bc_unique_ptr<bc_iquery> p_query)
+		_bc_query_shared_state& bc_query_manager::_queue_query(bc_query_context_hash p_context_hash, bool p_is_shared, bc_unique_ptr<bci_query> p_query)
 		{
 			{
 				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_providers_guard(m_providers_lock);
@@ -233,7 +233,7 @@ namespace black_cat
 			}
 		}
 
-		bc_query_manager::_query_entry::_query_entry(_provider_entry& p_provider, bool p_is_shared, bc_unique_ptr<bc_iquery> p_query)
+		bc_query_manager::_query_entry::_query_entry(_provider_entry& p_provider, bool p_is_shared, bc_unique_ptr<bci_query> p_query)
 			: _bc_query_shared_state(*p_query),
 			m_provider(&p_provider),
 			m_iterator(std::end(p_provider.m_queries)),

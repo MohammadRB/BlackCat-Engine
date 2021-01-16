@@ -59,7 +59,7 @@ namespace black_cat
 
 		void bc_height_map_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
-			auto* l_world_transform_event = core::bc_imessage::as< bc_actor_event_world_transform >(p_event);
+			auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_event);
 			if(l_world_transform_event)
 			{
 				m_transform.translate(l_world_transform_event->get_transform().get_translation());

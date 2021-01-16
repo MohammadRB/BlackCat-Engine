@@ -144,17 +144,17 @@ namespace black_cat
 
 			void unmap_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource);*/
 
-			void update_subresource(graphic::bc_iresource& p_resource, bcUINT p_dst_subresource, const void *p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch);
+			void update_subresource(graphic::bci_resource& p_resource, bcUINT p_dst_subresource, const void *p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch);
 
-			void copy_subresource(graphic::bc_iresource& p_dest_resource, bcUINT p_dst_subresource, graphic::bc_iresource& p_src_resource, bcUINT p_src_subresource);
+			void copy_subresource(graphic::bci_resource& p_dest_resource, bcUINT p_dst_subresource, graphic::bci_resource& p_src_resource, bcUINT p_src_subresource);
 
-			void copy_resource(graphic::bc_iresource& p_dest_resource, graphic::bc_iresource& p_src_resource);
+			void copy_resource(graphic::bci_resource& p_dest_resource, graphic::bci_resource& p_src_resource);
 
 			void copy_structure_count(graphic::bc_buffer p_dest_resource, bcUINT p_offset, graphic::bc_resource_view p_unordered_resource);
 
-			void resolve_subresource(graphic::bc_iresource& p_dest_resource,
+			void resolve_subresource(graphic::bci_resource& p_dest_resource,
 				bcUINT p_dest_subresource,
-				graphic::bc_iresource& p_src_resource,
+				graphic::bci_resource& p_src_resource,
 				bcUINT p_src_subresource,
 				graphic::bc_format p_format);
 

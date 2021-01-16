@@ -11,7 +11,7 @@
 
 namespace black_cat
 {
-	class BC_DLL bc_text_draw_pass : public game::bc_irender_pass
+	class BC_DLL bc_text_draw_pass : public game::bci_render_pass
 	{
 		BC_RENDER_PASS(txt_drw)
 

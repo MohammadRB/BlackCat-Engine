@@ -80,13 +80,13 @@ namespace black_cat
 			const core_platform::bc_clock::update_param& m_clock;
 		};
 		
-		class BC_GAME_DLL bc_iactor_component
+		class BC_GAME_DLL bci_actor_component
 		{
 		public:
 			constexpr static bc_actor_component_index invalid_index = static_cast< bc_actor_component_index >(-1);
 
 		public:
-			virtual ~bc_iactor_component();
+			virtual ~bci_actor_component();
 
 			bc_actor_component_index get_index() const noexcept;
 			
@@ -110,11 +110,11 @@ namespace black_cat
 			virtual void debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer);
 			
 		protected:
-			explicit bc_iactor_component(bc_actor_component_index p_index) noexcept;
+			explicit bci_actor_component(bc_actor_component_index p_index) noexcept;
 
-			bc_iactor_component(bc_iactor_component&& p_other) noexcept;
+			bci_actor_component(bci_actor_component&& p_other) noexcept;
 
-			bc_iactor_component& operator=(bc_iactor_component&& p_other) noexcept;
+			bci_actor_component& operator=(bci_actor_component&& p_other) noexcept;
 
 			static bc_actor_component_manager& get_manager() noexcept;
 
@@ -122,48 +122,48 @@ namespace black_cat
 			bc_actor_component_index m_index;
 		};
 
-		inline bc_iactor_component::~bc_iactor_component() = default;
+		inline bci_actor_component::~bci_actor_component() = default;
 
-		inline bc_actor_component_index bc_iactor_component::get_index() const noexcept
+		inline bc_actor_component_index bci_actor_component::get_index() const noexcept
 		{
 			return m_index;
 		}
 
-		inline void bc_iactor_component::initialize(bc_actor_component_initialize_context& p_context)
+		inline void bci_actor_component::initialize(bc_actor_component_initialize_context& p_context)
 		{
 		}
 
-		inline void bc_iactor_component::load_instance(bc_actor_component_load_context& p_context)
+		inline void bci_actor_component::load_instance(bc_actor_component_load_context& p_context)
 		{
 		}
 
-		inline void bc_iactor_component::write_instance(bc_actor_component_write_context& p_context)
+		inline void bci_actor_component::write_instance(bc_actor_component_write_context& p_context)
 		{
 		}
 
-		inline void bc_iactor_component::update(bc_actor_component_update_content& p_context)
+		inline void bci_actor_component::update(bc_actor_component_update_content& p_context)
 		{
 		}
 
-		inline void bc_iactor_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		inline void bci_actor_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
 		}
 		
-		inline void bc_iactor_component::debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer)
+		inline void bci_actor_component::debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer)
 		{
 		}
 		
-		inline bc_iactor_component::bc_iactor_component(bc_actor_component_index p_index) noexcept
+		inline bci_actor_component::bci_actor_component(bc_actor_component_index p_index) noexcept
 			: m_index(p_index)
 		{
 		}
 
-		inline bc_iactor_component::bc_iactor_component(bc_iactor_component&& p_other) noexcept
+		inline bci_actor_component::bci_actor_component(bci_actor_component&& p_other) noexcept
 			: m_index(p_other.m_index)
 		{
 		}
 
-		inline bc_iactor_component& bc_iactor_component::operator=(bc_iactor_component&& p_other) noexcept
+		inline bci_actor_component& bci_actor_component::operator=(bci_actor_component&& p_other) noexcept
 		{
 			m_index = p_other.m_index;
 

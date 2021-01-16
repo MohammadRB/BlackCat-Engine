@@ -15,13 +15,13 @@ namespace black_cat
 	namespace game
 	{
 		bc_default_game_console::bc_default_game_console(bc_render_application& p_application, bc_game_console& p_game_console) noexcept
-			: bc_igame_console_imp(p_game_console),
+			: bci_game_console_imp(p_game_console),
 			m_application(p_application)
 		{
 		}
 
 		bc_default_game_console::bc_default_game_console(bc_default_game_console&& p_other) noexcept
-			: bc_igame_console_imp(std::move(p_other)),
+			: bci_game_console_imp(std::move(p_other)),
 			m_application(p_other.m_application),
 			m_console(std::move(p_other.m_console))
 		{

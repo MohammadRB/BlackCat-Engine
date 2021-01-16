@@ -136,7 +136,7 @@ namespace black_cat
 
 	void bc_gbuffer_terrain_pass_dx11::execute(const game::bc_render_pass_render_context& p_param)
 	{
-		game::bc_icamera::extend l_camera_extends = p_param.m_render_camera.get_extends();
+		game::bci_camera::extend l_camera_extends = p_param.m_render_camera.get_extends();
 
 		_bc_parameter_buffer l_parameter;
 		l_parameter.m_frustum_planes[0] = _plane_from_3_point(l_camera_extends[0], l_camera_extends[1], l_camera_extends[2]);

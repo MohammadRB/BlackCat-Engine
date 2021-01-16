@@ -17,7 +17,7 @@
 
 namespace black_cat
 {
-	physics::bc_triangle_mesh_desc _bc_extract_triangle_mesh(const aiMesh* l_ai_mesh, core::bc_vector_frame< bcBYTE >& p_intermediate_buffer);
+	std::tuple<core::bc_unique_ptr< bcBYTE >, physics::bc_triangle_mesh_desc> _bc_extract_triangle_mesh(const aiMesh* l_ai_mesh);
 
 	bc_mesh_collider_loader::bc_mesh_collider_loader(bool p_high_detail_query_shape)
 		: m_high_detail_query_shape(p_high_detail_query_shape)
@@ -178,9 +178,8 @@ namespace black_cat
 			}
 			else if (l_mesh_name == "mesh")
 			{
-				core::bc_vector_frame< bcBYTE > l_intermediate_buffer;
-				physics::bc_triangle_mesh_desc l_px_triangle_desc = _bc_extract_triangle_mesh(l_ai_mesh, l_intermediate_buffer);
-				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(l_px_triangle_desc);
+				auto l_triangle_mesh_data = _bc_extract_triangle_mesh(l_ai_mesh);
+				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(std::get<physics::bc_triangle_mesh_desc>(l_triangle_mesh_data));
 				physics::bc_triangle_mesh_ref l_triangle_mesh = p_physics.create_triangle_mesh(l_triangle_buffer);
 
 				l_result.add_px_shape(std::move(l_triangle_mesh), physics::bc_transform(l_node_absolute_transformation), l_shape_flag);
@@ -213,8 +212,8 @@ namespace black_cat
 		{
 			game::bc_mesh_part_collider l_mesh_colliders;
 
-			aiMesh* l_aimesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[i]];
-			aiNode* l_px_node = find_px_node(p_ai_node, *l_aimesh);
+			aiMesh* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[i]];
+			aiNode* l_px_node = find_px_node(p_ai_node, *l_ai_mesh);
 
 			if (l_px_node)
 			{
@@ -224,15 +223,14 @@ namespace black_cat
 
 			if (p_generate_high_detail_query_shape)
 			{
-				core::bc_vector_frame< bcBYTE > p_intermediate_buffer;
-				physics::bc_triangle_mesh_desc l_px_triangle_desc = _bc_extract_triangle_mesh(l_aimesh, p_intermediate_buffer);
-				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(l_px_triangle_desc);
+				auto l_triangle_mesh_data = _bc_extract_triangle_mesh(l_ai_mesh);
+				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(std::get<physics::bc_triangle_mesh_desc>(l_triangle_mesh_data));
 				physics::bc_triangle_mesh_ref l_triangle_mesh = p_physics.create_triangle_mesh(l_triangle_buffer);
 
 				l_mesh_colliders.add_px_shape(std::move(l_triangle_mesh), physics::bc_transform(l_node_absolute_transformation), physics::bc_shape_flag::query);
 			}
 
-			p_result.add_mesh_colliders(l_aimesh->mName.C_Str(), std::move(l_mesh_colliders));
+			p_result.add_mesh_colliders(l_ai_mesh->mName.C_Str(), std::move(l_mesh_colliders));
 		}
 
 		for (bcUINT l_child_index = 0; l_child_index < p_ai_node.mNumChildren; ++l_child_index)
@@ -243,14 +241,14 @@ namespace black_cat
 		}
 	}
 
-	physics::bc_triangle_mesh_desc _bc_extract_triangle_mesh(const aiMesh* p_ai_mesh, core::bc_vector_frame< bcBYTE >& p_intermediate_buffer)
+	std::tuple<core::bc_unique_ptr< bcBYTE >, physics::bc_triangle_mesh_desc> _bc_extract_triangle_mesh(const aiMesh* p_ai_mesh)
 	{
 		const bool l_need_32bit_indices = p_ai_mesh->mNumFaces * 3 > std::numeric_limits< bcUINT16 >::max();
-		core::bc_vector_frame< bcBYTE >& l_indices = p_intermediate_buffer;
-		l_indices.reserve(p_ai_mesh->mNumFaces * 3 * (l_need_32bit_indices ? static_cast<bcINT>(game::bc_index_type::i32bit) : static_cast<bcINT>(game::bc_index_type::i16bit)));
+		const auto l_bytes_needed_for_indices = p_ai_mesh->mNumFaces * 3 * (l_need_32bit_indices ? sizeof(bcINT32) : sizeof(bcINT16));
+		core::bc_unique_ptr< bcBYTE > l_indices_buffer(static_cast<bcBYTE*>(BC_ALLOC(l_bytes_needed_for_indices, core::bc_alloc_type::frame)));
 
-		bcUINT16* l_16bit_indices = reinterpret_cast<bcUINT16*>(l_indices.data());
-		bcUINT32* l_32bit_indices = reinterpret_cast<bcUINT32*>(l_indices.data());
+		auto* l_16bit_indices = reinterpret_cast<bcUINT16*>(l_indices_buffer.get());
+		auto* l_32bit_indices = reinterpret_cast<bcUINT32*>(l_indices_buffer.get());
 		bcUINT32 l_index_count = 0;
 
 		for (bcUINT l_face_index = 0; l_face_index < p_ai_mesh->mNumFaces; ++l_face_index)
@@ -282,12 +280,12 @@ namespace black_cat
 			),
 			physics::bc_bounded_strided_data
 			(
-				l_indices.data(),
+				l_indices_buffer.get(),
 				l_need_32bit_indices ? static_cast<bcINT>(game::bc_index_type::i32bit) : static_cast<bcINT>(game::bc_index_type::i16bit),
 				l_index_count
 			)
 		);
 
-		return l_px_triangle_desc;
+		return std::make_tuple(std::move(l_indices_buffer), std::move(l_px_triangle_desc));
 	}
 }

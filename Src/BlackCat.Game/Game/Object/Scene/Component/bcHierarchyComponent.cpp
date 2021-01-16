@@ -14,12 +14,12 @@ namespace black_cat
 	namespace game
 	{
 		bc_hierarchy_component::bc_hierarchy_component(bc_actor_component_index p_index)
-			: bc_iactor_component(p_index)
+			: bci_actor_component(p_index)
 		{
 		}
 
 		bc_hierarchy_component::bc_hierarchy_component(bc_hierarchy_component&& p_other) noexcept
-			: bc_iactor_component(std::move(p_other)),
+			: bci_actor_component(std::move(p_other)),
 			m_actors(std::move(p_other.m_actors))
 		{
 		}
@@ -34,7 +34,7 @@ namespace black_cat
 
 		bc_hierarchy_component& bc_hierarchy_component::operator=(bc_hierarchy_component&& p_other) noexcept
 		{
-			bc_iactor_component::operator=(std::move(p_other));
+			bci_actor_component::operator=(std::move(p_other));
 			m_actors = std::move(p_other.m_actors);
 
 			return *this;

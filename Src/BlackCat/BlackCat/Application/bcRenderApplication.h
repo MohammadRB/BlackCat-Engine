@@ -40,7 +40,7 @@ namespace black_cat
 
 		virtual void application_render(core_platform::bc_clock::update_param p_clock) = 0;
 
-		virtual bool application_event(core::bc_ievent& p_event) = 0;
+		virtual bool application_event(core::bci_event& p_event) = 0;
 
 		virtual void application_unload_content(core::bc_content_stream_manager* p_stream_manager) = 0;
 
@@ -60,7 +60,7 @@ namespace black_cat
 
 		void app_swap_frame(core_platform::bc_clock::update_param p_clock) override;
 		
-		bool app_event(core::bc_ievent& p_event) override final;
+		bool app_event(core::bci_event& p_event) override final;
 
 		void app_unload_content() override final;
 

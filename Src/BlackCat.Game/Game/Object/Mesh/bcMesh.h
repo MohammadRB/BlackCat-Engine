@@ -37,7 +37,7 @@ namespace black_cat
 			graphic::bc_buffer_ptr m_index_buffer;
 		};
 
-		class BC_GAME_DLL bc_mesh : public core::bc_icontent
+		class BC_GAME_DLL bc_mesh : public core::bci_content
 		{
 			BC_CONTENT(mesh)
 

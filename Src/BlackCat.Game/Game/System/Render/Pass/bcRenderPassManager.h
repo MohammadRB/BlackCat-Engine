@@ -26,7 +26,7 @@ namespace black_cat
 		public:
 			bcUINT32 m_position;
 			const bcCHAR* m_name;
-			core::bc_unique_ptr< bc_irender_pass > m_pass;
+			core::bc_unique_ptr< bci_render_pass > m_pass;
 		};
 
 		class BC_GAME_DLL bc_render_pass_manager : public core_platform::bc_no_copy
@@ -46,7 +46,7 @@ namespace black_cat
 			template< typename T >
 			T* get_pass();
 
-			bc_irender_pass* get_pass(bcUINT32 p_location);
+			bci_render_pass* get_pass(bcUINT32 p_location);
 
 			template< typename T >
 			bool remove_pass();
@@ -70,7 +70,7 @@ namespace black_cat
 
 			bool _remove_pass(const bcCHAR* p_name);
 
-			bc_irender_pass* _get_pass(const bcCHAR* p_name);
+			bci_render_pass* _get_pass(const bcCHAR* p_name);
 
 			core::bc_vector< _bc_render_pass_entry > m_passes;
 			bc_render_pass_resource_share m_state_share;
@@ -79,7 +79,7 @@ namespace black_cat
 		template< typename T >
 		void bc_render_pass_manager::add_pass(bcUINT32 p_location, T&& p_pass)
 		{
-			static_assert(std::is_base_of_v<bc_irender_pass, T>, "T must inherit from bc_irender_pass");
+			static_assert(std::is_base_of_v<bci_render_pass, T>, "T must inherit from bc_irender_pass");
 
 			_bc_render_pass_entry l_entry;
 			l_entry.m_position = p_location;
@@ -92,7 +92,7 @@ namespace black_cat
 		template< typename T >
 		bool bc_render_pass_manager::remove_pass()
 		{
-			static_assert(std::is_base_of_v<bc_irender_pass, T>, "T must inherite from bc_irender_pass");
+			static_assert(std::is_base_of_v<bci_render_pass, T>, "T must inherite from bc_irender_pass");
 
 			return _remove_pass(bc_render_pass_trait<T>::render_pass_name());
 		}
@@ -100,7 +100,7 @@ namespace black_cat
 		template< typename T >
 		T* bc_render_pass_manager::get_pass()
 		{
-			static_assert(std::is_base_of_v<bc_irender_pass, T>, "T must inherite from bc_irender_pass");
+			static_assert(std::is_base_of_v<bci_render_pass, T>, "T must inherite from bc_irender_pass");
 
 			return static_cast< T* >(_get_pass(bc_render_pass_trait<T>::render_pass_name()));
 		}

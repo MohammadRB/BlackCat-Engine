@@ -40,7 +40,7 @@ namespace black_cat
 
 	namespace game
 	{
-		class bc_irender_task;
+		class bci_render_task;
 		class bc_file_system;
 		class bc_render_thread_manager;
 		class bc_material_manager;
@@ -71,14 +71,14 @@ namespace black_cat
 		struct bc_render_system_update_context
 		{
 			bc_render_system_update_context(const core_platform::bc_clock::update_param& p_clock,
-				const bc_icamera& p_camera)
+				const bci_camera& p_camera)
 				: m_clock(p_clock),
 				m_camera(p_camera)
 			{
 			}
 
 			core_platform::bc_clock::update_param m_clock;
-			const bc_icamera& m_camera;
+			const bci_camera& m_camera;
 		};
 
 		struct bc_render_system_render_context
@@ -163,7 +163,7 @@ namespace black_cat
 			 * \brief \b ThreadSafe
 			 * \param p_task 
 			 */
-			void add_render_task(bc_irender_task& p_task);
+			void add_render_task(bci_render_task& p_task);
 
 			/**
 			 * \brief \b ThreadSafe
@@ -272,7 +272,7 @@ namespace black_cat
 
 			void _destroy() override;
 
-			bool _event_handler(core::bc_ievent& p_event);
+			bool _event_handler(core::bci_event& p_event);
 
 			bc_render_pass_state* _get_render_pass_state(const _bc_render_state_handle& p_handle);
 

@@ -13,7 +13,7 @@
 
 namespace black_cat
 {
-	class BC_DLL bc_back_buffer_write_pass : public game::bc_irender_pass
+	class BC_DLL bc_back_buffer_write_pass : public game::bci_render_pass
 	{
 		BC_RENDER_PASS(bb_wrt)
 

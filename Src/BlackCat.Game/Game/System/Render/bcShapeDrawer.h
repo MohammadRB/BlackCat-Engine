@@ -43,7 +43,7 @@ namespace black_cat
 			 * \ThreadSafe
 			 * \param p_camera_extend
 			 */
-			void draw_wired_frustum(const bc_icamera::extend& p_camera_extend);
+			void draw_wired_frustum(const bci_camera::extend& p_camera_extend);
 
 			/**
 			 * \brief

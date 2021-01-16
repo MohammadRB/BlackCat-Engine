@@ -16,10 +16,10 @@ namespace black_cat
 		 * \brief Represent a rendering task that can execute commands on hardware device without bc_render_pass.
 		 * Task will be executed on different cpu and render thread from the thread which has submitted task.
 		 */
-		class bc_irender_task
+		class bci_render_task
 		{
 		public:
-			virtual ~bc_irender_task() = default;
+			virtual ~bci_render_task() = default;
 
 			/**
 			 * \brief Executor function.
@@ -40,11 +40,11 @@ namespace black_cat
 			}
 
 		protected:
-			bc_irender_task() = default;
+			bci_render_task() = default;
 
-			bc_irender_task(bc_irender_task&&) = default;
+			bci_render_task(bci_render_task&&) = default;
 
-			bc_irender_task& operator=(bc_irender_task&&) = default;
+			bci_render_task& operator=(bci_render_task&&) = default;
 
 		private:
 			core::bc_task<void> m_task;

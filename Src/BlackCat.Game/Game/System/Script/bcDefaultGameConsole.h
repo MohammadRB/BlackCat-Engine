@@ -16,7 +16,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_default_game_console : public bc_igame_console_imp
+		class BC_GAME_DLL bc_default_game_console : public bci_game_console_imp
 		{
 		public:
 			bc_default_game_console(bc_render_application& p_application, bc_game_console& p_game_console) noexcept;

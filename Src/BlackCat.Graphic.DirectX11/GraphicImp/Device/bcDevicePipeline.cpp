@@ -1004,7 +1004,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline< g_api_dx11 >::update_subresource(bc_iresource& p_resource, bcUINT p_dst_subresource, const void* p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch)
+		void bc_platform_device_pipeline< g_api_dx11 >::update_subresource(bci_resource& p_resource, bcUINT p_dst_subresource, const void* p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch)
 		{
 			m_pack.m_pipeline_proxy->m_context->UpdateSubresource
 			(
@@ -1019,7 +1019,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline< g_api_dx11 >::copy_subresource(bc_iresource& p_dest_resource, bcUINT p_dst_subresource, bc_iresource& p_src_resource, bcUINT p_src_subresource)
+		void bc_platform_device_pipeline< g_api_dx11 >::copy_subresource(bci_resource& p_dest_resource, bcUINT p_dst_subresource, bci_resource& p_src_resource, bcUINT p_src_subresource)
 		{
 			m_pack.m_pipeline_proxy->m_context->CopySubresourceRegion
 			(
@@ -1036,7 +1036,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline< g_api_dx11 >::copy_resource(bc_iresource& p_dest_resource, bc_iresource& p_src_resource)
+		void bc_platform_device_pipeline< g_api_dx11 >::copy_resource(bci_resource& p_dest_resource, bci_resource& p_src_resource)
 		{
 			m_pack.m_pipeline_proxy->m_context->CopyResource
 			(
@@ -1061,9 +1061,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline< g_api_dx11 >::resolve_subresource(bc_iresource& p_dest_resource, 
+		void bc_platform_device_pipeline< g_api_dx11 >::resolve_subresource(bci_resource& p_dest_resource, 
 			bcUINT p_dest_subresource, 
-			bc_iresource& p_src_resource, 
+			bci_resource& p_src_resource, 
 			bcUINT p_src_subresource, 
 			bc_format p_format)
 		{

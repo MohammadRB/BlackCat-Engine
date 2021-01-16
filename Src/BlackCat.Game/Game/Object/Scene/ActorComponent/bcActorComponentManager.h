@@ -111,14 +111,14 @@ namespace black_cat
 		struct _bc_actor_component_entry
 		{
 		public:
-			using deriveds_component_get_delegate = core::bc_delegate<bc_iactor_component*(const bc_actor&)>;
+			using deriveds_component_get_delegate = core::bc_delegate<bci_actor_component*(const bc_actor&)>;
 
 		public:
 			_bc_actor_component_entry(bool p_is_abstract,
 				bool p_require_event,
 				bool p_require_update,
 				bcUINT32 p_component_priority,
-				core::bc_unique_ptr<bc_iactor_component_container> p_container,
+				core::bc_unique_ptr<bci_actor_component_container> p_container,
 				core::bc_vector_movable< deriveds_component_get_delegate > p_deriveds);
 			
 			_bc_actor_component_entry(_bc_actor_component_entry&& p_other) noexcept;
@@ -132,7 +132,7 @@ namespace black_cat
 			bcUINT32 m_component_priority;
 			core::bc_vector_movable< bc_actor_component_index > m_actor_to_component_index_map;
 			core::bc_vector_movable< bc_actor_index > m_component_to_actor_index_map;
-			core::bc_unique_ptr< bc_iactor_component_container > m_container;
+			core::bc_unique_ptr< bci_actor_component_container > m_container;
 			core::bc_vector_movable< deriveds_component_get_delegate > m_deriveds;
 			mutable core_platform::bc_shared_mutex m_lock;
 		};
@@ -199,10 +199,10 @@ namespace black_cat
 			
 		private:
 			template< class TComponent >
-			bc_iactor_component* _actor_get_component(const bc_actor& p_actor, std::true_type);
+			bci_actor_component* _actor_get_component(const bc_actor& p_actor, std::true_type);
 
 			template< class TComponent >
-			bc_iactor_component* _actor_get_component(const bc_actor& p_actor, std::false_type);
+			bci_actor_component* _actor_get_component(const bc_actor& p_actor, std::false_type);
 
 			template< class TComponent >
 			void _register_component_type(bcSIZE p_priority);
@@ -287,7 +287,7 @@ namespace black_cat
 			bool p_require_event,
 			bool p_require_update,
 			bcUINT32 p_component_priority,
-			core::bc_unique_ptr<bc_iactor_component_container> p_container,
+			core::bc_unique_ptr<bci_actor_component_container> p_container,
 			core::bc_vector_movable< deriveds_component_get_delegate > p_deriveds)
 			: m_is_abstract(p_is_abstract),
 			m_require_event(p_require_event),
@@ -398,11 +398,11 @@ namespace black_cat
 					const auto l_component_index = l_component_entry.m_actor_to_component_index_map[l_actor_index];
 
 					// This actor has this component type
-					if (l_component_index != bc_iactor_component::invalid_index)
+					if (l_component_index != bci_actor_component::invalid_index)
 					{
 						l_component_entry.m_container->remove(l_component_index);
 						l_component_entry.m_component_to_actor_index_map[l_component_index] = bc_actor::invalid_index;
-						l_component_entry.m_actor_to_component_index_map[l_actor_index] = bc_iactor_component::invalid_index;
+						l_component_entry.m_actor_to_component_index_map[l_actor_index] = bci_actor_component::invalid_index;
 					}
 				}
 			}
@@ -475,8 +475,8 @@ namespace black_cat
 				l_parent_index = m_actors[l_actor_index]->m_parent_index;
 			}
 			
-			auto l_component_index = bc_iactor_component::invalid_index;
-			auto l_parent_component_index = bc_iactor_component::invalid_index;
+			auto l_component_index = bci_actor_component::invalid_index;
+			auto l_parent_component_index = bci_actor_component::invalid_index;
 
 			// If actor has parent and it's parent has this component type we must create actor component
 			// after parent component in sorting order of container so parent component update earlier
@@ -495,7 +495,7 @@ namespace black_cat
 				// Cast to concrete container to avoid virtual calls
 				auto* l_concrete_container = static_cast<bc_actor_component_container< TComponent >*>(l_s_component_entry->second.m_container.get());
 
-				if(l_parent_component_index == bc_iactor_component::invalid_index)
+				if(l_parent_component_index == bci_actor_component::invalid_index)
 				{
 					l_component_index = l_concrete_container->create();
 				}
@@ -528,7 +528,7 @@ namespace black_cat
 
 				auto l_component_index = l_component_entry->second.m_actor_to_component_index_map[l_actor_index];
 				// Actor has not this type of component
-				if (l_component_index == bc_iactor_component::invalid_index)
+				if (l_component_index == bci_actor_component::invalid_index)
 				{
 					BC_ASSERT(false);
 					return;
@@ -540,7 +540,7 @@ namespace black_cat
 				l_concrete_container->remove(l_component_index);
 
 				l_component_entry->second.m_component_to_actor_index_map[l_component_index] = bc_actor::invalid_index;
-				l_component_entry->second.m_actor_to_component_index_map[l_actor_index] = bc_iactor_component::invalid_index;
+				l_component_entry->second.m_actor_to_component_index_map[l_actor_index] = bci_actor_component::invalid_index;
 			}
 		}
 
@@ -553,7 +553,7 @@ namespace black_cat
 		template< class TComponent >
 		TComponent* bc_actor_component_manager::actor_get_component(const bc_actor& p_actor)
 		{
-			static_assert(std::is_base_of_v<bc_iactor_component, TComponent>, "TComponent parameter is not a component");
+			static_assert(std::is_base_of_v<bci_actor_component, TComponent>, "TComponent parameter is not a component");
 			
 			return static_cast<TComponent*>(_actor_get_component<TComponent>
 			(
@@ -575,7 +575,7 @@ namespace black_cat
 
 			for (auto& l_component_entry : m_components)
 			{
-				if(l_component_entry.second.m_component_priority == bc_iactor_component::invalid_index)
+				if(l_component_entry.second.m_component_priority == bci_actor_component::invalid_index)
 				{
 					continue; // It is an abstract component
 				}
@@ -584,7 +584,7 @@ namespace black_cat
 					core_platform::bc_shared_mutex_shared_guard l_lock(l_component_entry.second.m_lock);
 
 					const auto l_component_index = l_component_entry.second.m_actor_to_component_index_map[l_actor_index];
-					if (l_component_index != bc_iactor_component::invalid_index)
+					if (l_component_index != bci_actor_component::invalid_index)
 					{
 						*p_destination = l_component_entry.second.m_container->get(l_component_index);
 						++p_destination;
@@ -790,7 +790,7 @@ namespace black_cat
 		}
 		
 		template< class TComponent >
-		bc_iactor_component* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::true_type)
+		bci_actor_component* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::true_type)
 		{
 			static component_container_type::value_type* l_component_entry = _get_component_entry< TComponent >();
 
@@ -811,7 +811,7 @@ namespace black_cat
 		}
 
 		template< class TComponent >
-		bc_iactor_component* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::false_type)
+		bci_actor_component* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::false_type)
 		{
 			static component_container_type::value_type* l_component_entry = _get_component_entry< TComponent >();
 
@@ -827,7 +827,7 @@ namespace black_cat
 
 				auto l_actor_to_component = l_component_entry->second.m_actor_to_component_index_map[l_actor_index];
 				// Actor does not has this type of component
-				if (l_actor_to_component == bc_iactor_component::invalid_index)
+				if (l_actor_to_component == bci_actor_component::invalid_index)
 				{
 					return nullptr;
 				}
@@ -905,7 +905,7 @@ namespace black_cat
 		template< class TComponent >
 		bc_actor_component_manager::component_container_type::value_type* bc_actor_component_manager::_get_component_entry()
 		{
-			static_assert(std::is_base_of< bc_iactor_component, TComponent >::value, "TComponent must inherit from bc_iactor_component");
+			static_assert(std::is_base_of< bci_actor_component, TComponent >::value, "TComponent must inherit from bc_iactor_component");
 
 			constexpr bc_actor_component_hash l_hash = bc_actor_component_traits< TComponent >::component_hash();
 			const auto l_entry = m_components.find(l_hash);
@@ -940,7 +940,7 @@ namespace black_cat
 					// If component type doesn't have enough space in index map
 					if (l_component_entry.second.m_actor_to_component_index_map.size() < m_actors.size())
 					{
-						l_component_entry.second.m_actor_to_component_index_map.resize(m_actors.capacity(), bc_iactor_component::invalid_index);
+						l_component_entry.second.m_actor_to_component_index_map.resize(m_actors.capacity(), bci_actor_component::invalid_index);
 					}
 				}
 			}

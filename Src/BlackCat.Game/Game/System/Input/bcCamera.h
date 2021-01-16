@@ -18,13 +18,13 @@ namespace black_cat
 		class bc_orthographic_camera;
 		class bc_perspective_camera;
 
-		class BC_GAME_DLL bc_icamera
+		class BC_GAME_DLL bci_camera
 		{
 		public:
 			using extend = core::bc_array<core::bc_vector3f, 8>;
 
 		public:
-			virtual ~bc_icamera() noexcept;
+			virtual ~bci_camera() noexcept;
 
 			bcUINT16 get_screen_width() const noexcept
 			{
@@ -108,11 +108,11 @@ namespace black_cat
 			virtual void update(const core_platform::bc_clock::update_param& p_clock) noexcept = 0;
 
 		protected:
-			bc_icamera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
+			bci_camera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
 
-			bc_icamera(bc_icamera&& p_other) noexcept;
+			bci_camera(bci_camera&& p_other) noexcept;
 
-			bc_icamera& operator=(bc_icamera&& p_other) noexcept;
+			bci_camera& operator=(bci_camera&& p_other) noexcept;
 
 			virtual core::bc_matrix4f create_view_matrix(const core::bc_vector3f& p_up = core::bc_vector3f(0, 1, 0)) noexcept;
 
@@ -129,10 +129,10 @@ namespace black_cat
 			core::bc_matrix4f m_projection;
 		};
 
-		class BC_GAME_DLL bc_orthographic_camera : public bc_icamera
+		class BC_GAME_DLL bc_orthographic_camera : public bci_camera
 		{
 		public:
-			using bc_icamera::set_projection;
+			using bci_camera::set_projection;
 
 		public:
 			virtual ~bc_orthographic_camera() = default;
@@ -175,10 +175,10 @@ namespace black_cat
 			bcFLOAT m_max_y;
 		};
 
-		class BC_GAME_DLL bc_perspective_camera : public bc_icamera
+		class BC_GAME_DLL bc_perspective_camera : public bci_camera
 		{
 		public:
-			using bc_icamera::set_projection;
+			using bci_camera::set_projection;
 
 		public:
 			virtual ~bc_perspective_camera() = default;

@@ -16,7 +16,7 @@ namespace black_cat
 	namespace game
 	{
 		bc_light_component::bc_light_component(bc_actor_component_index p_index)
-			: bc_iactor_component(p_index)
+			: bci_actor_component(p_index)
 		{
 		}
 
@@ -125,7 +125,7 @@ namespace black_cat
 
 		void bc_light_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
-			const auto* l_world_transform_event = core::bc_imessage::as<bc_actor_event_world_transform>(p_event);
+			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_event);
 			if(l_world_transform_event)
 			{
 				// TODO what if light is part of a mesh

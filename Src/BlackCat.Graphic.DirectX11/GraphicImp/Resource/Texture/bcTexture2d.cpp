@@ -17,7 +17,7 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_texture2d< g_api_dx11 >::bc_platform_texture2d()
-			: bc_platform_iresource()
+			: bci_platform_resource()
 		{
 			m_pack.m_texture = nullptr;
 		}
@@ -25,7 +25,7 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_texture2d<g_api_dx11>::bc_platform_texture2d(platform_pack& p_pack)
-			: bc_platform_iresource(bc_platform_iresource::platform_pack(p_pack.m_texture))
+			: bci_platform_resource(bci_platform_resource::platform_pack(p_pack.m_texture))
 		{
 			m_pack.m_texture = p_pack.m_texture;
 		}
@@ -39,7 +39,7 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_texture2d< g_api_dx11 >::bc_platform_texture2d(const bc_platform_texture2d& p_other)
-			: bc_platform_iresource(p_other)
+			: bci_platform_resource(p_other)
 		{
 			m_pack.m_texture = p_other.m_pack.m_texture;
 		}
@@ -48,7 +48,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_platform_texture2d< g_api_dx11 >& bc_platform_texture2d< g_api_dx11 >::operator=(const bc_platform_texture2d& p_other)
 		{
-			bc_platform_iresource::operator=(p_other);
+			bci_platform_resource::operator=(p_other);
 			m_pack.m_texture = p_other.m_pack.m_texture;
 
 			return *this;

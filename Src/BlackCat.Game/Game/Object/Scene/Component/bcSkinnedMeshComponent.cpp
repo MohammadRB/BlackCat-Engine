@@ -67,7 +67,7 @@ namespace black_cat
 
 		void bc_skinned_mesh_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
-			const auto* l_world_transform_event = core::bc_imessage::as<bc_actor_event_world_transform>(p_event);
+			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_event);
 			if (l_world_transform_event)
 			{
 				_set_world_transform(p_actor, l_world_transform_event->get_transform());
@@ -85,7 +85,7 @@ namespace black_cat
 			const auto* l_mediate_component = p_actor.get_component< bc_mediate_component >();
 			const auto l_bound_box_z_length = l_mediate_component->get_bound_box().get_half_extends().z;
 			auto l_transform = l_mediate_component->get_transform();
-			l_transform.set_translation(l_transform.get_translation() + core::bc_vector3f(0,0, l_bound_box_z_length));
+			l_transform.set_translation(l_transform.get_translation() + core::bc_vector3f(0,0, l_bound_box_z_length * 1.1f));
 			const auto l_world_transform = core::bc_matrix4f::scale_matrix(m_mesh.get_mesh_scale()) * l_transform;
 			
 			p_shape_drawer.draw_wired_skeleton

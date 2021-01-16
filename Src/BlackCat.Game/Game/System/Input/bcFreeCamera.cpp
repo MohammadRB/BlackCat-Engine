@@ -146,7 +146,7 @@ namespace black_cat
 			if(!m_update_pointing_angle) // TODO remove this magical flag
 			{
 				m_update_pointing_angle = true;
-				return bc_icamera::create_view_matrix(p_up);
+				return bci_camera::create_view_matrix(p_up);
 			}
 			
 			const auto l_source_vec = core::bc_vector3f::normalize(get_look_at() - get_position());
@@ -164,7 +164,7 @@ namespace black_cat
 			m_pointing_angle.x = l_y_angle;
 			m_pointing_angle.y = l_x_angle;
 
-			return bc_icamera::create_view_matrix(p_up);
+			return bci_camera::create_view_matrix(p_up);
 			
 			/*core::bc_matrix3f l_new_rotation;
 			l_new_rotation.rotation_zyx_lh(core::bc_vector3f(l_y_angle, l_x_angle, 0));
@@ -237,14 +237,14 @@ namespace black_cat
 			}
 		}
 
-		bool bc_free_camera::_on_event(core::bc_ievent& p_event) noexcept
+		bool bc_free_camera::_on_event(core::bci_event& p_event) noexcept
 		{
-			if(core::bc_imessage::is<platform::bc_app_event_pointing>(p_event))
+			if(core::bci_message::is<platform::bc_app_event_pointing>(p_event))
 			{
 				return _on_pointing(static_cast<platform::bc_app_event_pointing&>(p_event));
 			}
 
-			if(core::bc_imessage::is<platform::bc_app_event_key>(p_event))
+			if(core::bci_message::is<platform::bc_app_event_key>(p_event))
 			{
 				return _on_key(static_cast<platform::bc_app_event_key&>(p_event));
 			}

@@ -7,7 +7,7 @@ namespace black_cat
 {
 	namespace physics
 	{
-		bc_px_contact_filter_callback::bc_px_contact_filter_callback(core::bc_unique_ptr< bc_icontact_filter_callback > p_imp)
+		bc_px_contact_filter_callback::bc_px_contact_filter_callback(core::bc_unique_ptr< bci_contact_filter_callback > p_imp)
 			: m_imp(std::move(p_imp))
 		{
 		}
@@ -133,7 +133,7 @@ namespace black_cat
 			return false;
 		}
 
-		bc_px_contact_modify_callback::bc_px_contact_modify_callback(core::bc_unique_ptr< bc_icontact_modify_callback > p_imp)
+		bc_px_contact_modify_callback::bc_px_contact_modify_callback(core::bc_unique_ptr< bci_contact_modify_callback > p_imp)
 			: m_imp(std::move(p_imp))
 		{
 		}

@@ -103,7 +103,7 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_game_console::set_implementation(bc_igame_console_imp* p_imp)
+		void bc_game_console::set_implementation(bci_game_console_imp* p_imp)
 		{
 			m_imp = p_imp;
 		}
@@ -255,7 +255,7 @@ namespace black_cat
 			}
 		}
 
-		bool bc_game_console::_on_key(core::bc_ievent& p_event)
+		bool bc_game_console::_on_key(core::bci_event& p_event)
 		{
 			if(!m_imp)
 			{

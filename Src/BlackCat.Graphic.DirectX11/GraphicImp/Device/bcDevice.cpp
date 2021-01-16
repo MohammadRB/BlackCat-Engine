@@ -347,7 +347,7 @@ namespace black_cat
 			return l_shader;
 		}
 
-		ID3D11View* _initialize_shader_view(bc_device* p_device, bc_iresource* p_resource, bc_resource_view_config* p_view_config)
+		ID3D11View* _initialize_shader_view(bc_device* p_device, bci_resource* p_resource, bc_resource_view_config* p_view_config)
 		{
 			BC_ASSERT
 			(
@@ -387,7 +387,7 @@ namespace black_cat
 			}
 		}
 
-		ID3D11DepthStencilView* _initialize_depth_stencil_view(bc_device* p_device, bc_iresource* p_resource, bc_depth_stencil_view_config* p_view_config)
+		ID3D11DepthStencilView* _initialize_depth_stencil_view(bc_device* p_device, bci_resource* p_resource, bc_depth_stencil_view_config* p_view_config)
 		{
 			ID3D11Resource* l_resource = p_resource->get_platform_pack().m_resource;
 			ID3D11DepthStencilView* l_depth_stencil_view;
@@ -404,7 +404,7 @@ namespace black_cat
 			return l_depth_stencil_view;
 		}
 
-		ID3D11RenderTargetView* _initialize_render_target_view(bc_device* p_device, bc_iresource* p_resource, bc_render_target_view_config* p_view_config)
+		ID3D11RenderTargetView* _initialize_render_target_view(bc_device* p_device, bci_resource* p_resource, bc_render_target_view_config* p_view_config)
 		{
 			ID3D11Resource* l_resource = p_resource->get_platform_pack().m_resource;
 			ID3D11RenderTargetView* l_render_target_view;
@@ -908,7 +908,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_resource_view_ptr bc_platform_device< g_api_dx11 >::create_resource_view(bc_iresource& p_resource, bc_resource_view_config& p_view_config)
+		bc_resource_view_ptr bc_platform_device< g_api_dx11 >::create_resource_view(bci_resource& p_resource, bc_resource_view_config& p_view_config)
 		{
 			auto* l_dx_view = _initialize_shader_view(static_cast< bc_device* >(this), &p_resource, &p_view_config);
 
@@ -939,7 +939,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_depth_stencil_view_ptr bc_platform_device< g_api_dx11 >::create_depth_stencil_view(bc_iresource& p_resource, bc_depth_stencil_view_config& p_view_config)
+		bc_depth_stencil_view_ptr bc_platform_device< g_api_dx11 >::create_depth_stencil_view(bci_resource& p_resource, bc_depth_stencil_view_config& p_view_config)
 		{
 			auto* l_dx_view = _initialize_depth_stencil_view(static_cast< bc_device* >(this), &p_resource, &p_view_config);
 
@@ -956,7 +956,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_render_target_view_ptr bc_platform_device< g_api_dx11 >::create_render_target_view(bc_iresource& p_resource, bc_render_target_view_config& p_view_config)
+		bc_render_target_view_ptr bc_platform_device< g_api_dx11 >::create_render_target_view(bci_resource& p_resource, bc_render_target_view_config& p_view_config)
 		{
 			auto* l_dx_view = _initialize_render_target_view(static_cast< bc_device* >(this), &p_resource, &p_view_config);
 
@@ -1199,7 +1199,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_mapped_resource bc_platform_device< g_api_dx11 >::map_resource(bc_iresource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type)
+		bc_mapped_resource bc_platform_device< g_api_dx11 >::map_resource(bci_resource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type)
 		{
 			bc_mapped_resource l_result;
 			D3D11_MAPPED_SUBRESOURCE l_mapped_resource;
@@ -1226,7 +1226,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device< g_api_dx11 >::unmap_resource(bc_iresource& p_resource, bcUINT p_subresource)
+		void bc_platform_device< g_api_dx11 >::unmap_resource(bci_resource& p_resource, bcUINT p_subresource)
 		{
 			{
 				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_pack.m_immediate_context_mutex);
@@ -1288,7 +1288,7 @@ namespace black_cat
 		void bc_platform_device< g_api_dx11 >::resize_texture2d(bc_texture2d& p_texture,
 			bcUINT p_width,
 			bcUINT p_height,
-			bc_iresource_view** p_views,
+			bci_resource_view** p_views,
 			bcUINT p_num_views)
 		{
 			bc_texture_config l_texture_config;
@@ -1308,7 +1308,7 @@ namespace black_cat
 
 			for (bcUINT l_view_i = 0; l_view_i < p_num_views; ++l_view_i)
 			{
-				bc_iresource_view* l_view = p_views[l_view_i];
+				bci_resource_view* l_view = p_views[l_view_i];
 
 				if (l_view->get_view_type() == bc_resource_view_type::shader)
 				{

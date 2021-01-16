@@ -38,7 +38,7 @@ namespace black_cat
 		public:
 			static void create_wired_box(bc_shape_generator_buffer& p_buffer, const physics::bc_bound_box& p_box);
 
-			static void create_wired_frustum(bc_shape_generator_buffer& p_buffer, const bc_icamera::extend& p_camera_extend);
+			static void create_wired_frustum(bc_shape_generator_buffer& p_buffer, const bci_camera::extend& p_camera_extend);
 			
 			static void create_wired_skeleton(bc_shape_generator_buffer& p_buffer, 
 				const bc_sub_mesh& p_mesh, 

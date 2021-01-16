@@ -10,7 +10,7 @@ namespace black_cat
 	{
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_iresource< g_api_dx11 >::bc_platform_iresource()
+		bci_platform_resource< g_api_dx11 >::bci_platform_resource()
 			: bc_platform_device_reference()
 		{
 			m_pack.m_resource = nullptr;
@@ -18,7 +18,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_iresource<g_api_dx11>::bc_platform_iresource(platform_pack& p_pack)
+		bci_platform_resource<g_api_dx11>::bci_platform_resource(platform_pack& p_pack)
 			: bc_platform_device_reference()
 		{
 			m_pack.m_resource = p_pack.m_resource;
@@ -26,13 +26,13 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_iresource< g_api_dx11 >::~bc_platform_iresource()
+		bci_platform_resource< g_api_dx11 >::~bci_platform_resource()
 		{
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_iresource< g_api_dx11 >::bc_platform_iresource(const bc_platform_iresource& p_other)
+		bci_platform_resource< g_api_dx11 >::bci_platform_resource(const bci_platform_resource& p_other)
 			: bc_platform_device_reference(p_other)
 		{
 			m_pack.m_resource = p_other.m_pack.m_resource;
@@ -40,7 +40,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_iresource< g_api_dx11 >& bc_platform_iresource< g_api_dx11 >::operator=(const bc_platform_iresource& p_other)
+		bci_platform_resource< g_api_dx11 >& bci_platform_resource< g_api_dx11 >::operator=(const bci_platform_resource& p_other)
 		{
 			bc_platform_device_reference::operator=(p_other);
 			m_pack.m_resource = p_other.m_pack.m_resource;
@@ -50,14 +50,14 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_resource_eviction_priority bc_platform_iresource< g_api_dx11 >::get_eviction_priority() const
+		bc_resource_eviction_priority bci_platform_resource< g_api_dx11 >::get_eviction_priority() const
 		{
 			return static_cast< bc_resource_eviction_priority >(m_pack.m_resource->GetEvictionPriority());
 		};
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_iresource< g_api_dx11 >::set_eviction_priority(bc_resource_eviction_priority p_eviction_priority)
+		void bci_platform_resource< g_api_dx11 >::set_eviction_priority(bc_resource_eviction_priority p_eviction_priority)
 		{
 			m_pack.m_resource->SetEvictionPriority(static_cast< bcUINT >(p_eviction_priority));
 		};

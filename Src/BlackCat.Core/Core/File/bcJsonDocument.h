@@ -21,36 +21,36 @@ namespace black_cat
 #define BC_JSON_OBJECT_OP(type, name)		black_cat::core::bc_json_object< type > m_##name { #name, this, true }
 #define BC_JSON_ARRAY(type, name)			black_cat::core::bc_json_array< type > m_##name { #name, this }
 #define BC_JSON_ARRAY_OP(type, name)		black_cat::core::bc_json_array< type > m_##name { #name, this, true }
-#define BC_JSON_STRUCTURE(type)				struct type : public black_cat::core::bc_ijson_structure
+#define BC_JSON_STRUCTURE(type)				struct type : public black_cat::core::bci_json_structure
 
-		class bc_ijson_value;
+		class bci_json_value;
 
-		class bc_ijson_structure
+		class bci_json_structure
 		{
 		public:
-			virtual ~bc_ijson_structure() = default;
+			virtual ~bci_json_structure() = default;
 
 			void load(bc_json_value_object& p_json_value);
 
 			void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value);
 
-			void _add_json_value(bc_ijson_value* p_parser);
+			void _add_json_value(bci_json_value* p_parser);
 
 		private:
-			bc_vector<bc_ijson_value*> m_json_fields;
+			bc_vector<bci_json_value*> m_json_fields;
 		};
 
-		class bc_ijson_value
+		class bci_json_value
 		{
 		public:
-			virtual ~bc_ijson_value() = default;
+			virtual ~bci_json_value() = default;
 
 			virtual void load(bc_json_value_object& p_json_value) = 0;
 
 			virtual void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) = 0;
 
 		protected:
-			explicit bc_ijson_value(bc_ijson_structure* p_structure, bool p_optional);
+			explicit bci_json_value(bci_json_structure* p_structure, bool p_optional);
 
 			bc_json_value_object* get_json_field(bc_json_value_object& p_json, const bcCHAR* p_name) const;
 
@@ -59,7 +59,7 @@ namespace black_cat
 			bool m_optional;
 		};
 
-		inline void bc_ijson_structure::load(bc_json_value_object& p_json_value)
+		inline void bci_json_structure::load(bc_json_value_object& p_json_value)
 		{
 			for (auto* l_field : m_json_fields)
 			{
@@ -67,7 +67,7 @@ namespace black_cat
 			}
 		}
 
-		inline void bc_ijson_structure::write(bc_json_document_object& p_document, bc_json_value_object& p_json_value)
+		inline void bci_json_structure::write(bc_json_document_object& p_document, bc_json_value_object& p_json_value)
 		{
 			for (auto* l_field : m_json_fields)
 			{
@@ -75,12 +75,12 @@ namespace black_cat
 			}
 		}
 
-		inline void bc_ijson_structure::_add_json_value(bc_ijson_value* p_parser)
+		inline void bci_json_structure::_add_json_value(bci_json_value* p_parser)
 		{
 			m_json_fields.push_back(p_parser);
 		}
 
-		inline bc_ijson_value::bc_ijson_value(bc_ijson_structure* p_structure, bool p_optional): m_optional(p_optional)
+		inline bci_json_value::bci_json_value(bci_json_structure* p_structure, bool p_optional): m_optional(p_optional)
 		{
 			if (p_structure)
 			{
@@ -88,7 +88,7 @@ namespace black_cat
 			}
 		}
 
-		inline bc_json_value_object* bc_ijson_value::get_json_field(bc_json_value_object& p_json, const bcCHAR* p_name) const
+		inline bc_json_value_object* bci_json_value::get_json_field(bc_json_value_object& p_json, const bcCHAR* p_name) const
 		{
 			auto* l_value = p_json.HasMember(p_name) ? &p_json[p_name] : nullptr;
 
@@ -104,7 +104,7 @@ namespace black_cat
 			return l_value;
 		}
 
-		inline bc_json_value_object* bc_ijson_value::set_json_field(bc_json_document_object& p_document, bc_json_value_object& p_json, const bcCHAR* p_name) const
+		inline bc_json_value_object* bci_json_value::set_json_field(bc_json_document_object& p_document, bc_json_value_object& p_json, const bcCHAR* p_name) const
 		{
 			bc_json_value_object* l_result = nullptr;
 
@@ -245,11 +245,11 @@ namespace black_cat
 		 * \tparam T 
 		 */
 		template< typename T >
-		class bc_json_value : public bc_ijson_value
+		class bc_json_value : public bci_json_value
 		{
 		public:
-			bc_json_value(const bcCHAR* p_name, bc_ijson_structure* p_structure, bool p_optional = false)
-				: bc_ijson_value(p_structure, p_optional),
+			bc_json_value(const bcCHAR* p_name, bci_json_structure* p_structure, bool p_optional = false)
+				: bci_json_value(p_structure, p_optional),
 				m_name(p_name),
 				m_value()
 			{
@@ -630,11 +630,11 @@ namespace black_cat
 		};
 
 		template< class T >
-		class bc_json_object : public bc_ijson_value
+		class bc_json_object : public bci_json_value
 		{
 		public:
-			bc_json_object(const bcCHAR* p_name, bc_ijson_structure* p_structure, bool p_optional = false)
-				: bc_ijson_value(p_structure, p_optional),
+			bc_json_object(const bcCHAR* p_name, bci_json_structure* p_structure, bool p_optional = false)
+				: bci_json_value(p_structure, p_optional),
 				m_name(p_name),
 				m_value()
 			{
@@ -726,7 +726,7 @@ namespace black_cat
 		};
 
 		template< typename T, typename T1 = void >
-		class bc_json_array : public bc_ijson_value
+		class bc_json_array : public bci_json_value
 		{
 		public:
 			using list_t = bc_list< bc_json_object< T > >;
@@ -739,8 +739,8 @@ namespace black_cat
 			using size_type = typename list_t::size_type;
 
 		public:
-			bc_json_array(const char* p_name, bc_ijson_structure* p_structure, bool p_optional = false)
-				: bc_ijson_value(p_structure, p_optional),
+			bc_json_array(const char* p_name, bci_json_structure* p_structure, bool p_optional = false)
+				: bci_json_value(p_structure, p_optional),
 				m_name(p_name),
 				m_value()
 			{
@@ -858,7 +858,7 @@ namespace black_cat
 				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value ||
 				std::is_same< bc_any, typename std::decay< T >::type >::value
 			>::type
-		> : public bc_ijson_value
+		> : public bci_json_value
 		{
 		public:
 			using list_t = bc_list< bc_json_value< T > >;
@@ -871,8 +871,8 @@ namespace black_cat
 			using size_type = typename list_t::size_type;
 
 		public:
-			bc_json_array(const bcCHAR* p_name, bc_ijson_structure* p_structure, bool p_optional = false)
-				: bc_ijson_value(p_structure, p_optional),
+			bc_json_array(const bcCHAR* p_name, bci_json_structure* p_structure, bool p_optional = false)
+				: bci_json_value(p_structure, p_optional),
 				m_name(p_name),
 				m_value()
 			{

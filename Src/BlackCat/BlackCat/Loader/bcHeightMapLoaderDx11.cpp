@@ -48,7 +48,7 @@ namespace black_cat
 		bcFLOAT m_scale[8]{ 0,0,0,0,0,0,0,0 };
 	};
 
-	class bc_height_map_texture_read_task : public game::bc_irender_task
+	class bc_height_map_texture_read_task : public game::bci_render_task
 	{
 	public:
 		explicit bc_height_map_texture_read_task(graphic::bc_texture2d p_height_map)

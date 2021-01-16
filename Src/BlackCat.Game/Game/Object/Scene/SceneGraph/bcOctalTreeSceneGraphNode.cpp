@@ -151,7 +151,7 @@ namespace black_cat
 			}
 		}
 
-		bc_iscene_graph_node::iterator bc_octal_tree_graph_node::begin() noexcept
+		bci_scene_graph_node::iterator bc_octal_tree_graph_node::begin() noexcept
 		{
 			bc_octal_tree_graph_node* l_min_node = _get_min_node();
 
@@ -174,27 +174,27 @@ namespace black_cat
 			return iterator(this, nullptr);
 		}
 
-		bc_iscene_graph_node::const_iterator bc_octal_tree_graph_node::begin() const noexcept
+		bci_scene_graph_node::const_iterator bc_octal_tree_graph_node::begin() const noexcept
 		{
 			return begin();
 		}
 
-		bc_iscene_graph_node::const_iterator bc_octal_tree_graph_node::cbegin() const noexcept
+		bci_scene_graph_node::const_iterator bc_octal_tree_graph_node::cbegin() const noexcept
 		{
 			return begin();
 		}
 
-		bc_iscene_graph_node::iterator bc_octal_tree_graph_node::end() noexcept
+		bci_scene_graph_node::iterator bc_octal_tree_graph_node::end() noexcept
 		{
 			return iterator(this, nullptr);
 		}
 
-		bc_iscene_graph_node::const_iterator bc_octal_tree_graph_node::end() const noexcept
+		bci_scene_graph_node::const_iterator bc_octal_tree_graph_node::end() const noexcept
 		{
 			return const_iterator(this, nullptr);
 		}
 
-		bc_iscene_graph_node::const_iterator bc_octal_tree_graph_node::cend() const noexcept
+		bci_scene_graph_node::const_iterator bc_octal_tree_graph_node::cend() const noexcept
 		{
 			return const_iterator(this, nullptr);
 		}
@@ -381,12 +381,12 @@ namespace black_cat
 			return p_first == p_second ? 0 : p_first > p_second ? 1 : -1;
 		}
 
-		bc_iscene_graph_node::value_type* bc_octal_tree_graph_node::iterator_dereference(node_type* p_node) const noexcept
+		bci_scene_graph_node::value_type* bc_octal_tree_graph_node::iterator_dereference(node_type* p_node) const noexcept
 		{
 			return &p_node->m_actor;
 		}
 
-		bc_iscene_graph_node::node_type* bc_octal_tree_graph_node::iterator_increment(node_type* p_node) const noexcept
+		bci_scene_graph_node::node_type* bc_octal_tree_graph_node::iterator_increment(node_type* p_node) const noexcept
 		{
 			auto* l_octal_tree_node_entry = static_cast<_bc_octal_tree_graph_node_entry*>(p_node);
 			auto l_next_internal_iterator = l_octal_tree_node_entry->m_internal_iterator;
@@ -411,7 +411,7 @@ namespace black_cat
 			return &*l_sibling_node->m_actors.begin();
 		}
 
-		bc_iscene_graph_node::node_type* bc_octal_tree_graph_node::iterator_decrement(node_type* p_node) const noexcept
+		bci_scene_graph_node::node_type* bc_octal_tree_graph_node::iterator_decrement(node_type* p_node) const noexcept
 		{
 			auto* l_octal_tree_node_entry = static_cast<_bc_octal_tree_graph_node_entry*>(p_node);
 			auto l_next_internal_iterator = l_octal_tree_node_entry->m_internal_iterator;
@@ -583,7 +583,7 @@ namespace black_cat
 			m_actors.swap(l_actors);
 			m_actors_count.store(0, core_platform::bc_memory_order::relaxed);
 
-			for (bc_iscene_graph_node_entry& l_entry : l_actors)
+			for (bci_scene_graph_node_entry& l_entry : l_actors)
 			{
 				add_actor(l_entry.m_actor);
 			}

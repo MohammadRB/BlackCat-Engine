@@ -39,7 +39,7 @@ namespace black_cat
 			{
 			}
 
-			_bc_queued_event(bc_event_ptr<bc_ievent>&& p_event, core_platform::bc_clock::big_delta_time p_process_time) noexcept
+			_bc_queued_event(bc_event_ptr<bci_event>&& p_event, core_platform::bc_clock::big_delta_time p_process_time) noexcept
 				: m_event(std::move(p_event)),
 				m_process_time(p_process_time)
 			{
@@ -61,7 +61,7 @@ namespace black_cat
 				return *this;
 			}
 
-			bc_event_ptr<bc_ievent> m_event;
+			bc_event_ptr<bci_event> m_event;
 			core_platform::bc_clock::big_delta_time m_process_time;
 		};
 
@@ -70,7 +70,7 @@ namespace black_cat
 			BC_SERVICE(evt_mng)
 
 		public:
-			using event_handler_type = bc_event_handler< bool(bc_ievent&) >;
+			using event_handler_type = bc_event_handler< bool(bci_event&) >;
 			using delegate_type = event_handler_type::delegate_type;
 
 		private:
@@ -97,7 +97,7 @@ namespace black_cat
 			 * \param p_event 
 			 * \return 
 			 */
-			bool process_event(bc_ievent& p_event);
+			bool process_event(bci_event& p_event);
 
 			/**
 			 * \brief Queue event for processing in a specific time in future that will be indicated by millisecond.
@@ -141,7 +141,7 @@ namespace black_cat
 		template< class TEvent >
 		void bc_event_manager::queue_event(TEvent&& p_event, core_platform::bc_clock::small_delta_time p_millisecond)
 		{
-			auto l_event = static_cast<bc_event_ptr<bc_ievent>>(bc_make_event(std::forward<TEvent>(p_event)));
+			auto l_event = static_cast<bc_event_ptr<bci_event>>(bc_make_event(std::forward<TEvent>(p_event)));
 			constexpr bool l_is_app_event = std::is_base_of_v<bc_app_event, std::decay_t<TEvent>>;
 			
 			if(l_is_app_event)

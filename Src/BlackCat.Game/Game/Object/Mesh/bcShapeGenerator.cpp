@@ -74,7 +74,7 @@ namespace black_cat
 			p_buffer.add_index(l_start_index + 7);
 		}
 
-		void bc_shape_generator::create_wired_frustum(bc_shape_generator_buffer& p_buffer, const bc_icamera::extend& p_camera_extend)
+		void bc_shape_generator::create_wired_frustum(bc_shape_generator_buffer& p_buffer, const bci_camera::extend& p_camera_extend)
 		{
 			const auto l_start_index = p_buffer.vertices_count();
 			

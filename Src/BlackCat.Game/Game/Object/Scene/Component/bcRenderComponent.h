@@ -11,7 +11,7 @@ namespace black_cat
 	{
 		class bc_render_state_buffer;
 
-		class BC_GAME_DLL bc_render_component : public bc_iactor_component
+		class BC_GAME_DLL bc_render_component : public bci_actor_component
 		{
 			BC_ABSTRACT_COMPONENT(render)
 

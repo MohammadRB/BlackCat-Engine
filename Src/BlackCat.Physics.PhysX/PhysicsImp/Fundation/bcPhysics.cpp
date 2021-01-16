@@ -619,9 +619,9 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_physics< g_api_physx >::_initialize(core::bc_unique_ptr< bc_iallocator > p_allocator,
-			core::bc_unique_ptr< bc_itask_dispatcher > p_task_dispatcher,
-			core::bc_unique_ptr< bc_ilogger > p_logger)
+		void bc_platform_physics< g_api_physx >::_initialize(core::bc_unique_ptr< bci_allocator > p_allocator,
+			core::bc_unique_ptr< bci_task_dispatcher > p_task_dispatcher,
+			core::bc_unique_ptr< bci_logger > p_logger)
 		{
 			physx::PxTolerancesScale l_px_scale;
 

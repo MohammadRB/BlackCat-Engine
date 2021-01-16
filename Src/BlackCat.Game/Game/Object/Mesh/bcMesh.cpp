@@ -262,17 +262,10 @@ namespace black_cat
 				l_mesh_part_data.m_bound_box.scale(m_scale);
 			}
 
-			for(auto l_mesh_part_collider_ite = m_colliders->cbegin(); l_mesh_part_collider_ite != m_colliders->cend(); ++l_mesh_part_collider_ite)
+			for(const auto& l_mesh_part_collider : *m_colliders)
 			{
-				for
-				(
-					auto l_mesh_part_collider_entry_ite = l_mesh_part_collider_ite->second.cbegin();
-					l_mesh_part_collider_entry_ite != l_mesh_part_collider_ite->second.cend();
-					++l_mesh_part_collider_entry_ite
-				)
+				for(bc_mesh_part_collider_entry& l_entry : l_mesh_part_collider.second)
 				{
-					bc_mesh_part_collider_entry& l_entry = *l_mesh_part_collider_entry_ite;
-
 					switch (l_entry.m_px_shape->get_type())
 					{
 					case physics::bc_shape_type::sphere:
@@ -316,7 +309,10 @@ namespace black_cat
 							BC_ASSERT(false);
 							break;
 						}
-					default:;
+					default:
+						{
+							BC_ASSERT(false);
+						}
 					}
 				}
 			}

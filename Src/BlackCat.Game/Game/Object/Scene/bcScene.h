@@ -24,7 +24,7 @@ namespace black_cat
 			add, update, remove
 		};
 		
-		class BC_GAME_DLL bc_scene : public core::bc_icontent
+		class BC_GAME_DLL bc_scene : public core::bci_content
 		{
 			BC_CONTENT(scene)
 

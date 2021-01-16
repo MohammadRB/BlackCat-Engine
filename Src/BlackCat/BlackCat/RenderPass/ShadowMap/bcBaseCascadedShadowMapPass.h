@@ -44,8 +44,8 @@ namespace black_cat
 		core::bc_vector_movable<game::bc_light_instance> m_lights;
 		
 		bool m_capture_debug_shapes = false;
-		game::bc_icamera::extend m_captured_camera;
-		core::bc_vector_movable<game::bc_icamera::extend> m_captured_cascades;
+		game::bci_camera::extend m_captured_camera;
+		core::bc_vector_movable<game::bci_camera::extend> m_captured_cascades;
 		core::bc_vector_movable<physics::bc_bound_box> m_captured_boxes;
 	};
 
@@ -83,7 +83,7 @@ namespace black_cat
 		bcSIZE m_cascade_count;
 	};
 
-	class BC_DLL bc_base_cascaded_shadow_map_pass : public game::bc_irender_pass
+	class BC_DLL bc_base_cascaded_shadow_map_pass : public game::bci_render_pass
 	{
 	public:
 		void initialize_resources(game::bc_render_system& p_render_system) override final;
@@ -126,7 +126,7 @@ namespace black_cat
 
 		_bc_cascaded_shadow_map_light_state _create_light_instance(game::bc_render_system& p_render_system);
 
-		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_cascades(const game::bc_icamera& p_camera, const game::bc_direct_light& p_light);
+		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_cascades(const game::bci_camera& p_camera, const game::bc_direct_light& p_light);
 
 		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_stabilized_cascades(const game::bc_camera_instance& p_camera, const game::bc_direct_light& p_light);
 

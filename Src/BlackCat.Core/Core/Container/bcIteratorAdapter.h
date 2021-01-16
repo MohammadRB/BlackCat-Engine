@@ -61,12 +61,16 @@ namespace black_cat
 
 			const_iterator cend() const noexcept;
 
+			template< typename = std::enable_if_t< !std::is_void_v< const_reverse_iterator > > >
 			const_reverse_iterator rbegin() const noexcept;
 
+			template< typename = std::enable_if_t< !std::is_void_v< const_reverse_iterator > > >
 			const_reverse_iterator crbegin() const noexcept;
 
+			template< typename = std::enable_if_t< !std::is_void_v< const_reverse_iterator > > >
 			const_reverse_iterator rend() const noexcept;
 
+			template< typename = std::enable_if_t< !std::is_void_v< const_reverse_iterator > > >
 			const_reverse_iterator crend() const noexcept;
 
 			size_type size() const noexcept;
@@ -108,8 +112,10 @@ namespace black_cat
 
 			iterator end() noexcept;
 
+			template< typename = std::enable_if_t< !std::is_void_v< reverse_iterator > > >
 			reverse_iterator rbegin() noexcept;
 
+			template< typename = std::enable_if_t< !std::is_void_v< reverse_iterator > > >
 			reverse_iterator rend() noexcept;
 		};
 
@@ -144,24 +150,28 @@ namespace black_cat
 		}
 
 		template< class TContainer >
+		template< typename >
 		typename bc_const_iterator_adapter<TContainer>::const_reverse_iterator bc_const_iterator_adapter<TContainer>::rbegin() const noexcept
 		{
 			return m_container->rbegin();
 		}
 
 		template< class TContainer >
+		template< typename >
 		typename bc_const_iterator_adapter<TContainer>::const_reverse_iterator bc_const_iterator_adapter<TContainer>::crbegin() const noexcept
 		{
 			return m_container->crbegin();
 		}
 
 		template< class TContainer >
+		template< typename >
 		typename bc_const_iterator_adapter<TContainer>::const_reverse_iterator bc_const_iterator_adapter<TContainer>::rend() const noexcept
 		{
 			return m_container->rend();
 		}
 
 		template< class TContainer >
+		template< typename >
 		typename bc_const_iterator_adapter<TContainer>::const_reverse_iterator bc_const_iterator_adapter<TContainer>::crend() const noexcept
 		{
 			return m_container->crend();
@@ -198,12 +208,14 @@ namespace black_cat
 		}
 
 		template< class TContainer >
+		template< typename >
 		typename bc_iterator_adapter<TContainer>::reverse_iterator bc_iterator_adapter<TContainer>::rbegin() noexcept
 		{
 			return const_cast<container_type*>(bc_const_iterator_adapter<container_type>::m_container)->rbegin();
 		}
 
 		template< class TContainer >
+		template< typename >
 		typename bc_iterator_adapter<TContainer>::reverse_iterator bc_iterator_adapter<TContainer>::rend() noexcept
 		{
 			return const_cast<container_type*>(bc_const_iterator_adapter<container_type>::m_container)->rend();

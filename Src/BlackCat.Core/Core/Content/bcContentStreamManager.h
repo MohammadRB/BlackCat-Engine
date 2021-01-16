@@ -151,7 +151,7 @@ namespace black_cat
 		template< class TContent >
 		bc_content_ptr<TContent> bc_content_stream_manager::find_content(const bcCHAR* p_content_name) const
 		{
-			static_assert(std::is_base_of< bc_icontent, TContent >::value, "TContent must be a content type");
+			static_assert(std::is_base_of< bci_content, TContent >::value, "TContent must be a content type");
 
 			bc_icontent_ptr l_content = find_content(p_content_name);
 
@@ -166,7 +166,7 @@ namespace black_cat
 		template< class TContent >
 		bc_content_ptr<TContent> bc_content_stream_manager::find_content_throw(const bcCHAR* p_content_name) const
 		{
-			static_assert(std::is_base_of< bc_icontent, TContent >::value, "TContent must be a content type");
+			static_assert(std::is_base_of< bci_content, TContent >::value, "TContent must be a content type");
 
 			bc_icontent_ptr l_content = find_content_throw(p_content_name);
 

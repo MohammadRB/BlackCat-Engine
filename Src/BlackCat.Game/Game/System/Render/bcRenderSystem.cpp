@@ -76,7 +76,7 @@ namespace black_cat
 
 		bool bc_render_system::remove_render_pass(bcUINT p_location)
 		{
-			bc_irender_pass* l_pass = m_render_pass_manager->get_pass(p_location);
+			bci_render_pass* l_pass = m_render_pass_manager->get_pass(p_location);
 
 			if (!l_pass)
 			{
@@ -100,7 +100,7 @@ namespace black_cat
 			m_device.present();
 		}
 
-		void bc_render_system::add_render_task(bc_irender_task& p_task)
+		void bc_render_system::add_render_task(bci_render_task& p_task)
 		{
 			core::bc_task<void> l_cpu_task = core::bc_concurrency::start_task<void>([this, &p_task]()
 			{
@@ -502,9 +502,9 @@ namespace black_cat
 			m_device.destroy();
 		}
 		
-		bool bc_render_system::_event_handler(core::bc_ievent& p_event)
+		bool bc_render_system::_event_handler(core::bci_event& p_event)
 		{
-			if(core::bc_imessage::is<platform::bc_app_event_window_resize>(p_event))
+			if(core::bci_message::is<platform::bc_app_event_window_resize>(p_event))
 			{
 				auto& l_resize_event = static_cast< platform::bc_app_event_window_resize& >(p_event);
 
@@ -539,7 +539,7 @@ namespace black_cat
 				return true;
 			}
 			
-			if(core::bc_imessage::is<graphic::bc_app_event_device_reset>(p_event))
+			if(core::bci_message::is<graphic::bc_app_event_device_reset>(p_event))
 			{
 				auto& l_device_reset_event = static_cast<graphic::bc_app_event_device_reset&>(p_event);
 				
@@ -564,7 +564,7 @@ namespace black_cat
 				return true;
 			}
 
-			if (core::bc_imessage::is<core::bc_event_frame_render_finish>(p_event))
+			if (core::bci_message::is<core::bc_event_frame_render_finish>(p_event))
 			{
 				m_shape_drawer->clear_swap_buffers();
 

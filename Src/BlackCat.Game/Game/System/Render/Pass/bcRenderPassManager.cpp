@@ -19,7 +19,7 @@ namespace black_cat
 		{
 		}
 
-		bc_irender_pass* bc_render_pass_manager::get_pass(bcUINT32 p_location)
+		bci_render_pass* bc_render_pass_manager::get_pass(bcUINT32 p_location)
 		{
 			for (auto& l_entry : m_passes)
 			{
@@ -162,7 +162,7 @@ namespace black_cat
 			return false;
 		}
 
-		bc_irender_pass* bc_render_pass_manager::_get_pass(const bcCHAR* p_name)
+		bci_render_pass* bc_render_pass_manager::_get_pass(const bcCHAR* p_name)
 		{
 			for (auto& l_entry : m_passes)
 			{

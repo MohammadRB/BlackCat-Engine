@@ -15,7 +15,7 @@
 
 namespace black_cat
 {
-	class BC_DLL bc_gbuffer_light_map_pass : public game::bc_irender_pass
+	class BC_DLL bc_gbuffer_light_map_pass : public game::bci_render_pass
 	{
 		BC_RENDER_PASS(gb_cmp)
 

@@ -21,7 +21,7 @@ namespace black_cat
 	
 	namespace game
 	{
-		class bc_icamera;
+		class bci_camera;
 		class bc_render_system;
 		class bc_render_thread_manager;
 		class bc_render_pass_manager;

@@ -86,7 +86,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder< g_api_physx >& bc_platform_scene_builder< g_api_physx >::use_contact_modify_callback(core::bc_unique_ptr< bc_icontact_modify_callback > p_callback)
+		bc_platform_scene_builder< g_api_physx >& bc_platform_scene_builder< g_api_physx >::use_contact_modify_callback(core::bc_unique_ptr< bci_contact_modify_callback > p_callback)
 		{
 			m_pack.m_contact_modify_callback = core::bc_make_unique<bc_px_contact_modify_callback>(std::move(p_callback));
 			m_pack.m_px_desc.contactModifyCallback = m_pack.m_contact_modify_callback.get();
@@ -97,7 +97,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder< g_api_physx >& bc_platform_scene_builder< g_api_physx >::use_contact_filter_callback(core::bc_unique_ptr< bc_icontact_filter_callback > p_callback)
+		bc_platform_scene_builder< g_api_physx >& bc_platform_scene_builder< g_api_physx >::use_contact_filter_callback(core::bc_unique_ptr< bci_contact_filter_callback > p_callback)
 		{
 			m_pack.m_contact_filter_callback = core::bc_make_unique<bc_px_contact_filter_callback>(std::move(p_callback));
 			m_pack.m_px_desc.filterCallback = m_pack.m_contact_filter_callback.get();

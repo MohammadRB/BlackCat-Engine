@@ -137,7 +137,7 @@ namespace black_cat
 		};
 
 		template< bc_physics_api TApi >
-		class bc_platform_physics : public core::bc_initializable<core::bc_unique_ptr<bc_iallocator>, core::bc_unique_ptr<bc_itask_dispatcher>, core::bc_unique_ptr<bc_ilogger>>
+		class bc_platform_physics : public core::bc_initializable<core::bc_unique_ptr<bci_allocator>, core::bc_unique_ptr<bci_task_dispatcher>, core::bc_unique_ptr<bci_logger>>
 		{
 		public:
 			using platform_pack = bc_platform_physics_pack< TApi >;
@@ -346,9 +346,9 @@ namespace black_cat
 		protected:
 			
 		private:
-			void _initialize(core::bc_unique_ptr<bc_iallocator> p_allocator, 
-				core::bc_unique_ptr<bc_itask_dispatcher> p_task_dispatcher,
-				core::bc_unique_ptr<bc_ilogger> p_logger) noexcept(false) override;
+			void _initialize(core::bc_unique_ptr<bci_allocator> p_allocator, 
+				core::bc_unique_ptr<bci_task_dispatcher> p_task_dispatcher,
+				core::bc_unique_ptr<bci_logger> p_logger) noexcept(false) override;
 
 			void _destroy() override;
 

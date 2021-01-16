@@ -78,7 +78,7 @@ namespace black_cat
 			
 			bc_query_provider_handle _register_query_provider(bc_query_context_hash p_context_hash, provider_delegate_t&& p_delegate);
 
-			_bc_query_shared_state& _queue_query(bc_query_context_hash p_context_hash, bool p_is_shared, bc_unique_ptr<bc_iquery> p_query);
+			_bc_query_shared_state& _queue_query(bc_query_context_hash p_context_hash, bool p_is_shared, bc_unique_ptr<bci_query> p_query);
 
 			bc_concurrent_memory_pool m_queries_pool;
 			core_platform::bc_shared_mutex m_providers_lock;
@@ -93,7 +93,7 @@ namespace black_cat
 		class bc_query_manager::_query_entry : public _bc_query_shared_state
 		{
 		public:
-			_query_entry(_provider_entry& p_provider, bool p_is_shared, bc_unique_ptr<bc_iquery> p_query);
+			_query_entry(_provider_entry& p_provider, bool p_is_shared, bc_unique_ptr<bci_query> p_query);
 
 			_query_entry(_query_entry&&) noexcept;
 
@@ -103,7 +103,7 @@ namespace black_cat
 
 			_provider_entry* m_provider;
 			query_list_t::iterator m_iterator;
-			bc_unique_ptr<bc_iquery> m_query;
+			bc_unique_ptr<bci_query> m_query;
 			bool m_is_shared;
 		};
 		
@@ -137,7 +137,7 @@ namespace black_cat
 		bc_query_result< std::decay_t< TQuery > > bc_query_manager::queue_query(TQuery&& p_query)
 		{
 			using query_t = std::decay_t< TQuery >;
-			static_assert(std::is_base_of_v< bc_iquery, query_t >, "TQuery must be derived from bc_iquery");
+			static_assert(std::is_base_of_v< bci_query, query_t >, "TQuery must be derived from bc_iquery");
 			static_assert(!query_t::is_shared(), "TQuery must not be a shared query");
 
 			auto l_query = core::bc_make_unique< query_t >(std::forward< query_t >(p_query));
@@ -152,7 +152,7 @@ namespace black_cat
 		void bc_query_manager::queue_shared_query(TQuery&& p_query)
 		{
 			using query_t = std::decay_t< TQuery >;
-			static_assert(std::is_base_of_v< bc_iquery, query_t >, "TQuery must be derived from bc_iquery");
+			static_assert(std::is_base_of_v< bci_query, query_t >, "TQuery must be derived from bc_iquery");
 			static_assert(query_t::is_shared(), "TQuery must be a shared query");
 
 			auto l_query = core::bc_make_unique< query_t >(std::forward< query_t >(p_query));
@@ -164,12 +164,12 @@ namespace black_cat
 		template< class TQuery >
 		TQuery& bc_query_manager::_get_shared_query()
 		{
-			static_assert(std::is_base_of_v< bc_iquery, TQuery >, "TQuery must be derived from bc_iquery");
+			static_assert(std::is_base_of_v< bci_query, TQuery >, "TQuery must be derived from bc_iquery");
 			static_assert(TQuery::is_shared(), "TQuery must be a shared query");
 			
 			for(auto& l_shared_query : m_executed_shared_queries)
 			{
-				if(bc_imessage::is<TQuery>(*l_shared_query.m_query))
+				if(bci_message::is<TQuery>(*l_shared_query.m_query))
 				{
 					// use acquire memory order so memory changes become available for calling thread
 					l_shared_query.m_state.load(core_platform::bc_memory_order::acquire);

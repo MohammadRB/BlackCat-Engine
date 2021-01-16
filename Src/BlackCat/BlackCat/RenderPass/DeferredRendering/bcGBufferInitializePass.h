@@ -13,7 +13,7 @@
 
 namespace black_cat
 {
-	class BC_DLL bc_gbuffer_initialize_pass : public game::bc_irender_pass
+	class BC_DLL bc_gbuffer_initialize_pass : public game::bci_render_pass
 	{
 		BC_RENDER_PASS(gb_init)
 

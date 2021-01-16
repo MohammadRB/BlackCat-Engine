@@ -27,7 +27,7 @@ namespace black_cat
 		game::bc_actor m_selected_actor;
 	};
 	
-	class BC_DLL bc_shape_draw_pass : public game::bc_irender_pass
+	class BC_DLL bc_shape_draw_pass : public game::bci_render_pass
 	{
 		BC_RENDER_PASS(shp_drw)
 

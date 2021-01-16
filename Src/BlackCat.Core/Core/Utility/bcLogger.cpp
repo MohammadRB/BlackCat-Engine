@@ -25,17 +25,17 @@ namespace black_cat
 			}
 		}
 
-		void bc_logger::register_listener(bc_log_type p_types, bc_unique_ptr<bc_ilog_listener> p_listener)
+		void bc_logger::register_listener(bc_log_type p_types, bc_unique_ptr<bci_log_listener> p_listener)
 		{
 			_register_listener(p_types, _bc_log_listener_container(std::move(p_listener)));
 		}
 
-		void bc_logger::register_listener(bc_log_type p_types, bc_ilog_listener* p_listener)
+		void bc_logger::register_listener(bc_log_type p_types, bci_log_listener* p_listener)
 		{
 			_register_listener(p_types, _bc_log_listener_container(p_listener));
 		}
 
-		void bc_logger::unregister_listener(bc_ilog_listener* p_listener)
+		void bc_logger::unregister_listener(bci_log_listener* p_listener)
 		{
 			for (auto& l_entry : m_listeners)
 			{

@@ -170,7 +170,7 @@ namespace black_cat
 
 		auto& l_scene = *p_context.m_result->get_result<game::bc_scene>();
 		
-		core::bc_vector< game::bc_iactor_component* > l_actor_components;
+		core::bc_vector< game::bci_actor_component* > l_actor_components;
 		for (auto& l_json_actor : l_json_document->m_actors)
 		{
 			game::bc_actor l_actor = l_entity_manager->create_entity(l_json_actor->m_entity_name->c_str());
@@ -218,7 +218,7 @@ namespace black_cat
 			*l_entry = l_stream.c_str();
 		}
 
-		core::bc_vector_frame< game::bc_iactor_component* > l_actor_components;
+		core::bc_vector_frame< game::bci_actor_component* > l_actor_components;
 		for (auto& l_actor : l_scene->get_scene_graph())
 		{
 			auto* l_mediate_component = l_actor.get_component<game::bc_mediate_component>();

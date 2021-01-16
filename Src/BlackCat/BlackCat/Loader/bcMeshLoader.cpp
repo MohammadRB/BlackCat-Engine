@@ -366,8 +366,8 @@ namespace black_cat
 				l_has_skinned ? p_render_system.get_per_skinned_object_cbuffer() : p_render_system.get_per_object_cbuffer(),
 				graphic::bc_constant_buffer_parameter
 				(
-					1, 
-					core::bc_enum::or({graphic::bc_shader_type::vertex, graphic::bc_shader_type::pixel}), 
+					1,
+					core::bc_enum::or({graphic::bc_shader_type::vertex, graphic::bc_shader_type::pixel}),
 					l_material_ptr->get_parameters_cbuffer()
 				)
 			}

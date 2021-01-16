@@ -83,7 +83,7 @@ namespace black_cat
 
 		void bc_xbot_controller::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
-			const auto* l_world_transform_event = core::bc_imessage::as<bc_actor_event_world_transform>(p_event);
+			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_event);
 			if(l_world_transform_event)
 			{
 				m_model_to_skinned_job->set_world(l_world_transform_event->get_transform());

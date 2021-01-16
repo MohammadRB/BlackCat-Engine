@@ -11,7 +11,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_light_component : public bc_iactor_component
+		class BC_GAME_DLL bc_light_component : public bci_actor_component
 		{
 			BC_COMPONENT(light, true, false)
 

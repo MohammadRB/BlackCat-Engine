@@ -4,15 +4,9 @@
 
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcVector.h"
-#include "Core/Math/bcMatrix4f.h"
+#include "Core/Container/bcIteratorAdapter.h"
 #include "PhysicsImp/Fundation/bcTransform.h"
 #include "PhysicsImp/Shape/bcShape.h"
-#include "PhysicsImp/Shape/bcShapeGeometry.h"
-#include "PhysicsImp/Shape/bcShapeBox.h"
-#include "PhysicsImp/Shape/bcShapeSphere.h"
-#include "PhysicsImp/Shape/bcShapeCapsule.h"
-#include "PhysicsImp/Shape/bcShapeConvexMesh.h"
-#include "PhysicsImp/Shape/bcShapeTriangleMesh.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -47,15 +41,10 @@ namespace black_cat
 			physics::bc_shape_flag m_shape_flags;
 		};
 
-		class BC_GAME_DLL bc_mesh_part_collider
+		class BC_GAME_DLL bc_mesh_part_collider : public core::bc_const_iterator_adapter<core::bc_vector<bc_mesh_part_collider_entry>>
 		{
-		private:
-			using colliders_container_t = core::bc_vector<bc_mesh_part_collider_entry>;
-
 		public:
 			using entry = bc_mesh_part_collider_entry;
-			using const_iterator = colliders_container_t::const_iterator;
-			using size_t = colliders_container_t::size_type;
 
 		public:
 			bc_mesh_part_collider();
@@ -76,18 +65,12 @@ namespace black_cat
 
 			void add_px_shape(physics::bc_triangle_mesh_ref&& p_mesh, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags = physics::bc_shape_flag::default);
 
-			const_iterator cbegin() const;
-
-			const_iterator cend() const;
-
-			size_t size() const;
-
 			void shrink_to_fit();
 
 		private:
 			core::bc_vector< bc_mesh_part_collider_entry > m_shapes;
-			core::bc_vector< physics::bc_convex_mesh_ref > m_convexes;
-			core::bc_vector< physics::bc_triangle_mesh_ref > m_triangles;
+			core::bc_vector< physics::bc_convex_mesh_ref > m_convex_shapes;
+			core::bc_vector< physics::bc_triangle_mesh_ref > m_triangle_shapes;
 		};
 	}
 }

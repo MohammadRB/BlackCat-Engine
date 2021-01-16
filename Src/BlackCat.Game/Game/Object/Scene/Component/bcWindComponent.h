@@ -83,7 +83,7 @@ namespace black_cat
 			physics::bc_bound_box m_bound_box;
 		};
 		
-		class BC_GAME_DLL bc_wind_component : public bc_iactor_component
+		class BC_GAME_DLL bc_wind_component : public bci_actor_component
 		{
 			BC_COMPONENT(wind, true, false)
 

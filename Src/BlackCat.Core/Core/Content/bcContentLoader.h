@@ -25,7 +25,7 @@ namespace black_cat
 				m_exception(nullptr),
 				m_result(std::move(p_result))
 			{
-				static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
+				static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
 			}
 
 			explicit bc_content_loader_result(bc_io_exception p_exception)
@@ -61,7 +61,7 @@ namespace black_cat
 			template< class TContent >
 			TContent* get_result()
 			{
-				static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
+				static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
 				
 				if (!m_succeeded)
 				{
@@ -76,7 +76,7 @@ namespace black_cat
 			template< class TContent >
 			bc_unique_ptr< TContent > release_result()
 			{
-				static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
+				static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
 
 				if (!m_succeeded)
 				{
@@ -91,7 +91,7 @@ namespace black_cat
 		private:
 			bool m_succeeded;
 			bc_io_exception m_exception;
-			bc_unique_ptr<bc_icontent> m_result;
+			bc_unique_ptr<bci_content> m_result;
 		};
 
 		class bc_content_loading_context : public bc_object_allocator
@@ -122,7 +122,7 @@ namespace black_cat
 			>
 			void set_result(TContent&& p_result)
 			{
-				static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
+				static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
 
 				bc_unique_ptr<TContent> l_content_result = allocate<TContent>(std::move(p_result));
 				m_result.reset(bc_content_loader_result(std::move(l_content_result)));
@@ -155,7 +155,7 @@ namespace black_cat
 
 			const bcECHAR* m_file_path;							// Used to give saver access to content file path
 			bc_stream m_file;									// Used to give saver access to content file
-			bc_icontent* m_content;								// Used to give saver access to content
+			bci_content* m_content;								// Used to give saver access to content
 		};
 
 		/**
@@ -163,10 +163,10 @@ namespace black_cat
 		 * \n
 		 * \b non-movable
 		 */
-		class BC_CORE_DLL bc_icontent_loader
+		class BC_CORE_DLL bci_content_loader
 		{
 		public:
-			virtual ~bc_icontent_loader() = default;
+			virtual ~bci_content_loader() = default;
 
 			virtual bool support_offline_processing() const = 0;
 
@@ -232,14 +232,14 @@ namespace black_cat
 			virtual void cleanup(bc_content_saving_context& p_context) const = 0;
 
 		protected:
-			bc_icontent_loader() = default;
+			bci_content_loader() = default;
 
-			bc_icontent_loader(bc_icontent_loader&&) = default;
+			bci_content_loader(bci_content_loader&&) = default;
 
-			bc_icontent_loader& operator=(bc_icontent_loader&&) = default;
+			bci_content_loader& operator=(bci_content_loader&&) = default;
 		};
 
-		class BC_CORE_DLL bc_base_content_loader : public bc_icontent_loader
+		class BC_CORE_DLL bc_base_content_loader : public bci_content_loader
 		{
 		public:
 			virtual ~bc_base_content_loader();
@@ -298,14 +298,14 @@ namespace black_cat
 		class _bc_content_loader_guard
 		{
 		public:
-			_bc_content_loader_guard(bc_icontent_loader& p_loader, bc_content_loading_context& p_context)
+			_bc_content_loader_guard(bci_content_loader& p_loader, bc_content_loading_context& p_context)
 				: m_loader(p_loader),
 				m_loading_context(&p_context),
 				m_saving_context(nullptr)
 			{
 			}
 
-			_bc_content_loader_guard(bc_icontent_loader& p_loader, bc_content_saving_context& p_context)
+			_bc_content_loader_guard(bci_content_loader& p_loader, bc_content_saving_context& p_context)
 				: m_loader(p_loader),
 				m_loading_context(nullptr),
 				m_saving_context(&p_context)
@@ -325,7 +325,7 @@ namespace black_cat
 			}
 
 		private:
-			bc_icontent_loader& m_loader;
+			bci_content_loader& m_loader;
 			bc_content_loading_context* m_loading_context;
 			bc_content_saving_context* m_saving_context;
 		};

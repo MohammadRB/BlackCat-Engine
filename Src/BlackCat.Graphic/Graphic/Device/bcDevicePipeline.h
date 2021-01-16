@@ -136,17 +136,17 @@ namespace black_cat
 
 			void clear_buffers(core::bc_vector4f p_color, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
 
-			void update_subresource(bc_iresource& p_resource, bcUINT p_dst_subresource, const void *p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch);
+			void update_subresource(bci_resource& p_resource, bcUINT p_dst_subresource, const void *p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch);
 
-			void copy_subresource(bc_iresource& p_dest_resource, bcUINT p_dst_subresource, bc_iresource& p_src_resource, bcUINT p_src_subresource);
+			void copy_subresource(bci_resource& p_dest_resource, bcUINT p_dst_subresource, bci_resource& p_src_resource, bcUINT p_src_subresource);
 
-			void copy_resource(bc_iresource& p_dest_resource, bc_iresource& p_src_resource);
+			void copy_resource(bci_resource& p_dest_resource, bci_resource& p_src_resource);
 
 			void copy_structure_count(bc_buffer p_dest_resource, bcUINT p_offset, bc_resource_view p_unordered_resource);
 
-			void resolve_subresource(bc_iresource& p_dest_resource,
+			void resolve_subresource(bci_resource& p_dest_resource,
 				bcUINT p_dest_subresource,
-				bc_iresource& p_src_resource,
+				bci_resource& p_src_resource,
 				bcUINT p_src_subresource,
 				bc_format p_format);
 

@@ -15,7 +15,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_scene_graph::bc_scene_graph(core::bc_unique_ptr<bc_iscene_graph_node> p_scene_graph)
+		bc_scene_graph::bc_scene_graph(core::bc_unique_ptr<bci_scene_graph_node> p_scene_graph)
 			: m_graph_node(std::move(p_scene_graph))
 		{
 		}

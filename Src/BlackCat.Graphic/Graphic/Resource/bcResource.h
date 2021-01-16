@@ -36,18 +36,18 @@ namespace black_cat
 		};
 
 		template<bc_render_api TRenderApi>
-		struct bc_platform_iresource_pack
+		struct bci_platform_resource_pack
 		{
 		};
 
 		template<bc_render_api TRenderApi>
-		class bc_platform_iresource : public bc_platform_device_reference<TRenderApi>
+		class bci_platform_resource : public bc_platform_device_reference<TRenderApi>
 		{
 		public:
-			using platform_pack = bc_platform_iresource_pack<TRenderApi>;
+			using platform_pack = bci_platform_resource_pack<TRenderApi>;
 
 		public:
-			virtual ~bc_platform_iresource();
+			virtual ~bci_platform_resource();
 
 			virtual bc_resource_type get_type() const = 0;
 
@@ -61,19 +61,19 @@ namespace black_cat
 			}
 
 		protected:
-			bc_platform_iresource();
+			bci_platform_resource();
 
-			explicit bc_platform_iresource(platform_pack& p_pack);
+			explicit bci_platform_resource(platform_pack& p_pack);
 
-			bc_platform_iresource(const bc_platform_iresource& p_other);
+			bci_platform_resource(const bci_platform_resource& p_other);
 
-			bc_platform_iresource& operator=(const bc_platform_iresource& p_other);
+			bci_platform_resource& operator=(const bci_platform_resource& p_other);
 
 			platform_pack m_pack;
 
 		private:
 		};
 
-		using bc_iresource = bc_platform_iresource<g_current_render_api>;
+		using bci_resource = bci_platform_resource<g_current_render_api>;
 	}
 }

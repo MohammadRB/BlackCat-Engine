@@ -54,12 +54,12 @@ namespace black_cat
 		class _loader_wrapper : public _content_wrapper< TContent >
 		{
 		public:
-			_loader_wrapper(bc_cloader_ptr< bc_icontent_loader > p_loader)
+			_loader_wrapper(bc_cloader_ptr< bci_content_loader > p_loader)
 				: m_loader(std::move(p_loader))
 			{
 			}
 
-			bc_cloader_ptr< bc_icontent_loader > m_loader;
+			bc_cloader_ptr< bci_content_loader > m_loader;
 		};
 
 		class _bc_content_entry
@@ -67,7 +67,7 @@ namespace black_cat
 		public:
 			_bc_content_entry() = default;
 
-			_bc_content_entry(const bcECHAR* p_file, const bcECHAR* p_file_variant, bc_unique_ptr< bc_icontent >&& p_content)
+			_bc_content_entry(const bcECHAR* p_file, const bcECHAR* p_file_variant, bc_unique_ptr< bci_content >&& p_content)
 				: m_file(p_file),
 				m_file_variant(p_file_variant ? p_file_variant : bcL("")),
 				m_content(std::move(p_content))
@@ -76,7 +76,7 @@ namespace black_cat
 
 			bc_estring m_file;
 			bc_estring m_file_variant;
-			bc_unique_ptr< bc_icontent > m_content;
+			bc_unique_ptr< bci_content > m_content;
 		};
 
 		/**
@@ -177,11 +177,11 @@ namespace black_cat
 			template< class TContent >
 			bc_content_ptr<TContent> store_content(bc_alloc_type p_alloc_type, const bcCHAR* p_content_name, TContent&& p_content);
 
-			void destroy_content(bc_icontent* p_content);
+			void destroy_content(bci_content* p_content);
 
 		private:
 			template< class TContent >
-			bc_icontent_loader* _get_loader();
+			bci_content_loader* _get_loader();
 
 			template< class TContent >
 			bc_estring_frame _get_offline_file_path(const bcECHAR* p_file, const bcECHAR* p_file_variant);
@@ -192,7 +192,7 @@ namespace black_cat
 				const bcECHAR* p_offline_file,
 				const bc_content_loader_parameter& p_parameter,
 				bc_content_loader_parameter p_instance_parameters,
-				bc_icontent_loader* p_loader);
+				bci_content_loader* p_loader);
 
 			template< class TContent >
 			bc_content_ptr<TContent> _store_new_content(bc_content_hash_t::result_type p_hash,
@@ -208,7 +208,7 @@ namespace black_cat
 
 		inline bc_content_manager::~bc_content_manager() = default;
 
-		inline void bc_content_manager::destroy_content(bc_icontent* p_content)
+		inline void bc_content_manager::destroy_content(bci_content* p_content)
 		{
 			map_type::value_type::second_type l_value;
 
@@ -235,8 +235,8 @@ namespace black_cat
 		template< class TContent, class TLoader >
 		void bc_content_manager::register_loader(bc_cloader_ptr< TLoader >&& p_loader)
 		{
-			static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
-			static_assert(std::is_base_of< bc_icontent_loader, TLoader >::value, "Content loader must inherit from bc_icontent_loader");
+			static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
+			static_assert(std::is_base_of< bci_content_loader, TLoader >::value, "Content loader must inherit from bc_icontent_loader");
 
 			bc_service_manager::get().register_service< _content_wrapper< TContent > >
 			(
@@ -260,7 +260,7 @@ namespace black_cat
 			const bc_content_loader_parameter& p_parameters,
 			bc_content_loader_parameter p_instance_parameters)
 		{
-			static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
+			static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
 
 			// Make hash, combination of both file path and content name because some contents like shaders load from same file
 			const bc_estring_frame l_offline_file_path = _get_offline_file_path<TContent>(p_file, p_file_variant);
@@ -276,7 +276,7 @@ namespace black_cat
 				}
 			}
 
-			bc_icontent_loader* l_loader = _get_loader<TContent>();
+			bci_content_loader* l_loader = _get_loader<TContent>();
 			bc_unique_ptr< TContent > l_content = _load_content< TContent >
 			(
 				p_alloc_type,
@@ -323,7 +323,7 @@ namespace black_cat
 		template< class TContent >
 		void bc_content_manager::save(TContent& p_content)
 		{
-			static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
+			static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
 
 			const bcECHAR* l_file_path;
 			const bcECHAR* l_file_variant;
@@ -342,7 +342,7 @@ namespace black_cat
 			}
 
 			bc_file_stream l_file_stream;
-			bc_icontent_loader* l_loader = _get_loader<TContent>();
+			bci_content_loader* l_loader = _get_loader<TContent>();
 			bc_content_saving_context l_context;
 			l_context.m_file_path = l_file_path;
 			l_context.m_content = &p_content;
@@ -406,7 +406,7 @@ namespace black_cat
 		}
 
 		template< class TContent >
-		bc_icontent_loader* bc_content_manager::_get_loader()
+		bci_content_loader* bc_content_manager::_get_loader()
 		{
 			_loader_wrapper< TContent >* l_loader_wrapper = static_cast< _loader_wrapper< TContent >* >
 			(
@@ -418,7 +418,7 @@ namespace black_cat
 				throw bc_invalid_argument_exception((bc_string("Loader for ") + _loader_wrapper< TContent >::service_name() + " not found").c_str());
 			}
 
-			bc_icontent_loader* l_loader = l_loader_wrapper->m_loader.get();
+			bci_content_loader* l_loader = l_loader_wrapper->m_loader.get();
 
 			return l_loader;
 		}
@@ -452,7 +452,7 @@ namespace black_cat
 			const bcECHAR* p_offline_file, 
 			const bc_content_loader_parameter& p_parameter,
 			bc_content_loader_parameter p_instance_parameters,
-			bc_icontent_loader* p_loader)
+			bci_content_loader* p_loader)
 		{
 			core_platform::bc_basic_file_info l_file_info;
 			core_platform::bc_basic_file_info l_offline_file_info;
@@ -575,7 +575,7 @@ namespace black_cat
 			bc_unique_ptr< TContent > p_content)
 		{
 			auto l_content_ptr = p_content.get();
-			auto l_pointer = bc_unique_ptr< bc_icontent >(std::move(p_content));
+			auto l_pointer = bc_unique_ptr< bci_content >(std::move(p_content));
 
 			l_pointer->_set_hash(p_hash);
 

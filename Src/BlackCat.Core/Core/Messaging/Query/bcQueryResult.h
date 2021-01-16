@@ -22,7 +22,7 @@ namespace black_cat
 			};
 			
 		public:
-			explicit _bc_query_shared_state(bc_iquery& p_query);
+			explicit _bc_query_shared_state(bci_query& p_query);
 
 			_bc_query_shared_state(_bc_query_shared_state&&) noexcept;
 
@@ -31,10 +31,10 @@ namespace black_cat
 			_bc_query_shared_state& operator=(_bc_query_shared_state&&) noexcept;
 			
 			core_platform::bc_atomic< state > m_state;
-			bc_iquery* m_query;
+			bci_query* m_query;
 		};
 
-		inline _bc_query_shared_state::_bc_query_shared_state(bc_iquery& p_query)
+		inline _bc_query_shared_state::_bc_query_shared_state(bci_query& p_query)
 			: m_state(state::queued),
 			m_query(&p_query)
 		{

@@ -12,7 +12,7 @@ namespace black_cat
 	{
 		// -- bc_icamera ------------------------------------------------------------------------------------------
 
-		bc_icamera::bc_icamera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
+		bci_camera::bci_camera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
 			: m_screen_width(p_back_buffer_width),
 			m_screen_height(p_back_buffer_height),
 			m_near(p_near_clip),
@@ -23,7 +23,7 @@ namespace black_cat
 			m_view = create_view_matrix();
 		}
 
-		bc_icamera::bc_icamera(bc_icamera&& p_other) noexcept
+		bci_camera::bci_camera(bci_camera&& p_other) noexcept
 			: m_screen_width(p_other.m_screen_width),
 			m_screen_height(p_other.m_screen_height),
 			m_near(p_other.m_near),
@@ -35,7 +35,7 @@ namespace black_cat
 		{
 		}
 
-		bc_icamera& bc_icamera::operator=(bc_icamera&& p_other) noexcept
+		bci_camera& bci_camera::operator=(bci_camera&& p_other) noexcept
 		{
 			m_screen_width = p_other.m_screen_width;
 			m_screen_height = p_other.m_screen_height;
@@ -49,11 +49,11 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_icamera::~bc_icamera() noexcept
+		bci_camera::~bci_camera() noexcept
 		{
 		}
 
-		core::bc_vector3f bc_icamera::get_direction() const noexcept
+		core::bc_vector3f bci_camera::get_direction() const noexcept
 		{
 			auto l_direction = (m_look_at - m_position);
 			l_direction.normalize();
@@ -61,17 +61,17 @@ namespace black_cat
 			return l_direction;
 		}
 
-		core::bc_vector3f bc_icamera::get_forward() const noexcept
+		core::bc_vector3f bci_camera::get_forward() const noexcept
 		{
 			return get_direction();
 		}
 
-		core::bc_vector3f bc_icamera::get_back() const noexcept
+		core::bc_vector3f bci_camera::get_back() const noexcept
 		{
 			return get_forward() * -1;
 		}
 
-		core::bc_vector3f bc_icamera::get_up() const noexcept
+		core::bc_vector3f bci_camera::get_up() const noexcept
 		{
 			auto l_direction = get_direction();
 
@@ -83,12 +83,12 @@ namespace black_cat
 			return l_up;
 		}
 
-		core::bc_vector3f bc_icamera::get_down() const noexcept
+		core::bc_vector3f bci_camera::get_down() const noexcept
 		{
 			return get_up() * -1;
 		}
 
-		core::bc_vector3f bc_icamera::get_right() const noexcept
+		core::bc_vector3f bci_camera::get_right() const noexcept
 		{
 			auto l_direction = get_direction();
 			auto l_right = core::bc_vector3f(0, 1, 0).cross(l_direction);
@@ -98,12 +98,12 @@ namespace black_cat
 			return l_right;
 		}
 
-		core::bc_vector3f bc_icamera::get_left() const noexcept
+		core::bc_vector3f bci_camera::get_left() const noexcept
 		{
 			return get_right() * -1;
 		}
 
-		void bc_icamera::set_look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_look_at, const core::bc_vector3f& p_up) noexcept
+		void bci_camera::set_look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_look_at, const core::bc_vector3f& p_up) noexcept
 		{
 			m_position = p_position;
 			m_look_at = p_look_at;
@@ -111,17 +111,17 @@ namespace black_cat
 			m_view = create_view_matrix(p_up);
 		}
 
-		void bc_icamera::set_projection(const core::bc_matrix4f& p_projection) noexcept
+		void bci_camera::set_projection(const core::bc_matrix4f& p_projection) noexcept
 		{
 			m_projection = p_projection;
 		}
 		
-		void bc_icamera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height) noexcept
+		void bci_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height) noexcept
 		{
 			set_projection(p_back_buffer_width, p_back_buffer_height, m_near, m_far);
 		}
 
-		void bc_icamera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
+		void bci_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
 		{
 			m_screen_width = p_back_buffer_width;
 			m_screen_height = p_back_buffer_height;
@@ -131,7 +131,7 @@ namespace black_cat
 			m_projection = create_projection_matrix();
 		}
 
-		core::bc_vector3f bc_icamera::project_clip_point_to_3d_ray(bcUINT16 p_screen_width, bcUINT16 p_screen_height, bcUINT16 p_left, bcUINT16 p_top) const noexcept
+		core::bc_vector3f bci_camera::project_clip_point_to_3d_ray(bcUINT16 p_screen_width, bcUINT16 p_screen_height, bcUINT16 p_left, bcUINT16 p_top) const noexcept
 		{
 			//auto l_view = get_view();
 			//auto l_proj = get_projection();
@@ -192,7 +192,7 @@ namespace black_cat
 			return l_ray;
 		}
 		
-		core::bc_matrix4f bc_icamera::create_view_matrix(const core::bc_vector3f& p_up) noexcept
+		core::bc_matrix4f bci_camera::create_view_matrix(const core::bc_vector3f& p_up) noexcept
 		{
 			if(graphic::bc_render_api_info::use_left_handed())
 			{
@@ -210,13 +210,13 @@ namespace black_cat
 			bcUINT16 p_back_buffer_height,
 			bcFLOAT p_near_clip,
 			bcFLOAT p_far_clip) noexcept
-			: bc_icamera(p_back_buffer_width, p_back_buffer_height, p_far_clip, p_near_clip)
+			: bci_camera(p_back_buffer_width, p_back_buffer_height, p_far_clip, p_near_clip)
 		{
 			set_projection(p_back_buffer_width, p_back_buffer_height, p_near_clip, p_far_clip);
 		}
 
 		bc_orthographic_camera::bc_orthographic_camera(bc_orthographic_camera&& p_other) noexcept
-			: bc_icamera(std::move(p_other))
+			: bci_camera(std::move(p_other))
 			, m_min_x(p_other.m_min_x),
 			m_max_x(p_other.m_max_x),
 			m_min_y(p_other.m_min_y),
@@ -226,7 +226,7 @@ namespace black_cat
 
 		bc_orthographic_camera& bc_orthographic_camera::operator=(bc_orthographic_camera&& p_other) noexcept
 		{
-			bc_icamera::operator=(std::move(p_other));
+			bci_camera::operator=(std::move(p_other));
 			m_min_x = p_other.m_min_x;
 			m_max_x = p_other.m_max_x;
 			m_min_y = p_other.m_min_y;
@@ -283,13 +283,13 @@ namespace black_cat
 			bcFLOAT p_height_fov, 
 			bcFLOAT p_near_clip, 
 			bcFLOAT p_far_clip) noexcept
-			: bc_icamera(p_back_buffer_width, p_back_buffer_height, p_near_clip, p_far_clip)
+			: bci_camera(p_back_buffer_width, p_back_buffer_height, p_near_clip, p_far_clip)
 		{
 			set_projection(p_back_buffer_width, p_back_buffer_height, p_height_fov, p_near_clip, p_far_clip);
 		}
 
 		bc_perspective_camera::bc_perspective_camera(bc_perspective_camera&& p_other) noexcept
-			: bc_icamera(std::move(p_other)),
+			: bci_camera(std::move(p_other)),
 			m_aspect_ratio(p_other.m_aspect_ratio),
 			m_field_of_view(p_other.m_field_of_view)
 		{
@@ -297,7 +297,7 @@ namespace black_cat
 
 		bc_perspective_camera& bc_perspective_camera::operator=(bc_perspective_camera&& p_other) noexcept
 		{
-			bc_icamera::operator=(std::move(p_other));
+			bci_camera::operator=(std::move(p_other));
 			m_aspect_ratio = p_other.m_aspect_ratio;
 			m_field_of_view = p_other.m_field_of_view;
 

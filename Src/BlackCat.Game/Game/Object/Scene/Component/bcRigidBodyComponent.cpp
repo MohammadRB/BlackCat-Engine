@@ -21,7 +21,7 @@ namespace black_cat
 
 			_get_mesh_colliders(l_mesh, *l_mesh.get_root_node(), l_colliders);
 
-			auto l_px_material = l_physics.create_material(1, 1, 0.1);
+			auto l_px_material = l_physics.create_material(1, 1, 0.1f);
 
 			for (const bc_mesh_part_collider_entry* l_collider : l_colliders)
 			{
@@ -40,16 +40,16 @@ namespace black_cat
 			{
 				const bc_mesh_part_collider& l_mesh_colliders = p_mesh.get_node_mesh_colliders(p_mesh_node, l_mesh_index);
 				
-				for(auto l_begin = l_mesh_colliders.cbegin(), l_end = l_mesh_colliders.cend(); l_begin != l_end; ++l_begin)
+				for (auto& l_mesh_collider : l_mesh_colliders)
 				{
-					p_result.push_back(&*l_begin);
+					p_result.push_back(&l_mesh_collider);
 				}
 			}
 
-			auto& l_node_children = p_mesh.get_node_children(p_mesh_node);
-			for (bcUINT32 l_child = 0, l_end = l_node_children.size(); l_child < l_end; ++l_child)
+			const auto& l_node_children = p_mesh.get_node_children(p_mesh_node);
+			for (auto* l_child : l_node_children)
 			{
-				_get_mesh_colliders(p_mesh, *l_node_children[l_child], p_result);
+				_get_mesh_colliders(p_mesh, *l_child, p_result);
 			}
 		}
 	}

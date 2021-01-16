@@ -13,16 +13,16 @@ namespace black_cat
 	{
 		class bc_actor_component_manager;
 
-		class bc_iactor_component_container
+		class bci_actor_component_container
 		{
 		public:
-			virtual ~bc_iactor_component_container() = default;
+			virtual ~bci_actor_component_container() = default;
 
-			virtual bc_iactor_component* get(bc_actor_component_index p_index) = 0;
+			virtual bci_actor_component* get(bc_actor_component_index p_index) = 0;
 
 			virtual bc_actor_component_index create() = 0;
 
-			virtual bc_actor_component_index create_after(bc_actor_component_index p_parent_index = bc_iactor_component::invalid_index) = 0;
+			virtual bc_actor_component_index create_after(bc_actor_component_index p_parent_index = bci_actor_component::invalid_index) = 0;
 
 			virtual void remove(bc_actor_component_index p_index) = 0;
 
@@ -35,11 +35,11 @@ namespace black_cat
 			virtual bcSIZE capacity() = 0;
 
 		protected:
-			bc_iactor_component_container() = default;
+			bci_actor_component_container() = default;
 		};
 
 		template< class TComponent >
-		class bc_actor_component_container : public bc_iactor_component_container
+		class bc_actor_component_container : public bci_actor_component_container
 		{
 		public:
 			bc_actor_component_container();
@@ -50,7 +50,7 @@ namespace black_cat
 
 			bc_actor_component_container& operator=(bc_actor_component_container&&) noexcept;
 
-			bc_iactor_component* get(bc_actor_component_index p_index) override;
+			bci_actor_component* get(bc_actor_component_index p_index) override;
 
 			bc_actor_component_index create() override;
 
@@ -75,7 +75,7 @@ namespace black_cat
 		template< class TComponent >
 		bc_actor_component_container<TComponent>::bc_actor_component_container()
 		{
-			static_assert(std::is_base_of< bc_iactor_component, TComponent >::value, "TComponent must inherit from bc_iactor_component");
+			static_assert(std::is_base_of< bci_actor_component, TComponent >::value, "TComponent must inherit from bc_iactor_component");
 		}
 
 		template< class TComponent >
@@ -88,7 +88,7 @@ namespace black_cat
 		bc_actor_component_container<TComponent>& bc_actor_component_container<TComponent>::operator=(bc_actor_component_container&&) noexcept = default;
 
 		template< class TComponent >
-		bc_iactor_component* bc_actor_component_container<TComponent>::get(bc_actor_component_index p_index)
+		bci_actor_component* bc_actor_component_container<TComponent>::get(bc_actor_component_index p_index)
 		{
 			auto& l_entry = m_components[p_index];
 

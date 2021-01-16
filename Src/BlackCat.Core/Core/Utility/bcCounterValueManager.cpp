@@ -56,9 +56,9 @@ namespace black_cat
 			return m_container[m_read_container].find(p_name);
 		}
 
-		bool bc_counter_value_manager::_event_handler(bc_ievent& p_event)
+		bool bc_counter_value_manager::_event_handler(bci_event& p_event)
 		{
-			if (bc_imessage::is< bc_event_frame_swap >(p_event))
+			if (bci_message::is< bc_event_frame_swap >(p_event))
 			{
 				m_container[m_read_container].clear();
 

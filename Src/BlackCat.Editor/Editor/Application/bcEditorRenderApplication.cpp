@@ -114,9 +114,9 @@ namespace black_cat
 		{
 		}
 
-		bool bc_editor_render_app::application_event(core::bc_ievent& p_event)
+		bool bc_editor_render_app::application_event(core::bci_event& p_event)
 		{
-			auto* l_key_event = core::bc_imessage::as<platform::bc_app_event_key>(p_event);
+			auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event);
 			if (l_key_event)
 			{
 				/*if(l_key_event->get_key_state() == platform::bc_key_state::releasing && l_key_event->get_key() == platform::bc_key::kb_F)
@@ -166,7 +166,7 @@ namespace black_cat
 				return true;
 			}
 
-			auto* l_exit_event = core::bc_imessage::as<platform::bc_app_event_exit>(p_event);
+			auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event);
 			if(l_exit_event)
 			{
 				auto& l_global_config = m_game_system->get_file_system().get_global_config();

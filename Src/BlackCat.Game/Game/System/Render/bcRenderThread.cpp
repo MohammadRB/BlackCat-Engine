@@ -548,17 +548,17 @@ namespace black_cat
 			m_pipeline->unmap_resource(p_resource, p_subresource);
 		}*/
 
-		void bc_render_thread::update_subresource(graphic::bc_iresource& p_resource, bcUINT p_dst_subresource, const void* p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch)
+		void bc_render_thread::update_subresource(graphic::bci_resource& p_resource, bcUINT p_dst_subresource, const void* p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch)
 		{
 			m_pipeline->update_subresource(p_resource, p_dst_subresource, p_src_data, p_src_row_pitch, p_src_depth_pitch);
 		}
 
-		void bc_render_thread::copy_subresource(graphic::bc_iresource& p_dest_resource, bcUINT p_dst_subresource, graphic::bc_iresource& p_src_resource, bcUINT p_src_subresource)
+		void bc_render_thread::copy_subresource(graphic::bci_resource& p_dest_resource, bcUINT p_dst_subresource, graphic::bci_resource& p_src_resource, bcUINT p_src_subresource)
 		{
 			m_pipeline->copy_subresource(p_dest_resource, p_dst_subresource, p_src_resource, p_src_subresource);
 		}
 
-		void bc_render_thread::copy_resource(graphic::bc_iresource& p_dest_resource, graphic::bc_iresource& p_src_resource)
+		void bc_render_thread::copy_resource(graphic::bci_resource& p_dest_resource, graphic::bci_resource& p_src_resource)
 		{
 			m_pipeline->copy_resource(p_dest_resource, p_src_resource);
 		}
@@ -568,7 +568,7 @@ namespace black_cat
 			m_pipeline->copy_structure_count(p_dest_resource, p_offset, p_unordered_resource);
 		}
 
-		void bc_render_thread::resolve_subresource(graphic::bc_iresource& p_dest_resource, bcUINT p_dest_subresource, graphic::bc_iresource& p_src_resource, bcUINT p_src_subresource, graphic::bc_format p_format)
+		void bc_render_thread::resolve_subresource(graphic::bci_resource& p_dest_resource, bcUINT p_dest_subresource, graphic::bci_resource& p_src_resource, bcUINT p_src_subresource, graphic::bc_format p_format)
 		{
 			m_pipeline->resolve_subresource(p_dest_resource, p_dest_subresource, p_src_resource, p_src_subresource, p_format);
 		}

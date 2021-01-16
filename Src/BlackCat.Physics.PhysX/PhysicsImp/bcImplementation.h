@@ -33,7 +33,7 @@ namespace black_cat
 		class bc_px_allocator : public physx::PxAllocatorCallback
 		{
 		public:
-			explicit bc_px_allocator(core::bc_unique_ptr< bc_iallocator > p_imp)
+			explicit bc_px_allocator(core::bc_unique_ptr< bci_allocator > p_imp)
 				: m_imp(std::move(p_imp))
 			{
 			}
@@ -48,13 +48,13 @@ namespace black_cat
 				m_imp->free(p_ptr);
 			}
 
-			core::bc_unique_ptr< bc_iallocator > m_imp;
+			core::bc_unique_ptr< bci_allocator > m_imp;
 		};
 
 		class bc_px_task_dispatcher : public physx::PxCpuDispatcher
 		{
 		public:
-			explicit bc_px_task_dispatcher(core::bc_unique_ptr< bc_itask_dispatcher > p_imp)
+			explicit bc_px_task_dispatcher(core::bc_unique_ptr< bci_task_dispatcher > p_imp)
 				: m_imp(std::move(p_imp))
 			{
 			}
@@ -69,13 +69,13 @@ namespace black_cat
 				return m_imp->worker_count();
 			}
 
-			core::bc_unique_ptr< bc_itask_dispatcher > m_imp;
+			core::bc_unique_ptr< bci_task_dispatcher > m_imp;
 		};
 
 		class bc_px_logger : public physx::PxErrorCallback
 		{
 		public:
-			explicit bc_px_logger(core::bc_unique_ptr<bc_ilogger> p_imp)
+			explicit bc_px_logger(core::bc_unique_ptr<bci_logger> p_imp)
 				: m_imp(std::move(p_imp))
 			{
 			}
@@ -101,13 +101,13 @@ namespace black_cat
 				}
 			}
 
-			core::bc_unique_ptr<bc_ilogger> m_imp;
+			core::bc_unique_ptr<bci_logger> m_imp;
 		};
 
 		class bc_px_contact_filter_callback : public physx::PxSimulationFilterCallback
 		{
 		public:
-			explicit bc_px_contact_filter_callback(core::bc_unique_ptr< bc_icontact_filter_callback > p_imp);
+			explicit bc_px_contact_filter_callback(core::bc_unique_ptr< bci_contact_filter_callback > p_imp);
 
 			physx::PxFilterFlags pairFound(physx::PxU32 p_pair_id,
 				physx::PxFilterObjectAttributes p_attributes0,
@@ -131,19 +131,19 @@ namespace black_cat
 				physx::PxPairFlags& p_pair_flags,
 				physx::PxFilterFlags& p_filter_flags) override;
 
-			core::bc_unique_ptr< bc_icontact_filter_callback > m_imp;
+			core::bc_unique_ptr< bci_contact_filter_callback > m_imp;
 		};
 
 		class bc_px_contact_modify_callback : public physx::PxContactModifyCallback, public physx::PxCCDContactModifyCallback
 		{
 		public:
-			explicit bc_px_contact_modify_callback(core::bc_unique_ptr< bc_icontact_modify_callback > p_imp);
+			explicit bc_px_contact_modify_callback(core::bc_unique_ptr< bci_contact_modify_callback > p_imp);
 
 			void onContactModify(physx::PxContactModifyPair* const p_pairs, physx::PxU32 p_count) override;
 
 			void onCCDContactModify(physx::PxContactModifyPair* const p_pairs, physx::PxU32 p_count) override;
 
-			core::bc_unique_ptr< bc_icontact_modify_callback > m_imp;
+			core::bc_unique_ptr< bci_contact_modify_callback > m_imp;
 		};
 
 		class bc_px_simulation_callback : public physx::PxSimulationEventCallback

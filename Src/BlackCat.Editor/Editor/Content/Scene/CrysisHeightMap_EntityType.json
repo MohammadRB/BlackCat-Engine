@@ -209,6 +209,10 @@
             "mesh": "xbot",
             "animations": [ "xbot-neutral-idle" ]
           }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {}
         }
       ]
     },
@@ -220,6 +224,10 @@
           "parameters": {
             "mesh": "xbotT"
           }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {}
         }
       ]
     },

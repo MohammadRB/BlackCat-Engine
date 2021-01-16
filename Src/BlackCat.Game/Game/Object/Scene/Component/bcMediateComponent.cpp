@@ -14,7 +14,7 @@ namespace black_cat
 	namespace game
 	{
 		bc_mediate_component::bc_mediate_component(bc_actor_component_index p_index)
-			: bc_iactor_component(p_index),
+			: bci_actor_component(p_index),
 			m_entity_name(nullptr),
 			m_scene(nullptr),
 			m_bound_box_changed(false),
@@ -77,14 +77,14 @@ namespace black_cat
 
 		void bc_mediate_component::_handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
 		{
-			const auto* l_transformation_event = core::bc_imessage::as< bc_actor_event_world_transform >(p_event);
+			const auto* l_transformation_event = core::bci_message::as< bc_actor_event_world_transform >(p_event);
 			if (l_transformation_event)
 			{
 				m_transform = l_transformation_event->get_transform();
 				return;
 			}
 
-			const auto* l_bound_box_event = core::bc_imessage::as< bc_actor_event_bound_box_changed >(p_event);
+			const auto* l_bound_box_event = core::bci_message::as< bc_actor_event_bound_box_changed >(p_event);
 			if (l_bound_box_event)
 			{
 				if(!m_bound_box_changed) // Only update prev box once in case of multiple events per frame
@@ -96,7 +96,7 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_added_to_scene_event = core::bc_imessage::as< bc_actor_event_added_to_scene >(p_event);
+			const auto* l_added_to_scene_event = core::bci_message::as< bc_actor_event_added_to_scene >(p_event);
 			if (l_added_to_scene_event)
 			{
 				m_scene = &l_added_to_scene_event->get_scene();

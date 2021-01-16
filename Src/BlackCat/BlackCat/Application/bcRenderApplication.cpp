@@ -140,7 +140,7 @@ namespace black_cat
 		m_update_count = 0;
 	}
 
-	bool bc_render_application::app_event(core::bc_ievent& p_event)
+	bool bc_render_application::app_event(core::bci_event& p_event)
 	{
 		return application_event(p_event);
 	}

@@ -8,7 +8,7 @@ namespace black_cat
 	namespace editor
 	{
 		bc_editor_game_console::bc_editor_game_console(game::bc_game_console& p_game_console, bc_widget_console& p_widget)
-			: game::bc_igame_console_imp(p_game_console)
+			: game::bci_game_console_imp(p_game_console)
 		{
 			qRegisterMetaType<game::bc_console_output_type>("game::bc_console_output_type");
 			
@@ -24,7 +24,7 @@ namespace black_cat
 		}
 
 		bc_editor_game_console::bc_editor_game_console(bc_editor_game_console&& p_other) noexcept
-			: game::bc_igame_console_imp(std::move(p_other))
+			: game::bci_game_console_imp(std::move(p_other))
 		{
 		}
 
@@ -34,7 +34,7 @@ namespace black_cat
 
 		bc_editor_game_console& bc_editor_game_console::operator=(bc_editor_game_console&& p_other) noexcept
 		{
-			game::bc_igame_console_imp::operator=(std::move(p_other));
+			game::bci_game_console_imp::operator=(std::move(p_other));
 
 			return *this;
 		}

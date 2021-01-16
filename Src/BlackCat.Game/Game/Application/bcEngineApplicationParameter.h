@@ -48,7 +48,7 @@ namespace black_cat
 		struct bc_render_application_parameter : public platform::bc_application_parameter
 		{
 			bc_render_application_parameter(platform::bc_application_parameter& p_app_parameters,
-				bc_irender_application_output_window* p_output_window,
+				bci_render_application_output_window* p_output_window,
 				bc_iscene_graph_node_factory p_scene_graph_factory)
 				: platform::bc_application_parameter(p_app_parameters),
 				m_output_window(p_output_window),
@@ -62,7 +62,7 @@ namespace black_cat
 
 			bc_render_application_parameter& operator=(bc_render_application_parameter&&) = default;
 
-			bc_irender_application_output_window* m_output_window;
+			bci_render_application_output_window* m_output_window;
 			bc_iscene_graph_node_factory m_scene_graph_factory;
 		};
 

@@ -106,16 +106,16 @@ namespace black_cat
 		/**
 		 * \brief Represent a whole rendering pass that do all tasks that required to render a scene with a specified configuration 
 		 */
-		class bc_irender_pass : public core_platform::bc_no_copy
+		class bci_render_pass : public core_platform::bc_no_copy
 		{
 		public:
-			bc_irender_pass() = default;
+			bci_render_pass() = default;
 
-			bc_irender_pass(bc_irender_pass&&) = default;
+			bci_render_pass(bci_render_pass&&) = default;
 
-			virtual ~bc_irender_pass() = default;
+			virtual ~bci_render_pass() = default;
 
-			bc_irender_pass& operator=(bc_irender_pass&&) = default;
+			bci_render_pass& operator=(bci_render_pass&&) = default;
 
 			/**
 			 * \brief This function will be called during app initialization
@@ -186,34 +186,34 @@ namespace black_cat
 			bc_render_pass_resource_share* m_resource_share;
 		};
 
-		inline void bc_irender_pass::cleanup_frame(const bc_render_pass_render_context& p_param)
+		inline void bci_render_pass::cleanup_frame(const bc_render_pass_render_context& p_param)
 		{
 		}
 
-		inline void bc_irender_pass::_set_pass_resource_share(bc_render_pass_resource_share* p_state_share)
+		inline void bci_render_pass::_set_pass_resource_share(bc_render_pass_resource_share* p_state_share)
 		{
 			m_resource_share = p_state_share;
 		}
 
 		template< typename T >
-		void bc_irender_pass::share_resource(constant::bc_render_pass_variable_t p_variable, T&& p_value)
+		void bci_render_pass::share_resource(constant::bc_render_pass_variable_t p_variable, T&& p_value)
 		{
 			m_resource_share->share_resource(p_variable, std::forward<T>(p_value));
 		}
 
-		inline void bc_irender_pass::unshare_resource(constant::bc_render_pass_variable_t p_variable)
+		inline void bci_render_pass::unshare_resource(constant::bc_render_pass_variable_t p_variable)
 		{
 			m_resource_share->unshare_resource(p_variable);
 		}
 
 		template< typename T >
-		T* bc_irender_pass::get_shared_resource(constant::bc_render_pass_variable_t p_variable) const noexcept
+		T* bci_render_pass::get_shared_resource(constant::bc_render_pass_variable_t p_variable) const noexcept
 		{
 			return m_resource_share->get_resource< T >(p_variable);
 		}
 
 		template< typename T >
-		T& bc_irender_pass::get_shared_resource_throw(constant::bc_render_pass_variable_t p_variable) const
+		T& bci_render_pass::get_shared_resource_throw(constant::bc_render_pass_variable_t p_variable) const
 		{
 			auto* l_resource = get_shared_resource<T>(p_variable);
 			if(l_resource)

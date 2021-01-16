@@ -15,7 +15,7 @@ namespace black_cat
 		class bc_sub_mesh;
 		class bc_mesh_component;
 
-		class bc_rigid_body_component : public bc_iactor_component
+		class bc_rigid_body_component : public bci_actor_component
 		{
 			BC_ABSTRACT_COMPONENT(rgd_bdy)
 
@@ -45,7 +45,7 @@ namespace black_cat
 		inline bc_rigid_body_component::~bc_rigid_body_component() = default;
 
 		inline bc_rigid_body_component::bc_rigid_body_component(bc_actor_component_index p_index) noexcept
-			: bc_iactor_component(p_index)
+			: bci_actor_component(p_index)
 		{
 		}
 

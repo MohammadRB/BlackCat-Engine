@@ -12,24 +12,24 @@ namespace black_cat
 	namespace core
 	{
 		class bc_event_manager;
-		class bc_ievent;
+		class bci_event;
 
 		using bc_event_hash = bc_message_hash;
 		
-		class BC_CORE_DLL bc_ievent : public bc_imessage
+		class BC_CORE_DLL bci_event : public bci_message
 		{
 		public:
-			virtual ~bc_ievent() = 0;
+			virtual ~bci_event() = 0;
 
 		protected:
-			bc_ievent(const bcCHAR* p_name);
+			bci_event(const bcCHAR* p_name);
 
-			bc_ievent(const bc_ievent&) = default;
+			bci_event(const bci_event&) = default;
 
-			bc_ievent& operator=(const bc_ievent&) = default;
+			bci_event& operator=(const bci_event&) = default;
 		};
 
-		class BC_CORE_DLL bc_event : public bc_ievent
+		class BC_CORE_DLL bc_event : public bci_event
 		{
 		public:
 			virtual ~bc_event() = 0;

@@ -13,10 +13,10 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_iscene_graph_node_entry
+		class bci_scene_graph_node_entry
 		{
 		public:
-			explicit bc_iscene_graph_node_entry(const bc_actor& p_actor)
+			explicit bci_scene_graph_node_entry(const bc_actor& p_actor)
 				: m_actor(p_actor)
 			{
 			}
@@ -24,14 +24,14 @@ namespace black_cat
 			bc_actor m_actor;
 		};
 
-		class bc_iscene_graph_node
+		class bci_scene_graph_node
 		{
-			bc_make_iterators_friend(bc_iscene_graph_node)
+			bc_make_iterators_friend(bci_scene_graph_node)
 
 		public:
-			using this_type = bc_iscene_graph_node;
+			using this_type = bci_scene_graph_node;
 			using value_type = bc_actor;
-			using node_type = bc_iscene_graph_node_entry;
+			using node_type = bci_scene_graph_node_entry;
 			using pointer = value_type*;
 			using reference = value_type&;
 			using difference_type = bcSIZE;
@@ -39,7 +39,7 @@ namespace black_cat
 			using const_iterator = core::bc_const_bidirectional_iterator<this_type>;
 
 		public:
-			virtual ~bc_iscene_graph_node() = default;
+			virtual ~bci_scene_graph_node() = default;
 
 			virtual iterator begin() noexcept = 0;
 
@@ -106,6 +106,6 @@ namespace black_cat
 			core::bc_vector3f m_half_extends;
 		};
 
-		using bc_iscene_graph_node_factory = core::bc_delegate<core::bc_unique_ptr<bc_iscene_graph_node>(bc_scene_graph_node_factory_parameter)>;
+		using bc_iscene_graph_node_factory = core::bc_delegate<core::bc_unique_ptr<bci_scene_graph_node>(bc_scene_graph_node_factory_parameter)>;
 	}
 }
