@@ -31,14 +31,14 @@ namespace black_cat
 			m_mesh_colliders.insert(container_type::value_type(p_mesh_name, std::move(p_colliders)));
 		}
 
-		const bc_mesh_part_collider* bc_mesh_collider::find_mesh_colliders(const bcCHAR* p_mesh_name)
+		const bc_mesh_part_collider* bc_mesh_collider::find_mesh_colliders(const bcCHAR* p_mesh_name) const noexcept
 		{
-			container_type::key_type l_key(p_mesh_name);
+			const container_type::key_type l_key(p_mesh_name);
 
 			return find_mesh_colliders(l_key);
 		}
 
-		const bc_mesh_part_collider* bc_mesh_collider::find_mesh_colliders(const core::bc_string& p_mesh_name)
+		const bc_mesh_part_collider* bc_mesh_collider::find_mesh_colliders(const core::bc_string& p_mesh_name) const noexcept
 		{
 			auto l_ite = m_mesh_colliders.find(p_mesh_name);
 			bc_mesh_part_collider* l_result = nullptr;

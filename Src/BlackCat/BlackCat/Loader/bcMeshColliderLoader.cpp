@@ -208,11 +208,11 @@ namespace black_cat
 		bc_mesh_loader::convert_ai_matrix(p_ai_node.mTransformation, l_node_transformation);
 		l_node_absolute_transformation = l_node_transformation * p_parent_transformation;
 
-		for (bcUINT32 i = 0; i < p_ai_node.mNumMeshes; ++i)
+		for (bcUINT32 l_i = 0; l_i < p_ai_node.mNumMeshes; ++l_i)
 		{
 			game::bc_mesh_part_collider l_mesh_colliders;
 
-			aiMesh* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[i]];
+			aiMesh* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[l_i]];
 			aiNode* l_px_node = find_px_node(p_ai_node, *l_ai_mesh);
 
 			if (l_px_node)

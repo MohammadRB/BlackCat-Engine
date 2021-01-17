@@ -56,9 +56,9 @@ namespace black_cat
 			
 			void update(bc_actor_component_update_content& p_context) override;
 			
-			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
+			void handle_event(bc_actor_component_event_context& p_context) override;
 
-			void debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer) override;
+			void debug_draw(bc_actor_component_debug_draw_context& p_context) override;
 			
 		private:
 			void _handle_event(bc_actor& p_actor, const bc_actor_event& p_event);

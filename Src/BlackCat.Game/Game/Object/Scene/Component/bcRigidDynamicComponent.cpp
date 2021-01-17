@@ -6,6 +6,8 @@
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "PhysicsImp/Body/bcActor.h"
+#include "PhysicsImp/Body/bcActor.h"
 
 namespace black_cat
 {
@@ -38,8 +40,8 @@ namespace black_cat
 		{
 			return get_manager().component_get_actor(*this);
 		}
-		
-		physics::bc_rigid_body bc_rigid_dynamic_component::get_body() noexcept
+
+		physics::bc_rigid_body& bc_rigid_dynamic_component::get_body() noexcept
 		{
 			return m_px_actor_ref.get();
 		}
@@ -67,9 +69,9 @@ namespace black_cat
 			throw bc_invalid_operation_exception("Rigid dynamic component needs mesh component.");
 		}
 
-		void bc_rigid_dynamic_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		void bc_rigid_dynamic_component::handle_event(bc_actor_component_event_context& p_context)
 		{
-			auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_event);
+			auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
 			if(l_world_transform_event)
 			{
 				m_px_actor_ref->set_global_pose(physics::bc_transform(l_world_transform_event->get_transform()));

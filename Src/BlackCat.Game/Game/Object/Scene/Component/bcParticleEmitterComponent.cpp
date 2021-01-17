@@ -60,11 +60,11 @@ namespace black_cat
 			}
 		}
 
-		void bc_particle_emitter_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		void bc_particle_emitter_component::handle_event(bc_actor_component_event_context& p_context)
 		{
 			if(m_emitter)
 			{
-				const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_event);
+				const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_context.m_event);
 				if (l_world_transform_event)
 				{
 					m_emitter->set_positions(l_world_transform_event->get_transform().get_translation());

@@ -22,7 +22,7 @@ namespace black_cat
 		public:
 			virtual ~bc_rigid_body_component();
 
-			virtual physics::bc_rigid_body get_body() noexcept = 0;
+			virtual physics::bc_rigid_body& get_body() noexcept = 0;
 
 		protected:
 			explicit bc_rigid_body_component(bc_actor_component_index p_index) noexcept;
@@ -37,9 +37,7 @@ namespace black_cat
 				bc_mesh_component& p_mesh_component);
 
 		private:
-			void _get_mesh_colliders(const bc_sub_mesh& p_mesh, 
-				const bc_mesh_node& p_mesh_node, 
-				core::bc_vector_frame<const bc_mesh_part_collider::entry*>& p_result);
+			void _get_mesh_colliders(const bc_sub_mesh& p_mesh, core::bc_vector_frame<const bc_mesh_part_collider::entry*>& p_result) const;
 		};
 
 		inline bc_rigid_body_component::~bc_rigid_body_component() = default;

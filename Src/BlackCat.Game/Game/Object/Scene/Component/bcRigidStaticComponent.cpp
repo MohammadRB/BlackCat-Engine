@@ -10,6 +10,8 @@
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "PhysicsImp/Body/bcActor.h"
+#include "PhysicsImp/Body/bcActor.h"
 
 namespace black_cat
 {
@@ -42,8 +44,8 @@ namespace black_cat
 		{
 			return get_manager().component_get_actor(*this);
 		}
-		
-		physics::bc_rigid_body bc_rigid_static_component::get_body() noexcept
+
+		physics::bc_rigid_body& bc_rigid_static_component::get_body() noexcept
 		{
 			return m_px_actor_ref.get();
 		}
@@ -79,15 +81,15 @@ namespace black_cat
 			throw bc_invalid_operation_exception("Rigid static component needs either mesh or height map component.");
 		}
 
-		void bc_rigid_static_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		void bc_rigid_static_component::handle_event(bc_actor_component_event_context& p_context)
 		{
-			auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_event);
+			const auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
 			if (l_world_transform_event)
 			{
-				auto& l_transform = l_world_transform_event->get_transform();
+				const auto& l_transform = l_world_transform_event->get_transform();
 				physics::bc_transform l_px_transform;
 				
-				auto* l_height_map_component = p_actor.get_component<bc_height_map_component>();
+				auto* l_height_map_component = p_context.m_actor.get_component<bc_height_map_component>();
 				if (l_height_map_component) // TODO
 				{
 					const auto& l_height_map = l_height_map_component->get_height_map();
@@ -115,10 +117,10 @@ namespace black_cat
 			bc_height_map_component& p_component)
 		{
 			auto& l_physics = p_physics_system.get_physics();
-			auto& l_height_map = p_component.get_height_map();
-			auto l_px_height_field = l_height_map.get_px_height_field();
+			const auto& l_height_map = p_component.get_height_map();
+			const auto l_px_height_field = l_height_map.get_px_height_field();
 
-			auto l_height_field_shape = physics::bc_shape_height_field(l_px_height_field, l_height_map.get_xz_multiplier(), p_physics_system.get_height_field_y_scale());
+			const auto l_height_field_shape = physics::bc_shape_height_field(l_px_height_field, l_height_map.get_xz_multiplier(), p_physics_system.get_height_field_y_scale());
 			auto l_height_field_material = l_physics.create_material(1, 1, 0.1);
 
 			p_rigid_static.create_shape(l_height_field_shape, l_height_field_material.get());

@@ -58,9 +58,6 @@
     <Filter Include="Game\System\Render\Particle">
       <UniqueIdentifier>{9c8133d3-9034-4fe9-a69e-82d71719f53c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Object\Scene\Component\Controller">
-      <UniqueIdentifier>{b827ac91-0489-44e4-9dc4-498aa48c50b4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Object\Animation">
       <UniqueIdentifier>{4dfe266a-e7f4-47b1-b23f-37e78d80f094}</UniqueIdentifier>
     </Filter>

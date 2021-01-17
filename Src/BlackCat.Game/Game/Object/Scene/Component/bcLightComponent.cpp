@@ -123,16 +123,16 @@ namespace black_cat
 			}
 		}
 
-		void bc_light_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		void bc_light_component::handle_event(bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_event);
+			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_context.m_event);
 			if(l_world_transform_event)
 			{
 				// TODO what if light is part of a mesh
 				m_light->set_transformation(l_world_transform_event->get_transform());
 
 				const auto& l_bound_box = m_light->get_bound_box();
-				p_actor.add_event(bc_actor_event_bound_box_changed(l_bound_box));
+				p_context.m_actor.add_event(bc_actor_event_bound_box_changed(l_bound_box));
 			}
 		}
 	}

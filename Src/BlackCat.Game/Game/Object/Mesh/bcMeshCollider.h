@@ -29,9 +29,9 @@ namespace black_cat
 
 			void add_mesh_colliders(const bcCHAR* p_mesh_name, bc_mesh_part_collider&& p_colliders);
 
-			const bc_mesh_part_collider* find_mesh_colliders(const bcCHAR* p_mesh_name);
+			const bc_mesh_part_collider* find_mesh_colliders(const bcCHAR* p_mesh_name) const noexcept;
 
-			const bc_mesh_part_collider* find_mesh_colliders(const core::bc_string& p_mesh_name);
+			const bc_mesh_part_collider* find_mesh_colliders(const core::bc_string& p_mesh_name) const noexcept;
 
 		private:
 			container_type m_mesh_colliders;

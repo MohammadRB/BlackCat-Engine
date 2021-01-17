@@ -89,7 +89,8 @@ namespace black_cat
 
 			for(bci_actor_component* l_component : l_components)
 			{
-				l_component->debug_draw(*this, p_shape_drawer);
+				bc_actor_component_debug_draw_context l_context(*this, p_shape_drawer);
+				l_component->debug_draw(l_context);
 			}
 		}
 

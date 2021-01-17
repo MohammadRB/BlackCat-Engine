@@ -47,7 +47,7 @@ namespace black_cat
 
 			void write_instance(bc_actor_component_write_context& p_context) override;
 
-			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
+			void handle_event(bc_actor_component_event_context& p_context) override;
 			
 			void render(bc_render_state_buffer& p_buffer) const override;
 			

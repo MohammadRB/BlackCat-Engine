@@ -55,23 +55,23 @@ namespace black_cat
 			}
 		}
 
-		void bc_mediate_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		void bc_mediate_component::handle_event(bc_actor_component_event_context& p_context)
 		{
-			_handle_event(p_actor, p_event);
+			_handle_event(p_context.m_actor, p_context.m_event);
 
 			if (m_controller)
 			{
-				m_controller->handle_event(p_actor, p_event);
+				m_controller->handle_event(p_context.m_actor, p_context.m_event);
 			}
 		}
 		
-		void bc_mediate_component::debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer)
+		void bc_mediate_component::debug_draw(bc_actor_component_debug_draw_context& p_context)
 		{
-			p_shape_drawer.draw_wired_box(m_bound_box);
+			p_context.m_shape_drawer.draw_wired_box(m_bound_box);
 
 			if(m_controller)
 			{
-				m_controller->debug_draw(p_actor, p_shape_drawer);
+				m_controller->debug_draw(p_context.m_actor, p_context.m_shape_drawer);
 			}
 		}
 

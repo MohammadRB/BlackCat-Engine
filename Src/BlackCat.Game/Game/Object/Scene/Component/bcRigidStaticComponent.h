@@ -4,6 +4,8 @@
 
 #include "PhysicsImp/Body/bcRigidStatic.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
+#include "PhysicsImp/Body/bcActor.h"
+#include "PhysicsImp/Body/bcActor.h"
 
 namespace black_cat
 {
@@ -26,14 +28,14 @@ namespace black_cat
 			bc_rigid_static_component& operator=(bc_rigid_static_component&&) noexcept;
 
 			bc_actor get_actor() const noexcept override;
-			
-			physics::bc_rigid_body get_body() noexcept override;
+
+			physics::bc_rigid_body& get_body() noexcept override;
 
 			physics::bc_rigid_static get_static_body() const noexcept;
 
 			void initialize(bc_actor_component_initialize_context& p_context) override;
 
-			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
+			void handle_event(bc_actor_component_event_context& p_context) override;
 
 		private:
 			void _initialize_from_height_map(bc_physics_system& p_physics_system, 

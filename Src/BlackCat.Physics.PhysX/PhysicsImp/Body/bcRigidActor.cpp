@@ -150,13 +150,13 @@ namespace black_cat
 		void bc_platform_rigid_actor< g_api_physx >::detach_shape(bc_shape& p_shape) noexcept
 		{
 			auto* l_px_actor = static_cast< physx::PxRigidActor* >
-				(
-					static_cast< bc_platform_physics_reference& >(*this).get_platform_pack().m_px_object
-					);
+			(
+				static_cast< bc_platform_physics_reference& >(*this).get_platform_pack().m_px_object
+			);
 			auto* l_px_shape = static_cast< physx::PxShape* >
-				(
-					static_cast< bc_physics_reference& >(p_shape).get_platform_pack().m_px_object
-					);
+			(
+				static_cast< bc_physics_reference& >(p_shape).get_platform_pack().m_px_object
+			);
 
 			l_px_actor->detachShape(*l_px_shape);
 		}
@@ -166,9 +166,9 @@ namespace black_cat
 		bcUINT32 bc_platform_rigid_actor< g_api_physx >::get_shape_count() const noexcept
 		{
 			auto* l_px_actor = static_cast< physx::PxRigidActor* >
-				(
-					static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_actor& >(*this)).get_platform_pack().m_px_object
-					);
+			(
+				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_actor& >(*this)).get_platform_pack().m_px_object
+			);
 
 			return l_px_actor->getNbShapes();
 		}
@@ -182,12 +182,12 @@ namespace black_cat
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_actor& >(*this)).get_platform_pack().m_px_object
 			);
 
-			bcUINT32 l_written_count = l_px_actor->getShapes(reinterpret_cast< physx::PxShape** >(p_buffer), p_buffer_size, p_start_index);
+			const bcUINT32 l_written_count = l_px_actor->getShapes(reinterpret_cast< physx::PxShape** >(p_buffer), p_buffer_size, p_start_index);
 
 			bc_overwrite_output_array< bc_shape, physx::PxShape >(p_buffer, l_written_count, [](bc_shape* p_shape, physx::PxShape* p_px_shape)
-				{
-					static_cast< bc_platform_physics_reference* >(p_shape)->get_platform_pack().m_px_object = p_px_shape;
-				});
+			{
+				static_cast< bc_platform_physics_reference* >(p_shape)->get_platform_pack().m_px_object = p_px_shape;
+			});
 
 			return l_written_count;
 		}
