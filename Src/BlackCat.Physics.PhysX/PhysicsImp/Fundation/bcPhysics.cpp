@@ -144,7 +144,7 @@ namespace black_cat
 			(
 				p_geometry,
 				p_material,
-				bc_shape_flag::default,
+				bc_shape_flag::default_v,
 				p_is_exclusive
 			);
 		}
@@ -182,7 +182,7 @@ namespace black_cat
 				p_geometry,
 				p_materials,
 				p_material_count,
-				bc_shape_flag::default,
+				bc_shape_flag::default_v,
 				p_is_exclusive
 			);
 		}

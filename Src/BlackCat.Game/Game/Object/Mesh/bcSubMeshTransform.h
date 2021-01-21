@@ -28,25 +28,29 @@ namespace black_cat
 
 			bc_sub_mesh_transform& operator=(bc_sub_mesh_transform&&) noexcept;
 
-			bc_mesh_node::node_index_t get_root_node_index() const;
+			bc_mesh_node::node_index_t get_root_node_index() const noexcept;
 
-			core::bc_vector3f get_node_translation(const bc_mesh_node& p_node) const;
+			core::bc_vector3f get_node_translation(const bc_mesh_node& p_node) const noexcept;
 
-			core::bc_matrix4f& get_node_transform(const bc_mesh_node& p_node);
+			core::bc_matrix4f& get_node_transform(const bc_mesh_node& p_node) noexcept;
 			
-			const core::bc_matrix4f& get_node_transform(const bc_mesh_node& p_node) const;
+			const core::bc_matrix4f& get_node_transform(const bc_mesh_node& p_node) const noexcept;
 
-			void set_node_transform(const bc_mesh_node& p_node, const core::bc_matrix4f& p_transform);
+			void set_node_transform(const bc_mesh_node& p_node, const core::bc_matrix4f& p_transform) noexcept;
 
-			void copy_transforms_from(const core::bc_matrix4f* p_transform);
+			void copy_transforms_from(const core::bc_matrix4f* p_transform) noexcept;
 
-			void copy_transforms_to(core::bc_matrix4f* p_transform) const;
+			void copy_transforms_to(core::bc_matrix4f* p_transform) const noexcept;
 
+			core::bc_matrix4f& operator[](container_type::size_type p_index);
+			
+			const core::bc_matrix4f& operator[](container_type::size_type p_index) const;
+			
 			bcSIZE size() const noexcept;
 			
 		private:
 			bc_mesh_node::node_index_t m_root_node_index;
-			core::bc_vector_movable<core::bc_matrix4f> m_transformations;
+			container_type m_transformations;
 		};
 
 		inline bc_sub_mesh_transform::bc_sub_mesh_transform()
@@ -94,45 +98,67 @@ namespace black_cat
 			return *this;
 		}
 
-		inline bc_mesh_node::node_index_t bc_sub_mesh_transform::get_root_node_index() const
+		inline bc_mesh_node::node_index_t bc_sub_mesh_transform::get_root_node_index() const noexcept
 		{
 			return m_root_node_index;
 		}
 
-		inline core::bc_vector3f bc_sub_mesh_transform::get_node_translation(const bc_mesh_node& p_node) const
-		{
-			return m_transformations[p_node.get_transform_index() - m_root_node_index].get_translation();
-		}
-
-		inline core::bc_matrix4f& bc_sub_mesh_transform::get_node_transform(const bc_mesh_node& p_node)
+		inline core::bc_vector3f bc_sub_mesh_transform::get_node_translation(const bc_mesh_node& p_node) const noexcept
 		{
 			BC_ASSERT
 			(
-				m_root_node_index != bc_mesh_node::s_invalid_index && p_node.get_transform_index() >=
-				m_root_node_index
+				m_root_node_index != bc_mesh_node::s_invalid_index &&
+				p_node.get_transform_index() >= m_root_node_index
+			);
+			
+			return m_transformations[p_node.get_transform_index() - m_root_node_index].get_translation();
+		}
+
+		inline core::bc_matrix4f& bc_sub_mesh_transform::get_node_transform(const bc_mesh_node& p_node) noexcept
+		{
+			BC_ASSERT
+			(
+				m_root_node_index != bc_mesh_node::s_invalid_index && 
+				p_node.get_transform_index() >= m_root_node_index
 			);
 
 			return m_transformations[p_node.get_transform_index() - m_root_node_index];
 		}
 
-		inline const core::bc_matrix4f& bc_sub_mesh_transform::get_node_transform(const bc_mesh_node& p_node) const
+		inline const core::bc_matrix4f& bc_sub_mesh_transform::get_node_transform(const bc_mesh_node& p_node) const noexcept
 		{
 			return const_cast<bc_sub_mesh_transform&>(*this).get_node_transform(p_node);
 		}
 
-		inline void bc_sub_mesh_transform::set_node_transform(const bc_mesh_node& p_node, const core::bc_matrix4f& p_transform)
+		inline void bc_sub_mesh_transform::set_node_transform(const bc_mesh_node& p_node, const core::bc_matrix4f& p_transform) noexcept
 		{
+			BC_ASSERT
+			(
+				m_root_node_index != bc_mesh_node::s_invalid_index &&
+				p_node.get_transform_index() >= m_root_node_index
+			);
+			
 			m_transformations.at(p_node.get_transform_index() - m_root_node_index) = p_transform;
 		}
 
-		inline void bc_sub_mesh_transform::copy_transforms_from(const core::bc_matrix4f* p_transform)
+		inline void bc_sub_mesh_transform::copy_transforms_from(const core::bc_matrix4f* p_transform) noexcept
 		{
 			std::memcpy(m_transformations.data(), p_transform, sizeof(decltype(m_transformations)::value_type) * m_transformations.size());
 		}
 
-		inline void bc_sub_mesh_transform::copy_transforms_to(core::bc_matrix4f* p_transform) const
+		inline void bc_sub_mesh_transform::copy_transforms_to(core::bc_matrix4f* p_transform) const noexcept
 		{
 			std::memcpy(p_transform, m_transformations.data(), sizeof(decltype(m_transformations)::value_type) * m_transformations.size());
+		}
+
+		inline core::bc_matrix4f& bc_sub_mesh_transform::operator[](container_type::size_type p_index)
+		{
+			return m_transformations[p_index];
+		}
+
+		inline const core::bc_matrix4f& bc_sub_mesh_transform::operator[](container_type::size_type p_index) const
+		{
+			return m_transformations[p_index];
 		}
 
 		inline bcSIZE bc_sub_mesh_transform::size() const noexcept

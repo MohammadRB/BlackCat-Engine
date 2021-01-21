@@ -32,6 +32,8 @@ namespace black_cat
 			const bc_mesh_ptr& get_mesh() const noexcept;
 
 			bcFLOAT get_mesh_scale() const noexcept;
+			
+			const bc_mesh_collider& get_mesh_collider() const noexcept;
 
 			const bc_mesh_node* get_root_node() const noexcept;
 
@@ -81,6 +83,11 @@ namespace black_cat
 		inline bcFLOAT bc_sub_mesh::get_mesh_scale() const noexcept
 		{
 			return m_mesh->get_scale();
+		}
+
+		inline const bc_mesh_collider& bc_sub_mesh::get_mesh_collider() const noexcept
+		{
+			return m_mesh->get_collider();
 		}
 		
 		inline const bc_mesh_node* bc_sub_mesh::get_root_node() const noexcept

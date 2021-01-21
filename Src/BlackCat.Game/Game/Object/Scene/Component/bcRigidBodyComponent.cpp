@@ -1,54 +1,51 @@
 // [02/01/2017 MRB]
 
 #include "Game/GamePCH.h"
+
+#include "Core/Container/bcVector.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/Object/Mesh/bcMeshCollider.h"
 #include "Game/Object/Mesh/bcSubMesh.h"
-#include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		void bc_rigid_body_component::initialize_from_mesh(bc_physics_system& p_physics_system, 
-			bc_actor& p_actor, 
+		void bc_rigid_body_component::create_px_shapes_from_mesh(bc_physics_system& p_physics_system, 
 			physics::bc_rigid_body& p_px_actor, 
-			bc_mesh_component& p_mesh_component)
+			const bc_sub_mesh& p_mesh)
 		{
 			auto& l_physics = p_physics_system.get_physics();
-			const bc_sub_mesh& l_mesh = p_mesh_component.get_mesh();
-			core::bc_vector_frame<const bc_mesh_part_collider_entry*> l_colliders;
-
-			_get_mesh_colliders(l_mesh, l_colliders);
-
 			auto l_px_material = l_physics.create_material(1, 1, 0.1f);
 
-			for (const bc_mesh_part_collider_entry* l_collider : l_colliders)
+			for(const auto& l_mesh_collider : p_mesh.get_mesh_collider())
 			{
- 				auto l_px_shape = p_px_actor.create_shape(*l_collider->m_px_shape, l_px_material.get(), l_collider->m_shape_flags);
-				l_px_shape.set_local_pose(l_collider->m_transformation);
-			}
-
-			p_physics_system.connect_px_actor_to_game_actor(p_px_actor, p_actor);
-		}
-		
-		void bc_rigid_body_component::_get_mesh_colliders(const bc_sub_mesh& p_mesh, core::bc_vector_frame<const bc_mesh_part_collider::entry*>& p_result) const
-		{
-			bcINT32 l_dummy;
-			p_mesh.iterate_over_nodes(l_dummy, [&p_mesh, &p_result](const bc_mesh_node& p_node, bcINT32)
-			{
-				for (bcUINT32 l_mesh_index = 0, l_end = p_node.get_mesh_count(); l_mesh_index < l_end; ++l_mesh_index)
+				for(bc_mesh_part_collider_entry& l_collider_entry : l_mesh_collider.second)
 				{
-					const bc_mesh_part_collider& l_mesh_colliders = p_mesh.get_node_mesh_colliders(p_node, l_mesh_index);
+					auto l_px_shape = p_px_actor.create_shape(*l_collider_entry.m_px_shape, l_px_material.get(), l_collider_entry.m_shape_flags);
+					
+					BC_ASSERT(l_px_shape.is_valid());
 
-					for (auto& l_mesh_collider : l_mesh_colliders)
-					{
-						p_result.push_back(&l_mesh_collider);
-					}
+					l_px_shape.set_local_pose(l_collider_entry.m_model_transform);
+					l_px_shape.set_data(&l_collider_entry);
 				}
+			}
+		}
 
-				return 0;
-			});
+		void bc_rigid_body_component::update_px_shape_transforms(physics::bc_rigid_body& p_px_actor,
+			const bc_sub_mesh_transform& p_model_space_transforms)
+		{
+			core::bc_vector_frame< physics::bc_shape > l_shapes(p_px_actor.get_shape_count());
+			p_px_actor.get_shapes(l_shapes.data(), l_shapes.size());
+
+			for(physics::bc_shape& l_shape : l_shapes)
+			{
+				const auto* l_collider_entry = static_cast<bc_mesh_part_collider_entry*>(l_shape.get_data());
+				const auto& l_transform = p_model_space_transforms[l_collider_entry->m_attached_node_transform_index];
+
+				l_shape.set_local_pose(physics::bc_transform(l_transform) * l_collider_entry->m_local_transform);
+			}
 		}
 	}
 }

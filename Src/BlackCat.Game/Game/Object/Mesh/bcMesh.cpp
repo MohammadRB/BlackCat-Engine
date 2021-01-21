@@ -68,7 +68,7 @@ namespace black_cat
 					
 					m_render_states[l_mesh_index] = std::move(l_builder_mesh.m_render_state);
 
-					auto* l_mesh_colliders = m_colliders->find_mesh_colliders(m_meshes[l_mesh_index].m_name);
+					const auto* l_mesh_colliders = m_colliders->find_mesh_colliders(m_meshes[l_mesh_index].m_name);
 					m_colliders_map.push_back(l_mesh_colliders);
 				}
 				
@@ -90,14 +90,8 @@ namespace black_cat
 				_apply_auto_scale(*p_builder.m_scale);
 			}
 			
-			auto l_identity = core::bc_matrix4f::identity();
-			iterate_over_nodes(l_identity, [this](const bc_mesh_node& p_node, core::bc_matrix4f& p_parent_transform)
-			{
-				auto l_node_absolute_transformation = get_node_transform(p_node) * p_parent_transform;
-				m_inverse_bind_poses[p_node.m_transform_index] = l_node_absolute_transformation.inverse();
-
-				return l_node_absolute_transformation;
-			});
+			_calculate_inverse_bind_pose();
+			_apply_collider_transforms();
 		}
 
 		const bc_mesh_node* bc_mesh::find_node(const bcCHAR* p_name) const noexcept
@@ -213,8 +207,8 @@ namespace black_cat
 				(
 					p_node,
 					m_scale == 1
-					? l_node_absolute_transformation
-					: core::bc_matrix4f::scale_matrix(m_scale) * l_node_absolute_transformation
+						? l_node_absolute_transformation
+						: core::bc_matrix4f::scale_matrix(m_scale) * l_node_absolute_transformation
 				);
 
 				// Update mesh bounding box based on its sub meshes
@@ -314,6 +308,35 @@ namespace black_cat
 							BC_ASSERT(false);
 						}
 					}
+				}
+			}
+		}
+
+		void bc_mesh::_calculate_inverse_bind_pose()
+		{
+			auto l_identity = core::bc_matrix4f::identity();
+			iterate_over_nodes(l_identity, [this](const bc_mesh_node& p_node, core::bc_matrix4f& p_parent_transform)
+			{
+				auto l_node_absolute_transformation = get_node_transform(p_node) * p_parent_transform;
+				m_inverse_bind_poses[p_node.m_transform_index] = l_node_absolute_transformation.inverse();
+
+				return l_node_absolute_transformation;
+			});
+		}
+
+		void bc_mesh::_apply_collider_transforms()
+		{
+			physics::bc_bound_box l_bound_box;
+			bc_sub_mesh_transform l_transforms(*get_root());
+			// Neutralize scale in collider transforms
+			calculate_absolute_transforms(core::bc_matrix4f::scale_matrix(1 / get_scale()), l_transforms, l_bound_box);
+
+			for (const auto& l_mesh_part_collider : *m_colliders)
+			{
+				for (bc_mesh_part_collider_entry& l_entry : l_mesh_part_collider.second)
+				{
+					const auto& l_transform = l_transforms[l_entry.m_attached_node_transform_index];
+					l_entry.m_model_transform = physics::bc_transform(l_transform) * l_entry.m_local_transform;
 				}
 			}
 		}

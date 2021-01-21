@@ -132,7 +132,7 @@ namespace black_cat
 
 					game::bc_actor l_actor;
 
-					m_shape_throw_counter = m_shape_throw_counter % 3;
+					m_shape_throw_counter = m_shape_throw_counter % 4;
 					switch (m_shape_throw_counter)
 					{
 					case 0:
@@ -143,6 +143,9 @@ namespace black_cat
 						break;
 					case 2:
 						l_actor = l_entity_manager->create_entity("convex");
+						break;
+					case 3:
+						l_actor = l_entity_manager->create_entity("capsule");
 						break;
 					}
 					++m_shape_throw_counter;

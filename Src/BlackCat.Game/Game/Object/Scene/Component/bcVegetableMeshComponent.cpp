@@ -42,7 +42,7 @@ namespace black_cat
 
 		void bc_vegetable_mesh_component::handle_event(bc_actor_component_event_context& p_context)
 		{
-			auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_context.m_event);
+			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_context.m_event);
 			if (l_world_transform_event)
 			{
 				bc_mesh_component::set_world_transform(p_context.m_actor, l_world_transform_event->get_transform());
@@ -56,7 +56,7 @@ namespace black_cat
 
 		void bc_vegetable_mesh_component::render(bc_render_state_buffer& p_buffer, bool p_render_leaf) const
 		{
-			const bcCHAR* l_mesh_prefix = p_render_leaf ? "leaf_" : "trunk_";
+			const bcCHAR* l_mesh_prefix = p_render_leaf ? "leaf." : "trunk.";
 
 			const auto& l_mesh = get_mesh();
 			const auto& l_mesh_transformation = get_mesh_transforms();

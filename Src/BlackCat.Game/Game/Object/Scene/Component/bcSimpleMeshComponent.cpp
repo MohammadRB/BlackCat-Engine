@@ -37,7 +37,7 @@ namespace black_cat
 
 		void bc_simple_mesh_component::handle_event(bc_actor_component_event_context& p_context)
 		{
-			auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_context.m_event);
+			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_context.m_event);
 			if(l_world_transform_event)
 			{
 				bc_mesh_component::set_world_transform(p_context.m_actor, l_world_transform_event->get_transform());

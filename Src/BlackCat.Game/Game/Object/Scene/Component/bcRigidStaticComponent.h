@@ -4,15 +4,13 @@
 
 #include "PhysicsImp/Body/bcRigidStatic.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
-#include "PhysicsImp/Body/bcActor.h"
-#include "PhysicsImp/Body/bcActor.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		class bc_height_map;
 		class bc_physics_system;
-		class bc_height_map_component;
 
 		class BC_GAME_DLL bc_rigid_static_component : public bc_rigid_body_component
 		{
@@ -38,10 +36,9 @@ namespace black_cat
 			void handle_event(bc_actor_component_event_context& p_context) override;
 
 		private:
-			void _initialize_from_height_map(bc_physics_system& p_physics_system, 
-				bc_actor& p_actor, 
+			void create_px_shapes_from_height_map(bc_physics_system& p_physics_system,
 				physics::bc_rigid_static& p_rigid_static, 
-				bc_height_map_component& p_component);
+				const bc_height_map& p_height_map);
 
 			physics::bc_rigid_static_ref m_px_actor_ref;
 		};

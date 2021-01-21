@@ -10,8 +10,7 @@
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
-#include "PhysicsImp/Body/bcActor.h"
-#include "PhysicsImp/Body/bcActor.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventHierarchyTransform.h"
 
 namespace black_cat
 {
@@ -64,7 +63,9 @@ namespace black_cat
 			if(l_mesh_component)
 			{
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform::identity());
-				initialize_from_mesh(l_physics_system, p_context.m_actor, m_px_actor_ref.get(), *l_mesh_component);
+				l_physics_system.connect_px_actor_to_game_actor(*m_px_actor_ref, p_context.m_actor);
+
+				create_px_shapes_from_mesh(l_physics_system, m_px_actor_ref.get(), l_mesh_component->get_mesh());
 
 				return;
 			}
@@ -73,7 +74,9 @@ namespace black_cat
 			if(l_height_map_component)
 			{
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform::identity());
-				_initialize_from_height_map(l_physics_system, p_context.m_actor, m_px_actor_ref.get(), *l_height_map_component);
+				l_physics_system.connect_px_actor_to_game_actor(*m_px_actor_ref, p_context.m_actor);
+
+				create_px_shapes_from_height_map(l_physics_system, m_px_actor_ref.get(), l_height_map_component->get_height_map());
 
 				return;
 			}
@@ -108,25 +111,30 @@ namespace black_cat
 				}
 				
 				m_px_actor_ref->set_global_pose(l_px_transform);
+
+				return;
+			}
+
+			const auto* l_hierarchy_transform_event = core::bci_message::as< bc_actor_event_hierarchy_transform >(p_context.m_event);
+			if(l_hierarchy_transform_event)
+			{
+				update_px_shape_transforms(*m_px_actor_ref, l_hierarchy_transform_event->get_transforms());
+				return;
 			}
 		}
 		
-		void bc_rigid_static_component::_initialize_from_height_map(bc_physics_system& p_physics_system, 
-			bc_actor& p_actor, 
+		void bc_rigid_static_component::create_px_shapes_from_height_map(bc_physics_system& p_physics_system,
 			physics::bc_rigid_static& p_rigid_static,
-			bc_height_map_component& p_component)
+			const bc_height_map& p_height_map)
 		{
 			auto& l_physics = p_physics_system.get_physics();
-			const auto& l_height_map = p_component.get_height_map();
-			const auto l_px_height_field = l_height_map.get_px_height_field();
+			const auto l_px_height_field = p_height_map.get_px_height_field();
 
-			const auto l_height_field_shape = physics::bc_shape_height_field(l_px_height_field, l_height_map.get_xz_multiplier(), p_physics_system.get_height_field_y_scale());
-			auto l_height_field_material = l_physics.create_material(1, 1, 0.1);
+			const auto l_height_field_shape = physics::bc_shape_height_field(l_px_height_field, p_height_map.get_xz_multiplier(), p_physics_system.get_height_field_y_scale());
+			auto l_height_field_material = l_physics.create_material(1, 1, 0.1f);
 
 			p_rigid_static.create_shape(l_height_field_shape, l_height_field_material.get());
 			p_rigid_static.set_query_group(static_cast<physics::bc_query_group>(bc_query_group::terrain));
-
-			p_physics_system.connect_px_actor_to_game_actor(p_rigid_static, p_actor);
 		}
 	}
 }

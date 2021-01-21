@@ -52,6 +52,9 @@
     <Filter Include="BlackCat\Content\Texture">
       <UniqueIdentifier>{98093a72-b2e4-48af-94ef-54024abe2461}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BlackCat\Content\Model">
+      <UniqueIdentifier>{a1d271e0-9139-4aef-96d8-e0f85414fa46}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.h">
@@ -153,6 +156,9 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferSkinnedPass.h">
       <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshLoaderUtility.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -238,6 +244,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferSkinnedPass.cpp">
       <Filter>BlackCat\RenderPass\DeferredRendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshLoaderUtility.cpp">
+      <Filter>BlackCat\Loader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

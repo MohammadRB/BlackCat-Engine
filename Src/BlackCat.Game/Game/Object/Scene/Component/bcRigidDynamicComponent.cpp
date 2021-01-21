@@ -6,8 +6,7 @@
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
-#include "PhysicsImp/Body/bcActor.h"
-#include "PhysicsImp/Body/bcActor.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventHierarchyTransform.h"
 
 namespace black_cat
 {
@@ -61,7 +60,9 @@ namespace black_cat
 				auto& l_physics = l_physics_system.get_physics();
 
 				m_px_actor_ref = l_physics.create_rigid_dynamic(physics::bc_transform::identity());
-				initialize_from_mesh(l_physics_system, p_context.m_actor, m_px_actor_ref.get(), *l_mesh_component);
+				l_physics_system.connect_px_actor_to_game_actor(*m_px_actor_ref, p_context.m_actor);
+				
+				create_px_shapes_from_mesh(l_physics_system, m_px_actor_ref.get(), l_mesh_component->get_mesh());
 
 				return;
 			}
@@ -71,10 +72,18 @@ namespace black_cat
 
 		void bc_rigid_dynamic_component::handle_event(bc_actor_component_event_context& p_context)
 		{
-			auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
+			const auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
 			if(l_world_transform_event)
 			{
 				m_px_actor_ref->set_global_pose(physics::bc_transform(l_world_transform_event->get_transform()));
+				return;
+			}
+
+			const auto* l_hierarchy_transform_event = core::bci_message::as< bc_actor_event_hierarchy_transform >(p_context.m_event);
+			if (l_hierarchy_transform_event)
+			{
+				update_px_shape_transforms(*m_px_actor_ref, l_hierarchy_transform_event->get_transforms());
+				return;
 			}
 		}
 	}

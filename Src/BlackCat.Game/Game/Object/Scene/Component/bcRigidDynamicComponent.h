@@ -4,8 +4,6 @@
 
 #include "PhysicsImp/Body/bcRigidDynamic.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
-#include "PhysicsImp/Body/bcActor.h"
-#include "PhysicsImp/Body/bcActor.h"
 
 namespace black_cat
 {

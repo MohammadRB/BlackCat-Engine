@@ -140,16 +140,16 @@
       ]
     },
     {
-      "name": "train",
+      "name": "capsule",
       "components": [
         {
           "name": "simple_mesh",
           "parameters": {
-            "mesh": "train"
+            "mesh": "capsule"
           }
         },
         {
-          "name": "rigid_static",
+          "name": "rigid_dynamic",
           "parameters": {}
         }
       ]

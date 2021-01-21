@@ -60,6 +60,8 @@ namespace black_cat
 
 			bcFLOAT get_scale() const noexcept;
 
+			const bc_mesh_collider& get_collider() const noexcept;
+			
 			/**
 			 * \brief Return nullptr if no node were found
 			 * \param p_name 
@@ -105,11 +107,15 @@ namespace black_cat
 			void iterate_over_nodes(TArg& p_arg, TCallable p_callable, const bc_mesh_node* p_node = nullptr) const noexcept;
 
 		private:			
-			void _apply_auto_scale(bcFLOAT p_scale);
-
 			template< typename TArg, typename TCallable >
 			void _iterate_over_nodes(TArg& p_arg, TCallable& p_callable, const bc_mesh_node* const* p_begin, const bc_mesh_node* const* p_end) const noexcept;
 
+			void _apply_auto_scale(bcFLOAT p_scale);
+
+			void _calculate_inverse_bind_pose();
+			
+			void _apply_collider_transforms();
+			
 			core::bc_string m_name;
 			bc_mesh_node* m_root;
 			core::bc_vector< bc_mesh_node > m_nodes;
@@ -141,6 +147,11 @@ namespace black_cat
 			return m_scale;
 		}
 
+		inline const bc_mesh_collider& bc_mesh::get_collider() const noexcept
+		{
+			return *m_colliders;
+		}
+		
 		inline const bc_mesh_node* bc_mesh::get_node_parent(const bc_mesh_node& p_node) const noexcept
 		{
 			return p_node.m_parent;
@@ -176,6 +187,7 @@ namespace black_cat
 		template< typename TArg, typename TCallable >
 		void bc_mesh::_iterate_over_nodes(TArg& p_arg, TCallable& p_callable, const bc_mesh_node* const* p_begin, const bc_mesh_node* const* p_end) const noexcept
 		{
+			// TODO use non-recursive version if possible
 			for (; p_begin != p_end; ++p_begin)
 			{
 				const bc_mesh_node* l_node = *p_begin;

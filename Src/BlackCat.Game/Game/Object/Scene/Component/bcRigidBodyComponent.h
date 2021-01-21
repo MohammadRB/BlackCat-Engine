@@ -3,7 +3,6 @@
 #pragma once
 
 #include "PhysicsImp/Body/bcRigidBody.h"
-#include "Game/Object/Mesh/bcMeshCollider.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 
 namespace black_cat
@@ -11,9 +10,8 @@ namespace black_cat
 	namespace game
 	{
 		class bc_physics_system;
-		class bc_mesh_node;
 		class bc_sub_mesh;
-		class bc_mesh_component;
+		class bc_sub_mesh_transform;
 
 		class bc_rigid_body_component : public bci_actor_component
 		{
@@ -31,13 +29,12 @@ namespace black_cat
 
 			bc_rigid_body_component& operator=(bc_rigid_body_component&&) noexcept;
 
-			void initialize_from_mesh(bc_physics_system& p_physics_system, 
-				bc_actor& p_actor, 
-				physics::bc_rigid_body& p_px_actor, 
-				bc_mesh_component& p_mesh_component);
+			void create_px_shapes_from_mesh(bc_physics_system& p_physics_system,
+				physics::bc_rigid_body& p_px_actor,
+				const bc_sub_mesh& p_mesh);
 
-		private:
-			void _get_mesh_colliders(const bc_sub_mesh& p_mesh, core::bc_vector_frame<const bc_mesh_part_collider::entry*>& p_result) const;
+			void update_px_shape_transforms(physics::bc_rigid_body& p_px_actor,
+				const bc_sub_mesh_transform& p_model_space_transforms);
 		};
 
 		inline bc_rigid_body_component::~bc_rigid_body_component() = default;

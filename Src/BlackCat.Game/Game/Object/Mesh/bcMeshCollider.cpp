@@ -40,8 +40,8 @@ namespace black_cat
 
 		const bc_mesh_part_collider* bc_mesh_collider::find_mesh_colliders(const core::bc_string& p_mesh_name) const noexcept
 		{
-			auto l_ite = m_mesh_colliders.find(p_mesh_name);
-			bc_mesh_part_collider* l_result = nullptr;
+			const auto l_ite = m_mesh_colliders.find(p_mesh_name);
+			const bc_mesh_part_collider* l_result = nullptr;
 
 			if (l_ite != std::cend(m_mesh_colliders))
 			{
