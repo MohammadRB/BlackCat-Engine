@@ -4,6 +4,7 @@
 #include "Game/Object/Scene/ActorController/bcXBotController.h"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventHierarchyTransform.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
 #include "Game/Object/Animation/bcAnimationSkeleton.h"
 #include "Game/Object/Animation/bcSkeletonAnimation.h"
@@ -57,7 +58,7 @@ namespace black_cat
 				bc_animation_job_model_to_skinned_transform
 				(
 					*m_local_to_model_job,
-					l_skinned_mesh_component->get_skinned_transforms()
+					l_skinned_mesh_component->get_world_transforms()
 				)
 			);
 		}
@@ -67,7 +68,22 @@ namespace black_cat
 			m_idle_job = bc_animation_job_builder()
 				.start_with(*m_sample_job)
 				.then(*m_local_to_model_job)
-				.end_with(*m_model_to_skinned_job);
+				.end_with(*m_model_to_skinned_job)
+				.afterward([l_actor = p_actor, l_model_to_skinned_job = m_model_to_skinned_job.get()]() mutable
+				{
+					auto& l_skinned_mesh_component = *l_actor.get_component<bc_skinned_mesh_component>();
+					const auto& l_mesh = l_skinned_mesh_component.get_mesh();
+
+					l_mesh.calculate_colliders_inverse_bind_pose
+					(
+						l_skinned_mesh_component.get_model_transforms(), 
+						l_skinned_mesh_component.get_collider_model_transforms()
+					);
+					
+					l_actor.add_event(bc_actor_event_bound_box_changed(l_model_to_skinned_job->get_bound_box()));
+					l_actor.add_event(bc_actor_event_hierarchy_transform(l_skinned_mesh_component.get_collider_model_transforms()));
+				})
+				.build();
 		}
 
 		void bc_xbot_controller::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock)
@@ -76,8 +92,6 @@ namespace black_cat
 			{
 				auto* l_skinned_mesh_component = p_actor.get_component<bc_skinned_mesh_component>();
 				l_skinned_mesh_component->add_animation_job(*m_idle_job);
-
-				p_actor.add_event(bc_actor_event_bound_box_changed(m_model_to_skinned_job->get_bound_box()));
 			}
 		}
 

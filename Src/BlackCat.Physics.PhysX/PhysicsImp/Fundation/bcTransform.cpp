@@ -26,7 +26,14 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_platform_transform< g_api_physx >::bc_platform_transform(const core::bc_matrix4f& p_transform) noexcept
 		{
-			m_pack.m_px_transform = physx::PxTransform(bc_to_right_hand(p_transform));
+			auto l_px_matrix = bc_to_right_hand(p_transform);
+
+			// Neutralize scales
+			reinterpret_cast<physx::PxVec3*>(&l_px_matrix .column0)->normalize();
+			reinterpret_cast<physx::PxVec3*>(&l_px_matrix .column1)->normalize();
+			reinterpret_cast<physx::PxVec3*>(&l_px_matrix .column2)->normalize();
+			
+			m_pack.m_px_transform = physx::PxTransform(l_px_matrix);
 		}
 
 		template<>

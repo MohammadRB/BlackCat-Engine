@@ -65,8 +65,20 @@ namespace black_cat
 		
 		core::bc_unordered_map_frame< const bcCHAR*, bcUINT32 > l_bone_mapping;
 		bc_mesh_loader_utility::calculate_node_mapping(*l_scene->mRootNode, l_bone_mapping);
+
+		const bool l_is_skinned = bc_null_default(p_context.m_parameters->get_value<bool>(constant::g_param_mesh_skinned), false);
+		core::bc_unordered_map_frame<const bcCHAR*, core::bc_vector_frame<const aiNode*>> l_px_node_mapping;
+
+		if(l_is_skinned)
+		{
+			bc_mesh_loader_utility::calculate_skinned_px_node_mapping(*l_scene, *l_scene->mRootNode, l_px_node_mapping);
+		}
+		else
+		{
+			bc_mesh_loader_utility::calculate_px_node_mapping(*l_scene, *l_scene->mRootNode, l_px_node_mapping);
+		}
 		
-		const bool l_generate_high_detail_query_shape = m_high_detail_query_shape && bc_null_default(p_context.m_parameters->get_value<bool>("high_detail_query_shape"), false);
+		const bool l_generate_high_detail_query_shape = m_high_detail_query_shape && bc_null_default(p_context.m_parameters->get_value<bool>(constant::g_param_high_detail_query_shape), false);
 		game::bc_game_system& l_game_system = *core::bc_get_service< game::bc_game_system >();
 		game::bc_mesh_collider l_result;
 
@@ -75,9 +87,11 @@ namespace black_cat
 			l_game_system.get_physics_system().get_physics(), 
 			p_context, 
 			*l_scene, 
-			*l_scene->mRootNode, 
+			*l_scene->mRootNode,
+			l_generate_high_detail_query_shape,
+			l_is_skinned,
 			l_bone_mapping,
-			l_generate_high_detail_query_shape, 
+			l_px_node_mapping,
 			l_result
 		);
 
@@ -105,28 +119,29 @@ namespace black_cat
 		return l_result;
 	}
 
-	game::bc_mesh_part_collider bc_mesh_collider_loader::convert_px_node(physics::bc_physics& p_physics,
+	void bc_mesh_collider_loader::convert_px_node(physics::bc_physics& p_physics,
 		const aiScene& p_ai_scene,
-		const aiNode& p_ai_node,
+		const aiNode& p_attached_node,
+		const aiNode& p_px_node,
+		bool p_high_detail_query_shape,
 		const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
-		bool p_generate_high_detail_query_shape) const
+		game::bc_mesh_part_collider& p_result) const
 	{
-		game::bc_mesh_part_collider l_result;
 		core::bc_string_frame l_mesh_name;
 		core::bc_matrix4f l_node_transformation;
-		const auto l_attached_node_index = p_node_mapping.find(p_ai_node.mParent->mName.C_Str())->second;
+		const auto l_attached_node_index = p_node_mapping.find(p_attached_node.mName.C_Str())->second;
 
-		bc_mesh_loader_utility::convert_ai_matrix(p_ai_node.mTransformation, l_node_transformation);
-		const physics::bc_shape_flag l_shape_flag = p_generate_high_detail_query_shape ?
+		bc_mesh_loader_utility::convert_ai_matrix(p_px_node.mTransformation, l_node_transformation);
+		const physics::bc_shape_flag l_shape_flag = p_high_detail_query_shape ?
 			core::bc_enum::or({ physics::bc_shape_flag::simulation, physics::bc_shape_flag::visualization }) :
 			physics::bc_shape_flag::default_v;
 
-		for (bcUINT32 l_mesh_index = 0; l_mesh_index < p_ai_node.mNumMeshes; ++l_mesh_index)
+		for (bcUINT32 l_mesh_index = 0; l_mesh_index < p_px_node.mNumMeshes; ++l_mesh_index)
 		{
-			const aiMesh* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[l_mesh_index]];
+			const aiMesh* l_ai_mesh = p_ai_scene.mMeshes[p_px_node.mMeshes[l_mesh_index]];
 			l_mesh_name.assign(l_ai_mesh->mName.data);
 
-			if (l_mesh_name == "px.sphere")
+			if (l_mesh_name.compare(0, sizeof("px.sphere") - 1, "px.sphere") == 0)
 			{
 				physics::bc_shape_sphere l_px_sphere = game::bc_extract_sphere_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
 					(
@@ -135,9 +150,9 @@ namespace black_cat
 						l_ai_mesh->mNumVertices
 					));
 
-				l_result.add_px_shape(l_px_sphere, l_attached_node_index, physics::bc_transform(l_node_transformation), l_shape_flag);
+				p_result.add_px_shape(l_px_sphere, l_attached_node_index, physics::bc_transform(l_node_transformation), l_shape_flag);
 			}
-			else if (l_mesh_name == "px.box")
+			else if (l_mesh_name.compare(0, sizeof("px.box") - 1, "px.box") == 0)
 			{
 				physics::bc_shape_box l_px_box = game::bc_extract_box_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
 					(
@@ -146,9 +161,9 @@ namespace black_cat
 						l_ai_mesh->mNumVertices
 					));
 
-				l_result.add_px_shape(l_px_box, l_attached_node_index, physics::bc_transform(l_node_transformation), l_shape_flag);
+				p_result.add_px_shape(l_px_box, l_attached_node_index, physics::bc_transform(l_node_transformation), l_shape_flag);
 			}
-			else if (l_mesh_name == "px.capsule")
+			else if (l_mesh_name.compare(0, sizeof("px.capsule") - 1, "px.capsule") == 0)
 			{
 				physics::bc_shape_capsule l_px_capsule = game::bc_extract_capsule_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
 					(
@@ -157,9 +172,9 @@ namespace black_cat
 						l_ai_mesh->mNumVertices
 					));
 
-				l_result.add_px_shape(l_px_capsule, l_attached_node_index, physics::bc_transform(l_node_transformation), l_shape_flag);
+				p_result.add_px_shape(l_px_capsule, l_attached_node_index, physics::bc_transform(l_node_transformation), l_shape_flag);
 			}
-			else if (l_mesh_name == "px.convex")
+			else if (l_mesh_name.compare(0, sizeof("px.convex") - 1, "px.convex") == 0)
 			{
 				physics::bc_convex_mesh_desc l_px_convex_desc = game::bc_extract_convex_from_points(physics::bc_bounded_strided_typed_data< core::bc_vector3f >
 					(
@@ -171,27 +186,27 @@ namespace black_cat
 				physics::bc_memory_buffer l_convex_buffer = p_physics.create_convex_mesh(l_px_convex_desc);
 				physics::bc_convex_mesh_ref l_convex = p_physics.create_convex_mesh(l_convex_buffer);
 
-				l_result.add_px_shape(std::move(l_convex), l_attached_node_index, physics::bc_transform(l_node_transformation), l_shape_flag);
+				p_result.add_px_shape(std::move(l_convex), l_attached_node_index, physics::bc_transform(l_node_transformation), l_shape_flag);
 			}
-			else if (l_mesh_name == "px.mesh")
+			else if (l_mesh_name.compare(0, sizeof("px.mesh") - 1, "px.mesh") == 0)
 			{
 				auto l_triangle_mesh_data = _bc_extract_triangle_mesh(l_ai_mesh);
 				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(std::get<physics::bc_triangle_mesh_desc>(l_triangle_mesh_data));
 				physics::bc_triangle_mesh_ref l_triangle_mesh = p_physics.create_triangle_mesh(l_triangle_buffer);
 
-				l_result.add_px_shape(std::move(l_triangle_mesh), l_attached_node_index, physics::bc_transform(l_node_transformation), l_shape_flag);
+				p_result.add_px_shape(std::move(l_triangle_mesh), l_attached_node_index, physics::bc_transform(l_node_transformation), l_shape_flag);
 			}
 		}
-
-		return l_result;
 	}
 
 	void bc_mesh_collider_loader::convert_nodes(physics::bc_physics& p_physics,
 		core::bc_content_loading_context& p_context,
 		const aiScene& p_ai_scene,
 		const aiNode& p_ai_node,
+		bool p_high_detail_query_shape,
+		bool p_skinned,
 		const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
-		bool p_generate_high_detail_query_shape,
+		const core::bc_unordered_map_frame<const bcCHAR*, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping,
 		game::bc_mesh_collider& p_result) const
 	{
 		if (bc_mesh_loader_utility::is_px_node(p_ai_node))
@@ -199,41 +214,62 @@ namespace black_cat
 			return;
 		}
 
-		const auto l_node_index = p_node_mapping.find(p_ai_node.mName.C_Str())->second;
 		core::bc_matrix4f l_node_transformation;
 		bc_mesh_loader_utility::convert_ai_matrix(p_ai_node.mTransformation, l_node_transformation);
-
-		for (bcUINT32 l_i = 0; l_i < p_ai_node.mNumMeshes; ++l_i)
+		
+		if(p_skinned)
 		{
-			game::bc_mesh_part_collider l_mesh_colliders;
-
-			aiMesh* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[l_i]];
-			aiNode* l_px_node = find_px_node(p_ai_node, *l_ai_mesh);
-
-			if (l_px_node)
+			auto l_px_nodes = p_px_node_mapping.find(p_ai_node.mName.C_Str());
+			if (l_px_nodes != std::end(p_px_node_mapping))
 			{
-				l_mesh_colliders = convert_px_node(p_physics, p_ai_scene, *l_px_node, p_node_mapping, p_generate_high_detail_query_shape);
+				game::bc_mesh_part_collider l_mesh_colliders;
+				
+				for (const aiNode* l_px_node : l_px_nodes->second)
+				{
+					convert_px_node(p_physics, p_ai_scene, p_ai_node ,*l_px_node, p_high_detail_query_shape, p_node_mapping, l_mesh_colliders);
+				}
+
 				l_mesh_colliders.shrink_to_fit();
+				p_result.add_mesh_colliders(p_ai_node.mName.C_Str(), std::move(l_mesh_colliders));
 			}
-
-			if (p_generate_high_detail_query_shape)
+		}
+		else
+		{
+			for (bcUINT32 l_i = 0; l_i < p_ai_node.mNumMeshes; ++l_i)
 			{
-				auto l_triangle_mesh_data = _bc_extract_triangle_mesh(l_ai_mesh);
-				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(std::get<physics::bc_triangle_mesh_desc>(l_triangle_mesh_data));
-				physics::bc_triangle_mesh_ref l_triangle_mesh = p_physics.create_triangle_mesh(l_triangle_buffer);
+				aiMesh* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[l_i]];
+				game::bc_mesh_part_collider l_mesh_colliders;
 
-				// Avoid double transform by parent node by passing identity transform
-				l_mesh_colliders.add_px_shape(std::move(l_triangle_mesh), l_node_index, physics::bc_transform::identity(), physics::bc_shape_flag::query);
+				auto l_px_nodes = p_px_node_mapping.find(l_ai_mesh->mName.C_Str());
+				if (l_px_nodes != std::end(p_px_node_mapping))
+				{
+					for (const aiNode* l_px_node : l_px_nodes->second)
+					{
+						convert_px_node(p_physics, p_ai_scene, *l_px_node->mParent, *l_px_node, p_high_detail_query_shape, p_node_mapping, l_mesh_colliders);
+					}
+				}
+
+				if (p_high_detail_query_shape)
+				{
+					const auto l_node_index = p_node_mapping.find(p_ai_node.mName.C_Str())->second;
+					auto l_triangle_mesh_data = _bc_extract_triangle_mesh(l_ai_mesh);
+					physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(std::get<physics::bc_triangle_mesh_desc>(l_triangle_mesh_data));
+					physics::bc_triangle_mesh_ref l_triangle_mesh = p_physics.create_triangle_mesh(l_triangle_buffer);
+
+					// Avoid double transform by parent node by passing identity transform
+					l_mesh_colliders.add_px_shape(std::move(l_triangle_mesh), l_node_index, physics::bc_transform::identity(), physics::bc_shape_flag::query);
+				}
+
+				l_mesh_colliders.shrink_to_fit();
+				p_result.add_mesh_colliders(l_ai_mesh->mName.C_Str(), std::move(l_mesh_colliders));
 			}
-
-			p_result.add_mesh_colliders(l_ai_mesh->mName.C_Str(), std::move(l_mesh_colliders));
 		}
 
 		for (bcUINT l_child_index = 0; l_child_index < p_ai_node.mNumChildren; ++l_child_index)
 		{
 			aiNode* l_child = p_ai_node.mChildren[l_child_index];
 
-			convert_nodes(p_physics, p_context, p_ai_scene, *l_child, p_node_mapping, p_generate_high_detail_query_shape, p_result);
+			convert_nodes(p_physics, p_context, p_ai_scene, *l_child, p_high_detail_query_shape, p_skinned, p_node_mapping, p_px_node_mapping, p_result);
 		}
 	}
 

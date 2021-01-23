@@ -215,7 +215,7 @@
         {
           "content_title": "xbot",
           "content_loader": "mesh",
-          "content_file": "content\\model\\xbot\\xbot.fbx",
+          "content_file": "content\\model\\xbot\\xbot-collision.fbx",
           "content_parameter": {
             "high_detail_query_shape": true,
             "auto_scale": 10.0,

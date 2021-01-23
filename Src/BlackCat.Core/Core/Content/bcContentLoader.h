@@ -134,6 +134,7 @@ namespace black_cat
 			}
 			
 			const bcECHAR* m_file_path;							// Used to give loader access to content and offline content file path
+			const bcECHAR* m_file_variant;						// Used to give loader access to content file variant
 			bc_stream m_file;									// Used to give loader access to content and offline content file
 			bc_unique_ptr<bcBYTE> m_file_buffer;				// Used to give loader access to file content
 			bcSIZE m_file_buffer_size;							// Used to give loader access to file content size

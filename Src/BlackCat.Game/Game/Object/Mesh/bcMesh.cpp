@@ -3,6 +3,8 @@
 #include "Game/GamePCH.h"
 #include "Game/bcException.h"
 #include "Game/Object/Mesh/bcMesh.h"
+#include "Game/Object/Mesh/bcMeshUtility.h"
+#include "Game/Object/Mesh/bcSubMesh.h"
 #include "Game/Object/Mesh/bcMeshPartCollider.h"
 #include "Game/Object/Mesh/bcSubMeshTransform.h"
 
@@ -12,16 +14,18 @@ namespace black_cat
 	{
 		bc_mesh::bc_mesh(bc_mesh_builder p_builder, bc_mesh_collider_ptr p_colliders)
 			: m_name(std::move(p_builder.m_name)),
-			m_root(nullptr),
+			m_auto_scale(0),
 			m_scale(1),
+			m_skinned(p_builder.m_skinned),
+			m_root(nullptr),
 			m_colliders(std::move(p_colliders))
 		{
 			// Reserve needed memory for nodes because we use raw pointers in bc_mesh_node for parent and children
 			m_nodes.resize(p_builder.m_node_count);
 			m_nodes_map.reserve(p_builder.m_node_count);
 			m_transformations.resize(p_builder.m_node_count);
-			m_bone_offsets.resize(p_builder.m_node_count);
 			m_inverse_bind_poses.resize(p_builder.m_node_count);
+			m_scaled_inverse_bind_poses.resize(p_builder.m_node_count);
 			m_meshes.resize(p_builder.m_mesh_part_count);
 			m_render_states.resize(p_builder.m_mesh_part_count);
 
@@ -48,7 +52,6 @@ namespace black_cat
 				l_node.m_mesh_count = l_builder_node.m_mesh_parts.size();
 
 				m_transformations[l_node_index] = l_builder_node.m_transform;
-				m_bone_offsets[l_node_index] = l_builder_node.m_bone_offset;
 
 				for(auto l_builder_node_mesh_ite = 0U; l_builder_node_mesh_ite < l_builder_node.m_mesh_parts.size(); ++l_builder_node_mesh_ite)
 				{
@@ -85,15 +88,28 @@ namespace black_cat
 				l_mesh_count += l_builder_node.m_mesh_parts.size();
 			}
 
+			// It is important to calculate inverse bind poses matrices before applying auto-scale
+			// to avoid reversing auto-scale
+			_calculate_inverse_bind_pose();
+			
 			if(p_builder.m_scale.is_set())
 			{
 				_apply_auto_scale(*p_builder.m_scale);
 			}
-			
-			_calculate_inverse_bind_pose();
-			_apply_collider_transforms();
+
+			_calculate_collider_initial_transforms();
 		}
 
+		const bc_mesh_node* bc_mesh::find_node(bc_mesh_node::node_index_t p_index) const noexcept
+		{
+			if(p_index >= m_nodes.size())
+			{
+				return nullptr;
+			}
+			
+			return &m_nodes[p_index];
+		}
+		
 		const bc_mesh_node* bc_mesh::find_node(const bcCHAR* p_name) const noexcept
 		{
 			const auto l_hash = hash_t()(p_name);
@@ -167,77 +183,11 @@ namespace black_cat
 			return *m_colliders_map[p_node.m_first_mesh_index + p_mesh_index];
 		}
 
-		void bc_mesh::calculate_bound_box(const bc_sub_mesh_transform& p_absolute_transforms, physics::bc_bound_box& p_bound_box) const noexcept
-		{
-			p_bound_box.set_empty();
-
-			int l_dummy = 0;
-			iterate_over_nodes(l_dummy, [this, &p_absolute_transforms, &p_bound_box](const bc_mesh_node& p_node, int)
-			{
-				const auto& l_node_transform = p_absolute_transforms.get_node_transform(p_node);
-
-				// Update mesh bounding box based on its sub meshes
-				for (bcSIZE l_mesh_ite = 0; l_mesh_ite < p_node.get_mesh_count(); ++l_mesh_ite)
-				{
-					auto l_node_mesh_box = get_node_mesh_bound_box(p_node, l_mesh_ite);
-					l_node_mesh_box.transform(physics::bc_transform(l_node_transform));
-
-					if (p_bound_box.is_empty())
-					{
-						p_bound_box = l_node_mesh_box;
-					}
-					else
-					{
-						p_bound_box.expand(l_node_mesh_box);
-					}
-				}
-
-				return 0;
-			});
-		}
-
-		void bc_mesh::calculate_absolute_transforms(const core::bc_matrix4f& p_world, bc_sub_mesh_transform& p_transforms, physics::bc_bound_box& p_bound_box) const noexcept
-		{
-			p_bound_box.set_empty();
-
-			iterate_over_nodes(p_world, [this, &p_transforms, &p_bound_box](const bc_mesh_node& p_node, const core::bc_matrix4f& p_parent_transform)
-			{
-				const auto l_node_absolute_transformation = get_node_transform(p_node) * p_parent_transform;
-				p_transforms.set_node_transform
-				(
-					p_node,
-					m_scale == 1
-						? l_node_absolute_transformation
-						: core::bc_matrix4f::scale_matrix(m_scale) * l_node_absolute_transformation
-				);
-
-				// Update mesh bounding box based on its sub meshes
-				for (bcSIZE l_m = 0; l_m < p_node.get_mesh_count(); ++l_m)
-				{
-					auto l_node_mesh_box = get_node_mesh_bound_box(p_node, l_m);
-					l_node_mesh_box.transform(physics::bc_transform(l_node_absolute_transformation));
-
-					if (p_bound_box.is_empty())
-					{
-						p_bound_box = l_node_mesh_box;
-					}
-					else
-					{
-						p_bound_box.expand(l_node_mesh_box);
-					}
-				}
-
-				return l_node_absolute_transformation;
-			});
-		}
-
-		void bc_mesh::_apply_auto_scale(bcFLOAT p_scale)
+		void bc_mesh::_apply_auto_scale(bcFLOAT p_auto_scale)
 		{
 			bc_sub_mesh_transform l_transformations(*m_root);
 			physics::bc_bound_box l_bound_box;
-			l_bound_box.set_empty();
-
-			calculate_absolute_transforms(core::bc_matrix4f::identity(), l_transformations, l_bound_box);
+			bc_mesh_utility::calculate_absolute_transforms(*this, core::bc_matrix4f::identity(), l_transformations, l_bound_box);
 
 			const bcFLOAT l_largest_side = std::max
 			(
@@ -249,8 +199,15 @@ namespace black_cat
 				)
 			) * 2;
 
-			m_scale = p_scale / l_largest_side;
+			m_auto_scale = p_auto_scale;
+			m_scale = p_auto_scale / l_largest_side;
+			m_transformations[m_root->get_transform_index()] *= core::bc_matrix4f::scale_matrix(m_scale);
 
+			for(auto& l_matrix : m_scaled_inverse_bind_poses)
+			{
+				l_matrix *= core::bc_matrix4f::scale_matrix(m_scale);
+			}
+			
 			for(auto& l_mesh_part_data : m_meshes)
 			{
 				l_mesh_part_data.m_bound_box.scale(m_scale);
@@ -308,6 +265,12 @@ namespace black_cat
 							BC_ASSERT(false);
 						}
 					}
+
+					l_entry.m_local_transform = physics::bc_transform
+					(
+						l_entry.m_local_transform.get_position() * m_scale, 
+						l_entry.m_local_transform.get_matrix3()
+					);
 				}
 			}
 		}
@@ -315,28 +278,35 @@ namespace black_cat
 		void bc_mesh::_calculate_inverse_bind_pose()
 		{
 			auto l_identity = core::bc_matrix4f::identity();
-			iterate_over_nodes(l_identity, [this](const bc_mesh_node& p_node, core::bc_matrix4f& p_parent_transform)
+			bc_mesh_utility::iterate_over_nodes(*this, l_identity, [this](const bc_mesh_node& p_node, core::bc_matrix4f& p_parent_transform)
 			{
 				auto l_node_absolute_transformation = get_node_transform(p_node) * p_parent_transform;
 				m_inverse_bind_poses[p_node.m_transform_index] = l_node_absolute_transformation.inverse();
+				m_scaled_inverse_bind_poses[p_node.m_transform_index] = m_inverse_bind_poses[p_node.m_transform_index];
 
 				return l_node_absolute_transformation;
 			});
 		}
 
-		void bc_mesh::_apply_collider_transforms()
+		void bc_mesh::_calculate_collider_initial_transforms()
 		{
 			physics::bc_bound_box l_bound_box;
 			bc_sub_mesh_transform l_transforms(*get_root());
-			// Neutralize scale in collider transforms
-			calculate_absolute_transforms(core::bc_matrix4f::scale_matrix(1 / get_scale()), l_transforms, l_bound_box);
+			bc_mesh_utility::calculate_absolute_transforms(*this, core::bc_matrix4f::identity(), l_transforms, l_bound_box);
 
 			for (const auto& l_mesh_part_collider : *m_colliders)
 			{
 				for (bc_mesh_part_collider_entry& l_entry : l_mesh_part_collider.second)
-				{
-					const auto& l_transform = l_transforms[l_entry.m_attached_node_transform_index];
-					l_entry.m_model_transform = physics::bc_transform(l_transform) * l_entry.m_local_transform;
+				{					
+					if(m_skinned)
+					{
+						l_entry.m_model_transform = l_entry.m_local_transform;
+					}
+					else
+					{
+						auto& l_attached_node_transform = l_transforms[l_entry.m_attached_node_transform_index];
+						l_entry.m_model_transform = physics::bc_transform(l_attached_node_transform) * l_entry.m_local_transform;
+					}
 				}
 			}
 		}

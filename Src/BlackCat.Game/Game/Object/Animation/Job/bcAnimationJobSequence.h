@@ -12,7 +12,12 @@ namespace black_cat
 		class bc_animation_job_sequence : public bci_animation_job
 		{
 		public:
+			using execute_callback = core::bc_delegate< void() >;
+			
+		public:
 			bc_animation_job_sequence(bci_animation_job** p_begin, bcSIZE p_count);
+			
+			bc_animation_job_sequence(bci_animation_job** p_begin, bcSIZE p_count, execute_callback p_callback);
 
 			bc_animation_job_sequence(bc_animation_job_sequence&&) noexcept;
 
@@ -24,13 +29,20 @@ namespace black_cat
 		
 		private:
 			core::bc_vector_movable<bci_animation_job*> m_jobs;
+			execute_callback m_callback;
 		};
 
 		inline bc_animation_job_sequence::bc_animation_job_sequence(bci_animation_job** p_begin, bcSIZE p_count)
-			: bci_animation_job((*p_begin)->get_skeleton())
+			: bc_animation_job_sequence(p_begin, p_count, execute_callback())
+		{
+		}
+
+		inline bc_animation_job_sequence::bc_animation_job_sequence(bci_animation_job** p_begin, bcSIZE p_count, execute_callback p_callback)
+			: bci_animation_job((*p_begin)->get_skeleton()),
+			m_callback(std::move(p_callback))
 		{
 			BC_ASSERT(p_count > 0);
-			
+
 			m_jobs.resize(p_count);
 			std::memcpy(m_jobs.data(), p_begin, sizeof(bci_animation_job**) * p_count);
 		}
@@ -49,6 +61,11 @@ namespace black_cat
 				{
 					break;
 				}
+			}
+
+			if(m_callback.is_valid())
+			{
+				m_callback();
 			}
 
 			return true;

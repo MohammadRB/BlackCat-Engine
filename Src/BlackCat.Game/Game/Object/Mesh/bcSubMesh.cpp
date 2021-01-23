@@ -1,7 +1,6 @@
 // [02/09/2017 MRB]
 
 #include "Game/GamePCH.h"
-#include "Game/System/Physics/bcPhysicsShapeUtility.h"
 #include "Game/Object/Mesh/bcSubMesh.h"
 
 namespace black_cat
@@ -18,16 +17,16 @@ namespace black_cat
 		{
 			BC_ASSERT(p_mesh != nullptr);
 			
-			m_mesh = p_mesh;
-			m_root_node = p_mesh->get_root();
+			m_mesh = std::move(p_mesh);
+			m_root_node = m_mesh->get_root();
 		}
 
 		bc_sub_mesh::bc_sub_mesh(bc_mesh_ptr p_mesh, const bcCHAR* p_node)
 		{
 			BC_ASSERT(p_mesh != nullptr);
 			
-			m_mesh = p_mesh;
-			m_root_node = p_mesh->find_node(p_node);
+			m_mesh = std::move(p_mesh);
+			m_root_node = m_mesh->find_node(p_node);
 
 			if (m_root_node == nullptr)
 			{

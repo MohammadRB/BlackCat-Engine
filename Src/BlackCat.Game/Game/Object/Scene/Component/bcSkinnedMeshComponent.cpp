@@ -19,7 +19,7 @@ namespace black_cat
 	namespace game
 	{
 		bc_skinned_mesh_component::bc_skinned_mesh_component(bc_actor_component_index p_index)
-			: bc_render_component(p_index),
+			: bc_mesh_component(p_index),
 			m_animation_played(false)
 		{
 		}
@@ -43,13 +43,12 @@ namespace black_cat
 
 		void bc_skinned_mesh_component::initialize(bc_actor_component_initialize_context& p_context)
 		{
-			const auto& l_mesh_name = p_context.m_parameters.get_value_throw< core::bc_string >(constant::g_param_mesh);
-			const auto& l_animation_names = p_context.m_parameters.get_value_throw< core::bc_vector< core::bc_any > >(constant::g_param_animations);
-			auto l_mesh = p_context.m_stream_manager.find_content_throw< bc_mesh >(l_mesh_name.c_str());
+			bc_mesh_component::initialize(p_context);
 			
-			m_mesh = bc_sub_mesh(std::move(l_mesh));
-			m_model_transforms = bc_sub_mesh_transform(*m_mesh.get_root_node());
-			m_skinned_transforms = bc_sub_mesh_transform(*m_mesh.get_root_node());
+			const auto& l_animation_names = p_context.m_parameters.get_value_throw< core::bc_vector< core::bc_any > >(constant::g_param_animations);
+			
+			m_model_transforms = bc_sub_mesh_transform(*get_mesh().get_root_node());
+			m_collider_model_transforms = bc_sub_mesh_transform(*get_mesh().get_root_node());
 			m_animations.reserve(l_animation_names.size());
 
 			for(auto& l_animation_name : l_animation_names)
@@ -76,21 +75,23 @@ namespace black_cat
 		
 		void bc_skinned_mesh_component::render(bc_render_state_buffer& p_buffer) const
 		{
-			const bc_mesh_node* l_root_pointer = m_mesh.get_root_node();
-			render_skinned_mesh(p_buffer, m_mesh, m_skinned_transforms, &l_root_pointer, &l_root_pointer + 1);
+			const auto& l_mesh = get_mesh();
+			const bc_mesh_node* l_root_pointer = l_mesh.get_root_node();
+			render_skinned_mesh(p_buffer, l_mesh, get_world_transforms(), &l_root_pointer, &l_root_pointer + 1);
 		}
 
 		void bc_skinned_mesh_component::debug_draw(bc_actor_component_debug_draw_context& p_context)
 		{
+			const auto& l_mesh = get_mesh();
 			const auto* l_mediate_component = p_context.m_actor.get_component< bc_mediate_component >();
 			const auto l_bound_box_z_length = l_mediate_component->get_bound_box().get_half_extends().z;
 			auto l_transform = l_mediate_component->get_transform();
 			l_transform.set_translation(l_transform.get_translation() + core::bc_vector3f(0,0, l_bound_box_z_length * 1.1f));
-			const auto l_world_transform = core::bc_matrix4f::scale_matrix(m_mesh.get_mesh_scale()) * l_transform;
+			const auto l_world_transform = core::bc_matrix4f::scale_matrix(l_mesh.get_mesh_scale()) * l_transform;
 			
 			p_context.m_shape_drawer.draw_wired_skeleton
 			(
-				m_mesh,
+				l_mesh,
 				l_world_transform,
 				m_model_transforms
 			);
@@ -98,17 +99,20 @@ namespace black_cat
 
 		void bc_skinned_mesh_component::_set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform)
 		{
+			// mesh is in bind pose
 			if(!m_animation_played)
 			{
-				// mesh is in bind pose
+				const auto& l_mesh = get_mesh();
+				auto& l_world_transforms = get_world_transforms();
+
 				physics::bc_bound_box l_bound_box;
-				m_mesh.calculate_absolute_transforms(p_transform, m_skinned_transforms, l_bound_box);
+				l_mesh.calculate_absolute_transforms(p_transform, l_world_transforms, l_bound_box);
 				
 				bcINT32 l_dummy;
-				m_mesh.iterate_over_nodes(l_dummy, [this, &p_transform](const bc_mesh_node& p_node, bcINT32)
+				l_mesh.iterate_over_nodes(l_dummy, [this, &l_mesh, &p_transform, &l_world_transforms](const bc_mesh_node& p_node, bcINT32)
 				{
 					// Reset absolute transforms so skinned mesh will be rendered correctly in T pose
-					m_skinned_transforms.set_node_transform(p_node, core::bc_matrix4f::scale_matrix(m_mesh.get_mesh_scale()) * p_transform);
+					l_world_transforms.set_node_transform(p_node, core::bc_matrix4f::scale_matrix(l_mesh.get_mesh_scale()) * p_transform);
 
 					return 0;
 				});

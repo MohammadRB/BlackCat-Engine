@@ -28,6 +28,8 @@ namespace black_cat
 
 			const bc_animation_local_transform& get_local_transforms() const noexcept override;
 
+			void change_animation(bc_skeleton_animation& p_animation) noexcept;
+			
 			bool run(const core_platform::bc_clock::update_param& p_clock) override;
 			
 		private:
@@ -40,6 +42,11 @@ namespace black_cat
 		inline const bc_animation_local_transform& bc_animation_job_sampling::get_local_transforms() const noexcept
 		{
 			return m_locals;
+		}
+
+		inline void bc_animation_job_sampling::change_animation(bc_skeleton_animation& p_animation) noexcept
+		{
+			m_animation = &p_animation;
 		}
 	}	
 }

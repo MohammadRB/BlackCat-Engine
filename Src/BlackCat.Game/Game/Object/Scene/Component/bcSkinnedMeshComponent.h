@@ -7,14 +7,14 @@
 #include "Game/Object/Mesh/bcSubMeshTransform.h"
 #include "Game/Object/Animation/bcSkinnedAnimation.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
-#include "Game/Object/Scene/Component/bcRenderComponent.h"
+#include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_skinned_mesh_component : public bc_render_component
+		class BC_GAME_DLL bc_skinned_mesh_component : public bc_mesh_component
 		{
 			BC_COMPONENT(skn_msh, true, false)
 
@@ -32,16 +32,14 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			const bc_sub_mesh& get_mesh() const;
-			
 			bc_sub_mesh_transform& get_model_transforms() noexcept;
 			
 			const bc_sub_mesh_transform& get_model_transforms() const noexcept;
 
-			bc_sub_mesh_transform& get_skinned_transforms() noexcept;
+			bc_sub_mesh_transform& get_collider_model_transforms() noexcept;
 
-			const bc_sub_mesh_transform& get_skinned_transforms() const noexcept;
-			
+			const bc_sub_mesh_transform& get_collider_model_transforms() const noexcept;
+
 			animation_iterator get_animations() noexcept;
 			
 			void add_animation_job(bci_animation_job& p_animation_job) noexcept;
@@ -59,18 +57,12 @@ namespace black_cat
 		private:
 			void _set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform);
 
-			bc_sub_mesh m_mesh;
 			bc_sub_mesh_transform m_model_transforms;
-			bc_sub_mesh_transform m_skinned_transforms;
+			bc_sub_mesh_transform m_collider_model_transforms;
 			core::bc_vector<bc_skinned_animation_ptr> m_animations;
 			bool m_animation_played;
 		};
 
-		inline const bc_sub_mesh& bc_skinned_mesh_component::get_mesh() const
-		{
-			return m_mesh;
-		}
-		
 		inline bc_sub_mesh_transform& bc_skinned_mesh_component::get_model_transforms() noexcept
 		{
 			return m_model_transforms;
@@ -81,16 +73,16 @@ namespace black_cat
 			return m_model_transforms;
 		}
 
-		inline bc_sub_mesh_transform& bc_skinned_mesh_component::get_skinned_transforms() noexcept
+		inline bc_sub_mesh_transform& bc_skinned_mesh_component::get_collider_model_transforms() noexcept
 		{
-			return m_skinned_transforms;
+			return m_collider_model_transforms;
 		}
 
-		inline const bc_sub_mesh_transform& bc_skinned_mesh_component::get_skinned_transforms() const noexcept
+		inline const bc_sub_mesh_transform& bc_skinned_mesh_component::get_collider_model_transforms() const noexcept
 		{
-			return m_skinned_transforms;
+			return m_collider_model_transforms;
 		}
-
+		
 		inline bc_skinned_mesh_component::animation_iterator bc_skinned_mesh_component::get_animations() noexcept
 		{
 			return animation_iterator(m_animations);

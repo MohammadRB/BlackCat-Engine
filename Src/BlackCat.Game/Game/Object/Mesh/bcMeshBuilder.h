@@ -86,9 +86,10 @@ namespace black_cat
 			
 		private:
 			core::bc_string m_name;
+			core::bc_nullable<bcFLOAT> m_scale;
+			bool m_skinned = false;
 			bcUINT32 m_node_count = 0;
 			bcUINT32 m_mesh_part_count = 0;
-			core::bc_nullable<bcFLOAT> m_scale;
 			core::bc_vector_frame<bc_mesh_builder_mesh_node> m_nodes;
 		};
 	}

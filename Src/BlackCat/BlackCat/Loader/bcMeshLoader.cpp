@@ -76,7 +76,7 @@ namespace black_cat
 		(
 			p_context.get_allocator_alloc_type(),
 			p_context.m_file_path,
-			nullptr,
+			p_context.m_file_variant,
 			*p_context.m_parameters,
 			core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_value("aiScene", l_scene)
 		);

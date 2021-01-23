@@ -56,17 +56,18 @@ namespace black_cat
 
 			const core::bc_string& get_name() const noexcept;
 
-			const bc_mesh_node* get_root() const noexcept;
-
+			bcFLOAT get_auto_scale() const noexcept;
+			
 			bcFLOAT get_scale() const noexcept;
 
-			const bc_mesh_collider& get_collider() const noexcept;
+			bool get_skinned() const noexcept;
 			
-			/**
-			 * \brief Return nullptr if no node were found
-			 * \param p_name 
-			 * \return 
-			 */
+			const bc_mesh_collider& get_collider() const noexcept;
+
+			const bc_mesh_node* get_root() const noexcept;
+
+			const bc_mesh_node* find_node(bc_mesh_node::node_index_t p_index) const noexcept;
+			
 			const bc_mesh_node* find_node(const bcCHAR* p_name) const noexcept;
 
 			const bc_mesh_node* get_node_parent(const bc_mesh_node& p_node) const noexcept;
@@ -75,9 +76,9 @@ namespace black_cat
 
 			const core::bc_matrix4f& get_node_transform(const bc_mesh_node& p_node) const noexcept;
 			
-			const core::bc_matrix4f& get_node_offset_transform(const bc_mesh_node& p_node) const noexcept;
-
 			const core::bc_matrix4f& get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
+			
+			const core::bc_matrix4f& get_node_scaled_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
 
 			const core::bc_string& get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
@@ -91,41 +92,25 @@ namespace black_cat
 
 			const bc_mesh_part_collider& get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 			
-			void calculate_bound_box(const bc_sub_mesh_transform& p_absolute_transforms, physics::bc_bound_box& p_bound_box) const noexcept;
-			
-			void calculate_absolute_transforms(const core::bc_matrix4f& p_world, bc_sub_mesh_transform& p_transforms, physics::bc_bound_box& p_bound_box) const noexcept;
-
-			/**
-			 * \brief 
-			 * \tparam TArg
-			 * \tparam TCallable
-			 * \param p_arg Root argument
-			 * \param p_callable Callable object (const bc_mesh_node&, TArg&) -> TArg
-			 * \param p_node 
-			 */
-			template< typename TArg, typename TCallable >
-			void iterate_over_nodes(TArg& p_arg, TCallable p_callable, const bc_mesh_node* p_node = nullptr) const noexcept;
-
-		private:			
-			template< typename TArg, typename TCallable >
-			void _iterate_over_nodes(TArg& p_arg, TCallable& p_callable, const bc_mesh_node* const* p_begin, const bc_mesh_node* const* p_end) const noexcept;
-
-			void _apply_auto_scale(bcFLOAT p_scale);
+		private:
+			void _apply_auto_scale(bcFLOAT p_auto_scale);
 
 			void _calculate_inverse_bind_pose();
 			
-			void _apply_collider_transforms();
+			void _calculate_collider_initial_transforms();
 			
 			core::bc_string m_name;
+			bcFLOAT m_auto_scale;
+			bcFLOAT m_scale;
+			bool m_skinned;
 			bc_mesh_node* m_root;
 			core::bc_vector< bc_mesh_node > m_nodes;
 			core::bc_unordered_map< hash_t::result_type, bc_mesh_node* > m_nodes_map;
 			core::bc_vector_movable< core::bc_matrix4f > m_transformations;
-			core::bc_vector_movable< core::bc_matrix4f > m_bone_offsets;
 			core::bc_vector_movable< core::bc_matrix4f > m_inverse_bind_poses;
+			core::bc_vector_movable< core::bc_matrix4f > m_scaled_inverse_bind_poses;
 			core::bc_vector< bc_mesh_part_data > m_meshes;
 			core::bc_vector< bc_render_state_ptr > m_render_states;
-			bcFLOAT m_scale;
 			bc_mesh_collider_ptr m_colliders;
 			core::bc_vector< const bc_mesh_part_collider* > m_colliders_map;
 		};
@@ -137,19 +122,29 @@ namespace black_cat
 			return m_name;
 		}
 
-		inline const bc_mesh_node* bc_mesh::get_root() const noexcept
+		inline bcFLOAT bc_mesh::get_auto_scale() const noexcept
 		{
-			return m_root;
+			return m_auto_scale;
 		}
-
+		
 		inline bcFLOAT bc_mesh::get_scale() const noexcept
 		{
 			return m_scale;
 		}
 
+		inline bool bc_mesh::get_skinned() const noexcept
+		{
+			return m_skinned;
+		}
+		
 		inline const bc_mesh_collider& bc_mesh::get_collider() const noexcept
 		{
 			return *m_colliders;
+		}
+
+		inline const bc_mesh_node* bc_mesh::get_root() const noexcept
+		{
+			return m_root;
 		}
 		
 		inline const bc_mesh_node* bc_mesh::get_node_parent(const bc_mesh_node& p_node) const noexcept
@@ -167,47 +162,14 @@ namespace black_cat
 			return m_transformations[p_node.m_transform_index];
 		}
 		
-		inline const core::bc_matrix4f& bc_mesh::get_node_offset_transform(const bc_mesh_node& p_node) const noexcept
-		{
-			return m_bone_offsets[p_node.m_transform_index];
-		}
-
 		inline const core::bc_matrix4f& bc_mesh::get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept
 		{
 			return m_inverse_bind_poses[p_node.m_transform_index];
 		}
-		
-		template< typename TArg, typename TCallable >
-		void bc_mesh::iterate_over_nodes(TArg& p_arg, TCallable p_callable, const bc_mesh_node* p_node) const noexcept
+
+		inline const core::bc_matrix4f& bc_mesh::get_node_scaled_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept
 		{
-			const bc_mesh_node* l_root_pointer = p_node ? p_node : get_root();
-			_iterate_over_nodes(p_arg, p_callable, &l_root_pointer, &l_root_pointer + 1);
-		}
-
-		template< typename TArg, typename TCallable >
-		void bc_mesh::_iterate_over_nodes(TArg& p_arg, TCallable& p_callable, const bc_mesh_node* const* p_begin, const bc_mesh_node* const* p_end) const noexcept
-		{
-			// TODO use non-recursive version if possible
-			for (; p_begin != p_end; ++p_begin)
-			{
-				const bc_mesh_node* l_node = *p_begin;
-				TArg l_arg = p_callable(*l_node, p_arg);
-
-				const auto& l_node_children = get_node_children(*l_node);
-				if (!l_node_children.empty())
-				{
-					const bc_mesh_node* const* l_begin = &l_node_children.front();
-					const bc_mesh_node* const* l_end = &l_node_children.back() + 1;
-
-					_iterate_over_nodes
-					(
-						l_arg,
-						p_callable,
-						l_begin,
-						l_end
-					);
-				}
-			}
+			return m_scaled_inverse_bind_poses[p_node.m_transform_index];
 		}
 	}
 }

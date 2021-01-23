@@ -189,6 +189,7 @@ namespace black_cat
 			template< class TContent >
 			bc_unique_ptr< TContent > _load_content(bc_alloc_type p_alloc_type,
 				const bcECHAR* p_file,
+				const bcECHAR* p_file_variant,
 				const bcECHAR* p_offline_file,
 				const bc_content_loader_parameter& p_parameter,
 				bc_content_loader_parameter p_instance_parameters,
@@ -281,6 +282,7 @@ namespace black_cat
 			(
 				p_alloc_type,
 				p_file,
+				p_file_variant,
 				l_offline_file_path.c_str(),
 				p_parameters,
 				std::move(p_instance_parameters),
@@ -449,6 +451,7 @@ namespace black_cat
 		template< class TContent >
 		bc_unique_ptr< TContent > bc_content_manager::_load_content(bc_alloc_type p_alloc_type,
 			const bcECHAR* p_file, 
+			const bcECHAR* p_file_variant, 
 			const bcECHAR* p_offline_file, 
 			const bc_content_loader_parameter& p_parameter,
 			bc_content_loader_parameter p_instance_parameters,
@@ -469,6 +472,7 @@ namespace black_cat
 			bc_unique_ptr< TContent > l_result;
 
 			l_context.m_file_path = p_file;
+			l_context.m_file_variant = p_file_variant;
 			l_context.m_parameters = &p_parameter;
 			l_context.m_instance_parameters = std::move(p_instance_parameters);
 			l_context.set_allocator_alloc_type(p_alloc_type);

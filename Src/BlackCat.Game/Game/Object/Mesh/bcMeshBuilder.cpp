@@ -116,6 +116,7 @@ namespace black_cat
 
 			l_node_ite->m_mesh_parts.push_back(std::move(l_mesh_part));
 			m_mesh_part_count++;
+			m_skinned = true;
 			
 			return *this;
 		}

@@ -31,18 +31,22 @@ namespace black_cat
 	private:
 		aiNode* find_px_node(const aiNode& p_ai_node, const aiMesh& p_ai_node_mesh) const;
 
-		game::bc_mesh_part_collider convert_px_node(physics::bc_physics& p_physics,
+		void convert_px_node(physics::bc_physics& p_physics,
 			const aiScene& p_ai_scene,
-			const aiNode& p_ai_node,
+			const aiNode& p_attached_node,
+			const aiNode& p_px_node,
+			bool p_high_detail_query_shape,
 			const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
-			bool p_generate_high_detail_query_shape) const;
+			game::bc_mesh_part_collider& p_result) const;
 
 		void convert_nodes(physics::bc_physics& p_physics,
 			core::bc_content_loading_context& p_context,
 			const aiScene& p_ai_scene,
 			const aiNode& p_ai_node,
+			bool p_high_detail_query_shape,
+			bool p_skinned,
 			const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
-			bool p_generate_high_detail_query_shape,
+			const core::bc_unordered_map_frame<const bcCHAR*, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping,
 			game::bc_mesh_collider& p_result) const;
 
 		bool m_high_detail_query_shape;

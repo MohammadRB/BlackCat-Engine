@@ -59,7 +59,7 @@ namespace black_cat
 			const bcCHAR* l_mesh_prefix = p_render_leaf ? "leaf." : "trunk.";
 
 			const auto& l_mesh = get_mesh();
-			const auto& l_mesh_transformation = get_mesh_transforms();
+			const auto& l_mesh_transformation = get_world_transforms();
 			const auto* l_root_node = l_mesh.get_root_node();
 
 			render_mesh(p_buffer, l_mesh, l_mesh_transformation, &l_root_node, &l_root_node + 1, l_mesh_prefix);

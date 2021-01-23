@@ -128,7 +128,7 @@ namespace black_cat
 		);
 		game::bc_register_abstract_component_types
 		(
-			game::bc_abstract_component_register< game::bc_mesh_component, game::bc_simple_mesh_component, game::bc_vegetable_mesh_component >(),
+			game::bc_abstract_component_register< game::bc_mesh_component, game::bc_simple_mesh_component, game::bc_vegetable_mesh_component, game::bc_skinned_mesh_component >(),
 			game::bc_abstract_component_register< game::bc_render_component, game::bc_mesh_component, game::bc_height_map_component >(),
 			game::bc_abstract_component_register< game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component >()
 		);
