@@ -32,13 +32,13 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			bc_sub_mesh_transform& get_model_transforms() noexcept;
+			bc_sub_mesh_mat4_transform& get_model_transforms() noexcept;
 			
-			const bc_sub_mesh_transform& get_model_transforms() const noexcept;
+			const bc_sub_mesh_mat4_transform& get_model_transforms() const noexcept;
 
-			bc_sub_mesh_transform& get_collider_model_transforms() noexcept;
+			bc_sub_mesh_px_transform& get_collider_model_transforms() noexcept;
 
-			const bc_sub_mesh_transform& get_collider_model_transforms() const noexcept;
+			const bc_sub_mesh_px_transform& get_collider_model_transforms() const noexcept;
 
 			animation_iterator get_animations() noexcept;
 			
@@ -57,28 +57,28 @@ namespace black_cat
 		private:
 			void _set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform);
 
-			bc_sub_mesh_transform m_model_transforms;
-			bc_sub_mesh_transform m_collider_model_transforms;
+			bc_sub_mesh_mat4_transform m_model_transforms;
+			bc_sub_mesh_px_transform m_collider_model_transforms;
 			core::bc_vector<bc_skinned_animation_ptr> m_animations;
 			bool m_animation_played;
 		};
 
-		inline bc_sub_mesh_transform& bc_skinned_mesh_component::get_model_transforms() noexcept
+		inline bc_sub_mesh_mat4_transform& bc_skinned_mesh_component::get_model_transforms() noexcept
 		{
 			return m_model_transforms;
 		}
 
-		inline const bc_sub_mesh_transform& bc_skinned_mesh_component::get_model_transforms() const noexcept
+		inline const bc_sub_mesh_mat4_transform& bc_skinned_mesh_component::get_model_transforms() const noexcept
 		{
 			return m_model_transforms;
 		}
 
-		inline bc_sub_mesh_transform& bc_skinned_mesh_component::get_collider_model_transforms() noexcept
+		inline bc_sub_mesh_px_transform& bc_skinned_mesh_component::get_collider_model_transforms() noexcept
 		{
 			return m_collider_model_transforms;
 		}
 
-		inline const bc_sub_mesh_transform& bc_skinned_mesh_component::get_collider_model_transforms() const noexcept
+		inline const bc_sub_mesh_px_transform& bc_skinned_mesh_component::get_collider_model_transforms() const noexcept
 		{
 			return m_collider_model_transforms;
 		}

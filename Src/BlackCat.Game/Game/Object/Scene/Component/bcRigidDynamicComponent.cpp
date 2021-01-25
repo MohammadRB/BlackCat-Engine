@@ -80,9 +80,9 @@ namespace black_cat
 			}
 
 			const auto* l_hierarchy_transform_event = core::bci_message::as< bc_actor_event_hierarchy_transform >(p_context.m_event);
-			if (l_hierarchy_transform_event)
+			if (l_hierarchy_transform_event && l_hierarchy_transform_event->get_px_transforms())
 			{
-				update_px_shape_transforms(*m_px_actor_ref, l_hierarchy_transform_event->get_transforms());
+				update_px_shape_transforms(*m_px_actor_ref, *l_hierarchy_transform_event->get_px_transforms());
 				return;
 			}
 		}

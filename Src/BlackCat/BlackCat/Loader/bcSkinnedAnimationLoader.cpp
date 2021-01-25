@@ -33,7 +33,7 @@ namespace black_cat
 		{
 			const auto& l_ai_node = p_ai_nodes_begin[l_node_ite];
 			auto& l_ozz_joint = p_ozz_skeletons[l_node_ite];
-
+			
 			aiVector3D l_node_translation;
 			aiVector3D l_node_scale;
 			aiQuaternion l_node_rotation;

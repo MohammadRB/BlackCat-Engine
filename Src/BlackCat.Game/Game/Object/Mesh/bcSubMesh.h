@@ -54,8 +54,6 @@ namespace black_cat
 
 			const core::bc_matrix4f& get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
 			
-			const core::bc_matrix4f& get_node_scaled_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
-
 			const core::bc_string& get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_render_material& get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
@@ -68,13 +66,15 @@ namespace black_cat
 
 			const bc_mesh_part_collider& get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			const core::bc_matrix4f& get_node_absolute_transform(const bc_mesh_node& p_node, const bc_sub_mesh_transform& p_transforms) const noexcept;
+			const core::bc_matrix4f& get_node_absolute_transform(const bc_mesh_node& p_node, const bc_sub_mesh_mat4_transform& p_transforms) const noexcept;
 
-			void calculate_bound_box(const bc_sub_mesh_transform& p_transforms, physics::bc_bound_box& p_bound_box) const noexcept;
+			void calculate_bound_box(const bc_sub_mesh_mat4_transform& p_world_transforms, physics::bc_bound_box& p_bound_box) const noexcept;
 			
-			void calculate_absolute_transforms(const core::bc_matrix4f& p_world, bc_sub_mesh_transform& p_transforms, physics::bc_bound_box& p_bound_box) const noexcept;
+			void calculate_absolute_transforms(const core::bc_matrix4f& p_world, bc_sub_mesh_mat4_transform& p_world_transforms, physics::bc_bound_box& p_bound_box) const noexcept;
 
-			void calculate_colliders_inverse_bind_pose(const bc_sub_mesh_transform& p_model_transforms, bc_sub_mesh_transform& p_transforms) const noexcept;
+			void calculate_mesh_collider_transforms(const bc_sub_mesh_mat4_transform& p_model_transforms, bc_sub_mesh_px_transform& p_transforms) const noexcept;
+			
+			void calculate_skinned_mesh_collider_transforms(const bc_sub_mesh_mat4_transform& p_model_transforms, bc_sub_mesh_px_transform& p_transforms) const noexcept;
 			
 			template< typename TArg, typename TCallable >
 			void iterate_over_nodes(TArg& p_arg, TCallable p_callable) const noexcept;
@@ -145,11 +145,6 @@ namespace black_cat
 			return m_mesh->get_node_inverse_bind_pose_transform(p_node);
 		}
 
-		inline const core::bc_matrix4f& bc_sub_mesh::get_node_scaled_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept
-		{
-			return m_mesh->get_node_scaled_inverse_bind_pose_transform(p_node);
-		}
-
 		inline const core::bc_matrix4f& bc_sub_mesh::get_node_transform(const bc_mesh_node& p_node) const noexcept
 		{
 			return m_mesh->get_node_transform(p_node);
@@ -185,25 +180,31 @@ namespace black_cat
 			return m_mesh->get_node_mesh_colliders(p_node, p_mesh_index);
 		}
 
-		inline const core::bc_matrix4f& bc_sub_mesh::get_node_absolute_transform(const bc_mesh_node& p_node, const bc_sub_mesh_transform& p_transforms) const noexcept
+		inline const core::bc_matrix4f& bc_sub_mesh::get_node_absolute_transform(const bc_mesh_node& p_node, const bc_sub_mesh_mat4_transform& p_transforms) const noexcept
 		{
 			return p_transforms.get_node_transform(p_node);
 		}
 
-		inline void bc_sub_mesh::calculate_bound_box(const bc_sub_mesh_transform& p_transforms, physics::bc_bound_box& p_bound_box) const noexcept
+		inline void bc_sub_mesh::calculate_bound_box(const bc_sub_mesh_mat4_transform& p_world_transforms, physics::bc_bound_box& p_bound_box) const noexcept
 		{
-			bc_mesh_utility::calculate_bound_box(*m_mesh, p_transforms, p_bound_box);
+			bc_mesh_utility::calculate_bound_box(*m_mesh, p_world_transforms, p_bound_box);
 		}
 
-		inline void bc_sub_mesh::calculate_absolute_transforms(const core::bc_matrix4f& p_world, bc_sub_mesh_transform& p_transforms, physics::bc_bound_box& p_bound_box) const noexcept
+		inline void bc_sub_mesh::calculate_absolute_transforms(const core::bc_matrix4f& p_world, bc_sub_mesh_mat4_transform& p_world_transforms, physics::bc_bound_box& p_bound_box) const noexcept
 		{
-			bc_mesh_utility::calculate_absolute_transforms(*m_mesh, p_world, p_transforms, p_bound_box);
+			bc_mesh_utility::calculate_absolute_transforms(*m_mesh, p_world, p_world_transforms, p_bound_box);
 		}
 
-		inline void bc_sub_mesh::calculate_colliders_inverse_bind_pose(const bc_sub_mesh_transform& p_model_transforms, bc_sub_mesh_transform& p_transforms) const noexcept
+		inline void bc_sub_mesh::calculate_mesh_collider_transforms(const bc_sub_mesh_mat4_transform& p_model_transforms, bc_sub_mesh_px_transform& p_transforms) const noexcept
 		{
 			BC_ASSERT(m_mesh->get_skinned());
-			bc_mesh_utility::calculate_skinned_mesh_colliders_inverse_bind_pose(*m_mesh, p_model_transforms, p_transforms);
+			bc_mesh_utility::calculate_mesh_collider_transforms(*m_mesh, p_model_transforms, p_transforms);
+		}
+		
+		inline void bc_sub_mesh::calculate_skinned_mesh_collider_transforms(const bc_sub_mesh_mat4_transform& p_model_transforms, bc_sub_mesh_px_transform& p_transforms) const noexcept
+		{
+			BC_ASSERT(m_mesh->get_skinned());
+			bc_mesh_utility::calculate_skinned_mesh_collider_transforms(*m_mesh, p_model_transforms, p_transforms);
 		}
 		
 		template< typename TArg, typename TCallable >

@@ -80,7 +80,7 @@ namespace black_cat
 			const auto* l_transformation_event = core::bci_message::as< bc_actor_event_world_transform >(p_event);
 			if (l_transformation_event)
 			{
-				m_transform = l_transformation_event->get_transform();
+				m_world_transform = l_transformation_event->get_transform();
 				return;
 			}
 

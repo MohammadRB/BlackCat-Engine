@@ -29,9 +29,9 @@ namespace black_cat
 			auto l_px_matrix = bc_to_right_hand(p_transform);
 
 			// Neutralize scales
-			reinterpret_cast<physx::PxVec3*>(&l_px_matrix .column0)->normalize();
-			reinterpret_cast<physx::PxVec3*>(&l_px_matrix .column1)->normalize();
-			reinterpret_cast<physx::PxVec3*>(&l_px_matrix .column2)->normalize();
+			reinterpret_cast<physx::PxVec3*>(&l_px_matrix.column0)->normalize();
+			reinterpret_cast<physx::PxVec3*>(&l_px_matrix.column1)->normalize();
+			reinterpret_cast<physx::PxVec3*>(&l_px_matrix.column2)->normalize();
 			
 			m_pack.m_px_transform = physx::PxTransform(l_px_matrix);
 		}
@@ -40,10 +40,17 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_platform_transform<g_api_physx>::bc_platform_transform(const core::bc_vector3f& p_position, const core::bc_matrix3f& p_rotation) noexcept
 		{
+			auto l_px_matrix = bc_to_right_hand(p_rotation);
+
+			// Neutralize scales
+			reinterpret_cast<physx::PxVec3*>(&l_px_matrix.column0)->normalize();
+			reinterpret_cast<physx::PxVec3*>(&l_px_matrix.column1)->normalize();
+			reinterpret_cast<physx::PxVec3*>(&l_px_matrix.column2)->normalize();
+			
 			m_pack.m_px_transform = physx::PxTransform
 			(
 				bc_to_right_hand(p_position),
-				physx::PxQuat(bc_to_right_hand(p_rotation))
+				physx::PxQuat(l_px_matrix)
 			);
 		}
 

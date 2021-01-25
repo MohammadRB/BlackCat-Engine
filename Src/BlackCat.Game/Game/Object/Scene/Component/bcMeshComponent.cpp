@@ -48,7 +48,7 @@ namespace black_cat
 			const bc_mesh_ptr l_mesh = p_context.m_stream_manager.find_content_throw<bc_mesh>(l_mesh_name.c_str());
 
 			m_sub_mesh = l_sub_mesh_name ? bc_sub_mesh(l_mesh, l_sub_mesh_name->c_str()) : bc_sub_mesh(l_mesh);
-			m_world_transforms = bc_sub_mesh_transform(*m_sub_mesh.get_root_node());
+			m_world_transforms = bc_sub_mesh_mat4_transform(*m_sub_mesh.get_root_node());
 		}
 
 		void bc_mesh_component::render(bc_render_state_buffer& p_buffer) const

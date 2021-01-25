@@ -74,7 +74,7 @@ namespace black_cat
 					auto& l_skinned_mesh_component = *l_actor.get_component<bc_skinned_mesh_component>();
 					const auto& l_mesh = l_skinned_mesh_component.get_mesh();
 
-					l_mesh.calculate_colliders_inverse_bind_pose
+					l_mesh.calculate_skinned_mesh_collider_transforms
 					(
 						l_skinned_mesh_component.get_model_transforms(), 
 						l_skinned_mesh_component.get_collider_model_transforms()

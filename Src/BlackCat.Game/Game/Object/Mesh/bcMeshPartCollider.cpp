@@ -35,7 +35,7 @@ namespace black_cat
 
 		void bc_mesh_part_collider::add_px_shape(const physics::bc_shape_box& p_box,
 			bc_mesh_node::node_index_t p_attached_node_transform_index,
-			const physics::bc_transform& p_local_transform, 
+			const physics::bc_transform& p_local_transform,
 			physics::bc_shape_flag p_flags)
 		{
 			m_shapes.push_back
@@ -45,7 +45,6 @@ namespace black_cat
 					core::bc_make_unique< physics::bc_shape_box >(p_box),
 					p_attached_node_transform_index,
 					p_local_transform,
-					physics::bc_transform::identity(),
 					p_flags
 				)
 			);
@@ -63,7 +62,6 @@ namespace black_cat
 					core::bc_make_unique< physics::bc_shape_sphere >(p_sphere),
 					p_attached_node_transform_index,
 					p_local_transform,
-					physics::bc_transform::identity(),
 					p_flags
 				)
 			);
@@ -81,7 +79,6 @@ namespace black_cat
 					core::bc_make_unique< physics::bc_shape_capsule >(p_capsule),
 					p_attached_node_transform_index,
 					p_local_transform,
-					physics::bc_transform::identity(),
 					p_flags
 				)
 			);
@@ -100,7 +97,6 @@ namespace black_cat
 					(physics::bc_shape_convex_mesh(p_convex.get())),
 					p_attached_node_transform_index,
 					p_local_transform,
-					physics::bc_transform::identity(),
 					p_flags
 				)
 			);
@@ -120,7 +116,6 @@ namespace black_cat
 					(physics::bc_shape_triangle_mesh(p_mesh.get())),
 					p_attached_node_transform_index,
 					p_local_transform,
-					physics::bc_transform::identity(),
 					p_flags
 				)
 			);

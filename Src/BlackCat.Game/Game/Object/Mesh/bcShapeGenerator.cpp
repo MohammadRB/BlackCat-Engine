@@ -118,7 +118,7 @@ namespace black_cat
 		void bc_shape_generator::create_wired_skeleton(bc_shape_generator_buffer& p_buffer, 
 			const bc_sub_mesh& p_mesh, 
 			const core::bc_matrix4f& p_world, 
-			const bc_sub_mesh_transform& p_mesh_transforms)
+			const bc_sub_mesh_mat4_transform& p_mesh_transforms)
 		{
 			auto l_identity = core::bc_matrix4f::identity();
 			p_mesh.iterate_over_nodes(l_identity, [&p_buffer, &p_world, &p_mesh_transforms](const bc_mesh_node& p_node, core::bc_matrix4f& p_parent_transform)

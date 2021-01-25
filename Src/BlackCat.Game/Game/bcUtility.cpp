@@ -10,7 +10,7 @@ namespace black_cat
 {
 	void render_mesh(game::bc_render_state_buffer& p_buffer,
 		const game::bc_sub_mesh& p_mesh_part,
-		const game::bc_sub_mesh_transform& p_transformations,
+		const game::bc_sub_mesh_mat4_transform& p_transformations,
 		const game::bc_mesh_node* const* p_begin,
 		const game::bc_mesh_node* const* p_end,
 		const bcCHAR* p_mesh_prefix)
@@ -60,7 +60,7 @@ namespace black_cat
 
 	void render_skinned_mesh(game::bc_render_state_buffer& p_buffer,
 		const game::bc_sub_mesh& p_mesh_part,
-		const game::bc_sub_mesh_transform& p_transformations,
+		const game::bc_sub_mesh_mat4_transform& p_transformations,
 		const game::bc_mesh_node* const* p_begin,
 		const game::bc_mesh_node* const* p_end)
 	{

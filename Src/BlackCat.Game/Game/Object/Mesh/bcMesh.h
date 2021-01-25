@@ -22,8 +22,6 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_sub_mesh_transform;
-
 		struct bc_mesh_part_data
 		{
 			core::bc_string m_name;
@@ -78,8 +76,6 @@ namespace black_cat
 			
 			const core::bc_matrix4f& get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
 			
-			const core::bc_matrix4f& get_node_scaled_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
-
 			const core::bc_string& get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_render_material& get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
@@ -108,7 +104,6 @@ namespace black_cat
 			core::bc_unordered_map< hash_t::result_type, bc_mesh_node* > m_nodes_map;
 			core::bc_vector_movable< core::bc_matrix4f > m_transformations;
 			core::bc_vector_movable< core::bc_matrix4f > m_inverse_bind_poses;
-			core::bc_vector_movable< core::bc_matrix4f > m_scaled_inverse_bind_poses;
 			core::bc_vector< bc_mesh_part_data > m_meshes;
 			core::bc_vector< bc_render_state_ptr > m_render_states;
 			bc_mesh_collider_ptr m_colliders;
@@ -165,11 +160,6 @@ namespace black_cat
 		inline const core::bc_matrix4f& bc_mesh::get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept
 		{
 			return m_inverse_bind_poses[p_node.m_transform_index];
-		}
-
-		inline const core::bc_matrix4f& bc_mesh::get_node_scaled_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept
-		{
-			return m_scaled_inverse_bind_poses[p_node.m_transform_index];
 		}
 	}
 }

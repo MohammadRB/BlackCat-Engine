@@ -14,7 +14,7 @@ namespace black_cat
 	{
 		bc_animation_job_local_to_model_transform::bc_animation_job_local_to_model_transform(bci_animation_job_local_transform& p_local_transform_job, 
 			const bc_sub_mesh& p_sub_mesh,
-			bc_sub_mesh_transform& p_transforms)
+			bc_sub_mesh_mat4_transform& p_transforms)
 			: bci_animation_job(p_local_transform_job.get_skeleton()),
 			m_mesh(&p_sub_mesh),
 			m_local_transform_job(&p_local_transform_job),
@@ -31,10 +31,12 @@ namespace black_cat
 		{
 			ozz::animation::LocalToModelJob l_ltm_job;
 			const auto& l_local_transforms = m_local_transform_job->get_local_transforms();
-
+			const auto l_scale = ozz::math::Float4x4::Scaling(ozz::math::simd_float4::Load1(m_mesh->get_mesh_scale()));
+			
 			l_ltm_job.skeleton = &get_skeleton().get_native_handle();
 			l_ltm_job.input = { &*l_local_transforms.begin(), l_local_transforms.size() };
 			l_ltm_job.output = ozz::make_span(m_ozz_model_transforms);
+			l_ltm_job.root = &l_scale;
 
 			if(!l_ltm_job.Run())
 			{

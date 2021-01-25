@@ -27,14 +27,14 @@ namespace black_cat
 					
 					BC_ASSERT(l_px_shape.is_valid());
 
-					l_px_shape.set_local_pose(l_collider_entry.m_model_transform);
+					l_px_shape.set_local_pose(l_collider_entry.m_initial_transform);
 					l_px_shape.set_data(&l_collider_entry);
 				}
 			}
 		}
 
 		void bc_rigid_body_component::update_px_shape_transforms(physics::bc_rigid_body& p_px_actor,
-			const bc_sub_mesh_transform& p_model_space_transforms)
+			const bc_sub_mesh_px_transform& p_model_space_transforms)
 		{
 			core::bc_vector_frame< physics::bc_shape > l_shapes(p_px_actor.get_shape_count());
 			p_px_actor.get_shapes(l_shapes.data(), l_shapes.size());
@@ -44,7 +44,7 @@ namespace black_cat
 				const auto* l_collider_entry = static_cast<bc_mesh_part_collider_entry*>(l_shape.get_data());
 				const auto& l_transform = p_model_space_transforms[l_collider_entry->m_attached_node_transform_index];
 
-				l_shape.set_local_pose(physics::bc_transform(l_transform) * l_collider_entry->m_local_transform);
+				l_shape.set_local_pose(l_transform);
 			}
 		}
 	}

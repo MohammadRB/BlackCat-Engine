@@ -17,7 +17,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_animation_job_local_to_model_transform : public bci_animation_job
 		{
 		public:
-			explicit bc_animation_job_local_to_model_transform(bci_animation_job_local_transform& p_local_transform_job, const bc_sub_mesh& p_sub_mesh, bc_sub_mesh_transform& p_transforms);
+			explicit bc_animation_job_local_to_model_transform(bci_animation_job_local_transform& p_local_transform_job, const bc_sub_mesh& p_sub_mesh, bc_sub_mesh_mat4_transform& p_transforms);
 
 			bc_animation_job_local_to_model_transform(bc_animation_job_local_to_model_transform&&) noexcept = default;
 
@@ -27,7 +27,7 @@ namespace black_cat
 
 			const bc_sub_mesh& get_mesh() const noexcept;
 			
-			const bc_sub_mesh_transform& get_transforms() const noexcept;
+			const bc_sub_mesh_mat4_transform& get_transforms() const noexcept;
 			
 			bool run(const core_platform::bc_clock::update_param& p_clock) override;
 			
@@ -35,7 +35,7 @@ namespace black_cat
 			const bc_sub_mesh* m_mesh;
 			bci_animation_job_local_transform* m_local_transform_job;
 			core::bc_vector_movable<ozz::math::Float4x4> m_ozz_model_transforms;
-			bc_sub_mesh_transform* m_model_transforms;
+			bc_sub_mesh_mat4_transform* m_model_transforms;
 		};
 
 		inline const bc_sub_mesh& bc_animation_job_local_to_model_transform::get_mesh() const noexcept
@@ -43,7 +43,7 @@ namespace black_cat
 			return *m_mesh;
 		}
 		
-		inline const bc_sub_mesh_transform& bc_animation_job_local_to_model_transform::get_transforms() const noexcept
+		inline const bc_sub_mesh_mat4_transform& bc_animation_job_local_to_model_transform::get_transforms() const noexcept
 		{
 			return *m_model_transforms;
 		}

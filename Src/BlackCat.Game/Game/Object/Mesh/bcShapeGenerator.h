@@ -13,7 +13,7 @@ namespace black_cat
 	namespace game
 	{
 		class bc_sub_mesh;
-		class bc_sub_mesh_transform;
+		class bc_sub_mesh_transform_mat4;
 		
 		class BC_GAME_DLL bc_shape_generator_buffer
 		{
@@ -43,7 +43,7 @@ namespace black_cat
 			static void create_wired_skeleton(bc_shape_generator_buffer& p_buffer, 
 				const bc_sub_mesh& p_mesh, 
 				const core::bc_matrix4f& p_world, 
-				const bc_sub_mesh_transform& p_mesh_transforms);
+				const bc_sub_mesh_mat4_transform& p_mesh_transforms);
 		};
 	}
 }

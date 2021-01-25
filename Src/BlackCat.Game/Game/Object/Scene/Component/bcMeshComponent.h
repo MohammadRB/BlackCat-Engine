@@ -29,9 +29,9 @@ namespace black_cat
 
 			const bc_sub_mesh& get_mesh() const;
 
-			bc_sub_mesh_transform& get_world_transforms();
+			bc_sub_mesh_mat4_transform& get_world_transforms();
 			
-			const bc_sub_mesh_transform& get_world_transforms() const;
+			const bc_sub_mesh_mat4_transform& get_world_transforms() const;
 
 			core::bc_vector3f get_world_position() const;
 
@@ -46,7 +46,7 @@ namespace black_cat
 			
 		private:
 			bc_sub_mesh m_sub_mesh;
-			bc_sub_mesh_transform m_world_transforms;
+			bc_sub_mesh_mat4_transform m_world_transforms;
 		};
 
 		inline const bc_sub_mesh& bc_mesh_component::get_mesh() const
@@ -54,19 +54,19 @@ namespace black_cat
 			return m_sub_mesh;
 		}
 
-		inline bc_sub_mesh_transform& bc_mesh_component::get_world_transforms()
+		inline bc_sub_mesh_mat4_transform& bc_mesh_component::get_world_transforms()
 		{
 			return m_world_transforms;
 		}
 		
-		inline const bc_sub_mesh_transform& bc_mesh_component::get_world_transforms() const
+		inline const bc_sub_mesh_mat4_transform& bc_mesh_component::get_world_transforms() const
 		{
 			return m_world_transforms;
 		}
 
 		inline core::bc_vector3f bc_mesh_component::get_world_position() const
 		{
-			return m_world_transforms.get_node_translation(*m_sub_mesh.get_root_node());
+			return m_world_transforms.get_node_transform(*m_sub_mesh.get_root_node()).get_translation();
 		}
 
 		inline core::bc_matrix4f bc_mesh_component::get_world_transform() const

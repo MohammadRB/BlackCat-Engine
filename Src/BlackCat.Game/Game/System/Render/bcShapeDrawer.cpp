@@ -69,7 +69,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_shape_drawer::draw_wired_skeleton(const bc_sub_mesh& p_mesh, const core::bc_matrix4f& p_world, const bc_sub_mesh_transform& p_mesh_transforms)
+		void bc_shape_drawer::draw_wired_skeleton(const bc_sub_mesh& p_mesh, const core::bc_matrix4f& p_world, const bc_sub_mesh_mat4_transform& p_mesh_transforms)
 		{
 			{
 				core_platform::bc_mutex_guard l_guard(m_mutex);

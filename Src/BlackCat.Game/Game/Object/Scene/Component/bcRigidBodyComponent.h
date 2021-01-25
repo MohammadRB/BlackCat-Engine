@@ -3,6 +3,7 @@
 #pragma once
 
 #include "PhysicsImp/Body/bcRigidBody.h"
+#include "Game/Object/Mesh/bcSubMeshTransform.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 
 namespace black_cat
@@ -11,7 +12,6 @@ namespace black_cat
 	{
 		class bc_physics_system;
 		class bc_sub_mesh;
-		class bc_sub_mesh_transform;
 
 		class bc_rigid_body_component : public bci_actor_component
 		{
@@ -34,7 +34,7 @@ namespace black_cat
 				const bc_sub_mesh& p_mesh);
 
 			void update_px_shape_transforms(physics::bc_rigid_body& p_px_actor,
-				const bc_sub_mesh_transform& p_model_space_transforms);
+				const bc_sub_mesh_px_transform& p_model_space_transforms);
 		};
 
 		inline bc_rigid_body_component::~bc_rigid_body_component() = default;

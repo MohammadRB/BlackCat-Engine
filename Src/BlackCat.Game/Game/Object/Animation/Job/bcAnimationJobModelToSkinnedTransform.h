@@ -16,7 +16,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_animation_job_model_to_skinned_transform : public bci_animation_job
 		{
 		public:
-			explicit bc_animation_job_model_to_skinned_transform(bc_animation_job_local_to_model_transform& p_model_job, bc_sub_mesh_transform& p_transforms);
+			explicit bc_animation_job_model_to_skinned_transform(bc_animation_job_local_to_model_transform& p_model_job, bc_sub_mesh_mat4_transform& p_transforms);
 
 			bc_animation_job_model_to_skinned_transform(bc_animation_job_model_to_skinned_transform&&) noexcept = default;
 
@@ -32,7 +32,7 @@ namespace black_cat
 
 		private:
 			bc_animation_job_local_to_model_transform* m_model_job;
-			bc_sub_mesh_transform* m_transforms;
+			bc_sub_mesh_mat4_transform* m_transforms;
 			core::bc_matrix4f m_world;
 			physics::bc_bound_box m_bound_box;
 		};
@@ -44,8 +44,7 @@ namespace black_cat
 		
 		inline void bc_animation_job_model_to_skinned_transform::set_world(const core::bc_matrix4f& p_world) noexcept
 		{
-			const auto l_mesh_scale = m_model_job->get_mesh().get_mesh_scale();
-			m_world = core::bc_matrix4f::scale_matrix(l_mesh_scale) * p_world;
+			m_world = p_world;
 		}
 	}	
 }

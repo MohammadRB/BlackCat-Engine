@@ -47,8 +47,8 @@ namespace black_cat
 			
 			const auto& l_animation_names = p_context.m_parameters.get_value_throw< core::bc_vector< core::bc_any > >(constant::g_param_animations);
 			
-			m_model_transforms = bc_sub_mesh_transform(*get_mesh().get_root_node());
-			m_collider_model_transforms = bc_sub_mesh_transform(*get_mesh().get_root_node());
+			m_model_transforms = bc_sub_mesh_mat4_transform(*get_mesh().get_root_node());
+			m_collider_model_transforms = bc_sub_mesh_px_transform(*get_mesh().get_root_node());
 			m_animations.reserve(l_animation_names.size());
 
 			for(auto& l_animation_name : l_animation_names)
@@ -85,9 +85,8 @@ namespace black_cat
 			const auto& l_mesh = get_mesh();
 			const auto* l_mediate_component = p_context.m_actor.get_component< bc_mediate_component >();
 			const auto l_bound_box_z_length = l_mediate_component->get_bound_box().get_half_extends().z;
-			auto l_transform = l_mediate_component->get_transform();
-			l_transform.set_translation(l_transform.get_translation() + core::bc_vector3f(0,0, l_bound_box_z_length * 1.1f));
-			const auto l_world_transform = core::bc_matrix4f::scale_matrix(l_mesh.get_mesh_scale()) * l_transform;
+			auto l_world_transform = l_mediate_component->get_world_transform();
+			l_world_transform.set_translation(l_world_transform.get_translation() + core::bc_vector3f(0,0, l_bound_box_z_length * 1.1f));
 			
 			p_context.m_shape_drawer.draw_wired_skeleton
 			(

@@ -25,7 +25,6 @@ namespace black_cat
 			m_nodes_map.reserve(p_builder.m_node_count);
 			m_transformations.resize(p_builder.m_node_count);
 			m_inverse_bind_poses.resize(p_builder.m_node_count);
-			m_scaled_inverse_bind_poses.resize(p_builder.m_node_count);
 			m_meshes.resize(p_builder.m_mesh_part_count);
 			m_render_states.resize(p_builder.m_mesh_part_count);
 
@@ -185,7 +184,7 @@ namespace black_cat
 
 		void bc_mesh::_apply_auto_scale(bcFLOAT p_auto_scale)
 		{
-			bc_sub_mesh_transform l_transformations(*m_root);
+			bc_sub_mesh_mat4_transform l_transformations(*m_root);
 			physics::bc_bound_box l_bound_box;
 			bc_mesh_utility::calculate_absolute_transforms(*this, core::bc_matrix4f::identity(), l_transformations, l_bound_box);
 
@@ -203,11 +202,6 @@ namespace black_cat
 			m_scale = p_auto_scale / l_largest_side;
 			m_transformations[m_root->get_transform_index()] *= core::bc_matrix4f::scale_matrix(m_scale);
 
-			for(auto& l_matrix : m_scaled_inverse_bind_poses)
-			{
-				l_matrix *= core::bc_matrix4f::scale_matrix(m_scale);
-			}
-			
 			for(auto& l_mesh_part_data : m_meshes)
 			{
 				l_mesh_part_data.m_bound_box.scale(m_scale);
@@ -268,7 +262,7 @@ namespace black_cat
 
 					l_entry.m_local_transform = physics::bc_transform
 					(
-						l_entry.m_local_transform.get_position() * m_scale, 
+						l_entry.m_local_transform.get_position() * m_scale,
 						l_entry.m_local_transform.get_matrix3()
 					);
 				}
@@ -282,7 +276,6 @@ namespace black_cat
 			{
 				auto l_node_absolute_transformation = get_node_transform(p_node) * p_parent_transform;
 				m_inverse_bind_poses[p_node.m_transform_index] = l_node_absolute_transformation.inverse();
-				m_scaled_inverse_bind_poses[p_node.m_transform_index] = m_inverse_bind_poses[p_node.m_transform_index];
 
 				return l_node_absolute_transformation;
 			});
@@ -291,7 +284,7 @@ namespace black_cat
 		void bc_mesh::_calculate_collider_initial_transforms()
 		{
 			physics::bc_bound_box l_bound_box;
-			bc_sub_mesh_transform l_transforms(*get_root());
+			bc_sub_mesh_mat4_transform l_transforms(*get_root());
 			bc_mesh_utility::calculate_absolute_transforms(*this, core::bc_matrix4f::identity(), l_transforms, l_bound_box);
 
 			for (const auto& l_mesh_part_collider : *m_colliders)
@@ -300,12 +293,12 @@ namespace black_cat
 				{					
 					if(m_skinned)
 					{
-						l_entry.m_model_transform = l_entry.m_local_transform;
+						l_entry.m_initial_transform = l_entry.m_local_transform;
 					}
 					else
 					{
 						auto& l_attached_node_transform = l_transforms[l_entry.m_attached_node_transform_index];
-						l_entry.m_model_transform = physics::bc_transform(l_attached_node_transform) * l_entry.m_local_transform;
+						l_entry.m_initial_transform = physics::bc_transform(l_attached_node_transform) * l_entry.m_local_transform;
 					}
 				}
 			}

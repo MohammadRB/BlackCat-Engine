@@ -3,24 +3,26 @@
 #pragma once
 
 #include "PhysicsImp/Shape/bcBoundBox.h"
-#include "Game/bcExport.h"
 #include "Game/Object/Mesh/bcMesh.h"
+#include "Game/Object/Mesh/bcSubMeshTransform.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
 	namespace game
 	{
 		class bc_mesh_node;
-		class bc_sub_mesh_transform;
 
 		class BC_GAME_DLL bc_mesh_utility
 		{
 		public:
-			static void calculate_bound_box(const bc_mesh& p_mesh, const bc_sub_mesh_transform& p_transforms, physics::bc_bound_box& p_bound_box) noexcept;
+			static void calculate_bound_box(const bc_mesh& p_mesh, const bc_sub_mesh_mat4_transform& p_world_transforms, physics::bc_bound_box& p_bound_box) noexcept;
 
-			static void calculate_absolute_transforms(const bc_mesh& p_mesh, const core::bc_matrix4f& p_world, bc_sub_mesh_transform& p_transforms, physics::bc_bound_box& p_bound_box) noexcept;
+			static void calculate_absolute_transforms(const bc_mesh& p_mesh, const core::bc_matrix4f& p_world, bc_sub_mesh_mat4_transform& p_world_transforms, physics::bc_bound_box& p_bound_box) noexcept;
 
-			static void calculate_skinned_mesh_colliders_inverse_bind_pose(const bc_mesh& p_mesh, const bc_sub_mesh_transform& p_model_transforms, bc_sub_mesh_transform& p_transforms);
+			static void calculate_mesh_collider_transforms(const bc_mesh& p_mesh, const bc_sub_mesh_mat4_transform& p_model_transforms, bc_sub_mesh_px_transform& p_transforms);
+			
+			static void calculate_skinned_mesh_collider_transforms(const bc_mesh& p_mesh, const bc_sub_mesh_mat4_transform& p_model_transforms, bc_sub_mesh_px_transform& p_transforms);
 			
 			/**
 			 * \brief

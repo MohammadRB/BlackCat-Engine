@@ -9,6 +9,7 @@
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/System/Render/State/bcRenderState.h"
 #include "Game/System/Input/bcCamera.h"
+#include "Game/Object/Mesh/bcSubMeshTransform.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -19,7 +20,6 @@ namespace black_cat
 		class bc_render_thread;
 		class bc_render_state_buffer;
 		class bc_sub_mesh;
-		class bc_sub_mesh_transform;
 
 		class BC_GAME_DLL bc_shape_drawer
 		{
@@ -52,7 +52,7 @@ namespace black_cat
 			 * \param p_world 
 			 * \param p_mesh_transforms 
 			 */
-			void draw_wired_skeleton(const bc_sub_mesh& p_mesh, const core::bc_matrix4f& p_world, const bc_sub_mesh_transform& p_mesh_transforms);
+			void draw_wired_skeleton(const bc_sub_mesh& p_mesh, const core::bc_matrix4f& p_world, const bc_sub_mesh_mat4_transform& p_mesh_transforms);
 			
 			void render(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_render_state_buffer& p_buffer);
 

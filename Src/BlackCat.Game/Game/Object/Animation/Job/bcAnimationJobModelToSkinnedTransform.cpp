@@ -7,7 +7,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_animation_job_model_to_skinned_transform::bc_animation_job_model_to_skinned_transform(bc_animation_job_local_to_model_transform& p_model_job, bc_sub_mesh_transform& p_transforms)
+		bc_animation_job_model_to_skinned_transform::bc_animation_job_model_to_skinned_transform(bc_animation_job_local_to_model_transform& p_model_job, bc_sub_mesh_mat4_transform& p_transforms)
 			: bci_animation_job(p_model_job.get_skeleton()),
 			m_model_job(&p_model_job),
 			m_transforms(&p_transforms)
