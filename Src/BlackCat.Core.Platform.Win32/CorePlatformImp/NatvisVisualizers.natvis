@@ -26,4 +26,37 @@
     </Expand>
   </Type>
 
+  <Type Name="black_cat::core::bc_matrix3f">
+    <DisplayString>matrix3x3</DisplayString>
+    <Expand>
+      <Synthetic Name="[0]">
+        <DisplayString>{{{m_entry[0]}, {m_entry[1]}, {m_entry[2]}}}</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[1]">
+        <DisplayString>{{{m_entry[3]}, {m_entry[4]}, {m_entry[5]}}}</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[2]">
+        <DisplayString>{{{m_entry[6]}, {m_entry[7]}, {m_entry[8]}}}</DisplayString>
+      </Synthetic>
+    </Expand>
+  </Type>
+
+  <Type Name="black_cat::core::bc_matrix4f">
+    <DisplayString>matrix4x4</DisplayString>
+    <Expand>
+      <Synthetic Name="[0]">
+        <DisplayString>{{{m_entry[0]}, {m_entry[1]}, {m_entry[2]}, {m_entry[3]}}}</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[1]">
+        <DisplayString>{{{m_entry[4]}, {m_entry[5]}, {m_entry[6]}, {m_entry[7]}}}</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[2]">
+        <DisplayString>{{{m_entry[8]}, {m_entry[9]}, {m_entry[10]}, {m_entry[11]}}}</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[3]">
+        <DisplayString>{{{m_entry[12]}, {m_entry[13]}, {m_entry[14]}, {m_entry[15]}}}</DisplayString>
+      </Synthetic>
+    </Expand>
+  </Type>
+
 </AutoVisualizer>

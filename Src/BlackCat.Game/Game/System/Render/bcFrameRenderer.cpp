@@ -137,9 +137,9 @@ namespace black_cat
 			const core_platform::bc_clock::update_param& p_clock,
 			const bc_camera_instance& p_camera)
 		{
-			g_global_state.m_view = p_camera.get_view().transpose();
-			g_global_state.m_projection = p_camera.get_projection().transpose();
-			g_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection()).transpose();
+			g_global_state.m_view = p_camera.get_view();
+			g_global_state.m_projection = p_camera.get_projection();
+			g_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection());
 			g_global_state.m_screen_width = p_camera.get_screen_width();
 			g_global_state.m_screen_height = p_camera.get_screen_height();
 			g_global_state.m_near_plan = p_camera.get_near_clip();
@@ -149,6 +149,13 @@ namespace black_cat
 			g_global_state.m_total_elapsed_second = p_clock.m_total_elapsed_second;
 			g_global_state.m_elapsed = p_clock.m_elapsed;
 			g_global_state.m_elapsed_second = p_clock.m_elapsed_second;
+
+			if (need_matrix_transpose())
+			{
+				g_global_state.m_view.make_transpose();
+				g_global_state.m_projection.make_transpose();
+				g_global_state.m_view_projection.make_transpose();
+			}
 
 			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
 			p_render_thread.update_subresource(l_buffer, 0, &g_global_state, 0, 0);
@@ -160,9 +167,9 @@ namespace black_cat
 			const bc_direct_light& p_global_light,
 			const bc_direct_wind& p_global_wind)
 		{
-			g_global_state.m_view = p_camera.get_view().transpose();
-			g_global_state.m_projection = p_camera.get_projection().transpose();
-			g_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection()).transpose();
+			g_global_state.m_view = p_camera.get_view();
+			g_global_state.m_projection = p_camera.get_projection();
+			g_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection());
 			g_global_state.m_screen_width = p_camera.get_screen_width();
 			g_global_state.m_screen_height = p_camera.get_screen_height();
 			g_global_state.m_near_plan = p_camera.get_near_clip();
@@ -180,6 +187,13 @@ namespace black_cat
 			g_global_state.m_global_wind_direction = p_global_wind.m_direction;
 			g_global_state.m_global_wind_power = p_global_wind.m_power;
 
+			if (need_matrix_transpose())
+			{
+				g_global_state.m_view.make_transpose();
+				g_global_state.m_projection.make_transpose();
+				g_global_state.m_view_projection.make_transpose();
+			}
+			
 			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
 			p_render_thread.update_subresource(l_buffer, 0, &g_global_state, 0, 0);
 		}
@@ -209,7 +223,7 @@ namespace black_cat
 					l_per_object_cbuffer.m_world_view_projection = (l_render_instance.get_transform() * l_view_proj);
 					l_per_object_cbuffer.m_world = l_render_instance.get_transform();
 
-					if(graphic::bc_render_api_info::use_column_matrix())
+					if(need_matrix_transpose())
 					{
 						l_per_object_cbuffer.m_world_view_projection.make_transpose();
 						l_per_object_cbuffer.m_world.make_transpose();
@@ -250,7 +264,7 @@ namespace black_cat
 
 					std::memcpy(&l_per_object_cbuffer.m_transforms[0], l_render_instance.get_transforms(), sizeof(core::bc_matrix4f) * l_render_instance.get_num_transforms());
 
-					if (graphic::bc_render_api_info::use_column_matrix())
+					if (need_matrix_transpose())
 					{
 						for (auto& l_transform : l_per_object_cbuffer.m_transforms)
 						{

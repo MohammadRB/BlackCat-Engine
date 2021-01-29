@@ -61,7 +61,7 @@ namespace black_cat
 			l_render_buffer = m_scene_queries[l_cascade_absolute_index].get().get_render_state_buffer();
 		}
 
-		m_scene_queries[l_cascade_absolute_index] = core::bc_get_service< core::bc_query_manager >()->queue_query
+		m_scene_queries[l_cascade_absolute_index] = p_param.m_query_manager.queue_query
 		(
 			game::bc_scene_graph_render_state_query(p_param.m_frame_renderer.create_buffer())
 				.with(game::bc_camera_frustum(p_param.m_cascade_camera))

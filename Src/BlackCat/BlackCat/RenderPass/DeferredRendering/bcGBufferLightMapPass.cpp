@@ -231,7 +231,7 @@ namespace black_cat
 			}
 			case game::bc_light_type::point:
 			{
-				auto l_point_light = l_light.as_point_light();
+				auto* l_point_light = l_light.as_point_light();
 				_bc_point_light_struct l_point_light_cbuffer;
 
 				l_point_light_cbuffer.m_min_bound = l_light.get_min_bound();
@@ -247,7 +247,7 @@ namespace black_cat
 			}
 			case game::bc_light_type::spot:
 			{
-				auto l_spot_light = l_light.as_spot_light();
+				auto* l_spot_light = l_light.as_spot_light();
 				_bc_spot_light_struct l_spot_light_cbuffer;
 
 				l_spot_light_cbuffer.m_min_bound = l_light.get_min_bound();
@@ -308,7 +308,15 @@ namespace black_cat
 					std::begin(l_shadow_map_buffer_entry.second.m_view_projections),
 					std::end(l_shadow_map_buffer_entry.second.m_view_projections),
 					std::begin(l_shadow_map_struct.m_view_projections),
-					[](const core::bc_matrix4f& p_mat) { return p_mat.transpose(); }
+					[&p_param](const core::bc_matrix4f& p_mat)
+					{
+						if(p_param.m_frame_renderer.need_matrix_transpose())
+						{
+							return p_mat.transpose();
+						}
+
+						return p_mat;
+					}
 				);
 
 				l_shadow_maps.push_back(std::move(l_shadow_map_struct));
@@ -323,8 +331,13 @@ namespace black_cat
 			l_direct_lights.size(),
 			l_point_lights.size(),
 			l_spot_lights.size(),
-			(p_param.m_render_camera.get_view() * p_param.m_render_camera.get_projection()).inverse().transpose()
+			(p_param.m_render_camera.get_view() * p_param.m_render_camera.get_projection()).inverse()
 		};
+
+		if(p_param.m_frame_renderer.need_matrix_transpose())
+		{
+			l_parameters_cbuffer_data.m_view_proj_inv.make_transpose();
+		}
 
 		p_param.m_render_thread.update_subresource(m_parameters_cbuffer.get(), 0, &l_parameters_cbuffer_data, 0, 0);
 		p_param.m_render_thread.update_subresource(m_direct_lights_buffer.get(), 0, l_direct_lights.data(), 0, 0);

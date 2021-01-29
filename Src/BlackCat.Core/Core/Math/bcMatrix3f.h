@@ -1,13 +1,3 @@
-//--------------------------------------------------------------------------------
-// This file is a portion of the Hieroglyph 3 Rendering Engine.  It is distributed
-// under the MIT License, available in the root of this distribution and 
-// at the following URL:
-//
-// http://www.opensource.org/licenses/mit-license.php
-//
-// Copyright (c) Jason Zink 
-//--------------------------------------------------------------------------------
-
 #pragma once
 
 #include "CorePlatform/bcType.h"
@@ -119,8 +109,15 @@ namespace black_cat
 
 			static bc_matrix3f identity() noexcept;
 
+			constexpr static bool use_column_major_storage()
+			{
+				return true;
+			}
+
 		protected:
-			static bcINT I(bcINT p_row, bcINT p_col); // p_row*N + p_col
+			constexpr static bcUINT32 i(bcUINT32 p_index);
+			
+			constexpr static bcUINT32 i(bcUINT32 p_row, bcUINT32 p_col);
 
 			bcFLOAT m_entry[3 * 3];
 		};

@@ -51,13 +51,48 @@ namespace black_cat
 				const auto* l_mesh_node = m_mesh->find_node(l_bone_name);
 				const auto& l_ozz_model_transform = m_ozz_model_transforms[l_bone_ite];
 				auto& l_model_transform = m_model_transforms->get_node_transform(*l_mesh_node);
-				auto& l_model_transform_ptr = l_model_transform(0, 0);
 
-				// Store columns into rows to transpose matrix
-				ozz::math::StorePtr(l_ozz_model_transform.cols[0], &l_model_transform_ptr);
-				ozz::math::StorePtr(l_ozz_model_transform.cols[1], &l_model_transform_ptr + 4);
-				ozz::math::StorePtr(l_ozz_model_transform.cols[2], &l_model_transform_ptr + 8);
-				ozz::math::StorePtr(l_ozz_model_transform.cols[3], &l_model_transform_ptr + 12);
+				if(core::bc_matrix4f::use_column_major_storage())
+				{
+					bcFLOAT l_col[4];
+					ozz::math::StorePtr(l_ozz_model_transform.cols[0], l_col);
+					
+					l_model_transform[0] = l_col[0];
+					l_model_transform[1] = l_col[1];
+					l_model_transform[2] = l_col[2];
+					l_model_transform[3] = l_col[3];
+
+					ozz::math::StorePtr(l_ozz_model_transform.cols[1], l_col);
+
+					l_model_transform[4] = l_col[0];
+					l_model_transform[5] = l_col[1];
+					l_model_transform[6] = l_col[2];
+					l_model_transform[7] = l_col[3];
+
+					ozz::math::StorePtr(l_ozz_model_transform.cols[2], l_col);
+
+					l_model_transform[8] = l_col[0];
+					l_model_transform[9] = l_col[1];
+					l_model_transform[10] = l_col[2];
+					l_model_transform[11] = l_col[3];
+
+					ozz::math::StorePtr(l_ozz_model_transform.cols[3], l_col);
+
+					l_model_transform[12] = l_col[0];
+					l_model_transform[13] = l_col[1];
+					l_model_transform[14] = l_col[2];
+					l_model_transform[15] = l_col[3];
+				}
+				else
+				{
+					auto& l_model_transform_ptr = l_model_transform(0, 0);
+					
+					// Store columns into rows to transpose matrix
+					ozz::math::StorePtr(l_ozz_model_transform.cols[0], &l_model_transform_ptr);
+					ozz::math::StorePtr(l_ozz_model_transform.cols[1], &l_model_transform_ptr + 4);
+					ozz::math::StorePtr(l_ozz_model_transform.cols[2], &l_model_transform_ptr + 8);
+					ozz::math::StorePtr(l_ozz_model_transform.cols[3], &l_model_transform_ptr + 12);
+				}
 			}
 			
 			return true;

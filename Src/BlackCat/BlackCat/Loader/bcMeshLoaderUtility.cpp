@@ -12,25 +12,22 @@ namespace black_cat
 {
 	void bc_mesh_loader_utility::convert_ai_matrix(const aiMatrix4x4& p_ai_matrix, core::bc_matrix4f& p_matrix)
 	{
-		aiMatrix4x4 l_ai_matrix = p_ai_matrix;
-		l_ai_matrix.Transpose();
-
-		p_matrix[0] = l_ai_matrix.a1;
-		p_matrix[1] = l_ai_matrix.a2;
-		p_matrix[2] = l_ai_matrix.a3;
-		p_matrix[3] = l_ai_matrix.a4;
-		p_matrix[4] = l_ai_matrix.b1;
-		p_matrix[5] = l_ai_matrix.b2;
-		p_matrix[6] = l_ai_matrix.b3;
-		p_matrix[7] = l_ai_matrix.b4;
-		p_matrix[8] = l_ai_matrix.c1;
-		p_matrix[9] = l_ai_matrix.c2;
-		p_matrix[10] = l_ai_matrix.c3;
-		p_matrix[11] = l_ai_matrix.c4;
-		p_matrix[12] = l_ai_matrix.d1;
-		p_matrix[13] = l_ai_matrix.d2;
-		p_matrix[14] = l_ai_matrix.d3;
-		p_matrix[15] = l_ai_matrix.d4;
+		p_matrix[0] = p_ai_matrix.a1;
+		p_matrix[1] = p_ai_matrix.b1;
+		p_matrix[2] = p_ai_matrix.c1;
+		p_matrix[3] = p_ai_matrix.d1;
+		p_matrix[4] = p_ai_matrix.a2;
+		p_matrix[5] = p_ai_matrix.b2;
+		p_matrix[6] = p_ai_matrix.c2;
+		p_matrix[7] = p_ai_matrix.d2;
+		p_matrix[8] = p_ai_matrix.a3;
+		p_matrix[9] = p_ai_matrix.b3;
+		p_matrix[10] = p_ai_matrix.c3;
+		p_matrix[11] = p_ai_matrix.d3;
+		p_matrix[12] = p_ai_matrix.a4;
+		p_matrix[13] = p_ai_matrix.b4;
+		p_matrix[14] = p_ai_matrix.c4;
+		p_matrix[15] = p_ai_matrix.d4;
 	}
 	
 	bool bc_mesh_loader_utility::is_px_node(const aiNode& p_ai_node)

@@ -1,13 +1,3 @@
-//--------------------------------------------------------------------------------
-// This file is a portion of the Hieroglyph 3 Rendering Engine.  It is distributed
-// under the MIT License, available in the root of this distribution and 
-// at the following URL:
-//
-// http://www.opensource.org/licenses/mit-license.php
-//
-// Copyright (c) Jason Zink 
-//--------------------------------------------------------------------------------
-
 #include "Core/CorePCH.h"
 #include "Core/Math/bcMatrix4f.h"
 
@@ -30,34 +20,36 @@ namespace black_cat
 		}
 		
 		bc_matrix4f::bc_matrix4f(const bc_matrix4f& p_matrix) noexcept
+			: m_entry{}
 		{
-			std::memcpy(m_entry, reinterpret_cast<const void*>(&p_matrix), 16 * sizeof(bcFLOAT));
+			std::memcpy(m_entry, p_matrix.m_entry, 16 * sizeof(bcFLOAT));
 		}
 		
 		bc_matrix4f::bc_matrix4f(bcFLOAT p_m11, bcFLOAT p_m12, bcFLOAT p_m13, bcFLOAT p_m14,
 			bcFLOAT p_m21, bcFLOAT p_m22, bcFLOAT p_m23, bcFLOAT p_m24,
 			bcFLOAT p_m31, bcFLOAT p_m32, bcFLOAT p_m33, bcFLOAT p_m34,
 			bcFLOAT p_m41, bcFLOAT p_m42, bcFLOAT p_m43, bcFLOAT p_m44) noexcept
+			: m_entry{}
 		{
-			m_entry[0] = p_m11;
-			m_entry[1] = p_m12;
-			m_entry[2] = p_m13;
-			m_entry[3] = p_m14;
+			m_entry[i(0, 0)] = p_m11;
+			m_entry[i(0, 1)] = p_m12;
+			m_entry[i(0, 2)] = p_m13;
+			m_entry[i(0, 3)] = p_m14;
 
-			m_entry[4] = p_m21;
-			m_entry[5] = p_m22;
-			m_entry[6] = p_m23;
-			m_entry[7] = p_m24;
+			m_entry[i(1, 0)] = p_m21;
+			m_entry[i(1, 1)] = p_m22;
+			m_entry[i(1, 2)] = p_m23;
+			m_entry[i(1, 3)] = p_m24;
 
-			m_entry[8] = p_m31;
-			m_entry[9] = p_m32;
-			m_entry[10] = p_m33;
-			m_entry[11] = p_m34;
+			m_entry[i(2, 0)] = p_m31;
+			m_entry[i(2, 1)] = p_m32;
+			m_entry[i(2, 2)] = p_m33;
+			m_entry[i(2, 3)] = p_m34;
 
-			m_entry[12] = p_m41;
-			m_entry[13] = p_m42;
-			m_entry[14] = p_m43;
-			m_entry[15] = p_m44;
+			m_entry[i(3, 0)] = p_m41;
+			m_entry[i(3, 1)] = p_m42;
+			m_entry[i(3, 2)] = p_m43;
+			m_entry[i(3, 3)] = p_m44;
 		}
 		
 		bc_matrix4f& bc_matrix4f::operator=(const bc_matrix4f& p_other) noexcept
@@ -68,150 +60,150 @@ namespace black_cat
 		
 		void bc_matrix4f::rotation_x_lh(bcFLOAT p_radians) noexcept
 		{
-			bcFLOAT l_sin = sinf(p_radians);
-			bcFLOAT l_cos = cosf(p_radians);
+			const bcFLOAT l_sin = sinf(p_radians);
+			const bcFLOAT l_cos = cosf(p_radians);
 
-			m_entry[0] = 1.0f;
-			m_entry[1] = 0.0f;
-			m_entry[2] = 0.0f;
-			m_entry[3] = 0.0f;
+			m_entry[i(0, 0)] = 1.0f;
+			m_entry[i(0, 1)] = 0.0f;
+			m_entry[i(0, 2)] = 0.0f;
+			m_entry[i(0, 3)] = 0.0f;
 
-			m_entry[4] = 0.0f;
-			m_entry[5] = l_cos;
-			m_entry[6] = l_sin;
-			m_entry[7] = 0.0f;
+			m_entry[i(1, 0)] = 0.0f;
+			m_entry[i(1, 1)] = l_cos;
+			m_entry[i(1, 2)] = l_sin;
+			m_entry[i(1, 3)] = 0.0f;
 
-			m_entry[8] = 0.0f;
-			m_entry[9] = -l_sin;
-			m_entry[10] = l_cos;
-			m_entry[11] = 0.0f;
+			m_entry[i(2, 0)] = 0.0f;
+			m_entry[i(2, 1)] = -l_sin;
+			m_entry[i(2, 2)] = l_cos;
+			m_entry[i(2, 3)] = 0.0f;
 
-			m_entry[12] = 0.0f;
-			m_entry[13] = 0.0f;
-			m_entry[14] = 0.0f;
-			m_entry[15] = 1.0f;
+			m_entry[i(3, 0)] = 0.0f;
+			m_entry[i(3, 1)] = 0.0f;
+			m_entry[i(3, 2)] = 0.0f;
+			m_entry[i(3, 3)] = 1.0f;
 		}
 		
 		void bc_matrix4f::rotation_y_lh(bcFLOAT p_radians) noexcept
 		{
-			bcFLOAT l_sin = sinf(p_radians);
-			bcFLOAT l_cos = cosf(p_radians);
+			const bcFLOAT l_sin = sinf(p_radians);
+			const bcFLOAT l_cos = cosf(p_radians);
 
-			m_entry[0] = l_cos;
-			m_entry[1] = 0.0f;
-			m_entry[2] = -l_sin;
-			m_entry[3] = 0.0f;
+			m_entry[i(0, 0)] = l_cos;
+			m_entry[i(0, 1)] = 0.0f;
+			m_entry[i(0, 2)] = -l_sin;
+			m_entry[i(0, 3)] = 0.0f;
 
-			m_entry[4] = 0.0f;
-			m_entry[5] = 1.0f;
-			m_entry[6] = 0.0f;
-			m_entry[7] = 0.0f;
+			m_entry[i(1, 0)] = 0.0f;
+			m_entry[i(1, 1)] = 1.0f;
+			m_entry[i(1, 2)] = 0.0f;
+			m_entry[i(1, 3)] = 0.0f;
 
-			m_entry[8] = l_sin;
-			m_entry[9] = 0.0f;
-			m_entry[10] = l_cos;
-			m_entry[11] = 0.0f;
+			m_entry[i(2, 0)] = l_sin;
+			m_entry[i(2, 1)] = 0.0f;
+			m_entry[i(2, 2)] = l_cos;
+			m_entry[i(2, 3)] = 0.0f;
 
-			m_entry[12] = 0.0f;
-			m_entry[13] = 0.0f;
-			m_entry[14] = 0.0f;
-			m_entry[15] = 1.0f;
+			m_entry[i(3, 0)] = 0.0f;
+			m_entry[i(3, 1)] = 0.0f;
+			m_entry[i(3, 2)] = 0.0f;
+			m_entry[i(3, 3)] = 1.0f;
 		}
 		
 		void bc_matrix4f::rotation_z_lh(bcFLOAT p_radians) noexcept
 		{
-			bcFLOAT l_sin = sinf(p_radians);
-			bcFLOAT l_cos = cosf(p_radians);
+			const bcFLOAT l_sin = sinf(p_radians);
+			const bcFLOAT l_cos = cosf(p_radians);
 
-			m_entry[0] = l_cos;
-			m_entry[1] = l_sin;
-			m_entry[2] = 0.0f;
-			m_entry[3] = 0.0f;
+			m_entry[i(0, 0)] = l_cos;
+			m_entry[i(0, 1)] = l_sin;
+			m_entry[i(0, 2)] = 0.0f;
+			m_entry[i(0, 3)] = 0.0f;
 
-			m_entry[4] = -l_sin;
-			m_entry[5] = l_cos;
-			m_entry[6] = 0.0f;
-			m_entry[7] = 0.0f;
+			m_entry[i(1, 0)] = -l_sin;
+			m_entry[i(1, 1)] = l_cos;
+			m_entry[i(1, 2)] = 0.0f;
+			m_entry[i(1, 3)] = 0.0f;
 
-			m_entry[8] = 0.0f;
-			m_entry[9] = 0.0f;
-			m_entry[10] = 1.0f;
-			m_entry[11] = 0.0f;
+			m_entry[i(2, 0)] = 0.0f;
+			m_entry[i(2, 1)] = 0.0f;
+			m_entry[i(2, 2)] = 1.0f;
+			m_entry[i(2, 3)] = 0.0f;
 
-			m_entry[12] = 0.0f;
-			m_entry[13] = 0.0f;
-			m_entry[14] = 0.0f;
-			m_entry[15] = 1.0f;
+			m_entry[i(3, 0)] = 0.0f;
+			m_entry[i(3, 1)] = 0.0f;
+			m_entry[i(3, 2)] = 0.0f;
+			m_entry[i(3, 3)] = 1.0f;
 		}
 
 		void bc_matrix4f::rotation_x_rh(bcFLOAT p_radians) noexcept
 		{
 			rotation_x_lh(p_radians);
 
-			m_entry[6] = -m_entry[6];
-			m_entry[9] = -m_entry[9];
+			m_entry[i(1, 2)] = -m_entry[i(1, 2)];
+			m_entry[i(2, 1)] = -m_entry[i(2, 1)];
 		}
 
 		void bc_matrix4f::rotation_y_rh(bcFLOAT p_radians) noexcept
 		{
 			rotation_y_lh(p_radians);
 
-			m_entry[2] = -m_entry[2];
-			m_entry[8] = -m_entry[8];
+			m_entry[i(0, 2)] = -m_entry[i(0, 2)];
+			m_entry[i(2, 0)] = -m_entry[i(2, 0)];
 		}
 
 		void bc_matrix4f::rotation_z_rh(bcFLOAT p_radians) noexcept
 		{
 			rotation_z_lh(p_radians);
 
-			m_entry[1] = -m_entry[1];
-			m_entry[4] = -m_entry[4];
+			m_entry[i(0, 1)] = -m_entry[i(0, 1)];
+			m_entry[i(1, 0)] = -m_entry[i(1, 0)];
 		}
 
 		void bc_matrix4f::scale(bcFLOAT p_scale) noexcept
 		{
-			m_entry[0] = p_scale;
-			m_entry[1] = 0.0f;
-			m_entry[2] = 0.0f;
-			m_entry[3] = 0.0f;
+			m_entry[i(0, 0)] = p_scale;
+			m_entry[i(0, 1)] = 0.0f;
+			m_entry[i(0, 2)] = 0.0f;
+			m_entry[i(0, 3)] = 0.0f;
 
-			m_entry[4] = 0.0f;
-			m_entry[5] = p_scale;
-			m_entry[6] = 0.0f;
-			m_entry[7] = 0.0f;
+			m_entry[i(1, 0)] = 0.0f;
+			m_entry[i(1, 1)] = p_scale;
+			m_entry[i(1, 2)] = 0.0f;
+			m_entry[i(1, 3)] = 0.0f;
 
-			m_entry[8] = 0.0f;
-			m_entry[9] = 0.0f;
-			m_entry[10] = p_scale;
-			m_entry[11] = 0.0f;
+			m_entry[i(2, 0)] = 0.0f;
+			m_entry[i(2, 1)] = 0.0f;
+			m_entry[i(2, 2)] = p_scale;
+			m_entry[i(2, 3)] = 0.0f;
 
-			m_entry[12] = 0.0f;
-			m_entry[13] = 0.0f;
-			m_entry[14] = 0.0f;
-			m_entry[15] = 1.0f;
+			m_entry[i(3, 0)] = 0.0f;
+			m_entry[i(3, 1)] = 0.0f;
+			m_entry[i(3, 2)] = 0.0f;
+			m_entry[i(3, 3)] = 1.0f;
 		}
 		
 		void bc_matrix4f::translate(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z) noexcept
 		{
-			m_entry[0] = 1.0f;
-			m_entry[1] = 0.0f;
-			m_entry[2] = 0.0f;
-			m_entry[3] = 0.0f;
+			m_entry[i(0, 0)] = 1.0f;
+			m_entry[i(0, 1)] = 0.0f;
+			m_entry[i(0, 2)] = 0.0f;
+			m_entry[i(0, 3)] = 0.0f;
 
-			m_entry[4] = 0.0f;
-			m_entry[5] = 1.0f;
-			m_entry[6] = 0.0f;
-			m_entry[7] = 0.0f;
+			m_entry[i(1, 0)] = 0.0f;
+			m_entry[i(1, 1)] = 1.0f;
+			m_entry[i(1, 2)] = 0.0f;
+			m_entry[i(1, 3)] = 0.0f;
 
-			m_entry[8] = 0.0f;
-			m_entry[9] = 0.0f;
-			m_entry[10] = 1.0f;
-			m_entry[11] = 0.0f;
+			m_entry[i(2, 0)] = 0.0f;
+			m_entry[i(2, 1)] = 0.0f;
+			m_entry[i(2, 2)] = 1.0f;
+			m_entry[i(2, 3)] = 0.0f;
 
-			m_entry[12] = p_x;
-			m_entry[13] = p_y;
-			m_entry[14] = p_z;
-			m_entry[15] = 1.0f;
+			m_entry[i(3, 0)] = p_x;
+			m_entry[i(3, 1)] = p_y;
+			m_entry[i(3, 2)] = p_z;
+			m_entry[i(3, 3)] = 1.0f;
 		}
 
 		void bc_matrix4f::translate(const bc_vector3f& p_translate) noexcept
@@ -223,9 +215,9 @@ namespace black_cat
 		{
 			bc_vector3f l_basis;
 
-			for (bcINT i = 0; i < 3; i++)
+			for (auto l_i = 0U; l_i < 3; l_i++)
 			{
-				l_basis[i] = m_entry[I(0, i)];
+				l_basis[l_i] = m_entry[i(0, l_i)];
 			}
 
 			return l_basis;
@@ -235,9 +227,9 @@ namespace black_cat
 		{
 			bc_vector3f l_basis;
 
-			for (bcINT i = 0; i < 3; i++)
+			for (auto l_i = 0U; l_i < 3; l_i++)
 			{
-				l_basis[i] = m_entry[I(1, i)];
+				l_basis[l_i] = m_entry[i(1, l_i)];
 			}
 
 			return l_basis;
@@ -247,9 +239,9 @@ namespace black_cat
 		{
 			bc_vector3f l_basis;
 
-			for (bcINT i = 0; i < 3; i++)
+			for (auto l_i = 0; l_i < 3; l_i++)
 			{
-				l_basis[i] = m_entry[I(2, i)];
+				l_basis[l_i] = m_entry[i(2, l_i)];
 			}
 
 			return l_basis;
@@ -259,9 +251,9 @@ namespace black_cat
 		{
 			bc_vector3f l_pos;
 
-			for (bcINT i = 0; i < 3; i++)
+			for (auto l_i = 0U; l_i < 3; l_i++)
 			{
-				l_pos[i] = m_entry[I(3, i)];
+				l_pos[l_i] = m_entry[i(3, l_i)];
 			}
 
 			return l_pos;
@@ -269,70 +261,70 @@ namespace black_cat
 
 		bc_matrix3f bc_matrix4f::get_rotation() const noexcept
 		{
-			bc_matrix3f mRet;
+			bc_matrix3f l_ret;
 
-			mRet.set_row(0, get_basis_x());
-			mRet.set_row(1, get_basis_y());
-			mRet.set_row(2, get_basis_z());
+			l_ret.set_row(0, get_basis_x());
+			l_ret.set_row(1, get_basis_y());
+			l_ret.set_row(2, get_basis_z());
 
-			return mRet;
+			return l_ret;
 		}
 				
 		void bc_matrix4f::set_rotation(const bc_matrix3f& p_rot) noexcept
 		{
-			for (bcINT i = 0; i < 3; i++)
+			for (auto l_i = 0U; l_i < 3; l_i++)
 			{
-				for (bcINT j = 0; j < 3; j++)
+				for (auto l_j = 0U; l_j < 3; l_j++)
 				{
-					m_entry[I(i, j)] = p_rot[(3 * i + j)];
+					m_entry[i(l_i, l_j)] = p_rot[(3 * l_i + l_j)];
 				}
 			}
 		}
 
 		void bc_matrix4f::set_translation(const bc_vector3f& p_trans) noexcept
 		{
-			for (bcINT i = 0; i < 3; i++)
+			for (auto l_i = 0U; l_i < 3; l_i++)
 			{
-				m_entry[I(3, i)] = p_trans[i];
+				m_entry[i(3, l_i)] = p_trans[l_i];
 			}
 		}
 
 		bc_matrix4f bc_matrix4f::inverse() const noexcept
 		{
-			bcFLOAT l_a0 = m_entry[0] * m_entry[5] - m_entry[1] * m_entry[4];
-			bcFLOAT l_a1 = m_entry[0] * m_entry[6] - m_entry[2] * m_entry[4];
-			bcFLOAT l_a2 = m_entry[0] * m_entry[7] - m_entry[3] * m_entry[4];
-			bcFLOAT l_a3 = m_entry[1] * m_entry[6] - m_entry[2] * m_entry[5];
-			bcFLOAT l_a4 = m_entry[1] * m_entry[7] - m_entry[3] * m_entry[5];
-			bcFLOAT l_a5 = m_entry[2] * m_entry[7] - m_entry[3] * m_entry[6];
-			bcFLOAT l_b0 = m_entry[8] * m_entry[13] - m_entry[9] * m_entry[12];
-			bcFLOAT l_b1 = m_entry[8] * m_entry[14] - m_entry[10] * m_entry[12];
-			bcFLOAT l_b2 = m_entry[8] * m_entry[15] - m_entry[11] * m_entry[12];
-			bcFLOAT l_b3 = m_entry[9] * m_entry[14] - m_entry[10] * m_entry[13];
-			bcFLOAT l_b4 = m_entry[9] * m_entry[15] - m_entry[11] * m_entry[13];
-			bcFLOAT l_b5 = m_entry[10] * m_entry[15] - m_entry[11] * m_entry[14];
+			const bcFLOAT l_a0 = m_entry[i(0, 0)] * m_entry[i(1, 1)] - m_entry[i(0, 1)] * m_entry[i(1, 0)];
+			const bcFLOAT l_a1 = m_entry[i(0, 0)] * m_entry[i(1, 2)] - m_entry[i(0, 2)] * m_entry[i(1, 0)];
+			const bcFLOAT l_a2 = m_entry[i(0, 0)] * m_entry[i(1, 3)] - m_entry[i(0, 3)] * m_entry[i(1, 0)];
+			const bcFLOAT l_a3 = m_entry[i(0, 1)] * m_entry[i(1, 2)] - m_entry[i(0, 2)] * m_entry[i(1, 1)];
+			const bcFLOAT l_a4 = m_entry[i(0, 1)] * m_entry[i(1, 3)] - m_entry[i(0, 3)] * m_entry[i(1, 1)];
+			const bcFLOAT l_a5 = m_entry[i(0, 2)] * m_entry[i(1, 3)] - m_entry[i(0, 3)] * m_entry[i(1, 2)];
+			const bcFLOAT l_b0 = m_entry[i(2, 0)] * m_entry[i(3, 1)] - m_entry[i(2, 1)] * m_entry[i(3, 0)];
+			const bcFLOAT l_b1 = m_entry[i(2, 0)] * m_entry[i(3, 2)] - m_entry[i(2, 2)] * m_entry[i(3, 0)];
+			const bcFLOAT l_b2 = m_entry[i(2, 0)] * m_entry[i(3, 3)] - m_entry[i(2, 3)] * m_entry[i(3, 0)];
+			const bcFLOAT l_b3 = m_entry[i(2, 1)] * m_entry[i(3, 2)] - m_entry[i(2, 2)] * m_entry[i(3, 1)];
+			const bcFLOAT l_b4 = m_entry[i(2, 1)] * m_entry[i(3, 3)] - m_entry[i(2, 3)] * m_entry[i(3, 1)];
+			const bcFLOAT l_b5 = m_entry[i(2, 2)] * m_entry[i(3, 3)] - m_entry[i(2, 3)] * m_entry[i(3, 2)];
 
 			bcFLOAT l_det = l_a0*l_b5 - l_a1*l_b4 + l_a2*l_b3 + l_a3*l_b2 - l_a4*l_b1 + l_a5*l_b0;
 			//if ( Math<Real>::FAbs(fDet) <= Math<Real>::EPSILON )
 			//    return Matrix4::ZERO;
 
 			bc_matrix4f l_inv;
-			l_inv(0, 0) = +m_entry[5] * l_b5 - m_entry[6] * l_b4 + m_entry[7] * l_b3;
-			l_inv(1, 0) = -m_entry[4] * l_b5 + m_entry[6] * l_b2 - m_entry[7] * l_b1;
-			l_inv(2, 0) = +m_entry[4] * l_b4 - m_entry[5] * l_b2 + m_entry[7] * l_b0;
-			l_inv(3, 0) = -m_entry[4] * l_b3 + m_entry[5] * l_b1 - m_entry[6] * l_b0;
-			l_inv(0, 1) = -m_entry[1] * l_b5 + m_entry[2] * l_b4 - m_entry[3] * l_b3;
-			l_inv(1, 1) = +m_entry[0] * l_b5 - m_entry[2] * l_b2 + m_entry[3] * l_b1;
-			l_inv(2, 1) = -m_entry[0] * l_b4 + m_entry[1] * l_b2 - m_entry[3] * l_b0;
-			l_inv(3, 1) = +m_entry[0] * l_b3 - m_entry[1] * l_b1 + m_entry[2] * l_b0;
-			l_inv(0, 2) = +m_entry[13] * l_a5 - m_entry[14] * l_a4 + m_entry[15] * l_a3;
-			l_inv(1, 2) = -m_entry[12] * l_a5 + m_entry[14] * l_a2 - m_entry[15] * l_a1;
-			l_inv(2, 2) = +m_entry[12] * l_a4 - m_entry[13] * l_a2 + m_entry[15] * l_a0;
-			l_inv(3, 2) = -m_entry[12] * l_a3 + m_entry[13] * l_a1 - m_entry[14] * l_a0;
-			l_inv(0, 3) = -m_entry[9] * l_a5 + m_entry[10] * l_a4 - m_entry[11] * l_a3;
-			l_inv(1, 3) = +m_entry[8] * l_a5 - m_entry[10] * l_a2 + m_entry[11] * l_a1;
-			l_inv(2, 3) = -m_entry[8] * l_a4 + m_entry[9] * l_a2 - m_entry[11] * l_a0;
-			l_inv(3, 3) = +m_entry[8] * l_a3 - m_entry[9] * l_a1 + m_entry[10] * l_a0;
+			l_inv(0, 0) = +m_entry[i(1, 1)] * l_b5 - m_entry[i(1, 2)] * l_b4 + m_entry[i(1, 3)] * l_b3;
+			l_inv(1, 0) = -m_entry[i(1, 0)] * l_b5 + m_entry[i(1, 2)] * l_b2 - m_entry[i(1, 3)] * l_b1;
+			l_inv(2, 0) = +m_entry[i(1, 0)] * l_b4 - m_entry[i(1, 1)] * l_b2 + m_entry[i(1, 3)] * l_b0;
+			l_inv(3, 0) = -m_entry[i(1, 0)] * l_b3 + m_entry[i(1, 1)] * l_b1 - m_entry[i(1, 2)] * l_b0;
+			l_inv(0, 1) = -m_entry[i(0, 1)] * l_b5 + m_entry[i(0, 2)] * l_b4 - m_entry[i(0, 3)] * l_b3;
+			l_inv(1, 1) = +m_entry[i(0, 0)] * l_b5 - m_entry[i(0, 2)] * l_b2 + m_entry[i(0, 3)] * l_b1;
+			l_inv(2, 1) = -m_entry[i(0, 0)] * l_b4 + m_entry[i(0, 1)] * l_b2 - m_entry[i(0, 3)] * l_b0;
+			l_inv(3, 1) = +m_entry[i(0, 0)] * l_b3 - m_entry[i(0, 1)] * l_b1 + m_entry[i(0, 2)] * l_b0;
+			l_inv(0, 2) = +m_entry[i(3, 1)] * l_a5 - m_entry[i(3, 2)] * l_a4 + m_entry[i(3, 3)] * l_a3;
+			l_inv(1, 2) = -m_entry[i(3, 0)] * l_a5 + m_entry[i(3, 2)] * l_a2 - m_entry[i(3, 3)] * l_a1;
+			l_inv(2, 2) = +m_entry[i(3, 0)] * l_a4 - m_entry[i(3, 1)] * l_a2 + m_entry[i(3, 3)] * l_a0;
+			l_inv(3, 2) = -m_entry[i(3, 0)] * l_a3 + m_entry[i(3, 1)] * l_a1 - m_entry[i(3, 2)] * l_a0;
+			l_inv(0, 3) = -m_entry[i(2, 1)] * l_a5 + m_entry[i(2, 2)] * l_a4 - m_entry[i(2, 3)] * l_a3;
+			l_inv(1, 3) = +m_entry[i(2, 0)] * l_a5 - m_entry[i(2, 2)] * l_a2 + m_entry[i(2, 3)] * l_a1;
+			l_inv(2, 3) = -m_entry[i(2, 0)] * l_a4 + m_entry[i(2, 1)] * l_a2 - m_entry[i(2, 3)] * l_a0;
+			l_inv(3, 3) = +m_entry[i(2, 0)] * l_a3 - m_entry[i(2, 1)] * l_a1 + m_entry[i(2, 2)] * l_a0;
 
 			const bcFLOAT l_inv_det = static_cast< bcFLOAT >(1.0) / l_det;
 			for (bcINT l_row = 0; l_row < 4; l_row++)
@@ -353,17 +345,17 @@ namespace black_cat
 
 		void bc_matrix4f::make_identity() noexcept
 		{
-			for (bcINT l_row = 0; l_row < 4; l_row++)
+			for (auto l_row = 0U; l_row < 4; l_row++)
 			{
-				for (bcINT l_col = 0; l_col < 4; l_col++)
+				for (auto l_col = 0U; l_col < 4; l_col++)
 				{
 					if (l_row == l_col)
 					{
-						m_entry[I(l_row, l_col)] = 1.0f;
+						m_entry[i(l_row, l_col)] = 1.0f;
 					}
 					else
 					{
-						m_entry[I(l_row, l_col)] = 0.0f;
+						m_entry[i(l_row, l_col)] = 0.0f;
 					}
 				}
 			}
@@ -373,11 +365,11 @@ namespace black_cat
 		{
 			bc_matrix4f l_transpose;
 
-			for (bcINT l_row = 0; l_row < 4; l_row++)
+			for (auto l_row = 0U; l_row < 4; l_row++)
 			{
-				for (bcINT l_col = 0; l_col < 4; l_col++)
+				for (auto l_col = 0U; l_col < 4; l_col++)
 				{
-					l_transpose.m_entry[I(l_row, l_col)] = m_entry[I(l_col, l_row)];
+					l_transpose.m_entry[i(l_row, l_col)] = m_entry[i(l_col, l_row)];
 				}
 			}
 
@@ -388,40 +380,39 @@ namespace black_cat
 		{
 			bc_matrix4f l_transpose;
 
-			for (bcINT l_row = 0; l_row < 4; l_row++)
+			for (auto l_row = 0U; l_row < 4; l_row++)
 			{
-				for (bcINT l_col = 0; l_col < 4; l_col++)
+				for (auto l_col = 0U; l_col < 4; l_col++)
 				{
-					l_transpose.m_entry[I(l_row, l_col)] = m_entry[I(l_col, l_row)];
+					l_transpose.m_entry[i(l_row, l_col)] = m_entry[i(l_col, l_row)];
 				}
 			}
 
 			return l_transpose;
-
 		}
 
 		void bc_matrix4f::set_row(bcINT p_row, const bc_vector4f& p_vector) noexcept
 		{
-			for (bcINT l_col = 0; l_col < 4; l_col++)
+			for (auto l_col = 0U; l_col < 4; l_col++)
 			{
-				m_entry[I(p_row, l_col)] = p_vector[l_col];
+				m_entry[i(p_row, l_col)] = p_vector[l_col];
 			}
 		}
 
 		void bc_matrix4f::set_row(bcINT p_row, const bc_vector3f& p_vector) noexcept
 		{
-			for (bcINT l_col = 0; l_col < 3; l_col++)
+			for (auto l_col = 0U; l_col < 3; l_col++)
 			{
-				m_entry[I(p_row, l_col)] = p_vector[l_col];
+				m_entry[i(p_row, l_col)] = p_vector[l_col];
 			}
 		}
 
 		bc_vector4f bc_matrix4f::get_row(bcINT p_row) const noexcept
 		{
 			bc_vector4f l_row;
-			for (bcINT iCol = 0; iCol < 4; iCol++)
+			for (auto l_col = 0U; l_col < 4; l_col++)
 			{
-				l_row[iCol] = m_entry[I(p_row, iCol)];
+				l_row[l_col] = m_entry[i(p_row, l_col)];
 			}
 
 			return l_row;
@@ -429,18 +420,18 @@ namespace black_cat
 
 		void bc_matrix4f::set_column(bcINT p_col, const bc_vector4f& p_vector) noexcept
 		{
-			for (bcINT l_row = 0; l_row < 4; l_row++)
+			for (auto l_row = 0U; l_row < 4; l_row++)
 			{
-				m_entry[I(l_row, p_col)] = p_vector[l_row];
+				m_entry[i(l_row, p_col)] = p_vector[l_row];
 			}
 		}
 
 		bc_vector4f bc_matrix4f::get_column(bcINT p_col) const noexcept
 		{
 			bc_vector4f l_col;
-			for (bcINT l_row = 0; l_row < 4; l_row++)
+			for (auto l_row = 0U; l_row < 4; l_row++)
 			{
-				l_col[l_row] = m_entry[I(l_row, p_col)];
+				l_col[l_row] = m_entry[i(l_row, p_col)];
 			}
 
 			return l_col;
@@ -448,22 +439,22 @@ namespace black_cat
 
 		bcFLOAT bc_matrix4f::operator() (bcINT p_row, bcINT p_col) const noexcept
 		{
-			return m_entry[I(p_row, p_col)];
+			return m_entry[i(p_row, p_col)];
 		}
 
 		bcFLOAT& bc_matrix4f::operator() (bcINT p_row, bcINT p_col) noexcept
 		{
-			return m_entry[I(p_row, p_col)];
+			return m_entry[i(p_row, p_col)];
 		}
 
 		bcFLOAT bc_matrix4f::operator[] (bcINT p_pos) const noexcept
 		{
-			return m_entry[p_pos];
+			return m_entry[i(p_pos)];
 		}
 		
 		bcFLOAT& bc_matrix4f::operator[] (bcINT p_pos) noexcept
 		{
-			return m_entry[p_pos];
+			return m_entry[i(p_pos)];
 		}
 		
 		bool bc_matrix4f::operator== (const bc_matrix4f& p_other) const noexcept
@@ -480,16 +471,16 @@ namespace black_cat
 		{
 			bc_matrix4f l_prod;
 
-			for (bcINT l_row = 0; l_row < 4; l_row++)
+			for (auto l_row = 0U; l_row < 4; l_row++)
 			{
-				for (bcINT l_col = 0; l_col < 4; l_col++)
+				for (auto l_col = 0U; l_col < 4; l_col++)
 				{
-					const bcINT i = I(l_row, l_col);
-					l_prod.m_entry[i] = 0.0f;
+					const auto l_i = i(l_row, l_col);
+					l_prod.m_entry[l_i] = 0.0f;
 					
 					for (bcINT l_imid = 0; l_imid < 4; l_imid++)
 					{
-						l_prod.m_entry[i] += m_entry[I(l_row, l_imid)] * p_other.m_entry[I(l_imid, l_col)];
+						l_prod.m_entry[l_i] += m_entry[i(l_row, l_imid)] * p_other.m_entry[i(l_imid, l_col)];
 					}
 				}
 			}
@@ -500,9 +491,9 @@ namespace black_cat
 		{
 			bc_matrix4f l_sum;
 
-			for (bcINT i = 0; i < 4 * 4; i++)
+			for (auto l_i = 0; l_i < 4 * 4; l_i++)
 			{
-				l_sum.m_entry[i] = m_entry[i] + p_other.m_entry[i];
+				l_sum.m_entry[l_i] = m_entry[l_i] + p_other.m_entry[l_i];
 			}
 
 			return l_sum;
@@ -512,9 +503,9 @@ namespace black_cat
 		{
 			bc_matrix4f l_diff;
 
-			for (bcINT i = 0; i < 4 * 4; i++)
+			for (auto l_i = 0; l_i < 4 * 4; l_i++)
 			{
-				l_diff.m_entry[i] = m_entry[i] - p_other.m_entry[i];
+				l_diff.m_entry[l_i] = m_entry[l_i] - p_other.m_entry[l_i];
 			}
 
 			return l_diff;
@@ -524,9 +515,9 @@ namespace black_cat
 		{
 			bc_matrix4f l_prod;
 
-			for (bcINT i = 0; i < 4 * 4; i++)
+			for (auto l_i = 0; l_i < 4 * 4; l_i++)
 			{
-				l_prod.m_entry[i] = m_entry[i] * p_scalar;
+				l_prod.m_entry[l_i] = m_entry[l_i] * p_scalar;
 			}
 
 			return l_prod;
@@ -538,16 +529,16 @@ namespace black_cat
 			if (p_scalar != 0.0f)
 			{
 				const bcFLOAT l_inv_scalar = 1.0f / p_scalar;
-				for (bcINT i = 0; i < 4 * 4; i++)
+				for (auto l_i = 0; l_i < 4 * 4; l_i++)
 				{
-					l_quot.m_entry[i] = m_entry[i] * l_inv_scalar;
+					l_quot.m_entry[l_i] = m_entry[l_i] * l_inv_scalar;
 				}
 			}
 			else
 			{
-				for (bcINT i = 0; i < 4 * 4; i++)
+				for (auto l_i = 0; l_i < 4 * 4; l_i++)
 				{
-					l_quot.m_entry[i] = 0;
+					l_quot.m_entry[l_i] = 0;
 				}
 			}
 
@@ -558,9 +549,9 @@ namespace black_cat
 		{
 			bc_matrix4f l_neg;
 
-			for (bcINT i = 0; i < 4 * 4; i++)
+			for (auto l_i = 0U; l_i < 4 * 4; l_i++)
 			{
-				l_neg.m_entry[i] = -m_entry[i];
+				l_neg.m_entry[l_i] = -m_entry[l_i];
 			}
 
 			return l_neg;
@@ -568,7 +559,7 @@ namespace black_cat
 		
 		bc_matrix4f& bc_matrix4f::operator+= (const bc_matrix4f& p_other) noexcept
 		{
-			for (bcINT i = 0; i < 4 * 4; i++)
+			for (auto i = 0U; i < 4 * 4; i++)
 			{
 				m_entry[i] += p_other.m_entry[i];
 			}
@@ -578,7 +569,7 @@ namespace black_cat
 		
 		bc_matrix4f& bc_matrix4f::operator-= (const bc_matrix4f& p_other) noexcept
 		{
-			for (bcINT i = 0; i < 4 * 4; i++)
+			for (auto i = 0U; i < 4 * 4; i++)
 			{
 				m_entry[i] -= p_other.m_entry[i];
 			}
@@ -588,7 +579,7 @@ namespace black_cat
 		
 		bc_matrix4f& bc_matrix4f::operator*= (bcFLOAT p_scalar) noexcept
 		{
-			for (bcINT i = 0; i < 4 * 4; i++)
+			for (auto i = 0U; i < 4 * 4; i++)
 			{
 				m_entry[i] *= p_scalar;
 			}
@@ -600,16 +591,16 @@ namespace black_cat
 		{
 			bc_matrix4f l_prod = *this;
 
-			for (bcINT l_row = 0; l_row < 4; l_row++)
+			for (auto l_row = 0U; l_row < 4; l_row++)
 			{
-				for (bcINT l_col = 0; l_col < 4; l_col++)
+				for (auto l_col = 0U; l_col < 4; l_col++)
 				{
-					const bcINT i = I(l_row, l_col);
-					m_entry[i] = 0.0f;
+					const auto l_i = i(l_row, l_col);
+					m_entry[l_i] = 0.0f;
 
-					for (bcINT l_mid = 0; l_mid < 4; l_mid++)
+					for (auto l_mid = 0U; l_mid < 4; l_mid++)
 					{
-						m_entry[i] += l_prod.m_entry[I(l_row, l_mid)] * p_other.m_entry[I(l_mid, l_col)];
+						m_entry[l_i] += l_prod.m_entry[i(l_row, l_mid)] * p_other.m_entry[i(l_mid, l_col)];
 					}
 				}
 			}
@@ -621,17 +612,17 @@ namespace black_cat
 		{
 			if (p_scalar != 0.0f)
 			{
-				const bcFLOAT l_inv_scalar = 1.0f / p_scalar;
-				for (bcINT i = 0; i < 4 * 4; i++)
+				const auto l_inv_scalar = 1.0f / p_scalar;
+				for (auto l_i = 0U; l_i < 4 * 4; l_i++)
 				{
-					m_entry[i] *= l_inv_scalar;
+					m_entry[l_i] *= l_inv_scalar;
 				}
 			}
 			else
 			{
-				for (bcINT i = 0; i < 4 * 4; i++)
+				for (auto l_i = 0U; l_i < 4 * 4; l_i++)
 				{
-					m_entry[i] = 0;
+					m_entry[l_i] = 0;
 				}
 			}
 
@@ -641,12 +632,12 @@ namespace black_cat
 		bc_vector4f bc_matrix4f::operator* (const bc_vector4f& p_vector) const noexcept
 		{
 			bc_vector4f l_prod;
-			for (bcINT l_col = 0; l_col < 4; l_col++)
+			for (auto l_col = 0U; l_col < 4; l_col++)
 			{
 				l_prod[l_col] = 0.0f;
-				for (bcINT l_row = 0; l_row < 4; l_row++)
+				for (auto l_row = 0U; l_row < 4; l_row++)
 				{
-					l_prod[l_col] += m_entry[I(l_row, l_col)] * p_vector[l_row];
+					l_prod[l_col] += m_entry[i(l_row, l_col)] * p_vector[l_row];
 				}
 			}
 			return l_prod;
@@ -721,25 +712,25 @@ namespace black_cat
 		{
 			bc_matrix4f l_ret;
 
-			l_ret.m_entry[0] = p_scale.x;
-			l_ret.m_entry[1] = 0.0f;
-			l_ret.m_entry[2] = 0.0f;
-			l_ret.m_entry[3] = 0.0f;
+			l_ret.m_entry[i(0, 0)] = p_scale.x;
+			l_ret.m_entry[i(0, 1)] = 0.0f;
+			l_ret.m_entry[i(0, 2)] = 0.0f;
+			l_ret.m_entry[i(0, 3)] = 0.0f;
 
-			l_ret.m_entry[4] = 0.0f;
-			l_ret.m_entry[5] = p_scale.y;
-			l_ret.m_entry[6] = 0.0f;
-			l_ret.m_entry[7] = 0.0f;
+			l_ret.m_entry[i(1, 0)] = 0.0f;
+			l_ret.m_entry[i(1, 1)] = p_scale.y;
+			l_ret.m_entry[i(1, 2)] = 0.0f;
+			l_ret.m_entry[i(1, 3)] = 0.0f;
 
-			l_ret.m_entry[8] = 0.0f;
-			l_ret.m_entry[9] = 0.0f;
-			l_ret.m_entry[10] = p_scale.z;
-			l_ret.m_entry[11] = 0.0f;
+			l_ret.m_entry[i(2, 0)] = 0.0f;
+			l_ret.m_entry[i(2, 1)] = 0.0f;
+			l_ret.m_entry[i(2, 2)] = p_scale.z;
+			l_ret.m_entry[i(2, 3)] = 0.0f;
 
-			l_ret.m_entry[12] = 0.0f;
-			l_ret.m_entry[13] = 0.0f;
-			l_ret.m_entry[14] = 0.0f;
-			l_ret.m_entry[15] = 1.0f;
+			l_ret.m_entry[i(3, 0)] = 0.0f;
+			l_ret.m_entry[i(3, 1)] = 0.0f;
+			l_ret.m_entry[i(3, 2)] = 0.0f;
+			l_ret.m_entry[i(3, 3)] = 1.0f;
 
 			return l_ret;
 		}
@@ -748,25 +739,25 @@ namespace black_cat
 		{
 			bc_matrix4f l_ret;
 
-			l_ret.m_entry[0] = p_x;
-			l_ret.m_entry[1] = 0.0f;
-			l_ret.m_entry[2] = 0.0f;
-			l_ret.m_entry[3] = 0.0f;
+			l_ret.m_entry[i(0, 0)] = p_x;
+			l_ret.m_entry[i(0, 1)] = 0.0f;
+			l_ret.m_entry[i(0, 2)] = 0.0f;
+			l_ret.m_entry[i(0, 3)] = 0.0f;
 
-			l_ret.m_entry[4] = 0.0f;
-			l_ret.m_entry[5] = p_y;
-			l_ret.m_entry[6] = 0.0f;
-			l_ret.m_entry[7] = 0.0f;
+			l_ret.m_entry[i(1, 0)] = 0.0f;
+			l_ret.m_entry[i(1, 1)] = p_y;
+			l_ret.m_entry[i(1, 2)] = 0.0f;
+			l_ret.m_entry[i(1, 3)] = 0.0f;
 
-			l_ret.m_entry[8] = 0.0f;
-			l_ret.m_entry[9] = 0.0f;
-			l_ret.m_entry[10] = p_z;
-			l_ret.m_entry[11] = 0.0f;
+			l_ret.m_entry[i(2, 0)] = 0.0f;
+			l_ret.m_entry[i(2, 1)] = 0.0f;
+			l_ret.m_entry[i(2, 2)] = p_z;
+			l_ret.m_entry[i(2, 3)] = 0.0f;
 
-			l_ret.m_entry[12] = 0.0f;
-			l_ret.m_entry[13] = 0.0f;
-			l_ret.m_entry[14] = 0.0f;
-			l_ret.m_entry[15] = 1.0f;
+			l_ret.m_entry[i(3, 0)] = 0.0f;
+			l_ret.m_entry[i(3, 1)] = 0.0f;
+			l_ret.m_entry[i(3, 2)] = 0.0f;
+			l_ret.m_entry[i(3, 3)] = 1.0f;
 
 			return l_ret;
 		}
@@ -791,33 +782,33 @@ namespace black_cat
 
 			bc_matrix4f l_ret;
 
-			bc_vector3f l_zaxis = p_at - p_eye;
-			l_zaxis.normalize();
+			bc_vector3f l_z_axis = p_at - p_eye;
+			l_z_axis.normalize();
 
-			bc_vector3f l_xaxis = p_up.cross(l_zaxis);
-			l_xaxis.normalize();
+			bc_vector3f l_x_axis = p_up.cross(l_z_axis);
+			l_x_axis.normalize();
 
-			bc_vector3f l_yaxis = l_zaxis.cross(l_xaxis);
+			bc_vector3f l_y_axis = l_z_axis.cross(l_x_axis);
 
-			l_ret.m_entry[0] = l_xaxis.x;
-			l_ret.m_entry[1] = l_yaxis.x;
-			l_ret.m_entry[2] = l_zaxis.x;
-			l_ret.m_entry[3] = 0.0f;
+			l_ret.m_entry[i(0, 0)] = l_x_axis.x;
+			l_ret.m_entry[i(0, 1)] = l_y_axis.x;
+			l_ret.m_entry[i(0, 2)] = l_z_axis.x;
+			l_ret.m_entry[i(0, 3)] = 0.0f;
 
-			l_ret.m_entry[4] = l_xaxis.y;
-			l_ret.m_entry[5] = l_yaxis.y;
-			l_ret.m_entry[6] = l_zaxis.y;
-			l_ret.m_entry[7] = 0.0f;
+			l_ret.m_entry[i(1, 0)] = l_x_axis.y;
+			l_ret.m_entry[i(1, 1)] = l_y_axis.y;
+			l_ret.m_entry[i(1, 2)] = l_z_axis.y;
+			l_ret.m_entry[i(1, 3)] = 0.0f;
 
-			l_ret.m_entry[8] = l_xaxis.z;
-			l_ret.m_entry[9] = l_yaxis.z;
-			l_ret.m_entry[10] = l_zaxis.z;
-			l_ret.m_entry[11] = 0.0f;
+			l_ret.m_entry[i(2, 0)] = l_x_axis.z;
+			l_ret.m_entry[i(2, 1)] = l_y_axis.z;
+			l_ret.m_entry[i(2, 2)] = l_z_axis.z;
+			l_ret.m_entry[i(2, 3)] = 0.0f;
 
-			l_ret.m_entry[12] = -l_xaxis.dot(p_eye);
-			l_ret.m_entry[13] = -l_yaxis.dot(p_eye);
-			l_ret.m_entry[14] = -l_zaxis.dot(p_eye);
-			l_ret.m_entry[15] = 1.0f;
+			l_ret.m_entry[i(3, 0)] = -l_x_axis.dot(p_eye);
+			l_ret.m_entry[i(3, 1)] = -l_y_axis.dot(p_eye);
+			l_ret.m_entry[i(3, 2)] = -l_z_axis.dot(p_eye);
+			l_ret.m_entry[i(3, 3)] = 1.0f;
 
 			return l_ret;
 		}
@@ -835,25 +826,25 @@ namespace black_cat
 			if (0.0f == p_aspect) p_aspect = 0.001f;
 			bcFLOAT l_x_scale = l_y_scale / p_aspect;
 
-			l_ret.m_entry[0] = l_x_scale;
-			l_ret.m_entry[1] = 0.0f;
-			l_ret.m_entry[2] = 0.0f;
-			l_ret.m_entry[3] = 0.0f;
+			l_ret.m_entry[i(0, 0)] = l_x_scale;
+			l_ret.m_entry[i(0, 1)] = 0.0f;
+			l_ret.m_entry[i(0, 2)] = 0.0f;
+			l_ret.m_entry[i(0, 3)] = 0.0f;
 
-			l_ret.m_entry[4] = 0.0f;
-			l_ret.m_entry[5] = l_y_scale;
-			l_ret.m_entry[6] = 0.0f;
-			l_ret.m_entry[7] = 0.0f;
+			l_ret.m_entry[i(1, 0)] = 0.0f;
+			l_ret.m_entry[i(1, 1)] = l_y_scale;
+			l_ret.m_entry[i(1, 2)] = 0.0f;
+			l_ret.m_entry[i(1, 3)] = 0.0f;
 
-			l_ret.m_entry[8] = 0.0f;
-			l_ret.m_entry[9] = 0.0f;
-			l_ret.m_entry[10] = p_zf / (p_zf - p_zn);
-			l_ret.m_entry[11] = 1.0f;
+			l_ret.m_entry[i(2, 0)] = 0.0f;
+			l_ret.m_entry[i(2, 1)] = 0.0f;
+			l_ret.m_entry[i(2, 2)] = p_zf / (p_zf - p_zn);
+			l_ret.m_entry[i(2, 3)] = 1.0f;
 
-			l_ret.m_entry[12] = 0.0f;
-			l_ret.m_entry[13] = 0.0f;
-			l_ret.m_entry[14] = -p_zn*p_zf / (p_zf - p_zn);
-			l_ret.m_entry[15] = 0.0f;
+			l_ret.m_entry[i(3, 0)] = 0.0f;
+			l_ret.m_entry[i(3, 1)] = 0.0f;
+			l_ret.m_entry[i(3, 2)] = -p_zn*p_zf / (p_zf - p_zn);
+			l_ret.m_entry[i(3, 3)] = 0.0f;
 
 			return l_ret;
 		}
@@ -868,25 +859,25 @@ namespace black_cat
 			if (p_width <= 0.0f) p_width = 1.0f;
 			if (p_height <= 0.0f) p_height = 1.0f;
 
-			l_ret.m_entry[0] = 2.0f / p_width;
-			l_ret.m_entry[1] = 0.0f;
-			l_ret.m_entry[2] = 0.0f;
-			l_ret.m_entry[3] = 0.0f;
+			l_ret.m_entry[i(0, 0)] = 2.0f / p_width;
+			l_ret.m_entry[i(0, 1)] = 0.0f;
+			l_ret.m_entry[i(0, 2)] = 0.0f;
+			l_ret.m_entry[i(0, 3)] = 0.0f;
 
-			l_ret.m_entry[4] = 0.0f;
-			l_ret.m_entry[5] = 2.0f / p_height;
-			l_ret.m_entry[6] = 0.0f;
-			l_ret.m_entry[7] = 0.0f;
+			l_ret.m_entry[i(1, 0)] = 0.0f;
+			l_ret.m_entry[i(1, 1)] = 2.0f / p_height;
+			l_ret.m_entry[i(1, 2)] = 0.0f;
+			l_ret.m_entry[i(1, 3)] = 0.0f;
 
-			l_ret.m_entry[8] = 0.0f;
-			l_ret.m_entry[9] = 0.0f;
-			l_ret.m_entry[10] = 1.0f / (p_zf - p_zn);
-			l_ret.m_entry[11] = 0.0f;
+			l_ret.m_entry[i(2, 0)] = 0.0f;
+			l_ret.m_entry[i(2, 1)] = 0.0f;
+			l_ret.m_entry[i(2, 2)] = 1.0f / (p_zf - p_zn);
+			l_ret.m_entry[i(2, 3)] = 0.0f;
 
-			l_ret.m_entry[12] = 0.0f;
-			l_ret.m_entry[13] = 0.0f;
-			l_ret.m_entry[14] = -p_zn / (p_zf - p_zn);
-			l_ret.m_entry[15] = 1.0f;
+			l_ret.m_entry[i(3, 0)] = 0.0f;
+			l_ret.m_entry[i(3, 1)] = 0.0f;
+			l_ret.m_entry[i(3, 2)] = -p_zn / (p_zf - p_zn);
+			l_ret.m_entry[i(3, 3)] = 1.0f;
 
 			return l_ret;
 		}
@@ -903,25 +894,25 @@ namespace black_cat
 
 			bc_vector3f l_yaxis = l_zaxis.cross(l_xaxis);
 
-			l_ret.m_entry[0] = l_xaxis.x;
-			l_ret.m_entry[1] = l_yaxis.x;
-			l_ret.m_entry[2] = l_zaxis.x;
-			l_ret.m_entry[3] = 0.0f;
+			l_ret.m_entry[i(0, 0)] = l_xaxis.x;
+			l_ret.m_entry[i(0, 1)] = l_yaxis.x;
+			l_ret.m_entry[i(0, 2)] = l_zaxis.x;
+			l_ret.m_entry[i(0, 3)] = 0.0f;
 
-			l_ret.m_entry[4] = l_xaxis.y;
-			l_ret.m_entry[5] = l_yaxis.y;
-			l_ret.m_entry[6] = l_zaxis.y;
-			l_ret.m_entry[7] = 0.0f;
+			l_ret.m_entry[i(1, 0)] = l_xaxis.y;
+			l_ret.m_entry[i(1, 1)] = l_yaxis.y;
+			l_ret.m_entry[i(1, 2)] = l_zaxis.y;
+			l_ret.m_entry[i(1, 3)] = 0.0f;
 
-			l_ret.m_entry[8] = l_xaxis.z;
-			l_ret.m_entry[9] = l_yaxis.z;
-			l_ret.m_entry[10] = l_zaxis.z;
-			l_ret.m_entry[11] = 0.0f;
+			l_ret.m_entry[i(2, 0)] = l_xaxis.z;
+			l_ret.m_entry[i(2, 1)] = l_yaxis.z;
+			l_ret.m_entry[i(2, 2)] = l_zaxis.z;
+			l_ret.m_entry[i(2, 3)] = 0.0f;
 
-			l_ret.m_entry[12] = l_xaxis.dot(p_eye);
-			l_ret.m_entry[13] = l_yaxis.dot(p_eye);
-			l_ret.m_entry[14] = l_zaxis.dot(p_eye);
-			l_ret.m_entry[15] = 1.0f;
+			l_ret.m_entry[i(3, 0)] = l_xaxis.dot(p_eye);
+			l_ret.m_entry[i(3, 1)] = l_yaxis.dot(p_eye);
+			l_ret.m_entry[i(3, 2)] = l_zaxis.dot(p_eye);
+			l_ret.m_entry[i(3, 3)] = 1.0f;
 
 			return l_ret;
 		}
@@ -937,25 +928,25 @@ namespace black_cat
 			if (0.0f == p_aspect) p_aspect = 0.001f;
 			bcFLOAT l_x_scale = l_y_scale / p_aspect;
 
-			l_ret.m_entry[0] = l_x_scale;
-			l_ret.m_entry[1] = 0.0f;
-			l_ret.m_entry[2] = 0.0f;
-			l_ret.m_entry[3] = 0.0f;
+			l_ret.m_entry[i(0, 0)] = l_x_scale;
+			l_ret.m_entry[i(0, 1)] = 0.0f;
+			l_ret.m_entry[i(0, 2)] = 0.0f;
+			l_ret.m_entry[i(0, 3)] = 0.0f;
 
-			l_ret.m_entry[4] = 0.0f;
-			l_ret.m_entry[5] = l_y_scale;
-			l_ret.m_entry[6] = 0.0f;
-			l_ret.m_entry[7] = 0.0f;
+			l_ret.m_entry[i(1, 0)] = 0.0f;
+			l_ret.m_entry[i(1, 1)] = l_y_scale;
+			l_ret.m_entry[i(1, 2)] = 0.0f;
+			l_ret.m_entry[i(1, 3)] = 0.0f;
 
-			l_ret.m_entry[8] = 0.0f;
-			l_ret.m_entry[9] = 0.0f;
-			l_ret.m_entry[10] = p_zf / (p_zf - p_zn);
-			l_ret.m_entry[11] = -1.0f;
+			l_ret.m_entry[i(2, 0)] = 0.0f;
+			l_ret.m_entry[i(2, 1)] = 0.0f;
+			l_ret.m_entry[i(2, 2)] = p_zf / (p_zf - p_zn);
+			l_ret.m_entry[i(2, 3)] = -1.0f;
 
-			l_ret.m_entry[12] = 0.0f;
-			l_ret.m_entry[13] = 0.0f;
-			l_ret.m_entry[14] = p_zn*p_zf / (p_zf - p_zn);
-			l_ret.m_entry[15] = 0.0f;
+			l_ret.m_entry[i(3, 0)] = 0.0f;
+			l_ret.m_entry[i(3, 1)] = 0.0f;
+			l_ret.m_entry[i(3, 2)] = p_zn*p_zf / (p_zf - p_zn);
+			l_ret.m_entry[i(3, 3)] = 0.0f;
 
 			return l_ret;
 		}
@@ -968,25 +959,25 @@ namespace black_cat
 			if (p_width <= 0.0f) p_width = 1.0f;
 			if (p_height <= 0.0f) p_height = 1.0f;
 
-			l_ret.m_entry[0] = 2.0f / p_width;
-			l_ret.m_entry[1] = 0.0f;
-			l_ret.m_entry[2] = 0.0f;
-			l_ret.m_entry[3] = 0.0f;
+			l_ret.m_entry[i(0, 0)] = 2.0f / p_width;
+			l_ret.m_entry[i(0, 1)] = 0.0f;
+			l_ret.m_entry[i(0, 2)] = 0.0f;
+			l_ret.m_entry[i(0, 3)] = 0.0f;
 
-			l_ret.m_entry[4] = 0.0f;
-			l_ret.m_entry[5] = 2.0f / p_height;
-			l_ret.m_entry[6] = 0.0f;
-			l_ret.m_entry[7] = 0.0f;
+			l_ret.m_entry[i(1, 0)] = 0.0f;
+			l_ret.m_entry[i(1, 1)] = 2.0f / p_height;
+			l_ret.m_entry[i(1, 2)] = 0.0f;
+			l_ret.m_entry[i(1, 3)] = 0.0f;
 
-			l_ret.m_entry[8] = 0.0f;
-			l_ret.m_entry[9] = 0.0f;
-			l_ret.m_entry[10] = 1.0f / (p_zn - p_zf);
-			l_ret.m_entry[11] = 0.0f;
+			l_ret.m_entry[i(2, 0)] = 0.0f;
+			l_ret.m_entry[i(2, 1)] = 0.0f;
+			l_ret.m_entry[i(2, 2)] = 1.0f / (p_zn - p_zf);
+			l_ret.m_entry[i(2, 3)] = 0.0f;
 
-			l_ret.m_entry[12] = 0.0f;
-			l_ret.m_entry[13] = 0.0f;
-			l_ret.m_entry[14] = p_zn / (p_zn - p_zf);
-			l_ret.m_entry[15] = 1.0f;
+			l_ret.m_entry[i(3, 0)] = 0.0f;
+			l_ret.m_entry[i(3, 1)] = 0.0f;
+			l_ret.m_entry[i(3, 2)] = p_zn / (p_zn - p_zf);
+			l_ret.m_entry[i(3, 3)] = 1.0f;
 
 			return l_ret;
 		}
@@ -1002,17 +993,17 @@ namespace black_cat
 		{
 			bc_matrix4f l_ident;
 
-			for (bcINT l_row = 0; l_row < 4; l_row++)
+			for (auto l_row = 0U; l_row < 4; l_row++)
 			{
-				for (bcINT l_col = 0; l_col < 4; l_col++)
+				for (auto l_col = 0U; l_col < 4; l_col++)
 				{
 					if (l_row == l_col)
 					{
-						l_ident.m_entry[I(l_row, l_col)] = 1.0f;
+						l_ident.m_entry[i(l_row, l_col)] = 1.0f;
 					}
 					else
 					{
-						l_ident.m_entry[I(l_row, l_col)] = 0.0f;
+						l_ident.m_entry[i(l_row, l_col)] = 0.0f;
 					}
 				}
 			}
@@ -1020,9 +1011,28 @@ namespace black_cat
 			return l_ident;
 		}
 
-		bcINT bc_matrix4f::I(bcINT iRow, bcINT iCol)
+		constexpr bcUINT32 bc_matrix4f::i(bcUINT32 p_index)
 		{
-			return 4 * iRow + iCol;
+			if (use_column_major_storage())
+			{
+				return i(p_index / 4, p_index % 4);
+			}
+			else
+			{
+				return p_index;
+			}
+		}
+
+		constexpr bcUINT32 bc_matrix4f::i(bcUINT32 p_row, bcUINT32 p_col)
+		{		
+			if (use_column_major_storage())
+			{
+				return 4 * p_col + p_row;
+			}
+			else
+			{
+				return 4 * p_row + p_col;
+			}
 		}
 	}
 }

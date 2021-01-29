@@ -254,9 +254,6 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcStream.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcMatrix3f.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcMatrix4f.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector2f.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector3f.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector4f.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryHeap.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\bcMessage.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Event\bcEvent.cpp" />
