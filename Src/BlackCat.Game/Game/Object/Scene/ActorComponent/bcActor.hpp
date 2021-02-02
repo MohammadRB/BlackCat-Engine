@@ -82,6 +82,7 @@ namespace black_cat
 
 		inline void bc_actor::draw_debug(bc_shape_drawer& p_shape_drawer) const
 		{
+			const bc_actor_component_debug_draw_context l_context(*this, p_shape_drawer);
 			core::bc_vector_frame<bci_actor_component*> l_components;
 			l_components.reserve(10);
 			
@@ -89,7 +90,6 @@ namespace black_cat
 
 			for(bci_actor_component* l_component : l_components)
 			{
-				bc_actor_component_debug_draw_context l_context(*this, p_shape_drawer);
 				l_component->debug_draw(l_context);
 			}
 		}

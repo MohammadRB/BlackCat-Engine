@@ -1,4 +1,81 @@
 {
   "entities": [
+    {
+      "name": "box",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "box"
+          }
+        },
+        {
+          "name": "rigid_dynamic",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "sphere",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "sphere"
+          }
+        },
+        {
+          "name": "rigid_dynamic",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "convex",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "convex"
+          }
+        },
+        {
+          "name": "rigid_dynamic",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "capsule",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "capsule"
+          }
+        },
+        {
+          "name": "rigid_dynamic",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "xbot",
+      "controller": "xbot",
+      "components": [
+        {
+          "name": "skinned_mesh",
+          "parameters": {
+            "mesh": "xbot",
+            "animations": [ "xbot-neutral-idle" ]
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {}
+        }
+      ]
+    }
   ]
 }

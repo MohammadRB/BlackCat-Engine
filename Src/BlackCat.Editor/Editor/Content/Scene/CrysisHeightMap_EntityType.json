@@ -95,66 +95,6 @@
       ]
     },
     {
-      "name": "box",
-      "components": [
-        {
-          "name": "simple_mesh",
-          "parameters": {
-            "mesh": "box"
-          }
-        },
-        {
-          "name": "rigid_dynamic",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "sphere",
-      "components": [
-        {
-          "name": "simple_mesh",
-          "parameters": {
-            "mesh": "sphere"
-          }
-        },
-        {
-          "name": "rigid_dynamic",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "convex",
-      "components": [
-        {
-          "name": "simple_mesh",
-          "parameters": {
-            "mesh": "convex"
-          }
-        },
-        {
-          "name": "rigid_dynamic",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "capsule",
-      "components": [
-        {
-          "name": "simple_mesh",
-          "parameters": {
-            "mesh": "capsule"
-          }
-        },
-        {
-          "name": "rigid_dynamic",
-          "parameters": {}
-        }
-      ]
-    },
-    {
       "name": "Palm_Tree_Large_d",
       "components": [
         {
@@ -191,38 +131,6 @@
           "name": "vegetable_mesh",
           "parameters": {
             "mesh": "thin_leave_tree_big_bright_green"
-          }
-        },
-        {
-          "name": "rigid_static",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "xbot",
-      "controller": "xbot",
-      "components": [
-        {
-          "name": "skinned_mesh",
-          "parameters": {
-            "mesh": "xbot",
-            "animations": [ "xbot-neutral-idle" ]
-          }
-        },
-        {
-          "name": "rigid_static",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "xbotT",
-      "components": [
-        {
-          "name": "simple_mesh",
-          "parameters": {
-            "mesh": "xbotT"
           }
         },
         {

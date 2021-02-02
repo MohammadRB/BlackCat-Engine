@@ -51,7 +51,7 @@ namespace black_cat
 			m_emitter = core::bc_get_service<bc_game_system>()->get_render_system().get_particle_manager().add_emitter(p_builder);
 		}
 		
-		void bc_particle_emitter_component::initialize(bc_actor_component_initialize_context& p_context)
+		void bc_particle_emitter_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			const auto* l_emitter_name = p_context.m_parameters.get_value<core::bc_string>("emitter_name");
 			if(l_emitter_name != nullptr)
@@ -60,7 +60,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_particle_emitter_component::handle_event(bc_actor_component_event_context& p_context)
+		void bc_particle_emitter_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
 			if(m_emitter)
 			{

@@ -83,13 +83,6 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		void bc_platform_path<g_api_win32>::get_path(bcECHAR* p_buffer, bcSIZE p_buffer_size) const
-		{
-			_copy_current_path_to_buffer(m_pack.m_path, p_buffer, p_buffer_size);
-		}
-
-		template< >
-		BC_COREPLATFORMIMP_DLL
 		void bc_platform_path<g_api_win32>::get_directory(bcECHAR* p_buffer, bcSIZE p_buffer_size) const
 		{
 			_copy_current_path_to_buffer(m_pack.m_path, p_buffer, p_buffer_size);
@@ -184,6 +177,13 @@ namespace black_cat
 			m_pack.m_path.assign(l_buffer);
 		}
 
+		template< >
+		BC_COREPLATFORMIMP_DLL
+		void bc_platform_path<g_api_win32>::get_string(bcECHAR* p_buffer, bcSIZE p_buffer_size) const
+		{
+			_copy_current_path_to_buffer(m_pack.m_path, p_buffer, p_buffer_size);
+		}
+		
 		template< >
 		BC_COREPLATFORMIMP_DLL
 		bool bc_platform_path<g_api_win32>::is_relative() const

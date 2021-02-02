@@ -31,9 +31,9 @@ namespace black_cat
 
 			physics::bc_rigid_static get_static_body() const noexcept;
 
-			void initialize(bc_actor_component_initialize_context& p_context) override;
+			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
-			void handle_event(bc_actor_component_event_context& p_context) override;
+			void handle_event(const bc_actor_component_event_context& p_context) override;
 
 		private:
 			void create_px_shapes_from_height_map(bc_physics_system& p_physics_system,

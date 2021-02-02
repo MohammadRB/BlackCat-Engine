@@ -50,7 +50,7 @@ namespace black_cat
 			return m_px_actor_ref.get();
 		}
 
-		void bc_rigid_dynamic_component::initialize(bc_actor_component_initialize_context& p_context)
+		void bc_rigid_dynamic_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>();
 
@@ -70,7 +70,7 @@ namespace black_cat
 			throw bc_invalid_operation_exception("Rigid dynamic component needs mesh component.");
 		}
 
-		void bc_rigid_dynamic_component::handle_event(bc_actor_component_event_context& p_context)
+		void bc_rigid_dynamic_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
 			const auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
 			if(l_world_transform_event && !l_world_transform_event->is_px_simulation_transform())

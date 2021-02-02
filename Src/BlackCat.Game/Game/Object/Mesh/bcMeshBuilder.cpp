@@ -123,14 +123,21 @@ namespace black_cat
 
 		bc_mesh_builder& bc_mesh_builder::with_auto_scale(bcFLOAT p_scale)
 		{
-			m_scale = p_scale;
+			m_auto_scale = p_scale;
 			return *this;
 		}
 
-		bc_mesh bc_mesh_builder::build(const bcCHAR* p_name, bc_mesh_collider_ptr p_colliders)
+		bc_mesh_builder& bc_mesh_builder::with_lod(bc_mesh_ptr p_mesh)
+		{
+			m_level_of_details.push_back(std::move(p_mesh));
+			return *this;
+		}
+
+
+		bc_mesh bc_mesh_builder::build(const bcCHAR* p_name, bc_mesh_collider_ptr p_collider)
 		{
 			m_name = p_name;
-			return bc_mesh(std::move(*this), std::move(p_colliders));
+			return bc_mesh(std::move(*this), std::move(p_collider));
 		}
 	}	
 }

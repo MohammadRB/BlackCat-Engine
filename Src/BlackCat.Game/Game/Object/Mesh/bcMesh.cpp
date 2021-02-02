@@ -3,9 +3,12 @@
 #include "Game/GamePCH.h"
 #include "Game/bcException.h"
 #include "Game/Object/Mesh/bcMesh.h"
-#include "Game/Object/Mesh/bcMeshUtility.h"
 #include "Game/Object/Mesh/bcSubMesh.h"
+#include "Game/Object/Mesh/bcMeshBuilder.h"
+#include "Game/Object/Mesh/bcMeshCollider.h"
 #include "Game/Object/Mesh/bcMeshPartCollider.h"
+#include "Game/Object/Mesh/bcMeshLevelOfDetail.h"
+#include "Game/Object/Mesh/bcMeshUtility.h"
 #include "Game/Object/Mesh/bcSubMeshTransform.h"
 
 namespace black_cat
@@ -18,7 +21,7 @@ namespace black_cat
 			m_scale(1),
 			m_skinned(p_builder.m_skinned),
 			m_root(nullptr),
-			m_colliders(std::move(p_colliders))
+			m_collider(std::move(p_colliders))
 		{
 			// Reserve needed memory for nodes because we use raw pointers in bc_mesh_node for parent and children
 			m_nodes.resize(p_builder.m_node_count);
@@ -27,6 +30,8 @@ namespace black_cat
 			m_inverse_bind_poses.resize(p_builder.m_node_count);
 			m_meshes.resize(p_builder.m_mesh_part_count);
 			m_render_states.resize(p_builder.m_mesh_part_count);
+			m_level_of_details.resize(p_builder.m_level_of_details.size());
+			m_level_of_details_map.resize(p_builder.m_level_of_details.size() + 1);
 
 			auto l_mesh_count = 0U;
 			
@@ -70,8 +75,8 @@ namespace black_cat
 					
 					m_render_states[l_mesh_index] = std::move(l_builder_mesh.m_render_state);
 
-					const auto* l_mesh_colliders = m_colliders->find_mesh_colliders(m_meshes[l_mesh_index].m_name);
-					m_colliders_map.push_back(l_mesh_colliders);
+					const auto* l_mesh_colliders = m_collider->find_mesh_colliders(m_meshes[l_mesh_index].m_name);
+					m_collider_map.push_back(l_mesh_colliders);
 				}
 				
 				m_nodes_map.insert(std::make_pair(hash_t()(l_node.m_name.c_str()), &l_node));
@@ -87,16 +92,61 @@ namespace black_cat
 				l_mesh_count += l_builder_node.m_mesh_parts.size();
 			}
 
+			std::copy
+			(
+				std::begin(p_builder.m_level_of_details),
+				std::end(p_builder.m_level_of_details),
+				std::begin(m_level_of_details)
+			);
+			m_level_of_details_map[0] = this;
+			std::transform
+			(
+				std::begin(p_builder.m_level_of_details),
+				std::end(p_builder.m_level_of_details),
+				std::begin(m_level_of_details_map) + 1,
+				[](const bc_mesh_ptr& p_mesh)
+				{
+					return p_mesh.get();
+				}
+			);
+
 			// It is important to calculate inverse bind poses matrices before applying auto-scale
 			// to avoid reversing auto-scale
 			_calculate_inverse_bind_pose();
 			
-			if(p_builder.m_scale.is_set())
+			if(p_builder.m_auto_scale.is_set())
 			{
-				_apply_auto_scale(*p_builder.m_scale);
+				_apply_auto_scale(*p_builder.m_auto_scale);
 			}
 
 			_calculate_collider_initial_transforms();
+		}
+
+		bc_mesh::bc_mesh(bc_mesh&& p_other) noexcept
+		{
+			operator=(std::move(p_other));
+		}
+
+		bc_mesh& bc_mesh::operator=(bc_mesh&& p_other) noexcept
+		{
+			m_name = std::move(p_other.m_name);
+			m_auto_scale = p_other.m_auto_scale;
+			m_scale = p_other.m_scale;
+			m_skinned = p_other.m_skinned;
+			m_root = p_other.m_root;
+			m_nodes = std::move(p_other.m_nodes);
+			m_nodes_map = std::move(p_other.m_nodes_map);
+			m_transformations = std::move(p_other.m_transformations);
+			m_inverse_bind_poses = std::move(p_other.m_inverse_bind_poses);
+			m_meshes = std::move(p_other.m_meshes);
+			m_render_states = std::move(p_other.m_render_states);
+			m_collider = std::move(p_other.m_collider);
+			m_collider_map = std::move(p_other.m_collider_map);
+			m_level_of_details = std::move(p_other.m_level_of_details);
+			m_level_of_details_map = std::move(p_other.m_level_of_details_map);
+			m_level_of_details_map[0] = this;
+			
+			return *this;
 		}
 
 		const bc_mesh_node* bc_mesh::find_node(bc_mesh_node::node_index_t p_index) const noexcept
@@ -179,7 +229,7 @@ namespace black_cat
 				throw bc_out_of_range_exception("Invalid mesh index");
 			}
 
-			return *m_colliders_map[p_node.m_first_mesh_index + p_mesh_index];
+			return *m_collider_map[p_node.m_first_mesh_index + p_mesh_index];
 		}
 
 		void bc_mesh::_apply_auto_scale(bcFLOAT p_auto_scale)
@@ -207,7 +257,7 @@ namespace black_cat
 				l_mesh_part_data.m_bound_box.scale(m_scale);
 			}
 
-			for(const auto& l_mesh_part_collider : *m_colliders)
+			for(const auto& l_mesh_part_collider : *m_collider)
 			{
 				for(bc_mesh_part_collider_entry& l_entry : l_mesh_part_collider.second)
 				{
@@ -287,7 +337,7 @@ namespace black_cat
 			bc_sub_mesh_mat4_transform l_transforms(*get_root());
 			bc_mesh_utility::calculate_absolute_transforms(*this, core::bc_matrix4f::identity(), l_transforms, l_bound_box);
 
-			for (const auto& l_mesh_part_collider : *m_colliders)
+			for (const auto& l_mesh_part_collider : *m_collider)
 			{
 				for (bc_mesh_part_collider_entry& l_entry : l_mesh_part_collider.second)
 				{					

@@ -52,11 +52,19 @@ namespace black_cat
 
 		m_leaf_render_states_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
-			game::bc_main_camera_render_state_query(p_param.m_frame_renderer.create_buffer()).only<game::bc_vegetable_mesh_component>(true)
+			game::bc_main_camera_render_state_query
+			(
+				p_param.m_current_camera,
+				p_param.m_frame_renderer.create_buffer()
+			).only<game::bc_vegetable_mesh_component>(true)
 		);
 		m_trunk_render_states_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
-			game::bc_main_camera_render_state_query(p_param.m_frame_renderer.create_buffer()).only<game::bc_vegetable_mesh_component>(false)
+			game::bc_main_camera_render_state_query
+			(
+				p_param.m_current_camera,
+				p_param.m_frame_renderer.create_buffer()
+			).only<game::bc_vegetable_mesh_component>(false)
 		);
 	}
 

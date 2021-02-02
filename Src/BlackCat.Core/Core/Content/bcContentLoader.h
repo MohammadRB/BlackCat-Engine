@@ -99,6 +99,7 @@ namespace black_cat
 		public:
 			bc_content_loading_context()
 				: m_file_path(nullptr),
+				m_file_variant(nullptr),
 				m_file(),
 				m_file_buffer(nullptr),
 				m_file_buffer_size(0),

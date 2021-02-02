@@ -45,8 +45,6 @@ namespace black_cat
 
 			bcSIZE get_length() const;
 
-			void get_path(bcECHAR* p_buffer, bcSIZE p_buffer_size) const;
-
 			void get_directory(bcECHAR* p_buffer, bcSIZE p_buffer_size) const;
 
 			void set_directory(const bcECHAR* p_directory);
@@ -71,6 +69,8 @@ namespace black_cat
 			 */
 			void combine(const bc_platform_path& p_other);
 
+			void get_string(bcECHAR* p_buffer, bcSIZE p_buffer_size) const;
+			
 			bool is_relative() const;
 
 			/**
@@ -96,8 +96,6 @@ namespace black_cat
 			static void get_absolute_path(const bcECHAR* p_relative_path, bcECHAR* p_buffer, bcSIZE p_buffer_size);
 
 			static bc_path_info get_path_info();
-
-		protected:
 
 		private:
 			platform_pack m_pack;

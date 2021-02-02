@@ -5,6 +5,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
 
 namespace black_cat
 {
@@ -35,12 +36,19 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
-		void bc_simple_mesh_component::handle_event(bc_actor_component_event_context& p_context)
+		void bc_simple_mesh_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
 			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_context.m_event);
 			if(l_world_transform_event)
 			{
 				bc_mesh_component::set_world_transform(p_context.m_actor, l_world_transform_event->get_transform());
+				return;
+			}
+
+			const auto* l_bound_box_event = core::bci_message::as<bc_actor_event_bound_box_changed>(p_context.m_event);
+			if(l_bound_box_event)
+			{
+				bc_mesh_component::update_lod_factor(l_bound_box_event->get_bound_box());
 			}
 		}
 	}

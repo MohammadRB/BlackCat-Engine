@@ -13,15 +13,17 @@
 #include "Game/bcExport.h"
 #include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/System/Render/State/bcRenderState.h"
-#include "Game/Object/Mesh/bcMeshCollider.h"
-#include "Game/Object/Mesh/bcRenderMaterial.h"
 #include "Game/Object/Mesh/bcMeshNode.h"
-#include "Game/Object/Mesh/bcMeshBuilder.h"
+#include "Game/Object/Mesh/bcMeshCollider.h"
+#include "Game/Object/Mesh/bcMeshLevelOfDetail.h"
+#include "Game/Object/Mesh/bcRenderMaterial.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		class bc_mesh_builder;
+		
 		struct bc_mesh_part_data
 		{
 			core::bc_string m_name;
@@ -46,11 +48,11 @@ namespace black_cat
 		public:
 			explicit bc_mesh(bc_mesh_builder p_builder, bc_mesh_collider_ptr p_colliders);
 
-			bc_mesh(bc_mesh&&) = default;
+			bc_mesh(bc_mesh&& p_other) noexcept;
 
 			~bc_mesh() = default;
 
-			bc_mesh& operator=(bc_mesh&&) = default;
+			bc_mesh& operator=(bc_mesh&& p_other) noexcept;
 
 			const core::bc_string& get_name() const noexcept;
 
@@ -87,6 +89,8 @@ namespace black_cat
 			const physics::bc_bound_box& get_node_mesh_bound_box(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_mesh_part_collider& get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+
+			bc_mesh_level_of_detail get_level_of_details() const noexcept;
 			
 		private:
 			void _apply_auto_scale(bcFLOAT p_auto_scale);
@@ -106,8 +110,11 @@ namespace black_cat
 			core::bc_vector_movable< core::bc_matrix4f > m_inverse_bind_poses;
 			core::bc_vector< bc_mesh_part_data > m_meshes;
 			core::bc_vector< bc_render_state_ptr > m_render_states;
-			bc_mesh_collider_ptr m_colliders;
-			core::bc_vector< const bc_mesh_part_collider* > m_colliders_map;
+			bc_mesh_collider_ptr m_collider;
+			core::bc_vector< const bc_mesh_part_collider* > m_collider_map;
+
+			core::bc_vector< core::bc_content_ptr< bc_mesh > > m_level_of_details;
+			core::bc_vector_movable< const bc_mesh* > m_level_of_details_map;
 		};
 
 		using bc_mesh_ptr = core::bc_content_ptr< bc_mesh >;
@@ -134,7 +141,7 @@ namespace black_cat
 		
 		inline const bc_mesh_collider& bc_mesh::get_collider() const noexcept
 		{
-			return *m_colliders;
+			return *m_collider;
 		}
 
 		inline const bc_mesh_node* bc_mesh::get_root() const noexcept
@@ -160,6 +167,11 @@ namespace black_cat
 		inline const core::bc_matrix4f& bc_mesh::get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept
 		{
 			return m_inverse_bind_poses[p_node.m_transform_index];
+		}
+
+		inline bc_mesh_level_of_detail bc_mesh::get_level_of_details() const noexcept
+		{
+			return bc_mesh_level_of_detail(m_level_of_details_map.data(), m_level_of_details_map.size());
 		}
 	}
 }

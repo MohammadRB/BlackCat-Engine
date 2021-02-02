@@ -24,7 +24,7 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			void handle_event(bc_actor_component_event_context& p_context) override;
+			void handle_event(const bc_actor_component_event_context& p_context) override;
 		};
 	}
 }

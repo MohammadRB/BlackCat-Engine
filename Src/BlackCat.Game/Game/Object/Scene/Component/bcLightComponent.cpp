@@ -40,7 +40,7 @@ namespace black_cat
 			return m_light.get();
 		}
 
-		void bc_light_component::initialize(bc_actor_component_initialize_context& p_context)
+		void bc_light_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			auto& l_game_system = *core::bc_get_service<bc_game_system>();
 			auto& l_light_manager = l_game_system.get_render_system().get_light_manager();
@@ -123,7 +123,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_light_component::handle_event(bc_actor_component_event_context& p_context)
+		void bc_light_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
 			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_context.m_event);
 			if(l_world_transform_event)

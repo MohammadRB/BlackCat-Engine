@@ -68,7 +68,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_hierarchy_component::initialize(bc_actor_component_initialize_context& p_context)
+		void bc_hierarchy_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			const auto& l_child_entity_names = p_context.m_parameters.get_value_throw< core::bc_string >(constant::g_param_child_actor);
 			auto* l_entity_manager = core::bc_get_service< bc_entity_manager >();

@@ -40,13 +40,17 @@ namespace black_cat
 
 	void bc_gbuffer_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
 	{
-		if(m_render_states_query.is_executed())
+		if (m_render_states_query.is_executed())
 		{
 			m_render_states = m_render_states_query.get().get_render_state_buffer();
 		}
-		m_render_states_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+		m_render_states_query = core::bc_get_service< core::bc_query_manager >()->queue_query
 		(
-			game::bc_main_camera_render_state_query(p_param.m_frame_renderer.create_buffer()).only<game::bc_simple_mesh_component>()
+			game::bc_main_camera_render_state_query
+			(
+				p_param.m_current_camera,
+				p_param.m_frame_renderer.create_buffer()
+			).only< game::bc_simple_mesh_component >()
 		);
 	}
 

@@ -150,48 +150,12 @@
           }
         },
         {
-          "content_title": "box",
-          "content_loader": "mesh",
-          "content_file": "content\\model\\box.fbx",
-          "content_parameter": {
-            "high_detail_query_shape": false,
-            "auto_scale": 1.5
-          }
-        },
-        {
-          "content_title": "sphere",
-          "content_loader": "mesh",
-          "content_file": "content\\model\\sphere.fbx",
-          "content_parameter": {
-            "high_detail_query_shape": false,
-            "auto_scale": 1.5
-          }
-        },
-        {
-          "content_title": "convex",
-          "content_loader": "mesh",
-          "content_file": "content\\model\\convex.fbx",
-          "content_parameter": {
-            "high_detail_query_shape": false,
-            "auto_scale": 1.5
-          }
-        },
-        {
-          "content_title": "capsule",
-          "content_loader": "mesh",
-          "content_file": "content\\model\\capsule.fbx",
-          "content_parameter": {
-            "high_detail_query_shape": false,
-            "auto_scale": 1.5
-          }
-        },
-        {
           "content_title": "Palm_Tree_Large_d",
           "content_loader": "mesh",
           "content_file": "content\\model\\nature\\palm_tree\\Palm_Tree_Large_d.FBX",
           "content_parameter": {
-            "high_detail_query_shape": true,
-            "auto_scale": 15.0
+            "auto_scale": 15.0,
+            "high_detail_query_shape": true
           }
         },
         {
@@ -199,8 +163,8 @@
           "content_loader": "mesh",
           "content_file": "content\\model\\nature\\Green_Fern_Bush_a\\Green_Fern_Bush_a.FBX",
           "content_parameter": {
-            "high_detail_query_shape": true,
-            "auto_scale": 5.0
+            "auto_scale": 5.0,
+            "high_detail_query_shape": true
           }
         },
         {
@@ -208,35 +172,8 @@
           "content_loader": "mesh",
           "content_file": "content\\model\\nature\\trees\\thin_leave_tree_big_bright_green.FBX",
           "content_parameter": {
-            "high_detail_query_shape": true,
-            "auto_scale": 20.0
-          }
-        },
-        {
-          "content_title": "xbot",
-          "content_loader": "mesh",
-          "content_file": "content\\model\\xbot\\xbot-collision.fbx",
-          "content_parameter": {
-            "high_detail_query_shape": true,
-            "auto_scale": 10.0,
-            "skinned": true
-          }
-        },
-        {
-          "content_title": "xbotT",
-          "content_loader": "mesh",
-          "content_file": "content\\model\\xbot\\xbot.fbx",
-          "content_parameter": {
-            "high_detail_query_shape": true,
-            "auto_scale": 10.0,
-            "skinned": false
-          }
-        },
-        {
-          "content_title": "xbot-neutral-idle",
-          "content_loader": "animation",
-          "content_file": "content\\model\\xbot\\xbot-neutral-idle.fbx",
-          "content_parameter": {
+            "auto_scale": 20.0,
+            "high_detail_query_shape": true
           }
         }
       ]

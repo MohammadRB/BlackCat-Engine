@@ -104,7 +104,7 @@ namespace black_cat
 		core::bc_register_loader< graphic::bc_geometry_shader_content, bc_geometry_shader_loader >("geometry_shader", core::bc_make_loader< bc_geometry_shader_loader >());
 		core::bc_register_loader< graphic::bc_pixel_shader_content, bc_pixel_shader_loader >("pixel_shader", core::bc_make_loader< bc_pixel_shader_loader >());
 		core::bc_register_loader< graphic::bc_compute_shader_content, bc_compute_shader_loader >("compute_shader", core::bc_make_loader< bc_compute_shader_loader >());
-		core::bc_register_loader< game::bc_mesh_collider, bc_mesh_collider_loader >("mesh_collider", core::bc_make_loader< bc_mesh_collider_loader >(true));
+		core::bc_register_loader< game::bc_mesh_collider, bc_mesh_collider_loader >("mesh_collider", core::bc_make_loader< bc_mesh_collider_loader >());
 		core::bc_register_loader< game::bc_mesh, bc_mesh_loader >("mesh", core::bc_make_loader< bc_mesh_loader >());
 		core::bc_register_loader< game::bc_skinned_animation, bc_skinned_animation_loader >("animation", core::bc_make_loader< bc_skinned_animation_loader >());
 		core::bc_register_loader< game::bc_scene, bc_scene_loader >("scene", core::bc_make_loader< bc_scene_loader >(std::move(p_parameters.m_app_parameters.m_scene_graph_factory)));
@@ -157,13 +157,13 @@ namespace black_cat
 		auto& l_material_manager = p_game_system.get_render_system().get_material_manager();
 
 		l_content_stream_manager->read_stream_file(p_game_system.get_file_system().get_content_data_path(bcL("ContentStream.json")).c_str());
-		l_entity_manager->read_entity_file(p_game_system.get_file_system().get_content_data_path(bcL("EntityType.json")).c_str());
 		l_material_manager.read_material_file(p_game_system.get_file_system().get_content_data_path(bcL("Material.json")).c_str());
+		l_entity_manager->read_entity_file(p_game_system.get_file_system().get_content_data_path(bcL("EntityType.json")).c_str());
 
-		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_resources");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_shaders");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "deferred_rendering_shaders");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "particle_shaders");
+		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_assets");
 	}
 
 	void bc_register_particle_emitters(game::bc_game_system& p_game_system)
@@ -213,10 +213,10 @@ namespace black_cat
 
 	void bc_unload_engine_resources(core::bc_content_stream_manager& p_stream_manager)
 	{
+		p_stream_manager.unload_content_stream("engine_assets");
 		p_stream_manager.unload_content_stream("particle_shaders");
 		p_stream_manager.unload_content_stream("deferred_rendering_shaders");
 		p_stream_manager.unload_content_stream("engine_shaders");
-		p_stream_manager.unload_content_stream("engine_resources");
 	}
 
 	void bc_close_engine_services()

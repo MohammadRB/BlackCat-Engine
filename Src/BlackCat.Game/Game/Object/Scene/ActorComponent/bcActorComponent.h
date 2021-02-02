@@ -118,17 +118,17 @@ namespace black_cat
 			 * In other word data members that act like entity template data.
 			 * \param p_context
 			 */
-			virtual void initialize(bc_actor_component_initialize_context& p_context);
+			virtual void initialize(const bc_actor_component_initialize_context& p_context);
 
-			virtual void load_instance(bc_actor_component_load_context& p_context);
+			virtual void load_instance(const bc_actor_component_load_context& p_context);
 
-			virtual void write_instance(bc_actor_component_write_context& p_context);
+			virtual void write_instance(const bc_actor_component_write_context& p_context);
 
-			virtual void update(bc_actor_component_update_content& p_context);
+			virtual void update(const bc_actor_component_update_content& p_context);
 
-			virtual void handle_event(bc_actor_component_event_context& p_context);
+			virtual void handle_event(const bc_actor_component_event_context& p_context);
 
-			virtual void debug_draw(bc_actor_component_debug_draw_context& p_context);
+			virtual void debug_draw(const bc_actor_component_debug_draw_context& p_context);
 			
 		protected:
 			explicit bci_actor_component(bc_actor_component_index p_index) noexcept;
@@ -150,27 +150,27 @@ namespace black_cat
 			return m_index;
 		}
 
-		inline void bci_actor_component::initialize(bc_actor_component_initialize_context& p_context)
+		inline void bci_actor_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 		}
 
-		inline void bci_actor_component::load_instance(bc_actor_component_load_context& p_context)
+		inline void bci_actor_component::load_instance(const bc_actor_component_load_context& p_context)
 		{
 		}
 
-		inline void bci_actor_component::write_instance(bc_actor_component_write_context& p_context)
+		inline void bci_actor_component::write_instance(const bc_actor_component_write_context& p_context)
 		{
 		}
 
-		inline void bci_actor_component::update(bc_actor_component_update_content& p_context)
+		inline void bci_actor_component::update(const bc_actor_component_update_content& p_context)
 		{
 		}
 
-		inline void bci_actor_component::handle_event(bc_actor_component_event_context& p_context)
+		inline void bci_actor_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
 		}
 		
-		inline void bci_actor_component::debug_draw(bc_actor_component_debug_draw_context& p_context)
+		inline void bci_actor_component::debug_draw(const bc_actor_component_debug_draw_context& p_context)
 		{
 		}
 		

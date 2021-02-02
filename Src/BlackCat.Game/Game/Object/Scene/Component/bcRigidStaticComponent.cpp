@@ -54,7 +54,7 @@ namespace black_cat
 			return m_px_actor_ref.get();
 		}
 
-		void bc_rigid_static_component::initialize(bc_actor_component_initialize_context& p_context)
+		void bc_rigid_static_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			auto& l_physics_system = core::bc_get_service<bc_game_system>()->get_physics_system();
 			auto& l_physics = l_physics_system.get_physics();
@@ -84,7 +84,7 @@ namespace black_cat
 			throw bc_invalid_operation_exception("Rigid static component needs either mesh or height map component.");
 		}
 
-		void bc_rigid_static_component::handle_event(bc_actor_component_event_context& p_context)
+		void bc_rigid_static_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
 			const auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
 			if (l_world_transform_event)

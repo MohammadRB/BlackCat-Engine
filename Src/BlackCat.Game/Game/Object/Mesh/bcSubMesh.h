@@ -5,6 +5,7 @@
 #include "Core/Container/bcVector.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/Object/Mesh/bcMesh.h"
+#include "Game/Object/Mesh/bcMeshLevelOfDetail.h"
 #include "Game/Object/Mesh/bcMeshUtility.h"
 #include "Game/Object/Mesh/bcSubMeshTransform.h"
 
@@ -31,7 +32,7 @@ namespace black_cat
 			bc_sub_mesh& operator=(bc_sub_mesh&&) noexcept;
 
 			const bc_mesh_ptr& get_mesh() const noexcept;
-
+			
 			bcFLOAT get_mesh_auto_scale() const noexcept;
 			
 			bcFLOAT get_mesh_scale() const noexcept;
@@ -39,6 +40,8 @@ namespace black_cat
 			bool get_skinned() const noexcept;
 			
 			const bc_mesh_collider& get_mesh_collider() const noexcept;
+
+			bc_mesh_level_of_detail get_mesh_level_of_detail() const noexcept;
 
 			const bc_mesh_node* get_root_node() const noexcept;
 
@@ -107,6 +110,11 @@ namespace black_cat
 		inline const bc_mesh_collider& bc_sub_mesh::get_mesh_collider() const noexcept
 		{
 			return m_mesh->get_collider();
+		}
+
+		inline bc_mesh_level_of_detail bc_sub_mesh::get_mesh_level_of_detail() const noexcept
+		{
+			return m_mesh->get_level_of_details();
 		}
 		
 		inline const bc_mesh_node* bc_sub_mesh::get_root_node() const noexcept

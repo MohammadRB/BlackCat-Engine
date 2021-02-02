@@ -133,7 +133,7 @@ namespace black_cat
 			return m_wind.is_set() ? &m_wind.get() : nullptr;
 		}
 
-		void bc_wind_component::initialize(bc_actor_component_initialize_context& p_context)
+		void bc_wind_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			const auto& l_wind_type = p_context.m_parameters.get_value_throw<core::bc_string>("type");
 
@@ -164,7 +164,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_wind_component::handle_event(bc_actor_component_event_context& p_context)
+		void bc_wind_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
 			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_context.m_event);
 			if (l_world_transform_event)
@@ -177,7 +177,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_wind_component::update(bc_actor_component_update_content& p_context)
+		void bc_wind_component::update(const bc_actor_component_update_content& p_context)
 		{
 		}
 	}	

@@ -5,6 +5,7 @@
 #include "Core/bcConstant.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Messaging/Query/bcQuery.h"
+#include "Game/System/Input/bcCameraInstance.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
@@ -21,7 +22,7 @@ namespace black_cat
 			BC_QUERY(hms)
 			
 		public:
-			bc_height_map_scene_query(bc_render_state_buffer p_scene_query);
+			bc_height_map_scene_query(const bc_camera_instance& p_camera, bc_render_state_buffer p_scene_query);
 
 			bc_height_map_scene_query(bc_height_map_scene_query&&) noexcept;
 
@@ -37,12 +38,14 @@ namespace black_cat
 			
 		private:
 			bc_scene_graph_query m_scene_query;
+			bc_camera_instance m_camera;
 			bc_render_state_buffer m_render_buffer;
 			core::bc_vector<bc_height_map_ptr> m_height_maps;
 		};
 
-		inline bc_height_map_scene_query::bc_height_map_scene_query(bc_render_state_buffer p_scene_query)
+		inline bc_height_map_scene_query::bc_height_map_scene_query(const bc_camera_instance& p_camera, bc_render_state_buffer p_scene_query)
 			: bc_query(message_name()),
+			m_camera(p_camera),
 			m_render_buffer(std::move(p_scene_query))
 		{
 		}
@@ -50,6 +53,7 @@ namespace black_cat
 		inline bc_height_map_scene_query::bc_height_map_scene_query(bc_height_map_scene_query&& p_other) noexcept
 			: bc_query(p_other),
 			m_scene_query(std::move(p_other.m_scene_query)),
+			m_camera(p_other.m_camera),
 			m_render_buffer(std::move(p_other.m_render_buffer)),
 			m_height_maps(std::move(p_other.m_height_maps))
 		{
@@ -61,6 +65,7 @@ namespace black_cat
 		{
 			bc_query::operator=(p_other);
 			m_scene_query = std::move(p_other.m_scene_query);
+			m_camera = p_other.m_camera;
 			m_render_buffer = std::move(p_other.m_render_buffer);
 			m_height_maps = std::move(p_other.m_height_maps);
 
@@ -91,7 +96,7 @@ namespace black_cat
 				m_height_maps.push_back(l_height_map);
 			}
 
-			l_scene_buffer.render_actors(m_render_buffer);
+			l_scene_buffer.render_actors(m_camera, m_render_buffer);
 		}
 	}
 }

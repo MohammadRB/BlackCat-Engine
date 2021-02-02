@@ -63,9 +63,13 @@ namespace black_cat
 
 		m_scene_queries[l_cascade_absolute_index] = p_param.m_query_manager.queue_query
 		(
-			game::bc_scene_graph_render_state_query(p_param.m_frame_renderer.create_buffer())
-				.with(game::bc_camera_frustum(p_param.m_cascade_camera))
-				.only< game::bc_simple_mesh_component >()
+			game::bc_scene_graph_render_state_query
+			(
+				p_param.m_current_camera,
+				p_param.m_frame_renderer.create_buffer()
+			)
+			.with(game::bc_camera_frustum(p_param.m_cascade_camera))
+			.only< game::bc_simple_mesh_component >()
 		);
 		
 		const auto& l_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index];

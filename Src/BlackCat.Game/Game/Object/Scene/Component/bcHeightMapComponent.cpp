@@ -45,19 +45,19 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
-		void bc_height_map_component::initialize(bc_actor_component_initialize_context& p_context)
+		void bc_height_map_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			auto& l_height_map_name = p_context.m_parameters.get_value_throw< core::bc_string >(constant::g_param_heightmap);
 			m_height_map = p_context.m_stream_manager.find_content_throw(l_height_map_name.c_str());
 		}
 
-		void bc_height_map_component::write_instance(bc_actor_component_write_context& p_context)
+		void bc_height_map_component::write_instance(const bc_actor_component_write_context& p_context)
 		{
 			auto* l_content_manager = core::bc_get_service< core::bc_content_manager >();
 			l_content_manager->save(*m_height_map);
 		}
 
-		void bc_height_map_component::handle_event(bc_actor_component_event_context& p_context)
+		void bc_height_map_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
 			auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
 			if(l_world_transform_event)
@@ -80,10 +80,10 @@ namespace black_cat
 			}
 		}
 
-		void bc_height_map_component::render(bc_render_state_buffer& p_buffer) const
+		void bc_height_map_component::render(const bc_actor_component_render_context& p_context) const
 		{
 			const bc_render_instance l_instance(m_transform);
-			p_buffer.add_render_instance(m_height_map->get_render_state_ptr(), l_instance);
+			p_context.m_buffer.add_render_instance(m_height_map->get_render_state_ptr(), l_instance);
 		}
 	}
 }

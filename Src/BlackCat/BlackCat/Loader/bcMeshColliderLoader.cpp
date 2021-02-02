@@ -19,11 +19,6 @@ namespace black_cat
 {
 	std::tuple<core::bc_unique_ptr< bcBYTE >, physics::bc_triangle_mesh_desc> _bc_extract_triangle_mesh(const aiMesh* p_ai_mesh);
 
-	bc_mesh_collider_loader::bc_mesh_collider_loader(bool p_high_detail_query_shape)
-		: m_high_detail_query_shape(p_high_detail_query_shape)
-	{
-	}
-
 	bool bc_mesh_collider_loader::support_offline_processing() const
 	{
 		return false;
@@ -78,7 +73,7 @@ namespace black_cat
 			bc_mesh_loader_utility::calculate_px_node_mapping(*l_scene, *l_scene->mRootNode, l_px_node_mapping);
 		}
 		
-		const bool l_generate_high_detail_query_shape = m_high_detail_query_shape && bc_null_default(p_context.m_parameters->get_value<bool>(constant::g_param_high_detail_query_shape), false);
+		const bool l_generate_high_detail_query_shape = bc_null_default(p_context.m_parameters->get_value<bool>(constant::g_param_high_detail_query_shape), true);
 		game::bc_game_system& l_game_system = *core::bc_get_service< game::bc_game_system >();
 		game::bc_mesh_collider l_result;
 

@@ -13,6 +13,8 @@ namespace black_cat
 		BC_PARAMETER(mesh_skinned, "skinned");
 		BC_PARAMETER(sub_mesh, "sub_mesh");
 		BC_PARAMETER(auto_scale, "auto_scale");
+		BC_PARAMETER(mesh_collider, "collider");
+		BC_PARAMETER(mesh_is_lod, "is_lod");
 		BC_PARAMETER(high_detail_query_shape, "high_detail_query_shape");
 		BC_PARAMETER(animations, "animations");
 		BC_PARAMETER(child_actor, "childs");

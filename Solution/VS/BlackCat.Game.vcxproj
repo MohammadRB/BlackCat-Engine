@@ -219,10 +219,12 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcSkinnedAnimation.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcAnimationJobLocalToModelTransform.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcAnimationJobLocalTransform.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcAnimationJobMeshSkinning.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcAnimationJobModelToSkinnedTransform.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcAnimationJobSampling.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcAnimationJobSequence.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcHeightMap.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshLevelOfDetail.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshBuilder.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshNode.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshUtility.h" />

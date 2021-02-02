@@ -13,10 +13,10 @@ namespace black_cat
 	namespace game
 	{
 		template< typename T >
-		class bc_sub_mesh_transform : public core::bc_iterator_adapter< core::bc_vector_movable< T > >
+		class bc_sub_mesh_transform : public core::bc_iterator_adapter< core::bc_vector< T, core::bc_aligned_allocator_movable< T, 16 > > >
 		{
 		private:
-			using iterator_adapter_t = core::bc_iterator_adapter< core::bc_vector_movable< T > >;
+			using iterator_adapter_t = core::bc_iterator_adapter< core::bc_vector< T, core::bc_aligned_allocator_movable< T, 16 > > >;
 			using container_type = typename iterator_adapter_t::container_type;
 			
 		public:

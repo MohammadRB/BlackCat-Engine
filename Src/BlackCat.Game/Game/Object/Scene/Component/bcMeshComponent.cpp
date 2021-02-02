@@ -11,6 +11,7 @@
 #include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
 #include "Game/bcUtility.h"
 #include "Game/bcConstant.h"
+#include "Game/System/Input/bcCameraInstance.h"
 
 namespace black_cat
 {
@@ -19,7 +20,8 @@ namespace black_cat
 		bc_mesh_component::bc_mesh_component(bc_actor_component_index p_index)
 			: bc_render_component(p_index),
 			m_sub_mesh(),
-			m_world_transforms()
+			m_world_transforms(),
+			m_lod_factor(0)
 		{
 		}
 
@@ -41,7 +43,7 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_mesh_component::initialize(bc_actor_component_initialize_context& p_context)
+		void bc_mesh_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			const auto& l_mesh_name = p_context.m_parameters.get_value_throw< core::bc_string >(constant::g_param_mesh);
 			const auto* l_sub_mesh_name = p_context.m_parameters.get_value< core::bc_string >(constant::g_param_sub_mesh);
@@ -51,13 +53,16 @@ namespace black_cat
 			m_world_transforms = bc_sub_mesh_mat4_transform(*m_sub_mesh.get_root_node());
 		}
 
-		void bc_mesh_component::render(bc_render_state_buffer& p_buffer) const
+		void bc_mesh_component::render(const bc_actor_component_render_context& p_context) const
 		{
-			const bc_mesh_node* l_root_pointer = m_sub_mesh.get_root_node();
-			render_mesh(p_buffer, m_sub_mesh, m_world_transforms, &l_root_pointer, &l_root_pointer + 1, nullptr);
+			const auto* l_root_pointer = m_sub_mesh.get_root_node();
+			const auto l_mesh_lod = m_sub_mesh.get_mesh_level_of_detail();
+			const auto& l_mesh = l_mesh_lod.get_mesh(p_context.m_camera.get_position(), get_world_position(), get_lod_factor());
+			
+			render_mesh(p_context.m_buffer, l_mesh, m_world_transforms, &l_root_pointer, &l_root_pointer + 1, nullptr);
 		}
 
-		void bc_mesh_component::set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform)
+		void bc_mesh_component::set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform) noexcept
 		{
 			physics::bc_bound_box l_bound_box;
 			m_sub_mesh.calculate_absolute_transforms(p_transform, m_world_transforms, l_bound_box);

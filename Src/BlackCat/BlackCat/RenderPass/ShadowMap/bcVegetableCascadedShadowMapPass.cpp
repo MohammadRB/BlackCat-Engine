@@ -96,15 +96,23 @@ namespace black_cat
 
 		m_leaf_scene_queries[l_cascade_absolute_index] = core::bc_get_service< core::bc_query_manager >()->queue_query
 		(
-			game::bc_scene_graph_render_state_query(p_param.m_frame_renderer.create_buffer())
-				.with(game::bc_camera_frustum(p_param.m_cascade_camera))
-				.only< game::bc_vegetable_mesh_component >(true)
+			game::bc_scene_graph_render_state_query
+			(
+				p_param.m_current_camera,
+				p_param.m_frame_renderer.create_buffer()
+			)
+			.with(game::bc_camera_frustum(p_param.m_cascade_camera))
+			.only< game::bc_vegetable_mesh_component >(true)
 		);
 		m_trunk_scene_queries[l_cascade_absolute_index] = core::bc_get_service< core::bc_query_manager >()->queue_query
 		(
-			game::bc_scene_graph_render_state_query(p_param.m_frame_renderer.create_buffer())
-				.with(game::bc_camera_frustum(p_param.m_cascade_camera))
-				.only< game::bc_vegetable_mesh_component >(false)
+			game::bc_scene_graph_render_state_query
+			(
+				p_param.m_current_camera,
+				p_param.m_frame_renderer.create_buffer()
+			)
+			.with(game::bc_camera_frustum(p_param.m_cascade_camera))
+			.only< game::bc_vegetable_mesh_component >(false)
 		);
 		
 		// Render vegetable leafs

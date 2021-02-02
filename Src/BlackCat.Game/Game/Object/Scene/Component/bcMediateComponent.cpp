@@ -37,11 +37,11 @@ namespace black_cat
 			m_controller->initialize(l_actor);
 		}
 
-		void bc_mediate_component::initialize(bc_actor_component_initialize_context& p_context)
+		void bc_mediate_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 		}
 				
-		void bc_mediate_component::update(bc_actor_component_update_content& p_context)
+		void bc_mediate_component::update(const bc_actor_component_update_content& p_context)
 		{
 			if(m_scene && m_bound_box_changed)
 			{
@@ -55,7 +55,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_mediate_component::handle_event(bc_actor_component_event_context& p_context)
+		void bc_mediate_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
 			_handle_event(p_context.m_actor, p_context.m_event);
 
@@ -65,7 +65,7 @@ namespace black_cat
 			}
 		}
 		
-		void bc_mediate_component::debug_draw(bc_actor_component_debug_draw_context& p_context)
+		void bc_mediate_component::debug_draw(const bc_actor_component_debug_draw_context& p_context)
 		{
 			p_context.m_shape_drawer.draw_wired_box(m_bound_box);
 

@@ -41,7 +41,7 @@ namespace black_cat
 			m_animation_played = true;
 		}
 
-		void bc_skinned_mesh_component::initialize(bc_actor_component_initialize_context& p_context)
+		void bc_skinned_mesh_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			bc_mesh_component::initialize(p_context);
 			
@@ -60,27 +60,37 @@ namespace black_cat
 			m_animations.shrink_to_fit();
 		}
 
-		void bc_skinned_mesh_component::update(bc_actor_component_update_content& p_context)
+		void bc_skinned_mesh_component::update(const bc_actor_component_update_content& p_context)
 		{
 		}
 
-		void bc_skinned_mesh_component::handle_event(bc_actor_component_event_context& p_context)
+		void bc_skinned_mesh_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_context.m_event);
+			const auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
 			if (l_world_transform_event)
 			{
 				_set_world_transform(p_context.m_actor, l_world_transform_event->get_transform());
+				return;
+			}
+
+			const auto* l_bound_box_event = core::bci_message::as< bc_actor_event_bound_box_changed >(p_context.m_event);
+			if (l_bound_box_event)
+			{
+				bc_mesh_component::update_lod_factor(l_bound_box_event->get_bound_box());
 			}
 		}
 		
-		void bc_skinned_mesh_component::render(bc_render_state_buffer& p_buffer) const
+		void bc_skinned_mesh_component::render(const bc_actor_component_render_context& p_context) const
 		{
-			const auto& l_mesh = get_mesh();
-			const bc_mesh_node* l_root_pointer = l_mesh.get_root_node();
-			render_skinned_mesh(p_buffer, l_mesh, get_world_transforms(), &l_root_pointer, &l_root_pointer + 1);
+			const auto& l_sub_mesh = get_mesh();
+			const auto l_mesh_lod = l_sub_mesh.get_mesh_level_of_detail();
+			const auto& l_mesh = l_mesh_lod.get_mesh(p_context.m_camera.get_position(), get_world_position(), get_lod_factor());
+			const auto* l_root_pointer = l_sub_mesh.get_root_node();
+
+			render_skinned_mesh(p_context.m_buffer, l_mesh, get_world_transforms(), &l_root_pointer, &l_root_pointer + 1);
 		}
 
-		void bc_skinned_mesh_component::debug_draw(bc_actor_component_debug_draw_context& p_context)
+		void bc_skinned_mesh_component::debug_draw(const bc_actor_component_debug_draw_context& p_context)
 		{
 			const auto& l_mesh = get_mesh();
 			const auto* l_mediate_component = p_context.m_actor.get_component< bc_mediate_component >();

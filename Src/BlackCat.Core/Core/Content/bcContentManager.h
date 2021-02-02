@@ -428,7 +428,9 @@ namespace black_cat
 		template <class TContent >
 		bc_estring_frame bc_content_manager::_get_offline_file_path(const bcECHAR* p_file, const bcECHAR* p_file_variant)
 		{
+			bc_path l_file_path(p_file);
 			bc_estring_frame l_file_variant;
+
 			if(!p_file_variant)
 			{
 				l_file_variant = bcL("");
@@ -438,14 +440,16 @@ namespace black_cat
 				l_file_variant += p_file_variant;
 				l_file_variant += bcL(".");
 			}
-			
-			bc_estring_frame l_offline_file_path = bc_estring_frame(p_file) +
+
+			const bc_estring_frame l_offline_file_name = l_file_path.get_filename_without_extension_frame() +
 				bcL(".") +
 				l_file_variant +
-				bc_to_estring_frame(bc_string_frame(bc_content_traits< TContent >::content_name())) +
+				bc_to_estring_frame(bc_content_traits< TContent >::content_name()) +
 				bcL(".bcc");
 
-			return std::move(l_offline_file_path);
+			l_file_path.set_filename(l_offline_file_name.c_str());
+			
+			return l_file_path.get_string_frame();
 		}
 
 		template< class TContent >

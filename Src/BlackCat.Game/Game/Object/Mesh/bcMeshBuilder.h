@@ -7,8 +7,9 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcNullable.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
-#include "Game/Object/Mesh/bcRenderMaterial.h"
+#include "Game/Object/Mesh/bcMesh.h"
 #include "Game/Object/Mesh/bcMeshCollider.h"
+#include "Game/Object/Mesh/bcRenderMaterial.h"
 #include "Game/System/Render/State/bcRenderState.h"
 #include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/bcExport.h"
@@ -17,8 +18,6 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_mesh;
-		
 		struct bc_mesh_builder_mesh_part
 		{
 			core::bc_string_frame m_name;
@@ -82,15 +81,18 @@ namespace black_cat
 
 			bc_mesh_builder& with_auto_scale(bcFLOAT p_scale);
 
-			bc_mesh build(const bcCHAR* p_name, bc_mesh_collider_ptr p_colliders);
+			bc_mesh_builder& with_lod(bc_mesh_ptr p_mesh);
+
+			bc_mesh build(const bcCHAR* p_name, bc_mesh_collider_ptr p_collider);
 			
 		private:
 			core::bc_string m_name;
-			core::bc_nullable<bcFLOAT> m_scale;
+			core::bc_nullable<bcFLOAT> m_auto_scale;
 			bool m_skinned = false;
 			bcUINT32 m_node_count = 0;
 			bcUINT32 m_mesh_part_count = 0;
 			core::bc_vector_frame<bc_mesh_builder_mesh_node> m_nodes;
+			core::bc_vector_frame< bc_mesh_ptr > m_level_of_details;
 		};
 	}
 }

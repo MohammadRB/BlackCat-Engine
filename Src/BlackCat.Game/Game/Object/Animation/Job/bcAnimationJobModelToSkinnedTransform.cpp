@@ -34,9 +34,10 @@ namespace black_cat
 				const auto* l_mesh_node = l_mesh.find_node(l_bone_name);
 				const auto& l_mesh_node_inverse_transform = l_mesh.get_node_inverse_bind_pose_transform(*l_mesh_node);
 				const auto& l_animation_model_transform = l_animation_model_transforms.get_node_transform(*l_mesh_node);
+				auto& l_output_transform = m_transforms->get_node_transform(*l_mesh_node);
 
 				auto l_animation_model_world_transform = l_animation_model_transform * m_world;
-				m_transforms->get_node_transform(*l_mesh_node) = l_mesh_node_inverse_transform * l_animation_model_world_transform;
+				l_output_transform = l_mesh_node_inverse_transform * l_animation_model_world_transform;
 
 				auto l_translation = l_animation_model_world_transform.get_translation();
 				l_min.x = std::min(l_min.x, l_translation.x);

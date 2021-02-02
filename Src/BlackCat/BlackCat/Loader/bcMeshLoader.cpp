@@ -71,21 +71,14 @@ namespace black_cat
 			return;
 		}
 
-		game::bc_game_system& l_game_system = *core::bc_get_service< game::bc_game_system >();
-		game::bc_mesh_collider_ptr l_mesh_colliders = core::bc_get_service< core::bc_content_manager >()->load< game::bc_mesh_collider >
-		(
-			p_context.get_allocator_alloc_type(),
-			p_context.m_file_path,
-			p_context.m_file_variant,
-			*p_context.m_parameters,
-			core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_value("aiScene", l_scene)
-		);
-		
-		core::bc_unordered_map_frame<const bcCHAR*, bcUINT32> l_node_mapping;
-		bc_mesh_loader_utility::calculate_node_mapping(*l_scene->mRootNode, l_node_mapping);
+		auto& l_game_system = *core::bc_get_service< game::bc_game_system >();
+		auto& l_content_manager = *core::bc_get_service< core::bc_content_manager >();
 
 		game::bc_mesh_builder l_builder;
-
+		core::bc_unordered_map_frame<const bcCHAR*, bcUINT32> l_node_mapping;
+		
+		bc_mesh_loader_utility::calculate_node_mapping(*l_scene->mRootNode, l_node_mapping);
+		
 		convert_ai_nodes(l_game_system.get_render_system(), p_context, *l_scene, l_node_mapping, *l_scene->mRootNode, l_builder);
 
 		const auto l_mesh_name = core::bc_to_exclusive_string(core::bc_path(p_context.m_file_path).get_filename());
@@ -95,8 +88,80 @@ namespace black_cat
 		{
 			l_builder.with_auto_scale(*l_auto_scale);
 		}
+
+		core::bc_path l_file_path(p_context.m_file_path);
+		core::bc_path l_lod_paths[3]
+		{
+			core::bc_path(l_file_path).set_filename((l_file_path.get_filename_without_extension_frame() + bcL(".lod1") + l_file_path.get_file_extension_frame()).c_str()),
+			core::bc_path(l_file_path).set_filename((l_file_path.get_filename_without_extension_frame() + bcL(".lod2") + l_file_path.get_file_extension_frame()).c_str()),
+			core::bc_path(l_file_path).set_filename((l_file_path.get_filename_without_extension_frame() + bcL(".lod3") + l_file_path.get_file_extension_frame()).c_str())
+		};
+
+		for(auto& l_lod_path : l_lod_paths)
+		{
+			if(!l_lod_path.exist())
+			{
+				continue;
+			}
+			
+			auto l_lod_mesh = l_content_manager.load< game::bc_mesh >
+			(
+				p_context.get_allocator_alloc_type(),
+				l_lod_path.get_string_frame().c_str(),
+				p_context.m_file_variant,
+				*p_context.m_parameters,
+				core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_value(constant::g_param_mesh_is_lod, true)
+			);
+
+			l_builder.with_lod(std::move(l_lod_mesh));
+		}
+
+		const auto* l_collider_file_name_value = p_context.m_parameters->get_value<core::bc_string>(constant::g_param_mesh_collider);
+		const auto l_is_lod = bc_null_default(p_context.m_instance_parameters.get_value<bool>(constant::g_param_mesh_is_lod), false);
+		core::bc_estring_frame l_collider_file_name;
 		
-		p_context.set_result(l_builder.build(l_mesh_name.c_str(), std::move(l_mesh_colliders)));
+		if (!l_collider_file_name_value)
+		{
+			auto l_collider_file_path = core::bc_path(l_file_path).set_filename
+			(
+				(l_file_path.get_filename_without_extension_frame() + bcL(".collider") + l_file_path.get_file_extension_frame()).c_str()
+			);
+			if (l_collider_file_path.exist())
+			{
+				l_collider_file_name = l_collider_file_path.get_filename_frame();
+			}
+		}
+		else
+		{
+			l_collider_file_name = core::bc_to_estring_frame(*l_collider_file_name_value);
+		}
+
+		game::bc_mesh_collider_ptr l_mesh_collider;
+		if(!l_collider_file_name.empty() && !l_is_lod)
+		{
+			auto l_collider_file_path = core::bc_path(l_file_path).set_filename(l_collider_file_name.c_str());
+			
+			const aiScene* l_collider_ai_scene = nullptr;
+			if (l_collider_file_name == l_file_path.get_filename_frame())
+			{
+				l_collider_ai_scene = l_scene;
+			}
+
+			l_mesh_collider = l_content_manager.load< game::bc_mesh_collider >
+			(
+				p_context.get_allocator_alloc_type(),
+				l_collider_file_path.get_string_frame().c_str(),
+				p_context.m_file_variant,
+				*p_context.m_parameters,
+				core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_value("aiScene", l_collider_ai_scene)
+			);
+		}
+		else
+		{
+			l_mesh_collider = l_content_manager.store_content((l_mesh_name + ".collider").c_str(), game::bc_mesh_collider());
+		}
+		
+		p_context.set_result(l_builder.build(l_mesh_name.c_str(), std::move(l_mesh_collider)));
 	}
 
 	void bc_mesh_loader::fill_skinned_vertices(const aiMesh& p_ai_mesh,
@@ -121,29 +186,35 @@ namespace black_cat
 				auto& l_vertex_ids = p_vertices[l_ai_bone_weight.mVertexId].m_bone_indices;
 				auto& l_vertex_weights = p_vertices[l_ai_bone_weight.mVertexId].m_bone_weights;
 
-				if (l_vertex_weights.x <= 0)
+				auto* l_vertex_ids_array = &l_vertex_ids.x;
+				auto* l_vertex_weights_array = &l_vertex_weights.x;
+
+				auto l_free_weight_slot = -1;
+				for(auto l_ite = 0U; l_ite < 4; ++l_ite)
 				{
-					l_vertex_ids.x = l_bone_index;
-					l_vertex_weights.x = l_bone_weight;
+					if(l_vertex_weights_array[l_ite] <= 0)
+					{
+						l_free_weight_slot = l_ite;
+						l_vertex_ids_array[l_ite] = l_bone_index;
+						l_vertex_weights_array[l_ite] = l_bone_weight;
+						break;
+					}
 				}
-				else if (l_vertex_weights.y <= 0)
+
+				// All weight slots are occupied, replace the one with lowest weight
+				if(l_free_weight_slot == -1)
 				{
-					l_vertex_ids.y = l_bone_index;
-					l_vertex_weights.y = l_bone_weight;
-				}
-				else if (l_vertex_weights.z <= 0)
-				{
-					l_vertex_ids.z = l_bone_index;
-					l_vertex_weights.z = l_bone_weight;
-				}
-				else if (l_vertex_weights.w <= 0)
-				{
-					l_vertex_ids.w = l_bone_index;
-					l_vertex_weights.w = l_bone_weight;
-				}
-				else
-				{
-					BC_ASSERT(false);
+					auto l_lowest_weight_index = 0;
+					for (auto l_ite = 1U; l_ite < 4; ++l_ite)
+					{
+						if (l_vertex_weights_array[l_ite] < l_vertex_weights_array[l_lowest_weight_index])
+						{
+							l_lowest_weight_index = l_ite;
+						}
+					}
+
+					l_vertex_ids_array[l_lowest_weight_index] = l_bone_index;
+					l_vertex_weights_array[l_lowest_weight_index] = l_bone_weight;
 				}
 			}
 		}
@@ -179,7 +250,7 @@ namespace black_cat
 			p_material.m_diffuse_map = l_content_manager->load< graphic::bc_texture2d_content >
 				(
 					p_context.get_allocator_alloc_type(),
-					core::bc_path(l_root_path).set_filename(l_diffuse_file_name->get_path().c_str()).get_path().c_str(),
+					core::bc_path(l_root_path).set_filename(l_diffuse_file_name->get_string().c_str()).get_string().c_str(),
 					nullptr,
 					*p_context.m_parameters
 					);
@@ -190,12 +261,12 @@ namespace black_cat
 
 		if (p_ai_material.GetTexture(aiTextureType_NORMALS, 0, &l_aistr) == aiReturn_SUCCESS)
 		{
-			l_normal_map_path = core::bc_path(l_root_path).set_filename(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str()).get_path();
+			l_normal_map_path = core::bc_path(l_root_path).set_filename(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str()).get_string();
 		}
 		else if (l_diffuse_file_name != nullptr)
 		{
 			const auto l_conventional_normal_map_name = l_diffuse_file_name->get_filename_without_extension() + L"_NRM" + l_diffuse_file_name->get_file_extension();
-			auto l_normal_map = core::bc_path(l_root_path).set_filename(l_conventional_normal_map_name.c_str()).get_path();
+			auto l_normal_map = core::bc_path(l_root_path).set_filename(l_conventional_normal_map_name.c_str()).get_string();
 
 			if (core_platform::bc_file_info::exist(l_normal_map.c_str()))
 			{
@@ -205,12 +276,12 @@ namespace black_cat
 
 		if (p_ai_material.GetTexture(aiTextureType_SPECULAR, 0, &l_aistr) == aiReturn_SUCCESS)
 		{
-			l_specular_map_path = core::bc_path(l_root_path).set_filename(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str()).get_path();
+			l_specular_map_path = core::bc_path(l_root_path).set_filename(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str()).get_string();
 		}
 		else if (l_diffuse_file_name != nullptr)
 		{
 			const auto l_conventional_specular_map_name = l_diffuse_file_name->get_filename_without_extension() + L"_SPEC" + l_diffuse_file_name->get_file_extension();
-			auto l_specular_map = core::bc_path(l_root_path).set_filename(l_conventional_specular_map_name.c_str()).get_path();
+			auto l_specular_map = core::bc_path(l_root_path).set_filename(l_conventional_specular_map_name.c_str()).get_string();
 
 			if (core_platform::bc_file_info::exist(l_specular_map.c_str()))
 			{

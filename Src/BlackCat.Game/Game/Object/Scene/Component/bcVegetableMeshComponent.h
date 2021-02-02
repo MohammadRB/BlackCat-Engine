@@ -24,13 +24,13 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			void initialize(bc_actor_component_initialize_context& p_context) override;
+			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
-			void handle_event(bc_actor_component_event_context& p_context) override;
+			void handle_event(const bc_actor_component_event_context& p_context) override;
 
-			void render(bc_render_state_buffer& p_buffer) const override;
+			void render(const bc_actor_component_render_context& p_context) const override;
 
-			void render(bc_render_state_buffer& p_buffer, bool p_render_leaf) const;
+			void render(const bc_actor_component_render_context& p_context, bool p_render_leaf) const;
 		};
 	}
 }

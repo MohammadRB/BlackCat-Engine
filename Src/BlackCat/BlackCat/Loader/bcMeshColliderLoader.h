@@ -16,7 +16,7 @@ namespace black_cat
 	class BC_DLL bc_mesh_collider_loader : public core::bc_base_content_loader
 	{
 	public:
-		explicit bc_mesh_collider_loader(bool p_high_detail_collision_shape);
+		bc_mesh_collider_loader() = default;
 
 		bc_mesh_collider_loader(bc_mesh_collider_loader&&) = default;
 
@@ -48,7 +48,5 @@ namespace black_cat
 			const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
 			const core::bc_unordered_map_frame<const bcCHAR*, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping,
 			game::bc_mesh_collider& p_result) const;
-
-		bool m_high_detail_query_shape;
 	};
 }

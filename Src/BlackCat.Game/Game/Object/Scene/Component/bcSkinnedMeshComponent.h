@@ -44,15 +44,15 @@ namespace black_cat
 			
 			void add_animation_job(bci_animation_job& p_animation_job) noexcept;
 
-			void initialize(bc_actor_component_initialize_context& p_context) override;
+			void initialize(const bc_actor_component_initialize_context& p_context) override;
 			
-			void update(bc_actor_component_update_content& p_context) override;
+			void update(const bc_actor_component_update_content& p_context) override;
 
-			void handle_event(bc_actor_component_event_context& p_context) override;
+			void handle_event(const bc_actor_component_event_context& p_context) override;
 
-			void render(bc_render_state_buffer& p_buffer) const override;
+			void render(const bc_actor_component_render_context& p_context) const override;
 
-			void debug_draw(bc_actor_component_debug_draw_context& p_context) override;
+			void debug_draw(const bc_actor_component_debug_draw_context& p_context) override;
 			
 		private:
 			void _set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform);

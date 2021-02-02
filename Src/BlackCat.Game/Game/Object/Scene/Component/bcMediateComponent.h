@@ -52,13 +52,13 @@ namespace black_cat
 			
 			core::bc_vector3f get_position() const noexcept;
 
-			void initialize(bc_actor_component_initialize_context& p_context) override;
+			void initialize(const bc_actor_component_initialize_context& p_context) override;
 			
-			void update(bc_actor_component_update_content& p_context) override;
+			void update(const bc_actor_component_update_content& p_context) override;
 			
-			void handle_event(bc_actor_component_event_context& p_context) override;
+			void handle_event(const bc_actor_component_event_context& p_context) override;
 
-			void debug_draw(bc_actor_component_debug_draw_context& p_context) override;
+			void debug_draw(const bc_actor_component_debug_draw_context& p_context) override;
 			
 		private:
 			void _handle_event(bc_actor& p_actor, const bc_actor_event& p_event);

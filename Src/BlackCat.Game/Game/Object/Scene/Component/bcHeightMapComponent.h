@@ -43,13 +43,13 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			void initialize(bc_actor_component_initialize_context& p_context) override;
+			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
-			void write_instance(bc_actor_component_write_context& p_context) override;
+			void write_instance(const bc_actor_component_write_context& p_context) override;
 
-			void handle_event(bc_actor_component_event_context& p_context) override;
+			void handle_event(const bc_actor_component_event_context& p_context) override;
 			
-			void render(bc_render_state_buffer& p_buffer) const override;
+			void render(const bc_actor_component_render_context& p_context) const override;
 			
 		private:
 			bc_height_map_ptr m_height_map;

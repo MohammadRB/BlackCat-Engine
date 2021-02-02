@@ -4,6 +4,7 @@
 
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcIteratorAdapter.h"
+#include "Game/System/Input/bcCameraInstance.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
@@ -38,13 +39,13 @@ namespace black_cat
 			
 			void add(const bc_actor& p_actor);
 			
-			void render_actors(bc_render_state_buffer& p_buffer) const;
+			void render_actors(const bc_camera_instance& p_camera, bc_render_state_buffer& p_buffer) const;
 
 			template<typename TRenderComponent>
-			void render_actors(bc_render_state_buffer& p_buffer) const;
+			void render_actors(const bc_camera_instance& p_camera, bc_render_state_buffer& p_buffer) const;
 
 			template<typename TRenderComponent, typename ...TArgs>
-			void render_actors(bc_render_state_buffer& p_buffer, TArgs&&... p_args) const;
+			void render_actors(const bc_camera_instance& p_camera, bc_render_state_buffer& p_buffer, TArgs&&... p_args) const;
 
 			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
@@ -107,44 +108,50 @@ namespace black_cat
 			m_actors.push_back(p_actor);
 		}
 
-		inline void bc_scene_graph_buffer::render_actors(bc_render_state_buffer& p_buffer) const
+		inline void bc_scene_graph_buffer::render_actors(const bc_camera_instance& p_camera, bc_render_state_buffer& p_buffer) const
 		{
+			const bc_actor_component_render_context l_render_context(p_camera, p_buffer);
+			
 			for(bc_actor& l_actor : m_actors)
 			{
 				auto* l_component = l_actor.get_component<bc_render_component>();
 				if(l_component)
 				{
-					l_component->render(p_buffer);
+					l_component->render(l_render_context);
 				}
 			}
 		}
 
 		template< typename TRenderComponent >
-		void bc_scene_graph_buffer::render_actors(bc_render_state_buffer& p_buffer) const
+		void bc_scene_graph_buffer::render_actors(const bc_camera_instance& p_camera, bc_render_state_buffer& p_buffer) const
 		{
 			static_assert(std::is_base_of_v<bc_render_component, TRenderComponent>, "TComponent must inherit from bc_render_component");
 
+			const bc_actor_component_render_context l_render_context(p_camera, p_buffer);
+			
 			for (bc_actor& l_actor : m_actors)
 			{
 				auto* l_component = static_cast<bc_render_component*>(l_actor.get_component<TRenderComponent>());
 				if (l_component)
 				{
-					l_component->render(p_buffer);
+					l_component->render(l_render_context);
 				}
 			}
 		}
 
 		template< typename TRenderComponent, typename ... TArgs >
-		void bc_scene_graph_buffer::render_actors(bc_render_state_buffer& p_buffer, TArgs&&... p_args) const
+		void bc_scene_graph_buffer::render_actors(const bc_camera_instance& p_camera, bc_render_state_buffer& p_buffer, TArgs&&... p_args) const
 		{
 			static_assert(std::is_base_of_v<bc_render_component, TRenderComponent>, "TComponent must inherit from bc_render_component");
 
+			const bc_actor_component_render_context l_render_context(p_camera, p_buffer);
+			
 			for (bc_actor& l_actor : m_actors)
 			{
 				auto* l_component = l_actor.get_component<TRenderComponent>();
 				if (l_component)
 				{
-					l_component->render(p_buffer, std::forward<TArgs>(p_args)...);
+					l_component->render(l_render_context, std::forward<TArgs>(p_args)...);
 				}
 			}
 		}

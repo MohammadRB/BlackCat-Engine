@@ -26,12 +26,12 @@ namespace black_cat
 
 			bc_scene_graph_query& operator=(bc_scene_graph_query&&) noexcept;
 
+			bc_scene_graph_buffer get_scene_buffer() noexcept;
+			
 			bc_scene_graph_query& with(const bc_camera_frustum& p_frustum);
 
 			template<class TComponent>
 			bc_scene_graph_query& only() noexcept;
-
-			bc_scene_graph_buffer get_scene_buffer() noexcept;
 
 			void execute(const bc_scene_query_context& p_context) noexcept override;
 
@@ -64,6 +64,11 @@ namespace black_cat
 			return *this;
 		}
 
+		inline bc_scene_graph_buffer bc_scene_graph_query::get_scene_buffer() noexcept
+		{
+			return std::move(m_scene_buffer);
+		}
+		
 		inline bc_scene_graph_query& bc_scene_graph_query::with(const bc_camera_frustum & p_frustum)
 		{
 			m_frustum = p_frustum;
@@ -88,11 +93,6 @@ namespace black_cat
 				}
 			);
 			return *this;
-		}
-
-		inline bc_scene_graph_buffer bc_scene_graph_query::get_scene_buffer() noexcept
-		{
-			return std::move(m_scene_buffer);
 		}
 
 		inline void bc_scene_graph_query::execute(const bc_scene_query_context & p_context) noexcept

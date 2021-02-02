@@ -12,9 +12,6 @@ namespace black_cat
 	{
 		using core_platform::bc_path_info;
 
-		/**
-		 * \brief Same as core_platform::bc_platform_path but provide convenience api
-		 */
 		class BC_CORE_DLL bc_path
 		{
 		public:
@@ -30,15 +27,19 @@ namespace black_cat
 
 			~bc_path();
 
-			bc_estring get_path() const;
-
 			bc_estring get_directory() const;
+			
+			bc_estring_frame get_directory_frame() const;
 
 			bc_path& set_directory(const bcECHAR* p_directory);
 
 			bc_estring get_filename() const;
+			
+			bc_estring_frame get_filename_frame() const;
 
 			bc_estring get_filename_without_extension() const;
+			
+			bc_estring_frame get_filename_without_extension_frame() const;
 
 			/**
 			 * \brief Change file name with it's extension
@@ -48,6 +49,8 @@ namespace black_cat
 			bc_path& set_filename(const bcECHAR* p_filename);
 
 			bc_estring get_file_extension() const;
+			
+			bc_estring_frame get_file_extension_frame() const;
 
 			bc_path& set_file_extension(const bcECHAR* p_file_extension);
 
@@ -58,6 +61,10 @@ namespace black_cat
 			 */
 			bc_path& combine(const bc_path& p_other);
 
+			bc_estring get_string() const;
+
+			bc_estring_frame get_string_frame() const;
+			
 			bool is_relative() const;
 
 			/**
@@ -75,8 +82,6 @@ namespace black_cat
 			static bc_estring get_absolute_path(const bcECHAR* p_relative_path);
 
 			static bc_path_info get_path_info();
-
-		protected:
 
 		private:
 			core_platform::bc_path m_path;
