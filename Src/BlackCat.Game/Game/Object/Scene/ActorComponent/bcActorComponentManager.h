@@ -131,7 +131,6 @@ namespace black_cat
 			bool m_require_update;
 			bcUINT32 m_component_priority;
 			core::bc_vector_movable< bc_actor_component_index > m_actor_to_component_index_map;
-			core::bc_vector_movable< bc_actor_index > m_component_to_actor_index_map;
 			core::bc_unique_ptr< bci_actor_component_container > m_container;
 			core::bc_vector_movable< deriveds_component_get_delegate > m_deriveds;
 			mutable core_platform::bc_shared_mutex m_lock;
@@ -294,7 +293,6 @@ namespace black_cat
 			m_require_update(p_require_update),
 			m_component_priority(p_component_priority),
 			m_actor_to_component_index_map(),
-			m_component_to_actor_index_map(),
 			m_container(std::move(p_container)),
 			m_deriveds(std::move(p_deriveds))
 		{
@@ -312,7 +310,6 @@ namespace black_cat
 			m_require_update = p_other.m_require_update;
 			m_component_priority = p_other.m_component_priority;
 			m_actor_to_component_index_map = std::move(p_other.m_actor_to_component_index_map);
-			m_component_to_actor_index_map = std::move(p_other.m_component_to_actor_index_map);
 			m_container = std::move(p_other.m_container);
 			m_deriveds = std::move(p_other.m_deriveds);
 			return *this;
@@ -401,7 +398,6 @@ namespace black_cat
 					if (l_component_index != bci_actor_component::invalid_index)
 					{
 						l_component_entry.m_container->remove(l_component_index);
-						l_component_entry.m_component_to_actor_index_map[l_component_index] = bc_actor::invalid_index;
 						l_component_entry.m_actor_to_component_index_map[l_actor_index] = bci_actor_component::invalid_index;
 					}
 				}
@@ -497,19 +493,13 @@ namespace black_cat
 
 				if(l_parent_component_index == bci_actor_component::invalid_index)
 				{
-					l_component_index = l_concrete_container->create();
+					l_component_index = l_concrete_container->create(l_actor_index);
 				}
 				else
 				{
-					l_component_index = l_concrete_container->create_after(l_parent_component_index);
+					l_component_index = l_concrete_container->create_after(l_actor_index, l_parent_component_index);
 				}
 
-				if (l_s_component_entry->second.m_component_to_actor_index_map.size() < l_component_index + 1)
-				{
-					l_s_component_entry->second.m_component_to_actor_index_map.resize(l_concrete_container->capacity(), bc_actor::invalid_index);
-				}
-
-				l_s_component_entry->second.m_component_to_actor_index_map[l_component_index] = l_actor_index;
 				l_s_component_entry->second.m_actor_to_component_index_map[l_actor_index] = l_component_index;
 			}
 		}
@@ -539,7 +529,6 @@ namespace black_cat
 
 				l_concrete_container->remove(l_component_index);
 
-				l_component_entry->second.m_component_to_actor_index_map[l_component_index] = bc_actor::invalid_index;
 				l_component_entry->second.m_actor_to_component_index_map[l_actor_index] = bci_actor_component::invalid_index;
 			}
 		}
@@ -598,16 +587,12 @@ namespace black_cat
 		{
 			static_assert(!bc_actor_component_traits<TComponent>::component_is_abstract(), "Can't get actor from abstract component");
 
-			static const component_container_type::value_type* l_component_entry = _get_component_entry< TComponent >();
-
-			const bc_actor_component_index l_component_index = p_component.get_index();
+			const bc_actor_index l_actor_index = p_component.get_actor_index();
 
 			{
 				core_platform::bc_shared_mutex_shared_guard l_actors_lock(m_actors_lock);
-				core_platform::bc_shared_mutex_shared_guard l_component_lock(l_component_entry->second.m_lock);
 
-				const auto l_component_to_actor = l_component_entry->second.m_component_to_actor_index_map[l_component_index];
-				return bc_actor(m_actors[l_component_to_actor].get().m_actor_index);
+				return bc_actor(m_actors[l_actor_index].get().m_actor_index);
 			}
 		}
 
@@ -631,27 +616,6 @@ namespace black_cat
 					}()
 				)...
 			};
-
-			// Create a dummy actor and add all components to it to initialize local static variables
-			// in component related functions
-			bc_actor l_actor = create_actor();
-
-			l_expansion_list =
-			{
-				(
-					[this, l_actor]()
-					{
-						this->create_component< typename TCAdapter::component_t >(l_actor);
-						typename TCAdapter::component_t* l_component = this->actor_get_component< typename TCAdapter::component_t >(l_actor);
-						l_component->get_actor();
-						this->remove_component< typename TCAdapter::component_t >(l_actor);
-
-						return true;
-					}()
-				)...
-			};
-
-			remove_actor(l_actor);
 		}
 
 		template< class ...TCAdapter >

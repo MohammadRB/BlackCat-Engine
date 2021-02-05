@@ -475,7 +475,7 @@ namespace black_cat
 			const auto l_far_plane = (l_frustum_center + (p_light.get_direction() * l_depth) - l_camera_pos).magnitude();
 			//const auto l_far_plane = l_max.z - l_min.z;
 
-			auto l_cascade_camera = bc_cascaded_shadow_map_camera(l_camera_pos, l_frustum_center, l_width, l_height, 0.1, l_far_plane);
+			auto l_cascade_camera = bc_cascaded_shadow_map_camera(l_camera_pos, l_frustum_center, l_width, l_height, 0.1f, l_far_plane);
 
 			const auto l_cascade_camera_view_proj = l_cascade_camera.get_view() * l_cascade_camera.get_projection();
 			const auto l_origin = (l_cascade_camera_view_proj * core::bc_vector4f(0, 0, 0, 1)) * (m_state->m_shadow_map_size / 2.0f);

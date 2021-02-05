@@ -58,7 +58,8 @@ namespace black_cat
 			const bcCHAR* p_name,
 			bc_render_material_ptr p_material,
 			core::bc_vector_movable<bc_vertex_pos_tex_nor_tan> p_vertices,
-			core::bc_vector_movable<bcBYTE> p_indices,
+			core::bc_vector_movable< bcUINT16 > p_16bit_indices,
+			core::bc_vector_movable< bcUINT32 > p_32bit_indices,
 			physics::bc_bound_box& p_bound_box,
 			graphic::bc_buffer_ptr p_vertex_buffer,
 			graphic::bc_buffer_ptr p_index_buffer,
@@ -75,7 +76,8 @@ namespace black_cat
 			l_mesh_part.m_name = p_name;
 			l_mesh_part.m_material = std::move(p_material);
 			l_mesh_part.m_vertices = std::move(p_vertices);
-			l_mesh_part.m_indices = std::move(p_indices);
+			l_mesh_part.m_16bit_indices = std::move(p_16bit_indices);
+			l_mesh_part.m_32bit_indices = std::move(p_32bit_indices);
 			l_mesh_part.m_bound_box = p_bound_box;
 			l_mesh_part.m_vertex_buffer = std::move(p_vertex_buffer);
 			l_mesh_part.m_index_buffer = std::move(p_index_buffer);
@@ -91,7 +93,8 @@ namespace black_cat
 			const bcCHAR* p_name,
 			bc_render_material_ptr p_material,
 			core::bc_vector_movable<bc_vertex_pos_tex_nor_tan_bon> p_vertices,
-			core::bc_vector_movable<bcBYTE> p_indices,
+			core::bc_vector_movable< bcUINT16 > p_16bit_indices,
+			core::bc_vector_movable< bcUINT32 > p_32bit_indices,
 			physics::bc_bound_box& p_bound_box,
 			graphic::bc_buffer_ptr p_vertex_buffer,
 			graphic::bc_buffer_ptr p_index_buffer,
@@ -108,7 +111,8 @@ namespace black_cat
 			l_mesh_part.m_name = p_name;
 			l_mesh_part.m_material = std::move(p_material);
 			l_mesh_part.m_skinned_vertices = std::move(p_vertices);
-			l_mesh_part.m_indices = std::move(p_indices);
+			l_mesh_part.m_16bit_indices = std::move(p_16bit_indices);
+			l_mesh_part.m_32bit_indices = std::move(p_32bit_indices);
 			l_mesh_part.m_bound_box = p_bound_box;
 			l_mesh_part.m_vertex_buffer = std::move(p_vertex_buffer);
 			l_mesh_part.m_index_buffer = std::move(p_index_buffer);

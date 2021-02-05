@@ -11,8 +11,8 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_simple_mesh_component::bc_simple_mesh_component(bc_actor_component_index p_index)
-			: bc_mesh_component(p_index)
+		bc_simple_mesh_component::bc_simple_mesh_component(bc_actor_index p_actor_index, bc_actor_component_index p_index)
+			: bc_mesh_component(p_actor_index, p_index)
 		{
 		}
 

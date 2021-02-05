@@ -93,11 +93,11 @@ namespace black_cat
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_aggregate& >(*this)).get_platform_pack().m_px_object
 			);
 
-			bcUINT32 l_written_count = l_px_aggregate->getActors(reinterpret_cast<physx::PxActor**>(p_buffer), p_buffer_size, p_start_index);
+			const bcUINT32 l_written_count = l_px_aggregate->getActors(reinterpret_cast<physx::PxActor**>(p_buffer), p_buffer_size, p_start_index);
 
-			bc_overwrite_output_array<bc_actor, physx::PxActor>(p_buffer, l_written_count, [](bc_actor* p_actor, physx::PxActor* p_px_actor)
+			bc_overwrite_output_array<bc_actor, physx::PxActor*>(p_buffer, l_written_count, [](bc_actor& p_actor, physx::PxActor*& p_px_actor)
 			{
-				static_cast<bc_platform_physics_reference*>(p_actor)->get_platform_pack().m_px_object = p_px_actor;
+				static_cast<bc_platform_physics_reference&>(p_actor).get_platform_pack().m_px_object = p_px_actor;
 			});
 
 			return l_written_count;

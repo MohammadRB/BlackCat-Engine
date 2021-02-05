@@ -16,7 +16,7 @@ namespace black_cat
 			BC_COMPONENT(light, true, false)
 
 		public:
-			explicit bc_light_component(bc_actor_component_index p_index);
+			bc_light_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
 			
 			bc_light_component(bc_light_component&& p_other) noexcept = default;
 

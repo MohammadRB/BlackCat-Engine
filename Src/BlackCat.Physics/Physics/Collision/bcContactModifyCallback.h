@@ -153,7 +153,7 @@ namespace black_cat
 		
 		/**
 		 * \brief An interface class that the user can implement in order to modify contact constraints.
-		 * Threading: The callback execute in simulation threads.
+		 * \n Threading: The callback execute in simulation threads.
 		 */
 		class bci_contact_modify_callback
 		{

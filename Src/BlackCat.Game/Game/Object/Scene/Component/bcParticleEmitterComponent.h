@@ -17,7 +17,7 @@ namespace black_cat
 			BC_COMPONENT("prtle", true, false)
 
 		public:
-			explicit bc_particle_emitter_component(bc_actor_component_index p_index);
+			bc_particle_emitter_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
 
 			bc_particle_emitter_component(bc_particle_emitter_component&& p_other) noexcept = default;
 

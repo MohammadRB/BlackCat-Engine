@@ -81,7 +81,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bcUINT32 bc_platform_scene< g_api_physx >::get_actors(bc_actor_type p_types, bc_actor* p_buffer, bcUINT32 p_buffer_size, bcUINT32 p_start_index) const
 		{
-			bcUINT32 l_written_count = m_pack.m_data->m_px_scene->getActors
+			const bcUINT32 l_written_count = m_pack.m_data->m_px_scene->getActors
 			(
 				static_cast< physx::PxActorTypeFlag::Enum >(p_types),
 				reinterpret_cast< physx::PxActor** >(p_buffer),
@@ -89,9 +89,9 @@ namespace black_cat
 				p_start_index
 			);
 
-			bc_overwrite_output_array<bc_actor, physx::PxActor>(p_buffer, l_written_count, [](bc_actor* p_bc_actor, physx::PxActor* p_px_actor)
+			bc_overwrite_output_array<bc_actor, physx::PxActor*>(p_buffer, l_written_count, [](bc_actor& p_actor, physx::PxActor*& p_px_actor)
 			{
-				static_cast<bc_physics_reference&>(*p_bc_actor).get_platform_pack().m_px_object = p_px_actor;
+				static_cast<bc_physics_reference&>(p_actor).get_platform_pack().m_px_object = p_px_actor;
 			});
 
 			return l_written_count;
@@ -132,16 +132,16 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bcUINT32 bc_platform_scene< g_api_physx >::get_aggregates(bc_aggregate* p_buffer, bcUINT32 p_buffer_size, bcUINT32 p_start_index) const
 		{
-			bcUINT32 l_written_count = m_pack.m_data->m_px_scene->getAggregates
+			const bcUINT32 l_written_count = m_pack.m_data->m_px_scene->getAggregates
 			(
 				reinterpret_cast< physx::PxAggregate** >(p_buffer),
 				p_buffer_size,
 				p_start_index
 			);
 
-			bc_overwrite_output_array<bc_aggregate, physx::PxAggregate>(p_buffer, l_written_count, [](bc_aggregate* p_bc_aggregate, physx::PxAggregate* p_px_aggregate)
+			bc_overwrite_output_array<bc_aggregate, physx::PxAggregate*>(p_buffer, l_written_count, [](bc_aggregate& p_aggregate, physx::PxAggregate*& p_px_aggregate)
 			{
-				static_cast<bc_physics_reference&>(*p_bc_aggregate).get_platform_pack().m_px_object = p_px_aggregate;
+				static_cast<bc_physics_reference&>(p_aggregate).get_platform_pack().m_px_object = p_px_aggregate;
 			});
 
 			return l_written_count;
@@ -158,16 +158,16 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bcUINT32 bc_platform_scene< g_api_physx >::get_joints(bc_joint* p_buffer, bcUINT32 p_buffer_size, bcUINT32 p_start_index) const
 		{
-			bcUINT32 l_written_count = m_pack.m_data->m_px_scene->getConstraints
+			const bcUINT32 l_written_count = m_pack.m_data->m_px_scene->getConstraints
 			(
 				reinterpret_cast< physx::PxConstraint** >(p_buffer),
 				p_buffer_size,
 				p_start_index
 			);
 
-			bc_overwrite_output_array<bc_joint, physx::PxConstraint>(p_buffer, l_written_count, [](bc_joint* p_bc_joint, physx::PxConstraint* p_px_constraint)
+			bc_overwrite_output_array<bc_joint, physx::PxConstraint*>(p_buffer, l_written_count, [](bc_joint& p_joint, physx::PxConstraint*& p_px_constraint)
 			{
-				static_cast<bc_physics_reference&>(*p_bc_joint).get_platform_pack().m_px_object = p_px_constraint;
+				static_cast<bc_physics_reference&>(p_joint).get_platform_pack().m_px_object = p_px_constraint;
 			});
 
 			return l_written_count;
@@ -276,21 +276,27 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bool bc_platform_scene<g_api_physx>::raycast(const bc_ray& p_ray, 
-			bc_scene_ray_query_buffer& p_buffer, 
-			bc_hit_flag p_hit_flags, 
-			bc_query_flags p_query_flags, 
-			bc_query_group p_query_groups) const
+		bool bc_platform_scene<g_api_physx>::raycast(const bc_ray& p_ray,
+			bc_scene_ray_query_buffer& p_buffer,
+			bc_hit_flag p_hit_flags,
+			bc_query_flags p_query_flags,
+			bc_query_group p_query_groups,
+			bc_scene_query_post_filter_callback* p_filter_callback) const
 		{
-			physx::PxVec3 l_origin = bc_to_right_hand(p_ray.m_origin);
-			physx::PxVec3 l_dir = bc_to_right_hand(p_ray.m_dir);
+			const physx::PxVec3 l_origin = bc_to_right_hand(p_ray.m_origin);
+			const physx::PxVec3 l_dir = bc_to_right_hand(p_ray.m_dir);
 			physx::PxQueryFilterData l_px_filter_data
 			(
 				physx::PxFilterData(static_cast< physx::PxU32 >(p_query_groups), 0, 0, 0),
-				static_cast< physx::PxQueryFlag::Enum >(p_query_flags)
+				static_cast< physx::PxQueryFlag::Enum >(p_query_flags) | physx::PxQueryFlag::ePREFILTER
 			);
-			l_px_filter_data.flags |= physx::PxQueryFlag::ePREFILTER;
+			bc_px_query_filter_callback l_callback(p_filter_callback);
 
+			if(p_filter_callback)
+			{
+				l_px_filter_data.flags |= physx::PxQueryFlag::ePOSTFILTER;
+			}
+			
 			return m_pack.m_data->m_px_scene->raycast
 			(
 				l_origin,
@@ -299,7 +305,7 @@ namespace black_cat
 				p_buffer.get_platform_pack().m_px_query,
 				static_cast< physx::PxHitFlag::Enum >(p_hit_flags),
 				l_px_filter_data,
-				&const_cast<bc_platform_scene&>(*this).m_pack.m_data->m_query_filter_callback
+				&l_callback
 			);
 		}
 
@@ -312,15 +318,21 @@ namespace black_cat
 			bc_scene_sweep_query_buffer& p_buffer, 
 			bc_hit_flag p_hit_flags, 
 			bc_query_flags p_query_flags, 
-			bc_query_group p_query_groups) const
+			bc_query_group p_query_groups,
+			bc_scene_query_post_filter_callback* p_filter_callback) const
 		{
-			physx::PxVec3 l_dir = bc_to_right_hand(p_unit_dir);
+			const physx::PxVec3 l_dir = bc_to_right_hand(p_unit_dir);
 			physx::PxQueryFilterData l_px_filter_data
 			(
 				physx::PxFilterData(static_cast< physx::PxU32 >(p_query_groups), 0, 0, 0), 
-				static_cast< physx::PxQueryFlag::Enum >(p_query_flags)
+				static_cast< physx::PxQueryFlag::Enum >(p_query_flags) | physx::PxQueryFlag::ePREFILTER
 			);
-			l_px_filter_data.flags |= physx::PxQueryFlag::ePREFILTER;
+			bc_px_query_filter_callback l_callback(p_filter_callback);
+
+			if (p_filter_callback)
+			{
+				l_px_filter_data.flags |= physx::PxQueryFlag::ePOSTFILTER;
+			}
 
 			return m_pack.m_data->m_px_scene->sweep
 			(
@@ -331,7 +343,7 @@ namespace black_cat
 				p_buffer.get_platform_pack().m_px_query,
 				static_cast< physx::PxHitFlag::Enum >(p_hit_flags),
 				l_px_filter_data,
-				&const_cast<bc_platform_scene&>(*this).m_pack.m_data->m_query_filter_callback
+				&l_callback
 			);
 		}
 
@@ -341,22 +353,30 @@ namespace black_cat
 			const bc_transform& p_pose, 
 			bc_scene_overlap_query_buffer& p_buffer, 
 			bc_query_flags p_query_flags, 
-			bc_query_group p_query_groups) const
+			bc_query_group p_query_groups,
+			bc_scene_query_post_filter_callback* p_filter_callback) const
 		{
+			// Because in overlap queries me must not return block flag from filter callback, there is no need
+			// to specify ePREFILTER flag and usage of PxQueryFilterCallback
 			physx::PxQueryFilterData l_px_filter_data
 			(
 				physx::PxFilterData(static_cast< physx::PxU32 >(p_query_groups), 0, 0, 0),
 				static_cast< physx::PxQueryFlag::Enum >(p_query_flags)
 			);
-			// Because in overlap queries me must not return block flag from filter callback, there is no need
-			// to specify ePREFILTER flag and usage of PxQueryFilterCallback
+			bc_px_query_filter_callback l_callback(p_filter_callback);
 
+			if (p_filter_callback)
+			{
+				l_px_filter_data.flags |= physx::PxQueryFlag::ePOSTFILTER;
+			}
+			
 			return m_pack.m_data->m_px_scene->overlap
 			(
 				*const_cast<bc_shape_geometry&>(p_geometry).get_platform_pack().m_px_geometry,
 				const_cast< bc_transform& >(p_pose).get_platform_pack().m_px_transform,
 				p_buffer.get_platform_pack().m_px_query,
-				l_px_filter_data
+				l_px_filter_data,
+				&l_callback
 			);
 		}
 

@@ -512,6 +512,7 @@ namespace black_cat
 		bc_vector<T, TAllocator>::bc_vector(size_type p_count, const allocator_type& p_allocator)
 			: bc_vector_base(p_allocator)
 		{
+			base_type::_change_capacity(p_count);
 			base_type::_new_node(base_type::m_first, p_count);
 		}
 
@@ -519,6 +520,7 @@ namespace black_cat
 		bc_vector<T, TAllocator>::bc_vector(size_type p_count, const value_type& p_value, const allocator_type& p_allocator)
 			: bc_vector_base(p_allocator)
 		{
+			base_type::_change_capacity(p_count);
 			base_type::_new_node(base_type::m_first, p_count, p_value);
 		}
 

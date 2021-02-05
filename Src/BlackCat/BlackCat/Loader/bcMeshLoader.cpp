@@ -3,16 +3,17 @@
 #include "BlackCat/BlackCatPCH.h"
 
 #include "CorePlatformImp/File/bcFileInfo.h"
-#include "Core/bcConstant.h"
-#include "Core/bcUtility.h"
-#include "Core/File/bcPath.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Content/bcContentManager.h"
 #include "Core/Math/bcVector2f.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
+#include "Core/Utility/bcNullable.h"
+#include "Core/File/bcPath.h"
+#include "Core/bcConstant.h"
+#include "Core/bcUtility.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
@@ -186,36 +187,7 @@ namespace black_cat
 				auto& l_vertex_ids = p_vertices[l_ai_bone_weight.mVertexId].m_bone_indices;
 				auto& l_vertex_weights = p_vertices[l_ai_bone_weight.mVertexId].m_bone_weights;
 
-				auto* l_vertex_ids_array = &l_vertex_ids.x;
-				auto* l_vertex_weights_array = &l_vertex_weights.x;
-
-				auto l_free_weight_slot = -1;
-				for(auto l_ite = 0U; l_ite < 4; ++l_ite)
-				{
-					if(l_vertex_weights_array[l_ite] <= 0)
-					{
-						l_free_weight_slot = l_ite;
-						l_vertex_ids_array[l_ite] = l_bone_index;
-						l_vertex_weights_array[l_ite] = l_bone_weight;
-						break;
-					}
-				}
-
-				// All weight slots are occupied, replace the one with lowest weight
-				if(l_free_weight_slot == -1)
-				{
-					auto l_lowest_weight_index = 0;
-					for (auto l_ite = 1U; l_ite < 4; ++l_ite)
-					{
-						if (l_vertex_weights_array[l_ite] < l_vertex_weights_array[l_lowest_weight_index])
-						{
-							l_lowest_weight_index = l_ite;
-						}
-					}
-
-					l_vertex_ids_array[l_lowest_weight_index] = l_bone_index;
-					l_vertex_weights_array[l_lowest_weight_index] = l_bone_weight;
-				}
+				bc_mesh_loader_utility::store_skinned_vertex_weights(l_vertex_ids, l_vertex_weights, l_bone_index, l_bone_weight);
 			}
 		}
 	}
@@ -322,7 +294,8 @@ namespace black_cat
 		auto& l_device = p_render_system.get_device();
 		core::bc_vector_movable< game::bc_vertex_pos_tex_nor_tan > l_vertices;
 		core::bc_vector_movable< game::bc_vertex_pos_tex_nor_tan_bon > l_skinned_vertices;
-		core::bc_vector_movable< bcBYTE > l_indices;
+		core::bc_vector_movable< bcUINT16 > l_16bit_indices;
+		core::bc_vector_movable< bcUINT32 > l_32bit_indices;
 		graphic::bc_buffer_ptr l_vertex_buffer;
 		graphic::bc_buffer_ptr l_index_buffer;
 		bcSIZE l_index_count = 0;
@@ -343,7 +316,15 @@ namespace black_cat
 		{
 			l_vertices.resize(p_ai_mesh.mNumVertices);
 		}
-		l_indices.resize(p_ai_mesh.mNumFaces * 3 * (l_need_32bit_indices ? sizeof(bcINT32) : sizeof(bcINT16)));
+
+		if(l_need_32bit_indices)
+		{
+			l_32bit_indices.resize(p_ai_mesh.mNumFaces * 3);
+		}
+		else
+		{
+			l_16bit_indices.resize(p_ai_mesh.mNumFaces * 3);
+		}
 
 		for (bcUINT l_vertex = 0; l_vertex < p_ai_mesh.mNumVertices; ++l_vertex)
 		{
@@ -385,8 +366,8 @@ namespace black_cat
 			fill_skinned_vertices(p_ai_mesh, p_node_mapping, l_skinned_vertices, p_builder);
 		}
 
-		auto* l_16bit_indices = reinterpret_cast<bcUINT16*>(l_indices.data());
-		auto* l_32bit_indices = reinterpret_cast<bcUINT32*>(l_indices.data());
+		auto* l_16bit_index = l_16bit_indices.data();
+		auto* l_32bit_index = l_32bit_indices.data();
 
 		for (bcUINT l_face_index = 0; l_face_index < p_ai_mesh.mNumFaces; ++l_face_index)
 		{
@@ -394,13 +375,13 @@ namespace black_cat
 			{
 				if (l_need_32bit_indices)
 				{
-					*l_32bit_indices = static_cast<bcUINT32>(p_ai_mesh.mFaces[l_face_index].mIndices[l_index]);
-					++l_32bit_indices;
+					*l_32bit_index = static_cast<bcUINT32>(p_ai_mesh.mFaces[l_face_index].mIndices[l_index]);
+					++l_32bit_index;
 				}
 				else
 				{
-					*l_16bit_indices = static_cast<bcUINT16>(p_ai_mesh.mFaces[l_face_index].mIndices[l_index]);
-					++l_16bit_indices;
+					*l_16bit_index = static_cast<bcUINT16>(p_ai_mesh.mFaces[l_face_index].mIndices[l_index]);
+					++l_16bit_index;
 				}
 
 				++l_index_count;
@@ -428,7 +409,7 @@ namespace black_cat
 				false
 			).as_index_buffer();
 		auto l_vertex_buffer_data = graphic::bc_subresource_data(l_has_skinned ? static_cast<void*>(l_skinned_vertices.data()) : static_cast<void*>(l_vertices.data()), 0, 0);
-		auto l_index_buffer_data = graphic::bc_subresource_data(l_indices.data(), 0, 0);
+		auto l_index_buffer_data = graphic::bc_subresource_data(l_need_32bit_indices ? static_cast<void*>(l_32bit_indices.data()) : static_cast<void*>(l_16bit_indices.data()), 0, 0);
 
 		l_vertex_buffer = l_device.create_buffer(l_vertex_buffer_config, &l_vertex_buffer_data);
 		l_index_buffer = l_device.create_buffer(l_index_buffer_config, &l_index_buffer_data);
@@ -467,7 +448,7 @@ namespace black_cat
 					l_material_ptr->get_parameters_cbuffer()
 				)
 			}
-			);
+		);
 
 		if (l_has_skinned)
 		{
@@ -478,7 +459,7 @@ namespace black_cat
 					&l_skinned_vertices[0].m_position,
 					sizeof(game::bc_vertex_pos_tex_nor_tan_bon),
 					l_skinned_vertices.size()
-					)
+				)
 			);
 
 			p_builder.add_skinned_mesh_part
@@ -487,7 +468,8 @@ namespace black_cat
 				p_ai_mesh.mName.C_Str(),
 				std::move(l_material_ptr),
 				std::move(l_skinned_vertices),
-				std::move(l_indices),
+				std::move(l_16bit_indices),
+				std::move(l_32bit_indices),
 				l_bound_box,
 				std::move(l_vertex_buffer),
 				std::move(l_index_buffer),
@@ -503,7 +485,7 @@ namespace black_cat
 					&l_vertices[0].m_position,
 					sizeof(game::bc_vertex_pos_tex_nor_tan),
 					l_vertices.size()
-					)
+				)
 			);
 
 			p_builder.add_mesh_part
@@ -512,7 +494,8 @@ namespace black_cat
 				p_ai_mesh.mName.C_Str(),
 				std::move(l_material_ptr),
 				std::move(l_vertices),
-				std::move(l_indices),
+				std::move(l_16bit_indices),
+				std::move(l_32bit_indices),
 				l_bound_box,
 				std::move(l_vertex_buffer),
 				std::move(l_index_buffer),

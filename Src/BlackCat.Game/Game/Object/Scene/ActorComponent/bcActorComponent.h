@@ -109,6 +109,8 @@ namespace black_cat
 		public:
 			virtual ~bci_actor_component();
 
+			bc_actor_index get_actor_index() const noexcept;
+			
 			bc_actor_component_index get_index() const noexcept;
 			
 			virtual bc_actor get_actor() const noexcept = 0; // TODO provide default implementation
@@ -131,7 +133,7 @@ namespace black_cat
 			virtual void debug_draw(const bc_actor_component_debug_draw_context& p_context);
 			
 		protected:
-			explicit bci_actor_component(bc_actor_component_index p_index) noexcept;
+			bci_actor_component(bc_actor_index p_actor_index, bc_actor_component_index p_index) noexcept;
 
 			bci_actor_component(bci_actor_component&& p_other) noexcept;
 
@@ -140,11 +142,17 @@ namespace black_cat
 			static bc_actor_component_manager& get_manager() noexcept;
 
 		private:
+			bc_actor_index m_actor_index;
 			bc_actor_component_index m_index;
 		};
 
 		inline bci_actor_component::~bci_actor_component() = default;
 
+		inline bc_actor_index bci_actor_component::get_actor_index() const noexcept
+		{
+			return m_actor_index;
+		}
+		
 		inline bc_actor_component_index bci_actor_component::get_index() const noexcept
 		{
 			return m_index;
@@ -174,18 +182,21 @@ namespace black_cat
 		{
 		}
 		
-		inline bci_actor_component::bci_actor_component(bc_actor_component_index p_index) noexcept
-			: m_index(p_index)
+		inline bci_actor_component::bci_actor_component(bc_actor_index p_actor_index, bc_actor_component_index p_index) noexcept
+			: m_actor_index(p_actor_index),
+			m_index(p_index)
 		{
 		}
 
 		inline bci_actor_component::bci_actor_component(bci_actor_component&& p_other) noexcept
-			: m_index(p_other.m_index)
+			: m_actor_index(p_other.m_actor_index),
+			m_index(p_other.m_index)
 		{
 		}
 
 		inline bci_actor_component& bci_actor_component::operator=(bci_actor_component&& p_other) noexcept
 		{
+			m_actor_index = p_other.m_actor_index;
 			m_index = p_other.m_index;
 
 			return *this;

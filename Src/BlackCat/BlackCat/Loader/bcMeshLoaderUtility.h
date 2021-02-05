@@ -49,5 +49,11 @@ namespace black_cat
 		static void calculate_skinned_px_node_mapping(const aiScene& p_ai_scene,
 			const aiNode& p_ai_node,
 			core::bc_unordered_map_frame<const bcCHAR*, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping);
+
+		static void store_skinned_vertex_weights(core::bc_vector4i& p_indices, core::bc_vector4f& p_weights, bcUINT32 p_bone_index, bcFLOAT p_bone_weight);
+		
+		static void clean_skinned_vertex_weights(core::bc_vector4i& p_indices, core::bc_vector4f& p_weights, bcFLOAT p_weight_threshold);
+		
+		static void sort_skinned_vertex_weights(core::bc_vector4i& p_indices, core::bc_vector4f& p_weights);
 	};
 }

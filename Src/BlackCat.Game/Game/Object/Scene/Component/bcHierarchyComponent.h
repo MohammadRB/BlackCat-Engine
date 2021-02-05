@@ -17,7 +17,7 @@ namespace black_cat
 			BC_COMPONENT(hier, false, false)
 
 		public:
-			explicit bc_hierarchy_component(bc_actor_component_index p_index);
+			bc_hierarchy_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
 
 			bc_hierarchy_component(bc_hierarchy_component&&) noexcept;
 

@@ -137,4 +137,78 @@ namespace black_cat
 			calculate_skinned_px_node_mapping(p_ai_scene , *p_ai_node.mChildren[l_child_ite], p_px_node_mapping);
 		}
 	}
+
+	void bc_mesh_loader_utility::store_skinned_vertex_weights(core::bc_vector4i& p_indices,
+		core::bc_vector4f& p_weights,
+		bcUINT32 p_bone_index,
+		bcFLOAT p_bone_weight)
+	{
+		auto* l_vertex_ids_array = &p_indices.x;
+		auto* l_vertex_weights_array = &p_weights.x;
+
+		auto l_free_weight_slot = -1;
+		for (auto l_ite = 0U; l_ite < 4; ++l_ite)
+		{
+			if (l_vertex_weights_array[l_ite] <= 0)
+			{
+				l_free_weight_slot = l_ite;
+				l_vertex_ids_array[l_ite] = p_bone_index;
+				l_vertex_weights_array[l_ite] = p_bone_weight;
+				break;
+			}
+		}
+
+		// All weight slots are occupied, replace the one with lowest weight
+		if (l_free_weight_slot == -1)
+		{
+			auto l_lowest_weight_index = 0;
+			for (auto l_ite = 1U; l_ite < 4; ++l_ite)
+			{
+				if (l_vertex_weights_array[l_ite] < l_vertex_weights_array[l_lowest_weight_index])
+				{
+					l_lowest_weight_index = l_ite;
+				}
+			}
+
+			l_vertex_ids_array[l_lowest_weight_index] = p_bone_index;
+			l_vertex_weights_array[l_lowest_weight_index] = p_bone_weight;
+		}
+	}
+
+	void bc_mesh_loader_utility::clean_skinned_vertex_weights(core::bc_vector4i& p_indices, core::bc_vector4f& p_weights, bcFLOAT p_weight_threshold)
+	{
+		auto* l_vertex_ids_array = &p_indices.x;
+		auto* l_vertex_weights_array = &p_weights.x;
+		
+		for (auto l_ite = 0U; l_ite < 4; ++l_ite)
+		{
+			if(l_vertex_weights_array[l_ite] <= p_weight_threshold)
+			{
+				l_vertex_weights_array[l_ite] = 0;
+				l_vertex_ids_array[l_ite] = 0;
+			}
+		}
+
+		p_weights.normalize();
+	}
+
+	void bc_mesh_loader_utility::sort_skinned_vertex_weights(core::bc_vector4i& p_indices, core::bc_vector4f& p_weights)
+	{
+		auto* l_vertex_ids_array = &p_indices.x;
+		auto* l_vertex_weights_array = &p_weights.x;
+
+		for (auto l_ite = 0U; l_ite < 3; ++l_ite)
+		{
+			if (l_vertex_weights_array[l_ite] < l_vertex_weights_array[l_ite + 1])
+			{
+				const auto l_temp_weight = l_vertex_weights_array[l_ite];
+				const auto l_temp_index = l_vertex_ids_array[l_ite];
+
+				l_vertex_weights_array[l_ite] = l_vertex_weights_array[l_ite + 1];
+				l_vertex_ids_array[l_ite] = l_vertex_ids_array[l_ite + 1];
+				l_vertex_weights_array[l_ite + 1] = l_temp_weight;
+				l_vertex_ids_array[l_ite + 1] = l_temp_index;
+			}
+		}
+	}
 }

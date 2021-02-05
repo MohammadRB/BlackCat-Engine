@@ -31,8 +31,6 @@ namespace black_cat
 
 			void update_ui(update_ui_context& p_context) override;
 
-		protected:
-
 		private:
 			bcUINT16 m_screen_width;
 			bcUINT16 m_screen_height;

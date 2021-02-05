@@ -66,18 +66,18 @@ namespace black_cat
 		{
 			for (bcUINT32 i = 0; i < p_desc.m_points.m_count; ++i)
 			{
-				auto& l_point = p_desc.m_points.at(i);
+				const auto& l_point = p_desc.m_points.at(i);
 
 				p_px_point_buffer[i] = bc_to_right_hand(l_point);
 			}
 
 			if(core::bc_enum::has(p_desc.m_flag, bc_triangle_mesh_flag::use_16bit_index))
 			{
-				bcUINT16* l_indices = reinterpret_cast<bcUINT16*>(p_px_index_buffer);
+				auto* l_indices = reinterpret_cast<bcUINT16*>(p_px_index_buffer);
 
 				for(bcUINT32 i = 0; i < p_desc.m_indices.m_count / 3; ++i)
 				{
-					auto l_index = i * 3;
+					const auto l_index = i * 3;
 
 					l_indices[l_index] = p_desc.m_indices.at<bcUINT16>(l_index + 2);
 					l_indices[l_index + 1] = p_desc.m_indices.at<bcUINT16>(l_index + 1);
@@ -86,11 +86,11 @@ namespace black_cat
 			}
 			else
 			{
-				bcUINT32* l_indices = reinterpret_cast<bcUINT32*>(p_px_index_buffer);
+				auto* l_indices = reinterpret_cast<bcUINT32*>(p_px_index_buffer);
 
 				for (bcUINT32 i = 0; i < p_desc.m_indices.m_count / 3; ++i)
 				{
-					auto l_index = i * 3;
+					const auto l_index = i * 3;
 
 					l_indices[l_index] = p_desc.m_indices.at<bcUINT32>(l_index + 2);
 					l_indices[l_index + 1] = p_desc.m_indices.at<bcUINT32>(l_index + 1);
@@ -105,7 +105,7 @@ namespace black_cat
 			l_px_desc.triangles.data = p_px_index_buffer;
 			l_px_desc.triangles.stride = p_desc.m_indices.m_stride * 3;
 			l_px_desc.triangles.count = p_desc.m_indices.m_count / 3;
-			l_px_desc.materialIndices.data = reinterpret_cast< const physx::PxMaterialTableIndex* >(p_desc.m_material_indices.m_data);
+			l_px_desc.materialIndices.data = static_cast< const physx::PxMaterialTableIndex* >(p_desc.m_material_indices.m_data);
 			l_px_desc.materialIndices.stride = p_desc.m_material_indices.m_stride;
 			l_px_desc.flags = static_cast< physx::PxMeshFlag::Enum >(p_desc.m_flag);
 

@@ -12,6 +12,7 @@
 #include "PhysicsImp/Fundation/bcSimulationEventCallback.h"
 #include "PhysicsImp/Collision/bcContactFilterCallback.h"
 #include "PhysicsImp/Collision/bcContactModifyCallback.h"
+#include "PhysicsImp/Collision/bcSceneQuery.h"
 
 namespace black_cat
 {
@@ -149,7 +150,7 @@ namespace black_cat
 		class bc_px_simulation_callback : public physx::PxSimulationEventCallback
 		{
 		public:
-			explicit bc_px_simulation_callback(core::bc_unique_ptr< bc_isimulation_event_callback > p_imp);
+			explicit bc_px_simulation_callback(core::bc_unique_ptr< bci_simulation_event_callback > p_imp);
 
 			void onConstraintBreak(physx::PxConstraintInfo* p_constraints, physx::PxU32 p_count) override;
 
@@ -163,12 +164,17 @@ namespace black_cat
 				const physx::PxContactPair* p_pairs,
 				physx::PxU32 p_pairs_count) override;
 
-			core::bc_unique_ptr< bc_isimulation_event_callback > m_imp;
+			core::bc_unique_ptr< bci_simulation_event_callback > m_imp;
 		};
 
 		class bc_px_query_filter_callback : public physx::PxQueryFilterCallback
 		{
 		public:
+			explicit bc_px_query_filter_callback(bc_scene_query_post_filter_callback* p_post_filter_callback)
+				: m_post_filter_callback(p_post_filter_callback)
+			{
+			}
+			
 			physx::PxQueryHitType::Enum preFilter(const physx::PxFilterData& p_filter_data,
 				const physx::PxShape* p_shape,
 				const physx::PxRigidActor* p_actor,
@@ -176,6 +182,9 @@ namespace black_cat
 
 			physx::PxQueryHitType::Enum postFilter(const physx::PxFilterData& p_filter_data,
 				const physx::PxQueryHit& p_hit) override;
+
+		private:
+			bc_scene_query_post_filter_callback* m_post_filter_callback;
 		};
 
 		physx::PxFilterFlags bc_px_filter_shader(physx::PxFilterObjectAttributes p_attributes0,

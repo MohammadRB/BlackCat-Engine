@@ -13,6 +13,7 @@ namespace black_cat
 	namespace game
 	{
 		class bc_skeleton_animation;
+		class bc_skinned_mesh_component;
 
 		class BC_GAME_DLL bc_xbot_controller : public bci_actor_controller
 		{
@@ -27,7 +28,8 @@ namespace black_cat
 
 		private:
 			bc_skeleton_animation* _find_animation(const bcCHAR* p_name) const noexcept;
-			
+
+			bc_skinned_mesh_component* m_skinned_component;
 			core::bc_vector_movable<bc_skeleton_animation*> m_all_animations;
 			core::bc_unique_ptr<bc_animation_job_sampling> m_sample_job;
 			core::bc_unique_ptr<bc_animation_job_local_to_model_transform> m_local_to_model_job;

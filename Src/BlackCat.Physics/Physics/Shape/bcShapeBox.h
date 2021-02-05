@@ -55,8 +55,6 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-
 		private:
 			platform_pack m_pack;
 		};

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CorePlatform/bcType.h"
+#include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcUnorderedMap.h"
@@ -23,14 +24,15 @@ namespace black_cat
 	namespace game
 	{
 		class bc_mesh_builder;
-		
+
 		struct bc_mesh_part_data
 		{
 			core::bc_string m_name;
 			bc_render_material_ptr m_material;
 			core::bc_vector_movable< bc_vertex_pos_tex_nor_tan > m_vertices;
 			core::bc_vector_movable< bc_vertex_pos_tex_nor_tan_bon > m_skinned_vertices;
-			core::bc_vector_movable< bcBYTE > m_indices;
+			core::bc_vector_movable< bcUINT16 > m_16bit_indices;
+			core::bc_vector_movable< bcUINT32 > m_32bit_indices;
 			physics::bc_bound_box m_bound_box;
 
 			graphic::bc_buffer_ptr m_vertex_buffer;

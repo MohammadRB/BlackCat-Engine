@@ -7,16 +7,12 @@
 #include "Core/Container/bcString.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcParameterPack.h"
+#include "PhysicsImp/Collision/bcShapeQuery.h"
 #include "PhysicsImp/Collision/bcSceneQuery.h"
 #include "Game/System/Physics/bcPxWrap.h"
 
 namespace black_cat
 {
-	namespace physics
-	{
-		using bc_scene_ray_query_buffer = bc_scene_query_buffer< bc_ray_hit >;
-	}
-
 	namespace game
 	{
 		class bc_game_system;
@@ -158,6 +154,10 @@ namespace black_cat
 				game::bc_query_group p_query_group,
 				physics::bc_query_flags p_flags,
 				physics::bc_scene_ray_query_buffer& p_result) const;
+
+			physics::bc_query_hit_type skinning_mesh_hit_check(const update_context& p_context,
+				const physics::bc_ray& p_ray,
+				physics::bc_scene_query_post_filter_data& p_filter_data) const;
 		};
 
 		class bc_iui_command_reversible : public bc_iui_command
@@ -173,5 +173,15 @@ namespace black_cat
 			 */
 			virtual void undo(undo_context& p_context) = 0;
 		};
+
+		inline bool bc_iui_command::is_reversible() const
+		{
+			return false;
+		}
+		
+		inline bool bc_iui_command_reversible::is_reversible() const
+		{
+			return true;
+		}
 	}
 }

@@ -73,8 +73,6 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-
 		private:
 			platform_pack m_pack;
 		};
@@ -109,8 +107,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
 
 		private:
 			platform_pack m_pack;
@@ -155,8 +151,6 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-
 		private:
 			platform_pack m_pack;
 		};
@@ -196,8 +190,6 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-
 		private:
 			platform_pack m_pack;
 		};
@@ -209,12 +201,12 @@ namespace black_cat
 		 * States should not be modified from within the callbacks. In particular objects should not
 		 * be created or destroyed. If state modification is needed then the changes should be stored to a buffer
 		 * and performed after the simulation step.
-		 * Threading: It is not necessary to make this class thread safe as it will only be called in the context of the user thread.
+		 * \n Threading: It is not necessary to make this class thread safe as it will only be called in the context of the user thread.
 		 */
-		class bc_isimulation_event_callback
+		class bci_simulation_event_callback
 		{
 		public:
-			virtual ~bc_isimulation_event_callback() = default;
+			virtual ~bci_simulation_event_callback() = default;
 
 			virtual void on_joint_break(bc_joint* p_joints, bcUINT32 p_count) = 0;
 

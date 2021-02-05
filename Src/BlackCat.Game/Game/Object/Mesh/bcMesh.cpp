@@ -68,14 +68,15 @@ namespace black_cat
 					l_mesh.m_material = std::move(l_builder_mesh.m_material);
 					l_mesh.m_vertices = std::move(l_builder_mesh.m_vertices);
 					l_mesh.m_skinned_vertices = std::move(l_builder_mesh.m_skinned_vertices);
-					l_mesh.m_indices = std::move(l_builder_mesh.m_indices);
+					l_mesh.m_16bit_indices = std::move(l_builder_mesh.m_16bit_indices);
+					l_mesh.m_32bit_indices = std::move(l_builder_mesh.m_32bit_indices);
 					l_mesh.m_bound_box = l_builder_mesh.m_bound_box;
 					l_mesh.m_vertex_buffer = std::move(l_builder_mesh.m_vertex_buffer);
 					l_mesh.m_index_buffer = std::move(l_builder_mesh.m_index_buffer);
 					
 					m_render_states[l_mesh_index] = std::move(l_builder_mesh.m_render_state);
 
-					const auto* l_mesh_colliders = m_collider->find_mesh_colliders(m_meshes[l_mesh_index].m_name);
+					const auto* l_mesh_colliders = m_collider->find_mesh_collider(m_meshes[l_mesh_index].m_name);
 					m_collider_map.push_back(l_mesh_colliders);
 				}
 				

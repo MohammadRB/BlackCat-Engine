@@ -50,7 +50,7 @@ namespace black_cat
 			core::bc_vector3f m_normal;
 			core::bc_vector3f m_tangent;
 		};
-
+		
 		class bc_vertex_pos_tex_nor_tan_bon
 		{
 		public:

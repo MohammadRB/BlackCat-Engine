@@ -16,8 +16,8 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_rigid_static_component::bc_rigid_static_component(bc_actor_component_index p_index) noexcept
-			: bc_rigid_body_component(p_index)
+		bc_rigid_static_component::bc_rigid_static_component(bc_actor_index p_actor_index, bc_actor_component_index p_index) noexcept
+			: bc_rigid_body_component(p_actor_index, p_index)
 		{
 		}
 
@@ -63,9 +63,9 @@ namespace black_cat
 			if(l_mesh_component)
 			{
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform::identity());
-				l_physics_system.connect_px_actor_to_game_actor(*m_px_actor_ref, p_context.m_actor);
+				l_physics_system.set_game_actor(*m_px_actor_ref, p_context.m_actor);
 
-				create_px_shapes_from_mesh(l_physics_system, m_px_actor_ref.get(), l_mesh_component->get_mesh());
+				l_physics_system.create_px_shapes_from_mesh(m_px_actor_ref.get(), p_context.m_actor, *l_mesh_component);
 
 				return;
 			}
@@ -74,9 +74,9 @@ namespace black_cat
 			if(l_height_map_component)
 			{
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform::identity());
-				l_physics_system.connect_px_actor_to_game_actor(*m_px_actor_ref, p_context.m_actor);
+				l_physics_system.set_game_actor(*m_px_actor_ref, p_context.m_actor);
 
-				create_px_shapes_from_height_map(l_physics_system, m_px_actor_ref.get(), l_height_map_component->get_height_map());
+				l_physics_system.create_px_shapes_from_height_map(m_px_actor_ref.get(), p_context.m_actor, *l_height_map_component);
 
 				return;
 			}
@@ -121,20 +121,6 @@ namespace black_cat
 				update_px_shape_transforms(*m_px_actor_ref, *l_hierarchy_transform_event->get_px_transforms());
 				return;
 			}
-		}
-		
-		void bc_rigid_static_component::create_px_shapes_from_height_map(bc_physics_system& p_physics_system,
-			physics::bc_rigid_static& p_rigid_static,
-			const bc_height_map& p_height_map)
-		{
-			auto& l_physics = p_physics_system.get_physics();
-			const auto l_px_height_field = p_height_map.get_px_height_field();
-
-			const auto l_height_field_shape = physics::bc_shape_height_field(l_px_height_field, p_height_map.get_xz_multiplier(), p_physics_system.get_height_field_y_scale());
-			auto l_height_field_material = l_physics.create_material(1, 1, 0.1f);
-
-			p_rigid_static.create_shape(l_height_field_shape, l_height_field_material.get());
-			p_rigid_static.set_query_group(static_cast<physics::bc_query_group>(bc_query_group::terrain));
 		}
 	}
 }

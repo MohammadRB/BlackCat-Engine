@@ -23,18 +23,18 @@ namespace black_cat
 			const physx::PxShape* p_s1, 
 			physx::PxPairFlags& p_pair_flags)
 		{
-			auto l_px_actor0_type = physx::PxGetFilterObjectType(p_attributes0);
-			bool l_px_actor0_is_kinematic = physx::PxFilterObjectIsKinematic(p_attributes0);
-			bool l_px_actor0_is_trigger = physx::PxFilterObjectIsTrigger(p_attributes0);
-			bc_collision_filter l_actor0_filter_data
+			const auto l_px_actor0_type = physx::PxGetFilterObjectType(p_attributes0);
+			const bool l_px_actor0_is_kinematic = physx::PxFilterObjectIsKinematic(p_attributes0);
+			const bool l_px_actor0_is_trigger = physx::PxFilterObjectIsTrigger(p_attributes0);
+			const bc_collision_filter l_actor0_filter_data
 			(
 				static_cast< bc_collision_group >(p_filter_data0.word0),
 				static_cast< bc_collision_group >(p_filter_data0.word1)
 			);
-			auto l_px_actor1_type = physx::PxGetFilterObjectType(p_attributes1);
-			bool l_px_actor1_is_kinematic = physx::PxFilterObjectIsKinematic(p_attributes1);
-			bool l_px_actor1_is_trigger = physx::PxFilterObjectIsTrigger(p_attributes1);
-			bc_collision_filter l_actor1_filter_data
+			const auto l_px_actor1_type = physx::PxGetFilterObjectType(p_attributes1);
+			const bool l_px_actor1_is_kinematic = physx::PxFilterObjectIsKinematic(p_attributes1);
+			const bool l_px_actor1_is_trigger = physx::PxFilterObjectIsTrigger(p_attributes1);
+			const bc_collision_filter l_actor1_filter_data
 			(
 				static_cast< bc_collision_group >(p_filter_data1.word0),
 				static_cast< bc_collision_group >(p_filter_data1.word1)
@@ -50,8 +50,8 @@ namespace black_cat
 			static_cast< bc_physics_reference& >(l_shape0).get_platform_pack().m_px_object = const_cast< physx::PxShape* >(p_s0);
 			static_cast< bc_physics_reference& >(l_shape1).get_platform_pack().m_px_object = const_cast< physx::PxShape* >(p_s1);
 
-			bc_filter_object_flag l_actor0_flags = core::bc_enum::none< bc_filter_object_flag >();
-			bc_filter_object_flag l_actor1_flags = core::bc_enum::none< bc_filter_object_flag >();
+			const bc_filter_object_flag l_actor0_flags = core::bc_enum::none< bc_filter_object_flag >();
+			const bc_filter_object_flag l_actor1_flags = core::bc_enum::none< bc_filter_object_flag >();
 
 			core::bc_enum::set
 			(
@@ -102,7 +102,7 @@ namespace black_cat
 				l_px_actor1_is_trigger
 			);
 
-			bool l_result = m_imp->pair_found
+			const bool l_result = m_imp->pair_found
 			(
 				l_actor0_flags,
 				l_actor0_filter_data,
@@ -166,7 +166,7 @@ namespace black_cat
 			m_imp->on_contact_modify(l_pairs.data(), p_count);
 		}
 
-		bc_px_simulation_callback::bc_px_simulation_callback(core::bc_unique_ptr< bc_isimulation_event_callback > p_imp)
+		bc_px_simulation_callback::bc_px_simulation_callback(core::bc_unique_ptr< bci_simulation_event_callback > p_imp)
 			: m_imp(std::move(p_imp))
 		{
 		}
@@ -248,11 +248,10 @@ namespace black_cat
 			physx::PxHitFlags& p_query_flags)
 		{
 			bc_shape l_shape;
-			static_cast< bc_physics_reference& >(l_shape).get_platform_pack().m_px_object =
-				const_cast< physx::PxShape* >(p_shape);
+			static_cast< bc_physics_reference& >(l_shape).get_platform_pack().m_px_object = const_cast< physx::PxShape* >(p_shape);
 
-			bc_query_group l_query_groups = static_cast< bc_query_group >(p_filter_data.word0);
-			bc_query_group l_shape_group = l_shape.get_query_group();
+			const bc_query_group l_query_groups = static_cast< bc_query_group >(p_filter_data.word0);
+			const bc_query_group l_shape_group = l_shape.get_query_group();
 
 			// If filter data is zero or query groups does not include shape query group then discard test
 			if (l_query_groups != bc_query_group::all && !core::bc_enum::has(l_query_groups, l_shape_group))
@@ -260,7 +259,7 @@ namespace black_cat
 				return physx::PxQueryHitType::eNONE;
 			}
 
-			bc_shape_query_flag l_flags = l_shape.get_query_flags();
+			const bc_shape_query_flag l_flags = l_shape.get_query_flags();
 
 			if (core::bc_enum::has(l_flags, bc_shape_query_flag::touching))
 			{
@@ -271,10 +270,19 @@ namespace black_cat
 			return physx::PxQueryHitType::eBLOCK;
 		}
 
-		physx::PxQueryHitType::Enum bc_px_query_filter_callback::postFilter(const physx::PxFilterData& p_filter_data, 
-			const physx::PxQueryHit& p_hit)
+		physx::PxQueryHitType::Enum bc_px_query_filter_callback::postFilter(const physx::PxFilterData& p_filter_data, const physx::PxQueryHit& p_hit)
 		{
-			return physx::PxQueryHitType::eBLOCK;
+			if(!m_post_filter_callback)
+			{
+				return physx::PxQueryHitType::eBLOCK;
+			}
+
+			bc_scene_query_post_filter_data l_data;
+			static_cast<bc_physics_reference&>(l_data.m_actor).get_platform_pack().m_px_object = p_hit.actor;
+			static_cast<bc_physics_reference&>(l_data.m_shape).get_platform_pack().m_px_object = p_hit.shape;
+			l_data.m_face_index = p_hit.faceIndex;
+			
+			return static_cast<physx::PxQueryHitType::Enum>((*m_post_filter_callback)(l_data));
 		}
 
 		physx::PxFilterFlags bc_px_filter_shader(physx::PxFilterObjectAttributes p_attributes0, 
@@ -287,7 +295,7 @@ namespace black_cat
 		{
 			p_pair_flags |= physx::PxPairFlag::eNOTIFY_CONTACT_POINTS;
 
-			auto* l_constant_block = reinterpret_cast< const bc_px_filter_shader_data* >(p_constant_block);
+			const auto* l_constant_block = reinterpret_cast< const bc_px_filter_shader_data* >(p_constant_block);
 
 			// If filter callback is required so let callback be invoked
 			if (l_constant_block->m_use_filter_callback)
@@ -311,8 +319,8 @@ namespace black_cat
 				p_pair_flags |= physx::PxPairFlag::eNOTIFY_TOUCH_LOST;
 			}
 
-			bc_shape_notify_flag l_collision_flag0 = static_cast< bc_shape_notify_flag >(p_filter_data0.word2);
-			bc_shape_notify_flag l_collision_flag1 = static_cast< bc_shape_notify_flag >(p_filter_data1.word2);
+			const auto l_collision_flag0 = static_cast< bc_shape_notify_flag >(p_filter_data0.word2);
+			const auto l_collision_flag1 = static_cast< bc_shape_notify_flag >(p_filter_data1.word2);
 
 			// If object is tagged to report contact notifications, so notify
 			if (core::bc_enum::has(l_collision_flag0, bc_shape_notify_flag::notify_touch) ||

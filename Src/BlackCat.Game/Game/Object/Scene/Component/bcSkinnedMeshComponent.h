@@ -19,10 +19,10 @@ namespace black_cat
 			BC_COMPONENT(skn_msh, true, false)
 
 		public:
-			using animation_iterator = core::bc_iterator_adapter<core::bc_vector<bc_skinned_animation_ptr>>;
+			using animation_iterator = core::bc_const_iterator_adapter<core::bc_vector<bc_skinned_animation_ptr>>;
 			
 		public:
-			explicit bc_skinned_mesh_component(bc_actor_component_index p_index);
+			bc_skinned_mesh_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
 
 			bc_skinned_mesh_component(bc_skinned_mesh_component&& p_other) noexcept;
 
@@ -40,7 +40,7 @@ namespace black_cat
 
 			const bc_sub_mesh_px_transform& get_collider_model_transforms() const noexcept;
 
-			animation_iterator get_animations() noexcept;
+			animation_iterator get_animations() const noexcept;
 			
 			void add_animation_job(bci_animation_job& p_animation_job) noexcept;
 
@@ -83,7 +83,7 @@ namespace black_cat
 			return m_collider_model_transforms;
 		}
 		
-		inline bc_skinned_mesh_component::animation_iterator bc_skinned_mesh_component::get_animations() noexcept
+		inline bc_skinned_mesh_component::animation_iterator bc_skinned_mesh_component::get_animations() const noexcept
 		{
 			return animation_iterator(m_animations);
 		}

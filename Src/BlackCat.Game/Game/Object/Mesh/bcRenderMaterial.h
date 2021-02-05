@@ -13,7 +13,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		struct bc_render_material;
+		class bc_render_material;
 		class bc_material_manager;
 
 		class BC_GAME_DLL _bc_material_ptr_deleter

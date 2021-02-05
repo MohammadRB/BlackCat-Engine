@@ -15,18 +15,27 @@ namespace black_cat
 {
 	namespace physics
 	{
-		// TODO replace with another approach
+		
+		/**
+		 * \brief Reinterpret input buffer as another type in Px library and use TInitializer callback to overwrite every object in place
+		 * \tparam TBcType 
+		 * \tparam TPxType 
+		 * \tparam TInitializer Callback that accept TBcType&, TPxType&
+		 * \param p_buffer 
+		 * \param p_element_count 
+		 * \param p_initializer 
+		 */
 		template< class TBcType, class TPxType, class TInitializer >
 		void bc_overwrite_output_array(TBcType* p_buffer, bcUINT32 p_element_count, TInitializer p_initializer)
 		{
-			auto* l_px_types = reinterpret_cast< TPxType** >(p_buffer);
+			auto* l_px_types = reinterpret_cast< TPxType* >(p_buffer);
 
 			// Initialize objects in reverse order to prevent data overwrite(in case of wrapper objects are bigger) 
 			// when writing to the array
 			for (bcINT32 i = p_element_count - 1; i >= 0; --i)
 			{
-				TPxType* l_px_type = l_px_types[i];
-				TBcType* l_bc_type = &p_buffer[i];
+				TPxType& l_px_type = l_px_types[i];
+				TBcType& l_bc_type = p_buffer[i];
 
 				p_initializer(l_bc_type, l_px_type);
 			}

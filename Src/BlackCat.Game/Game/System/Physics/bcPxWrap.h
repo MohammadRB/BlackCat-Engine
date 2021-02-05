@@ -16,6 +16,7 @@ namespace black_cat
 		enum class bc_query_group : core::bc_enum::enum_t< physics::bc_query_group >
 		{
 			terrain = static_cast< core::bc_enum::enum_t< physics::bc_query_group > >(physics::bc_query_group::group1),
+			skinned = static_cast< core::bc_enum::enum_t< physics::bc_query_group > >(physics::bc_query_group::group2),
 			all = static_cast<core::bc_enum::enum_t< physics::bc_query_group >>(physics::bc_query_group::all)
 		};
 
@@ -43,10 +44,6 @@ namespace black_cat
 				auto l_px_actor = get_px_actor();
 				return core::bc_get_service<bc_game_system>()->get_physics_system().get_game_actor(l_px_actor);
 			}
-
-		protected:
-
-		private:
 		};
 
 		class bc_overlap_hit : public physics::bc_overlap_hit
@@ -73,10 +70,6 @@ namespace black_cat
 				auto l_px_actor = get_px_actor();
 				return core::bc_get_service<bc_game_system>()->get_physics_system().get_game_actor(l_px_actor);
 			}
-
-		protected:
-
-		private:
 		};
 
 		class bc_sweep_hit : public physics::bc_sweep_hit
@@ -103,10 +96,6 @@ namespace black_cat
 				auto l_px_actor = get_px_actor();
 				return core::bc_get_service<bc_game_system>()->get_physics_system().get_game_actor(l_px_actor);
 			}
-
-		protected:
-
-		private:
 		};
 	}
 }

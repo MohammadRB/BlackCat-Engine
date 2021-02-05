@@ -3,8 +3,11 @@
 #pragma once
 
 #include "Core/Utility/bcEnumOperand.h"
+#include "Core/Utility/bcDelegate.h"
 #include "Physics/bcPhysicsApi.h"
 #include "Physics/Collision/bcShapeQuery.h"
+#include "Physics/Body/bcRigidActor.h"
+#include "Physics/Shape/bcShape.h"
 
 namespace black_cat
 {
@@ -18,6 +21,21 @@ namespace black_cat
 													// Helps query performance. Both eTOUCH and eBLOCK hitTypes are considered hits with this flag.
 		};
 
+		enum class bc_query_hit_type
+		{
+			none = 0,
+			touch = 1,
+			block = 2
+		};
+
+		struct bc_scene_query_post_filter_data
+		{
+			bc_actor m_actor;
+			bc_shape m_shape;
+			bcUINT32 m_face_index;
+		};
+		using bc_scene_query_post_filter_callback = core::bc_delegate < bc_query_hit_type(bc_scene_query_post_filter_data&) >;
+		
 		template< bc_physics_api TApi, class THit >
 		struct bc_platform_scene_query_buffer_pack
 		{
@@ -50,8 +68,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
 
 		private:
 			platform_pack m_pack;

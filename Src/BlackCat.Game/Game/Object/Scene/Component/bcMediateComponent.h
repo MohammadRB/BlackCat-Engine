@@ -28,7 +28,7 @@ namespace black_cat
 			static constexpr const bcCHAR* s_entity_name_json_key = "entity_name";
 
 		public:
-			explicit bc_mediate_component(bc_actor_component_index p_index);
+			bc_mediate_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
 
 			bc_mediate_component(bc_mediate_component&&) = default;
 

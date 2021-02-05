@@ -17,8 +17,8 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_mesh_component::bc_mesh_component(bc_actor_component_index p_index)
-			: bc_render_component(p_index),
+		bc_mesh_component::bc_mesh_component(bc_actor_index p_actor_index, bc_actor_component_index p_index)
+			: bc_render_component(p_actor_index, p_index),
 			m_sub_mesh(),
 			m_world_transforms(),
 			m_lod_factor(0)

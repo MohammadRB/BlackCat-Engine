@@ -65,7 +65,7 @@ namespace black_cat
 		(
 			game::bc_scene_graph_render_state_query
 			(
-				p_param.m_current_camera,
+				p_param.m_cascade_camera,
 				p_param.m_frame_renderer.create_buffer()
 			)
 			.with(game::bc_camera_frustum(p_param.m_cascade_camera))

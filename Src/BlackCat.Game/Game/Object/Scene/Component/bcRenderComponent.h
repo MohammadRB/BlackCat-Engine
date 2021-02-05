@@ -32,7 +32,7 @@ namespace black_cat
 			virtual void render(const bc_actor_component_render_context& p_context) const = 0;
 
 		protected:
-			explicit bc_render_component(bc_actor_component_index p_index);
+			bc_render_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
 
 			bc_render_component(bc_render_component&&) noexcept;
 

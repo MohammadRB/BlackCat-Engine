@@ -20,7 +20,7 @@ namespace black_cat
 			BC_ABSTRACT_COMPONENT(mesh)
 			
 		public:
-			explicit bc_mesh_component(bc_actor_component_index p_index);
+			bc_mesh_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
 
 			bc_mesh_component(bc_mesh_component&&) noexcept;
 

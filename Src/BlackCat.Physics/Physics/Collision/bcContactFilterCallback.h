@@ -29,7 +29,7 @@ namespace black_cat
 		/**
 		 * \brief Filter callback to specify handling of collision pairs.
 		 * States should not be modified from within the callbacks.
-		 * Threading: The callbacks may execute in user threads or simulation threads, possibly simultaneously.
+		 * \n Threading: The callbacks may execute in user threads or simulation threads, possibly simultaneously.
 		 */
 		class bci_contact_filter_callback
 		{

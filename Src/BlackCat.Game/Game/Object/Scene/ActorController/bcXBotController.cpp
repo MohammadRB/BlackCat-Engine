@@ -15,14 +15,14 @@ namespace black_cat
 	{
 		void bc_xbot_controller::initialize(bc_actor& p_actor)
 		{
-			auto* l_skinned_mesh_component = p_actor.get_component<bc_skinned_mesh_component>();
+			m_skinned_component = p_actor.get_component<bc_skinned_mesh_component>();
 
-			if(!l_skinned_mesh_component)
+			if(!m_skinned_component)
 			{
 				throw bc_invalid_operation_exception("xbot actor must have skinned components");
 			}
 
-			auto l_skinned_animations = l_skinned_mesh_component->get_animations();
+			auto l_skinned_animations = m_skinned_component->get_animations();
 			
 			BC_ASSERT(l_skinned_animations.size());
 			
@@ -49,8 +49,8 @@ namespace black_cat
 				bc_animation_job_local_to_model_transform
 				(
 					*m_sample_job,
-					l_skinned_mesh_component->get_mesh(),
-					l_skinned_mesh_component->get_model_transforms()
+					m_skinned_component->get_mesh(),
+					m_skinned_component->get_model_transforms()
 				)
 			);
 			m_model_to_skinned_job = core::bc_make_unique< bc_animation_job_model_to_skinned_transform >
@@ -58,7 +58,7 @@ namespace black_cat
 				bc_animation_job_model_to_skinned_transform
 				(
 					*m_local_to_model_job,
-					l_skinned_mesh_component->get_world_transforms()
+					m_skinned_component->get_world_transforms()
 				)
 			);
 		}
@@ -90,8 +90,7 @@ namespace black_cat
 		{
 			if(m_idle_job)
 			{
-				auto* l_skinned_mesh_component = p_actor.get_component<bc_skinned_mesh_component>();
-				l_skinned_mesh_component->add_animation_job(*m_idle_job);
+				m_skinned_component->add_animation_job(*m_idle_job);
 			}
 		}
 
@@ -118,5 +117,5 @@ namespace black_cat
 
 			return nullptr;
 		}
-	}	
+	}
 }

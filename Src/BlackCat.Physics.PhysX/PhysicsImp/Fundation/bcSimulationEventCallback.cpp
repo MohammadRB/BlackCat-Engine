@@ -253,8 +253,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		const bc_shape* bc_platform_contact_shape_pair<g_api_physx>::get_shape0() const noexcept
 		{
-			static_cast< bc_physics_reference& >(m_pack.m_shape0).get_platform_pack().m_px_object =
-				m_pack.m_px_pair->shapes[0];
+			static_cast< bc_physics_reference& >(m_pack.m_shape0).get_platform_pack().m_px_object = m_pack.m_px_pair->shapes[0];
 
 			return &m_pack.m_shape0;
 		}
@@ -263,8 +262,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		const bc_shape* bc_platform_contact_shape_pair<g_api_physx>::get_shape1() const noexcept
 		{
-			static_cast< bc_physics_reference& >(m_pack.m_shape1).get_platform_pack().m_px_object =
-				m_pack.m_px_pair->shapes[1];
+			static_cast< bc_physics_reference& >(m_pack.m_shape1).get_platform_pack().m_px_object = m_pack.m_px_pair->shapes[1];
 
 			return &m_pack.m_shape1;
 		}
@@ -273,11 +271,11 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bcUINT32 bc_platform_contact_shape_pair<g_api_physx>::get_contacts(bc_contact_point* p_buffer, bcUINT32 p_buffer_size) const noexcept
 		{
-			bcUINT32 l_written_count = m_pack.m_px_pair->extractContacts(reinterpret_cast<physx::PxContactPairPoint*>(p_buffer), p_buffer_size);
+			const bcUINT32 l_written_count = m_pack.m_px_pair->extractContacts(reinterpret_cast<physx::PxContactPairPoint*>(p_buffer), p_buffer_size);
 
-			bc_overwrite_output_array<bc_contact_point, physx::PxContactPairPoint>(p_buffer, l_written_count, [](bc_contact_point* p_bc_point, physx::PxContactPairPoint* p_px_point)
+			bc_overwrite_output_array<bc_contact_point, physx::PxContactPairPoint>(p_buffer, l_written_count, [](bc_contact_point& p_bc_point, physx::PxContactPairPoint& p_px_point)
 			{
-				p_bc_point->get_platform_pack().m_px_point = *p_px_point;
+				p_bc_point.get_platform_pack().m_px_point = p_px_point;
 			});
 
 			return l_written_count;

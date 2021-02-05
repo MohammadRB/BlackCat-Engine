@@ -8,6 +8,7 @@
 #include "Core/Content/bcContent.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Mesh/bcMeshPartCollider.h"
+#include "Game/Object/Mesh/bcSkinnedMeshCollider.h"
 
 namespace black_cat
 {
@@ -27,16 +28,31 @@ namespace black_cat
 
 			bc_mesh_collider& operator=(bc_mesh_collider&& p_other) noexcept;
 
-			void add_mesh_colliders(const bcCHAR* p_mesh_name, bc_mesh_part_collider&& p_colliders);
+			bc_skinned_mesh_collider& get_skinned_collider() noexcept;
+			
+			const bc_skinned_mesh_collider& get_skinned_collider() const noexcept;
+			
+			const bc_mesh_part_collider* find_mesh_collider(const bcCHAR* p_mesh_name) const noexcept;
 
-			const bc_mesh_part_collider* find_mesh_colliders(const bcCHAR* p_mesh_name) const noexcept;
+			const bc_mesh_part_collider* find_mesh_collider(const core::bc_string& p_mesh_name) const noexcept;
 
-			const bc_mesh_part_collider* find_mesh_colliders(const core::bc_string& p_mesh_name) const noexcept;
+			void add_mesh_collider(const bcCHAR* p_name, bc_mesh_part_collider&& p_collider);
 
 		private:
 			container_type m_mesh_colliders;
+			bc_skinned_mesh_collider m_skinned_collider;
 		};
 
 		using bc_mesh_collider_ptr = core::bc_content_ptr< bc_mesh_collider >;
+
+		inline bc_skinned_mesh_collider& bc_mesh_collider::get_skinned_collider() noexcept
+		{
+			return m_skinned_collider;
+		}
+
+		inline const bc_skinned_mesh_collider& bc_mesh_collider::get_skinned_collider() const noexcept
+		{
+			return m_skinned_collider;
+		}
 	}
 }

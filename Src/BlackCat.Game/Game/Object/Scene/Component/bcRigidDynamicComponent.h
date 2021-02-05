@@ -14,7 +14,7 @@ namespace black_cat
 			BC_COMPONENT(rgd_dyn, true, false)
 
 		public:
-			explicit bc_rigid_dynamic_component(bc_actor_component_index p_index) noexcept;
+			bc_rigid_dynamic_component(bc_actor_index p_actor_index, bc_actor_component_index p_index) noexcept;
 
 			bc_rigid_dynamic_component(bc_rigid_dynamic_component&&) noexcept;
 
