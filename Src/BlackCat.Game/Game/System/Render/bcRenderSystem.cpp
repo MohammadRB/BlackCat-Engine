@@ -438,7 +438,7 @@ namespace black_cat
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
 			);
-			m_frame_render_finish_handle = l_event_manager->register_event_listener< core::bc_event_frame_render_finish >
+			m_frame_render_finish_handle = l_event_manager->register_event_listener< core::bc_event_frame_swap >
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
 			);
@@ -564,7 +564,7 @@ namespace black_cat
 				return true;
 			}
 
-			if (core::bci_message::is<core::bc_event_frame_render_finish>(p_event))
+			if (core::bci_message::is<core::bc_event_frame_swap>(p_event))
 			{
 				m_shape_drawer->clear_swap_buffers();
 

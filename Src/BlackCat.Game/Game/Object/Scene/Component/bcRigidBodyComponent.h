@@ -31,6 +31,8 @@ namespace black_cat
 
 			void update_px_shape_transforms(physics::bc_rigid_body& p_px_actor,
 				const bc_sub_mesh_px_transform& p_model_space_transforms);
+
+			void debug_draw(physics::bc_rigid_body& p_px_actor, const bc_actor_component_debug_draw_context& p_context);
 		};
 
 		inline bc_rigid_body_component::~bc_rigid_body_component() = default;

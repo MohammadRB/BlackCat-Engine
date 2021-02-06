@@ -155,7 +155,7 @@ namespace black_cat
 				physics::bc_query_flags p_flags,
 				physics::bc_scene_ray_query_buffer& p_result) const;
 
-			physics::bc_query_hit_type skinning_mesh_hit_check(const update_context& p_context,
+			physics::bc_query_hit_type skinned_mesh_hit_check(const update_context& p_context,
 				const physics::bc_ray& p_ray,
 				physics::bc_scene_query_post_filter_data& p_filter_data) const;
 		};

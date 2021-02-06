@@ -69,19 +69,18 @@ namespace black_cat
 				.start_with(*m_sample_job)
 				.then(*m_local_to_model_job)
 				.end_with(*m_model_to_skinned_job)
-				.afterward([l_actor = p_actor, l_model_to_skinned_job = m_model_to_skinned_job.get()]() mutable
+				.afterward([this, l_actor = p_actor, l_model_to_skinned_job = m_model_to_skinned_job.get()]() mutable
 				{
-					auto& l_skinned_mesh_component = *l_actor.get_component<bc_skinned_mesh_component>();
-					const auto& l_mesh = l_skinned_mesh_component.get_mesh();
+					const auto& l_mesh = m_skinned_component->get_mesh();
 
 					l_mesh.calculate_skinned_mesh_collider_transforms
 					(
-						l_skinned_mesh_component.get_model_transforms(), 
-						l_skinned_mesh_component.get_collider_model_transforms()
+						m_skinned_component->get_model_transforms(),
+						m_skinned_component->get_collider_model_transforms()
 					);
 					
 					l_actor.add_event(bc_actor_event_bound_box_changed(l_model_to_skinned_job->get_bound_box()));
-					l_actor.add_event(bc_actor_event_hierarchy_transform(l_skinned_mesh_component.get_collider_model_transforms()));
+					l_actor.add_event(bc_actor_event_hierarchy_transform(m_skinned_component->get_collider_model_transforms()));
 				})
 				.build();
 		}

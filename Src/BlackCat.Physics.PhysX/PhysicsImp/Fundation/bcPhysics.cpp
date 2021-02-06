@@ -2,6 +2,7 @@
 
 #include "PhysicsImp/PhysicsImpPCH.h"
 #include "Core/Memory/bcAlloc.h"
+#include "Core/Utility/bcLogger.h"
 #include "Physics/bcException.h"
 #include "PhysicsImp/bcExport.h"
 #include "PhysicsImp/bcUtility.h"
@@ -374,15 +375,15 @@ namespace black_cat
 		bc_triangle_mesh_ref bc_platform_physics< g_api_physx >::create_runtime_triangle_mesh(const bc_triangle_mesh_desc& p_desc)
 		{
 			const physx::PxTolerancesScale l_scale;
-			physx::PxCookingParams params(l_scale);
+			physx::PxCookingParams l_params(l_scale);
 			// disable mesh cleaning - perform mesh validation on development configurations
-			params.meshPreprocessParams |= physx::PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH;
+			l_params.meshPreprocessParams |= physx::PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH;
 			// disable edge precompute, edges are set for each triangle, slows contact generation
-			params.meshPreprocessParams |= physx::PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
+			l_params.meshPreprocessParams |= physx::PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
 			// lower hierarchy for internal mesh
-			params.meshCookingHint = physx::PxMeshCookingHint::eCOOKING_PERFORMANCE;
+			l_params.meshCookingHint = physx::PxMeshCookingHint::eCOOKING_PERFORMANCE;
 
-			m_pack.m_px_cooking->setParams(params);
+			m_pack.m_px_cooking->setParams(l_params);
 
 			const bool l_is_16_bit_index = core::bc_enum::has(p_desc.m_flag, bc_triangle_mesh_flag::use_16bit_index);
 			const core::bc_unique_ptr< physx::PxVec3 > l_vertex_buffer
@@ -404,7 +405,11 @@ namespace black_cat
 
 #ifdef BC_DEBUG
 			// mesh should be validated before cooked without the mesh cleaning
-			BC_ASSERT(m_pack.m_px_cooking->validateTriangleMesh(l_px_desc));
+			const bool l_is_mesh_valid = m_pack.m_px_cooking->validateTriangleMesh(l_px_desc);
+			if(!l_is_mesh_valid)
+			{
+				core::bc_get_service<core::bc_logger>()->log_debug(bcL("Triangle mesh is not valid for cooking"));
+			}
 #endif
 
 			physx::PxTriangleMesh* l_px_triangle_mesh = m_pack.m_px_cooking->createTriangleMesh(l_px_desc, m_pack.m_px_physics->getPhysicsInsertionCallback());

@@ -86,5 +86,10 @@ namespace black_cat
 				return;
 			}
 		}
+
+		void bc_rigid_dynamic_component::debug_draw(const bc_actor_component_debug_draw_context& p_context)
+		{
+			bc_rigid_body_component::debug_draw(m_px_actor_ref.get(), p_context);
+		}
 	}
 }

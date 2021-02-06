@@ -67,7 +67,7 @@ namespace black_cat
 		
 		void bc_mediate_component::debug_draw(const bc_actor_component_debug_draw_context& p_context)
 		{
-			p_context.m_shape_drawer.draw_wired_box(m_bound_box);
+			p_context.m_shape_drawer.draw_wired_bound_box(m_bound_box);
 
 			if(m_controller)
 			{

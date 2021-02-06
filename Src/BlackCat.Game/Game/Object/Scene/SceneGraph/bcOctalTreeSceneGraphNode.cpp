@@ -354,7 +354,7 @@ namespace black_cat
 
 		void bc_octal_tree_graph_node::draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const
 		{
-			p_shape_drawer.draw_wired_box(m_bound_box);
+			p_shape_drawer.draw_wired_bound_box(m_bound_box);
 
 			if (is_leaf_node())
 			{

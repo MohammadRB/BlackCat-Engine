@@ -224,7 +224,7 @@ namespace black_cat
 			}
 			for (auto& l_captured_box : m_state->m_captured_boxes)
 			{
-				p_param.m_render_system.get_shape_drawer().draw_wired_box(l_captured_box);
+				p_param.m_render_system.get_shape_drawer().draw_wired_bound_box(l_captured_box);
 			}
 			//p_param.m_render_system.get_shape_drawer().render_wired_frustum(m_state->m_captured_camera);	
 		}

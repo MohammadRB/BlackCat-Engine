@@ -35,6 +35,8 @@ namespace black_cat
 
 			void handle_event(const bc_actor_component_event_context& p_context) override;
 
+			void debug_draw(const bc_actor_component_debug_draw_context& p_context) override;
+			
 		private:
 			physics::bc_rigid_static_ref m_px_actor_ref;
 		};

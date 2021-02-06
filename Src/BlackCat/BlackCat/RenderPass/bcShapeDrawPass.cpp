@@ -32,10 +32,10 @@ namespace black_cat
 			}
 		}
 
-		for(auto& l_actor : l_actors_buffer)
+		/*for(auto& l_actor : l_actors_buffer)
 		{
 			l_actor.draw_debug(*m_shape_drawer);
-		}
+		}*/
 		
 		p_context.m_scene->draw_debug_shapes(*m_shape_drawer);
 	}

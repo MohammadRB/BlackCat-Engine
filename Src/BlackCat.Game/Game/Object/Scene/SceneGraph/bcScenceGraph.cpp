@@ -97,7 +97,6 @@ namespace black_cat
 			{
 				for (auto& l_actor : *m_graph_node)
 				{
-					core::bc_get_service<core::bc_logger>()->log_debug((bcL("Removing actor: ") + core::bc_to_estring_frame(l_actor.get_index())).c_str());
 					l_actor.destroy();
 				}
 

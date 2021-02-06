@@ -47,7 +47,7 @@ namespace black_cat
 			(
 				[&p_context, &l_ray, this](physics::bc_scene_query_post_filter_data& p_filter_data)
 				{
-					return skinning_mesh_hit_check(p_context, l_ray, p_filter_data);
+					return skinned_mesh_hit_check(p_context, l_ray, p_filter_data);
 				}
 			);
 			
@@ -64,13 +64,18 @@ namespace black_cat
 			return l_px_hit_result;
 		}
 
-		physics::bc_query_hit_type bc_iui_command::skinning_mesh_hit_check(const update_context& p_context,
+		physics::bc_query_hit_type bc_iui_command::skinned_mesh_hit_check(const update_context& p_context,
 			const physics::bc_ray& p_ray,
 			physics::bc_scene_query_post_filter_data& p_filter_data) const
 		{
-			if (p_filter_data.m_shape.get_query_group() != static_cast<physics::bc_query_group>(game::bc_query_group::skinned))
+			const auto l_shape_query_flag = p_filter_data.m_shape.get_query_flags();
+			const auto l_shape_query_type = core::bc_enum::has(l_shape_query_flag, physics::bc_shape_query_flag::touching) ?
+				physics::bc_query_hit_type::touch :
+				physics::bc_query_hit_type::block;
+			
+			if (p_filter_data.m_shape.get_query_group() != static_cast<physics::bc_query_group>(game::bc_query_group::skinned_mesh))
 			{
-				return physics::bc_query_hit_type::block;
+				return l_shape_query_type;
 			}
 			
 			game::bc_actor l_actor = p_context.m_game_system.get_physics_system().get_game_actor(p_filter_data.m_actor);
@@ -124,10 +129,7 @@ namespace black_cat
 				return physics::bc_query_hit_type::none;
 			}
 			
-			const auto l_shape_query_flag = p_filter_data.m_shape.get_query_flags();
-			return core::bc_enum::has(l_shape_query_flag, physics::bc_shape_query_flag::touching) ?
-				       physics::bc_query_hit_type::touch :
-				       physics::bc_query_hit_type::block;
+			return l_shape_query_type;
 		}
 	}
 }

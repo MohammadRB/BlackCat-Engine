@@ -5,6 +5,7 @@
 #include "Core/Math/bcVector3f.h"
 #include "Core/Container/bcVector.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
+#include "PhysicsImp/Shape/bcShape.h"
 #include "Game/bcExport.h"
 #include "Game/System/Input/bcCamera.h"
 
@@ -36,8 +37,14 @@ namespace black_cat
 		class BC_GAME_DLL bc_shape_generator
 		{
 		public:
-			static void create_wired_box(bc_shape_generator_buffer& p_buffer, const physics::bc_bound_box& p_box);
+			static void create_wired_bound_box(bc_shape_generator_buffer& p_buffer, const physics::bc_bound_box& p_box);
+			
+			static void create_wired_box(bc_shape_generator_buffer& p_buffer, const physics::bc_shape_box& p_box, const physics::bc_transform& p_transform);
 
+			static void create_wired_sphere(bc_shape_generator_buffer& p_buffer, const physics::bc_shape_sphere& p_sphere, const physics::bc_transform& p_transform);
+			
+			static void create_wired_capsule(bc_shape_generator_buffer& p_buffer, const physics::bc_shape_capsule& p_capsule, const physics::bc_transform& p_transform);
+			
 			static void create_wired_frustum(bc_shape_generator_buffer& p_buffer, const bci_camera::extend& p_camera_extend);
 			
 			static void create_wired_skeleton(bc_shape_generator_buffer& p_buffer, 

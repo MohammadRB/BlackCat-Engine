@@ -33,10 +33,35 @@ namespace black_cat
 			bc_shape_drawer& operator=(bc_shape_drawer&& p_other) noexcept;
 						
 			/**
-			 * \brief 
+			 * \brief
+			 * \ThreadSafe
 			 * \param p_box 
 			 */
-			void draw_wired_box(const physics::bc_bound_box& p_box);
+			void draw_wired_bound_box(const physics::bc_bound_box& p_box);
+
+			/**
+			 * \brief 
+			 * \param p_box
+			 * \ThreadSafe
+			 * \param p_transform 
+			 */
+			void draw_wired_box(const physics::bc_shape_box& p_box, const physics::bc_transform& p_transform);
+
+			/**
+			 * \brief
+			 * \ThreadSafe
+			 * \param p_sphere 
+			 * \param p_transform 
+			 */
+			void draw_wired_sphere(const physics::bc_shape_sphere& p_sphere, const physics::bc_transform& p_transform);
+			
+			/**
+			 * \brief
+			 * \ThreadSafe
+			 * \param p_capsule 
+			 * \param p_transform 
+			 */
+			void draw_wired_capsule(const physics::bc_shape_capsule& p_capsule, const physics::bc_transform& p_transform);
 
 			/**
 			 * \brief

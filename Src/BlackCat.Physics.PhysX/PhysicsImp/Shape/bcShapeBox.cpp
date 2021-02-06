@@ -81,12 +81,12 @@ namespace black_cat
 
 			p_result[0] = core::bc_vector3f(-l_half_x, l_half_y, l_half_z * l_z_sign);
 			p_result[1] = core::bc_vector3f(-l_half_x, l_half_y, -l_half_z * l_z_sign);
-			p_result[2] = core::bc_vector3f(l_half_x, l_half_y, l_half_z * l_z_sign);
-			p_result[3] = core::bc_vector3f(l_half_x, l_half_y, -l_half_z * l_z_sign);
+			p_result[2] = core::bc_vector3f(l_half_x, l_half_y, -l_half_z * l_z_sign);
+			p_result[3] = core::bc_vector3f(l_half_x, l_half_y, l_half_z * l_z_sign);
 			p_result[4] = core::bc_vector3f(-l_half_x, -l_half_y, l_half_z * l_z_sign);
 			p_result[5] = core::bc_vector3f(-l_half_x, -l_half_y, -l_half_z * l_z_sign);
-			p_result[6] = core::bc_vector3f(l_half_x, -l_half_y, l_half_z * l_z_sign);
-			p_result[7] = core::bc_vector3f(l_half_x, -l_half_y, -l_half_z * l_z_sign);
+			p_result[6] = core::bc_vector3f(l_half_x, -l_half_y, -l_half_z * l_z_sign);
+			p_result[7] = core::bc_vector3f(l_half_x, -l_half_y, l_half_z * l_z_sign);
 		}
 	}
 }

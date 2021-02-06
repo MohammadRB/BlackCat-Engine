@@ -33,5 +33,48 @@ namespace black_cat
 				l_shape.set_local_pose(l_transform);
 			}
 		}
+
+		void bc_rigid_body_component::debug_draw(physics::bc_rigid_body& p_px_actor, const bc_actor_component_debug_draw_context& p_context)
+		{
+			core::bc_vector_frame< physics::bc_shape > l_shapes(p_px_actor.get_shape_count());
+			p_px_actor.get_shapes(l_shapes.data(), l_shapes.size());
+
+			for (physics::bc_shape& l_shape : l_shapes)
+			{
+				switch (l_shape.get_type())
+				{
+				case physics::bc_shape_type::sphere:
+				{
+					physics::bc_shape_sphere l_sphere(0);
+					l_shape.as_sphere(l_sphere);
+					p_context.m_shape_drawer.draw_wired_sphere(l_sphere, p_px_actor.get_global_pose().transform(l_shape.get_local_pose()));
+					break;
+				}
+				case physics::bc_shape_type::plane:
+					break;
+				case physics::bc_shape_type::capsule:
+				{
+					physics::bc_shape_capsule l_capsule(0,0);
+					l_shape.as_capsule(l_capsule);
+					p_context.m_shape_drawer.draw_wired_capsule(l_capsule, p_px_actor.get_global_pose().transform(l_shape.get_local_pose()));
+					break;
+				}
+				case physics::bc_shape_type::box:
+				{
+					physics::bc_shape_box l_box(0, 0, 0);
+					l_shape.as_box(l_box);
+					p_context.m_shape_drawer.draw_wired_box(l_box, p_px_actor.get_global_pose().transform(l_shape.get_local_pose()));
+					break;
+				}
+				case physics::bc_shape_type::convex_mesh:
+					break;
+				case physics::bc_shape_type::triangle_mesh:
+					break;
+				case physics::bc_shape_type::height_field:
+					break;
+				default: ;
+				}
+			}
+		}
 	}
 }

@@ -94,7 +94,7 @@ namespace black_cat
 
 					if(l_mesh.get_skinned())
 					{
-						l_px_shape.set_query_group(static_cast<physics::bc_query_group>(bc_query_group::skinned));
+						l_px_shape.set_query_group(static_cast<physics::bc_query_group>(bc_query_group::skinned_mesh));
 					}
 				}
 			}
