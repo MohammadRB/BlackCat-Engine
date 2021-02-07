@@ -40,7 +40,7 @@ namespace black_cat
 			if (m_px_height_map_deserialize_buffer)
 			{
 				m_px_height_map.reset();
-				bcAlignedFree(m_px_height_map_deserialize_buffer);
+				BC_ALIGNED_FREE(m_px_height_map_deserialize_buffer);
 			}
 		}
 

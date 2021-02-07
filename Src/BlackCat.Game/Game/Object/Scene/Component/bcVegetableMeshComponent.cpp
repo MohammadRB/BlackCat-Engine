@@ -1,25 +1,21 @@
 // [09/06/2019 MRB]
 
 #include "Game/GamePCH.h"
+#include "Game/System/Input/bcCameraInstance.h"
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
+#include "Game/bcUtility.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		extern void _render_mesh_node(bc_render_state_buffer& p_buffer,
-			const bc_sub_mesh& p_mesh_part,
-			const bc_sub_mesh_transformation& p_transformations,
-			const bc_mesh_node* p_begin,
-			const bc_mesh_node* p_end,
-			const bcCHAR* p_mesh_prefix);
-
-		bc_vegetable_mesh_component::bc_vegetable_mesh_component(bc_actor_component_index p_index)
-			: bc_mesh_component(p_index)
+		bc_vegetable_mesh_component::bc_vegetable_mesh_component(bc_actor_index p_actor_index, bc_actor_component_index p_index)
+			: bc_mesh_component(p_actor_index, p_index)
 		{
 		}
 
@@ -41,34 +37,54 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
-		void bc_vegetable_mesh_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
+		void bc_vegetable_mesh_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			bc_mesh_component::initialize(p_actor, p_parameters);
+			bc_mesh_component::initialize(p_context);
 		}
 
-		void bc_vegetable_mesh_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		void bc_vegetable_mesh_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			auto* l_world_transform_event = core::bc_imessage::as<bc_actor_event_world_transform>(p_event);
+			const auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
 			if (l_world_transform_event)
 			{
-				bc_mesh_component::set_world_transform(p_actor, l_world_transform_event->get_transform());
+				bc_mesh_component::set_world_transform(p_context.m_actor, l_world_transform_event->get_transform());
+				return;
+			}
+
+			const auto* l_bound_box_event = core::bci_message::as< bc_actor_event_bound_box_changed >(p_context.m_event);
+			if (l_bound_box_event)
+			{
+				bc_mesh_component::update_lod_factor(l_bound_box_event->get_bound_box());
 			}
 		}
 		
-		void bc_vegetable_mesh_component::render(bc_render_state_buffer& p_buffer) const
+		void bc_vegetable_mesh_component::render(const bc_actor_component_render_context& p_context) const
 		{
-			bcAssert(false);
+			BC_ASSERT(false);
 		}
 
-		void bc_vegetable_mesh_component::render(bc_render_state_buffer& p_buffer, bool p_render_leaf) const
+		void bc_vegetable_mesh_component::render(const bc_actor_component_render_context& p_context, bool p_render_leaf) const
 		{
-			const bcCHAR* l_mesh_prefix = p_render_leaf ? "leaf_" : "trunk_";
+			const bcCHAR* l_mesh_prefix = p_render_leaf ? "leaf." : "trunk.";
 
-			const auto& l_mesh = get_mesh();
-			const auto& l_mesh_transformation = get_mesh_transformation();
-			const auto* l_root_node = l_mesh.get_root_node();
+			const auto& l_sub_mesh = get_mesh();
+			const auto l_mesh_lod = l_sub_mesh.get_mesh_level_of_detail();
+			const auto* l_mesh = l_mesh_lod.get_mesh_nullable
+			(
+				p_context.m_camera.m_main_camera.get_position(),
+				p_context.m_camera.m_render_camera.get_position(),
+				get_world_position(),
+				get_lod_factor()
+			);
+			if(!l_mesh)
+			{
+				return;
+			}
+			
+			const auto& l_mesh_transformation = get_world_transforms();
+			const auto* l_root_node = l_sub_mesh.get_root_node();
 
-			_render_mesh_node(p_buffer, l_mesh, l_mesh_transformation, l_root_node, l_root_node + 1, l_mesh_prefix);
+			render_mesh(p_context.m_buffer, *l_mesh, l_mesh_transformation, &l_root_node, &l_root_node + 1, l_mesh_prefix);
 		}
 	}
 }

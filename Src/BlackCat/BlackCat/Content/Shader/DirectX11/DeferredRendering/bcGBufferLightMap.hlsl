@@ -1,7 +1,7 @@
 // [03/23/2019 MRB]
 
-#include "..\bcRegister.hlsli"
-#include "..\bcHelper.hlsli"
+#include "../bcRegister.hlsli"
+#include "../bcHelper.hlsli"
 
 #define THREAD_GROUP_SIZE 16
 #define SHADER_SHADOW_MAP_CASCADE_COUNT 4

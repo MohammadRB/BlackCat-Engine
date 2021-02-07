@@ -95,66 +95,6 @@
       ]
     },
     {
-      "name": "box",
-      "components": [
-        {
-          "name": "simple_mesh",
-          "parameters": {
-            "mesh": "box"
-          }
-        },
-        {
-          "name": "rigid_dynamic",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "sphere",
-      "components": [
-        {
-          "name": "simple_mesh",
-          "parameters": {
-            "mesh": "sphere"
-          }
-        },
-        {
-          "name": "rigid_dynamic",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "convex",
-      "components": [
-        {
-          "name": "simple_mesh",
-          "parameters": {
-            "mesh": "convex"
-          }
-        },
-        {
-          "name": "rigid_dynamic",
-          "parameters": {}
-        }
-      ]
-    },
-    {
-      "name": "train",
-      "components": [
-        {
-          "name": "simple_mesh",
-          "parameters": {
-            "mesh": "train"
-          }
-        },
-        {
-          "name": "rigid_static",
-          "parameters": {}
-        }
-      ]
-    },
-    {
       "name": "Palm_Tree_Large_d",
       "components": [
         {

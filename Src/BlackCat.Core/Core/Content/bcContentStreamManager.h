@@ -12,7 +12,6 @@
 #include "Core/Content/bcContent.h"
 #include "Core/Content/bcContentManager.h"
 #include "Core/Utility/bcServiceManager.h"
-#include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcDataDrivenParameter.h"
 #include "Core/Utility/bcDelegate.h"
 
@@ -34,7 +33,7 @@ namespace black_cat
 		struct _bc_content_stream_file
 		{
 			bc_string_program m_title;
-			bc_string_program m_name;
+			bc_string_program m_loader;
 			bc_estring_program m_file;
 			bc_data_driven_parameter m_parameters;
 		};
@@ -49,7 +48,7 @@ namespace black_cat
 
 		private:
 			using string_hash = std::hash< const bcCHAR* >;
-			using content_load_delegate = bc_delegate< bc_icontent_ptr(bc_alloc_type, const bcECHAR*, bc_content_loader_parameter&&) >;
+			using content_load_delegate = bc_delegate< bc_icontent_ptr(bc_alloc_type, const bcECHAR*, const bcECHAR*, const bc_content_loader_parameter&) >;
 			using content_loader_map_type = bc_unordered_map_program< string_hash::result_type, content_load_delegate >;
 			using content_stream_map_type = bc_unordered_map_program< string_hash::result_type, bc_vector_program< _bc_content_stream_file >>;
 			using content_map_type = bc_unordered_map_program< string_hash::result_type, bc_vector< bc_icontent_ptr > >;
@@ -141,9 +140,9 @@ namespace black_cat
 		void bc_content_stream_manager::_register_content_loader(const bcCHAR* p_data_driven_name)
 		{
 			auto l_data_driven_hash = string_hash()(p_data_driven_name);
-			content_load_delegate l_load_delegate([this](bc_alloc_type p_alloc_type, const bcECHAR* p_file_name, bc_content_loader_parameter&& p_parameters)
+			content_load_delegate l_load_delegate([this](bc_alloc_type p_alloc_type, const bcECHAR* p_file_name, const bcECHAR* p_file_variant, const bc_content_loader_parameter& p_parameters)
 			{
-				return m_content_manager.load< TContent >(p_alloc_type, p_file_name, std::move(p_parameters));
+				return m_content_manager.load< TContent >(p_alloc_type, p_file_name, p_file_variant, p_parameters);
 			});
 
 			m_content_loader_delegates.insert(content_loader_map_type::value_type(l_data_driven_hash, std::move(l_load_delegate)));
@@ -152,7 +151,7 @@ namespace black_cat
 		template< class TContent >
 		bc_content_ptr<TContent> bc_content_stream_manager::find_content(const bcCHAR* p_content_name) const
 		{
-			static_assert(std::is_base_of< bc_icontent, TContent >::value, "TContent must be a content type");
+			static_assert(std::is_base_of< bci_content, TContent >::value, "TContent must be a content type");
 
 			bc_icontent_ptr l_content = find_content(p_content_name);
 
@@ -167,7 +166,7 @@ namespace black_cat
 		template< class TContent >
 		bc_content_ptr<TContent> bc_content_stream_manager::find_content_throw(const bcCHAR* p_content_name) const
 		{
-			static_assert(std::is_base_of< bc_icontent, TContent >::value, "TContent must be a content type");
+			static_assert(std::is_base_of< bci_content, TContent >::value, "TContent must be a content type");
 
 			bc_icontent_ptr l_content = find_content_throw(p_content_name);
 

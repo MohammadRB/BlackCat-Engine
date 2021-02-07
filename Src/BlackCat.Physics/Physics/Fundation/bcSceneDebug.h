@@ -81,8 +81,6 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-
 		private:
 			bc_platform_scene_debug() noexcept;
 

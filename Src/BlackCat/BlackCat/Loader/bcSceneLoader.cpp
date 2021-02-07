@@ -158,7 +158,7 @@ namespace black_cat
 		
 		p_context.set_result(game::bc_scene
 		(
-			core::bc_estring(p_context.m_file_path.c_str()),
+			core::bc_estring(p_context.m_file_path),
 			core::bc_string(l_json_document->m_name->c_str()),
 			l_stream_file_names,
 			l_entity_file_names,
@@ -170,7 +170,7 @@ namespace black_cat
 
 		auto& l_scene = *p_context.m_result->get_result<game::bc_scene>();
 		
-		core::bc_vector< game::bc_iactor_component* > l_actor_components;
+		core::bc_vector< game::bci_actor_component* > l_actor_components;
 		for (auto& l_json_actor : l_json_document->m_actors)
 		{
 			game::bc_actor l_actor = l_entity_manager->create_entity(l_json_actor->m_entity_name->c_str());
@@ -179,7 +179,7 @@ namespace black_cat
 			l_actor.get_components(std::back_inserter(l_actor_components));
 			for (auto* l_actor_component : l_actor_components)
 			{
-				l_actor_component->load_instance(l_actor, *l_json_actor->m_parameters);
+				l_actor_component->load_instance(game::bc_actor_component_load_context(l_actor, *l_json_actor->m_parameters));
 			}
 
 			l_scene.add_actor(l_actor);
@@ -218,7 +218,7 @@ namespace black_cat
 			*l_entry = l_stream.c_str();
 		}
 
-		core::bc_vector_frame< game::bc_iactor_component* > l_actor_components;
+		core::bc_vector_frame< game::bci_actor_component* > l_actor_components;
 		for (auto& l_actor : l_scene->get_scene_graph())
 		{
 			auto* l_mediate_component = l_actor.get_component<game::bc_mediate_component>();
@@ -227,16 +227,16 @@ namespace black_cat
 			l_actor.get_components(std::back_inserter(l_actor_components));
 			for (auto& l_component : l_actor_components)
 			{
-				l_component->write_instance(l_actor, *l_json_entry->m_parameters);
+				l_component->write_instance(game::bc_actor_component_write_context(l_actor, *l_json_entry->m_parameters));
 			}
 
 			*l_json_entry->m_entity_name = l_mediate_component->get_entity_name();
-			*l_json_entry->m_position = l_mediate_component->get_world_position();
+			*l_json_entry->m_position = l_mediate_component->get_position();
 
 			l_actor_components.clear();
 		}
 
 		const auto l_json = l_json_document.write();
-		p_context.m_file->write(reinterpret_cast<const bcBYTE*>(l_json.c_str()), sizeof(decltype(l_json)::value_type) * l_json.size());
+		p_context.m_file.write(reinterpret_cast<const bcBYTE*>(l_json.c_str()), sizeof(decltype(l_json)::value_type) * l_json.size());
 	}
 }

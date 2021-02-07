@@ -115,7 +115,7 @@ namespace black_cat
 			);
 			core::bc_unique_ptr< physx::PxHeightFieldSample > l_px_samples(static_cast< physx::PxHeightFieldSample* >
 			(
-				bcAlloc(sizeof(physx::PxHeightFieldSample) * (p_desc.m_num_row * p_desc.m_num_column), core::bc_alloc_type::frame)
+				BC_ALLOC(sizeof(physx::PxHeightFieldSample) * (p_desc.m_num_row * p_desc.m_num_column), core::bc_alloc_type::frame)
 			));
 
 			physx::PxHeightFieldDesc l_px_height_desc = bc_convert_to_px_height_field(p_desc, l_px_samples.get());

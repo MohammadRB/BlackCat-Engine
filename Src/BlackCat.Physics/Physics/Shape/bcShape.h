@@ -41,7 +41,7 @@ namespace black_cat
 			query = core::bc_enum::value(1),				// The shape will partake in scene queries.
 			trigger = core::bc_enum::value(2),				// The shape is a trigger which can send reports whenever other shapes enter/leave its volume.
 			visualization = core::bc_enum::value(3),		// The shape will be visualized
-			default = simulation | query | visualization
+			default_v = simulation | query | visualization
 		};
 
 		template< bc_physics_api TApi >
@@ -174,8 +174,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
 
 		private:
 			platform_pack m_pack;

@@ -2,6 +2,7 @@
 
 #include "PhysicsImp/PhysicsImpPCH.h"
 #include "Core/Memory/bcAlloc.h"
+#include "Core/Utility/bcLogger.h"
 #include "Physics/bcException.h"
 #include "PhysicsImp/bcExport.h"
 #include "PhysicsImp/bcUtility.h"
@@ -144,7 +145,7 @@ namespace black_cat
 			(
 				p_geometry,
 				p_material,
-				bc_shape_flag::default,
+				bc_shape_flag::default_v,
 				p_is_exclusive
 			);
 		}
@@ -182,7 +183,7 @@ namespace black_cat
 				p_geometry,
 				p_materials,
 				p_material_count,
-				bc_shape_flag::default,
+				bc_shape_flag::default_v,
 				p_is_exclusive
 			);
 		}
@@ -197,7 +198,7 @@ namespace black_cat
 		{
 			bc_shape l_result;
 
-			physx::PxMaterial** l_px_material_buffer = reinterpret_cast< physx::PxMaterial** >(bcAlloc(sizeof(physx::PxMaterial*) * p_material_count, core::bc_alloc_type::frame));
+			auto** l_px_material_buffer = static_cast< physx::PxMaterial** >(BC_ALLOC(sizeof(physx::PxMaterial*) * p_material_count, core::bc_alloc_type::frame));
 
 			for (bcUINT32 i = 0; i < p_material_count; ++i)
 			{
@@ -217,7 +218,7 @@ namespace black_cat
 					static_cast< physx::PxShapeFlag::Enum >(p_shape_flags)
 				);
 
-			bcFree(l_px_material_buffer);
+			BC_FREE(l_px_material_buffer);
 
 			return bc_shape_ref(l_result);
 		}
@@ -269,7 +270,7 @@ namespace black_cat
 			bc_memory_buffer l_result;
 			core::bc_unique_ptr< physx::PxVec3 > l_vertex_buffer(static_cast< physx::PxVec3* >
 				(
-					bcAlloc(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
+					BC_ALLOC(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
 				));
 
 			physx::PxConvexMeshDesc l_px_desc = bc_convert_to_px_convex_mesh(p_desc, l_vertex_buffer.get());
@@ -283,7 +284,7 @@ namespace black_cat
 				return l_result;
 			}
 
-			// If failded try with eINFLATE_CONVEX flag
+			// If failed try with eINFLATE_CONVEX flag
 			l_px_desc.flags |= physx::PxConvexFlag::eINFLATE_CONVEX;
 
 			if (m_pack.m_px_cooking->cookConvexMesh(l_px_desc, *l_result.get_platform_pack().m_px_stream, &l_px_result_flag))
@@ -298,7 +299,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_convex_mesh_ref bc_platform_physics< g_api_physx >::create_convex_mesh(bc_memory_buffer& p_buffer)
 		{
-			bcAssert(p_buffer.is_valid());
+			BC_ASSERT(p_buffer.is_valid());
 
 			bc_convex_mesh l_result;
 
@@ -325,18 +326,23 @@ namespace black_cat
 		bc_memory_buffer bc_platform_physics< g_api_physx >::create_triangle_mesh(const bc_triangle_mesh_desc& p_desc)
 		{
 			bc_memory_buffer l_result;
-			bool is_16_bit_index = core::bc_enum::has(p_desc.m_flag, bc_triangle_mesh_flag::use_16bit_index);
-
-			core::bc_unique_ptr< physx::PxVec3 > l_vertex_buffer(static_cast< physx::PxVec3* >
+			const bool l_16_bit_index = core::bc_enum::has(p_desc.m_flag, bc_triangle_mesh_flag::use_16bit_index);
+			const core::bc_unique_ptr< physx::PxVec3 > l_vertex_buffer
+			(
+				static_cast< physx::PxVec3* >
 				(
-					bcAlloc(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
-				));
-			core::bc_unique_ptr< bcBYTE > l_index_buffer(static_cast< bcBYTE* >
+					BC_ALLOC(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
+				)
+			);
+			const core::bc_unique_ptr< bcBYTE > l_index_buffer
+			(
+				static_cast< bcBYTE* >
 				(
-					bcAlloc(sizeof(bcBYTE) * p_desc.m_indices.m_count * (is_16_bit_index ? sizeof(bcUINT16) : sizeof(bcUINT32)), core::bc_alloc_type::frame)
-				));
+					BC_ALLOC(p_desc.m_indices.m_count * (l_16_bit_index ? sizeof(bcUINT16) : sizeof(bcUINT32)), core::bc_alloc_type::frame)
+				)
+			);
 
-			physx::PxTriangleMeshDesc l_px_desc = bc_convert_to_px_triangle_mesh(p_desc, l_vertex_buffer.get(), l_index_buffer.get());
+			const physx::PxTriangleMeshDesc l_px_desc = bc_convert_to_px_triangle_mesh(p_desc, l_vertex_buffer.get(), l_index_buffer.get());
 
 			if (m_pack.m_px_cooking->cookTriangleMesh(l_px_desc, *l_result.get_platform_pack().m_px_stream))
 			{
@@ -350,19 +356,68 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_triangle_mesh_ref bc_platform_physics< g_api_physx >::create_triangle_mesh(bc_memory_buffer& p_buffer)
 		{
-			bcAssert(p_buffer.is_valid());
+			BC_ASSERT(p_buffer.is_valid());
 
 			bc_triangle_mesh l_result;
 
-			physx::PxDefaultMemoryInputData input
+			physx::PxDefaultMemoryInputData l_input
 			(
 				static_cast< physx::PxU8* >(p_buffer.get_buffer_pointer()),
 				p_buffer.get_buffer_size()
 			);
-			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
-				m_pack.m_px_physics->createTriangleMesh(input);
+			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object = m_pack.m_px_physics->createTriangleMesh(l_input);
 
 			return bc_triangle_mesh_ref(l_result);
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_triangle_mesh_ref bc_platform_physics< g_api_physx >::create_runtime_triangle_mesh(const bc_triangle_mesh_desc& p_desc)
+		{
+			const physx::PxTolerancesScale l_scale;
+			physx::PxCookingParams l_params(l_scale);
+			// disable mesh cleaning - perform mesh validation on development configurations
+			l_params.meshPreprocessParams |= physx::PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH;
+			// disable edge precompute, edges are set for each triangle, slows contact generation
+			l_params.meshPreprocessParams |= physx::PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
+			// lower hierarchy for internal mesh
+			l_params.meshCookingHint = physx::PxMeshCookingHint::eCOOKING_PERFORMANCE;
+
+			m_pack.m_px_cooking->setParams(l_params);
+
+			const bool l_is_16_bit_index = core::bc_enum::has(p_desc.m_flag, bc_triangle_mesh_flag::use_16bit_index);
+			const core::bc_unique_ptr< physx::PxVec3 > l_vertex_buffer
+			(
+				static_cast<physx::PxVec3*>
+				(
+					BC_ALLOC(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
+				)
+			);
+			const core::bc_unique_ptr< bcBYTE > l_index_buffer
+			(
+				static_cast<bcBYTE*>
+				(
+					BC_ALLOC(p_desc.m_indices.m_count * (l_is_16_bit_index ? sizeof(bcUINT16) : sizeof(bcUINT32)), core::bc_alloc_type::frame)
+				)
+			);
+
+			const physx::PxTriangleMeshDesc l_px_desc = bc_convert_to_px_triangle_mesh(p_desc, l_vertex_buffer.get(), l_index_buffer.get());
+
+#ifdef BC_DEBUG
+			// mesh should be validated before cooked without the mesh cleaning
+			const bool l_is_mesh_valid = m_pack.m_px_cooking->validateTriangleMesh(l_px_desc);
+			if(!l_is_mesh_valid)
+			{
+				core::bc_get_service<core::bc_logger>()->log_debug(bcL("Triangle mesh is not valid for cooking"));
+			}
+#endif
+
+			physx::PxTriangleMesh* l_px_triangle_mesh = m_pack.m_px_cooking->createTriangleMesh(l_px_desc, m_pack.m_px_physics->getPhysicsInsertionCallback());
+
+			bc_triangle_mesh l_triangle_mesh;
+			static_cast<bc_physics_reference&>(l_triangle_mesh).get_platform_pack().m_px_object = l_px_triangle_mesh;
+
+			return bc_triangle_mesh_ref(l_triangle_mesh);
 		}
 
 		template<>
@@ -379,7 +434,7 @@ namespace black_cat
 			bc_memory_buffer l_result;
 			core::bc_unique_ptr< physx::PxHeightFieldSample > l_sample_buffer(static_cast< physx::PxHeightFieldSample* >
 			(
-				bcAlloc(sizeof(physx::PxHeightFieldSample) * (p_desc.m_num_row * p_desc.m_num_column), core::bc_alloc_type::frame)
+				BC_ALLOC(sizeof(physx::PxHeightFieldSample) * (p_desc.m_num_row * p_desc.m_num_column), core::bc_alloc_type::frame)
 			));
 
 			physx::PxHeightFieldDesc l_px_desc = bc_convert_to_px_height_field(p_desc, l_sample_buffer.get());
@@ -396,7 +451,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_height_field_ref bc_platform_physics< g_api_physx >::create_height_field(bc_memory_buffer& p_buffer)
 		{
-			bcAssert(p_buffer.is_valid());
+			BC_ASSERT(p_buffer.is_valid());
 
 			bc_height_field l_result;
 
@@ -603,7 +658,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_serialize_buffer bc_platform_physics< g_api_physx >::deserialize(bc_memory_buffer& p_buffer)
 		{
-			void* l_aligned_buffer = bcAlignedAllocThrow(p_buffer.get_buffer_size(), 128, core::bc_alloc_type::unknown);
+			void* l_aligned_buffer = BC_ALIGNED_ALLOC_THROW(p_buffer.get_buffer_size(), 128, core::bc_alloc_type::unknown);
 			
 			std::memcpy(l_aligned_buffer, p_buffer.get_buffer_pointer(), p_buffer.get_buffer_size());
 
@@ -619,9 +674,9 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_physics< g_api_physx >::_initialize(core::bc_unique_ptr< bc_iallocator > p_allocator,
-			core::bc_unique_ptr< bc_itask_dispatcher > p_task_dispatcher,
-			core::bc_unique_ptr< bc_ilogger > p_logger)
+		void bc_platform_physics< g_api_physx >::_initialize(core::bc_unique_ptr< bci_allocator > p_allocator,
+			core::bc_unique_ptr< bci_task_dispatcher > p_task_dispatcher,
+			core::bc_unique_ptr< bci_logger > p_logger)
 		{
 			physx::PxTolerancesScale l_px_scale;
 
@@ -633,7 +688,7 @@ namespace black_cat
 
 			if (!m_pack.m_px_foundation)
 			{
-				throw bc_physics_exception(0, "Failed to create Physx fundation");
+				throw bc_physics_exception(0, "Failed to create PhysX fundation");
 			}
 
 			bool l_track_memory = false;
@@ -643,7 +698,7 @@ namespace black_cat
 
 			if (!m_pack.m_px_profile)
 			{
-				throw bc_physics_exception(0, "Failed to create Physx profile");
+				throw bc_physics_exception(0, "Failed to create PhysX profile");
 			}
 #endif
 
@@ -661,7 +716,7 @@ namespace black_cat
 
 			if (!m_pack.m_px_physics)
 			{
-				throw bc_physics_exception(0, "Failed to create Physx physics");
+				throw bc_physics_exception(0, "Failed to create PhysX physics");
 			}
 
 			m_pack.m_px_cooking = PxCreateCooking
@@ -678,7 +733,7 @@ namespace black_cat
 
 			if (!PxInitExtensions(*m_pack.m_px_physics))
 			{
-				throw bc_physics_exception(0, "Failed to create Physx extensions");
+				throw bc_physics_exception(0, "Failed to create PhysX extensions");
 			}
 
 			PxRegisterHeightFields(*m_pack.m_px_physics);

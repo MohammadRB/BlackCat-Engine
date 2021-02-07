@@ -5,11 +5,8 @@
 #include "Core/bcExport.h"
 #include "Core/bcException.h"
 #include "Core/Container/bcAllocator.h"
-#include "Core/Utility/bcServiceManager.h"
-#include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcDataDrivenParameter.h"
 #include "Core/Utility/bcNullable.h"
-#include "Core/Container/bcVector.h"
 #include "Core/File/bcStream.h"
 #include "Core/Content/bcContent.h"
 
@@ -17,6 +14,8 @@ namespace black_cat
 {
 	namespace core
 	{
+		using bc_content_loader_parameter = bc_data_driven_parameter;
+		
 		class bc_content_loader_result
 		{
 		public:
@@ -26,7 +25,7 @@ namespace black_cat
 				m_exception(nullptr),
 				m_result(std::move(p_result))
 			{
-				static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
+				static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
 			}
 
 			explicit bc_content_loader_result(bc_io_exception p_exception)
@@ -62,62 +61,71 @@ namespace black_cat
 			template< class TContent >
 			TContent* get_result()
 			{
-				static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
+				static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
 				
 				if (!m_succeeded)
 				{
 					throw m_exception;
 				}
 
-				bcAssert(m_result != nullptr);
-
+				BC_ASSERT(m_result != nullptr);
+				
 				return static_cast<TContent*>(m_result.get());
 			}
 			
 			template< class TContent >
 			bc_unique_ptr< TContent > release_result()
 			{
-				static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
+				static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
 
 				if (!m_succeeded)
 				{
 					throw m_exception;
 				}
 
-				bcAssert(m_result != nullptr);
-
+				BC_ASSERT(m_result != nullptr);
+				
 				return static_pointer_cast<TContent>(m_result);
 			}
 
 		private:
 			bool m_succeeded;
 			bc_io_exception m_exception;
-			bc_unique_ptr<bc_icontent> m_result;
+			bc_unique_ptr<bci_content> m_result;
 		};
-		
-		using bc_content_loader_parameter = bc_data_driven_parameter;
 
 		class bc_content_loading_context : public bc_object_allocator
 		{
 		public:
-			bc_content_loading_context() = default;
+			bc_content_loading_context()
+				: m_file_path(nullptr),
+				m_file_variant(nullptr),
+				m_file(),
+				m_file_buffer(nullptr),
+				m_file_buffer_size(0),
+				m_parameters(nullptr),
+				m_instance_parameters(bc_alloc_type::frame),
+				m_result(nullptr)
 
-			bc_content_loading_context(bc_content_loading_context&&) = default;
+			{
+			}
+
+			bc_content_loading_context(bc_content_loading_context&&) noexcept = default;
 
 			~bc_content_loading_context() = default;
 
-			bc_content_loading_context& operator=(bc_content_loading_context&&) = default;
+			bc_content_loading_context& operator=(bc_content_loading_context&&) noexcept = default;
 
 			template
 			<
 				typename TContent,
-				typename = std::enable_if_t< !std::is_same_v< bc_io_exception, std::decay_t< TContent > > >
+				typename = std::enable_if_t< !std::is_same_v< std::decay_t< TContent >, bc_io_exception > >
 			>
 			void set_result(TContent&& p_result)
 			{
-				static_assert(std::is_base_of< bc_icontent, TContent >::value, "Content must inherit from bc_icontent");
+				static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
 
-				bc_unique_ptr<TContent> l_content_result = allocate<TContent>(std::forward<TContent>(p_result));
+				bc_unique_ptr<TContent> l_content_result = allocate<TContent>(std::move(p_result));
 				m_result.reset(bc_content_loader_result(std::move(l_content_result)));
 			}
 
@@ -125,12 +133,14 @@ namespace black_cat
 			{
 				m_result.reset(bc_content_loader_result(std::move(p_exception)));
 			}
-
-			bc_estring_frame m_file_path;						// Used to give loader access to content and offline content file path
-			bc_nullable< bc_stream > m_file;					// Used to give loader access to content and offline content file
+			
+			const bcECHAR* m_file_path;							// Used to give loader access to content and offline content file path
+			const bcECHAR* m_file_variant;						// Used to give loader access to content file variant
+			bc_stream m_file;									// Used to give loader access to content and offline content file
 			bc_unique_ptr<bcBYTE> m_file_buffer;				// Used to give loader access to file content
-			bcUINT64 m_file_buffer_size;						// Used to give loader access to file content size
-			bc_content_loader_parameter m_parameter;			// Used to pass additional parameters to loader
+			bcSIZE m_file_buffer_size;							// Used to give loader access to file content size
+			const bc_content_loader_parameter* m_parameters;	// Used to pass constant parameters to loader
+			bc_content_loader_parameter m_instance_parameters;	// Used to pass instance parameters to loader
 			bc_nullable< bc_content_loader_result > m_result;	// Used to pass result from loader to caller
 		};
 
@@ -139,15 +149,15 @@ namespace black_cat
 		public:
 			bc_content_saving_context() = default;
 
-			bc_content_saving_context(bc_content_saving_context&&) = default;
+			bc_content_saving_context(bc_content_saving_context&&) noexcept = default;
 
 			~bc_content_saving_context() = default;
 
-			bc_content_saving_context& operator=(bc_content_saving_context&&) = default;
+			bc_content_saving_context& operator=(bc_content_saving_context&&) noexcept = default;
 
-			bc_estring_frame m_file_path;						// Used to give saver access to content file path
-			bc_nullable< bc_stream > m_file;					// Used to give saver access to content file
-			bc_icontent* m_content;								// Used to give saver access to content
+			const bcECHAR* m_file_path;							// Used to give saver access to content file path
+			bc_stream m_file;									// Used to give saver access to content file
+			bci_content* m_content;								// Used to give saver access to content
 		};
 
 		/**
@@ -155,10 +165,10 @@ namespace black_cat
 		 * \n
 		 * \b non-movable
 		 */
-		class BC_CORE_DLL bc_icontent_loader
+		class BC_CORE_DLL bci_content_loader
 		{
 		public:
-			virtual ~bc_icontent_loader() = default;
+			virtual ~bci_content_loader() = default;
 
 			virtual bool support_offline_processing() const = 0;
 
@@ -224,14 +234,14 @@ namespace black_cat
 			virtual void cleanup(bc_content_saving_context& p_context) const = 0;
 
 		protected:
-			bc_icontent_loader() = default;
+			bci_content_loader() = default;
 
-			bc_icontent_loader(bc_icontent_loader&&) = default;
+			bci_content_loader(bci_content_loader&&) = default;
 
-			bc_icontent_loader& operator=(bc_icontent_loader&&) = default;
+			bci_content_loader& operator=(bci_content_loader&&) = default;
 		};
 
-		class BC_CORE_DLL bc_base_content_loader : public bc_icontent_loader
+		class BC_CORE_DLL bc_base_content_loader : public bci_content_loader
 		{
 		public:
 			virtual ~bc_base_content_loader();
@@ -290,14 +300,14 @@ namespace black_cat
 		class _bc_content_loader_guard
 		{
 		public:
-			_bc_content_loader_guard(bc_icontent_loader& p_loader, bc_content_loading_context& p_context)
+			_bc_content_loader_guard(bci_content_loader& p_loader, bc_content_loading_context& p_context)
 				: m_loader(p_loader),
 				m_loading_context(&p_context),
 				m_saving_context(nullptr)
 			{
 			}
 
-			_bc_content_loader_guard(bc_icontent_loader& p_loader, bc_content_saving_context& p_context)
+			_bc_content_loader_guard(bci_content_loader& p_loader, bc_content_saving_context& p_context)
 				: m_loader(p_loader),
 				m_loading_context(nullptr),
 				m_saving_context(&p_context)
@@ -317,7 +327,7 @@ namespace black_cat
 			}
 
 		private:
-			bc_icontent_loader& m_loader;
+			bci_content_loader& m_loader;
 			bc_content_loading_context* m_loading_context;
 			bc_content_saving_context* m_saving_context;
 		};

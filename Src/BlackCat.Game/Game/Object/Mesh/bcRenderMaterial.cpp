@@ -20,7 +20,7 @@ namespace black_cat
 
 		void _bc_material_ptr_deleter::operator()(bc_render_material* p_material) const
 		{
-			bcAssert(m_material_manager != nullptr);
+			BC_ASSERT(m_material_manager != nullptr);
 
 			m_material_manager->destroy_material(p_material);
 		}

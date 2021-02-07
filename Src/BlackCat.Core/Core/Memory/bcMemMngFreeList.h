@@ -2,7 +2,7 @@
 
 #include "Core/CorePCH.h"
 #include "CorePlatform/Concurrency/bcConcurrencyDef.h"
-#include "coreplatform/memory/bcmemalloc.h"
+#include "CorePlatformImp/Memory/bcMemAlloc.h"
 #include "CorePlatformImp/Utility/bcHardwareInfo.h"
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
@@ -211,7 +211,7 @@ namespace black_cat
 				if (l_last_block == nullptr)
 				{
 					// TODO check for allocation fail here
-					bcAssert(false);
+					BC_ASSERT(false);
 				}
 				l_last_block->m_pointer = nullptr;
 				l_last_block->m_next = nullptr;
@@ -231,7 +231,7 @@ namespace black_cat
 				if (l_last_block->m_pointer == nullptr)
 				{
 					// TODO check for allocation fail here
-					bcAssert(false);
+					BC_ASSERT(false);
 				}
 
 				_freelist_item* l_alloc_batch = static_cast<_freelist_item*>(l_last_block->m_pointer);

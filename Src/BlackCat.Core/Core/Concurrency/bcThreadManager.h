@@ -17,11 +17,11 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcConcurrentQueue.h"
 #include "Core/Container/bcDeque.h"
+#include "Core/Concurrency/bcTask.h"
 #include "Core/Utility/bcInitializable.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcDelegate.hpp"
 #include "Core/Utility/bcEnumOperand.h"
-#include "Core/Concurrency/bcTask.h"
 
 namespace black_cat
 {

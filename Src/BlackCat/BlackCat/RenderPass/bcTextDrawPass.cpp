@@ -22,15 +22,15 @@ namespace black_cat
 		);
 	}
 
-	void bc_text_draw_pass::update(const game::bc_render_pass_update_param& p_param)
+	void bc_text_draw_pass::update(const game::bc_render_pass_update_context& p_param)
 	{
 	}
 
-	void bc_text_draw_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_text_draw_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
 	{
 	}
 
-	void bc_text_draw_pass::execute(const game::bc_render_pass_render_param& p_param)
+	void bc_text_draw_pass::execute(const game::bc_render_pass_render_context& p_param)
 	{
 		auto& l_counter_value_manager = *core::bc_get_service<core::bc_counter_value_manager>();
 
@@ -57,11 +57,11 @@ namespace black_cat
 		m_text_renderer->draw_texts(p_param.m_render_system.get_device(), m_back_buffer_view, l_texts.data(), l_texts.size());
 	}
 
-	void bc_text_draw_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_text_draw_pass::before_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 	}
 
-	void bc_text_draw_pass::after_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_text_draw_pass::after_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 		m_back_buffer_view = *get_shared_resource<graphic::bc_render_target_view>(m_back_buffer_view_parameter);
 	}

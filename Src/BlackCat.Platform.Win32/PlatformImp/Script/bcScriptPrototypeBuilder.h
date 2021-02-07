@@ -28,9 +28,9 @@ namespace black_cat
 		template< typename T, typename ...TA >
 		JsValueRef CHAKRA_CALLBACK _js_object_ctor(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
-			bcAssert(p_is_construct_call);
+			BC_ASSERT(p_is_construct_call);
 			// TODO Make a chiose for more and less argument count than expected
-			bcAssert(p_argument_count == sizeof...(TA) + 1);
+			BC_ASSERT(p_argument_count == sizeof...(TA) + 1);
 
 			bc_chakra_call l_call;
 			bc_script_var_pack< TA... > l_pack;
@@ -68,7 +68,7 @@ namespace black_cat
 		JsValueRef CHAKRA_CALLBACK _js_getter_default(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
-			bcAssert(p_argument_count == 1);
+			BC_ASSERT(p_argument_count == 1);
 
 			JsValueRef l_this;
 			TM* l_external_variable;
@@ -85,7 +85,7 @@ namespace black_cat
 		JsValueRef CHAKRA_CALLBACK _js_object_getter_default(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
-			bcAssert(p_argument_count == 1);
+			BC_ASSERT(p_argument_count == 1);
 
 			bc_chakra_call l_call;
 			JsValueRef l_this = p_arguments[0];
@@ -106,7 +106,7 @@ namespace black_cat
 		JsValueRef CHAKRA_CALLBACK _js_setter_default(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
-			bcAssert(p_argument_count == 2);
+			BC_ASSERT(p_argument_count == 2);
 
 			JsValueRef l_this;
 			bc_script_variable l_arg;
@@ -128,7 +128,7 @@ namespace black_cat
 		JsValueRef CHAKRA_CALLBACK _js_object_setter_default(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
-			bcAssert(p_argument_count == 2);
+			BC_ASSERT(p_argument_count == 2);
 
 			bc_chakra_call l_call;
 			JsValueRef l_this;
@@ -153,7 +153,7 @@ namespace black_cat
 		JsValueRef CHAKRA_CALLBACK _js_getter(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
-			bcAssert(p_argument_count == 1);
+			BC_ASSERT(p_argument_count == 1);
 
 			using getter_t = bc_script_getter<TM>;
 
@@ -173,7 +173,7 @@ namespace black_cat
 		JsValueRef CHAKRA_CALLBACK _js_object_getter(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
-			bcAssert(p_argument_count == 1);
+			BC_ASSERT(p_argument_count == 1);
 
 			bc_chakra_call l_call;
 			JsValueRef l_this = p_arguments[0];
@@ -194,7 +194,7 @@ namespace black_cat
 		JsValueRef CHAKRA_CALLBACK _js_setter(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
-			bcAssert(p_argument_count == 2);
+			BC_ASSERT(p_argument_count == 2);
 
 			using setter_t = bc_script_setter<TM>;
 
@@ -217,7 +217,7 @@ namespace black_cat
 		JsValueRef CHAKRA_CALLBACK _js_object_setter(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
-			bcAssert(p_argument_count == 2);
+			BC_ASSERT(p_argument_count == 2);
 
 			bc_chakra_call l_call;
 			JsValueRef l_this;
@@ -242,7 +242,7 @@ namespace black_cat
 		JsValueRef CHAKRA_CALLBACK _js_function(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
-			bcAssert(p_argument_count == sizeof...(TA) + 1);
+			BC_ASSERT(p_argument_count == sizeof...(TA) + 1);
 
 			using function_t = bc_script_free_function<TR, TA...>;
 
@@ -321,7 +321,7 @@ namespace black_cat
 		JsValueRef CHAKRA_CALLBACK _js_object_function(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
-			bcAssert(p_argument_count == sizeof...(TA) + 1);
+			BC_ASSERT(p_argument_count == sizeof...(TA) + 1);
 
 			bc_chakra_call l_call;
 			JsValueRef l_this = p_arguments[0];
@@ -686,7 +686,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_prototype, p_name, p_bool);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -696,7 +696,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_prototype, p_name, p_integer);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -706,7 +706,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_prototype, p_name, p_double);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -716,7 +716,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_prototype, p_name, p_string);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -726,7 +726,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_prototype, p_name, p_bool);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -736,7 +736,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_prototype, p_name, p_int);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -746,7 +746,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_prototype, p_name, p_double);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -756,7 +756,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_prototype, p_name, p_string);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -766,7 +766,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_prototype, p_name, p_object);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -776,7 +776,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_prototype, p_name, p_descriptor);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -786,7 +786,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_prototype, p_name, p_descriptor);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -796,7 +796,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_prototype, p_name, p_descriptor);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -806,7 +806,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_prototype, p_name, p_descriptor);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -816,7 +816,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_prototype, p_name, p_descriptor);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}
@@ -827,7 +827,7 @@ namespace black_cat
 		{
 			bool l_successed = _create_js_function(m_context, m_pack.m_js_prototype, p_name, p_member_func);
 
-			bcAssert(l_successed);
+			BC_ASSERT(l_successed);
 
 			return *this;
 		}

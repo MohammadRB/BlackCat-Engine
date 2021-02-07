@@ -103,7 +103,7 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_game_console::set_implementation(bc_igame_console_imp* p_imp)
+		void bc_game_console::set_implementation(bci_game_console_imp* p_imp)
 		{
 			m_imp = p_imp;
 		}
@@ -157,7 +157,7 @@ namespace black_cat
 
 		void bc_game_console::run_script(const bcWCHAR* p_script, core_platform::bc_future<platform::bc_script_variable>* p_result, bool p_output_to_console)
 		{
-			bcAssert(p_result);
+			BC_ASSERT(p_result);
 
 			{
 				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_scripts_mutex);
@@ -255,7 +255,7 @@ namespace black_cat
 			}
 		}
 
-		bool bc_game_console::_on_key(core::bc_ievent& p_event)
+		bool bc_game_console::_on_key(core::bci_event& p_event)
 		{
 			if(!m_imp)
 			{

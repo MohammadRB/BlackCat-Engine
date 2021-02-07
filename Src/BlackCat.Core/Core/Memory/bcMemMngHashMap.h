@@ -24,7 +24,7 @@ namespace black_cat
 				: m_min_allocation_size(bc_memblock::get_required_size(1, BC_MEMORY_MIN_ALIGN)),
 				m_level_count(sizeof...(tLevelSizes))
 			{
-				bcAssert(m_level_count > 0);
+				BC_ASSERT(m_level_count > 0);
 				//bcAssert(sizeof...(tLevelSizes) == tLevelCount);
 
 				bcUINT32 l_temp_level_sizes[sizeof...(tLevelSizes)] = { tLevelSizes... };
@@ -86,7 +86,7 @@ namespace black_cat
 				}
 				else
 				{
-					bcAssert(false);
+					BC_ASSERT(false);
 				}
 
 				l_chunk->unlock();
@@ -213,7 +213,7 @@ namespace black_cat
 
 				l_chunk->unlock();
 
-				bcAssert(l_item != nullptr);
+				BC_ASSERT(l_item != nullptr);
 
 				return l_item;
 			}
@@ -242,7 +242,7 @@ namespace black_cat
 
 					if (l_sub_chunks)
 					{
-						bcAssert(!l_chunk->m_items);
+						BC_ASSERT(!l_chunk->m_items);
 
 						l_gaurd.unlock();
 

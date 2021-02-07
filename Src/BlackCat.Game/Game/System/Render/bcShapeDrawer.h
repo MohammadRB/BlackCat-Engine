@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CorePlatformImp/Concurrency/bcMutex.h"
-#include "Core/Container/bcVector.h"
 #include "Core/Math/bcVector3f.h"
+#include "Core/Container/bcVector.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
-#include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/State/bcRenderState.h"
 #include "Game/System/Input/bcCamera.h"
+#include "Game/Object/Mesh/bcSubMeshTransform.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -17,7 +17,9 @@ namespace black_cat
 	namespace game
 	{
 		class bc_render_system;
+		class bc_render_thread;
 		class bc_render_state_buffer;
+		class bc_sub_mesh;
 
 		class BC_GAME_DLL bc_shape_drawer
 		{
@@ -29,21 +31,54 @@ namespace black_cat
 			~bc_shape_drawer();
 
 			bc_shape_drawer& operator=(bc_shape_drawer&& p_other) noexcept;
-
+						
 			/**
 			 * \brief
 			 * \ThreadSafe
 			 * \param p_box 
 			 */
-			void render_wired_box(const physics::bc_bound_box& p_box);
+			void draw_wired_bound_box(const physics::bc_bound_box& p_box);
+
+			/**
+			 * \brief 
+			 * \param p_box
+			 * \ThreadSafe
+			 * \param p_transform 
+			 */
+			void draw_wired_box(const physics::bc_shape_box& p_box, const physics::bc_transform& p_transform);
+
+			/**
+			 * \brief
+			 * \ThreadSafe
+			 * \param p_sphere 
+			 * \param p_transform 
+			 */
+			void draw_wired_sphere(const physics::bc_shape_sphere& p_sphere, const physics::bc_transform& p_transform);
+			
+			/**
+			 * \brief
+			 * \ThreadSafe
+			 * \param p_capsule 
+			 * \param p_transform 
+			 */
+			void draw_wired_capsule(const physics::bc_shape_capsule& p_capsule, const physics::bc_transform& p_transform);
 
 			/**
 			 * \brief
 			 * \ThreadSafe
 			 * \param p_camera_extend
 			 */
-			void render_wired_frustum(const bc_icamera::extend& p_camera_extend);
+			void draw_wired_frustum(const bci_camera::extend& p_camera_extend);
 
+			/**
+			 * \brief
+			 * \ThreadSafe
+			 * \param p_mesh
+			 * \param p_world 
+			 * \param p_mesh_transforms 
+			 */
+			void draw_wired_skeleton(const bc_sub_mesh& p_mesh, const core::bc_matrix4f& p_world, const bc_sub_mesh_mat4_transform& p_mesh_transforms);
+			
 			void render(bc_render_system& p_render_system, bc_render_thread& p_thread, bc_render_state_buffer& p_buffer);
 
 			void clear_swap_buffers();

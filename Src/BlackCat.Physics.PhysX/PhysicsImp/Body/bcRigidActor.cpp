@@ -102,7 +102,7 @@ namespace black_cat
 
 			auto** l_buffer = static_cast< physx::PxMaterial** >
 			(
-				bcAlloc(sizeof(physx::PxMaterial*) * p_material_count, core::bc_alloc_type::frame)
+				BC_ALLOC(sizeof(physx::PxMaterial*) * p_material_count, core::bc_alloc_type::frame)
 			);
 
 			for (bcUINT32 i = 0; i < p_material_count; ++i)
@@ -124,7 +124,7 @@ namespace black_cat
 					static_cast< physx::PxShapeFlag::Enum >(static_cast< physx::PxShapeFlags::InternalType >(p_flags))
 				);
 
-			bcFree(l_buffer);
+			BC_FREE(l_buffer);
 
 			return l_shape;
 		}
@@ -150,13 +150,13 @@ namespace black_cat
 		void bc_platform_rigid_actor< g_api_physx >::detach_shape(bc_shape& p_shape) noexcept
 		{
 			auto* l_px_actor = static_cast< physx::PxRigidActor* >
-				(
-					static_cast< bc_platform_physics_reference& >(*this).get_platform_pack().m_px_object
-					);
+			(
+				static_cast< bc_platform_physics_reference& >(*this).get_platform_pack().m_px_object
+			);
 			auto* l_px_shape = static_cast< physx::PxShape* >
-				(
-					static_cast< bc_physics_reference& >(p_shape).get_platform_pack().m_px_object
-					);
+			(
+				static_cast< bc_physics_reference& >(p_shape).get_platform_pack().m_px_object
+			);
 
 			l_px_actor->detachShape(*l_px_shape);
 		}
@@ -166,9 +166,9 @@ namespace black_cat
 		bcUINT32 bc_platform_rigid_actor< g_api_physx >::get_shape_count() const noexcept
 		{
 			auto* l_px_actor = static_cast< physx::PxRigidActor* >
-				(
-					static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_actor& >(*this)).get_platform_pack().m_px_object
-					);
+			(
+				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_actor& >(*this)).get_platform_pack().m_px_object
+			);
 
 			return l_px_actor->getNbShapes();
 		}
@@ -182,12 +182,12 @@ namespace black_cat
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_actor& >(*this)).get_platform_pack().m_px_object
 			);
 
-			bcUINT32 l_written_count = l_px_actor->getShapes(reinterpret_cast< physx::PxShape** >(p_buffer), p_buffer_size, p_start_index);
+			const bcUINT32 l_written_count = l_px_actor->getShapes(reinterpret_cast< physx::PxShape** >(p_buffer), p_buffer_size, p_start_index);
 
-			bc_overwrite_output_array< bc_shape, physx::PxShape >(p_buffer, l_written_count, [](bc_shape* p_shape, physx::PxShape* p_px_shape)
-				{
-					static_cast< bc_platform_physics_reference* >(p_shape)->get_platform_pack().m_px_object = p_px_shape;
-				});
+			bc_overwrite_output_array< bc_shape, physx::PxShape* >(p_buffer, l_written_count, [](bc_shape& p_shape, physx::PxShape*& p_px_shape)
+			{
+				static_cast< bc_platform_physics_reference& >(p_shape).get_platform_pack().m_px_object = p_px_shape;
+			});
 
 			return l_written_count;
 		}
@@ -199,7 +199,7 @@ namespace black_cat
 			auto l_buffer_size = get_shape_count();
 			auto* l_buffer = static_cast< bc_shape* >
 			(
-				bcAlloc(sizeof(bc_shape*) * l_buffer_size, core::bc_alloc_type::frame)
+				BC_ALLOC(sizeof(bc_shape*) * l_buffer_size, core::bc_alloc_type::frame)
 			);
 
 			get_shapes(l_buffer, l_buffer_size);
@@ -209,7 +209,7 @@ namespace black_cat
 				l_buffer[i].set_collision_group(p_filter);
 			}
 
-			bcFree(l_buffer);
+			BC_FREE(l_buffer);
 		}
 
 		template<>
@@ -219,7 +219,7 @@ namespace black_cat
 			auto l_buffer_size = get_shape_count();
 			auto* l_buffer = static_cast< bc_shape* >
 			(
-				bcAlloc(sizeof(bc_shape*) * l_buffer_size, core::bc_alloc_type::frame)
+				BC_ALLOC(sizeof(bc_shape*) * l_buffer_size, core::bc_alloc_type::frame)
 			);
 
 			get_shapes(l_buffer, l_buffer_size);
@@ -229,7 +229,7 @@ namespace black_cat
 				l_buffer[i].set_query_group(p_filter);
 			}
 
-			bcFree(l_buffer);
+			BC_FREE(l_buffer);
 		}
 
 		template<>
@@ -239,7 +239,7 @@ namespace black_cat
 			auto l_buffer_size = get_shape_count();
 			auto* l_buffer = static_cast< bc_shape* >
 				(
-					bcAlloc(sizeof(bc_shape*) * l_buffer_size, core::bc_alloc_type::frame)
+					BC_ALLOC(sizeof(bc_shape*) * l_buffer_size, core::bc_alloc_type::frame)
 					);
 
 			get_shapes(l_buffer, l_buffer_size);
@@ -249,7 +249,7 @@ namespace black_cat
 				l_buffer[i].set_notify_flag(p_flag, p_value);
 			}
 
-			bcFree(l_buffer);
+			BC_FREE(l_buffer);
 		}
 	}
 }

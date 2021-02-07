@@ -283,7 +283,7 @@ namespace black_cat
 			
 			TR operator()(TA... p_args) const 
 			{
-				bcAssert(*this != nullptr);
+				BC_ASSERT(*this != nullptr);
 
 				return m_stub_call(const_cast<bcCHAR*>(m_buffer), std::forward<TA>(p_args)...);
 			}

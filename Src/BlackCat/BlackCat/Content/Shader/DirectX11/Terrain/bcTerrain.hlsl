@@ -1,6 +1,6 @@
 // [09/02/2016 MRB]
 
-#include "..\\bcRegister.hlsli"
+#include "../bcRegister.hlsli"
 
 #define NUM_TEXTURE 8
 

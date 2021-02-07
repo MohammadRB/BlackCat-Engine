@@ -120,8 +120,6 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-
 		private:
 			bc_platform_basic_window(bc_basic_window_parameter& p_parameters);
 

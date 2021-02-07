@@ -12,10 +12,10 @@ namespace black_cat
 {
 	namespace physics
 	{
-		class bc_iallocator
+		class bci_allocator
 		{
 		public:
-			virtual ~bc_iallocator() = default;
+			virtual ~bci_allocator() = default;
 
 			virtual void* allocate(bcSIZE p_byte, const bcCHAR* p_file, bcUINT32 p_line) = 0;
 
@@ -26,10 +26,10 @@ namespace black_cat
 			virtual void temp_free(void* p_memory) = 0;
 		};
 
-		class bc_ilogger
+		class bci_logger
 		{
 		public:
-			virtual ~bc_ilogger() = default;
+			virtual ~bci_logger() = default;
 
 			virtual void info(bcINT p_code, const bcCHAR* p_message, const bcCHAR* p_file, bcUINT32 p_line) const = 0;
 
@@ -38,10 +38,10 @@ namespace black_cat
 			virtual void error(bcINT p_code, const bcCHAR* p_message, const bcCHAR* p_file, bcUINT32 p_line) const = 0;
 		};
 
-		class bc_itask_dispatcher
+		class bci_task_dispatcher
 		{
 		public:
-			virtual ~bc_itask_dispatcher() = default;
+			virtual ~bci_task_dispatcher() = default;
 
 			virtual void add_task(bc_task&& p_task) = 0;
 
@@ -49,7 +49,7 @@ namespace black_cat
 		};
 
 		template< class TAllocator, class TTempAllocator >
-		class bc_default_allocator : public bc_iallocator
+		class bc_default_allocator : public bci_allocator
 		{
 		public:
 			void* allocate(bcSIZE p_byte, const bcCHAR* p_file, bcUINT32 p_line) override
@@ -79,7 +79,7 @@ namespace black_cat
 			TTempAllocator m_temp_allocator;
 		};
 
-		class bc_default_logger : public bc_ilogger
+		class bc_default_logger : public bci_logger
 		{
 		public:
 			explicit bc_default_logger(core::bc_logger* p_logger)
@@ -109,7 +109,7 @@ namespace black_cat
 			core::bc_logger* m_logger;
 		};
 
-		class bc_default_task_dispatcher : public bc_itask_dispatcher
+		class bc_default_task_dispatcher : public bci_task_dispatcher
 		{
 		public:
 			void add_task(bc_task&& p_task) override

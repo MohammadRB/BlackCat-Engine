@@ -23,13 +23,13 @@ namespace black_cat
 		template<typename T>
 		void bc_load(const core::bc_json_value_object& p_jvalue, T& p_value)
 		{
-			bcAssert(false);
+			BC_ASSERT(false);
 		}
 
 		template<typename T>
 		void bc_write(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, const T& p_value)
 		{
-			bcAssert(false);
+			BC_ASSERT(false);
 		}
 	}
 }

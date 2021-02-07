@@ -42,45 +42,45 @@ namespace black_cat
 			size_type capacity() const
 			{
 				return m_capacity;
-			};
-
-		protected:
-			bool iterator_validate(const node_type* p_node) const noexcept(true)
-			{
-				return p_node && p_node >= m_first && p_node <= _get_end();
 			}
 
-			bcINT32 iterator_compare(const node_type* p_first, const node_type* p_second) const noexcept(true)
+		protected:
+			bool iterator_validate(const node_type* p_node) const noexcept
+			{
+				return p_node && p_node >= m_first - 1 && p_node <= _get_end();
+			}
+
+			bcINT32 iterator_compare(const node_type* p_first, const node_type* p_second) const noexcept
 			{
 				return p_first == p_second ? 0 : p_first > p_second ? 1 : -1;
 			}
 
-			value_type* iterator_dereference(node_type* p_node) const noexcept(true)
+			value_type* iterator_dereference(node_type* p_node) const noexcept
 			{
 				return std::addressof(p_node->m_value);
 			}
 
-			node_type* iterator_increment(node_type* p_node) const noexcept(true)
+			node_type* iterator_increment(node_type* p_node) const noexcept
 			{
 				return ++p_node;
 			}
 
-			node_type* iterator_decrement(node_type* p_node) const noexcept(true)
+			node_type* iterator_decrement(node_type* p_node) const noexcept
 			{
 				return --p_node;
 			}
 
-			node_type* iterator_increment(node_type* p_node, difference_type p_step) const noexcept(true)
+			node_type* iterator_increment(node_type* p_node, difference_type p_step) const noexcept
 			{
 				return p_node + p_step;
 			}
 
-			node_type* iterator_decrement(node_type* p_node, difference_type p_step) const noexcept(true)
+			node_type* iterator_decrement(node_type* p_node, difference_type p_step) const noexcept
 			{
 				return p_node - p_step;
 			}
 
-			void iterator_swap(node_type** p_first, node_type** p_second) const noexcept(true)
+			void iterator_swap(node_type** p_first, node_type** p_second) const noexcept
 			{
 				std::swap(*p_first, *p_second);
 			}
@@ -197,7 +197,7 @@ namespace black_cat
 				size_type l_new_capacity = std::pow(2, std::ceil(std::log2(std::max(m_capacity + p_count_to_add, 2U))));
 				
 				_change_capacity(l_new_capacity);
-			};
+			}
 
 			void _decrease_capacity()
 			{
@@ -221,12 +221,12 @@ namespace black_cat
 			template< typename ...TArgs >
 			node_type* _new_node(node_type* p_position, size_type p_count, TArgs&&... p_args)
 			{
-				bcAssert(p_position >= m_first && p_position <= _get_end());
+				BC_ASSERT(p_position >= m_first && p_position <= _get_end());
 				node_type* l_first = m_first;
 
 				_increase_capacity(p_count);
 
-				// _increase_capacity method may change pointers, so if it has occured we should correct p_position
+				// _increase_capacity method may change pointers, so if it has occurred we should correct p_position
 				p_position = m_first + (p_position - l_first);
 				node_type* l_position = p_position;
 				size_type l_count = p_count;
@@ -251,7 +251,7 @@ namespace black_cat
 			{
 				using input_iterator_reference = typename std::iterator_traits<TInputIterator>::reference;
 
-				bcAssert(p_position >= m_first && p_position <= _get_end());
+				BC_ASSERT(p_position >= m_first && p_position <= _get_end());
 
 				base_type::template check_iterator< TInputIterator >();
 
@@ -275,7 +275,7 @@ namespace black_cat
 			{
 				using input_iterator_reference = typename std::iterator_traits<TInputIterator>::reference;
 
-				bcAssert(p_position >= m_first && p_position <= _get_end());
+				BC_ASSERT(p_position >= m_first && p_position <= _get_end());
 
 				base_type::template check_iterator< TInputIterator >();
 
@@ -308,7 +308,7 @@ namespace black_cat
 
 			node_type* _free_node(node_type* p_position, size_type p_count)
 			{
-				bcAssert(p_position >= m_first && p_position + p_count <= _get_end());
+				BC_ASSERT(p_position >= m_first && p_position + p_count <= _get_end());
 
 				size_type l_count = p_count;
 				while (l_count-- > 0)
@@ -324,19 +324,17 @@ namespace black_cat
 				base_type::m_size -= p_count;
 
 				return p_position;
-			};
+			}
 
 			size_type m_capacity;
 			node_pointer m_first;
 			internal_allocator_type m_allocator;
-
-		private:
 		};
 
 		template < typename T, class TAllocator = bc_allocator< T > >
 		class bc_vector : public bc_vector_base< T, TAllocator >
 		{
-			bc_make_iterators_friend(bc_vector);
+			bc_make_iterators_friend(bc_vector)
 
 		public:
 			using this_type = bc_vector;
@@ -479,8 +477,6 @@ namespace black_cat
 
 			void swap(this_type& p_other) noexcept;
 
-		protected:
-			
 		private:
 			void _assign(const this_type& p_other, const allocator_type* p_allocator);
 
@@ -488,7 +484,7 @@ namespace black_cat
 
 			node_type& _get_node(size_type p_position) const
 			{
-				bcAssert(p_position >= 0 && p_position <= base_type::m_size);
+				BC_ASSERT(p_position >= 0 && p_position <= base_type::m_size);
 
 				return *(base_type::m_first + p_position);
 			}
@@ -516,6 +512,7 @@ namespace black_cat
 		bc_vector<T, TAllocator>::bc_vector(size_type p_count, const allocator_type& p_allocator)
 			: bc_vector_base(p_allocator)
 		{
+			base_type::_change_capacity(p_count);
 			base_type::_new_node(base_type::m_first, p_count);
 		}
 
@@ -523,6 +520,7 @@ namespace black_cat
 		bc_vector<T, TAllocator>::bc_vector(size_type p_count, const value_type& p_value, const allocator_type& p_allocator)
 			: bc_vector_base(p_allocator)
 		{
+			base_type::_change_capacity(p_count);
 			base_type::_new_node(base_type::m_first, p_count, p_value);
 		}
 
@@ -962,9 +960,11 @@ namespace black_cat
 			if (p_count < base_type::size())
 			{
 				base_type::_free_node(base_type::m_first + p_count, base_type::size() - p_count);
+				shrink_to_fit();
 			}
 			else if (p_count > base_type::size())
 			{
+				base_type::_change_capacity(p_count);
 				base_type::_new_node(base_type::m_first + base_type::size(), p_count - base_type::size());
 			}
 		}
@@ -975,9 +975,11 @@ namespace black_cat
 			if (p_count < base_type::size())
 			{
 				base_type::_free_node(base_type::m_first + p_count, base_type::size() - p_count);
+				shrink_to_fit();
 			}
 			else if (p_count > base_type::size())
 			{
+				base_type::_change_capacity(p_count);
 				base_type::_new_node(base_type::m_first + base_type::size(), p_count - base_type::size(), p_value);
 			}
 		}

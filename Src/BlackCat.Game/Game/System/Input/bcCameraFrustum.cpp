@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_camera_frustum::bc_camera_frustum(const bc_icamera& p_camera) noexcept
+		bc_camera_frustum::bc_camera_frustum(const bci_camera& p_camera) noexcept
 			: m_planes
 			({ 
 				physics::bc_shape_plane(core::bc_vector3f(0), 0),
@@ -21,7 +21,7 @@ namespace black_cat
 				physics::bc_shape_plane(core::bc_vector3f(0), 0)
 			})
 		{
-			bc_icamera::extend l_camera_extends;
+			bci_camera::extend l_camera_extends;
 			p_camera.get_extend_points(l_camera_extends);
 
 			_construct(l_camera_extends);
@@ -73,7 +73,7 @@ namespace black_cat
 			return true;
 		}
 
-		void bc_camera_frustum::_construct(const bc_icamera::extend& p_extends)
+		void bc_camera_frustum::_construct(const bci_camera::extend& p_extends)
 		{
 			// Near
 			m_planes[0] = physics::bc_shape_plane(p_extends[2], p_extends[1], p_extends[3]);

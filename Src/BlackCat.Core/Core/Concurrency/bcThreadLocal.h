@@ -118,13 +118,13 @@ namespace black_cat
 		private:
 			static void _default_clean_up(entry* p_pointer)
 			{
-				bcDelete(p_pointer);
+				BC_DELETE(p_pointer);
 			}
 
 			template< typename T >
 			typename std::enable_if< std::is_integral< T >::value, entry* >::type _create() const
 			{				
-				entry* l_entry = bcNew(entry, TAllocType);
+				entry* l_entry = BC_NEW(entry, TAllocType);
 				l_entry->m_value = value_type(0);
 				l_entry->m_next = nullptr;
 
@@ -136,7 +136,7 @@ namespace black_cat
 			template< typename T >
 			typename std::enable_if< !std::is_integral< T >::value, entry* >::type _create() const
 			{
-				entry* l_entry = bcNew(entry, TAllocType);
+				entry* l_entry = BC_NEW(entry, TAllocType);
 				l_entry->m_value = value_type();
 				l_entry->m_next = nullptr;
 

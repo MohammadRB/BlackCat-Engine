@@ -43,10 +43,6 @@ namespace black_cat
 			bc_physics_exception& operator=(const bc_physics_exception&) = default;
 
 			bc_physics_exception& operator=(bc_physics_exception&&) = default;
-
-		protected:
-
-		private:
 		};
 
 		inline bc_physics_exception::bc_physics_exception(bcINT p_code, const bcCHAR* p_message)

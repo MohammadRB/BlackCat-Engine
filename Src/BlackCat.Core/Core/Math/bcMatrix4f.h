@@ -1,13 +1,3 @@
-//--------------------------------------------------------------------------------
-// This file is a portion of the Hieroglyph 3 Rendering Engine.  It is distributed
-// under the MIT License, available in the root of this distribution and 
-// at the following URL:
-//
-// http://www.opensource.org/licenses/mit-license.php
-//
-// Copyright (c) Jason Zink 
-//--------------------------------------------------------------------------------
-
 #pragma once
 
 #include "CorePlatform/bcType.h"
@@ -23,7 +13,6 @@ namespace black_cat
 		class BC_CORE_DLL bc_matrix4f
 		{
 		public:
-
 			bc_matrix4f() noexcept;
 
 			bc_matrix4f(bool p_zero) noexcept;
@@ -167,30 +156,17 @@ namespace black_cat
 
 			static bc_matrix4f identity() noexcept;
 
-			static const bcINT m11 = 0;
-			static const bcINT m12 = 1;
-			static const bcINT m13 = 2;
-			static const bcINT m14 = 3;
+			constexpr static bool use_column_major_storage()
+			{
+				return true;
+			}
 
-			static const bcINT m21 = 4;
-			static const bcINT m22 = 5;
-			static const bcINT m23 = 6;
-			static const bcINT m24 = 7;
-
-			static const bcINT m31 = 8;
-			static const bcINT m32 = 9;
-			static const bcINT m33 = 10;
-			static const bcINT m34 = 11;
-
-			static const bcINT m41 = 12;
-			static const bcINT m42 = 13;
-			static const bcINT m43 = 14;
-			static const bcINT m44 = 15;
-			
 		protected:
-			bcFLOAT m_entry[4 * 4];
+			constexpr static bcUINT32 i(bcUINT32 p_index);
 
-			static bcINT I(bcINT iRow, bcINT iCol); // iRow*N + iCol
+			constexpr static bcUINT32 i(bcUINT32 p_row, bcUINT32 p_col);
+			
+			bcFLOAT m_entry[4 * 4];
 		};
 	}
 }

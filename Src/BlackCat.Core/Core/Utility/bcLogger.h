@@ -27,10 +27,10 @@ namespace black_cat
 		 * \brief Interface for log listeners. Calls to `on_log` method can be called from different threads so
 		 * clients must take care of threads in their implementations.
 		 */
-		class bc_ilog_listener
+		class bci_log_listener
 		{
 		public:
-			virtual ~bc_ilog_listener() = default;
+			virtual ~bci_log_listener() = default;
 
 			virtual void on_log(bc_log_type p_type, const bcECHAR* p_log) = 0;
 		};
@@ -38,13 +38,13 @@ namespace black_cat
 		class _bc_log_listener_container
 		{
 		public:
-			explicit _bc_log_listener_container(bc_ilog_listener* p_raw_pointer) noexcept
+			explicit _bc_log_listener_container(bci_log_listener* p_raw_pointer) noexcept
 				: m_raw_pointer(p_raw_pointer),
 				m_smart_pointer(nullptr)
 			{
 			}
 
-			explicit _bc_log_listener_container(bc_unique_ptr< bc_ilog_listener >&& p_smart_pointer) noexcept
+			explicit _bc_log_listener_container(bc_unique_ptr< bci_log_listener >&& p_smart_pointer) noexcept
 				: m_raw_pointer(nullptr),
 				m_smart_pointer(std::move(p_smart_pointer))
 			{
@@ -60,13 +60,13 @@ namespace black_cat
 
 			_bc_log_listener_container& operator=(_bc_log_listener_container&& p_other) = default;
 
-			bc_ilog_listener* operator->() const noexcept
+			bci_log_listener* operator->() const noexcept
 			{
 				return m_raw_pointer ? m_raw_pointer : m_smart_pointer.get();
 			}
 
-			bc_ilog_listener* m_raw_pointer;
-			bc_shared_ptr<bc_ilog_listener> m_smart_pointer;
+			bci_log_listener* m_raw_pointer;
+			bc_shared_ptr<bci_log_listener> m_smart_pointer;
 		};
 
 		class BC_CORE_DLL bc_logger : public bc_iservice
@@ -118,7 +118,7 @@ namespace black_cat
 			 * \param p_types
 			 * \param p_listener 
 			 */
-			void register_listener(bc_log_type p_types, bc_unique_ptr<bc_ilog_listener> p_listener);
+			void register_listener(bc_log_type p_types, bc_unique_ptr<bci_log_listener> p_listener);
 
 			/**
 			 * \brief 
@@ -127,9 +127,9 @@ namespace black_cat
 			 * \param p_types
 			 * \param p_listener 
 			 */
-			void register_listener(bc_log_type p_types, bc_ilog_listener* p_listener);
+			void register_listener(bc_log_type p_types, bci_log_listener* p_listener);
 
-			void unregister_listener(bc_ilog_listener* p_listener);
+			void unregister_listener(bci_log_listener* p_listener);
 
 		protected:
 

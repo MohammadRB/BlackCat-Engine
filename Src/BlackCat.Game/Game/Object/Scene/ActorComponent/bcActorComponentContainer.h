@@ -3,11 +3,10 @@
 #pragma once
 
 #include "CorePlatformImp/Utility/bcClock.h"
-#include "Core/Container/bcVector.h"
+#include "Core/Container/bcDeque.h"
 #include "Core/Utility/bcNullable.h"
-#include "Core/Utility/bcObjectStackPool.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
-#include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
 {
@@ -15,16 +14,16 @@ namespace black_cat
 	{
 		class bc_actor_component_manager;
 
-		class bc_iactor_component_container
+		class bci_actor_component_container
 		{
 		public:
-			virtual ~bc_iactor_component_container() = default;
+			virtual ~bci_actor_component_container() = default;
 
-			virtual bc_iactor_component* get(bc_actor_component_index p_index) = 0;
+			virtual bci_actor_component* get(bc_actor_component_index p_index) = 0;
 
-			virtual bc_actor_component_index create() = 0;
+			virtual bc_actor_component_index create(bc_actor_index p_actor_index) = 0;
 
-			virtual bc_actor_component_index create_after(bc_actor_component_index p_parent_index = bc_iactor_component::invalid_index) = 0;
+			virtual bc_actor_component_index create_after(bc_actor_index p_actor_index, bc_actor_component_index p_parent_index = bci_actor_component::invalid_index) = 0;
 
 			virtual void remove(bc_actor_component_index p_index) = 0;
 
@@ -34,14 +33,12 @@ namespace black_cat
 
 			virtual bcSIZE size() = 0;
 
-			virtual bcSIZE capacity() = 0;
-
 		protected:
-			bc_iactor_component_container() = default;
+			bci_actor_component_container() = default;
 		};
 
 		template< class TComponent >
-		class bc_actor_component_container : public bc_iactor_component_container
+		class bc_actor_component_container : public bci_actor_component_container
 		{
 		public:
 			bc_actor_component_container();
@@ -52,13 +49,13 @@ namespace black_cat
 
 			bc_actor_component_container& operator=(bc_actor_component_container&&) noexcept;
 
-			bc_iactor_component* get(bc_actor_component_index p_index) override;
+			bci_actor_component* get(bc_actor_component_index p_index) override;
 
-			bc_actor_component_index create() override;
+			bc_actor_component_index create(bc_actor_index p_actor_index) override;
 
 			// In case of parent child relative between actors, component of child actor must be inserted after
 			// component of parent actor so it will be updated after parent component
-			bc_actor_component_index create_after(bc_actor_component_index p_parent_index) override;
+			bc_actor_component_index create_after(bc_actor_index p_actor_index, bc_actor_component_index p_parent_index) override;
 
 			void remove(bc_actor_component_index p_index) override;
 
@@ -68,16 +65,14 @@ namespace black_cat
 
 			bcSIZE size() override;
 
-			bcSIZE capacity() override;
-
 		private:
-			core::bc_vector< core::bc_nullable< TComponent > > m_components;
+			core::bc_deque< core::bc_nullable< TComponent > > m_components;
 		};
 
 		template< class TComponent >
 		bc_actor_component_container<TComponent>::bc_actor_component_container()
 		{
-			static_assert(std::is_base_of< bc_iactor_component, TComponent >::value, "TComponent must inherit from bc_iactor_component");
+			static_assert(std::is_base_of< bci_actor_component, TComponent >::value, "TComponent must inherit from bc_iactor_component");
 		}
 
 		template< class TComponent >
@@ -90,7 +85,7 @@ namespace black_cat
 		bc_actor_component_container<TComponent>& bc_actor_component_container<TComponent>::operator=(bc_actor_component_container&&) noexcept = default;
 
 		template< class TComponent >
-		bc_iactor_component* bc_actor_component_container<TComponent>::get(bc_actor_component_index p_index)
+		bci_actor_component* bc_actor_component_container<TComponent>::get(bc_actor_component_index p_index)
 		{
 			auto& l_entry = m_components[p_index];
 
@@ -103,7 +98,7 @@ namespace black_cat
 		}
 
 		template< class TComponent >
-		bc_actor_component_index bc_actor_component_container<TComponent>::create()
+		bc_actor_component_index bc_actor_component_container<TComponent>::create(bc_actor_index p_actor_index)
 		{
 			bc_actor_component_index l_index = 0;
 			bool l_has_set = false;
@@ -112,7 +107,7 @@ namespace black_cat
 			{
 				if (!l_component.is_set())
 				{
-					l_component.reset(TComponent(l_index));
+					l_component.reset(TComponent(p_actor_index, l_index));
 					l_has_set = true;
 					break;
 				}
@@ -124,14 +119,14 @@ namespace black_cat
 
 			if (!l_has_set)
 			{
-				m_components.push_back(core::bc_nullable< TComponent >(TComponent(l_index)));
+				m_components.push_back(core::bc_nullable< TComponent >(TComponent(p_actor_index, l_index)));
 			}
 
 			return l_index;
 		}
 
 		template< class TComponent >
-		bc_actor_component_index bc_actor_component_container<TComponent>::create_after(bc_actor_component_index p_parent_index)
+		bc_actor_component_index bc_actor_component_container<TComponent>::create_after(bc_actor_index p_actor_index, bc_actor_component_index p_parent_index)
 		{
 			bc_actor_component_index l_index = 0;
 			bool l_has_set = false;
@@ -144,7 +139,7 @@ namespace black_cat
 
 				if (!l_component.is_set())
 				{
-					l_component.reset(TComponent(l_index));
+					l_component.reset(TComponent(p_actor_index, l_index));
 					l_has_set = true;
 				}
 				else
@@ -155,7 +150,7 @@ namespace black_cat
 
 			if (!l_has_set)
 			{
-				m_components.push_back(core::bc_nullable< TComponent >(TComponent(l_index)));
+				m_components.push_back(core::bc_nullable< TComponent >(TComponent(p_actor_index, l_index)));
 			}
 
 			return l_index;
@@ -181,7 +176,8 @@ namespace black_cat
 
 					while (l_current_event)
 					{
-						l_component.handle_event(l_actor, *l_current_event);
+						bc_actor_component_event_context l_context(l_actor, *l_current_event);
+						l_component.handle_event(l_context);
 						l_current_event = l_current_event->get_next();
 					}
 				}
@@ -197,7 +193,7 @@ namespace black_cat
 				{
 					bc_actor l_actor = p_manager.component_get_actor< TComponent >(l_component.get());
 					
-					l_component->update(l_actor, p_clock);
+					l_component->update(bc_actor_component_update_content(l_actor, p_clock));
 				}
 			}
 		}
@@ -206,12 +202,6 @@ namespace black_cat
 		bcSIZE bc_actor_component_container<TComponent>::size()
 		{
 			return m_components.size();
-		}
-
-		template< class TComponent >
-		bcSIZE bc_actor_component_container<TComponent>::capacity()
-		{
-			return m_components.capacity();
 		}
 	}
 }

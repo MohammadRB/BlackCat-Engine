@@ -10,17 +10,17 @@ namespace black_cat
 {
 	namespace core
 	{
-		bc_ievent::~bc_ievent()
+		bci_event::~bci_event()
 		{		
 		}
 
-		bc_ievent::bc_ievent(const bcCHAR* p_name)
-			: bc_imessage(p_name)
+		bci_event::bci_event(const bcCHAR* p_name)
+			: bci_message(p_name)
 		{
 		}
 
 		bc_event::bc_event(const bcCHAR* p_name) noexcept
-			: bc_ievent(p_name)
+			: bci_event(p_name)
 		{
 		}
 

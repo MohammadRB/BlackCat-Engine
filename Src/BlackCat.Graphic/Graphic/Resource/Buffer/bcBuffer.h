@@ -18,7 +18,7 @@ namespace black_cat
 		};
 		
 		template<bc_render_api TRenderApi>
-		class bc_platform_buffer : public bc_platform_iresource<TRenderApi>
+		class bc_platform_buffer : public bci_platform_resource<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_buffer_pack<TRenderApi>;

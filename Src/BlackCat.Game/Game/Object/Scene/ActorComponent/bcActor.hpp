@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Container/bcVector.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 
@@ -79,10 +80,31 @@ namespace black_cat
 			_get_manager().actor_get_components(*this, p_destination);
 		}
 
+		inline void bc_actor::draw_debug(bc_shape_drawer& p_shape_drawer) const
+		{
+			const bc_actor_component_debug_draw_context l_context(*this, p_shape_drawer);
+			core::bc_vector_frame<bci_actor_component*> l_components;
+			l_components.reserve(10);
+			
+			get_components(std::back_inserter(l_components));
+
+			for(bci_actor_component* l_component : l_components)
+			{
+				l_component->debug_draw(l_context);
+			}
+		}
+
 		inline void bc_actor::destroy()
 		{
+			BC_ASSERT(is_valid());
+			
 			_get_manager().remove_actor(*this);
 			m_index = invalid_index;
+		}
+
+		inline bool bc_actor::is_valid() const noexcept
+		{
+			return m_index != invalid_index;
 		}
 
 		inline bool bc_actor::operator==(const bc_actor& p_other) const noexcept

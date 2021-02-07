@@ -242,7 +242,7 @@ namespace black_cat
 		BC_PLATFORMIMP_DLL
 		bc_script_bool bc_platform_script_variable< core_platform::g_api_win32 >::as_boolean() const
 		{
-			bcAssert(is_boolean());
+			BC_ASSERT(is_boolean());
 
 			bc_script_bool l_value;
 
@@ -263,7 +263,7 @@ namespace black_cat
 		BC_PLATFORMIMP_DLL
 		bc_script_int bc_platform_script_variable< core_platform::g_api_win32 >::as_integer() const
 		{
-			bcAssert(is_number());
+			BC_ASSERT(is_number());
 
 			bc_script_int l_value;
 
@@ -284,7 +284,7 @@ namespace black_cat
 		BC_PLATFORMIMP_DLL
 		bc_script_double bc_platform_script_variable< core_platform::g_api_win32 >::as_double() const
 		{
-			bcAssert(is_number());
+			BC_ASSERT(is_number());
 
 			bc_script_double l_value;
 
@@ -304,7 +304,7 @@ namespace black_cat
 		BC_PLATFORMIMP_DLL
 		bc_script_string bc_platform_script_variable< core_platform::g_api_win32 >::as_string() const
 		{
-			bcAssert(is_string());
+			BC_ASSERT(is_string());
 
 			bc_script_string l_string;
 
@@ -324,7 +324,7 @@ namespace black_cat
 		BC_PLATFORMIMP_DLL
 		bc_script_object bc_platform_script_variable< core_platform::g_api_win32 >::as_object() const
 		{
-			bcAssert(is_object());
+			BC_ASSERT(is_object());
 
 			bc_script_object l_object;
 
@@ -344,7 +344,7 @@ namespace black_cat
 		BC_PLATFORMIMP_DLL
 		bc_script_error bc_platform_script_variable< core_platform::g_api_win32 >::as_error() const
 		{
-			bcAssert(is_error());
+			BC_ASSERT(is_error());
 
 			bc_script_error l_error;
 

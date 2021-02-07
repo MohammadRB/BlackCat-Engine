@@ -10,9 +10,9 @@ namespace black_cat
 	{
 #ifdef BC_MEMORY_ENABLE
 
-		bc_memmng bc_memmng::m_instance;
+		bc_memory_manager bc_memory_manager::m_instance;
 
-		bc_memmng::bc_memmng() noexcept
+		bc_memory_manager::bc_memory_manager() noexcept
 			: m_fsa_allocators_start_size(0),
 			m_fsa_num_allocators(0),
 			m_fsa_step_size(0),
@@ -30,9 +30,9 @@ namespace black_cat
 		{
 		}
 
-		bc_memmng::~bc_memmng() = default;
+		bc_memory_manager::~bc_memory_manager() = default;
 
-		void bc_memmng::initialize(bcSIZE p_max_num_thread,
+		void bc_memory_manager::initialize(bcSIZE p_max_num_thread,
 			bcSIZE p_fsa_start_size,
 			bcSIZE p_fsa_num,
 			bcSIZE p_fsa_step_size,
@@ -100,7 +100,7 @@ namespace black_cat
 			m_initialized = true;
 		}
 
-		void bc_memmng::destroy() noexcept
+		void bc_memory_manager::destroy() noexcept
 		{
 			delete[] (m_fsa_allocators);
 			delete (m_per_program_stack);
@@ -114,7 +114,7 @@ namespace black_cat
 			m_initialized = false;
 		}
 
-		void bc_memmng::startup(bcSIZE p_max_num_thread,
+		void bc_memory_manager::startup(bcSIZE p_max_num_thread,
 			bcSIZE p_fsa_start_size,
 			bcSIZE p_fsa_num,
 			bcSIZE p_fsa_step_size,
@@ -123,7 +123,7 @@ namespace black_cat
 			bcSIZE p_per_frm_heap_size,
 			bcSIZE p_super_heap_size)
 		{
-			bc_memmng::m_instance.initialize(p_max_num_thread,
+			bc_memory_manager::m_instance.initialize(p_max_num_thread,
 				p_fsa_start_size,
 				p_fsa_num,
 				p_fsa_step_size,
@@ -133,14 +133,14 @@ namespace black_cat
 				p_super_heap_size);
 		}
 		
-		void bc_memmng::close() noexcept
+		void bc_memory_manager::close() noexcept
 		{
-			bc_memmng::m_instance.destroy();
+			bc_memory_manager::m_instance.destroy();
 		}
 		
-		void* bc_memmng::alloc(bcSIZE p_size, bc_alloc_type p_allocType, const bcCHAR* p_file, bcUINT32 p_line) noexcept
+		void* bc_memory_manager::alloc(bcSIZE p_size, bc_alloc_type p_allocType, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
-			bcAssert(m_initialized);
+			BC_ASSERT(m_initialized);
 
 			void* l_result = nullptr;
 			bc_memory* l_allocator = nullptr;
@@ -216,7 +216,7 @@ namespace black_cat
 			return l_result;
 		}
 		
-		void bc_memmng::free(void* p_pointer) noexcept
+		void bc_memory_manager::free(void* p_pointer) noexcept
 		{
 			if (!p_pointer)
 			{
@@ -226,7 +226,7 @@ namespace black_cat
 			bc_memblock* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 			void* l_pointer = reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer) - l_block->offset());
 
-			bcAssert(l_block);
+			BC_ASSERT(l_block);
 
 			auto* l_allocator = reinterpret_cast<bc_memory*>(l_block->extra());
 			l_allocator->free(l_pointer, l_block);
@@ -242,7 +242,7 @@ namespace black_cat
 #endif
 		}
 		
-		void* bc_memmng::realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
+		void* bc_memory_manager::realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 			auto* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 
@@ -267,9 +267,9 @@ namespace black_cat
 			return l_new_pointer;
 		}
 		
-		void* bc_memmng::aligned_alloc(bcSIZE p_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
+		void* bc_memory_manager::aligned_alloc(bcSIZE p_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
-			bcAssert(m_initialized);
+			BC_ASSERT(m_initialized);
 
 			void* l_result = nullptr;
 			bc_memory* l_allocator = nullptr;
@@ -344,7 +344,7 @@ namespace black_cat
 			return l_result;
 		}
 		
-		void bc_memmng::aligned_free(void* p_pointer) noexcept
+		void bc_memory_manager::aligned_free(void* p_pointer) noexcept
 		{
 			if (!p_pointer) 
 			{
@@ -354,7 +354,7 @@ namespace black_cat
 			bc_memblock* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 			void* l_pointer = reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer) - l_block->offset());
 
-			bcAssert(l_block);
+			BC_ASSERT(l_block);
 
 			auto* l_allocator = reinterpret_cast<bc_memory*>(l_block->extra());
 			l_allocator->free(l_pointer, l_block);
@@ -370,7 +370,7 @@ namespace black_cat
 #endif
 		}
 		
-		void* bc_memmng::aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
+		void* bc_memory_manager::aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 			auto* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 
@@ -391,11 +391,11 @@ namespace black_cat
 			return l_new_pointer;
 		}
 
-		void bc_memmng::end_of_frame() noexcept
+		void bc_memory_manager::end_of_frame() noexcept
 		{
 #ifdef BC_MEMORY_DEFRAG
-			bcUINT32 l_num_fragment = m_super_heap->fragmentation_count();
-			l_num_fragment = l_num_fragment == 0 ? 0 : l_num_fragment / 3 + 1;
+			auto l_num_fragment = m_super_heap->fragmentation_count();
+			l_num_fragment = l_num_fragment ? l_num_fragment / 3 + 1 : 0;
 
 			{
 #ifdef BC_MEMORY_LEAK_DETECTION
@@ -405,25 +405,23 @@ namespace black_cat
 				m_super_heap->defragment
 				(
 					l_num_fragment,
-#ifdef BC_MEMORY_LEAK_DETECTION
 					[this](void* p_old, void* p_new)
 					{
+#ifdef BC_MEMORY_LEAK_DETECTION
 						auto l_old_ite = m_leak_allocator->find(p_old);
 						m_leak_allocator->insert(std::make_pair(p_new, l_old_ite->second));
 						m_leak_allocator->erase(l_old_ite);
-					}
-#else
-					bc_memory_heap::defrag_callback()
 #endif
+					}
 				);
 			}
 #endif
 
-			bcAssert(m_per_frame_stack->tracer().alloc_count() == 0);
+			BC_ASSERT(m_per_frame_stack->tracer().alloc_count() == 0);
 			m_per_frame_stack->clear();
 		}
 
-		bcSIZE bc_memmng::get_total_size() const
+		bcSIZE bc_memory_manager::get_total_size() const
 		{
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_total_size = 0;
@@ -442,7 +440,7 @@ namespace black_cat
 			return 0;
 		}
 		
-		bcSIZE bc_memmng::get_used_size() const
+		bcSIZE bc_memory_manager::get_used_size() const
 		{
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_used_size = 0;
@@ -459,7 +457,7 @@ namespace black_cat
 			return 0;
 		}
 		
-		bcSIZE bc_memmng::get_overhead_size() const
+		bcSIZE bc_memory_manager::get_overhead_size() const
 		{
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_wasted_size = 0;
@@ -476,7 +474,7 @@ namespace black_cat
 			return 0;
 		}
 		
-		bcSIZE bc_memmng::get_max_used_size() const
+		bcSIZE bc_memory_manager::get_max_used_size() const
 		{
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_max_used_size = 0;
@@ -494,7 +492,7 @@ namespace black_cat
 		}
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-		bcUINT32 bc_memmng::report_memory_leaks() const
+		bcUINT32 bc_memory_manager::report_memory_leaks() const
 		{
 			{
 				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);

@@ -15,7 +15,7 @@ namespace black_cat
 	{
 		class bc_octal_tree_graph_node;
 
-		class _bc_octal_tree_graph_node_entry : public bc_iscene_graph_node_entry
+		class _bc_octal_tree_graph_node_entry : public bci_scene_graph_node_entry
 		{
 		public:
 			using graph_node_entry_allocator = core::bc_memory_pool_allocator<_bc_octal_tree_graph_node_entry>;
@@ -24,7 +24,7 @@ namespace black_cat
 
 		public:
 			explicit _bc_octal_tree_graph_node_entry(const bc_actor& p_actor, const bc_octal_tree_graph_node* p_graph_node)
-				: bc_iscene_graph_node_entry(p_actor),
+				: bci_scene_graph_node_entry(p_actor),
 				m_graph_node(p_graph_node),
 				m_internal_iterator(nullptr, nullptr)
 			{
@@ -62,7 +62,7 @@ namespace black_cat
 			bottom_right_back
 		};
 
-		class BC_GAME_DLL bc_octal_tree_graph_node : public bc_iscene_graph_node
+		class BC_GAME_DLL bc_octal_tree_graph_node : public bci_scene_graph_node
 		{
 		public:
 			using graph_node_entry_allocator = _bc_octal_tree_graph_node_entry::graph_node_entry_allocator;
@@ -109,7 +109,7 @@ namespace black_cat
 
 			void clear() override;
 
-			void add_debug_shapes(bc_shape_drawer& p_shape_drawer) const override;
+			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const override;
 
 		protected:
 			bool iterator_validate(const node_type* p_node) const noexcept override;

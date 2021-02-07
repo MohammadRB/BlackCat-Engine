@@ -12,6 +12,11 @@
 
 namespace black_cat
 {
+	namespace core
+	{
+		class bc_query_manager;
+	}
+	
 	namespace game
 	{
 		class bc_render_system;
@@ -35,10 +40,10 @@ namespace black_cat
 			}
 		};
 
-		class bc_render_pass_update_param
+		class bc_render_pass_update_context
 		{
 		public:
-			bc_render_pass_update_param(const core_platform::bc_clock::update_param& p_clock,
+			bc_render_pass_update_context(const core_platform::bc_clock::update_param& p_clock,
 				const bc_camera_instance& p_camera)
 				: m_clock(p_clock),
 				m_camera(p_camera)
@@ -49,17 +54,19 @@ namespace black_cat
 			bc_camera_instance m_camera;
 		};
 
-		class bc_render_pass_render_param
+		class bc_render_pass_render_context
 		{
 		public:
-			bc_render_pass_render_param(const core_platform::bc_clock::update_param& p_clock,
-				const bc_camera_instance& p_current_camera,
+			bc_render_pass_render_context(const core_platform::bc_clock::update_param& p_clock,
+				core::bc_query_manager& p_query_manager,
+				const bc_camera_instance& p_update_camera,
 				const bc_camera_instance& p_render_camera,
 				bc_render_system& p_render_system,
 				bc_frame_renderer& p_frame_renderer,
 				bc_default_render_thread& p_render_thread)
 				: m_clock(p_clock),
-				m_current_camera(p_current_camera),
+				m_query_manager(p_query_manager),
+				m_update_camera(p_update_camera),
 				m_render_camera(p_render_camera),
 				m_render_system(p_render_system),
 				m_frame_renderer(p_frame_renderer),
@@ -68,17 +75,18 @@ namespace black_cat
 			}
 
 			core_platform::bc_clock::update_param m_clock;
-			bc_camera_instance m_current_camera;
+			core::bc_query_manager& m_query_manager;
+			bc_camera_instance m_update_camera;
 			bc_camera_instance m_render_camera;
 			bc_render_system& m_render_system;
 			bc_frame_renderer& m_frame_renderer;
 			bc_default_render_thread& m_render_thread;
 		};
 
-		class bc_render_pass_reset_param
+		class bc_render_pass_reset_context
 		{
 		public:
-			bc_render_pass_reset_param(bc_render_system& p_render_system,
+			bc_render_pass_reset_context(bc_render_system& p_render_system,
 				graphic::bc_device& p_device,
 				graphic::bc_device_parameters& p_old_parameters,
 				graphic::bc_device_parameters& p_new_parameters)
@@ -98,16 +106,16 @@ namespace black_cat
 		/**
 		 * \brief Represent a whole rendering pass that do all tasks that required to render a scene with a specified configuration 
 		 */
-		class bc_irender_pass : public core_platform::bc_no_copy
+		class bci_render_pass : public core_platform::bc_no_copy
 		{
 		public:
-			bc_irender_pass() = default;
+			bci_render_pass() = default;
 
-			bc_irender_pass(bc_irender_pass&&) = default;
+			bci_render_pass(bci_render_pass&&) = default;
 
-			virtual ~bc_irender_pass() = default;
+			virtual ~bci_render_pass() = default;
 
-			bc_irender_pass& operator=(bc_irender_pass&&) = default;
+			bci_render_pass& operator=(bci_render_pass&&) = default;
 
 			/**
 			 * \brief This function will be called during app initialization
@@ -119,39 +127,39 @@ namespace black_cat
 			 * \brief This function will be called during app update phase
 			 * \param p_param 
 			 */
-			virtual void update(const bc_render_pass_update_param& p_param) = 0;
+			virtual void update(const bc_render_pass_update_context& p_param) = 0;
 
 			/**
 			 * \brief This function will be called in the start of frame draw phase.
 			 * Threading: This function will be executed concurrently by a cpu worker thread.
 			 * \param p_param
 			 */
-			virtual void initialize_frame(const bc_render_pass_render_param& p_param) = 0;
+			virtual void initialize_frame(const bc_render_pass_render_context& p_param) = 0;
 
 			/**
 			 * \brief This function will be called in frame draw phase.
 			 * Threading: This function will be executed concurrently by a cpu worker thread.
 			 * \param p_param
 			 */
-			virtual void execute(const bc_render_pass_render_param& p_param) = 0;
+			virtual void execute(const bc_render_pass_render_context& p_param) = 0;
 
 			/**
 			 * \brief This function will be called in the end of frame draw phase.
 			 * \param p_param
 			 */
-			virtual void cleanup_frame(const bc_render_pass_render_param& p_param);
+			virtual void cleanup_frame(const bc_render_pass_render_context& p_param);
 
 			/**
 			 * \brief This function will be called when device duo to some parameter changes and buffer resize need reset
 			 * \param p_param
 			 */
-			virtual void before_reset(const bc_render_pass_reset_param& p_param) = 0;
+			virtual void before_reset(const bc_render_pass_reset_context& p_param) = 0;
 
 			/**
 			 * \brief This function will be called when device duo to some parameter changes and buffer resize need reset
 			 * \param p_param
 			 */
-			virtual void after_reset(const bc_render_pass_reset_param& p_param) = 0;
+			virtual void after_reset(const bc_render_pass_reset_context& p_param) = 0;
 
 			/**
 			 * \brief This function will be called when pass is going to be destroy.
@@ -178,34 +186,34 @@ namespace black_cat
 			bc_render_pass_resource_share* m_resource_share;
 		};
 
-		inline void bc_irender_pass::cleanup_frame(const bc_render_pass_render_param& p_param)
+		inline void bci_render_pass::cleanup_frame(const bc_render_pass_render_context& p_param)
 		{
 		}
 
-		inline void bc_irender_pass::_set_pass_resource_share(bc_render_pass_resource_share* p_state_share)
+		inline void bci_render_pass::_set_pass_resource_share(bc_render_pass_resource_share* p_state_share)
 		{
 			m_resource_share = p_state_share;
 		}
 
 		template< typename T >
-		void bc_irender_pass::share_resource(constant::bc_render_pass_variable_t p_variable, T&& p_value)
+		void bci_render_pass::share_resource(constant::bc_render_pass_variable_t p_variable, T&& p_value)
 		{
 			m_resource_share->share_resource(p_variable, std::forward<T>(p_value));
 		}
 
-		inline void bc_irender_pass::unshare_resource(constant::bc_render_pass_variable_t p_variable)
+		inline void bci_render_pass::unshare_resource(constant::bc_render_pass_variable_t p_variable)
 		{
 			m_resource_share->unshare_resource(p_variable);
 		}
 
 		template< typename T >
-		T* bc_irender_pass::get_shared_resource(constant::bc_render_pass_variable_t p_variable) const noexcept
+		T* bci_render_pass::get_shared_resource(constant::bc_render_pass_variable_t p_variable) const noexcept
 		{
 			return m_resource_share->get_resource< T >(p_variable);
 		}
 
 		template< typename T >
-		T& bc_irender_pass::get_shared_resource_throw(constant::bc_render_pass_variable_t p_variable) const
+		T& bci_render_pass::get_shared_resource_throw(constant::bc_render_pass_variable_t p_variable) const
 		{
 			auto* l_resource = get_shared_resource<T>(p_variable);
 			if(l_resource)

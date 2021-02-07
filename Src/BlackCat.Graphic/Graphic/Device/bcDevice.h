@@ -122,8 +122,8 @@ namespace black_cat
 		using bc_depth_stencil_view_config = bc_platform_depth_stencil_view_config< g_current_render_api >;
 
 		template<bc_render_api>
-		class bc_platform_iresource_view;
-		using bc_iresource_view = bc_platform_iresource_view< g_current_render_api >;
+		class bci_platform_resource_view;
+		using bci_resource_view = bci_platform_resource_view< g_current_render_api >;
 
 		template<bc_render_api>
 		class bc_platform_resource_view;
@@ -225,11 +225,11 @@ namespace black_cat
 
 			bc_compute_shader_ptr create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-			bc_resource_view_ptr create_resource_view(bc_iresource& p_resource, bc_resource_view_config& p_view_config);
+			bc_resource_view_ptr create_resource_view(bci_resource& p_resource, bc_resource_view_config& p_view_config);
 
-			bc_depth_stencil_view_ptr create_depth_stencil_view(bc_iresource& p_resource, bc_depth_stencil_view_config& p_view_config);
+			bc_depth_stencil_view_ptr create_depth_stencil_view(bci_resource& p_resource, bc_depth_stencil_view_config& p_view_config);
 
-			bc_render_target_view_ptr create_render_target_view(bc_iresource& p_resource, bc_render_target_view_config& p_view_config);
+			bc_render_target_view_ptr create_render_target_view(bci_resource& p_resource, bc_render_target_view_config& p_view_config);
 
 			bc_device_pipeline_state_ptr create_pipeline_state(bc_device_pipeline_state_config& p_config);
 
@@ -245,9 +245,9 @@ namespace black_cat
 
 			bc_device_text_renderer create_text_renderer();
 
-			bc_mapped_resource map_resource(bc_iresource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type);
+			bc_mapped_resource map_resource(bci_resource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type);
 
-			void unmap_resource(bc_iresource& p_resource, bcUINT p_subresource);
+			void unmap_resource(bci_resource& p_resource, bcUINT p_subresource);
 
 			/**
 			 * \brief Resize back buffer and send bc_app_event_device_reset event to resize all other resizable resources. 
@@ -278,7 +278,7 @@ namespace black_cat
 			void resize_texture2d(bc_texture2d& p_texture, 
 				bcUINT p_width, 
 				bcUINT p_height, 
-				bc_iresource_view** p_views,
+				bci_resource_view** p_views,
 				bcUINT p_num_views);
 
 			void present();

@@ -120,7 +120,7 @@ namespace black_cat
 
 		inline QString bc_form_main_menu::_get_executing_path() const
 		{
-			auto l_executing_path = core::bc_path(core::bc_path::get_program_path().c_str()).set_filename(bcL("Content")).get_path();
+			auto l_executing_path = core::bc_path(core::bc_path::get_program_path().c_str()).set_filename(bcL("Content")).get_string();
 			auto l_executing_path_qt = QString::fromWCharArray(l_executing_path.c_str(), l_executing_path.size());
 			return l_executing_path_qt;
 		}

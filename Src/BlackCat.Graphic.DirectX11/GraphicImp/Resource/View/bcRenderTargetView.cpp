@@ -14,7 +14,7 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_render_target_view< g_api_dx11 >::bc_platform_render_target_view()
-			: bc_platform_iresource_view()
+			: bci_platform_resource_view()
 		{
 			m_pack.m_render_target_view = nullptr;
 		}
@@ -22,7 +22,7 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_render_target_view<g_api_dx11>::bc_platform_render_target_view(platform_pack& p_pack)
-			: bc_platform_iresource_view()
+			: bci_platform_resource_view()
 		{
 			m_pack.m_render_target_view = p_pack.m_render_target_view;
 		}
@@ -36,7 +36,7 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_render_target_view< g_api_dx11 >::bc_platform_render_target_view(const bc_platform_render_target_view& p_other)
-			: bc_platform_iresource_view(p_other)
+			: bci_platform_resource_view(p_other)
 		{
 			m_pack.m_render_target_view = p_other.m_pack.m_render_target_view;
 		}
@@ -45,7 +45,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_platform_render_target_view< g_api_dx11 >& bc_platform_render_target_view< g_api_dx11 >::operator=(const bc_platform_render_target_view& p_other)
 		{
-			bc_platform_iresource_view::operator=(p_other);
+			bci_platform_resource_view::operator=(p_other);
 			m_pack.m_render_target_view = p_other.m_pack.m_render_target_view;
 
 			return *this;

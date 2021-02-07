@@ -75,7 +75,7 @@ namespace black_cat
 							Node* lNewExpected = pExpected.mPointer.load(core_platform::bc_memory_order::seqcst);
 							Node* lNewNew = pNew.mPointer.load(core_platform::bc_memory_order::seqcst);
 
-							bcAssert(lNewExpected == lExpected && lNewNew == lNew);
+							BC_ASSERT(lNewExpected == lExpected && lNewNew == lNew);
 
 							return true;
 						}
@@ -186,7 +186,7 @@ namespace black_cat
 			bcInline NodeType* _createNode(const ValueType& pValue)
 			{
 				NodeType* lNode = mMemMng.newNode();
-				bcAssert((reinterpret_cast<bcINT32>(lNode)& LinkType::dMask) == 0);
+				BC_ASSERT((reinterpret_cast<bcINT32>(lNode)& LinkType::dMask) == 0);
 				new (lNode)NodeType(pValue);
 
 				return lNode;
@@ -194,7 +194,7 @@ namespace black_cat
 			bcInline NodeType* _createNode(ValueType&& pValue)
 			{
 				NodeType* lNode = mMemMng.newNode();
-				bcAssert((reinterpret_cast<bcINT32>(lNode)& LinkType::dMask) == 0);
+				BC_ASSERT((reinterpret_cast<bcINT32>(lNode)& LinkType::dMask) == 0);
 				new (lNode)NodeType(pValue);
 
 				return lNode;
@@ -231,7 +231,7 @@ namespace black_cat
 
 					if (lNode == mTail)
 					{
-						bcAssert(false);
+						BC_ASSERT(false);
 						return false;
 					}
 
@@ -261,7 +261,7 @@ namespace black_cat
 
 					if (lNode == mHead)
 					{
-						bcAssert(false);
+						BC_ASSERT(false);
 						return false;
 					}
 
@@ -289,7 +289,7 @@ namespace black_cat
 
 			bcInline bool _read(NodeType* pNode, bcNullable< ValueType >* pData)
 			{
-				bcAssert(pNode != mHead || pNode != mTail);
+				BC_ASSERT(pNode != mHead || pNode != mTail);
 
 				*pData = pNode->mValue;
 
@@ -370,7 +370,7 @@ namespace black_cat
 			{
 				NodeType* lNode = *pNode;
 
-				bcAssert(lNode != mHead || lNode != mTail);
+				BC_ASSERT(lNode != mHead || lNode != mTail);
 
 				while (true)
 				{
@@ -768,7 +768,7 @@ namespace black_cat
 			{
 				bcIterator lIterator(pReference.getNode(), this);
 #ifdef BC_CONTAINER_DEBUG
-				bcAssert(lIterator.validate());
+				BC_ASSERT(lIterator.validate());
 #endif
 				return lIterator;
 			}

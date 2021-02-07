@@ -11,9 +11,9 @@ namespace black_cat
 {
 	namespace physics
 	{
-		class bc_isimulation_event_callback;
-		class bc_icontact_modify_callback;
-		class bc_icontact_filter_callback;
+		class bci_simulation_event_callback;
+		class bci_contact_modify_callback;
+		class bci_contact_filter_callback;
 
 		struct bc_scene_hint
 		{
@@ -65,11 +65,11 @@ namespace black_cat
 
 			bc_platform_scene_builder& gravity(const core::bc_vector3f& p_gravity);
 
-			bc_platform_scene_builder& use_simulation_callback(core::bc_unique_ptr<bc_isimulation_event_callback> p_callback);
+			bc_platform_scene_builder& use_simulation_callback(core::bc_unique_ptr<bci_simulation_event_callback> p_callback);
 
-			bc_platform_scene_builder& use_contact_modify_callback(core::bc_unique_ptr<bc_icontact_modify_callback> p_callback);
+			bc_platform_scene_builder& use_contact_modify_callback(core::bc_unique_ptr<bci_contact_modify_callback> p_callback);
 
-			bc_platform_scene_builder& use_contact_filter_callback(core::bc_unique_ptr<bc_icontact_filter_callback> p_callback);
+			bc_platform_scene_builder& use_contact_filter_callback(core::bc_unique_ptr<bci_contact_filter_callback> p_callback);
 
 			bc_platform_scene_builder& enable_ccd(bcUINT32 p_max_ccd_pass = 1);
 
@@ -79,8 +79,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-			
-		protected:
 
 		private:
 			platform_pack m_pack;

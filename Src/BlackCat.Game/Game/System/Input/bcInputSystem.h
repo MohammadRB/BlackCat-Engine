@@ -34,27 +34,27 @@ namespace black_cat
 				return m_pointing_device;
 			}
 
-			bc_icamera& get_camera()
+			bci_camera& get_camera()
 			{
 				return *m_camera;
 			}
 
-			const bc_icamera& get_camera() const
+			const bci_camera& get_camera() const
 			{
 				return const_cast<bc_input_system&>(*this).get_camera();
 			}
 
-			void register_camera(core::bc_unique_ptr< bc_icamera > p_camera);
+			void register_camera(core::bc_unique_ptr< bci_camera > p_camera);
 
 			void update(core_platform::bc_clock::update_param p_clock_update_param);
 
 		private:
-			bool _event_handler(core::bc_ievent& p_event);
+			bool _event_handler(core::bci_event& p_event);
 
 			platform::bc_key_device m_key_device;
 			platform::bc_pointing_device m_pointing_device;
 			
-			core::bc_unique_ptr<bc_icamera> m_camera;
+			core::bc_unique_ptr<bci_camera> m_camera;
 			
 			core::bc_event_listener_handle m_window_resize_event_handle;
 		};

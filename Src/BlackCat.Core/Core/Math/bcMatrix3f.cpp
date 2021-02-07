@@ -1,13 +1,3 @@
-//--------------------------------------------------------------------------------
-// This file is a portion of the Hieroglyph 3 Rendering Engine.  It is distributed
-// under the MIT License, available in the root of this distribution and 
-// at the following URL:
-//
-// http://www.opensource.org/licenses/mit-license.php
-//
-// Copyright (c) Jason Zink 
-//--------------------------------------------------------------------------------
-
 #include "Core/CorePCH.h"
 #include "Core/Math/bcMatrix3f.h"
 
@@ -16,12 +6,12 @@ namespace black_cat
 	namespace core
 	{
 		bc_matrix3f::bc_matrix3f() noexcept
-			: m_entry{  }
+			: m_entry{}
 		{
 		}
 		
 		bc_matrix3f::bc_matrix3f(bool p_zero) noexcept
-			: m_entry{  }
+			: m_entry{}
 		{
 			if (p_zero)
 			{
@@ -30,25 +20,27 @@ namespace black_cat
 		}
 		
 		bc_matrix3f::bc_matrix3f(const bc_matrix3f& p_other) noexcept
+			: m_entry{}
 		{
-			std::memcpy(m_entry, static_cast<void*>(const_cast<bc_matrix3f*>(&p_other)), 9 * sizeof(bcFLOAT));
+			std::memcpy(m_entry, p_other.m_entry, 9 * sizeof(bcFLOAT));
 		}
 		
 		bc_matrix3f::bc_matrix3f(bcFLOAT p_m11, bcFLOAT p_m12, bcFLOAT p_m13,
 			bcFLOAT p_m21, bcFLOAT p_m22, bcFLOAT p_m23,
 			bcFLOAT p_m31, bcFLOAT p_m32, bcFLOAT p_m33) noexcept
+			: m_entry{}
 		{
-			m_entry[0] = p_m11;
-			m_entry[1] = p_m12;
-			m_entry[2] = p_m13;
+			m_entry[i(0, 0)] = p_m11;
+			m_entry[i(0, 1)] = p_m12;
+			m_entry[i(0, 2)] = p_m13;
 
-			m_entry[3] = p_m21;
-			m_entry[4] = p_m22;
-			m_entry[5] = p_m23;
+			m_entry[i(1, 0)] = p_m21;
+			m_entry[i(1, 1)] = p_m22;
+			m_entry[i(1, 2)] = p_m23;
 
-			m_entry[6] = p_m31;
-			m_entry[7] = p_m32;
-			m_entry[8] = p_m33;
+			m_entry[i(2, 0)] = p_m31;
+			m_entry[i(2, 1)] = p_m32;
+			m_entry[i(2, 2)] = p_m33;
 		}
 		
 		bc_matrix3f& bc_matrix3f::operator= (const bc_matrix3f& p_other) noexcept
@@ -62,17 +54,17 @@ namespace black_cat
 			const bcFLOAT l_sin = sinf(p_radians);
 			const bcFLOAT l_cos = cosf(p_radians);
 
-			m_entry[0] = 1.0f;
-			m_entry[1] = 0.0f;
-			m_entry[2] = 0.0f;
+			m_entry[i(0, 0)] = 1.0f;
+			m_entry[i(0, 1)] = 0.0f;
+			m_entry[i(0, 2)] = 0.0f;
 
-			m_entry[3] = 0.0f;
-			m_entry[4] = l_cos;
-			m_entry[5] = l_sin;
+			m_entry[i(1, 0)] = 0.0f;
+			m_entry[i(1, 1)] = l_cos;
+			m_entry[i(1, 2)] = l_sin;
 
-			m_entry[6] = 0.0f;
-			m_entry[7] = -l_sin;
-			m_entry[8] = l_cos;
+			m_entry[i(2, 0)] = 0.0f;
+			m_entry[i(2, 1)] = -l_sin;
+			m_entry[i(2, 2)] = l_cos;
 		}
 		
 		void bc_matrix3f::rotation_y_lh(bcFLOAT p_radians) noexcept
@@ -80,17 +72,17 @@ namespace black_cat
 			const bcFLOAT l_sin = sinf(p_radians);
 			const bcFLOAT l_cos = cosf(p_radians);
 
-			m_entry[0] = l_cos;
-			m_entry[1] = 0.0f;
-			m_entry[2] = -l_sin;
+			m_entry[i(0, 0)] = l_cos;
+			m_entry[i(0, 1)] = 0.0f;
+			m_entry[i(0, 2)] = -l_sin;
 
-			m_entry[3] = 0.0f;
-			m_entry[4] = 1.0f;
-			m_entry[5] = 0.0f;
+			m_entry[i(1, 0)] = 0.0f;
+			m_entry[i(1, 1)] = 1.0f;
+			m_entry[i(1, 2)] = 0.0f;
 
-			m_entry[6] = l_sin;
-			m_entry[7] = 0.0f;
-			m_entry[8] = l_cos;
+			m_entry[i(2, 0)] = l_sin;
+			m_entry[i(2, 1)] = 0.0f;
+			m_entry[i(2, 2)] = l_cos;
 		}
 		
 		void bc_matrix3f::rotation_z_lh(bcFLOAT p_radians) noexcept
@@ -98,17 +90,17 @@ namespace black_cat
 			const bcFLOAT l_sin = sinf(p_radians);
 			const bcFLOAT l_cos = cosf(p_radians);
 
-			m_entry[0] = l_cos;
-			m_entry[1] = l_sin;
-			m_entry[2] = 0.0f;
+			m_entry[i(0, 0)] = l_cos;
+			m_entry[i(0, 1)] = l_sin;
+			m_entry[i(0, 2)] = 0.0f;
 
-			m_entry[3] = -l_sin;
-			m_entry[4] = l_cos;
-			m_entry[5] = 0.0f;
+			m_entry[i(1, 0)] = -l_sin;
+			m_entry[i(1, 1)] = l_cos;
+			m_entry[i(1, 2)] = 0.0f;
 
-			m_entry[6] = 0.0f;
-			m_entry[7] = 0.0f;
-			m_entry[8] = 1.0f;
+			m_entry[i(2, 0)] = 0.0f;
+			m_entry[i(2, 1)] = 0.0f;
+			m_entry[i(2, 2)] = 1.0f;
 		}
 		
 		void bc_matrix3f::rotation_lh(bc_vector3f& p_rot) noexcept
@@ -143,17 +135,17 @@ namespace black_cat
 			const bcFLOAT l_c = cosf(p_angle);
 			const bcFLOAT l_t = 1 - l_c;
 
-			m_entry[0] = l_t * p_axis.x * p_axis.x + l_c;
-			m_entry[1] = l_t * p_axis.x * p_axis.y + l_s * p_axis.z;
-			m_entry[2] = l_t * p_axis.x * p_axis.z - l_s * p_axis.y;
+			m_entry[i(0, 0)] = l_t * p_axis.x * p_axis.x + l_c;
+			m_entry[i(0, 1)] = l_t * p_axis.x * p_axis.y + l_s * p_axis.z;
+			m_entry[i(0, 2)] = l_t * p_axis.x * p_axis.z - l_s * p_axis.y;
 
-			m_entry[3] = l_t * p_axis.x * p_axis.y - l_s * p_axis.z;
-			m_entry[4] = l_t * p_axis.y * p_axis.y + l_c;
-			m_entry[5] = l_t * p_axis.y * p_axis.z + l_s * p_axis.x;
+			m_entry[i(1, 0)] = l_t * p_axis.x * p_axis.y - l_s * p_axis.z;
+			m_entry[i(1, 1)] = l_t * p_axis.y * p_axis.y + l_c;
+			m_entry[i(1, 2)] = l_t * p_axis.y * p_axis.z + l_s * p_axis.x;
 
-			m_entry[6] = l_t * p_axis.x * p_axis.y + l_s * p_axis.y;
-			m_entry[7] = l_t * p_axis.y * p_axis.z - l_s * p_axis.x;
-			m_entry[8] = l_t * p_axis.z * p_axis.z + l_c;
+			m_entry[i(2, 0)] = l_t * p_axis.x * p_axis.y + l_s * p_axis.y;
+			m_entry[i(2, 1)] = l_t * p_axis.y * p_axis.z - l_s * p_axis.x;
+			m_entry[i(2, 2)] = l_t * p_axis.z * p_axis.z + l_c;
 		}
 
 		void bc_matrix3f::rotation_between_two_vector_lh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept
@@ -168,24 +160,24 @@ namespace black_cat
 		{
 			rotation_x_lh(p_radians);
 
-			m_entry[5] = -m_entry[5];
-			m_entry[7] = -m_entry[7];
+			m_entry[i(1, 2)] = -m_entry[i(1, 2)];
+			m_entry[i(2, 1)] = -m_entry[i(2, 1)];
 		}
 
 		void bc_matrix3f::rotation_y_rh(bcFLOAT p_radians) noexcept
 		{
 			rotation_y_lh(p_radians);
 
-			m_entry[2] = -m_entry[2];
-			m_entry[6] = -m_entry[6];
+			m_entry[i(0, 2)] = -m_entry[i(0, 2)];
+			m_entry[i(2, 0)] = -m_entry[i(2, 0)];
 		}
 
 		void bc_matrix3f::rotation_z_rh(bcFLOAT p_radians) noexcept
 		{
 			rotation_z_lh(p_radians);
 
-			m_entry[1] = -m_entry[1];
-			m_entry[3] = -m_entry[3];
+			m_entry[i(0, 1)] = -m_entry[i(0, 1)];
+			m_entry[i(1, 0)] = -m_entry[i(1, 0)];
 		}
 
 		void bc_matrix3f::rotation_rh(const bc_vector3f& p_rot) noexcept
@@ -218,12 +210,12 @@ namespace black_cat
 		{
 			rotation_euler_lh(p_axis, p_angle);
 
-			m_entry[1] = -m_entry[1];
-			m_entry[2] = -m_entry[2];
-			m_entry[3] = -m_entry[3];
-			m_entry[5] = -m_entry[5];
-			m_entry[6] = -m_entry[6];
-			m_entry[7] = -m_entry[7];
+			m_entry[i(0, 1)] = -m_entry[i(0, 1)];
+			m_entry[i(0, 2)] = -m_entry[i(0, 2)];
+			m_entry[i(1, 0)] = -m_entry[i(1, 0)];
+			m_entry[i(1, 2)] = -m_entry[i(1, 2)];
+			m_entry[i(2, 0)] = -m_entry[i(2, 0)];
+			m_entry[i(2, 1)] = -m_entry[i(2, 1)];
 		}
 
 		void bc_matrix3f::rotation_between_two_vector_rh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept
@@ -252,45 +244,39 @@ namespace black_cat
 			//(1.0/sqrt((double)fValue))
 
 			// compute q0
-			bcFLOAT l_inv_length = static_cast<bcFLOAT>(1.0 / sqrt(static_cast<double>(m_entry[0] * m_entry[0] +
-				m_entry[3] * m_entry[3] + m_entry[6] * m_entry[6])));
+			bcFLOAT l_inv_length = static_cast<bcFLOAT>(1.0 / sqrt(static_cast<double>(m_entry[i(0, 0)] * m_entry[i(0, 0)] + m_entry[i(1, 0)] * m_entry[i(1, 0)] + m_entry[i(2, 0)] * m_entry[i(2, 0)])));
 
-			m_entry[0] *= l_inv_length;
-			m_entry[3] *= l_inv_length;
-			m_entry[6] *= l_inv_length;
+			m_entry[i(0, 0)] *= l_inv_length;
+			m_entry[i(1, 0)] *= l_inv_length;
+			m_entry[i(2, 0)] *= l_inv_length;
 
 			// compute q1
-			bcFLOAT l_dot0 = m_entry[0] * m_entry[1] + m_entry[3] * m_entry[4] +
-				m_entry[6] * m_entry[7];
+			bcFLOAT l_dot0 = m_entry[i(0, 0)] * m_entry[i(0, 1)] + m_entry[i(1, 0)] * m_entry[i(1, 1)] + m_entry[i(2, 0)] * m_entry[i(2, 1)];
 
-			m_entry[1] -= l_dot0*m_entry[0];
-			m_entry[4] -= l_dot0*m_entry[3];
-			m_entry[7] -= l_dot0*m_entry[6];
+			m_entry[i(0, 1)] -= l_dot0*m_entry[i(0, 0)];
+			m_entry[i(1, 1)] -= l_dot0*m_entry[i(1, 0)];
+			m_entry[i(2, 1)] -= l_dot0*m_entry[i(2, 0)];
 
-			l_inv_length = static_cast<bcFLOAT>(1.0 / sqrt(static_cast<double>(m_entry[1] * m_entry[1] +
-				m_entry[4] * m_entry[4] + m_entry[7] * m_entry[7])));
+			l_inv_length = static_cast<bcFLOAT>(1.0 / sqrt(static_cast<double>(m_entry[i(0, 1)] * m_entry[i(0, 1)] + m_entry[i(1, 1)] * m_entry[i(1, 1)] + m_entry[i(2, 1)] * m_entry[i(2, 1)])));
 
-			m_entry[1] *= l_inv_length;
-			m_entry[4] *= l_inv_length;
-			m_entry[7] *= l_inv_length;
+			m_entry[i(0, 1)] *= l_inv_length;
+			m_entry[i(1, 1)] *= l_inv_length;
+			m_entry[i(2, 1)] *= l_inv_length;
 
 			// compute q2
-			const bcFLOAT fDot1 = m_entry[1] * m_entry[2] + m_entry[4] * m_entry[5] +
-				m_entry[7] * m_entry[8];
+			const bcFLOAT fDot1 = m_entry[i(0, 1)] * m_entry[i(0, 2)] + m_entry[i(1, 1)] * m_entry[i(1, 2)] + m_entry[i(2, 1)] * m_entry[i(2, 2)];
 
-			l_dot0 = m_entry[0] * m_entry[2] + m_entry[3] * m_entry[5] +
-				m_entry[6] * m_entry[8];
+			l_dot0 = m_entry[i(0, 0)] * m_entry[i(0, 2)] + m_entry[i(1, 0)] * m_entry[i(1, 2)] + m_entry[i(2, 0)] * m_entry[i(2, 2)];
 
-			m_entry[2] -= l_dot0*m_entry[0] + fDot1*m_entry[1];
-			m_entry[5] -= l_dot0*m_entry[3] + fDot1*m_entry[4];
-			m_entry[8] -= l_dot0*m_entry[6] + fDot1*m_entry[7];
+			m_entry[i(0, 2)] -= l_dot0*m_entry[i(0, 0)] + fDot1*m_entry[i(0, 1)];
+			m_entry[i(1, 2)] -= l_dot0*m_entry[i(1, 0)] + fDot1*m_entry[i(1, 1)];
+			m_entry[i(2, 2)] -= l_dot0*m_entry[i(2, 0)] + fDot1*m_entry[i(2, 1)];
 
-			l_inv_length = static_cast<bcFLOAT>(1.0 / sqrt(static_cast<double>(m_entry[2] * m_entry[2] +
-				m_entry[5] * m_entry[5] + m_entry[8] * m_entry[8])));
+			l_inv_length = static_cast<bcFLOAT>(1.0 / sqrt(static_cast<double>(m_entry[i(0, 2)] * m_entry[i(0, 2)] + m_entry[i(1, 2)] * m_entry[i(1, 2)] + m_entry[i(2, 2)] * m_entry[i(2, 2)])));
 
-			m_entry[2] *= l_inv_length;
-			m_entry[5] *= l_inv_length;
-			m_entry[8] *= l_inv_length;
+			m_entry[i(0, 2)] *= l_inv_length;
+			m_entry[i(1, 2)] *= l_inv_length;
+			m_entry[i(2, 2)] *= l_inv_length;
 		}
 				
 		void bc_matrix3f::make_zero() noexcept
@@ -300,14 +286,18 @@ namespace black_cat
 		
 		void bc_matrix3f::make_identity() noexcept
 		{
-			for (bcINT l_row = 0; l_row < 3; l_row++)
+			for (auto l_row = 0U; l_row < 3; l_row++)
 			{
-				for (bcINT l_col = 0; l_col < 3; l_col++)
+				for (auto l_col = 0U; l_col < 3; l_col++)
 				{
 					if (l_row == l_col)
-						m_entry[I(l_row, l_col)] = 1.0f;
+					{
+						m_entry[i(l_row, l_col)] = 1.0f;
+					}
 					else
-						m_entry[I(l_row, l_col)] = 0.0f;
+					{
+						m_entry[i(l_row, l_col)] = 0.0f;
+					}
 				}
 			}
 		}
@@ -316,10 +306,12 @@ namespace black_cat
 		{
 			bc_matrix3f l_transpose;
 
-			for (bcINT l_row = 0; l_row < 3; l_row++)
+			for (auto l_row = 0U; l_row < 3; l_row++)
 			{
-				for (bcINT l_col = 0; l_col < 3; l_col++)
-					l_transpose.m_entry[I(l_row, l_col)] = m_entry[I(l_col, l_row)];
+				for (auto l_col = 0U; l_col < 3; l_col++)
+				{
+					l_transpose.m_entry[i(l_row, l_col)] = m_entry[i(l_col, l_row)];
+				}
 			}
 
 			std::memcpy(m_entry, l_transpose.m_entry, 3 * 3 * sizeof(bcFLOAT));
@@ -329,134 +321,153 @@ namespace black_cat
 		{
 			bc_matrix3f l_transpose;
 
-			for (bcINT l_row = 0; l_row < 3; l_row++)
+			for (auto l_row = 0U; l_row < 3; l_row++)
 			{
-				for (bcINT l_col = 0; l_col < 3; l_col++)
-					l_transpose.m_entry[I(l_row, l_col)] = m_entry[I(l_col, l_row)];
+				for (auto l_col = 0U; l_col < 3; l_col++)
+				{
+					l_transpose.m_entry[i(l_row, l_col)] = m_entry[i(l_col, l_row)];
+				}
 			}
-			return(l_transpose);
+			return l_transpose;
 		}
 		
 		bc_vector3f bc_matrix3f::operator* (const bc_vector3f& p_vector) const noexcept
 		{
 			bc_vector3f l_prod;
-			for (bcINT l_col = 0; l_col < 3; l_col++)
+			for (auto l_col = 0U; l_col < 3; l_col++)
 			{
 				l_prod[l_col] = 0.0f;
-				for (bcINT iRow = 0; iRow < 3; iRow++)
-					l_prod[l_col] += m_entry[I(iRow, l_col)] * p_vector[iRow];
+				for (auto l_row = 0U; l_row < 3; l_row++)
+				{
+					l_prod[l_col] += m_entry[i(l_row, l_col)] * p_vector[l_row];
+				}
 			}
-			return(l_prod);
+			return l_prod;
 		}
 		
 		void bc_matrix3f::set_row(bcINT p_row, const bc_vector3f& p_vector) noexcept
 		{
-			for (bcINT l_col = 0; l_col < 3; l_col++)
-				m_entry[I(p_row, l_col)] = p_vector[l_col];
+			for (auto l_col = 0U; l_col < 3; l_col++)
+			{
+				m_entry[i(p_row, l_col)] = p_vector[l_col];
+			}
 		}
 		
 		bc_vector3f bc_matrix3f::get_row(bcINT p_row) const noexcept
 		{
 			bc_vector3f l_row;
-			for (bcINT l_col = 0; l_col < 3; l_col++)
-				l_row[l_col] = m_entry[I(p_row, l_col)];
+			for (auto l_col = 0U; l_col < 3; l_col++)
+			{
+				l_row[l_col] = m_entry[i(p_row, l_col)];
+			}
 
-			return(l_row);
+			return l_row;
 		}
 		
 		void bc_matrix3f::set_column(bcINT p_col, const bc_vector3f& p_vector) noexcept
 		{
-			for (bcINT l_row = 0; l_row < 3; l_row++)
-				m_entry[I(l_row, p_col)] = p_vector[l_row];
+			for (auto l_row = 0U; l_row < 3; l_row++)
+			{
+				m_entry[i(l_row, p_col)] = p_vector[l_row];
+			}
 		}
 		
 		bc_vector3f bc_matrix3f::get_column(bcINT p_col) const noexcept
 		{
 			bc_vector3f l_col;
-			for (bcINT l_row = 0; l_row < 3; l_row++)
-				l_col[l_row] = m_entry[I(l_row, p_col)];
+			for (auto l_row = 0U; l_row < 3; l_row++)
+			{
+				l_col[l_row] = m_entry[i(l_row, p_col)];
+			}
 
-			return(l_col);
+			return l_col;
 		}
 
 		bcFLOAT bc_matrix3f::operator[] (bcINT p_pos) const noexcept
 		{
-			return(m_entry[p_pos]);
+			return m_entry[i(p_pos)];
 		}
 		
 		bcFLOAT& bc_matrix3f::operator[] (bcINT p_pos) noexcept
 		{
-			return(m_entry[p_pos]);
+			return m_entry[i(p_pos)];
 		}
 		
 		bcFLOAT bc_matrix3f::operator() (bcINT p_row, bcINT p_col) const noexcept
 		{
-			return(m_entry[I(p_row, p_col)]);
+			return m_entry[i(p_row, p_col)];
 		}
 		
 		bcFLOAT& bc_matrix3f::operator() (bcINT p_row, bcINT p_col) noexcept
 		{
-			return(m_entry[I(p_row, p_col)]);
+			return m_entry[i(p_row, p_col)];
 		}
 		
 		bool bc_matrix3f::operator== (const bc_matrix3f& p_other) const noexcept
 		{
-			return(std::memcmp(m_entry, p_other.m_entry, 3 * 3 * sizeof(bcFLOAT)) == 0);
+			return std::memcmp(m_entry, p_other.m_entry, 3 * 3 * sizeof(bcFLOAT)) == 0;
 		}
 
 		bool bc_matrix3f::operator!= (const bc_matrix3f& p_other) const noexcept
 		{
-			return(std::memcmp(m_entry, p_other.m_entry, 3 * 3 * sizeof(bcFLOAT)) != 0);
+			return std::memcmp(m_entry, p_other.m_entry, 3 * 3 * sizeof(bcFLOAT)) != 0;
 		}
 
 		bc_matrix3f bc_matrix3f::operator* (const bc_matrix3f& p_other) const noexcept
 		{
 			bc_matrix3f l_prod;
 
-			for (bcINT l_row = 0; l_row < 3; l_row++)
+			for (auto l_row = 0U; l_row < 3; l_row++)
 			{
-				for (bcINT l_col = 0; l_col < 3; l_col++)
+				for (auto l_col = 0U; l_col < 3; l_col++)
 				{
-					const bcINT l_i = I(l_row, l_col);
+					const auto l_i = i(l_row, l_col);
 					l_prod.m_entry[l_i] = 0.0f;
-					for (bcINT l_mid = 0; l_mid < 3; l_mid++)
+
+					for (auto l_mid = 0U; l_mid < 3; l_mid++)
 					{
-						l_prod.m_entry[l_i] +=
-							m_entry[I(l_row, l_mid)] * p_other.m_entry[I(l_mid, l_col)];
+						l_prod.m_entry[l_i] += m_entry[i(l_row, l_mid)] * p_other.m_entry[i(l_mid, l_col)];
 					}
 				}
 			}
-			return(l_prod);
+			
+			return l_prod;
 		}
 
 		bc_matrix3f bc_matrix3f::operator+ (const bc_matrix3f& p_other) const noexcept
 		{
 			bc_matrix3f l_sum;
 
-			for (bcINT i = 0; i < 3 * 3; i++)
-				l_sum.m_entry[i] = m_entry[i] + p_other.m_entry[i];
+			for (auto l_i = 0U; l_i < 3 * 3; l_i++)
+			{
+				l_sum.m_entry[l_i] = m_entry[l_i] + p_other.m_entry[l_i];
+			}
 
-			return(l_sum);
+			return l_sum;
 		}
 
 		bc_matrix3f bc_matrix3f::operator- (const bc_matrix3f& p_other) const noexcept
 		{
 			bc_matrix3f l_diff;
 
-			for (bcINT i = 0; i < 3 * 3; i++)
-				l_diff.m_entry[i] = m_entry[i] - p_other.m_entry[i];
+			for (auto l_i = 0U; l_i < 3 * 3; l_i++)
+			{
+				l_diff.m_entry[l_i] = m_entry[l_i] - p_other.m_entry[l_i];
+			}
 
-			return(l_diff);
+			return l_diff;
 		}
 
 		bc_matrix3f bc_matrix3f::operator* (bcFLOAT p_scalar) const noexcept
 		{
 			bc_matrix3f l_prod;
 
-			for (bcINT i = 0; i < 3 * 3; i++)
-				l_prod.m_entry[i] = m_entry[i] * p_scalar;
+			for (auto l_i = 0U; l_i < 3 * 3; l_i++)
+			{
+				l_prod.m_entry[l_i] = m_entry[l_i] * p_scalar;
+			}
 
-			return(l_prod);
+			return l_prod;
 		}
 
 		bc_matrix3f bc_matrix3f::operator/ (bcFLOAT p_scalar) const noexcept
@@ -465,70 +476,82 @@ namespace black_cat
 			if (p_scalar != 0.0f)
 			{
 				const bcFLOAT l_inv_scalar = 1.0f / p_scalar;
-				for (bcINT i = 0; i < 3 * 3; i++)
-					l_quot.m_entry[i] = m_entry[i] * l_inv_scalar;
+				for (auto l_i = 0; l_i < 3 * 3; l_i++)
+				{
+					l_quot.m_entry[l_i] = m_entry[l_i] * l_inv_scalar;
+				}
 			}
 			else
 			{
-				for (bcINT i = 0; i < 3 * 3; i++)
-					l_quot.m_entry[i] = 0;
+				for (auto l_i = 0; l_i < 3 * 3; l_i++)
+				{
+					l_quot.m_entry[l_i] = 0;
+				}
 			}
 
-			return(l_quot);
+			return l_quot;
 		}
 
 		bc_matrix3f bc_matrix3f::operator- () const noexcept
 		{
 			bc_matrix3f l_neg;
 
-			for (bcINT i = 0; i < 3 * 3; i++)
-				l_neg.m_entry[i] = -m_entry[i];
+			for (auto l_i = 0; l_i < 3 * 3; l_i++)
+			{
+				l_neg.m_entry[l_i] = -m_entry[l_i];
+			}
 
-			return(l_neg);
+			return l_neg;
 		}
 
 		bc_matrix3f& bc_matrix3f::operator+= (const bc_matrix3f& p_other) noexcept
 		{
-			for (bcINT i = 0; i < 3 * 3; i++)
-				m_entry[i] += p_other.m_entry[i];
+			for (auto l_i = 0; l_i < 3 * 3; l_i++)
+			{
+				m_entry[l_i] += p_other.m_entry[l_i];
+			}
 
-			return(*this);
+			return*this;
 		}
 
 		bc_matrix3f& bc_matrix3f::operator-= (const bc_matrix3f& p_other) noexcept
 		{
-			for (bcINT i = 0; i < 3 * 3; i++)
-				m_entry[i] -= p_other.m_entry[i];
+			for (auto l_i = 0; l_i < 3 * 3; l_i++)
+			{
+				m_entry[l_i] -= p_other.m_entry[l_i];
+			}
 
-			return(*this);
+			return*this;
 		}
 
 		bc_matrix3f& bc_matrix3f::operator*= (bcFLOAT p_scalar) noexcept
 		{
-			for (bcINT i = 0; i < 3 * 3; i++)
-				m_entry[i] *= p_scalar;
+			for (auto l_i = 0; l_i < 3 * 3; l_i++)
+			{
+				m_entry[l_i] *= p_scalar;
+			}
 
-			return(*this);
+			return*this;
 		}
 
 		bc_matrix3f& bc_matrix3f::operator*= (const bc_matrix3f& p_matrix) noexcept
 		{
 			bc_matrix3f l_prod = *this;
 
-			for (bcINT l_row = 0; l_row < 3; l_row++)
+			for (auto l_row = 0U; l_row < 3; l_row++)
 			{
-				for (bcINT l_col = 0; l_col < 3; l_col++)
+				for (auto l_col = 0U; l_col < 3; l_col++)
 				{
-					const bcINT i = I(l_row, l_col);
-					m_entry[i] = 0.0f;
-					for (bcINT l_mid = 0; l_mid < 3; l_mid++)
+					const auto l_i = i(l_row, l_col);
+					m_entry[l_i] = 0.0f;
+
+					for (auto l_mid = 0U; l_mid < 3; l_mid++)
 					{
-						m_entry[i] +=
-							l_prod.m_entry[I(l_row, l_mid)] * p_matrix.m_entry[I(l_mid, l_col)];
+						m_entry[l_i] += l_prod.m_entry[i(l_row, l_mid)] * p_matrix.m_entry[i(l_mid, l_col)];
 					}
 				}
 			}
-			return(*this);
+			return*this;
 		}
 
 		bc_matrix3f& bc_matrix3f::operator/= (bcFLOAT p_scalar) noexcept
@@ -536,16 +559,20 @@ namespace black_cat
 			if (p_scalar != 0.0f)
 			{
 				const bcFLOAT l_inv_scalar = 1.0f / p_scalar;
-				for (bcINT i = 0; i < 3 * 3; i++)
+				for (auto i = 0U; i < 3 * 3; i++)
+				{
 					m_entry[i] *= l_inv_scalar;
+				}
 			}
 			else
 			{
-				for (bcINT i = 0; i < 3 * 3; i++)
+				for (auto i = 0U; i < 3 * 3; i++)
+				{
 					m_entry[i] = 0;
+				}
 			}
 
-			return(*this);
+			return*this;
 		}
 
 		bc_matrix3f bc_matrix3f::zero() noexcept
@@ -563,9 +590,28 @@ namespace black_cat
 			return l_ident;
 		}
 
-		bcINT bc_matrix3f::I(bcINT p_row, bcINT p_col)
+		constexpr bcUINT32 bc_matrix3f::i(bcUINT32 p_index)
 		{
-			return(3 * p_row + p_col);
+			if (use_column_major_storage())
+			{
+				return i(p_index / 3, p_index % 3);
+			}
+			else
+			{
+				return p_index;
+			}
+		}
+
+		constexpr bcUINT32 bc_matrix3f::i(bcUINT32 p_row, bcUINT32 p_col)
+		{
+			if(use_column_major_storage())
+			{
+				return 3 * p_col + p_row;
+			}
+			else
+			{
+				return 3 * p_row + p_col;
+			}
 		}
 	}
 }

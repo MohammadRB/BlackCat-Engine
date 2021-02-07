@@ -18,13 +18,13 @@ namespace black_cat
 			
 			if(!m_stream.open
 			(
-				l_config_path.get_path().c_str(),
+				l_config_path.get_string().c_str(),
 				core_platform::bc_file_mode::open_create, 
 				core_platform::bc_file_access::read_write, 
 				core_platform::bc_file_sharing::read
 			))
 			{
-				const auto l_error_message = "Cannot open config file: " + core::bc_to_string_frame(l_config_path.get_path().c_str());
+				const auto l_error_message = "Cannot open config file: " + core::bc_to_string_frame(l_config_path.get_string().c_str());
 				throw bc_io_exception(l_error_message.c_str());
 			}
 

@@ -13,19 +13,19 @@ namespace black_cat
 	{
 		using bc_query_hash = bc_message_hash;
 		
-		class bc_iquery : public bc_imessage
+		class bci_query : public bci_message
 		{
 		public:
-			virtual ~bc_iquery() = 0;
+			virtual ~bci_query() = 0;
 
 			virtual void execute(const bc_query_context& p_context) noexcept = 0;
 
 		protected:
-			bc_iquery(const bcCHAR* p_name);
+			bci_query(const bcCHAR* p_name);
 
-			bc_iquery(const bc_iquery&);
+			bci_query(const bci_query&);
 
-			bc_iquery& operator=(const bc_iquery&);
+			bci_query& operator=(const bci_query&);
 		};
 
 		/**
@@ -33,7 +33,7 @@ namespace black_cat
 		 * \tparam TContext 
 		 */
 		template< class TContext >
-		class bc_query : public bc_iquery
+		class bc_query : public bci_query
 		{
 		public:
 			using context_t = TContext;
@@ -53,16 +53,16 @@ namespace black_cat
 			bc_query& operator=(const bc_query&);
 		};
 
-		inline bc_iquery::~bc_iquery() = default;
+		inline bci_query::~bci_query() = default;
 
-		inline bc_iquery::bc_iquery(const bcCHAR * p_name)
-			: bc_imessage(p_name)
+		inline bci_query::bci_query(const bcCHAR * p_name)
+			: bci_message(p_name)
 		{
 		}
 
-		inline bc_iquery::bc_iquery(const bc_iquery&) = default;
+		inline bci_query::bci_query(const bci_query&) = default;
 
-		inline bc_iquery& bc_iquery::operator=(const bc_iquery&) = default;
+		inline bci_query& bci_query::operator=(const bci_query&) = default;
 		
 		template< class TContext >
 		bc_query<TContext>::~bc_query() = default;
@@ -75,7 +75,7 @@ namespace black_cat
 
 		template< class TContext >
 		bc_query<TContext>::bc_query(const bcCHAR* p_name)
-			: bc_iquery(p_name)
+			: bci_query(p_name)
 		{
 		}
 

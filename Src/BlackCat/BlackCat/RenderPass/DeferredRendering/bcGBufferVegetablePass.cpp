@@ -32,14 +32,14 @@ namespace black_cat
 			l_device.get_back_buffer_texture().get_sample_count()
 		);
 
-		after_reset(game::bc_render_pass_reset_param(p_render_system, l_device, l_old_parameters, l_new_parameters));
+		after_reset(game::bc_render_pass_reset_context(p_render_system, l_device, l_old_parameters, l_new_parameters));
 	}
 
-	void bc_gbuffer_vegetable_pass::update(const game::bc_render_pass_update_param& p_param)
+	void bc_gbuffer_vegetable_pass::update(const game::bc_render_pass_update_context& p_param)
 	{
 	}
 
-	void bc_gbuffer_vegetable_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_vegetable_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
 	{
 		if(m_leaf_render_states_query.is_executed())
 		{
@@ -52,15 +52,23 @@ namespace black_cat
 
 		m_leaf_render_states_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
-			game::bc_main_camera_render_state_query(p_param.m_frame_renderer.create_buffer()).only<game::bc_vegetable_mesh_component>(true)
+			game::bc_main_camera_render_state_query
+			(
+				game::bc_actor_render_camera(p_param.m_update_camera),
+				p_param.m_frame_renderer.create_buffer()
+			).only<game::bc_vegetable_mesh_component>(true)
 		);
 		m_trunk_render_states_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
-			game::bc_main_camera_render_state_query(p_param.m_frame_renderer.create_buffer()).only<game::bc_vegetable_mesh_component>(false)
+			game::bc_main_camera_render_state_query
+			(
+				game::bc_actor_render_camera(p_param.m_update_camera),
+				p_param.m_frame_renderer.create_buffer()
+			).only<game::bc_vegetable_mesh_component>(false)
 		);
 	}
 
-	void bc_gbuffer_vegetable_pass::execute(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_vegetable_pass::execute(const game::bc_render_pass_render_context& p_param)
 	{
 		p_param.m_render_thread.start();
 		
@@ -81,11 +89,11 @@ namespace black_cat
 		p_param.m_render_thread.finish();
 	}
 
-	void bc_gbuffer_vegetable_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_gbuffer_vegetable_pass::before_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 	}
 
-	void bc_gbuffer_vegetable_pass::after_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_gbuffer_vegetable_pass::after_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 		if
 		(

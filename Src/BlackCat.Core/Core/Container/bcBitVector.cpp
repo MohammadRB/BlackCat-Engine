@@ -43,7 +43,7 @@ namespace black_cat
 		{
 			if (m_array != nullptr)
 			{
-				bcFree(m_array);
+				BC_FREE(m_array);
 			}
 
 			m_array = nullptr;
@@ -78,7 +78,7 @@ namespace black_cat
 			const auto l_block_count = _get_block_count(m_size);
 			const auto l_new_block_count = _get_block_count(p_size);
 
-			bcUINT32* l_new_array = reinterpret_cast< bcUINT32* >(bcAllocThrow(l_new_block_count * sizeof(bcUINT32), p_alloc_type));
+			bcUINT32* l_new_array = reinterpret_cast< bcUINT32* >(BC_ALLOC_THROW(l_new_block_count * sizeof(bcUINT32), p_alloc_type));
 
 			const bcINT32 l_min_block_count = (std::min)(l_block_count, l_new_block_count);
 			std::memcpy(l_new_array, m_array, l_min_block_count * sizeof(bcUINT32));
@@ -90,7 +90,7 @@ namespace black_cat
 
 			if (m_array != nullptr)
 			{
-				bcFree(m_array);
+				BC_FREE(m_array);
 			}
 
 			m_array = l_new_array;

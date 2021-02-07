@@ -225,7 +225,7 @@ namespace black_cat
 			bc_ray_hit* p_hits,
 			bcUINT32 p_hits_count)
 		{
-			bcUINT32 l_written_count = physx::PxGeometryQuery::raycast
+			const bcUINT32 l_written_count = physx::PxGeometryQuery::raycast
 			(
 				bc_to_right_hand(p_ray.m_origin),
 				bc_to_right_hand(p_ray.m_dir),
@@ -237,10 +237,10 @@ namespace black_cat
 				reinterpret_cast< physx::PxRaycastHit* >(p_hits)
 			);
 
-			bc_overwrite_output_array< bc_ray_hit, physx::PxRaycastHit >(p_hits, l_written_count, [](bc_ray_hit* p_hit, physx::PxRaycastHit* p_px_hit)
-				{
-					p_hit->get_platform_pack().m_px_hit = *p_px_hit;
-				});
+			bc_overwrite_output_array< bc_ray_hit, physx::PxRaycastHit >(p_hits, l_written_count, [](bc_ray_hit& p_hit, physx::PxRaycastHit& p_px_hit)
+			{
+				p_hit.get_platform_pack().m_px_hit = p_px_hit;
+			});
 
 			return l_written_count;
 		}
@@ -255,7 +255,7 @@ namespace black_cat
 			bc_hit_flag p_flags,
 			const bcFLOAT p_inflation)
 		{
-			bool l_result = physx::PxGeometryQuery::sweep
+			const bool l_result = physx::PxGeometryQuery::sweep
 			(
 				bc_to_right_hand(p_unit_dir),
 				p_max_dist,
@@ -276,7 +276,7 @@ namespace black_cat
 			const bc_shape_geometry& p_geom1,
 			const bc_transform& p_pose1)
 		{
-			bool l_result = physx::PxGeometryQuery::overlap
+			const bool l_result = physx::PxGeometryQuery::overlap
 			(
 				*const_cast<bc_shape_geometry&>(p_geom0).get_platform_pack().m_px_geometry,
 				const_cast< bc_transform& >(p_pose0).get_platform_pack().m_px_transform,
@@ -295,7 +295,7 @@ namespace black_cat
 			bcFLOAT& p_depth)
 		{
 			auto l_direction = bc_to_right_hand(static_cast< const core::bc_vector3f& >(p_direction));
-			bool l_result = physx::PxGeometryQuery::computePenetration
+			const bool l_result = physx::PxGeometryQuery::computePenetration
 			(
 				l_direction,
 				p_depth,
@@ -317,7 +317,7 @@ namespace black_cat
 		{
 			physx::PxVec3 l_closest_point;
 
-			bcFLOAT l_result = physx::PxGeometryQuery::pointDistance
+			const bcFLOAT l_result = physx::PxGeometryQuery::pointDistance
 			(
 				bc_to_right_hand(p_point),
 				*const_cast<bc_shape_geometry&>(p_geom).get_platform_pack().m_px_geometry,

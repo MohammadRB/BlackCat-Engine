@@ -136,7 +136,7 @@ namespace black_cat
 				return bc_sampler_state();
 			}
 
-			bcAssert(m_data->m_parameter_type == bc_shader_parameter_type::sampler);
+			BC_ASSERT(m_data->m_parameter_type == bc_shader_parameter_type::sampler);
 
 			return m_data->m_sampler;
 		}
@@ -161,7 +161,7 @@ namespace black_cat
 				return bc_buffer();
 			}
 
-			bcAssert(m_data->m_parameter_type == bc_shader_parameter_type::cbuffer);
+			BC_ASSERT(m_data->m_parameter_type == bc_shader_parameter_type::cbuffer);
 
 			return m_data->m_cbuffer;
 		}
@@ -186,7 +186,7 @@ namespace black_cat
 				return bc_resource_view();
 			}
 
-			bcAssert(m_data->m_parameter_type == bc_shader_parameter_type::shader_view || m_data->m_parameter_type == bc_shader_parameter_type::unordered_view);
+			BC_ASSERT(m_data->m_parameter_type == bc_shader_parameter_type::shader_view || m_data->m_parameter_type == bc_shader_parameter_type::unordered_view);
 
 			return m_data->m_resource_view;
 		}

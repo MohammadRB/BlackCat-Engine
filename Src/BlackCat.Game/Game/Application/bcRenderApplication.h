@@ -24,7 +24,7 @@ namespace black_cat
 
 			bc_render_application& operator=(bc_render_application&&) = delete;
 
-			bc_irender_application_output_window& get_output_window() const;
+			bci_render_application_output_window& get_output_window() const;
 
 			core_platform::bc_clock& get_clock() const;
 
@@ -78,9 +78,9 @@ namespace black_cat
 			/**
 			 * \brief Update app
 			 * \param p_clock
-			 * \param p_is_same_frame
+			 * \param p_is_partial_update
 			 */
-			virtual void app_update(core_platform::bc_clock::update_param p_clock, bool p_is_same_frame) = 0;
+			virtual void app_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update) = 0;
 
 			/**
 			 * \brief Render app
@@ -98,7 +98,7 @@ namespace black_cat
 			 * \param p_event
 			 * \return
 			 */
-			virtual bool app_event(core::bc_ievent& p_event) = 0;
+			virtual bool app_event(core::bci_event& p_event) = 0;
 
 			/**
 			 * \brief Cleanup loaded contents
@@ -119,11 +119,11 @@ namespace black_cat
 
 			void _destroy() override;
 
-			bool _app_event(core::bc_ievent& p_event);
+			bool _app_event(core::bci_event& p_event);
 
 			core::bc_unique_ptr< platform::bc_application > m_app;
 			core::bc_unique_ptr< bc_render_application_basic_output_window > m_default_output_window;
-			bc_irender_application_output_window* m_output_window;
+			bci_render_application_output_window* m_output_window;
 			core::bc_unique_ptr< core_platform::bc_clock > m_clock;
 
 			bool m_is_terminated;
@@ -133,7 +133,9 @@ namespace black_cat
 			bcUINT32 m_min_update_rate;
 			bcINT32 m_render_rate;
 
-			core::bc_event_listener_handle m_event_handle_window_resizing;
+			core::bc_event_listener_handle m_event_handle_window_state;
+			core::bc_event_listener_handle m_event_handle_window_resize;
+			core::bc_event_listener_handle m_event_handle_window_focus;
 			core::bc_event_listener_handle m_event_handle_window_close;
 			core::bc_event_listener_handle m_event_handle_app_active;
 			core::bc_event_listener_handle m_event_handle_app_exit;

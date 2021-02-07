@@ -16,7 +16,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_camera_frustum
 		{
 		public:
-			explicit bc_camera_frustum(const bc_icamera& p_camera) noexcept;
+			explicit bc_camera_frustum(const bci_camera& p_camera) noexcept;
 
 			explicit bc_camera_frustum(const bc_camera_instance& p_camera) noexcept;
 
@@ -29,7 +29,7 @@ namespace black_cat
 			bool intersects(const physics::bc_bound_box& p_box) const noexcept;
 
 		private:
-			void _construct(const bc_icamera::extend& p_extends);
+			void _construct(const bci_camera::extend& p_extends);
 			
 			// Ordered by: near, far, left, top, right, bottom
 			core::bc_array<physics::bc_shape_plane, 6> m_planes;

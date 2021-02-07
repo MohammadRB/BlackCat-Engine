@@ -74,14 +74,14 @@ namespace black_cat
 			l_back_buffer_texture.get_sample_count()
 		);
 
-		after_reset(game::bc_render_pass_reset_param(p_render_system, l_device, l_old_parameters, l_new_parameters));
+		after_reset(game::bc_render_pass_reset_context(p_render_system, l_device, l_old_parameters, l_new_parameters));
 	}
 
-	void bc_gbuffer_terrain_pass_dx11::update(const game::bc_render_pass_update_param& p_update_param)
+	void bc_gbuffer_terrain_pass_dx11::update(const game::bc_render_pass_update_context& p_update_param)
 	{
 	}
 
-	void bc_gbuffer_terrain_pass_dx11::initialize_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_terrain_pass_dx11::initialize_frame(const game::bc_render_pass_render_context& p_param)
 	{
 		core::bc_vector<game::bc_height_map_ptr> l_height_maps;
 		
@@ -94,7 +94,7 @@ namespace black_cat
 
 		m_height_maps_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
-			game::bc_height_map_scene_query(p_param.m_frame_renderer.create_buffer())
+			game::bc_height_map_scene_query(game::bc_actor_render_camera(p_param.m_update_camera), p_param.m_frame_renderer.create_buffer())
 		);
 		
 		if (m_run_chunk_info_shader)
@@ -134,9 +134,9 @@ namespace black_cat
 		}
 	}
 
-	void bc_gbuffer_terrain_pass_dx11::execute(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_terrain_pass_dx11::execute(const game::bc_render_pass_render_context& p_param)
 	{
-		game::bc_icamera::extend l_camera_extends = p_param.m_render_camera.get_extends();
+		game::bci_camera::extend l_camera_extends = p_param.m_render_camera.get_extends();
 
 		_bc_parameter_buffer l_parameter;
 		l_parameter.m_frustum_planes[0] = _plane_from_3_point(l_camera_extends[0], l_camera_extends[1], l_camera_extends[2]);
@@ -157,11 +157,11 @@ namespace black_cat
 		p_param.m_render_thread.finish();
 	}
 
-	void bc_gbuffer_terrain_pass_dx11::cleanup_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_terrain_pass_dx11::cleanup_frame(const game::bc_render_pass_render_context& p_param)
 	{
 	}
 
-	void bc_gbuffer_terrain_pass_dx11::before_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_gbuffer_terrain_pass_dx11::before_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 		if
 		(
@@ -173,7 +173,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_gbuffer_terrain_pass_dx11::after_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_gbuffer_terrain_pass_dx11::after_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 		if
 		(

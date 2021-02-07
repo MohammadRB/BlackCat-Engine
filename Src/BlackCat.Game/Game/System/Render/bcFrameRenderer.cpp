@@ -5,6 +5,7 @@
 #include "Core/Utility/bcEnumOperand.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
+#include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcRenderThreadManager.h"
 #include "Game/System/Render/Pass/bcRenderPassManager.h"
@@ -49,16 +50,19 @@ namespace black_cat
 			bcFLOAT m_global_wind_power;
 		};
 
+		static _bc_render_system_global_state_cbuffer g_global_state;
+		static const bcSIZE g_max_skinned_transform = 90;
+
 		struct _bc_render_system_per_object_cbuffer
 		{
 			BC_CBUFFER_ALIGN
 			core::bc_matrix4f m_world_view_projection;
 			BC_CBUFFER_ALIGN
 			core::bc_matrix4f m_world;
+			BC_CBUFFER_ALIGN
+			core::bc_matrix4f m_transforms[g_max_skinned_transform];
 		};
 
-		static _bc_render_system_global_state_cbuffer g_global_state;
-		
 		bc_frame_renderer::bc_frame_renderer(graphic::bc_device& p_device, bc_render_thread_manager& p_thread_manager, bc_render_pass_manager& p_render_pass_manager) noexcept
 			: m_thread_manager(&p_thread_manager),
 			m_render_pass_manager(&p_render_pass_manager),
@@ -129,28 +133,13 @@ namespace black_cat
 			return *this;
 		}
 
-		const graphic::bc_constant_buffer_parameter& bc_frame_renderer::get_global_cbuffer() const noexcept
-		{
-			return m_global_cbuffer_parameter;
-		}
-
-		const graphic::bc_constant_buffer_parameter& bc_frame_renderer::get_per_object_cbuffer() const noexcept
-		{
-			return m_per_object_cbuffer_parameter;
-		}
-
-		bc_render_thread_manager& bc_frame_renderer::get_thread_manager() noexcept
-		{
-			return *m_thread_manager;
-		}
-
 		void bc_frame_renderer::update_global_cbuffer(bc_render_thread& p_render_thread,
 			const core_platform::bc_clock::update_param& p_clock,
 			const bc_camera_instance& p_camera)
 		{
-			g_global_state.m_view = p_camera.get_view().transpose();
-			g_global_state.m_projection = p_camera.get_projection().transpose();
-			g_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection()).transpose();
+			g_global_state.m_view = p_camera.get_view();
+			g_global_state.m_projection = p_camera.get_projection();
+			g_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection());
 			g_global_state.m_screen_width = p_camera.get_screen_width();
 			g_global_state.m_screen_height = p_camera.get_screen_height();
 			g_global_state.m_near_plan = p_camera.get_near_clip();
@@ -160,6 +149,13 @@ namespace black_cat
 			g_global_state.m_total_elapsed_second = p_clock.m_total_elapsed_second;
 			g_global_state.m_elapsed = p_clock.m_elapsed;
 			g_global_state.m_elapsed_second = p_clock.m_elapsed_second;
+
+			if (need_matrix_transpose())
+			{
+				g_global_state.m_view.make_transpose();
+				g_global_state.m_projection.make_transpose();
+				g_global_state.m_view_projection.make_transpose();
+			}
 
 			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
 			p_render_thread.update_subresource(l_buffer, 0, &g_global_state, 0, 0);
@@ -171,9 +167,9 @@ namespace black_cat
 			const bc_direct_light& p_global_light,
 			const bc_direct_wind& p_global_wind)
 		{
-			g_global_state.m_view = p_camera.get_view().transpose();
-			g_global_state.m_projection = p_camera.get_projection().transpose();
-			g_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection()).transpose();
+			g_global_state.m_view = p_camera.get_view();
+			g_global_state.m_projection = p_camera.get_projection();
+			g_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection());
 			g_global_state.m_screen_width = p_camera.get_screen_width();
 			g_global_state.m_screen_height = p_camera.get_screen_height();
 			g_global_state.m_near_plan = p_camera.get_near_clip();
@@ -191,6 +187,13 @@ namespace black_cat
 			g_global_state.m_global_wind_direction = p_global_wind.m_direction;
 			g_global_state.m_global_wind_power = p_global_wind.m_power;
 
+			if (need_matrix_transpose())
+			{
+				g_global_state.m_view.make_transpose();
+				g_global_state.m_projection.make_transpose();
+				g_global_state.m_view_projection.make_transpose();
+			}
+			
 			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
 			p_render_thread.update_subresource(l_buffer, 0, &g_global_state, 0, 0);
 		}
@@ -202,9 +205,10 @@ namespace black_cat
 
 		void bc_frame_renderer::render_buffer(bc_render_thread& p_render_thread, const bc_render_state_buffer& p_buffer, const bc_camera_instance& p_camera)
 		{
+			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
 			const auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
-
-			for (auto& l_render_state_entry : p_buffer)
+			
+			for (const auto& l_render_state_entry : p_buffer.get_instances())
 			{
 				if (l_render_state_entry.second.empty())
 				{
@@ -216,11 +220,57 @@ namespace black_cat
 
 				for (auto& l_render_instance : l_render_state_entry.second)
 				{
-					_bc_render_system_per_object_cbuffer l_per_object_cbuffer
+					l_per_object_cbuffer.m_world_view_projection = (l_render_instance.get_transform() * l_view_proj);
+					l_per_object_cbuffer.m_world = l_render_instance.get_transform();
+
+					if(need_matrix_transpose())
 					{
-						(l_render_instance.get_world() * l_view_proj).transpose(),
-						l_render_instance.get_world().transpose()
-					};
+						l_per_object_cbuffer.m_world_view_projection.make_transpose();
+						l_per_object_cbuffer.m_world.make_transpose();
+					}
+					
+					graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
+					p_render_thread.update_subresource(l_buffer, 0, &l_per_object_cbuffer, 0, 0); // TODO update part of buffer
+
+					p_render_thread.draw_indexed
+					(
+						l_render_state_entry.first->get_index_buffer_offset(),
+						l_render_state_entry.first->get_index_count(),
+						l_render_state_entry.first->get_vertex_buffer_offset()
+					);
+				}
+
+				p_render_thread.unbind_render_state(l_render_state);
+			}
+		}
+
+		void bc_frame_renderer::render_skinned_buffer(bc_render_thread& p_render_thread, const bc_render_state_buffer& p_buffer, const bc_camera_instance& p_camera)
+		{
+			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
+			
+			for (const auto& l_render_state_entry : p_buffer.get_skinned_instances())
+			{
+				if (l_render_state_entry.second.empty())
+				{
+					continue;
+				}
+
+				auto& l_render_state = *l_render_state_entry.first;
+				p_render_thread.bind_render_state(l_render_state);
+
+				for (auto& l_render_instance : l_render_state_entry.second)
+				{
+					BC_ASSERT(l_render_instance.get_num_transforms() <= g_max_skinned_transform);
+
+					std::memcpy(&l_per_object_cbuffer.m_transforms[0], l_render_instance.get_transforms(), sizeof(core::bc_matrix4f) * l_render_instance.get_num_transforms());
+
+					if (need_matrix_transpose())
+					{
+						for (auto& l_transform : l_per_object_cbuffer.m_transforms)
+						{
+							l_transform.make_transpose();
+						}
+					}
 
 					graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
 					p_render_thread.update_subresource(l_buffer, 0, &l_per_object_cbuffer, 0, 0);
@@ -236,8 +286,8 @@ namespace black_cat
 				p_render_thread.unbind_render_state(l_render_state);
 			}
 		}
-		
-		void bc_frame_renderer::update(const bc_frame_renderer_update_param& p_update_param)
+
+		void bc_frame_renderer::update(const update_context& p_update_param)
 		{
 			if(m_camera_instance.is_set())
 			{
@@ -248,10 +298,10 @@ namespace black_cat
 			m_camera_instance.reset(p_update_param.m_camera);
 			m_camera.store(&m_camera_instance.get(), core_platform::bc_memory_order::release);
 			
-			m_render_pass_manager->pass_update(bc_render_pass_update_param(p_update_param.m_clock, p_update_param.m_camera));
+			m_render_pass_manager->pass_update(bc_render_pass_update_context(p_update_param.m_clock, p_update_param.m_camera));
 		}
 
-		void bc_frame_renderer::render(const bc_frame_renderer_render_param& p_render_param)
+		void bc_frame_renderer::render(const render_context& p_render_param)
 		{
 			auto* l_prev_camera = m_prev_camera.load(core_platform::bc_memory_order::consume);
 			auto* l_camera = m_camera.load(core_platform::bc_memory_order::consume);
@@ -261,9 +311,10 @@ namespace black_cat
 				return;
 			}
 			
-			m_render_pass_manager->pass_execute(bc_render_pass_render_param
+			m_render_pass_manager->pass_execute(bc_render_pass_render_context
 			(
 				p_render_param.m_clock,
+				p_render_param.m_query_manager,
 				*l_camera,
 				*l_prev_camera,
 				p_render_param.m_render_system,

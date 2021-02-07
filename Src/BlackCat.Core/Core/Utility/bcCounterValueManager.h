@@ -60,7 +60,7 @@ namespace black_cat
 			const_iterator find(const bcCHAR* p_name) const noexcept;
 			
 		private:
-			bool _event_handler(bc_ievent& p_event);
+			bool _event_handler(bci_event& p_event);
 			
 			bcUINT32 m_read_container;
 			bcUINT32 m_write_container;

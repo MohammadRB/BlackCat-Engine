@@ -19,7 +19,7 @@ namespace black_cat
 		};
 
 		template< bc_render_api TRenderApi >
-		class bc_platform_resource_view : public bc_platform_iresource_view<TRenderApi>
+		class bc_platform_resource_view : public bci_platform_resource_view<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_shader_view_pack<TRenderApi>;

@@ -11,7 +11,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		class bc_icontent;
+		class bci_content;
 		class bc_content_manager;
 
 		using bc_content_hash_t = std::hash< const bcECHAR* >;
@@ -23,9 +23,7 @@ namespace black_cat
 
 			_bc_content_ptr_deleter(bc_content_manager* p_content_manager);
 
-			void operator ()(bc_icontent* p_content) const;
-
-		protected:
+			void operator ()(bci_content* p_content) const;
 
 		private:
 			bc_content_manager* m_content_manager;
@@ -49,7 +47,7 @@ namespace black_cat
 			}
 		};
 
-		class bc_icontent : 
+		class bci_content : 
 			private bc_ref_count,
 			public core_platform::bc_no_copy
 		{
@@ -57,14 +55,14 @@ namespace black_cat
 			friend class bc_content_manager;
 
 		public:
-			virtual ~bc_icontent() = default;
+			virtual ~bci_content() = default;
 
 		protected:
-			bc_icontent() = default;
+			bci_content() = default;
 
-			bc_icontent(bc_icontent&&) = default;
+			bci_content(bci_content&&) = default;
 
-			bc_icontent& operator=(bc_icontent&&) = default;
+			bci_content& operator=(bci_content&&) = default;
 
 		private:
 			bc_content_hash_t::result_type _get_hash() const
@@ -80,6 +78,6 @@ namespace black_cat
 			bc_content_hash_t::result_type m_hash = 0;
 		};
 
-		using bc_icontent_ptr = bc_content_ptr< bc_icontent >;
+		using bc_icontent_ptr = bc_content_ptr< bci_content >;
 	}
 }

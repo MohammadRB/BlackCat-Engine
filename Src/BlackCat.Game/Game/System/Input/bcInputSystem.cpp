@@ -26,7 +26,7 @@ namespace black_cat
 
 		bc_input_system& bc_input_system::operator=(bc_input_system&&) noexcept = default;
 
-		void bc_input_system::register_camera(core::bc_unique_ptr<bc_icamera> p_camera)
+		void bc_input_system::register_camera(core::bc_unique_ptr<bci_camera> p_camera)
 		{
 			m_camera = std::move(p_camera);
 		}
@@ -42,9 +42,9 @@ namespace black_cat
 			}
 		}
 
-		bool bc_input_system::_event_handler(core::bc_ievent & p_event)
+		bool bc_input_system::_event_handler(core::bci_event & p_event)
 		{
-			auto* l_window_resize_event = core::bc_imessage::as<platform::bc_app_event_window_resize>(p_event);
+			auto* l_window_resize_event = core::bci_message::as< platform::bc_app_event_window_resize >(p_event);
 			if (l_window_resize_event)
 			{
 				if (m_camera)

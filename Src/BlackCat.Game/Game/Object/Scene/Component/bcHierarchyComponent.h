@@ -12,12 +12,12 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_hierarchy_component : public bc_iactor_component
+		class BC_GAME_DLL bc_hierarchy_component : public bci_actor_component
 		{
 			BC_COMPONENT(hier, false, false)
 
 		public:
-			explicit bc_hierarchy_component(bc_actor_component_index p_index);
+			bc_hierarchy_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
 
 			bc_hierarchy_component(bc_hierarchy_component&&) noexcept;
 
@@ -27,16 +27,16 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			const core::bc_vector< bc_actor >& get_actors() const;
+			const core::bc_vector_movable< bc_actor >& get_actors() const;
 
 			void add_actor(const bc_actor& p_actor);
 
 			void remove_actor(const bc_actor& p_actor);
 
-			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
+			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
 		private:
-			core::bc_vector< bc_actor > m_actors;
+			core::bc_vector_movable< bc_actor > m_actors;
 		};
 	}
 }

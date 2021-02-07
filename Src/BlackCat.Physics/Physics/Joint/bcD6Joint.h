@@ -13,7 +13,7 @@ namespace black_cat
 	{
 		enum class bc_d6_axis
 		{
-			along_x = 0,		// motion along the X axix
+			along_x = 0,		// motion along the X axis
 			along_y = 1,		// motion along the Y axis
 			along_z = 2,		// motion along the Z axis
 			around_x = 3,		// motion around the X axis
@@ -125,8 +125,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
 
 		private:
 			platform_pack m_pack;

@@ -13,13 +13,13 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_hierarchy_component::bc_hierarchy_component(bc_actor_component_index p_index)
-			: bc_iactor_component(p_index)
+		bc_hierarchy_component::bc_hierarchy_component(bc_actor_index p_actor_index, bc_actor_component_index p_index)
+			: bci_actor_component(p_actor_index, p_index)
 		{
 		}
 
 		bc_hierarchy_component::bc_hierarchy_component(bc_hierarchy_component&& p_other) noexcept
-			: bc_iactor_component(std::move(p_other)),
+			: bci_actor_component(std::move(p_other)),
 			m_actors(std::move(p_other.m_actors))
 		{
 		}
@@ -34,7 +34,7 @@ namespace black_cat
 
 		bc_hierarchy_component& bc_hierarchy_component::operator=(bc_hierarchy_component&& p_other) noexcept
 		{
-			bc_iactor_component::operator=(std::move(p_other));
+			bci_actor_component::operator=(std::move(p_other));
 			m_actors = std::move(p_other.m_actors);
 
 			return *this;
@@ -45,7 +45,7 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
-		const core::bc_vector< bc_actor >& bc_hierarchy_component::get_actors() const
+		const core::bc_vector_movable< bc_actor >& bc_hierarchy_component::get_actors() const
 		{
 			return m_actors;
 		}
@@ -57,7 +57,7 @@ namespace black_cat
 
 		void bc_hierarchy_component::remove_actor(const bc_actor& p_actor)
 		{
-			auto l_actor = std::find_if(std::begin(m_actors), std::end(m_actors), [p_actor](const bc_actor& p_item)
+			const auto l_actor = std::find_if(std::begin(m_actors), std::end(m_actors), [p_actor](const bc_actor& p_item)
 			{
 				return p_item == p_actor;
 			});
@@ -68,9 +68,9 @@ namespace black_cat
 			}
 		}
 
-		void bc_hierarchy_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
+		void bc_hierarchy_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			auto& l_child_entity_names = p_parameters.get_value_throw< core::bc_string >(constant::g_param_child_actor);
+			const auto& l_child_entity_names = p_context.m_parameters.get_value_throw< core::bc_string >(constant::g_param_child_actor);
 			auto* l_entity_manager = core::bc_get_service< bc_entity_manager >();
 
 			core::bc_string::size_type l_last_pos = 0;

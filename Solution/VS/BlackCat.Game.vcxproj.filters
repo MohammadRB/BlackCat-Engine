@@ -58,8 +58,14 @@
     <Filter Include="Game\System\Render\Particle">
       <UniqueIdentifier>{9c8133d3-9034-4fe9-a69e-82d71719f53c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Object\Scene\Component\Controller">
-      <UniqueIdentifier>{b827ac91-0489-44e4-9dc4-498aa48c50b4}</UniqueIdentifier>
+    <Filter Include="Game\Object\Animation">
+      <UniqueIdentifier>{4dfe266a-e7f4-47b1-b23f-37e78d80f094}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Animation\Job">
+      <UniqueIdentifier>{17a953fe-4d1e-4898-a583-1cfc4a5620ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Scene\ActorController">
+      <UniqueIdentifier>{0c50bcc8-18f7-4234-b340-220e3150b83f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -246,9 +252,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcLightComponent.h">
       <Filter>Game\Object\Scene\Component</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcSubMeshTransformation.h">
-      <Filter>Game\Object\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassResourceShare.h">
       <Filter>Game\System\Render\Pass</Filter>
     </ClInclude>
@@ -360,14 +363,83 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcActorEventRemovedFromScene.h">
       <Filter>Game\Object\Scene\Component\Event</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Controller\bcFireActorController.h">
-      <Filter>Game\Object\Scene\Component\Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Controller\bcExplosionActorController.h">
-      <Filter>Game\Object\Scene\Component\Controller</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcConfigFile.h">
       <Filter>Game\System\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcSkinnedAnimation.h">
+      <Filter>Game\Object\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationManager.h">
+      <Filter>Game\Object\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcSkeletonAnimation.h">
+      <Filter>Game\Object\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationSkeleton.h">
+      <Filter>Game\Object\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationJob.h">
+      <Filter>Game\Object\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationJobBuilder.h">
+      <Filter>Game\Object\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationLocalTransform.h">
+      <Filter>Game\Object\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcSkinnedMeshComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\bcUtility.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcExplosionActorController.h">
+      <Filter>Game\Object\Scene\ActorController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcFireActorController.h">
+      <Filter>Game\Object\Scene\ActorController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotController.h">
+      <Filter>Game\Object\Scene\ActorController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcSubMeshTransform.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshBuilder.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshNode.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcActorEventHierarchyTransform.h">
+      <Filter>Game\Object\Scene\Component\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshUtility.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshLevelOfDetail.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcSkinnedMeshCollider.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcSequenceAnimationJob.h">
+      <Filter>Game\Object\Animation\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcSamplingAnimationJob.h">
+      <Filter>Game\Object\Animation\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcModelToSkinnedTransformAnimationJob.h">
+      <Filter>Game\Object\Animation\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcMeshColliderSkinningAnimationJob.h">
+      <Filter>Game\Object\Animation\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalTransformAnimationJob.h">
+      <Filter>Game\Object\Animation\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelTransformAnimationJob.h">
+      <Filter>Game\Object\Animation\Job</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -545,14 +617,50 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcParticleEmitterComponent.cpp">
       <Filter>Game\Object\Scene\Component</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Controller\bcFireActorController.cpp">
-      <Filter>Game\Object\Scene\Component\Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Controller\bcExplosionActorController.cpp">
-      <Filter>Game\Object\Scene\Component\Controller</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcConfigFile.cpp">
       <Filter>Game\System\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcSkinnedMeshComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\bcUtility.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationManager.cpp">
+      <Filter>Game\Object\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcExplosionActorController.cpp">
+      <Filter>Game\Object\Scene\ActorController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcFireActorController.cpp">
+      <Filter>Game\Object\Scene\ActorController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotController.cpp">
+      <Filter>Game\Object\Scene\ActorController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshBuilder.cpp">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshUtility.cpp">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcSkinnedMeshCollider.cpp">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshLevelOfDetail.cpp">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcSamplingAnimationJob.cpp">
+      <Filter>Game\Object\Animation\Job</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcModelToSkinnedTransformAnimationJob.cpp">
+      <Filter>Game\Object\Animation\Job</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcMeshColliderSkininingAnimationJob.cpp">
+      <Filter>Game\Object\Animation\Job</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelTransformAnimationJob.cpp">
+      <Filter>Game\Object\Animation\Job</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

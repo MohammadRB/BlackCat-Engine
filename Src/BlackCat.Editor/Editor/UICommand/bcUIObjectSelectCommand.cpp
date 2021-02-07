@@ -6,6 +6,7 @@
 #include "Game/System/Physics/bcPxWrap.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "BlackCat/RenderPass/bcShapeDrawPass.h"
 #include "Editor/UICommand/bcUIObjectSelectCommand.h"
 #include "Editor/UI/bcFormObject.h"
 
@@ -44,7 +45,9 @@ namespace black_cat
 
 		bool bc_ui_object_select_command::update(update_context& p_context)
 		{
+			auto* l_shape_draw_pass = p_context.m_game_system.get_render_system().get_render_pass<bc_shape_draw_pass>();
 			physics::bc_scene_ray_query_buffer l_query_buffer(1);
+
 			const bool l_query_result = query_ray_in_scene
 			(
 				p_context,
@@ -60,6 +63,12 @@ namespace black_cat
 			{
 				m_selected_actor_index = game::bc_actor::invalid_index;
 				m_selected_actor_entity_name = nullptr;
+
+				if (l_shape_draw_pass)
+				{
+					l_shape_draw_pass->set_selected_actor(game::bc_actor());
+				}
+				
 				return false;
 			}
 
@@ -67,6 +76,11 @@ namespace black_cat
 			game::bc_actor l_actor = l_hit.get_actor();
 			game::bc_mediate_component* l_mediate_component = l_actor.get_component<game::bc_mediate_component>();
 
+			if(l_shape_draw_pass)
+			{
+				l_shape_draw_pass->set_selected_actor(l_actor);
+			}
+						
 			m_selected_actor_index = l_actor.get_index();
 			m_selected_actor_entity_name = l_mediate_component->get_entity_name();
 

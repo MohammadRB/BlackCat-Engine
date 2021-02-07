@@ -13,17 +13,17 @@ namespace black_cat
 		physics::bc_shape_sphere bc_extract_sphere_from_points(physics::bc_bounded_strided_typed_data<core::bc_vector3f> p_vertices)
 		{
 			bcFLOAT l_min_x = std::numeric_limits<bcFLOAT>::max();
-			bcFLOAT l_max_x = std::numeric_limits<bcFLOAT>::min();
+			bcFLOAT l_max_x = std::numeric_limits<bcFLOAT>::lowest();
 
 			for (bcUINT32 l_index = 0; l_index < p_vertices.m_count; ++l_index)
 			{
-				auto& l_vertex = p_vertices.at(l_index);
+				const auto& l_vertex = p_vertices.at(l_index);
 
 				l_min_x = std::min(l_min_x, l_vertex.x);
 				l_max_x = std::max(l_max_x, l_vertex.x);
 			}
 
-			bcFLOAT l_radius = (l_max_x - l_min_x) / 2;
+			const bcFLOAT l_radius = (l_max_x - l_min_x) / 2;
 			return physics::bc_shape_sphere(l_radius);
 		}
 
@@ -32,11 +32,11 @@ namespace black_cat
 			bcFLOAT l_min_x, l_min_y, l_min_z;
 			bcFLOAT l_max_x, l_max_y, l_max_z;
 			l_min_x = l_min_y = l_min_z = std::numeric_limits< bcFLOAT >::max();
-			l_max_x = l_max_y = l_max_z = std::numeric_limits< bcFLOAT >::min();
+			l_max_x = l_max_y = l_max_z = std::numeric_limits< bcFLOAT >::lowest();
 
 			for (bcUINT32 l_index = 0; l_index < p_vertices.m_count; ++l_index)
 			{
-				auto& l_vertex = p_vertices.at(l_index);
+				const auto& l_vertex = p_vertices.at(l_index);
 
 				l_min_x = std::min(l_min_x, l_vertex.x);
 				l_min_y = std::min(l_min_y, l_vertex.y);
@@ -54,11 +54,11 @@ namespace black_cat
 			bcFLOAT l_min_x, l_min_y, l_min_z;
 			bcFLOAT l_max_x, l_max_y, l_max_z;
 			l_min_x = l_min_y = l_min_z = std::numeric_limits< bcFLOAT >::max();
-			l_max_x = l_max_y = l_max_z = std::numeric_limits< bcFLOAT >::min();
+			l_max_x = l_max_y = l_max_z = std::numeric_limits< bcFLOAT >::lowest();
 
 			for (bcUINT32 l_index = 0; l_index < p_vertices.m_count; ++l_index)
 			{
-				auto& l_vertex = p_vertices.at(l_index);
+				const auto& l_vertex = p_vertices.at(l_index);
 
 				l_min_x = std::min(l_min_x, l_vertex.x);
 				l_min_y = std::min(l_min_y, l_vertex.y);
@@ -80,11 +80,11 @@ namespace black_cat
 			bcFLOAT l_min_x, l_min_y;
 			bcFLOAT l_max_x, l_max_y;
 			l_min_x = l_min_y = std::numeric_limits< bcFLOAT >::max();
-			l_max_x = l_max_y = std::numeric_limits< bcFLOAT >::min();
+			l_max_x = l_max_y = std::numeric_limits< bcFLOAT >::lowest();
 
 			for (bcUINT32 l_index = 0; l_index < p_vertices.m_count; ++l_index)
 			{
-				auto& l_vertex = p_vertices.at(l_index);
+				const auto& l_vertex = p_vertices.at(l_index);
 
 				l_min_x = std::min(l_min_x, l_vertex.x);
 				l_min_y = std::min(l_min_y, l_vertex.y);
@@ -92,8 +92,8 @@ namespace black_cat
 				l_max_y = std::max(l_max_y, l_vertex.y);
 			}
 
-			bcFLOAT l_radius = (l_max_y - l_min_y) / 2;
-			bcFLOAT l_half_height = ((l_max_x - l_min_x) - l_radius * 2) / 2;
+			const bcFLOAT l_radius = (l_max_y - l_min_y) / 2;
+			const bcFLOAT l_half_height = ((l_max_x - l_min_x) - l_radius * 2) / 2;
 
 			return physics::bc_shape_capsule(l_half_height, l_radius);
 		}
@@ -131,7 +131,7 @@ namespace black_cat
 			bcFLOAT l_min_x, l_min_y, l_min_z;
 			bcFLOAT l_max_x, l_max_y, l_max_z;
 			l_min_x = l_min_y = l_min_z = std::numeric_limits< bcFLOAT >::max();
-			l_max_x = l_max_y = l_max_z = std::numeric_limits< bcFLOAT >::min();
+			l_max_x = l_max_y = l_max_z = std::numeric_limits< bcFLOAT >::lowest();
 
 			for (auto& l_vertex : l_points)
 			{

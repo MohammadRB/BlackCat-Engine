@@ -1,7 +1,7 @@
 // [10/10/2019 MRB]
 
-#include "..\bcRegister.hlsli"
-#include "..\DeferredRendering\bcVegetableAnimation.hlsli"
+#include "../bcRegister.hlsli"
+#include "../DeferredRendering/bcVegetableAnimation.hlsli"
 
 SamplerState g_sam_sampler		: register(BC_RENDER_PASS_STATE_S0);
 Texture2D g_tex2d_diffuse		: register(BC_RENDER_STATE_T0);

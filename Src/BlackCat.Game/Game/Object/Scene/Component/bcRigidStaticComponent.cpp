@@ -10,13 +10,14 @@
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "Game/Object/Scene/Component/Event/bcActorEventHierarchyTransform.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		bc_rigid_static_component::bc_rigid_static_component(bc_actor_component_index p_index) noexcept
-			: bc_rigid_body_component(p_index)
+		bc_rigid_static_component::bc_rigid_static_component(bc_actor_index p_actor_index, bc_actor_component_index p_index) noexcept
+			: bc_rigid_body_component(p_actor_index, p_index)
 		{
 		}
 
@@ -42,8 +43,8 @@ namespace black_cat
 		{
 			return get_manager().component_get_actor(*this);
 		}
-		
-		physics::bc_rigid_body bc_rigid_static_component::get_body() noexcept
+
+		physics::bc_rigid_body& bc_rigid_static_component::get_body() noexcept
 		{
 			return m_px_actor_ref.get();
 		}
@@ -53,25 +54,29 @@ namespace black_cat
 			return m_px_actor_ref.get();
 		}
 
-		void bc_rigid_static_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
+		void bc_rigid_static_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			auto& l_physics_system = core::bc_get_service<bc_game_system>()->get_physics_system();
 			auto& l_physics = l_physics_system.get_physics();
 
-			auto* l_mesh_component = p_actor.get_component<bc_mesh_component>();
+			auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>();
 			if(l_mesh_component)
 			{
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform::identity());
-				initialize_from_mesh(l_physics_system, p_actor, m_px_actor_ref.get(), *l_mesh_component);
+				l_physics_system.set_game_actor(*m_px_actor_ref, p_context.m_actor);
+
+				l_physics_system.create_px_shapes_from_mesh(m_px_actor_ref.get(), p_context.m_actor, *l_mesh_component);
 
 				return;
 			}
 
-			auto* l_height_map_component = p_actor.get_component<bc_height_map_component>();
+			auto* l_height_map_component = p_context.m_actor.get_component<bc_height_map_component>();
 			if(l_height_map_component)
 			{
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform::identity());
-				_initialize_from_height_map(l_physics_system, p_actor, m_px_actor_ref.get(), *l_height_map_component);
+				l_physics_system.set_game_actor(*m_px_actor_ref, p_context.m_actor);
+
+				l_physics_system.create_px_shapes_from_height_map(m_px_actor_ref.get(), p_context.m_actor, *l_height_map_component);
 
 				return;
 			}
@@ -79,15 +84,15 @@ namespace black_cat
 			throw bc_invalid_operation_exception("Rigid static component needs either mesh or height map component.");
 		}
 
-		void bc_rigid_static_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		void bc_rigid_static_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			auto* l_world_transform_event = core::bc_imessage::as< bc_actor_event_world_transform >(p_event);
+			const auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
 			if (l_world_transform_event)
 			{
-				auto& l_transform = l_world_transform_event->get_transform();
+				const auto& l_transform = l_world_transform_event->get_transform();
 				physics::bc_transform l_px_transform;
 				
-				auto* l_height_map_component = p_actor.get_component<bc_height_map_component>();
+				auto* l_height_map_component = p_context.m_actor.get_component<bc_height_map_component>();
 				if (l_height_map_component) // TODO
 				{
 					const auto& l_height_map = l_height_map_component->get_height_map();
@@ -106,25 +111,21 @@ namespace black_cat
 				}
 				
 				m_px_actor_ref->set_global_pose(l_px_transform);
+
+				return;
+			}
+
+			const auto* l_hierarchy_transform_event = core::bci_message::as< bc_actor_event_hierarchy_transform >(p_context.m_event);
+			if(l_hierarchy_transform_event && l_hierarchy_transform_event->get_px_transforms())
+			{
+				update_px_shape_transforms(*m_px_actor_ref, *l_hierarchy_transform_event->get_px_transforms());
+				return;
 			}
 		}
-		
-		void bc_rigid_static_component::_initialize_from_height_map(bc_physics_system& p_physics_system, 
-			bc_actor& p_actor, 
-			physics::bc_rigid_static& p_rigid_static,
-			bc_height_map_component& p_component)
+
+		void bc_rigid_static_component::debug_draw(const bc_actor_component_debug_draw_context& p_context)
 		{
-			auto& l_physics = p_physics_system.get_physics();
-			auto& l_height_map = p_component.get_height_map();
-			auto l_px_height_field = l_height_map.get_px_height_field();
-
-			auto l_height_field_shape = physics::bc_shape_height_field(l_px_height_field, l_height_map.get_xz_multiplier(), p_physics_system.get_height_field_y_scale());
-			auto l_height_field_material = l_physics.create_material(1, 1, 0.1);
-
-			p_rigid_static.create_shape(l_height_field_shape, l_height_field_material.get());
-			p_rigid_static.set_query_group(static_cast<physics::bc_query_group>(bc_query_group::terrain));
-
-			p_physics_system.connect_px_actor_to_game_actor(p_rigid_static, p_actor);
+			bc_rigid_body_component::debug_draw(m_px_actor_ref.get(), p_context);
 		}
 	}
 }

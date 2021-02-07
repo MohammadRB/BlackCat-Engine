@@ -173,14 +173,14 @@ namespace black_cat
 			l_device.get_back_buffer_texture().get_sample_count()
 		);
 
-		after_reset(game::bc_render_pass_reset_param(p_render_system, l_device, l_old_parameters, l_new_parameters));
+		after_reset(game::bc_render_pass_reset_context(p_render_system, l_device, l_old_parameters, l_new_parameters));
 	}
 
-	void bc_gbuffer_light_map_pass::update(const game::bc_render_pass_update_param& p_param)
+	void bc_gbuffer_light_map_pass::update(const game::bc_render_pass_update_context& p_param)
 	{
 	}
 
-	void bc_gbuffer_light_map_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_light_map_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
 	{
 		if (m_lights_query.is_executed())
 		{
@@ -192,11 +192,11 @@ namespace black_cat
 			game::bc_scene_light_query
 			(
 				core::bc_enum::or({ game::bc_light_type::direct, game::bc_light_type::point, game::bc_light_type::spot })
-			).with(game::bc_camera_frustum(p_param.m_current_camera))
+			).with(game::bc_camera_frustum(p_param.m_update_camera))
 		);
 	}
 
-	void bc_gbuffer_light_map_pass::execute(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_light_map_pass::execute(const game::bc_render_pass_render_context& p_param)
 	{
 		core::bc_vector_frame<_bc_direct_light_struct> l_direct_lights;
 		core::bc_vector_frame<_bc_point_light_struct> l_point_lights;
@@ -231,7 +231,7 @@ namespace black_cat
 			}
 			case game::bc_light_type::point:
 			{
-				auto l_point_light = l_light.as_point_light();
+				auto* l_point_light = l_light.as_point_light();
 				_bc_point_light_struct l_point_light_cbuffer;
 
 				l_point_light_cbuffer.m_min_bound = l_light.get_min_bound();
@@ -247,7 +247,7 @@ namespace black_cat
 			}
 			case game::bc_light_type::spot:
 			{
-				auto l_spot_light = l_light.as_spot_light();
+				auto* l_spot_light = l_light.as_spot_light();
 				_bc_spot_light_struct l_spot_light_cbuffer;
 
 				l_spot_light_cbuffer.m_min_bound = l_light.get_min_bound();
@@ -267,30 +267,30 @@ namespace black_cat
 			}
 		}
 
-		bcAssert(l_direct_lights.size() <= m_num_direct_lights);
-		bcAssert(l_point_lights.size() <= m_num_point_lights);
-		bcAssert(l_spot_lights.size() <= m_num_spot_lights);
+		BC_ASSERT(l_direct_lights.size() <= m_num_direct_lights);
+		BC_ASSERT(l_point_lights.size() <= m_num_point_lights);
+		BC_ASSERT(l_spot_lights.size() <= m_num_spot_lights);
 
 		// Associate light depth maps to their structures
 		auto* l_shadow_map_buffer_container = get_shared_resource<bc_cascaded_shadow_map_buffer_container>(m_csm_buffers_container_share_slot);
 
 		if (l_shadow_map_buffer_container != nullptr)
 		{
-			bcAssert(l_shadow_map_buffer_container->size() <= m_shader_shadow_map_array_count);
+			BC_ASSERT(l_shadow_map_buffer_container->size() <= m_shader_shadow_map_array_count);
 
 			for (bcSIZE l_shadow_map_buffer_ite = 0, l_end = l_shadow_map_buffer_container->size(); l_shadow_map_buffer_ite < l_end; ++l_shadow_map_buffer_ite)
 			{
 				auto& l_shadow_map_buffer_entry = l_shadow_map_buffer_container->get(l_shadow_map_buffer_ite);
 
-				bcAssert(l_shadow_map_buffer_entry.second.m_cascade_sizes.size() <= m_shader_shadow_map_cascade_count);
-				bcAssert(l_shadow_map_buffer_entry.second.m_view_projections.size() <= m_shader_shadow_map_cascade_count);
+				BC_ASSERT(l_shadow_map_buffer_entry.second.m_cascade_sizes.size() <= m_shader_shadow_map_cascade_count);
+				BC_ASSERT(l_shadow_map_buffer_entry.second.m_view_projections.size() <= m_shader_shadow_map_cascade_count);
 
 				auto l_direct_light_ite = std::find_if(std::cbegin(l_direct_lights), std::cend(l_direct_lights), [&](const _bc_direct_light_struct& p_direct_light)
 					{
 						return p_direct_light.m_direction == l_shadow_map_buffer_entry.first;
 					});
 
-				bcAssert(l_direct_light_ite != std::cend(l_direct_lights));
+				BC_ASSERT(l_direct_light_ite != std::cend(l_direct_lights));
 
 				l_direct_light_ite->m_shadow_map_index = l_shadow_map_buffer_ite;
 
@@ -308,7 +308,15 @@ namespace black_cat
 					std::begin(l_shadow_map_buffer_entry.second.m_view_projections),
 					std::end(l_shadow_map_buffer_entry.second.m_view_projections),
 					std::begin(l_shadow_map_struct.m_view_projections),
-					[](const core::bc_matrix4f& p_mat) { return p_mat.transpose(); }
+					[&p_param](const core::bc_matrix4f& p_mat)
+					{
+						if(p_param.m_frame_renderer.need_matrix_transpose())
+						{
+							return p_mat.transpose();
+						}
+
+						return p_mat;
+					}
 				);
 
 				l_shadow_maps.push_back(std::move(l_shadow_map_struct));
@@ -323,8 +331,13 @@ namespace black_cat
 			l_direct_lights.size(),
 			l_point_lights.size(),
 			l_spot_lights.size(),
-			(p_param.m_render_camera.get_view() * p_param.m_render_camera.get_projection()).inverse().transpose()
+			(p_param.m_render_camera.get_view() * p_param.m_render_camera.get_projection()).inverse()
 		};
+
+		if(p_param.m_frame_renderer.need_matrix_transpose())
+		{
+			l_parameters_cbuffer_data.m_view_proj_inv.make_transpose();
+		}
 
 		p_param.m_render_thread.update_subresource(m_parameters_cbuffer.get(), 0, &l_parameters_cbuffer_data, 0, 0);
 		p_param.m_render_thread.update_subresource(m_direct_lights_buffer.get(), 0, l_direct_lights.data(), 0, 0);
@@ -344,11 +357,11 @@ namespace black_cat
 		p_param.m_render_thread.finish();
 	}
 
-	void bc_gbuffer_light_map_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_gbuffer_light_map_pass::before_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 	}
 
-	void bc_gbuffer_light_map_pass::after_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_gbuffer_light_map_pass::after_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 		if
 		(

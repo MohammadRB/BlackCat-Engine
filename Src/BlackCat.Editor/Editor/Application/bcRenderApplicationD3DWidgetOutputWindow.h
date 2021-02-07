@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace editor
 	{
-		class bc_render_application_d3dwidget_output_window : public game::bc_irender_application_output_window
+		class bc_render_application_d3dwidget_output_window : public game::bci_render_application_output_window
 		{
 		public:
 			bc_render_application_d3dwidget_output_window(bc_widget_d3d_output* p_d3d_widget);

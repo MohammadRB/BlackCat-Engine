@@ -35,17 +35,17 @@ namespace black_cat
 			l_back_buffer_texture.get_sample_count()
 		);
 
-		after_reset(game::bc_render_pass_reset_param(p_render_system, l_device, l_old_parameters, l_new_parameters));
+		after_reset(game::bc_render_pass_reset_context(p_render_system, l_device, l_old_parameters, l_new_parameters));
 	}
 
-	void bc_gbuffer_initialize_pass::update(const game::bc_render_pass_update_param& p_update_param)
+	void bc_gbuffer_initialize_pass::update(const game::bc_render_pass_update_context& p_update_param)
 	{
 	}
 
-	void bc_gbuffer_initialize_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_initialize_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
 	{
 		auto* l_query_manager = core::bc_get_service< core::bc_query_manager >();
-		const game::bc_camera_frustum l_frustum(p_param.m_current_camera);
+		const game::bc_camera_frustum l_frustum(p_param.m_update_camera);
 
 		if(m_lights_query.is_executed())
 		{
@@ -70,7 +70,7 @@ namespace black_cat
 		);
 	}
 
-	void bc_gbuffer_initialize_pass::execute(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_initialize_pass::execute(const game::bc_render_pass_render_context& p_param)
 	{
 		graphic::bc_render_target_view l_render_targets[] = { m_diffuse_map_view.get(), m_normal_map_view.get() };
 		
@@ -109,16 +109,16 @@ namespace black_cat
 		p_param.m_render_thread.finish();
 	}
 
-	void bc_gbuffer_initialize_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_gbuffer_initialize_pass::cleanup_frame(const game::bc_render_pass_render_context& p_param)
 	{
 	}
 
-	void bc_gbuffer_initialize_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_gbuffer_initialize_pass::before_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 		destroy(p_param.m_render_system);
 	}
 
-	void bc_gbuffer_initialize_pass::after_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_gbuffer_initialize_pass::after_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 		graphic::bc_graphic_resource_builder l_resource_configure;
 

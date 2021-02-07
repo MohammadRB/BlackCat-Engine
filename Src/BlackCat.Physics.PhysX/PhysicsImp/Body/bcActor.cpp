@@ -185,14 +185,14 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_actor< g_api_physx >::set_data(void* user_data) noexcept
+		void bc_platform_actor< g_api_physx >::set_data(void* p_user_data) noexcept
 		{
 			auto* l_px_actor = static_cast< physx::PxActor* >
 			(
 				static_cast< bc_platform_physics_reference& >(*this).get_platform_pack().m_px_object
 			);
 
-			l_px_actor->userData = user_data;
+			l_px_actor->userData = p_user_data;
 		}
 
 		template<>

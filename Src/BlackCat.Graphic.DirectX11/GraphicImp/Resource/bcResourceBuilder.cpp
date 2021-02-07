@@ -113,7 +113,7 @@ namespace black_cat
 				l_new_format = DXGI_FORMAT_R32_TYPELESS;
 				break;
 			default:
-				bcAssert(false);
+				BC_ASSERT(false);
 				break;
 			}
 
@@ -286,7 +286,7 @@ namespace black_cat
 				l_new_format = bc_format::R32_FLOAT;
 				break;
 			default:
-				bcAssert(false);
+				BC_ASSERT(false);
 				break;
 			}
 

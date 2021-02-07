@@ -246,12 +246,12 @@ namespace black_cat
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_shape& >(*this)).get_platform_pack().m_px_object
 			);
 
-			bcUINT32 l_written_count = l_px_shape->getMaterials(reinterpret_cast< physx::PxMaterial** >(p_buffer), p_buffer_size);
+			const bcUINT32 l_written_count = l_px_shape->getMaterials(reinterpret_cast< physx::PxMaterial** >(p_buffer), p_buffer_size);
 
-			bc_overwrite_output_array< bc_material, physx::PxMaterial >(p_buffer, l_written_count, [](bc_material* p_material, physx::PxMaterial* p_px_material)
-				{
-					static_cast< bc_platform_physics_reference* >(p_material)->get_platform_pack().m_px_object = p_px_material;
-				});
+			bc_overwrite_output_array< bc_material, physx::PxMaterial* >(p_buffer, l_written_count, [](bc_material& p_material, physx::PxMaterial*& p_px_material)
+			{
+				static_cast< bc_platform_physics_reference& >(p_material).get_platform_pack().m_px_object = p_px_material;
+			});
 
 			return l_written_count;
 		}
@@ -267,7 +267,7 @@ namespace black_cat
 
 			auto* l_buffer = static_cast< physx::PxMaterial** >
 			(
-				bcAlloc(sizeof(physx::PxMaterial*) * p_count, core::bc_alloc_type::frame)
+				BC_ALLOC(sizeof(physx::PxMaterial*) * p_count, core::bc_alloc_type::frame)
 			);
 
 			for (bcUINT32 i = 0; i < p_count; ++i)
@@ -283,7 +283,7 @@ namespace black_cat
 
 			l_px_shape->setMaterials(l_buffer, p_count);
 
-			bcFree(l_buffer);
+			BC_FREE(l_buffer);
 		}
 
 		template<>
@@ -463,7 +463,7 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(*this).get_platform_pack().m_px_object
 			);
-			auto l_px_filter_data = l_px_shape->getQueryFilterData();
+			const auto l_px_filter_data = l_px_shape->getQueryFilterData();
 
 			l_px_shape->setQueryFilterData(physx::PxFilterData
 			(

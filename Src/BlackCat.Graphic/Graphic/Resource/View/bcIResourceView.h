@@ -12,18 +12,18 @@ namespace black_cat
 	namespace graphic
 	{
 		template< bc_render_api TRenderApi >
-		struct bc_platform_iresource_view_pack
+		struct bci_platform_resource_view_pack
 		{
 		};
 
 		template< bc_render_api TRenderApi >
-		class bc_platform_iresource_view : public bc_platform_device_reference<TRenderApi>
+		class bci_platform_resource_view : public bc_platform_device_reference<TRenderApi>
 		{
 		public:
-			using platform_pack = bc_platform_iresource_view_pack<TRenderApi>;
+			using platform_pack = bci_platform_resource_view_pack<TRenderApi>;
 
 		public:
-			virtual ~bc_platform_iresource_view();
+			virtual ~bci_platform_resource_view();
 
 			virtual bc_resource_view_type get_view_type() const = 0;
 
@@ -33,18 +33,18 @@ namespace black_cat
 			}
 			
 		protected:
-			bc_platform_iresource_view();
+			bci_platform_resource_view();
 
-			explicit bc_platform_iresource_view(platform_pack& p_pack);
+			explicit bci_platform_resource_view(platform_pack& p_pack);
 
-			bc_platform_iresource_view(const bc_platform_iresource_view&);
+			bci_platform_resource_view(const bci_platform_resource_view&);
 
-			bc_platform_iresource_view& operator=(const bc_platform_iresource_view&);
+			bci_platform_resource_view& operator=(const bci_platform_resource_view&);
 
 		private:
 			platform_pack m_pack;
 		};
 
-		using bc_iresource_view = bc_platform_iresource_view< g_current_render_api >;
+		using bci_resource_view = bci_platform_resource_view< g_current_render_api >;
 	}
 }

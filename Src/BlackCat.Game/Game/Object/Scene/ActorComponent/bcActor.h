@@ -10,12 +10,13 @@ namespace black_cat
 	namespace game
 	{
 		class bc_actor_component_manager;
+		class bc_shape_drawer;
 		using bc_actor_index = bcINT32;
 
 		class bc_actor
 		{
 		public:
-			constexpr static bc_actor_index invalid_index = bc_actor_index(-1);
+			constexpr static bc_actor_index invalid_index = static_cast< bc_actor_index >(-1);
 
 		private:
 			friend class bc_actor_component_manager;
@@ -32,7 +33,7 @@ namespace black_cat
 			bc_actor& operator=(const bc_actor&) noexcept;
 
 			bc_actor_index get_index() const noexcept;
-
+			
 			template<typename TEvent>
 			void add_event(TEvent&& p_event);
 
@@ -56,8 +57,12 @@ namespace black_cat
 			template< class TIterator >
 			void get_components(TIterator p_destination) const;
 
+			void draw_debug(bc_shape_drawer& p_shape_drawer) const;
+			
 			void destroy();
 
+			bool is_valid() const noexcept;
+			
 			bool operator==(const bc_actor& p_other) const noexcept;
 
 			bool operator!=(const bc_actor& p_other) const noexcept;

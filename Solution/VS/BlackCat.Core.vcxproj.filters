@@ -210,9 +210,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcTemplateMetaType.h">
       <Filter>Core\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcUtility.h">
-      <Filter>Core\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\bcConstant.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -318,6 +315,12 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcRandom.h">
       <Filter>Core\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcIteratorAdapter.h">
+      <Filter>Core\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\bcUtility.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.cpp">
@@ -333,15 +336,6 @@
       <Filter>Core\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcMatrix4f.cpp">
-      <Filter>Core\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector2f.cpp">
-      <Filter>Core\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector3f.cpp">
-      <Filter>Core\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector4f.cpp">
       <Filter>Core\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryFixedSize.cpp">

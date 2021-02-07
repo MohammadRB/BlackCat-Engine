@@ -118,7 +118,7 @@ namespace black_cat
 				}
 			);
 
-			bcAssert(l_lower_bound != std::end(m_points));
+			BC_ASSERT(l_lower_bound != std::end(m_points));
 
 			auto l_preceding_ite = l_lower_bound != std::begin(m_points) ? l_lower_bound - 1 : l_lower_bound;
 			auto l_proceeding_ite = l_preceding_ite + 1;
@@ -193,7 +193,7 @@ namespace black_cat
 		template< typename T1 >
 		T1 bc_curve<T>::_linear_curve(const T1& p_first, const T1& p_second, bcFLOAT p_time) noexcept
 		{
-			bcAssert(p_time >= 0 && p_time <= 1);
+			BC_ASSERT(p_time >= 0 && p_time <= 1);
 			
 			return p_first * (1.f - p_time) + p_second * p_time;
 		}
@@ -210,7 +210,7 @@ namespace black_cat
 		template< typename T >
 		bcFLOAT bc_curve< T >::_clamp_time(bcFLOAT p_t1, bcFLOAT p_t2, bcFLOAT p_time) noexcept
 		{
-			bcAssert(p_time >= p_t1 && p_time <= p_t2);
+			BC_ASSERT(p_time >= p_t1 && p_time <= p_t2);
 
 			return (p_time - p_t1) * (1.f / (p_t2 - p_t1)); // clamp time to [0,1] range
 		}

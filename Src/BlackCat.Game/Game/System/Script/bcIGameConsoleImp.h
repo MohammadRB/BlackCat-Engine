@@ -14,10 +14,10 @@ namespace black_cat
 		/**
 		 * \brief Implementation class must be thread safe due to multiple threads can write to game console
 		 */
-		class bc_igame_console_imp
+		class bci_game_console_imp
 		{
 		public:
-			virtual ~bc_igame_console_imp() = default;
+			virtual ~bci_game_console_imp() = default;
 
 			/**
 			 * \brief Write log message to output screen
@@ -54,18 +54,18 @@ namespace black_cat
 			virtual bool is_visible() = 0;
 
 		protected:
-			explicit bc_igame_console_imp(bc_game_console& p_game_console)
+			explicit bci_game_console_imp(bc_game_console& p_game_console)
 				: m_game_console(p_game_console)
 			{
 				m_game_console.set_implementation(this);
 			}
 
-			bc_igame_console_imp(bc_igame_console_imp&& p_other) noexcept
+			bci_game_console_imp(bci_game_console_imp&& p_other) noexcept
 				: m_game_console(p_other.m_game_console)
 			{
 			}
 
-			bc_igame_console_imp& operator=(bc_igame_console_imp&& p_other) noexcept
+			bci_game_console_imp& operator=(bci_game_console_imp&& p_other) noexcept
 			{
 				return *this;
 			}

@@ -22,7 +22,7 @@ namespace black_cat
 			};
 			
 		public:
-			explicit _bc_query_shared_state(bc_iquery& p_query);
+			explicit _bc_query_shared_state(bci_query& p_query);
 
 			_bc_query_shared_state(_bc_query_shared_state&&) noexcept;
 
@@ -31,10 +31,10 @@ namespace black_cat
 			_bc_query_shared_state& operator=(_bc_query_shared_state&&) noexcept;
 			
 			core_platform::bc_atomic< state > m_state;
-			bc_iquery* m_query;
+			bci_query* m_query;
 		};
 
-		inline _bc_query_shared_state::_bc_query_shared_state(bc_iquery& p_query)
+		inline _bc_query_shared_state::_bc_query_shared_state(bci_query& p_query)
 			: m_state(state::queued),
 			m_query(&p_query)
 		{
@@ -109,6 +109,8 @@ namespace black_cat
 
 		template< class TQuery >
 		bc_query_result<TQuery>::bc_query_result(bc_query_result&& p_other) noexcept
+			: m_query_manager(nullptr),
+			m_shared_state(nullptr)
 		{
 			operator=(std::move(p_other));
 		}
@@ -132,6 +134,11 @@ namespace black_cat
 		template< class TQuery >
 		bc_query_result<TQuery>& bc_query_result<TQuery>::operator=(bc_query_result&& p_other) noexcept
 		{
+			if(m_shared_state)
+			{
+				m_query_manager->_mark_shared_state(*m_shared_state);
+			}
+			
 			m_query_manager = p_other.m_query_manager;
 			m_shared_state = p_other.m_shared_state;
 			p_other.m_query_manager = nullptr;
@@ -145,6 +152,11 @@ namespace black_cat
 		bc_query_result<TQuery>& bc_query_result<TQuery>::operator=(bc_query_result<TQuery1>&& p_other) noexcept
 		{
 			static_assert(std::is_base_of_v<TQuery, TQuery1>, "TQuery1 must be a derived type of TQuery");
+
+			if (m_shared_state)
+			{
+				m_query_manager->_mark_shared_state(*m_shared_state);
+			}
 			
 			m_query_manager = p_other.m_query_manager;
 			m_shared_state = p_other.m_shared_state;
@@ -168,7 +180,7 @@ namespace black_cat
 
 			if(!l_is_executed)
 			{
-				bcAssert(false);
+				BC_ASSERT(false);
 				throw bc_invalid_operation_exception("Query is not ready.");
 			}
 

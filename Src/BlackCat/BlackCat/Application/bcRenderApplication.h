@@ -36,11 +36,11 @@ namespace black_cat
 
 		virtual void application_load_content(core::bc_content_stream_manager* p_stream_manager) = 0;
 
-		virtual void application_update(core_platform::bc_clock::update_param p_clock, bool p_is_same_frame) = 0;
+		virtual void application_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update) = 0;
 
 		virtual void application_render(core_platform::bc_clock::update_param p_clock) = 0;
 
-		virtual bool application_event(core::bc_ievent& p_event) = 0;
+		virtual bool application_event(core::bci_event& p_event) = 0;
 
 		virtual void application_unload_content(core::bc_content_stream_manager* p_stream_manager) = 0;
 
@@ -54,13 +54,13 @@ namespace black_cat
 
 		void app_load_content() override final;
 
-		void app_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_same_frame) override final;
+		void app_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_partial_update) override final;
 
 		void app_render(core_platform::bc_clock::update_param p_clock_update_param) override final;
 
 		void app_swap_frame(core_platform::bc_clock::update_param p_clock) override;
 		
-		bool app_event(core::bc_ievent& p_event) override final;
+		bool app_event(core::bci_event& p_event) override final;
 
 		void app_unload_content() override final;
 
@@ -71,6 +71,7 @@ namespace black_cat
 		core::bc_value_sampler<core_platform::bc_clock::small_delta_time, 64> m_fps_sampler;
 		bcUINT32 m_fps;
 
+		bcUINT32 m_update_count;
 		core::bc_stop_watch m_update_watch;
 		core::bc_stop_watch m_render_watch;
 	};

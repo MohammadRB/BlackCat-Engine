@@ -22,15 +22,6 @@ namespace black_cat
 
 		bc_path::~bc_path() = default;
 
-		bc_estring bc_path::get_path() const
-		{
-			bc_estring_frame l_buffer(m_path.get_length() + 1, ' ');
-			
-			m_path.get_path(&l_buffer[0], l_buffer.size());
-
-			return bc_estring(l_buffer.c_str());
-		}
-
 		bc_estring bc_path::get_directory() const
 		{
 			bc_estring_frame l_buffer(m_path.get_length() + 1, ' ');
@@ -38,6 +29,15 @@ namespace black_cat
 			m_path.get_directory(&l_buffer[0], l_buffer.size());
 
 			return bc_estring(l_buffer.c_str());
+		}
+
+		bc_estring_frame bc_path::get_directory_frame() const
+		{
+			bc_estring_frame l_buffer(m_path.get_length() + 1, ' ');
+
+			m_path.get_directory(&l_buffer[0], l_buffer.size());
+
+			return bc_estring_frame(l_buffer.c_str());
 		}
 
 		bc_path& bc_path::set_directory(const bcECHAR* p_directory)
@@ -56,6 +56,15 @@ namespace black_cat
 			return bc_estring(l_buffer.c_str());
 		}
 
+		bc_estring_frame bc_path::get_filename_frame() const
+		{
+			bc_estring_frame l_buffer(m_path.get_length() + 1, ' ');
+
+			m_path.get_filename(&l_buffer[0], l_buffer.size());
+
+			return bc_estring_frame(l_buffer.c_str());
+		}
+
 		bc_estring bc_path::get_filename_without_extension() const
 		{
 			bc_estring_frame l_buffer(m_path.get_length() + 1, ' ');
@@ -63,6 +72,15 @@ namespace black_cat
 			m_path.get_filename_without_extension(&l_buffer[0], l_buffer.size());
 
 			return bc_estring(l_buffer.c_str());
+		}
+
+		bc_estring_frame bc_path::get_filename_without_extension_frame() const
+		{
+			bc_estring_frame l_buffer(m_path.get_length() + 1, ' ');
+
+			m_path.get_filename_without_extension(&l_buffer[0], l_buffer.size());
+
+			return bc_estring_frame(l_buffer.c_str());
 		}
 
 		bc_path& bc_path::set_filename(const bcECHAR* p_filename)
@@ -81,6 +99,15 @@ namespace black_cat
 			return bc_estring(l_buffer.c_str());
 		}
 
+		bc_estring_frame bc_path::get_file_extension_frame() const
+		{
+			bc_estring_frame l_buffer(m_path.get_length() + 1, ' ');
+
+			m_path.get_file_extension(&l_buffer[0], l_buffer.size());
+
+			return bc_estring_frame(l_buffer.c_str());
+		}
+
 		bc_path& bc_path::set_file_extension(const bcECHAR* p_file_extension)
 		{
 			m_path.set_file_extension(p_file_extension);
@@ -95,6 +122,24 @@ namespace black_cat
 			return *this;
 		}
 
+		bc_estring bc_path::get_string() const
+		{
+			bc_estring_frame l_buffer(m_path.get_length() + 1, ' ');
+
+			m_path.get_string(&l_buffer[0], l_buffer.size());
+
+			return bc_estring(l_buffer.c_str());
+		}
+
+		bc_estring_frame bc_path::get_string_frame() const
+		{
+			bc_estring_frame l_buffer(m_path.get_length() + 1, ' ');
+
+			m_path.get_string(&l_buffer[0], l_buffer.size());
+
+			return bc_estring_frame(l_buffer.c_str());
+		}
+		
 		bool bc_path::is_relative() const
 		{
 			return m_path.is_relative();

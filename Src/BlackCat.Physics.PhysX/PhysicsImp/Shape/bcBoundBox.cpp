@@ -135,7 +135,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		void bc_platform_bound_box< g_api_physx >::get_points(core::bc_array<core::bc_vector3f, 8>& p_result) const noexcept
 		{
-			const auto l_z_sign = graphic::bc_render_api_info::is_left_handed() ? +1 : -1;
+			const auto l_z_sign = graphic::bc_render_api_info::use_left_handed() ? +1 : -1;
 			const auto l_position = get_center();
 			const auto l_half_extend = get_half_extends();
 

@@ -10,7 +10,7 @@ namespace black_cat
 	{
 		inline JsValueRef CALLBACK _js_call(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
-			bcAssert(p_argument_count <= 10);
+			BC_ASSERT(p_argument_count <= 10);
 
 			auto l_function = reinterpret_cast< bc_script_function_base::callback_t >(p_callback_state);
 			bc_script_var_pack
@@ -45,7 +45,7 @@ namespace black_cat
 		JsValueRef CALLBACK _js_call(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			// TODO Make a chiose for more and less argument count than expected
-			bcAssert(p_argument_count == sizeof...(TA)+1);
+			BC_ASSERT(p_argument_count == sizeof...(TA)+1);
 
 			auto l_function = reinterpret_cast< typename bc_script_function< TR, TA... >::callback_t >(p_callback_state);
 			bc_script_var_pack< TA... > l_pack;
@@ -121,7 +121,7 @@ namespace black_cat
 		BC_PLATFORMIMP_DLL
 		inline bc_script_variable bc_platform_script_function_base<core_platform::g_api_win32>::operator()(bc_script_variable& p_this, bc_script_variable* p_args, bcSIZE p_arg_count) const
 		{
-			bcAssert(p_arg_count <= 10);
+			BC_ASSERT(p_arg_count <= 10);
 
 			bc_chakra_call l_call;
 			bc_script_variable l_call_result;

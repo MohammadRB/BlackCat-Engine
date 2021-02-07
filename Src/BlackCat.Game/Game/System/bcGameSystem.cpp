@@ -6,7 +6,10 @@
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/System/bcGameSystem.h"
+
+#include "Game/Object/Animation/bcAnimationManager.h"
 #include "Game/Query/bcQueryContext.h"
+#include "Render/Particle/bcParticleManager.h"
 
 namespace black_cat
 {
@@ -36,40 +39,69 @@ namespace black_cat
 			m_scene = std::move(p_scene);
 		}
 
-		void bc_game_system::update_game(const core_platform::bc_clock::update_param& p_clock, bool p_is_same_frame)
+		void bc_game_system::update_game(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
 		{
-			if(p_is_same_frame)
+			auto& l_event_manager = *core::bc_get_service<core::bc_event_manager>();
+			auto& l_actor_component_manager = *core::bc_get_service<bc_actor_component_manager>();
+			auto& l_query_manager = *core::bc_get_service< core::bc_query_manager >();
+			auto& l_animation_manager = m_render_system.get_animation_manager();
+			auto& l_particle_manager = m_render_system.get_particle_manager();
+			auto& l_render_system = m_render_system;
+			auto& l_script_system = m_script_system;
+			auto& l_input_system = m_input_system;
+			auto& l_physics_system = m_physics_system;
+			auto& l_console = m_console;
+			auto* l_scene = m_scene.get();
+			
+			if(p_is_partial_update)
 			{
-				m_physics_system.update(p_clock);
-				if (m_scene)
+				l_physics_system.update(p_clock);
+				if (l_scene)
 				{
-					m_scene->update_px(m_physics_system, p_clock);
+					l_scene->update_px(l_physics_system, p_clock);
 				}
 
 				return;
 			}
 			
-			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
-			auto* l_actor_component_manager = core::bc_get_service<bc_actor_component_manager>();
+			l_input_system.update(p_clock);
+			l_physics_system.update(p_clock);
+
+			core::bc_task<void> l_scene_task;
 			
-			m_input_system.update(p_clock);
-			m_physics_system.update(p_clock);
-			if (m_scene)
+			if (l_scene)
 			{
-				m_scene->update_px(m_physics_system, p_clock);
+				l_scene_task = l_scene->update_px_async(l_physics_system, p_clock);
 			}
 
-			l_event_manager->process_event_queue(p_clock);
-			l_actor_component_manager->update_actors(p_clock);
+			l_event_manager.process_event_queue(p_clock);
 
-			if(m_scene)
+			if (l_scene)
 			{
-				m_scene->update_graph();
+				l_scene_task.wait();
 			}
 			
-			m_script_system.update(p_clock);
-			m_console->update(p_clock);
-			m_render_system.update(bc_render_system::update_param(p_clock, m_input_system.get_camera()));
+			l_actor_component_manager.update_actors(p_clock);
+			l_query_manager.process_query_queue(p_clock);
+
+			if(l_scene)
+			{
+				l_scene_task = l_scene->update_graph_async();
+			}
+
+			const auto l_animations_task = l_animation_manager.run_scheduled_jobs_async(p_clock);
+			
+			l_particle_manager.update(p_clock);
+			l_script_system.update(p_clock);
+			l_console->update(p_clock);
+
+			if (l_scene)
+			{
+				l_scene_task.wait();
+			}
+			l_animations_task.wait();
+			
+			l_render_system.update(bc_render_system::update_context(p_clock, m_input_system.get_camera()));
 		}
 		
 		void bc_game_system::render_game(const core_platform::bc_clock::update_param& p_clock)
@@ -78,14 +110,15 @@ namespace black_cat
 			
 			if(m_scene)
 			{
-				m_render_system.render(bc_render_system::render_param(p_clock));
+				m_render_system.render(bc_render_system::render_context(p_clock, *core::bc_get_service< core::bc_query_manager >()));
 			}
 		}
 
 		void bc_game_system::swap_frame(const core_platform::bc_clock::update_param& p_clock)
 		{
-			// TODO Other queries except ones which are submitted by render thread can be executed in update phase
-			core::bc_get_service< core::bc_query_manager >()->process_query_queue(p_clock);
+			auto* l_query_manager = core::bc_get_service< core::bc_query_manager >();
+			l_query_manager->process_query_queue(p_clock);
+			l_query_manager->swap_frame();
 		}
 
 		void bc_game_system::_initialize(bc_game_system_parameter p_parameter)

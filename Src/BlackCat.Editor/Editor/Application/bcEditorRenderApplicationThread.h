@@ -12,7 +12,7 @@ namespace black_cat
 		class bc_editor_render_app_thread : public QThread
 		{
 		public:
-			void start(HINSTANCE p_instance, const char* p_cmd_line, game::bc_irender_application_output_window* p_output_window);
+			void start(HINSTANCE p_instance, const char* p_cmd_line, game::bci_render_application_output_window* p_output_window);
 
 			void wait_for_initialization() const;
 
@@ -28,7 +28,7 @@ namespace black_cat
 
 			HINSTANCE m_instance;
 			const char* m_cmd_line;
-			game::bc_irender_application_output_window* m_output_window;
+			game::bci_render_application_output_window* m_output_window;
 			QAtomicInt m_initialized;
 			QAtomicInt m_result_code;
 		};

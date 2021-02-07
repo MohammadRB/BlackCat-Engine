@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace editor
 	{
-		void bc_editor_render_app_thread::start(HINSTANCE p_instance, const char* p_cmd_line, game::bc_irender_application_output_window* p_output_window)
+		void bc_editor_render_app_thread::start(HINSTANCE p_instance, const char* p_cmd_line, game::bci_render_application_output_window* p_output_window)
 		{
 			m_instance = p_instance;
 			m_cmd_line = p_cmd_line;
@@ -55,7 +55,7 @@ namespace black_cat
 					return core::bc_make_unique< game::bc_octal_tree_graph_node >
 					(
 						physics::bc_bound_box(p_parameter.m_center, p_parameter.m_half_extends),
-						20,
+						10,
 						128
 					);
 				}
@@ -65,12 +65,12 @@ namespace black_cat
 				32,
 				20,
 				BC_MEMORY_MIN_ALIGN,
-				64,
+				128,
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 128,
-				l_hardware_info.proccessor_count,
-				l_hardware_info.proccessor_count
+				std::max(4U, l_hardware_info.proccessor_count),
+				std::max(4U, l_hardware_info.proccessor_count)
 			);
 			game::bc_engine_application_parameter l_engine_app_parameters
 			(

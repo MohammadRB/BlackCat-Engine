@@ -5,97 +5,97 @@
       "stream_content": [
         {
           "content_title": "beach_white_sand_fine",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\beach_white_sand_fine.dds",
           "content_parameter": {}
         },
         {
           "content_title": "beach_white_sand_fine_nrm",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\beach_white_sand_fine_nrm.dds",
           "content_parameter": {}
         },
         {
           "content_title": "cliff_is2",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\cliff_is2.dds",
           "content_parameter": {}
         },
         {
           "content_title": "cliff_is2_nrm",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\cliff_is2_nrm.dds",
           "content_parameter": {}
         },
         {
           "content_title": "field_earth",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\field_earth.dds",
           "content_parameter": {}
         },
         {
           "content_title": "field_earth_nrm",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\field_earth_nrm.dds",
           "content_parameter": {}
         },
         {
           "content_title": "plains_dry_grass_fern",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\plains_dry_grass_fern.dds",
           "content_parameter": {}
         },
         {
           "content_title": "plains_dry_grass_fern_nrm",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\plains_dry_grass_fern_nrm.dds",
           "content_parameter": {}
         },
         {
           "content_title": "plains_ferns_green",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\plains_ferns_green.dds",
           "content_parameter": {}
         },
         {
           "content_title": "plains_ferns_green_nrm",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\plains_ferns_green_nrm.dds",
           "content_parameter": {}
         },
         {
           "content_title": "plains_pepples_a",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\plains_pepples_a.dds",
           "content_parameter": {}
         },
         {
           "content_title": "plains_pepples_a_nrm",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\plains_pepples_a_nrm.dds",
           "content_parameter": {}
         },
         {
           "content_title": "ground_earth_village_var",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\ground_earth_village_var.dds",
           "content_parameter": {}
         },
         {
           "content_title": "ground_earth_village_var_nrm",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\ground_earth_village_var_nrm.dds",
           "content_parameter": {}
         },
         {
           "content_title": "plains_dry_grass_detailed_highpassed",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\plains_dry_grass_detailed_highpassed.dds",
           "content_parameter": {}
         },
         {
           "content_title": "plains_dry_grass_detailed_highpassed_nrm",
-          "content_name": "texture2d",
+          "content_loader": "texture2d",
           "content_file": "content\\Texture\\TerrainTextures\\plains_dry_grass_detailed_highpassed_nrm.dds",
           "content_parameter": {}
         }
@@ -106,7 +106,7 @@
       "stream_content": [
         {
           "content_title": "crysis_heightmap",
-          "content_name": "height_map",
+          "content_loader": "height_map",
           "content_file": "content\\texture\\CrysisHM1-1024.bmp",
           "content_parameter": {
             "xz_multiplier": 2,
@@ -150,65 +150,30 @@
           }
         },
         {
-          "content_title": "box",
-          "content_name": "mesh",
-          "content_file": "content\\model\\box.fbx",
+          "content_title": "Palm_Tree_Large_d",
+          "content_loader": "mesh",
+          "content_file": "content\\model\\nature\\palm_tree\\Palm_Tree_Large_d.FBX",
           "content_parameter": {
-            "high_detail_query_shape": false,
-            "auto_scale": 1.5
-          }
-        },
-        {
-          "content_title": "sphere",
-          "content_name": "mesh",
-          "content_file": "content\\model\\sphere.fbx",
-          "content_parameter": {
-            "high_detail_query_shape": false,
-            "auto_scale": 1.5
-          }
-        },
-        {
-          "content_title": "convex",
-          "content_name": "mesh",
-          "content_file": "content\\model\\convex.fbx",
-          "content_parameter": {
-            "high_detail_query_shape": true,
-            "auto_scale": 1.5
-          }
-        },
-        {
-          "content_title": "train",
-          "content_name": "mesh",
-          "content_file": "content\\model\\train.fbx",
-          "content_parameter": {
+            "auto_scale": 15.0,
             "high_detail_query_shape": true
           }
         },
         {
-          "content_title": "Palm_Tree_Large_d",
-          "content_name": "mesh",
-          "content_file": "content\\model\\nature\\palm_tree\\Palm_Tree_Large_d.FBX",
-          "content_parameter": {
-            "high_detail_query_shape": true,
-            "auto_scale": 15.0
-          }
-        },
-        {
           "content_title": "Green_Fern_Bush_a",
-          "content_name": "mesh",
+          "content_loader": "mesh",
           "content_file": "content\\model\\nature\\Green_Fern_Bush_a\\Green_Fern_Bush_a.FBX",
           "content_parameter": {
-            "high_detail_query_shape": true,
-            "auto_scale": 5.0
+            "auto_scale": 5.0,
+            "high_detail_query_shape": true
           }
         },
         {
           "content_title": "thin_leave_tree_big_bright_green",
-          "content_name": "mesh",
-          "content_file": "content\\model\\nature\\trees\\thin_leave_tree_big_bright_green_1.FBX",
+          "content_loader": "mesh",
+          "content_file": "content\\model\\nature\\trees\\thin_leave_tree_big_bright_green.FBX",
           "content_parameter": {
-            "high_detail_query_shape": true,
-            "auto_scale": 20.0
+            "auto_scale": 20.0,
+            "high_detail_query_shape": true
           }
         }
       ]

@@ -126,7 +126,7 @@ namespace black_cat
 					l_entry.m_is_available = false;
 					const auto l_count = m_available_threads_count.fetch_sub(1, core_platform::bc_memory_order::relaxed) - 1;
 
-					bcAssert(l_count >= 0);
+					BC_ASSERT(l_count >= 0);
 
 					return bc_render_thread_guard(const_cast< bc_render_thread_manager* >(this), &l_entry.m_thread);
 				}
@@ -171,7 +171,7 @@ namespace black_cat
 					l_entry.m_is_available = true;
 					const auto l_count = m_available_threads_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1;
 
-					bcAssert(l_count <= m_threads.size());
+					BC_ASSERT(l_count <= m_threads.size());
 
 					m_threads_cv.notify_one();
 				}

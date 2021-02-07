@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace platform
 	{
-		class BC_PLATFORMSHARED_DLL bc_ide_logger : public core::bc_ilog_listener
+		class BC_PLATFORMSHARED_DLL bc_ide_logger : public core::bci_log_listener
 		{
 		public:
 			bc_ide_logger();

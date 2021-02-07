@@ -1,7 +1,7 @@
 // [11/30/2020 MRB]
 
-#include "..\bcRegister.hlsli"
-#include "..\bcHelper.hlsli"
+#include "../bcRegister.hlsli"
+#include "../bcHelper.hlsli"
 #include "bcParticle.hlsli"
 
 #define TRANSPOSE_BLOCK_SIZE 32

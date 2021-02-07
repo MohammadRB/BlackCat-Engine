@@ -21,7 +21,7 @@ namespace black_cat
 
 		void _bc_light_ptr_deleter::operator()(bc_light* p_light)
 		{
-			bcAssert(m_manager);
+			BC_ASSERT(m_manager);
 
 			m_manager->destroy_light(p_light);
 		}

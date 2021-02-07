@@ -13,7 +13,7 @@ namespace black_cat
 		class bc_camera_instance
 		{
 		public:
-			explicit bc_camera_instance(const bc_icamera& p_camera);
+			explicit bc_camera_instance(const bci_camera& p_camera);
 
 			bc_camera_instance(const bc_camera_instance&) noexcept;
 
@@ -51,7 +51,7 @@ namespace black_cat
 
 			const core::bc_matrix4f& get_projection() const noexcept;
 
-			const bc_icamera::extend& get_extends() const noexcept;
+			const bci_camera::extend& get_extends() const noexcept;
 			
 		private:
 			bcUINT16 m_screen_width;
@@ -69,10 +69,10 @@ namespace black_cat
 			core::bc_vector3f m_left;
 			core::bc_matrix4f m_view;
 			core::bc_matrix4f m_projection;
-			bc_icamera::extend m_extends;
+			bci_camera::extend m_extends;
 		};
 
-		inline bc_camera_instance::bc_camera_instance(const bc_icamera& p_camera)
+		inline bc_camera_instance::bc_camera_instance(const bci_camera& p_camera)
 			: m_screen_width(p_camera.get_screen_width()),
 			m_screen_height(p_camera.get_screen_height()),
 			m_near_clip(p_camera.get_near_clip()),
@@ -173,7 +173,7 @@ namespace black_cat
 			return m_projection;
 		}
 
-		inline const bc_icamera::extend& bc_camera_instance::get_extends() const noexcept
+		inline const bci_camera::extend& bc_camera_instance::get_extends() const noexcept
 		{
 			return m_extends;
 		}

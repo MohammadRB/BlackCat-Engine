@@ -74,14 +74,19 @@
     <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\File\bcPath.cpp">
       <Filter>CorePlatformImp\File</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Memory\bcMemAlloc.cpp">
-      <Filter>CorePlatformImp\Memory</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\bcUtility.cpp">
       <Filter>CorePlatformImp</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\CorePlatformImpPCH.cpp">
       <Filter>CorePlatformImp</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Memory\bcMemAlloc.h">
+      <Filter>CorePlatformImp\Memory</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\NatvisVisualizers.natvis">
+      <Filter>CorePlatformImp</Filter>
+    </Natvis>
   </ItemGroup>
 </Project>

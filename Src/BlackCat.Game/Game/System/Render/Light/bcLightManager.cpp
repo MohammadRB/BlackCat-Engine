@@ -55,7 +55,7 @@ namespace black_cat
 		bc_light_ptr bc_light_manager::add_light(const bc_direct_light& p_light)
 		{
 			{
-				core::bc_mutex_test_guard l_lock(m_lights_lock);
+				core_platform::bc_shared_mutex_guard l_lock(m_lights_lock);
 
 				m_lights.push_back(bc_light(p_light));
 				return bc_light_ptr(&m_lights.back(), _bc_light_ptr_deleter(this));
@@ -65,7 +65,7 @@ namespace black_cat
 		bc_light_ptr bc_light_manager::add_light(const bc_point_light& p_light)
 		{
 			{
-				core::bc_mutex_test_guard l_lock(m_lights_lock);
+				core_platform::bc_shared_mutex_guard l_lock(m_lights_lock);
 				
 				m_lights.push_back(bc_light(p_light));
 				return bc_light_ptr(&m_lights.back(), _bc_light_ptr_deleter(this));
@@ -75,7 +75,7 @@ namespace black_cat
 		bc_light_ptr bc_light_manager::add_light(const bc_spot_light& p_light)
 		{
 			{
-				core::bc_mutex_test_guard l_lock(m_lights_lock);
+				core_platform::bc_shared_mutex_guard l_lock(m_lights_lock);
 				
 				m_lights.push_back(bc_light(p_light));
 				return bc_light_ptr(&m_lights.back(), _bc_light_ptr_deleter(this));
@@ -94,7 +94,7 @@ namespace black_cat
 		void bc_light_manager::destroy_light(bc_light* p_light)
 		{
 			{
-				core::bc_mutex_test_guard l_lock(m_lights_lock);
+				core_platform::bc_shared_mutex_guard l_lock(m_lights_lock);
 
 				m_lights.remove_if
 				(

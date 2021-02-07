@@ -28,7 +28,7 @@ namespace black_cat
 
 			explicit bc_platform_transform(const core::bc_vector3f& p_position) noexcept;
 
-			explicit bc_platform_transform(const core::bc_matrix4f& p_rotation) noexcept;
+			explicit bc_platform_transform(const core::bc_matrix4f& p_transform) noexcept;
 
 			bc_platform_transform(const core::bc_vector3f& p_position, const core::bc_matrix3f& p_rotation) noexcept;
 
@@ -46,6 +46,8 @@ namespace black_cat
 
 			bc_platform_transform get_normalized() const noexcept;
 
+			bc_platform_transform transform(const bc_platform_transform& p_other) const noexcept;
+			
 			core::bc_vector3f transform(const core::bc_vector3f& p_vector) const noexcept;
 
 			core::bc_vector3f transform_inverse(const core::bc_vector3f& p_vector) const noexcept;
@@ -70,8 +72,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
 
 		private:
 			platform_pack m_pack;

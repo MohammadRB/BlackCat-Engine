@@ -2,54 +2,57 @@
 
 #pragma once
 
+#include "Core/Container/bcIteratorAdapter.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Content/bcContent.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Mesh/bcMeshPartCollider.h"
+#include "Game/Object/Mesh/bcSkinnedMeshCollider.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_mesh_collider : public core::bc_icontent
+		class BC_GAME_DLL bc_mesh_collider : public core::bci_content,
+			public core::bc_const_iterator_adapter< core::bc_unordered_map< core::bc_string, bc_mesh_part_collider > >
 		{
 			BC_CONTENT(msh_cld)
 
-		private:
-			using colliders_container_t = core::bc_unordered_map<core::bc_string, bc_mesh_part_collider>;
-
 		public:
-			using const_iterator = colliders_container_t::const_iterator;
-			using size_t = colliders_container_t::size_type;
+			bc_mesh_collider();
 
-		public:
-			bc_mesh_collider() = default;
-
-			bc_mesh_collider(bc_mesh_collider&&) = default;
+			bc_mesh_collider(bc_mesh_collider&& p_other) noexcept;
 
 			~bc_mesh_collider() = default;
 
-			bc_mesh_collider& operator=(bc_mesh_collider&&) = default;
+			bc_mesh_collider& operator=(bc_mesh_collider&& p_other) noexcept;
 
-			void add_mesh_colliders(const bcCHAR* p_mesh_name, bc_mesh_part_collider&& p_colliders);
+			bc_skinned_mesh_collider& get_skinned_collider() noexcept;
+			
+			const bc_skinned_mesh_collider& get_skinned_collider() const noexcept;
+			
+			const bc_mesh_part_collider* find_mesh_collider(const bcCHAR* p_mesh_name) const noexcept;
 
-			const bc_mesh_part_collider* find_mesh_colliders(const bcCHAR* p_mesh_name);
+			const bc_mesh_part_collider* find_mesh_collider(const core::bc_string& p_mesh_name) const noexcept;
 
-			const bc_mesh_part_collider* find_mesh_colliders(const core::bc_string& p_mesh_name);
-
-			const_iterator cbegin() const;
-
-			const_iterator cend() const;
-
-			size_t size() const;
-
-		protected:
+			void add_mesh_collider(const bcCHAR* p_name, bc_mesh_part_collider&& p_collider);
 
 		private:
-			colliders_container_t m_mesh_colliders;
+			container_type m_mesh_colliders;
+			bc_skinned_mesh_collider m_skinned_collider;
 		};
 
 		using bc_mesh_collider_ptr = core::bc_content_ptr< bc_mesh_collider >;
+
+		inline bc_skinned_mesh_collider& bc_mesh_collider::get_skinned_collider() noexcept
+		{
+			return m_skinned_collider;
+		}
+
+		inline const bc_skinned_mesh_collider& bc_mesh_collider::get_skinned_collider() const noexcept
+		{
+			return m_skinned_collider;
+		}
 	}
 }

@@ -350,7 +350,7 @@ namespace black_cat
 							if (lChunks == nullptr)
 							{
 								// TODO check for allocation fail here
-								bcAssert(false);
+								BC_ASSERT(false);
 							}
 							for (bcUINT32 i = 0; i < mLevelSizes[l]; ++i)
 							{
@@ -433,7 +433,7 @@ namespace black_cat
 				}
 				else
 				{
-					bcAssert(false);
+					BC_ASSERT(false);
 					if (pData != nullptr) *pData = nullptr;
 					return false;
 				}				
@@ -460,7 +460,7 @@ namespace black_cat
 				}
 				else
 				{
-					bcAssert(false);
+					BC_ASSERT(false);
 					if (pData != nullptr) *pData = nullptr;
 					return false;
 				}
@@ -471,7 +471,7 @@ namespace black_cat
 				mLevelCount(sizeof...(tLevelSizes)),
 				mNodeList(pNumThread, 2) // TODO change iterator count to local count + external iterator count
 			{
-				bcAssert(mLevelCount > 0);
+				BC_ASSERT(mLevelCount > 0);
 
 				bcSIZE lTempLevelSizes[sizeof...(tLevelSizes)] = { tLevelSizes... };
 				std::memcpy(&mLevelSizes[0], &lTempLevelSizes, mLevelCount * sizeof(bcSIZE));

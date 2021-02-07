@@ -44,24 +44,25 @@ namespace black_cat
 		core::bc_vector_movable<game::bc_light_instance> m_lights;
 		
 		bool m_capture_debug_shapes = false;
-		game::bc_icamera::extend m_captured_camera;
-		core::bc_vector_movable<game::bc_icamera::extend> m_captured_cascades;
+		game::bci_camera::extend m_captured_camera;
+		core::bc_vector_movable<game::bci_camera::extend> m_captured_cascades;
 		core::bc_vector_movable<physics::bc_bound_box> m_captured_boxes;
 	};
 
-	class bc_cascaded_shadow_map_pass_render_param : public game::bc_render_pass_render_param
+	class bc_cascaded_shadow_map_pass_render_param : public game::bc_render_pass_render_context
 	{
 	public:
-		bc_cascaded_shadow_map_pass_render_param(const game::bc_render_pass_render_param& p_render_param,
+		bc_cascaded_shadow_map_pass_render_param(const game::bc_render_pass_render_context& p_render_param,
 			const core::bc_vector< game::bc_render_pass_state_ptr >& p_render_states,
 			const game::bc_camera_instance& p_cascade_camera,
 			bcSIZE p_light_index,
 			bcSIZE p_cascade_index,
 			bcSIZE p_cascade_count)
-			: game::bc_render_pass_render_param
+			: game::bc_render_pass_render_context
 			(
 				p_render_param.m_clock,
-				p_render_param.m_current_camera,
+				p_render_param.m_query_manager,
+				p_render_param.m_update_camera,
 				p_render_param.m_render_camera,
 				p_render_param.m_render_system,
 				p_render_param.m_frame_renderer,
@@ -82,22 +83,22 @@ namespace black_cat
 		bcSIZE m_cascade_count;
 	};
 
-	class BC_DLL bc_base_cascaded_shadow_map_pass : public game::bc_irender_pass
+	class BC_DLL bc_base_cascaded_shadow_map_pass : public game::bci_render_pass
 	{
 	public:
 		void initialize_resources(game::bc_render_system& p_render_system) override final;
 
-		void update(const game::bc_render_pass_update_param& p_param) override final;
+		void update(const game::bc_render_pass_update_context& p_param) override final;
 
-		void initialize_frame(const game::bc_render_pass_render_param& p_param) override final;
+		void initialize_frame(const game::bc_render_pass_render_context& p_param) override final;
 
-		void execute(const game::bc_render_pass_render_param& p_param) override final;
+		void execute(const game::bc_render_pass_render_context& p_param) override final;
 
-		void cleanup_frame(const game::bc_render_pass_render_param& p_param) override final;
+		void cleanup_frame(const game::bc_render_pass_render_context& p_param) override final;
 
-		void before_reset(const game::bc_render_pass_reset_param& p_param) override final;
+		void before_reset(const game::bc_render_pass_reset_context& p_param) override final;
 
-		void after_reset(const game::bc_render_pass_reset_param& p_param) override final;
+		void after_reset(const game::bc_render_pass_reset_context& p_param) override final;
 
 		void destroy(game::bc_render_system& p_render_system) override final;
 
@@ -125,7 +126,7 @@ namespace black_cat
 
 		_bc_cascaded_shadow_map_light_state _create_light_instance(game::bc_render_system& p_render_system);
 
-		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_cascades(const game::bc_icamera& p_camera, const game::bc_direct_light& p_light);
+		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_cascades(const game::bci_camera& p_camera, const game::bc_direct_light& p_light);
 
 		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_stabilized_cascades(const game::bc_camera_instance& p_camera, const game::bc_direct_light& p_light);
 

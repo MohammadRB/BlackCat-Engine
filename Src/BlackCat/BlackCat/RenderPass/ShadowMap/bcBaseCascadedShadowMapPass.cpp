@@ -75,11 +75,11 @@ namespace black_cat
 		}
 	}
 	
-	void bc_base_cascaded_shadow_map_pass::update(const game::bc_render_pass_update_param& p_param)
+	void bc_base_cascaded_shadow_map_pass::update(const game::bc_render_pass_update_context& p_param)
 	{
 	}
 
-	void bc_base_cascaded_shadow_map_pass::initialize_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_base_cascaded_shadow_map_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
 	{
 		if (m_my_index == 0)
 		{
@@ -95,7 +95,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_base_cascaded_shadow_map_pass::execute(const game::bc_render_pass_render_param& p_param)
+	void bc_base_cascaded_shadow_map_pass::execute(const game::bc_render_pass_render_context& p_param)
 	{
 		if(m_state->m_lights.empty())
 		{
@@ -201,7 +201,7 @@ namespace black_cat
 
 				for (auto& l_cascade_camera : l_light_cascade_cameras)
 				{
-					game::bc_icamera::extend l_extends;
+					game::bci_camera::extend l_extends;
 					l_cascade_camera.get_extend_points(l_extends);
 					
 					m_state->m_captured_cascades.push_back(l_extends);
@@ -220,17 +220,17 @@ namespace black_cat
 		{
 			for (auto& l_captured_camera : m_state->m_captured_cascades)
 			{
-				p_param.m_render_system.get_shape_drawer().render_wired_frustum(l_captured_camera);
+				p_param.m_render_system.get_shape_drawer().draw_wired_frustum(l_captured_camera);
 			}
 			for (auto& l_captured_box : m_state->m_captured_boxes)
 			{
-				p_param.m_render_system.get_shape_drawer().render_wired_box(l_captured_box);
+				p_param.m_render_system.get_shape_drawer().draw_wired_bound_box(l_captured_box);
 			}
 			//p_param.m_render_system.get_shape_drawer().render_wired_frustum(m_state->m_captured_camera);	
 		}
 	}
 
-	void bc_base_cascaded_shadow_map_pass::cleanup_frame(const game::bc_render_pass_render_param& p_param)
+	void bc_base_cascaded_shadow_map_pass::cleanup_frame(const game::bc_render_pass_render_context& p_param)
 	{
 		if(m_my_index == 0)
 		{
@@ -238,11 +238,11 @@ namespace black_cat
 		}
 	}
 
-	void bc_base_cascaded_shadow_map_pass::before_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_base_cascaded_shadow_map_pass::before_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 	}
 
-	void bc_base_cascaded_shadow_map_pass::after_reset(const game::bc_render_pass_reset_param& p_param)
+	void bc_base_cascaded_shadow_map_pass::after_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 	}
 
@@ -320,9 +320,9 @@ namespace black_cat
 		return l_instance;
 	}
 
-	core::bc_vector_frame<bc_cascaded_shadow_map_camera> bc_base_cascaded_shadow_map_pass::_get_light_cascades(const game::bc_icamera& p_camera, const game::bc_direct_light& p_light)
+	core::bc_vector_frame<bc_cascaded_shadow_map_camera> bc_base_cascaded_shadow_map_pass::_get_light_cascades(const game::bci_camera& p_camera, const game::bc_direct_light& p_light)
 	{
-		game::bc_icamera::extend l_camera_frustum_corners;
+		game::bci_camera::extend l_camera_frustum_corners;
 		p_camera.get_extend_points(l_camera_frustum_corners);
 
 		core::bc_vector_frame<bcFLOAT> l_cascade_break_points;
@@ -347,7 +347,7 @@ namespace black_cat
 			const auto l_cascade_camera_min_z_distance_ratio = (l_min_z / l_camera_far_plane_distance);
 			const auto l_cascade_camera_max_z_distance_ratio = (l_max_z / l_camera_far_plane_distance);
 
-			game::bc_icamera::extend l_frustum_points
+			game::bci_camera::extend l_frustum_points
 			{
 				l_lower_left_ray * l_cascade_camera_min_z_distance_ratio + l_camera_position,
 				l_upper_left_ray * l_cascade_camera_min_z_distance_ratio + l_camera_position,
@@ -378,7 +378,7 @@ namespace black_cat
 
 			auto l_cascade_view_matrix = core::bc_matrix4f::look_at_matrix_lh(l_cascade_camera_pos, l_frustum_center, core::bc_vector3f::up());
 			//auto l_cascade_view_matrix = core::bc_matrix4f::look_at_matrix_lh(l_light_frustum_center, l_light_camera_look, core::bc_vector3f::up());
-			game::bc_icamera::extend l_frustum_points_vs
+			game::bci_camera::extend l_frustum_points_vs
 			{
 				(l_cascade_view_matrix * core::bc_vector4f(l_frustum_points[0], 1)).xyz(),
 				(l_cascade_view_matrix * core::bc_vector4f(l_frustum_points[1], 1)).xyz(),
@@ -443,7 +443,7 @@ namespace black_cat
 			const auto l_cascade_camera_min_z_distance_ratio = (l_min_z / l_camera_far_plane_distance);
 			const auto l_cascade_camera_max_z_distance_ratio = (l_max_z / l_camera_far_plane_distance);
 
-			game::bc_icamera::extend l_frustum_points
+			game::bci_camera::extend l_frustum_points
 			{
 				l_lower_left_ray * l_cascade_camera_min_z_distance_ratio + l_camera_position,
 				l_upper_left_ray * l_cascade_camera_min_z_distance_ratio + l_camera_position,
@@ -475,7 +475,7 @@ namespace black_cat
 			const auto l_far_plane = (l_frustum_center + (p_light.get_direction() * l_depth) - l_camera_pos).magnitude();
 			//const auto l_far_plane = l_max.z - l_min.z;
 
-			auto l_cascade_camera = bc_cascaded_shadow_map_camera(l_camera_pos, l_frustum_center, l_width, l_height, 0.1, l_far_plane);
+			auto l_cascade_camera = bc_cascaded_shadow_map_camera(l_camera_pos, l_frustum_center, l_width, l_height, 0.1f, l_far_plane);
 
 			const auto l_cascade_camera_view_proj = l_cascade_camera.get_view() * l_cascade_camera.get_projection();
 			const auto l_origin = (l_cascade_camera_view_proj * core::bc_vector4f(0, 0, 0, 1)) * (m_state->m_shadow_map_size / 2.0f);

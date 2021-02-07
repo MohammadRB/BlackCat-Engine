@@ -102,7 +102,7 @@ namespace black_cat
 		template< typename TState, bcUINT32 TNum >
 		void bc_pipeline_state_array_variable< TState, TNum >::set(bcUINT32 p_slot, TState p_state) noexcept
 		{
-			bcAssert(p_slot < m_states.size());
+			BC_ASSERT(p_slot < m_states.size());
 
 			bool l_is_same = m_states[p_slot] == p_state;
 
@@ -129,7 +129,7 @@ namespace black_cat
 		template< typename TState, bcUINT32 TNum >
 		TState bc_pipeline_state_array_variable< TState, TNum >::get(bcUINT32 p_slot) const noexcept
 		{
-			bcAssert(p_slot < m_states.size());
+			BC_ASSERT(p_slot < m_states.size());
 
 			return m_states[p_slot];
 		}
@@ -137,7 +137,7 @@ namespace black_cat
 		template< typename TState, bcUINT32 TNum >
 		TState* bc_pipeline_state_array_variable< TState, TNum >::get_slot(bcUINT32 p_slot) noexcept
 		{
-			bcAssert(p_slot < m_states.size());
+			BC_ASSERT(p_slot < m_states.size());
 
 			return &m_states[p_slot];
 		}

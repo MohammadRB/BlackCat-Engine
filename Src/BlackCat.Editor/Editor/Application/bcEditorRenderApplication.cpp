@@ -20,10 +20,12 @@
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferTerrainPassDx11.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferPass.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferVegetablePass.h"
+#include "BlackCat/RenderPass/DeferredRendering/bcGBufferSkinnedPass.h"
 #include "BlackCat/RenderPass/DeferredRendering/bcGBufferLightMapPass.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapPass.h"
 #include "BlackCat/RenderPass/ShadowMap/bcVegetableCascadedShadowMapPass.h"
-#include "BlackCat/RenderPass/PostProcess/bcParticleSystemDx11.h"
+#include "BlackCat/RenderPass/ShadowMap/bcSkinnedCascadedShadowMapPass.h"
+#include "BlackCat/RenderPass/PostProcess/bcParticleSystemPassDx11.h"
 #include "BlackCat/RenderPass/bcBackBufferWritePass.h"
 #include "BlackCat/RenderPass/bcTextDrawPass.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
@@ -63,13 +65,15 @@ namespace black_cat
 			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
 			l_render_system.add_render_pass(2, bc_gbuffer_pass());
 			l_render_system.add_render_pass(3, bc_gbuffer_vegetable_pass());
-			l_render_system.add_render_pass(4, bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 2048, { {15, 1}, {35, 2}, {90, 3}, {170, 4} }));
-			l_render_system.add_render_pass(5, bc_vegetable_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
-			l_render_system.add_render_pass(6, bc_gbuffer_light_map_pass(constant::g_rpass_direct_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
-			l_render_system.add_render_pass(7, bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
-			l_render_system.add_render_pass(8, bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
-			l_render_system.add_render_pass(9, bc_particle_system_dx11());
-			l_render_system.add_render_pass(10, bc_text_draw_pass(constant::g_rpass_back_buffer_view));
+			l_render_system.add_render_pass(4, bc_gbuffer_skinned_pass());
+			l_render_system.add_render_pass(5, bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 2048, { {15, 1}, {35, 2}, {90, 3}, {170, 4} }));
+			l_render_system.add_render_pass(6, bc_vegetable_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
+			l_render_system.add_render_pass(7, bc_skinned_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
+			l_render_system.add_render_pass(8, bc_gbuffer_light_map_pass(constant::g_rpass_direct_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
+			l_render_system.add_render_pass(9, bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
+			l_render_system.add_render_pass(10, bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
+			l_render_system.add_render_pass(11, bc_particle_system_pass_dx11());
+			l_render_system.add_render_pass(12, bc_text_draw_pass(constant::g_rpass_back_buffer_view));
 		}
 
 		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager* p_stream_manager)
@@ -82,6 +86,7 @@ namespace black_cat
 			const auto l_crysis_scene = l_content_manager->load< game::bc_scene >
 			(
 				l_file_system.get_content_path(bcL("Scene\\CrysisHeightMap.json")).c_str(),
+				nullptr,
 				core::bc_content_loader_parameter()
 			);
 
@@ -89,16 +94,16 @@ namespace black_cat
 		}
 
 		double g_explosion_counter = 0;
-		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_same_frame)
+		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_partial_update)
 		{
-			if(!p_is_same_frame)
+			if(!p_is_partial_update)
 			{
 				g_explosion_counter += p_clock_update_param.m_elapsed_second;
 				if (g_explosion_counter > 12)
 				{
 					auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
 					auto l_actor = l_entity_manager->create_entity("sample_explosion");
-					l_actor.add_event(game::bc_actor_event_world_transform({ 21, 49, -740 }));
+					l_actor.add_event(game::bc_actor_event_world_transform({ 13, 49, -740 }));
 
 					m_game_system->get_scene()->add_actor(l_actor);
 
@@ -111,9 +116,9 @@ namespace black_cat
 		{
 		}
 
-		bool bc_editor_render_app::application_event(core::bc_ievent& p_event)
+		bool bc_editor_render_app::application_event(core::bci_event& p_event)
 		{
-			auto* l_key_event = core::bc_imessage::as<platform::bc_app_event_key>(p_event);
+			auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event);
 			if (l_key_event)
 			{
 				/*if(l_key_event->get_key_state() == platform::bc_key_state::releasing && l_key_event->get_key() == platform::bc_key::kb_F)
@@ -129,7 +134,7 @@ namespace black_cat
 
 					game::bc_actor l_actor;
 
-					m_shape_throw_counter = m_shape_throw_counter % 3;
+					m_shape_throw_counter = m_shape_throw_counter % 4;
 					switch (m_shape_throw_counter)
 					{
 					case 0:
@@ -142,7 +147,7 @@ namespace black_cat
 						l_actor = l_entity_manager->create_entity("convex");
 						break;
 					case 3:
-						l_actor = l_entity_manager->create_entity("train");
+						l_actor = l_entity_manager->create_entity("capsule");
 						break;
 					}
 					++m_shape_throw_counter;
@@ -166,7 +171,7 @@ namespace black_cat
 				return true;
 			}
 
-			auto* l_exit_event = core::bc_imessage::as<platform::bc_app_event_exit>(p_event);
+			auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event);
 			if(l_exit_event)
 			{
 				auto& l_global_config = m_game_system->get_file_system().get_global_config();

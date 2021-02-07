@@ -96,15 +96,23 @@ namespace black_cat
 
 		m_leaf_scene_queries[l_cascade_absolute_index] = core::bc_get_service< core::bc_query_manager >()->queue_query
 		(
-			game::bc_scene_graph_render_state_query(p_param.m_frame_renderer.create_buffer())
-				.with(game::bc_camera_frustum(p_param.m_cascade_camera))
-				.only< game::bc_vegetable_mesh_component >(true)
+			game::bc_scene_graph_render_state_query
+			(
+				game::bc_actor_render_camera(p_param.m_update_camera, p_param.m_cascade_camera),
+				p_param.m_frame_renderer.create_buffer()
+			)
+			.with(game::bc_camera_frustum(p_param.m_cascade_camera))
+			.only< game::bc_vegetable_mesh_component >(true)
 		);
 		m_trunk_scene_queries[l_cascade_absolute_index] = core::bc_get_service< core::bc_query_manager >()->queue_query
 		(
-			game::bc_scene_graph_render_state_query(p_param.m_frame_renderer.create_buffer())
-				.with(game::bc_camera_frustum(p_param.m_cascade_camera))
-				.only< game::bc_vegetable_mesh_component >(false)
+			game::bc_scene_graph_render_state_query
+			(
+				game::bc_actor_render_camera(p_param.m_update_camera, p_param.m_cascade_camera),
+				p_param.m_frame_renderer.create_buffer()
+			)
+			.with(game::bc_camera_frustum(p_param.m_cascade_camera))
+			.only< game::bc_vegetable_mesh_component >(false)
 		);
 		
 		// Render vegetable leafs
@@ -133,6 +141,8 @@ namespace black_cat
 	{
 		m_leaf_pipeline_state.reset();
 		m_trunk_pipeline_state.reset();
+		m_leaf_scene_queries.clear();
+		m_trunk_scene_queries.clear();
 	}
 
 	core::bc_vector<game::bc_render_pass_state_ptr> bc_vegetable_cascaded_shadow_map_pass::create_render_pass_states(game::bc_render_system& p_render_system,

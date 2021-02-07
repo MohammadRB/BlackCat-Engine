@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "Game/bcExport.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
@@ -14,7 +14,7 @@ namespace black_cat
 			BC_COMPONENT(smp_msh, true, false)
 
 		public:
-			explicit bc_simple_mesh_component(bc_actor_component_index p_index);
+			bc_simple_mesh_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
 
 			bc_simple_mesh_component(bc_simple_mesh_component&& p_other) noexcept;
 
@@ -24,7 +24,7 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
+			void handle_event(const bc_actor_component_event_context& p_context) override;
 		};
 	}
 }

@@ -8,13 +8,15 @@ namespace black_cat
 	namespace game
 	{
 		bc_mesh_part_collider::bc_mesh_part_collider()
+			: bc_const_iterator_adapter(m_shapes)
 		{
 		}
 
 		bc_mesh_part_collider::bc_mesh_part_collider(bc_mesh_part_collider&& p_other) noexcept
-			: m_shapes(std::move(p_other.m_shapes)),
-			m_convexes(std::move(p_other.m_convexes)),
-			m_triangles(std::move(p_other.m_triangles))
+			: bc_const_iterator_adapter(m_shapes),
+			m_shapes(std::move(p_other.m_shapes)),
+			m_convex_shapes(std::move(p_other.m_convex_shapes)),
+			m_triangle_shapes(std::move(p_other.m_triangle_shapes))
 		{
 		}
 
@@ -25,69 +27,106 @@ namespace black_cat
 		bc_mesh_part_collider& bc_mesh_part_collider::operator=(bc_mesh_part_collider&& p_other) noexcept
 		{
 			m_shapes = std::move(p_other.m_shapes);
-			m_convexes = std::move(p_other.m_convexes);
-			m_triangles = std::move(p_other.m_triangles);
+			m_convex_shapes = std::move(p_other.m_convex_shapes);
+			m_triangle_shapes = std::move(p_other.m_triangle_shapes);
 
 			return *this;
 		}
 
-		void bc_mesh_part_collider::add_px_shape(const physics::bc_shape_box& p_box, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags)
+		void bc_mesh_part_collider::add_px_shape(const physics::bc_shape_box& p_box,
+			bc_mesh_node::node_index_t p_attached_node_transform_index,
+			const physics::bc_transform& p_local_transform,
+			physics::bc_shape_flag p_flags)
 		{
-			m_shapes.push_back(bc_mesh_part_collider_entry(core::bc_make_unique<physics::bc_shape_box>(p_box), p_transformation, p_flags));
-		}
-
-		void bc_mesh_part_collider::add_px_shape(const physics::bc_shape_sphere& p_sphere, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags)
-		{
-			m_shapes.push_back(bc_mesh_part_collider_entry(core::bc_make_unique<physics::bc_shape_sphere>(p_sphere), p_transformation, p_flags));
-		}
-
-		void bc_mesh_part_collider::add_px_shape(const physics::bc_shape_capsule& p_capsule, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags)
-		{
-			m_shapes.push_back(bc_mesh_part_collider_entry(core::bc_make_unique<physics::bc_shape_capsule>(p_capsule), p_transformation, p_flags));
-		}
-
-		void bc_mesh_part_collider::add_px_shape(physics::bc_convex_mesh_ref&& p_convex, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags)
-		{
-			m_shapes.push_back(bc_mesh_part_collider_entry
+			m_shapes.push_back
 			(
-				core::bc_make_unique<physics::bc_shape_convex_mesh>(physics::bc_shape_convex_mesh(p_convex.get())),
-				p_transformation,
-				p_flags
-			));
-			m_convexes.push_back(std::move(p_convex));
+				bc_mesh_part_collider_entry
+				(
+					core::bc_make_unique< physics::bc_shape_box >(p_box),
+					p_attached_node_transform_index,
+					p_local_transform,
+					p_flags
+				)
+			);
 		}
 
-		void bc_mesh_part_collider::add_px_shape(physics::bc_triangle_mesh_ref&& p_mesh, const physics::bc_transform& p_transformation, physics::bc_shape_flag p_flags)
+		void bc_mesh_part_collider::add_px_shape(const physics::bc_shape_sphere& p_sphere,
+			bc_mesh_node::node_index_t p_attached_node_transform_index,
+			const physics::bc_transform& p_local_transform,
+			physics::bc_shape_flag p_flags)
 		{
-			m_shapes.push_back(bc_mesh_part_collider_entry
+			m_shapes.push_back
 			(
-				core::bc_make_unique<physics::bc_shape_triangle_mesh>(physics::bc_shape_triangle_mesh(p_mesh.get())), 
-				p_transformation,
-				p_flags
-			));
-			m_triangles.push_back(std::move(p_mesh));
+				bc_mesh_part_collider_entry
+				(
+					core::bc_make_unique< physics::bc_shape_sphere >(p_sphere),
+					p_attached_node_transform_index,
+					p_local_transform,
+					p_flags
+				)
+			);
 		}
 
-		bc_mesh_part_collider::const_iterator bc_mesh_part_collider::cbegin() const
+		void bc_mesh_part_collider::add_px_shape(const physics::bc_shape_capsule& p_capsule,
+			bc_mesh_node::node_index_t p_attached_node_transform_index,
+			const physics::bc_transform& p_local_transform,
+			physics::bc_shape_flag p_flags)
 		{
-			return m_shapes.cbegin();
+			m_shapes.push_back
+			(
+				bc_mesh_part_collider_entry
+				(
+					core::bc_make_unique< physics::bc_shape_capsule >(p_capsule),
+					p_attached_node_transform_index,
+					p_local_transform,
+					p_flags
+				)
+			);
 		}
 
-		bc_mesh_part_collider::const_iterator bc_mesh_part_collider::cend() const
+		void bc_mesh_part_collider::add_px_shape(physics::bc_convex_mesh_ref&& p_convex,
+			bc_mesh_node::node_index_t p_attached_node_transform_index,
+			const physics::bc_transform& p_local_transform,
+			physics::bc_shape_flag p_flags)
 		{
-			return m_shapes.cend();
+			m_shapes.push_back
+			(
+				bc_mesh_part_collider_entry
+				(
+					core::bc_make_unique< physics::bc_shape_convex_mesh >
+					(physics::bc_shape_convex_mesh(p_convex.get())),
+					p_attached_node_transform_index,
+					p_local_transform,
+					p_flags
+				)
+			);
+			m_convex_shapes.push_back(std::move(p_convex));
 		}
 
-		size_t bc_mesh_part_collider::size() const
+		void bc_mesh_part_collider::add_px_shape(physics::bc_triangle_mesh_ref&& p_mesh,
+			bc_mesh_node::node_index_t p_attached_node_transform_index,
+			const physics::bc_transform& p_local_transform,
+			physics::bc_shape_flag p_flags)
 		{
-			return m_shapes.size();
+			m_shapes.push_back
+			(
+				bc_mesh_part_collider_entry
+				(
+					core::bc_make_unique< physics::bc_shape_triangle_mesh >
+					(physics::bc_shape_triangle_mesh(p_mesh.get())),
+					p_attached_node_transform_index,
+					p_local_transform,
+					p_flags
+				)
+			);
+			m_triangle_shapes.push_back(std::move(p_mesh));
 		}
 
 		void bc_mesh_part_collider::shrink_to_fit()
 		{
 			m_shapes.shrink_to_fit();
-			m_convexes.shrink_to_fit();
-			m_triangles.shrink_to_fit();
+			m_convex_shapes.shrink_to_fit();
+			m_triangle_shapes.shrink_to_fit();
 		}
 	}
 }

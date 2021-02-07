@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CorePlatform/Memory/bcMemAlloc.h"
+#include "CorePlatformImp/Memory/bcMemAlloc.h"
 #include "Core/CorePCH.h"
 #include "Core/Memory/bcMemoryManagment.h"
 
@@ -26,25 +26,25 @@ namespace black_cat
 #endif
 		}
 
-		inline void register_movable_pointer(void** p_pointer) noexcept(true)
+		inline void register_movable_pointer(void** p_pointer) noexcept
 		{
 #if defined(BC_MEMORY_ENABLE) && defined(BC_MEMORY_DEFRAG)
-			bcAssert(p_pointer && *p_pointer);
+			BC_ASSERT(p_pointer && *p_pointer);
 
-			bc_memmng::get().register_pointer_in_movable_allocators(p_pointer);
+			bc_memory_manager::get().register_pointer_in_movable_allocators(p_pointer);
 #endif
 		}
 		 
-		inline void unregister_movable_pointer(void** p_pointer) noexcept(true)
+		inline void unregister_movable_pointer(void** p_pointer) noexcept
 		{
 #if defined(BC_MEMORY_ENABLE) && defined(BC_MEMORY_DEFRAG)
-			bcAssert(p_pointer && *p_pointer);
+			BC_ASSERT(p_pointer && *p_pointer);
 
-			bc_memmng::get().unregister_pointer_in_movable_allocators(p_pointer);
+			bc_memory_manager::get().unregister_pointer_in_movable_allocators(p_pointer);
 #endif
 		}
 		 
-		inline void* bc_mem_alloc(bcSIZE p_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true)
+		inline void* bc_mem_alloc(bcSIZE p_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 			void* l_result;
 
@@ -54,7 +54,7 @@ namespace black_cat
 				p_size = 1;
 			}
 
-			l_result = bc_memmng::get().alloc(p_size, p_alloc_type, p_file, p_line);
+			l_result = bc_memory_manager::get().alloc(p_size, p_alloc_type, p_file, p_line);
 #else
 			l_result = core_platform::bc_mem_alloc(p_size);
 #endif
@@ -62,7 +62,7 @@ namespace black_cat
 			return l_result;
 		}
 		 
-		inline void bc_mem_free(void* p_pointer) noexcept(true)
+		inline void bc_mem_free(void* p_pointer) noexcept
 		{
 			if (!p_pointer)
 			{
@@ -70,22 +70,22 @@ namespace black_cat
 			}
 
 #ifdef BC_MEMORY_ENABLE
-			bc_memmng::get().free(p_pointer);
+			bc_memory_manager::get().free(p_pointer);
 #else
 			core_platform::bc_mem_free(p_pointer);
 #endif
 		}
 		 
-		inline void* bc_mem_realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true)
+		inline void* bc_mem_realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 #ifdef BC_MEMORY_ENABLE
-			return bc_memmng::get().realloc(p_pointer, p_new_size, p_alloc_type, p_file, p_line);
+			return bc_memory_manager::get().realloc(p_pointer, p_new_size, p_alloc_type, p_file, p_line);
 #else
 			return core_platform::bc_mem_realloc(p_pointer, p_new_size);
 #endif
 		}
 		 
-		inline void* bc_mem_aligned_alloc(bcSIZE p_size, bcSIZE p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true)
+		inline void* bc_mem_aligned_alloc(bcSIZE p_size, bcSIZE p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 			void* l_result;
 
@@ -95,7 +95,7 @@ namespace black_cat
 				p_size = 1;
 			}
 
-			l_result = bc_memmng::get().aligned_alloc(p_size, p_alignment, p_alloc_type, p_file, p_line);
+			l_result = bc_memory_manager::get().aligned_alloc(p_size, p_alignment, p_alloc_type, p_file, p_line);
 #else
 			l_result = core_platform::bc_mem_aligned_alloc(p_size, p_alignment);
 #endif
@@ -103,7 +103,7 @@ namespace black_cat
 			return l_result;
 		}
 		 
-		inline void bc_mem_aligned_free(void* p_pointer) noexcept(true)
+		inline void bc_mem_aligned_free(void* p_pointer) noexcept
 		{
 			if (!p_pointer)
 			{
@@ -111,16 +111,16 @@ namespace black_cat
 			}
 
 #ifdef BC_MEMORY_ENABLE
-			bc_memmng::get().aligned_free(p_pointer);
+			bc_memory_manager::get().aligned_free(p_pointer);
 #else
 			core_platform::bc_mem_aligned_free(p_pointer);
 #endif
 		}
 		 
-		inline void* bc_mem_aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcSIZE p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept(true)
+		inline void* bc_mem_aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcSIZE p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 #ifdef BC_MEMORY_ENABLE
-			return bc_memmng::get().aligned_realloc(p_pointer, p_new_size, p_alignment, p_alloc_type, p_file, p_line);
+			return bc_memory_manager::get().aligned_realloc(p_pointer, p_new_size, p_alignment, p_alloc_type, p_file, p_line);
 #else
 			return  core_platform::bc_mem_aligned_realloc(p_pointer, p_new_size, p_alignment);
 #endif
@@ -211,7 +211,7 @@ namespace black_cat
 		}
 
 		template<typename T>
-		void bc_mem_delete(T* p_pointer) noexcept(true)
+		void bc_mem_delete(T* p_pointer) noexcept
 		{
 			if (!p_pointer)
 			{
@@ -223,7 +223,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bc_mem_delete_array(T* p_pointer) noexcept(true)
+		void bc_mem_delete_array(T* p_pointer) noexcept
 		{
 			if (!p_pointer)
 			{
@@ -279,7 +279,7 @@ namespace black_cat
 		}
 
 		template<typename T>
-		void bc_mem_aligned_delete(T* p_pointer) noexcept(true)
+		void bc_mem_aligned_delete(T* p_pointer) noexcept
 		{
 			if (!p_pointer)
 			{
@@ -291,7 +291,7 @@ namespace black_cat
 		}
 
 		template<typename T>
-		void bc_mem_aligned_delete_array(T* p_pointer) noexcept(true)
+		void bc_mem_aligned_delete_array(T* p_pointer) noexcept
 		{
 			if (!p_pointer)
 			{
@@ -312,25 +312,25 @@ namespace black_cat
 			bc_mem_aligned_free(p_pointer);
 		}
 
-#define bcAlloc(p_size, p_alloc_type)										black_cat::core::bc_mem_alloc(p_size, p_alloc_type, __FILE__, __LINE__)
-#define bcFree(p_pointer)													black_cat::core::bc_mem_free(p_pointer); p_pointer = nullptr
-#define bcReAlloc(p_pointer, p_new_size, p_alloc_type)						black_cat::core::bc_mem_realloc(p_pointer, p_new_size, p_alloc_type, __FILE__, __LINE__)
-#define bcAlignedAlloc(p_size, p_alignment, p_alloc_type)					black_cat::core::bc_mem_aligned_alloc(p_size, p_alignment, p_alloc_type, __FILE__, __LINE__)
-#define bcAlignedFree(p_pointer)												black_cat::core::bc_mem_aligned_free(p_pointer); p_pointer = nullptr
-#define bcAlignedReAlloc(p_pointer, p_new_size, p_alignment, p_alloc_type)	black_cat::core::bc_mem_aligned_realloc(p_pointer, p_new_size, p_alignment, p_alloc_type, __FILE__, __LINE__)
-#define bcAllocThrow(p_size, p_alloc_type)									black_cat::core::bc_mem_alloc_throw(p_size, p_alloc_type, __FILE__, __LINE__)
-#define bcAlignedAllocThrow(p_size, p_alignment, p_alloc_type)				black_cat::core::bc_mem_aligned_alloc_throw(p_size, p_alignment, p_alloc_type, __FILE__, __LINE__)
+#define BC_ALLOC(p_size, p_alloc_type)											black_cat::core::bc_mem_alloc(p_size, p_alloc_type, __FILE__, __LINE__)
+#define BC_FREE(p_pointer)														black_cat::core::bc_mem_free(p_pointer); p_pointer = nullptr
+#define BC_REALLOC(p_pointer, p_new_size, p_alloc_type)							black_cat::core::bc_mem_realloc(p_pointer, p_new_size, p_alloc_type, __FILE__, __LINE__)
+#define BC_ALIGNED_ALLOC(p_size, p_alignment, p_alloc_type)						black_cat::core::bc_mem_aligned_alloc(p_size, p_alignment, p_alloc_type, __FILE__, __LINE__)
+#define BC_ALIGNED_FREE(p_pointer)												black_cat::core::bc_mem_aligned_free(p_pointer); p_pointer = nullptr
+#define BC_ALIGNED_REALLOC(p_pointer, p_new_size, p_alignment, p_alloc_type)	black_cat::core::bc_mem_aligned_realloc(p_pointer, p_new_size, p_alignment, p_alloc_type, __FILE__, __LINE__)
+#define BC_ALLOC_THROW(p_size, p_alloc_type)									black_cat::core::bc_mem_alloc_throw(p_size, p_alloc_type, __FILE__, __LINE__)
+#define BC_ALIGNED_ALLOC_THROW(p_size, p_alignment, p_alloc_type)				black_cat::core::bc_mem_aligned_alloc_throw(p_size, p_alignment, p_alloc_type, __FILE__, __LINE__)
 
 		// TODO check array allocation
 		// TODO use standard routines in macros instead of calling bc_mem functions directly
-#define bcNew(p_type, p_alloc_type)											new (p_alloc_type, __FILE__, __LINE__) p_type
-#define bcNewArray(p_type, p_length, p_alloc_type)							black_cat::core::bc_mem_new_array<p_type>(p_length, p_alloc_type, __FILE__, __LINE__)
-#define bcDelete(p_t)														black_cat::core::bc_mem_delete(p_t); p_t = nullptr
-#define bcDeleteArray(p_t)													black_cat::core::bc_mem_delete_array(p_t); p_t = nullptr
-#define bcAlignedNew(p_type, p_alignment, p_alloc_type)						new (p_alignment, p_alloc_type, __FILE__, __LINE__) p_type
-#define bcAlignedNewArray(p_alignment, p_length, p_alloc_type)				black_cat::core::bc_mem_aligned_new_array<p_type>(p_length, p_alignment, p_alloc_type, __FILE__, __LINE__)
-#define bcAlignedDelete(p_t)													black_cat::core::bc_mem_aligned_delete(p_t); p_t = nullptr
-#define bcAlignedDeleteArray(p_t)											black_cat::core::bc_mem_aligned_delete_array(p_t); p_t = nullptr
+#define BC_NEW(p_type, p_alloc_type)											new (p_alloc_type, __FILE__, __LINE__) p_type
+#define BC_NEW_ARRAY(p_type, p_length, p_alloc_type)							black_cat::core::bc_mem_new_array<p_type>(p_length, p_alloc_type, __FILE__, __LINE__)
+#define BC_DELETE(p_t)															black_cat::core::bc_mem_delete(p_t); p_t = nullptr
+#define BC_DELETE_ARRAY(p_t)													black_cat::core::bc_mem_delete_array(p_t); p_t = nullptr
+#define BC_ALIGNED_NEW(p_type, p_alignment, p_alloc_type)						new (p_alignment, p_alloc_type, __FILE__, __LINE__) p_type
+#define BC_ALIGNED_NEW_ARRAY(p_alignment, p_length, p_alloc_type)				black_cat::core::bc_mem_aligned_new_array<p_type>(p_length, p_alignment, p_alloc_type, __FILE__, __LINE__)
+#define BC_ALIGNED_DELETE(p_t)													black_cat::core::bc_mem_aligned_delete(p_t); p_t = nullptr
+#define BC_ALIGNED_DELETE_ARRAY(p_t)											black_cat::core::bc_mem_aligned_delete_array(p_t); p_t = nullptr
 	}
 }
 
@@ -354,22 +354,22 @@ inline void* operator new[](black_cat::bcSIZE p_size, black_cat::bcSIZE p_alignm
 	return black_cat::core::bc_mem_aligned_alloc_throw(p_size, p_alignment, p_alloc_type, p_file, p_line);
 }
 
-inline void operator delete(void* p_pointer, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept(true)
+inline void operator delete(void* p_pointer, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept
 {
 	black_cat::core::bc_mem_free(p_pointer);
 }
 
-inline void operator delete[](void* p_pointer, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept(true)
+inline void operator delete[](void* p_pointer, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept
 {
 	black_cat::core::bc_mem_free(p_pointer);
 }
 
-inline void operator delete(void* p_pointer, black_cat::bcSIZE p_alignment, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept(true)
+inline void operator delete(void* p_pointer, black_cat::bcSIZE p_alignment, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept
 {
 	black_cat::core::bc_mem_aligned_free(p_pointer);
 }
 
-inline void operator delete[](void* p_pointer, black_cat::bcSIZE p_alignment, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept(true)
+inline void operator delete[](void* p_pointer, black_cat::bcSIZE p_alignment, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept
 {
 	black_cat::core::bc_mem_aligned_free(p_pointer);
 }

@@ -1,7 +1,7 @@
 // [12/06/2020 MRB]
 
-#include "..\bcRegister.hlsli"
-#include "..\bcHelper.hlsli"
+#include "../bcRegister.hlsli"
+#include "../bcHelper.hlsli"
 #include "bcParticle.hlsli"
 
 #define THREAD_GROUP_SIZE 1024

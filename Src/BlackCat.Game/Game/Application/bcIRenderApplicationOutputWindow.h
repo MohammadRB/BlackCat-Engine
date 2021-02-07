@@ -11,10 +11,10 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_irender_application_output_window
+		class bci_render_application_output_window
 		{
 		public:
-			virtual ~bc_irender_application_output_window() = default;
+			virtual ~bci_render_application_output_window() = default;
 
 			virtual platform::bc_window_id get_id() const noexcept = 0;
 
@@ -29,14 +29,14 @@ namespace black_cat
 			virtual void close() noexcept = 0;
 
 		protected:
-			bc_irender_application_output_window() = default;
+			bci_render_application_output_window() = default;
 
-			bc_irender_application_output_window(bc_irender_application_output_window&&) noexcept = default;
+			bci_render_application_output_window(bci_render_application_output_window&&) noexcept = default;
 
-			bc_irender_application_output_window& operator=(bc_irender_application_output_window&&) noexcept = default;
+			bci_render_application_output_window& operator=(bci_render_application_output_window&&) noexcept = default;
 		};
 
-		class bc_render_application_basic_output_window : public bc_irender_application_output_window
+		class bc_render_application_basic_output_window : public bci_render_application_output_window
 		{
 		public:
 			bc_render_application_basic_output_window(platform::bc_basic_window p_window)

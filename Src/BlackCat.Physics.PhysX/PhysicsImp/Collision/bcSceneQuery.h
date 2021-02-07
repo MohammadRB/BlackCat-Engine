@@ -3,8 +3,9 @@
 #pragma once
 
 #include "PhysicsImp/Collision/bcShapeQuery.h"
+#include "PhysicsImp/Body/bcRigidActor.h"
+#include "PhysicsImp/Shape/bcShape.h"
 
-#include "Core/Container/bcVector.h"
 #include "Physics/Collision/bcSceneQuery.h"
 
 namespace black_cat

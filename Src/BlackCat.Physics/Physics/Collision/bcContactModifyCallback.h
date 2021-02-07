@@ -98,8 +98,6 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-
 		private:
 			platform_pack m_pack;
 		};
@@ -147,8 +145,6 @@ namespace black_cat
 				return m_pack;
 			}
 			
-		protected:
-
 		private:
 			platform_pack m_pack;
 		};
@@ -157,12 +153,12 @@ namespace black_cat
 		
 		/**
 		 * \brief An interface class that the user can implement in order to modify contact constraints.
-		 * Threading: The callback execute in simulation threads.
+		 * \n Threading: The callback execute in simulation threads.
 		 */
-		class bc_icontact_modify_callback
+		class bci_contact_modify_callback
 		{
 		public:
-			virtual ~bc_icontact_modify_callback() = default;
+			virtual ~bci_contact_modify_callback() = default;
 		
 			/**
 			 * \brief Passes modifiable arrays of contacts to the application.

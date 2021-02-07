@@ -37,7 +37,7 @@ namespace black_cat
 		template< typename TR, typename ... TA >
 		bc_script_function< TR(TA ...) > bc_platform_script_variable< TPlatform >::as_function() const
 		{
-			bcAssert(is_function());
+			BC_ASSERT(is_function());
 
 			bc_script_function< TR(TA ...) > l_function;
 
@@ -57,7 +57,7 @@ namespace black_cat
 		template< typename T >
 		bc_script_array< T > bc_platform_script_variable< core_platform::g_api_win32 >::as_array() const
 		{
-			bcAssert(is_array());
+			BC_ASSERT(is_array());
 
 			bc_script_array< T > l_array;
 

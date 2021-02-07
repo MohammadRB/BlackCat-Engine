@@ -1,6 +1,6 @@
 // [09/06/2016 MRB]
 
-#include "..\\bcRegister.hlsli"
+#include "..//bcRegister.hlsli"
 
 #define THREAD_GROUP_SIZE 32
 

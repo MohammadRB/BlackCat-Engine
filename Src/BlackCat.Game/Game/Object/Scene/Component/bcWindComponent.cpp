@@ -43,7 +43,7 @@ namespace black_cat
 				m_point = p_other.m_point;
 				break;
 			default:
-				bcAssert(false);
+				BC_ASSERT(false);
 				break;
 			}
 
@@ -113,13 +113,13 @@ namespace black_cat
 				);
 				break;
 			default:
-				bcAssert(false);
+				BC_ASSERT(false);
 				break;
 			}
 		}
 
-		bc_wind_component::bc_wind_component(bc_actor_component_index p_index)
-			: bc_iactor_component(p_index)
+		bc_wind_component::bc_wind_component(bc_actor_index p_actor_index, bc_actor_component_index p_index)
+			: bci_actor_component(p_actor_index, p_index)
 		{
 		}
 
@@ -133,51 +133,51 @@ namespace black_cat
 			return m_wind.is_set() ? &m_wind.get() : nullptr;
 		}
 
-		void bc_wind_component::initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters)
+		void bc_wind_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			const auto& l_wind_type = p_parameters.get_value_throw<core::bc_string>("type");
+			const auto& l_wind_type = p_context.m_parameters.get_value_throw<core::bc_string>("type");
 
 			if (l_wind_type == "direct")
 			{
-				const auto l_direction_x = p_parameters.get_value_throw< bcFLOAT >("direction_x");
-				const auto l_direction_y = p_parameters.get_value_throw< bcFLOAT >("direction_y");
-				const auto l_direction_z = p_parameters.get_value_throw< bcFLOAT >("direction_z");
-				const auto l_power = p_parameters.get_value_throw< bcFLOAT >("power");
+				const auto l_direction_x = p_context.m_parameters.get_value_throw< bcFLOAT >("direction_x");
+				const auto l_direction_y = p_context.m_parameters.get_value_throw< bcFLOAT >("direction_y");
+				const auto l_direction_z = p_context.m_parameters.get_value_throw< bcFLOAT >("direction_z");
+				const auto l_power = p_context.m_parameters.get_value_throw< bcFLOAT >("power");
 
 				const bc_direct_wind l_direct_wind({ l_direction_x, l_direction_y, l_direction_z }, l_power);
 				m_wind = bc_wind(l_direct_wind);
 			}
 			else if (l_wind_type == "point")
 			{
-				const auto l_position_x = p_parameters.get_value_throw< bcFLOAT >("position_x");
-				const auto l_position_y = p_parameters.get_value_throw< bcFLOAT >("position_y");
-				const auto l_position_z = p_parameters.get_value_throw< bcFLOAT >("position_z");
-				const auto l_power = p_parameters.get_value_throw< bcFLOAT >("power");
-				const auto l_radius = p_parameters.get_value_throw< bcFLOAT >("radius");
+				const auto l_position_x = p_context.m_parameters.get_value_throw< bcFLOAT >("position_x");
+				const auto l_position_y = p_context.m_parameters.get_value_throw< bcFLOAT >("position_y");
+				const auto l_position_z = p_context.m_parameters.get_value_throw< bcFLOAT >("position_z");
+				const auto l_power = p_context.m_parameters.get_value_throw< bcFLOAT >("power");
+				const auto l_radius = p_context.m_parameters.get_value_throw< bcFLOAT >("radius");
 
 				const bc_point_wind l_wind_point({ l_position_x, l_position_y, l_position_z }, l_power, l_radius);
 				m_wind = bc_wind(l_wind_point);
 			}
 			else
 			{
-				bcAssert(false);
+				BC_ASSERT(false);
 			}
 		}
 
-		void bc_wind_component::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		void bc_wind_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bc_imessage::as<bc_actor_event_world_transform>(p_event);
+			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_context.m_event);
 			if (l_world_transform_event)
 			{
 				// TODO what if wind is part of a mesh
 				m_wind->set_transformation(l_world_transform_event->get_transform());
 
 				const auto& l_bound_box = m_wind->get_bound_box();
-				p_actor.add_event(bc_actor_event_bound_box_changed(l_bound_box));
+				p_context.m_actor.add_event(bc_actor_event_bound_box_changed(l_bound_box));
 			}
 		}
 
-		void bc_wind_component::update(bc_actor& p_actor,const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_wind_component::update(const bc_actor_component_update_content& p_context)
 		{
 		}
 	}	

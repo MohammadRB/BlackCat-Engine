@@ -137,7 +137,7 @@ namespace black_cat
 		};
 
 		template< bc_physics_api TApi >
-		class bc_platform_physics : public core::bc_initializable<core::bc_unique_ptr<bc_iallocator>, core::bc_unique_ptr<bc_itask_dispatcher>, core::bc_unique_ptr<bc_ilogger>>
+		class bc_platform_physics : public core::bc_initializable<core::bc_unique_ptr<bci_allocator>, core::bc_unique_ptr<bci_task_dispatcher>, core::bc_unique_ptr<bci_logger>>
 		{
 		public:
 			using platform_pack = bc_platform_physics_pack< TApi >;
@@ -250,6 +250,8 @@ namespace black_cat
 
 			bc_triangle_mesh_ref create_triangle_mesh(bc_memory_buffer& p_buffer);
 
+			bc_triangle_mesh_ref create_runtime_triangle_mesh(const bc_triangle_mesh_desc& p_desc);
+
 			bcUINT32 get_triangle_mesh_count() const noexcept;
 
 			bc_memory_buffer create_height_field(const bc_height_field_desc& p_desc);
@@ -343,12 +345,10 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-			
 		private:
-			void _initialize(core::bc_unique_ptr<bc_iallocator> p_allocator, 
-				core::bc_unique_ptr<bc_itask_dispatcher> p_task_dispatcher,
-				core::bc_unique_ptr<bc_ilogger> p_logger) noexcept(false) override;
+			void _initialize(core::bc_unique_ptr<bci_allocator> p_allocator, 
+				core::bc_unique_ptr<bci_task_dispatcher> p_task_dispatcher,
+				core::bc_unique_ptr<bci_logger> p_logger) noexcept(false) override;
 
 			void _destroy() override;
 

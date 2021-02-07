@@ -15,7 +15,7 @@ namespace black_cat
 		 * \tparam TContentName
 		 */
 		template< class TResource, const bcCHAR TContentName[] >
-		class bc_device_resource_content : public core::bc_icontent
+		class bc_device_resource_content : public core::bci_content
 		{
 		public:
 			explicit bc_device_resource_content(bc_device_ref<TResource>&& p_resource) noexcept

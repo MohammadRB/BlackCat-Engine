@@ -21,7 +21,7 @@ namespace black_cat
 		{
 			if ((m_pack.m_tls_index = TlsAlloc()) == TLS_OUT_OF_INDEXES)
 			{
-				bcAssert(false);
+				BC_ASSERT(false);
 				throw bc_thread_resource_exception("TLS allocation failed");
 			}
 		}

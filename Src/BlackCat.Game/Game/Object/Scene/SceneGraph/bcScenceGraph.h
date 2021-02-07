@@ -21,15 +21,15 @@ namespace black_cat
 		class BC_GAME_DLL bc_scene_graph
 		{
 		public:
-			using value_type = bc_iscene_graph_node::value_type;
-			using pointer = bc_iscene_graph_node::pointer;
-			using reference = bc_iscene_graph_node::reference;
-			using difference_type = bc_iscene_graph_node::difference_type;
-			using iterator = bc_iscene_graph_node::iterator;
-			using const_iterator = bc_iscene_graph_node::const_iterator;
+			using value_type = bci_scene_graph_node::value_type;
+			using pointer = bci_scene_graph_node::pointer;
+			using reference = bci_scene_graph_node::reference;
+			using difference_type = bci_scene_graph_node::difference_type;
+			using iterator = bci_scene_graph_node::iterator;
+			using const_iterator = bci_scene_graph_node::const_iterator;
 
 		public:
-			bc_scene_graph(core::bc_unique_ptr<bc_iscene_graph_node> p_scene_graph);
+			bc_scene_graph(core::bc_unique_ptr<bci_scene_graph_node> p_scene_graph);
 
 			bc_scene_graph(bc_scene_graph&&) = default;
 
@@ -80,12 +80,12 @@ namespace black_cat
 			template< typename TComponent >
 			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;
 
-			void add_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
+			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
 			void clear();
 
 		private:
-			core::bc_unique_ptr<bc_iscene_graph_node> m_graph_node;
+			core::bc_unique_ptr<bci_scene_graph_node> m_graph_node;
 		};
 
 		template< typename TComponent >
@@ -97,7 +97,7 @@ namespace black_cat
 			{
 				if (l_actor.has_component<TComponent>())
 				{
-					l_result.add_actor(l_actor);
+					l_result.add(l_actor);
 				}
 			}
 
@@ -114,7 +114,7 @@ namespace black_cat
 			{
 				if (l_actor.has_component<TComponent>())
 				{
-					l_result.add_actor(l_actor);
+					l_result.add(l_actor);
 				}
 			}
 

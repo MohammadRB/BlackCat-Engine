@@ -15,7 +15,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_scene_graph::bc_scene_graph(core::bc_unique_ptr<bc_iscene_graph_node> p_scene_graph)
+		bc_scene_graph::bc_scene_graph(core::bc_unique_ptr<bci_scene_graph_node> p_scene_graph)
 			: m_graph_node(std::move(p_scene_graph))
 		{
 		}
@@ -86,9 +86,9 @@ namespace black_cat
 			return l_result;
 		}
 
-		void bc_scene_graph::add_debug_shapes(bc_shape_drawer& p_shape_drawer) const
+		void bc_scene_graph::draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const
 		{
-			m_graph_node->add_debug_shapes(p_shape_drawer);
+			m_graph_node->draw_debug_shapes(p_shape_drawer);
 		}
 
 		void bc_scene_graph::clear()
@@ -97,7 +97,6 @@ namespace black_cat
 			{
 				for (auto& l_actor : *m_graph_node)
 				{
-					core::bc_get_service<core::bc_logger>()->log_debug((bcL("Removing actor: ") + core::bc_to_estring_frame(l_actor.get_index())).c_str());
 					l_actor.destroy();
 				}
 

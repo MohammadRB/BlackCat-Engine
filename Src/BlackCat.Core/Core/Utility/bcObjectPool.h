@@ -149,7 +149,7 @@ namespace black_cat
 
 			if (!l_result)
 			{
-				l_result = static_cast<T*>(bcAllocThrow(sizeof(T), m_alloc_type));
+				l_result = static_cast<T*>(BC_ALLOC_THROW(sizeof(T), m_alloc_type));
 			}
 
 			new(l_result)T(std::forward< TArgs >(p_args)...);
@@ -168,7 +168,7 @@ namespace black_cat
 			}
 			else
 			{
-				bcDelete(p_pointer);
+				BC_DELETE(p_pointer);
 			}
 		}
 

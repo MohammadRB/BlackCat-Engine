@@ -50,7 +50,7 @@ namespace black_cat
 			bcINT16 m_height;
 		};
 
-		class bc_ui_terrain_height_command_render_task : public game::bc_irender_task
+		class bc_ui_terrain_height_command_render_task : public game::bci_render_task
 		{
 		public:
 			bc_ui_terrain_height_command_render_task(const bc_editor_height_map_dx11& p_height_map, 

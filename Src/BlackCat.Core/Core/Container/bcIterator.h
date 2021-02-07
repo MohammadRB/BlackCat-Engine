@@ -135,14 +135,14 @@ namespace black_cat
 
 			reference operator *() const
 			{
-				bcAssert(bc_input_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_input_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return *bc_input_iterator_provider_traits< provider_type >::dereference(*m_provider, m_node);
 			}
 
 			pointer operator ->() const noexcept
 			{
-				bcAssert(bc_input_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_input_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return bc_input_iterator_provider_traits< provider_type >::dereference(*m_provider, m_node);
 			}
@@ -151,7 +151,7 @@ namespace black_cat
 			{
 				m_node = bc_input_iterator_provider_traits< provider_type >::increment(*m_provider, m_node);
 
-				bcAssert(bc_input_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_input_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return *this;
 			}
@@ -162,7 +162,7 @@ namespace black_cat
 
 				m_node = bc_input_iterator_provider_traits< provider_type >::increment(*m_provider, m_node);
 
-				bcAssert(bc_input_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_input_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return l_old;
 			}
@@ -232,14 +232,14 @@ namespace black_cat
 
 			reference operator *() const
 			{
-				bcAssert(bc_forward_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_forward_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return *bc_forward_iterator_provider_traits< provider_type >::dereference(*m_provider, m_node);
 			}
 
 			pointer operator ->() const noexcept
 			{
-				bcAssert(bc_forward_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_forward_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return bc_forward_iterator_provider_traits< provider_type >::dereference(*m_provider, m_node);
 			}
@@ -248,7 +248,7 @@ namespace black_cat
 			{
 				m_node = bc_forward_iterator_provider_traits< provider_type >::increment(*m_provider, m_node);
 
-				bcAssert(bc_forward_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_forward_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return *this;
 			}
@@ -259,7 +259,7 @@ namespace black_cat
 
 				m_node = bc_forward_iterator_provider_traits< provider_type >::increment(*m_provider, m_node);
 
-				bcAssert(bc_forward_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_forward_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return l_old;
 			}
@@ -403,21 +403,21 @@ namespace black_cat
 
 			reference operator *() const
 			{
-				bcAssert(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return *bc_bidirectional_iterator_provider_traits< provider_type >::dereference(*m_provider, m_node);
 			}
 
 			pointer operator ->() const noexcept
 			{
-				bcAssert(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return bc_bidirectional_iterator_provider_traits< provider_type >::dereference(*m_provider, m_node);
 			}
 
 			this_type& operator ++()
 			{
-				bcAssert(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				m_node = bc_bidirectional_iterator_provider_traits< provider_type >::increment(*m_provider, m_node);
 
@@ -428,7 +428,7 @@ namespace black_cat
 			{
 				this_type l_old = *this;
 
-				bcAssert(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				m_node = bc_bidirectional_iterator_provider_traits< provider_type >::increment(*m_provider, m_node);
 
@@ -437,7 +437,7 @@ namespace black_cat
 
 			this_type& operator --()
 			{
-				bcAssert(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				m_node = bc_bidirectional_iterator_provider_traits< provider_type >::decrement(*m_provider, m_node);
 
@@ -448,7 +448,7 @@ namespace black_cat
 			{
 				this_type l_old = *this;
 
-				bcAssert(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_bidirectional_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				m_node = bc_bidirectional_iterator_provider_traits< provider_type >::decrement(*m_provider, m_node);
 
@@ -610,14 +610,14 @@ namespace black_cat
 
 			reference operator *() const
 			{
-				bcAssert(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return *bc_random_access_iterator_provider_traits< provider_type >::dereference(*m_provider, m_node);
 			}
 
 			pointer operator ->() const noexcept
 			{
-				bcAssert(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return bc_random_access_iterator_provider_traits< provider_type >::dereference(*m_provider, m_node);
 			}
@@ -626,7 +626,7 @@ namespace black_cat
 			{
 				m_node = bc_random_access_iterator_provider_traits< provider_type >::increment(*m_provider, m_node);
 
-				bcAssert(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return *this;
 			}
@@ -637,7 +637,7 @@ namespace black_cat
 
 				m_node = bc_random_access_iterator_provider_traits< provider_type >::increment(*m_provider, m_node);
 
-				bcAssert(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return l_old;
 			}
@@ -646,7 +646,7 @@ namespace black_cat
 			{
 				m_node = bc_random_access_iterator_provider_traits< provider_type >::increment(*m_provider, m_node, p_count);
 
-				bcAssert(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return *this;
 			}
@@ -656,7 +656,7 @@ namespace black_cat
 				this_type l_temp = *this;
 				l_temp += p_count;
 
-				bcAssert(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, l_temp.m_node));
+				BC_ASSERT(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, l_temp.m_node));
 
 				return l_temp;
 			}
@@ -665,7 +665,7 @@ namespace black_cat
 			{
 				m_node = bc_random_access_iterator_provider_traits< provider_type >::decrement(*m_provider, m_node);
 
-				bcAssert(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return *this;
 			}
@@ -676,7 +676,7 @@ namespace black_cat
 
 				m_node = bc_random_access_iterator_provider_traits< provider_type >::decrement(*m_provider, m_node);
 
-				bcAssert(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return l_old;
 			}
@@ -685,7 +685,7 @@ namespace black_cat
 			{
 				m_node = bc_random_access_iterator_provider_traits< provider_type >::decrement(*m_provider, m_node, p_count);
 
-				bcAssert(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
+				BC_ASSERT(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, m_node));
 
 				return *this;
 			}
@@ -695,7 +695,7 @@ namespace black_cat
 				this_type l_temp = *this;
 				l_temp -= p_count;
 
-				bcAssert(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, l_temp.m_node));
+				BC_ASSERT(bc_random_access_iterator_provider_traits< provider_type >::validate(*m_provider, l_temp.m_node));
 
 				return l_temp;
 			}

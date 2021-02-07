@@ -20,7 +20,7 @@ namespace black_cat
 		};
 
 		template< bc_render_api TRenderApi >
-		class bc_platform_texture2d : public bc_platform_iresource<TRenderApi>
+		class bc_platform_texture2d : public bci_platform_resource<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_texture2d_pack<TRenderApi>;

@@ -24,7 +24,7 @@ namespace black_cat
 
 		void _copy_current_path_to_buffer(core::bc_estring p_path, bcECHAR* p_buffer)
 		{
-			bcAssert(p_path.size() < MAX_PATH);
+			BC_ASSERT(p_path.size() < MAX_PATH);
 
 #ifdef BC_UNICODE
 			std::wcscpy(p_buffer, p_path.c_str());

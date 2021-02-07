@@ -79,6 +79,8 @@ namespace black_cat
 		class bc_stream : core_platform::bc_no_copy
 		{
 		public:
+			bc_stream();
+			
 			/**
 			 * \brief Initialize stream with an actual stream object
 			 * \tparam TStreamAdapter 
@@ -164,6 +166,11 @@ namespace black_cat
 			bc_unique_ptr< bc_istream_adapter > m_stream;
 		};
 
+		inline bc_stream::bc_stream()
+			: m_stream(nullptr)
+		{
+		}
+		
 		template< class TStreamAdapter, typename >
 		bc_stream::bc_stream(TStreamAdapter&& p_stream)
 		{
@@ -175,23 +182,29 @@ namespace black_cat
 
 		inline bc_stream::bc_stream(bc_stream&& p_other) noexcept = default;
 
-		inline bc_stream::~bc_stream() = default;
+		inline bc_stream::~bc_stream()
+		{
+			if(get_status() == bc_stream_status::open)
+			{
+				m_stream->close();
+			}
+		}
 
 		inline bc_stream& bc_stream::operator=(bc_stream&& p_other) noexcept = default;
 
 		inline bc_stream_status bc_stream::get_status() const noexcept
 		{
-			return m_stream->get_status();
+			return m_stream ? m_stream->get_status() : bc_stream_status::error;
 		}
 
 		inline bool bc_stream::is_open() const noexcept
 		{
-			return m_stream->get_status() == bc_stream_status::open;
+			return get_status() == bc_stream_status::open;
 		}
 
 		inline bool bc_stream::is_close() const noexcept
 		{
-			return m_stream->get_status() == bc_stream_status::close;
+			return get_status() == bc_stream_status::close;
 		}
 
 		inline bool bc_stream::can_read() const noexcept

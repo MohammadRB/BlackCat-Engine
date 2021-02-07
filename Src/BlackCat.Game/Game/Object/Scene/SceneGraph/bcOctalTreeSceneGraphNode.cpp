@@ -2,7 +2,7 @@
 
 #include "Game/GamePCH.h"
 
-#include "Core/Utility/bcUtility.h"
+#include "Core/bcUtility.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/bcException.h"
 #include "Game/Object/Scene/SceneGraph/bcOctalTreeSceneGraphNode.h"
@@ -30,8 +30,8 @@ namespace black_cat
 			m_bottom_right_back(nullptr),
 			m_my_position(bc_octal_tree_node_position::null),
 			m_bound_box(p_box),
-			m_child_nodes_pool(bcNew(core::bc_concurrent_object_pool<bc_octal_tree_graph_node>(), core::bc_alloc_type::unknown)),
-			m_actors_pool(bcNew(core::bc_concurrent_memory_pool(), core::bc_alloc_type::unknown)),
+			m_child_nodes_pool(BC_NEW(core::bc_concurrent_object_pool<bc_octal_tree_graph_node>(), core::bc_alloc_type::unknown)),
+			m_actors_pool(BC_NEW(core::bc_concurrent_memory_pool(), core::bc_alloc_type::unknown)),
 			m_actors(graph_node_entry_allocator(*m_actors_pool))
 		{
 			const auto l_half_extends = p_box.get_half_extends();
@@ -79,7 +79,7 @@ namespace black_cat
 		{
 			core::bc_vector3f l_bound_box_center = p_parent.m_bound_box.get_center();
 			const core::bc_vector3f l_half_extends = p_parent.m_bound_box.get_half_extends() / 2;
-			const auto l_z_sign = graphic::bc_render_api_info::is_left_handed() ? +1 : -1;
+			const auto l_z_sign = graphic::bc_render_api_info::use_left_handed() ? +1 : -1;
 
 			switch (p_my_position)
 			{
@@ -124,7 +124,7 @@ namespace black_cat
 				l_bound_box_center.z += (l_half_extends.z * l_z_sign);
 				break;
 			default:
-				bcAssert(false);
+				BC_ASSERT(false);
 			}
 
 			m_bound_box = physics::bc_bound_box(l_bound_box_center, l_half_extends);
@@ -146,12 +146,12 @@ namespace black_cat
 
 			if (!m_parent)
 			{
-				bcDelete(m_actors_pool);
-				bcDelete(m_child_nodes_pool);
+				BC_DELETE(m_actors_pool);
+				BC_DELETE(m_child_nodes_pool);
 			}
 		}
 
-		bc_iscene_graph_node::iterator bc_octal_tree_graph_node::begin() noexcept
+		bci_scene_graph_node::iterator bc_octal_tree_graph_node::begin() noexcept
 		{
 			bc_octal_tree_graph_node* l_min_node = _get_min_node();
 
@@ -174,27 +174,27 @@ namespace black_cat
 			return iterator(this, nullptr);
 		}
 
-		bc_iscene_graph_node::const_iterator bc_octal_tree_graph_node::begin() const noexcept
+		bci_scene_graph_node::const_iterator bc_octal_tree_graph_node::begin() const noexcept
 		{
 			return begin();
 		}
 
-		bc_iscene_graph_node::const_iterator bc_octal_tree_graph_node::cbegin() const noexcept
+		bci_scene_graph_node::const_iterator bc_octal_tree_graph_node::cbegin() const noexcept
 		{
 			return begin();
 		}
 
-		bc_iscene_graph_node::iterator bc_octal_tree_graph_node::end() noexcept
+		bci_scene_graph_node::iterator bc_octal_tree_graph_node::end() noexcept
 		{
 			return iterator(this, nullptr);
 		}
 
-		bc_iscene_graph_node::const_iterator bc_octal_tree_graph_node::end() const noexcept
+		bci_scene_graph_node::const_iterator bc_octal_tree_graph_node::end() const noexcept
 		{
 			return const_iterator(this, nullptr);
 		}
 
-		bc_iscene_graph_node::const_iterator bc_octal_tree_graph_node::cend() const noexcept
+		bci_scene_graph_node::const_iterator bc_octal_tree_graph_node::cend() const noexcept
 		{
 			return const_iterator(this, nullptr);
 		}
@@ -227,7 +227,7 @@ namespace black_cat
 
 					if (p_camera_frustum.intersects(l_bound_box))
 					{
-						p_buffer.add_actor(l_entry.m_actor);
+						p_buffer.add(l_entry.m_actor);
 					}
 				}
 			}
@@ -284,14 +284,17 @@ namespace black_cat
 		bool bc_octal_tree_graph_node::update_actor(bc_actor& p_actor)
 		{
 			auto* l_actor_mediate_component = p_actor.get_component<bc_mediate_component>();
-			auto& l_actor_prev_bound_box = l_actor_mediate_component->get_prev_bound_box();
-			auto& l_actor_bound_box = l_actor_mediate_component->get_bound_box();
+			const auto& l_actor_prev_bound_box = l_actor_mediate_component->get_prev_bound_box();
+			const auto& l_actor_bound_box = l_actor_mediate_component->get_bound_box();
 
 			bc_octal_tree_graph_node* l_prev_containing_node = _find_containing_node(l_actor_prev_bound_box);
 			bc_octal_tree_graph_node* l_containing_node = _find_containing_node(l_actor_bound_box);
 
 			if (!l_containing_node)
 			{
+				const bool l_removed = _remove_actor(p_actor, l_actor_prev_bound_box);
+				BC_ASSERT(l_removed);
+				
 				return false;
 			}
 
@@ -301,11 +304,11 @@ namespace black_cat
 			}
 
 			const bool l_removed = _remove_actor(p_actor, l_actor_prev_bound_box);
-			const bool l_updated = _add_actor(p_actor, l_actor_bound_box);
+			const bool l_added = _add_actor(p_actor, l_actor_bound_box);
 
-			bcAssert(l_removed);
+			BC_ASSERT(l_removed);
 
-			return l_updated;
+			return l_added;
 		}
 
 		bool bc_octal_tree_graph_node::remove_actor(bc_actor& p_actor)
@@ -349,23 +352,23 @@ namespace black_cat
 			m_actors_count.store(0, core_platform::bc_memory_order::relaxed);
 		}
 
-		void bc_octal_tree_graph_node::add_debug_shapes(bc_shape_drawer& p_shape_drawer) const
+		void bc_octal_tree_graph_node::draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const
 		{
-			p_shape_drawer.render_wired_box(m_bound_box);
+			p_shape_drawer.draw_wired_bound_box(m_bound_box);
 
 			if (is_leaf_node())
 			{
 				return;
 			}
 
-			m_top_left_back->add_debug_shapes(p_shape_drawer);
-			m_top_left_front->add_debug_shapes(p_shape_drawer);
-			m_top_right_front->add_debug_shapes(p_shape_drawer);
-			m_top_right_back->add_debug_shapes(p_shape_drawer);
-			m_bottom_left_back->add_debug_shapes(p_shape_drawer);
-			m_bottom_left_front->add_debug_shapes(p_shape_drawer);
-			m_bottom_right_front->add_debug_shapes(p_shape_drawer);
-			m_bottom_right_back->add_debug_shapes(p_shape_drawer);
+			m_top_left_back->draw_debug_shapes(p_shape_drawer);
+			m_top_left_front->draw_debug_shapes(p_shape_drawer);
+			m_top_right_front->draw_debug_shapes(p_shape_drawer);
+			m_top_right_back->draw_debug_shapes(p_shape_drawer);
+			m_bottom_left_back->draw_debug_shapes(p_shape_drawer);
+			m_bottom_left_front->draw_debug_shapes(p_shape_drawer);
+			m_bottom_right_front->draw_debug_shapes(p_shape_drawer);
+			m_bottom_right_back->draw_debug_shapes(p_shape_drawer);
 		}
 
 		bool bc_octal_tree_graph_node::iterator_validate(const node_type* p_node) const noexcept
@@ -378,12 +381,12 @@ namespace black_cat
 			return p_first == p_second ? 0 : p_first > p_second ? 1 : -1;
 		}
 
-		bc_iscene_graph_node::value_type* bc_octal_tree_graph_node::iterator_dereference(node_type* p_node) const noexcept
+		bci_scene_graph_node::value_type* bc_octal_tree_graph_node::iterator_dereference(node_type* p_node) const noexcept
 		{
 			return &p_node->m_actor;
 		}
 
-		bc_iscene_graph_node::node_type* bc_octal_tree_graph_node::iterator_increment(node_type* p_node) const noexcept
+		bci_scene_graph_node::node_type* bc_octal_tree_graph_node::iterator_increment(node_type* p_node) const noexcept
 		{
 			auto* l_octal_tree_node_entry = static_cast<_bc_octal_tree_graph_node_entry*>(p_node);
 			auto l_next_internal_iterator = l_octal_tree_node_entry->m_internal_iterator;
@@ -408,7 +411,7 @@ namespace black_cat
 			return &*l_sibling_node->m_actors.begin();
 		}
 
-		bc_iscene_graph_node::node_type* bc_octal_tree_graph_node::iterator_decrement(node_type* p_node) const noexcept
+		bci_scene_graph_node::node_type* bc_octal_tree_graph_node::iterator_decrement(node_type* p_node) const noexcept
 		{
 			auto* l_octal_tree_node_entry = static_cast<_bc_octal_tree_graph_node_entry*>(p_node);
 			auto l_next_internal_iterator = l_octal_tree_node_entry->m_internal_iterator;
@@ -580,7 +583,7 @@ namespace black_cat
 			m_actors.swap(l_actors);
 			m_actors_count.store(0, core_platform::bc_memory_order::relaxed);
 
-			for (bc_iscene_graph_node_entry& l_entry : l_actors)
+			for (bci_scene_graph_node_entry& l_entry : l_actors)
 			{
 				add_actor(l_entry.m_actor);
 			}
@@ -729,7 +732,7 @@ namespace black_cat
 				return m_parent;
 			}
 
-			bcAssert(false);
+			BC_ASSERT(false);
 			return nullptr;
 		}
 
@@ -773,7 +776,7 @@ namespace black_cat
 				return m_parent;
 			}
 
-			bcAssert(false);
+			BC_ASSERT(false);
 			return nullptr;
 		}
 
@@ -782,7 +785,7 @@ namespace black_cat
 			auto* l_mediate_component = p_actor.get_component<bc_mediate_component>();
 			const auto& l_bound_box = l_mediate_component->get_bound_box();
 
-			bcAssert(!l_bound_box.is_empty());
+			BC_ASSERT(!l_bound_box.is_empty());
 
 			return l_bound_box;
 		}

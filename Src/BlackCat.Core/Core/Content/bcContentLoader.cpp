@@ -13,7 +13,7 @@ namespace black_cat
 		}
 
 		bc_base_content_loader::bc_base_content_loader(bc_base_content_loader&& p_other) noexcept
-			: bc_icontent_loader(std::move(p_other))
+			: bci_content_loader(std::move(p_other))
 		{
 		}
 
@@ -23,55 +23,55 @@ namespace black_cat
 
 		bc_base_content_loader& bc_base_content_loader::operator=(bc_base_content_loader&& p_other) noexcept
 		{
-			bc_icontent_loader::operator=(std::move(p_other));
+			bci_content_loader::operator=(std::move(p_other));
 
 			return *this;
 		}
 
 		void bc_base_content_loader::content_offline_file_open_succeeded(bc_content_loading_context& p_context) const
 		{
-			p_context.m_file_buffer_size = p_context.m_file->length();
-			p_context.m_file_buffer.reset(reinterpret_cast<bcBYTE*>(bcAlloc(p_context.m_file_buffer_size, bc_alloc_type::frame)));
+			p_context.m_file_buffer_size = p_context.m_file.length();
+			p_context.m_file_buffer.reset(reinterpret_cast<bcBYTE*>(BC_ALLOC(p_context.m_file_buffer_size, bc_alloc_type::frame)));
 
-			p_context.m_file->read(p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
+			p_context.m_file.read(p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
 		}
 
 		void bc_base_content_loader::content_offline_processing(bc_content_loading_context& p_context) const
 		{
-			auto l_file_name = bc_to_exclusive_string(p_context.m_file_path.c_str());
-			auto l_error_msg = bc_string_frame("Content offline processing is not supported: ") + l_file_name.c_str();
+			const auto l_file_name = bc_to_string_frame(p_context.m_file_path);
+			const auto l_error_msg = bc_string_frame("Content offline processing is not supported: ") + l_file_name;
 
 			throw bc_io_exception(l_error_msg.c_str());
 		}
 
 		void bc_base_content_loader::content_file_open_succeeded(bc_content_loading_context& p_context) const
 		{
-			p_context.m_file_buffer_size = p_context.m_file->length();
-			p_context.m_file_buffer.reset(reinterpret_cast<bcBYTE*>(bcAlloc(p_context.m_file_buffer_size, bc_alloc_type::frame)));
+			p_context.m_file_buffer_size = p_context.m_file.length();
+			p_context.m_file_buffer.reset(reinterpret_cast<bcBYTE*>(BC_ALLOC(p_context.m_file_buffer_size, bc_alloc_type::frame)));
 
-			p_context.m_file->read(p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
+			p_context.m_file.read(p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
 		}
 
 		void bc_base_content_loader::content_file_open_failed(bc_content_loading_context& p_context) const
 		{
-			auto l_file_name = bc_to_exclusive_string(p_context.m_file_path.c_str());
-			auto l_error_msg = bc_string_frame("Cannot open content file: ") + l_file_name.c_str();
+			const auto l_file_name = bc_to_string_frame(p_context.m_file_path);
+			const auto l_error_msg = bc_string_frame("Cannot open content file: ") + l_file_name;
 
 			throw bc_io_exception(l_error_msg.c_str());
 		}
 
 		void bc_base_content_loader::content_file_open_failed(bc_content_saving_context& p_context) const
 		{
-			auto l_file_name = bc_to_exclusive_string(p_context.m_file_path.c_str());
-			auto l_error_msg = bc_string_frame("Cannot open content file: ") + l_file_name.c_str();
+			const auto l_file_name = bc_to_string_frame(p_context.m_file_path);
+			const auto l_error_msg = bc_string_frame("Cannot open content file: ") + l_file_name;
 
 			throw bc_io_exception(l_error_msg.c_str());
 		}
 
 		void bc_base_content_loader::content_processing(bc_content_saving_context& p_context) const
 		{
-			auto l_file_name = bc_to_exclusive_string(p_context.m_file_path.c_str());
-			auto l_error_msg = bc_string_frame("Content saving is not supported: ") + l_file_name.c_str();
+			const auto l_file_name = bc_to_string_frame(p_context.m_file_path);
+			const auto l_error_msg = bc_string_frame("Content saving is not supported: ") + l_file_name;
 
 			throw bc_io_exception(l_error_msg.c_str());
 		}
@@ -86,30 +86,27 @@ namespace black_cat
 				return l_result;
 			}
 
-			return bc_content_loader_result(bc_io_exception("Error in loading content"));
+			return bc_content_loader_result(bc_io_exception("Content load result is not set"));
 		}
 
 		void bc_base_content_loader::cleanup(bc_content_loading_context& p_context) const
 		{
-			if(p_context.m_file->is_open())
+			if(p_context.m_file.is_open())
 			{
-				p_context.m_file->close();
+				p_context.m_file.close();
 			}
 
-			p_context.m_file.reset();
-			p_context.m_parameter.reset();
 			p_context.m_file_buffer.reset();
+			p_context.m_instance_parameters.reset();
 			p_context.m_result.reset();
 		}
 
 		void bc_base_content_loader::cleanup(bc_content_saving_context& p_context) const
 		{
-			if (p_context.m_file->is_open())
+			if (p_context.m_file.is_open())
 			{
-				p_context.m_file->close();
+				p_context.m_file.close();
 			}
-
-			p_context.m_file.reset();
 		}
 	}
 }

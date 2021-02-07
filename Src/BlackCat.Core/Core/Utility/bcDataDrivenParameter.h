@@ -12,16 +12,32 @@ namespace black_cat
 	namespace core
 	{
 		/**
-		 * \brief This class contains parameters from data driven sources, e.g. json files, which are constant throughout program lifetime.
+		 * \brief Contains parameters from data driven sources, e.g. json files.
+		 * \n By default memory is allocated from program stack.
 		 */
 		class bc_data_driven_parameter
 		{
 		private:
 			using key_hash = std::hash< const bcCHAR* >;
-			using map_type = bc_unordered_map_program< key_hash::result_type, bc_any >;
+			using map_type = bc_unordered_map_a
+			<
+				key_hash::result_type,
+				bc_any,
+				std::hash< key_hash::result_type >,
+				std::equal_to< key_hash::result_type >,
+				bc_runtime_allocator
+			>;
 
 		public:
-			bc_data_driven_parameter() = default;
+			bc_data_driven_parameter()
+				: bc_data_driven_parameter(bc_alloc_type::program)
+			{
+			}
+
+			explicit bc_data_driven_parameter(bc_alloc_type p_alloc_type)
+				: m_values(map_type::allocator_type(p_alloc_type))
+			{
+			}
 
 			bc_data_driven_parameter(const bc_data_driven_parameter&) = default;
 

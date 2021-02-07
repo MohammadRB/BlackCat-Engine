@@ -180,7 +180,7 @@ namespace black_cat
 		decltype(bc_particle_builder::s_curves)::size_type bc_particle_builder::_find_curve_index(const bc_particle_curve& p_curve) noexcept
 		{
 			const auto l_index = std::find(std::begin(s_curves), std::end(s_curves), &p_curve) - std::begin(s_curves);
-			bcAssert(l_index < s_curves.size());
+			BC_ASSERT(l_index < s_curves.size());
 
 			return l_index;
 		}

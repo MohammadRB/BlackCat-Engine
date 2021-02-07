@@ -19,7 +19,7 @@ namespace black_cat
 	namespace game
 	{
 		class bc_game_console;
-		class bc_igame_console_imp;
+		class bci_game_console_imp;
 
 		enum class bc_console_output_type : bcUBYTE
 		{
@@ -58,7 +58,7 @@ namespace black_cat
 			core_platform::bc_promise< platform::bc_script_variable > m_promise;
 		};
 
-		class BC_GAME_DLL bc_game_console : private core::bc_ilog_listener
+		class BC_GAME_DLL bc_game_console : private core::bci_log_listener
 		{
 		public:
 			explicit bc_game_console(bc_script_system& p_script_system);
@@ -73,7 +73,7 @@ namespace black_cat
 			 * \brief Set concrete console object. Ownership of object is by caller.
 			 * \param p_imp 
 			 */
-			void set_implementation(bc_igame_console_imp* p_imp);
+			void set_implementation(bci_game_console_imp* p_imp);
 
 			void disable_output(bc_console_output_type p_output) noexcept;
 
@@ -92,12 +92,12 @@ namespace black_cat
 		private:
 			void on_log(core::bc_log_type p_type, const bcECHAR* p_log) override;
 
-			bool _on_key(core::bc_ievent& p_event);
+			bool _on_key(core::bci_event& p_event);
 
 			void _write_logs();
 
 			bc_script_system& m_script_system;
-			bc_igame_console_imp* m_imp;
+			bci_game_console_imp* m_imp;
 
 			core_platform::bc_mutex m_logs_mutex;
 			core::bc_array< bool, static_cast<bcSIZE>(bc_console_output_type::_count) > m_log_types;

@@ -7,16 +7,12 @@
 #include "Core/Container/bcString.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcParameterPack.h"
+#include "PhysicsImp/Collision/bcShapeQuery.h"
 #include "PhysicsImp/Collision/bcSceneQuery.h"
 #include "Game/System/Physics/bcPxWrap.h"
 
 namespace black_cat
 {
-	namespace physics
-	{
-		using bc_scene_ray_query_buffer = bc_scene_query_buffer< bc_ray_hit >;
-	}
-
 	namespace game
 	{
 		class bc_game_system;
@@ -52,17 +48,17 @@ namespace black_cat
 		class bc_ui_command_update_context
 		{
 		public:
-			bc_ui_command_update_context(const core_platform::bc_clock::update_param& p_elapsed, 
+			bc_ui_command_update_context(const core_platform::bc_clock::update_param& p_clock, 
 				game::bc_game_system& p_game_system, 
 				bc_iui_command_state* p_state)
-				: m_elapsed(p_elapsed),
+				: m_clock(p_clock),
 				m_game_system(p_game_system),
 				m_state(p_state),
 				m_result()
 			{
 			}
 
-			const core_platform::bc_clock::update_param& m_elapsed;
+			const core_platform::bc_clock::update_param& m_clock;
 			game::bc_game_system& m_game_system;
 			bc_iui_command_state* m_state;
 			core::bc_any m_result;
@@ -88,16 +84,16 @@ namespace black_cat
 		class bc_ui_command_undo_context
 		{
 		public:
-			bc_ui_command_undo_context(const core_platform::bc_clock::update_param& p_elapsed,
+			bc_ui_command_undo_context(const core_platform::bc_clock::update_param& p_clock,
 				game::bc_game_system& p_game_system,
 				bc_iui_command_state* p_state)
-				: m_elapsed(p_elapsed),
+				: m_clock(p_clock),
 				m_game_system(p_game_system),
 				m_state(p_state)
 			{
 			}
 
-			const core_platform::bc_clock::update_param& m_elapsed;
+			const core_platform::bc_clock::update_param& m_clock;
 			game::bc_game_system& m_game_system;
 			bc_iui_command_state* m_state;
 		};
@@ -158,6 +154,10 @@ namespace black_cat
 				game::bc_query_group p_query_group,
 				physics::bc_query_flags p_flags,
 				physics::bc_scene_ray_query_buffer& p_result) const;
+
+			physics::bc_query_hit_type skinned_mesh_hit_check(const update_context& p_context,
+				const physics::bc_ray& p_ray,
+				physics::bc_scene_query_post_filter_data& p_filter_data) const;
 		};
 
 		class bc_iui_command_reversible : public bc_iui_command
@@ -173,5 +173,15 @@ namespace black_cat
 			 */
 			virtual void undo(undo_context& p_context) = 0;
 		};
+
+		inline bool bc_iui_command::is_reversible() const
+		{
+			return false;
+		}
+		
+		inline bool bc_iui_command_reversible::is_reversible() const
+		{
+			return true;
+		}
 	}
 }

@@ -5,38 +5,44 @@
       "stream_content": [
         {
           "content_title": "shape_draw_vs",
-          "content_name": "vertex_shader",
+          "content_loader": "vertex_shader",
           "content_file": "content\\shader\\directx11\\bcShapeDraw.hlsl",
           "content_parameter": { "function": "vs" }
         },
         {
           "content_title": "shape_draw_ps",
-          "content_name": "pixel_shader",
+          "content_loader": "pixel_shader",
           "content_file": "content\\shader\\directx11\\bcShapeDraw.hlsl",
           "content_parameter": { "function": "ps" }
         },
         {
           "content_title": "mesh_shadow_map_vs",
-          "content_name": "vertex_shader",
+          "content_loader": "vertex_shader",
           "content_file": "content\\shader\\directx11\\ShadowMap\\bcMeshShadowMap.hlsl",
           "content_parameter": { "function": "vs" }
         },
         {
           "content_title": "vegetable_leaf_shadow_map_vs",
-          "content_name": "vertex_shader",
+          "content_loader": "vertex_shader",
           "content_file": "content\\shader\\directx11\\ShadowMap\\bcVegetableLeafShadowMap.hlsl",
           "content_parameter": { "function": "vs" }
         },
         {
           "content_title": "vegetable_leaf_shadow_map_ps",
-          "content_name": "pixel_shader",
+          "content_loader": "pixel_shader",
           "content_file": "content\\shader\\directx11\\ShadowMap\\bcVegetableLeafShadowMap.hlsl",
           "content_parameter": { "function": "ps" }
         },
         {
           "content_title": "vegetable_trunk_shadow_map_vs",
-          "content_name": "vertex_shader",
+          "content_loader": "vertex_shader",
           "content_file": "content\\shader\\directx11\\ShadowMap\\bcVegetableTrunkShadowMap.hlsl",
+          "content_parameter": { "function": "vs" }
+        },
+        {
+          "content_title": "skinned_mesh_shadow_map_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "content\\shader\\directx11\\ShadowMap\\bcSkinnedMeshShadowMap.hlsl",
           "content_parameter": { "function": "vs" }
         }
       ]
@@ -46,79 +52,85 @@
       "stream_content": [
         {
           "content_title": "terrain_vs",
-          "content_name": "vertex_shader",
+          "content_loader": "vertex_shader",
           "content_file": "content\\shader\\directx11\\Terrain\\bcTerrain.hlsl",
           "content_parameter": { "function": "vs" }
         },
         {
           "content_title": "terrain_hs",
-          "content_name": "hull_shader",
+          "content_loader": "hull_shader",
           "content_file": "content\\shader\\directx11\\Terrain\\bcTerrain.hlsl",
           "content_parameter": { "function": "hs" }
         },
         {
           "content_title": "terrain_ds",
-          "content_name": "domain_shader",
+          "content_loader": "domain_shader",
           "content_file": "content\\shader\\directx11\\Terrain\\bcTerrain.hlsl",
           "content_parameter": { "function": "ds" }
         },
         {
           "content_title": "terrain_gbuffer_ps",
-          "content_name": "pixel_shader",
+          "content_loader": "pixel_shader",
           "content_file": "content\\shader\\directx11\\Terrain\\bcTerrain.hlsl",
           "content_parameter": { "function": "gbuffer_ps" }
         },
         {
           "content_title": "terrain_chunk_info",
-          "content_name": "compute_shader",
+          "content_loader": "compute_shader",
           "content_file": "content\\shader\\directx11\\Terrain\\bcTerrainChunkInfo.hlsl",
           "content_parameter": { "function": "main" }
         },
         {
           "content_title": "bb_write_vs",
-          "content_name": "vertex_shader",
+          "content_loader": "vertex_shader",
           "content_file": "content\\shader\\directx11\\bcBBWrite.hlsl",
           "content_parameter": { "function": "bb_write_vs" }
         },
         {
           "content_title": "bb_write_ps",
-          "content_name": "pixel_shader",
+          "content_loader": "pixel_shader",
           "content_file": "content\\shader\\directx11\\bcBBWrite.hlsl",
           "content_parameter": { "function": "bb_write_ps" }
         },
         {
           "content_title": "gbuffer_vs",
-          "content_name": "vertex_shader",
+          "content_loader": "vertex_shader",
           "content_file": "content\\shader\\directx11\\deferredrendering\\bcMeshGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_vs" }
         },
         {
+          "content_title": "gbuffer_skinned_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "content\\shader\\directx11\\deferredrendering\\bcSkinnedMeshGBuffer.hlsl",
+          "content_parameter": { "function": "gbuffer_skinned_vs" }
+        },
+        {
           "content_title": "gbuffer_ps",
-          "content_name": "pixel_shader",
+          "content_loader": "pixel_shader",
           "content_file": "content\\shader\\directx11\\deferredrendering\\bcMeshGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_ps" }
         },
         {
           "content_title": "gbuffer_light_map",
-          "content_name": "compute_shader",
+          "content_loader": "compute_shader",
           "content_file": "content\\shader\\directx11\\deferredrendering\\bcGBufferLightMap.hlsl",
           "content_parameter": { "function": "main" }
         },
         {
           "content_title": "gbuffer_vegetable_leaf_vs",
-          "content_name": "vertex_shader",
+          "content_loader": "vertex_shader",
           "content_file": "content\\shader\\directx11\\deferredrendering\\bcVegetableLeafGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_vegetable_leaf_vs" }
         },
         {
           "content_title": "gbuffer_vegetable_leaf_ps",
-          "content_name": "pixel_shader",
+          "content_loader": "pixel_shader",
           "content_file": "content\\shader\\directx11\\deferredrendering\\bcVegetableLeafGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_vegetable_leaf_ps" }
         },
         {
           "content_title": "gbuffer_vegetable_trunk_vs",
-          "content_name": "vertex_shader",
+          "content_loader": "vertex_shader",
           "content_file": "content\\shader\\directx11\\deferredrendering\\bcVegetableTrunkGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_vegetable_trunk_vs" }
         }
@@ -129,57 +141,115 @@
       "stream_content": [
         {
           "content_title": "particle_emission",
-          "content_name": "compute_shader",
+          "content_loader": "compute_shader",
           "content_file": "content\\shader\\directx11\\particle\\bcParticleEmission.hlsl",
           "content_parameter": { "function": "main" }
         },
         {
           "content_title": "particle_simulation",
-          "content_name": "compute_shader",
+          "content_loader": "compute_shader",
           "content_file": "content\\shader\\directx11\\particle\\bcParticleSimulation.hlsl",
           "content_parameter": { "function": "main" }
         },
         {
           "content_title": "bitonic_group_sort",
-          "content_name": "compute_shader",
+          "content_loader": "compute_shader",
           "content_file": "content\\shader\\directx11\\particle\\bcParticleGroupSort.hlsl",
           "content_parameter": { "function": "bitonic_group_sort" }
         },
         {
           "content_title": "bitonic_sort",
-          "content_name": "compute_shader",
+          "content_loader": "compute_shader",
           "content_file": "content\\shader\\directx11\\particle\\bcParticleSort.hlsl",
           "content_parameter": { "function": "bitonic_sort" }
         },
         {
           "content_title": "bitonic_matrix_transpose",
-          "content_name": "compute_shader",
+          "content_loader": "compute_shader",
           "content_file": "content\\shader\\directx11\\particle\\bcParticleSortTranspose.hlsl",
           "content_parameter": { "function": "bitonic_matrix_transpose" }
         },
         {
           "content_title": "particle_render_vs",
-          "content_name": "vertex_shader",
+          "content_loader": "vertex_shader",
           "content_file": "content\\shader\\directx11\\particle\\bcParticleRender.hlsl",
           "content_parameter": { "function": "vs" }
         },
         {
           "content_title": "particle_render_gs",
-          "content_name": "geometry_shader",
+          "content_loader": "geometry_shader",
           "content_file": "content\\shader\\directx11\\particle\\bcParticleRender.hlsl",
           "content_parameter": { "function": "gs" }
         },
         {
           "content_title": "particle_render_ps",
-          "content_name": "pixel_shader",
+          "content_loader": "pixel_shader",
           "content_file": "content\\shader\\directx11\\particle\\bcParticleRender.hlsl",
           "content_parameter": { "function": "ps" }
         }
       ]
     },
     {
-      "stream_name": "engine_resources",
+      "stream_name": "engine_assets",
       "stream_content": [
+        {
+          "content_title": "box",
+          "content_loader": "mesh",
+          "content_file": "content\\model\\box.fbx",
+          "content_parameter": {
+            "auto_scale": 1.5,
+            "collider": "box.fbx",
+            "high_detail_query_shape": false
+          }
+        },
+        {
+          "content_title": "sphere",
+          "content_loader": "mesh",
+          "content_file": "content\\model\\sphere.fbx",
+          "content_parameter": {
+            "auto_scale": 1.5,
+            "collider": "sphere.fbx",
+            "high_detail_query_shape": false
+          }
+        },
+        {
+          "content_title": "convex",
+          "content_loader": "mesh",
+          "content_file": "content\\model\\convex.fbx",
+          "content_parameter": {
+            "auto_scale": 1.5,
+            "collider": "convex.fbx",
+            "high_detail_query_shape": false
+          }
+        },
+        {
+          "content_title": "capsule",
+          "content_loader": "mesh",
+          "content_file": "content\\model\\capsule.fbx",
+          "content_parameter": {
+            "auto_scale": 1.5,
+            "collider": "capsule.fbx",
+            "high_detail_query_shape": false
+          }
+        },
+        {
+          "content_title": "xbot",
+          "content_loader": "mesh",
+          "content_file": "content\\model\\xbot\\xbot.fbx",
+          "content_parameter": {
+            "auto_scale": 10.0,
+            "skinned": true,
+            "collider": "xbot.collider.fbx",
+            "high_detail_query_shape": true
+          }
+        },
+        {
+          "content_title": "xbot-neutral-idle",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-neutral-idle.fbx",
+          "content_parameter": {
+          }
+        }
       ]
     }
   ]

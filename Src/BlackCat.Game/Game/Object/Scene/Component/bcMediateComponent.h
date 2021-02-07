@@ -19,7 +19,7 @@ namespace black_cat
 		/**
 		 * \brief Register mediate component as last component to receive published events as last component
 		 */
-		class BC_GAME_DLL bc_mediate_component : public bc_iactor_component
+		class BC_GAME_DLL bc_mediate_component : public bci_actor_component
 		{
 			BC_COMPONENT(mediate, true, true)
 
@@ -28,7 +28,7 @@ namespace black_cat
 			static constexpr const bcCHAR* s_entity_name_json_key = "entity_name";
 
 		public:
-			explicit bc_mediate_component(bc_actor_component_index p_index);
+			bc_mediate_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
 
 			bc_mediate_component(bc_mediate_component&&) = default;
 
@@ -42,29 +42,35 @@ namespace black_cat
 
 			void set_entity_name(const bcCHAR* p_entity_name);
 
-			void set_controller(core::bc_unique_ptr< bc_iactor_controller > p_controller);
+			void set_controller(core::bc_unique_ptr< bci_actor_controller > p_controller);
 			
 			const physics::bc_bound_box& get_prev_bound_box() const noexcept;
 			
 			const physics::bc_bound_box& get_bound_box() const noexcept;
 
-			core::bc_vector3f get_world_position() const noexcept;
+			const core::bc_matrix4f& get_world_transform() const noexcept;
+			
+			core::bc_vector3f get_position() const noexcept;
 
-			void initialize(bc_actor& p_actor, const core::bc_data_driven_parameter& p_parameters) override;
+			void initialize(const bc_actor_component_initialize_context& p_context) override;
+			
+			void update(const bc_actor_component_update_content& p_context) override;
+			
+			void handle_event(const bc_actor_component_event_context& p_context) override;
 
-			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
-
-			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock) override;
+			void debug_draw(const bc_actor_component_debug_draw_context& p_context) override;
 			
 		private:
+			void _handle_event(bc_actor& p_actor, const bc_actor_event& p_event);
+
 			const bcCHAR* m_entity_name;
 			
 			bc_scene* m_scene;
-			core::bc_matrix4f m_transformation;
-			core::bc_unique_ptr<bc_iactor_controller> m_controller;
+			core::bc_matrix4f m_world_transform;
 			bool m_bound_box_changed;
 			physics::bc_bound_box m_prev_bound_box;
 			physics::bc_bound_box m_bound_box;
+			core::bc_unique_ptr<bci_actor_controller> m_controller;
 		};
 
 		inline const bcCHAR* bc_mediate_component::get_entity_name() const
@@ -87,9 +93,14 @@ namespace black_cat
 			return m_bound_box;
 		}
 
-		inline core::bc_vector3f bc_mediate_component::get_world_position() const noexcept
+		inline const core::bc_matrix4f& bc_mediate_component::get_world_transform() const noexcept
 		{
-			return m_transformation.get_translation();
+			return m_world_transform;
+		}
+		
+		inline core::bc_vector3f bc_mediate_component::get_position() const noexcept
+		{
+			return m_world_transform.get_translation();
 		}
 	}
 }

@@ -5,16 +5,19 @@
 #include "Core/Content/bcContentLoader.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/Object/Mesh/bcMeshCollider.h"
+#include "Game/Object/Mesh/bcSkinnedMeshCollider.h"
 #include "BlackCat/bcExport.h"
 
-#include "3rdParty/Assimp/Include/scene.h"
+struct aiNode;
+struct aiScene;
+struct aiMesh;
 
 namespace black_cat
 {
 	class BC_DLL bc_mesh_collider_loader : public core::bc_base_content_loader
 	{
 	public:
-		explicit bc_mesh_collider_loader(bool p_high_detail_collision_shape);
+		bc_mesh_collider_loader() = default;
 
 		bc_mesh_collider_loader(bc_mesh_collider_loader&&) = default;
 
@@ -22,29 +25,31 @@ namespace black_cat
 
 		bc_mesh_collider_loader& operator=(bc_mesh_collider_loader&&) = default;
 
-		bool static is_px_node(const aiNode& p_node);
-
 		bool support_offline_processing() const override;
 
 		void content_processing(core::bc_content_loading_context& p_context) const override;
 
 	private:
-		aiNode* find_px_node(const aiNode& p_ainode, const aiMesh& p_ainode_mesh) const;
+		aiNode* find_px_node(const aiNode& p_ai_node, const aiMesh& p_ai_node_mesh) const;
 
-		game::bc_mesh_part_collider convert_px_node(physics::bc_physics& p_physics,
-			const aiScene& p_aiscene,
-			const aiNode& p_ainode,
-			const core::bc_matrix4f& p_parent_transformation,
-			bool p_generate_high_detail_query_shape) const;
+		void convert_px_node(physics::bc_physics& p_physics,
+			const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
+			const aiScene& p_ai_scene,
+			const aiNode& p_attached_node,
+			const aiNode& p_px_node,
+			bool p_high_detail_query_shape,
+			bool p_skinned,
+			game::bc_mesh_part_collider& p_collider) const;
 
-		void convert_nodes(physics::bc_physics& p_physics,
-			core::bc_content_loading_context& p_context,
-			const aiScene& p_aiscene,
-			const aiNode& p_ainode,
-			const core::bc_matrix4f& p_parent_transformation,
-			bool p_generate_high_detail_query_shape,
-			game::bc_mesh_collider& p_result) const;
-
-		bool m_high_detail_query_shape;
+		void convert_nodes(core::bc_content_loading_context& p_context,
+			physics::bc_physics& p_physics,
+			const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
+			const core::bc_unordered_map_frame<const bcCHAR*, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping,
+			const aiScene& p_ai_scene,
+			const aiNode& p_ai_node,
+			bool p_high_detail_query_shape,
+			bool p_skinned,
+			game::bc_mesh_collider& p_collider,
+			game::bc_skinned_mesh_collider& p_skinned_collider) const;
 	};
 }

@@ -160,7 +160,7 @@ namespace black_cat
 			 * This function run simulation async and return immediately.
 			 * \param p_elapsed_time Amount of time to advance simulation by.
 			 */
-			void update(core_platform::bc_clock::update_param p_elapsed_time);
+			void update(const core_platform::bc_clock::update_param& p_elapsed_time);
 
 			/**
 			 * \brief Check if simulation has been done.
@@ -211,13 +211,15 @@ namespace black_cat
 			 * \param[in] p_hit_flags Specifies which properties per hit should be computed and returned via the hit callback.
 			 * \param[in] p_query_flags	
 			 * \param[in] p_query_groups Specify witch groups must be included in query.
+			 * \param p_filter_callback Custom filtering logic
 			 * \return True if any touching or blocking hits were found.
 			 */
 			bool raycast(const bc_ray& p_ray, 
 				bc_scene_ray_query_buffer& p_buffer, 
 				bc_hit_flag p_hit_flags = bc_hit_flag::hit_info,
 				bc_query_flags p_query_flags = core::bc_enum::or({ bc_query_flags::statics, bc_query_flags::dynamics}),
-				bc_query_group p_query_groups = bc_query_group::all) const;
+				bc_query_group p_query_groups = bc_query_group::all,
+				bc_scene_query_post_filter_callback* p_filter_callback = nullptr) const;
 
 			/**
 			 * \brief Performs a sweep test against objects in the scene.
@@ -235,11 +237,12 @@ namespace black_cat
 			bool sweep(const bc_shape_geometry& p_geometry,
 				const bc_transform& p_pose,
 				const core::bc_vector3f& p_unit_dir,
-				const bcFLOAT p_max_dist,
+				bcFLOAT p_max_dist,
 				bc_scene_sweep_query_buffer& p_buffer,
 				bc_hit_flag p_hit_flags = bc_hit_flag::hit_info,
 				bc_query_flags p_query_flags = core::bc_enum::or({ bc_query_flags::statics, bc_query_flags::dynamics }),
-				bc_query_group p_query_groups = bc_query_group::all) const;
+				bc_query_group p_query_groups = bc_query_group::all,
+				bc_scene_query_post_filter_callback* p_filter_callback = nullptr) const;
 
 			/**
 			\brief Performs an overlap test of a given geometry against objects in the scene.
@@ -254,7 +257,8 @@ namespace black_cat
 				const bc_transform& p_pose,
 				bc_scene_overlap_query_buffer& p_buffer,
 				bc_query_flags p_query_flags = core::bc_enum::or({ bc_query_flags::statics, bc_query_flags::dynamics }),
-				bc_query_group p_query_groups = bc_query_group::all) const;
+				bc_query_group p_query_groups = bc_query_group::all,
+				bc_scene_query_post_filter_callback* p_filter_callback = nullptr) const;
 
 			void lock();
 
@@ -270,8 +274,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
 
 		private:
 			platform_pack m_pack;

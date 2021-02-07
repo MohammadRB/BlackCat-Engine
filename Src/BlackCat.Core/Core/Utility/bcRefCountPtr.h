@@ -61,7 +61,7 @@ namespace black_cat
 			bool dec_ref() noexcept
 			{
 				const auto l_ref_count = m_ref_count.fetch_sub(1U, core_platform::bc_memory_order::relaxed) - 1;
-				bcAssert(l_ref_count >= 0);
+				BC_ASSERT(l_ref_count >= 0);
 
 				return l_ref_count == 0;
 			}

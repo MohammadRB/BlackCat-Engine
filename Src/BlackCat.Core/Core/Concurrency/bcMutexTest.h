@@ -47,7 +47,7 @@ namespace black_cat
 		{
 #ifdef BC_DEBUG
 			const auto l_current_thread_id = id_hasher()(core_platform::bc_thread::current_thread_id());
-			auto l_expected = id_hash_t(0);
+			auto l_expected = static_cast< id_hash_t >(0);
 
 			const auto l_locked = m_thread_id.compare_exchange_strong
 			(
@@ -57,7 +57,7 @@ namespace black_cat
 				core_platform::bc_memory_order::relaxed
 			);
 
-			bcAssert(l_locked);
+			BC_ASSERT(l_locked);
 #endif
 		}
 
@@ -67,9 +67,9 @@ namespace black_cat
 			const auto l_current_thread_id = id_hasher()(core_platform::bc_thread::current_thread_id());
 			const auto l_thread_id = m_thread_id.load(core_platform::bc_memory_order::relaxed);
 			
-			bcAssert(l_current_thread_id == l_thread_id);
+			BC_ASSERT(l_current_thread_id == l_thread_id);
 			
-			m_thread_id.store(id_hash_t(0), core_platform::bc_memory_order::relaxed);
+			m_thread_id.store(static_cast< id_hash_t >(0), core_platform::bc_memory_order::relaxed);
 #endif
 		}
 

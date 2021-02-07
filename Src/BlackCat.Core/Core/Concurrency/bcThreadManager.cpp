@@ -118,7 +118,7 @@ namespace black_cat
 					}
 				}
 
-				bcAssert(false);
+				BC_ASSERT(false);
 			}
 		}
 
@@ -187,7 +187,7 @@ namespace black_cat
 			{
 				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_threads_mutex);
 
-				bcUINT32 l_my_index = m_threads.size();
+				auto l_my_index = m_threads.size();
 				if (l_my_index >= m_thread_count + m_reserved_thread_count)
 				{
 					return;

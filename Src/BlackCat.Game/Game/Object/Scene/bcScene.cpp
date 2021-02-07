@@ -111,32 +111,48 @@ namespace black_cat
 			}
 		}
 
-		void bc_scene::add_debug_shapes(bc_shape_drawer& p_shape_drawer) const
+		void bc_scene::draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const
 		{
-			m_scene_graph.add_debug_shapes(p_shape_drawer);
+			m_scene_graph.draw_debug_shapes(p_shape_drawer);
 		}
 
-		void bc_scene::update_px(bc_physics_system& p_physics, core_platform::bc_clock::update_param p_time)
+		void bc_scene::update_px(bc_physics_system& p_physics, const core_platform::bc_clock::update_param& p_clock)
 		{
-			m_px_scene->update(p_time);
+			m_px_scene->update(p_clock);
 			m_px_scene->wait();
 
 			auto l_px_actors = m_px_scene->get_active_actors();
-			const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), l_px_actors.size() / 100);
+			const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), l_px_actors.size() / 25U + 1);
 
 			core::bc_concurrency::concurrent_for_each
 			(
 				l_num_thread,
 				std::begin(l_px_actors),
 				std::end(l_px_actors),
-				[]() {return true; },
+				[]() { return true; },
 				[&](bool, physics::bc_updated_actor& p_px_actor)
 				{
 					bc_actor l_actor = p_physics.get_game_actor(p_px_actor.m_actor);
-					l_actor.add_event(bc_actor_event_world_transform(p_px_actor.m_global_pose.get_matrix4()));
+					l_actor.add_event(bc_actor_event_world_transform(p_px_actor.m_global_pose.get_matrix4(), true));
 				},
 				[](bool) {}
 			);
+		}
+
+		core::bc_task<void> bc_scene::update_px_async(bc_physics_system& p_physics, const core_platform::bc_clock::update_param& p_clock)
+		{
+			auto l_task = core::bc_concurrency::start_task
+			(
+				core::bc_delegate< void() >
+				(
+					[=, &p_physics, &p_clock]()
+					{
+						update_px(p_physics, p_clock);
+					}
+				)
+			);
+
+			return l_task;
 		}
 
 		void bc_scene::update_graph()
@@ -147,7 +163,7 @@ namespace black_cat
 					m_new_actors_lock, core_platform::bc_lock_operation::heavy
 				);
 
-				const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), m_new_actors.size() / 10);
+				const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), m_new_actors.size() / 10U + 1);
 				
 				core::bc_concurrency::concurrent_for_each
 				(
@@ -169,7 +185,7 @@ namespace black_cat
 							_remove_actor(std::get<bc_actor>(p_actor));
 							break;
 						default:
-							bcAssert(false);
+							BC_ASSERT(false);
 						}
 					},
 					[](bool) {}
@@ -178,6 +194,22 @@ namespace black_cat
 				m_new_actors.clear();
 				m_new_actors.shrink_to_fit();
 			}
+		}
+
+		core::bc_task<void> bc_scene::update_graph_async()
+		{
+			auto l_task = core::bc_concurrency::start_task
+			(
+				core::bc_delegate< void() >
+				(
+					[=]()
+					{
+						update_graph();
+					}
+				)
+			);
+
+			return l_task;
 		}
 
 		void bc_scene::_add_actor(bc_actor& p_actor)
@@ -204,7 +236,13 @@ namespace black_cat
 			const bool l_updated = m_scene_graph.update_actor(p_actor);
 			if (!l_updated)
 			{
-				_remove_actor(p_actor);
+				auto* l_rigid_component = p_actor.get_component<bc_rigid_body_component>();
+				if (l_rigid_component)
+				{
+					physics::bc_rigid_body l_rigid_body = l_rigid_component->get_body();
+					m_px_scene->remove_actor(l_rigid_body);
+				}
+
 				p_actor.destroy();
 			}
 		}
@@ -219,12 +257,9 @@ namespace black_cat
 			}
 
 			const bool l_removed = m_scene_graph.remove_actor(p_actor);
-			if(l_removed)
-			{
-				p_actor.destroy();
-			}
+			p_actor.destroy();
 
-			bcAssert(l_removed);
+			BC_ASSERT(l_removed);
 		}
 	}
 }

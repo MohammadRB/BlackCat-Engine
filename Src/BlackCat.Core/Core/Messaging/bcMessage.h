@@ -25,10 +25,10 @@ namespace black_cat
 			}
 		};
 		
-		class BC_CORE_DLL bc_imessage
+		class BC_CORE_DLL bci_message
 		{
 		public:
-			virtual ~bc_imessage();
+			virtual ~bci_message();
 
 			const bcCHAR* get_message_name() const noexcept;
 
@@ -37,20 +37,20 @@ namespace black_cat
 			static bc_message_hash get_hash(const bcCHAR* p_name) noexcept;
 
 			template< class TMessage >
-			static bool is(const bc_imessage& p_message);
+			static bool is(const bci_message& p_message);
 
 			template< class TMessage >
-			static TMessage* as(bc_imessage& p_message);
+			static TMessage* as(bci_message& p_message);
 
 			template< class TMessage >
-			static const TMessage* as(const bc_imessage& p_message);
+			static const TMessage* as(const bci_message& p_message);
 
 		protected:
-			bc_imessage(const bcCHAR* p_name);
+			bci_message(const bcCHAR* p_name);
 
-			bc_imessage(const bc_imessage&);
+			bci_message(const bci_message&);
 
-			bc_imessage& operator=(const bc_imessage&);
+			bci_message& operator=(const bci_message&);
 			
 		private:
 			const bcCHAR* m_name;
@@ -58,14 +58,14 @@ namespace black_cat
 		};
 
 		template< class TMessage >
-		bool bc_imessage::is(const bc_imessage& p_message)
+		bool bci_message::is(const bci_message& p_message)
 		{
 			constexpr auto l_hash = bc_message_traits<TMessage>::message_hash();
 			return l_hash == p_message.get_message_hash();
 		}
 
 		template< class TMessage >
-		TMessage* bc_imessage::as(bc_imessage& p_message)
+		TMessage* bci_message::as(bci_message& p_message)
 		{
 			if (is<TMessage>(p_message))
 			{
@@ -76,9 +76,9 @@ namespace black_cat
 		}
 
 		template< class TMessage >
-		const TMessage* bc_imessage::as(const bc_imessage& p_message)
+		const TMessage* bci_message::as(const bci_message& p_message)
 		{
-			return as<TMessage>(const_cast<bc_imessage&>(p_message));
+			return as<TMessage>(const_cast<bci_message&>(p_message));
 		}
 	}
 }

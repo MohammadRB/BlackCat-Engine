@@ -18,7 +18,7 @@ namespace black_cat
 			void operator()(T* p_pointer) const noexcept
 			{
 				static_assert(sizeof(T) > 0, "Can not delete an incomplete type");
-				bcDelete(p_pointer);
+				BC_DELETE(p_pointer);
 			}
 		};
 
@@ -563,12 +563,12 @@ namespace black_cat
 			template< typename TDeleter >
 			meta_data* _allocate_meta(TDeleter p_deleter)
 			{
-				return bcNew(meta_data_imp<TDeleter>(p_deleter, false), bc_alloc_type::unknown);
+				return BC_NEW(meta_data_imp<TDeleter>(p_deleter, false), bc_alloc_type::unknown);
 			}
 
 			void _deallocate_meta(meta_data* p_meta)
 			{
-				bcDelete(p_meta);
+				BC_DELETE(p_meta);
 			}
 
 			void _inc_reference_count()
@@ -1201,13 +1201,13 @@ namespace black_cat
 		template< typename T, typename ...TArgs >
 		bc_unique_ptr< T > bc_make_unique(bc_alloc_type p_alloc_type, TArgs&&... p_args)
 		{
-			return bc_unique_ptr< T >(bcNew(T(std::forward< TArgs >(p_args)...), p_alloc_type));
+			return bc_unique_ptr< T >(BC_NEW(T(std::forward< TArgs >(p_args)...), p_alloc_type));
 		}
 
 		template< typename T, typename ...TArgs >
 		bc_unique_ptr< T > bc_make_unique(bc_alloc_type p_alloc_type, bcUINT16 p_alignment, TArgs&&... p_args)
 		{
-			return bc_unique_ptr< T >(bcAlignedNew(T(std::forward< TArgs >(p_args)...), p_alignment, p_alloc_type));
+			return bc_unique_ptr< T >(BC_ALIGNED_NEW(T(std::forward< TArgs >(p_args)...), p_alignment, p_alloc_type));
 		}
 
 		template< typename T, typename ...TArgs >
@@ -1222,7 +1222,7 @@ namespace black_cat
 			using meta_type = typename bc_shared_ptr< T >::template meta_data_imp<bc_default_deleter>;
 
 			const bcSIZE l_required_size = sizeof(T) + sizeof(meta_type);
-			void* l_alloc = bcAlloc(l_required_size, p_alloc_type);
+			void* l_alloc = BC_ALLOC(l_required_size, p_alloc_type);
 			if (!l_alloc)
 			{
 				throw std::bad_alloc();

@@ -14,7 +14,7 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_buffer< g_api_dx11 >::bc_platform_buffer()
-			: bc_platform_iresource()
+			: bci_platform_resource()
 		{
 			m_pack.m_buffer = nullptr;
 		}
@@ -22,7 +22,7 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_buffer<g_api_dx11>::bc_platform_buffer(platform_pack& p_pack)
-			: bc_platform_iresource(bc_platform_iresource::platform_pack(p_pack.m_buffer))
+			: bci_platform_resource(bci_platform_resource::platform_pack(p_pack.m_buffer))
 		{
 			m_pack.m_buffer = p_pack.m_buffer;
 		}
@@ -36,7 +36,7 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_buffer< g_api_dx11 >::bc_platform_buffer(const bc_platform_buffer& p_other)
-			: bc_platform_iresource(p_other)
+			: bci_platform_resource(p_other)
 		{
 			m_pack.m_buffer = p_other.m_pack.m_buffer;
 		};
@@ -45,7 +45,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_platform_buffer< g_api_dx11 >& bc_platform_buffer< g_api_dx11 >::operator=(const bc_platform_buffer& p_other)
 		{
-			bc_platform_iresource::operator=(p_other);
+			bci_platform_resource::operator=(p_other);
 			m_pack.m_buffer = p_other.m_pack.m_buffer;
 
 			return *this;
