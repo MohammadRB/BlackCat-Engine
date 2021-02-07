@@ -52,6 +52,7 @@ namespace black_cat
 		private:
 			bc_sub_mesh m_sub_mesh;
 			bc_sub_mesh_mat4_transform m_world_transforms;
+			bcFLOAT m_lod_scale;
 			bcFLOAT m_lod_factor;
 		};
 
@@ -83,13 +84,6 @@ namespace black_cat
 		inline bcFLOAT bc_mesh_component::get_lod_factor() const noexcept
 		{
 			return m_lod_factor;
-		}
-
-		inline void bc_mesh_component::update_lod_factor(const physics::bc_bound_box& p_bound_box) noexcept
-		{
-			const auto l_bound_box_half_extends = p_bound_box.get_half_extends();
-			const auto l_box_length = std::max(std::max(l_bound_box_half_extends.x, l_bound_box_half_extends.y), l_bound_box_half_extends.z) * 2;
-			m_lod_factor = l_box_length * 4;
 		}
 	}
 }

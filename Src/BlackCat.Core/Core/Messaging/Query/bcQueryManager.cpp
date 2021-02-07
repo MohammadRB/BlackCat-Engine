@@ -43,7 +43,7 @@ namespace black_cat
 			}
 		}
 		
-		void bc_query_manager::process_query_queue(const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_query_manager::process_query_queue(const core_platform::bc_clock::update_param& p_clock)
 		{
 			{
 				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_providers_guard(m_providers_lock);
@@ -58,7 +58,7 @@ namespace black_cat
 					{
 						l_provider.second.m_provided_context = l_provider.second.m_provider_delegate();
 						l_provider.second.m_provided_context->m_query_manager = this;
-						l_provider.second.m_provided_context->m_clock = p_clock_update_param;
+						l_provider.second.m_provided_context->m_clock = p_clock;
 					}
 
 					const query_list_t::iterator l_local_last_exist_query = std::rbegin(m_executed_queries).base();
@@ -159,6 +159,22 @@ namespace black_cat
 					[&](bool) {}
 				);
 			}
+		}
+
+		bc_task<void> bc_query_manager::process_query_queue_async(const core_platform::bc_clock::update_param& p_clock)
+		{
+			auto l_task = bc_concurrency::start_task
+			(
+				bc_delegate< void() >
+				(
+					[=, &p_clock]()
+					{
+						process_query_queue(p_clock);
+					}
+				)
+			);
+
+			return l_task;
 		}
 
 		void bc_query_manager::swap_frame()

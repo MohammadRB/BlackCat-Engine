@@ -40,9 +40,9 @@ namespace black_cat
 			//bc_skeleton_animation& l_idle_animation = *_find_animation("Armature|NatualIdle");
 			bc_skeleton_animation& l_idle_animation = *m_all_animations[0];
 
-			m_sample_job = core::bc_make_unique< bc_animation_job_sampling >
+			m_sample_job = core::bc_make_unique< bc_sampling_animation_job >
 			(
-				bc_animation_job_sampling(l_skeleton, l_idle_animation)
+				bc_sampling_animation_job(l_skeleton, l_idle_animation)
 			);
 			m_local_to_model_job = core::bc_make_unique< bc_animation_job_local_to_model_transform >
 			(
@@ -53,9 +53,9 @@ namespace black_cat
 					m_skinned_component->get_model_transforms()
 				)
 			);
-			m_model_to_skinned_job = core::bc_make_unique< bc_animation_job_model_to_skinned_transform >
+			m_model_to_skinned_job = core::bc_make_unique< bc_model_to_skinned_transform_animation_job >
 			(
-				bc_animation_job_model_to_skinned_transform
+				bc_model_to_skinned_transform_animation_job
 				(
 					*m_local_to_model_job,
 					m_skinned_component->get_world_transforms()

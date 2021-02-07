@@ -13,7 +13,7 @@
 #include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Render/Particle/bcParticleEmitter.h"
-#include "BlackCat/RenderPass/PostProcess/bcParticleSystemDx11.h"
+#include "BlackCat/RenderPass/PostProcess/bcParticleSystemPassDx11.h"
 #include "BlackCat/bcConstant.h"
 
 namespace black_cat
@@ -76,7 +76,7 @@ namespace black_cat
 		core::bc_vector4f m_lights[TLightCount * 2];
 	};
 
-	void bc_particle_system_dx11::initialize_resources(game::bc_render_system& p_render_system)
+	void bc_particle_system_pass_dx11::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
 
@@ -255,11 +255,11 @@ namespace black_cat
 		after_reset(game::bc_render_pass_reset_context(p_render_system, l_device, l_old_parameters, l_new_parameters));
 	}
 
-	void bc_particle_system_dx11::update(const game::bc_render_pass_update_context& p_param)
+	void bc_particle_system_pass_dx11::update(const game::bc_render_pass_update_context& p_param)
 	{
 	}
 
-	void bc_particle_system_dx11::initialize_frame(const game::bc_render_pass_render_context& p_param)
+	void bc_particle_system_pass_dx11::initialize_frame(const game::bc_render_pass_render_context& p_param)
 	{
 		if(m_emitters_query.is_executed())
 		{
@@ -289,11 +289,11 @@ namespace black_cat
 		);
 		m_lights_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
-			game::bc_scene_light_query({game::bc_light_type::point}).with(game::bc_camera_frustum(p_param.m_current_camera))
+			game::bc_scene_light_query({game::bc_light_type::point}).with(game::bc_camera_frustum(p_param.m_update_camera))
 		);
 	}
 
-	void bc_particle_system_dx11::execute(const game::bc_render_pass_render_context& p_param)
+	void bc_particle_system_pass_dx11::execute(const game::bc_render_pass_render_context& p_param)
 	{
 		p_param.m_render_thread.start();
 		
@@ -363,7 +363,7 @@ namespace black_cat
 		m_dead_particles_initial_count = -1;
 	}
 
-	void bc_particle_system_dx11::_execute_sort_shader(const game::bc_render_pass_render_context& p_param)
+	void bc_particle_system_pass_dx11::_execute_sort_shader(const game::bc_render_pass_render_context& p_param)
 	{
 		// DX11 ComputeShaderSort11 Sample
 
@@ -421,11 +421,11 @@ namespace black_cat
 		}
 	}
 
-	void bc_particle_system_dx11::before_reset(const game::bc_render_pass_reset_context& p_param)
+	void bc_particle_system_pass_dx11::before_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 	}
 
-	void bc_particle_system_dx11::after_reset(const game::bc_render_pass_reset_context& p_param)
+	void bc_particle_system_pass_dx11::after_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 		m_depth_buffer_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
 		m_depth_buffer_shader_view = get_shared_resource_throw<graphic::bc_resource_view>(constant::g_rpass_depth_stencil_read_view);
@@ -587,7 +587,7 @@ namespace black_cat
 		);
 	}
 
-	void bc_particle_system_dx11::destroy(game::bc_render_system& p_render_system)
+	void bc_particle_system_pass_dx11::destroy(game::bc_render_system& p_render_system)
 	{
 		m_emitters_query = core::bc_query_result<game::bc_particle_emitter_query>();
 		m_emitters_query_result.clear();

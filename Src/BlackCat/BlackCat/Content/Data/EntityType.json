@@ -6,7 +6,8 @@
         {
           "name": "simple_mesh",
           "parameters": {
-            "mesh": "box"
+            "mesh": "box",
+            "lod_scale":  3.0 
           }
         },
         {
@@ -21,7 +22,8 @@
         {
           "name": "simple_mesh",
           "parameters": {
-            "mesh": "sphere"
+            "mesh": "sphere",
+            "lod_scale": 3.0
           }
         },
         {
@@ -36,7 +38,8 @@
         {
           "name": "simple_mesh",
           "parameters": {
-            "mesh": "convex"
+            "mesh": "convex",
+            "lod_scale": 3.0
           }
         },
         {
@@ -51,7 +54,8 @@
         {
           "name": "simple_mesh",
           "parameters": {
-            "mesh": "capsule"
+            "mesh": "capsule",
+            "lod_scale": 3.0
           }
         },
         {

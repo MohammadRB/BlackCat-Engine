@@ -139,6 +139,22 @@ namespace black_cat
 			);
 		}
 
+		core::bc_task<void> bc_scene::update_px_async(bc_physics_system& p_physics, const core_platform::bc_clock::update_param& p_clock)
+		{
+			auto l_task = core::bc_concurrency::start_task
+			(
+				core::bc_delegate< void() >
+				(
+					[=, &p_physics, &p_clock]()
+					{
+						update_px(p_physics, p_clock);
+					}
+				)
+			);
+
+			return l_task;
+		}
+
 		void bc_scene::update_graph()
 		{
 			{
@@ -178,6 +194,22 @@ namespace black_cat
 				m_new_actors.clear();
 				m_new_actors.shrink_to_fit();
 			}
+		}
+
+		core::bc_task<void> bc_scene::update_graph_async()
+		{
+			auto l_task = core::bc_concurrency::start_task
+			(
+				core::bc_delegate< void() >
+				(
+					[=]()
+					{
+						update_graph();
+					}
+				)
+			);
+
+			return l_task;
 		}
 
 		void bc_scene::_add_actor(bc_actor& p_actor)

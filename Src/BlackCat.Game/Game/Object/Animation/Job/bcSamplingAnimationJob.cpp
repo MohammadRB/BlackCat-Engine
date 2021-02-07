@@ -1,14 +1,14 @@
 // [01/05/2021 MRB]
 
 #include "Game/GamePCH.h"
-#include "Game/Object/Animation/Job/bcAnimationJobSampling.h"
+#include "Game/Object/Animation/Job/bcSamplingAnimationJob.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		bc_animation_job_sampling::bc_animation_job_sampling(bc_animation_skeleton& p_skeleton, bc_skeleton_animation& p_animation)
-			: bci_animation_job_local_transform(p_skeleton),
+		bc_sampling_animation_job::bc_sampling_animation_job(bc_animation_skeleton& p_skeleton, bc_skeleton_animation& p_animation)
+			: bci_local_transform_animation_job(p_skeleton),
 			m_animation(&p_animation),
 			m_sampling_cache(core::bc_make_unique< ozz::animation::SamplingCache >())
 		{
@@ -16,7 +16,7 @@ namespace black_cat
 			m_locals.resize(m_skeleton->get_native_handle().num_soa_joints());
 		}
 
-		bool bc_animation_job_sampling::run(const core_platform::bc_clock::update_param& p_clock)
+		bool bc_sampling_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
 			m_local_time += p_clock.m_elapsed_second;
 			auto l_local_time = m_local_time / m_animation->get_duration();

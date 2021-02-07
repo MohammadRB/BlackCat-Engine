@@ -94,7 +94,7 @@ namespace black_cat
 
 		m_height_maps_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
-			game::bc_height_map_scene_query(p_param.m_current_camera, p_param.m_frame_renderer.create_buffer())
+			game::bc_height_map_scene_query(game::bc_actor_render_camera(p_param.m_update_camera), p_param.m_frame_renderer.create_buffer())
 		);
 		
 		if (m_run_chunk_info_shader)

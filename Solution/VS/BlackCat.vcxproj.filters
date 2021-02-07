@@ -144,9 +144,6 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTextDrawPass.h">
       <Filter>BlackCat\RenderPass</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\PostProcess\bcParticleSystemDx11.h">
-      <Filter>BlackCat\RenderPass\PostProcess</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Application\bcApplicationHookFuncations.h">
       <Filter>BlackCat\Application</Filter>
     </ClInclude>
@@ -158,6 +155,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshLoaderUtility.h">
       <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcSkinnedCascadedShadowMapPass.h">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\PostProcess\bcParticleSystemPassDx11.h">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -233,9 +236,6 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTextDrawPass.cpp">
       <Filter>BlackCat\RenderPass</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\PostProcess\bcParticleSystemDx11.cpp">
-      <Filter>BlackCat\RenderPass\PostProcess</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcSkinnedAnimationLoader.cpp">
       <Filter>BlackCat\Loader</Filter>
     </ClCompile>
@@ -247,6 +247,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshLoaderUtility.cpp">
       <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcSkinnedCascadedShadowMapPass.cpp">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\PostProcess\bcParticleSystemPassDx11.cpp">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -306,6 +312,9 @@
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcSkinnedMeshGBuffer.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\DeferredRendering</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\bcSkinnedMeshShadowMap.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\ShadowMap</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

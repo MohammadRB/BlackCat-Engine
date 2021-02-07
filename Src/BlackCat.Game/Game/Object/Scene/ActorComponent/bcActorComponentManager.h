@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CorePlatformImp/Concurrency/bcMutex.h"
-#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/bcConstant.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Concurrency/bcThreadManager.h"
+#include "Core/Concurrency/bcTask.h"
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Utility/bcNullable.h"
 #include "Core/Utility/bcServiceManager.h"
@@ -195,6 +195,8 @@ namespace black_cat
 			void register_abstract_component_types(TCAdapter... p_components);
 
 			void update_actors(const core_platform::bc_clock::update_param& p_clock);
+			
+			core::bc_task<void> update_actors_async(const core_platform::bc_clock::update_param& p_clock);
 			
 		private:
 			template< class TComponent >
@@ -752,7 +754,23 @@ namespace black_cat
 				[](bcINT32) {}
 			);
 		}
-		
+
+		inline core::bc_task<void> bc_actor_component_manager::update_actors_async(const core_platform::bc_clock::update_param& p_clock)
+		{
+			auto l_task = core::bc_concurrency::start_task
+			(
+				core::bc_delegate< void() >
+				(
+					[=, &p_clock]()
+					{
+						update_actors(p_clock);
+					}
+				)
+			);
+
+			return l_task;
+		}
+
 		template< class TComponent >
 		bci_actor_component* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::true_type)
 		{

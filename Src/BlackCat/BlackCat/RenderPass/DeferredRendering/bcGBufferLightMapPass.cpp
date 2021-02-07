@@ -192,7 +192,7 @@ namespace black_cat
 			game::bc_scene_light_query
 			(
 				core::bc_enum::or({ game::bc_light_type::direct, game::bc_light_type::point, game::bc_light_type::spot })
-			).with(game::bc_camera_frustum(p_param.m_current_camera))
+			).with(game::bc_camera_frustum(p_param.m_update_camera))
 		);
 	}
 

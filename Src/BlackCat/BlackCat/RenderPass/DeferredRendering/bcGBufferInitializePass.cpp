@@ -45,7 +45,7 @@ namespace black_cat
 	void bc_gbuffer_initialize_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
 	{
 		auto* l_query_manager = core::bc_get_service< core::bc_query_manager >();
-		const game::bc_camera_frustum l_frustum(p_param.m_current_camera);
+		const game::bc_camera_frustum l_frustum(p_param.m_update_camera);
 
 		if(m_lights_query.is_executed())
 		{

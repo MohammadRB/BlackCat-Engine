@@ -960,9 +960,11 @@ namespace black_cat
 			if (p_count < base_type::size())
 			{
 				base_type::_free_node(base_type::m_first + p_count, base_type::size() - p_count);
+				shrink_to_fit();
 			}
 			else if (p_count > base_type::size())
 			{
+				base_type::_change_capacity(p_count);
 				base_type::_new_node(base_type::m_first + base_type::size(), p_count - base_type::size());
 			}
 		}
@@ -973,9 +975,11 @@ namespace black_cat
 			if (p_count < base_type::size())
 			{
 				base_type::_free_node(base_type::m_first + p_count, base_type::size() - p_count);
+				shrink_to_fit();
 			}
 			else if (p_count > base_type::size())
 			{
+				base_type::_change_capacity(p_count);
 				base_type::_new_node(base_type::m_first + base_type::size(), p_count - base_type::size(), p_value);
 			}
 		}

@@ -9,6 +9,7 @@
 #include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
+#include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Query/bcQueryContext.h"
 #include "Game/Query/bcSceneGraphQuery.h"
@@ -22,7 +23,7 @@ namespace black_cat
 			BC_QUERY(hms)
 			
 		public:
-			bc_height_map_scene_query(const bc_camera_instance& p_camera, bc_render_state_buffer p_scene_query);
+			bc_height_map_scene_query(const bc_actor_render_camera& p_camera, bc_render_state_buffer p_scene_query);
 
 			bc_height_map_scene_query(bc_height_map_scene_query&&) noexcept;
 
@@ -38,12 +39,12 @@ namespace black_cat
 			
 		private:
 			bc_scene_graph_query m_scene_query;
-			bc_camera_instance m_camera;
+			bc_actor_render_camera m_camera;
 			bc_render_state_buffer m_render_buffer;
 			core::bc_vector<bc_height_map_ptr> m_height_maps;
 		};
 
-		inline bc_height_map_scene_query::bc_height_map_scene_query(const bc_camera_instance& p_camera, bc_render_state_buffer p_scene_query)
+		inline bc_height_map_scene_query::bc_height_map_scene_query(const bc_actor_render_camera& p_camera, bc_render_state_buffer p_scene_query)
 			: bc_query(message_name()),
 			m_camera(p_camera),
 			m_render_buffer(std::move(p_scene_query))

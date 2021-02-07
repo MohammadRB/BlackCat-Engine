@@ -21,7 +21,7 @@ namespace black_cat
 			BC_QUERY(sgrs)
 
 		public:
-			bc_scene_graph_render_state_query(const bc_camera_instance& p_camera, bc_render_state_buffer p_render_buffer) noexcept;
+			bc_scene_graph_render_state_query(const bc_actor_render_camera& p_camera, bc_render_state_buffer p_render_buffer) noexcept;
 
 			bc_scene_graph_render_state_query(bc_scene_graph_render_state_query&&) noexcept;
 
@@ -40,12 +40,12 @@ namespace black_cat
 
 		private:
 			bc_scene_graph_query m_scene_query;
-			bc_camera_instance m_camera;
+			bc_actor_render_camera m_camera;
 			bc_render_state_buffer m_render_buffer;
-			core::bc_delegate< void(const bc_scene_graph_buffer&, const bc_camera_instance&, bc_render_state_buffer&) > m_execute_with_component;
+			core::bc_delegate< void(const bc_scene_graph_buffer&, const bc_actor_render_camera&, bc_render_state_buffer&) > m_execute_with_component;
 		};
 
-		inline bc_scene_graph_render_state_query::bc_scene_graph_render_state_query(const bc_camera_instance& p_camera, bc_render_state_buffer p_render_buffer) noexcept
+		inline bc_scene_graph_render_state_query::bc_scene_graph_render_state_query(const bc_actor_render_camera& p_camera, bc_render_state_buffer p_render_buffer) noexcept
 			: bc_query(message_name()),
 			m_camera(p_camera),
 			m_render_buffer(std::move(p_render_buffer))
@@ -88,7 +88,7 @@ namespace black_cat
 		template< class TComponent, typename ...TArgs >
 		bc_scene_graph_render_state_query& bc_scene_graph_render_state_query::only(TArgs&&... p_render_args) noexcept
 		{
-			auto l_lambda = [=](const bc_scene_graph_buffer& p_scene_buffer, const bc_camera_instance& p_camera, bc_render_state_buffer& p_render_buffer, auto&&... p_render_args)
+			auto l_lambda = [=](const bc_scene_graph_buffer& p_scene_buffer, const bc_actor_render_camera& p_camera, bc_render_state_buffer& p_render_buffer, auto&&... p_render_args)
 			{
 				p_scene_buffer.render_actors<TComponent>(p_camera, p_render_buffer, p_render_args...);
 			};

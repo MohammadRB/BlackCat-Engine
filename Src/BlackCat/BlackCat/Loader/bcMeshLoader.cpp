@@ -83,7 +83,7 @@ namespace black_cat
 		convert_ai_nodes(l_game_system.get_render_system(), p_context, *l_scene, l_node_mapping, *l_scene->mRootNode, l_builder);
 
 		const auto l_mesh_name = core::bc_to_exclusive_string(core::bc_path(p_context.m_file_path).get_filename());
-		const auto* l_auto_scale = p_context.m_parameters->get_value<bcFLOAT>(constant::g_param_auto_scale);
+		const auto* l_auto_scale = p_context.m_parameters->get_value<bcFLOAT>(constant::g_param_mesh_auto_scale);
 
 		if(l_auto_scale)
 		{

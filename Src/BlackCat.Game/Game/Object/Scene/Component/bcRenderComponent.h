@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Game/bcExport.h"
+#include "Game/System/Input/bcCameraInstance.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 
 namespace black_cat
@@ -10,17 +11,34 @@ namespace black_cat
 	namespace game
 	{
 		class bc_render_state_buffer;
-		class bc_camera_instance;
+
+		struct bc_actor_render_camera
+		{
+			bc_camera_instance m_main_camera;
+			bc_camera_instance m_render_camera;
+
+			explicit bc_actor_render_camera(const bc_camera_instance& p_main_camera)
+				: m_main_camera(p_main_camera),
+				m_render_camera(p_main_camera)
+			{
+			}
+			
+			bc_actor_render_camera(const bc_camera_instance& p_main_camera, const bc_camera_instance& p_render_camera)
+				: m_main_camera(p_main_camera),
+				m_render_camera(p_render_camera)
+			{
+			}
+		};
 		
 		struct bc_actor_component_render_context
 		{
-			bc_actor_component_render_context(const bc_camera_instance& p_camera, bc_render_state_buffer& p_buffer)
+			bc_actor_component_render_context(const bc_actor_render_camera& p_camera, bc_render_state_buffer& p_buffer)
 				: m_camera(p_camera),
 				m_buffer(p_buffer)
 			{
 			}
 
-			const bc_camera_instance& m_camera;
+			const bc_actor_render_camera& m_camera;
 			bc_render_state_buffer& m_buffer;
 		};
 

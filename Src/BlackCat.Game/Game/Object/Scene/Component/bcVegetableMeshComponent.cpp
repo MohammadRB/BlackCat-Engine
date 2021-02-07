@@ -44,7 +44,7 @@ namespace black_cat
 
 		void bc_vegetable_mesh_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_context.m_event);
+			const auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
 			if (l_world_transform_event)
 			{
 				bc_mesh_component::set_world_transform(p_context.m_actor, l_world_transform_event->get_transform());
@@ -69,11 +69,22 @@ namespace black_cat
 
 			const auto& l_sub_mesh = get_mesh();
 			const auto l_mesh_lod = l_sub_mesh.get_mesh_level_of_detail();
-			const auto& l_mesh = l_mesh_lod.get_mesh(p_context.m_camera.get_position(), get_world_position(), get_lod_factor());
+			const auto* l_mesh = l_mesh_lod.get_mesh_nullable
+			(
+				p_context.m_camera.m_main_camera.get_position(),
+				p_context.m_camera.m_render_camera.get_position(),
+				get_world_position(),
+				get_lod_factor()
+			);
+			if(!l_mesh)
+			{
+				return;
+			}
+			
 			const auto& l_mesh_transformation = get_world_transforms();
 			const auto* l_root_node = l_sub_mesh.get_root_node();
 
-			render_mesh(p_context.m_buffer, l_mesh, l_mesh_transformation, &l_root_node, &l_root_node + 1, l_mesh_prefix);
+			render_mesh(p_context.m_buffer, *l_mesh, l_mesh_transformation, &l_root_node, &l_root_node + 1, l_mesh_prefix);
 		}
 	}
 }

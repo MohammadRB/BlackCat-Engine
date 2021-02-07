@@ -5,10 +5,10 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcDelegate.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
-#include "Game/Object/Animation/Job/bcAnimationJobSampling.h"
-#include "Game/Object/Animation/Job/bcAnimationJobLocalToModelTransform.h"
-#include "Game/Object/Animation/Job/bcAnimationJobModelToSkinnedTransform.h"
-#include "Game/Object/Animation/Job/bcAnimationJobSequence.h"
+#include "Game/Object/Animation/Job/bcSamplingAnimationJob.h"
+#include "Game/Object/Animation/Job/bcLocalToModelTransformAnimationJob.h"
+#include "Game/Object/Animation/Job/bcModelToSkinnedTransformAnimationJob.h"
+#include "Game/Object/Animation/Job/bcSequenceAnimationJob.h"
 
 namespace black_cat
 {
@@ -25,7 +25,7 @@ namespace black_cat
 
 			bc_animation_job_builder2& operator=(bc_animation_job_builder2&&) noexcept;
 
-			bc_animation_job_builder2& afterward(bc_animation_job_sequence::execute_callback p_callback);
+			bc_animation_job_builder2& afterward(bc_sequence_animation_job::execute_callback p_callback);
 			
 			core::bc_unique_ptr<bci_animation_job> build();
 		
@@ -81,7 +81,7 @@ namespace black_cat
 
 		inline bc_animation_job_builder2& bc_animation_job_builder2::operator=(bc_animation_job_builder2&&) noexcept = default;
 
-		inline bc_animation_job_builder2& bc_animation_job_builder2::afterward(bc_animation_job_sequence::execute_callback p_callback)
+		inline bc_animation_job_builder2& bc_animation_job_builder2::afterward(bc_sequence_animation_job::execute_callback p_callback)
 		{
 			m_after_delegate = std::move(p_callback);
 			return *this;
@@ -89,7 +89,7 @@ namespace black_cat
 
 		inline core::bc_unique_ptr<bci_animation_job> bc_animation_job_builder2::build()
 		{
-			return core::bc_make_unique< bc_animation_job_sequence >(bc_animation_job_sequence(m_animations.data(), m_animations.size(), m_after_delegate));
+			return core::bc_make_unique< bc_sequence_animation_job >(bc_sequence_animation_job(m_animations.data(), m_animations.size(), m_after_delegate));
 		}
 
 		inline bc_animation_job_builder1::bc_animation_job_builder1(core::bc_vector_movable<bci_animation_job*> p_animations)

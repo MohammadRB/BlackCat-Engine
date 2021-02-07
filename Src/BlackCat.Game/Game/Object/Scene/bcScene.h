@@ -17,6 +17,12 @@
 
 namespace black_cat
 {
+	namespace core
+	{
+		template<typename T>
+		class bc_task;
+	}
+	
 	namespace game
 	{
 		enum class _bc_scene_actor_operation
@@ -85,8 +91,12 @@ namespace black_cat
 			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
 			void update_px(bc_physics_system& p_physics, const core_platform::bc_clock::update_param& p_clock);
+			
+			core::bc_task<void> update_px_async(bc_physics_system& p_physics, const core_platform::bc_clock::update_param& p_clock);
 
 			void update_graph();
+			
+			core::bc_task<void> update_graph_async();
 			
 		private:
 			void _add_actor(bc_actor& p_actor);

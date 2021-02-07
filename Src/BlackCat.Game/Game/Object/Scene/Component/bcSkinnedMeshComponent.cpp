@@ -84,10 +84,21 @@ namespace black_cat
 		{
 			const auto& l_sub_mesh = get_mesh();
 			const auto l_mesh_lod = l_sub_mesh.get_mesh_level_of_detail();
-			const auto& l_mesh = l_mesh_lod.get_mesh(p_context.m_camera.get_position(), get_world_position(), get_lod_factor());
+			const auto* l_mesh = l_mesh_lod.get_mesh_nullable
+			(
+				p_context.m_camera.m_main_camera.get_position(),
+				p_context.m_camera.m_render_camera.get_position(),
+				get_world_position(),
+				get_lod_factor()
+			);
+			if(!l_mesh)
+			{
+				return;
+			}
+			
 			const auto* l_root_pointer = l_sub_mesh.get_root_node();
 
-			render_skinned_mesh(p_context.m_buffer, l_mesh, get_world_transforms(), &l_root_pointer, &l_root_pointer + 1);
+			render_skinned_mesh(p_context.m_buffer, *l_mesh, get_world_transforms(), &l_root_pointer, &l_root_pointer + 1);
 		}
 
 		void bc_skinned_mesh_component::debug_draw(const bc_actor_component_debug_draw_context& p_context)

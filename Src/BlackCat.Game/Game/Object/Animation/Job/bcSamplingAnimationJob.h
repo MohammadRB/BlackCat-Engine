@@ -6,7 +6,7 @@
 #include "Game/Object/Animation/bcAnimationSkeleton.h"
 #include "Game/Object/Animation/bcSkeletonAnimation.h"
 #include "Game/Object/Animation/bcAnimationLocalTransform.h"
-#include "Game/Object/Animation/Job/bcAnimationJobLocalTransform.h"
+#include "Game/Object/Animation/Job/bcLocalTransformAnimationJob.h"
 #include "Game/bcExport.h"
 
 #include "3rdParty/Ozz/Include/ozz/animation/runtime/sampling_job.h"
@@ -15,16 +15,16 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_animation_job_sampling : public bci_animation_job_local_transform
+		class BC_GAME_DLL bc_sampling_animation_job : public bci_local_transform_animation_job
 		{
 		public:
-			bc_animation_job_sampling(bc_animation_skeleton& p_skeleton, bc_skeleton_animation& p_animation);
+			bc_sampling_animation_job(bc_animation_skeleton& p_skeleton, bc_skeleton_animation& p_animation);
 
-			bc_animation_job_sampling(bc_animation_job_sampling&&) noexcept = default;
+			bc_sampling_animation_job(bc_sampling_animation_job&&) noexcept = default;
 
-			~bc_animation_job_sampling() = default;
+			~bc_sampling_animation_job() = default;
 
-			bc_animation_job_sampling& operator=(bc_animation_job_sampling&&) noexcept = default;
+			bc_sampling_animation_job& operator=(bc_sampling_animation_job&&) noexcept = default;
 
 			const bc_animation_local_transform& get_local_transforms() const noexcept override;
 
@@ -39,12 +39,12 @@ namespace black_cat
 			bc_animation_local_transform m_locals;
 		};
 
-		inline const bc_animation_local_transform& bc_animation_job_sampling::get_local_transforms() const noexcept
+		inline const bc_animation_local_transform& bc_sampling_animation_job::get_local_transforms() const noexcept
 		{
 			return m_locals;
 		}
 
-		inline void bc_animation_job_sampling::change_animation(bc_skeleton_animation& p_animation) noexcept
+		inline void bc_sampling_animation_job::change_animation(bc_skeleton_animation& p_animation) noexcept
 		{
 			m_animation = &p_animation;
 		}

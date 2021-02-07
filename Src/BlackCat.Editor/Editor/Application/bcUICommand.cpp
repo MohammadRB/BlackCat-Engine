@@ -5,7 +5,7 @@
 #include "Core/Utility/bcEnumOperand.h"
 #include "PhysicsImp/Collision/bcShapeQuery.h"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
-#include "Game/Object/Animation/Job/bcAnimationJobMeshColliderSkinning.h"
+#include "Game/Object/Animation/Job/bcMeshColliderSkinningAnimationJob.h"
 #include "Editor/Application/bcUICommand.h"
 
 namespace black_cat
@@ -84,7 +84,7 @@ namespace black_cat
 
 			BC_ASSERT(l_skinned_mesh_component);
 
-			game::bc_animation_job_mesh_collider_skinning l_skinning_job
+			game::bc_mesh_collider_skinning_animation_job l_skinning_job
 			(
 				(*l_skinned_mesh_component->get_animations().begin())->get_skeleton(),
 				l_skinned_mesh_component->get_mesh(),

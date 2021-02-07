@@ -1,13 +1,13 @@
 // [02/04/2021 MRB]
 
 #include "Game/GamePCH.h"
-#include "Game/Object/Animation/Job/bcAnimationJobMeshColliderSkinning.h"
+#include "Game/Object/Animation/Job/bcMeshColliderSkinningAnimationJob.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		bc_animation_job_mesh_collider_skinning::bc_animation_job_mesh_collider_skinning(bc_animation_skeleton& p_skeleton,
+		bc_mesh_collider_skinning_animation_job::bc_mesh_collider_skinning_animation_job(bc_animation_skeleton& p_skeleton,
 			const bc_sub_mesh& p_sub_mesh,
 			const bc_sub_mesh_mat4_transform& p_model_transforms)
 			: bci_animation_job(p_skeleton),
@@ -16,13 +16,13 @@ namespace black_cat
 		{
 		}
 
-		bc_animation_job_mesh_collider_skinning::bc_animation_job_mesh_collider_skinning(bc_animation_job_mesh_collider_skinning&& p_other) noexcept = default;
+		bc_mesh_collider_skinning_animation_job::bc_mesh_collider_skinning_animation_job(bc_mesh_collider_skinning_animation_job&& p_other) noexcept = default;
 
-		bc_animation_job_mesh_collider_skinning::~bc_animation_job_mesh_collider_skinning() = default;
+		bc_mesh_collider_skinning_animation_job::~bc_mesh_collider_skinning_animation_job() = default;
 
-		bc_animation_job_mesh_collider_skinning& bc_animation_job_mesh_collider_skinning::operator=(bc_animation_job_mesh_collider_skinning&& p_other) noexcept = default;
+		bc_mesh_collider_skinning_animation_job& bc_mesh_collider_skinning_animation_job::operator=(bc_mesh_collider_skinning_animation_job&& p_other) noexcept = default;
 
-		bool bc_animation_job_mesh_collider_skinning::run(const core_platform::bc_clock::update_param& p_clock)
+		bool bc_mesh_collider_skinning_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
 			if(m_inverse_model_transforms.empty())
 			{

@@ -1,13 +1,13 @@
 // [01/15/2021 MRB]
 
 #include "Game/GamePCH.h"
-#include "Game/Object/Animation/Job/bcAnimationJobModelToSkinnedTransform.h"
+#include "Game/Object/Animation/Job/bcModelToSkinnedTransformAnimationJob.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		bc_animation_job_model_to_skinned_transform::bc_animation_job_model_to_skinned_transform(bc_animation_job_local_to_model_transform& p_model_job, bc_sub_mesh_mat4_transform& p_transforms)
+		bc_model_to_skinned_transform_animation_job::bc_model_to_skinned_transform_animation_job(bc_animation_job_local_to_model_transform& p_model_job, bc_sub_mesh_mat4_transform& p_transforms)
 			: bci_animation_job(p_model_job.get_skeleton()),
 			m_model_job(&p_model_job),
 			m_transforms(&p_transforms)
@@ -18,7 +18,7 @@ namespace black_cat
 			}
 		}
 
-		bool bc_animation_job_model_to_skinned_transform::run(const core_platform::bc_clock::update_param& p_clock)
+		bool bc_model_to_skinned_transform_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
 			const auto& l_mesh = m_model_job->get_mesh();
 			const auto& l_animation_model_transforms = m_model_job->get_transforms();

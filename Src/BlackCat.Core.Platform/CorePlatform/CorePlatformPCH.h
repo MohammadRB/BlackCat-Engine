@@ -47,7 +47,7 @@
 #define BC_DEBUG_BREAK() asm { int 3 }
 #define BC_ASSERT(expr) assert(((expr)))
 #else
-#define bcAssert(expr) void(0)
+#define BC_ASSERT(expr) void(0)
 #endif
 
 #ifdef UNICODE

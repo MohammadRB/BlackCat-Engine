@@ -12,16 +12,16 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_animation_job_mesh_collider_skinning : public bci_animation_job
+		class BC_GAME_DLL bc_mesh_collider_skinning_animation_job : public bci_animation_job
 		{
 		public:
-			bc_animation_job_mesh_collider_skinning(bc_animation_skeleton& p_skeleton, const bc_sub_mesh& p_sub_mesh, const bc_sub_mesh_mat4_transform& p_model_transforms);
+			bc_mesh_collider_skinning_animation_job(bc_animation_skeleton& p_skeleton, const bc_sub_mesh& p_sub_mesh, const bc_sub_mesh_mat4_transform& p_model_transforms);
 
-			bc_animation_job_mesh_collider_skinning(bc_animation_job_mesh_collider_skinning&& p_other) noexcept;
+			bc_mesh_collider_skinning_animation_job(bc_mesh_collider_skinning_animation_job&& p_other) noexcept;
 
-			~bc_animation_job_mesh_collider_skinning();
+			~bc_mesh_collider_skinning_animation_job();
 
-			bc_animation_job_mesh_collider_skinning& operator=(bc_animation_job_mesh_collider_skinning&& p_other) noexcept;
+			bc_mesh_collider_skinning_animation_job& operator=(bc_mesh_collider_skinning_animation_job&& p_other) noexcept;
 
 			bcSIZE get_vertices_count() const noexcept;
 			
@@ -42,27 +42,27 @@ namespace black_cat
 			core::bc_vector_movable< core::bc_vector3f > m_skinned_vertices;
 		};
 
-		inline bcSIZE bc_animation_job_mesh_collider_skinning::get_vertices_count() const noexcept
+		inline bcSIZE bc_mesh_collider_skinning_animation_job::get_vertices_count() const noexcept
 		{
 			return m_sub_mesh->get_mesh_collider().get_skinned_collider().get_vertices_count();
 		}
 
-		inline const core::bc_vector3f* bc_animation_job_mesh_collider_skinning::get_vertices() const noexcept
+		inline const core::bc_vector3f* bc_mesh_collider_skinning_animation_job::get_vertices() const noexcept
 		{
 			return m_skinned_vertices.data();
 		}
 
-		bcSIZE bc_animation_job_mesh_collider_skinning::get_faces_count() const noexcept
+		bcSIZE bc_mesh_collider_skinning_animation_job::get_faces_count() const noexcept
 		{
 			return m_sub_mesh->get_mesh_collider().get_skinned_collider().get_faces_count();
 		}
 
-		inline const bcUINT16* bc_animation_job_mesh_collider_skinning::get_16bit_indices() const noexcept
+		inline const bcUINT16* bc_mesh_collider_skinning_animation_job::get_16bit_indices() const noexcept
 		{
 			return m_sub_mesh->get_mesh_collider().get_skinned_collider().get_16bit_indices();
 		}
 
-		inline const bcUINT32* bc_animation_job_mesh_collider_skinning::get_32bit_indices() const noexcept
+		inline const bcUINT32* bc_mesh_collider_skinning_animation_job::get_32bit_indices() const noexcept
 		{
 			return m_sub_mesh->get_mesh_collider().get_skinned_collider().get_32bit_indices();
 		}

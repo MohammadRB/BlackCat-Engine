@@ -54,7 +54,7 @@ namespace black_cat
 		(
 			game::bc_main_camera_render_state_query
 			(
-				p_param.m_current_camera,
+				game::bc_actor_render_camera(p_param.m_update_camera),
 				p_param.m_frame_renderer.create_buffer()
 			).only<game::bc_vegetable_mesh_component>(true)
 		);
@@ -62,7 +62,7 @@ namespace black_cat
 		(
 			game::bc_main_camera_render_state_query
 			(
-				p_param.m_current_camera,
+				game::bc_actor_render_camera(p_param.m_update_camera),
 				p_param.m_frame_renderer.create_buffer()
 			).only<game::bc_vegetable_mesh_component>(false)
 		);

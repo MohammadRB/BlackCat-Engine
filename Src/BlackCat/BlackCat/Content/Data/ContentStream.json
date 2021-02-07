@@ -38,6 +38,12 @@
           "content_loader": "vertex_shader",
           "content_file": "content\\shader\\directx11\\ShadowMap\\bcVegetableTrunkShadowMap.hlsl",
           "content_parameter": { "function": "vs" }
+        },
+        {
+          "content_title": "skinned_mesh_shadow_map_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "content\\shader\\directx11\\ShadowMap\\bcSkinnedMeshShadowMap.hlsl",
+          "content_parameter": { "function": "vs" }
         }
       ]
     },
