@@ -18,64 +18,13 @@ namespace black_cat
 		class bc_render_system;
 		class bc_render_thread;
 		class bc_render_state;
-
-		class _bc_render_state_handle
-		{
-		public:
-			using handle_type = bcINT32;
-
-		public:
-			_bc_render_state_handle()
-				: m_handle(-1)
-			{
-			}
-
-			_bc_render_state_handle(std::nullptr_t)
-				: _bc_render_state_handle()
-			{
-			}
-
-			_bc_render_state_handle(handle_type p_handle)
-				: m_handle(p_handle)
-			{
-			}
-
-			_bc_render_state_handle(const _bc_render_state_handle&) = default;
-
-			~_bc_render_state_handle() = default;
-
-			_bc_render_state_handle& operator=(const _bc_render_state_handle&) = default;
-
-			_bc_render_state_handle& operator=(std::nullptr_t)
-			{
-				m_handle = -1;
-				return *this;
-			}
-
-			bool operator==(std::nullptr_t) const
-			{
-				return m_handle == -1;
-			}
-
-			bool operator!=(std::nullptr_t) const
-			{
-				return !operator==(nullptr);
-			}
-
-			handle_type m_handle;
-		};
-
+		
 		class BC_GAME_DLL _bc_render_state_handle_deleter
 		{
-		public:
-			using handle_t = _bc_render_state_handle;
-
 		public:
 			_bc_render_state_handle_deleter();
 
 			_bc_render_state_handle_deleter(bc_render_system* p_render_system);
-
-			bc_render_state* operator()(handle_t p_handle) const;
 
 			void operator ()(bc_render_state* p_render_state) const;
 
@@ -178,6 +127,6 @@ namespace black_cat
 			bc_render_state_constant_buffer_array m_shader_cbuffers;
 		};
 
-		using bc_render_state_ptr = core::bc_ref_count_handle< bc_render_state, _bc_render_state_handle_deleter >;
+		using bc_render_state_ptr = core::bc_ref_count_ptr< bc_render_state, _bc_render_state_handle_deleter >;
 	}
 }

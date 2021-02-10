@@ -2,15 +2,12 @@
 
 #pragma once
 
-#include "CorePlatformImp/Concurrency/bcMutex.h"
-#include "Core/Utility/bcInitializable.h"
-#include "Core/Utility/bcNullable.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcArray.h"
 #include "Core/Messaging/Event/bcEvent.h"
-#include "Core/Math/bcVector3f.h"
-#include "Core/Math/bcMatrix4f.h"
+#include "Core/Utility/bcInitializable.h"
+#include "Core/Utility/bcObjectPool.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
@@ -274,38 +271,29 @@ namespace black_cat
 
 			bool _event_handler(core::bci_event& p_event);
 
-			bc_render_pass_state* _get_render_pass_state(const _bc_render_state_handle& p_handle);
-
-			bc_render_state* _get_render_state(const _bc_render_state_handle& p_handle);
-
-			bc_compute_state* _get_compute_state(const _bc_render_state_handle& p_handle);
-
 			/**
 			 * \brief ThreadSafe function
 			 * \param p_render_pass_state
 			 */
-			void _destroy_render_pass_state(const bc_render_pass_state* p_render_pass_state);
+			void _destroy_render_pass_state(bc_render_pass_state* p_render_pass_state);
 
 			/**
 			 * \brief ThreadSafe function
 			 * \param p_render_state
 			 */
-			void _destroy_render_state(const bc_render_state* p_render_state);
+			void _destroy_render_state(bc_render_state* p_render_state);
 
 			/**
 			 * \brief ThreadSafe function
 			 * \param p_compute_state
 			 */
-			void _destroy_compute_state(const bc_compute_state* p_compute_state);
+			void _destroy_compute_state(bc_compute_state* p_compute_state);
 
 			graphic::bc_device m_device;
 			
-			core_platform::bc_mutex m_render_pass_states_mutex;
-			core_platform::bc_mutex m_render_states_mutex;
-			core_platform::bc_mutex m_compute_states_mutex;
-			core::bc_vector< core::bc_nullable< bc_render_pass_state > > m_render_pass_states;
-			core::bc_vector< core::bc_nullable< bc_render_state > > m_render_states;
-			core::bc_vector< core::bc_nullable< bc_compute_state > > m_compute_states;
+			core::bc_concurrent_object_pool< bc_render_pass_state > m_render_pass_states;
+			core::bc_concurrent_object_pool< bc_render_state > m_render_states;
+			core::bc_concurrent_object_pool< bc_compute_state > m_compute_states;
 			
 			core::bc_content_stream_manager* m_content_stream;
 			core::bc_unique_ptr< bc_render_thread_manager > m_thread_manager;

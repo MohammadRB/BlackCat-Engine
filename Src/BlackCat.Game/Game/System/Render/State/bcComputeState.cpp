@@ -18,13 +18,6 @@ namespace black_cat
 		{
 		}
 
-		bc_compute_state* _bc_compute_state_handle_deleter::operator()(handle_t p_handle) const
-		{
-			BC_ASSERT(m_render_system != nullptr);
-
-			return m_render_system->_get_compute_state(p_handle);
-		}
-
 		void _bc_compute_state_handle_deleter::operator()(bc_compute_state* p_compute_state) const
 		{
 			BC_ASSERT(m_render_system != nullptr);

@@ -159,7 +159,7 @@ namespace black_cat
 #endif 
 			}
 
-			bcInline void accept_alloc(bcSIZE p_size)
+			void accept_alloc(bcSIZE p_size)
 			{
 #ifdef BC_MEMORY_TRACING
 				m_used_size.fetch_add(p_size, core_platform::bc_memory_order::relaxed);
@@ -183,26 +183,30 @@ namespace black_cat
 				m_alloc_count.fetch_add(1U, core_platform::bc_memory_order::relaxed);
 #endif
 			}
-			bcInline void accept_free(bcSIZE p_size)
+
+			void accept_free(bcSIZE p_size)
 			{
 #ifdef BC_MEMORY_TRACING
 				m_used_size.fetch_sub(p_size, core_platform::bc_memory_order::relaxed);
 				m_alloc_count.fetch_sub(1U, core_platform::bc_memory_order::relaxed);
 #endif
 			}
-			bcInline void accept_overhead(bcSIZE p_size)
+
+			void accept_overhead(bcSIZE p_size)
 			{
 #ifdef BC_MEMORY_TRACING
 				m_overhead_size.fetch_add(p_size, core_platform::bc_memory_order::relaxed);
 #endif
 			}
-			bcInline void accept_free_overhead(bcSIZE p_size)
+
+			void accept_free_overhead(bcSIZE p_size)
 			{
 #ifdef BC_MEMORY_TRACING
 				m_overhead_size.fetch_sub(p_size, core_platform::bc_memory_order::relaxed);
 #endif
 			}
-			bcInline void reject_alloc(bcSIZE p_size)
+
+			void reject_alloc(bcSIZE p_size)
 			{
 #ifdef BC_MEMORY_TRACING
 				m_rejected_alloc_size.fetch_add(p_size, core_platform::bc_memory_order::relaxed);
@@ -210,7 +214,7 @@ namespace black_cat
 #endif
 			}
 
-			bcInline void accept_clear()
+			void accept_clear()
 			{
 #ifdef BC_MEMORY_TRACING
 				m_used_size.store(0U, core_platform::bc_memory_order::relaxed);
@@ -229,8 +233,6 @@ namespace black_cat
 			core_platform::bc_atomic< bcSIZE > m_rejected_alloc_count;
 			core_platform::bc_atomic< bcSIZE > m_rejected_alloc_size;
 #endif	
-
-		private:
 		};
 	}
 }

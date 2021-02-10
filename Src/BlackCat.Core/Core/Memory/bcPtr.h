@@ -189,8 +189,6 @@ namespace black_cat
 				return m_pointer;
 			}
 
-		protected:
-
 		private:
 			void _construct(T* p_pointer)
 			{

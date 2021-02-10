@@ -8,6 +8,7 @@
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcUnorderedMap.h"
+#include "Core/Container/bcBitVector.h"
 #include "Core/Concurrency/bcThreadManager.h"
 #include "Core/Concurrency/bcTask.h"
 #include "Core/Concurrency/bcConcurrency.h"
@@ -143,7 +144,7 @@ namespace black_cat
 		private:
 			template< class TAbstract, class TDerived, class ...TDeriveds >
 			friend class bc_abstract_component_register;
-			using actor_container_type = core::bc_vector_movable< core::bc_nullable< _bc_actor_entry > >;
+			using actor_container_type = core::bc_vector_movable< _bc_actor_entry >;
 			using component_container_type = core::bc_unordered_map_program< bc_actor_component_hash, _bc_actor_component_entry >;
 
 		public:
@@ -223,6 +224,7 @@ namespace black_cat
 
 			mutable core_platform::bc_shared_mutex m_actors_lock;
 			actor_container_type m_actors;
+			core::bc_bit_vector m_actors_bit;
 			component_container_type m_components;
 			bcUINT32 m_read_event_pool;
 			bcUINT32 m_write_event_pool;
@@ -329,10 +331,7 @@ namespace black_cat
 		{
 			BC_ASSERT
 			(
-				std::count_if(std::cbegin(m_actors), std::cend(m_actors), [](core::bc_nullable< _bc_actor_entry >& p_entry)
-				{
-					return p_entry.is_set();
-				}) == 0
+				m_actors_bit.find_true_indices().empty()
 			);
 
 			m_events_pool[0].destroy();
@@ -341,40 +340,41 @@ namespace black_cat
 
 		inline bc_actor bc_actor_component_manager::create_actor(const bc_actor* p_parent)
 		{
-			bc_actor_index l_index = 0;
-			bool l_inserted = false;
+			bc_actor_index l_actor_index;
+			bool l_actor_to_component_need_resize = false;
 			
 			{
-				core_platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
+				core_platform::bc_shared_mutex_guard l_lock(m_actors_lock);
 
-				for (core::bc_nullable< _bc_actor_entry >& l_actor : m_actors) // TODO use fast free space lookup
+				bcUINT32 l_free_slot;
+				const auto l_has_free_slot = m_actors_bit.find_first_false(l_free_slot);
+
+				if (l_has_free_slot)
 				{
-					if (!l_actor.is_set())
-					{
-						l_actor.reset(_bc_actor_entry(l_index, p_parent ? p_parent->get_index() : bc_actor::invalid_index));
-						l_inserted = true;
-						break;
-					}
-					
-					++l_index;
+					new (&m_actors[l_free_slot]) _bc_actor_entry(l_free_slot, p_parent ? p_parent->get_index() : bc_actor::invalid_index);
+					m_actors_bit.make_true(l_free_slot);
 				}
+				else
+				{
+					l_actor_to_component_need_resize = true;
+					l_free_slot = m_actors.size();
+					m_actors.push_back(_bc_actor_entry(l_free_slot, p_parent ? p_parent->get_index() : bc_actor::invalid_index));
+					m_actors_bit.resize(m_actors.size());
+					m_actors_bit.make_true(l_free_slot);
+				}
+
+				l_actor_index = l_free_slot;
 			}
 
-			if (!l_inserted)
+			if(l_actor_to_component_need_resize)
 			{
 				{
-					core_platform::bc_shared_mutex_guard l_lock(m_actors_lock);
-
-					m_actors.push_back(core::bc_nullable< _bc_actor_entry >
-					(
-						_bc_actor_entry(l_index, p_parent ? p_parent->get_index() : bc_actor::invalid_index)
-					));
+					core_platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
+					_resize_actor_to_component_index_maps();
 				}
-
-				_resize_actor_to_component_index_maps();
 			}
-
-			return bc_actor(l_index);
+			
+			return bc_actor(l_actor_index);
 		}
 
 		inline void bc_actor_component_manager::remove_actor(const bc_actor& p_actor)
@@ -407,12 +407,12 @@ namespace black_cat
 
 			{
 				core_platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
+
+				BC_ASSERT(m_actors_bit[l_actor_index]);
 				
-				auto& l_actor_entry = m_actors[p_actor.get_index()];
-				BC_ASSERT(l_actor_entry.is_set());
-				
+				auto& l_actor_entry = m_actors[l_actor_index];
 				auto* l_events_pool = &m_events_pool[m_write_event_pool];
-				auto* l_actor_events = l_actor_entry->get_events(m_write_event_pool);
+				auto* l_actor_events = l_actor_entry.get_events(m_write_event_pool);
 
 				while (l_actor_events)
 				{
@@ -421,7 +421,8 @@ namespace black_cat
 					l_actor_events = l_next;
 				}
 				
-				m_actors[p_actor.get_index()].reset();
+				m_actors[l_actor_index].~_bc_actor_entry();
+				m_actors_bit.make_false(l_actor_index);
 			}
 		}
 
@@ -433,7 +434,7 @@ namespace black_cat
 			{
 				core_platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
 
-				auto& l_actor_entry = m_actors[p_actor.get_index()].get();
+				auto& l_actor_entry = m_actors[p_actor.get_index()];
 				l_actor_entry.add_event(m_write_event_pool, l_event);
 			}
 		}
@@ -443,7 +444,7 @@ namespace black_cat
 			{
 				core_platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
 
-				const auto& l_actor_entry = m_actors[p_actor.get_index()].get();
+				const auto& l_actor_entry = m_actors[p_actor.get_index()];
 				return l_actor_entry.get_events(m_read_event_pool);
 			}
 		}
@@ -453,7 +454,7 @@ namespace black_cat
 			{
 				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_lock(m_actors_lock);
 
-				auto& l_actor_entry = m_actors[p_actor.get_index()].get();
+				auto& l_actor_entry = m_actors[p_actor.get_index()];
 				l_actor_entry.clear_events(m_read_event_pool);
 			}
 		}
@@ -470,7 +471,7 @@ namespace black_cat
 			
 			{
 				core_platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
-				l_parent_index = m_actors[l_actor_index]->m_parent_index;
+				l_parent_index = m_actors[l_actor_index].m_parent_index;
 			}
 			
 			auto l_component_index = bci_actor_component::invalid_index;
@@ -590,12 +591,13 @@ namespace black_cat
 			static_assert(!bc_actor_component_traits<TComponent>::component_is_abstract(), "Can't get actor from abstract component");
 
 			const bc_actor_index l_actor_index = p_component.get_actor_index();
+			return bc_actor(l_actor_index);
 
-			{
+			/*{
 				core_platform::bc_shared_mutex_shared_guard l_actors_lock(m_actors_lock);
 
-				return bc_actor(m_actors[l_actor_index].get().m_actor_index);
-			}
+				return bc_actor(m_actors[l_actor_index].m_actor_index);
+			}*/
 		}
 
 		template< class ...TCAdapter >
@@ -623,23 +625,16 @@ namespace black_cat
 		template< class ...TCAdapter >
 		void bc_actor_component_manager::register_abstract_component_types(TCAdapter... p_components)
 		{
-			bc_actor l_actor = create_actor();
-
 			auto l_expansion_list =
 			{
 				(
-					[this, l_actor, p_components]()
+					[this, p_components]()
 					{
 						p_components(*this);
-					
-						this->actor_get_component< typename TCAdapter::abstract_component_t >(l_actor);
-
 						return true;
 					}()
 				)...
 			};
-
-			remove_actor(l_actor);
 		}
 
 		inline void bc_actor_component_manager::update_actors(const core_platform::bc_clock::update_param& p_clock)
@@ -712,20 +707,16 @@ namespace black_cat
 				{
 					core_platform::bc_shared_mutex_shared_guard l_actors_lock(m_actors_lock);
 
+					auto l_actor_indices = m_actors_bit.find_true_indices();
 					core::bc_concurrency::concurrent_for_each
 					(
-						std::begin(m_actors),
-						std::end(m_actors),
-						[]() { return true; },
-						[&](bool, actor_container_type::reference& p_actor_entry)
+						std::begin(l_actor_indices),
+						std::end(l_actor_indices),
+						[&](decltype(l_actor_indices)::value_type p_actor_index)
 						{
-							if (!p_actor_entry.is_set())
-							{
-								return;
-							}
-
+							auto& l_actor_entry = m_actors[p_actor_index];
 							auto* l_events_pool = &m_events_pool[m_read_event_pool];
-							auto* l_actor_events = p_actor_entry->get_events(m_read_event_pool);
+							auto* l_actor_events = l_actor_entry.get_events(m_read_event_pool);
 
 							while (l_actor_events)
 							{
@@ -734,9 +725,8 @@ namespace black_cat
 								l_actor_events = l_next;
 							}
 
-							p_actor_entry->clear_events(m_read_event_pool);
-						},
-						[](bcINT32) {}
+							l_actor_entry.clear_events(m_read_event_pool);
+						}
 					);
 				}
 				

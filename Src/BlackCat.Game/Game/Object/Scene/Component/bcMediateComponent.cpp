@@ -87,7 +87,7 @@ namespace black_cat
 			const auto* l_bound_box_event = core::bci_message::as< bc_actor_event_bound_box_changed >(p_event);
 			if (l_bound_box_event)
 			{
-				if(!m_bound_box_changed) // Only update prev box once in case of multiple events per frame
+				if(!m_bound_box_changed) // update prev box once only in case of multiple events per frame
 				{
 					m_prev_bound_box = m_bound_box;
 				}

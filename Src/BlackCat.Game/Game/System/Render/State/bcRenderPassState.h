@@ -22,14 +22,9 @@ namespace black_cat
 		class BC_GAME_DLL _bc_render_pass_state_handle_deleter
 		{
 		public:
-			using handle_t = _bc_render_state_handle;
-
-		public:
 			_bc_render_pass_state_handle_deleter();
 
 			_bc_render_pass_state_handle_deleter(bc_render_system* p_render_system);
-
-			bc_render_pass_state* operator()(handle_t p_handle) const;
 
 			void operator ()(bc_render_pass_state* p_render_state) const;
 
@@ -118,6 +113,6 @@ namespace black_cat
 			bc_render_pass_state_constant_buffer_array m_shader_cbuffers;
 		};
 
-		using bc_render_pass_state_ptr = core::bc_ref_count_handle< bc_render_pass_state, _bc_render_pass_state_handle_deleter >;
+		using bc_render_pass_state_ptr = core::bc_ref_count_ptr< bc_render_pass_state, _bc_render_pass_state_handle_deleter >;
 	}
 }

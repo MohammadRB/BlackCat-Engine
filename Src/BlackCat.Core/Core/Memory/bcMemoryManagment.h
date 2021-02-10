@@ -31,6 +31,10 @@ namespace black_cat
 			unknown_movable,		// Try to alloc in fixed size allocators, then in super heap that is defragmentable , otherwise in crt memory
 		};
 
+#ifdef BC_MEMORY_LEAK_DETECTION
+		struct bc_mem_block_leak_information;
+#endif
+		
 #ifdef BC_MEMORY_ENABLE
 
 		template< typename TMemory >

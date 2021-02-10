@@ -51,73 +51,70 @@ namespace black_cat
 				return *this;
 			}
 
-			bcInline void tag(const bcCHAR* p_tag)
+			void tag(const bcCHAR* p_tag)
 			{
 				m_memory.tag(p_tag);
 			}
 
-			bcInline const bcCHAR* tag() const
+			const bcCHAR* tag() const
 			{
 				return m_memory.tag();
-			};
+			}
 
-			bcInline const bc_memory_tracer& tracer() const
+			const bc_memory_tracer& tracer() const
 			{
 				return m_memory.tracer();
 			}
 
 			template< typename ...A >
-			bcInline void initialize(A... p_args, const bcCHAR* p_tag)
+			void initialize(A... p_args, const bcCHAR* p_tag)
 			{
 				m_memory.initialize(p_tag, p_args...);
 			}
 
-			bcInline void destroy()
+			void destroy()
 			{
 				m_memory.destroy();
 			}
 
-			bcInline void* alloc(bc_memblock* p_memblock) noexcept(true)
+			void* alloc(bc_memblock* p_memblock) noexcept(true)
 			{
 				return m_memory.alloc(p_memblock);
 			}
 
-			bcInline void free(const void* p_pointer, bc_memblock* p_memblock) noexcept(true)
+			void free(const void* p_pointer, bc_memblock* p_memblock) noexcept(true)
 			{
 				m_memory.free(p_pointer, p_memblock);
 			}
 
-			bcInline bool contain_mpointer(const void* p_pointer) const noexcept(true)
+			bool contain_pointer(const void* p_pointer) const noexcept(true)
 			{
 				return m_memory.contain_pointer(p_pointer);
 			}
 
-			bcInline void clear() const noexcept(true)
+			void clear() const noexcept(true)
 			{
 				m_memory.clear();
 			}
 
-			bcInline void register_pointer(const void* p_pointer)
+			void register_pointer(const void* p_pointer)
 			{
 				register_pointer< memory_type >(p_pointer);
 			}
 
-			bcInline void unregister_pointer(const void* p_pointer)
+			void unregister_pointer(const void* p_pointer)
 			{
 				register_pointer< memory_type >(p_pointer);
 			}
 
-			bcInline void defragment(bcUINT32 p_num)
+			void defragment(bcUINT32 p_num)
 			{
 				defragment< memory_type >(p_num);
 			}
 
-		protected:
-
 		private:
-			// http://stackoverflow.com/questions/11363822/compile-time-conditional-member-function-call-in-c
 			template< typename T1 >
-			bcInline typename std::enable_if< is_movable_type::value_type >::type register_pointer(const void* p_pointer)
+			typename std::enable_if< is_movable_type::value_type >::type register_pointer(const void* p_pointer)
 			{
 #ifdef BC_MEMORY_DEFRAG
 				m_memory.register_pointer(p_pointer);
@@ -125,12 +122,12 @@ namespace black_cat
 			}
 
 			template< typename T1 >
-			bcInline typename std::enable_if< !is_movable_type::value_type >::type register_pointer(const void* p_pointer)
+			typename std::enable_if< !is_movable_type::value_type >::type register_pointer(const void* p_pointer)
 			{
 			}
 
 			template< typename T1 >
-			bcInline typename std::enable_if< is_movable_type::value_type >::type unregister_pointer(const void* p_pointer)
+			typename std::enable_if< is_movable_type::value_type >::type unregister_pointer(const void* p_pointer)
 			{
 #ifdef BC_MEMORY_DEFRAG
 				m_memory.unregister_pointer(p_pointer);
@@ -138,12 +135,12 @@ namespace black_cat
 			}
 			
 			template< typename T1 >
-			bcInline typename std::enable_if< !is_movable_type::value_type >::type unregister_pointer(const void* p_pointer)
+			typename std::enable_if< !is_movable_type::value_type >::type unregister_pointer(const void* p_pointer)
 			{
 			}
 
 			template< typename T1 >
-			bcInline typename std::enable_if< is_movable_type::value_type >::type defragment(bcUINT32 p_num)
+			typename std::enable_if< is_movable_type::value_type >::type defragment(bcUINT32 p_num)
 			{
 #ifdef BC_MEMORY_DEFRAG
 				m_memory.defragment(p_num);
@@ -151,7 +148,7 @@ namespace black_cat
 			}
 
 			template< typename T1 >
-			bcInline typename std::enable_if< !is_movable_type::value_type >::type defragment(bcUINT32 p_num)
+			typename std::enable_if< !is_movable_type::value_type >::type defragment(bcUINT32 p_num)
 			{
 			}
 						

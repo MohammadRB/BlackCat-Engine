@@ -35,7 +35,7 @@ namespace black_cat
 
 			/**
 			 * \brief Return null pointer in case of allocation failure
-			 * \return 
+			 * \return Allocated pointer
 			 */
 			void* alloc() noexcept;
 
@@ -74,11 +74,16 @@ namespace black_cat
 
 			bc_concurrent_object_pool& operator=(bc_concurrent_object_pool&& p_other) noexcept;
 
-			bcUINT32 block_size() const;;
+			bcUINT32 block_size() const;
 
-			bcUINT32 num_block() const;;
+			bcUINT32 num_block() const;
 
-			// Allocate from pool or if it can't be done allocate object from global memory
+			/**
+			 * \brief Try to allocate object from pool or in case of not enough memory use global memory
+			 * \tparam TArgs 
+			 * \param p_args 
+			 * \return Allocated object
+			 */
 			template< typename ...TArgs >
 			T* alloc(TArgs&&... p_args) noexcept(std::is_nothrow_constructible< T, TArgs... >::value);
 

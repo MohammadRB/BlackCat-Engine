@@ -220,12 +220,12 @@ namespace black_cat
 		{
 			l_diffuse_file_name = core::bc_path(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str());
 			p_material.m_diffuse_map = l_content_manager->load< graphic::bc_texture2d_content >
-				(
-					p_context.get_allocator_alloc_type(),
-					core::bc_path(l_root_path).set_filename(l_diffuse_file_name->get_string().c_str()).get_string().c_str(),
-					nullptr,
-					*p_context.m_parameters
-					);
+			(
+				p_context.get_allocator_alloc_type(),
+				core::bc_path(l_root_path).set_filename(l_diffuse_file_name->get_string().c_str()).get_string().c_str(),
+				nullptr,
+				*p_context.m_parameters
+			);
 		}
 
 		core::bc_estring l_normal_map_path;
@@ -237,7 +237,7 @@ namespace black_cat
 		}
 		else if (l_diffuse_file_name != nullptr)
 		{
-			const auto l_conventional_normal_map_name = l_diffuse_file_name->get_filename_without_extension() + L"_NRM" + l_diffuse_file_name->get_file_extension();
+			const auto l_conventional_normal_map_name = l_diffuse_file_name->get_filename_without_extension() + L".nrm" + l_diffuse_file_name->get_file_extension();
 			auto l_normal_map = core::bc_path(l_root_path).set_filename(l_conventional_normal_map_name.c_str()).get_string();
 
 			if (core_platform::bc_file_info::exist(l_normal_map.c_str()))
@@ -252,7 +252,7 @@ namespace black_cat
 		}
 		else if (l_diffuse_file_name != nullptr)
 		{
-			const auto l_conventional_specular_map_name = l_diffuse_file_name->get_filename_without_extension() + L"_SPEC" + l_diffuse_file_name->get_file_extension();
+			const auto l_conventional_specular_map_name = l_diffuse_file_name->get_filename_without_extension() + L".spec" + l_diffuse_file_name->get_file_extension();
 			auto l_specular_map = core::bc_path(l_root_path).set_filename(l_conventional_specular_map_name.c_str()).get_string();
 
 			if (core_platform::bc_file_info::exist(l_specular_map.c_str()))
@@ -264,22 +264,22 @@ namespace black_cat
 		if (!l_normal_map_path.empty())
 		{
 			p_material.m_normal_map = l_content_manager->load< graphic::bc_texture2d_content >
-				(
-					p_context.get_allocator_alloc_type(),
-					l_normal_map_path.c_str(),
-					nullptr,
-					*p_context.m_parameters
-					);
+			(
+				p_context.get_allocator_alloc_type(),
+				l_normal_map_path.c_str(),
+				nullptr,
+				*p_context.m_parameters
+			);
 		}
 		if (!l_specular_map_path.empty())
 		{
 			p_material.m_specular_map = l_content_manager->load< graphic::bc_texture2d_content >
-				(
-					p_context.get_allocator_alloc_type(),
-					l_specular_map_path.c_str(),
-					nullptr,
-					*p_context.m_parameters
-					);
+			(
+				p_context.get_allocator_alloc_type(),
+				l_specular_map_path.c_str(),
+				nullptr,
+				*p_context.m_parameters
+			);
 		}
 	}
 

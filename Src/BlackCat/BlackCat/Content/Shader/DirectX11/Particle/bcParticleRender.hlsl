@@ -77,7 +77,7 @@ void gs(point vertex_output p_input[1], inout TriangleStream<geometry_output> p_
 		float l_light_attenuation = 1 - min(1, l_light_distance / l_light_pos.w);
 		float l_light_intensity = pow(l_light_attenuation, 4) * l_light_color.w;
 		
-		l_lights_color += l_light_color.xyz * l_light_intensity;
+		l_lights_color += l_light_color.xyz * l_light_intensity * l_particle.m_fade;
 		l_lights_intensity += l_light_intensity;
 	}
 

@@ -52,28 +52,28 @@ namespace black_cat
 			bool l_reach_end = false;
 			// TODO
 			bcUINT32 l_allocated_block = m_allocated_block.load(core_platform::bc_memory_order::seqcst);
-			bcUINT32 l_end = l_allocated_block + m_num_bitblocks;
+			bcUINT32 l_end = l_allocated_block + m_num_bit_blocks;
 			for (bcINT32 i = l_allocated_block; i < l_end; ++i)
 			{
-				bcUINT32 l_i = i % m_num_bitblocks;
-				bitblock_type l_current_block = m_blocks[l_i].load(core_platform::bc_memory_order::seqcst);
+				bcUINT32 l_i = i % m_num_bit_blocks;
+				bit_block_type l_current_block = m_blocks[l_i].load(core_platform::bc_memory_order::seqcst);
 
 				// any free blocks in this chunk? /
-				if (s_bitblock_mask != l_current_block)
+				if (s_bit_block_mask != l_current_block)
 				{
 					// find a free entry in this chunk then allocate it and set the proper block index /
-					for (int j = 0; j < s_bitblock_size; ++j)
+					for (int j = 0; j < s_bit_block_size; ++j)
 					{
-						if (bitblock_type(0) == (l_current_block & (bitblock_type(1) << j)))
+						if (bit_block_type(0) == (l_current_block & (bit_block_type(1) << j)))
 						{
-							bitblock_type l_current_block_changed = l_current_block | (bitblock_type(1) << j);
+							bit_block_type l_current_block_changed = l_current_block | (bit_block_type(1) << j);
 							if (m_blocks[l_i].compare_exchange_strong(
 								&l_current_block,
 								l_current_block_changed,
 								core_platform::bc_memory_order::seqcst,
 								core_platform::bc_memory_order::seqcst))
 							{
-								l_block = l_i * s_bitblock_size + j;
+								l_block = l_i * s_bit_block_size + j;
 
 								m_allocated_block.compare_exchange_strong(&l_allocated_block, l_i, core_platform::bc_memory_order::seqcst);
 
@@ -115,14 +115,14 @@ namespace black_cat
 			bcINT32 l_block = static_cast<bcINT32>(l_pointer - m_heap) / m_block_size;
 
 			// reset the bit in our block management array /
-			bcINT32 l_chunk_index = l_block / s_bitblock_size;
-			bcINT32 l_bit_index = l_block % s_bitblock_size;
+			bcINT32 l_chunk_index = l_block / s_bit_block_size;
+			bcINT32 l_bit_index = l_block % s_bit_block_size;
 
 #ifdef BC_MEMORY_DEBUG
 			std::memset(l_pointer, 0, p_mem_block->size());
 #endif
 
-			m_blocks[l_chunk_index].fetch_and(~(bitblock_type(1) << l_bit_index), core_platform::bc_memory_order::seqcst);
+			m_blocks[l_chunk_index].fetch_and(~(bit_block_type(1) << l_bit_index), core_platform::bc_memory_order::seqcst);
 
 			m_tracer.accept_free(p_mem_block->size());
 		}
@@ -134,7 +134,7 @@ namespace black_cat
 
 		void bc_memory_fixed_size::clear() noexcept
 		{
-			for (bcUINT32 i = 0; i < m_num_bitblocks; ++i)
+			for (bcUINT32 i = 0; i < m_num_bit_blocks; ++i)
 			{
 				m_blocks[i].store(0U);
 			}
@@ -147,20 +147,20 @@ namespace black_cat
 			m_num_block = p_num_block;
 			m_block_size = p_block_size;
 
-			if (m_num_block % s_bitblock_size == 0)
+			if (m_num_block % s_bit_block_size == 0)
 			{
-				m_num_bitblocks = m_num_block / s_bitblock_size;
+				m_num_bit_blocks = m_num_block / s_bit_block_size;
 			}
 			else
 			{
-				m_num_block = ((m_num_block / s_bitblock_size) + 1) * s_bitblock_size;
-				m_num_bitblocks = m_num_block / s_bitblock_size;
+				m_num_block = ((m_num_block / s_bit_block_size) + 1) * s_bit_block_size;
+				m_num_bit_blocks = m_num_block / s_bit_block_size;
 			}
 			m_allocated_block.store(0U);
 
-			m_blocks = static_cast< core_platform::bc_atomic< bitblock_type >* >
+			m_blocks = static_cast< core_platform::bc_atomic< bit_block_type >* >
 			(
-				core_platform::bc_mem_aligned_alloc(m_num_bitblocks * sizeof(core_platform::bc_atomic< bitblock_type >), BC_MEMORY_MIN_ALIGN)
+				core_platform::bc_mem_aligned_alloc(m_num_bit_blocks * sizeof(core_platform::bc_atomic< bit_block_type >), BC_MEMORY_MIN_ALIGN)
 			);
 
 			if (!m_blocks)
@@ -168,7 +168,7 @@ namespace black_cat
 				throw std::bad_alloc();
 			}
 
-			for (bcUINT32 i = 0; i < m_num_bitblocks; ++i)
+			for (bcUINT32 i = 0; i < m_num_bit_blocks; ++i)
 			{
 				m_blocks[i].store(0U);
 			}
@@ -204,13 +204,13 @@ namespace black_cat
 
 			m_num_block = p_other.m_num_block;
 			m_block_size = p_other.m_block_size;
-			m_num_bitblocks = p_other.m_num_bitblocks;
+			m_num_bit_blocks = p_other.m_num_bit_blocks;
 			m_blocks = p_other.m_blocks;
 			m_heap = p_other.m_heap;
 
 			p_other.m_num_block = 0;
 			p_other.m_block_size = 0;
-			p_other.m_num_bitblocks = 0;
+			p_other.m_num_bit_blocks = 0;
 			p_other.m_blocks = nullptr;
 			p_other.m_heap = nullptr;
 

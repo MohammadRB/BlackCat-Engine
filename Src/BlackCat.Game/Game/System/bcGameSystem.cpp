@@ -52,8 +52,8 @@ namespace black_cat
 			auto& l_physics_system = m_physics_system;
 			auto& l_console = m_console;
 			auto* l_scene = m_scene.get();
-			
-			if(p_is_partial_update)
+
+			if (p_is_partial_update)
 			{
 				l_physics_system.update(p_clock);
 				if (l_scene)
@@ -63,12 +63,12 @@ namespace black_cat
 
 				return;
 			}
-			
+
 			l_input_system.update(p_clock);
 			l_physics_system.update(p_clock);
 
 			core::bc_task<void> l_scene_task;
-			
+
 			if (l_scene)
 			{
 				l_scene_task = l_scene->update_px_async(l_physics_system, p_clock);
@@ -80,17 +80,17 @@ namespace black_cat
 			{
 				l_scene_task.wait();
 			}
-			
+
 			l_actor_component_manager.update_actors(p_clock);
 			l_query_manager.process_query_queue(p_clock);
 
-			if(l_scene)
+			if (l_scene)
 			{
 				l_scene_task = l_scene->update_graph_async();
 			}
 
 			const auto l_animations_task = l_animation_manager.run_scheduled_jobs_async(p_clock);
-			
+
 			l_particle_manager.update(p_clock);
 			l_script_system.update(p_clock);
 			l_console->update(p_clock);
@@ -100,7 +100,7 @@ namespace black_cat
 				l_scene_task.wait();
 			}
 			l_animations_task.wait();
-			
+
 			l_render_system.update(bc_render_system::update_context(p_clock, m_input_system.get_camera()));
 		}
 		

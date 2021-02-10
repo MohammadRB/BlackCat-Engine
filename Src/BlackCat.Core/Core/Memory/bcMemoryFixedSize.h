@@ -50,15 +50,15 @@ namespace black_cat
 
 			void _move(this_type&& p_other);
 
-			using bitblock_type = bcUINT32;
-			static const bitblock_type s_bitblock_mask = 0xffffffff;
-			static const bcSIZE s_bitblock_size = sizeof(bitblock_type) * 8;
+			using bit_block_type = bcUINT32;
+			static const bit_block_type s_bit_block_mask = 0xffffffff;
+			static const bcSIZE s_bit_block_size = sizeof(bit_block_type) * 8;
 
 			bcUINT32 m_num_block;
 			bcUINT32 m_block_size;
-			bcUINT32 m_num_bitblocks;
+			bcUINT32 m_num_bit_blocks;
 			core_platform::bc_atomic< bcUINT32 > m_allocated_block;		// An index that searching for free block will continue from this place
-			core_platform::bc_atomic< bitblock_type >* m_blocks;			// bit-vector indicating if a block is allocated or not
+			core_platform::bc_atomic< bit_block_type >* m_blocks;			// bit-vector indicating if a block is allocated or not
 			bcUBYTE* m_heap;												// block of data
 		};
 

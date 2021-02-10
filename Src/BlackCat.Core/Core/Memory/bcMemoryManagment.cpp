@@ -10,6 +10,50 @@ namespace black_cat
 	{
 #ifdef BC_MEMORY_ENABLE
 
+#ifdef BC_MEMORY_LEAK_DETECTION
+		struct bc_mem_block_leak_information
+		{
+			static const bcUINT32 s_filename_length = 20;
+
+			void* m_pointer;
+			bc_alloc_type m_type;
+			bcSIZE m_number;
+			bcSIZE m_requested_size;
+			bcSIZE m_line_number;
+			bcCHAR m_file_name[s_filename_length];
+
+			bc_mem_block_leak_information()
+				: m_pointer(nullptr),
+				m_type(bc_alloc_type::unknown),
+				m_number(0),
+				m_requested_size(0),
+				m_line_number(0),
+				m_file_name()
+			{
+			}
+
+			bc_mem_block_leak_information(void* p_pointer,
+				bc_alloc_type p_type,
+				bcSIZE p_number,
+				bcSIZE p_requested_size,
+				bcSIZE p_line_number,
+				const bcCHAR* p_file_name) :
+				m_pointer(p_pointer),
+				m_type(p_type),
+				m_number(p_number),
+				m_requested_size(p_requested_size),
+				m_line_number(p_line_number),
+				m_file_name()
+			{
+				std::strcpy
+				(
+					m_file_name,
+					&p_file_name[std::max< bcINT32 >(static_cast<bcINT32>(std::strlen(p_file_name)) - (s_filename_length - 1), 0)]
+				);
+			}
+		};
+#endif
+		
 		bc_memory_manager bc_memory_manager::m_instance;
 
 		bc_memory_manager::bc_memory_manager() noexcept
@@ -138,7 +182,7 @@ namespace black_cat
 			bc_memory_manager::m_instance.destroy();
 		}
 		
-		void* bc_memory_manager::alloc(bcSIZE p_size, bc_alloc_type p_allocType, const bcCHAR* p_file, bcUINT32 p_line) noexcept
+		void* bc_memory_manager::alloc(bcSIZE p_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 			BC_ASSERT(m_initialized);
 
@@ -148,7 +192,7 @@ namespace black_cat
 			bc_memblock::initialize_mem_block_before_allocation(p_size, BC_MEMORY_MIN_ALIGN, &l_block);
 			const bcSIZE l_size = l_block.size();
 
-			switch (p_allocType)
+			switch (p_alloc_type)
 			{
 			case bc_alloc_type::frame:
 				l_result = m_per_frame_stack->alloc(&l_block);
@@ -172,7 +216,7 @@ namespace black_cat
 				break;
 			}
 
-			if (!l_result && p_allocType == bc_alloc_type::unknown_movable)
+			if (!l_result && p_alloc_type == bc_alloc_type::unknown_movable)
 			{
 				l_result = m_super_heap->alloc(&l_block);
 				l_allocator = m_super_heap;
@@ -203,6 +247,7 @@ namespace black_cat
 						bc_mem_block_leak_information
 						(
 							l_result,
+							p_alloc_type,
 							m_allocation_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1,
 							p_size,
 							p_line,
@@ -331,6 +376,7 @@ namespace black_cat
 						bc_mem_block_leak_information
 						(
 							l_result,
+							p_alloc_type,
 							m_allocation_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1,
 							p_size,
 							p_line,
@@ -506,10 +552,6 @@ namespace black_cat
 
 				return l_leak_count;
 			}
-			/*m_leak_allocator->iterate_over([](void* p_key, bc_mem_block_leak_information& p_value)->void
-			{
-				bc_memblock* l_memblock = bc_memblock::retrieve_mem_block(p_value.m_pointer);
-			});*/
 		}
 #endif
 #endif

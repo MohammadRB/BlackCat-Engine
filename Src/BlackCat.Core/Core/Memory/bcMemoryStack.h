@@ -59,8 +59,6 @@ namespace black_cat
 
 			void clear() noexcept override;
 
-		protected:
-
 		private:
 			void _initialize(bcSIZE p_max_num_thread, bcSIZE p_size, const bcCHAR* p_tag) override;
 

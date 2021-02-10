@@ -17,38 +17,19 @@ namespace black_cat
 			using this_type = bc_memory;
 
 		public:
-			bc_memory() = default;
+			bc_memory();
 
-			bc_memory(this_type&& p_other) noexcept
-			{
-				_assign(std::move(p_other));
-			}
+			bc_memory(this_type&& p_other) noexcept;
 
-			virtual ~bc_memory() = default;
+			virtual ~bc_memory();
 
-			this_type& operator =(this_type&& p_other) noexcept
-			{
-				_assign(std::move(p_other));
+			this_type& operator =(this_type&& p_other) noexcept;
 
-				return *this;
-			}
+			void tag(const bcCHAR* p_tag);
 
-			void tag(const bcCHAR* p_tag)
-			{
-				// In allocators we call this function only in theirs Initialize method, so it is safe /
-				std::memcpy(m_tag, p_tag, std::min<bcSIZE>(bcSIZE(s_tag_length - 1), strlen(p_tag)));
-				*(m_tag + std::min<bcSIZE>(bcSIZE(s_tag_length - 1), strlen(p_tag))) = '\0';
-			}
+			const bcCHAR* tag() const noexcept;
 
-			const bcCHAR* tag() const noexcept 
-			{ 
-				return m_tag; 
-			}
-
-			const bc_memory_tracer& tracer() const noexcept 
-			{ 
-				return m_tracer; 
-			}
+			const bc_memory_tracer& tracer() const noexcept;
 
 			virtual void* alloc(bc_memblock* p_memblock) noexcept = 0;
 
@@ -65,35 +46,23 @@ namespace black_cat
 			static const bcUINT8 s_tag_length = 15;
 			bcCHAR m_tag[s_tag_length];
 
-			void _assign(this_type&& p_other)
-			{
-				tag(p_other.tag());
-				m_tracer = const_cast< bc_memory_tracer& >(p_other.tracer());
-			}
+			void _assign(this_type&& p_other);
 		};
 
 		class bc_memory_movable : public bc_memory
 		{
 		public:
 			using this_type = bc_memory_movable;
-			using defrag_callback = bc_delegate<void(void*,void*)>;
+			using defrag_callback = bc_delegate<void(void*, void*)>;
 
 		public:
-			bc_memory_movable() = default;
+			bc_memory_movable();
 
-			bc_memory_movable(this_type&& p_other) noexcept
-				: bc_memory(std::move(p_other))
-			{
-			}
+			bc_memory_movable(this_type&& p_other) noexcept;
 
-			virtual ~bc_memory_movable() = default;
+			virtual ~bc_memory_movable();
 
-			this_type& operator =(this_type&& p_other) noexcept
-			{
-				bc_memory::operator =(std::move(p_other));
-
-				return *this;
-			}
+			this_type& operator =(this_type&& p_other) noexcept;
 
 #ifdef BC_MEMORY_DEFRAG
 			virtual void register_pointer(void** p_pointer, bc_memblock* p_memblock) noexcept = 0;
@@ -102,10 +71,60 @@ namespace black_cat
 
 			virtual void defragment(bcINT32 p_num_defrag, defrag_callback p_defrag_callback) noexcept = 0;
 #endif
-
-		protected:
-
-		private:
 		};
+
+		inline bc_memory::bc_memory() = default;
+
+		inline bc_memory::bc_memory(this_type&& p_other) noexcept
+		{
+			_assign(std::move(p_other));
+		}
+
+		inline bc_memory::~bc_memory() = default;
+
+		inline bc_memory::this_type& bc_memory::operator=(this_type&& p_other) noexcept
+		{
+			_assign(std::move(p_other));
+
+			return *this;
+		}
+
+		inline void bc_memory::tag(const bcCHAR* p_tag)
+		{
+			// In allocators we call this function only in theirs Initialize method, so it is safe /
+			std::memcpy(m_tag, p_tag, std::min< bcSIZE >(bcSIZE(s_tag_length - 1), strlen(p_tag)));
+			*(m_tag + std::min< bcSIZE >(bcSIZE(s_tag_length - 1), strlen(p_tag))) = '\0';
+		}
+
+		inline const bcCHAR* bc_memory::tag() const noexcept
+		{
+			return m_tag;
+		}
+
+		inline const bc_memory_tracer& bc_memory::tracer() const noexcept
+		{
+			return m_tracer;
+		}
+
+		inline void bc_memory::_assign(this_type&& p_other)
+		{
+			tag(p_other.tag());
+			m_tracer = const_cast< bc_memory_tracer& >(p_other.tracer());
+		}
+
+		inline bc_memory_movable::bc_memory_movable() = default;
+
+		inline bc_memory_movable::bc_memory_movable(this_type&& p_other) noexcept: bc_memory(std::move(p_other))
+		{
+		}
+
+		inline bc_memory_movable::~bc_memory_movable() = default;
+
+		inline bc_memory_movable::this_type& bc_memory_movable::operator=(this_type&& p_other) noexcept
+		{
+			bc_memory::operator =(std::move(p_other));
+
+			return *this;
+		}
 	}
 }

@@ -67,7 +67,7 @@ namespace black_cat
 	}
 
 	void bc_render_application::app_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_partial_update)
-	{
+	{	
 		++m_update_count;
 		m_update_watch.start();
 		

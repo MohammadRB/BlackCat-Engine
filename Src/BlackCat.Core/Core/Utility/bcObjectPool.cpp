@@ -33,7 +33,7 @@ namespace black_cat
 		bc_concurrent_memory_pool& bc_concurrent_memory_pool::operator=(bc_concurrent_memory_pool&& p_other) noexcept
 		{
 			bc_initializable::operator=(std::move(p_other));
-			bcUINT32 l_allocated_block = p_other.m_allocated_block.load(core_platform::bc_memory_order::acquire);
+			const bcUINT32 l_allocated_block = p_other.m_allocated_block.load(core_platform::bc_memory_order::acquire);
 
 			m_num_block = p_other.m_num_block;
 			m_block_size = p_other.m_block_size;
@@ -74,9 +74,9 @@ namespace black_cat
 					// find a free entry in this chunk then allocate it and set the proper block index
 					for (bcUINT32 j = 0; j < s_bit_block_size; ++j)
 					{
-						if (bit_block_type(0) == (l_current_block & (bit_block_type(1) << j)))
+						if (static_cast< bit_block_type >(0) == (l_current_block & (static_cast< bit_block_type >(1) << j)))
 						{
-							const bit_block_type l_current_block_changed = l_current_block | (bit_block_type(1) << j);
+							const bit_block_type l_current_block_changed = l_current_block | (static_cast< bit_block_type >(1) << j);
 							if (m_blocks[i].compare_exchange_strong
 								(
 									&l_current_block,
@@ -110,12 +110,12 @@ namespace black_cat
 			return l_result;
 		}
 
-		void bc_concurrent_memory_pool::free(void* p_pointer) noexcept(true)
+		void bc_concurrent_memory_pool::free(void* p_pointer) noexcept
 		{
 			// is this pointer in our heap?
 			BC_ASSERT(contain_pointer(p_pointer));
 
-			bcUBYTE* l_pointer = reinterpret_cast<bcUBYTE*>(p_pointer);
+			auto* l_pointer = static_cast<bcUBYTE*>(p_pointer);
 
 			// convert the pointer into a block index
 			const bcINT32 l_block = static_cast<bcINT32>(l_pointer - m_heap) / m_block_size;
@@ -124,7 +124,7 @@ namespace black_cat
 			const bcINT32 l_chunk_index = l_block / s_bit_block_size;
 			const bcINT32 l_bit_index = l_block % s_bit_block_size;
 
-			m_blocks[l_chunk_index].fetch_and(~(bit_block_type(1) << l_bit_index), core_platform::bc_memory_order::seqcst);
+			m_blocks[l_chunk_index].fetch_and(~(static_cast< bit_block_type >(1) << l_bit_index), core_platform::bc_memory_order::seqcst);
 
 #ifdef BC_MEMORY_DEBUG
 			std::memset(reinterpret_cast<void*>(l_pointer), 0, m_block_size);
@@ -189,7 +189,7 @@ namespace black_cat
 				const auto l_current_block = m_blocks[l_i].load(core_platform::bc_memory_order::relaxed);
 				for (bcUINT32 l_j = 0; l_j < s_bit_block_size; ++l_j)
 				{
-					const bool l_is_alive = l_current_block & (bit_block_type(1) << l_j);
+					const bool l_is_alive = l_current_block & (static_cast< bit_block_type >(1) << l_j);
 					if (l_is_alive)
 					{
 						++l_num_alive_objects;

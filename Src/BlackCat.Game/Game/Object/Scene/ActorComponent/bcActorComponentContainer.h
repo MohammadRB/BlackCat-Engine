@@ -4,7 +4,7 @@
 
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcDeque.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Container/bcBitVector.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 
@@ -66,7 +66,8 @@ namespace black_cat
 			bcSIZE size() override;
 
 		private:
-			core::bc_deque< core::bc_nullable< TComponent > > m_components;
+			core::bc_bit_vector m_bit_block;
+			core::bc_deque< TComponent > m_components;
 		};
 
 		template< class TComponent >
@@ -87,99 +88,84 @@ namespace black_cat
 		template< class TComponent >
 		bci_actor_component* bc_actor_component_container<TComponent>::get(bc_actor_component_index p_index)
 		{
-			auto& l_entry = m_components[p_index];
-
-			if(!l_entry.is_set())
+			const auto l_is_set = m_bit_block[p_index];
+			if(!l_is_set)
 			{
 				return nullptr;
 			}
-
-			return &l_entry.get();
+			
+			auto& l_entry = m_components[p_index];
+			return &l_entry;
 		}
 
 		template< class TComponent >
 		bc_actor_component_index bc_actor_component_container<TComponent>::create(bc_actor_index p_actor_index)
 		{
-			bc_actor_component_index l_index = 0;
-			bool l_has_set = false;
+			bcUINT32 l_free_slot;
+			const auto l_has_free_slot = m_bit_block.find_first_false(l_free_slot);
 
-			for (core::bc_nullable< TComponent >& l_component : m_components) // TODO use fast free space lookup
+			if(l_has_free_slot)
 			{
-				if (!l_component.is_set())
-				{
-					l_component.reset(TComponent(p_actor_index, l_index));
-					l_has_set = true;
-					break;
-				}
-				else
-				{
-					++l_index;
-				}
+				new (&m_components[l_free_slot]) TComponent(p_actor_index, l_free_slot);
+				m_bit_block.make_true(l_free_slot);
+			}
+			else
+			{
+				l_free_slot = m_components.size();
+				m_components.push_back(TComponent(p_actor_index, l_free_slot));
+				m_bit_block.resize(m_components.size());
+				m_bit_block.make_true(l_free_slot);
 			}
 
-			if (!l_has_set)
-			{
-				m_components.push_back(core::bc_nullable< TComponent >(TComponent(p_actor_index, l_index)));
-			}
-
-			return l_index;
+			return l_free_slot;
 		}
 
 		template< class TComponent >
 		bc_actor_component_index bc_actor_component_container<TComponent>::create_after(bc_actor_index p_actor_index, bc_actor_component_index p_parent_index)
 		{
-			bc_actor_component_index l_index = 0;
-			bool l_has_set = false;
+			bcUINT32 l_free_slot;
+			const auto l_has_free_slot = m_bit_block.find_first_false(l_free_slot, p_parent_index);
 
-			auto l_begin = std::begin(m_components) + p_parent_index + 1;
-			auto l_end = std::end(m_components);
-			for (; l_begin != l_end; ++l_begin)
+			if (l_has_free_slot)
 			{
-				core::bc_nullable< TComponent >& l_component = *l_begin;
-
-				if (!l_component.is_set())
-				{
-					l_component.reset(TComponent(p_actor_index, l_index));
-					l_has_set = true;
-				}
-				else
-				{
-					++l_index;
-				}
+				new (&m_components[l_free_slot]) TComponent(p_actor_index, l_free_slot);
+				m_bit_block.make_true(l_free_slot);
+			}
+			else
+			{
+				l_free_slot = m_components.size() - 1;
+				m_components.push_back(TComponent(p_actor_index, l_free_slot));
+				m_bit_block.resize(m_components.size());
+				m_bit_block.make_true(l_free_slot);
 			}
 
-			if (!l_has_set)
-			{
-				m_components.push_back(core::bc_nullable< TComponent >(TComponent(p_actor_index, l_index)));
-			}
-
-			return l_index;
+			return l_free_slot;
 		}
 
 		template< class TComponent >
 		void bc_actor_component_container<TComponent>::remove(bc_actor_component_index p_index)
 		{
-			m_components[p_index].reset();
+			m_bit_block.make_false(p_index);
+			m_components[p_index].~TComponent();
 		}
 
 		template <class TComponent>
 		void bc_actor_component_container<TComponent>::handle_events(bc_actor_component_manager& p_manager)
 		{
-			for (auto& l_component_entry : m_components)
-			{
-				if (l_component_entry.is_set()) // TODO find a way to skip this if
-				{
-					TComponent& l_component = l_component_entry.get();
-					bc_actor l_actor = p_manager.component_get_actor< TComponent >(l_component);
-					bc_actor_event* l_events = p_manager.actor_get_events(l_actor);
-					bc_actor_event* l_current_event = l_events;
+			const auto l_used_slots = m_bit_block.find_true_indices();
 
-					while (l_current_event)
-					{
-						bc_actor_component_event_context l_context(l_actor, *l_current_event);
-						l_component.handle_event(l_context);
-						l_current_event = l_current_event->get_next();
-					}
+			for(auto l_index : l_used_slots)
+			{
+				TComponent& l_component = m_components[l_index];
+				bc_actor l_actor = p_manager.component_get_actor< TComponent >(l_component);
+				bc_actor_event* l_events = p_manager.actor_get_events(l_actor);
+				bc_actor_event* l_current_event = l_events;
+
+				while (l_current_event)
+				{
+					bc_actor_component_event_context l_context(l_actor, *l_current_event);
+					l_component.handle_event(l_context);
+					l_current_event = l_current_event->get_next();
 				}
 			}
 		}
@@ -187,14 +173,14 @@ namespace black_cat
 		template< class TComponent >
 		void bc_actor_component_container<TComponent>::update(bc_actor_component_manager& p_manager, const core_platform::bc_clock::update_param& p_clock)
 		{
-			for(auto& l_component : m_components)
+			const auto l_used_slots = m_bit_block.find_true_indices();
+
+			for (auto l_index : l_used_slots)
 			{
-				if(l_component.is_set()) // TODO find a way to skip this if
-				{
-					bc_actor l_actor = p_manager.component_get_actor< TComponent >(l_component.get());
-					
-					l_component->update(bc_actor_component_update_content(l_actor, p_clock));
-				}
+				TComponent& l_component = m_components[l_index];
+				bc_actor l_actor = p_manager.component_get_actor< TComponent >(l_component);
+
+				l_component.update(bc_actor_component_update_content(l_actor, p_clock));
 			}
 		}
 

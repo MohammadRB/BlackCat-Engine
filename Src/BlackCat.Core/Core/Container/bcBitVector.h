@@ -2,6 +2,7 @@
 
 #include "Core/bcExport.h"
 #include "Core/Container/bcContainer.h"
+#include "Core/Container/bcVector.h"
 
 namespace black_cat
 {
@@ -10,7 +11,13 @@ namespace black_cat
 		class BC_CORE_DLL bc_bit_vector
 		{
 		public:
-			bc_bit_vector(bcUINT32 p_size);
+			bc_bit_vector();
+			
+			/**
+			 * \brief Initialize bits with false values
+			 * \param p_capacity 
+			 */
+			explicit bc_bit_vector(bcUINT32 p_capacity);
 
 			bc_bit_vector(const bc_bit_vector& p_other);
 
@@ -22,26 +29,45 @@ namespace black_cat
 
 			bc_bit_vector& operator =(bc_bit_vector&& p_other) noexcept;
 
-			void resize(bcUINT32 p_size, bc_alloc_type p_alloc_type = bc_alloc_type::unknown);
+			bcUINT32 capacity() const noexcept;
+			
+			bool operator[](bcUINT32 p_index) const noexcept;
 
-			bool operator[](bcUINT32 p_index) const;
-
+			bool at(bcUINT32 p_index) const;
+			
 			void set(bcUINT32 p_index, bool p_value);
+			
+			void make_false(bcUINT32 p_index);
 
-			void false_all();
+			void make_all_false() noexcept;
 
-			void true_all();
+			void make_true(bcUINT32 p_index) noexcept;
+			
+			void make_all_true() noexcept;
 
-			bcUINT32 size() const
-			{
-				return m_size;
-			}
+			bool find_first_false(bcUINT32& p_result, bcUINT32 p_search_start = 0) const noexcept;
 
-		protected:
+			bc_vector_frame<bcUINT32> find_true_indices() const noexcept;
+			
+			/**
+			 * \brief Change the capacity of vector and initialize newly created bits with false values
+			 * \param p_capacity 
+			 * \param p_alloc_type 
+			 */
+			void resize(bcUINT32 p_capacity, bc_alloc_type p_alloc_type = bc_alloc_type::unknown_movable);
 
 		private:
-			bcUINT32* m_array;
-			bcUINT32 m_size;
+			using block_t = bcUINT32;
+			const block_t m_block_mask = 0xffffffff;
+			
+			bcUINT32 m_capacity;
+			bcUINT32 m_block_count;
+			block_t* m_blocks;
 		};
+
+		inline bcUINT32 bc_bit_vector::capacity() const noexcept
+		{
+			return m_capacity;
+		}
 	}
 }

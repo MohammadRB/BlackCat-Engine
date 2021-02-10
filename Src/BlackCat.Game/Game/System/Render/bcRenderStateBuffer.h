@@ -16,23 +16,22 @@ namespace black_cat
 		struct _bc_render_state_buffer_entry_hash
 		{
 			using argument_type = bc_render_state_ptr;
-			using result_type = _bc_render_state_handle::handle_type;
+			using result_type = std::hash<void*>::result_type;
 
 			result_type operator ()(const argument_type& p_arg) const noexcept
 			{
-				return p_arg.get_handle().m_handle;
+				return std::hash<void*>()(p_arg.get());
 			}
 		};
 
 		struct _bc_render_state_buffer_entry_equal
 		{
-			using result_type = _bc_render_state_handle::handle_type;
 			using first_argument_type = bc_render_state_ptr;
 			using second_argument_type = bc_render_state_ptr;
 
 			bool operator()(const first_argument_type& p_1, const second_argument_type& p_2) const
 			{
-				return p_1.get_handle().m_handle == p_2.get_handle().m_handle;
+				return p_1.get() == p_2.get();
 			}
 		};
 

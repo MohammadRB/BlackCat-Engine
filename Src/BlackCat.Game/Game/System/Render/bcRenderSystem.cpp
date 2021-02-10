@@ -234,31 +234,9 @@ namespace black_cat
 				l_cbuffer_parameter.set_register_index(l_parameter_register++);
 			}
 
-			bcSIZE l_insert_index;
-			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_pass_states_mutex);
-
-				auto l_first_empty = std::find_if(std::begin(m_render_pass_states), std::end(m_render_pass_states), [](const core::bc_nullable< bc_render_pass_state >& p_item)
-				{
-					return !p_item.is_set();
-				});
-
-				if (l_first_empty != std::end(m_render_pass_states))
-				{
-					(*l_first_empty).reset(std::move(l_render_pass_state));
-				}
-				else
-				{
-					m_render_pass_states.push_back(core::bc_nullable< bc_render_pass_state >(std::move(l_render_pass_state)));
-
-					l_first_empty = std::begin(m_render_pass_states);
-					std::advance(l_first_empty, std::size(m_render_pass_states) - 1);
-				}
-
-				l_insert_index = std::distance(std::begin(m_render_pass_states), l_first_empty);
-			}
-
-			return bc_render_pass_state_ptr(_bc_render_state_handle(l_insert_index), _bc_render_pass_state_handle_deleter(this));
+			auto* l_render_pass_state_ptr = m_render_pass_states.alloc(std::move(l_render_pass_state));
+			
+			return bc_render_pass_state_ptr(l_render_pass_state_ptr, _bc_render_pass_state_handle_deleter(this));
 		}
 		
 		bc_render_state_ptr bc_render_system::create_render_state(graphic::bc_primitive p_primitive,
@@ -300,31 +278,9 @@ namespace black_cat
 				l_cbuffer_parameter.set_register_index(l_parameter_register++);
 			}
 
-			bcSIZE l_insert_index;
-			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_render_states_mutex);
-
-				auto l_first_empty = std::find_if(std::begin(m_render_states), std::end(m_render_states), [](const core::bc_nullable<bc_render_state>& p_item)
-				{
-					return !p_item.is_set();
-				});
-
-				if (l_first_empty != std::end(m_render_states))
-				{
-					(*l_first_empty).reset(std::move(l_render_state));
-				}
-				else
-				{
-					m_render_states.push_back(core::bc_nullable< bc_render_state >(std::move(l_render_state)));
-
-					l_first_empty = std::begin(m_render_states);
-					std::advance(l_first_empty, std::size(m_render_states) - 1);
-				}
-
-				l_insert_index = std::distance(std::begin(m_render_states), l_first_empty);
-			}
-
-			return bc_render_state_ptr(_bc_render_state_handle(l_insert_index), _bc_render_state_handle_deleter(this));
+			auto* l_render_state_ptr = m_render_states.alloc(std::move(l_render_state));
+			
+			return bc_render_state_ptr(l_render_state_ptr, _bc_render_state_handle_deleter(this));
 		}
 
 		bc_compute_state_ptr bc_render_system::create_compute_state(graphic::bc_device_compute_state p_compute_state,
@@ -374,31 +330,9 @@ namespace black_cat
 				l_cbuffer_parameter.set_register_index(l_parameter_register++);
 			}
 
-			bcSIZE l_insert_index;
-			{
-				core_platform::bc_mutex_guard l_guard(m_compute_states_mutex);
-				
-				auto l_first_empty = std::find_if(std::begin(m_compute_states), std::end(m_compute_states), [](const core::bc_nullable< bc_compute_state >& p_item)
-				{
-					return !p_item.is_set();
-				});
+			auto* l_compute_state_ptr = m_compute_states.alloc(std::move(l_compute_state));
 
-				if (l_first_empty != std::end(m_compute_states))
-				{
-					(*l_first_empty).reset(std::move(l_compute_state));
-				}
-				else
-				{
-					m_compute_states.push_back(core::bc_nullable< bc_compute_state >(std::move(l_compute_state)));
-
-					l_first_empty = std::begin(m_compute_states);
-					std::advance(l_first_empty, std::size(m_compute_states) - 1);
-				}
-
-				l_insert_index = std::distance(std::begin(m_compute_states), l_first_empty);
-			}
-
-			return bc_compute_state_ptr(_bc_render_state_handle(l_insert_index), _bc_compute_state_handle_deleter(this));
+			return bc_compute_state_ptr(l_compute_state_ptr, _bc_compute_state_handle_deleter(this));
 		}
 
 		void bc_render_system::_initialize(core::bc_content_stream_manager& p_content_stream, bc_render_system_parameter p_parameter)
@@ -416,6 +350,10 @@ namespace black_cat
 			core_platform::bc_basic_hardware_info l_hw_info;
 			core_platform::bc_hardware_info::get_basic_info(&l_hw_info);
 
+			m_render_pass_states.initialize(20, core::bc_alloc_type::program);
+			m_render_states.initialize(300, core::bc_alloc_type::program);
+			m_compute_states.initialize(20, core::bc_alloc_type::program);
+			
 			m_content_stream = &p_content_stream;
 			m_thread_manager = core::bc_make_unique< bc_render_thread_manager >(core::bc_alloc_type::program , *this, std::max(1U, l_hw_info.proccessor_count / 2));
 			m_material_manager = core::bc_make_unique< bc_material_manager >(core::bc_alloc_type::program, *m_content_stream, *this);
@@ -460,44 +398,9 @@ namespace black_cat
 			m_material_manager.reset();
 			m_thread_manager.reset();
 
-#ifdef BC_DEBUG // All states must be released upon render system destruction
-			auto l_render_pass_states_count = 0;
-			auto l_render_states_count = 0;
-			auto l_compute_states_count = 0;
-
-			for (auto& l_item : m_render_pass_states)
-			{
-				if (l_item != nullptr)
-				{
-					auto& l_rps = *l_item;
-					++l_render_pass_states_count;
-				}
-			}
-			
-			for (auto& l_item : m_render_states)
-			{
-				if (l_item != nullptr)
-				{
-					auto& l_rs = *l_item;
-					++l_render_states_count;
-				}
-			}
-
-			for (auto& l_item : m_compute_states)
-			{
-				if (l_item != nullptr)
-				{
-					auto& l_cs = *l_item;
-					++l_compute_states_count;
-				}
-			}
-
-			BC_ASSERT(l_render_pass_states_count + l_render_states_count + l_compute_states_count == 0);
-#endif
-			
-			m_render_pass_states.clear();
-			m_render_states.clear();
-			m_compute_states.clear();
+			m_render_pass_states.destroy();
+			m_render_states.destroy();
+			m_compute_states.destroy();
 			
 			m_device.destroy();
 		}
@@ -573,108 +476,23 @@ namespace black_cat
 			
 			return false;
 		}
-
-		bc_render_pass_state* bc_render_system::_get_render_pass_state(const _bc_render_state_handle& p_handle)
+		
+		void bc_render_system::_destroy_render_pass_state(bc_render_pass_state* p_render_pass_state)
 		{
-			auto& l_render_pass_state = m_render_pass_states.at(p_handle.m_handle);
-
-			if (l_render_pass_state.is_set())
-			{
-				return &l_render_pass_state.get();
-			}
-
-			return nullptr;
+			BC_ASSERT(m_initialized);
+			m_render_pass_states.free(p_render_pass_state);
 		}
 
-		bc_render_state* bc_render_system::_get_render_state(const _bc_render_state_handle& p_handle)
+		void bc_render_system::_destroy_render_state(bc_render_state* p_render_state)
 		{
-			auto& l_render_state = m_render_states.at(p_handle.m_handle);
-
-			if (l_render_state.is_set())
-			{
-				return &l_render_state.get();
-			}
-
-			return nullptr;
+			BC_ASSERT(m_initialized);
+			m_render_states.free(p_render_state);
 		}
 
-		bc_compute_state* bc_render_system::_get_compute_state(const _bc_render_state_handle& p_handle)
+		void bc_render_system::_destroy_compute_state(bc_compute_state* p_compute_state)
 		{
-			{
-				core_platform::bc_mutex_guard l_lock(m_compute_states_mutex);
-
-				auto& l_compute_state = m_compute_states.at(p_handle.m_handle);
-
-				if (l_compute_state.is_set())
-				{
-					return &l_compute_state.get();
-				}
-
-				return nullptr;
-			}
-		}
-
-		void bc_render_system::_destroy_render_pass_state(const bc_render_pass_state* p_render_pass_state)
-		{
-			{
-				core_platform::bc_mutex_guard l_guard(m_render_pass_states_mutex);
-
-				auto l_item = std::find_if(std::begin(m_render_pass_states), std::end(m_render_pass_states), [p_render_pass_state](const core::bc_nullable< bc_render_pass_state >& p_item)
-				{
-					return p_item.is_set() && &p_item.get() == p_render_pass_state;
-				});
-
-				if (l_item == std::end(m_render_pass_states))
-				{
-					BC_ASSERT(false, "Render pass state not found");
-					return;
-				}
-
-				// We set object to null because we can use null objects again 
-				(*l_item).reset(nullptr);
-			}
-		}
-
-		void bc_render_system::_destroy_render_state(const bc_render_state* p_render_state)
-		{
-			{
-				core_platform::bc_mutex_guard l_guard(m_render_states_mutex);
-
-				auto l_item = std::find_if(std::begin(m_render_states), std::end(m_render_states), [p_render_state](const core::bc_nullable<bc_render_state>& p_item)
-				{
-					return p_item.is_set() && &p_item.get() == p_render_state;
-				});
-
-				if (l_item == std::end(m_render_states))
-				{
-					BC_ASSERT(false, "Render state not found");
-					return;
-				}
-
-				// We set object to null because we can use null objects again 
-				(*l_item).reset(nullptr);
-			}
-		}
-
-		void bc_render_system::_destroy_compute_state(const bc_compute_state* p_compute_state)
-		{
-			{
-				core_platform::bc_mutex_guard l_guard(m_compute_states_mutex);
-
-				const auto l_item = std::find_if(std::begin(m_compute_states), std::end(m_compute_states), [p_compute_state](const core::bc_nullable< bc_compute_state >& p_item)
-				{
-					return p_item.is_set() && &p_item.get() == p_compute_state;
-				});
-
-				if (l_item == std::end(m_compute_states))
-				{
-					BC_ASSERT(false, "Compute state not found");
-					return;
-				}
-
-				// We set object to null because we can use null objects again 
-				(*l_item).reset(nullptr);
-			}
+			BC_ASSERT(m_initialized);
+			m_compute_states.free(p_compute_state);
 		}
 	}
 }
