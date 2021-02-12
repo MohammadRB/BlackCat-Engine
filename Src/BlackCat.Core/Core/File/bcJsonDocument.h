@@ -80,7 +80,8 @@ namespace black_cat
 			m_json_fields.push_back(p_parser);
 		}
 
-		inline bci_json_value::bci_json_value(bci_json_structure* p_structure, bool p_optional): m_optional(p_optional)
+		inline bci_json_value::bci_json_value(bci_json_structure* p_structure, bool p_optional)
+			: m_optional(p_optional)
 		{
 			if (p_structure)
 			{
@@ -130,7 +131,7 @@ namespace black_cat
 		 * If value is a json array, stored value will be bc_vector<bc_any>.
 		 * If value is a json object, stored value will be bc_json_key_value.
 		 */
-		struct bc_json_key_value
+		class bc_json_key_value
 		{
 		public:
 			using key_value_array = bc_vector< std::pair< bc_string, bc_any > >;
@@ -188,7 +189,8 @@ namespace black_cat
 
 			iterator find(const bcCHAR* p_key)
 			{
-				iterator l_current = std::begin(m_key_values), l_end = std::end(m_key_values);
+				auto l_current = std::begin(m_key_values);
+				const auto l_end = std::end(m_key_values);
 				for(;l_current != l_end; ++l_current)
 				{
 					if(l_current->first == p_key)
@@ -213,7 +215,8 @@ namespace black_cat
 
 			void remove(const bcCHAR* p_key)
 			{
-				iterator l_current = std::begin(m_key_values), l_end = std::end(m_key_values);
+				auto l_current = std::begin(m_key_values);
+				const auto l_end = std::end(m_key_values);
 				for (; l_current != l_end; ++l_current)
 				{
 					if (l_current->first == p_key)
@@ -275,6 +278,11 @@ namespace black_cat
 					return;
 				}
 
+				if(m_optional && l_value->IsNull())
+				{
+					return;
+				}
+				
 				_load(*l_value, m_value);
 			}
 

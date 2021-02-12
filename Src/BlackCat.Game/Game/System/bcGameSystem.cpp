@@ -125,7 +125,7 @@ namespace black_cat
 		{
 			m_physics_system.initialize();
 			m_script_system.initialize(true);
-			m_render_system.initialize(*core::bc_get_service<core::bc_content_stream_manager>(), std::move(p_parameter.m_render_system_parameter));
+			m_render_system.initialize(*core::bc_get_service<core::bc_content_stream_manager>(), m_physics_system, std::move(p_parameter.m_render_system_parameter));
 			m_console = core::bc_make_unique<bc_game_console>(core::bc_alloc_type::program, m_script_system);
 
 			m_scene_query_context_provider = core::bc_get_service< core::bc_query_manager >()->register_query_provider<bc_scene_query_context>

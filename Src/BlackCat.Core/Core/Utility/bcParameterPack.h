@@ -51,7 +51,7 @@ namespace black_cat
 
 			_bc_parameter_pack_object* copy(void* p_memory) override
 			{
-				_bc_parameter_pack_concrete_object* l_pointer = reinterpret_cast<_bc_parameter_pack_concrete_object*>(p_memory);
+				auto* l_pointer = static_cast<_bc_parameter_pack_concrete_object*>(p_memory);
 				new (l_pointer) _bc_parameter_pack_concrete_object(m_value);
 
 				return l_pointer;
@@ -59,7 +59,7 @@ namespace black_cat
 
 			_bc_parameter_pack_object* move(void* p_memory) override
 			{
-				_bc_parameter_pack_concrete_object* l_pointer = reinterpret_cast<_bc_parameter_pack_concrete_object*>(p_memory);
+				auto* l_pointer = static_cast<_bc_parameter_pack_concrete_object*>(p_memory);
 				new (l_pointer) _bc_parameter_pack_concrete_object(std::move(m_value));
 
 				return l_pointer;
@@ -110,29 +110,15 @@ namespace black_cat
 			const T* as() const;
 
 			/**
-			* \brief Return pointer to underlying buffer
-			* \return Return null if there is no state
-			*/
-			template<>
-			const void* as< void >() const;
-
-			/**
 			 * \brief Cast underlying type to requested type. Throw bad_cast exception if underlying type mismatch
 			 * \tparam T
 			 * \return
 			 */
 			template< typename T >
-			T* as_throw();
+			T& as_throw();
 
 			template< typename T >
-			const T* as_throw() const;
-
-			/**
-			 * \brief Return pointer to underlying buffer. Throw bad_cast exception if there is no state
-			 * \return
-			 */
-			template<>
-			const void* as_throw< void >() const;
+			const T& as_throw() const;
 
 			template<typename T>
 			T release_as();
@@ -323,19 +309,8 @@ namespace black_cat
 			return const_cast<bc_parameter_pack&>(*this).as< T >();
 		}
 
-		template<>
-		inline const void* bc_parameter_pack::as<void>() const
-		{
-			if (!has_value())
-			{
-				return nullptr;
-			}
-
-			return m_object;
-		}
-
 		template < typename T >
-		T* bc_parameter_pack::as_throw()
+		T& bc_parameter_pack::as_throw()
 		{
 			T* l_value = as<T>();
 
@@ -344,24 +319,13 @@ namespace black_cat
 				throw bc_bad_cast_exception();
 			}
 
-			return l_value;
+			return *l_value;
 		}
 
 		template< typename T >
-		const T* bc_parameter_pack::as_throw() const
+		const T& bc_parameter_pack::as_throw() const
 		{
 			return const_cast<bc_parameter_pack&>(*this).as_throw< T >();
-		}
-
-		template<>
-		inline const void* bc_parameter_pack::as_throw<void>() const
-		{
-			if (!has_value())
-			{
-				throw bc_bad_cast_exception();
-			}
-
-			return m_object;
 		}
 
 		template< typename T >

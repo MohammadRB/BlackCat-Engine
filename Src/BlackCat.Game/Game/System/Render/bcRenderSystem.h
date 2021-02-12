@@ -39,6 +39,7 @@ namespace black_cat
 	{
 		class bci_render_task;
 		class bc_file_system;
+		class bc_physics_system;
 		class bc_render_thread_manager;
 		class bc_material_manager;
 		class bc_animation_manager;
@@ -91,7 +92,7 @@ namespace black_cat
 			core::bc_query_manager& m_query_manager;
 		};
 
-		class BC_GAME_DLL bc_render_system : public core::bc_initializable< core::bc_content_stream_manager&, bc_render_system_parameter >
+		class BC_GAME_DLL bc_render_system : public core::bc_initializable< core::bc_content_stream_manager&, bc_physics_system&, bc_render_system_parameter >
 		{
 		private:
 			friend class _bc_render_pass_state_handle_deleter;
@@ -265,7 +266,7 @@ namespace black_cat
 				bc_compute_state_constant_buffer_array&& p_cbuffers);
 			
 		private:			
-			void _initialize(core::bc_content_stream_manager& p_content_stream, bc_render_system_parameter p_parameter) override;
+			void _initialize(core::bc_content_stream_manager& p_content_stream, bc_physics_system& p_physics_system, bc_render_system_parameter p_parameter) override;
 
 			void _destroy() override;
 

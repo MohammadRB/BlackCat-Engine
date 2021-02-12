@@ -183,7 +183,7 @@ namespace black_cat
 			return m_meshes[p_node.m_first_mesh_index + p_mesh_index].m_name;
 		}
 
-		const bc_render_material& bc_mesh::get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
+		const bc_mesh_material& bc_mesh::get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
 		{
 			if(p_mesh_index >= p_node.m_mesh_count)
 			{
@@ -191,6 +191,16 @@ namespace black_cat
 			}
 
 			return *m_meshes[p_node.m_first_mesh_index + p_mesh_index].m_material;
+		}
+
+		bc_mesh_material_ptr bc_mesh::get_node_mesh_material_ptr(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
+		{
+			if (p_mesh_index >= p_node.m_mesh_count)
+			{
+				throw bc_out_of_range_exception("Invalid mesh index");
+			}
+
+			return m_meshes[p_node.m_first_mesh_index + p_mesh_index].m_material;
 		}
 
 		const bc_render_state& bc_mesh::get_node_mesh_render_state(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const

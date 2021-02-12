@@ -7,8 +7,8 @@
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
+#include "Game/System/Render/Material/bcMeshMaterial.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
-#include "Game/Object/Mesh/bcRenderMaterial.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -33,7 +33,7 @@ namespace black_cat
 			graphic::bc_resource_view_ptr p_chunk_info_view,
 			graphic::bc_resource_view_ptr p_chunk_info_unordered_view,
 			graphic::bc_buffer_ptr p_material_properties_buffer,
-			core::bc_vector<game::bc_render_material_ptr> p_materials,
+			core::bc_vector<game::bc_mesh_material_ptr> p_materials,
 			physics::bc_height_field_ref p_px_height_map,
 			void* p_px_height_map_deserialize_buffer);
 
@@ -83,7 +83,7 @@ namespace black_cat
 			return m_chunk_info_unordered_view.get();
 		}
 
-		const core::bc_vector<game::bc_render_material_ptr>& get_materials() const
+		const core::bc_vector<game::bc_mesh_material_ptr>& get_materials() const
 		{
 			return m_materials;
 		}
@@ -103,7 +103,7 @@ namespace black_cat
 		graphic::bc_resource_view_ptr m_chunk_info_view;
 		graphic::bc_resource_view_ptr m_chunk_info_unordered_view;
 		graphic::bc_buffer_ptr m_material_properties_buffer;
-		core::bc_vector<game::bc_render_material_ptr> m_materials;
+		core::bc_vector<game::bc_mesh_material_ptr> m_materials;
 	};
 
 	class BC_DLL bc_height_map_loader_dx11 : public core::bc_base_content_loader

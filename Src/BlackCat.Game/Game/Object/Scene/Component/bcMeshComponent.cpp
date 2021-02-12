@@ -4,15 +4,16 @@
 
 #include "Core/bcUtility.h"
 #include "Core/Content/bcContentStreamManager.h"
+#include "Core/File/bcJsonDocument.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/System/Input/bcCameraInstance.h"
+#include "Game/System/bcGameSystem.h"
+#include "Game/Object/Mesh/bcMeshUtility.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
-#include "Game/bcUtility.h"
 #include "Game/bcConstant.h"
-#include "Game/System/Input/bcCameraInstance.h"
 
 namespace black_cat
 {
@@ -53,30 +54,40 @@ namespace black_cat
 		{
 			const auto& l_mesh_name = p_context.m_parameters.get_value_throw< core::bc_string >(constant::g_param_mesh);
 			const auto* l_sub_mesh_name = p_context.m_parameters.get_value< core::bc_string >(constant::g_param_sub_mesh);
-			m_lod_scale = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_mesh_lod_scale), 1.0f);
+			const auto* l_materials = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_mesh_materials);
+			const auto l_lod_scale = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_mesh_lod_scale), 1.0f);
 			const auto l_mesh = p_context.m_stream_manager.find_content_throw<bc_mesh>(l_mesh_name.c_str());
 
 			m_sub_mesh = l_sub_mesh_name ? bc_sub_mesh(l_mesh, l_sub_mesh_name->c_str()) : bc_sub_mesh(l_mesh);
+			m_lod_scale = l_lod_scale;
 			m_world_transforms = bc_sub_mesh_mat4_transform(*m_sub_mesh.get_root_node());
+
+			if(l_materials)
+			{
+				m_render_state = m_sub_mesh.create_render_states(p_context.m_game_system.get_render_system(),*l_materials);
+			}
+			else
+			{
+				m_render_state = m_sub_mesh.create_render_states(p_context.m_game_system.get_render_system());
+			}
 		}
 
 		void bc_mesh_component::render(const bc_actor_component_render_context& p_context) const
 		{
-			const auto* l_root_pointer = m_sub_mesh.get_root_node();
 			const auto l_mesh_lod = m_sub_mesh.get_mesh_level_of_detail();
-			const auto* l_mesh = l_mesh_lod.get_mesh_nullable
+			const auto l_lod = l_mesh_lod.get_lod_culling
 			(
 				p_context.m_camera.m_main_camera.get_position(), 
 				p_context.m_camera.m_render_camera.get_position(), 
 				get_world_position(), 
 				get_lod_factor()
 			);
-			if(!l_mesh)
+			if(!l_lod.second)
 			{
 				return;
 			}
-			
-			render_mesh(p_context.m_buffer, *l_mesh, m_world_transforms, &l_root_pointer, &l_root_pointer + 1, nullptr);
+
+			bc_mesh_utility::render_mesh(p_context.m_buffer, m_render_state, m_world_transforms, l_lod.first);
 		}
 
 		void bc_mesh_component::set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform) noexcept
@@ -85,13 +96,6 @@ namespace black_cat
 			m_sub_mesh.calculate_absolute_transforms(p_transform, m_world_transforms, l_bound_box);
 
 			p_actor.add_event(bc_actor_event_bound_box_changed(l_bound_box));
-		}
-
-		void bc_mesh_component::update_lod_factor(const physics::bc_bound_box& p_bound_box) noexcept
-		{
-			const auto l_bound_box_half_extends = p_bound_box.get_half_extends();
-			const auto l_box_length = std::max(std::max(l_bound_box_half_extends.x, l_bound_box_half_extends.y), l_bound_box_half_extends.z) * 2;
-			m_lod_factor = l_box_length * m_lod_scale * bc_mesh_level_of_detail::s_lod_factor_multiplier;
 		}
 	}
 }

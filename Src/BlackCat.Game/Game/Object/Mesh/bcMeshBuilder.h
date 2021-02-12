@@ -10,7 +10,7 @@
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/Object/Mesh/bcMesh.h"
 #include "Game/Object/Mesh/bcMeshCollider.h"
-#include "Game/Object/Mesh/bcRenderMaterial.h"
+#include "Game/System/Render/Material/bcMeshMaterial.h"
 #include "Game/System/Render/State/bcRenderState.h"
 #include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/bcExport.h"
@@ -22,7 +22,7 @@ namespace black_cat
 		struct bc_mesh_builder_mesh_part
 		{
 			core::bc_string_frame m_name;
-			bc_render_material_ptr m_material;
+			bc_mesh_material_ptr m_material;
 			core::bc_vector_movable< bc_vertex_pos_tex_nor_tan > m_vertices;
 			core::bc_vector_movable< bc_vertex_pos_tex_nor_tan_bon > m_skinned_vertices;
 			core::bc_vector_movable< bcUINT16 > m_16bit_indices;
@@ -63,7 +63,7 @@ namespace black_cat
 
 			bc_mesh_builder& add_mesh_part(const bcCHAR* p_node_name,
 				const bcCHAR* p_name,
-				bc_render_material_ptr p_material,
+				bc_mesh_material_ptr p_material,
 				core::bc_vector_movable< bc_vertex_pos_tex_nor_tan > p_vertices,
 				core::bc_vector_movable< bcUINT16 > p_16bit_indices,
 				core::bc_vector_movable< bcUINT32 > p_32bit_indices,
@@ -74,7 +74,7 @@ namespace black_cat
 
 			bc_mesh_builder& add_skinned_mesh_part(const bcCHAR* p_node_name,
 				const bcCHAR* p_name,
-				bc_render_material_ptr p_material,
+				bc_mesh_material_ptr p_material,
 				core::bc_vector_movable< bc_vertex_pos_tex_nor_tan_bon > p_vertices,
 				core::bc_vector_movable< bcUINT16 > p_16bit_indices,
 				core::bc_vector_movable< bcUINT32 > p_32bit_indices,

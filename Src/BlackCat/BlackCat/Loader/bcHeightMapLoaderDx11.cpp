@@ -16,9 +16,9 @@
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/System/Render/bcRenderTask.h"
-#include "Game/System/Render/bcMaterialManager.h"
+#include "Game/System/Render/Material/bcMaterialManager.h"
+#include "Game/System/Render/Material/bcMeshMaterial.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
-#include "Game/Object/Mesh/bcRenderMaterial.h"
 #include "BlackCat/bcConstant.h"
 #include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
 
@@ -84,10 +84,10 @@ namespace black_cat
 
 			p_render_thread.finish();
 
-			auto l_mapped = l_device.map_resource(l_texture.get(), 0, graphic::bc_resource_map::read);
+			const auto l_mapped = l_device.map_resource(l_texture.get(), 0, graphic::bc_resource_map::read);
 			
 			m_texel_size = l_mapped.m_row_pitch / l_width;
-			bcUINT32 l_buffer_size = l_width * l_height * m_texel_size;
+			const bcUINT32 l_buffer_size = l_width * l_height * m_texel_size;
 			m_texture_buffer.reset(static_cast< bcUBYTE* >(BC_ALLOC(l_buffer_size, core::bc_alloc_type::frame)));
 
 			void* l_src = l_mapped.m_data;
@@ -126,7 +126,7 @@ namespace black_cat
 		graphic::bc_resource_view_ptr p_chunk_info_view,
 		graphic::bc_resource_view_ptr p_chunk_info_unordered_view,
 		graphic::bc_buffer_ptr p_material_properties_buffer,
-		core::bc_vector<game::bc_render_material_ptr> p_materials,
+		core::bc_vector<game::bc_mesh_material_ptr> p_materials,
 		physics::bc_height_field_ref p_px_height_map,
 		void* p_px_height_map_deserialize_buffer)
 		: bc_height_map
@@ -210,7 +210,7 @@ namespace black_cat
 		}
 
 		const bcUINT32 l_sample_count = l_width * l_height;
-		core::bc_unique_ptr<bcINT16> l_heights(reinterpret_cast<bcINT16*>(BC_ALLOC(sizeof(bcINT16) * l_sample_count, core::bc_alloc_type::frame)));
+		core::bc_unique_ptr<bcINT16> l_heights(static_cast<bcINT16*>(BC_ALLOC(sizeof(bcINT16) * l_sample_count, core::bc_alloc_type::frame)));
 
 		l_height_map_copy_task.wait();
 
@@ -246,7 +246,7 @@ namespace black_cat
 
 		p_context.m_file.write
 		(
-			reinterpret_cast< bcBYTE* >(l_serialized_buffer.get_buffer_pointer()),
+			static_cast< bcBYTE* >(l_serialized_buffer.get_buffer_pointer()),
 			l_serialized_buffer.get_buffer_size()
 		);
 	}
@@ -333,7 +333,7 @@ namespace black_cat
 				std::back_inserter(l_material_names),
 				[](const core::bc_any& p_material)
 				{
-					auto& l_key_value = *p_material.as<core::bc_json_key_value>();
+					const auto& l_key_value = *p_material.as<core::bc_json_key_value>();
 
 					auto l_name_ite = l_key_value.find("name");
 					auto l_scale_ite = l_key_value.find("scale");
@@ -423,7 +423,7 @@ namespace black_cat
 		l_parameter.m_distance_detail = l_distance_detail;
 		l_parameter.m_height_detail = l_height_detail;
 		
-		core::bc_vector<game::bc_render_material_ptr> l_materials;
+		core::bc_vector<game::bc_mesh_material_ptr> l_materials;
 		_bc_material_properties l_material_properties;
 
 		l_materials.reserve(l_material_names.size());
@@ -431,7 +431,7 @@ namespace black_cat
 
 		for (auto& l_material_name : l_material_names)
 		{
-			game::bc_render_material_ptr l_material = l_render_system.get_material_manager().load_material_throw
+			game::bc_mesh_material_ptr l_material = l_render_system.get_material_manager().load_mesh_material_throw
 			(
 				p_context.get_allocator_alloc_type(), std::get<core::bc_string>(l_material_name).c_str()
 			);
@@ -537,20 +537,14 @@ namespace black_cat
 			graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::pixel, l_texture_map_view.get())
 		};
 
-		//l_counter = 0;
 		bcUINT32 l_resource_view_count = 3;
 		for(auto& l_material : l_materials)
 		{
-			//auto& l_material = l_materials[l_counter];
-
 			auto l_diffuse_map_parameter = graphic::bc_resource_view_parameter(l_resource_view_count, graphic::bc_shader_type::pixel, l_material->get_diffuse_map_view());
 			auto l_normal_map_parameter = graphic::bc_resource_view_parameter(l_resource_view_count + 1, graphic::bc_shader_type::pixel, l_material->get_normal_map_view());
 			
 			l_render_state_resource_view_array[l_resource_view_count++] = l_diffuse_map_parameter;
 			l_render_state_resource_view_array[l_resource_view_count++] = l_normal_map_parameter;
-
-			//l_materials.push_back(std::move(l_material));
-			//++l_counter;
 		}
 
 		//l_device->set_allocator_alloc_type(l_device_alloc_type);
@@ -621,7 +615,7 @@ namespace black_cat
 		physics::bc_memory_buffer l_px_serialized_buffer = l_physics.serialize(l_px_serialize_buffer);
 
 		core::bc_task<void> l_texture_map_task = l_content_loader.save_async(l_texture_map);
-		p_context.m_file.write(reinterpret_cast< bcBYTE* >(l_px_serialized_buffer.get_buffer_pointer()), l_px_serialized_buffer.get_buffer_size());
+		p_context.m_file.write(static_cast< bcBYTE* >(l_px_serialized_buffer.get_buffer_pointer()), l_px_serialized_buffer.get_buffer_size());
 
 		l_texture_map_task.wait();
 	}

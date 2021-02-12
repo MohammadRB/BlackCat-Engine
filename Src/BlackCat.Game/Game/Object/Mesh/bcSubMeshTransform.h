@@ -6,7 +6,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "PhysicsImp/Fundation/bcTransform.h"
-#include "Game/Object/Mesh/bcMesh.h"
+#include "Game/Object/Mesh/bcMeshNode.h"
 
 namespace black_cat
 {
@@ -39,6 +39,10 @@ namespace black_cat
 
 			bc_mesh_node::node_index_t get_root_node_index() const noexcept;
 
+			transform_t& operator[](typename container_type::size_type p_index);
+
+			const transform_t& operator[](typename container_type::size_type p_index) const;
+			
 			transform_t& get_node_transform(const bc_mesh_node& p_node) noexcept;
 			
 			const transform_t& get_node_transform(const bc_mesh_node& p_node) const noexcept;
@@ -48,12 +52,6 @@ namespace black_cat
 			void copy_transforms_from(const transform_t* p_transform) noexcept;
 
 			void copy_transforms_to(transform_t* p_transform) const noexcept;
-
-			transform_t& operator[](typename container_type::size_type p_index);
-			
-			const transform_t& operator[](typename container_type::size_type p_index) const;
-			
-			bcSIZE size() const noexcept;
 			
 		private:
 			bc_mesh_node::node_index_t m_root_node_index;
@@ -122,6 +120,18 @@ namespace black_cat
 		}
 
 		template< typename T >
+		typename bc_sub_mesh_transform< T >::transform_t& bc_sub_mesh_transform< T >::operator[](typename container_type::size_type p_index)
+		{
+			return m_transformations[p_index];
+		}
+
+		template< typename T >
+		const typename bc_sub_mesh_transform< T >::transform_t& bc_sub_mesh_transform< T >::operator[](typename container_type::size_type p_index) const
+		{
+			return m_transformations[p_index];
+		}
+		
+		template< typename T >
 		typename bc_sub_mesh_transform< T >::transform_t& bc_sub_mesh_transform< T >::get_node_transform(const bc_mesh_node& p_node) noexcept
 		{
 			BC_ASSERT
@@ -161,24 +171,6 @@ namespace black_cat
 		void bc_sub_mesh_transform< T >::copy_transforms_to(transform_t* p_transform) const noexcept
 		{
 			std::memcpy(p_transform, m_transformations.data(), sizeof(decltype(m_transformations)::value_type) * m_transformations.size());
-		}
-
-		template< typename T >
-		typename bc_sub_mesh_transform< T >::transform_t& bc_sub_mesh_transform< T >::operator[](typename container_type::size_type p_index)
-		{
-			return m_transformations[p_index];
-		}
-
-		template< typename T >
-		const typename bc_sub_mesh_transform< T >::transform_t& bc_sub_mesh_transform< T >::operator[](typename container_type::size_type p_index) const
-		{
-			return m_transformations[p_index];
-		}
-
-		template< typename T >
-		bcSIZE bc_sub_mesh_transform< T >::size() const noexcept
-		{
-			return m_transformations.size();
 		}
 	}
 }

@@ -67,7 +67,7 @@ namespace black_cat
 		inline void bc_form_main_menu::onLoadSceneClicked() const
 		{
 			const auto l_executing_path_qt = _get_executing_path();
-			auto l_file_name = QFileDialog::getOpenFileName
+			const auto l_file_name = QFileDialog::getOpenFileName
 			(
 				static_cast<QWidget*>(QObject::parent()), 
 				"Open Scene File", 
@@ -87,7 +87,7 @@ namespace black_cat
 		inline void bc_form_main_menu::onSaveSceneClicked() const
 		{
 			auto l_task = m_command_service.queue_command(bc_ui_scene_command::for_get_scene());
-			auto* l_scene = *l_task.get().as_throw<game::bc_scene*>();
+			auto* l_scene = *l_task.get().as<game::bc_scene*>();
 			if(!l_scene)
 			{
 				return;
@@ -120,7 +120,7 @@ namespace black_cat
 
 		inline QString bc_form_main_menu::_get_executing_path() const
 		{
-			auto l_executing_path = core::bc_path(core::bc_path::get_program_path().c_str()).set_filename(bcL("Content")).get_string();
+			const auto l_executing_path = core::bc_path(core::bc_path::get_program_path().c_str()).set_filename(bcL("Content")).get_string();
 			auto l_executing_path_qt = QString::fromWCharArray(l_executing_path.c_str(), l_executing_path.size());
 			return l_executing_path_qt;
 		}

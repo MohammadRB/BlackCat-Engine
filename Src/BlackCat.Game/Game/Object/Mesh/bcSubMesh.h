@@ -6,6 +6,7 @@
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/Object/Mesh/bcMesh.h"
 #include "Game/Object/Mesh/bcMeshLevelOfDetail.h"
+#include "Game/Object/Mesh/bcMeshRenderState.h"
 #include "Game/Object/Mesh/bcMeshUtility.h"
 #include "Game/Object/Mesh/bcSubMeshTransform.h"
 
@@ -59,7 +60,9 @@ namespace black_cat
 			
 			const core::bc_string& get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			const bc_render_material& get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+			const bc_mesh_material& get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+			
+			bc_mesh_material_ptr get_node_mesh_material_ptr(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_render_state& get_node_mesh_render_state(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
@@ -71,6 +74,10 @@ namespace black_cat
 
 			const core::bc_matrix4f& get_node_absolute_transform(const bc_mesh_node& p_node, const bc_sub_mesh_mat4_transform& p_transforms) const noexcept;
 
+			bc_mesh_render_state create_render_states(bc_render_system& p_render_system, const bcCHAR* p_mesh_prefix = nullptr) const noexcept;
+			
+			bc_mesh_render_state create_render_states(bc_render_system& p_render_system, const core::bc_json_key_value& p_mesh_materials, const bcCHAR* p_mesh_prefix = nullptr) const noexcept;
+			
 			void calculate_bound_box(const bc_sub_mesh_mat4_transform& p_world_transforms, physics::bc_bound_box& p_bound_box) const noexcept;
 			
 			void calculate_absolute_transforms(const core::bc_matrix4f& p_world, bc_sub_mesh_mat4_transform& p_world_transforms, physics::bc_bound_box& p_bound_box) const noexcept;
@@ -163,11 +170,16 @@ namespace black_cat
 			return m_mesh->get_node_mesh_name(p_node, p_mesh_index);
 		}
 
-		inline const bc_render_material& bc_sub_mesh::get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
+		inline const bc_mesh_material& bc_sub_mesh::get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
 		{
 			return m_mesh->get_node_mesh_material(p_node, p_mesh_index);
 		}
 
+		inline bc_mesh_material_ptr bc_sub_mesh::get_node_mesh_material_ptr(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
+		{
+			return m_mesh->get_node_mesh_material_ptr(p_node, p_mesh_index);
+		}
+		
 		inline const bc_render_state& bc_sub_mesh::get_node_mesh_render_state(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
 		{
 			return m_mesh->get_node_mesh_render_state(p_node, p_mesh_index);
@@ -193,6 +205,16 @@ namespace black_cat
 			return p_transforms.get_node_transform(p_node);
 		}
 
+		inline bc_mesh_render_state bc_sub_mesh::create_render_states(bc_render_system& p_render_system, const bcCHAR* p_mesh_prefix) const noexcept
+		{
+			return bc_mesh_utility::create_mesh_render_states(p_render_system, *m_mesh, *m_root_node, p_mesh_prefix);
+		}
+
+		inline bc_mesh_render_state bc_sub_mesh::create_render_states(bc_render_system& p_render_system, const core::bc_json_key_value& p_mesh_materials, const bcCHAR* p_mesh_prefix) const noexcept
+		{
+			return bc_mesh_utility::create_mesh_render_states(p_render_system, *m_mesh, *m_root_node, p_mesh_materials, p_mesh_prefix);
+		}
+		
 		inline void bc_sub_mesh::calculate_bound_box(const bc_sub_mesh_mat4_transform& p_world_transforms, physics::bc_bound_box& p_bound_box) const noexcept
 		{
 			bc_mesh_utility::calculate_bound_box(*m_mesh, p_world_transforms, p_bound_box);

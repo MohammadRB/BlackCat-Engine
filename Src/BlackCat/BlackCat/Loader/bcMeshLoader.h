@@ -4,7 +4,7 @@
 
 #include "Core/Content/bcContent.h"
 #include "Core/Content/bcContentLoader.h"
-#include "Game/System/Render/bcMaterialManager.h"
+#include "Game/System/Render/Material/bcMeshMaterial.h"
 #include "Game/Object/Mesh/bcMesh.h"
 #include "Game/Object/Mesh/bcMeshBuilder.h"
 #include "BlackCat/bcExport.h"
@@ -44,7 +44,7 @@ namespace black_cat
 
 		static void convert_ai_material(core::bc_content_loading_context& p_context,
 			const aiMaterial& p_ai_material,
-			game::bc_render_material_description& p_material);
+			game::bc_mesh_material_description& p_material);
 
 		static void convert_ai_mesh(game::bc_render_system& p_render_system,
 			core::bc_content_loading_context& p_context,

@@ -20,6 +20,7 @@ namespace black_cat
 	
 	namespace game
 	{
+		class bc_game_system;
 		class bc_actor_component_manager;
 		class bc_shape_drawer;
 		
@@ -28,18 +29,21 @@ namespace black_cat
 
 		struct bc_actor_component_initialize_context
 		{
-			bc_actor_component_initialize_context(bc_actor& p_actor, 
-				const core::bc_data_driven_parameter& p_parameters,
-				const core::bc_content_stream_manager& p_stream_manager)
-				: m_actor(p_actor),
-				m_parameters(p_parameters),
-				m_stream_manager(p_stream_manager)
+			bc_actor_component_initialize_context(const core::bc_data_driven_parameter& p_parameters,
+				const core::bc_content_stream_manager& p_stream_manager,
+				bc_game_system& p_game_system,
+				bc_actor& p_actor)
+				: m_parameters(p_parameters),
+				m_stream_manager(p_stream_manager),
+				m_game_system(p_game_system),
+				m_actor(p_actor)
 			{
 			}
 
-			bc_actor& m_actor;
 			const core::bc_data_driven_parameter& m_parameters;
 			const core::bc_content_stream_manager& m_stream_manager;
+			bc_game_system& m_game_system;
+			bc_actor& m_actor;
 		};
 
 		struct bc_actor_component_load_context

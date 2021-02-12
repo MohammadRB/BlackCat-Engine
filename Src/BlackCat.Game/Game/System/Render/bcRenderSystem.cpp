@@ -17,7 +17,7 @@
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/State/bcRenderState.h"
 #include "Game/System/Render/bcRenderTask.h"
-#include "Game/System/Render/bcMaterialManager.h"
+#include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/Render/bcRenderThreadManager.h"
 #include "Game/System/Render/bcFrameRenderer.h"
 #include "Game/System/Render/Light/bcLightManager.h"
@@ -335,7 +335,7 @@ namespace black_cat
 			return bc_compute_state_ptr(l_compute_state_ptr, _bc_compute_state_handle_deleter(this));
 		}
 
-		void bc_render_system::_initialize(core::bc_content_stream_manager& p_content_stream, bc_render_system_parameter p_parameter)
+		void bc_render_system::_initialize(core::bc_content_stream_manager& p_content_stream, bc_physics_system& p_physics_system, bc_render_system_parameter p_parameter)
 		{
 			m_device.initialize
 			(
@@ -351,12 +351,12 @@ namespace black_cat
 			core_platform::bc_hardware_info::get_basic_info(&l_hw_info);
 
 			m_render_pass_states.initialize(20, core::bc_alloc_type::program);
-			m_render_states.initialize(300, core::bc_alloc_type::program);
+			m_render_states.initialize(500, core::bc_alloc_type::program);
 			m_compute_states.initialize(20, core::bc_alloc_type::program);
 			
 			m_content_stream = &p_content_stream;
 			m_thread_manager = core::bc_make_unique< bc_render_thread_manager >(core::bc_alloc_type::program , *this, std::max(1U, l_hw_info.proccessor_count / 2));
-			m_material_manager = core::bc_make_unique< bc_material_manager >(core::bc_alloc_type::program, *m_content_stream, *this);
+			m_material_manager = core::bc_make_unique< bc_material_manager >(core::bc_alloc_type::program, *m_content_stream, *this, p_physics_system);
 			m_render_pass_manager = core::bc_make_unique< bc_render_pass_manager >(core::bc_alloc_type::program);
 			m_animation_manager = core::bc_make_unique< bc_animation_manager >(core::bc_alloc_type::program);
 			m_light_manager = core::bc_make_unique< bc_light_manager >(core::bc_alloc_type::program);

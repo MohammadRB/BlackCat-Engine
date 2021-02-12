@@ -67,6 +67,9 @@
     <Filter Include="Game\Object\Scene\ActorController">
       <UniqueIdentifier>{0c50bcc8-18f7-4234-b340-220e3150b83f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\System\Render\Material">
+      <UniqueIdentifier>{eb5b5ea3-f91f-49c7-8c6d-606925099bbd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h">
@@ -116,9 +119,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcInputSystem.h">
       <Filter>Game\System\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcMaterialManager.h">
-      <Filter>Game\System\Render</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderInstance.h">
       <Filter>Game\System\Render</Filter>
@@ -263,9 +263,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcSimpleMeshComponent.h">
       <Filter>Game\Object\Scene\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcRenderMaterial.h">
-      <Filter>Game\Object\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActor.h">
       <Filter>Game\Object\Scene\ActorComponent</Filter>
@@ -441,6 +438,18 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelTransformAnimationJob.h">
       <Filter>Game\Object\Animation\Job</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Material\bcMaterialManager.h">
+      <Filter>Game\System\Render\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Material\bcMeshMaterial.h">
+      <Filter>Game\System\Render\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Material\bcColliderMaterial.h">
+      <Filter>Game\System\Render\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshRenderState.h">
+      <Filter>Game\Object\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -484,9 +493,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFreeCamera.cpp">
       <Filter>Game\System\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcMaterialManager.cpp">
-      <Filter>Game\System\Render</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderSystem.cpp">
       <Filter>Game\System\Render</Filter>
@@ -578,9 +584,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcSimpleMeshComponent.cpp">
       <Filter>Game\Object\Scene\Component</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcRenderMaterial.cpp">
-      <Filter>Game\Object\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponent.cpp">
       <Filter>Game\Object\Scene\ActorComponent</Filter>
     </ClCompile>
@@ -661,6 +664,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelTransformAnimationJob.cpp">
       <Filter>Game\Object\Animation\Job</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Material\bcMaterialManager.cpp">
+      <Filter>Game\System\Render\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Material\bcMeshMaterial.cpp">
+      <Filter>Game\System\Render\Material</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

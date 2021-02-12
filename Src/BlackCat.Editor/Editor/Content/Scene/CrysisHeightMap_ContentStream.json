@@ -116,7 +116,7 @@
             "materials": [
               {
                 "name": "terrain_material_1",
-                "scale": 0.7
+                "scale": 1.0
               },
               {
                 "name": "terrain_material_2",
@@ -124,27 +124,27 @@
               },
               {
                 "name": "terrain_material_3",
-                "scale": 0.7
+                "scale": 1.0
               },
               {
                 "name": "terrain_material_4",
-                "scale": 0.7
+                "scale": 1.0
               },
               {
                 "name": "terrain_material_5",
-                "scale": 0.7
+                "scale": 1.0
               },
               {
                 "name": "terrain_material_6",
-                "scale": 0.7
+                "scale": 1.0
               },
               {
                 "name": "terrain_material_7",
-                "scale": 0.7
+                "scale": 1.0
               },
               {
                 "name": "terrain_material_8",
-                "scale": 0.7
+                "scale": 1.0
               }
             ]
           }

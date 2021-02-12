@@ -5,12 +5,14 @@
 #include "Core/Container/bcString.h"
 #include "Core/File/bcFileStream.h"
 #include "Core/File/bcJsonDocument.h"
+#include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcParameterPack.h"
-#include "Game/bcException.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/System/bcGameSystem.h"
+#include "Game/bcException.h"
 
 namespace black_cat
 {
@@ -34,9 +36,10 @@ namespace black_cat
 			BC_JSON_ARRAY(_bc_json_entity, entities);
 		};
 
-		bc_entity_manager::bc_entity_manager(core::bc_content_stream_manager& p_content_stream_manager, bc_actor_component_manager& p_actor_manager)
+		bc_entity_manager::bc_entity_manager(core::bc_content_stream_manager& p_content_stream_manager, bc_actor_component_manager& p_actor_manager, bc_game_system& p_game_system)
 			: m_content_stream_manager(p_content_stream_manager),
-			m_actor_component_manager(p_actor_manager)
+			m_actor_component_manager(p_actor_manager),
+			m_game_system(p_game_system)
 		{
 		}
 
@@ -138,9 +141,10 @@ namespace black_cat
 					(
 						bc_actor_component_initialize_context
 						(
-							l_actor,
 							l_entity_component_data.m_component_parameters,
-							m_content_stream_manager
+							m_content_stream_manager,
+							m_game_system,
+							l_actor
 						)
 					);
 				}

@@ -14,7 +14,7 @@
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
-#include "Game/System/Render/bcMaterialManager.h"
+#include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/bcGameSystem.h"
 #include "BlackCat/Loader/bcSceneLoader.h"
 

@@ -6,7 +6,7 @@
 #include "PhysicsImp/Body/bcRigidDynamic.h"
 #include "Game/System/Input/bcFreeCamera.h"
 #include "Game/System/Input/bcConfigFile.h"
-#include "Game/System/Render/bcMaterialManager.h"
+#include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"

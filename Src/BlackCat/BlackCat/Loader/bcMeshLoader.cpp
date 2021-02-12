@@ -23,7 +23,7 @@
 #include "PhysicsImp/Fundation/bcPhysics.h"
 #include "PhysicsImp/Fundation/bcMemoryBuffer.h"
 #include "Game/System/Render/State/bcVertexLayout.h"
-#include "Game/System/Render/bcMaterialManager.h"
+#include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Physics/bcPhysicsShapeUtility.h"
@@ -194,7 +194,7 @@ namespace black_cat
 
 	void bc_mesh_loader::convert_ai_material(core::bc_content_loading_context& p_context,
 		const aiMaterial& p_ai_material,
-		game::bc_render_material_description& p_material)
+		game::bc_mesh_material_description& p_material)
 	{
 		auto* l_content_manager = core::bc_get_service< core::bc_content_manager >();
 
@@ -300,7 +300,7 @@ namespace black_cat
 		graphic::bc_buffer_ptr l_index_buffer;
 		bcSIZE l_index_count = 0;
 		graphic::bc_buffer_ptr l_cbuffer;
-		game::bc_render_material_description l_material;
+		game::bc_mesh_material_description l_material;
 
 		bool l_need_32bit_indices = p_ai_mesh.mNumFaces * 3 > std::numeric_limits< bcUINT16 >::max();
 		bool l_has_texcoord = p_ai_mesh.HasTextureCoords(0);
@@ -417,7 +417,7 @@ namespace black_cat
 		convert_ai_material(p_context, *p_ai_scene.mMaterials[p_ai_mesh.mMaterialIndex], l_material);
 
 		auto l_material_name = core::bc_to_exclusive_string(core::bc_path(p_context.m_file.get_path().c_str()).get_filename()) + "." + p_ai_mesh.mName.C_Str();
-		auto l_material_ptr = p_render_system.get_material_manager().store_material
+		auto l_material_ptr = p_render_system.get_material_manager().store_mesh_material
 		(
 			p_context.get_allocator_alloc_type(),
 			l_material_name.c_str(),
