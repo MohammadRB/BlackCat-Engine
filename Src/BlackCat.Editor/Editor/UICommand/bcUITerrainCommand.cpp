@@ -65,7 +65,7 @@ namespace black_cat
 				return false;
 			}
 
-			game::bc_ray_hit l_hit = l_buffer.get_block();
+			const game::bc_ray_hit l_hit = l_buffer.get_block();
 			game::bc_actor l_terrain = l_hit.get_actor();
 
 			const auto* l_height_map_component = l_terrain.get_component< game::bc_height_map_component >();

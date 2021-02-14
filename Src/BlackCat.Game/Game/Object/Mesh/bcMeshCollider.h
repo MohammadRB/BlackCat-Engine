@@ -14,8 +14,8 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_mesh_collider : public core::bci_content,
-			public core::bc_const_iterator_adapter< core::bc_unordered_map< core::bc_string, bc_mesh_part_collider > >
+		class BC_GAME_DLL bc_mesh_collider : public core::bc_const_iterator_adapter< core::bc_unordered_map< core::bc_string, bc_mesh_part_collider >>,
+			public core::bci_content
 		{
 			BC_CONTENT(msh_cld)
 

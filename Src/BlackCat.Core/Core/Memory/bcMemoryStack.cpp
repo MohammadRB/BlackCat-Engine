@@ -14,7 +14,7 @@ namespace black_cat
 		{
 		}
 
-		bc_memory_stack::bc_memory_stack(bc_memory_stack::this_type&& p_other) noexcept : bc_memory(std::move(p_other))
+		bc_memory_stack::bc_memory_stack(bc_memory_stack::this_type&& p_other) noexcept : bci_memory(std::move(p_other))
 		{
 			_move(std::move(p_other));
 		}
@@ -29,7 +29,7 @@ namespace black_cat
 
 		bc_memory_stack::this_type& bc_memory_stack::operator =(bc_memory_stack::this_type&& p_other) noexcept
 		{
-			bc_memory::operator=(std::move(p_other));
+			bci_memory::operator=(std::move(p_other));
 			_move(std::move(p_other));
 
 			return *this;
@@ -55,7 +55,7 @@ namespace black_cat
 
 			if (p_tag)
 			{
-				bc_memory::tag(p_tag);
+				bci_memory::tag(p_tag);
 			}
 		}
 

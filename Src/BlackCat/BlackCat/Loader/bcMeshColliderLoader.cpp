@@ -9,6 +9,7 @@
 #include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Physics/bcPhysicsShapeUtility.h"
+#include "Game/bcConstant.h"
 #include "BlackCat/Loader/bcMeshColliderLoader.h"
 #include "BlackCat/Loader/bcMeshLoaderUtility.h"
 
@@ -217,15 +218,13 @@ namespace black_cat
 		{
 			return;
 		}
-
-		core::bc_matrix4f l_node_transformation;
-		bc_mesh_loader_utility::convert_ai_matrix(p_ai_node.mTransformation, l_node_transformation);
-		
+				
 		if(p_skinned)
 		{
 			auto l_px_nodes = p_px_node_mapping.find(p_ai_node.mName.C_Str());
 			if (l_px_nodes != std::end(p_px_node_mapping))
 			{
+				const auto* l_mesh_part_collider_name = p_ai_node.mName.C_Str();
 				game::bc_mesh_part_collider l_mesh_colliders;
 				
 				for (const aiNode* l_px_node : l_px_nodes->second)
@@ -244,14 +243,14 @@ namespace black_cat
 				}
 
 				l_mesh_colliders.shrink_to_fit();
-				p_collider.add_mesh_collider(p_ai_node.mName.C_Str(), std::move(l_mesh_colliders));
+				p_collider.add_mesh_collider(l_mesh_part_collider_name, std::move(l_mesh_colliders));
 			}
 
-			if(p_high_detail_query_shape)
+			if (p_high_detail_query_shape)
 			{
 				for (bcUINT32 l_i = 0; l_i < p_ai_node.mNumMeshes; ++l_i)
 				{
-					aiMesh* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[l_i]];
+					const auto* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[l_i]];
 					_bc_extract_skinned_mesh_collider(p_context, p_node_mapping, *l_ai_mesh, p_skinned_collider);
 				}
 
@@ -262,10 +261,11 @@ namespace black_cat
 		{
 			for (bcUINT32 l_i = 0; l_i < p_ai_node.mNumMeshes; ++l_i)
 			{
-				aiMesh* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[l_i]];
+				const auto* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[l_i]];
+				const auto* l_mesh_part_collider_name = l_ai_mesh->mName.C_Str();
 				game::bc_mesh_part_collider l_mesh_colliders;
 
-				auto l_px_nodes = p_px_node_mapping.find(l_ai_mesh->mName.C_Str());
+				auto l_px_nodes = p_px_node_mapping.find(l_mesh_part_collider_name);
 				if (l_px_nodes != std::end(p_px_node_mapping))
 				{
 					for (const aiNode* l_px_node : l_px_nodes->second)
@@ -302,7 +302,7 @@ namespace black_cat
 				}
 
 				l_mesh_colliders.shrink_to_fit();
-				p_collider.add_mesh_collider(l_ai_mesh->mName.C_Str(), std::move(l_mesh_colliders));
+				p_collider.add_mesh_collider(l_mesh_part_collider_name, std::move(l_mesh_colliders));
 			}
 		}
 

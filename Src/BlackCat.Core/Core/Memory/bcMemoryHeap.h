@@ -68,7 +68,7 @@ namespace black_cat
 #endif
 		};
 
-		class BC_CORE_DLL bc_memory_heap : public bc_memory_movable, public bc_initializable<bcSIZE, const bcCHAR*>
+		class BC_CORE_DLL bc_memory_heap : public bci_memory_movable, public bc_initializable<bcSIZE, const bcCHAR*>
 		{
 		public:
 			using this_type = bc_memory_heap;

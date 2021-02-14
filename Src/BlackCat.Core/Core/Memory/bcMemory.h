@@ -11,17 +11,17 @@ namespace black_cat
 {
 	namespace core
 	{
-		class bc_memory : private core_platform::bc_no_copy
+		class bci_memory : private core_platform::bc_no_copy
 		{
 		public:
-			using this_type = bc_memory;
+			using this_type = bci_memory;
 
 		public:
-			bc_memory();
+			bci_memory();
 
-			bc_memory(this_type&& p_other) noexcept;
+			bci_memory(this_type&& p_other) noexcept;
 
-			virtual ~bc_memory();
+			virtual ~bci_memory();
 
 			this_type& operator =(this_type&& p_other) noexcept;
 
@@ -49,18 +49,18 @@ namespace black_cat
 			void _assign(this_type&& p_other);
 		};
 
-		class bc_memory_movable : public bc_memory
+		class bci_memory_movable : public bci_memory
 		{
 		public:
-			using this_type = bc_memory_movable;
+			using this_type = bci_memory_movable;
 			using defrag_callback = bc_delegate<void(void*, void*)>;
 
 		public:
-			bc_memory_movable();
+			bci_memory_movable();
 
-			bc_memory_movable(this_type&& p_other) noexcept;
+			bci_memory_movable(this_type&& p_other) noexcept;
 
-			virtual ~bc_memory_movable();
+			virtual ~bci_memory_movable();
 
 			this_type& operator =(this_type&& p_other) noexcept;
 
@@ -73,56 +73,56 @@ namespace black_cat
 #endif
 		};
 
-		inline bc_memory::bc_memory() = default;
+		inline bci_memory::bci_memory() = default;
 
-		inline bc_memory::bc_memory(this_type&& p_other) noexcept
+		inline bci_memory::bci_memory(this_type&& p_other) noexcept
 		{
 			_assign(std::move(p_other));
 		}
 
-		inline bc_memory::~bc_memory() = default;
+		inline bci_memory::~bci_memory() = default;
 
-		inline bc_memory::this_type& bc_memory::operator=(this_type&& p_other) noexcept
+		inline bci_memory::this_type& bci_memory::operator=(this_type&& p_other) noexcept
 		{
 			_assign(std::move(p_other));
 
 			return *this;
 		}
 
-		inline void bc_memory::tag(const bcCHAR* p_tag)
+		inline void bci_memory::tag(const bcCHAR* p_tag)
 		{
 			// In allocators we call this function only in theirs Initialize method, so it is safe /
 			std::memcpy(m_tag, p_tag, std::min< bcSIZE >(bcSIZE(s_tag_length - 1), strlen(p_tag)));
 			*(m_tag + std::min< bcSIZE >(bcSIZE(s_tag_length - 1), strlen(p_tag))) = '\0';
 		}
 
-		inline const bcCHAR* bc_memory::tag() const noexcept
+		inline const bcCHAR* bci_memory::tag() const noexcept
 		{
 			return m_tag;
 		}
 
-		inline const bc_memory_tracer& bc_memory::tracer() const noexcept
+		inline const bc_memory_tracer& bci_memory::tracer() const noexcept
 		{
 			return m_tracer;
 		}
 
-		inline void bc_memory::_assign(this_type&& p_other)
+		inline void bci_memory::_assign(this_type&& p_other)
 		{
 			tag(p_other.tag());
 			m_tracer = const_cast< bc_memory_tracer& >(p_other.tracer());
 		}
 
-		inline bc_memory_movable::bc_memory_movable() = default;
+		inline bci_memory_movable::bci_memory_movable() = default;
 
-		inline bc_memory_movable::bc_memory_movable(this_type&& p_other) noexcept: bc_memory(std::move(p_other))
+		inline bci_memory_movable::bci_memory_movable(this_type&& p_other) noexcept: bci_memory(std::move(p_other))
 		{
 		}
 
-		inline bc_memory_movable::~bc_memory_movable() = default;
+		inline bci_memory_movable::~bci_memory_movable() = default;
 
-		inline bc_memory_movable::this_type& bc_memory_movable::operator=(this_type&& p_other) noexcept
+		inline bci_memory_movable::this_type& bci_memory_movable::operator=(this_type&& p_other) noexcept
 		{
-			bc_memory::operator =(std::move(p_other));
+			bci_memory::operator =(std::move(p_other));
 
 			return *this;
 		}

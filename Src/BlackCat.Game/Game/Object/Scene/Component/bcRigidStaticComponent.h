@@ -9,9 +9,6 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_height_map;
-		class bc_physics_system;
-
 		class BC_GAME_DLL bc_rigid_static_component : public bc_rigid_body_component
 		{
 			BC_COMPONENT(rgd_stc, true, false)
@@ -40,5 +37,15 @@ namespace black_cat
 		private:
 			physics::bc_rigid_static_ref m_px_actor_ref;
 		};
+
+		inline physics::bc_rigid_body& bc_rigid_static_component::get_body() noexcept
+		{
+			return m_px_actor_ref.get();
+		}
+
+		inline physics::bc_rigid_static bc_rigid_static_component::get_static_body() const noexcept
+		{
+			return m_px_actor_ref.get();
+		}
 	}
 }

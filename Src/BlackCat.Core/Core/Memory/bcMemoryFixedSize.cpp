@@ -12,11 +12,16 @@ namespace black_cat
 #ifdef BC_MEMORY_ENABLE
 
 		bc_memory_fixed_size::bc_memory_fixed_size() noexcept
+			: m_num_block(0),
+			m_block_size(0),
+			m_num_bit_blocks(0),
+			m_blocks(nullptr),
+			m_heap(nullptr)
 		{
 		}
 
 		bc_memory_fixed_size::bc_memory_fixed_size(this_type&& p_other) noexcept
-			: bc_memory(std::move(p_other))
+			: bci_memory(std::move(p_other))
 		{
 			_move(std::move(p_other));
 		}
@@ -31,7 +36,7 @@ namespace black_cat
 
 		bc_memory_fixed_size::this_type& bc_memory_fixed_size::operator =(this_type&& p_other) noexcept
 		{
-			bc_memory::operator =(std::move(p_other));
+			bci_memory::operator =(std::move(p_other));
 			_move(std::move(p_other));
 
 			return *this;
@@ -39,7 +44,7 @@ namespace black_cat
 
 		void* bc_memory_fixed_size::alloc(bc_memblock* p_mem_block) noexcept
 		{
-			bcUINT32 l_size = p_mem_block->size();
+			const bcUINT32 l_size = p_mem_block->size();
 
 			// we can't handle allocations larger than our block size /
 			BC_ASSERT(l_size <= m_block_size);
@@ -49,51 +54,53 @@ namespace black_cat
 			bcINT32 l_block = -1;
 			void* l_result = nullptr;
 
-			bool l_reach_end = false;
-			// TODO
-			bcUINT32 l_allocated_block = m_allocated_block.load(core_platform::bc_memory_order::seqcst);
-			bcUINT32 l_end = l_allocated_block + m_num_bit_blocks;
-			for (bcINT32 i = l_allocated_block; i < l_end; ++i)
+			auto l_allocated_block = m_allocated_block.load(core_platform::bc_memory_order::relaxed);
+			const auto l_end = l_allocated_block + m_num_bit_blocks;
+			for (bcUINT32 l_i = l_allocated_block; l_i < l_end; ++l_i)
 			{
-				bcUINT32 l_i = i % m_num_bit_blocks;
-				bit_block_type l_current_block = m_blocks[l_i].load(core_platform::bc_memory_order::seqcst);
+				const auto l_bit_block_ite = l_i % m_num_bit_blocks;
+				auto l_current_block = m_blocks[l_bit_block_ite].load(core_platform::bc_memory_order::relaxed);
 
-				// any free blocks in this chunk? /
-				if (s_bit_block_mask != l_current_block)
+				// any free blocks in this chunk?
+				if (s_bit_block_mask == l_current_block)
 				{
-					// find a free entry in this chunk then allocate it and set the proper block index /
-					for (int j = 0; j < s_bit_block_size; ++j)
+					continue;
+				}
+				
+				// find a free entry in this chunk then allocate it and set the proper block index
+				for (bcUINT32 l_bit_ite = 0U; l_bit_ite < s_bit_block_size; ++l_bit_ite)
+				{
+					if (static_cast< bit_block_type >(0) == (l_current_block & (static_cast< bit_block_type >(1) << l_bit_ite)))
 					{
-						if (bit_block_type(0) == (l_current_block & (bit_block_type(1) << j)))
+						const auto l_current_block_changed = l_current_block | (static_cast< bit_block_type >(1) << l_bit_ite);
+						if (m_blocks[l_bit_block_ite].compare_exchange_strong
+						(
+							&l_current_block,
+							l_current_block_changed,
+							core_platform::bc_memory_order::relaxed,
+							core_platform::bc_memory_order::relaxed
+						))
 						{
-							bit_block_type l_current_block_changed = l_current_block | (bit_block_type(1) << j);
-							if (m_blocks[l_i].compare_exchange_strong(
-								&l_current_block,
-								l_current_block_changed,
-								core_platform::bc_memory_order::seqcst,
-								core_platform::bc_memory_order::seqcst))
-							{
-								l_block = l_i * s_bit_block_size + j;
+							l_block = l_bit_block_ite * s_bit_block_size + l_bit_ite;
 
-								m_allocated_block.compare_exchange_strong(&l_allocated_block, l_i, core_platform::bc_memory_order::seqcst);
+							m_allocated_block.compare_exchange_strong(&l_allocated_block, l_bit_block_ite, core_platform::bc_memory_order::seqcst);
 
-								break;
-							}
-
+							break;
 						}
-					}
 
-					if (l_block != -1)
-					{
-						break;
 					}
+				}
+
+				if (l_block != -1)
+				{
+					break;
 				}
 			}
 
 			// A free block found /
 			if (-1 != l_block || l_block <= m_num_block)
 			{
-				l_result = reinterpret_cast<void*>(reinterpret_cast<bcUINT32>(m_heap) + (l_block * m_block_size));
+				l_result = reinterpret_cast<void*>(m_heap + l_block * m_block_size);
 				m_tracer.accept_alloc(l_size);
 			}
 			else
@@ -106,23 +113,23 @@ namespace black_cat
 
 		void bc_memory_fixed_size::free(void* p_pointer, bc_memblock* p_mem_block) noexcept
 		{
-			bcUBYTE* l_pointer = reinterpret_cast<bcUBYTE*>(p_pointer);
+			auto* l_pointer = static_cast<bcUBYTE*>(p_pointer);
 
 			// is this pointer in our heap? /
 			BC_ASSERT((l_pointer >= m_heap) && (l_pointer < m_heap + m_block_size * m_num_block));
 
 			// convert the pointer into a block index /
-			bcINT32 l_block = static_cast<bcINT32>(l_pointer - m_heap) / m_block_size;
+			const bcINT32 l_block = static_cast<bcINT32>(l_pointer - m_heap) / m_block_size;
 
 			// reset the bit in our block management array /
-			bcINT32 l_chunk_index = l_block / s_bit_block_size;
-			bcINT32 l_bit_index = l_block % s_bit_block_size;
+			const bcINT32 l_chunk_index = l_block / s_bit_block_size;
+			const bcINT32 l_bit_index = l_block % s_bit_block_size;
 
 #ifdef BC_MEMORY_DEBUG
 			std::memset(l_pointer, 0, p_mem_block->size());
 #endif
 
-			m_blocks[l_chunk_index].fetch_and(~(bit_block_type(1) << l_bit_index), core_platform::bc_memory_order::seqcst);
+			m_blocks[l_chunk_index].fetch_and(~(static_cast< bit_block_type >(1) << l_bit_index), core_platform::bc_memory_order::seqcst);
 
 			m_tracer.accept_free(p_mem_block->size());
 		}
@@ -200,7 +207,7 @@ namespace black_cat
 
 		void bc_memory_fixed_size::_move(this_type&& p_other)
 		{
-			bcUINT32 l_allocated_block = p_other.m_allocated_block.load(core_platform::bc_memory_order::acquire);
+			const bcUINT32 l_allocated_block = p_other.m_allocated_block.load(core_platform::bc_memory_order::acquire);
 
 			m_num_block = p_other.m_num_block;
 			m_block_size = p_other.m_block_size;

@@ -17,8 +17,10 @@ namespace black_cat
 
 		class BC_CORE_DLL bc_concurrent_memory_pool : public bc_initializable<bcUINT32, bcUINT32, bc_alloc_type>
 		{
+		private:
 			template< typename T >
 			friend class bc_concurrent_object_pool;
+			using bit_block_type = bcUINT32;
 
 		public:
 			bc_concurrent_memory_pool();
@@ -29,9 +31,9 @@ namespace black_cat
 
 			bc_concurrent_memory_pool& operator =(bc_concurrent_memory_pool&& p_other) noexcept;
 
-			bcUINT32 block_size() const noexcept { return m_block_size; }
+			bcUINT32 block_size() const noexcept;
 
-			bcUINT32 num_block() const noexcept { return m_num_block; }
+			bcUINT32 num_block() const noexcept;
 
 			/**
 			 * \brief Return null pointer in case of allocation failure
@@ -50,7 +52,8 @@ namespace black_cat
 
 			void _destroy() override;
 
-			using bit_block_type = bcUINT32;
+			bcINT32 _find_free_bit(bit_block_type p_bit_block) const noexcept;
+
 			static const bit_block_type s_bit_block_mask = 0xffffffff;
 			static const bcSIZE s_bit_block_size = sizeof(bit_block_type) * 8;
 
@@ -101,6 +104,16 @@ namespace black_cat
 			bc_alloc_type m_alloc_type;
 			bc_concurrent_memory_pool m_memory_pool;
 		};
+
+		inline bcUINT32 bc_concurrent_memory_pool::block_size() const noexcept
+		{
+			return m_block_size;
+		}
+
+		inline bcUINT32 bc_concurrent_memory_pool::num_block() const noexcept
+		{
+			return m_num_block;
+		}
 
 		template< typename T >
 		bc_concurrent_object_pool< T >::bc_concurrent_object_pool() = default;

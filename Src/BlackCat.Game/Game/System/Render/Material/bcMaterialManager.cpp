@@ -35,6 +35,7 @@ namespace black_cat
 
 		BC_JSON_STRUCTURE(_bc_collider_material_desc)
 		{
+			BC_JSON_VALUE(core::bc_string_frame, name);
 			BC_JSON_VALUE_OP(bcFLOAT, static_friction);
 			BC_JSON_VALUE_OP(bcFLOAT, dynamic_friction);
 			BC_JSON_VALUE_OP(bcFLOAT, restitution);
@@ -105,7 +106,7 @@ namespace black_cat
 			m_collider_materials.insert(collider_material_map::value_type
 			(
 				string_hash()("default"),
-				bc_collider_material(m_physics_system->get_physics().create_material(1, 1, 0.1f), "")
+				bc_collider_material("default", m_physics_system->get_physics().create_material(2, 2, 0.1f), "")
 			));
 		}
 
@@ -175,7 +176,7 @@ namespace black_cat
 					*l_material_desc->m_dynamic_friction,
 					*l_material_desc->m_restitution
 				);
-				bc_collider_material l_material_description(std::move(l_px_material), l_material_desc->m_particle->c_str());
+				bc_collider_material l_material_description(l_material_desc->m_name->c_str(), std::move(l_px_material), l_material_desc->m_particle->c_str());
 
 				m_collider_materials.insert(collider_material_map::value_type
 				(
@@ -346,34 +347,82 @@ namespace black_cat
 			return _store_mesh_material(p_alloc_type, p_name, std::move(l_material));
 		}
 
+		bc_collider_material_description bc_material_manager::get_default_collider_material()
+		{
+			const auto l_default_material_ite = m_collider_materials.find(string_hash()("default"));
+
+			bc_collider_material_description l_material;
+			l_material.m_hash = l_default_material_ite->first;
+			l_material.m_name = l_default_material_ite->second.get_name();
+			l_material.m_px_material = l_default_material_ite->second.get_px_material();
+			l_material.m_collision_particle = l_default_material_ite->second.get_particle_name();
+
+			return l_material;
+		}
+		
 		bc_collider_material_description bc_material_manager::find_collider_material(const bcCHAR* p_name)
 		{
 			const auto l_hash = string_hash()(p_name);
+			auto l_material = find_collider_material(l_hash);
+
+			if(l_hash == string_hash()("default"))
+			{
+				const auto l_warning_msg = core::bc_estring_frame(bcL("No collider material was found for material with name ")) +
+						core::bc_to_estring_frame(p_name) +
+						bcL(". Using default material instead.");
+				core::bc_get_service<core::bc_logger>()->log_info(l_warning_msg.c_str());
+			}
+
+			return l_material;
+		}
+
+		bc_collider_material_description bc_material_manager::find_collider_material(bc_collider_material_description::hash_t p_hash)
+		{
 			collider_material_map::const_iterator l_ite;
 			bool l_was_found = true;
 
 			{
 				core_platform::bc_mutex_guard l_guard(m_materials_mutex);
 
-				l_ite = m_collider_materials.find(l_hash);
-				if(l_ite == std::cend(m_collider_materials))
+				l_ite = m_collider_materials.find(p_hash);
+				if (l_ite == std::cend(m_collider_materials))
 				{
 					l_ite = m_collider_materials.find(string_hash()("default"));
 					l_was_found = false;
 				}
 			}
 
-			if(!l_was_found)
+			if (!l_was_found)
 			{
-				const auto l_warning_msg = core::bc_estring_frame(bcL("No collider material was found for ")) + core::bc_to_estring_frame(p_name) + bcL(". Using default material instead.");
+				const auto l_warning_msg = core::bc_estring_frame(bcL("No collider material was found for material with hash ")) +
+						core::bc_to_estring_frame(p_hash) +
+						bcL(". Using default material instead.");
 				core::bc_get_service<core::bc_logger>()->log_info(l_warning_msg.c_str());
 			}
-			
+
 			bc_collider_material_description l_material;
+			l_material.m_hash = l_ite->first;
+			l_material.m_name = l_ite->second.get_name();
 			l_material.m_px_material = l_ite->second.get_px_material();
-			l_material.m_particle_name = l_ite->second.get_particle_name();
+			l_material.m_collision_particle = l_ite->second.get_particle_name();
 
 			return l_material;
+		}
+
+		bc_collider_material_description bc_material_manager::find_collider_material_throw(bc_collider_material_description::hash_t p_hash)
+		{
+			{
+				core_platform::bc_mutex_guard l_guard(m_materials_mutex);
+
+				const auto l_ite = m_collider_materials.find(p_hash);
+				if (l_ite == std::cend(m_collider_materials))
+				{
+					const auto l_msg = core::bc_string_frame("No entry found for material with hash '") + core::bc_to_string_frame(p_hash) + "'";
+					throw bc_key_not_found_exception(l_msg.c_str());
+				}
+			}
+
+			return find_collider_material(p_hash);
 		}
 
 		bc_collider_material_description bc_material_manager::find_collider_material_throw(const bcCHAR* p_name)
@@ -386,10 +435,7 @@ namespace black_cat
 				const auto l_ite = m_collider_materials.find(l_hash);
 				if (l_ite == std::cend(m_collider_materials))
 				{
-					core::bc_string_frame l_msg = "No entry found for material with name '";
-					l_msg += p_name;
-					l_msg += "'";
-
+					const auto l_msg = core::bc_string_frame("No entry found for material with name '") + p_name + "'";
 					throw bc_key_not_found_exception(l_msg.c_str());
 				}
 			}

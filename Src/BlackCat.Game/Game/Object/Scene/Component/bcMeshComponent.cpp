@@ -64,7 +64,7 @@ namespace black_cat
 
 			if(l_materials)
 			{
-				m_render_state = m_sub_mesh.create_render_states(p_context.m_game_system.get_render_system(),*l_materials);
+				m_render_state = m_sub_mesh.create_render_states(p_context.m_game_system.get_render_system(), *l_materials);
 			}
 			else
 			{

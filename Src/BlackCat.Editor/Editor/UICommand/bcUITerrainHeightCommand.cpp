@@ -16,8 +16,6 @@ namespace black_cat
 {
 	namespace editor
 	{
-		// == bc_ui_terrain_height_command =============================================================================================
-
 		bc_ui_terrain_height_command::bc_ui_terrain_height_command(bcUINT16 p_screen_width,
 			bcUINT16 p_screen_height,
 			bcUINT16 p_point_left,
@@ -51,7 +49,8 @@ namespace black_cat
 		{
 			auto& l_render_system = p_context.m_game_system.get_render_system();
 
-			auto l_cb_config = graphic::bc_graphic_resource_builder().as_resource()
+			auto l_cb_config = graphic::bc_graphic_resource_builder()
+				.as_resource()
 				.as_buffer
 				(
 					1,
@@ -62,9 +61,9 @@ namespace black_cat
 				.as_constant_buffer();
 
 			bc_ui_terrain_height_command_state l_state;
-			l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_height_cs");;
-			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);;
-			l_state.m_device_command_list = l_render_system.get_device().create_command_list();;
+			l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_height_cs");
+			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);
+			l_state.m_device_command_list = l_render_system.get_device().create_command_list();
 
 			return core::bc_make_unique<bc_ui_terrain_height_command_state>(std::move(l_state));
 		}
@@ -142,8 +141,6 @@ namespace black_cat
 
 			return false;
 		}
-
-		// == bc_ui_terrain_height_command_render_task ==================================================================================
 
 		bc_ui_terrain_height_command_render_task::bc_ui_terrain_height_command_render_task(const bc_editor_height_map_dx11& p_height_map,
 			bc_ui_terrain_height_command_state& p_command_state,

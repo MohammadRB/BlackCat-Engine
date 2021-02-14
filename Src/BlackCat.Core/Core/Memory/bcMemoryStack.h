@@ -30,7 +30,7 @@ namespace black_cat
 			bcSIZE m_size;
 		};
 
-		class BC_CORE_DLL bc_memory_stack : public bc_memory, public bc_initializable<bcSIZE, bcSIZE, const bcCHAR*>
+		class BC_CORE_DLL bc_memory_stack : public bci_memory, public bc_initializable<bcSIZE, bcSIZE, const bcCHAR*>
 		{
 		public:
 			using this_type = bc_memory_stack;

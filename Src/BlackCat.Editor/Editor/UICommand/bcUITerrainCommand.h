@@ -64,8 +64,6 @@ namespace black_cat
 			bcUINT16 m_point_left;
 			bcUINT16 m_point_top;
 			bcUINT16 m_radius;
-
-		private:
 		};
 	}
 }

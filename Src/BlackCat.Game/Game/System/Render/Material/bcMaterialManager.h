@@ -50,13 +50,6 @@ namespace black_cat
 			graphic::bc_texture2d_content_ptr m_specular_map;
 		};
 
-		class bc_collider_material_description
-		{
-		public:
-			physics::bc_material m_px_material;
-			const bcCHAR* m_particle_name;
-		};
-
 		class BC_GAME_DLL bc_material_manager
 		{
 		private:
@@ -115,6 +108,8 @@ namespace black_cat
 
 			bc_mesh_material_ptr store_mesh_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_name, bc_mesh_material_description p_material);
 
+			bc_collider_material_description get_default_collider_material();
+			
 			/**
 			 * \brief Try to find collider material or return default collider material
 			 * \param p_name 
@@ -122,7 +117,16 @@ namespace black_cat
 			 */
 			bc_collider_material_description find_collider_material(const bcCHAR* p_name);
 			
+			/**
+			 * \brief Try to find collider material or return default collider material
+			 * \param p_hash
+			 * \return
+			 */
+			bc_collider_material_description find_collider_material(bc_collider_material_description::hash_t p_hash);
+
 			bc_collider_material_description find_collider_material_throw(const bcCHAR* p_name);
+			
+			bc_collider_material_description find_collider_material_throw(bc_collider_material_description::hash_t p_hash);
 			
 			void destroy_mesh_material(bc_mesh_material* p_material);
 			

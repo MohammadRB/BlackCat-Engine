@@ -57,54 +57,53 @@ namespace black_cat
 			void* l_result = nullptr;
 			bool l_reached_end = false;
 			bcINT32 l_block = -1;
-			bcUINT32 l_allocated_block = m_allocated_block.load(core_platform::bc_memory_order::seqcst);
+			bcUINT32 l_allocated_block = m_allocated_block.load(core_platform::bc_memory_order::relaxed);
 
-			for (bcUINT32 i = l_allocated_block; (i != l_allocated_block || !l_reached_end); ++i)
+			for (bcUINT32 l_ite = l_allocated_block; (l_ite != l_allocated_block || !l_reached_end); ++l_ite)
 			{
-				if (i >= m_num_bit_blocks)
+				if (l_ite >= m_num_bit_blocks)
 				{
-					i = 0;
+					l_ite = 0;
 					l_reached_end = true;
 				}
-				bit_block_type l_current_block = m_blocks[i].load(core_platform::bc_memory_order::seqcst);
+				
+				auto l_current_block = m_blocks[l_ite].load(core_platform::bc_memory_order::relaxed);
 
-				// any free blocks in this chunk?
-				if (s_bit_block_mask != l_current_block)
+				while (true)
 				{
-					// find a free entry in this chunk then allocate it and set the proper block index
-					for (bcUINT32 j = 0; j < s_bit_block_size; ++j)
-					{
-						if (static_cast< bit_block_type >(0) == (l_current_block & (static_cast< bit_block_type >(1) << j)))
-						{
-							const bit_block_type l_current_block_changed = l_current_block | (static_cast< bit_block_type >(1) << j);
-							if (m_blocks[i].compare_exchange_strong
-								(
-									&l_current_block,
-									l_current_block_changed,
-									core_platform::bc_memory_order::seqcst,
-									core_platform::bc_memory_order::seqcst
-								))
-							{
-								l_block = i * s_bit_block_size + j;
-
-								m_allocated_block.compare_exchange_strong(&l_allocated_block, i, core_platform::bc_memory_order::seqcst);
-
-								break;
-							}
-						}
-					}
-
-					if (l_block != -1)
+					const auto l_free_bit = _find_free_bit(l_current_block);
+					if (l_free_bit == -1)
 					{
 						break;
 					}
+
+					const bit_block_type l_current_block_changed = l_current_block | (static_cast<bit_block_type>(1) << l_free_bit);
+					if (m_blocks[l_ite].compare_exchange_strong
+					(
+						&l_current_block,
+						l_current_block_changed,
+						core_platform::bc_memory_order::relaxed,
+						core_platform::bc_memory_order::relaxed
+					))
+					{
+						l_block = l_ite * s_bit_block_size + l_free_bit;
+
+						m_allocated_block.compare_exchange_strong(&l_allocated_block, l_ite, core_platform::bc_memory_order::relaxed);
+
+						break;
+					}
+				}
+
+				if (l_block != -1)
+				{
+					break;
 				}
 			}
 
 			// A free block were found
 			if (l_block != -1 || l_block <= m_num_block)
 			{
-				l_result = reinterpret_cast<void*>(reinterpret_cast<bcUINT32>(m_heap)+(l_block * m_block_size));
+				l_result = reinterpret_cast<void*>(m_heap + l_block * m_block_size);
 			}
 
 			return l_result;
@@ -124,7 +123,7 @@ namespace black_cat
 			const bcINT32 l_chunk_index = l_block / s_bit_block_size;
 			const bcINT32 l_bit_index = l_block % s_bit_block_size;
 
-			m_blocks[l_chunk_index].fetch_and(~(static_cast< bit_block_type >(1) << l_bit_index), core_platform::bc_memory_order::seqcst);
+			m_blocks[l_chunk_index].fetch_and(~(static_cast< bit_block_type >(1) << l_bit_index), core_platform::bc_memory_order::relaxed);
 
 #ifdef BC_MEMORY_DEBUG
 			std::memset(reinterpret_cast<void*>(l_pointer), 0, m_block_size);
@@ -138,9 +137,9 @@ namespace black_cat
 
 		void bc_concurrent_memory_pool::clear() noexcept
 		{
-			for (bcUINT32 i = 0; i < m_num_bit_blocks; ++i)
+			for (bcUINT32 l_ite = 0; l_ite < m_num_bit_blocks; ++l_ite)
 			{
-				m_blocks[i].store(0U);
+				m_blocks[l_ite].store(0U, core_platform::bc_memory_order::relaxed);
 			}
 		}
 
@@ -166,17 +165,16 @@ namespace black_cat
 				throw std::bad_alloc();
 			}
 
-			for (bcUINT32 i = 0; i < m_num_bit_blocks; ++i)
-			{
-				m_blocks[i].store(0U);
-			}
-
-			m_heap = static_cast<bcUBYTE*>(BC_ALIGNED_ALLOC((m_block_size * m_num_block) * sizeof(bcUBYTE), BC_MEMORY_MIN_ALIGN, p_alloc_type));
-
+			m_heap = static_cast<bcUBYTE*>(BC_ALIGNED_ALLOC(m_block_size * m_num_block, BC_MEMORY_MIN_ALIGN, p_alloc_type));
 			if (!m_heap)
 			{
 				_aligned_free(m_blocks);
 				throw std::bad_alloc();
+			}
+
+			for (bcUINT32 l_ite = 0; l_ite < m_num_bit_blocks; ++l_ite)
+			{
+				m_blocks[l_ite].store(0U, core_platform::bc_memory_order::relaxed);
 			}
 		}
 
@@ -206,6 +204,52 @@ namespace black_cat
 			m_num_block = 0;
 			m_blocks = nullptr;
 			m_heap = nullptr;
+		}
+
+		bcINT32 bc_concurrent_memory_pool::_find_free_bit(bit_block_type p_bit_block) const noexcept
+		{
+			if (s_bit_block_mask == p_bit_block) // No false bit
+			{
+				return -1;
+			}
+
+			// Start searching in sub blocks
+			auto l_sub_block_size_bytes = sizeof(bit_block_type) / 2;
+			auto l_sub_block_shift_bytes = 0U;
+
+			while (l_sub_block_size_bytes >= 1)
+			{
+				for (auto l_sub_block_byte_ite = l_sub_block_shift_bytes; l_sub_block_byte_ite < sizeof(bit_block_type); l_sub_block_byte_ite += l_sub_block_size_bytes)
+				{
+					const auto l_sub_block_ite = (l_sub_block_byte_ite - l_sub_block_shift_bytes) / l_sub_block_size_bytes;
+					const auto l_sub_block_mask = s_bit_block_mask >> ((sizeof(bit_block_type) - l_sub_block_size_bytes) * 8);
+					const auto l_sub_block = (p_bit_block >> (l_sub_block_ite * l_sub_block_size_bytes * 8 + l_sub_block_shift_bytes * 8)) & l_sub_block_mask;
+
+					if ((l_sub_block & l_sub_block_mask) == l_sub_block_mask) // No free bit
+					{
+						continue;
+					}
+
+					l_sub_block_shift_bytes += l_sub_block_size_bytes * l_sub_block_ite;
+					break;
+				}
+
+				l_sub_block_size_bytes /= 2;
+			}
+
+			const auto l_start_bit = l_sub_block_shift_bytes * 8;
+			auto l_found_bit = 0U;
+
+			for (auto l_bit_ite = l_start_bit; l_bit_ite < l_start_bit + 8; ++l_bit_ite)
+			{
+				if (static_cast<bit_block_type>(0) == (p_bit_block & (static_cast<bit_block_type>(1) << l_bit_ite)))
+				{
+					l_found_bit = l_bit_ite;
+					break;
+				}
+			}
+
+			return l_found_bit;
 		}
 	}
 }

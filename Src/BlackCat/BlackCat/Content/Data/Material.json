@@ -2,7 +2,7 @@
   "mesh_materials": [
     {
       "name": "xbot-red",
-      "diffuse_color": [ 0.8, 0.2, 0.2, 1.0 ],
+      "diffuse_color": [ 0.8, 0.3, 0.2, 1.0 ],
       "specular_intensity": 0.8,
       "specular_power": 0.3,
       "diffuse_map": null,
@@ -10,12 +10,14 @@
     },
     {
       "name": "xbot-blue",
-      "diffuse_color": [ 0.2, 0.2, 0.8, 1.0 ],
+      "diffuse_color": [ 0.2, 0.3, 0.8, 1.0 ],
       "specular_intensity": 0.8,
       "specular_power": 0.3,
       "diffuse_map": null,
       "normal_map": null
     }
   ],
-  "collider_materials": [] 
+  "collider_materials": [
+
+  ] 
 }
