@@ -60,6 +60,7 @@
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Shape\bcBoundBox.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Shape\bcConvexMesh.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Shape\bcHeightField.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Shape\bcHeightFieldSampleArray.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Shape\bcShape.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Shape\bcShapeBox.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Shape\bcShapeCapsule.h" />

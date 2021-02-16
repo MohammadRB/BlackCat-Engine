@@ -2,9 +2,10 @@
 
 #pragma once
 
+#include "PhysicsImp/Fundation/bcMaterial.h"
+#include "PhysicsImp/Shape/bcHeightFieldSampleArray.h"
 #include "PhysicsImp/bcPhysicsReference.h"
 #include "PhysicsImp/bcPhysicsRef.h"
-#include "PhysicsImp/Fundation/bcMaterial.h"
 
 #include "Physics/Shape/bcHeightField.h"
 

@@ -80,13 +80,12 @@ namespace black_cat
 			);
 			bc_shape l_shape;
 
-			static_cast< bc_physics_reference& >(l_shape).get_platform_pack().m_px_object =
-				l_px_actor->createShape
-				(
-					*const_cast<bc_shape_geometry&>(p_shape).get_platform_pack().m_px_geometry,
-					*l_px_material,
-					static_cast< physx::PxShapeFlag::Enum >(static_cast< physx::PxShapeFlags::InternalType >(p_flags))
-				);
+			static_cast< bc_physics_reference& >(l_shape).get_platform_pack().m_px_object = l_px_actor->createShape
+			(
+				*const_cast<bc_shape_geometry&>(p_shape).get_platform_pack().m_px_geometry,
+				*l_px_material,
+				static_cast< physx::PxShapeFlag::Enum >(static_cast< physx::PxShapeFlags::InternalType >(p_flags))
+			);
 
 			return l_shape;
 		}

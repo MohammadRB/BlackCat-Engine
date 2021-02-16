@@ -69,9 +69,7 @@ namespace black_cat
 		{
 		}
 
-		bc_render_thread::~bc_render_thread() noexcept
-		{
-		}
+		bc_render_thread::~bc_render_thread() noexcept = default;
 
 		bc_render_thread& bc_render_thread::operator=(bc_render_thread&& p_other) noexcept
 		{
@@ -96,6 +94,7 @@ namespace black_cat
 
 			m_pipeline->finish_command_list(m_command_list);
 			m_executor->excecute_command_list(m_command_list);
+			m_command_list.finished();
 
 			graphic::bc_device_command_list l_command_list;
 			std::swap(l_command_list, m_command_list);

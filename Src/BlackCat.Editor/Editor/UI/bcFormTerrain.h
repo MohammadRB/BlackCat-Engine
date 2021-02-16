@@ -54,15 +54,13 @@ namespace black_cat
 
 			bcUINT32 get_material() const
 			{
-				return m_material_combo->currentIndex() + 1;
+				return m_material_combo->currentIndex();
 			}
 
 			void set_material(bcUINT32 p_index)
 			{
-				m_material_combo->setCurrentIndex(p_index - 1);
+				m_material_combo->setCurrentIndex(p_index);
 			}
-
-		protected:
 
 		private:
 			QSlider* m_height_slider;

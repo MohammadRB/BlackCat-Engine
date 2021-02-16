@@ -65,7 +65,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bcFLOAT bc_platform_height_field< g_api_physx >::get_height(bcFLOAT p_x, bcFLOAT p_z)
+		bcFLOAT bc_platform_height_field< g_api_physx >::get_height(bcFLOAT p_x, bcFLOAT p_z) const noexcept
 		{
 			physx::PxHeightField* l_px_height_field = static_cast< physx::PxHeightField* >
 			(
@@ -77,7 +77,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_material_index bc_platform_height_field< g_api_physx >::get_triangle_material(bcUINT32 p_triangle_index)
+		bc_material_index bc_platform_height_field< g_api_physx >::get_triangle_material(bcUINT32 p_triangle_index) const noexcept
 		{
 			physx::PxHeightField* l_px_height_field = static_cast< physx::PxHeightField* >
 			(
@@ -89,7 +89,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		core::bc_vector3f bc_platform_height_field< g_api_physx >::get_triangle_normal(bcUINT32 p_triangle_index)
+		core::bc_vector3f bc_platform_height_field< g_api_physx >::get_triangle_normal(bcUINT32 p_triangle_index) const noexcept
 		{
 			physx::PxHeightField* l_px_height_field = static_cast< physx::PxHeightField* >
 			(
@@ -109,7 +109,7 @@ namespace black_cat
 			bc_shape* p_height_field_shapes, 
 			bcUINT32 p_shape_count)
 		{
-			physx::PxHeightField* l_px_height_field = static_cast< physx::PxHeightField* >
+			auto* l_px_height_field = static_cast< physx::PxHeightField* >
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_height_field& >(*this)).get_platform_pack().m_px_object
 			);
@@ -120,11 +120,11 @@ namespace black_cat
 
 			physx::PxHeightFieldDesc l_px_height_desc = bc_convert_to_px_height_field(p_desc, l_px_samples.get());
 			bool l_result = l_px_height_field->modifySamples(p_row, p_column, l_px_height_desc);
-
+			
 			// Update associated shapes to this height field
 			for (bcUINT32 i = 0; i < p_shape_count; ++i)
 			{
-				physx::PxShape* l_px_shape = static_cast< physx::PxShape* >
+				auto* l_px_shape = static_cast< physx::PxShape* >
 				(
 					static_cast< bc_platform_physics_reference& >(p_height_field_shapes[i]).get_platform_pack().m_px_object
 				);
@@ -139,6 +139,27 @@ namespace black_cat
 					l_px_height_field_geo.columnScale
 				));
 			}
+
+			return l_result;
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_height_field_sample_array bc_platform_height_field< g_api_physx >::get_sample_array(core::bc_alloc_type p_alloc_type) const
+		{
+			bc_height_field_sample_array l_result;
+			auto& l_result_pack = l_result.get_platform_pack();
+			const auto l_buffer_size = get_num_row() * get_num_column() * sizeof(physx::PxHeightFieldSample);
+			
+			l_result_pack.m_num_rows = get_num_row();
+			l_result_pack.m_num_columns = get_num_column();
+			l_result_pack.m_buffer.reset(static_cast< physx::PxHeightFieldSample* >(BC_ALLOC(l_buffer_size, p_alloc_type)));
+
+			auto* l_px_height_field = static_cast<physx::PxHeightField*>
+			(
+				static_cast<bc_platform_physics_reference&>(const_cast<bc_platform_height_field&>(*this)).get_platform_pack().m_px_object
+			);
+			l_px_height_field->saveCells(l_result_pack.m_buffer.get(), l_buffer_size);
 
 			return l_result;
 		}

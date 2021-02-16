@@ -4,11 +4,12 @@
 
 #include "CorePlatform/bcType.h"
 #include "Core/Math/bcVector3f.h"
-#include "Physics/bcPhysicsApi.h"
+#include "Physics/Fundation/bcMaterial.h"
+#include "Physics/Shape/bcHeightFieldSampleArray.h"
 #include "Physics/bcPhysicsReference.h"
 #include "Physics/bcPhysicsRef.h"
+#include "Physics/bcPhysicsApi.h"
 #include "Physics/bcUtility.h"
-#include "Physics/Fundation/bcMaterial.h"
 
 namespace black_cat
 {
@@ -16,7 +17,6 @@ namespace black_cat
 	{
 		template<bc_physics_api>
 		class bc_platform_shape;
-
 		using bc_shape = bc_platform_shape<g_current_physics_api>;
 
 		/**
@@ -79,11 +79,11 @@ namespace black_cat
 			 * \param p_z 
 			 * \return 
 			 */
-			bcFLOAT get_height(bcFLOAT p_x, bcFLOAT p_z);
+			bcFLOAT get_height(bcFLOAT p_x, bcFLOAT p_z) const noexcept;
 
-			bc_material_index get_triangle_material(bcUINT32 p_triangle_index);
+			bc_material_index get_triangle_material(bcUINT32 p_triangle_index) const noexcept;
 
-			core::bc_vector3f get_triangle_normal(bcUINT32 p_triangle_index);
+			core::bc_vector3f get_triangle_normal(bcUINT32 p_triangle_index) const noexcept;
 
 			/**
 			 * \brief Replaces a rectangular sub-field in the sample data array.
@@ -101,6 +101,12 @@ namespace black_cat
 				bc_shape* p_height_field_shapes, 
 				bcUINT32 p_shape_count);
 
+			/**
+			 * \brief Get internal array of height field samples
+			 * \return 
+			 */
+			bc_height_field_sample_array get_sample_array(core::bc_alloc_type p_alloc_type) const;
+			
 			bool is_valid() const noexcept override;
 
 			platform_pack& get_platform_pack()

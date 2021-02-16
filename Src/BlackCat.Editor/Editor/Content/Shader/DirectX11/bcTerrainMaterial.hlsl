@@ -47,70 +47,54 @@ uint4 set_material(int p_material_index)
 
     switch (p_material_index)
     {
+        case 0:
+        {
+            const uint l_new_value = 255 << 8;
+            l_texturemap.x = l_new_value;
+            break;
+        }
         case 1:
-            {
-                uint l_new_value = 255 << 8;
-
-                l_texturemap.x = l_new_value;
-
-                break;
-            }
+        {
+	        const uint l_new_value = 255;
+            l_texturemap.x = l_new_value;
+            break;
+        }
         case 2:
-            {
-                uint l_new_value = 255;
-
-                l_texturemap.x = l_new_value;
-
-                break;
-            }
+        {
+            const uint l_new_value = 255 << 8;
+            l_texturemap.y = l_new_value;
+            break;
+        }
         case 3:
-            {
-                uint l_new_value = 255 << 8;
-
-                l_texturemap.y = l_new_value;
-
-                break;
-            }
+        {
+            const uint l_new_value = 255;
+            l_texturemap.y = l_new_value;
+            break;
+        }
         case 4:
-            {
-                uint l_new_value = 255;
-
-                l_texturemap.y = l_new_value;
-
-                break;
-            }
+        {
+            const uint l_new_value = 255 << 8;
+            l_texturemap.z = l_new_value;
+            break;
+        }
         case 5:
-            {
-                uint l_new_value = 255 << 8;
-
-                l_texturemap.z = l_new_value;
-
-                break;
-            }
+        {
+            const uint l_new_value = 255;
+            l_texturemap.z = l_new_value;
+            break;
+        }
         case 6:
-            {
-                uint l_new_value = 255;
-
-                l_texturemap.z = l_new_value;
-
-                break;
-            }
+        {
+            const uint l_new_value = 255 << 8;
+            l_texturemap.w = l_new_value;
+            break;
+        }
         case 7:
-            {
-                uint l_new_value = 255 << 8;
-
-                l_texturemap.w = l_new_value;
-
-                break;
-            }
-        case 8:
-            {
-                uint l_new_value = 255;
-
-                l_texturemap.w = l_new_value;
-
-                break;
-            }
+        {
+            const uint l_new_value = 255;
+            l_texturemap.w = l_new_value;
+            break;
+        }
     }
 
     return l_texturemap;
@@ -124,17 +108,17 @@ void main(uint3 p_group_id : SV_GroupID,
     uint3 p_group_thread_id : SV_GroupThreadID,
     uint3 p_dispatch_thread_id : SV_DispatchThreadID)
 {
-    int2 l_tool_center = int2(g_tool_center_x, g_tool_center_z);
-    int2 l_circle_coord = int2(p_dispatch_thread_id.x - g_tool_radius, p_dispatch_thread_id.y - g_tool_radius);
-    int2 l_global_coord = l_tool_center + l_circle_coord;
-    float l_center_distance = length(l_tool_center - l_global_coord);
+	const int2 l_tool_center = int2(g_tool_center_x, g_tool_center_z);
+	const int2 l_circle_coord = int2(p_dispatch_thread_id.x - g_tool_radius, p_dispatch_thread_id.y - g_tool_radius);
+	const int2 l_global_coord = l_tool_center + l_circle_coord;
+	const float l_center_distance = length(l_tool_center - l_global_coord);
 
     if (l_center_distance > g_tool_radius)
     {
         return;
     }
 
-    uint4 l_texture_map = set_material(g_tool_material);
+	const uint4 l_texture_map = set_material(g_tool_material);
 
     set_texture_map(l_global_coord, l_texture_map);
 }

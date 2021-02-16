@@ -65,7 +65,7 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_actor& >(*this)).get_platform_pack().m_px_object
 			);
-			auto l_px_rigid_actor = l_px_actor->isRigidActor();
+			auto* l_px_rigid_actor = l_px_actor->isRigidActor();
 
 			static_cast< bc_platform_physics_reference& >(l_rigid_actor).get_platform_pack().m_px_object = l_px_rigid_actor;
 

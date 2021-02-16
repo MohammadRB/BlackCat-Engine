@@ -38,7 +38,7 @@ namespace black_cat
 			}
 
 			/**
-			 * \brief Start thread to capture device pipeline commands and save them in passed command list
+			 * \brief Start thread to capture device pipeline commands and save them into the passed command list
 			 * \param p_command_list 
 			 */
 			void start(graphic::bc_device_command_list p_command_list) noexcept;

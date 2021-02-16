@@ -71,7 +71,7 @@ namespace black_cat
 
 			void unload_content();
 
-			bcUINT32 command_count() const;
+			bcUINT32 reversible_command_count() const;
 
 			template<typename T>
 			core::bc_task<core::bc_any> queue_command(T&& p_command);

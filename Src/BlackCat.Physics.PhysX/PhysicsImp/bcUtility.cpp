@@ -2,6 +2,7 @@
 
 #include "PhysicsImp/PhysicsImpPCH.h"
 
+#include "Core/Utility/bcLogger.h"
 #include "Core/Utility/bcEnumOperand.h"
 #include "PhysicsImp/bcUtility.h"
 
@@ -11,17 +12,23 @@ namespace black_cat
 	{
 		physx::PxHeightFieldDesc bc_convert_to_px_height_field(const bc_height_field_desc& p_desc, physx::PxHeightFieldSample* p_px_sample_buffer)
 		{
-			bool l_has_material = p_desc.m_samples_material.m_data;
+			const bool l_has_material = p_desc.m_samples_material.m_data;
 			bcUINT32 l_source_index = 0;
 
 			for (bcUINT32 x = 0; x < p_desc.m_num_row; ++x)
 			{
 				for (bcUINT32 z = 0; z < p_desc.m_num_column; ++z)
 				{
-					auto l_zx_index = z * p_desc.m_num_row + x;
+					const auto l_zx_index = z * p_desc.m_num_row + x;
 
-					bcINT16 l_height = p_desc.m_samples.at(l_source_index);
-					physx::PxBitAndByte l_material_index(l_has_material ? p_desc.m_samples_material.at(l_source_index) : 0);
+					const bcINT16 l_height = p_desc.m_samples.at(l_source_index);
+					const bc_material_index l_material = l_has_material ? p_desc.m_samples_material.at(l_source_index) : 0;
+					if(l_material > 127)
+					{
+						core::bc_get_service<core::bc_logger>()->log_info(bcL("Terrain material indices higher that 127 is not supported."));
+					}
+					
+					const physx::PxBitAndByte l_material_index(l_material);
 
 					p_px_sample_buffer[l_zx_index] = physx::PxHeightFieldSample
 					{
@@ -34,20 +41,20 @@ namespace black_cat
 				}
 			}
 
-			physx::PxHeightFieldDesc l_px_desx;
-			l_px_desx.nbRows = p_desc.m_num_row;
-			l_px_desx.nbColumns = p_desc.m_num_column;
-			l_px_desx.samples.data = p_px_sample_buffer;
-			l_px_desx.samples.stride = sizeof(physx::PxHeightFieldSample);
+			physx::PxHeightFieldDesc l_px_desc;
+			l_px_desc.nbRows = p_desc.m_num_row;
+			l_px_desc.nbColumns = p_desc.m_num_column;
+			l_px_desc.samples.data = p_px_sample_buffer;
+			l_px_desc.samples.stride = sizeof(physx::PxHeightFieldSample);
 
-			return l_px_desx;
+			return l_px_desc;
 		}
 
 		physx::PxConvexMeshDesc bc_convert_to_px_convex_mesh(const bc_convex_mesh_desc& p_desc, physx::PxVec3* p_px_point_buffer)
 		{
 			for(bcUINT32 i = 0; i < p_desc.m_points.m_count; ++i)
 			{
-				auto& l_point = p_desc.m_points.at(i);
+				const auto& l_point = p_desc.m_points.at(i);
 
 				p_px_point_buffer[i] = bc_to_right_hand(l_point);
 			}

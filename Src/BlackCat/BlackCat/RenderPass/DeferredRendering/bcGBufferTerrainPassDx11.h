@@ -46,7 +46,7 @@ namespace black_cat
 		bool m_run_chunk_info_shader = false;
 
 		graphic::bc_device_pipeline_state_ptr m_device_pipeline_state;
-		graphic::bc_device_compute_state_ptr m_device_compute_state;
+		graphic::bc_device_compute_state_ptr m_chunk_info_device_compute_state;
 		graphic::bc_buffer_ptr m_parameter_cbuffer;
 		graphic::bc_sampler_state_ptr m_height_map_sampler;
 		graphic::bc_sampler_state_ptr m_texture_sampler;

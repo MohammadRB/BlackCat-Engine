@@ -111,8 +111,8 @@
           "content_parameter": {
             "xz_multiplier": 2,
             "y_multiplier": 512,
-            "distance_detail": 100,
-            "height_detail": 20,
+            "distance_detail": 200,
+            "height_detail": 10,
             "materials": [
               {
                 "name": "terrain_material_1",

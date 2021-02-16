@@ -27,8 +27,8 @@ namespace black_cat
 			bc_ui_terrain_command_update_context(const bc_ui_command_update_context& p_update_context,
 				const game::bc_actor& p_terrain,
 				const core::bc_vector3f& p_hit_position,
-				bcUINT32 m_tool_center_x,
-				bcUINT32 m_tool_center_z);
+				bcUINT32 p_tool_center_x,
+				bcUINT32 p_tool_center_z);
 
 			game::bc_actor m_terrain;
 			core::bc_vector3f m_hit_position;

@@ -688,7 +688,7 @@ namespace black_cat
 
 			if (!m_pack.m_px_foundation)
 			{
-				throw bc_physics_exception(0, "Failed to create PhysX fundation");
+				throw bc_physics_exception(0, "Failed to create PhysX foundation");
 			}
 
 			bool l_track_memory = false;
@@ -728,7 +728,7 @@ namespace black_cat
 
 			if (!m_pack.m_px_cooking)
 			{
-				throw bc_physics_exception(0, "Failed to create Physx cooking");
+				throw bc_physics_exception(0, "Failed to create PhysX cooking");
 			}
 
 			if (!PxInitExtensions(*m_pack.m_px_physics))
@@ -742,9 +742,9 @@ namespace black_cat
 			if (m_pack.m_px_physics->getPvdConnectionManager() != nullptr)
 			{
 				const bcCHAR* l_pvd_host_ip = "127.0.0.1";
-				bcINT32 l_port = 5425;
-				bcUINT32 l_timeout = 100;
-				physx::PxVisualDebuggerConnectionFlags l_connection_flags = physx::PxVisualDebuggerExt::getAllConnectionFlags();
+				const bcINT32 l_port = 5425;
+				const bcUINT32 l_timeout = 10000;
+				const physx::PxVisualDebuggerConnectionFlags l_connection_flags = physx::PxVisualDebuggerExt::getAllConnectionFlags();
 
 				m_pack.m_visualizer = physx::PxVisualDebuggerExt::createConnection
 				(

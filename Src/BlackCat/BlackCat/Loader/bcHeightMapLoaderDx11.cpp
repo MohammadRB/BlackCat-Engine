@@ -222,10 +222,8 @@ namespace black_cat
 		
 		for (bcUINT32 l_i = 0, l_end = l_sample_count; l_i < l_end; ++l_i)
 		{
-			bcINT16 l_value =
-			(
-				(l_texture_data[l_i * l_texel_size] / 255.f) / l_physics_system.get_height_field_y_scale()
-			) * l_y_multiplier; // read red channel of texture
+			// read red channel of texture
+			bcINT16 l_value = ((l_texture_data[l_i * l_texel_size] / 255.f) / l_physics_system.get_height_field_y_scale()) * l_y_multiplier;
 
 			l_dest[l_i] = l_value;
 		}

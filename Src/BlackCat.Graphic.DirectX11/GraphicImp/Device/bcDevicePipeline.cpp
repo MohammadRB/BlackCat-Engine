@@ -1081,7 +1081,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline< g_api_dx11 >::start_command_list()
 		{
-			if (m_pack.m_pipeline_proxy->m_context->GetType() == D3D11_DEVICE_CONTEXT_IMMEDIATE)
+			if (m_pack.m_pipeline_proxy->m_context_type == D3D11_DEVICE_CONTEXT_IMMEDIATE)
 			{
 				auto& l_device_pack = m_pack.m_pipeline_proxy->m_device->get_platform_pack();
 				l_device_pack.m_immediate_context_mutex.lock();
@@ -1092,7 +1092,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline< g_api_dx11 >::finish_command_list(bc_device_command_list& p_command_list)
 		{
-			if (m_pack.m_pipeline_proxy->m_context->GetType() == D3D11_DEVICE_CONTEXT_IMMEDIATE)
+			if (m_pack.m_pipeline_proxy->m_context_type == D3D11_DEVICE_CONTEXT_IMMEDIATE)
 			{
 				auto& l_device_pack = m_pack.m_pipeline_proxy->m_device->get_platform_pack();
 				l_device_pack.m_immediate_context_mutex.unlock();

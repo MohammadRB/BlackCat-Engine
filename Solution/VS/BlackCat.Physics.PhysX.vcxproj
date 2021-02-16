@@ -268,6 +268,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcBoundBox.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcConvexMesh.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcHeightField.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcHeightFieldSampleArray.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShape.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeBox.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeCapsule.h" />
@@ -317,6 +318,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcBoundBox.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcConvexMesh.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcHeightField.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcHeightFieldSampleArray.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShape.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeBox.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeCapsule.cpp" />

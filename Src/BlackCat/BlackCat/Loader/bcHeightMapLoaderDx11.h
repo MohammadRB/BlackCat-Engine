@@ -88,8 +88,6 @@ namespace black_cat
 			return m_materials;
 		}
 
-	protected:
-
 	private:
 		bcUINT16 m_distance_detail;
 		bcUINT16 m_height_detail;
