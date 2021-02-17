@@ -92,7 +92,7 @@ namespace black_cat
 				s_particles_count, 
 				sizeof(_bc_particle_struct), 
 				graphic::bc_resource_usage::gpu_rw, 
-				core::bc_enum::or({ graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered })
+				core::bc_enum::mask_or({ graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered })
 			)
 			.with_structured_buffer(sizeof(_bc_particle_struct))
 			.as_buffer();
@@ -103,7 +103,7 @@ namespace black_cat
 				s_particles_count,
 				sizeof(_bc_alive_particle_struct), 
 				graphic::bc_resource_usage::gpu_rw, 
-				core::bc_enum::or({ graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered })
+				core::bc_enum::mask_or({ graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered })
 			)
 			.with_structured_buffer(sizeof(_bc_alive_particle_struct))
 			.as_buffer();

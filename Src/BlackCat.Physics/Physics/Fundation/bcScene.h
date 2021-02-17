@@ -203,11 +203,11 @@ namespace black_cat
 			core::bc_vector_frame<bc_updated_actor> get_active_actors() noexcept;
 
 			/**
-			 * \brief Performs a raycast against objects in the scene.
+			 * \brief Performs a ray cast against objects in the scene.
 			 * \note Touching hits are not ordered.
 			 * \note Shooting a ray from within an object leads to different results depending on the shape type.
 			 * \param[in] p_ray	Ray to query
-			 * \param[out] p_buffer	Raycast hit buffer used to report raycast hits.
+			 * \param[out] p_buffer	Ray cast hit buffer used to report ray cast hits.
 			 * \param[in] p_hit_flags Specifies which properties per hit should be computed and returned via the hit callback.
 			 * \param[in] p_query_flags	
 			 * \param[in] p_query_groups Specify witch groups must be included in query.
@@ -217,7 +217,7 @@ namespace black_cat
 			bool raycast(const bc_ray& p_ray, 
 				bc_scene_ray_query_buffer& p_buffer, 
 				bc_hit_flag p_hit_flags = bc_hit_flag::hit_info,
-				bc_query_flags p_query_flags = core::bc_enum::or({ bc_query_flags::statics, bc_query_flags::dynamics}),
+				bc_query_flags p_query_flags = core::bc_enum::mask_or({ bc_query_flags::statics, bc_query_flags::dynamics}),
 				bc_query_group p_query_groups = bc_query_group::all,
 				bc_scene_query_post_filter_callback* p_filter_callback = nullptr) const;
 
@@ -240,7 +240,7 @@ namespace black_cat
 				bcFLOAT p_max_dist,
 				bc_scene_sweep_query_buffer& p_buffer,
 				bc_hit_flag p_hit_flags = bc_hit_flag::hit_info,
-				bc_query_flags p_query_flags = core::bc_enum::or({ bc_query_flags::statics, bc_query_flags::dynamics }),
+				bc_query_flags p_query_flags = core::bc_enum::mask_or({ bc_query_flags::statics, bc_query_flags::dynamics }),
 				bc_query_group p_query_groups = bc_query_group::all,
 				bc_scene_query_post_filter_callback* p_filter_callback = nullptr) const;
 
@@ -256,7 +256,7 @@ namespace black_cat
 			bool overlap(const bc_shape_geometry& p_geometry,
 				const bc_transform& p_pose,
 				bc_scene_overlap_query_buffer& p_buffer,
-				bc_query_flags p_query_flags = core::bc_enum::or({ bc_query_flags::statics, bc_query_flags::dynamics }),
+				bc_query_flags p_query_flags = core::bc_enum::mask_or({ bc_query_flags::statics, bc_query_flags::dynamics }),
 				bc_query_group p_query_groups = bc_query_group::all,
 				bc_scene_query_post_filter_callback* p_filter_callback = nullptr) const;
 

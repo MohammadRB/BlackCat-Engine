@@ -16,7 +16,7 @@ namespace black_cat
 
 			if (core::bc_enum::has(p_shader_types, graphic::bc_shader_type::vertex))
 			{
-				l_pipeline_stages = core::bc_enum::or
+				l_pipeline_stages = core::bc_enum::mask_or
 				({
 					l_pipeline_stages,
 					graphic::bc_pipeline_stage::vertex_stage
@@ -24,7 +24,7 @@ namespace black_cat
 			}
 			if (core::bc_enum::has(p_shader_types, graphic::bc_shader_type::domain))
 			{
-				l_pipeline_stages = core::bc_enum::or
+				l_pipeline_stages = core::bc_enum::mask_or
 				({
 					l_pipeline_stages,
 					graphic::bc_pipeline_stage::domain_stage
@@ -32,7 +32,7 @@ namespace black_cat
 			}
 			if (core::bc_enum::has(p_shader_types, graphic::bc_shader_type::hull))
 			{
-				l_pipeline_stages = core::bc_enum::or
+				l_pipeline_stages = core::bc_enum::mask_or
 				({
 					l_pipeline_stages,
 					graphic::bc_pipeline_stage::hull_stage
@@ -40,7 +40,7 @@ namespace black_cat
 			}
 			if (core::bc_enum::has(p_shader_types, graphic::bc_shader_type::geometry))
 			{
-				l_pipeline_stages = core::bc_enum::or
+				l_pipeline_stages = core::bc_enum::mask_or
 				({
 					l_pipeline_stages,
 					graphic::bc_pipeline_stage::geometry_stage
@@ -48,7 +48,7 @@ namespace black_cat
 			}
 			if (core::bc_enum::has(p_shader_types, graphic::bc_shader_type::pixel))
 			{
-				l_pipeline_stages = core::bc_enum::or
+				l_pipeline_stages = core::bc_enum::mask_or
 				({
 					l_pipeline_stages,
 					graphic::bc_pipeline_stage::pixel_stage
@@ -125,7 +125,7 @@ namespace black_cat
 				}
 			);
 
-			graphic::bc_pipeline_stage l_pipeline_stages = core::bc_enum::or
+			graphic::bc_pipeline_stage l_pipeline_stages = core::bc_enum::mask_or
 			({
 				graphic::bc_pipeline_stage::rasterizer_stage,
 				graphic::bc_pipeline_stage::output_merger_stage
@@ -141,7 +141,7 @@ namespace black_cat
 			{
 				if (l_sampler_parameter.is_valid())
 				{
-					l_shader_types = core::bc_enum::or({l_shader_types, l_sampler_parameter.get_shader_types()});
+					l_shader_types = core::bc_enum::mask_or({l_shader_types, l_sampler_parameter.get_shader_types()});
 
 					m_pipeline->bind_ps_sampler_parameter(l_sampler_parameter);
 				}
@@ -150,7 +150,7 @@ namespace black_cat
 			{
 				if (l_view_parameter.is_valid())
 				{
-					l_shader_types = core::bc_enum::or({l_shader_types, l_view_parameter.get_shader_types()});
+					l_shader_types = core::bc_enum::mask_or({l_shader_types, l_view_parameter.get_shader_types()});
 
 					m_pipeline->bind_ps_shader_view_parameter(l_view_parameter);
 				}
@@ -159,11 +159,11 @@ namespace black_cat
 			{
 				if (l_view_parameter.is_valid())
 				{
-					l_shader_types = core::bc_enum:: or ({ l_shader_types, l_view_parameter.get_shader_types() });
+					l_shader_types = core::bc_enum::mask_or({ l_shader_types, l_view_parameter.get_shader_types() });
 					// If there is any unordered view for pixel shader add output merger for apply changes
 					if(l_view_parameter.get_shader_types() == graphic::bc_shader_type::pixel)
 					{
-						l_pipeline_stages = core::bc_enum:: or ({ l_pipeline_stages ,graphic::bc_pipeline_stage::output_merger_stage });
+						l_pipeline_stages = core::bc_enum::mask_or({ l_pipeline_stages ,graphic::bc_pipeline_stage::output_merger_stage });
 					}
 					
 					m_pipeline->bind_ps_shader_view_parameter(l_view_parameter);
@@ -173,13 +173,13 @@ namespace black_cat
 			{
 				if (l_buffer_parameter.is_valid())
 				{
-					l_shader_types = core::bc_enum::or({l_shader_types, l_buffer_parameter.get_shader_types()});
+					l_shader_types = core::bc_enum::mask_or({l_shader_types, l_buffer_parameter.get_shader_types()});
 
 					m_pipeline->bind_ps_constant_buffer_parameter(l_buffer_parameter);
 				}
 			}
 
-			l_pipeline_stages = core::bc_enum::or({l_pipeline_stages, _convert_shader_type_to_pipeline_stage(l_shader_types)});
+			l_pipeline_stages = core::bc_enum::mask_or({l_pipeline_stages, _convert_shader_type_to_pipeline_stage(l_shader_types)});
 
 			m_pipeline->pipeline_apply_states(l_pipeline_stages);
 		}
@@ -190,7 +190,7 @@ namespace black_cat
 			m_pipeline->unbind_rs_viewports();
 			m_pipeline->unbind_om_render_targets();
 
-			graphic::bc_pipeline_stage l_pipeline_stages = core::bc_enum::or
+			graphic::bc_pipeline_stage l_pipeline_stages = core::bc_enum::mask_or
 			({
 				graphic::bc_pipeline_stage::rasterizer_stage,
 				graphic::bc_pipeline_stage::output_merger_stage
@@ -201,7 +201,7 @@ namespace black_cat
 			{
 				if (l_sampler_parameter.is_valid())
 				{
-					l_shader_types = core::bc_enum::or({l_shader_types, l_sampler_parameter.get_shader_types()});
+					l_shader_types = core::bc_enum::mask_or({l_shader_types, l_sampler_parameter.get_shader_types()});
 
 					m_pipeline->unbind_ps_sampler_parameter(l_sampler_parameter);
 				}
@@ -210,7 +210,7 @@ namespace black_cat
 			{
 				if (l_view_parameter.is_valid())
 				{
-					l_shader_types = core::bc_enum::or({l_shader_types, l_view_parameter.get_shader_types()});
+					l_shader_types = core::bc_enum::mask_or({l_shader_types, l_view_parameter.get_shader_types()});
 
 					m_pipeline->unbind_ps_shader_view_parameter(l_view_parameter);
 				}
@@ -219,7 +219,7 @@ namespace black_cat
 			{
 				if (l_view_parameter.is_valid())
 				{
-					l_shader_types = core::bc_enum:: or ({ l_shader_types, l_view_parameter.get_shader_types() });
+					l_shader_types = core::bc_enum::mask_or({ l_shader_types, l_view_parameter.get_shader_types() });
 
 					m_pipeline->unbind_ps_shader_view_parameter(l_view_parameter);
 				}
@@ -228,13 +228,13 @@ namespace black_cat
 			{
 				if (l_buffer_parameter.is_valid())
 				{
-					l_shader_types = core::bc_enum::or({l_shader_types, l_buffer_parameter.get_shader_types()});
+					l_shader_types = core::bc_enum::mask_or({l_shader_types, l_buffer_parameter.get_shader_types()});
 
 					m_pipeline->unbind_ps_constant_buffer_parameter(l_buffer_parameter);
 				}
 			}
 
-			l_pipeline_stages = core::bc_enum::or({l_pipeline_stages, _convert_shader_type_to_pipeline_stage(l_shader_types)});
+			l_pipeline_stages = core::bc_enum::mask_or({l_pipeline_stages, _convert_shader_type_to_pipeline_stage(l_shader_types)});
 
 			m_pipeline->pipeline_apply_states(l_pipeline_stages);
 		}
@@ -263,7 +263,7 @@ namespace black_cat
 			{
 				if (l_view_parameter.is_valid())
 				{
-					l_shader_types = core::bc_enum::or({l_shader_types, l_view_parameter.get_shader_types()});
+					l_shader_types = core::bc_enum::mask_or({l_shader_types, l_view_parameter.get_shader_types()});
 					m_pipeline->bind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
@@ -271,12 +271,12 @@ namespace black_cat
 			{
 				if (l_buffer_parameter.is_valid())
 				{
-					l_shader_types = core::bc_enum::or({l_shader_types, l_buffer_parameter.get_shader_types()});
+					l_shader_types = core::bc_enum::mask_or({l_shader_types, l_buffer_parameter.get_shader_types()});
 					m_pipeline->bind_ps_constant_buffer_parameter(l_buffer_parameter);
 				}
 			}
 
-			l_pipeline_stages = core::bc_enum::or({l_pipeline_stages, _convert_shader_type_to_pipeline_stage(l_shader_types)});
+			l_pipeline_stages = core::bc_enum::mask_or({l_pipeline_stages, _convert_shader_type_to_pipeline_stage(l_shader_types)});
 
 			m_pipeline->pipeline_apply_states(l_pipeline_stages);
 		}
@@ -294,7 +294,7 @@ namespace black_cat
 			{
 				if (l_view_parameter.is_valid())
 				{
-					l_shader_types = core::bc_enum::or({l_shader_types, l_view_parameter.get_shader_types()});
+					l_shader_types = core::bc_enum::mask_or({l_shader_types, l_view_parameter.get_shader_types()});
 					m_pipeline->unbind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
@@ -302,12 +302,12 @@ namespace black_cat
 			{
 				if (l_buffer_parameter.is_valid())
 				{
-					l_shader_types = core::bc_enum::or({l_shader_types, l_buffer_parameter.get_shader_types()});
+					l_shader_types = core::bc_enum::mask_or({l_shader_types, l_buffer_parameter.get_shader_types()});
 					m_pipeline->unbind_ps_constant_buffer_parameter(l_buffer_parameter);
 				}
 			}
 
-			l_pipeline_stages = core::bc_enum::or({l_pipeline_stages, _convert_shader_type_to_pipeline_stage(l_shader_types)});
+			l_pipeline_stages = core::bc_enum::mask_or({l_pipeline_stages, _convert_shader_type_to_pipeline_stage(l_shader_types)});
 
 			m_pipeline->pipeline_apply_states(l_pipeline_stages);
 		}

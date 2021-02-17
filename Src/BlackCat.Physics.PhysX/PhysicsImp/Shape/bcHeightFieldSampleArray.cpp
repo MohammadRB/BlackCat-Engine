@@ -58,6 +58,9 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		std::tuple<bcINT16, bc_material_index> bc_platform_height_field_sample_array<g_api_physx>::get_sample_from_top_left(bcINT32 p_row, bcINT32 p_column) const noexcept
 		{
+			p_row = std::min(static_cast<bcUINT32>(std::max(0, p_row)), m_pack.m_num_rows - 1);
+			p_column = std::min(static_cast<bcUINT32>(std::max(0, p_column)), m_pack.m_num_rows - 1);
+			
 			auto& l_sample = m_pack.m_buffer.get()[p_row * m_pack.m_num_rows + p_column];
 			return std::make_tuple(l_sample.height, static_cast<bcUBYTE>(l_sample.materialIndex1));
 		}

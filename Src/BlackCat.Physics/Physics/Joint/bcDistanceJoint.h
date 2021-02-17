@@ -17,19 +17,19 @@ namespace black_cat
 		};
 
 		template< bc_physics_api TApi >
-		class bc_platfrom_distance_joint : public bc_platform_joint<TApi>
+		class bc_platform_distance_joint : public bc_platform_joint<TApi>
 		{
 		public:
 			using platform_pack = bc_platform_distance_joint_pack< TApi >;
 
 		public:
-			bc_platfrom_distance_joint() noexcept;
+			bc_platform_distance_joint() noexcept;
 
-			bc_platfrom_distance_joint(const bc_platfrom_distance_joint&) noexcept;
+			bc_platform_distance_joint(const bc_platform_distance_joint&) noexcept;
 
-			~bc_platfrom_distance_joint();
+			~bc_platform_distance_joint();
 
-			bc_platfrom_distance_joint& operator=(const bc_platfrom_distance_joint&) noexcept;
+			bc_platform_distance_joint& operator=(const bc_platform_distance_joint&) noexcept;
 
 			/**
 			 * \brief Return the current distance of the joint
@@ -57,7 +57,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_distance_joint = bc_platfrom_distance_joint< g_current_physics_api >;
+		using bc_distance_joint = bc_platform_distance_joint< g_current_physics_api >;
 		using bc_distance_joint_ref = bc_physics_ref<bc_distance_joint>;
 	}
 }

@@ -230,8 +230,8 @@ namespace black_cat
 				{ *l_diffuse_map_view, *l_normal_map_view },
 				*l_depth_stencil_view,
 				{
-					graphic::bc_sampler_parameter(0, core::bc_enum:: or ({ graphic::bc_shader_type::pixel }), m_height_map_sampler.get()),
-					graphic::bc_sampler_parameter(0, core::bc_enum:: or ({ graphic::bc_shader_type::pixel }), m_texture_sampler.get())
+					graphic::bc_sampler_parameter(0, core::bc_enum::mask_or({ graphic::bc_shader_type::pixel }), m_height_map_sampler.get()),
+					graphic::bc_sampler_parameter(0, core::bc_enum::mask_or({ graphic::bc_shader_type::pixel }), m_texture_sampler.get())
 				},
 				{},
 				{},

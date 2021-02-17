@@ -89,17 +89,14 @@ namespace black_cat
 			);
 			p_context.m_game_system.get_render_system().add_render_task(l_render_task);
 
-			const auto l_height_map_samples = l_px_height_map.get_sample_array(core::bc_alloc_type::frame);
+			const auto l_height_map_array = l_px_height_map.get_sample_array(core::bc_alloc_type::frame);
 			
 			const bcINT32 l_diameter = l_cbuffer_parameters.m_tool_radius * 2;
 			const core::bc_vector2f l_tool_center(l_cbuffer_parameters.m_tool_center_x, l_cbuffer_parameters.m_tool_center_z);
 			const bcUINT32 l_sample_count = l_diameter * l_diameter;
 			const core::bc_unique_ptr< height_map_sample_t > l_sample_buffer
 			(
-				static_cast<std::tuple< bcINT16, physics::bc_material_index >*>
-				(
-					BC_ALLOC(l_sample_count * sizeof(height_map_sample_t), core::bc_alloc_type::frame)
-				)
+				static_cast<height_map_sample_t*>(BC_ALLOC(l_sample_count * sizeof(height_map_sample_t), core::bc_alloc_type::frame))
 			);
 			auto* l_samples = l_sample_buffer.get();
 
@@ -111,7 +108,7 @@ namespace black_cat
 					core::bc_vector2f l_circle_coords(l_x - m_radius, l_z - m_radius);
 					core::bc_vector2f l_global_coords = l_tool_center + l_circle_coords;
 					const bcFLOAT l_center_distance = (l_tool_center - l_global_coords).magnitude();
-					auto l_height_map_sample = l_height_map_samples.get_sample_from_top_left(l_global_coords.x, l_global_coords.y);
+					auto l_height_map_sample = l_height_map_array.get_sample_from_top_left(l_global_coords.x, l_global_coords.y);
 
 					if (l_center_distance > m_radius)
 					{
@@ -130,24 +127,25 @@ namespace black_cat
 					{
 						for (bcUINT32 l_z1 = l_min_z; l_z1 <= l_max_z; ++l_z1)
 						{
-							auto l_new_height_map_sample = l_height_map_samples.get_sample_from_top_left(l_x1, l_z1);
-							l_computed_height += std::get<bcINT16>(l_new_height_map_sample) * l_dx11_height_map.get_physics_y_scale();
+							auto l_new_height_map_sample = l_height_map_array.get_sample_from_top_left(l_x1, l_z1);
+							l_computed_height += std::get<0>(l_new_height_map_sample) * l_dx11_height_map.get_physics_y_scale();
 
 							++l_num_sample;
 						}
 					}
 
 					l_computed_height /= l_num_sample;
-					bcFLOAT l_source_height = std::get<bcINT16>(l_height_map_sample) * l_dx11_height_map.get_physics_y_scale();
+					bcFLOAT l_source_height = std::get<0>(l_height_map_sample) * l_dx11_height_map.get_physics_y_scale();
 					bcFLOAT l_smooth_ratio = (s_smooth_max - l_cbuffer_parameters.m_tool_smooth * 1.0f) / s_smooth_max;
 					bcFLOAT l_final_height = (l_computed_height * (1 - l_smooth_ratio)) + (l_source_height * l_smooth_ratio);
 
-					std::get<bcINT16>(l_samples[l_sample_index]) = l_final_height / l_dx11_height_map.get_physics_y_scale();
+					std::get<0>(l_height_map_sample) = l_final_height / l_dx11_height_map.get_physics_y_scale();
+					l_samples[l_sample_index] = l_height_map_sample;
 				}
 			}
 
-			const physics::bc_bounded_strided_typed_data<bcINT16> l_px_samples(&std::get<bcINT16>(*l_samples), sizeof(height_map_sample_t), l_sample_count);
-			const physics::bc_bounded_strided_typed_data<physics::bc_material_index> l_px_sample_materials(&std::get<physics::bc_material_index>(*l_samples), sizeof(height_map_sample_t), l_sample_count);
+			const physics::bc_bounded_strided_typed_data<bcINT16> l_px_samples(&std::get<0>(*l_samples), sizeof(height_map_sample_t), l_sample_count);
+			const physics::bc_bounded_strided_typed_data<physics::bc_material_index> l_px_sample_materials(&std::get<1>(*l_samples), sizeof(height_map_sample_t), l_sample_count);
 			const physics::bc_height_field_desc l_px_height_map_desc(l_diameter, l_diameter, l_px_samples, l_px_sample_materials);
 
 			physics::bc_shape l_terrain_shape;

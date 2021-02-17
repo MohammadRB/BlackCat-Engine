@@ -62,7 +62,7 @@ namespace black_cat
 		);
 		m_lights_query = l_query_manager->queue_query
 		(
-			game::bc_scene_light_query(core::bc_enum::or({ game::bc_light_type::direct }))
+			game::bc_scene_light_query(core::bc_enum::mask_or({ game::bc_light_type::direct }))
 		);
 		m_winds_query = l_query_manager->queue_query
 		(
@@ -132,7 +132,7 @@ namespace black_cat
 				1,
 				graphic::bc_format::D32_FLOAT,
 				graphic::bc_resource_usage::gpu_rw,
-				core::bc_enum:: or ({ graphic::bc_resource_view_type::depth_stencil, graphic::bc_resource_view_type::shader })
+				core::bc_enum::mask_or({ graphic::bc_resource_view_type::depth_stencil, graphic::bc_resource_view_type::shader })
 			).as_depth_stencil_texture();
 		auto l_diffuse_map_config = l_resource_configure
 			.as_resource()
@@ -144,7 +144,7 @@ namespace black_cat
 				1,
 				graphic::bc_format::R8G8B8A8_UNORM,
 				graphic::bc_resource_usage::gpu_rw,
-				core::bc_enum:: or ({ graphic::bc_resource_view_type::render_target, graphic::bc_resource_view_type::shader })
+				core::bc_enum::mask_or({ graphic::bc_resource_view_type::render_target, graphic::bc_resource_view_type::shader })
 			).as_render_target_texture();
 		auto l_normal_map_config = l_resource_configure
 			.as_resource()
@@ -156,7 +156,7 @@ namespace black_cat
 				1,
 				graphic::bc_format::R8G8B8A8_UNORM,
 				graphic::bc_resource_usage::gpu_rw,
-				core::bc_enum:: or ({ graphic::bc_resource_view_type::render_target, graphic::bc_resource_view_type::shader })
+				core::bc_enum::mask_or({ graphic::bc_resource_view_type::render_target, graphic::bc_resource_view_type::shader })
 			).as_render_target_texture();
 
 		auto l_depth_stencil_view_config = l_resource_configure

@@ -1,12 +1,29 @@
-/*
- * Copyright (c) 2008-2015, NVIDIA CORPORATION.  All rights reserved.
- *
- * NVIDIA CORPORATION and its licensors retain all intellectual property
- * and proprietary rights in and to this software, related documentation
- * and any modifications thereto.  Any use, reproduction, disclosure or
- * distribution of this software and related documentation without an express
- * license agreement from NVIDIA CORPORATION is strictly prohibited.
- */
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -19,7 +36,7 @@
 #include "PxPhysXConfig.h"
 #include "common/PxBase.h"
 
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 namespace physx
 {
 #endif
@@ -31,7 +48,7 @@ Two drive models are currently supported. in the TARGET model, the drive spring 
 as the rotation vector from the relative quaternion beetween child and parent, and the target quaternion.
 
 In the ERROR model, the drive spring displacement will be taken directly from the imaginary part of the relative
-quaternion. This drive model requires more computation on the part of the application, but allows driving the joing
+quaternion. This drive model requires more computation on the part of the application, but allows driving the joint
 with a spring displacement that is more than a complete rotation.
 
 @see PxArticulationJoint
@@ -286,24 +303,27 @@ public:
 
 	Note that very small or highly elliptical limit cones may result in jitter.
 
-	\param[in] yLimit the allowed extent of rotation around the y-axis
 	\param[in] zLimit the allowed extent of rotation around the z-axis
+	\param[in] yLimit the allowed extent of rotation around the y-axis
 	<b> Range:</b> ( (0, Pi), (0, Pi) )
 	<b> Default:</b> (Pi/4, Pi/4)
-	*/
 
-	virtual		void			setSwingLimit(PxReal yLimit, PxReal zLimit) = 0;
+	\note Please note the order of zLimit and yLimit. 
+	*/
+	virtual		void			setSwingLimit(PxReal zLimit, PxReal yLimit) = 0;
 
 
 	/**
 	\brief get the extents for the swing limit cone
-	
-	\param[out] yLimit the allowed extent of rotation around the y-axis
+
 	\param[out] zLimit the allowed extent of rotation around the z-axis
+	\param[out] yLimit the allowed extent of rotation around the y-axis
+
+	\note Please note the order of zLimit and yLimit.
 
 	@see setSwingLimit()
 	*/
-	virtual		void			getSwingLimit(PxReal &yLimit, PxReal &zLimit) const = 0;
+	virtual		void			getSwingLimit(PxReal& zLimit, PxReal& yLimit) const = 0;
 
 
 
@@ -467,10 +487,10 @@ protected:
 	PX_INLINE					PxArticulationJoint(PxType concreteType, PxBaseFlags baseFlags) : PxBase(concreteType, baseFlags) {}
 	PX_INLINE					PxArticulationJoint(PxBaseFlags baseFlags) : PxBase(baseFlags)	{}
 	virtual						~PxArticulationJoint() {}
-	virtual		bool			isKindOf(const char* name)	const		{	return !strcmp("PxArticulationJoint", name) || PxBase::isKindOf(name); }
+	virtual		bool			isKindOf(const char* name)	const		{	return !::strcmp("PxArticulationJoint", name) || PxBase::isKindOf(name); }
 };
 
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 } // namespace physx
 #endif
 

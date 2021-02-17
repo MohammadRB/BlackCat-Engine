@@ -444,7 +444,7 @@ namespace black_cat
 				graphic::bc_constant_buffer_parameter
 				(
 					1,
-					core::bc_enum:: or ({graphic::bc_shader_type::vertex, graphic::bc_shader_type::pixel}),
+					core::bc_enum::mask_or({graphic::bc_shader_type::vertex, graphic::bc_shader_type::pixel}),
 					l_material_ptr->get_parameters_cbuffer()
 				)
 			}

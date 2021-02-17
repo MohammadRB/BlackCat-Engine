@@ -56,7 +56,7 @@ namespace black_cat
 					1,
 					graphic::bc_format::R32_FLOAT,
 					graphic::bc_resource_usage::gpu_rw,
-					core::bc_enum::or({ graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered })
+					core::bc_enum::mask_or({ graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered })
 				)
 				.as_normal_texture();
 			auto l_view_config = graphic::bc_graphic_resource_builder()
@@ -79,7 +79,7 @@ namespace black_cat
 					1,
 					graphic::bc_format::R16G16B16A16_UINT,
 					graphic::bc_resource_usage::gpu_rw,
-					core::bc_enum::or({ graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered })
+					core::bc_enum::mask_or({ graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered })
 				)
 				.as_normal_texture();
 			auto l_view_config = graphic::bc_graphic_resource_builder()

@@ -44,6 +44,7 @@ namespace black_cat
 			physics::bc_rigid_static& p_rigid_static, 
 			const bc_height_map_component& p_height_map)
 		{
+			const auto& l_height_map = p_height_map.get_height_map();
 			const auto l_px_height_field = p_height_map.get_height_map().get_px_height_field();
 			const auto l_px_height_field_shape = physics::bc_shape_height_field
 			(
@@ -51,9 +52,20 @@ namespace black_cat
 				p_height_map.get_height_map().get_xz_multiplier(), 
 				get_height_field_y_scale()
 			);
-			const auto l_height_field_material = p_material_manager.get_default_collider_material();
+			const auto l_px_height_field_materials = core::bc_vector_frame<physics::bc_material>(l_height_map.get_materials_count());
 
-			p_rigid_static.create_shape(l_px_height_field_shape, l_height_field_material.m_px_material)
+			std::transform
+			(
+				l_height_map.get_materials(),
+				l_height_map.get_materials() + l_height_map.get_materials_count(),
+				std::begin(l_px_height_field_materials),
+				[](const bc_height_map_material& p_material)
+				{
+					return p_material.m_collider_material.m_px_material;
+				}
+			);
+
+			p_rigid_static.create_shape(l_px_height_field_shape, l_px_height_field_materials.data(), l_height_map.get_materials_count())
 			              .set_query_group(static_cast< physics::bc_query_group >(bc_query_group::terrain));
 		}
 

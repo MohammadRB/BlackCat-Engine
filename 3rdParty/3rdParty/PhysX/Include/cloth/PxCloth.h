@@ -1,12 +1,29 @@
-/*
- * Copyright (c) 2008-2015, NVIDIA CORPORATION.  All rights reserved.
- *
- * NVIDIA CORPORATION and its licensors retain all intellectual property
- * and proprietary rights in and to this software, related documentation
- * and any modifications thereto.  Any use, reproduction, disclosure or
- * distribution of this software and related documentation without an express
- * license agreement from NVIDIA CORPORATION is strictly prohibited.
- */
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -25,7 +42,7 @@
 #include "cloth/PxClothTypes.h"
 #include "cloth/PxClothCollisionData.h"
 
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 namespace physx
 {
 #endif
@@ -36,8 +53,9 @@ class PxScene;
 \brief Solver configuration parameters for the vertical and horizontal stretch phase types.
 \see PxCloth.setStretchConfig()
 \see PxClothFabric for information on actual phase data in cloth fabric
+\deprecated The PhysX cloth feature has been deprecated in PhysX version 3.4.1
 */
-struct PxClothStretchConfig
+struct PX_DEPRECATED PxClothStretchConfig
 {
 	/**
 	\brief Stiffness of the stretch constraints.
@@ -87,8 +105,9 @@ struct PxClothStretchConfig
 \brief Solver configuration parameters for the tether phases.
 \see PxCloth.setTetherConfig()
 \see PxClothFabric for information on actual tether constraints in cloth fabric.
+\deprecated The PhysX cloth feature has been deprecated in PhysX version 3.4.1
 */
-struct PxClothTetherConfig
+struct PX_DEPRECATED PxClothTetherConfig
 {
 	/**
 	\brief Stiffness of the tether constraints.
@@ -119,8 +138,9 @@ struct PxClothTetherConfig
 \brief Solver configuration parameters for the tether phases.
 \see PxCloth.setTetherConfig()
 \see PxClothFabric for information on actual tether constraints in cloth fabric.
+\deprecated The PhysX cloth feature has been deprecated in PhysX version 3.4.1
 */
-struct PxClothMotionConstraintConfig
+struct PX_DEPRECATED PxClothMotionConstraintConfig
 {
 	/**
 	\brief Scale of motion constraint radii.
@@ -167,9 +187,11 @@ These shapes are all treated separately to the main PhysX rigid body scene.
 \arg Virtual particles can be used to improve collision at a finer scale than the cloth sampling.
 \arg Motion and separation constraints are used to limit the particle movement within or outside of a sphere.
 
+\deprecated The PhysX cloth feature has been deprecated in PhysX version 3.4.1
+
 @see PxPhysics.createCloth
 */
-class PxCloth : public PxActor
+class PX_DEPRECATED PxCloth : public PxActor
 {
 public:
 	/**
@@ -208,7 +230,7 @@ public:
 	Requesting multiple concurrent read-only locks is supported, but no other lock may be active
 	when requesting a write lock.
 	
-	If PxDataAccessFlag::eDEVICE is set in flags then the returned pointers will be to GPU 
+	If PxDataAccessFlag::eDEVICE is set in flags then the returned pointers will be to CUDA 
 	device memory, this can be used for direct interop with graphics APIs. Note that these pointers
 	should only be considered valid until PxClothParticleData::unlock() is called and should not
 	be stored. PxDataAccessFlag::eDEVICE implies read and write access, and changing the 
@@ -445,6 +467,31 @@ public:
 	\return Number of particle accelerations (same as getNbParticles() if enabled, 0 otherwise).
 	*/
 	virtual PxU32 getNbParticleAccelerations() const = 0; 
+
+	/**
+	\brief Returns the velocity of the wind affecting the fabric's triangles.
+	*/
+	virtual PxVec3 getWindVelocity() const = 0;
+	/**
+	\brief Sets the velocity of the wind affecting the fabric's triangles.
+	*/
+	virtual void setWindVelocity(PxVec3) = 0;
+	/**
+	\brief Returns the coefficient of the air drag on the fabric's triangles.
+	*/
+	virtual PxReal getWindDrag() const = 0;
+	/**
+	\brief Sets the coefficient of the air drag on the fabric's triangles.
+	*/
+	virtual void setWindDrag(PxReal) = 0;
+	/**
+	\brief Returns the coefficient of the air lift on the fabric's triangles.
+	*/
+	virtual PxReal getWindLift() const = 0;
+	/**
+	\brief Sets the coefficient of the air lift on the fabric's triangles.
+	*/
+	virtual void setWindLift(PxReal) = 0;
 
 	/// @}
 
@@ -951,13 +998,10 @@ protected:
 	PX_INLINE PxCloth(PxType concreteType, PxBaseFlags baseFlags) : PxActor(concreteType, baseFlags) {}
 	PX_INLINE PxCloth(PxBaseFlags baseFlags) : PxActor(baseFlags) {}
 	virtual ~PxCloth() {}
-	virtual bool isKindOf(const char* name)	const {	return !strcmp("PxCloth", name) || PxActor::isKindOf(name); }
+	virtual bool isKindOf(const char* name)	const {	return !::strcmp("PxCloth", name) || PxActor::isKindOf(name); }
 };
 
-PX_DEPRECATED PX_INLINE PxCloth*		PxActor::isCloth()       { return is<PxCloth>(); }
-PX_DEPRECATED PX_INLINE const PxCloth*	PxActor::isCloth() const { return is<PxCloth>(); }
-
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 } // namespace physx
 #endif
 

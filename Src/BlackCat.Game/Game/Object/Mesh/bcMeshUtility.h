@@ -19,6 +19,7 @@ namespace black_cat
 	namespace game
 	{
 		class bc_mesh_node;
+		class bc_render_state_buffer;
 		class bc_render_system;
 
 		class BC_GAME_DLL bc_mesh_utility

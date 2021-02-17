@@ -154,17 +154,17 @@ namespace black_cat
 
 			for(core::bc_json_object<_bc_mesh_material_desc>& l_material_desc : l_material_json->m_mesh_materials)
 			{
-				_bc_mesh_material_file_description l_material_description;
-				l_material_description.m_diffuse_color = *l_material_desc->m_diffuse_color;
-				l_material_description.m_specular_intensity = *l_material_desc->m_specular_intensity;
-				l_material_description.m_specular_power = *l_material_desc->m_specular_power;
-				l_material_description.m_diffuse_map_name = l_material_desc->m_diffuse_map->c_str();
-				l_material_description.m_normal_map_name = l_material_desc->m_normal_map->c_str();
-				l_material_description.m_specular_map_name = l_material_desc->m_specular_map->c_str();
+				_bc_mesh_material_entry l_material;
+				l_material.m_diffuse_color = *l_material_desc->m_diffuse_color;
+				l_material.m_specular_intensity = *l_material_desc->m_specular_intensity;
+				l_material.m_specular_power = *l_material_desc->m_specular_power;
+				l_material.m_diffuse_map_name = l_material_desc->m_diffuse_map->c_str();
+				l_material.m_normal_map_name = l_material_desc->m_normal_map->c_str();
+				l_material.m_specular_map_name = l_material_desc->m_specular_map->c_str();
 
 				m_mesh_material_descriptions.insert(mesh_material_desc_map::value_type
 				(
-					string_hash()(l_material_desc->m_name->c_str()), std::move(l_material_description)
+					string_hash()(l_material_desc->m_name->c_str()), std::move(l_material)
 				));
 			}
 
@@ -176,11 +176,11 @@ namespace black_cat
 					*l_material_desc->m_dynamic_friction,
 					*l_material_desc->m_restitution
 				);
-				bc_collider_material l_material_description(l_material_desc->m_name->c_str(), std::move(l_px_material), l_material_desc->m_particle->c_str());
+				bc_collider_material l_material(l_material_desc->m_name->c_str(), std::move(l_px_material), l_material_desc->m_particle->c_str());
 
 				m_collider_materials.insert(collider_material_map::value_type
 				(
-					string_hash()(l_material_description.get_particle_name()), std::move(l_material_description)
+					string_hash()(l_material.get_name()), std::move(l_material)
 				));
 			}
 		}
@@ -365,7 +365,7 @@ namespace black_cat
 			const auto l_hash = string_hash()(p_name);
 			auto l_material = find_collider_material(l_hash);
 
-			if(l_hash == string_hash()("default"))
+			if(l_material.m_hash == string_hash()("default"))
 			{
 				const auto l_warning_msg = core::bc_estring_frame(bcL("No collider material was found for material with name ")) +
 						core::bc_to_estring_frame(p_name) +

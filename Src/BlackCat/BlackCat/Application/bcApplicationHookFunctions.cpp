@@ -73,7 +73,7 @@ namespace black_cat
 #ifdef BC_DEBUG
 		core::bc_get_service<core::bc_logger>()->register_listener
 		(
-			core::bc_enum:: or ({ core::bc_log_type::debug, core::bc_log_type::error }),
+			core::bc_enum::mask_or({ core::bc_log_type::debug, core::bc_log_type::error }),
 			core::bc_make_unique< platform::bc_ide_logger >(core::bc_alloc_type::program)
 		);
 #endif
@@ -227,6 +227,7 @@ namespace black_cat
 	void bc_close_engine_services()
 	{
 		core::bc_service_manager::close();
+		
 #ifdef BC_MEMORY_ENABLE
 #ifdef BC_MEMORY_LEAK_DETECTION
 		const bcUINT32 l_leak_counts = core::bc_memory_manager::get().report_memory_leaks();

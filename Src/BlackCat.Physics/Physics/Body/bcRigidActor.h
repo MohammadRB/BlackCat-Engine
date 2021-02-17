@@ -60,7 +60,7 @@ namespace black_cat
 			 */
 			bc_shape create_shape(const bc_shape_geometry& p_shape,
 				const bc_material& p_material,
-				bc_shape_flag p_flags = core::bc_enum::or({ bc_shape_flag::simulation, bc_shape_flag::query, bc_shape_flag::visualization }));
+				bc_shape_flag p_flags = core::bc_enum::mask_or({ bc_shape_flag::simulation, bc_shape_flag::query, bc_shape_flag::visualization }));
 
 			/**
 			 * \brief Add a new shape to actor shapes collection
@@ -74,7 +74,7 @@ namespace black_cat
 			bc_shape create_shape(const bc_shape_geometry& p_shape,
 				const bc_material* p_materials,
 				bcUINT32 p_material_count,
-				bc_shape_flag p_flags = core::bc_enum::or({ bc_shape_flag::simulation, bc_shape_flag::query, bc_shape_flag::visualization }));
+				bc_shape_flag p_flags = core::bc_enum::mask_or({ bc_shape_flag::simulation, bc_shape_flag::query, bc_shape_flag::visualization }));
 
 			/**
 			 * \brief Attach a shape to actor

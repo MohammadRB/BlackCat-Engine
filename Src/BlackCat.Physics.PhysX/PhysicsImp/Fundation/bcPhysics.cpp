@@ -65,7 +65,7 @@ namespace black_cat
 		{
 			m_pack.m_px_foundation = p_other.m_pack.m_px_foundation;
 #ifdef BC_DEBUG
-			m_pack.m_px_profile = p_other.m_pack.m_px_profile;
+			m_pack.m_px_pvd = p_other.m_pack.m_px_pvd;
 #endif
 			m_pack.m_px_physics = p_other.m_pack.m_px_physics;
 			m_pack.m_px_cooking = p_other.m_pack.m_px_cooking;
@@ -74,7 +74,7 @@ namespace black_cat
 
 			p_other.m_pack.m_px_foundation = nullptr;
 #ifdef BC_DEBUG
-			p_other.m_pack.m_px_profile = nullptr;
+			p_other.m_pack.m_px_pvd = nullptr;
 #endif
 			p_other.m_pack.m_px_physics = nullptr;
 			p_other.m_pack.m_px_cooking = nullptr;
@@ -678,41 +678,28 @@ namespace black_cat
 			core::bc_unique_ptr< bci_task_dispatcher > p_task_dispatcher,
 			core::bc_unique_ptr< bci_logger > p_logger)
 		{
-			physx::PxTolerancesScale l_px_scale;
+			const physx::PxTolerancesScale l_px_scale;
 
 			m_pack.m_allocator = core::bc_make_unique< bc_px_allocator >(std::move(p_allocator));
 			m_pack.m_task_dispatcher = core::bc_make_unique< bc_px_task_dispatcher >(std::move(p_task_dispatcher));
 			m_pack.m_logger = core::bc_make_unique< bc_px_logger >(std::move(p_logger));
 
-			m_pack.m_px_foundation = PxCreateFoundation(PX_PHYSICS_VERSION, *m_pack.m_allocator, *m_pack.m_logger);
+			m_pack.m_px_foundation = PxCreateFoundation(PX_FOUNDATION_VERSION, *m_pack.m_allocator, *m_pack.m_logger);
 
 			if (!m_pack.m_px_foundation)
 			{
 				throw bc_physics_exception(0, "Failed to create PhysX foundation");
 			}
 
-			bool l_track_memory = false;
 #ifdef BC_DEBUG
-			l_track_memory = true;
-			m_pack.m_px_profile = &physx::PxProfileZoneManager::createProfileZoneManager(m_pack.m_px_foundation);
+			m_pack.m_px_pvd = physx::PxCreatePvd(*m_pack.m_px_foundation);
+			m_pack.m_px_pvd_transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
+			m_pack.m_px_pvd->connect(*m_pack.m_px_pvd_transport, physx::PxPvdInstrumentationFlag::eDEBUG);
 
-			if (!m_pack.m_px_profile)
-			{
-				throw bc_physics_exception(0, "Failed to create PhysX profile");
-			}
+			m_pack.m_px_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_pack.m_px_foundation, l_px_scale, true, m_pack.m_px_pvd);
+#else
+			m_pack.m_px_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_pack.m_px_foundation, l_px_scale, false, nullptr);
 #endif
-
-			m_pack.m_px_physics = PxCreatePhysics
-			(
-				PX_PHYSICS_VERSION,
-				*m_pack.m_px_foundation,
-				l_px_scale,
-				l_track_memory
-#ifdef BC_DEBUG
-				,
-				m_pack.m_px_profile
-#endif
-			);
 
 			if (!m_pack.m_px_physics)
 			{
@@ -731,32 +718,16 @@ namespace black_cat
 				throw bc_physics_exception(0, "Failed to create PhysX cooking");
 			}
 
-			if (!PxInitExtensions(*m_pack.m_px_physics))
+#ifdef BC_DEBUG
+			if (!PxInitExtensions(*m_pack.m_px_physics, m_pack.m_px_pvd))
+#else
+			if (!PxInitExtensions(*m_pack.m_px_physics, nullptr))
+#endif
 			{
 				throw bc_physics_exception(0, "Failed to create PhysX extensions");
 			}
-
+			
 			PxRegisterHeightFields(*m_pack.m_px_physics);
-
-#ifdef BC_DEBUG
-			if (m_pack.m_px_physics->getPvdConnectionManager() != nullptr)
-			{
-				const bcCHAR* l_pvd_host_ip = "127.0.0.1";
-				const bcINT32 l_port = 5425;
-				const bcUINT32 l_timeout = 10000;
-				const physx::PxVisualDebuggerConnectionFlags l_connection_flags = physx::PxVisualDebuggerExt::getAllConnectionFlags();
-
-				m_pack.m_visualizer = physx::PxVisualDebuggerExt::createConnection
-				(
-					m_pack.m_px_physics->getPvdConnectionManager(),
-					l_pvd_host_ip,
-					l_port,
-					l_timeout,
-					l_connection_flags
-				);
-				m_pack.m_px_physics->getVisualDebugger()->setVisualDebuggerFlag(physx::PxVisualDebuggerFlag::eTRANSMIT_SCENEQUERIES, true);
-			}
-#endif
 		}
 
 		template<>
@@ -766,10 +737,10 @@ namespace black_cat
 			m_pack.m_px_cooking->release();
 			m_pack.m_px_physics->release();
 #ifdef BC_DEBUG
-			m_pack.m_px_profile->release();
-			if (m_pack.m_visualizer)
+			m_pack.m_px_pvd->release();
+			if (m_pack.m_px_pvd_transport)
 			{
-				m_pack.m_visualizer->release();
+				m_pack.m_px_pvd_transport->release();
 			}
 #endif
 			m_pack.m_px_foundation->release();

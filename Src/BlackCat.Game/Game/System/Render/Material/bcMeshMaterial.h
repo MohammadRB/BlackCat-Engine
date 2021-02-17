@@ -8,8 +8,6 @@
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "Game/bcExport.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventAddedToScene.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventAddedToScene.h"
 
 namespace black_cat
 {

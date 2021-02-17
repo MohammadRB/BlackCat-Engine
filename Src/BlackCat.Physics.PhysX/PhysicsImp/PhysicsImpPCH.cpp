@@ -24,7 +24,8 @@ namespace black_cat
 			static_cast< bcUINT32 >(bc_hit_flag::mesh_multiple) == physx::PxHitFlag::eMESH_MULTIPLE &&
 			static_cast< bcUINT32 >(bc_hit_flag::mesh_any) == physx::PxHitFlag::eMESH_ANY &&
 			static_cast< bcUINT32 >(bc_hit_flag::mesh_both_side) == physx::PxHitFlag::eMESH_BOTH_SIDES &&
-			static_cast< bcUINT32 >(bc_hit_flag::hit_info) == physx::PxHitFlag::eDEFAULT,
+			static_cast< bcUINT32 >(bc_hit_flag::precise_sweep) == physx::PxHitFlag::ePRECISE_SWEEP &&
+			static_cast< bcUINT32 >(bc_hit_flag::face_index) == physx::PxHitFlag::eFACE_INDEX,
 			"bc_hit_flag value is incompatible with physX values"
 		);
 	}

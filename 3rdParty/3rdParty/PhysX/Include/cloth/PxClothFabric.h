@@ -1,12 +1,29 @@
-/*
- * Copyright (c) 2008-2015, NVIDIA CORPORATION.  All rights reserved.
- *
- * NVIDIA CORPORATION and its licensors retain all intellectual property
- * and proprietary rights in and to this software, related documentation
- * and any modifications thereto.  Any use, reproduction, disclosure or
- * distribution of this software and related documentation without an express
- * license agreement from NVIDIA CORPORATION is strictly prohibited.
- */
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -20,7 +37,7 @@
 
 #include "common/PxBase.h"
 
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 namespace physx
 {
 #endif
@@ -28,8 +45,9 @@ namespace physx
 /**
 \brief Describe type of phase in cloth fabric.
 \see PxClothFabric for an explanation of concepts on phase and set.
+\deprecated The PhysX cloth feature has been deprecated in PhysX version 3.4.1
 */
-struct PxClothFabricPhaseType
+struct PX_DEPRECATED PxClothFabricPhaseType
 {
 	enum Enum
 	{
@@ -45,8 +63,9 @@ struct PxClothFabricPhaseType
 /**
 \brief References a set of constraints that can be solved in parallel.
 \see PxClothFabric for an explanation of the concepts on phase and set.
+\deprecated The PhysX cloth feature has been deprecated in PhysX version 3.4.1
 */
-struct PxClothFabricPhase
+struct PX_DEPRECATED PxClothFabricPhase
 {
 	PxClothFabricPhase(PxClothFabricPhaseType::Enum type = 
 		PxClothFabricPhaseType::eINVALID, PxU32 index = 0);
@@ -71,8 +90,9 @@ PX_INLINE PxClothFabricPhase::PxClothFabricPhase(
 /**
 \brief References all the data required to create a fabric.
 \see PxPhysics.createClothFabric(), PxClothFabricCooker.getDescriptor()
+\deprecated The PhysX cloth feature has been deprecated in PhysX version 3.4.1
 */
-class PxClothFabricDesc
+class PX_DEPRECATED PxClothFabricDesc
 {
 public:
 	/** \brief The number of particles needed when creating a PxCloth instance from the fabric. */
@@ -99,6 +119,11 @@ public:
 	const PxU32* tetherAnchors;
 	/** \brief Array of rest distance between tethered particle pairs. See #PxClothFabric.getTetherLengths(). */
 	const PxReal* tetherLengths;
+
+	/** \brief Array of triangle indices used to calculate air friction. */
+	const PxU32* triangles;
+	/** \brief The number of triangles in the triangles array. (1 triangle means 3 indices in the array) */
+	PxU32 nbTriangles;
 
 	/**
 	\brief constructor sets to default.
@@ -130,7 +155,8 @@ PX_INLINE void PxClothFabricDesc::setToDefault()
 PX_INLINE bool PxClothFabricDesc::isValid() const
 {
 	return nbParticles && nbPhases && phases && restvalues && nbSets 
-		&& sets && indices && (!nbTethers || (tetherAnchors && tetherLengths));
+		&& sets && indices && (!nbTethers || (tetherAnchors && tetherLengths))
+		&& (!nbTriangles || triangles);
 }
 
 
@@ -151,16 +177,17 @@ The tether anchor is the index of the other particle, and the tether length is t
 these two particles are allowed to be away from each other. A tether constraint is momentum conserving 
 if the anchor particle has infinite mass (zero inverse weight).
 
+\deprecated The PhysX cloth feature has been deprecated in PhysX version 3.4.1
+
 @see The fabric structure can be created from a mesh using PxClothFabricCreate. Alternatively, the fabric data can 
 be saved into a stream (see PxClothFabricCooker.save()) and later created from the stream using PxPhysics.createClothFabric(PxInputStream&).
 */
-class PxClothFabric	: public PxBase
+class PX_DEPRECATED PxClothFabric	: public PxBase
 {
 public:
 	/**
-	\brief Release the cloth fabric.
-	\details Releases the application's reference to the cloth fabric.
-	The fabric is destroyed when the application's reference is released and all cloth instances referencing the fabric are destroyed.
+	\brief Decrements the cloth fabric's reference count, and releases it if the new reference count is zero.
+	
 	\see PxPhysics.createClothFabric()
 	*/
 	virtual void release() = 0;
@@ -280,14 +307,6 @@ public:
     */
 	virtual PxU32 getTetherLengths(PxReal* userLengthBuffer, PxU32 bufferSize) const = 0;
 
-	/**
-	\deprecated
-	\brief Returns the type of a phase.
-	\param [in] phaseIndex The index of the phase to return the type for.
-	\return The phase type as PxClothFabricPhaseType::Enum.
-    \note If phase index is invalid, PxClothFabricPhaseType::eINVALID is returned.
-    */
-	PX_DEPRECATED virtual PxClothFabricPhaseType::Enum getPhaseType(PxU32 phaseIndex) const = 0;
 
     /**
     \brief Scale all rest values of length dependent constraints.
@@ -303,6 +322,14 @@ public:
 	*/
 	virtual	PxU32 getReferenceCount() const = 0;
 
+	/**
+	\brief Acquires a counted reference to a cloth fabric.
+
+	This method increases the reference count of the cloth fabric by 1. Decrement the reference count by calling release()
+	*/
+	virtual void acquireReference() = 0;
+
+
 	virtual	const char*	getConcreteTypeName() const	{ return "PxClothFabric";	}
 
 protected:
@@ -310,10 +337,10 @@ protected:
 	PX_INLINE PxClothFabric(PxType concreteType, PxBaseFlags baseFlags) : PxBase(concreteType, baseFlags) {}
 	PX_INLINE PxClothFabric(PxBaseFlags baseFlags) : PxBase(baseFlags) {}
 	virtual	~PxClothFabric() {}
-	virtual	bool isKindOf(const char* name) const { return !strcmp("PxClothFabric", name) || PxBase::isKindOf(name); }
+	virtual	bool isKindOf(const char* name) const { return !::strcmp("PxClothFabric", name) || PxBase::isKindOf(name); }
 };
 
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 } // namespace physx
 #endif
 

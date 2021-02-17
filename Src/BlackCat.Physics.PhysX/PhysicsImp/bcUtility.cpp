@@ -12,6 +12,7 @@ namespace black_cat
 	{
 		physx::PxHeightFieldDesc bc_convert_to_px_height_field(const bc_height_field_desc& p_desc, physx::PxHeightFieldSample* p_px_sample_buffer)
 		{
+			bool l_has_invalid_material = false;
 			const bool l_has_material = p_desc.m_samples_material.m_data;
 			bcUINT32 l_source_index = 0;
 
@@ -25,7 +26,7 @@ namespace black_cat
 					const bc_material_index l_material = l_has_material ? p_desc.m_samples_material.at(l_source_index) : 0;
 					if(l_material > 127)
 					{
-						core::bc_get_service<core::bc_logger>()->log_info(bcL("Terrain material indices higher that 127 is not supported."));
+						l_has_invalid_material = true;
 					}
 					
 					const physx::PxBitAndByte l_material_index(l_material);
@@ -47,6 +48,11 @@ namespace black_cat
 			l_px_desc.samples.data = p_px_sample_buffer;
 			l_px_desc.samples.stride = sizeof(physx::PxHeightFieldSample);
 
+			if(l_has_invalid_material)
+			{
+				core::bc_get_service<core::bc_logger>()->log_debug(bcL("Terrain material indices higher that 127 is not supported."));
+			}
+			
 			return l_px_desc;
 		}
 

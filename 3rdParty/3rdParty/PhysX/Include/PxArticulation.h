@@ -1,12 +1,29 @@
-/*
- * Copyright (c) 2008-2015, NVIDIA CORPORATION.  All rights reserved.
- *
- * NVIDIA CORPORATION and its licensors retain all intellectual property
- * and proprietary rights in and to this software, related documentation
- * and any modifications thereto.  Any use, reproduction, disclosure or
- * distribution of this software and related documentation without an express
- * license agreement from NVIDIA CORPORATION is strictly prohibited.
- */
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -19,7 +36,7 @@
 #include "PxPhysXConfig.h"
 #include "common/PxBase.h"
 
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 namespace physx
 {
 #endif
@@ -45,7 +62,7 @@ protected:
 Articulations are more expensive to simulate than the equivalent collection of
 PxRigidDynamic and PxJoint structures, but because the dynamics solver treats
 each articulation as a single object, they are much less prone to separation and
-have better support for actuation.
+have better support for actuation. An articulation may have at most 64 links.
 
 @see PxArticulationJoint PxArticulationLink PxPhysics.createArticulation
 */
@@ -259,7 +276,7 @@ public:
 
 	<b>Default:</b> 0.01 * PxTolerancesScale::speed * PxTolerancesScale::speed
 
-	\param[in] threshold Energy below which an actor may participate in stabilization. <b>Range:</b> (0,inf]
+	\param[in] threshold Energy below which an actor may participate in stabilization. <b>Range:</b> [0,inf)
 
 	@see  getStabilizationThreshold() PxSceneFlag::eENABLE_STABILIZATION
 	*/
@@ -332,10 +349,10 @@ public:
 	\brief adds a link to the articulation with default attribute values.
 
 	\param[in] parent the parent link of the articulation. Should be NULL if (and only if) this is the root link
-	\param[in] pose the pose of the new link
+	\param[in] pose the initial pose of the new link. Must be a valid transform
 
 	\return the new link, or NULL if the link cannot be created because the articulation has reached
-	its maximum link count
+	its maximum link count (currently 64).
 	
 	@see PxArticulationLink
 	*/
@@ -355,13 +372,14 @@ public:
 	\param[in] userBuffer buffer into which to write an array of articulation link pointers
 	\param[in] bufferSize the size of the buffer. If this is not large enough to contain all the pointers to links,
 	only as many as will fit are written.
+	\param[in] startIndex Index of first link pointer to be retrieved
 
 	\return the number of links written into the buffer.
 
-	@see PxsArticulationLink
+	@see ArticulationLink
 	*/
 
-	virtual		PxU32			getLinks(PxArticulationLink** userBuffer, PxU32 bufferSize) const = 0;
+	virtual		PxU32			getLinks(PxArticulationLink** userBuffer, PxU32 bufferSize, PxU32 startIndex=0) const = 0;
 
 	/**
 	\brief Sets a name string for the object that can be retrieved with getName().
@@ -428,8 +446,6 @@ public:
 	\param[in] driveCache the drive cache to update
 	\param[in] compliance the compliance value to use at all joints of the articulation. 
 	\param[in] driveIterations the number of iterations to use to evaluate the drive strengths
-
-	\return a drive cache
 
 	@see releaseDriveCache createDriveCache applyImpulse computeImpulseResponse
 	
@@ -501,12 +517,12 @@ protected:
 	PX_INLINE					PxArticulation(PxType concreteType, PxBaseFlags baseFlags) : PxBase(concreteType, baseFlags) {}
 	PX_INLINE					PxArticulation(PxBaseFlags baseFlags) : PxBase(baseFlags) {}
 	virtual						~PxArticulation() {}
-	virtual		bool			isKindOf(const char* name) const { return !strcmp("PxArticulation", name) || PxBase::isKindOf(name); }
+	virtual		bool			isKindOf(const char* name) const { return !::strcmp("PxArticulation", name) || PxBase::isKindOf(name); }
 
 
 };
 
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 } // namespace physx
 #endif
 

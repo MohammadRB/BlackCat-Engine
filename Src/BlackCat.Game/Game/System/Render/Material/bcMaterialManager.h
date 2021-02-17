@@ -27,7 +27,7 @@ namespace black_cat
 		class bc_render_system;
 		class bc_physics_system;
 
-		class _bc_mesh_material_file_description
+		class _bc_mesh_material_entry
 		{
 		public:
 			core::bc_vector4f m_diffuse_color;
@@ -54,7 +54,7 @@ namespace black_cat
 		{
 		private:
 			using string_hash = std::hash< const bcCHAR* >;
-			using mesh_material_desc_map = core::bc_unordered_map_program< string_hash::result_type, _bc_mesh_material_file_description >;
+			using mesh_material_desc_map = core::bc_unordered_map_program< string_hash::result_type, _bc_mesh_material_entry >;
 			using collider_material_map = core::bc_unordered_map_program< string_hash::result_type, bc_collider_material >;
 			using mesh_material_map = core::bc_unordered_map< string_hash::result_type, core::bc_unique_ptr< bc_mesh_material > >;
 			using default_diffuse_map = core::bc_unordered_map_program< bcUINT32, graphic::bc_texture2d_content_ptr >;

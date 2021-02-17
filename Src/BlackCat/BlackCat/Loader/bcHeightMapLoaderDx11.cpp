@@ -126,7 +126,7 @@ namespace black_cat
 		graphic::bc_resource_view_ptr p_chunk_info_view,
 		graphic::bc_resource_view_ptr p_chunk_info_unordered_view,
 		graphic::bc_buffer_ptr p_material_properties_buffer,
-		core::bc_vector<game::bc_mesh_material_ptr> p_materials,
+		core::bc_vector<game::bc_height_map_material> p_materials,
 		physics::bc_height_field_ref p_px_height_map,
 		void* p_px_height_map_deserialize_buffer)
 		: bc_height_map
@@ -139,6 +139,7 @@ namespace black_cat
 			p_render_state,
 			std::move(p_vertex_buffer),
 			std::move(p_index_buffer),
+			std::move(p_materials),
 			std::move(p_px_height_map),
 			p_px_height_map_deserialize_buffer
 		),
@@ -152,8 +153,7 @@ namespace black_cat
 		m_chunk_info_buffer(std::move(p_chunk_info_buffer)),
 		m_chunk_info_view(std::move(p_chunk_info_view)),
 		m_chunk_info_unordered_view(std::move(p_chunk_info_unordered_view)),
-		m_material_properties_buffer(std::move(p_material_properties_buffer)),
-		m_materials(std::move(p_materials))
+		m_material_properties_buffer(std::move(p_material_properties_buffer))
 	{
 	}
 
@@ -257,6 +257,7 @@ namespace black_cat
 		auto& l_physics_system = l_game_system->get_physics_system();
 		auto* l_device = &l_render_system.get_device();
 		auto* l_physics = &l_physics_system.get_physics();
+		auto& l_material_manager = l_render_system.get_material_manager();
 		
 		physics::bc_memory_buffer l_px_serialized_buffer = l_physics->read_to_memory_buffer(p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
 		physics::bc_serialize_buffer l_px_deserialized_buffer = l_physics->deserialize(l_px_serialized_buffer);
@@ -318,7 +319,7 @@ namespace black_cat
 		bcFLOAT l_y_multiplier = bc_null_default(l_y_multiplier_value, 512);
 		bcUINT16 l_distance_detail = bc_null_default(l_distance_detail_value, 100);
 		bcUINT16 l_height_detail = bc_null_default(l_height_detail_value, 20);
-		core::bc_vector< std::tuple< core::bc_string, bcFLOAT > > l_material_names; // Name, Scale
+		core::bc_vector< std::tuple< core::bc_string, core::bc_string, bcFLOAT > > l_material_names;
 
 		if (l_material_names_value != nullptr)
 		{
@@ -333,22 +334,28 @@ namespace black_cat
 				{
 					const auto& l_key_value = *p_material.as<core::bc_json_key_value>();
 
-					auto l_name_ite = l_key_value.find("name");
+					auto l_mesh_material_ite = l_key_value.find("mesh_material");
+					auto l_collider_material_ite = l_key_value.find("collider_material");
 					auto l_scale_ite = l_key_value.find("scale");
 
-					core::bc_string l_name;
+					core::bc_string l_mesh_material;
+					core::bc_string l_collider_material;
 					bcFLOAT l_scale = 1;
 
-					if (l_name_ite != std::cend(l_key_value))
+					if (l_mesh_material_ite != std::cend(l_key_value))
 					{
-						l_name = *l_name_ite->second.as< core::bc_string >();
+						l_mesh_material = *l_mesh_material_ite->second.as< core::bc_string >();
+					}
+					if (l_collider_material_ite != std::cend(l_key_value))
+					{
+						l_collider_material = *l_collider_material_ite->second.as< core::bc_string >();
 					}
 					if (l_scale_ite != std::cend(l_key_value))
 					{
 						l_scale = *l_scale_ite->second.as< bcFLOAT >();
 					}
 
-					return std::make_tuple(std::move(l_name), l_scale);
+					return std::make_tuple(std::move(l_mesh_material), std::move(l_collider_material), l_scale);
 				}
 			);
 		}
@@ -421,7 +428,7 @@ namespace black_cat
 		l_parameter.m_distance_detail = l_distance_detail;
 		l_parameter.m_height_detail = l_height_detail;
 		
-		core::bc_vector<game::bc_mesh_material_ptr> l_materials;
+		core::bc_vector<game::bc_height_map_material> l_materials;
 		_bc_material_properties l_material_properties;
 
 		l_materials.reserve(l_material_names.size());
@@ -429,17 +436,21 @@ namespace black_cat
 
 		for (auto& l_material_name : l_material_names)
 		{
-			game::bc_mesh_material_ptr l_material = l_render_system.get_material_manager().load_mesh_material_throw
+			game::bc_mesh_material_ptr l_mesh_material = l_material_manager.load_mesh_material_throw
 			(
-				p_context.get_allocator_alloc_type(), std::get<core::bc_string>(l_material_name).c_str()
+				p_context.get_allocator_alloc_type(), std::get<0>(l_material_name).c_str()
+			);
+			game::bc_collider_material_description l_collider_material = l_material_manager.find_collider_material
+			(
+				std::get<1>(l_material_name).c_str()
 			);
 
-			l_material_properties.m_specular_intensity[l_counter] = l_material->get_specular_intensity();
-			l_material_properties.m_specular_power[l_counter] = l_material->get_specular_power();
+			l_material_properties.m_specular_intensity[l_counter] = l_mesh_material->get_specular_intensity();
+			l_material_properties.m_specular_power[l_counter] = l_mesh_material->get_specular_power();
 			l_material_properties.m_scale[l_counter] = std::get<bcFLOAT>(l_material_name);
 			l_counter++;
 
-			l_materials.push_back(std::move(l_material));
+			l_materials.push_back({ std::move(l_mesh_material), std::move(l_collider_material) });
 		}
 
 		auto l_resource_configure = graphic::bc_graphic_resource_builder();
@@ -469,7 +480,7 @@ namespace black_cat
 				l_width_chunk_count * l_height_chunk_count,
 				sizeof(core::bc_vector3f),
 				graphic::bc_resource_usage::gpu_rw,
-				core::bc_enum::or({graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered})
+				core::bc_enum::mask_or({graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered})
 			)
 			.with_structured_buffer(sizeof(core::bc_vector3f))
 			.as_buffer();
@@ -524,7 +535,7 @@ namespace black_cat
 
 		game::bc_render_state_resource_view_array l_render_state_resource_view_array =
 		{
-			graphic::bc_resource_view_parameter(0, core::bc_enum::or
+			graphic::bc_resource_view_parameter(0, core::bc_enum::mask_or
 			({
 				graphic::bc_shader_type::vertex,
 				graphic::bc_shader_type::hull,
@@ -538,8 +549,8 @@ namespace black_cat
 		bcUINT32 l_resource_view_count = 3;
 		for(auto& l_material : l_materials)
 		{
-			auto l_diffuse_map_parameter = graphic::bc_resource_view_parameter(l_resource_view_count, graphic::bc_shader_type::pixel, l_material->get_diffuse_map_view());
-			auto l_normal_map_parameter = graphic::bc_resource_view_parameter(l_resource_view_count + 1, graphic::bc_shader_type::pixel, l_material->get_normal_map_view());
+			auto l_diffuse_map_parameter = graphic::bc_resource_view_parameter(l_resource_view_count, graphic::bc_shader_type::pixel, l_material.m_mesh_material->get_diffuse_map_view());
+			auto l_normal_map_parameter = graphic::bc_resource_view_parameter(l_resource_view_count + 1, graphic::bc_shader_type::pixel, l_material.m_mesh_material->get_normal_map_view());
 			
 			l_render_state_resource_view_array[l_resource_view_count++] = l_diffuse_map_parameter;
 			l_render_state_resource_view_array[l_resource_view_count++] = l_normal_map_parameter;
@@ -560,14 +571,14 @@ namespace black_cat
 			std::move(l_render_state_resource_view_array),
 			{
 				l_render_system.get_per_object_cbuffer(),
-				graphic::bc_constant_buffer_parameter(0, core::bc_enum::or
+				graphic::bc_constant_buffer_parameter(0, core::bc_enum::mask_or
 				({
 					graphic::bc_shader_type::vertex,
 					graphic::bc_shader_type::hull,
 					graphic::bc_shader_type::domain,
 					graphic::bc_shader_type::pixel
 				}), l_parameter_cbuffer.get()),
-				graphic::bc_constant_buffer_parameter(1, core::bc_enum::or({ graphic::bc_shader_type::pixel }), l_material_properties_cbuffer.get())
+				graphic::bc_constant_buffer_parameter(1, core::bc_enum::mask_or({ graphic::bc_shader_type::pixel }), l_material_properties_cbuffer.get())
 			}
 		);
 
@@ -630,7 +641,7 @@ namespace black_cat
 				1,
 				graphic::bc_format::R32_FLOAT,
 				graphic::bc_resource_usage::gpu_r,
-				core::bc_enum::or({ graphic::bc_resource_view_type::shader })
+				core::bc_enum::mask_or({ graphic::bc_resource_view_type::shader })
 			)
 			.as_normal_texture();
 		auto l_view_config = graphic::bc_graphic_resource_builder()
@@ -654,7 +665,7 @@ namespace black_cat
 				1,
 				graphic::bc_format::R16G16B16A16_UINT,
 				graphic::bc_resource_usage::gpu_r,
-				core::bc_enum::or({ graphic::bc_resource_view_type::shader })
+				core::bc_enum::mask_or({ graphic::bc_resource_view_type::shader })
 			)
 			.as_normal_texture();
 		auto l_view_config = graphic::bc_graphic_resource_builder()

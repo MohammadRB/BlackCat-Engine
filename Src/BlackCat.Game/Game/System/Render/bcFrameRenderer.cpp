@@ -95,7 +95,7 @@ namespace black_cat
 			m_global_cbuffer_parameter = graphic::bc_constant_buffer_parameter
 			(
 				g_render_pass_state_constant_buffer_min_index,
-				core::bc_enum:: or
+				core::bc_enum::mask_or
 				({
 					graphic::bc_shader_type::vertex,
 					graphic::bc_shader_type::hull,
@@ -103,13 +103,13 @@ namespace black_cat
 					graphic::bc_shader_type::geometry,
 					graphic::bc_shader_type::pixel,
 					graphic::bc_shader_type::compute
-					}),
+				}),
 				m_global_cbuffer.get()
 			);
 			m_per_object_cbuffer_parameter = graphic::bc_constant_buffer_parameter
 			(
 				g_render_state_constant_buffer_min_index,
-				core::bc_enum:: or ({ graphic::bc_shader_type::vertex, graphic::bc_shader_type::hull, graphic::bc_shader_type::domain }),
+				core::bc_enum::mask_or({ graphic::bc_shader_type::vertex, graphic::bc_shader_type::hull, graphic::bc_shader_type::domain }),
 				m_per_object_cbuffer.get()
 			);
 		}

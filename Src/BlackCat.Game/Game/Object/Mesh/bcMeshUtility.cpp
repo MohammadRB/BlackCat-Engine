@@ -4,6 +4,7 @@
 
 #include "Core/Utility/bcLogger.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/Object/Mesh/bcMeshUtility.h"
 #include "Game/Object/Mesh/bcSubMesh.h"
@@ -100,7 +101,7 @@ namespace black_cat
 										graphic::bc_constant_buffer_parameter
 										(
 											1,
-											core::bc_enum::or({graphic::bc_shader_type::vertex, graphic::bc_shader_type::pixel}),
+											core::bc_enum::mask_or({graphic::bc_shader_type::vertex, graphic::bc_shader_type::pixel}),
 											l_material->get_parameters_cbuffer()
 										)
 									}
