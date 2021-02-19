@@ -5,7 +5,6 @@
 #include "Core/bcConstant.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcUnorderedMap.h"
-#include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcDelegate.hpp"
 #include "Core/Utility/bcDataDrivenParameter.h"
@@ -16,12 +15,18 @@
 
 namespace black_cat
 {
+	namespace core
+	{
+		class bc_content_stream_manager;
+	}
+	
 	namespace game
 	{
 		struct _bc_entity_data;
 		struct _bc_entity_component_data;
 		struct _bc_entity_component_callbacks;
 		class bc_entity_manager;
+		class bc_game_system;
 
 		template<typename TController>
 		class bc_actor_controller_register
@@ -73,7 +78,7 @@ namespace black_cat
 			using controller_map_type = core::bc_unordered_map_program< string_hash::result_type, actor_controller_create_delegate >;
 
 		public:
-			explicit bc_entity_manager(core::bc_content_stream_manager& p_content_stream_manager, bc_actor_component_manager& p_actor_manager);
+			bc_entity_manager(core::bc_content_stream_manager& p_content_stream_manager, bc_actor_component_manager& p_actor_manager, bc_game_system& p_game_system);
 
 			bc_entity_manager(bc_entity_manager&&) noexcept = delete;
 
@@ -116,6 +121,7 @@ namespace black_cat
 
 			core::bc_content_stream_manager& m_content_stream_manager;
 			bc_actor_component_manager& m_actor_component_manager;
+			bc_game_system& m_game_system;
 			component_map_type m_components;
 			entity_map_type m_entities;
 			controller_map_type m_controllers;

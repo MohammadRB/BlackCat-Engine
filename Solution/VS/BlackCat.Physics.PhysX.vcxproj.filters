@@ -162,6 +162,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\PhysicsImpPCH.h">
       <Filter>PhysicsImp</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcHeightFieldSampleArray.h">
+      <Filter>PhysicsImp\Shape</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcActor.cpp">
@@ -295,6 +298,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\PhysicsImpPCH.cpp">
       <Filter>PhysicsImp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcHeightFieldSampleArray.cpp">
+      <Filter>PhysicsImp\Shape</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

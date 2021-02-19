@@ -5,7 +5,6 @@
 #include "CorePlatform/bcType.h"
 #include "Core/bcConstant.h"
 #include "Core/Container/bcString.h"
-#include "Core/Content/bcContentStreamManager.h"
 #include "Core/Messaging/Query/bcQueryProviderHandle.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Game/bcExport.h"

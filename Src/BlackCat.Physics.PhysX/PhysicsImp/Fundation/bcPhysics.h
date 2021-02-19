@@ -19,8 +19,8 @@ namespace black_cat
 		{
 			physx::PxFoundation* m_px_foundation;
 #ifdef BC_DEBUG
-			physx::PxProfileZoneManager* m_px_profile;
-			physx::PxVisualDebuggerConnection* m_visualizer;
+			physx::PxPvd* m_px_pvd;
+			physx::PxPvdTransport* m_px_pvd_transport;
 #endif
 			physx::PxPhysics* m_px_physics;
 			physx::PxCooking* m_px_cooking;

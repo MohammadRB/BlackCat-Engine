@@ -1,12 +1,29 @@
-/*
- * Copyright (c) 2008-2015, NVIDIA CORPORATION.  All rights reserved.
- *
- * NVIDIA CORPORATION and its licensors retain all intellectual property
- * and proprietary rights in and to this software, related documentation
- * and any modifications thereto.  Any use, reproduction, disclosure or
- * distribution of this software and related documentation without an express
- * license agreement from NVIDIA CORPORATION is strictly prohibited.
- */
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -20,7 +37,7 @@
 #include "PxActor.h"
 #include "PxShape.h"
 
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 namespace physx
 {
 #endif
@@ -133,29 +150,12 @@ public:
 
 	\return The newly created shape.
 
-	@see PxShape PxShape::release()
+	\note this method is <b>deprecated</b>, please use PxPhysics::createShape() and PxRigidActor::attachShape() or PxRigidActorExt::createExclusiveShape()
+
+	@see PxShape PxShape::release(), PxPhysics::createShape(), PxRigidActor::attachShape(), PxRigidActorExt::createExclusiveShape()
 	*/
 
-	virtual		PxShape*		createShape(const PxGeometry& geometry, PxMaterial*const* materials, PxU16 materialCount, PxShapeFlags shapeFlags = PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE) = 0;
-
-	/**
-	\deprecated
-	\brief Deprecated function to create shapes with an initial transform. 
-	
-	Use this instead:
-	PxShape* shape = actor->createShape(geometry, materials, materialCount);
-	if (shape)
-		shape->setLocalPose(transform);
-
-	@see PxShape, createShape(const PxGeometry& geometry, PxMaterial*const* materials, PxU16 materialCount, PxShapeFlags shapeFlags = PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE)
-	*/
-	PX_DEPRECATED PX_INLINE	PxShape* createShape(const PxGeometry& geometry, PxMaterial*const* materials, PxU32 materialCount, const PxTransform& localPose)
-	{
-		PxShape* shape = createShape(geometry, materials, PxU16(materialCount));
-		if (shape)
-			shape->setLocalPose(localPose);
-		return shape;
-	}
+	PX_DEPRECATED virtual		PxShape*		createShape(const PxGeometry& geometry, PxMaterial*const* materials, PxU16 materialCount, PxShapeFlags shapeFlags = PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE) = 0;
 
 	/**
 	\brief Creates a new shape with default properties and a single material adds it to the list of shapes of this actor.
@@ -182,34 +182,16 @@ public:
 
 	\return The newly created shape.
 
-	@see PxShape PxShape::release() detachShape()
+	\note this method is <b>deprecated</b>, please use PxPhysics::createShape() and PxRigidActor::attachShape() or PxRigidActorExt::createExclusiveShape()
+
+	@see PxShape PxShape::release(), PxPhysics::createShape(), PxRigidActor::attachShape(), PxRigidActorExt::createExclusiveShape()
 	*/
 
-	PX_FORCE_INLINE	PxShape*	createShape(const PxGeometry& geometry, const PxMaterial& material, PxShapeFlags shapeFlags = PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE)
+	PX_DEPRECATED PX_FORCE_INLINE	PxShape*	createShape(const PxGeometry& geometry, const PxMaterial& material, PxShapeFlags shapeFlags = PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE)
 	{
 		PxMaterial* materialPtr = const_cast<PxMaterial*>(&material);
 		return createShape(geometry, &materialPtr, 1, shapeFlags);
 	}
-
-	/**
-	\deprecated
-	\brief Deprecated function to create shapes with an initial transform. 
-	
-	Use this instead:
-	PxShape* shape = actor->createShape(geometry, material);
-	if (shape)
-		shape->setLocalPose(transform);
-
-	@see PxShape, createShape(const PxGeometry& geometry, const PxMaterial& material, PxShapeFlags shapeFlags = PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE)
-	*/
-	PX_DEPRECATED PX_INLINE	PxShape* createShape(const PxGeometry& geometry, const PxMaterial& material, const PxTransform& localPose)
-	{
-		PxShape* shape = createShape(geometry, material);
-		if (shape)
-			shape->setLocalPose(localPose);
-		return shape;
-	}
-
 
 	/** attach a shared shape to an actor 
 
@@ -234,9 +216,6 @@ public:
 	/** detach a shape from an actor. 
 	
 	This will also decrement the reference count of the PxShape, and if the reference count is zero, will cause it to be deleted.
-
-	For static rigid actors it is not possible to detach all shapes associated with the actor.
-	An attempt to remove the last shape will be ignored.
 
 	<b>Sleeping:</b> Does <b>NOT</b> wake the actor up automatically.
 
@@ -313,14 +292,11 @@ protected:
 	PX_INLINE					PxRigidActor(PxType concreteType, PxBaseFlags baseFlags) : PxActor(concreteType, baseFlags) {}
 	PX_INLINE					PxRigidActor(PxBaseFlags baseFlags) : PxActor(baseFlags) {}
 	virtual						~PxRigidActor()	{}
-	virtual		bool			isKindOf(const char* name)	const	{	return !strcmp("PxRigidActor", name) || PxActor::isKindOf(name); }
+	virtual		bool			isKindOf(const char* name)	const	{	return !::strcmp("PxRigidActor", name) || PxActor::isKindOf(name); }
 };
 
-PX_DEPRECATED PX_INLINE PxRigidActor*		PxActor::isRigidActor()				{ return is<PxRigidActor>();			}
-PX_DEPRECATED PX_INLINE const PxRigidActor*	PxActor::isRigidActor()		const	{ return is<PxRigidActor>();			}
 
-
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 } // namespace physx
 #endif
 

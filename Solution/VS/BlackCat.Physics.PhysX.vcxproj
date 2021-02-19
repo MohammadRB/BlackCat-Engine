@@ -106,7 +106,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CommonDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3DEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CookingDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3ExtensionsDEBUG.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysXProfileSDKDEBUG.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysXVisualDebuggerSDKDEBUG.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CommonDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3DEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CookingDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3ExtensionsDEBUG.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PxFoundationDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PxPvdSDKDEBUG_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist ..\..\BC_SDK\Include\PhysicsImp\ mkdir ..\..\BC_SDK\Include\PhysicsImp\
@@ -176,7 +176,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Common_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Cooking_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Extensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Common_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Cooking_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Extensions.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PxFoundation_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist ..\..\BC_SDK\Include\PhysicsImp\ mkdir ..\..\BC_SDK\Include\PhysicsImp\
@@ -268,6 +268,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcBoundBox.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcConvexMesh.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcHeightField.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcHeightFieldSampleArray.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShape.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeBox.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeCapsule.h" />
@@ -317,6 +318,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcBoundBox.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcConvexMesh.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcHeightField.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcHeightFieldSampleArray.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShape.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeBox.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Shape\bcShapeCapsule.cpp" />

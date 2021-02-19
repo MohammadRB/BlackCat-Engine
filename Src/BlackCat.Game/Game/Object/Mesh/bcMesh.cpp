@@ -183,7 +183,7 @@ namespace black_cat
 			return m_meshes[p_node.m_first_mesh_index + p_mesh_index].m_name;
 		}
 
-		const bc_render_material& bc_mesh::get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
+		const bc_mesh_material& bc_mesh::get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
 		{
 			if(p_mesh_index >= p_node.m_mesh_count)
 			{
@@ -191,6 +191,16 @@ namespace black_cat
 			}
 
 			return *m_meshes[p_node.m_first_mesh_index + p_mesh_index].m_material;
+		}
+
+		bc_mesh_material_ptr bc_mesh::get_node_mesh_material_ptr(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
+		{
+			if (p_mesh_index >= p_node.m_mesh_count)
+			{
+				throw bc_out_of_range_exception("Invalid mesh index");
+			}
+
+			return m_meshes[p_node.m_first_mesh_index + p_mesh_index].m_material;
 		}
 
 		const bc_render_state& bc_mesh::get_node_mesh_render_state(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
@@ -262,41 +272,41 @@ namespace black_cat
 			{
 				for(bc_mesh_part_collider_entry& l_entry : l_mesh_part_collider.second)
 				{
-					switch (l_entry.m_px_shape->get_type())
+					switch (l_entry.m_shape->get_type())
 					{
 					case physics::bc_shape_type::sphere:
 						{
-							auto& l_sphere = static_cast< physics::bc_shape_sphere& >(*l_entry.m_px_shape);
+							auto& l_sphere = static_cast< physics::bc_shape_sphere& >(*l_entry.m_shape);
 							l_sphere = physics::bc_shape_sphere(l_sphere.get_radius() * m_scale);
 							break;
 						}
 					case physics::bc_shape_type::plane:
 						{
-							auto& l_plane = static_cast< physics::bc_shape_plane& >(*l_entry.m_px_shape);
+							auto& l_plane = static_cast< physics::bc_shape_plane& >(*l_entry.m_shape);
 							l_plane = physics::bc_shape_plane(l_plane.get_normal(), l_plane.get_distance() * m_scale);
 							break;
 						}
 					case physics::bc_shape_type::capsule:
 						{
-							auto& l_capsule = static_cast< physics::bc_shape_capsule& >(*l_entry.m_px_shape);
+							auto& l_capsule = static_cast< physics::bc_shape_capsule& >(*l_entry.m_shape);
 							l_capsule = physics::bc_shape_capsule(l_capsule.get_half_height() * m_scale, l_capsule.get_radius() * m_scale);
 							break;
 						}
 					case physics::bc_shape_type::box:
 						{
-							auto& l_box = static_cast< physics::bc_shape_box& >(*l_entry.m_px_shape);
+							auto& l_box = static_cast< physics::bc_shape_box& >(*l_entry.m_shape);
 							l_box = physics::bc_shape_box(l_box.get_half_extends() * m_scale);
 							break;
 						}
 					case physics::bc_shape_type::convex_mesh:
 						{
-							auto& l_convex = static_cast< physics::bc_shape_convex_mesh& >(*l_entry.m_px_shape);
+							auto& l_convex = static_cast< physics::bc_shape_convex_mesh& >(*l_entry.m_shape);
 							l_convex = physics::bc_shape_convex_mesh(physics::bc_geometry_scale(m_scale), l_convex.get_convex());
 							break;
 						}
 					case physics::bc_shape_type::triangle_mesh:
 						{
-							auto& l_triangle = static_cast< physics::bc_shape_triangle_mesh& >(*l_entry.m_px_shape);
+							auto& l_triangle = static_cast< physics::bc_shape_triangle_mesh& >(*l_entry.m_shape);
 							l_triangle = physics::bc_shape_triangle_mesh(physics::bc_geometry_scale(m_scale), l_triangle.get_mesh());
 							break;
 						}

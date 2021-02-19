@@ -31,6 +31,10 @@ namespace black_cat
 			void render(const bc_actor_component_render_context& p_context) const override;
 
 			void render(const bc_actor_component_render_context& p_context, bool p_render_leaf) const;
+
+		private:
+			bc_mesh_render_state m_leaf_render_state;
+			bc_mesh_render_state m_trunk_render_state;
 		};
 	}
 }

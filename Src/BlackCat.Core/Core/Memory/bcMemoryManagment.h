@@ -94,22 +94,22 @@ namespace black_cat
 
 			void end_of_frame() noexcept;
 
-			bcSIZE get_total_size() const;
+			bcSIZE get_total_size() const noexcept;
 
-			bcSIZE get_used_size() const;
+			bcSIZE get_used_size() const noexcept;
 
-			bcSIZE get_overhead_size() const;
+			bcSIZE get_overhead_size() const noexcept;
 
-			bcSIZE get_max_used_size() const;
+			bcSIZE get_max_used_size() const noexcept;
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			bcUINT32 report_memory_leaks() const;
+			bcUINT32 report_memory_leaks() const noexcept;
 #endif
 
 		private:
-			bcUINT32 _fsa_index_max_size(bcUINT32 p_index) const;
+			bcUINT32 _fsa_index_max_size(bcUINT32 p_index) const noexcept;
 
-			bcUINT32 _get_fsa_index(bcUINT32 p_size) const;
+			bcUINT32 _get_fsa_index(bcUINT32 p_size) const noexcept;
 
 			// We don't use static pointer because it is possible after we free pointer on exit, some call to free be called
 			static bc_memory_manager m_instance;
@@ -152,14 +152,14 @@ namespace black_cat
 		}
 #endif
 
-		inline bcUINT32 bc_memory_manager::_fsa_index_max_size(bcUINT32 p_index) const
+		inline bcUINT32 bc_memory_manager::_fsa_index_max_size(bcUINT32 p_index) const noexcept
 		{
 			return m_fsa_allocators_start_size + p_index * m_fsa_step_size;
 		}
 
-		inline bcUINT32 bc_memory_manager::_get_fsa_index(bcUINT32 p_size) const
+		inline bcUINT32 bc_memory_manager::_get_fsa_index(bcUINT32 p_size) const noexcept
 		{
-			return std::ceil((p_size - m_fsa_allocators_start_size) / m_fsa_step_size);
+			return static_cast<bcUINT32>(std::ceil((p_size * 1.0f - m_fsa_allocators_start_size) / m_fsa_step_size));
 		}
 
 #endif

@@ -1056,7 +1056,7 @@ namespace black_cat
 			}
 
 			//auto l_pipeline_state_poxy = allocate< bc_device_pipeline_state_proxy >();
-			auto l_pipeline_state_poxy = BC_NEW(bc_device_pipeline_state_proxy, core::bc_alloc_type::unknown);
+			auto* l_pipeline_state_poxy = BC_NEW(bc_device_pipeline_state_proxy, core::bc_alloc_type::unknown);
 
 			l_pipeline_state_poxy->m_config = std::move(p_config);
 			l_pipeline_state_poxy->m_blend_state = l_dx_blend_state;
@@ -1117,6 +1117,7 @@ namespace black_cat
 			l_pack.m_pipeline_proxy->m_device = this;
 			l_pack.m_pipeline_proxy->m_query = l_query;
 			l_pack.m_pipeline_proxy->m_context = m_pack.m_immediate_context.Get();
+			l_pack.m_pipeline_proxy->m_context_type = m_pack.m_immediate_context->GetType();
 
 			bc_device_pipeline l_pipeline(l_pack);
 			bc_device_pipeline_ptr l_pipeline_ptr(l_pipeline);
@@ -1146,6 +1147,7 @@ namespace black_cat
 			l_pack.m_pipeline_proxy->m_device = this;
 			l_pack.m_pipeline_proxy->m_query = l_query;
 			l_pack.m_pipeline_proxy->m_context = l_context;
+			l_pack.m_pipeline_proxy->m_context_type = l_context->GetType();
 
 			bc_device_pipeline l_pipeline(l_pack);
 			bc_device_pipeline_ptr l_pipeline_ptr(l_pipeline);

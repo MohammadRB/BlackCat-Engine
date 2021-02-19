@@ -14,10 +14,10 @@
 #include "Game/bcExport.h"
 #include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/System/Render/State/bcRenderState.h"
+#include "Game/System/Render/Material/bcMeshMaterial.h"
 #include "Game/Object/Mesh/bcMeshNode.h"
 #include "Game/Object/Mesh/bcMeshCollider.h"
 #include "Game/Object/Mesh/bcMeshLevelOfDetail.h"
-#include "Game/Object/Mesh/bcRenderMaterial.h"
 
 namespace black_cat
 {
@@ -28,7 +28,7 @@ namespace black_cat
 		struct bc_mesh_part_data
 		{
 			core::bc_string m_name;
-			bc_render_material_ptr m_material;
+			bc_mesh_material_ptr m_material;
 			core::bc_vector_movable< bc_vertex_pos_tex_nor_tan > m_vertices;
 			core::bc_vector_movable< bc_vertex_pos_tex_nor_tan_bon > m_skinned_vertices;
 			core::bc_vector_movable< bcUINT16 > m_16bit_indices;
@@ -48,7 +48,7 @@ namespace black_cat
 			using hash_t = std::hash< const bcCHAR* >;
 
 		public:
-			explicit bc_mesh(bc_mesh_builder p_builder, bc_mesh_collider_ptr p_colliders);
+			bc_mesh(bc_mesh_builder p_builder, bc_mesh_collider_ptr p_colliders);
 
 			bc_mesh(bc_mesh&& p_other) noexcept;
 
@@ -56,13 +56,17 @@ namespace black_cat
 
 			bc_mesh& operator=(bc_mesh&& p_other) noexcept;
 
-			const core::bc_string& get_name() const noexcept;
+			const bcCHAR* get_name() const noexcept;
 
 			bcFLOAT get_auto_scale() const noexcept;
 			
 			bcFLOAT get_scale() const noexcept;
 
 			bool get_skinned() const noexcept;
+
+			bcSIZE get_node_count() const noexcept;
+
+			bcSIZE get_mesh_count() const noexcept;
 			
 			const bc_mesh_collider& get_collider() const noexcept;
 
@@ -82,7 +86,9 @@ namespace black_cat
 			
 			const core::bc_string& get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			const bc_render_material& get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+			const bc_mesh_material& get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+			
+			bc_mesh_material_ptr get_node_mesh_material_ptr(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_render_state& get_node_mesh_render_state(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
@@ -121,9 +127,9 @@ namespace black_cat
 
 		using bc_mesh_ptr = core::bc_content_ptr< bc_mesh >;
 
-		inline const core::bc_string& bc_mesh::get_name() const noexcept
+		inline const bcCHAR* bc_mesh::get_name() const noexcept
 		{
-			return m_name;
+			return m_name.c_str();
 		}
 
 		inline bcFLOAT bc_mesh::get_auto_scale() const noexcept
@@ -139,6 +145,16 @@ namespace black_cat
 		inline bool bc_mesh::get_skinned() const noexcept
 		{
 			return m_skinned;
+		}
+
+		inline bcSIZE bc_mesh::get_node_count() const noexcept
+		{
+			return m_nodes.size();
+		}
+
+		inline bcSIZE bc_mesh::get_mesh_count() const noexcept
+		{
+			return m_meshes.size();
 		}
 		
 		inline const bc_mesh_collider& bc_mesh::get_collider() const noexcept

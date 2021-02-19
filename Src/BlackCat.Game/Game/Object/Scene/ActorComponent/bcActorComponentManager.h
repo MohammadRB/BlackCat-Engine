@@ -12,7 +12,6 @@
 #include "Core/Concurrency/bcThreadManager.h"
 #include "Core/Concurrency/bcTask.h"
 #include "Core/Concurrency/bcConcurrency.h"
-#include "Core/Utility/bcNullable.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcEnumOperand.h"
 #include "Core/Utility/bcObjectStackPool.h"
@@ -23,6 +22,11 @@
 
 namespace black_cat
 {
+	namespace core
+	{
+		class bc_query_manager;
+	}
+	
 	namespace game
 	{
 		class bc_mediate_component;
@@ -148,7 +152,7 @@ namespace black_cat
 			using component_container_type = core::bc_unordered_map_program< bc_actor_component_hash, _bc_actor_component_entry >;
 
 		public:
-			bc_actor_component_manager();
+			explicit bc_actor_component_manager(core::bc_query_manager& p_query_manager);
 
 			bc_actor_component_manager(bc_actor_component_manager&&) noexcept = delete;
 
@@ -221,7 +225,8 @@ namespace black_cat
 			void _resize_actor_to_component_index_maps();
 
 			const bcSIZE s_events_pool_capacity = 100 * 1024;
-
+			
+			core::bc_query_manager& m_query_manager;
 			mutable core_platform::bc_shared_mutex m_actors_lock;
 			actor_container_type m_actors;
 			core::bc_bit_vector m_actors_bit;
@@ -319,7 +324,8 @@ namespace black_cat
 			return *this;
 		}
 
-		inline bc_actor_component_manager::bc_actor_component_manager()
+		inline bc_actor_component_manager::bc_actor_component_manager(core::bc_query_manager& p_query_manager)
+			: m_query_manager(p_query_manager)
 		{
 			m_events_pool[0].initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
 			m_events_pool[1].initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
@@ -699,7 +705,7 @@ namespace black_cat
 					[]() { return true; },
 					[&](bool, _bc_actor_component_entry* p_entry)
 					{
-						p_entry->m_container->handle_events(*this);
+						p_entry->m_container->handle_events(m_query_manager, *this);
 					},
 					[](bcINT32) {}
 				);
@@ -739,7 +745,7 @@ namespace black_cat
 				[]() { return true; },
 				[&](bool, _bc_actor_component_entry* p_entry)
 				{
-					p_entry->m_container->update(*this, p_clock);
+					p_entry->m_container->update(m_query_manager, *this, p_clock);
 				},
 				[](bcINT32) {}
 			);

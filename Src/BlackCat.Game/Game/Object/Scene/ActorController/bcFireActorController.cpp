@@ -45,16 +45,16 @@ namespace black_cat
 			m_light_intensity = l_light_component->get_light()->as_point_light()->get_intensity();
 		}
 
-		void bc_fire_actor_controller::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock)
+		void bc_fire_actor_controller::update(const bc_actor_component_update_content& p_context)
 		{
-			auto* l_light_component = p_actor.get_component< bc_light_component >();
-			auto* l_emitter_component = p_actor.get_component< bc_particle_emitter_component >();
+			auto* l_light_component = p_context.m_actor.get_component< bc_light_component >();
+			auto* l_emitter_component = p_context.m_actor.get_component< bc_particle_emitter_component >();
 
-			const bcFLOAT l_noise = (bc_noise(p_clock.m_total_elapsed_second / 7.5f, 1) - 0.5f) * m_light_intensity * 0.2f;
+			const bcFLOAT l_noise = (bc_noise(p_context.m_clock.m_total_elapsed_second / 7.5f, 1) - 0.5f) * m_light_intensity * 0.2f;
 			auto* l_point_light = l_light_component->get_light()->as_point_light();
 			l_point_light->set_intensity(m_light_intensity + l_noise);
 
-			const bcUINT32 l_total_particles_in_current_second = (p_clock.m_total_elapsed_second - std::floor(p_clock.m_total_elapsed_second)) * m_num_particles_per_second;
+			const bcUINT32 l_total_particles_in_current_second = (p_context.m_clock.m_total_elapsed_second - std::floor(p_context.m_clock.m_total_elapsed_second)) * m_num_particles_per_second;
 			if (l_total_particles_in_current_second < m_num_spawned_particles_in_current_second)
 			{
 				m_num_spawned_particles_in_current_second = 0;

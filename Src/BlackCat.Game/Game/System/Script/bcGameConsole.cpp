@@ -59,7 +59,7 @@ namespace black_cat
 		{
 			core::bc_get_service< core::bc_logger >()->register_listener
 			(
-				core::bc_enum::or({core::bc_log_type::info, core::bc_log_type::debug, core::bc_log_type::error}),
+				core::bc_enum::mask_or({core::bc_log_type::info, core::bc_log_type::debug, core::bc_log_type::error}),
 				this
 			);
 			m_key_event_handle = core::bc_get_service< core::bc_event_manager >()->register_event_listener< platform::bc_app_event_key >

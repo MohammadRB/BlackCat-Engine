@@ -37,7 +37,7 @@ namespace black_cat
 			}
 
 			template< typename TEnum >
-			static TEnum or(std::initializer_list<TEnum> p_values)
+			static TEnum mask_or(std::initializer_list<TEnum> p_values)
 			{
 				using type = enum_t<TEnum>;
 
@@ -48,7 +48,7 @@ namespace black_cat
 			}
 
 			template< typename TEnum >
-			static TEnum and(std::initializer_list<TEnum> p_values)
+			static TEnum mask_and(std::initializer_list<TEnum> p_values)
 			{
 				using type = enum_t<TEnum>;
 				const type l_max = (std::numeric_limits<type>::max)();
@@ -66,16 +66,16 @@ namespace black_cat
 
 				if(p_bool)
 				{
-					return bc_enum::or({ p_values, p_value });
+					return bc_enum::mask_or({ p_values, p_value });
 				}
 
-				return bc_enum::and({ p_values, static_cast< TEnum >(~static_cast< type >(p_value)) });
+				return bc_enum::mask_and({ p_values, static_cast< TEnum >(~static_cast< type >(p_value)) });
 			}
 
 			template< typename TEnum >
 			static bool has(TEnum p_values, TEnum p_value)
 			{
-				return bc_enum::and({ p_values, p_value }) == p_value;
+				return bc_enum::mask_and({ p_values, p_value }) == p_value;
 			}
 		};
 	}

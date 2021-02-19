@@ -112,6 +112,7 @@ namespace black_cat
 					(
 						[=](bc_memory_fixed_size* p_pointer)
 						{
+							p_pointer->destroy();
 							delete p_pointer;
 						}
 					);
@@ -187,7 +188,7 @@ namespace black_cat
 			BC_ASSERT(m_initialized);
 
 			void* l_result = nullptr;
-			bc_memory* l_allocator = nullptr;
+			bci_memory* l_allocator = nullptr;
 			bc_memblock l_block;
 			bc_memblock::initialize_mem_block_before_allocation(p_size, BC_MEMORY_MIN_ALIGN, &l_block);
 			const bcSIZE l_size = l_block.size();
@@ -273,7 +274,7 @@ namespace black_cat
 
 			BC_ASSERT(l_block);
 
-			auto* l_allocator = reinterpret_cast<bc_memory*>(l_block->extra());
+			auto* l_allocator = static_cast<bci_memory*>(l_block->extra());
 			l_allocator->free(l_pointer, l_block);
 
 			bc_memblock::free_mem_block(l_pointer);
@@ -317,7 +318,7 @@ namespace black_cat
 			BC_ASSERT(m_initialized);
 
 			void* l_result = nullptr;
-			bc_memory* l_allocator = nullptr;
+			bci_memory* l_allocator = nullptr;
 			bc_memblock l_block;
 			bc_memblock::initialize_mem_block_before_allocation(p_size, p_alignment, &l_block);
 			const bcSIZE l_size = l_block.size();
@@ -402,7 +403,7 @@ namespace black_cat
 
 			BC_ASSERT(l_block);
 
-			auto* l_allocator = reinterpret_cast<bc_memory*>(l_block->extra());
+			auto* l_allocator = static_cast<bci_memory*>(l_block->extra());
 			l_allocator->free(l_pointer, l_block);
 
 			bc_memblock::free_mem_block(l_pointer);
@@ -467,7 +468,7 @@ namespace black_cat
 			m_per_frame_stack->clear();
 		}
 
-		bcSIZE bc_memory_manager::get_total_size() const
+		bcSIZE bc_memory_manager::get_total_size() const noexcept
 		{
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_total_size = 0;
@@ -486,7 +487,7 @@ namespace black_cat
 			return 0;
 		}
 		
-		bcSIZE bc_memory_manager::get_used_size() const
+		bcSIZE bc_memory_manager::get_used_size() const noexcept
 		{
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_used_size = 0;
@@ -503,7 +504,7 @@ namespace black_cat
 			return 0;
 		}
 		
-		bcSIZE bc_memory_manager::get_overhead_size() const
+		bcSIZE bc_memory_manager::get_overhead_size() const noexcept
 		{
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_wasted_size = 0;
@@ -520,7 +521,7 @@ namespace black_cat
 			return 0;
 		}
 		
-		bcSIZE bc_memory_manager::get_max_used_size() const
+		bcSIZE bc_memory_manager::get_max_used_size() const noexcept
 		{
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_max_used_size = 0;
@@ -538,7 +539,7 @@ namespace black_cat
 		}
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-		bcUINT32 bc_memory_manager::report_memory_leaks() const
+		bcUINT32 bc_memory_manager::report_memory_leaks() const noexcept
 		{
 			{
 				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);

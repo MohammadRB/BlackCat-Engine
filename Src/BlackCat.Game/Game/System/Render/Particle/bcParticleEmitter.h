@@ -37,6 +37,7 @@ namespace black_cat
 			bcFLOAT m_mass;
 			bcUINT32 m_direction_deviation;
 			bcUINT32 m_emission_deviation;
+			core::bc_vector3f m_emission_deviation_force;
 			bcUINT32 m_sprite_index;
 			bcUINT32 m_velocity_curve_index;
 			bcFLOAT m_velocity_curve_duration;

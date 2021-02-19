@@ -37,5 +37,15 @@ namespace black_cat
 		private:
 			physics::bc_rigid_dynamic_ref m_px_actor_ref;
 		};
+
+		inline physics::bc_rigid_body& bc_rigid_dynamic_component::get_body() noexcept
+		{
+			return m_px_actor_ref.get();
+		}
+
+		inline physics::bc_rigid_dynamic bc_rigid_dynamic_component::get_dynamic_body() const noexcept
+		{
+			return m_px_actor_ref.get();
+		}
 	}
 }

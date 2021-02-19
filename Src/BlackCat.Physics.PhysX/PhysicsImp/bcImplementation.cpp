@@ -242,6 +242,12 @@ namespace black_cat
 			m_imp->on_contact(l_pair, l_shape_pairs.data(), p_pairs_count);
 		}
 
+		void bc_px_simulation_callback::onAdvance(const physx::PxRigidBody* const* p_body_buffer,
+			const physx::PxTransform* p_pose_buffer,
+			const physx::PxU32 p_count)
+		{
+		}
+
 		physx::PxQueryHitType::Enum bc_px_query_filter_callback::preFilter(const physx::PxFilterData& p_filter_data, 
 			const physx::PxShape* p_shape, 
 			const physx::PxRigidActor* p_actor, 

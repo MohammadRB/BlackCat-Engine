@@ -56,7 +56,7 @@ namespace black_cat
 			.as_constant_buffer();
 
 		m_parameter_cbuffer = l_device.create_buffer(l_parameter_cbuffer_config, nullptr);
-		m_device_compute_state = p_render_system.create_device_compute_state("terrain_chunk_info");
+		m_chunk_info_device_compute_state = p_render_system.create_device_compute_state("terrain_chunk_info");
 		m_run_chunk_info_shader = true;
 		
 		graphic::bc_device_parameters l_old_parameters
@@ -112,7 +112,7 @@ namespace black_cat
 
 				auto l_compute_state = p_param.m_render_system.create_compute_state
 				(
-					m_device_compute_state.get(),
+					m_chunk_info_device_compute_state.get(),
 					{},
 					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11.get_height_map_view()) },
 					{ graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, l_height_map_dx11.get_chunk_info_unordered_view()) },
@@ -230,8 +230,8 @@ namespace black_cat
 				{ *l_diffuse_map_view, *l_normal_map_view },
 				*l_depth_stencil_view,
 				{
-					graphic::bc_sampler_parameter(0, core::bc_enum:: or ({ graphic::bc_shader_type::pixel }), m_height_map_sampler.get()),
-					graphic::bc_sampler_parameter(0, core::bc_enum:: or ({ graphic::bc_shader_type::pixel }), m_texture_sampler.get())
+					graphic::bc_sampler_parameter(0, core::bc_enum::mask_or({ graphic::bc_shader_type::pixel }), m_height_map_sampler.get()),
+					graphic::bc_sampler_parameter(0, core::bc_enum::mask_or({ graphic::bc_shader_type::pixel }), m_texture_sampler.get())
 				},
 				{},
 				{},
@@ -246,7 +246,7 @@ namespace black_cat
 	void bc_gbuffer_terrain_pass_dx11::destroy(game::bc_render_system& p_render_system)
 	{
 		m_device_pipeline_state.reset();
-		m_device_compute_state.reset();
+		m_chunk_info_device_compute_state.reset();
 		m_render_pass_state.reset();
 		m_parameter_cbuffer.reset();
 		m_height_map_sampler.reset();

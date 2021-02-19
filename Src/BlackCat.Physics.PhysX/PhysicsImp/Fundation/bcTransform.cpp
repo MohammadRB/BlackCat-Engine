@@ -210,7 +210,8 @@ namespace black_cat
 		{
 			bc_platform_transform l_result;
 
-			l_result.m_pack.m_px_transform = physx::PxTransform::createIdentity();
+			l_result.m_pack.m_px_transform.p = physx::PxVec3(physx::PxZero);
+			l_result.m_pack.m_px_transform.q = physx::PxQuat(physx::PxIdentity);
 
 			return l_result;
 		}

@@ -74,8 +74,6 @@ namespace black_cat
 			}
 
 			size_type m_size;
-
-		private:
 		};
 
 		template< typename T, class TAllocator >
@@ -90,12 +88,6 @@ namespace black_cat
 			using const_reference = const value_type&;
 			using difference_type = typename bc_allocator_traits< allocator_type >::difference_type;
 			using size_type = typename bc_allocator_traits< allocator_type >::size_type;
-
-		public:
-
-		protected:
-
-		private:
 		};
 	}
 }

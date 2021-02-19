@@ -14,7 +14,7 @@ namespace black_cat
 	{
 #ifdef BC_MEMORY_ENABLE
 
-		class BC_CORE_DLL bc_memory_fixed_size : public bc_memory, public bc_initializable<bcUINT32, bcUINT32, const bcCHAR*>
+		class BC_CORE_DLL bc_memory_fixed_size : public bci_memory, public bc_initializable<bcUINT32, bcUINT32, const bcCHAR*>
 		{
 		public:
 			using this_type = bc_memory_fixed_size;

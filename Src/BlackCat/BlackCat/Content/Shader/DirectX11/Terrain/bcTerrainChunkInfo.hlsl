@@ -35,7 +35,7 @@ float compute_distance_from_plane(float4 p_plane, float3 p_position)
 
 float get_height(uint2 p_texcoord)
 {
-    p_texcoord.y = g_height - p_texcoord.y; // In directx TexCoord (0,0) is top-left but we begin from bottom-left
+    p_texcoord.y = g_height - p_texcoord.y; // In directX TexCoord (0,0) is top-left but we begin from bottom-left
     return g_heightmap.Load(int3(p_texcoord, 0));
 }
 
@@ -77,7 +77,7 @@ void main(uint3 p_group_id : SV_GroupID,
     uint l_step = 1;
     uint l_divider = 2;
     
-    // Divide shared memory into n*n blocks (n is power of two, starting from 2 and increase upto thread group size) 
+    // Divide shared memory into n*n blocks (n is power of two, starting from 2 and increase up to thread group size) 
     // and compute min max values in every block and store in top-left entry of block and continue by merging results
     // from prev step
     while (THREAD_GROUP_SIZE / l_divider >= 1)
@@ -104,7 +104,7 @@ void main(uint3 p_group_id : SV_GroupID,
     if (p_group_thread_id.x == 0 && p_group_thread_id.y == 0)
     {
         uint l_chunk_index = get_chunk_index(p_dispatch_thread_id.xy);
-         // Convert float min max to int becuase interlocked operations only work with ints
+         // Convert float min max to int because interlocked operations only work with ints
         int2 l_thread_group_minmax = int2(floor(gs_height[0][0].x), ceil(gs_height[0][0].y));
 
         InterlockedMin(g_chunk_info[l_chunk_index].x, l_thread_group_minmax.x);
@@ -157,35 +157,47 @@ void main(uint3 p_group_id : SV_GroupID,
 
     if (p_group_thread_id.x == 1 && p_group_thread_id.y == 0)
     {
-        gs_normals[0] = normalize(cross
-                            (
-                                gs_corners[1] - gs_corners[0],
-                                gs_corners[3] - gs_corners[0]
-                            ));
+	    gs_normals[0] = normalize
+	    (
+		    cross
+		    (
+			    gs_corners[1] - gs_corners[0],
+			    gs_corners[3] - gs_corners[0]
+		    )
+	    );
     }
     if (p_group_thread_id.x == 3 && p_group_thread_id.y == 0)
     {
-        gs_normals[1] = normalize(cross
-                            (
-                                gs_corners[2] - gs_corners[1],
-                                gs_corners[0] - gs_corners[1]
-                            ));
+	    gs_normals[1] = normalize
+	    (
+		    cross
+		    (
+			    gs_corners[2] - gs_corners[1],
+			    gs_corners[0] - gs_corners[1]
+		    )
+	    );
     }
     if (p_group_thread_id.x == 5 && p_group_thread_id.y == 0)
     {
-        gs_normals[2] = normalize(cross
-                            (
-                                gs_corners[3] - gs_corners[2],
-                                gs_corners[1] - gs_corners[2]
-                            ));
+	    gs_normals[2] = normalize
+	    (
+		    cross
+		    (
+			    gs_corners[3] - gs_corners[2],
+			    gs_corners[1] - gs_corners[2]
+		    )
+	    );
     }
     if (p_group_thread_id.x == 7 && p_group_thread_id.y == 0)
     {
-        gs_normals[3] = normalize(cross
-                            (
-                                gs_corners[0] - gs_corners[3],
-                                gs_corners[2] - gs_corners[3]
-                            ));
+	    gs_normals[3] = normalize
+	    (
+		    cross
+		    (
+			    gs_corners[0] - gs_corners[3],
+			    gs_corners[2] - gs_corners[3]
+		    )
+	    );
     }
 
     // Wait for all four normal be ready
@@ -248,7 +260,7 @@ void main(uint3 p_group_id : SV_GroupID,
     if (p_group_thread_id.x == 0 && p_group_thread_id.y == 0)
     {
         uint l_chunk_index = get_chunk_index(p_dispatch_thread_id.xy);
-         // Convert float min max to int becuase interlocked operations only work with ints
+         // Convert float min max to int because interlocked operations only work with ints
         float l_thread_group_distance = gs_height[0][0].z;
 
         uint l_num_thread_group_per_chunk = (g_chunk_size / THREAD_GROUP_SIZE);

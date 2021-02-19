@@ -121,9 +121,6 @@ namespace black_cat
 				1
 			);
 
-			/*auto l_px_material = p_context.m_game_system.get_physics_system().get_physics().create_material(1, 1, 0.1f);
-			p_filter_data.m_actor.is_rigid_actor().create_shape(physics::bc_shape_triangle_mesh(l_triangle_mesh.get()), l_px_material.get());*/
-			
 			if(l_hit_count == 0)
 			{
 				return physics::bc_query_hit_type::none;

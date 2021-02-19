@@ -112,39 +112,47 @@
             "xz_multiplier": 2,
             "y_multiplier": 512,
             "distance_detail": 100,
-            "height_detail": 20,
+            "height_detail": 10,
             "materials": [
               {
-                "name": "terrain_material_1",
-                "scale": 0.7
+                "mesh_material": "terrain_material_1",
+                "collider_material": "terrain_material_1",
+                "scale": 1.0
               },
               {
-                "name": "terrain_material_2",
+                "mesh_material": "terrain_material_2",
+                "collider_material": "terrain_material_2",
                 "scale": 20.0
               },
               {
-                "name": "terrain_material_3",
-                "scale": 0.7
+                "mesh_material": "terrain_material_3",
+                "collider_material": "terrain_material_3",
+                "scale": 1.0
               },
               {
-                "name": "terrain_material_4",
-                "scale": 0.7
+                "mesh_material": "terrain_material_4",
+                "collider_material": "terrain_material_4",
+                "scale": 1.0
               },
               {
-                "name": "terrain_material_5",
-                "scale": 0.7
+                "mesh_material": "terrain_material_5",
+                "collider_material": "terrain_material_5",
+                "scale": 1.0
               },
               {
-                "name": "terrain_material_6",
-                "scale": 0.7
+                "mesh_material": "terrain_material_6",
+                "collider_material": "terrain_material_6",
+                "scale": 1.0
               },
               {
-                "name": "terrain_material_7",
-                "scale": 0.7
+                "mesh_material": "terrain_material_7",
+                "collider_material": "terrain_material_7",
+                "scale": 1.0
               },
               {
-                "name": "terrain_material_8",
-                "scale": 0.7
+                "mesh_material": "terrain_material_8",
+                "collider_material": "terrain_material_8",
+                "scale": 1.0
               }
             ]
           }

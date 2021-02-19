@@ -65,7 +65,7 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_actor& >(*this)).get_platform_pack().m_px_object
 			);
-			auto l_px_rigid_actor = l_px_actor->isRigidActor();
+			auto* l_px_rigid_actor = l_px_actor->is<physx::PxRigidActor>();
 
 			static_cast< bc_platform_physics_reference& >(l_rigid_actor).get_platform_pack().m_px_object = l_px_rigid_actor;
 
@@ -82,7 +82,7 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_actor& >(*this)).get_platform_pack().m_px_object
 			);
-			auto l_px_rigid_body = l_px_actor->isRigidBody();
+			auto* l_px_rigid_body = l_px_actor->is<physx::PxRigidBody>();
 
 			static_cast< bc_platform_physics_reference& >(l_rigid_body).get_platform_pack().m_px_object = l_px_rigid_body;
 
@@ -99,7 +99,7 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_actor& >(*this)).get_platform_pack().m_px_object
 			);
-			auto l_px_rigid_static = l_px_actor->isRigidStatic();
+			auto* l_px_rigid_static = l_px_actor->is<physx::PxRigidStatic>();
 
 			static_cast< bc_platform_physics_reference& >(l_rigid_static).get_platform_pack().m_px_object = l_px_rigid_static;
 
@@ -116,7 +116,7 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_actor& >(*this)).get_platform_pack().m_px_object
 			);
-			auto l_px_rigid_dynamic = l_px_actor->isRigidDynamic();
+			auto* l_px_rigid_dynamic = l_px_actor->is<physx::PxRigidDynamic>();
 
 			static_cast< bc_platform_physics_reference& >(l_rigid_dynamic).get_platform_pack().m_px_object = l_px_rigid_dynamic;
 

@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/bcConstant.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Messaging/Query/bcQuery.h"
 #include "Game/System/Render/Particle/bcParticleEmitter.h"
@@ -18,6 +17,7 @@ namespace black_cat
 			core::bc_vector3f m_emission_direction;
 			bcFLOAT m_energy;
 			bcUINT32 m_emission_deviation;
+			core::bc_vector3f m_emission_deviation_force;
 			bcUINT32 m_sprite_index;
 			core::bc_vector3f m_particles_color;
 			bcFLOAT m_particles_color_intensity;
@@ -50,7 +50,7 @@ namespace black_cat
 			BC_QUERY(ptc_emt)
 			
 		public:
-			explicit bc_particle_emitter_query()
+			bc_particle_emitter_query()
 				: bc_query(message_name())
 			{
 			}
@@ -65,7 +65,8 @@ namespace black_cat
 			{
 				return std::move(m_emitters);
 			}
-			
+
+		protected:
 			void execute(const bc_particle_emitters_query_context& p_context) noexcept override
 			{
 				m_emitters = p_context.m_emitters;

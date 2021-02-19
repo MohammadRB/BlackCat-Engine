@@ -140,7 +140,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_particle_manager::spawn_emitter(const bcCHAR* p_emitter_name, const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir)
+		void bc_particle_manager::spawn_emitter(const bcCHAR* p_emitter_name, const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir, const core::bc_vector3f* p_color)
 		{
 			core::bc_matrix3f l_rotation;
 			l_rotation.rotation_between_two_vector_lh(core::bc_vector3f(0, 1, 0), p_dir);
@@ -156,10 +156,18 @@ namespace black_cat
 					m_emitters.emplace_back(l_emitter);
 					auto& l_ite = m_emitters.back();
 
-					l_ite.m_position += p_pos;
+					l_ite.m_position = l_rotation * l_ite.m_position + p_pos;
 					l_ite.m_prev_position = l_ite.m_position;
 					l_ite.m_direction = l_rotation * l_ite.m_direction;
+					l_ite.m_emission_deviation_force = l_rotation * l_ite.m_emission_deviation_force;
 					l_ite.m_lifetime += .001f; // to avoid division by zero
+
+					if(p_color)
+					{
+						const auto l_src_color_magnitude = l_ite.m_particles_color.magnitude();
+						const auto l_color = core::bc_vector3f::normalize(*p_color * *p_color);
+						l_ite.m_particles_color = core::bc_vector3f::normalize(l_color * l_ite.m_particles_color) * l_src_color_magnitude;
+					}
 
 					bc_randomize_direction(m_random, l_ite.m_direction, l_ite.m_direction_deviation, &l_ite.m_direction, &l_ite.m_direction + 1);
 				}
@@ -333,6 +341,7 @@ namespace black_cat
 						l_emitter.m_emission_direction = p_emitter.m_direction * p_emitter.m_particles_velocity_reverse_direction;
 						l_emitter.m_energy = p_emitter.m_energy;
 						l_emitter.m_emission_deviation = p_emitter.m_emission_deviation;
+						l_emitter.m_emission_deviation_force = p_emitter.m_emission_deviation_force;
 						l_emitter.m_sprite_index = p_emitter.m_sprite_index;
 						l_emitter.m_particles_color = p_emitter.m_particles_color;
 						l_emitter.m_particles_color_intensity = p_emitter.m_particles_color_intensity;

@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/bcConstant.h"
 #include "Core/Messaging/Query/bcQuery.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/Query/bcQueryContext.h"
@@ -28,6 +27,7 @@ namespace black_cat
 
 			const bc_scene_graph_buffer& get_scene_buffer() const noexcept;
 
+		protected:
 			void execute(const bc_scene_query_context& p_context) noexcept override;
 
 		private:

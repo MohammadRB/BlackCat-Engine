@@ -9,6 +9,7 @@ struct emitter
 	float3 m_emission_direction;
 	float m_energy;
 	uint m_emission_deviation;
+	float3 m_emission_deviation_force;
 	uint m_sprite_index;
 	float3 m_particles_color;
 	float m_particles_color_intensity;

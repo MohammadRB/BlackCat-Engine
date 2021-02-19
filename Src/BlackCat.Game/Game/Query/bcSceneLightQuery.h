@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CorePlatformImp/Concurrency/bcMutex.h"
-#include "Core/bcConstant.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Messaging/Query/bcQuery.h"
 #include "Core/Utility/bcNullable.h"
@@ -33,7 +32,8 @@ namespace black_cat
 			bc_scene_light_query& with(const bc_camera_frustum& p_frustum);
 
 			core::bc_vector_movable<bc_light_instance> get_lights() noexcept;
-			
+
+		protected:
 			void execute(const bc_light_instances_query_context& p_context) noexcept override;
 			
 		private:

@@ -47,7 +47,7 @@ namespace black_cat
 
 		void bc_height_map_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			auto& l_height_map_name = p_context.m_parameters.get_value_throw< core::bc_string >(constant::g_param_heightmap);
+			const auto& l_height_map_name = p_context.m_parameters.get_value_throw< core::bc_string >(constant::g_param_heightmap);
 			m_height_map = p_context.m_stream_manager.find_content_throw(l_height_map_name.c_str());
 		}
 
@@ -59,7 +59,7 @@ namespace black_cat
 
 		void bc_height_map_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
+			const auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
 			if(l_world_transform_event)
 			{
 				m_transform.translate(l_world_transform_event->get_transform().get_translation());

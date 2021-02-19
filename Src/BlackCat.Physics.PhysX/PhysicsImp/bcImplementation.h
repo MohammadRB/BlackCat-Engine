@@ -164,6 +164,10 @@ namespace black_cat
 				const physx::PxContactPair* p_pairs,
 				physx::PxU32 p_pairs_count) override;
 
+			void onAdvance(const physx::PxRigidBody* const* p_body_buffer,
+				const physx::PxTransform* p_pose_buffer,
+				const physx::PxU32 p_count) override;
+			
 			core::bc_unique_ptr< bci_simulation_event_callback > m_imp;
 		};
 

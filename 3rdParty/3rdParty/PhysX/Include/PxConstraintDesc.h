@@ -1,12 +1,29 @@
-/*
- * Copyright (c) 2008-2015, NVIDIA CORPORATION.  All rights reserved.
- *
- * NVIDIA CORPORATION and its licensors retain all intellectual property
- * and proprietary rights in and to this software, related documentation
- * and any modifications thereto.  Any use, reproduction, disclosure or
- * distribution of this software and related documentation without an express
- * license agreement from NVIDIA CORPORATION is strictly prohibited.
- */
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -20,19 +37,18 @@
 
 #include "PxPhysXConfig.h"
 #include "foundation/PxFlags.h"
-#include "foundation/PxMath.h"
 #include "foundation/PxVec3.h"
 #include "common/PxBase.h"
 
-#ifndef PX_DOXYGEN
-namespace physx { namespace debugger { namespace comm {
+#if !PX_DOXYGEN
+namespace physx { namespace pvdsdk {
 #endif
 	class PvdDataStream;
-#ifndef PX_DOXYGEN
-}}}
+#if !PX_DOXYGEN
+}}
 #endif
 
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 namespace physx
 {
 #endif
@@ -44,7 +60,6 @@ class PxConstraintConnector;
 class PxRenderBuffer;
 class PxDeletionListener;
 
-
 /**
  \brief constraint row flags
 
@@ -53,6 +68,8 @@ class PxDeletionListener;
 
 struct Px1DConstraintFlag
 {
+	PX_CUDA_CALLABLE Px1DConstraintFlag(){}
+
 	enum Type
 	{
 		eSPRING						= 1<<0,		//!< whether the constraint is a spring. Mutually exclusive with eRESTITUTION. If set, eKEEPBIAS is ignored.
@@ -148,7 +165,7 @@ struct Px1DConstraint
 		} bounce;
 	} mods;
 
-	PxReal				forInternalUse;			//< for internal use only
+	PxReal				forInternalUse;			//!< for internal use only
 	PxU16				flags;					//!< a set of Px1DConstraintFlags
 	PxU16				solveHint;				//!< constraint optimization hint, should be an element of PxConstraintSolveHint
 } 
@@ -169,6 +186,7 @@ struct PxConstraintVisualizationFlag
 	};
 };
 
+PX_ALIGN_PREFIX(16)
 struct PxConstraintInvMassScale
 {
 //= ATTENTION! =====================================================================================
@@ -182,12 +200,16 @@ struct PxConstraintInvMassScale
 	PxReal angular0;	//!< multiplier for inverse MoI of body0
 	PxReal linear1;		//!< multiplier for inverse mass of body1
 	PxReal angular1;	//!< multiplier for inverse MoI of body1
-};
+
+	PxConstraintInvMassScale(){}
+	PxConstraintInvMassScale(PxReal lin0, PxReal ang0, PxReal lin1, PxReal ang1) : linear0(lin0), angular0(ang0), linear1(lin1), angular1(ang1){}
+}
+PX_ALIGN_SUFFIX(16);
 
 /** solver constraint generation shader
 
 This function is called by the constraint solver framework. The function must be reentrant, since it may be called simultaneously
-from multiple threads, and should access only the arguments passed into it, since on PS3 this function may execute on SPU. 
+from multiple threads, and should access only the arguments passed into it.
 
 Developers writing custom constraints are encouraged to read the documentation in the user guide and the implementation code in PhysXExtensions.
 
@@ -213,12 +235,12 @@ typedef PxU32 (*PxConstraintSolverPrep)(Px1DConstraint* constraints,
 /** solver constraint projection shader
 
 This function is called by the constraint post-solver framework. The function must be reentrant, since it may be called simultaneously
-from multiple threads and should access only the arguments passed into it, since on PS3 this function may execute on SPU.
+from multiple threads and should access only the arguments passed into it.
 
 \param[in] constantBlock the constant data block
 \param[out] bodyAToWorld The center of mass frame of the first constrained body (the identity if the actor is static or a NULL pointer was provided for it)
 \param[out] bodyBToWorld The center of mass frame of the second constrained body (the identity if the actor is static or a NULL pointer was provided for it)
-\param[in] true if the constraint should be projected by moving the second body towards the first, false if the converse
+\param[in] projectToA true if the constraint should be projected by moving the second body towards the first, false if the converse
 */
 
 typedef void (*PxConstraintProject)(const void* constantBlock,
@@ -243,19 +265,19 @@ public:
 	virtual void visualizeLimitCone( const PxTransform& t, PxReal ySwing, PxReal zSwing, bool active) = 0;
 
 	virtual void visualizeDoubleCone( const PxTransform& t, PxReal angle, bool active) = 0;
+
+	virtual void visualizeLine(const PxVec3& p0, const PxVec3& p1, PxU32 color) = 0;
 };
 
 /** solver constraint visualization function
 
 This function is called by the constraint post-solver framework to visualize the constraint
 
-\param[out] out the render buffer to render to
-\param[in] constantBlock the constant data block
-\param[in] body0Transform The center of mass frame of the first constrained body (the identity if the actor is static, or a NULL pointer was provided for it)
-\param[in] body1Transform The center of mass frame of the second constrained body (the identity if the actor is static, or a NULL pointer was provided for it)
-\param[in] frameScale the visualization scale for the constraint frames
-\param[in] limitScale the visualization scale for the constraint limits
-\param[in] flags the visualization flags
+\param[out] visualizer		The render buffer to render to
+\param[in] constantBlock	The constant data block
+\param[in] body0Transform	The center of mass frame of the first constrained body (the identity if the actor is static, or a NULL pointer was provided for it)
+\param[in] body1Transform	The center of mass frame of the second constrained body (the identity if the actor is static, or a NULL pointer was provided for it)
+\param[in] flags			The visualization flags (PxConstraintVisualizationFlag)
 
 @see PxRenderBuffer 
 */
@@ -301,7 +323,7 @@ public:
 	this function is called by the SDK to update PVD's view of it
 	*/
 	
-	virtual bool			updatePvdProperties(physx::debugger::comm::PvdDataStream& pvdConnection,
+	virtual bool			updatePvdProperties(physx::pvdsdk::PvdDataStream& pvdConnection,
 												const PxConstraint* c,
 												PxPvdUpdateType::Enum updateType) const		= 0;
 
@@ -365,6 +387,16 @@ public:
 
 	virtual PxBase* getSerializable()												= 0;
 
+	/**
+	\brief Obtain the shader function pointer used to prep rows for this constraint
+	*/
+	virtual PxConstraintSolverPrep getPrep() const									= 0;
+
+	/**
+	\brief Obtain the pointer to the constraint's constant data
+	*/
+	virtual const void* getConstantBlock() const									= 0;
+
 
 	/**
 	\brief virtual destructor
@@ -372,7 +404,7 @@ public:
 	virtual ~PxConstraintConnector() {}
 };
 
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 } // namespace physx
 #endif
 

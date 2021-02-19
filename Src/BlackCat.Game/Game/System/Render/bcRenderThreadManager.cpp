@@ -114,7 +114,7 @@ namespace black_cat
 		bc_render_thread_guard bc_render_thread_manager::get_available_thread() const
 		{
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_threads_mutex);
+				core_platform::bc_mutex_guard l_guard(m_threads_mutex);
 				
 				for (_bc_render_thread_entry& l_entry : m_threads)
 				{
@@ -145,7 +145,7 @@ namespace black_cat
 			}
 
 			{
-				core_platform::bc_unique_lock< core_platform::bc_mutex > l_guard(m_threads_mutex);
+				core_platform::bc_mutex_unique_guard l_guard(m_threads_mutex);
 				
 				m_threads_cv.wait(l_guard, [this]()
 				{

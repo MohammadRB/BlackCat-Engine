@@ -20,11 +20,11 @@ namespace black_cat
 		public:
 			void initialize(bc_actor& p_actor) override;
 			
-			void added_to_scene(bc_actor& p_actor, bc_scene& p_scene) override;
+			void added_to_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene) override;
 			
-			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock) override;
+			void update(const bc_actor_component_update_content& p_context) override;
 			
-			void handle_event(bc_actor& p_actor, const bc_actor_event& p_event) override;
+			void handle_event(const bc_actor_component_event_context& p_context) override;
 
 		private:
 			bc_skeleton_animation* _find_animation(const bcCHAR* p_name) const noexcept;

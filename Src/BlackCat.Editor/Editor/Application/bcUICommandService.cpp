@@ -75,7 +75,7 @@ namespace black_cat
 			m_content_stream.unload_content_stream("editor_shaders");
 		}
 
-		bcUINT32 bc_ui_command_service::command_count() const
+		bcUINT32 bc_ui_command_service::reversible_command_count() const
 		{
 			{
 				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_commands_lock);
@@ -94,7 +94,7 @@ namespace black_cat
 		void bc_ui_command_service::update(const core_platform::bc_clock::update_param& p_elapsed)
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_commands_lock);
+				core_platform::bc_mutex_guard l_guard(m_commands_lock);
 				m_last_update_clock = p_elapsed.m_total_elapsed;
 
 				while (!m_commands_to_execute.empty())
@@ -134,7 +134,7 @@ namespace black_cat
 		void bc_ui_command_service::update_ui(bc_iui_command::update_ui_context& p_context)
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_commands_lock);
+				core_platform::bc_mutex_guard l_guard(m_commands_lock);
 
 				while(!m_executed_commands.empty())
 				{

@@ -24,17 +24,17 @@ float randomize_normal(float p_value, float p_rnd, float coefficient)
 [numthreads(THREAD_GROUP_SIZE, 1, 1)]
 void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uint3 p_group_thread_id : SV_GroupThreadID, uint3 p_dispatch_thread_id : SV_DispatchThreadID)
 {
-	uint l_emitter_index = p_dispatch_thread_id.x;
-	emitter l_emitter = g_emitters[l_emitter_index];
-	float l_particles_deviation = l_emitter.m_emission_deviation / 180.f;
-	float l_emitter_position_length = length(l_emitter.m_position);
+	const uint l_emitter_index = p_dispatch_thread_id.x;
+	const emitter l_emitter = g_emitters[l_emitter_index];
+	const float l_particles_deviation = l_emitter.m_emission_deviation / 180.f;
+	const float l_emitter_position_length = length(l_emitter.m_position);
 	
 	for (uint i = 0; i < l_emitter.m_particles_count; ++i)
 	{
 		float l_random[] = { bc_random((i + 3) + g_total_elapsed), bc_random((i + 7) + g_total_elapsed), bc_random((i + 5) + g_total_elapsed) };
 		float l_random_range[] = { (l_random[0] - .5f) * 2, (l_random[1] - .5f) * 2, (l_random[2] - .5f) * 2 };
 		particle l_new_particle;
-		
+
 		float3 l_new_particle_dir = normalize
 		(
 			float3
@@ -44,10 +44,14 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 				randomize_normal(l_emitter.m_emission_direction.z, l_random_range[2], l_particles_deviation)
 			)
 		);
-		float3 l_new_particle_color = l_emitter.m_particles_color; + (bc_noise((g_total_elapsed_second + i + l_emitter_position_length) / 30, 0.8f) * min(1, l_emitter.m_particles_color_intensity));
+		const float l_particle_dir_reverse_force = abs(dot(l_new_particle_dir, l_emitter.m_emission_deviation_force));
+		const float3 l_particle_reverse_force_dir = l_particle_dir_reverse_force * l_emitter.m_emission_deviation_force;
+		l_new_particle_dir = normalize(l_new_particle_dir + l_particle_reverse_force_dir);
+		
+		const float3 l_new_particle_color = l_emitter.m_particles_color;// + (bc_noise((g_total_elapsed_second + i + l_emitter_position_length) / 30, 0.05f) * min(1, l_emitter.m_particles_color_intensity));
 
-		float l_rnd = l_random_range[i % 3];
-		float l_emitter_energy = min(1, l_emitter.m_energy + 0.5f);
+		const float l_rnd = l_random_range[i % 3];
+		const float l_emitter_energy = min(1, l_emitter.m_energy + 0.5f);
 		
 		l_new_particle.m_position = lerp(l_emitter.m_prev_position, l_emitter.m_position, (i + 1.f) / l_emitter.m_particles_count);
 		l_new_particle.m_direction = l_new_particle_dir;

@@ -3,9 +3,10 @@
 #include "Game/GamePCH.h"
 
 #include "PhysicsImp/Shape/bcShapeHeightField.h"
-#include "Game/bcException.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Physics/bcPxWrap.h"
+#include "Game/bcConstant.h"
+#include "Game/bcException.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
@@ -29,6 +30,11 @@ namespace black_cat
 
 		bc_rigid_static_component::~bc_rigid_static_component()
 		{
+			auto& l_body = get_body();
+			if(l_body.is_valid())
+			{
+				core::bc_get_service<bc_game_system>()->get_physics_system().clear_px_shapes_data(l_body);
+			}
 		}
 
 		bc_rigid_static_component& bc_rigid_static_component::operator=(bc_rigid_static_component&& p_other) noexcept
@@ -44,19 +50,10 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
-		physics::bc_rigid_body& bc_rigid_static_component::get_body() noexcept
-		{
-			return m_px_actor_ref.get();
-		}
-
-		physics::bc_rigid_static bc_rigid_static_component::get_static_body() const noexcept
-		{
-			return m_px_actor_ref.get();
-		}
-
 		void bc_rigid_static_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			auto& l_physics_system = core::bc_get_service<bc_game_system>()->get_physics_system();
+			auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();
+			auto& l_physics_system = p_context.m_game_system.get_physics_system();
 			auto& l_physics = l_physics_system.get_physics();
 
 			auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>();
@@ -65,7 +62,8 @@ namespace black_cat
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform::identity());
 				l_physics_system.set_game_actor(*m_px_actor_ref, p_context.m_actor);
 
-				l_physics_system.create_px_shapes_from_mesh(m_px_actor_ref.get(), p_context.m_actor, *l_mesh_component);
+				const auto* l_materials = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_mesh_collider_materials);
+				l_physics_system.create_px_shapes_from_mesh(l_material_manager, m_px_actor_ref.get(), *l_mesh_component, l_materials);
 
 				return;
 			}
@@ -76,7 +74,7 @@ namespace black_cat
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform::identity());
 				l_physics_system.set_game_actor(*m_px_actor_ref, p_context.m_actor);
 
-				l_physics_system.create_px_shapes_from_height_map(m_px_actor_ref.get(), p_context.m_actor, *l_height_map_component);
+				l_physics_system.create_px_shapes_from_height_map(l_material_manager, m_px_actor_ref.get(), *l_height_map_component);
 
 				return;
 			}

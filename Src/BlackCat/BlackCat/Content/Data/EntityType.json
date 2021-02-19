@@ -65,14 +65,41 @@
       ]
     },
     {
-      "name": "xbot",
+      "name": "xbot-red",
       "controller": "xbot",
       "components": [
         {
           "name": "skinned_mesh",
           "parameters": {
             "mesh": "xbot",
-            "animations": [ "xbot-neutral-idle" ]
+            "materials": {
+               "Beta_Surface": "xbot-red"
+            },
+            "animations": [
+              "xbot-neutral-idle"
+            ]
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "xbot-blue",
+      "controller": "xbot",
+      "components": [
+        {
+          "name": "skinned_mesh",
+          "parameters": {
+            "mesh": "xbot",
+            "materials": {
+              "Beta_Surface": "xbot-blue"
+            },
+            "animations": [
+              "xbot-neutral-idle"
+            ]
           }
         },
         {

@@ -7,6 +7,7 @@
 #include "Core/Container/bcVector.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
+#include "PhysicsImp/Shape/bcShape.h"
 #include "Game/System/Render/State/bcRenderState.h"
 #include "Game/System/Input/bcCamera.h"
 #include "Game/Object/Mesh/bcSubMeshTransform.h"

@@ -43,11 +43,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		void bc_platform_task<g_api_physx>::run()
 		{
-#ifdef BC_DEBUG
-			m_pack.m_px_task->runProfiled();
-#else
 			m_pack.m_px_task->run();
-#endif
 			m_pack.m_px_task->release();
 		}
 	}

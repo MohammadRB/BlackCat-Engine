@@ -68,6 +68,7 @@ namespace black_cat
 			l_physics_system.update(p_clock);
 
 			core::bc_task<void> l_scene_task;
+			core::bc_task<void> l_animations_task;
 
 			if (l_scene)
 			{
@@ -89,7 +90,7 @@ namespace black_cat
 				l_scene_task = l_scene->update_graph_async();
 			}
 
-			const auto l_animations_task = l_animation_manager.run_scheduled_jobs_async(p_clock);
+			l_animations_task = l_animation_manager.run_scheduled_jobs_async(p_clock);
 
 			l_particle_manager.update(p_clock);
 			l_script_system.update(p_clock);
@@ -125,7 +126,7 @@ namespace black_cat
 		{
 			m_physics_system.initialize();
 			m_script_system.initialize(true);
-			m_render_system.initialize(*core::bc_get_service<core::bc_content_stream_manager>(), std::move(p_parameter.m_render_system_parameter));
+			m_render_system.initialize(*core::bc_get_service<core::bc_content_stream_manager>(), m_physics_system, std::move(p_parameter.m_render_system_parameter));
 			m_console = core::bc_make_unique<bc_game_console>(core::bc_alloc_type::program, m_script_system);
 
 			m_scene_query_context_provider = core::bc_get_service< core::bc_query_manager >()->register_query_provider<bc_scene_query_context>

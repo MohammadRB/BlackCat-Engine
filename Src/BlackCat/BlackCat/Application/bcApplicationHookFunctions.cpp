@@ -16,7 +16,7 @@
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Script/bcScriptSystem.h"
 #include "Game/System/Script/bcScriptBinding.h"
-#include "Game/System/Render/bcMaterialManager.h"
+#include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
@@ -73,7 +73,7 @@ namespace black_cat
 #ifdef BC_DEBUG
 		core::bc_get_service<core::bc_logger>()->register_listener
 		(
-			core::bc_enum:: or ({ core::bc_log_type::debug, core::bc_log_type::error }),
+			core::bc_enum::mask_or({ core::bc_log_type::debug, core::bc_log_type::error }),
 			core::bc_make_unique< platform::bc_ide_logger >(core::bc_alloc_type::program)
 		);
 #endif
@@ -90,9 +90,14 @@ namespace black_cat
 		core::bc_register_service(core::bc_make_service<core::bc_counter_value_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
-		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>());
-		core::bc_register_service(core::bc_make_service<game::bc_entity_manager>(*core::bc_get_service<core::bc_content_stream_manager>(), *core::bc_get_service<game::bc_actor_component_manager>()));
+		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>(*core::bc_get_service<core::bc_query_manager>()));
 		core::bc_register_service(core::bc_make_service<game::bc_game_system>());
+		core::bc_register_service(core::bc_make_service<game::bc_entity_manager>
+		(
+			*core::bc_get_service<core::bc_content_stream_manager>(), 
+			*core::bc_get_service<game::bc_actor_component_manager>(),
+			*core::bc_get_service<game::bc_game_system>()
+		));
 	}
 
 	void bc_register_engine_loaders(game::bc_engine_application_parameter& p_parameters)
@@ -187,7 +192,17 @@ namespace black_cat
 			.with_particle_size(2, 15)
 			.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step2)
 			.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step3, 0.15f)
-			.emit_particles(100, 8, 600, 0.01f);
+			.with_particles_rotation(10)
+			.emit_particles(100, 5, 700, 0.15f);
+		l_builder.emitter(core::bc_vector3f(0, -8, 0), core::bc_vector3f::up())
+			.with_emission_deviation(180, { 0, -0.9f, 0 })
+			.with_texture(4)
+			.with_particles_color({ 0.7f, 0.7f, 0.7f })
+			.with_particle_size(7, 15)
+			.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step2)
+			.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step3, 0.1f)
+			.with_particles_rotation(10)
+			.emit_particles(100, 8, 3000, 0.05f);
 
 		for (auto& l_direction : l_random_directions)
 		{
@@ -222,6 +237,7 @@ namespace black_cat
 	void bc_close_engine_services()
 	{
 		core::bc_service_manager::close();
+		
 #ifdef BC_MEMORY_ENABLE
 #ifdef BC_MEMORY_LEAK_DETECTION
 		const bcUINT32 l_leak_counts = core::bc_memory_manager::get().report_memory_leaks();

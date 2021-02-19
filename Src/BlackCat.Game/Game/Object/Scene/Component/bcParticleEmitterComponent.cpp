@@ -27,23 +27,22 @@ namespace black_cat
 			return m_emitter.get();
 		}
 
-		void bc_particle_emitter_component::spawn_emitter()
+		void bc_particle_emitter_component::spawn_emitter(const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir, const core::bc_vector3f* p_color)
 		{
 			if (!m_emitter_name.empty())
 			{
-				const auto l_position = get_actor().get_component<bc_mediate_component>()->get_position();
-				core::bc_get_service<bc_game_system>()->get_render_system()
+				core::bc_get_service<bc_game_system>()
+					->get_render_system()
 					.get_particle_manager()
-					.spawn_emitter(m_emitter_name.c_str(), l_position, core::bc_vector3f::up());
+					.spawn_emitter(m_emitter_name.c_str(), p_pos, p_dir, p_color);
 			}
 		}
 
-		void bc_particle_emitter_component::spawn_emitter(const bcCHAR* p_name)
+		void bc_particle_emitter_component::spawn_emitter(const bcCHAR* p_name, const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir, const core::bc_vector3f* p_color)
 		{
-			const auto l_position = get_actor().get_component<bc_mediate_component>()->get_position();
 			core::bc_get_service<bc_game_system>()->get_render_system()
 				.get_particle_manager()
-				.spawn_emitter(p_name, l_position, core::bc_vector3f::up());
+				.spawn_emitter(p_name, p_pos, p_dir, p_color);
 		}
 
 		void bc_particle_emitter_component::add_emitter(const bc_particle_builder& p_builder)

@@ -34,12 +34,13 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		class _bc_device_pipeline
+		class _bc_device_pipeline_proxy
 		{
 		public:
-			_bc_device_pipeline()
+			_bc_device_pipeline_proxy()
 				: m_device(nullptr),
 				m_context(nullptr),
+				m_context_type(D3D11_DEVICE_CONTEXT_IMMEDIATE),
 				m_query(nullptr),
 				m_input_assembler_stage(bc_input_assembler_stage::platform_pack()),
 				m_stream_output_stage(bc_stream_output_stage::platform_pack()),
@@ -59,6 +60,7 @@ namespace black_cat
 
 			bc_device* m_device;
 			ID3D11DeviceContext* m_context;
+			D3D11_DEVICE_CONTEXT_TYPE m_context_type;
 			ID3D11Query* m_query;
 			bc_input_assembler_stage m_input_assembler_stage;
 			bc_stream_output_stage m_stream_output_stage;
@@ -74,7 +76,7 @@ namespace black_cat
 			bc_programmable_stage* m_shader_stages[6];
 		};
 
-		using bc_device_pipeline_proxy = bc_refcount_proxy<_bc_device_pipeline>;
+		using bc_device_pipeline_proxy = bc_refcount_proxy<_bc_device_pipeline_proxy>;
 
 		template<>
 		struct bc_platform_device_pipeline_pack< g_api_dx11 >

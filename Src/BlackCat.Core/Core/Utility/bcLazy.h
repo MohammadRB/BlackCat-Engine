@@ -94,8 +94,6 @@ namespace black_cat
 				return is_set();
 			}
 
-		protected:
-
 		private:
 			static T* _default_initializer() { return new type(); }
 
@@ -212,23 +210,7 @@ namespace black_cat
 
 			T* get() const
 			{
-				/*T* l_pointer;
-				static core_platform::bc_mutex s_mutex;
-
-				if ((l_pointer = m_pointer.load(core_platform::bc_memory_order::acquire)) == nullptr)
-				{
-					core_platform::bc_lock_guard< core_platform::bc_mutex > l_gaurd(s_mutex);
-
-					if ((l_pointer = m_pointer.load(core_platform::bc_memory_order::relaxed)) == nullptr)
-					{
-						l_pointer = m_initializer();
-						m_pointer.store(l_pointer, core_platform::bc_memory_order::release);
-					}
-				}
-
-				return l_pointer;*/
-
-				return bc_concurrency::double_check_lock(m_pointer, m_initializer);
+				return bc_concurrency::double_check_lock(m_pointer, m_mutex, m_initializer);
 			}
 
 			bool is_set() const noexcept
@@ -245,8 +227,6 @@ namespace black_cat
 			{
 				return is_set();
 			}
-
-		protected:
 
 		private:
 			static T* _default_initializer() { return new type(); }
@@ -306,6 +286,7 @@ namespace black_cat
 
 			initializer_type m_initializer;
 			cleanup_type m_cleanup;
+			mutable core_platform::bc_mutex m_mutex;
 			mutable core_platform::bc_atomic<T*> m_pointer;
 		};
 	}

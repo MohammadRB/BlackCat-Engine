@@ -14,7 +14,7 @@
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
-#include "Game/System/Render/bcMaterialManager.h"
+#include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/bcGameSystem.h"
 #include "BlackCat/Loader/bcSceneLoader.h"
 
@@ -179,7 +179,7 @@ namespace black_cat
 			l_actor.get_components(std::back_inserter(l_actor_components));
 			for (auto* l_actor_component : l_actor_components)
 			{
-				l_actor_component->load_instance(game::bc_actor_component_load_context(l_actor, *l_json_actor->m_parameters));
+				l_actor_component->load_instance(game::bc_actor_component_load_context(*l_json_actor->m_parameters, l_actor));
 			}
 
 			l_scene.add_actor(l_actor);
@@ -227,7 +227,7 @@ namespace black_cat
 			l_actor.get_components(std::back_inserter(l_actor_components));
 			for (auto& l_component : l_actor_components)
 			{
-				l_component->write_instance(game::bc_actor_component_write_context(l_actor, *l_json_entry->m_parameters));
+				l_component->write_instance(game::bc_actor_component_write_context(*l_json_entry->m_parameters, l_actor));
 			}
 
 			*l_json_entry->m_entity_name = l_mediate_component->get_entity_name();

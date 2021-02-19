@@ -12,8 +12,6 @@ namespace black_cat
 {
 	namespace editor
 	{
-		// == bc_ui_terrain_material_command ==================================================================================
-
 		bc_ui_terrain_material_smooth_command::bc_ui_terrain_material_smooth_command(bcUINT16 p_screen_width,
 			bcUINT16 p_screen_height,
 			bcUINT16 p_point_left,
@@ -89,8 +87,6 @@ namespace black_cat
 			return false;
 		}
 
-		// == bc_ui_terrain_material_smooth_command_render_task ======================================================================
-
 		bc_ui_terrain_material_smooth_command_render_task::bc_ui_terrain_material_smooth_command_render_task(const bc_editor_height_map_dx11& p_height_map,
 			bc_ui_terrain_material_smooth_command_state& p_command_state,
 			const bc_ui_terrain_material_smooth_command_parameter_cbuffer& p_shader_parameter)
@@ -160,7 +156,6 @@ namespace black_cat
 			p_render_thread.unbind_compute_state(*l_compute_state.get());
 
 			p_render_thread.finish();
-			m_command_state.m_device_command_list->finished();
 		}
 	}
 }

@@ -53,7 +53,7 @@ namespace black_cat
 
 			for(auto& l_animation_name : l_animation_names)
 			{
-				auto l_skinned_animation = p_context.m_stream_manager.find_content_throw< bc_skinned_animation >(l_animation_name.as_throw<core::bc_string>()->c_str());
+				auto l_skinned_animation = p_context.m_stream_manager.find_content_throw< bc_skinned_animation >(l_animation_name.as_throw<core::bc_string>().c_str());
 				m_animations.push_back(std::move(l_skinned_animation));
 			}
 
@@ -82,23 +82,22 @@ namespace black_cat
 		
 		void bc_skinned_mesh_component::render(const bc_actor_component_render_context& p_context) const
 		{
-			const auto& l_sub_mesh = get_mesh();
-			const auto l_mesh_lod = l_sub_mesh.get_mesh_level_of_detail();
-			const auto* l_mesh = l_mesh_lod.get_mesh_nullable
+			const auto l_mesh_lod = get_mesh().get_mesh_level_of_detail();
+			const auto l_lod = l_mesh_lod.get_lod_culling
 			(
 				p_context.m_camera.m_main_camera.get_position(),
 				p_context.m_camera.m_render_camera.get_position(),
 				get_world_position(),
 				get_lod_factor()
 			);
-			if(!l_mesh)
+			if(!l_lod.second)
 			{
 				return;
 			}
-			
-			const auto* l_root_pointer = l_sub_mesh.get_root_node();
 
-			render_skinned_mesh(p_context.m_buffer, *l_mesh, get_world_transforms(), &l_root_pointer, &l_root_pointer + 1);
+			const auto& l_render_states = get_render_states();
+			const auto& l_world_transforms = get_world_transforms();
+			bc_mesh_utility::render_skinned_mesh(p_context.m_buffer, l_render_states, l_world_transforms, l_lod.first);
 		}
 
 		void bc_skinned_mesh_component::debug_draw(const bc_actor_component_debug_draw_context& p_context)

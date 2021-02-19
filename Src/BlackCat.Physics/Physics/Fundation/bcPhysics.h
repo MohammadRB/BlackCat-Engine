@@ -94,13 +94,13 @@ namespace black_cat
 		using bc_aggregate_ref = bc_physics_ref< bc_aggregate >;
 
 		template< bc_physics_api TApi >
-		class bc_platfrom_fixed_joint;
-		using bc_fixed_joint = bc_platfrom_fixed_joint< g_current_physics_api >;
+		class bc_platform_fixed_joint;
+		using bc_fixed_joint = bc_platform_fixed_joint< g_current_physics_api >;
 		using bc_fixed_joint_ref = bc_physics_ref<bc_fixed_joint>;
 
 		template< bc_physics_api TApi >
-		class bc_platfrom_distance_joint;
-		using bc_distance_joint = bc_platfrom_distance_joint< g_current_physics_api >;
+		class bc_platform_distance_joint;
+		using bc_distance_joint = bc_platform_distance_joint< g_current_physics_api >;
 		using bc_distance_joint_ref = bc_physics_ref<bc_distance_joint>;
 
 		template< bc_physics_api TApi >

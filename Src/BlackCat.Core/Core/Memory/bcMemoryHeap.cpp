@@ -49,7 +49,7 @@ namespace black_cat
 		}
 
 		bc_memory_heap::bc_memory_heap(bc_memory_heap::this_type&& p_other) noexcept
-			: bc_memory_movable(std::move(p_other))
+			: bci_memory_movable(std::move(p_other))
 		{
 			operator=(std::move(p_other));
 		}
@@ -64,7 +64,7 @@ namespace black_cat
 
 		bc_memory_heap::this_type& bc_memory_heap::operator =(bc_memory_heap::this_type&& p_other) noexcept
 		{
-			bc_memory_movable::operator=(std::move(p_other));
+			bci_memory_movable::operator=(std::move(p_other));
 			m_heap = p_other.m_heap;
 			m_heap_size = p_other.m_heap_size;
 			m_remaining_free_space_limit = p_other.m_remaining_free_space_limit;
@@ -107,7 +107,7 @@ namespace black_cat
 			m_tracer.initialize(p_size);
 			if (p_tag)
 			{
-				bc_memory::tag(p_tag);
+				bci_memory::tag(p_tag);
 			}
 
 			m_tracer.accept_overhead(m_block_size);

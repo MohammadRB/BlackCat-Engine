@@ -9,7 +9,6 @@ namespace black_cat
 {
 	namespace core
 	{
-		
 		/**
 		 * \brief 
 		 * Wrap a non-nullable object (a class that does not support uninitialized state).
@@ -47,10 +46,11 @@ namespace black_cat
 				_set(std::move(p_value));
 			}
 
-			template< typename = std::enable_if_t< bc_type_traits< type >::is_copyable > >
 			bc_nullable(const bc_nullable& p_other) noexcept(bc_type_traits<type>::is_no_throw_copy)
 				: bc_nullable()
 			{
+				static_assert(bc_type_traits< type >::is_copyable, "T is not copyable");
+				
 				if(p_other.is_set())
 				{
 					_set(p_other.get());
@@ -67,14 +67,15 @@ namespace black_cat
 				}
 			}
 
-			~bc_nullable() noexcept(true)
+			~bc_nullable() noexcept
 			{
 				_unset();
 			}
 
-			template< typename = std::enable_if_t< bc_type_traits<type>::is_copyable > >
 			bc_nullable& operator=(const bc_nullable& p_other) noexcept(bc_type_traits<type>::is_no_throw_copy)
 			{
+				static_assert(bc_type_traits< type >::is_copyable, "T is not copyable");
+				
 				if(p_other.is_set())
 				{
 					_set(p_other.get());
@@ -103,23 +104,22 @@ namespace black_cat
 			}
 
 			template< typename = std::enable_if_t< bc_type_traits< type >::is_copyable > >
-			type& operator =(const type& p_value) noexcept(bc_type_traits<type>::is_no_throw_copy)
+			bc_nullable& operator =(const type& p_value) noexcept(bc_type_traits<type>::is_no_throw_copy)
 			{ 
 				_set(p_value); 
-				
-				return get(); 
+				return *this;
 			}
 
-			type& operator =(type&& p_value) noexcept(bc_type_traits<type>::is_no_throw_move)
+			bc_nullable& operator =(type&& p_value) noexcept(bc_type_traits<type>::is_no_throw_move)
 			{ 
 				_set(std::move(p_value)); 
-				
-				return get(); 
+				return *this;
 			}
 
-			void operator =(std::nullptr_t) noexcept
+			bc_nullable& operator =(std::nullptr_t) noexcept
 			{
 				_unset();
+				return *this;
 			}
 
 			bool operator ==(bc_nullable& p_other) const noexcept

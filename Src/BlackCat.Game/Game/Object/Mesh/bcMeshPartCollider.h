@@ -4,6 +4,7 @@
 
 #include "Core/Memory/bcPtr.h"
 #include "Core/Math/bcMatrix4f.h"
+#include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcIteratorAdapter.h"
 #include "PhysicsImp/Fundation/bcTransform.h"
@@ -34,11 +35,11 @@ namespace black_cat
 				bc_mesh_node::node_index_t p_attached_node_transform_index,
 				const physics::bc_transform& p_local_transform,
 				physics::bc_shape_flag p_flag)
-				: m_px_shape(std::move(p_px_shape)),
+				: m_shape(std::move(p_px_shape)),
+				m_shape_flags(p_flag),
 				m_local_transform(p_local_transform),
 				m_initial_transform(),
-				m_attached_node_transform_index(p_attached_node_transform_index),
-				m_shape_flags(p_flag)
+				m_attached_node_transform_index(p_attached_node_transform_index)
 			{
 			}
 
@@ -48,11 +49,11 @@ namespace black_cat
 
 			bc_mesh_part_collider_entry& operator=(bc_mesh_part_collider_entry&&) = default;
 
-			core::bc_unique_ptr< physics::bc_shape_geometry > m_px_shape;
+			core::bc_unique_ptr< physics::bc_shape_geometry > m_shape;
+			physics::bc_shape_flag m_shape_flags;
 			physics::bc_transform m_local_transform;
 			physics::bc_transform m_initial_transform;
 			bc_mesh_node::node_index_t m_attached_node_transform_index;
-			physics::bc_shape_flag m_shape_flags;
 		};
 
 		class BC_GAME_DLL bc_mesh_part_collider : public core::bc_const_iterator_adapter<core::bc_vector<bc_mesh_part_collider_entry>>

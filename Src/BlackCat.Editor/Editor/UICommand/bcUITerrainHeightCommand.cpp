@@ -16,8 +16,6 @@ namespace black_cat
 {
 	namespace editor
 	{
-		// == bc_ui_terrain_height_command =============================================================================================
-
 		bc_ui_terrain_height_command::bc_ui_terrain_height_command(bcUINT16 p_screen_width,
 			bcUINT16 p_screen_height,
 			bcUINT16 p_point_left,
@@ -51,7 +49,8 @@ namespace black_cat
 		{
 			auto& l_render_system = p_context.m_game_system.get_render_system();
 
-			auto l_cb_config = graphic::bc_graphic_resource_builder().as_resource()
+			auto l_cb_config = graphic::bc_graphic_resource_builder()
+				.as_resource()
 				.as_buffer
 				(
 					1,
@@ -62,15 +61,17 @@ namespace black_cat
 				.as_constant_buffer();
 
 			bc_ui_terrain_height_command_state l_state;
-			l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_height_cs");;
-			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);;
-			l_state.m_device_command_list = l_render_system.get_device().create_command_list();;
+			l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_height_cs");
+			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);
+			l_state.m_device_command_list = l_render_system.get_device().create_command_list();
 
 			return core::bc_make_unique<bc_ui_terrain_height_command_state>(std::move(l_state));
 		}
 
 		bool bc_ui_terrain_height_command::update(terrain_update_context& p_context)
 		{
+			using height_map_sample_t = std::tuple< bcINT16, physics::bc_material_index >;
+			
 			auto* l_rigid_component = p_context.m_terrain.get_component<game::bc_rigid_static_component>();
 			auto* l_height_map_component = p_context.m_terrain.get_component<game::bc_height_map_component>();
 			auto& l_dx11_height_map = static_cast<const bc_editor_height_map_dx11&>(l_height_map_component->get_height_map());
@@ -90,40 +91,44 @@ namespace black_cat
 			);
 			p_context.m_game_system.get_render_system().add_render_task(l_render_task);
 
+			const auto l_height_map_array = l_px_height_map.get_sample_array(core::bc_alloc_type::frame);
+			
 			const bcINT32 l_diameter = l_cbuffer_parameters.m_tool_radius * 2;
+			const core::bc_vector2i l_tool_center(p_context.m_tool_center_x, p_context.m_tool_center_z);
 			const bcUINT32 l_sample_count = l_diameter * l_diameter;
-			core::bc_unique_ptr<bcINT16> l_sample_buffer(static_cast<bcINT16*>(BC_ALLOC(l_sample_count * sizeof(bcINT16), core::bc_alloc_type::frame)));
-			bcINT16* l_samples = l_sample_buffer.get();
+			const core::bc_unique_ptr< height_map_sample_t > l_sample_buffer
+			(
+				static_cast<height_map_sample_t* >(BC_ALLOC(l_sample_count * sizeof(height_map_sample_t), core::bc_alloc_type::frame))
+			);
+			auto* l_samples = l_sample_buffer.get();
 
-			const core::bc_vector2f l_tool_center(l_cbuffer_parameters.m_tool_center_x, l_cbuffer_parameters.m_tool_center_z);
-			core::bc_vector2f l_circle_coords;
-			core::bc_vector2f l_global_coords;
 			for(bcINT32 l_z = 0; l_z < l_diameter; ++l_z)
 			{
 				for (bcINT32 l_x = 0; l_x < l_diameter; ++l_x)
 				{
 					const bcUINT32 l_sample_index = l_z * l_diameter + l_x;
-					l_circle_coords.x = l_x - m_radius;
-					l_circle_coords.y = l_z - m_radius;
-					l_global_coords = l_tool_center + l_circle_coords;
+					core::bc_vector2i l_circle_coords(l_x - m_radius, l_z - m_radius);
+					core::bc_vector2i l_global_coords = l_tool_center + l_circle_coords;
 					const bcFLOAT l_center_distance = (l_tool_center - l_global_coords).magnitude();
-
+					auto l_height_map_sample = l_height_map_array.get_sample_from_top_left(l_global_coords.x, l_global_coords.y);
+					
 					if (l_center_distance > m_radius)
 					{
-						l_samples[l_sample_index] = l_px_height_map.get_height(l_global_coords.x, l_global_coords.y);
+						l_samples[l_sample_index] = l_height_map_sample;
 						continue;
 					}
 
 					const bcFLOAT l_height_ratio = 1 - std::pow(l_center_distance / m_radius, 2);
-					bcFLOAT l_height = l_px_height_map.get_height(l_global_coords.x, l_global_coords.y) * l_dx11_height_map.get_physics_y_scale();
-
+					bcFLOAT l_height = std::get<0>(l_height_map_sample) * l_dx11_height_map.get_physics_y_scale();
 					l_height += l_height_ratio * l_cbuffer_parameters.m_tool_height;
-					l_samples[l_sample_index] = l_height / l_dx11_height_map.get_physics_y_scale();
+
+					std::get<0>(l_height_map_sample) = l_height / l_dx11_height_map.get_physics_y_scale();
+					l_samples[l_sample_index] = l_height_map_sample;
 				}
 			}
 
-			const physics::bc_bounded_strided_typed_data<bcINT16> l_px_samples(l_samples, sizeof(bcINT16), l_sample_count);
-			const physics::bc_bounded_strided_typed_data<physics::bc_material_index> l_px_sample_materials;
+			const physics::bc_bounded_strided_typed_data<bcINT16> l_px_samples(&std::get<0>(*l_samples), sizeof(height_map_sample_t), l_sample_count);
+			const physics::bc_bounded_strided_typed_data<physics::bc_material_index> l_px_sample_materials(&std::get<1>(*l_samples), sizeof(height_map_sample_t), l_sample_count);
 			const physics::bc_height_field_desc l_px_height_map_desc(l_diameter, l_diameter, l_px_samples, l_px_sample_materials);
 
 			physics::bc_shape l_terrain_shape;
@@ -142,8 +147,6 @@ namespace black_cat
 
 			return false;
 		}
-
-		// == bc_ui_terrain_height_command_render_task ==================================================================================
 
 		bc_ui_terrain_height_command_render_task::bc_ui_terrain_height_command_render_task(const bc_editor_height_map_dx11& p_height_map,
 			bc_ui_terrain_height_command_state& p_command_state,
@@ -188,7 +191,6 @@ namespace black_cat
 			p_render_thread.unbind_compute_state(*l_compute_state);
 
 			p_render_thread.finish();
-			m_command_state.m_device_command_list->finished();
 		}
 	}
 }

@@ -1,12 +1,29 @@
-/*
- * Copyright (c) 2008-2015, NVIDIA CORPORATION.  All rights reserved.
- *
- * NVIDIA CORPORATION and its licensors retain all intellectual property
- * and proprietary rights in and to this software, related documentation
- * and any modifications thereto.  Any use, reproduction, disclosure or
- * distribution of this software and related documentation without an express
- * license agreement from NVIDIA CORPORATION is strictly prohibited.
- */
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -20,9 +37,8 @@
 #include "common/PxBase.h"
 #include "geometry/PxGeometry.h"
 #include "geometry/PxGeometryHelpers.h"
-#include "PxQueryReport.h"
 
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 namespace physx
 {
 #endif
@@ -78,6 +94,10 @@ struct PxShapeFlag
 		eSIMULATION_SHAPE flags on a single PxShape instance.  In the event that one of these flags is already 
 		raised the sdk will reject any attempt to raise the other.  To raise the eTRIGGER_SHAPE flag first 
 		ensure that eSIMULATION_SHAPE flag is already lowered.
+
+		\note Trigger shapes will no longer send notification events for interactions with other trigger shapes.
+		For PhysX 3.4 there is the option to re-enable the reports by raising #PxSceneFlag::eDEPRECATED_TRIGGER_TRIGGER_REPORTS.
+		In PhysX 3.5 there will be no support for these reports any longer. See the 3.4 migration guide for more information.
 
 		\note Shapes marked as triggers are allowed to participate in scene queries, provided the eSCENE_QUERY_SHAPE flag is set. 
 
@@ -141,6 +161,13 @@ public:
 	@see PxRigidActor::createShape() PxPhysics::createShape() PxRigidActor::attachShape() PxRigidActor::detachShape()
 	*/
 	virtual		void					release() = 0;
+
+	/**
+	\brief Acquires a counted reference to a shape.
+
+	This method increases the reference count of the shape by 1. Decrement the reference count by calling release()
+	*/
+	virtual		void					acquireReference() = 0;
 
 	/**
 	\brief Get the geometry type of the shape.
@@ -341,14 +368,6 @@ public:
 	virtual		PxFilterData			getSimulationFilterData()					const	= 0;
 
 	/**
-	\deprecated
-	\brief Marks the object to reset interactions and re-run collision filters in the next simulation step.
-	
-	\note This method has been deprecated. Please use #PxScene::resetFiltering() instead.
-	*/
-	PX_DEPRECATED virtual void			resetFiltering() = 0;
-
-	/**
 	\brief Sets the user definable query filter data.
 
 	<b>Default:</b> (0,0,0,0)
@@ -399,11 +418,12 @@ public:
 
 	\param[out] userBuffer The buffer to store the material pointers.
 	\param[in] bufferSize Size of provided user buffer.
+	\param[in] startIndex Index of first material pointer to be retrieved
 	\return Number of material pointers written to the buffer.
 
 	@see PxMaterial getNbMaterials() PxMaterial::release()
 	*/
-	virtual		PxU32					getMaterials(PxMaterial** userBuffer, PxU32 bufferSize) const				= 0;
+	virtual		PxU32					getMaterials(PxMaterial** userBuffer, PxU32 bufferSize, PxU32 startIndex=0) const	= 0;
 	
 	/**
 	\brief Retrieve material from given triangle index.
@@ -515,7 +535,7 @@ public:
 	
 	@see PxPhysics::createShape()
 	*/
-	virtual		bool					isExclusive() const				= 0;
+	virtual		bool					isExclusive() const	= 0;
 
 	/**
 	\brief Sets a name string for the object that can be retrieved with #getName().
@@ -551,11 +571,11 @@ protected:
 	PX_INLINE							PxShape(PxBaseFlags baseFlags) : PxBase(baseFlags) {}
 	PX_INLINE							PxShape(PxType concreteType, PxBaseFlags baseFlags) : PxBase(concreteType, baseFlags), userData(NULL) {}
 	virtual								~PxShape() {}
-	virtual		bool					isKindOf(const char* name) const { return !strcmp("PxShape", name) || PxBase::isKindOf(name); }
+	virtual		bool					isKindOf(const char* name) const { return !::strcmp("PxShape", name) || PxBase::isKindOf(name); }
 
 };
 
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 } // namespace physx
 #endif
 

@@ -1,12 +1,29 @@
-/*
- * Copyright (c) 2008-2015, NVIDIA CORPORATION.  All rights reserved.
- *
- * NVIDIA CORPORATION and its licensors retain all intellectual property
- * and proprietary rights in and to this software, related documentation
- * and any modifications thereto.  Any use, reproduction, disclosure or
- * distribution of this software and related documentation without an express
- * license agreement from NVIDIA CORPORATION is strictly prohibited.
- */
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -18,20 +35,22 @@
 */
 
 #include "foundation/PxStrideIterator.h"
-#include "PxLockedData.h"
 #include "foundation/PxFlags.h"
+#include "PxLockedData.h"
 #include "PxParticleFlag.h"
 
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 namespace physx
 {
 #endif
 
 /**
-Flags to configure PxParticleBase simulation output that can be read by the application. 
+Flags to configure PxParticleBase simulation output that can be read by the application. (deprecated)
 Disabling unneeded buffers saves memory and improves performance.
+
+\deprecated The PhysX particle feature has been deprecated in PhysX version 3.4
 */
-struct PxParticleReadDataFlag
+struct PX_DEPRECATED PxParticleReadDataFlag
 	{
 	enum Enum
 		{
@@ -83,23 +102,27 @@ struct PxParticleReadDataFlag
 	};
 
 /**
-\brief collection of set bits defined in PxParticleReadDataFlag.
+\brief collection of set bits defined in PxParticleReadDataFlag. (deprecated)
+
+\deprecated The PhysX particle feature has been deprecated in PhysX version 3.4
 
 @see PxParticleReadDataFlag
 */
-typedef PxFlags<PxParticleReadDataFlag::Enum,PxU16> PxParticleReadDataFlags;
+typedef PX_DEPRECATED PxFlags<PxParticleReadDataFlag::Enum, PxU16> PxParticleReadDataFlags;
 PX_FLAGS_OPERATORS(PxParticleReadDataFlag::Enum,PxU16)
 
 /**
-\brief collection of set bits defined in PxParticleFlag.
+\brief collection of set bits defined in PxParticleFlag. (deprecated)
+
+\deprecated The PhysX particle feature has been deprecated in PhysX version 3.4
 
 @see PxParticleFlag
 */
-typedef PxFlags<PxParticleFlag::Enum,PxU16> PxParticleFlags;
+typedef PX_DEPRECATED PxFlags<PxParticleFlag::Enum, PxU16> PxParticleFlags;
 PX_FLAGS_OPERATORS(PxParticleFlag::Enum,PxU16)
 
 /**
-\brief Data layout descriptor for reading particle data from the SDK.
+\brief Data layout descriptor for reading particle data from the SDK. (deprecated)
 
 PxParticleReadData is used to retrieve information about simulated particles. It can be accessed by calling PxParticleBase.lockParticleReadData().
 
@@ -113,9 +136,11 @@ PxParticleReadDataFlag in particleReadDataFlags is set.
 The particle data buffer are defined in the range [0, PxParticleReadData.validParticleRange-1].
 The bitmap words are defined in the range [0, (PxParticleReadData.validParticleRange-1) >> 5].
 
+\deprecated The PhysX particle feature has been deprecated in PhysX version 3.4
+
 @see PxParticleBase::lockParticleReadData()
 */
-class PxParticleReadData : public PxLockedData
+class PX_DEPRECATED PxParticleReadData : public PxLockedData
 	{
 	public:
 
@@ -191,7 +216,7 @@ class PxParticleReadData : public PxLockedData
 
 	};
 
-#ifndef PX_DOXYGEN
+#if !PX_DOXYGEN
 } // namespace physx
 #endif
 

@@ -289,7 +289,7 @@ namespace black_cat
 				1,
 				graphic::bc_format::D16_UNORM,
 				graphic::bc_resource_usage::gpu_rw,
-				core::bc_enum:: or ({ graphic::bc_resource_view_type::depth_stencil, graphic::bc_resource_view_type::shader }),
+				core::bc_enum::mask_or({ graphic::bc_resource_view_type::depth_stencil, graphic::bc_resource_view_type::shader }),
 				1,
 				0,
 				l_cascade_count

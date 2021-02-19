@@ -14,7 +14,7 @@ namespace black_cat
 	{
 #ifdef BC_MEMORY_ENABLE
 
-		class bc_memory_crt : public bc_memory
+		class bc_memory_crt : public bci_memory
 		{
 		public:
 			using this_type = bc_memory_crt;
@@ -58,7 +58,7 @@ namespace black_cat
 			m_tracer.initialize(0xffffffff);
 			if (p_tag)
 			{
-				bc_memory::tag(p_tag);
+				bci_memory::tag(p_tag);
 			}
 		}
 
