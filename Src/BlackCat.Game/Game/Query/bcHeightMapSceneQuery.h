@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/bcConstant.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Messaging/Query/bcQuery.h"
 #include "Game/System/Input/bcCameraInstance.h"
@@ -34,7 +33,8 @@ namespace black_cat
 			bc_render_state_buffer get_render_state_buffer() noexcept;
 
 			core::bc_vector<bc_height_map_ptr> get_height_maps() noexcept;
-			
+
+		protected:
 			void execute(const bc_scene_query_context& p_context) noexcept override;
 			
 		private:

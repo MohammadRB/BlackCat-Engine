@@ -2,7 +2,7 @@
   "mesh_materials": [
     {
       "name": "terrain_material_1",
-      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "diffuse_color": [ 0.8, 0.8, 0.8, 1.0 ],
       "specular_intensity": 0.3,
       "specular_power": 0.3,
       "diffuse_map": "beach_white_sand_fine",
@@ -10,7 +10,7 @@
     },
     {
       "name": "terrain_material_2",
-      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "diffuse_color": [ 0.8, 0.8, 0.8, 1.0 ],
       "specular_intensity": 0.2,
       "specular_power": 0.2,
       "diffuse_map": "cliff_is2",
@@ -18,7 +18,7 @@
     },
     {
       "name": "terrain_material_3",
-      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "diffuse_color": [ 0.5, 0.5, 0.5, 1.0 ],
       "specular_intensity": 0.1,
       "specular_power": 0.2,
       "diffuse_map": "field_earth",
@@ -26,7 +26,7 @@
     },
     {
       "name": "terrain_material_4",
-      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "diffuse_color": [ 0.48, 0.52, 0.46, 1.0 ],
       "specular_intensity": 0.1,
       "specular_power": 0.2,
       "diffuse_map": "plains_dry_grass_fern",
@@ -34,7 +34,7 @@
     },
     {
       "name": "terrain_material_5",
-      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "diffuse_color": [ 0.54, 0.60, 0.45, 1.0 ],
       "specular_intensity": 0.2,
       "specular_power": 0.2,
       "diffuse_map": "plains_ferns_green",
@@ -42,7 +42,7 @@
     },
     {
       "name": "terrain_material_6",
-      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "diffuse_color": [ 0.48, 0.48, 0.48, 1.0 ],
       "specular_intensity": 0.1,
       "specular_power": 0.2,
       "diffuse_map": "plains_pepples_a",
@@ -50,7 +50,7 @@
     },
     {
       "name": "terrain_material_7",
-      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "diffuse_color": [ 0.5, 0.5, 0.5, 1.0 ],
       "specular_intensity": 0.1,
       "specular_power": 0.2,
       "diffuse_map": "ground_earth_village_var",
@@ -58,7 +58,7 @@
     },
     {
       "name": "terrain_material_8",
-      "diffuse_color": [ 0.7, 0.7, 0.7, 0.7 ],
+      "diffuse_color": [ 0.5, 0.54, 0.5, 1.0 ],
       "specular_intensity": 0.1,
       "specular_power": 0.2,
       "diffuse_map": "plains_dry_grass_detailed_highpassed",

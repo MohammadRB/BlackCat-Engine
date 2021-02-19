@@ -10,6 +10,11 @@
 
 namespace black_cat
 {
+	namespace core
+	{
+		class bc_query_manager;
+	}
+	
 	namespace game
 	{
 		class bc_actor_component_manager;
@@ -27,9 +32,9 @@ namespace black_cat
 
 			virtual void remove(bc_actor_component_index p_index) = 0;
 
-			virtual void handle_events(bc_actor_component_manager& p_manager) = 0;
+			virtual void handle_events(core::bc_query_manager& p_query_manager, bc_actor_component_manager& p_manager) = 0;
 
-			virtual void update(bc_actor_component_manager& p_manager, const core_platform::bc_clock::update_param& p_clock) = 0;
+			virtual void update(core::bc_query_manager& p_query_manager, bc_actor_component_manager& p_manager, const core_platform::bc_clock::update_param& p_clock) = 0;
 
 			virtual bcSIZE size() = 0;
 
@@ -59,9 +64,9 @@ namespace black_cat
 
 			void remove(bc_actor_component_index p_index) override;
 
-			void handle_events(bc_actor_component_manager& p_manager) override;
+			void handle_events(core::bc_query_manager& p_query_manager, bc_actor_component_manager& p_manager) override;
 
-			void update(bc_actor_component_manager& p_manager, const core_platform::bc_clock::update_param& p_clock) override;
+			void update(core::bc_query_manager& p_query_manager, bc_actor_component_manager& p_manager, const core_platform::bc_clock::update_param& p_clock) override;
 
 			bcSIZE size() override;
 
@@ -149,8 +154,8 @@ namespace black_cat
 			m_components[p_index].~TComponent();
 		}
 
-		template <class TComponent>
-		void bc_actor_component_container<TComponent>::handle_events(bc_actor_component_manager& p_manager)
+		template< class TComponent >
+		void bc_actor_component_container<TComponent>::handle_events(core::bc_query_manager& p_query_manager, bc_actor_component_manager& p_manager)
 		{
 			const auto l_used_slots = m_bit_block.find_true_indices();
 
@@ -163,7 +168,7 @@ namespace black_cat
 
 				while (l_current_event)
 				{
-					bc_actor_component_event_context l_context(l_actor, *l_current_event);
+					bc_actor_component_event_context l_context(p_query_manager, l_actor, *l_current_event);
 					l_component.handle_event(l_context);
 					l_current_event = l_current_event->get_next();
 				}
@@ -171,7 +176,9 @@ namespace black_cat
 		}
 
 		template< class TComponent >
-		void bc_actor_component_container<TComponent>::update(bc_actor_component_manager& p_manager, const core_platform::bc_clock::update_param& p_clock)
+		void bc_actor_component_container< TComponent >::update(core::bc_query_manager& p_query_manager,
+			bc_actor_component_manager& p_manager,
+			const core_platform::bc_clock::update_param& p_clock)
 		{
 			const auto l_used_slots = m_bit_block.find_true_indices();
 
@@ -180,7 +187,7 @@ namespace black_cat
 				TComponent& l_component = m_components[l_index];
 				bc_actor l_actor = p_manager.component_get_actor< TComponent >(l_component);
 
-				l_component.update(bc_actor_component_update_content(l_actor, p_clock));
+				l_component.update(bc_actor_component_update_content(p_clock, p_query_manager, l_actor));
 			}
 		}
 

@@ -63,13 +63,13 @@ namespace black_cat
 			);
 		}
 
-		void bc_xbot_controller::added_to_scene(bc_actor& p_actor, bc_scene& p_scene)
+		void bc_xbot_controller::added_to_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene)
 		{
 			m_idle_job = bc_animation_job_builder()
 				.start_with(*m_sample_job)
 				.then(*m_local_to_model_job)
 				.end_with(*m_model_to_skinned_job)
-				.afterward([this, l_actor = p_actor, l_model_to_skinned_job = m_model_to_skinned_job.get()]() mutable
+				.afterward([this, l_actor = p_context.m_actor, l_model_to_skinned_job = m_model_to_skinned_job.get()]() mutable
 				{
 					const auto& l_mesh = m_skinned_component->get_mesh();
 
@@ -85,7 +85,7 @@ namespace black_cat
 				.build();
 		}
 
-		void bc_xbot_controller::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock)
+		void bc_xbot_controller::update(const bc_actor_component_update_content& p_context)
 		{
 			if(m_idle_job)
 			{
@@ -93,9 +93,9 @@ namespace black_cat
 			}
 		}
 
-		void bc_xbot_controller::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		void bc_xbot_controller::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_event);
+			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_context.m_event);
 			if(l_world_transform_event)
 			{
 				m_model_to_skinned_job->set_world(l_world_transform_event->get_transform());

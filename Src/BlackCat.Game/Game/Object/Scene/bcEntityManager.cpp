@@ -121,7 +121,7 @@ namespace black_cat
 			}
 
 			bc_actor l_actor = m_actor_component_manager.create_actor();
-			
+						
 			try
 			{
 				l_actor.create_component<bc_mediate_component>();

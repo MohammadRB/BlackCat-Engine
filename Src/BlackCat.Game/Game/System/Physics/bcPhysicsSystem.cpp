@@ -74,15 +74,15 @@ namespace black_cat
 			const bc_mesh_component& p_mesh,
 			const core::bc_json_key_value* p_collider_materials)
 		{
-			const core::bc_json_key_value l_empty_json;
+			const core::bc_json_key_value l_empty_collider_json;
 			const auto& l_mesh = p_mesh.get_mesh();
-			const auto& l_material_keys = p_collider_materials ? *p_collider_materials : l_empty_json;
+			const auto& l_collider_materials = p_collider_materials ? *p_collider_materials : l_empty_collider_json;
 
 			for (const auto& l_mesh_part_collider : l_mesh.get_mesh_collider())
 			{
 				auto l_material = p_material_manager.get_default_collider_material();
-				const auto l_material_ite = l_material_keys.find(l_mesh_part_collider.first.c_str());
-				if (l_material_ite != std::end(l_material_keys))
+				const auto l_material_ite = l_collider_materials.find(l_mesh_part_collider.first.c_str());
+				if (l_material_ite != std::end(l_collider_materials))
 				{
 					core::bc_any& l_material_key = l_material_ite->second;
 					auto& l_material_name = l_material_key.as_throw< core::bc_string >();

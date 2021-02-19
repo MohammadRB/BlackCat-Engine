@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include "Core/CorePCH.h"
 #include "Core/bcException.h"
 #include "Core/Memory/bcAlloc.h"
@@ -29,14 +31,7 @@ namespace black_cat
 		class _bc_parameter_pack_concrete_object : public _bc_parameter_pack_object
 		{
 		public:
-			template< typename = typename std::enable_if< std::is_copy_constructible< T >::value >::type >
-			explicit _bc_parameter_pack_concrete_object(const T& p_data)
-				: _bc_parameter_pack_object(),
-				m_value(p_data)
-			{
-			}
-
-			explicit _bc_parameter_pack_concrete_object(T&& p_data)
+			explicit _bc_parameter_pack_concrete_object(T p_data)
 				: _bc_parameter_pack_object(),
 				m_value(std::move(p_data))
 			{
@@ -81,7 +76,7 @@ namespace black_cat
 
 			bc_parameter_pack(const bc_parameter_pack& p_other);
 
-			bc_parameter_pack(bc_parameter_pack&& p_other);
+			bc_parameter_pack(bc_parameter_pack&& p_other) noexcept;
 
 			template< typename T, typename = std::enable_if_t< !std::is_same_v< std::decay_t<T>, bc_parameter_pack > > >
 			explicit bc_parameter_pack(T&& p_value);
@@ -90,7 +85,7 @@ namespace black_cat
 
 			bc_parameter_pack& operator=(const bc_parameter_pack& p_other);
 
-			bc_parameter_pack& operator=(bc_parameter_pack&& p_other);
+			bc_parameter_pack& operator=(bc_parameter_pack&& p_other) noexcept;
 
 			template<typename T>
 			void set_value(T&& p_data);
@@ -135,7 +130,6 @@ namespace black_cat
 		private:
 			static constexpr bcUINT s_buffer_size = 5 * sizeof(void*);
 
-			bool m_used_internal_buffer;
 			bcUINT m_buffer[s_buffer_size];
 			_bc_parameter_pack_object* m_object;
 		};
@@ -152,7 +146,7 @@ namespace black_cat
 
 			bc_any(const bc_any& p_other);
 
-			bc_any(bc_any&& p_other);
+			bc_any(bc_any&& p_other) noexcept;
 
 			template
 			<
@@ -171,12 +165,11 @@ namespace black_cat
 
 			bc_any& operator=(const bc_any& p_other);
 
-			bc_any& operator=(bc_any&& p_other);
+			bc_any& operator=(bc_any&& p_other) noexcept;
 		};
 
 		inline bc_parameter_pack::bc_parameter_pack()
-			: m_used_internal_buffer(false),
-			m_buffer(),
+			: m_buffer(),
 			m_object(nullptr)
 		{
 			set_allocator_alloc_type(bc_alloc_type::frame);
@@ -188,7 +181,7 @@ namespace black_cat
 			operator=(p_other);
 		}
 
-		inline bc_parameter_pack::bc_parameter_pack(bc_parameter_pack&& p_other)
+		inline bc_parameter_pack::bc_parameter_pack(bc_parameter_pack&& p_other) noexcept
 			: bc_parameter_pack()
 		{
 			operator=(std::move(p_other));
@@ -215,22 +208,20 @@ namespace black_cat
 				return *this;
 			}
 
-			if (p_other.m_used_internal_buffer)
+			if (p_other.used_internal_buffer())
 			{
 				m_object = p_other.m_object->copy(&m_buffer);
-				m_used_internal_buffer = true;
 			}
 			else
 			{
 				bcBYTE* l_buffer = allocate_raw(p_other.m_object->size()).release();
 				m_object = p_other.m_object->copy(l_buffer);
-				m_used_internal_buffer = false;
 			}
 
 			return *this;
 		}
 
-		inline bc_parameter_pack& bc_parameter_pack::operator=(bc_parameter_pack&& p_other)
+		inline bc_parameter_pack& bc_parameter_pack::operator=(bc_parameter_pack&& p_other) noexcept
 		{
 			reset();
 
@@ -239,19 +230,16 @@ namespace black_cat
 				return *this;
 			}
 
-			if (p_other.m_used_internal_buffer)
+			if (p_other.used_internal_buffer())
 			{
 				m_object = p_other.m_object->move(&m_buffer);
-				m_used_internal_buffer = true;
 			}
 			else
 			{
 				m_object = p_other.m_object;
-				m_used_internal_buffer = false;
 			}
 
 			p_other.m_object = nullptr;
-			p_other.m_used_internal_buffer = false;
 
 			return *this;
 		}
@@ -268,12 +256,10 @@ namespace black_cat
 			{
 				new (&m_buffer) _bc_parameter_pack_concrete_object<T1>(std::forward<T>(p_data));
 				m_object = reinterpret_cast<_bc_parameter_pack_object*>(&m_buffer);
-				m_used_internal_buffer = true;
 			}
 			else
 			{
 				m_object = allocate<_bc_parameter_pack_concrete_object<T1>>(std::forward<T>(p_data)).release();
-				m_used_internal_buffer = false;
 			}
 		}
 
@@ -341,17 +327,16 @@ namespace black_cat
 		inline void bc_parameter_pack::reset()
 		{
 			// Free allocated memory
-			if (m_object && !m_used_internal_buffer)
+			if (m_object && !used_internal_buffer())
 			{
 				deallocate(m_object);
 			}
 			// Only destruct constructed object in internal buffer
-			else if (m_object && m_used_internal_buffer)
+			else if (m_object && used_internal_buffer())
 			{
 				m_object->~_bc_parameter_pack_object();
 			}
 
-			m_used_internal_buffer = false;
 			m_object = nullptr;
 		}
 
@@ -362,7 +347,7 @@ namespace black_cat
 
 		inline bool bc_parameter_pack::used_internal_buffer() const
 		{
-			return m_used_internal_buffer;
+			return static_cast<const void*>(m_object) == static_cast<const void*>(&m_buffer[0]);
 		}
 
 		inline bc_any::bc_any()
@@ -382,7 +367,7 @@ namespace black_cat
 			operator=(p_other);
 		}
 
-		inline bc_any::bc_any(bc_any&& p_other)
+		inline bc_any::bc_any(bc_any&& p_other) noexcept
 			: bc_any()
 		{
 			operator=(std::move(p_other));
@@ -406,6 +391,6 @@ namespace black_cat
 
 		inline bc_any& bc_any::operator=(const bc_any& p_other) = default;
 
-		inline bc_any& bc_any::operator=(bc_any&& p_other) = default;
+		inline bc_any& bc_any::operator=(bc_any&& p_other) noexcept = default;
 	}
 }

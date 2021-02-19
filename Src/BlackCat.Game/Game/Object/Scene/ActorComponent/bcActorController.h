@@ -12,6 +12,11 @@ namespace black_cat
 	{
 		class bc_scene;
 		class bc_shape_drawer;
+		struct bc_actor_component_load_context;
+		struct bc_actor_component_write_context;
+		struct bc_actor_component_update_content;
+		struct bc_actor_component_event_context;
+		struct bc_actor_component_debug_draw_context;
 		
 		class bci_actor_controller
 		{
@@ -20,13 +25,13 @@ namespace black_cat
 
 			virtual void initialize(bc_actor& p_actor);
 
-			virtual void added_to_scene(bc_actor& p_actor, bc_scene& p_scene);
-						
-			virtual void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock);
-
-			virtual void debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer);
+			virtual void added_to_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene);
 			
-			virtual void handle_event(bc_actor& p_actor, const bc_actor_event& p_event);
+			virtual void update(const bc_actor_component_update_content& p_context);
+
+			virtual void debug_draw(const bc_actor_component_debug_draw_context& p_context);
+			
+			virtual void handle_event(const bc_actor_component_event_context& p_context);
 		};
 
 		inline bci_actor_controller::~bci_actor_controller() = default;
@@ -35,19 +40,19 @@ namespace black_cat
 		{
 		}
 
-		inline void bci_actor_controller::added_to_scene(bc_actor& p_actor, bc_scene& p_scene)
+		inline void bci_actor_controller::added_to_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene)
 		{
 		}
 
-		inline void bci_actor_controller::update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock)
+		inline void bci_actor_controller::update(const bc_actor_component_update_content& p_context)
 		{
 		}
 
-		inline void bci_actor_controller::debug_draw(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer)
+		inline void bci_actor_controller::debug_draw(const bc_actor_component_debug_draw_context& p_context)
 		{
 		}
 
-		inline void bci_actor_controller::handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		inline void bci_actor_controller::handle_event(const bc_actor_component_event_context& p_context)
 		{
 		}
 	}

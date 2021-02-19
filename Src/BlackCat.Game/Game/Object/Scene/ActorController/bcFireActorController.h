@@ -14,7 +14,7 @@ namespace black_cat
 		public:
 			void initialize(bc_actor& p_actor) override;
 
-			void update(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock) override;
+			void update(const bc_actor_component_update_content& p_context) override;
 
 		private:
 			bcFLOAT m_light_intensity = 0;

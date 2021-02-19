@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/Math/bcVector3f.h"
 #include "Core/Container/bcString.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
@@ -29,9 +30,9 @@ namespace black_cat
 
 			bc_external_particle_emitter* get_emitters() noexcept;
 
-			void spawn_emitter();
+			void spawn_emitter(const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir, const core::bc_vector3f* p_color = nullptr);
 
-			void spawn_emitter(const bcCHAR* p_name);
+			void spawn_emitter(const bcCHAR* p_name, const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir, const core::bc_vector3f* p_color = nullptr);
 
 			void add_emitter(const bc_particle_builder& p_builder);
 			

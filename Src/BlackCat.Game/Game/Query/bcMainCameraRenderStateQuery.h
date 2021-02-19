@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/bcConstant.h"
 #include "Core/Messaging/Query/bcQuery.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
@@ -31,6 +30,7 @@ namespace black_cat
 			template<class TComponent, typename ...TArgs>
 			bc_main_camera_render_state_query& only(TArgs&&... p_render_args) noexcept;
 
+		protected:
 			void execute(const core::bc_null_query_context& p_context) noexcept override;
 
 		private:

@@ -3,22 +3,23 @@
 #pragma once
 
 #include "CorePlatform/bcType.h"
-#include "Core/bcExport.h"
 #include "Core/Messaging/bcMessage.h"
 #include "Core/Messaging/Query/bcQueryContext.h"
+#include "Core/bcConstant.h"
 
 namespace black_cat
 {
 	namespace core
 	{
+		class bc_query_manager;
 		using bc_query_hash = bc_message_hash;
 		
 		class bci_query : public bci_message
 		{
+			friend class bc_query_manager;
+			
 		public:
 			virtual ~bci_query() = 0;
-
-			virtual void execute(const bc_query_context& p_context) noexcept = 0;
 
 		protected:
 			bci_query(const bcCHAR* p_name);
@@ -26,6 +27,8 @@ namespace black_cat
 			bci_query(const bci_query&);
 
 			bci_query& operator=(const bci_query&);
+
+			virtual void execute(const bc_query_context& p_context) noexcept = 0;
 		};
 
 		/**
@@ -35,15 +38,13 @@ namespace black_cat
 		template< class TContext >
 		class bc_query : public bci_query
 		{
+			friend class bc_query_manager;
+			
 		public:
 			using context_t = TContext;
 			
 		public:
 			virtual ~bc_query() = 0;
-
-			void execute(const bc_query_context& p_context) noexcept override final;
-
-			virtual void execute(const TContext& p_context) noexcept = 0;
 
 		protected:
 			bc_query(const bcCHAR* p_name);
@@ -51,6 +52,10 @@ namespace black_cat
 			bc_query(const bc_query&);
 
 			bc_query& operator=(const bc_query&);
+
+			void execute(const bc_query_context& p_context) noexcept override final;
+
+			virtual void execute(const TContext& p_context) noexcept = 0;
 		};
 
 		inline bci_query::~bci_query() = default;

@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/bcConstant.h"
 #include "Core/Messaging/Query/bcQuery.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/Query/bcQueryContext.h"
@@ -15,7 +14,7 @@ namespace black_cat
 	{
 		class bc_scene_graph_query : public core::bc_query<bc_scene_query_context>
 		{
-			BC_QUERY(sg)
+			BC_QUERY(sgq)
 
 		public:
 			bc_scene_graph_query() noexcept;

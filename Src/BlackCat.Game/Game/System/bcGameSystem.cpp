@@ -68,6 +68,7 @@ namespace black_cat
 			l_physics_system.update(p_clock);
 
 			core::bc_task<void> l_scene_task;
+			core::bc_task<void> l_animations_task;
 
 			if (l_scene)
 			{
@@ -89,7 +90,7 @@ namespace black_cat
 				l_scene_task = l_scene->update_graph_async();
 			}
 
-			const auto l_animations_task = l_animation_manager.run_scheduled_jobs_async(p_clock);
+			l_animations_task = l_animation_manager.run_scheduled_jobs_async(p_clock);
 
 			l_particle_manager.update(p_clock);
 			l_script_system.update(p_clock);

@@ -16,6 +16,7 @@ namespace black_cat
 	namespace core
 	{
 		class bc_content_stream_manager;
+		class bc_query_manager;
 	}
 	
 	namespace game
@@ -48,61 +49,66 @@ namespace black_cat
 
 		struct bc_actor_component_load_context
 		{
-			bc_actor_component_load_context(bc_actor& p_actor, const core::bc_json_key_value& p_parameters)
-				: m_actor(p_actor),
-				m_parameters(p_parameters)
+			bc_actor_component_load_context(const core::bc_json_key_value& p_parameters, bc_actor& p_actor)
+				: m_parameters(p_parameters),
+				m_actor(p_actor)
 			{
 			}
 
-			bc_actor& m_actor;
 			const core::bc_json_key_value& m_parameters;
+			bc_actor& m_actor;
 		};
 
 		struct bc_actor_component_write_context
 		{
-			bc_actor_component_write_context(bc_actor& p_actor, core::bc_json_key_value& p_parameters)
-				: m_actor(p_actor),
-				m_parameters(p_parameters)
+			bc_actor_component_write_context(core::bc_json_key_value& p_parameters, bc_actor& p_actor)
+				: m_parameters(p_parameters),
+				m_actor(p_actor)
 			{
 			}
 
-			bc_actor& m_actor;
 			core::bc_json_key_value& m_parameters;
+			bc_actor& m_actor;
 		};
 
 		struct bc_actor_component_update_content
 		{
-			bc_actor_component_update_content(bc_actor& p_actor, const core_platform::bc_clock::update_param& p_clock): m_actor(p_actor),
-				m_clock(p_clock)
+			bc_actor_component_update_content(const core_platform::bc_clock::update_param& p_clock, core::bc_query_manager& p_query_manager, bc_actor& p_actor)
+				: m_clock(p_clock),
+				m_query_manager(p_query_manager),
+				m_actor(p_actor)
 			{
 			}
 
-			bc_actor& m_actor;
 			const core_platform::bc_clock::update_param& m_clock;
+			core::bc_query_manager& m_query_manager;
+			bc_actor& m_actor;
 		};
 
 		struct bc_actor_component_event_context
 		{
-			bc_actor_component_event_context(bc_actor& p_actor, const bc_actor_event& p_event)
-				: m_actor(p_actor),
+			bc_actor_component_event_context(core::bc_query_manager& p_query_manager, bc_actor& p_actor, const bc_actor_event& p_event)
+				: m_query_manager(p_query_manager),
+				m_actor(p_actor),
 				m_event(p_event)
 			{
 			}
 
+			core::bc_query_manager& m_query_manager;
 			bc_actor& m_actor;
 			const bc_actor_event& m_event;
 		};
 
 		struct bc_actor_component_debug_draw_context
 		{
-			bc_actor_component_debug_draw_context(const bc_actor& p_actor, bc_shape_drawer& p_shape_drawer)
-				: m_actor(p_actor),
-				m_shape_drawer(p_shape_drawer)
+			bc_actor_component_debug_draw_context(bc_shape_drawer& p_shape_drawer, const bc_actor& p_actor)
+				: m_shape_drawer(p_shape_drawer),
+				m_actor(p_actor)
 			{
 			}
 
-			const bc_actor& m_actor;
 			bc_shape_drawer& m_shape_drawer;
+			const bc_actor& m_actor;
 		};
 		
 		class BC_GAME_DLL bci_actor_component

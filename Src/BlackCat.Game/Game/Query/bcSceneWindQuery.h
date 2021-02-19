@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/bcConstant.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Messaging/Query/bcQuery.h"
 #include "Game/Query/bcQueryContext.h"
@@ -27,7 +26,8 @@ namespace black_cat
 			bc_scene_wind_query& operator=(bc_scene_wind_query&&) noexcept;
 
 			core::bc_vector<bc_wind> get_winds() noexcept;
-			
+
+		protected:
 			void execute(const bc_scene_query_context& p_context) noexcept override;
 
 		private:

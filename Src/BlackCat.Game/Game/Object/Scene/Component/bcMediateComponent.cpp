@@ -51,17 +51,17 @@ namespace black_cat
 
 			if(m_controller)
 			{
-				m_controller->update(p_context.m_actor, p_context.m_clock);
+				m_controller->update(p_context);
 			}
 		}
 
 		void bc_mediate_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			_handle_event(p_context.m_actor, p_context.m_event);
+			_handle_event(p_context);
 
 			if (m_controller)
 			{
-				m_controller->handle_event(p_context.m_actor, p_context.m_event);
+				m_controller->handle_event(p_context);
 			}
 		}
 		
@@ -71,20 +71,20 @@ namespace black_cat
 
 			if(m_controller)
 			{
-				m_controller->debug_draw(p_context.m_actor, p_context.m_shape_drawer);
+				m_controller->debug_draw(p_context);
 			}
 		}
 
-		void bc_mediate_component::_handle_event(bc_actor& p_actor, const bc_actor_event& p_event)
+		void bc_mediate_component::_handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_transformation_event = core::bci_message::as< bc_actor_event_world_transform >(p_event);
+			const auto* l_transformation_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
 			if (l_transformation_event)
 			{
 				m_world_transform = l_transformation_event->get_transform();
 				return;
 			}
 
-			const auto* l_bound_box_event = core::bci_message::as< bc_actor_event_bound_box_changed >(p_event);
+			const auto* l_bound_box_event = core::bci_message::as< bc_actor_event_bound_box_changed >(p_context.m_event);
 			if (l_bound_box_event)
 			{
 				if(!m_bound_box_changed) // update prev box once only in case of multiple events per frame
@@ -96,13 +96,13 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_added_to_scene_event = core::bci_message::as< bc_actor_event_added_to_scene >(p_event);
+			const auto* l_added_to_scene_event = core::bci_message::as< bc_actor_event_added_to_scene >(p_context.m_event);
 			if (l_added_to_scene_event)
 			{
 				m_scene = &l_added_to_scene_event->get_scene();
 				if (m_controller)
 				{
-					m_controller->added_to_scene(p_actor, *m_scene);
+					m_controller->added_to_scene(p_context, *m_scene);
 				}
 				return;
 			}

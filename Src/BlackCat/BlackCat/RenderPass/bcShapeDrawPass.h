@@ -20,6 +20,7 @@ namespace black_cat
 	public:
 		explicit bc_scene_debug_shape_query(game::bc_shape_drawer& p_shape_drawer, const game::bc_actor& p_selected_actor) noexcept;
 
+	protected:
 		void execute(const game::bc_scene_query_context& p_context) noexcept override;
 
 	private:
