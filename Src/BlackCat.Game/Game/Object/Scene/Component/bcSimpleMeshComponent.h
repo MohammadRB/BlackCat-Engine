@@ -18,7 +18,7 @@ namespace black_cat
 
 			bc_simple_mesh_component(bc_simple_mesh_component&& p_other) noexcept;
 
-			~bc_simple_mesh_component();
+			~bc_simple_mesh_component() override;
 
 			bc_simple_mesh_component& operator=(bc_simple_mesh_component&& p_other) noexcept;
 

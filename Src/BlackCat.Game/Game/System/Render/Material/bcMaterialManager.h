@@ -27,7 +27,7 @@ namespace black_cat
 		class bc_render_system;
 		class bc_physics_system;
 
-		class _bc_mesh_material_entry
+		class _bc_mesh_material_desc_entry
 		{
 		public:
 			core::bc_vector4f m_diffuse_color;
@@ -54,7 +54,7 @@ namespace black_cat
 		{
 		private:
 			using string_hash = std::hash< const bcCHAR* >;
-			using mesh_material_desc_map = core::bc_unordered_map_program< string_hash::result_type, _bc_mesh_material_entry >;
+			using mesh_material_desc_map = core::bc_unordered_map_program< string_hash::result_type, _bc_mesh_material_desc_entry >;
 			using collider_material_map = core::bc_unordered_map_program< string_hash::result_type, bc_collider_material >;
 			using mesh_material_map = core::bc_unordered_map< string_hash::result_type, core::bc_unique_ptr< bc_mesh_material > >;
 			using default_diffuse_map = core::bc_unordered_map_program< bcUINT32, graphic::bc_texture2d_content_ptr >;
@@ -75,9 +75,8 @@ namespace black_cat
 			void read_material_file(const bcECHAR* p_material_json_file);
 
 			/**
-			 * \brief Try to found material and load all associated resources.
-			 * If material has already loaded return pointer to it.
-			 * \ThreadSafe
+			 * \brief Try to found material and load all associated resources. If material has already been loaded return pointer to it.
+			 * \n ThreadSafe
 			 * \param p_name 
 			 * \return null_ptr if material descriptor not found.
 			 */
@@ -86,10 +85,9 @@ namespace black_cat
 			bc_mesh_material_ptr load_mesh_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_name) noexcept;
 
 			/**
-			* \brief Found associated material description and load material from it's descriptor.
-			* If material has already loaded return pointer to it.
+			* \brief Find associated material description and load material from its descriptor. If material has already been loaded return pointer to it.
 			* Throw exception if material descriptor not found.
-			* \ThreadSafe
+			* \n ThreadSafe
 			* \param p_name
 			* \return
 			*/
@@ -99,7 +97,7 @@ namespace black_cat
 
 			/**
 			 * \brief Store a pre-made material which can be loaded later
-			 * \ThreadSafe
+			 * \n ThreadSafe
 			 * \param p_name 
 			 * \param p_material 
 			 * \return 

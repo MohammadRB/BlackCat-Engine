@@ -66,7 +66,7 @@ namespace black_cat
 			);
 
 			p_rigid_static.create_shape(l_px_height_field_shape, l_px_height_field_materials.data(), l_height_map.get_materials_count())
-			              .set_query_group(static_cast< physics::bc_query_group >(bc_query_group::terrain));
+			              .set_query_group(static_cast< physics::bc_query_group >(bc_actor_group::terrain));
 		}
 
 		void bc_physics_system::create_px_shapes_from_mesh(bc_material_manager& p_material_manager,
@@ -99,7 +99,7 @@ namespace black_cat
 					l_px_shape.set_local_pose(l_collider_entry.m_initial_transform);
 					if(l_mesh.get_skinned())
 					{
-						l_px_shape.set_query_group(static_cast<physics::bc_query_group>(bc_query_group::skinned_mesh));
+						l_px_shape.set_query_group(static_cast<physics::bc_query_group>(bc_actor_group::skinned_mesh));
 					}
 					
 					auto* l_shape_data = m_shape_data_pool.alloc();

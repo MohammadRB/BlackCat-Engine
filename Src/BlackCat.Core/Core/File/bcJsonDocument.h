@@ -45,18 +45,23 @@ namespace black_cat
 		public:
 			virtual ~bci_json_value() = default;
 
+			bool get_is_optional() const noexcept;
+
+			bool get_had_value() const noexcept;
+			
 			virtual void load(bc_json_value_object& p_json_value) = 0;
 
 			virtual void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) = 0;
 
 		protected:
-			explicit bci_json_value(bci_json_structure* p_structure, bool p_optional);
+			bci_json_value(bci_json_structure* p_structure, bool p_optional);
 
 			bc_json_value_object* get_json_field(bc_json_value_object& p_json, const bcCHAR* p_name) const;
 
 			bc_json_value_object* set_json_field(bc_json_document_object& p_document, bc_json_value_object& p_json, const bcCHAR* p_name) const;
 
 			bool m_optional;
+			bool m_had_value;
 		};
 
 		inline void bci_json_structure::load(bc_json_value_object& p_json_value)
@@ -80,8 +85,19 @@ namespace black_cat
 			m_json_fields.push_back(p_parser);
 		}
 
+		inline bool bci_json_value::get_is_optional() const noexcept
+		{
+			return m_optional;
+		}
+
+		inline bool bci_json_value::get_had_value() const noexcept
+		{
+			return m_had_value;
+		}
+
 		inline bci_json_value::bci_json_value(bci_json_structure* p_structure, bool p_optional)
-			: m_optional(p_optional)
+			: m_optional(p_optional),
+			m_had_value(false)
 		{
 			if (p_structure)
 			{
@@ -275,15 +291,18 @@ namespace black_cat
 				auto* l_value = m_name != nullptr ? get_json_field(p_json_value, m_name) : &p_json_value;
 				if (!l_value)
 				{
+					m_had_value = false;
 					return;
 				}
 
 				if(m_optional && l_value->IsNull())
 				{
+					m_had_value = false;
 					return;
 				}
 				
 				_load(*l_value, m_value);
+				m_had_value = true;
 			}
 
 			void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override

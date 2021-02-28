@@ -3,6 +3,7 @@
 #include "PhysicsImp/PhysicsImpPCH.h"
 #include "PhysicsImp/Collision/bcSceneQuery.h"
 #include "PhysicsImp/Collision/bcShapeQuery.h"
+#include "PhysicsImp/Body/bcActor.h"
 
 namespace black_cat
 {
@@ -27,6 +28,13 @@ namespace black_cat
 			static_cast< bcUINT32 >(bc_hit_flag::precise_sweep) == physx::PxHitFlag::ePRECISE_SWEEP &&
 			static_cast< bcUINT32 >(bc_hit_flag::face_index) == physx::PxHitFlag::eFACE_INDEX,
 			"bc_hit_flag value is incompatible with physX values"
+		);
+
+		static_assert
+		(
+			static_cast<bcUINT32>(bc_actor_type::rigid_static) == physx::PxActorType::eRIGID_STATIC &&
+			static_cast<bcUINT32>(bc_actor_type::rigid_dynamic) == physx::PxActorType::eRIGID_DYNAMIC,
+			"bc_actor_type value is incompatible with physX values"
 		);
 	}
 }

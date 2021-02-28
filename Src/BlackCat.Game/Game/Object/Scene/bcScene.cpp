@@ -10,9 +10,9 @@
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventAddedToScene.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventRemovedFromScene.h"
+#include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 
 namespace black_cat
 {
@@ -133,7 +133,7 @@ namespace black_cat
 				[&](bool, physics::bc_updated_actor& p_px_actor)
 				{
 					bc_actor l_actor = p_physics.get_game_actor(p_px_actor.m_actor);
-					l_actor.add_event(bc_actor_event_world_transform(p_px_actor.m_global_pose.get_matrix4(), true));
+					l_actor.add_event(bc_world_transform_actor_event(p_px_actor.m_global_pose.get_matrix4(), true));
 				},
 				[](bool) {}
 			);
@@ -228,7 +228,7 @@ namespace black_cat
 				m_px_scene->add_actor(l_rigid_body);
 			}
 
-			p_actor.add_event(bc_actor_event_added_to_scene(*this));
+			p_actor.add_event(bc_added_to_scene_actor_event(*this));
 		}
 
 		void bc_scene::_update_actor(bc_actor& p_actor)

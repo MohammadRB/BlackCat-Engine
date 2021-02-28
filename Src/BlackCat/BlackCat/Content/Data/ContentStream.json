@@ -95,44 +95,56 @@
         {
           "content_title": "gbuffer_vs",
           "content_loader": "vertex_shader",
-          "content_file": "content\\shader\\directx11\\deferredrendering\\bcMeshGBuffer.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcMeshGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_vs" }
         },
         {
           "content_title": "gbuffer_skinned_vs",
           "content_loader": "vertex_shader",
-          "content_file": "content\\shader\\directx11\\deferredrendering\\bcSkinnedMeshGBuffer.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcSkinnedMeshGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_skinned_vs" }
         },
         {
           "content_title": "gbuffer_ps",
           "content_loader": "pixel_shader",
-          "content_file": "content\\shader\\directx11\\deferredrendering\\bcMeshGBuffer.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcMeshGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_ps" }
         },
         {
           "content_title": "gbuffer_light_map",
           "content_loader": "compute_shader",
-          "content_file": "content\\shader\\directx11\\deferredrendering\\bcGBufferLightMap.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcGBufferLightMap.hlsl",
           "content_parameter": { "function": "main" }
         },
         {
           "content_title": "gbuffer_vegetable_leaf_vs",
           "content_loader": "vertex_shader",
-          "content_file": "content\\shader\\directx11\\deferredrendering\\bcVegetableLeafGBuffer.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcVegetableLeafGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_vegetable_leaf_vs" }
         },
         {
           "content_title": "gbuffer_vegetable_leaf_ps",
           "content_loader": "pixel_shader",
-          "content_file": "content\\shader\\directx11\\deferredrendering\\bcVegetableLeafGBuffer.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcVegetableLeafGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_vegetable_leaf_ps" }
         },
         {
           "content_title": "gbuffer_vegetable_trunk_vs",
           "content_loader": "vertex_shader",
-          "content_file": "content\\shader\\directx11\\deferredrendering\\bcVegetableTrunkGBuffer.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcVegetableTrunkGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_vegetable_trunk_vs" }
+        },
+        {
+          "content_title": "decal_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "content\\shader\\directx11\\decal\\bcDecal.hlsl",
+          "content_parameter": { "function": "vs" }
+        },
+        {
+          "content_title": "decal_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "content\\shader\\directx11\\decal\\bcDecal.hlsl",
+          "content_parameter": { "function": "ps" }
         }
       ]
     },

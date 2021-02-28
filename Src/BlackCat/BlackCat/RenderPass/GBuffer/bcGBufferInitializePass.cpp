@@ -10,7 +10,7 @@
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcWindComponent.h"
 #include "Game/Query/bcMainCameraSceneQuery.h"
-#include "BlackCat/RenderPass/DeferredRendering/bcGBufferInitializePass.h"
+#include "BlackCat/RenderPass/GBuffer/bcGBufferInitializePass.h"
 #include "BlackCat/bcConstant.h"
 
 namespace black_cat

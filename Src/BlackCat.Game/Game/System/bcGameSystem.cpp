@@ -4,12 +4,12 @@
 
 #include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/System/bcGameSystem.h"
-
+#include "Game/System/Render/Particle/bcParticleManager.h"
+#include "Game/System/Render/Decal/bcDecalManager.h"
 #include "Game/Object/Animation/bcAnimationManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Query/bcQueryContext.h"
-#include "Render/Particle/bcParticleManager.h"
 
 namespace black_cat
 {
@@ -46,6 +46,7 @@ namespace black_cat
 			auto& l_query_manager = *core::bc_get_service< core::bc_query_manager >();
 			auto& l_animation_manager = m_render_system.get_animation_manager();
 			auto& l_particle_manager = m_render_system.get_particle_manager();
+			auto& l_decal_manager = m_render_system.get_decal_manager();
 			auto& l_render_system = m_render_system;
 			auto& l_script_system = m_script_system;
 			auto& l_input_system = m_input_system;
@@ -93,6 +94,7 @@ namespace black_cat
 			l_animations_task = l_animation_manager.run_scheduled_jobs_async(p_clock);
 
 			l_particle_manager.update(p_clock);
+			l_decal_manager.update_decal_lifespans();
 			l_script_system.update(p_clock);
 			l_console->update(p_clock);
 

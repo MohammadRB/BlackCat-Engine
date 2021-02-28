@@ -555,8 +555,6 @@ namespace black_cat
 				_construct(p_pointer, p_meta);
 			}
 
-		protected:
-
 		private:
 			template< typename TDeleter >
 			meta_data* _allocate_meta(TDeleter p_deleter)
@@ -713,8 +711,6 @@ namespace black_cat
 
 			virtual void call_deleter_and_destruct(pointer p_pointer) const = 0;
 
-		protected:
-
 		private:
 			core_platform::bc_atomic<bcSIZE> m_ref_count;
 			bool m_is_shared;
@@ -745,8 +741,6 @@ namespace black_cat
 				l_deleter(p_pointer);
 			}
 
-		protected:
-
 		private:
 			TDeleter m_deleter;
 		};
@@ -755,115 +749,119 @@ namespace black_cat
 		bool operator ==(const bc_shared_ptr<T1>& p_first, const bc_shared_ptr<T2>& p_second)
 		{
 			return p_first.get() == p_second.get();
-		};
+		}
 
 		template<class T1, class T2>
 		bool operator !=(const bc_shared_ptr<T1>& p_first, const bc_shared_ptr<T2>& p_second)
 		{
 			return p_first.get() != p_second.get();
-		};
+		}
 
 		template<class T1, class T2>
 		bool operator <(const bc_shared_ptr<T1>& p_first, const bc_shared_ptr<T2>& p_second)
 		{
 			return p_first.get() < p_second.get();
-		};
+		}
 
 		template<class T1, class T2>
 		bool operator <=(const bc_shared_ptr<T1>& p_first, const bc_shared_ptr<T2>& p_second)
 		{
 			return p_first.get() <= p_second.get();
-		};
+		}
 
 		template<class T1, class T2>
 		bool operator >(const bc_shared_ptr<T1>& p_first, const bc_shared_ptr<T2>& p_second)
 		{
 			return p_first.get() > p_second.get();
-		};
+		}
 
 		template<class T1, class T2>
 		bool operator >=(const bc_shared_ptr<T1>& p_first, const bc_shared_ptr<T2>& p_second)
 		{
 			return p_first.get() >= p_second.get();
-		};
+		}
 
 		template <class T>
 		bool operator ==(const bc_shared_ptr<T>& p_first, std::nullptr_t)
 		{
 			return p_first.get() == nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator ==(std::nullptr_t, const bc_shared_ptr<T>& p_first)
 		{
 			return p_first.get() == nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator !=(const bc_shared_ptr<T>& p_first, std::nullptr_t)
 		{
 			return p_first.get() != nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator !=(std::nullptr_t, const bc_shared_ptr<T>& p_first)
 		{
 			return p_first.get() != nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator <(const bc_shared_ptr<T>& p_first, std::nullptr_t)
 		{
 			return p_first.get() < nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator <(std::nullptr_t, const bc_shared_ptr<T>& p_first)
 		{
 			return p_first.get() < nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator <=(const bc_shared_ptr<T>& p_first, std::nullptr_t)
 		{
 			return p_first.get() <= nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator <=(nullptr_t, const bc_shared_ptr<T>& p_first)
 		{
 			return p_first.get() <= nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator >(const bc_shared_ptr<T>& p_first, std::nullptr_t)
 		{
 			return p_first.get() > nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator >(std::nullptr_t, const bc_shared_ptr<T>& p_first)
 		{
 			return p_first.get() > nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator >=(const bc_shared_ptr<T>& p_first, std::nullptr_t)
 		{
 			return p_first.get() >= nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator >=(std::nullptr_t, const bc_shared_ptr<T>& p_first)
 		{
 			return p_first.get() >= nullptr;
-		};
+		}
 
 #pragma endregion
 
 #pragma region Ptr
 
-		// A movale aware smart pointer that doesn't provide auto clean-up after destruction
+		/**
+		 * \brief Movable aware smart pointer.
+		 * <b> Does not </b> provide auto clean-up after destruction
+		 * \tparam T 
+		 */
 		template < typename T >
 		class bc_handle_ptr
 		{
@@ -1020,8 +1018,6 @@ namespace black_cat
 				return m_pointer != nullptr;
 			}
 
-		protected:
-
 		private:
 			void _construct(T* p_pointer)
 			{
@@ -1072,109 +1068,109 @@ namespace black_cat
 		bool operator ==(const bc_handle_ptr<T1>& p_first, const bc_handle_ptr<T2>& p_second)
 		{
 			return p_first.get() == p_second.get();
-		};
+		}
 
 		template<class T1, class T2>
 		bool operator !=(const bc_handle_ptr<T1>& p_first, const bc_handle_ptr<T2>& p_second)
 		{
 			return p_first.get() != p_second.get();
-		};
+		}
 
 		template<class T1, class T2>
 		bool operator <(const bc_handle_ptr<T1>& p_first, const bc_handle_ptr<T2>& p_second)
 		{
 			return p_first.get() < p_second.get();
-		};
+		}
 
 		template<class T1, class T2>
 		bool operator <=(const bc_handle_ptr<T1>& p_first, const bc_handle_ptr<T2>& p_second)
 		{
 			return p_first.get() <= p_second.get();
-		};
+		}
 
 		template<class T1, class T2>
 		bool operator >(const bc_handle_ptr<T1>& p_first, const bc_handle_ptr<T2>& p_second)
 		{
 			return p_first.get() > p_second.get();
-		};
+		}
 
 		template<class T1, class T2>
 		bool operator >=(const bc_handle_ptr<T1>& p_first, const bc_handle_ptr<T2>& p_second)
 		{
 			return p_first.get() >= p_second.get();
-		};
+		}
 
 		template <class T>
 		bool operator ==(const bc_handle_ptr<T>& p_first, std::nullptr_t)
 		{
 			return p_first.get() == nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator ==(std::nullptr_t, const bc_handle_ptr<T>& p_first)
 		{
 			return p_first.get() == nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator !=(const bc_handle_ptr<T>& p_first, std::nullptr_t)
 		{
 			return p_first.get() != nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator !=(std::nullptr_t, const bc_handle_ptr<T>& p_first)
 		{
 			return p_first.get() != nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator <(const bc_handle_ptr<T>& p_first, std::nullptr_t)
 		{
 			return p_first.get() < nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator <(std::nullptr_t, const bc_handle_ptr<T>& p_first)
 		{
 			return p_first.get() < nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator <=(const bc_handle_ptr<T>& p_first, std::nullptr_t)
 		{
 			return p_first.get() <= nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator <=(nullptr_t, const bc_handle_ptr<T>& p_first)
 		{
 			return p_first.get() <= nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator >(const bc_handle_ptr<T>& p_first, std::nullptr_t)
 		{
 			return p_first.get() > nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator >(std::nullptr_t, const bc_handle_ptr<T>& p_first)
 		{
 			return p_first.get() > nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator >=(const bc_handle_ptr<T>& p_first, std::nullptr_t)
 		{
 			return p_first.get() >= nullptr;
-		};
+		}
 
 		template <class T>
 		bool operator >=(std::nullptr_t, const bc_handle_ptr<T>& p_first)
 		{
 			return p_first.get() >= nullptr;
-		};
+		}
 
 #pragma endregion
 

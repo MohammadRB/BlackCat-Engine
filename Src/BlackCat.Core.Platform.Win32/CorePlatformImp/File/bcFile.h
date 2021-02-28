@@ -10,7 +10,7 @@ namespace black_cat
 	namespace core_platform
 	{
 		template< >
-		struct bc_platform_file_pack< core_platform::g_api_win32 > 
+		struct bc_platform_file_pack< g_api_win32 > 
 		{
 			HANDLE m_file;
 			DWORD m_error_code;

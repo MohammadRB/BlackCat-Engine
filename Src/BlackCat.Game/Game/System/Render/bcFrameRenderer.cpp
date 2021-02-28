@@ -197,7 +197,42 @@ namespace black_cat
 			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
 			p_render_thread.update_subresource(l_buffer, 0, &g_global_state, 0, 0);
 		}
-		
+
+		void bc_frame_renderer::update_per_object_cbuffer(bc_render_thread& p_render_thread, const bc_camera_instance& p_camera, const bc_render_instance& p_instance)
+		{
+			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
+			l_per_object_cbuffer.m_world_view_projection = (p_instance.get_transform() * p_camera.get_view() * p_camera.get_projection());
+			l_per_object_cbuffer.m_world = p_instance.get_transform();
+
+			if (need_matrix_transpose())
+			{
+				l_per_object_cbuffer.m_world_view_projection.make_transpose();
+				l_per_object_cbuffer.m_world.make_transpose();
+			}
+
+			graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
+			p_render_thread.update_subresource(l_buffer, 0, &l_per_object_cbuffer, 0, 0); // TODO update part of buffer
+		}
+
+		void bc_frame_renderer::update_per_skinned_object_cbuffer(bc_render_thread& p_render_thread, const bc_camera_instance& p_camera, const bc_skinned_render_instance& p_instance)
+		{
+			BC_ASSERT(p_instance.get_num_transforms() <= g_max_skinned_transform);
+			
+			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
+			std::memcpy(&l_per_object_cbuffer.m_transforms[0], p_instance.get_transforms(), sizeof(core::bc_matrix4f) * p_instance.get_num_transforms());
+
+			if (need_matrix_transpose())
+			{
+				for (auto& l_transform : l_per_object_cbuffer.m_transforms)
+				{
+					l_transform.make_transpose();
+				}
+			}
+
+			graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
+			p_render_thread.update_subresource(l_buffer, 0, &l_per_object_cbuffer, 0, 0);
+		}
+
 		bc_render_state_buffer bc_frame_renderer::create_buffer() const
 		{
 			return bc_render_state_buffer();

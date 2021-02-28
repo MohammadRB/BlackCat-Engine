@@ -14,16 +14,16 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_animation_job_local_to_model_transform : public bci_animation_job
+		class BC_GAME_DLL bc_local_to_model_transform_animation_job : public bci_animation_job
 		{
 		public:
-			explicit bc_animation_job_local_to_model_transform(bci_local_transform_animation_job& p_local_transform_job, const bc_sub_mesh& p_sub_mesh, bc_sub_mesh_mat4_transform& p_transforms);
+			explicit bc_local_to_model_transform_animation_job(bci_local_transform_animation_job& p_local_transform_job, const bc_sub_mesh& p_sub_mesh, bc_sub_mesh_mat4_transform& p_transforms);
 
-			bc_animation_job_local_to_model_transform(bc_animation_job_local_to_model_transform&&) noexcept = default;
+			bc_local_to_model_transform_animation_job(bc_local_to_model_transform_animation_job&&) noexcept = default;
 
-			~bc_animation_job_local_to_model_transform() = default;
+			~bc_local_to_model_transform_animation_job() = default;
 
-			bc_animation_job_local_to_model_transform& operator=(bc_animation_job_local_to_model_transform&&) noexcept = default;
+			bc_local_to_model_transform_animation_job& operator=(bc_local_to_model_transform_animation_job&&) noexcept = default;
 
 			const bc_sub_mesh& get_mesh() const noexcept;
 			
@@ -38,12 +38,12 @@ namespace black_cat
 			bc_sub_mesh_mat4_transform* m_model_transforms;
 		};
 
-		inline const bc_sub_mesh& bc_animation_job_local_to_model_transform::get_mesh() const noexcept
+		inline const bc_sub_mesh& bc_local_to_model_transform_animation_job::get_mesh() const noexcept
 		{
 			return *m_mesh;
 		}
 		
-		inline const bc_sub_mesh_mat4_transform& bc_animation_job_local_to_model_transform::get_transforms() const noexcept
+		inline const bc_sub_mesh_mat4_transform& bc_local_to_model_transform_animation_job::get_transforms() const noexcept
 		{
 			return *m_model_transforms;
 		}

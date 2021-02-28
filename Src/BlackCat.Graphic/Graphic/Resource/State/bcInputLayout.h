@@ -24,7 +24,7 @@ namespace black_cat
 
 		struct bc_input_layout_config
 		{
-			core::bc_vector< bc_input_element_desc > m_input_elements;
+			core::bc_vector_movable< bc_input_element_desc > m_input_elements;
 		};
 
 		/*template< bc_platform_render_api TRenderApi >

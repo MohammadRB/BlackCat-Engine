@@ -8,7 +8,7 @@
 #include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/System/Render/State/bcStateConfigs.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
-#include "BlackCat/RenderPass/DeferredRendering/bcGBufferVegetablePass.h"
+#include "BlackCat/RenderPass/GBuffer/bcGBufferVegetablePass.h"
 #include "BlackCat/bcConstant.h"
 
 namespace black_cat

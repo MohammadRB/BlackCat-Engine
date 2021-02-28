@@ -22,7 +22,7 @@ namespace black_cat
 
 			bc_height_map_component(bc_height_map_component&&) noexcept;
 
-			~bc_height_map_component();
+			~bc_height_map_component() override;
 
 			bc_height_map_component& operator=(bc_height_map_component&&) noexcept;
 

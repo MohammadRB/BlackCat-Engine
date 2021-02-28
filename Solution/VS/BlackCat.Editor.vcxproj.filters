@@ -424,6 +424,9 @@
     <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap_Material.json">
       <Filter>Editor\Content\Scene</Filter>
     </None>
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap_Decal.json">
+      <Filter>Editor\Content\Scene</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat.Editor\Editor\Content\Shader\DirectX11\bcTerrainHeight.hlsl">

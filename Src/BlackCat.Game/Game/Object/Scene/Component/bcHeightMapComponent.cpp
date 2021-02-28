@@ -10,8 +10,8 @@
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
+#include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 
 namespace black_cat
 {
@@ -48,7 +48,7 @@ namespace black_cat
 		void bc_height_map_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			const auto& l_height_map_name = p_context.m_parameters.get_value_throw< core::bc_string >(constant::g_param_heightmap);
-			m_height_map = p_context.m_stream_manager.find_content_throw(l_height_map_name.c_str());
+			m_height_map = p_context.m_stream_manager.find_content_throw<bc_height_map>(l_height_map_name.c_str());
 		}
 
 		void bc_height_map_component::write_instance(const bc_actor_component_write_context& p_context)
@@ -59,12 +59,12 @@ namespace black_cat
 
 		void bc_height_map_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
+			const auto* l_world_transform_event = core::bci_message::as< bc_world_transform_actor_event >(p_context.m_event);
 			if(l_world_transform_event)
 			{
 				m_transform.translate(l_world_transform_event->get_transform().get_translation());
 				
-				p_context.m_actor.add_event(bc_actor_event_bound_box_changed
+				p_context.m_actor.add_event(bc_bound_box_changed_actor_event
 				(
 					physics::bc_bound_box
 					(

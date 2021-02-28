@@ -6,7 +6,7 @@
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 
 namespace black_cat
 {
@@ -63,7 +63,7 @@ namespace black_cat
 		{
 			if(m_emitter)
 			{
-				const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_context.m_event);
+				const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
 				if (l_world_transform_event)
 				{
 					m_emitter->set_positions(l_world_transform_event->get_transform().get_translation());

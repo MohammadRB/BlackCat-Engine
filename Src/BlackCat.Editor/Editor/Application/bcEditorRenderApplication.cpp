@@ -5,23 +5,24 @@
 #include "Platform/bcEvent.h"
 #include "PhysicsImp/Body/bcRigidDynamic.h"
 #include "Game/System/Input/bcFreeCamera.h"
-#include "Game/System/Input/bcConfigFile.h"
+#include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "BlackCat/bcConstant.h"
 #include "BlackCat/RenderPass/bcShapeDrawPass.h"
-#include "BlackCat/RenderPass/DeferredRendering/bcGBufferInitializePass.h"
-#include "BlackCat/RenderPass/DeferredRendering/bcGBufferTerrainPassDx11.h"
-#include "BlackCat/RenderPass/DeferredRendering/bcGBufferPass.h"
-#include "BlackCat/RenderPass/DeferredRendering/bcGBufferVegetablePass.h"
-#include "BlackCat/RenderPass/DeferredRendering/bcGBufferSkinnedPass.h"
-#include "BlackCat/RenderPass/DeferredRendering/bcGBufferLightMapPass.h"
+#include "BlackCat/RenderPass/GBuffer/bcGBufferInitializePass.h"
+#include "BlackCat/RenderPass/GBuffer/bcGBufferTerrainPassDx11.h"
+#include "BlackCat/RenderPass/GBuffer/bcGBufferPass.h"
+#include "BlackCat/RenderPass/GBuffer/bcGBufferVegetablePass.h"
+#include "BlackCat/RenderPass/GBuffer/bcGBufferSkinnedPass.h"
+#include "BlackCat/RenderPass/GBuffer/bcGBufferDecalPass.h"
+#include "BlackCat/RenderPass/GBuffer/bcGBufferLightMapPass.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapPass.h"
 #include "BlackCat/RenderPass/ShadowMap/bcVegetableCascadedShadowMapPass.h"
 #include "BlackCat/RenderPass/ShadowMap/bcSkinnedCascadedShadowMapPass.h"
@@ -66,14 +67,15 @@ namespace black_cat
 			l_render_system.add_render_pass(2, bc_gbuffer_pass());
 			l_render_system.add_render_pass(3, bc_gbuffer_vegetable_pass());
 			l_render_system.add_render_pass(4, bc_gbuffer_skinned_pass());
-			l_render_system.add_render_pass(5, bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 2048, { {15, 1}, {35, 2}, {90, 3}, {170, 4} }));
-			l_render_system.add_render_pass(6, bc_vegetable_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
-			l_render_system.add_render_pass(7, bc_skinned_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
-			l_render_system.add_render_pass(8, bc_gbuffer_light_map_pass(constant::g_rpass_direct_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
-			l_render_system.add_render_pass(9, bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
-			l_render_system.add_render_pass(10, bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
-			l_render_system.add_render_pass(11, bc_particle_system_pass_dx11());
-			l_render_system.add_render_pass(12, bc_text_draw_pass(constant::g_rpass_back_buffer_view));
+			l_render_system.add_render_pass(5, bc_gbuffer_decal_pass());
+			l_render_system.add_render_pass(6, bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 2048, { {15, 1}, {35, 2}, {90, 3}, {170, 4} }));
+			l_render_system.add_render_pass(7, bc_vegetable_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
+			l_render_system.add_render_pass(8, bc_skinned_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
+			l_render_system.add_render_pass(9, bc_gbuffer_light_map_pass(constant::g_rpass_direct_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
+			l_render_system.add_render_pass(10, bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
+			l_render_system.add_render_pass(11, bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
+			l_render_system.add_render_pass(12, bc_particle_system_pass_dx11());
+			l_render_system.add_render_pass(13, bc_text_draw_pass(constant::g_rpass_back_buffer_view));
 		}
 
 		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager* p_stream_manager)
@@ -103,7 +105,7 @@ namespace black_cat
 				{
 					auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
 					auto l_actor = l_entity_manager->create_entity("sample_explosion");
-					l_actor.add_event(game::bc_actor_event_world_transform({ 13, 49, -740 }));
+					l_actor.add_event(game::bc_world_transform_actor_event({ 13, 49, -740 }));
 
 					m_game_system->get_scene()->add_actor(l_actor);
 
@@ -153,7 +155,7 @@ namespace black_cat
 					++m_shape_throw_counter;
 
 					const auto l_position = l_input_system.get_camera().get_position();
-					l_actor.add_event(game::bc_actor_event_world_transform(l_position));
+					l_actor.add_event(game::bc_world_transform_actor_event(l_position));
 
 					auto* l_rigid_component = l_actor.get_component<game::bc_rigid_body_component>();
 					auto l_rigid = l_rigid_component->get_body();

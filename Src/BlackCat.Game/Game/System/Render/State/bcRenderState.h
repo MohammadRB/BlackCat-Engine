@@ -33,11 +33,11 @@ namespace black_cat
 		};
 
 		/**
-		 * \brief Non-mutable object that represent part of device pipeline states that can be set apart from bc_device_pipeline_state object.
+		 * \brief Non-mutable object that represent part of device pipeline states which are specific to render instance
 		 * \n Shader parameters will be mapped to device registers as they appear in their array
 		 */
 		class BC_GAME_DLL bc_render_state 
-			: private core::bc_ref_count,
+			: public core::bc_ref_count,
 			core_platform::bc_no_copy
 		{
 		public:

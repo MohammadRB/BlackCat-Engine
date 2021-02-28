@@ -13,7 +13,7 @@
 #include "Game/Object/Mesh/bcHeightMap.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
-#include "BlackCat/RenderPass/DeferredRendering/bcGBufferTerrainPassDx11.h"
+#include "BlackCat/RenderPass/GBuffer/bcGBufferTerrainPassDx11.h"
 #include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
 #include "BlackCat/bcException.h"
 #include "BlackCat/bcConstant.h"

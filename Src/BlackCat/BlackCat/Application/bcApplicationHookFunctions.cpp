@@ -18,6 +18,7 @@
 #include "Game/System/Script/bcScriptBinding.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
+#include "Game/System/Render/Decal/bcDecalManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
@@ -33,6 +34,7 @@
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Object/Scene/Component/bcWindComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
+#include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/ActorController/bcFireActorController.h"
 #include "Game/Object/Scene/ActorController/bcExplosionActorController.h"
 #include "Game/Object/Scene/ActorController/bcXBotController.h"
@@ -129,7 +131,8 @@ namespace black_cat
 			game::bc_component_register< game::bc_height_map_component >("height_map"),
 			game::bc_component_register< game::bc_light_component >("light"),
 			game::bc_component_register< game::bc_wind_component >("wind"),
-			game::bc_component_register< game::bc_particle_emitter_component >("particle_emitter")
+			game::bc_component_register< game::bc_particle_emitter_component >("particle_emitter"),
+			game::bc_component_register< game::bc_decal_component >("decal")
 		);
 		game::bc_register_abstract_component_types
 		(
@@ -158,11 +161,13 @@ namespace black_cat
 	void bc_load_engine_resources(game::bc_game_system& p_game_system)
 	{
 		auto* l_content_stream_manager = core::bc_get_service< core::bc_content_stream_manager >();
-		auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
 		auto& l_material_manager = p_game_system.get_render_system().get_material_manager();
+		auto& l_decal_manager = p_game_system.get_render_system().get_decal_manager();
+		auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
 
 		l_content_stream_manager->read_stream_file(p_game_system.get_file_system().get_content_data_path(bcL("ContentStream.json")).c_str());
 		l_material_manager.read_material_file(p_game_system.get_file_system().get_content_data_path(bcL("Material.json")).c_str());
+		l_decal_manager.read_decal_file(p_game_system.get_file_system().get_content_data_path(bcL("Decal.json")).c_str());
 		l_entity_manager->read_entity_file(p_game_system.get_file_system().get_content_data_path(bcL("EntityType.json")).c_str());
 
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_shaders");

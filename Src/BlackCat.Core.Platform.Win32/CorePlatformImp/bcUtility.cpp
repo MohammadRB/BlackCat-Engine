@@ -11,12 +11,14 @@ namespace black_cat
 		// https://blogs.msdn.microsoft.com/oldnewthing/20061103-07/?p=29133
 		BOOL win32_from_hresult(HRESULT p_hr, OUT DWORD *p_Win32)
 		{
-			if ((p_hr & 0xFFFF0000) == MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, 0)) {
+			if ((p_hr & 0xFFFF0000) == MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, 0)) 
+			{
 				// Could have come from many values, but we choose this one
 				*p_Win32 = HRESULT_CODE(p_hr);
 				return TRUE;
 			}
-			if (p_hr == S_OK) {
+			if (p_hr == S_OK) 
+			{
 				*p_Win32 = HRESULT_CODE(p_hr);
 				return TRUE;
 			}
@@ -27,14 +29,17 @@ namespace black_cat
 		void win_call(DWORD p_error_code)
 		{
 			bcCHAR l_error_string[MAX_PATH];
-			
-			FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM,
+
+			FormatMessageA
+			(
+				FORMAT_MESSAGE_FROM_SYSTEM,
 				0,
 				p_error_code,
 				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 				l_error_string,
 				MAX_PATH,
-				NULL);
+				NULL
+			);
 
 			std::string l_message = "Win32 Error: ";
 			l_message += l_error_string;
@@ -46,10 +51,10 @@ namespace black_cat
 		{
 			if(!p_result)
 			{
-				DWORD l_error_code = GetLastError();
+				const DWORD l_error_code = GetLastError();
 				win_call(l_error_code);
 			}
-		};
+		}
 
 		void win_call(HRESULT p_result)
 		{
@@ -57,7 +62,11 @@ namespace black_cat
 			{
 				DWORD l_error_code = 0;
 				win32_from_hresult(p_result, &l_error_code);
-				win_call(l_error_code);
+				
+				if(l_error_code != 0)
+				{
+					win_call(l_error_code);
+				}
 			}
 		}
 

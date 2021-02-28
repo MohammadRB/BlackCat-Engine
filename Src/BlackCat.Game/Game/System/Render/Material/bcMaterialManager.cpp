@@ -154,7 +154,7 @@ namespace black_cat
 
 			for(core::bc_json_object<_bc_mesh_material_desc>& l_material_desc : l_material_json->m_mesh_materials)
 			{
-				_bc_mesh_material_entry l_material;
+				_bc_mesh_material_desc_entry l_material;
 				l_material.m_diffuse_color = *l_material_desc->m_diffuse_color;
 				l_material.m_specular_intensity = *l_material_desc->m_specular_intensity;
 				l_material.m_specular_power = *l_material_desc->m_specular_power;
@@ -195,7 +195,7 @@ namespace black_cat
 			const auto l_hash = string_hash()(p_name);
 
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_materials_mutex);
+				core_platform::bc_mutex_guard l_guard(m_materials_mutex);
 
 				const auto l_entry = m_materials.find(l_hash);
 				if (l_entry != std::cend(m_materials))

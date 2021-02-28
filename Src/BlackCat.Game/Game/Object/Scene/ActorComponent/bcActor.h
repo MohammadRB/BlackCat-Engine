@@ -4,6 +4,7 @@
 
 #include "CorePlatform/bcType.h"
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
+#include "Game/Object/Scene/ActorComponent/bcActorGroup.h"
 
 namespace black_cat
 {

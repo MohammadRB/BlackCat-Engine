@@ -39,16 +39,30 @@ namespace black_cat
 
 			void set_timeout(bcUINT32 p_millisecond) noexcept override;
 		
-			// This function doesn't throw exception but if it fail any subsequence calls to object will
-			// throw exception
+			/**
+			 * \brief This function does not throw exception but if it fail any subsequence calls to object will throw exception
+			 * \param p_file 
+			 * \param p_mode 
+			 * \param p_access 
+			 * \param p_sharing 
+			 * \return 
+			 */
 			bool open(const bcECHAR* p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access, core_platform::bc_file_sharing p_sharing) noexcept;
 
 			bool open(const bcECHAR* p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access) noexcept;
-
-			// Open an existing file for reading
+			
+			/**
+			 * \brief Open an existing file for reading
+			 * \param p_file 
+			 * \return 
+			 */
 			bool open_read(const bcECHAR* p_file) noexcept;
 
-			// Open an existing file or create a new file fo writing
+			/**
+			 * \brief Open an existing file or create a new file fo writing
+			 * \param p_file 
+			 * \return 
+			 */
 			bool open_write(const bcECHAR* p_file) noexcept;
 
 			bcUINT64 get_position() const override;
@@ -79,8 +93,7 @@ namespace black_cat
 
 		inline bc_file_stream::bc_file_stream() = default;
 
-		inline bc_file_stream::bc_file_stream(bc_file_stream && p_other)
-			noexcept (std::is_nothrow_move_constructible< core_platform::bc_file >::value) = default;
+		inline bc_file_stream::bc_file_stream(bc_file_stream && p_other) noexcept (std::is_nothrow_move_constructible< core_platform::bc_file >::value) = default;
 
 		inline bc_file_stream::~bc_file_stream()
 		{
@@ -90,8 +103,7 @@ namespace black_cat
 			}
 		}
 
-		inline bc_file_stream& bc_file_stream::operator=(bc_file_stream && p_other)
-			noexcept (std::is_nothrow_move_constructible< core_platform::bc_file >::value) = default;
+		inline bc_file_stream& bc_file_stream::operator=(bc_file_stream && p_other) noexcept (std::is_nothrow_move_constructible< core_platform::bc_file >::value) = default;
 
 		inline const core_platform::bc_file& bc_file_stream::get_file() const noexcept
 		{
@@ -150,11 +162,11 @@ namespace black_cat
 
 		inline bool bc_file_stream::open(const bcECHAR* p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access, core_platform::bc_file_sharing p_sharing) noexcept
 		{
-			bool l_result = m_file.open(p_file, p_mode, p_access, p_sharing);
+			const bool l_result = m_file.open(p_file, p_mode, p_access, p_sharing);
 			
 			if (l_result)
 			{
-				m_path.append(p_file);
+				m_path.assign(p_file);
 				m_access = p_access;
 			}
 
@@ -163,11 +175,11 @@ namespace black_cat
 
 		inline bool bc_file_stream::open(const bcECHAR* p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access) noexcept
 		{
-			bool l_result = m_file.open(p_file, p_mode, p_access);
+			const bool l_result = m_file.open(p_file, p_mode, p_access);
 
 			if (l_result)
 			{
-				m_path.append(p_file);
+				m_path.assign(p_file);
 				m_access = p_access;
 			}
 
@@ -176,11 +188,11 @@ namespace black_cat
 
 		inline bool bc_file_stream::open_read(const bcECHAR* p_file) noexcept
 		{
-			bool l_result = m_file.open_read(p_file);
+			const bool l_result = m_file.open_read(p_file);
 
 			if (l_result)
 			{
-				m_path.append(p_file);
+				m_path.assign(p_file);
 				m_access = core_platform::bc_file_access::read;
 			}
 
@@ -189,11 +201,11 @@ namespace black_cat
 
 		inline bool bc_file_stream::open_write(const bcECHAR* p_file) noexcept
 		{
-			bool l_result = m_file.open_write(p_file);
+			const bool l_result = m_file.open_write(p_file);
 
 			if (l_result)
 			{
-				m_path.append(p_file);
+				m_path.assign(p_file);
 				m_access = core_platform::bc_file_access::write;
 			}
 

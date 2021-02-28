@@ -1,4 +1,4 @@
-// [01/01/2021 MRB]
+// [03/09/2019 MRB]
 
 #include "BlackCat/BlackCatPCH.h"
 
@@ -6,13 +6,13 @@
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcDefaultRenderThread.h"
-#include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
-#include "BlackCat/RenderPass/DeferredRendering/bcGBufferSkinnedPass.h"
+#include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
+#include "BlackCat/RenderPass/GBuffer/bcGBufferPass.h"
 #include "BlackCat/bcConstant.h"
 
 namespace black_cat
 {
-	void bc_gbuffer_skinned_pass::initialize_resources(game::bc_render_system& p_render_system)
+	void bc_gbuffer_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
 
@@ -34,46 +34,54 @@ namespace black_cat
 		after_reset(game::bc_render_pass_reset_context(p_render_system, l_device, l_old_parameters, l_new_parameters));
 	}
 
-	void bc_gbuffer_skinned_pass::update(const game::bc_render_pass_update_context& p_update_param)
+	void bc_gbuffer_pass::update(const game::bc_render_pass_update_context& p_update_param)
 	{
 	}
 
-	void bc_gbuffer_skinned_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
+	void bc_gbuffer_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
 	{
 		if (m_render_states_query.is_executed())
 		{
 			m_render_states = m_render_states_query.get().get_render_state_buffer();
 		}
-		m_render_states_query = p_param.m_query_manager.queue_query
+		m_render_states_query = core::bc_get_service< core::bc_query_manager >()->queue_query
 		(
 			game::bc_main_camera_render_state_query
 			(
 				game::bc_actor_render_camera(p_param.m_update_camera),
 				p_param.m_frame_renderer.create_buffer()
-			).only<game::bc_skinned_mesh_component>()
+			).only< game::bc_simple_mesh_component >()
 		);
 	}
 
-	void bc_gbuffer_skinned_pass::execute(const game::bc_render_pass_render_context& p_param)
+	void bc_gbuffer_pass::execute(const game::bc_render_pass_render_context& p_param)
 	{
 		p_param.m_render_thread.start();
 		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
-		
-		p_param.m_frame_renderer.render_skinned_buffer(p_param.m_render_thread, m_render_states, p_param.m_render_camera);
+
+		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, m_render_states, p_param.m_render_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_param.m_render_thread.finish();
 	}
 
-	void bc_gbuffer_skinned_pass::before_reset(const game::bc_render_pass_reset_context& p_param)
-	{
-	}
-
-	void bc_gbuffer_skinned_pass::after_reset(const game::bc_render_pass_reset_context& p_param)
+	void bc_gbuffer_pass::before_reset(const game::bc_render_pass_reset_context& p_param)
 	{
 		if
 		(
-			p_param.m_old_parameters.m_width == p_param.m_new_parameters.m_width &&
+			p_param.m_old_parameters.m_width != p_param.m_new_parameters.m_width ||
+			p_param.m_old_parameters.m_height != p_param.m_new_parameters.m_height
+		)
+		{
+			m_render_pass_state.reset();
+		}
+	}
+
+	void bc_gbuffer_pass::after_reset(const game::bc_render_pass_reset_context& p_param)
+	{
+		if
+		(
+			p_param.m_old_parameters.m_width == p_param.m_new_parameters.m_width && 
 			p_param.m_old_parameters.m_height == p_param.m_new_parameters.m_height
 		)
 		{
@@ -95,12 +103,12 @@ namespace black_cat
 		m_sampler_state = p_param.m_device.create_sampler_state(l_sampler_config);
 		m_pipeline_state = p_param.m_render_system.create_device_pipeline_state
 		(
-			"gbuffer_skinned_vs",
+			"gbuffer_vs",
 			nullptr,
 			nullptr,
 			nullptr,
 			"gbuffer_ps",
-			game::bc_vertex_type::pos_tex_nor_tan_bon,
+			game::bc_vertex_type::pos_tex_nor_tan,
 			game::bc_blend_type::opaque,
 			game::bc_depth_stencil_type::depth_less_stencil_off,
 			game::bc_rasterizer_type::fill_solid_cull_back,
@@ -127,7 +135,7 @@ namespace black_cat
 		);
 	}
 
-	void bc_gbuffer_skinned_pass::destroy(game::bc_render_system& p_render_system)
+	void bc_gbuffer_pass::destroy(game::bc_render_system& p_render_system)
 	{
 		m_render_pass_state.reset();
 		m_sampler_state.reset();

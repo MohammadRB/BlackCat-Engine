@@ -8,8 +8,8 @@
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Animation/bcAnimationManager.h"
 #include "Game/bcConstant.h"
 #include "Game/bcUtility.h"
@@ -66,14 +66,14 @@ namespace black_cat
 
 		void bc_skinned_mesh_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
+			const auto* l_world_transform_event = core::bci_message::as< bc_world_transform_actor_event >(p_context.m_event);
 			if (l_world_transform_event)
 			{
 				_set_world_transform(p_context.m_actor, l_world_transform_event->get_transform());
 				return;
 			}
 
-			const auto* l_bound_box_event = core::bci_message::as< bc_actor_event_bound_box_changed >(p_context.m_event);
+			const auto* l_bound_box_event = core::bci_message::as< bc_bound_box_changed_actor_event >(p_context.m_event);
 			if (l_bound_box_event)
 			{
 				bc_mesh_component::update_lod_factor(l_bound_box_event->get_bound_box());
@@ -137,7 +137,7 @@ namespace black_cat
 					return 0;
 				});
 
-				p_actor.add_event(bc_actor_event_bound_box_changed(l_bound_box));
+				p_actor.add_event(bc_bound_box_changed_actor_event(l_bound_box));
 			}
 		}
 	}

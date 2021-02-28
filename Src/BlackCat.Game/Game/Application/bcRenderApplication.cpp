@@ -89,6 +89,7 @@ namespace black_cat
 				&l_render_thread_state
 			);
 			l_render_thread.set_name(bcL("BC_RENDER_WORKER"));
+			l_render_thread.set_priority(core_platform::bc_thread_priority::highest);
 			
 			try
 			{

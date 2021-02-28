@@ -45,6 +45,7 @@ namespace black_cat
 		class bc_animation_manager;
 		class bc_light_manager;
 		class bc_particle_manager;
+		class bc_decal_manager;
 		class bc_scene;
 		
 		struct bc_render_system_parameter
@@ -131,6 +132,10 @@ namespace black_cat
 			bc_particle_manager& get_particle_manager() noexcept;
 			
 			const bc_particle_manager& get_particle_manager() const noexcept;
+
+			bc_decal_manager& get_decal_manager() noexcept;
+
+			const bc_decal_manager& get_decal_manager() const noexcept;
 
 			bc_shape_drawer& get_shape_drawer() noexcept;
 			
@@ -303,6 +308,7 @@ namespace black_cat
 			core::bc_unique_ptr< bc_animation_manager > m_animation_manager;
 			core::bc_unique_ptr< bc_light_manager > m_light_manager;
 			core::bc_unique_ptr< bc_particle_manager > m_particle_manager;
+			core::bc_unique_ptr< bc_decal_manager > m_decal_manager;
 			core::bc_unique_ptr< bc_shape_drawer > m_shape_drawer;
 			core::bc_unique_ptr< bc_frame_renderer > m_frame_renderer;
 
@@ -361,6 +367,16 @@ namespace black_cat
 			return *m_particle_manager;
 		}
 
+		inline bc_decal_manager& bc_render_system::get_decal_manager() noexcept
+		{
+			return *m_decal_manager;
+		}
+
+		inline const bc_decal_manager& bc_render_system::get_decal_manager() const noexcept
+		{
+			return *m_decal_manager;
+		}
+		
 		inline bc_shape_drawer& bc_render_system::get_shape_drawer() noexcept
 		{
 			return *m_shape_drawer;

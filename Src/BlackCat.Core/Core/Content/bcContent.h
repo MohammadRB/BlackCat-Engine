@@ -48,7 +48,7 @@ namespace black_cat
 		};
 
 		class bci_content : 
-			private bc_ref_count,
+			public bc_ref_count,
 			public core_platform::bc_no_copy
 		{
 		public:

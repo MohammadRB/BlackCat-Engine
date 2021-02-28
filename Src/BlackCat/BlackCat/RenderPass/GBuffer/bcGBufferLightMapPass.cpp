@@ -14,7 +14,7 @@
 #include "Game/System/Render/Light/bcLightManager.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "BlackCat/RenderPass/ShadowMap/bcCascadedShadowMapBufferContainer.h"
-#include "BlackCat/RenderPass/DeferredRendering/bcGBufferLightMapPass.h"
+#include "BlackCat/RenderPass/GBuffer/bcGBufferLightMapPass.h"
 #include "BlackCat/bcConstant.h"
 
 namespace black_cat

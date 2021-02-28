@@ -55,7 +55,7 @@ namespace black_cat
 				m_screen_height, 
 				m_point_left, 
 				m_point_top,
-				game::bc_query_group::all,
+				game::bc_actor_group::all,
 				core::bc_enum::mask_or({ physics::bc_query_flags::statics, physics::bc_query_flags::dynamics }),
 				l_query_buffer
 			);

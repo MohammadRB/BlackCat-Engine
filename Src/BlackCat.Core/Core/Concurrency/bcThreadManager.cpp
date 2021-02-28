@@ -185,7 +185,7 @@ namespace black_cat
 		void bc_thread_manager::_push_worker()
 		{
 			{
-				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_threads_mutex);
+				core_platform::bc_shared_mutex_guard l_guard(m_threads_mutex);
 
 				auto l_my_index = m_threads.size();
 				if (l_my_index >= m_thread_count + m_reserved_thread_count)
@@ -200,6 +200,7 @@ namespace black_cat
 					core_platform::bc_thread(&bc_thread_manager::_worker_spin, this, l_my_index)
 				));
 				m_threads.back()->m_thread.set_name(bcL("BC_Worker"));
+				m_threads.back()->m_thread.set_priority(core_platform::bc_thread_priority::highest);
 			}
 		}
 

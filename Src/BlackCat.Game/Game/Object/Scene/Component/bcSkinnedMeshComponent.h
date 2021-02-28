@@ -26,7 +26,7 @@ namespace black_cat
 
 			bc_skinned_mesh_component(bc_skinned_mesh_component&& p_other) noexcept;
 
-			~bc_skinned_mesh_component();
+			~bc_skinned_mesh_component() override;
 
 			bc_skinned_mesh_component& operator=(bc_skinned_mesh_component&& p_other) noexcept;
 

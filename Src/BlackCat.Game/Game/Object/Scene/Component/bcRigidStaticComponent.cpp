@@ -10,8 +10,8 @@
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventHierarchyTransform.h"
+#include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcHierarchyTransformActorEvent.h"
 
 namespace black_cat
 {
@@ -84,7 +84,7 @@ namespace black_cat
 
 		void bc_rigid_static_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
+			const auto* l_world_transform_event = core::bci_message::as< bc_world_transform_actor_event >(p_context.m_event);
 			if (l_world_transform_event)
 			{
 				const auto& l_transform = l_world_transform_event->get_transform();
@@ -113,7 +113,7 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_hierarchy_transform_event = core::bci_message::as< bc_actor_event_hierarchy_transform >(p_context.m_event);
+			const auto* l_hierarchy_transform_event = core::bci_message::as< bc_hierarchy_transform_actor_event >(p_context.m_event);
 			if(l_hierarchy_transform_event && l_hierarchy_transform_event->get_px_transforms())
 			{
 				update_px_shape_transforms(*m_px_actor_ref, *l_hierarchy_transform_event->get_px_transforms());

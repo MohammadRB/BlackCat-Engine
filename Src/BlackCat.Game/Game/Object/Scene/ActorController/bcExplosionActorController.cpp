@@ -56,7 +56,7 @@ namespace black_cat
 						l_query_buffer,
 						core::bc_enum::mask_or({physics::bc_hit_flag::position, physics::bc_hit_flag::normal, physics::bc_hit_flag::face_index}),
 						physics::bc_query_flags::statics,
-						static_cast<physics::bc_query_group>(bc_query_group::terrain)
+						static_cast<physics::bc_query_group>(bc_actor_group::terrain)
 					);
 
 					core::bc_nullable<bc_ray_hit> l_result;
