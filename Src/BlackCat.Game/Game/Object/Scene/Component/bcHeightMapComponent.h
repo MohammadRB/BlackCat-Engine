@@ -2,18 +2,19 @@
 
 #pragma once
 
-#include "Core/Math/bcMatrix4f.h"
+#include "Core/Math/bcVector3f.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
+#include "Game/Object/Scene/Component/bcDecalResolverComponent.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_height_map_component : public bc_render_component
+		class BC_GAME_DLL bc_height_map_component : public bc_render_component, public bc_decal_resolver_component
 		{
 			BC_COMPONENT(hgt_map, true, false)
 
@@ -50,6 +51,8 @@ namespace black_cat
 			void handle_event(const bc_actor_component_event_context& p_context) override;
 			
 			void render(const bc_actor_component_render_context& p_context) const override;
+
+			void add_decal(const bcCHAR* p_decal_name, const core::bc_vector3f& p_world_position) override;
 			
 		private:
 			bc_height_map_ptr m_height_map;

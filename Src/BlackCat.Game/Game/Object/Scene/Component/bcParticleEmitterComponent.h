@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Core/Math/bcVector3f.h"
-#include "Core/Container/bcString.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/System/Render/Particle/bcParticleEmitter.h"
@@ -41,7 +40,7 @@ namespace black_cat
 			void handle_event(const bc_actor_component_event_context& p_context) override;
 			
 		private:
-			core::bc_string m_emitter_name;
+			const bcCHAR* m_emitter_name;
 			bc_particle_emitter_ptr m_emitter;
 		};
 	}

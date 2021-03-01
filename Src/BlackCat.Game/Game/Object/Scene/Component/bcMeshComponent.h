@@ -21,14 +21,6 @@ namespace black_cat
 			BC_ABSTRACT_COMPONENT(mesh)
 			
 		public:
-			bc_mesh_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
-
-			bc_mesh_component(bc_mesh_component&&) noexcept;
-
-			~bc_mesh_component() override;
-
-			bc_mesh_component& operator=(bc_mesh_component&&) noexcept;
-
 			const bc_sub_mesh& get_mesh() const;
 
 			bc_sub_mesh_mat4_transform& get_world_transforms();
@@ -44,6 +36,14 @@ namespace black_cat
 			void render(const bc_actor_component_render_context& p_context) const override;
 
 		protected:
+			bc_mesh_component();
+
+			bc_mesh_component(bc_mesh_component&&) noexcept;
+
+			~bc_mesh_component() override;
+
+			bc_mesh_component& operator=(bc_mesh_component&&) noexcept;
+			
 			const bc_mesh_render_state& get_render_states() const noexcept;
 			
 			void set_render_states(bc_mesh_render_state p_render_state) noexcept;

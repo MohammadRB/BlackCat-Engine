@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_rigid_body_component : public bci_actor_component
+		class bc_rigid_body_component : public bci_actor_abstract_component
 		{
 			BC_ABSTRACT_COMPONENT(rgd_bdy)
 

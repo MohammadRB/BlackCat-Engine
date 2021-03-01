@@ -71,56 +71,64 @@
       "static_friction": 1000.0,
       "dynamic_friction": 1000.0,
       "restitution": 0.01,
-      "particle": null
+      "particle": null,
+      "decal": null
     },
     {
       "name": "terrain_material_2",
       "static_friction": 5.0,
       "dynamic_friction": 5.0,
       "restitution": 0.2,
-      "particle": null
+      "particle": null,
+      "decal": null
     },
     {
       "name": "terrain_material_3",
       "static_friction": 2.0,
       "dynamic_friction": 2.0,
       "restitution": 0.1,
-      "particle": null
+      "particle": null,
+      "decal": null
     },
     {
       "name": "terrain_material_4",
       "static_friction": 20.0,
       "dynamic_friction": 20.0,
       "restitution": 0.1,
-      "particle": null
+      "particle": null,
+      "decal": null
     },
     {
       "name": "terrain_material_5",
       "static_friction": 20.0,
       "dynamic_friction": 20.0,
       "restitution": 0.1,
-      "particle": null
+      "particle": null,
+      "decal": null
     },
     {
       "name": "terrain_material_6",
       "static_friction": 5.0,
       "dynamic_friction": 5.0,
       "restitution": 0.1,
-      "particle": null
+      "particle": null,
+      "decal": null
     },
     {
       "name": "terrain_material_7",
       "static_friction": 5.0,
       "dynamic_friction": 5.0,
       "restitution": 0.1,
-      "particle": null
+      "particle": null,
+      "decal": null
     },
     {
       "name": "terrain_material_8",
       "static_friction": 20.0,
       "dynamic_friction": 20.0,
       "restitution": 0.1,
-      "particle": null
+      "particle": null,
+      "decal": null
     }
   ] 
 }

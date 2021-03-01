@@ -40,6 +40,7 @@ namespace black_cat
 			BC_JSON_VALUE_OP(bcFLOAT, dynamic_friction);
 			BC_JSON_VALUE_OP(bcFLOAT, restitution);
 			BC_JSON_VALUE_OP(core::bc_string_frame, particle);
+			BC_JSON_VALUE_OP(core::bc_string_frame, decal);
 		};
 
 		BC_JSON_STRUCTURE(_bc_material_json)
@@ -99,14 +100,13 @@ namespace black_cat
 				nullptr,
 				core::bc_content_loader_parameter()
 			);
-
 			m_default_normal_map = l_content_manager.store_content("default_material_normal_map", std::move(l_default_normal_map));
 			m_default_specular_map = l_content_manager.store_content("default_material_specular_map", std::move(l_default_specular_map));
 
 			m_collider_materials.insert(collider_material_map::value_type
 			(
 				string_hash()("default"),
-				bc_collider_material("default", m_physics_system->get_physics().create_material(2, 2, 0.1f), "")
+				bc_collider_material("default", m_physics_system->get_physics().create_material(2, 2, 0.1f), "", "")
 			));
 		}
 
@@ -176,7 +176,13 @@ namespace black_cat
 					*l_material_desc->m_dynamic_friction,
 					*l_material_desc->m_restitution
 				);
-				bc_collider_material l_material(l_material_desc->m_name->c_str(), std::move(l_px_material), l_material_desc->m_particle->c_str());
+				bc_collider_material l_material
+				(
+					l_material_desc->m_name->c_str(),
+					std::move(l_px_material),
+					l_material_desc->m_particle->c_str(),
+					l_material_desc->m_decal->c_str()
+				);
 
 				m_collider_materials.insert(collider_material_map::value_type
 				(

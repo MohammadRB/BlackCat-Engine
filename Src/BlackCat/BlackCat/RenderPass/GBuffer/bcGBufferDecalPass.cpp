@@ -48,18 +48,18 @@ namespace black_cat
 		};
 		core::bc_array< bcINT16, 36 > l_cube_indices
 		{
-			0,1,2, // Bottom
-			0,2,3,
+			0,2,1, // Bottom
+			0,3,2,
 			4,5,6, // Top
 			4,6,7,
 			0,4,7, // Front
 			0,7,3,
-			0,4,1, // Left
-			4,5,1,
-			1,5,6, // Back
-			1,6,2,
-			2,6,7, // Right
-			2,7,3,
+			1,4,0, // Left
+			1,5,4,
+			1,6,5, // Back
+			1,2,6,
+			2,7,6, // Right
+			2,3,7,
 		};
 
 		auto l_cube_vb_config = graphic::bc_resource_builder()
@@ -189,8 +189,8 @@ namespace black_cat
 			game::bc_vertex_type::pos,
 			game::bc_blend_type::alpha,
 			game::bc_depth_stencil_type::depth_less_no_write_stencil_off,
-			game::bc_rasterizer_type::fill_wireframe_cull_none,
-			0x0,
+			game::bc_rasterizer_type::fill_solid_cull_back,
+			0x1,
 			{ l_diffuse_map.get_format(), l_normal_map.get_format() },
 			l_depth_buffer.get_format(),
 			game::bc_multi_sample_type::c1_q1
@@ -237,11 +237,11 @@ namespace black_cat
 		(
 			graphic::bc_primitive::trianglelist,
 			m_cube_vb.get(),
-			m_cube_vb->get_structure_byte_stride(),
+			sizeof(core::bc_vector3f),
 			0,
 			m_cube_ib.get(),
 			game::i16bit,
-			m_cube_ib->get_byte_width() / m_cube_ib->get_structure_byte_stride(),
+			m_cube_ib->get_byte_width() / sizeof(bcUINT16),
 			0,
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, p_decal.get_material().get_diffuse_map_view()),

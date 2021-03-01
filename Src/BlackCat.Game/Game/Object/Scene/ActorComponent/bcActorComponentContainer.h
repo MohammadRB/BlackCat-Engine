@@ -54,7 +54,7 @@ namespace black_cat
 
 			bc_actor_component_container& operator=(bc_actor_component_container&&) noexcept;
 
-			bci_actor_component* get(bc_actor_component_index p_index) override;
+			TComponent* get(bc_actor_component_index p_index) override;
 
 			bc_actor_component_index create(bc_actor_index p_actor_index) override;
 
@@ -91,7 +91,7 @@ namespace black_cat
 		bc_actor_component_container<TComponent>& bc_actor_component_container<TComponent>::operator=(bc_actor_component_container&&) noexcept = default;
 
 		template< class TComponent >
-		bci_actor_component* bc_actor_component_container<TComponent>::get(bc_actor_component_index p_index)
+		TComponent* bc_actor_component_container<TComponent>::get(bc_actor_component_index p_index)
 		{
 			const auto l_is_set = m_bit_block[p_index];
 			if(!l_is_set)

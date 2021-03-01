@@ -156,6 +156,18 @@ namespace black_cat
 			bc_actor_component_index m_index;
 		};
 
+		class BC_GAME_DLL bci_actor_abstract_component : public virtual bci_actor_component
+		{
+		protected:
+			bci_actor_abstract_component() {}
+
+			bci_actor_abstract_component(bci_actor_abstract_component&&) = default;
+
+			virtual ~bci_actor_abstract_component() override = default;
+
+			bci_actor_abstract_component& operator=(bci_actor_abstract_component&&) = default;
+		};
+
 		inline bci_actor_component::~bci_actor_component() = default;
 
 		inline bc_actor_index bci_actor_component::get_actor_index() const noexcept

@@ -19,7 +19,8 @@ namespace black_cat
 	namespace game
 	{
 		bc_skinned_mesh_component::bc_skinned_mesh_component(bc_actor_index p_actor_index, bc_actor_component_index p_index)
-			: bc_mesh_component(p_actor_index, p_index),
+			: bci_actor_component(p_actor_index, p_index),
+			bc_mesh_component(),
 			m_animation_played(false)
 		{
 		}

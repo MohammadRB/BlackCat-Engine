@@ -267,7 +267,7 @@ namespace black_cat
 
 			if(!l_content)
 			{
-				throw bc_key_not_found_exception(std::string("There is no content named ") + p_content_name);
+				throw bc_key_not_found_exception(std::string("No content was found with key ") + p_content_name);
 			}
 
 			return l_content;

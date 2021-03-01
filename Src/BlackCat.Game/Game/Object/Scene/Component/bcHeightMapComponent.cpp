@@ -8,8 +8,10 @@
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
+#include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 
@@ -18,12 +20,16 @@ namespace black_cat
 	namespace game
 	{
 		bc_height_map_component::bc_height_map_component(bc_actor_index p_actor_index, bc_actor_component_index p_index)
-			: bc_render_component(p_actor_index, p_index)
+			: bci_actor_component(p_actor_index, p_index),
+			bc_render_component(),
+			bc_decal_resolver_component()
 		{
 		}
 
 		bc_height_map_component::bc_height_map_component(bc_height_map_component&& p_other) noexcept
-			: bc_render_component(std::move(p_other)),
+			: bci_actor_component(std::move(p_other)),
+			bc_render_component(std::move(p_other)),
+			bc_decal_resolver_component(std::move(p_other)),
 			m_height_map(std::move(p_other.m_height_map))
 		{
 		}
@@ -34,8 +40,10 @@ namespace black_cat
 
 		bc_height_map_component& bc_height_map_component::operator=(bc_height_map_component&& p_other) noexcept
 		{
-			m_height_map = std::move(p_other.m_height_map);
+			bci_actor_component::operator=(std::move(p_other));
 			bc_render_component::operator=(std::move(p_other));
+			bc_decal_resolver_component::operator=(std::move(p_other));
+			m_height_map = std::move(p_other.m_height_map);
 
 			return *this;
 		}
@@ -84,6 +92,28 @@ namespace black_cat
 		{
 			const bc_render_instance l_instance(m_transform);
 			p_context.m_buffer.add_render_instance(m_height_map->get_render_state_ptr(), l_instance);
+		}
+
+		void bc_height_map_component::add_decal(const bcCHAR* p_decal_name, const core::bc_vector3f& p_world_position)
+		{
+			auto l_actor = get_actor();
+			auto* l_decal_component = l_actor.get_component<bc_decal_component>();
+
+			if(!l_decal_component)
+			{
+				l_actor.create_component<bc_decal_component>();
+				l_decal_component = l_actor.get_component<bc_decal_component>();
+			}
+
+			const auto l_local_pos = p_world_position - m_transform.get_translation();
+			const auto l_world_pos = p_world_position - l_local_pos;
+			l_decal_component->add_decal
+			(
+				p_decal_name,
+				l_local_pos,
+				core::bc_matrix4f::translation_matrix(l_world_pos),
+				bc_mesh_node::s_invalid_index
+			);
 		}
 	}
 }

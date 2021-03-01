@@ -190,6 +190,12 @@
           "parameters": {
             "emitter_name": "big_explosion"
           }
+        },
+        {
+          "name": "decal",
+          "parameters": {
+            "decal_name": "explosion_blast1"
+          }
         }
       ]
     }

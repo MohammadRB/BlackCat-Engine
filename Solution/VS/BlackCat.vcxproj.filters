@@ -55,9 +55,6 @@
     <Filter Include="BlackCat\Content\Shader\DirectX11\GBuffer">
       <UniqueIdentifier>{fedec527-ffe6-4dfa-bae6-98f8930fccaf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BlackCat\Content\Shader\DirectX11\Decal">
-      <UniqueIdentifier>{0545a422-7e19-4b87-917a-b116bafaa7f4}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.h">
@@ -325,8 +322,8 @@
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\GBuffer\bcVegetableTrunkGBuffer.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\GBuffer</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Decal\bcDecal.hlsl">
-      <Filter>BlackCat\Content\Shader\DirectX11\Decal</Filter>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\GBuffer\bcDecalGBuffer.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\GBuffer</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -360,6 +357,15 @@
       <Filter>BlackCat\Content\Texture</Filter>
     </Image>
     <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Sprites.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Decal.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Decal.nrm.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Decal.spec.dds">
       <Filter>BlackCat\Content\Texture</Filter>
     </Image>
   </ItemGroup>

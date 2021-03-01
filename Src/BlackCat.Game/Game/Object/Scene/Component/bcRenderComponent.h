@@ -42,7 +42,7 @@ namespace black_cat
 			bc_render_state_buffer& m_buffer;
 		};
 
-		class BC_GAME_DLL bc_render_component : public bci_actor_component
+		class BC_GAME_DLL bc_render_component : public bci_actor_abstract_component
 		{
 			BC_ABSTRACT_COMPONENT(render)
 
@@ -50,7 +50,7 @@ namespace black_cat
 			virtual void render(const bc_actor_component_render_context& p_context) const = 0;
 
 		protected:
-			bc_render_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
+			bc_render_component();
 
 			bc_render_component(bc_render_component&&) noexcept;
 
@@ -58,5 +58,16 @@ namespace black_cat
 
 			bc_render_component& operator=(bc_render_component&&) noexcept;
 		};
+
+		inline bc_render_component::bc_render_component()
+			: bci_actor_abstract_component()
+		{
+		}
+
+		inline bc_render_component::bc_render_component(bc_render_component&& p_other) noexcept = default;
+
+		inline bc_render_component::~bc_render_component() = default;
+
+		inline bc_render_component& bc_render_component::operator=(bc_render_component&& p_other) noexcept = default;
 	}
 }

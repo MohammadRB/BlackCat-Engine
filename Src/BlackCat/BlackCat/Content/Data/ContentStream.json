@@ -137,13 +137,13 @@
         {
           "content_title": "decal_vs",
           "content_loader": "vertex_shader",
-          "content_file": "content\\shader\\directx11\\decal\\bcDecal.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcDecalGBuffer.hlsl",
           "content_parameter": { "function": "vs" }
         },
         {
           "content_title": "decal_ps",
           "content_loader": "pixel_shader",
-          "content_file": "content\\shader\\directx11\\decal\\bcDecal.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcDecalGBuffer.hlsl",
           "content_parameter": { "function": "ps" }
         }
       ]
@@ -204,6 +204,24 @@
     {
       "stream_name": "engine_assets",
       "stream_content": [
+        {
+          "content_title": "decal_texture",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\Decal.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "decal_texture.nrm",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\Decal.nrm.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "decal_texture.spec",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\Decal.spec.dds",
+          "content_parameter": {}
+        },
         {
           "content_title": "box",
           "content_loader": "mesh",

@@ -29,7 +29,7 @@ namespace black_cat
 			BC_JSON_VALUE(bcFLOAT, width);
 			BC_JSON_VALUE(bcFLOAT, height);
 			BC_JSON_VALUE_OP(bcUINT32, group);
-			BC_JSON_VALUE_OP(bcUINT32, auto_remove);
+			BC_JSON_VALUE_OP(bool, auto_remove);
 		};
 		
 		BC_JSON_STRUCTURE(_bc_decal_json)
@@ -37,7 +37,7 @@ namespace black_cat
 			BC_JSON_ARRAY(_bc_decal_desc, decals);
 		};
 
-		inline bc_decal_manager::bc_decal_manager(bc_render_system& p_render_system, bc_material_manager& p_material_manager)
+		bc_decal_manager::bc_decal_manager(bc_render_system& p_render_system, bc_material_manager& p_material_manager)
 			: m_render_system(&p_render_system),
 			m_material_manager(&p_material_manager),
 			m_decal_instances_pool(2000, core::bc_alloc_type::program)
@@ -45,9 +45,9 @@ namespace black_cat
 			m_decals_pool.initialize(100, core::bc_alloc_type::program);
 		}
 
-		inline bc_decal_manager::~bc_decal_manager() = default;
+		bc_decal_manager::~bc_decal_manager() = default;
 
-		inline void bc_decal_manager::read_decal_file(const bcECHAR* p_decal_file)
+		void bc_decal_manager::read_decal_file(const bcECHAR* p_decal_file)
 		{
 			core::bc_file_stream l_json_file;
 			core::bc_string_frame l_json_file_buffer;
@@ -84,7 +84,7 @@ namespace black_cat
 			}
 		}
 
-		inline bc_decal_ptr bc_decal_manager::load_decal(const bcCHAR* p_name) noexcept
+		bc_decal_ptr bc_decal_manager::load_decal(const bcCHAR* p_name) noexcept
 		{
 			const auto l_hash = string_hash()(p_name);
 
@@ -129,7 +129,7 @@ namespace black_cat
 			return bc_decal_ptr(l_decal, bc_decal_deleter(*this));
 		}
 
-		inline bc_decal_ptr bc_decal_manager::load_decal_throw(const bcCHAR* p_name)
+		bc_decal_ptr bc_decal_manager::load_decal_throw(const bcCHAR* p_name)
 		{
 			auto l_decal_ptr = load_decal(p_name);
 			if(l_decal_ptr == nullptr)
@@ -229,7 +229,7 @@ namespace black_cat
 			}
 		}
 
-		inline void bc_decal_manager::destroy_decal(bc_decal* p_decal)
+		void bc_decal_manager::destroy_decal(bc_decal* p_decal)
 		{
 			auto* l_entry = static_cast<_bc_decal_entry*>(p_decal);
 			

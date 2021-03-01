@@ -35,6 +35,7 @@
 #include "Game/Object/Scene/Component/bcWindComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
+#include "Game/Object/Scene/Component/bcDecalResolverComponent.h"
 #include "Game/Object/Scene/ActorController/bcFireActorController.h"
 #include "Game/Object/Scene/ActorController/bcExplosionActorController.h"
 #include "Game/Object/Scene/ActorController/bcXBotController.h"
@@ -138,7 +139,8 @@ namespace black_cat
 		(
 			game::bc_abstract_component_register< game::bc_mesh_component, game::bc_simple_mesh_component, game::bc_vegetable_mesh_component, game::bc_skinned_mesh_component >(),
 			game::bc_abstract_component_register< game::bc_render_component, game::bc_mesh_component, game::bc_height_map_component >(),
-			game::bc_abstract_component_register< game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component >()
+			game::bc_abstract_component_register< game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component >(),
+			game::bc_abstract_component_register< game::bc_decal_resolver_component, game::bc_height_map_component >()
 		);
 		game::bc_register_actor_controller_types
 		(

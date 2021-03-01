@@ -14,14 +14,18 @@ namespace black_cat
 	namespace game
 	{
 		bc_decal_component::bc_decal_component(bc_actor_index p_actor_index, bc_actor_component_index p_index)
-			: bc_render_component(p_actor_index, p_index),
-			bc_const_iterator_adapter(m_decals)
+			: bci_actor_component(p_actor_index, p_index),
+			bc_render_component(),
+			bc_const_iterator_adapter(m_decals),
+			m_decal_name(nullptr)
 		{
 		}
 
 		bc_decal_component::bc_decal_component(bc_decal_component&& p_other) noexcept
-			: bc_render_component(std::move(p_other)),
+			: bci_actor_component(std::move(p_other)),
+			bc_render_component(std::move(p_other)),
 			bc_const_iterator_adapter(m_decals),
+			m_decal_name(p_other.m_decal_name),
 			m_decals(std::move(p_other.m_decals))
 		{
 		}
@@ -30,7 +34,9 @@ namespace black_cat
 
 		bc_decal_component& bc_decal_component::operator=(bc_decal_component&& p_other) noexcept
 		{
+			bci_actor_component::operator=(std::move(p_other));
 			bc_render_component::operator=(std::move(p_other));
+			m_decal_name = p_other.m_decal_name;
 			m_decals = std::move(p_other.m_decals);
 			return *this;
 		}
@@ -38,6 +44,24 @@ namespace black_cat
 		bc_actor bc_decal_component::get_actor() const noexcept
 		{
 			return get_manager().component_get_actor(*this);
+		}
+
+		void bc_decal_component::add_decal(const core::bc_vector3f& p_local_pos,
+			const core::bc_matrix4f& p_initial_world_transform,
+			bc_mesh_node::node_index_t p_attached_node)
+		{
+			if(!m_decal_name)
+			{
+				return;
+			}
+			
+			add_decal
+			(
+				m_decal_name,
+				p_local_pos,
+				p_initial_world_transform,
+				p_attached_node
+			);
 		}
 
 		void bc_decal_component::add_decal(const bcCHAR* p_decal_name,
@@ -52,6 +76,15 @@ namespace black_cat
 			l_decal->set_world_transform(p_initial_world_transform);
 			
 			m_decals.push_back(std::move(l_decal));
+		}
+
+		void bc_decal_component::initialize(const bc_actor_component_initialize_context& p_context)
+		{
+			const auto* l_decal_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_decal_name);
+			if (l_decal_name != nullptr)
+			{
+				m_decal_name = l_decal_name->c_str();
+			}
 		}
 
 		void bc_decal_component::handle_event(const bc_actor_component_event_context& p_context)

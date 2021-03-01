@@ -18,12 +18,14 @@ namespace black_cat
 	namespace game
 	{
 		bc_rigid_static_component::bc_rigid_static_component(bc_actor_index p_actor_index, bc_actor_component_index p_index) noexcept
-			: bc_rigid_body_component(p_actor_index, p_index)
+			: bci_actor_component(p_actor_index, p_index),
+			bc_rigid_body_component(p_actor_index, p_index)
 		{
 		}
 
 		bc_rigid_static_component::bc_rigid_static_component(bc_rigid_static_component&& p_other) noexcept
-			: bc_rigid_body_component(std::move(p_other)),
+			: bci_actor_component(std::move(p_other)),
+			bc_rigid_body_component(std::move(p_other)),
 			m_px_actor_ref(std::move(p_other.m_px_actor_ref))
 		{
 		}
@@ -39,8 +41,9 @@ namespace black_cat
 
 		bc_rigid_static_component& bc_rigid_static_component::operator=(bc_rigid_static_component&& p_other) noexcept
 		{
-			m_px_actor_ref = std::move(p_other.m_px_actor_ref);
+			bci_actor_component::operator=(std::move(p_other));
 			bc_rigid_body_component::operator=(std::move(p_other));
+			m_px_actor_ref = std::move(p_other.m_px_actor_ref);
 
 			return *this;
 		}

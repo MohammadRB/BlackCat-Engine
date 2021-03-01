@@ -11,7 +11,8 @@ namespace black_cat
 
 		bc_render_state_buffer::bc_render_state_buffer(bc_render_state_buffer&& p_other) noexcept
 			: m_render_states(std::move(p_other.m_render_states)),
-			m_skinned_render_states(std::move(p_other.m_skinned_render_states))
+			m_skinned_render_states(std::move(p_other.m_skinned_render_states)),
+			m_decals(std::move(p_other.m_decals))
 		{
 		}
 
@@ -21,6 +22,7 @@ namespace black_cat
 		{
 			m_render_states = std::move(p_other.m_render_states);
 			m_skinned_render_states = std::move(p_other.m_skinned_render_states);
+			m_decals = std::move(p_other.m_decals);
 			return *this;
 		}
 	}
