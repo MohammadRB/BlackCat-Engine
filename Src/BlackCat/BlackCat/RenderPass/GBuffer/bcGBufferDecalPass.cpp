@@ -30,6 +30,14 @@ namespace black_cat
 		bcFLOAT m_height;
 		bcUINT32 m_group;
 	};
+
+	struct bc_instance_cbuffer_parameter
+	{
+		BC_CBUFFER_ALIGN
+		core::bc_matrix4f m_world_inv;
+		BC_CBUFFER_ALIGN
+		core::bc_matrix4f m_world_view_projection;
+	};
 	
 	void bc_gbuffer_decal_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
@@ -62,17 +70,48 @@ namespace black_cat
 			2,3,7,
 		};
 
-		auto l_cube_vb_config = graphic::bc_resource_builder()
+		auto l_cube_vb_config = graphic::bc_graphic_resource_builder()
+			.as_resource()
 			.as_buffer(8, sizeof(core::bc_vector3f), graphic::bc_resource_usage::gpu_r)
 			.as_vertex_buffer();
-		auto l_cube_ib_config = graphic::bc_resource_builder()
+		auto l_cube_ib_config = graphic::bc_graphic_resource_builder()
+			.as_resource()
 			.as_buffer(36, sizeof(bcINT16), graphic::bc_resource_usage::gpu_r)
 			.as_index_buffer();
+		auto l_instance_cb_config = graphic::bc_graphic_resource_builder()
+			.as_resource()
+			.as_buffer(1, sizeof(bc_instance_cbuffer_parameter), graphic::bc_resource_usage::gpu_rw)
+			.as_constant_buffer();
 		auto l_cube_vb_data = graphic::bc_subresource_data(&l_cube_vertices[0], 0, 0);
 		auto l_cube_ib_data = graphic::bc_subresource_data(&l_cube_indices[0], 0, 0);
 
 		m_cube_vb = l_device.create_buffer(l_cube_vb_config, &l_cube_vb_data);
 		m_cube_ib = l_device.create_buffer(l_cube_ib_config, &l_cube_ib_data);
+		m_instance_cbuffer = l_device.create_buffer(l_instance_cb_config, nullptr);
+
+		const auto l_point_sampler_config = graphic::bc_graphic_resource_builder()
+		                                    .as_resource()
+		                                    .as_sampler_state
+		                                    (
+			                                    graphic::bc_filter::min_mag_mip_point,
+			                                    graphic::bc_texture_address_mode::wrap,
+			                                    graphic::bc_texture_address_mode::wrap,
+			                                    graphic::bc_texture_address_mode::wrap
+		                                    )
+		                                    .as_sampler_state();
+		const auto l_linear_sampler_config = graphic::bc_graphic_resource_builder()
+		                                     .as_resource()
+		                                     .as_sampler_state
+		                                     (
+			                                     graphic::bc_filter::min_mag_mip_linear,
+			                                     graphic::bc_texture_address_mode::wrap,
+			                                     graphic::bc_texture_address_mode::wrap,
+			                                     graphic::bc_texture_address_mode::wrap
+		                                     )
+		                                     .as_sampler_state();
+
+		m_point_sampler = l_device.create_sampler_state(l_point_sampler_config);
+		m_linear_sampler = l_device.create_sampler_state(l_linear_sampler_config);
 				
 		after_reset
 		(
@@ -139,7 +178,20 @@ namespace black_cat
 			
 			for(auto& l_instance : l_entry.second)
 			{
-				p_param.m_frame_renderer.update_per_object_cbuffer(p_param.m_render_thread, p_param.m_render_camera, l_instance);
+				bc_instance_cbuffer_parameter l_cbuffer_data
+				{
+					l_instance.get_transform().inverse(),
+					l_instance.get_transform() * p_param.m_render_camera.get_view() * p_param.m_render_camera.get_projection()
+				};
+
+				if(p_param.m_frame_renderer.need_matrix_transpose())
+				{
+					l_cbuffer_data.m_world_inv.make_transpose();
+					l_cbuffer_data.m_world_view_projection.make_transpose();
+				}
+				
+				p_param.m_render_thread.update_subresource(*m_instance_cbuffer, 0, &l_cbuffer_data, 0 , 0);
+				//p_param.m_frame_renderer.update_per_object_cbuffer(p_param.m_render_thread, p_param.m_render_camera, l_instance);
 
 				p_param.m_render_thread.draw_indexed
 				(
@@ -173,25 +225,34 @@ namespace black_cat
 		
 		const auto l_diffuse_map = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1);
 		const auto l_normal_map = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2);
-		const auto l_depth_buffer = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
+		auto l_depth_buffer = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
 		const auto l_diffuse_map_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_1);
 		const auto l_normal_map_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_2);
-		const auto l_depth_buffer_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
+		const auto l_depth_render_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
 		const auto l_viewport = graphic::bc_viewport::default_config(l_diffuse_map.get_width(), l_diffuse_map.get_height());
+
+		auto l_depth_view_config = graphic::bc_graphic_resource_builder()
+			.as_resource_view()
+			.as_texture_view(graphic::bc_format::R32_FLOAT)
+			.as_tex2d_shader_view(0, 1)
+			.on_texture2d();
+		m_depth_view = p_param.m_device.create_resource_view(l_depth_buffer, l_depth_view_config);
 		
 		m_device_pipeline_state = p_param.m_render_system.create_device_pipeline_state
 		(
-			"decal_vs",
+			"gbuffer_decal_vs",
 			nullptr,
 			nullptr,
 			nullptr,
-			"decal_ps",
+			"gbuffer_decal_ps",
 			game::bc_vertex_type::pos,
 			game::bc_blend_type::alpha,
-			game::bc_depth_stencil_type::depth_less_no_write_stencil_off,
+			game::bc_depth_stencil_type::depth_off_stencil_off,
 			game::bc_rasterizer_type::fill_solid_cull_back,
 			0x1,
-			{ l_diffuse_map.get_format(), l_normal_map.get_format() },
+			{
+				l_diffuse_map.get_format(), l_normal_map.get_format()
+			},
 			l_depth_buffer.get_format(),
 			game::bc_multi_sample_type::c1_q1
 		);
@@ -199,12 +260,21 @@ namespace black_cat
 		(
 			m_device_pipeline_state.get(),
 			l_viewport,
-			{ l_diffuse_map_view, l_normal_map_view },
-			l_depth_buffer_view,
-			{},
-			{},
-			{},
-			{ p_param.m_render_system.get_global_cbuffer() }
+			{
+				l_diffuse_map_view, l_normal_map_view
+			},
+			graphic::bc_depth_stencil_view(),
+			{
+				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_point_sampler.get()),
+				graphic::bc_sampler_parameter(1, graphic::bc_shader_type::pixel, m_linear_sampler.get())
+			},
+			{
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, m_depth_view.get()) },
+			{
+			},
+			{
+				p_param.m_render_system.get_global_cbuffer()
+			}
 		);
 	}
 
@@ -249,8 +319,8 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::pixel, p_decal.get_material().get_specular_map_view()),
 			},
 			{
-				p_render_system.get_per_object_cbuffer(),
-				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::pixel, l_cbuffer.get())
+				graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::pixel, l_cbuffer.get()),
+				graphic::bc_constant_buffer_parameter(1, core::bc_enum::mask_or({graphic::bc_shader_type::vertex, graphic::bc_shader_type::pixel}), m_instance_cbuffer.get())
 			}
 		);
 

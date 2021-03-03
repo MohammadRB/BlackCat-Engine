@@ -28,6 +28,7 @@ namespace black_cat
 			BC_JSON_VALUE(bcFLOAT, v1);
 			BC_JSON_VALUE(bcFLOAT, width);
 			BC_JSON_VALUE(bcFLOAT, height);
+			BC_JSON_VALUE(bcFLOAT, depth);
 			BC_JSON_VALUE_OP(bcUINT32, group);
 			BC_JSON_VALUE_OP(bool, auto_remove);
 		};
@@ -77,6 +78,7 @@ namespace black_cat
 					*l_decal->m_v1,
 					*l_decal->m_width,
 					*l_decal->m_height,
+					*l_decal->m_depth,
 					l_decal->m_group.get_had_value() ? static_cast<bc_actor_group>(*l_decal->m_group) : bc_actor_group::all,
 					l_decal->m_auto_remove.get_had_value() ? *l_decal->m_auto_remove : false
 				};
@@ -115,6 +117,7 @@ namespace black_cat
 					l_desc_ite->second.m_v1,
 					l_desc_ite->second.m_width,
 					l_desc_ite->second.m_height,
+					l_desc_ite->second.m_depth,
 					l_desc_ite->second.m_group,
 					l_desc_ite->second.m_auto_remove
 				),

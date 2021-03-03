@@ -135,16 +135,21 @@
           "content_parameter": { "function": "gbuffer_vegetable_trunk_vs" }
         },
         {
-          "content_title": "decal_vs",
+          "content_title": "gbuffer_decal_vs",
           "content_loader": "vertex_shader",
           "content_file": "content\\shader\\directx11\\gbuffer\\bcDecalGBuffer.hlsl",
           "content_parameter": { "function": "vs" }
         },
         {
-          "content_title": "decal_ps",
+          "content_title": "gbuffer_decal_ps",
           "content_loader": "pixel_shader",
           "content_file": "content\\shader\\directx11\\gbuffer\\bcDecalGBuffer.hlsl",
-          "content_parameter": { "function": "ps" }
+          "content_parameter": {
+            "function": "ps",
+            "macros": {
+              "CAMERA_INSIDE": "false"
+            }
+          }
         }
       ]
     },

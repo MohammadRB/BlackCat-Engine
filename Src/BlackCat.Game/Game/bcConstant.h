@@ -9,6 +9,7 @@ namespace black_cat
 	namespace constant
 	{
 		BC_PARAMETER(shader_function, "function");
+		BC_PARAMETER(shader_macro, "macros");
 		BC_PARAMETER(mesh, "mesh");
 		BC_PARAMETER(sub_mesh, "sub_mesh");
 		BC_PARAMETER(mesh_materials, "materials");

@@ -25,6 +25,8 @@ namespace black_cat
 			BC_CBUFFER_ALIGN
 			core::bc_matrix4f m_view_projection;
 			BC_CBUFFER_ALIGN
+			core::bc_matrix4f m_view_projection_inv;
+			BC_CBUFFER_ALIGN
 			bcUINT32 m_screen_width;
 			bcUINT32 m_screen_height;
 			bcFLOAT m_near_plan;
@@ -139,7 +141,8 @@ namespace black_cat
 		{
 			g_global_state.m_view = p_camera.get_view();
 			g_global_state.m_projection = p_camera.get_projection();
-			g_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection());
+			g_global_state.m_view_projection = p_camera.get_view() * p_camera.get_projection();
+			g_global_state.m_view_projection_inv = g_global_state.m_view_projection.inverse();
 			g_global_state.m_screen_width = p_camera.get_screen_width();
 			g_global_state.m_screen_height = p_camera.get_screen_height();
 			g_global_state.m_near_plan = p_camera.get_near_clip();
@@ -155,6 +158,7 @@ namespace black_cat
 				g_global_state.m_view.make_transpose();
 				g_global_state.m_projection.make_transpose();
 				g_global_state.m_view_projection.make_transpose();
+				g_global_state.m_view_projection_inv.make_transpose();
 			}
 
 			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
@@ -169,7 +173,8 @@ namespace black_cat
 		{
 			g_global_state.m_view = p_camera.get_view();
 			g_global_state.m_projection = p_camera.get_projection();
-			g_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection());
+			g_global_state.m_view_projection = p_camera.get_view() * p_camera.get_projection();
+			g_global_state.m_view_projection_inv = g_global_state.m_view_projection.inverse();
 			g_global_state.m_screen_width = p_camera.get_screen_width();
 			g_global_state.m_screen_height = p_camera.get_screen_height();
 			g_global_state.m_near_plan = p_camera.get_near_clip();
@@ -191,7 +196,7 @@ namespace black_cat
 			{
 				g_global_state.m_view.make_transpose();
 				g_global_state.m_projection.make_transpose();
-				g_global_state.m_view_projection.make_transpose();
+				g_global_state.m_view_projection_inv.make_transpose();
 			}
 			
 			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();

@@ -21,6 +21,12 @@ namespace black_cat
 			compute = 32
 		};
 
+		struct bc_shader_macro
+		{
+			const bcCHAR* m_name;
+			const bcCHAR* m_value;
+		};
+		
 		template< bc_render_api TRenderApi >
 		struct bc_platform_compiled_shader_pack
 		{

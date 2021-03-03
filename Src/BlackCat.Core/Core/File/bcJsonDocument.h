@@ -173,37 +173,37 @@ namespace black_cat
 
 			bc_json_key_value& operator=(bc_json_key_value&&) noexcept(bc_type_traits<key_value_array>::is_no_throw_move) = default;
 
-			iterator begin()
+			iterator begin() noexcept
 			{
 				return m_key_values.begin();
 			}
 
-			const_iterator begin() const
+			const_iterator begin() const noexcept
 			{
 				return m_key_values.begin();
 			}
 
-			const_iterator cbegin() const
+			const_iterator cbegin() const noexcept
 			{
 				return m_key_values.cbegin();
 			}
 
-			iterator end()
+			iterator end() noexcept
 			{
 				return m_key_values.end();
 			}
 
-			const_iterator end() const
+			const_iterator end() const noexcept
 			{
 				return m_key_values.end();
 			}
 
-			const_iterator cend() const
+			const_iterator cend() const noexcept
 			{
 				return m_key_values.cend();
 			}
 
-			iterator find(const bcCHAR* p_key)
+			iterator find(const bcCHAR* p_key) noexcept
 			{
 				auto l_current = std::begin(m_key_values);
 				const auto l_end = std::end(m_key_values);
@@ -218,7 +218,7 @@ namespace black_cat
 				return l_current;
 			}
 
-			const_iterator find(const bcCHAR* p_key) const
+			const_iterator find(const bcCHAR* p_key) const noexcept
 			{
 				return const_cast<bc_json_key_value*>(this)->find(p_key);
 			}
@@ -254,6 +254,11 @@ namespace black_cat
 				m_key_values.reserve(p_new_capacity);
 			}
 
+			bcSIZE size() const noexcept
+			{
+				return m_key_values.size();
+			}
+		
 		private:
 			key_value_array m_key_values;
 		};

@@ -5,6 +5,8 @@
 #include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
+#include "GraphicImp/Resource/View/bcResourceView.h"
+#include "GraphicImp/Resource/State/bcSamplerState.h"
 #include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
@@ -42,6 +44,10 @@ namespace black_cat
 		
 		graphic::bc_buffer_ptr m_cube_vb;
 		graphic::bc_buffer_ptr m_cube_ib;
+		graphic::bc_buffer_ptr m_instance_cbuffer;
+		graphic::bc_resource_view_ptr m_depth_view;
+		graphic::bc_sampler_state_ptr m_point_sampler;
+		graphic::bc_sampler_state_ptr m_linear_sampler;
 		graphic::bc_device_pipeline_state_ptr m_device_pipeline_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;
 

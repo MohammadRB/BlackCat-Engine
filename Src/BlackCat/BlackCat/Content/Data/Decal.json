@@ -9,6 +9,7 @@
       "v1": 0.35,
       "width": 15.0,
       "height": 15.0,
+      "depth": 15.0, 
       "group": 1,
       "auto_remove": false
     }

@@ -48,6 +48,20 @@ namespace black_cat
 {
 	namespace graphic
 	{
+		D3D_SHADER_MACRO* _create_shader_macro_array(const bc_shader_macro* p_macros, bcUINT32 p_macro_count, core::bc_vector< D3D_SHADER_MACRO >& p_buffer)
+		{
+			p_buffer.resize(p_macro_count + 1);
+
+			std::transform(p_macros, p_macros + p_macro_count, std::begin(p_buffer), [](const bc_shader_macro& p_macro)
+			{
+				return D3D_SHADER_MACRO{ p_macro.m_name, p_macro.m_value };
+			});
+			
+			p_buffer[p_macro_count] = D3D_SHADER_MACRO{ nullptr, nullptr };
+
+			return p_buffer.data();
+		}
+		
 		ID3D11Buffer* _initialize_buffer(bc_device* p_device, bc_buffer_config* p_config, bc_subresource_data* p_data)
 		{
 			ID3D11Buffer* l_buffer;
@@ -195,7 +209,7 @@ namespace black_cat
 			}
 		}
 
-		ID3D10Blob* _compile_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_profile, const D3D_SHADER_MACRO* p_defines, const bcCHAR* p_source_file)
+		ID3D10Blob* _compile_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_profile, const D3D_SHADER_MACRO* p_macros, const bcCHAR* p_source_file)
 		{
 			// Loop until we succeed, or an exception is thrown
 			while (true)
@@ -212,7 +226,7 @@ namespace black_cat
 					p_data,
 					p_data_size,
 					p_source_file,
-					p_defines,
+					p_macros,
 					D3D_COMPILE_STANDARD_FILE_INCLUDE,
 					p_function_name,
 					p_profile,
@@ -654,15 +668,28 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_vertex_shader(const bcBYTE* p_data,
+			bcSIZE p_data_size, 
+			const bcCHAR* p_function_name,
+			const bcCHAR* p_source_file,
+			const bc_shader_macro* p_macros,
+			bcUINT32 p_macro_count)
 		{
+			D3D_SHADER_MACRO* l_macros = nullptr;
+			core::bc_vector< D3D_SHADER_MACRO > l_macro_definitions;
+
+			if (p_macro_count == 0)
+			{
+				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
+			}
+			
 			auto* l_dx_blob = _compile_shader
 			(
 				p_data,
 				p_data_size,
 				p_function_name,
 				"vs_5_0",
-				nullptr,
+				l_macros,
 				p_source_file
 			);
 
@@ -698,15 +725,28 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_hull_shader(const bcBYTE* p_data, 
+			bcSIZE p_data_size, 
+			const bcCHAR* p_function_name, 
+			const bcCHAR* p_source_file, 
+			const bc_shader_macro* p_macros, 
+			bcUINT32 p_macro_count)
 		{
+			D3D_SHADER_MACRO* l_macros = nullptr;
+			core::bc_vector< D3D_SHADER_MACRO > l_macro_definitions;
+
+			if (p_macro_count > 0)
+			{
+				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
+			}
+			
 			auto* l_dx_shader = _compile_shader
 			(
 				p_data,
 				p_data_size,
 				p_function_name,
 				"hs_5_0",
-				nullptr,
+				l_macros,
 				p_source_file
 			);
 
@@ -740,15 +780,28 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_domain_shader(const bcBYTE* p_data, 
+			bcSIZE p_data_size, 
+			const bcCHAR* p_function_name, 
+			const bcCHAR* p_source_file, 
+			const bc_shader_macro* p_macros, 
+			bcUINT32 p_macro_count)
 		{
+			D3D_SHADER_MACRO* l_macros = nullptr;
+			core::bc_vector< D3D_SHADER_MACRO > l_macro_definitions;
+
+			if (p_macro_count > 0)
+			{
+				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
+			}
+			
 			auto* l_dx_shader = _compile_shader
 			(
 				p_data,
 				p_data_size,
 				p_function_name,
 				"ds_5_0",
-				nullptr,
+				l_macros,
 				p_source_file
 			);
 
@@ -782,15 +835,28 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_geometry_shader(const bcBYTE* p_data, 
+			bcSIZE p_data_size, 
+			const bcCHAR* p_function_name, 
+			const bcCHAR* p_source_file, 
+			const bc_shader_macro* p_macros, 
+			bcUINT32 p_macro_count)
 		{
+			D3D_SHADER_MACRO* l_macros = nullptr;
+			core::bc_vector< D3D_SHADER_MACRO > l_macro_definitions;
+
+			if (p_macro_count > 0)
+			{
+				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
+			}
+			
 			auto* l_dx_shader = _compile_shader
 			(
 				p_data,
 				p_data_size,
 				p_function_name,
 				"gs_5_0",
-				nullptr,
+				l_macros,
 				p_source_file
 			);
 
@@ -824,15 +890,28 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_pixel_shader(const bcBYTE* p_data, 
+			bcSIZE p_data_size, 
+			const bcCHAR* p_function_name, 
+			const bcCHAR* p_source_file, 
+			const bc_shader_macro* p_macros, 
+			bcUINT32 p_macro_count)
 		{
+			D3D_SHADER_MACRO* l_macros = nullptr;
+			core::bc_vector< D3D_SHADER_MACRO > l_macro_definitions;
+
+			if (p_macro_count > 0)
+			{
+				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
+			}
+			
 			auto* l_dx_shader = _compile_shader
 			(
 				p_data,
 				p_data_size,
 				p_function_name,
 				"ps_5_0",
-				nullptr,
+				l_macros,
 				p_source_file
 			);
 
@@ -866,15 +945,28 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file)
+		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_compute_shader(const bcBYTE* p_data, 
+			bcSIZE p_data_size, 
+			const bcCHAR* p_function_name, 
+			const bcCHAR* p_source_file, 
+			const bc_shader_macro* p_macros, 
+			bcUINT32 p_macro_count)
 		{
+			D3D_SHADER_MACRO* l_macros = nullptr;
+			core::bc_vector< D3D_SHADER_MACRO > l_macro_definitions;
+
+			if (p_macro_count > 0)
+			{
+				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
+			}
+			
 			auto* l_dx_shader = _compile_shader
 			(
 				p_data,
 				p_data_size,
 				p_function_name,
 				"cs_5_0",
-				nullptr,
+				l_macros,
 				p_source_file
 			);
 

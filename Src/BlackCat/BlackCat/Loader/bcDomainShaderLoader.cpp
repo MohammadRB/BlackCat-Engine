@@ -42,13 +42,40 @@ namespace black_cat
 		graphic::bc_device& l_device = core::bc_service_manager::get().get_service< game::bc_game_system >()->get_render_system().get_device();
 		const core::bc_string l_file_path = core::bc_to_exclusive_string(p_context.m_file_path);
 		const core::bc_string& l_function = p_context.m_parameters->get_value_throw< core::bc_string >(constant::g_param_shader_function);
+		const auto* l_macros_value = p_context.m_parameters->get_value< core::bc_json_key_value >(constant::g_param_shader_macro);
+
+		core::bc_vector<graphic::bc_shader_macro> l_macros_buffer;
+		graphic::bc_shader_macro* l_macros = nullptr;
+		bcUINT32 l_macros_count = 0;
+
+		if (l_macros_value)
+		{
+			l_macros_buffer.reserve(l_macros_value->size());
+
+			for (core::bc_json_key_value::value_type& l_key_value : *l_macros_value)
+			{
+				l_macros_buffer.push_back
+				(
+					graphic::bc_shader_macro
+					{
+						l_key_value.first.c_str(),
+						l_key_value.second.as_throw< core::bc_string >().c_str()
+					}
+				);
+			}
+
+			l_macros = l_macros_buffer.data();
+			l_macros_count = l_macros_buffer.size();
+		}
 
 		graphic::bc_compiled_shader_ptr l_compiled_shader = l_device.compile_domain_shader
 		(
 			p_context.m_file_buffer.get(),
 			p_context.m_file_buffer_size,
 			l_function.c_str(),
-			l_file_path.c_str()
+			l_file_path.c_str(),
+			l_macros,
+			l_macros_count
 		);
 
 		p_context.m_file.write

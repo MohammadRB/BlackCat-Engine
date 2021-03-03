@@ -101,7 +101,7 @@ namespace black_cat
 		p_param.m_render_thread.get_pipeline().bind_om_render_targets(2, &l_render_targets[0], m_depth_stencil_view.get());
 		p_param.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::output_merger_stage);
 		
-		p_param.m_render_thread.clear_buffers(core::bc_vector4f(0, 0, 255, 0), 1, 0);
+		p_param.m_render_thread.clear_buffers(core::bc_vector4f(l_direct_light.get_color(), 0), 1, 0);
 		
 		p_param.m_render_thread.get_pipeline().unbind_om_render_targets();
 		p_param.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::output_merger_stage);
