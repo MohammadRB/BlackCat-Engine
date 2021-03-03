@@ -678,7 +678,7 @@ namespace black_cat
 			D3D_SHADER_MACRO* l_macros = nullptr;
 			core::bc_vector< D3D_SHADER_MACRO > l_macro_definitions;
 
-			if (p_macro_count == 0)
+			if (p_macro_count > 0)
 			{
 				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 			}

@@ -51,14 +51,6 @@ namespace black_cat
 
 			bc_decal& operator=(bc_decal&&) noexcept;
 
-			graphic::bc_buffer get_cbuffer() const noexcept;
-			
-			void set_cbuffer(graphic::bc_buffer_ptr p_buffer) noexcept;
-
-			bc_render_state* get_render_state() const noexcept;
-
-			void set_render_state(bc_render_state_ptr p_render_state) noexcept;
-			
 			const bc_mesh_material& get_material() const noexcept;
 
 			bcFLOAT get_u0() const noexcept;
@@ -80,8 +72,6 @@ namespace black_cat
 			bool get_temporary() const noexcept;
 
 		private:
-			graphic::bc_buffer_ptr m_cbuffer;
-			bc_render_state_ptr m_render_state;
 			bc_mesh_material_ptr m_material;
 			bcFLOAT m_u0;
 			bcFLOAT m_v0;
@@ -134,26 +124,6 @@ namespace black_cat
 		inline bc_decal::~bc_decal() = default;
 
 		inline bc_decal& bc_decal::operator=(bc_decal&&) noexcept = default;
-
-		inline graphic::bc_buffer bc_decal::get_cbuffer() const noexcept
-		{
-			return m_cbuffer.get();
-		}
-
-		inline void bc_decal::set_cbuffer(graphic::bc_buffer_ptr p_buffer) noexcept
-		{
-			m_cbuffer = std::move(p_buffer);
-		}
-
-		inline bc_render_state* bc_decal::get_render_state() const noexcept
-		{
-			return m_render_state.get();
-		}
-
-		inline void bc_decal::set_render_state(bc_render_state_ptr p_render_state) noexcept
-		{
-			m_render_state = std::move(p_render_state);
-		}
 		
 		inline const bc_mesh_material& bc_decal::get_material() const noexcept
 		{

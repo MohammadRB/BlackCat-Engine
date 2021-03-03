@@ -138,7 +138,12 @@
           "content_title": "gbuffer_decal_vs",
           "content_loader": "vertex_shader",
           "content_file": "content\\shader\\directx11\\gbuffer\\bcDecalGBuffer.hlsl",
-          "content_parameter": { "function": "vs" }
+          "content_parameter": {
+            "function": "vs",
+            "macros": {
+              "CAMERA_INSIDE": "false"
+            }
+          }
         },
         {
           "content_title": "gbuffer_decal_ps",
@@ -148,6 +153,17 @@
             "function": "ps",
             "macros": {
               "CAMERA_INSIDE": "false"
+            }
+          }
+        },
+        {
+          "content_title": "gbuffer_non_culling_decal_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcDecalGBuffer.hlsl",
+          "content_parameter": {
+            "function": "ps",
+            "macros": {
+              "CAMERA_INSIDE": "true"
             }
           }
         }
