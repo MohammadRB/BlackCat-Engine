@@ -21,6 +21,8 @@ namespace black_cat
 			BC_CBUFFER_ALIGN
 			core::bc_matrix4f m_view;
 			BC_CBUFFER_ALIGN
+			core::bc_matrix4f m_view_inv;
+			BC_CBUFFER_ALIGN
 			core::bc_matrix4f m_projection;
 			BC_CBUFFER_ALIGN
 			core::bc_matrix4f m_view_projection;
@@ -140,6 +142,7 @@ namespace black_cat
 			const bc_camera_instance& p_camera)
 		{
 			g_global_state.m_view = p_camera.get_view();
+			g_global_state.m_view_inv = p_camera.get_view().inverse();
 			g_global_state.m_projection = p_camera.get_projection();
 			g_global_state.m_view_projection = p_camera.get_view() * p_camera.get_projection();
 			g_global_state.m_view_projection_inv = g_global_state.m_view_projection.inverse();
@@ -156,6 +159,7 @@ namespace black_cat
 			if (need_matrix_transpose())
 			{
 				g_global_state.m_view.make_transpose();
+				g_global_state.m_view_inv.make_transpose();
 				g_global_state.m_projection.make_transpose();
 				g_global_state.m_view_projection.make_transpose();
 				g_global_state.m_view_projection_inv.make_transpose();
@@ -172,6 +176,7 @@ namespace black_cat
 			const bc_direct_wind& p_global_wind)
 		{
 			g_global_state.m_view = p_camera.get_view();
+			g_global_state.m_view_inv = p_camera.get_view().inverse();
 			g_global_state.m_projection = p_camera.get_projection();
 			g_global_state.m_view_projection = p_camera.get_view() * p_camera.get_projection();
 			g_global_state.m_view_projection_inv = g_global_state.m_view_projection.inverse();
@@ -195,6 +200,7 @@ namespace black_cat
 			if (need_matrix_transpose())
 			{
 				g_global_state.m_view.make_transpose();
+				g_global_state.m_view_inv.make_transpose();
 				g_global_state.m_projection.make_transpose();
 				g_global_state.m_view_projection_inv.make_transpose();
 			}

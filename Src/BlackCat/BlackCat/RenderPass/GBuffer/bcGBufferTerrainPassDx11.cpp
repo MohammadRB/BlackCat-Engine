@@ -59,22 +59,25 @@ namespace black_cat
 		m_chunk_info_device_compute_state = p_render_system.create_device_compute_state("terrain_chunk_info");
 		m_run_chunk_info_shader = true;
 		
-		graphic::bc_device_parameters l_old_parameters
+		after_reset(game::bc_render_pass_reset_context
 		(
-			0,
-			0,
-			graphic::bc_format::unknown,
-			graphic::bc_texture_ms_config(1, 0)
-		);
-		graphic::bc_device_parameters l_new_parameters
-		(
-			l_back_buffer_texture.get_width(),
-			l_back_buffer_texture.get_height(),
-			l_back_buffer_texture.get_format(),
-			l_back_buffer_texture.get_sample_count()
-		);
-
-		after_reset(game::bc_render_pass_reset_context(p_render_system, l_device, l_old_parameters, l_new_parameters));
+			p_render_system,
+			l_device,
+			graphic::bc_device_parameters
+			(
+				0,
+				0,
+				graphic::bc_format::unknown,
+				graphic::bc_texture_ms_config(1, 0)
+			),
+			graphic::bc_device_parameters
+			(
+				l_device.get_back_buffer_width(),
+				l_device.get_back_buffer_height(),
+				l_device.get_back_buffer_format(),
+				l_device.get_back_buffer_texture().get_sample_count()
+			)
+		));
 	}
 
 	void bc_gbuffer_terrain_pass_dx11::update(const game::bc_render_pass_update_context& p_update_param)
@@ -197,9 +200,13 @@ namespace black_cat
 				graphic::bc_texture_address_mode::wrap,
 				graphic::bc_texture_address_mode::wrap
 			).as_sampler_state();
+			const auto* l_diffuse_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1);
+			const auto* l_normal_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2);
+			const auto* l_specular_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_3);
 			const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
 			const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_1);
 			const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_2);
+			const auto* l_specular_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_3);
 			const auto l_viewport = graphic::bc_viewport::default_config(p_param.m_device.get_back_buffer_width(), p_param.m_device.get_back_buffer_height());
 
 			m_height_map_sampler = p_param.m_device.create_sampler_state(l_height_map_sampler_config);
@@ -217,8 +224,9 @@ namespace black_cat
 				game::bc_rasterizer_type::fill_solid_cull_back,
 				0x1,
 				{
-					get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1)->get_format(),
-					get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2)->get_format()
+					l_diffuse_map->get_format(),
+					l_normal_map->get_format(),
+					l_specular_map->get_format()
 				},
 				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
 				game::bc_multi_sample_type::c1_q1
@@ -227,7 +235,9 @@ namespace black_cat
 			(
 				m_device_pipeline_state.get(),
 				l_viewport,
-				{ *l_diffuse_map_view, *l_normal_map_view },
+				{
+					*l_diffuse_map_view, *l_normal_map_view, *l_specular_map_view
+				},
 				*l_depth_stencil_view,
 				{
 					graphic::bc_sampler_parameter(0, core::bc_enum::mask_or({ graphic::bc_shader_type::pixel }), m_height_map_sampler.get()),

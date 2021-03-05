@@ -19,19 +19,19 @@ cbuffer g_cb_material				: register(BC_RENDER_STATE_CB1)
 
 struct bc_vs_input
 {
-    float3 m_position	: POSITION0;
-    float2 m_texcoord	: TEXCOORD0;
-    float3 m_normal		: NORMAL0;
+    float3 m_position		: POSITION0;
+    float2 m_texcoord		: TEXCOORD0;
+    float3 m_normal			: NORMAL0;
     float3 m_tangent		: TANGENT0;
 };
 
 struct bc_vs_output
 {
-    float4 m_position	: SV_POSITION;
-    float2 m_texcoord	: TEXCOORD0;
-    float3 m_normal		: NORMAL0;
+    float4 m_position		: SV_POSITION;
+    float2 m_texcoord		: TEXCOORD0;
+    float3 m_normal			: NORMAL0;
     float3 m_tangent		: TANGENT0;
-    float3 m_binormal	: BINORMAL0;
+    float3 m_binormal		: BINORMAL0;
 };
 
 bc_vs_output gbuffer_vegetable_trunk_vs(bc_vs_input p_input)

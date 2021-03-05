@@ -52,7 +52,7 @@ namespace black_cat
 			
 			void render(const bc_actor_component_render_context& p_context) const override;
 
-			void add_decal(const bcCHAR* p_decal_name, const core::bc_vector3f& p_world_position) override;
+			void add_decal(const bcCHAR* p_decal_name, const core::bc_vector3f& p_world_position, const core::bc_vector3f& p_dir) override;
 			
 		private:
 			bc_height_map_ptr m_height_map;

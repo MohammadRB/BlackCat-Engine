@@ -19,25 +19,26 @@ cbuffer g_cb_material				: register(BC_RENDER_STATE_CB1)
 
 struct bc_vs_input
 {
-    float3 m_position	: POSITION0;
-    float2 m_texcoord	: TEXCOORD0;
-    float3 m_normal		: NORMAL0;
+    float3 m_position		: POSITION0;
+    float2 m_texcoord		: TEXCOORD0;
+    float3 m_normal			: NORMAL0;
     float3 m_tangent		: TANGENT0;
 };
 
 struct bc_vs_output
 {
-    float4 m_position	: SV_POSITION;
-    float2 m_texcoord	: TEXCOORD0;
-    float3 m_normal		: NORMAL0;
+    float4 m_position		: SV_POSITION;
+    float2 m_texcoord		: TEXCOORD0;
+    float3 m_normal			: NORMAL0;
     float3 m_tangent		: TANGENT0;
-    float3 m_binormal	: BINORMAL0;
+    float3 m_binormal		: BINORMAL0;
 };
 
 struct bc_ps_output
 {
     float4 m_diffuse		: SV_Target0;
-    float4 m_normal		: SV_Target1;
+    float4 m_normal			: SV_Target1;
+    float4 m_specular		: SV_Target2;
 };
 
 bc_vs_output gbuffer_vegetable_leaf_vs(bc_vs_input p_input)
@@ -89,8 +90,9 @@ bc_ps_output gbuffer_vegetable_leaf_ps(bc_vs_output p_input)
 
     float3 l_final_normal = (l_normal + 1) / 2.0f;
 
-    l_output.m_diffuse = float4(l_diffuse_map.xyz, l_specular_map.x);
-    l_output.m_normal = float4(l_final_normal, g_specular_power);
+    l_output.m_diffuse = float4(l_diffuse_map.xyz, 1);
+    l_output.m_normal = float4(l_final_normal, 1);
+	l_output.m_specular = float4(l_specular_map.x, g_specular_power, 0, 1);
 
     return l_output;
 }

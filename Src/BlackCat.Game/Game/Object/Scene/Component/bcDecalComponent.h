@@ -2,6 +2,9 @@
 
 #pragma once
 
+#include "Core/Math/bcVector3f.h"
+#include "Core/Math/bcMatrix3f.h"
+#include "Core/Math/bcMatrix4f.h"
 #include "Core/Container/bcIteratorAdapter.h"
 #include "Core/Container/bcVector.h"
 #include "Game/System/Render/Decal/bcDecalInstance.h"
@@ -31,11 +34,13 @@ namespace black_cat
 			const bcCHAR* get_decal_name() const noexcept;
 			
 			void add_decal(const core::bc_vector3f& p_local_pos,
+				const core::bc_matrix3f& p_local_rotation,
 				const core::bc_matrix4f& p_initial_world_transform,
 				bc_mesh_node::node_index_t p_attached_node);
 			
 			void add_decal(const bcCHAR* p_decal_name,
 				const core::bc_vector3f& p_local_pos,
+				const core::bc_matrix3f& p_local_rotation,
 				const core::bc_matrix4f& p_initial_world_transform,
 				bc_mesh_node::node_index_t p_attached_node);
 

@@ -17,22 +17,25 @@ namespace black_cat
 	{
 		auto& l_device = p_render_system.get_device();
 
-		graphic::bc_device_parameters l_old_parameters
+		after_reset(game::bc_render_pass_reset_context
 		(
-			0,
-			0,
-			graphic::bc_format::unknown,
-			graphic::bc_texture_ms_config(1, 0)
-		);
-		graphic::bc_device_parameters l_new_parameters
-		(
-			l_device.get_back_buffer_width(),
-			l_device.get_back_buffer_height(),
-			l_device.get_back_buffer_format(),
-			l_device.get_back_buffer_texture().get_sample_count()
-		);
-
-		after_reset(game::bc_render_pass_reset_context(p_render_system, l_device, l_old_parameters, l_new_parameters));
+			p_render_system,
+			l_device,
+			graphic::bc_device_parameters
+			(
+				0,
+				0,
+				graphic::bc_format::unknown,
+				graphic::bc_texture_ms_config(1, 0)
+			),
+			graphic::bc_device_parameters
+			(
+				l_device.get_back_buffer_width(),
+				l_device.get_back_buffer_height(),
+				l_device.get_back_buffer_format(),
+				l_device.get_back_buffer_texture().get_sample_count()
+			)
+		));
 	}
 
 	void bc_gbuffer_vegetable_pass::update(const game::bc_render_pass_update_context& p_param)
@@ -104,9 +107,13 @@ namespace black_cat
 			return;
 		}
 
+		const auto* l_diffuse_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1);
+		const auto* l_normal_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2);
+		const auto* l_specular_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_3);
 		const auto* l_depth_stencil_view = get_shared_resource<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
 		const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_1);
 		const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_2);
+		const auto* l_specular_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_3);
 		const auto l_viewport = graphic::bc_viewport::default_config(p_param.m_device.get_back_buffer_width(), p_param.m_device.get_back_buffer_height());
 		const auto l_sampler_config = graphic::bc_graphic_resource_builder().as_resource().as_sampler_state
 		(
@@ -130,8 +137,9 @@ namespace black_cat
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0x1,
 			{
-				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1)->get_format(),
-				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2)->get_format()
+				l_diffuse_map->get_format(),
+				l_normal_map->get_format(),
+				l_specular_map->get_format()
 			},
 			get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
 			game::bc_multi_sample_type::c1_q1
@@ -149,8 +157,9 @@ namespace black_cat
 			game::bc_rasterizer_type::fill_solid_cull_back,
 			0x1,
 			{
-				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1)->get_format(),
-				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2)->get_format()
+				l_diffuse_map->get_format(),
+				l_normal_map->get_format(),
+				l_specular_map->get_format()
 			},
 			get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
 			game::bc_multi_sample_type::c1_q1
@@ -159,9 +168,13 @@ namespace black_cat
 		(
 			m_leaf_pipeline_state.get(),
 			l_viewport,
-			{ *l_diffuse_map_view, *l_normal_map_view },
+			{
+				*l_diffuse_map_view, *l_normal_map_view, *l_specular_map_view
+			},
 			*l_depth_stencil_view,
-			{ graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler_state.get()) },
+			{
+				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler_state.get())
+			},
 			{},
 			{},
 			{
@@ -172,9 +185,13 @@ namespace black_cat
 		(
 			m_trunk_pipeline_state.get(),
 			l_viewport,
-			{ *l_diffuse_map_view, *l_normal_map_view },
+			{
+				*l_diffuse_map_view, *l_normal_map_view, *l_specular_map_view
+			},
 			*l_depth_stencil_view,
-			{ graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler_state.get()) },
+			{
+				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler_state.get())
+			},
 			{},
 			{},
 			{

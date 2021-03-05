@@ -114,25 +114,26 @@
 cbuffer g_cb_global_state					: register(BC_RENDER_PASS_STATE_CB0)
 {
     float4x4 g_view							: packoffset(c0);
-    float4x4 g_projection					: packoffset(c4);
-    float4x4 g_view_projection				: packoffset(c8);
-    float4x4 g_view_projection_inv			: packoffset(c12);
-    int g_screen_width						: packoffset(c16.x);
-    int g_screen_height						: packoffset(c16.y);
-    float g_near_plane						: packoffset(c16.z);
-    float g_far_plane						: packoffset(c16.w);
-    float3 g_camera_position				: packoffset(c17);
-    double g_total_elapsed					: packoffset(c18.x);
-    double g_total_elapsed_second			: packoffset(c18.z);
-    float g_elapsed							: packoffset(c19.x);
-    float g_elapsed_second					: packoffset(c19.y);
-	float3 g_global_light_direction			: packoffset(c20);
-	float3 g_global_light_color				: packoffset(c21.x);
-	float g_global_light_intensity			: packoffset(c21.w);
-	float3 g_global_light_ambient_color		: packoffset(c22.x);
-	float g_global_light_ambient_intensity	: packoffset(c22.w);
-	float3 g_global_wind_direction			: packoffset(c23.x);
-	float g_global_wind_power				: packoffset(c23.w);
+    float4x4 g_view_inv						: packoffset(c4);
+    float4x4 g_projection					: packoffset(c8);
+    float4x4 g_view_projection				: packoffset(c12);
+    float4x4 g_view_projection_inv			: packoffset(c16);
+    int g_screen_width						: packoffset(c20.x);
+    int g_screen_height						: packoffset(c20.y);
+    float g_near_plane						: packoffset(c20.z);
+    float g_far_plane						: packoffset(c20.w);
+    float3 g_camera_position				: packoffset(c21);
+    double g_total_elapsed					: packoffset(c22.x);
+    double g_total_elapsed_second			: packoffset(c22.z);
+    float g_elapsed							: packoffset(c23.x);
+    float g_elapsed_second					: packoffset(c23.y);
+	float3 g_global_light_direction			: packoffset(c24);
+	float3 g_global_light_color				: packoffset(c25.x);
+	float g_global_light_intensity			: packoffset(c25.w);
+	float3 g_global_light_ambient_color		: packoffset(c26.x);
+	float g_global_light_ambient_intensity	: packoffset(c26.w);
+	float3 g_global_wind_direction			: packoffset(c27.x);
+	float g_global_wind_power				: packoffset(c27.w);
 }
 
 // Bound to vertex, hull, domain shader

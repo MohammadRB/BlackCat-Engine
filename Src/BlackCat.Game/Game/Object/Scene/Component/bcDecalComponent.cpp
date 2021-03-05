@@ -47,6 +47,7 @@ namespace black_cat
 		}
 
 		void bc_decal_component::add_decal(const core::bc_vector3f& p_local_pos,
+			const core::bc_matrix3f& p_local_rotation,
 			const core::bc_matrix4f& p_initial_world_transform,
 			bc_mesh_node::node_index_t p_attached_node)
 		{
@@ -59,6 +60,7 @@ namespace black_cat
 			(
 				m_decal_name,
 				p_local_pos,
+				p_local_rotation,
 				p_initial_world_transform,
 				p_attached_node
 			);
@@ -66,12 +68,13 @@ namespace black_cat
 
 		void bc_decal_component::add_decal(const bcCHAR* p_decal_name,
 			const core::bc_vector3f& p_local_pos,
+			const core::bc_matrix3f& p_local_rotation,
 			const core::bc_matrix4f& p_initial_world_transform,
 			bc_mesh_node::node_index_t p_attached_node)
 		{
 			auto& l_decal_manager = core::bc_get_service<bc_game_system>()->get_render_system().get_decal_manager();
 			const auto l_actor = p_attached_node != bc_mesh_node::s_invalid_index ? get_actor() : bc_actor();
-			auto l_decal = l_decal_manager.create_decal(p_decal_name, l_actor, p_local_pos, core::bc_matrix3f::identity(), p_attached_node);
+			auto l_decal = l_decal_manager.create_decal(p_decal_name, l_actor, p_local_pos, p_local_rotation, p_attached_node);
 
 			l_decal->set_world_transform(p_initial_world_transform);
 			

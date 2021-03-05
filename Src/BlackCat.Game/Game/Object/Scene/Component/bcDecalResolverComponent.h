@@ -16,7 +16,7 @@ namespace black_cat
 			BC_ABSTRACT_COMPONENT(dcl_rsv)
 			
 		public:
-			virtual void add_decal(const bcCHAR* p_decal_name, const core::bc_vector3f& p_world_position) = 0;
+			virtual void add_decal(const bcCHAR* p_decal_name, const core::bc_vector3f& p_world_position, const core::bc_vector3f& p_dir = core::bc_vector3f::up()) = 0;
 			
 		protected:
 			bc_decal_resolver_component();

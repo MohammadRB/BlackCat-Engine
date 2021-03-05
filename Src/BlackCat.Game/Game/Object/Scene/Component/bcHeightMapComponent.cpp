@@ -4,6 +4,7 @@
 
 #include "Core/Content/bcLazyContent.h"
 #include "Core/Content/bcContentManager.h"
+#include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/bcConstant.h"
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
@@ -94,7 +95,7 @@ namespace black_cat
 			p_context.m_buffer.add_render_instance(m_height_map->get_render_state_ptr(), l_instance);
 		}
 
-		void bc_height_map_component::add_decal(const bcCHAR* p_decal_name, const core::bc_vector3f& p_world_position)
+		void bc_height_map_component::add_decal(const bcCHAR* p_decal_name, const core::bc_vector3f& p_world_position, const core::bc_vector3f& p_dir)
 		{
 			auto l_actor = get_actor();
 			auto* l_decal_component = l_actor.get_component<bc_decal_component>();
@@ -107,10 +108,22 @@ namespace black_cat
 
 			const auto l_local_pos = p_world_position - m_transform.get_translation();
 			const auto l_world_pos = p_world_position - l_local_pos;
+			core::bc_matrix3f l_local_rotation;
+
+			if(graphic::bc_render_api_info::use_left_handed())
+			{
+				l_local_rotation.rotation_between_two_vector_lh(core::bc_vector3f::up(), p_dir);
+			}
+			else
+			{
+				l_local_rotation.rotation_between_two_vector_rh(core::bc_vector3f::up(), p_dir);
+			}
+
 			l_decal_component->add_decal
 			(
 				p_decal_name,
 				l_local_pos,
+				l_local_rotation,
 				core::bc_matrix4f::translation_matrix(l_world_pos),
 				bc_mesh_node::s_invalid_index
 			);

@@ -135,22 +135,6 @@ namespace black_cat
 			return m_attached_node_index;
 		}
 
-		inline void bc_decal_instance::set_world_transform(const core::bc_matrix4f& p_transform) noexcept
-		{
-			core::bc_matrix4f l_decal_local_transform;
-			l_decal_local_transform.make_identity();
-
-			l_decal_local_transform.set_rotation(get_local_rotation());
-			l_decal_local_transform.set_translation(get_local_position());
-
-			const auto l_decal_width = m_decal->get_width();
-			const auto l_decal_height = m_decal->get_height();
-			const auto l_decal_depth = m_decal->get_depth();
-			const auto l_scale = core::bc_matrix4f::scale_matrix_xyz(l_decal_width, l_decal_depth, l_decal_height);
-
-			m_world_transform = l_scale * l_decal_local_transform * p_transform;
-		}
-
 		inline const core::bc_matrix4f& bc_decal_instance::get_world_transform() const noexcept
 		{
 			return m_world_transform;

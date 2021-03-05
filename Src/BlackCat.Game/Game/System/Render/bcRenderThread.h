@@ -138,7 +138,7 @@ namespace black_cat
 
 			void dispatch_indirect(graphic::bc_buffer p_args, bcUINT p_offset);
 
-			void clear_buffers(const core::bc_vector4f& p_color, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
+			void clear_buffers(const core::bc_vector4f* p_color, bcUINT32 p_count, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
 
 			/*graphic::bc_mapped_resource map_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource, graphic::bc_resource_map p_map_type);
 

@@ -532,9 +532,9 @@ namespace black_cat
 			m_pipeline->dispatch_indirect(p_args, p_offset);
 		}
 
-		void bc_render_thread::clear_buffers(const core::bc_vector4f& p_color, bcFLOAT p_depth, bcUINT p_stencil)
+		void bc_render_thread::clear_buffers(const core::bc_vector4f* p_color, bcUINT32 p_count, bcFLOAT p_depth, bcUINT p_stencil)
 		{
-			m_pipeline->clear_buffers(p_color, p_depth, p_stencil);
+			m_pipeline->clear_buffers(p_color, p_count, p_depth, p_stencil);
 		}
 
 		/*graphic::bc_mapped_resource bc_render_thread::map_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource, graphic::bc_resource_map p_map_type)

@@ -158,22 +158,25 @@ namespace black_cat
 		m_spot_lights_buffer_view = l_device.create_resource_view(m_spot_lights_buffer.get(), l_spot_lights_buffer_view_config);
 		m_shadow_maps_buffer_view = l_device.create_resource_view(m_shadow_maps_buffer.get(), l_shadow_maps_buffer_view_config);
 
-		graphic::bc_device_parameters l_old_parameters
+		after_reset(game::bc_render_pass_reset_context
 		(
-			0,
-			0,
-			graphic::bc_format::unknown,
-			graphic::bc_texture_ms_config(1, 0)
-		);
-		graphic::bc_device_parameters l_new_parameters
-		(
-			l_device.get_back_buffer_width(),
-			l_device.get_back_buffer_height(),
-			l_device.get_back_buffer_format(),
-			l_device.get_back_buffer_texture().get_sample_count()
-		);
-
-		after_reset(game::bc_render_pass_reset_context(p_render_system, l_device, l_old_parameters, l_new_parameters));
+			p_render_system,
+			l_device,
+			graphic::bc_device_parameters
+			(
+				0,
+				0,
+				graphic::bc_format::unknown,
+				graphic::bc_texture_ms_config(1, 0)
+			),
+			graphic::bc_device_parameters
+			(
+				l_device.get_back_buffer_width(),
+				l_device.get_back_buffer_height(),
+				l_device.get_back_buffer_format(),
+				l_device.get_back_buffer_texture().get_sample_count()
+			)
+		));
 	}
 
 	void bc_gbuffer_light_map_pass::update(const game::bc_render_pass_update_context& p_param)
@@ -376,6 +379,7 @@ namespace black_cat
 		auto* l_depth_stencil = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
 		auto* l_diffuse_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1);
 		auto* l_normal_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2);
+		auto* l_specular_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_3);
 
 		auto l_resource_configure = graphic::bc_graphic_resource_builder();
 
@@ -400,18 +404,28 @@ namespace black_cat
 			.as_texture_view(l_normal_map->get_format())
 			.as_tex2d_shader_view(0, 1)
 			.on_texture2d();
+		auto l_specular_map_view_config = l_resource_configure
+			.as_resource_view()
+			.as_texture_view(l_normal_map->get_format())
+			.as_tex2d_shader_view(0, 1)
+			.on_texture2d();
 
 		m_depth_stencil_view = p_param.m_device.create_resource_view(*l_depth_stencil, l_depth_resource_view_config);
 		m_diffuse_map_view = p_param.m_device.create_resource_view(*l_diffuse_map, l_diffuse_map_view_config);
 		m_normal_map_view = p_param.m_device.create_resource_view(*l_normal_map, l_normal_map_view_config);
+		m_specular_map_view = p_param.m_device.create_resource_view(*l_specular_map, l_specular_map_view_config);
 
-		auto l_pcf_sampler_config = l_resource_configure.as_resource().as_sampler_state
-		(
-			graphic::bc_filter::comparison_min_mag_linear_mip_point,
-			graphic::bc_texture_address_mode::clamp,
-			graphic::bc_texture_address_mode::clamp,
-			graphic::bc_texture_address_mode::clamp
-		).with_comparison(graphic::bc_comparison_func::less).as_sampler_state();
+		auto l_pcf_sampler_config = l_resource_configure
+			.as_resource()
+			.as_sampler_state
+			(
+				graphic::bc_filter::comparison_min_mag_linear_mip_point,
+				graphic::bc_texture_address_mode::clamp,
+				graphic::bc_texture_address_mode::clamp,
+				graphic::bc_texture_address_mode::clamp
+			)
+			.with_comparison(graphic::bc_comparison_func::less)
+			.as_sampler_state();
 
 		m_pcf_sampler = p_param.m_device.create_sampler_state(l_pcf_sampler_config);
 
@@ -441,14 +455,15 @@ namespace black_cat
 			graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_depth_stencil_view.get()),
 			graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::compute, m_diffuse_map_view.get()),
 			graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::compute, m_normal_map_view.get()),
-			graphic::bc_resource_view_parameter(3, graphic::bc_shader_type::compute, m_direct_lights_buffer_view.get()),
-			graphic::bc_resource_view_parameter(4, graphic::bc_shader_type::compute, m_point_lights_buffer_view.get()),
-			graphic::bc_resource_view_parameter(5, graphic::bc_shader_type::compute, m_spot_lights_buffer_view.get()),
-			graphic::bc_resource_view_parameter(6, graphic::bc_shader_type::compute, m_shadow_maps_buffer_view.get())
+			graphic::bc_resource_view_parameter(3, graphic::bc_shader_type::compute, m_specular_map_view.get()),
+			graphic::bc_resource_view_parameter(4, graphic::bc_shader_type::compute, m_direct_lights_buffer_view.get()),
+			graphic::bc_resource_view_parameter(5, graphic::bc_shader_type::compute, m_point_lights_buffer_view.get()),
+			graphic::bc_resource_view_parameter(6, graphic::bc_shader_type::compute, m_spot_lights_buffer_view.get()),
+			graphic::bc_resource_view_parameter(7, graphic::bc_shader_type::compute, m_shadow_maps_buffer_view.get())
 		};
 		for(bcSIZE l_shadow_map_ite = 0; l_shadow_map_ite < m_shadow_map_parameters.size(); ++l_shadow_map_ite)
 		{
-			auto l_resource_view_index = 7 + l_shadow_map_ite;
+			auto l_resource_view_index = 8 + l_shadow_map_ite;
 			auto l_resource_view_parameter = graphic::bc_resource_view_parameter
 			(
 				l_resource_view_index, 
@@ -477,11 +492,18 @@ namespace black_cat
 		share_resource(constant::g_rpass_depth_stencil_read_view, m_depth_stencil_view.get());
 		share_resource(constant::g_rpass_render_target_read_view_1, m_diffuse_map_view.get());
 		share_resource(constant::g_rpass_render_target_read_view_2, m_normal_map_view.get());
+		share_resource(constant::g_rpass_render_target_read_view_3, m_specular_map_view.get());
 		share_resource(m_output_texture_share_slot, m_output_texture.get());
 	}
 
 	void bc_gbuffer_light_map_pass::destroy(game::bc_render_system& p_render_system)
 	{
+		unshare_resource(constant::g_rpass_depth_stencil_read_view);
+		unshare_resource(constant::g_rpass_render_target_read_view_1);
+		unshare_resource(constant::g_rpass_render_target_read_view_2);
+		unshare_resource(constant::g_rpass_render_target_read_view_3);
+		unshare_resource(m_output_texture_share_slot);
+		
 		m_compute_state.reset();
 		m_device_compute_state.reset();
 
@@ -501,6 +523,7 @@ namespace black_cat
 
 		m_pcf_sampler.reset();
 
+		m_specular_map_view.reset();
 		m_normal_map_view.reset();
 		m_diffuse_map_view.reset();
 		m_depth_stencil_view.reset();

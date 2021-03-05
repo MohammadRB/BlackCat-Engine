@@ -222,13 +222,15 @@ namespace black_cat
 		{
 			return;
 		}
-		
+
+		auto l_depth_buffer = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
 		const auto l_diffuse_map = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1);
 		const auto l_normal_map = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2);
-		auto l_depth_buffer = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
+		const auto l_specular_map = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_3);
+		const auto l_depth_render_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
 		const auto l_diffuse_map_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_1);
 		const auto l_normal_map_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_2);
-		const auto l_depth_render_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
+		const auto l_specular_map_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_3);
 		const auto l_viewport = graphic::bc_viewport::default_config(l_diffuse_map.get_width(), l_diffuse_map.get_height());
 
 		auto l_depth_view_config = graphic::bc_graphic_resource_builder()
@@ -251,7 +253,7 @@ namespace black_cat
 			game::bc_rasterizer_type::fill_solid_cull_back,
 			0x1,
 			{
-				l_diffuse_map.get_format(), l_normal_map.get_format()
+				l_diffuse_map.get_format(), l_normal_map.get_format(), l_specular_map.get_format()
 			},
 			l_depth_buffer.get_format(),
 			game::bc_multi_sample_type::c1_q1
@@ -261,7 +263,7 @@ namespace black_cat
 			m_device_pipeline_state.get(),
 			l_viewport,
 			{
-				l_diffuse_map_view, l_normal_map_view
+				l_diffuse_map_view, l_normal_map_view, l_specular_map_view
 			},
 			graphic::bc_depth_stencil_view(),
 			{
@@ -288,10 +290,10 @@ namespace black_cat
 			game::bc_vertex_type::pos,
 			game::bc_blend_type::alpha,
 			game::bc_depth_stencil_type::depth_off_stencil_off,
-			game::bc_rasterizer_type::fill_solid_cull_none,
+			game::bc_rasterizer_type::fill_solid_cull_front,
 			0x1,
 			{
-				l_diffuse_map.get_format(), l_normal_map.get_format()
+				l_diffuse_map.get_format(), l_normal_map.get_format(), l_specular_map.get_format()
 			},
 			l_depth_buffer.get_format(),
 			game::bc_multi_sample_type::c1_q1
@@ -301,7 +303,7 @@ namespace black_cat
 			m_device_pipeline_state_for_non_culling.get(),
 			l_viewport,
 			{
-				l_diffuse_map_view, l_normal_map_view
+				l_diffuse_map_view, l_normal_map_view, l_specular_map_view
 			},
 			graphic::bc_depth_stencil_view(),
 			{

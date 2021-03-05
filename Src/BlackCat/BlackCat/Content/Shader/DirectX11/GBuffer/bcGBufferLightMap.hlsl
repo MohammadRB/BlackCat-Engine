@@ -64,15 +64,15 @@ struct cascade_shadow_map
 Texture2D<float4> g_depth_map						: register(BC_COMPUTE_STATE_T0);
 Texture2D<float4> g_diffuse_map						: register(BC_COMPUTE_STATE_T1);
 Texture2D<float4> g_normal_map						: register(BC_COMPUTE_STATE_T2);
+Texture2D<float4> g_specular_map					: register(BC_COMPUTE_STATE_T3);
 
-StructuredBuffer<direct_light> g_direct_lights		: register(BC_COMPUTE_STATE_T3);
-StructuredBuffer<point_light> g_point_lights		: register(BC_COMPUTE_STATE_T4);
-StructuredBuffer<spot_light> g_spot_lights			: register(BC_COMPUTE_STATE_T5);
-StructuredBuffer<cascade_shadow_map> g_shadow_maps	: register(BC_COMPUTE_STATE_T6);
+StructuredBuffer<direct_light> g_direct_lights		: register(BC_COMPUTE_STATE_T4);
+StructuredBuffer<point_light> g_point_lights		: register(BC_COMPUTE_STATE_T5);
+StructuredBuffer<spot_light> g_spot_lights			: register(BC_COMPUTE_STATE_T6);
+StructuredBuffer<cascade_shadow_map> g_shadow_maps	: register(BC_COMPUTE_STATE_T7);
 
-Texture2DArray<float4> g_light_shadow_map_1			: register(BC_COMPUTE_STATE_T7);
-Texture2D<float4> g_light_shadow_map_2				: register(BC_COMPUTE_STATE_T8);
-Texture2D<float4> g_light_shadow_map_3				: register(BC_COMPUTE_STATE_T9);
+Texture2DArray<float4> g_light_shadow_map_1			: register(BC_COMPUTE_STATE_T8);
+Texture2D<float4> g_light_shadow_map_2				: register(BC_COMPUTE_STATE_T9);
 
 SamplerComparisonState g_pcf_sampler				: register(BC_COMPUTE_STATE_S0);
 
@@ -151,7 +151,7 @@ bool is_light_in_tile(float p_tile_min_z, float p_tile_max_z, float p_light_min_
 
 bool is_pixel_in_light_range(float3 p_position, float3 p_light_min_bound, float3 p_light_max_bound)
 {
-    bool l_is_in_light_box = (p_position.x >= p_light_min_bound.x) &&
+	const bool l_is_in_light_box = (p_position.x >= p_light_min_bound.x) &&
     (p_position.y >= p_light_min_bound.y) &&
     (p_position.z >= p_light_min_bound.z) &&
     (p_position.x <= p_light_max_bound.x) &&
@@ -163,15 +163,12 @@ bool is_pixel_in_light_range(float3 p_position, float3 p_light_min_bound, float3
 
 float read_light_shadow_map(uint p_shadow_map_index, int3 p_texcoord)
 {
-	//return load_texture(g_light_shadow_map_1, p_texcoord).x;
     switch (p_shadow_map_index)
     {
         case 0:
             return g_light_shadow_map_1.Load(int4(p_texcoord, 0)).x;
         case 1:
             return g_light_shadow_map_2.Load(int3(p_texcoord.xy, 0)).x;
-        case 2:
-            return g_light_shadow_map_3.Load(int3(p_texcoord.xy, 0)).x;
     }
 
     return 0;
@@ -179,15 +176,12 @@ float read_light_shadow_map(uint p_shadow_map_index, int3 p_texcoord)
 
 float read_pcf_light_shadow_map(uint p_shadow_map_index, SamplerComparisonState p_pcf_sampler, float3 p_texcoord, float p_compare_value)
 {
-    //return g_light_shadow_map_1.SampleCmpLevelZero(p_pcf_sampler, p_texcoord, p_compare_value).x;
     switch (p_shadow_map_index)
     {
         case 0:
             return g_light_shadow_map_1.SampleCmpLevelZero(p_pcf_sampler, p_texcoord, p_compare_value).x;
         case 1:
             return g_light_shadow_map_2.SampleCmpLevelZero(p_pcf_sampler, p_texcoord.xy, p_compare_value).x;
-        case 2:
-            return g_light_shadow_map_3.SampleCmpLevelZero(p_pcf_sampler, p_texcoord.xy, p_compare_value).x;
     }
 
     return 0;
@@ -228,7 +222,7 @@ float2 direct_light_shadow_map(direct_light p_light, float3 p_position, float p_
 
 	cascade_shadow_map l_shadow_map_data = g_shadow_maps[p_light.m_shadow_map_index];
 
-	float l_depth = p_linear_depth * (g_far_plane - g_near_plane);
+	const float l_depth = p_linear_depth * (g_far_plane - g_near_plane);
 	int l_cascade_index = -1;
 
 	for (uint i = 0; i < l_shadow_map_data.m_shadow_map_count; ++i)
@@ -244,16 +238,16 @@ float2 direct_light_shadow_map(direct_light p_light, float3 p_position, float p_
 	{
 		return float2(l_result, l_cascade_index);
 	}
-	
-	float4x4 l_cascade_view_projection = l_shadow_map_data.m_view_projections[l_cascade_index];
-	float4 l_cascade_projection = mul(float4(p_position, 1), l_cascade_view_projection);
-	float2 l_cascade_texcoord_normal = bc_clip_space_to_texcoord(l_cascade_projection);
-	float l_cascade_projection_z = l_cascade_projection.z / l_cascade_projection.w;
+
+	const float4x4 l_cascade_view_projection = l_shadow_map_data.m_view_projections[l_cascade_index];
+	const float4 l_cascade_projection = mul(float4(p_position, 1), l_cascade_view_projection);
+	const float l_cascade_projection_z = l_cascade_projection.z / l_cascade_projection.w;
+	const float2 l_cascade_texcoord_normal = bc_clip_space_to_texcoord(l_cascade_projection);
 	//l_cascade_texcoord_normal.x /= l_shadow_map_data.m_shadow_map_count;
 	//l_cascade_texcoord_normal.x += (l_cascade_index * (1.0 / l_shadow_map_data.m_shadow_map_count));
 
-    float l_bias = BIAS_SCALE[l_cascade_index] * p_shadow_bias;
-    float l_poisson_disk_sample_radius = l_shadow_map_data.m_shadow_map_size / POISSON_DISK_SCALE[l_cascade_index];
+	const float l_bias = BIAS_SCALE[l_cascade_index] * p_shadow_bias;
+	const float l_poisson_disk_sample_radius = l_shadow_map_data.m_shadow_map_size / POISSON_DISK_SCALE[l_cascade_index];
     l_result = read_poison_disk_shadow_map(p_light.m_shadow_map_index, g_pcf_sampler, float3(l_cascade_texcoord_normal, l_cascade_index), l_poisson_disk_sample_radius, l_cascade_projection_z - l_bias);
 
 	return float2(l_result, l_cascade_index);
@@ -261,49 +255,49 @@ float2 direct_light_shadow_map(direct_light p_light, float3 p_position, float p_
 
 float4 direct_light_shading(direct_light p_light, float3 p_camera_pos, float3 p_position, float3 p_normal, float p_specular_intensity, float p_specular_power)
 {
-    float3 l_light_vector = -normalize(p_light.m_direction);
-    float l_dot = max(0.0f, dot(p_normal, l_light_vector));
-    float3 l_diffuse_light = p_light.m_color * l_dot;
+	const float3 l_light_vector = -normalize(p_light.m_direction);
+	const float l_dot = max(0.0f, dot(p_normal, l_light_vector));
+    const float3 l_diffuse_light = p_light.m_color * l_dot;
 	
-    float3 l_reflection_vector = normalize(reflect(-l_light_vector, p_normal));
-    float3 l_direction_to_camera = normalize(p_camera_pos - p_position);
-	float l_specular_light = p_specular_intensity * saturate(pow(max(0.0, dot(l_reflection_vector, l_direction_to_camera)), p_specular_power));
+	const float3 l_reflection_vector = normalize(reflect(-l_light_vector, p_normal));
+	const float3 l_direction_to_camera = normalize(p_camera_pos - p_position);
+	const float l_specular_light = p_specular_intensity * saturate(pow(max(0.0, dot(l_reflection_vector, l_direction_to_camera)), p_specular_power));
 	
     return p_light.m_intensity * float4(l_diffuse_light, l_specular_light);
 }
 
 float4 point_light_shading(point_light p_light, float3 p_camera_pos, float3 p_position, float3 p_normal, float p_specular_intensity, float p_specular_power)
 {
-    float3 l_light_vector = normalize(p_light.m_position - p_position);
-    float l_dot = max(0.0f, dot(p_normal, l_light_vector));
-    float3 l_diffuse_light = p_light.m_color * l_dot;
+	const float3 l_light_vector = normalize(p_light.m_position - p_position);
+	const float l_dot = max(0.0f, dot(p_normal, l_light_vector));
+	const float3 l_diffuse_light = p_light.m_color * l_dot;
     
-    float3 l_reflection_vector = normalize(reflect(-l_light_vector, p_normal));
-    float3 l_direction_to_camera = normalize(p_camera_pos - p_position);
-	float l_specular_light = p_specular_intensity * saturate(pow(max(0.0, dot(l_reflection_vector, l_direction_to_camera)), p_specular_power));
+	const float3 l_reflection_vector = normalize(reflect(-l_light_vector, p_normal));
+	const float3 l_direction_to_camera = normalize(p_camera_pos - p_position);
+	const float l_specular_light = p_specular_intensity * saturate(pow(max(0.0, dot(l_reflection_vector, l_direction_to_camera)), p_specular_power));
 	
-    float l_attenuation = 1.0f - saturate(length(p_light.m_position - p_position) / p_light.m_radius);
+	const float l_attenuation = 1.0f - saturate(length(p_light.m_position - p_position) / p_light.m_radius);
 	
     return l_attenuation * p_light.m_intensity * float4(l_diffuse_light, l_specular_light);
 }
 
 float4 spot_light_shading(spot_light p_light, float3 p_camera_pos, float3 p_position, float3 p_normal, float p_specular_intensity, float p_specular_power)
 {
-    float3 l_light_vector = normalize(p_light.m_position - p_position);
-    float l_light_surface_angle = max(0.0f, dot(p_light.m_direction, -l_light_vector));
+	const float3 l_light_vector = normalize(p_light.m_position - p_position);
+	const float l_light_surface_angle = max(0.0f, dot(p_light.m_direction, -l_light_vector));
 
     float4 l_shading = 0;
     if (l_light_surface_angle >= p_light.m_angle_cos)
     {
-        float l_dot = max(0.0f, dot(p_normal, l_light_vector));
-        float3 l_diffuse_light = p_light.m_color * l_dot;
+		const float l_dot = max(0.0f, dot(p_normal, l_light_vector));
+		const float3 l_diffuse_light = p_light.m_color * l_dot;
     
-        float3 l_reflection_vector = normalize(reflect(-l_light_vector, p_normal));
-        float3 l_direction_to_camera = normalize(p_camera_pos - p_position);
-		float l_specular_light = p_specular_intensity * saturate(pow(max(0.0, dot(l_reflection_vector, l_direction_to_camera)), p_specular_power));
+		const float3 l_reflection_vector = normalize(reflect(-l_light_vector, p_normal));
+		const float3 l_direction_to_camera = normalize(p_camera_pos - p_position);
+		const float l_specular_light = p_specular_intensity * saturate(pow(max(0.0, dot(l_reflection_vector, l_direction_to_camera)), p_specular_power));
 		
-        float l_attenuation = 1.0f - saturate(length(p_light.m_position - p_position) / p_light.m_length);
-        float l_angle_attenuation = l_light_surface_angle - p_light.m_angle_cos;
+		const float l_attenuation = 1.0f - saturate(length(p_light.m_position - p_position) / p_light.m_length);
+		float l_angle_attenuation = l_light_surface_angle - p_light.m_angle_cos;
         l_angle_attenuation *= (1.0 / (1 - p_light.m_angle_cos));
         l_angle_attenuation = pow(l_angle_attenuation, 1.5);
         
@@ -323,20 +317,21 @@ groupshared uint gs_visible_spot_light_indices[512];
 [numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]
 void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uint3 p_group_thread_id : SV_GroupThreadID, uint3 p_dispatch_thread_id : SV_DispatchThreadID)
 {
-	int2 l_global_texcoord = p_dispatch_thread_id.xy;
+	const int2 l_global_texcoord = p_dispatch_thread_id.xy;
 
-    float l_depth = load_texture(g_depth_map, l_global_texcoord).x;
-    float4 l_diffuse_map = load_texture(g_diffuse_map, l_global_texcoord);
-    float4 l_normal_map = load_texture(g_normal_map, l_global_texcoord);
+	const float l_depth = load_texture(g_depth_map, l_global_texcoord).x;
+	const float4 l_diffuse_map = load_texture(g_diffuse_map, l_global_texcoord);
+	const float4 l_normal_map = load_texture(g_normal_map, l_global_texcoord);
+	const float4 l_specular_map = load_texture(g_specular_map, l_global_texcoord);
 	
-    float3 l_world_position = bc_reconstruct_world_space(bc_to_screen_space_texcoord(l_global_texcoord, g_screen_width, g_screen_height), l_depth, g_view_proj_inv);
-    float3 l_diffuse = l_diffuse_map.xyz;
-    float3 l_normal = bc_to_decoded_normal(l_normal_map.xyz);
-    float l_specular_intensity = l_diffuse_map.w;
-	float l_specular_power = l_normal_map.w * 20;
+	const float3 l_world_position = bc_reconstruct_world_space(bc_to_screen_space_texcoord(l_global_texcoord, g_screen_width, g_screen_height), l_depth, g_view_proj_inv);
+	const float3 l_diffuse = l_diffuse_map.xyz;
+	const float3 l_normal = bc_to_decoded_normal(l_normal_map.xyz);
+	const float l_specular_intensity = l_specular_map.x;
+	const float l_specular_power = l_specular_map.y * 20;
     
-    int l_world_pos_min_z = floor(l_world_position.z);
-    int l_world_pos_max_z = ceil(l_world_position.z);
+	const int l_world_pos_min_z = floor(l_world_position.z);
+	const int l_world_pos_max_z = ceil(l_world_position.z);
 
     GroupMemoryBarrierWithGroupSync();
 
@@ -345,19 +340,19 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 
     GroupMemoryBarrierWithGroupSync();
     
-    uint l_thread_count = THREAD_GROUP_SIZE * THREAD_GROUP_SIZE;
-    uint l_point_light_serving_count = (g_point_lights_count + l_thread_count - 1) / l_thread_count;
-    uint l_spot_light_serving_count = (g_spot_lights_count + l_thread_count - 1) / l_thread_count;
+	const uint l_thread_count = THREAD_GROUP_SIZE * THREAD_GROUP_SIZE;
+	const uint l_point_light_serving_count = (g_point_lights_count + l_thread_count - 1) / l_thread_count;
+	const uint l_spot_light_serving_count = (g_spot_lights_count + l_thread_count - 1) / l_thread_count;
 
     for (uint l_p = 0; l_p < l_point_light_serving_count; ++l_p)
     {
-        uint l_light_index = l_p + (p_group_index * l_point_light_serving_count);
+		const uint l_light_index = l_p + (p_group_index * l_point_light_serving_count);
         if(l_light_index >= g_point_lights_count)
         {
             continue;
         }
 
-        point_light l_light = g_point_lights[l_light_index];
+		const point_light l_light = g_point_lights[l_light_index];
         if (is_light_in_tile(gs_tile_min_z, gs_tile_max_z, l_light.m_min_bound.z, l_light.m_max_bound.z))
         {
             uint l_offset;
@@ -369,13 +364,13 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 
     for (uint l_s = 0; l_s < l_spot_light_serving_count; ++l_s)
     {
-        uint l_light_index = l_s + (p_group_index * l_spot_light_serving_count);
+		const uint l_light_index = l_s + (p_group_index * l_spot_light_serving_count);
         if (l_light_index >= g_spot_lights_count)
         {
             continue;
         }
 
-        spot_light l_light = g_spot_lights[l_light_index];
+		const spot_light l_light = g_spot_lights[l_light_index];
         if (is_light_in_tile(gs_tile_min_z, gs_tile_max_z, l_light.m_min_bound.z, l_light.m_max_bound.z))
         {
             uint l_offset;
@@ -389,14 +384,14 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 
     float4 l_light_map = 0;
     float3 l_ambient_map = 0;
-	float l_linear_depth = bc_convert_to_linear_depth(l_depth, g_near_plane, g_far_plane);
+	const float l_linear_depth = bc_convert_to_linear_depth(l_depth, g_near_plane, g_far_plane);
 
     for (uint l_d = 0; l_d < g_direct_lights_count; ++l_d)
     {
-        direct_light l_light = g_direct_lights[l_d];
+		const direct_light l_light = g_direct_lights[l_d];
 
-        float l_shadow_bias = calculate_shadow_bias(l_light.m_direction, l_normal);
-        float2 l_shadow_map = direct_light_shadow_map(l_light, l_world_position, l_linear_depth, l_shadow_bias);
+		const float l_shadow_bias = calculate_shadow_bias(l_light.m_direction, l_normal);
+		const float2 l_shadow_map = direct_light_shadow_map(l_light, l_world_position, l_linear_depth, l_shadow_bias);
 
         l_light_map += l_shadow_map.x * direct_light_shading(l_light, g_camera_position, l_world_position, l_normal, l_specular_intensity, l_specular_power);
         l_ambient_map += (l_light.m_ambient_color * l_light.m_ambient_intensity);
@@ -416,8 +411,8 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	
     for (uint l_p = 0; l_p < gs_number_of_visible_point_lights; ++l_p)
     {
-        uint l_point_light_index = gs_visible_point_light_indices[l_p];
-        point_light l_light = g_point_lights[l_point_light_index];
+		const uint l_point_light_index = gs_visible_point_light_indices[l_p];
+		const point_light l_light = g_point_lights[l_point_light_index];
 
         if (!is_pixel_in_light_range(l_world_position, l_light.m_min_bound, l_light.m_max_bound))
         {
@@ -429,8 +424,8 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 
     for (uint l_s = 0; l_s < gs_number_of_visible_spot_lights; ++l_s)
     {
-        uint l_spot_light_index = gs_visible_spot_light_indices[l_s];
-        spot_light l_light = g_spot_lights[l_spot_light_index];
+		const uint l_spot_light_index = gs_visible_spot_light_indices[l_s];
+		const spot_light l_light = g_spot_lights[l_spot_light_index];
 
         if (!is_pixel_in_light_range(l_world_position, l_light.m_min_bound, l_light.m_max_bound))
         {

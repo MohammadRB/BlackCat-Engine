@@ -40,7 +40,7 @@ namespace black_cat
 		constexpr static bcSIZE m_shader_thread_group_size = 16;
 		constexpr static bcSIZE m_shader_shadow_map_cascade_count = 4;
 		constexpr static bcSIZE m_shader_shadow_map_array_count = 1;
-		constexpr static bcSIZE m_shader_shadow_map_count = 2;
+		constexpr static bcSIZE m_shader_shadow_map_count = 1;
 		constexpr static bcSIZE m_num_direct_lights = 2;
 		constexpr static bcSIZE m_num_point_lights = 100;
 		constexpr static bcSIZE m_num_spot_lights = 100;
@@ -51,6 +51,7 @@ namespace black_cat
 		graphic::bc_resource_view_ptr m_depth_stencil_view;
 		graphic::bc_resource_view_ptr m_diffuse_map_view;
 		graphic::bc_resource_view_ptr m_normal_map_view;
+		graphic::bc_resource_view_ptr m_specular_map_view;
 
 		graphic::bc_sampler_state_ptr m_pcf_sampler;
 

@@ -101,7 +101,7 @@ namespace black_cat
 					const auto* l_decal_component = p_context.m_actor.get_component< bc_decal_component >();
 					if(l_decal_component)
 					{
-						l_height_map_component->add_decal(l_decal_component->get_decal_name(), l_hit_result->get_position());
+						l_height_map_component->add_decal(l_decal_component->get_decal_name(), l_hit_result->get_position(), m_light_direction);
 					}
 				}
 				else

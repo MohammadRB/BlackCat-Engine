@@ -121,7 +121,8 @@ namespace black_cat
 
 		if(my_index() == 0)
 		{
-			p_param.m_render_thread.clear_buffers(core::bc_vector4f(1));
+			core::bc_vector<core::bc_vector4f> l_clear_buffers(p_param.m_cascade_count, core::bc_vector4f(1));
+			p_param.m_render_thread.clear_buffers(l_clear_buffers.data(), p_param.m_cascade_count);
 		}
 
 		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, l_leaf_render_buffer, p_param.m_cascade_camera);
