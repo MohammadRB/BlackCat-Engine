@@ -223,11 +223,10 @@ namespace black_cat
 			return;
 		}
 
-		auto l_depth_buffer = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
+		auto l_depth_stencil = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
 		const auto l_diffuse_map = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1);
 		const auto l_normal_map = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2);
 		const auto l_specular_map = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_3);
-		const auto l_depth_render_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
 		const auto l_diffuse_map_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_1);
 		const auto l_normal_map_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_2);
 		const auto l_specular_map_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_3);
@@ -235,10 +234,16 @@ namespace black_cat
 
 		auto l_depth_view_config = graphic::bc_graphic_resource_builder()
 			.as_resource_view()
-			.as_texture_view(graphic::bc_format::R32_FLOAT)
+			.as_texture_view(graphic::bc_format::R24_UNORM_X8_TYPELESS)
 			.as_tex2d_shader_view(0, 1)
 			.on_texture2d();
-		m_depth_view = p_param.m_device.create_resource_view(l_depth_buffer, l_depth_view_config);
+		auto l_stencil_view_config = graphic::bc_graphic_resource_builder()
+			.as_resource_view()
+			.as_texture_view(graphic::bc_format::X24_TYPELESS_G8_UINT)
+			.as_tex2d_shader_view(0, 1)
+			.on_texture2d();
+		m_depth_view = p_param.m_device.create_resource_view(l_depth_stencil, l_depth_view_config);
+		m_stencil_view = p_param.m_device.create_resource_view(l_depth_stencil, l_stencil_view_config);
 		
 		m_device_pipeline_state = p_param.m_render_system.create_device_pipeline_state
 		(
@@ -248,14 +253,14 @@ namespace black_cat
 			nullptr,
 			"gbuffer_decal_ps",
 			game::bc_vertex_type::pos,
-			game::bc_blend_type::alpha,
-			game::bc_depth_stencil_type::depth_off_stencil_off,
+			game::bc_blend_type::blending_overwrite_alpha,
+			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_off, game::bc_depth_stencil_type::stencil_off }),
 			game::bc_rasterizer_type::fill_solid_cull_back,
 			0x1,
 			{
 				l_diffuse_map.get_format(), l_normal_map.get_format(), l_specular_map.get_format()
 			},
-			l_depth_buffer.get_format(),
+			l_depth_stencil.get_format(),
 			game::bc_multi_sample_type::c1_q1
 		);
 		m_render_pass_state = p_param.m_render_system.create_render_pass_state
@@ -272,7 +277,8 @@ namespace black_cat
 			},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, m_depth_view.get()),
-				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::vertex, m_instance_buffer_view.get())
+				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::pixel, m_stencil_view.get()),
+				graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::vertex, m_instance_buffer_view.get())
 			},
 			{
 			},
@@ -288,14 +294,14 @@ namespace black_cat
 			nullptr,
 			"gbuffer_non_culling_decal_ps",
 			game::bc_vertex_type::pos,
-			game::bc_blend_type::alpha,
-			game::bc_depth_stencil_type::depth_off_stencil_off,
+			game::bc_blend_type::blending_preserve_alpha,
+			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_off, game::bc_depth_stencil_type::stencil_off }),
 			game::bc_rasterizer_type::fill_solid_cull_front,
 			0x1,
 			{
 				l_diffuse_map.get_format(), l_normal_map.get_format(), l_specular_map.get_format()
 			},
-			l_depth_buffer.get_format(),
+			l_depth_stencil.get_format(),
 			game::bc_multi_sample_type::c1_q1
 		);
 		m_render_pass_state_for_non_culling = p_param.m_render_system.create_render_pass_state
@@ -312,7 +318,8 @@ namespace black_cat
 			},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, m_depth_view.get()),
-				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::vertex, m_instance_buffer_view.get())
+				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::pixel, m_stencil_view.get()),
+				graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::vertex, m_instance_buffer_view.get())
 			},
 			{
 			},
@@ -332,6 +339,7 @@ namespace black_cat
 		m_linear_sampler.reset();
 		m_point_sampler.reset();
 		m_depth_view.reset();
+		m_stencil_view.reset();
 		m_instance_buffer_view.reset();
 		m_instance_buffer.reset();
 		m_cube_vb.reset();

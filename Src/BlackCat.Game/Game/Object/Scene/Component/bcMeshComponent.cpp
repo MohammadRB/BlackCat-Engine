@@ -73,24 +73,6 @@ namespace black_cat
 			}
 		}
 
-		void bc_mesh_component::render(const bc_actor_component_render_context& p_context) const
-		{
-			const auto l_mesh_lod = m_sub_mesh.get_mesh_level_of_detail();
-			const auto l_lod = l_mesh_lod.get_lod_culling
-			(
-				p_context.m_camera.m_main_camera.get_position(), 
-				p_context.m_camera.m_render_camera.get_position(), 
-				get_world_position(), 
-				get_lod_factor()
-			);
-			if(!l_lod.second)
-			{
-				return;
-			}
-
-			bc_mesh_utility::render_mesh(p_context.m_buffer, m_render_state, m_world_transforms, l_lod.first);
-		}
-
 		void bc_mesh_component::set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform) noexcept
 		{
 			physics::bc_bound_box l_bound_box;

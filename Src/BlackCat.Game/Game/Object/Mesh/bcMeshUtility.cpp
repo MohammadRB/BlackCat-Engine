@@ -81,6 +81,7 @@ namespace black_cat
 									l_material = l_new_material;
 								}
 
+								// TODO this causes every instance get a new render state and render instances doesn't group together in draw calls
 								l_render_state = p_render_system.create_render_state
 								(
 									graphic::bc_primitive::trianglelist,
@@ -124,7 +125,8 @@ namespace black_cat
 		void bc_mesh_utility::render_mesh(bc_render_state_buffer& p_buffer, 
 			const bc_mesh_render_state& p_render_states, 
 			const bc_sub_mesh_mat4_transform& p_transformations, 
-			bcUINT32 p_lod)
+			bcUINT32 p_lod,
+			bc_render_group p_group)
 		{
 			auto l_begin = p_render_states.begin(p_lod);
 			const auto l_end = p_render_states.end(p_lod);
@@ -134,7 +136,7 @@ namespace black_cat
 				auto& l_entry = *l_begin;
 				const auto& l_node_transformation = p_transformations[l_entry.m_node_index];
 
-				bc_render_instance l_instance(l_node_transformation);
+				bc_render_instance l_instance(l_node_transformation, p_group);
 				p_buffer.add_render_instance(l_entry.m_render_state, l_instance);
 
 				++l_begin;
@@ -144,7 +146,8 @@ namespace black_cat
 		void bc_mesh_utility::render_skinned_mesh(bc_render_state_buffer& p_buffer, 
 			const bc_mesh_render_state& p_render_states, 
 			const bc_sub_mesh_mat4_transform& p_transformations, 
-			bcUINT32 p_lod)
+			bcUINT32 p_lod,
+			bc_render_group p_group)
 		{
 			auto l_begin = p_render_states.begin(p_lod);
 			const auto l_end = p_render_states.end(p_lod);
@@ -152,9 +155,8 @@ namespace black_cat
 			while (l_begin != l_end)
 			{
 				auto& l_entry = *l_begin;
-				bc_skinned_render_instance l_instance(p_transformations.size());
-				p_transformations.copy_transforms_to(l_instance.get_transforms());
-
+				
+				bc_skinned_render_instance l_instance(&*p_transformations.begin(), p_transformations.size(), p_group);
 				p_buffer.add_skinned_render_instance(l_entry.m_render_state, std::move(l_instance));
 
 				++l_begin;

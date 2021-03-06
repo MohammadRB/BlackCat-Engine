@@ -391,7 +391,7 @@ namespace black_cat
 
 		auto l_depth_resource_view_config = l_resource_configure
 			.as_resource_view()
-			.as_texture_view(graphic::bc_format::R32_FLOAT)
+			.as_texture_view(graphic::bc_format::R24_UNORM_X8_TYPELESS)
 			.as_tex2d_shader_view(0, 1)
 			.on_texture2d();
 		auto l_diffuse_map_view_config = l_resource_configure

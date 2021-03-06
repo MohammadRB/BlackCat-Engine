@@ -42,6 +42,7 @@ namespace black_cat
 				bcFLOAT p_width,
 				bcFLOAT p_height,
 				bcFLOAT p_depth,
+				bcFLOAT p_lod_scale,
 				bc_actor_group p_group,
 				bool p_auto_remove);
 
@@ -66,6 +67,8 @@ namespace black_cat
 			bcFLOAT get_height() const noexcept;
 			
 			bcFLOAT get_depth() const noexcept;
+			
+			bcFLOAT get_lod_scale() const noexcept;
 
 			bc_actor_group get_group() const noexcept;
 
@@ -80,6 +83,7 @@ namespace black_cat
 			bcFLOAT m_width;
 			bcFLOAT m_height;
 			bcFLOAT m_depth;
+			bcFLOAT m_lod_scale;
 			bc_actor_group m_group;
 			bool m_auto_remove;
 		};
@@ -104,6 +108,7 @@ namespace black_cat
 			bcFLOAT p_width,
 			bcFLOAT p_height,
 			bcFLOAT p_depth,
+			bcFLOAT p_lod_scale,
 			bc_actor_group p_group,
 			bool p_auto_remove)
 			: m_material(std::move(p_material)),
@@ -114,6 +119,7 @@ namespace black_cat
 			m_width(p_width),
 			m_height(p_height),
 			m_depth(p_depth),
+			m_lod_scale(p_lod_scale),
 			m_group(p_group),
 			m_auto_remove(p_auto_remove)
 		{
@@ -143,6 +149,11 @@ namespace black_cat
 		inline bcFLOAT bc_decal::get_depth() const noexcept
 		{
 			return m_depth;
+		}
+
+		inline bcFLOAT bc_decal::get_lod_scale() const noexcept
+		{
+			return m_lod_scale;
 		}
 		
 		inline bcFLOAT bc_decal::get_u0() const noexcept

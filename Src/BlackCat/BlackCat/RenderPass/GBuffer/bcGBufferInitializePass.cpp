@@ -139,7 +139,7 @@ namespace black_cat
 				p_param.m_new_parameters.m_height,
 				false,
 				1,
-				graphic::bc_format::D32_FLOAT,
+				graphic::bc_format::D24_UNORM_S8_UINT,
 				graphic::bc_resource_usage::gpu_rw,
 				core::bc_enum::mask_or({ graphic::bc_resource_view_type::depth_stencil, graphic::bc_resource_view_type::shader })
 			).as_depth_stencil_texture();
@@ -182,7 +182,7 @@ namespace black_cat
 
 		auto l_depth_stencil_view_config = l_resource_configure
 			.as_resource_view()
-			.as_texture_view(graphic::bc_format::D32_FLOAT)
+			.as_texture_view(graphic::bc_format::D24_UNORM_S8_UINT)
 			.as_tex2d_depth_stencil_view(0);
 		auto l_diffuse_map_view_config = l_resource_configure
 			.as_resource_view()

@@ -200,6 +200,8 @@ namespace black_cat
 				graphic::bc_texture_address_mode::wrap,
 				graphic::bc_texture_address_mode::wrap
 			).as_sampler_state();
+
+			const auto* l_depth_stencil = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
 			const auto* l_diffuse_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1);
 			const auto* l_normal_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2);
 			const auto* l_specular_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_3);
@@ -220,7 +222,7 @@ namespace black_cat
 				"terrain_gbuffer_ps",
 				game::bc_vertex_type::pos_tex,
 				game::bc_blend_type::opaque,
-				game::bc_depth_stencil_type::depth_less_stencil_off,
+				core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_less, game::bc_depth_stencil_type::stencil_write }),
 				game::bc_rasterizer_type::fill_solid_cull_back,
 				0x1,
 				{
@@ -228,7 +230,7 @@ namespace black_cat
 					l_normal_map->get_format(),
 					l_specular_map->get_format()
 				},
-				get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
+				l_depth_stencil->get_format(),
 				game::bc_multi_sample_type::c1_q1
 			);
 			m_render_pass_state = p_param.m_render_system.create_render_pass_state

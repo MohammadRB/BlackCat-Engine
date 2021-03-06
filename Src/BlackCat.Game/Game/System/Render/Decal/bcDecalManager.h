@@ -27,6 +27,7 @@ namespace black_cat
 			bcFLOAT m_width;
 			bcFLOAT m_height;
 			bcFLOAT m_depth;
+			bcFLOAT m_lod_scale;
 			bc_actor_group m_group;
 			bool m_auto_remove;
 		};

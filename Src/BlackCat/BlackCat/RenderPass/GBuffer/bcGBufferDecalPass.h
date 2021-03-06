@@ -61,6 +61,7 @@ namespace black_cat
 		graphic::bc_buffer_ptr m_instance_buffer;
 		graphic::bc_resource_view_ptr m_instance_buffer_view;
 		graphic::bc_resource_view_ptr m_depth_view;
+		graphic::bc_resource_view_ptr m_stencil_view;
 		graphic::bc_sampler_state_ptr m_point_sampler;
 		graphic::bc_sampler_state_ptr m_linear_sampler;
 		graphic::bc_device_pipeline_state_ptr m_device_pipeline_state;

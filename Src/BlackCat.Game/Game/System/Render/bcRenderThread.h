@@ -64,9 +64,10 @@ namespace black_cat
 			 * \brief Bind render states to given device pipeline and apply changes
 			 * Apply InputAssemblerStage for primitive topology, vertex buffer and index buffer
 			 * Apply ProgrammableStates for parameters
-			 * \param p_render_state 
+			 * \param p_render_state
+			 * \param p_stencil_ref 
 			 */
-			void bind_render_state(const bc_render_state& p_render_state);
+			void bind_render_state(const bc_render_state& p_render_state, const bcUINT32* p_stencil_ref = nullptr);
 
 			void unbind_render_state(const bc_render_state& p_render_state);
 

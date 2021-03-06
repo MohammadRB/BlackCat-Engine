@@ -36,7 +36,7 @@ namespace black_cat
 			nullptr,
 			game::bc_vertex_type::pos_tex_nor_tan_bon,
 			game::bc_blend_type::opaque,
-			game::bc_depth_stencil_type::depth_less_stencil_off,
+			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_less, game::bc_depth_stencil_type::stencil_off }),
 			game::bc_rasterizer_type::fill_solid_cull_back,
 			0x01,
 			{},

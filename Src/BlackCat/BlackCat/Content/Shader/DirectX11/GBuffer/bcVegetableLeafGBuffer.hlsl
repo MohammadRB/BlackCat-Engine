@@ -71,26 +71,26 @@ bc_ps_output gbuffer_vegetable_leaf_ps(bc_vs_output p_input)
     float4 l_specular_map = g_tex2d_specular.Sample(g_sam_sampler, p_input.m_texcoord);
     float3 l_normal = p_input.m_normal;
 
-    float2 l_ddx = ddx(p_input.m_texcoord);
-    float2 l_ddy = ddy(p_input.m_texcoord);
+    const float2 l_ddx = ddx(p_input.m_texcoord);
+    const float2 l_ddy = ddy(p_input.m_texcoord);
 
 	[branch]
     if (g_has_normal_map)
     {
-        float4 l_normal_map = g_tex2d_normal.SampleGrad(g_sam_sampler, p_input.m_texcoord, l_ddx, l_ddy);
+	    const float4 l_normal_map = g_tex2d_normal.SampleGrad(g_sam_sampler, p_input.m_texcoord, l_ddx, l_ddy);
 
         float3x3 l_tbn;
         l_tbn[0] = p_input.m_tangent;
         l_tbn[1] = p_input.m_binormal;
         l_tbn[2] = p_input.m_normal;
 
-        float3 l_in_range_normal = (l_normal_map.xyz - 0.5) * 2;
+	    const float3 l_in_range_normal = (l_normal_map.xyz - 0.5) * 2;
         l_normal = mul(l_in_range_normal, l_tbn);
     }
 
     float3 l_final_normal = (l_normal + 1) / 2.0f;
 
-    l_output.m_diffuse = float4(l_diffuse_map.xyz, 1);
+	l_output.m_diffuse = float4(l_diffuse_map.xyz, 1);
     l_output.m_normal = float4(l_final_normal, 1);
 	l_output.m_specular = float4(l_specular_map.x, g_specular_power, 0, 1);
 

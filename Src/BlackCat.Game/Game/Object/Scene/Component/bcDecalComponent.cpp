@@ -1,6 +1,7 @@
 // [02/25/2021 MRB]
 
 #include "Game/GamePCH.h"
+#include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
@@ -146,11 +147,20 @@ namespace black_cat
 		{
 			for(const bc_decal_instance_ptr& l_decal : m_decals)
 			{
-				p_context.m_buffer.add_decal_instance
-				(
-					l_decal->get_decal_ptr(), 
-					bc_render_instance(l_decal->get_world_transform())
-				);
+				const auto l_lod_factor = std::max(l_decal->get_decal()->get_width(), l_decal->get_decal()->get_height()) * 
+					l_decal->get_decal()->get_lod_scale() * 
+					get_global_config().get_lod_global_scale();
+				const auto l_camera_distance = (l_decal->get_world_transform().get_translation() - p_context.m_camera.m_main_camera.get_position()).magnitude();
+				const auto l_culling_index = static_cast<bcUINT32>(l_camera_distance / l_lod_factor);
+				
+				if(l_culling_index <= get_global_config().get_lod_culling_index())
+				{
+					p_context.m_buffer.add_decal_instance
+					(
+						l_decal->get_decal_ptr(),
+						bc_render_instance(l_decal->get_world_transform(), bc_render_group::unknown)
+					);
+				}
 			}
 		}
 	}

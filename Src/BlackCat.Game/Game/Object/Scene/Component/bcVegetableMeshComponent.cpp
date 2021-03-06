@@ -121,11 +121,11 @@ namespace black_cat
 			const auto& l_mesh_transformation = get_world_transforms();
 			if(p_render_leaf)
 			{
-				bc_mesh_utility::render_mesh(p_context.m_buffer, m_leaf_render_state, l_mesh_transformation, l_lod.first);
+				bc_mesh_utility::render_mesh(p_context.m_buffer, m_leaf_render_state, l_mesh_transformation, l_lod.first, bc_render_group::vegetable);
 			}
 			else
 			{
-				bc_mesh_utility::render_mesh(p_context.m_buffer, m_trunk_render_state, l_mesh_transformation, l_lod.first);
+				bc_mesh_utility::render_mesh(p_context.m_buffer, m_trunk_render_state, l_mesh_transformation, l_lod.first, bc_render_group::static_mesh);
 			}
 		}
 	}

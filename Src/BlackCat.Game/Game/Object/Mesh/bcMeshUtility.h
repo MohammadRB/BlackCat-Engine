@@ -4,6 +4,7 @@
 
 #include "Core/Container/bcVector.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
+#include "Game/System/Render/bcRenderInstance.h"
 #include "Game/Object/Mesh/bcMesh.h"
 #include "Game/Object/Mesh/bcSubMeshTransform.h"
 #include "Game/Object/Mesh/bcMeshRenderState.h"
@@ -39,12 +40,14 @@ namespace black_cat
 			static void render_mesh(bc_render_state_buffer& p_buffer, 
 				const bc_mesh_render_state& p_render_states, 
 				const bc_sub_mesh_mat4_transform& p_transformations, 
-				bcUINT32 p_lod);
+				bcUINT32 p_lod,
+				bc_render_group p_group);
 			
 			static void render_skinned_mesh(bc_render_state_buffer& p_buffer, 
 				const bc_mesh_render_state& p_render_states, 
 				const bc_sub_mesh_mat4_transform& p_transformations, 
-				bcUINT32 p_lod);
+				bcUINT32 p_lod,
+				bc_render_group p_group);
 			
 			static void calculate_bound_box(const bc_mesh& p_mesh, 
 				const bc_sub_mesh_mat4_transform& p_world_transforms, 

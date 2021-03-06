@@ -33,8 +33,6 @@ namespace black_cat
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
-			void render(const bc_actor_component_render_context& p_context) const override;
-
 		protected:
 			bc_mesh_component();
 

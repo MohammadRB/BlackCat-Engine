@@ -253,6 +253,7 @@ namespace black_cat
 		{
 			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
 			const auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
+			auto l_last_render_group = game::bc_render_group::unknown;
 			
 			for (const auto& l_render_state_entry : p_buffer.get_instances())
 			{
@@ -263,9 +264,16 @@ namespace black_cat
 
 				auto& l_render_state = *l_render_state_entry.first;
 				p_render_thread.bind_render_state(l_render_state);
-
-				for (auto& l_render_instance : l_render_state_entry.second)
+				
+				for (const bc_render_instance& l_render_instance : l_render_state_entry.second)
 				{
+					if(l_render_instance.get_render_group() != l_last_render_group)
+					{
+						l_last_render_group = l_render_instance.get_render_group();
+						p_render_thread.bind_om_stencil_ref(static_cast<bcUINT32>(l_last_render_group));
+						p_render_thread.pipeline_apply_states(graphic::bc_pipeline_stage::output_merger_stage);
+					}
+					
 					l_per_object_cbuffer.m_world_view_projection = (l_render_instance.get_transform() * l_view_proj);
 					l_per_object_cbuffer.m_world = l_render_instance.get_transform();
 
@@ -293,6 +301,7 @@ namespace black_cat
 		void bc_frame_renderer::render_skinned_buffer(bc_render_thread& p_render_thread, const bc_render_state_buffer& p_buffer, const bc_camera_instance& p_camera)
 		{
 			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
+			auto l_last_render_group = game::bc_render_group::unknown;
 			
 			for (const auto& l_render_state_entry : p_buffer.get_skinned_instances())
 			{
@@ -304,10 +313,17 @@ namespace black_cat
 				auto& l_render_state = *l_render_state_entry.first;
 				p_render_thread.bind_render_state(l_render_state);
 
-				for (auto& l_render_instance : l_render_state_entry.second)
+				for (bc_skinned_render_instance& l_render_instance : l_render_state_entry.second)
 				{
 					BC_ASSERT(l_render_instance.get_num_transforms() <= g_max_skinned_transform);
 
+					if (l_render_instance.get_render_group() != l_last_render_group)
+					{
+						l_last_render_group = l_render_instance.get_render_group();
+						p_render_thread.bind_om_stencil_ref(static_cast<bcUINT32>(l_last_render_group));
+						p_render_thread.pipeline_apply_states(graphic::bc_pipeline_stage::output_merger_stage);
+					}
+					
 					std::memcpy(&l_per_object_cbuffer.m_transforms[0], l_render_instance.get_transforms(), sizeof(core::bc_matrix4f) * l_render_instance.get_num_transforms());
 
 					if (need_matrix_transpose())
