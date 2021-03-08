@@ -1,11 +1,13 @@
  // [03/13/2016 MRB]
 
 #include "Game/GamePCH.h"
-#include "Game/bcException.h"
+
+#include "Core/Utility/bcCounterValueManager.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/Pass/bcRenderPassManager.h"
+#include "Game/bcException.h"
 
-namespace black_cat
+ namespace black_cat
 {
 	namespace game
 	{
@@ -75,19 +77,30 @@ namespace black_cat
 
 		void bc_render_pass_manager::pass_execute(const bc_render_pass_render_context& p_param)
 		{
-			for (auto& l_entry : m_passes)
+			auto* l_counter_value_manager = core::bc_get_service<core::bc_counter_value_manager>();
+			
+			for (_bc_render_pass_entry& l_entry : m_passes)
 			{
+				l_entry.m_stop_watch->start();
 				l_entry.m_pass->initialize_frame(p_param);
+				l_entry.m_stop_watch->stop();
 			}
 			
-			for(auto& l_entry : m_passes)
+			for(_bc_render_pass_entry& l_entry : m_passes)
 			{
+				l_entry.m_stop_watch->start();
 				l_entry.m_pass->execute(p_param);
+				l_entry.m_stop_watch->stop();
 			}
 
-			for (auto& l_entry : m_passes)
+			for (_bc_render_pass_entry& l_entry : m_passes)
 			{
+				l_entry.m_stop_watch->start();
 				l_entry.m_pass->cleanup_frame(p_param);
+				l_entry.m_stop_watch->stop();
+
+				l_entry.m_stop_watch->restart();
+				l_counter_value_manager->add_counter(l_entry.m_name, l_entry.m_stop_watch->average_total_elapsed());
 			}
 		}
 

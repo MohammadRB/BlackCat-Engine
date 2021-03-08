@@ -64,8 +64,8 @@ namespace black_cat
 		template< typename TValue, bcUINT32 TSampleCount >
 		TValue bc_value_sampler<TValue, TSampleCount>::average_value() const noexcept
 		{
-			const auto l_sum = std::accumulate(std::begin(m_samples), std::end(m_samples), 0);
-			const auto l_average = l_sum * 1. / TSampleCount;
+			const auto l_sum = std::accumulate(std::begin(m_samples), std::end(m_samples), static_cast<TValue>(0.));
+			const auto l_average = l_sum / TSampleCount;
 
 			return l_average;
 		}

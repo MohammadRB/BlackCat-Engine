@@ -6,6 +6,7 @@
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "PhysicsImp/Shape/bcHeightField.h"
 #include "Game/System/Physics/bcPxWrap.h"
+#include "Game/System/Render/bcRenderThread.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"

@@ -6,6 +6,7 @@
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcList.h"
+#include "Core/Container/bcIteratorAdapter.h"
 #include "Core/bcException.h"
 #include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcTemplateMetaType.h"
@@ -48,7 +49,7 @@ namespace black_cat
 			bool get_is_optional() const noexcept;
 
 			bool get_had_value() const noexcept;
-			
+
 			virtual void load(bc_json_value_object& p_json_value) = 0;
 
 			virtual void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) = 0;
@@ -125,7 +126,7 @@ namespace black_cat
 		{
 			bc_json_value_object* l_result = nullptr;
 
-			if(p_json.HasMember(p_name))
+			if (p_json.HasMember(p_name))
 			{
 				l_result = &p_json[p_name];
 			}
@@ -207,9 +208,9 @@ namespace black_cat
 			{
 				auto l_current = std::begin(m_key_values);
 				const auto l_end = std::end(m_key_values);
-				for(;l_current != l_end; ++l_current)
+				for (; l_current != l_end; ++l_current)
 				{
-					if(l_current->first == p_key)
+					if (l_current->first == p_key)
 					{
 						break;
 					}
@@ -258,15 +259,15 @@ namespace black_cat
 			{
 				return m_key_values.size();
 			}
-		
+
 		private:
 			key_value_array m_key_values;
 		};
 
 		/**
-		 * \brief T can be fundamental types like bool, bcINT, bcUINT, bcFLOAT32, bc_string, bc_string_program, bc_string_level, 
+		 * \brief T can be fundamental types like bool, bcINT, bcUINT, bcFLOAT32, bc_string, bc_string_program, bc_string_level,
 		 * bc_string_frame, bc_json_key_value and bc_parameter_pack which last one can hold all of previous types.
-		 * \tparam T 
+		 * \tparam T
 		 */
 		template< typename T >
 		class bc_json_value : public bci_json_value
@@ -300,12 +301,12 @@ namespace black_cat
 					return;
 				}
 
-				if(m_optional && l_value->IsNull())
+				if (m_optional && l_value->IsNull())
 				{
 					m_had_value = false;
 					return;
 				}
-				
+
 				_load(*l_value, m_value);
 				m_had_value = true;
 			}
@@ -359,7 +360,7 @@ namespace black_cat
 
 			const T& operator*() const noexcept
 			{
-				return &get();
+				return get();
 			}
 
 		private:
@@ -656,7 +657,7 @@ namespace black_cat
 			{
 				json_parse::bc_write(p_document, p_json_value, p_value);
 			}
-			
+
 			const bcCHAR* m_name;
 			T m_value;
 		};
@@ -688,15 +689,23 @@ namespace black_cat
 				auto* l_value = m_name != nullptr ? get_json_field(p_json_value, m_name) : &p_json_value;
 				if (!l_value)
 				{
+					m_had_value = false;
 					return;
 				}
 
+				if (m_optional && l_value->IsNull())
+				{
+					m_had_value = false;
+					return;
+				}
+				
 				if (!l_value->IsObject())
 				{
 					throw bc_io_exception("bad json format. expected object value.");
 				}
 
 				m_value.load(*l_value);
+				m_had_value = true;
 			}
 
 			void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override
@@ -758,7 +767,7 @@ namespace black_cat
 		};
 
 		template< typename T, typename T1 = void >
-		class bc_json_array : public bci_json_value
+		class bc_json_array : public bci_json_value, public bc_iterator_adapter<bc_list< bc_json_object< T > >>
 		{
 		public:
 			using list_t = bc_list< bc_json_object< T > >;
@@ -773,15 +782,28 @@ namespace black_cat
 		public:
 			bc_json_array(const char* p_name, bci_json_structure* p_structure, bool p_optional = false)
 				: bci_json_value(p_structure, p_optional),
+				bc_iterator_adapter(m_value),
 				m_name(p_name),
 				m_value()
 			{
 			}
 
-			bc_json_array(const bc_json_array&) noexcept(std::is_nothrow_copy_constructible<T>::value) = default;
+			bc_json_array(const bc_json_array& p_other) noexcept(std::is_nothrow_copy_constructible<T>::value)
+				: bci_json_value(p_other),
+				bc_iterator_adapter(m_value),
+				m_name(p_other.m_name),
+				m_value(p_other.m_value)
+			{
+			}
 
-			bc_json_array(bc_json_array&&) noexcept(std::is_nothrow_move_constructible<T>::value) = default;
-			
+			bc_json_array(bc_json_array&& p_other) noexcept(std::is_nothrow_move_constructible<T>::value)
+				: bci_json_value(std::move(p_other)),
+				bc_iterator_adapter(m_value),
+				m_name(p_other.m_name),
+				m_value(std::move(p_other.m_value))
+			{
+			}
+
 			~bc_json_array() = default;
 
 			bc_json_array& operator=(const bc_json_array&) noexcept(std::is_nothrow_copy_assignable<T>::value) = default;
@@ -793,9 +815,16 @@ namespace black_cat
 				auto* l_value = get_json_field(p_json_value, m_name);
 				if (!l_value)
 				{
+					m_had_value = false;
 					return;
 				}
 
+				if (m_optional && l_value->IsNull())
+				{
+					m_had_value = false;
+					return;
+				}
+				
 				if (!l_value->IsArray())
 				{
 					throw bc_io_exception("bad json format. expected array value.");
@@ -810,6 +839,7 @@ namespace black_cat
 					auto l_inserted_value = m_value.rbegin();
 					l_inserted_value->load(l_array_value);
 				}
+				m_had_value = true;
 			}
 
 			void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override
@@ -826,36 +856,6 @@ namespace black_cat
 				}
 			}
 
-			iterator begin() noexcept
-			{
-				return m_value.begin();
-			}
-
-			const_iterator begin() const noexcept
-			{
-				return m_value.begin();
-			}
-
-			const_iterator cbegin() const noexcept
-			{
-				return m_value.cbegin();
-			}
-
-			iterator end() noexcept
-			{
-				return m_value.end();
-			}
-
-			const_iterator end() const noexcept
-			{
-				return m_value.end();
-			}
-
-			const_iterator cend() const noexcept
-			{
-				return m_value.cend();
-			}
-
 			bc_json_object< T >& new_entry()
 			{
 				m_value.emplace_back(nullptr, nullptr);
@@ -864,11 +864,11 @@ namespace black_cat
 				return *l_inserted_value;
 			}
 
-			size_type size() const
+			void remove_entry(const_iterator p_iterator)
 			{
-				return m_value.size();
+				m_value.erase(p_iterator);
 			}
-
+		
 		private:
 			const bcCHAR* m_name;
 			list_t m_value;			// Because json objects are not copyable and movable we have used list instead of vector
@@ -876,21 +876,21 @@ namespace black_cat
 
 		template< typename T >
 		class bc_json_array
-		<
+			<
 			T,
 			typename std::enable_if
 			<
-				std::is_same< bool, typename std::decay< T >::type >::value ||
-				std::is_same< bcINT, typename std::decay< T >::type >::value ||
-				std::is_same< bcUINT, typename std::decay< T >::type >::value ||
-				std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
-				std::is_same< bc_string, typename std::decay< T >::type >::value ||
-				std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
-				std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
-				std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value ||
-				std::is_same< bc_any, typename std::decay< T >::type >::value
+			std::is_same< bool, typename std::decay< T >::type >::value ||
+			std::is_same< bcINT, typename std::decay< T >::type >::value ||
+			std::is_same< bcUINT, typename std::decay< T >::type >::value ||
+			std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
+			std::is_same< bc_string, typename std::decay< T >::type >::value ||
+			std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
+			std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
+			std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value ||
+			std::is_same< bc_any, typename std::decay< T >::type >::value
 			>::type
-		> : public bci_json_value
+		> : public bci_json_value, public bc_iterator_adapter<bc_list< bc_json_value< T > >>
 		{
 		public:
 			using list_t = bc_list< bc_json_value< T > >;
@@ -905,14 +905,27 @@ namespace black_cat
 		public:
 			bc_json_array(const bcCHAR* p_name, bci_json_structure* p_structure, bool p_optional = false)
 				: bci_json_value(p_structure, p_optional),
+				bc_iterator_adapter(m_value),
 				m_name(p_name),
 				m_value()
 			{
 			}
 
-			bc_json_array(const bc_json_array&) noexcept(std::is_nothrow_copy_constructible<T>::value) = delete;
+			bc_json_array(const bc_json_array& p_other) noexcept(std::is_nothrow_copy_constructible<T>::value)
+				: bci_json_value(p_other),
+				bc_iterator_adapter(m_value),
+				m_name(p_other.m_name),
+				m_value(p_other.m_value)
+			{
+			}
 
-			bc_json_array(bc_json_array&&) noexcept(std::is_nothrow_move_constructible<T>::value) = delete;
+			bc_json_array(bc_json_array&& p_other) noexcept(std::is_nothrow_move_constructible<T>::value)
+				: bci_json_value(std::move(p_other)),
+				bc_iterator_adapter(m_value),
+				m_name(p_other.m_name),
+				m_value(std::move(p_other.m_value))
+			{
+			}
 
 			~bc_json_array() = default;
 
@@ -925,9 +938,16 @@ namespace black_cat
 				auto* l_value = get_json_field(p_json_value, m_name);
 				if (!l_value)
 				{
+					m_had_value = false;
 					return;
 				}
 
+				if (m_optional && l_value->IsNull())
+				{
+					m_had_value = false;
+					return;
+				}
+				
 				if (!l_value->IsArray())
 				{
 					throw bc_io_exception("bad json format. expected array value.");
@@ -942,6 +962,7 @@ namespace black_cat
 					auto l_inserted_value = m_value.rbegin();
 					l_inserted_value->load(l_array_value);
 				}
+				m_had_value = true;
 			}
 
 			void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override
@@ -958,36 +979,6 @@ namespace black_cat
 				}
 			}
 
-			iterator begin() noexcept
-			{
-				return m_value.begin();
-			}
-
-			const_iterator begin() const noexcept
-			{
-				return m_value.begin();
-			}
-
-			const_iterator cbegin() const noexcept
-			{
-				return m_value.cbegin();
-			}
-
-			iterator end() noexcept
-			{
-				return m_value.end();
-			}
-
-			const_iterator end() const noexcept
-			{
-				return m_value.end();
-			}
-
-			const_iterator cend() const noexcept
-			{
-				return m_value.cend();
-			}
-
 			bc_json_value< T >& new_entry()
 			{
 				m_value.emplace_back(nullptr, nullptr);
@@ -996,9 +987,9 @@ namespace black_cat
 				return *l_inserted_value;
 			}
 
-			size_type size() const
+			void remove_entry(const_iterator p_iterator)
 			{
-				return m_value.size();
+				m_value.erase(p_iterator);
 			}
 
 		private:
@@ -1038,7 +1029,7 @@ namespace black_cat
 
 					throw bc_io_exception(l_parse_error_msg.c_str());
 				}
-				
+
 				if (!l_json_document.IsObject())
 				{
 					throw bc_io_exception("bad json format. expected object value.");

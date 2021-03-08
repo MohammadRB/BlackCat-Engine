@@ -56,6 +56,13 @@ namespace black_cat
 			size_type size() const noexcept;
 			
 			void add_counter(const bcCHAR* p_name, bc_wstring p_value);
+			
+			/**
+			 * \brief Add float counter with %.1f format
+			 * \param p_name 
+			 * \param p_value 
+			 */
+			void add_counter(const bcCHAR* p_name, bcFLOAT p_value);
 
 			const_iterator find(const bcCHAR* p_name) const noexcept;
 			

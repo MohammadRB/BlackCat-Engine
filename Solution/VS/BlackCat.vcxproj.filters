@@ -351,6 +351,9 @@
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\GBuffer\bcVegetableAnimation.hlsli">
       <Filter>BlackCat\Content\Shader\DirectX11\GBuffer</Filter>
     </None>
+    <None Include="..\..\Src\BlackCat\BlackCat\Content\config.json">
+      <Filter>BlackCat\Content</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Default.dds">

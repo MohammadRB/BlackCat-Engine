@@ -53,10 +53,10 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_particle_builder1& bc_particle_builder1::with_emission_deviation(bcUINT32 p_angle, const core::bc_vector3f& p_apply_directions) noexcept
+		bc_particle_builder1& bc_particle_builder1::with_emission_deviation(bcUINT32 p_angle, const core::bc_vector3f& p_deviation_force) noexcept
 		{
 			m_emitter.m_emission_deviation = p_angle;
-			m_emitter.m_emission_deviation_force = p_apply_directions;
+			m_emitter.m_emission_deviation_force = p_deviation_force;
 			return *this;
 		}
 

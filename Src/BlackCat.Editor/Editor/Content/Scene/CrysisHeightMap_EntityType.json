@@ -176,11 +176,11 @@
             "position_x": 0.0,
             "position_y": 1.0,
             "position_z": 0.0,
-            "radius": 30.0,
+            "radius": 40.0,
             "color_r": 0.9,
             "color_g": 0.4,
             "color_b": 0.001,
-            "intensity": 5.0,
+            "intensity": 8.0,
             "particle_cast": true,
             "particle_intensity": 8.0
           }

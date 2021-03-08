@@ -44,6 +44,7 @@ local.properties
 # Build results
 
 [Dd]ebug/
+[Dd]evelope/
 [Rr]elease/
 x64/
 build/
@@ -199,11 +200,14 @@ BlackCat.VC.VC.opendb
 
 BC_SDK/
 BlackCar.Core.UnitTest/
-Debug/
 ipch/
 Test/
 Test2/
 TestResults/
 .vs/
+Debug/
+Develope/
+Release/
 *.Debug/
+*.Develope/
 *.Release/

@@ -26,7 +26,7 @@ namespace black_cat
 	
 	class BC_DLL bc_gbuffer_decal_pass : public game::bci_render_pass
 	{
-		BC_RENDER_PASS(dc_pass)
+		BC_RENDER_PASS(gb_dcl)
 
 	private:
 		using decal_group_container = core::bc_unordered_map_frame< const game::bc_mesh_material*, core::bc_vector_frame< std::pair< game::bc_decal*, game::bc_render_instance* >>>;

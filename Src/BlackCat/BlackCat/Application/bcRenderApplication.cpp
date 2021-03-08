@@ -131,8 +131,8 @@ namespace black_cat
 		const auto l_render_time = m_render_watch.average_total_elapsed();
 
 		l_counter_value_manager->add_counter("fps", core::bc_to_wstring(m_fps));
-		l_counter_value_manager->add_counter("update_time", core::bc_to_wstring(l_update_time, L"%.1f"));
-		l_counter_value_manager->add_counter("render_time", core::bc_to_wstring(l_render_time, L"%.1f"));
+		l_counter_value_manager->add_counter("update_time", l_update_time);
+		l_counter_value_manager->add_counter("render_time", l_render_time);
 
 		core::bc_event_frame_swap l_event_frame_swap;
 		l_event_manager->process_event(l_event_frame_swap);

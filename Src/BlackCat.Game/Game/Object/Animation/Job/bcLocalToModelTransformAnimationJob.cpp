@@ -23,7 +23,7 @@ namespace black_cat
 		{
 			if (m_model_transforms->size() < m_skeleton->get_num_bones())
 			{
-				throw bc_invalid_argument_exception("Mesh and animation bones count does not match");
+				throw bc_invalid_argument_exception("Number of bones in mesh and animation does not match");
 			}
 		}
 
@@ -54,7 +54,7 @@ namespace black_cat
 
 				if(core::bc_matrix4f::use_column_major_storage())
 				{
-					bcFLOAT l_col[4];
+					alignas(16) bcFLOAT l_col[4];
 					ozz::math::StorePtr(l_ozz_model_transform.cols[0], l_col);
 					
 					l_model_transform[0] = l_col[0];

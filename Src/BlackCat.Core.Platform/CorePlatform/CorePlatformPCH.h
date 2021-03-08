@@ -18,8 +18,6 @@
 #include <chrono>
 #include <assert.h>
 
-// == BlackCat Definitions ==================================================================================== /
-
 #ifndef bcInline
 #define bcInline inline
 #endif
@@ -27,8 +25,6 @@
 #ifndef asm
 #define asm _asm
 #endif
-
-// == BlackCat Debug Definitions ============================================================================== /
 
 #if defined( DEBUG ) || defined( _DEBUG )
 #ifndef BC_DEBUG
@@ -54,4 +50,10 @@
 #define BC_UNICODE
 #endif
 
-// == BlackCat General Definitions ============================================================================ /
+#if defined(_MSC_VER)
+#define BC_DEBUG_OPTIMIZE_ON __pragma(optimize("gt", on))    //enable optimizations
+#define BC_DEBUG_OPTIMIZE_OFF __pragma(optimize("", on))     //reset optimization settings
+#else
+#define BC_DEBUG_OPTIMIZE_ON
+#define BC_DEBUG_OPTIMIZE_OFF
+#endif

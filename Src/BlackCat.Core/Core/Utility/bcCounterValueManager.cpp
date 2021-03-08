@@ -51,6 +51,11 @@ namespace black_cat
 			m_container[m_write_container].insert(std::make_pair(p_name, std::move(p_value)));
 		}
 
+		void bc_counter_value_manager::add_counter(const bcCHAR* p_name, bcFLOAT p_value)
+		{
+			add_counter(p_name, bc_to_wstring(p_value, L"%.1f"));
+		}
+
 		bc_counter_value_manager::const_iterator bc_counter_value_manager::find(const bcCHAR* p_name) const noexcept
 		{
 			return m_container[m_read_container].find(p_name);

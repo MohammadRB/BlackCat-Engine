@@ -14,7 +14,7 @@ namespace black_cat
 {
 	class BC_DLL bc_gbuffer_pass : public game::bci_render_pass
 	{
-		BC_RENDER_PASS(gb_pass)
+		BC_RENDER_PASS(gb_sm)
 
 	public:
 		void initialize_resources(game::bc_render_system& p_render_system) override;

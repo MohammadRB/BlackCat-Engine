@@ -4,13 +4,10 @@
 
 #include "CorePlatform/Utility/bcNoCopy.h"
 #include "Core/Memory/bcPtr.h"
-#include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
-#include "GraphicImp/Device/bcDevicePipeline.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
+#include "Core/Utility/bcStopWatch.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
-#include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/Pass/bcRenderPassResourceShare.h"
 
 namespace black_cat
@@ -27,6 +24,7 @@ namespace black_cat
 			bcUINT32 m_position;
 			const bcCHAR* m_name;
 			core::bc_unique_ptr< bci_render_pass > m_pass;
+			core::bc_unique_ptr< core::bc_stop_watch > m_stop_watch;
 		};
 
 		class BC_GAME_DLL bc_render_pass_manager : public core_platform::bc_no_copy
@@ -85,6 +83,7 @@ namespace black_cat
 			l_entry.m_position = p_location;
 			l_entry.m_name = bc_render_pass_trait<T>::render_pass_name();
 			l_entry.m_pass = core::bc_make_unique<T>(core::bc_alloc_type::program, std::move(p_pass));
+			l_entry.m_stop_watch = core::bc_make_unique<core::bc_stop_watch>();
 
 			_add_pass(std::move(l_entry));
 		}

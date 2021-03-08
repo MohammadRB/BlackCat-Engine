@@ -5,6 +5,14 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Develope|Win32">
+      <Configuration>Develope</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Develop|Win32">
+      <Configuration>Develop</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -21,8 +29,15 @@
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Develop|Win32'">
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -31,6 +46,12 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
     <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)\</IntDir>
     <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -48,6 +69,34 @@
       <AdditionalIncludeDirectories>..\..\Src\BlackCat.Editor;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);.;$(QTDIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Editor/EditorPCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnablePREfast>true</EnablePREfast>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
+      <AdditionalLibraryDirectories>$(Configuration);$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>BlackCat.lib;qtmaind.lib;qt5cored.lib;qt5guid.lib;qt5fontdatabasesupportd.lib;qt5concurrentd.lib;qt5widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>if not exist $(Configuration)\Content\ mkdir $(Configuration)\Content\
+
+xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E /Y</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>UNICODE;WIN32;WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\Src\BlackCat.Editor;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);.;$(QTDIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -73,7 +122,7 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_NO_DEBUG;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\Src\BlackCat.Editor;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);.;$(QTDIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>None</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -89,7 +138,7 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(Configuration);$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>BlackCat.lib;qtmain.lib;qt5core.lib;qt5gui.lib;qt5fontdatabasesupport.lib;qt5concurrent.lib;qt5widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -109,11 +158,15 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\main.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\EditorPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\QtAwesome\QtAwesome.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
       </PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -121,7 +174,10 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\QtAwesome\QtAwesomeAnim.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
       </PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -143,20 +199,28 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
+      </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_bcEditorGameConsole.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
       </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_bcFormMainMenu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
+      </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_bcFormTools.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
       </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_bcWidgetConsole.cpp">
@@ -168,17 +232,25 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     <ClCompile Include="GeneratedFiles\Debug\moc_QtAwesome.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">NotUsing</PrecompiledHeader>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
       </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_QtAwesomeAnim.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">NotUsing</PrecompiledHeader>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
       </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_bcBlackCatEditor.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
@@ -186,44 +258,60 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     <ClCompile Include="GeneratedFiles\qrc_style.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
+      </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_bcEditorApplication.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_bcEditorGameConsole.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_bcFormMainMenu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_bcFormTools.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_bcWidgetConsole.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_bcWidgetD3DOutput.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_QtAwesome.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_QtAwesomeAnim.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorApplication.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing bcEditorApplication.h...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Moc%27ing bcEditorApplication.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions)  "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include" "-fEditor/EditorPCH.h" "-f../../../../Src/BlackCat.Editor/Editor/Application/%(Filename)%(Extension)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions)  "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include" "-fEditor/EditorPCH.h" "-f../../../../Src/BlackCat.Editor/Editor/Application/%(Filename)%(Extension)"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing bcEditorApplication.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -231,9 +319,13 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorGameConsole.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing bcEditorGameConsole.h...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Moc%27ing bcEditorGameConsole.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions)  "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include" "-fEditor/EditorPCH.h" "-f../../../../Src/BlackCat.Editor/Editor/Application/%(Filename)%(Extension)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions)  "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include" "-fEditor/EditorPCH.h" "-f../../../../Src/BlackCat.Editor/Editor/Application/%(Filename)%(Extension)"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing bcEditorGameConsole.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -248,9 +340,13 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\EditorPCH.h" />
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\QtAwesome\QtAwesome.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing QtAwesome.h...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Moc%27ing QtAwesome.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions)  "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions)  "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing QtAwesome.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -258,9 +354,13 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\QtAwesome\QtAwesomeAnim.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing QtAwesomeAnim.h...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Moc%27ing QtAwesomeAnim.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions)  "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions)  "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing QtAwesomeAnim.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -268,9 +368,13 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetConsole.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Moc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fEditor/EditorPCH.h" "-f../../../../Src/BlackCat.Editor/Editor/Widget/%(Filename)%(Extension)"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions) "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fEditor/EditorPCH.h" "-f../../../../Src/BlackCat.Editor/Editor/Widget/%(Filename)%(Extension)"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions) "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -278,9 +382,13 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetD3DOutput.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Moc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fEditor/EditorPCH.h" "-f../../../../Src/BlackCat.Editor/Editor/Widget/%(Filename)%(Extension)"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions) "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fEditor/EditorPCH.h" "-f../../../../Src/BlackCat.Editor/Editor/Widget/%(Filename)%(Extension)"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions) "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -298,9 +406,15 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObject.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
+      </Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
+      </Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
       </Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </Message>
@@ -311,9 +425,13 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainMenu.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Moc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fEditor/EditorPCH.h" "-f../../../../Src/BlackCat.Editor/Editor/UI/%(Filename)%(Extension)"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions) "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fEditor/EditorPCH.h" "-f../../../../Src/BlackCat.Editor/Editor/UI/%(Filename)%(Extension)"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions) "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -323,9 +441,13 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormTerrain.h" />
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormTools.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing bcFormTools.h...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Moc%27ing bcFormTools.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions)  "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include" "-fEditor/EditorPCH.h" "-f../../../../Src/BlackCat.Editor/Editor/UI/%(Filename)%(Extension)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -D%(PreprocessorDefinitions)  "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include" "-fEditor/EditorPCH.h" "-f../../../../Src/BlackCat.Editor/Editor/UI/%(Filename)%(Extension)"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing bcFormTools.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -336,9 +458,13 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
   <ItemGroup>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\bcBlackCatEditor.ui">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Uic%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Uic%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
@@ -348,9 +474,13 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
   <ItemGroup>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\bcBlackCatEditor.qrc">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">%(FullPath);%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Rcc%27ing %(Identity)...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Rcc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(FullPath);%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rcc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
@@ -360,9 +490,13 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
   <ItemGroup>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\style.qrc">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(FullPath);..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\up_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Hmovetoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-branch-end.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_closed-on.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-vline.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_closed.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_open-on.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\transparent.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\right_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\sizegrip.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close-hover.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close-pressed.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\down_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Vmovetoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\left_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-branch-more.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\up_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\right_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\left_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Hsepartoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_open.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Vsepartoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\down_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\undock.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_indeterminate.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_indeterminate_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\style.qss;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">%(FullPath);..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\up_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Hmovetoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-branch-end.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_closed-on.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-vline.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_closed.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_open-on.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\transparent.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\right_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\sizegrip.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close-hover.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close-pressed.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\down_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Vmovetoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\left_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-branch-more.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\up_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\right_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\left_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Hsepartoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_open.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Vsepartoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\down_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\undock.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_indeterminate.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_indeterminate_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\style.qss;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Rcc%27ing %(Identity)...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Rcc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(FullPath);..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\up_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Hmovetoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-branch-end.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_closed-on.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-vline.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_closed.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_open-on.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\transparent.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\right_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\sizegrip.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close-hover.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close-pressed.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\down_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Vmovetoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\left_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-branch-more.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\up_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\right_arrow.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\left_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Hsepartoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_open.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Vsepartoolbar.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\down_arrow_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\undock.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_indeterminate.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_indeterminate_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked_disabled.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked_focus.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked.png;..\..\Src\BlackCat.Editor\Editor\qdarkstyle\style.qss;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rcc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
@@ -372,158 +506,197 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
   <ItemGroup>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_closed-on.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_closed.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_open-on.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_open.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked_disabled.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked_focus.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_indeterminate.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_indeterminate_focus.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked_disabled.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked_focus.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close-hover.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close-pressed.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\down_arrow.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\down_arrow_disabled.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Hmovetoolbar.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Hsepartoolbar.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\left_arrow.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\left_arrow_disabled.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked_disabled.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked_focus.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked_disabled.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked_focus.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\right_arrow.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\right_arrow_disabled.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\sizegrip.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-branch-end.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-branch-more.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-vline.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\transparent.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\undock.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\up_arrow.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\up_arrow_disabled.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Vmovetoolbar.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Vsepartoolbar.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
   </ItemGroup>
@@ -536,6 +709,7 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap_Material.json" />
     <None Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\style.qss">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </None>
   </ItemGroup>
@@ -547,30 +721,40 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat.Editor\Editor\Content\Shader\DirectX11\bcTerrainHeight.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat.Editor\Editor\Content\Shader\DirectX11\bcTerrainMaterialSmooth.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat.Editor\Editor\Content\Shader\DirectX11\bcTerrainSmooth.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat.Editor\Editor\Content\Shader\DirectX11\bcTerrainMaterial.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
