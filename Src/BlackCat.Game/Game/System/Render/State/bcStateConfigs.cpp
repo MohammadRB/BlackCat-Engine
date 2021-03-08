@@ -29,7 +29,7 @@ namespace black_cat
 					l_config.m_render_target[i].m_render_target_write_mask = static_cast< bcUINT8 >(graphic::bc_color_write::all);
 				}
 				break;
-			case bc_blend_type::alpha:
+			case bc_blend_type::blending_overwrite_alpha:
 				l_config.m_alpha_to_coverage_enable = false;
 				l_config.m_independent_blend_enable = false;
 				for (bcUINT32 i = 0; i < graphic::bc_render_api_info::number_of_om_render_target_slots(); i++)
@@ -40,6 +40,21 @@ namespace black_cat
 					l_config.m_render_target[i].m_blend_op = graphic::bc_blend_op::add;
 					l_config.m_render_target[i].m_src_blend_alpha = graphic::bc_blend::one;
 					l_config.m_render_target[i].m_dest_blend_alpha = graphic::bc_blend::zero;
+					l_config.m_render_target[i].m_blend_op_alpha = graphic::bc_blend_op::add;
+					l_config.m_render_target[i].m_render_target_write_mask = static_cast<bcUINT8>(graphic::bc_color_write::all);
+				}
+				break;
+			case bc_blend_type::blending_preserve_alpha:
+				l_config.m_alpha_to_coverage_enable = false;
+				l_config.m_independent_blend_enable = false;
+				for (bcUINT32 i = 0; i < graphic::bc_render_api_info::number_of_om_render_target_slots(); i++)
+				{
+					l_config.m_render_target[i].m_blend_enable = true;
+					l_config.m_render_target[i].m_src_blend = graphic::bc_blend::src_alpha;
+					l_config.m_render_target[i].m_dest_blend = graphic::bc_blend::inv_src_alpha;
+					l_config.m_render_target[i].m_blend_op = graphic::bc_blend_op::add;
+					l_config.m_render_target[i].m_src_blend_alpha = graphic::bc_blend::zero;
+					l_config.m_render_target[i].m_dest_blend_alpha = graphic::bc_blend::one;
 					l_config.m_render_target[i].m_blend_op_alpha = graphic::bc_blend_op::add;
 					l_config.m_render_target[i].m_render_target_write_mask = static_cast<bcUINT8>(graphic::bc_color_write::all);
 				}
@@ -55,11 +70,51 @@ namespace black_cat
 		{
 			graphic::bc_depth_stencil_state_config l_config;
 
-			switch (p_value)
+			auto l_depth_config = bc_depth_stencil_type::depth_off;
+			auto l_stencil_config = bc_depth_stencil_type::stencil_off;
+
+			if(core::bc_enum::has(p_value, bc_depth_stencil_type::depth_less))
 			{
-			case bc_depth_stencil_type::depth_off_stencil_off:
-			case bc_depth_stencil_type::depth_less_stencil_off:
-			case bc_depth_stencil_type::depth_less_no_write_stencil_off:
+				l_depth_config = bc_depth_stencil_type::depth_less;
+			}
+			if(core::bc_enum::has(p_value, bc_depth_stencil_type::depth_less_no_write))
+			{
+				l_depth_config = bc_depth_stencil_type::depth_less_no_write;
+			}
+			if (core::bc_enum::has(p_value, bc_depth_stencil_type::stencil_write))
+			{
+				l_stencil_config = bc_depth_stencil_type::stencil_write;
+			}
+
+			switch (l_depth_config)
+			{
+			case bc_depth_stencil_type::depth_off:
+			{
+				l_config.m_depth_enable = false;
+				l_config.m_depth_write_mask = graphic::bc_depth_write_mask::zero;
+				l_config.m_depth_func = graphic::bc_comparison_func::never;
+				break;
+			}
+			case bc_depth_stencil_type::depth_less:
+			{
+				l_config.m_depth_enable = true;
+				l_config.m_depth_write_mask = graphic::bc_depth_write_mask::all;
+				l_config.m_depth_func = graphic::bc_comparison_func::less;
+				break;
+			}
+			case bc_depth_stencil_type::depth_less_no_write:
+			{
+				l_config.m_depth_enable = true;
+				l_config.m_depth_write_mask = graphic::bc_depth_write_mask::zero;
+				l_config.m_depth_func = graphic::bc_comparison_func::less;
+				break;
+			}
+			default: ;
+			}
+
+			switch (l_stencil_config)
+			{
+			case bc_depth_stencil_type::stencil_off:
 			{
 				l_config.m_stencil_enable = false;
 				l_config.m_stencil_read_mask = 0xff;
@@ -74,36 +129,26 @@ namespace black_cat
 				l_config.m_back_face.m_stencil_pass_op = graphic::bc_stencil_op::keep;
 				l_config.m_back_face.m_stencil_fail_op = graphic::bc_stencil_op::keep;
 				l_config.m_back_face.m_stencil_depth_fail_op = graphic::bc_stencil_op::keep;
-
-				switch (p_value)
-				{
-					case bc_depth_stencil_type::depth_less_stencil_off:
-					{
-						l_config.m_depth_enable = true;
-						l_config.m_depth_write_mask = graphic::bc_depth_write_mask::all;
-						l_config.m_depth_func = graphic::bc_comparison_func::less;
-						break;
-					}
-					case bc_depth_stencil_type::depth_off_stencil_off:
-					{
-						l_config.m_depth_enable = false;
-						l_config.m_depth_write_mask = graphic::bc_depth_write_mask::zero;
-						l_config.m_depth_func = graphic::bc_comparison_func::never;
-						break;
-					}
-					case bc_depth_stencil_type::depth_less_no_write_stencil_off:
-					{
-						l_config.m_depth_enable = true;
-						l_config.m_depth_write_mask = graphic::bc_depth_write_mask::zero;
-						l_config.m_depth_func = graphic::bc_comparison_func::less;
-						break;
-					}
-				}
-
 				break;
 			}
-			default:
-				throw bc_invalid_argument_exception("Invalid depth-stencil state");
+			case bc_depth_stencil_type::stencil_write:
+			{
+				l_config.m_stencil_enable = true;
+				l_config.m_stencil_read_mask = 0xff;
+				l_config.m_stencil_write_mask = 0xff;
+
+				l_config.m_front_face.m_stencil_func = graphic::bc_comparison_func::always;
+				l_config.m_front_face.m_stencil_pass_op = graphic::bc_stencil_op::replace;
+				l_config.m_front_face.m_stencil_fail_op = graphic::bc_stencil_op::replace;
+				l_config.m_front_face.m_stencil_depth_fail_op = graphic::bc_stencil_op::keep;
+
+				l_config.m_back_face.m_stencil_func = graphic::bc_comparison_func::never;
+				l_config.m_back_face.m_stencil_pass_op = graphic::bc_stencil_op::replace;
+				l_config.m_back_face.m_stencil_fail_op = graphic::bc_stencil_op::replace;
+				l_config.m_back_face.m_stencil_depth_fail_op = graphic::bc_stencil_op::keep;
+				break;
+			}
+			default: ;
 			}
 
 			return l_config;

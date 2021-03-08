@@ -21,14 +21,6 @@ namespace black_cat
 			BC_ABSTRACT_COMPONENT(mesh)
 			
 		public:
-			bc_mesh_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
-
-			bc_mesh_component(bc_mesh_component&&) noexcept;
-
-			~bc_mesh_component();
-
-			bc_mesh_component& operator=(bc_mesh_component&&) noexcept;
-
 			const bc_sub_mesh& get_mesh() const;
 
 			bc_sub_mesh_mat4_transform& get_world_transforms();
@@ -41,9 +33,15 @@ namespace black_cat
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
-			void render(const bc_actor_component_render_context& p_context) const override;
-
 		protected:
+			bc_mesh_component();
+
+			bc_mesh_component(bc_mesh_component&&) noexcept;
+
+			~bc_mesh_component() override;
+
+			bc_mesh_component& operator=(bc_mesh_component&&) noexcept;
+			
 			const bc_mesh_render_state& get_render_states() const noexcept;
 			
 			void set_render_states(bc_mesh_render_state p_render_state) noexcept;
@@ -100,13 +98,6 @@ namespace black_cat
 		inline bcFLOAT bc_mesh_component::get_lod_factor() const noexcept
 		{
 			return m_lod_factor;
-		}
-
-		inline void bc_mesh_component::update_lod_factor(const physics::bc_bound_box& p_bound_box) noexcept
-		{
-			const auto l_bound_box_half_extends = p_bound_box.get_half_extends();
-			const auto l_box_length = std::max(std::max(l_bound_box_half_extends.x, l_bound_box_half_extends.y), l_bound_box_half_extends.z) * 2;
-			m_lod_factor = l_box_length * m_lod_scale * bc_mesh_level_of_detail::s_lod_factor_multiplier;
 		}
 	}
 }

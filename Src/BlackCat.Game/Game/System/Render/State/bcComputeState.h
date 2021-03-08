@@ -32,7 +32,7 @@ namespace black_cat
 		 * \brief Shader parameters will be mapped to device registers as they appear in their array
 		 */
 		class BC_GAME_DLL bc_compute_state
-			: private core::bc_ref_count,
+			: public core::bc_ref_count,
 			core_platform::bc_no_copy
 		{
 		public:

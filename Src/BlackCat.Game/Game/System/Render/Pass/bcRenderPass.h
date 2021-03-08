@@ -88,8 +88,8 @@ namespace black_cat
 		public:
 			bc_render_pass_reset_context(bc_render_system& p_render_system,
 				graphic::bc_device& p_device,
-				graphic::bc_device_parameters& p_old_parameters,
-				graphic::bc_device_parameters& p_new_parameters)
+				const graphic::bc_device_parameters& p_old_parameters,
+				const graphic::bc_device_parameters& p_new_parameters)
 				: m_render_system(p_render_system),
 				m_device(p_device),
 				m_old_parameters(p_old_parameters),
@@ -99,8 +99,8 @@ namespace black_cat
 
 			bc_render_system& m_render_system;
 			graphic::bc_device& m_device;
-			graphic::bc_device_parameters& m_old_parameters;
-			graphic::bc_device_parameters& m_new_parameters;
+			const graphic::bc_device_parameters& m_old_parameters;
+			const graphic::bc_device_parameters& m_new_parameters;
 		};
 
 		/**

@@ -70,7 +70,6 @@ namespace black_cat
 				bcUINT32 l_current_stencil_ref;
 
 				l_context->OMGetDepthStencilState(l_current_depth_stencil_state.GetAddressOf(), &l_current_stencil_ref);
-
 				l_context->OMSetDepthStencilState(l_current_depth_stencil_state.Get(), m_required_state.m_stencil_ref.get());
 			}
 

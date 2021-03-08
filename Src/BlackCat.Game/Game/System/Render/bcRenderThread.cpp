@@ -12,7 +12,7 @@ namespace black_cat
 	{
 		graphic::bc_pipeline_stage _convert_shader_type_to_pipeline_stage(graphic::bc_shader_type p_shader_types)
 		{
-			graphic::bc_pipeline_stage l_pipeline_stages = core::bc_enum::none< graphic::bc_pipeline_stage >();
+			auto l_pipeline_stages = core::bc_enum::none< graphic::bc_pipeline_stage >();
 
 			if (core::bc_enum::has(p_shader_types, graphic::bc_shader_type::vertex))
 			{
@@ -137,7 +137,7 @@ namespace black_cat
 
 			graphic::bc_shader_type l_shader_types = core::bc_enum::none< graphic::bc_shader_type >();
 
-			for (auto& l_sampler_parameter : p_render_pass_state.m_shader_samplers)
+			for (const auto& l_sampler_parameter : p_render_pass_state.m_shader_samplers)
 			{
 				if (l_sampler_parameter.is_valid())
 				{
@@ -146,7 +146,7 @@ namespace black_cat
 					m_pipeline->bind_ps_sampler_parameter(l_sampler_parameter);
 				}
 			}
-			for (auto& l_view_parameter : p_render_pass_state.m_resource_views)
+			for (const auto& l_view_parameter : p_render_pass_state.m_resource_views)
 			{
 				if (l_view_parameter.is_valid())
 				{
@@ -155,7 +155,7 @@ namespace black_cat
 					m_pipeline->bind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_view_parameter : p_render_pass_state.m_unordered_views)
+			for (const auto& l_view_parameter : p_render_pass_state.m_unordered_views)
 			{
 				if (l_view_parameter.is_valid())
 				{
@@ -169,7 +169,7 @@ namespace black_cat
 					m_pipeline->bind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_buffer_parameter : p_render_pass_state.m_shader_cbuffers)
+			for (const auto& l_buffer_parameter : p_render_pass_state.m_shader_cbuffers)
 			{
 				if (l_buffer_parameter.is_valid())
 				{
@@ -197,7 +197,7 @@ namespace black_cat
 			});
 			graphic::bc_shader_type l_shader_types = core::bc_enum::none< graphic::bc_shader_type >();
 
-			for (auto& l_sampler_parameter : p_render_pass_state.m_shader_samplers)
+			for (const auto& l_sampler_parameter : p_render_pass_state.m_shader_samplers)
 			{
 				if (l_sampler_parameter.is_valid())
 				{
@@ -206,7 +206,7 @@ namespace black_cat
 					m_pipeline->unbind_ps_sampler_parameter(l_sampler_parameter);
 				}
 			}
-			for (auto& l_view_parameter : p_render_pass_state.m_resource_views)
+			for (const auto& l_view_parameter : p_render_pass_state.m_resource_views)
 			{
 				if (l_view_parameter.is_valid())
 				{
@@ -215,7 +215,7 @@ namespace black_cat
 					m_pipeline->unbind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_view_parameter : p_render_pass_state.m_unordered_views)
+			for (const auto& l_view_parameter : p_render_pass_state.m_unordered_views)
 			{
 				if (l_view_parameter.is_valid())
 				{
@@ -224,7 +224,7 @@ namespace black_cat
 					m_pipeline->unbind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_buffer_parameter : p_render_pass_state.m_shader_cbuffers)
+			for (const auto& l_buffer_parameter : p_render_pass_state.m_shader_cbuffers)
 			{
 				if (l_buffer_parameter.is_valid())
 				{
@@ -239,7 +239,7 @@ namespace black_cat
 			m_pipeline->pipeline_apply_states(l_pipeline_stages);
 		}
 
-		void bc_render_thread::bind_render_state(const bc_render_state& p_render_state)
+		void bc_render_thread::bind_render_state(const bc_render_state& p_render_state, const bcUINT32* p_stencil_ref)
 		{
 			m_pipeline->bind_ia_primitive_topology(p_render_state.get_primitive());
 			m_pipeline->bind_ia_vertex_buffers
@@ -259,7 +259,7 @@ namespace black_cat
 			graphic::bc_pipeline_stage l_pipeline_stages = graphic::bc_pipeline_stage::input_assembler_stage;
 			graphic::bc_shader_type l_shader_types = core::bc_enum::none< graphic::bc_shader_type >();
 
-			for (auto& l_view_parameter : p_render_state.get_shader_views())
+			for (const auto& l_view_parameter : p_render_state.get_shader_views())
 			{
 				if (l_view_parameter.is_valid())
 				{
@@ -267,13 +267,19 @@ namespace black_cat
 					m_pipeline->bind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_buffer_parameter : p_render_state.get_shader_buffers())
+			for (const auto& l_buffer_parameter : p_render_state.get_shader_buffers())
 			{
 				if (l_buffer_parameter.is_valid())
 				{
 					l_shader_types = core::bc_enum::mask_or({l_shader_types, l_buffer_parameter.get_shader_types()});
 					m_pipeline->bind_ps_constant_buffer_parameter(l_buffer_parameter);
 				}
+			}
+
+			if(p_stencil_ref)
+			{
+				bind_om_stencil_ref(*p_stencil_ref);
+				l_pipeline_stages = core::bc_enum::mask_or({ l_pipeline_stages, graphic::bc_pipeline_stage::output_merger_stage });
 			}
 
 			l_pipeline_stages = core::bc_enum::mask_or({l_pipeline_stages, _convert_shader_type_to_pipeline_stage(l_shader_types)});
@@ -290,7 +296,7 @@ namespace black_cat
 			graphic::bc_pipeline_stage l_pipeline_stages = graphic::bc_pipeline_stage::input_assembler_stage;
 			graphic::bc_shader_type l_shader_types = core::bc_enum::none< graphic::bc_shader_type >();
 
-			for (auto& l_view_parameter : p_render_state.get_shader_views())
+			for (const auto& l_view_parameter : p_render_state.get_shader_views())
 			{
 				if (l_view_parameter.is_valid())
 				{
@@ -298,7 +304,7 @@ namespace black_cat
 					m_pipeline->unbind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_buffer_parameter : p_render_state.get_shader_buffers())
+			for (const auto& l_buffer_parameter : p_render_state.get_shader_buffers())
 			{
 				if (l_buffer_parameter.is_valid())
 				{
@@ -316,28 +322,28 @@ namespace black_cat
 		{
 			m_pipeline->bind_compute_state(p_compute_state.m_compute_state);
 
-			for (auto& l_sampler_parameter : p_compute_state.m_samplers)
+			for (const auto& l_sampler_parameter : p_compute_state.m_samplers)
 			{
 				if (l_sampler_parameter.is_valid())
 				{
 					m_pipeline->bind_ps_sampler_parameter(l_sampler_parameter);
 				}
 			}
-			for (auto& l_view_parameter : p_compute_state.m_resource_views)
+			for (const auto& l_view_parameter : p_compute_state.m_resource_views)
 			{
 				if (l_view_parameter.is_valid())
 				{
 					m_pipeline->bind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_view_parameter : p_compute_state.m_unordered_views)
+			for (const auto& l_view_parameter : p_compute_state.m_unordered_views)
 			{
 				if (l_view_parameter.is_valid())
 				{
 					m_pipeline->bind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_buffer_parameter : p_compute_state.m_cbuffers)
+			for (const auto& l_buffer_parameter : p_compute_state.m_cbuffers)
 			{
 				if (l_buffer_parameter.is_valid())
 				{
@@ -352,28 +358,28 @@ namespace black_cat
 		{
 			m_pipeline->unbind_compute_state();
 
-			for (auto& l_sampler_parameter : p_compute_state.m_samplers)
+			for (const auto& l_sampler_parameter : p_compute_state.m_samplers)
 			{
 				if (l_sampler_parameter.is_valid())
 				{
 					m_pipeline->unbind_ps_sampler_parameter(l_sampler_parameter);
 				}
 			}
-			for (auto& l_view_parameter : p_compute_state.m_resource_views)
+			for (const auto& l_view_parameter : p_compute_state.m_resource_views)
 			{
 				if (l_view_parameter.is_valid())
 				{
 					m_pipeline->unbind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_view_parameter : p_compute_state.m_unordered_views)
+			for (const auto& l_view_parameter : p_compute_state.m_unordered_views)
 			{
 				if (l_view_parameter.is_valid())
 				{
 					m_pipeline->unbind_ps_shader_view_parameter(l_view_parameter);
 				}
 			}
-			for (auto& l_buffer_parameter : p_compute_state.m_cbuffers)
+			for (const auto& l_buffer_parameter : p_compute_state.m_cbuffers)
 			{
 				if (l_buffer_parameter.is_valid())
 				{
@@ -532,9 +538,9 @@ namespace black_cat
 			m_pipeline->dispatch_indirect(p_args, p_offset);
 		}
 
-		void bc_render_thread::clear_buffers(const core::bc_vector4f& p_color, bcFLOAT p_depth, bcUINT p_stencil)
+		void bc_render_thread::clear_buffers(const core::bc_vector4f* p_color, bcUINT32 p_count, bcFLOAT p_depth, bcUINT p_stencil)
 		{
-			m_pipeline->clear_buffers(p_color, p_depth, p_stencil);
+			m_pipeline->clear_buffers(p_color, p_count, p_depth, p_stencil);
 		}
 
 		/*graphic::bc_mapped_resource bc_render_thread::map_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource, graphic::bc_resource_map p_map_type)

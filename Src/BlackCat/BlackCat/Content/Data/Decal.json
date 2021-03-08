@@ -1,0 +1,17 @@
+{
+  "decals": [
+    {
+      "name": "explosion_blast1",
+      "material_name": "decal_material",
+      "u0": 0,
+      "v0": 0,
+      "u1": 0.43,
+      "v1": 0.35,
+      "width": 15.0,
+      "height": 15.0,
+      "depth": 15.0, 
+      "group": 1,
+      "auto_remove": false
+    }
+  ]
+}

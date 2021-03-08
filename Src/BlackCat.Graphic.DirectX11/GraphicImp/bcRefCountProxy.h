@@ -25,7 +25,7 @@ namespace black_cat
 		 * \tparam T 
 		 */
 		template< typename T >
-		class bc_refcount_proxy : public T, protected core::bc_ref_count
+		class bc_refcount_proxy : public T, public core::bc_ref_count
 		{
 		public:
 			bc_refcount_proxy();

@@ -37,7 +37,7 @@ namespace black_cat
 		 * \n Shader parameters will be mapped to device registers as they appear in their array
 		 */
 		class BC_GAME_DLL bc_render_pass_state
-			: private core::bc_ref_count,
+			: public core::bc_ref_count,
 			core_platform::bc_no_copy
 		{
 		public:

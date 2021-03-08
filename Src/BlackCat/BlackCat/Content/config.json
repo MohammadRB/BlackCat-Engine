@@ -1,0 +1,28 @@
+{
+    "lod_global_scale": 4.0,
+    "lod_culling_index": 6,
+    "counter_values": [
+      "fps",
+      "update_time",
+      "render_time",
+		  "rps_gb_init",
+		  "rps_gb_trn",
+		  "rps_gb_sm",
+		  "rps_gb_vgt",
+		  "rps_gb_skn",
+		  "rps_gb_dcl",
+		  "rps_csm_sm",
+		  "rps_csm_veg",
+		  "rps_csm_sk",
+		  "rps_gb_lgt",
+		  "rps_bb_wrt",
+		  "rps_shp_drw",
+		  "rps_ptc_sys",
+		  "rps_txt_drw"
+    ],
+    "key_values": {
+        "camera_position_x": 58.34946823120117,
+        "camera_position_y": 53.17096710205078,
+        "camera_position_z": -782.4445190429688
+    }
+}

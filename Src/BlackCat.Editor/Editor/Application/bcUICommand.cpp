@@ -38,7 +38,7 @@ namespace black_cat
 			bcUINT16 p_screen_height,
 			bcUINT16 p_point_left,
 			bcUINT16 p_point_top,
-			game::bc_query_group p_query_group,
+			game::bc_actor_group p_query_group,
 			physics::bc_query_flags p_flags,
 			physics::bc_scene_ray_query_buffer& p_result) const
 		{
@@ -73,7 +73,7 @@ namespace black_cat
 				physics::bc_query_hit_type::touch :
 				physics::bc_query_hit_type::block;
 			
-			if (p_filter_data.m_shape.get_query_group() != static_cast<physics::bc_query_group>(game::bc_query_group::skinned_mesh))
+			if (p_filter_data.m_shape.get_query_group() != static_cast<physics::bc_query_group>(game::bc_actor_group::skinned_mesh))
 			{
 				return l_shape_query_type;
 			}

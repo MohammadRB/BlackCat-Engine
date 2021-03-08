@@ -21,9 +21,13 @@ namespace black_cat
 			BC_CBUFFER_ALIGN
 			core::bc_matrix4f m_view;
 			BC_CBUFFER_ALIGN
+			core::bc_matrix4f m_view_inv;
+			BC_CBUFFER_ALIGN
 			core::bc_matrix4f m_projection;
 			BC_CBUFFER_ALIGN
 			core::bc_matrix4f m_view_projection;
+			BC_CBUFFER_ALIGN
+			core::bc_matrix4f m_view_projection_inv;
 			BC_CBUFFER_ALIGN
 			bcUINT32 m_screen_width;
 			bcUINT32 m_screen_height;
@@ -138,8 +142,10 @@ namespace black_cat
 			const bc_camera_instance& p_camera)
 		{
 			g_global_state.m_view = p_camera.get_view();
+			g_global_state.m_view_inv = p_camera.get_view().inverse();
 			g_global_state.m_projection = p_camera.get_projection();
-			g_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection());
+			g_global_state.m_view_projection = p_camera.get_view() * p_camera.get_projection();
+			g_global_state.m_view_projection_inv = g_global_state.m_view_projection.inverse();
 			g_global_state.m_screen_width = p_camera.get_screen_width();
 			g_global_state.m_screen_height = p_camera.get_screen_height();
 			g_global_state.m_near_plan = p_camera.get_near_clip();
@@ -153,8 +159,10 @@ namespace black_cat
 			if (need_matrix_transpose())
 			{
 				g_global_state.m_view.make_transpose();
+				g_global_state.m_view_inv.make_transpose();
 				g_global_state.m_projection.make_transpose();
 				g_global_state.m_view_projection.make_transpose();
+				g_global_state.m_view_projection_inv.make_transpose();
 			}
 
 			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
@@ -168,8 +176,10 @@ namespace black_cat
 			const bc_direct_wind& p_global_wind)
 		{
 			g_global_state.m_view = p_camera.get_view();
+			g_global_state.m_view_inv = p_camera.get_view().inverse();
 			g_global_state.m_projection = p_camera.get_projection();
-			g_global_state.m_view_projection = (p_camera.get_view() * p_camera.get_projection());
+			g_global_state.m_view_projection = p_camera.get_view() * p_camera.get_projection();
+			g_global_state.m_view_projection_inv = g_global_state.m_view_projection.inverse();
 			g_global_state.m_screen_width = p_camera.get_screen_width();
 			g_global_state.m_screen_height = p_camera.get_screen_height();
 			g_global_state.m_near_plan = p_camera.get_near_clip();
@@ -190,14 +200,50 @@ namespace black_cat
 			if (need_matrix_transpose())
 			{
 				g_global_state.m_view.make_transpose();
+				g_global_state.m_view_inv.make_transpose();
 				g_global_state.m_projection.make_transpose();
-				g_global_state.m_view_projection.make_transpose();
+				g_global_state.m_view_projection_inv.make_transpose();
 			}
 			
 			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
 			p_render_thread.update_subresource(l_buffer, 0, &g_global_state, 0, 0);
 		}
-		
+
+		void bc_frame_renderer::update_per_object_cbuffer(bc_render_thread& p_render_thread, const bc_camera_instance& p_camera, const bc_render_instance& p_instance)
+		{
+			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
+			l_per_object_cbuffer.m_world_view_projection = (p_instance.get_transform() * p_camera.get_view() * p_camera.get_projection());
+			l_per_object_cbuffer.m_world = p_instance.get_transform();
+
+			if (need_matrix_transpose())
+			{
+				l_per_object_cbuffer.m_world_view_projection.make_transpose();
+				l_per_object_cbuffer.m_world.make_transpose();
+			}
+
+			graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
+			p_render_thread.update_subresource(l_buffer, 0, &l_per_object_cbuffer, 0, 0); // TODO update part of buffer
+		}
+
+		void bc_frame_renderer::update_per_skinned_object_cbuffer(bc_render_thread& p_render_thread, const bc_camera_instance& p_camera, const bc_skinned_render_instance& p_instance)
+		{
+			BC_ASSERT(p_instance.get_num_transforms() <= g_max_skinned_transform);
+			
+			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
+			std::memcpy(&l_per_object_cbuffer.m_transforms[0], p_instance.get_transforms(), sizeof(core::bc_matrix4f) * p_instance.get_num_transforms());
+
+			if (need_matrix_transpose())
+			{
+				for (auto& l_transform : l_per_object_cbuffer.m_transforms)
+				{
+					l_transform.make_transpose();
+				}
+			}
+
+			graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
+			p_render_thread.update_subresource(l_buffer, 0, &l_per_object_cbuffer, 0, 0);
+		}
+
 		bc_render_state_buffer bc_frame_renderer::create_buffer() const
 		{
 			return bc_render_state_buffer();
@@ -207,6 +253,7 @@ namespace black_cat
 		{
 			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
 			const auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
+			auto l_last_render_group = game::bc_render_group::unknown;
 			
 			for (const auto& l_render_state_entry : p_buffer.get_instances())
 			{
@@ -217,9 +264,16 @@ namespace black_cat
 
 				auto& l_render_state = *l_render_state_entry.first;
 				p_render_thread.bind_render_state(l_render_state);
-
-				for (auto& l_render_instance : l_render_state_entry.second)
+				
+				for (const bc_render_instance& l_render_instance : l_render_state_entry.second)
 				{
+					if(l_render_instance.get_render_group() != l_last_render_group)
+					{
+						l_last_render_group = l_render_instance.get_render_group();
+						p_render_thread.bind_om_stencil_ref(static_cast<bcUINT32>(l_last_render_group));
+						p_render_thread.pipeline_apply_states(graphic::bc_pipeline_stage::output_merger_stage);
+					}
+					
 					l_per_object_cbuffer.m_world_view_projection = (l_render_instance.get_transform() * l_view_proj);
 					l_per_object_cbuffer.m_world = l_render_instance.get_transform();
 
@@ -247,6 +301,7 @@ namespace black_cat
 		void bc_frame_renderer::render_skinned_buffer(bc_render_thread& p_render_thread, const bc_render_state_buffer& p_buffer, const bc_camera_instance& p_camera)
 		{
 			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
+			auto l_last_render_group = game::bc_render_group::unknown;
 			
 			for (const auto& l_render_state_entry : p_buffer.get_skinned_instances())
 			{
@@ -258,10 +313,17 @@ namespace black_cat
 				auto& l_render_state = *l_render_state_entry.first;
 				p_render_thread.bind_render_state(l_render_state);
 
-				for (auto& l_render_instance : l_render_state_entry.second)
+				for (bc_skinned_render_instance& l_render_instance : l_render_state_entry.second)
 				{
 					BC_ASSERT(l_render_instance.get_num_transforms() <= g_max_skinned_transform);
 
+					if (l_render_instance.get_render_group() != l_last_render_group)
+					{
+						l_last_render_group = l_render_instance.get_render_group();
+						p_render_thread.bind_om_stencil_ref(static_cast<bcUINT32>(l_last_render_group));
+						p_render_thread.pipeline_apply_states(graphic::bc_pipeline_stage::output_merger_stage);
+					}
+					
 					std::memcpy(&l_per_object_cbuffer.m_transforms[0], l_render_instance.get_transforms(), sizeof(core::bc_matrix4f) * l_render_instance.get_num_transforms());
 
 					if (need_matrix_transpose())

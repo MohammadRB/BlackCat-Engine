@@ -9,6 +9,7 @@
 #include "Game/System/Input/bcCameraInstance.h"
 #include "Game/System/Input/bcCamera.h"
 #include "Game/System/Render/Light/bcDirectLight.h"
+#include "Game/System/Render/bcRenderInstance.h"
 #include "Game/Object/Scene/Component/bcWindComponent.h"
 #include "Game/bcExport.h"
 
@@ -90,6 +91,10 @@ namespace black_cat
 				const bc_camera_instance& p_camera,
 				const bc_direct_light& p_global_light,
 				const bc_direct_wind& p_global_wind);
+
+			void update_per_object_cbuffer(bc_render_thread& p_render_thread, const bc_camera_instance& p_camera, const bc_render_instance& p_instance);
+			
+			void update_per_skinned_object_cbuffer(bc_render_thread& p_render_thread, const bc_camera_instance& p_camera, const bc_skinned_render_instance& p_instance);
 			
 			bc_render_state_buffer create_buffer() const;
 

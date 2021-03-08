@@ -978,7 +978,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline< g_api_dx11 >::clear_buffers(core::bc_vector4f p_color, bcFLOAT p_depth, bcUINT p_stencil)
+		void bc_platform_device_pipeline< g_api_dx11 >::clear_buffers(const core::bc_vector4f* p_color, bcUINT32 p_count, bcFLOAT p_depth, bcUINT p_stencil)
 		{
 			constexpr bcUINT32 l_target_count = bc_render_api_info::number_of_om_render_target_slots();
 			ComPtr< ID3D11RenderTargetView > l_target_views[l_target_count];
@@ -986,12 +986,12 @@ namespace black_cat
 
 			m_pack.m_pipeline_proxy->m_context->OMGetRenderTargets(l_target_count, l_target_views[0].GetAddressOf(), l_depth_view.GetAddressOf());
 
-			bcFLOAT l_colors[] = { p_color.x, p_color.y, p_color.z, p_color.w };
-			for (bcUINT i = 0; i < l_target_count; ++i)
+			for (bcUINT l_i = 0; l_i < p_count; ++l_i)
 			{
-				ID3D11RenderTargetView* l_render_target = l_target_views[i].Get();
+				auto* l_render_target = l_target_views[l_i].Get();
 				if (l_render_target != nullptr)
 				{
+					bcFLOAT l_colors[] = { p_color[l_i].x, p_color[l_i].y, p_color[l_i].z, p_color[l_i].w };
 					m_pack.m_pipeline_proxy->m_context->ClearRenderTargetView(l_render_target, l_colors);
 				}
 			}

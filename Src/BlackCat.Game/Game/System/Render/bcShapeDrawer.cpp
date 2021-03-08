@@ -118,7 +118,7 @@ namespace black_cat
 				return;
 			}
 
-			const bc_render_instance l_instance(core::bc_matrix4f::identity());
+			const bc_render_instance l_instance(core::bc_matrix4f::identity(), bc_render_group::unknown);
 			p_buffer.add_render_instance(m_render_state, l_instance);
 		}
 

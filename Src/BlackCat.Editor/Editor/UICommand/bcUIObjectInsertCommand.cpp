@@ -2,7 +2,7 @@
 
 #include "Editor/EditorPCH.h"
 
-#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/System/Physics/bcPxWrap.h"
@@ -51,7 +51,7 @@ namespace black_cat
 				m_screen_height,
 				m_point_left,
 				m_point_top,
-				game::bc_query_group::all,
+				game::bc_actor_group::all,
 				core::bc_enum::mask_or({ physics::bc_query_flags::statics, physics::bc_query_flags::dynamics }),
 				l_query_buffer
 			);
@@ -78,7 +78,7 @@ namespace black_cat
 
 			const std::string l_entity_name = m_entity_name.toStdString();
 			game::bc_actor l_actor = core::bc_get_service<game::bc_entity_manager>()->create_entity(l_entity_name.c_str());
-			l_actor.add_event(game::bc_actor_event_world_transform(l_position));
+			l_actor.add_event(game::bc_world_transform_actor_event(l_position));
 			
 			p_context.m_game_system.get_scene()->add_actor(l_actor);
 

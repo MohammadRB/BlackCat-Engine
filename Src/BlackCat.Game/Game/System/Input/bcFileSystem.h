@@ -7,13 +7,14 @@
 #include "Core/Container/bcString.h"
 #include "Core/Content/bcContentManager.h"
 #include "Core/Content/bcContentStreamManager.h"
-#include "Game/System/Input/bcConfigFile.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		class bc_global_config;
+		
 		class BC_GAME_DLL bc_file_system : public core_platform::bc_no_copy
 		{
 		public:
@@ -57,9 +58,9 @@ namespace black_cat
 
 			core::bc_estring get_content_script_path(const bcECHAR* p_script_path) const noexcept;
 
-			bc_config_file& get_global_config() noexcept;
+			bc_global_config& get_global_config() noexcept;
 
-			const bc_config_file& get_global_config() const noexcept;
+			const bc_global_config& get_global_config() const noexcept;
 			
 		private:
 			core::bc_estring m_execute_path;
@@ -69,10 +70,20 @@ namespace black_cat
 			core::bc_estring m_content_model_path;
 			core::bc_estring m_content_platform_shader_path;
 			core::bc_estring m_content_script_path;
-			core::bc_unique_ptr<bc_config_file> m_global_config;
+			core::bc_unique_ptr<bc_global_config> m_global_config;
 			
 			core::bc_content_manager* m_content_manager;
 			core::bc_content_stream_manager* m_content_stream_manager;
 		};
+
+		inline bc_global_config& bc_file_system::get_global_config() noexcept
+		{
+			return *m_global_config;
+		}
+
+		inline const bc_global_config& bc_file_system::get_global_config() const noexcept
+		{
+			return *m_global_config;
+		}
 	}
 }

@@ -2,12 +2,11 @@
 
 #pragma once
 
+#include "Core/Utility/bcEnumOperand.h"
 #include "Graphic/Resource/State/bcBlendState.h"
 #include "Graphic/Resource/State/bcDepthStencilState.h"
 #include "Graphic/Resource/State/bcInputLayout.h"
 #include "Graphic/Resource/State/bcRasterizerState.h"
-#include "Graphic/Resource/State/bcViewPort.h"
-#include "GraphicImp/Resource/State/bcSamplerState.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/State/bcVertexLayout.h"
 
@@ -20,14 +19,17 @@ namespace black_cat
 		enum class bc_blend_type
 		{
 			opaque,
-			alpha
+			blending_overwrite_alpha,
+			blending_preserve_alpha
 		};
 
 		enum class bc_depth_stencil_type
 		{
-			depth_off_stencil_off,
-			depth_less_stencil_off,
-			depth_less_no_write_stencil_off,
+			depth_off = core::bc_enum::value(0),
+			depth_less = core::bc_enum::value(1),
+			depth_less_no_write = core::bc_enum::value(2),
+			stencil_off = core::bc_enum::value(3),
+			stencil_write = core::bc_enum::value(4)
 		};
 
 		enum class bc_rasterizer_type
@@ -57,10 +59,6 @@ namespace black_cat
 			static graphic::bc_input_layout_config bc_input_layout_config(bc_vertex_type p_value);
 
 			static graphic::bc_texture_ms_config bc_texture_multi_sample(bc_multi_sample_type p_ms);
-
-		protected:
-
-		private:
 		};
 	}
 }

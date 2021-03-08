@@ -134,7 +134,7 @@ namespace black_cat
 
 			void dispatch_indirect(bc_buffer p_args, bcUINT p_offset);
 
-			void clear_buffers(core::bc_vector4f p_color, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
+			void clear_buffers(const core::bc_vector4f* p_color, bcUINT32 p_count, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
 
 			void update_subresource(bci_resource& p_resource, bcUINT p_dst_subresource, const void *p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch);
 

@@ -14,7 +14,7 @@ namespace black_cat
 		{
 			open,				// File opened and ready
 			close,				// File is closed
-			error				// File isn't open and error occured during file opening
+			error				// File isn't open and error occurred during file opening
 		};
 
 		enum class bc_file_mode
@@ -113,8 +113,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
 
 		private:
 			platform_pack m_pack;

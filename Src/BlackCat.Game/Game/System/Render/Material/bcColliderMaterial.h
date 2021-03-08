@@ -39,13 +39,16 @@ namespace black_cat
 			physics::bc_material get_px_material() const noexcept;
 
 			const bcCHAR* get_particle_name() const noexcept;
+			
+			const bcCHAR* get_decal_name() const noexcept;
 
 		private:
-			bc_collider_material(core::bc_string_program p_name, physics::bc_material_ref p_px_material, core::bc_string_program p_collision_particle);
+			bc_collider_material(core::bc_string_program p_name, physics::bc_material_ref p_px_material, core::bc_string_program p_particle, core::bc_string_program p_decal);
 
 			core::bc_string_program m_name;
 			physics::bc_material_ref m_px_material;
-			core::bc_string_program m_collision_particle;
+			core::bc_string_program m_particle;
+			core::bc_string_program m_decal;
 		};
 
 		inline bc_collider_material::bc_collider_material(bc_collider_material&&) noexcept = default;
@@ -66,13 +69,19 @@ namespace black_cat
 
 		inline const bcCHAR* bc_collider_material::get_particle_name() const noexcept
 		{
-			return m_collision_particle.c_str();
+			return m_particle.c_str();
 		}
 
-		inline bc_collider_material::bc_collider_material(core::bc_string_program p_name, physics::bc_material_ref p_px_material, core::bc_string_program p_collision_particle)
+		inline const bcCHAR* bc_collider_material::get_decal_name() const noexcept
+		{
+			return m_decal.c_str();
+		}
+
+		inline bc_collider_material::bc_collider_material(core::bc_string_program p_name, physics::bc_material_ref p_px_material, core::bc_string_program p_particle, core::bc_string_program p_decal)
 			: m_name(std::move(p_name)),
 			m_px_material(std::move(p_px_material)),
-			m_collision_particle(std::move(p_collision_particle))
+			m_particle(std::move(p_particle)),
+			m_decal(std::move(p_decal))
 		{
 		}
 	}

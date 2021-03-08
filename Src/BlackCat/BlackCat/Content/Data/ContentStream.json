@@ -95,44 +95,77 @@
         {
           "content_title": "gbuffer_vs",
           "content_loader": "vertex_shader",
-          "content_file": "content\\shader\\directx11\\deferredrendering\\bcMeshGBuffer.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcMeshGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_vs" }
         },
         {
           "content_title": "gbuffer_skinned_vs",
           "content_loader": "vertex_shader",
-          "content_file": "content\\shader\\directx11\\deferredrendering\\bcSkinnedMeshGBuffer.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcSkinnedMeshGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_skinned_vs" }
         },
         {
           "content_title": "gbuffer_ps",
           "content_loader": "pixel_shader",
-          "content_file": "content\\shader\\directx11\\deferredrendering\\bcMeshGBuffer.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcMeshGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_ps" }
         },
         {
           "content_title": "gbuffer_light_map",
           "content_loader": "compute_shader",
-          "content_file": "content\\shader\\directx11\\deferredrendering\\bcGBufferLightMap.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcGBufferLightMap.hlsl",
           "content_parameter": { "function": "main" }
         },
         {
           "content_title": "gbuffer_vegetable_leaf_vs",
           "content_loader": "vertex_shader",
-          "content_file": "content\\shader\\directx11\\deferredrendering\\bcVegetableLeafGBuffer.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcVegetableLeafGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_vegetable_leaf_vs" }
         },
         {
           "content_title": "gbuffer_vegetable_leaf_ps",
           "content_loader": "pixel_shader",
-          "content_file": "content\\shader\\directx11\\deferredrendering\\bcVegetableLeafGBuffer.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcVegetableLeafGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_vegetable_leaf_ps" }
         },
         {
           "content_title": "gbuffer_vegetable_trunk_vs",
           "content_loader": "vertex_shader",
-          "content_file": "content\\shader\\directx11\\deferredrendering\\bcVegetableTrunkGBuffer.hlsl",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcVegetableTrunkGBuffer.hlsl",
           "content_parameter": { "function": "gbuffer_vegetable_trunk_vs" }
+        },
+        {
+          "content_title": "gbuffer_decal_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcDecalGBuffer.hlsl",
+          "content_parameter": {
+            "function": "vs",
+            "macros": {
+              "CAMERA_INSIDE": "false"
+            }
+          }
+        },
+        {
+          "content_title": "gbuffer_decal_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcDecalGBuffer.hlsl",
+          "content_parameter": {
+            "function": "ps",
+            "macros": {
+              "CAMERA_INSIDE": "false"
+            }
+          }
+        },
+        {
+          "content_title": "gbuffer_non_culling_decal_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcDecalGBuffer.hlsl",
+          "content_parameter": {
+            "function": "ps",
+            "macros": {
+              "CAMERA_INSIDE": "true"
+            }
+          }
         }
       ]
     },
@@ -192,6 +225,24 @@
     {
       "stream_name": "engine_assets",
       "stream_content": [
+        {
+          "content_title": "decal_texture",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\Decal.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "decal_texture.nrm",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\Decal.nrm.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "decal_texture.spec",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\Decal.spec.dds",
+          "content_parameter": {}
+        },
         {
           "content_title": "box",
           "content_loader": "mesh",

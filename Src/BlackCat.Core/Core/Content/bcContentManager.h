@@ -469,7 +469,8 @@ namespace black_cat
 			const bool l_need_offline_processing = p_loader->support_offline_processing() &&
 			(
 				!l_offline_file_info.m_exist ||
-				l_offline_file_info.m_last_write_time.m_total_milliseconds < l_file_info.m_last_write_time.m_total_milliseconds
+				l_offline_file_info.m_last_write_time.m_total_milliseconds < l_file_info.m_last_write_time.m_total_milliseconds ||
+				l_offline_file_info.m_size == 0
 			);
 
 			bc_content_loading_context l_context;

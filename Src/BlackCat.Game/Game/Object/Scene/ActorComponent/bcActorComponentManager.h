@@ -116,7 +116,7 @@ namespace black_cat
 		struct _bc_actor_component_entry
 		{
 		public:
-			using deriveds_component_get_delegate = core::bc_delegate<bci_actor_component*(const bc_actor&)>;
+			using deriveds_component_get_delegate = core::bc_delegate<bci_actor_abstract_component*(const bc_actor&)>;
 
 		public:
 			_bc_actor_component_entry(bool p_is_abstract,
@@ -205,10 +205,10 @@ namespace black_cat
 			
 		private:
 			template< class TComponent >
-			bci_actor_component* _actor_get_component(const bc_actor& p_actor, std::true_type);
+			TComponent* _actor_get_component(const bc_actor& p_actor, std::true_type);
 
 			template< class TComponent >
-			bci_actor_component* _actor_get_component(const bc_actor& p_actor, std::false_type);
+			TComponent* _actor_get_component(const bc_actor& p_actor, std::false_type);
 
 			template< class TComponent >
 			void _register_component_type(bcSIZE p_priority);
@@ -768,7 +768,7 @@ namespace black_cat
 		}
 
 		template< class TComponent >
-		bci_actor_component* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::true_type)
+		TComponent* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::true_type)
 		{
 			static component_container_type::value_type* l_component_entry = _get_component_entry< TComponent >();
 
@@ -781,7 +781,7 @@ namespace black_cat
 
 				if(l_derived_component != nullptr)
 				{
-					return l_derived_component;
+					return static_cast<TComponent*>(l_derived_component);
 				}
 			}
 
@@ -789,7 +789,7 @@ namespace black_cat
 		}
 
 		template< class TComponent >
-		bci_actor_component* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::false_type)
+		TComponent* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::false_type)
 		{
 			static component_container_type::value_type* l_component_entry = _get_component_entry< TComponent >();
 
@@ -823,6 +823,11 @@ namespace black_cat
 		{
 			static_assert
 			(
+				std::is_base_of_v<bci_actor_component, TComponent>,
+				"TComponent must be inherited from bci_actor_component"
+			);
+			static_assert
+			(
 				!bc_actor_component_traits< TComponent >::component_is_abstract(),
 				"TComponent must not be an abstract component."
 			);
@@ -847,6 +852,11 @@ namespace black_cat
 		{
 			static_assert
 			(
+				std::is_base_of_v< bci_actor_abstract_component, TComponent >,
+				"TComponent must be inherited from bci_actor_abstract_component"
+			);
+			static_assert
+			(
 				bc_actor_component_traits< TComponent >::component_is_abstract(),
 				"TComponent is not an abstract component."
 			);
@@ -866,10 +876,13 @@ namespace black_cat
 						(
 							[&](const bc_actor& p_actor)
 							{
-								return this->_actor_get_component<TDeriveds>
+								return static_cast<TComponent* >
 								(
-									p_actor,
-									std::integral_constant<bool, bc_actor_component_traits<TDeriveds>::component_is_abstract()>()
+									this->_actor_get_component< TDeriveds >
+									(
+										p_actor,
+										std::integral_constant< bool, bc_actor_component_traits< TDeriveds>::component_is_abstract() >()
+									)
 								);
 							}
 						)...

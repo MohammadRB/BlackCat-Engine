@@ -158,7 +158,7 @@ namespace black_cat
 			"bb_write_ps",
 			game::bc_vertex_type::pos_tex,
 			game::bc_blend_type::opaque,
-			game::bc_depth_stencil_type::depth_off_stencil_off,
+			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_off, game::bc_depth_stencil_type::stencil_off }),
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0x1,
 			{ p_param.m_device.get_back_buffer_format() },

@@ -5,6 +5,14 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Develope|Win32">
+      <Configuration>Develope</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Develop|Win32">
+      <Configuration>Develop</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -23,11 +31,20 @@
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Develop|Win32'">
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -36,11 +53,23 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
@@ -102,6 +131,53 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
       <PreserveSbr>true</PreserveSbr>
     </Bscmake>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>BC_DLL;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../Src/BlackCat;../../Src/BlackCat.Core;../../Src/BlackCat.Core.Platform;../../Src/BlackCat.Core.Platform.Win32;../../Src/BlackCat.Platform;../../Src/BlackCat.Platform.Win32;../../Src/BlackCat.Graphic;../../Src/BlackCat.Graphic.DirectX11;../../Src/BlackCat.Game;../../Src/BlackCat.Physics;../../Src/BlackCat.Physics.PhysX;../../3rdParty;../../3rdParty/3rdParty/Ozz/Include</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>BlackCat/BlackCatPCH.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <EnablePREfast>true</EnablePREfast>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(DXSDK_LIB)\Lib\x86;Assimp\lib\assimp_debug-dll_win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
+if not exist ..\..\BC_SDK\Include\BlackCat\ mkdir ..\..\BC_SDK\Include\BlackCat\
+if not exist ..\..\BC_SDK\Content\ mkdir ..\..\BC_SDK\Include\Content\
+if not exist $(Configuration)\Content\ mkdir $(Configuration)\Content\
+
+copy $(Configuration)\BlackCat.lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)
+
+xcopy ..\..\Src\BlackCat\BlackCat\*.h ..\..\BC_SDK\Include\BlackCat\ /E /Y
+xcopy ..\..\Src\BlackCat\BlackCat\Content\*.* ..\..\BC_SDK\Content\ /E /Y
+xcopy ..\..\Src\BlackCat\BlackCat\Content\*.* $(Configuration)\Content\ /E /Y
+
+xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;3rdParty/Assimp/Lib/$(Platform)_$(Configuration)/assimp-vc130-mtd.lib;3rdParty/Ozz/Lib/$(Platform)_$(Configuration)/ozz_animation_offline_d.lib;3rdParty/Ozz/Lib/$(Platform)_$(Configuration)/ozz_animation_d.lib;3rdParty/Ozz/Lib/$(Platform)_$(Configuration)/ozz_base_d.lib;3rdParty/Ozz/Lib/$(Platform)_$(Configuration)/ozz_geometry_d.lib;3rdParty/Ozz/Lib/$(Platform)_$(Configuration)/ozz_options_d.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(Configuration)\;../../3rdParty/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -114,6 +190,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>BlackCat/BlackCatPCH.h</PrecompiledHeaderFile>
       <EnablePREfast>true</EnablePREfast>
+      <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -162,13 +239,14 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferWritePass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTextDrawPass.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferLightMapPass.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferInitializePass.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferPass.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferSkinnedPass.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferTerrainPassDx11.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferVegetablePass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcShapeDrawPass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\GBuffer\bcGBufferDecalPass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\GBuffer\bcGBufferInitializePass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\GBuffer\bcGBufferLightMapPass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\GBuffer\bcGBufferPass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\GBuffer\bcGBufferSkinnedPass.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\GBuffer\bcGBufferTerrainPassDx11.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\GBuffer\bcGBufferVegetablePass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\PostProcess\bcParticleSystemPassDx11.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcBaseCascadedShadowMapPass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcCascadedShadowMapBufferContainer.h" />
@@ -182,6 +260,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Application\bcRenderApplication.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\BlackCatPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp" />
@@ -199,13 +278,14 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcVertexShaderLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcBackBufferWritePass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcTextDrawPass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferLightMapPass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferInitializePass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferPass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferSkinnedPass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferTerrainPassDx11.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\DeferredRendering\bcGBufferVegetablePass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\bcShapeDrawPass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\GBuffer\bcGBufferDecalPass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\GBuffer\bcGBufferInitializePass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\GBuffer\bcGBufferLightMapPass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\GBuffer\bcGBufferPass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\GBuffer\bcGBufferSkinnedPass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\GBuffer\bcGBufferTerrainPassDx11.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\GBuffer\bcGBufferVegetablePass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\PostProcess\bcParticleSystemPassDx11.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcBaseCascadedShadowMapPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcCascadedShadowMapPass.cpp" />
@@ -235,156 +315,208 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcBBWrite.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcHelper.hlsli">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcShapeDraw.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcGBufferLightMap.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\GBuffer\bcDecalGBuffer.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcMeshGBuffer.hlsl">
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\GBuffer\bcGBufferLightMap.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcSkinnedMeshGBuffer.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\GBuffer\bcMeshGBuffer.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcVegetableLeafGBuffer.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\GBuffer\bcSkinnedMeshGBuffer.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcVegetableTrunkGBuffer.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\GBuffer\bcVegetableLeafGBuffer.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\GBuffer\bcVegetableTrunkGBuffer.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticleEmission.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticleGroupSort.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticleRender.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticleSimulation.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticleSort.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticleSortTranspose.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\bcMeshShadowMap.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\bcSkinnedMeshShadowMap.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\bcVegetableLeafShadowMap.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\ShadowMap\bcVegetableTrunkShadowMap.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\bcTerrain.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Terrain\bcTerrainChunkInfo.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Src\BlackCat\BlackCat\Content\config.json" />
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\ContentStream.json" />
+    <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\Decal.json" />
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\DX11.spritefont" />
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\EntityType.json" />
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\Material.json" />
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcRegister.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </None>
-    <None Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\DeferredRendering\bcVegetableAnimation.hlsli">
+    <None Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\GBuffer\bcVegetableAnimation.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </None>
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\Particle\bcParticle.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Decal.dds">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </Image>
+    <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Decal.nrm.dds">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </Image>
+    <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Decal.spec.dds">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </Image>
     <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Default.dds">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Sprites.dds">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
   </ItemGroup>

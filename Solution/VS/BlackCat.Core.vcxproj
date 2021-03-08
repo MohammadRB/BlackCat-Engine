@@ -5,6 +5,14 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Develope|Win32">
+      <Configuration>Develope</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Develop|Win32">
+      <Configuration>Develop</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -23,11 +31,20 @@
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Develop|Win32'">
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -36,11 +53,23 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <IntDir>$(SolutionDir)\$(ProjectName).$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)\$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
@@ -96,6 +125,47 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
       <PreserveSbr>true</PreserveSbr>
     </Bscmake>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLACKCATCORE_EXPORTS;BC_CORE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>Core/CorePCH.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <EnablePREfast>true</EnablePREfast>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
+if not exist ..\..\BC_SDK\Include\Core\ mkdir ..\..\BC_SDK\Include\Core\
+
+copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
+
+copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
+
+copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).ilk
+
+copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
+
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command>
+    </PostBuildEvent>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -109,10 +179,11 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
       <PrecompiledHeaderFile>Core/CorePCH.h</PrecompiledHeaderFile>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <EnablePREfast>true</EnablePREfast>
+      <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -206,13 +277,16 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryFixedSize.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\_bcLockFreeMemMng.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcConcurrentHashMap.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcConcurrentList.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcConcurrentQueue.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcContainer.h" />
@@ -247,7 +321,9 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Content\bcContentStreamManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\CorePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Core/CorePCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Core/CorePCH.h</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcPath.cpp" />

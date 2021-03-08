@@ -14,6 +14,7 @@
 #include "PhysicsImp/Fundation/bcSerializeBuffer.h"
 #include "PhysicsImp/Shape/bcHeightField.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/System/Render/bcRenderThread.h"
 #include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/System/Render/bcRenderTask.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"

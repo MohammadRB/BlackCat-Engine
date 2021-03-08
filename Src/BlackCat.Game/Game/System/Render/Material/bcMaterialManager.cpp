@@ -40,6 +40,7 @@ namespace black_cat
 			BC_JSON_VALUE_OP(bcFLOAT, dynamic_friction);
 			BC_JSON_VALUE_OP(bcFLOAT, restitution);
 			BC_JSON_VALUE_OP(core::bc_string_frame, particle);
+			BC_JSON_VALUE_OP(core::bc_string_frame, decal);
 		};
 
 		BC_JSON_STRUCTURE(_bc_material_json)
@@ -99,14 +100,13 @@ namespace black_cat
 				nullptr,
 				core::bc_content_loader_parameter()
 			);
-
 			m_default_normal_map = l_content_manager.store_content("default_material_normal_map", std::move(l_default_normal_map));
 			m_default_specular_map = l_content_manager.store_content("default_material_specular_map", std::move(l_default_specular_map));
 
 			m_collider_materials.insert(collider_material_map::value_type
 			(
 				string_hash()("default"),
-				bc_collider_material("default", m_physics_system->get_physics().create_material(2, 2, 0.1f), "")
+				bc_collider_material("default", m_physics_system->get_physics().create_material(2, 2, 0.1f), "", "")
 			));
 		}
 
@@ -154,7 +154,7 @@ namespace black_cat
 
 			for(core::bc_json_object<_bc_mesh_material_desc>& l_material_desc : l_material_json->m_mesh_materials)
 			{
-				_bc_mesh_material_entry l_material;
+				_bc_mesh_material_desc_entry l_material;
 				l_material.m_diffuse_color = *l_material_desc->m_diffuse_color;
 				l_material.m_specular_intensity = *l_material_desc->m_specular_intensity;
 				l_material.m_specular_power = *l_material_desc->m_specular_power;
@@ -176,7 +176,13 @@ namespace black_cat
 					*l_material_desc->m_dynamic_friction,
 					*l_material_desc->m_restitution
 				);
-				bc_collider_material l_material(l_material_desc->m_name->c_str(), std::move(l_px_material), l_material_desc->m_particle->c_str());
+				bc_collider_material l_material
+				(
+					l_material_desc->m_name->c_str(),
+					std::move(l_px_material),
+					l_material_desc->m_particle->c_str(),
+					l_material_desc->m_decal->c_str()
+				);
 
 				m_collider_materials.insert(collider_material_map::value_type
 				(
@@ -195,7 +201,7 @@ namespace black_cat
 			const auto l_hash = string_hash()(p_name);
 
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_materials_mutex);
+				core_platform::bc_mutex_guard l_guard(m_materials_mutex);
 
 				const auto l_entry = m_materials.find(l_hash);
 				if (l_entry != std::cend(m_materials))

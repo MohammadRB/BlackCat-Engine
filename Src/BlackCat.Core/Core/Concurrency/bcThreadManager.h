@@ -18,7 +18,6 @@
 #include "Core/Container/bcConcurrentQueue.h"
 #include "Core/Container/bcDeque.h"
 #include "Core/Concurrency/bcTask.h"
-#include "Core/Utility/bcInitializable.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcDelegate.hpp"
 #include "Core/Utility/bcEnumOperand.h"
@@ -55,7 +54,6 @@ namespace black_cat
 			bool try_steal(delegate_type& p_task);
 
 		private:
-			//bc_deque_frame< delegate_type > m_deque; TODO
 			bc_deque< delegate_type > m_deque;
 			mutable core_platform::bc_mutex m_mutex;
 		};

@@ -4,16 +4,29 @@
 
 #include "Core/Math/bcMatrix4f.h"
 #include "Core/Container/bcVector.h"
+#include "Core/Utility/bcEnumOperand.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		enum class bc_render_group : bcUBYTE
+		{
+			terrain = core::bc_enum::value(0),
+			static_mesh = core::bc_enum::value(1),
+			dynamic_mesh = core::bc_enum::value(2),
+			vegetable = core::bc_enum::value(3),
+			all_static = terrain | static_mesh,
+			all_dynamic = dynamic_mesh,
+			unknown = 0
+		};
+		
 		class bc_render_instance
 		{
 		public:
-			explicit bc_render_instance(const core::bc_matrix4f& p_world)
-				: m_transform(p_world)
+			bc_render_instance(const core::bc_matrix4f& p_world, bc_render_group p_group)
+				: m_transform(p_world),
+				m_group(p_group)
 			{
 			}
 
@@ -28,27 +41,24 @@ namespace black_cat
 				return m_transform;
 			}
 
-			void set_transform(const core::bc_matrix4f& p_world)
+			bc_render_group get_render_group() const noexcept
 			{
-				m_transform = p_world;
+				return m_group;
 			}
-			
+		
 		private:
 			core::bc_matrix4f m_transform;
+			bc_render_group m_group;
 		};
 
 		class bc_skinned_render_instance
 		{
 		public:
-			explicit bc_skinned_render_instance(bcSIZE p_count)
+			bc_skinned_render_instance(const core::bc_matrix4f* p_transforms, bcSIZE p_count, bc_render_group p_group)
+				: m_transforms(p_count),
+				m_group(p_group)
 			{
-				m_transforms.resize(p_count);
-			}
-			
-			bc_skinned_render_instance(const core::bc_matrix4f* p_transforms, bcSIZE p_count)
-			{
-				m_transforms.resize(p_count);
-				set_transforms(p_transforms);
+				std::memcpy(m_transforms.data(), p_transforms, p_count * sizeof(core::bc_matrix4f));
 			}
 
 			bc_skinned_render_instance(bc_skinned_render_instance&&) = default;
@@ -72,13 +82,14 @@ namespace black_cat
 				return m_transforms.data();
 			}
 
-			void set_transforms(const core::bc_matrix4f* p_transforms)
+			bc_render_group get_render_group() const noexcept
 			{
-				std::memcpy(m_transforms.data(), p_transforms, m_transforms.size());
+				return m_group;
 			}
-
+		
 		private:
 			core::bc_vector_movable<core::bc_matrix4f> m_transforms;
+			bc_render_group m_group;
 		};
 	}
 }

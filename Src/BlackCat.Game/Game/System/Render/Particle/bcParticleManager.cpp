@@ -8,6 +8,7 @@
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/bcUtility.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
+#include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Input/bcFileSystem.h"
@@ -143,7 +144,15 @@ namespace black_cat
 		void bc_particle_manager::spawn_emitter(const bcCHAR* p_emitter_name, const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir, const core::bc_vector3f* p_color)
 		{
 			core::bc_matrix3f l_rotation;
-			l_rotation.rotation_between_two_vector_lh(core::bc_vector3f(0, 1, 0), p_dir);
+			if(graphic::bc_render_api_info::use_left_handed())
+			{
+				l_rotation.rotation_between_two_vector_lh(core::bc_vector3f(0, 1, 0), p_dir);
+			}
+			else
+			{
+				l_rotation.rotation_between_two_vector_rh(core::bc_vector3f(0, 1, 0), p_dir);
+			}
+			
 			const auto l_definition_ite = m_emitter_definitions.find(string_hash_t()(p_emitter_name));
 			
 			BC_ASSERT(l_definition_ite != std::end(m_emitter_definitions));

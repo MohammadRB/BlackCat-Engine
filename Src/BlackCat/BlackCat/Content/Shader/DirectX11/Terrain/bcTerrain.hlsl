@@ -96,6 +96,7 @@ struct bc_ps_gbuffer_output
 {
 	float4 m_diffuse	: SV_Target0;
 	float4 m_normal		: SV_Target1;
+	float4 m_specular	: SV_Target2;
 };
 
 struct bc_material_property
@@ -492,8 +493,9 @@ bc_ps_gbuffer_output gbuffer_ps(bc_ds_output p_input)
 
 	float3 l_final_normal = (mul(l_normal, l_tbn) + 1) / 2.0f;
     
-    l_output.m_diffuse = float4(l_diffuse.xyz, l_specular_intensity);
-    l_output.m_normal = float4(l_final_normal, l_specular_power);
+    l_output.m_diffuse = float4(l_diffuse.xyz, 1);
+    l_output.m_normal = float4(l_final_normal, 1);
+	l_output.m_specular = float4(l_specular_intensity, l_specular_power, 0, 1);
 
 	return l_output;
 }

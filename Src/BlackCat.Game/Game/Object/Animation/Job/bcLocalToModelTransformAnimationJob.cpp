@@ -12,7 +12,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_animation_job_local_to_model_transform::bc_animation_job_local_to_model_transform(bci_local_transform_animation_job& p_local_transform_job, 
+		bc_local_to_model_transform_animation_job::bc_local_to_model_transform_animation_job(bci_local_transform_animation_job& p_local_transform_job, 
 			const bc_sub_mesh& p_sub_mesh,
 			bc_sub_mesh_mat4_transform& p_transforms)
 			: bci_animation_job(p_local_transform_job.get_skeleton()),
@@ -23,11 +23,11 @@ namespace black_cat
 		{
 			if (m_model_transforms->size() < m_skeleton->get_num_bones())
 			{
-				throw bc_invalid_argument_exception("Mesh and animation bones count does not match");
+				throw bc_invalid_argument_exception("Number of bones in mesh and animation does not match");
 			}
 		}
 
-		bool bc_animation_job_local_to_model_transform::run(const core_platform::bc_clock::update_param& p_clock)
+		bool bc_local_to_model_transform_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
 			ozz::animation::LocalToModelJob l_ltm_job;
 			const auto& l_local_transforms = m_local_transform_job->get_local_transforms();
@@ -54,7 +54,7 @@ namespace black_cat
 
 				if(core::bc_matrix4f::use_column_major_storage())
 				{
-					bcFLOAT l_col[4];
+					alignas(16) bcFLOAT l_col[4];
 					ozz::math::StorePtr(l_ozz_model_transform.cols[0], l_col);
 					
 					l_model_transform[0] = l_col[0];

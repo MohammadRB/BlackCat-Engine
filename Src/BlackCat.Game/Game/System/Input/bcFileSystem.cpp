@@ -6,6 +6,7 @@
 #include "Core/Container/bcString.h"
 #include "Graphic/bcRenderApiInfo.h"
 #include "Game/System/Input/bcFileSystem.h"
+#include "Game/System/Input/bcGlobalConfig.h"
 
 namespace black_cat
 {
@@ -49,7 +50,8 @@ namespace black_cat
 			l_temp.combine(core::bc_path(bcL("Content\\Script")));
 			m_content_script_path = l_temp.get_string();
 
-			m_global_config = core::bc_make_unique<bc_config_file>(core::bc_alloc_type::program, m_content_base_path.c_str(), bcL("config.json"));
+			m_global_config = core::bc_make_unique<bc_global_config>(core::bc_alloc_type::program, m_content_base_path.c_str());
+			set_global_config(*m_global_config);
 		}
 
 		bc_file_system::bc_file_system(bc_file_system&& p_other) noexcept
@@ -69,6 +71,7 @@ namespace black_cat
 			m_content_texture_path = std::move(p_other.m_content_texture_path);
 			m_content_model_path = std::move(p_other.m_content_model_path);
 			m_content_platform_shader_path = std::move(m_content_platform_shader_path);
+			m_content_script_path = std::move(m_content_script_path);
 			m_global_config = std::move(p_other.m_global_config);
 
 			m_content_manager = p_other.m_content_manager;
@@ -173,16 +176,6 @@ namespace black_cat
 			l_path.combine(core::bc_path(p_script_path));
 
 			return l_path.get_string();
-		}
-
-		bc_config_file& bc_file_system::get_global_config() noexcept
-		{
-			return *m_global_config;
-		}
-
-		const bc_config_file& bc_file_system::get_global_config() const noexcept
-		{
-			return *m_global_config;
 		}
 	}
 }

@@ -70,6 +70,9 @@
     <Filter Include="Game\System\Render\Material">
       <UniqueIdentifier>{eb5b5ea3-f91f-49c7-8c6d-606925099bbd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\System\Render\Decal">
+      <UniqueIdentifier>{501c8fab-fde2-4cb1-964c-e1a91cfed0a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h">
@@ -282,15 +285,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorEvent.h">
       <Filter>Game\Object\Scene\ActorComponent</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcActorEventWorldTransform.h">
-      <Filter>Game\Object\Scene\Component\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcActorEventBoundBoxChanged.h">
-      <Filter>Game\Object\Scene\Component\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcActorEventAddedToScene.h">
-      <Filter>Game\Object\Scene\Component\Event</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcFrameRenderer.h">
       <Filter>Game\System\Render</Filter>
     </ClInclude>
@@ -357,9 +351,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcParticleEmitterComponent.h">
       <Filter>Game\Object\Scene\Component</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcActorEventRemovedFromScene.h">
-      <Filter>Game\Object\Scene\Component\Event</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcConfigFile.h">
       <Filter>Game\System\Input</Filter>
     </ClInclude>
@@ -408,9 +399,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshNode.h">
       <Filter>Game\Object\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcActorEventHierarchyTransform.h">
-      <Filter>Game\Object\Scene\Component\Event</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshUtility.h">
       <Filter>Game\Object\Mesh</Filter>
     </ClInclude>
@@ -455,6 +443,45 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneQuery.h">
       <Filter>Game\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Decal\bcDecalManager.h">
+      <Filter>Game\System\Render\Decal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Decal\bcDecal.h">
+      <Filter>Game\System\Render\Decal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcGlobalConfig.h">
+      <Filter>Game\System\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Decal\bcDecalInstance.h">
+      <Filter>Game\System\Render\Decal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcAddedToSceneActorEvent.h">
+      <Filter>Game\Object\Scene\Component\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcBoundBoxChangedActorEvent.h">
+      <Filter>Game\Object\Scene\Component\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcHierarchyTransformActorEvent.h">
+      <Filter>Game\Object\Scene\Component\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcRemovedFromSceneActorEvent.h">
+      <Filter>Game\Object\Scene\Component\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcWorldTransformActorEvent.h">
+      <Filter>Game\Object\Scene\Component\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcRemoveDecalActorEvent.h">
+      <Filter>Game\Object\Scene\Component\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcDecalComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorGroup.h">
+      <Filter>Game\Object\Scene\ActorComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcDecalResolverComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -676,6 +703,21 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Material\bcMeshMaterial.cpp">
       <Filter>Game\System\Render\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Decal\bcDecalManager.cpp">
+      <Filter>Game\System\Render\Decal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Decal\bcDecal.cpp">
+      <Filter>Game\System\Render\Decal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcGlobalConfig.cpp">
+      <Filter>Game\System\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Decal\bcDecalInstance.cpp">
+      <Filter>Game\System\Render\Decal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcDecalComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

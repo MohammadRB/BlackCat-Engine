@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Messaging/Query/bcQuery.h"
+#include "Core/Utility/bcNullable.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/Query/bcQueryContext.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"

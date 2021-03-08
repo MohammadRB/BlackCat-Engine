@@ -18,7 +18,7 @@ namespace black_cat
 
 			bc_vegetable_mesh_component(bc_vegetable_mesh_component&& p_other) noexcept;
 
-			~bc_vegetable_mesh_component();
+			~bc_vegetable_mesh_component() override;
 
 			bc_vegetable_mesh_component& operator=(bc_vegetable_mesh_component&&) noexcept;
 

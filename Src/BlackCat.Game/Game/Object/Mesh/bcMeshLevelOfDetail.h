@@ -15,10 +15,6 @@ namespace black_cat
 		class bc_mesh_level_of_detail
 		{
 		public:
-			static bcFLOAT s_lod_factor_multiplier;
-			static bcUINT32 s_lod_culling_index;
-			
-		public:
 			bc_mesh_level_of_detail(const bc_mesh* const* p_meshes, bcUINT32 p_count);
 
 			bc_mesh_level_of_detail(bc_mesh_level_of_detail&&) noexcept = default;
@@ -80,26 +76,6 @@ namespace black_cat
 			bcFLOAT p_lod_factor) const noexcept
 		{
 			return get_lod_culling(p_camera_position, p_camera_position, p_position, p_lod_factor);
-		}
-
-		inline std::pair<bcUINT32, const bc_mesh*> bc_mesh_level_of_detail::get_lod_culling(
-			const core::bc_vector3f& p_main_camera_position,
-			const core::bc_vector3f& p_render_camera_position,
-			const core::bc_vector3f& p_position,
-			bcFLOAT p_lod_factor) const noexcept
-		{
-			const auto l_main_camera_distance = (p_main_camera_position - p_position).magnitude();
-			const auto l_main_camera_mesh_index = static_cast<bcUINT32>(l_main_camera_distance / p_lod_factor);
-
-			if (l_main_camera_mesh_index > s_lod_culling_index)
-			{
-				return std::make_pair(-1, nullptr);
-			}
-
-			const auto l_render_camera_distance = (p_render_camera_position - p_position).magnitude();
-			const auto l_render_camera_mesh_index = std::min(static_cast<bcUINT32>(l_render_camera_distance / p_lod_factor), m_count - 1);
-
-			return std::make_pair(l_render_camera_mesh_index, m_meshes[l_render_camera_mesh_index]);
 		}
 	}
 }

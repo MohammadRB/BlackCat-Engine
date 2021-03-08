@@ -15,6 +15,8 @@
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
+#include "Game/Object/Scene/Component/bcDecalComponent.h"
+#include "Game/Object/Scene/Component/bcDecalResolverComponent.h"
 #include "Game/Object/Scene/ActorController/bcExplosionActorController.h"
 
 namespace black_cat
@@ -42,7 +44,7 @@ namespace black_cat
 			m_scene = &p_scene;
 			m_scene_terrain_query = p_context.m_query_manager.queue_query(bc_scene_query().with_callable
 			(
-				[l_scene = &p_scene, l_actor = p_context.m_actor](const bc_scene_query_context& p_query_context)
+				[this, l_scene = &p_scene, l_actor = p_context.m_actor](const bc_scene_query_context& p_query_context)
 				{
 					const auto& l_px_scene = l_scene->get_px_scene();
 					const auto l_position = l_actor.get_component<bc_mediate_component>()->get_position();
@@ -56,7 +58,7 @@ namespace black_cat
 						l_query_buffer,
 						core::bc_enum::mask_or({physics::bc_hit_flag::position, physics::bc_hit_flag::normal, physics::bc_hit_flag::face_index}),
 						physics::bc_query_flags::statics,
-						static_cast<physics::bc_query_group>(bc_query_group::terrain)
+						static_cast<physics::bc_query_group>(bc_actor_group::terrain)
 					);
 
 					core::bc_nullable<bc_ray_hit> l_result;
@@ -64,7 +66,7 @@ namespace black_cat
 					if(l_has_collided)
 					{
 						const auto l_ray_hit = l_query_buffer.get_block();
-						if((l_ray_hit.get_position() - l_position).magnitude() < 2) // If explosion is close to height map
+						if((l_ray_hit.get_position() - l_position).magnitude() < m_light_radius * 0.6f) // If explosion is close to height map
 						{
 							l_result.reset(l_ray_hit);
 						}
@@ -87,14 +89,20 @@ namespace black_cat
 				if(l_hit_result.is_set())
 				{
 					m_light_direction = l_hit_result->get_normal();
-					
-					const auto* l_height_map_component = l_hit_result->get_actor().get_component<bc_height_map_component>();
+
+					auto* l_height_map_component = l_hit_result->get_actor().get_component<bc_height_map_component>();
 					const auto l_px_height_map = l_height_map_component->get_height_map().get_px_height_field();
 					const auto l_height_map_material_index = l_px_height_map.get_triangle_material(l_hit_result->get_face_index());
 					const auto& l_material = l_height_map_component->get_height_map().get_material(l_height_map_material_index);
 					const auto l_color = l_material.m_mesh_material->get_diffuse().xyz();
 					
 					l_emitter_component->spawn_emitter(l_mediate_component->get_position(), m_light_direction, &l_color);
+
+					const auto* l_decal_component = p_context.m_actor.get_component< bc_decal_component >();
+					if(l_decal_component)
+					{
+						l_height_map_component->add_decal(l_decal_component->get_decal_name(), l_hit_result->get_position(), m_light_direction);
+					}
 				}
 				else
 				{

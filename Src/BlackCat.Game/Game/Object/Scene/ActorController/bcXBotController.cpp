@@ -3,9 +3,9 @@
 #include "Game/GamePCH.h"
 #include "Game/Object/Scene/ActorController/bcXBotController.h"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventHierarchyTransform.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
+#include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcHierarchyTransformActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Animation/bcAnimationSkeleton.h"
 #include "Game/Object/Animation/bcSkeletonAnimation.h"
 
@@ -44,9 +44,9 @@ namespace black_cat
 			(
 				bc_sampling_animation_job(l_skeleton, l_idle_animation)
 			);
-			m_local_to_model_job = core::bc_make_unique< bc_animation_job_local_to_model_transform >
+			m_local_to_model_job = core::bc_make_unique< bc_local_to_model_transform_animation_job >
 			(
-				bc_animation_job_local_to_model_transform
+				bc_local_to_model_transform_animation_job
 				(
 					*m_sample_job,
 					m_skinned_component->get_mesh(),
@@ -79,8 +79,8 @@ namespace black_cat
 						m_skinned_component->get_collider_model_transforms()
 					);
 					
-					l_actor.add_event(bc_actor_event_bound_box_changed(l_model_to_skinned_job->get_bound_box()));
-					l_actor.add_event(bc_actor_event_hierarchy_transform(m_skinned_component->get_collider_model_transforms()));
+					l_actor.add_event(bc_bound_box_changed_actor_event(l_model_to_skinned_job->get_bound_box()));
+					l_actor.add_event(bc_hierarchy_transform_actor_event(m_skinned_component->get_collider_model_transforms()));
 				})
 				.build();
 		}
@@ -95,7 +95,7 @@ namespace black_cat
 
 		void bc_xbot_controller::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as<bc_actor_event_world_transform>(p_context.m_event);
+			const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
 			if(l_world_transform_event)
 			{
 				m_model_to_skinned_job->set_world(l_world_transform_event->get_transform());

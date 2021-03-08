@@ -31,9 +31,9 @@ namespace black_cat
 
 			bc_concurrent_memory_pool& operator =(bc_concurrent_memory_pool&& p_other) noexcept;
 
-			bcUINT32 block_size() const noexcept;
-
-			bcUINT32 num_block() const noexcept;
+			bcUINT32 capacity() const noexcept;
+			
+			bcUINT32 entry_size() const noexcept;
 
 			/**
 			 * \brief Return null pointer in case of allocation failure
@@ -105,14 +105,14 @@ namespace black_cat
 			bc_concurrent_memory_pool m_memory_pool;
 		};
 
-		inline bcUINT32 bc_concurrent_memory_pool::block_size() const noexcept
-		{
-			return m_block_size;
-		}
-
-		inline bcUINT32 bc_concurrent_memory_pool::num_block() const noexcept
+		inline bcUINT32 bc_concurrent_memory_pool::capacity() const noexcept
 		{
 			return m_num_block;
+		}
+		
+		inline bcUINT32 bc_concurrent_memory_pool::entry_size() const noexcept
+		{
+			return m_block_size;
 		}
 
 		template< typename T >
@@ -148,13 +148,13 @@ namespace black_cat
 		template< typename T >
 		bcUINT32 bc_concurrent_object_pool< T >::block_size() const
 		{
-			return m_memory_pool.block_size();
+			return m_memory_pool.entry_size();
 		}
 
 		template< typename T >
 		bcUINT32 bc_concurrent_object_pool< T >::num_block() const
 		{
-			return m_memory_pool.num_block();
+			return m_memory_pool.capacity();
 		}
 
 		template< typename T >

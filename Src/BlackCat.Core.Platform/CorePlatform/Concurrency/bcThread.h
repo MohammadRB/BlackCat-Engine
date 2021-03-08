@@ -3,15 +3,25 @@
 #pragma once
 
 #include "CorePlatform/CorePlatformPCH.h"
-#include "CorePlatform/bcType.h"
 #include "CorePlatform/Utility/bcNoCopy.h"
-#include "CorePlatform/Concurrency/bcAtomic.h"
+#include "CorePlatform/bcType.h"
+#include "CorePlatform/bcPlatform.h"
+
 #include <stack>
 
 namespace black_cat
 {
 	namespace core_platform
 	{
+		enum class bc_thread_priority
+		{
+			lowest,
+			below_normal,
+			normal,
+			above_normal,
+			highest
+		};
+		
 		template< bc_platform TP >
 		struct bc_platform_thread_pack
 		{
@@ -47,8 +57,14 @@ namespace black_cat
 
 			id get_id() const noexcept;
 
+			const bcWCHAR* get_name() const noexcept;
+			
 			void set_name(const bcWCHAR* p_name) noexcept;
 
+			bc_thread_priority get_priority() const noexcept;
+
+			void set_priority(bc_thread_priority p_priority) noexcept;
+			
 			static id current_thread_id() noexcept;
 
 			static void current_thread_sleep_for(const std::chrono::nanoseconds& p_duration);

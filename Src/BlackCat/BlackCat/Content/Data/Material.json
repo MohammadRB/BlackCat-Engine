@@ -1,12 +1,22 @@
 {
   "mesh_materials": [
     {
+      "name": "decal_material",
+      "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
+      "specular_intensity": 0.8,
+      "specular_power": 0.3,
+      "diffuse_map": "decal_texture",
+      "normal_map": "decal_texture.nrm",
+      "specular_map": "decal_texture.spec"
+    },
+    {
       "name": "xbot-red",
       "diffuse_color": [ 0.8, 0.3, 0.2, 1.0 ],
       "specular_intensity": 0.8,
       "specular_power": 0.3,
       "diffuse_map": null,
-      "normal_map": null
+      "normal_map": null,
+      "specular_map": null
     },
     {
       "name": "xbot-blue",
@@ -14,7 +24,8 @@
       "specular_intensity": 0.8,
       "specular_power": 0.3,
       "diffuse_map": null,
-      "normal_map": null
+      "normal_map": null,
+      "specular_map": null
     }
   ],
   "collider_materials": [

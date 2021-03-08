@@ -36,7 +36,7 @@ namespace black_cat
 			nullptr,
 			game::bc_vertex_type::pos_tex_nor_tan,
 			game::bc_blend_type::opaque,
-			game::bc_depth_stencil_type::depth_less_stencil_off,
+			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_less, game::bc_depth_stencil_type::stencil_off }),
 			game::bc_rasterizer_type::fill_solid_cull_back,
 			0x01,
 			{},
@@ -76,7 +76,8 @@ namespace black_cat
 
 		if(my_index() == 0)
 		{
-			p_param.m_render_thread.clear_buffers(core::bc_vector4f(1));
+			core::bc_vector<core::bc_vector4f> l_clear_buffers(p_param.m_cascade_count, core::bc_vector4f(1));
+			p_param.m_render_thread.clear_buffers(l_clear_buffers.data(), p_param.m_cascade_count);
 		}
 
 		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, l_render_buffer, p_param.m_cascade_camera);

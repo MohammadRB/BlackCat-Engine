@@ -8,7 +8,7 @@
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Editor/UICommand/bcUITerrainCommand.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
-#include "BlackCat/RenderPass/DeferredRendering/bcGBufferTerrainPassDx11.h"
+#include "BlackCat/RenderPass/GBuffer/bcGBufferTerrainPassDx11.h"
 
 namespace black_cat
 {
@@ -56,7 +56,7 @@ namespace black_cat
 				m_screen_height, 
 				m_point_left, 
 				m_point_top, 
-				game::bc_query_group::terrain,
+				game::bc_actor_group::terrain,
 				physics::bc_query_flags::statics,
 				l_buffer
 			);

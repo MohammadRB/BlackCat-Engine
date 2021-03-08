@@ -8,8 +8,8 @@
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventBoundBoxChanged.h"
-#include "Game/Object/Scene/Component/Event/bcActorEventWorldTransform.h"
+#include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Animation/bcAnimationManager.h"
 #include "Game/bcConstant.h"
 #include "Game/bcUtility.h"
@@ -19,7 +19,8 @@ namespace black_cat
 	namespace game
 	{
 		bc_skinned_mesh_component::bc_skinned_mesh_component(bc_actor_index p_actor_index, bc_actor_component_index p_index)
-			: bc_mesh_component(p_actor_index, p_index),
+			: bci_actor_component(p_actor_index, p_index),
+			bc_mesh_component(),
 			m_animation_played(false)
 		{
 		}
@@ -66,14 +67,14 @@ namespace black_cat
 
 		void bc_skinned_mesh_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as< bc_actor_event_world_transform >(p_context.m_event);
+			const auto* l_world_transform_event = core::bci_message::as< bc_world_transform_actor_event >(p_context.m_event);
 			if (l_world_transform_event)
 			{
 				_set_world_transform(p_context.m_actor, l_world_transform_event->get_transform());
 				return;
 			}
 
-			const auto* l_bound_box_event = core::bci_message::as< bc_actor_event_bound_box_changed >(p_context.m_event);
+			const auto* l_bound_box_event = core::bci_message::as< bc_bound_box_changed_actor_event >(p_context.m_event);
 			if (l_bound_box_event)
 			{
 				bc_mesh_component::update_lod_factor(l_bound_box_event->get_bound_box());
@@ -97,7 +98,7 @@ namespace black_cat
 
 			const auto& l_render_states = get_render_states();
 			const auto& l_world_transforms = get_world_transforms();
-			bc_mesh_utility::render_skinned_mesh(p_context.m_buffer, l_render_states, l_world_transforms, l_lod.first);
+			bc_mesh_utility::render_skinned_mesh(p_context.m_buffer, l_render_states, l_world_transforms, l_lod.first, bc_render_group::dynamic_mesh);
 		}
 
 		void bc_skinned_mesh_component::debug_draw(const bc_actor_component_debug_draw_context& p_context)
@@ -137,7 +138,7 @@ namespace black_cat
 					return 0;
 				});
 
-				p_actor.add_event(bc_actor_event_bound_box_changed(l_bound_box));
+				p_actor.add_event(bc_bound_box_changed_actor_event(l_bound_box));
 			}
 		}
 	}

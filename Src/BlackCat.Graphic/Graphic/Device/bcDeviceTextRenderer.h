@@ -43,6 +43,16 @@ namespace black_cat
 				m_scale(p_scale)
 			{
 			}
+
+			bc_device_text(const bc_device_text&) = default;
+			
+			bc_device_text(bc_device_text&&) = default;
+
+			~bc_device_text() = default;
+
+			bc_device_text& operator=(const bc_device_text&) = default;
+			
+			bc_device_text& operator=(bc_device_text&&) = default;
 			
 			core::bc_wstring m_text;
 			core::bc_vector2i m_position;
