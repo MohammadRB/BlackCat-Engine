@@ -209,7 +209,9 @@ namespace black_cat
 			.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step2)
 			.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step3, 0.09f)
 			.with_particles_rotation(10)
-			.emit_particles(100, 8, 3000, 0.05f);
+			.emit_particles(100, 8, 3000, 0.05f)
+			.duplicate_last(core::bc_vector3f(0, -8, 0), core::bc_vector3f::up())
+			.emit_particles(50, 8, 2000, 0.05f);
 
 		for (auto& l_direction : l_random_directions)
 		{

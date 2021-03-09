@@ -51,15 +51,15 @@ namespace black_cat
 			// TODO default alignment is not preserved
 			const bcSIZE l_needed_memory = sizeof(bcSIZE) + sizeof(T);
 			void* l_allocated_memory = _alloc(l_needed_memory);
-			void* l_object_ptr = reinterpret_cast<bcBYTE*>(l_allocated_memory) + sizeof(bcSIZE);
-			bcSIZE* l_memory_size_ptr = reinterpret_cast<bcSIZE*>(l_allocated_memory);
+			void* l_object_ptr = static_cast<bcBYTE*>(l_allocated_memory) + sizeof(bcSIZE);
+			bcSIZE* l_memory_size_ptr = static_cast<bcSIZE*>(l_allocated_memory);
 
 			new (l_object_ptr) T(std::forward<T>(p_parameters)...);
 			*l_memory_size_ptr = l_needed_memory;
 
 			m_size.fetch_add(1, core_platform::bc_memory_order::relaxed);
 			
-			return reinterpret_cast<T*>(l_object_ptr);
+			return static_cast<T*>(l_object_ptr);
 		}
 		
 		template<typename T>
@@ -68,7 +68,7 @@ namespace black_cat
 			p_object->~T();
 
 			void* l_allocated_memory = reinterpret_cast<bcBYTE*>(p_object) - sizeof(bcSIZE);
-			const bcSIZE l_memory_size = *reinterpret_cast<bcSIZE*>(l_allocated_memory);
+			const bcSIZE l_memory_size = *static_cast<bcSIZE*>(l_allocated_memory);
 
 			_free(l_allocated_memory, l_memory_size);
 

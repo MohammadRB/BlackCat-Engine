@@ -5,6 +5,7 @@
       "fps",
       "update_time",
       "render_time",
+      "swap_time",
 		  "rps_gb_init",
 		  "rps_gb_trn",
 		  "rps_gb_sm",

@@ -29,6 +29,7 @@ namespace black_cat
 				l_json->m_counter_values.new_entry().set("fps");
 				l_json->m_counter_values.new_entry().set("update_time");
 				l_json->m_counter_values.new_entry().set("render_time");
+				l_json->m_counter_values.new_entry().set("swap_time");
 			}
 			
 			auto l_read_value = [=](const bcCHAR* p_name, auto& p_value)

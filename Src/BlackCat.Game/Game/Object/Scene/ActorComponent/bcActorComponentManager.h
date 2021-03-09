@@ -224,7 +224,7 @@ namespace black_cat
 
 			void _resize_actor_to_component_index_maps();
 
-			const bcSIZE s_events_pool_capacity = 100 * 1024;
+			const bcSIZE s_events_pool_capacity = 100 * static_cast<bcSIZE>(core::bc_mem_size::kb);
 			
 			core::bc_query_manager& m_query_manager;
 			mutable core_platform::bc_shared_mutex m_actors_lock;

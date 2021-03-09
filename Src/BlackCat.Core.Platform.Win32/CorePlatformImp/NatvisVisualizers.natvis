@@ -67,4 +67,8 @@
     </Expand>
   </Type>
 
+  <Type Name="std::atomic&lt;*&gt;">
+    <DisplayString>{{{($T1)_Storage._Value}}}</DisplayString>
+  </Type>
+
 </AutoVisualizer>

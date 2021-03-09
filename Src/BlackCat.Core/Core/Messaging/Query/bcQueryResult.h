@@ -44,6 +44,7 @@ namespace black_cat
 			: m_state(p_other.m_state.load(core_platform::bc_memory_order::relaxed)),
 			m_query(p_other.m_query)
 		{
+			p_other.m_query = nullptr;
 		}
 
 		inline _bc_query_shared_state::~_bc_query_shared_state() = default;

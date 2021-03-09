@@ -549,6 +549,10 @@ namespace black_cat
 				for (auto& l_leak : *m_leak_allocator)
 				{
 					bc_memblock* l_memblock = bc_memblock::retrieve_mem_block(l_leak.first);
+					/*if(l_leak.second.m_type == bc_alloc_type::frame)
+					{
+						BC_DEBUG_BREAK();
+					}*/
 				}
 
 				return l_leak_count;

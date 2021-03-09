@@ -67,7 +67,7 @@ namespace black_cat
 		void* bc_memory_stack::push(bc_memblock* p_mem_block) noexcept
 		{
 			void* l_result = nullptr;
-			bcSIZE l_size = p_mem_block->size();
+			const auto l_size = p_mem_block->size();
 
 			BC_ASSERT(l_size > 0);
 

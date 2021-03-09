@@ -74,5 +74,6 @@ namespace black_cat
 		bcUINT32 m_update_count;
 		core::bc_stop_watch m_update_watch;
 		core::bc_stop_watch m_render_watch;
+		core::bc_stop_watch m_swap_watch;
 	};
 }

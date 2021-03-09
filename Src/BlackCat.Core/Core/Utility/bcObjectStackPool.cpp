@@ -72,11 +72,11 @@ namespace black_cat
 
 		void bc_concurrent_object_stack_pool::_free(void* p_pointer, bcSIZE p_size)
 		{
-			bc_memblock l_memblock;
-			l_memblock.size(p_size);
-
 			if (m_stack_allocator.contain_pointer(p_pointer))
 			{
+				bc_memblock l_memblock;
+				l_memblock.size(p_size);
+				
 				m_stack_allocator.free(p_pointer, &l_memblock);
 			}
 			else 

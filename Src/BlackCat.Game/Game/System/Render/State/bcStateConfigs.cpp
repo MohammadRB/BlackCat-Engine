@@ -142,7 +142,7 @@ namespace black_cat
 				l_config.m_front_face.m_stencil_fail_op = graphic::bc_stencil_op::replace;
 				l_config.m_front_face.m_stencil_depth_fail_op = graphic::bc_stencil_op::keep;
 
-				l_config.m_back_face.m_stencil_func = graphic::bc_comparison_func::never;
+				l_config.m_back_face.m_stencil_func = graphic::bc_comparison_func::always;
 				l_config.m_back_face.m_stencil_pass_op = graphic::bc_stencil_op::replace;
 				l_config.m_back_face.m_stencil_fail_op = graphic::bc_stencil_op::replace;
 				l_config.m_back_face.m_stencil_depth_fail_op = graphic::bc_stencil_op::keep;
