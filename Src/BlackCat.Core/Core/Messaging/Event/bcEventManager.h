@@ -81,7 +81,7 @@ namespace black_cat
 
 			bc_event_manager(bc_event_manager&&) noexcept = delete;
 
-			~bc_event_manager();
+			~bc_event_manager() override;
 
 			bc_event_manager& operator=(bc_event_manager&&) noexcept = delete;
 

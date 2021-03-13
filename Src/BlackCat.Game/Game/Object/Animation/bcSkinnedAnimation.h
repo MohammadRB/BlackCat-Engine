@@ -14,7 +14,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_skinned_animation : public core::bci_content
+		class BC_GAME_DLL bc_skinned_animation : public core::bci_content
 		{
 			BC_CONTENT(anim)
 			

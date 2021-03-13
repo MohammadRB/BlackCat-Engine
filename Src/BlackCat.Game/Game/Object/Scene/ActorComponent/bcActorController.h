@@ -12,6 +12,7 @@ namespace black_cat
 	{
 		class bc_scene;
 		class bc_shape_drawer;
+		struct bc_actor_component_initialize_context;
 		struct bc_actor_component_load_context;
 		struct bc_actor_component_write_context;
 		struct bc_actor_component_update_content;
@@ -23,7 +24,7 @@ namespace black_cat
 		public:
 			virtual ~bci_actor_controller() = 0;
 
-			virtual void initialize(bc_actor& p_actor);
+			virtual void initialize(const bc_actor_component_initialize_context& p_context);
 
 			virtual void added_to_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene);
 			
@@ -36,7 +37,7 @@ namespace black_cat
 
 		inline bci_actor_controller::~bci_actor_controller() = default;
 
-		inline void bci_actor_controller::initialize(bc_actor& p_actor)
+		inline void bci_actor_controller::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 		}
 

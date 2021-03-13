@@ -21,24 +21,13 @@ namespace black_cat
 		public:
 			template< class TContent >
 			explicit bc_content_loader_result(bc_unique_ptr<TContent>&& p_result)
-				: m_succeeded(true),
-				m_exception(nullptr),
-				m_result(std::move(p_result))
+				: m_result(std::move(p_result))
 			{
 				static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
 			}
 
-			explicit bc_content_loader_result(bc_io_exception p_exception)
-				: m_succeeded(false),
-				m_exception(std::move(p_exception)),
-				m_result(nullptr)
-			{
-			}
-
 			bc_content_loader_result(bc_content_loader_result&& p_other) noexcept
-				: m_succeeded(p_other.m_succeeded),
-				m_exception(std::move(p_other.m_exception)),
-				m_result(std::move(p_other.m_result))
+				: m_result(std::move(p_other.m_result))
 			{
 			}
 
@@ -46,16 +35,9 @@ namespace black_cat
 
 			bc_content_loader_result& operator=(bc_content_loader_result&& p_other) noexcept
 			{
-				m_succeeded = p_other.m_succeeded;
-				m_exception = std::move(p_other.m_exception);
 				m_result = std::move(p_other.m_result);
 
 				return *this;
-			}
-
-			bool succeeded() const
-			{
-				return m_succeeded;
 			}
 
 			template< class TContent >
@@ -63,11 +45,6 @@ namespace black_cat
 			{
 				static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
 				
-				if (!m_succeeded)
-				{
-					throw m_exception;
-				}
-
 				BC_ASSERT(m_result != nullptr);
 				
 				return static_cast<TContent*>(m_result.get());
@@ -78,19 +55,12 @@ namespace black_cat
 			{
 				static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
 
-				if (!m_succeeded)
-				{
-					throw m_exception;
-				}
-
 				BC_ASSERT(m_result != nullptr);
 				
 				return static_pointer_cast<TContent>(m_result);
 			}
 
 		private:
-			bool m_succeeded;
-			bc_io_exception m_exception;
 			bc_unique_ptr<bci_content> m_result;
 		};
 
@@ -129,11 +99,6 @@ namespace black_cat
 				m_result.reset(bc_content_loader_result(std::move(l_content_result)));
 			}
 
-			void set_result(bc_io_exception p_exception)
-			{
-				m_result.reset(bc_content_loader_result(std::move(p_exception)));
-			}
-			
 			const bcECHAR* m_file_path;							// Used to give loader access to content and offline content file path
 			const bcECHAR* m_file_variant;						// Used to give loader access to content file variant
 			bc_stream m_file;									// Used to give loader access to content and offline content file

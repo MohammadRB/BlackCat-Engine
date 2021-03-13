@@ -107,7 +107,7 @@
         {
           "content_title": "crysis_heightmap",
           "content_loader": "height_map",
-          "content_file": "content\\texture\\CrysisHM1-1024.bmp",
+          "content_file": "content\\texture\\HeightMaps\\CrysisHM1-1024.bmp",
           "content_parameter": {
             "xz_multiplier": 2,
             "y_multiplier": 512,

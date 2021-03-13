@@ -2,7 +2,9 @@
 
 #pragma once
 
+#include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcSpan.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
 
 namespace black_cat
@@ -15,9 +17,9 @@ namespace black_cat
 			using execute_callback = core::bc_delegate< void() >;
 			
 		public:
-			bc_sequence_animation_job(bci_animation_job** p_begin, bcSIZE p_count);
+			bc_sequence_animation_job(core::bc_span<core::bc_unique_ptr< bci_animation_job >>& p_animations);
 			
-			bc_sequence_animation_job(bci_animation_job** p_begin, bcSIZE p_count, execute_callback p_callback);
+			bc_sequence_animation_job(core::bc_span<core::bc_unique_ptr< bci_animation_job >>& p_animations, execute_callback p_callback);
 
 			bc_sequence_animation_job(bc_sequence_animation_job&&) noexcept;
 
@@ -28,23 +30,21 @@ namespace black_cat
 			bool run(const core_platform::bc_clock::update_param& p_clock) override;
 		
 		private:
-			core::bc_vector_movable<bci_animation_job*> m_jobs;
+			core::bc_vector< core::bc_unique_ptr< bci_animation_job > > m_jobs;
 			execute_callback m_callback;
 		};
 
-		inline bc_sequence_animation_job::bc_sequence_animation_job(bci_animation_job** p_begin, bcSIZE p_count)
-			: bc_sequence_animation_job(p_begin, p_count, execute_callback())
+		inline bc_sequence_animation_job::bc_sequence_animation_job(core::bc_span<core::bc_unique_ptr< bci_animation_job >>& p_animations)
+			: bci_animation_job((*p_animations.begin())->get_skeleton()),
+			m_jobs(std::make_move_iterator(std::begin(p_animations)), std::make_move_iterator(std::end(p_animations)))
 		{
 		}
 
-		inline bc_sequence_animation_job::bc_sequence_animation_job(bci_animation_job** p_begin, bcSIZE p_count, execute_callback p_callback)
-			: bci_animation_job((*p_begin)->get_skeleton()),
+		inline bc_sequence_animation_job::bc_sequence_animation_job(core::bc_span<core::bc_unique_ptr< bci_animation_job >>& p_animations, execute_callback p_callback)
+			: bci_animation_job((*p_animations.begin())->get_skeleton()),
+			m_jobs(std::make_move_iterator(std::begin(p_animations)), std::make_move_iterator(std::end(p_animations))),
 			m_callback(std::move(p_callback))
 		{
-			BC_ASSERT(p_count > 0);
-
-			m_jobs.resize(p_count);
-			std::memcpy(m_jobs.data(), p_begin, sizeof(bci_animation_job**) * p_count);
 		}
 
 		inline bc_sequence_animation_job::bc_sequence_animation_job(bc_sequence_animation_job&&) noexcept = default;

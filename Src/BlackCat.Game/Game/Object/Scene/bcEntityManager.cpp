@@ -127,6 +127,16 @@ namespace black_cat
 				l_actor.create_component<bc_mediate_component>();
 				auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
 				l_mediate_component->set_entity_name(l_entity_entry->second.m_entity_name.c_str());
+				l_mediate_component->initialize
+				(
+					bc_actor_component_initialize_context
+					(
+						core::bc_data_driven_parameter(),
+						m_content_stream_manager,
+						m_game_system,
+						l_actor
+					)
+				);
 				
 				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
 				{
@@ -158,7 +168,17 @@ namespace black_cat
 						throw bc_invalid_argument_exception("Invalid actor controller name");
 					}
 
-					l_mediate_component->set_controller(l_controller_ite->second());
+					l_mediate_component->set_controller
+					(
+						l_controller_ite->second(),
+						bc_actor_component_initialize_context
+						(
+							core::bc_data_driven_parameter(),
+							m_content_stream_manager,
+							m_game_system,
+							l_actor
+						)
+					);
 				}
 			}
 			catch (...)

@@ -193,9 +193,7 @@ namespace black_cat
 				", "
 				+
 				l_importer.GetErrorString();
-			p_context.set_result(bc_io_exception(l_error_msg.c_str()));
-
-			return;
+			throw bc_io_exception(l_error_msg.c_str());
 		}
 
 		ozz::animation::offline::RawSkeleton l_ozz_raw_skeleton;

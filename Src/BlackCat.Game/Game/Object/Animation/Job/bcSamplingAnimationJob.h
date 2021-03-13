@@ -8,7 +8,6 @@
 #include "Game/Object/Animation/bcAnimationLocalTransform.h"
 #include "Game/Object/Animation/Job/bcLocalTransformAnimationJob.h"
 #include "Game/bcExport.h"
-
 #include "3rdParty/Ozz/Include/ozz/animation/runtime/sampling_job.h"
 
 namespace black_cat

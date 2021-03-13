@@ -300,6 +300,34 @@
           "content_file": "content\\model\\xbot\\xbot-neutral-idle.fbx",
           "content_parameter": {
           }
+        },
+        {
+          "content_title": "xbot-left-turn",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-left-turn.fbx",
+          "content_parameter": {
+          }
+        },
+        {
+          "content_title": "xbot-right-turn",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-right-turn.fbx",
+          "content_parameter": {
+          }
+        },
+        {
+          "content_title": "xbot-walking",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-walking.fbx",
+          "content_parameter": {
+          }
+        },
+        {
+          "content_title": "xbot-running",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-running.fbx",
+          "content_parameter": {
+          }
         }
       ]
     }

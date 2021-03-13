@@ -29,6 +29,8 @@ namespace black_cat
 
 			bc_free_camera& operator=(bc_free_camera&& p_other) noexcept;
 
+			void set_look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_look_at) noexcept;
+			
 			void update(const core_platform::bc_clock::update_param& p_clock) noexcept override;
 
 		private:

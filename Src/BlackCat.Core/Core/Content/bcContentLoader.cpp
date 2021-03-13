@@ -7,19 +7,14 @@ namespace black_cat
 {
 	namespace core
 	{
-		// -- Base content loader --------------------------------------------------------------------------------
-		bc_base_content_loader::bc_base_content_loader()
-		{
-		}
+		bc_base_content_loader::bc_base_content_loader() = default;
 
 		bc_base_content_loader::bc_base_content_loader(bc_base_content_loader&& p_other) noexcept
 			: bci_content_loader(std::move(p_other))
 		{
 		}
 
-		bc_base_content_loader::~bc_base_content_loader()
-		{
-		}
+		bc_base_content_loader::~bc_base_content_loader() = default;
 
 		bc_base_content_loader& bc_base_content_loader::operator=(bc_base_content_loader&& p_other) noexcept
 		{
@@ -31,7 +26,7 @@ namespace black_cat
 		void bc_base_content_loader::content_offline_file_open_succeeded(bc_content_loading_context& p_context) const
 		{
 			p_context.m_file_buffer_size = p_context.m_file.length();
-			p_context.m_file_buffer.reset(reinterpret_cast<bcBYTE*>(BC_ALLOC(p_context.m_file_buffer_size, bc_alloc_type::frame)));
+			p_context.m_file_buffer.reset(static_cast<bcBYTE*>(BC_ALLOC(p_context.m_file_buffer_size, bc_alloc_type::frame)));
 
 			p_context.m_file.read(p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
 		}
@@ -47,7 +42,7 @@ namespace black_cat
 		void bc_base_content_loader::content_file_open_succeeded(bc_content_loading_context& p_context) const
 		{
 			p_context.m_file_buffer_size = p_context.m_file.length();
-			p_context.m_file_buffer.reset(reinterpret_cast<bcBYTE*>(BC_ALLOC(p_context.m_file_buffer_size, bc_alloc_type::frame)));
+			p_context.m_file_buffer.reset(static_cast<bcBYTE*>(BC_ALLOC(p_context.m_file_buffer_size, bc_alloc_type::frame)));
 
 			p_context.m_file.read(p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
 		}
@@ -86,7 +81,7 @@ namespace black_cat
 				return l_result;
 			}
 
-			return bc_content_loader_result(bc_io_exception("Content load result is not set"));
+			throw bc_io_exception("Content load result is not set");
 		}
 
 		void bc_base_content_loader::cleanup(bc_content_loading_context& p_context) const

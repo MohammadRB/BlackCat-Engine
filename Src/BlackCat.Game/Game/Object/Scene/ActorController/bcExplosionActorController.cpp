@@ -16,17 +16,16 @@
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
-#include "Game/Object/Scene/Component/bcDecalResolverComponent.h"
 #include "Game/Object/Scene/ActorController/bcExplosionActorController.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		void bc_explosion_actor_controller::initialize(bc_actor& p_actor)
+		void bc_explosion_actor_controller::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			auto* l_light_component = p_actor.get_component< bc_light_component >();
-			auto* l_emitter_component = p_actor.get_component< bc_particle_emitter_component >();
+			auto* l_light_component = p_context.m_actor.get_component< bc_light_component >();
+			auto* l_emitter_component = p_context.m_actor.get_component< bc_particle_emitter_component >();
 
 			if (!l_light_component || !l_emitter_component)
 			{

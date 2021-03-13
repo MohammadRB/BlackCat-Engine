@@ -26,7 +26,9 @@ namespace black_cat
 		inline bc_key_device bc_human_interface_device::create_key_device(bcUBYTE p_index)
 		{
 			if (p_index > get_key_device_count() - 1)
+			{
 				throw bc_invalid_argument_exception("Invalid device index");
+			}
 
 			return bc_key_device(p_index);
 		}
@@ -34,7 +36,9 @@ namespace black_cat
 		inline bc_pointing_device bc_human_interface_device::create_pointing_device(bcUBYTE p_index)
 		{
 			if (p_index > get_pointing_device_count() - 1)
+			{
 				throw bc_invalid_argument_exception("Invalid device index");
+			}
 
 			return bc_pointing_device(p_index);
 		}

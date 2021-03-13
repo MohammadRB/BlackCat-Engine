@@ -104,7 +104,7 @@ namespace black_cat
 			}
 			l_animations_task.wait();
 
-			l_render_system.update(bc_render_system::update_context(p_clock, m_input_system.get_camera()));
+			l_render_system.update(bc_render_system::update_context(p_clock, *m_input_system.get_camera()));
 		}
 		
 		void bc_game_system::render_game(const core_platform::bc_clock::update_param& p_clock)

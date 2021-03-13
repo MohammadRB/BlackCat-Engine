@@ -22,27 +22,23 @@ namespace black_cat
 		}
 
 		physics::bc_ray bc_iui_command::get_pointer_ray(const update_context& p_context,
-			bcUINT16 p_screen_width,
-			bcUINT16 p_screen_height,
 			bcUINT16 p_point_left,
 			bcUINT16 p_point_top) const
 		{
-			const auto& l_camera = p_context.m_game_system.get_input_system().get_camera();
-			const auto l_pointing_ray = l_camera.project_clip_point_to_3d_ray(p_screen_width, p_screen_height, p_point_left, p_point_top);
+			const auto& l_camera = *p_context.m_game_system.get_input_system().get_camera();
+			const auto l_pointing_ray = l_camera.project_clip_point_to_3d_ray(p_point_left, p_point_top);
 
 			return physics::bc_ray(l_camera.get_position(), l_pointing_ray, l_camera.get_far_clip());
 		}
 
 		bool bc_iui_command::query_ray_in_scene(const update_context& p_context,
-			bcUINT16 p_screen_width,
-			bcUINT16 p_screen_height,
 			bcUINT16 p_point_left,
 			bcUINT16 p_point_top,
 			game::bc_actor_group p_query_group,
 			physics::bc_query_flags p_flags,
 			physics::bc_scene_ray_query_buffer& p_result) const
 		{
-			const auto l_ray = get_pointer_ray(p_context, p_screen_width, p_screen_height, p_point_left, p_point_top);
+			const auto l_ray = get_pointer_ray(p_context, p_point_left, p_point_top);
 			auto l_query_filter = physics::bc_scene_query_post_filter_callback
 			(
 				[&p_context, &l_ray, this](physics::bc_scene_query_post_filter_data& p_filter_data)
@@ -86,7 +82,7 @@ namespace black_cat
 
 			game::bc_mesh_collider_skinning_animation_job l_skinning_job
 			(
-				(*l_skinned_mesh_component->get_animations().begin())->get_skeleton(),
+				*l_skinned_mesh_component->get_skeleton(),
 				l_skinned_mesh_component->get_mesh(),
 				l_skinned_mesh_component->get_model_transforms()
 			);

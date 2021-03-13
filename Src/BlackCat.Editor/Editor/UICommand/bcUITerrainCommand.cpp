@@ -51,9 +51,7 @@ namespace black_cat
 			physics::bc_scene_ray_query_buffer l_buffer(0);
 			const bool l_px_hit_result = query_ray_in_scene
 			(
-				p_context, 
-				m_screen_width, 
-				m_screen_height, 
+				p_context,
 				m_point_left, 
 				m_point_top, 
 				game::bc_actor_group::terrain,

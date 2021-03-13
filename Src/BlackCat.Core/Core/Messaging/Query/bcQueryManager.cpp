@@ -200,6 +200,7 @@ namespace black_cat
 
 			// Swap buffers with interval to let stack allocator free intermediate blocks which will create
 			// hole in allocator due to life time of queries
+			// TODO Check if interval value is enough to prevent stack pool wrong usage
 			m_active_query_pool_swap_interval = (m_active_query_pool_swap_interval + 1) % 3;
 			if(m_active_query_pool_swap_interval == 0)
 			{

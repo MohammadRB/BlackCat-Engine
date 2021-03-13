@@ -141,14 +141,10 @@ namespace black_cat
 
 		protected:
 			physics::bc_ray get_pointer_ray(const update_context& p_context,
-				bcUINT16 p_screen_width,
-				bcUINT16 p_screen_height,
 				bcUINT16 p_point_left,
 				bcUINT16 p_point_top) const;
 
 			bool query_ray_in_scene(const update_context& p_context,
-				bcUINT16 p_screen_width, 
-				bcUINT16 p_screen_height, 
 				bcUINT16 p_point_left, 
 				bcUINT16 p_point_top,
 				game::bc_actor_group p_query_group,

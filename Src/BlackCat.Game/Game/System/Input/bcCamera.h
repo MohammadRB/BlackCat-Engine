@@ -21,7 +21,7 @@ namespace black_cat
 		class BC_GAME_DLL bci_camera
 		{
 		public:
-			using extend = core::bc_array<core::bc_vector3f, 8>;
+			using extend = core::bc_array< core::bc_vector3f, 8 >;
 
 		public:
 			virtual ~bci_camera() noexcept;
@@ -51,24 +51,55 @@ namespace black_cat
 				return m_position;
 			}
 
-			core::bc_vector3f get_direction() const noexcept;
+			core::bc_vector3f get_direction() const noexcept
+			{
+				auto l_direction = (m_look_at - m_position);
+				l_direction.normalize();
+
+				return l_direction;
+			}
 
 			core::bc_vector3f get_look_at() const noexcept
 			{
 				return m_look_at;
 			}
 			
-			core::bc_vector3f get_forward() const noexcept;
+			core::bc_vector3f get_forward() const noexcept
+			{
+				return get_direction();
+			}
 
-			core::bc_vector3f get_back() const noexcept;
+			core::bc_vector3f get_back() const noexcept
+			{
+				return get_forward() * -1;
+			}
 
-			core::bc_vector3f get_up() const noexcept;
+			core::bc_vector3f get_up() const noexcept
+			{
+				const auto l_direction = get_direction();
+				const auto l_right = core::bc_vector3f(0, 1, 0).cross(l_direction);
+				const auto l_up = core::bc_vector3f::normalize(l_direction.cross(l_right));
 
-			core::bc_vector3f get_down() const noexcept;
+				return l_up;
+			}
 
-			core::bc_vector3f get_right() const noexcept;
+			core::bc_vector3f get_down() const noexcept
+			{
+				return get_up() * -1;
+			}
 
-			core::bc_vector3f get_left() const noexcept;
+			core::bc_vector3f get_right() const noexcept
+			{
+				const auto l_direction = get_direction();
+				const auto l_right = core::bc_vector3f::normalize(core::bc_vector3f(0, 1, 0).cross(l_direction));
+
+				return l_right;
+			}
+
+			core::bc_vector3f get_left() const noexcept
+			{
+				return get_right() * -1;
+			}
 
 			core::bc_matrix4f get_view() const noexcept
 			{
@@ -79,14 +110,6 @@ namespace black_cat
 			{
 				return m_projection;
 			}
-
-			void set_look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_look_at, const core::bc_vector3f& p_up = core::bc_vector3f(0, 1, 0)) noexcept;
-
-			void set_projection(const core::bc_matrix4f& p_projection) noexcept;
-			
-			void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height) noexcept;
-
-			void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
 
 			/**
 			 * \brief Get 8 point that describe camera frustum. First four points lay on near clip and second four points on far clip
@@ -103,8 +126,12 @@ namespace black_cat
 			 * \param p_top point offset from the top of screen
 			 * \return
 			 */
-			core::bc_vector3f project_clip_point_to_3d_ray(bcUINT16 p_screen_width, bcUINT16 p_screen_height, bcUINT16 p_left, bcUINT16 p_top) const noexcept;
+			core::bc_vector3f project_clip_point_to_3d_ray(bcUINT16 p_left, bcUINT16 p_top) const noexcept;
 
+			void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height) noexcept;
+
+			void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
+			
 			virtual void update(const core_platform::bc_clock::update_param& p_clock) noexcept = 0;
 
 		protected:
@@ -114,6 +141,8 @@ namespace black_cat
 
 			bci_camera& operator=(bci_camera&& p_other) noexcept;
 
+			void set_look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_look_at, const core::bc_vector3f& p_up = core::bc_vector3f(0, 1, 0)) noexcept;
+			
 			virtual core::bc_matrix4f create_view_matrix(const core::bc_vector3f& p_up = core::bc_vector3f(0, 1, 0)) noexcept;
 
 			virtual core::bc_matrix4f create_projection_matrix() noexcept = 0;
@@ -135,7 +164,7 @@ namespace black_cat
 			using bci_camera::set_projection;
 
 		public:
-			virtual ~bc_orthographic_camera() = default;
+			virtual ~bc_orthographic_camera() override = default;
 
 			bcFLOAT get_min_x() const noexcept
 			{
@@ -166,7 +195,7 @@ namespace black_cat
 
 			bc_orthographic_camera& operator=(bc_orthographic_camera&& p_other) noexcept;
 
-			core::bc_matrix4f create_projection_matrix() noexcept override final;
+			core::bc_matrix4f create_projection_matrix() noexcept override;
 
 		private:
 			bcFLOAT m_min_x;
@@ -181,7 +210,7 @@ namespace black_cat
 			using bci_camera::set_projection;
 
 		public:
-			virtual ~bc_perspective_camera() = default;
+			virtual ~bc_perspective_camera() override = default;
 			
 			bcFLOAT get_aspect_ratio() const noexcept
 			{
@@ -193,9 +222,9 @@ namespace black_cat
 				return m_field_of_view;
 			}
 
-			void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
-
 			void get_extend_points(extend& p_points) const noexcept override final;
+
+			void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
 			
 		protected:
 			bc_perspective_camera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
@@ -204,7 +233,7 @@ namespace black_cat
 
 			bc_perspective_camera& operator=(bc_perspective_camera&& p_other) noexcept;
 
-			core::bc_matrix4f create_projection_matrix() noexcept override final;
+			core::bc_matrix4f create_projection_matrix() noexcept override;
 
 		private:
 			bcFLOAT m_aspect_ratio;

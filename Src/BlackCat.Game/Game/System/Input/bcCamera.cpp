@@ -20,7 +20,6 @@ namespace black_cat
 			m_position(core::bc_vector3f(0, 0, 0)),
 			m_look_at(core::bc_vector3f(0, 0, 1))
 		{
-			m_view = create_view_matrix();
 		}
 
 		bci_camera::bci_camera(bci_camera&& p_other) noexcept
@@ -53,85 +52,7 @@ namespace black_cat
 		{
 		}
 
-		core::bc_vector3f bci_camera::get_direction() const noexcept
-		{
-			auto l_direction = (m_look_at - m_position);
-			l_direction.normalize();
-
-			return l_direction;
-		}
-
-		core::bc_vector3f bci_camera::get_forward() const noexcept
-		{
-			return get_direction();
-		}
-
-		core::bc_vector3f bci_camera::get_back() const noexcept
-		{
-			return get_forward() * -1;
-		}
-
-		core::bc_vector3f bci_camera::get_up() const noexcept
-		{
-			auto l_direction = get_direction();
-
-			auto l_right = core::bc_vector3f(0, 1, 0).cross(l_direction);
-			auto l_up = l_direction.cross(l_right);
-
-			l_up.normalize();
-
-			return l_up;
-		}
-
-		core::bc_vector3f bci_camera::get_down() const noexcept
-		{
-			return get_up() * -1;
-		}
-
-		core::bc_vector3f bci_camera::get_right() const noexcept
-		{
-			auto l_direction = get_direction();
-			auto l_right = core::bc_vector3f(0, 1, 0).cross(l_direction);
-
-			l_right.normalize();
-
-			return l_right;
-		}
-
-		core::bc_vector3f bci_camera::get_left() const noexcept
-		{
-			return get_right() * -1;
-		}
-
-		void bci_camera::set_look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_look_at, const core::bc_vector3f& p_up) noexcept
-		{
-			m_position = p_position;
-			m_look_at = p_look_at;
-
-			m_view = create_view_matrix(p_up);
-		}
-
-		void bci_camera::set_projection(const core::bc_matrix4f& p_projection) noexcept
-		{
-			m_projection = p_projection;
-		}
-		
-		void bci_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height) noexcept
-		{
-			set_projection(p_back_buffer_width, p_back_buffer_height, m_near, m_far);
-		}
-
-		void bci_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
-		{
-			m_screen_width = p_back_buffer_width;
-			m_screen_height = p_back_buffer_height;
-			m_near = p_near_clip;
-			m_far = p_far_clip;
-
-			m_projection = create_projection_matrix();
-		}
-
-		core::bc_vector3f bci_camera::project_clip_point_to_3d_ray(bcUINT16 p_screen_width, bcUINT16 p_screen_height, bcUINT16 p_left, bcUINT16 p_top) const noexcept
+		core::bc_vector3f bci_camera::project_clip_point_to_3d_ray(bcUINT16 p_left, bcUINT16 p_top) const noexcept
 		{
 			//auto l_view = get_view();
 			//auto l_proj = get_projection();
@@ -156,8 +77,8 @@ namespace black_cat
 
 			//return l_dir;
 
-			const bcFLOAT l_left = static_cast<bcFLOAT>(p_left) / p_screen_width;
-			const bcFLOAT l_bottom = 1 - (static_cast<bcFLOAT>(p_top) / p_screen_height);
+			const bcFLOAT l_left = static_cast<bcFLOAT>(p_left) / m_screen_width;
+			const bcFLOAT l_bottom = 1 - (static_cast<bcFLOAT>(p_top) / m_screen_height);
 			extend l_camera_extends;
 
 			get_extend_points(l_camera_extends);
@@ -191,10 +112,33 @@ namespace black_cat
 
 			return l_ray;
 		}
+
+		void bci_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height) noexcept
+		{
+			set_projection(p_back_buffer_width, p_back_buffer_height, m_near, m_far);
+		}
+
+		void bci_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
+		{
+			m_screen_width = p_back_buffer_width;
+			m_screen_height = p_back_buffer_height;
+			m_near = p_near_clip;
+			m_far = p_far_clip;
+
+			m_projection = create_projection_matrix();
+		}
 		
+		void bci_camera::set_look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_look_at, const core::bc_vector3f& p_up) noexcept
+		{
+			m_position = p_position;
+			m_look_at = p_look_at;
+
+			m_view = create_view_matrix(p_up);
+		}
+
 		core::bc_matrix4f bci_camera::create_view_matrix(const core::bc_vector3f& p_up) noexcept
 		{
-			if(graphic::bc_render_api_info::use_left_handed())
+			if (graphic::bc_render_api_info::use_left_handed())
 			{
 				return core::bc_matrix4f::look_at_matrix_lh(m_position, m_look_at, p_up);
 			}
@@ -304,12 +248,6 @@ namespace black_cat
 			return *this;
 		}
 		
-		void bc_perspective_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
-		{
-			m_field_of_view = p_height_fov;
-			set_projection(p_back_buffer_width, p_back_buffer_height, p_near_clip, p_far_clip);
-		}
-
 		void bc_perspective_camera::get_extend_points(extend& p_points) const noexcept
 		{
 			const auto l_fov_tan = 2 * std::tanf(m_field_of_view / 2);
@@ -339,6 +277,12 @@ namespace black_cat
 			p_points[5] = l_far_clip_center + l_left * l_far_clip_half_width + l_up * l_far_clip_half_height;
 			p_points[6] = l_far_clip_center + l_right * l_far_clip_half_width + l_up * l_far_clip_half_height;
 			p_points[7] = l_far_clip_center + l_right * l_far_clip_half_width + l_down * l_far_clip_half_height;
+		}
+
+		void bc_perspective_camera::set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept
+		{
+			m_field_of_view = p_height_fov;
+			set_projection(p_back_buffer_width, p_back_buffer_height, p_near_clip, p_far_clip);
 		}
 		
 		core::bc_matrix4f bc_perspective_camera::create_projection_matrix() noexcept

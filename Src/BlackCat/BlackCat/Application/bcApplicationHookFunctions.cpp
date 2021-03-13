@@ -39,6 +39,7 @@
 #include "Game/Object/Scene/ActorController/bcFireActorController.h"
 #include "Game/Object/Scene/ActorController/bcExplosionActorController.h"
 #include "Game/Object/Scene/ActorController/bcXBotController.h"
+#include "Game/Object/Scene/ActorController/bcXBotCameraController.h"
 #include "Game/Object/Animation/bcSkinnedAnimation.h"
 #include "BlackCat/Application/bcApplicationHookFuncations.h"
 #include "BlackCat/Loader/bcTextureLoader.h"
@@ -146,7 +147,8 @@ namespace black_cat
 		(
 			game::bc_actor_controller_register< game::bc_fire_actor_controller >("fire"),
 			game::bc_actor_controller_register< game::bc_explosion_actor_controller >("explosion"),
-			game::bc_actor_controller_register< game::bc_xbot_controller >("xbot")
+			game::bc_actor_controller_register< game::bc_xbot_controller >("xbot"),
+			game::bc_actor_controller_register< game::bc_xbot_camera_controller >("xbot_player")
 		);
 	}
 

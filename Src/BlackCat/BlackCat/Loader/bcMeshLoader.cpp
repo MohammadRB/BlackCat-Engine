@@ -67,9 +67,7 @@ namespace black_cat
 				", "
 				+
 				l_importer.GetErrorString();
-			p_context.set_result(bc_io_exception(l_error_msg.c_str()));
-
-			return;
+			throw bc_io_exception(l_error_msg.c_str());
 		}
 
 		auto& l_game_system = *core::bc_get_service< game::bc_game_system >();

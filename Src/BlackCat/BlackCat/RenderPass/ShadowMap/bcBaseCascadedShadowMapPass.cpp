@@ -482,11 +482,7 @@ namespace black_cat
 			const auto l_rounded_origin = core::bc_vector4f(std::round(l_origin.x), std::round(l_origin.y), std::round(l_origin.z), std::round(l_origin.w));
 			auto l_rounded_offset = (l_rounded_origin - l_origin) * (2.0f / m_state->m_shadow_map_size);
 
-			auto l_cascade_camera_proj = l_cascade_camera.get_projection();
-			l_cascade_camera_proj(3, 0) += l_rounded_offset.x;
-			l_cascade_camera_proj(3, 1) += l_rounded_offset.y;
-
-			l_cascade_camera.set_projection(l_cascade_camera_proj);
+			l_cascade_camera.set_offset(l_rounded_offset.x, l_rounded_offset.y);
 
 			l_cascade_cameras.push_back(std::move(l_cascade_camera));
 

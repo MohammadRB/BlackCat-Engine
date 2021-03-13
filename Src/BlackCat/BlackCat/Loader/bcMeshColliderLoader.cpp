@@ -60,9 +60,7 @@ namespace black_cat
 				", "
 				+
 				l_importer.GetErrorString();
-			p_context.set_result(bc_io_exception(l_error_msg.c_str()));
-
-			return;
+			throw bc_io_exception(l_error_msg.c_str());
 		}
 		
 		core::bc_unordered_map_frame< const bcCHAR*, bcUINT32 > l_node_mapping;

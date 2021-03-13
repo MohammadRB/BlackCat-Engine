@@ -10,10 +10,10 @@ namespace black_cat
 		bc_sampling_animation_job::bc_sampling_animation_job(bc_animation_skeleton& p_skeleton, bc_skeleton_animation& p_animation)
 			: bci_local_transform_animation_job(p_skeleton),
 			m_animation(&p_animation),
-			m_sampling_cache(core::bc_make_unique< ozz::animation::SamplingCache >())
+			m_sampling_cache(core::bc_make_unique< ozz::animation::SamplingCache >()),
+			m_locals(m_skeleton->get_native_handle().num_soa_joints())
 		{
 			m_sampling_cache->Resize(m_skeleton->get_num_bones());
-			m_locals.resize(m_skeleton->get_native_handle().num_soa_joints());
 		}
 
 		bool bc_sampling_animation_job::run(const core_platform::bc_clock::update_param& p_clock)

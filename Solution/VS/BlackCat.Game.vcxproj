@@ -325,10 +325,12 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationSkeleton.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcSkeletonAnimation.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcSkinnedAnimation.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcBlendingAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelTransformAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalTransformAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcMeshColliderSkinningAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcModelToSkinnedTransformAnimationJob.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcPartialBlendingAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcSamplingAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcSequenceAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcHeightMap.h" />
@@ -354,6 +356,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcExplosionActorController.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcFireActorController.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotController.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotCameraController.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcEntityManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcScene.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcDecalComponent.h" />
@@ -403,6 +406,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcCamera.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcCameraFrustum.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcCameraInstance.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcChasingCamera.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcConfigFile.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFileSystem.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFreeCamera.h" />
@@ -462,9 +466,11 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationManager.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcBlendingAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelTransformAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcMeshColliderSkininingAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcModelToSkinnedTransformAnimationJob.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcPartialBlendingAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcSamplingAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshBuilder.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshLevelOfDetail.cpp" />
@@ -476,6 +482,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcExplosionActorController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcFireActorController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotController.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotCameraController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcEntityManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcScene.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcDecalComponent.cpp" />
@@ -505,6 +512,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcCamera.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcCameraFrustum.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcChasingCamera.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcConfigFile.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFileSystem.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFreeCamera.cpp" />

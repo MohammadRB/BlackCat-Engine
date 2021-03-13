@@ -47,8 +47,6 @@ namespace black_cat
 			const bool l_query_result = query_ray_in_scene
 			(
 				p_context,
-				m_screen_width,
-				m_screen_height,
 				m_point_left,
 				m_point_top,
 				game::bc_actor_group::all,
@@ -67,8 +65,6 @@ namespace black_cat
 				const physics::bc_ray l_ray = get_pointer_ray
 				(
 					p_context,
-					m_screen_width,
-					m_screen_height,
 					m_point_left,
 					m_point_top
 				);

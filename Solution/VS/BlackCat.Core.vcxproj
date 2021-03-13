@@ -221,6 +221,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcArray.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcIteratorAdapter.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcDeque.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcSpan.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcListPool.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcQueue.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcUnorderedMap.h" />

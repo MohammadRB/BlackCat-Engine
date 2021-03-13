@@ -7,7 +7,7 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "box",
-            "lod_scale":  3.0 
+            "lod_scale": 3.0
           }
         },
         {
@@ -73,7 +73,7 @@
           "parameters": {
             "mesh": "xbot",
             "materials": {
-               "Beta_Surface": "xbot-red"
+              "Beta_Surface": "xbot-red"
             },
             "animations": [
               "xbot-neutral-idle"
@@ -99,6 +99,32 @@
             },
             "animations": [
               "xbot-neutral-idle"
+            ]
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "xbot-player",
+      "controller": "xbot_player",
+      "components": [
+        {
+          "name": "skinned_mesh",
+          "parameters": {
+            "mesh": "xbot",
+            "materials": {
+              "Beta_Surface": "xbot-red"
+            },
+            "animations": [
+              "xbot-neutral-idle",
+              "xbot-left-turn",
+              "xbot-right-turn",
+              "xbot-walking",
+              "xbot-running"
             ]
           }
         },

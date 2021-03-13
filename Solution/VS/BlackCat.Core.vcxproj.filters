@@ -321,6 +321,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\bcUtility.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcSpan.h">
+      <Filter>Core\Container</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.cpp">

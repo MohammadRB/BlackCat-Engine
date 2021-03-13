@@ -42,7 +42,7 @@ namespace black_cat
 
 			void set_entity_name(const bcCHAR* p_entity_name);
 
-			void set_controller(core::bc_unique_ptr< bci_actor_controller > p_controller);
+			void set_controller(core::bc_unique_ptr< bci_actor_controller > p_controller, const bc_actor_component_initialize_context& p_context);
 			
 			const physics::bc_bound_box& get_prev_bound_box() const noexcept;
 			

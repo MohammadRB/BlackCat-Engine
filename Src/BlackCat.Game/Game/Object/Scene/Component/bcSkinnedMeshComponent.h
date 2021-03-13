@@ -19,7 +19,7 @@ namespace black_cat
 			BC_COMPONENT(skn_msh, true, false)
 
 		public:
-			using animation_iterator = core::bc_const_iterator_adapter<core::bc_vector<bc_skinned_animation_ptr>>;
+			using animation_iterator = core::bc_const_iterator_adapter< core::bc_vector_movable<bc_skeleton_animation*> >;
 			
 		public:
 			bc_skinned_mesh_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
@@ -32,6 +32,17 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
+			bc_animation_skeleton* get_skeleton() const noexcept;
+
+			/**
+			 * \brief Find animation which its name contains passed string
+			 * \param p_name
+			 * \return
+			 */
+			bc_skeleton_animation* find_animation(const bcCHAR* p_name) const noexcept;
+			
+			animation_iterator get_animations() const noexcept;
+			
 			bc_sub_mesh_mat4_transform& get_model_transforms() noexcept;
 			
 			const bc_sub_mesh_mat4_transform& get_model_transforms() const noexcept;
@@ -39,8 +50,6 @@ namespace black_cat
 			bc_sub_mesh_px_transform& get_collider_model_transforms() noexcept;
 
 			const bc_sub_mesh_px_transform& get_collider_model_transforms() const noexcept;
-
-			animation_iterator get_animations() const noexcept;
 			
 			void add_animation_job(bci_animation_job& p_animation_job) noexcept;
 
@@ -60,9 +69,20 @@ namespace black_cat
 			bc_sub_mesh_mat4_transform m_model_transforms;
 			bc_sub_mesh_px_transform m_collider_model_transforms;
 			core::bc_vector<bc_skinned_animation_ptr> m_animations;
+			core::bc_vector_movable<bc_skeleton_animation*> m_all_animations;
 			bool m_animation_played;
 		};
 
+		inline bc_animation_skeleton* bc_skinned_mesh_component::get_skeleton() const noexcept
+		{
+			return &m_animations[0]->get_skeleton();
+		}
+		
+		inline bc_skinned_mesh_component::animation_iterator bc_skinned_mesh_component::get_animations() const noexcept
+		{
+			return animation_iterator(m_all_animations);
+		}
+		
 		inline bc_sub_mesh_mat4_transform& bc_skinned_mesh_component::get_model_transforms() noexcept
 		{
 			return m_model_transforms;
@@ -81,11 +101,6 @@ namespace black_cat
 		inline const bc_sub_mesh_px_transform& bc_skinned_mesh_component::get_collider_model_transforms() const noexcept
 		{
 			return m_collider_model_transforms;
-		}
-		
-		inline bc_skinned_mesh_component::animation_iterator bc_skinned_mesh_component::get_animations() const noexcept
-		{
-			return animation_iterator(m_animations);
 		}
 	}
 }

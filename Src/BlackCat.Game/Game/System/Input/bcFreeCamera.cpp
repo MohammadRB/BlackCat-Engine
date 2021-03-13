@@ -90,6 +90,11 @@ namespace black_cat
 			return *this;
 		}
 
+		void bc_free_camera::set_look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_look_at) noexcept
+		{
+			bci_camera::set_look_at(p_position, p_look_at);
+		}
+
 		void bc_free_camera::update(const core_platform::bc_clock::update_param& p_clock) noexcept
 		{
 			_update_pointing();
@@ -135,7 +140,7 @@ namespace black_cat
 			const auto l_position = get_position() + l_movement_velocity;
 
 			m_update_pointing_angle = false;
-			set_look_at(l_position, l_position + l_forward, l_up);
+			bci_camera::set_look_at(l_position, l_position + l_forward, l_up);
 
 			m_new_pointing_delta = core::bc_vector2f(0);
 			m_movement_direction = core::bc_vector3f(0);

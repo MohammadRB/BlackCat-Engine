@@ -41,7 +41,7 @@ namespace black_cat
 #pragma region bcUniquePtr
 
 		template <typename T, typename TDeleter = bc_default_deleter>
-		class bc_unique_ptr
+		class bc_unique_ptr : TDeleter
 		{
 			template< typename T1, typename TDeleter1 >
 			friend class bc_unique_ptr;
@@ -59,26 +59,25 @@ namespace black_cat
 
 		public:
 			constexpr bc_unique_ptr() noexcept
-				: m_pointer(nullptr),
-				m_deleter()
+				: TDeleter(),
+				m_pointer(nullptr)
 			{
 			}
 			
 			constexpr bc_unique_ptr(std::nullptr_t) noexcept
-				: bc_unique_ptr()
+				: TDeleter(),
+				m_pointer(nullptr)
 			{
 			}
 			
 			explicit bc_unique_ptr(pointer p_pointer) noexcept
-				: m_pointer(nullptr),
-				m_deleter()
+				: TDeleter()
 			{
  				_construct(p_pointer);
 			}
 
 			bc_unique_ptr(pointer p_pointer, deleter_type p_deleter) noexcept
-				: m_pointer(nullptr),
-				m_deleter(p_deleter)
+				: TDeleter(p_deleter)
 			{
 				_construct(p_pointer);
 			}
@@ -86,16 +85,16 @@ namespace black_cat
 			bc_unique_ptr(const this_type& p_other) = delete;
 
 			bc_unique_ptr(this_type&& p_other) noexcept
-				: m_pointer(nullptr),
-				m_deleter()
+				: TDeleter(),
+				m_pointer(nullptr)
 			{
 				_assign(std::move(p_other));
 			}
 
 			template< typename T1, typename TDeleter1 >
 			bc_unique_ptr(bc_unique_ptr<T1, TDeleter1>&& p_other) noexcept
-				: m_pointer(nullptr),
-				m_deleter()
+				: TDeleter(),
+				m_pointer(nullptr)
 			{
 				_assign(std::move(p_other));
 			}
@@ -158,7 +157,7 @@ namespace black_cat
 				_unregister_pointer(reinterpret_cast< void** >(&p_other.m_pointer));
 
 				std::swap(m_pointer, p_other.m_pointer);
-				swap(m_deleter, p_other.m_deleter);
+				swap(static_cast<TDeleter&>(*this), static_cast<TDeleter&>(p_other));
 
 				_register_pointer(reinterpret_cast< void** >(&m_pointer));
 				_register_pointer(reinterpret_cast< void** >(&p_other.m_pointer));
@@ -171,7 +170,7 @@ namespace black_cat
 
 			deleter_type get_deleter() const noexcept
 			{
-				return m_deleter;
+				return static_cast< TDeleter >(*this);
 			}
 
 			explicit operator bool() const noexcept
@@ -193,43 +192,30 @@ namespace black_cat
 			void _construct(T* p_pointer)
 			{
 				m_pointer = p_pointer;
-
-				if (m_pointer)
-				{
-					_register_pointer(reinterpret_cast< void** >(&m_pointer));
-				}
+				_register_pointer(reinterpret_cast< void** >(&m_pointer));
 			}
 
 			void _destruct()
 			{
-				if (m_pointer != nullptr)
-				{
-					_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
+				_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
 
-					m_deleter(m_pointer);
-					m_pointer = nullptr;
-				}
+				static_cast<TDeleter&>(*this)(m_pointer);
+				m_pointer = nullptr;
 			}
 
 			template<typename T1, typename TDeleter1>
 			void _assign(bc_unique_ptr<T1, TDeleter1>&& p_other)
 			{
-				if (this != reinterpret_cast<bc_unique_ptr<T, TDeleter>*>(&p_other)) // avoid self assignment
+				if (this != reinterpret_cast<bc_unique_ptr<T, TDeleter>*>(&p_other))
 				{
 					reset(static_cast<T*>(p_other.release()));
-					m_deleter = static_cast< deleter_type >(p_other.get_deleter());
+					static_cast<TDeleter&>(*this) = static_cast< deleter_type >(p_other.get_deleter());
 
 					p_other.m_pointer = nullptr;
 				}
 			}
 
-			bcBYTE _compare(const void* p_pointer) const
-			{
-				return (m_pointer == p_pointer) ? 0 : ((m_pointer > p_pointer) ? 1 : ((m_pointer < p_pointer) ? -1 : 0));
-			}
-
 			pointer m_pointer;
-			deleter_type m_deleter;
 		};
 
 		template<class T1, class D1, class T2, class D2>
@@ -371,7 +357,8 @@ namespace black_cat
 			}
 
 			constexpr bc_shared_ptr(std::nullptr_t) noexcept
-				: bc_shared_ptr()
+				: m_pointer(nullptr),
+				m_meta(nullptr)
 			{
 			}
 
@@ -382,61 +369,62 @@ namespace black_cat
 			}
 
 			explicit bc_shared_ptr(pointer p_pointer)
-				: m_pointer(nullptr)
 			{
 				_construct(p_pointer, bc_default_deleter());
 			}
 
 			template< typename TDeleter >
 			explicit bc_shared_ptr(pointer p_pointer, TDeleter p_deleter)
-				: m_pointer(nullptr)
 			{
 				_construct(p_pointer, p_deleter);
 			}
 
 			template< typename T1 >
 			explicit bc_shared_ptr(T1* p_pointer)
-				: m_pointer(nullptr)
 			{
 				_construct(static_cast<T*>(p_pointer), bc_default_deleter());
 			}
 
 			template< typename T1, typename TDeleter >
 			explicit bc_shared_ptr(T1* p_pointer, TDeleter p_deleter)
-				: m_pointer(nullptr)
 			{
 				_construct(static_cast<T*>(p_pointer), p_deleter);
 			}
 
 			bc_shared_ptr(const this_type& p_other) noexcept
-				: m_pointer(nullptr)
+				: m_pointer(nullptr),
+				m_meta(nullptr)
 			{
 				_assign(p_other);
 			}
 
 			template<typename T1>
 			bc_shared_ptr(const bc_shared_ptr<T1>& p_other) noexcept
-				: m_pointer(nullptr)
+				: m_pointer(nullptr),
+				m_meta(nullptr)
 			{
 				_assign(p_other);
 			}
 
 			bc_shared_ptr(this_type&& p_other) noexcept
-				: m_pointer(nullptr)
+				: m_pointer(nullptr),
+				m_meta(nullptr)
 			{
 				_assign(std::move(p_other));
 			}
 			
 			template<typename T1>
 			bc_shared_ptr(bc_shared_ptr<T1>&& p_other) noexcept
-				: m_pointer(nullptr)
+				: m_pointer(nullptr),
+				m_meta(nullptr)
 			{
 				_assign(std::move(p_other));
 			}
 
 			template<typename T1>
 			bc_shared_ptr(bc_unique_ptr<T1>&& p_other)
-				: m_pointer(nullptr)
+				: m_pointer(nullptr),
+				m_meta(nullptr)
 			{
 				_construct(static_cast<T*>(p_other.release()), p_other.get_deleter());
 			}
@@ -556,17 +544,6 @@ namespace black_cat
 			}
 
 		private:
-			template< typename TDeleter >
-			meta_data* _allocate_meta(TDeleter p_deleter)
-			{
-				return BC_NEW(meta_data_imp<TDeleter>(p_deleter, false), bc_alloc_type::unknown);
-			}
-
-			void _deallocate_meta(meta_data* p_meta)
-			{
-				BC_DELETE(p_meta);
-			}
-
 			void _inc_reference_count()
 			{
 				m_meta->inc_ref_count();
@@ -574,7 +551,7 @@ namespace black_cat
 			
 			void _dec_reference_count()
 			{
-				if (m_meta->dec_ref_count() == 0)
+				if (m_meta && m_meta->dec_ref_count() == 0)
 				{
 					// If meta structure is shared with main data call it's destructor otherwise free it's memory
 					if (m_meta->is_shared())
@@ -584,7 +561,7 @@ namespace black_cat
 					else
 					{
 						m_meta->call_deleter(m_pointer);
-						_deallocate_meta(m_meta);
+						BC_DELETE(m_meta);
 					}
 				}
 			}
@@ -595,7 +572,7 @@ namespace black_cat
 				try
 				{
 					m_pointer = p_pointer;
-					m_meta = _allocate_meta(p_deleter);
+					m_meta = BC_NEW(meta_data_imp<TDeleter>(p_deleter, false), bc_alloc_type::unknown);
 				}
 				catch (...)
 				{
@@ -624,11 +601,8 @@ namespace black_cat
 
 			void _destruct()
 			{
-				if (m_pointer)
-				{
-					_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
-					_dec_reference_count();
-				}
+				_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
+				_dec_reference_count();
 			}
 
 			template<typename T1>
@@ -655,18 +629,11 @@ namespace black_cat
 					m_pointer = static_cast<T*>(p_other.m_pointer);
 					m_meta = p_other.m_meta;
 
-					if (p_other.m_pointer)
-					{
-						_register_pointer(reinterpret_cast< void** >(&m_pointer));
-						_unregister_pointer(reinterpret_cast< void** >(&p_other.m_pointer));
-						p_other.m_pointer = nullptr;
-					}
+					_register_pointer(reinterpret_cast<void**>(&m_pointer));
+					_unregister_pointer(reinterpret_cast<void**>(&p_other.m_pointer));
+					p_other.m_pointer = nullptr;
+					p_other.m_meta = nullptr;
 				}
-			}
-
-			bcBYTE _compare(const void* p_pointer) const
-			{
-				return (m_pointer == p_pointer) ? 0 : ((m_pointer > p_pointer) ? 1 : ((m_pointer < p_pointer) ? -1 : 0));
 			}
 
 			pointer m_pointer;
@@ -882,12 +849,11 @@ namespace black_cat
 			}
 
 			constexpr bc_handle_ptr(std::nullptr_t) noexcept
-				: bc_handle_ptr()
+				: m_pointer(nullptr)
 			{
 			}
 
 			bc_handle_ptr(T* p_pointer) noexcept
-				: m_pointer(nullptr)
 			{
 				_construct(p_pointer);
 			}
@@ -899,27 +865,23 @@ namespace black_cat
 			}
 
 			bc_handle_ptr(const bc_handle_ptr<T>& p_other) noexcept
-				: m_pointer(nullptr)
 			{
 				_construct(p_other.get());
 			}
 
 			bc_handle_ptr(bc_handle_ptr<T>&& p_other) noexcept
-				: m_pointer(nullptr)
 			{
 				_assign(std::move(p_other));
 			}
 
 			template<typename T1>
 			bc_handle_ptr(const bc_handle_ptr<T1>& p_other) noexcept
-				: m_pointer(nullptr)
 			{
 				_construct(static_cast<T*>(p_other.get()));
 			}
 
 			template<typename T1>
 			bc_handle_ptr(bc_handle_ptr<T1>&& p_other) noexcept
-				: m_pointer(nullptr)
 			{
 				_assign(std::move(p_other));
 			}
@@ -1022,20 +984,13 @@ namespace black_cat
 			void _construct(T* p_pointer)
 			{
 				m_pointer = p_pointer;
-
-				if (m_pointer)
-				{
-					_register_pointer(reinterpret_cast< void** >(&m_pointer));
-				}
+				_register_pointer(reinterpret_cast<void**>(&m_pointer));
 			}
 
 			void _destruct()
 			{
-				if (m_pointer)
-				{
-					_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
-					m_pointer = nullptr;
-				}
+				_unregister_pointer(reinterpret_cast<void**>(&m_pointer));
+				m_pointer = nullptr;
 			}
 
 			template<typename T1>
@@ -1054,11 +1009,6 @@ namespace black_cat
 				{
 					reset(p_other.release());
 				}
-			}
-
-			bcBYTE _compare(const void* pPointer) const
-			{
-				return (m_pointer == pPointer) ? 0 : ((m_pointer > pPointer) ? 1 : ((m_pointer < pPointer) ? -1 : 0));
 			}
 
 			T* m_pointer;

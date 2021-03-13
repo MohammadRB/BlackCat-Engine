@@ -64,11 +64,6 @@ namespace black_cat
 		 
 		inline void bc_mem_free(void* p_pointer) noexcept
 		{
-			if (!p_pointer)
-			{
-				return;
-			}
-
 #ifdef BC_MEMORY_ENABLE
 			bc_memory_manager::get().free(p_pointer);
 #else
@@ -105,11 +100,6 @@ namespace black_cat
 		 
 		inline void bc_mem_aligned_free(void* p_pointer) noexcept
 		{
-			if (!p_pointer)
-			{
-				return;
-			}
-
 #ifdef BC_MEMORY_ENABLE
 			bc_memory_manager::get().aligned_free(p_pointer);
 #else
@@ -302,9 +292,9 @@ namespace black_cat
 
 			// Retrieve array length
 			bc_memblock* l_block = bc_memblock::retrieve_mem_block(l_first);
-			bcUINT32 l_count = *(reinterpret_cast<bcUINT32*>(reinterpret_cast<bcUINTPTR>(p_pointer) - l_block->offset() + l_block->size() - sizeof(bcUINT32)));
+			const bcUINT32 l_count = *(reinterpret_cast<bcUINT32*>(reinterpret_cast<bcUINTPTR>(p_pointer) - l_block->offset() + l_block->size() - sizeof(bcUINT32)));
 
-			for (register bcUINT32 i = 0; i < l_count; ++i, ++l_first)
+			for (bcUINT32 i = 0; i < l_count; ++i, ++l_first)
 			{
 				l_first->~T();
 			}

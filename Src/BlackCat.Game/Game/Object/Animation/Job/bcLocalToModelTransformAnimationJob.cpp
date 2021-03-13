@@ -5,7 +5,6 @@
 #include "Core/Math/bcMatrix4f.h"
 #include "Game/Object/Animation/Job/bcLocalToModelTransformAnimationJob.h"
 #include "Game/bcException.h"
-
 #include "3rdParty/Ozz/Include/ozz/animation/runtime/local_to_model_job.h"
 
 namespace black_cat

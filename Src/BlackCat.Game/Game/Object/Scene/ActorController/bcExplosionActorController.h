@@ -15,7 +15,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_explosion_actor_controller : public bci_actor_controller
 		{
 		public:
-			void initialize(bc_actor& p_actor) override;
+			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
 			void added_to_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene) override;
 

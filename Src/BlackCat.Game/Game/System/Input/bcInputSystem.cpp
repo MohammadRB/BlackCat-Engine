@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Platform/bcEvent.h"
 #include "Game/System/Input/bcInputSystem.h"
 
@@ -20,15 +21,56 @@ namespace black_cat
 					);
 		}
 
-		bc_input_system::bc_input_system(bc_input_system&&) noexcept = default;
+		bc_input_system::bc_input_system(bc_input_system&& p_other) noexcept
+			: m_window_resize_event_handle(std::move(p_other.m_window_resize_event_handle)),
+			m_key_device(p_other.m_key_device),
+			m_pointing_device(p_other.m_pointing_device),
+			m_cameras(std::move(p_other.m_cameras))
+		{
+			m_window_resize_event_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_input_system::_event_handler));
+		}
 
 		bc_input_system::~bc_input_system() = default;
 
-		bc_input_system& bc_input_system::operator=(bc_input_system&&) noexcept = default;
-
-		void bc_input_system::register_camera(core::bc_unique_ptr<bci_camera> p_camera)
+		bc_input_system& bc_input_system::operator=(bc_input_system&& p_other) noexcept
 		{
-			m_camera = std::move(p_camera);
+			m_window_resize_event_handle = std::move(p_other.m_window_resize_event_handle);
+			m_key_device = p_other.m_key_device;
+			m_pointing_device = p_other.m_pointing_device;
+			m_cameras = std::move(p_other.m_cameras);
+			
+			return *this;
+		}
+
+		bci_camera* bc_input_system::add_camera(core::bc_unique_ptr<bci_camera> p_camera)
+		{
+			{
+				core::bc_mutex_test_guard l_lock(m_cameras_mutex);
+				
+				m_cameras.push_back(std::move(p_camera));
+				return get_camera();
+			}
+		}
+
+		void bc_input_system::remove_camera(const bci_camera* p_camera)
+		{
+			{
+				core::bc_mutex_test_guard l_lock(m_cameras_mutex);
+
+				const auto l_ite = std::find_if
+				(
+					std::begin(m_cameras),
+					std::end(m_cameras),
+					[p_camera](const core::bc_unique_ptr<bci_camera>& p_camera_entry)
+					{
+						return p_camera_entry.get() == p_camera;
+					}
+				);
+
+				BC_ASSERT(l_ite != std::end(m_cameras));
+
+				m_cameras.erase(l_ite);
+			}
 		}
 
 		void bc_input_system::update(core_platform::bc_clock::update_param p_clock_update_param)
@@ -36,9 +78,9 @@ namespace black_cat
 			m_key_device.update();
 			m_pointing_device.update();
 
-			if (m_camera)
+			if (get_camera())
 			{
-				m_camera->update(p_clock_update_param);
+				get_camera()->update(p_clock_update_param);
 			}
 		}
 
@@ -47,15 +89,9 @@ namespace black_cat
 			auto* l_window_resize_event = core::bci_message::as< platform::bc_app_event_window_resize >(p_event);
 			if (l_window_resize_event)
 			{
-				if (m_camera)
+				for(auto& l_camera : m_cameras)
 				{
-					m_camera->set_projection
-					(
-						l_window_resize_event->width(),
-						l_window_resize_event->height(),
-						m_camera->get_near_clip(),
-						m_camera->get_far_clip()
-					);
+					l_camera->set_projection(l_window_resize_event->width(), l_window_resize_event->height());
 				}
 
 				return true;

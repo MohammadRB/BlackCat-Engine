@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcDelegate.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
@@ -17,7 +18,7 @@ namespace black_cat
 		class bc_animation_job_builder2
 		{
 		public:
-			explicit bc_animation_job_builder2(core::bc_vector_movable<bci_animation_job*> p_animations);
+			explicit bc_animation_job_builder2(core::bc_vector<core::bc_unique_ptr<bci_animation_job>> p_animations);
 
 			bc_animation_job_builder2(bc_animation_job_builder2&&) noexcept;
 
@@ -30,14 +31,14 @@ namespace black_cat
 			core::bc_unique_ptr<bci_animation_job> build();
 		
 		private:
-			core::bc_vector_movable<bci_animation_job*> m_animations;
+			core::bc_vector<core::bc_unique_ptr<bci_animation_job>> m_animations;
 			core::bc_delegate<void()> m_after_delegate;
 		};
 		
 		class bc_animation_job_builder1
 		{
 		public:
-			bc_animation_job_builder1(core::bc_vector_movable<bci_animation_job*> p_animations);
+			bc_animation_job_builder1(core::bc_vector<core::bc_unique_ptr<bci_animation_job>> p_animations);
 
 			bc_animation_job_builder1(bc_animation_job_builder1&&) noexcept;
 
@@ -45,12 +46,12 @@ namespace black_cat
 
 			bc_animation_job_builder1& operator=(bc_animation_job_builder1&&) noexcept;
 
-			bc_animation_job_builder1& then(bci_animation_job& p_job);
+			bc_animation_job_builder1& then(core::bc_unique_ptr<bci_animation_job> p_job);
 
-			bc_animation_job_builder2 end_with(bci_animation_job& p_job);
+			bc_animation_job_builder2 end_with(core::bc_unique_ptr<bci_animation_job> p_job);
 
 		private:
-			core::bc_vector_movable<bci_animation_job*> m_animations;
+			core::bc_vector<core::bc_unique_ptr<bci_animation_job>> m_animations;
 		};
 		
 		class bc_animation_job_builder
@@ -63,14 +64,14 @@ namespace black_cat
 			~bc_animation_job_builder();
 
 			bc_animation_job_builder& operator=(bc_animation_job_builder&&) noexcept;
-			
-			bc_animation_job_builder1 start_with(bci_animation_job& p_job);
+
+			bc_animation_job_builder1 start_with(core::bc_unique_ptr<bci_animation_job> p_job);
 		
 		private:
-			core::bc_vector_movable<bci_animation_job*> m_animations;
+			core::bc_vector<core::bc_unique_ptr<bci_animation_job>> m_animations;
 		};
 
-		inline bc_animation_job_builder2::bc_animation_job_builder2(core::bc_vector_movable<bci_animation_job*> p_animations)
+		inline bc_animation_job_builder2::bc_animation_job_builder2(core::bc_vector<core::bc_unique_ptr<bci_animation_job>> p_animations)
 			: m_animations(std::move(p_animations))
 		{
 		}
@@ -89,10 +90,11 @@ namespace black_cat
 
 		inline core::bc_unique_ptr<bci_animation_job> bc_animation_job_builder2::build()
 		{
-			return core::bc_make_unique< bc_sequence_animation_job >(bc_sequence_animation_job(m_animations.data(), m_animations.size(), m_after_delegate));
+			auto l_span = core::bc_make_span(m_animations);
+			return core::bc_make_unique< bc_sequence_animation_job >(bc_sequence_animation_job(l_span, m_after_delegate));
 		}
 
-		inline bc_animation_job_builder1::bc_animation_job_builder1(core::bc_vector_movable<bci_animation_job*> p_animations)
+		inline bc_animation_job_builder1::bc_animation_job_builder1(core::bc_vector<core::bc_unique_ptr<bci_animation_job>> p_animations)
 			: m_animations(std::move(p_animations))
 		{
 		}
@@ -103,15 +105,17 @@ namespace black_cat
 
 		inline bc_animation_job_builder1& bc_animation_job_builder1::operator=(bc_animation_job_builder1&&) noexcept = default;
 
-		inline bc_animation_job_builder1& bc_animation_job_builder1::then(bci_animation_job& p_job)
+		inline bc_animation_job_builder1& bc_animation_job_builder1::then(core::bc_unique_ptr<bci_animation_job> p_job)
 		{
-			m_animations.push_back(&p_job);
+			m_animations.push_back(std::move(p_job));
+
 			return *this;
 		}
 
-		inline bc_animation_job_builder2 bc_animation_job_builder1::end_with(bci_animation_job& p_job)
+		inline bc_animation_job_builder2 bc_animation_job_builder1::end_with(core::bc_unique_ptr<bci_animation_job> p_job)
 		{
-			m_animations.push_back(&p_job);
+			m_animations.push_back(std::move(p_job));
+
 			return bc_animation_job_builder2(std::move(m_animations));
 		}
 		
@@ -123,10 +127,10 @@ namespace black_cat
 
 		inline bc_animation_job_builder& bc_animation_job_builder::operator=(bc_animation_job_builder&&) noexcept = default;
 
-		inline bc_animation_job_builder1 bc_animation_job_builder::start_with(bci_animation_job& p_job)
+		inline bc_animation_job_builder1 bc_animation_job_builder::start_with(core::bc_unique_ptr<bci_animation_job> p_job)
 		{
 			m_animations.reserve(8);
-			m_animations.push_back(&p_job);
+			m_animations.push_back(std::move(p_job));
 
 			return bc_animation_job_builder1(std::move(m_animations));
 		}
