@@ -414,16 +414,10 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcSamplingAnimationJob.h">
       <Filter>Game\Object\Animation\Job</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcModelToSkinnedTransformAnimationJob.h">
-      <Filter>Game\Object\Animation\Job</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcMeshColliderSkinningAnimationJob.h">
       <Filter>Game\Object\Animation\Job</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalTransformAnimationJob.h">
-      <Filter>Game\Object\Animation\Job</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelTransformAnimationJob.h">
       <Filter>Game\Object\Animation\Job</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Material\bcMaterialManager.h">
@@ -494,6 +488,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotCameraController.h">
       <Filter>Game\Object\Scene\ActorController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelAnimationJob.h">
+      <Filter>Game\Object\Animation\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcModelToSkinnedAnimationJob.h">
+      <Filter>Game\Object\Animation\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcActorUpdateAnimationJob.h">
+      <Filter>Game\Object\Animation\Job</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -701,13 +704,7 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcSamplingAnimationJob.cpp">
       <Filter>Game\Object\Animation\Job</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcModelToSkinnedTransformAnimationJob.cpp">
-      <Filter>Game\Object\Animation\Job</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcMeshColliderSkininingAnimationJob.cpp">
-      <Filter>Game\Object\Animation\Job</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelTransformAnimationJob.cpp">
       <Filter>Game\Object\Animation\Job</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Material\bcMaterialManager.cpp">
@@ -742,6 +739,15 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotCameraController.cpp">
       <Filter>Game\Object\Scene\ActorController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelAnimationJob.cpp">
+      <Filter>Game\Object\Animation\Job</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcModelToSkinnedAnimationJob.cpp">
+      <Filter>Game\Object\Animation\Job</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcActorUpdateAnimationJob.cpp">
+      <Filter>Game\Object\Animation\Job</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

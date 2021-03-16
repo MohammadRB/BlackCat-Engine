@@ -8,7 +8,6 @@
 #include "Game/Object/Animation/bcSkinnedAnimation.h"
 #include "BlackCat/Loader/bcSkinnedAnimationLoader.h"
 #include "BlackCat/bcException.h"
-
 #include "3rdParty/Assimp/Include/Importer.hpp"
 #include "3rdParty/Assimp/Include/postprocess.h"
 #include "3rdParty/Assimp/Include/scene.h"

@@ -14,12 +14,12 @@ namespace black_cat
 	namespace game
 	{
 		bc_partial_blending_animation_job::bc_partial_blending_animation_job(bc_animation_skeleton& p_skeleton,
-			const bci_local_transform_animation_job& p_layer1,
-			const bci_local_transform_animation_job& p_layer2,
+			core::bc_shared_ptr<bci_local_transform_animation_job> p_layer1,
+			core::bc_shared_ptr<bci_local_transform_animation_job> p_layer2,
 			const bcCHAR* p_layer_2_root_joint)
 			: bci_local_transform_animation_job(p_skeleton),
-			m_layer1(&p_layer1),
-			m_layer2(&p_layer2),
+			m_layer1(std::move(p_layer1)),
+			m_layer2(std::move(p_layer2)),
 			m_layer1_weights(m_skeleton->get_native_handle().num_soa_joints(), ozz::math::simd_float4::one()),
 			m_layer2_weights(m_skeleton->get_native_handle().num_soa_joints(), ozz::math::simd_float4::zero())
 		{

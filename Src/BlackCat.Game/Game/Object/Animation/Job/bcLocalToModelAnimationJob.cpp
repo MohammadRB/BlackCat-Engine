@@ -3,7 +3,8 @@
 #include "Game/GamePCH.h"
 
 #include "Core/Math/bcMatrix4f.h"
-#include "Game/Object/Animation/Job/bcLocalToModelTransformAnimationJob.h"
+#include "Game/Object/Mesh/bcSubMesh.h"
+#include "Game/Object/Animation/Job/bcLocalToModelAnimationJob.h"
 #include "Game/bcException.h"
 #include "3rdParty/Ozz/Include/ozz/animation/runtime/local_to_model_job.h"
 
@@ -11,7 +12,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_local_to_model_transform_animation_job::bc_local_to_model_transform_animation_job(bci_local_transform_animation_job& p_local_transform_job, 
+		bc_local_to_model_animation_job::bc_local_to_model_animation_job(bci_local_transform_animation_job& p_local_transform_job, 
 			const bc_sub_mesh& p_sub_mesh,
 			bc_sub_mesh_mat4_transform& p_transforms)
 			: bci_animation_job(p_local_transform_job.get_skeleton()),
@@ -26,7 +27,7 @@ namespace black_cat
 			}
 		}
 
-		bool bc_local_to_model_transform_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
+		bool bc_local_to_model_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
 			ozz::animation::LocalToModelJob l_ltm_job;
 			const auto& l_local_transforms = m_local_transform_job->get_local_transforms();

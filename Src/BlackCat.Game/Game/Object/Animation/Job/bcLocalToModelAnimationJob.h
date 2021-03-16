@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcVector.h"
-#include "Game/Object/Mesh/bcSubMesh.h"
+#include "Game/Object/Mesh/bcSubMeshTransform.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
 #include "Game/Object/Animation/Job/bcLocalTransformAnimationJob.h"
 #include "Game/bcExport.h"
@@ -13,18 +13,20 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_local_to_model_transform_animation_job : public bci_animation_job
+		class bc_sub_mesh;
+		
+		class BC_GAME_DLL bc_local_to_model_animation_job : public bci_animation_job
 		{
 		public:
-			bc_local_to_model_transform_animation_job(bci_local_transform_animation_job& p_local_transform_job, 
+			bc_local_to_model_animation_job(bci_local_transform_animation_job& p_local_transform_job, 
 				const bc_sub_mesh& p_sub_mesh, 
 				bc_sub_mesh_mat4_transform& p_transforms);
 
-			bc_local_to_model_transform_animation_job(bc_local_to_model_transform_animation_job&&) noexcept = default;
+			bc_local_to_model_animation_job(bc_local_to_model_animation_job&&) noexcept = default;
 
-			~bc_local_to_model_transform_animation_job() = default;
+			~bc_local_to_model_animation_job() = default;
 
-			bc_local_to_model_transform_animation_job& operator=(bc_local_to_model_transform_animation_job&&) noexcept = default;
+			bc_local_to_model_animation_job& operator=(bc_local_to_model_animation_job&&) noexcept = default;
 
 			const bc_sub_mesh& get_mesh() const noexcept;
 			
@@ -39,12 +41,12 @@ namespace black_cat
 			bc_sub_mesh_mat4_transform* m_model_transforms;
 		};
 
-		inline const bc_sub_mesh& bc_local_to_model_transform_animation_job::get_mesh() const noexcept
+		inline const bc_sub_mesh& bc_local_to_model_animation_job::get_mesh() const noexcept
 		{
 			return *m_mesh;
 		}
 		
-		inline const bc_sub_mesh_mat4_transform& bc_local_to_model_transform_animation_job::get_transforms() const noexcept
+		inline const bc_sub_mesh_mat4_transform& bc_local_to_model_animation_job::get_transforms() const noexcept
 		{
 			return *m_model_transforms;
 		}

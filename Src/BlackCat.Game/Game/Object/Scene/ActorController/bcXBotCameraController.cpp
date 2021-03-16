@@ -10,13 +10,27 @@ namespace black_cat
 {
 	namespace game
 	{
+		bc_xbot_camera_controller::bc_xbot_camera_controller()
+			: m_input_system(nullptr),
+			m_camera(nullptr),
+			m_camera_y_offset(0),
+			m_camera_z_offset(0),
+			m_camera_look_at_offset(0),
+			m_forward_velocity(0, 1, 0.5)
+		{
+		}
+
+		bc_xbot_camera_controller::bc_xbot_camera_controller(bc_xbot_camera_controller&& p_other) noexcept = default;
+
 		bc_xbot_camera_controller::~bc_xbot_camera_controller()
 		{
-			if(m_camera)
+			if (m_camera)
 			{
 				m_input_system->remove_camera(m_camera);
 			}
 		}
+		
+		bc_xbot_camera_controller& bc_xbot_camera_controller::operator=(bc_xbot_camera_controller&& p_other) noexcept = default;
 
 		void bc_xbot_camera_controller::initialize(const bc_actor_component_initialize_context& p_context)
 		{
@@ -77,6 +91,22 @@ namespace black_cat
 
 				m_position = l_world_transform.get_translation();
 				m_forward = l_world_forward;
+			}
+		}
+
+		void bc_xbot_camera_controller::_update_input(const core_platform::bc_clock::update_param& p_clock)
+		{
+			const auto& l_key_device = m_input_system->get_key_device();
+
+			const auto l_w_pressed = l_key_device.get_key_state(platform::bc_key::kb_W) == platform::bc_key_state::pressed;
+
+			if(l_w_pressed)
+			{
+				m_forward_velocity.push(p_clock.m_elapsed_second);
+			}
+			else
+			{
+				m_forward_velocity.release(p_clock.m_elapsed_second);
 			}
 		}
 	}	

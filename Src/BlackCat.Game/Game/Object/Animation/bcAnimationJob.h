@@ -18,6 +18,8 @@ namespace black_cat
 
 			const bc_animation_skeleton& get_skeleton() const noexcept;
 
+			void set_local_time(bcFLOAT p_time) noexcept;
+			
 			void reset_local_time() noexcept;
 			
 			virtual bool run(const core_platform::bc_clock::update_param& p_clock) = 0;
@@ -49,6 +51,11 @@ namespace black_cat
 		inline const bc_animation_skeleton& bci_animation_job::get_skeleton() const noexcept
 		{
 			return *m_skeleton;
+		}
+
+		inline void bci_animation_job::set_local_time(bcFLOAT p_time) noexcept
+		{
+			m_local_time = p_time;
 		}
 
 		inline void bci_animation_job::reset_local_time() noexcept

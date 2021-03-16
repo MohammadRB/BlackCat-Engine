@@ -6,7 +6,9 @@
 #include "Core/Math/bcVector3f.h"
 #include "Game/Object/Scene/ActorComponent/bcActorController.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
-#include "Game/Object/Animation/Job/bcModelToSkinnedTransformAnimationJob.h"
+#include "Game/Object/Animation/Job/bcSamplingAnimationJob.h"
+#include "Game/Object/Animation/Job/bcLocalToModelAnimationJob.h"
+#include "Game/Object/Animation/Job/bcModelToSkinnedAnimationJob.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -33,16 +35,25 @@ namespace black_cat
 			const core::bc_vector3f& get_local_forward() const noexcept;
 
 			bci_animation_job* get_idle_animation() const noexcept;
+			
+			bci_animation_job* get_running_animation() const noexcept;
 
 			void set_active_animation(bci_animation_job* p_animation) noexcept;
 			
 		private:
+			void _create_idle_animation(bc_actor& p_actor);
+
+			void _create_running_animation(bc_actor& p_actor);
+			
 			bc_skinned_mesh_component* m_skinned_component = nullptr;
 			core::bc_vector3f m_local_forward;
 
+			core::bc_shared_ptr<bc_sampling_animation_job> m_idle_sample_job;
+			core::bc_shared_ptr<bc_sampling_animation_job> m_running_sample_job;
+			
 			bci_animation_job* m_active_job = nullptr;
-			core::bc_unique_ptr<bci_animation_job> m_idle_job;
-			bc_model_to_skinned_transform_animation_job* m_idle_model_to_skinned_job = nullptr;
+			core::bc_shared_ptr<bci_animation_job> m_idle_job;
+			core::bc_shared_ptr<bci_animation_job> m_running_job;
 		};
 
 		inline const core::bc_vector3f& bc_xbot_controller::get_local_forward() const noexcept
@@ -53,6 +64,11 @@ namespace black_cat
 		inline bci_animation_job* bc_xbot_controller::get_idle_animation() const noexcept
 		{
 			return m_idle_job.get();
+		}
+
+		inline bci_animation_job* bc_xbot_controller::get_running_animation() const noexcept
+		{
+			return m_running_job.get();
 		}
 
 		inline void bc_xbot_controller::set_active_animation(bci_animation_job* p_animation) noexcept

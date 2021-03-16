@@ -51,7 +51,10 @@ namespace black_cat
 
 		inline bc_skinned_animation::bc_skinned_animation(bc_skinned_animation&&) noexcept = default;
 
-		inline bc_skinned_animation::~bc_skinned_animation() = default;
+		inline bc_skinned_animation::~bc_skinned_animation()
+		{
+			m_animations.clear();
+		}
 
 		inline bc_skinned_animation& bc_skinned_animation::operator=(bc_skinned_animation&&) noexcept = default;
 

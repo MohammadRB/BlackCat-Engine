@@ -627,7 +627,7 @@ namespace black_cat
 					_destruct();
 					
 					m_pointer = static_cast<T*>(p_other.m_pointer);
-					m_meta = p_other.m_meta;
+					m_meta = reinterpret_cast<meta_data*>(p_other.m_meta);
 
 					_register_pointer(reinterpret_cast<void**>(&m_pointer));
 					_unregister_pointer(reinterpret_cast<void**>(&p_other.m_pointer));
