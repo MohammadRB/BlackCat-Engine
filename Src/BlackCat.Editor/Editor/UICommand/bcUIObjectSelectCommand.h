@@ -37,8 +37,7 @@ namespace black_cat
 			bcUINT16 m_point_left;
 			bcUINT16 m_point_top;
 
-			game::bc_actor_index m_selected_actor_index;
-			const bcCHAR* m_selected_actor_entity_name;
+			game::bc_actor m_selected_actor;
 		};
 	}
 }

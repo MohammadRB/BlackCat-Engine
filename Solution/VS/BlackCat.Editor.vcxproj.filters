@@ -63,6 +63,9 @@
     <Filter Include="Editor\Content\Scene">
       <UniqueIdentifier>{d226d214-d4d6-4b70-b0db-7a1d9fae9309}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Generated Files\Develope">
+      <UniqueIdentifier>{a2b1c5a7-aa4d-4158-8c7e-af44bbaed9fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\qrc_bcBlackCatEditor.cpp">
@@ -188,6 +191,48 @@
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetD3DOutput.cpp">
       <Filter>Editor\Widget</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectDeleteCommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObject.cpp">
+      <Filter>Editor\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Develope\moc_bcEditorApplication.cpp">
+      <Filter>Generated Files\Develope</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Develope\moc_bcEditorGameConsole.cpp">
+      <Filter>Generated Files\Develope</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Develope\moc_bcFormMainMenu.cpp">
+      <Filter>Generated Files\Develope</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Develope\moc_bcFormTools.cpp">
+      <Filter>Generated Files\Develope</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Develope\moc_bcWidgetConsole.cpp">
+      <Filter>Generated Files\Develope</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Develope\moc_bcWidgetD3DOutput.cpp">
+      <Filter>Generated Files\Develope</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Develope\moc_QtAwesome.cpp">
+      <Filter>Generated Files\Develope</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Develope\moc_QtAwesomeAnim.cpp">
+      <Filter>Generated Files\Develope</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Develope\moc_bcFormObject.cpp">
+      <Filter>Generated Files\Develope</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Develop\moc_bcFormObject.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_bcFormObject.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_bcFormObject.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_bcBlackCatEditor.h">
@@ -245,6 +290,9 @@
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUISceneCommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectDeleteCommand.h">
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
   </ItemGroup>

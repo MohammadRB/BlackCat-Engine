@@ -58,7 +58,6 @@ namespace black_cat
 
 			bc_ui_scene_command(command_type p_type, core::bc_estring p_scene_path, game::bc_scene* p_scene);
 
-		private:
 			command_type m_type;
 			core::bc_estring m_scene_path;
 			game::bc_scene* m_scene;

@@ -323,9 +323,23 @@
           }
         },
         {
+          "content_title": "xbot-walking-backwards",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-walking-backwards.fbx",
+          "content_parameter": {
+          }
+        },
+        {
           "content_title": "xbot-running",
           "content_loader": "animation",
           "content_file": "content\\model\\xbot\\xbot-running.fbx",
+          "content_parameter": {
+          }
+        },
+        {
+          "content_title": "xbot-running-backwards",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-running-backwards.fbx",
           "content_parameter": {
           }
         }

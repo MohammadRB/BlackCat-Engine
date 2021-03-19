@@ -22,6 +22,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QStatusBar>
@@ -57,6 +58,7 @@ public:
     QWidget *rightToolBoxObjectSelect;
     QLabel *entityNameLabel;
     QLabel *entityNameLabelValue;
+    QPushButton *entityDeleteButton;
     QWidget *rightToolBoxObjectInsert;
     QHBoxLayout *horizontalLayout_2;
     QListWidget *entityNameList;
@@ -188,17 +190,21 @@ public:
         rightToolBox->setObjectName(QStringLiteral("rightToolBox"));
         rightToolBoxObjectSelect = new QWidget();
         rightToolBoxObjectSelect->setObjectName(QStringLiteral("rightToolBoxObjectSelect"));
-        rightToolBoxObjectSelect->setGeometry(QRect(0, 0, 338, 708));
+        rightToolBoxObjectSelect->setGeometry(QRect(0, 0, 340, 717));
         entityNameLabel = new QLabel(rightToolBoxObjectSelect);
         entityNameLabel->setObjectName(QStringLiteral("entityNameLabel"));
         entityNameLabel->setGeometry(QRect(10, 10, 81, 16));
         entityNameLabelValue = new QLabel(rightToolBoxObjectSelect);
         entityNameLabelValue->setObjectName(QStringLiteral("entityNameLabelValue"));
         entityNameLabelValue->setGeometry(QRect(100, 10, 231, 16));
+        entityDeleteButton = new QPushButton(rightToolBoxObjectSelect);
+        entityDeleteButton->setObjectName(QStringLiteral("entityDeleteButton"));
+        entityDeleteButton->setEnabled(false);
+        entityDeleteButton->setGeometry(QRect(10, 40, 81, 31));
         rightToolBox->addItem(rightToolBoxObjectSelect, QStringLiteral("ObjectSelection"));
         rightToolBoxObjectInsert = new QWidget();
         rightToolBoxObjectInsert->setObjectName(QStringLiteral("rightToolBoxObjectInsert"));
-        rightToolBoxObjectInsert->setGeometry(QRect(0, 0, 338, 708));
+        rightToolBoxObjectInsert->setGeometry(QRect(0, 0, 91, 91));
         horizontalLayout_2 = new QHBoxLayout(rightToolBoxObjectInsert);
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -211,7 +217,7 @@ public:
         rightToolBox->addItem(rightToolBoxObjectInsert, QStringLiteral("ObjectInsert"));
         rightToolBoxTerrain = new QWidget();
         rightToolBoxTerrain->setObjectName(QStringLiteral("rightToolBoxTerrain"));
-        rightToolBoxTerrain->setGeometry(QRect(0, 0, 338, 708));
+        rightToolBoxTerrain->setGeometry(QRect(0, 0, 91, 222));
         formLayout = new QFormLayout(rightToolBoxTerrain);
         formLayout->setSpacing(6);
         formLayout->setContentsMargins(11, 11, 11, 11);
@@ -317,7 +323,7 @@ public:
         bcBlackCatEditorClass->setCentralWidget(centralWidget);
         mainMenuBar = new QMenuBar(bcBlackCatEditorClass);
         mainMenuBar->setObjectName(QStringLiteral("mainMenuBar"));
-        mainMenuBar->setGeometry(QRect(0, 0, 1600, 23));
+        mainMenuBar->setGeometry(QRect(0, 0, 1600, 21));
         fileMenu = new QMenu(mainMenuBar);
         fileMenu->setObjectName(QStringLiteral("fileMenu"));
         bcBlackCatEditorClass->setMenuBar(mainMenuBar);
@@ -451,6 +457,7 @@ public:
         rightToolBox->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "handpointero,cubes,areachart", nullptr)));
         entityNameLabel->setText(QApplication::translate("bcBlackCatEditorClass", "EntityName:", nullptr));
         entityNameLabelValue->setText(QString());
+        entityDeleteButton->setText(QApplication::translate("bcBlackCatEditorClass", "Delete", nullptr));
         rightToolBox->setItemText(rightToolBox->indexOf(rightToolBoxObjectSelect), QApplication::translate("bcBlackCatEditorClass", "ObjectSelection", nullptr));
         rightToolBox->setItemText(rightToolBox->indexOf(rightToolBoxObjectInsert), QApplication::translate("bcBlackCatEditorClass", "ObjectInsert", nullptr));
         terrainHeightLable->setText(QApplication::translate("bcBlackCatEditorClass", "Height: ", nullptr));

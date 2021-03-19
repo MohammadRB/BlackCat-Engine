@@ -59,7 +59,7 @@ namespace black_cat
 			static void concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TBodyFunc p_body_func);
 			
 			template< typename T >
-			static T* double_check_lock(core_platform::bc_atomic< T* >& p_pointer, core_platform::bc_mutex& p_mutex, bc_delegate< T*() >& p_initializer);
+			static T* double_check_lock(core_platform::bc_atomic< T* >& p_pointer, core_platform::bc_mutex& p_mutex, const bc_delegate< T*() >& p_initializer);
 
 		private:
 			template<typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc>
@@ -198,7 +198,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		T* bc_concurrency::double_check_lock(core_platform::bc_atomic< T* >& p_pointer, core_platform::bc_mutex& p_mutex, bc_delegate< T*() >& p_initializer)
+		T* bc_concurrency::double_check_lock(core_platform::bc_atomic< T* >& p_pointer, core_platform::bc_mutex& p_mutex, const bc_delegate< T*() >& p_initializer)
 		{
 			T* l_pointer;
 

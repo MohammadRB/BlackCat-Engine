@@ -8,13 +8,12 @@
 #include "Core/Content/bcContent.h"
 #include "Game/Object/Animation/bcAnimationSkeleton.h"
 #include "Game/Object/Animation/bcSkeletonAnimation.h"
-#include "Game/bcExport.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_skinned_animation : public core::bci_content
+		class bc_skinned_animation : public core::bci_content
 		{
 			BC_CONTENT(anim)
 			
@@ -51,10 +50,7 @@ namespace black_cat
 
 		inline bc_skinned_animation::bc_skinned_animation(bc_skinned_animation&&) noexcept = default;
 
-		inline bc_skinned_animation::~bc_skinned_animation()
-		{
-			m_animations.clear();
-		}
+		inline bc_skinned_animation::~bc_skinned_animation() = default;
 
 		inline bc_skinned_animation& bc_skinned_animation::operator=(bc_skinned_animation&&) noexcept = default;
 

@@ -181,8 +181,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>338</width>
-              <height>708</height>
+              <width>340</width>
+              <height>717</height>
              </rect>
             </property>
             <attribute name="label">
@@ -214,14 +214,30 @@
               <string/>
              </property>
             </widget>
+            <widget class="QPushButton" name="entityDeleteButton">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>40</y>
+               <width>81</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Delete</string>
+             </property>
+            </widget>
            </widget>
            <widget class="QWidget" name="rightToolBoxObjectInsert">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>338</width>
-              <height>708</height>
+              <width>91</width>
+              <height>91</height>
              </rect>
             </property>
             <attribute name="label">
@@ -238,8 +254,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>338</width>
-              <height>708</height>
+              <width>91</width>
+              <height>222</height>
              </rect>
             </property>
             <attribute name="icon">
@@ -426,7 +442,7 @@
      <x>0</x>
      <y>0</y>
      <width>1600</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">

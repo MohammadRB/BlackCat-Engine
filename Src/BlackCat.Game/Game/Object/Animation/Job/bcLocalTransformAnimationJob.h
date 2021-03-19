@@ -14,6 +14,8 @@ namespace black_cat
 		public:
 			virtual ~bci_local_transform_animation_job() = 0;
 			
+			virtual bc_animation_local_transform& get_local_transforms() noexcept = 0;
+			
 			virtual const bc_animation_local_transform& get_local_transforms() const noexcept = 0;
 
 		protected:

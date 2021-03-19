@@ -83,9 +83,9 @@ namespace black_cat
 			{
 				core_platform::bc_lock_guard<core_platform::bc_hybrid_mutex> l_lock_guard
 				(
-					m_new_actors_lock, core_platform::bc_lock_operation::light
+					m_changed_actors_lock, core_platform::bc_lock_operation::light
 				);
-				m_new_actors.push_back(std::make_tuple(_bc_scene_actor_operation::add, p_actor));
+				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::add, p_actor));
 			}
 		}
 
@@ -94,9 +94,9 @@ namespace black_cat
 			{
 				core_platform::bc_lock_guard<core_platform::bc_hybrid_mutex> l_lock_guard
 				(
-					m_new_actors_lock, core_platform::bc_lock_operation::light
+					m_changed_actors_lock, core_platform::bc_lock_operation::light
 				);
-				m_new_actors.push_back(std::make_tuple(_bc_scene_actor_operation::update, p_actor));
+				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::update, p_actor));
 			}
 		}
 
@@ -105,9 +105,9 @@ namespace black_cat
 			{
 				core_platform::bc_lock_guard<core_platform::bc_hybrid_mutex> l_lock_guard
 				(
-					m_new_actors_lock, core_platform::bc_lock_operation::light
+					m_changed_actors_lock, core_platform::bc_lock_operation::light
 				);
-				m_new_actors.push_back(std::make_tuple(_bc_scene_actor_operation::remove, p_actor));
+				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::remove, p_actor));
 			}
 		}
 
@@ -160,18 +160,38 @@ namespace black_cat
 			{
 				core_platform::bc_lock_guard<core_platform::bc_hybrid_mutex> l_lock
 				(
-					m_new_actors_lock, core_platform::bc_lock_operation::heavy
+					m_changed_actors_lock, core_platform::bc_lock_operation::heavy
 				);
 
-				const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), m_new_actors.size() / 10U + 1);
+				for(auto& l_removed_actor : m_removed_actors)
+				{
+					auto l_changed_list_ite = std::find_if
+					(
+						std::begin(m_changed_actors),
+						std::end(m_changed_actors),
+						[l_removed_actor](decltype(m_changed_actors)::reference p_entry)
+						{
+							return std::get< bc_actor >(p_entry) == l_removed_actor;
+						}
+					);
+					if(l_changed_list_ite != std::end(m_changed_actors))
+					{
+						m_changed_actors.erase(l_changed_list_ite);
+					}
+					
+					_remove_actor(l_removed_actor);
+				}
+				m_removed_actors.clear();
+				
+				const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), m_changed_actors.size() / 10U + 1);
 				
 				core::bc_concurrency::concurrent_for_each
 				(
 					l_num_thread,
-					std::begin(m_new_actors),
-					std::end(m_new_actors),
+					std::begin(m_changed_actors),
+					std::end(m_changed_actors),
 					[]() { return true; },
-					[&](bool, decltype(m_new_actors)::reference p_actor)
+					[&](bool, decltype(m_changed_actors)::reference p_actor)
 					{
 						switch (std::get<_bc_scene_actor_operation>(p_actor))
 						{
@@ -182,7 +202,7 @@ namespace black_cat
 							_update_actor(std::get<bc_actor>(p_actor));
 							break;
 						case _bc_scene_actor_operation::remove:
-							_remove_actor(std::get<bc_actor>(p_actor));
+							_remove_actor_event(std::get<bc_actor>(p_actor));
 							break;
 						default:
 							BC_ASSERT(false);
@@ -191,8 +211,8 @@ namespace black_cat
 					[](bool) {}
 				);
 
-				m_new_actors.clear();
-				m_new_actors.shrink_to_fit();
+				m_changed_actors.clear();
+				m_changed_actors.shrink_to_fit();
 			}
 		}
 
@@ -245,6 +265,12 @@ namespace black_cat
 
 				p_actor.destroy();
 			}
+		}
+
+		void bc_scene::_remove_actor_event(bc_actor& p_actor)
+		{
+			p_actor.add_event(bc_removed_from_scene_actor_event(*this));
+			m_removed_actors.push_back(p_actor);
 		}
 
 		void bc_scene::_remove_actor(bc_actor& p_actor)

@@ -40,7 +40,7 @@ namespace black_cat
 				core_platform::bc_hybrid_mutex_guard l_lock(m_jobs_lock, core_platform::bc_lock_operation::heavy);
 
 				const auto l_job_count = m_jobs.size();
-				const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), l_job_count / 1U + 1);
+				const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), l_job_count);
 				core::bc_concurrency::concurrent_for_each
 				(
 					l_num_thread,

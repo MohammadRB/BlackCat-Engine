@@ -87,13 +87,6 @@ namespace black_cat
 			bc_animation_job_builder& operator=(bc_animation_job_builder&&) noexcept;
 
 			bc_animation_job_builder1 start_with(core::bc_shared_ptr<bci_animation_job> p_job);
-
-			/**
-			 * \brief Find 'model to skinned' job and set world transform
-			 * \param p_job 
-			 * \param p_world 
-			 */
-			static void set_skinning_world_transform(bc_sequence_animation_job& p_job, const core::bc_matrix4f& p_world);
 		
 		private:
 			core::bc_vector<core::bc_shared_ptr<bci_animation_job>> m_animations;
@@ -154,13 +147,13 @@ namespace black_cat
 
 			auto l_local_to_model_job = core::bc_make_shared<bc_local_to_model_animation_job>(bc_local_to_model_animation_job
 			(
-				*l_local_transform_job,
+				m_animations.back(),
 				p_sub_mesh,
 				p_model_transforms
 			));
 			auto l_model_to_skinned_job = core::bc_make_shared<bc_model_to_skinned_animation_job>(bc_model_to_skinned_animation_job
 			(
-				*l_local_to_model_job,
+				m_animations.back(),
 				p_world_transforms
 			));
 
@@ -205,19 +198,6 @@ namespace black_cat
 			m_animations.push_back(std::move(p_job));
 
 			return bc_animation_job_builder1(std::move(m_animations));
-		}
-
-		inline void bc_animation_job_builder::set_skinning_world_transform(bc_sequence_animation_job& p_job, const core::bc_matrix4f& p_world)
-		{
-			for(bcINT32 l_job_ite = p_job.size() - 1; l_job_ite >= 0; --l_job_ite)
-			{
-				auto* l_job = dynamic_cast<bc_model_to_skinned_animation_job*>(p_job.at(l_job_ite));
-				if(l_job)
-				{
-					l_job->set_world(p_world);
-					break;
-				}
-			}
 		}
 	}
 }

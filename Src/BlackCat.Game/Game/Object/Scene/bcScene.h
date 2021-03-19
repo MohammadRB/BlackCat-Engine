@@ -102,6 +102,8 @@ namespace black_cat
 			void _add_actor(bc_actor& p_actor);
 
 			void _update_actor(bc_actor& p_actor);
+			
+			void _remove_actor_event(bc_actor& p_actor);
 
 			void _remove_actor(bc_actor& p_actor);
 			
@@ -114,8 +116,9 @@ namespace black_cat
 			bc_scene_graph m_scene_graph;
 			physics::bc_scene_ref m_px_scene;
 
-			core_platform::bc_hybrid_mutex m_new_actors_lock;
-			core::bc_vector_movable<std::tuple<_bc_scene_actor_operation, bc_actor>> m_new_actors;
+			core_platform::bc_hybrid_mutex m_changed_actors_lock;
+			core::bc_vector_movable<std::tuple<_bc_scene_actor_operation, bc_actor>> m_changed_actors;
+			core::bc_vector_movable<bc_actor> m_removed_actors;
 		};
 
 		using bc_scene_ptr = core::bc_content_ptr<bc_scene>;

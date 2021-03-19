@@ -38,7 +38,7 @@ namespace black_cat
 			m_ui_command_service = core::bc_get_service<bc_ui_command_service>();
 			m_form_main_menu = std::make_unique< bc_form_main_menu >(*menuBar(), *m_ui_command_service);
 			m_form_terrain = std::make_unique< bc_form_terrain >(*centralWidget());
-			m_form_object = std::make_unique< bc_form_object >(*centralWidget());
+			m_form_object = std::make_unique< bc_form_object >(*centralWidget(), *m_ui_command_service);
 			m_form_object_insert = std::make_unique< bc_form_object_insert >(*centralWidget());
 			m_form_tools = std::make_unique< bc_form_tools >(*m_ui_command_service, *m_d3d_widget, *ui.toolsDock, *ui.rightToolBox, *m_form_terrain, *m_form_object_insert);
 			m_timer = std::make_unique< QTimer >();

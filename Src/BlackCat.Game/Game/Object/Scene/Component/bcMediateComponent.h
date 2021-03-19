@@ -38,9 +38,9 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			const bcCHAR* get_entity_name() const;
+			const bcCHAR* get_entity_name() const noexcept;
 
-			void set_entity_name(const bcCHAR* p_entity_name);
+			void set_entity_name(const bcCHAR* p_entity_name) noexcept;
 
 			void set_controller(core::bc_unique_ptr< bci_actor_controller > p_controller, const bc_actor_component_initialize_context& p_context);
 			
@@ -73,12 +73,12 @@ namespace black_cat
 			core::bc_unique_ptr<bci_actor_controller> m_controller;
 		};
 
-		inline const bcCHAR* bc_mediate_component::get_entity_name() const
+		inline const bcCHAR* bc_mediate_component::get_entity_name() const noexcept
 		{
 			return m_entity_name;
 		}
 		
-		inline void bc_mediate_component::set_entity_name(const bcCHAR* p_entity_name)
+		inline void bc_mediate_component::set_entity_name(const bcCHAR* p_entity_name) noexcept
 		{
 			m_entity_name = p_entity_name;
 		}

@@ -7,8 +7,6 @@
 #include "Game/Object/Scene/ActorComponent/bcActorController.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
 #include "Game/Object/Animation/Job/bcSamplingAnimationJob.h"
-#include "Game/Object/Animation/Job/bcLocalToModelAnimationJob.h"
-#include "Game/Object/Animation/Job/bcModelToSkinnedAnimationJob.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -28,6 +26,8 @@ namespace black_cat
 			void added_to_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene) override;
 			
 			void update(const bc_actor_component_update_content& p_context) override;
+
+			void removed_from_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene) override;
 			
 			void handle_event(const bc_actor_component_event_context& p_context) override;
 
@@ -44,12 +44,13 @@ namespace black_cat
 			void _create_idle_animation(bc_actor& p_actor);
 
 			void _create_running_animation(bc_actor& p_actor);
-			
+
 			bc_skinned_mesh_component* m_skinned_component = nullptr;
 			core::bc_vector3f m_local_forward;
 
 			core::bc_shared_ptr<bc_sampling_animation_job> m_idle_sample_job;
 			core::bc_shared_ptr<bc_sampling_animation_job> m_running_sample_job;
+			core::bc_shared_ptr<bc_sampling_animation_job> m_running_backward_sample_job;
 			
 			bci_animation_job* m_active_job = nullptr;
 			core::bc_shared_ptr<bci_animation_job> m_idle_job;

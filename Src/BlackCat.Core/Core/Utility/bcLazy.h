@@ -23,7 +23,8 @@ namespace black_cat
 			using cleanup_type = bc_delegate< void(type*) >;
 
 		public:
-			bc_lazy() : bc_lazy(bc_delegate< type*() >(&this_type::_default_initializer),
+			bc_lazy()
+				: bc_lazy(bc_delegate< type*() >(&this_type::_default_initializer),
 				bc_delegate< void(type*) >(&this_type::_default_cleanup))
 			{
 			}
@@ -64,17 +65,32 @@ namespace black_cat
 				return *this;
 			}
 
-			T* operator ->() const noexcept
+			T* operator ->() noexcept
 			{ 
 				return get(); 
 			}
 
-			T& operator *() const 
+			const T* operator ->() const noexcept
+			{
+				return get();
+			}
+
+			T& operator *() 
 			{ 
 				return *get(); 
 			}
 
-			T* get() const
+			const T& operator *() const
+			{
+				return *get();
+			}
+
+			T* get()
+			{
+				return m_pointer == nullptr ? (m_pointer = m_initializer()) : m_pointer;
+			}
+
+			const T* get() const
 			{
 				return m_pointer == nullptr ? (m_pointer = m_initializer()) : m_pointer;
 			}
@@ -198,17 +214,32 @@ namespace black_cat
 				return *this;
 			}
 
-			T* operator ->() const noexcept
+			T* operator ->() noexcept
 			{ 
 				return get();
 			}
 
-			T& operator *() const 
+			const T* operator ->() const noexcept
+			{
+				return get();
+			}
+
+			T& operator *() 
 			{ 
 				return *get(); 
 			}
 
-			T* get() const
+			const T& operator *() const
+			{
+				return *get();
+			}
+
+			T* get()
+			{
+				return bc_concurrency::double_check_lock(m_pointer, m_mutex, m_initializer);
+			}
+
+			const T* get() const
 			{
 				return bc_concurrency::double_check_lock(m_pointer, m_mutex, m_initializer);
 			}
@@ -229,16 +260,23 @@ namespace black_cat
 			}
 
 		private:
-			static T* _default_initializer() { return new type(); }
+			static T* _default_initializer()
+			{
+				return new type();
+			}
 
-			static void _default_cleanup(type* p_pointer) { delete p_pointer; }
+			static void _default_cleanup(type* p_pointer)
+			{
+				delete p_pointer;
+			}
 
 			void _cleanup()
 			{
-				T* l_pointer = m_pointer.load(core_platform::bc_memory_order::acquire);
-
-				if (l_pointer) 
+				T* l_pointer = m_pointer.load();
+				if (l_pointer)
+				{
 					m_cleanup(l_pointer);
+				}
 			}
 
 			void _assign(const this_type& p_other)
@@ -248,22 +286,23 @@ namespace black_cat
 				m_initializer = p_other.m_initializer;
 				m_cleanup = p_other.m_cleanup;
 
-				T* l_other_pointer = p_other.m_pointer.load(core_platform::bc_memory_order::acquire);
-				T* l_pointer = m_pointer.load(core_platform::bc_memory_order::acquire);
+				T* l_other_pointer = p_other.m_pointer.load();
+				T* l_pointer = m_pointer.load();
 
 				if (l_other_pointer)
 				{
 					if (!l_pointer)
+					{
 						l_pointer = m_initializer();
+					}
 
 					*l_pointer = *l_other_pointer;
-
-					m_pointer.store(l_pointer, core_platform::bc_memory_order::release);
+					m_pointer.store(l_pointer);
 				}
 				else if (l_pointer)
 				{
 					m_cleanup(l_pointer);
-					m_pointer.store(nullptr, core_platform::bc_memory_order::relaxed);
+					m_pointer.store(nullptr);
 				}
 			}
 
@@ -274,14 +313,8 @@ namespace black_cat
 				m_initializer = std::move(p_other.m_initializer);
 				m_cleanup = std::move(p_other.m_cleanup);
 
-				T* l_other_pointer = p_other.m_pointer.load(core_platform::bc_memory_order::acquire);
-				T* l_pointer = m_pointer.load(core_platform::bc_memory_order::acquire);
-
-				if (l_pointer)
-					m_cleanup(l_pointer);
-
-				m_pointer.store(l_other_pointer, core_platform::bc_memory_order::release);
-				p_other.m_pointer.store(nullptr, core_platform::bc_memory_order::relaxed);
+				m_pointer.store(p_other.m_pointer.load());
+				p_other.m_pointer.store(nullptr);
 			}
 
 			initializer_type m_initializer;

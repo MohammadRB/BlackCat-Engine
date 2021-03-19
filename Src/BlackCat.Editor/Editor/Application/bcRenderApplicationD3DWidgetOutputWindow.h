@@ -34,8 +34,6 @@ namespace black_cat
 
 			void close() noexcept override;
 
-		protected:
-
 		private:
 			bc_widget_d3d_output* m_d3d_widget;
 		};

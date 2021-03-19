@@ -65,7 +65,7 @@ namespace black_cat
 			std::unique_ptr< bc_render_application_d3dwidget_output_window > m_d3d_output_window;
 			std::unique_ptr< bc_editor_game_console > m_editor_game_console;
 
-			std::unique_ptr < bc_form_main_menu > m_form_main_menu;
+			std::unique_ptr< bc_form_main_menu > m_form_main_menu;
 			std::unique_ptr< bc_form_tools > m_form_tools;
 			std::unique_ptr< bc_form_terrain > m_form_terrain;
 			std::unique_ptr< bc_form_object > m_form_object;

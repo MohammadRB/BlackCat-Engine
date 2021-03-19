@@ -40,8 +40,6 @@ namespace black_cat
 				return selected_item->text();
 			}
 
-		protected:
-
 		private:
 			QListWidget* m_entity_list;
 		};

@@ -124,7 +124,9 @@
               "xbot-left-turn",
               "xbot-right-turn",
               "xbot-walking",
-              "xbot-running"
+              "xbot-walking-backwards",
+              "xbot-running",
+              "xbot-running-backwards"
             ]
           }
         },

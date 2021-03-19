@@ -3,6 +3,8 @@
 #pragma once
 
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcUnorderedMap.h"
+#include "Core/Utility/bcLazy.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/Object/Mesh/bcMesh.h"
@@ -25,6 +27,8 @@ namespace black_cat
 
 		class BC_GAME_DLL bc_mesh_utility
 		{
+			using mesh_render_state_container = core::bc_unordered_map_program<core::bc_string, std::pair<bc_render_state_ptr, bc_mesh_material_ptr>>;
+			
 		public:
 			static bc_mesh_render_state create_mesh_render_states(bc_render_system& p_render_system, 
 				const bc_mesh& p_mesh, 
@@ -81,6 +85,8 @@ namespace black_cat
 				TCallable p_callable, 
 				const bc_mesh_node* p_node = nullptr) noexcept;
 
+			static void clear_mesh_render_states_cache();
+			
 		private:
 			template< typename TArg, typename TCallable >
 			static void _iterate_over_nodes(const bc_mesh& p_mesh, 
@@ -88,6 +94,8 @@ namespace black_cat
 				TCallable& p_callable, 
 				const bc_mesh_node* const* p_begin, 
 				const bc_mesh_node* const* p_end) noexcept;
+
+			static core::bc_concurrent_lazy<mesh_render_state_container> m_mesh_render_states;
 		};
 
 		template< typename TArg, typename TCallable >

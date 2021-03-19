@@ -4,8 +4,7 @@
 
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcVector.h"
-#include "Core/Container/bcIteratorAdapter.h"
-
+#include "Core/Container/bcSpan.h"
 #include "3rdParty/Ozz/Include/ozz/animation/runtime/skeleton.h"
 
 namespace black_cat
@@ -14,9 +13,6 @@ namespace black_cat
 	{
 		class bc_animation_skeleton
 		{
-		public:
-			using bone_name_iterator = core::bc_const_iterator_adapter< core::bc_vector_movable< const bcCHAR* > >;
-		
 		public:
 			bc_animation_skeleton();
 
@@ -28,7 +24,7 @@ namespace black_cat
 
 			bcUINT32 get_num_bones() const noexcept;
 
-			bone_name_iterator get_bone_names() const noexcept;
+			core::bc_span<const bcCHAR*> get_bone_names() const noexcept;
 			
 			ozz::animation::Skeleton& get_native_handle() noexcept;
 			
@@ -53,7 +49,7 @@ namespace black_cat
 			return m_skeleton->num_joints();
 		}
 
-		inline bc_animation_skeleton::bone_name_iterator bc_animation_skeleton::get_bone_names() const noexcept
+		inline core::bc_span<const bcCHAR*> bc_animation_skeleton::get_bone_names() const noexcept
 		{
 			if(m_bone_names.empty() && m_skeleton)
 			{
@@ -66,7 +62,7 @@ namespace black_cat
 				}
 			}
 
-			return bone_name_iterator(m_bone_names);
+			return core::bc_make_span(m_bone_names);
 		}
 
 		inline ozz::animation::Skeleton& bc_animation_skeleton::get_native_handle() noexcept

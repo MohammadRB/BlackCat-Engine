@@ -6,7 +6,6 @@
 #include "Editor/Application/bcUICommandService.h"
 #include "Editor/Widget/bcWidgetD3DOutput.h"
 #include "Editor/UI/bcFormTerrain.h"
-
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QDockWidget>
 
@@ -37,8 +36,6 @@ namespace black_cat
 				QToolBox& p_tool_properties_container,
 				bc_form_terrain& p_terrain_form,
 				bc_form_object_insert& p_object_insert_form);
-
-		protected:
 
 		private slots:
 			void objectSelectionToggled(bool p_toggled);

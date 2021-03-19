@@ -68,7 +68,7 @@ namespace black_cat
 				p_param.m_frame_renderer.create_buffer()
 			)
 			.with(game::bc_camera_frustum(p_param.m_cascade_camera))
-			.only< game::bc_skinned_mesh_component >()
+			.only<game::bc_skinned_mesh_component>()
 		);
 		
 		const auto& l_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index];

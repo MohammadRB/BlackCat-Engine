@@ -13,6 +13,8 @@ namespace black_cat
 {
 	namespace game
 	{
+		core::bc_concurrent_lazy<bc_mesh_utility::mesh_render_state_container> bc_mesh_utility::m_mesh_render_states;
+		
 		bc_mesh_render_state bc_mesh_utility::create_mesh_render_states(bc_render_system& p_render_system,
 			const bc_mesh& p_mesh,
 			const bc_mesh_node& p_root_node, 
@@ -45,11 +47,11 @@ namespace black_cat
 					{
 						for (bc_mesh_node::node_index_t l_mesh_ite = 0, l_mesh_count = p_node.get_mesh_count(); l_mesh_ite < l_mesh_count; ++l_mesh_ite)
 						{
-							const auto& l_mesh_name = l_lod_mesh.get_node_mesh_name(p_node, l_mesh_ite);
+							const auto& l_mesh_part_name = l_lod_mesh.get_node_mesh_name(p_node, l_mesh_ite);
 
 							if (p_mesh_prefix != nullptr)
 							{
-								const bool l_starts_with_prefix = l_mesh_name.compare(0, std::strlen(p_mesh_prefix), p_mesh_prefix) == 0;
+								const bool l_starts_with_prefix = l_mesh_part_name.compare(0, std::strlen(p_mesh_prefix), p_mesh_prefix) == 0;
 
 								if (!l_starts_with_prefix)
 								{
@@ -59,54 +61,69 @@ namespace black_cat
 
 							auto l_material = l_lod_mesh.get_node_mesh_material_ptr(p_node, l_mesh_ite);
 							auto l_render_state = l_lod_mesh.get_node_mesh_render_state_ptr(p_node, l_mesh_ite);
-							auto l_material_ite = p_mesh_materials.find(l_mesh_name.c_str());
+							auto l_material_ite = p_mesh_materials.find(l_mesh_part_name.c_str());
 
 							if (l_material_ite != std::cend(p_mesh_materials))
 							{
 								core::bc_any& l_material_key = l_material_ite->second;
 								auto& l_material_name = l_material_key.as_throw< core::bc_string >();
-								auto l_new_material = p_render_system.get_material_manager().load_mesh_material(l_material_name.c_str());
+								auto l_cache_name = l_lod_mesh.get_name() + l_mesh_part_name + l_material_name;
+								auto l_cache_entry = m_mesh_render_states->find(l_cache_name);
 
-								if (l_new_material == nullptr)
+								if(l_cache_entry == std::end(*m_mesh_render_states))
 								{
-									auto l_msg = core::bc_estring_frame(bcL("No material was found with key '")) +
-										core::bc_to_estring_frame(l_material_name.c_str()) +
-										bcL("' to associate with mesh '") +
-										core::bc_to_estring_frame(l_lod_mesh.get_name()) +
-										bcL("'");
-									core::bc_get_service<core::bc_logger>()->log_info(l_msg.c_str());
-								}
-								else
-								{
-									l_material = l_new_material;
-								}
+									auto l_new_material = p_render_system.get_material_manager().load_mesh_material(l_material_name.c_str());
 
-								// TODO this causes every instance get a new render state and render instances doesn't group together in draw calls
-								l_render_state = p_render_system.create_render_state
-								(
-									graphic::bc_primitive::trianglelist,
-									l_render_state->get_vertex_buffer(),
-									l_render_state->get_vertex_buffer_stride(),
-									0,
-									l_render_state->get_index_buffer(),
-									l_render_state->get_index_type(),
-									l_render_state->get_index_count(),
-									0,
+									if (l_new_material == nullptr)
 									{
-										graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_material->get_diffuse_map_view()),
-										graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_material->get_normal_map_view()),
-										graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_material->get_specular_map_view()),
-									},
-									{
-										l_lod_mesh.get_skinned() ? p_render_system.get_per_skinned_object_cbuffer() : p_render_system.get_per_object_cbuffer(),
-										graphic::bc_constant_buffer_parameter
-										(
-											1,
-											core::bc_enum::mask_or({graphic::bc_shader_type::vertex, graphic::bc_shader_type::pixel}),
-											l_material->get_parameters_cbuffer()
-										)
+										auto l_msg = core::bc_estring_frame(bcL("No material was found with key '")) +
+											core::bc_to_estring_frame(l_material_name.c_str()) +
+											bcL("' to associate with mesh '") +
+											core::bc_to_estring_frame(l_lod_mesh.get_name()) +
+											bcL("'");
+										core::bc_get_service<core::bc_logger>()->log_info(l_msg.c_str());
 									}
-								);
+									else
+									{
+										l_material = l_new_material;
+									}
+
+									l_render_state = p_render_system.create_render_state
+									(
+										graphic::bc_primitive::trianglelist,
+										l_render_state->get_vertex_buffer(),
+										l_render_state->get_vertex_buffer_stride(),
+										0,
+										l_render_state->get_index_buffer(),
+										l_render_state->get_index_type(),
+										l_render_state->get_index_count(),
+										0,
+										{
+											graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_material->get_diffuse_map_view()),
+											graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_material->get_normal_map_view()),
+											graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_material->get_specular_map_view()),
+										},
+										{
+											l_lod_mesh.get_skinned() ? p_render_system.get_per_skinned_object_cbuffer() : p_render_system.get_per_object_cbuffer(),
+											graphic::bc_constant_buffer_parameter
+											(
+												1,
+												core::bc_enum::mask_or({graphic::bc_shader_type::vertex, graphic::bc_shader_type::pixel}),
+												l_material->get_parameters_cbuffer()
+											)
+										}
+									);
+
+									// TODO find a way to cleanup this render states and materials
+									l_cache_entry = m_mesh_render_states->insert(std::make_pair
+									(
+										std::move(l_cache_name),
+										std::make_pair(std::move(l_render_state), std::move(l_material))
+									)).first;
+								}
+
+								l_render_state = l_cache_entry->second.first;
+								l_material = l_cache_entry->second.second;
 							}
 
 							p_result->push_back(bc_mesh_render_state_entry(p_node.get_transform_index(), std::move(l_render_state), std::move(l_material)));
@@ -274,6 +291,11 @@ namespace black_cat
 					l_output_transform = physics::bc_transform(l_model_transform) * l_output_transform;
 				}
 			}
+		}
+
+		void bc_mesh_utility::clear_mesh_render_states_cache()
+		{
+			m_mesh_render_states = core::bc_concurrent_lazy<mesh_render_state_container>();
 		}
 	}
 }

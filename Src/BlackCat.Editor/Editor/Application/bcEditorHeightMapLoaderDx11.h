@@ -37,8 +37,6 @@ namespace black_cat
 				return m_texture_map_unordered_view.get();
 			}
 
-		protected:
-
 		private:
 			graphic::bc_resource_view_ptr m_height_map_unordered_view;
 			graphic::bc_resource_view_ptr m_texture_map_unordered_view;

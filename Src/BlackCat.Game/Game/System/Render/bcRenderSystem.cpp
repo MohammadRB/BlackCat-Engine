@@ -24,6 +24,7 @@
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/Render/Decal/bcDecalManager.h"
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/Object/Mesh/bcMeshUtility.h"
 #include "Game/Object/Animation/bcAnimationManager.h"
 
 namespace black_cat
@@ -386,6 +387,8 @@ namespace black_cat
 
 		void bc_render_system::_destroy()
 		{
+			bc_mesh_utility::clear_mesh_render_states_cache();
+			
 			m_render_pass_manager->pass_destroy(*this);
 
 			m_device_reset_handle.reset();
@@ -399,7 +402,7 @@ namespace black_cat
 			m_render_pass_manager.reset();
 			m_material_manager.reset();
 			m_thread_manager.reset();
-
+			
 			m_render_pass_states.destroy();
 			m_render_states.destroy();
 			m_compute_states.destroy();

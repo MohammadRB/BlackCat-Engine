@@ -28,7 +28,6 @@ namespace black_cat
 			bool update(update_context& p_context) override;
 			
 			void update_ui(update_ui_context& p_context) override;
-		protected:
 
 		private:
 			QVector<QString> m_entity_list;

@@ -24,6 +24,10 @@ namespace black_cat
 
 			bc_animation_local_transform& operator=(bc_animation_local_transform&& p_other) noexcept;
 
+			ozz::math::SoaTransform* data() noexcept;
+			
+			const ozz::math::SoaTransform* data() const noexcept;
+			
 			void resize(container_type::size_type p_size);
 		
 		private:
@@ -53,6 +57,16 @@ namespace black_cat
 		{
 			m_transforms = std::move(p_other.m_transforms);
 			return *this;
+		}
+
+		inline ozz::math::SoaTransform* bc_animation_local_transform::data() noexcept
+		{
+			return m_transforms.data();
+		}
+
+		inline const ozz::math::SoaTransform* bc_animation_local_transform::data() const noexcept
+		{
+			return m_transforms.data();
 		}
 
 		inline void bc_animation_local_transform::resize(container_type::size_type p_size)

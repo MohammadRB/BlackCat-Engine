@@ -61,12 +61,18 @@ namespace black_cat
 		bool bc_partial_blending_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
 			ozz::animation::BlendingJob::Layer l_layers[2];
-			l_layers[0].transform = { &*m_layer1->get_local_transforms().begin(), m_layer1->get_local_transforms().size() };
+			l_layers[0].transform = ozz::make_span(m_layer1->get_local_transforms());
 			l_layers[0].weight = 1;
 			l_layers[0].joint_weights = ozz::make_span(m_layer1_weights);
-			l_layers[1].transform = { &*m_layer2->get_local_transforms().begin(), m_layer2->get_local_transforms().size() };
+			l_layers[1].transform = ozz::make_span(m_layer2->get_local_transforms());
 			l_layers[1].weight = 1;
 			l_layers[1].joint_weights = ozz::make_span(m_layer2_weights);
+
+			const bool l_is_valid = m_layer1->run(p_clock) && m_layer2->run(p_clock);
+			if(!l_is_valid)
+			{
+				return false;
+			}
 			
 			ozz::animation::BlendingJob l_job;
 			l_job.layers = ozz::make_span(l_layers);

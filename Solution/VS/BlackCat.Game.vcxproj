@@ -320,12 +320,14 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\GamePCH.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationJobBuilder.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationJobHelper.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationLocalTransform.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationSkeleton.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcSkeletonAnimation.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcSkinnedAnimation.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcActorUpdateAnimationJob.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcAimAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcBlendingAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalTransformAnimationJob.h" />
@@ -468,6 +470,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcActorUpdateAnimationJob.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcAimAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcBlendingAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcMeshColliderSkininingAnimationJob.cpp" />

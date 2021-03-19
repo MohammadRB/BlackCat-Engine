@@ -29,8 +29,7 @@ namespace black_cat
 			state_ptr create_state(state_context& p_context) const override;
 
 			bool update(update_context& p_context) override;
-		protected:
-			
+		
 		private:
 			QString m_entity_name;
 			bcUINT16 m_screen_width;

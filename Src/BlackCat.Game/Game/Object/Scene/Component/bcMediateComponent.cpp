@@ -8,6 +8,7 @@
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 
 namespace black_cat
 {
@@ -101,6 +102,17 @@ namespace black_cat
 				if (m_controller)
 				{
 					m_controller->added_to_scene(p_context, *m_scene);
+				}
+				return;
+			}
+
+			const auto* l_remove_from_scene_event = core::bci_message::as< bc_removed_from_scene_actor_event >(p_context.m_event);
+			if (l_remove_from_scene_event)
+			{
+				if (m_controller)
+				{
+					m_controller->removed_from_scene(p_context, l_remove_from_scene_event->get_scene());
+					m_scene = nullptr;
 				}
 				return;
 			}
