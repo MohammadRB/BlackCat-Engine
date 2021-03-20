@@ -204,7 +204,7 @@ float read_poison_disk_shadow_map(uint p_shadow_map_index, SamplerComparisonStat
 
 float calculate_shadow_bias(float3 p_light_dir, float3 p_normal)
 {
-    float l_cos_theta = saturate(dot(-p_light_dir, p_normal));
+	const float l_cos_theta = saturate(dot(-p_light_dir, p_normal));
     float l_bias = 0.005 * tan(acos(l_cos_theta));
     l_bias = clamp(l_bias, 0, 0.002);
 

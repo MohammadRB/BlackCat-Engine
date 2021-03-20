@@ -147,7 +147,7 @@ namespace black_cat
 						p_query.m_state.store(_bc_query_shared_state::state::executed, core_platform::bc_memory_order::release);
 					},
 					[&](bool) {}
-					);
+				);
 
 				bc_concurrency::concurrent_for_each
 				(
@@ -164,7 +164,7 @@ namespace black_cat
 						p_query.m_state.store(_bc_query_shared_state::state::executed, core_platform::bc_memory_order::release);
 					},
 					[&](bool) {}
-					);
+				);
 			}
 		}
 
@@ -172,13 +172,13 @@ namespace black_cat
 		{
 			auto l_task = bc_concurrency::start_task
 			(
-				bc_delegate< void() >
+				bc_delegate<void()>
 				(
 					[=, &p_clock]()
 					{
 						process_query_queue(p_clock);
 					}
-					)
+				)
 			);
 
 			return l_task;

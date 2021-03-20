@@ -20,7 +20,7 @@ namespace black_cat
 		BC_RENDER_PASS(gb_lgt)
 
 	public:
-		explicit bc_gbuffer_light_map_pass(constant::bc_render_pass_variable_t p_csm_buffers_container, constant::bc_render_pass_variable_t p_output_texture);
+		bc_gbuffer_light_map_pass(constant::bc_render_pass_variable_t p_csm_buffers_container, constant::bc_render_pass_variable_t p_output_texture);
 
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 

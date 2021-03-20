@@ -45,38 +45,71 @@ namespace black_cat
 				return *this;
 			}
 
-			value_type get() noexcept(noexcept(std::declval<core_platform::bc_future<value_type>>().get()))
-			{
-				return m_future.get();
-			}
-
 			bool is_ready() const noexcept(core_platform::bc_future<value_type>::wait_for)
 			{
 				return wait_for(std::chrono::seconds(0)) == core_platform::bc_future_status::ready;
 			}
+
+			bool valid() const noexcept(noexcept(std::declval<core_platform::bc_future<value_type>>().valid()))
+			{
+				return m_future.valid();
+			}
 			
+			value_type get() noexcept(noexcept(std::declval<core_platform::bc_future<value_type>>().get()))
+			{
+				return m_future.get();
+			}
+			
+			/**
+			 * \brief Waits for the result to become available or return immediately if the task does not have shared state 
+			 */
 			void wait() const noexcept(noexcept(std::declval<core_platform::bc_future<value_type>>().wait()))
 			{
+				if(!m_future.valid())
+				{
+					return;
+				}
+
 				m_future.wait();
 			}
 			
 			core_platform::bc_future_status wait_for(const std::chrono::nanoseconds& p_duration) const noexcept(core_platform::bc_future<value_type>::wait_for)
 			{
+				if (!m_future.valid())
+				{
+					return core_platform::bc_future_status::ready;
+				}
+				
 				return m_future.wait_for(p_duration);
 			}
 
 			core_platform::bc_future_status wait_for(const std::chrono::microseconds& p_duration) const noexcept(core_platform::bc_future<value_type>::wait_for)
 			{
+				if (!m_future.valid())
+				{
+					return core_platform::bc_future_status::ready;
+				}
+				
 				return m_future.wait_for(p_duration);
 			}
 
 			core_platform::bc_future_status wait_for(const std::chrono::milliseconds& p_duration) const noexcept(core_platform::bc_future<value_type>::wait_for)
 			{
+				if (!m_future.valid())
+				{
+					return core_platform::bc_future_status::ready;
+				}
+				
 				return m_future.wait_for(p_duration);
 			}
 
 			core_platform::bc_future_status wait_for(const std::chrono::seconds& p_duration) const noexcept(core_platform::bc_future<value_type>::wait_for)
 			{
+				if (!m_future.valid())
+				{
+					return core_platform::bc_future_status::ready;
+				}
+				
 				return m_future.wait_for(p_duration);
 			}
 

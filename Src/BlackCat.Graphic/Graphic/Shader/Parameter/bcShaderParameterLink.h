@@ -27,7 +27,11 @@ namespace black_cat
 
 			_bc_shader_parameter_link_data(bc_resource_view p_view);
 
+			_bc_shader_parameter_link_data(const _bc_shader_parameter_link_data& p_other);
+			
 			~_bc_shader_parameter_link_data();
+
+			_bc_shader_parameter_link_data& operator=(const _bc_shader_parameter_link_data& p_other);
 
 			bc_shader_parameter_type m_parameter_type;
 			union
@@ -91,8 +95,36 @@ namespace black_cat
 			}
 		}
 
-		inline _bc_shader_parameter_link_data::~_bc_shader_parameter_link_data()
+		inline _bc_shader_parameter_link_data::_bc_shader_parameter_link_data(const _bc_shader_parameter_link_data& p_other)
 		{
+			operator=(p_other);
+		}
+
+		inline _bc_shader_parameter_link_data::~_bc_shader_parameter_link_data() = default;
+
+		inline _bc_shader_parameter_link_data& _bc_shader_parameter_link_data::operator=(const _bc_shader_parameter_link_data& p_other)
+		{
+			m_parameter_type = p_other.m_parameter_type;
+			
+			switch (m_parameter_type)
+			{
+			case bc_shader_parameter_type::shader_view:
+				m_resource_view = p_other.m_resource_view;
+				break;
+			case bc_shader_parameter_type::unordered_view:
+				m_resource_view = p_other.m_resource_view;
+				break;
+			case bc_shader_parameter_type::cbuffer:
+				m_cbuffer = p_other.m_cbuffer;
+				break;
+			case bc_shader_parameter_type::sampler:
+				m_sampler = p_other.m_sampler;
+				break;
+			default: 
+				BC_ASSERT(false);
+			}
+
+			return *this;
 		}
 
 		inline bc_shader_parameter_link::bc_shader_parameter_link()
@@ -105,9 +137,7 @@ namespace black_cat
 		{
 		}
 
-		inline bc_shader_parameter_link::~bc_shader_parameter_link()
-		{
-		}
+		inline bc_shader_parameter_link::~bc_shader_parameter_link() = default;
 
 		inline bc_shader_parameter_link& bc_shader_parameter_link::operator=(bc_shader_parameter_link&& p_other) noexcept
 		{
@@ -126,6 +156,10 @@ namespace black_cat
 			if (!m_data)
 			{
 				m_data = core::bc_make_unique<_bc_shader_parameter_link_data>(p_sampler);
+			}
+			else
+			{
+				*m_data = _bc_shader_parameter_link_data(p_sampler);
 			}
 		}
 
@@ -152,6 +186,10 @@ namespace black_cat
 			{
 				m_data = core::bc_make_unique<_bc_shader_parameter_link_data>(p_buffer);
 			}
+			else
+			{
+				*m_data = _bc_shader_parameter_link_data(p_buffer);
+			}
 		}
 
 		inline bc_buffer bc_shader_parameter_link::get_as_cbuffer() const noexcept
@@ -176,6 +214,10 @@ namespace black_cat
 			if (!m_data)
 			{
 				m_data = core::bc_make_unique<_bc_shader_parameter_link_data>(p_view);
+			}
+			else
+			{
+				*m_data = _bc_shader_parameter_link_data(p_view);
 			}
 		}
 

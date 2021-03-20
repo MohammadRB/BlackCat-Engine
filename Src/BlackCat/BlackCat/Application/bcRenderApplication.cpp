@@ -20,8 +20,7 @@ namespace black_cat
 		: game::bc_render_application(),
 		m_game_system(nullptr),
 		m_fps_sampler(0),
-		m_fps(0),
-		m_update_count(0)
+		m_fps(0)
 	{
 	}
 
@@ -67,13 +66,12 @@ namespace black_cat
 	}
 
 	void bc_render_application::app_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_partial_update)
-	{	
-		++m_update_count;
+	{
 		m_update_watch.start();
 		
 		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 
-		if(m_update_count == 1)
+		if(!p_is_partial_update)
 		{
 			core::bc_event_frame_update_start l_event_frame_start;
 			l_event_manager->process_event(l_event_frame_start);
@@ -140,8 +138,6 @@ namespace black_cat
 		m_swap_watch.restart();
 
 		l_counter_value_manager->add_counter("swap_time", m_swap_watch.average_total_elapsed());
-		
-		m_update_count = 0;
 	}
 
 	bool bc_render_application::app_event(core::bci_event& p_event)

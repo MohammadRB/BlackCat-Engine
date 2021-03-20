@@ -68,8 +68,6 @@ namespace black_cat
 
 			bc_future_status wait_for(const std::chrono::seconds& p_duration) const;
 
-		protected:
-
 		private:
 			platform_pack m_pack;
 		};
@@ -113,8 +111,6 @@ namespace black_cat
 
 			bc_future_status wait_for(const std::chrono::seconds& p_duration) const;
 
-		protected:
-
 		private:
 			platform_pack m_pack;
 		};
@@ -150,8 +146,6 @@ namespace black_cat
 
 			void set_exception(std::exception_ptr p_exception);
 
-		protected:
-
 		private:
 			platform_pack m_pack;
 		};
@@ -184,8 +178,6 @@ namespace black_cat
 			void set_value();
 
 			void set_exception(std::exception_ptr p_exception);
-
-		protected:
 
 		private:
 			platform_pack m_pack;

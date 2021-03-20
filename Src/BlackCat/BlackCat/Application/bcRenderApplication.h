@@ -71,7 +71,6 @@ namespace black_cat
 		core::bc_value_sampler<core_platform::bc_clock::small_delta_time, 64> m_fps_sampler;
 		bcUINT32 m_fps;
 
-		bcUINT32 m_update_count;
 		core::bc_stop_watch m_update_watch;
 		core::bc_stop_watch m_render_watch;
 		core::bc_stop_watch m_swap_watch;

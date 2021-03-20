@@ -19,9 +19,9 @@ namespace black_cat
 	}
 
 	bc_vegetable_cascaded_shadow_map_pass::bc_vegetable_cascaded_shadow_map_pass(constant::bc_render_pass_variable_t p_output_depth_buffers,
-		bcSIZE p_shadow_map_size,
-		const std::initializer_list< std::tuple< bcSIZE, bcUBYTE > >& p_cascade_sizes) :
-		bc_base_cascaded_shadow_map_pass(p_output_depth_buffers, p_shadow_map_size, p_cascade_sizes)
+		bcFLOAT p_shadow_map_multiplier,
+		const std::initializer_list<std::tuple<bcSIZE, bcUBYTE>>& p_cascade_sizes)
+		: bc_base_cascaded_shadow_map_pass(p_output_depth_buffers, p_shadow_map_multiplier, p_cascade_sizes)
 	{
 	}
 
@@ -70,50 +70,56 @@ namespace black_cat
 		m_sampler_state = p_render_system.get_device().create_sampler_state(l_sampler_config);
 	}
 
-	void bc_vegetable_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_param& p_param)
+	void bc_vegetable_cascaded_shadow_map_pass::initialize_frame_pass(const bc_cascaded_shadow_map_pass_init_frame_param& p_param)
 	{
 		const auto l_cascade_absolute_index = p_param.m_light_index * p_param.m_cascade_count + p_param.m_cascade_index;
 		if (m_leaf_scene_queries.size() < l_cascade_absolute_index + 1)
 		{
 			m_leaf_scene_queries.resize(l_cascade_absolute_index + 1);
+			m_leaf_scene_query_results.resize(l_cascade_absolute_index + 1);
 		}
 		if (m_trunk_scene_queries.size() < l_cascade_absolute_index + 1)
 		{
 			m_trunk_scene_queries.resize(l_cascade_absolute_index + 1);
+			m_trunk_scene_query_results.resize(l_cascade_absolute_index + 1);
 		}
-
-		game::bc_render_state_buffer l_leaf_render_buffer;
-		game::bc_render_state_buffer l_trunk_render_buffer;
 
 		if (m_leaf_scene_queries[l_cascade_absolute_index].is_executed())
 		{
-			l_leaf_render_buffer = m_leaf_scene_queries[l_cascade_absolute_index].get().get_render_state_buffer();
+			m_leaf_scene_query_results[l_cascade_absolute_index] = m_leaf_scene_queries[l_cascade_absolute_index].get().get_render_state_buffer();
 		}
 		if (m_trunk_scene_queries[l_cascade_absolute_index].is_executed())
 		{
-			l_trunk_render_buffer = m_trunk_scene_queries[l_cascade_absolute_index].get().get_render_state_buffer();
+			m_trunk_scene_query_results[l_cascade_absolute_index] = m_trunk_scene_queries[l_cascade_absolute_index].get().get_render_state_buffer();
 		}
 
 		m_leaf_scene_queries[l_cascade_absolute_index] = core::bc_get_service< core::bc_query_manager >()->queue_query
 		(
 			game::bc_scene_graph_render_state_query
 			(
-				game::bc_actor_render_camera(p_param.m_update_camera, p_param.m_cascade_camera),
+				game::bc_actor_render_camera(p_param.m_update_camera, p_param.m_update_cascade_camera),
 				p_param.m_frame_renderer.create_buffer()
 			)
-			.with(game::bc_camera_frustum(p_param.m_cascade_camera))
+			.with(game::bc_camera_frustum(p_param.m_update_cascade_camera))
 			.only< game::bc_vegetable_mesh_component >(true)
 		);
 		m_trunk_scene_queries[l_cascade_absolute_index] = core::bc_get_service< core::bc_query_manager >()->queue_query
 		(
 			game::bc_scene_graph_render_state_query
 			(
-				game::bc_actor_render_camera(p_param.m_update_camera, p_param.m_cascade_camera),
+				game::bc_actor_render_camera(p_param.m_update_camera, p_param.m_update_cascade_camera),
 				p_param.m_frame_renderer.create_buffer()
 			)
-			.with(game::bc_camera_frustum(p_param.m_cascade_camera))
+			.with(game::bc_camera_frustum(p_param.m_update_cascade_camera))
 			.only< game::bc_vegetable_mesh_component >(false)
 		);
+	}
+
+	void bc_vegetable_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_param& p_param)
+	{
+		const auto l_cascade_absolute_index = p_param.m_light_index * p_param.m_cascade_count + p_param.m_cascade_index;
+		auto& l_leaf_render_buffer = m_leaf_scene_query_results[l_cascade_absolute_index];
+		auto& l_trunk_render_buffer = m_trunk_scene_query_results[l_cascade_absolute_index];
 		
 		// Render vegetable leafs
 		const auto& l_leaf_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index * 2];
@@ -125,7 +131,7 @@ namespace black_cat
 			p_param.m_render_thread.clear_buffers(l_clear_buffers.data(), p_param.m_cascade_count);
 		}
 
-		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, l_leaf_render_buffer, p_param.m_cascade_camera);
+		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, l_leaf_render_buffer, p_param.m_render_cascade_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(l_leaf_render_pass_state);
 
@@ -133,7 +139,7 @@ namespace black_cat
 		const auto& l_trunk_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index * 2 + 1];
 		p_param.m_render_thread.bind_render_pass_state(l_trunk_render_pass_state);
 		
-		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, l_trunk_render_buffer, p_param.m_cascade_camera);
+		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, l_trunk_render_buffer, p_param.m_render_cascade_camera);
 
 		p_param.m_render_thread.unbind_render_pass_state(l_trunk_render_pass_state);
 	}

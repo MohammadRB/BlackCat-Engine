@@ -29,6 +29,12 @@ namespace black_cat
 		{
 			add, update, remove
 		};
+
+		enum class _bc_scene_actor_remove_state
+		{
+			to_remove_from_graph,
+			removed_from_graph
+		};
 		
 		class BC_GAME_DLL bc_scene : public core::bci_content
 		{
@@ -103,9 +109,9 @@ namespace black_cat
 
 			void _update_actor(bc_actor& p_actor);
 			
-			void _remove_actor_event(bc_actor& p_actor);
+			void _remove_actor_event(_bc_scene_actor_remove_state p_state, bc_actor& p_actor);
 
-			void _remove_actor(bc_actor& p_actor);
+			void _remove_actor(_bc_scene_actor_remove_state p_state, bc_actor& p_actor);
 			
 			core::bc_estring m_path;
 			core::bc_string m_name;
@@ -118,7 +124,7 @@ namespace black_cat
 
 			core_platform::bc_hybrid_mutex m_changed_actors_lock;
 			core::bc_vector_movable<std::tuple<_bc_scene_actor_operation, bc_actor>> m_changed_actors;
-			core::bc_vector_movable<bc_actor> m_removed_actors;
+			core::bc_vector_movable<std::tuple<_bc_scene_actor_remove_state, bc_actor>> m_to_remove_actors;
 		};
 
 		using bc_scene_ptr = core::bc_content_ptr<bc_scene>;
