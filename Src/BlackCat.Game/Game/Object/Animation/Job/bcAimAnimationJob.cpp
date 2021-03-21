@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 #include "Game/Object/Mesh/bcSubMesh.h"
 #include "Game/Object/Animation/Job/bcAimAnimationJob.h"
+#include "Game/bcException.h"
 #include "3rdParty/Ozz/Include/ozz/animation/runtime/ik_aim_job.h"
 #include "3rdParty/Ozz/Include/ozz/base/maths/simd_quaternion.h"
 
@@ -10,7 +11,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		void MultiplySoATransformQuaternion(bcINT32 p_index, 
+		void multiply_soa_transform_quaternion(bcINT32 p_index, 
 			const ozz::math::SimdQuaternion& p_quat,
 			const ozz::span<ozz::math::SoaTransform>& p_transforms)
 		{
@@ -27,8 +28,7 @@ namespace black_cat
 			ozz::math::Transpose4x4(&l_aos_quats->xyzw, &l_soa_transform_ref.rotation.x);
 		}
 
-		bc_aim_animation_job::bc_aim_animation_job(const bc_sub_mesh& p_mesh,
-			core::bc_shared_ptr< bci_local_transform_animation_job > p_local_job,
+		bc_aim_animation_job::bc_aim_animation_job(core::bc_shared_ptr< bci_local_transform_animation_job > p_local_job,
 			core::bc_shared_ptr< bc_local_to_model_animation_job > p_model_job,
 			core::bc_shared_ptr< bc_model_to_skinned_animation_job > p_skinned_job,
 			core::bc_span< bc_aim_animation_bone > p_joint_chains,
@@ -38,34 +38,41 @@ namespace black_cat
 			m_model_job(std::move(p_model_job)),
 			m_skinned_job(std::move(p_skinned_job)),
 			m_bone_chains(std::begin(p_joint_chains), std::end(p_joint_chains)),
+			m_enabled(true),
 			m_aim_weight(p_aim_weight)
 		{
-			physics::bc_bound_box l_mesh_bound_box;
-			bc_sub_mesh_mat4_transform l_mesh_absolute_transforms(*p_mesh.get_root_node());
-			p_mesh.calculate_absolute_transforms(core::bc_matrix4f::identity(), l_mesh_absolute_transforms, l_mesh_bound_box);
+			_assign_bone_indices();
+		}
+
+		bc_aim_animation_job::bc_aim_animation_job(core::bc_shared_ptr<bci_local_transform_animation_job> p_local_job,
+			core::bc_shared_ptr<bc_local_to_model_animation_job> p_model_job,
+			core::bc_shared_ptr<bc_model_to_skinned_animation_job> p_skinned_job,
+			const core::bc_span<const bcCHAR*>& p_joint_chains,
+			const core::bc_vector3f& p_local_forward,
+			bcFLOAT p_aim_weight)
+			: bc_aim_animation_job
+			(
+				std::move(p_local_job),
+				std::move(p_model_job),
+				std::move(p_skinned_job),
+				core::bc_span<bc_aim_animation_bone>(),
+				p_aim_weight
+			)
+		{
+			m_bone_chains.reserve(p_joint_chains.size());
 			
-			auto l_bone_names = get_skeleton().get_bone_names();
-			auto l_bone_index = 0U;
-			for(auto l_bone_name : l_bone_names)
-			{
-				auto l_bone_ite = std::find_if(std::begin(m_bone_chains), std::end(m_bone_chains), [l_bone_name](bc_aim_animation_bone& p_bone)
+			std::transform
+			(
+				std::begin(p_joint_chains),
+				std::end(p_joint_chains),
+				std::back_inserter(m_bone_chains),
+				[&](const bcCHAR* p_bone_name)
 				{
-					return std::strstr(l_bone_name, p_bone.m_bone_name) != nullptr;
-				});
-				
-				if(l_bone_ite != std::end(m_bone_chains))
-				{
-					const auto* l_mesh_node = p_mesh.find_node(l_bone_ite->m_bone_name);
-					BC_ASSERT(l_mesh_node);
-
-					const core::bc_matrix4f& l_bone_transform = p_mesh.get_node_absolute_transform(*l_mesh_node, l_mesh_absolute_transforms);
-					l_bone_ite->m_bone_index = l_bone_index;
-					l_bone_ite->m_local_up = l_bone_transform.get_basis_y();
-					l_bone_ite->m_local_forward = l_bone_transform.get_basis_z();
+					return bc_aim_animation_bone(p_bone_name, core::bc_vector3f::up(), p_local_forward);
 				}
+			);
 
-				++l_bone_index;
-			}
+			_assign_bone_indices();
 		}
 
 		bc_aim_animation_job::bc_aim_animation_job(bc_aim_animation_job&&) noexcept = default;
@@ -76,11 +83,25 @@ namespace black_cat
 
 		bool bc_aim_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
+			if(m_bone_chains.size() < 2)
+			{
+				throw bc_invalid_operation_exception("Number of bones in aim bone chain must be greater than 1");
+			}
+			
+			if(!m_enabled)
+			{
+				return true;
+			}
+			
 			ozz::animation::IKAimJob l_aim_job;
 			ozz::math::SimdQuaternion l_correction;
 			auto l_ozz_model_transforms = m_model_job->get_native_transforms();
-			
-			l_aim_job.pole_vector = ozz::math::simd_float4::y_axis();
+			const auto l_first_chain_bone_index = m_bone_chains[0].m_bone_index;
+			const auto l_last_chain_bone_index = m_bone_chains[m_bone_chains.size() - 1].m_bone_index;
+			l_aim_job.pole_vector = ozz::math::Normalize3
+			(
+				l_ozz_model_transforms[l_last_chain_bone_index].cols[3] - l_ozz_model_transforms[l_first_chain_bone_index].cols[3]
+			);
 			l_aim_job.target = ozz::math::simd_float4::Load3PtrU(&m_model_target.x);
 			l_aim_job.joint_correction = &l_correction;
 
@@ -88,12 +109,12 @@ namespace black_cat
 			for(bcINT32 l_ite = m_bone_chains.size() - 1; l_ite >= 0 ; --l_ite)
 			{
 				const auto& l_bone_chain = m_bone_chains[l_ite];
-				
+
 				l_aim_job.joint = &l_ozz_model_transforms[l_bone_chain.m_bone_index];
 				l_aim_job.up = ozz::math::simd_float4::Load3PtrU(&l_bone_chain.m_local_up.x);
 
 				const bool l_is_last_bone = l_ite == 0;
-				l_aim_job.weight = m_aim_weight * (l_is_last_bone ? 1.f : 0.5f);
+				l_aim_job.weight = m_aim_weight * (l_is_last_bone ? 1.f : 0.3f);
 				l_aim_job.offset = ozz::math::simd_float4::Load1(0);
 
 				if(l_ite == m_bone_chains.size() - 1)
@@ -121,12 +142,37 @@ namespace black_cat
 				}
 
 				// Apply IK quaternion to its respective local-space transforms.
-				MultiplySoATransformQuaternion(l_bone_chain.m_bone_index, l_correction, ozz::make_span(m_local_job->get_local_transforms()));
+				multiply_soa_transform_quaternion(l_bone_chain.m_bone_index, l_correction, ozz::make_span(m_local_job->get_local_transforms()));
 				
 				l_previous_bone = l_bone_chain.m_bone_index;
 			}
 
 			return m_model_job->run(p_clock, l_previous_bone);
+		}
+
+		void bc_aim_animation_job::_assign_bone_indices()
+		{
+			auto l_bone_names = get_skeleton().get_bone_names();
+			auto l_bone_index = 0U;
+			for (auto l_bone_name : l_bone_names)
+			{
+				auto l_bone_ite = std::find_if
+				(
+					std::begin(m_bone_chains),
+					std::end(m_bone_chains),
+					[l_bone_name](bc_aim_animation_bone& p_bone)
+					{
+						return std::strstr(l_bone_name, p_bone.m_bone_name) != nullptr;
+					}
+				);
+
+				if (l_bone_ite != std::end(m_bone_chains))
+				{
+					l_bone_ite->m_bone_index = l_bone_index;
+				}
+
+				++l_bone_index;
+			}
 		}
 	}
 }

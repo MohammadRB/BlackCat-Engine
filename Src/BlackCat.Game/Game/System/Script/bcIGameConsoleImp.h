@@ -71,8 +71,6 @@ namespace black_cat
 			}
 
 			bc_game_console& m_game_console;
-
-		private:
 		};
 	}
 }

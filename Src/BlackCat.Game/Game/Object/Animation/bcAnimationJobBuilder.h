@@ -30,13 +30,10 @@ namespace black_cat
 
 			bc_animation_job_builder2& operator=(bc_animation_job_builder2&&) noexcept;
 			
-			bc_animation_job_builder2& afterward(bc_sequence_animation_job::execute_callback p_callback);
-			
 			core::bc_shared_ptr<bci_animation_job> build();
 		
 		private:
 			core::bc_vector<core::bc_shared_ptr<bci_animation_job>> m_animations;
-			core::bc_delegate<void()> m_after_delegate;
 		};
 		
 		class bc_animation_job_builder1
@@ -102,17 +99,11 @@ namespace black_cat
 		inline bc_animation_job_builder2::~bc_animation_job_builder2() = default;
 
 		inline bc_animation_job_builder2& bc_animation_job_builder2::operator=(bc_animation_job_builder2&&) noexcept = default;
-
-		inline bc_animation_job_builder2& bc_animation_job_builder2::afterward(bc_sequence_animation_job::execute_callback p_callback)
-		{
-			m_after_delegate = std::move(p_callback);
-			return *this;
-		}
-
+		
 		inline core::bc_shared_ptr<bci_animation_job> bc_animation_job_builder2::build()
 		{
 			auto l_span = core::bc_make_span(m_animations);
-			return core::bc_make_unique< bc_sequence_animation_job >(bc_sequence_animation_job(l_span, m_after_delegate));
+			return core::bc_make_unique< bc_sequence_animation_job >(bc_sequence_animation_job(l_span));
 		}
 
 		inline bc_animation_job_builder1::bc_animation_job_builder1(core::bc_vector<core::bc_shared_ptr<bci_animation_job>> p_animations)

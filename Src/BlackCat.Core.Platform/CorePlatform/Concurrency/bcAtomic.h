@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatform/bcPlatform.h"
 #include "CorePlatform/Concurrency/bcConcurrencyDef.h"
 #include "CorePlatform/Utility/bcNoCopy.h"
@@ -12,10 +11,14 @@ namespace black_cat
 	namespace core_platform
 	{
 		template< bc_platform TPlatform >
-		struct bc_platform_atomic_flag_pack {};
+		struct bc_platform_atomic_flag_pack
+		{
+		};
 
 		template< bc_platform TPlatform, typename T >
-		struct bc_platform_atomic_pack {};
+		struct bc_platform_atomic_pack
+		{
+		};
 
 		template< bc_platform TPlatform >
 		class bc_platform_atomic_flag : private bc_no_copy
@@ -169,5 +172,7 @@ namespace black_cat
 
 		template< typename T >
 		using bc_atomic = bc_platform_atomic< g_current_platform, T >;
+
+		void atomic_thread_fence(bc_memory_order p_order) noexcept;
 	}
 }

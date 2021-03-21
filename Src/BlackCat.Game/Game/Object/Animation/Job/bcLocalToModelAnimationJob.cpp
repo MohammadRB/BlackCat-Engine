@@ -32,7 +32,7 @@ namespace black_cat
 			return run(p_clock, ozz::animation::Skeleton::kNoParent);
 		}
 
-		bool bc_local_to_model_animation_job::run(const core_platform::bc_clock::update_param& p_clock, bcUINT32 p_from)
+		bool bc_local_to_model_animation_job::run(const core_platform::bc_clock::update_param& p_clock, bcINT32 p_from)
 		{
 			ozz::animation::LocalToModelJob l_ltm_job;
 			const auto& l_local_transforms = m_local_transform_job->get_local_transforms();
@@ -49,9 +49,13 @@ namespace black_cat
 				return false;
 			}
 
+			p_from = p_from == ozz::animation::Skeleton::kNoParent ? 0 : p_from;
+
 			const auto l_bone_names = get_skeleton().get_bone_names();
 			auto l_bone_name_ite = l_bone_names.begin();
-			for (auto l_bone_ite = 0U; l_bone_ite < l_bone_names.size(); ++l_bone_ite, ++l_bone_name_ite)
+			std::advance(l_bone_name_ite, p_from);
+			
+			for (auto l_bone_ite = p_from; l_bone_ite < l_bone_names.size(); ++l_bone_ite, ++l_bone_name_ite)
 			{
 				const auto* l_bone_name = *l_bone_name_ite;
 				const auto* l_mesh_node = m_mesh->find_node(l_bone_name);

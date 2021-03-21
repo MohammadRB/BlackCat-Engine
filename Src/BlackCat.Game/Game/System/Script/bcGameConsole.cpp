@@ -136,13 +136,18 @@ namespace black_cat
 			{
 				m_imp->clear_output();
 			}
-			m_logs.clear();
+
+			{
+				core_platform::bc_mutex_guard l_guard(m_logs_mutex);
+
+				m_logs.clear();
+			}
 		}
 
 		void bc_game_console::run_script(const bcWCHAR* p_script, bool p_output_to_console)
 		{
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_scripts_mutex);
+				core_platform::bc_mutex_guard l_guard(m_scripts_mutex);
 
 				_bc_script_queue_entry l_item
 				{
@@ -160,7 +165,7 @@ namespace black_cat
 			BC_ASSERT(p_result);
 
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_scripts_mutex);
+				core_platform::bc_mutex_guard l_guard(m_scripts_mutex);
 
 				_bc_script_queue_entry l_item
 				{
@@ -185,7 +190,7 @@ namespace black_cat
 			core::bc_estring_frame l_result_string;
 
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_scripts_mutex);
+				core_platform::bc_mutex_guard l_guard(m_scripts_mutex);
 
 				if (!m_scripts.empty())
 				{
@@ -239,7 +244,7 @@ namespace black_cat
 			auto l_log = core::bc_estring(p_log);
 
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_logs_mutex);
+				core_platform::bc_mutex_guard l_guard(m_logs_mutex);
 
 				m_logs.push_back(std::make_pair(l_type, std::move(l_log)));
 			}
@@ -247,10 +252,9 @@ namespace black_cat
 			if (m_imp)
 			{
 				const bool l_log_enabled = m_log_types[std::log2(static_cast<bcSIZE>(l_type))];
-
 				if(l_log_enabled)
 				{
-					m_imp->write_output(l_type, m_logs.rbegin()->second);
+					m_imp->write_output(l_type, m_logs.back().second);
 				}
 			}
 		}
@@ -262,7 +266,7 @@ namespace black_cat
 				return false;
 			}
 
-			auto l_key_event = static_cast< platform::bc_app_event_key& >(p_event);
+			const auto l_key_event = static_cast< platform::bc_app_event_key& >(p_event);
 
 			if (l_key_event.get_key() == platform::bc_key::kb_grave &&
 				l_key_event.get_key_state() == platform::bc_key_state::pressing)
@@ -283,12 +287,11 @@ namespace black_cat
 		void bc_game_console::_write_logs()
 		{
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_logs_mutex);
+				core_platform::bc_mutex_guard l_guard(m_logs_mutex);
 
 				for (auto& l_log : m_logs)
 				{
-					bool l_log_enabled = m_log_types[std::log2(static_cast<bcSIZE>(l_log.first))];
-
+					const bool l_log_enabled = m_log_types[std::log2(static_cast<bcSIZE>(l_log.first))];
 					if (l_log_enabled)
 					{
 						m_imp->write_output(l_log.first, l_log.second);

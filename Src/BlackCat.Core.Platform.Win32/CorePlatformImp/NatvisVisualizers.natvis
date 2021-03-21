@@ -26,6 +26,17 @@
     </Expand>
   </Type>
 
+  <Type Name="black_cat::core::bc_span&lt;*&gt;">
+    <DisplayString>{{size = {m_size}}}</DisplayString>
+    <Expand>
+      <Item Name="[size]">m_size</Item>
+      <ArrayItems>
+        <Size>m_size</Size>
+        <ValuePointer>m_data</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
   <Type Name="black_cat::core::bc_matrix3f">
     <DisplayString>matrix3x3</DisplayString>
     <Expand>

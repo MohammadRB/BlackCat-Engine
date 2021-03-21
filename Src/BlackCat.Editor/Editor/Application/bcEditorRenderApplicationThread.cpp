@@ -63,7 +63,7 @@ namespace black_cat
 			game::bc_engine_component_parameter l_engine_component_parameters
 			(
 				32,
-				20,
+				32,
 				BC_MEMORY_MIN_ALIGN,
 				128,
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,

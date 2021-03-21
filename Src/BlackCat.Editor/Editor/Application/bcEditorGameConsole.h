@@ -5,7 +5,6 @@
 #include "Game/System/Script/bcGameConsole.h"
 #include "Game/System/Script/bcIGameConsoleImp.h"
 #include "Editor/Widget/bcWidgetConsole.h"
-
 #include <QtCore/QObject>
 #include <QtConcurrent/QtConcurrent>
 
@@ -54,8 +53,6 @@ namespace black_cat
 			void clearRecievied();
 
 			void scriptExecuted(const QString& p_string);
-
-		private:
 		};
 	}
 }

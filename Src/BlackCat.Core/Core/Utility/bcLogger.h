@@ -131,14 +131,17 @@ namespace black_cat
 
 			void unregister_listener(bci_log_listener* p_listener);
 
-		protected:
-
 		private:
 			void _log(bc_log_type p_type, const bcECHAR* p_log);
 
 			void _register_listener(bc_log_type p_types, _bc_log_listener_container&& p_listener);
 
 			map_type m_listeners;
-		};	
+		};
+
+		inline void bc_log(bc_log_type p_types, const bcECHAR* p_log)
+		{
+			bc_get_service<bc_logger>()->log(p_types, p_log);
+		}
 	}
 }

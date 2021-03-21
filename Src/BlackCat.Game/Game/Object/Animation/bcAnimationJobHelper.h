@@ -2,8 +2,10 @@
 
 #pragma once
 
+#include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "Game/Object/Animation/Job/bcSequenceAnimationJob.h"
+#include "Game/Object/Animation/Job/bcAimAnimationJob.h"
 #include "Game/Object/Animation/Job/bcModelToSkinnedAnimationJob.h"
 
 namespace black_cat
@@ -15,6 +17,8 @@ namespace black_cat
 		public:
 			template< typename TJob >
 			static TJob* find_job(bc_sequence_animation_job& p_job, bcUINT32 p_search_from = 0);
+
+			static void set_aim_world_target(bc_sequence_animation_job& p_job, const core::bc_vector3f& p_target);
 			
 			/**
 			 * \brief Find 'model to skinned' job and set world transform
@@ -37,6 +41,18 @@ namespace black_cat
 			}
 
 			return nullptr;
+		}
+
+		inline void bc_animation_job_helper::set_aim_world_target(bc_sequence_animation_job& p_job, const core::bc_vector3f& p_target)
+		{
+			auto* l_aim_job = find_job<bc_aim_animation_job>(p_job);
+			if(!l_aim_job)
+			{
+				BC_ASSERT(false);
+				return;
+			}
+
+			l_aim_job->set_world_target(p_target);
 		}
 
 		inline void bc_animation_job_helper::set_skinning_world_transform(bc_sequence_animation_job& p_job, const core::bc_matrix4f& p_world)

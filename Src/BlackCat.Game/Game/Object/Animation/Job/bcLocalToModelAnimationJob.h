@@ -38,7 +38,7 @@ namespace black_cat
 			
 			bool run(const core_platform::bc_clock::update_param& p_clock) override;
 			
-			bool run(const core_platform::bc_clock::update_param& p_clock, bcUINT32 p_from);
+			bool run(const core_platform::bc_clock::update_param& p_clock, bcINT32 p_from);
 			
 		private:
 			const bc_sub_mesh* m_mesh;

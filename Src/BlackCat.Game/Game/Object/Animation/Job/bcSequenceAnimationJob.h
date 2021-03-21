@@ -19,8 +19,6 @@ namespace black_cat
 		public:
 			explicit bc_sequence_animation_job(core::bc_span<core::bc_shared_ptr< bci_animation_job >>& p_animations);
 			
-			bc_sequence_animation_job(core::bc_span<core::bc_shared_ptr< bci_animation_job >>& p_animations, execute_callback p_callback);
-
 			bc_sequence_animation_job(bc_sequence_animation_job&&) noexcept;
 
 			~bc_sequence_animation_job() override;
@@ -43,13 +41,6 @@ namespace black_cat
 		inline bc_sequence_animation_job::bc_sequence_animation_job(core::bc_span<core::bc_shared_ptr< bci_animation_job >>& p_animations)
 			: bci_animation_job((*p_animations.begin())->get_skeleton()),
 			m_jobs(std::make_move_iterator(std::begin(p_animations)), std::make_move_iterator(std::end(p_animations)))
-		{
-		}
-
-		inline bc_sequence_animation_job::bc_sequence_animation_job(core::bc_span<core::bc_shared_ptr< bci_animation_job >>& p_animations, execute_callback p_callback)
-			: bci_animation_job((*p_animations.begin())->get_skeleton()),
-			m_jobs(std::make_move_iterator(std::begin(p_animations)), std::make_move_iterator(std::end(p_animations))),
-			m_callback(std::move(p_callback))
 		{
 		}
 
