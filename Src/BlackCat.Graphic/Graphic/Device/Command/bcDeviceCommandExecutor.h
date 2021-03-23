@@ -59,6 +59,6 @@ namespace black_cat
 		};
 
 		using bc_device_command_executor = bc_platform_device_command_executor< g_current_render_api >;
-		using bc_device_command_executor_ptr = bc_device_ref< bc_device_command_executor >;
+		using bc_device_command_executor_ref = bc_device_ref< bc_device_command_executor >;
 	}
 }

@@ -98,7 +98,7 @@ namespace black_cat
 
 	core::bc_vector<game::bc_render_pass_state_ptr> bc_cascaded_shadow_map_pass::create_render_pass_states(game::bc_render_system& p_render_system,
 		graphic::bc_texture2d p_depth,
-		const core::bc_vector<graphic::bc_depth_stencil_view_ptr>& p_depth_views)
+		const core::bc_vector<graphic::bc_depth_stencil_view_ref>& p_depth_views)
 	{
 		core::bc_vector<game::bc_render_pass_state_ptr> l_result;
 		l_result.reserve(p_depth_views.size());

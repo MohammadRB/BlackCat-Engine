@@ -9,7 +9,6 @@
 #include "Graphic/bcDeviceRef.h"
 #include "Graphic/bcRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
-#include "Graphic/bcDeviceObject.h"
 #include "Graphic/Device/bcDeviceInfo.h"
 #include "Graphic/Device/bcDeviceOutput.h"
 #include "Graphic/Resource/bcResource.h"
@@ -21,7 +20,7 @@ namespace black_cat
 		template<bc_render_api>
 		class bc_platform_buffer;
 		using bc_buffer = bc_platform_buffer< g_current_render_api >;
-		using bc_buffer_ptr = bc_device_ref< bc_buffer >;
+		using bc_buffer_ref = bc_device_ref< bc_buffer >;
 
 		template<bc_render_api>
 		class bc_platform_buffer_config;
@@ -36,14 +35,14 @@ namespace black_cat
 		template<bc_render_api>
 		class bc_platform_texture2d;
 		using bc_texture2d = bc_platform_texture2d< g_current_render_api >;
-		using bc_texture2d_ptr = bc_device_ref< bc_texture2d >;
+		using bc_texture2d_ref = bc_device_ref< bc_texture2d >;
 
 		struct bc_sampler_state_config;
 
 		template<bc_render_api>
 		class bc_platform_sampler_state;
 		using bc_sampler_state = bc_platform_sampler_state< g_current_render_api >;
-		using bc_sampler_state_ptr = bc_device_ref< bc_sampler_state >;
+		using bc_sampler_state_ref = bc_device_ref< bc_sampler_state >;
 
 		struct bc_shader_macro;
 		
@@ -55,61 +54,61 @@ namespace black_cat
 		template<bc_render_api>
 		class bc_platform_vertex_shader;
 		using bc_vertex_shader = bc_platform_vertex_shader< g_current_render_api >;
-		using bc_vertex_shader_ptr = bc_device_ref<bc_vertex_shader>;
+		using bc_vertex_shader_ref = bc_device_ref<bc_vertex_shader>;
 
 		template<bc_render_api>
 		class bc_platform_hull_shader;
 		using bc_hull_shader = bc_platform_hull_shader< g_current_render_api >;
-		using bc_hull_shader_ptr = bc_device_ref< bc_hull_shader >;
+		using bc_hull_shader_ref = bc_device_ref< bc_hull_shader >;
 
 		template<bc_render_api>
 		class bc_platform_domain_shader;
 		using bc_domain_shader = bc_platform_domain_shader< g_current_render_api >;
-		using bc_domain_shader_ptr = bc_device_ref< bc_domain_shader >;
+		using bc_domain_shader_ref = bc_device_ref< bc_domain_shader >;
 
 		template<bc_render_api>
 		class bc_platform_geometry_shader;
 		using bc_geometry_shader = bc_platform_geometry_shader< g_current_render_api >;
-		using bc_geometry_shader_ptr = bc_device_ref< bc_geometry_shader >;
+		using bc_geometry_shader_ref = bc_device_ref< bc_geometry_shader >;
 
 		template<bc_render_api>
 		class bc_platform_pixel_shader;
 		using bc_pixel_shader = bc_platform_pixel_shader< g_current_render_api >;
-		using bc_pixel_shader_ptr = bc_device_ref< bc_pixel_shader >;
+		using bc_pixel_shader_ref = bc_device_ref< bc_pixel_shader >;
 
 		template<bc_render_api>
 		class bc_platform_compute_shader;
 		using bc_compute_shader = bc_platform_compute_shader< g_current_render_api >;
-		using bc_compute_shader_ptr = bc_device_ref< bc_compute_shader >;
+		using bc_compute_shader_ref = bc_device_ref< bc_compute_shader >;
 
 		template<bc_render_api>
 		class bc_platform_device_pipeline;
 		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
-		using bc_device_pipeline_ptr = bc_device_ref< bc_device_pipeline >;
+		using bc_device_pipeline_ref = bc_device_ref< bc_device_pipeline >;
 
 		struct bc_device_pipeline_state_config;
 
 		template<bc_render_api>
 		class bc_platform_device_pipeline_state;
 		using bc_device_pipeline_state = bc_platform_device_pipeline_state< g_current_render_api >;
-		using bc_device_pipeline_state_ptr = bc_device_ref<bc_device_pipeline_state>;
+		using bc_device_pipeline_state_ref = bc_device_ref<bc_device_pipeline_state>;
 
 		struct bc_device_compute_state_config;
 
 		template<bc_render_api>
 		class bc_platform_device_compute_state;
 		using bc_device_compute_state = bc_platform_device_compute_state< g_current_render_api >;
-		using bc_device_compute_state_ptr = bc_device_ref<bc_device_compute_state>;
+		using bc_device_compute_state_ref = bc_device_ref<bc_device_compute_state>;
 
 		template<bc_render_api>
 		class bc_platform_device_command_list;
 		using bc_device_command_list = bc_platform_device_command_list< g_current_render_api >;
-		using bc_device_command_list_ptr = bc_device_ref< bc_device_command_list >;
+		using bc_device_command_list_ref = bc_device_ref< bc_device_command_list >;
 
 		template<bc_render_api>
 		class bc_platform_device_command_executor;
 		using bc_device_command_executor = bc_platform_device_command_executor< g_current_render_api >;
-		using bc_device_command_executor_ptr = bc_device_ref< bc_device_command_executor >;
+		using bc_device_command_executor_ref = bc_device_ref< bc_device_command_executor >;
 
 		template<bc_render_api>
 		class bc_platform_resource_view_config;
@@ -130,17 +129,17 @@ namespace black_cat
 		template<bc_render_api>
 		class bc_platform_resource_view;
 		using bc_resource_view = bc_platform_resource_view< g_current_render_api >;
-		using bc_resource_view_ptr = bc_device_ref< bc_resource_view >;
+		using bc_resource_view_ref = bc_device_ref< bc_resource_view >;
 
 		template<bc_render_api>
 		class bc_platform_depth_stencil_view;
 		using bc_depth_stencil_view = bc_platform_depth_stencil_view< g_current_render_api >;
-		using bc_depth_stencil_view_ptr = bc_device_ref< bc_depth_stencil_view >;
+		using bc_depth_stencil_view_ref = bc_device_ref< bc_depth_stencil_view >;
 
 		template<bc_render_api>
 		class bc_platform_render_target_view;
 		using bc_render_target_view = bc_platform_render_target_view< g_current_render_api >;
-		using bc_render_target_view_ptr = bc_device_ref<bc_render_target_view>;
+		using bc_render_target_view_ref = bc_device_ref<bc_render_target_view>;
 
 		template< bc_render_api TRenderApi >
 		class bc_platform_device_text_renderer;
@@ -193,57 +192,57 @@ namespace black_cat
 
 			bcUINT check_multi_sampling(bc_format p_textue_format, bcUINT p_sample_count) const;
 
-			bc_buffer_ptr create_buffer(bc_buffer_config& p_config, bc_subresource_data* p_data);
+			bc_buffer_ref create_buffer(bc_buffer_config& p_config, bc_subresource_data* p_data);
 
-			bc_texture2d_ptr create_texture2d(bc_texture_config& p_config, bc_subresource_data* p_data);
+			bc_texture2d_ref create_texture2d(bc_texture_config& p_config, bc_subresource_data* p_data);
 
-			bc_texture2d_ptr create_texture2d(bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format);
+			bc_texture2d_ref create_texture2d(bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format);
 
 			void save_texture2d(bc_texture2d p_texture, bc_image_format p_format, const bcECHAR* p_path);
 
-			bc_sampler_state_ptr create_sampler_state(const bc_sampler_state_config& p_config);
+			bc_sampler_state_ref create_sampler_state(const bc_sampler_state_config& p_config);
 
 			bc_compiled_shader_ptr compile_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file, const bc_shader_macro* p_macros = nullptr, bcUINT32 p_macro_count = 0);
 
-			bc_vertex_shader_ptr create_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
+			bc_vertex_shader_ref create_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
 			bc_compiled_shader_ptr compile_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file, const bc_shader_macro* p_macros = nullptr, bcUINT32 p_macro_count = 0);
 
-			bc_hull_shader_ptr create_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
+			bc_hull_shader_ref create_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
 			bc_compiled_shader_ptr compile_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file, const bc_shader_macro* p_macros = nullptr, bcUINT32 p_macro_count = 0);
 
-			bc_domain_shader_ptr create_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
+			bc_domain_shader_ref create_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
 			bc_compiled_shader_ptr compile_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file, const bc_shader_macro* p_macros = nullptr, bcUINT32 p_macro_count = 0);
 
-			bc_geometry_shader_ptr create_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
+			bc_geometry_shader_ref create_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
 			bc_compiled_shader_ptr compile_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file, const bc_shader_macro* p_macros = nullptr, bcUINT32 p_macro_count = 0);
 
-			bc_pixel_shader_ptr create_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
+			bc_pixel_shader_ref create_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
 			bc_compiled_shader_ptr compile_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file, const bc_shader_macro* p_macros = nullptr, bcUINT32 p_macro_count = 0);
 
-			bc_compute_shader_ptr create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
+			bc_compute_shader_ref create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-			bc_resource_view_ptr create_resource_view(bci_resource& p_resource, bc_resource_view_config& p_view_config);
+			bc_resource_view_ref create_resource_view(bci_resource& p_resource, bc_resource_view_config& p_view_config);
 
-			bc_depth_stencil_view_ptr create_depth_stencil_view(bci_resource& p_resource, bc_depth_stencil_view_config& p_view_config);
+			bc_depth_stencil_view_ref create_depth_stencil_view(bci_resource& p_resource, bc_depth_stencil_view_config& p_view_config);
 
-			bc_render_target_view_ptr create_render_target_view(bci_resource& p_resource, bc_render_target_view_config& p_view_config);
+			bc_render_target_view_ref create_render_target_view(bci_resource& p_resource, bc_render_target_view_config& p_view_config);
 
-			bc_device_pipeline_state_ptr create_pipeline_state(bc_device_pipeline_state_config& p_config);
+			bc_device_pipeline_state_ref create_pipeline_state(bc_device_pipeline_state_config& p_config);
 
-			bc_device_compute_state_ptr create_compute_state(bc_device_compute_state_config& p_config);
+			bc_device_compute_state_ref create_compute_state(bc_device_compute_state_config& p_config);
 
-			bc_device_pipeline_ptr get_default_pipeline();
+			bc_device_pipeline_ref get_default_pipeline();
 			
-			bc_device_pipeline_ptr create_pipeline();
+			bc_device_pipeline_ref create_pipeline();
 			
-			bc_device_command_list_ptr create_command_list();
+			bc_device_command_list_ref create_command_list();
 
-			bc_device_command_executor_ptr create_command_executor();
+			bc_device_command_executor_ref create_command_executor();
 
 			bc_device_text_renderer create_text_renderer();
 

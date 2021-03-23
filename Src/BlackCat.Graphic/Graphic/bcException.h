@@ -50,8 +50,6 @@ namespace black_cat
 
 		const bcCHAR* what() const override;
 
-	protected:
-
 	private:
 		core::bc_string m_string; // Due to existence of this string, std::system_error string will left uninitialized
 	};

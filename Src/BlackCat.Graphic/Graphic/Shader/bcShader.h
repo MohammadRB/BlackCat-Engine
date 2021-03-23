@@ -91,8 +91,6 @@ namespace black_cat
 			bc_platform_ishader& operator=(const bc_platform_ishader& p_other);
 
 			platform_pack m_pack;
-
-		private:
 		};
 
 		using bc_ishader = bc_platform_ishader< g_current_render_api >;

@@ -90,7 +90,7 @@ namespace black_cat
 		graphic::bc_device& l_device = core::bc_service_manager::get().get_service< game::bc_game_system >()->get_render_system().get_device();
 		const core::bc_string& l_function = p_context.m_parameters->get_value_throw< core::bc_string >(constant::g_param_shader_function);
 
-		graphic::bc_domain_shader_ptr l_result = l_device.create_domain_shader
+		graphic::bc_domain_shader_ref l_result = l_device.create_domain_shader
 		(
 			p_context.m_file_buffer.get(),
 			p_context.m_file_buffer_size,

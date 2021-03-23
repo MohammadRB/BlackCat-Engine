@@ -15,7 +15,7 @@ namespace black_cat
 		class bc_subresource_data
 		{
 		public:
-			explicit bc_subresource_data(void* p_data, bcUINT p_row_pitch, bcUINT p_depth_pitch)
+			bc_subresource_data(void* p_data, bcUINT p_row_pitch, bcUINT p_depth_pitch)
 				: m_data(p_data), 
 				m_row_pitch(p_row_pitch),
 				m_depth_pitch(p_depth_pitch)
@@ -70,8 +70,6 @@ namespace black_cat
 			bci_platform_resource& operator=(const bci_platform_resource& p_other);
 
 			platform_pack m_pack;
-
-		private:
 		};
 
 		using bci_resource = bci_platform_resource<g_current_render_api>;

@@ -13,8 +13,8 @@ namespace black_cat
 		{
 		public:
 			bc_editor_height_map_dx11(bc_height_map_dx11&& p_height_map,
-				graphic::bc_resource_view_ptr& p_height_map_unordered_view,
-				graphic::bc_resource_view_ptr& p_texture_map_unordered_view)
+				graphic::bc_resource_view_ref& p_height_map_unordered_view,
+				graphic::bc_resource_view_ref& p_texture_map_unordered_view)
 				: bc_height_map_dx11(std::move(p_height_map)),
 				m_height_map_unordered_view(std::move(p_height_map_unordered_view)),
 				m_texture_map_unordered_view(std::move(p_texture_map_unordered_view))
@@ -38,8 +38,8 @@ namespace black_cat
 			}
 
 		private:
-			graphic::bc_resource_view_ptr m_height_map_unordered_view;
-			graphic::bc_resource_view_ptr m_texture_map_unordered_view;
+			graphic::bc_resource_view_ref m_height_map_unordered_view;
+			graphic::bc_resource_view_ref m_texture_map_unordered_view;
 		};
 
 		class bc_editor_height_map_loader_dx11 : public bc_height_map_loader_dx11

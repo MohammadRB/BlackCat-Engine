@@ -15,8 +15,8 @@ namespace black_cat
 			bcFLOAT p_y_multiplier,
 			bcFLOAT p_physics_y_scale,
 			bc_render_state_ptr p_render_state,
-			graphic::bc_buffer_ptr p_vertex_buffer,
-			graphic::bc_buffer_ptr p_index_buffer,
+			graphic::bc_buffer_ref p_vertex_buffer,
+			graphic::bc_buffer_ref p_index_buffer,
 			core::bc_vector<bc_height_map_material> p_materials,
 			physics::bc_height_field_ref p_px_height_map,
 			void* p_px_height_map_deserialize_buffer)

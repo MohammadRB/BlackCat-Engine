@@ -37,8 +37,6 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-
 		private:
 			bc_platform_script_bytecode();
 

@@ -91,16 +91,17 @@ namespace black_cat
 			bc_scene l_result;
 			_bc_px_scene_pack_data l_scene_pack_data;
 			l_scene_pack_data.m_px_scene = m_pack.m_px_physics->createScene(p_desc.get_platform_pack().m_px_desc);
+			l_scene_pack_data.m_controller_manager = PxCreateControllerManager(*l_scene_pack_data.m_px_scene);
 			l_scene_pack_data.m_allocator = m_pack.m_allocator->m_imp.get();
 			l_scene_pack_data.m_task_dispatcher = m_pack.m_task_dispatcher->m_imp.get();
 			l_scene_pack_data.m_simulation_callback = std::move(p_desc.get_platform_pack().m_simulation_callback);
 			l_scene_pack_data.m_contact_filter_callback = std::move(p_desc.get_platform_pack().m_contact_filter_callback);
 			l_scene_pack_data.m_contact_modify_callback = std::move(p_desc.get_platform_pack().m_contact_modify_callback);
 
-			l_result.get_platform_pack().m_data = core::bc_make_shared<_bc_px_scene_pack_data>
-			(
-				std::move(l_scene_pack_data)
-			);
+			l_scene_pack_data.m_controller_manager->setOverlapRecoveryModule(true);
+			l_scene_pack_data.m_controller_manager->setPreciseSweeps(false);
+			
+			l_result.get_platform_pack().m_data = core::bc_make_shared<_bc_px_scene_pack_data>(std::move(l_scene_pack_data));
 
 			return bc_scene_ref(l_result);
 		}

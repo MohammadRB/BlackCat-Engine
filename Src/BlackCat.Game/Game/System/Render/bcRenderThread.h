@@ -161,11 +161,11 @@ namespace black_cat
 
 			void reset();
 
-			void reset(graphic::bc_device_pipeline_ptr p_pipeline, graphic::bc_device_command_executor_ptr p_command_executor);
+			void reset(graphic::bc_device_pipeline_ref p_pipeline, graphic::bc_device_command_executor_ref p_command_executor);
 
 		private:
-			graphic::bc_device_pipeline_ptr m_pipeline;
-			graphic::bc_device_command_executor_ptr m_executor;
+			graphic::bc_device_pipeline_ref m_pipeline;
+			graphic::bc_device_command_executor_ref m_executor;
 			graphic::bc_device_command_list m_command_list;
 		};
 	}

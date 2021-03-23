@@ -149,8 +149,6 @@ namespace black_cat
 				return s_object_meta_data->m_member_functions.size() - 1;
 			}
 
-		protected:
-
 		private:
 			static meta_data* s_object_meta_data;
 

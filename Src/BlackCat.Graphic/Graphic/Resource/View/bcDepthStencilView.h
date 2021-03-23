@@ -59,6 +59,6 @@ namespace black_cat
 		};
 
 		using bc_depth_stencil_view = bc_platform_depth_stencil_view< g_current_render_api >;
-		using bc_depth_stencil_view_ptr = bc_device_ref< bc_depth_stencil_view >;
+		using bc_depth_stencil_view_ref = bc_device_ref< bc_depth_stencil_view >;
 	}
 }

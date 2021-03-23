@@ -41,8 +41,6 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-
 		private:
 			bc_platform_script_prototype(bc_script_context& p_context);
 

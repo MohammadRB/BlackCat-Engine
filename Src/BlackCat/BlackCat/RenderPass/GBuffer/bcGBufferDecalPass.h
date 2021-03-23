@@ -56,16 +56,16 @@ namespace black_cat
 
 		static const bcUINT32 s_max_instance_per_draw = 300;
 		
-		graphic::bc_buffer_ptr m_cube_vb;
-		graphic::bc_buffer_ptr m_cube_ib;
-		graphic::bc_buffer_ptr m_instance_buffer;
-		graphic::bc_resource_view_ptr m_instance_buffer_view;
-		graphic::bc_resource_view_ptr m_depth_view;
-		graphic::bc_resource_view_ptr m_stencil_view;
-		graphic::bc_sampler_state_ptr m_point_sampler;
-		graphic::bc_sampler_state_ptr m_linear_sampler;
-		graphic::bc_device_pipeline_state_ptr m_device_pipeline_state;
-		graphic::bc_device_pipeline_state_ptr m_device_pipeline_state_for_non_culling;
+		graphic::bc_buffer_ref m_cube_vb;
+		graphic::bc_buffer_ref m_cube_ib;
+		graphic::bc_buffer_ref m_instance_buffer;
+		graphic::bc_resource_view_ref m_instance_buffer_view;
+		graphic::bc_resource_view_ref m_depth_view;
+		graphic::bc_resource_view_ref m_stencil_view;
+		graphic::bc_sampler_state_ref m_point_sampler;
+		graphic::bc_sampler_state_ref m_linear_sampler;
+		graphic::bc_device_pipeline_state_ref m_device_pipeline_state;
+		graphic::bc_device_pipeline_state_ref m_device_pipeline_state_for_non_culling;
 		game::bc_render_pass_state_ptr m_render_pass_state;
 		game::bc_render_pass_state_ptr m_render_pass_state_for_non_culling;
 		core::bc_unordered_map< const game::bc_mesh_material*, game::bc_render_state_ptr > m_render_states; // Use raw pointer to let materials get destroyed

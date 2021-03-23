@@ -7,6 +7,7 @@
 #include "PhysicsImp/Fundation/bcTransform.h"
 #include "PhysicsImp/Fundation/bcPhysics.h"
 #include "PhysicsImp/Fundation/bcSceneBuilder.h"
+#include "PhysicsImp/Fundation/bcCController.h"
 #include "PhysicsImp/Fundation/bcSceneDebug.h"
 #include "PhysicsImp/Collision/bcSceneQuery.h"
 #include "PhysicsImp/Body/bcActor.h"
@@ -22,6 +23,7 @@ namespace black_cat
 		struct _bc_px_scene_pack_data
 		{
 			physx::PxScene* m_px_scene;
+			physx::PxControllerManager* m_controller_manager;
 			bci_allocator* m_allocator;
 			bci_task_dispatcher* m_task_dispatcher;
 			core::bc_unique_ptr< bc_px_simulation_callback > m_simulation_callback;

@@ -77,10 +77,10 @@ namespace black_cat
 			graphic::bc_texture2d_content_ptr m_diffuse_map;
 			graphic::bc_texture2d_content_ptr m_normal_map;
 			graphic::bc_texture2d_content_ptr m_specular_map;
-			graphic::bc_resource_view_ptr m_diffuse_map_view;
-			graphic::bc_resource_view_ptr m_normal_map_view;
-			graphic::bc_resource_view_ptr m_specular_map_view;
-			graphic::bc_buffer_ptr m_parameter_cbuffer;
+			graphic::bc_resource_view_ref m_diffuse_map_view;
+			graphic::bc_resource_view_ref m_normal_map_view;
+			graphic::bc_resource_view_ref m_specular_map_view;
+			graphic::bc_buffer_ref m_parameter_cbuffer;
 		};
 
 		using bc_mesh_material_ptr = core::bc_ref_count_ptr< bc_mesh_material, _bc_mesh_material_ptr_deleter >;

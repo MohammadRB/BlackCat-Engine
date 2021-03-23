@@ -117,8 +117,6 @@ namespace black_cat
 				return l_meta_data;
 			}
 
-		protected:
-
 		private:
 			// Hold all external object meta data in one place so when runtime destroyed we can clear these data
 			core::bc_list_program< core::bc_any > m_external_object_meta_data;

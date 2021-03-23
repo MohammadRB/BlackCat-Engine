@@ -94,8 +94,8 @@ namespace black_cat
 			core::bc_vector_movable<core::bc_vector3f> m_vertices[2];
 			core::bc_vector_movable<bcUINT32> m_indices[2];
 
-			graphic::bc_buffer_ptr m_vb;
-			graphic::bc_buffer_ptr m_ib;
+			graphic::bc_buffer_ref m_vb;
+			graphic::bc_buffer_ref m_ib;
 			bcUINT32 m_last_frame_indices_count;
 			bc_render_state_ptr m_render_state;
 		};

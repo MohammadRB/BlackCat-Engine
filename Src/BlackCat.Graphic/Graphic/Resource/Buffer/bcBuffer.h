@@ -67,6 +67,6 @@ namespace black_cat
 		};
 
 		using bc_buffer = bc_platform_buffer<g_current_render_api>;
-		using bc_buffer_ptr = bc_device_ref< bc_buffer >;
+		using bc_buffer_ref = bc_device_ref< bc_buffer >;
 	}
 }

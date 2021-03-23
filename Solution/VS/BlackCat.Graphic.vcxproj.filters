@@ -183,9 +183,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\bcVertexShader.h">
       <Filter>Graphic\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcDeviceObject.h">
-      <Filter>Graphic</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcDeviceRef.h">
       <Filter>Graphic</Filter>
     </ClInclude>

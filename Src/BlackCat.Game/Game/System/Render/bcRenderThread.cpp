@@ -586,7 +586,7 @@ namespace black_cat
 			m_executor.reset();
 		}
 
-		void bc_render_thread::reset(graphic::bc_device_pipeline_ptr p_pipeline, graphic::bc_device_command_executor_ptr p_command_executor)
+		void bc_render_thread::reset(graphic::bc_device_pipeline_ref p_pipeline, graphic::bc_device_command_executor_ref p_command_executor)
 		{
 			BC_ASSERT(!m_command_list.is_valid());
 

@@ -59,6 +59,6 @@ namespace black_cat
 		};
 
 		using bc_render_target_view = bc_platform_render_target_view< g_current_render_api >;
-		using bc_render_target_view_ptr = bc_device_ref<bc_render_target_view>;
+		using bc_render_target_view_ref = bc_device_ref<bc_render_target_view>;
 	}
 }

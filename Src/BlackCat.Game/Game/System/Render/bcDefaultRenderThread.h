@@ -65,7 +65,7 @@ namespace black_cat
 
 			void reset();
 
-			void reset(graphic::bc_device_pipeline_ptr p_pipeline);
+			void reset(graphic::bc_device_pipeline_ref p_pipeline);
 		};
 	}
 }

@@ -34,8 +34,6 @@ namespace black_cat
 				return m_context;
 			}
 
-		protected:
-
 		private:
 			bc_script_context& m_context;
 			bc_script_context& m_prev_context;

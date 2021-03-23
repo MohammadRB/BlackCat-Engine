@@ -3,13 +3,10 @@
 #pragma once
 
 #include "Core/Memory/bcPtr.h"
-#include "Core/Container/bcVector.h"
 #include "PhysicsImp/PhysicsImpPCH.h"
 #include "PhysicsImp/Fundation/bcFundation.h"
-#include "PhysicsImp/Body/bcActor.h"
-#include "PhysicsImp/Shape/bcShape.h"
-#include "PhysicsImp/Joint/bcJoint.h"
 #include "PhysicsImp/Fundation/bcSimulationEventCallback.h"
+#include "PhysicsImp/Fundation/bcCControllerSimulationCallback.h"
 #include "PhysicsImp/Collision/bcContactFilterCallback.h"
 #include "PhysicsImp/Collision/bcContactModifyCallback.h"
 #include "PhysicsImp/Collision/bcSceneQuery.h"
@@ -189,6 +186,32 @@ namespace black_cat
 
 		private:
 			bc_scene_query_post_filter_callback* m_post_filter_callback;
+		};
+
+		class bc_px_controller_hit_callback : public physx::PxUserControllerHitReport
+		{
+		public:
+			explicit bc_px_controller_hit_callback(bci_ccontroller_hit_callback* p_callback);
+			
+			void onShapeHit(const physx::PxControllerShapeHit& p_hit) override;
+			
+			void onControllerHit(const physx::PxControllersHit& p_hit) override;
+			
+			void onObstacleHit(const physx::PxControllerObstacleHit& p_hit) override;
+
+		private:
+			bci_ccontroller_hit_callback* m_callback;
+		};
+
+		class bc_px_controller_collision_filter : public physx::PxControllerFilterCallback
+		{
+		public:
+			explicit bc_px_controller_collision_filter(bc_ccontroller_collision_filter_callback* p_callback);
+
+			bool filter(const physx::PxController& p_controller1, const physx::PxController& p_controller2) override;
+
+		private:
+			bc_ccontroller_collision_filter_callback* m_callback;
 		};
 
 		physx::PxFilterFlags bc_px_filter_shader(physx::PxFilterObjectAttributes p_attributes0,

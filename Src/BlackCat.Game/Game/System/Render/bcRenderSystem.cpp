@@ -115,7 +115,7 @@ namespace black_cat
 			p_task._set_cpu_task(std::move(l_cpu_task));
 		}
 
-		graphic::bc_device_pipeline_state_ptr bc_render_system::create_device_pipeline_state(const bcCHAR* p_vertex_shader_name,
+		graphic::bc_device_pipeline_state_ref bc_render_system::create_device_pipeline_state(const bcCHAR* p_vertex_shader_name,
 			const bcCHAR* p_hull_shader_name,
 			const bcCHAR* p_domain_shader_name,
 			const bcCHAR* p_geometry_shader_name,
@@ -184,7 +184,7 @@ namespace black_cat
 			return m_device.create_pipeline_state(l_pipeline_config);
 		}
 
-		graphic::bc_device_compute_state_ptr bc_render_system::create_device_compute_state(const bcCHAR* p_compute_shader_name)
+		graphic::bc_device_compute_state_ref bc_render_system::create_device_compute_state(const bcCHAR* p_compute_shader_name)
 		{
 			graphic::bc_compute_shader_content_ptr l_compute_shader = m_content_stream->find_content_throw< graphic::bc_compute_shader_content >(p_compute_shader_name);
 

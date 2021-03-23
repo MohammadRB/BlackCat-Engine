@@ -65,8 +65,6 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-
 		private:
 			template< typename T >
 			bc_platform_script_object(bc_script_context& p_context, bc_script_prototype<T>& p_prototype, T&& p_native_object) noexcept;

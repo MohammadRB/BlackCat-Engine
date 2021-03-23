@@ -89,7 +89,7 @@ namespace black_cat
 			const auto* l_mediate_component = p_context.m_actor.get_component<bc_mediate_component>();
 			const auto l_bound_box_extends = l_mediate_component->get_bound_box().get_half_extends();
 			const auto l_max_side_length = std::max(std::max(l_bound_box_extends.x, l_bound_box_extends.y), l_bound_box_extends.z) * 2;
-			m_camera_y_offset = l_max_side_length * 3.5f;
+			m_camera_y_offset = l_max_side_length * 2.5f;
 			m_camera_z_offset = l_max_side_length * -1.5f;
 			m_camera_look_at_offset = l_max_side_length * 1.75f;
 		}

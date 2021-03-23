@@ -47,8 +47,6 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-
 		private:
 			bc_platform_script_array_base(bc_script_context& p_context, bcSIZE p_length);
 
@@ -74,8 +72,6 @@ namespace black_cat
 			bc_platform_script_array_base_element& operator=(bc_script_variable p_value);
 
 			operator bc_script_variable();
-
-		protected:
 
 		private:
 			platform_pack m_pack;
@@ -104,8 +100,6 @@ namespace black_cat
 
 			element operator[](bcINT p_index);
 
-		protected:
-
 		private:
 			bc_platform_script_array(bc_script_context& p_context, bcSIZE p_length);
 
@@ -121,10 +115,6 @@ namespace black_cat
 			bc_platform_script_array_element& operator=(T p_value);
 
 			operator T();
-
-		protected:
-
-		private:
 		};
 
 		using bc_script_array_base = bc_platform_script_array_base< core_platform::g_current_platform >;

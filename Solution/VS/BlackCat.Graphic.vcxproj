@@ -9,17 +9,12 @@
       <Configuration>Develope</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Develop|Win32">
-      <Configuration>Develop</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcDeviceObject.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcDeviceRef.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcDeviceReference.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcDeviceResourceContent.h" />
@@ -126,9 +121,6 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Develop|Win32'">
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />

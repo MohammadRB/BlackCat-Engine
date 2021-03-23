@@ -189,6 +189,6 @@ namespace black_cat
 		};
 
 		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
-		using bc_device_pipeline_ptr = bc_device_ref< bc_device_pipeline >;
+		using bc_device_pipeline_ref = bc_device_ref< bc_device_pipeline >;
 	}
 }

@@ -35,11 +35,11 @@ namespace black_cat
 		
 		core::bc_vector<game::bc_render_pass_state_ptr> create_render_pass_states(game::bc_render_system& p_render_system, 
 			graphic::bc_texture2d p_depth,
-			const core::bc_vector<graphic::bc_depth_stencil_view_ptr>& p_depth_views) override;
+			const core::bc_vector<graphic::bc_depth_stencil_view_ref>& p_depth_views) override;
 
-		graphic::bc_device_pipeline_state_ptr m_leaf_pipeline_state;
-		graphic::bc_device_pipeline_state_ptr m_trunk_pipeline_state;
-		graphic::bc_sampler_state_ptr m_sampler_state;
+		graphic::bc_device_pipeline_state_ref m_leaf_pipeline_state;
+		graphic::bc_device_pipeline_state_ref m_trunk_pipeline_state;
+		graphic::bc_sampler_state_ref m_sampler_state;
 		core::bc_vector<core::bc_query_result<game::bc_scene_graph_render_state_query>> m_leaf_scene_queries;
 		core::bc_vector<core::bc_query_result<game::bc_scene_graph_render_state_query>> m_trunk_scene_queries;
 		core::bc_vector<game::bc_render_state_buffer> m_leaf_scene_query_results;

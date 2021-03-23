@@ -576,7 +576,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_buffer_ptr bc_platform_device< g_api_dx11 >::create_buffer(bc_buffer_config& p_config, bc_subresource_data* p_data)
+		bc_buffer_ref bc_platform_device< g_api_dx11 >::create_buffer(bc_buffer_config& p_config, bc_subresource_data* p_data)
 		{
 			auto* l_dx_buffer = _initialize_buffer(static_cast< bc_device* >(this), &p_config, p_data);
 
@@ -584,7 +584,7 @@ namespace black_cat
 			l_pack.m_buffer = l_dx_buffer;
 
 			bc_buffer l_buffer(l_pack);
-			bc_buffer_ptr l_buffer_ptr(l_buffer);
+			bc_buffer_ref l_buffer_ptr(l_buffer);
 
 			l_dx_buffer->Release();
 
@@ -593,7 +593,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_texture2d_ptr bc_platform_device< g_api_dx11 >::create_texture2d(bc_texture_config& p_config, bc_subresource_data* p_data)
+		bc_texture2d_ref bc_platform_device< g_api_dx11 >::create_texture2d(bc_texture_config& p_config, bc_subresource_data* p_data)
 		{
 			auto* l_dx_texture = _initialize_texture(static_cast< bc_device* >(this), &p_config, p_data);
 
@@ -601,7 +601,7 @@ namespace black_cat
 			l_pack.m_texture = l_dx_texture;
 
 			bc_texture2d l_texture2(l_pack);
-			bc_texture2d_ptr l_texture_ptr(l_texture2);
+			bc_texture2d_ref l_texture_ptr(l_texture2);
 
 			l_dx_texture->Release();
 
@@ -610,7 +610,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_texture2d_ptr bc_platform_device< g_api_dx11 >::create_texture2d(bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
+		bc_texture2d_ref bc_platform_device< g_api_dx11 >::create_texture2d(bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
 		{
 			auto* l_dx_texture = _initialize_texture(static_cast< bc_device* >(this), &p_config, p_data, p_data_size, p_format);
 			
@@ -618,7 +618,7 @@ namespace black_cat
 			l_pack.m_texture = l_dx_texture;
 
 			bc_texture2d l_texture(l_pack);
-			bc_texture2d_ptr l_texture_ptr(l_texture);
+			bc_texture2d_ref l_texture_ptr(l_texture);
 
 			l_dx_texture->Release();
 
@@ -634,7 +634,7 @@ namespace black_cat
 		 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_sampler_state_ptr bc_platform_device< g_api_dx11 >::create_sampler_state(const bc_sampler_state_config& p_config)
+		bc_sampler_state_ref bc_platform_device< g_api_dx11 >::create_sampler_state(const bc_sampler_state_config& p_config)
 		{
 			ID3D11SamplerState* l_dx_sampler;
 			D3D11_SAMPLER_DESC l_dx_sampler_desc;
@@ -659,7 +659,7 @@ namespace black_cat
 			l_pack.m_sampler_state = l_dx_sampler;
 
 			bc_sampler_state l_sampler(l_pack);
-			bc_sampler_state_ptr l_sampler_ptr(l_sampler);
+			bc_sampler_state_ref l_sampler_ptr(l_sampler);
 
 			l_dx_sampler->Release();
 
@@ -706,7 +706,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_vertex_shader_ptr bc_platform_device< g_api_dx11 >::create_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		bc_vertex_shader_ref bc_platform_device< g_api_dx11 >::create_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto l_dx_shader = _initialize_vertex_shader(static_cast< bc_device* >(this), p_data, p_data_size, p_function);
 
@@ -715,7 +715,7 @@ namespace black_cat
 			l_pack.m_shader = l_dx_shader.second;
 
 			bc_vertex_shader l_sahder(l_pack);
-			bc_vertex_shader_ptr l_sahder_ptr(l_sahder);
+			bc_vertex_shader_ref l_sahder_ptr(l_sahder);
 
 			l_dx_shader.first->Release();
 			l_dx_shader.second->Release();
@@ -763,7 +763,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_hull_shader_ptr bc_platform_device< g_api_dx11 >::create_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		bc_hull_shader_ref bc_platform_device< g_api_dx11 >::create_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto* l_dx_shader = _initialize_hull_shader(static_cast< bc_device* >(this), p_data, p_data_size, p_function);
 
@@ -771,7 +771,7 @@ namespace black_cat
 			l_pack.m_shader = l_dx_shader;
 
 			bc_hull_shader l_shader(l_pack);
-			bc_hull_shader_ptr l_shader_ptr(l_shader);
+			bc_hull_shader_ref l_shader_ptr(l_shader);
 
 			l_dx_shader->Release();
 
@@ -818,7 +818,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_domain_shader_ptr bc_platform_device< g_api_dx11 >::create_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		bc_domain_shader_ref bc_platform_device< g_api_dx11 >::create_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto* l_dx_shader = _initialize_domain_shader(static_cast< bc_device* >(this), p_data, p_data_size, p_function);
 
@@ -826,7 +826,7 @@ namespace black_cat
 			l_pack.m_shader = l_dx_shader;
 
 			bc_domain_shader l_shader(l_pack);
-			bc_domain_shader_ptr l_shader_ptr(l_shader);
+			bc_domain_shader_ref l_shader_ptr(l_shader);
 
 			l_dx_shader->Release();
 
@@ -873,7 +873,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_geometry_shader_ptr bc_platform_device< g_api_dx11 >::create_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		bc_geometry_shader_ref bc_platform_device< g_api_dx11 >::create_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto* l_dx_shader = _initialize_geometry_shader(static_cast< bc_device* >(this), p_data, p_data_size, p_function);
 
@@ -881,7 +881,7 @@ namespace black_cat
 			l_pack.m_shader = l_dx_shader;
 
 			bc_geometry_shader l_shader(l_pack);
-			bc_geometry_shader_ptr l_shader_ptr(l_shader);
+			bc_geometry_shader_ref l_shader_ptr(l_shader);
 
 			l_dx_shader->Release();
 
@@ -928,7 +928,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_pixel_shader_ptr bc_platform_device< g_api_dx11 >::create_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		bc_pixel_shader_ref bc_platform_device< g_api_dx11 >::create_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto* l_dx_shader = _initialize_pixel_shader(static_cast< bc_device* >(this), p_data, p_data_size, p_function);
 
@@ -936,7 +936,7 @@ namespace black_cat
 			l_pack.m_shader = l_dx_shader;
 
 			bc_pixel_shader l_shader(l_pack);
-			bc_pixel_shader_ptr l_shader_ptr(l_shader);
+			bc_pixel_shader_ref l_shader_ptr(l_shader);
 
 			l_dx_shader->Release();
 
@@ -983,7 +983,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_compute_shader_ptr bc_platform_device< g_api_dx11 >::create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		bc_compute_shader_ref bc_platform_device< g_api_dx11 >::create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
 			auto* l_dx_shader = _initialize_compute_shader(static_cast< bc_device* >(this), p_data, p_data_size, p_function);
 
@@ -991,7 +991,7 @@ namespace black_cat
 			l_pack.m_shader = l_dx_shader;
 
 			bc_compute_shader l_shader(l_pack);
-			bc_compute_shader_ptr l_shader_ptr(l_shader);
+			bc_compute_shader_ref l_shader_ptr(l_shader);
 
 			l_dx_shader->Release();
 
@@ -1000,7 +1000,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_resource_view_ptr bc_platform_device< g_api_dx11 >::create_resource_view(bci_resource& p_resource, bc_resource_view_config& p_view_config)
+		bc_resource_view_ref bc_platform_device< g_api_dx11 >::create_resource_view(bci_resource& p_resource, bc_resource_view_config& p_view_config)
 		{
 			auto* l_dx_view = _initialize_shader_view(static_cast< bc_device* >(this), &p_resource, &p_view_config);
 
@@ -1022,7 +1022,7 @@ namespace black_cat
 				l_view = bc_resource_view(l_pack, bc_resource_view_type::unordered);
 			}
 
-			bc_resource_view_ptr l_view_ptr(l_view);
+			bc_resource_view_ref l_view_ptr(l_view);
 
 			l_dx_view->Release();
 
@@ -1031,7 +1031,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_depth_stencil_view_ptr bc_platform_device< g_api_dx11 >::create_depth_stencil_view(bci_resource& p_resource, bc_depth_stencil_view_config& p_view_config)
+		bc_depth_stencil_view_ref bc_platform_device< g_api_dx11 >::create_depth_stencil_view(bci_resource& p_resource, bc_depth_stencil_view_config& p_view_config)
 		{
 			auto* l_dx_view = _initialize_depth_stencil_view(static_cast< bc_device* >(this), &p_resource, &p_view_config);
 
@@ -1039,7 +1039,7 @@ namespace black_cat
 			l_pack.m_depth_stencil_view = l_dx_view;
 
 			bc_depth_stencil_view l_depth_view(l_pack);
-			bc_depth_stencil_view_ptr l_depth_view_ptr(l_depth_view);
+			bc_depth_stencil_view_ref l_depth_view_ptr(l_depth_view);
 
 			l_dx_view->Release();
 
@@ -1048,7 +1048,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_render_target_view_ptr bc_platform_device< g_api_dx11 >::create_render_target_view(bci_resource& p_resource, bc_render_target_view_config& p_view_config)
+		bc_render_target_view_ref bc_platform_device< g_api_dx11 >::create_render_target_view(bci_resource& p_resource, bc_render_target_view_config& p_view_config)
 		{
 			auto* l_dx_view = _initialize_render_target_view(static_cast< bc_device* >(this), &p_resource, &p_view_config);
 
@@ -1056,7 +1056,7 @@ namespace black_cat
 			l_pack.m_render_target_view = l_dx_view;
 
 			bc_render_target_view l_render_view(l_pack);
-			bc_render_target_view_ptr l_render_view_ptr(l_render_view);
+			bc_render_target_view_ref l_render_view_ptr(l_render_view);
 
 			l_dx_view->Release();
 
@@ -1065,7 +1065,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_pipeline_state_ptr bc_platform_device< g_api_dx11 >::create_pipeline_state(bc_device_pipeline_state_config& p_config)
+		bc_device_pipeline_state_ref bc_platform_device< g_api_dx11 >::create_pipeline_state(bc_device_pipeline_state_config& p_config)
 		{
 			ID3D11BlendState* l_dx_blend_state = nullptr;
 			ID3D11DepthStencilState* l_dx_depth_stencil = nullptr;
@@ -1160,7 +1160,7 @@ namespace black_cat
 			l_pack.m_pipeline_state_proxy = l_pipeline_state_poxy;
 
 			bc_device_pipeline_state l_pipeline_state(l_pack);
-			bc_device_pipeline_state_ptr l_pipeline_state_ptr(l_pipeline_state);
+			bc_device_pipeline_state_ref l_pipeline_state_ptr(l_pipeline_state);
 
 			l_pipeline_state_poxy->m_blend_state->Release();
 			l_pipeline_state_poxy->m_depth_stencil_state->Release();
@@ -1175,7 +1175,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_compute_state_ptr bc_platform_device< g_api_dx11 >::create_compute_state(bc_device_compute_state_config& p_config)
+		bc_device_compute_state_ref bc_platform_device< g_api_dx11 >::create_compute_state(bc_device_compute_state_config& p_config)
 		{
 			/*auto l_compute_state_proxy = allocate< bc_device_compute_state_proxy >();*/
 			auto* l_compute_state_proxy = BC_NEW(bc_device_compute_state_proxy, core::bc_alloc_type::unknown);
@@ -1186,14 +1186,14 @@ namespace black_cat
 			l_pack.m_compute_state_proxy = l_compute_state_proxy;
 
 			bc_device_compute_state l_compute_state(l_pack);
-			bc_device_compute_state_ptr l_compute_state_ptr(l_compute_state);
+			bc_device_compute_state_ref l_compute_state_ptr(l_compute_state);
 
 			return l_compute_state_ptr;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_pipeline_ptr bc_platform_device< g_api_dx11 >::get_default_pipeline()
+		bc_device_pipeline_ref bc_platform_device< g_api_dx11 >::get_default_pipeline()
 		{
 			auto* l_pipeline_proxy = BC_NEW(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
 
@@ -1212,7 +1212,7 @@ namespace black_cat
 			l_pack.m_pipeline_proxy->m_context_type = m_pack.m_immediate_context->GetType();
 
 			bc_device_pipeline l_pipeline(l_pack);
-			bc_device_pipeline_ptr l_pipeline_ptr(l_pipeline);
+			bc_device_pipeline_ref l_pipeline_ptr(l_pipeline);
 
 			l_query->Release();
 
@@ -1221,7 +1221,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_pipeline_ptr bc_platform_device< g_api_dx11 >::create_pipeline()
+		bc_device_pipeline_ref bc_platform_device< g_api_dx11 >::create_pipeline()
 		{
 			auto* l_pipeline_proxy = BC_NEW(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
 
@@ -1242,7 +1242,7 @@ namespace black_cat
 			l_pack.m_pipeline_proxy->m_context_type = l_context->GetType();
 
 			bc_device_pipeline l_pipeline(l_pack);
-			bc_device_pipeline_ptr l_pipeline_ptr(l_pipeline);
+			bc_device_pipeline_ref l_pipeline_ptr(l_pipeline);
 
 			l_query->Release();
 			l_context->Release();
@@ -1252,7 +1252,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_command_list_ptr bc_platform_device< g_api_dx11 >::create_command_list()
+		bc_device_command_list_ref bc_platform_device< g_api_dx11 >::create_command_list()
 		{
 			auto l_command_list_proxy = BC_NEW(bc_device_command_list_proxy, core::bc_alloc_type::unknown);
 
@@ -1261,20 +1261,20 @@ namespace black_cat
 			l_pack.m_command_list_proxy->m_command_list = nullptr;
 
 			bc_device_command_list l_command_list(l_pack);
-			bc_device_command_list_ptr l_command_list_ptr(l_command_list);
+			bc_device_command_list_ref l_command_list_ptr(l_command_list);
 
 			return l_command_list_ptr;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_command_executor_ptr bc_platform_device< g_api_dx11 >::create_command_executor()
+		bc_device_command_executor_ref bc_platform_device< g_api_dx11 >::create_command_executor()
 		{
 			bc_device_command_executor::platform_pack l_pack;
 			l_pack.m_device = this;
 			bc_device_command_executor l_pointer(l_pack);
 
-			return bc_device_command_executor_ptr(l_pointer);
+			return bc_device_command_executor_ref(l_pointer);
 		}
 
 		template< >

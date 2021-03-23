@@ -13,14 +13,6 @@
       <Configuration>Develope</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Develop|Win32">
-      <Configuration>Develop</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Develop|x64">
-      <Configuration>Develop</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -78,12 +70,6 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Develop|Win32'">
-    <PlatformToolset>v142</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">
-    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -156,7 +142,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CommonDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3DEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CookingDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3ExtensionsDEBUG.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PxFoundationDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PxPvdSDKDEBUG_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CommonDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3DEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CookingDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3ExtensionsDEBUG.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PxFoundationDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PxPvdSDKDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CharacterKinematicDEBUG_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist ..\..\BC_SDK\Include\PhysicsImp\ mkdir ..\..\BC_SDK\Include\PhysicsImp\
@@ -194,7 +180,7 @@ xcopy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\Physi
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CommonDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3DEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CookingDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3ExtensionsDEBUG.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PxFoundationDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PxPvdSDKDEBUG_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CommonDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3DEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CookingDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3ExtensionsDEBUG.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PxFoundationDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PxPvdSDKDEBUG_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CharacterKinematicDEBUG_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist ..\..\BC_SDK\Include\PhysicsImp\ mkdir ..\..\BC_SDK\Include\PhysicsImp\
@@ -296,7 +282,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Common_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Cooking_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Extensions.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PxFoundation_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Common_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Cooking_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3Extensions.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PxFoundation_x86.lib;3rdParty\PhysX\Lib\$(Platform)_$(Configuration)\PhysX3CharacterKinematic_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist ..\..\BC_SDK\Include\PhysicsImp\ mkdir ..\..\BC_SDK\Include\PhysicsImp\
@@ -366,6 +352,8 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcContactModifyCallback.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcSceneQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcShapeQuery.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcCController.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcCControllerSimulationCallback.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcFundation.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcMaterial.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcMemoryBuffer.h" />
@@ -414,6 +402,8 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcContactModifyCallback.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcSceneQuery.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Collision\bcShapeQuery.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcCController.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcCControllerSimulationCallback.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcMaterial.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcMemoryBuffer.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcPhysics.cpp" />

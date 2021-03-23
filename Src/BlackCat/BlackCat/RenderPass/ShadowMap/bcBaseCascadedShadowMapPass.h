@@ -20,9 +20,9 @@ namespace black_cat
 	class _bc_cascaded_shadow_map_light_state
 	{
 	public:
-		graphic::bc_texture2d_ptr m_depth_buffer;
-		graphic::bc_resource_view_ptr m_depth_buffer_resource_view;
-		core::bc_vector<graphic::bc_depth_stencil_view_ptr> m_depth_buffer_views;
+		graphic::bc_texture2d_ref m_depth_buffer;
+		graphic::bc_resource_view_ref m_depth_buffer_resource_view;
+		core::bc_vector<graphic::bc_depth_stencil_view_ref> m_depth_buffer_views;
 		core::bc_vector<core::bc_vector<game::bc_render_pass_state_ptr>> m_render_pass_states;
 		core::bc_vector_movable<core::bc_matrix4f> m_last_view_projections;
 	};
@@ -162,7 +162,7 @@ namespace black_cat
 
 		virtual core::bc_vector<game::bc_render_pass_state_ptr> create_render_pass_states(game::bc_render_system& p_render_system,
 			graphic::bc_texture2d p_depth,
-			const core::bc_vector<graphic::bc_depth_stencil_view_ptr>& p_depth_views) = 0;
+			const core::bc_vector<graphic::bc_depth_stencil_view_ref>& p_depth_views) = 0;
 
 		_bc_cascaded_shadow_map_light_state _create_light_instance(game::bc_render_system& p_render_system);
 

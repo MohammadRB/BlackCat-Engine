@@ -37,14 +37,14 @@ namespace black_cat
 	private:
 		constant::bc_render_pass_variable_t m_input_texture;
 
-		graphic::bc_buffer_ptr m_vertices_buffer;
-		graphic::bc_buffer_ptr m_indices_buffer;
+		graphic::bc_buffer_ref m_vertices_buffer;
+		graphic::bc_buffer_ref m_indices_buffer;
 
-		graphic::bc_sampler_state_ptr m_sampler_state;
-		graphic::bc_render_target_view_ptr m_back_buffer_view;
-		graphic::bc_resource_view_ptr m_input_texture_view;
+		graphic::bc_sampler_state_ref m_sampler_state;
+		graphic::bc_render_target_view_ref m_back_buffer_view;
+		graphic::bc_resource_view_ref m_input_texture_view;
 
-		graphic::bc_device_pipeline_state_ptr m_pipeline_state;
+		graphic::bc_device_pipeline_state_ref m_pipeline_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;
 		game::bc_render_state_ptr m_render_state;
 	};

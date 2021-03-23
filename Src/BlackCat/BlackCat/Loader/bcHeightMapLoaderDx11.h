@@ -22,17 +22,17 @@ namespace black_cat
 			bcUINT16 p_distance_detail,
 			bcUINT16 p_height_detail,
 			game::bc_render_state_ptr p_render_state,
-			graphic::bc_buffer_ptr p_vertex_buffer,
-			graphic::bc_buffer_ptr p_index_buffer,
-			graphic::bc_texture2d_ptr p_height_map,
-			graphic::bc_resource_view_ptr p_height_map_view,
+			graphic::bc_buffer_ref p_vertex_buffer,
+			graphic::bc_buffer_ref p_index_buffer,
+			graphic::bc_texture2d_ref p_height_map,
+			graphic::bc_resource_view_ref p_height_map_view,
 			graphic::bc_texture2d_content_ptr p_texture_map,
-			graphic::bc_resource_view_ptr p_texture_map_view,
-			graphic::bc_buffer_ptr p_parameter_cbuffer,
-			graphic::bc_buffer_ptr p_chunk_info_buffer,
-			graphic::bc_resource_view_ptr p_chunk_info_view,
-			graphic::bc_resource_view_ptr p_chunk_info_unordered_view,
-			graphic::bc_buffer_ptr p_material_properties_buffer,
+			graphic::bc_resource_view_ref p_texture_map_view,
+			graphic::bc_buffer_ref p_parameter_cbuffer,
+			graphic::bc_buffer_ref p_chunk_info_buffer,
+			graphic::bc_resource_view_ref p_chunk_info_view,
+			graphic::bc_resource_view_ref p_chunk_info_unordered_view,
+			graphic::bc_buffer_ref p_material_properties_buffer,
 			core::bc_vector<game::bc_height_map_material> p_materials,
 			physics::bc_height_field_ref p_px_height_map,
 			void* p_px_height_map_deserialize_buffer);
@@ -87,15 +87,15 @@ namespace black_cat
 		bcUINT16 m_distance_detail;
 		bcUINT16 m_height_detail;
 
-		graphic::bc_texture2d_ptr m_height_map;
-		graphic::bc_resource_view_ptr m_height_map_view;
+		graphic::bc_texture2d_ref m_height_map;
+		graphic::bc_resource_view_ref m_height_map_view;
 		graphic::bc_texture2d_content_ptr m_texture_map;
-		graphic::bc_resource_view_ptr m_texture_map_view;
-		graphic::bc_buffer_ptr m_parameter_cbuffer;
-		graphic::bc_buffer_ptr m_chunk_info_buffer;
-		graphic::bc_resource_view_ptr m_chunk_info_view;
-		graphic::bc_resource_view_ptr m_chunk_info_unordered_view;
-		graphic::bc_buffer_ptr m_material_properties_buffer;
+		graphic::bc_resource_view_ref m_texture_map_view;
+		graphic::bc_buffer_ref m_parameter_cbuffer;
+		graphic::bc_buffer_ref m_chunk_info_buffer;
+		graphic::bc_resource_view_ref m_chunk_info_view;
+		graphic::bc_resource_view_ref m_chunk_info_unordered_view;
+		graphic::bc_buffer_ref m_material_properties_buffer;
 	};
 
 	class BC_DLL bc_height_map_loader_dx11 : public core::bc_base_content_loader

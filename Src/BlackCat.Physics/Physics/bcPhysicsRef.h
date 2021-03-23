@@ -45,12 +45,16 @@ namespace black_cat
 			bc_platform_physics_ref& operator=(bc_platform_physics_ref&& p_other) noexcept;
 
 			type* operator->() noexcept;
+			
+			const type* operator->() const noexcept;
 
-			type& operator*();
+			type& operator*() noexcept;
+			
+			const type& operator*() const noexcept;
 
-			type& get();
+			type& get() noexcept;
 
-			const type& get() const;
+			const type& get() const noexcept;
 
 			void reset();
 

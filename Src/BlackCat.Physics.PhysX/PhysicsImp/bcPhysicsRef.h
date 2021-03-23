@@ -15,6 +15,10 @@ namespace black_cat
 		template< bc_physics_api TApi >
 		class bc_platform_scene;
 		using bc_scene = bc_platform_scene< g_current_physics_api >;
+
+		template< bc_physics_api TApi >
+		class bc_platform_ccontroller;
+		using bc_ccontroller = bc_platform_ccontroller< g_current_physics_api >;
 		
 		template< class TObject >
 		struct bc_platform_physics_ref_pack<g_api_physx, TObject>
@@ -61,33 +65,47 @@ namespace black_cat
 			return &get();
 		}
 
+		template<bc_physics_api TApi, class TObject>
+		const typename bc_platform_physics_ref<TApi, TObject>::type* bc_platform_physics_ref<TApi, TObject>::operator->() const noexcept
+		{
+			return &get();
+		}
+
 		template< bc_physics_api TApi, class TObject >
-		typename bc_platform_physics_ref<TApi, TObject>::type& bc_platform_physics_ref<TApi, TObject>::operator*()
+		typename bc_platform_physics_ref<TApi, TObject>::type& bc_platform_physics_ref<TApi, TObject>::operator*() noexcept
+		{
+			return get();
+		}
+
+		template<bc_physics_api TApi, class TObject>
+		const typename bc_platform_physics_ref<TApi, TObject>::type& bc_platform_physics_ref<TApi, TObject>::operator*() const noexcept
 		{
 			return get();
 		}
 
 		template< bc_physics_api TApi, class TObject >
-		typename bc_platform_physics_ref<TApi, TObject>::type& bc_platform_physics_ref<TApi, TObject>::get()
+		typename bc_platform_physics_ref<TApi, TObject>::type& bc_platform_physics_ref<TApi, TObject>::get() noexcept
 		{
 			return m_pack.m_object;
 		}
 
 		template< bc_physics_api TApi, class TObject >
-		const typename bc_platform_physics_ref<TApi, TObject>::type& bc_platform_physics_ref<TApi, TObject>::get() const
+		const typename bc_platform_physics_ref<TApi, TObject>::type& bc_platform_physics_ref<TApi, TObject>::get() const noexcept
 		{
-			return const_cast<bc_platform_physics_ref&>(*this).get();
+			return m_pack.m_object;
 		}
 
 		template< bc_physics_api TApi, class TObject >
 		void bc_platform_physics_ref<TApi, TObject>::reset()
 		{
 			auto& l_reference = static_cast<bc_platform_physics_reference<TApi>&>(m_pack.m_object);
-			if (l_reference.is_valid())
+			if (!l_reference.is_valid())
 			{
-				_release_px_reference(l_reference, std::is_same<bc_platform_scene<TApi>, TObject>());
-				m_pack.m_object = type();
+				return;
 			}
+
+			_release_px_reference(m_pack.m_object);
+			m_pack.m_object = type();
 		}
 
 		template< bc_physics_api TApi, class TObject >
@@ -96,9 +114,11 @@ namespace black_cat
 			reset();
 			m_pack.m_object = p_object;
 		}
-		
-		void BC_PHYSICSIMP_DLL _release_px_reference(bc_platform_physics_reference<g_api_physx>& p_reference, std::true_type p_is_scene);
 
-		void BC_PHYSICSIMP_DLL _release_px_reference(bc_platform_physics_reference<g_api_physx>& p_reference, std::false_type p_is_scene);
+		void BC_PHYSICSIMP_DLL _release_px_reference(bc_platform_scene<g_api_physx>& p_reference);
+
+		void BC_PHYSICSIMP_DLL _release_px_reference(bc_platform_ccontroller<g_api_physx>& p_reference);
+		
+		void BC_PHYSICSIMP_DLL _release_px_reference(bc_platform_physics_reference<g_api_physx>& p_reference);
 	}
 }

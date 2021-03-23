@@ -48,6 +48,31 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
+		bc_ccontroller_ref bc_platform_scene<g_api_physx>::create_ccontroller(const bc_ccontroller_desc& p_desc)
+		{
+			auto l_hit_callback = p_desc.m_hit_callback ? core::bc_make_shared<bc_px_controller_hit_callback>(p_desc.m_hit_callback) : nullptr;
+
+			physx::PxCapsuleControllerDesc l_px_desc;
+			l_px_desc.setToDefault();
+			l_px_desc.position = bc_to_right_hand_ex(p_desc.m_position);
+			l_px_desc.upDirection = bc_to_right_hand(p_desc.m_up);
+			l_px_desc.slopeLimit = p_desc.m_slope_limit;
+			l_px_desc.contactOffset = p_desc.m_contact_offset;
+			l_px_desc.stepOffset = p_desc.m_step_offset;
+			l_px_desc.density = p_desc.m_density;
+			l_px_desc.height = p_desc.m_capsule_height;
+			l_px_desc.radius = p_desc.m_capsule_radius;
+			l_px_desc.reportCallback = l_hit_callback.get();
+
+			bc_ccontroller l_controller;
+			l_controller.get_platform_pack().m_controller = m_pack.m_data->m_controller_manager->createController(l_px_desc);
+			l_controller.get_platform_pack().m_hit_callback = std::move(l_hit_callback);
+
+			return bc_ccontroller_ref(l_controller);
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
 		void bc_platform_scene< g_api_physx >::add_actor(bc_actor& p_actor)
 		{
 			auto* l_px_actor = static_cast< physx::PxActor* >
@@ -60,14 +85,14 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_scene< g_api_physx >::remove_actor(bc_actor& p_actor, bool wake_on_lost_touch)
+		void bc_platform_scene< g_api_physx >::remove_actor(bc_actor& p_actor, bool p_wake_on_lost_touch)
 		{
 			auto* l_px_actor = static_cast< physx::PxActor* >
 			(
 				static_cast< bc_physics_reference& >(p_actor).get_platform_pack().m_px_object
 			);
 
-			m_pack.m_data->m_px_scene->removeActor(*l_px_actor, wake_on_lost_touch);
+			m_pack.m_data->m_px_scene->removeActor(*l_px_actor, p_wake_on_lost_touch);
 		}
 
 		template<>
@@ -175,14 +200,14 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_scene< g_api_physx >::update(const core_platform::bc_clock::update_param& p_time)
+		void bc_platform_scene< g_api_physx >::update(const core_platform::bc_clock::update_param& p_clock)
 		{
 			constexpr bcUINT32 l_block_size = 16 * 1024;
 			constexpr bcUINT32 l_num_block_to_alloc = 10;
 
 			void* l_temp_buffer = m_pack.m_data->m_allocator->temp_allocate(l_block_size * l_num_block_to_alloc, __FILE__, __LINE__);
 
-			m_pack.m_data->m_px_scene->simulate(p_time.m_fixed_elapsed_second, nullptr, l_temp_buffer, l_block_size * l_num_block_to_alloc);
+			m_pack.m_data->m_px_scene->simulate(p_clock.m_fixed_elapsed_second, nullptr, l_temp_buffer, l_block_size * l_num_block_to_alloc);
 
 			m_pack.m_data->m_allocator->temp_free(l_temp_buffer);
 		}

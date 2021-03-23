@@ -505,7 +505,7 @@ namespace black_cat
 				}
 
 				graphic::bc_subresource_data l_color_map_init_data(&p_color, sizeof(core::bc_vector4f), 0);
-				graphic::bc_texture2d_ptr l_color_map_texture;
+				graphic::bc_texture2d_ref l_color_map_texture;
 
 				l_color_map_texture = m_render_system->get_device().create_texture2d
 				(

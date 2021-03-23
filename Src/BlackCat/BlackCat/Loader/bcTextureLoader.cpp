@@ -92,7 +92,7 @@ namespace black_cat
 
 		l_config = l_config ? l_config : &s_default_config;
 
-		graphic::bc_texture2d_ptr l_result = l_device.create_texture2d
+		graphic::bc_texture2d_ref l_result = l_device.create_texture2d
 		(
 			*const_cast<graphic::bc_texture_config*>(l_config),
 			p_context.m_file_buffer.get(),

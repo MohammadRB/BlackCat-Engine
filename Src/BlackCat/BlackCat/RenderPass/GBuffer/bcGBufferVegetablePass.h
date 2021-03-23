@@ -33,9 +33,9 @@ namespace black_cat
 		void destroy(game::bc_render_system& p_render_system) override;
 
 	private:
-		graphic::bc_sampler_state_ptr m_sampler_state;
-		graphic::bc_device_pipeline_state_ptr m_leaf_pipeline_state;
-		graphic::bc_device_pipeline_state_ptr m_trunk_pipeline_state;
+		graphic::bc_sampler_state_ref m_sampler_state;
+		graphic::bc_device_pipeline_state_ref m_leaf_pipeline_state;
+		graphic::bc_device_pipeline_state_ref m_trunk_pipeline_state;
 		game::bc_render_pass_state_ptr m_leaf_render_pass_state;
 		game::bc_render_pass_state_ptr m_trunk_render_pass_state;
 

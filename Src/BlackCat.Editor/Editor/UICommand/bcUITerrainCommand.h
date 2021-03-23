@@ -16,9 +16,9 @@ namespace black_cat
 		class bc_ui_terrain_command_state : public bc_iui_command_state
 		{
 		public:
-			graphic::bc_buffer_ptr m_parameter_cbuffer;
-			graphic::bc_device_compute_state_ptr m_device_compute_state;
-			graphic::bc_device_command_list_ptr m_device_command_list;
+			graphic::bc_buffer_ref m_parameter_cbuffer;
+			graphic::bc_device_compute_state_ref m_device_compute_state;
+			graphic::bc_device_command_list_ref m_device_command_list;
 		};
 
 		class bc_ui_terrain_command_update_context : public bc_ui_command_update_context

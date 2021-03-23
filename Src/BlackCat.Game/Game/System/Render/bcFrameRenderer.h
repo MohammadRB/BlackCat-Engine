@@ -110,8 +110,8 @@ namespace black_cat
 			bc_render_thread_manager* m_thread_manager;
 			bc_render_pass_manager* m_render_pass_manager;
 
-			graphic::bc_buffer_ptr m_global_cbuffer;
-			graphic::bc_buffer_ptr m_per_object_cbuffer;
+			graphic::bc_buffer_ref m_global_cbuffer;
+			graphic::bc_buffer_ref m_per_object_cbuffer;
 			graphic::bc_constant_buffer_parameter m_global_cbuffer_parameter;
 			graphic::bc_constant_buffer_parameter m_per_object_cbuffer_parameter;
 

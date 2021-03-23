@@ -35,14 +35,14 @@ namespace black_cat
 		void destroy(game::bc_render_system& p_render_system) override;
 
 	private:
-		graphic::bc_texture2d_ptr m_depth_stencil;
-		graphic::bc_texture2d_ptr m_diffuse_map;
-		graphic::bc_texture2d_ptr m_normal_map;
-		graphic::bc_texture2d_ptr m_specular_map;
-		graphic::bc_depth_stencil_view_ptr m_depth_stencil_view;
-		graphic::bc_render_target_view_ptr m_diffuse_map_view;
-		graphic::bc_render_target_view_ptr m_normal_map_view;
-		graphic::bc_render_target_view_ptr m_specular_map_view;
+		graphic::bc_texture2d_ref m_depth_stencil;
+		graphic::bc_texture2d_ref m_diffuse_map;
+		graphic::bc_texture2d_ref m_normal_map;
+		graphic::bc_texture2d_ref m_specular_map;
+		graphic::bc_depth_stencil_view_ref m_depth_stencil_view;
+		graphic::bc_render_target_view_ref m_diffuse_map_view;
+		graphic::bc_render_target_view_ref m_normal_map_view;
+		graphic::bc_render_target_view_ref m_specular_map_view;
 
 		core::bc_query_result< game::bc_scene_light_query > m_lights_query;
 		core::bc_vector_movable< game::bc_light_instance > m_lights_query_result;

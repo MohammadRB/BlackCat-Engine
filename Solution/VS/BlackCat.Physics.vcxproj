@@ -13,14 +13,6 @@
       <Configuration>Develope</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Develop|Win32">
-      <Configuration>Develop</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Develop|x64">
-      <Configuration>Develop</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -53,6 +45,8 @@
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Collision\bcQueryGroup.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Collision\bcSceneQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Collision\bcShapeQuery.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcCController.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcCControllerSimulationCallback.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcFundation.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcMaterial.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcMemoryBuffer.h" />
@@ -150,12 +144,6 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Develop|Win32'">
-    <PlatformToolset>v142</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">
-    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">

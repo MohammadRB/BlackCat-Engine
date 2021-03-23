@@ -294,10 +294,10 @@ namespace black_cat
 		core::bc_vector_movable< game::bc_vertex_pos_tex_nor_tan_bon > l_skinned_vertices;
 		core::bc_vector_movable< bcUINT16 > l_16bit_indices;
 		core::bc_vector_movable< bcUINT32 > l_32bit_indices;
-		graphic::bc_buffer_ptr l_vertex_buffer;
-		graphic::bc_buffer_ptr l_index_buffer;
+		graphic::bc_buffer_ref l_vertex_buffer;
+		graphic::bc_buffer_ref l_index_buffer;
 		bcSIZE l_index_count = 0;
-		graphic::bc_buffer_ptr l_cbuffer;
+		graphic::bc_buffer_ref l_cbuffer;
 		game::bc_mesh_material_description l_material;
 
 		bool l_need_32bit_indices = p_ai_mesh.mNumFaces * 3 > std::numeric_limits< bcUINT16 >::max();

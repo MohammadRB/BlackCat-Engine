@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "Core/Utility/bcRefCountPtr.h"
-#include "Core/Container/bcVector.h"
 #include "Physics/bcPhysicsReference.h"
 #include "PhysicsImp/PhysicsImpPCH.h"
 

@@ -35,8 +35,8 @@ namespace black_cat
 			core::bc_vector_movable< bcUINT32 > m_32bit_indices;
 			physics::bc_bound_box m_bound_box;
 
-			graphic::bc_buffer_ptr m_vertex_buffer;
-			graphic::bc_buffer_ptr m_index_buffer;
+			graphic::bc_buffer_ref m_vertex_buffer;
+			graphic::bc_buffer_ref m_index_buffer;
 		};
 
 		class BC_GAME_DLL bc_mesh : public core::bci_content

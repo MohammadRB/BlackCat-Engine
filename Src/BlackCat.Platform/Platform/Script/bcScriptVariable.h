@@ -198,8 +198,6 @@ namespace black_cat
 			template< typename T >
 			static void _unpack_arg(const bc_script_variable& p_pack, bc_script_array< T >* p_value);
 
-		protected:
-
 		private:
 			platform_pack m_pack;
 		};

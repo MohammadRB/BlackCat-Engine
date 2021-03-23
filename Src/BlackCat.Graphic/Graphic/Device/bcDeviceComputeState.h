@@ -62,6 +62,6 @@ namespace black_cat
 		};
 
 		using bc_device_compute_state = bc_platform_device_compute_state<g_current_render_api>;
-		using bc_device_compute_state_ptr = bc_device_ref<bc_device_compute_state>;
+		using bc_device_compute_state_ref = bc_device_ref<bc_device_compute_state>;
 	}
 }

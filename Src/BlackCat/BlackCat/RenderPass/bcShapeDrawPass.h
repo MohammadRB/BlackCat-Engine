@@ -56,7 +56,7 @@ namespace black_cat
 	private:
 		constant::bc_render_pass_variable_t m_render_target_view_variable;
 
-		graphic::bc_device_pipeline_state_ptr m_pipeline_state;
+		graphic::bc_device_pipeline_state_ref m_pipeline_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;
 
 		core::bc_query_result<bc_scene_debug_shape_query> m_scene_debug_query;

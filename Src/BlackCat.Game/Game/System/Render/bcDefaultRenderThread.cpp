@@ -26,9 +26,9 @@ namespace black_cat
 			bc_render_thread::reset();
 		}
 
-		void bc_default_render_thread::reset(graphic::bc_device_pipeline_ptr p_pipeline)
+		void bc_default_render_thread::reset(graphic::bc_device_pipeline_ref p_pipeline)
 		{
-			bc_render_thread::reset(std::move(p_pipeline), graphic::bc_device_command_executor_ptr());
+			bc_render_thread::reset(std::move(p_pipeline), graphic::bc_device_command_executor_ref());
 		}
 	}
 }

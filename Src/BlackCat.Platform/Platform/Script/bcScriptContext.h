@@ -184,8 +184,6 @@ namespace black_cat
 				return m_pack;
 			}
 
-		protected:
-
 		private:
 			explicit bc_platform_script_context(bc_script_runtime& p_runtime) noexcept;
 

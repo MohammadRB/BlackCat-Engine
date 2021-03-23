@@ -60,6 +60,6 @@ namespace black_cat
 		};
 
 		using bc_resource_view = bc_platform_resource_view< g_current_render_api >;
-		using bc_resource_view_ptr = bc_device_ref< bc_resource_view >;
+		using bc_resource_view_ref = bc_device_ref< bc_resource_view >;
 	}
 }

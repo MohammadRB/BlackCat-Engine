@@ -150,5 +150,25 @@ namespace black_cat
 				p_mat.column3.x, p_mat.column3.y, p_mat.column3.z, p_mat.column3.w
 			);
 		}
+
+		inline physx::PxExtendedVec3 bc_to_right_hand_ex(const core::bc_vector3f& p_vector)
+		{
+			if (graphic::bc_render_api_info::use_left_handed())
+			{
+				return physx::PxExtendedVec3(p_vector.x, p_vector.y, -p_vector.z);
+			}
+
+			return physx::PxExtendedVec3(p_vector.x, p_vector.y, p_vector.z);
+		}
+
+		inline core::bc_vector3f bc_to_game_hand_ex(const physx::PxExtendedVec3& p_vector)
+		{
+			if (graphic::bc_render_api_info::use_left_handed())
+			{
+				return core::bc_vector3f(p_vector.x, p_vector.y, -p_vector.z);
+			}
+
+			return core::bc_vector3f(p_vector.x, p_vector.y, p_vector.z);
+		}
 	}
 }

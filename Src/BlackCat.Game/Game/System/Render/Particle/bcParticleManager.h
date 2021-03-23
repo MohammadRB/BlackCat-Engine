@@ -101,7 +101,7 @@ namespace black_cat
 			core::bc_query_provider_handle m_emitters_provider_handle;
 
 			graphic::bc_texture2d_content_ptr m_sprites;
-			graphic::bc_resource_view_ptr m_sprites_view;
+			graphic::bc_resource_view_ref m_sprites_view;
 		};
 	}
 }

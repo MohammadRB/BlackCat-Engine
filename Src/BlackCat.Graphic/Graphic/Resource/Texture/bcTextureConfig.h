@@ -11,7 +11,6 @@ namespace black_cat
 		template< bc_render_api TRenderApi >
 		struct bc_platform_texture_config_pack
 		{
-			
 		};
 
 		template< bc_render_api TRenderApi >
@@ -35,8 +34,6 @@ namespace black_cat
 			{
 				return m_pack;
 			}
-
-		protected:
 
 		private:
 			platform_pack m_pack;

@@ -29,8 +29,8 @@ namespace black_cat
 			core::bc_vector_movable< bcUINT32 > m_32bit_indices;
 			physics::bc_bound_box m_bound_box;
 
-			graphic::bc_buffer_ptr m_vertex_buffer;
-			graphic::bc_buffer_ptr m_index_buffer;
+			graphic::bc_buffer_ref m_vertex_buffer;
+			graphic::bc_buffer_ref m_index_buffer;
 			bc_render_state_ptr m_render_state;
 		};
 		
@@ -68,8 +68,8 @@ namespace black_cat
 				core::bc_vector_movable< bcUINT16 > p_16bit_indices,
 				core::bc_vector_movable< bcUINT32 > p_32bit_indices,
 				physics::bc_bound_box& p_bound_box,
-				graphic::bc_buffer_ptr p_vertex_buffer,
-				graphic::bc_buffer_ptr p_index_buffer,
+				graphic::bc_buffer_ref p_vertex_buffer,
+				graphic::bc_buffer_ref p_index_buffer,
 				bc_render_state_ptr p_render_state);
 
 			bc_mesh_builder& add_skinned_mesh_part(const bcCHAR* p_node_name,
@@ -79,8 +79,8 @@ namespace black_cat
 				core::bc_vector_movable< bcUINT16 > p_16bit_indices,
 				core::bc_vector_movable< bcUINT32 > p_32bit_indices,
 				physics::bc_bound_box& p_bound_box,
-				graphic::bc_buffer_ptr p_vertex_buffer,
-				graphic::bc_buffer_ptr p_index_buffer,
+				graphic::bc_buffer_ref p_vertex_buffer,
+				graphic::bc_buffer_ref p_index_buffer,
 				bc_render_state_ptr p_render_state);
 
 			bc_mesh_builder& with_auto_scale(bcFLOAT p_scale);

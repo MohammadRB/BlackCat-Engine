@@ -61,8 +61,8 @@ namespace black_cat
 			core::bc_vector_movable< bcUINT16 > p_16bit_indices,
 			core::bc_vector_movable< bcUINT32 > p_32bit_indices,
 			physics::bc_bound_box& p_bound_box,
-			graphic::bc_buffer_ptr p_vertex_buffer,
-			graphic::bc_buffer_ptr p_index_buffer,
+			graphic::bc_buffer_ref p_vertex_buffer,
+			graphic::bc_buffer_ref p_index_buffer,
 			bc_render_state_ptr p_render_state)
 		{
 			auto l_node_ite = std::find_if(std::begin(m_nodes), std::end(m_nodes), [p_node_name](bc_mesh_builder_mesh_node& p_node)
@@ -96,8 +96,8 @@ namespace black_cat
 			core::bc_vector_movable< bcUINT16 > p_16bit_indices,
 			core::bc_vector_movable< bcUINT32 > p_32bit_indices,
 			physics::bc_bound_box& p_bound_box,
-			graphic::bc_buffer_ptr p_vertex_buffer,
-			graphic::bc_buffer_ptr p_index_buffer,
+			graphic::bc_buffer_ref p_vertex_buffer,
+			graphic::bc_buffer_ref p_index_buffer,
 			bc_render_state_ptr p_render_state)
 		{
 			auto l_node_ite = std::find_if(std::begin(m_nodes), std::end(m_nodes), [p_node_name](bc_mesh_builder_mesh_node& p_node)

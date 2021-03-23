@@ -91,8 +91,6 @@ namespace black_cat
 			template< typename TCallable >
 			static TR _call_callback(TCallable p_callable, bc_script_variable* p_args, bcUINT32 p_arg_count);
 
-		protected:
-
 		private:
 			bc_platform_script_function(bc_script_context& p_context/*, callback_t p_callback*/);
 

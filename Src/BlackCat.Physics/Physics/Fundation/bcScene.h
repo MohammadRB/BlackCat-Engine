@@ -11,6 +11,7 @@
 #include "Physics/Fundation/bcTransform.h"
 #include "Physics/Fundation/bcPhysics.h"
 #include "Physics/Fundation/bcSceneBuilder.h"
+#include "Physics/Fundation/bcCController.h"
 #include "Physics/Fundation/bcSceneDebug.h"
 #include "Physics/Collision/bcQueryGroup.h"
 #include "Physics/Collision/bcSceneQuery.h"
@@ -68,10 +69,17 @@ namespace black_cat
 
 			bc_platform_scene(const bc_platform_scene& p_other) noexcept;
 
-			~bc_platform_scene();
+			~bc_platform_scene() override;
 
 			bc_platform_scene& operator=(const bc_platform_scene& p_other) noexcept;
 
+			/**
+			 * \brief Create a new character controller.
+			 * \param p_desc 
+			 * \return 
+			 */
+			bc_ccontroller_ref create_ccontroller(const bc_ccontroller_desc& p_desc);
+			
 			/**
 			 * \brief Adds an actor to this scene.
 			 * \note If the actor is already assigned to a scene, the call is ignored and an error is issued.
@@ -87,9 +95,9 @@ namespace black_cat
 			 * \note If the actor is a PxRigidActor then all assigned Constraint objects will get removed from the scene automatically.
 			 * \note If the actor is in an aggregate it will be removed from the aggregate.
 			 * \param[in] p_actor Actor to remove from scene.
-			 * \param[in] wake_on_lost_touch Specifies whether touching objects from the previous frame should get woken up in the next frame. Only applies to Articulation and RigidActor types.
+			 * \param[in] p_wake_on_lost_touch Specifies whether touching objects from the previous frame should get woken up in the next frame. Only applies to Articulation and RigidActor types.
 			 */
-			void remove_actor(bc_actor& p_actor, bool wake_on_lost_touch = true);
+			void remove_actor(bc_actor& p_actor, bool p_wake_on_lost_touch = true);
 
 			/**
 			* \brief Retrieve the number of actors of certain types in the scene.
@@ -158,9 +166,9 @@ namespace black_cat
 			/**
 			 * \brief Advances the simulation by an elapsed time.
 			 * This function run simulation async and return immediately.
-			 * \param p_elapsed_time Amount of time to advance simulation by.
+			 * \param p_clock Amount of time to advance simulation by.
 			 */
-			void update(const core_platform::bc_clock::update_param& p_elapsed_time);
+			void update(const core_platform::bc_clock::update_param& p_clock);
 
 			/**
 			 * \brief Check if simulation has been done.

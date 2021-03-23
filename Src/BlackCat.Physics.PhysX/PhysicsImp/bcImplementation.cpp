@@ -1,6 +1,10 @@
 // [12/20/2016 MRB]
 
 #include "PhysicsImp/PhysicsImpPCH.h"
+#include "PhysicsImp/Fundation/bcCController.h"
+#include "PhysicsImp/Body/bcActor.h"
+#include "PhysicsImp/Shape/bcShape.h"
+#include "PhysicsImp/Joint/bcJoint.h"
 #include "PhysicsImp/bcImplementation.h"
 
 namespace black_cat
@@ -289,6 +293,47 @@ namespace black_cat
 			l_data.m_face_index = p_hit.faceIndex;
 			
 			return static_cast<physx::PxQueryHitType::Enum>((*m_post_filter_callback)(l_data));
+		}
+
+		bc_px_controller_hit_callback::bc_px_controller_hit_callback(bci_ccontroller_hit_callback* p_callback)
+			: m_callback(p_callback)
+		{
+		}
+
+		void bc_px_controller_hit_callback::onShapeHit(const physx::PxControllerShapeHit& p_hit)
+		{
+			bc_platform_ccontroller_shape_hit<g_api_physx> l_hit;
+			l_hit.get_platform_pack().m_px_hit = &p_hit;
+			
+			m_callback->on_shape_hit(l_hit);
+		}
+
+		void bc_px_controller_hit_callback::onControllerHit(const physx::PxControllersHit& p_hit)
+		{
+			bc_platform_ccontroller_controller_hit<g_api_physx> l_hit;
+			l_hit.get_platform_pack().m_px_hit = &p_hit;
+			
+			m_callback->on_ccontroller_hit(l_hit);
+		}
+
+		void bc_px_controller_hit_callback::onObstacleHit(const physx::PxControllerObstacleHit& p_hit)
+		{
+		}
+
+		bc_px_controller_collision_filter::bc_px_controller_collision_filter(bc_ccontroller_collision_filter_callback* p_callback)
+			: m_callback(p_callback)
+		{
+		}
+
+		bool bc_px_controller_collision_filter::filter(const physx::PxController& p_controller1, const physx::PxController& p_controller2)
+		{
+			bc_platform_ccontroller<g_api_physx> l_controller1;
+			bc_platform_ccontroller<g_api_physx> l_controller2;
+
+			l_controller1.get_platform_pack().m_controller = const_cast<physx::PxController*>(&p_controller1);
+			l_controller2.get_platform_pack().m_controller = const_cast<physx::PxController*>(&p_controller2);
+
+			return (*m_callback)(l_controller1, l_controller2);
 		}
 
 		physx::PxFilterFlags bc_px_filter_shader(physx::PxFilterObjectAttributes p_attributes0, 

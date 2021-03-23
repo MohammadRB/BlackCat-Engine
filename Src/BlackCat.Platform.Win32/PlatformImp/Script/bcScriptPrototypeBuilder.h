@@ -596,7 +596,7 @@ namespace black_cat
 		bool _create_js_function(bc_script_context& p_context, JsValueRef p_js_prototype, const bcWCHAR* p_name, bc_script_free_function< TR, TA... > p_func)
 		{
 			bc_chakra_call l_call(p_context);
-			bool l_successed = true;
+			const bool l_successed = true;
 			JsValueRef l_js_function;
 			JsPropertyIdRef l_js_name;
 
@@ -612,7 +612,7 @@ namespace black_cat
 		bool _create_js_function(bc_script_context& p_context, JsValueRef p_js_prototype, const bcWCHAR* p_name, bc_script_memeber_function<T, TR, TA...> p_member_func)
 		{
 			bc_chakra_call l_call(p_context);
-			bool l_successed = true;
+			const bool l_successed = true;
 			JsValueRef l_js_function;
 			JsPropertyIdRef l_js_name;
 
@@ -669,14 +669,12 @@ namespace black_cat
 		template< typename ...TA >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::constructor()
 		{
-			bc_chakra_call l_call;
-
 			if(m_pack.m_js_ctor_function != JS_INVALID_REFERENCE)
 			{
 				throw bc_invalid_operation_exception("Constructor signature has already defined");
 			}
 
-			l_call = JsCreateFunction(&_js_object_ctor< T, TA...>, nullptr, &m_pack.m_js_ctor_function);
+			bc_chakra_call l_call = JsCreateFunction(&_js_object_ctor<T, TA...>, nullptr, &m_pack.m_js_ctor_function);
 
 			return *this;
 		}
@@ -684,7 +682,7 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::constant(const bcWCHAR* p_name, bc_script_bool p_bool)
 		{
-			bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_prototype, p_name, p_bool);
+			const bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_prototype, p_name, p_bool);
 
 			BC_ASSERT(l_successed);
 
@@ -694,7 +692,7 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::constant(const bcWCHAR* p_name, bc_script_int p_integer)
 		{
-			bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_prototype, p_name, p_integer);
+			const bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_prototype, p_name, p_integer);
 
 			BC_ASSERT(l_successed);
 
@@ -704,7 +702,7 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::constant(const bcWCHAR* p_name, bc_script_double p_double)
 		{
-			bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_prototype, p_name, p_double);
+			const bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_prototype, p_name, p_double);
 
 			BC_ASSERT(l_successed);
 
@@ -714,7 +712,7 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::constant(const bcWCHAR* p_name, bc_script_string& p_string)
 		{
-			bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_prototype, p_name, p_string);
+			const bool l_successed = _create_js_property_constant(m_context, m_pack.m_js_prototype, p_name, p_string);
 
 			BC_ASSERT(l_successed);
 
@@ -724,7 +722,7 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::property(const bcWCHAR* p_name, bc_script_bool type::* p_bool)
 		{
-			bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_prototype, p_name, p_bool);
+			const bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_prototype, p_name, p_bool);
 
 			BC_ASSERT(l_successed);
 
@@ -734,7 +732,7 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::property(const bcWCHAR* p_name, bc_script_int type::* p_int)
 		{
-			bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_prototype, p_name, p_int);
+			const bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_prototype, p_name, p_int);
 
 			BC_ASSERT(l_successed);
 
@@ -744,7 +742,7 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::property(const bcWCHAR* p_name, bc_script_double type::* p_double)
 		{
-			bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_prototype, p_name, p_double);
+			const bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_prototype, p_name, p_double);
 
 			BC_ASSERT(l_successed);
 
@@ -754,7 +752,7 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::property(const bcWCHAR* p_name, bc_script_string type::* p_string)
 		{
-			bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_prototype, p_name, p_string);
+			const bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_prototype, p_name, p_string);
 
 			BC_ASSERT(l_successed);
 
@@ -764,7 +762,7 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::property(const bcWCHAR* p_name, bc_script_object type::* p_object)
 		{
-			bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_prototype, p_name, p_object);
+			const bool l_successed = _create_js_property_default_get_set(m_context, m_pack.m_js_prototype, p_name, p_object);
 
 			BC_ASSERT(l_successed);
 
@@ -774,7 +772,7 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::property(const bcWCHAR* p_name, bc_script_member_property_descriptor< type, bc_script_bool >& p_descriptor)
 		{
-			bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_prototype, p_name, p_descriptor);
+			const bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_prototype, p_name, p_descriptor);
 
 			BC_ASSERT(l_successed);
 
@@ -784,7 +782,7 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::property(const bcWCHAR* p_name, bc_script_member_property_descriptor< type, bc_script_int >& p_descriptor)
 		{
-			bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_prototype, p_name, p_descriptor);
+			const bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_prototype, p_name, p_descriptor);
 
 			BC_ASSERT(l_successed);
 
@@ -794,7 +792,7 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::property(const bcWCHAR* p_name, bc_script_member_property_descriptor< type, bc_script_double >& p_descriptor)
 		{
-			bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_prototype, p_name, p_descriptor);
+			const bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_prototype, p_name, p_descriptor);
 
 			BC_ASSERT(l_successed);
 
@@ -804,7 +802,7 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::property(const bcWCHAR* p_name, bc_script_member_property_descriptor< type, bc_script_string >& p_descriptor)
 		{
-			bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_prototype, p_name, p_descriptor);
+			const bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_prototype, p_name, p_descriptor);
 
 			BC_ASSERT(l_successed);
 
@@ -814,7 +812,7 @@ namespace black_cat
 		template< core_platform::bc_platform TPlatform, typename T >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::property(const bcWCHAR* p_name, bc_script_member_property_descriptor< type, bc_script_object >& p_descriptor)
 		{
-			bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_prototype, p_name, p_descriptor);
+			const bool l_successed = _create_js_property_get_set(m_context, m_pack.m_js_prototype, p_name, p_descriptor);
 
 			BC_ASSERT(l_successed);
 
@@ -825,7 +823,7 @@ namespace black_cat
 		template< typename TR, typename ... TA >
 		bc_platform_script_prototype_builder< TPlatform, T >& bc_platform_script_prototype_builder< TPlatform, T >::function(const bcWCHAR* p_name, bc_script_memeber_function<type, TR, TA...> p_member_func)
 		{
-			bool l_successed = _create_js_function(m_context, m_pack.m_js_prototype, p_name, p_member_func);
+			const bool l_successed = _create_js_function(m_context, m_pack.m_js_prototype, p_name, p_member_func);
 
 			BC_ASSERT(l_successed);
 

@@ -185,7 +185,7 @@ namespace black_cat
 			 * \param p_ms_config 
 			 * \return 
 			 */
-			graphic::bc_device_pipeline_state_ptr create_device_pipeline_state(const bcCHAR* p_vertex_shader_name,
+			graphic::bc_device_pipeline_state_ref create_device_pipeline_state(const bcCHAR* p_vertex_shader_name,
 				const bcCHAR* p_hull_shader_name,
 				const bcCHAR* p_domain_shader_name,
 				const bcCHAR* p_geometry_shader_name,
@@ -204,7 +204,7 @@ namespace black_cat
 			 * \param p_compute_shader_name 
 			 * \return 
 			 */
-			graphic::bc_device_compute_state_ptr create_device_compute_state(const bcCHAR* p_compute_shader_name);
+			graphic::bc_device_compute_state_ref create_device_compute_state(const bcCHAR* p_compute_shader_name);
 
 			/**
 			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
