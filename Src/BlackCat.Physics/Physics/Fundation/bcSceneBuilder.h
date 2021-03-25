@@ -11,7 +11,7 @@ namespace black_cat
 {
 	namespace physics
 	{
-		class bci_simulation_event_callback;
+		class bci_physics_simulation_callback;
 		class bci_contact_modify_callback;
 		class bci_contact_filter_callback;
 
@@ -65,7 +65,7 @@ namespace black_cat
 
 			bc_platform_scene_builder& gravity(const core::bc_vector3f& p_gravity);
 
-			bc_platform_scene_builder& use_simulation_callback(core::bc_unique_ptr<bci_simulation_event_callback> p_callback);
+			bc_platform_scene_builder& use_simulation_callback(core::bc_unique_ptr<bci_physics_simulation_callback> p_callback);
 
 			bc_platform_scene_builder& use_contact_modify_callback(core::bc_unique_ptr<bci_contact_modify_callback> p_callback);
 

@@ -151,7 +151,7 @@ namespace black_cat
 
 			bc_platform_physics& operator=(bc_platform_physics&& p_other) noexcept;
 
-			bc_scene_ref create_scene(bc_scene_builder&& p_desc);
+			bc_scene_ref create_scene(bc_scene_builder p_desc);
 
 			bcUINT32 get_scene_count() const noexcept;
 

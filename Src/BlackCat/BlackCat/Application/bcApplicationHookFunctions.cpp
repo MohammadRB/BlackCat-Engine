@@ -19,6 +19,7 @@
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Render/Decal/bcDecalManager.h"
+#include "Game/System/Physics/bcPhysicsSimulationCallback.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
@@ -78,7 +79,7 @@ namespace black_cat
 		core::bc_get_service<core::bc_logger>()->register_listener
 		(
 			core::bc_enum::mask_or({ core::bc_log_type::debug, core::bc_log_type::error }),
-			core::bc_make_unique< platform::bc_ide_logger >(core::bc_alloc_type::program)
+			core::bc_make_unique<platform::bc_ide_logger>(core::bc_alloc_type::program)
 		);
 #endif
 		core::bc_register_service
@@ -105,50 +106,67 @@ namespace black_cat
 	}
 
 	void bc_register_engine_loaders(game::bc_engine_application_parameter& p_parameters)
-	{
-		core::bc_register_loader< graphic::bc_texture2d_content, bc_texture_loader >("texture2d", core::bc_make_loader< bc_texture_loader >());
-		core::bc_register_loader< graphic::bc_vertex_shader_content, bc_vertex_shader_loader >("vertex_shader", core::bc_make_loader< bc_vertex_shader_loader >());
-		core::bc_register_loader< graphic::bc_hull_shader_content, bc_hull_shader_loader >("hull_shader", core::bc_make_loader< bc_hull_shader_loader >());
-		core::bc_register_loader< graphic::bc_domain_shader_content, bc_domain_shader_loader >("domain_shader", core::bc_make_loader< bc_domain_shader_loader >());
-		core::bc_register_loader< graphic::bc_geometry_shader_content, bc_geometry_shader_loader >("geometry_shader", core::bc_make_loader< bc_geometry_shader_loader >());
-		core::bc_register_loader< graphic::bc_pixel_shader_content, bc_pixel_shader_loader >("pixel_shader", core::bc_make_loader< bc_pixel_shader_loader >());
-		core::bc_register_loader< graphic::bc_compute_shader_content, bc_compute_shader_loader >("compute_shader", core::bc_make_loader< bc_compute_shader_loader >());
-		core::bc_register_loader< game::bc_mesh_collider, bc_mesh_collider_loader >("mesh_collider", core::bc_make_loader< bc_mesh_collider_loader >());
-		core::bc_register_loader< game::bc_mesh, bc_mesh_loader >("mesh", core::bc_make_loader< bc_mesh_loader >());
-		core::bc_register_loader< game::bc_skinned_animation, bc_skinned_animation_loader >("animation", core::bc_make_loader< bc_skinned_animation_loader >());
-		core::bc_register_loader< game::bc_scene, bc_scene_loader >("scene", core::bc_make_loader< bc_scene_loader >(std::move(p_parameters.m_app_parameters.m_scene_graph_factory)));
+	{		
+		core::bc_register_loader<graphic::bc_texture2d_content, bc_texture_loader>("texture2d", core::bc_make_loader<bc_texture_loader>());
+		core::bc_register_loader<graphic::bc_vertex_shader_content, bc_vertex_shader_loader>("vertex_shader", core::bc_make_loader<bc_vertex_shader_loader>());
+		core::bc_register_loader<graphic::bc_hull_shader_content, bc_hull_shader_loader>("hull_shader", core::bc_make_loader<bc_hull_shader_loader>());
+		core::bc_register_loader<graphic::bc_domain_shader_content, bc_domain_shader_loader>("domain_shader", core::bc_make_loader<bc_domain_shader_loader>());
+		core::bc_register_loader<graphic::bc_geometry_shader_content, bc_geometry_shader_loader>("geometry_shader", core::bc_make_loader<bc_geometry_shader_loader>());
+		core::bc_register_loader<graphic::bc_pixel_shader_content, bc_pixel_shader_loader>("pixel_shader", core::bc_make_loader<bc_pixel_shader_loader>());
+		core::bc_register_loader<graphic::bc_compute_shader_content, bc_compute_shader_loader>("compute_shader", core::bc_make_loader<bc_compute_shader_loader>());
+		core::bc_register_loader<game::bc_mesh_collider, bc_mesh_collider_loader>("mesh_collider", core::bc_make_loader<bc_mesh_collider_loader>());
+		core::bc_register_loader<game::bc_mesh, bc_mesh_loader>("mesh", core::bc_make_loader< bc_mesh_loader >());
+		core::bc_register_loader<game::bc_skinned_animation, bc_skinned_animation_loader>("animation", core::bc_make_loader<bc_skinned_animation_loader>());
+		core::bc_register_loader<game::bc_scene, bc_scene_loader>
+		(
+			"scene",
+			core::bc_make_loader<bc_scene_loader>
+			(
+				[]()
+				{
+					return std::move
+					(
+						physics::bc_scene_builder()
+						.enable_locking()
+						.enable_ccd()
+						.use_simulation_callback(core::bc_make_unique<game::bc_physics_simulation_callback>())
+					);
+				},
+				std::move(p_parameters.m_app_parameters.m_scene_graph_factory)
+			)
+		);
 	}
 
 	void bc_register_engine_actor_components()
 	{
 		game::bc_register_component_types
 		(
-			game::bc_component_register< game::bc_mediate_component >("mediate"),
-			game::bc_component_register< game::bc_simple_mesh_component >("simple_mesh"),
-			game::bc_component_register< game::bc_vegetable_mesh_component >("vegetable_mesh"),
-			game::bc_component_register< game::bc_skinned_mesh_component >("skinned_mesh"),
-			game::bc_component_register< game::bc_hierarchy_component >("hierarchy"),
-			game::bc_component_register< game::bc_rigid_static_component >("rigid_static"),
-			game::bc_component_register< game::bc_rigid_dynamic_component >("rigid_dynamic"),
-			game::bc_component_register< game::bc_height_map_component >("height_map"),
-			game::bc_component_register< game::bc_light_component >("light"),
-			game::bc_component_register< game::bc_wind_component >("wind"),
-			game::bc_component_register< game::bc_particle_emitter_component >("particle_emitter"),
-			game::bc_component_register< game::bc_decal_component >("decal")
+			game::bc_component_register<game::bc_mediate_component>("mediate"),
+			game::bc_component_register<game::bc_simple_mesh_component>("simple_mesh"),
+			game::bc_component_register<game::bc_vegetable_mesh_component>("vegetable_mesh"),
+			game::bc_component_register<game::bc_skinned_mesh_component>("skinned_mesh"),
+			game::bc_component_register<game::bc_hierarchy_component>("hierarchy"),
+			game::bc_component_register<game::bc_rigid_static_component>("rigid_static"),
+			game::bc_component_register<game::bc_rigid_dynamic_component>("rigid_dynamic"),
+			game::bc_component_register<game::bc_height_map_component>("height_map"),
+			game::bc_component_register<game::bc_light_component>("light"),
+			game::bc_component_register<game::bc_wind_component>("wind"),
+			game::bc_component_register<game::bc_particle_emitter_component>("particle_emitter"),
+			game::bc_component_register<game::bc_decal_component>("decal")
 		);
 		game::bc_register_abstract_component_types
 		(
-			game::bc_abstract_component_register< game::bc_mesh_component, game::bc_simple_mesh_component, game::bc_vegetable_mesh_component, game::bc_skinned_mesh_component >(),
-			game::bc_abstract_component_register< game::bc_render_component, game::bc_mesh_component, game::bc_height_map_component >(),
-			game::bc_abstract_component_register< game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component >(),
-			game::bc_abstract_component_register< game::bc_decal_resolver_component, game::bc_height_map_component >()
+			game::bc_abstract_component_register<game::bc_mesh_component, game::bc_simple_mesh_component, game::bc_vegetable_mesh_component, game::bc_skinned_mesh_component>(),
+			game::bc_abstract_component_register<game::bc_render_component, game::bc_mesh_component, game::bc_height_map_component>(),
+			game::bc_abstract_component_register<game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component>(),
+			game::bc_abstract_component_register<game::bc_decal_resolver_component, game::bc_height_map_component>()
 		);
 		game::bc_register_actor_controller_types
 		(
-			game::bc_actor_controller_register< game::bc_fire_actor_controller >("fire"),
-			game::bc_actor_controller_register< game::bc_explosion_actor_controller >("explosion"),
-			game::bc_actor_controller_register< game::bc_xbot_controller >("xbot"),
-			game::bc_actor_controller_register< game::bc_xbot_camera_controller >("xbot_player")
+			game::bc_actor_controller_register<game::bc_fire_actor_controller>("fire"),
+			game::bc_actor_controller_register<game::bc_explosion_actor_controller>("explosion"),
+			game::bc_actor_controller_register<game::bc_xbot_controller>("xbot"),
+			game::bc_actor_controller_register<game::bc_xbot_camera_controller>("xbot_player")
 		);
 	}
 

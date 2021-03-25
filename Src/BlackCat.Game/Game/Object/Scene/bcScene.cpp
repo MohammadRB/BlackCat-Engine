@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "PhysicsImp/Body/bcRigidBody.h"
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Content/bcContentStreamManager.h"
@@ -132,10 +133,16 @@ namespace black_cat
 
 		void bc_scene::update_px(bc_physics_system& p_physics, const core_platform::bc_clock::update_param& p_clock)
 		{
-			m_px_scene->update(p_clock);
-			m_px_scene->wait();
+			core::bc_vector_frame<physics::bc_updated_actor> l_px_actors;
+			
+			{
+				physics::bc_scene_lock l_lock(&m_px_scene.get());
 
-			auto l_px_actors = m_px_scene->get_active_actors();
+				m_px_scene->update(p_clock);
+				m_px_scene->wait();
+				l_px_actors = m_px_scene->get_active_actors();
+			}
+
 			const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), l_px_actors.size() / 25U + 1);
 
 			core::bc_concurrency::concurrent_for_each
@@ -172,11 +179,8 @@ namespace black_cat
 		void bc_scene::update_graph()
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_hybrid_mutex> l_lock
-				(
-					m_changed_actors_lock, core_platform::bc_lock_operation::heavy
-				);
-
+				core_platform::bc_hybrid_mutex_guard l_lock(m_changed_actors_lock, core_platform::bc_lock_operation::heavy);
+				
 				for(auto& l_to_removed_actor : m_to_remove_actors)
 				{
 					auto l_changed_list_ite = std::find_if
@@ -256,13 +260,6 @@ namespace black_cat
 				return;
 			}
 
-			auto* l_rigid_component = p_actor.get_component<bc_rigid_body_component>();
-			if (l_rigid_component)
-			{
-				physics::bc_rigid_body l_rigid_body = l_rigid_component->get_body();
-				m_px_scene->add_actor(l_rigid_body);
-			}
-
 			p_actor.add_event(bc_added_to_scene_actor_event(*this));
 		}
 
@@ -283,13 +280,6 @@ namespace black_cat
 
 		void bc_scene::_remove_actor(_bc_scene_actor_remove_state p_state, bc_actor& p_actor)
 		{
-			auto* l_rigid_component = p_actor.get_component<bc_rigid_body_component>();
-			if (l_rigid_component)
-			{
-				physics::bc_rigid_body l_rigid_body = l_rigid_component->get_body();
-				m_px_scene->remove_actor(l_rigid_body);
-			}
-
 			if(p_state != _bc_scene_actor_remove_state::removed_from_graph)
 			{
 				const bool l_removed = m_scene_graph.remove_actor(p_actor);

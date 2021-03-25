@@ -5,7 +5,7 @@
 #include "Core/Memory/bcPtr.h"
 #include "PhysicsImp/PhysicsImpPCH.h"
 #include "PhysicsImp/Fundation/bcFundation.h"
-#include "PhysicsImp/Fundation/bcSimulationEventCallback.h"
+#include "PhysicsImp/Fundation/bcPhysicsSimulationCallback.h"
 #include "PhysicsImp/Fundation/bcCControllerSimulationCallback.h"
 #include "PhysicsImp/Collision/bcContactFilterCallback.h"
 #include "PhysicsImp/Collision/bcContactModifyCallback.h"
@@ -147,7 +147,7 @@ namespace black_cat
 		class bc_px_simulation_callback : public physx::PxSimulationEventCallback
 		{
 		public:
-			explicit bc_px_simulation_callback(core::bc_unique_ptr< bci_simulation_event_callback > p_imp);
+			explicit bc_px_simulation_callback(core::bc_unique_ptr< bci_physics_simulation_callback > p_imp);
 
 			void onConstraintBreak(physx::PxConstraintInfo* p_constraints, physx::PxU32 p_count) override;
 
@@ -165,7 +165,7 @@ namespace black_cat
 				const physx::PxTransform* p_pose_buffer,
 				const physx::PxU32 p_count) override;
 			
-			core::bc_unique_ptr< bci_simulation_event_callback > m_imp;
+			core::bc_unique_ptr< bci_physics_simulation_callback > m_imp;
 		};
 
 		class bc_px_query_filter_callback : public physx::PxQueryFilterCallback
@@ -203,10 +203,29 @@ namespace black_cat
 			bci_ccontroller_hit_callback* m_callback;
 		};
 
-		class bc_px_controller_collision_filter : public physx::PxControllerFilterCallback
+		class bc_px_ccontroller_query_filter : public physx::PxQueryFilterCallback
 		{
 		public:
-			explicit bc_px_controller_collision_filter(bc_ccontroller_collision_filter_callback* p_callback);
+			bc_px_ccontroller_query_filter(bc_scene_query_pre_filter_callback* p_pre_filter,
+				bc_scene_query_post_filter_callback* p_post_filter);
+
+			physx::PxQueryHitType::Enum preFilter(const physx::PxFilterData& p_filter_data,
+				const physx::PxShape* p_shape,
+				const physx::PxRigidActor* p_actor,
+				physx::PxHitFlags& p_query_flags) override;
+
+			physx::PxQueryHitType::Enum postFilter(const physx::PxFilterData& p_filter_data,
+				const physx::PxQueryHit& p_hit) override;
+
+		private:
+			bc_scene_query_pre_filter_callback* m_pre_filter;
+			bc_scene_query_post_filter_callback* m_post_filter;
+		};
+		
+		class bc_px_ccontroller_collision_filter : public physx::PxControllerFilterCallback
+		{
+		public:
+			explicit bc_px_ccontroller_collision_filter(bc_ccontroller_collision_filter_callback* p_callback);
 
 			bool filter(const physx::PxController& p_controller1, const physx::PxController& p_controller2) override;
 

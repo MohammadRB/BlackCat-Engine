@@ -5,6 +5,8 @@
 #include "Core/Memory/bcPtr.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Utility/bcVelocity.h"
+#include "PhysicsImp/Fundation/bcCController.h"
+#include "PhysicsImp/Fundation/bcCControllerSimulationCallback.h"
 #include "Game/Object/Scene/ActorComponent/bcActorController.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
 #include "Game/Object/Animation/Job/bcSamplingAnimationJob.h"
@@ -14,10 +16,11 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_physics_system;
 		class bc_skeleton_animation;
 		class bc_skinned_mesh_component;
 
-		class BC_GAME_DLL bc_xbot_controller : public bci_actor_controller
+		class BC_GAME_DLL bc_xbot_controller : public bci_actor_controller, protected physics::bci_ccontroller_hit_callback
 		{
 		public:
 			bc_xbot_controller();
@@ -39,6 +42,10 @@ namespace black_cat
 			void handle_event(const bc_actor_component_event_context& p_context) override;
 
 		protected:
+			bc_actor& get_actor() noexcept;
+			
+			const core::bc_vector3f& get_local_origin() const noexcept;
+			
 			const core::bc_vector3f& get_local_forward() const noexcept;
 
 			bci_animation_job* get_idle_animation() const noexcept;
@@ -66,11 +73,15 @@ namespace black_cat
 			void set_move_left(bool p_value) noexcept;
 
 			void set_walk(bool p_value) noexcept;
+
+			void on_shape_hit(const physics::bc_ccontroller_shape_hit& p_hit) override;
+
+			void on_ccontroller_hit(const physics::bc_ccontroller_controller_hit& p_hit) override;
 			
 		private:
-			void _create_idle_animation(bc_actor& p_actor);
+			void _create_idle_animation();
 
-			void _create_running_animation(bc_actor& p_actor);
+			void _create_running_animation();
 
 			void _update_input(const core_platform::bc_clock::update_param& p_clock);
 
@@ -78,11 +89,15 @@ namespace black_cat
 
 			void _select_active_animation(const core_platform::bc_clock::update_param& p_clock);
 
-			void _update_world_transform(bc_actor& p_actor);
+			void _update_world_transform(const core_platform::bc_clock::update_param& p_clock);
 
+			bc_physics_system* m_physics_system;
 			bc_scene* m_scene;
+			bc_actor m_actor;
 			bc_skinned_mesh_component* m_skinned_component;
+			physics::bc_ccontroller_ref m_px_controller;
 			core::bc_vector<core::bc_string> m_upper_body_chain;
+			core::bc_vector3f m_local_origin;
 			core::bc_vector3f m_local_forward;
 
 			core::bc_shared_ptr<bc_sampling_animation_job> m_idle_sample_job;
@@ -118,6 +133,16 @@ namespace black_cat
 			bcFLOAT m_move_amount;
 		};
 
+		inline bc_actor& bc_xbot_controller::get_actor() noexcept
+		{
+			return m_actor;
+		}
+
+		inline const core::bc_vector3f& bc_xbot_controller::get_local_origin() const noexcept
+		{
+			return m_local_origin;
+		}
+		
 		inline const core::bc_vector3f& bc_xbot_controller::get_local_forward() const noexcept
 		{
 			return m_local_forward;

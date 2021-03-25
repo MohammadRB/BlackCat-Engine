@@ -203,10 +203,10 @@ namespace black_cat
 		 * and performed after the simulation step.
 		 * \n Threading: It is not necessary to make this class thread safe as it will only be called in the context of the user thread.
 		 */
-		class bci_simulation_event_callback
+		class bci_physics_simulation_callback
 		{
 		public:
-			virtual ~bci_simulation_event_callback() = default;
+			virtual ~bci_physics_simulation_callback() = default;
 
 			virtual void on_joint_break(bc_joint* p_joints, bcUINT32 p_count) = 0;
 

@@ -75,9 +75,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSerializeBuffer.h">
       <Filter>PhysicsImp\Fundation</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSimulationEventCallback.h">
-      <Filter>PhysicsImp\Fundation</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcTask.h">
       <Filter>PhysicsImp\Fundation</Filter>
     </ClInclude>
@@ -171,6 +168,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcCControllerSimulationCallback.h">
       <Filter>PhysicsImp\Fundation</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcPhysicsSimulationCallback.h">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Body\bcActor.cpp">
@@ -219,9 +219,6 @@
       <Filter>PhysicsImp\Fundation</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSerializeBuffer.cpp">
-      <Filter>PhysicsImp\Fundation</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSimulationEventCallback.cpp">
       <Filter>PhysicsImp\Fundation</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcTask.cpp">
@@ -312,6 +309,9 @@
       <Filter>PhysicsImp\Fundation</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcCControllerSimulationCallback.cpp">
+      <Filter>PhysicsImp\Fundation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcPhysicsSimulationCallback.cpp">
       <Filter>PhysicsImp\Fundation</Filter>
     </ClCompile>
   </ItemGroup>

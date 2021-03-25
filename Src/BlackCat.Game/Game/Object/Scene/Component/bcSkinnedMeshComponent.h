@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Core/Container/bcIteratorAdapter.h"
+#include "Core/Container/bcSpan.h"
 #include "Game/Object/Mesh/bcSubMesh.h"
 #include "Game/Object/Mesh/bcSubMeshTransform.h"
 #include "Game/Object/Animation/bcSkinnedAnimation.h"
@@ -18,9 +18,6 @@ namespace black_cat
 		{
 			BC_COMPONENT(skn_msh, true, false)
 
-		public:
-			using animation_iterator = core::bc_const_iterator_adapter< core::bc_vector_movable<bc_skeleton_animation*> >;
-			
 		public:
 			bc_skinned_mesh_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
 
@@ -41,7 +38,7 @@ namespace black_cat
 			 */
 			bc_skeleton_animation* find_animation(const bcCHAR* p_name) const noexcept;
 			
-			animation_iterator get_animations() const noexcept;
+			core::bc_const_span<bc_skeleton_animation*> get_animations() const noexcept;
 			
 			bc_sub_mesh_mat4_transform& get_model_transforms() noexcept;
 			
@@ -78,9 +75,9 @@ namespace black_cat
 			return &m_animations[0]->get_skeleton();
 		}
 		
-		inline bc_skinned_mesh_component::animation_iterator bc_skinned_mesh_component::get_animations() const noexcept
+		inline core::bc_const_span<bc_skeleton_animation*> bc_skinned_mesh_component::get_animations() const noexcept
 		{
-			return animation_iterator(m_all_animations);
+			return core::bc_make_span(m_all_animations);
 		}
 		
 		inline bc_sub_mesh_mat4_transform& bc_skinned_mesh_component::get_model_transforms() noexcept

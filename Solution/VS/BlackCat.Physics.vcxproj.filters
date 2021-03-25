@@ -81,9 +81,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcSerializeBuffer.h">
       <Filter>Physics\Fundation</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcSimulationEventCallback.h">
-      <Filter>Physics\Fundation</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcTask.h">
       <Filter>Physics\Fundation</Filter>
     </ClInclude>
@@ -181,6 +178,9 @@
       <Filter>Physics\Fundation</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcCControllerSimulationCallback.h">
+      <Filter>Physics\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcPhysicsSimulationCallback.h">
       <Filter>Physics\Fundation</Filter>
     </ClInclude>
   </ItemGroup>

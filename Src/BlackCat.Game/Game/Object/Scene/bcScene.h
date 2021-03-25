@@ -75,10 +75,10 @@ namespace black_cat
 			physics::bc_scene& get_px_scene();
 
 			const physics::bc_scene& get_px_scene() const;
-				
+			
 			/**
 			 * \brief ThreadSafe
-			 * \param p_actor 
+			 * \param p_actor
 			 */
 			void add_actor(bc_actor& p_actor);
 

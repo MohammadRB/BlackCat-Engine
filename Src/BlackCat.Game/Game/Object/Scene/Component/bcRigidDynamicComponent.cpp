@@ -7,6 +7,8 @@
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcHierarchyTransformActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 
 namespace black_cat
 {
@@ -14,7 +16,7 @@ namespace black_cat
 	{
 		bc_rigid_dynamic_component::bc_rigid_dynamic_component(bc_actor_index p_actor_index, bc_actor_component_index p_index) noexcept
 			: bci_actor_component(p_actor_index, p_index),
-			bc_rigid_body_component(p_actor_index, p_index)
+			bc_rigid_body_component()
 		{
 		}
 
@@ -72,17 +74,34 @@ namespace black_cat
 
 		void bc_rigid_dynamic_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as< bc_world_transform_actor_event >(p_context.m_event);
+			const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
 			if(l_world_transform_event && !l_world_transform_event->is_px_simulation_transform())
 			{
-				m_px_actor_ref->set_global_pose(physics::bc_transform(l_world_transform_event->get_transform()));
+				{
+					physics::bc_scene_lock l_lock(get_scene());
+					m_px_actor_ref->set_global_pose(physics::bc_transform(l_world_transform_event->get_transform()));
+				}
 				return;
 			}
 
-			const auto* l_hierarchy_transform_event = core::bci_message::as< bc_hierarchy_transform_actor_event >(p_context.m_event);
+			const auto* l_hierarchy_transform_event = core::bci_message::as<bc_hierarchy_transform_actor_event>(p_context.m_event);
 			if (l_hierarchy_transform_event && l_hierarchy_transform_event->get_px_transforms())
 			{
 				update_px_shape_transforms(*m_px_actor_ref, *l_hierarchy_transform_event->get_px_transforms());
+				return;
+			}
+
+			const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
+			if (l_scene_add_event)
+			{
+				added_to_scene(l_scene_add_event->get_scene().get_px_scene());
+				return;
+			}
+
+			const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event);
+			if (l_scene_remove_event)
+			{
+				remove_from_scene(l_scene_remove_event->get_scene().get_px_scene());
 				return;
 			}
 		}

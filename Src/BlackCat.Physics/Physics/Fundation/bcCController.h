@@ -9,7 +9,10 @@
 #include "Physics/bcPhysicsApi.h"
 #include "Physics/bcPhysicsReference.h"
 #include "Physics/bcPhysicsRef.h"
+#include "Physics/Body/bcRigidActor.h"
 #include "Physics/Fundation/bcCControllerSimulationCallback.h"
+#include "Physics/Fundation/bcMaterial.h"
+#include "Physics/Collision/bcSceneQuery.h"
 
 namespace black_cat
 {
@@ -17,7 +20,7 @@ namespace black_cat
 	{
 		struct bc_ccontroller_desc
 		{
-			bc_ccontroller_desc(const core::bc_vector3f& p_position, bcFLOAT p_capsule_height, bcFLOAT p_capsule_radius) noexcept;
+			bc_ccontroller_desc(const core::bc_vector3f& p_position, bcFLOAT p_capsule_height, bcFLOAT p_capsule_radius, bc_material p_material) noexcept;
 
 			bc_ccontroller_desc& with_up(const core::bc_vector3f& p_up) noexcept;
 			
@@ -70,20 +73,25 @@ namespace black_cat
 			 */
 			bcFLOAT m_capsule_radius;
 			/**
+			 * \brief The material which is used for controller
+			 */
+			bc_material m_material;
+			/**
 			 * \brief Specifies a user hit callback.
 			 */
 			bci_ccontroller_hit_callback* m_hit_callback;
 		};
 
-		inline bc_ccontroller_desc::bc_ccontroller_desc(const core::bc_vector3f& p_position, bcFLOAT p_capsule_height, bcFLOAT p_capsule_radius) noexcept
+		inline bc_ccontroller_desc::bc_ccontroller_desc(const core::bc_vector3f& p_position, bcFLOAT p_capsule_height, bcFLOAT p_capsule_radius, bc_material p_material) noexcept
 			: m_position(p_position),
 			m_up(core::bc_vector3f::up()),
 			m_slope_limit(30),
-			m_contact_offset(0.1f),
+			m_contact_offset(p_capsule_radius * 0.25f),
 			m_step_offset(0.5f),
 			m_density(10),
 			m_capsule_height(p_capsule_height),
 			m_capsule_radius(p_capsule_radius),
+			m_material(p_material),
 			m_hit_callback(nullptr)
 		{
 		}
@@ -151,6 +159,8 @@ namespace black_cat
 
 			bc_platform_ccontroller& operator=(const bc_platform_ccontroller& p_other) noexcept;
 
+			bc_rigid_actor get_actor() noexcept;
+			
 			/**
 			 * \brief The position retrieved by this function is the center of the collision shape.
 			 * \return 
@@ -165,7 +175,7 @@ namespace black_cat
 
 			/**
 			 * \brief Retrieve the "foot" position of the controller, i.e. the position of the bottom of the CCT's shape.
-			 * \return a
+			 * \return
 			 */
 			core::bc_vector3f get_foot_position() const noexcept;
 
@@ -193,8 +203,19 @@ namespace black_cat
 			
 			void resize(bcFLOAT p_height, bool p_align_foot = true) noexcept;
 
-			bc_ccontroller_collision_flag move(const core::bc_vector3f& p_displacement, 
-				const core_platform::bc_clock::update_param& p_clock, 
+			/**
+			 * \brief Moves the character
+			 * \param p_displacement Displacement vector
+			 * \param p_clock
+			 * \param p_pre_filter
+			 * \param p_post_filter 
+			 * \param p_cc_vs_cc_filter 
+			 * \return 
+			 */
+			bc_ccontroller_collision_flag move(const core::bc_vector3f& p_displacement,
+				const core_platform::bc_clock::update_param& p_clock,
+				bc_scene_query_pre_filter_callback* p_pre_filter = nullptr,
+				bc_scene_query_post_filter_callback* p_post_filter = nullptr,
 				bc_ccontroller_collision_filter_callback* p_cc_vs_cc_filter = nullptr) noexcept;
 			
 			bool is_valid() const noexcept override;

@@ -24,7 +24,7 @@ namespace black_cat
 
 			bcUINT32 get_num_bones() const noexcept;
 
-			core::bc_span<const bcCHAR*> get_bone_names() const noexcept;
+			core::bc_const_span<const bcCHAR*> get_bone_names() const noexcept;
 			
 			ozz::animation::Skeleton& get_native_handle() noexcept;
 			
@@ -49,7 +49,7 @@ namespace black_cat
 			return m_skeleton->num_joints();
 		}
 
-		inline core::bc_span<const bcCHAR*> bc_animation_skeleton::get_bone_names() const noexcept
+		inline core::bc_const_span<const bcCHAR*> bc_animation_skeleton::get_bone_names() const noexcept
 		{
 			if(m_bone_names.empty() && m_skeleton)
 			{
@@ -62,7 +62,7 @@ namespace black_cat
 				}
 			}
 
-			return core::bc_make_span(m_bone_names);
+			return core::bc_make_cspan(m_bone_names);
 		}
 
 		inline ozz::animation::Skeleton& bc_animation_skeleton::get_native_handle() noexcept

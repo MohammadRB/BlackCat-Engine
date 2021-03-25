@@ -37,6 +37,15 @@ namespace black_cat
 		}
 
 		template<>
+		BC_PHYSICSIMP_DLL bc_rigid_actor bc_platform_ccontroller<g_api_physx>::get_actor() noexcept
+		{
+			bc_rigid_actor l_actor;
+			static_cast<bc_physics_reference&>(l_actor).get_platform_pack().m_px_object = m_pack.m_controller->getActor();
+			
+			return l_actor;
+		}
+
+		template<>
 		BC_PHYSICSIMP_DLL core::bc_vector3f bc_platform_ccontroller<g_api_physx>::get_position() const noexcept
 		{
 			return bc_to_game_hand_ex(m_pack.m_controller->getPosition());
@@ -124,15 +133,33 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL bc_ccontroller_collision_flag bc_platform_ccontroller<g_api_physx>::move(const core::bc_vector3f& p_displacement,
 			const core_platform::bc_clock::update_param& p_clock,
+			bc_scene_query_pre_filter_callback* p_pre_filter,
+			bc_scene_query_post_filter_callback* p_post_filter,
 			bc_ccontroller_collision_filter_callback* p_cc_vs_cc_filter) noexcept
 		{
-			physx::PxControllerFilters l_filter;
-			bc_px_controller_collision_filter l_filter_callback(p_cc_vs_cc_filter);
+			physx::PxFilterData l_filter_data;
+			bc_px_ccontroller_query_filter l_filter_callback(p_pre_filter, p_post_filter);
+			bc_px_ccontroller_collision_filter l_controller_filter_callback(p_cc_vs_cc_filter);
 
+			physx::PxQueryFilterCallback* l_filter_callback_ptr = nullptr;
+			physx::PxControllerFilterCallback* l_controller_filter_callback_ptr = nullptr;
+			
+			if(p_pre_filter)
+			{
+				l_filter_callback_ptr = &l_filter_callback;
+			}
+			
+			if(p_post_filter)
+			{
+				l_filter_callback_ptr = &l_filter_callback;
+			}
+			
 			if(p_cc_vs_cc_filter)
 			{
-				l_filter.mCCTFilterCallback = &l_filter_callback;
+				l_controller_filter_callback_ptr = &l_controller_filter_callback;
 			}
+
+			const physx::PxControllerFilters l_filter(&l_filter_data, l_filter_callback_ptr, l_controller_filter_callback_ptr);
 
 			const auto l_px_flag = m_pack.m_controller->move
 			(

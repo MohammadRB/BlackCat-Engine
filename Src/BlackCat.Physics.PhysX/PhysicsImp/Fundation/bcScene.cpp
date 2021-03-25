@@ -1,15 +1,18 @@
 // [12/17/2016 MRB]
 
 #include "PhysicsImp/PhysicsImpPCH.h"
+
+#include "Core/Math/bcCoordinate.h"
 #include "Physics/Shape/bcShapeGeometry.h"
-#include "PhysicsImp/bcExport.h"
-#include "PhysicsImp/bcUtility.h"
+#include "Physics/bcException.h"
 #include "PhysicsImp/Fundation/bcScene.h"
 #include "PhysicsImp/Body/bcActor.h"
 #include "PhysicsImp/Body/bcAggregate.h"
 #include "PhysicsImp/Shape/bcShapeGeometry.h"
 #include "PhysicsImp/Shape/bcShape.h"
 #include "PhysicsImp/Joint/bcJoint.h"
+#include "PhysicsImp/bcExport.h"
+#include "PhysicsImp/bcUtility.h"
 
 namespace black_cat
 {
@@ -51,19 +54,29 @@ namespace black_cat
 		bc_ccontroller_ref bc_platform_scene<g_api_physx>::create_ccontroller(const bc_ccontroller_desc& p_desc)
 		{
 			auto l_hit_callback = p_desc.m_hit_callback ? core::bc_make_shared<bc_px_controller_hit_callback>(p_desc.m_hit_callback) : nullptr;
-
+			auto* l_px_material = static_cast<physx::PxMaterial*>
+			(
+				static_cast<bc_physics_reference&>(const_cast<bc_material&>(p_desc.m_material)).get_platform_pack().m_px_object
+			);
+			
 			physx::PxCapsuleControllerDesc l_px_desc;
 			l_px_desc.setToDefault();
 			l_px_desc.position = bc_to_right_hand_ex(p_desc.m_position);
 			l_px_desc.upDirection = bc_to_right_hand(p_desc.m_up);
-			l_px_desc.slopeLimit = p_desc.m_slope_limit;
+			l_px_desc.slopeLimit = std::cosf(core::bc_to_radian(p_desc.m_slope_limit));
 			l_px_desc.contactOffset = p_desc.m_contact_offset;
 			l_px_desc.stepOffset = p_desc.m_step_offset;
 			l_px_desc.density = p_desc.m_density;
 			l_px_desc.height = p_desc.m_capsule_height;
 			l_px_desc.radius = p_desc.m_capsule_radius;
+			l_px_desc.material = l_px_material;
 			l_px_desc.reportCallback = l_hit_callback.get();
 
+			if(!l_px_desc.isValid())
+			{
+				throw bc_invalid_argument_exception("Capsule controller description is not valid");
+			}
+			
 			bc_ccontroller l_controller;
 			l_controller.get_platform_pack().m_controller = m_pack.m_data->m_controller_manager->createController(l_px_desc);
 			l_controller.get_platform_pack().m_hit_callback = std::move(l_hit_callback);

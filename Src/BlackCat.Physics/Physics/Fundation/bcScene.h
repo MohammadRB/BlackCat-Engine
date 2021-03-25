@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CorePlatform/bcType.h"
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Math/bcVector3f.h"
 #include "Physics/bcPhysicsApi.h"
@@ -289,5 +290,35 @@ namespace black_cat
 
 		using bc_scene = bc_platform_scene< g_current_physics_api >;
 		using bc_scene_ref = bc_physics_ref<bc_scene>;
+
+		class bc_scene_lock
+		{
+		public:
+			explicit bc_scene_lock(bc_scene* p_scene);
+
+			bc_scene_lock(const bc_scene_lock&) = delete;
+
+			~bc_scene_lock();
+
+			bc_scene_lock& operator=(const bc_scene_lock&) = delete;
+
+		private:
+			bc_scene* m_scene;
+		};
+
+		class bc_scene_shared_lock
+		{
+		public:
+			explicit bc_scene_shared_lock(bc_scene* p_scene);
+
+			bc_scene_shared_lock(const bc_scene_shared_lock&) = delete;
+			
+			~bc_scene_shared_lock();
+
+			bc_scene_shared_lock& operator=(const bc_scene_shared_lock&) = delete;
+
+		private:
+			bc_scene* m_scene;
+		};
 	}
 }

@@ -46,9 +46,10 @@ namespace black_cat
 		BC_JSON_ARRAY(_bc_scene_actor, actors);
 	};
 
-	bc_scene_loader::bc_scene_loader(game::bc_iscene_graph_node_factory p_scene_graph_factory)
+	bc_scene_loader::bc_scene_loader(game::bc_px_scene_builder_factory p_px_scene_builder_factory, game::bc_scene_graph_node_factory p_scene_graph_factory)
+		: m_px_scene_builder_factory(std::move(p_px_scene_builder_factory)),
+		m_scene_graph_factory(std::move(p_scene_graph_factory))
 	{
-		m_scene_graph_factory = std::move(p_scene_graph_factory);
 	}
 
 	bool bc_scene_loader::support_offline_processing() const
@@ -107,13 +108,21 @@ namespace black_cat
 		);
 		core::bc_concurrency::when_all(std::cbegin(l_stream_tasks), std::cend(l_stream_tasks));
 
-		auto l_px_scene_builder = std::move(physics::bc_scene_builder().enable_ccd());
-		auto l_px_scene = l_game_system->get_physics_system().get_physics().create_scene(std::move(l_px_scene_builder));
-		auto l_scene_graph = game::bc_scene_graph(m_scene_graph_factory(game::bc_scene_graph_node_factory_parameter
-		{
-			*l_json_document->m_scene_graph->m_center,
-			*l_json_document->m_scene_graph->m_half_extends
-		}));
+		auto l_px_scene = l_game_system->get_physics_system().get_physics().create_scene
+		(
+			m_px_scene_builder_factory()
+		);
+		auto l_scene_graph = game::bc_scene_graph
+		(
+			m_scene_graph_factory
+			(
+				game::bc_scene_graph_node_factory_parameter
+				{
+					*l_json_document->m_scene_graph->m_center,
+					*l_json_document->m_scene_graph->m_half_extends
+				}
+			)
+		);
 
 		core::bc_vector< core::bc_string > l_stream_file_names;
 		l_stream_file_names.reserve(l_json_document->m_stream_files.size());
@@ -151,14 +160,14 @@ namespace black_cat
 				return p_value->c_str();
 			}
 		);
-		core::bc_vector< core::bc_string > l_stream_names;
+		core::bc_vector<core::bc_string> l_stream_names;
 		l_stream_names.reserve(l_json_document->m_streams.size());
 		std::transform
 		(
 			std::cbegin(l_json_document->m_streams),
 			std::cend(l_json_document->m_streams),
 			std::back_inserter(l_stream_names),
-			[](const core::bc_json_value< core::bc_string_frame >& p_value)
+			[](const core::bc_json_value<core::bc_string_frame>& p_value)
 			{
 				return p_value->c_str();
 			}

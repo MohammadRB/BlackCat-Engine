@@ -52,21 +52,24 @@ namespace black_cat
 			const_iterator cend() const noexcept;
 
 			/**
-			 * \brief Try to add actor to scene
+			 * \brief Try to add actor to scene.
+			 * \n ThreadSafe
 			 * \param p_actor 
 			 * \return True if the actor was added and False if actor was out of bound of scene graph
 			 */
 			bool add_actor(bc_actor& p_actor);
 
 			/**
-			 * \brief Update actor in scene graph
+			 * \brief Update actor in scene graph.
+			 * \n ThreadSafe
 			 * \param p_actor 
 			 * \return True if the actor was updated and False if actor went out of bound of scene graph
 			 */
 			bool update_actor(bc_actor& p_actor);
 
 			/**
-			 * \brief Try to remove actor from scene
+			 * \brief Try to remove actor from scene.
+			 * \n ThreadSafe
 			 * \param p_actor 
 			 * \return True if the actor was removed and False if actor was not found
 			 */

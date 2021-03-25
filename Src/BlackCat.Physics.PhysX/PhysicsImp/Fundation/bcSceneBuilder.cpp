@@ -4,7 +4,7 @@
 #include "PhysicsImp/bcExport.h"
 #include "PhysicsImp/bcUtility.h"
 #include "PhysicsImp/bcImplementation.h"
-#include "PhysicsImp/Fundation/bcSimulationEventCallback.h"
+#include "PhysicsImp/Fundation/bcPhysicsSimulationCallback.h"
 #include "PhysicsImp/Collision/bcContactModifyCallback.h"
 #include "PhysicsImp/Collision/bcContactFilterCallback.h"
 #include "PhysicsImp/Fundation/bcSceneBuilder.h"
@@ -15,7 +15,7 @@ namespace black_cat
 	{
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder< g_api_physx >::bc_platform_scene_builder()
+		bc_platform_scene_builder<g_api_physx>::bc_platform_scene_builder()
 		{
 			m_pack.m_filter_shader_data = core::bc_make_unique<bc_px_filter_shader_data>();
 
@@ -30,20 +30,20 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder< g_api_physx >::bc_platform_scene_builder(bc_platform_scene_builder&& p_other) noexcept
+		bc_platform_scene_builder<g_api_physx>::bc_platform_scene_builder(bc_platform_scene_builder&& p_other) noexcept
 		{
 			operator=(std::move(p_other));
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder< g_api_physx >::~bc_platform_scene_builder()
+		bc_platform_scene_builder<g_api_physx>::~bc_platform_scene_builder()
 		{
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder< g_api_physx >& bc_platform_scene_builder< g_api_physx >::operator=(bc_platform_scene_builder&& p_other) noexcept
+		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::operator=(bc_platform_scene_builder&& p_other) noexcept
 		{
 			m_pack.m_px_desc = p_other.m_pack.m_px_desc;
 			m_pack.m_simulation_callback = std::move(p_other.m_pack.m_simulation_callback);
@@ -56,7 +56,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder< g_api_physx >& bc_platform_scene_builder< g_api_physx >::use_hint(const bc_scene_hint& p_hint) noexcept
+		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::use_hint(const bc_scene_hint& p_hint) noexcept
 		{
 			m_pack.m_px_desc.limits.maxNbStaticShapes = p_hint.m_num_static_bodies;
 			m_pack.m_px_desc.limits.maxNbDynamicShapes = p_hint.m_num_dynamic_bodies;
@@ -67,7 +67,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder< g_api_physx >& bc_platform_scene_builder< g_api_physx >::gravity(const core::bc_vector3f& p_gravity)
+		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::gravity(const core::bc_vector3f& p_gravity)
 		{
 			m_pack.m_px_desc.gravity = bc_to_right_hand(p_gravity);
 
@@ -76,7 +76,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder< g_api_physx >& bc_platform_scene_builder< g_api_physx >::use_simulation_callback(core::bc_unique_ptr< bci_simulation_event_callback > p_callback)
+		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::use_simulation_callback(core::bc_unique_ptr< bci_physics_simulation_callback > p_callback)
 		{
 			m_pack.m_simulation_callback = core::bc_make_unique<bc_px_simulation_callback>(std::move(p_callback));
 			m_pack.m_px_desc.simulationEventCallback = m_pack.m_simulation_callback.get();
@@ -86,7 +86,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder< g_api_physx >& bc_platform_scene_builder< g_api_physx >::use_contact_modify_callback(core::bc_unique_ptr< bci_contact_modify_callback > p_callback)
+		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::use_contact_modify_callback(core::bc_unique_ptr< bci_contact_modify_callback > p_callback)
 		{
 			m_pack.m_contact_modify_callback = core::bc_make_unique<bc_px_contact_modify_callback>(std::move(p_callback));
 			m_pack.m_px_desc.contactModifyCallback = m_pack.m_contact_modify_callback.get();
@@ -97,7 +97,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder< g_api_physx >& bc_platform_scene_builder< g_api_physx >::use_contact_filter_callback(core::bc_unique_ptr< bci_contact_filter_callback > p_callback)
+		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::use_contact_filter_callback(core::bc_unique_ptr< bci_contact_filter_callback > p_callback)
 		{
 			m_pack.m_contact_filter_callback = core::bc_make_unique<bc_px_contact_filter_callback>(std::move(p_callback));
 			m_pack.m_px_desc.filterCallback = m_pack.m_contact_filter_callback.get();
@@ -108,7 +108,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder< g_api_physx >& bc_platform_scene_builder< g_api_physx >::enable_ccd(bcUINT32 p_max_ccd_pass)
+		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::enable_ccd(bcUINT32 p_max_ccd_pass)
 		{
 			m_pack.m_px_desc.flags |= physx::PxSceneFlag::eENABLE_CCD;
 			m_pack.m_px_desc.ccdMaxPasses = p_max_ccd_pass;
@@ -119,7 +119,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder< g_api_physx >& bc_platform_scene_builder< g_api_physx >::enable_locking()
+		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::enable_locking()
 		{
 			m_pack.m_px_desc.flags |= physx::PxSceneFlag::eREQUIRE_RW_LOCK;
 

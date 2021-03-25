@@ -362,7 +362,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSceneBuilder.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSceneDebug.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSerializeBuffer.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSimulationEventCallback.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcPhysicsSimulationCallback.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcTask.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcTransform.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcD6Joint.h" />
@@ -411,7 +411,7 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSceneBuilder.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSceneDebug.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSerializeBuffer.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcSimulationEventCallback.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcPhysicsSimulationCallback.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcTask.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Fundation\bcTransform.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Joint\bcD6Joint.cpp" />

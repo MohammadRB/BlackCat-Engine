@@ -57,7 +57,7 @@ namespace black_cat
 			 * \param p_px_actor
 			 * \return
 			 */
-			bc_actor get_game_actor(physics::bc_actor& p_px_actor) noexcept;
+			bc_actor get_game_actor(const physics::bc_actor& p_px_actor) noexcept;
 
 			void create_px_shapes_from_height_map(bc_material_manager& p_material_manager, 
 				physics::bc_rigid_static& p_rigid_static, 
@@ -113,7 +113,7 @@ namespace black_cat
 			p_px_actor.set_data(reinterpret_cast<void*>(static_cast<bcINTPTR>(p_actor.get_index())));
 		}
 
-		inline bc_actor bc_physics_system::get_game_actor(physics::bc_actor& p_px_actor) noexcept
+		inline bc_actor bc_physics_system::get_game_actor(const physics::bc_actor& p_px_actor) noexcept
 		{
 			return bc_actor(static_cast<bc_actor_index>(reinterpret_cast<bcINTPTR>(p_px_actor.get_data())));
 		}

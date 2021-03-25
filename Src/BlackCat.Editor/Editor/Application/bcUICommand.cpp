@@ -41,28 +41,33 @@ namespace black_cat
 			const auto l_ray = get_pointer_ray(p_context, p_point_left, p_point_top);
 			auto l_query_filter = physics::bc_scene_query_post_filter_callback
 			(
-				[&p_context, &l_ray, this](physics::bc_scene_query_post_filter_data& p_filter_data)
+				[&p_context, &l_ray, this](const physics::bc_scene_query_post_filter_data& p_filter_data)
 				{
 					return skinned_mesh_hit_check(p_context, l_ray, p_filter_data);
 				}
 			);
-			
-			const bool l_px_hit_result = p_context.m_game_system.get_scene()->get_px_scene().raycast
-			(
-				l_ray,
-				p_result,
-				physics::bc_hit_flag::hit_info,
-				p_flags,
-				static_cast<physics::bc_query_group>(p_query_group),
-				&l_query_filter
-			);
 
-			return l_px_hit_result;
+			auto& l_px_scene = p_context.m_game_system.get_scene()->get_px_scene();
+
+			{
+				physics::bc_scene_shared_lock l_lock(&l_px_scene);
+
+				const bool l_px_hit_result = l_px_scene.raycast
+				(
+					l_ray,
+					p_result,
+					physics::bc_hit_flag::hit_info,
+					p_flags,
+					static_cast<physics::bc_query_group>(p_query_group),
+					&l_query_filter
+				);
+				return l_px_hit_result;
+			}
 		}
 
 		physics::bc_query_hit_type bc_iui_command::skinned_mesh_hit_check(const update_context& p_context,
 			const physics::bc_ray& p_ray,
-			physics::bc_scene_query_post_filter_data& p_filter_data) const
+			const physics::bc_scene_query_post_filter_data& p_filter_data) const
 		{
 			const auto l_shape_query_flag = p_filter_data.m_shape.get_query_flags();
 			const auto l_shape_query_type = core::bc_enum::has(l_shape_query_flag, physics::bc_shape_query_flag::touching) ?

@@ -399,7 +399,7 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(*this).get_platform_pack().m_px_object
 			);
-			auto l_px_filter_data = l_px_shape->getSimulationFilterData();
+			const auto l_px_filter_data = l_px_shape->getSimulationFilterData();
 
 			l_px_shape->setSimulationFilterData(physx::PxFilterData
 			(
@@ -415,10 +415,10 @@ namespace black_cat
 		bc_shape_notify_flag bc_platform_shape< g_api_physx >::get_notify_flags() const noexcept
 		{
 			auto* l_px_shape = static_cast< physx::PxShape* >
-				(
-					static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_shape& >(*this)).get_platform_pack().m_px_object
-					);
-			auto l_px_filter_data = l_px_shape->getSimulationFilterData();
+			(
+				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_shape& >(*this)).get_platform_pack().m_px_object
+			);
+			const auto l_px_filter_data = l_px_shape->getSimulationFilterData();
 
 			return static_cast< bc_shape_notify_flag >(l_px_filter_data.word2);
 		}
@@ -431,7 +431,7 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(*this).get_platform_pack().m_px_object
 			);
-			auto l_px_filter_data = l_px_shape->getSimulationFilterData();
+			const auto l_px_filter_data = l_px_shape->getSimulationFilterData();
 
 			l_px_shape->setSimulationFilterData(physx::PxFilterData
 			(
@@ -450,7 +450,7 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_shape& >(*this)).get_platform_pack().m_px_object
 			);
-			auto l_px_filter_data = l_px_shape->getQueryFilterData();
+			const auto l_px_filter_data = l_px_shape->getQueryFilterData();
 
 			return static_cast< bc_query_group >(l_px_filter_data.word0);
 		}
@@ -482,7 +482,7 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_shape& >(*this)).get_platform_pack().m_px_object
 			);
-			auto l_px_filter_data = l_px_shape->getQueryFilterData();
+			const auto l_px_filter_data = l_px_shape->getQueryFilterData();
 
 			return static_cast< bc_shape_query_flag >(l_px_filter_data.word1);
 		}
@@ -495,7 +495,7 @@ namespace black_cat
 			(
 				static_cast< bc_platform_physics_reference& >(*this).get_platform_pack().m_px_object
 			);
-			auto l_px_filter_data = l_px_shape->getQueryFilterData();
+			const auto l_px_filter_data = l_px_shape->getQueryFilterData();
 
 			l_px_shape->setQueryFilterData(physx::PxFilterData
 			(

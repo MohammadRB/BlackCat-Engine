@@ -55,7 +55,7 @@
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcSceneBuilder.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcSceneDebug.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcSerializeBuffer.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcSimulationEventCallback.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcPhysicsSimulationCallback.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcTask.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Fundation\bcTransform.h" />
     <ClInclude Include="..\..\Src\BlackCat.Physics\Physics\Joint\bcD6Joint.h" />

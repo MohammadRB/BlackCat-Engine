@@ -2,12 +2,16 @@
 
 #include "Game/GamePCH.h"
 
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/Math/bcCoordinate.h"
 #include "Core/Utility/bcLogger.h"
 #include "GraphicImp/bcRenderApiInfo.h"
+#include "PhysicsImp/Shape/bcShape.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/ActorController/bcXBotController.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
+#include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcHierarchyTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
@@ -19,13 +23,16 @@
 #include "Game/Object/Animation/Job/bcAimAnimationJob.h"
 #include "Game/Object/Animation/Job/bcPartialBlendingAnimationJob.h"
 #include "Game/Object/Animation/Job/bcActorUpdateAnimationJob.h"
+#include "Game/System/Render/Material/bcMaterialManager.h"
+#include "Game/System/bcGameSystem.h"
 
 namespace black_cat
 {
 	namespace game
 	{
 		bc_xbot_controller::bc_xbot_controller()
-			: m_scene(nullptr),
+			: m_physics_system(nullptr),
+			m_scene(nullptr),
 			m_skinned_component(nullptr),
 			m_active_job(nullptr),
 			m_look_speed(0),
@@ -53,19 +60,23 @@ namespace black_cat
 
 		void bc_xbot_controller::initialize(const bc_actor_component_initialize_context& p_context)
 		{
+			m_physics_system = &p_context.m_game_system.get_physics_system();
+			m_actor = p_context.m_actor;
 			m_skinned_component = p_context.m_actor.get_component< bc_skinned_mesh_component >();
+
 			if (!m_skinned_component)
 			{
 				throw bc_invalid_operation_exception("xbot actor must have skinned components");
 			}
 			
 			m_upper_body_chain = {"Spine1", "Spine2", "Neck", "Head"};
+			m_local_origin = core::bc_vector3f(0);
 			m_local_forward = core::bc_vector3f(0, 0, -1);
 			m_look_direction = m_local_forward;
 			m_move_direction = m_local_forward;
 
-			_create_idle_animation(p_context.m_actor);
-			_create_running_animation(p_context.m_actor);
+			_create_idle_animation();
+			_create_running_animation();
 		}
 
 		void bc_xbot_controller::added_to_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene)
@@ -74,8 +85,30 @@ namespace black_cat
 			
 			const auto* l_mediate_component = p_context.m_actor.get_component<bc_mediate_component>();
 			const auto l_bound_box_extends = l_mediate_component->get_bound_box().get_half_extends();
-			const auto l_max_side_length = std::max(std::max(l_bound_box_extends.x, l_bound_box_extends.y), l_bound_box_extends.z) * 2;
+			const auto l_max_side_length = std::max({ l_bound_box_extends.x, l_bound_box_extends.y, l_bound_box_extends.z }) * 2;
+			const auto l_px_material = core::bc_get_service<bc_game_system>()->get_render_system().get_material_manager().get_default_collider_material().m_px_material;
+			const auto l_px_controller_desc = physics::bc_ccontroller_desc
+			                                  (
+				                                  core::bc_vector3f(m_position),
+				                                  l_max_side_length * 0.8f,
+				                                  l_max_side_length * 0.2f,
+				                                  l_px_material
+			                                  )
+											  .with_contact_offset(l_max_side_length * 0.05f)
+			                                  .with_step_offset(l_max_side_length * 0.f)
+			                                  .with_hit_callback(this);
+			
+			{
+				physics::bc_scene_lock l_lock(&m_scene->get_px_scene());
+				
+				m_px_controller = m_scene->get_px_scene().create_ccontroller(l_px_controller_desc);
+				m_px_controller->set_foot_position(m_position - m_local_origin);
 
+				physics::bc_shape l_px_controller_shape;
+				m_px_controller->get_actor().get_shapes(&l_px_controller_shape, 1);
+				l_px_controller_shape.set_flag(physics::bc_shape_flag::query, false);
+			}
+			
 			m_look_speed = 10.0f;
 			m_run_speed = l_max_side_length * 1.3f;
 			m_walk_speed = l_max_side_length * 0.6f;
@@ -93,7 +126,7 @@ namespace black_cat
 			_update_input(p_context.m_clock);
 			_update_direction(p_context.m_clock);
 			_select_active_animation(p_context.m_clock);
-			_update_world_transform(p_context.m_actor);
+			_update_world_transform(p_context.m_clock);
 
 			if(m_active_job)
 			{
@@ -103,6 +136,11 @@ namespace black_cat
 
 		void bc_xbot_controller::removed_from_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene)
 		{
+			{
+				physics::bc_scene_lock l_lock(&m_scene->get_px_scene());
+				m_px_controller.reset();
+			}
+			
 			m_scene = nullptr;
 			m_active_job = nullptr;
 		}
@@ -110,13 +148,19 @@ namespace black_cat
 		void bc_xbot_controller::handle_event(const bc_actor_component_event_context& p_context)
 		{
 			const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
-			if(l_world_transform_event)
+			if(l_world_transform_event && !l_world_transform_event->is_px_simulation_transform())
 			{
 				const auto& l_world_transform = l_world_transform_event->get_transform();
-				m_position = l_world_transform.get_translation();
-				
-				bc_animation_job_helper::set_skinning_world_transform(static_cast<bc_sequence_animation_job&>(*m_idle_job), l_world_transform);
-				bc_animation_job_helper::set_skinning_world_transform(static_cast<bc_sequence_animation_job&>(*m_running_job), l_world_transform);
+				m_position = l_world_transform.get_translation() - m_local_origin;
+
+				// In case we have transform event before actor added to scene
+				if(m_px_controller->is_valid())
+				{
+					{
+						physics::bc_scene_lock l_lock(&m_scene->get_px_scene());
+						m_px_controller->set_foot_position(m_position - m_local_origin);
+					}
+				}
 			}
 		}
 
@@ -156,7 +200,15 @@ namespace black_cat
 			core_platform::atomic_thread_fence(core_platform::bc_memory_order::release);
 		}
 
-		void bc_xbot_controller::_create_idle_animation(bc_actor& p_actor)
+		void bc_xbot_controller::on_shape_hit(const physics::bc_ccontroller_shape_hit& p_hit)
+		{
+		}
+
+		void bc_xbot_controller::on_ccontroller_hit(const physics::bc_ccontroller_controller_hit& p_hit)
+		{
+		}
+
+		void bc_xbot_controller::_create_idle_animation()
 		{
 			auto& l_skeleton = *m_skinned_component->get_skeleton();
 			auto& l_idle_animation = *m_skinned_component->find_animation("NeutralIdle");
@@ -196,7 +248,7 @@ namespace black_cat
 			);
 			auto l_actor_update_job = core::bc_make_shared<bc_actor_update_animation_job>
 			(
-				bc_actor_update_animation_job(p_actor, *m_skinned_component, l_model_to_skinning_job)
+				bc_actor_update_animation_job(m_actor, *m_skinned_component, l_model_to_skinning_job)
 			);
 
 			bcFLOAT l_blending_weights[] = { 0,1,0 };
@@ -212,7 +264,7 @@ namespace black_cat
 			             .build();
 		}
 
-		void bc_xbot_controller::_create_running_animation(bc_actor& p_actor)
+		void bc_xbot_controller::_create_running_animation()
 		{
 			auto& l_skeleton = *m_skinned_component->get_skeleton();
 			auto& l_walking_animation = *m_skinned_component->find_animation("Walking");
@@ -265,7 +317,7 @@ namespace black_cat
 			);
 			auto l_actor_update_job = core::bc_make_shared<bc_actor_update_animation_job>
 			(
-				bc_actor_update_animation_job(p_actor, *m_skinned_component, l_model_to_skinning_job)
+				bc_actor_update_animation_job(m_actor, *m_skinned_component, l_model_to_skinning_job)
 			);
 
 			m_running_job = bc_animation_job_builder()
@@ -470,8 +522,29 @@ namespace black_cat
 			}
 		}
 
-		void bc_xbot_controller::_update_world_transform(bc_actor& p_actor)
+		void bc_xbot_controller::_update_world_transform(const core_platform::bc_clock::update_param& p_clock)
 		{
+			auto l_px_controller_pre_filter = physics::bc_scene_query_pre_filter_callback
+			(
+				[this](const physics::bc_scene_query_pre_filter_data& p_filter_data)
+				{
+					const auto l_actor = m_physics_system->get_game_actor(p_filter_data.m_actor);
+					if(l_actor == m_actor)
+					{
+						return physics::bc_query_hit_type::none;
+					}
+					
+					return physics::bc_query_hit_type::block;
+				}
+			);
+			
+			{
+				physics::bc_scene_lock l_lock(&m_scene->get_px_scene());
+				
+				m_px_controller->move(m_move_direction * m_move_amount, p_clock, &l_px_controller_pre_filter);
+				m_position = m_px_controller->get_foot_position();
+			}
+			
 			core::bc_matrix4f l_world_transform;
 			core::bc_matrix3f l_rotation;
 
@@ -485,12 +558,15 @@ namespace black_cat
 			{
 				l_rotation.rotation_between_two_vector_rh(get_local_forward(), m_move_direction * l_move_direction_sign);
 			}
-
+			
 			l_world_transform.make_identity();
 			l_world_transform.set_rotation(l_rotation);
-			l_world_transform.set_translation(m_position + m_move_direction * m_move_amount);
+			l_world_transform.set_translation(m_position);
 
-			p_actor.add_event(bc_world_transform_actor_event(l_world_transform));
+			bc_animation_job_helper::set_skinning_world_transform(static_cast<bc_sequence_animation_job&>(*m_idle_job), l_world_transform);
+			bc_animation_job_helper::set_skinning_world_transform(static_cast<bc_sequence_animation_job&>(*m_running_job), l_world_transform);
+			
+			m_actor.add_event(bc_world_transform_actor_event(l_world_transform, true));
 		}
 	}
 }

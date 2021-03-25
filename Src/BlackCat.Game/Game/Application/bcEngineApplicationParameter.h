@@ -4,6 +4,7 @@
 
 #include "Core/Utility/bcDelegate.h"
 #include "PlatformImp/Application/bcApplication.h"
+#include "PhysicsImp/Fundation/bcSceneBuilder.h"
 #include "Game/Application/bcIRenderApplicationOutputWindow.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphNode.h"
 
@@ -45,11 +46,20 @@ namespace black_cat
 			bcSIZE m_thread_manager_reserved_thread_count;
 		};
 
+		struct bc_scene_graph_node_factory_parameter
+		{
+			core::bc_vector3f m_center;
+			core::bc_vector3f m_half_extends;
+		};
+
+		using bc_px_scene_builder_factory = core::bc_delegate<physics::bc_scene_builder()>;
+		using bc_scene_graph_node_factory = core::bc_delegate<core::bc_unique_ptr<bci_scene_graph_node>(bc_scene_graph_node_factory_parameter)>;
+		
 		struct bc_render_application_parameter : public platform::bc_application_parameter
 		{
 			bc_render_application_parameter(platform::bc_application_parameter& p_app_parameters,
 				bci_render_application_output_window* p_output_window,
-				bc_iscene_graph_node_factory p_scene_graph_factory)
+				bc_scene_graph_node_factory p_scene_graph_factory)
 				: platform::bc_application_parameter(p_app_parameters),
 				m_output_window(p_output_window),
 				m_scene_graph_factory(std::move(p_scene_graph_factory))
@@ -63,7 +73,7 @@ namespace black_cat
 			bc_render_application_parameter& operator=(bc_render_application_parameter&&) = default;
 
 			bci_render_application_output_window* m_output_window;
-			bc_iscene_graph_node_factory m_scene_graph_factory;
+			bc_scene_graph_node_factory m_scene_graph_factory;
 		};
 
 		struct bc_engine_application_parameter

@@ -4,7 +4,9 @@
 
 #include "PhysicsImp/bcPhysicsReference.h"
 #include "PhysicsImp/bcPhysicsRef.h"
+#include "PhysicsImp/Body/bcRigidActor.h"
 #include "PhysicsImp/Fundation/bcCControllerSimulationCallback.h"
+#include "PhysicsImp/Fundation/bcMaterial.h"
 
 #include "Physics/Fundation/bcCController.h"
 #include "PhysicsImp/bcImplementation.h"

@@ -53,8 +53,8 @@ namespace black_cat
 
 		void bc_mesh_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			const auto& l_mesh_name = p_context.m_parameters.get_value_throw< core::bc_string >(constant::g_param_mesh);
-			const auto* l_sub_mesh_name = p_context.m_parameters.get_value< core::bc_string >(constant::g_param_sub_mesh);
+			const auto& l_mesh_name = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_mesh);
+			const auto* l_sub_mesh_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_sub_mesh);
 			const auto* l_materials = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_mesh_materials);
 			const auto l_lod_scale = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_mesh_lod_scale), 1.0f);
 			const auto l_mesh = p_context.m_stream_manager.find_content_throw<bc_mesh>(l_mesh_name.c_str());

@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
@@ -63,7 +64,7 @@ namespace black_cat
 					BC_ASSERT(false);
 				}
 
-				const auto l_px_actor_type = get_actor().get_component<bc_rigid_body_component>()->get_body().get_type();
+				const auto l_px_actor_type = l_rigid_body_component->get_body().get_type();
 				if (l_px_actor_type == physics::bc_actor_type::rigid_static)
 				{
 					m_render_group.reset(bc_render_group::static_mesh);

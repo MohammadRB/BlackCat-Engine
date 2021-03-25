@@ -28,13 +28,20 @@ namespace black_cat
 			block = 2
 		};
 
+		struct bc_scene_query_pre_filter_data
+		{
+			bc_actor m_actor;
+			bc_shape m_shape;
+		};
+		using bc_scene_query_pre_filter_callback = core::bc_delegate<bc_query_hit_type(const bc_scene_query_pre_filter_data&)>;
+		
 		struct bc_scene_query_post_filter_data
 		{
 			bc_actor m_actor;
 			bc_shape m_shape;
 			bcUINT32 m_face_index;
 		};
-		using bc_scene_query_post_filter_callback = core::bc_delegate < bc_query_hit_type(bc_scene_query_post_filter_data&) >;
+		using bc_scene_query_post_filter_callback = core::bc_delegate<bc_query_hit_type(const bc_scene_query_post_filter_data&)>;
 		
 		template< bc_physics_api TApi, class THit >
 		struct bc_platform_scene_query_buffer_pack

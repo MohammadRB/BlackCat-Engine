@@ -17,7 +17,7 @@ namespace black_cat
 		
 		/**
 		 * \brief Filtering callback for CCT vs CCT.
-		 * \n To make each CCT collide against all other CCTs.
+		 * \n To make each CCT collide against all other CCTs, return true.
 		 * \n To make each CCT freely go through all other CCTs, just return false.
 		 */
 		using bc_ccontroller_collision_filter_callback = core::bc_delegate<bool(const bc_ccontroller&, const bc_ccontroller&)>;

@@ -84,7 +84,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_scene_ref bc_platform_physics< g_api_physx >::create_scene(bc_scene_builder&& p_desc)
+		bc_scene_ref bc_platform_physics< g_api_physx >::create_scene(bc_scene_builder p_desc)
 		{
 			p_desc.get_platform_pack().m_px_desc.cpuDispatcher = m_pack.m_task_dispatcher.get();
 
@@ -97,6 +97,7 @@ namespace black_cat
 			l_scene_pack_data.m_simulation_callback = std::move(p_desc.get_platform_pack().m_simulation_callback);
 			l_scene_pack_data.m_contact_filter_callback = std::move(p_desc.get_platform_pack().m_contact_filter_callback);
 			l_scene_pack_data.m_contact_modify_callback = std::move(p_desc.get_platform_pack().m_contact_modify_callback);
+			l_scene_pack_data.m_filter_shader_data = std::move(p_desc.get_platform_pack().m_filter_shader_data);
 
 			l_scene_pack_data.m_controller_manager->setOverlapRecoveryModule(true);
 			l_scene_pack_data.m_controller_manager->setPreciseSweeps(false);

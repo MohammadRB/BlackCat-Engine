@@ -54,8 +54,8 @@ namespace black_cat
 			static_cast< bc_physics_reference& >(l_shape0).get_platform_pack().m_px_object = const_cast< physx::PxShape* >(p_s0);
 			static_cast< bc_physics_reference& >(l_shape1).get_platform_pack().m_px_object = const_cast< physx::PxShape* >(p_s1);
 
-			const bc_filter_object_flag l_actor0_flags = core::bc_enum::none< bc_filter_object_flag >();
-			const bc_filter_object_flag l_actor1_flags = core::bc_enum::none< bc_filter_object_flag >();
+			const auto l_actor0_flags = core::bc_enum::none< bc_filter_object_flag >();
+			const auto l_actor1_flags = core::bc_enum::none< bc_filter_object_flag >();
 
 			core::bc_enum::set
 			(
@@ -144,8 +144,7 @@ namespace black_cat
 
 		void bc_px_contact_modify_callback::onContactModify(physx::PxContactModifyPair* const p_pairs, physx::PxU32 p_count)
 		{
-			core::bc_vector_frame< bc_contact_modify_pair > l_pairs;
-			l_pairs.resize(p_count);
+			core::bc_vector_frame< bc_contact_modify_pair > l_pairs(p_count);
 
 			for (bcUINT32 i = 0; i < p_count; ++i)
 			{
@@ -158,8 +157,7 @@ namespace black_cat
 
 		void bc_px_contact_modify_callback::onCCDContactModify(physx::PxContactModifyPair* const p_pairs, physx::PxU32 p_count)
 		{
-			core::bc_vector_frame< bc_contact_modify_pair > l_pairs;
-			l_pairs.resize(p_count);
+			core::bc_vector_frame< bc_contact_modify_pair > l_pairs(p_count);
 
 			for (bcUINT32 i = 0; i < p_count; ++i)
 			{
@@ -170,20 +168,18 @@ namespace black_cat
 			m_imp->on_contact_modify(l_pairs.data(), p_count);
 		}
 
-		bc_px_simulation_callback::bc_px_simulation_callback(core::bc_unique_ptr< bci_simulation_event_callback > p_imp)
+		bc_px_simulation_callback::bc_px_simulation_callback(core::bc_unique_ptr< bci_physics_simulation_callback > p_imp)
 			: m_imp(std::move(p_imp))
 		{
 		}
 
 		void bc_px_simulation_callback::onConstraintBreak(physx::PxConstraintInfo* p_constraints, physx::PxU32 p_count)
 		{
-			core::bc_vector_frame< bc_joint > l_joints;
-			l_joints.resize(p_count);
+			core::bc_vector_frame< bc_joint > l_joints(p_count);
 
 			for (bcUINT32 i = 0; i < p_count; ++i)
 			{
-				static_cast< bc_physics_reference& >(l_joints[i]).get_platform_pack().m_px_object =
-					static_cast< physx::PxJoint* >(p_constraints[i].externalReference);
+				static_cast< bc_physics_reference& >(l_joints[i]).get_platform_pack().m_px_object = static_cast< physx::PxJoint* >(p_constraints[i].externalReference);
 			}
 
 			m_imp->on_joint_break(l_joints.data(), p_count);
@@ -191,8 +187,7 @@ namespace black_cat
 
 		void bc_px_simulation_callback::onWake(physx::PxActor** p_actors, physx::PxU32 p_count)
 		{
-			core::bc_vector_frame< bc_actor > l_actors;
-			l_actors.resize(p_count);
+			core::bc_vector_frame< bc_actor > l_actors(p_count);
 
 			for (bcUINT32 i = 0; i < p_count; ++i)
 			{
@@ -204,8 +199,7 @@ namespace black_cat
 
 		void bc_px_simulation_callback::onSleep(physx::PxActor** p_actors, physx::PxU32 p_count)
 		{
-			core::bc_vector_frame< bc_actor > l_actors;
-			l_actors.resize(p_count);
+			core::bc_vector_frame< bc_actor > l_actors(p_count);
 
 			for (bcUINT32 i = 0; i < p_count; ++i)
 			{
@@ -217,8 +211,7 @@ namespace black_cat
 
 		void bc_px_simulation_callback::onTrigger(physx::PxTriggerPair* p_pairs, physx::PxU32 p_count)
 		{
-			core::bc_vector_frame< bc_trigger_pair > l_pairs;
-			l_pairs.resize(p_count);
+			core::bc_vector_frame< bc_trigger_pair > l_pairs(p_count);
 
 			for (bcUINT32 i = 0; i < p_count; ++i)
 			{
@@ -235,8 +228,7 @@ namespace black_cat
 			bc_contant_pair l_pair;
 			l_pair.get_platform_pack().m_px_pair = &const_cast< physx::PxContactPairHeader& >(p_pair_header);
 
-			core::bc_vector_frame< bc_contact_shape_pair > l_shape_pairs;
-			l_shape_pairs.resize(p_pairs_count);
+			core::bc_vector_frame< bc_contact_shape_pair > l_shape_pairs(p_pairs_count);
 
 			for (bcUINT32 i = 0; i < p_pairs_count; ++i)
 			{
@@ -320,12 +312,44 @@ namespace black_cat
 		{
 		}
 
-		bc_px_controller_collision_filter::bc_px_controller_collision_filter(bc_ccontroller_collision_filter_callback* p_callback)
+		bc_px_ccontroller_query_filter::bc_px_ccontroller_query_filter(bc_scene_query_pre_filter_callback* p_pre_filter,
+			bc_scene_query_post_filter_callback* p_post_filter): m_pre_filter(p_pre_filter),
+			m_post_filter(p_post_filter)
+		{
+		}
+
+		physx::PxQueryHitType::Enum bc_px_ccontroller_query_filter::preFilter(const physx::PxFilterData& p_filter_data,
+			const physx::PxShape* p_shape,
+			const physx::PxRigidActor* p_actor,
+			physx::PxHitFlags& p_query_flags)
+		{
+			BC_ASSERT(m_pre_filter);
+
+			bc_scene_query_pre_filter_data l_data;
+			static_cast<bc_physics_reference&>(l_data.m_actor).get_platform_pack().m_px_object = const_cast<physx::PxRigidActor*>(p_actor);
+			static_cast<bc_physics_reference&>(l_data.m_shape).get_platform_pack().m_px_object = const_cast<physx::PxShape*>(p_shape);
+
+			return static_cast<physx::PxQueryHitType::Enum>((*m_pre_filter)(l_data));
+		}
+
+		physx::PxQueryHitType::Enum bc_px_ccontroller_query_filter::postFilter(const physx::PxFilterData& p_filter_data, const physx::PxQueryHit& p_hit)
+		{
+			BC_ASSERT(m_post_filter);
+
+			bc_scene_query_post_filter_data l_data;
+			static_cast<bc_physics_reference&>(l_data.m_actor).get_platform_pack().m_px_object = p_hit.actor;
+			static_cast<bc_physics_reference&>(l_data.m_shape).get_platform_pack().m_px_object = p_hit.shape;
+			l_data.m_face_index = p_hit.faceIndex;
+
+			return static_cast<physx::PxQueryHitType::Enum>((*m_post_filter)(l_data));
+		}
+
+		bc_px_ccontroller_collision_filter::bc_px_ccontroller_collision_filter(bc_ccontroller_collision_filter_callback* p_callback)
 			: m_callback(p_callback)
 		{
 		}
 
-		bool bc_px_controller_collision_filter::filter(const physx::PxController& p_controller1, const physx::PxController& p_controller2)
+		bool bc_px_ccontroller_collision_filter::filter(const physx::PxController& p_controller1, const physx::PxController& p_controller2)
 		{
 			bc_platform_ccontroller<g_api_physx> l_controller1;
 			bc_platform_ccontroller<g_api_physx> l_controller2;
@@ -346,7 +370,7 @@ namespace black_cat
 		{
 			p_pair_flags |= physx::PxPairFlag::eNOTIFY_CONTACT_POINTS;
 
-			const auto* l_constant_block = reinterpret_cast< const bc_px_filter_shader_data* >(p_constant_block);
+			const auto* l_constant_block = static_cast< const bc_px_filter_shader_data* >(p_constant_block);
 
 			// If filter callback is required so let callback be invoked
 			if (l_constant_block->m_use_filter_callback)
@@ -370,20 +394,20 @@ namespace black_cat
 				p_pair_flags |= physx::PxPairFlag::eNOTIFY_TOUCH_LOST;
 			}
 
-			const auto l_collision_flag0 = static_cast< bc_shape_notify_flag >(p_filter_data0.word2);
-			const auto l_collision_flag1 = static_cast< bc_shape_notify_flag >(p_filter_data1.word2);
+			const auto l_collision_notify0 = static_cast< bc_shape_notify_flag >(p_filter_data0.word2);
+			const auto l_collision_notify1 = static_cast< bc_shape_notify_flag >(p_filter_data1.word2);
 
 			// If object is tagged to report contact notifications, so notify
-			if (core::bc_enum::has(l_collision_flag0, bc_shape_notify_flag::notify_touch) ||
-				core::bc_enum::has(l_collision_flag1, bc_shape_notify_flag::notify_touch))
+			if (core::bc_enum::has(l_collision_notify0, bc_shape_notify_flag::notify_touch) ||
+				core::bc_enum::has(l_collision_notify1, bc_shape_notify_flag::notify_touch))
 			{
 				p_pair_flags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
 				p_pair_flags |= physx::PxPairFlag::eNOTIFY_TOUCH_LOST;
 			}
 
 			// If object is tagged to modify contacts, so modify
-			if (core::bc_enum::has(l_collision_flag0, bc_shape_notify_flag::notify_modify) ||
-				core::bc_enum::has(l_collision_flag1, bc_shape_notify_flag::notify_modify))
+			if (core::bc_enum::has(l_collision_notify0, bc_shape_notify_flag::notify_modify) ||
+				core::bc_enum::has(l_collision_notify1, bc_shape_notify_flag::notify_modify))
 			{
 				p_pair_flags |= physx::PxPairFlag::eMODIFY_CONTACTS;
 			}
