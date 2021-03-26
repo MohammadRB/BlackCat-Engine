@@ -205,7 +205,7 @@ namespace black_cat
 
 			/**
 			 * \brief Moves the character
-			 * \param p_displacement Displacement vector
+			 * \param p_displacement Displacement vector. It is typically a combination of vertical motion due to gravity and lateral motion when your character is moving.
 			 * \param p_clock
 			 * \param p_pre_filter
 			 * \param p_post_filter 

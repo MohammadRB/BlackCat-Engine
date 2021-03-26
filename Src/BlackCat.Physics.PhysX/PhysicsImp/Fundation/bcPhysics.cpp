@@ -99,8 +99,8 @@ namespace black_cat
 			l_scene_pack_data.m_contact_modify_callback = std::move(p_desc.get_platform_pack().m_contact_modify_callback);
 			l_scene_pack_data.m_filter_shader_data = std::move(p_desc.get_platform_pack().m_filter_shader_data);
 
-			l_scene_pack_data.m_controller_manager->setOverlapRecoveryModule(true);
-			l_scene_pack_data.m_controller_manager->setPreciseSweeps(false);
+			//l_scene_pack_data.m_controller_manager->setOverlapRecoveryModule(true);
+			//l_scene_pack_data.m_controller_manager->setPreciseSweeps(false);
 			
 			l_result.get_platform_pack().m_data = core::bc_make_shared<_bc_px_scene_pack_data>(std::move(l_scene_pack_data));
 

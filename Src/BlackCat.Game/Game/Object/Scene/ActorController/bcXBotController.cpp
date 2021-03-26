@@ -94,7 +94,7 @@ namespace black_cat
 				                                  l_max_side_length * 0.2f,
 				                                  l_px_material
 			                                  )
-											  .with_contact_offset(l_max_side_length * 0.05f)
+											  .with_contact_offset(l_max_side_length * 0.2f)
 			                                  .with_step_offset(l_max_side_length * 0.f)
 			                                  .with_hit_callback(this);
 			
@@ -448,13 +448,18 @@ namespace black_cat
 				l_left_vector * l_left_velocity;
 			m_move_amount = std::max({ l_forward_velocity, l_backward_velocity, l_right_velocity, l_left_velocity }) * m_move_speed * p_clock.m_elapsed_second;
 
+			if (core::bc_vector3f::length_sq(m_move_direction) == 0)
+			{
+				m_move_amount = 0;
+			}
+			
 			if (m_move_amount <= 0)
 			{
 				m_move_direction = m_look_direction;
 			}
 
 			m_move_direction.normalize();
-
+			
 			// if two vectors are exactly opposite of each other 'rotation_between_two_vector' method in matrix3x3 will have undefined result
 			if (m_move_direction.dot(m_look_direction) == -1.f)
 			{
@@ -537,11 +542,14 @@ namespace black_cat
 					return physics::bc_query_hit_type::block;
 				}
 			);
+
+			auto& l_px_scene = m_scene->get_px_scene();
 			
 			{
-				physics::bc_scene_lock l_lock(&m_scene->get_px_scene());
+				physics::bc_scene_lock l_lock(&l_px_scene);
+				const auto l_dis = m_move_direction * m_move_amount + l_px_scene.get_gravity() * p_clock.m_elapsed_second;
 				
-				m_px_controller->move(m_move_direction * m_move_amount, p_clock, &l_px_controller_pre_filter);
+				m_px_controller->move(l_dis, p_clock, &l_px_controller_pre_filter);
 				m_position = m_px_controller->get_foot_position();
 			}
 			

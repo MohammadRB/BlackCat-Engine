@@ -45,6 +45,7 @@ namespace black_cat
 			physx::PxHeightFieldDesc l_px_desc;
 			l_px_desc.nbRows = p_desc.m_num_row;
 			l_px_desc.nbColumns = p_desc.m_num_column;
+			l_px_desc.thickness = -2;
 			l_px_desc.samples.data = p_px_sample_buffer;
 			l_px_desc.samples.stride = sizeof(physx::PxHeightFieldSample);
 

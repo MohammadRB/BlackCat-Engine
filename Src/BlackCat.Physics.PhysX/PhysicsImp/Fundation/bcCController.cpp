@@ -164,7 +164,7 @@ namespace black_cat
 			const auto l_px_flag = m_pack.m_controller->move
 			(
 				bc_to_right_hand(p_displacement),
-				0.1f,
+				0.01f,
 				p_clock.m_elapsed_second,
 				l_filter
 			);
