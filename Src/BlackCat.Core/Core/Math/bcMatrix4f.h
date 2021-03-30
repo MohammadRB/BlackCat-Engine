@@ -66,6 +66,8 @@ namespace black_cat
 
 			void make_transpose() noexcept;
 
+			void make_neutralize_scale() noexcept;
+
 			bc_matrix4f transpose() const noexcept;
 			
 			void set_row(bcINT p_row, const bc_vector4f& p_vector) noexcept;
@@ -135,7 +137,7 @@ namespace black_cat
 			static bc_matrix4f scale_matrix(const bc_vector3f& p_scale) noexcept;
 
 			static bc_matrix4f scale_matrix_xyz(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z) noexcept;
-
+			
 			static bc_matrix4f translation_matrix(bcFLOAT p_x, bcFLOAT p_y, bcFLOAT p_z) noexcept;
 			
 			static bc_matrix4f translation_matrix(const bc_vector3f& p_translation) noexcept;

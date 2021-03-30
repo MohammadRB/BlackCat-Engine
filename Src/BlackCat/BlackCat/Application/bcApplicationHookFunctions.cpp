@@ -37,6 +37,7 @@
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/bcDecalResolverComponent.h"
+#include "Game/Object/Scene/Component/bcWeaponComponent.h"
 #include "Game/Object/Scene/ActorController/bcFireActorController.h"
 #include "Game/Object/Scene/ActorController/bcExplosionActorController.h"
 #include "Game/Object/Scene/ActorController/bcXBotController.h"
@@ -106,7 +107,7 @@ namespace black_cat
 	}
 
 	void bc_register_engine_loaders(game::bc_engine_application_parameter& p_parameters)
-	{		
+	{
 		core::bc_register_loader<graphic::bc_texture2d_content, bc_texture_loader>("texture2d", core::bc_make_loader<bc_texture_loader>());
 		core::bc_register_loader<graphic::bc_vertex_shader_content, bc_vertex_shader_loader>("vertex_shader", core::bc_make_loader<bc_vertex_shader_loader>());
 		core::bc_register_loader<graphic::bc_hull_shader_content, bc_hull_shader_loader>("hull_shader", core::bc_make_loader<bc_hull_shader_loader>());
@@ -152,7 +153,8 @@ namespace black_cat
 			game::bc_component_register<game::bc_light_component>("light"),
 			game::bc_component_register<game::bc_wind_component>("wind"),
 			game::bc_component_register<game::bc_particle_emitter_component>("particle_emitter"),
-			game::bc_component_register<game::bc_decal_component>("decal")
+			game::bc_component_register<game::bc_decal_component>("decal"),
+			game::bc_component_register<game::bc_weapon_component>("weapon")
 		);
 		game::bc_register_abstract_component_types
 		(

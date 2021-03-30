@@ -72,9 +72,10 @@ namespace black_cat
 
 			for (bcUINT32 l_index = 0; l_index < p_ai_node.mNumChildren; ++l_index)
 			{
-				if (l_px_node_name.compare(0, l_px_node_name.size(), p_ai_node.mChildren[l_index]->mName.data) == 0)
+				const aiNode* l_child_node = p_ai_node.mChildren[l_index];
+				if (std::strncmp(l_child_node->mName.data, l_px_node_name.data(), l_px_node_name.size()) == 0)
 				{
-					l_ai_mesh_colliders.push_back(p_ai_node.mChildren[l_index]);
+					l_ai_mesh_colliders.push_back(l_child_node);
 				}
 			}
 
@@ -109,8 +110,7 @@ namespace black_cat
 		for(bcUINT32 l_child_ite = 0; l_child_ite < p_ai_scene.mRootNode->mNumChildren; ++l_child_ite)
 		{
 			const aiNode* l_child_node = p_ai_scene.mRootNode->mChildren[l_child_ite];
-
-			if(l_px_node_name.compare(0, l_px_node_name.size(), l_child_node->mName.C_Str()) == 0)
+			if (std::strncmp(l_child_node->mName.data, l_px_node_name.data(), l_px_node_name.size()) == 0)
 			{
 				l_ai_node_colliders.push_back(l_child_node);
 			}

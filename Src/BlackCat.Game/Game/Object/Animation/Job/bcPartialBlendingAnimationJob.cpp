@@ -21,23 +21,13 @@ namespace black_cat
 			m_layer1(std::move(p_layer1)),
 			m_layer2(std::move(p_layer2)),
 			m_layer1_weights(m_skeleton->get_native_handle().num_soa_joints(), ozz::math::simd_float4::one()),
-			m_layer2_weights(m_skeleton->get_native_handle().num_soa_joints(), ozz::math::simd_float4::zero())
+			m_layer2_weights(m_skeleton->get_native_handle().num_soa_joints(), ozz::math::simd_float4::zero()),
+			m_locals(m_skeleton->get_native_handle().num_soa_joints()),
+			m_enabled(true)
 		{
-			bool l_joint_found = false;
-			bcINT32 l_joint_index = 0;
-			
-			for(auto& l_joint_name : m_skeleton->get_bone_names())
-			{
-				if(std::strstr(l_joint_name, p_layer_2_root_joint))
-				{
-					l_joint_found = true;
-					break;
-				}
+			const auto l_joint = m_skeleton->find_joint_by_name(p_layer_2_root_joint);
 
-				++l_joint_index;
-			}
-
-			if(!l_joint_found)
+			if (!l_joint.second)
 			{
 				const auto l_msg = bcL("No joint were found with name ") + core::bc_to_estring_frame(p_layer_2_root_joint);
 				core::bc_get_service<core::bc_logger>()->log_debug(l_msg.c_str());
@@ -53,13 +43,18 @@ namespace black_cat
 					l_soa_weight = ozz::math::SetI(l_soa_weight, l_weight_value, p_joint % 4);
 				};
 			};
-			
-			ozz::animation::IterateJointsDF(m_skeleton->get_native_handle(), l_weight_setter(m_layer1_weights, 0.f), l_joint_index);
-			ozz::animation::IterateJointsDF(m_skeleton->get_native_handle(), l_weight_setter(m_layer2_weights, 1.f), l_joint_index);
+
+			ozz::animation::IterateJointsDF(m_skeleton->get_native_handle(), l_weight_setter(m_layer1_weights, 0.f), l_joint.first);
+			ozz::animation::IterateJointsDF(m_skeleton->get_native_handle(), l_weight_setter(m_layer2_weights, 1.f), l_joint.first);
 		}
 
 		bool bc_partial_blending_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
+			if(!m_enabled)
+			{
+				return true;
+			}
+			
 			ozz::animation::BlendingJob::Layer l_layers[2];
 			l_layers[0].transform = ozz::make_span(m_layer1->get_local_transforms());
 			l_layers[0].weight = 1;
@@ -68,7 +63,7 @@ namespace black_cat
 			l_layers[1].weight = 1;
 			l_layers[1].joint_weights = ozz::make_span(m_layer2_weights);
 
-			const bool l_is_valid = m_layer1->run(p_clock) && m_layer2->run(p_clock);
+			const bool l_is_valid = m_layer2->run(p_clock);
 			if(!l_is_valid)
 			{
 				return false;
@@ -77,7 +72,7 @@ namespace black_cat
 			ozz::animation::BlendingJob l_job;
 			l_job.layers = ozz::make_span(l_layers);
 			l_job.bind_pose = m_skeleton->get_native_handle().joint_bind_poses();
-			l_job.output = { &*m_locals.begin(), m_locals.size() };
+			l_job.output = ozz::make_span(m_locals);
 
 			return l_job.Run();
 		}

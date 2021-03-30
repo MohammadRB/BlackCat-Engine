@@ -28,6 +28,7 @@ namespace black_cat
 		{
 			BC_JSON_VALUE(core::bc_string_frame, name);
 			BC_JSON_VALUE_OP(core::bc_string_frame, controller);
+			BC_JSON_VALUE_OP(core::bc_json_key_value, parameters);
 			BC_JSON_ARRAY(_bc_json_entity_components, components);
 		};
 
@@ -55,7 +56,7 @@ namespace black_cat
 			l_json_file.open_read(p_json_file_path);
 			core::bc_read_all_lines(l_json_file, l_json_file_buffer);
 
-			core::bc_json_document< _bc_entity_json > l_json;
+			core::bc_json_document<_bc_entity_json> l_json;
 			l_json.load(l_json_file_buffer.c_str());
 
 			for (auto& l_entity : l_json->m_entities)
@@ -68,8 +69,18 @@ namespace black_cat
 				// Because we have used program heap we must reserve needed memory
 				l_entity_components.m_entity_name = l_entity_name.c_str();
 				l_entity_components.m_controller_name = l_controller_name.c_str();
-				l_entity_components.m_components.reserve(l_entity->m_components.size());
 
+				std::for_each
+				(
+					std::begin(*l_entity->m_parameters),
+					std::end(*l_entity->m_parameters),
+					[&](core::bc_json_key_value::value_type& p_parameter)
+					{
+						l_entity_components.m_parameters.add_value(p_parameter.first.c_str(), std::move(p_parameter.second));
+					}
+				);
+				
+				l_entity_components.m_components.reserve(l_entity->m_components.size());
 				for (auto& l_component : l_entity->m_components)
 				{
 					const auto& l_component_name = *l_component->m_name;
@@ -85,7 +96,7 @@ namespace black_cat
 						std::end(l_component_parameters),
 						[&](core::bc_json_key_value::value_type& p_parameter)
 						{
-							l_component_data.m_component_parameters.add_value(core::bc_to_string_frame(p_parameter.first).c_str(), std::move(p_parameter.second));
+							l_component_data.m_component_parameters.add_value(p_parameter.first.c_str(), std::move(p_parameter.second));
 						}
 					);
 
@@ -107,6 +118,11 @@ namespace black_cat
 				l_result.push_back(l_entity.second.m_entity_name.c_str());
 			}
 
+			std::sort(std::begin(l_result), std::end(l_result), [](const bcCHAR* p_first, const bcCHAR* p_second)
+			{
+				return std::strcmp(p_first, p_second) <= 0;
+			});
+			
 			return l_result;
 		}
 
@@ -121,7 +137,7 @@ namespace black_cat
 			}
 
 			bc_actor l_actor = m_actor_component_manager.create_actor();
-						
+			
 			try
 			{
 				l_actor.create_component<bc_mediate_component>();
@@ -131,7 +147,7 @@ namespace black_cat
 				(
 					bc_actor_component_initialize_context
 					(
-						core::bc_data_driven_parameter(),
+						l_entity_entry->second.m_parameters,
 						m_content_stream_manager,
 						m_game_system,
 						l_actor
@@ -173,7 +189,7 @@ namespace black_cat
 						l_controller_ite->second(),
 						bc_actor_component_initialize_context
 						(
-							core::bc_data_driven_parameter(),
+							l_entity_entry->second.m_parameters,
 							m_content_stream_manager,
 							m_game_system,
 							l_actor

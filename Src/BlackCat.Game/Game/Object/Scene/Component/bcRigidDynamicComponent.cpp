@@ -1,6 +1,9 @@
 // [01/07/2017 MRB]
 
 #include "Game/GamePCH.h"
+
+#include "Core/bcUtility.h"
+#include "Core/Utility/bcJsonParse.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
@@ -62,10 +65,21 @@ namespace black_cat
 
 				m_px_actor_ref = l_physics.create_rigid_dynamic(physics::bc_transform::identity());
 				l_physics_system.set_game_actor(*m_px_actor_ref, p_context.m_actor);
-
+				
 				const auto* l_materials = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_mesh_collider_materials);
 				l_physics_system.create_px_shapes_from_mesh(l_material_manager, m_px_actor_ref.get(), *l_mesh_component, l_materials);
 
+				const auto l_mass_value = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_rigid_mass), 1);
+				const auto* l_cmass_value = p_context.m_parameters.get_value<core::bc_vector<core::bc_any>>(constant::g_param_rigid_cmass);
+				core::bc_vector3f l_cmass(0);
+
+				if(l_cmass_value)
+				{
+					json_parse::bc_load(*l_cmass_value, l_cmass);
+				}
+				
+				m_px_actor_ref->update_mass_inertia(l_mass_value, &l_cmass);
+				
 				return;
 			}
 

@@ -507,6 +507,21 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsSimulationCallback.h">
       <Filter>Game\System\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcWeaponComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotWeapon.h">
+      <Filter>Game\Object\Scene\ActorController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotUpdateAnimationJob.h">
+      <Filter>Game\Object\Scene\ActorController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcTwoBoneIKAnimationJob.h">
+      <Filter>Game\Object\Animation\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotWeaponIKAnimationJob.h">
+      <Filter>Game\Object\Scene\ActorController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -763,6 +778,21 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsSimulationCallback.cpp">
       <Filter>Game\System\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationSkeleton.cpp">
+      <Filter>Game\Object\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcWeaponComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotUpdateAnimationJob.cpp">
+      <Filter>Game\Object\Scene\ActorController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcTwoBoneIKAnimationJob.cpp">
+      <Filter>Game\Object\Animation\Job</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotWeaponIKAnimationJob.cpp">
+      <Filter>Game\Object\Scene\ActorController</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

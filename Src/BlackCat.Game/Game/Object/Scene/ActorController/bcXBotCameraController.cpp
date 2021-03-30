@@ -2,28 +2,31 @@
 
 #include "Game/GamePCH.h"
 
-#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Utility/bcLogger.h"
 #include "Platform/bcEvent.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/Object/Scene/ActorController/bcXBotCameraController.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		bc_xbot_camera_controller::bc_xbot_camera_controller()
+		bc_xbot_camera_controller::bc_xbot_camera_controller() noexcept
 			: m_input_system(nullptr),
 			m_camera(nullptr),
 			m_camera_y_offset(0),
 			m_camera_z_offset(0),
 			m_camera_look_at_offset(0),
 			m_pointing_delta_x(0),
-			m_pointing_last_x(0)
+			m_pointing_last_x(0),
+			m_rifle_name(nullptr),
+			m_detached_rifle_name(nullptr)
 		{
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 			m_key_listener_handle = l_event_manager->register_event_listener< platform::bc_app_event_key >
@@ -58,6 +61,9 @@ namespace black_cat
 			m_camera_look_at_offset = p_other.m_camera_look_at_offset;
 			m_pointing_delta_x = p_other.m_pointing_delta_x;
 			m_pointing_last_x = p_other.m_pointing_last_x;
+
+			m_rifle_name = p_other.m_rifle_name;
+			m_detached_rifle_name = p_other.m_detached_rifle_name;
 			
 			m_key_listener_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_xbot_camera_controller::_on_event));
 			m_pointing_listener_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_xbot_camera_controller::_on_event));
@@ -69,6 +75,9 @@ namespace black_cat
 		{
 			bc_xbot_controller::initialize(p_context);
 			m_input_system = &p_context.m_game_system.get_input_system();
+
+			m_rifle_name = p_context.m_parameters.get_value_throw<core::bc_string>("rifle_name").c_str();
+			m_detached_rifle_name = p_context.m_parameters.get_value_throw<core::bc_string>("detached_rifle_name").c_str();
 		}
 
 		void bc_xbot_camera_controller::added_to_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene)
@@ -121,6 +130,11 @@ namespace black_cat
 					(
 						get_position() + get_look_direction() * m_camera_z_offset + core::bc_vector3f(0, m_camera_y_offset, 0),
 						get_position() + get_look_direction() * m_camera_look_at_offset
+					);
+					m_camera->update
+					(
+						get_position() + core::bc_vector3f(1,0,0) * m_camera_z_offset + core::bc_vector3f(0, m_camera_y_offset, 0),
+						get_position()
 					);
 				}
 			}
@@ -208,8 +222,53 @@ namespace black_cat
 					set_walk(false);
 				}
 			}
+
+			if (p_key_event.get_key() == platform::bc_key::kb_d1)
+			{
+				if (p_key_event.get_key_state() == platform::bc_key_state::pressing)
+				{
+					_attach_weapon(m_rifle_name);
+				}
+			}
+			else if (p_key_event.get_key() == platform::bc_key::kb_d0)
+			{
+				if (p_key_event.get_key_state() == platform::bc_key_state::pressing)
+				{
+					_detach_weapon(m_detached_rifle_name);
+				}
+			}
 			
 			return true;
+		}
+
+		void bc_xbot_camera_controller::_attach_weapon(const bcCHAR* p_entity)
+		{
+			m_current_weapon = core::bc_get_service<bc_entity_manager>()->create_entity(p_entity);
+			m_current_weapon.add_event(bc_world_transform_actor_event(get_position()));
+
+			get_scene()->add_actor(m_current_weapon);
+			bc_xbot_controller::attach_weapon(m_current_weapon);
+		}
+
+		void bc_xbot_camera_controller::_detach_weapon(const bcCHAR* p_detached_entity)
+		{
+			detach_weapon();
+
+			auto l_current_weapon_world_transform = m_current_weapon.get_component<bc_mediate_component>()->get_world_transform();
+			l_current_weapon_world_transform.set_translation(l_current_weapon_world_transform.get_translation() + get_look_direction());
+
+			auto l_detached_rifle_actor = core::bc_get_service<bc_entity_manager>()->create_entity(p_detached_entity);
+			l_detached_rifle_actor.add_event(bc_world_transform_actor_event(l_current_weapon_world_transform));
+
+			auto* l_rigid_dynamic_component = l_detached_rifle_actor.get_component<bc_rigid_dynamic_component>();
+			if (l_rigid_dynamic_component)
+			{
+				auto l_rigid_dynamic = l_rigid_dynamic_component->get_dynamic_body();
+				l_rigid_dynamic.set_linear_velocity(get_look_direction() * 2);
+			}
+
+			get_scene()->remove_actor(m_current_weapon);
+			get_scene()->add_actor(l_detached_rifle_actor);
 		}
 	}	
 }

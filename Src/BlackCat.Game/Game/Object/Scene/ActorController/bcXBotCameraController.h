@@ -17,7 +17,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_xbot_camera_controller : public bc_xbot_controller
 		{
 		public:
-			bc_xbot_camera_controller();
+			bc_xbot_camera_controller() noexcept;
 
 			bc_xbot_camera_controller(bc_xbot_camera_controller&&) noexcept;
 			
@@ -42,6 +42,10 @@ namespace black_cat
 
 			bool _on_key(platform::bc_app_event_key& p_key_event) noexcept;
 
+			void _attach_weapon(const bcCHAR* p_entity);
+
+			void _detach_weapon(const bcCHAR* p_detached_entity);
+			
 			core::bc_event_listener_handle m_key_listener_handle;
 			core::bc_event_listener_handle m_pointing_listener_handle;
 			bc_input_system* m_input_system;
@@ -52,6 +56,10 @@ namespace black_cat
 			bcFLOAT m_camera_look_at_offset;
 			bcINT32 m_pointing_delta_x;
 			bcINT32 m_pointing_last_x;
+
+			const bcCHAR* m_rifle_name;
+			const bcCHAR* m_detached_rifle_name;
+			bc_actor m_current_weapon;
 		};
 	}	
 }

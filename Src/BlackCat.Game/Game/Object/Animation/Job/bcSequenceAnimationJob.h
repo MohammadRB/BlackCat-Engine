@@ -14,9 +14,6 @@ namespace black_cat
 		class bc_sequence_animation_job : public bci_animation_job
 		{
 		public:
-			using execute_callback = core::bc_delegate< void() >;
-			
-		public:
 			explicit bc_sequence_animation_job(core::bc_span<core::bc_shared_ptr< bci_animation_job >>& p_animations);
 			
 			bc_sequence_animation_job(bc_sequence_animation_job&&) noexcept;
@@ -35,7 +32,6 @@ namespace black_cat
 		
 		private:
 			core::bc_vector< core::bc_shared_ptr< bci_animation_job > > m_jobs;
-			execute_callback m_callback;
 		};
 
 		inline bc_sequence_animation_job::bc_sequence_animation_job(core::bc_span<core::bc_shared_ptr< bci_animation_job >>& p_animations)
@@ -73,11 +69,6 @@ namespace black_cat
 				{
 					break;
 				}
-			}
-
-			if(m_callback.is_valid())
-			{
-				m_callback();
 			}
 
 			return true;

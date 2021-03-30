@@ -84,7 +84,7 @@ namespace black_cat
 				{
 					if (p_frustum.is_set())
 					{
-						return p_context.m_scene->get_scene_graph().get_actors< TComponent >(p_frustum.get());
+						return p_context.m_scene->get_scene_graph().get_actors< TComponent >(*p_frustum);
 					}
 					else
 					{

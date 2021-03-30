@@ -75,7 +75,7 @@ namespace black_cat
 		{
 			if (p_context.m_result != nullptr)
 			{
-				auto l_result = std::move(p_context.m_result.get());
+				auto l_result = std::move(*p_context.m_result);
 				p_context.m_result.reset();
 
 				return l_result;

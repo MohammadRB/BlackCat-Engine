@@ -242,7 +242,7 @@ namespace black_cat
 		_read_ozz_structures(l_ozz_stream, l_skeleton, l_animations);
 
 		// Call get_bone_names to create its structure
-		const auto l_bone_names = l_skeleton.get_bone_names();
+		const auto l_bone_names = l_skeleton.get_joint_names();
 		if(l_bone_names.empty())
 		{
 			throw bc_io_exception(":|"); // Just to prevent interpret bone names as unused variable

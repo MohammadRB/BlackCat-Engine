@@ -342,6 +342,72 @@
           "content_file": "content\\model\\xbot\\xbot-running-backwards.fbx",
           "content_parameter": {
           }
+        },
+        {
+          "content_title": "xbot-rifle-aiming-idle",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-rifle-aiming-idle.fbx",
+          "content_parameter": {
+          }
+        },
+        {
+          "content_title": "xbot-rifle-left-turn",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-rifle-left-turn.fbx",
+          "content_parameter": {
+          }
+        },
+        {
+          "content_title": "xbot-rifle-right-turn",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-rifle-right-turn.fbx",
+          "content_parameter": {
+          }
+        },
+        {
+          "content_title": "xbot-rifle-firing",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-firing-rifle.fbx",
+          "content_parameter": {
+          }
+        },
+        {
+          "content_title": "xbot-rifle-walking",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-rifle-walking.fbx",
+          "content_parameter": {
+          }
+        },
+        {
+          "content_title": "xbot-rifle-walking-backwards",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-rifle-walking-backwards.fbx",
+          "content_parameter": {
+          }
+        },
+        {
+          "content_title": "xbot-rifle-running",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-rifle-run.fbx",
+          "content_parameter": {
+          }
+        },
+        {
+          "content_title": "xbot-rifle-running-backwards",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-rifle-run-backwards.fbx",
+          "content_parameter": {
+          }
+        },
+        {
+          "content_title": "scifi-rifle",
+          "content_loader": "mesh",
+          "content_file": "content\\model\\xbot\\scifi-rifle.fbx",
+          "content_parameter": {
+            "auto_scale": 6.0,
+            "collider": "scifi-rifle.collider.fbx",
+            "high_detail_query_shape": true
+          }
         }
       ]
     }

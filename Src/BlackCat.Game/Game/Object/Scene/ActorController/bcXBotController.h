@@ -3,13 +3,19 @@
 #pragma once
 
 #include "Core/Memory/bcPtr.h"
+#include "Core/Container/bcVector.h"
+#include "Core/Container/bcArray.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Utility/bcVelocity.h"
+#include "Core/Utility/bcNullable.h"
 #include "PhysicsImp/Fundation/bcCController.h"
 #include "PhysicsImp/Fundation/bcCControllerSimulationCallback.h"
 #include "Game/Object/Scene/ActorComponent/bcActorController.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
 #include "Game/Object/Animation/Job/bcSamplingAnimationJob.h"
+#include "Game/Object/Animation/Job/bcBlendingAnimationJob.h"
+#include "Game/Object/Animation/Job/bcTwoBoneIKAnimationJob.h"
+#include "Game/Object/Scene/ActorController/bcXBotWeapon.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -19,11 +25,13 @@ namespace black_cat
 		class bc_physics_system;
 		class bc_skeleton_animation;
 		class bc_skinned_mesh_component;
-
+		
 		class BC_GAME_DLL bc_xbot_controller : public bci_actor_controller, protected physics::bci_ccontroller_hit_callback
 		{
+			friend class bc_xbot_update_animation_job;
+			
 		public:
-			bc_xbot_controller();
+			bc_xbot_controller() noexcept;
 
 			bc_xbot_controller(bc_xbot_controller&&) = default;
 			
@@ -42,6 +50,8 @@ namespace black_cat
 			void handle_event(const bc_actor_component_event_context& p_context) override;
 
 		protected:
+			bc_scene* get_scene() noexcept;
+			
 			bc_actor& get_actor() noexcept;
 			
 			const core::bc_vector3f& get_local_origin() const noexcept;
@@ -51,6 +61,10 @@ namespace black_cat
 			bci_animation_job* get_idle_animation() const noexcept;
 			
 			bci_animation_job* get_running_animation() const noexcept;
+
+			bci_animation_job* get_rifle_idle_animation() const noexcept;
+
+			bci_animation_job* get_rifle_running_animation() const noexcept;
 
 			const core::bc_vector3f& get_position() const noexcept;
 			
@@ -74,29 +88,56 @@ namespace black_cat
 
 			void set_walk(bool p_value) noexcept;
 
+			void attach_weapon(const bc_actor& p_weapon) noexcept;
+
+			void detach_weapon() noexcept;
+			
 			void on_shape_hit(const physics::bc_ccontroller_shape_hit& p_hit) override;
 
 			void on_ccontroller_hit(const physics::bc_ccontroller_controller_hit& p_hit) override;
 			
 		private:
-			void _create_idle_animation();
+			core::bc_shared_ptr<bci_animation_job> _create_idle_animation(const bcCHAR* p_idle_animation,
+				const bcCHAR* p_left_turn_animation,
+				const bcCHAR* p_right_turn_animation,
+				core::bc_shared_ptr<bc_sampling_animation_job>& p_idle_sample_job);
 
-			void _create_running_animation();
+			core::bc_shared_ptr<bci_animation_job> _create_running_animation(core::bc_shared_ptr<bc_sampling_animation_job> p_idle_sample_job,
+				const bcCHAR* p_walking_animation,
+				const bcCHAR* p_walking_backward_animation,
+				const bcCHAR* p_running_animation,
+				const bcCHAR* p_running_backward_animation,
+				core::bc_shared_ptr<bc_sampling_animation_job>& p_walking_sample_job,
+				core::bc_shared_ptr<bc_sampling_animation_job>& p_walking_backward_sample_job,
+				core::bc_shared_ptr<bc_sampling_animation_job>& p_running_sample_job,
+				core::bc_shared_ptr<bc_sampling_animation_job>& p_running_backward_sample_job);
 
 			void _update_input(const core_platform::bc_clock::update_param& p_clock);
 
 			void _update_direction(const core_platform::bc_clock::update_param& p_clock);
 
-			void _select_active_animation(const core_platform::bc_clock::update_param& p_clock);
+			void _update_active_animation(const core_platform::bc_clock::update_param& p_clock);
 
+			void _blend_idle_animation(const core_platform::bc_clock::update_param& p_clock, bci_animation_job& p_idle_animation);
+
+			void _blend_running_animation(const core_platform::bc_clock::update_param& p_clock, bci_animation_job& p_running_animation);
+
+			void _weapon_ik_animation(bc_xbot_weapon* p_weapon, bci_animation_job & p_main_animation);
+			
 			void _update_world_transform(const core_platform::bc_clock::update_param& p_clock);
 
+			void _update_weapon(const core_platform::bc_clock::update_param& p_clock);
+			
 			bc_physics_system* m_physics_system;
 			bc_scene* m_scene;
 			bc_actor m_actor;
 			bc_skinned_mesh_component* m_skinned_component;
 			physics::bc_ccontroller_ref m_px_controller;
 			core::bc_vector<core::bc_string> m_upper_body_chain;
+			core::bc_array<std::pair<bcUINT32, const bcCHAR*>, 3> m_main_hand_chain;
+			core::bc_array<std::pair<bcUINT32, const bcCHAR*>, 3> m_second_hand_chain;
+			std::pair<bcUINT32, const bcCHAR*> m_rifle_joint;
+			core::bc_vector3f m_rifle_joint_offset;
 			core::bc_vector3f m_local_origin;
 			core::bc_vector3f m_local_forward;
 
@@ -107,6 +148,13 @@ namespace black_cat
 			core::bc_shared_ptr<bc_sampling_animation_job> m_running_backward_sample_job;
 			core::bc_shared_ptr<bci_animation_job> m_idle_job;
 			core::bc_shared_ptr<bci_animation_job> m_running_job;
+			core::bc_shared_ptr<bc_sampling_animation_job> m_rifle_aiming_idle_sample_job;
+			core::bc_shared_ptr<bc_sampling_animation_job> m_rifle_walking_sample_job;
+			core::bc_shared_ptr<bc_sampling_animation_job> m_rifle_walking_backward_sample_job;
+			core::bc_shared_ptr<bc_sampling_animation_job> m_rifle_running_sample_job;
+			core::bc_shared_ptr<bc_sampling_animation_job> m_rifle_running_backward_sample_job;
+			core::bc_shared_ptr<bci_animation_job> m_rifle_idle_job;
+			core::bc_shared_ptr<bci_animation_job> m_rifle_running_job;
 			bci_animation_job* m_active_job;
 
 			bcFLOAT m_look_speed;
@@ -131,8 +179,15 @@ namespace black_cat
 			core::bc_vector3f m_look_direction;
 			core::bc_vector3f m_move_direction;
 			bcFLOAT m_move_amount;
+
+			core::bc_nullable<bc_xbot_weapon> m_weapon;
 		};
 
+		inline bc_scene* bc_xbot_controller::get_scene() noexcept
+		{
+			return m_scene;
+		}
+		
 		inline bc_actor& bc_xbot_controller::get_actor() noexcept
 		{
 			return m_actor;
@@ -158,6 +213,16 @@ namespace black_cat
 			return m_running_job.get();
 		}
 
+		inline bci_animation_job* bc_xbot_controller::get_rifle_idle_animation() const noexcept
+		{
+			return m_rifle_idle_job.get();
+		}
+
+		inline bci_animation_job* bc_xbot_controller::get_rifle_running_animation() const noexcept
+		{
+			return m_rifle_running_job.get();
+		}
+		
 		inline const core::bc_vector3f& bc_xbot_controller::get_position() const noexcept
 		{
 			return m_position;

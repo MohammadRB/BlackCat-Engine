@@ -18,10 +18,10 @@ namespace black_cat
 			: bci_animation_job(p_local_transform_job->get_skeleton()),
 			m_mesh(&p_sub_mesh),
 			m_local_transform_job(std::move(p_local_transform_job)),
-			m_ozz_model_transforms(m_local_transform_job->get_skeleton().get_num_bones()),
+			m_ozz_model_transforms(m_local_transform_job->get_skeleton().get_num_joints()),
 			m_model_transforms(&p_transforms)
 		{
-			if (m_model_transforms->size() < m_skeleton->get_num_bones())
+			if (m_model_transforms->size() < m_skeleton->get_num_joints())
 			{
 				throw bc_invalid_argument_exception("Number of bones in mesh and animation does not match");
 			}
@@ -51,7 +51,7 @@ namespace black_cat
 
 			p_from = p_from == ozz::animation::Skeleton::kNoParent ? 0 : p_from;
 
-			const auto l_bone_names = get_skeleton().get_bone_names();
+			const auto l_bone_names = get_skeleton().get_joint_names();
 			auto l_bone_name_ite = l_bone_names.begin();
 			std::advance(l_bone_name_ite, p_from);
 			

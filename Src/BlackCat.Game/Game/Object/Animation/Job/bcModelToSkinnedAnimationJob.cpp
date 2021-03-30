@@ -11,9 +11,10 @@ namespace black_cat
 		bc_model_to_skinned_animation_job::bc_model_to_skinned_animation_job(core::bc_shared_ptr<bc_local_to_model_animation_job> p_model_job, bc_sub_mesh_mat4_transform& p_transforms)
 			: bci_animation_job(p_model_job->get_skeleton()),
 			m_model_job(std::move(p_model_job)),
-			m_transforms(&p_transforms)
+			m_transforms(&p_transforms),
+			m_world(core::bc_matrix4f::identity())
 		{
-			if (m_transforms->size() < m_skeleton->get_num_bones())
+			if (m_transforms->size() < m_skeleton->get_num_joints())
 			{
 				throw bc_invalid_argument_exception("Mesh and animation bones count does not match");
 			}
@@ -23,7 +24,7 @@ namespace black_cat
 		{
 			const auto& l_mesh = m_model_job->get_mesh();
 			const auto& l_animation_model_transforms = m_model_job->get_transforms();
-			const auto l_bone_names = get_skeleton().get_bone_names();
+			const auto l_bone_names = get_skeleton().get_joint_names();
 			auto l_bone_name_ite = l_bone_names.begin();
 
 			core::bc_vector3f l_min(std::numeric_limits<bcFLOAT>::max());

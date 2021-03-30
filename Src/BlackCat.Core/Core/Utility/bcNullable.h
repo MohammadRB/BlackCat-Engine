@@ -23,7 +23,7 @@ namespace black_cat
 
 		public:
 			bc_nullable() noexcept
-				: m_set(false),
+				: m_pointer(nullptr),
 				m_buffer()
 			{
 			}
@@ -53,7 +53,7 @@ namespace black_cat
 				
 				if(p_other.is_set())
 				{
-					_set(p_other.get());
+					_set(*p_other.get());
 				}
 			}
 
@@ -62,7 +62,7 @@ namespace black_cat
 			{
 				if(p_other.is_set())
 				{
-					_set(std::move(p_other.get()));
+					_set(std::move(*p_other.get()));
 					p_other._unset();
 				}
 			}
@@ -78,7 +78,7 @@ namespace black_cat
 				
 				if(p_other.is_set())
 				{
-					_set(p_other.get());
+					_set(*p_other.get());
 				}
 				else
 				{
@@ -92,7 +92,7 @@ namespace black_cat
 			{
 				if(p_other.is_set())
 				{
-					_set(std::move(p_other.get()));
+					_set(std::move(*p_other.get()));
 					p_other._unset();
 				}
 				else
@@ -144,39 +144,37 @@ namespace black_cat
 
 			type* operator ->()
 			{
-				return &get();
+				return get();
 			}
 
 			const type* operator ->() const
 			{
-				return &get();
+				return get();
 			}
 
 			type& operator *() noexcept
 			{
-				return get();
+				return *get();
 			}
 
 			const type& operator *() const noexcept
 			{
-				return get();
+				return *get();
 			}
 
-			type& get() noexcept
+			type* get() noexcept
 			{
-				BC_ASSERT(is_set());
-
-				return *reinterpret_cast< type* >(&m_buffer);
+				return m_pointer;
 			}
 
-			const type& get() const noexcept
+			const type* get() const noexcept
 			{
 				return const_cast<bc_nullable*>(this)->get();
 			}
 
 			bool is_set() const noexcept
 			{ 
-				return m_set;
+				return m_pointer != nullptr;
 			}
 
 			void reset() noexcept
@@ -200,19 +198,19 @@ namespace black_cat
 			}
 
 		private:
-			bool m_set;
+			type* m_pointer;
 			bcBYTE m_buffer[sizeof(type)];
 
 			void _set(const type& p_value)
 			{
 				if (!is_set())
 				{
-					new(m_buffer) type(p_value);
-					m_set = true;
+					m_pointer = reinterpret_cast<type*>(&m_buffer[0]);
+					new(m_pointer) type(p_value);
 				}
 				else
 				{
-					get() = p_value;
+					*get() = p_value;
 				}
 			}
 
@@ -220,12 +218,12 @@ namespace black_cat
 			{
 				if (!is_set())
 				{
-					new (m_buffer) type(std::move(p_value));
-					m_set = true;
+					m_pointer = reinterpret_cast<type*>(&m_buffer[0]);
+					new (m_pointer) type(std::move(p_value));
 				}
 				else
 				{
-					get() = std::move(p_value);
+					*get() = std::move(p_value);
 				}
 			}
 
@@ -233,8 +231,8 @@ namespace black_cat
 			{
 				if(is_set())
 				{
-					get().~type();
-					m_set = false;
+					m_pointer->~type();
+					m_pointer = nullptr;
 				}
 			}
 
@@ -245,7 +243,7 @@ namespace black_cat
 					return !p_other.is_set();
 				}
 
-				return get() == p_other.get();
+				return *get() == *p_other.get();
 			}
 
 			bool _equal(std::nullptr_t) const

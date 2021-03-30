@@ -12,7 +12,9 @@
         },
         {
           "name": "rigid_dynamic",
-          "parameters": {}
+          "parameters": {
+            "mass": 10.0
+          }
         }
       ]
     },
@@ -28,7 +30,9 @@
         },
         {
           "name": "rigid_dynamic",
-          "parameters": {}
+          "parameters": {
+            "mass": 10.0
+          }
         }
       ]
     },
@@ -44,7 +48,9 @@
         },
         {
           "name": "rigid_dynamic",
-          "parameters": {}
+          "parameters": {
+            "mass": 10.0
+          }
         }
       ]
     },
@@ -60,13 +66,22 @@
         },
         {
           "name": "rigid_dynamic",
-          "parameters": {}
+          "parameters": {
+            "mass": 10.0
+          }
         }
       ]
     },
     {
       "name": "xbot-red",
       "controller": "xbot",
+      "parameters": {
+        "upper_body_chain": [ "Spine1", "Spine2", "Neck", "Head" ],
+        "main_hand_chain": [ "RightArm", "RightForeArm", "RightHand" ],
+        "second_hand_chain": [ "LeftArm", "LeftForeArm", "LeftHand" ],
+        "rifle_joint": "Head",
+        "rifle_joint_offset": [ -0.75, -1.0, -2.0 ]
+      },
       "components": [
         {
           "name": "skinned_mesh",
@@ -89,6 +104,13 @@
     {
       "name": "xbot-blue",
       "controller": "xbot",
+      "parameters": {
+        "upper_body_chain": [ "Spine1", "Spine2", "Neck", "Head" ],
+        "main_hand_chain": [ "RightArm", "RightForeArm", "RightHand" ],
+        "second_hand_chain": [ "LeftArm", "LeftForeArm", "LeftHand" ],
+        "rifle_joint": "Head",
+        "rifle_joint_offset": [ -0.75, -1.0, -2.0 ]
+      },
       "components": [
         {
           "name": "skinned_mesh",
@@ -111,6 +133,15 @@
     {
       "name": "xbot-player",
       "controller": "xbot_player",
+      "parameters": {
+        "upper_body_chain": [ "Spine1", "Spine2", "Neck", "Head" ],
+        "main_hand_chain": [ "RightArm", "RightForeArm", "RightHand" ],
+        "second_hand_chain": [ "LeftArm", "LeftForeArm", "LeftHand" ],
+        "rifle_joint": "Head",
+        "rifle_joint_offset": [ -0.75, -1.0, -2.0 ],
+        "rifle_name": "xbot-rifle",
+        "detached_rifle_name": "xbot-rifle-detached"
+      },
       "components": [
         {
           "name": "skinned_mesh",
@@ -126,13 +157,74 @@
               "xbot-walking",
               "xbot-walking-backwards",
               "xbot-running",
-              "xbot-running-backwards"
+              "xbot-running-backwards",
+              "xbot-rifle-aiming-idle",
+              "xbot-rifle-left-turn",
+              "xbot-rifle-right-turn",
+              "xbot-rifle-firing",
+              "xbot-rifle-walking",
+              "xbot-rifle-walking-backwards",
+              "xbot-rifle-running",
+              "xbot-rifle-running-backwards"
             ]
           }
         },
         {
           "name": "rigid_static",
           "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "xbot-rifle",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "scifi-rifle",
+            "lod_scale": 1.0
+          }
+        },
+        {
+          "name": "weapon",
+          "parameters": {
+            "class": "rifle",
+            "main_hand_node": "body",
+            "second_hand_node": "body",
+            "main_hand_offset": [ -0.3, -1.2, 1.6 ],
+            "second_hand_offset": [ -0.0, -1.1, 2.5 ],
+            "local_forward": [ 0.0, 0.0, 1.0 ]
+          } 
+        }
+      ]
+    },
+    {
+      "name": "xbot-rifle-detached",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "scifi-rifle",
+            "lod_scale": 1.0
+          }
+        },
+        {
+          "name": "weapon",
+          "parameters": {
+            "class": "rifle",
+            "main_hand_node": "body",
+            "second_hand_node": "body",
+            "main_hand_offset": [ -0.3, -1.2, 1.6 ],
+            "second_hand_offset": [ -0.0, -1.1, 2.5 ],
+            "local_forward": [ 0.0, 0.0, 1.0 ]
+          }
+        },
+        {
+          "name": "rigid_dynamic",
+          "parameters": {
+            "mass": 100.0,
+            "cmass": [ 0.0, 1.0, 0.0 ]
+          }
         }
       ]
     }

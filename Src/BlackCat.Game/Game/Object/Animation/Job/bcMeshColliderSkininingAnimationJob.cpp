@@ -29,7 +29,7 @@ namespace black_cat
 				m_inverse_model_transforms = bc_sub_mesh_mat4_transform(*m_sub_mesh->get_root_node());
 			}
 			
-			const auto l_bone_names = get_skeleton().get_bone_names();
+			const auto l_bone_names = get_skeleton().get_joint_names();
 			auto l_bone_name_ite = l_bone_names.begin();
 
 			for (auto l_bone_ite = 0U; l_bone_ite < l_bone_names.size(); ++l_bone_ite, ++l_bone_name_ite)

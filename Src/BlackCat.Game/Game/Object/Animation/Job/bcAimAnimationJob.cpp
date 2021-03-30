@@ -28,10 +28,10 @@ namespace black_cat
 			ozz::math::Transpose4x4(&l_aos_quats->xyzw, &l_soa_transform_ref.rotation.x);
 		}
 
-		bc_aim_animation_job::bc_aim_animation_job(core::bc_shared_ptr< bci_local_transform_animation_job > p_local_job,
-			core::bc_shared_ptr< bc_local_to_model_animation_job > p_model_job,
-			core::bc_shared_ptr< bc_model_to_skinned_animation_job > p_skinned_job,
-			core::bc_span< bc_aim_animation_bone > p_joint_chains,
+		bc_aim_animation_job::bc_aim_animation_job(core::bc_shared_ptr<bci_local_transform_animation_job> p_local_job,
+			core::bc_shared_ptr<bc_local_to_model_animation_job> p_model_job,
+			core::bc_shared_ptr<bc_model_to_skinned_animation_job> p_skinned_job,
+			core::bc_span<bc_aim_animation_bone> p_joint_chains,
 			bcFLOAT p_aim_weight)
 			: bci_animation_job(p_local_job->get_skeleton()),
 			m_local_job(std::move(p_local_job)),
@@ -114,7 +114,7 @@ namespace black_cat
 				l_aim_job.up = ozz::math::simd_float4::Load3PtrU(&l_bone_chain.m_local_up.x);
 
 				const bool l_is_last_bone = l_ite == 0;
-				l_aim_job.weight = m_aim_weight * (l_is_last_bone ? 1.f : 0.3f);
+				l_aim_job.weight = m_aim_weight * (l_is_last_bone ? 1.f : 0.1f);
 				l_aim_job.offset = ozz::math::simd_float4::Load1(0);
 
 				if(l_ite == m_bone_chains.size() - 1)
@@ -147,31 +147,20 @@ namespace black_cat
 				l_previous_bone = l_bone_chain.m_bone_index;
 			}
 
-			return m_model_job->run(p_clock, l_previous_bone);
+			return m_model_job->run(p_clock, l_first_chain_bone_index);
 		}
 
 		void bc_aim_animation_job::_assign_bone_indices()
 		{
-			auto l_bone_names = get_skeleton().get_bone_names();
-			auto l_bone_index = 0U;
-			for (auto l_bone_name : l_bone_names)
+			for (auto& l_bone_chain : m_bone_chains)
 			{
-				auto l_bone_ite = std::find_if
-				(
-					std::begin(m_bone_chains),
-					std::end(m_bone_chains),
-					[l_bone_name](bc_aim_animation_bone& p_bone)
-					{
-						return std::strstr(l_bone_name, p_bone.m_bone_name) != nullptr;
-					}
-				);
-
-				if (l_bone_ite != std::end(m_bone_chains))
+				const auto l_real_bone_name = get_skeleton().find_joint_by_name(l_bone_chain.m_bone_name);
+				if(!l_real_bone_name.second)
 				{
-					l_bone_ite->m_bone_index = l_bone_index;
+					throw bc_invalid_argument_exception("Bone chain bone were not found in skeleton");
 				}
-
-				++l_bone_index;
+				
+				l_bone_chain.m_bone_index = l_real_bone_name.first;
 			}
 		}
 	}

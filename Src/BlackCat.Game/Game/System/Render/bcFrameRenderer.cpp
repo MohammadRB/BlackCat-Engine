@@ -353,12 +353,12 @@ namespace black_cat
 		{
 			if(m_camera_instance.is_set())
 			{
-				m_prev_camera_instance.reset(m_camera_instance.get());
-				m_prev_camera.store(&m_prev_camera_instance.get(), core_platform::bc_memory_order::release);
+				m_prev_camera_instance.reset(*m_camera_instance.get());
+				m_prev_camera.store(m_prev_camera_instance.get(), core_platform::bc_memory_order::release);
 			}
 			
 			m_camera_instance.reset(p_update_param.m_camera);
-			m_camera.store(&m_camera_instance.get(), core_platform::bc_memory_order::release);
+			m_camera.store(m_camera_instance.get(), core_platform::bc_memory_order::release);
 			
 			m_render_pass_manager->pass_update(bc_render_pass_update_context(p_update_param.m_clock, p_update_param.m_camera));
 		}

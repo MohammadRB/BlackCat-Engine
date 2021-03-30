@@ -12,14 +12,18 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_partial_blending_animation_job : bci_local_transform_animation_job
+		/**
+		 * \brief Partial blending of two separate samples.
+		 * The first job must have been executed but the second job will be executed by blending job.
+		 */
+		class BC_GAME_DLL bc_partial_blending_animation_job : public bci_local_transform_animation_job
 		{
 		public:
 			/**
 			 * \brief Partial blend of two sampled animations.
 			 * \param p_skeleton 
-			 * \param p_layer1 First animation which will get weight 1 by default
-			 * \param p_layer2 Second animation which will get weight 1 for all children of passed root node
+			 * \param p_layer1 First animation which will get weight 1 by default. This sampling job must have been executed before the blending job. 
+			 * \param p_layer2 Second animation which will get weight 1 for all children of passed root node. This sampling job will be executed the blending job.
 			 * \param p_layer_2_root_joint Root node which layer 2 will get weight 1 from this joint
 			 */
 			bc_partial_blending_animation_job(bc_animation_skeleton& p_skeleton, 
@@ -36,6 +40,8 @@ namespace black_cat
 			bc_animation_local_transform& get_local_transforms() noexcept override;
 			
 			const bc_animation_local_transform& get_local_transforms() const noexcept override;
+
+			void set_enabled(bool p_enabled) noexcept;
 			
 			bool run(const core_platform::bc_clock::update_param& p_clock) override;
 
@@ -46,16 +52,32 @@ namespace black_cat
 			core::bc_vector_movable<ozz::math::SimdFloat4> m_layer2_weights;
 			
 			bc_animation_local_transform m_locals;
+			bool m_enabled;
 		};
 
 		inline bc_animation_local_transform& bc_partial_blending_animation_job::get_local_transforms() noexcept
 		{
-			return m_locals;
+			if(m_enabled)
+			{
+				return m_locals;
+			}
+
+			return m_layer1->get_local_transforms();
 		}
 		
 		inline const bc_animation_local_transform& bc_partial_blending_animation_job::get_local_transforms() const noexcept
 		{
-			return m_locals;
+			if (m_enabled)
+			{
+				return m_locals;
+			}
+
+			return m_layer1->get_local_transforms();
+		}
+
+		inline void bc_partial_blending_animation_job::set_enabled(bool p_enabled) noexcept
+		{
+			m_enabled = p_enabled;
 		}
 	}
 }

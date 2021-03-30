@@ -376,6 +376,20 @@ namespace black_cat
 			std::memcpy(m_entry, l_transpose.m_entry, 4 * 4 * sizeof(bcFLOAT));
 		}
 
+		void bc_matrix4f::make_neutralize_scale() noexcept
+		{
+			const auto l_row0 = get_row(0);
+			const auto l_row1 = get_row(1);
+			const auto l_row2 = get_row(2);
+			const auto l_row0_normal = bc_vector3f::normalize(l_row0.xyz());
+			const auto l_row1_normal = bc_vector3f::normalize(l_row1.xyz());
+			const auto l_row2_normal = bc_vector3f::normalize(l_row2.xyz());
+			
+			set_row(0, bc_vector4f(l_row0_normal, l_row0.w));
+			set_row(1, bc_vector4f(l_row1_normal, l_row1.w));
+			set_row(2, bc_vector4f(l_row2_normal, l_row2.w));
+		}
+
 		bc_matrix4f bc_matrix4f::transpose() const noexcept
 		{
 			bc_matrix4f l_transpose;

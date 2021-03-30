@@ -131,6 +131,7 @@ namespace black_cat
 		{
 			core::bc_string_program m_entity_name;
 			core::bc_string_program m_controller_name;
+			core::bc_data_driven_parameter m_parameters;
 			core::bc_vector_program< _bc_entity_component_data > m_components;
 		};
 

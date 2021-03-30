@@ -11,6 +11,10 @@ namespace black_cat
 {
 	namespace game
 	{
+		/**
+		 * \brief Blend multiple samples based on their weights.
+		 * All sampling jobs will be executed by this job.
+		 */
 		class BC_GAME_DLL bc_blending_animation_job : public bci_local_transform_animation_job
 		{
 		public:

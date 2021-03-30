@@ -13,7 +13,7 @@ namespace black_cat
 			m_sampling_cache(core::bc_make_unique< ozz::animation::SamplingCache >()),
 			m_locals(m_skeleton->get_native_handle().num_soa_joints())
 		{
-			m_sampling_cache->Resize(m_skeleton->get_num_bones());
+			m_sampling_cache->Resize(m_skeleton->get_num_joints());
 		}
 
 		bool bc_sampling_animation_job::run(const core_platform::bc_clock::update_param& p_clock)

@@ -81,7 +81,7 @@ namespace black_cat
 
 				if(!m_animations.empty())
 				{
-					if(l_skinned_animation->get_skeleton().get_num_bones() != (*m_animations.rbegin())->get_skeleton().get_num_bones())
+					if(l_skinned_animation->get_skeleton().get_num_joints() != (*m_animations.rbegin())->get_skeleton().get_num_joints())
 					{
 						l_has_invalid_skeletons = true;
 					}

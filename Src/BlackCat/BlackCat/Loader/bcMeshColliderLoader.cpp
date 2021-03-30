@@ -12,7 +12,6 @@
 #include "Game/bcConstant.h"
 #include "BlackCat/Loader/bcMeshColliderLoader.h"
 #include "BlackCat/Loader/bcMeshLoaderUtility.h"
-
 #include "3rdParty/Assimp/Include/Importer.hpp"
 #include "3rdParty/Assimp/Include/postprocess.h"
 #include "3rdParty/Assimp/Include/scene.h"
@@ -49,7 +48,7 @@ namespace black_cat
 				(graphic::bc_render_api_info::use_left_handed() ? aiProcess_ConvertToLeftHanded : 0)
 			);
 		}
-
+		
 		if (!l_scene || !l_scene->HasMeshes())
 		{
 			const auto l_error_msg =
@@ -110,9 +109,10 @@ namespace black_cat
 
 		for (bcUINT32 l_index = 0; l_index < p_ai_node.mNumChildren; ++l_index)
 		{
-			if (l_px_node_name.compare(0, l_px_node_name.size(), p_ai_node.mChildren[l_index]->mName.data) == 0)
+			auto* l_child = p_ai_node.mChildren[l_index];
+			if (l_px_node_name.compare(0, l_px_node_name.size(), l_child->mName.data) == 0)
 			{
-				l_result = p_ai_node.mChildren[l_index];
+				l_result = l_child;
 				break;
 			}
 		}

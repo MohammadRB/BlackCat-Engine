@@ -189,8 +189,6 @@ namespace black_cat
 					if (l_rigid.is_rigid_dynamic().is_valid())
 					{
 						const auto l_direction = l_camera.get_forward();
-
-						l_rigid.update_mass_inertia(10);
 						l_rigid.set_linear_velocity(l_direction * 70);
 					}
 

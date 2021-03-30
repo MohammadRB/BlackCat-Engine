@@ -133,7 +133,7 @@ namespace black_cat
 
 			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
 				m_pack.m_px_physics->createRigidDynamic(const_cast< bc_transform& >(p_pose).get_platform_pack().m_px_transform);
-
+			
 			return bc_rigid_dynamic_ref(l_result);
 		}
 

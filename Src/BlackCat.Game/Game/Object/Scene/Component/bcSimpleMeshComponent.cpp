@@ -59,25 +59,27 @@ namespace black_cat
 			if(!m_render_group.is_set())
 			{
 				auto* l_rigid_body_component = get_actor().get_component<bc_rigid_body_component>();
-				if(!l_rigid_body_component)
+				if(l_rigid_body_component)
 				{
-					BC_ASSERT(false);
-				}
-
-				const auto l_px_actor_type = l_rigid_body_component->get_body().get_type();
-				if (l_px_actor_type == physics::bc_actor_type::rigid_static)
-				{
-					m_render_group.reset(bc_render_group::static_mesh);
+					const auto l_px_actor_type = l_rigid_body_component->get_body().get_type();
+					if (l_px_actor_type == physics::bc_actor_type::rigid_static)
+					{
+						m_render_group.reset(bc_render_group::static_mesh);
+					}
+					else
+					{
+						m_render_group.reset(bc_render_group::dynamic_mesh);
+					}
 				}
 				else
 				{
-					m_render_group.reset(bc_render_group::dynamic_mesh);
+					m_render_group.reset(bc_render_group::static_mesh);
 				}
 			}
 
 			const auto& l_render_states = get_render_states();
 			const auto& l_world_transforms = get_world_transforms();
-			bc_mesh_utility::render_mesh(p_context.m_buffer, l_render_states, l_world_transforms, l_lod.first, m_render_group.get());
+			bc_mesh_utility::render_mesh(p_context.m_buffer, l_render_states, l_world_transforms, l_lod.first, *m_render_group.get());
 		}
 		
 		void bc_simple_mesh_component::handle_event(const bc_actor_component_event_context& p_context)
