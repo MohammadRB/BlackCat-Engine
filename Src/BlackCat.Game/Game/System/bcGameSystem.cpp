@@ -97,6 +97,8 @@ namespace black_cat
 			core::bc_concurrency::when_all(l_scene_task , l_query_task);
 
 			l_render_system.update(bc_render_system::update_context(p_clock, *m_input_system.get_camera()));
+
+			l_query_manager.process_query_queue(p_clock);
 		}
 		
 		void bc_game_system::render_game(const core_platform::bc_clock::update_param& p_clock)

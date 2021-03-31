@@ -29,6 +29,7 @@ namespace black_cat
 		BC_PARAMETER(emitter_name, "emitter_name");
 		BC_PARAMETER(decal_name, "decal_name");
 		BC_PARAMETER(weapon_class, "class");
+		BC_PARAMETER(weapon_local_up, "local_up");
 		BC_PARAMETER(weapon_local_forward, "local_forward");
 		BC_PARAMETER(weapon_main_hand_node, "main_hand_node");
 		BC_PARAMETER(weapon_second_hand_node, "second_hand_node");

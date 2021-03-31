@@ -19,6 +19,7 @@ namespace black_cat
 			const bc_mesh_node* m_second_hand_node;
 			core::bc_vector3f m_main_hand_offset;
 			core::bc_vector3f m_second_hand_offset;
+			core::bc_vector3f m_local_up;
 			core::bc_vector3f m_local_forward;
 		};
 	}

@@ -80,7 +80,7 @@
         "main_hand_chain": [ "RightArm", "RightForeArm", "RightHand" ],
         "second_hand_chain": [ "LeftArm", "LeftForeArm", "LeftHand" ],
         "rifle_joint": "Head",
-        "rifle_joint_offset": [ -0.75, -1.0, -2.0 ]
+        "rifle_joint_offset": [ -1.0, -2.0, -2.0 ]
       },
       "components": [
         {
@@ -109,7 +109,7 @@
         "main_hand_chain": [ "RightArm", "RightForeArm", "RightHand" ],
         "second_hand_chain": [ "LeftArm", "LeftForeArm", "LeftHand" ],
         "rifle_joint": "Head",
-        "rifle_joint_offset": [ -0.75, -1.0, -2.0 ]
+        "rifle_joint_offset": [ -1.0, -2.0, -2.0 ]
       },
       "components": [
         {
@@ -138,7 +138,7 @@
         "main_hand_chain": [ "RightArm", "RightForeArm", "RightHand" ],
         "second_hand_chain": [ "LeftArm", "LeftForeArm", "LeftHand" ],
         "rifle_joint": "Head",
-        "rifle_joint_offset": [ -0.75, -1.0, -2.0 ],
+        "rifle_joint_offset": [ -1.0, -2.0, -2.0 ],
         "rifle_name": "xbot-rifle",
         "detached_rifle_name": "xbot-rifle-detached"
       },
@@ -191,9 +191,10 @@
             "class": "rifle",
             "main_hand_node": "body",
             "second_hand_node": "body",
-            "main_hand_offset": [ -0.3, -1.2, 1.6 ],
-            "second_hand_offset": [ -0.0, -1.1, 2.5 ],
-            "local_forward": [ 0.0, 0.0, 1.0 ]
+            "main_hand_offset": [ 0.2, 0.1, -0.3 ],
+            "second_hand_offset": [ 0.3, -0.8, 0.3 ],
+            "local_up": [ 0.0, 0.0, -1.0 ],
+            "local_forward": [ -1.0, 0.0, -0.0 ]
           } 
         }
       ]
@@ -214,16 +215,17 @@
             "class": "rifle",
             "main_hand_node": "body",
             "second_hand_node": "body",
-            "main_hand_offset": [ -0.3, -1.2, 1.6 ],
-            "second_hand_offset": [ -0.0, -1.1, 2.5 ],
-            "local_forward": [ 0.0, 0.0, 1.0 ]
+            "main_hand_offset": [ 0.2, 0.1, -0.3 ],
+            "second_hand_offset": [ 0.3, -0.8, 0.3 ],
+            "local_up": [ 0.0, 0.0, -1.0 ],
+            "local_forward": [ -1.0, 0.0, -0.0 ]
           }
         },
         {
           "name": "rigid_dynamic",
           "parameters": {
             "mass": 100.0,
-            "cmass": [ 0.0, 1.0, 0.0 ]
+            "cmass": [ -1.0, 0.0, 0.0 ]
           }
         }
       ]

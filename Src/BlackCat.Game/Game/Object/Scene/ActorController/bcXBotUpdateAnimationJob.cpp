@@ -8,11 +8,11 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_xbot_update_animation_job::bc_xbot_update_animation_job(const bc_actor& p_actor,
+		bc_xbot_update_animation_job::bc_xbot_update_animation_job(const bc_actor& p_xbot_actor,
 			bc_xbot_controller& p_xbot,
 			bc_skinned_mesh_component& p_component,
 			const core::bc_shared_ptr<bc_model_to_skinned_animation_job>& p_model_to_skinned_job)
-			: bc_actor_update_animation_job(p_actor, p_component, p_model_to_skinned_job),
+			: bc_actor_update_animation_job(p_xbot_actor, p_component, p_model_to_skinned_job),
 			m_xbot_controller(&p_xbot)
 		{
 		}

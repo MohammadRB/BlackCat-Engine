@@ -38,6 +38,8 @@ namespace black_cat
 			
 			const core::bc_vector3f& get_second_hand_local_offset() const noexcept;
 
+			const core::bc_vector3f& get_local_up() const noexcept;
+			
 			const core::bc_vector3f& get_local_forward() const noexcept;
 			
 			bc_actor get_actor() const noexcept override;
@@ -50,6 +52,7 @@ namespace black_cat
 			const bcCHAR* m_second_hand_node_name;
 			core::bc_vector3f m_main_hand_local_offset;
 			core::bc_vector3f m_second_hand_local_offset;
+			core::bc_vector3f m_local_up;
 			core::bc_vector3f m_local_forward;
 		};
 
@@ -78,6 +81,11 @@ namespace black_cat
 			return m_second_hand_local_offset;
 		}
 
+		inline const core::bc_vector3f& bc_weapon_component::get_local_up() const noexcept
+		{
+			return m_local_up;
+		}
+		
 		inline const core::bc_vector3f& bc_weapon_component::get_local_forward() const noexcept
 		{
 			return m_local_forward;

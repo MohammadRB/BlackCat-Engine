@@ -323,6 +323,7 @@ namespace black_cat
 			l_weapon.m_second_hand_node = l_second_hand_node;
 			l_weapon.m_main_hand_offset = l_weapon_mesh_transforms.get_node_transform(*l_main_hand_node).get_translation() + l_weapon_component->get_main_hand_local_offset();
 			l_weapon.m_second_hand_offset = l_weapon_mesh_transforms.get_node_transform(*l_second_hand_node).get_translation() + l_weapon_component->get_second_hand_local_offset();
+			l_weapon.m_local_up = l_weapon_component->get_local_up();
 			l_weapon.m_local_forward = l_weapon_component->get_local_forward();
 
 			m_weapon.reset(l_weapon);
@@ -390,10 +391,6 @@ namespace black_cat
 			(
 				bc_model_to_skinned_animation_job(l_local_to_model_job, m_skinned_component->get_world_transforms())
 			);
-			auto l_aim_job = core::bc_make_shared<bc_aim_animation_job>
-			(
-				bc_aim_animation_job(l_idle_blending_job, l_local_to_model_job, l_model_to_skinning_job, core::bc_make_span(l_aim_bone_chain), m_local_forward)
-			);
 			auto l_weapon_ik_job = core::bc_make_shared<bc_xbot_weapon_ik_animation_job>
 			(
 				bc_xbot_weapon_ik_animation_job
@@ -411,6 +408,10 @@ namespace black_cat
 					m_rifle_joint_offset
 				)
 			);
+			auto l_aim_job = core::bc_make_shared<bc_aim_animation_job>
+			(
+				bc_aim_animation_job(l_idle_blending_job, l_local_to_model_job, l_model_to_skinning_job, core::bc_make_span(l_aim_bone_chain), m_local_forward)
+			);
 			auto l_actor_update_job = core::bc_make_shared<bc_xbot_update_animation_job>
 			(
 				bc_xbot_update_animation_job(m_actor, *this, *m_skinned_component, l_model_to_skinning_job)
@@ -418,13 +419,12 @@ namespace black_cat
 			
 			bcFLOAT l_blending_weights[] = { 0,1,0 };
 			l_idle_blending_job->set_weights(&l_blending_weights[0]);
-			//l_aim_job->set_enabled(false);
 
 			return bc_animation_job_builder()
 				.start_with(std::move(l_idle_blending_job))
 				.then(std::move(l_local_to_model_job))
-				.then(std::move(l_aim_job))
 				.then(std::move(l_weapon_ik_job))
+				.then(std::move(l_aim_job))
 				.then(std::move(l_model_to_skinning_job))
 				.end_with(std::move(l_actor_update_job))
 				.build();
@@ -485,10 +485,6 @@ namespace black_cat
 			(
 				bc_model_to_skinned_animation_job(l_local_to_model_job, m_skinned_component->get_world_transforms())
 			);
-			auto l_aim_job = core::bc_make_shared<bc_aim_animation_job>
-			(
-				bc_aim_animation_job(l_running_blending_job, l_local_to_model_job, l_model_to_skinning_job, core::bc_make_span(l_aim_bone_chain), m_local_forward)
-			);
 			auto l_weapon_ik_job = core::bc_make_shared<bc_xbot_weapon_ik_animation_job>
 			(
 				bc_xbot_weapon_ik_animation_job
@@ -506,18 +502,20 @@ namespace black_cat
 					m_rifle_joint_offset
 				)
 			);
+			auto l_aim_job = core::bc_make_shared<bc_aim_animation_job>
+			(
+				bc_aim_animation_job(l_running_blending_job, l_local_to_model_job, l_model_to_skinning_job, core::bc_make_span(l_aim_bone_chain), m_local_forward)
+			);
 			auto l_actor_update_job = core::bc_make_shared<bc_xbot_update_animation_job>
 			(
 				bc_xbot_update_animation_job(m_actor, *this, *m_skinned_component, l_model_to_skinning_job)
 			);
 
-			//l_aim_job->set_enabled(false);
-			
 			return bc_animation_job_builder()
 				.start_with(std::move(l_running_blending_job))
 				.then(std::move(l_local_to_model_job))
-				.then(std::move(l_aim_job))
 				.then(std::move(l_weapon_ik_job))
+				.then(std::move(l_aim_job))
 				.then(std::move(l_model_to_skinning_job))
 				.end_with(std::move(l_actor_update_job))
 				.build();
@@ -838,24 +836,34 @@ namespace black_cat
 
 			auto* l_model_job = bc_animation_job_helper::find_job<bc_local_to_model_animation_job>(static_cast<bc_sequence_animation_job&>(*m_active_job));
 			auto* l_skinning_job = bc_animation_job_helper::find_job<bc_model_to_skinned_animation_job>(static_cast<bc_sequence_animation_job&>(*m_active_job));
-			auto l_main_hand_translation = l_model_job->get_transforms()[m_main_hand_chain[2].first].get_translation();
-			l_main_hand_translation = (l_skinning_job->get_world() * core::bc_vector4f(l_main_hand_translation, 1)).xyz();
-			
-			core::bc_matrix4f l_world_transform;
-			core::bc_matrix3f l_rotation;
+			auto l_main_hand_transform = l_model_job->get_transforms()[m_main_hand_chain[2].first];
+			l_main_hand_transform.make_neutralize_scale();
+
+			core::bc_matrix3f l_aim_target_rotation;
+			core::bc_matrix3f l_weapon_forward_rotation;
+			core::bc_matrix3f l_weapon_up_rotation;
 
 			if(graphic::bc_render_api_info::use_left_handed())
 			{
-				l_rotation.rotation_between_two_vector_lh(m_weapon->m_local_forward, m_look_direction);
+				l_aim_target_rotation.rotation_between_two_vector_lh(m_local_forward, m_look_direction);
+				l_weapon_forward_rotation.rotation_between_two_vector_lh(m_weapon->m_local_forward, m_look_direction);
+				l_weapon_up_rotation.rotation_between_two_vector_lh(m_weapon->m_local_up, core::bc_vector3f::up());
 			}
 			else
 			{
-				l_rotation.rotation_between_two_vector_rh(m_weapon->m_local_forward, m_look_direction);
+				l_aim_target_rotation.rotation_between_two_vector_rh(m_local_forward, m_look_direction);
+				l_weapon_forward_rotation.rotation_between_two_vector_rh(m_weapon->m_local_forward, m_look_direction);
+				l_weapon_up_rotation.rotation_between_two_vector_lh(m_weapon->m_local_up, core::bc_vector3f::up());
 			}
 
-			l_world_transform.make_identity();
-			l_world_transform.set_rotation(l_rotation);
-			l_world_transform.set_translation(l_main_hand_translation + l_rotation * m_weapon->m_main_hand_offset);
+			const auto l_main_hand_offset = l_aim_target_rotation * m_weapon->m_main_hand_offset;
+			core::bc_matrix4f l_world_transform = l_main_hand_transform * l_skinning_job->get_world();
+			l_world_transform.set_translation(l_world_transform.get_translation() + l_main_hand_offset);
+
+			const auto l_aim_lock = .5f;
+			const auto l_final_rotation = l_world_transform.get_rotation() * (1 - l_aim_lock) + (l_weapon_up_rotation * l_weapon_forward_rotation) * l_aim_lock;
+			
+			l_world_transform.set_rotation(l_final_rotation);
 			
 			m_weapon->m_actor.add_event(bc_world_transform_actor_event(l_world_transform));
 		}

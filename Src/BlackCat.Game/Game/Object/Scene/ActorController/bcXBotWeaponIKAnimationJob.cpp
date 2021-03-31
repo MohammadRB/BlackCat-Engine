@@ -1,6 +1,8 @@
 // [03/29/2021 MRB]
 
 #include "Game/GamePCH.h"
+
+#include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/Object/Scene/ActorController/bcXBotWeaponIKAnimationJob.h"
 #include "Game/bcException.h"
 
@@ -43,6 +45,7 @@ namespace black_cat
 				core::bc_vector3f(0.2, 0, 1),
 				core::bc_vector3f(0, 1, 0)
 			),
+			m_offset_joint_index(0),
 			m_offset(p_offset),
 			m_weapon(nullptr)
 		{
@@ -66,7 +69,14 @@ namespace black_cat
 			}
 			
 			core::bc_matrix3f l_weapon_local_forward_rotation;
-			l_weapon_local_forward_rotation.rotation_between_two_vector_lh(m_local_forward, m_weapon->m_local_forward);
+			if (graphic::bc_render_api_info::use_left_handed())
+			{
+				l_weapon_local_forward_rotation.rotation_between_two_vector_lh(m_local_forward, m_weapon->m_local_forward);
+			}
+			else
+			{
+				l_weapon_local_forward_rotation.rotation_between_two_vector_rh(m_local_forward, m_weapon->m_local_forward);
+			}
 			
 			const auto& l_offset_joint = m_model_job->get_transforms()[m_offset_joint_index];
 			const auto l_weapon_main_hand_offset = l_offset_joint.get_translation() + m_offset;
