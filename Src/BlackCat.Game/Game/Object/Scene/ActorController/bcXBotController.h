@@ -91,6 +91,8 @@ namespace black_cat
 			void attach_weapon(const bc_actor& p_weapon) noexcept;
 
 			void detach_weapon() noexcept;
+
+			void fire_weapon() noexcept;
 			
 			void on_shape_hit(const physics::bc_ccontroller_shape_hit& p_hit) override;
 
@@ -100,33 +102,37 @@ namespace black_cat
 			core::bc_shared_ptr<bci_animation_job> _create_idle_animation(const bcCHAR* p_idle_animation,
 				const bcCHAR* p_left_turn_animation,
 				const bcCHAR* p_right_turn_animation,
-				core::bc_shared_ptr<bc_sampling_animation_job>& p_idle_sample_job);
+				const bcCHAR* p_weapon_shoot_animation,
+				core::bc_shared_ptr<bc_sampling_animation_job>* p_idle_sample_job);
 
 			core::bc_shared_ptr<bci_animation_job> _create_running_animation(core::bc_shared_ptr<bc_sampling_animation_job> p_idle_sample_job,
 				const bcCHAR* p_walking_animation,
 				const bcCHAR* p_walking_backward_animation,
 				const bcCHAR* p_running_animation,
 				const bcCHAR* p_running_backward_animation,
-				core::bc_shared_ptr<bc_sampling_animation_job>& p_walking_sample_job,
-				core::bc_shared_ptr<bc_sampling_animation_job>& p_walking_backward_sample_job,
-				core::bc_shared_ptr<bc_sampling_animation_job>& p_running_sample_job,
-				core::bc_shared_ptr<bc_sampling_animation_job>& p_running_backward_sample_job);
+				const bcCHAR* p_weapon_shoot_animation,
+				core::bc_shared_ptr<bc_sampling_animation_job>* p_walking_sample_job,
+				core::bc_shared_ptr<bc_sampling_animation_job>* p_walking_backward_sample_job,
+				core::bc_shared_ptr<bc_sampling_animation_job>* p_running_sample_job,
+				core::bc_shared_ptr<bc_sampling_animation_job>* p_running_backward_sample_job);
 
-			void _update_input(const core_platform::bc_clock::update_param& p_clock);
+			void _update_input();
 
-			void _update_direction(const core_platform::bc_clock::update_param& p_clock);
+			void _update_direction();
 
-			void _update_active_animation(const core_platform::bc_clock::update_param& p_clock);
+			void _update_active_animation();
 
-			void _blend_idle_animation(const core_platform::bc_clock::update_param& p_clock, bci_animation_job& p_idle_animation);
+			void _blend_idle_animation(bci_animation_job& p_idle_animation);
 
-			void _blend_running_animation(const core_platform::bc_clock::update_param& p_clock, bci_animation_job& p_running_animation);
+			void _blend_running_animation(bci_animation_job& p_running_animation);
 
+			void _blend_weapon_shoot_animation();
+			
 			void _weapon_ik_animation(bc_xbot_weapon* p_weapon, bci_animation_job & p_main_animation);
 			
-			void _update_world_transform(const core_platform::bc_clock::update_param& p_clock);
+			void _update_world_transform();
 
-			void _update_weapon(const core_platform::bc_clock::update_param& p_clock);
+			void _update_weapon_transform();
 			
 			bc_physics_system* m_physics_system;
 			bc_scene* m_scene;
@@ -142,17 +148,9 @@ namespace black_cat
 			core::bc_vector3f m_local_forward;
 
 			core::bc_shared_ptr<bc_sampling_animation_job> m_idle_sample_job;
-			core::bc_shared_ptr<bc_sampling_animation_job> m_walking_sample_job;
-			core::bc_shared_ptr<bc_sampling_animation_job> m_walking_backward_sample_job;
-			core::bc_shared_ptr<bc_sampling_animation_job> m_running_sample_job;
-			core::bc_shared_ptr<bc_sampling_animation_job> m_running_backward_sample_job;
+			core::bc_shared_ptr<bc_sampling_animation_job> m_rifle_aiming_idle_sample_job;
 			core::bc_shared_ptr<bci_animation_job> m_idle_job;
 			core::bc_shared_ptr<bci_animation_job> m_running_job;
-			core::bc_shared_ptr<bc_sampling_animation_job> m_rifle_aiming_idle_sample_job;
-			core::bc_shared_ptr<bc_sampling_animation_job> m_rifle_walking_sample_job;
-			core::bc_shared_ptr<bc_sampling_animation_job> m_rifle_walking_backward_sample_job;
-			core::bc_shared_ptr<bc_sampling_animation_job> m_rifle_running_sample_job;
-			core::bc_shared_ptr<bc_sampling_animation_job> m_rifle_running_backward_sample_job;
 			core::bc_shared_ptr<bci_animation_job> m_rifle_idle_job;
 			core::bc_shared_ptr<bci_animation_job> m_rifle_running_job;
 			bci_animation_job* m_active_job;
@@ -162,6 +160,7 @@ namespace black_cat
 			bcFLOAT m_walk_speed;
 			bcFLOAT m_move_speed;
 
+			core_platform::bc_clock::update_param m_clock;
 			bcINT32 m_look_delta_x;
 			bool m_forward_pressed;
 			bool m_backward_pressed;

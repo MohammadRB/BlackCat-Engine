@@ -18,9 +18,7 @@ namespace black_cat
 
 		bool bc_sampling_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
-			m_local_time += p_clock.m_elapsed_second;
-			auto l_local_time = m_local_time / m_animation->get_duration();
-			l_local_time = l_local_time - std::floorf(l_local_time);
+			const auto l_local_time = update_time(p_clock, m_animation->get_duration());
 
 			ozz::animation::SamplingJob l_sampling_job;
 			l_sampling_job.animation = &m_animation->get_native_handle();

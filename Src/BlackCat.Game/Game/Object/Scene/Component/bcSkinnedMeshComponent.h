@@ -34,7 +34,7 @@ namespace black_cat
 			/**
 			 * \brief Find animation which its name contains passed string
 			 * \param p_name
-			 * \return
+			 * \return Found animation otherwise null.
 			 */
 			bc_skeleton_animation* find_animation(const bcCHAR* p_name) const noexcept;
 			

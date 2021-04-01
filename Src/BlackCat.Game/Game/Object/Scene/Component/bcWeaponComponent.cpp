@@ -15,7 +15,8 @@ namespace black_cat
 			: bci_actor_component(p_actor_index, p_index),
 			m_class(bc_weapon_class::rifle),
 			m_main_hand_node_name(nullptr),
-			m_second_hand_node_name(nullptr)
+			m_second_hand_node_name(nullptr),
+			m_rate_of_fire_seconds(0)
 		{
 		}
 
@@ -33,7 +34,8 @@ namespace black_cat
 			json_parse::bc_load(p_context.m_parameters.get_value_throw<core::bc_vector<core::bc_any>>(constant::g_param_weapon_second_hand_offset), m_second_hand_local_offset);
 			json_parse::bc_load(p_context.m_parameters.get_value_throw<core::bc_vector<core::bc_any>>(constant::g_param_weapon_local_up), m_local_up);
 			json_parse::bc_load(p_context.m_parameters.get_value_throw<core::bc_vector<core::bc_any>>(constant::g_param_weapon_local_forward), m_local_forward);
-
+			m_rate_of_fire_seconds = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_rate_of_fire_seconds);
+			
 			if(l_class_value == "rifle")
 			{
 				m_class = bc_weapon_class::rifle;

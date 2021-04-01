@@ -21,6 +21,7 @@ namespace black_cat
 			core::bc_vector3f m_second_hand_offset;
 			core::bc_vector3f m_local_up;
 			core::bc_vector3f m_local_forward;
+			bcFLOAT m_rate_of_fire_seconds;
 		};
 	}
 }

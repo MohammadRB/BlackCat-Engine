@@ -28,6 +28,8 @@ namespace black_cat
 
 			bc_weapon_component& operator=(bc_weapon_component&&) noexcept = default;
 
+			bc_actor get_actor() const noexcept override;
+			
 			bc_weapon_class get_class() const noexcept;
 			
 			const bcCHAR* get_main_hand_node_name() const noexcept;
@@ -41,8 +43,8 @@ namespace black_cat
 			const core::bc_vector3f& get_local_up() const noexcept;
 			
 			const core::bc_vector3f& get_local_forward() const noexcept;
-			
-			bc_actor get_actor() const noexcept override;
+
+			bcFLOAT get_rate_of_fire_seconds() const noexcept;
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 		
@@ -54,6 +56,7 @@ namespace black_cat
 			core::bc_vector3f m_second_hand_local_offset;
 			core::bc_vector3f m_local_up;
 			core::bc_vector3f m_local_forward;
+			bcFLOAT m_rate_of_fire_seconds;
 		};
 
 		inline bc_weapon_class bc_weapon_component::get_class() const noexcept
@@ -89,6 +92,11 @@ namespace black_cat
 		inline const core::bc_vector3f& bc_weapon_component::get_local_forward() const noexcept
 		{
 			return m_local_forward;
+		}
+
+		inline bcFLOAT bc_weapon_component::get_rate_of_fire_seconds() const noexcept
+		{
+			return m_rate_of_fire_seconds;
 		}
 	}
 }

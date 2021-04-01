@@ -26,7 +26,7 @@ namespace black_cat
 		bool bc_xbot_update_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
 			bc_actor_update_animation_job::run(p_clock);
-			m_xbot_controller->_update_weapon(p_clock);
+			m_xbot_controller->_update_weapon_transform();
 
 			return true;
 		}

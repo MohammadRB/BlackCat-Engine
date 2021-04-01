@@ -313,6 +313,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcSkeletonAnimation.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcSkinnedAnimation.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcActorUpdateAnimationJob.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcAdditiveBlendingAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcAimAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcBlendingAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelAnimationJob.h" />
@@ -463,6 +464,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationSkeleton.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcActorUpdateAnimationJob.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcAdditiveBlendingAnimatianJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcAimAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcBlendingAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelAnimationJob.cpp" />

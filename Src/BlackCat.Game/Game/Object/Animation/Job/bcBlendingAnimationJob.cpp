@@ -8,7 +8,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_blending_animation_job::bc_blending_animation_job(bc_animation_skeleton& p_skeleton, std::initializer_list<core::bc_shared_ptr<bci_local_transform_animation_job>> p_layers)
+		bc_blending_animation_job::bc_blending_animation_job(bc_animation_skeleton& p_skeleton, std::initializer_list<core::bc_shared_ptr<bc_sampling_animation_job>> p_layers)
 			: bci_local_transform_animation_job(p_skeleton),
 			m_layers(p_layers.size()),
 			m_locals(m_skeleton->get_native_handle().num_soa_joints())
@@ -18,7 +18,7 @@ namespace black_cat
 				std::begin(p_layers),
 				std::end(p_layers),
 				std::begin(m_layers),
-				[](const core::bc_shared_ptr<bci_local_transform_animation_job>& p_sample)
+				[](const core::bc_shared_ptr<bc_sampling_animation_job>& p_sample)
 				{
 					return std::make_pair(p_sample, 0.f);
 				}

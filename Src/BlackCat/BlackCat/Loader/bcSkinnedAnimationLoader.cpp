@@ -4,8 +4,10 @@
 
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcVector.h"
+#include "Core/bcUtility.h"
 #include "Graphic/bcRenderApiInfo.h"
 #include "Game/Object/Animation/bcSkinnedAnimation.h"
+#include "Game/bcConstant.h"
 #include "BlackCat/Loader/bcSkinnedAnimationLoader.h"
 #include "BlackCat/bcException.h"
 #include "3rdParty/Assimp/Include/Importer.hpp"
@@ -17,6 +19,7 @@
 #include "3rdParty/Ozz/Include/ozz/animation/offline/raw_animation.h"
 #include "3rdParty/Ozz/Include/ozz/animation/offline/skeleton_builder.h"
 #include "3rdParty/Ozz/Include/ozz/animation/offline/animation_builder.h"
+#include "3rdParty/Ozz/Include/ozz/animation/offline/additive_animation_builder.h"
 #include "3rdParty/Ozz/Include/ozz/animation/runtime/skeleton.h"
 #include "3rdParty/Ozz/Include/ozz/animation/runtime/animation.h"
 
@@ -207,14 +210,27 @@ namespace black_cat
 		core::bc_vector_frame< ozz::unique_ptr< ozz::animation::Animation>> l_ozz_animations;
 		l_ozz_animations.reserve(l_ozz_raw_animations.size());
 
+		bool l_additive_animation = bc_null_default(p_context.m_parameters->get_value<bool>(constant::g_param_animation_additive), false);
+		
 		std::transform
 		(
 			std::begin(l_ozz_raw_animations),
 			std::end(l_ozz_raw_animations),
 			std::back_inserter(l_ozz_animations),
-			[](const ozz::animation::offline::RawAnimation& p_ozz_raw_animation)
+			[l_additive_animation](ozz::animation::offline::RawAnimation& p_ozz_raw_animation)
 			{
+				// TODO use animation optimizer
 				BC_ASSERT(p_ozz_raw_animation.Validate());
+
+				if(l_additive_animation)
+				{
+					ozz::animation::offline::RawAnimation l_ozz_raw_additive_animation;
+					ozz::animation::offline::AdditiveAnimationBuilder()(p_ozz_raw_animation, &l_ozz_raw_additive_animation);
+					l_ozz_raw_additive_animation.name = p_ozz_raw_animation.name;
+					
+					p_ozz_raw_animation = l_ozz_raw_additive_animation;
+				}
+				
 				return ozz::animation::offline::AnimationBuilder()(p_ozz_raw_animation);
 			}
 		);

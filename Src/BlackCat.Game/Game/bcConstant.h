@@ -23,6 +23,7 @@ namespace black_cat
 		BC_PARAMETER(rigid_cmass, "cmass");
 		BC_PARAMETER(rigid_mass, "mass");
 		BC_PARAMETER(animations, "animations");
+		BC_PARAMETER(animation_additive, "additive");
 		BC_PARAMETER(child_actor, "childs");
 		BC_PARAMETER(heightmap, "heightmap");
 		BC_PARAMETER(texture_config, "config");
@@ -35,5 +36,6 @@ namespace black_cat
 		BC_PARAMETER(weapon_second_hand_node, "second_hand_node");
 		BC_PARAMETER(weapon_main_hand_offset, "main_hand_offset");
 		BC_PARAMETER(weapon_second_hand_offset, "second_hand_offset");
+		BC_PARAMETER(weapon_rate_of_fire_seconds, "rate_of_fire");
 	}
 }

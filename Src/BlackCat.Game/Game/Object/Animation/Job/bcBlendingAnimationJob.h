@@ -18,7 +18,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_blending_animation_job : public bci_local_transform_animation_job
 		{
 		public:
-			bc_blending_animation_job(bc_animation_skeleton& p_skeleton, std::initializer_list<core::bc_shared_ptr<bci_local_transform_animation_job>> p_layers);
+			bc_blending_animation_job(bc_animation_skeleton& p_skeleton, std::initializer_list<core::bc_shared_ptr<bc_sampling_animation_job>> p_layers);
 
 			bc_blending_animation_job(bc_blending_animation_job&&) noexcept = default;
 
@@ -45,7 +45,7 @@ namespace black_cat
 			bool run(const core_platform::bc_clock::update_param& p_clock) override;
 
 		private:
-			core::bc_vector< std::pair< core::bc_shared_ptr<bci_local_transform_animation_job>, bcFLOAT > > m_layers;
+			core::bc_vector< std::pair< core::bc_shared_ptr<bc_sampling_animation_job>, bcFLOAT > > m_layers;
 			bc_animation_local_transform m_locals;
 		};
 

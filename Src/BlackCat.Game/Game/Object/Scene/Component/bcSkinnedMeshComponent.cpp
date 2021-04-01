@@ -39,6 +39,11 @@ namespace black_cat
 
 		bc_skeleton_animation* bc_skinned_mesh_component::find_animation(const bcCHAR* p_name) const noexcept
 		{
+			if(!p_name)
+			{
+				return nullptr;
+			}
+			
 			const auto l_ite = std::find_if
 			(
 				std::begin(m_all_animations),

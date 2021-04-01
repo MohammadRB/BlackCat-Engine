@@ -365,13 +365,6 @@
           }
         },
         {
-          "content_title": "xbot-rifle-firing",
-          "content_loader": "animation",
-          "content_file": "content\\model\\xbot\\xbot-firing-rifle.fbx",
-          "content_parameter": {
-          }
-        },
-        {
           "content_title": "xbot-rifle-walking",
           "content_loader": "animation",
           "content_file": "content\\model\\xbot\\xbot-rifle-walking.fbx",
@@ -397,6 +390,14 @@
           "content_loader": "animation",
           "content_file": "content\\model\\xbot\\xbot-rifle-run-backwards.fbx",
           "content_parameter": {
+          }
+        },
+        {
+          "content_title": "xbot-rifle-firing",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-firing-rifle.fbx",
+          "content_parameter": {
+            "additive": true 
           }
         },
         {
