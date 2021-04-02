@@ -17,7 +17,6 @@ namespace black_cat
 			core::bc_shared_ptr<bc_sampling_animation_job> p_additive_layer,
 			const bcCHAR* p_additive_layer_root_joint)
 			: bci_local_transform_animation_job(p_skeleton),
-			m_enabled(true),
 			m_main_layer_weight(1),
 			m_additive_layer_weight(1),
 			m_main_layer(std::move(p_main_layer)),

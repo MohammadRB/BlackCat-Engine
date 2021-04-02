@@ -11,17 +11,17 @@ namespace black_cat
 	{
 		template BC_CORE_DLL class bc_singleton< bc_service_manager() >;
 
-		bc_iservice::~bc_iservice() = default;
+		bci_service::~bci_service() = default;
 
-		void bc_iservice::update(const core_platform::bc_clock::update_param& p_clock)
+		void bci_service::update(const core_platform::bc_clock::update_param& p_clock)
 		{
 		}
 
-		void bc_iservice::destroy()
+		void bci_service::destroy()
 		{
 		}
 
-		_bc_service_container::_bc_service_container(bcUINT32 p_hash, const bcCHAR* p_name, bcSIZE p_priority, bc_service_ptr< bc_iservice > p_service)
+		_bc_service_container::_bc_service_container(bcUINT32 p_hash, const bcCHAR* p_name, bcSIZE p_priority, bc_service_ptr< bci_service > p_service)
 			: m_hash(p_hash),
 			m_name(p_name),
 			m_priority(p_priority),
@@ -60,9 +60,9 @@ namespace black_cat
 			m_sorted_services.clear();
 		}
 
-		bc_iservice* bc_service_manager::_get_service(bcUINT32 p_service_hash)
+		bci_service* bc_service_manager::_get_service(bcUINT32 p_service_hash)
 		{
-			bc_iservice* l_result = nullptr;
+			bci_service* l_result = nullptr;
 			const auto l_ite = m_services.find(p_service_hash);
 
 			if (l_ite != std::end(m_services))
@@ -73,7 +73,7 @@ namespace black_cat
 			return l_result;
 		}
 
-		bc_iservice* bc_service_manager::_register_service(bcUINT32 p_hash, const bcCHAR* p_name, bc_service_ptr<bc_iservice> p_service)
+		bci_service* bc_service_manager::_register_service(bcUINT32 p_hash, const bcCHAR* p_name, bc_service_ptr<bci_service> p_service)
 		{
 			const bcSIZE l_priority = m_services.size();
 

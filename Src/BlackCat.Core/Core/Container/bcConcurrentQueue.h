@@ -37,13 +37,13 @@ namespace black_cat
 			explicit bc_concurrent_queue_base(const allocator_type& p_allocator = allocator_type())
 				: m_allocator(p_allocator)
 			{
-				static_assert(internal_allocator_type::is_movable_type::value == false, "Movable allocators aren't supported");
-				static_assert(std::is_default_constructible<value_type>::value == true, "T must be default constructible"); // TODO
+				static_assert(internal_allocator_type::is_movable_type::value == false, "Movable allocators are not supported");
+				static_assert(std::is_default_constructible<value_type>::value == true, "T must be default constructable");
 				static_assert(std::is_nothrow_move_assignable<value_type>::value == true, "T must be nothrow move assignable");
 
-				// BUG If we use frame allocator we can't use allocator for allocation of head node(check other containers)
 				node_pointer l_node = bc_allocator_traits< internal_allocator_type >::allocate(m_allocator, 1);
 				bc_allocator_traits< internal_allocator_type >::construct(m_allocator, l_node);
+				
 				m_tail.store(l_node, core_platform::bc_memory_order::relaxed);
 				m_head.store(l_node, core_platform::bc_memory_order::relaxed);
 			}
@@ -62,7 +62,7 @@ namespace black_cat
 					m_allocator, 
 					m_head.load(core_platform::bc_memory_order::relaxed)
 				);
-			};
+			}
 
 			this_type& operator =(const this_type&) = delete;
 
@@ -334,14 +334,10 @@ namespace black_cat
 			}
 
 			bc_lockfree_memmng< this_type > m_memmng;
-			
 		};
 
 		template< typename T, template< typename > typename TAllocator >
 		using bc_concurrent_queue_a = bc_concurrent_queue< T, TAllocator< T > >;
-
-		template< typename T >
-		using bc_concurrent_queue_frame = bc_concurrent_queue< T, bc_allocator_frame< T > >;
 
 		template< typename T, typename TAllocator >
 		void swap(bc_concurrent_queue< T, TAllocator > p_first, bc_concurrent_queue< T, TAllocator > p_second)

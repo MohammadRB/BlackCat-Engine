@@ -144,7 +144,7 @@ namespace black_cat
 					
 					while (l_render_thread_state.m_signal.load(core_platform::bc_memory_order::acquire))
 					{
-						core_platform::bc_thread::current_thread_yield();
+						app_swap_frame_idle(core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed));
 					}
 
 					app_swap_frame(core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed));

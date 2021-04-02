@@ -48,7 +48,7 @@ namespace black_cat
 					std::end(m_jobs),
 					[=](bci_animation_job* p_job)
 					{
-						auto l_result = p_job->run(p_clock);
+						const auto l_result = p_job->run(p_clock);
 						BC_ASSERT(l_result);
 					}
 				);

@@ -30,7 +30,7 @@ namespace black_cat
 			bc_render_system_parameter m_render_system_parameter;
 		};
 
-		class BC_GAME_DLL bc_game_system : public core::bc_iservice, public core::bc_initializable< bc_game_system_parameter >
+		class BC_GAME_DLL bc_game_system : public core::bci_service, public core::bc_initializable< bc_game_system_parameter >
 		{
 			BC_SERVICE(gme_sys)
 
@@ -128,6 +128,12 @@ namespace black_cat
 			 */
 			void render_game(const core_platform::bc_clock::update_param& p_clock);
 
+			/**
+			 * \brief Time before swap frame which main thread is idle 
+			 * \param p_clock 
+			 */
+			void swap_frame_idle(const core_platform::bc_clock::update_param& p_clock);
+			
 			void swap_frame(const core_platform::bc_clock::update_param& p_clock);
 
 		private:

@@ -9,6 +9,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Container/bcBitVector.h"
+#include "Core/Container/bcConcurrentQueue.h"
 #include "Core/Concurrency/bcThreadManager.h"
 #include "Core/Concurrency/bcTask.h"
 #include "Core/Concurrency/bcConcurrency.h"
@@ -141,7 +142,7 @@ namespace black_cat
 			mutable core_platform::bc_shared_mutex m_lock;
 		};
 
-		class bc_actor_component_manager : public core::bc_iservice
+		class bc_actor_component_manager : public core::bci_service
 		{
 			BC_SERVICE(ac_mng)
 
@@ -149,6 +150,7 @@ namespace black_cat
 			template< class TAbstract, class TDerived, class ...TDeriveds >
 			friend class bc_abstract_component_register;
 			using actor_container_type = core::bc_vector_movable< _bc_actor_entry >;
+			using double_update_actor_container_type = core::bc_concurrent_queue<bc_actor>;
 			using component_container_type = core::bc_unordered_map_program< bc_actor_component_hash, _bc_actor_component_entry >;
 
 		public:
@@ -170,8 +172,14 @@ namespace black_cat
 			bc_actor_event* actor_get_events(const bc_actor& p_actor) const noexcept;
 
 			void actor_clear_events(const bc_actor& p_actor) noexcept;
+
+			void mark_actor_for_double_update(const bc_actor& p_actor);
 			
-			// Create uninitialized component for actor
+			/**
+			 * \brief Create uninitialized component for actor
+			 * \tparam TComponent 
+			 * \param p_actor 
+			 */
 			template< class TComponent >
 			void create_component(const bc_actor& p_actor);
 
@@ -179,13 +187,13 @@ namespace black_cat
 			void remove_component(const bc_actor& p_actor);
 
 			template< class TComponent >
-			bool actor_has_component(const bc_actor& p_actor) const;
+			bool actor_has_component(const bc_actor& p_actor) const noexcept;
 
 			template< class TComponent >
-			TComponent* actor_get_component(const bc_actor& p_actor);
+			TComponent* actor_get_component(const bc_actor& p_actor) noexcept;
 
 			template< class TComponent >
-			const TComponent* actor_get_component(const bc_actor& p_actor) const;
+			const TComponent* actor_get_component(const bc_actor& p_actor) const noexcept;
 
 			template< class TIterator >
 			void actor_get_components(const bc_actor& p_actor, TIterator p_destination) const;
@@ -193,15 +201,17 @@ namespace black_cat
 			template< class TComponent >
 			bc_actor component_get_actor(const TComponent& p_component) const noexcept;
 
+			void update_actors(const core_platform::bc_clock::update_param& p_clock);
+			
+			core::bc_task<void> update_actors_async(const core_platform::bc_clock::update_param& p_clock);
+
+			void double_update_actors(const core_platform::bc_clock::update_param& p_clock);
+			
 			template< class ...TCAdapter >
 			void register_component_types(TCAdapter... p_components);
 
 			template< class ...TCAdapter >
 			void register_abstract_component_types(TCAdapter... p_components);
-
-			void update_actors(const core_platform::bc_clock::update_param& p_clock);
-			
-			core::bc_task<void> update_actors_async(const core_platform::bc_clock::update_param& p_clock);
 			
 		private:
 			template< class TComponent >
@@ -210,6 +220,8 @@ namespace black_cat
 			template< class TComponent >
 			TComponent* _actor_get_component(const bc_actor& p_actor, std::false_type);
 
+			void _clear_actor_events(bc_actor_index p_actor);
+			
 			template< class TComponent >
 			void _register_component_type(bcSIZE p_priority);
 
@@ -230,10 +242,11 @@ namespace black_cat
 			mutable core_platform::bc_shared_mutex m_actors_lock;
 			actor_container_type m_actors;
 			core::bc_bit_vector m_actors_bit;
+			double_update_actor_container_type m_double_update_actors;
 			component_container_type m_components;
 			bcUINT32 m_read_event_pool;
 			bcUINT32 m_write_event_pool;
-			core::bc_concurrent_object_stack_pool m_events_pool[2];
+			core::bc_concurrent_object_stack_pool m_event_pools[2];
 		};
 
 		inline _bc_actor_entry::_bc_actor_entry(bc_actor_index p_actor, bc_actor_index p_parent_index)
@@ -327,8 +340,8 @@ namespace black_cat
 		inline bc_actor_component_manager::bc_actor_component_manager(core::bc_query_manager& p_query_manager)
 			: m_query_manager(p_query_manager)
 		{
-			m_events_pool[0].initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
-			m_events_pool[1].initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
+			m_event_pools[0].initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
+			m_event_pools[1].initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
 			m_read_event_pool = 0U;
 			m_write_event_pool = 0U;
 		}
@@ -340,8 +353,8 @@ namespace black_cat
 				m_actors_bit.find_true_indices().empty()
 			);
 
-			m_events_pool[0].destroy();
-			m_events_pool[1].destroy();
+			m_event_pools[0].destroy();
+			m_event_pools[1].destroy();
 		}
 
 		inline bc_actor bc_actor_component_manager::create_actor(const bc_actor* p_parent)
@@ -417,7 +430,7 @@ namespace black_cat
 				BC_ASSERT(m_actors_bit[l_actor_index]);
 				
 				auto& l_actor_entry = m_actors[l_actor_index];
-				auto* l_events_pool = &m_events_pool[m_write_event_pool];
+				auto* l_events_pool = &m_event_pools[m_write_event_pool];
 				auto* l_actor_events = l_actor_entry.get_events(m_write_event_pool);
 
 				while (l_actor_events)
@@ -435,7 +448,7 @@ namespace black_cat
 		template<typename TEvent>
 		void bc_actor_component_manager::actor_add_event(const bc_actor& p_actor, TEvent&& p_event)
 		{
-			auto* l_event = m_events_pool[m_write_event_pool].alloc<TEvent>(std::move(p_event));
+			auto* l_event = m_event_pools[m_write_event_pool].alloc<TEvent>(std::move(p_event));
 
 			{
 				core_platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
@@ -463,6 +476,11 @@ namespace black_cat
 				auto& l_actor_entry = m_actors[p_actor.get_index()];
 				l_actor_entry.clear_events(m_read_event_pool);
 			}
+		}
+
+		inline void bc_actor_component_manager::mark_actor_for_double_update(const bc_actor& p_actor)
+		{
+			m_double_update_actors.push(p_actor);
 		}
 
 		template< class TComponent >
@@ -543,13 +561,13 @@ namespace black_cat
 		}
 
 		template< class TComponent >
-		bool bc_actor_component_manager::actor_has_component(const bc_actor& p_actor) const
+		bool bc_actor_component_manager::actor_has_component(const bc_actor& p_actor) const noexcept
 		{
 			return actor_get_component< TComponent >(p_actor) != nullptr;
 		}
 
 		template< class TComponent >
-		TComponent* bc_actor_component_manager::actor_get_component(const bc_actor& p_actor)
+		TComponent* bc_actor_component_manager::actor_get_component(const bc_actor& p_actor) noexcept
 		{
 			static_assert(std::is_base_of_v<bci_actor_component, TComponent>, "TComponent parameter is not a component");
 			
@@ -561,7 +579,7 @@ namespace black_cat
 		}
 
 		template< class TComponent >
-		const TComponent* bc_actor_component_manager::actor_get_component(const bc_actor& p_actor) const
+		const TComponent* bc_actor_component_manager::actor_get_component(const bc_actor& p_actor) const noexcept
 		{
 			return const_cast<bc_actor_component_manager*>(this)->actor_get_component< TComponent >(p_actor);
 		}
@@ -618,8 +636,8 @@ namespace black_cat
 					{
 						// Register mediate component as last component
 						const bcSIZE l_priority = std::is_same_v< typename TCAdapter::component_t, bc_mediate_component >
-							                          ? _bc_actor_component_entry::s_invalid_priority_value - 1
-							                          : l_counter++;
+													  ? _bc_actor_component_entry::s_invalid_priority_value - 1
+													  : l_counter++;
 						this->_register_component_type< typename TCAdapter::component_t >(l_priority);
 
 						return true;
@@ -641,130 +659,6 @@ namespace black_cat
 					}()
 				)...
 			};
-		}
-
-		inline void bc_actor_component_manager::update_actors(const core_platform::bc_clock::update_param& p_clock)
-		{
-			core::bc_vector_frame< _bc_actor_component_entry* > l_components_with_event;
-			core::bc_vector_frame< _bc_actor_component_entry* > l_components_with_update;
-			
-			l_components_with_event.reserve(m_components.size());
-			l_components_with_update.reserve(m_components.size());
-
-			for (auto& l_entry : m_components)
-			{
-				if (l_entry.second.m_is_abstract)
-				{
-					continue;
-				}
-
-				if(l_entry.second.m_require_event)
-				{
-					l_components_with_event.push_back(&l_entry.second);
-				}
-				
-				if(l_entry.second.m_require_update)
-				{
-					l_components_with_update.push_back(&l_entry.second);
-				}
-			}
-
-			std::sort
-			(
-				std::begin(l_components_with_event),
-				std::end(l_components_with_event),
-				[](const _bc_actor_component_entry* p_first, const _bc_actor_component_entry* p_second)
-				{
-					return p_first->m_component_priority < p_second->m_component_priority;
-				}
-			);
-			std::sort
-			(
-				std::begin(l_components_with_update),
-				std::end(l_components_with_update),
-				[](const _bc_actor_component_entry* p_first, const _bc_actor_component_entry* p_second)
-				{
-					return p_first->m_component_priority < p_second->m_component_priority;
-				}
-			);
-			
-			do
-			{
-				m_read_event_pool = m_write_event_pool;
-				m_write_event_pool = (m_write_event_pool + 1) % 2;
-
-				if (!m_events_pool[m_read_event_pool].size())
-				{
-					break;
-				}
-
-				core::bc_concurrency::concurrent_for_each
-				(
-					std::begin(l_components_with_event),
-					std::end(l_components_with_event),
-					[]() { return true; },
-					[&](bool, _bc_actor_component_entry* p_entry)
-					{
-						p_entry->m_container->handle_events(m_query_manager, *this);
-					},
-					[](bcINT32) {}
-				);
-
-				{
-					core_platform::bc_shared_mutex_shared_guard l_actors_lock(m_actors_lock);
-
-					auto l_actor_indices = m_actors_bit.find_true_indices();
-					core::bc_concurrency::concurrent_for_each
-					(
-						std::begin(l_actor_indices),
-						std::end(l_actor_indices),
-						[&](decltype(l_actor_indices)::value_type p_actor_index)
-						{
-							auto& l_actor_entry = m_actors[p_actor_index];
-							auto* l_events_pool = &m_events_pool[m_read_event_pool];
-							auto* l_actor_events = l_actor_entry.get_events(m_read_event_pool);
-
-							while (l_actor_events)
-							{
-								bc_actor_event* l_next = l_actor_events->get_next();
-								l_events_pool->free(l_actor_events);
-								l_actor_events = l_next;
-							}
-
-							l_actor_entry.clear_events(m_read_event_pool);
-						}
-					);
-				}
-				
-			} while (m_events_pool[m_write_event_pool].size());
-
-			core::bc_concurrency::concurrent_for_each
-			(
-				std::begin(l_components_with_update),
-				std::end(l_components_with_update),
-				[]() { return true; },
-				[&](bool, _bc_actor_component_entry* p_entry)
-				{
-					p_entry->m_container->update(m_query_manager, *this, p_clock);
-				},
-				[](bcINT32) {}
-			);
-		}
-
-		inline core::bc_task<void> bc_actor_component_manager::update_actors_async(const core_platform::bc_clock::update_param& p_clock)
-		{
-			auto l_task = core::bc_concurrency::start_task
-			(
-				core::bc_delegate< void() >
-				(
-					[=, &p_clock]()
-					{
-						update_actors(p_clock);
-					}
-				)
-			);
-
-			return l_task;
 		}
 
 		template< class TComponent >
@@ -818,6 +712,22 @@ namespace black_cat
 			}
 		}
 
+		inline void bc_actor_component_manager::_clear_actor_events(bc_actor_index p_actor)
+		{
+			auto& l_actor_entry = m_actors[p_actor];
+			auto* l_events_pool = &m_event_pools[m_read_event_pool];
+			auto* l_actor_events = l_actor_entry.get_events(m_read_event_pool);
+
+			while (l_actor_events)
+			{
+				bc_actor_event* l_next = l_actor_events->get_next();
+				l_events_pool->free(l_actor_events);
+				l_actor_events = l_next;
+			}
+
+			l_actor_entry.clear_events(m_read_event_pool);
+		}
+		
 		template< class TComponent >
 		void bc_actor_component_manager::_register_component_type(bcSIZE p_priority)
 		{

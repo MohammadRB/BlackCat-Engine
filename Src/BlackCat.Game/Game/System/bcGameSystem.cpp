@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 
+#include "CorePlatformImp/Concurrency/bcThread.h"
 #include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/System/bcGameSystem.h"
@@ -66,7 +67,7 @@ namespace black_cat
 			}
 
 			core::bc_task<void> l_scene_task;
-			core::bc_task<void> l_query_task;
+			core::bc_task<bcUINT32> l_query_task;
 
 			l_input_system.update(p_clock);
 			l_physics_system.update(p_clock);
@@ -82,6 +83,7 @@ namespace black_cat
 
 			l_actor_component_manager.update_actors(p_clock);
 			l_animation_manager.run_scheduled_jobs(p_clock);
+			l_actor_component_manager.double_update_actors(p_clock);
 			l_query_task = l_query_manager.process_query_queue_async(p_clock);
 
 			if (l_scene)
@@ -108,6 +110,17 @@ namespace black_cat
 			if(m_scene)
 			{
 				m_render_system.render(bc_render_system::render_context(p_clock, *core::bc_get_service< core::bc_query_manager >()));
+			}
+		}
+
+		void bc_game_system::swap_frame_idle(const core_platform::bc_clock::update_param& p_clock)
+		{
+			auto* l_query_manager = core::bc_get_service< core::bc_query_manager >();
+			const auto l_num_query = l_query_manager->process_query_queue(p_clock);
+
+			if(!l_num_query)
+			{
+				core_platform::bc_thread::current_thread_yield();
 			}
 		}
 

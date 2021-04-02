@@ -63,7 +63,7 @@ namespace black_cat
 		/**
 		 * \brief Make bcActorComponentManager data driven
 		 */
-		class BC_GAME_DLL bc_entity_manager : public core::bc_iservice
+		class BC_GAME_DLL bc_entity_manager : public core::bci_service
 		{
 			BC_SERVICE(ent_mng)
 

@@ -61,7 +61,8 @@ namespace black_cat
 			m_look_direction(),
 			m_move_direction(),
 			m_move_amount(0),
-			m_weapon(nullptr)
+			m_weapon(nullptr),
+			m_weapon_shoot_time(-1)
 		{
 		}
 
@@ -335,6 +336,7 @@ namespace black_cat
 			l_weapon.m_rate_of_fire_seconds = l_weapon_component->get_rate_of_fire_seconds();
 
 			m_weapon.reset(l_weapon);
+			m_weapon_shoot_time = 0;
 
 			auto* l_rifle_idle_ik_job = bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(static_cast<bc_sequence_animation_job&>(*m_rifle_idle_job));
 			auto* l_rifle_running_ik_job = bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(static_cast<bc_sequence_animation_job&>(*m_rifle_running_job));
@@ -366,7 +368,14 @@ namespace black_cat
 				return;
 			}
 
+			if(m_weapon_shoot_time >= 0)
+			{
+				return;
+			}
+
+			m_weapon_shoot_time = 0;
 			l_additive_blend_job->get_additive_layer()->set_local_time(0);
+			l_additive_blend_job->get_additive_layer()->set_enabled(true);
 			l_additive_blend_job->set_enabled(true);
 		}
 
@@ -410,6 +419,7 @@ namespace black_cat
 			if(l_weapon_shoot_animation)
 			{
 				l_weapon_shoot_sample_job = core::bc_make_shared<bc_sampling_animation_job>(bc_sampling_animation_job(l_skeleton, *l_weapon_shoot_animation));
+				l_weapon_shoot_sample_job->set_play_mode(bc_animation_play_mode::once_disable);
 			}
 			
 			auto l_idle_blending_job = core::bc_make_shared<bc_blending_animation_job>
@@ -513,6 +523,7 @@ namespace black_cat
 			if (l_weapon_shoot_animation)
 			{
 				l_weapon_shoot_sample_job = core::bc_make_shared<bc_sampling_animation_job>(bc_sampling_animation_job(l_skeleton, *l_weapon_shoot_animation));
+				l_weapon_shoot_sample_job->set_play_mode(bc_animation_play_mode::once_disable);
 			}
 			
 			auto l_running_blending_job = core::bc_make_shared<bc_blending_animation_job>
@@ -855,19 +866,28 @@ namespace black_cat
 				return;
 			}
 
-			auto* l_additive_layer = dynamic_cast<bc_sampling_animation_job*>(l_additive_blend_job->get_additive_layer().get());
+			auto* l_additive_layer = l_additive_blend_job->get_additive_layer().get();
 			if(!l_additive_layer)
 			{
 				return;
 			}
 
-			const auto l_animation_duration = l_additive_layer->get_animation()->get_duration();
-			l_additive_layer->set_speed(l_animation_duration / m_weapon->m_rate_of_fire_seconds);
-			l_additive_blend_job->set_weights(1, m_move_amount ? std::max((m_move_speed / m_run_speed) * 2, 1.4f) : 1); // Increase weapon shoot impact in running mode
-			
-			if(l_additive_layer->get_local_time() >= l_animation_duration)
+			if (m_weapon_shoot_time >= 0)
 			{
-				l_additive_blend_job->get_additive_layer()->set_local_time(0);
+				m_weapon_shoot_time += m_clock.m_elapsed_second;
+
+				if (m_weapon_shoot_time >= m_weapon->m_rate_of_fire_seconds)
+				{
+					m_weapon_shoot_time = -1;
+				}
+			}
+			
+			l_additive_blend_job->set_weights(1, m_move_amount ? std::max((m_move_speed / m_run_speed) * 2, 1.4f) : 1); // Increase weapon shoot impact in running mode
+
+			// Once weapon shoot animation stopped disable additive blend
+			if(!l_additive_layer->get_enabled())
+			{
+				l_additive_layer->set_local_time(0);
 				l_additive_blend_job->set_enabled(false);
 			}
 		}
@@ -974,6 +994,7 @@ namespace black_cat
 			l_world_transform.set_rotation(l_final_rotation);
 			
 			m_weapon->m_actor.add_event(bc_world_transform_actor_event(l_world_transform));
+			m_weapon->m_actor.mark_for_double_update();
 		}
 	}
 }

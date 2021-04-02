@@ -22,7 +22,6 @@ namespace black_cat
 			const core::bc_vector3f& p_pole_vector_ms,
 			bcFLOAT p_aim_weight)
 			: bci_animation_job(p_local_job->get_skeleton()),
-			m_enabled(true),
 			m_local_job(std::move(p_local_job)),
 			m_model_job(std::move(p_model_job)),
 			m_middle_joint_rotation_ls(core::bc_vector3f::normalize(p_middle_joint_rotation_ls)),

@@ -18,6 +18,11 @@ namespace black_cat
 
 		bool bc_sampling_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
+			if(!m_enabled)
+			{
+				return true;
+			}
+			
 			const auto l_local_time = update_time(p_clock, m_animation->get_duration());
 
 			ozz::animation::SamplingJob l_sampling_job;

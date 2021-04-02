@@ -24,6 +24,11 @@ namespace black_cat
 
 		bool bc_mesh_collider_skinning_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
+			if (!m_enabled)
+			{
+				return true;
+			}
+			
 			if(m_inverse_model_transforms.empty())
 			{
 				m_inverse_model_transforms = bc_sub_mesh_mat4_transform(*m_sub_mesh->get_root_node());

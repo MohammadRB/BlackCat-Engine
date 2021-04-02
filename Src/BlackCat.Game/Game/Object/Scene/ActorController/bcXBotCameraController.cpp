@@ -26,8 +26,7 @@ namespace black_cat
 			m_pointing_delta_x(0),
 			m_pointing_last_x(0),
 			m_rifle_name(nullptr),
-			m_detached_rifle_name(nullptr),
-			m_weapon_shoot_time(0)
+			m_detached_rifle_name(nullptr)
 		{
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 			m_key_listener_handle = l_event_manager->register_event_listener< platform::bc_app_event_key >
@@ -65,6 +64,7 @@ namespace black_cat
 
 			m_rifle_name = p_other.m_rifle_name;
 			m_detached_rifle_name = p_other.m_detached_rifle_name;
+			m_current_weapon = p_other.m_current_weapon;
 			
 			m_key_listener_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_xbot_camera_controller::_on_event));
 			m_pointing_listener_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_xbot_camera_controller::_on_event));
@@ -110,19 +110,6 @@ namespace black_cat
 			
 			m_pointing_delta_x = 0;
 			set_look_delta(m_pointing_delta_x);
-
-			if(m_weapon_shoot_time <= -1) // Start of weapon shoot
-			{
-				m_weapon_shoot_time = p_context.m_clock.m_elapsed_second;
-			}
-			if(m_weapon_shoot_time > 0)
-			{
-				m_weapon_shoot_time += p_context.m_clock.m_elapsed_second;
-			}
-			if(m_current_weapon.is_valid() && m_weapon_shoot_time >= m_current_weapon.get_component<bc_weapon_component>()->get_rate_of_fire_seconds())
-			{
-				m_weapon_shoot_time = 0;
-			}
 		}
 
 		void bc_xbot_camera_controller::removed_from_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene)
@@ -257,11 +244,7 @@ namespace black_cat
 			{
 				if (p_key_event.get_key_state() == platform::bc_key_state::pressing || p_key_event.get_key_state() == platform::bc_key_state::pressed)
 				{
-					if(m_current_weapon.is_valid() && m_weapon_shoot_time <= 0)
-					{
-						fire_weapon();
-						m_weapon_shoot_time = -1; // Signal start of weapon shoot
-					}
+					fire_weapon();
 				}
 			}
 			
@@ -274,7 +257,7 @@ namespace black_cat
 			{
 				_detach_weapon(m_detached_rifle_name);
 			}
-			
+
 			m_current_weapon = core::bc_get_service<bc_entity_manager>()->create_entity(p_entity);
 			m_current_weapon.add_event(bc_world_transform_actor_event(get_position()));
 

@@ -34,6 +34,11 @@ namespace black_cat
 
 		bool bc_local_to_model_animation_job::run(const core_platform::bc_clock::update_param& p_clock, bcINT32 p_from)
 		{
+			if (!m_enabled)
+			{
+				return true;
+			}
+			
 			ozz::animation::LocalToModelJob l_ltm_job;
 			const auto& l_local_transforms = m_local_transform_job->get_local_transforms();
 			const auto l_scale = ozz::math::Float4x4::Scaling(ozz::math::simd_float4::Load1(m_mesh->get_mesh_scale()));

@@ -51,7 +51,7 @@ namespace black_cat
 			bool m_command_result;
 		};
 
-		class bc_ui_command_service : public core::bc_iservice
+		class bc_ui_command_service : public core::bci_service
 		{
 		private:
 			BC_SERVICE(uic_srv)

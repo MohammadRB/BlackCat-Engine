@@ -26,7 +26,7 @@ namespace black_cat
 		template<typename T>
 		class bc_task;
 
-		class BC_CORE_DLL bc_query_manager final : public bc_iservice
+		class BC_CORE_DLL bc_query_manager final : public bci_service
 		{
 			BC_SERVICE(qr_mng)
 
@@ -68,9 +68,9 @@ namespace black_cat
 			template< class TQuery >
 			void queue_shared_query(TQuery&& p_query);
 
-			void process_query_queue(const core_platform::bc_clock::update_param& p_clock);
+			bcUINT32 process_query_queue(const core_platform::bc_clock::update_param& p_clock);
 
-			bc_task<void> process_query_queue_async(const core_platform::bc_clock::update_param& p_clock);
+			bc_task<bcUINT32> process_query_queue_async(const core_platform::bc_clock::update_param& p_clock);
 
 			void swap_frame();
 

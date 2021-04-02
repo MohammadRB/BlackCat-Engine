@@ -38,7 +38,6 @@ namespace black_cat
 			m_model_job(std::move(p_model_job)),
 			m_skinned_job(std::move(p_skinned_job)),
 			m_bone_chains(std::begin(p_joint_chains), std::end(p_joint_chains)),
-			m_enabled(true),
 			m_aim_weight(p_aim_weight)
 		{
 			_assign_bone_indices();

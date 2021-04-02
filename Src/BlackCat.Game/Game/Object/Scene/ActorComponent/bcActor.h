@@ -38,26 +38,28 @@ namespace black_cat
 			template<typename TEvent>
 			void add_event(TEvent&& p_event);
 
-			const bc_actor_event* get_events() const;
+			const bc_actor_event* get_events() const noexcept;
 
+			template< class TComponent >
+			TComponent* get_component() noexcept;
+
+			template< class TComponent >
+			const TComponent* get_component() const noexcept;
+
+			template< class TIterator >
+			void get_components(TIterator p_destination) const;
+
+			template< class TComponent >
+			bool has_component() const noexcept;
+			
 			template< class TComponent >
 			void create_component();
 
 			template< class TComponent >
 			void remove_component();
 
-			template< class TComponent >
-			bool has_component() const;
-
-			template< class TComponent >
-			TComponent* get_component();
-
-			template< class TComponent >
-			const TComponent* get_component() const;
-
-			template< class TIterator >
-			void get_components(TIterator p_destination) const;
-
+			void mark_for_double_update();
+			
 			void draw_debug(bc_shape_drawer& p_shape_drawer) const;
 			
 			void destroy();

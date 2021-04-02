@@ -180,6 +180,7 @@ namespace black_cat
 			bcFLOAT m_move_amount;
 
 			core::bc_nullable<bc_xbot_weapon> m_weapon;
+			bcFLOAT m_weapon_shoot_time;
 		};
 
 		inline bc_scene* bc_xbot_controller::get_scene() noexcept

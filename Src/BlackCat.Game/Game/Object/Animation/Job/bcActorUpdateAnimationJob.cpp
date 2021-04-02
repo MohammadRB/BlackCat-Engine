@@ -29,6 +29,11 @@ namespace black_cat
 
 		inline bool bc_actor_update_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
+			if(!m_enabled)
+			{
+				return true;
+			}
+			
 			const auto& l_mesh = m_skinned_component->get_mesh();
 
 			l_mesh.calculate_skinned_mesh_collider_transforms

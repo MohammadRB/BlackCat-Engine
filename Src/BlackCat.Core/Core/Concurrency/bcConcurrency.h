@@ -142,15 +142,16 @@ namespace black_cat
 			if(p_num_thread > 1)
 			{
 				_concurrent_for_each(p_num_thread, p_begin, p_end, p_init_func, p_body_func, p_finalizer_func);
-				return;
 			}
-
-			auto l_init = p_init_func();
-			std::for_each(p_begin, p_end, [&l_init, &p_body_func](typename std::iterator_traits<TIte>::reference p_item)
+			else
 			{
-				p_body_func(l_init, p_item);
-			});
-			p_finalizer_func(l_init);
+				auto l_init = p_init_func();
+				std::for_each(p_begin, p_end, [&l_init, &p_body_func](typename std::iterator_traits<TIte>::reference p_item)
+				{
+					p_body_func(l_init, p_item);
+				});
+				p_finalizer_func(l_init);
+			}
 		}
 
 		template< typename TIte, typename TBodyFunc >
@@ -178,23 +179,33 @@ namespace black_cat
 		template< typename TIte, typename TBodyFunc >
 		void bc_concurrency::concurrent_for_each(bcUINT32 p_num_thread, TIte p_begin, TIte p_end, TBodyFunc p_body_func)
 		{
-			_concurrent_for_each
-			(
-				p_num_thread,
-				p_begin,
-				p_end,
-				[]()
-				{
-					return true;
-				},
-				[&p_body_func](bool, typename std::iterator_traits< TIte >::reference p_item)
+			if(p_num_thread > 1)
+			{
+				_concurrent_for_each
+				(
+					p_num_thread,
+					p_begin,
+					p_end,
+					[]()
+					{
+						return true;
+					},
+					[&p_body_func](bool, typename std::iterator_traits< TIte >::reference p_item)
+					{
+						p_body_func(p_item);
+					},
+					[](bool)
+					{
+					}
+				);
+			}
+			else
+			{
+				std::for_each(p_begin, p_end, [&p_body_func](typename std::iterator_traits<TIte>::reference p_item)
 				{
 					p_body_func(p_item);
-				},
-				[](bool)
-				{
-				}
-			);
+				});
+			}
 		}
 
 		template< typename T >

@@ -34,7 +34,7 @@ namespace black_cat
 		}
 
 		template< class TContent >
-		class _content_wrapper : public bc_iservice
+		class _content_wrapper : public bci_service
 		{
 		public:
 			static constexpr const bcCHAR* service_name()
@@ -83,7 +83,7 @@ namespace black_cat
 		 * \brief 
 		 * \ThreadSafe
 		 */
-		class bc_content_manager : public bc_iservice, protected bc_object_allocator
+		class bc_content_manager : public bci_service, protected bc_object_allocator
 		{
 			BC_SERVICE(cnt_mng)
 

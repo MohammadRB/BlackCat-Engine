@@ -18,7 +18,7 @@ namespace black_cat
 		 * At the end of every frame values become available for read. \n
 		 * <b>ThreadSafe</b>
 		 */
-		class BC_CORE_DLL bc_counter_value_manager : public bc_iservice
+		class BC_CORE_DLL bc_counter_value_manager : public bci_service
 		{
 			BC_SERVICE(cv_mng)
 

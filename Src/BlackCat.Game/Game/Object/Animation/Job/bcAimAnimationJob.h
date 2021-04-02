@@ -60,8 +60,6 @@ namespace black_cat
 
 			bc_aim_animation_job& operator=(bc_aim_animation_job&&) noexcept;
 
-			void set_enabled(bool p_enabled) noexcept;
-			
 			void set_aim_weight(bcFLOAT p_aim_weight) noexcept;
 			
 			void set_world_target(const core::bc_vector3f& p_target) noexcept;
@@ -75,16 +73,10 @@ namespace black_cat
 			core::bc_shared_ptr<bc_local_to_model_animation_job> m_model_job;
 			core::bc_shared_ptr<bc_model_to_skinned_animation_job> m_skinned_job;
 			core::bc_vector<bc_aim_animation_bone> m_bone_chains;
-			bool m_enabled;
 			bcFLOAT m_aim_weight;
 			core::bc_vector3f m_model_target;
 		};
 
-		inline void bc_aim_animation_job::set_enabled(bool p_enabled) noexcept
-		{
-			m_enabled = p_enabled;
-		}
-		
 		inline void bc_aim_animation_job::set_world_target(const core::bc_vector3f& p_target) noexcept
 		{
 			m_model_target = (m_skinned_job->get_world().inverse() * core::bc_vector4f(p_target, 1)).xyz();

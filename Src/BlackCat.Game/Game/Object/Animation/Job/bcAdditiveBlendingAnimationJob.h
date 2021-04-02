@@ -46,14 +46,11 @@ namespace black_cat
 
 			const core::bc_shared_ptr<bc_sampling_animation_job>& get_additive_layer() const noexcept;
 			
-			void set_enabled(bool p_enabled) noexcept;
-
 			void set_weights(bcFLOAT p_main_layer_weight, bcFLOAT p_additive_layer_weight) noexcept;
 			
 			bool run(const core_platform::bc_clock::update_param& p_clock) override;
 
 		private:
-			bool m_enabled;
 			bcFLOAT m_main_layer_weight;
 			bcFLOAT m_additive_layer_weight;
 			core::bc_shared_ptr<bci_local_transform_animation_job> m_main_layer;
@@ -96,11 +93,6 @@ namespace black_cat
 		{
 			m_main_layer_weight = p_main_layer_weight;
 			m_additive_layer_weight = p_additive_layer_weight;
-		}
-		
-		inline void bc_additive_blending_animation_job::set_enabled(bool p_enabled) noexcept
-		{
-			m_enabled = p_enabled;
 		}
 	}
 }

@@ -50,11 +50,11 @@ namespace black_cat
 			}
 		}
 
-		void bc_query_manager::process_query_queue(const core_platform::bc_clock::update_param& p_clock)
+		bcUINT32 bc_query_manager::process_query_queue(const core_platform::bc_clock::update_param& p_clock)
 		{
 			{
-				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_providers_guard(m_providers_lock);
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_executed_queries_guard(m_executed_queries_lock);
+				core_platform::bc_shared_mutex_shared_guard l_providers_guard(m_providers_lock);
+				core_platform::bc_mutex_guard l_executed_queries_guard(m_executed_queries_lock);
 
 				const query_list_t::iterator l_last_exist_shared_query = std::rbegin(m_executed_shared_queries).base();
 				const query_list_t::iterator l_last_exist_query = std::rbegin(m_executed_queries).base();
@@ -71,7 +71,7 @@ namespace black_cat
 					const query_list_t::iterator l_local_last_exist_query = std::rbegin(m_executed_queries).base();
 
 					{
-						core_platform::bc_lock_guard<core_platform::bc_mutex> l_queries_guard(l_provider.second.m_queries_lock);
+						core_platform::bc_mutex_guard l_queries_guard(l_provider.second.m_queries_lock);
 
 						if (l_provider.second.m_queries.empty())
 						{
@@ -165,18 +165,20 @@ namespace black_cat
 					},
 					[&](bool) {}
 				);
+
+				return l_num_shared_queries + l_num_queries;
 			}
 		}
 
-		bc_task<void> bc_query_manager::process_query_queue_async(const core_platform::bc_clock::update_param& p_clock)
+		bc_task<bcUINT32> bc_query_manager::process_query_queue_async(const core_platform::bc_clock::update_param& p_clock)
 		{
 			auto l_task = bc_concurrency::start_task
 			(
-				bc_delegate<void()>
+				bc_delegate<bcUINT32()>
 				(
 					[=, &p_clock]()
 					{
-						process_query_queue(p_clock);
+						return process_query_queue(p_clock);
 					}
 				)
 			);
@@ -258,7 +260,7 @@ namespace black_cat
 				auto& l_provider = l_provider_entry->second;
 
 				{
-					core_platform::bc_lock_guard<core_platform::bc_mutex> l_queries_guard(l_provider.m_queries_lock);
+					core_platform::bc_mutex_guard l_queries_guard(l_provider.m_queries_lock);
 
 					l_provider.m_queries.push_back(_query_entry(&m_query_pool[p_pool_index], l_provider, p_is_shared, p_query));
 

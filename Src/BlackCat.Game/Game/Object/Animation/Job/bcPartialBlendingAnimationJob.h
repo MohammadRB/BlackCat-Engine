@@ -46,8 +46,6 @@ namespace black_cat
 			
 			const core::bc_shared_ptr<bc_sampling_animation_job>& get_layer2() const noexcept;
 			
-			void set_enabled(bool p_enabled) noexcept;
-
 			void set_weights(bcFLOAT p_layer1_weight, bcFLOAT p_layer2_weight) noexcept;
 			
 			bool run(const core_platform::bc_clock::update_param& p_clock) override;
@@ -91,11 +89,6 @@ namespace black_cat
 		inline const core::bc_shared_ptr<bc_sampling_animation_job>& bc_partial_blending_animation_job::get_layer2() const noexcept
 		{
 			return m_layer2;
-		}
-
-		inline void bc_partial_blending_animation_job::set_enabled(bool p_enabled) noexcept
-		{
-			m_enabled = p_enabled;
 		}
 
 		inline void bc_partial_blending_animation_job::set_weights(bcFLOAT p_layer1_weight, bcFLOAT p_layer2_weight) noexcept

@@ -22,6 +22,11 @@ namespace black_cat
 
 		bool bc_model_to_skinned_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
+			if (!m_enabled)
+			{
+				return true;
+			}
+			
 			const auto& l_mesh = m_model_job->get_mesh();
 			const auto& l_animation_model_transforms = m_model_job->get_transforms();
 			const auto l_bone_names = get_skeleton().get_joint_names();

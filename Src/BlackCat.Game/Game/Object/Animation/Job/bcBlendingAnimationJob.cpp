@@ -48,6 +48,11 @@ namespace black_cat
 
 		bool bc_blending_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
+			if (!m_enabled)
+			{
+				return true;
+			}
+			
 			core::bc_vector_frame<ozz::animation::BlendingJob::Layer> l_layers(m_layers.size());
 			bool l_is_valid = true;
 			

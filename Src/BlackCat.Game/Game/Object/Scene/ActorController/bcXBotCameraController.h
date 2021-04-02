@@ -60,7 +60,6 @@ namespace black_cat
 			const bcCHAR* m_rifle_name;
 			const bcCHAR* m_detached_rifle_name;
 			bc_actor m_current_weapon;
-			core_platform::bc_clock::small_delta_time m_weapon_shoot_time;
 		};
 	}	
 }

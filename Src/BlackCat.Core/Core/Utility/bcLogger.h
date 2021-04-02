@@ -69,7 +69,7 @@ namespace black_cat
 			bc_shared_ptr<bci_log_listener> m_smart_pointer;
 		};
 
-		class BC_CORE_DLL bc_logger : public bc_iservice
+		class BC_CORE_DLL bc_logger : public bci_service
 		{
 			BC_SERVICE(logger)
 

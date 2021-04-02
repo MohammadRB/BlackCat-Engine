@@ -89,7 +89,12 @@ namespace black_cat
 			virtual void app_render(core_platform::bc_clock::update_param p_clock) = 0;
 
 			/**
-			 * \brief Run when both update and render are executed and ready to start next frame
+			 * \brief Called when main thread is idle before swap frame
+			 */
+			virtual void app_swap_frame_idle(core_platform::bc_clock::update_param p_clock) = 0;
+			
+			/**
+			 * \brief Called when both update and render are executed and ready to start next frame
 			 */
 			virtual void app_swap_frame(core_platform::bc_clock::update_param p_clock) = 0;
 			

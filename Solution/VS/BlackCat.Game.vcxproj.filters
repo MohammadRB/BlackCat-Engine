@@ -800,5 +800,8 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcAdditiveBlendingAnimatianJob.cpp">
       <Filter>Game\Object\Animation\Job</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentManager.cpp">
+      <Filter>Game\Object\Scene\ActorComponent</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

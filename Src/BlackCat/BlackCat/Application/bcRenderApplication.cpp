@@ -113,6 +113,15 @@ namespace black_cat
 		m_render_watch.stop();
 	}
 
+	void bc_render_application::app_swap_frame_idle(core_platform::bc_clock::update_param p_clock)
+	{
+		m_update_watch.start();
+		
+		m_game_system->swap_frame_idle(p_clock);
+
+		m_update_watch.stop();
+	}
+
 	void bc_render_application::app_swap_frame(core_platform::bc_clock::update_param p_clock)
 	{
 		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();

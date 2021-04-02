@@ -63,6 +63,11 @@ namespace black_cat
 
 		inline bool bc_sequence_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
 		{
+			if (!m_enabled)
+			{
+				return true;
+			}
+			
 			for(auto& l_job : m_jobs)
 			{
 				if(!l_job->run(p_clock))

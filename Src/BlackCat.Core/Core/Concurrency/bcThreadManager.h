@@ -90,7 +90,7 @@ namespace black_cat
 			lifetime_exceed_frame = bc_enum::value(2)			// Lifetime of task exceed frame
 		};
 
-		class BC_CORE_DLL bc_thread_manager : public bc_iservice
+		class BC_CORE_DLL bc_thread_manager : public bci_service
 		{
 			BC_SERVICE(trd_mng)
 

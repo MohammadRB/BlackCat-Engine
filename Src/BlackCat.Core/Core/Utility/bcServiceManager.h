@@ -32,17 +32,16 @@ namespace black_cat
 
 		class bc_service_manager;
 
-		// Act like a tag class
-		class BC_CORE_DLL bc_iservice : public core_platform::bc_no_copy_move
+		class BC_CORE_DLL bci_service : public core_platform::bc_no_copy_move
 		{
 		private:
 			friend class bc_service_manager;
 
 		public:
-			virtual ~bc_iservice();
+			virtual ~bci_service();
 
 		protected:
-			bc_iservice() = default;
+			bci_service() = default;
 
 		private:
 			virtual void update(const core_platform::bc_clock::update_param& p_clock);
@@ -76,7 +75,7 @@ namespace black_cat
 		class BC_CORE_DLL _bc_service_container : private core_platform::bc_no_copy
 		{
 		public:
-			_bc_service_container(bcUINT32 p_hash, const bcCHAR* p_name, bcSIZE p_priority, bc_service_ptr< bc_iservice > p_service);
+			_bc_service_container(bcUINT32 p_hash, const bcCHAR* p_name, bcSIZE p_priority, bc_service_ptr< bci_service > p_service);
 
 			_bc_service_container(_bc_service_container&& p_other) noexcept = default;
 
@@ -87,7 +86,7 @@ namespace black_cat
 			bcUINT32 m_hash;
 			const bcCHAR* m_name;
 			bcSIZE m_priority;
-			bc_service_ptr< bc_iservice > m_service;
+			bc_service_ptr< bci_service > m_service;
 		};
 
 		class BC_CORE_DLL bc_service_manager : public bc_singleton< bc_service_manager() >
@@ -114,9 +113,9 @@ namespace black_cat
 
 			void _destroy() override;
 
-			bc_iservice* _get_service(bcUINT32 p_service_hash);
+			bci_service* _get_service(bcUINT32 p_service_hash);
 
-			bc_iservice* _register_service(bcUINT32 p_hash, const bcCHAR* p_name, bc_service_ptr<bc_iservice> p_service);
+			bci_service* _register_service(bcUINT32 p_hash, const bcCHAR* p_name, bc_service_ptr<bci_service> p_service);
 
 			map_t m_services;
 			sorted_map_t m_sorted_services;
@@ -132,7 +131,7 @@ namespace black_cat
 		template< class TService >
 		TService* bc_service_manager::register_service(bc_service_ptr<TService> p_service)
 		{
-			static_assert(std::is_base_of<bc_iservice, TService>::value, "services must inherit from bc_iservice");
+			static_assert(std::is_base_of<bci_service, TService>::value, "services must inherit from bc_iservice");
 
 			constexpr auto l_hash = bc_service_traits< TService >::service_hash();
 			constexpr auto* l_name = bc_service_traits< TService >::service_name();

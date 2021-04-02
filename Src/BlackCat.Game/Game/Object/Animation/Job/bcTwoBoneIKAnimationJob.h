@@ -31,8 +31,6 @@ namespace black_cat
 
 			bc_two_bone_ik_animation_job& operator=(bc_two_bone_ik_animation_job&&) noexcept;
 
-			void set_enabled(bool p_enabled) noexcept;
-			
 			void set_target_ms(const core::bc_vector3f& p_target) noexcept;
 
 			void set_weight(bcFLOAT p_weight) noexcept;
@@ -42,7 +40,6 @@ namespace black_cat
 			bool run(const core_platform::bc_clock::update_param& p_clock) override;
 			
 		private:
-			bool m_enabled;
 			core::bc_shared_ptr<bci_local_transform_animation_job> m_local_job;
 			core::bc_shared_ptr<bc_local_to_model_animation_job> m_model_job;
 			bcUINT32 m_first_joint_index;
@@ -54,11 +51,6 @@ namespace black_cat
 			bcFLOAT m_twist_angle;
 			core::bc_vector3f m_target_ms;
 		};
-
-		inline void bc_two_bone_ik_animation_job::set_enabled(bool p_enabled) noexcept
-		{
-			m_enabled = p_enabled;
-		}
 
 		inline void bc_two_bone_ik_animation_job::set_target_ms(const core::bc_vector3f& p_target) noexcept
 		{

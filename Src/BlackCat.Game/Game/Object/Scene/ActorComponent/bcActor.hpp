@@ -39,11 +39,35 @@ namespace black_cat
 			_get_manager().actor_add_event(*this, std::move(p_event));
 		}
 
-		inline const bc_actor_event* bc_actor::get_events() const
+		inline const bc_actor_event* bc_actor::get_events() const noexcept
 		{
 			return _get_manager().actor_get_events(*this);
 		}
 
+		template< class TComponent >
+		TComponent* bc_actor::get_component() noexcept
+		{
+			return _get_manager().actor_get_component< TComponent >(*this);
+		}
+
+		template< class TComponent >
+		const TComponent* bc_actor::get_component() const noexcept
+		{
+			return const_cast<bc_actor*>(this)->get_component<TComponent>();
+		}
+
+		template< class TIterator >
+		void bc_actor::get_components(TIterator p_destination) const
+		{
+			_get_manager().actor_get_components(*this, p_destination);
+		}
+
+		template< class TComponent >
+		bool bc_actor::has_component() const noexcept
+		{
+			return _get_manager().actor_has_component< TComponent >(*this);
+		}
+		
 		template< class TComponent >
 		void bc_actor::create_component()
 		{
@@ -56,28 +80,9 @@ namespace black_cat
 			_get_manager().remove_component< TComponent >(*this);
 		}
 
-		template< class TComponent >
-		bool bc_actor::has_component() const
+		inline void bc_actor::mark_for_double_update()
 		{
-			return _get_manager().actor_has_component< TComponent >(*this);
-		}
-
-		template< class TComponent >
-		TComponent* bc_actor::get_component()
-		{
-			return _get_manager().actor_get_component< TComponent >(*this);
-		}
-
-		template< class TComponent >
-		const TComponent* bc_actor::get_component() const
-		{
-			return const_cast<bc_actor*>(this)->get_component<TComponent>();
-		}
-
-		template< class TIterator >
-		void bc_actor::get_components(TIterator p_destination) const
-		{
-			_get_manager().actor_get_components(*this, p_destination);
+			_get_manager().mark_actor_for_double_update(*this);
 		}
 
 		inline void bc_actor::draw_debug(bc_shape_drawer& p_shape_drawer) const

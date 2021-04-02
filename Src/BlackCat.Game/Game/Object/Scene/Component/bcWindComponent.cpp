@@ -130,7 +130,7 @@ namespace black_cat
 
 		const bc_wind* bc_wind_component::get_wind() const noexcept
 		{
-			return m_wind.is_set() ? &m_wind.get() : nullptr;
+			return m_wind.is_set() ? m_wind.get() : nullptr;
 		}
 
 		void bc_wind_component::initialize(const bc_actor_component_initialize_context& p_context)

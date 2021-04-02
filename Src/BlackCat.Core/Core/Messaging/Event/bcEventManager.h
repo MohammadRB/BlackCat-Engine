@@ -65,7 +65,7 @@ namespace black_cat
 			core_platform::bc_clock::big_delta_time m_process_time;
 		};
 
-		class BC_CORE_DLL bc_event_manager : public bc_iservice
+		class BC_CORE_DLL bc_event_manager : public bci_service
 		{
 			BC_SERVICE(evt_mng)
 
