@@ -86,6 +86,12 @@ namespace black_cat
 
 			bc_particle_builder1 duplicate_last(const core::bc_vector3f& p_position, const core::bc_vector3f& p_direction) noexcept;
 
+			bc_particle_builder1 duplicate_last(const core::bc_vector3f& p_position,
+				const core::bc_vector3f& p_direction,
+				bcFLOAT p_lifetime_seconds,
+				bcFLOAT p_force,
+				bcFLOAT p_mass) noexcept;
+
 		private:
 			static decltype(s_curves)::size_type _find_curve_index(const bc_particle_curve& p_curve) noexcept;
 			

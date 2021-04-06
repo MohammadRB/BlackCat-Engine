@@ -70,15 +70,9 @@ namespace black_cat
 				l_physics_system.create_px_shapes_from_mesh(l_material_manager, m_px_actor_ref.get(), *l_mesh_component, l_materials);
 
 				const auto l_mass_value = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_rigid_mass), 1);
-				const auto* l_cmass_value = p_context.m_parameters.get_value<core::bc_vector<core::bc_any>>(constant::g_param_rigid_cmass);
-				core::bc_vector3f l_cmass(0);
+				const auto l_cmass_value = p_context.m_parameters.get_value_vector3f(constant::g_param_rigid_cmass);
 
-				if(l_cmass_value)
-				{
-					json_parse::bc_load(*l_cmass_value, l_cmass);
-				}
-				
-				m_px_actor_ref->update_mass_inertia(l_mass_value, &l_cmass);
+				m_px_actor_ref->update_mass_inertia(l_mass_value, l_cmass_value.get());
 				
 				return;
 			}

@@ -25,7 +25,8 @@ namespace black_cat
 			core::bc_vector<core::bc_string> p_entity_files,
 			core::bc_vector<core::bc_string> p_material_files,
 			core::bc_vector<core::bc_string> p_loaded_streams,
-			bc_scene_graph p_scene_graph, 
+			bc_scene_graph p_scene_graph,
+			bc_physics_system& p_physics,
 			physics::bc_scene_ref p_px_scene)
 			: m_path(std::move(p_path)),
 			m_name(std::move(p_name)),
@@ -34,22 +35,23 @@ namespace black_cat
 			m_material_files(std::move(p_material_files)),
 			m_loaded_streams(std::move(p_loaded_streams)),
 			m_scene_graph(std::move(p_scene_graph)),
-			m_px_scene(std::move(p_px_scene))
+			m_physics(&p_physics),
+			m_px_scene(std::move(p_px_scene)),
+			m_bullet_manager(p_physics)
 		{
 		}
 
 		bc_scene::bc_scene(bc_scene&& p_other) noexcept
-			: bc_scene
-			(
-				std::move(p_other.m_path),
-				std::move(p_other.m_name),
-				std::move(p_other.m_stream_files),
-				std::move(p_other.m_entity_files),
-				std::move(p_other.m_material_files),
-				std::move(p_other.m_loaded_streams),
-				std::move(p_other.m_scene_graph),
-				std::move(p_other.m_px_scene)
-			)
+			: m_path(std::move(p_other.m_path)),
+			m_name(std::move(p_other.m_name)),
+			m_stream_files(std::move(p_other.m_stream_files)),
+			m_entity_files(std::move(p_other.m_entity_files)),
+			m_material_files(std::move(p_other.m_material_files)),
+			m_loaded_streams(std::move(p_other.m_loaded_streams)),
+			m_scene_graph(std::move(p_other.m_scene_graph)),
+			m_physics(p_other.m_physics),
+			m_px_scene(std::move(p_other.m_px_scene)),
+			m_bullet_manager(std::move(p_other.m_bullet_manager))
 		{
 		}
 
@@ -74,7 +76,9 @@ namespace black_cat
 			m_material_files = std::move(p_other.m_material_files);
 			m_loaded_streams = std::move(p_other.m_loaded_streams);
 			m_scene_graph = std::move(p_other.m_scene_graph);
+			m_physics = p_other.m_physics;
 			m_px_scene = std::move(p_other.m_px_scene);
+			m_bullet_manager = std::move(p_other.m_bullet_manager);
 
 			return *this;
 		}
@@ -126,12 +130,17 @@ namespace black_cat
 			}
 		}
 
+		void bc_scene::add_bullet(const bc_bullet& p_bullet)
+		{
+			m_bullet_manager.add_bullet(p_bullet);
+		}
+
 		void bc_scene::draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const
 		{
 			m_scene_graph.draw_debug_shapes(p_shape_drawer);
 		}
 
-		void bc_scene::update_px(bc_physics_system& p_physics, const core_platform::bc_clock::update_param& p_clock)
+		void bc_scene::update_physics(const core_platform::bc_clock::update_param& p_clock)
 		{
 			core::bc_vector_frame<physics::bc_updated_actor> l_px_actors;
 			
@@ -153,22 +162,43 @@ namespace black_cat
 				[]() { return true; },
 				[&](bool, physics::bc_updated_actor& p_px_actor)
 				{
-					bc_actor l_actor = p_physics.get_game_actor(p_px_actor.m_actor);
+					bc_actor l_actor = m_physics->get_game_actor(p_px_actor.m_actor);
 					l_actor.add_event(bc_world_transform_actor_event(p_px_actor.m_global_pose.get_matrix4(), true));
 				},
 				[](bool) {}
 			);
 		}
 
-		core::bc_task<void> bc_scene::update_px_async(bc_physics_system& p_physics, const core_platform::bc_clock::update_param& p_clock)
+		core::bc_task<void> bc_scene::update_physics_async(const core_platform::bc_clock::update_param& p_clock)
 		{
 			auto l_task = core::bc_concurrency::start_task
 			(
 				core::bc_delegate< void() >
 				(
-					[=, &p_physics, &p_clock]()
+					[=, &p_clock]()
 					{
-						update_px(p_physics, p_clock);
+						update_physics(p_clock);
+					}
+				)
+			);
+
+			return l_task;
+		}
+
+		void bc_scene::update_bullets(const core_platform::bc_clock::update_param& p_clock)
+		{
+			m_bullet_manager.update(*this, p_clock);
+		}
+
+		core::bc_task<void> bc_scene::update_bullets_async(const core_platform::bc_clock::update_param& p_clock)
+		{
+			auto l_task = core::bc_concurrency::start_task
+			(
+				core::bc_delegate< void() >
+				(
+					[=, &p_clock]()
+					{
+						update_bullets(p_clock);
 					}
 				)
 			);

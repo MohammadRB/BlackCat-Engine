@@ -7,7 +7,6 @@
 #include "Core/Container/bcString.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcParameterPack.h"
-#include "PhysicsImp/Collision/bcShapeQuery.h"
 #include "PhysicsImp/Collision/bcSceneQuery.h"
 #include "Game/System/Physics/bcPxWrap.h"
 
@@ -150,10 +149,6 @@ namespace black_cat
 				game::bc_actor_group p_query_group,
 				physics::bc_query_flags p_flags,
 				physics::bc_scene_ray_query_buffer& p_result) const;
-
-			physics::bc_query_hit_type skinned_mesh_hit_check(const update_context& p_context,
-				const physics::bc_ray& p_ray,
-				const physics::bc_scene_query_post_filter_data& p_filter_data) const;
 		};
 
 		class bc_iui_command_reversible : public bc_iui_command

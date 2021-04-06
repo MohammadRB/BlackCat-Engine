@@ -6,6 +6,8 @@
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Utility/bcLazy.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
+#include "PhysicsImp/Collision/bcShapeQuery.h"
+#include "PhysicsImp/Collision/bcSceneQuery.h"
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/Object/Mesh/bcMesh.h"
 #include "Game/Object/Mesh/bcSubMeshTransform.h"
@@ -24,6 +26,7 @@ namespace black_cat
 		class bc_mesh_node;
 		class bc_render_state_buffer;
 		class bc_render_system;
+		class bc_physics_system;
 
 		class BC_GAME_DLL bc_mesh_utility
 		{
@@ -69,6 +72,10 @@ namespace black_cat
 			static void calculate_skinned_mesh_collider_transforms(const bc_mesh& p_mesh, 
 				const bc_sub_mesh_mat4_transform& p_model_transforms, 
 				bc_sub_mesh_px_transform& p_transforms);
+
+			static std::pair<physics::bc_query_hit_type, physics::bc_ray_hit> skinned_mesh_ray_hit_test(bc_physics_system& p_physics_system,
+				const physics::bc_ray& p_ray,
+				const physics::bc_scene_query_post_filter_data& p_filter_data);
 			
 			/**
 			 * \brief

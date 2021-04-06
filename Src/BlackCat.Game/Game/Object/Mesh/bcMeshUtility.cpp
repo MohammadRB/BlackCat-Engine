@@ -6,8 +6,12 @@
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
+#include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/Object/Mesh/bcMeshUtility.h"
 #include "Game/Object/Mesh/bcSubMesh.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
+#include "Game/Object/Animation/Job/bcMeshColliderSkinningAnimationJob.h"
 
 namespace black_cat
 {
@@ -291,6 +295,66 @@ namespace black_cat
 					l_output_transform = physics::bc_transform(l_model_transform) * l_output_transform;
 				}
 			}
+		}
+
+		std::pair<physics::bc_query_hit_type, physics::bc_ray_hit> bc_mesh_utility::skinned_mesh_ray_hit_test(bc_physics_system& p_physics_system,
+			const physics::bc_ray& p_ray,
+			const physics::bc_scene_query_post_filter_data& p_filter_data)
+		{
+			const auto l_shape_query_flag = p_filter_data.m_shape.get_query_flags();
+			const auto l_shape_query_type = core::bc_enum::has(l_shape_query_flag, physics::bc_shape_query_flag::touching) ?
+				physics::bc_query_hit_type::touch :
+				physics::bc_query_hit_type::block;
+
+			if (p_filter_data.m_shape.get_query_group() != static_cast<physics::bc_query_group>(bc_actor_group::skinned_mesh))
+			{
+				return std::make_pair(l_shape_query_type, physics::bc_ray_hit());
+			}
+
+			auto l_actor = p_physics_system.get_game_actor(p_filter_data.m_actor);
+			auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
+			auto* l_skinned_mesh_component = l_actor.get_component<bc_skinned_mesh_component>();
+
+			BC_ASSERT(l_skinned_mesh_component);
+
+			bc_mesh_collider_skinning_animation_job l_skinning_job
+			(
+				*l_skinned_mesh_component->get_skeleton(),
+				l_skinned_mesh_component->get_mesh(),
+				l_skinned_mesh_component->get_model_transforms()
+			);
+			l_skinning_job.run(core_platform::bc_clock::update_param(0, 0));
+
+			const physics::bc_triangle_mesh_desc l_triangle_mesh_desc
+			(
+				physics::bc_bounded_strided_typed_data< core::bc_vector3f >
+				(
+					l_skinning_job.get_vertices(),
+					sizeof(core::bc_vector3f),
+					l_skinning_job.get_vertices_count()
+				),
+				physics::bc_bounded_strided_data
+				(
+					l_skinning_job.get_16bit_indices() ? static_cast<const void*>(l_skinning_job.get_16bit_indices()) : static_cast<const void*>(l_skinning_job.get_32bit_indices()),
+					l_skinning_job.get_16bit_indices() ? sizeof(bcUINT16) : sizeof(bcUINT32),
+					l_skinning_job.get_faces_count() * 3
+				),
+				l_skinning_job.get_16bit_indices() ? physics::bc_triangle_mesh_flag::use_16bit_index : core::bc_enum::none<physics::bc_triangle_mesh_flag>()
+			);
+			auto l_triangle_mesh = p_physics_system.get_physics().create_runtime_triangle_mesh(l_triangle_mesh_desc);
+
+			physics::bc_ray_hit l_hit;
+			const auto l_hit_count = physics::bc_shape_query::ray_cast
+			(
+				p_ray,
+				physics::bc_shape_triangle_mesh(l_triangle_mesh.get()),
+				physics::bc_transform(l_mediate_component->get_world_transform()),
+				physics::bc_hit_flag::position,
+				&l_hit,
+				1
+			);
+
+			return std::make_pair(l_hit_count > 0 ? l_shape_query_type : physics::bc_query_hit_type::none, l_hit);
 		}
 
 		void bc_mesh_utility::clear_mesh_render_states_cache()

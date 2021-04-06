@@ -1,10 +1,10 @@
 // [12/08/2016 MRB]
 
 #include "PhysicsImp/PhysicsImpPCH.h"
-
 #include "PhysicsImp/Fundation/bcCController.h"
 #include "PhysicsImp/Collision/bcSceneQuery.h"
 #include "PhysicsImp/Body/bcActor.h"
+#include "PhysicsImp/Body/bcRigidBody.h"
 
 namespace black_cat
 {
@@ -44,6 +44,20 @@ namespace black_cat
 			static_cast<bcUINT32>(bc_ccontroller_collision_flag::up) == physx::PxControllerCollisionFlag::eCOLLISION_UP &&
 			static_cast<bcUINT32>(bc_ccontroller_collision_flag::down) == physx::PxControllerCollisionFlag::eCOLLISION_DOWN,
 			"bc_ccontroller_collision_flag value is incompatible with physX values"
+		);
+
+		static_assert
+		(
+			static_cast<bcUINT32>(bc_force_mode::force) == physx::PxForceMode::eFORCE &&
+			static_cast<bcUINT32>(bc_force_mode::impulse) == physx::PxForceMode::eIMPULSE,
+			"bc_force_mode value is incompatible with physX values"
+		);
+
+		static_assert
+		(
+			static_cast<bcUINT32>(bc_rigid_body_flag::ccd) == physx::PxRigidBodyFlag::eENABLE_CCD &&
+			static_cast<bcUINT32>(bc_rigid_body_flag::kinematic) == physx::PxRigidBodyFlag::eKINEMATIC,
+			"bc_rigid_body_flag value is incompatible with physX values"
 		);
 	}
 }

@@ -60,21 +60,22 @@ namespace black_cat
 				l_physics_system.update(p_clock);
 				if (l_scene)
 				{
-					l_scene->update_px(l_physics_system, p_clock);
+					l_scene->update_physics(p_clock);
 				}
 
 				return;
 			}
 
 			core::bc_task<void> l_scene_task;
-			core::bc_task<bcUINT32> l_query_task;
+			core::bc_task<void> l_scene_task1;
+			//core::bc_task<bcUINT32> l_query_task;
 
 			l_input_system.update(p_clock);
 			l_physics_system.update(p_clock);
 
 			if (l_scene)
 			{
-				l_scene_task = l_scene->update_px_async(l_physics_system, p_clock);
+				l_scene_task = l_scene->update_physics_async(p_clock);
 			}
 
 			l_event_manager.process_event_queue(p_clock);
@@ -84,21 +85,21 @@ namespace black_cat
 			l_actor_component_manager.update_actors(p_clock);
 			l_animation_manager.run_scheduled_jobs(p_clock);
 			l_actor_component_manager.double_update_actors(p_clock);
-			l_query_task = l_query_manager.process_query_queue_async(p_clock);
+			//l_query_task = l_query_manager.process_query_queue_async(p_clock);
 
 			if (l_scene)
 			{
 				l_scene_task = l_scene->update_graph_async();
+				l_scene_task1 = l_scene->update_bullets_async(p_clock);
 			}
 
 			l_particle_manager.update(p_clock);
 			l_decal_manager.update_decal_lifespans();
 			l_script_system.update(p_clock);
 			l_console->update(p_clock);
-
-			core::bc_concurrency::when_all(l_scene_task , l_query_task);
-
 			l_render_system.update(bc_render_system::update_context(p_clock, *m_input_system.get_camera()));
+
+			core::bc_concurrency::when_all(l_scene_task, l_scene_task1);
 
 			l_query_manager.process_query_queue(p_clock);
 		}

@@ -4,8 +4,13 @@
 
 #include "Core/bcException.h"
 #include "Core/Container/bcString.h"
+#include "Core/Container/bcVector.h"
 #include "Core/Container/bcUnorderedMap.h"
+#include "Core/Math/bcVector2f.h"
+#include "Core/Math/bcVector3f.h"
+#include "Core/Math/bcVector4f.h"
 #include "Core/Utility/bcParameterPack.h"
+#include "Core/Utility/bcNullable.h"
 
 namespace black_cat
 {
@@ -95,7 +100,7 @@ namespace black_cat
 			 * \return 
 			 */
 			template< typename T >
-			const T* get_value(const bcCHAR* p_name)
+			const T* get_value(const bcCHAR* p_name) const
 			{
 				const auto l_hash = key_hash()(p_name);
 				const auto l_value = m_values.find(l_hash);
@@ -108,12 +113,6 @@ namespace black_cat
 				return l_value->second.as<T>();
 			}
 
-			template< typename T >
-			const T* get_value(const bcCHAR* p_name) const
-			{
-				return const_cast<bc_data_driven_parameter*>(this)->get_value<T>(p_name);
-			}
-
 			/**
 			 * \brief Throw exception if parameter isn't presented
 			 * \tparam T 
@@ -121,25 +120,112 @@ namespace black_cat
 			 * \return 
 			 */
 			template< typename T >
-			const T& get_value_throw(const bcCHAR* p_name)
+			const T& get_value_throw(const bcCHAR* p_name) const
 			{
 				const T* l_value = get_value<T>(p_name);
 
 				if (!l_value)
 				{
-					bc_string_frame l_msg = bc_string_frame("No parameter with given name was found: ") + p_name;
+					const auto l_msg = bc_string_frame("No parameter with given name was found: ") + p_name;
 					throw bc_key_not_found_exception(l_msg.c_str());
 				}
 
 				return *l_value;
 			}
 
-			template< typename T >
-			const T& get_value_throw(const bcCHAR* p_name) const
+			bc_nullable<bc_vector2f> get_value_vector2f(const bcCHAR* p_name) const
 			{
-				return const_cast<bc_data_driven_parameter*>(this)->get_value_throw<T>(p_name);
+				const auto* l_value = get_value<bc_vector<bc_any>>(p_name);
+				if (!l_value || l_value->size() != 2)
+				{
+					return nullptr;
+				}
+
+				return bc_nullable<bc_vector2f>
+				(
+					{
+						(*l_value)[0].as_throw<bcFLOAT>(),
+						(*l_value)[1].as_throw<bcFLOAT>()
+					}
+				);
 			}
 
+			bc_vector2f get_value_vector2f_throw(const bcCHAR* p_name) const
+			{
+				const auto l_value = get_value_vector2f(p_name);
+
+				if (!l_value.is_set())
+				{
+					const auto l_msg = bc_string_frame("No parameter with given name was found: ") + p_name;
+					throw bc_key_not_found_exception(l_msg.c_str());
+				}
+
+				return *l_value;
+			}
+			
+			bc_nullable<bc_vector3f> get_value_vector3f(const bcCHAR* p_name) const
+			{
+				const auto* l_value = get_value<bc_vector<bc_any>>(p_name);
+				if(!l_value || l_value->size() != 3)
+				{
+					return nullptr;
+				}
+
+				return bc_nullable<bc_vector3f>
+				(
+					{
+						(*l_value)[0].as_throw<bcFLOAT>(),
+						(*l_value)[1].as_throw<bcFLOAT>(),
+						(*l_value)[2].as_throw<bcFLOAT>()
+					}
+				);
+			}
+
+			bc_vector3f get_value_vector3f_throw(const bcCHAR* p_name) const
+			{
+				const auto l_value = get_value_vector3f(p_name);
+
+				if(!l_value.is_set())
+				{
+					const auto l_msg = bc_string_frame("No parameter with given name was found: ") + p_name;
+					throw bc_key_not_found_exception(l_msg.c_str());
+				}
+
+				return *l_value;
+			}
+
+			bc_nullable<bc_vector4f> get_value_vector4f(const bcCHAR* p_name) const
+			{
+				const auto* l_value = get_value<bc_vector<bc_any>>(p_name);
+				if (!l_value || l_value->size() != 4)
+				{
+					return nullptr;
+				}
+
+				return bc_nullable<bc_vector4f>
+				(
+					{
+						(*l_value)[0].as_throw<bcFLOAT>(),
+						(*l_value)[1].as_throw<bcFLOAT>(),
+						(*l_value)[2].as_throw<bcFLOAT>(),
+						(*l_value)[3].as_throw<bcFLOAT>()
+					}
+				);
+			}
+
+			bc_vector4f get_value_vector4f_throw(const bcCHAR* p_name) const
+			{
+				const auto l_value = get_value_vector4f(p_name);
+
+				if (!l_value.is_set())
+				{
+					const auto l_msg = bc_string_frame("No parameter with given name was found: ") + p_name;
+					throw bc_key_not_found_exception(l_msg.c_str());
+				}
+
+				return *l_value;
+			}
+			
 			void reset()
 			{
 				m_values.clear();

@@ -5,6 +5,7 @@
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Container/bcListPool.h"
+#include "Core/Concurrency/bcTask.h"
 #include "Core/Utility/bcObjectPool.h"
 #include "Game/System/Render/Decal/bcDecal.h"
 #include "Game/System/Render/Decal/bcDecalInstance.h"
@@ -134,6 +135,8 @@ namespace black_cat
 				bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index);
 
 			void update_decal_lifespans() noexcept;
+			
+			core::bc_task<void> update_decal_lifespans_async() noexcept;
 			
 			void destroy_decal(bc_decal* p_decal);
 			

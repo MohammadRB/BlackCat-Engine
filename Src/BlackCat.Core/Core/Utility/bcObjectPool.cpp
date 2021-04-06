@@ -103,7 +103,7 @@ namespace black_cat
 			// A free block were found
 			if (l_block != -1 || l_block <= m_num_block)
 			{
-				l_result = reinterpret_cast<void*>(m_heap + l_block * m_block_size);
+				l_result = reinterpret_cast<void*>(static_cast<bcUBYTE*>(m_heap) + l_block * m_block_size);
 			}
 
 			return l_result;
@@ -117,7 +117,7 @@ namespace black_cat
 			auto* l_pointer = static_cast<bcUBYTE*>(p_pointer);
 
 			// convert the pointer into a block index
-			const bcINT32 l_block = static_cast<bcINT32>(l_pointer - m_heap) / m_block_size;
+			const bcINT32 l_block = static_cast<bcINT32>(l_pointer - static_cast<bcUBYTE*>(m_heap)) / m_block_size;
 
 			// reset the bit in our block management array
 			const bcINT32 l_chunk_index = l_block / s_bit_block_size;
@@ -132,7 +132,7 @@ namespace black_cat
 
 		bool bc_concurrent_memory_pool::contain_pointer(const void* p_pointer) const noexcept
 		{
-			return p_pointer >= m_heap && p_pointer < m_heap + (m_block_size * m_num_block);
+			return p_pointer >= static_cast<bcUBYTE*>(m_heap) && p_pointer < static_cast<bcUBYTE*>(m_heap) + (m_block_size * m_num_block);
 		}
 
 		void bc_concurrent_memory_pool::clear() noexcept

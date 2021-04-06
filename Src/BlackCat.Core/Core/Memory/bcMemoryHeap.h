@@ -200,7 +200,7 @@ namespace black_cat
 
 			for (void** l_ptr : m_pointers)
 			{
-				if (*l_ptr != nullptr)
+				if (l_ptr != nullptr)
 				{
 					l_pointer = *l_ptr;
 					break;
@@ -219,8 +219,9 @@ namespace black_cat
 		{
 			bool l_has_set = false;
 
-			core_platform::bc_lock_guard< core_platform::bc_hybrid_mutex > l_guard(m_mutex);
 			{
+				core_platform::bc_hybrid_mutex_guard l_lock(m_mutex, core_platform::bc_lock_operation::light);
+
 				for (void**& l_ptr : m_pointers)
 				{
 					if (l_ptr == nullptr)
@@ -239,8 +240,9 @@ namespace black_cat
 		{
 			bool l_found = false;
 
-			core_platform::bc_lock_guard< core_platform::bc_hybrid_mutex > l_guard(m_mutex);
 			{
+				core_platform::bc_hybrid_mutex_guard l_lock(m_mutex, core_platform::bc_lock_operation::light);
+
 				for (void**& l_ptr : m_pointers)
 				{
 					if (l_ptr && l_ptr == p_pointer)

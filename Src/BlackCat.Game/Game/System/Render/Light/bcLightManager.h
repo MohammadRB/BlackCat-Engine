@@ -38,13 +38,13 @@ namespace black_cat
 
 			bc_light_ptr add_light(const bc_spot_light& p_light);
 
-			iterator_buffer get_iterator() const noexcept;
-
 			void update(const core_platform::bc_clock::update_param& p_clock);
 
 			void destroy_light(bc_light* p_light);
 
 		private:
+			iterator_buffer _get_iterator() const noexcept;
+			
 			core::bc_query_context_ptr _lights_query_context_provider() const;
 			
 			container_t m_lights;

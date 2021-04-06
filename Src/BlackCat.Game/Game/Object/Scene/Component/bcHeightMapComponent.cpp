@@ -15,6 +15,7 @@
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 
 namespace black_cat
 {
@@ -68,7 +69,7 @@ namespace black_cat
 
 		void bc_height_map_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as< bc_world_transform_actor_event >(p_context.m_event);
+			const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
 			if(l_world_transform_event)
 			{
 				m_transform.translate(l_world_transform_event->get_transform().get_translation());
@@ -86,6 +87,12 @@ namespace black_cat
 						)
 					)
 				));
+			}
+
+			const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event);
+			if(l_bullet_hit_event)
+			{
+				
 			}
 		}
 

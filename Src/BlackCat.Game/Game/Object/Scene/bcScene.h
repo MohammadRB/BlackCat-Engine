@@ -9,11 +9,12 @@
 #include "Core/Content/bcContent.h"
 #include "Core/bcConstant.h"
 #include "PhysicsImp/Fundation/bcScene.h"
-#include "Game/bcExport.h"
 #include "Game/Object/Scene/SceneGraph/bcScenceGraph.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
+#include "Game/Object/Scene/Bullet/bcBulletManager.h"
 #include "Game/System/Render/bcShapeDrawer.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
@@ -47,12 +48,13 @@ namespace black_cat
 				core::bc_vector<core::bc_string> p_entity_files,
 				core::bc_vector<core::bc_string> p_material_files,
 				core::bc_vector<core::bc_string> p_loaded_streams,
-				bc_scene_graph p_scene_graph, 
+				bc_scene_graph p_scene_graph,
+				bc_physics_system& p_physics,
 				physics::bc_scene_ref p_px_scene);
 
 			bc_scene(bc_scene&&) noexcept;
 
-			~bc_scene();
+			~bc_scene() override;
 
 			bc_scene& operator=(bc_scene&&) noexcept;
 
@@ -94,12 +96,22 @@ namespace black_cat
 			 */
 			void remove_actor(bc_actor& p_actor);
 
+			/**
+			 * \brief ThreadSafe
+			 * \param p_bullet 
+			 */
+			void add_bullet(const bc_bullet& p_bullet);
+			
 			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
-			void update_px(bc_physics_system& p_physics, const core_platform::bc_clock::update_param& p_clock);
+			void update_physics(const core_platform::bc_clock::update_param& p_clock);
 			
-			core::bc_task<void> update_px_async(bc_physics_system& p_physics, const core_platform::bc_clock::update_param& p_clock);
+			core::bc_task<void> update_physics_async(const core_platform::bc_clock::update_param& p_clock);
 
+			void update_bullets(const core_platform::bc_clock::update_param& p_clock);
+
+			core::bc_task<void> update_bullets_async(const core_platform::bc_clock::update_param& p_clock);
+			
 			void update_graph();
 			
 			core::bc_task<void> update_graph_async();
@@ -120,7 +132,9 @@ namespace black_cat
 			core::bc_vector<core::bc_string> m_material_files;
 			core::bc_vector<core::bc_string> m_loaded_streams;
 			bc_scene_graph m_scene_graph;
+			bc_physics_system* m_physics;
 			physics::bc_scene_ref m_px_scene;
+			bc_bullet_manager m_bullet_manager;
 
 			core_platform::bc_hybrid_mutex m_changed_actors_lock;
 			core::bc_vector_movable<std::tuple<_bc_scene_actor_operation, bc_actor>> m_changed_actors;

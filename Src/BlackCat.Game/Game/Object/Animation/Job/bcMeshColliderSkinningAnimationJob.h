@@ -52,7 +52,7 @@ namespace black_cat
 			return m_skinned_vertices.data();
 		}
 
-		bcSIZE bc_mesh_collider_skinning_animation_job::get_faces_count() const noexcept
+		inline bcSIZE bc_mesh_collider_skinning_animation_job::get_faces_count() const noexcept
 		{
 			return m_sub_mesh->get_mesh_collider().get_skinned_collider().get_faces_count();
 		}

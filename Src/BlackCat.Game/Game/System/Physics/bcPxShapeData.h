@@ -13,6 +13,7 @@ namespace black_cat
 			const bcCHAR* m_material_name;
 			bc_mesh_part_collider_entry* m_collider_entry;
 			const bcCHAR* m_collision_particle;
+			const bcCHAR* m_collision_decal;
 		};
 	}	
 }

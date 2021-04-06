@@ -235,6 +235,22 @@ namespace black_cat
 			}
 		}
 
+		core::bc_task<void> bc_decal_manager::update_decal_lifespans_async() noexcept
+		{
+			auto l_task = core::bc_concurrency::start_task
+			(
+				core::bc_delegate< void() >
+				(
+					[=]()
+					{
+						update_decal_lifespans();
+					}
+				)
+			);
+
+			return l_task;
+		}
+
 		void bc_decal_manager::destroy_decal(bc_decal* p_decal)
 		{
 			auto* l_entry = static_cast<_bc_decal_entry*>(p_decal);

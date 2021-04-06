@@ -46,18 +46,18 @@ namespace black_cat
 			core::bc_unique_ptr< bcINT16 > convert_height_field_samples(bcUINT32 p_num_row, bcUINT32 p_num_column, bcFLOAT* p_samples);
 
 			/**
+			 * \brief Retrieve stored pointer of game actor
+			 * \param p_px_actor
+			 * \return
+			 */
+			bc_actor get_game_actor(const physics::bc_actor& p_px_actor) const noexcept;
+			
+			/**
 			 * \brief Store a pointer of game actor inside physics actor so it can be accessible within physics callbacks
 			 * \param p_px_actor 
 			 * \param p_actor 
 			 */
 			void set_game_actor(physics::bc_actor& p_px_actor, const bc_actor& p_actor) noexcept;
-
-			/**
-			 * \brief Retrieve stored pointer of game actor
-			 * \param p_px_actor
-			 * \return
-			 */
-			bc_actor get_game_actor(const physics::bc_actor& p_px_actor) noexcept;
 
 			void create_px_shapes_from_height_map(bc_material_manager& p_material_manager, 
 				physics::bc_rigid_static& p_rigid_static, 
@@ -108,14 +108,14 @@ namespace black_cat
 			return s_height_field_y_scale_ratio;
 		}
 
+		inline bc_actor bc_physics_system::get_game_actor(const physics::bc_actor& p_px_actor) const noexcept
+		{
+			return bc_actor(static_cast<bc_actor_index>(reinterpret_cast<bcINTPTR>(p_px_actor.get_data())));
+		}
+		
 		inline void bc_physics_system::set_game_actor(physics::bc_actor& p_px_actor, const bc_actor& p_actor) noexcept
 		{
 			p_px_actor.set_data(reinterpret_cast<void*>(static_cast<bcINTPTR>(p_actor.get_index())));
-		}
-
-		inline bc_actor bc_physics_system::get_game_actor(const physics::bc_actor& p_px_actor) noexcept
-		{
-			return bc_actor(static_cast<bc_actor_index>(reinterpret_cast<bcINTPTR>(p_px_actor.get_data())));
 		}
 		
 		inline bcFLOAT bc_physics_system::height_to_float(bcINT16 p_physics_height) noexcept

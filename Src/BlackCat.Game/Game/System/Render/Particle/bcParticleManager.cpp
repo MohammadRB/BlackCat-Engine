@@ -123,10 +123,15 @@ namespace black_cat
 			return m_curves;
 		}
 
-		void bc_particle_manager::register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder)
+		void bc_particle_manager::register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder, bcFLOAT p_scale)
 		{
 			core::bc_vector_program<bc_particle_emitter_trait> l_emitters(std::begin(p_builder.m_emitters), std::end(p_builder.m_emitters));
 
+			for(auto& l_emitter : l_emitters)
+			{
+				_apply_emitter_scale(l_emitter, p_scale);
+			}
+			
 			auto l_hash = string_hash_t()(p_name);
 			auto l_value = std::make_pair(l_hash, std::move(l_emitters));
 			auto l_entry = m_emitter_definitions.find(l_hash);
@@ -372,6 +377,17 @@ namespace black_cat
 
 				return core::bc_make_query_context(bc_particle_emitters_query_context(l_emitters));
 			}
+		}
+
+		void bc_particle_manager::_apply_emitter_scale(bc_particle_emitter_trait& p_emitter, bcFLOAT p_scale)
+		{
+			p_emitter.m_position *= p_scale;
+			p_emitter.m_force *= p_scale;
+			p_emitter.m_mass *= p_scale;
+			p_emitter.m_particles_force *= p_scale;
+			p_emitter.m_particles_mass *= p_scale;
+			p_emitter.m_particles_start_size *= p_scale;
+			p_emitter.m_particles_end_size *= p_scale;
 		}
 
 		bcFLOAT bc_particle_manager::_sample_curve(bcSIZE p_curve_index, bcFLOAT p_normalized_time) const

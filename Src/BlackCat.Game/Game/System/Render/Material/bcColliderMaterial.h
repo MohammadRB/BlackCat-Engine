@@ -21,6 +21,7 @@ namespace black_cat
 			const bcCHAR* m_name;
 			physics::bc_material m_px_material;
 			const bcCHAR* m_collision_particle;
+			const bcCHAR* m_collision_decal;
 		};
 		
 		class bc_collider_material

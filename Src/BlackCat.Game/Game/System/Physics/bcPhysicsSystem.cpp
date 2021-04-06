@@ -106,6 +106,7 @@ namespace black_cat
 					l_shape_data->m_collider_entry = &l_collider_entry;
 					l_shape_data->m_material_name = l_material.m_name;
 					l_shape_data->m_collision_particle = l_material.m_collision_particle;
+					l_shape_data->m_collision_decal = l_material.m_collision_decal;
 					
 					l_px_shape.set_data(l_shape_data);
 				}

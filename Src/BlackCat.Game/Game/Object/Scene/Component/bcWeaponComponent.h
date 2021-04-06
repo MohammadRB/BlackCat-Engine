@@ -3,13 +3,18 @@
 #pragma once
 
 #include "Core/Math/bcVector3f.h"
+#include "Game/System/Render/Light/bcLight.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
+#include "Game/Object/Scene/Bullet/bcBullet.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		class bc_particle_manager;
+		class bc_light_manager;
+		
 		enum class bc_weapon_class : bcUBYTE
 		{
 			rifle
@@ -17,7 +22,7 @@ namespace black_cat
 		
 		class BC_GAME_DLL bc_weapon_component : public bci_actor_component
 		{
-			BC_COMPONENT(weapon, false, false)
+			BC_COMPONENT(weapon, false, true)
 
 		public:
 			bc_weapon_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
@@ -32,66 +37,66 @@ namespace black_cat
 			
 			bc_weapon_class get_class() const noexcept;
 			
-			const bcCHAR* get_main_hand_node_name() const noexcept;
-			
-			const bcCHAR* get_second_hand_node_name() const noexcept;
+			const core::bc_vector3f& get_up_ls() const noexcept;
 
-			const core::bc_vector3f& get_main_hand_local_offset() const noexcept;
+			const core::bc_vector3f& get_forward_ls() const noexcept;
 			
-			const core::bc_vector3f& get_second_hand_local_offset() const noexcept;
-
-			const core::bc_vector3f& get_local_up() const noexcept;
+			const core::bc_vector3f& get_main_hand_offset_ls() const noexcept;
 			
-			const core::bc_vector3f& get_local_forward() const noexcept;
+			const core::bc_vector3f& get_second_hand_offset_ls() const noexcept;
 
 			bcFLOAT get_rate_of_fire_seconds() const noexcept;
 
+			bc_bullet shoot(const core::bc_vector3f& p_aim_direction_ws);
+			
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
-		
+
+			void update(const bc_actor_component_update_content& p_context) override;
+			
 		private:
 			bc_weapon_class m_class;
-			const bcCHAR* m_main_hand_node_name;
-			const bcCHAR* m_second_hand_node_name;
-			core::bc_vector3f m_main_hand_local_offset;
-			core::bc_vector3f m_second_hand_local_offset;
-			core::bc_vector3f m_local_up;
-			core::bc_vector3f m_local_forward;
+			core::bc_vector3f m_up_ls;
+			core::bc_vector3f m_forward_ls;
+			core::bc_vector3f m_main_hand_offset_ls;
+			core::bc_vector3f m_second_hand_offset_ls;
+			core::bc_vector3f m_fire_offset_ls;
+			const bcCHAR* m_fire_particle;
+			core::bc_vector3f m_fire_light_color;
+			bcFLOAT m_fire_light_radius;
+			bcFLOAT m_fire_light_intensity;
 			bcFLOAT m_rate_of_fire_seconds;
+			bcFLOAT m_bullet_speed;
+			bcFLOAT m_bullet_mass;
+
+			bc_particle_manager* m_particle_manager;
+			bc_light_manager* m_light_manager;
+			bc_light_ptr m_light;
+			bcFLOAT m_light_age;
 		};
 
 		inline bc_weapon_class bc_weapon_component::get_class() const noexcept
 		{
 			return m_class;
 		}
-		
-		inline const bcCHAR* bc_weapon_component::get_main_hand_node_name() const noexcept
+
+		inline const core::bc_vector3f& bc_weapon_component::get_up_ls() const noexcept
 		{
-			return m_main_hand_node_name;
+			return m_up_ls;
 		}
 
-		inline const bcCHAR* bc_weapon_component::get_second_hand_node_name() const noexcept
+		inline const core::bc_vector3f& bc_weapon_component::get_forward_ls() const noexcept
 		{
-			return m_second_hand_node_name;
-		}
-
-		inline const core::bc_vector3f& bc_weapon_component::get_main_hand_local_offset() const noexcept
-		{
-			return m_main_hand_local_offset;
-		}
-
-		inline const core::bc_vector3f& bc_weapon_component::get_second_hand_local_offset() const noexcept
-		{
-			return m_second_hand_local_offset;
-		}
-
-		inline const core::bc_vector3f& bc_weapon_component::get_local_up() const noexcept
-		{
-			return m_local_up;
+			return m_forward_ls;
 		}
 		
-		inline const core::bc_vector3f& bc_weapon_component::get_local_forward() const noexcept
+		inline const core::bc_vector3f& bc_weapon_component::get_main_hand_offset_ls() const noexcept
 		{
-			return m_local_forward;
+			return m_main_hand_offset_ls;
+		}
+
+		inline const core::bc_vector3f& bc_weapon_component::get_second_hand_offset_ls() const noexcept
+		{
+			return m_second_hand_offset_ls;
 		}
 
 		inline bcFLOAT bc_weapon_component::get_rate_of_fire_seconds() const noexcept

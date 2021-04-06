@@ -149,35 +149,5 @@ namespace black_cat
 			p_jvalue.PushBack(core::bc_json_value_object(p_value.z), p_document.GetAllocator());
 			p_jvalue.PushBack(core::bc_json_value_object(p_value.w), p_document.GetAllocator());
 		}
-
-		inline void bc_load(const core::bc_vector<core::bc_any>& p_jvalue, core::bc_vector2f& p_value)
-		{
-			if (p_jvalue.size() != 2)
-			{
-				throw bc_invalid_operation_exception("Input array must contains 2 elements");
-			}
-
-			p_value = { p_jvalue[0].as_throw<bcFLOAT>(), p_jvalue[1].as_throw<bcFLOAT>() };
-		}
-		
-		inline void bc_load(const core::bc_vector<core::bc_any>& p_jvalue, core::bc_vector3f& p_value)
-		{
-			if(p_jvalue.size() != 3)
-			{
-				throw bc_invalid_operation_exception("Input array must contains 3 elements");
-			}
-
-			p_value = { p_jvalue[0].as_throw<bcFLOAT>(), p_jvalue[1].as_throw<bcFLOAT>() , p_jvalue[2].as_throw<bcFLOAT>() };
-		}
-
-		inline void bc_load(const core::bc_vector<core::bc_any>& p_jvalue, core::bc_vector4f& p_value)
-		{
-			if (p_jvalue.size() != 4)
-			{
-				throw bc_invalid_operation_exception("Input array must contains 4 elements");
-			}
-
-			p_value = { p_jvalue[0].as_throw<bcFLOAT>(), p_jvalue[1].as_throw<bcFLOAT>() , p_jvalue[2].as_throw<bcFLOAT>(), p_jvalue[3].as_throw<bcFLOAT>() };
-		}
 	}
 }

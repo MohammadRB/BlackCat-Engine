@@ -182,6 +182,7 @@ namespace black_cat
 			l_material_file_names,
 			l_stream_names,
 			std::move(l_scene_graph),
+			l_game_system->get_physics_system(),
 			std::move(l_px_scene)
 		));
 

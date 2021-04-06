@@ -38,10 +38,6 @@
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/bcDecalResolverComponent.h"
 #include "Game/Object/Scene/Component/bcWeaponComponent.h"
-#include "Game/Object/Scene/ActorController/bcFireActorController.h"
-#include "Game/Object/Scene/ActorController/bcExplosionActorController.h"
-#include "Game/Object/Scene/ActorController/bcXBotController.h"
-#include "Game/Object/Scene/ActorController/bcXBotCameraController.h"
 #include "Game/Object/Animation/bcSkinnedAnimation.h"
 #include "BlackCat/Application/bcApplicationHookFuncations.h"
 #include "BlackCat/Loader/bcTextureLoader.h"
@@ -55,6 +51,12 @@
 #include "BlackCat/Loader/bcMeshLoader.h"
 #include "BlackCat/Loader/bcSkinnedAnimationLoader.h"
 #include "BlackCat/Loader/bcSceneLoader.h"
+#include "BlackCat/SampleImp/ActorController/bcFireActorController.h"
+#include "BlackCat/SampleImp/ActorController/bcExplosionActorController.h"
+#include "BlackCat/SampleImp/ActorController/bcXBotController.h"
+#include "BlackCat/SampleImp/ActorController/bcXBotCameraController.h"
+#include "BlackCat/SampleImp/Particle/bcSampleExplosionParticle.h"
+#include "BlackCat/SampleImp/Particle/bcSampleRifleFireParticle.h"
 
 namespace black_cat
 {
@@ -165,10 +167,10 @@ namespace black_cat
 		);
 		game::bc_register_actor_controller_types
 		(
-			game::bc_actor_controller_register<game::bc_fire_actor_controller>("fire"),
-			game::bc_actor_controller_register<game::bc_explosion_actor_controller>("explosion"),
-			game::bc_actor_controller_register<game::bc_xbot_controller>("xbot"),
-			game::bc_actor_controller_register<game::bc_xbot_camera_controller>("xbot_player")
+			game::bc_actor_controller_register<bc_fire_actor_controller>("fire"),
+			game::bc_actor_controller_register<bc_explosion_actor_controller>("explosion"),
+			game::bc_actor_controller_register<bc_xbot_controller>("xbot"),
+			game::bc_actor_controller_register<bc_xbot_camera_controller>("xbot_player")
 		);
 	}
 
@@ -202,59 +204,11 @@ namespace black_cat
 
 	void bc_register_particle_emitters(game::bc_game_system& p_game_system)
 	{
+		auto& l_particle_manager = p_game_system.get_render_system().get_particle_manager();
 		core::bc_random l_random;
-		core::bc_array< core::bc_vector3f, 30 > l_random_directions;
-		bc_randomize_direction
-		(
-			l_random,
-			core::bc_vector3f::up(),
-			180,
-			std::begin(l_random_directions),
-			std::end(l_random_directions)
-		);
 
-		game::bc_particle_builder l_builder;
-		l_builder.emitter(core::bc_vector3f(0), core::bc_vector3f::up())
-			.with_emission_deviation(180)
-			.with_texture(4)
-			.with_particles_color({ 0.2f, 0.2f, 0.2f })
-			.with_particle_size(2, 15)
-			.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step2)
-			.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step3, 0.15f)
-			.with_particles_rotation(10)
-			.emit_particles(100, 5, 700, 0.15f);
-		l_builder.emitter(core::bc_vector3f(0, -8, 0), core::bc_vector3f::up())
-			.with_emission_deviation(180, { 0, -0.9f, 0 })
-			.with_texture(4)
-			.with_particles_color({ 0.7f, 0.7f, 0.7f })
-			.with_particle_size(7, 15)
-			.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step2)
-			.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step3, 0.09f)
-			.with_particles_rotation(10)
-			.emit_particles(100, 8, 3000, 0.05f)
-			.duplicate_last(core::bc_vector3f(0, -8, 0), core::bc_vector3f::up())
-			.emit_particles(50, 8, 2000, 0.05f);
-
-		for (auto& l_direction : l_random_directions)
-		{
-			const auto l_position = core::bc_vector3f(l_direction.x, 0, l_direction.z) * 6;
-			const auto l_emitter_energy = l_direction.y;
-
-			l_builder.emitter(l_position, l_direction, 0.2f, 1500 * l_emitter_energy, 0.1f)
-				.with_direction_deviation(20)
-				.with_emission_deviation(180)
-				.with_velocity_curve(game::bc_particle_builder::s_curve_fast_step4)
-				.with_texture(7)
-				.with_particles_color({ 0.4f, 0.4f, 0.4f }, 1.0)
-				.with_particle_size(1.0f, 5.0f)
-				.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step4)
-				.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step3, 2)
-				.emit_particles(30, 5, 4.0f * l_emitter_energy, 0.15f);
-		}
-
-		p_game_system.get_render_system()
-			.get_particle_manager()
-			.register_emitter_definition("big_explosion", l_builder);
+		l_particle_manager.register_emitter_definition("big_explosion", bc_sample_explosion_particle()(l_random));
+		l_particle_manager.register_emitter_definition("rifle_fire", bc_sample_rifle_fire_particle()());
 	}
 
 	void bc_unload_engine_resources(core::bc_content_stream_manager& p_stream_manager)

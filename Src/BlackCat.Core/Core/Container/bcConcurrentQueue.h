@@ -212,9 +212,9 @@ namespace black_cat
 			using const_reference = typename base_type::const_reference;
 			using difference_type = typename base_type::difference_type;
 			using size_type = typename base_type::size_type;
+			using node_type = typename base_type::node_type;
 
 		protected:
-			using node_type = typename base_type::node_type;
 			using node_pointer = typename base_type::node_pointer;
 			using internal_allocator_type = typename base_type::internal_allocator_type;
 

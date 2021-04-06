@@ -7,11 +7,11 @@
 #include "Core/Utility/bcStopWatch.h"
 #include "Game/Application/bcRenderApplication.h"
 #include "Game/System/bcGameSystem.h"
-#include "BlackCat/BlackCatPCH.h"
+#include "BlackCat/bcExport.h"
 
 namespace black_cat
 {
-	class bc_render_application : public game::bc_render_application
+	class BC_DLL bc_render_application : public game::bc_render_application
 	{
 	public:
 		using game::bc_render_application::initialize;

@@ -81,11 +81,6 @@ namespace black_cat
 				return bc_light_ptr(&m_lights.back(), _bc_light_ptr_deleter(this));
 			}
 		}
-
-		bc_light_manager::iterator_buffer bc_light_manager::get_iterator() const noexcept
-		{
-			return iterator_buffer(m_lights_lock, m_lights);
-		}
 		
 		void bc_light_manager::update(const core_platform::bc_clock::update_param& p_clock)
 		{
@@ -106,9 +101,14 @@ namespace black_cat
 			}
 		}
 
+		bc_light_manager::iterator_buffer bc_light_manager::_get_iterator() const noexcept
+		{
+			return iterator_buffer(m_lights_lock, m_lights);
+		}
+		
 		core::bc_query_context_ptr bc_light_manager::_lights_query_context_provider() const
 		{
-			bc_light_instances_query_context l_context(get_iterator());
+			bc_light_instances_query_context l_context(_get_iterator());
 			
 			return core::bc_make_query_context(std::move(l_context));
 		}

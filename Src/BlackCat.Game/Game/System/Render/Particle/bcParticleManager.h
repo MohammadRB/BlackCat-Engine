@@ -70,7 +70,7 @@ namespace black_cat
 			
 			const curves_container& get_curves() const noexcept;
 			
-			void register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder);
+			void register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder, bcFLOAT p_scale = 1);
 
 			void spawn_emitter(const bcCHAR* p_emitter_name, 
 				const core::bc_vector3f& p_pos, 
@@ -86,6 +86,8 @@ namespace black_cat
 		private:
 			core::bc_query_context_ptr _emitters_query_context_provider() const;
 
+			void _apply_emitter_scale(bc_particle_emitter_trait& p_emitter, bcFLOAT p_scale);
+			
 			bcFLOAT _sample_curve(bcSIZE p_curve_index, bcFLOAT p_normalized_time) const;
 			
 			constexpr static bcSIZE s_emitter_count = 300;

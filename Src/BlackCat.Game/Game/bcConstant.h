@@ -30,12 +30,17 @@ namespace black_cat
 		BC_PARAMETER(emitter_name, "emitter_name");
 		BC_PARAMETER(decal_name, "decal_name");
 		BC_PARAMETER(weapon_class, "class");
-		BC_PARAMETER(weapon_local_up, "local_up");
-		BC_PARAMETER(weapon_local_forward, "local_forward");
-		BC_PARAMETER(weapon_main_hand_node, "main_hand_node");
-		BC_PARAMETER(weapon_second_hand_node, "second_hand_node");
-		BC_PARAMETER(weapon_main_hand_offset, "main_hand_offset");
-		BC_PARAMETER(weapon_second_hand_offset, "second_hand_offset");
+		BC_PARAMETER(weapon_up_ls, "up_ls");
+		BC_PARAMETER(weapon_forward_ls, "forward_ls");
+		BC_PARAMETER(weapon_main_hand_offset_ls, "main_hand_offset_ls");
+		BC_PARAMETER(weapon_second_hand_offset_ls, "second_hand_offset_ls");
+		BC_PARAMETER(weapon_fire_offset_ls, "fire_offset_ls");
+		BC_PARAMETER(weapon_fire_particle, "fire_particle");
+		BC_PARAMETER(weapon_fire_light_color, "fire_light_color");
+		BC_PARAMETER(weapon_fire_light_radius, "fire_light_radius");
+		BC_PARAMETER(weapon_fire_light_intensity, "fire_light_intensity");
 		BC_PARAMETER(weapon_rate_of_fire_seconds, "rate_of_fire");
+		BC_PARAMETER(weapon_bullet_speed, "bullet_speed");
+		BC_PARAMETER(weapon_bullet_mass, "bullet_mass");
 	}
 }

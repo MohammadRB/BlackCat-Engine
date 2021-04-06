@@ -3,10 +3,11 @@
 #pragma once
 
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
-#include "Core/Utility/bcInitializable.h"
-#include "Core/CorePCH.h"
-#include "Core/bcExport.h"
 #include "Core/Memory/bcAlloc.h"
+#include "Core/Memory/bcPtr.h"
+#include "Core/Utility/bcInitializable.h"
+#include "Core/bcExport.h"
+#include "Core/bcException.h"
 
 namespace black_cat
 {
@@ -61,8 +62,8 @@ namespace black_cat
 			bcUINT32 m_block_size;
 			bcUINT32 m_num_bit_blocks;
 			core_platform::bc_atomic< bcUINT32 > m_allocated_block;	// An index that searching for free block will continue from this place
-			core_platform::bc_atomic< bit_block_type >* m_blocks;
-			bcUBYTE* m_heap;
+			bc_ptr<core_platform::bc_atomic< bit_block_type >> m_blocks;
+			bc_ptr<bcUBYTE> m_heap;
 		};
 
 		template< typename T >
@@ -200,6 +201,12 @@ namespace black_cat
 		template< typename T >
 		void bc_concurrent_object_pool< T >::_initialize(bcUINT32 p_objects_count, bc_alloc_type p_alloc_type)
 		{
+			// Because this class has fallback allocation routines any movable allocation will lead to dangled pointer
+			if(p_alloc_type == bc_alloc_type::unknown_movable)
+			{
+				throw bc_invalid_argument_exception("unknown_movable allocation is not supported in bc_concurrent_object_pool");
+			}
+			
 			m_alloc_type = p_alloc_type;
 			m_memory_pool.initialize(p_objects_count, sizeof(T), p_alloc_type);
 		}
@@ -223,7 +230,7 @@ namespace black_cat
 					if (l_is_alive)
 					{
 						const bcSIZE l_object_pos = l_i * bc_concurrent_memory_pool::s_bit_block_size + l_j;
-						reinterpret_cast< T* >(m_memory_pool.m_heap + l_object_pos)->~T();
+						reinterpret_cast< T* >(static_cast<bcUBYTE*>(m_memory_pool.m_heap) + l_object_pos)->~T();
 					}
 				}
 			}

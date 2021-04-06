@@ -362,6 +362,7 @@ namespace black_cat
 			l_material.m_name = l_default_material_ite->second.get_name();
 			l_material.m_px_material = l_default_material_ite->second.get_px_material();
 			l_material.m_collision_particle = l_default_material_ite->second.get_particle_name();
+			l_material.m_collision_decal = l_default_material_ite->second.get_decal_name();
 
 			return l_material;
 		}
@@ -411,6 +412,7 @@ namespace black_cat
 			l_material.m_name = l_ite->second.get_name();
 			l_material.m_px_material = l_ite->second.get_px_material();
 			l_material.m_collision_particle = l_ite->second.get_particle_name();
+			l_material.m_collision_decal = l_ite->second.get_decal_name();
 
 			return l_material;
 		}

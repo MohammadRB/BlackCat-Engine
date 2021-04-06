@@ -64,14 +64,14 @@
     <Filter Include="Game\Object\Animation\Job">
       <UniqueIdentifier>{17a953fe-4d1e-4898-a583-1cfc4a5620ac}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Object\Scene\ActorController">
-      <UniqueIdentifier>{0c50bcc8-18f7-4234-b340-220e3150b83f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\System\Render\Material">
       <UniqueIdentifier>{eb5b5ea3-f91f-49c7-8c6d-606925099bbd}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\System\Render\Decal">
       <UniqueIdentifier>{501c8fab-fde2-4cb1-964c-e1a91cfed0a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Scene\Bullet">
+      <UniqueIdentifier>{74eb0cb2-057a-483c-9026-92f74a99d866}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -381,15 +381,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\bcUtility.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcExplosionActorController.h">
-      <Filter>Game\Object\Scene\ActorController</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcFireActorController.h">
-      <Filter>Game\Object\Scene\ActorController</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotController.h">
-      <Filter>Game\Object\Scene\ActorController</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcSubMeshTransform.h">
       <Filter>Game\Object\Mesh</Filter>
     </ClInclude>
@@ -486,9 +477,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcPartialBlendingAnimationJob.h">
       <Filter>Game\Object\Animation\Job</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotCameraController.h">
-      <Filter>Game\Object\Scene\ActorController</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelAnimationJob.h">
       <Filter>Game\Object\Animation\Job</Filter>
     </ClInclude>
@@ -510,20 +498,20 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcWeaponComponent.h">
       <Filter>Game\Object\Scene\Component</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotWeapon.h">
-      <Filter>Game\Object\Scene\ActorController</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotUpdateAnimationJob.h">
-      <Filter>Game\Object\Scene\ActorController</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcTwoBoneIKAnimationJob.h">
       <Filter>Game\Object\Animation\Job</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotWeaponIKAnimationJob.h">
-      <Filter>Game\Object\Scene\ActorController</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcAdditiveBlendingAnimationJob.h">
       <Filter>Game\Object\Animation\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Bullet\bcBullet.h">
+      <Filter>Game\Object\Scene\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Bullet\bcBulletManager.h">
+      <Filter>Game\Object\Scene\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcBulletHitActorEvent.h">
+      <Filter>Game\Object\Scene\Component\Event</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -707,15 +695,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\bcAnimationManager.cpp">
       <Filter>Game\Object\Animation</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcExplosionActorController.cpp">
-      <Filter>Game\Object\Scene\ActorController</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcFireActorController.cpp">
-      <Filter>Game\Object\Scene\ActorController</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotController.cpp">
-      <Filter>Game\Object\Scene\ActorController</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshBuilder.cpp">
       <Filter>Game\Object\Mesh</Filter>
     </ClCompile>
@@ -764,9 +743,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcPartialBlendingAnimationJob.cpp">
       <Filter>Game\Object\Animation\Job</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotCameraController.cpp">
-      <Filter>Game\Object\Scene\ActorController</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelAnimationJob.cpp">
       <Filter>Game\Object\Animation\Job</Filter>
     </ClCompile>
@@ -788,20 +764,17 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcWeaponComponent.cpp">
       <Filter>Game\Object\Scene\Component</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotUpdateAnimationJob.cpp">
-      <Filter>Game\Object\Scene\ActorController</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcTwoBoneIKAnimationJob.cpp">
       <Filter>Game\Object\Animation\Job</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorController\bcXBotWeaponIKAnimationJob.cpp">
-      <Filter>Game\Object\Scene\ActorController</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcAdditiveBlendingAnimatianJob.cpp">
       <Filter>Game\Object\Animation\Job</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentManager.cpp">
       <Filter>Game\Object\Scene\ActorComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Bullet\bcBulletManager.cpp">
+      <Filter>Game\Object\Scene\Bullet</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

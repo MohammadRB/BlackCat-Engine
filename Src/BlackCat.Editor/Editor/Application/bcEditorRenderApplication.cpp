@@ -161,7 +161,7 @@ namespace black_cat
 					auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
 					auto* l_scene = m_game_system->get_scene();
 
-					game::bc_actor l_actor;
+					/*game::bc_actor l_actor;
 
 					m_shape_throw_counter = m_shape_throw_counter % 4;
 					switch (m_shape_throw_counter)
@@ -192,7 +192,8 @@ namespace black_cat
 						l_rigid.set_linear_velocity(l_direction * 70);
 					}
 
-					l_scene->add_actor(l_actor);
+					l_scene->add_actor(l_actor);*/
+					l_scene->add_bullet(game::bc_bullet(l_camera.get_position(), l_camera.get_forward(), 0.2f, 250));
 				}
 				
 				return true;
