@@ -61,9 +61,11 @@ namespace black_cat
 		public:
 			bc_platform_triangle_mesh() noexcept;
 
+			explicit bc_platform_triangle_mesh(platform_pack& p_pack) noexcept;
+
 			bc_platform_triangle_mesh(const bc_platform_triangle_mesh&) noexcept;
 
-			~bc_platform_triangle_mesh();
+			~bc_platform_triangle_mesh() override;
 
 			bc_platform_triangle_mesh& operator=(const bc_platform_triangle_mesh&) noexcept;
 
@@ -83,7 +85,12 @@ namespace black_cat
 
 			bool is_valid() const noexcept override;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

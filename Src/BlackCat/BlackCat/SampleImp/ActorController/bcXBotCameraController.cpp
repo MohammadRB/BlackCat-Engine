@@ -115,6 +115,8 @@ namespace black_cat
 		bc_xbot_controller::removed_from_scene(p_context, p_scene);
 		
 		m_input_system->remove_camera(m_camera);
+		m_camera = nullptr;
+
 		if(m_current_weapon.is_valid())
 		{
 			p_scene.remove_actor(m_current_weapon);
@@ -238,7 +240,7 @@ namespace black_cat
 		{
 			if (p_key_event.get_key_state() == platform::bc_key_state::pressing)
 			{
-				_detach_weapon(m_detached_rifle_name);
+				_detach_weapon();
 			}
 		}
 
@@ -257,17 +259,23 @@ namespace black_cat
 	{
 		if(m_current_weapon.is_valid())
 		{
-			_detach_weapon(m_detached_rifle_name);
+			_detach_weapon();
 		}
 
 		m_current_weapon = core::bc_get_service<game::bc_entity_manager>()->create_entity(p_entity);
 		m_current_weapon.add_event(game::bc_world_transform_actor_event(get_position()));
 
+		auto* l_rigid_dynamic_component = m_current_weapon.get_component<game::bc_rigid_dynamic_component>();
+		if(l_rigid_dynamic_component)
+		{
+			l_rigid_dynamic_component->set_enable(false);
+		}
+
 		get_scene()->add_actor(m_current_weapon);
 		bc_xbot_controller::attach_weapon(m_current_weapon);
 	}
 
-	void bc_xbot_camera_controller::_detach_weapon(const bcCHAR* p_detached_entity)
+	void bc_xbot_camera_controller::_detach_weapon()
 	{
 		if (!m_current_weapon.is_valid())
 		{
@@ -276,7 +284,7 @@ namespace black_cat
 		
 		detach_weapon();
 
-		auto l_current_weapon_world_transform = m_current_weapon.get_component<game::bc_mediate_component>()->get_world_transform();
+		/*auto l_current_weapon_world_transform = m_current_weapon.get_component<game::bc_mediate_component>()->get_world_transform();
 		l_current_weapon_world_transform.set_translation(l_current_weapon_world_transform.get_translation() + get_look_direction());
 
 		auto l_detached_rifle_actor = core::bc_get_service<game::bc_entity_manager>()->create_entity(p_detached_entity);
@@ -291,6 +299,23 @@ namespace black_cat
 
 		get_scene()->remove_actor(m_current_weapon);
 		get_scene()->add_actor(l_detached_rifle_actor);
+
+		m_current_weapon = game::bc_actor();*/
+
+		auto* l_rigid_dynamic_component = m_current_weapon.get_component<game::bc_rigid_dynamic_component>();
+		if (l_rigid_dynamic_component)
+		{
+			l_rigid_dynamic_component->set_enable(true);
+
+			{
+				physics::bc_scene_lock l_lock(&get_scene()->get_px_scene());
+				
+				auto l_rigid_dynamic = l_rigid_dynamic_component->get_dynamic_body();
+				const auto l_rigid_dynamic_pose = l_rigid_dynamic.get_global_pose();
+				l_rigid_dynamic.set_global_pose(physics::bc_transform(l_rigid_dynamic_pose.get_position() + get_look_direction(), l_rigid_dynamic_pose.get_matrix3()));
+				l_rigid_dynamic.set_linear_velocity(get_look_direction() * 2);
+			}
+		}
 
 		m_current_weapon = game::bc_actor();
 	}

@@ -208,8 +208,11 @@ namespace black_cat
 			m_px_controller = m_scene->get_px_scene().create_ccontroller(l_px_controller_desc);
 			m_px_controller->set_foot_position(m_position - m_local_origin);
 
+			physics::bc_rigid_actor l_px_controller_actor = m_px_controller->get_actor();
 			physics::bc_shape l_px_controller_shape;
-			m_px_controller->get_actor().get_shapes(&l_px_controller_shape, 1);
+			l_px_controller_actor.get_shapes(&l_px_controller_shape, 1);
+			
+			m_physics_system->set_game_actor(l_px_controller_actor, game::bc_actor());
 			l_px_controller_shape.set_flag(physics::bc_shape_flag::query, false);
 		}
 		
@@ -994,6 +997,9 @@ namespace black_cat
 		const auto l_final_rotation = l_world_transform.get_rotation() * (1 - l_aim_lock) + (l_weapon_up_rotation * l_weapon_forward_rotation) * l_aim_lock;
 		
 		l_world_transform.set_rotation(l_final_rotation);
+
+		//physics::bc_transform l(l_world_transform);
+		//BC_ASSERT(l.is_valid());
 		
 		m_weapon->m_actor.add_event(game::bc_world_transform_actor_event(l_world_transform));
 		m_weapon->m_actor.mark_for_double_update();

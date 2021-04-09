@@ -61,11 +61,13 @@ namespace black_cat
 			using platform_pack = bc_platform_height_field_pack< TApi >;
 
 		public:
-			bc_platform_height_field();
+			bc_platform_height_field() noexcept;
+
+			explicit bc_platform_height_field(platform_pack& p_pack) noexcept;
 
 			bc_platform_height_field(const bc_platform_height_field&) noexcept;
 
-			~bc_platform_height_field();
+			~bc_platform_height_field() override;
 
 			bc_platform_height_field& operator=(const bc_platform_height_field&) noexcept;
 
@@ -109,7 +111,12 @@ namespace black_cat
 			
 			bool is_valid() const noexcept override;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

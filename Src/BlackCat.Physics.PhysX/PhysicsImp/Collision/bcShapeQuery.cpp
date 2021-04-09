@@ -14,6 +14,13 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_ray_hit<g_api_physx>::bc_platform_ray_hit() noexcept
+			: m_pack()
+		{
+		}
+
+		template<bc_physics_api TApi>
+		bc_platform_ray_hit<TApi>::bc_platform_ray_hit(platform_pack& p_pack) noexcept
+			: m_pack(p_pack)
 		{
 		}
 
@@ -43,20 +50,20 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_rigid_actor bc_platform_ray_hit<g_api_physx>::get_actor() const noexcept
 		{
-			bc_rigid_actor l_result;
-			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object = m_pack.m_px_hit.actor;
-
-			return l_result;
+			bc_rigid_actor::platform_pack l_pack;
+			l_pack.m_px_object = m_pack.m_px_hit.actor;
+			
+			return bc_rigid_actor(l_pack);
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_shape bc_platform_ray_hit<g_api_physx>::get_shape() const noexcept
 		{
-			bc_shape l_result;
-			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object = m_pack.m_px_hit.shape;
-
-			return l_result;
+			bc_shape::platform_pack l_pack;
+			l_pack.m_px_object = m_pack.m_px_hit.shape;
+			
+			return bc_shape(l_pack);
 		}
 
 		template<>
@@ -90,14 +97,22 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_overlap_hit<g_api_physx>::bc_platform_overlap_hit() noexcept
+			: m_pack()
 		{
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_overlap_hit<g_api_physx>::bc_platform_overlap_hit(platform_pack& p_pack) noexcept
+			: m_pack(p_pack)
+		{	
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_overlap_hit<g_api_physx>::bc_platform_overlap_hit(const bc_platform_overlap_hit& p_other) noexcept
 		{
-			m_pack.m_px_hit = m_pack.m_px_hit;
+			m_pack.m_px_hit = p_other.m_pack.m_px_hit;
 		}
 
 		template<>
@@ -110,7 +125,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_platform_overlap_hit<g_api_physx>& bc_platform_overlap_hit<g_api_physx>::operator=(const bc_platform_overlap_hit& p_other) noexcept
 		{
-			m_pack.m_px_hit = m_pack.m_px_hit;
+			m_pack.m_px_hit = p_other.m_pack.m_px_hit;
 
 			return *this;
 		}
@@ -119,20 +134,20 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_rigid_actor bc_platform_overlap_hit<g_api_physx>::get_actor() const noexcept
 		{
-			bc_rigid_actor l_result;
-			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object = m_pack.m_px_hit.actor;
+			bc_rigid_actor::platform_pack l_pack;
+			l_pack.m_px_object = m_pack.m_px_hit.actor;
 
-			return l_result;
+			return bc_rigid_actor(l_pack);
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_shape bc_platform_overlap_hit<g_api_physx>::get_shape() const noexcept
 		{
-			bc_shape l_result;
-			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object = m_pack.m_px_hit.actor;
+			bc_shape::platform_pack l_pack;
+			l_pack.m_px_object = m_pack.m_px_hit.actor;
 
-			return l_result;
+			return bc_shape(l_pack);
 		}
 
 		template<>
@@ -145,6 +160,13 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_sweep_hit<g_api_physx>::bc_platform_sweep_hit() noexcept
+			: m_pack()
+		{
+		}
+
+		template<bc_physics_api TApi>
+		bc_platform_sweep_hit<TApi>::bc_platform_sweep_hit(platform_pack& p_pack) noexcept
+			: m_pack(p_pack)
 		{
 		}
 
@@ -174,20 +196,20 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_rigid_actor bc_platform_sweep_hit<g_api_physx>::get_actor() const noexcept
 		{
-			bc_rigid_actor l_result;
-			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object = m_pack.m_px_hit.actor;
-
-			return l_result;
+			bc_rigid_actor::platform_pack l_pack;
+			l_pack.m_px_object = m_pack.m_px_hit.actor;
+			
+			return bc_rigid_actor(l_pack);
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_shape bc_platform_sweep_hit<g_api_physx>::get_shape() const noexcept
 		{
-			bc_shape l_result;
-			static_cast<bc_physics_reference&>(l_result).get_platform_pack().m_px_object = m_pack.m_px_hit.actor;
+			bc_shape::platform_pack  l_pack;
+			l_pack.m_px_object = m_pack.m_px_hit.actor;
 
-			return l_result;
+			return bc_shape(l_pack);
 		}
 
 		template<>
@@ -229,17 +251,20 @@ namespace black_cat
 			(
 				bc_to_right_hand(p_ray.m_origin),
 				bc_to_right_hand(p_ray.m_dir),
-				*const_cast< bc_shape_geometry& >(p_shape).get_platform_pack().m_px_geometry,
-				const_cast< bc_transform& >(p_shape_pose).get_platform_pack().m_px_transform,
+				*p_shape.get_platform_pack().m_px_geometry,
+				p_shape_pose.get_platform_pack().m_px_transform,
 				p_ray.m_length,
 				static_cast< physx::PxHitFlag::Enum >(p_flags),
 				p_hits_count,
-				reinterpret_cast< physx::PxRaycastHit* >(p_hits)
+				&p_hits->get_platform_pack().m_px_hit
 			);
 
-			bc_overwrite_output_array< bc_ray_hit, physx::PxRaycastHit >(p_hits, l_written_count, [](bc_ray_hit& p_hit, physx::PxRaycastHit& p_px_hit)
+			bc_overwrite_output_array<bc_ray_hit, physx::PxRaycastHit>(p_hits, l_written_count, [](bc_ray_hit& p_hit, physx::PxRaycastHit& p_px_hit)
 			{
-				p_hit.get_platform_pack().m_px_hit = p_px_hit;
+				bc_ray_hit::platform_pack l_pack;
+				l_pack.m_px_hit = p_px_hit;
+			
+				return bc_ray_hit(l_pack);
 			});
 
 			return l_written_count;
@@ -259,10 +284,10 @@ namespace black_cat
 			(
 				bc_to_right_hand(p_unit_dir),
 				p_max_dist,
-				*const_cast<bc_shape_geometry&>(p_geom0).get_platform_pack().m_px_geometry,
-				const_cast<bc_transform&>(p_pose0).get_platform_pack().m_px_transform,
-				*const_cast<bc_shape_geometry&>(p_geom1).get_platform_pack().m_px_geometry,
-				const_cast<bc_transform&>(p_pose1).get_platform_pack().m_px_transform,
+				*p_geom0.get_platform_pack().m_px_geometry,
+				p_pose0.get_platform_pack().m_px_transform,
+				*p_geom1.get_platform_pack().m_px_geometry,
+				p_pose1.get_platform_pack().m_px_transform,
 				p_hit.get_platform_pack().m_px_hit,
 				static_cast< physx::PxHitFlag::Enum >(p_flags),
 				p_inflation
@@ -278,10 +303,10 @@ namespace black_cat
 		{
 			const bool l_result = physx::PxGeometryQuery::overlap
 			(
-				*const_cast<bc_shape_geometry&>(p_geom0).get_platform_pack().m_px_geometry,
-				const_cast< bc_transform& >(p_pose0).get_platform_pack().m_px_transform,
-				*const_cast<bc_shape_geometry&>(p_geom1).get_platform_pack().m_px_geometry,
-				const_cast< bc_transform& >(p_pose1).get_platform_pack().m_px_transform
+				*p_geom0.get_platform_pack().m_px_geometry,
+				p_pose0.get_platform_pack().m_px_transform,
+				*p_geom1.get_platform_pack().m_px_geometry,
+				p_pose1.get_platform_pack().m_px_transform
 			);
 
 			return l_result;
@@ -299,10 +324,10 @@ namespace black_cat
 			(
 				l_direction,
 				p_depth,
-				*const_cast<bc_shape_geometry&>(p_geom0).get_platform_pack().m_px_geometry,
-				const_cast< bc_transform& >(p_pose0).get_platform_pack().m_px_transform,
-				*const_cast<bc_shape_geometry&>(p_geom1).get_platform_pack().m_px_geometry,
-				const_cast< bc_transform& >(p_pose1).get_platform_pack().m_px_transform
+				*p_geom0.get_platform_pack().m_px_geometry,
+				p_pose0.get_platform_pack().m_px_transform,
+				*p_geom1.get_platform_pack().m_px_geometry,
+				p_pose1.get_platform_pack().m_px_transform
 			);
 
 			p_direction = bc_to_game_hand(l_direction);
@@ -320,8 +345,8 @@ namespace black_cat
 			const bcFLOAT l_result = physx::PxGeometryQuery::pointDistance
 			(
 				bc_to_right_hand(p_point),
-				*const_cast<bc_shape_geometry&>(p_geom).get_platform_pack().m_px_geometry,
-				const_cast< bc_transform& >(p_pose).get_platform_pack().m_px_transform,
+				*p_geom.get_platform_pack().m_px_geometry,
+				p_pose.get_platform_pack().m_px_transform,
 				&l_closest_point
 			);
 
@@ -334,16 +359,15 @@ namespace black_cat
 			const bc_transform& p_pose, 
 			bcFLOAT p_inflation)
 		{
-			bc_bound_box l_result;
-
-			l_result.get_platform_pack().m_bound = physx::PxGeometryQuery::getWorldBounds
+			bc_bound_box::platform_pack l_pack;
+			l_pack.m_bound = physx::PxGeometryQuery::getWorldBounds
 			(
-				*const_cast<bc_shape_geometry&>(p_geom).get_platform_pack().m_px_geometry,
-				const_cast< bc_transform& >(p_pose).get_platform_pack().m_px_transform,
+				*p_geom.get_platform_pack().m_px_geometry,
+				p_pose.get_platform_pack().m_px_transform,
 				p_inflation
 			);
-
-			return l_result;
+			
+			return bc_bound_box(l_pack);
 		}
 	}
 }

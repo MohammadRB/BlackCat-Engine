@@ -12,6 +12,14 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_contact_modify_set<g_api_physx>::bc_platform_contact_modify_set() noexcept
+			: m_pack()
+		{
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_contact_modify_set<g_api_physx>::bc_platform_contact_modify_set(platform_pack& p_pack) noexcept
+			: m_pack(p_pack)
 		{
 		}
 
@@ -41,8 +49,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		core::bc_vector3f bc_platform_contact_modify_set<g_api_physx>::get_point(bcUINT32 p_index) const noexcept
 		{
-			auto l_px_vec = m_pack.m_px_set->getPoint(p_index);
-
+			const auto& l_px_vec = m_pack.m_px_set->getPoint(p_index);
 			return bc_to_game_hand(l_px_vec);
 		}
 
@@ -57,8 +64,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		core::bc_vector3f bc_platform_contact_modify_set<g_api_physx>::get_normal(bcUINT32 p_index) const noexcept
 		{
-			auto l_px_vec = m_pack.m_px_set->getNormal(p_index);
-
+			const auto& l_px_vec = m_pack.m_px_set->getNormal(p_index);
 			return bc_to_game_hand(l_px_vec);
 		}
 
@@ -113,9 +119,16 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_contact_modify_pair<g_api_physx>::bc_platform_contact_modify_pair()
+		bc_platform_contact_modify_pair<g_api_physx>::bc_platform_contact_modify_pair() noexcept
 		{
 			m_pack.m_is_ccd = false;
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_contact_modify_pair<g_api_physx>::bc_platform_contact_modify_pair(platform_pack& p_pack) noexcept
+			: m_pack(p_pack)
+		{
 		}
 
 		template<>
@@ -150,8 +163,10 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		const bc_rigid_actor& bc_platform_contact_modify_pair<g_api_physx>::get_actor0() const noexcept
 		{
-			static_cast< bc_physics_reference& >(m_pack.m_actor0).get_platform_pack().m_px_object =
-				const_cast< physx::PxRigidActor* >(m_pack.m_px_pair->actor[0]);
+			bc_rigid_actor::platform_pack l_pack;
+			l_pack.m_px_object = const_cast<physx::PxRigidActor*>(m_pack.m_px_pair->actor[0]);
+			
+			m_pack.m_actor0 = bc_rigid_actor(l_pack);
 
 			return m_pack.m_actor0;
 		}
@@ -160,8 +175,10 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		const bc_rigid_actor& bc_platform_contact_modify_pair<g_api_physx>::get_actor1() const noexcept
 		{
-			static_cast< bc_physics_reference& >(m_pack.m_actor1).get_platform_pack().m_px_object =
-				const_cast< physx::PxRigidActor* >(m_pack.m_px_pair->actor[1]);
+			bc_rigid_actor::platform_pack l_pack;
+			l_pack.m_px_object = const_cast<physx::PxRigidActor*>(m_pack.m_px_pair->actor[1]);
+
+			m_pack.m_actor1 = bc_rigid_actor(l_pack);
 
 			return m_pack.m_actor1;
 		}
@@ -170,8 +187,10 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		const bc_shape& bc_platform_contact_modify_pair<g_api_physx>::get_shape0() const noexcept
 		{
-			static_cast< bc_physics_reference& >(m_pack.m_shape_0).get_platform_pack().m_px_object =
-				const_cast< physx::PxShape* >(m_pack.m_px_pair->shape[0]);
+			bc_shape::platform_pack l_pack;
+			l_pack.m_px_object = const_cast<physx::PxShape*>(m_pack.m_px_pair->shape[0]);
+			
+			m_pack.m_shape_0 = bc_shape(l_pack);
 
 			return m_pack.m_shape_0;
 		}
@@ -180,8 +199,10 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		const bc_shape& bc_platform_contact_modify_pair<g_api_physx>::get_shape1() const noexcept
 		{
-			static_cast< bc_physics_reference& >(m_pack.m_shape_1).get_platform_pack().m_px_object =
-				const_cast< physx::PxShape* >(m_pack.m_px_pair->shape[1]);
+			bc_shape::platform_pack l_pack;
+			l_pack.m_px_object = const_cast<physx::PxShape*>(m_pack.m_px_pair->shape[1]);
+
+			m_pack.m_shape_1 = bc_shape(l_pack);
 
 			return m_pack.m_shape_1;
 		}
@@ -197,7 +218,10 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_contact_modify_set& bc_platform_contact_modify_pair<g_api_physx>::get_contacts() noexcept
 		{
-			m_pack.m_contacts.get_platform_pack().m_px_set = &m_pack.m_px_pair->contacts;
+			bc_contact_modify_set::platform_pack l_pack;
+			l_pack.m_px_set = &m_pack.m_px_pair->contacts;
+			
+			m_pack.m_contacts = bc_contact_modify_set(l_pack);
 
 			return m_pack.m_contacts;
 		}

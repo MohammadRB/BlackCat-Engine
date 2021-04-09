@@ -23,7 +23,7 @@ namespace black_cat
 			using platform_pack = bc_platform_shape_box_pack<TApi>;
 
 		public:
-			bc_platform_shape_box(platform_pack& p_pack);
+			explicit bc_platform_shape_box(platform_pack& p_pack) noexcept;
 
 			/**
 			 * \brief Constructor to initialize half extents
@@ -31,15 +31,15 @@ namespace black_cat
 			 * \param p_y_half half of y extend
 			 * \param p_z_half half of z extend
 			 */
-			bc_platform_shape_box(bcFLOAT p_x_half, bcFLOAT p_y_half, bcFLOAT p_z_half);
+			bc_platform_shape_box(bcFLOAT p_x_half, bcFLOAT p_y_half, bcFLOAT p_z_half) noexcept;
 
-			explicit bc_platform_shape_box(const core::bc_vector3f& p_half_extends);
+			explicit bc_platform_shape_box(const core::bc_vector3f& p_half_extends) noexcept;
 
-			bc_platform_shape_box(const bc_platform_shape_box&);
+			bc_platform_shape_box(const bc_platform_shape_box&) noexcept;
 
-			~bc_platform_shape_box();
+			~bc_platform_shape_box() override;
 
-			bc_platform_shape_box& operator=(const bc_platform_shape_box&);
+			bc_platform_shape_box& operator=(const bc_platform_shape_box&) noexcept;
 
 			core::bc_vector3f get_half_extends() const noexcept;
 
@@ -50,7 +50,12 @@ namespace black_cat
 				return bc_shape_type::box;
 			}
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

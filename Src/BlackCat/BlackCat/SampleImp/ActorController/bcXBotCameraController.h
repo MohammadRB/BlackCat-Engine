@@ -45,7 +45,7 @@ namespace black_cat
 
 		void _attach_weapon(const bcCHAR* p_entity);
 
-		void _detach_weapon(const bcCHAR* p_detached_entity);
+		void _detach_weapon();
 		
 		core::bc_event_listener_handle m_key_listener_handle;
 		core::bc_event_listener_handle m_pointing_listener_handle;

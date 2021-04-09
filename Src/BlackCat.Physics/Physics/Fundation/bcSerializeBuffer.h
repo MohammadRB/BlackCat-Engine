@@ -26,7 +26,7 @@ namespace black_cat
 			using platform_pack = bc_platform_serialize_buffer_pack< TApi >;
 
 		public:
-			bc_platform_serialize_buffer();
+			bc_platform_serialize_buffer() noexcept;
 
 			explicit bc_platform_serialize_buffer(platform_pack& p_pack);
 
@@ -65,7 +65,12 @@ namespace black_cat
 			 */
 			void add(bc_height_field p_height_field) noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}

@@ -19,7 +19,7 @@ namespace black_cat
 		template< bc_physics_api TApi >
 		class bc_platform_ccontroller;
 		using bc_ccontroller = bc_platform_ccontroller< g_current_physics_api >;
-		
+
 		template< class TObject >
 		struct bc_platform_physics_ref_pack<g_api_physx, TObject>
 		{

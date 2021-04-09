@@ -35,12 +35,30 @@ namespace black_cat
 				bc_mesh_node::node_index_t p_attached_node_transform_index,
 				const physics::bc_transform& p_local_transform,
 				physics::bc_shape_flag p_flag)
+				: bc_mesh_part_collider_entry
+				(
+					std::move(p_px_shape),
+					p_attached_node_transform_index,
+					p_local_transform,
+					p_flag,
+					false
+				)
+			{
+			}
+
+			bc_mesh_part_collider_entry(core::bc_unique_ptr< physics::bc_shape_geometry > p_px_shape,
+				bc_mesh_node::node_index_t p_attached_node_transform_index,
+				const physics::bc_transform& p_local_transform,
+				physics::bc_shape_flag p_flag,
+				bool p_high_detail_query_shape)
 				: m_shape(std::move(p_px_shape)),
 				m_shape_flags(p_flag),
 				m_local_transform(p_local_transform),
 				m_initial_transform(),
-				m_attached_node_transform_index(p_attached_node_transform_index)
+				m_attached_node_transform_index(p_attached_node_transform_index),
+				m_high_detail_query_shape(p_high_detail_query_shape)
 			{
+				
 			}
 
 			bc_mesh_part_collider_entry(bc_mesh_part_collider_entry&&) = default;
@@ -54,6 +72,7 @@ namespace black_cat
 			physics::bc_transform m_local_transform;
 			physics::bc_transform m_initial_transform;
 			bc_mesh_node::node_index_t m_attached_node_transform_index;
+			bool m_high_detail_query_shape;
 		};
 
 		class BC_GAME_DLL bc_mesh_part_collider : public core::bc_const_iterator_adapter<core::bc_vector<bc_mesh_part_collider_entry>>
@@ -93,7 +112,8 @@ namespace black_cat
 			void add_px_shape(physics::bc_triangle_mesh_ref&& p_mesh,
 				bc_mesh_node::node_index_t p_attached_node_transform_index,
 				const physics::bc_transform& p_local_transform,
-				physics::bc_shape_flag p_flags = physics::bc_shape_flag::default_v);
+				physics::bc_shape_flag p_flags = physics::bc_shape_flag::default_v,
+				bool p_high_detail_query_shape = false);
 
 			void shrink_to_fit();
 

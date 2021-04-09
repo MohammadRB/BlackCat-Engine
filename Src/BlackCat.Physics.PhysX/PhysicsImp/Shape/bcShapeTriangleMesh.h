@@ -13,14 +13,31 @@ namespace black_cat
 	namespace physics
 	{
 		template<>
-		struct bc_platform_shape_triangle_mesh_pack< g_api_physx >
+		struct bc_platform_shape_triangle_mesh_pack<g_api_physx> : bc_platform_shape_geometry_pack<g_api_physx>
 		{
-			explicit bc_platform_shape_triangle_mesh_pack(const physx::PxTriangleMeshGeometry& p_sphere)
-				: m_px_geometry(p_sphere)
+			explicit bc_platform_shape_triangle_mesh_pack(const physx::PxTriangleMeshGeometry& p_px_mesh_geometry)
+				: bc_platform_shape_geometry_pack(m_px_mesh_geometry),
+				m_px_mesh_geometry(p_px_mesh_geometry)
 			{
 			}
 
-			physx::PxTriangleMeshGeometry m_px_geometry;
+			bc_platform_shape_triangle_mesh_pack(const bc_platform_shape_triangle_mesh_pack& p_other)
+				: bc_platform_shape_geometry_pack(m_px_mesh_geometry),
+				m_px_mesh_geometry(p_other.m_px_mesh_geometry)
+			{
+			}
+
+			~bc_platform_shape_triangle_mesh_pack() = default;
+
+			bc_platform_shape_triangle_mesh_pack& operator=(const bc_platform_shape_triangle_mesh_pack& p_other)
+			{
+				bc_platform_shape_geometry_pack::operator=(m_px_mesh_geometry);
+				m_px_mesh_geometry = p_other.m_px_mesh_geometry;
+
+				return *this;
+			}
+
+			physx::PxTriangleMeshGeometry m_px_mesh_geometry;
 		};
 	}
 }

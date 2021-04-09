@@ -11,7 +11,7 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_shape_capsule<g_api_physx>::bc_platform_shape_capsule(platform_pack& p_pack)
-			: bc_platform_shape_geometry(bc_platform_shape_geometry::platform_pack(m_pack.m_px_geometry)),
+			: bc_platform_shape_geometry(),
 			m_pack(p_pack)
 		{
 		}
@@ -19,7 +19,7 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_shape_capsule<g_api_physx>::bc_platform_shape_capsule(bcFLOAT p_half_height, bcFLOAT p_radius)
-			: bc_platform_shape_geometry(bc_platform_shape_geometry::platform_pack(m_pack.m_px_geometry)),
+			: bc_platform_shape_geometry(),
 			m_pack(physx::PxCapsuleGeometry(p_radius, p_half_height))
 		{
 		}
@@ -27,7 +27,7 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_shape_capsule<g_api_physx>::bc_platform_shape_capsule(const bc_platform_shape_capsule& p_other)
-			: bc_platform_shape_geometry(bc_platform_shape_geometry::platform_pack(m_pack.m_px_geometry)),
+			: bc_platform_shape_geometry(p_other),
 			m_pack(p_other.m_pack)
 		{
 		}
@@ -42,8 +42,8 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_platform_shape_capsule<g_api_physx>& bc_platform_shape_capsule<g_api_physx>::operator=(const bc_platform_shape_capsule& p_other)
 		{
-			bc_platform_shape_geometry::operator=(bc_platform_shape_geometry::platform_pack(m_pack.m_px_geometry));
-			m_pack.m_px_geometry = p_other.m_pack.m_px_geometry;
+			bc_platform_shape_geometry::operator=(p_other);
+			m_pack.m_px_capsule = p_other.m_pack.m_px_capsule;
 
 			return *this;
 		}
@@ -52,14 +52,14 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bcFLOAT bc_platform_shape_capsule<g_api_physx>::get_half_height() const noexcept
 		{
-			return m_pack.m_px_geometry.halfHeight;
+			return m_pack.m_px_capsule.halfHeight;
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		bcFLOAT bc_platform_shape_capsule<g_api_physx>::get_radius() const noexcept
 		{
-			return m_pack.m_px_geometry.radius;
+			return m_pack.m_px_capsule.radius;
 		}
 	}
 }

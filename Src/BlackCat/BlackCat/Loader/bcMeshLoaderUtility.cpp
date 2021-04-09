@@ -110,7 +110,7 @@ namespace black_cat
 		for(bcUINT32 l_child_ite = 0; l_child_ite < p_ai_scene.mRootNode->mNumChildren; ++l_child_ite)
 		{
 			const aiNode* l_child_node = p_ai_scene.mRootNode->mChildren[l_child_ite];
-			if (std::strncmp(l_child_node->mName.data, l_px_node_name.data(), l_px_node_name.size()) == 0)
+			if (std::strcmp(l_child_node->mName.data, l_px_node_name.data()) == 0)
 			{
 				l_ai_node_colliders.push_back(l_child_node);
 			}

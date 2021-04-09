@@ -153,6 +153,8 @@ namespace black_cat
 		public:
 			bc_platform_ccontroller() noexcept;
 
+			explicit bc_platform_ccontroller(platform_pack& p_pack) noexcept;
+
 			bc_platform_ccontroller(const bc_platform_ccontroller& p_other) noexcept;
 
 			~bc_platform_ccontroller() override;
@@ -224,7 +226,12 @@ namespace black_cat
 
 			void* get_data() const noexcept;
 			
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

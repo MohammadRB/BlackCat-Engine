@@ -12,6 +12,14 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_scene_debug<g_api_physx>::bc_platform_scene_debug() noexcept
+			: m_pack()
+		{
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_scene_debug<g_api_physx>::bc_platform_scene_debug(platform_pack&& p_pack) noexcept
+			: m_pack(std::move(p_pack))
 		{
 		}
 
@@ -51,7 +59,7 @@ namespace black_cat
 		{
 			core::bc_vector< bc_scene_debug_line > result;
 			auto* l_px_lines = m_pack.m_px_debug->getLines();
-			auto l_line_count = get_line_count();
+			const auto l_line_count = get_line_count();
 
 			result.reserve(l_line_count);
 
@@ -82,7 +90,7 @@ namespace black_cat
 		{
 			core::bc_vector< bc_scene_debug_text > result;
 			auto* l_px_texts = m_pack.m_px_debug->getTexts();
-			auto l_text_count = get_text_count();
+			const auto l_text_count = get_text_count();
 
 			result.reserve(l_text_count);
 

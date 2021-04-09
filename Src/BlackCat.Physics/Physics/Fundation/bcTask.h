@@ -22,7 +22,7 @@ namespace black_cat
 			using platform_pack = bc_platform_task_pack<TApi>;
 
 		public:
-			bc_platform_task(const platform_pack& p_pack);
+			explicit bc_platform_task(const platform_pack& p_pack);
 
 			bc_platform_task(bc_platform_task&&) noexcept;
 

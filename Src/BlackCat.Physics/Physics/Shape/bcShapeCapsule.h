@@ -25,10 +25,10 @@ namespace black_cat
 			using platform_pack = bc_platform_shape_capsule_pack<TApi>;
 
 		public:
-			bc_platform_shape_capsule(platform_pack& p_pack);
+			explicit bc_platform_shape_capsule(platform_pack& p_pack);
 
 			/**
-			 * \brief Constructor to initialzie capsule with passed radius and half height.
+			 * \brief Constructor to initialize capsule with passed radius and half height.
 			 * \param p_half_height Half of the capsule's height, measured between the centers of the hemispherical ends.
 			 * \param p_radius 
 			 */
@@ -36,7 +36,7 @@ namespace black_cat
 
 			bc_platform_shape_capsule(const bc_platform_shape_capsule&);
 
-			~bc_platform_shape_capsule();
+			~bc_platform_shape_capsule() override;
 
 			bc_platform_shape_capsule& operator=(const bc_platform_shape_capsule&);
 
@@ -49,7 +49,12 @@ namespace black_cat
 				return bc_shape_type::capsule;
 			}
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

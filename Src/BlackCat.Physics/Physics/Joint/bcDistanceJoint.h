@@ -25,9 +25,11 @@ namespace black_cat
 		public:
 			bc_platform_distance_joint() noexcept;
 
+			explicit bc_platform_distance_joint(platform_pack& p_pack) noexcept;
+
 			bc_platform_distance_joint(const bc_platform_distance_joint&) noexcept;
 
-			~bc_platform_distance_joint();
+			~bc_platform_distance_joint() override;
 
 			bc_platform_distance_joint& operator=(const bc_platform_distance_joint&) noexcept;
 
@@ -48,7 +50,12 @@ namespace black_cat
 
 			bc_joint_linear_limit_pair get_limit() const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

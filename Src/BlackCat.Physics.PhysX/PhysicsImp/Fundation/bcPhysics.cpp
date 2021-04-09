@@ -88,7 +88,6 @@ namespace black_cat
 		{
 			p_desc.get_platform_pack().m_px_desc.cpuDispatcher = m_pack.m_task_dispatcher.get();
 
-			bc_scene l_result;
 			_bc_px_scene_pack_data l_scene_pack_data;
 			l_scene_pack_data.m_px_scene = m_pack.m_px_physics->createScene(p_desc.get_platform_pack().m_px_desc);
 			l_scene_pack_data.m_controller_manager = PxCreateControllerManager(*l_scene_pack_data.m_px_scene);
@@ -102,9 +101,10 @@ namespace black_cat
 			//l_scene_pack_data.m_controller_manager->setOverlapRecoveryModule(true);
 			//l_scene_pack_data.m_controller_manager->setPreciseSweeps(false);
 			
-			l_result.get_platform_pack().m_data = core::bc_make_shared<_bc_px_scene_pack_data>(std::move(l_scene_pack_data));
+			bc_scene::platform_pack l_pack;
+			l_pack.m_data = core::bc_make_shared<_bc_px_scene_pack_data>(std::move(l_scene_pack_data));
 
-			return bc_scene_ref(l_result);
+			return bc_scene_ref(bc_scene(l_pack));
 		}
 
 		template<>
@@ -118,23 +118,20 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_rigid_static_ref bc_platform_physics< g_api_physx >::create_rigid_static(const bc_transform& p_pose)
 		{
-			bc_rigid_static l_result;
-			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
-				m_pack.m_px_physics->createRigidStatic(const_cast< bc_transform& >(p_pose).get_platform_pack().m_px_transform);
+			bc_rigid_static::platform_pack l_pack;
+			l_pack.m_px_object = m_pack.m_px_physics->createRigidStatic(p_pose.get_platform_pack().m_px_transform);
 
-			return bc_rigid_static_ref(l_result);
+			return bc_rigid_static_ref(bc_rigid_static(l_pack));
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_rigid_dynamic_ref bc_platform_physics< g_api_physx >::create_rigid_dynamic(const bc_transform& p_pose)
 		{
-			bc_rigid_dynamic l_result;
-
-			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
-				m_pack.m_px_physics->createRigidDynamic(const_cast< bc_transform& >(p_pose).get_platform_pack().m_px_transform);
-			
-			return bc_rigid_dynamic_ref(l_result);
+			bc_rigid_dynamic::platform_pack l_pack;
+			l_pack.m_px_object = m_pack.m_px_physics->createRigidDynamic(p_pose.get_platform_pack().m_px_transform);
+						
+			return bc_rigid_dynamic_ref(bc_rigid_dynamic(l_pack));
 		}
 
 		template<>
@@ -159,18 +156,16 @@ namespace black_cat
 			bc_shape_flag p_shape_flags,
 			bool p_is_exclusive)
 		{
-			bc_shape l_result;
+			bc_shape::platform_pack l_pack;
+			l_pack.m_px_object = m_pack.m_px_physics->createShape
+			(
+				*p_geometry.get_platform_pack().m_px_geometry,
+				*static_cast<physx::PxMaterial*>(p_material.get_platform_pack().m_px_object),
+				p_is_exclusive,
+				static_cast<physx::PxShapeFlag::Enum>(p_shape_flags)
+			);
 
-			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
-				m_pack.m_px_physics->createShape
-				(
-					*const_cast< bc_shape_geometry& >(p_geometry).get_platform_pack().m_px_geometry,
-					*reinterpret_cast< physx::PxMaterial* >(static_cast< bc_physics_reference& >(const_cast< bc_material& >(p_material)).get_platform_pack().m_px_object),
-					p_is_exclusive,
-					static_cast< physx::PxShapeFlag::Enum >(p_shape_flags)
-				);
-
-			return bc_shape_ref(l_result);
+			return bc_shape_ref(bc_shape(l_pack));
 		}
 
 		template<>
@@ -198,31 +193,26 @@ namespace black_cat
 			bc_shape_flag p_shape_flags,
 			bool p_is_exclusive)
 		{
-			bc_shape l_result;
-
 			auto** l_px_material_buffer = static_cast< physx::PxMaterial** >(BC_ALLOC(sizeof(physx::PxMaterial*) * p_material_count, core::bc_alloc_type::frame));
 
 			for (bcUINT32 i = 0; i < p_material_count; ++i)
 			{
-				l_px_material_buffer[i] = static_cast< physx::PxMaterial* >
-				(
-					static_cast< bc_physics_reference* >(p_materials[i])->get_platform_pack().m_px_object
-				);
+				l_px_material_buffer[i] = static_cast<physx::PxMaterial*>(p_materials[i]->get_platform_pack().m_px_object);
 			}
 
-			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
-				m_pack.m_px_physics->createShape
-				(
-					*const_cast< bc_shape_geometry& >(p_geometry).get_platform_pack().m_px_geometry,
-					l_px_material_buffer,
-					p_material_count,
-					p_is_exclusive,
-					static_cast< physx::PxShapeFlag::Enum >(p_shape_flags)
-				);
+			bc_shape::platform_pack l_shape_pack;
+			l_shape_pack.m_px_object = m_pack.m_px_physics->createShape
+			(
+				*p_geometry.get_platform_pack().m_px_geometry,
+				l_px_material_buffer,
+				p_material_count,
+				p_is_exclusive,
+				static_cast<physx::PxShapeFlag::Enum>(p_shape_flags)
+			);
 
 			BC_FREE(l_px_material_buffer);
 
-			return bc_shape_ref(l_result);
+			return bc_shape_ref(bc_shape(l_shape_pack));
 		}
 
 		template<>
@@ -238,12 +228,10 @@ namespace black_cat
 			bcFLOAT p_dynamic_friction,
 			bcFLOAT p_restitution)
 		{
-			bc_material l_px_material;
+			bc_material::platform_pack l_pack;
+			l_pack.m_px_object = m_pack.m_px_physics->createMaterial(p_static_friction, p_dynamic_friction, p_restitution);
 
-			static_cast< bc_physics_reference& >(l_px_material).get_platform_pack().m_px_object =
-				m_pack.m_px_physics->createMaterial(p_static_friction, p_dynamic_friction, p_restitution);
-
-			return bc_material_ref(l_px_material);
+			return bc_material_ref(bc_material(l_pack));
 		}
 
 		template<>
@@ -257,44 +245,42 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_aggregate_ref bc_platform_physics< g_api_physx >::create_aggregate(bcUINT32 p_max_size, bool p_enable_self_collision)
 		{
-			bc_aggregate l_px_aggregate;
+			bc_aggregate::platform_pack l_pack;
+			l_pack.m_px_object = m_pack.m_px_physics->createAggregate(p_max_size, p_enable_self_collision);
 
-			static_cast< bc_physics_reference& >(l_px_aggregate).get_platform_pack().m_px_object =
-				m_pack.m_px_physics->createAggregate(p_max_size, p_enable_self_collision);
-
-			return bc_aggregate_ref(l_px_aggregate);
+			return bc_aggregate_ref(bc_aggregate(l_pack));
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_memory_buffer bc_platform_physics< g_api_physx >::create_convex_mesh(const bc_convex_mesh_desc& p_desc)
 		{
-			bc_memory_buffer l_result;
 			core::bc_unique_ptr< physx::PxVec3 > l_vertex_buffer(static_cast< physx::PxVec3* >
-				(
-					BC_ALLOC(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
-				));
+			(
+				BC_ALLOC(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
+			));
 
 			physx::PxConvexMeshDesc l_px_desc = bc_convert_to_px_convex_mesh(p_desc, l_vertex_buffer.get());
 			l_px_desc.flags = physx::PxConvexFlag::eCOMPUTE_CONVEX;
 
+			bc_memory_buffer l_buffer;
 			physx::PxConvexMeshCookingResult::Enum l_px_result_flag;
-			if (m_pack.m_px_cooking->cookConvexMesh(l_px_desc, *l_result.get_platform_pack().m_px_stream, &l_px_result_flag))
+			
+			if (m_pack.m_px_cooking->cookConvexMesh(l_px_desc, *l_buffer.get_platform_pack().m_px_stream, &l_px_result_flag))
 			{
-				l_result.get_platform_pack().m_is_valid = true;
-
-				return l_result;
+				l_buffer.get_platform_pack().m_is_valid = true;
+				return l_buffer;
 			}
 
 			// If failed try with eINFLATE_CONVEX flag
 			l_px_desc.flags |= physx::PxConvexFlag::eINFLATE_CONVEX;
 
-			if (m_pack.m_px_cooking->cookConvexMesh(l_px_desc, *l_result.get_platform_pack().m_px_stream, &l_px_result_flag))
+			if (m_pack.m_px_cooking->cookConvexMesh(l_px_desc, *l_buffer.get_platform_pack().m_px_stream, &l_px_result_flag))
 			{
-				l_result.get_platform_pack().m_is_valid = true;
+				l_buffer.get_platform_pack().m_is_valid = true;
 			}
 
-			return l_result;
+			return l_buffer;
 		}
 
 		template<>
@@ -303,17 +289,16 @@ namespace black_cat
 		{
 			BC_ASSERT(p_buffer.is_valid());
 
-			bc_convex_mesh l_result;
+			bc_convex_mesh::platform_pack l_pack;
 
 			physx::PxDefaultMemoryInputData input
 			(
 				static_cast< physx::PxU8* >(p_buffer.get_buffer_pointer()),
 				p_buffer.get_buffer_size()
 			);
-			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
-				m_pack.m_px_physics->createConvexMesh(input);
+			l_pack.m_px_object = m_pack.m_px_physics->createConvexMesh(input);
 
-			return bc_convex_mesh_ref(l_result);
+			return bc_convex_mesh_ref(bc_convex_mesh(l_pack));
 		}
 
 		template<>
@@ -327,7 +312,6 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_memory_buffer bc_platform_physics< g_api_physx >::create_triangle_mesh(const bc_triangle_mesh_desc& p_desc)
 		{
-			bc_memory_buffer l_result;
 			const bool l_16_bit_index = core::bc_enum::has(p_desc.m_flag, bc_triangle_mesh_flag::use_16bit_index);
 			const core::bc_unique_ptr< physx::PxVec3 > l_vertex_buffer
 			(
@@ -345,13 +329,14 @@ namespace black_cat
 			);
 
 			const physx::PxTriangleMeshDesc l_px_desc = bc_convert_to_px_triangle_mesh(p_desc, l_vertex_buffer.get(), l_index_buffer.get());
-
-			if (m_pack.m_px_cooking->cookTriangleMesh(l_px_desc, *l_result.get_platform_pack().m_px_stream))
+			bc_memory_buffer l_buffer;
+			
+			if (m_pack.m_px_cooking->cookTriangleMesh(l_px_desc, *l_buffer.get_platform_pack().m_px_stream))
 			{
-				l_result.get_platform_pack().m_is_valid = true;
+				l_buffer.get_platform_pack().m_is_valid = true;
 			}
 
-			return l_result;
+			return l_buffer;
 		}
 
 		template<>
@@ -360,16 +345,15 @@ namespace black_cat
 		{
 			BC_ASSERT(p_buffer.is_valid());
 
-			bc_triangle_mesh l_result;
-
 			physx::PxDefaultMemoryInputData l_input
 			(
 				static_cast< physx::PxU8* >(p_buffer.get_buffer_pointer()),
 				p_buffer.get_buffer_size()
 			);
-			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object = m_pack.m_px_physics->createTriangleMesh(l_input);
+			bc_triangle_mesh::platform_pack l_pack;
+			l_pack.m_px_object = m_pack.m_px_physics->createTriangleMesh(l_input);
 
-			return bc_triangle_mesh_ref(l_result);
+			return bc_triangle_mesh_ref(bc_triangle_mesh(l_pack));
 		}
 
 		template<>
@@ -416,10 +400,10 @@ namespace black_cat
 
 			physx::PxTriangleMesh* l_px_triangle_mesh = m_pack.m_px_cooking->createTriangleMesh(l_px_desc, m_pack.m_px_physics->getPhysicsInsertionCallback());
 
-			bc_triangle_mesh l_triangle_mesh;
-			static_cast<bc_physics_reference&>(l_triangle_mesh).get_platform_pack().m_px_object = l_px_triangle_mesh;
+			bc_triangle_mesh::platform_pack l_triangle_pack;
+			l_triangle_pack.m_px_object = l_px_triangle_mesh;
 
-			return bc_triangle_mesh_ref(l_triangle_mesh);
+			return bc_triangle_mesh_ref(bc_triangle_mesh(l_triangle_pack));
 		}
 
 		template<>
@@ -433,20 +417,20 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_memory_buffer bc_platform_physics< g_api_physx >::create_height_field(const bc_height_field_desc& p_desc)
 		{
-			bc_memory_buffer l_result;
-			core::bc_unique_ptr< physx::PxHeightFieldSample > l_sample_buffer(static_cast< physx::PxHeightFieldSample* >
+			const core::bc_unique_ptr< physx::PxHeightFieldSample > l_sample_buffer(static_cast< physx::PxHeightFieldSample* >
 			(
 				BC_ALLOC(sizeof(physx::PxHeightFieldSample) * (p_desc.m_num_row * p_desc.m_num_column), core::bc_alloc_type::frame)
 			));
 
-			physx::PxHeightFieldDesc l_px_desc = bc_convert_to_px_height_field(p_desc, l_sample_buffer.get());
-
-			if (m_pack.m_px_cooking->cookHeightField(l_px_desc, *l_result.get_platform_pack().m_px_stream))
+			const physx::PxHeightFieldDesc l_px_desc = bc_convert_to_px_height_field(p_desc, l_sample_buffer.get());
+			bc_memory_buffer l_buffer;
+			
+			if (m_pack.m_px_cooking->cookHeightField(l_px_desc, *l_buffer.get_platform_pack().m_px_stream))
 			{
-				l_result.get_platform_pack().m_is_valid = true;
+				l_buffer.get_platform_pack().m_is_valid = true;
 			}
 
-			return l_result;
+			return l_buffer;
 		}
 
 		template<>
@@ -455,17 +439,15 @@ namespace black_cat
 		{
 			BC_ASSERT(p_buffer.is_valid());
 
-			bc_height_field l_result;
-
 			physx::PxDefaultMemoryInputData input
 			(
 				static_cast< physx::PxU8* >(p_buffer.get_buffer_pointer()),
 				p_buffer.get_buffer_size()
 			);
-			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
-				m_pack.m_px_physics->createHeightField(input);
+			bc_height_field::platform_pack l_pack;
+			l_pack.m_px_object = m_pack.m_px_physics->createHeightField(input);
 
-			return bc_height_field_ref(l_result);
+			return bc_height_field_ref(bc_height_field(l_pack));
 		}
 
 		template<>
@@ -482,19 +464,17 @@ namespace black_cat
 			bc_rigid_actor* p_actor1,
 			const bc_transform& p_local_frame1)
 		{
-			bc_fixed_joint l_result;
+			bc_fixed_joint::platform_pack l_pack;
+			l_pack.m_px_object = physx::PxFixedJointCreate
+			(
+				*m_pack.m_px_physics,
+				static_cast< physx::PxRigidActor* >(p_actor0->get_platform_pack().m_px_object),
+				p_local_frame0.get_platform_pack().m_px_transform,
+				static_cast< physx::PxRigidActor* >(p_actor1->get_platform_pack().m_px_object),
+				p_local_frame1.get_platform_pack().m_px_transform
+			);
 
-			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
-				physx::PxFixedJointCreate
-				(
-					*m_pack.m_px_physics,
-					static_cast< physx::PxRigidActor* >(static_cast< bc_physics_reference* >(p_actor0)->get_platform_pack().m_px_object),
-					const_cast< bc_transform& >(p_local_frame0).get_platform_pack().m_px_transform,
-					static_cast< physx::PxRigidActor* >(static_cast< bc_physics_reference* >(p_actor1)->get_platform_pack().m_px_object),
-					const_cast< bc_transform& >(p_local_frame1).get_platform_pack().m_px_transform
-				);
-
-			return bc_fixed_joint_ref(l_result);
+			return bc_fixed_joint_ref(bc_fixed_joint(l_pack));
 		}
 
 		template<>
@@ -504,19 +484,17 @@ namespace black_cat
 			bc_rigid_actor* p_actor1,
 			const bc_transform& p_local_frame1)
 		{
-			bc_distance_joint l_result;
+			bc_distance_joint::platform_pack l_pack;
+			l_pack.m_px_object = physx::PxDistanceJointCreate
+			(
+				*m_pack.m_px_physics,
+				static_cast< physx::PxRigidActor* >(p_actor0->get_platform_pack().m_px_object),
+				p_local_frame0.get_platform_pack().m_px_transform,
+				static_cast< physx::PxRigidActor* >(p_actor1->get_platform_pack().m_px_object),
+				p_local_frame1.get_platform_pack().m_px_transform
+			);
 
-			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
-				physx::PxDistanceJointCreate
-				(
-					*m_pack.m_px_physics,
-					static_cast< physx::PxRigidActor* >(static_cast< bc_physics_reference* >(p_actor0)->get_platform_pack().m_px_object),
-					const_cast< bc_transform& >(p_local_frame0).get_platform_pack().m_px_transform,
-					static_cast< physx::PxRigidActor* >(static_cast< bc_physics_reference* >(p_actor1)->get_platform_pack().m_px_object),
-					const_cast< bc_transform& >(p_local_frame1).get_platform_pack().m_px_transform
-				);
-
-			return bc_distance_joint_ref(l_result);
+			return bc_distance_joint_ref(bc_distance_joint(l_pack));
 		}
 
 		template<>
@@ -526,19 +504,18 @@ namespace black_cat
 			bc_rigid_actor* p_actor1,
 			const bc_transform& p_local_frame1)
 		{
-			bc_prismatic_joint l_result;
+			bc_prismatic_joint::platform_pack l_pack;
 
-			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
-				physx::PxPrismaticJointCreate
-				(
-					*m_pack.m_px_physics,
-					static_cast< physx::PxRigidActor* >(static_cast< bc_physics_reference* >(p_actor0)->get_platform_pack().m_px_object),
-					const_cast< bc_transform& >(p_local_frame0).get_platform_pack().m_px_transform,
-					static_cast< physx::PxRigidActor* >(static_cast< bc_physics_reference* >(p_actor1)->get_platform_pack().m_px_object),
-					const_cast< bc_transform& >(p_local_frame1).get_platform_pack().m_px_transform
-				);
+			l_pack.m_px_object = physx::PxPrismaticJointCreate
+			(
+				*m_pack.m_px_physics,
+				static_cast<physx::PxRigidActor*>(p_actor0->get_platform_pack().m_px_object),
+				p_local_frame0.get_platform_pack().m_px_transform,
+				static_cast<physx::PxRigidActor*>(p_actor1->get_platform_pack().m_px_object),
+				p_local_frame1.get_platform_pack().m_px_transform
+			);
 
-			return bc_prismatic_joint_ref(l_result);
+			return bc_prismatic_joint_ref(bc_prismatic_joint(l_pack));
 		}
 
 		template<>
@@ -548,19 +525,18 @@ namespace black_cat
 			bc_rigid_actor* p_actor1,
 			const bc_transform& p_local_frame1)
 		{
-			bc_revolute_joint l_result;
+			bc_revolute_joint::platform_pack l_pack;
 
-			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
-				physx::PxRevoluteJointCreate
-				(
-					*m_pack.m_px_physics,
-					static_cast< physx::PxRigidActor* >(static_cast< bc_physics_reference* >(p_actor0)->get_platform_pack().m_px_object),
-					const_cast< bc_transform& >(p_local_frame0).get_platform_pack().m_px_transform,
-					static_cast< physx::PxRigidActor* >(static_cast< bc_physics_reference* >(p_actor1)->get_platform_pack().m_px_object),
-					const_cast< bc_transform& >(p_local_frame1).get_platform_pack().m_px_transform
-				);
+			l_pack.m_px_object = physx::PxRevoluteJointCreate
+			(
+				*m_pack.m_px_physics,
+				static_cast<physx::PxRigidActor*>(p_actor0->get_platform_pack().m_px_object),
+				p_local_frame0.get_platform_pack().m_px_transform,
+				static_cast<physx::PxRigidActor*>(p_actor1->get_platform_pack().m_px_object),
+				p_local_frame1.get_platform_pack().m_px_transform
+			);
 
-			return bc_revolute_joint_ref(l_result);
+			return bc_revolute_joint_ref(bc_revolute_joint(l_pack));
 		}
 
 		template<>
@@ -570,19 +546,17 @@ namespace black_cat
 			bc_rigid_actor* p_actor1,
 			const bc_transform& p_local_frame1)
 		{
-			bc_spherical_joint l_result;
+			bc_spherical_joint::platform_pack l_pack;
+			l_pack.m_px_object = physx::PxSphericalJointCreate
+			(
+				*m_pack.m_px_physics,
+				static_cast<physx::PxRigidActor*>(p_actor0->get_platform_pack().m_px_object),
+				p_local_frame0.get_platform_pack().m_px_transform,
+				static_cast<physx::PxRigidActor*>(p_actor1->get_platform_pack().m_px_object),
+				p_local_frame1.get_platform_pack().m_px_transform
+			);
 
-			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
-				physx::PxSphericalJointCreate
-				(
-					*m_pack.m_px_physics,
-					static_cast< physx::PxRigidActor* >(static_cast< bc_physics_reference* >(p_actor0)->get_platform_pack().m_px_object),
-					const_cast< bc_transform& >(p_local_frame0).get_platform_pack().m_px_transform,
-					static_cast< physx::PxRigidActor* >(static_cast< bc_physics_reference* >(p_actor1)->get_platform_pack().m_px_object),
-					const_cast< bc_transform& >(p_local_frame1).get_platform_pack().m_px_transform
-				);
-
-			return bc_spherical_joint_ref(l_result);
+			return bc_spherical_joint_ref(bc_spherical_joint(l_pack));
 		}
 
 		template<>
@@ -592,43 +566,39 @@ namespace black_cat
 			bc_rigid_actor* p_actor1,
 			const bc_transform& p_local_frame1)
 		{
-			bc_d6_joint l_result;
+			bc_d6_joint::platform_pack l_pack;
+			l_pack.m_px_object = physx::PxD6JointCreate
+			(
+				*m_pack.m_px_physics,
+				static_cast<physx::PxRigidActor*>(p_actor0->get_platform_pack().m_px_object),
+				p_local_frame0.get_platform_pack().m_px_transform,
+				static_cast<physx::PxRigidActor*>(p_actor1->get_platform_pack().m_px_object),
+				p_local_frame1.get_platform_pack().m_px_transform
+			);
 
-			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object =
-				physx::PxD6JointCreate
-				(
-					*m_pack.m_px_physics,
-					static_cast< physx::PxRigidActor* >(static_cast< bc_physics_reference* >(p_actor0)->get_platform_pack().m_px_object),
-					const_cast< bc_transform& >(p_local_frame0).get_platform_pack().m_px_transform,
-					static_cast< physx::PxRigidActor* >(static_cast< bc_physics_reference* >(p_actor1)->get_platform_pack().m_px_object),
-					const_cast< bc_transform& >(p_local_frame1).get_platform_pack().m_px_transform
-				);
-
-			return bc_d6_joint_ref(l_result);
+			return bc_d6_joint_ref(bc_d6_joint(l_pack));
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_memory_buffer bc_platform_physics< g_api_physx >::read_to_memory_buffer(void* p_data, bcUINT32 p_size)
 		{
-			bc_memory_buffer l_result;
-			l_result.get_platform_pack().m_px_stream->write(p_data, p_size);
-			l_result.get_platform_pack().m_is_valid = true;
+			bc_memory_buffer l_buffer;
+			l_buffer.get_platform_pack().m_px_stream->write(p_data, p_size);
+			l_buffer.get_platform_pack().m_is_valid = true;
 
-			return l_result;
+			return l_buffer;
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_serialize_buffer bc_platform_physics< g_api_physx >::create_serialize_buffer()
 		{
-			bc_serialize_buffer::platform_pack l_buffer_pack;
-			l_buffer_pack.m_registry = physx::PxSerialization::createSerializationRegistry(*m_pack.m_px_physics);
-			l_buffer_pack.m_collection = PxCreateCollection();
+			bc_serialize_buffer::platform_pack l_pack;
+			l_pack.m_registry = physx::PxSerialization::createSerializationRegistry(*m_pack.m_px_physics);
+			l_pack.m_collection = PxCreateCollection();
 
-			bc_serialize_buffer l_buffer(l_buffer_pack);
-
-			return l_buffer;
+			return bc_serialize_buffer(l_pack);
 		}
 
 		template<>
@@ -649,11 +619,11 @@ namespace black_cat
 				*p_buffer.get_platform_pack().m_registry
 			);
 
-			bc_memory_buffer l_result;
-			l_result.get_platform_pack().m_px_stream = std::move(l_output_stream);
-			l_result.get_platform_pack().m_is_valid = true;
+			bc_memory_buffer l_buffer;
+			l_buffer.get_platform_pack().m_px_stream = std::move(l_output_stream);
+			l_buffer.get_platform_pack().m_is_valid = true;
 
-			return l_result;
+			return l_buffer;
 		}
 
 		template<>
@@ -669,9 +639,7 @@ namespace black_cat
 			l_buffer_pack.m_collection = physx::PxSerialization::createCollectionFromBinary(l_aligned_buffer, *l_buffer_pack.m_registry);
 			l_buffer_pack.m_collection_deserialize_buffer = l_aligned_buffer;
 
-			bc_serialize_buffer l_result(l_buffer_pack);
-
-			return l_result;
+			return bc_serialize_buffer(l_buffer_pack);;
 		}
 
 		template<>

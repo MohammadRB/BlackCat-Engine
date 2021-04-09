@@ -23,17 +23,17 @@ namespace black_cat
 			using platform_pack = bc_platform_shape_convex_mesh_pack<TApi>;
 
 		public:
-			explicit bc_platform_shape_convex_mesh(platform_pack& p_pack);
+			explicit bc_platform_shape_convex_mesh(platform_pack& p_pack) noexcept;
 
-			explicit bc_platform_shape_convex_mesh(const bc_convex_mesh& p_convex);
+			explicit bc_platform_shape_convex_mesh(const bc_convex_mesh& p_convex) noexcept;
 
-			bc_platform_shape_convex_mesh(const bc_geometry_scale& p_scale, const bc_convex_mesh& p_convex);
+			bc_platform_shape_convex_mesh(const bc_geometry_scale& p_scale, const bc_convex_mesh& p_convex) noexcept;
 
-			bc_platform_shape_convex_mesh(const bc_platform_shape_convex_mesh&);
+			bc_platform_shape_convex_mesh(const bc_platform_shape_convex_mesh&) noexcept;
 
-			~bc_platform_shape_convex_mesh();
+			~bc_platform_shape_convex_mesh() override;
 
-			bc_platform_shape_convex_mesh& operator=(const bc_platform_shape_convex_mesh&);
+			bc_platform_shape_convex_mesh& operator=(const bc_platform_shape_convex_mesh&) noexcept;
 
 			bc_geometry_scale get_scale() const noexcept;
 
@@ -44,7 +44,12 @@ namespace black_cat
 				return bc_shape_type::convex_mesh;
 			}
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

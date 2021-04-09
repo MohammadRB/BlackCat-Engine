@@ -63,6 +63,7 @@ namespace black_cat
 					physics::bc_hit_flag::hit_info,
 					p_flags,
 					static_cast<physics::bc_query_group>(p_query_group),
+					true,
 					&l_query_filter
 				);
 				return l_px_hit_result;

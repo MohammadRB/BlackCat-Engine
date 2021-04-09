@@ -14,7 +14,7 @@ namespace black_cat
 	namespace physics
 	{
 		template<>
-		struct bc_platform_convex_mesh_pack< g_api_physx >
+		struct bc_platform_convex_mesh_pack<g_api_physx> : bc_platform_physics_reference_pack<g_api_physx>
 		{
 			constexpr static bcUINT16 s_polygon_limit = 256;
 		};

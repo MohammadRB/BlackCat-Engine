@@ -13,7 +13,7 @@ namespace black_cat
 	namespace physics
 	{
 		template<>
-		struct bc_platform_height_field_sample_array_pack< g_api_physx >
+		struct bc_platform_height_field_sample_array_pack< g_api_physx > : bc_platform_physics_reference_pack<g_api_physx>
 		{
 			bcUINT32 m_num_rows;
 			bcUINT32 m_num_columns;

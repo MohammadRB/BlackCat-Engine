@@ -43,7 +43,12 @@ namespace black_cat
 				return bc_shape_type::triangle_mesh;
 			}
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

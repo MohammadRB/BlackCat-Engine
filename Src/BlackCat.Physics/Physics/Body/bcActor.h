@@ -60,9 +60,11 @@ namespace black_cat
 		public:
 			bc_platform_actor() noexcept;
 
+			explicit bc_platform_actor(platform_pack& p_pack) noexcept;
+
 			bc_platform_actor(const bc_platform_actor&) noexcept;
 
-			virtual ~bc_platform_actor();
+			virtual ~bc_platform_actor() override;
 
 			bc_platform_actor& operator=(const bc_platform_actor&) noexcept;
 
@@ -98,7 +100,12 @@ namespace black_cat
 
 			void* get_data() const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}
@@ -107,7 +114,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_actor = bc_platform_actor< g_current_physics_api >;
-		using bc_actor_ref = bc_physics_ref< bc_actor >;
+		using bc_actor = bc_platform_actor<g_current_physics_api>;
+		using bc_actor_ref = bc_physics_ref<bc_actor>;
 	}
 }

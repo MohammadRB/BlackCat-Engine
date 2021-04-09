@@ -40,6 +40,15 @@ namespace black_cat
 
 		static_assert
 		(
+			static_cast<bcUINT32>(bc_actor_flag::visualization) == physx::PxActorFlag::eVISUALIZATION &&
+			static_cast<bcUINT32>(bc_actor_flag::disable_gravity) == physx::PxActorFlag::eDISABLE_GRAVITY &&
+			static_cast<bcUINT32>(bc_actor_flag::send_sleep_wake) == physx::PxActorFlag::eSEND_SLEEP_NOTIFIES &&
+			static_cast<bcUINT32>(bc_actor_flag::visualization) == physx::PxActorFlag::eVISUALIZATION,
+			"bc_actor_flag value is incompatible with physX values"
+		);
+
+		static_assert
+		(
 			static_cast<bcUINT32>(bc_ccontroller_collision_flag::sides) == physx::PxControllerCollisionFlag::eCOLLISION_SIDES &&
 			static_cast<bcUINT32>(bc_ccontroller_collision_flag::up) == physx::PxControllerCollisionFlag::eCOLLISION_UP &&
 			static_cast<bcUINT32>(bc_ccontroller_collision_flag::down) == physx::PxControllerCollisionFlag::eCOLLISION_DOWN,
@@ -58,6 +67,13 @@ namespace black_cat
 			static_cast<bcUINT32>(bc_rigid_body_flag::ccd) == physx::PxRigidBodyFlag::eENABLE_CCD &&
 			static_cast<bcUINT32>(bc_rigid_body_flag::kinematic) == physx::PxRigidBodyFlag::eKINEMATIC,
 			"bc_rigid_body_flag value is incompatible with physX values"
+		);
+
+		static_assert
+		(
+			static_cast<bcUINT32>(bc_shape_query_flag::touching) == physx::PxQueryHitType::eTOUCH &&
+			static_cast<bcUINT32>(bc_shape_query_flag::blocking) == physx::PxQueryHitType::eBLOCK,
+			"bc_shape_query_flag value is incompatible with physX values"
 		);
 	}
 }

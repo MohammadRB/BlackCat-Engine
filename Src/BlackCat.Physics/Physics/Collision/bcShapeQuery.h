@@ -67,6 +67,8 @@ namespace black_cat
 		public:
 			bc_platform_ray_hit() noexcept;
 
+			explicit bc_platform_ray_hit(platform_pack& p_pack) noexcept;
+
 			bc_platform_ray_hit(const bc_platform_ray_hit&) noexcept;
 
 			~bc_platform_ray_hit();
@@ -85,7 +87,12 @@ namespace black_cat
 
 			bcUINT32 get_face_index() const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}
@@ -110,6 +117,8 @@ namespace black_cat
 		public:
 			bc_platform_overlap_hit() noexcept;
 
+			explicit bc_platform_overlap_hit(platform_pack& p_pack) noexcept;
+
 			bc_platform_overlap_hit(const bc_platform_overlap_hit&) noexcept;
 
 			~bc_platform_overlap_hit();
@@ -122,7 +131,12 @@ namespace black_cat
 
 			bcUINT32 get_face_index() const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}
@@ -147,6 +161,8 @@ namespace black_cat
 		public:
 			bc_platform_sweep_hit() noexcept;
 
+			explicit bc_platform_sweep_hit(platform_pack& p_pack) noexcept;
+
 			bc_platform_sweep_hit(const bc_platform_sweep_hit&) noexcept;
 
 			~bc_platform_sweep_hit();
@@ -165,7 +181,12 @@ namespace black_cat
 
 			bcUINT32 get_face_index() const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}

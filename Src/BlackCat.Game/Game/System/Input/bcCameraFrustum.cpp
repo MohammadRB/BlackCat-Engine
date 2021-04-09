@@ -41,27 +41,18 @@ namespace black_cat
 			_construct(p_camera.get_extends());
 		}
 
-		bc_camera_frustum::bc_camera_frustum(const bc_camera_frustum& p_other) noexcept
-			: m_planes(p_other.m_planes)
-		{
-		}
+		bc_camera_frustum::bc_camera_frustum(const bc_camera_frustum& p_other) noexcept = default;
 
-		bc_camera_frustum::~bc_camera_frustum()
-		{
-		}
+		bc_camera_frustum::~bc_camera_frustum() = default;
 
-		bc_camera_frustum& bc_camera_frustum::operator=(const bc_camera_frustum& p_other) noexcept
-		{
-			m_planes = p_other.m_planes;
-			return *this;
-		}
+		bc_camera_frustum& bc_camera_frustum::operator=(const bc_camera_frustum& p_other) noexcept = default;
 
 		bool bc_camera_frustum::intersects(const physics::bc_bound_box& p_box) const noexcept
 		{
 			const physics::bc_shape_box l_box(p_box.get_half_extends());
 			const physics::bc_transform l_box_transform(p_box.get_center());
 
-			for (auto& l_plane : m_planes)
+			for (const auto& l_plane : m_planes)
 			{
 				const bool l_intersects = physics::bc_shape_query::overlap(l_box, l_box_transform, l_plane, l_plane.as_transform());
 				if(!l_intersects)

@@ -52,6 +52,8 @@ namespace black_cat
 		public:
 			bc_platform_trigger_pair() noexcept;
 
+			explicit bc_platform_trigger_pair(platform_pack& p_pack) noexcept;
+
 			bc_platform_trigger_pair(const bc_platform_trigger_pair&) noexcept;
 
 			~bc_platform_trigger_pair();
@@ -68,7 +70,12 @@ namespace black_cat
 
 			bc_trigger_type trigger_type() const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}
@@ -93,6 +100,8 @@ namespace black_cat
 		public:
 			bc_platform_contact_pair() noexcept;
 
+			explicit bc_platform_contact_pair(platform_pack& p_pack) noexcept;
+
 			bc_platform_contact_pair(const bc_platform_contact_pair&) noexcept;
 
 			~bc_platform_contact_pair();
@@ -103,7 +112,12 @@ namespace black_cat
 
 			const bc_rigid_actor* get_actor1() const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}
@@ -128,6 +142,8 @@ namespace black_cat
 		public:
 			bc_platform_contact_point() noexcept;
 
+			explicit bc_platform_contact_point(platform_pack& p_pack) noexcept;
+
 			bc_platform_contact_point(const bc_platform_contact_point&) noexcept;
 
 			~bc_platform_contact_point();
@@ -146,7 +162,12 @@ namespace black_cat
 
 			bcUINT32 get_face_index1() const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}
@@ -171,6 +192,8 @@ namespace black_cat
 		public:
 			bc_platform_contact_shape_pair() noexcept;
 
+			explicit bc_platform_contact_shape_pair(platform_pack& p_pack) noexcept;
+
 			bc_platform_contact_shape_pair(const bc_platform_contact_shape_pair&) noexcept;
 
 			~bc_platform_contact_shape_pair();
@@ -185,7 +208,12 @@ namespace black_cat
 
 			bcUINT32 get_contact_count() const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}

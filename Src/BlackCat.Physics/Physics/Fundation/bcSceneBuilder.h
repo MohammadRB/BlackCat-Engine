@@ -53,7 +53,9 @@ namespace black_cat
 			using platform_pack = bc_platform_scene_builder_pack< TApi >;
 			
 		public:
-			bc_platform_scene_builder();
+			bc_platform_scene_builder() noexcept;
+
+			explicit bc_platform_scene_builder(platform_pack&& p_pack) noexcept;
 
 			bc_platform_scene_builder(bc_platform_scene_builder&&) noexcept;
 
@@ -76,6 +78,11 @@ namespace black_cat
 			bc_platform_scene_builder& enable_locking();
 
 			platform_pack& get_platform_pack()
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const
 			{
 				return m_pack;
 			}

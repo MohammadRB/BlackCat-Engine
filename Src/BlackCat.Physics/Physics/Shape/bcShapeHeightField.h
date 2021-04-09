@@ -21,17 +21,17 @@ namespace black_cat
 			using platform_pack = bc_platform_shape_height_field_pack<TApi>;
 
 		public:
-			explicit bc_platform_shape_height_field(platform_pack& p_pack);
+			explicit bc_platform_shape_height_field(platform_pack& p_pack) noexcept;
 
 			bc_platform_shape_height_field(const bc_height_field& p_height_field,
 				bcUINT16 p_xz_scale,
-				bcFLOAT p_y_scale);
+				bcFLOAT p_y_scale) noexcept;
 
-			bc_platform_shape_height_field(const bc_platform_shape_height_field&);
+			bc_platform_shape_height_field(const bc_platform_shape_height_field&) noexcept;
 
-			~bc_platform_shape_height_field();
+			~bc_platform_shape_height_field() override;
 
-			bc_platform_shape_height_field& operator=(const bc_platform_shape_height_field&);
+			bc_platform_shape_height_field& operator=(const bc_platform_shape_height_field&) noexcept;
 
 			bc_height_field get_height_field() const noexcept;
 
@@ -44,7 +44,12 @@ namespace black_cat
 				return bc_shape_type::height_field;
 			}
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

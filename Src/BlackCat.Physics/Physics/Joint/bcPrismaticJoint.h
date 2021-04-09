@@ -17,19 +17,21 @@ namespace black_cat
 		};
 
 		template< bc_physics_api TApi >
-		class bc_platfrom_prismatic_joint : public bc_platform_joint<TApi>
+		class bc_platform_prismatic_joint : public bc_platform_joint<TApi>
 		{
 		public:
 			using platform_pack = bc_platform_prismatic_joint_pack< TApi >;
 
 		public:
-			bc_platfrom_prismatic_joint() noexcept;
+			bc_platform_prismatic_joint() noexcept;
 
-			bc_platfrom_prismatic_joint(const bc_platfrom_prismatic_joint&) noexcept;
+			explicit bc_platform_prismatic_joint(platform_pack& p_pack) noexcept;
 
-			~bc_platfrom_prismatic_joint();
+			bc_platform_prismatic_joint(const bc_platform_prismatic_joint&) noexcept;
 
-			bc_platfrom_prismatic_joint& operator=(const bc_platfrom_prismatic_joint&) noexcept;
+			~bc_platform_prismatic_joint() override;
+
+			bc_platform_prismatic_joint& operator=(const bc_platform_prismatic_joint&) noexcept;
 
 			/**
 			 * \brief returns the displacement of the joint along its axis.
@@ -52,7 +54,12 @@ namespace black_cat
 
 			bc_joint_linear_limit_pair get_limit() const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}
@@ -61,7 +68,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_prismatic_joint = bc_platfrom_prismatic_joint< g_current_physics_api >;
+		using bc_prismatic_joint = bc_platform_prismatic_joint< g_current_physics_api >;
 		using bc_prismatic_joint_ref = bc_physics_ref<bc_prismatic_joint>;
 	}
 }

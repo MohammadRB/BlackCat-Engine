@@ -30,6 +30,13 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
+		bc_platform_bound_box<g_api_physx>::bc_platform_bound_box(platform_pack& p_pack) noexcept
+			: m_pack(p_pack)
+		{
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
 		bc_platform_bound_box< g_api_physx >::bc_platform_bound_box(const bc_platform_bound_box& p_other) noexcept
 			: m_pack(p_other.m_pack)
 		{

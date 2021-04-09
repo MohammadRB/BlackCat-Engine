@@ -171,8 +171,9 @@ namespace black_cat
 		class bc_px_query_filter_callback : public physx::PxQueryFilterCallback
 		{
 		public:
-			explicit bc_px_query_filter_callback(bc_scene_query_post_filter_callback* p_post_filter_callback)
-				: m_post_filter_callback(p_post_filter_callback)
+			explicit bc_px_query_filter_callback(bc_scene_query_post_filter_callback* p_post_filter_callback, bool p_high_detail_query_shape)
+				: m_post_filter_callback(p_post_filter_callback),
+				m_high_detail_query_shape(p_high_detail_query_shape)
 			{
 			}
 			
@@ -186,6 +187,7 @@ namespace black_cat
 
 		private:
 			bc_scene_query_post_filter_callback* m_post_filter_callback;
+			bool m_high_detail_query_shape;
 		};
 
 		class bc_px_controller_hit_callback : public physx::PxUserControllerHitReport
@@ -207,7 +209,8 @@ namespace black_cat
 		{
 		public:
 			bc_px_ccontroller_query_filter(bc_scene_query_pre_filter_callback* p_pre_filter,
-				bc_scene_query_post_filter_callback* p_post_filter);
+				bc_scene_query_post_filter_callback* p_post_filter,
+				bool p_high_detail_query_shape);
 
 			physx::PxQueryHitType::Enum preFilter(const physx::PxFilterData& p_filter_data,
 				const physx::PxShape* p_shape,
@@ -220,6 +223,7 @@ namespace black_cat
 		private:
 			bc_scene_query_pre_filter_callback* m_pre_filter;
 			bc_scene_query_post_filter_callback* m_post_filter;
+			bool m_high_detail_query_shape;
 		};
 		
 		class bc_px_ccontroller_collision_filter : public physx::PxControllerFilterCallback

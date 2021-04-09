@@ -21,6 +21,12 @@ namespace black_cat
 
 			virtual physics::bc_rigid_body& get_body() noexcept = 0;
 
+			/**
+			 * \brief Enable or disable simulation of physics actor
+			 * \param p_enable 
+			 */
+			void set_enable(bool p_enable) noexcept;
+			
 		protected:
 			bc_rigid_body_component() noexcept;
 

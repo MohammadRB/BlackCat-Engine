@@ -31,6 +31,8 @@ namespace black_cat
 
 			bc_platform_bound_box(const core::bc_vector3f& p_center, const core::bc_vector3f& p_half_extend) noexcept;
 
+			explicit bc_platform_bound_box(platform_pack& p_pack) noexcept;
+			
 			bc_platform_bound_box(const bc_platform_bound_box&) noexcept;
 
 			~bc_platform_bound_box();

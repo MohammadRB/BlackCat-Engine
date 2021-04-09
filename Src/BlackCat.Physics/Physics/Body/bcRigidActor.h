@@ -14,23 +14,25 @@ namespace black_cat
 {
 	namespace physics
 	{
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		struct bc_platform_rigid_actor_pack
 		{
 		};
 
-		template< bc_physics_api TApi >
-		class bc_platform_rigid_actor : public bc_platform_actor< TApi >
+		template<bc_physics_api TApi>
+		class bc_platform_rigid_actor : public bc_platform_actor<TApi>
 		{
 		public:
-			using platform_pack = bc_platform_rigid_actor_pack< TApi >;
+			using platform_pack = bc_platform_rigid_actor_pack<TApi>;
 
 		public:
 			bc_platform_rigid_actor() noexcept;
+			
+			explicit bc_platform_rigid_actor(platform_pack& p_pack) noexcept;
 
 			bc_platform_rigid_actor(const bc_platform_rigid_actor&) noexcept;
 
-			virtual ~bc_platform_rigid_actor();
+			virtual ~bc_platform_rigid_actor() override;
 
 			bc_platform_rigid_actor& operator=(const bc_platform_rigid_actor&);
 
@@ -119,14 +121,6 @@ namespace black_cat
 			 * \param p_value 
 			 */
 			void set_notify_flag(bc_shape_notify_flag p_flag, bool p_value) noexcept;
-
-			platform_pack& get_platform_pack()
-			{
-				return m_pack;
-			}
-
-		private:
-			platform_pack m_pack;
 		};
 
 		using bc_rigid_actor = bc_platform_rigid_actor< g_current_physics_api >;

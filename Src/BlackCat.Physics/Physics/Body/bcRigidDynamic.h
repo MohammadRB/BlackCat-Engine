@@ -22,7 +22,9 @@ namespace black_cat
 			using platform_pack = bc_platform_rigid_dynamic_pack< TApi >;
 
 		public:
-			bc_platform_rigid_dynamic();
+			bc_platform_rigid_dynamic() noexcept;
+
+			explicit bc_platform_rigid_dynamic(platform_pack& p_pack) noexcept;
 
 			bc_platform_rigid_dynamic(const bc_platform_rigid_dynamic&) noexcept;
 
@@ -119,14 +121,6 @@ namespace black_cat
 			 * \param[in] p_threshold Force threshold for contact reports.
 			 */
 			void set_contact_report_threshold(bcFLOAT p_threshold) noexcept;
-
-			platform_pack& get_platform_pack()
-			{
-				return m_pack;
-			}
-
-		private:
-			platform_pack m_pack;
 		};
 
 		using bc_rigid_dynamic = bc_platform_rigid_dynamic< g_current_physics_api >;

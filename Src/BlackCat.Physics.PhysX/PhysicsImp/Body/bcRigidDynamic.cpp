@@ -10,8 +10,15 @@ namespace black_cat
 	{
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_rigid_dynamic< g_api_physx >::bc_platform_rigid_dynamic()
+		bc_platform_rigid_dynamic< g_api_physx >::bc_platform_rigid_dynamic() noexcept
 			: bc_platform_rigid_body()
+		{
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_rigid_dynamic<g_api_physx>::bc_platform_rigid_dynamic(platform_pack& p_pack) noexcept
+			: bc_platform_rigid_body(p_pack)
 		{
 		}
 
@@ -41,34 +48,25 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		void bc_platform_rigid_dynamic< g_api_physx >::set_kinematic_target(const bc_transform& p_destination) noexcept
 		{
-			auto* l_px_rigid = static_cast< physx::PxRigidDynamic* >
-			(
-				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_dynamic& >(*this)).get_platform_pack().m_px_object
-			);
+			auto* l_px_rigid = static_cast<physx::PxRigidDynamic*>(get_platform_pack().m_px_object);
 
-			l_px_rigid->setKinematicTarget(const_cast< bc_transform& >(p_destination).get_platform_pack().m_px_transform);
+			l_px_rigid->setKinematicTarget(p_destination.get_platform_pack().m_px_transform);
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		bool bc_platform_rigid_dynamic< g_api_physx >::get_kinematic_target(bc_transform& p_target) noexcept
 		{
-			auto* l_px_rigid = static_cast< physx::PxRigidDynamic* >
-			(
-				static_cast< bc_platform_physics_reference& >(*this).get_platform_pack().m_px_object
-			);
+			auto* l_px_rigid = static_cast<physx::PxRigidDynamic*>(get_platform_pack().m_px_object);
 
-			return l_px_rigid->getKinematicTarget(const_cast< bc_transform& >(p_target).get_platform_pack().m_px_transform);
+			return l_px_rigid->getKinematicTarget(p_target.get_platform_pack().m_px_transform);
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		void bc_platform_rigid_dynamic< g_api_physx >::set_linear_damping(bcFLOAT p_damp) noexcept
 		{
-			auto* l_px_rigid = static_cast< physx::PxRigidDynamic* >
-			(
-				static_cast< bc_platform_physics_reference& >(*this).get_platform_pack().m_px_object
-			);
+			auto* l_px_rigid = static_cast<physx::PxRigidDynamic*>(get_platform_pack().m_px_object);
 
 			l_px_rigid->setLinearDamping(p_damp);
 		}
@@ -77,10 +75,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bcFLOAT bc_platform_rigid_dynamic< g_api_physx >::get_linear_damping() const noexcept
 		{
-			auto* l_px_rigid = static_cast< physx::PxRigidDynamic* >
-			(
-				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_dynamic& >(*this)).get_platform_pack().m_px_object
-			);
+			auto* l_px_rigid = static_cast<physx::PxRigidDynamic*>(get_platform_pack().m_px_object);
 
 			return l_px_rigid->getLinearDamping();
 		}
@@ -89,10 +84,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		void bc_platform_rigid_dynamic< g_api_physx >::set_angular_damping(bcFLOAT p_damp) noexcept
 		{
-			auto* l_px_rigid = static_cast< physx::PxRigidDynamic* >
-			(
-				static_cast< bc_platform_physics_reference& >(*this).get_platform_pack().m_px_object
-			);
+			auto* l_px_rigid = static_cast<physx::PxRigidDynamic*>(get_platform_pack().m_px_object);
 
 			l_px_rigid->setAngularDamping(p_damp);
 		}
@@ -101,10 +93,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bcFLOAT bc_platform_rigid_dynamic< g_api_physx >::get_angular_damping() const noexcept
 		{
-			auto* l_px_rigid = static_cast< physx::PxRigidDynamic* >
-			(
-				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_dynamic& >(*this)).get_platform_pack().m_px_object
-			);
+			auto* l_px_rigid = static_cast<physx::PxRigidDynamic*>(get_platform_pack().m_px_object);
 
 			return l_px_rigid->getAngularDamping();
 		}
@@ -113,10 +102,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bool bc_platform_rigid_dynamic< g_api_physx >::is_sleeping() const noexcept
 		{
-			auto* l_px_rigid = static_cast< physx::PxRigidDynamic* >
-			(
-				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_dynamic& >(*this)).get_platform_pack().m_px_object
-			);
+			auto* l_px_rigid = static_cast<physx::PxRigidDynamic*>(get_platform_pack().m_px_object);
 
 			return l_px_rigid->isSleeping();
 		}
@@ -149,10 +135,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bcFLOAT bc_platform_rigid_dynamic< g_api_physx >::get_contact_report_threshold() const noexcept
 		{
-			auto* l_px_rigid = static_cast< physx::PxRigidDynamic* >
-			(
-				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_rigid_dynamic& >(*this)).get_platform_pack().m_px_object
-			);
+			auto* l_px_rigid = static_cast<physx::PxRigidDynamic*>(get_platform_pack().m_px_object);
 
 			return l_px_rigid->getContactReportThreshold();
 		}
@@ -161,10 +144,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		void bc_platform_rigid_dynamic< g_api_physx >::set_contact_report_threshold(bcFLOAT p_threshold) noexcept
 		{
-			auto* l_px_rigid = static_cast< physx::PxRigidDynamic* >
-			(
-				static_cast< bc_platform_physics_reference& >(*this).get_platform_pack().m_px_object
-			);
+			auto* l_px_rigid = static_cast<physx::PxRigidDynamic*>(get_platform_pack().m_px_object);
 
 			l_px_rigid->setContactReportThreshold(p_threshold);
 		}

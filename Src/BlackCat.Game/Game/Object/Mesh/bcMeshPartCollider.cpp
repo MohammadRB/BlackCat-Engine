@@ -93,8 +93,7 @@ namespace black_cat
 			(
 				bc_mesh_part_collider_entry
 				(
-					core::bc_make_unique< physics::bc_shape_convex_mesh >
-					(physics::bc_shape_convex_mesh(p_convex.get())),
+					core::bc_make_unique< physics::bc_shape_convex_mesh >(physics::bc_shape_convex_mesh(p_convex.get())),
 					p_attached_node_transform_index,
 					p_local_transform,
 					p_flags
@@ -106,17 +105,18 @@ namespace black_cat
 		void bc_mesh_part_collider::add_px_shape(physics::bc_triangle_mesh_ref&& p_mesh,
 			bc_mesh_node::node_index_t p_attached_node_transform_index,
 			const physics::bc_transform& p_local_transform,
-			physics::bc_shape_flag p_flags)
+			physics::bc_shape_flag p_flags,
+			bool p_high_detail_query_shape)
 		{
 			m_shapes.push_back
 			(
 				bc_mesh_part_collider_entry
 				(
-					core::bc_make_unique< physics::bc_shape_triangle_mesh >
-					(physics::bc_shape_triangle_mesh(p_mesh.get())),
+					core::bc_make_unique< physics::bc_shape_triangle_mesh >(physics::bc_shape_triangle_mesh(p_mesh.get())),
 					p_attached_node_transform_index,
 					p_local_transform,
-					p_flags
+					p_flags,
+					p_high_detail_query_shape
 				)
 			);
 			m_triangle_shapes.push_back(std::move(p_mesh));

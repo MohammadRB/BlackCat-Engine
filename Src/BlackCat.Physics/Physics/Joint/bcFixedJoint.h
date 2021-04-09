@@ -23,13 +23,20 @@ namespace black_cat
 		public:
 			bc_platform_fixed_joint() noexcept;
 
+			explicit bc_platform_fixed_joint(platform_pack& p_pack) noexcept;
+
 			bc_platform_fixed_joint(const bc_platform_fixed_joint&) noexcept;
 
-			~bc_platform_fixed_joint();
+			~bc_platform_fixed_joint() override;
 
 			bc_platform_fixed_joint& operator=(const bc_platform_fixed_joint&) noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

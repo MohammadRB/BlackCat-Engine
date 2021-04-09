@@ -12,7 +12,7 @@ namespace black_cat
 	namespace physics
 	{
 		template<>
-		struct bc_platform_material_pack<g_api_physx>
+		struct bc_platform_material_pack<g_api_physx> : bc_platform_physics_reference_pack<g_api_physx>
 		{
 		};
 	}

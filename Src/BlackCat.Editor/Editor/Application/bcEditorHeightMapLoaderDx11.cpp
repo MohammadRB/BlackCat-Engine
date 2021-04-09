@@ -43,7 +43,7 @@ namespace black_cat
 			));
 		}
 
-		std::pair< graphic::bc_texture_config, graphic::bc_resource_view_config > bc_editor_height_map_loader_dx11::get_height_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const
+		std::pair<graphic::bc_texture_config, graphic::bc_resource_view_config> bc_editor_height_map_loader_dx11::get_height_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const
 		{
 			// Because in editor we need unordered view on height map texture and DX11.0 doesn't support typed UAV load on R16_SINT format, we use R32_SINT
 			auto l_texture_config = graphic::bc_graphic_resource_builder()
@@ -68,7 +68,7 @@ namespace black_cat
 			return std::make_pair(l_texture_config, l_view_config);
 		}
 
-		std::pair< graphic::bc_texture_config, graphic::bc_resource_view_config > bc_editor_height_map_loader_dx11::get_texture_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const
+		std::pair<graphic::bc_texture_config, graphic::bc_resource_view_config> bc_editor_height_map_loader_dx11::get_texture_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const
 		{
 			auto l_texture_config = graphic::bc_graphic_resource_builder().as_resource()
 				.as_texture2d

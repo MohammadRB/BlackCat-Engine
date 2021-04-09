@@ -14,7 +14,6 @@ namespace black_cat
 		template< bc_physics_api TApi >
 		struct bc_platform_transform_pack
 		{
-			
 		};
 
 		template< bc_physics_api TApi >
@@ -25,6 +24,8 @@ namespace black_cat
 
 		public:
 			bc_platform_transform() noexcept;
+			
+			explicit bc_platform_transform(platform_pack& p_pack) noexcept;
 
 			explicit bc_platform_transform(const core::bc_vector3f& p_position) noexcept;
 
@@ -68,7 +69,12 @@ namespace black_cat
 
 			static bc_platform_transform identity() noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}

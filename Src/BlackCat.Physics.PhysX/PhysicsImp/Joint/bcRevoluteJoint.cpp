@@ -10,65 +10,67 @@ namespace black_cat
 	{
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platfrom_revolute_joint<g_api_physx>::bc_platfrom_revolute_joint() noexcept
-			: bc_platform_joint()
+		bc_platform_revolute_joint<g_api_physx>::bc_platform_revolute_joint() noexcept
+			: bc_platform_joint(),
+			m_pack()
 		{
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platfrom_revolute_joint<g_api_physx>::bc_platfrom_revolute_joint(const bc_platfrom_revolute_joint& p_other) noexcept
-			: bc_platform_joint(p_other)
+		bc_platform_revolute_joint<g_api_physx>::bc_platform_revolute_joint(platform_pack& p_pack) noexcept
+			: bc_platform_joint(p_pack),
+			m_pack(p_pack)
 		{
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platfrom_revolute_joint<g_api_physx>::~bc_platfrom_revolute_joint()
+		bc_platform_revolute_joint<g_api_physx>::bc_platform_revolute_joint(const bc_platform_revolute_joint& p_other) noexcept
+			: bc_platform_joint(p_other),
+			m_pack(p_other.m_pack)
 		{
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platfrom_revolute_joint<g_api_physx>& bc_platfrom_revolute_joint<g_api_physx>::operator=(const bc_platfrom_revolute_joint& p_other) noexcept
+		bc_platform_revolute_joint<g_api_physx>::~bc_platform_revolute_joint()
+		{
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_revolute_joint<g_api_physx>& bc_platform_revolute_joint<g_api_physx>::operator=(const bc_platform_revolute_joint& p_other) noexcept
 		{
 			bc_platform_joint::operator=(p_other);
+			m_pack = p_other.m_pack;
 
 			return *this;
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bcFLOAT bc_platfrom_revolute_joint<g_api_physx>::get_angle() const noexcept
+		bcFLOAT bc_platform_revolute_joint<g_api_physx>::get_angle() const noexcept
 		{
-			auto* l_px_joint = static_cast< physx::PxRevoluteJoint* >
-				(
-					static_cast< bc_platform_physics_reference& >(const_cast< bc_platfrom_revolute_joint& >(*this)).get_platform_pack().m_px_object
-					);
+			auto* l_px_joint = static_cast<physx::PxRevoluteJoint*>(m_pack.m_px_object);
 
 			return l_px_joint->getAngle();
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bcFLOAT bc_platfrom_revolute_joint<g_api_physx>::get_velocity() const noexcept
+		bcFLOAT bc_platform_revolute_joint<g_api_physx>::get_velocity() const noexcept
 		{
-			auto* l_px_joint = static_cast< physx::PxRevoluteJoint* >
-				(
-					static_cast< bc_platform_physics_reference& >(const_cast< bc_platfrom_revolute_joint& >(*this)).get_platform_pack().m_px_object
-					);
+			auto* l_px_joint = static_cast<physx::PxRevoluteJoint*>(m_pack.m_px_object);
 
 			return l_px_joint->getVelocity();
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platfrom_revolute_joint<g_api_physx>::enable_limit(bc_joint_angular_limit& p_limit) noexcept
+		void bc_platform_revolute_joint<g_api_physx>::enable_limit(bc_joint_angular_limit& p_limit) noexcept
 		{
-			auto* l_px_joint = static_cast< physx::PxRevoluteJoint* >
-				(
-					static_cast< bc_platform_physics_reference& >(const_cast< bc_platfrom_revolute_joint& >(*this)).get_platform_pack().m_px_object
-					);
+			auto* l_px_joint = static_cast<physx::PxRevoluteJoint*>(m_pack.m_px_object);
 
 			l_px_joint->setRevoluteJointFlag(physx::PxRevoluteJointFlag::eLIMIT_ENABLED, true);
 			l_px_joint->setLimit(physx::PxJointAngularLimitPair(p_limit.m_lower, p_limit.m_upper, physx::PxSpring(p_limit.p_stiffness, p_limit.p_damping)));
@@ -76,25 +78,19 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platfrom_revolute_joint<g_api_physx>::disable_limit() noexcept
+		void bc_platform_revolute_joint<g_api_physx>::disable_limit() noexcept
 		{
-			auto* l_px_joint = static_cast< physx::PxRevoluteJoint* >
-				(
-					static_cast< bc_platform_physics_reference& >(const_cast< bc_platfrom_revolute_joint& >(*this)).get_platform_pack().m_px_object
-					);
+			auto* l_px_joint = static_cast<physx::PxRevoluteJoint*>(m_pack.m_px_object);
 
 			l_px_joint->setRevoluteJointFlag(physx::PxRevoluteJointFlag::eLIMIT_ENABLED, false);
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_joint_angular_limit bc_platfrom_revolute_joint<g_api_physx>::get_limit() const noexcept
+		bc_joint_angular_limit bc_platform_revolute_joint<g_api_physx>::get_limit() const noexcept
 		{
-			auto* l_px_joint = static_cast< physx::PxRevoluteJoint* >
-				(
-					static_cast< bc_platform_physics_reference& >(const_cast< bc_platfrom_revolute_joint& >(*this)).get_platform_pack().m_px_object
-					);
-			auto l_px_limit = l_px_joint->getLimit();
+			auto* l_px_joint = static_cast<physx::PxRevoluteJoint*>(m_pack.m_px_object);
+			const auto l_px_limit = l_px_joint->getLimit();
 
 			return bc_joint_angular_limit(l_px_limit.upper, l_px_limit.lower, l_px_limit.stiffness, l_px_limit.damping);
 		}

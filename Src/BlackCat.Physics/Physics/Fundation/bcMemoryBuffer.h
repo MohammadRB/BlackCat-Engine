@@ -41,13 +41,20 @@ namespace black_cat
 
 			bcUINT32 get_buffer_size() const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}
 
 		private:
 			bc_platform_memory_buffer();
+
+			explicit bc_platform_memory_buffer(platform_pack&& p_pack);
 
 			platform_pack m_pack;
 		};

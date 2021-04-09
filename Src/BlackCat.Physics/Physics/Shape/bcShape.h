@@ -25,14 +25,14 @@ namespace black_cat
 	{
 		enum class bc_shape_notify_flag
 		{
-			notify_touch = core::bc_enum::value(0),			// Enable collision notification callback 
-			notify_modify = core::bc_enum::value(1),		// Enable collision modify callback		
+			notify_touch = core::bc_enum::value(0),			// Enable collision notification callback
+			notify_modify = core::bc_enum::value(1),		// Enable collision modify callback
 		};
 
 		enum class bc_shape_query_flag
 		{
-			blocking,										// Treat as blocking object.By default shapes are blocking
-			touching										// Treat as touching object
+			touching = 1,									// Treat as touching object
+			blocking = 2									// Treat as blocking object.By default shapes are blocking
 		};
 
 		enum class bc_shape_flag
@@ -44,12 +44,12 @@ namespace black_cat
 			default_v = simulation | query | visualization
 		};
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		struct bc_platform_shape_pack
 		{
 		};
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_shape : public bc_platform_physics_reference<TApi>
 		{
 		public:
@@ -58,9 +58,11 @@ namespace black_cat
 		public:
 			bc_platform_shape();
 
+			explicit bc_platform_shape(platform_pack& p_pack);
+
 			bc_platform_shape(const bc_platform_shape&) noexcept;
 
-			~bc_platform_shape();
+			~bc_platform_shape() override;
 
 			bc_platform_shape& operator=(const bc_platform_shape&) noexcept;
 
@@ -162,6 +164,10 @@ namespace black_cat
 
 			void set_query_flag(bc_shape_query_flag p_flag, bool p_value) noexcept;
 
+			bool get_high_detail_query_shape() const noexcept;
+
+			void set_high_detail_query_shape(bool p_value) noexcept;
+			
 			bool is_exclusive() const noexcept;
 
 			bool is_valid() const noexcept override;
@@ -170,7 +176,12 @@ namespace black_cat
 
 			void* get_data() const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

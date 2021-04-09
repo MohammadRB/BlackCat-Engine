@@ -14,6 +14,17 @@ namespace black_cat
 {
 	namespace game
 	{
+		void bc_rigid_body_component::set_enable(bool p_enable) noexcept
+		{
+			{
+				physics::bc_scene_lock l_lock(m_scene);
+				
+				auto& l_px_body = get_body();
+				l_px_body.set_actor_flag(physics::bc_actor_flag::disable_gravity, !p_enable);
+				l_px_body.set_actor_flag(physics::bc_actor_flag::disable_simulation, !p_enable);
+			}
+		}
+
 		void bc_rigid_body_component::added_to_scene(physics::bc_scene& p_scene)
 		{
 			m_scene = &p_scene;

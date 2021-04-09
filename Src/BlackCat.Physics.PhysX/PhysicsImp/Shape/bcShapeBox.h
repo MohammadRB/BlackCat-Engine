@@ -12,14 +12,31 @@ namespace black_cat
 	namespace physics
 	{
 		template<>
-		struct bc_platform_shape_box_pack< g_api_physx >
+		struct bc_platform_shape_box_pack<g_api_physx> : bc_platform_shape_geometry_pack<g_api_physx>
 		{
-			explicit bc_platform_shape_box_pack(const physx::PxBoxGeometry& p_sphere)
-				: m_px_geometry(p_sphere)
+			explicit bc_platform_shape_box_pack(const physx::PxBoxGeometry& p_px_box)
+				: bc_platform_shape_geometry_pack(m_px_box),
+				m_px_box(p_px_box)
 			{
 			}
 
-			physx::PxBoxGeometry m_px_geometry;
+			bc_platform_shape_box_pack(const bc_platform_shape_box_pack& p_other)
+				: bc_platform_shape_geometry_pack(m_px_box),
+				m_px_box(p_other.m_px_box)
+			{
+			}
+
+			~bc_platform_shape_box_pack() = default;
+
+			bc_platform_shape_box_pack& operator=(const bc_platform_shape_box_pack& p_other)
+			{
+				bc_platform_shape_geometry_pack::operator=(m_px_box);
+				m_px_box = p_other.m_px_box;
+				
+				return *this;
+			}
+			
+			physx::PxBoxGeometry m_px_box;
 		};
 	}
 }

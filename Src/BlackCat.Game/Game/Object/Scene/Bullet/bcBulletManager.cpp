@@ -133,6 +133,7 @@ namespace black_cat
 				physics::bc_hit_flag::hit_info,
 				core::bc_enum::mask_or({physics::bc_query_flags::statics, physics::bc_query_flags::dynamics}),
 				physics::bc_query_group::all,
+				true,
 				&l_query_filter
 			);
 		}

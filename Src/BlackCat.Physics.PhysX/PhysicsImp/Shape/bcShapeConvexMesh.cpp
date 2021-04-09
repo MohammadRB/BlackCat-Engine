@@ -10,41 +10,39 @@ namespace black_cat
 	{
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_convex_mesh< g_api_physx >::bc_platform_shape_convex_mesh(platform_pack& p_pack)
-			: bc_platform_shape_geometry(bc_platform_shape_geometry::platform_pack(m_pack.m_px_geometry)),
+		bc_platform_shape_convex_mesh< g_api_physx >::bc_platform_shape_convex_mesh(platform_pack& p_pack) noexcept
+			: bc_platform_shape_geometry(),
 			m_pack(p_pack)
 		{
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_convex_mesh< g_api_physx >::bc_platform_shape_convex_mesh(const bc_convex_mesh& p_convex)
-			: bc_platform_shape_geometry(bc_platform_shape_geometry::platform_pack(m_pack.m_px_geometry)),
-			m_pack(physx::PxConvexMeshGeometry())
+		bc_platform_shape_convex_mesh< g_api_physx >::bc_platform_shape_convex_mesh(const bc_convex_mesh& p_convex) noexcept
+			: bc_platform_shape_geometry(),
+			m_pack(static_cast<physx::PxConvexMesh*>(p_convex.get_platform_pack().m_px_object))
 		{
-			m_pack.m_px_geometry.convexMesh = static_cast< physx::PxConvexMesh* >
-			(
-				static_cast< bc_physics_reference& >(const_cast< bc_convex_mesh& >(p_convex)).get_platform_pack().m_px_object
-			);
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_convex_mesh< g_api_physx >::bc_platform_shape_convex_mesh(const bc_geometry_scale& p_scale, const bc_convex_mesh& p_convex)
-			: bc_platform_shape_geometry(bc_platform_shape_geometry::platform_pack(m_pack.m_px_geometry)),
-			m_pack(physx::PxConvexMeshGeometry())
-		{
-			m_pack.m_px_geometry.convexMesh = static_cast< physx::PxConvexMesh* >
+		bc_platform_shape_convex_mesh<g_api_physx>::bc_platform_shape_convex_mesh(const bc_geometry_scale& p_scale, const bc_convex_mesh& p_convex) noexcept
+			: bc_platform_shape_geometry(),
+			m_pack
 			(
-				static_cast< bc_physics_reference& >(const_cast< bc_convex_mesh& >(p_convex)).get_platform_pack().m_px_object
-			);
-			m_pack.m_px_geometry.scale = physx::PxMeshScale(p_scale.m_scale);
+				physx::PxConvexMeshGeometry
+				(
+					static_cast<physx::PxConvexMesh*>(p_convex.get_platform_pack().m_px_object),
+					physx::PxMeshScale(p_scale.m_scale)
+				)
+			)
+		{
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_convex_mesh< g_api_physx >::bc_platform_shape_convex_mesh(const bc_platform_shape_convex_mesh& p_other)
-			: bc_platform_shape_geometry(bc_platform_shape_geometry::platform_pack(m_pack.m_px_geometry)),
+		bc_platform_shape_convex_mesh< g_api_physx >::bc_platform_shape_convex_mesh(const bc_platform_shape_convex_mesh& p_other) noexcept
+			: bc_platform_shape_geometry(p_other),
 			m_pack(p_other.m_pack)
 		{
 		}
@@ -57,10 +55,10 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_convex_mesh< g_api_physx >& bc_platform_shape_convex_mesh< g_api_physx >::operator=(const bc_platform_shape_convex_mesh& p_other)
+		bc_platform_shape_convex_mesh< g_api_physx >& bc_platform_shape_convex_mesh< g_api_physx >::operator=(const bc_platform_shape_convex_mesh& p_other) noexcept
 		{
-			bc_platform_shape_geometry::operator=(bc_platform_shape_geometry::platform_pack(m_pack.m_px_geometry));
-			m_pack.m_px_geometry = p_other.m_pack.m_px_geometry;
+			bc_platform_shape_geometry::operator=(p_other);
+			m_pack.m_px_convex = p_other.m_pack.m_px_convex;
 
 			return *this;
 		}
@@ -69,7 +67,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_geometry_scale bc_platform_shape_convex_mesh< g_api_physx >::get_scale() const noexcept
 		{
-			return bc_geometry_scale(m_pack.m_px_geometry.scale.scale.x);
+			return bc_geometry_scale(m_pack.m_px_convex.scale.scale.x);
 		}
 
 		template<>
@@ -77,7 +75,7 @@ namespace black_cat
 		bc_convex_mesh bc_platform_shape_convex_mesh< g_api_physx >::get_convex() const noexcept
 		{
 			bc_convex_mesh l_result;
-			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object = m_pack.m_px_geometry.convexMesh;
+			static_cast< bc_physics_reference& >(l_result).get_platform_pack().m_px_object = m_pack.m_px_convex.convexMesh;
 
 			return l_result;
 		}

@@ -21,21 +21,15 @@ namespace black_cat
 			using platform_pack = bc_platform_rigid_static_pack< TApi >;
 
 		public:
-			bc_platform_rigid_static();
+			bc_platform_rigid_static() noexcept;
+
+			explicit bc_platform_rigid_static(platform_pack& p_pack) noexcept;
 
 			bc_platform_rigid_static(const bc_platform_rigid_static&) noexcept;
 
-			~bc_platform_rigid_static();
+			~bc_platform_rigid_static() override;
 
 			bc_platform_rigid_static& operator=(const bc_platform_rigid_static&) noexcept;
-
-			platform_pack& get_platform_pack()
-			{
-				return m_pack;
-			}
-
-		private:
-			platform_pack m_pack;
 		};
 
 		using bc_rigid_static = bc_platform_rigid_static< g_current_physics_api >;

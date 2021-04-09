@@ -15,7 +15,7 @@ namespace black_cat
 	{
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder<g_api_physx>::bc_platform_scene_builder()
+		bc_platform_scene_builder<g_api_physx>::bc_platform_scene_builder() noexcept
 		{
 			m_pack.m_filter_shader_data = core::bc_make_unique<bc_px_filter_shader_data>();
 
@@ -26,6 +26,13 @@ namespace black_cat
 			m_pack.m_px_desc.flags |= physx::PxSceneFlag::eENABLE_ACTIVETRANSFORMS;
 
 			gravity(core::bc_vector3f(0, -9.8f, 0));
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_scene_builder<g_api_physx>::bc_platform_scene_builder(platform_pack&& p_pack) noexcept
+			: m_pack(std::move(p_pack))
+		{
 		}
 
 		template<>

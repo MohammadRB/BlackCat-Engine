@@ -76,13 +76,20 @@ namespace black_cat
 
 			core::bc_vector< bc_scene_debug_text > get_texts() const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}
 
 		private:
 			bc_platform_scene_debug() noexcept;
+
+			explicit bc_platform_scene_debug(platform_pack&& p_pack) noexcept;
 
 			platform_pack m_pack;
 		};

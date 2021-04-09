@@ -163,7 +163,10 @@ namespace black_cat
 				[&](bool, physics::bc_updated_actor& p_px_actor)
 				{
 					bc_actor l_actor = m_physics->get_game_actor(p_px_actor.m_actor);
-					l_actor.add_event(bc_world_transform_actor_event(p_px_actor.m_global_pose.get_matrix4(), true));
+					if(l_actor.is_valid())
+					{
+						l_actor.add_event(bc_world_transform_actor_event(p_px_actor.m_global_pose.get_matrix4(), true));
+					}
 				},
 				[](bool) {}
 			);

@@ -36,9 +36,11 @@ namespace black_cat
 		public:
 			bc_platform_rigid_body() noexcept;
 
+			explicit bc_platform_rigid_body(platform_pack& p_pack) noexcept;
+
 			bc_platform_rigid_body(const bc_platform_rigid_body&) noexcept;
 
-			virtual ~bc_platform_rigid_body();
+			virtual ~bc_platform_rigid_body() override;
 
 			bc_platform_rigid_body& operator=(const bc_platform_rigid_body&) noexcept;
 
@@ -153,14 +155,6 @@ namespace black_cat
 			virtual bc_rigid_body_flag get_rigid_body_flags() const noexcept;
 
 			virtual void set_rigid_body_flags(bc_rigid_body_flag p_flag, bool p_value) noexcept;
-
-			platform_pack& get_platform_pack()
-			{
-				return m_pack;
-			}
-
-		private:
-			platform_pack m_pack;
 		};
 
 		using bc_rigid_body = bc_platform_rigid_body< g_current_physics_api >;

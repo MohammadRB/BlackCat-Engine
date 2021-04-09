@@ -11,7 +11,7 @@ namespace black_cat
 	namespace physics
 	{
 		template<>
-		struct bc_platform_rigid_static_pack< g_api_physx >
+		struct bc_platform_rigid_static_pack<g_api_physx> : bc_platform_rigid_body_pack<g_api_physx>
 		{
 		};
 	}

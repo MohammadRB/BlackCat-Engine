@@ -13,7 +13,7 @@ namespace black_cat
 	namespace physics
 	{
 		template<>
-		struct bc_platform_scene_query_buffer_pack< g_api_physx, bc_platform_ray_hit< g_api_physx > >
+		struct bc_platform_scene_query_buffer_pack<g_api_physx, bc_platform_ray_hit<g_api_physx>>
 		{
 			physx::PxRaycastBuffer m_px_query;
 			/*mutable bc_platform_ray_hit< g_api_physx > m_block;
@@ -21,7 +21,7 @@ namespace black_cat
 		};
 
 		template<>
-		struct bc_platform_scene_query_buffer_pack< g_api_physx, bc_platform_overlap_hit< g_api_physx > >
+		struct bc_platform_scene_query_buffer_pack<g_api_physx, bc_platform_overlap_hit<g_api_physx>>
 		{
 			physx::PxOverlapBuffer m_px_query;
 			/*mutable bc_platform_overlap_hit< g_api_physx > m_block;
@@ -29,7 +29,7 @@ namespace black_cat
 		};
 
 		template<>
-		struct bc_platform_scene_query_buffer_pack< g_api_physx, bc_platform_sweep_hit< g_api_physx > >
+		struct bc_platform_scene_query_buffer_pack<g_api_physx, bc_platform_sweep_hit<g_api_physx>>
 		{
 			physx::PxSweepBuffer m_px_query;
 			/*mutable bc_platform_sweep_hit< g_api_physx > m_block;
@@ -37,9 +37,15 @@ namespace black_cat
 		};
 
 		template<bc_physics_api TApi, class THit>
-		bc_platform_scene_query_buffer< TApi, THit >::bc_platform_scene_query_buffer(bcUINT32 p_touching_hit_count)
+		bc_platform_scene_query_buffer< TApi, THit >::bc_platform_scene_query_buffer(bcUINT32 p_touching_hit_count) noexcept
 		{
 			//m_pack.m_touches.reserve(p_touching_hit_count);
+		}
+
+		template<bc_physics_api TApi, class THit>
+		bc_platform_scene_query_buffer<TApi, THit>::bc_platform_scene_query_buffer(platform_pack& p_pack) noexcept
+			: m_pack(p_pack)
+		{
 		}
 
 		template<bc_physics_api TApi, class THit>

@@ -44,15 +44,19 @@ namespace black_cat
 				static_cast< bc_collision_group >(p_filter_data1.word1)
 			);
 
-			bc_actor l_actor0;
-			bc_actor l_actor1;
-			bc_shape l_shape0;
-			bc_shape l_shape1;
-
-			static_cast< bc_physics_reference& >(l_actor0).get_platform_pack().m_px_object = const_cast< physx::PxActor* >(p_a0);
-			static_cast< bc_physics_reference& >(l_actor1).get_platform_pack().m_px_object = const_cast< physx::PxActor* >(p_a1);
-			static_cast< bc_physics_reference& >(l_shape0).get_platform_pack().m_px_object = const_cast< physx::PxShape* >(p_s0);
-			static_cast< bc_physics_reference& >(l_shape1).get_platform_pack().m_px_object = const_cast< physx::PxShape* >(p_s1);
+			bc_actor::platform_pack l_actor_pack0;
+			l_actor_pack0.m_px_object = const_cast<physx::PxActor*>(p_a0);
+			bc_actor::platform_pack l_actor_pack1;
+			l_actor_pack1.m_px_object = const_cast<physx::PxActor*>(p_a1);
+			bc_shape::platform_pack l_shape_pack0;
+			l_shape_pack0.m_px_object = const_cast<physx::PxShape*>(p_s0);
+			bc_shape::platform_pack l_shape_pack1;
+			l_shape_pack1.m_px_object = const_cast<physx::PxShape*>(p_s1);
+			
+			bc_actor l_actor0(l_actor_pack0);
+			bc_actor l_actor1(l_actor_pack1);
+			bc_shape l_shape0(l_shape_pack0);
+			bc_shape l_shape1(l_shape_pack1);
 
 			const auto l_actor0_flags = core::bc_enum::none< bc_filter_object_flag >();
 			const auto l_actor1_flags = core::bc_enum::none< bc_filter_object_flag >();
@@ -144,12 +148,15 @@ namespace black_cat
 
 		void bc_px_contact_modify_callback::onContactModify(physx::PxContactModifyPair* const p_pairs, physx::PxU32 p_count)
 		{
-			core::bc_vector_frame< bc_contact_modify_pair > l_pairs(p_count);
+			core::bc_vector_frame<bc_contact_modify_pair> l_pairs(p_count);
 
 			for (bcUINT32 i = 0; i < p_count; ++i)
 			{
-				l_pairs[i].get_platform_pack().m_px_pair = &p_pairs[i];
-				l_pairs[i].get_platform_pack().m_is_ccd = false;
+				bc_contact_modify_pair::platform_pack l_pack;
+				l_pack.m_px_pair = &p_pairs[i];
+				l_pack.m_is_ccd = false;
+
+				l_pairs[i] = bc_contact_modify_pair(l_pack);
 			}
 
 			m_imp->on_contact_modify(l_pairs.data(), p_count);
@@ -157,12 +164,15 @@ namespace black_cat
 
 		void bc_px_contact_modify_callback::onCCDContactModify(physx::PxContactModifyPair* const p_pairs, physx::PxU32 p_count)
 		{
-			core::bc_vector_frame< bc_contact_modify_pair > l_pairs(p_count);
+			core::bc_vector_frame<bc_contact_modify_pair> l_pairs(p_count);
 
 			for (bcUINT32 i = 0; i < p_count; ++i)
 			{
-				l_pairs[i].get_platform_pack().m_px_pair = &p_pairs[i];
-				l_pairs[i].get_platform_pack().m_is_ccd = true;
+				bc_contact_modify_pair::platform_pack l_pack;
+				l_pack.m_px_pair = &p_pairs[i];
+				l_pack.m_is_ccd = true;
+
+				l_pairs[i] = bc_contact_modify_pair(l_pack);
 			}
 
 			m_imp->on_contact_modify(l_pairs.data(), p_count);
@@ -175,11 +185,14 @@ namespace black_cat
 
 		void bc_px_simulation_callback::onConstraintBreak(physx::PxConstraintInfo* p_constraints, physx::PxU32 p_count)
 		{
-			core::bc_vector_frame< bc_joint > l_joints(p_count);
+			core::bc_vector_frame<bc_joint> l_joints(p_count);
 
 			for (bcUINT32 i = 0; i < p_count; ++i)
 			{
-				static_cast< bc_physics_reference& >(l_joints[i]).get_platform_pack().m_px_object = static_cast< physx::PxJoint* >(p_constraints[i].externalReference);
+				bc_joint::platform_pack l_pack;
+				l_pack.m_px_object = static_cast<physx::PxJoint*>(p_constraints[i].externalReference);
+
+				l_joints[i] = bc_joint(l_pack);
 			}
 
 			m_imp->on_joint_break(l_joints.data(), p_count);
@@ -187,11 +200,14 @@ namespace black_cat
 
 		void bc_px_simulation_callback::onWake(physx::PxActor** p_actors, physx::PxU32 p_count)
 		{
-			core::bc_vector_frame< bc_actor > l_actors(p_count);
+			core::bc_vector_frame<bc_actor> l_actors(p_count);
 
 			for (bcUINT32 i = 0; i < p_count; ++i)
 			{
-				static_cast< bc_physics_reference& >(l_actors[i]).get_platform_pack().m_px_object = p_actors[i];
+				bc_actor::platform_pack l_pack;
+				l_pack.m_px_object = p_actors[i];
+
+				l_actors[i] = bc_actor(l_pack);
 			}
 
 			m_imp->on_wake(l_actors.data(), p_count);
@@ -199,11 +215,14 @@ namespace black_cat
 
 		void bc_px_simulation_callback::onSleep(physx::PxActor** p_actors, physx::PxU32 p_count)
 		{
-			core::bc_vector_frame< bc_actor > l_actors(p_count);
+			core::bc_vector_frame<bc_actor> l_actors(p_count);
 
 			for (bcUINT32 i = 0; i < p_count; ++i)
 			{
-				static_cast< bc_physics_reference& >(l_actors[i]).get_platform_pack().m_px_object = p_actors[i];
+				bc_actor::platform_pack l_pack;
+				l_pack.m_px_object = p_actors[i];
+				
+				l_actors[i] = bc_actor(l_pack);
 			}
 
 			m_imp->on_sleep(l_actors.data(), p_count);
@@ -211,11 +230,14 @@ namespace black_cat
 
 		void bc_px_simulation_callback::onTrigger(physx::PxTriggerPair* p_pairs, physx::PxU32 p_count)
 		{
-			core::bc_vector_frame< bc_trigger_pair > l_pairs(p_count);
+			core::bc_vector_frame<bc_trigger_pair> l_pairs(p_count);
 
 			for (bcUINT32 i = 0; i < p_count; ++i)
 			{
-				l_pairs[i].get_platform_pack().m_px_pair = &p_pairs[i];
+				bc_trigger_pair::platform_pack l_pack;
+				l_pack.m_px_pair = &p_pairs[i];
+				
+				l_pairs[i] = bc_trigger_pair(l_pack);
 			}
 
 			m_imp->on_trigger(l_pairs.data(), p_count);
@@ -225,14 +247,19 @@ namespace black_cat
 			const physx::PxContactPair* p_pairs, 
 			physx::PxU32 p_pairs_count)
 		{
-			bc_contant_pair l_pair;
-			l_pair.get_platform_pack().m_px_pair = &const_cast< physx::PxContactPairHeader& >(p_pair_header);
+			bc_contant_pair::platform_pack l_pack;
+			l_pack.m_px_pair = &const_cast<physx::PxContactPairHeader&>(p_pair_header);
 
-			core::bc_vector_frame< bc_contact_shape_pair > l_shape_pairs(p_pairs_count);
+			const bc_contant_pair l_pair(l_pack);
+
+			core::bc_vector_frame<bc_contact_shape_pair> l_shape_pairs(p_pairs_count);
 
 			for (bcUINT32 i = 0; i < p_pairs_count; ++i)
 			{
-				l_shape_pairs[i].get_platform_pack().m_px_pair = const_cast< physx::PxContactPair* >(&p_pairs[i]);
+				bc_contact_shape_pair::platform_pack l_contact_pack;
+				l_contact_pack.m_px_pair = const_cast<physx::PxContactPair*>(&p_pairs[i]);
+				
+				l_shape_pairs[i] = bc_contact_shape_pair(l_contact_pack);
 			}
 
 			m_imp->on_contact(l_pair, l_shape_pairs.data(), p_pairs_count);
@@ -249,9 +276,16 @@ namespace black_cat
 			const physx::PxRigidActor* p_actor, 
 			physx::PxHitFlags& p_query_flags)
 		{
-			bc_shape l_shape;
-			static_cast< bc_physics_reference& >(l_shape).get_platform_pack().m_px_object = const_cast< physx::PxShape* >(p_shape);
+			bc_shape::platform_pack l_shape_pack;
+			l_shape_pack.m_px_object = const_cast<physx::PxShape*>(p_shape);
+			const bc_shape l_shape(l_shape_pack);
 
+			if(!m_high_detail_query_shape && l_shape.get_high_detail_query_shape())
+			{
+				return physx::PxQueryHitType::eNONE;
+			}
+
+			// TODO this check will be done in PhysX fixed pipeline
 			const bc_query_group l_query_groups = static_cast< bc_query_group >(p_filter_data.word0);
 			const bc_query_group l_shape_group = l_shape.get_query_group();
 
@@ -274,14 +308,16 @@ namespace black_cat
 
 		physx::PxQueryHitType::Enum bc_px_query_filter_callback::postFilter(const physx::PxFilterData& p_filter_data, const physx::PxQueryHit& p_hit)
 		{
-			if(!m_post_filter_callback)
-			{
-				return physx::PxQueryHitType::eBLOCK;
-			}
+			BC_ASSERT(m_post_filter_callback);
 
+			bc_rigid_actor::platform_pack l_actor_pack;
+			l_actor_pack.m_px_object = p_hit.actor;
+			bc_shape::platform_pack l_shape_pack;
+			l_shape_pack.m_px_object = p_hit.shape;
+			
 			bc_scene_query_post_filter_data l_data;
-			static_cast<bc_physics_reference&>(l_data.m_actor).get_platform_pack().m_px_object = p_hit.actor;
-			static_cast<bc_physics_reference&>(l_data.m_shape).get_platform_pack().m_px_object = p_hit.shape;
+			l_data.m_actor = bc_rigid_actor(l_actor_pack);
+			l_data.m_shape = bc_shape(l_shape_pack);
 			l_data.m_face_index = p_hit.faceIndex;
 			
 			return static_cast<physx::PxQueryHitType::Enum>((*m_post_filter_callback)(l_data));
@@ -294,18 +330,18 @@ namespace black_cat
 
 		void bc_px_controller_hit_callback::onShapeHit(const physx::PxControllerShapeHit& p_hit)
 		{
-			bc_platform_ccontroller_shape_hit<g_api_physx> l_hit;
-			l_hit.get_platform_pack().m_px_hit = &p_hit;
+			bc_ccontroller_shape_hit::platform_pack l_pack;
+			l_pack.m_px_hit = &p_hit;
 			
-			m_callback->on_shape_hit(l_hit);
+			m_callback->on_shape_hit(bc_ccontroller_shape_hit(l_pack));
 		}
 
 		void bc_px_controller_hit_callback::onControllerHit(const physx::PxControllersHit& p_hit)
 		{
-			bc_platform_ccontroller_controller_hit<g_api_physx> l_hit;
-			l_hit.get_platform_pack().m_px_hit = &p_hit;
+			bc_ccontroller_controller_hit::platform_pack l_pack;
+			l_pack.m_px_hit = &p_hit;
 			
-			m_callback->on_ccontroller_hit(l_hit);
+			m_callback->on_ccontroller_hit(bc_ccontroller_controller_hit(l_pack));
 		}
 
 		void bc_px_controller_hit_callback::onObstacleHit(const physx::PxControllerObstacleHit& p_hit)
@@ -313,8 +349,11 @@ namespace black_cat
 		}
 
 		bc_px_ccontroller_query_filter::bc_px_ccontroller_query_filter(bc_scene_query_pre_filter_callback* p_pre_filter,
-			bc_scene_query_post_filter_callback* p_post_filter): m_pre_filter(p_pre_filter),
-			m_post_filter(p_post_filter)
+			bc_scene_query_post_filter_callback* p_post_filter,
+			bool p_high_detail_query_shape)
+			: m_pre_filter(p_pre_filter),
+			m_post_filter(p_post_filter),
+			m_high_detail_query_shape(p_high_detail_query_shape)
 		{
 		}
 
@@ -323,12 +362,27 @@ namespace black_cat
 			const physx::PxRigidActor* p_actor,
 			physx::PxHitFlags& p_query_flags)
 		{
-			BC_ASSERT(m_pre_filter);
+			bc_shape::platform_pack l_shape_pack;
+			l_shape_pack.m_px_object = const_cast<physx::PxShape*>(p_shape);
+			const bc_shape l_shape(l_shape_pack);
 
+			if (!m_high_detail_query_shape && l_shape.get_high_detail_query_shape())
+			{
+				return physx::PxQueryHitType::eNONE;
+			}
+
+			if(!m_pre_filter)
+			{
+				return static_cast<physx::PxQueryHitType::Enum>(l_shape.get_query_flags());
+			}
+			
+			bc_rigid_actor::platform_pack l_actor_pack;
+			l_actor_pack.m_px_object = const_cast<physx::PxRigidActor*>(p_actor);
+			
 			bc_scene_query_pre_filter_data l_data;
-			static_cast<bc_physics_reference&>(l_data.m_actor).get_platform_pack().m_px_object = const_cast<physx::PxRigidActor*>(p_actor);
-			static_cast<bc_physics_reference&>(l_data.m_shape).get_platform_pack().m_px_object = const_cast<physx::PxShape*>(p_shape);
-
+			l_data.m_actor = bc_rigid_actor(l_actor_pack);
+			l_data.m_shape = l_shape;
+			
 			return static_cast<physx::PxQueryHitType::Enum>((*m_pre_filter)(l_data));
 		}
 
@@ -336,9 +390,14 @@ namespace black_cat
 		{
 			BC_ASSERT(m_post_filter);
 
+			bc_rigid_actor::platform_pack l_actor_pack;
+			l_actor_pack.m_px_object = p_hit.actor;
+			bc_shape::platform_pack l_shape_pack;
+			l_shape_pack.m_px_object = p_hit.shape;
+			
 			bc_scene_query_post_filter_data l_data;
-			static_cast<bc_physics_reference&>(l_data.m_actor).get_platform_pack().m_px_object = p_hit.actor;
-			static_cast<bc_physics_reference&>(l_data.m_shape).get_platform_pack().m_px_object = p_hit.shape;
+			l_data.m_actor = bc_rigid_actor(l_actor_pack);
+			l_data.m_shape = bc_shape(l_shape_pack);
 			l_data.m_face_index = p_hit.faceIndex;
 
 			return static_cast<physx::PxQueryHitType::Enum>((*m_post_filter)(l_data));
@@ -351,13 +410,13 @@ namespace black_cat
 
 		bool bc_px_ccontroller_collision_filter::filter(const physx::PxController& p_controller1, const physx::PxController& p_controller2)
 		{
-			bc_platform_ccontroller<g_api_physx> l_controller1;
-			bc_platform_ccontroller<g_api_physx> l_controller2;
+			bc_ccontroller::platform_pack l_controller1_pack;
+			bc_ccontroller::platform_pack l_controller2_pack;
 
-			l_controller1.get_platform_pack().m_controller = const_cast<physx::PxController*>(&p_controller1);
-			l_controller2.get_platform_pack().m_controller = const_cast<physx::PxController*>(&p_controller2);
+			l_controller1_pack.m_controller = const_cast<physx::PxController*>(&p_controller1);
+			l_controller2_pack.m_controller = const_cast<physx::PxController*>(&p_controller2);
 
-			return (*m_callback)(l_controller1, l_controller2);
+			return (*m_callback)(bc_ccontroller(l_controller1_pack), bc_ccontroller(l_controller2_pack));
 		}
 
 		physx::PxFilterFlags bc_px_filter_shader(physx::PxFilterObjectAttributes p_attributes0, 

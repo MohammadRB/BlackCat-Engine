@@ -21,16 +21,15 @@ namespace black_cat
 		class bc_platform_physics_reference
 		{
 		public:
-			using platform_pack = bc_platform_physics_reference_pack< TApi >;
+			using platform_pack = bc_platform_physics_reference_pack<TApi>;
 
 		public:
 			virtual bool is_valid() const noexcept = 0;
-			
-			platform_pack& get_platform_pack()
-			{
-				return m_pack;
-			}
 
+			virtual platform_pack& get_platform_pack() noexcept = 0;
+			
+			virtual const platform_pack& get_platform_pack() const noexcept = 0;
+		
 		protected:
 			bc_platform_physics_reference() noexcept;
 
@@ -39,9 +38,6 @@ namespace black_cat
 			virtual ~bc_platform_physics_reference();
 
 			bc_platform_physics_reference& operator=(const bc_platform_physics_reference&) noexcept;
-
-		private:
-			platform_pack m_pack;
 		};
 
 		using bc_physics_reference = bc_platform_physics_reference< g_current_physics_api >;

@@ -11,14 +11,24 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_distance_joint< g_api_physx >::bc_platform_distance_joint() noexcept
-			: bc_platform_joint()
+			: bc_platform_joint(),
+			m_pack()
+		{
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_distance_joint<g_api_physx>::bc_platform_distance_joint(platform_pack& p_pack) noexcept
+			: bc_platform_joint(p_pack),
+			m_pack(p_pack)
 		{
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_distance_joint< g_api_physx >::bc_platform_distance_joint(const bc_platform_distance_joint& p_other) noexcept
-			: bc_platform_joint(p_other)
+			: bc_platform_joint(p_other),
+			m_pack(p_other.m_pack)
 		{
 		}
 
@@ -33,6 +43,7 @@ namespace black_cat
 		bc_platform_distance_joint< g_api_physx >& bc_platform_distance_joint< g_api_physx >::operator=(const bc_platform_distance_joint& p_other) noexcept
 		{
 			bc_platform_joint::operator=(p_other);
+			m_pack = p_other.m_pack;
 
 			return *this;
 		}
@@ -41,10 +52,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bcFLOAT bc_platform_distance_joint< g_api_physx >::get_distance() const noexcept
 		{
-			auto* l_px_joint = static_cast< physx::PxDistanceJoint* >
-			(
-				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_distance_joint& >(*this)).get_platform_pack().m_px_object
-			);
+			auto* l_px_joint = static_cast<physx::PxDistanceJoint*>(m_pack.m_px_object);
 
 			return l_px_joint->getDistance();
 		}
@@ -53,10 +61,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		void bc_platform_distance_joint< g_api_physx >::enable_limit(const bc_joint_linear_limit_pair& p_limit) noexcept
 		{
-			auto* l_px_joint = static_cast< physx::PxDistanceJoint* >
-			(
-				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_distance_joint& >(*this)).get_platform_pack().m_px_object
-			);
+			auto* l_px_joint = static_cast<physx::PxDistanceJoint*>(m_pack.m_px_object);
 
 			l_px_joint->setDistanceJointFlag(physx::PxDistanceJointFlag::eMIN_DISTANCE_ENABLED, true);
 			l_px_joint->setDistanceJointFlag(physx::PxDistanceJointFlag::eMAX_DISTANCE_ENABLED, true);
@@ -72,10 +77,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		void bc_platform_distance_joint< g_api_physx >::disable_limit() noexcept
 		{
-			auto* l_px_joint = static_cast< physx::PxDistanceJoint* >
-			(
-				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_distance_joint& >(*this)).get_platform_pack().m_px_object
-			);
+			auto* l_px_joint = static_cast<physx::PxDistanceJoint*>(m_pack.m_px_object);
 
 			l_px_joint->setDistanceJointFlag(physx::PxDistanceJointFlag::eMIN_DISTANCE_ENABLED, false);
 			l_px_joint->setDistanceJointFlag(physx::PxDistanceJointFlag::eMAX_DISTANCE_ENABLED, false);
@@ -86,10 +88,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_joint_linear_limit_pair bc_platform_distance_joint< g_api_physx >::get_limit() const noexcept
 		{
-			auto* l_px_joint = static_cast< physx::PxDistanceJoint* >
-			(
-				static_cast< bc_platform_physics_reference& >(const_cast< bc_platform_distance_joint& >(*this)).get_platform_pack().m_px_object
-			);
+			auto* l_px_joint = static_cast<physx::PxDistanceJoint*>(m_pack.m_px_object);
 
 			return bc_joint_linear_limit_pair
 			(

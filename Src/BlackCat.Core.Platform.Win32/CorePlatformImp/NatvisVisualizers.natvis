@@ -73,7 +73,7 @@
   <Type Name="black_cat::core::bc_nullable&lt;*&gt;">
     <DisplayString>{"$T1"}</DisplayString>
     <Expand>
-      <Item Name="[set]">m_set</Item>
+      <Item Name="[set]">($T1*)m_buffer != nullptr</Item>
       <Item Name="[value]">($T1*)m_buffer</Item>
     </Expand>
   </Type>

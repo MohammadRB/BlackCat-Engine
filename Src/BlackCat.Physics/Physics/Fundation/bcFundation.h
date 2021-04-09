@@ -128,10 +128,6 @@ namespace black_cat
 			{
 				return core::bc_concurrency::worker_count();
 			}
-
-		protected:
-
-		private:
 		};
 	}
 }

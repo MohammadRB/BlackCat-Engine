@@ -18,9 +18,16 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_memory_buffer<g_api_physx>::bc_platform_memory_buffer(bc_platform_memory_buffer&& p_other) noexcept
+		bc_platform_memory_buffer<g_api_physx>::bc_platform_memory_buffer(platform_pack&& p_pack)
+			: m_pack(std::move(p_pack))
 		{
-			operator=(std::move(p_other));
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_memory_buffer<g_api_physx>::bc_platform_memory_buffer(bc_platform_memory_buffer&& p_other) noexcept
+			: m_pack(std::move(p_other.m_pack))
+		{
 		}
 
 		template<>
@@ -33,8 +40,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_platform_memory_buffer<g_api_physx>& bc_platform_memory_buffer<g_api_physx>::operator=(bc_platform_memory_buffer&& p_other) noexcept
 		{
-			m_pack.m_px_stream = std::move(p_other.m_pack.m_px_stream);
-			m_pack.m_is_valid = p_other.m_pack.m_is_valid;
+			m_pack = std::move(p_other.m_pack);
 
 			return *this;
 		}

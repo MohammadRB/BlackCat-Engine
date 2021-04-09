@@ -38,12 +38,14 @@ namespace black_cat
 
 		bc_bullet bc_weapon_component::shoot(const core::bc_vector3f& p_aim_direction_ws)
 		{
-			core::bc_matrix3f l_aim_direction_rotation;
-			bc_matrix3f_rotation_between_two_vector(l_aim_direction_rotation, m_forward_ls, p_aim_direction_ws);
-			
-			const auto l_position = get_actor().get_component<bc_mediate_component>()->get_position() + l_aim_direction_rotation * m_fire_offset_ls;
+			//core::bc_matrix3f l_aim_direction_rotation;
+			//bc_matrix3f_rotation_between_two_vector(l_aim_direction_rotation, m_forward_ls, p_aim_direction_ws);
 
-			m_particle_manager->spawn_emitter(m_fire_particle, l_position, p_aim_direction_ws);
+			const auto& l_transform = get_actor().get_component<bc_mediate_component>()->get_world_transform();
+			const auto l_position = (l_transform * core::bc_vector4f(m_fire_offset_ls, 1)).xyz();
+			const auto l_direction = core::bc_vector3f::normalize(l_transform.get_rotation() * m_forward_ls);
+
+			m_particle_manager->spawn_emitter(m_fire_particle, l_position, l_direction);
 			m_light = m_light_manager->add_light(bc_point_light
 			(
 				l_position,

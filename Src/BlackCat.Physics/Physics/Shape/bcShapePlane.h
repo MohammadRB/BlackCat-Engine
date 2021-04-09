@@ -24,21 +24,21 @@ namespace black_cat
 			using platform_pack = bc_platform_shape_plane_pack<TApi>;
 
 		public:
-			explicit bc_platform_shape_plane(platform_pack& p_pack);
+			explicit bc_platform_shape_plane(platform_pack& p_pack) noexcept;
 
-			bc_platform_shape_plane(const core::bc_vector3f& p_normal, bcFLOAT p_distance);
+			bc_platform_shape_plane(const core::bc_vector3f& p_normal, bcFLOAT p_distance) noexcept;
 
-			bc_platform_shape_plane(const core::bc_vector3f& p_normal, const core::bc_vector3f& p_point_on_plane);
+			bc_platform_shape_plane(const core::bc_vector3f& p_normal, const core::bc_vector3f& p_point_on_plane) noexcept;
 
 			bc_platform_shape_plane(const core::bc_vector3f& p_point0,
 				const core::bc_vector3f& p_point1,
-				const core::bc_vector3f& p_point2);
+				const core::bc_vector3f& p_point2) noexcept;
 
-			bc_platform_shape_plane(const bc_platform_shape_plane&);
+			bc_platform_shape_plane(const bc_platform_shape_plane&) noexcept;
 
-			~bc_platform_shape_plane();
+			~bc_platform_shape_plane() override;
 
-			bc_platform_shape_plane& operator=(const bc_platform_shape_plane&);
+			bc_platform_shape_plane& operator=(const bc_platform_shape_plane&) noexcept;
 
 			bcFLOAT distance(const core::bc_vector3f& p_point) const noexcept;
 
@@ -53,7 +53,12 @@ namespace black_cat
 				return bc_shape_type::plane;
 			}
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

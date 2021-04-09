@@ -19,6 +19,13 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
+		bc_platform_height_field_sample_array<g_api_physx>::bc_platform_height_field_sample_array(platform_pack&& p_pack)
+			: m_pack(std::move(p_pack))
+		{
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
 		bc_platform_height_field_sample_array<g_api_physx>::bc_platform_height_field_sample_array(bc_platform_height_field_sample_array&& p_other) noexcept
 		{
 			operator=(std::move(p_other));

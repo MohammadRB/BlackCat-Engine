@@ -39,6 +39,8 @@ namespace black_cat
 		public:
 			bc_platform_ccontroller_shape_hit() = default;
 
+			explicit bc_platform_ccontroller_shape_hit(platform_pack& p_pack);
+
 			bc_platform_ccontroller_shape_hit(const bc_platform_ccontroller_shape_hit&) noexcept = default;
 
 			~bc_platform_ccontroller_shape_hit() = default;
@@ -99,6 +101,8 @@ namespace black_cat
 
 		public:
 			bc_platform_ccontroller_controller_hit() = default;
+
+			explicit bc_platform_ccontroller_controller_hit(platform_pack& p_pack);
 
 			bc_platform_ccontroller_controller_hit(const bc_platform_ccontroller_controller_hit&) noexcept = default;
 

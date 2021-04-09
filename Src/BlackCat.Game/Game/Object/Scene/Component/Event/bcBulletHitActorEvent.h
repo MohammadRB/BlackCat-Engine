@@ -61,7 +61,7 @@ namespace black_cat
 			bcUINT32 p_hit_face_index,
 			bcFLOAT p_bullet_mass,
 			bcFLOAT p_bullet_speed) noexcept
-			: bc_actor_event(get_message_name()),
+			: bc_actor_event(message_name()),
 			m_hit_actor(p_hit_actor),
 			m_hit_shape(p_hit_shape),
 			m_hit_position(p_hit_position),

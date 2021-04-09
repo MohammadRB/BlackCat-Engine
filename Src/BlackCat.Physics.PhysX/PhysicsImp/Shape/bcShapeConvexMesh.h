@@ -13,14 +13,31 @@ namespace black_cat
 	namespace physics
 	{
 		template<>
-		struct bc_platform_shape_convex_mesh_pack< g_api_physx >
+		struct bc_platform_shape_convex_mesh_pack<g_api_physx> : bc_platform_shape_geometry_pack<g_api_physx>
 		{
-			explicit bc_platform_shape_convex_mesh_pack(const physx::PxConvexMeshGeometry& p_sphere)
-				: m_px_geometry(p_sphere)
+			explicit bc_platform_shape_convex_mesh_pack(const physx::PxConvexMeshGeometry& p_px_convex)
+				: bc_platform_shape_geometry_pack(m_px_convex),
+				m_px_convex(p_px_convex)
 			{
 			}
 
-			physx::PxConvexMeshGeometry m_px_geometry;
+			bc_platform_shape_convex_mesh_pack(const bc_platform_shape_convex_mesh_pack& p_other)
+				: bc_platform_shape_geometry_pack(m_px_convex),
+				m_px_convex(p_other.m_px_convex)
+			{
+			}
+
+			~bc_platform_shape_convex_mesh_pack() = default;
+
+			bc_platform_shape_convex_mesh_pack& operator=(const bc_platform_shape_convex_mesh_pack& p_other)
+			{
+				bc_platform_shape_geometry_pack::operator=(m_px_convex);
+				m_px_convex = p_other.m_px_convex;
+
+				return *this;
+			}
+
+			physx::PxConvexMeshGeometry m_px_convex;
 		};
 	}
 }

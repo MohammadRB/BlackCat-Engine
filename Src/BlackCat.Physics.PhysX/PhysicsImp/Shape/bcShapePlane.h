@@ -13,15 +13,34 @@ namespace black_cat
 	namespace physics
 	{
 		template<>
-		struct bc_platform_shape_plane_pack< g_api_physx >
+		struct bc_platform_shape_plane_pack<g_api_physx> : bc_platform_shape_geometry_pack<g_api_physx>
 		{
-			explicit bc_platform_shape_plane_pack(const physx::PxPlaneGeometry& p_sphere, const physx::PxPlane& p_plane)
-				: m_px_geometry(p_sphere),
-				m_px_plane(p_plane)
+			explicit bc_platform_shape_plane_pack(const physx::PxPlaneGeometry& p_px_plane_geometry, const physx::PxPlane& p_px_plane)
+				: bc_platform_shape_geometry_pack(m_px_plane_geometry),
+				m_px_plane_geometry(p_px_plane_geometry),
+				m_px_plane(p_px_plane)
 			{
 			}
 
-			physx::PxPlaneGeometry m_px_geometry;
+			bc_platform_shape_plane_pack(const bc_platform_shape_plane_pack& p_other)
+				: bc_platform_shape_geometry_pack(m_px_plane_geometry),
+				m_px_plane_geometry(p_other.m_px_plane_geometry),
+				m_px_plane(p_other.m_px_plane)
+			{
+			}
+
+			~bc_platform_shape_plane_pack() = default;
+
+			bc_platform_shape_plane_pack& operator=(const bc_platform_shape_plane_pack& p_other)
+			{
+				bc_platform_shape_geometry_pack::operator=(m_px_plane_geometry);
+				m_px_plane_geometry = p_other.m_px_plane_geometry;
+				m_px_plane = p_other.m_px_plane;
+
+				return *this;
+			}
+
+			physx::PxPlaneGeometry m_px_plane_geometry;
 			physx::PxPlane m_px_plane;
 		};
 	}

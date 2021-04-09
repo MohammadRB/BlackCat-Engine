@@ -97,6 +97,7 @@ namespace black_cat
 					BC_ASSERT(l_px_shape.is_valid());
 
 					l_px_shape.set_local_pose(l_collider_entry.m_initial_transform);
+					l_px_shape.set_high_detail_query_shape(l_collider_entry.m_high_detail_query_shape);
 					if(l_mesh.get_skinned())
 					{
 						l_px_shape.set_query_group(static_cast<physics::bc_query_group>(bc_actor_group::skinned_mesh));

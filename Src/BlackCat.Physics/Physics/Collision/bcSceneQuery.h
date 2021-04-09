@@ -30,14 +30,14 @@ namespace black_cat
 
 		struct bc_scene_query_pre_filter_data
 		{
-			bc_actor m_actor;
+			bc_rigid_actor m_actor;
 			bc_shape m_shape;
 		};
 		using bc_scene_query_pre_filter_callback = core::bc_delegate<bc_query_hit_type(const bc_scene_query_pre_filter_data&)>;
 		
 		struct bc_scene_query_post_filter_data
 		{
-			bc_actor m_actor;
+			bc_rigid_actor m_actor;
 			bc_shape m_shape;
 			bcUINT32 m_face_index;
 		};
@@ -55,7 +55,9 @@ namespace black_cat
 			using platform_pack = bc_platform_scene_query_buffer_pack< TApi, THit >;
 
 		public:
-			explicit bc_platform_scene_query_buffer(bcUINT32 p_touching_hit_count);
+			explicit bc_platform_scene_query_buffer(bcUINT32 p_touching_hit_count) noexcept;
+			
+			explicit bc_platform_scene_query_buffer(platform_pack& p_pack) noexcept;
 
 			bc_platform_scene_query_buffer(const bc_platform_scene_query_buffer&) noexcept;
 
@@ -71,7 +73,12 @@ namespace black_cat
 
 			THit get_touch(bcUINT32 p_index) const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}

@@ -32,6 +32,8 @@ namespace black_cat
 		public:
 			bc_platform_contact_modify_set() noexcept;
 
+			explicit bc_platform_contact_modify_set(platform_pack& p_pack) noexcept;
+
 			bc_platform_contact_modify_set(const bc_platform_contact_modify_set&) noexcept;
 
 			~bc_platform_contact_modify_set();
@@ -93,7 +95,12 @@ namespace black_cat
 			 */
 			bcUINT32 size() const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}
@@ -102,7 +109,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_contact_modify_set = bc_platform_contact_modify_set< g_current_physics_api >;
+		using bc_contact_modify_set = bc_platform_contact_modify_set<g_current_physics_api>;
 
 		template< bc_physics_api TApi >
 		struct bc_platform_contact_modify_pair_pack
@@ -113,10 +120,12 @@ namespace black_cat
 		class bc_platform_contact_modify_pair
 		{
 		public:
-			using platform_pack = bc_platform_contact_modify_pair_pack< TApi >;
+			using platform_pack = bc_platform_contact_modify_pair_pack<TApi>;
 
 		public:
-			bc_platform_contact_modify_pair();
+			bc_platform_contact_modify_pair() noexcept;
+
+			explicit bc_platform_contact_modify_pair(platform_pack& p_pack) noexcept;
 
 			bc_platform_contact_modify_pair(const bc_platform_contact_modify_pair&) noexcept;
 
@@ -144,12 +153,17 @@ namespace black_cat
 			{
 				return m_pack;
 			}
+
+			const platform_pack& get_platform_pack() const noexcept
+			{
+				return m_pack;
+			}
 			
 		private:
 			platform_pack m_pack;
 		};
 
-		using bc_contact_modify_pair = bc_platform_contact_modify_pair< g_current_physics_api >;
+		using bc_contact_modify_pair = bc_platform_contact_modify_pair<g_current_physics_api>;
 		
 		/**
 		 * \brief An interface class that the user can implement in order to modify contact constraints.

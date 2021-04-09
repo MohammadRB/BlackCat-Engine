@@ -33,7 +33,7 @@ namespace black_cat
 		};
 
 		template<>
-		struct bc_platform_scene_pack< g_api_physx >
+		struct bc_platform_scene_pack<g_api_physx> : bc_platform_physics_reference_pack<g_api_physx>
 		{
 			core::bc_shared_ptr< _bc_px_scene_pack_data > m_data;
 		};

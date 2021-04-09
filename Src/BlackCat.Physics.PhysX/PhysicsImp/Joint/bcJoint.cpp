@@ -13,14 +13,24 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_joint< g_api_physx >::bc_platform_joint() noexcept
-			: bc_platform_physics_reference()
+			: bc_platform_physics_reference(),
+			m_pack()
+		{
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_joint<g_api_physx>::bc_platform_joint(platform_pack& p_pack) noexcept
+			: bc_platform_physics_reference(),
+			m_pack(p_pack)
 		{
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_joint< g_api_physx >::bc_platform_joint(const bc_platform_joint& p_other) noexcept
-			: bc_platform_physics_reference(p_other)
+			: bc_platform_physics_reference(p_other),
+			m_pack(p_other.m_pack)
 		{
 		}
 
@@ -35,6 +45,7 @@ namespace black_cat
 		bc_platform_joint< g_api_physx >& bc_platform_joint< g_api_physx >::operator=(const bc_platform_joint& p_other) noexcept
 		{
 			bc_platform_physics_reference::operator=(p_other);
+			m_pack = p_other.m_pack;
 
 			return *this;
 		}

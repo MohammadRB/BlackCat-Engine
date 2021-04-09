@@ -10,7 +10,8 @@ namespace black_cat
 	{
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_serialize_buffer< g_api_physx >::bc_platform_serialize_buffer()
+		bc_platform_serialize_buffer< g_api_physx >::bc_platform_serialize_buffer() noexcept
+			: m_pack()
 		{
 		}
 
@@ -99,7 +100,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		void bc_platform_serialize_buffer< g_api_physx >::add(bc_height_field p_height_field) noexcept
 		{
-			m_pack.m_collection->add(*static_cast<bc_physics_reference&>(p_height_field).get_platform_pack().m_px_object);
+			m_pack.m_collection->add(*p_height_field.get_platform_pack().m_px_object);
 		}
 	}
 }

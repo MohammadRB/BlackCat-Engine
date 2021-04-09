@@ -66,7 +66,9 @@ namespace black_cat
 			friend bc_platform_physics<TApi>;
 
 		public:
-			bc_platform_scene();
+			bc_platform_scene() noexcept;
+
+			explicit bc_platform_scene(platform_pack& p_pack) noexcept;
 
 			bc_platform_scene(const bc_platform_scene& p_other) noexcept;
 
@@ -228,6 +230,7 @@ namespace black_cat
 				bc_hit_flag p_hit_flags = bc_hit_flag::hit_info,
 				bc_query_flags p_query_flags = core::bc_enum::mask_or({ bc_query_flags::statics, bc_query_flags::dynamics}),
 				bc_query_group p_query_groups = bc_query_group::all,
+				bool p_high_detail_query_shape = false,
 				bc_scene_query_post_filter_callback* p_filter_callback = nullptr) const;
 
 			/**
@@ -251,6 +254,7 @@ namespace black_cat
 				bc_hit_flag p_hit_flags = bc_hit_flag::hit_info,
 				bc_query_flags p_query_flags = core::bc_enum::mask_or({ bc_query_flags::statics, bc_query_flags::dynamics }),
 				bc_query_group p_query_groups = bc_query_group::all,
+				bool p_high_detail_query_shape = false,
 				bc_scene_query_post_filter_callback* p_filter_callback = nullptr) const;
 
 			/**
@@ -267,6 +271,7 @@ namespace black_cat
 				bc_scene_overlap_query_buffer& p_buffer,
 				bc_query_flags p_query_flags = core::bc_enum::mask_or({ bc_query_flags::statics, bc_query_flags::dynamics }),
 				bc_query_group p_query_groups = bc_query_group::all,
+				bool p_high_detail_query_shape = false,
 				bc_scene_query_post_filter_callback* p_filter_callback = nullptr) const;
 
 			void lock();
@@ -279,7 +284,12 @@ namespace black_cat
 
 			bool is_valid() const noexcept override;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

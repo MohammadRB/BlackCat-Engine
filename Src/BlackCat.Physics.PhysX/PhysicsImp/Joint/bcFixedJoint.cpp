@@ -11,14 +11,24 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_fixed_joint<g_api_physx>::bc_platform_fixed_joint() noexcept
-			: bc_platform_joint()
+			: bc_platform_joint(),
+			m_pack()
+		{
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_fixed_joint<g_api_physx>::bc_platform_fixed_joint(platform_pack& p_pack) noexcept
+			: bc_platform_joint(p_pack),
+			m_pack(p_pack)
 		{
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_fixed_joint<g_api_physx>::bc_platform_fixed_joint(const bc_platform_fixed_joint& p_other) noexcept
-			: bc_platform_joint(p_other)
+			: bc_platform_joint(p_other),
+			m_pack(p_other.m_pack)
 		{
 		}
 
@@ -33,6 +43,7 @@ namespace black_cat
 		bc_platform_fixed_joint<g_api_physx>& bc_platform_fixed_joint<g_api_physx>::operator=(const bc_platform_fixed_joint& p_other) noexcept
 		{
 			bc_platform_joint::operator=(p_other);
+			m_pack = p_other.m_pack;
 
 			return *this;
 		}

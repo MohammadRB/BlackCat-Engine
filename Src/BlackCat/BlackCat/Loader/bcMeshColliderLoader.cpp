@@ -295,7 +295,8 @@ namespace black_cat
 						std::move(l_triangle_mesh),
 						l_node_index,
 						physics::bc_transform::identity(),
-						physics::bc_shape_flag::query
+						physics::bc_shape_flag::query,
+						true
 					);
 				}
 

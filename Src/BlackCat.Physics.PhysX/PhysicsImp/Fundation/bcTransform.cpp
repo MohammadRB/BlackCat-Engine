@@ -12,6 +12,14 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_transform<g_api_physx>::bc_platform_transform() noexcept
+			: m_pack()
+		{
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_transform<g_api_physx>::bc_platform_transform(platform_pack& p_pack) noexcept
+			: m_pack(p_pack)
 		{
 		}
 
@@ -34,6 +42,7 @@ namespace black_cat
 			reinterpret_cast<physx::PxVec3*>(&l_px_matrix.column2)->normalize();
 			
 			m_pack.m_px_transform = physx::PxTransform(l_px_matrix);
+			//m_pack.m_px_transform.q.normalize(); // Neutralize scales
 		}
 
 		template<>
@@ -52,6 +61,7 @@ namespace black_cat
 				bc_to_right_hand(p_position),
 				physx::PxQuat(l_px_matrix)
 			);
+			//m_pack.m_px_transform.q.normalize(); // Neutralize scales
 		}
 
 		template<>

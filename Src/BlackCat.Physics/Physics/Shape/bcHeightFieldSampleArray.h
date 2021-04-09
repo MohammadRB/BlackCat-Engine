@@ -23,6 +23,8 @@ namespace black_cat
 		public:
 			bc_platform_height_field_sample_array();
 
+			explicit bc_platform_height_field_sample_array(platform_pack&& p_pack);
+
 			bc_platform_height_field_sample_array(bc_platform_height_field_sample_array&&) noexcept;
 
 			~bc_platform_height_field_sample_array();
@@ -49,7 +51,12 @@ namespace black_cat
 			 */
 			std::tuple<bcINT16, bc_material_index> get_sample_from_bottom_left(bcINT32 p_row, bcINT32 p_column) const noexcept;
 			
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}

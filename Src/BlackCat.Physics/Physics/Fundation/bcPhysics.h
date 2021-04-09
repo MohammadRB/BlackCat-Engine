@@ -104,23 +104,23 @@ namespace black_cat
 		using bc_distance_joint_ref = bc_physics_ref<bc_distance_joint>;
 
 		template< bc_physics_api TApi >
-		class bc_platfrom_prismatic_joint;
-		using bc_prismatic_joint = bc_platfrom_prismatic_joint< g_current_physics_api >;
+		class bc_platform_prismatic_joint;
+		using bc_prismatic_joint = bc_platform_prismatic_joint< g_current_physics_api >;
 		using bc_prismatic_joint_ref = bc_physics_ref<bc_prismatic_joint>;
 
 		template< bc_physics_api TApi >
-		class bc_platfrom_revolute_joint;
-		using bc_revolute_joint = bc_platfrom_revolute_joint< g_current_physics_api >;
+		class bc_platform_revolute_joint;
+		using bc_revolute_joint = bc_platform_revolute_joint< g_current_physics_api >;
 		using bc_revolute_joint_ref = bc_physics_ref< bc_revolute_joint >;
 
 		template< bc_physics_api TApi >
-		class bc_platfrom_spherical_joint;
-		using bc_spherical_joint = bc_platfrom_spherical_joint< g_current_physics_api >;
+		class bc_platform_spherical_joint;
+		using bc_spherical_joint = bc_platform_spherical_joint< g_current_physics_api >;
 		using bc_spherical_joint_ref = bc_physics_ref<bc_spherical_joint>;
 
 		template< bc_physics_api TApi >
-		class bc_platfrom_d6_joint;
-		using bc_d6_joint = bc_platfrom_d6_joint< g_current_physics_api >;
+		class bc_platform_d6_joint;
+		using bc_d6_joint = bc_platform_d6_joint< g_current_physics_api >;
 		using bc_d6_joint_ref = bc_physics_ref<bc_d6_joint>;
 
 		template< bc_physics_api TApi >

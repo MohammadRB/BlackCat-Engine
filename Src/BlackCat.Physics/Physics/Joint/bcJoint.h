@@ -31,9 +31,11 @@ namespace black_cat
 		public:
 			bc_platform_joint() noexcept;
 
+			explicit bc_platform_joint(platform_pack& p_pack) noexcept;
+
 			bc_platform_joint(const bc_platform_joint&) noexcept;
 
-			virtual ~bc_platform_joint();
+			virtual ~bc_platform_joint() override;
 
 			bc_platform_joint& operator=(const bc_platform_joint&) noexcept;
 
@@ -101,7 +103,12 @@ namespace black_cat
 
 			bool is_valid() const noexcept override;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}
