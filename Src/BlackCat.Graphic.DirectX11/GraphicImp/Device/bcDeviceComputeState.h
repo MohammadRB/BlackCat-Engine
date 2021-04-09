@@ -23,31 +23,30 @@ namespace black_cat
 		using bc_device_compute_state_proxy = bc_refcount_proxy<_bc_device_compute_state>;
 
 		template<>
-		struct bc_platform_device_compute_state_pack< g_api_dx11 >
+		struct bc_platform_device_compute_state_pack<g_api_dx11> : bc_platform_device_reference_pack<g_api_dx11>
 		{
 			bc_device_compute_state_proxy* m_compute_state_proxy;
 		};
 
 		template<>
-		inline bc_platform_device_compute_state< g_api_dx11 >::bc_platform_device_compute_state()
-			: m_pack()
+		inline bc_platform_device_compute_state< g_api_dx11 >::bc_platform_device_compute_state() noexcept
+			: bc_platform_device_reference()
 		{
 			m_pack.m_compute_state_proxy = nullptr;
 		}
 
 		template<>
-		inline bc_platform_device_compute_state<g_api_dx11>::bc_platform_device_compute_state(platform_pack& p_pack)
-			: m_pack()
+		inline bc_platform_device_compute_state<g_api_dx11>::bc_platform_device_compute_state(platform_pack& p_pack) noexcept
+			: bc_platform_device_reference(p_pack),
+			m_pack(p_pack)
 		{
-			m_pack.m_compute_state_proxy = p_pack.m_compute_state_proxy;
 		}
 
 		template<>
 		inline bc_platform_device_compute_state< g_api_dx11 >::bc_platform_device_compute_state(const bc_platform_device_compute_state& p_other) noexcept
 			: bc_platform_device_reference(p_other),
-			m_pack()
+			m_pack(p_other.m_pack)
 		{
-			m_pack.m_compute_state_proxy = p_other.m_pack.m_compute_state_proxy;
 		}
 
 		template<>
@@ -59,7 +58,7 @@ namespace black_cat
 		inline bc_platform_device_compute_state< g_api_dx11 >& bc_platform_device_compute_state< g_api_dx11 >::operator=(const bc_platform_device_compute_state& p_other) noexcept
 		{
 			bc_platform_device_reference::operator=(p_other);
-			m_pack.m_compute_state_proxy = p_other.m_pack.m_compute_state_proxy;
+			m_pack = p_other.m_pack;
 
 			return *this;
 		}

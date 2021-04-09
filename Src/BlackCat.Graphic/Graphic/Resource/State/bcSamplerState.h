@@ -47,27 +47,27 @@ namespace black_cat
 			}
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_sampler_state_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_sampler_state : public bc_platform_device_reference<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_sampler_state_pack<TRenderApi>;
 
 		public:
-			bc_platform_sampler_state();
+			bc_platform_sampler_state() noexcept;
 
-			explicit bc_platform_sampler_state(platform_pack& p_pack);
+			explicit bc_platform_sampler_state(platform_pack& p_pack) noexcept;
 
-			bc_platform_sampler_state(const bc_platform_sampler_state& p_other);
+			bc_platform_sampler_state(const bc_platform_sampler_state& p_other) noexcept;
 
 			~bc_platform_sampler_state();
 
-			bc_platform_sampler_state& operator=(const bc_platform_sampler_state& p_other);
+			bc_platform_sampler_state& operator=(const bc_platform_sampler_state& p_other) noexcept;
 
 			bool is_valid() const noexcept override;
 
@@ -81,7 +81,12 @@ namespace black_cat
 
 			bool operator!=(std::nullptr_t) const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

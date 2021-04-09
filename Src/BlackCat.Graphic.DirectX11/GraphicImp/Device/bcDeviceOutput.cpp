@@ -10,7 +10,7 @@ namespace black_cat
 	{
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device_output< g_api_dx11 >::bc_platform_device_output(platform_pack p_parameter)
+		bc_platform_device_output< g_api_dx11 >::bc_platform_device_output(platform_pack p_parameter) noexcept
 			: m_pack(p_parameter.m_output_handle)
 		{
 		}

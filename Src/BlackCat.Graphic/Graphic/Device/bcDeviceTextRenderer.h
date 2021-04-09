@@ -72,7 +72,7 @@ namespace black_cat
 			using platform_pack = bc_platform_device_text_renderer_pack<TRenderApi>;
 
 		public:
-			explicit bc_platform_device_text_renderer(platform_pack p_parameter);
+			explicit bc_platform_device_text_renderer(platform_pack p_parameter) noexcept;
 			
 			bc_platform_device_text_renderer(bc_platform_device_text_renderer&&) noexcept;
 
@@ -84,7 +84,12 @@ namespace black_cat
 			
 			void draw_texts(bc_device& p_device, bc_render_target_view& p_back_buffer_view, const bc_device_text* p_texts, bcSIZE p_count);
 			
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}

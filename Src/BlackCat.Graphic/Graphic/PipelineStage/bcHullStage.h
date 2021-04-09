@@ -10,11 +10,11 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_hull_stage : public bc_programmable_stage
 		{
 		public:
-			bc_platform_hull_stage();
+			bc_platform_hull_stage() noexcept;
 
 			bc_platform_hull_stage(bc_platform_hull_stage&&) noexcept;
 

@@ -9,8 +9,6 @@
 #include "GraphicImp/GraphicImpPCH.h"
 #include "GraphicImp/bcRefCountProxy.h"
 
-using namespace Microsoft::WRL;
-
 namespace black_cat
 {
 	namespace graphic
@@ -24,7 +22,7 @@ namespace black_cat
 		using bc_device_command_list_proxy = bc_refcount_proxy<_bc_device_command_list_proxy>;
 
 		template< >
-		struct bc_platform_device_command_list_pack<bc_render_api::directx11>
+		struct bc_platform_device_command_list_pack<g_api_dx11> : bc_platform_device_reference_pack<g_api_dx11>
 		{
 			// Because in Dx11, command lists are created with a call to ID3D11DeviceContext::FinishCommandList, there is no way
 			// to created command list instance with device, and because all copies must point to the same command list object, 

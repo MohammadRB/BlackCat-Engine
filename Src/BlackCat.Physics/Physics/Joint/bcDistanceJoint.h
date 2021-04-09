@@ -49,19 +49,6 @@ namespace black_cat
 			void disable_limit() noexcept;
 
 			bc_joint_linear_limit_pair get_limit() const noexcept;
-
-			platform_pack& get_platform_pack() noexcept override
-			{
-				return m_pack;
-			}
-
-			const platform_pack& get_platform_pack() const noexcept override
-			{
-				return m_pack;
-			}
-
-		private:
-			platform_pack m_pack;
 		};
 
 		using bc_distance_joint = bc_platform_distance_joint< g_current_physics_api >;

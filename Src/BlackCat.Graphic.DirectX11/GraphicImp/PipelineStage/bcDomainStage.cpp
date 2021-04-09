@@ -15,7 +15,7 @@ namespace black_cat
 	{
 		template < >
 		BC_GRAPHICIMP_DLL
-		bc_platform_domain_stage<g_api_dx11>::bc_platform_domain_stage()
+		bc_platform_domain_stage<g_api_dx11>::bc_platform_domain_stage() noexcept
 			: bc_platform_programmable_stage(bc_platform_programmable_stage::platform_pack())
 		{
 		}

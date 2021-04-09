@@ -14,8 +14,8 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< >
-		struct bc_platform_shader_view_pack< g_api_dx11 >
+		template<>
+		struct bc_platform_shader_view_pack<g_api_dx11> : bci_platform_resource_view_pack<g_api_dx11>
 		{
 			ID3D11ShaderResourceView* m_shader_view;
 			ID3D11UnorderedAccessView* m_unordered_shader_view;

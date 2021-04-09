@@ -11,7 +11,7 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_compute_stage : public bc_programmable_stage
 		{
 		public:
@@ -19,7 +19,7 @@ namespace black_cat
 			using initial_counts_array = core::bc_array<bcINT32, bc_render_api_info::number_of_ps_cs_uav_resource()>;
 			
 		public:
-			bc_platform_compute_stage();
+			bc_platform_compute_stage() noexcept;
 
 			bc_platform_compute_stage(bc_platform_compute_stage&&) noexcept;
 
@@ -43,6 +43,6 @@ namespace black_cat
 			initial_counts_array m_initial_counts;
 		};
 
-		using bc_compute_stage = bc_platform_compute_stage< g_current_render_api >;
+		using bc_compute_stage = bc_platform_compute_stage<g_current_render_api>;
 	}
 }

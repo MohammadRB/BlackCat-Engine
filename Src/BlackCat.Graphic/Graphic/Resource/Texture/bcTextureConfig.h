@@ -8,12 +8,12 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_texture_config_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_texture_config
 		{
 		public:
@@ -29,7 +29,6 @@ namespace black_cat
 
 			bc_format get_format() const;
 
-		public:
 			platform_pack& get_platform_pack()
 			{
 				return m_pack;

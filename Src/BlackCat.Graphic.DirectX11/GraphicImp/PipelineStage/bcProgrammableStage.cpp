@@ -10,21 +10,21 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_programmable_stage<g_api_dx11>::bc_platform_programmable_stage(const platform_pack& p_pack)
+		bc_platform_programmable_stage<g_api_dx11>::bc_platform_programmable_stage(const platform_pack& p_pack) noexcept
 			: m_pack(p_pack)
 		{
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_programmable_stage<g_api_dx11>::bc_platform_programmable_stage(bc_platform_programmable_stage&& p_other) noexcept
 			: m_pack(std::move(p_other.m_pack))
 		{
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_programmable_stage<g_api_dx11>::~bc_platform_programmable_stage()
 		{
@@ -39,7 +39,7 @@ namespace black_cat
 			return *this;
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
 		void bc_platform_programmable_stage<g_api_dx11>::apply_required_state(bc_device_pipeline& p_pipeline)
 		{
@@ -52,7 +52,7 @@ namespace black_cat
 			m_required_state.reset_tracking();
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
 		void bc_platform_programmable_stage<g_api_dx11>::set_to_default_state(bc_device_pipeline& p_pipeline)
 		{

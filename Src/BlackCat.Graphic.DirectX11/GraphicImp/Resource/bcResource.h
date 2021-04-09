@@ -13,19 +13,27 @@ namespace black_cat
 	namespace graphic
 	{
 		template<>
-		struct bci_platform_resource_pack<g_api_dx11>
+		struct bci_platform_resource_pack<g_api_dx11> : bc_platform_device_reference_pack<g_api_dx11>
 		{
-			bci_platform_resource_pack()
-				: m_resource(nullptr)
-			{
-			}
-
-			explicit bci_platform_resource_pack(ID3D11Resource* p_resource)
-				: m_resource(p_resource)
-			{
-			}
-
 			ID3D11Resource* m_resource;
 		};
+
+		template<>
+		inline bci_platform_resource< g_api_dx11 >::bci_platform_resource() noexcept = default;
+
+		template<>
+		inline bci_platform_resource<g_api_dx11>::bci_platform_resource(platform_pack& p_pack) noexcept
+			: bc_platform_device_reference()
+		{
+		}
+
+		template<>
+		inline bci_platform_resource< g_api_dx11 >::~bci_platform_resource() = default;
+
+		template<>
+		inline bci_platform_resource< g_api_dx11 >::bci_platform_resource(const bci_platform_resource& p_other) noexcept = default;
+
+		template<>
+		inline bci_platform_resource< g_api_dx11 >& bci_platform_resource< g_api_dx11 >::operator=(const bci_platform_resource& p_other) noexcept = default;
 	}
 }

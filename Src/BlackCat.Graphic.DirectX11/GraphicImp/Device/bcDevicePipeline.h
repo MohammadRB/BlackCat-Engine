@@ -79,7 +79,7 @@ namespace black_cat
 		using bc_device_pipeline_proxy = bc_refcount_proxy<_bc_device_pipeline_proxy>;
 
 		template<>
-		struct bc_platform_device_pipeline_pack< g_api_dx11 >
+		struct bc_platform_device_pipeline_pack< g_api_dx11 > : bc_platform_device_reference_pack<g_api_dx11>
 		{
 			bc_device_pipeline_proxy* m_pipeline_proxy;
 		};

@@ -26,22 +26,18 @@ namespace black_cat
 
 			virtual void set_debug_name(const bcCHAR* p_name) noexcept = 0;
 			
-			platform_pack& get_platform_pack()
-			{
-				return m_pack;
-			}
+			virtual platform_pack& get_platform_pack() noexcept = 0;
+			
+			virtual const platform_pack& get_platform_pack() const noexcept = 0;
 			
 		protected:
-			bc_platform_device_reference();
+			bc_platform_device_reference() noexcept;
 
-			explicit bc_platform_device_reference(platform_pack& p_pack);
+			explicit bc_platform_device_reference(platform_pack& p_pack) noexcept;
 
-			bc_platform_device_reference(const bc_platform_device_reference&);
+			bc_platform_device_reference(const bc_platform_device_reference&) noexcept;
 
-			bc_platform_device_reference& operator=(const bc_platform_device_reference&);
-
-		private:
-			platform_pack m_pack;
+			bc_platform_device_reference& operator=(const bc_platform_device_reference&) noexcept;
 		};
 
 		using bc_device_reference = bc_platform_device_reference<g_current_render_api>;

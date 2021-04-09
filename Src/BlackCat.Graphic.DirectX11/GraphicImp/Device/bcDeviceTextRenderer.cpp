@@ -12,7 +12,7 @@ namespace black_cat
 	{
 		template< >
 		BC_GRAPHICIMP_DLL
-		bc_platform_device_text_renderer<g_api_dx11>::bc_platform_device_text_renderer(platform_pack p_parameter)
+		bc_platform_device_text_renderer<g_api_dx11>::bc_platform_device_text_renderer(platform_pack p_parameter) noexcept
 			: m_pack(std::move(p_parameter))
 		{
 		}

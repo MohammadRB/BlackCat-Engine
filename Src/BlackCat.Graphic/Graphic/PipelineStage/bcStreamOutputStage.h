@@ -21,7 +21,7 @@ namespace black_cat
 		class bc_stream_output_stage_state
 		{
 		public:
-			bc_stream_output_stage_state();
+			bc_stream_output_stage_state() noexcept;
 
 			bc_stream_output_stage_state(const bc_stream_output_stage_state&) noexcept = default;
 
@@ -41,7 +41,7 @@ namespace black_cat
 			bc_pipeline_state_array_variable< bcUINT, bc_render_api_info::number_of_so_streams()> m_stream_offsets;
 		};
 
-		inline bc_stream_output_stage_state::bc_stream_output_stage_state()
+		inline bc_stream_output_stage_state::bc_stream_output_stage_state() noexcept
 			: m_stream_buffers(bc_buffer()),
 			m_stream_offsets(0)
 		{
@@ -75,7 +75,7 @@ namespace black_cat
 			using platform_pack = bc_platform_stream_output_stage_pack<TRenderApi>;
 
 		public:
-			bc_platform_stream_output_stage(platform_pack& p_pack);
+			bc_platform_stream_output_stage(platform_pack& p_pack) noexcept;
 
 			bc_platform_stream_output_stage(bc_platform_stream_output_stage&&) noexcept;
 

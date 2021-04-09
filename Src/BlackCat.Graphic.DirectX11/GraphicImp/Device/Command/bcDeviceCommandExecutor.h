@@ -10,14 +10,12 @@
 #include "Graphic/Device/Command/bcDeviceCommandExecutor.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
-using namespace Microsoft::WRL;
-
 namespace black_cat
 {
 	namespace graphic
 	{
 		template< >
-		struct bc_platform_device_command_executor_pack<g_api_dx11>
+		struct bc_platform_device_command_executor_pack<g_api_dx11> : bc_platform_device_reference_pack<g_api_dx11>
 		{
 			bc_device* m_device;
 		};

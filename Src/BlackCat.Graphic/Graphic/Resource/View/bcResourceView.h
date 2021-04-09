@@ -25,17 +25,17 @@ namespace black_cat
 			using platform_pack = bc_platform_shader_view_pack<TRenderApi>;
 
 		public:
-			bc_platform_resource_view();
+			bc_platform_resource_view() noexcept;
 
-			bc_platform_resource_view(platform_pack& p_pack, bc_resource_view_type p_type);
+			bc_platform_resource_view(platform_pack& p_pack, bc_resource_view_type p_type) noexcept;
 
-			bc_platform_resource_view(const bc_platform_resource_view&);
+			bc_platform_resource_view(const bc_platform_resource_view&) noexcept;
 
-			~bc_platform_resource_view();
+			~bc_platform_resource_view() override;
 
-			bc_platform_resource_view& operator=(const bc_platform_resource_view&);
+			bc_platform_resource_view& operator=(const bc_platform_resource_view&) noexcept;
 
-			bc_resource_view_type get_view_type() const override;
+			bc_resource_view_type get_view_type() const noexcept override;
 
 			bool is_valid() const noexcept override;
 
@@ -49,11 +49,26 @@ namespace black_cat
 
 			bool operator!=(std::nullptr_t) const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
 			{
 				return m_pack;
 			}
 
+			const platform_pack& get_platform_pack() const noexcept override
+			{
+				return m_pack;
+			}
+
+			platform_pack& get_resource_view_platform_pack() noexcept override
+			{
+				return get_platform_pack();
+			}
+
+			const platform_pack& get_resource_view_platform_pack() const noexcept override
+			{
+				return get_platform_pack();
+			}
+		
 		private:
 			platform_pack m_pack;
 			bc_resource_view_type m_type;

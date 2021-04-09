@@ -15,7 +15,7 @@ namespace black_cat
 	namespace graphic
 	{
 		template<>
-		struct bc_platform_domain_shader_pack<bc_render_api::directx11>
+		struct bc_platform_domain_shader_pack<g_api_dx11> : bci_platform_shader_pack<g_api_dx11>
 		{
 			ID3D11DomainShader* m_shader;
 		};

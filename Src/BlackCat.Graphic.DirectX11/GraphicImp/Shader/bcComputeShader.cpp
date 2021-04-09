@@ -14,18 +14,26 @@ namespace black_cat
 	{
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_compute_shader< g_api_dx11 >::bc_platform_compute_shader()
-			: bc_platform_ishader()
+		bc_platform_compute_shader< g_api_dx11 >::bc_platform_compute_shader() noexcept
+			: bci_platform_shader()
 		{
 			m_pack.m_shader = nullptr;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_compute_shader<g_api_dx11>::bc_platform_compute_shader(platform_pack& p_pack)
-			: bc_platform_ishader()
+		bc_platform_compute_shader<g_api_dx11>::bc_platform_compute_shader(platform_pack& p_pack) noexcept
+			: bci_platform_shader(),
+			m_pack(p_pack)
 		{
-			m_pack.m_shader = p_pack.m_shader;
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_platform_compute_shader< g_api_dx11 >::bc_platform_compute_shader(const bc_platform_compute_shader& p_other) noexcept
+			: bci_platform_shader(p_other),
+			m_pack(p_other.m_pack)
+		{
 		}
 
 		template<>
@@ -36,18 +44,10 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_compute_shader< g_api_dx11 >::bc_platform_compute_shader(const bc_platform_compute_shader& p_other)
-			: bc_platform_ishader(p_other)
+		bc_platform_compute_shader< g_api_dx11 >& bc_platform_compute_shader< g_api_dx11 >::operator=(const bc_platform_compute_shader& p_other) noexcept
 		{
-			m_pack.m_shader = p_other.m_pack.m_shader;
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_platform_compute_shader< g_api_dx11 >& bc_platform_compute_shader< g_api_dx11 >::operator=(const bc_platform_compute_shader& p_other)
-		{
-			bc_platform_ishader::operator=(p_other);
-			m_pack.m_shader = p_other.m_pack.m_shader;
+			bci_platform_shader::operator=(p_other);
+			m_pack = p_other.m_pack;
 
 			return *this;
 		}

@@ -8,15 +8,13 @@
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Device/bcDevice.h"
 
-using namespace Microsoft::WRL;
-
 namespace black_cat
 {
 	namespace graphic
 	{
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_texture2d< g_api_dx11 >::bc_platform_texture2d()
+		bc_platform_texture2d< g_api_dx11 >::bc_platform_texture2d() noexcept
 			: bci_platform_resource()
 		{
 			m_pack.m_texture = nullptr;
@@ -24,12 +22,20 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_texture2d<g_api_dx11>::bc_platform_texture2d(platform_pack& p_pack)
-			: bci_platform_resource(bci_platform_resource::platform_pack(p_pack.m_texture))
+		bc_platform_texture2d<g_api_dx11>::bc_platform_texture2d(platform_pack& p_pack) noexcept
+			: bci_platform_resource(p_pack),
+			m_pack(p_pack)
 		{
-			m_pack.m_texture = p_pack.m_texture;
 		}
 
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_platform_texture2d< g_api_dx11 >::bc_platform_texture2d(const bc_platform_texture2d& p_other) noexcept
+			: bci_platform_resource(p_other),
+			m_pack(p_other.m_pack)
+		{
+		}
+		
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_texture2d< g_api_dx11 >::~bc_platform_texture2d()
@@ -38,18 +44,10 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_texture2d< g_api_dx11 >::bc_platform_texture2d(const bc_platform_texture2d& p_other)
-			: bci_platform_resource(p_other)
-		{
-			m_pack.m_texture = p_other.m_pack.m_texture;
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_platform_texture2d< g_api_dx11 >& bc_platform_texture2d< g_api_dx11 >::operator=(const bc_platform_texture2d& p_other)
+		bc_platform_texture2d< g_api_dx11 >& bc_platform_texture2d< g_api_dx11 >::operator=(const bc_platform_texture2d& p_other) noexcept
 		{
 			bci_platform_resource::operator=(p_other);
-			m_pack.m_texture = p_other.m_pack.m_texture;
+			m_pack = p_other.m_pack;
 
 			return *this;
 		}

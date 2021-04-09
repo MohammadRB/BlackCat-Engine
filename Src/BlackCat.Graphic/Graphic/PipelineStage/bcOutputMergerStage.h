@@ -25,7 +25,7 @@ namespace black_cat
 		class bc_output_merger_stage_state
 		{
 		public:
-			bc_output_merger_stage_state();
+			bc_output_merger_stage_state() noexcept;
 
 			bc_output_merger_stage_state(const bc_output_merger_stage_state&) noexcept = default;
 
@@ -52,7 +52,7 @@ namespace black_cat
 			//bc_pipeline_state_array_variable< bcUINT > m_uav_initial_counts;
 		};
 
-		inline bc_output_merger_stage_state::bc_output_merger_stage_state()
+		inline bc_output_merger_stage_state::bc_output_merger_stage_state() noexcept
 			: //m_blend_state(nullptr),
 			  //m_depth_stencil_state(nullptr),
 			m_blend_factors(core::bc_vector4f(0, 0, 0, 0)),
@@ -101,12 +101,12 @@ namespace black_cat
 			return l_count;
 		}
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_output_merger_stage_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_output_merger_stage : public core_platform::bc_no_copy
 		{
 		public:

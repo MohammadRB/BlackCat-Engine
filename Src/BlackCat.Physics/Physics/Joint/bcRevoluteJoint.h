@@ -20,7 +20,7 @@ namespace black_cat
 		class bc_platform_revolute_joint : public bc_platform_joint<TApi>
 		{
 		public:
-			using platform_pack = bc_platform_revolute_joint_pack< TApi >;
+			using platform_pack = bc_platform_revolute_joint_pack<TApi>;
 
 		public:
 			bc_platform_revolute_joint() noexcept;
@@ -54,19 +54,6 @@ namespace black_cat
 			void disable_limit() noexcept;
 
 			bc_joint_angular_limit get_limit() const noexcept;
-
-			platform_pack& get_platform_pack() noexcept override
-			{
-				return m_pack;
-			}
-
-			const platform_pack& get_platform_pack() const noexcept override
-			{
-				return m_pack;
-			}
-
-		private:
-			platform_pack m_pack;
 		};
 
 		using bc_revolute_joint = bc_platform_revolute_joint< g_current_physics_api >;

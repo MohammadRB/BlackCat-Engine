@@ -123,7 +123,7 @@ namespace black_cat
 			void set_notify_flag(bc_shape_notify_flag p_flag, bool p_value) noexcept;
 		};
 
-		using bc_rigid_actor = bc_platform_rigid_actor< g_current_physics_api >;
-		using bc_rigid_actor_ref = bc_physics_ref< bc_rigid_actor >;
+		using bc_rigid_actor = bc_platform_rigid_actor<g_current_physics_api>;
+		using bc_rigid_actor_ref = bc_physics_ref<bc_rigid_actor>;
 	}
 }

@@ -14,7 +14,7 @@ namespace black_cat
 	namespace graphic
 	{
 		template<>
-		struct bc_platform_buffer_pack<g_api_dx11>
+		struct bc_platform_buffer_pack<g_api_dx11> : bci_platform_resource_pack<g_api_dx11>
 		{
 			ID3D11Buffer* m_buffer;
 		};

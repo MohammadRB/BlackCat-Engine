@@ -18,7 +18,7 @@ namespace black_cat
 	{
 		template<bc_render_api>
 		class bc_platform_device_pipeline;
-		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
+		using bc_device_pipeline = bc_platform_device_pipeline<g_current_render_api>;
 
 		class bc_programmable_stage_state
 		{
@@ -83,7 +83,7 @@ namespace black_cat
 			using platform_pack = bc_platform_programmable_stage_pack<TRenderApi>;
 
 		public:
-			explicit bc_platform_programmable_stage(const platform_pack& p_pack);
+			explicit bc_platform_programmable_stage(const platform_pack& p_pack) noexcept;
 
 			bc_platform_programmable_stage(bc_platform_programmable_stage&&) noexcept;
 

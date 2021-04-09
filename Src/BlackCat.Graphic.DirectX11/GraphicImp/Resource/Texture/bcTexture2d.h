@@ -15,8 +15,8 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< >
-		struct bc_platform_texture2d_pack<g_api_dx11>
+		template<>
+		struct bc_platform_texture2d_pack<g_api_dx11> : bci_platform_resource_pack<g_api_dx11>
 		{
 			ID3D11Texture2D* m_texture;
 		};

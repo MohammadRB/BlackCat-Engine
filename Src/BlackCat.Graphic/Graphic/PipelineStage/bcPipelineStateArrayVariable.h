@@ -104,7 +104,7 @@ namespace black_cat
 		{
 			BC_ASSERT(p_slot < m_states.size());
 
-			bool l_is_same = m_states[p_slot] == p_state;
+			const bool l_is_same = m_states[p_slot] == p_state;
 
 			if (!l_is_same)
 			{

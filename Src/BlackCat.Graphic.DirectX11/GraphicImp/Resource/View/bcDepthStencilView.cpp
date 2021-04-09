@@ -13,7 +13,7 @@ namespace black_cat
 	{
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_depth_stencil_view< g_api_dx11 >::bc_platform_depth_stencil_view()
+		bc_platform_depth_stencil_view< g_api_dx11 >::bc_platform_depth_stencil_view() noexcept
 			: bci_platform_resource_view()
 		{
 			m_pack.m_depth_stencil_view = nullptr;
@@ -21,12 +21,20 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_depth_stencil_view<g_api_dx11>::bc_platform_depth_stencil_view(platform_pack& p_pack)
-			: bci_platform_resource_view()
+		bc_platform_depth_stencil_view<g_api_dx11>::bc_platform_depth_stencil_view(platform_pack& p_pack) noexcept
+			: bci_platform_resource_view(),
+			m_pack(p_pack)
 		{
-			m_pack.m_depth_stencil_view = p_pack.m_depth_stencil_view;
 		}
 
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_platform_depth_stencil_view< g_api_dx11 >::bc_platform_depth_stencil_view(const bc_platform_depth_stencil_view& p_other) noexcept
+			: bci_platform_resource_view(p_other),
+			m_pack(p_other.m_pack)
+		{
+		}
+		
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_depth_stencil_view< g_api_dx11 >::~bc_platform_depth_stencil_view()
@@ -35,25 +43,17 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_depth_stencil_view< g_api_dx11 >::bc_platform_depth_stencil_view(const bc_platform_depth_stencil_view& p_other)
-			: bci_platform_resource_view(p_other)
-		{
-			m_pack.m_depth_stencil_view = p_other.m_pack.m_depth_stencil_view;
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_platform_depth_stencil_view< g_api_dx11 >& bc_platform_depth_stencil_view< g_api_dx11 >::operator=(const bc_platform_depth_stencil_view& p_other)
+		bc_platform_depth_stencil_view< g_api_dx11 >& bc_platform_depth_stencil_view< g_api_dx11 >::operator=(const bc_platform_depth_stencil_view& p_other) noexcept
 		{
 			bci_platform_resource_view::operator=(p_other);
-			m_pack.m_depth_stencil_view = p_other.m_pack.m_depth_stencil_view;
+			m_pack = p_other.m_pack;
 
 			return *this;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_resource_view_type bc_platform_depth_stencil_view< g_api_dx11 >::get_view_type() const
+		bc_resource_view_type bc_platform_depth_stencil_view< g_api_dx11 >::get_view_type() const noexcept
 		{
 			return bc_resource_view_type::depth_stencil;
 		}

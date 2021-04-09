@@ -27,33 +27,38 @@ namespace black_cat
 			const bcCHAR* m_value;
 		};
 		
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_compiled_shader_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_compiled_shader : public bc_platform_device_reference<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_compiled_shader_pack<TRenderApi>;
 
 		public:
-			bc_platform_compiled_shader();
+			bc_platform_compiled_shader() noexcept;
 
-			explicit bc_platform_compiled_shader(platform_pack& p_pack);
+			explicit bc_platform_compiled_shader(platform_pack& p_pack) noexcept;
 
-			bc_platform_compiled_shader(const bc_platform_compiled_shader& p_other);
+			bc_platform_compiled_shader(const bc_platform_compiled_shader& p_other) noexcept;
 
-			~bc_platform_compiled_shader();
+			~bc_platform_compiled_shader() override;
 
-			bc_platform_compiled_shader& operator=(const bc_platform_compiled_shader& p_other);
+			bc_platform_compiled_shader& operator=(const bc_platform_compiled_shader& p_other) noexcept;
 
 			bool is_valid() const noexcept override;
 
 			void set_debug_name(const bcCHAR* p_name) noexcept override;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}
@@ -62,37 +67,39 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_compiled_shader = bc_platform_compiled_shader< g_current_render_api >;
-		using bc_compiled_shader_ptr = bc_device_ref< bc_compiled_shader >;
+		using bc_compiled_shader = bc_platform_compiled_shader<g_current_render_api>;
+		using bc_compiled_shader_ptr = bc_device_ref<bc_compiled_shader>;
 
-		template< bc_render_api TRenderApi >
-		struct bc_platform_ishader_pack
+		template<bc_render_api TRenderApi>
+		struct bci_platform_shader_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
-		class bc_platform_ishader : public bc_platform_device_reference<TRenderApi>
+		template<bc_render_api TRenderApi>
+		class bci_platform_shader : public bc_platform_device_reference<TRenderApi>
 		{
 		public:
-			using platform_pack = bc_platform_ishader_pack<TRenderApi>;
+			using platform_pack = bci_platform_shader_pack<TRenderApi>;
 
 		public:
-			virtual ~bc_platform_ishader();
+			virtual ~bci_platform_shader() override;
 
 			virtual bc_shader_type get_type() const = 0;
 
+			virtual platform_pack& get_shader_platform_pack() noexcept = 0;
+
+			virtual const platform_pack& get_shader_platform_pack() const noexcept = 0;
+
 		protected:
-			bc_platform_ishader();
+			bci_platform_shader() noexcept;
 
-			explicit bc_platform_ishader(platform_pack& p_pack);
+			explicit bci_platform_shader(platform_pack& p_pack) noexcept;
 
-			bc_platform_ishader(const bc_platform_ishader& p_other);
+			bci_platform_shader(const bci_platform_shader& p_other) noexcept;
 
-			bc_platform_ishader& operator=(const bc_platform_ishader& p_other);
-
-			platform_pack m_pack;
+			bci_platform_shader& operator=(const bci_platform_shader& p_other) noexcept;
 		};
 
-		using bc_ishader = bc_platform_ishader< g_current_render_api >;
+		using bci_shader = bci_platform_shader< g_current_render_api >;
 	}
 }

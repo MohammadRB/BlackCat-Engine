@@ -36,27 +36,27 @@ namespace black_cat
 			default, deferred
 		};
 		
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_device_pipeline_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_device_pipeline : public bc_platform_device_reference<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_device_pipeline_pack<TRenderApi>;
 
 		public:
-			bc_platform_device_pipeline();
+			bc_platform_device_pipeline() noexcept;
 
-			bc_platform_device_pipeline(platform_pack& p_pack);
+			bc_platform_device_pipeline(platform_pack& p_pack) noexcept;
 
-			bc_platform_device_pipeline(const bc_platform_device_pipeline&);
+			bc_platform_device_pipeline(const bc_platform_device_pipeline&) noexcept;
 
-			~bc_platform_device_pipeline();
+			~bc_platform_device_pipeline() override;
 
-			bc_platform_device_pipeline& operator=(const bc_platform_device_pipeline&);
+			bc_platform_device_pipeline& operator=(const bc_platform_device_pipeline&) noexcept;
 
 			/**
 			 * \brief Bind and Apply required pipeline states.
@@ -179,7 +179,12 @@ namespace black_cat
 
 			bool operator!=(std::nullptr_t) const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}
@@ -188,7 +193,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
-		using bc_device_pipeline_ref = bc_device_ref< bc_device_pipeline >;
+		using bc_device_pipeline = bc_platform_device_pipeline<g_current_render_api>;
+		using bc_device_pipeline_ref = bc_device_ref<bc_device_pipeline>;
 	}
 }

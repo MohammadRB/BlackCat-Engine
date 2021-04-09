@@ -13,20 +13,20 @@ namespace black_cat
 {
 	namespace physics
 	{
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_rigid_actor;
-		using bc_rigid_actor = bc_platform_rigid_actor< g_current_physics_api >;
+		using bc_rigid_actor = bc_platform_rigid_actor<g_current_physics_api>;
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		struct bc_platform_joint_pack
 		{
 		};
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_joint : public bc_platform_physics_reference<TApi>
 		{
 		public:
-			using platform_pack = bc_platform_joint_pack< TApi >;
+			using platform_pack = bc_platform_joint_pack<TApi>;
 
 		public:
 			bc_platform_joint() noexcept;
@@ -117,7 +117,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_joint = bc_platform_joint< g_current_physics_api >;
+		using bc_joint = bc_platform_joint<g_current_physics_api>;
 		using bc_joint_ref = bc_physics_ref<bc_joint>;
 	}
 }

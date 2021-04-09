@@ -64,15 +64,15 @@ namespace black_cat
 			using platform_pack = bc_platform_device_pipeline_state_pack<TRenderApi>;
 
 		public:
-			bc_platform_device_pipeline_state();
+			bc_platform_device_pipeline_state() noexcept;
 
-			explicit bc_platform_device_pipeline_state(platform_pack& p_pack);
+			explicit bc_platform_device_pipeline_state(platform_pack& p_pack) noexcept;
 			
-			bc_platform_device_pipeline_state(const bc_platform_device_pipeline_state&);
+			bc_platform_device_pipeline_state(const bc_platform_device_pipeline_state&) noexcept;
 
 			~bc_platform_device_pipeline_state();
 
-			bc_platform_device_pipeline_state& operator=(const bc_platform_device_pipeline_state&);
+			bc_platform_device_pipeline_state& operator=(const bc_platform_device_pipeline_state&) noexcept;
 
 			const bc_device_pipeline_state_config& get_config() const;
 
@@ -88,7 +88,12 @@ namespace black_cat
 
 			bool operator!=(std::nullptr_t) const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

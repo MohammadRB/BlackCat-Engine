@@ -44,19 +44,6 @@ namespace black_cat
 			void disable_limit() noexcept;
 
 			bc_joint_cone_limit get_limit() const noexcept;
-
-			platform_pack& get_platform_pack() noexcept override
-			{
-				return m_pack;
-			}
-
-			const platform_pack& get_platform_pack() const noexcept override
-			{
-				return m_pack;
-			}
-
-		private:
-			platform_pack m_pack;
 		};
 
 		using bc_spherical_joint = bc_platform_spherical_joint< g_current_physics_api >;

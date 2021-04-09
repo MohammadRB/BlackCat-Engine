@@ -14,8 +14,8 @@ namespace black_cat
 	{
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_vertex_shader< g_api_dx11 >::bc_platform_vertex_shader()
-			: bc_platform_ishader()
+		bc_platform_vertex_shader<g_api_dx11>::bc_platform_vertex_shader() noexcept
+			: bci_platform_shader()
 		{
 			m_pack.m_shader = nullptr;
 			m_pack.m_compiled_shader = nullptr;
@@ -23,35 +23,32 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_vertex_shader< g_api_dx11 >::bc_platform_vertex_shader(platform_pack& p_pack)
-			: bc_platform_ishader()
-		{
-			m_pack.m_shader = p_pack.m_shader;
-			m_pack.m_compiled_shader = p_pack.m_compiled_shader;
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_platform_vertex_shader< g_api_dx11 >::~bc_platform_vertex_shader()
+		bc_platform_vertex_shader<g_api_dx11>::bc_platform_vertex_shader(platform_pack& p_pack) noexcept
+			: bci_platform_shader(),
+			m_pack(p_pack)
 		{
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_vertex_shader< g_api_dx11 >::bc_platform_vertex_shader(const bc_platform_vertex_shader& p_other)
-			: bc_platform_ishader(p_other)
+		bc_platform_vertex_shader<g_api_dx11>::bc_platform_vertex_shader(const bc_platform_vertex_shader& p_other) noexcept
+			: bci_platform_shader(p_other),
+			m_pack(p_other.m_pack)
 		{
-			m_pack.m_shader = p_other.m_pack.m_shader;
-			m_pack.m_compiled_shader = p_other.m_pack.m_compiled_shader;
+		}
+		
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_platform_vertex_shader<g_api_dx11>::~bc_platform_vertex_shader()
+		{
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_vertex_shader< g_api_dx11 >& bc_platform_vertex_shader< g_api_dx11 >::operator=(const bc_platform_vertex_shader& p_other)
+		bc_platform_vertex_shader<g_api_dx11>& bc_platform_vertex_shader< g_api_dx11 >::operator=(const bc_platform_vertex_shader& p_other) noexcept
 		{
-			bc_platform_ishader::operator=(p_other);
-			m_pack.m_shader = p_other.m_pack.m_shader;
-			m_pack.m_compiled_shader = p_other.m_pack.m_compiled_shader;
+			bci_platform_shader::operator=(p_other);
+			m_pack = p_other.m_pack;
 
 			return *this;
 		}

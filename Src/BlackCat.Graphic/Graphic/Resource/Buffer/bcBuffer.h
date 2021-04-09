@@ -24,15 +24,15 @@ namespace black_cat
 			using platform_pack = bc_platform_buffer_pack<TRenderApi>;
 
 		public:
-			bc_platform_buffer();
+			bc_platform_buffer() noexcept;
 
-			explicit bc_platform_buffer(platform_pack& p_pack);
+			explicit bc_platform_buffer(platform_pack& p_pack) noexcept;
 
-			bc_platform_buffer(const bc_platform_buffer& p_other);
+			bc_platform_buffer(const bc_platform_buffer& p_other) noexcept;
 
-			~bc_platform_buffer();
+			~bc_platform_buffer() override;
 
-			bc_platform_buffer& operator=(const bc_platform_buffer& p_other);
+			bc_platform_buffer& operator=(const bc_platform_buffer& p_other) noexcept;
 
 			bcUINT get_byte_width() const;
 
@@ -57,16 +57,31 @@ namespace black_cat
 				return bc_resource_type::buffer;
 			}
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
 			{
 				return m_pack;
 			}
 
+			const platform_pack& get_platform_pack() const noexcept override
+			{
+				return m_pack;
+			}
+
+			platform_pack& get_resource_platform_pack() noexcept override
+			{
+				return get_platform_pack();
+			}
+			
+			const platform_pack& get_resource_platform_pack() const noexcept override
+			{
+				return get_platform_pack();
+			}
+		
 		private:
 			platform_pack m_pack;
 		};
 
 		using bc_buffer = bc_platform_buffer<g_current_render_api>;
-		using bc_buffer_ref = bc_device_ref< bc_buffer >;
+		using bc_buffer_ref = bc_device_ref<bc_buffer>;
 	}
 }

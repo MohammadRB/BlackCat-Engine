@@ -202,27 +202,57 @@ namespace black_cat
 
 			bc_sampler_state_ref create_sampler_state(const bc_sampler_state_config& p_config);
 
-			bc_compiled_shader_ptr compile_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file, const bc_shader_macro* p_macros = nullptr, bcUINT32 p_macro_count = 0);
+			bc_compiled_shader_ptr compile_vertex_shader(const bcBYTE* p_data, 
+				bcSIZE p_data_size, 
+				const bcCHAR* p_function_name, 
+				const bcCHAR* p_source_file, 
+				const bc_shader_macro* p_macros = nullptr, 
+				bcUINT32 p_macro_count = 0);
 
 			bc_vertex_shader_ref create_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-			bc_compiled_shader_ptr compile_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file, const bc_shader_macro* p_macros = nullptr, bcUINT32 p_macro_count = 0);
+			bc_compiled_shader_ptr compile_hull_shader(const bcBYTE* p_data, 
+				bcSIZE p_data_size, 
+				const bcCHAR* p_function_name, 
+				const bcCHAR* p_source_file, 
+				const bc_shader_macro* p_macros = nullptr, 
+				bcUINT32 p_macro_count = 0);
 
 			bc_hull_shader_ref create_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-			bc_compiled_shader_ptr compile_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file, const bc_shader_macro* p_macros = nullptr, bcUINT32 p_macro_count = 0);
+			bc_compiled_shader_ptr compile_domain_shader(const bcBYTE* p_data,
+				bcSIZE p_data_size, 
+				const bcCHAR* p_function_name,
+				const bcCHAR* p_source_file, 
+				const bc_shader_macro* p_macros = nullptr, 
+				bcUINT32 p_macro_count = 0);
 
 			bc_domain_shader_ref create_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-			bc_compiled_shader_ptr compile_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file, const bc_shader_macro* p_macros = nullptr, bcUINT32 p_macro_count = 0);
+			bc_compiled_shader_ptr compile_geometry_shader(const bcBYTE* p_data,
+				bcSIZE p_data_size, 
+				const bcCHAR* p_function_name,
+				const bcCHAR* p_source_file, 
+				const bc_shader_macro* p_macros = nullptr, 
+				bcUINT32 p_macro_count = 0);
 
 			bc_geometry_shader_ref create_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-			bc_compiled_shader_ptr compile_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file, const bc_shader_macro* p_macros = nullptr, bcUINT32 p_macro_count = 0);
+			bc_compiled_shader_ptr compile_pixel_shader(const bcBYTE* p_data, 
+				bcSIZE p_data_size, 
+				const bcCHAR* p_function_name, 
+				const bcCHAR* p_source_file, 
+				const bc_shader_macro* p_macros = nullptr,
+				bcUINT32 p_macro_count = 0);
 
 			bc_pixel_shader_ref create_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-			bc_compiled_shader_ptr compile_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_source_file, const bc_shader_macro* p_macros = nullptr, bcUINT32 p_macro_count = 0);
+			bc_compiled_shader_ptr compile_compute_shader(const bcBYTE* p_data, 
+				bcSIZE p_data_size, 
+				const bcCHAR* p_function_name, 
+				const bcCHAR* p_source_file, 
+				const bc_shader_macro* p_macros = nullptr,
+				bcUINT32 p_macro_count = 0);
 
 			bc_compute_shader_ref create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 

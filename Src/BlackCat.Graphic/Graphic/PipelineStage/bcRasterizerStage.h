@@ -21,7 +21,7 @@ namespace black_cat
 		class bc_rasterizer_stage_state
 		{
 		public:
-			bc_rasterizer_stage_state();
+			bc_rasterizer_stage_state() noexcept;
 
 			bc_rasterizer_stage_state(const bc_rasterizer_stage_state&) noexcept = default;
 
@@ -44,7 +44,7 @@ namespace black_cat
 			bc_pipeline_state_array_variable< D3D11_RECT > m_scissor_rects;*/
 		};
 
-		inline bc_rasterizer_stage_state::bc_rasterizer_stage_state()
+		inline bc_rasterizer_stage_state::bc_rasterizer_stage_state() noexcept
 			: //m_rasterizer_state(nullptr),
 			m_viewport_count(0),
 			m_viewports(nullptr)
@@ -81,7 +81,7 @@ namespace black_cat
 			using platform_pack = bc_platform_rasterizer_stage_pack<TRenderApi>;
 
 		public:
-			bc_platform_rasterizer_stage(platform_pack& p_pack);
+			bc_platform_rasterizer_stage(platform_pack& p_pack) noexcept;
 
 			bc_platform_rasterizer_stage(bc_platform_rasterizer_stage&&) noexcept;
 

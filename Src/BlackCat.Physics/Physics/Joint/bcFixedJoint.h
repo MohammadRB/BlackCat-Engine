@@ -30,19 +30,6 @@ namespace black_cat
 			~bc_platform_fixed_joint() override;
 
 			bc_platform_fixed_joint& operator=(const bc_platform_fixed_joint&) noexcept;
-
-			platform_pack& get_platform_pack() noexcept override
-			{
-				return m_pack;
-			}
-
-			const platform_pack& get_platform_pack() const noexcept override
-			{
-				return m_pack;
-			}
-
-		private:
-			platform_pack m_pack;
 		};
 
 		using bc_fixed_joint = bc_platform_fixed_joint< g_current_physics_api >;

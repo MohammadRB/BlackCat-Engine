@@ -19,21 +19,21 @@ namespace black_cat
 		};
 
 		template< bc_render_api TRenderApi >
-		class bc_platform_hull_shader : public bc_platform_ishader<TRenderApi>
+		class bc_platform_hull_shader : public bci_platform_shader<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_hull_shader_pack<TRenderApi>;
 
 		public:
-			bc_platform_hull_shader();
+			bc_platform_hull_shader() noexcept;
 
-			explicit bc_platform_hull_shader(platform_pack& p_pack);
+			explicit bc_platform_hull_shader(platform_pack& p_pack) noexcept;
 
-			bc_platform_hull_shader(const bc_platform_hull_shader& p_other);
+			bc_platform_hull_shader(const bc_platform_hull_shader& p_other) noexcept;
 
-			~bc_platform_hull_shader();
+			~bc_platform_hull_shader() noexcept;
 
-			bc_platform_hull_shader& operator=(const bc_platform_hull_shader& p_other);
+			bc_platform_hull_shader& operator=(const bc_platform_hull_shader& p_other) noexcept;
 
 			bc_shader_type get_type() const override;
 
@@ -49,9 +49,24 @@ namespace black_cat
 
 			bool operator!=(std::nullptr_t) const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
 			{
 				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
+			{
+				return m_pack;
+			}
+
+			platform_pack& get_shader_platform_pack() noexcept override
+			{
+				return get_platform_pack();
+			}
+
+			const platform_pack& get_shader_platform_pack() const noexcept override
+			{
+				return get_platform_pack();
 			}
 
 		private:

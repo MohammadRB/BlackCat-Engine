@@ -122,19 +122,6 @@ namespace black_cat
 			 * \return
 			 */
 			bc_joint_cone_limit get_swing_limit() const noexcept;
-
-			platform_pack& get_platform_pack() noexcept override
-			{
-				return m_pack;
-			}
-
-			const platform_pack& get_platform_pack() const noexcept override
-			{
-				return m_pack;
-			}
-
-		private:
-			platform_pack m_pack;
 		};
 
 		using bc_d6_joint = bc_platform_d6_joint< g_current_physics_api >;

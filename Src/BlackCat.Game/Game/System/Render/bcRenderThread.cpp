@@ -93,7 +93,7 @@ namespace black_cat
 			BC_ASSERT(m_command_list.is_valid());
 
 			m_pipeline->finish_command_list(m_command_list);
-			m_executor->excecute_command_list(m_command_list);
+			m_executor->execute_command_list(m_command_list);
 			m_command_list.finished();
 
 			graphic::bc_device_command_list l_command_list;

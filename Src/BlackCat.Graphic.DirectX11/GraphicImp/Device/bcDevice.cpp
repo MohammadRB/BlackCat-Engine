@@ -369,7 +369,7 @@ namespace black_cat
 				p_view_config->get_platform_pack().m_type == bc_resource_view_type::unordered
 			);
 
-			ID3D11Resource* l_resource = p_resource->get_platform_pack().m_resource;
+			ID3D11Resource* l_resource = p_resource->get_resource_platform_pack().m_resource;
 			ID3D11ShaderResourceView* l_shader_view;
 			ID3D11UnorderedAccessView* l_unordered_view;
 
@@ -403,7 +403,7 @@ namespace black_cat
 
 		ID3D11DepthStencilView* _initialize_depth_stencil_view(bc_device* p_device, bci_resource* p_resource, bc_depth_stencil_view_config* p_view_config)
 		{
-			ID3D11Resource* l_resource = p_resource->get_platform_pack().m_resource;
+			ID3D11Resource* l_resource = p_resource->get_resource_platform_pack().m_resource;
 			ID3D11DepthStencilView* l_depth_stencil_view;
 
 			D3D11_DEPTH_STENCIL_VIEW_DESC& l_depth_stencil_view_desc = p_view_config->get_platform_pack().m_depth_stencil_view_desc;
@@ -420,7 +420,7 @@ namespace black_cat
 
 		ID3D11RenderTargetView* _initialize_render_target_view(bc_device* p_device, bci_resource* p_resource, bc_render_target_view_config* p_view_config)
 		{
-			ID3D11Resource* l_resource = p_resource->get_platform_pack().m_resource;
+			ID3D11Resource* l_resource = p_resource->get_resource_platform_pack().m_resource;
 			ID3D11RenderTargetView* l_render_target_view;
 
 			D3D11_RENDER_TARGET_VIEW_DESC& l_render_target_view_desc = p_view_config->get_platform_pack().m_render_target_view_desc;
@@ -540,6 +540,7 @@ namespace black_cat
 			dx_call(m_pack.m_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast< void** >(l_surface.GetAddressOf())));
 
 			bc_texture2d::platform_pack l_pack;
+			l_pack.m_resource = l_surface.Get();
 			l_pack.m_texture = l_surface.Get();
 
 			return bc_texture2d(l_pack);
@@ -581,6 +582,7 @@ namespace black_cat
 			auto* l_dx_buffer = _initialize_buffer(static_cast< bc_device* >(this), &p_config, p_data);
 
 			bc_buffer::platform_pack l_pack;
+			l_pack.m_resource = l_dx_buffer;
 			l_pack.m_buffer = l_dx_buffer;
 
 			bc_buffer l_buffer(l_pack);
@@ -598,6 +600,7 @@ namespace black_cat
 			auto* l_dx_texture = _initialize_texture(static_cast< bc_device* >(this), &p_config, p_data);
 
 			bc_texture2d::platform_pack l_pack;
+			l_pack.m_resource = l_dx_texture;
 			l_pack.m_texture = l_dx_texture;
 
 			bc_texture2d l_texture2(l_pack);
@@ -615,6 +618,7 @@ namespace black_cat
 			auto* l_dx_texture = _initialize_texture(static_cast< bc_device* >(this), &p_config, p_data, p_data_size, p_format);
 			
 			bc_texture2d::platform_pack l_pack;
+			l_pack.m_resource = l_dx_texture;
 			l_pack.m_texture = l_dx_texture;
 
 			bc_texture2d l_texture(l_pack);
@@ -1303,7 +1307,7 @@ namespace black_cat
 
 				dx_call(m_pack.m_immediate_context->Map
 				(
-					p_resource.get_platform_pack().m_resource,
+					p_resource.get_resource_platform_pack().m_resource,
 					p_subresource,
 					bc_graphic_cast(p_map_type),
 					0,
@@ -1325,7 +1329,7 @@ namespace black_cat
 			{
 				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_pack.m_immediate_context_mutex);
 
-				m_pack.m_immediate_context->Unmap(p_resource.get_platform_pack().m_resource, p_subresource);
+				m_pack.m_immediate_context->Unmap(p_resource.get_resource_platform_pack().m_resource, p_subresource);
 			}
 		}
 

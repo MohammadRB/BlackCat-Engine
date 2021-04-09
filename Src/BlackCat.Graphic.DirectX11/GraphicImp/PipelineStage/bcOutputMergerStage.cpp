@@ -50,7 +50,7 @@ namespace black_cat
 
 			if (m_required_state.m_blend_factors.update_needed())
 			{
-				ComPtr< ID3D11BlendState > l_current_blend_state;
+				Microsoft::WRL::ComPtr< ID3D11BlendState > l_current_blend_state;
 				bcFLOAT l_current_blend_factors[4];
 				bcUINT l_current_sample_mask;
 
@@ -66,7 +66,7 @@ namespace black_cat
 
 			if (m_required_state.m_stencil_ref.update_needed())
 			{
-				ComPtr< ID3D11DepthStencilState > l_current_depth_stencil_state;
+				Microsoft::WRL::ComPtr< ID3D11DepthStencilState > l_current_depth_stencil_state;
 				bcUINT32 l_current_stencil_ref;
 
 				l_context->OMGetDepthStencilState(l_current_depth_stencil_state.GetAddressOf(), &l_current_stencil_ref);

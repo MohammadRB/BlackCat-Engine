@@ -25,17 +25,17 @@ namespace black_cat
 			using platform_pack = bc_platform_device_command_executor_pack< TRenderApi >;
 
 		public:
-			bc_platform_device_command_executor();
+			bc_platform_device_command_executor() noexcept;
 
-			bc_platform_device_command_executor(platform_pack& p_pack);
+			bc_platform_device_command_executor(platform_pack& p_pack) noexcept;
 
-			bc_platform_device_command_executor(const bc_platform_device_command_executor&);
+			bc_platform_device_command_executor(const bc_platform_device_command_executor&) noexcept;
 
-			~bc_platform_device_command_executor();
+			~bc_platform_device_command_executor() override;
 
-			bc_platform_device_command_executor& operator=(const bc_platform_device_command_executor&);
+			bc_platform_device_command_executor& operator=(const bc_platform_device_command_executor&) noexcept;
 
-			void excecute_command_list(bc_device_command_list p_command_list);
+			void execute_command_list(bc_device_command_list p_command_list);
 
 			bool is_valid() const noexcept override;
 
@@ -49,7 +49,12 @@ namespace black_cat
 
 			bool operator!=(std::nullptr_t) const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept override
 			{
 				return m_pack;
 			}

@@ -1,14 +1,13 @@
-#include "..\..\..\BlackCat.Graphic\Graphic\PipelineStage\bcComputeStage.h"
 // [02/10/2016 MRB]
 
 #include "GraphicImp/GraphicImpPCH.h"
-#include "GraphicImp/bcExport.h"
-#include "GraphicImp/bcRenderApiInfo.h"
+#include "GraphicImp/PipelineStage/bcComputeStage.h"
 #include "GraphicImp/PipelineStage/bcVertexStage.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
+#include "GraphicImp/bcExport.h"
 
 namespace black_cat
 {
@@ -16,7 +15,7 @@ namespace black_cat
 	{
 		template < >
 		BC_GRAPHICIMP_DLL
-		bc_platform_compute_stage<g_api_dx11>::bc_platform_compute_stage()
+		bc_platform_compute_stage<g_api_dx11>::bc_platform_compute_stage() noexcept
 			: bc_platform_programmable_stage(platform_pack()),
 			m_initial_counts()
 		{

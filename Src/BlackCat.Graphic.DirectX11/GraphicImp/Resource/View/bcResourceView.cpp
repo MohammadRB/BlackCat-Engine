@@ -13,7 +13,7 @@ namespace black_cat
 	{
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_resource_view<g_api_dx11>::bc_platform_resource_view()
+		bc_platform_resource_view<g_api_dx11>::bc_platform_resource_view() noexcept
 			: bci_platform_resource_view(),
 			m_type(bc_resource_view_type::shader)
 		{
@@ -23,12 +23,11 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_resource_view< g_api_dx11 >::bc_platform_resource_view(platform_pack& p_pack, bc_resource_view_type p_type)
+		bc_platform_resource_view< g_api_dx11 >::bc_platform_resource_view(platform_pack& p_pack, bc_resource_view_type p_type) noexcept
 			: bci_platform_resource_view(),
+			m_pack(p_pack),
 			m_type(p_type)
 		{
-			m_pack.m_shader_view = p_pack.m_shader_view;
-			m_pack.m_unordered_shader_view = p_pack.m_unordered_shader_view;
 		}
 
 		template<>
@@ -39,29 +38,27 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_resource_view< g_api_dx11 >::bc_platform_resource_view(const bc_platform_resource_view& p_other)
+		bc_platform_resource_view< g_api_dx11 >::bc_platform_resource_view(const bc_platform_resource_view& p_other) noexcept
 			: bci_platform_resource_view(p_other),
+			m_pack(p_other.m_pack),
 			m_type(p_other.m_type)
 		{
-			m_pack.m_shader_view = p_other.m_pack.m_shader_view;
-			m_pack.m_unordered_shader_view = p_other.m_pack.m_unordered_shader_view;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_resource_view< g_api_dx11 >& bc_platform_resource_view< g_api_dx11 >::operator=(const bc_platform_resource_view& p_other)
+		bc_platform_resource_view< g_api_dx11 >& bc_platform_resource_view< g_api_dx11 >::operator=(const bc_platform_resource_view& p_other) noexcept
 		{
 			bci_platform_resource_view::operator=(p_other);
 			m_type = p_other.m_type;
-			m_pack.m_shader_view = p_other.m_pack.m_shader_view;
-			m_pack.m_unordered_shader_view = p_other.m_pack.m_unordered_shader_view;
+			m_pack = p_other.m_pack;
 
 			return *this;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_resource_view_type bc_platform_resource_view< g_api_dx11 >::get_view_type() const
+		bc_resource_view_type bc_platform_resource_view< g_api_dx11 >::get_view_type() const noexcept
 		{
 			return m_type;
 		}

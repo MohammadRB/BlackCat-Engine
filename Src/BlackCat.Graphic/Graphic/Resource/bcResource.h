@@ -47,7 +47,7 @@ namespace black_cat
 			using platform_pack = bci_platform_resource_pack<TRenderApi>;
 
 		public:
-			virtual ~bci_platform_resource();
+			virtual ~bci_platform_resource() override;
 
 			virtual bc_resource_type get_type() const = 0;
 
@@ -55,21 +55,18 @@ namespace black_cat
 
 			void set_eviction_priority(bc_resource_eviction_priority p_eviction_priority);
 
-			platform_pack& get_platform_pack()
-			{
-				return m_pack;
-			}
+			virtual platform_pack& get_resource_platform_pack() noexcept = 0;
 
+			virtual const platform_pack& get_resource_platform_pack() const noexcept = 0;
+		
 		protected:
-			bci_platform_resource();
+			bci_platform_resource() noexcept;
 
-			explicit bci_platform_resource(platform_pack& p_pack);
+			explicit bci_platform_resource(platform_pack& p_pack) noexcept;
 
-			bci_platform_resource(const bci_platform_resource& p_other);
+			bci_platform_resource(const bci_platform_resource& p_other) noexcept;
 
-			bci_platform_resource& operator=(const bci_platform_resource& p_other);
-
-			platform_pack m_pack;
+			bci_platform_resource& operator=(const bci_platform_resource& p_other) noexcept;
 		};
 
 		using bci_resource = bci_platform_resource<g_current_render_api>;

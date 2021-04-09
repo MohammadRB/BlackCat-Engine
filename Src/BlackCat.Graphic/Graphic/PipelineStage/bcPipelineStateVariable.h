@@ -71,9 +71,13 @@ namespace black_cat
 		void bc_pipeline_state_variable<TState>::set(TState p_state) noexcept
 		{
 			if (p_state != m_state)
+			{
 				m_update_needed = true;
+			}
 			else
+			{
 				m_update_needed = false;
+			}
 
 			m_state = p_state;
 		}

@@ -14,27 +14,27 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_texture2d_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_texture2d : public bci_platform_resource<TRenderApi>
 		{
 		public:
 			using platform_pack = bc_platform_texture2d_pack<TRenderApi>;
 
 		public:
-			bc_platform_texture2d();
+			bc_platform_texture2d() noexcept;
 
-			explicit  bc_platform_texture2d(platform_pack& p_pack);
+			explicit  bc_platform_texture2d(platform_pack& p_pack) noexcept;
 
-			bc_platform_texture2d(const bc_platform_texture2d& p_other);
+			bc_platform_texture2d(const bc_platform_texture2d& p_other) noexcept;
 
-			~bc_platform_texture2d();
+			~bc_platform_texture2d() noexcept override;
 			
-			bc_platform_texture2d& operator=(const bc_platform_texture2d& p_other);
+			bc_platform_texture2d& operator=(const bc_platform_texture2d& p_other) noexcept;
 
 			bcUINT32 get_width() const;
 
@@ -65,11 +65,26 @@ namespace black_cat
 
 			bool operator!=(std::nullptr_t) const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept override
 			{
 				return m_pack;
 			}
 
+			const platform_pack& get_platform_pack() const noexcept override
+			{
+				return m_pack;
+			}
+
+			platform_pack& get_resource_platform_pack() noexcept override
+			{
+				return get_platform_pack();
+			}
+
+			const platform_pack& get_resource_platform_pack() const noexcept override
+			{
+				return get_platform_pack();
+			}
+		
 		private:
 			platform_pack m_pack;
 		};

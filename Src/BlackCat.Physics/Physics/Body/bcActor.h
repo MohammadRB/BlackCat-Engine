@@ -51,7 +51,7 @@ namespace black_cat
 		{
 		};
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_actor : public bc_platform_physics_reference<TApi>
 		{
 		public:

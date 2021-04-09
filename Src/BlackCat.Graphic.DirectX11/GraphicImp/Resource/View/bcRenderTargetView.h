@@ -15,7 +15,7 @@ namespace black_cat
 	namespace graphic
 	{
 		template<>
-		struct bc_platform_render_target_view_pack< g_api_dx11 >
+		struct bc_platform_render_target_view_pack<g_api_dx11> : bci_platform_resource_view_pack<g_api_dx11>
 		{
 			ID3D11RenderTargetView* m_render_target_view;
 		};

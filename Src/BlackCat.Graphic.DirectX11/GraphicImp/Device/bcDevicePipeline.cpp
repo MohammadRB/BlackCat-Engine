@@ -31,27 +31,28 @@ namespace black_cat
 	{
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device_pipeline<g_api_dx11>::bc_platform_device_pipeline()
-			: m_pack()
+		bc_platform_device_pipeline<g_api_dx11>::bc_platform_device_pipeline() noexcept
+			: bc_platform_device_reference(),
+			m_pack()
 		{
 			m_pack.m_pipeline_proxy = nullptr;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device_pipeline< g_api_dx11 >::bc_platform_device_pipeline(platform_pack& p_pack)
-			: m_pack()
+		bc_platform_device_pipeline< g_api_dx11 >::bc_platform_device_pipeline(platform_pack& p_pack) noexcept
+			: bc_platform_device_reference(p_pack),
+			m_pack(p_pack)
 		{
-			m_pack.m_pipeline_proxy = p_pack.m_pipeline_proxy;
+			m_pack = p_pack;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device_pipeline< g_api_dx11 >::bc_platform_device_pipeline(const bc_platform_device_pipeline& p_other)
+		bc_platform_device_pipeline< g_api_dx11 >::bc_platform_device_pipeline(const bc_platform_device_pipeline& p_other) noexcept
 			: bc_platform_device_reference(p_other),
-			m_pack()
+			m_pack(p_other.m_pack)
 		{
-			m_pack.m_pipeline_proxy = p_other.m_pack.m_pipeline_proxy;
 		}
 
 		template<>
@@ -62,10 +63,10 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device_pipeline< g_api_dx11 >& bc_platform_device_pipeline< g_api_dx11 >::operator=(const bc_platform_device_pipeline& p_other)
+		bc_platform_device_pipeline< g_api_dx11 >& bc_platform_device_pipeline< g_api_dx11 >::operator=(const bc_platform_device_pipeline& p_other) noexcept
 		{
 			bc_platform_device_reference::operator=(p_other);
-			m_pack.m_pipeline_proxy = p_other.m_pack.m_pipeline_proxy;
+			m_pack = p_other.m_pack;
 
 			return *this;
 		}
@@ -981,8 +982,8 @@ namespace black_cat
 		void bc_platform_device_pipeline< g_api_dx11 >::clear_buffers(const core::bc_vector4f* p_color, bcUINT32 p_count, bcFLOAT p_depth, bcUINT p_stencil)
 		{
 			constexpr bcUINT32 l_target_count = bc_render_api_info::number_of_om_render_target_slots();
-			ComPtr< ID3D11RenderTargetView > l_target_views[l_target_count];
-			ComPtr< ID3D11DepthStencilView > l_depth_view;
+			Microsoft::WRL::ComPtr< ID3D11RenderTargetView > l_target_views[l_target_count];
+			Microsoft::WRL::ComPtr< ID3D11DepthStencilView > l_depth_view;
 
 			m_pack.m_pipeline_proxy->m_context->OMGetRenderTargets(l_target_count, l_target_views[0].GetAddressOf(), l_depth_view.GetAddressOf());
 
@@ -1008,7 +1009,7 @@ namespace black_cat
 		{
 			m_pack.m_pipeline_proxy->m_context->UpdateSubresource
 			(
-				p_resource.get_platform_pack().m_resource,
+				p_resource.get_resource_platform_pack().m_resource,
 				p_dst_subresource,
 				nullptr,
 				p_src_data,
@@ -1023,12 +1024,12 @@ namespace black_cat
 		{
 			m_pack.m_pipeline_proxy->m_context->CopySubresourceRegion
 			(
-				p_dest_resource.get_platform_pack().m_resource,
+				p_dest_resource.get_resource_platform_pack().m_resource,
 				p_dst_subresource,
 				0,
 				0,
 				0,
-				p_src_resource.get_platform_pack().m_resource,
+				p_src_resource.get_resource_platform_pack().m_resource,
 				p_src_subresource,
 				nullptr
 			);
@@ -1040,8 +1041,8 @@ namespace black_cat
 		{
 			m_pack.m_pipeline_proxy->m_context->CopyResource
 			(
-				p_dest_resource.get_platform_pack().m_resource,
-				p_src_resource.get_platform_pack().m_resource
+				p_dest_resource.get_resource_platform_pack().m_resource,
+				p_src_resource.get_resource_platform_pack().m_resource
 			);
 		}
 
@@ -1069,9 +1070,9 @@ namespace black_cat
 		{
 			m_pack.m_pipeline_proxy->m_context->ResolveSubresource
 			(
-				p_dest_resource.get_platform_pack().m_resource,
+				p_dest_resource.get_resource_platform_pack().m_resource,
 				p_dest_subresource,
-				p_src_resource.get_platform_pack().m_resource,
+				p_src_resource.get_resource_platform_pack().m_resource,
 				p_src_subresource,
 				bc_graphic_cast(p_format)
 			);

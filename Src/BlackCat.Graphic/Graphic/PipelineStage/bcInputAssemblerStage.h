@@ -16,12 +16,12 @@ namespace black_cat
 	{
 		template<bc_render_api>
 		class bc_platform_device_pipeline;
-		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
+		using bc_device_pipeline = bc_platform_device_pipeline<g_current_render_api>;
 
 		class bc_input_assembler_stage_state
 		{
 		public:
-			bc_input_assembler_stage_state();
+			bc_input_assembler_stage_state() noexcept;
 
 			bc_input_assembler_stage_state(const bc_input_assembler_stage_state&) noexcept = default;
 
@@ -46,7 +46,7 @@ namespace black_cat
 			bc_pipeline_state_variable< bc_primitive > m_primitive_topology;
 		};
 
-		inline bc_input_assembler_stage_state::bc_input_assembler_stage_state()
+		inline bc_input_assembler_stage_state::bc_input_assembler_stage_state() noexcept
 			: m_index_buffer(bc_buffer()),
 			m_index_buffer_format(bc_format::R32_UINT),
 			m_vertex_buffers(bc_buffer()),
@@ -82,12 +82,12 @@ namespace black_cat
 			m_primitive_topology.reset_tracking();
 		}
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_input_assembler_stage_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_input_assembler_stage : public core_platform::bc_no_copy
 		{
 		public:
