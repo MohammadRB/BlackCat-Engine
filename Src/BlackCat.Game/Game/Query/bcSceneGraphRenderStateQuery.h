@@ -42,7 +42,7 @@ namespace black_cat
 			bc_scene_graph_query m_scene_query;
 			bc_actor_render_camera m_camera;
 			bc_render_state_buffer m_render_buffer;
-			core::bc_delegate< void(const bc_scene_graph_buffer&, const bc_actor_render_camera&, bc_render_state_buffer&) > m_execute_with_component;
+			core::bc_delegate<void(const bc_scene_graph_buffer&, const bc_actor_render_camera&, bc_render_state_buffer&)> m_execute_with_component;
 		};
 
 		inline bc_scene_graph_render_state_query::bc_scene_graph_render_state_query(const bc_actor_render_camera& p_camera, bc_render_state_buffer p_render_buffer) noexcept

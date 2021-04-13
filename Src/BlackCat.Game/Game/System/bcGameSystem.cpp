@@ -94,7 +94,7 @@ namespace black_cat
 			}
 
 			l_particle_manager.update(p_clock);
-			l_decal_manager.update_decal_lifespans();
+			l_decal_manager.update_decal_lifespans(p_clock);
 			l_script_system.update(p_clock);
 			l_console->update(p_clock);
 			l_render_system.update(bc_render_system::update_context(p_clock, *m_input_system.get_camera()));

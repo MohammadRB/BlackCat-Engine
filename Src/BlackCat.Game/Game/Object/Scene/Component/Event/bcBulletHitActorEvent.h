@@ -21,8 +21,8 @@ namespace black_cat
 				const core::bc_vector3f& p_hit_position,
 				const core::bc_vector3f& p_hit_normal,
 				bcUINT32 p_hit_face_index,
-				bcFLOAT p_bullet_mass,
-				bcFLOAT p_bullet_speed) noexcept;
+				bcFLOAT p_bullet_speed,
+				bcFLOAT p_bullet_mass) noexcept;
 
 			bc_bullet_hit_actor_event(const bc_bullet_hit_actor_event&) noexcept;
 
@@ -40,9 +40,9 @@ namespace black_cat
 
 			bcUINT32 get_hit_face_index() const noexcept;
 
-			bcFLOAT get_bullet_mass() const noexcept;
-
 			bcFLOAT get_bullet_speed() const noexcept;
+			
+			bcFLOAT get_bullet_mass() const noexcept;
 		
 		private:
 			bc_actor m_hit_actor;
@@ -50,8 +50,8 @@ namespace black_cat
 			core::bc_vector3f m_hit_position;
 			core::bc_vector3f m_hit_normal;
 			bcUINT32 m_hit_face_index;
-			bcFLOAT m_bullet_mass;
 			bcFLOAT m_bullet_speed;
+			bcFLOAT m_bullet_mass;
 		};
 
 		inline bc_bullet_hit_actor_event::bc_bullet_hit_actor_event(const bc_actor& p_hit_actor,
@@ -59,16 +59,16 @@ namespace black_cat
 			const core::bc_vector3f& p_hit_position,
 			const core::bc_vector3f& p_hit_normal,
 			bcUINT32 p_hit_face_index,
-			bcFLOAT p_bullet_mass,
-			bcFLOAT p_bullet_speed) noexcept
+			bcFLOAT p_bullet_speed,
+			bcFLOAT p_bullet_mass) noexcept
 			: bc_actor_event(message_name()),
 			m_hit_actor(p_hit_actor),
 			m_hit_shape(p_hit_shape),
 			m_hit_position(p_hit_position),
 			m_hit_normal(p_hit_normal),
 			m_hit_face_index(p_hit_face_index),
-			m_bullet_mass(p_bullet_mass),
-			m_bullet_speed(p_bullet_speed)
+			m_bullet_speed(p_bullet_speed),
+			m_bullet_mass(p_bullet_mass)
 		{
 		}
 
@@ -103,14 +103,14 @@ namespace black_cat
 			return m_hit_face_index;
 		}
 
-		inline bcFLOAT bc_bullet_hit_actor_event::get_bullet_mass() const noexcept
-		{
-			return m_bullet_mass;
-		}
-
 		inline bcFLOAT bc_bullet_hit_actor_event::get_bullet_speed() const noexcept
 		{
 			return m_bullet_speed;
+		}
+		
+		inline bcFLOAT bc_bullet_hit_actor_event::get_bullet_mass() const noexcept
+		{
+			return m_bullet_mass;
 		}
 	}	
 }

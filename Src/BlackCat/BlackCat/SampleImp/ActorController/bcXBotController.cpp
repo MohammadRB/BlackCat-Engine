@@ -238,7 +238,7 @@ namespace black_cat
 
 		if(m_active_job)
 		{
-			m_skinned_component->add_animation_job(*m_active_job);
+			m_skinned_component->add_animation_job(m_active_job);
 		}
 	}
 
@@ -986,7 +986,7 @@ namespace black_cat
 		{
 			l_aim_target_rotation.rotation_between_two_vector_rh(m_local_forward, m_look_direction);
 			l_weapon_forward_rotation.rotation_between_two_vector_rh(m_weapon->m_local_forward, m_look_direction);
-			l_weapon_up_rotation.rotation_between_two_vector_lh(m_weapon->m_local_up, core::bc_vector3f::up());
+			l_weapon_up_rotation.rotation_between_two_vector_rh(m_weapon->m_local_up, core::bc_vector3f::up());
 		}
 
 		const auto l_main_hand_offset = l_aim_target_rotation * m_weapon->m_main_hand_offset;

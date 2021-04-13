@@ -11,7 +11,7 @@ namespace black_cat
 	namespace core
 	{
 		class bc_file_stream : 
-			public bc_istream_adapter,
+			public bci_stream_adapter,
 			public core_platform::bc_no_copy
 		{
 		public:

@@ -11,7 +11,7 @@ namespace black_cat
 	{
 		using bc_message_hash = bcSIZE;
 
-		template< class TMessage >
+		template<class TMessage>
 		struct bc_message_traits
 		{
 			static constexpr const bcCHAR* message_name()
@@ -36,36 +36,36 @@ namespace black_cat
 
 			static bc_message_hash get_hash(const bcCHAR* p_name) noexcept;
 
-			template< class TMessage >
-			static bool is(const bci_message& p_message);
+			template<class TMessage>
+			static bool is(const bci_message& p_message) noexcept;
 
-			template< class TMessage >
-			static TMessage* as(bci_message& p_message);
+			template<class TMessage>
+			static TMessage* as(bci_message& p_message) noexcept;
 
-			template< class TMessage >
-			static const TMessage* as(const bci_message& p_message);
+			template<class TMessage>
+			static const TMessage* as(const bci_message& p_message) noexcept;
 
 		protected:
-			bci_message(const bcCHAR* p_name);
+			bci_message(const bcCHAR* p_name) noexcept;
 
-			bci_message(const bci_message&);
+			bci_message(const bci_message&) noexcept;
 
-			bci_message& operator=(const bci_message&);
+			bci_message& operator=(const bci_message&) noexcept;
 			
 		private:
 			const bcCHAR* m_name;
 			mutable bc_message_hash m_hash;
 		};
 
-		template< class TMessage >
-		bool bci_message::is(const bci_message& p_message)
+		template<class TMessage>
+		bool bci_message::is(const bci_message& p_message) noexcept
 		{
 			constexpr auto l_hash = bc_message_traits<TMessage>::message_hash();
 			return l_hash == p_message.get_message_hash();
 		}
 
-		template< class TMessage >
-		TMessage* bci_message::as(bci_message& p_message)
+		template<class TMessage>
+		TMessage* bci_message::as(bci_message& p_message) noexcept
 		{
 			if (is<TMessage>(p_message))
 			{
@@ -75,8 +75,8 @@ namespace black_cat
 			return nullptr;
 		}
 
-		template< class TMessage >
-		const TMessage* bci_message::as(const bci_message& p_message)
+		template<class TMessage>
+		const TMessage* bci_message::as(const bci_message& p_message) noexcept
 		{
 			return as<TMessage>(const_cast<bci_message&>(p_message));
 		}

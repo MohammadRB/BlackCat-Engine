@@ -26,7 +26,7 @@ namespace black_cat
 			const auto l_decal_depth = m_decal->get_depth();
 			const auto l_scale = core::bc_matrix4f::scale_matrix_xyz(l_decal_width, l_decal_depth, l_decal_height);
 
-			m_world_transform = l_scale * p_transform * l_decal_local_transform;
+			m_world_transform = l_scale * l_decal_local_transform * p_transform;
 		}
 	}	
 }

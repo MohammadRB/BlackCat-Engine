@@ -12,7 +12,7 @@
 #include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
-#include "Game/Query/bcMainCameraRenderStateQuery.h"
+#include "Game/Query/bcSceneDecalQuery.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -29,7 +29,7 @@ namespace black_cat
 		BC_RENDER_PASS(gb_dcl)
 
 	private:
-		using decal_group_container = core::bc_unordered_map_frame< const game::bc_mesh_material*, core::bc_vector_frame< std::pair< game::bc_decal*, game::bc_render_instance* >>>;
+		using decal_group_container = core::bc_unordered_map_frame<const game::bc_mesh_material*, core::bc_vector_frame<std::pair<game::bc_decal*, game::bc_render_instance*>>>;
 		
 	public:
 		void initialize_resources(game::bc_render_system& p_render_system) override;
@@ -70,7 +70,7 @@ namespace black_cat
 		game::bc_render_pass_state_ptr m_render_pass_state_for_non_culling;
 		core::bc_unordered_map< const game::bc_mesh_material*, game::bc_render_state_ptr > m_render_states; // Use raw pointer to let materials get destroyed
 
-		core::bc_query_result< game::bc_main_camera_render_state_query > m_decals_query;
+		core::bc_query_result<game::bc_scene_decal_query> m_decals_query;
 		game::bc_render_state_buffer m_decals_buffer;
 	};
 }

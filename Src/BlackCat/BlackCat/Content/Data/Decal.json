@@ -5,13 +5,39 @@
       "material_name": "decal_material",
       "u0": 0,
       "v0": 0,
-      "u1": 0.43,
-      "v1": 0.35,
+      "u1": 760,
+      "v1": 600,
       "width": 15.0,
       "height": 15.0,
-      "depth": 15.0, 
+      "depth": 15.0,
       "group": 1,
       "auto_remove": false
+    },
+    {
+      "name": "bullet_stone",
+      "material_name": "decal_material",
+      "u0": 780,
+      "v0": 40,
+      "u1": 1050,
+      "v1": 290,
+      "width": 0.4,
+      "height": 0.4,
+      "depth": 0.2,
+      "lod_scale": 4.0,
+      "auto_remove": true
+    },
+    {
+      "name": "bullet_iron",
+      "material_name": "decal_material",
+      "u0": 1060,
+      "v0": 40,
+      "u1": 1290,
+      "v1": 290,
+      "width": 0.4,
+      "height": 0.4,
+      "depth": 0.2,
+      "lod_scale": 4.0,
+      "auto_remove": true
     }
   ]
 }

@@ -14,6 +14,8 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_animation_manager;
+		
 		class BC_GAME_DLL bc_skinned_mesh_component : public bc_mesh_component
 		{
 			BC_COMPONENT(skn_msh, true, false)
@@ -48,7 +50,7 @@ namespace black_cat
 
 			const bc_sub_mesh_px_transform& get_collider_model_transforms() const noexcept;
 			
-			void add_animation_job(bci_animation_job& p_animation_job) noexcept;
+			void add_animation_job(bci_animation_job* p_animation_job) noexcept;
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 			
@@ -63,6 +65,7 @@ namespace black_cat
 		private:
 			void _set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform);
 
+			bc_animation_manager* m_animation_manager;
 			bc_sub_mesh_mat4_transform m_model_transforms;
 			bc_sub_mesh_px_transform m_collider_model_transforms;
 			core::bc_vector<bc_skinned_animation_ptr> m_animations;

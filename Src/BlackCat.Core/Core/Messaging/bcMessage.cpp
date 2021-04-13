@@ -34,19 +34,19 @@ namespace black_cat
 			return l_hash;
 		}
 
-		bci_message::bci_message(const bcCHAR* p_name)
+		bci_message::bci_message(const bcCHAR* p_name) noexcept
 			: m_name(p_name),
 			m_hash(0)
 		{
 		}
 
-		bci_message::bci_message(const bci_message& p_other)
+		bci_message::bci_message(const bci_message& p_other) noexcept
 			: m_name(p_other.m_name),
 			m_hash(p_other.m_hash)
 		{
 		}
 
-		bci_message& bci_message::operator=(const bci_message& p_other)
+		bci_message& bci_message::operator=(const bci_message& p_other) noexcept
 		{
 			m_name = p_other.m_name;
 			m_hash = p_other.m_hash;

@@ -9,7 +9,6 @@
 #include "Core/Utility/bcDelegate.hpp"
 #include "Core/Utility/bcDataDrivenParameter.h"
 #include "Game/bcExport.h"
-#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/ActorComponent/bcActorController.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 
@@ -69,13 +68,14 @@ namespace black_cat
 
 		private:
 			friend struct _bc_entity_component_callbacks;
-			using string_hash = std::hash< const bcCHAR* >;
-			using actor_component_create_delegate = core::bc_delegate< void(const bc_actor&) >;
-			using actor_component_initialize_delegate = core::bc_delegate< void(bc_actor_component_initialize_context&) >;
+			using string_hash = std::hash<const bcCHAR*>;
+			using actor_component_create_delegate = core::bc_delegate<void(const bc_actor&)>;
+			using actor_component_initialize_delegate = core::bc_delegate<void(const bc_actor_component_initialize_context&)>;
+			using actor_component_initialize_entity_delegate = core::bc_delegate<void(const bc_actor_component_initialize_entity_context&)>;
 			using actor_controller_create_delegate = core::bc_delegate<core::bc_unique_ptr<bci_actor_controller>()>;
-			using component_map_type = core::bc_unordered_map_program< bc_actor_component_hash, _bc_entity_component_callbacks >;
-			using entity_map_type = core::bc_unordered_map_program< string_hash::result_type, _bc_entity_data >;
-			using controller_map_type = core::bc_unordered_map_program< string_hash::result_type, actor_controller_create_delegate >;
+			using component_map_type = core::bc_unordered_map_program<bc_actor_component_hash, _bc_entity_component_callbacks>;
+			using entity_map_type = core::bc_unordered_map_program<string_hash::result_type, _bc_entity_data>;
+			using controller_map_type = core::bc_unordered_map_program<string_hash::result_type, actor_controller_create_delegate>;
 
 		public:
 			bc_entity_manager(core::bc_content_stream_manager& p_content_stream_manager, bc_actor_component_manager& p_actor_manager, bc_game_system& p_game_system);
@@ -91,7 +91,7 @@ namespace black_cat
 			core::bc_vector_frame<const bcCHAR*> get_entity_names() const;
 
 			/**
-			 * \brief Create an uninitialized actor along with it's components
+			 * \brief Create an actor along with it's components
 			 * \param p_entity_name 
 			 * \return 
 			 */
@@ -103,21 +103,27 @@ namespace black_cat
 			 */
 			void remove_entity(const bc_actor& p_entity);
 
-			template< class ...TCAdapter >
-			void register_component_types(TCAdapter... p_components);
+			template<class TComponent>
+			void create_entity_component(bc_actor& p_actor);
 
-			template< class ...TCAdapter >
-			void register_abstract_component_types(TCAdapter... p_components);
+			template<class ...TCAdapter>
+			void register_component_types(TCAdapter ... p_components);
 
-			template< class ...TCAdapter >
-			void register_actor_controller(TCAdapter... p_controllers);
+			template<class ...TCAdapter>
+			void register_abstract_component_types(TCAdapter ... p_components);
+
+			template<class ...TCAdapter>
+			void register_actor_controller(TCAdapter ... p_controllers);
 			
 		private:
-			template< class TComponent >
+			template<class TComponent>
 			void _register_component_type(const bcCHAR* p_data_driven_name);
 
-			template< class TComponent >
-			void _actor_component_initialization(bc_actor_component_initialize_context& p_context) const;
+			template<class TComponent>
+			void _actor_component_initialization(const bc_actor_component_initialize_context& p_context) const;
+
+			template<class TComponent>
+			void _actor_component_entity_initialization(const bc_actor_component_initialize_entity_context& p_context) const;
 
 			core::bc_content_stream_manager& m_content_stream_manager;
 			bc_actor_component_manager& m_actor_component_manager;
@@ -145,9 +151,29 @@ namespace black_cat
 		{
 			bc_entity_manager::actor_component_create_delegate m_create_delegate;
 			bc_entity_manager::actor_component_initialize_delegate m_initialize_delegate;
+			bc_entity_manager::actor_component_initialize_entity_delegate m_initialize_entity_delegate;
 		};
 
-		template< class ...TCAdapter >
+		template<class TComponent>
+		void bc_entity_manager::create_entity_component(bc_actor& p_actor)
+		{
+			m_actor_component_manager.create_component<TComponent>(p_actor);
+			_actor_component_initialization<TComponent>(bc_actor_component_initialize_context
+			(
+				core::bc_data_driven_parameter(),
+				m_content_stream_manager,
+				m_game_system,
+				p_actor
+			));
+			_actor_component_entity_initialization<TComponent>(bc_actor_component_initialize_entity_context
+			(
+				m_content_stream_manager,
+				m_game_system,
+				p_actor
+			));
+		}
+
+		template<class ...TCAdapter>
 		void bc_entity_manager::register_component_types(TCAdapter... p_components)
 		{
 			m_actor_component_manager.register_component_types(p_components...);
@@ -164,13 +190,13 @@ namespace black_cat
 			};
 		}
 
-		template< class ...TCAdapter >
+		template<class ...TCAdapter>
 		void bc_entity_manager::register_abstract_component_types(TCAdapter... p_components)
 		{
 			m_actor_component_manager.register_abstract_component_types(p_components...);
 		}
 
-		template< class ... TCAdapter >
+		template<class ... TCAdapter>
 		void bc_entity_manager::register_actor_controller(TCAdapter... p_controllers)
 		{
 			auto l_expansion_list =
@@ -192,28 +218,39 @@ namespace black_cat
 			};
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		void bc_entity_manager::_register_component_type(const bcCHAR* p_data_driven_name)
 		{
 			bc_actor_component_hash l_data_driven_hash = string_hash()(p_data_driven_name);
-			actor_component_create_delegate l_creation_delegate(m_actor_component_manager, &bc_actor_component_manager::create_component< TComponent >);
-			actor_component_initialize_delegate l_initialization_delegate(*this, &bc_entity_manager::_actor_component_initialization< TComponent >);
+			actor_component_create_delegate l_creation_delegate(m_actor_component_manager, &bc_actor_component_manager::create_component<TComponent>);
+			actor_component_initialize_delegate l_initialization_delegate(*this, &bc_entity_manager::_actor_component_initialization<TComponent>);
+			actor_component_initialize_entity_delegate l_entity_initialization_delegate(*this, &bc_entity_manager::_actor_component_entity_initialization<TComponent>);
 
 			_bc_entity_component_callbacks l_component_callbacks;
 			l_component_callbacks.m_create_delegate = std::move(l_creation_delegate);
 			l_component_callbacks.m_initialize_delegate = std::move(l_initialization_delegate);
+			l_component_callbacks.m_initialize_entity_delegate = std::move(l_entity_initialization_delegate);
 
 			m_components.insert(component_map_type::value_type(l_data_driven_hash, std::move(l_component_callbacks)));
 		}
 
-		template< class TComponent >
-		void bc_entity_manager::_actor_component_initialization(bc_actor_component_initialize_context& p_context) const
+		template<class TComponent>
+		void bc_entity_manager::_actor_component_initialization(const bc_actor_component_initialize_context& p_context) const
 		{
-			TComponent* l_component = p_context.m_actor.get_component< TComponent >();
-
+			auto* l_component = p_context.m_actor.get_component<TComponent>();
 			if (l_component)
 			{
-				l_component->initialize(bc_actor_component_initialize_context(p_context));
+				l_component->initialize(p_context);
+			}
+		}
+
+		template<class TComponent>
+		void bc_entity_manager::_actor_component_entity_initialization(const bc_actor_component_initialize_entity_context& p_context) const
+		{
+			auto* l_component = p_context.m_actor.get_component<TComponent>();
+			if (l_component)
+			{
+				l_component->initialize_entity(p_context);
 			}
 		}
 	}

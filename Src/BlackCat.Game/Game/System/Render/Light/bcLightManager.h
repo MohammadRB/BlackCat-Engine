@@ -18,10 +18,10 @@ namespace black_cat
 		class BC_GAME_DLL bc_light_manager
 		{
 		private:
-			using container_t = core::bc_list_pool< bc_light >;
+			using container_t = core::bc_list_pool<bc_light>;
 
 		public:
-			using iterator_buffer = bc_light_iterator_buffer< container_t >;
+			using iterator_buffer = bc_light_iterator_buffer<container_t>;
 			
 		public:
 			bc_light_manager();
@@ -43,9 +43,7 @@ namespace black_cat
 			void destroy_light(bc_light* p_light);
 
 		private:
-			iterator_buffer _get_iterator() const noexcept;
-			
-			core::bc_query_context_ptr _lights_query_context_provider() const;
+			core::bc_query_context_ptr _get_query_context() const;
 			
 			container_t m_lights;
 			mutable core_platform::bc_shared_mutex m_lights_lock;

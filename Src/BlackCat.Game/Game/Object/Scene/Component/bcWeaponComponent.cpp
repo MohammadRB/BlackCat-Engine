@@ -55,7 +55,7 @@ namespace black_cat
 			));
 			m_light_age = 0;
 
-			return bc_bullet(l_position, p_aim_direction_ws, m_bullet_mass, m_bullet_speed);
+			return bc_bullet(l_position, p_aim_direction_ws, m_bullet_speed, m_bullet_mass);
 		}
 		
 		void bc_weapon_component::initialize(const bc_actor_component_initialize_context& p_context)

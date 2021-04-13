@@ -17,6 +17,7 @@ namespace black_cat
 	
 	namespace game
 	{
+		class bc_game_system;
 		class bc_actor_component_manager;
 
 		class bci_actor_component_container
@@ -32,9 +33,14 @@ namespace black_cat
 
 			virtual void remove(bc_actor_component_index p_index) = 0;
 
-			virtual void handle_events(core::bc_query_manager& p_query_manager, bc_actor_component_manager& p_manager) = 0;
+			virtual void handle_events(core::bc_query_manager& p_query_manager, 
+				bc_game_system& p_game_system, 
+				bc_actor_component_manager& p_manager) = 0;
 
-			virtual void update(core::bc_query_manager& p_query_manager, bc_actor_component_manager& p_manager, const core_platform::bc_clock::update_param& p_clock) = 0;
+			virtual void update(core::bc_query_manager& p_query_manager, 
+				bc_game_system& p_game_system, 
+				bc_actor_component_manager& p_manager, 
+				const core_platform::bc_clock::update_param& p_clock) = 0;
 
 			virtual bcSIZE size() = 0;
 
@@ -42,7 +48,7 @@ namespace black_cat
 			bci_actor_component_container() = default;
 		};
 
-		template< class TComponent >
+		template<class TComponent>
 		class bc_actor_component_container : public bci_actor_component_container
 		{
 		public:
@@ -64,9 +70,14 @@ namespace black_cat
 
 			void remove(bc_actor_component_index p_index) override;
 
-			void handle_events(core::bc_query_manager& p_query_manager, bc_actor_component_manager& p_manager) override;
+			void handle_events(core::bc_query_manager& p_query_manager,
+				bc_game_system& p_game_system,
+				bc_actor_component_manager& p_manager) override;
 
-			void update(core::bc_query_manager& p_query_manager, bc_actor_component_manager& p_manager, const core_platform::bc_clock::update_param& p_clock) override;
+			void update(core::bc_query_manager& p_query_manager,
+				bc_game_system& p_game_system,
+				bc_actor_component_manager& p_manager,
+				const core_platform::bc_clock::update_param& p_clock) override;
 
 			bcSIZE size() override;
 
@@ -75,22 +86,22 @@ namespace black_cat
 			core::bc_deque< TComponent > m_components;
 		};
 
-		template< class TComponent >
+		template<class TComponent>
 		bc_actor_component_container<TComponent>::bc_actor_component_container()
 		{
 			static_assert(std::is_base_of< bci_actor_component, TComponent >::value, "TComponent must inherit from bc_iactor_component");
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		bc_actor_component_container<TComponent>::bc_actor_component_container(bc_actor_component_container&&) noexcept = default;
 
-		template< class TComponent >
+		template<class TComponent>
 		bc_actor_component_container<TComponent>::~bc_actor_component_container() = default;
 
-		template< class TComponent >
+		template<class TComponent>
 		bc_actor_component_container<TComponent>& bc_actor_component_container<TComponent>::operator=(bc_actor_component_container&&) noexcept = default;
 
-		template< class TComponent >
+		template<class TComponent>
 		TComponent* bc_actor_component_container<TComponent>::get(bc_actor_component_index p_index)
 		{
 			const auto l_is_set = m_bit_block[p_index];
@@ -103,7 +114,7 @@ namespace black_cat
 			return &l_entry;
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		bc_actor_component_index bc_actor_component_container<TComponent>::create(bc_actor_index p_actor_index)
 		{
 			bcUINT32 l_free_slot;
@@ -125,7 +136,7 @@ namespace black_cat
 			return l_free_slot;
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		bc_actor_component_index bc_actor_component_container<TComponent>::create_after(bc_actor_index p_actor_index, bc_actor_component_index p_parent_index)
 		{
 			bcUINT32 l_free_slot;
@@ -147,15 +158,17 @@ namespace black_cat
 			return l_free_slot;
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		void bc_actor_component_container<TComponent>::remove(bc_actor_component_index p_index)
 		{
 			m_bit_block.make_false(p_index);
 			m_components[p_index].~TComponent();
 		}
 
-		template< class TComponent >
-		void bc_actor_component_container<TComponent>::handle_events(core::bc_query_manager& p_query_manager, bc_actor_component_manager& p_manager)
+		template<class TComponent>
+		void bc_actor_component_container<TComponent>::handle_events(core::bc_query_manager& p_query_manager,
+			bc_game_system& p_game_system,
+			bc_actor_component_manager& p_manager)
 		{
 			const auto l_used_slots = m_bit_block.find_true_indices();
 
@@ -168,15 +181,15 @@ namespace black_cat
 
 				while (l_current_event)
 				{
-					bc_actor_component_event_context l_context(p_query_manager, l_actor, *l_current_event);
-					l_component.handle_event(l_context);
+					l_component.handle_event(bc_actor_component_event_context(p_query_manager, p_game_system, l_actor, *l_current_event));
 					l_current_event = l_current_event->get_next();
 				}
 			}
 		}
 
-		template< class TComponent >
-		void bc_actor_component_container< TComponent >::update(core::bc_query_manager& p_query_manager,
+		template<class TComponent>
+		void bc_actor_component_container<TComponent>::update(core::bc_query_manager& p_query_manager,
+			bc_game_system& p_game_system,
 			bc_actor_component_manager& p_manager,
 			const core_platform::bc_clock::update_param& p_clock)
 		{
@@ -185,13 +198,13 @@ namespace black_cat
 			for (auto l_index : l_used_slots)
 			{
 				TComponent& l_component = m_components[l_index];
-				bc_actor l_actor = p_manager.component_get_actor< TComponent >(l_component);
+				bc_actor l_actor = p_manager.component_get_actor<TComponent>(l_component);
 
-				l_component.update(bc_actor_component_update_content(p_clock, p_query_manager, l_actor));
+				l_component.update(bc_actor_component_update_content(p_clock, p_query_manager, p_game_system, l_actor));
 			}
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		bcSIZE bc_actor_component_container<TComponent>::size()
 		{
 			return m_components.size();

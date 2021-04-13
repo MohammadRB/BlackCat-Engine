@@ -9,6 +9,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
+#include "Game/Object/Scene/Component/bcDecalResolverComponent.h"
 #include "Game/Object/Mesh/bcSubMesh.h"
 #include "Game/Object/Mesh/bcMeshRenderState.h"
 
@@ -16,7 +17,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_mesh_component : public bc_render_component
+		class BC_GAME_DLL bc_mesh_component : public bc_render_component, public bc_decal_resolver_component
 		{
 			BC_ABSTRACT_COMPONENT(mesh)
 			
@@ -33,8 +34,13 @@ namespace black_cat
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
+			void add_decal(const bcCHAR* p_decal_name, 
+				const core::bc_vector3f& p_world_position,
+				const core::bc_vector3f& p_dir, 
+				bc_mesh_node::node_index_t p_attached_node_index) override;
+			
 		protected:
-			bc_mesh_component();
+			bc_mesh_component() noexcept;
 
 			bc_mesh_component(bc_mesh_component&&) noexcept;
 

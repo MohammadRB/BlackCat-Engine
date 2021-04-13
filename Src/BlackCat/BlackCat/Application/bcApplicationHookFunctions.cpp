@@ -55,8 +55,8 @@
 #include "BlackCat/SampleImp/ActorController/bcExplosionActorController.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotController.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotCameraController.h"
-#include "BlackCat/SampleImp/Particle/bcSampleExplosionParticle.h"
-#include "BlackCat/SampleImp/Particle/bcSampleRifleFireParticle.h"
+#include "BlackCat/SampleImp/Particle/bcExplosionParticle.h"
+#include "BlackCat/SampleImp/Particle/bcWeaponParticle.h"
 
 namespace black_cat
 {
@@ -98,8 +98,8 @@ namespace black_cat
 		core::bc_register_service(core::bc_make_service<core::bc_counter_value_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
-		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>(*core::bc_get_service<core::bc_query_manager>()));
 		core::bc_register_service(core::bc_make_service<game::bc_game_system>());
+		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>(*core::bc_get_service<core::bc_query_manager>(), *core::bc_get_service<game::bc_game_system>()));
 		core::bc_register_service(core::bc_make_service<game::bc_entity_manager>
 		(
 			*core::bc_get_service<core::bc_content_stream_manager>(), 
@@ -163,7 +163,7 @@ namespace black_cat
 			game::bc_abstract_component_register<game::bc_mesh_component, game::bc_simple_mesh_component, game::bc_vegetable_mesh_component, game::bc_skinned_mesh_component>(),
 			game::bc_abstract_component_register<game::bc_render_component, game::bc_mesh_component, game::bc_height_map_component>(),
 			game::bc_abstract_component_register<game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component>(),
-			game::bc_abstract_component_register<game::bc_decal_resolver_component, game::bc_height_map_component>()
+			game::bc_abstract_component_register<game::bc_decal_resolver_component, game::bc_mesh_component, game::bc_height_map_component>()
 		);
 		game::bc_register_actor_controller_types
 		(
@@ -207,8 +207,11 @@ namespace black_cat
 		auto& l_particle_manager = p_game_system.get_render_system().get_particle_manager();
 		core::bc_random l_random;
 
-		l_particle_manager.register_emitter_definition("big_explosion", bc_sample_explosion_particle()(l_random));
-		l_particle_manager.register_emitter_definition("rifle_fire", bc_sample_rifle_fire_particle()());
+		l_particle_manager.register_emitter_definition("big_explosion", bc_big_explosion_particle()(l_random));
+		l_particle_manager.register_emitter_definition("rifle_fire", bc_rifle_fire_particle()());
+		l_particle_manager.register_emitter_definition("bullet_terrain", bc_bullet_terrain_particle()(l_random));
+		l_particle_manager.register_emitter_definition("bullet_soil", bc_bullet_soil_particle()());
+		l_particle_manager.register_emitter_definition("bullet_iron", bc_bullet_iron_particle()());
 	}
 
 	void bc_unload_engine_resources(core::bc_content_stream_manager& p_stream_manager)

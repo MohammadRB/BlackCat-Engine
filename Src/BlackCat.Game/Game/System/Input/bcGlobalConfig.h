@@ -16,6 +16,7 @@ namespace black_cat
 		{
 			BC_JSON_VALUE_OP(bcFLOAT, lod_global_scale);
 			BC_JSON_VALUE_OP(bcUINT32, lod_culling_index);
+			BC_JSON_VALUE_OP(bcFLOAT, bullet_reference_mass);
 			BC_JSON_ARRAY_OP(core::bc_string, counter_values);
 			BC_JSON_VALUE_OP(core::bc_json_key_value, key_values);
 		};
@@ -35,6 +36,8 @@ namespace black_cat
 
 			bcUINT32 get_lod_culling_index() const noexcept;
 
+			bcFLOAT get_bullet_reference_mass() const noexcept;
+			
 			const core::bc_json_array<core::bc_string>& get_counter_values() const noexcept;
 			
 			core::bc_json_array<core::bc_string>& get_counter_values() noexcept;
@@ -63,6 +66,11 @@ namespace black_cat
 			return *(*m_json)->m_lod_culling_index;
 		}
 
+		inline bcFLOAT bc_global_config::get_bullet_reference_mass() const noexcept
+		{
+			return *(*m_json)->m_bullet_reference_mass;
+		}
+		
 		inline const core::bc_json_array<core::bc_string>& bc_global_config::get_counter_values() const noexcept
 		{
 			return (*m_json)->m_counter_values;

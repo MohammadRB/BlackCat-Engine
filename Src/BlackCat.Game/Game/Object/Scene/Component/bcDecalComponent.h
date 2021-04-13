@@ -16,6 +16,8 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_decal_manager;
+		
 		class BC_GAME_DLL bc_decal_component : public bc_render_component, public core::bc_const_iterator_adapter<core::bc_vector<bc_decal_instance_ptr>>
 		{
 			BC_COMPONENT(dcl, true, false)
@@ -33,10 +35,10 @@ namespace black_cat
 
 			const bcCHAR* get_decal_name() const noexcept;
 			
-			void add_decal(const core::bc_vector3f& p_local_pos,
+			void add_decal(const bcCHAR* p_decal_name,
+				const core::bc_vector3f& p_local_pos,
 				const core::bc_matrix3f& p_local_rotation,
-				const core::bc_matrix4f& p_initial_world_transform,
-				bc_mesh_node::node_index_t p_attached_node);
+				const core::bc_matrix4f& p_initial_world_transform);
 			
 			void add_decal(const bcCHAR* p_decal_name,
 				const core::bc_vector3f& p_local_pos,
@@ -45,14 +47,18 @@ namespace black_cat
 				bc_mesh_node::node_index_t p_attached_node);
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
+
+			void initialize_entity(const bc_actor_component_initialize_entity_context& p_context) override;
 			
 			void handle_event(const bc_actor_component_event_context& p_context) override;
 
 			void render(const bc_actor_component_render_context& p_context) const override;
 
 		private:
+			bc_decal_manager* m_decal_manager;
 			const bcCHAR* m_decal_name;
 			container_type m_decals;
+			bcFLOAT m_mesh_scale;
 		};
 
 		inline const bcCHAR* bc_decal_component::get_decal_name() const noexcept

@@ -168,11 +168,11 @@ namespace black_cat
 
 		m_decals_query = p_param.m_query_manager.queue_query
 		(
-			game::bc_main_camera_render_state_query
+			game::bc_scene_decal_query
 			(
-				game::bc_actor_render_camera(p_param.m_update_camera),
+				p_param.m_update_camera.get_position(),
 				p_param.m_frame_renderer.create_buffer()
-			).only< game::bc_decal_component >()
+			)
 		);
 	}
 

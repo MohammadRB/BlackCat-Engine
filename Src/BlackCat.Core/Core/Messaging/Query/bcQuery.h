@@ -19,14 +19,14 @@ namespace black_cat
 			friend class bc_query_manager;
 			
 		public:
-			virtual ~bci_query() = 0;
+			virtual ~bci_query() override = default;
 
 		protected:
-			bci_query(const bcCHAR* p_name);
+			explicit bci_query(const bcCHAR* p_name) noexcept;
 
-			bci_query(const bci_query&);
+			bci_query(const bci_query&) noexcept = default;
 
-			bci_query& operator=(const bci_query&);
+			bci_query& operator=(const bci_query&) noexcept = default;
 
 			virtual void execute(const bc_query_context& p_context) noexcept = 0;
 		};
@@ -44,33 +44,24 @@ namespace black_cat
 			using context_t = TContext;
 			
 		public:
-			virtual ~bc_query() = 0;
+			virtual ~bc_query() override = default;
 
 		protected:
-			bc_query(const bcCHAR* p_name);
+			explicit bc_query(const bcCHAR* p_name) noexcept;
 
-			bc_query(const bc_query&);
+			bc_query(const bc_query&) noexcept = default;
 
-			bc_query& operator=(const bc_query&);
+			bc_query& operator=(const bc_query&) noexcept = default;
 
 			void execute(const bc_query_context& p_context) noexcept override final;
 
 			virtual void execute(const TContext& p_context) noexcept = 0;
 		};
 
-		inline bci_query::~bci_query() = default;
-
-		inline bci_query::bci_query(const bcCHAR * p_name)
+		inline bci_query::bci_query(const bcCHAR* p_name) noexcept
 			: bci_message(p_name)
 		{
 		}
-
-		inline bci_query::bci_query(const bci_query&) = default;
-
-		inline bci_query& bci_query::operator=(const bci_query&) = default;
-		
-		template< class TContext >
-		bc_query<TContext>::~bc_query() = default;
 
 		template< class TContext >
 		void bc_query<TContext>::execute(const bc_query_context& p_context) noexcept
@@ -79,15 +70,9 @@ namespace black_cat
 		}
 
 		template< class TContext >
-		bc_query<TContext>::bc_query(const bcCHAR* p_name)
+		bc_query<TContext>::bc_query(const bcCHAR* p_name) noexcept
 			: bci_query(p_name)
 		{
 		}
-
-		template< class TContext >
-		bc_query<TContext>::bc_query(const bc_query&) = default;
-
-		template< class TContext >
-		bc_query<TContext>& bc_query<TContext>::operator=(const bc_query&) = default;
 	}
 }

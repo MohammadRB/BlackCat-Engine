@@ -70,12 +70,13 @@ namespace black_cat
 			
 			const curves_container& get_curves() const noexcept;
 			
-			void register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder, bcFLOAT p_scale = 1);
+			void register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder);
 
 			void spawn_emitter(const bcCHAR* p_emitter_name, 
 				const core::bc_vector3f& p_pos, 
 				const core::bc_vector3f& p_dir, 
-				const core::bc_vector3f* p_color = nullptr);
+				const core::bc_vector3f* p_color = nullptr,
+				bcFLOAT p_scale = 1);
 
 			bc_particle_emitter_ptr add_emitter(const bc_particle_builder& p_builder);
 			
@@ -84,11 +85,11 @@ namespace black_cat
 			void _destroy_emitter(bc_external_particle_emitter* p_emitter);
 
 		private:
-			core::bc_query_context_ptr _emitters_query_context_provider() const;
+			core::bc_query_context_ptr _emitters_query_context_provider() const noexcept;
 
-			void _apply_emitter_scale(bc_particle_emitter_trait& p_emitter, bcFLOAT p_scale);
+			void _apply_emitter_scale(bc_particle_emitter_trait& p_emitter, bcFLOAT p_scale) const noexcept;
 			
-			bcFLOAT _sample_curve(bcSIZE p_curve_index, bcFLOAT p_normalized_time) const;
+			bcFLOAT _sample_curve(bcSIZE p_curve_index, bcFLOAT p_normalized_time) const noexcept;
 			
 			constexpr static bcSIZE s_emitter_count = 300;
 

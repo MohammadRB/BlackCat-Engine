@@ -36,6 +36,8 @@ namespace black_cat
 			void rotation_euler_lh(const bc_vector3f& p_axis, bcFLOAT p_angle) noexcept;
 
 			void rotation_between_two_vector_lh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept;
+			
+			void rotation_between_two_vector_checked_lh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept;
 
 			void rotation_x_rh(bcFLOAT p_radians) noexcept;
 
@@ -50,6 +52,8 @@ namespace black_cat
 			void rotation_euler_rh(const bc_vector3f& p_axis, bcFLOAT p_angle) noexcept;
 
 			void rotation_between_two_vector_rh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept;
+			
+			void rotation_between_two_vector_checked_rh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept;
 			
 			void orthonormalize() noexcept;
 

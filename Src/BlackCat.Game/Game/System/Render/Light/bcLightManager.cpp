@@ -5,8 +5,8 @@
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/Math/bcCoordinate.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
-#include "Game/Query/bcQueryContext.h"
 #include "Game/System/Render/Light/bcLightManager.h"
+#include "Game/Query/bcQueryContext.h"
 
 namespace black_cat
 {
@@ -28,9 +28,9 @@ namespace black_cat
 		bc_light_manager::bc_light_manager()
 			: m_lights(200)
 		{
-			m_lights_query_handle = core::bc_get_service< core::bc_query_manager >()->register_query_provider<bc_light_instances_query_context>
+			m_lights_query_handle = core::bc_get_service<core::bc_query_manager>()->register_query_provider<bc_light_instances_query_context>
 			(
-				core::bc_query_manager::provider_delegate_t(*this, &bc_light_manager::_lights_query_context_provider)
+				core::bc_query_manager::provider_delegate_t(*this, &bc_light_manager::_get_query_context)
 			);
 		}
 
@@ -38,7 +38,7 @@ namespace black_cat
 			: m_lights(std::move(p_other.m_lights)),
 			m_lights_query_handle(std::move(p_other.m_lights_query_handle))
 		{
-			m_lights_query_handle.reassign(core::bc_query_manager::provider_delegate_t(*this, &bc_light_manager::_lights_query_context_provider));
+			m_lights_query_handle.reassign(core::bc_query_manager::provider_delegate_t(*this, &bc_light_manager::_get_query_context));
 		}
 
 		bc_light_manager::~bc_light_manager() = default;
@@ -47,7 +47,7 @@ namespace black_cat
 		{
 			m_lights = std::move(p_other.m_lights);
 			m_lights_query_handle = std::move(p_other.m_lights_query_handle);
-			m_lights_query_handle.reassign(core::bc_query_manager::provider_delegate_t(*this, &bc_light_manager::_lights_query_context_provider));
+			m_lights_query_handle.reassign(core::bc_query_manager::provider_delegate_t(*this, &bc_light_manager::_get_query_context));
 			
 			return *this;
 		}
@@ -101,14 +101,9 @@ namespace black_cat
 			}
 		}
 
-		bc_light_manager::iterator_buffer bc_light_manager::_get_iterator() const noexcept
+		core::bc_query_context_ptr bc_light_manager::_get_query_context() const
 		{
-			return iterator_buffer(m_lights_lock, m_lights);
-		}
-		
-		core::bc_query_context_ptr bc_light_manager::_lights_query_context_provider() const
-		{
-			bc_light_instances_query_context l_context(_get_iterator());
+			bc_light_instances_query_context l_context(iterator_buffer(m_lights_lock, m_lights));
 			
 			return core::bc_make_query_context(std::move(l_context));
 		}

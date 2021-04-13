@@ -156,6 +156,20 @@ namespace black_cat
 			rotation_euler_lh(l_cross, l_angle);
 		}
 
+		void bc_matrix3f::rotation_between_two_vector_checked_lh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept
+		{
+			const auto l_dot = bc_vector3f::dot(p_v1, p_v2);
+			const bcFLOAT l_angle = std::acos(std::min(std::max(l_dot, -1.f), 1.f));
+			bc_vector3f l_cross = bc_vector3f::normalize(bc_vector3f::cross(p_v1, p_v2));
+			
+			if(bc_vector3f::length_sq(l_cross) == 0)
+			{
+				l_cross = bc_vector3f::normalize(bc_vector3f::cross(p_v1, p_v2 + bc_vector3f(0, 0.0001f, 0)));
+			}
+
+			rotation_euler_lh(l_cross, l_angle);
+		}
+
 		void bc_matrix3f::rotation_x_rh(bcFLOAT p_radians) noexcept
 		{
 			rotation_x_lh(p_radians);
@@ -222,6 +236,20 @@ namespace black_cat
 		{
 			const bcFLOAT l_angle = std::acos(bc_vector3f::dot(p_v1, p_v2));
 			const bc_vector3f l_cross = bc_vector3f::normalize(bc_vector3f::cross(p_v1, p_v2));
+
+			rotation_euler_rh(l_cross, l_angle);
+		}
+
+		void bc_matrix3f::rotation_between_two_vector_checked_rh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept
+		{
+			const auto l_dot = bc_vector3f::dot(p_v1, p_v2);
+			const bcFLOAT l_angle = std::acos(l_dot);
+			bc_vector3f l_cross = bc_vector3f::normalize(bc_vector3f::cross(p_v1, p_v2));
+
+			if (bc_vector3f::length_sq(l_cross) == 0)
+			{
+				l_cross = bc_vector3f::normalize(bc_vector3f::cross(p_v1, p_v2 + bc_vector3f(0, 0.0001f, 0)));
+			}
 
 			rotation_euler_rh(l_cross, l_angle);
 		}

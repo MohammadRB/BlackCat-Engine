@@ -34,12 +34,12 @@ namespace black_cat
 			network
 		};
 
-		class bc_istream_adapter
+		class bci_stream_adapter
 		{
 		public:
-			bc_istream_adapter() = default;
+			bci_stream_adapter() = default;
 
-			virtual ~bc_istream_adapter() = default;
+			virtual ~bci_stream_adapter() = default;
 
 			virtual bc_stream_status get_status() const noexcept = 0;
 
@@ -163,7 +163,7 @@ namespace black_cat
 			bc_stream_type get_type() const noexcept;
 
 		private:
-			bc_unique_ptr< bc_istream_adapter > m_stream;
+			bc_unique_ptr< bci_stream_adapter > m_stream;
 		};
 
 		inline bc_stream::bc_stream()
@@ -175,7 +175,7 @@ namespace black_cat
 		bc_stream::bc_stream(TStreamAdapter&& p_stream)
 		{
 			using stream_adapter_t = std::remove_reference_t< TStreamAdapter >;
-			static_assert(std::is_base_of< bc_istream_adapter, stream_adapter_t >::value, "Stream class must inherite from bc_istream_adapter");
+			static_assert(std::is_base_of< bci_stream_adapter, stream_adapter_t >::value, "Stream class must inherite from bc_istream_adapter");
 
 			m_stream = core::bc_make_unique< stream_adapter_t >(bc_alloc_type::unknown_movable, std::move(p_stream));
 		}
@@ -288,7 +288,7 @@ namespace black_cat
 		 * \param p_char 
 		 * \return 
 		 */
-		bool BC_CORE_DLL bc_read_char(bc_istream_adapter& p_stream, bcCHAR* p_char);
+		bool BC_CORE_DLL bc_read_char(bci_stream_adapter& p_stream, bcCHAR* p_char);
 		
 		/**
 		 * \brief Read a wchar from stream if stream is readable and stream position isn't at end
@@ -296,7 +296,7 @@ namespace black_cat
 		 * \param p_char 
 		 * \return 
 		 */
-		bool BC_CORE_DLL bc_read_char(bc_istream_adapter& p_stream, bcWCHAR* p_char);
+		bool BC_CORE_DLL bc_read_char(bci_stream_adapter& p_stream, bcWCHAR* p_char);
 
 		/**
 		 * \brief Read a line from stream if stream is readable and stream position isn't at end
@@ -304,7 +304,7 @@ namespace black_cat
 		 * \param p_line 
 		 * \return 
 		 */
-		bool BC_CORE_DLL bc_read_line(bc_istream_adapter& p_stream, bc_string_frame& p_line);
+		bool BC_CORE_DLL bc_read_line(bci_stream_adapter& p_stream, bc_string_frame& p_line);
 
 		/**
 		 * \brief Read a line from stream if stream is readable and stream position isn't at end
@@ -312,7 +312,7 @@ namespace black_cat
 		 * \param p_line 
 		 * \return 
 		 */
-		bool BC_CORE_DLL bc_read_line(bc_istream_adapter& p_stream, bc_wstring_frame& p_line);
+		bool BC_CORE_DLL bc_read_line(bci_stream_adapter& p_stream, bc_wstring_frame& p_line);
 
 		/**
 		 * \brief Read stream to the end if stream is readable and stream position isn't at end
@@ -320,7 +320,7 @@ namespace black_cat
 		 * \param p_content
 		 * \return
 		 */
-		bool BC_CORE_DLL bc_read_all_lines(bc_istream_adapter& p_stream, bc_string_frame& p_content);
+		bool BC_CORE_DLL bc_read_all_lines(bci_stream_adapter& p_stream, bc_string_frame& p_content);
 
 		/**
 		 * \brief Read stream to the end if stream is readable and stream position isn't at end
@@ -328,6 +328,6 @@ namespace black_cat
 		 * \param p_content
 		 * \return
 		 */
-		bool BC_CORE_DLL bc_read_all_lines(bc_istream_adapter& p_stream, bc_wstring_frame& p_content);
+		bool BC_CORE_DLL bc_read_all_lines(bci_stream_adapter& p_stream, bc_wstring_frame& p_content);
 	}
 }

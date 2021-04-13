@@ -97,7 +97,7 @@ namespace black_cat
 				m_height_maps.push_back(l_height_map);
 			}
 
-			l_scene_buffer.render_actors(m_camera, m_render_buffer);
+			l_scene_buffer.render_actors<bc_height_map_component>(m_camera, m_render_buffer);
 		}
 	}
 }

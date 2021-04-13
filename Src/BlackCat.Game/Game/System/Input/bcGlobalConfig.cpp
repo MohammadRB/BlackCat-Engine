@@ -24,6 +24,10 @@ namespace black_cat
 			{
 				*l_json->m_lod_culling_index = 6;
 			}
+			if(!l_json->m_bullet_reference_mass.get_had_value())
+			{
+				*l_json->m_bullet_reference_mass = 0.1f;
+			}
 			if(!l_json->m_counter_values.get_had_value())
 			{
 				l_json->m_counter_values.new_entry().set("fps");

@@ -22,6 +22,7 @@ namespace black_cat
 		bc_skinned_mesh_component::bc_skinned_mesh_component(bc_actor_index p_actor_index, bc_actor_component_index p_index)
 			: bci_actor_component(p_actor_index, p_index),
 			bc_mesh_component(),
+			m_animation_manager(nullptr),
 			m_animation_played(false)
 		{
 		}
@@ -62,10 +63,17 @@ namespace black_cat
 			return nullptr;
 		}
 
-		void bc_skinned_mesh_component::add_animation_job(bci_animation_job& p_animation_job) noexcept
+		void bc_skinned_mesh_component::add_animation_job(bci_animation_job* p_animation_job) noexcept
 		{
-			core::bc_get_service<bc_game_system>()->get_render_system().get_animation_manager().schedule_job(p_animation_job);
-			m_animation_played = true;
+			if(p_animation_job)
+			{
+				m_animation_manager->schedule_job(*p_animation_job);
+				m_animation_played = true;
+			}
+			else
+			{
+				m_animation_played = false;
+			}
 		}
 
 		void bc_skinned_mesh_component::initialize(const bc_actor_component_initialize_context& p_context)
@@ -73,7 +81,8 @@ namespace black_cat
 			bc_mesh_component::initialize(p_context);
 			
 			const auto& l_animation_names = p_context.m_parameters.get_value_throw< core::bc_vector< core::bc_any > >(constant::g_param_animations);
-			
+
+			m_animation_manager = &p_context.m_game_system.get_render_system().get_animation_manager();
 			m_model_transforms = bc_sub_mesh_mat4_transform(*get_mesh().get_root_node());
 			m_collider_model_transforms = bc_sub_mesh_px_transform(*get_mesh().get_root_node());
 			m_animations.reserve(l_animation_names.size());
@@ -171,12 +180,11 @@ namespace black_cat
 			// mesh is in bind pose
 			if(!m_animation_played)
 			{
+				bc_mesh_component::set_world_transform(p_actor, p_transform);
+
 				const auto& l_mesh = get_mesh();
 				auto& l_world_transforms = get_world_transforms();
 
-				physics::bc_bound_box l_bound_box;
-				l_mesh.calculate_absolute_transforms(p_transform, l_world_transforms, l_bound_box);
-				
 				bcINT32 l_dummy;
 				l_mesh.iterate_over_nodes(l_dummy, [this, &l_mesh, &p_transform, &l_world_transforms](const bc_mesh_node& p_node, bcINT32)
 				{
@@ -185,8 +193,6 @@ namespace black_cat
 
 					return 0;
 				});
-
-				p_actor.add_event(bc_bound_box_changed_actor_event(l_bound_box));
 			}
 		}
 	}

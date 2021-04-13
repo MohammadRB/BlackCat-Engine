@@ -513,6 +513,12 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcBulletHitActorEvent.h">
       <Filter>Game\Object\Scene\Component\Event</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Decal\bcDecalIteratorBuffer.h">
+      <Filter>Game\System\Render\Decal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneDecalQuery.h">
+      <Filter>Game\Query</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -775,6 +781,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Bullet\bcBulletManager.cpp">
       <Filter>Game\Object\Scene\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneDecalQuery.cpp">
+      <Filter>Game\Query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneLightQuery.cpp">
+      <Filter>Game\Query</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

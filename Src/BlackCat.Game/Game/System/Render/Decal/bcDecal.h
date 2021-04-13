@@ -6,7 +6,7 @@
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "Game/System/Render/Material/bcMeshMaterial.h"
 #include "Game/System/Render/State/bcRenderState.h"
-#include "Game/Object/Scene/ActorComponent/bcActorGroup.h"
+#include "Game/System/Render/bcRenderInstance.h"
 
 namespace black_cat
 {
@@ -43,7 +43,7 @@ namespace black_cat
 				bcFLOAT p_height,
 				bcFLOAT p_depth,
 				bcFLOAT p_lod_scale,
-				bc_actor_group p_group,
+				bc_render_group p_group,
 				bool p_auto_remove);
 
 			bc_decal(bc_decal&&) noexcept;
@@ -70,7 +70,7 @@ namespace black_cat
 			
 			bcFLOAT get_lod_scale() const noexcept;
 
-			bc_actor_group get_group() const noexcept;
+			bc_render_group get_group() const noexcept;
 
 			bool get_temporary() const noexcept;
 
@@ -84,7 +84,7 @@ namespace black_cat
 			bcFLOAT m_height;
 			bcFLOAT m_depth;
 			bcFLOAT m_lod_scale;
-			bc_actor_group m_group;
+			bc_render_group m_group;
 			bool m_auto_remove;
 		};
 
@@ -109,7 +109,7 @@ namespace black_cat
 			bcFLOAT p_height,
 			bcFLOAT p_depth,
 			bcFLOAT p_lod_scale,
-			bc_actor_group p_group,
+			bc_render_group p_group,
 			bool p_auto_remove)
 			: m_material(std::move(p_material)),
 			m_u0(p_u0),
@@ -176,7 +176,7 @@ namespace black_cat
 			return m_v1;
 		}
 
-		inline bc_actor_group bc_decal::get_group() const noexcept
+		inline bc_render_group bc_decal::get_group() const noexcept
 		{
 			return m_group;
 		}

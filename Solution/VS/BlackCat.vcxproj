@@ -254,8 +254,8 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotUpdateAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotWeapon.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotWeaponIKAnimationJob.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\Particle\bcSampleExplosionParticle.h" />
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\Particle\bcSampleRifleFireParticle.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\Particle\bcExplosionParticle.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\Particle\bcWeaponParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Application\bcApplicationHookFunctions.cpp" />

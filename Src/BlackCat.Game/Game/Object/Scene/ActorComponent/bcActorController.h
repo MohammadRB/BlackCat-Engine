@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CorePlatformImp/Utility/bcClock.h"
-#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
 
 namespace black_cat

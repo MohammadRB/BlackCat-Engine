@@ -63,9 +63,9 @@ namespace black_cat
 
 			physics::bc_height_field get_px_height_field() const noexcept;
 
-			bcSIZE get_materials_count() const noexcept;
+			bcUINT32 get_materials_count() const noexcept;
 
-			const bc_height_map_material& get_material(bcSIZE p_index) const noexcept;
+			const bc_height_map_material& get_material(bcUINT32 p_index) const noexcept;
 			
 			const bc_height_map_material* get_materials() const noexcept;
 
@@ -136,12 +136,12 @@ namespace black_cat
 			return m_px_height_map.get();
 		}
 
-		inline bcSIZE bc_height_map::get_materials_count() const noexcept
+		inline bcUINT32 bc_height_map::get_materials_count() const noexcept
 		{
 			return m_materials.size();
 		}
 
-		inline const bc_height_map_material& bc_height_map::get_material(bcSIZE p_index) const noexcept
+		inline const bc_height_map_material& bc_height_map::get_material(bcUINT32 p_index) const noexcept
 		{
 			return m_materials[p_index];
 		}

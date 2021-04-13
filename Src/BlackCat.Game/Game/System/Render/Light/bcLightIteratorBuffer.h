@@ -29,23 +29,23 @@ namespace black_cat
 			void unlock() noexcept;
 			
 		private:
-			const container_type* m_container;
 			core_platform::bc_shared_mutex* m_container_lock;
+			const container_type* m_container;
 		};
 
 		template< class TContainer >
 		bc_light_iterator_buffer< TContainer >::bc_light_iterator_buffer(core_platform::bc_shared_mutex& p_container_lock, const container_type& p_container)
 			: core::bc_const_iterator_adapter< TContainer >(p_container),
-			m_container(&p_container),
-			m_container_lock(&p_container_lock)
+			m_container_lock(&p_container_lock),
+			m_container(&p_container)
 		{
 		}
 
 		template< class TContainer >
 		bc_light_iterator_buffer<TContainer>::bc_light_iterator_buffer(bc_light_iterator_buffer&& p_other) noexcept
 			: core::bc_const_iterator_adapter< TContainer >(*p_other.m_container),
-			m_container(p_other.m_container),
-			m_container_lock(p_other.m_container_lock)
+			m_container_lock(p_other.m_container_lock),
+			m_container(p_other.m_container)
 		{
 			p_other.m_container = nullptr;
 			p_other.m_container_lock = nullptr;

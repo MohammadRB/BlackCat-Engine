@@ -53,11 +53,11 @@ namespace black_cat
 		class BC_GAME_DLL bc_material_manager
 		{
 		private:
-			using string_hash = std::hash< const bcCHAR* >;
-			using mesh_material_desc_map = core::bc_unordered_map_program< string_hash::result_type, _bc_mesh_material_desc_entry >;
-			using collider_material_map = core::bc_unordered_map_program< string_hash::result_type, bc_collider_material >;
-			using mesh_material_map = core::bc_unordered_map< string_hash::result_type, core::bc_unique_ptr< bc_mesh_material > >;
-			using default_diffuse_map = core::bc_unordered_map_program< bcUINT32, graphic::bc_texture2d_content_ptr >;
+			using string_hash = std::hash<const bcCHAR*>;
+			using mesh_material_desc_map = core::bc_unordered_map_program<string_hash::result_type, _bc_mesh_material_desc_entry>;
+			using collider_material_map = core::bc_unordered_map_program<string_hash::result_type, bc_collider_material>;
+			using mesh_material_map = core::bc_unordered_map<string_hash::result_type, core::bc_unique_ptr<bc_mesh_material>>;
+			using default_diffuse_map = core::bc_unordered_map_program<bcUINT32, graphic::bc_texture2d_content_ptr>;
 
 		public:
 			bc_material_manager(core::bc_content_stream_manager& p_content_stream, bc_render_system& p_render_system, bc_physics_system& p_physics_system);

@@ -80,8 +80,8 @@ namespace black_cat
 		{
 			auto l_hit_result = *m_scene_terrain_query.get().get_result().as<core::bc_nullable<game::bc_ray_hit>>();
 
-			auto* l_mediate_component = p_context.m_actor.get_component< game::bc_mediate_component >();
-			auto* l_emitter_component = p_context.m_actor.get_component< game::bc_particle_emitter_component >();
+			auto* l_mediate_component = p_context.m_actor.get_component<game::bc_mediate_component>();
+			auto* l_emitter_component = p_context.m_actor.get_component<game::bc_particle_emitter_component>();
 
 			if(l_hit_result.is_set())
 			{
@@ -95,7 +95,7 @@ namespace black_cat
 				
 				l_emitter_component->spawn_emitter(l_mediate_component->get_position(), m_light_direction, &l_color);
 
-				const auto* l_decal_component = p_context.m_actor.get_component< game::bc_decal_component >();
+				const auto* l_decal_component = p_context.m_actor.get_component<game::bc_decal_component>();
 				if(l_decal_component)
 				{
 					l_height_map_component->add_decal(l_decal_component->get_decal_name(), l_hit_result->get_position(), m_light_direction);

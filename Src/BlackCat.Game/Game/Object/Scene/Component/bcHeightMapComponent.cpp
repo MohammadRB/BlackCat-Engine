@@ -5,9 +5,11 @@
 #include "Core/Content/bcLazyContent.h"
 #include "Core/Content/bcContentManager.h"
 #include "GraphicImp/bcRenderApiInfo.h"
-#include "Game/bcConstant.h"
+#include "Game/System/bcGameSystem.h"
+#include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
+#include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
@@ -16,6 +18,7 @@
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
+#include "Game/bcConstant.h"
 
 namespace black_cat
 {
@@ -92,7 +95,31 @@ namespace black_cat
 			const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event);
 			if(l_bullet_hit_event)
 			{
+				const auto l_material_index = m_height_map->get_px_height_field().get_triangle_material(l_bullet_hit_event->get_hit_face_index());
+				const auto& l_material = m_height_map->get_material(l_material_index);
+
+				if(l_material.m_collider_material.m_collision_particle)
+				{
+					auto l_particle_color = l_material.m_mesh_material->get_diffuse().xyz();
+					p_context.m_game_system.get_render_system().get_particle_manager().spawn_emitter
+					(
+						l_material.m_collider_material.m_collision_particle,
+						l_bullet_hit_event->get_hit_position(),
+						l_bullet_hit_event->get_hit_normal(),
+						&l_particle_color,
+						l_bullet_hit_event->get_bullet_mass() / get_global_config().get_bullet_reference_mass()
+					);
+				}
 				
+				if(l_material.m_collider_material.m_collision_decal)
+				{
+					add_decal
+					(
+						l_material.m_collider_material.m_collision_decal, 
+						l_bullet_hit_event->get_hit_position(), 
+						l_bullet_hit_event->get_hit_normal()
+					);
+				}
 			}
 		}
 
@@ -102,16 +129,13 @@ namespace black_cat
 			p_context.m_buffer.add_render_instance(m_height_map->get_render_state_ptr(), l_instance);
 		}
 
-		void bc_height_map_component::add_decal(const bcCHAR* p_decal_name, const core::bc_vector3f& p_world_position, const core::bc_vector3f& p_dir)
+		void bc_height_map_component::add_decal(const bcCHAR* p_decal_name, 
+			const core::bc_vector3f& p_world_position, 
+			const core::bc_vector3f& p_dir, 
+			bc_mesh_node::node_index_t p_attached_node_index)
 		{
 			auto l_actor = get_actor();
-			auto* l_decal_component = l_actor.get_component<bc_decal_component>();
-
-			if(!l_decal_component)
-			{
-				l_actor.create_component<bc_decal_component>();
-				l_decal_component = l_actor.get_component<bc_decal_component>();
-			}
+			auto* l_decal_component = l_actor.get_create_component<bc_decal_component>();
 
 			const auto l_local_pos = p_world_position - m_transform.get_translation();
 			const auto l_world_pos = p_world_position - l_local_pos;
@@ -131,8 +155,7 @@ namespace black_cat
 				p_decal_name,
 				l_local_pos,
 				l_local_rotation,
-				core::bc_matrix4f::translation_matrix(l_world_pos),
-				bc_mesh_node::s_invalid_index
+				core::bc_matrix4f::translation_matrix(l_world_pos)
 			);
 		}
 	}

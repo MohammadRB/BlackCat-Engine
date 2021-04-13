@@ -93,8 +93,8 @@ namespace black_cat
 						l_query_hit.get_position(),
 						l_query_hit.get_normal(),
 						l_query_hit.get_face_index(),
-						l_ite->get_mass(),
-						l_ite->get_speed()
+						l_ite->get_speed(),
+						l_ite->get_mass()
 					));
 					
 					l_ite = m_bullets.erase(l_ite);

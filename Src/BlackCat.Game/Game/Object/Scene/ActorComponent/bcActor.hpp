@@ -7,6 +7,7 @@
 #include "Core/Container/bcVector.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/bcEntityManager.h"
 
 namespace black_cat
 {
@@ -33,51 +34,64 @@ namespace black_cat
 			return m_index;
 		}
 
+		inline const bc_actor_event* bc_actor::get_events() const noexcept
+		{
+			return _get_manager().actor_get_events(*this);
+		}
+		
 		template<typename TEvent>
 		inline void bc_actor::add_event(TEvent&& p_event)
 		{
 			_get_manager().actor_add_event(*this, std::move(p_event));
 		}
 
-		inline const bc_actor_event* bc_actor::get_events() const noexcept
-		{
-			return _get_manager().actor_get_events(*this);
-		}
-
-		template< class TComponent >
+		template<class TComponent>
 		TComponent* bc_actor::get_component() noexcept
 		{
-			return _get_manager().actor_get_component< TComponent >(*this);
+			return _get_manager().actor_get_component<TComponent>(*this);
 		}
 
-		template< class TComponent >
+		template<class TComponent>
+		TComponent* bc_actor::get_create_component() noexcept
+		{
+			auto* l_component = get_component<TComponent>();
+			if(!l_component)
+			{
+				create_component<TComponent>();
+				l_component = get_component<TComponent>();
+			}
+
+			return l_component;
+		}
+
+		template<class TComponent>
 		const TComponent* bc_actor::get_component() const noexcept
 		{
 			return const_cast<bc_actor*>(this)->get_component<TComponent>();
 		}
 
-		template< class TIterator >
+		template<class TIterator>
 		void bc_actor::get_components(TIterator p_destination) const
 		{
 			_get_manager().actor_get_components(*this, p_destination);
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		bool bc_actor::has_component() const noexcept
 		{
-			return _get_manager().actor_has_component< TComponent >(*this);
-		}
-		
-		template< class TComponent >
-		void bc_actor::create_component()
-		{
-			_get_manager().create_component< TComponent >(*this);
+			return _get_manager().actor_has_component<TComponent>(*this);
 		}
 
-		template< class TComponent >
+		template<class TComponent>
+		void bc_actor::create_component()
+		{
+			_get_entity_manager().create_entity_component<TComponent>(*this);
+		}
+
+		template<class TComponent>
 		void bc_actor::remove_component()
 		{
-			_get_manager().remove_component< TComponent >(*this);
+			_get_manager().remove_component<TComponent>(*this);
 		}
 
 		inline void bc_actor::mark_for_double_update()
@@ -124,8 +138,13 @@ namespace black_cat
 
 		inline bc_actor_component_manager& bc_actor::_get_manager() noexcept
 		{
-			static bc_actor_component_manager* s_manager = core::bc_get_service< bc_actor_component_manager >();
+			static auto* s_manager = core::bc_get_service<bc_actor_component_manager>();
+			return *s_manager;
+		}
 
+		inline bc_entity_manager& bc_actor::_get_entity_manager() noexcept
+		{
+			static auto* s_manager = core::bc_get_service<bc_entity_manager>();
 			return *s_manager;
 		}
 	}

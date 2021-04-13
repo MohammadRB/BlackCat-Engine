@@ -11,7 +11,7 @@ namespace black_cat
 		{
 			core::bc_vector_frame< _bc_actor_component_entry* > l_components_with_event;
 			core::bc_vector_frame< _bc_actor_component_entry* > l_components_with_update;
-
+			
 			l_components_with_event.reserve(m_components.size());
 			l_components_with_update.reserve(m_components.size());
 
@@ -72,7 +72,7 @@ namespace black_cat
 					},
 					[&](bool, _bc_actor_component_entry* p_entry)
 					{
-						p_entry->m_container->handle_events(m_query_manager, *this);
+						p_entry->m_container->handle_events(m_query_manager, m_game_system, *this);
 					},
 					[](bcINT32)
 					{
@@ -103,7 +103,7 @@ namespace black_cat
 				[]() { return true; },
 				[&](bool, _bc_actor_component_entry* p_entry)
 				{
-					p_entry->m_container->update(m_query_manager, *this, p_clock);
+					p_entry->m_container->update(m_query_manager, m_game_system, *this, p_clock);
 				},
 				[](bcINT32) {}
 			);
@@ -150,7 +150,7 @@ namespace black_cat
 
 						while (l_current_event)
 						{
-							l_component->handle_event(bc_actor_component_event_context(m_query_manager, l_actor, *l_current_event));
+							l_component->handle_event(bc_actor_component_event_context(m_query_manager, m_game_system, l_actor, *l_current_event));
 							l_current_event = l_current_event->get_next();
 						}
 					}
@@ -161,7 +161,7 @@ namespace black_cat
 
 				for (bci_actor_component* l_component : l_components)
 				{
-					l_component->update(bc_actor_component_update_content(p_clock, m_query_manager, l_actor));
+					l_component->update(bc_actor_component_update_content(p_clock, m_query_manager, m_game_system, l_actor));
 				}
 
 				l_components.clear();

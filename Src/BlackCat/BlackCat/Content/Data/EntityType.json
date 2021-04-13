@@ -13,7 +13,10 @@
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 30.0
+            "mass": 30.0,
+            "collider_materials": {
+              "cube": "iron"
+            }
           }
         }
       ]
@@ -31,7 +34,10 @@
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 30.0
+            "mass": 30.0,
+            "collider_materials": {
+              "sphere": "iron"
+            }
           }
         }
       ]
@@ -49,7 +55,10 @@
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 30.0
+            "mass": 30.0,
+            "collider_materials": {
+              "convex": "iron"
+            }
           }
         }
       ]
@@ -67,7 +76,10 @@
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 30.0
+            "mass": 30.0,
+            "collider_materials": {
+              "capsule": "iron"
+            }
           }
         }
       ]
@@ -97,7 +109,12 @@
         },
         {
           "name": "rigid_static",
-          "parameters": {}
+          "parameters": {
+            "collider_materials": {
+              "Beta_Surface": "iron",
+              "Beta_Joints": "iron"
+            }
+          }
         }
       ]
     },
@@ -126,7 +143,12 @@
         },
         {
           "name": "rigid_static",
-          "parameters": {}
+          "parameters": {
+            "collider_materials": {
+              "Beta_Surface": "iron",
+              "Beta_Joints": "iron"
+            }
+          }
         }
       ]
     },
@@ -172,7 +194,12 @@
         },
         {
           "name": "rigid_static",
-          "parameters": {}
+          "parameters": {
+            "collider_materials": {
+              "Beta_Surface": "iron",
+              "Beta_Joints": "iron"
+            }
+          }
         }
       ]
     },
@@ -201,44 +228,7 @@
             "fire_light_intensity": 3.0,
             "rate_of_fire": 0.30,
             "bullet_speed": 250.0,
-            "bullet_mass": 0.2
-          }
-        },
-        {
-          "name": "rigid_dynamic",
-          "parameters": {
-            "mass": 100.0,
-            "cmass": [ -1.0, 0.0, 0.0 ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "xbot-rifle-detached",
-      "components": [
-        {
-          "name": "simple_mesh",
-          "parameters": {
-            "mesh": "scifi-rifle",
-            "lod_scale": 1.0
-          }
-        },
-        {
-          "name": "weapon",
-          "parameters": {
-            "class": "rifle",
-            "up_ls": [ 0.0, 0.0, -1.0 ],
-            "forward_ls": [ -1.0, 0.0, -0.0 ],
-            "main_hand_offset_ls": [ 0.2, 0.1, -0.3 ],
-            "second_hand_offset_ls": [ 0.3, -0.8, 0.3 ],
-            "fire_offset_ls": [ -4.5, 0.3, -0.1 ],
-            "fire_particle": "rifle_fire",
-            "fire_light_color": [ 0.9, 0.4, 0.01 ],
-            "fire_light_radius": 11.0,
-            "fire_light_intensity": 3.0,
-            "rate_of_fire": 0.30,
-            "bullet_speed": 250.0,
-            "bullet_mass": 0.2
+            "bullet_mass": 0.1
           }
         },
         {

@@ -12,13 +12,14 @@ namespace black_cat
 	{
 		enum class bc_render_group : bcUBYTE
 		{
+			unknown = 0,
 			terrain = core::bc_enum::value(0),
 			static_mesh = core::bc_enum::value(1),
 			dynamic_mesh = core::bc_enum::value(2),
 			vegetable = core::bc_enum::value(3),
 			all_static = terrain | static_mesh,
 			all_dynamic = dynamic_mesh,
-			unknown = 0
+			all = std::numeric_limits<bcUBYTE>::max()
 		};
 		
 		class bc_render_instance

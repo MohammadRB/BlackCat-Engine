@@ -377,7 +377,7 @@ namespace black_cat
 				const auto l_warning_msg = core::bc_estring_frame(bcL("No collider material was found for material with name ")) +
 						core::bc_to_estring_frame(p_name) +
 						bcL(". Using default material instead.");
-				core::bc_get_service<core::bc_logger>()->log_info(l_warning_msg.c_str());
+				core::bc_log(core::bc_log_type::info, l_warning_msg.c_str());
 			}
 
 			return l_material;
@@ -404,7 +404,7 @@ namespace black_cat
 				const auto l_warning_msg = core::bc_estring_frame(bcL("No collider material was found for material with hash ")) +
 						core::bc_to_estring_frame(p_hash) +
 						bcL(". Using default material instead.");
-				core::bc_get_service<core::bc_logger>()->log_info(l_warning_msg.c_str());
+				core::bc_log(core::bc_log_type::info, l_warning_msg.c_str());
 			}
 
 			bc_collider_material_description l_material;

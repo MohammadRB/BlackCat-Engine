@@ -11,6 +11,7 @@ namespace black_cat
 	namespace game
 	{
 		class bc_actor_component_manager;
+		class bc_entity_manager;
 		class bc_shape_drawer;
 		using bc_actor_index = bcINT32;
 
@@ -34,28 +35,31 @@ namespace black_cat
 			bc_actor& operator=(const bc_actor&) noexcept;
 
 			bc_actor_index get_index() const noexcept;
+
+			const bc_actor_event* get_events() const noexcept;
 			
 			template<typename TEvent>
 			void add_event(TEvent&& p_event);
 
-			const bc_actor_event* get_events() const noexcept;
-
-			template< class TComponent >
+			template<class TComponent>
 			TComponent* get_component() noexcept;
 
-			template< class TComponent >
+			template<class TComponent>
+			TComponent* get_create_component() noexcept;
+
+			template<class TComponent>
 			const TComponent* get_component() const noexcept;
 
-			template< class TIterator >
+			template<class TIterator>
 			void get_components(TIterator p_destination) const;
 
-			template< class TComponent >
+			template<class TComponent>
 			bool has_component() const noexcept;
-			
-			template< class TComponent >
+
+			template<class TComponent>
 			void create_component();
 
-			template< class TComponent >
+			template<class TComponent>
 			void remove_component();
 
 			void mark_for_double_update();
@@ -72,6 +76,8 @@ namespace black_cat
 
 		private:
 			static bc_actor_component_manager& _get_manager() noexcept;
+			
+			static bc_entity_manager& _get_entity_manager() noexcept;
 
 			bc_actor_index m_index;
 		};		

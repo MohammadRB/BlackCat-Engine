@@ -11,6 +11,7 @@
 #include "Game/Object/Mesh/bcSubMesh.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Animation/Job/bcMeshColliderSkinningAnimationJob.h"
 
 namespace black_cat
@@ -70,7 +71,7 @@ namespace black_cat
 							if (l_material_ite != std::cend(p_mesh_materials))
 							{
 								core::bc_any& l_material_key = l_material_ite->second;
-								auto& l_material_name = l_material_key.as_throw< core::bc_string >();
+								const auto& l_material_name = l_material_key.as_throw< core::bc_string >();
 								auto l_cache_name = l_lod_mesh.get_name() + l_mesh_part_name + l_material_name;
 								auto l_cache_entry = m_mesh_render_states->find(l_cache_name);
 

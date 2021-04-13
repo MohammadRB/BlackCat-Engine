@@ -16,10 +16,13 @@ namespace black_cat
 			BC_ABSTRACT_COMPONENT(dcl_rsv)
 			
 		public:
-			virtual void add_decal(const bcCHAR* p_decal_name, const core::bc_vector3f& p_world_position, const core::bc_vector3f& p_dir = core::bc_vector3f::up()) = 0;
+			virtual void add_decal(const bcCHAR* p_decal_name, 
+				const core::bc_vector3f& p_world_position, 
+				const core::bc_vector3f& p_dir, 
+				bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index) = 0;
 			
 		protected:
-			bc_decal_resolver_component();
+			bc_decal_resolver_component() noexcept;
 
 			bc_decal_resolver_component(bc_decal_resolver_component&&) noexcept;
 
@@ -28,10 +31,7 @@ namespace black_cat
 			bc_decal_resolver_component& operator=(bc_decal_resolver_component&&) noexcept;
 		};
 
-		inline bc_decal_resolver_component::bc_decal_resolver_component()
-			: bci_actor_abstract_component()
-		{
-		}
+		inline bc_decal_resolver_component::bc_decal_resolver_component() noexcept = default;
 
 		inline bc_decal_resolver_component::bc_decal_resolver_component(bc_decal_resolver_component&&) noexcept = default;
 

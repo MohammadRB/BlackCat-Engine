@@ -64,29 +64,29 @@ namespace black_cat
 			using instance_map_type = core::bc_unordered_map
 			<
 				bc_render_state_ptr,
-				core::bc_vector_movable< bc_render_instance >,
+				core::bc_vector_movable<bc_render_instance>,
 				_bc_render_state_buffer_entry_hash,
 				_bc_render_state_buffer_entry_equal
 			>;
 			using skinned_instance_map_type = core::bc_unordered_map
 			<
 				bc_render_state_ptr,
-				core::bc_vector_movable< bc_skinned_render_instance >,
+				core::bc_vector_movable<bc_skinned_render_instance>,
 				_bc_render_state_buffer_entry_hash,
 				_bc_render_state_buffer_entry_equal
 			>;
 			using decal_instance_map_type = core::bc_unordered_map
 			<
 				bc_decal_ptr,
-				core::bc_vector_movable< bc_render_instance >,
+				core::bc_vector_movable<bc_render_instance>,
 				_bc_render_state_buffer_decal_entry_hash,
 				_bc_render_state_buffer_decal_entry_equal
 			>;
 			
 		public:
-			using instance_iterator = core::bc_const_iterator_adapter< instance_map_type >;
-			using skinned_instance_iterator = core::bc_const_iterator_adapter< skinned_instance_map_type >;
-			using decal_instance_iterator = core::bc_const_iterator_adapter< decal_instance_map_type >;
+			using instance_iterator = core::bc_const_iterator_adapter<instance_map_type>;
+			using skinned_instance_iterator = core::bc_const_iterator_adapter<skinned_instance_map_type>;
+			using decal_instance_iterator = core::bc_const_iterator_adapter<decal_instance_map_type>;
 			
 		public:
 			bc_render_state_buffer();

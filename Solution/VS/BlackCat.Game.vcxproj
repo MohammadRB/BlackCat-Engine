@@ -381,6 +381,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcParticleEmittersQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcQueryContext.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraRenderStateQuery.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneDecalQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneGraphQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneGraphRenderStateQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneLightQuery.h" />
@@ -413,6 +414,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\bcRenderStateBuffer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Decal\bcDecal.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Decal\bcDecalInstance.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Decal\bcDecalIteratorBuffer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Decal\bcDecalManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcDirectLight.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLight.h" />
@@ -498,6 +500,8 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcWindComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcScenceGraph.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\SceneGraph\bcOctalTreeSceneGraphNode.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneDecalQuery.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneLightQuery.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\bcGameSystem.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </ExcludedFromBuild>

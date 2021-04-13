@@ -114,16 +114,16 @@ bc_ps_output ps(bc_vs_output p_input)
 	const uint l_stencil = g_tex2d_stencil.Load(int3(l_texcoord * uint2(g_screen_width, g_screen_height), 0)).g;
 
 	clip((l_stencil & p_input.m_group) - 1.0f);
-	
-	const float3 l_pixel_world = bc_reconstruct_world_space(l_clip_space.xy, l_depth, g_view_projection_inv);
-	const float3 l_pixel_local = mul(float4(l_pixel_world, 1), p_input.m_world_inv).xyz;
-
-	clip(0.5 - abs(l_pixel_local));
 
 	//l_output.m_diffuse = float4(1, 1, 1, 0.5);
 	//l_output.m_normal = float4(0, 0, 0, 0);
 	//l_output.m_specular = float4(0, 0, 0, 0);
 	//return l_output;
+	
+	const float3 l_pixel_world = bc_reconstruct_world_space(l_clip_space.xy, l_depth, g_view_projection_inv);
+	const float3 l_pixel_local = mul(float4(l_pixel_world, 1), p_input.m_world_inv).xyz;
+
+	clip(0.5 - abs(l_pixel_local));
 	
 	float2 l_decal_texcoord = l_pixel_local.xz + 0.5;
 	l_decal_texcoord = float2

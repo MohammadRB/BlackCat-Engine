@@ -30,10 +30,11 @@ namespace black_cat
 	
 	namespace game
 	{
+		class bc_game_system;
 		class bc_mediate_component;
 		class bc_actor_component_manager;
 
-		template< class TComponent >
+		template<class TComponent>
 		struct bc_actor_component_traits
 		{
 		public:
@@ -117,7 +118,7 @@ namespace black_cat
 		struct _bc_actor_component_entry
 		{
 		public:
-			using deriveds_component_get_delegate = core::bc_delegate<bci_actor_abstract_component*(const bc_actor&)>;
+			using deriveds_component_get_delegate = core::bc_delegate<void*(const bc_actor&)>;
 
 		public:
 			_bc_actor_component_entry(bool p_is_abstract,
@@ -147,14 +148,14 @@ namespace black_cat
 			BC_SERVICE(ac_mng)
 
 		private:
-			template< class TAbstract, class TDerived, class ...TDeriveds >
+			template<class TAbstract, class TDerived, class ...TDeriveds>
 			friend class bc_abstract_component_register;
-			using actor_container_type = core::bc_vector_movable< _bc_actor_entry >;
+			using actor_container_type = core::bc_vector_movable<_bc_actor_entry>;
 			using double_update_actor_container_type = core::bc_concurrent_queue<bc_actor>;
-			using component_container_type = core::bc_unordered_map_program< bc_actor_component_hash, _bc_actor_component_entry >;
+			using component_container_type = core::bc_unordered_map_program<bc_actor_component_hash, _bc_actor_component_entry>;
 
 		public:
-			explicit bc_actor_component_manager(core::bc_query_manager& p_query_manager);
+			bc_actor_component_manager(core::bc_query_manager& p_query_manager, bc_game_system& p_game_system);
 
 			bc_actor_component_manager(bc_actor_component_manager&&) noexcept = delete;
 
@@ -180,25 +181,25 @@ namespace black_cat
 			 * \tparam TComponent 
 			 * \param p_actor 
 			 */
-			template< class TComponent >
+			template<class TComponent>
 			void create_component(const bc_actor& p_actor);
 
-			template< class TComponent >
+			template<class TComponent>
 			void remove_component(const bc_actor& p_actor);
 
-			template< class TComponent >
+			template<class TComponent>
 			bool actor_has_component(const bc_actor& p_actor) const noexcept;
 
-			template< class TComponent >
+			template<class TComponent>
 			TComponent* actor_get_component(const bc_actor& p_actor) noexcept;
 
-			template< class TComponent >
+			template<class TComponent>
 			const TComponent* actor_get_component(const bc_actor& p_actor) const noexcept;
 
-			template< class TIterator >
+			template<class TIterator>
 			void actor_get_components(const bc_actor& p_actor, TIterator p_destination) const;
 
-			template< class TComponent >
+			template<class TComponent>
 			bc_actor component_get_actor(const TComponent& p_component) const noexcept;
 
 			void update_actors(const core_platform::bc_clock::update_param& p_clock);
@@ -206,32 +207,32 @@ namespace black_cat
 			core::bc_task<void> update_actors_async(const core_platform::bc_clock::update_param& p_clock);
 
 			void double_update_actors(const core_platform::bc_clock::update_param& p_clock);
-			
-			template< class ...TCAdapter >
+
+			template<class ...TCAdapter>
 			void register_component_types(TCAdapter... p_components);
 
-			template< class ...TCAdapter >
+			template<class ...TCAdapter>
 			void register_abstract_component_types(TCAdapter... p_components);
 			
 		private:
-			template< class TComponent >
+			template<class TComponent>
 			TComponent* _actor_get_component(const bc_actor& p_actor, std::true_type);
 
-			template< class TComponent >
+			template<class TComponent>
 			TComponent* _actor_get_component(const bc_actor& p_actor, std::false_type);
 
 			void _clear_actor_events(bc_actor_index p_actor);
-			
-			template< class TComponent >
+
+			template<class TComponent>
 			void _register_component_type(bcSIZE p_priority);
 
-			template< class TComponent, class ...TDeriveds >
+			template<class TComponent, class ...TDeriveds>
 			void _register_abstract_component_type();
 
-			template< class TComponent >
+			template<class TComponent>
 			component_container_type::value_type* _get_component_entry();
 
-			template< class TComponent >
+			template<class TComponent>
 			const component_container_type::value_type* _get_component_entry() const;
 
 			void _resize_actor_to_component_index_maps();
@@ -239,6 +240,7 @@ namespace black_cat
 			const bcSIZE s_events_pool_capacity = 100 * static_cast<bcSIZE>(core::bc_mem_size::kb);
 			
 			core::bc_query_manager& m_query_manager;
+			bc_game_system& m_game_system;
 			mutable core_platform::bc_shared_mutex m_actors_lock;
 			actor_container_type m_actors;
 			core::bc_bit_vector m_actors_bit;
@@ -337,8 +339,9 @@ namespace black_cat
 			return *this;
 		}
 
-		inline bc_actor_component_manager::bc_actor_component_manager(core::bc_query_manager& p_query_manager)
-			: m_query_manager(p_query_manager)
+		inline bc_actor_component_manager::bc_actor_component_manager(core::bc_query_manager& p_query_manager, bc_game_system& p_game_system)
+			: m_query_manager(p_query_manager),
+			m_game_system(p_game_system)
 		{
 			m_event_pools[0].initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
 			m_event_pools[1].initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
@@ -483,7 +486,7 @@ namespace black_cat
 			m_double_update_actors.push(p_actor);
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		void bc_actor_component_manager::create_component(const bc_actor& p_actor)
 		{
 			static component_container_type::value_type* l_s_component_entry = _get_component_entry< TComponent >();
@@ -531,7 +534,7 @@ namespace black_cat
 			}
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		void bc_actor_component_manager::remove_component(const bc_actor& p_actor)
 		{
 			static component_container_type::value_type* l_component_entry = _get_component_entry< TComponent >();
@@ -560,13 +563,13 @@ namespace black_cat
 			}
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		bool bc_actor_component_manager::actor_has_component(const bc_actor& p_actor) const noexcept
 		{
 			return actor_get_component< TComponent >(p_actor) != nullptr;
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		TComponent* bc_actor_component_manager::actor_get_component(const bc_actor& p_actor) noexcept
 		{
 			static_assert(std::is_base_of_v<bci_actor_component, TComponent>, "TComponent parameter is not a component");
@@ -578,13 +581,13 @@ namespace black_cat
 			));
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		const TComponent* bc_actor_component_manager::actor_get_component(const bc_actor& p_actor) const noexcept
 		{
 			return const_cast<bc_actor_component_manager*>(this)->actor_get_component< TComponent >(p_actor);
 		}
 
-		template< class TIterator >
+		template<class TIterator>
 		void bc_actor_component_manager::actor_get_components(const bc_actor& p_actor, TIterator p_destination) const
 		{
 			const auto l_actor_index = p_actor.get_index();
@@ -609,7 +612,7 @@ namespace black_cat
 			}
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		bc_actor bc_actor_component_manager::component_get_actor(const TComponent& p_component) const noexcept
 		{
 			static_assert(!bc_actor_component_traits<TComponent>::component_is_abstract(), "Can't get actor from abstract component");
@@ -624,7 +627,7 @@ namespace black_cat
 			}*/
 		}
 
-		template< class ...TCAdapter >
+		template<class ...TCAdapter>
 		void bc_actor_component_manager::register_component_types(TCAdapter... p_components)
 		{
 			bcSIZE l_counter = m_components.size();
@@ -646,7 +649,7 @@ namespace black_cat
 			};
 		}
 
-		template< class ...TCAdapter >
+		template<class ...TCAdapter>
 		void bc_actor_component_manager::register_abstract_component_types(TCAdapter... p_components)
 		{
 			auto l_expansion_list =
@@ -661,7 +664,7 @@ namespace black_cat
 			};
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		TComponent* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::true_type)
 		{
 			static component_container_type::value_type* l_component_entry = _get_component_entry< TComponent >();
@@ -672,17 +675,16 @@ namespace black_cat
 			for(auto& l_derived_get : l_component_entry->second.m_deriveds)
 			{
 				auto* l_derived_component = l_derived_get(p_actor);
-
 				if(l_derived_component != nullptr)
 				{
-					return static_cast<TComponent*>(l_derived_component);
+					return reinterpret_cast<TComponent*>(l_derived_component);
 				}
 			}
 
 			return nullptr;
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		TComponent* bc_actor_component_manager::_actor_get_component(const bc_actor& p_actor, std::false_type)
 		{
 			static component_container_type::value_type* l_component_entry = _get_component_entry< TComponent >();
@@ -727,8 +729,8 @@ namespace black_cat
 
 			l_actor_entry.clear_events(m_read_event_pool);
 		}
-		
-		template< class TComponent >
+
+		template<class TComponent>
 		void bc_actor_component_manager::_register_component_type(bcSIZE p_priority)
 		{
 			static_assert
@@ -757,7 +759,7 @@ namespace black_cat
 			m_components.insert(component_container_type::value_type(l_hash, std::move(l_data)));
 		}
 
-		template< class TComponent, class ...TDeriveds >
+		template<class TComponent, class ...TDeriveds>
 		void bc_actor_component_manager::_register_abstract_component_type()
 		{
 			static_assert
@@ -779,19 +781,22 @@ namespace black_cat
 				bc_actor_component_traits<TComponent>::component_require_update(),
 				_bc_actor_component_entry::s_invalid_priority_value,
 				nullptr,
-				core::bc_vector_movable< _bc_actor_component_entry::deriveds_component_get_delegate >
+				core::bc_vector_movable<_bc_actor_component_entry::deriveds_component_get_delegate>
 				(
 					{
 						_bc_actor_component_entry::deriveds_component_get_delegate
 						(
 							[&](const bc_actor& p_actor)
 							{
-								return static_cast<TComponent* >
+								return reinterpret_cast<void*>
 								(
-									this->_actor_get_component< TDeriveds >
+									static_cast<TComponent*>
 									(
-										p_actor,
-										std::integral_constant< bool, bc_actor_component_traits< TDeriveds>::component_is_abstract() >()
+										this->_actor_get_component<TDeriveds>
+										(
+											p_actor,
+											std::integral_constant<bool, bc_actor_component_traits<TDeriveds>::component_is_abstract()>()
+										)
 									)
 								);
 							}
@@ -803,7 +808,7 @@ namespace black_cat
 			m_components.insert(component_container_type::value_type(l_hash, std::move(l_data)));
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		bc_actor_component_manager::component_container_type::value_type* bc_actor_component_manager::_get_component_entry()
 		{
 			static_assert(std::is_base_of< bci_actor_component, TComponent >::value, "TComponent must inherit from bc_iactor_component");
@@ -819,7 +824,7 @@ namespace black_cat
 			return &*l_entry;
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		const bc_actor_component_manager::component_container_type::value_type* bc_actor_component_manager::_get_component_entry() const
 		{
 			return const_cast< bc_actor_component_manager& >(*this)._get_component_entry< TComponent >();

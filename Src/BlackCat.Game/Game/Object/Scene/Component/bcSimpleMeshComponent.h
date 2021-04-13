@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/Utility/bcNullable.h"
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/bcExport.h"
@@ -26,12 +25,14 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
+			void initialize_entity(const bc_actor_component_initialize_entity_context& p_context) override;
+			
 			void render(const bc_actor_component_render_context& p_context) const override;
 			
 			void handle_event(const bc_actor_component_event_context& p_context) override;
 
 		private:
-			mutable core::bc_nullable<bc_render_group> m_render_group;
+			bc_render_group m_render_group;
 		};
 	}
 }

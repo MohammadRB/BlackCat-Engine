@@ -363,7 +363,7 @@ namespace black_cat
 			m_animation_manager = core::bc_make_unique< bc_animation_manager >(core::bc_alloc_type::program);
 			m_light_manager = core::bc_make_unique< bc_light_manager >(core::bc_alloc_type::program);
 			m_particle_manager = core::bc_make_unique< bc_particle_manager >(core::bc_alloc_type::program, m_device, *m_content_stream);
-			m_decal_manager = core::bc_make_unique< bc_decal_manager >(core::bc_alloc_type::program, *this, *m_material_manager);
+			m_decal_manager = core::bc_make_unique< bc_decal_manager >(core::bc_alloc_type::program, *m_material_manager);
 			m_shape_drawer = core::bc_make_unique< bc_shape_drawer >(core::bc_alloc_type::program);
 			m_frame_renderer = core::bc_make_unique< bc_frame_renderer >(core::bc_alloc_type::program, m_device, *m_thread_manager, *m_render_pass_manager);
 

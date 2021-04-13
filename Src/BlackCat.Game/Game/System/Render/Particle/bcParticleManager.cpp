@@ -123,14 +123,9 @@ namespace black_cat
 			return m_curves;
 		}
 
-		void bc_particle_manager::register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder, bcFLOAT p_scale)
+		void bc_particle_manager::register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder)
 		{
 			core::bc_vector_program<bc_particle_emitter_trait> l_emitters(std::begin(p_builder.m_emitters), std::end(p_builder.m_emitters));
-
-			for(auto& l_emitter : l_emitters)
-			{
-				_apply_emitter_scale(l_emitter, p_scale);
-			}
 			
 			auto l_hash = string_hash_t()(p_name);
 			auto l_value = std::make_pair(l_hash, std::move(l_emitters));
@@ -146,16 +141,20 @@ namespace black_cat
 			}
 		}
 
-		void bc_particle_manager::spawn_emitter(const bcCHAR* p_emitter_name, const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir, const core::bc_vector3f* p_color)
+		void bc_particle_manager::spawn_emitter(const bcCHAR* p_emitter_name, 
+			const core::bc_vector3f& p_pos, 
+			const core::bc_vector3f& p_dir, 
+			const core::bc_vector3f* p_color,
+			bcFLOAT p_scale)
 		{
 			core::bc_matrix3f l_rotation;
 			if(graphic::bc_render_api_info::use_left_handed())
 			{
-				l_rotation.rotation_between_two_vector_lh(core::bc_vector3f(0, 1, 0), p_dir);
+				l_rotation.rotation_between_two_vector_checked_lh(core::bc_vector3f(0, 1, 0), p_dir);
 			}
 			else
 			{
-				l_rotation.rotation_between_two_vector_rh(core::bc_vector3f(0, 1, 0), p_dir);
+				l_rotation.rotation_between_two_vector_checked_rh(core::bc_vector3f(0, 1, 0), p_dir);
 			}
 			
 			const auto l_definition_ite = m_emitter_definitions.find(string_hash_t()(p_emitter_name));
@@ -170,11 +169,16 @@ namespace black_cat
 					m_emitters.emplace_back(l_emitter);
 					auto& l_ite = m_emitters.back();
 
+					if(p_scale != 1)
+					{
+						_apply_emitter_scale(l_ite, p_scale);
+					}
+
 					l_ite.m_position = l_rotation * l_ite.m_position + p_pos;
 					l_ite.m_prev_position = l_ite.m_position;
 					l_ite.m_direction = l_rotation * l_ite.m_direction;
 					l_ite.m_emission_deviation_force = l_rotation * l_ite.m_emission_deviation_force;
-					l_ite.m_lifetime += .001f; // to avoid division by zero
+					l_ite.m_lifetime += .0001f; // to avoid division by zero
 
 					if(p_color)
 					{
@@ -275,7 +279,7 @@ namespace black_cat
 						l_energy = 1 - std::min(1.f, l_emitter.m_age / l_emitter.m_lifetime);
 						l_particle_count_multiplier = 1 - l_energy;
 
-						if(l_emitter.m_lifetime <= 0.001f)
+						if(l_emitter.m_lifetime <= 0.0001f)
 						{
 							l_energy = 1;
 							l_particle_count_multiplier = 1;
@@ -334,7 +338,7 @@ namespace black_cat
 			}
 		}
 
-		core::bc_query_context_ptr bc_particle_manager::_emitters_query_context_provider() const
+		core::bc_query_context_ptr bc_particle_manager::_emitters_query_context_provider() const noexcept
 		{
 			{
 				core_platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, core_platform::bc_lock_operation::heavy);
@@ -379,7 +383,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_particle_manager::_apply_emitter_scale(bc_particle_emitter_trait& p_emitter, bcFLOAT p_scale)
+		void bc_particle_manager::_apply_emitter_scale(bc_particle_emitter_trait& p_emitter, bcFLOAT p_scale) const noexcept
 		{
 			p_emitter.m_position *= p_scale;
 			p_emitter.m_force *= p_scale;
@@ -388,9 +392,10 @@ namespace black_cat
 			p_emitter.m_particles_mass *= p_scale;
 			p_emitter.m_particles_start_size *= p_scale;
 			p_emitter.m_particles_end_size *= p_scale;
+			p_emitter.m_particles_total_count *= p_scale;
 		}
 
-		bcFLOAT bc_particle_manager::_sample_curve(bcSIZE p_curve_index, bcFLOAT p_normalized_time) const
+		bcFLOAT bc_particle_manager::_sample_curve(bcSIZE p_curve_index, bcFLOAT p_normalized_time) const noexcept
 		{
 			p_normalized_time = std::min(1.f, p_normalized_time);
 			const curve_sample_container& l_curve_samples = m_curves[p_curve_index];

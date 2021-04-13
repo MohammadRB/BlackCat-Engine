@@ -193,7 +193,7 @@ namespace black_cat
 					}
 
 					l_scene->add_actor(l_actor);*/
-					l_scene->add_bullet(game::bc_bullet(l_camera.get_position(), l_camera.get_forward(), 0.2f, 250));
+					l_scene->add_bullet(game::bc_bullet(l_camera.get_position(), l_camera.get_forward(), 250, 0.2f));
 				}
 				
 				return true;

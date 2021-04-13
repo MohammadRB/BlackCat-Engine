@@ -29,6 +29,13 @@
     }
   ],
   "collider_materials": [
-
+    {
+      "name": "iron",
+      "static_friction": 5000.0,
+      "dynamic_friction": 5000.0,
+      "restitution": 0.05,
+      "particle": "bullet_iron",
+      "decal": "bullet_iron"
+    }
   ] 
 }

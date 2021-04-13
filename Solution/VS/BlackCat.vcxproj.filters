@@ -195,10 +195,10 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotWeaponIKAnimationJob.h">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\Particle\bcSampleRifleFireParticle.h">
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\Particle\bcExplosionParticle.h">
       <Filter>BlackCat\SampleImp\Particle</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\Particle\bcSampleExplosionParticle.h">
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\Particle\bcWeaponParticle.h">
       <Filter>BlackCat\SampleImp\Particle</Filter>
     </ClInclude>
   </ItemGroup>

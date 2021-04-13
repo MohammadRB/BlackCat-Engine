@@ -12,10 +12,12 @@ namespace black_cat
 		
 		class bc_bullet
 		{
+		public:
 			friend class bc_bullet_manager;
+			static constexpr bcFLOAT s_reference_mass = 0.1;
 			
 		public:
-			bc_bullet(const core::bc_vector3f& p_position, const core::bc_vector3f& p_dir, bcFLOAT p_mass, bcFLOAT p_speed, bcFLOAT p_radius = 0);
+			bc_bullet(const core::bc_vector3f& p_position, const core::bc_vector3f& p_dir, bcFLOAT p_speed, bcFLOAT p_mass);
 
 			bc_bullet(const bc_bullet&) noexcept = default;
 
@@ -26,31 +28,25 @@ namespace black_cat
 			const core::bc_vector3f& get_position() const noexcept;
 			
 			const core::bc_vector3f& get_direction() const noexcept;
-
-			bcFLOAT get_mass() const noexcept;
 			
 			bcFLOAT get_speed() const noexcept;
+
+			bcFLOAT get_mass() const noexcept;
 
 			bcFLOAT get_radius() const noexcept;
 		
 		private:
 			core::bc_vector3f m_position;
 			core::bc_vector3f m_direction;
-			bcFLOAT m_mass;
 			bcFLOAT m_speed;
-			bcFLOAT m_radius;
+			bcFLOAT m_mass;
 		};
 
-		inline bc_bullet::bc_bullet(const core::bc_vector3f& p_position,
-			const core::bc_vector3f& p_dir,
-			bcFLOAT p_mass,
-			bcFLOAT p_speed,
-			bcFLOAT p_radius)
+		inline bc_bullet::bc_bullet(const core::bc_vector3f& p_position, const core::bc_vector3f& p_dir, bcFLOAT p_speed, bcFLOAT p_mass)
 			: m_position(p_position),
 			m_direction(p_dir),
-			m_mass(p_mass),
 			m_speed(p_speed),
-			m_radius(p_radius)
+			m_mass(p_mass)
 		{
 		}
 
@@ -72,11 +68,6 @@ namespace black_cat
 		inline bcFLOAT bc_bullet::get_speed() const noexcept
 		{
 			return m_speed;
-		}
-
-		inline bcFLOAT bc_bullet::get_radius() const noexcept
-		{
-			return m_radius;
 		}
 	}	
 }
