@@ -167,6 +167,15 @@ namespace black_cat
 			return l_ptr.release();
 		}
 
+		bc_decal_instance* bc_decal_manager::create_decal(const bcCHAR* p_decal_name,
+			const core::bc_vector3f& p_local_position,
+			const core::bc_matrix3f& p_local_rotation,
+			bc_render_group p_render_group)
+		{
+			auto l_ptr = create_decal(p_decal_name, bc_actor(), p_local_position, p_local_rotation, p_render_group, bc_mesh_node::s_invalid_index);
+			return l_ptr.release();
+		}
+
 		bc_decal_instance_ptr bc_decal_manager::create_decal(const bcCHAR* p_decal_name,
 			const bc_actor& p_actor,
 			const core::bc_vector3f& p_local_position,
@@ -181,6 +190,30 @@ namespace black_cat
 				m_decal_instances_pool.push_back(_bc_decal_instance_entry(bc_decal_instance
 				(
 					std::move(l_decal_ptr), p_actor, p_local_position, p_local_rotation, p_attached_node_index
+				)));
+
+				auto l_ite = m_decal_instances_pool.rbegin();
+				l_ite->m_iterator = l_ite.base();
+
+				return bc_decal_instance_ptr(&*l_ite, bc_decal_instance_deleter(*this));
+			}
+		}
+
+		bc_decal_instance_ptr bc_decal_manager::create_decal(const bcCHAR* p_decal_name,
+			const bc_actor& p_actor,
+			const core::bc_vector3f& p_local_position,
+			const core::bc_matrix3f& p_local_rotation,
+			bc_render_group p_render_group,
+			bc_mesh_node::node_index_t p_attached_node_index)
+		{
+			auto l_decal_ptr = load_decal_throw(p_decal_name);
+
+			{
+				core_platform::bc_mutex_guard l_lock(m_decal_instances_mutex);
+
+				m_decal_instances_pool.push_back(_bc_decal_instance_entry(bc_decal_instance
+				(
+					std::move(l_decal_ptr), p_actor, p_local_position, p_local_rotation, p_render_group, p_attached_node_index
 				)));
 
 				auto l_ite = m_decal_instances_pool.rbegin();

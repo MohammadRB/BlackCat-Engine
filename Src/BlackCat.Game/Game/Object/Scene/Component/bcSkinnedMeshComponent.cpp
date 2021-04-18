@@ -6,11 +6,15 @@
 #include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcLogger.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/System/Input/bcGlobalConfig.h"
+#include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
+#include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "Game/Object/Animation/bcAnimationManager.h"
 #include "Game/bcConstant.h"
 #include "Game/bcUtility.h"
@@ -134,7 +138,20 @@ namespace black_cat
 			const auto* l_bound_box_event = core::bci_message::as< bc_bound_box_changed_actor_event >(p_context.m_event);
 			if (l_bound_box_event)
 			{
-				bc_mesh_component::update_lod_factor(l_bound_box_event->get_bound_box());
+				bc_mesh_component::set_lod_factor(l_bound_box_event->get_bound_box());
+				return;
+			}
+
+			const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event);
+			if (l_bullet_hit_event)
+			{
+				bc_mesh_component::process_bullet_hit
+				(
+					p_context.m_game_system.get_render_system().get_particle_manager(),
+					*l_bullet_hit_event,
+					true
+				);
+				return;
 			}
 		}
 		
@@ -172,6 +189,46 @@ namespace black_cat
 				l_mesh,
 				l_world_transform,
 				m_model_transforms
+			);
+		}
+
+		void bc_skinned_mesh_component::add_decal(const bcCHAR* p_decal_name,
+			const core::bc_vector3f& p_world_position,
+			const core::bc_vector3f& p_world_direction,
+			bc_mesh_node::node_index_t p_attached_node_index)
+		{
+			auto l_actor = get_actor();
+			auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
+			const auto& l_mesh = get_mesh();
+			const auto* l_mesh_node = l_mesh.find_node(p_attached_node_index);
+			core::bc_vector3f l_local_position;
+			core::bc_vector3f l_local_direction;
+			core::bc_matrix3f l_local_rotation;
+			core::bc_matrix4f l_world_transform;
+			
+			bc_mesh_utility::calculate_skinned_mesh_decal
+			(
+				p_world_position,
+				p_world_direction,
+				l_mesh.get_node_bind_pose_transform(*l_mesh_node),
+				l_mesh.get_node_inverse_bind_pose_transform(*l_mesh_node),
+				get_model_transforms().get_node_transform(*l_mesh_node),
+				l_mediate_component->get_world_transform(),
+				l_local_position,
+				l_local_direction,
+				l_local_rotation,
+				l_world_transform
+			);
+
+			auto* l_decal_component = l_actor.get_create_component<bc_decal_component>();
+			l_decal_component->add_decal
+			(
+				p_decal_name,
+				l_local_position,
+				l_local_rotation,
+				bc_render_group::dynamic_mesh,
+				l_world_transform,
+				p_attached_node_index
 			);
 		}
 

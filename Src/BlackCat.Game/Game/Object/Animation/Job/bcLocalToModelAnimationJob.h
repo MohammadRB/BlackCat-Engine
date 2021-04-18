@@ -22,7 +22,7 @@ namespace black_cat
 		public:
 			bc_local_to_model_animation_job(core::bc_shared_ptr< bci_local_transform_animation_job> p_local_transform_job,
 				const bc_sub_mesh& p_sub_mesh, 
-				bc_sub_mesh_mat4_transform& p_transforms);
+				bc_sub_mesh_mat4_transform& p_model_transforms);
 
 			bc_local_to_model_animation_job(bc_local_to_model_animation_job&&) noexcept = default;
 

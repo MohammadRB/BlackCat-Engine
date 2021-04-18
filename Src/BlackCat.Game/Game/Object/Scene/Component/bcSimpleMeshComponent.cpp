@@ -11,6 +11,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
+#include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
@@ -104,41 +105,61 @@ namespace black_cat
 			const auto* l_bound_box_event = core::bci_message::as<bc_bound_box_changed_actor_event>(p_context.m_event);
 			if(l_bound_box_event)
 			{
-				bc_mesh_component::update_lod_factor(l_bound_box_event->get_bound_box());
+				bc_mesh_component::set_lod_factor(l_bound_box_event->get_bound_box());
 				return;
 			}
 
 			const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event);
 			if(l_bullet_hit_event)
 			{
-				auto* l_hit_shape_data = static_cast<bc_px_shape_data*>(l_bullet_hit_event->get_hit_shape().get_data());
-				BC_ASSERT(l_hit_shape_data);
-				
-				if(l_hit_shape_data->m_collision_particle)
-				{
-					p_context.m_game_system.get_render_system().get_particle_manager().spawn_emitter
-					(
-						l_hit_shape_data->m_collision_particle,
-						l_bullet_hit_event->get_hit_position(),
-						l_bullet_hit_event->get_hit_normal(),
-						nullptr,
-						l_bullet_hit_event->get_bullet_mass() / get_global_config().get_bullet_reference_mass()
-					);
-				}
-				
-				if (l_hit_shape_data->m_collision_decal)
-				{
-					add_decal
-					(
-						l_hit_shape_data->m_collision_decal,
-						l_bullet_hit_event->get_hit_position(),
-						l_bullet_hit_event->get_hit_normal(),
-						l_hit_shape_data->m_collider_entry->m_attached_node_transform_index
-					);
-				}
-				
+				bc_mesh_component::process_bullet_hit
+				(
+					p_context.m_game_system.get_render_system().get_particle_manager(), 
+					*l_bullet_hit_event,
+					m_render_group == bc_render_group::all_dynamic
+				);
 				return;
 			}
+		}
+
+		void bc_simple_mesh_component::add_decal(const bcCHAR* p_decal_name,
+			const core::bc_vector3f& p_world_position,
+			const core::bc_vector3f& p_world_direction,
+			bc_mesh_node::node_index_t p_attached_node_index)
+		{
+			core::bc_vector3f l_local_position;
+			core::bc_vector3f l_local_direction;
+			core::bc_matrix3f l_local_rotation;
+			core::bc_matrix4f l_world_transform;
+
+			if (p_attached_node_index == bc_mesh_node::s_invalid_index)
+			{
+				bc_mesh_utility::calculate_mesh_decal
+				(
+					p_world_position,
+					p_world_direction,
+					l_local_position,
+					l_local_direction,
+					l_local_rotation,
+					l_world_transform
+				);
+			}
+			else
+			{
+				bc_mesh_utility::calculate_mesh_decal
+				(
+					p_world_position,
+					p_world_direction,
+					get_world_transforms()[p_attached_node_index],
+					l_local_position,
+					l_local_direction,
+					l_local_rotation,
+					l_world_transform
+				);
+			}
+
+			auto* l_decal_component = get_actor().get_create_component<bc_decal_component>();
+			l_decal_component->add_decal(p_decal_name, l_local_position, l_local_rotation, m_render_group, l_world_transform, p_attached_node_index);
 		}
 	}
 }

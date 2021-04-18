@@ -5,18 +5,21 @@
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
-#include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Scene/Component/bcDecalResolverComponent.h"
+#include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "Game/Object/Mesh/bcSubMesh.h"
 #include "Game/Object/Mesh/bcMeshRenderState.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		class bc_particle_manager;
+		
 		class BC_GAME_DLL bc_mesh_component : public bc_render_component, public bc_decal_resolver_component
 		{
 			BC_ABSTRACT_COMPONENT(mesh)
@@ -34,11 +37,6 @@ namespace black_cat
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
-			void add_decal(const bcCHAR* p_decal_name, 
-				const core::bc_vector3f& p_world_position,
-				const core::bc_vector3f& p_dir, 
-				bc_mesh_node::node_index_t p_attached_node_index) override;
-			
 		protected:
 			bc_mesh_component() noexcept;
 
@@ -47,6 +45,10 @@ namespace black_cat
 			~bc_mesh_component() override;
 
 			bc_mesh_component& operator=(bc_mesh_component&&) noexcept;
+
+			bcFLOAT get_lod_factor() const noexcept;
+
+			void set_lod_factor(const physics::bc_bound_box& p_bound_box) noexcept;
 			
 			const bc_mesh_render_state& get_render_states() const noexcept;
 			
@@ -54,10 +56,10 @@ namespace black_cat
 			
 			void set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform) noexcept;
 
-			bcFLOAT get_lod_factor() const noexcept;
+			void process_bullet_hit(bc_particle_manager& p_particle_manager, 
+				const bc_bullet_hit_actor_event& p_event,
+				bool p_store_reference_to_bullet);
 			
-			void update_lod_factor(const physics::bc_bound_box& p_bound_box) noexcept;
-
 		private:
 			bc_sub_mesh m_sub_mesh;
 			bc_mesh_render_state m_render_state;
@@ -91,6 +93,11 @@ namespace black_cat
 			return m_world_transforms.get_node_transform(*m_sub_mesh.get_root_node());
 		}
 
+		inline bcFLOAT bc_mesh_component::get_lod_factor() const noexcept
+		{
+			return m_lod_factor;
+		}
+		
 		inline const bc_mesh_render_state& bc_mesh_component::get_render_states() const noexcept
 		{
 			return m_render_state;
@@ -99,11 +106,6 @@ namespace black_cat
 		inline void bc_mesh_component::set_render_states(bc_mesh_render_state p_render_state) noexcept
 		{
 			m_render_state = std::move(p_render_state);
-		}
-		
-		inline bcFLOAT bc_mesh_component::get_lod_factor() const noexcept
-		{
-			return m_lod_factor;
 		}
 	}
 }

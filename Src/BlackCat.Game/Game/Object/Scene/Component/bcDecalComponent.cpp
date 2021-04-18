@@ -21,7 +21,8 @@ namespace black_cat
 			bc_const_iterator_adapter(m_decals),
 			m_decal_manager(nullptr),
 			m_decal_name(nullptr),
-			m_mesh_scale(0)
+			m_mesh_scale(0),
+			m_use_hierarchy_transforms(false)
 		{
 		}
 
@@ -32,7 +33,8 @@ namespace black_cat
 			m_decal_manager(p_other.m_decal_manager),
 			m_decal_name(p_other.m_decal_name),
 			m_decals(std::move(p_other.m_decals)),
-			m_mesh_scale(p_other.m_mesh_scale)
+			m_mesh_scale(p_other.m_mesh_scale),
+			m_use_hierarchy_transforms(p_other.m_use_hierarchy_transforms)
 		{
 		}
 
@@ -46,6 +48,7 @@ namespace black_cat
 			m_decal_name = p_other.m_decal_name;
 			m_decals = std::move(p_other.m_decals);
 			m_mesh_scale = p_other.m_mesh_scale;
+			m_use_hierarchy_transforms = p_other.m_use_hierarchy_transforms;
 			
 			return *this;
 		}
@@ -67,6 +70,16 @@ namespace black_cat
 		void bc_decal_component::add_decal(const bcCHAR* p_decal_name,
 			const core::bc_vector3f& p_local_pos,
 			const core::bc_matrix3f& p_local_rotation,
+			bc_render_group p_render_group,
+			const core::bc_matrix4f& p_initial_world_transform)
+		{
+			auto* l_decal = m_decal_manager->create_decal(p_decal_name, p_local_pos, p_local_rotation, p_render_group);
+			l_decal->set_world_transform(p_initial_world_transform);
+		}
+
+		void bc_decal_component::add_decal(const bcCHAR* p_decal_name,
+			const core::bc_vector3f& p_local_pos,
+			const core::bc_matrix3f& p_local_rotation,
 			const core::bc_matrix4f& p_initial_world_transform,
 			bc_mesh_node::node_index_t p_attached_node)
 		{
@@ -79,7 +92,33 @@ namespace black_cat
 				auto l_decal = m_decal_manager->create_decal(p_decal_name, get_actor(), p_local_pos, p_local_rotation, p_attached_node);
 				l_decal->set_world_transform(p_initial_world_transform);
 
-				m_decals.push_back(std::move(l_decal));
+				{
+					core_platform::bc_spin_mutex_guard l_lock(m_decals_lock);
+					m_decals.push_back(std::move(l_decal));
+				}
+			}
+		}
+
+		void bc_decal_component::add_decal(const bcCHAR* p_decal_name,
+			const core::bc_vector3f& p_local_pos,
+			const core::bc_matrix3f& p_local_rotation,
+			bc_render_group p_render_group,
+			const core::bc_matrix4f& p_initial_world_transform,
+			bc_mesh_node::node_index_t p_attached_node)
+		{
+			if (p_attached_node == bc_mesh_node::s_invalid_index)
+			{
+				add_decal(p_decal_name, p_local_pos, p_local_rotation, p_initial_world_transform);
+			}
+			else
+			{
+				auto l_decal = m_decal_manager->create_decal(p_decal_name, get_actor(), p_local_pos, p_local_rotation, p_render_group, p_attached_node);
+				l_decal->set_world_transform(p_initial_world_transform);
+
+				{
+					core_platform::bc_spin_mutex_guard l_lock(m_decals_lock);
+					m_decals.push_back(std::move(l_decal));
+				}
 			}
 		}
 
@@ -99,50 +138,59 @@ namespace black_cat
 			if(l_mesh_component)
 			{
 				m_mesh_scale = l_mesh_component->get_mesh().get_mesh_scale();
+				m_use_hierarchy_transforms = l_mesh_component->get_mesh().get_skinned();
 			}
 		}
 
 		void bc_decal_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
 			const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
-			if(l_world_transform_event)
+			if(l_world_transform_event && !m_use_hierarchy_transforms)
 			{
-				for(bc_decal_instance_ptr& l_decal : m_decals)
 				{
-					if(m_mesh_scale != 1)
+					core_platform::bc_spin_mutex_guard l_lock(m_decals_lock);
+
+					for (bc_decal_instance_ptr& l_decal : m_decals)
 					{
-						l_decal->set_world_transform(core::bc_matrix4f::scale_matrix(m_mesh_scale) * l_world_transform_event->get_transform());
-					}
-					else
-					{
-						l_decal->set_world_transform(l_world_transform_event->get_transform());
+						if (m_mesh_scale != 1)
+						{
+							l_decal->set_world_transform(core::bc_matrix4f::scale_matrix(m_mesh_scale) * l_world_transform_event->get_transform());
+						}
+						else
+						{
+							l_decal->set_world_transform(l_world_transform_event->get_transform());
+						}
 					}
 				}
+				
 				return;
 			}
 
 			const auto* l_hierarchy_event = core::bci_message::as<bc_hierarchy_transform_actor_event>(p_context.m_event);
-			if(l_hierarchy_event)
+			if(l_hierarchy_event && m_use_hierarchy_transforms)
 			{
-				for (bc_decal_instance_ptr& l_decal : m_decals)
+				const auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>();
+				const auto& l_mesh = l_mesh_component->get_mesh();
+
 				{
-					const auto l_attached_node_index = l_decal->get_attached_node_index();
-					if(l_attached_node_index == bc_mesh_node::s_invalid_index)
+					core_platform::bc_spin_mutex_guard l_lock(m_decals_lock);
+
+					for (bc_decal_instance_ptr& l_decal : m_decals)
 					{
-						continue;
-					}
-					
-					if(l_hierarchy_event->get_px_transforms())
-					{
-						auto l_transform = (*l_hierarchy_event->get_px_transforms())[l_attached_node_index].get_matrix4();
-						l_decal->set_world_transform(l_transform);
-					}
-					else
-					{
-						const auto& l_transform = (*l_hierarchy_event->get_mat4_transforms())[l_attached_node_index];
-						l_decal->set_world_transform(l_transform);
+						const auto l_attached_node_index = l_decal->get_attached_node_index();
+						if (l_attached_node_index == bc_mesh_node::s_invalid_index)
+						{
+							continue;
+						}
+
+						const auto& l_mesh_node = *l_mesh.find_node(l_attached_node_index);
+						const auto& l_model_transform = l_hierarchy_event->get_mat4_transforms()->get_node_transform(l_mesh_node);
+						const auto& l_inv_bind_pose_transform = l_mesh.get_node_inverse_bind_pose_transform(l_mesh_node);
+
+						l_decal->set_world_transform(l_inv_bind_pose_transform * (l_model_transform * l_hierarchy_event->get_world_transform()));
 					}
 				}
+				
 				return;
 			}
 			

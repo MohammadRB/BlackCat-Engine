@@ -123,6 +123,11 @@ namespace black_cat
 				const core::bc_vector3f& p_local_position,
 				const core::bc_matrix3f& p_local_rotation);
 
+			bc_decal_instance* create_decal(const bcCHAR* p_decal_name,
+				const core::bc_vector3f& p_local_position,
+				const core::bc_matrix3f& p_local_rotation,
+				bc_render_group p_render_group);
+
 			/**
 			 * \brief Create a decal with a strong reference to owning actor.
 			 * Decals with strong reference will be removed when their reference count reach to zero.
@@ -138,6 +143,13 @@ namespace black_cat
 				const bc_actor& p_actor,
 				const core::bc_vector3f& p_local_position,
 				const core::bc_matrix3f& p_local_rotation,
+				bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index);
+
+			bc_decal_instance_ptr create_decal(const bcCHAR* p_decal_name,
+				const bc_actor& p_actor,
+				const core::bc_vector3f& p_local_position,
+				const core::bc_matrix3f& p_local_rotation,
+				bc_render_group p_render_group,
 				bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index);
 
 			void update_decal_lifespans(const core_platform::bc_clock::update_param& p_clock) noexcept;

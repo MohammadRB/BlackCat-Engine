@@ -39,6 +39,13 @@ namespace black_cat
 				const core::bc_matrix3f& p_local_rotation,
 				bc_mesh_node::node_index_t p_attached_node_index) noexcept;
 
+			bc_decal_instance(bc_decal_ptr p_decal,
+				const bc_actor& p_actor,
+				const core::bc_vector3f& p_local_position,
+				const core::bc_matrix3f& p_local_rotation,
+				bc_render_group p_render_group,
+				bc_mesh_node::node_index_t p_attached_node_index) noexcept;
+
 			bc_decal_instance(bc_decal_instance&&) noexcept;
 
 			~bc_decal_instance();
@@ -57,11 +64,13 @@ namespace black_cat
 			
 			bc_mesh_node::node_index_t get_attached_node_index() const noexcept;
 
+			bc_render_group get_render_group() const noexcept;
+			
 			/**
 			 * \brief Apply decal local transforms and scale and set decal world transform
-			 * \param p_transform
+			 * \param p_world_transform
 			 */
-			void set_world_transform(const core::bc_matrix4f& p_transform) noexcept;
+			void set_world_transform(const core::bc_matrix4f& p_world_transform) noexcept;
 
 			const core::bc_matrix4f& get_world_transform() const noexcept;
 		
@@ -70,6 +79,7 @@ namespace black_cat
 			bc_actor m_actor;
 			core::bc_vector3f m_local_position;
 			core::bc_matrix3f m_local_rotation;
+			bc_render_group m_render_group;
 			bc_mesh_node::node_index_t m_attached_node_index;
 			core::bc_matrix4f m_world_transform;
 		};
@@ -95,10 +105,26 @@ namespace black_cat
 			m_actor(p_actor),
 			m_local_position(p_local_position),
 			m_local_rotation(p_local_rotation),
+			m_render_group(m_decal->get_group()),
 			m_attached_node_index(p_attached_node_index)
 		{
 		}
 
+		inline bc_decal_instance::bc_decal_instance(bc_decal_ptr p_decal,
+			const bc_actor& p_actor,
+			const core::bc_vector3f& p_local_position,
+			const core::bc_matrix3f& p_local_rotation,
+			bc_render_group p_render_group,
+			bc_mesh_node::node_index_t p_attached_node_index) noexcept
+			: m_decal(std::move(p_decal)),
+			m_actor(p_actor),
+			m_local_position(p_local_position),
+			m_local_rotation(p_local_rotation),
+			m_render_group(p_render_group),
+			m_attached_node_index(p_attached_node_index)
+		{
+		}
+		
 		inline bc_decal_instance::bc_decal_instance(bc_decal_instance&&) noexcept = default;
 
 		inline bc_decal_instance::~bc_decal_instance() = default;
@@ -135,9 +161,14 @@ namespace black_cat
 			return m_attached_node_index;
 		}
 
+		inline bc_render_group bc_decal_instance::get_render_group() const noexcept
+		{
+			return m_render_group;
+		}
+		
 		inline const core::bc_matrix4f& bc_decal_instance::get_world_transform() const noexcept
 		{
 			return m_world_transform;
 		}
-	}	
+	}
 }

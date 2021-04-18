@@ -8,10 +8,10 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_model_to_skinned_animation_job::bc_model_to_skinned_animation_job(core::bc_shared_ptr<bc_local_to_model_animation_job> p_model_job, bc_sub_mesh_mat4_transform& p_transforms)
+		bc_model_to_skinned_animation_job::bc_model_to_skinned_animation_job(core::bc_shared_ptr<bc_local_to_model_animation_job> p_model_job, bc_sub_mesh_mat4_transform& p_skinned_world_transforms)
 			: bci_animation_job(p_model_job->get_skeleton()),
 			m_model_job(std::move(p_model_job)),
-			m_transforms(&p_transforms),
+			m_transforms(&p_skinned_world_transforms),
 			m_world(core::bc_matrix4f::identity())
 		{
 			if (m_transforms->size() < m_skeleton->get_num_joints())

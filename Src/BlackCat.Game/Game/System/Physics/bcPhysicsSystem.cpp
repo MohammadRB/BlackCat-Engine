@@ -26,7 +26,7 @@ namespace black_cat
 
 		bc_physics_system& bc_physics_system::operator=(bc_physics_system&&) noexcept(core::bc_type_traits<physics::bc_physics>::is_no_throw_move) = default;
 
-		core::bc_unique_ptr< bcINT16 > bc_physics_system::convert_height_field_samples(bcUINT32 p_num_row, bcUINT32 p_num_column, bcFLOAT* p_samples)
+		core::bc_unique_ptr<bcINT16> bc_physics_system::convert_height_field_samples(bcUINT32 p_num_row, bcUINT32 p_num_column, bcFLOAT* p_samples)
 		{
 			const bcUINT32 l_num_samples = p_num_row * p_num_column;
 			core::bc_unique_ptr< bcINT16 > l_buffer(static_cast< bcINT16* >(BC_ALLOC(sizeof(bcINT16) * l_num_samples, core::bc_alloc_type::frame)));

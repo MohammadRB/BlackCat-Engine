@@ -45,7 +45,7 @@ namespace black_cat
 		bool bc_ui_object_select_command::update(update_context& p_context)
 		{
 			auto* l_shape_draw_pass = p_context.m_game_system.get_render_system().get_render_pass<bc_shape_draw_pass>();
-			physics::bc_scene_ray_query_buffer l_query_buffer(1);
+			physics::bc_scene_ray_query_buffer l_query_buffer;
 
 			const bool l_query_result = query_ray_in_scene
 			(

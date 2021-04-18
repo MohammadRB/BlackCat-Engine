@@ -76,6 +76,32 @@ namespace black_cat
 			static std::pair<physics::bc_query_hit_type, physics::bc_ray_hit> skinned_mesh_ray_hit_test(bc_physics_system& p_physics_system,
 				const physics::bc_ray& p_ray,
 				const physics::bc_scene_query_post_filter_data& p_filter_data);
+
+			static void calculate_mesh_decal(const core::bc_vector3f& p_world_position,
+				const core::bc_vector3f& p_world_direction,
+				core::bc_vector3f& p_decal_local_position,
+				core::bc_vector3f& p_decal_local_direction,
+				core::bc_matrix3f& p_decal_local_rotation,
+				core::bc_matrix4f& p_decal_world_transform);
+			
+			static void calculate_mesh_decal(const core::bc_vector3f& p_world_position,
+				const core::bc_vector3f& p_world_direction,
+				const core::bc_matrix4f& p_attached_node_world_transform,
+				core::bc_vector3f& p_decal_local_position,
+				core::bc_vector3f& p_decal_local_direction,
+				core::bc_matrix3f& p_decal_local_rotation,
+				core::bc_matrix4f& p_decal_world_transform);
+
+			static void calculate_skinned_mesh_decal(const core::bc_vector3f& p_world_position,
+				const core::bc_vector3f& p_world_direction,
+				const core::bc_matrix4f& p_attached_node_bind_pose_transform,
+				const core::bc_matrix4f& p_attached_node_inv_bind_pose_transform,
+				const core::bc_matrix4f& p_attached_node_model_transform,
+				const core::bc_matrix4f& p_attached_actor_world_transform,
+				core::bc_vector3f& p_decal_local_position,
+				core::bc_vector3f& p_decal_local_direction,
+				core::bc_matrix3f& p_decal_local_rotation,
+				core::bc_matrix4f& p_decal_world_transform);
 			
 			/**
 			 * \brief

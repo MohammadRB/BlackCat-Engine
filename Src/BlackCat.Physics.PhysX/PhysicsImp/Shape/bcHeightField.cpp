@@ -117,7 +117,7 @@ namespace black_cat
 			// Update associated shapes to this height field
 			for (bcUINT32 i = 0; i < p_shape_count; ++i)
 			{
-				auto* l_px_shape = static_cast<physx::PxShape*>(p_height_field_shapes->get_platform_pack().m_px_object);
+				auto* l_px_shape = static_cast<physx::PxShape*>(p_height_field_shapes[i].get_platform_pack().m_px_object);
 
 				auto& l_px_height_field_geo = l_px_shape->getGeometry().heightField();
 				l_px_shape->setGeometry(physx::PxHeightFieldGeometry

@@ -14,12 +14,12 @@ namespace black_cat
 	{
 		bc_local_to_model_animation_job::bc_local_to_model_animation_job(core::bc_shared_ptr < bci_local_transform_animation_job > p_local_transform_job,
 			const bc_sub_mesh& p_sub_mesh,
-			bc_sub_mesh_mat4_transform& p_transforms)
+			bc_sub_mesh_mat4_transform& p_model_transforms)
 			: bci_animation_job(p_local_transform_job->get_skeleton()),
 			m_mesh(&p_sub_mesh),
 			m_local_transform_job(std::move(p_local_transform_job)),
 			m_ozz_model_transforms(m_local_transform_job->get_skeleton().get_num_joints()),
-			m_model_transforms(&p_transforms)
+			m_model_transforms(&p_model_transforms)
 		{
 			if (m_model_transforms->size() < m_skeleton->get_num_joints())
 			{

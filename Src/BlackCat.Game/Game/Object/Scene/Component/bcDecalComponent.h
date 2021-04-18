@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix3f.h"
 #include "Core/Math/bcMatrix4f.h"
@@ -39,10 +40,23 @@ namespace black_cat
 				const core::bc_vector3f& p_local_pos,
 				const core::bc_matrix3f& p_local_rotation,
 				const core::bc_matrix4f& p_initial_world_transform);
+
+			void add_decal(const bcCHAR* p_decal_name,
+				const core::bc_vector3f& p_local_pos,
+				const core::bc_matrix3f& p_local_rotation,
+				bc_render_group p_render_group,
+				const core::bc_matrix4f& p_initial_world_transform);
+
+			void add_decal(const bcCHAR* p_decal_name,
+				const core::bc_vector3f& p_local_pos,
+				const core::bc_matrix3f& p_local_rotation,
+				const core::bc_matrix4f& p_initial_world_transform,
+				bc_mesh_node::node_index_t p_attached_node);
 			
 			void add_decal(const bcCHAR* p_decal_name,
 				const core::bc_vector3f& p_local_pos,
 				const core::bc_matrix3f& p_local_rotation,
+				bc_render_group p_render_group,
 				const core::bc_matrix4f& p_initial_world_transform,
 				bc_mesh_node::node_index_t p_attached_node);
 
@@ -57,8 +71,10 @@ namespace black_cat
 		private:
 			bc_decal_manager* m_decal_manager;
 			const bcCHAR* m_decal_name;
+			core_platform::bc_spin_mutex m_decals_lock;
 			container_type m_decals;
 			bcFLOAT m_mesh_scale;
+			bool m_use_hierarchy_transforms;
 		};
 
 		inline const bcCHAR* bc_decal_component::get_decal_name() const noexcept

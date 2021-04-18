@@ -18,7 +18,7 @@ namespace black_cat
 		public:
 			virtual void add_decal(const bcCHAR* p_decal_name, 
 				const core::bc_vector3f& p_world_position, 
-				const core::bc_vector3f& p_dir, 
+				const core::bc_vector3f& p_world_direction, 
 				bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index) = 0;
 			
 		protected:

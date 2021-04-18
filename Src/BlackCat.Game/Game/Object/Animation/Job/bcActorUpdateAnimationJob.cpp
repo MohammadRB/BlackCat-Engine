@@ -13,7 +13,7 @@ namespace black_cat
 	{
 		bc_actor_update_animation_job::bc_actor_update_animation_job(bc_actor p_actor,
 			bc_skinned_mesh_component& p_component,
-			core::bc_shared_ptr< bc_model_to_skinned_animation_job > p_model_to_skinned_job)
+			core::bc_shared_ptr<bc_model_to_skinned_animation_job> p_model_to_skinned_job)
 			: bci_animation_job(p_model_to_skinned_job->get_skeleton()),
 			m_actor(p_actor),
 			m_skinned_component(&p_component),
@@ -43,7 +43,12 @@ namespace black_cat
 			);
 
 			m_actor.add_event(bc_bound_box_changed_actor_event(m_model_to_skinned_job->get_bound_box()));
-			m_actor.add_event(bc_hierarchy_transform_actor_event(m_skinned_component->get_collider_model_transforms()));
+			m_actor.add_event(bc_hierarchy_transform_actor_event
+			(
+				m_model_to_skinned_job->get_world(),
+				&m_skinned_component->get_model_transforms(),
+				&m_skinned_component->get_collider_model_transforms()
+			));
 
 			return true;
 		}

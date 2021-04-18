@@ -155,6 +155,7 @@ namespace black_cat
 				p_decal_name,
 				l_local_pos,
 				l_local_rotation,
+				bc_render_group::terrain,
 				core::bc_matrix4f::translation_matrix(l_world_pos)
 			);
 		}

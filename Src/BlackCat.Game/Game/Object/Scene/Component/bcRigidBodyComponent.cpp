@@ -48,7 +48,7 @@ namespace black_cat
 			{
 				physics::bc_scene_lock l_lock(get_scene());
 
-				core::bc_vector_frame< physics::bc_shape > l_shapes(p_px_actor.get_shape_count());
+				core::bc_vector_frame<physics::bc_shape> l_shapes(p_px_actor.get_shape_count());
 				p_px_actor.get_shapes(l_shapes.data(), l_shapes.size());
 
 				for (physics::bc_shape& l_shape : l_shapes)
@@ -72,7 +72,7 @@ namespace black_cat
 			{
 				physics::bc_scene_shared_lock l_lock(get_scene());
 
-				core::bc_vector_frame< physics::bc_shape > l_shapes(p_px_actor.get_shape_count());
+				core::bc_vector_frame<physics::bc_shape> l_shapes(p_px_actor.get_shape_count());
 				p_px_actor.get_shapes(l_shapes.data(), l_shapes.size());
 
 				for (physics::bc_shape& l_shape : l_shapes)

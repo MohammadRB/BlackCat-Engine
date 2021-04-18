@@ -111,8 +111,20 @@
           "name": "rigid_static",
           "parameters": {
             "collider_materials": {
-              "Beta_Surface": "iron",
-              "Beta_Joints": "iron"
+              "mixamorig:Head": "iron",
+              "mixamorig:LeftArm": "iron",
+              "mixamorig:LeftFoot": "iron",
+              "mixamorig:LeftForeArm": "iron",
+              "mixamorig:LeftHand": "iron",
+              "mixamorig:LeftLeg": "iron",
+              "mixamorig:LeftUpLeg": "iron",
+              "mixamorig:RightArm": "iron",
+              "mixamorig:RightFoot": "iron",
+              "mixamorig:RightForeArm": "iron",
+              "mixamorig:RightHand": "iron",
+              "mixamorig:RightLeg": "iron",
+              "mixamorig:RightUpLeg": "iron",
+              "mixamorig:Spine1": "iron"
             }
           }
         }
@@ -145,8 +157,20 @@
           "name": "rigid_static",
           "parameters": {
             "collider_materials": {
-              "Beta_Surface": "iron",
-              "Beta_Joints": "iron"
+              "mixamorig:Head": "iron",
+              "mixamorig:LeftArm": "iron",
+              "mixamorig:LeftFoot": "iron",
+              "mixamorig:LeftForeArm": "iron",
+              "mixamorig:LeftHand": "iron",
+              "mixamorig:LeftLeg": "iron",
+              "mixamorig:LeftUpLeg": "iron",
+              "mixamorig:RightArm": "iron",
+              "mixamorig:RightFoot": "iron",
+              "mixamorig:RightForeArm": "iron",
+              "mixamorig:RightHand": "iron",
+              "mixamorig:RightLeg": "iron",
+              "mixamorig:RightUpLeg": "iron",
+              "mixamorig:Spine1": "iron"
             }
           }
         }
@@ -196,8 +220,20 @@
           "name": "rigid_static",
           "parameters": {
             "collider_materials": {
-              "Beta_Surface": "iron",
-              "Beta_Joints": "iron"
+              "mixamorig:Head": "iron",
+              "mixamorig:LeftArm": "iron",
+              "mixamorig:LeftFoot": "iron",
+              "mixamorig:LeftForeArm": "iron",
+              "mixamorig:LeftHand": "iron",
+              "mixamorig:LeftLeg": "iron",
+              "mixamorig:LeftUpLeg": "iron",
+              "mixamorig:RightArm": "iron",
+              "mixamorig:RightFoot": "iron",
+              "mixamorig:RightForeArm": "iron",
+              "mixamorig:RightHand": "iron",
+              "mixamorig:RightLeg": "iron",
+              "mixamorig:RightUpLeg": "iron",
+              "mixamorig:Spine1": "iron"
             }
           }
         }

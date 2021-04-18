@@ -27,6 +27,7 @@ namespace black_cat
 			m_nodes.resize(p_builder.m_node_count);
 			m_nodes_map.reserve(p_builder.m_node_count);
 			m_transformations.resize(p_builder.m_node_count);
+			m_bind_poses.resize(p_builder.m_node_count);
 			m_inverse_bind_poses.resize(p_builder.m_node_count);
 			m_meshes.resize(p_builder.m_mesh_part_count);
 			m_render_states.resize(p_builder.m_mesh_part_count);
@@ -138,6 +139,7 @@ namespace black_cat
 			m_nodes = std::move(p_other.m_nodes);
 			m_nodes_map = std::move(p_other.m_nodes_map);
 			m_transformations = std::move(p_other.m_transformations);
+			m_bind_poses = std::move(p_other.m_bind_poses);
 			m_inverse_bind_poses = std::move(p_other.m_inverse_bind_poses);
 			m_meshes = std::move(p_other.m_meshes);
 			m_render_states = std::move(p_other.m_render_states);
@@ -335,10 +337,10 @@ namespace black_cat
 			auto l_identity = core::bc_matrix4f::identity();
 			bc_mesh_utility::iterate_over_nodes(*this, l_identity, [this](const bc_mesh_node& p_node, core::bc_matrix4f& p_parent_transform)
 			{
-				auto l_node_absolute_transformation = get_node_transform(p_node) * p_parent_transform;
-				m_inverse_bind_poses[p_node.m_transform_index] = l_node_absolute_transformation.inverse();
+				m_bind_poses[p_node.m_transform_index] = get_node_transform(p_node) * p_parent_transform;
+				m_inverse_bind_poses[p_node.m_transform_index] = m_bind_poses[p_node.m_transform_index].inverse();
 
-				return l_node_absolute_transformation;
+				return m_bind_poses[p_node.m_transform_index];
 			});
 		}
 

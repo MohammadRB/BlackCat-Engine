@@ -401,7 +401,7 @@ namespace black_cat
 				l_instance_buffer_data[l_instance_buffer_ite].m_v0 = l_decal.get_v0();
 				l_instance_buffer_data[l_instance_buffer_ite].m_u1 = l_decal.get_u1();
 				l_instance_buffer_data[l_instance_buffer_ite].m_v1 = l_decal.get_v1();
-				l_instance_buffer_data[l_instance_buffer_ite].m_group = static_cast<bcUINT32>(l_decal.get_group());
+				l_instance_buffer_data[l_instance_buffer_ite].m_group = static_cast<bcUINT32>(l_render_instance.get_render_group());
 
 				// Because matrices are put in regular buffer rather than cbuffer they must be stored in row major format
 				if (!p_param.m_frame_renderer.need_matrix_transpose())

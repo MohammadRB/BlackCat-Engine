@@ -8,6 +8,7 @@
 #include "Game/Object/Animation/bcSkinnedAnimation.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
+#include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -15,6 +16,7 @@ namespace black_cat
 	namespace game
 	{
 		class bc_animation_manager;
+		class bc_particle_manager;
 		
 		class BC_GAME_DLL bc_skinned_mesh_component : public bc_mesh_component
 		{
@@ -61,6 +63,11 @@ namespace black_cat
 			void render(const bc_actor_component_render_context& p_context) const override;
 
 			void debug_draw(const bc_actor_component_debug_draw_context& p_context) override;
+
+			void add_decal(const bcCHAR* p_decal_name,
+				const core::bc_vector3f& p_world_position,
+				const core::bc_vector3f& p_world_direction,
+				bc_mesh_node::node_index_t p_attached_node_index) override;
 			
 		private:
 			void _set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform);

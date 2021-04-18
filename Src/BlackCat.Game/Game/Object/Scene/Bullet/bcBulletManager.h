@@ -6,6 +6,7 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcListPool.h"
 #include "Core/Concurrency/bcTask.h"
+#include "Core/Utility/bcNullable.h"
 #include "PhysicsImp/Fundation/bcScene.h"
 #include "Game/Object/Scene/Bullet/bcBullet.h"
 #include "Game/bcExport.h"
@@ -39,7 +40,10 @@ namespace black_cat
 			core::bc_task<void> update_async(bc_scene& p_scene, const core_platform::bc_clock::update_param& p_clock);
 			
 		private:
-			void _scene_ray_query(const physics::bc_scene& p_px_scene, const physics::bc_ray& p_ray, physics::bc_scene_ray_query_buffer& p_buffer);
+			core::bc_nullable<physics::bc_ray_hit> _scene_ray_query(const physics::bc_scene& p_px_scene, 
+				const physics::bc_ray& p_ray, 
+				physics::bc_scene_ray_query_buffer& p_buffer,
+				core::bc_vector_frame<physics::bc_ray_hit>& p_modified_hits_buffer);
 			
 			bc_physics_system* m_physics_system;			
 			core_platform::bc_spin_mutex m_bullets_mutex;

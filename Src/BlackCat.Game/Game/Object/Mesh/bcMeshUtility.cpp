@@ -350,12 +350,87 @@ namespace black_cat
 				p_ray,
 				physics::bc_shape_triangle_mesh(l_triangle_mesh.get()),
 				physics::bc_transform(l_mediate_component->get_world_transform()),
-				physics::bc_hit_flag::position,
+				physics::bc_hit_flag::hit_info,
 				&l_hit,
 				1
 			);
 
 			return std::make_pair(l_hit_count > 0 ? l_shape_query_type : physics::bc_query_hit_type::none, l_hit);
+		}
+
+		void bc_mesh_utility::calculate_mesh_decal(const core::bc_vector3f& p_world_position,
+			const core::bc_vector3f& p_world_direction,
+			core::bc_vector3f& p_decal_local_position,
+			core::bc_vector3f& p_decal_local_direction,
+			core::bc_matrix3f& p_decal_local_rotation,
+			core::bc_matrix4f& p_decal_world_transform)
+		{
+			p_decal_local_position = p_world_position;
+			p_decal_local_direction = p_world_direction;
+			p_decal_world_transform.make_identity();
+						
+			if (graphic::bc_render_api_info::use_left_handed())
+			{
+				p_decal_local_rotation.rotation_between_two_vector_lh(core::bc_vector3f::up(), p_decal_local_direction);
+			}
+			else
+			{
+				p_decal_local_rotation.rotation_between_two_vector_rh(core::bc_vector3f::up(), p_decal_local_direction);
+			}
+		}
+
+		void bc_mesh_utility::calculate_mesh_decal(const core::bc_vector3f& p_world_position,
+			const core::bc_vector3f& p_world_direction,
+			const core::bc_matrix4f& p_attached_node_world_transform,
+			core::bc_vector3f& p_decal_local_position,
+			core::bc_vector3f& p_decal_local_direction,
+			core::bc_matrix3f& p_decal_local_rotation,
+			core::bc_matrix4f& p_decal_world_transform)
+		{
+			const auto l_inv_node_world_transform = p_attached_node_world_transform.inverse();
+
+			p_decal_local_position = (l_inv_node_world_transform * core::bc_vector4f(p_world_position, 1)).xyz();
+			p_decal_local_direction = core::bc_vector3f::normalize((l_inv_node_world_transform * core::bc_vector4f(p_world_direction, 0)).xyz());
+			p_decal_world_transform = p_attached_node_world_transform;
+
+			if (graphic::bc_render_api_info::use_left_handed())
+			{
+				p_decal_local_rotation.rotation_between_two_vector_lh(core::bc_vector3f::up(), p_decal_local_direction);
+			}
+			else
+			{
+				p_decal_local_rotation.rotation_between_two_vector_rh(core::bc_vector3f::up(), p_decal_local_direction);
+			}
+		}
+
+		void bc_mesh_utility::calculate_skinned_mesh_decal(const core::bc_vector3f& p_world_position,
+			const core::bc_vector3f& p_world_direction,
+			const core::bc_matrix4f& p_attached_node_bind_pose_transform,
+			const core::bc_matrix4f& p_attached_node_inv_bind_pose_transform,
+			const core::bc_matrix4f& p_attached_node_model_transform,
+			const core::bc_matrix4f& p_attached_actor_world_transform,
+			core::bc_vector3f& p_decal_local_position,
+			core::bc_vector3f& p_decal_local_direction,
+			core::bc_matrix3f& p_decal_local_rotation,
+			core::bc_matrix4f& p_decal_world_transform)
+		{
+			const auto l_inv_node_world_transform = (p_attached_node_model_transform * p_attached_actor_world_transform).inverse();
+
+			p_decal_local_position = (l_inv_node_world_transform * core::bc_vector4f(p_world_position, 1)).xyz();
+			p_decal_local_position = (p_attached_node_bind_pose_transform * core::bc_vector4f(p_decal_local_position, 1)).xyz();
+			p_decal_local_direction = (l_inv_node_world_transform * core::bc_vector4f(p_world_direction, 0)).xyz();
+			p_decal_local_direction = (p_attached_node_bind_pose_transform * core::bc_vector4f(p_decal_local_direction, 0)).xyz();
+			p_decal_local_direction.normalize();
+			p_decal_world_transform = p_attached_node_inv_bind_pose_transform * (p_attached_node_model_transform * p_attached_actor_world_transform);
+
+			if (graphic::bc_render_api_info::use_left_handed())
+			{
+				p_decal_local_rotation.rotation_between_two_vector_lh(core::bc_vector3f::up(), p_decal_local_direction);
+			}
+			else
+			{
+				p_decal_local_rotation.rotation_between_two_vector_rh(core::bc_vector3f::up(), p_decal_local_direction);
+			}
 		}
 
 		void bc_mesh_utility::clear_mesh_render_states_cache()

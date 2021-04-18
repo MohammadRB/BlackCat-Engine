@@ -31,6 +31,11 @@ namespace black_cat
 			
 			void handle_event(const bc_actor_component_event_context& p_context) override;
 
+			void add_decal(const bcCHAR* p_decal_name,
+				const core::bc_vector3f& p_world_position,
+				const core::bc_vector3f& p_world_direction,
+				bc_mesh_node::node_index_t p_attached_node_index) override;
+			
 		private:
 			bc_render_group m_render_group;
 		};

@@ -32,6 +32,11 @@ namespace black_cat
 
 			void render(const bc_actor_component_render_context& p_context, bool p_render_leaf) const;
 
+			void add_decal(const bcCHAR* p_decal_name,
+				const core::bc_vector3f& p_world_position,
+				const core::bc_vector3f& p_world_direction,
+				bc_mesh_node::node_index_t p_attached_node_index) override;
+			
 		private:
 			bc_mesh_render_state m_leaf_render_state;
 			bc_mesh_render_state m_trunk_render_state;

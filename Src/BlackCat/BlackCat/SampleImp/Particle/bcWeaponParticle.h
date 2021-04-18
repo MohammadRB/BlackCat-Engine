@@ -151,15 +151,15 @@ namespace black_cat
 		{
 			const auto l_emitter_energy = l_direction.y;
 			
-			l_builder.emitter(core::bc_vector3f(0), l_direction, 0.06f, 40 * l_emitter_energy, 0)
+			l_builder.emitter(core::bc_vector3f(0), l_direction, 0.06f, 20 * l_emitter_energy, 0)
 				.with_emission_deviation(100)
 				.with_direction_deviation(30)
 				.with_texture(10)
 				.with_particles_color({ 0.9f, 0.3f, 0.01f }, 4.0)
-				.with_particle_size(0.01f, 0.04f)
+				.with_particle_size(0.02f, 0.06f)
 				.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step3)
-				.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step5, 0.07f)
-				.emit_particles(10, 0.3f * l_emitter_energy, 400 * l_emitter_energy, 0.01f);
+				.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step5, 0.09f)
+				.emit_particles(10, 0.12f * l_emitter_energy, 200 * l_emitter_energy, 0.01f);
 		}
 
 		return l_builder;

@@ -53,7 +53,11 @@ namespace black_cat
 		{
 			if(!m_16bit_indices.empty())
 			{
-				throw bc_invalid_operation_exception("Skinned collider indices cannot contain 16bit and 32bit indices together");
+				m_32bit_indices.resize(m_16bit_indices.size());
+				std::copy(std::begin(m_16bit_indices), std::end(m_16bit_indices), std::begin(m_32bit_indices));
+				m_16bit_indices.clear();
+				m_16bit_indices.shrink_to_fit();
+				//throw bc_invalid_operation_exception("Skinned collider indices cannot contain 16bit and 32bit indices together");
 			}
 			
 			const auto l_vertices_count = m_vertices.size();

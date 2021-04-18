@@ -17,7 +17,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_model_to_skinned_animation_job : public bci_animation_job
 		{
 		public:
-			bc_model_to_skinned_animation_job(core::bc_shared_ptr<bc_local_to_model_animation_job> p_model_job, bc_sub_mesh_mat4_transform& p_transforms);
+			bc_model_to_skinned_animation_job(core::bc_shared_ptr<bc_local_to_model_animation_job> p_model_job, bc_sub_mesh_mat4_transform& p_skinned_world_transforms);
 
 			bc_model_to_skinned_animation_job(bc_model_to_skinned_animation_job&&) noexcept = default;
 

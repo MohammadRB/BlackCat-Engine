@@ -42,28 +42,32 @@ namespace black_cat
 			bcUINT32 m_face_index;
 		};
 		using bc_scene_query_post_filter_callback = core::bc_delegate<bc_query_hit_type(const bc_scene_query_post_filter_data&)>;
-		
-		template< bc_physics_api TApi, class THit >
+
+		template<bc_physics_api TApi, class THit>
 		struct bc_platform_scene_query_buffer_pack
 		{
 		};
 
-		template< bc_physics_api TApi, class THit >
+		template<bc_physics_api TApi, class THit>
 		class bc_platform_scene_query_buffer
 		{
 		public:
-			using platform_pack = bc_platform_scene_query_buffer_pack< TApi, THit >;
+			using platform_pack = bc_platform_scene_query_buffer_pack<TApi, THit>;
 
 		public:
-			explicit bc_platform_scene_query_buffer(bcUINT32 p_touching_hit_count) noexcept;
+			explicit bc_platform_scene_query_buffer(bcUINT32 p_touching_hits_count = 0) noexcept;
 			
 			explicit bc_platform_scene_query_buffer(platform_pack& p_pack) noexcept;
 
 			bc_platform_scene_query_buffer(const bc_platform_scene_query_buffer&) noexcept;
+			
+			bc_platform_scene_query_buffer(bc_platform_scene_query_buffer&&) noexcept;
 
 			~bc_platform_scene_query_buffer();
 
 			bc_platform_scene_query_buffer& operator=(const bc_platform_scene_query_buffer&) noexcept;
+			
+			bc_platform_scene_query_buffer& operator=(bc_platform_scene_query_buffer&&) noexcept;
 
 			bool has_block() const noexcept;
 
@@ -87,11 +91,11 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< class THit >
-		using bc_scene_query_buffer = bc_platform_scene_query_buffer< g_current_physics_api, THit >;
+		template<class THit>
+		using bc_scene_query_buffer = bc_platform_scene_query_buffer<g_current_physics_api, THit>;
 
-		using bc_scene_ray_query_buffer = bc_scene_query_buffer< bc_ray_hit >;
-		using bc_scene_overlap_query_buffer = bc_scene_query_buffer< bc_overlap_hit >;
-		using bc_scene_sweep_query_buffer = bc_scene_query_buffer< bc_sweep_hit >;
+		using bc_scene_ray_query_buffer = bc_scene_query_buffer<bc_ray_hit>;
+		using bc_scene_overlap_query_buffer = bc_scene_query_buffer<bc_overlap_hit>;
+		using bc_scene_sweep_query_buffer = bc_scene_query_buffer<bc_sweep_hit>;
 	}
 }

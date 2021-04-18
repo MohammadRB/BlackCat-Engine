@@ -11,8 +11,10 @@
 #include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
+#include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat
@@ -94,7 +96,20 @@ namespace black_cat
 			const auto* l_bound_box_event = core::bci_message::as< bc_bound_box_changed_actor_event >(p_context.m_event);
 			if (l_bound_box_event)
 			{
-				bc_mesh_component::update_lod_factor(l_bound_box_event->get_bound_box());
+				bc_mesh_component::set_lod_factor(l_bound_box_event->get_bound_box());
+				return;
+			}
+
+			const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event);
+			if (l_bullet_hit_event)
+			{
+				bc_mesh_component::process_bullet_hit
+				(
+					p_context.m_game_system.get_render_system().get_particle_manager(),
+					*l_bullet_hit_event,
+					false
+				);
+				return;
 			}
 		}
 		
@@ -127,6 +142,54 @@ namespace black_cat
 			{
 				bc_mesh_utility::render_mesh(p_context.m_buffer, m_trunk_render_state, l_mesh_transformation, l_lod.first, bc_render_group::static_mesh);
 			}
+		}
+
+		void bc_vegetable_mesh_component::add_decal(const bcCHAR* p_decal_name,
+			const core::bc_vector3f& p_world_position,
+			const core::bc_vector3f& p_world_direction,
+			bc_mesh_node::node_index_t p_attached_node_index)
+		{
+			core::bc_vector3f l_local_position;
+			core::bc_vector3f l_local_direction;
+			core::bc_matrix3f l_local_rotation;
+			core::bc_matrix4f l_world_transform;
+
+			if (p_attached_node_index == bc_mesh_node::s_invalid_index)
+			{
+				bc_mesh_utility::calculate_mesh_decal
+				(
+					p_world_position,
+					p_world_direction,
+					l_local_position,
+					l_local_direction,
+					l_local_rotation,
+					l_world_transform
+				);
+			}
+			else
+			{
+				bc_mesh_utility::calculate_mesh_decal
+				(
+					p_world_position,
+					p_world_direction,
+					get_world_transforms()[p_attached_node_index],
+					l_local_position,
+					l_local_direction,
+					l_local_rotation,
+					l_world_transform
+				);
+			}
+
+			auto* l_decal_component = get_actor().get_create_component<bc_decal_component>();
+			l_decal_component->add_decal
+			(
+				p_decal_name,
+				l_local_position,
+				l_local_rotation,
+				bc_render_group::static_mesh,
+				l_world_transform,
+				p_attached_node_index
+			);
 		}
 	}
 }

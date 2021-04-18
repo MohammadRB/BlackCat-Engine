@@ -28,7 +28,7 @@ namespace black_cat
 						m_buffer.add_decal_instance
 						(
 							l_decal_instance.get_decal_ptr(),
-							bc_render_instance(l_decal_instance.get_world_transform(), bc_render_group::unknown)
+							bc_render_instance(l_decal_instance.get_world_transform(), l_decal_instance.get_render_group())
 						);
 					}
 				}

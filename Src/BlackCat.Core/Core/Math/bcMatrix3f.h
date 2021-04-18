@@ -63,6 +63,8 @@ namespace black_cat
 
 			void make_transpose() noexcept;
 
+			void make_neutralize_scale() noexcept;
+
 			bc_matrix3f transpose() const noexcept;
 
 			void set_row(bcINT p_row, const bc_vector3f& p_vector) noexcept;
