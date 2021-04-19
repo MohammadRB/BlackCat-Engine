@@ -138,7 +138,7 @@ namespace black_cat
 
 		inline bcFLOAT bc_decal::get_width() const noexcept
 		{
-			return m_width;
+ 			return m_width;
 		}
 
 		inline bcFLOAT bc_decal::get_height() const noexcept

@@ -17,21 +17,17 @@ namespace black_cat
 			BC_COMPONENT("prtle", true, false)
 
 		public:
-			bc_particle_emitter_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
+			bc_particle_emitter_component(bc_actor_index p_actor_index, bc_actor_component_index p_index) noexcept;
 
 			bc_particle_emitter_component(bc_particle_emitter_component&& p_other) noexcept = default;
 
-			~bc_particle_emitter_component() = default;
+			~bc_particle_emitter_component() override = default;
 
 			bc_particle_emitter_component& operator=(bc_particle_emitter_component&& p_other) noexcept = default;
 			
 			bc_actor get_actor() const noexcept override;
 
-			bc_external_particle_emitter* get_emitters() noexcept;
-
-			void spawn_emitter(const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir, const core::bc_vector3f* p_color = nullptr);
-
-			void spawn_emitter(const bcCHAR* p_name, const core::bc_vector3f& p_pos, const core::bc_vector3f& p_dir, const core::bc_vector3f* p_color = nullptr);
+			bc_external_particle_emitter* get_emitter() noexcept;
 
 			void add_emitter(const bc_particle_builder& p_builder);
 			
@@ -40,7 +36,6 @@ namespace black_cat
 			void handle_event(const bc_actor_component_event_context& p_context) override;
 			
 		private:
-			const bcCHAR* m_emitter_name;
 			bc_particle_emitter_ptr m_emitter;
 		};
 	}

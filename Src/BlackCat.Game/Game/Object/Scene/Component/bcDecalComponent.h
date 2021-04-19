@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CorePlatformImp/Concurrency/bcMutex.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix3f.h"
 #include "Core/Math/bcMatrix4f.h"
@@ -24,7 +24,7 @@ namespace black_cat
 			BC_COMPONENT(dcl, true, false)
 			
 		public:
-			bc_decal_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
+			bc_decal_component(bc_actor_index p_actor_index, bc_actor_component_index p_index) noexcept;
 
 			bc_decal_component(bc_decal_component&&) noexcept;
 
@@ -34,8 +34,6 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			const bcCHAR* get_decal_name() const noexcept;
-			
 			void add_decal(const bcCHAR* p_decal_name,
 				const core::bc_vector3f& p_local_pos,
 				const core::bc_matrix3f& p_local_rotation,
@@ -69,17 +67,15 @@ namespace black_cat
 			void render(const bc_actor_component_render_context& p_context) const override;
 
 		private:
+			void _add_decal(bc_decal_instance_ptr p_decal) noexcept;
+
+			const bcUINT32 m_decals_count = 10;
+			
 			bc_decal_manager* m_decal_manager;
-			const bcCHAR* m_decal_name;
-			core_platform::bc_spin_mutex m_decals_lock;
+			core_platform::bc_atomic<bcUINT32> m_decals_slot;
 			container_type m_decals;
 			bcFLOAT m_mesh_scale;
 			bool m_use_hierarchy_transforms;
 		};
-
-		inline const bcCHAR* bc_decal_component::get_decal_name() const noexcept
-		{
-			return m_decal_name;
-		}
 	}
 }

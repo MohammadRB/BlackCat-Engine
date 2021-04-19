@@ -264,7 +264,7 @@
             "fire_light_intensity": 3.0,
             "rate_of_fire": 0.30,
             "bullet_speed": 250.0,
-            "bullet_mass": 0.1
+            "bullet_mass": 0.2
           }
         },
         {

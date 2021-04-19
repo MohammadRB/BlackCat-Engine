@@ -20,6 +20,8 @@ namespace black_cat
 		void update(const game::bc_actor_component_update_content& p_context) override;
 
 	private:
+		const bcCHAR* m_emitter_name = nullptr;
+		const bcCHAR* m_decal_name = nullptr;
 		bcFLOAT m_light_intensity = 0;
 		bcFLOAT m_light_particle_intensity = 0;
 		bcFLOAT m_light_radius = 0;

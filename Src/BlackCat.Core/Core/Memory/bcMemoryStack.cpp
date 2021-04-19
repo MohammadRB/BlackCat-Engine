@@ -11,10 +11,14 @@ namespace black_cat
 #ifdef BC_MEMORY_ENABLE
 
 		bc_memory_stack::bc_memory_stack() noexcept
+			: m_max_num_thread(0),
+			m_size(0),
+			m_heap(nullptr)
 		{
 		}
 
-		bc_memory_stack::bc_memory_stack(bc_memory_stack::this_type&& p_other) noexcept : bci_memory(std::move(p_other))
+		bc_memory_stack::bc_memory_stack(this_type&& p_other) noexcept
+			: bci_memory(std::move(p_other))
 		{
 			_move(std::move(p_other));
 		}
@@ -27,7 +31,7 @@ namespace black_cat
 			}
 		}
 
-		bc_memory_stack::this_type& bc_memory_stack::operator =(bc_memory_stack::this_type&& p_other) noexcept
+		bc_memory_stack::this_type& bc_memory_stack::operator =(this_type&& p_other) noexcept
 		{
 			bci_memory::operator=(std::move(p_other));
 			_move(std::move(p_other));
@@ -126,7 +130,7 @@ namespace black_cat
 			if(!l_is_freeing_top)
 			{
 				// Check again if current block has become top block because after first compare it's 
-				// possible duo to poping by other threads this block become top block
+				// possible duo to popping by other threads this block become top block
 				l_local_top = m_top.load(core_platform::bc_memory_order::seqcst);
 				l_is_freeing_top = l_local_top - l_size == p_pointer;
 
@@ -138,7 +142,7 @@ namespace black_cat
 
 			bcUBYTE* l_new_top = l_local_top - l_size;
 
-			bool l_freed = m_top.compare_exchange_strong
+			const bool l_freed = m_top.compare_exchange_strong
 			(
 				&l_local_top,
 				l_new_top,
@@ -170,7 +174,7 @@ namespace black_cat
 			if (!l_was_top)
 			{
 				{
-					core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_guard(m_free_block_mutex);
+					core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_guard(m_free_block_mutex);
 					// Add current block to free list
 					_add_free_block(p_pointer, p_memblock);
 				}
@@ -180,7 +184,7 @@ namespace black_cat
 			if (l_pop_thread_count == 1)
 			{
 				{
-					core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_free_block_mutex);
+					core_platform::bc_lock_guard<core_platform::bc_shared_mutex> l_guard(m_free_block_mutex);
 					
 					l_pop_thread_count = m_pop_thread_count.load(core_platform::bc_memory_order::relaxed);
 					if (l_pop_thread_count == 0)
@@ -226,7 +230,7 @@ namespace black_cat
 				return;
 			}
 
-			_bc_memory_stack_block* l_free_block_begin = reinterpret_cast< _bc_memory_stack_block* >(m_heap + m_size);
+			_bc_memory_stack_block* l_free_block_begin = reinterpret_cast<_bc_memory_stack_block*>(m_heap + m_size);
 			_bc_memory_stack_block* l_free_block_top = l_free_block_begin - l_free_block_count;
 			_bc_memory_stack_block* l_current_free_block = l_free_block_top;
 			
@@ -263,7 +267,7 @@ namespace black_cat
 							l_current_free_block++;
 						}
 					}
-					// If current block isn't top reset searching because by poping this block, other blocks
+					// If current block isn't top reset searching because by popping this block, other blocks
 					// may become top block
 					else
 					{
@@ -280,7 +284,7 @@ namespace black_cat
 		void bc_memory_stack::_move(this_type&& p_other)
 		{
 			bcUBYTE* l_top = p_other.m_top.load(core_platform::bc_memory_order::relaxed);
-			bcSIZE l_free_block_count = p_other.m_free_block_count.load(core_platform::bc_memory_order::relaxed);
+			const bcSIZE l_free_block_count = p_other.m_free_block_count.load(core_platform::bc_memory_order::relaxed);
 
 			m_size = p_other.m_size;
 			m_heap = p_other.m_heap;

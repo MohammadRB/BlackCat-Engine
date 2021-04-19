@@ -344,6 +344,14 @@ namespace black_cat
 			);
 			auto l_triangle_mesh = p_physics_system.get_physics().create_runtime_triangle_mesh(l_triangle_mesh_desc);
 
+			/*auto l_mat = p_physics_system.get_physics().create_material(10, 10, 0.1);
+			const_cast<physics::bc_rigid_actor&>(p_filter_data.m_actor).create_shape
+			(
+				physics::bc_shape_triangle_mesh(l_triangle_mesh.get()),
+				l_mat.get(),
+				physics::bc_shape_flag::visualization
+			);*/
+			
 			physics::bc_ray_hit l_hit;
 			const auto l_hit_count = physics::bc_shape_query::ray_cast
 			(

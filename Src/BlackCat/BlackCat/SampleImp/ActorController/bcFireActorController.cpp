@@ -4,6 +4,7 @@
 
 #include "Core/bcUtility.h"
 #include "Game/Object/Scene/bcEntityManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
 #include "BlackCat/SampleImp/ActorController/bcFireActorController.h"
@@ -13,11 +14,11 @@ namespace black_cat
 	void bc_fire_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		auto* l_light_component = p_context.m_actor.get_component<game::bc_light_component>();
-		auto* l_emitter_component = p_context.m_actor.get_component<game::bc_particle_emitter_component>();
+		auto* l_emitter_component = p_context.m_actor.get_create_component<game::bc_particle_emitter_component>();
 
-		if (!l_light_component || !l_emitter_component)
+		if (!l_light_component)
 		{
-			throw bc_invalid_operation_exception("fire actor must have light and emitter components");
+			throw bc_invalid_operation_exception("fire actor must have light components");
 		}
 
 		const auto l_emitter = game::bc_particle_builder()
@@ -37,9 +38,7 @@ namespace black_cat
 		                       .with_particles_color({ 0.9f, 0.005f, 0.001f }, 3.0)
 		                       .with_particle_size(0.1f, 0.3f)
 		                       .emit_particles(0, 3, 25, 0.0f);
-
 		l_emitter_component->add_emitter(l_emitter);
-
 		m_light_intensity = l_light_component->get_light()->as_point_light()->get_intensity();
 	}
 
@@ -59,7 +58,7 @@ namespace black_cat
 		}
 
 		const bcUINT32 l_num_particles_in_current_second = l_total_particles_in_current_second - m_num_spawned_particles_in_current_second;
-		l_emitter_component->get_emitters()->set_particle_counts(l_num_particles_in_current_second);
+		l_emitter_component->get_emitter()->set_particle_counts(l_num_particles_in_current_second);
 
 		m_num_spawned_particles_in_current_second += l_num_particles_in_current_second;
 	}

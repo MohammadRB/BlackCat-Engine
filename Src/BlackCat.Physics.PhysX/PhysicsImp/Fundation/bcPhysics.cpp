@@ -394,7 +394,7 @@ namespace black_cat
 			const bool l_is_mesh_valid = m_pack.m_px_cooking->validateTriangleMesh(l_px_desc);
 			if(!l_is_mesh_valid)
 			{
-				core::bc_get_service<core::bc_logger>()->log_debug(bcL("Triangle mesh is not valid for cooking"));
+				core::bc_log(core::bc_log_type::debug, bcL("Triangle mesh is not valid for cooking"));
 			}
 #endif
 

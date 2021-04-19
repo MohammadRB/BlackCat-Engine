@@ -175,7 +175,7 @@ namespace black_cat
 					return p_hit1.get_distance() - l_block.get_distance() < p_hit2.get_distance() - l_block.get_distance();
 				}
 			);
-
+			
 			return core::bc_nullable<physics::bc_ray_hit>(*l_min_distance_ite);
 		}
 	}	

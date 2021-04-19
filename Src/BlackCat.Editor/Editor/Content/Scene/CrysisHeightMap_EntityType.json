@@ -158,16 +158,16 @@
             "particle_cast": true,
             "particle_intensity": 50.0
           }
-        },
-        {
-          "name": "particle_emitter",
-          "parameters": {}
         }
       ]
     },
     {
       "name": "sample_explosion",
       "controller": "explosion",
+      "parameters": {
+        "emitter_name": "big_explosion",
+        "decal_name": "explosion_blast1"
+      },
       "components": [
         {
           "name": "light",
@@ -183,18 +183,6 @@
             "intensity": 8.0,
             "particle_cast": true,
             "particle_intensity": 8.0
-          }
-        },
-        {
-          "name": "particle_emitter",
-          "parameters": {
-            "emitter_name": "big_explosion"
-          }
-        },
-        {
-          "name": "decal",
-          "parameters": {
-            "decal_name": "explosion_blast1"
           }
         }
       ]

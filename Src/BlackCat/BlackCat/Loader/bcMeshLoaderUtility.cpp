@@ -188,8 +188,6 @@ namespace black_cat
 				l_vertex_ids_array[l_ite] = 0;
 			}
 		}
-
-		p_weights.normalize();
 	}
 
 	void bc_mesh_loader_utility::sort_skinned_vertex_weights(core::bc_vector4i& p_indices, core::bc_vector4f& p_weights)

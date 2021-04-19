@@ -23,13 +23,14 @@ namespace black_cat
 	void bc_explosion_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		auto* l_light_component = p_context.m_actor.get_component<game::bc_light_component>();
-		auto* l_emitter_component = p_context.m_actor.get_component<game::bc_particle_emitter_component>();
-
-		if (!l_light_component || !l_emitter_component)
+		
+		if (!l_light_component)
 		{
-			throw bc_invalid_operation_exception("explosion actor must have light and emitter components");
+			throw bc_invalid_operation_exception("explosion actor must have light components");
 		}
 
+		m_emitter_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_emitter_name)->c_str();
+		m_decal_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_decal_name)->c_str();
 		m_light_intensity = l_light_component->get_light()->as_point_light()->get_intensity();
 		m_light_particle_intensity = l_light_component->get_light()->as_point_light()->get_particle_intensity();
 		m_light_radius = l_light_component->get_light()->as_point_light()->get_radius();
@@ -79,9 +80,8 @@ namespace black_cat
 		if(m_scene_terrain_query.is_executed())
 		{
 			auto l_hit_result = *m_scene_terrain_query.get().get_result().as<core::bc_nullable<game::bc_ray_hit>>();
-
+			auto& l_particle_manager = p_context.m_game_system.get_render_system().get_particle_manager();
 			auto* l_mediate_component = p_context.m_actor.get_component<game::bc_mediate_component>();
-			auto* l_emitter_component = p_context.m_actor.get_component<game::bc_particle_emitter_component>();
 
 			if(l_hit_result.is_set())
 			{
@@ -92,18 +92,23 @@ namespace black_cat
 				const auto l_height_map_material_index = l_px_height_map.get_triangle_material(l_hit_result->get_face_index());
 				const auto& l_material = l_height_map_component->get_height_map().get_material(l_height_map_material_index);
 				const auto l_color = l_material.m_mesh_material->get_diffuse().xyz();
-				
-				l_emitter_component->spawn_emitter(l_mediate_component->get_position(), m_light_direction, &l_color);
 
-				const auto* l_decal_component = p_context.m_actor.get_component<game::bc_decal_component>();
-				if(l_decal_component)
+				if (m_emitter_name)
 				{
-					l_height_map_component->add_decal(l_decal_component->get_decal_name(), l_hit_result->get_position(), m_light_direction);
+					l_particle_manager.spawn_emitter(m_emitter_name, l_mediate_component->get_position(), m_light_direction, &l_color);
+				}
+
+				if(m_decal_name)
+				{
+					l_height_map_component->add_decal(m_decal_name, l_hit_result->get_position(), m_light_direction);
 				}
 			}
 			else
 			{
-				l_emitter_component->spawn_emitter(l_mediate_component->get_position(), core::bc_vector3f::up());
+				if (m_emitter_name)
+				{
+					l_particle_manager.spawn_emitter(m_emitter_name, l_mediate_component->get_position(), core::bc_vector3f::up());
+				}
 			}
 
 			m_has_started = true;

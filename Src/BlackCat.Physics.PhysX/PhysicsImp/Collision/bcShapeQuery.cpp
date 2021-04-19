@@ -264,7 +264,7 @@ namespace black_cat
 				bc_ray_hit::platform_pack l_pack;
 				l_pack.m_px_hit = p_px_hit;
 			
-				return bc_ray_hit(l_pack);
+				p_hit = bc_ray_hit(l_pack);
 			});
 
 			return l_written_count;
