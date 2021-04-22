@@ -140,7 +140,7 @@ namespace black_cat
 
 			m_toolbar = new QFrame(nullptr);
 
-			QString l_toolbar_button_style = "padding-top: 1px; padding-bottom: 1px;";
+			const QString l_toolbar_button_style = "padding-top: 1px; padding-bottom: 1px;";
 			QVariantMap l_info_icon_options;
 			l_info_icon_options.insert("color", m_info_color);
 			l_info_icon_options.insert("color-selected", m_info_color);

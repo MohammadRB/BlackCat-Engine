@@ -19,7 +19,9 @@ namespace black_cat
 		public:
 			virtual ~bc_rigid_body_component() override;
 
-			virtual physics::bc_rigid_body& get_body() noexcept = 0;
+			virtual physics::bc_actor_type get_body_type() const noexcept = 0;
+			
+			virtual physics::bc_rigid_body get_body() const noexcept = 0;
 
 			/**
 			 * \brief Enable or disable simulation of physics actor
@@ -36,12 +38,12 @@ namespace black_cat
 
 			physics::bc_scene* get_scene() noexcept;
 			
-			void added_to_scene(physics::bc_scene& p_scene);
+			void added_to_scene(physics::bc_scene& p_scene, physics::bc_rigid_body& p_body);
 			
-			void remove_from_scene(physics::bc_scene& p_scene);
+			void remove_from_scene(physics::bc_scene& p_scene, physics::bc_rigid_body& p_body);
 			
 			void update_px_shape_transforms(physics::bc_rigid_body& p_px_actor, const bc_sub_mesh_px_transform& p_model_space_transforms);
-
+			
 			void debug_draw(physics::bc_rigid_body& p_px_actor, const bc_actor_component_debug_draw_context& p_context);
 
 		private:

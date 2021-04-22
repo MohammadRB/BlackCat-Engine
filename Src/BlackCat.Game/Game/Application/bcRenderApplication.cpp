@@ -300,11 +300,11 @@ namespace black_cat
 
 		bool bc_render_application::_app_event(core::bci_event& p_event)
 		{
-			auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
+			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 			
-			if(core::bci_message::is< platform::bc_app_event_window_state >(p_event))
+			if(core::bci_message::is<platform::bc_app_event_window_state>(p_event))
 			{
-				auto& l_resize_event = static_cast< platform::bc_app_event_window_state& >(p_event);
+				auto& l_resize_event = static_cast<platform::bc_app_event_window_state&>(p_event);
 				if (l_resize_event.get_window_id() == m_output_window->get_id())
 				{
 					if(l_resize_event.get_state() == platform::bc_app_event_window_state::state::minimized)
@@ -320,7 +320,7 @@ namespace black_cat
 				}
 			}
 			
-			if (core::bci_message::is< platform::bc_app_event_window_resize >(p_event))
+			if (core::bci_message::is<platform::bc_app_event_window_resize>(p_event))
 			{
 				auto& l_resizing_event = static_cast<platform::bc_app_event_window_resize&>(p_event);
 
@@ -339,7 +339,7 @@ namespace black_cat
 				}
 			}
 
-			if (core::bci_message::is< platform::bc_app_event_window_focus >(p_event))
+			if (core::bci_message::is<platform::bc_app_event_window_focus>(p_event))
 			{
 				auto& l_focus_event = static_cast<platform::bc_app_event_window_focus&>(p_event);
 				if(l_focus_event.get_focus())
@@ -354,7 +354,7 @@ namespace black_cat
 				}
 			}
 			
-			if (core::bci_message::is< platform::bc_app_event_active >(p_event))
+			if (core::bci_message::is<platform::bc_app_event_active>(p_event))
 			{
 				auto& l_active_event = static_cast<platform::bc_app_event_active&>(p_event);
 				m_paused = !l_active_event.active();
@@ -369,7 +369,7 @@ namespace black_cat
 				}
 			}
 
-			if (core::bci_message::is< platform::bc_app_event_window_close >(p_event))
+			if (core::bci_message::is<platform::bc_app_event_window_close>(p_event))
 			{
 				auto& l_close_event = static_cast<platform::bc_app_event_window_close&>(p_event);
 
@@ -380,7 +380,7 @@ namespace black_cat
 				}
 			}
 
-			if (core::bci_message::is< platform::bc_app_event_exit >(p_event))
+			if (core::bci_message::is<platform::bc_app_event_exit>(p_event))
 			{
 				auto& l_exit_event = static_cast<platform::bc_app_event_exit&>(p_event);
 
@@ -388,7 +388,7 @@ namespace black_cat
 				m_termination_code = l_exit_event.exit_code();
 			}
 
-			if (core::bci_message::is< core::bc_app_event_error >(p_event))
+			if (core::bci_message::is<core::bc_app_event_error>(p_event))
 			{
 				core::bc_get_service< core::bc_logger >()->log
 				(
@@ -397,9 +397,9 @@ namespace black_cat
 				);
 			}
 
-			if (core::bci_message::is< core::bc_app_event_debug >(p_event))
+			if (core::bci_message::is<core::bc_app_event_debug>(p_event))
 			{
-				core::bc_get_service< core::bc_logger >()->log
+				core::bc_get_service<core::bc_logger>()->log
 				(
 					core::bc_log_type::debug,
 					core::bc_to_estring_frame(static_cast<core::bc_app_event_debug&>(p_event).get_message()).c_str()

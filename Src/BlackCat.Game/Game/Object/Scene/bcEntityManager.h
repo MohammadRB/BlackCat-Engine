@@ -167,6 +167,7 @@ namespace black_cat
 			));
 			_actor_component_entity_initialization<TComponent>(bc_actor_component_initialize_entity_context
 			(
+				core::bc_data_driven_parameter(),
 				m_content_stream_manager,
 				m_game_system,
 				p_actor

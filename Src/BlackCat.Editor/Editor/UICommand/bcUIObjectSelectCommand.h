@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/Math/bcMatrix4f.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Editor/Application/bcUICommand.h"
 
@@ -37,7 +38,8 @@ namespace black_cat
 			bcUINT16 m_point_left;
 			bcUINT16 m_point_top;
 
-			game::bc_actor m_selected_actor;
+			game::bc_actor m_actor;
+			core::bc_matrix4f m_actor_transformation;
 		};
 	}
 }

@@ -3,6 +3,7 @@
 #include "BlackCat/BlackCatPCH.h"
 
 #include "Core/Messaging/Event/bcEventManager.h"
+#include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Content/bcContentManager.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcServiceManager.h"
@@ -43,6 +44,8 @@ namespace black_cat
 		(
 			game::bc_game_system_parameter
 			(
+				*core::bc_get_service<core::bc_query_manager>(),
+				*core::bc_get_service<core::bc_event_manager>(),
 				game::bc_render_system_parameter
 				(
 					game::bc_render_application::get_output_window().get_width(),

@@ -57,7 +57,7 @@ namespace black_cat
 			auto* l_rigid_body_component = get_actor().get_component<bc_rigid_body_component>();
 			if (l_rigid_body_component)
 			{
-				const auto l_px_actor_type = l_rigid_body_component->get_body().get_type();
+				const auto l_px_actor_type = l_rigid_body_component->get_body_type();
 				if (l_px_actor_type == physics::bc_actor_type::rigid_static)
 				{
 					m_render_group = bc_render_group::static_mesh;

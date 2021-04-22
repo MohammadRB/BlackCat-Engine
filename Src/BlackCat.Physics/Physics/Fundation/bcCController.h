@@ -9,7 +9,7 @@
 #include "Physics/bcPhysicsApi.h"
 #include "Physics/bcPhysicsReference.h"
 #include "Physics/bcPhysicsRef.h"
-#include "Physics/Body/bcRigidActor.h"
+#include "Physics/Body/bcRigidDynamic.h"
 #include "Physics/Fundation/bcCControllerSimulationCallback.h"
 #include "Physics/Fundation/bcMaterial.h"
 #include "Physics/Collision/bcSceneQuery.h"
@@ -161,7 +161,7 @@ namespace black_cat
 
 			bc_platform_ccontroller& operator=(const bc_platform_ccontroller& p_other) noexcept;
 
-			bc_rigid_actor get_actor() noexcept;
+			bc_rigid_dynamic get_actor() const noexcept;
 			
 			/**
 			 * \brief The position retrieved by this function is the center of the collision shape.

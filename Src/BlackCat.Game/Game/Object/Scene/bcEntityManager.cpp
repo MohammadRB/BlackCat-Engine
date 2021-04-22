@@ -175,6 +175,22 @@ namespace black_cat
 					);
 				}
 
+				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
+				{
+					auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
+
+					l_entity_component_entry->second.m_initialize_entity_delegate
+					(
+						bc_actor_component_initialize_entity_context
+						(
+							l_entity_component_data.m_component_parameters,
+							m_content_stream_manager,
+							m_game_system,
+							l_actor
+						)
+					);
+				}
+				
 				if (!l_entity_entry->second.m_controller_name.empty())
 				{
 					const auto l_controller_hash = string_hash()(l_entity_entry->second.m_controller_name.c_str());
@@ -190,21 +206,6 @@ namespace black_cat
 						bc_actor_component_initialize_context
 						(
 							l_entity_entry->second.m_parameters,
-							m_content_stream_manager,
-							m_game_system,
-							l_actor
-						)
-					);
-				}
-
-				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
-				{
-					auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
-					
-					l_entity_component_entry->second.m_initialize_entity_delegate
-					(
-						bc_actor_component_initialize_entity_context
-						(
 							m_content_stream_manager,
 							m_game_system,
 							l_actor

@@ -233,6 +233,24 @@
     <ClCompile Include="GeneratedFiles\Release\moc_bcFormObject.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Develope\moc_bcFormMainToolBar.cpp">
+      <Filter>Generated Files\Develope</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_bcFormMainToolBar.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_bcFormMainToolBar.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainToolBar.cpp">
+      <Filter>Editor\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIEditorModeCommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectUpdateCommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_bcBlackCatEditor.h">
@@ -295,6 +313,12 @@
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectDeleteCommand.h">
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIEditorModeCommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectUpdateCommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorApplication.h">
@@ -312,12 +336,6 @@
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormTools.h">
       <Filter>Editor\UI</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\bcBlackCatEditor.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\bcBlackCatEditor.qrc">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\style.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
@@ -332,6 +350,12 @@
     </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetD3DOutput.h">
       <Filter>Editor\Widget</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainToolBar.h">
+      <Filter>Editor\UI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\Src\BlackCat.Editor\FormFiles\bcBlackCatEditor.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -474,6 +498,9 @@
     </None>
     <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap_Decal.json">
       <Filter>Editor\Content\Scene</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.Editor\FormFiles\bcBlackCatEditor.qrc">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

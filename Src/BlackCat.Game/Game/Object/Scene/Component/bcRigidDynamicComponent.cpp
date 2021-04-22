@@ -55,6 +55,10 @@ namespace black_cat
 
 		void bc_rigid_dynamic_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
+		}
+
+		void bc_rigid_dynamic_component::initialize_entity(const bc_actor_component_initialize_entity_context& p_context)
+		{
 			auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>();
 
 			if (l_mesh_component)
@@ -65,7 +69,7 @@ namespace black_cat
 
 				m_px_actor_ref = l_physics.create_rigid_dynamic(physics::bc_transform::identity());
 				l_physics_system.set_game_actor(*m_px_actor_ref, p_context.m_actor);
-				
+
 				const auto* l_materials = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_mesh_collider_materials);
 				l_physics_system.create_px_shapes_from_mesh(l_material_manager, m_px_actor_ref.get(), *l_mesh_component, l_materials);
 
@@ -73,7 +77,7 @@ namespace black_cat
 				const auto l_cmass_value = p_context.m_parameters.get_value_vector3f(constant::g_param_rigid_cmass);
 
 				m_px_actor_ref->update_mass_inertia(l_mass_value, l_cmass_value.get());
-				
+
 				return;
 			}
 
@@ -102,14 +106,14 @@ namespace black_cat
 			const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
 			if (l_scene_add_event)
 			{
-				added_to_scene(l_scene_add_event->get_scene().get_px_scene());
+				added_to_scene(l_scene_add_event->get_scene().get_px_scene(), m_px_actor_ref.get());
 				return;
 			}
 
 			const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event);
 			if (l_scene_remove_event)
 			{
-				remove_from_scene(l_scene_remove_event->get_scene().get_px_scene());
+				remove_from_scene(l_scene_remove_event->get_scene().get_px_scene(), m_px_actor_ref.get());
 				return;
 			}
 		}

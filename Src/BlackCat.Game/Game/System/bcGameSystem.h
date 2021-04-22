@@ -5,6 +5,7 @@
 #include "CorePlatform/bcType.h"
 #include "Core/bcConstant.h"
 #include "Core/Container/bcString.h"
+#include "Core/Messaging/Event/bcEventListenerHandle.h"
 #include "Core/Messaging/Query/bcQueryProviderHandle.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Game/bcExport.h"
@@ -18,19 +19,31 @@
 
 namespace black_cat
 {
+	namespace core
+	{
+		class bc_query_manager;
+		class bc_event_manager;
+	}
+	
 	namespace game
 	{
 		struct bc_game_system_parameter
 		{
-			explicit bc_game_system_parameter(bc_render_system_parameter&& p_render_system_parameter)
-				: m_render_system_parameter(std::move(p_render_system_parameter))
+			explicit bc_game_system_parameter(core::bc_query_manager& p_query_manager,
+				core::bc_event_manager& p_event_manager,
+				bc_render_system_parameter&& p_render_system_parameter)
+				: m_query_manager(&p_query_manager),
+				m_event_manager(&p_event_manager),
+				m_render_system_parameter(std::move(p_render_system_parameter))
 			{
 			}
 
+			core::bc_query_manager* m_query_manager;
+			core::bc_event_manager* m_event_manager;
 			bc_render_system_parameter m_render_system_parameter;
 		};
 
-		class BC_GAME_DLL bc_game_system : public core::bci_service, public core::bc_initializable< bc_game_system_parameter >
+		class BC_GAME_DLL bc_game_system : public core::bci_service, public core::bc_initializable<bc_game_system_parameter>
 		{
 			BC_SERVICE(gme_sys)
 
@@ -141,6 +154,8 @@ namespace black_cat
 
 			void _destroy() override;
 
+			core::bc_query_manager* m_query_manager;
+			core::bc_event_manager* m_event_manager;
 			bc_file_system m_file_system;
 			bc_input_system m_input_system;
 			bc_physics_system m_physics_system;
@@ -149,7 +164,10 @@ namespace black_cat
 			core::bc_unique_ptr<bc_game_console> m_console;
 			bc_scene_ptr m_scene;
 
+			core::bc_event_listener_handle m_editor_event_handle;
 			core::bc_query_provider_handle m_scene_query_context_provider;
+
+			bool m_editor_mode;
 		};
 	}
 }

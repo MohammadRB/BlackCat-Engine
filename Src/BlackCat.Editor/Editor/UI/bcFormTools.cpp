@@ -32,12 +32,12 @@ namespace black_cat
 		{
 			m_tool_bar.setTitleBarWidget(new QWidget(&m_tool_bar));
 
-			m_object_selection = m_tool_bar.findChild< QAbstractButton* >("objectSelectButton");
-			m_object_insert = m_tool_bar.findChild< QAbstractButton* >("objectInsertButton");
-			m_terrain_height = m_tool_bar.findChild< QAbstractButton* >("terrainHeightButton");
-			m_terrain_smooth = m_tool_bar.findChild< QAbstractButton* >("terrainSmoothButton");
-			m_terrain_material = m_tool_bar.findChild< QAbstractButton* >("terrainMaterialButton");
-			m_terrain_material_smooth = m_tool_bar.findChild< QAbstractButton* >("terrainMaterialSmoothButton");
+			m_object_selection = m_tool_bar.findChild<QAbstractButton*>("objectSelectButton");
+			m_object_insert = m_tool_bar.findChild<QAbstractButton*>("objectInsertButton");
+			m_terrain_height = m_tool_bar.findChild<QAbstractButton*>("terrainHeightButton");
+			m_terrain_smooth = m_tool_bar.findChild<QAbstractButton*>("terrainSmoothButton");
+			m_terrain_material = m_tool_bar.findChild<QAbstractButton*>("terrainMaterialButton");
+			m_terrain_material_smooth = m_tool_bar.findChild<QAbstractButton*>("terrainMaterialSmoothButton");
 			
 			QObject::connect(m_object_selection, SIGNAL(toggled(bool)), this, SLOT(objectSelectionToggled(bool)));
 			QObject::connect(m_object_insert, SIGNAL(toggled(bool)), this, SLOT(objectInsertToggled(bool)));

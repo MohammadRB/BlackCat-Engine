@@ -18,6 +18,7 @@
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
@@ -41,6 +42,8 @@ public:
     QAction *newSceneMenu;
     QAction *loadSceneMenu;
     QAction *saveSceneMenu;
+    QAction *gameModeButton;
+    QAction *editorModeButton;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QHBoxLayout *mainLayout;
@@ -59,6 +62,23 @@ public:
     QLabel *entityNameLabel;
     QLabel *entityNameLabelValue;
     QPushButton *entityDeleteButton;
+    QLabel *entityPositionLabel;
+    QLineEdit *entityPositionXText;
+    QLabel *entityPositionXLabel;
+    QLabel *entityPositionYLabel;
+    QLineEdit *entityPositionYText;
+    QLabel *entityPositionZLabel;
+    QLineEdit *entityPositionZText;
+    QLineEdit *entityUpZText;
+    QLabel *entityUpXLabel;
+    QLabel *entityUpYLabel;
+    QLabel *entityUpLabel;
+    QLineEdit *entityUpYText;
+    QLabel *entityUpZLabel;
+    QLineEdit *entityUpXText;
+    QPushButton *entityUpdateButton;
+    QLineEdit *entityUpRotationText;
+    QLabel *entityUpRotationLabel;
     QWidget *rightToolBoxObjectInsert;
     QHBoxLayout *horizontalLayout_2;
     QListWidget *entityNameList;
@@ -107,6 +127,13 @@ public:
         loadSceneMenu->setObjectName(QStringLiteral("loadSceneMenu"));
         saveSceneMenu = new QAction(bcBlackCatEditorClass);
         saveSceneMenu->setObjectName(QStringLiteral("saveSceneMenu"));
+        gameModeButton = new QAction(bcBlackCatEditorClass);
+        gameModeButton->setObjectName(QStringLiteral("gameModeButton"));
+        gameModeButton->setCheckable(true);
+        editorModeButton = new QAction(bcBlackCatEditorClass);
+        editorModeButton->setObjectName(QStringLiteral("editorModeButton"));
+        editorModeButton->setCheckable(true);
+        editorModeButton->setChecked(true);
         centralWidget = new QWidget(bcBlackCatEditorClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -190,7 +217,7 @@ public:
         rightToolBox->setObjectName(QStringLiteral("rightToolBox"));
         rightToolBoxObjectSelect = new QWidget();
         rightToolBoxObjectSelect->setObjectName(QStringLiteral("rightToolBoxObjectSelect"));
-        rightToolBoxObjectSelect->setGeometry(QRect(0, 0, 340, 717));
+        rightToolBoxObjectSelect->setGeometry(QRect(0, 0, 340, 724));
         entityNameLabel = new QLabel(rightToolBoxObjectSelect);
         entityNameLabel->setObjectName(QStringLiteral("entityNameLabel"));
         entityNameLabel->setGeometry(QRect(10, 10, 81, 16));
@@ -200,7 +227,73 @@ public:
         entityDeleteButton = new QPushButton(rightToolBoxObjectSelect);
         entityDeleteButton->setObjectName(QStringLiteral("entityDeleteButton"));
         entityDeleteButton->setEnabled(false);
-        entityDeleteButton->setGeometry(QRect(10, 40, 81, 31));
+        entityDeleteButton->setGeometry(QRect(160, 200, 81, 31));
+        entityPositionLabel = new QLabel(rightToolBoxObjectSelect);
+        entityPositionLabel->setObjectName(QStringLiteral("entityPositionLabel"));
+        entityPositionLabel->setGeometry(QRect(10, 40, 81, 16));
+        entityPositionXText = new QLineEdit(rightToolBoxObjectSelect);
+        entityPositionXText->setObjectName(QStringLiteral("entityPositionXText"));
+        entityPositionXText->setEnabled(false);
+        entityPositionXText->setGeometry(QRect(30, 70, 91, 25));
+        entityPositionXText->setReadOnly(false);
+        entityPositionXLabel = new QLabel(rightToolBoxObjectSelect);
+        entityPositionXLabel->setObjectName(QStringLiteral("entityPositionXLabel"));
+        entityPositionXLabel->setGeometry(QRect(10, 70, 16, 16));
+        entityPositionYLabel = new QLabel(rightToolBoxObjectSelect);
+        entityPositionYLabel->setObjectName(QStringLiteral("entityPositionYLabel"));
+        entityPositionYLabel->setGeometry(QRect(10, 100, 16, 16));
+        entityPositionYText = new QLineEdit(rightToolBoxObjectSelect);
+        entityPositionYText->setObjectName(QStringLiteral("entityPositionYText"));
+        entityPositionYText->setEnabled(false);
+        entityPositionYText->setGeometry(QRect(30, 100, 91, 25));
+        entityPositionYText->setReadOnly(false);
+        entityPositionZLabel = new QLabel(rightToolBoxObjectSelect);
+        entityPositionZLabel->setObjectName(QStringLiteral("entityPositionZLabel"));
+        entityPositionZLabel->setGeometry(QRect(10, 130, 16, 16));
+        entityPositionZText = new QLineEdit(rightToolBoxObjectSelect);
+        entityPositionZText->setObjectName(QStringLiteral("entityPositionZText"));
+        entityPositionZText->setEnabled(false);
+        entityPositionZText->setGeometry(QRect(30, 130, 91, 25));
+        entityPositionZText->setReadOnly(false);
+        entityUpZText = new QLineEdit(rightToolBoxObjectSelect);
+        entityUpZText->setObjectName(QStringLiteral("entityUpZText"));
+        entityUpZText->setEnabled(false);
+        entityUpZText->setGeometry(QRect(160, 130, 91, 25));
+        entityUpZText->setReadOnly(false);
+        entityUpXLabel = new QLabel(rightToolBoxObjectSelect);
+        entityUpXLabel->setObjectName(QStringLiteral("entityUpXLabel"));
+        entityUpXLabel->setGeometry(QRect(140, 70, 16, 16));
+        entityUpYLabel = new QLabel(rightToolBoxObjectSelect);
+        entityUpYLabel->setObjectName(QStringLiteral("entityUpYLabel"));
+        entityUpYLabel->setGeometry(QRect(140, 100, 16, 16));
+        entityUpLabel = new QLabel(rightToolBoxObjectSelect);
+        entityUpLabel->setObjectName(QStringLiteral("entityUpLabel"));
+        entityUpLabel->setGeometry(QRect(140, 40, 81, 16));
+        entityUpYText = new QLineEdit(rightToolBoxObjectSelect);
+        entityUpYText->setObjectName(QStringLiteral("entityUpYText"));
+        entityUpYText->setEnabled(false);
+        entityUpYText->setGeometry(QRect(160, 100, 91, 25));
+        entityUpYText->setReadOnly(false);
+        entityUpZLabel = new QLabel(rightToolBoxObjectSelect);
+        entityUpZLabel->setObjectName(QStringLiteral("entityUpZLabel"));
+        entityUpZLabel->setGeometry(QRect(140, 130, 16, 16));
+        entityUpXText = new QLineEdit(rightToolBoxObjectSelect);
+        entityUpXText->setObjectName(QStringLiteral("entityUpXText"));
+        entityUpXText->setEnabled(false);
+        entityUpXText->setGeometry(QRect(160, 70, 91, 25));
+        entityUpXText->setReadOnly(false);
+        entityUpdateButton = new QPushButton(rightToolBoxObjectSelect);
+        entityUpdateButton->setObjectName(QStringLiteral("entityUpdateButton"));
+        entityUpdateButton->setEnabled(false);
+        entityUpdateButton->setGeometry(QRect(30, 200, 81, 31));
+        entityUpRotationText = new QLineEdit(rightToolBoxObjectSelect);
+        entityUpRotationText->setObjectName(QStringLiteral("entityUpRotationText"));
+        entityUpRotationText->setEnabled(false);
+        entityUpRotationText->setGeometry(QRect(160, 160, 91, 25));
+        entityUpRotationText->setReadOnly(false);
+        entityUpRotationLabel = new QLabel(rightToolBoxObjectSelect);
+        entityUpRotationLabel->setObjectName(QStringLiteral("entityUpRotationLabel"));
+        entityUpRotationLabel->setGeometry(QRect(140, 160, 16, 16));
         rightToolBox->addItem(rightToolBoxObjectSelect, QStringLiteral("ObjectSelection"));
         rightToolBoxObjectInsert = new QWidget();
         rightToolBoxObjectInsert->setObjectName(QStringLiteral("rightToolBoxObjectInsert"));
@@ -334,10 +427,13 @@ public:
         sizePolicy4.setVerticalStretch(0);
         sizePolicy4.setHeightForWidth(mainToolBar->sizePolicy().hasHeightForWidth());
         mainToolBar->setSizePolicy(sizePolicy4);
-        mainToolBar->setMinimumSize(QSize(30, 30));
+        mainToolBar->setMinimumSize(QSize(0, 0));
+        mainToolBar->setMaximumSize(QSize(16777215, 30));
         mainToolBar->setBaseSize(QSize(0, 0));
         mainToolBar->setMovable(false);
         mainToolBar->setOrientation(Qt::Horizontal);
+        mainToolBar->setIconSize(QSize(22, 22));
+        mainToolBar->setFloatable(false);
         bcBlackCatEditorClass->addToolBar(Qt::TopToolBarArea, mainToolBar);
         statusBar = new QStatusBar(bcBlackCatEditorClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));
@@ -434,6 +530,8 @@ public:
         fileMenu->addAction(newSceneMenu);
         fileMenu->addAction(loadSceneMenu);
         fileMenu->addAction(saveSceneMenu);
+        mainToolBar->addAction(gameModeButton);
+        mainToolBar->addAction(editorModeButton);
 
         retranslateUi(bcBlackCatEditorClass);
         QObject::connect(terrainHeightSlider, SIGNAL(valueChanged(int)), terrainHeightValue, SLOT(setNum(int)));
@@ -453,11 +551,31 @@ public:
         newSceneMenu->setText(QApplication::translate("bcBlackCatEditorClass", "NewScene", nullptr));
         loadSceneMenu->setText(QApplication::translate("bcBlackCatEditorClass", "LoadScene", nullptr));
         saveSceneMenu->setText(QApplication::translate("bcBlackCatEditorClass", "SaveScene", nullptr));
+        gameModeButton->setText(QApplication::translate("bcBlackCatEditorClass", "GameMode", nullptr));
+#ifndef QT_NO_TOOLTIP
+        gameModeButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "GameMode", nullptr));
+#endif // QT_NO_TOOLTIP
+        gameModeButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "play", nullptr)));
+        editorModeButton->setText(QApplication::translate("bcBlackCatEditorClass", "EditorMode", nullptr));
+#ifndef QT_NO_TOOLTIP
+        editorModeButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "EditorMode", nullptr));
+#endif // QT_NO_TOOLTIP
+        editorModeButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "stop", nullptr)));
         leftBottomTab->setTabText(leftBottomTab->indexOf(consoleTab), QApplication::translate("bcBlackCatEditorClass", "Console", nullptr));
         rightToolBox->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "handpointero,cubes,areachart", nullptr)));
         entityNameLabel->setText(QApplication::translate("bcBlackCatEditorClass", "EntityName:", nullptr));
         entityNameLabelValue->setText(QString());
         entityDeleteButton->setText(QApplication::translate("bcBlackCatEditorClass", "Delete", nullptr));
+        entityPositionLabel->setText(QApplication::translate("bcBlackCatEditorClass", "Entity Position:", nullptr));
+        entityPositionXLabel->setText(QApplication::translate("bcBlackCatEditorClass", "x:", nullptr));
+        entityPositionYLabel->setText(QApplication::translate("bcBlackCatEditorClass", "y:", nullptr));
+        entityPositionZLabel->setText(QApplication::translate("bcBlackCatEditorClass", "z:", nullptr));
+        entityUpXLabel->setText(QApplication::translate("bcBlackCatEditorClass", "x:", nullptr));
+        entityUpYLabel->setText(QApplication::translate("bcBlackCatEditorClass", "y:", nullptr));
+        entityUpLabel->setText(QApplication::translate("bcBlackCatEditorClass", "Entity Up:", nullptr));
+        entityUpZLabel->setText(QApplication::translate("bcBlackCatEditorClass", "z:", nullptr));
+        entityUpdateButton->setText(QApplication::translate("bcBlackCatEditorClass", "Update", nullptr));
+        entityUpRotationLabel->setText(QApplication::translate("bcBlackCatEditorClass", "r:", nullptr));
         rightToolBox->setItemText(rightToolBox->indexOf(rightToolBoxObjectSelect), QApplication::translate("bcBlackCatEditorClass", "ObjectSelection", nullptr));
         rightToolBox->setItemText(rightToolBox->indexOf(rightToolBoxObjectInsert), QApplication::translate("bcBlackCatEditorClass", "ObjectInsert", nullptr));
         terrainHeightLable->setText(QApplication::translate("bcBlackCatEditorClass", "Height: ", nullptr));

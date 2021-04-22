@@ -181,7 +181,7 @@ namespace black_cat
 			const auto* l_mediate_component = p_context.m_actor.get_component< bc_mediate_component >();
 			const auto l_bound_box_z_length = l_mediate_component->get_bound_box().get_half_extends().z;
 			auto l_world_transform = l_mediate_component->get_world_transform();
-			const auto l_world_offset = l_world_transform.get_rotation() * core::bc_vector3f(0, 0, l_bound_box_z_length * 2.0f);
+			const auto l_world_offset = l_world_transform.get_rotation() * core::bc_vector3f(0, 0, l_bound_box_z_length * 2.5f);
 			l_world_transform.set_translation(l_world_transform.get_translation() + l_world_offset);
 			
 			p_context.m_shape_drawer.draw_wired_skeleton

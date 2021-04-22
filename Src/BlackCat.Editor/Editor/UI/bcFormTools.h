@@ -26,7 +26,7 @@ namespace black_cat
 
 		class bc_form_tools : public QObject
 		{
-			Q_OBJECT;
+			Q_OBJECT
 			using state = bc_form_tools_state;
 
 		public:

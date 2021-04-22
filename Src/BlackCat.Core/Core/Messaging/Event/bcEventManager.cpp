@@ -25,7 +25,7 @@ namespace black_cat
 			const auto l_hash = bci_event::get_hash(p_listener_handle.m_event_name);
 
 			{
-				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_handlers_mutex);
+				core_platform::bc_shared_mutex_guard l_guard(m_handlers_mutex);
 
 				auto l_ite = m_handlers.find(l_hash);
 				BC_ASSERT(l_ite != m_handlers.end());
@@ -39,7 +39,7 @@ namespace black_cat
 			const auto l_hash = bci_event::get_hash(p_listener_handle.m_event_name);
 
 			{
-				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_handlers_mutex);
+				core_platform::bc_shared_mutex_guard l_guard(m_handlers_mutex);
 
 				auto l_ite = m_handlers.find(l_hash);
 				BC_ASSERT(l_ite != m_handlers.end());
@@ -61,7 +61,7 @@ namespace black_cat
 			bool l_handled = false;
 
 			{
-				core_platform::bc_shared_lock< core_platform::bc_shared_mutex > l_guard(m_handlers_mutex);
+				core_platform::bc_shared_mutex_shared_guard l_guard(m_handlers_mutex);
 
 				l_ite = m_handlers.find(l_hash);
 			}
@@ -93,7 +93,7 @@ namespace black_cat
 			bc_event_handler_index l_index;
 
 			{
-				core_platform::bc_lock_guard< core_platform::bc_shared_mutex > l_guard(m_handlers_mutex);
+				core_platform::bc_shared_mutex_guard l_guard(m_handlers_mutex);
 
 				auto& l_event_handle = m_handlers[l_hash];
 				l_index = l_event_handle.add_delegate(std::move(p_listener));

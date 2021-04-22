@@ -108,7 +108,7 @@
           }
         },
         {
-          "name": "rigid_static",
+          "name": "rigid_controller",
           "parameters": {
             "collider_materials": {
               "mixamorig:Head": "iron",
@@ -154,7 +154,7 @@
           }
         },
         {
-          "name": "rigid_static",
+          "name": "rigid_controller",
           "parameters": {
             "collider_materials": {
               "mixamorig:Head": "iron",
@@ -217,7 +217,7 @@
           }
         },
         {
-          "name": "rigid_static",
+          "name": "rigid_controller",
           "parameters": {
             "collider_materials": {
               "mixamorig:Head": "iron",

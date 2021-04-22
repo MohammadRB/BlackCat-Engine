@@ -52,12 +52,12 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_rigid_actor bc_platform_ccontroller<g_api_physx>::get_actor() noexcept
+		bc_rigid_dynamic bc_platform_ccontroller<g_api_physx>::get_actor() const noexcept
 		{
-			bc_rigid_actor::platform_pack l_pack;
+			bc_rigid_dynamic::platform_pack l_pack;
 			l_pack.m_px_object = m_pack.m_controller->getActor();
 
-			return bc_rigid_actor(l_pack);
+			return bc_rigid_dynamic(l_pack);
 		}
 
 		template<>

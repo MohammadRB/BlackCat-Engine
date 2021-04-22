@@ -141,7 +141,7 @@ namespace black_cat
 		game::bc_scene* m_scene;
 		game::bc_actor m_actor;
 		game::bc_skinned_mesh_component* m_skinned_component;
-		physics::bc_ccontroller_ref m_px_controller;
+		physics::bc_ccontroller m_px_controller;
 		bcFLOAT m_bound_box_max_side_length;
 		core::bc_vector<core::bc_string> m_upper_body_chain;
 		core::bc_array<std::pair<bcUINT32, const bcCHAR*>, 3> m_main_hand_chain;

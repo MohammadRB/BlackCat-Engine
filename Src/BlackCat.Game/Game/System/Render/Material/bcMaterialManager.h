@@ -106,25 +106,25 @@ namespace black_cat
 
 			bc_mesh_material_ptr store_mesh_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_name, bc_mesh_material_description p_material);
 
-			bc_collider_material_description get_default_collider_material();
+			bc_collider_material_description get_default_collider_material() const;
 			
 			/**
 			 * \brief Try to find collider material or return default collider material
 			 * \param p_name 
 			 * \return 
 			 */
-			bc_collider_material_description find_collider_material(const bcCHAR* p_name);
+			bc_collider_material_description find_collider_material(const bcCHAR* p_name) const;
 			
 			/**
 			 * \brief Try to find collider material or return default collider material
 			 * \param p_hash
 			 * \return
 			 */
-			bc_collider_material_description find_collider_material(bc_collider_material_description::hash_t p_hash);
+			bc_collider_material_description find_collider_material(bc_collider_material_description::hash_t p_hash) const;
 
-			bc_collider_material_description find_collider_material_throw(const bcCHAR* p_name);
+			bc_collider_material_description find_collider_material_throw(const bcCHAR* p_name) const;
 			
-			bc_collider_material_description find_collider_material_throw(bc_collider_material_description::hash_t p_hash);
+			bc_collider_material_description find_collider_material_throw(bc_collider_material_description::hash_t p_hash) const;
 			
 			void destroy_mesh_material(bc_mesh_material* p_material);
 			
@@ -138,7 +138,7 @@ namespace black_cat
 			bc_physics_system* m_physics_system;
 
 			mesh_material_desc_map m_mesh_material_descriptions;
-			core_platform::bc_mutex m_materials_mutex;
+			mutable core_platform::bc_mutex m_materials_mutex;
 			collider_material_map m_collider_materials;
 			mesh_material_map m_materials;
 

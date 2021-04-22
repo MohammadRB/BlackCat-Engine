@@ -2,6 +2,7 @@
 
 #include "Editor/EditorPCH.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/bcUtility.h"
 #include "Platform/bcEvent.h"
 #include "PhysicsImp/Body/bcRigidDynamic.h"
@@ -15,6 +16,7 @@
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
+#include "Game/bcEvent.h"
 #include "BlackCat/bcConstant.h"
 #include "BlackCat/RenderPass/bcShapeDrawPass.h"
 #include "BlackCat/RenderPass/GBuffer/bcGBufferInitializePass.h"
@@ -77,7 +79,7 @@ namespace black_cat
 			l_global_config.read_config_key("camera_lookat_z", l_config_value);
 			l_camera_look_at.z = bc_null_default(l_config_value.as<bcFLOAT>(), 1);
 
-			auto l_camera = core::bc_make_unique< game::bc_free_camera >
+			auto l_camera = core::bc_make_unique<game::bc_free_camera>
 			(
 				l_render_system.get_device().get_back_buffer_width(),
 				l_render_system.get_device().get_back_buffer_height(),
@@ -102,6 +104,9 @@ namespace black_cat
 			l_render_system.add_render_pass(11, bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
 			l_render_system.add_render_pass(12, bc_particle_system_pass_dx11());
 			l_render_system.add_render_pass(13, bc_text_draw_pass(constant::g_rpass_back_buffer_view));
+
+			game::bc_event_editor_mode l_editor_event(true);
+			core::bc_get_service<core::bc_event_manager>()->process_event(l_editor_event);
 		}
 
 		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager* p_stream_manager)

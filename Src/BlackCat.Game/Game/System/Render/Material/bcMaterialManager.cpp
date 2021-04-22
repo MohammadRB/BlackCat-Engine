@@ -353,7 +353,7 @@ namespace black_cat
 			return _store_mesh_material(p_alloc_type, p_name, std::move(l_material));
 		}
 
-		bc_collider_material_description bc_material_manager::get_default_collider_material()
+		bc_collider_material_description bc_material_manager::get_default_collider_material() const
 		{
 			const auto l_default_material_ite = m_collider_materials.find(string_hash()("default"));
 
@@ -367,7 +367,7 @@ namespace black_cat
 			return l_material;
 		}
 		
-		bc_collider_material_description bc_material_manager::find_collider_material(const bcCHAR* p_name)
+		bc_collider_material_description bc_material_manager::find_collider_material(const bcCHAR* p_name) const
 		{
 			const auto l_hash = string_hash()(p_name);
 			auto l_material = find_collider_material(l_hash);
@@ -383,7 +383,7 @@ namespace black_cat
 			return l_material;
 		}
 
-		bc_collider_material_description bc_material_manager::find_collider_material(bc_collider_material_description::hash_t p_hash)
+		bc_collider_material_description bc_material_manager::find_collider_material(bc_collider_material_description::hash_t p_hash) const
 		{
 			collider_material_map::const_iterator l_ite;
 			bool l_was_found = true;
@@ -417,7 +417,7 @@ namespace black_cat
 			return l_material;
 		}
 
-		bc_collider_material_description bc_material_manager::find_collider_material_throw(bc_collider_material_description::hash_t p_hash)
+		bc_collider_material_description bc_material_manager::find_collider_material_throw(bc_collider_material_description::hash_t p_hash) const
 		{
 			{
 				core_platform::bc_mutex_guard l_guard(m_materials_mutex);
@@ -433,7 +433,7 @@ namespace black_cat
 			return find_collider_material(p_hash);
 		}
 
-		bc_collider_material_description bc_material_manager::find_collider_material_throw(const bcCHAR* p_name)
+		bc_collider_material_description bc_material_manager::find_collider_material_throw(const bcCHAR* p_name) const
 		{
 			const auto l_hash = string_hash()(p_name);
 			

@@ -39,7 +39,7 @@ namespace black_cat
 
 			bc_platform_transform& operator=(const bc_platform_transform& p_other) noexcept;
 
-			bc_platform_transform operator*(const bc_platform_transform& p_other) noexcept;
+			bc_platform_transform operator*(const bc_platform_transform& p_other) const noexcept;
 
 			bc_platform_transform& operator*=(const bc_platform_transform& p_other) noexcept;
 

@@ -19,27 +19,35 @@ namespace black_cat
 			{
 				physics::bc_scene_lock l_lock(m_scene);
 				
-				auto& l_px_body = get_body();
+				auto l_px_body = get_body();
 				l_px_body.set_actor_flag(physics::bc_actor_flag::disable_gravity, !p_enable);
 				l_px_body.set_actor_flag(physics::bc_actor_flag::disable_simulation, !p_enable);
 			}
 		}
 
-		void bc_rigid_body_component::added_to_scene(physics::bc_scene& p_scene)
+		void bc_rigid_body_component::added_to_scene(physics::bc_scene& p_scene, physics::bc_rigid_body& p_body)
 		{
 			m_scene = &p_scene;
+
+			if(p_body.is_valid()) // rigid controller may contain invalid handle
 			{
-				physics::bc_scene_lock l_lock(m_scene);
-				m_scene->add_actor(get_body());
+				{
+					physics::bc_scene_lock l_lock(m_scene);
+					m_scene->add_actor(p_body);
+				}
 			}
 		}
 
-		void bc_rigid_body_component::remove_from_scene(physics::bc_scene& p_scene)
+		void bc_rigid_body_component::remove_from_scene(physics::bc_scene& p_scene, physics::bc_rigid_body& p_body)
 		{
+			if(p_body.is_valid()) // rigid controller may contain invalid handle
 			{
-				physics::bc_scene_lock l_lock(m_scene);
-				m_scene->remove_actor(get_body());
+				{
+					physics::bc_scene_lock l_lock(m_scene);
+					m_scene->remove_actor(p_body);
+				}
 			}
+			
 			m_scene = nullptr;
 		}
 
@@ -66,7 +74,7 @@ namespace black_cat
 				}
 			}
 		}
-
+		
 		void bc_rigid_body_component::debug_draw(physics::bc_rigid_body& p_px_actor, const bc_actor_component_debug_draw_context& p_context)
 		{			
 			{

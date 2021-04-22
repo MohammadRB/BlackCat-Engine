@@ -40,7 +40,7 @@ namespace black_cat
 			return l_buffer;
 		}
 
-		void bc_physics_system::create_px_shapes_from_height_map(bc_material_manager& p_material_manager, 
+		void bc_physics_system::create_px_shapes_from_height_map(const bc_material_manager& p_material_manager, 
 			physics::bc_rigid_static& p_rigid_static, 
 			const bc_height_map_component& p_height_map)
 		{
@@ -69,7 +69,7 @@ namespace black_cat
 			              .set_query_group(static_cast< physics::bc_query_group >(bc_actor_group::terrain));
 		}
 
-		void bc_physics_system::create_px_shapes_from_mesh(bc_material_manager& p_material_manager,
+		void bc_physics_system::create_px_shapes_from_mesh(const bc_material_manager& p_material_manager,
 			physics::bc_rigid_body& p_px_actor,
 			const bc_mesh_component& p_mesh,
 			const core::bc_json_key_value* p_collider_materials)

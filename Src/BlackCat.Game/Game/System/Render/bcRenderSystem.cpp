@@ -62,6 +62,7 @@ namespace black_cat
 			m_animation_manager = std::move(p_other.m_animation_manager);
 			m_light_manager = std::move(p_other.m_light_manager);
 			m_particle_manager = std::move(p_other.m_particle_manager);
+			m_decal_manager = std::move(p_other.m_decal_manager);
 			m_shape_drawer = std::move(p_other.m_shape_drawer);
 			m_frame_renderer = std::move(p_other.m_frame_renderer);
 
@@ -390,6 +391,8 @@ namespace black_cat
 			bc_mesh_utility::clear_mesh_render_states_cache();
 			
 			m_render_pass_manager->pass_destroy(*this);
+			// Delete all render passes to clear queries and references which they might hold
+			m_render_pass_manager.reset(); 
 
 			m_device_reset_handle.reset();
 			m_window_resize_handle.reset();
@@ -397,9 +400,9 @@ namespace black_cat
 
 			m_frame_renderer.reset();
 			m_shape_drawer.reset();
+			m_decal_manager.reset();
 			m_particle_manager.reset();
 			m_light_manager.reset();
-			m_render_pass_manager.reset();
 			m_material_manager.reset();
 			m_thread_manager.reset();
 			

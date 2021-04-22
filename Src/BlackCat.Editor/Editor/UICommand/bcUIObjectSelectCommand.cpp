@@ -22,7 +22,7 @@ namespace black_cat
 			m_screen_height(p_screen_height),
 			m_point_left(p_point_left),
 			m_point_top(p_point_top),
-			m_selected_actor()
+			m_actor()
 		{
 		}
 
@@ -60,16 +60,17 @@ namespace black_cat
 			if(l_query_result)
 			{
 				const game::bc_ray_hit l_hit = l_query_buffer.get_block();
-				m_selected_actor = l_hit.get_actor();
+				m_actor = l_hit.get_actor();
+				m_actor_transformation = m_actor.get_component<game::bc_mediate_component>()->get_world_transform();
 			}
 			else
 			{
-				m_selected_actor = game::bc_actor();
+				m_actor = game::bc_actor();
 			}
 
 			if(l_shape_draw_pass)
 			{
-				l_shape_draw_pass->set_selected_actor(m_selected_actor);
+				l_shape_draw_pass->set_selected_actor(m_actor);
 			}
 
 			return false;
@@ -77,7 +78,7 @@ namespace black_cat
 
 		void bc_ui_object_select_command::update_ui(update_ui_context& p_context)
 		{
-			p_context.m_form_object.setSelectedActor(m_selected_actor);
+			p_context.m_form_object.setSelectedActor(m_actor, m_actor_transformation);
 		}
 	}
 }

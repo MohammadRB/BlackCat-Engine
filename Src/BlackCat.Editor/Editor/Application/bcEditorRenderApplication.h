@@ -15,8 +15,7 @@ namespace black_cat
 			bc_editor_render_app();
 
 			~bc_editor_render_app();
-		protected:
-
+		
 		private:
 			void application_start_engine_components(game::bc_engine_application_parameter& p_parameters) override;
 

@@ -11,19 +11,27 @@
 #include "Game/Object/Animation/bcAnimationManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Query/bcQueryContext.h"
+#include "Game/bcEvent.h"
 
 namespace black_cat
 {
 	namespace game
 	{
 		bc_game_system::bc_game_system()
-			: m_file_system(*core::bc_get_service<core::bc_content_manager>(), *core::bc_get_service<core::bc_content_stream_manager>()),
+			: m_query_manager(nullptr),
+			m_event_manager(nullptr),
+			m_file_system
+			(
+				*core::bc_get_service<core::bc_content_manager>(),
+				*core::bc_get_service<core::bc_content_stream_manager>()
+			),
 			m_input_system(),
 			m_physics_system(),
 			m_script_system(),
 			m_render_system(),
 			m_console(),
-			m_scene()
+			m_scene(),
+			m_editor_mode(false)
 		{
 		}
 
@@ -42,9 +50,9 @@ namespace black_cat
 
 		void bc_game_system::update_game(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
 		{
-			auto& l_event_manager = *core::bc_get_service<core::bc_event_manager>();
+			auto& l_event_manager = *m_event_manager;
 			auto& l_actor_component_manager = *core::bc_get_service<bc_actor_component_manager>();
-			auto& l_query_manager = *core::bc_get_service< core::bc_query_manager >();
+			auto& l_query_manager = *m_query_manager;
 			auto& l_animation_manager = m_render_system.get_animation_manager();
 			auto& l_particle_manager = m_render_system.get_particle_manager();
 			auto& l_decal_manager = m_render_system.get_decal_manager();
@@ -106,18 +114,17 @@ namespace black_cat
 		
 		void bc_game_system::render_game(const core_platform::bc_clock::update_param& p_clock)
 		{
-			core::bc_get_service< core::bc_event_manager >()->process_render_event_queue(p_clock);
+			m_event_manager->process_render_event_queue(p_clock);
 			
 			if(m_scene)
 			{
-				m_render_system.render(bc_render_system::render_context(p_clock, *core::bc_get_service< core::bc_query_manager >()));
+				m_render_system.render(bc_render_system::render_context(p_clock, *m_query_manager));
 			}
 		}
 
 		void bc_game_system::swap_frame_idle(const core_platform::bc_clock::update_param& p_clock)
 		{
-			auto* l_query_manager = core::bc_get_service< core::bc_query_manager >();
-			const auto l_num_query = l_query_manager->process_query_queue(p_clock);
+			const auto l_num_query = m_query_manager->process_query_queue(p_clock);
 
 			if(!l_num_query)
 			{
@@ -127,19 +134,32 @@ namespace black_cat
 
 		void bc_game_system::swap_frame(const core_platform::bc_clock::update_param& p_clock)
 		{
-			auto* l_query_manager = core::bc_get_service< core::bc_query_manager >();
-			l_query_manager->process_query_queue(p_clock);
-			l_query_manager->swap_frame();
+			m_query_manager->process_query_queue(p_clock);
+			m_query_manager->swap_frame();
 		}
 
 		void bc_game_system::_initialize(bc_game_system_parameter p_parameter)
 		{
+			m_query_manager = p_parameter.m_query_manager;
+			m_event_manager = p_parameter.m_event_manager;
 			m_physics_system.initialize();
 			m_script_system.initialize(true);
 			m_render_system.initialize(*core::bc_get_service<core::bc_content_stream_manager>(), m_physics_system, std::move(p_parameter.m_render_system_parameter));
 			m_console = core::bc_make_unique<bc_game_console>(core::bc_alloc_type::program, m_script_system);
 
-			m_scene_query_context_provider = core::bc_get_service< core::bc_query_manager >()->register_query_provider<bc_scene_query_context>
+			m_editor_event_handle = m_event_manager->register_event_listener<bc_event_editor_mode>
+			(
+				[=](core::bci_event& p_event)
+				{
+					auto* l_editor_event = core::bci_message::as<bc_event_editor_mode>(p_event);
+					if(l_editor_event)
+					{
+						m_editor_mode = l_editor_event->get_editor_mode();
+					}
+					return true;
+				}
+			);
+			m_scene_query_context_provider = m_query_manager->register_query_provider<bc_scene_query_context>
 			(
 				[=]()
 				{
@@ -153,6 +173,7 @@ namespace black_cat
 
 		void bc_game_system::_destroy()
 		{
+			m_editor_event_handle.reset();
 			m_scene_query_context_provider.reset();
 			
 			m_scene.reset();

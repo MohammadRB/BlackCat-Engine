@@ -32,6 +32,7 @@
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
+#include "Game/Object/Scene/Component/bcRigidControllerComponent.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Object/Scene/Component/bcWindComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
@@ -151,6 +152,7 @@ namespace black_cat
 			game::bc_component_register<game::bc_hierarchy_component>("hierarchy"),
 			game::bc_component_register<game::bc_rigid_static_component>("rigid_static"),
 			game::bc_component_register<game::bc_rigid_dynamic_component>("rigid_dynamic"),
+			game::bc_component_register<game::bc_rigid_controller_component>("rigid_controller"),
 			game::bc_component_register<game::bc_height_map_component>("height_map"),
 			game::bc_component_register<game::bc_light_component>("light"),
 			game::bc_component_register<game::bc_wind_component>("wind"),
@@ -162,7 +164,7 @@ namespace black_cat
 		(
 			game::bc_abstract_component_register<game::bc_mesh_component, game::bc_simple_mesh_component, game::bc_vegetable_mesh_component, game::bc_skinned_mesh_component>(),
 			game::bc_abstract_component_register<game::bc_render_component, game::bc_mesh_component, game::bc_height_map_component>(),
-			game::bc_abstract_component_register<game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component>(),
+			game::bc_abstract_component_register<game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component, game::bc_rigid_controller_component>(),
 			game::bc_abstract_component_register<game::bc_decal_resolver_component, game::bc_mesh_component, game::bc_height_map_component>()
 		);
 		game::bc_register_actor_controller_types
@@ -186,10 +188,10 @@ namespace black_cat
 
 	void bc_load_engine_resources(game::bc_game_system& p_game_system)
 	{
-		auto* l_content_stream_manager = core::bc_get_service< core::bc_content_stream_manager >();
+		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
 		auto& l_material_manager = p_game_system.get_render_system().get_material_manager();
 		auto& l_decal_manager = p_game_system.get_render_system().get_decal_manager();
-		auto* l_entity_manager = core::bc_get_service< game::bc_entity_manager >();
+		auto* l_entity_manager = core::bc_get_service<game::bc_entity_manager>();
 
 		l_content_stream_manager->read_stream_file(p_game_system.get_file_system().get_content_data_path(bcL("ContentStream.json")).c_str());
 		l_material_manager.read_material_file(p_game_system.get_file_system().get_content_data_path(bcL("Material.json")).c_str());

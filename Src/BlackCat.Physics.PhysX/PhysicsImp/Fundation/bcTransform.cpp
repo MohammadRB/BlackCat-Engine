@@ -88,7 +88,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_transform<g_api_physx> bc_platform_transform<g_api_physx>::operator*(const bc_platform_transform& p_other) noexcept
+		bc_platform_transform<g_api_physx> bc_platform_transform<g_api_physx>::operator*(const bc_platform_transform& p_other) const noexcept
 		{
 			bc_platform_transform l_result;
 

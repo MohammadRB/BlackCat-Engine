@@ -70,8 +70,8 @@ namespace black_cat
 			throw bc_io_exception(l_error_msg.c_str());
 		}
 
-		auto& l_game_system = *core::bc_get_service< game::bc_game_system >();
-		auto& l_content_manager = *core::bc_get_service< core::bc_content_manager >();
+		auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
+		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
 
 		game::bc_mesh_builder l_builder;
 		core::bc_unordered_map_frame<const bcCHAR*, bcUINT32> l_node_mapping;
@@ -103,7 +103,7 @@ namespace black_cat
 				continue;
 			}
 			
-			auto l_lod_mesh = l_content_manager.load< game::bc_mesh >
+			auto l_lod_mesh = l_content_manager.load<game::bc_mesh>
 			(
 				p_context.get_allocator_alloc_type(),
 				l_lod_path.get_string_frame().c_str(),
@@ -146,7 +146,7 @@ namespace black_cat
 				l_collider_ai_scene = l_scene;
 			}
 
-			l_mesh_collider = l_content_manager.load< game::bc_mesh_collider >
+			l_mesh_collider = l_content_manager.load<game::bc_mesh_collider>
 			(
 				p_context.get_allocator_alloc_type(),
 				l_collider_file_path.get_string_frame().c_str(),
@@ -165,7 +165,7 @@ namespace black_cat
 
 	void bc_mesh_loader::fill_skinned_vertices(const aiMesh& p_ai_mesh,
 		const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
-		core::bc_vector_movable< game::bc_vertex_pos_tex_nor_tan_bon >& p_vertices,
+		core::bc_vector_movable<game::bc_vertex_pos_tex_nor_tan_bon>& p_vertices,
 		game::bc_mesh_builder& p_builder)
 	{
 		for (auto l_bone_ite = 0U; l_bone_ite < p_ai_mesh.mNumBones; ++l_bone_ite)
@@ -194,7 +194,7 @@ namespace black_cat
 		const aiMaterial& p_ai_material,
 		game::bc_mesh_material_description& p_material)
 	{
-		auto* l_content_manager = core::bc_get_service< core::bc_content_manager >();
+		auto* l_content_manager = core::bc_get_service<core::bc_content_manager>();
 
 		aiColor3D l_diffuse;
 		bcFLOAT l_alpha = 1;
@@ -261,7 +261,7 @@ namespace black_cat
 
 		if (!l_normal_map_path.empty())
 		{
-			p_material.m_normal_map = l_content_manager->load< graphic::bc_texture2d_content >
+			p_material.m_normal_map = l_content_manager->load<graphic::bc_texture2d_content>
 			(
 				p_context.get_allocator_alloc_type(),
 				l_normal_map_path.c_str(),
@@ -271,7 +271,7 @@ namespace black_cat
 		}
 		if (!l_specular_map_path.empty())
 		{
-			p_material.m_specular_map = l_content_manager->load< graphic::bc_texture2d_content >
+			p_material.m_specular_map = l_content_manager->load<graphic::bc_texture2d_content>
 			(
 				p_context.get_allocator_alloc_type(),
 				l_specular_map_path.c_str(),
@@ -300,7 +300,7 @@ namespace black_cat
 		graphic::bc_buffer_ref l_cbuffer;
 		game::bc_mesh_material_description l_material;
 
-		bool l_need_32bit_indices = p_ai_mesh.mNumFaces * 3 > std::numeric_limits< bcUINT16 >::max();
+		bool l_need_32bit_indices = p_ai_mesh.mNumFaces * 3 > std::numeric_limits<bcUINT16>::max();
 		bool l_has_texcoord = p_ai_mesh.HasTextureCoords(0);
 		bool l_has_normal = p_ai_mesh.HasNormals();
 		bool l_has_tangent = p_ai_mesh.HasTangentsAndBitangents();
@@ -452,7 +452,7 @@ namespace black_cat
 		{
 			auto l_bound_box = game::bc_extract_bound_box_from_points
 			(
-				physics::bc_bounded_strided_typed_data< core::bc_vector3f >
+				physics::bc_bounded_strided_typed_data<core::bc_vector3f>
 				(
 					&l_skinned_vertices[0].m_position,
 					sizeof(game::bc_vertex_pos_tex_nor_tan_bon),
@@ -478,7 +478,7 @@ namespace black_cat
 		{
 			auto l_bound_box = game::bc_extract_bound_box_from_points
 			(
-				physics::bc_bounded_strided_typed_data< core::bc_vector3f >
+				physics::bc_bounded_strided_typed_data<core::bc_vector3f>
 				(
 					&l_vertices[0].m_position,
 					sizeof(game::bc_vertex_pos_tex_nor_tan),

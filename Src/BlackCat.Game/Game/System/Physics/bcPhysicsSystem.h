@@ -59,11 +59,11 @@ namespace black_cat
 			 */
 			void set_game_actor(physics::bc_actor& p_px_actor, const bc_actor& p_actor) noexcept;
 
-			void create_px_shapes_from_height_map(bc_material_manager& p_material_manager, 
+			void create_px_shapes_from_height_map(const bc_material_manager& p_material_manager, 
 				physics::bc_rigid_static& p_rigid_static, 
 				const bc_height_map_component& p_height_map);
 
-			void create_px_shapes_from_mesh(bc_material_manager& p_material_manager, 
+			void create_px_shapes_from_mesh(const bc_material_manager& p_material_manager, 
 				physics::bc_rigid_body& p_px_actor, 
 				const bc_mesh_component& p_mesh, 
 				const core::bc_json_key_value* p_collider_materials);

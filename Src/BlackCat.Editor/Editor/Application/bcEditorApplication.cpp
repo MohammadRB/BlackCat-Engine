@@ -10,39 +10,40 @@ namespace black_cat
 {
 	namespace editor
 	{
-		bc_editor_app::bc_editor_app(HINSTANCE p_instance, QWidget *parent)
-			: QMainWindow(parent)
+		bc_editor_app::bc_editor_app(HINSTANCE p_instance, QWidget *p_parent)
+			: QMainWindow(p_parent)
 		{
 			setAttribute(Qt::WA_QuitOnClose);
 			ui.setupUi(this);
-			_load_style();
+			ui.mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
 			
-			m_d3d_widget = new bc_widget_d3d_output(centralWidget()->findChild<QFrame*>("leftRenderFrame"));
+			m_d3d_widget = new bc_widget_d3d_output(ui.centralWidget->findChild<QFrame*>("leftRenderFrame"));
 			m_d3d_output_window = std::make_unique<bc_render_application_d3dwidget_output_window>(m_d3d_widget);
 
 			m_render_app_thread.start(p_instance, nullptr, m_d3d_output_window.get());
 
-			m_awesome = std::make_unique< QtAwesome >(this);
+			m_awesome = std::make_unique<QtAwesome>(this);
 			m_awesome->initFontAwesome();
-			m_console_widget = new bc_widget_console(m_awesome.get(), centralWidget()->findChild<QWidget*>("consoleTab"));
-
+			m_console_widget = new bc_widget_console(m_awesome.get(), ui.centralWidget->findChild<QWidget*>("consoleTab"));
+			_load_style();
 			_load_icons();
 			
 			m_render_app_thread.wait_for_initialization();
 
 			// Now that game is available initialize console
-			game::bc_game_console& l_game_console = core::bc_get_service< game::bc_game_system >()->get_console();
-			m_editor_game_console = std::make_unique< bc_editor_game_console >(l_game_console, *m_console_widget);
+			game::bc_game_console& l_game_console = core::bc_get_service<game::bc_game_system>()->get_console();
+			m_editor_game_console = std::make_unique<bc_editor_game_console>(l_game_console, *m_console_widget);
 			m_editor_game_console->connect_widget(m_console_widget);
-
+			
 			m_ui_command_service = core::bc_get_service<bc_ui_command_service>();
-			m_form_main_menu = std::make_unique< bc_form_main_menu >(*menuBar(), *m_ui_command_service);
-			m_form_terrain = std::make_unique< bc_form_terrain >(*centralWidget());
-			m_form_object = std::make_unique< bc_form_object >(*centralWidget(), *m_ui_command_service);
-			m_form_object_insert = std::make_unique< bc_form_object_insert >(*centralWidget());
-			m_form_tools = std::make_unique< bc_form_tools >(*m_ui_command_service, *m_d3d_widget, *ui.toolsDock, *ui.rightToolBox, *m_form_terrain, *m_form_object_insert);
-			m_timer = std::make_unique< QTimer >();
-			m_timer->start(1000.0 / 60);
+			m_form_main_menu = std::make_unique<bc_form_main_menu>(*ui.mainMenuBar, *m_ui_command_service);
+			m_form_main_tool_bar = std::make_unique<bc_form_main_tool_bar>(*m_ui_command_service, *ui.mainToolBar);
+			m_form_object = std::make_unique<bc_form_object>(*ui.centralWidget, *m_ui_command_service);
+			m_form_object_insert = std::make_unique<bc_form_object_insert>(*ui.centralWidget);
+			m_form_terrain = std::make_unique<bc_form_terrain>(*ui.centralWidget);
+			m_form_tools = std::make_unique<bc_form_tools>(*m_ui_command_service, *m_d3d_widget, *ui.toolsDock, *ui.rightToolBox, *m_form_terrain, *m_form_object_insert);
+			m_timer = std::make_unique<QTimer>();
+			m_timer->start(1000.0f / 60);
 
 			QObject::connect(m_editor_game_console.get(), SIGNAL(scriptExecuted(const QString&)), this, SLOT(scriptExecuted(const QString&)));
 			QObject::connect(m_timer.get(), SIGNAL(timeout()), this, SLOT(timerTimeout()));
@@ -95,12 +96,12 @@ namespace black_cat
 
 		void bc_editor_app::_load_style() const
 		{
-			QFile f(":qdarkstyle/style.qss");
+			QFile l_style_file(":qdarkstyle/style.qss");
 
-			if (f.exists())
+			if (l_style_file.exists())
 			{
-				f.open(QFile::ReadOnly | QFile::Text);
-				QTextStream ts(&f);
+				l_style_file.open(QFile::ReadOnly | QFile::Text);
+				QTextStream ts(&l_style_file);
 
 				qApp->setStyleSheet(ts.readAll());
 			}
@@ -113,9 +114,10 @@ namespace black_cat
 			l_icon_defaults.insert("color", l_icon_default_color);
 			l_icon_defaults.insert("color-selected", l_icon_default_color);
 			l_icon_defaults.insert("color-active", l_icon_default_color);
-
-			_load_icon(centralWidget(), l_icon_defaults);
+			
+			_load_icon(ui.centralWidget, l_icon_defaults);
 			_load_icon(ui.toolsDock, l_icon_defaults);
+			_load_icon(ui.mainToolBar, l_icon_defaults);
 		}
 
 		void bc_editor_app::_load_icon(QWidget* p_parent, QVariantMap& p_options) const
@@ -126,51 +128,56 @@ namespace black_cat
 				_load_icon_toolbox(l_tool_box, p_options);
 			}
 
+			auto* l_tool_bar = qobject_cast<QToolBar*>(p_parent);
+			if (l_tool_bar)
+			{
+				_load_icon_toolbar(l_tool_bar, p_options);
+			}
+			
 			auto* l_button = qobject_cast<QToolButton*>(p_parent);
 			if (l_button)
 			{
 				_load_icon_button(l_button, p_options);
 			}
 
-			auto& l_children = p_parent->children();
-			for (auto l_child_obj : l_children)
+			const auto& l_children = p_parent->children();
+			for (auto* l_child_obj : l_children)
 			{
-				auto* l_child = qobject_cast<QWidget*>(l_child_obj);
-
-				if (!l_child)
+				auto* l_child_widget = qobject_cast<QWidget*>(l_child_obj);
+				if(!l_child_widget)
 				{
 					continue;
 				}
-
-				_load_icon(l_child, p_options);
+				
+				_load_icon(l_child_widget, p_options);
 			}
 		}
 
 		void bc_editor_app::_load_icon_button(QAbstractButton* p_bottom, QVariantMap& p_options) const
 		{
-			auto l_font_name_property = p_bottom->property("fontAwesome");
+			const auto l_font_name_property = p_bottom->property("fontAwesome");
 			if (!l_font_name_property.isValid())
 			{
 				return;
 			}
 
-			auto l_icon = m_awesome->icon(l_font_name_property.toString(), p_options);
+			const auto l_icon = m_awesome->icon(l_font_name_property.toString(), p_options);
 			p_bottom->setIcon(l_icon);
 		}
 
 		void bc_editor_app::_load_icon_toolbox(QToolBox* p_tool_box, QVariantMap& p_options) const
 		{
-			auto l_font_name_property = p_tool_box->property("fontAwesome");
+			const auto l_font_name_property = p_tool_box->property("fontAwesome");
 			if(!l_font_name_property.isValid())
 			{
 				return;
 			}
 
-			auto l_font_name_array = l_font_name_property.toString();
+			const auto l_font_name_array = l_font_name_property.toString();
 			auto l_font_names = l_font_name_array.split(',');
 
-			auto l_name_count = l_font_names.count();
-			auto l_tab_count = p_tool_box->count();
+			const auto l_name_count = l_font_names.count();
+			const auto l_tab_count = p_tool_box->count();
 
 			for(bcSIZE i = 0, end = std::min(l_name_count, l_tab_count); i < end; ++i)
 			{
@@ -178,7 +185,23 @@ namespace black_cat
 				p_tool_box->setItemIcon(i, l_icon);
 			}
 		}
-		
+
+		void bc_editor_app::_load_icon_toolbar(QToolBar* p_tool_bar, QVariantMap& p_options) const
+		{
+			auto l_actions = p_tool_bar->actions();
+			for(auto* l_action : l_actions)
+			{
+				const auto l_font_name_property = l_action->property("fontAwesome");
+				if (!l_font_name_property.isValid())
+				{
+					return;
+				}
+
+				const auto l_icon = m_awesome->icon(l_font_name_property.toString(), p_options);
+				l_action->setIcon(l_icon);
+			}
+		}
+
 		void bc_editor_app::scriptExecuted(const QString& p_string)
 		{
 			statusBar()->showMessage("Script executed: " + p_string, 3000);

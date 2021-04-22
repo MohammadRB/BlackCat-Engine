@@ -12,13 +12,13 @@ namespace black_cat
 		class bc_ui_object_delete_command : public bc_iui_command
 		{
 		public:
-			bc_ui_object_delete_command(game::bc_actor p_selected_actor);
+			bc_ui_object_delete_command(game::bc_actor p_actor) noexcept;
 
-			bc_ui_object_delete_command(const bc_ui_object_delete_command&);
+			bc_ui_object_delete_command(const bc_ui_object_delete_command&) noexcept;
 
-			virtual ~bc_ui_object_delete_command();
+			~bc_ui_object_delete_command() override;
 
-			bc_ui_object_delete_command& operator=(const bc_ui_object_delete_command&);
+			bc_ui_object_delete_command& operator=(const bc_ui_object_delete_command&) noexcept;
 
 			core::bc_string title() const override;
 
@@ -29,7 +29,7 @@ namespace black_cat
 			void update_ui(update_ui_context& p_context) override;
 
 		private:
-			game::bc_actor m_selected_actor;
+			game::bc_actor m_actor;
 		};
 	}
 }

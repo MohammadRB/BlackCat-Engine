@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Platform/PlatformPCH.h"
+#include "Core/bcEvent.h"
 #include "Platform/bcExport.h"
 #include "Platform/Application/bcWindow.h"
 #include "Platform/Application/bcKeyDevice.h"
