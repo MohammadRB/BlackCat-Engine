@@ -38,8 +38,8 @@ namespace black_cat
 		private:
 			const bc_sub_mesh* m_sub_mesh;
 			const bc_sub_mesh_mat4_transform* m_model_transforms;
-			bc_sub_mesh_mat4_transform m_inverse_model_transforms;
-			core::bc_vector_movable< core::bc_vector3f > m_skinned_vertices;
+			bc_sub_mesh_mat4_transform m_skinning_model_transforms;
+			core::bc_vector_movable<core::bc_vector3f> m_skinned_vertices;
 		};
 
 		inline bcSIZE bc_mesh_collider_skinning_animation_job::get_vertices_count() const noexcept

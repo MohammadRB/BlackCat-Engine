@@ -75,34 +75,72 @@ namespace black_cat
 
 			bool is_close() const noexcept;
 
-			// This function doesn't throw exception but if it fail, any subsequence calls to object will
-			// throw exception
+			/**
+			 * \brief This function does not throw exception but if it fail, any subsequence calls to object will throw exception
+			 * \param p_file 
+			 * \param p_mode 
+			 * \param p_access 
+			 * \param p_sharing 
+			 * \return 
+			 */
 			bool open(const bcECHAR* p_file, bc_file_mode p_mode, bc_file_access p_access, bc_file_sharing p_sharing) noexcept;
 
 			bool open(const bcECHAR* p_file, bc_file_mode p_mode, bc_file_access p_access) noexcept;
 
-			// Open an existing file for reading(open mode)
+			/**
+			 * \brief Open an existing file for reading(open mode)
+			 * \param p_file 
+			 * \return 
+			 */
 			bool open_read(const bcECHAR* p_file) noexcept;
 
-			// Open an existing file or create a new file for writing(open_create mode)
+			/**
+			 * \brief Open an existing file or create a new file for writing(create_overwrite mode)
+			 * \param p_file 
+			 * \return 
+			 */
 			bool open_write(const bcECHAR* p_file) noexcept;
 
-			// Move file pointer by offset(bytes) and return new location from beginning of file
+			/**
+			 * \brief Move file pointer by offset(bytes) and return new location from beginning of file
+			 * \param p_seek_location 
+			 * \param p_offset 
+			 * \return 
+			 */
 			bcUINT64 set_pointer(bc_file_seek p_seek_location, bcINT64 p_offset);
 
-			// Get current file pointer
+			/**
+			 * \brief Get current file pointer
+			 * \return 
+			 */
 			bcUINT64 get_pointer() const;
 
-			// Get end of file pointer
+			/**
+			 * \brief Get end of file pointer
+			 * \return 
+			 */
 			bcUINT64 get_eof_pointer() const;
 
-			// Return number of bytes that has been read
+			/**
+			 * \brief Return number of bytes that has been read
+			 * \param p_buffer 
+			 * \param p_bytes_to_read 
+			 * \return 
+			 */
 			bcSIZE read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read);
 
-			// Return number of bytes that has been written
+			/**
+			 * \brief Return number of bytes that has been written
+			 * \param p_buffer 
+			 * \param p_bytes_to_write 
+			 * \return 
+			 */
 			bcSIZE write(const bcBYTE* p_buffer, bcSIZE p_bytes_to_write);
 
-			// Return size of file in bytes
+			/**
+			 * \brief Return size of file in bytes
+			 * \return 
+			 */
 			bcUINT64 size() const;
 
 			void flush();

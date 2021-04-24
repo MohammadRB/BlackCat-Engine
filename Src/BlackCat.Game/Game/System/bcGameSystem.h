@@ -154,6 +154,8 @@ namespace black_cat
 
 			void _destroy() override;
 
+			bool _event_handler(core::bci_event& p_event);
+
 			core::bc_query_manager* m_query_manager;
 			core::bc_event_manager* m_event_manager;
 			bc_file_system m_file_system;

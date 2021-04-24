@@ -86,7 +86,7 @@ namespace black_cat
 		void bc_scene::add_actor(bc_actor& p_actor)
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_hybrid_mutex> l_lock_guard
+				core_platform::bc_hybrid_mutex_guard l_lock_guard
 				(
 					m_changed_actors_lock, core_platform::bc_lock_operation::light
 				);
@@ -97,7 +97,7 @@ namespace black_cat
 		void bc_scene::update_actor(bc_actor& p_actor)
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_hybrid_mutex> l_lock_guard
+				core_platform::bc_hybrid_mutex_guard l_lock_guard
 				(
 					m_changed_actors_lock, core_platform::bc_lock_operation::light
 				);
@@ -108,7 +108,7 @@ namespace black_cat
 					std::end(m_to_remove_actors),
 					[&p_actor](decltype(m_to_remove_actors)::reference p_entry)
 					{
-						return std::get< bc_actor >(p_entry) == p_actor;
+						return std::get<bc_actor>(p_entry) == p_actor;
 					}
 				);
 				
@@ -122,7 +122,7 @@ namespace black_cat
 		void bc_scene::remove_actor(bc_actor& p_actor)
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_hybrid_mutex> l_lock_guard
+				core_platform::bc_hybrid_mutex_guard l_lock_guard
 				(
 					m_changed_actors_lock, core_platform::bc_lock_operation::light
 				);
@@ -222,7 +222,7 @@ namespace black_cat
 						std::end(m_changed_actors),
 						[l_to_removed_actor](decltype(m_changed_actors)::reference p_entry)
 						{
-							return std::get< bc_actor >(p_entry) == std::get< bc_actor >(l_to_removed_actor);
+							return std::get<bc_actor>(p_entry) == std::get<bc_actor>(l_to_removed_actor);
 						}
 					);
 					if(l_changed_list_ite != std::end(m_changed_actors))
@@ -230,7 +230,7 @@ namespace black_cat
 						m_changed_actors.erase(l_changed_list_ite);
 					}
 					
-					_remove_actor(std::get< _bc_scene_actor_remove_state >(l_to_removed_actor), std::get< bc_actor >(l_to_removed_actor));
+					_remove_actor(std::get<_bc_scene_actor_remove_state>(l_to_removed_actor), std::get<bc_actor>(l_to_removed_actor));
 				}
 				
 				m_to_remove_actors.clear();

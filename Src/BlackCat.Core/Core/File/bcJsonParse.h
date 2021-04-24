@@ -3,10 +3,7 @@
 #pragma once
 
 #include "CorePlatform/bcType.h"
-
 #include "3rdParty/RapidJSON/include/document.h"
-#include "3rdParty/RapidJSON/Include/writer.h"
-#include "3rdParty/RapidJSON/include/prettywriter.h"
 
 namespace black_cat
 {

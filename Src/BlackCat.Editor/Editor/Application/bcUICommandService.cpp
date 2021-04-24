@@ -4,7 +4,9 @@
 
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Content/bcContentStreamManager.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/bcEvent.h"
 #include "Editor/Application/bcUICommandService.h"
 #include "PlatformImp/bcIDELogger.h"
 
@@ -53,13 +55,18 @@ namespace black_cat
 			return m_update_context->m_result;
 		}
 
-		bc_ui_command_service::bc_ui_command_service(core::bc_content_stream_manager& p_content_stream, game::bc_game_system& p_game_system)
+		bc_ui_command_service::bc_ui_command_service(core::bc_content_stream_manager& p_content_stream, core::bc_event_manager& p_event_manager, game::bc_game_system& p_game_system)
 			: m_content_stream(p_content_stream),
 			m_game_system(p_game_system),
 			m_last_update_clock(0),
 			m_last_execute_clock(0),
-			m_commands_to_undo(0)
+			m_commands_to_undo(0),
+			m_editor_mode(false)
 		{
+			m_editor_mode_event_handle = p_event_manager.register_event_listener<game::bc_event_editor_mode>
+			(
+				core::bc_event_manager::delegate_type(*this, &bc_ui_command_service::_event_handler)
+			);
 		}
 
 		bc_ui_command_service::~bc_ui_command_service() = default;
@@ -159,6 +166,17 @@ namespace black_cat
 			}
 
 			return l_command_state->second.get();
+		}
+
+		bool bc_ui_command_service::_event_handler(core::bci_event& p_event)
+		{
+			auto* l_editor_mode_event = core::bci_message::as<game::bc_event_editor_mode>(p_event);
+			if (l_editor_mode_event)
+			{
+				m_editor_mode = l_editor_mode_event->get_editor_mode();
+			}
+
+			return false;
 		}
 	}
 }

@@ -53,7 +53,7 @@ namespace black_cat
 
 			~_bc_queued_event() = default;
 
-			_bc_queued_event& operator =(_bc_queued_event&& p_other) noexcept
+			_bc_queued_event& operator=(_bc_queued_event&& p_other) noexcept
 			{
 				m_event = std::move(p_other.m_event);
 				m_process_time = p_other.m_process_time;
@@ -70,11 +70,11 @@ namespace black_cat
 			BC_SERVICE(evt_mng)
 
 		public:
-			using event_handler_type = bc_event_handler< bool(bci_event&) >;
+			using event_handler_type = bc_event_handler<bool(bci_event&)>;
 			using delegate_type = event_handler_type::delegate_type;
 
 		private:
-			using handler_map_t = bc_unordered_map< bc_event_hash, event_handler_type >;
+			using handler_map_t = bc_unordered_map<bc_event_hash, event_handler_type>;
 		
 		public:
 			bc_event_manager();
@@ -85,7 +85,7 @@ namespace black_cat
 
 			bc_event_manager& operator=(bc_event_manager&&) noexcept = delete;
 
-			template< class TEvent >
+			template<class TEvent>
 			bc_event_listener_handle register_event_listener(delegate_type&& p_listener);
 
 			void replace_event_listener(bc_event_listener_handle& p_listener_handle, delegate_type&& p_listener);
@@ -105,7 +105,7 @@ namespace black_cat
 			 * \param p_event
 			 * \param p_millisecond
 			 */
-			template< class TEvent >
+			template<class TEvent>
 			void queue_event(TEvent&& p_event, core_platform::bc_clock::small_delta_time p_millisecond);
 
 			bcUINT32 process_event_queue(const core_platform::bc_clock::update_param& p_clock);
@@ -117,28 +117,28 @@ namespace black_cat
 
 			bcUINT32 _process_events_in_queue(const core_platform::bc_clock::update_param& p_clock,
 				core_platform::bc_clock::big_clock& p_last_elapsed,
-				bc_concurrent_queue< _bc_queued_event >& p_global_queue,
-				bc_list< _bc_queued_event, bc_memory_pool_allocator< _bc_queued_event > >& p_local_queue);
+				bc_concurrent_queue<_bc_queued_event>& p_global_queue,
+				bc_list<_bc_queued_event, bc_memory_pool_allocator<_bc_queued_event>>& p_local_queue);
 
 			core_platform::bc_shared_mutex m_handlers_mutex;
 			handler_map_t m_handlers;
 
 			bc_concurrent_memory_pool m_queue_pool;
-			bc_list< _bc_queued_event, bc_memory_pool_allocator< _bc_queued_event > > m_local_queue;
-			bc_list< _bc_queued_event, bc_memory_pool_allocator< _bc_queued_event > > m_render_local_queue;
-			bc_concurrent_queue< _bc_queued_event > m_global_queue;
-			bc_concurrent_queue< _bc_queued_event > m_render_global_queue;
+			bc_list<_bc_queued_event, bc_memory_pool_allocator<_bc_queued_event>> m_local_queue;
+			bc_list<_bc_queued_event, bc_memory_pool_allocator<_bc_queued_event>> m_render_local_queue;
+			bc_concurrent_queue<_bc_queued_event> m_global_queue;
+			bc_concurrent_queue<_bc_queued_event> m_render_global_queue;
 			core_platform::bc_clock::big_clock m_last_elapsed;
 			core_platform::bc_clock::big_clock m_render_last_elapsed;
 		};
 
-		template< class TEvent >
+		template<class TEvent>
 		bc_event_listener_handle bc_event_manager::register_event_listener(delegate_type&& p_listener)
 		{
 			return _register_event_listener(bc_message_traits< TEvent >::message_name(), std::move(p_listener));
 		}
 
-		template< class TEvent >
+		template<class TEvent>
 		void bc_event_manager::queue_event(TEvent&& p_event, core_platform::bc_clock::small_delta_time p_millisecond)
 		{
 			auto l_event = static_cast<bc_event_ptr<bci_event>>(bc_make_event(std::forward<TEvent>(p_event)));

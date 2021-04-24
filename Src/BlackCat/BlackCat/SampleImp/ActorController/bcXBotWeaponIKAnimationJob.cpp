@@ -65,10 +65,8 @@ namespace black_cat
 		{
 			return true;
 		}
-		
-		core::bc_matrix3f l_weapon_local_forward_rotation;
-		bc_matrix3f_rotation_between_two_vector(l_weapon_local_forward_rotation, m_local_forward, m_weapon->m_local_forward);
-		
+
+		const auto l_weapon_local_forward_rotation = bc_matrix3f_rotation_between_two_vector(m_local_forward, m_weapon->m_local_forward);
 		const auto& l_offset_joint = m_model_job->get_transforms()[m_offset_joint_index];
 		const auto l_weapon_main_hand_offset = l_offset_joint.get_translation() + m_offset;
 		const auto l_weapon_second_hand_offset = l_weapon_main_hand_offset + l_weapon_local_forward_rotation * m_weapon->m_second_hand_offset;

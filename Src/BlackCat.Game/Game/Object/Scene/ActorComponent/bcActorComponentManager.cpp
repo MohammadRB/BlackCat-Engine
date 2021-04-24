@@ -7,13 +7,11 @@ namespace black_cat
 {
 	namespace game
 	{
-		void bc_actor_component_manager::update_actors(const core_platform::bc_clock::update_param& p_clock)
+		void bc_actor_component_manager::process_actor_events(const core_platform::bc_clock::update_param& p_clock)
 		{
-			core::bc_vector_frame< _bc_actor_component_entry* > l_components_with_event;
-			core::bc_vector_frame< _bc_actor_component_entry* > l_components_with_update;
-			
+			core::bc_vector_frame<_bc_actor_component_entry*> l_components_with_event;
+
 			l_components_with_event.reserve(m_components.size());
-			l_components_with_update.reserve(m_components.size());
 
 			for (auto& l_entry : m_components)
 			{
@@ -26,26 +24,12 @@ namespace black_cat
 				{
 					l_components_with_event.push_back(&l_entry.second);
 				}
-
-				if (l_entry.second.m_require_update)
-				{
-					l_components_with_update.push_back(&l_entry.second);
-				}
 			}
 
 			std::sort
 			(
 				std::begin(l_components_with_event),
 				std::end(l_components_with_event),
-				[](const _bc_actor_component_entry* p_first, const _bc_actor_component_entry* p_second)
-				{
-					return p_first->m_component_priority < p_second->m_component_priority;
-				}
-			);
-			std::sort
-			(
-				std::begin(l_components_with_update),
-				std::end(l_components_with_update),
 				[](const _bc_actor_component_entry* p_first, const _bc_actor_component_entry* p_second)
 				{
 					return p_first->m_component_priority < p_second->m_component_priority;
@@ -66,16 +50,9 @@ namespace black_cat
 				(
 					std::begin(l_components_with_event),
 					std::end(l_components_with_event),
-					[]()
-					{
-						return true;
-					},
-					[&](bool, _bc_actor_component_entry* p_entry)
+					[&](_bc_actor_component_entry* p_entry)
 					{
 						p_entry->m_container->handle_events(m_query_manager, m_game_system, *this);
-					},
-					[](bcINT32)
-					{
 					}
 				);
 
@@ -93,20 +70,63 @@ namespace black_cat
 						}
 					);
 				}
+			} while (m_event_pools[m_write_event_pool].size());
+		}
+
+		void bc_actor_component_manager::update_actors(const core_platform::bc_clock::update_param& p_clock)
+		{
+			core::bc_vector_frame<_bc_actor_component_entry*> l_components_with_update;
+			
+			l_components_with_update.reserve(m_components.size());
+
+			for (auto& l_entry : m_components)
+			{
+				if (l_entry.second.m_is_abstract)
+				{
+					continue;
+				}
+
+				if (l_entry.second.m_require_update)
+				{
+					l_components_with_update.push_back(&l_entry.second);
+				}
 			}
-			while (m_event_pools[m_write_event_pool].size());
+
+			std::sort
+			(
+				std::begin(l_components_with_update),
+				std::end(l_components_with_update),
+				[](const _bc_actor_component_entry* p_first, const _bc_actor_component_entry* p_second)
+				{
+					return p_first->m_component_priority < p_second->m_component_priority;
+				}
+			);
 
 			core::bc_concurrency::concurrent_for_each
 			(
 				std::begin(l_components_with_update),
 				std::end(l_components_with_update),
-				[]() { return true; },
-				[&](bool, _bc_actor_component_entry* p_entry)
+				[&](_bc_actor_component_entry* p_entry)
 				{
 					p_entry->m_container->update(m_query_manager, m_game_system, *this, p_clock);
-				},
-				[](bcINT32) {}
+				}
 			);
+		}
+
+		core::bc_task<void> bc_actor_component_manager::process_actor_events_async(const core_platform::bc_clock::update_param& p_clock)
+		{
+			auto l_task = core::bc_concurrency::start_task
+			(
+				core::bc_delegate< void() >
+				(
+					[=, &p_clock]()
+					{
+						process_actor_events(p_clock);
+					}
+				)
+			);
+
+			return l_task;
 		}
 
 		core::bc_task<void> bc_actor_component_manager::update_actors_async(const core_platform::bc_clock::update_param& p_clock)

@@ -3,6 +3,7 @@
 #include "Editor/EditorPCH.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Messaging/Event/bcEventManager.h"
+#include "Core/Content/bcContentStreamManager.h"
 #include "Core/bcUtility.h"
 #include "Platform/bcEvent.h"
 #include "PhysicsImp/Body/bcRigidDynamic.h"
@@ -46,8 +47,16 @@ namespace black_cat
 
 		void bc_editor_render_app::application_start_engine_components(game::bc_engine_application_parameter& p_parameters)
 		{
-			core::bc_register_service(core::bc_make_service<bc_ui_command_service>(*core::bc_get_service<core::bc_content_stream_manager>(), *m_game_system));
-			core::bc_register_loader< game::bc_height_map, bc_editor_height_map_loader_dx11 >("height_map", core::bc_make_loader< bc_editor_height_map_loader_dx11 >());
+			core::bc_register_service(core::bc_make_service<bc_ui_command_service>
+			(
+				*core::bc_get_service<core::bc_content_stream_manager>(),
+				*core::bc_get_service<core::bc_event_manager>(),
+				*m_game_system
+			));
+			core::bc_register_loader<game::bc_height_map, bc_editor_height_map_loader_dx11>
+			(
+				"height_map", core::bc_make_loader<bc_editor_height_map_loader_dx11>()
+			);
 		}
 
 		void bc_editor_render_app::application_initialize(game::bc_engine_application_parameter& p_parameters)
@@ -88,7 +97,7 @@ namespace black_cat
 				3000
 			);
 			l_camera->set_look_at(l_camera_pos, l_camera_look_at);
-			l_input_system.add_camera(std::move(l_camera));
+			l_input_system.add_editor_camera(std::move(l_camera));
 			
 			l_render_system.add_render_pass(0, bc_gbuffer_initialize_pass());
 			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
@@ -105,8 +114,8 @@ namespace black_cat
 			l_render_system.add_render_pass(12, bc_particle_system_pass_dx11());
 			l_render_system.add_render_pass(13, bc_text_draw_pass(constant::g_rpass_back_buffer_view));
 
-			game::bc_event_editor_mode l_editor_event(true);
-			core::bc_get_service<core::bc_event_manager>()->process_event(l_editor_event);
+			game::bc_event_editor_mode l_editor_mode_event(true);
+			core::bc_get_service<core::bc_event_manager>()->process_event(l_editor_mode_event);
 		}
 
 		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager* p_stream_manager)

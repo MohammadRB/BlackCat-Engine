@@ -61,7 +61,7 @@ namespace black_cat
 	{
 		core::bc_json_document<_bc_scene_json> l_json_document;
 		core::bc_string_frame l_json_str(p_context.m_file_buffer_size + 1, '\0');
-		std::memcpy(const_cast< bcCHAR* >(l_json_str.data()), p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
+		std::memcpy(const_cast<bcCHAR*>(l_json_str.data()), p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
 		
 		l_json_document.load(l_json_str.data());
 

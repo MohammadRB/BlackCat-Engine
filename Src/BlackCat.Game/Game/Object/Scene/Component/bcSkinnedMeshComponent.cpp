@@ -76,6 +76,10 @@ namespace black_cat
 			}
 			else
 			{
+				auto l_actor = get_actor();
+				auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
+				
+				_set_world_transform(l_actor, l_mediate_component->get_world_transform());
 				m_animation_played = false;
 			}
 		}
@@ -84,7 +88,7 @@ namespace black_cat
 		{
 			bc_mesh_component::initialize(p_context);
 			
-			const auto& l_animation_names = p_context.m_parameters.get_value_throw< core::bc_vector< core::bc_any > >(constant::g_param_animations);
+			const auto& l_animation_names = p_context.m_parameters.get_value_throw<core::bc_vector<core::bc_any>>(constant::g_param_animations);
 
 			m_animation_manager = &p_context.m_game_system.get_render_system().get_animation_manager();
 			m_model_transforms = bc_sub_mesh_mat4_transform(*get_mesh().get_root_node());
@@ -95,7 +99,7 @@ namespace black_cat
 			
 			for(auto& l_animation_name : l_animation_names)
 			{
-				bc_skinned_animation_ptr l_skinned_animation = p_context.m_stream_manager.find_content_throw< bc_skinned_animation >(l_animation_name.as_throw<core::bc_string>().c_str());
+				bc_skinned_animation_ptr l_skinned_animation = p_context.m_stream_manager.find_content_throw<bc_skinned_animation>(l_animation_name.as_throw<core::bc_string>().c_str());
 
 				if(!m_animations.empty())
 				{
@@ -128,14 +132,14 @@ namespace black_cat
 
 		void bc_skinned_mesh_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as< bc_world_transform_actor_event >(p_context.m_event);
+			const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
 			if (l_world_transform_event)
 			{
 				_set_world_transform(p_context.m_actor, l_world_transform_event->get_transform());
 				return;
 			}
 
-			const auto* l_bound_box_event = core::bci_message::as< bc_bound_box_changed_actor_event >(p_context.m_event);
+			const auto* l_bound_box_event = core::bci_message::as<bc_bound_box_changed_actor_event>(p_context.m_event);
 			if (l_bound_box_event)
 			{
 				bc_mesh_component::set_lod_factor(l_bound_box_event->get_bound_box());
@@ -240,13 +244,16 @@ namespace black_cat
 				bc_mesh_component::set_world_transform(p_actor, p_transform);
 
 				const auto& l_mesh = get_mesh();
+				auto& l_model_transforms = get_model_transforms();
 				auto& l_world_transforms = get_world_transforms();
+				auto l_scale_transform = core::bc_matrix4f::scale_matrix(l_mesh.get_mesh_scale());
 
 				bcINT32 l_dummy;
-				l_mesh.iterate_over_nodes(l_dummy, [this, &l_mesh, &p_transform, &l_world_transforms](const bc_mesh_node& p_node, bcINT32)
+				l_mesh.iterate_over_nodes(l_dummy, [this, &l_mesh, &p_transform, &l_model_transforms, &l_world_transforms, &l_scale_transform](const bc_mesh_node& p_node, bcINT32)
 				{
 					// Reset absolute transforms so skinned mesh will be rendered correctly in T pose
-					l_world_transforms.set_node_transform(p_node, core::bc_matrix4f::scale_matrix(l_mesh.get_mesh_scale()) * p_transform);
+					l_world_transforms.set_node_transform(p_node, l_scale_transform * p_transform);
+					l_model_transforms.set_node_transform(p_node, l_mesh.get_node_bind_pose_transform(p_node) * l_scale_transform);
 
 					return 0;
 				});

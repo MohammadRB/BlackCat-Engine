@@ -22,6 +22,8 @@
 #include "Game/System/Physics/bcPhysicsSimulationCallback.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
+#include "Game/Object/Scene/bcScene.h"
+#include "Game/Object/Scene/bcSceneCheckPoint.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
@@ -52,6 +54,7 @@
 #include "BlackCat/Loader/bcMeshLoader.h"
 #include "BlackCat/Loader/bcSkinnedAnimationLoader.h"
 #include "BlackCat/Loader/bcSceneLoader.h"
+#include "BlackCat/Loader/bcSceneCheckPointLoader.h"
 #include "BlackCat/SampleImp/ActorController/bcFireActorController.h"
 #include "BlackCat/SampleImp/ActorController/bcExplosionActorController.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotController.h"
@@ -139,6 +142,7 @@ namespace black_cat
 				std::move(p_parameters.m_app_parameters.m_scene_graph_factory)
 			)
 		);
+		core::bc_register_loader<game::bc_scene_check_point, bc_scene_check_point_loader>("scene_check_point", core::bc_make_loader<bc_scene_check_point_loader>());
 	}
 
 	void bc_register_engine_actor_components()

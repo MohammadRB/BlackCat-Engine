@@ -22,7 +22,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bc_platform_file<core_platform::g_api_win32>::bc_platform_file() noexcept
+		bc_platform_file<g_api_win32>::bc_platform_file() noexcept
 			: m_pack()
 		{
 			m_pack.m_file = INVALID_HANDLE_VALUE;
@@ -31,7 +31,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bc_platform_file<core_platform::g_api_win32>::bc_platform_file(bc_platform_file&& p_other) noexcept
+		bc_platform_file<g_api_win32>::bc_platform_file(bc_platform_file&& p_other) noexcept
 			: m_pack(std::move(p_other.m_pack))
 		{
 			p_other.m_pack.m_file = INVALID_HANDLE_VALUE;
@@ -40,7 +40,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bc_platform_file<core_platform::g_api_win32>::~bc_platform_file()
+		bc_platform_file<g_api_win32>::~bc_platform_file()
 		{
 			if (get_status() == bc_file_status::open)
 				close();
@@ -48,7 +48,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bc_platform_file<core_platform::g_api_win32>& bc_platform_file<core_platform::g_api_win32>::operator=(bc_platform_file&& p_other) noexcept
+		bc_platform_file<g_api_win32>& bc_platform_file<g_api_win32>::operator=(bc_platform_file&& p_other) noexcept
 		{
 			m_pack = std::move(p_other.m_pack);
 
@@ -60,7 +60,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bc_file_status bc_platform_file<core_platform::g_api_win32>::get_status() const noexcept
+		bc_file_status bc_platform_file<g_api_win32>::get_status() const noexcept
 		{
 			if (m_pack.m_file != INVALID_HANDLE_VALUE && m_pack.m_error_code == 0)
 			{
@@ -83,7 +83,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bool bc_platform_file<core_platform::g_api_win32>::open(const bcECHAR* p_file, bc_file_mode p_mode, bc_file_access p_access, bc_file_sharing p_sharing) noexcept
+		bool bc_platform_file<g_api_win32>::open(const bcECHAR* p_file, bc_file_mode p_mode, bc_file_access p_access, bc_file_sharing p_sharing) noexcept
 		{
 			HANDLE l_file;
 
@@ -117,28 +117,28 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bool bc_platform_file<core_platform::g_api_win32>::open(const bcECHAR* p_file, bc_file_mode p_mode, bc_file_access p_access) noexcept
+		bool bc_platform_file<g_api_win32>::open(const bcECHAR* p_file, bc_file_mode p_mode, bc_file_access p_access) noexcept
 		{
 			return open(p_file, p_mode, p_access, p_access == bc_file_access::read ? bc_file_sharing::read : bc_file_sharing::none);
 		}
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bool bc_platform_file<core_platform::g_api_win32>::open_read(const bcECHAR* p_file) noexcept
+		bool bc_platform_file<g_api_win32>::open_read(const bcECHAR* p_file) noexcept
 		{
 			return open(p_file, bc_file_mode::open, bc_file_access::read, bc_file_sharing::read);
 		}
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bool bc_platform_file<core_platform::g_api_win32>::open_write(const bcECHAR* p_file) noexcept
+		bool bc_platform_file<g_api_win32>::open_write(const bcECHAR* p_file) noexcept
 		{
-			return open(p_file, bc_file_mode::open_create, bc_file_access::write, bc_file_sharing::none);
+			return open(p_file, bc_file_mode::create_overwrite, bc_file_access::write, bc_file_sharing::none);
 		}
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bcUINT64 bc_platform_file<core_platform::g_api_win32>::set_pointer(bc_file_seek p_seek_location, bcINT64 p_offset)
+		bcUINT64 bc_platform_file<g_api_win32>::set_pointer(bc_file_seek p_seek_location, bcINT64 p_offset)
 		{
 			_check_file_is_open(m_pack.m_file, m_pack.m_error_code);
 
@@ -153,7 +153,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bcUINT64 bc_platform_file<core_platform::g_api_win32>::get_pointer() const
+		bcUINT64 bc_platform_file<g_api_win32>::get_pointer() const
 		{
 			_check_file_is_open(m_pack.m_file, m_pack.m_error_code);
 
@@ -162,7 +162,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bcUINT64 bc_platform_file<core_platform::g_api_win32>::get_eof_pointer() const
+		bcUINT64 bc_platform_file<g_api_win32>::get_eof_pointer() const
 		{
 			_check_file_is_open(m_pack.m_file, m_pack.m_error_code);
 
@@ -176,7 +176,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bcSIZE bc_platform_file<core_platform::g_api_win32>::read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read)
+		bcSIZE bc_platform_file<g_api_win32>::read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read)
 		{
 			_check_file_is_open(m_pack.m_file, m_pack.m_error_code);
 
@@ -188,7 +188,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bcSIZE bc_platform_file<core_platform::g_api_win32>::write(const bcBYTE* p_buffer, bcSIZE p_bytes_to_write)
+		bcSIZE bc_platform_file<g_api_win32>::write(const bcBYTE* p_buffer, bcSIZE p_bytes_to_write)
 		{
 			_check_file_is_open(m_pack.m_file, m_pack.m_error_code);
 
@@ -200,7 +200,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		bcUINT64 bc_platform_file<core_platform::g_api_win32>::size() const
+		bcUINT64 bc_platform_file<g_api_win32>::size() const
 		{
 			_check_file_is_open(m_pack.m_file, m_pack.m_error_code);
 
@@ -212,7 +212,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		void bc_platform_file<core_platform::g_api_win32>::flush()
+		void bc_platform_file<g_api_win32>::flush()
 		{
 			_check_file_is_open(m_pack.m_file, m_pack.m_error_code);
 
@@ -221,7 +221,7 @@ namespace black_cat
 
 		template< >
 		BC_COREPLATFORMIMP_DLL
-		void bc_platform_file<core_platform::g_api_win32>::close()
+		void bc_platform_file<g_api_win32>::close()
 		{
 			_check_file_is_open(m_pack.m_file, m_pack.m_error_code);
 

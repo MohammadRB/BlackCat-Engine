@@ -42,7 +42,12 @@ namespace black_cat
 			 */
 			bci_camera* get_camera() noexcept
 			{
-				return m_cameras.rbegin()->get();
+				if(!m_editor_mode)
+				{
+					return m_cameras.back().get();
+				}
+
+				return m_editor_camera;
 			}
 
 			/**
@@ -59,7 +64,14 @@ namespace black_cat
 			 * \param p_camera 
 			 * \return 
 			 */
-			bci_camera* add_camera(core::bc_unique_ptr< bci_camera > p_camera);
+			bci_camera* add_camera(core::bc_unique_ptr<bci_camera> p_camera);
+			
+			/**
+			 * \brief Add camera to camera stack and use it in editor mode 
+			 * \param p_camera 
+			 * \return 
+			 */
+			bci_camera* add_editor_camera(core::bc_unique_ptr<bci_camera> p_camera);
 
 			void remove_camera(const bci_camera* p_camera);
 			
@@ -69,11 +81,15 @@ namespace black_cat
 			bool _event_handler(core::bci_event& p_event);
 
 			core::bc_event_listener_handle m_window_resize_event_handle;
+			core::bc_event_listener_handle m_editor_mode_event_handle;
 			platform::bc_key_device m_key_device;
 			platform::bc_pointing_device m_pointing_device;
 
 			core::bc_mutex_test m_cameras_mutex;
 			core::bc_vector<core::bc_unique_ptr<bci_camera>> m_cameras;
+
+			bci_camera* m_editor_camera;
+			bool m_editor_mode;
 		};
 	}
 }

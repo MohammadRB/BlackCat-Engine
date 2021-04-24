@@ -202,7 +202,11 @@ namespace black_cat
 			template<class TComponent>
 			bc_actor component_get_actor(const TComponent& p_component) const noexcept;
 
+			void process_actor_events(const core_platform::bc_clock::update_param& p_clock);
+			
 			void update_actors(const core_platform::bc_clock::update_param& p_clock);
+			
+			core::bc_task<void> process_actor_events_async(const core_platform::bc_clock::update_param& p_clock);
 			
 			core::bc_task<void> update_actors_async(const core_platform::bc_clock::update_param& p_clock);
 

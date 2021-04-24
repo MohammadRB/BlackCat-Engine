@@ -63,51 +63,69 @@ namespace black_cat
 			auto& l_console = m_console;
 			auto* l_scene = m_scene.get();
 
-			if (p_is_partial_update)
+			if(!m_editor_mode)
 			{
-				l_physics_system.update(p_clock);
-				if (l_scene)
+				if (p_is_partial_update)
 				{
-					l_scene->update_physics(p_clock);
+					l_physics_system.update(p_clock);
+					if (l_scene)
+					{
+						l_scene->update_physics(p_clock);
+					}
+
+					return;
 				}
 
-				return;
+				core::bc_task<void> l_scene_task;
+				core::bc_task<void> l_scene_task1;
+
+				l_input_system.update(p_clock);
+				l_physics_system.update(p_clock);
+
+				if (l_scene)
+				{
+					l_scene_task = l_scene->update_physics_async(p_clock);
+				}
+
+				l_event_manager.process_event_queue(p_clock);
+
+				l_scene_task.wait();
+
+				l_actor_component_manager.process_actor_events(p_clock);
+				l_actor_component_manager.update_actors(p_clock);
+				l_animation_manager.run_scheduled_jobs(p_clock);
+				l_actor_component_manager.double_update_actors(p_clock);
+
+				if (l_scene)
+				{
+					l_scene_task = l_scene->update_graph_async();
+					l_scene_task1 = l_scene->update_bullets_async(p_clock);
+				}
+
+				l_particle_manager.update(p_clock);
+				l_decal_manager.update_decal_lifespans(p_clock);
+				l_script_system.update(p_clock);
+				l_console->update(p_clock);
+				l_render_system.update(bc_render_system::update_context(p_clock, *m_input_system.get_camera()));
+
+				core::bc_concurrency::when_all(l_scene_task, l_scene_task1);
 			}
-
-			core::bc_task<void> l_scene_task;
-			core::bc_task<void> l_scene_task1;
-			//core::bc_task<bcUINT32> l_query_task;
-
-			l_input_system.update(p_clock);
-			l_physics_system.update(p_clock);
-
-			if (l_scene)
+			else
 			{
-				l_scene_task = l_scene->update_physics_async(p_clock);
+				l_input_system.update(p_clock);
+				
+				l_event_manager.process_event_queue(p_clock);
+
+				l_actor_component_manager.process_actor_events(p_clock);
+
+				core::bc_task<void> l_scene_task = l_scene->update_graph_async();
+
+				l_script_system.update(p_clock);
+				l_console->update(p_clock);
+				l_render_system.update(bc_render_system::update_context(p_clock, *m_input_system.get_camera()));
+
+				core::bc_concurrency::when_all(l_scene_task);
 			}
-
-			l_event_manager.process_event_queue(p_clock);
-
-			l_scene_task.wait();
-
-			l_actor_component_manager.update_actors(p_clock);
-			l_animation_manager.run_scheduled_jobs(p_clock);
-			l_actor_component_manager.double_update_actors(p_clock);
-			//l_query_task = l_query_manager.process_query_queue_async(p_clock);
-
-			if (l_scene)
-			{
-				l_scene_task = l_scene->update_graph_async();
-				l_scene_task1 = l_scene->update_bullets_async(p_clock);
-			}
-
-			l_particle_manager.update(p_clock);
-			l_decal_manager.update_decal_lifespans(p_clock);
-			l_script_system.update(p_clock);
-			l_console->update(p_clock);
-			l_render_system.update(bc_render_system::update_context(p_clock, *m_input_system.get_camera()));
-
-			core::bc_concurrency::when_all(l_scene_task, l_scene_task1);
 
 			l_query_manager.process_query_queue(p_clock);
 		}
@@ -149,15 +167,7 @@ namespace black_cat
 
 			m_editor_event_handle = m_event_manager->register_event_listener<bc_event_editor_mode>
 			(
-				[=](core::bci_event& p_event)
-				{
-					auto* l_editor_event = core::bci_message::as<bc_event_editor_mode>(p_event);
-					if(l_editor_event)
-					{
-						m_editor_mode = l_editor_event->get_editor_mode();
-					}
-					return true;
-				}
+				core::bc_event_manager::delegate_type(*this, &bc_game_system::_event_handler)
 			);
 			m_scene_query_context_provider = m_query_manager->register_query_provider<bc_scene_query_context>
 			(
@@ -181,6 +191,16 @@ namespace black_cat
 			m_render_system.destroy();
 			m_script_system.destroy();
 			m_physics_system.destroy();
+		}
+
+		bool bc_game_system::_event_handler(core::bci_event& p_event)
+		{
+			auto* l_editor_event = core::bci_message::as<bc_event_editor_mode>(p_event);
+			if (l_editor_event)
+			{
+				m_editor_mode = l_editor_event->get_editor_mode();
+			}
+			return true;
 		}
 	}
 }

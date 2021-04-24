@@ -30,8 +30,8 @@ namespace black_cat
 			bc_ui_command_service* m_command_service;
 			
 			QLabel* m_entity_name_label;
-			QAbstractButton* m_entity_delete_button;
 			QAbstractButton* m_entity_update_button;
+			QAbstractButton* m_entity_delete_button;
 			QLineEdit* m_entity_position_x_text;
 			QLineEdit* m_entity_position_y_text;
 			QLineEdit* m_entity_position_z_text;

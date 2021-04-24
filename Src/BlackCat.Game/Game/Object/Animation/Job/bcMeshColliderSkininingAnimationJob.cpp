@@ -29,9 +29,9 @@ namespace black_cat
 				return true;
 			}
 			
-			if(m_inverse_model_transforms.empty())
+			if(m_skinning_model_transforms.empty())
 			{
-				m_inverse_model_transforms = bc_sub_mesh_mat4_transform(*m_sub_mesh->get_root_node());
+				m_skinning_model_transforms = bc_sub_mesh_mat4_transform(*m_sub_mesh->get_root_node());
 			}
 			
 			const auto l_bone_names = get_skeleton().get_joint_names();
@@ -43,7 +43,7 @@ namespace black_cat
 				const auto* l_mesh_node = m_sub_mesh->find_node(l_bone_name);
 				const auto& l_mesh_node_inverse_transform = m_sub_mesh->get_node_inverse_bind_pose_transform(*l_mesh_node);
 				const auto& l_animation_model_transform = m_model_transforms->get_node_transform(*l_mesh_node);
-				auto& l_output_transform = m_inverse_model_transforms.get_node_transform(*l_mesh_node);
+				auto& l_output_transform = m_skinning_model_transforms.get_node_transform(*l_mesh_node);
 
 				l_output_transform = l_mesh_node_inverse_transform * l_animation_model_transform;
 			}
@@ -85,7 +85,7 @@ namespace black_cat
 						}
 						
 						const auto l_bone_index = l_skinning_vertex.m_indices[l_weight_ite];
-						l_final_vertex += m_inverse_model_transforms[l_bone_index] * core::bc_vector4f(l_skinning_vertex.m_position, 1) * l_bone_weight;
+						l_final_vertex += m_skinning_model_transforms[l_bone_index] * core::bc_vector4f(l_skinning_vertex.m_position, 1) * l_bone_weight;
 					}
 
 					m_skinned_vertices[l_vertex_index] = l_final_vertex.xyz();

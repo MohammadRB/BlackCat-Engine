@@ -8,9 +8,11 @@
 #include "Core/Container/bcQueue.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Concurrency/bcTask.h"
+#include "Core/Messaging/Event/bcEventListenerHandle.h"
 #include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Editor/Application/bcUICommand.h"
+#include "Editor/UICommand/bcUIEditorModeCommand.h"
 #include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
@@ -18,6 +20,7 @@ namespace black_cat
 	namespace core
 	{
 		class bc_content_stream_manager;
+		class bc_event_manager;
 	}
 
 	namespace game
@@ -53,17 +56,18 @@ namespace black_cat
 
 		class bc_ui_command_service : public core::bci_service
 		{
-		private:
 			BC_SERVICE(uic_srv)
+			
+		private:
 			using command_hash_t = std::hash<core::bc_string>;
 			using command_state_container = core::bc_unordered_map_program<command_hash_t::result_type, bc_iui_command::state_ptr>;
 
 		public:
-			bc_ui_command_service(core::bc_content_stream_manager& p_content_stream, game::bc_game_system& p_game_system);
+			bc_ui_command_service(core::bc_content_stream_manager& p_content_stream, core::bc_event_manager& p_event_manager, game::bc_game_system& p_game_system);
 
 			bc_ui_command_service(bc_ui_command_service&&) noexcept = delete;
 
-			~bc_ui_command_service();
+			~bc_ui_command_service() override;
 
 			bc_ui_command_service& operator=(bc_ui_command_service&&) noexcept = delete;
 
@@ -85,9 +89,14 @@ namespace black_cat
 		private:
 			bc_iui_command::state* _get_command_state(const bc_iui_command& p_command);
 
+			bool _event_handler(core::bci_event& p_event);
+
 			core::bc_content_stream_manager& m_content_stream;
 			game::bc_game_system& m_game_system;
 
+			core::bc_event_listener_handle m_editor_mode_event_handle;
+			command_state_container m_command_states;
+			
 			mutable core_platform::bc_mutex m_commands_lock;
 			core_platform::bc_clock::big_clock m_last_update_clock;
 			core_platform::bc_clock::big_clock m_last_execute_clock;
@@ -95,17 +104,22 @@ namespace black_cat
 			core::bc_queue<core::bc_shared_ptr<_bc_ui_command_entry>> m_executed_commands;
 			core::bc_queue<core::bc_shared_ptr<_bc_ui_command_entry>> m_reversible_commands;
 			bcUINT32 m_commands_to_undo;
-
-			command_state_container m_command_states;
+			bool m_editor_mode;
 		};
 
-		template< typename T >
+		template<typename T>
 		core::bc_task<core::bc_any> bc_ui_command_service::queue_command(T&& p_command)
 		{
 			static_assert(std::is_base_of_v<bc_iui_command, T>, "T must inherit from bc_iui_command");
+
+			// Only allow editor mode command when application is in game mode
+			if(!m_editor_mode && !std::is_same_v<bc_ui_editor_mode_command, T>)
+			{
+				return core::bc_task<core::bc_any>();
+			}
 			
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> m_guard(m_commands_lock);
+				core_platform::bc_mutex_guard l_lock(m_commands_lock);
 				
 				if(m_last_execute_clock == m_last_update_clock) // Only allow one command per frame
 				{

@@ -77,10 +77,10 @@ namespace black_cat
 
 			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;
 
-			template< typename TComponent >
+			template<typename TComponent>
 			bc_scene_graph_buffer get_actors() const;
 
-			template< typename TComponent >
+			template<typename TComponent>
 			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;
 
 			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
@@ -91,7 +91,7 @@ namespace black_cat
 			core::bc_unique_ptr<bci_scene_graph_node> m_graph_node;
 		};
 
-		template< typename TComponent >
+		template<typename TComponent>
 		bc_scene_graph_buffer bc_scene_graph::get_actors() const
 		{
 			bc_scene_graph_buffer l_result;
@@ -107,7 +107,7 @@ namespace black_cat
 			return l_result;
 		}
 
-		template< typename TComponent >
+		template<typename TComponent>
 		bc_scene_graph_buffer bc_scene_graph::get_actors(const bc_camera_frustum& p_camera_frustum) const
 		{
 			bc_scene_graph_buffer l_in_view_actors = get_actors(p_camera_frustum);

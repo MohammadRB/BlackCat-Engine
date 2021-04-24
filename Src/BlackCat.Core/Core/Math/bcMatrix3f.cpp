@@ -129,10 +129,10 @@ namespace black_cat
 			*this = l_rot1;
 		}
 		
-		void bc_matrix3f::rotation_euler_lh(const bc_vector3f& p_axis, bcFLOAT p_angle) noexcept
+		void bc_matrix3f::rotation_euler_lh(const bc_vector3f& p_axis, bcFLOAT p_radians) noexcept
 		{
-			const bcFLOAT l_s = sinf(p_angle);
-			const bcFLOAT l_c = cosf(p_angle);
+			const bcFLOAT l_s = sinf(p_radians);
+			const bcFLOAT l_c = cosf(p_radians);
 			const bcFLOAT l_t = 1 - l_c;
 
 			m_entry[i(0, 0)] = l_t * p_axis.x * p_axis.x + l_c;
@@ -221,9 +221,9 @@ namespace black_cat
 			*this = l_rot1;
 		}
 
-		void bc_matrix3f::rotation_euler_rh(const bc_vector3f& p_axis, bcFLOAT p_angle) noexcept
+		void bc_matrix3f::rotation_euler_rh(const bc_vector3f& p_axis, bcFLOAT p_radians) noexcept
 		{
-			rotation_euler_lh(p_axis, p_angle);
+			rotation_euler_lh(p_axis, p_radians);
 
 			m_entry[i(0, 1)] = -m_entry[i(0, 1)];
 			m_entry[i(0, 2)] = -m_entry[i(0, 2)];

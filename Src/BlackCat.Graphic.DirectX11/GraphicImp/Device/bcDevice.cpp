@@ -48,7 +48,7 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		D3D_SHADER_MACRO* _create_shader_macro_array(const bc_shader_macro* p_macros, bcUINT32 p_macro_count, core::bc_vector< D3D_SHADER_MACRO >& p_buffer)
+		D3D_SHADER_MACRO* _create_shader_macro_array(const bc_shader_macro* p_macros, bcUINT32 p_macro_count, core::bc_vector<D3D_SHADER_MACRO>& p_buffer)
 		{
 			p_buffer.resize(p_macro_count + 1);
 
@@ -124,7 +124,7 @@ namespace black_cat
 				dx_call(DirectX::CreateDDSTextureFromMemoryEx
 				(
 					p_device->get_platform_pack().m_device.Get(),
-					reinterpret_cast< const bcUBYTE* >(p_data),
+					reinterpret_cast<const bcUBYTE*>(p_data),
 					p_data_size,
 					0,
 					l_usage,
@@ -142,7 +142,7 @@ namespace black_cat
 				dx_call(DirectX::CreateWICTextureFromMemoryEx
 				(
 					p_device->get_platform_pack().m_device.Get(),
-					reinterpret_cast< const bcUBYTE* >(p_data),
+					reinterpret_cast<const bcUBYTE*>(p_data),
 					p_data_size,
 					0,
 					l_usage,
@@ -155,7 +155,7 @@ namespace black_cat
 				));
 			}
 
-			return static_cast< ID3D11Texture2D* >(l_texture);
+			return static_cast<ID3D11Texture2D*>(l_texture);
 		}
 
 		void _save_texture(bc_device* p_device, bc_texture2d* p_texture, bc_image_format p_format, const bcECHAR* p_file_name)
@@ -220,7 +220,7 @@ namespace black_cat
 #endif
 
 				ID3D10Blob* l_compiled_shader;
-				ComPtr< ID3D10Blob > l_error_messages;
+				ComPtr<ID3D10Blob> l_error_messages;
 				const HRESULT l_hr = D3DCompile
 				(
 					p_data,
@@ -246,19 +246,19 @@ namespace black_cat
 					{
 						bcCHAR l_message[3072];
 						l_message[0] = NULL;
-						bcCHAR* l_blobdata = reinterpret_cast< char* >(l_error_messages->GetBufferPointer());
+						bcCHAR* l_blobdata = reinterpret_cast<char*>(l_error_messages->GetBufferPointer());
 
 						std::strcpy(l_message, l_blobdata);
 
 						l_full_message += l_message;
 
 						BC_ASSERT(false);
-						throw bc_graphic_exception(static_cast< bcINT >(l_error_code), l_full_message);
+						throw bc_graphic_exception(static_cast<bcINT>(l_error_code), l_full_message);
 					}
 					else
 					{
 						BC_ASSERT(false);
-						throw bc_graphic_exception(static_cast< bcINT >(l_error_code), l_full_message);
+						throw bc_graphic_exception(static_cast<bcINT>(l_error_code), l_full_message);
 					}
 				}
 
@@ -437,11 +437,11 @@ namespace black_cat
 
 		void _check_best_dxgi_fullscreen_setting(ID3D11Device* p_device, IDXGISwapChain* p_swap_chain, DXGI_MODE_DESC* p_new_desc, DXGI_MODE_DESC* p_best_desc)
 		{
-			ComPtr< IDXGIDevice > l_dxgi_device;
-			ComPtr< IDXGIAdapter > l_adapter;
-			ComPtr< IDXGIOutput > l_output;
+			ComPtr<IDXGIDevice> l_dxgi_device;
+			ComPtr<IDXGIAdapter> l_adapter;
+			ComPtr<IDXGIOutput> l_output;
 
-			dx_call(p_swap_chain->GetDevice(__uuidof(IDXGIDevice), reinterpret_cast< void** >(l_dxgi_device.GetAddressOf())));
+			dx_call(p_swap_chain->GetDevice(__uuidof(IDXGIDevice), reinterpret_cast<void**>(l_dxgi_device.GetAddressOf())));
 			l_dxgi_device->GetAdapter(l_adapter.GetAddressOf());
 			l_adapter->EnumOutputs(0, l_output.GetAddressOf());
 
@@ -450,20 +450,20 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device< g_api_dx11 >::bc_platform_device()
+		bc_platform_device<g_api_dx11>::bc_platform_device()
 		{
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device< g_api_dx11 >::bc_platform_device(bc_platform_device&& p_other) noexcept
+		bc_platform_device<g_api_dx11>::bc_platform_device(bc_platform_device&& p_other) noexcept
 		{
 			operator=(std::move(p_other));
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device< g_api_dx11 >::~bc_platform_device()
+		bc_platform_device<g_api_dx11>::~bc_platform_device()
 		{
 			if (m_initialized)
 			{
@@ -473,7 +473,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device< g_api_dx11 >& bc_platform_device< g_api_dx11 >::operator=(bc_platform_device&& p_other) noexcept
+		bc_platform_device<g_api_dx11>& bc_platform_device<g_api_dx11>::operator=(bc_platform_device&& p_other) noexcept
 		{
 			m_pack.m_vsync = p_other.m_pack.m_vsync;
 			m_pack.m_device = std::move(p_other.m_pack.m_device);
@@ -485,21 +485,21 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bool bc_platform_device< g_api_dx11 >::get_vsync() const
+		bool bc_platform_device<g_api_dx11>::get_vsync() const
 		{
 			return m_pack.m_vsync;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device< g_api_dx11 >::set_vsync(bool p_sync)
+		void bc_platform_device<g_api_dx11>::set_vsync(bool p_sync)
 		{
 			m_pack.m_vsync = p_sync;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bool bc_platform_device< g_api_dx11 >::get_full_screen() const
+		bool bc_platform_device<g_api_dx11>::get_full_screen() const
 		{
 			DXGI_SWAP_CHAIN_DESC l_desc;
 			m_pack.m_swap_chain->GetDesc(&l_desc);
@@ -509,7 +509,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device< g_api_dx11 >::set_full_screen(bool p_full_screen)
+		void bc_platform_device<g_api_dx11>::set_full_screen(bool p_full_screen)
 		{
 			if (p_full_screen)
 			{
@@ -534,10 +534,10 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_texture2d bc_platform_device< g_api_dx11 >::get_back_buffer_texture() const
+		bc_texture2d bc_platform_device<g_api_dx11>::get_back_buffer_texture() const
 		{
-			ComPtr< ID3D11Texture2D > l_surface;
-			dx_call(m_pack.m_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast< void** >(l_surface.GetAddressOf())));
+			ComPtr<ID3D11Texture2D> l_surface;
+			dx_call(m_pack.m_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(l_surface.GetAddressOf())));
 
 			bc_texture2d::platform_pack l_pack;
 			l_pack.m_resource = l_surface.Get();
@@ -548,13 +548,13 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_info bc_platform_device< g_api_dx11 >::get_device_info() const
+		bc_device_info bc_platform_device<g_api_dx11>::get_device_info() const
 		{
-			ComPtr< IDXGIDevice > l_dxgi_device;
-			ComPtr< IDXGIAdapter > l_adapter;
+			ComPtr<IDXGIDevice> l_dxgi_device;
+			ComPtr<IDXGIAdapter> l_adapter;
 			DXGI_ADAPTER_DESC l_adapter_desc;
 
-			dx_call(m_pack.m_swap_chain->GetDevice(__uuidof(IDXGIDevice), reinterpret_cast< void** >(l_dxgi_device.GetAddressOf())));
+			dx_call(m_pack.m_swap_chain->GetDevice(__uuidof(IDXGIDevice), reinterpret_cast<void**>(l_dxgi_device.GetAddressOf())));
 			l_dxgi_device->GetAdapter(l_adapter.GetAddressOf());
 			l_adapter->GetDesc(&l_adapter_desc);
 
@@ -566,7 +566,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bcUINT bc_platform_device< g_api_dx11 >::check_multi_sampling(bc_format p_textue_format, bcUINT p_sample_count) const
+		bcUINT bc_platform_device<g_api_dx11>::check_multi_sampling(bc_format p_textue_format, bcUINT p_sample_count) const
 		{
 			bcUINT l_sample_quality;
 
@@ -577,9 +577,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_buffer_ref bc_platform_device< g_api_dx11 >::create_buffer(bc_buffer_config& p_config, bc_subresource_data* p_data)
+		bc_buffer_ref bc_platform_device<g_api_dx11>::create_buffer(bc_buffer_config& p_config, bc_subresource_data* p_data)
 		{
-			auto* l_dx_buffer = _initialize_buffer(static_cast< bc_device* >(this), &p_config, p_data);
+			auto* l_dx_buffer = _initialize_buffer(static_cast<bc_device*>(this), &p_config, p_data);
 
 			bc_buffer::platform_pack l_pack;
 			l_pack.m_resource = l_dx_buffer;
@@ -595,9 +595,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_texture2d_ref bc_platform_device< g_api_dx11 >::create_texture2d(bc_texture_config& p_config, bc_subresource_data* p_data)
+		bc_texture2d_ref bc_platform_device<g_api_dx11>::create_texture2d(bc_texture_config& p_config, bc_subresource_data* p_data)
 		{
-			auto* l_dx_texture = _initialize_texture(static_cast< bc_device* >(this), &p_config, p_data);
+			auto* l_dx_texture = _initialize_texture(static_cast<bc_device*>(this), &p_config, p_data);
 
 			bc_texture2d::platform_pack l_pack;
 			l_pack.m_resource = l_dx_texture;
@@ -613,9 +613,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_texture2d_ref bc_platform_device< g_api_dx11 >::create_texture2d(bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
+		bc_texture2d_ref bc_platform_device<g_api_dx11>::create_texture2d(bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
 		{
-			auto* l_dx_texture = _initialize_texture(static_cast< bc_device* >(this), &p_config, p_data, p_data_size, p_format);
+			auto* l_dx_texture = _initialize_texture(static_cast<bc_device*>(this), &p_config, p_data, p_data_size, p_format);
 			
 			bc_texture2d::platform_pack l_pack;
 			l_pack.m_resource = l_dx_texture;
@@ -631,14 +631,14 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device< g_api_dx11 >::save_texture2d(bc_texture2d p_texture, bc_image_format p_format, const bcECHAR* p_path)
+		void bc_platform_device<g_api_dx11>::save_texture2d(bc_texture2d p_texture, bc_image_format p_format, const bcECHAR* p_path)
 		{
 			_save_texture(static_cast<bc_device*>(this), &p_texture, p_format, p_path);
 		}
 		 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_sampler_state_ref bc_platform_device< g_api_dx11 >::create_sampler_state(const bc_sampler_state_config& p_config)
+		bc_sampler_state_ref bc_platform_device<g_api_dx11>::create_sampler_state(const bc_sampler_state_config& p_config)
 		{
 			ID3D11SamplerState* l_dx_sampler;
 			D3D11_SAMPLER_DESC l_dx_sampler_desc;
@@ -672,7 +672,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_vertex_shader(const bcBYTE* p_data,
+		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_vertex_shader(const bcBYTE* p_data,
 			bcSIZE p_data_size, 
 			const bcCHAR* p_function_name,
 			const bcCHAR* p_source_file,
@@ -680,9 +680,9 @@ namespace black_cat
 			bcUINT32 p_macro_count)
 		{
 			D3D_SHADER_MACRO* l_macros = nullptr;
-			core::bc_vector< D3D_SHADER_MACRO > l_macro_definitions;
+			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
 
-			if (p_macro_count > 0)
+			if (p_macro_count> 0)
 			{
 				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 			}
@@ -710,9 +710,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_vertex_shader_ref bc_platform_device< g_api_dx11 >::create_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		bc_vertex_shader_ref bc_platform_device<g_api_dx11>::create_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			auto l_dx_shader = _initialize_vertex_shader(static_cast< bc_device* >(this), p_data, p_data_size, p_function);
+			auto l_dx_shader = _initialize_vertex_shader(static_cast<bc_device*>(this), p_data, p_data_size, p_function);
 
 			bc_vertex_shader::platform_pack l_pack;
 			l_pack.m_compiled_shader = l_dx_shader.first;
@@ -729,7 +729,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_hull_shader(const bcBYTE* p_data, 
+		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_hull_shader(const bcBYTE* p_data, 
 			bcSIZE p_data_size, 
 			const bcCHAR* p_function_name, 
 			const bcCHAR* p_source_file, 
@@ -737,9 +737,9 @@ namespace black_cat
 			bcUINT32 p_macro_count)
 		{
 			D3D_SHADER_MACRO* l_macros = nullptr;
-			core::bc_vector< D3D_SHADER_MACRO > l_macro_definitions;
+			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
 
-			if (p_macro_count > 0)
+			if (p_macro_count> 0)
 			{
 				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 			}
@@ -767,9 +767,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_hull_shader_ref bc_platform_device< g_api_dx11 >::create_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		bc_hull_shader_ref bc_platform_device<g_api_dx11>::create_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			auto* l_dx_shader = _initialize_hull_shader(static_cast< bc_device* >(this), p_data, p_data_size, p_function);
+			auto* l_dx_shader = _initialize_hull_shader(static_cast<bc_device*>(this), p_data, p_data_size, p_function);
 
 			bc_hull_shader::platform_pack l_pack;
 			l_pack.m_shader = l_dx_shader;
@@ -784,7 +784,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_domain_shader(const bcBYTE* p_data, 
+		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_domain_shader(const bcBYTE* p_data, 
 			bcSIZE p_data_size, 
 			const bcCHAR* p_function_name, 
 			const bcCHAR* p_source_file, 
@@ -792,9 +792,9 @@ namespace black_cat
 			bcUINT32 p_macro_count)
 		{
 			D3D_SHADER_MACRO* l_macros = nullptr;
-			core::bc_vector< D3D_SHADER_MACRO > l_macro_definitions;
+			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
 
-			if (p_macro_count > 0)
+			if (p_macro_count> 0)
 			{
 				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 			}
@@ -822,9 +822,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_domain_shader_ref bc_platform_device< g_api_dx11 >::create_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		bc_domain_shader_ref bc_platform_device<g_api_dx11>::create_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			auto* l_dx_shader = _initialize_domain_shader(static_cast< bc_device* >(this), p_data, p_data_size, p_function);
+			auto* l_dx_shader = _initialize_domain_shader(static_cast<bc_device*>(this), p_data, p_data_size, p_function);
 
 			bc_domain_shader::platform_pack l_pack;
 			l_pack.m_shader = l_dx_shader;
@@ -839,7 +839,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_geometry_shader(const bcBYTE* p_data, 
+		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_geometry_shader(const bcBYTE* p_data, 
 			bcSIZE p_data_size, 
 			const bcCHAR* p_function_name, 
 			const bcCHAR* p_source_file, 
@@ -847,9 +847,9 @@ namespace black_cat
 			bcUINT32 p_macro_count)
 		{
 			D3D_SHADER_MACRO* l_macros = nullptr;
-			core::bc_vector< D3D_SHADER_MACRO > l_macro_definitions;
+			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
 
-			if (p_macro_count > 0)
+			if (p_macro_count> 0)
 			{
 				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 			}
@@ -877,9 +877,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_geometry_shader_ref bc_platform_device< g_api_dx11 >::create_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		bc_geometry_shader_ref bc_platform_device<g_api_dx11>::create_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			auto* l_dx_shader = _initialize_geometry_shader(static_cast< bc_device* >(this), p_data, p_data_size, p_function);
+			auto* l_dx_shader = _initialize_geometry_shader(static_cast<bc_device*>(this), p_data, p_data_size, p_function);
 
 			bc_geometry_shader::platform_pack l_pack;
 			l_pack.m_shader = l_dx_shader;
@@ -894,7 +894,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_pixel_shader(const bcBYTE* p_data, 
+		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_pixel_shader(const bcBYTE* p_data, 
 			bcSIZE p_data_size, 
 			const bcCHAR* p_function_name, 
 			const bcCHAR* p_source_file, 
@@ -902,9 +902,9 @@ namespace black_cat
 			bcUINT32 p_macro_count)
 		{
 			D3D_SHADER_MACRO* l_macros = nullptr;
-			core::bc_vector< D3D_SHADER_MACRO > l_macro_definitions;
+			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
 
-			if (p_macro_count > 0)
+			if (p_macro_count> 0)
 			{
 				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 			}
@@ -932,9 +932,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_pixel_shader_ref bc_platform_device< g_api_dx11 >::create_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		bc_pixel_shader_ref bc_platform_device<g_api_dx11>::create_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			auto* l_dx_shader = _initialize_pixel_shader(static_cast< bc_device* >(this), p_data, p_data_size, p_function);
+			auto* l_dx_shader = _initialize_pixel_shader(static_cast<bc_device*>(this), p_data, p_data_size, p_function);
 
 			bc_pixel_shader::platform_pack l_pack;
 			l_pack.m_shader = l_dx_shader;
@@ -949,7 +949,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device< g_api_dx11 >::compile_compute_shader(const bcBYTE* p_data, 
+		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_compute_shader(const bcBYTE* p_data, 
 			bcSIZE p_data_size, 
 			const bcCHAR* p_function_name, 
 			const bcCHAR* p_source_file, 
@@ -957,9 +957,9 @@ namespace black_cat
 			bcUINT32 p_macro_count)
 		{
 			D3D_SHADER_MACRO* l_macros = nullptr;
-			core::bc_vector< D3D_SHADER_MACRO > l_macro_definitions;
+			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
 
-			if (p_macro_count > 0)
+			if (p_macro_count> 0)
 			{
 				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 			}
@@ -987,9 +987,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_compute_shader_ref bc_platform_device< g_api_dx11 >::create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		bc_compute_shader_ref bc_platform_device<g_api_dx11>::create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			auto* l_dx_shader = _initialize_compute_shader(static_cast< bc_device* >(this), p_data, p_data_size, p_function);
+			auto* l_dx_shader = _initialize_compute_shader(static_cast<bc_device*>(this), p_data, p_data_size, p_function);
 
 			bc_compute_shader::platform_pack l_pack;
 			l_pack.m_shader = l_dx_shader;
@@ -1004,16 +1004,16 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_resource_view_ref bc_platform_device< g_api_dx11 >::create_resource_view(bci_resource& p_resource, bc_resource_view_config& p_view_config)
+		bc_resource_view_ref bc_platform_device<g_api_dx11>::create_resource_view(bci_resource& p_resource, bc_resource_view_config& p_view_config)
 		{
-			auto* l_dx_view = _initialize_shader_view(static_cast< bc_device* >(this), &p_resource, &p_view_config);
+			auto* l_dx_view = _initialize_shader_view(static_cast<bc_device*>(this), &p_resource, &p_view_config);
 
 			bc_resource_view::platform_pack l_pack;
 			bc_resource_view l_view;
 
 			if(p_view_config.get_platform_pack().m_type == bc_resource_view_type::shader)
 			{
-				l_pack.m_shader_view = static_cast< ID3D11ShaderResourceView* >(l_dx_view);
+				l_pack.m_shader_view = static_cast<ID3D11ShaderResourceView*>(l_dx_view);
 				l_pack.m_unordered_shader_view = nullptr;
 
 				l_view = bc_resource_view(l_pack, bc_resource_view_type::shader);
@@ -1021,7 +1021,7 @@ namespace black_cat
 			else
 			{
 				l_pack.m_shader_view = nullptr;
-				l_pack.m_unordered_shader_view = static_cast< ID3D11UnorderedAccessView* >(l_dx_view);
+				l_pack.m_unordered_shader_view = static_cast<ID3D11UnorderedAccessView*>(l_dx_view);
 
 				l_view = bc_resource_view(l_pack, bc_resource_view_type::unordered);
 			}
@@ -1035,9 +1035,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_depth_stencil_view_ref bc_platform_device< g_api_dx11 >::create_depth_stencil_view(bci_resource& p_resource, bc_depth_stencil_view_config& p_view_config)
+		bc_depth_stencil_view_ref bc_platform_device<g_api_dx11>::create_depth_stencil_view(bci_resource& p_resource, bc_depth_stencil_view_config& p_view_config)
 		{
-			auto* l_dx_view = _initialize_depth_stencil_view(static_cast< bc_device* >(this), &p_resource, &p_view_config);
+			auto* l_dx_view = _initialize_depth_stencil_view(static_cast<bc_device*>(this), &p_resource, &p_view_config);
 
 			bc_depth_stencil_view::platform_pack l_pack;
 			l_pack.m_depth_stencil_view = l_dx_view;
@@ -1052,9 +1052,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_render_target_view_ref bc_platform_device< g_api_dx11 >::create_render_target_view(bci_resource& p_resource, bc_render_target_view_config& p_view_config)
+		bc_render_target_view_ref bc_platform_device<g_api_dx11>::create_render_target_view(bci_resource& p_resource, bc_render_target_view_config& p_view_config)
 		{
-			auto* l_dx_view = _initialize_render_target_view(static_cast< bc_device* >(this), &p_resource, &p_view_config);
+			auto* l_dx_view = _initialize_render_target_view(static_cast<bc_device*>(this), &p_resource, &p_view_config);
 
 			bc_render_target_view::platform_pack l_pack;
 			l_pack.m_render_target_view = l_dx_view;
@@ -1069,7 +1069,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_pipeline_state_ref bc_platform_device< g_api_dx11 >::create_pipeline_state(bc_device_pipeline_state_config& p_config)
+		bc_device_pipeline_state_ref bc_platform_device<g_api_dx11>::create_pipeline_state(bc_device_pipeline_state_config& p_config)
 		{
 			ID3D11BlendState* l_dx_blend_state = nullptr;
 			ID3D11DepthStencilState* l_dx_depth_stencil = nullptr;
@@ -1078,13 +1078,13 @@ namespace black_cat
 			D3D11_BLEND_DESC l_dx_blend_desc;
 			D3D11_DEPTH_STENCIL_DESC l_dx_depth_stencil_desc;
 			D3D11_RASTERIZER_DESC l_dx_rasterizer_desc;
-			core::bc_vector_frame< D3D11_INPUT_ELEMENT_DESC > l_dx_input_elements;
+			core::bc_vector_frame<D3D11_INPUT_ELEMENT_DESC> l_dx_input_elements;
 
 			l_dx_input_elements.reserve(p_config.m_input_layout_config.m_input_elements.size());
 
 			l_dx_blend_desc.AlphaToCoverageEnable = p_config.m_blend_state_config.m_alpha_to_coverage_enable;
 			l_dx_blend_desc.IndependentBlendEnable = p_config.m_blend_state_config.m_independent_blend_enable;
-			for (bcUINT i = 0; i < bc_render_api_info::number_of_om_render_target_slots(); ++i)
+			for (bcUINT i = 0; i <bc_render_api_info::number_of_om_render_target_slots(); ++i)
 			{
 				l_dx_blend_desc.RenderTarget[i].BlendEnable = p_config.m_blend_state_config.m_render_target[i].m_blend_enable;
 				l_dx_blend_desc.RenderTarget[i].SrcBlend = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_src_blend);
@@ -1151,7 +1151,7 @@ namespace black_cat
 				));
 			}
 
-			//auto l_pipeline_state_poxy = allocate< bc_device_pipeline_state_proxy >();
+			//auto l_pipeline_state_poxy = allocate<bc_device_pipeline_state_proxy>();
 			auto* l_pipeline_state_poxy = BC_NEW(bc_device_pipeline_state_proxy, core::bc_alloc_type::unknown);
 
 			l_pipeline_state_poxy->m_config = std::move(p_config);
@@ -1179,9 +1179,9 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_compute_state_ref bc_platform_device< g_api_dx11 >::create_compute_state(bc_device_compute_state_config& p_config)
+		bc_device_compute_state_ref bc_platform_device<g_api_dx11>::create_compute_state(bc_device_compute_state_config& p_config)
 		{
-			/*auto l_compute_state_proxy = allocate< bc_device_compute_state_proxy >();*/
+			/*auto l_compute_state_proxy = allocate<bc_device_compute_state_proxy>();*/
 			auto* l_compute_state_proxy = BC_NEW(bc_device_compute_state_proxy, core::bc_alloc_type::unknown);
 			
 			l_compute_state_proxy->m_config = std::move(p_config);
@@ -1197,7 +1197,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_pipeline_ref bc_platform_device< g_api_dx11 >::get_default_pipeline()
+		bc_device_pipeline_ref bc_platform_device<g_api_dx11>::get_default_pipeline()
 		{
 			auto* l_pipeline_proxy = BC_NEW(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
 
@@ -1225,7 +1225,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_pipeline_ref bc_platform_device< g_api_dx11 >::create_pipeline()
+		bc_device_pipeline_ref bc_platform_device<g_api_dx11>::create_pipeline()
 		{
 			auto* l_pipeline_proxy = BC_NEW(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
 
@@ -1256,7 +1256,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_command_list_ref bc_platform_device< g_api_dx11 >::create_command_list()
+		bc_device_command_list_ref bc_platform_device<g_api_dx11>::create_command_list()
 		{
 			auto l_command_list_proxy = BC_NEW(bc_device_command_list_proxy, core::bc_alloc_type::unknown);
 
@@ -1272,7 +1272,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_command_executor_ref bc_platform_device< g_api_dx11 >::create_command_executor()
+		bc_device_command_executor_ref bc_platform_device<g_api_dx11>::create_command_executor()
 		{
 			bc_device_command_executor::platform_pack l_pack;
 			l_pack.m_device = this;
@@ -1281,9 +1281,9 @@ namespace black_cat
 			return bc_device_command_executor_ref(l_pointer);
 		}
 
-		template< >
+		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_text_renderer bc_platform_device< g_api_dx11 >::create_text_renderer()
+		bc_device_text_renderer bc_platform_device<g_api_dx11>::create_text_renderer()
 		{
 			// TODO use parameter
 			auto l_sprite_path = core::bc_path::get_absolute_path(L"Content\\Data\\DX11.spritefont");
@@ -1297,7 +1297,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_mapped_resource bc_platform_device< g_api_dx11 >::map_resource(bci_resource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type)
+		bc_mapped_resource bc_platform_device<g_api_dx11>::map_resource(bci_resource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type)
 		{
 			bc_mapped_resource l_result;
 			D3D11_MAPPED_SUBRESOURCE l_mapped_resource;
@@ -1324,7 +1324,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device< g_api_dx11 >::unmap_resource(bci_resource& p_resource, bcUINT p_subresource)
+		void bc_platform_device<g_api_dx11>::unmap_resource(bci_resource& p_resource, bcUINT p_subresource)
 		{
 			{
 				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_pack.m_immediate_context_mutex);
@@ -1335,14 +1335,14 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device< g_api_dx11 >::resize_back_buffer(bcUINT p_width, bcUINT p_height)
+		void bc_platform_device<g_api_dx11>::resize_back_buffer(bcUINT p_width, bcUINT p_height)
 		{
 			resize_back_buffer(p_width, p_height, get_back_buffer_format());
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device< g_api_dx11 >::resize_back_buffer(bcUINT p_width, bcUINT p_height, bc_format p_format)
+		void bc_platform_device<g_api_dx11>::resize_back_buffer(bcUINT p_width, bcUINT p_height, bc_format p_format)
 		{
 			bc_texture2d l_back_buffer = get_back_buffer_texture();
 
@@ -1383,7 +1383,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device< g_api_dx11 >::resize_texture2d(bc_texture2d& p_texture,
+		void bc_platform_device<g_api_dx11>::resize_texture2d(bc_texture2d& p_texture,
 			bcUINT p_width,
 			bcUINT p_height,
 			bci_resource_view** p_views,
@@ -1404,13 +1404,13 @@ namespace black_cat
 
 			p_texture.get_platform_pack().m_texture = l_dx_texture;
 
-			for (bcUINT l_view_i = 0; l_view_i < p_num_views; ++l_view_i)
+			for (bcUINT l_view_i = 0; l_view_i <p_num_views; ++l_view_i)
 			{
 				bci_resource_view* l_view = p_views[l_view_i];
 
 				if (l_view->get_view_type() == bc_resource_view_type::shader)
 				{
-					bc_resource_view* l_shader_view = static_cast< bc_resource_view* >(l_view);
+					bc_resource_view* l_shader_view = static_cast<bc_resource_view*>(l_view);
 
 					bc_resource_view_config l_view_config;
 					l_shader_view->get_platform_pack().m_shader_view->GetDesc(&l_view_config.get_platform_pack().m_shader_view_desc);
@@ -1422,11 +1422,11 @@ namespace black_cat
 						&l_view_config
 					);
 
-					l_shader_view->get_platform_pack().m_shader_view = static_cast< ID3D11ShaderResourceView* >(l_dx_view);
+					l_shader_view->get_platform_pack().m_shader_view = static_cast<ID3D11ShaderResourceView*>(l_dx_view);
 				}
 				else if (l_view->get_view_type() == bc_resource_view_type::unordered)
 				{
-					bc_resource_view* l_shader_view = static_cast< bc_resource_view* >(l_view);
+					bc_resource_view* l_shader_view = static_cast<bc_resource_view*>(l_view);
 
 					bc_resource_view_config l_view_config;
 					l_shader_view->get_platform_pack().m_unordered_shader_view->GetDesc(&l_view_config.get_platform_pack().m_unordered_shader_view_desc);
@@ -1438,18 +1438,18 @@ namespace black_cat
 						&l_view_config
 					);
 
-					l_shader_view->get_platform_pack().m_unordered_shader_view = static_cast< ID3D11UnorderedAccessView* >(l_dx_view);
+					l_shader_view->get_platform_pack().m_unordered_shader_view = static_cast<ID3D11UnorderedAccessView*>(l_dx_view);
 				}
 				else if (l_view->get_view_type() == bc_resource_view_type::render_target)
 				{
-					bc_render_target_view* l_target_view = static_cast< bc_render_target_view* >(l_view);
+					bc_render_target_view* l_target_view = static_cast<bc_render_target_view*>(l_view);
 
 					bc_render_target_view_config l_render_view_config;
 					l_target_view->get_platform_pack().m_render_target_view->GetDesc(&l_render_view_config.get_platform_pack().m_render_target_view_desc);
 
 					auto* l_dx_view = _initialize_render_target_view
 					(
-						static_cast< bc_device* >(this),
+						static_cast<bc_device*>(this),
 						&p_texture,
 						&l_render_view_config
 					);
@@ -1458,7 +1458,7 @@ namespace black_cat
 				}
 				else if (l_view->get_view_type() == bc_resource_view_type::depth_stencil)
 				{
-					bc_depth_stencil_view* l_depth_view = static_cast< bc_depth_stencil_view* >(l_view);
+					bc_depth_stencil_view* l_depth_view = static_cast<bc_depth_stencil_view*>(l_view);
 
 					bc_depth_stencil_view_config l_depth_view_config;
 					l_depth_view->get_platform_pack().m_depth_stencil_view->GetDesc(&l_depth_view_config.get_platform_pack().m_depth_stencil_view_desc);
@@ -1477,23 +1477,23 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device< g_api_dx11 >::present()
+		void bc_platform_device<g_api_dx11>::present()
 		{
 			m_pack.m_swap_chain->Present(m_pack.m_vsync ? 1 : 0, 0);
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device< g_api_dx11 >::_initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, bc_platform_device_output< g_api_dx11 > p_output)
+		void bc_platform_device<g_api_dx11>::_initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, bc_platform_device_output<g_api_dx11> p_output)
 		{
 			HRESULT l_result = S_OK;
 
-			ComPtr< IDXGIFactory > l_factory;
-			CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast< void** >(l_factory.GetAddressOf()));
+			ComPtr<IDXGIFactory> l_factory;
+			CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(l_factory.GetAddressOf()));
 
 			bcUINT l_adapter_num = 0;
-			ComPtr< IDXGIAdapter > l_current_adapter;
-			core::bc_vector_frame< ComPtr< IDXGIAdapter > > l_adapters;
+			ComPtr<IDXGIAdapter> l_current_adapter;
+			core::bc_vector_frame<ComPtr<IDXGIAdapter>> l_adapters;
 
 			core::bc_wstring_frame l_nvidia(L"nvidia");
 			core::bc_wstring_frame l_amd(L"amd");
@@ -1563,7 +1563,7 @@ namespace black_cat
 			{
 				DWORD l_error_code;
 				core_platform::win32_from_hresult(l_result, &l_error_code);
-				throw bc_graphic_exception(static_cast< bcINT >(l_error_code), "Can not found an adapter compatible with DirectX11");
+				throw bc_graphic_exception(static_cast<bcINT>(l_error_code), "Can not found an adapter compatible with DirectX11");
 			}
 
 			DXGI_SWAP_CHAIN_DESC l_swap_chain_desc;
@@ -1591,7 +1591,7 @@ namespace black_cat
 			{
 				DWORD l_error_code;
 				core_platform::win32_from_hresult(l_result, &l_error_code);
-				throw bc_graphic_exception(static_cast< bcINT >(l_error_code), "Failed to create DirectX11 SwapChain");
+				throw bc_graphic_exception(static_cast<bcINT>(l_error_code), "Failed to create DirectX11 SwapChain");
 			}
 
 			set_vsync(false);
@@ -1600,14 +1600,14 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device< g_api_dx11 >::_destroy()
+		void bc_platform_device<g_api_dx11>::_destroy()
 		{
 			m_pack.m_swap_chain.ReleaseAndGetAddressOf();
 			m_pack.m_immediate_context.ReleaseAndGetAddressOf();
 
 #ifdef BC_DEBUG
-			ComPtr< ID3D11Debug > l_debug_layer;
-			m_pack.m_device.Get()->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast< void** >(l_debug_layer.GetAddressOf()));
+			ComPtr<ID3D11Debug> l_debug_layer;
+			m_pack.m_device.Get()->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(l_debug_layer.GetAddressOf()));
 			l_debug_layer->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 			l_debug_layer.ReleaseAndGetAddressOf();
 #endif

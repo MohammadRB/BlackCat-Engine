@@ -59,7 +59,7 @@ namespace black_cat
 			bool open_read(const bcECHAR* p_file) noexcept;
 
 			/**
-			 * \brief Open an existing file or create a new file fo writing
+			 * \brief Open an existing file or create a new file for writing
 			 * \param p_file 
 			 * \return 
 			 */

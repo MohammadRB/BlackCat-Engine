@@ -226,6 +226,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshColliderLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshLoaderUtility.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcPixelShaderLoader.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneCheckPointLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcSkinnedAnimationLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcTextureLoader.h" />
@@ -274,6 +275,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshColliderLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcMeshLoaderUtility.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcPixelShaderLoader.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneCheckPointLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcSkinnedAnimationLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcTextureLoader.cpp" />
