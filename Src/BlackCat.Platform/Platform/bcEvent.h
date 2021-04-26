@@ -38,30 +38,38 @@ namespace black_cat
 			bcINT32 m_exit_code;
 		};
 
-		class bc_app_event_active : public core::bc_app_event
+		class bc_app_event_pause_state : public core::bc_app_event
 		{
-			BC_EVENT(app_acv)
+			BC_EVENT(app_pus)
 
 		public:
-			explicit bc_app_event_active(bool p_active)
+			enum class state : bcBYTE
+			{
+				paused,
+				pause_request,
+				resume_request
+			};
+		
+		public:
+			explicit bc_app_event_pause_state(state p_state)
 				: bc_app_event(message_name()),
-				m_active(p_active)
+				m_state(p_state)
 			{
 			}
 
-			bc_app_event_active(const bc_app_event_active&) = default;
+			bc_app_event_pause_state(const bc_app_event_pause_state&) = default;
 
-			~bc_app_event_active() = default;
+			~bc_app_event_pause_state() = default;
 
-			bc_app_event_active& operator =(const bc_app_event_active&) = default;
+			bc_app_event_pause_state& operator =(const bc_app_event_pause_state&) = default;
 
-			bool active() const
+			state get_state() const
 			{
-				return m_active;
+				return m_state;
 			}
 
 		private:
-			bool m_active;
+			state m_state;
 		};
 
 		class bc_app_event_window_focus : public core::bc_app_event

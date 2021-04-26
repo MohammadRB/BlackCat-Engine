@@ -34,7 +34,8 @@ namespace black_cat
 		extern graphic::bc_pipeline_stage _convert_shader_type_to_pipeline_stage(graphic::bc_shader_type p_shader_types);
 
 		bc_render_system::bc_render_system()
-			: m_content_stream(nullptr)
+			: m_content_stream(nullptr),
+			m_app_active_flag(true)
 		{
 		}
 
@@ -54,7 +55,6 @@ namespace black_cat
 		bc_render_system& bc_render_system::operator=(bc_render_system&& p_other) noexcept
 		{
 			m_device = std::move(p_other.m_device);
-			
 			m_content_stream = p_other.m_content_stream;
 			m_thread_manager = std::move(p_other.m_thread_manager);
 			m_material_manager = std::move(p_other.m_material_manager);
@@ -67,6 +67,7 @@ namespace black_cat
 			m_frame_renderer = std::move(p_other.m_frame_renderer);
 
 			m_window_resize_handle = std::move(p_other.m_window_resize_handle);
+			m_app_active_handle = std::move(p_other.m_app_active_handle);
 			m_device_reset_handle = std::move(p_other.m_device_reset_handle);
 			m_frame_render_finish_handle = std::move(p_other.m_frame_render_finish_handle);
 
@@ -74,6 +75,12 @@ namespace black_cat
 			m_render_states = std::move(p_other.m_render_states);
 			m_compute_states = std::move(p_other.m_compute_states);
 
+			m_app_active_flag.store(m_app_active_flag.load());
+			m_window_resize_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
+			m_app_active_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
+			m_device_reset_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
+			m_frame_render_finish_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
+			
 			return *this;
 		}
 
@@ -370,17 +377,21 @@ namespace black_cat
 
 			m_device.set_allocator_alloc_type(l_alloc_type);
 			
-			auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
+			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 
-			m_window_resize_handle = l_event_manager->register_event_listener< platform::bc_app_event_window_resize >
+			m_window_resize_handle = l_event_manager->register_event_listener<platform::bc_app_event_window_resize>
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
 			);
-			m_device_reset_handle = l_event_manager->register_event_listener< graphic::bc_app_event_device_reset >
+			m_app_active_handle = l_event_manager->register_event_listener<platform::bc_app_event_pause_state>
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
 			);
-			m_frame_render_finish_handle = l_event_manager->register_event_listener< core::bc_event_frame_swap >
+			m_device_reset_handle = l_event_manager->register_event_listener<graphic::bc_app_event_device_reset>
+			(
+				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
+			);
+			m_frame_render_finish_handle = l_event_manager->register_event_listener<core::bc_event_frame_swap>
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
 			);
@@ -395,6 +406,7 @@ namespace black_cat
 			m_render_pass_manager.reset(); 
 
 			m_device_reset_handle.reset();
+			m_app_active_handle.reset();
 			m_window_resize_handle.reset();
 			m_frame_render_finish_handle.reset();
 
@@ -415,13 +427,14 @@ namespace black_cat
 		
 		bool bc_render_system::_event_handler(core::bci_event& p_event)
 		{
-			if(core::bci_message::is<platform::bc_app_event_window_resize>(p_event))
-			{
-				auto& l_resize_event = static_cast< platform::bc_app_event_window_resize& >(p_event);
+			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 
+			auto* l_window_resize_event = core::bci_message::as<platform::bc_app_event_window_resize>(p_event);
+			if(l_window_resize_event)
+			{
 				// If nothing has change do not continue
-				if (l_resize_event.width() != m_device.get_back_buffer_width() ||
-					l_resize_event.height() != m_device.get_back_buffer_height())
+				if (l_window_resize_event->width() != m_device.get_back_buffer_width() ||
+					l_window_resize_event->height() != m_device.get_back_buffer_height())
 				{
 					const auto l_device_back_buffer = m_device.get_back_buffer_texture();
 
@@ -434,48 +447,74 @@ namespace black_cat
 					);
 					graphic::bc_device_parameters l_new_parameters
 					(
-						l_resize_event.width(),
-						l_resize_event.height(),
+						l_window_resize_event->width(),
+						l_window_resize_event->height(),
 						l_device_back_buffer.get_format(),
 						l_device_back_buffer.get_sample_count()
 					);
 
-					core::bc_get_service< core::bc_event_manager >()->queue_event
-					(
-						graphic::bc_app_event_device_reset(m_device, l_old_parameters, l_new_parameters, true), 
-						0
-					);
+					// Request application pause
+					platform::bc_app_event_pause_state l_pause_event(platform::bc_app_event_pause_state::state::pause_request);
+					l_event_manager->process_event(l_pause_event);
+					// Put device reset event in render event queue
+					l_event_manager->queue_event(graphic::bc_app_event_device_reset(m_device, l_old_parameters, l_new_parameters, true), 0);
 				}
 
 				return true;
 			}
-			
-			if(core::bci_message::is<graphic::bc_app_event_device_reset>(p_event))
+
+			auto* l_app_pause_event = core::bci_message::as<platform::bc_app_event_pause_state>(p_event);
+			if(l_app_pause_event)
 			{
-				auto& l_device_reset_event = static_cast<graphic::bc_app_event_device_reset&>(p_event);
+				if(l_app_pause_event->get_state() == platform::bc_app_event_pause_state::state::paused)
+				{
+					m_app_active_flag.store(false);
+				}
+				if (l_app_pause_event->get_state() == platform::bc_app_event_pause_state::state::resume_request)
+				{
+					m_app_active_flag.store(true);
+				}
+				
+				return true;
+			}
+
+			auto* l_device_reset_event = core::bci_message::as<graphic::bc_app_event_device_reset>(p_event);
+			if(l_device_reset_event)
+			{
+				// If application is not in pause state, requeue device reset event and return
+				// to let main thread proceed into pause state
+				if (m_app_active_flag.load())
+				{
+					l_event_manager->queue_event(*l_device_reset_event, 0);
+					return true;
+				}
 				
 				m_render_pass_manager->before_reset(bc_render_pass_reset_context
 				(
 					*this, 
-					*l_device_reset_event.m_device, 
-					l_device_reset_event.m_old_parameters, 
-					l_device_reset_event.m_new_parameters
+					*l_device_reset_event->m_device, 
+					l_device_reset_event->m_old_parameters,
+					l_device_reset_event->m_new_parameters
 				));
 
-				m_device.resize_back_buffer(l_device_reset_event.m_new_parameters.m_width, l_device_reset_event.m_new_parameters.m_height);
+				m_device.resize_back_buffer(l_device_reset_event->m_new_parameters.m_width, l_device_reset_event->m_new_parameters.m_height);
 				
 				m_render_pass_manager->after_reset(bc_render_pass_reset_context
 				(
 					*this, 
-					*l_device_reset_event.m_device, 
-					l_device_reset_event.m_old_parameters, 
-					l_device_reset_event.m_new_parameters
+					*l_device_reset_event->m_device,
+					l_device_reset_event->m_old_parameters,
+					l_device_reset_event->m_new_parameters
 				));
 
+				// Request application resume
+				l_event_manager->queue_event(platform::bc_app_event_pause_state(platform::bc_app_event_pause_state::state::resume_request), 0);
+				
 				return true;
 			}
 
-			if (core::bci_message::is<core::bc_event_frame_swap>(p_event))
+			auto* l_frame_swap_event = core::bci_message::as<core::bc_event_frame_swap>(p_event);
+			if (l_frame_swap_event)
 			{
 				m_shape_drawer->clear_swap_buffers();
 

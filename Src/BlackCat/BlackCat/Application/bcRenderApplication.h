@@ -22,7 +22,7 @@ namespace black_cat
 
 		bc_render_application(bc_render_application&&) = delete;
 
-		virtual ~bc_render_application();
+		~bc_render_application() override;
 
 		bc_render_application& operator=(bc_render_application&&) = delete;
 
@@ -54,13 +54,17 @@ namespace black_cat
 
 		void app_load_content() override final;
 
-		void app_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_partial_update) override final;
+		void app_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update) override final;
 
-		void app_render(core_platform::bc_clock::update_param p_clock_update_param) override final;
+		void app_render(const core_platform::bc_clock::update_param& p_clock) override final;
 
-		void app_swap_frame_idle(core_platform::bc_clock::update_param p_clock) override;
+		void app_pause_idle(const core_platform::bc_clock::update_param& p_clock) override;
+
+		void app_pause_render_idle(const core_platform::bc_clock::update_param& p_clock) override;
 		
-		void app_swap_frame(core_platform::bc_clock::update_param p_clock) override;
+		void app_swap_frame_idle(const core_platform::bc_clock::update_param& p_clock) override;
+		
+		void app_swap_frame(const core_platform::bc_clock::update_param& p_clock) override;
 		
 		bool app_event(core::bci_event& p_event) override final;
 
@@ -69,7 +73,7 @@ namespace black_cat
 		void app_destroy() override final;
 
 		void app_close_engine_components() override final;
-
+		
 		core::bc_value_sampler<core_platform::bc_clock::small_delta_time, 64> m_fps_sampler;
 		bcUINT32 m_fps;
 

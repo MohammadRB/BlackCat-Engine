@@ -68,7 +68,7 @@ namespace black_cat
 		application_load_content(core::bc_get_service< core::bc_content_stream_manager >());
 	}
 
-	void bc_render_application::app_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_partial_update)
+	void bc_render_application::app_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
 	{
 		m_update_watch.start();
 		
@@ -80,14 +80,14 @@ namespace black_cat
 			l_event_manager->process_event(l_event_frame_start);
 		}
 		
-		m_game_system->update_game(p_clock_update_param, p_is_partial_update);
+		m_game_system->update_game(p_clock, p_is_partial_update);
 
 		if (!p_is_partial_update)
 		{
-			core::bc_service_manager::get().update(p_clock_update_param);
+			core::bc_service_manager::get().update(p_clock);
 		}
 		
-		application_update(p_clock_update_param, p_is_partial_update);
+		application_update(p_clock, p_is_partial_update);
 
 		if(!p_is_partial_update)
 		{
@@ -98,7 +98,7 @@ namespace black_cat
 		m_update_watch.stop();
 	}
 
-	void bc_render_application::app_render(core_platform::bc_clock::update_param p_clock_update_param)
+	void bc_render_application::app_render(const core_platform::bc_clock::update_param& p_clock)
 	{
 		m_render_watch.start();
 		
@@ -107,8 +107,8 @@ namespace black_cat
 		core::bc_event_frame_render_start l_event_frame_start;
 		l_event_manager->process_event(l_event_frame_start);
 		
-		m_game_system->render_game(p_clock_update_param);
-		application_render(p_clock_update_param);
+		m_game_system->render_game(p_clock);
+		application_render(p_clock);
 
 		core::bc_event_frame_render_finish l_event_frame_finish;
 		l_event_manager->process_event(l_event_frame_finish);
@@ -116,7 +116,17 @@ namespace black_cat
 		m_render_watch.stop();
 	}
 
-	void bc_render_application::app_swap_frame_idle(core_platform::bc_clock::update_param p_clock)
+	void bc_render_application::app_pause_idle(const core_platform::bc_clock::update_param& p_clock)
+	{
+		core::bc_get_service<core::bc_event_manager>()->process_event_queue(p_clock);
+	}
+
+	void bc_render_application::app_pause_render_idle(const core_platform::bc_clock::update_param& p_clock)
+	{
+		core::bc_get_service<core::bc_event_manager>()->process_render_event_queue(p_clock);
+	}
+
+	void bc_render_application::app_swap_frame_idle(const core_platform::bc_clock::update_param& p_clock)
 	{
 		m_update_watch.start();
 		
@@ -125,7 +135,7 @@ namespace black_cat
 		m_update_watch.stop();
 	}
 
-	void bc_render_application::app_swap_frame(core_platform::bc_clock::update_param p_clock)
+	void bc_render_application::app_swap_frame(const core_platform::bc_clock::update_param& p_clock)
 	{
 		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 		auto* l_counter_value_manager = core::bc_get_service<core::bc_counter_value_manager>();

@@ -13,7 +13,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_render_application : public core::bc_initializable< bc_engine_application_parameter& >
+		class BC_GAME_DLL bc_render_application : public core::bc_initializable<bc_engine_application_parameter&>
 		{
 		public:
 			bc_render_application();
@@ -80,23 +80,35 @@ namespace black_cat
 			 * \param p_clock
 			 * \param p_is_partial_update
 			 */
-			virtual void app_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update) = 0;
+			virtual void app_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update) = 0;
 
 			/**
 			 * \brief Render app
 			 * \param p_clock
 			 */
-			virtual void app_render(core_platform::bc_clock::update_param p_clock) = 0;
+			virtual void app_render(const core_platform::bc_clock::update_param& p_clock) = 0;
 
+			/**
+			 * \brief Called when main thread is paused
+			 * \param p_clock 
+			 */
+			virtual void app_pause_idle(const core_platform::bc_clock::update_param& p_clock) = 0;
+
+			/**
+			 * \brief Called when render thread is paused 
+			 * \param p_clock 
+			 */
+			virtual void app_pause_render_idle(const core_platform::bc_clock::update_param& p_clock) = 0;
+			
 			/**
 			 * \brief Called when main thread is idle before swap frame
 			 */
-			virtual void app_swap_frame_idle(core_platform::bc_clock::update_param p_clock) = 0;
+			virtual void app_swap_frame_idle(const core_platform::bc_clock::update_param& p_clock) = 0;
 			
 			/**
 			 * \brief Called when both update and render are executed and ready to start next frame
 			 */
-			virtual void app_swap_frame(core_platform::bc_clock::update_param p_clock) = 0;
+			virtual void app_swap_frame(const core_platform::bc_clock::update_param& p_clock) = 0;
 			
 			/**
 			 * \brief Handle app events
@@ -126,17 +138,16 @@ namespace black_cat
 
 			bool _app_event(core::bci_event& p_event);
 
-			core::bc_unique_ptr< platform::bc_application > m_app;
-			core::bc_unique_ptr< bc_render_application_basic_output_window > m_default_output_window;
+			core::bc_unique_ptr<platform::bc_application> m_app;
+			core::bc_unique_ptr<bc_render_application_basic_output_window> m_default_output_window;
 			bci_render_application_output_window* m_output_window;
-			core::bc_unique_ptr< core_platform::bc_clock > m_clock;
+			core::bc_unique_ptr<core_platform::bc_clock> m_clock;
+			bcUINT32 m_min_update_rate;
+			bcINT32 m_render_rate;
 
 			bool m_is_terminated;
 			bool m_paused;
 			bcINT32 m_termination_code;
-
-			bcUINT32 m_min_update_rate;
-			bcINT32 m_render_rate;
 
 			core::bc_event_listener_handle m_event_handle_window_state;
 			core::bc_event_listener_handle m_event_handle_window_resize;

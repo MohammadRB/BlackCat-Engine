@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcArray.h"
@@ -296,23 +297,24 @@ namespace black_cat
 			void _destroy_compute_state(bc_compute_state* p_compute_state);
 
 			graphic::bc_device m_device;
-			
-			core::bc_concurrent_object_pool< bc_render_pass_state > m_render_pass_states;
-			core::bc_concurrent_object_pool< bc_render_state > m_render_states;
-			core::bc_concurrent_object_pool< bc_compute_state > m_compute_states;
+			core::bc_concurrent_object_pool<bc_render_pass_state> m_render_pass_states;
+			core::bc_concurrent_object_pool<bc_render_state> m_render_states;
+			core::bc_concurrent_object_pool<bc_compute_state> m_compute_states;
 			
 			core::bc_content_stream_manager* m_content_stream;
-			core::bc_unique_ptr< bc_render_thread_manager > m_thread_manager;
-			core::bc_unique_ptr< bc_material_manager > m_material_manager;
-			core::bc_unique_ptr< bc_render_pass_manager > m_render_pass_manager;
-			core::bc_unique_ptr< bc_animation_manager > m_animation_manager;
-			core::bc_unique_ptr< bc_light_manager > m_light_manager;
-			core::bc_unique_ptr< bc_particle_manager > m_particle_manager;
-			core::bc_unique_ptr< bc_decal_manager > m_decal_manager;
-			core::bc_unique_ptr< bc_shape_drawer > m_shape_drawer;
-			core::bc_unique_ptr< bc_frame_renderer > m_frame_renderer;
+			core::bc_unique_ptr<bc_render_thread_manager> m_thread_manager;
+			core::bc_unique_ptr<bc_material_manager> m_material_manager;
+			core::bc_unique_ptr<bc_render_pass_manager> m_render_pass_manager;
+			core::bc_unique_ptr<bc_animation_manager> m_animation_manager;
+			core::bc_unique_ptr<bc_light_manager> m_light_manager;
+			core::bc_unique_ptr<bc_particle_manager> m_particle_manager;
+			core::bc_unique_ptr<bc_decal_manager> m_decal_manager;
+			core::bc_unique_ptr<bc_shape_drawer> m_shape_drawer;
+			core::bc_unique_ptr<bc_frame_renderer> m_frame_renderer;
 
+			core_platform::bc_atomic<bool> m_app_active_flag;
 			core::bc_event_listener_handle m_window_resize_handle;
+			core::bc_event_listener_handle m_app_active_handle;
 			core::bc_event_listener_handle m_device_reset_handle;
 			core::bc_event_listener_handle m_frame_render_finish_handle;
 		};
