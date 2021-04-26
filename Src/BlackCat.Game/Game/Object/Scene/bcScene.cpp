@@ -209,7 +209,7 @@ namespace black_cat
 			return l_task;
 		}
 
-		void bc_scene::update_graph()
+		void bc_scene::update_graph(const core_platform::bc_clock::update_param& p_clock)
 		{
 			{
 				core_platform::bc_hybrid_mutex_guard l_lock(m_changed_actors_lock, core_platform::bc_lock_operation::heavy);
@@ -266,17 +266,19 @@ namespace black_cat
 				m_changed_actors.clear();
 				m_changed_actors.shrink_to_fit();
 			}
+
+			m_scene_graph.update(p_clock);
 		}
 
-		core::bc_task<void> bc_scene::update_graph_async()
+		core::bc_task<void> bc_scene::update_graph_async(const core_platform::bc_clock::update_param& p_clock)
 		{
 			auto l_task = core::bc_concurrency::start_task
 			(
-				core::bc_delegate< void() >
+				core::bc_delegate<void()>
 				(
-					[=]()
+					[&]()
 					{
-						update_graph();
+						update_graph(p_clock);
 					}
 				)
 			);

@@ -12,7 +12,7 @@ namespace black_cat
 		bc_global_config::bc_global_config(const bcECHAR* p_content_path)
 			: bc_config_file()
 		{
-			m_json = core::bc_make_unique<core::bc_json_document< bc_config_layout >>();
+			m_json = core::bc_make_unique<core::bc_json_document<bc_config_layout>>();
 			load(p_content_path, bcL("config.json"));
 
 			auto& l_json = *m_json;
@@ -23,6 +23,10 @@ namespace black_cat
 			if (!l_json->m_lod_culling_index.get_had_value())
 			{
 				*l_json->m_lod_culling_index = 6;
+			}
+			if(!l_json->m_scene_graph_actors_pool_capacity.get_had_value())
+			{
+				*l_json->m_scene_graph_actors_pool_capacity = 2000;
 			}
 			if(!l_json->m_bullet_reference_mass.get_had_value())
 			{

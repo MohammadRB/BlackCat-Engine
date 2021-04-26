@@ -16,6 +16,7 @@ namespace black_cat
 		{
 			BC_JSON_VALUE_OP(bcFLOAT, lod_global_scale);
 			BC_JSON_VALUE_OP(bcUINT32, lod_culling_index);
+			BC_JSON_VALUE_OP(bcUINT32, scene_graph_actors_pool_capacity);
 			BC_JSON_VALUE_OP(bcFLOAT, bullet_reference_mass);
 			BC_JSON_ARRAY_OP(core::bc_string, counter_values);
 			BC_JSON_VALUE_OP(core::bc_json_key_value, key_values);
@@ -36,6 +37,8 @@ namespace black_cat
 
 			bcUINT32 get_lod_culling_index() const noexcept;
 
+			bcUINT32 get_scene_graph_actors_pool_capacity() const noexcept;
+
 			bcFLOAT get_bullet_reference_mass() const noexcept;
 			
 			const core::bc_json_array<core::bc_string>& get_counter_values() const noexcept;
@@ -47,7 +50,7 @@ namespace black_cat
 			
 			core::bc_string_frame write_json() override;
 
-			core::bc_unique_ptr< core::bc_json_document< bc_config_layout >> m_json;
+			core::bc_unique_ptr<core::bc_json_document<bc_config_layout>> m_json;
 		};
 
 		inline bc_global_config::bc_global_config(bc_global_config&&) noexcept = default;
@@ -66,6 +69,11 @@ namespace black_cat
 			return *(*m_json)->m_lod_culling_index;
 		}
 
+		inline bcUINT32 bc_global_config::get_scene_graph_actors_pool_capacity() const noexcept
+		{
+			return *(*m_json)->m_scene_graph_actors_pool_capacity;
+		}
+		
 		inline bcFLOAT bc_global_config::get_bullet_reference_mass() const noexcept
 		{
 			return *(*m_json)->m_bullet_reference_mass;

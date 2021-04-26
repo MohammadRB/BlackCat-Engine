@@ -93,12 +93,12 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_bound_box_event = core::bci_message::as< bc_bound_box_changed_actor_event >(p_context.m_event);
+			/*const auto* l_bound_box_event = core::bci_message::as< bc_bound_box_changed_actor_event >(p_context.m_event);
 			if (l_bound_box_event)
 			{
 				bc_mesh_component::set_lod_factor(l_bound_box_event->get_bound_box());
 				return;
-			}
+			}*/
 
 			const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event);
 			if (l_bullet_hit_event)

@@ -112,9 +112,9 @@ namespace black_cat
 
 			core::bc_task<void> update_bullets_async(const core_platform::bc_clock::update_param& p_clock);
 			
-			void update_graph();
+			void update_graph(const core_platform::bc_clock::update_param& p_clock);
 			
-			core::bc_task<void> update_graph_async();
+			core::bc_task<void> update_graph_async(const core_platform::bc_clock::update_param& p_clock);
 			
 		private:
 			void _add_actor(bc_actor& p_actor);

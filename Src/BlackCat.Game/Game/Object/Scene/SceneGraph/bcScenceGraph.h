@@ -29,7 +29,7 @@ namespace black_cat
 			using const_iterator = bci_scene_graph_node::const_iterator;
 
 		public:
-			bc_scene_graph(core::bc_unique_ptr<bci_scene_graph_node> p_scene_graph);
+			explicit bc_scene_graph(core::bc_unique_ptr<bci_scene_graph_node> p_scene_graph);
 
 			bc_scene_graph(bc_scene_graph&&) = default;
 
@@ -83,6 +83,8 @@ namespace black_cat
 			template<typename TComponent>
 			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;
 
+			void update(const core_platform::bc_clock::update_param& p_clock);
+			
 			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
 			void clear();

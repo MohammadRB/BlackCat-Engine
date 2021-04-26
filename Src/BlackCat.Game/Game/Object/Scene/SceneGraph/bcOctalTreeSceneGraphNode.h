@@ -107,6 +107,8 @@ namespace black_cat
 
 			bool remove_actor(bc_actor& p_actor) override;
 
+			void update(const core_platform::bc_clock::update_param& p_clock) override;
+			
 			void clear() override;
 
 			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const override;
@@ -128,6 +130,8 @@ namespace black_cat
 			bool _add_actor(bc_actor& p_actor, const physics::bc_bound_box& p_actor_bound_box);
 
 			bool _remove_actor(bc_actor& p_actor, const physics::bc_bound_box& p_actor_bound_box);
+
+			void _reform_graph();
 			
 			void _split();
 
@@ -147,6 +151,7 @@ namespace black_cat
 
 			bcSIZE m_max_actors_count;
 			bcSIZE m_min_size;
+			bcFLOAT m_update_interval_seconds;
 			core_platform::bc_atomic<bcSIZE> m_actors_count;
 
 			bc_octal_tree_graph_node* m_parent;
@@ -164,8 +169,7 @@ namespace black_cat
 			core::bc_concurrent_object_pool<bc_octal_tree_graph_node>* m_child_nodes_pool;
 			core::bc_concurrent_memory_pool* m_actors_pool;
 			graph_node_entry_list m_actors;
-
-			mutable core_platform::bc_recursive_mutex m_lock;
+			mutable core_platform::bc_mutex m_actors_lock;
 		};
 	}
 }

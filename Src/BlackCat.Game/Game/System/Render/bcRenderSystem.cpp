@@ -468,11 +468,11 @@ namespace black_cat
 			{
 				if(l_app_pause_event->get_state() == platform::bc_app_event_pause_state::state::paused)
 				{
-					m_app_active_flag.store(false);
+					m_app_active_flag.store(false, core_platform::bc_memory_order::relaxed);
 				}
 				if (l_app_pause_event->get_state() == platform::bc_app_event_pause_state::state::resume_request)
 				{
-					m_app_active_flag.store(true);
+					m_app_active_flag.store(true, core_platform::bc_memory_order::relaxed);
 				}
 				
 				return true;
@@ -483,7 +483,7 @@ namespace black_cat
 			{
 				// If application is not in pause state, requeue device reset event and return
 				// to let main thread proceed into pause state
-				if (m_app_active_flag.load())
+				if (m_app_active_flag.load(core_platform::bc_memory_order::relaxed))
 				{
 					l_event_manager->queue_event(*l_device_reset_event, 0);
 					return true;

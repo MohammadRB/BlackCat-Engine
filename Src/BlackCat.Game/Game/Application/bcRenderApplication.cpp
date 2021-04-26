@@ -101,6 +101,7 @@ namespace black_cat
 						else
 						{
 							(p_state->m_app->*p_state->m_pause_function)(p_state->m_clock);
+							core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(100));
 						}
 
 						p_state->m_signal.store(0, core_platform::bc_memory_order::release);

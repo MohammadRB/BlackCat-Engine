@@ -82,6 +82,8 @@ namespace black_cat
 			 */
 			virtual bool remove_actor(bc_actor& p_actor) = 0;
 
+			virtual void update(const core_platform::bc_clock::update_param& p_clock) = 0;
+			
 			virtual void clear() = 0;
 
 			virtual void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const = 0;

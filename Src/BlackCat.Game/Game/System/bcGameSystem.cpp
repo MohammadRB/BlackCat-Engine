@@ -98,7 +98,7 @@ namespace black_cat
 
 				if (l_scene)
 				{
-					l_scene_task = l_scene->update_graph_async();
+					l_scene_task = l_scene->update_graph_async(p_clock);
 					l_scene_task1 = l_scene->update_bullets_async(p_clock);
 				}
 
@@ -118,7 +118,7 @@ namespace black_cat
 
 				l_actor_component_manager.process_actor_events(p_clock);
 
-				core::bc_task<void> l_scene_task = l_scene->update_graph_async();
+				core::bc_task<void> l_scene_task = l_scene->update_graph_async(p_clock);
 
 				l_script_system.update(p_clock);
 				l_console->update(p_clock);
