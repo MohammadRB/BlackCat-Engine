@@ -16,6 +16,10 @@ namespace black_cat
 			load(p_content_path, bcL("config.json"));
 
 			auto& l_json = *m_json;
+			if (!l_json->m_global_scale.get_had_value())
+			{
+				*l_json->m_global_scale = 1.0f;
+			}
 			if(!l_json->m_lod_global_scale.get_had_value())
 			{
 				*l_json->m_lod_global_scale = 4.0f;

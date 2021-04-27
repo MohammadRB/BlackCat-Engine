@@ -250,6 +250,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcVegetableCascadedShadowMapPass.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcExplosionActorController.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcFireActorController.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcRocketActorController.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotCameraController.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotController.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotUpdateAnimationJob.h" />
@@ -297,6 +298,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\ShadowMap\bcVegetableCascadedShadowMapPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcExplosionActorController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcFireActorController.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcRocketActorController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotCameraController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotUpdateAnimationJob.cpp" />

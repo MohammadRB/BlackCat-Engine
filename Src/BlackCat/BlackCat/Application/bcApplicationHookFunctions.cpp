@@ -57,6 +57,7 @@
 #include "BlackCat/Loader/bcSceneCheckPointLoader.h"
 #include "BlackCat/SampleImp/ActorController/bcFireActorController.h"
 #include "BlackCat/SampleImp/ActorController/bcExplosionActorController.h"
+#include "BlackCat/SampleImp/ActorController/bcRocketActorController.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotController.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotCameraController.h"
 #include "BlackCat/SampleImp/Particle/bcExplosionParticle.h"
@@ -175,6 +176,7 @@ namespace black_cat
 		(
 			game::bc_actor_controller_register<bc_fire_actor_controller>("fire"),
 			game::bc_actor_controller_register<bc_explosion_actor_controller>("explosion"),
+			game::bc_actor_controller_register<bc_rocket_controller>("rocket"),
 			game::bc_actor_controller_register<bc_xbot_controller>("xbot"),
 			game::bc_actor_controller_register<bc_xbot_camera_controller>("xbot_player")
 		);

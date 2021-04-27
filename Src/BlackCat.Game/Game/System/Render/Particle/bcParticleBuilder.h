@@ -31,7 +31,7 @@ namespace black_cat
 
 			bc_particle_builder1& with_particles_color(const core::bc_vector3f& p_color, bcFLOAT p_intensity = 1);
 			
-			bc_particle_builder1& with_particle_reverse_direction() noexcept;
+			bc_particle_builder1& with_particles_reverse_direction() noexcept;
 
 			bc_particle_builder1& with_particle_size(bcFLOAT p_start_size, bcFLOAT p_end_size) noexcept;
 

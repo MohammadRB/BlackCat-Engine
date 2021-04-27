@@ -52,7 +52,7 @@ namespace black_cat
 		}
 		else
 		{
-			l_matrix.rotation_euler_lh(p_axis, p_radians);
+			l_matrix.rotation_euler_rh(p_axis, p_radians);
 		}
 
 		return l_matrix;
@@ -64,5 +64,15 @@ namespace black_cat
 		const auto l_up_rotation = core::bc_to_degree(std::acos(core::bc_vector3f::dot(core::bc_vector3f::right(), p_transform.get_row(0).xyz())));
 
 		return core::bc_vector4f(l_up, l_up_rotation);
+	}
+
+	inline core::bc_matrix4f bc_matrix4f_from_position_and_direction(const core::bc_vector3f& p_position, const core::bc_vector3f& p_direction)
+	{
+		core::bc_matrix4f l_matrix;
+		l_matrix.make_identity();
+		l_matrix.set_translation(p_position);
+		l_matrix.set_rotation(bc_matrix3f_rotation_between_two_vector(core::bc_vector3f::forward(), p_direction));
+
+		return l_matrix;
 	}
 }

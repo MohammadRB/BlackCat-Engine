@@ -44,20 +44,25 @@ namespace black_cat
 		(
 			[this, l_scene = &p_scene, l_actor = p_context.m_actor](const game::bc_scene_query_context& p_query_context)
 			{
-				const auto& l_px_scene = l_scene->get_px_scene();
+				auto& l_px_scene = l_scene->get_px_scene();
 				const auto l_position = l_actor.get_component<game::bc_mediate_component>()->get_position();
 
-				const physics::bc_ray l_ray(core::bc_vector3f(l_position.x, l_position.y + 10, l_position.z), core::bc_vector3f(0, -1, 0), 20);
+				const physics::bc_ray l_ray(l_position + core::bc_vector3f(0,1,0), core::bc_vector3f(0, -1, 0), 5 * l_scene->get_global_scale());
 				physics::bc_scene_ray_query_buffer l_query_buffer;
+				bool l_has_collided;
 
-				const bool l_has_collided = l_px_scene.raycast
-				(
-					l_ray,
-					l_query_buffer,
-					core::bc_enum::mask_or({physics::bc_hit_flag::position, physics::bc_hit_flag::normal, physics::bc_hit_flag::face_index}),
-					physics::bc_query_flags::statics,
-					static_cast<physics::bc_query_group>(game::bc_actor_group::terrain)
-				);
+				{
+					physics::bc_scene_shared_lock l_lock(&l_px_scene);
+
+					l_has_collided = l_px_scene.raycast
+					(
+						l_ray,
+						l_query_buffer,
+						core::bc_enum::mask_or({ physics::bc_hit_flag::position, physics::bc_hit_flag::normal, physics::bc_hit_flag::face_index }),
+						physics::bc_query_flags::statics,
+						static_cast<physics::bc_query_group>(game::bc_actor_group::terrain)
+					);
+				}
 
 				core::bc_nullable<game::bc_ray_hit> l_result;
 				
@@ -81,12 +86,11 @@ namespace black_cat
 		{
 			auto l_hit_result = *m_scene_terrain_query.get().get_result().as<core::bc_nullable<game::bc_ray_hit>>();
 			auto& l_particle_manager = p_context.m_game_system.get_render_system().get_particle_manager();
-			auto* l_mediate_component = p_context.m_actor.get_component<game::bc_mediate_component>();
+			auto& l_mediate_component = *p_context.m_actor.get_component<game::bc_mediate_component>();
+			m_direction = l_mediate_component.get_world_transform().get_basis_z();
 
 			if(l_hit_result.is_set())
 			{
-				m_light_direction = l_hit_result->get_normal();
-
 				auto* l_height_map_component = l_hit_result->get_actor().get_component<game::bc_height_map_component>();
 				const auto l_px_height_map = l_height_map_component->get_height_map().get_px_height_field();
 				const auto l_height_map_material_index = l_px_height_map.get_triangle_material(l_hit_result->get_face_index());
@@ -95,19 +99,18 @@ namespace black_cat
 
 				if (m_emitter_name)
 				{
-					l_particle_manager.spawn_emitter(m_emitter_name, l_mediate_component->get_position(), m_light_direction, &l_color);
+					l_particle_manager.spawn_emitter(m_emitter_name, l_mediate_component.get_position(), m_direction, &l_color);
 				}
-
 				if(m_decal_name)
 				{
-					l_height_map_component->add_decal(m_decal_name, l_hit_result->get_position(), m_light_direction);
+					l_height_map_component->add_decal(m_decal_name, l_hit_result->get_position(), m_direction);
 				}
 			}
 			else
 			{
 				if (m_emitter_name)
 				{
-					l_particle_manager.spawn_emitter(m_emitter_name, l_mediate_component->get_position(), core::bc_vector3f::up());
+					l_particle_manager.spawn_emitter(m_emitter_name, l_mediate_component.get_position(), m_direction);
 				}
 			}
 
@@ -119,7 +122,7 @@ namespace black_cat
 			return;
 		}
 		
-		auto* l_light_component = p_context.m_actor.get_component< game::bc_light_component >();
+		auto* l_light_component = p_context.m_actor.get_component<game::bc_light_component>();
 		auto* l_point_light = l_light_component->get_light()->as_point_light();
 
 		const auto l_normal_age = pow(1 - (m_age / m_light_lifetime_second), 2);
@@ -127,7 +130,7 @@ namespace black_cat
 		l_point_light->set_particle_intensity(m_light_particle_intensity * l_normal_age);
 		l_point_light->set_position
 		(
-			l_point_light->get_position() + m_light_direction * m_light_rise_per_second * p_context.m_clock.
+			l_point_light->get_position() + m_direction * m_light_rise_per_second * p_context.m_clock.
 			m_elapsed_second
 		);
 

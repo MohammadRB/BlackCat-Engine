@@ -14,6 +14,7 @@ namespace black_cat
 	{
 		BC_JSON_STRUCTURE(bc_config_layout)
 		{
+			BC_JSON_VALUE_OP(bcFLOAT, global_scale);
 			BC_JSON_VALUE_OP(bcFLOAT, lod_global_scale);
 			BC_JSON_VALUE_OP(bcUINT32, lod_culling_index);
 			BC_JSON_VALUE_OP(bcUINT32, scene_graph_actors_pool_capacity);
@@ -33,6 +34,8 @@ namespace black_cat
 
 			bc_global_config& operator=(bc_global_config&&) noexcept;
 
+			bcFLOAT get_global_scale() const noexcept;
+			
 			bcFLOAT get_lod_global_scale() const noexcept;
 
 			bcUINT32 get_lod_culling_index() const noexcept;
@@ -59,6 +62,11 @@ namespace black_cat
 
 		inline bc_global_config& bc_global_config::operator=(bc_global_config&&) noexcept = default;
 
+		inline bcFLOAT bc_global_config::get_global_scale() const noexcept
+		{
+			return *(*m_json)->m_global_scale;
+		}
+		
 		inline bcFLOAT bc_global_config::get_lod_global_scale() const noexcept
 		{
 			return *(*m_json)->m_lod_global_scale;

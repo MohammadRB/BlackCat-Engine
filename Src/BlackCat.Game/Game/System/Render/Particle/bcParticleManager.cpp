@@ -13,6 +13,7 @@
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Input/bcFileSystem.h"
 #include "Game/Query/bcParticleEmittersQuery.h"
+#include "Game/bcUtility.h"
 #include "Game/bcException.h"
 
 namespace black_cat
@@ -147,18 +148,8 @@ namespace black_cat
 			const core::bc_vector3f* p_color,
 			bcFLOAT p_scale)
 		{
-			core::bc_matrix3f l_rotation;
-			if(graphic::bc_render_api_info::use_left_handed())
-			{
-				l_rotation.rotation_between_two_vector_checked_lh(core::bc_vector3f(0, 1, 0), p_dir);
-			}
-			else
-			{
-				l_rotation.rotation_between_two_vector_checked_rh(core::bc_vector3f(0, 1, 0), p_dir);
-			}
-			
+			const auto l_rotation = bc_matrix3f_rotation_between_two_vector_checked(core::bc_vector3f::up(), p_dir);
 			const auto l_definition_ite = m_emitter_definitions.find(string_hash_t()(p_emitter_name));
-			
 			BC_ASSERT(l_definition_ite != std::end(m_emitter_definitions));
 
 			{

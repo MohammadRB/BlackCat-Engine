@@ -68,6 +68,14 @@ namespace black_cat
 				}
 			}
 
+			void set_directions(const core::bc_vector3f& p_direction)
+			{
+				for (bc_particle_emitter_trait* l_emitter : m_emitters)
+				{
+					l_emitter->m_direction = p_direction;
+				}
+			}
+
 			void set_particle_counts(bcUINT32 p_count)
 			{
 				for (bc_particle_emitter_trait* l_emitter : m_emitters)

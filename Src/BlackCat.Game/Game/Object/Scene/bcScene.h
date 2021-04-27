@@ -58,25 +58,27 @@ namespace black_cat
 
 			bc_scene& operator=(bc_scene&&) noexcept;
 
-			const core::bc_estring& get_path() const;
+			const core::bc_estring& get_path() const noexcept;
 
-			const core::bc_string& get_name() const;
+			const core::bc_string& get_name() const noexcept;
 
-			const core::bc_vector<core::bc_string>& get_stream_files() const;
+			const core::bc_vector<core::bc_string>& get_stream_files() const noexcept;
 
-			const core::bc_vector<core::bc_string>& get_entity_files() const;
+			const core::bc_vector<core::bc_string>& get_entity_files() const noexcept;
 
-			const core::bc_vector<core::bc_string>& get_material_files() const;
+			const core::bc_vector<core::bc_string>& get_material_files() const noexcept;
 			
-			const core::bc_vector<core::bc_string>& get_loaded_streams() const;
+			const core::bc_vector<core::bc_string>& get_loaded_streams() const noexcept;
 
-			bc_scene_graph& get_scene_graph();
+			bcFLOAT get_global_scale() const noexcept;
+			
+			bc_scene_graph& get_scene_graph() noexcept;
 
-			const bc_scene_graph& get_scene_graph() const;
+			const bc_scene_graph& get_scene_graph() const noexcept;
 
-			physics::bc_scene& get_px_scene();
+			physics::bc_scene& get_px_scene() noexcept;
 
-			const physics::bc_scene& get_px_scene() const;
+			const physics::bc_scene& get_px_scene() const noexcept;
 			
 			/**
 			 * \brief ThreadSafe
@@ -131,6 +133,8 @@ namespace black_cat
 			core::bc_vector<core::bc_string> m_entity_files;
 			core::bc_vector<core::bc_string> m_material_files;
 			core::bc_vector<core::bc_string> m_loaded_streams;
+
+			bcFLOAT m_global_scale;
 			bc_scene_graph m_scene_graph;
 			bc_physics_system* m_physics;
 			physics::bc_scene_ref m_px_scene;
@@ -143,52 +147,57 @@ namespace black_cat
 
 		using bc_scene_ptr = core::bc_content_ptr<bc_scene>;
 
-		inline const core::bc_estring& bc_scene::get_path() const
+		inline const core::bc_estring& bc_scene::get_path() const noexcept
 		{
 			return m_path;
 		}
 
-		inline const core::bc_string& bc_scene::get_name() const
+		inline const core::bc_string& bc_scene::get_name() const noexcept
 		{
 			return m_name;
 		}
 
-		inline const core::bc_vector<core::bc_string>& bc_scene::get_stream_files() const
+		inline const core::bc_vector<core::bc_string>& bc_scene::get_stream_files() const noexcept
 		{
 			return m_stream_files;
 		}
 
-		inline const core::bc_vector<core::bc_string>& bc_scene::get_entity_files() const
+		inline const core::bc_vector<core::bc_string>& bc_scene::get_entity_files() const noexcept
 		{
 			return m_entity_files;
 		}
 
-		inline const core::bc_vector<core::bc_string>& bc_scene::get_material_files() const
+		inline const core::bc_vector<core::bc_string>& bc_scene::get_material_files() const noexcept
 		{
 			return m_material_files;
 		}
 		
-		inline const core::bc_vector<core::bc_string>& bc_scene::get_loaded_streams() const
+		inline const core::bc_vector<core::bc_string>& bc_scene::get_loaded_streams() const noexcept
 		{
 			return m_loaded_streams;
 		}
 
-		inline bc_scene_graph& bc_scene::get_scene_graph()
+		inline bcFLOAT bc_scene::get_global_scale() const noexcept
+		{
+			return m_global_scale;
+		}
+		
+		inline bc_scene_graph& bc_scene::get_scene_graph() noexcept
 		{
 			return m_scene_graph;
 		}
 
-		inline const bc_scene_graph& bc_scene::get_scene_graph() const
+		inline const bc_scene_graph& bc_scene::get_scene_graph() const noexcept
 		{
 			return m_scene_graph;
 		}
 
-		inline physics::bc_scene& bc_scene::get_px_scene()
+		inline physics::bc_scene& bc_scene::get_px_scene() noexcept
 		{
 			return m_px_scene.get();
 		}
 		
-		inline const physics::bc_scene& bc_scene::get_px_scene() const
+		inline const physics::bc_scene& bc_scene::get_px_scene() const noexcept
 		{
 			return m_px_scene.get();
 		}

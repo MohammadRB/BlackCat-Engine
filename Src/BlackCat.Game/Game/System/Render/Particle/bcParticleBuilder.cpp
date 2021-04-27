@@ -67,7 +67,7 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_particle_builder1& bc_particle_builder1::with_particle_reverse_direction() noexcept
+		bc_particle_builder1& bc_particle_builder1::with_particles_reverse_direction() noexcept
 		{
 			m_emitter.m_particles_velocity_reverse_direction = -1;
 			return *this;

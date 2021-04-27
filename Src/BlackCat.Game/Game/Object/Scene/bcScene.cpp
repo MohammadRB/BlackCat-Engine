@@ -6,6 +6,7 @@
 #include "PhysicsImp/Body/bcRigidBody.h"
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Content/bcContentStreamManager.h"
+#include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
@@ -39,6 +40,7 @@ namespace black_cat
 			m_px_scene(std::move(p_px_scene)),
 			m_bullet_manager(p_physics)
 		{
+			m_global_scale = get_global_config().get_global_scale();
 		}
 
 		bc_scene::bc_scene(bc_scene&& p_other) noexcept
@@ -48,6 +50,7 @@ namespace black_cat
 			m_entity_files(std::move(p_other.m_entity_files)),
 			m_material_files(std::move(p_other.m_material_files)),
 			m_loaded_streams(std::move(p_other.m_loaded_streams)),
+			m_global_scale(p_other.m_global_scale),
 			m_scene_graph(std::move(p_other.m_scene_graph)),
 			m_physics(p_other.m_physics),
 			m_px_scene(std::move(p_other.m_px_scene)),
@@ -76,6 +79,7 @@ namespace black_cat
 			m_material_files = std::move(p_other.m_material_files);
 			m_loaded_streams = std::move(p_other.m_loaded_streams);
 			m_scene_graph = std::move(p_other.m_scene_graph);
+			m_global_scale = p_other.m_global_scale;
 			m_physics = p_other.m_physics;
 			m_px_scene = std::move(p_other.m_px_scene);
 			m_bullet_manager = std::move(p_other.m_bullet_manager);

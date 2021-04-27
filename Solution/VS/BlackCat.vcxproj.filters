@@ -204,6 +204,9 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneCheckPointLoader.h">
       <Filter>BlackCat\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcRocketActorController.h">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -319,6 +322,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneCheckPointLoader.cpp">
       <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcRocketActorController.cpp">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
