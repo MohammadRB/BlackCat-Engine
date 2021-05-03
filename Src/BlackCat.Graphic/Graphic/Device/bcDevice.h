@@ -19,133 +19,138 @@ namespace black_cat
 	{
 		template<bc_render_api>
 		class bc_platform_buffer;
-		using bc_buffer = bc_platform_buffer< g_current_render_api >;
-		using bc_buffer_ref = bc_device_ref< bc_buffer >;
+		using bc_buffer = bc_platform_buffer<g_current_render_api>;
+		using bc_buffer_ref = bc_device_ref<bc_buffer>;
 
 		template<bc_render_api>
 		class bc_platform_buffer_config;
-		using bc_buffer_config = bc_platform_buffer_config< g_current_render_api >;
+		using bc_buffer_config = bc_platform_buffer_config<g_current_render_api>;
 
 		template<bc_render_api>
 		class bc_platform_texture_config;
-		using bc_texture_config = bc_platform_texture_config< g_current_render_api >;
+		using bc_texture_config = bc_platform_texture_config<g_current_render_api>;
 
 		class bc_subresource_data;
 
 		template<bc_render_api>
 		class bc_platform_texture2d;
-		using bc_texture2d = bc_platform_texture2d< g_current_render_api >;
-		using bc_texture2d_ref = bc_device_ref< bc_texture2d >;
+		using bc_texture2d = bc_platform_texture2d<g_current_render_api>;
+		using bc_texture2d_ref = bc_device_ref<bc_texture2d>;
 
 		struct bc_sampler_state_config;
 
 		template<bc_render_api>
 		class bc_platform_sampler_state;
-		using bc_sampler_state = bc_platform_sampler_state< g_current_render_api >;
-		using bc_sampler_state_ref = bc_device_ref< bc_sampler_state >;
+		using bc_sampler_state = bc_platform_sampler_state<g_current_render_api>;
+		using bc_sampler_state_ref = bc_device_ref<bc_sampler_state>;
 
 		struct bc_shader_macro;
 		
 		template<bc_render_api>
 		class bc_platform_compiled_shader;
-		using bc_compiled_shader = bc_platform_compiled_shader< g_current_render_api >;
-		using bc_compiled_shader_ptr = bc_device_ref< bc_compiled_shader >;
+		using bc_compiled_shader = bc_platform_compiled_shader<g_current_render_api>;
+		using bc_compiled_shader_ptr = bc_device_ref<bc_compiled_shader>;
 
 		template<bc_render_api>
 		class bc_platform_vertex_shader;
-		using bc_vertex_shader = bc_platform_vertex_shader< g_current_render_api >;
+		using bc_vertex_shader = bc_platform_vertex_shader<g_current_render_api>;
 		using bc_vertex_shader_ref = bc_device_ref<bc_vertex_shader>;
 
 		template<bc_render_api>
 		class bc_platform_hull_shader;
-		using bc_hull_shader = bc_platform_hull_shader< g_current_render_api >;
-		using bc_hull_shader_ref = bc_device_ref< bc_hull_shader >;
+		using bc_hull_shader = bc_platform_hull_shader<g_current_render_api>;
+		using bc_hull_shader_ref = bc_device_ref<bc_hull_shader>;
 
 		template<bc_render_api>
 		class bc_platform_domain_shader;
-		using bc_domain_shader = bc_platform_domain_shader< g_current_render_api >;
-		using bc_domain_shader_ref = bc_device_ref< bc_domain_shader >;
+		using bc_domain_shader = bc_platform_domain_shader<g_current_render_api>;
+		using bc_domain_shader_ref = bc_device_ref<bc_domain_shader>;
 
 		template<bc_render_api>
 		class bc_platform_geometry_shader;
-		using bc_geometry_shader = bc_platform_geometry_shader< g_current_render_api >;
-		using bc_geometry_shader_ref = bc_device_ref< bc_geometry_shader >;
+		using bc_geometry_shader = bc_platform_geometry_shader<g_current_render_api>;
+		using bc_geometry_shader_ref = bc_device_ref<bc_geometry_shader>;
 
 		template<bc_render_api>
 		class bc_platform_pixel_shader;
-		using bc_pixel_shader = bc_platform_pixel_shader< g_current_render_api >;
-		using bc_pixel_shader_ref = bc_device_ref< bc_pixel_shader >;
+		using bc_pixel_shader = bc_platform_pixel_shader<g_current_render_api>;
+		using bc_pixel_shader_ref = bc_device_ref<bc_pixel_shader>;
 
 		template<bc_render_api>
 		class bc_platform_compute_shader;
-		using bc_compute_shader = bc_platform_compute_shader< g_current_render_api >;
-		using bc_compute_shader_ref = bc_device_ref< bc_compute_shader >;
+		using bc_compute_shader = bc_platform_compute_shader<g_current_render_api>;
+		using bc_compute_shader_ref = bc_device_ref<bc_compute_shader>;
 
 		template<bc_render_api>
 		class bc_platform_device_pipeline;
-		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
-		using bc_device_pipeline_ref = bc_device_ref< bc_device_pipeline >;
+		using bc_device_pipeline = bc_platform_device_pipeline<g_current_render_api>;
+		using bc_device_pipeline_ref = bc_device_ref<bc_device_pipeline>;
 
 		struct bc_device_pipeline_state_config;
 
 		template<bc_render_api>
 		class bc_platform_device_pipeline_state;
-		using bc_device_pipeline_state = bc_platform_device_pipeline_state< g_current_render_api >;
+		using bc_device_pipeline_state = bc_platform_device_pipeline_state<g_current_render_api>;
 		using bc_device_pipeline_state_ref = bc_device_ref<bc_device_pipeline_state>;
 
 		struct bc_device_compute_state_config;
 
 		template<bc_render_api>
 		class bc_platform_device_compute_state;
-		using bc_device_compute_state = bc_platform_device_compute_state< g_current_render_api >;
+		using bc_device_compute_state = bc_platform_device_compute_state<g_current_render_api>;
 		using bc_device_compute_state_ref = bc_device_ref<bc_device_compute_state>;
 
 		template<bc_render_api>
 		class bc_platform_device_command_list;
-		using bc_device_command_list = bc_platform_device_command_list< g_current_render_api >;
-		using bc_device_command_list_ref = bc_device_ref< bc_device_command_list >;
+		using bc_device_command_list = bc_platform_device_command_list<g_current_render_api>;
+		using bc_device_command_list_ref = bc_device_ref<bc_device_command_list>;
 
 		template<bc_render_api>
 		class bc_platform_device_command_executor;
-		using bc_device_command_executor = bc_platform_device_command_executor< g_current_render_api >;
-		using bc_device_command_executor_ref = bc_device_ref< bc_device_command_executor >;
+		using bc_device_command_executor = bc_platform_device_command_executor<g_current_render_api>;
+		using bc_device_command_executor_ref = bc_device_ref<bc_device_command_executor>;
 
 		template<bc_render_api>
 		class bc_platform_resource_view_config;
-		using bc_resource_view_config = bc_platform_resource_view_config< g_current_render_api >;
+		using bc_resource_view_config = bc_platform_resource_view_config<g_current_render_api>;
 
 		template<bc_render_api>
 		class bc_platform_render_target_view_config;
-		using bc_render_target_view_config = bc_platform_render_target_view_config< g_current_render_api >;
+		using bc_render_target_view_config = bc_platform_render_target_view_config<g_current_render_api>;
 
 		template<bc_render_api>
 		class bc_platform_depth_stencil_view_config;
-		using bc_depth_stencil_view_config = bc_platform_depth_stencil_view_config< g_current_render_api >;
+		using bc_depth_stencil_view_config = bc_platform_depth_stencil_view_config<g_current_render_api>;
 
 		template<bc_render_api>
 		class bci_platform_resource_view;
-		using bci_resource_view = bci_platform_resource_view< g_current_render_api >;
+		using bci_resource_view = bci_platform_resource_view<g_current_render_api>;
 
 		template<bc_render_api>
 		class bc_platform_resource_view;
-		using bc_resource_view = bc_platform_resource_view< g_current_render_api >;
-		using bc_resource_view_ref = bc_device_ref< bc_resource_view >;
+		using bc_resource_view = bc_platform_resource_view<g_current_render_api>;
+		using bc_resource_view_ref = bc_device_ref<bc_resource_view>;
 
 		template<bc_render_api>
 		class bc_platform_depth_stencil_view;
-		using bc_depth_stencil_view = bc_platform_depth_stencil_view< g_current_render_api >;
-		using bc_depth_stencil_view_ref = bc_device_ref< bc_depth_stencil_view >;
+		using bc_depth_stencil_view = bc_platform_depth_stencil_view<g_current_render_api>;
+		using bc_depth_stencil_view_ref = bc_device_ref<bc_depth_stencil_view>;
 
 		template<bc_render_api>
 		class bc_platform_render_target_view;
-		using bc_render_target_view = bc_platform_render_target_view< g_current_render_api >;
+		using bc_render_target_view = bc_platform_render_target_view<g_current_render_api>;
 		using bc_render_target_view_ref = bc_device_ref<bc_render_target_view>;
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api>
 		class bc_platform_device_text_renderer;
-		using bc_device_text_renderer = bc_platform_device_text_renderer< g_current_render_api >;
+		using bc_device_text_renderer = bc_platform_device_text_renderer<g_current_render_api>;
+
+		template<bc_render_api>
+		class bc_platform_device_occlusion_query;
+		using bc_device_occlusion_query = bc_platform_device_occlusion_query<g_current_render_api>;
+		using bc_device_occlusion_query_ref = bc_device_ref<bc_device_occlusion_query>;
 		
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_device_pack
 		{
 		};
@@ -154,7 +159,7 @@ namespace black_cat
 		 * \brief ThreadSafe 
 		 * \tparam TRenderApi 
 		 */
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_device 
 			: public core::bc_initializable<bcUINT, bcUINT, bc_format, bc_device_output>,
 			public core::bc_object_allocator,
@@ -276,6 +281,8 @@ namespace black_cat
 
 			bc_device_text_renderer create_text_renderer();
 
+			bc_device_occlusion_query_ref create_occlusion_query();
+			
 			bc_mapped_resource map_resource(bci_resource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type);
 
 			void unmap_resource(bci_resource& p_resource, bcUINT p_subresource);
@@ -327,21 +334,21 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_device = bc_platform_device< g_current_render_api >;
+		using bc_device = bc_platform_device<g_current_render_api>;
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		bcUINT32 bc_platform_device<TRenderApi>::get_back_buffer_width() const
 		{
 			return get_back_buffer_texture().get_width();
 		}
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		bcUINT32 bc_platform_device<TRenderApi>::get_back_buffer_height() const
 		{
 			return get_back_buffer_texture().get_height();
 		}
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		bc_format bc_platform_device<TRenderApi>::get_back_buffer_format() const
 		{
 			return get_back_buffer_texture().get_format();

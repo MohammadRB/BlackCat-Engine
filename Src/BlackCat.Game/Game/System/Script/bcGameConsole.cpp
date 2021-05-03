@@ -52,17 +52,17 @@ namespace black_cat
 		bc_game_console::bc_game_console(bc_script_system& p_script_system)
 			: m_script_system(p_script_system),
 			m_imp(),
-			m_log_types({true, true, true, true}),
+			m_log_types({true, true, true, true, true}),
 			m_logs(),
 			m_bound_context(nullptr),
 			m_bound_console()
 		{
-			core::bc_get_service< core::bc_logger >()->register_listener
+			core::bc_get_service<core::bc_logger>()->register_listener
 			(
-				core::bc_enum::mask_or({core::bc_log_type::info, core::bc_log_type::debug, core::bc_log_type::error}),
+				core::bc_enum::mask_or({core::bc_log_type::info, core::bc_log_type::debug, core::bc_log_type::warning, core::bc_log_type::error}),
 				this
 			);
-			m_key_event_handle = core::bc_get_service< core::bc_event_manager >()->register_event_listener< platform::bc_app_event_key >
+			m_key_event_handle = core::bc_get_service<core::bc_event_manager>()->register_event_listener<platform::bc_app_event_key>
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_game_console::_on_key)
 			);
@@ -89,7 +89,7 @@ namespace black_cat
 				}
 			}
 
-			core::bc_get_service< core::bc_logger >()->unregister_listener(this);
+			core::bc_get_service<core::bc_logger>()->unregister_listener(this);
 		}
 
 		bc_game_console& bc_game_console::operator=(bc_game_console&& p_other) noexcept
@@ -221,6 +221,7 @@ namespace black_cat
 				l_console_builder
 					.constant(L"outputInfo", static_cast< platform::bc_script_int >(bc_console_output_type::info))
 					.constant(L"outputDebug", static_cast< platform::bc_script_int >(bc_console_output_type::debug))
+					.constant(L"outputWarning", static_cast< platform::bc_script_int >(bc_console_output_type::warning))
 					.constant(L"outputError", static_cast< platform::bc_script_int >(bc_console_output_type::error))
 					.constant(L"outputScript", static_cast< platform::bc_script_int >(bc_console_output_type::script))
 					.function(L"enableOutput", &bc_game_console_bind::enable_output)

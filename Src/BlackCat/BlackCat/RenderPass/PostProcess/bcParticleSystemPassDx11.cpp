@@ -255,11 +255,11 @@ namespace black_cat
 		after_reset(game::bc_render_pass_reset_context(p_render_system, l_device, l_old_parameters, l_new_parameters));
 	}
 
-	void bc_particle_system_pass_dx11::update(const game::bc_render_pass_update_context& p_param)
+	void bc_particle_system_pass_dx11::update(const game::bc_render_pass_update_context& p_context)
 	{
 	}
 
-	void bc_particle_system_pass_dx11::initialize_frame(const game::bc_render_pass_render_context& p_param)
+	void bc_particle_system_pass_dx11::initialize_frame(const game::bc_render_pass_render_context& p_context)
 	{
 		if(m_emitters_query.is_executed())
 		{
@@ -289,31 +289,31 @@ namespace black_cat
 		);
 		m_lights_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
-			game::bc_scene_light_query({game::bc_light_type::point}).with(game::bc_camera_frustum(p_param.m_update_camera))
+			game::bc_scene_light_query({game::bc_light_type::point}).with(game::bc_camera_frustum(p_context.m_update_camera))
 		);
 	}
 
-	void bc_particle_system_pass_dx11::execute(const game::bc_render_pass_render_context& p_param)
+	void bc_particle_system_pass_dx11::execute(const game::bc_render_pass_render_context& p_context)
 	{
-		p_param.m_render_thread.start();
+		p_context.m_render_thread.start();
 		
 		if(!m_emitters_query_result.empty())
 		{
 			game::bc_compute_state_unordered_view_initial_count_array l_initial_count = { -1, m_dead_particles_initial_count, -1, -1, -1, -1, -1, -1 };
-			p_param.m_render_thread.bind_compute_state(*m_emission_compute, &l_initial_count);
-			p_param.m_render_thread.update_subresource(*m_emitters_buffer, 0, m_emitters_query_result.data(), m_emitters_query_result.size(), 1);
-			p_param.m_render_thread.dispatch(m_emitters_query_result.size(), 1, 1);
-			p_param.m_render_thread.unbind_compute_state(*m_emission_compute);
+			p_context.m_render_thread.bind_compute_state(*m_emission_compute, &l_initial_count);
+			p_context.m_render_thread.update_subresource(*m_emitters_buffer, 0, m_emitters_query_result.data(), m_emitters_query_result.size(), 1);
+			p_context.m_render_thread.dispatch(m_emitters_query_result.size(), 1, 1);
+			p_context.m_render_thread.unbind_compute_state(*m_emission_compute);
 		}
 
 		game::bc_compute_state_unordered_view_initial_count_array l_initial_count = { -1, 0, m_dead_particles_initial_count, -1, -1, -1, -1, -1 };
-		p_param.m_render_thread.bind_compute_state(*m_simulation_compute, &l_initial_count);
-		p_param.m_render_thread.dispatch(std::max(1U, s_particles_count / s_simulation_shader_group_size), 1, 1);
-		p_param.m_render_thread.unbind_compute_state(*m_simulation_compute);
+		p_context.m_render_thread.bind_compute_state(*m_simulation_compute, &l_initial_count);
+		p_context.m_render_thread.dispatch(std::max(1U, s_particles_count / s_simulation_shader_group_size), 1, 1);
+		p_context.m_render_thread.unbind_compute_state(*m_simulation_compute);
 
-		p_param.m_render_thread.copy_structure_count(*m_draw_args_buffer, sizeof(bcUINT32), *m_alive_particles1_unordered_view);
+		p_context.m_render_thread.copy_structure_count(*m_draw_args_buffer, sizeof(bcUINT32), *m_alive_particles1_unordered_view);
 
-		_execute_sort_shader(p_param);
+		_execute_sort_shader(p_context);
 
 		if(!m_lights_query_result.empty())
 		{
@@ -324,8 +324,8 @@ namespace black_cat
 				std::end(m_lights_query_result),
 				[&](const game::bc_light_instance& p_1, const game::bc_light_instance& p_2)
 				{
-					const auto l_1_distance = (p_param.m_render_camera.get_position() - p_1.as_point_light()->get_position()).magnitude();
-					const auto l_2_distance = (p_param.m_render_camera.get_position() - p_2.as_point_light()->get_position()).magnitude();
+					const auto l_1_distance = (p_context.m_render_camera.get_position() - p_1.as_point_light()->get_position()).magnitude();
+					const auto l_2_distance = (p_context.m_render_camera.get_position() - p_2.as_point_light()->get_position()).magnitude();
 					return l_1_distance < l_2_distance;
 				}
 			);
@@ -348,17 +348,17 @@ namespace black_cat
 			l_lights.m_lights[l_cbuffer_ite + 1].w = l_light.get_particle_intensity();
 		}
 
-		p_param.m_render_thread.update_subresource(m_lights_cbuffer.get(), 0, &l_lights,1, 1);
+		p_context.m_render_thread.update_subresource(m_lights_cbuffer.get(), 0, &l_lights,1, 1);
 		
-		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state);
-		p_param.m_render_thread.get_pipeline().bind_ia_primitive_topology(graphic::bc_primitive::pointlist);
-		p_param.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::input_assembler_stage);
-		p_param.m_render_thread.draw_instanced_indirect(*m_draw_args_buffer, 0);
-		p_param.m_render_thread.get_pipeline().unbind_ia_primitive_topology();
-		p_param.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::input_assembler_stage);
-		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state);
+		p_context.m_render_thread.bind_render_pass_state(*m_render_pass_state);
+		p_context.m_render_thread.get_pipeline().bind_ia_primitive_topology(graphic::bc_primitive::pointlist);
+		p_context.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::input_assembler_stage);
+		p_context.m_render_thread.draw_instanced_indirect(*m_draw_args_buffer, 0);
+		p_context.m_render_thread.get_pipeline().unbind_ia_primitive_topology();
+		p_context.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::input_assembler_stage);
+		p_context.m_render_thread.unbind_render_pass_state(*m_render_pass_state);
 		
-		p_param.m_render_thread.finish();
+		p_context.m_render_thread.finish();
 
 		m_dead_particles_initial_count = -1;
 	}
@@ -421,17 +421,17 @@ namespace black_cat
 		}
 	}
 
-	void bc_particle_system_pass_dx11::before_reset(const game::bc_render_pass_reset_context& p_param)
+	void bc_particle_system_pass_dx11::before_reset(const game::bc_render_pass_reset_context& p_context)
 	{
 	}
 
-	void bc_particle_system_pass_dx11::after_reset(const game::bc_render_pass_reset_context& p_param)
+	void bc_particle_system_pass_dx11::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
 		m_depth_buffer_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
 		m_depth_buffer_shader_view = get_shared_resource_throw<graphic::bc_resource_view>(constant::g_rpass_depth_stencil_read_view);
-		m_default_sprites_shader_view = p_param.m_render_system.get_particle_manager().get_sprites_view();
+		m_default_sprites_shader_view = p_context.m_render_system.get_particle_manager().get_sprites_view();
 
-		m_emission_compute = p_param.m_render_system.create_compute_state
+		m_emission_compute = p_context.m_render_system.create_compute_state
 		(
 			m_emission_compute_state.get(),
 			{},
@@ -443,10 +443,10 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::compute, m_dead_particles_unordered_view.get())
 			},
 			{
-				p_param.m_render_system.get_global_cbuffer()
+				p_context.m_render_system.get_global_cbuffer()
 			}
 		);
-		m_simulation_compute = p_param.m_render_system.create_compute_state
+		m_simulation_compute = p_context.m_render_system.create_compute_state
 		(
 			m_simulation_compute_state.get(),
 			{},
@@ -457,11 +457,11 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::compute, m_dead_particles_unordered_view.get())
 			},
 			{
-				p_param.m_render_system.get_global_cbuffer(),
+				p_context.m_render_system.get_global_cbuffer(),
 				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::compute, m_curves_cbuffer.get())
 			}
 		);
-		m_sort_group_compute = p_param.m_render_system.create_compute_state
+		m_sort_group_compute = p_context.m_render_system.create_compute_state
 		(
 			m_sort_group_compute_state.get(),
 			{},
@@ -470,10 +470,10 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_alive_particles1_unordered_view.get())
 			},
 			{
-				p_param.m_render_system.get_global_cbuffer()
+				p_context.m_render_system.get_global_cbuffer()
 			}
 		);
-		m_sort_compute = p_param.m_render_system.create_compute_state
+		m_sort_compute = p_context.m_render_system.create_compute_state
 		(
 			m_sort_compute_state.get(),
 			{},
@@ -482,11 +482,11 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_alive_particles1_unordered_view.get())
 			},
 			{
-				p_param.m_render_system.get_global_cbuffer(),
+				p_context.m_render_system.get_global_cbuffer(),
 				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::compute, m_sort_cbuffer.get())
 			}
 		);
-		m_sort_transpose1_compute = p_param.m_render_system.create_compute_state
+		m_sort_transpose1_compute = p_context.m_render_system.create_compute_state
 		(
 			m_sort_transpose_compute_state.get(),
 			{},
@@ -497,11 +497,11 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_alive_particles2_unordered_view.get())
 			},
 			{
-				p_param.m_render_system.get_global_cbuffer(),
+				p_context.m_render_system.get_global_cbuffer(),
 				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::compute, m_sort_cbuffer.get())
 			}
 		);
-		m_sort1_after_transpose_compute = p_param.m_render_system.create_compute_state
+		m_sort1_after_transpose_compute = p_context.m_render_system.create_compute_state
 		(
 			m_sort_compute_state.get(),
 			{},
@@ -510,11 +510,11 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_alive_particles2_unordered_view.get())
 			},
 			{
-				p_param.m_render_system.get_global_cbuffer(),
+				p_context.m_render_system.get_global_cbuffer(),
 				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::compute, m_sort_cbuffer.get())
 			}
 		);
-		m_sort_transpose2_compute = p_param.m_render_system.create_compute_state
+		m_sort_transpose2_compute = p_context.m_render_system.create_compute_state
 		(
 			m_sort_transpose_compute_state.get(),
 			{},
@@ -525,11 +525,11 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_alive_particles1_unordered_view.get())
 			},
 			{
-				p_param.m_render_system.get_global_cbuffer(),
+				p_context.m_render_system.get_global_cbuffer(),
 				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::compute, m_sort_cbuffer.get())
 			}
 		);
-		m_sort2_after_transpose_compute = p_param.m_render_system.create_compute_state
+		m_sort2_after_transpose_compute = p_context.m_render_system.create_compute_state
 		(
 			m_sort_compute_state.get(),
 			{},
@@ -538,16 +538,16 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_alive_particles1_unordered_view.get())
 			},
 			{
-				p_param.m_render_system.get_global_cbuffer(),
+				p_context.m_render_system.get_global_cbuffer(),
 				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::compute, m_sort_cbuffer.get())
 			}
 		);
 
-		const auto l_back_buffer = p_param.m_device.get_back_buffer_texture();
+		const auto l_back_buffer = p_context.m_device.get_back_buffer_texture();
 		const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer.get_width(), l_back_buffer.get_height());
 		const auto l_back_buffer_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_back_buffer_view);
 		
-		m_device_pipeline_state = p_param.m_render_system.create_device_pipeline_state
+		m_device_pipeline_state = p_context.m_render_system.create_device_pipeline_state
 		(
 			"particle_render_vs",
 			nullptr,
@@ -559,15 +559,19 @@ namespace black_cat
 			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_off, game::bc_depth_stencil_type::stencil_off }),
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0x1,
-			{ l_back_buffer.get_format() },
+			{
+				l_back_buffer.get_format()
+			},
 			graphic::bc_format::unknown,
 			game::bc_multi_sample_type::c1_q1
 		);
-		m_render_pass_state = p_param.m_render_system.create_render_pass_state
+		m_render_pass_state = p_context.m_render_system.create_render_pass_state
 		(
 			m_device_pipeline_state.get(),
 			l_viewport,
-			{ l_back_buffer_view },
+			{
+				l_back_buffer_view
+			},
 			graphic::bc_depth_stencil_view(),
 			{
 				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_linear_sampler.get()),
@@ -581,7 +585,7 @@ namespace black_cat
 			},
 			{},
 			{
-				p_param.m_render_system.get_global_cbuffer(),
+				p_context.m_render_system.get_global_cbuffer(),
 				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::geometry, m_lights_cbuffer.get())
 			}
 		);

@@ -12,6 +12,7 @@
 #include "Graphic/Device/bcDeviceComputeState.h"
 #include "Graphic/Device/bcDeviceInfo.h"
 #include "Graphic/Device/Command/bcDeviceCommandList.h"
+#include "Graphic/Device/bcDeviceOcclusionQuery.h"
 #include "Graphic/Shader/Parameter/bcConstantBufferParameter.h"
 #include "Graphic/Shader/Parameter/bcSamplerParameter.h"
 #include "Graphic/Shader/Parameter/bcResourceViewParameter.h"
@@ -161,6 +162,17 @@ namespace black_cat
 			 */
 			void finish_command_list(bc_device_command_list& p_command_list);
 
+			void start_query(bc_device_occlusion_query& p_query);
+
+			void end_query(bc_device_occlusion_query& p_query);
+
+			/**
+			 * \brief Get the result of an occlusion query if it is ready otherwise return false
+			 * \param p_query 
+			 * \return true if result is ready otherwise false
+			 */
+			std::pair<bool, bcUINT64> get_query_data(bc_device_occlusion_query& p_query);
+			
 			void start_monitoring_pipeline();
 
 			bc_device_pipeline_statistic end_monitoring_pipeline();

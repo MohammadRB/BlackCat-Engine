@@ -159,47 +159,47 @@ namespace black_cat
 		m_shadow_maps_buffer_view = l_device.create_resource_view(m_shadow_maps_buffer.get(), l_shadow_maps_buffer_view_config);
 
 		after_reset(game::bc_render_pass_reset_context
-		(
-			p_render_system,
-			l_device,
-			graphic::bc_device_parameters
 			(
-				0,
-				0,
-				graphic::bc_format::unknown,
-				graphic::bc_texture_ms_config(1, 0)
-			),
-			graphic::bc_device_parameters
-			(
-				l_device.get_back_buffer_width(),
-				l_device.get_back_buffer_height(),
-				l_device.get_back_buffer_format(),
-				l_device.get_back_buffer_texture().get_sample_count()
-			)
-		));
+				p_render_system,
+				l_device,
+				graphic::bc_device_parameters
+				(
+					0,
+					0,
+					graphic::bc_format::unknown,
+					graphic::bc_texture_ms_config(1, 0)
+				),
+				graphic::bc_device_parameters
+				(
+					l_device.get_back_buffer_width(),
+					l_device.get_back_buffer_height(),
+					l_device.get_back_buffer_format(),
+					l_device.get_back_buffer_texture().get_sample_count()
+				)
+			));
 	}
 
-	void bc_gbuffer_light_map_pass::update(const game::bc_render_pass_update_context& p_param)
+	void bc_gbuffer_light_map_pass::update(const game::bc_render_pass_update_context& p_context)
 	{
 	}
 
-	void bc_gbuffer_light_map_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
+	void bc_gbuffer_light_map_pass::initialize_frame(const game::bc_render_pass_render_context& p_context)
 	{
 		if (m_lights_query.is_executed())
 		{
 			m_lights = m_lights_query.get().get_lights();
 		}
 
-		m_lights_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+		m_lights_query = p_context.m_query_manager.queue_query
 		(
-			game::bc_scene_light_query
+			game::bc_main_camera_scene_light_query
 			(
 				core::bc_enum::mask_or({ game::bc_light_type::direct, game::bc_light_type::point, game::bc_light_type::spot })
-			).with(game::bc_camera_frustum(p_param.m_update_camera))
+			)
 		);
 	}
 
-	void bc_gbuffer_light_map_pass::execute(const game::bc_render_pass_render_context& p_param)
+	void bc_gbuffer_light_map_pass::execute(const game::bc_render_pass_render_context& p_context)
 	{
 		core::bc_vector_frame<_bc_direct_light_struct> l_direct_lights;
 		core::bc_vector_frame<_bc_point_light_struct> l_point_lights;
@@ -271,9 +271,39 @@ namespace black_cat
 		}
 
 		BC_ASSERT(l_direct_lights.size() <= m_num_direct_lights);
-		BC_ASSERT(l_point_lights.size() <= m_num_point_lights);
-		BC_ASSERT(l_spot_lights.size() <= m_num_spot_lights);
 
+		if(l_point_lights.size() > m_num_point_lights)
+		{
+			std::partial_sort
+			(
+				std::begin(l_point_lights),
+				std::begin(l_point_lights) + std::min(m_num_point_lights, l_point_lights.size()),
+				std::end(l_point_lights),
+				[&](const _bc_point_light_struct& p_1, const _bc_point_light_struct& p_2)
+				{
+					const auto l_1_distance = (p_context.m_render_camera.get_position() - p_1.m_position).magnitude();
+					const auto l_2_distance = (p_context.m_render_camera.get_position() - p_2.m_position).magnitude();
+					return l_1_distance < l_2_distance;
+				}
+			);
+		}
+
+		if (l_spot_lights.size() > m_num_spot_lights)
+		{
+			std::partial_sort
+			(
+				std::begin(l_spot_lights),
+				std::begin(l_spot_lights) + std::min(m_num_spot_lights, l_spot_lights.size()),
+				std::end(l_spot_lights),
+				[&](const _bc_spot_light_struct& p_1, const _bc_spot_light_struct& p_2)
+				{
+					const auto l_1_distance = (p_context.m_render_camera.get_position() - p_1.m_position).magnitude();
+					const auto l_2_distance = (p_context.m_render_camera.get_position() - p_2.m_position).magnitude();
+					return l_1_distance < l_2_distance;
+				}
+			);
+		}
+		
 		// Associate light depth maps to their structures
 		auto* l_shadow_map_buffer_container = get_shared_resource<bc_cascaded_shadow_map_buffer_container>(m_csm_buffers_container_share_slot);
 
@@ -311,9 +341,9 @@ namespace black_cat
 					std::begin(l_shadow_map_buffer_entry.second.m_view_projections),
 					std::end(l_shadow_map_buffer_entry.second.m_view_projections),
 					std::begin(l_shadow_map_struct.m_view_projections),
-					[&p_param](const core::bc_matrix4f& p_mat)
+					[&p_context](const core::bc_matrix4f& p_mat)
 					{
-						if(p_param.m_frame_renderer.need_matrix_transpose())
+						if(p_context.m_frame_renderer.need_matrix_transpose())
 						{
 							return p_mat.transpose();
 						}
@@ -327,50 +357,50 @@ namespace black_cat
 			}
 		}
 
-		p_param.m_render_thread.start();
+		p_context.m_render_thread.start();
 
 		_bc_parameters_cbuffer l_parameters_cbuffer_data
 		{
 			l_direct_lights.size(),
 			l_point_lights.size(),
 			l_spot_lights.size(),
-			(p_param.m_render_camera.get_view() * p_param.m_render_camera.get_projection()).inverse()
+			(p_context.m_render_camera.get_view() * p_context.m_render_camera.get_projection()).inverse()
 		};
 
-		if(p_param.m_frame_renderer.need_matrix_transpose())
+		if(p_context.m_frame_renderer.need_matrix_transpose())
 		{
 			l_parameters_cbuffer_data.m_view_proj_inv.make_transpose();
 		}
 
-		p_param.m_render_thread.update_subresource(m_parameters_cbuffer.get(), 0, &l_parameters_cbuffer_data, 0, 0);
-		p_param.m_render_thread.update_subresource(m_direct_lights_buffer.get(), 0, l_direct_lights.data(), 0, 0);
-		p_param.m_render_thread.update_subresource(m_point_lights_buffer.get(), 0, l_point_lights.data(), 0, 0);
-		p_param.m_render_thread.update_subresource(m_spot_lights_buffer.get(), 0, l_spot_lights.data(), 0, 0);
-		p_param.m_render_thread.update_subresource(m_shadow_maps_buffer.get(), 0, l_shadow_maps.data(), 0, 0);
+		p_context.m_render_thread.update_subresource(m_parameters_cbuffer.get(), 0, &l_parameters_cbuffer_data, 0, 0);
+		p_context.m_render_thread.update_subresource(m_direct_lights_buffer.get(), 0, l_direct_lights.data(), 0, 0);
+		p_context.m_render_thread.update_subresource(m_point_lights_buffer.get(), 0, l_point_lights.data(), 0, 0);
+		p_context.m_render_thread.update_subresource(m_spot_lights_buffer.get(), 0, l_spot_lights.data(), 0, 0);
+		p_context.m_render_thread.update_subresource(m_shadow_maps_buffer.get(), 0, l_shadow_maps.data(), 0, 0);
 		
-		p_param.m_render_thread.bind_compute_state(*m_compute_state.get());
-		p_param.m_render_thread.dispatch
+		p_context.m_render_thread.bind_compute_state(*m_compute_state.get());
+		p_context.m_render_thread.dispatch
 		(
-			p_param.m_render_system.get_device().get_back_buffer_width() / m_shader_thread_group_size + 1,
-			p_param.m_render_system.get_device().get_back_buffer_height() / m_shader_thread_group_size + 1,
+			p_context.m_render_system.get_device().get_back_buffer_width() / m_shader_thread_group_size + 1,
+			p_context.m_render_system.get_device().get_back_buffer_height() / m_shader_thread_group_size + 1,
 			1
 		);
-		p_param.m_render_thread.unbind_compute_state(*m_compute_state.get());
+		p_context.m_render_thread.unbind_compute_state(*m_compute_state.get());
 		
-		p_param.m_render_thread.finish();
+		p_context.m_render_thread.finish();
 	}
 
-	void bc_gbuffer_light_map_pass::before_reset(const game::bc_render_pass_reset_context& p_param)
+	void bc_gbuffer_light_map_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
 	{
 	}
 
-	void bc_gbuffer_light_map_pass::after_reset(const game::bc_render_pass_reset_context& p_param)
+	void bc_gbuffer_light_map_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
 		if
 		(
-			p_param.m_old_parameters.m_width == p_param.m_new_parameters.m_width
+			p_context.m_old_parameters.m_width == p_context.m_new_parameters.m_width
 			&& 
-			p_param.m_old_parameters.m_height == p_param.m_new_parameters.m_height
+			p_context.m_old_parameters.m_height == p_context.m_new_parameters.m_height
 		)
 		{
 			return;
@@ -387,7 +417,7 @@ namespace black_cat
 			.as_resource()
 			.as_buffer(1, sizeof(_bc_parameters_cbuffer), graphic::bc_resource_usage::gpu_rw, graphic::bc_resource_view_type::none)
 			.as_constant_buffer();
-		m_parameters_cbuffer = p_param.m_device.create_buffer(l_parameters_cbuffer_config, nullptr);
+		m_parameters_cbuffer = p_context.m_device.create_buffer(l_parameters_cbuffer_config, nullptr);
 
 		auto l_depth_resource_view_config = l_resource_configure
 			.as_resource_view()
@@ -410,10 +440,10 @@ namespace black_cat
 			.as_tex2d_shader_view(0, 1)
 			.on_texture2d();
 
-		m_depth_stencil_view = p_param.m_device.create_resource_view(*l_depth_stencil, l_depth_resource_view_config);
-		m_diffuse_map_view = p_param.m_device.create_resource_view(*l_diffuse_map, l_diffuse_map_view_config);
-		m_normal_map_view = p_param.m_device.create_resource_view(*l_normal_map, l_normal_map_view_config);
-		m_specular_map_view = p_param.m_device.create_resource_view(*l_specular_map, l_specular_map_view_config);
+		m_depth_stencil_view = p_context.m_device.create_resource_view(*l_depth_stencil, l_depth_resource_view_config);
+		m_diffuse_map_view = p_context.m_device.create_resource_view(*l_diffuse_map, l_diffuse_map_view_config);
+		m_normal_map_view = p_context.m_device.create_resource_view(*l_normal_map, l_normal_map_view_config);
+		m_specular_map_view = p_context.m_device.create_resource_view(*l_specular_map, l_specular_map_view_config);
 
 		auto l_pcf_sampler_config = l_resource_configure
 			.as_resource()
@@ -427,14 +457,14 @@ namespace black_cat
 			.with_comparison(graphic::bc_comparison_func::less)
 			.as_sampler_state();
 
-		m_pcf_sampler = p_param.m_device.create_sampler_state(l_pcf_sampler_config);
+		m_pcf_sampler = p_context.m_device.create_sampler_state(l_pcf_sampler_config);
 
 		auto l_output_texture_config = l_resource_configure
 			.as_resource()
 			.as_texture2d
 			(
-				p_param.m_new_parameters.m_width,
-				p_param.m_new_parameters.m_height,
+				p_context.m_new_parameters.m_width,
+				p_context.m_new_parameters.m_height,
 				false,
 				1,
 				graphic::bc_format::R8G8B8A8_UNORM,
@@ -447,8 +477,8 @@ namespace black_cat
 			.as_tex2d_unordered_shader_view(0)
 			.on_texture2d();
 
-		m_output_texture = p_param.m_device.create_texture2d(l_output_texture_config, nullptr);
-		m_output_texture_unordered_view = p_param.m_device.create_resource_view(m_output_texture.get(), l_output_texture_view_config);
+		m_output_texture = p_context.m_device.create_texture2d(l_output_texture_config, nullptr);
+		m_output_texture_unordered_view = p_context.m_device.create_resource_view(m_output_texture.get(), l_output_texture_view_config);
 
 		game::bc_compute_state_resource_view_array l_resource_views = 
 		{
@@ -473,7 +503,7 @@ namespace black_cat
 			l_resource_views[l_resource_view_index] = l_resource_view_parameter;
 		}
 
-		m_compute_state = p_param.m_render_system.create_compute_state
+		m_compute_state = p_context.m_render_system.create_compute_state
 		(
 			m_device_compute_state.get(),
 			{
@@ -484,7 +514,7 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_output_texture_unordered_view.get())
 			},
 			{
-				p_param.m_render_system.get_global_cbuffer(),
+				p_context.m_render_system.get_global_cbuffer(),
 				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::compute, m_parameters_cbuffer.get())
 			}
 		);
@@ -518,9 +548,7 @@ namespace black_cat
 		m_spot_lights_buffer_view.reset();
 		m_shadow_maps_buffer.reset();
 		m_shadow_maps_buffer_view.reset();
-
 		m_parameters_cbuffer.reset();
-
 		m_pcf_sampler.reset();
 
 		m_specular_map_view.reset();

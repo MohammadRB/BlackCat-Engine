@@ -10,6 +10,7 @@
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
+#include "GraphicImp/Device/bcDeviceOcclusionQuery.h"
 #include "GraphicImp/Shader/Parameter/bcConstantBufferParameter.h"
 #include "GraphicImp/Shader/Parameter/bcSamplerParameter.h"
 #include "GraphicImp/Shader/Parameter/bcResourceViewParameter.h"
@@ -79,7 +80,7 @@ namespace black_cat
 		using bc_device_pipeline_proxy = bc_refcount_proxy<_bc_device_pipeline_proxy>;
 
 		template<>
-		struct bc_platform_device_pipeline_pack< g_api_dx11 > : bc_platform_device_reference_pack<g_api_dx11>
+		struct bc_platform_device_pipeline_pack<g_api_dx11> : bc_platform_device_reference_pack<g_api_dx11>
 		{
 			bc_device_pipeline_proxy* m_pipeline_proxy;
 		};

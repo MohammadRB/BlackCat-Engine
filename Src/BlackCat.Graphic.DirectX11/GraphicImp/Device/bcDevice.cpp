@@ -34,7 +34,7 @@
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "GraphicImp/Device/bcDeviceTextRenderer.h"
-
+#include "GraphicImp/Device/bcDeviceOcclusionQuery.h"
 #include "3rdParty/DirectXTK-master/Include/DDSTextureLoader.h"
 #include "3rdParty/DirectXTK-master/Include/WICTextureLoader.h"
 #include "3rdParty/DirectXTK-master/Include/ScreenGrab.h"
@@ -1286,13 +1286,28 @@ namespace black_cat
 		bc_device_text_renderer bc_platform_device<g_api_dx11>::create_text_renderer()
 		{
 			// TODO use parameter
-			auto l_sprite_path = core::bc_path::get_absolute_path(L"Content\\Data\\DX11.spritefont");
+			const auto l_sprite_path = core::bc_path::get_absolute_path(L"Content\\Data\\DX11.spritefont");
 			
 			bc_device_text_renderer::platform_pack l_pack;
 			l_pack.m_sprite_font = core::bc_make_unique<DirectX::SpriteFont>(m_pack.m_device.Get(), l_sprite_path.c_str());
 			l_pack.m_sprite_batch = core::bc_make_unique<DirectX::SpriteBatch>(m_pack.m_immediate_context.Get());
 
 			return bc_device_text_renderer(std::move(l_pack));
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_device_occlusion_query_ref bc_platform_device<g_api_dx11>::create_occlusion_query()
+		{
+			bc_device_occlusion_query::platform_pack l_pack;
+
+			D3D11_QUERY_DESC l_desc;
+			l_desc.Query = D3D11_QUERY_OCCLUSION;
+			l_desc.MiscFlags = 0;
+			
+			dx_call(m_pack.m_device->CreateQuery(&l_desc, &l_pack.m_query));
+
+			return bc_device_occlusion_query_ref(bc_device_occlusion_query(l_pack));
 		}
 
 		template<>

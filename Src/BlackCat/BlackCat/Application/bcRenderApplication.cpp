@@ -65,7 +65,7 @@ namespace black_cat
 
 	void bc_render_application::app_load_content()
 	{
-		application_load_content(core::bc_get_service< core::bc_content_stream_manager >());
+		application_load_content(core::bc_get_service<core::bc_content_stream_manager>());
 	}
 
 	void bc_render_application::app_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)

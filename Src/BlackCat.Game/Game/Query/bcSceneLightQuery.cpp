@@ -10,11 +10,11 @@ namespace black_cat
 {
 	namespace game
 	{
-		inline void bc_scene_light_query::execute(const bc_light_instances_query_context& p_context) noexcept
+		void bc_scene_light_query::execute(const bc_light_instances_query_context& p_context) noexcept
 		{
-			const bool l_need_direct = core::bc_enum::has(m_types, bc_light_type::direct),
-				l_need_spot = core::bc_enum::has(m_types, bc_light_type::spot),
-				l_need_point = core::bc_enum::has(m_types, bc_light_type::point);
+			const bool l_need_direct = core::bc_enum::has(m_types, bc_light_type::direct);
+			const bool l_need_spot = core::bc_enum::has(m_types, bc_light_type::spot);
+			const bool l_need_point = core::bc_enum::has(m_types, bc_light_type::point);
 
 			{
 				// TODO const_cast
@@ -33,23 +33,25 @@ namespace black_cat
 					const bool l_is_spot = l_need_spot && l_light.get_type() == bc_light_type::spot;
 					if (l_is_spot)
 					{
-						if (m_frustum.is_set() && !m_frustum->intersects(l_light.get_bound_box()))
+						if (m_frustum.has_value() && !m_frustum->intersects(l_light.get_bound_box()))
 						{
 							continue;
 						}
 
 						m_lights.push_back(bc_light_instance(l_light));
+						continue;
 					}
 
 					const bool l_is_point = l_need_point && l_light.get_type() == bc_light_type::point;
 					if (l_is_point)
 					{
-						if (m_frustum.is_set() && !m_frustum->intersects(l_light.get_bound_box()))
+						if (m_frustum.has_value() && !m_frustum->intersects(l_light.get_bound_box()))
 						{
 							continue;
 						}
 
 						m_lights.push_back(bc_light_instance(l_light));
+						continue;
 					}
 				}
 			}

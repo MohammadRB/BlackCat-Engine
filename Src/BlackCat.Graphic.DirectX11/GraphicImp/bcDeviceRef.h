@@ -17,13 +17,13 @@ namespace black_cat
 		template<bc_render_api TApi>
 		class bc_platform_device_command_executor;
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_device_compute_state;
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_device_pipeline;
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_device_pipeline_state;
 
 		template<bc_render_api TApi>
@@ -64,6 +64,9 @@ namespace black_cat
 
 		template<bc_render_api TApi>
 		class bc_platform_vertex_shader;
+
+		template<bc_render_api TApi>
+		class bc_platform_device_occlusion_query;
 
 		void BC_GRAPHICIMP_DLL _add_ref(bc_platform_device_command_list<g_api_dx11>& p_command_list);
 
@@ -137,7 +140,11 @@ namespace black_cat
 
 		void BC_GRAPHICIMP_DLL _release(bc_platform_vertex_shader<g_api_dx11>& p_shader);
 
-		template< class TObject >
+		void BC_GRAPHICIMP_DLL _add_ref(bc_platform_device_occlusion_query<g_api_dx11>& p_query);
+
+		void BC_GRAPHICIMP_DLL _release(bc_platform_device_occlusion_query<g_api_dx11>& p_query);
+
+		template<class TObject>
 		struct bc_platform_device_ref_pack<g_api_dx11, TObject>
 		{
 			void add_ref()
@@ -153,31 +160,31 @@ namespace black_cat
 			TObject m_object;
 		};
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		bc_platform_device_ref<TApi, TObject>::bc_platform_device_ref()
 		{
 		}
 
-		template< bc_render_api TApi, class TObject >
-		template< typename >
+		template<bc_render_api TApi, class TObject>
+		template<typename>
 		bc_platform_device_ref<TApi, TObject>::bc_platform_device_ref(const type& p_object)
 		{
 			reset(p_object);
 		}
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		bc_platform_device_ref<TApi, TObject>::bc_platform_device_ref(bc_platform_device_ref&& p_other) noexcept
 		{
 			operator=(std::move(p_other));
 		}
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		bc_platform_device_ref<TApi, TObject>::~bc_platform_device_ref()
 		{
 			reset();
 		}
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		bc_platform_device_ref<TApi, TObject>& bc_platform_device_ref<TApi, TObject>::operator=(bc_platform_device_ref&& p_other) noexcept
 		{
 			if(m_pack.m_object.is_valid())
@@ -191,43 +198,43 @@ namespace black_cat
 			return *this;
 		}
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		typename bc_platform_device_ref<TApi, TObject>::type* bc_platform_device_ref<TApi, TObject>::operator->() noexcept
 		{
 			return &get();
 		}
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		const typename bc_platform_device_ref<TApi, TObject>::type* bc_platform_device_ref<TApi, TObject>::operator->() const noexcept
 		{
 			return &get();
 		}
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		typename bc_platform_device_ref<TApi, TObject>::type& bc_platform_device_ref<TApi, TObject>::operator*()
 		{
 			return get();
 		}
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		const typename bc_platform_device_ref<TApi, TObject>::type& bc_platform_device_ref<TApi, TObject>::operator*() const
 		{
 			return get();
 		}
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		typename bc_platform_device_ref<TApi, TObject>::type& bc_platform_device_ref<TApi, TObject>::get()
 		{
 			return m_pack.m_object;
 		}
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		const typename bc_platform_device_ref<TApi, TObject>::type& bc_platform_device_ref<TApi, TObject>::get() const
 		{
 			return m_pack.m_object;
 		}
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		void bc_platform_device_ref<TApi, TObject>::reset()
 		{
 			if (m_pack.m_object.is_valid())
@@ -237,7 +244,7 @@ namespace black_cat
 			}
 		}
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		void bc_platform_device_ref<TApi, TObject>::reset(const type& p_object)
 		{
 			if (m_pack.m_object.is_valid())
@@ -253,25 +260,25 @@ namespace black_cat
 			}
 		}
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		bool bc_platform_device_ref<TApi, TObject>::operator==(const bc_platform_device_ref& p_other) const noexcept
 		{
 			return m_pack.m_object == p_other.m_pack.m_object;
 		}
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		bool bc_platform_device_ref<TApi, TObject>::operator!=(const bc_platform_device_ref& p_other) const noexcept
 		{
 			return m_pack.m_object != p_other.m_pack.m_object;
 		}
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		bool bc_platform_device_ref<TApi, TObject>::operator==(std::nullptr_t) const noexcept
 		{
 			return m_pack.m_object == nullptr;
 		}
 
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		bool bc_platform_device_ref<TApi, TObject>::operator!=(std::nullptr_t) const noexcept
 		{
 			return m_pack.m_object != nullptr;

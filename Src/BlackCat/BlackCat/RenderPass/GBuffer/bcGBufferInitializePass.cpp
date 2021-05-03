@@ -9,7 +9,8 @@
 #include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcWindComponent.h"
-#include "Game/Query/bcMainCameraSceneQuery.h"
+#include "Game/Query/bcMainCameraSceneSharedQuery.h"
+#include "Game/Query/bcMainCameraSceneLightSharedQuery.h"
 #include "BlackCat/RenderPass/GBuffer/bcGBufferInitializePass.h"
 #include "BlackCat/bcConstant.h"
 
@@ -21,34 +22,33 @@ namespace black_cat
 		const auto l_back_buffer_texture = l_device.get_back_buffer_texture();
 		
 		after_reset(game::bc_render_pass_reset_context
-		(
-			p_render_system, 
-			l_device, 
-			graphic::bc_device_parameters
 			(
-				0,
-				0,
-				graphic::bc_format::unknown,
-				graphic::bc_texture_ms_config(1, 0)
-			),
-			graphic::bc_device_parameters
-			(
-				l_back_buffer_texture.get_width(),
-				l_back_buffer_texture.get_height(),
-				l_back_buffer_texture.get_format(),
-				l_back_buffer_texture.get_sample_count()
-			)
-		));
+				p_render_system, 
+				l_device, 
+				graphic::bc_device_parameters
+				(
+					0,
+					0,
+					graphic::bc_format::unknown,
+					graphic::bc_texture_ms_config(1, 0)
+				),
+				graphic::bc_device_parameters
+				(
+					l_back_buffer_texture.get_width(),
+					l_back_buffer_texture.get_height(),
+					l_back_buffer_texture.get_format(),
+					l_back_buffer_texture.get_sample_count()
+				)
+			));
 	}
 
-	void bc_gbuffer_initialize_pass::update(const game::bc_render_pass_update_context& p_update_param)
+	void bc_gbuffer_initialize_pass::update(const game::bc_render_pass_update_context& p_context)
 	{
 	}
 
-	void bc_gbuffer_initialize_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
+	void bc_gbuffer_initialize_pass::initialize_frame(const game::bc_render_pass_render_context& p_context)
 	{
-		auto* l_query_manager = core::bc_get_service< core::bc_query_manager >();
-		const game::bc_camera_frustum l_frustum(p_param.m_update_camera);
+		const game::bc_camera_frustum l_frustum(p_context.m_update_camera);
 
 		if(m_lights_query.is_executed())
 		{
@@ -59,21 +59,25 @@ namespace black_cat
 			m_winds_query_result = m_winds_query.get().get_winds();
 		}
 		
-		l_query_manager->queue_shared_query
+		p_context.m_query_manager.queue_shared_query
 		(
-			game::bc_main_camera_scene_query(l_frustum)
+			game::bc_main_camera_scene_shared_query(l_frustum)
 		);
-		m_lights_query = l_query_manager->queue_query
+		p_context.m_query_manager.queue_shared_query
 		(
-			game::bc_scene_light_query(core::bc_enum::mask_or({ game::bc_light_type::direct }))
+			game::bc_main_camera_scene_light_shared_query(l_frustum)
 		);
-		m_winds_query = l_query_manager->queue_query
+		m_lights_query = p_context.m_query_manager.queue_query
+		(
+			game::bc_main_camera_scene_light_query(core::bc_enum::mask_or({ game::bc_light_type::direct }))
+		);
+		m_winds_query = p_context.m_query_manager.queue_query
 		(
 			game::bc_scene_wind_query()
 		);
 	}
 
-	void bc_gbuffer_initialize_pass::execute(const game::bc_render_pass_render_context& p_param)
+	void bc_gbuffer_initialize_pass::execute(const game::bc_render_pass_render_context& p_context)
 	{
 		game::bc_direct_light l_direct_light({0,0,0}, {0,0,0}, 1, {0,0,0}, 1);
 		game::bc_direct_wind l_direct_wind({0,0,0}, 1);
@@ -96,13 +100,13 @@ namespace black_cat
 			l_direct_wind = *l_wind_ite->as_direct_wind();
 		}
 		
-		p_param.m_render_thread.start();
-		p_param.m_frame_renderer.update_global_cbuffer(p_param.m_render_thread, p_param.m_clock, p_param.m_render_camera, l_direct_light, l_direct_wind);
+		p_context.m_render_thread.start();
+		p_context.m_frame_renderer.update_global_cbuffer(p_context.m_render_thread, p_context.m_clock, p_context.m_render_camera, l_direct_light, l_direct_wind);
 
 		graphic::bc_render_target_view l_render_targets[] = { m_diffuse_map_view.get(), m_normal_map_view.get(), m_specular_map_view.get() };
 		
-		p_param.m_render_thread.get_pipeline().bind_om_render_targets(3, &l_render_targets[0], m_depth_stencil_view.get());
-		p_param.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::output_merger_stage);
+		p_context.m_render_thread.get_pipeline().bind_om_render_targets(3, &l_render_targets[0], m_depth_stencil_view.get());
+		p_context.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::output_merger_stage);
 
 		core::bc_vector4f l_colors[] =
 		{
@@ -110,24 +114,24 @@ namespace black_cat
 			core::bc_vector4f(0, 0, 0, 1),
 			core::bc_vector4f(0, 0, 0, 1)
 		};
-		p_param.m_render_thread.clear_buffers(&l_colors[0], 3, 1, 0);
+		p_context.m_render_thread.clear_buffers(&l_colors[0], 3, 1, 0);
 		
-		p_param.m_render_thread.get_pipeline().unbind_om_render_targets();
-		p_param.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::output_merger_stage);
+		p_context.m_render_thread.get_pipeline().unbind_om_render_targets();
+		p_context.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::output_merger_stage);
 		
-		p_param.m_render_thread.finish();
+		p_context.m_render_thread.finish();
 	}
 
-	void bc_gbuffer_initialize_pass::cleanup_frame(const game::bc_render_pass_render_context& p_param)
+	void bc_gbuffer_initialize_pass::cleanup_frame(const game::bc_render_pass_render_context& p_context)
 	{
 	}
 
-	void bc_gbuffer_initialize_pass::before_reset(const game::bc_render_pass_reset_context& p_param)
+	void bc_gbuffer_initialize_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
 	{
-		destroy(p_param.m_render_system);
+		destroy(p_context.m_render_system);
 	}
 
-	void bc_gbuffer_initialize_pass::after_reset(const game::bc_render_pass_reset_context& p_param)
+	void bc_gbuffer_initialize_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
 		graphic::bc_graphic_resource_builder l_resource_configure;
 
@@ -135,8 +139,8 @@ namespace black_cat
 			.as_resource()
 			.as_texture2d
 			(
-				p_param.m_new_parameters.m_width,
-				p_param.m_new_parameters.m_height,
+				p_context.m_new_parameters.m_width,
+				p_context.m_new_parameters.m_height,
 				false,
 				1,
 				graphic::bc_format::D24_UNORM_S8_UINT,
@@ -147,8 +151,8 @@ namespace black_cat
 			.as_resource()
 			.as_texture2d
 			(
-				p_param.m_new_parameters.m_width,
-				p_param.m_new_parameters.m_height,
+				p_context.m_new_parameters.m_width,
+				p_context.m_new_parameters.m_height,
 				false,
 				1,
 				graphic::bc_format::R8G8B8A8_UNORM,
@@ -159,8 +163,8 @@ namespace black_cat
 			.as_resource()
 			.as_texture2d
 			(
-				p_param.m_new_parameters.m_width,
-				p_param.m_new_parameters.m_height,
+				p_context.m_new_parameters.m_width,
+				p_context.m_new_parameters.m_height,
 				false,
 				1,
 				graphic::bc_format::R8G8B8A8_UNORM,
@@ -171,8 +175,8 @@ namespace black_cat
 			.as_resource()
 			.as_texture2d
 			(
-				p_param.m_new_parameters.m_width,
-				p_param.m_new_parameters.m_height,
+				p_context.m_new_parameters.m_width,
+				p_context.m_new_parameters.m_height,
 				false,
 				1,
 				graphic::bc_format::R8G8B8A8_UNORM,
@@ -197,14 +201,14 @@ namespace black_cat
 			.as_texture_view(l_specular_map_config.get_format())
 			.as_tex2d_render_target_view(0);
 
-		m_depth_stencil = p_param.m_device.create_texture2d(l_depth_stencil_config, nullptr);
-		m_diffuse_map = p_param.m_device.create_texture2d(l_diffuse_map_config, nullptr);
-		m_normal_map = p_param.m_device.create_texture2d(l_normal_map_config, nullptr);
-		m_specular_map = p_param.m_device.create_texture2d(l_specular_map_config, nullptr);
-		m_depth_stencil_view = p_param.m_device.create_depth_stencil_view(m_depth_stencil.get(), l_depth_stencil_view_config);
-		m_diffuse_map_view = p_param.m_device.create_render_target_view(m_diffuse_map.get(), l_diffuse_map_view_config);
-		m_normal_map_view = p_param.m_device.create_render_target_view(m_normal_map.get(), l_normal_map_view_config);
-		m_specular_map_view = p_param.m_device.create_render_target_view(m_specular_map.get(), l_specular_map_view_config);
+		m_depth_stencil = p_context.m_device.create_texture2d(l_depth_stencil_config, nullptr);
+		m_diffuse_map = p_context.m_device.create_texture2d(l_diffuse_map_config, nullptr);
+		m_normal_map = p_context.m_device.create_texture2d(l_normal_map_config, nullptr);
+		m_specular_map = p_context.m_device.create_texture2d(l_specular_map_config, nullptr);
+		m_depth_stencil_view = p_context.m_device.create_depth_stencil_view(m_depth_stencil.get(), l_depth_stencil_view_config);
+		m_diffuse_map_view = p_context.m_device.create_render_target_view(m_diffuse_map.get(), l_diffuse_map_view_config);
+		m_normal_map_view = p_context.m_device.create_render_target_view(m_normal_map.get(), l_normal_map_view_config);
+		m_specular_map_view = p_context.m_device.create_render_target_view(m_specular_map.get(), l_specular_map_view_config);
 
 		share_resource(constant::g_rpass_depth_stencil_texture, m_depth_stencil.get());
 		share_resource(constant::g_rpass_depth_stencil_render_view, m_depth_stencil_view.get());

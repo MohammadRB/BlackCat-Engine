@@ -23,18 +23,19 @@ namespace black_cat
 	void bc_explosion_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		auto* l_light_component = p_context.m_actor.get_component<game::bc_light_component>();
-		
-		if (!l_light_component)
+		if (!l_light_component || !l_light_component->get_light()->as_point_light())
 		{
-			throw bc_invalid_operation_exception("explosion actor must have light components");
+			throw bc_invalid_operation_exception("explosion actor must have point light components");
 		}
 
+		auto* l_point_light = l_light_component->get_light()->as_point_light();
 		m_emitter_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_emitter_name)->c_str();
 		m_decal_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_decal_name)->c_str();
-		m_light_intensity = l_light_component->get_light()->as_point_light()->get_intensity();
-		m_light_particle_intensity = l_light_component->get_light()->as_point_light()->get_particle_intensity();
-		m_light_radius = l_light_component->get_light()->as_point_light()->get_radius();
-		m_light_rise_per_second = m_light_radius * 0.8f / m_light_lifetime_second;
+		m_light_intensity = l_point_light->get_intensity();
+		m_light_particle_intensity = l_point_light->get_particle_intensity();
+		m_light_flare_intensity = l_point_light->get_flare() ? l_point_light->get_flare()->get_intensity() : 0.f;
+		m_light_radius = l_point_light->get_radius();
+		m_light_rise_per_second = m_light_radius * 0.7f / m_light_lifetime_second;
 	}
 
 	void bc_explosion_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
@@ -89,7 +90,7 @@ namespace black_cat
 			auto& l_mediate_component = *p_context.m_actor.get_component<game::bc_mediate_component>();
 			m_direction = l_mediate_component.get_world_transform().get_basis_z();
 
-			if(l_hit_result.is_set())
+			if(l_hit_result.has_value())
 			{
 				auto* l_height_map_component = l_hit_result->get_actor().get_component<game::bc_height_map_component>();
 				const auto l_px_height_map = l_height_map_component->get_height_map().get_px_height_field();
@@ -128,6 +129,7 @@ namespace black_cat
 		const auto l_normal_age = pow(1 - (m_age / m_light_lifetime_second), 2);
 		l_point_light->set_intensity(m_light_intensity * l_normal_age);
 		l_point_light->set_particle_intensity(m_light_particle_intensity * l_normal_age);
+		l_point_light->set_flare_intensity(m_light_flare_intensity * l_normal_age);
 		l_point_light->set_position
 		(
 			l_point_light->get_position() + m_direction * m_light_rise_per_second * p_context.m_clock.

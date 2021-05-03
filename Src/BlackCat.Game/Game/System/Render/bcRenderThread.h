@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GraphicImp/Device/bcDevicePipeline.h"
+#include "GraphicImp/Device/bcDeviceOcclusionQuery.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "Game/bcExport.h"
@@ -36,18 +37,6 @@ namespace black_cat
 			{
 				return m_executor.get();
 			}
-
-			/**
-			 * \brief Start thread to capture device pipeline commands and save them into the passed command list
-			 * \param p_command_list 
-			 */
-			void start(graphic::bc_device_command_list p_command_list) noexcept;
-			
-			/**
-			 * \brief save device pipeline commands in command list and execute command list
-			 * \return command list passed into when running new thread
-			 */
-			graphic::bc_device_command_list finish() noexcept;
 
 			/**
 			 * \brief Bind render pass states to given device pipeline and apply changes
@@ -159,6 +148,24 @@ namespace black_cat
 				bcUINT p_src_subresource,
 				graphic::bc_format p_format);
 
+			/**
+			 * \brief Start thread to capture device pipeline commands and save them into the passed command list
+			 * \param p_command_list
+			 */
+			void start(graphic::bc_device_command_list p_command_list) noexcept;
+
+			/**
+			 * \brief save device pipeline commands in command list and execute command list
+			 * \return command list passed into when running new thread
+			 */
+			graphic::bc_device_command_list finish() noexcept;
+
+			void start_query(graphic::bc_device_occlusion_query& p_query);
+
+			void end_query(graphic::bc_device_occlusion_query& p_query);
+
+			std::pair<bool, bcUINT64> get_query_data(graphic::bc_device_occlusion_query& p_query);
+			
 			void reset();
 
 			void reset(graphic::bc_device_pipeline_ref p_pipeline, graphic::bc_device_command_executor_ref p_command_executor);

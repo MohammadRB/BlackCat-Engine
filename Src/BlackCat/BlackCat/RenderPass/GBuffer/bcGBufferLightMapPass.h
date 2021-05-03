@@ -10,7 +10,7 @@
 #include "GraphicImp/Shader/Parameter/bcShaderParameter.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/State/bcComputeState.h"
-#include "Game/Query/bcSceneLightQuery.h"
+#include "Game/Query/bcMainCameraSceneLightQuery.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -24,15 +24,15 @@ namespace black_cat
 
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 
-		void update(const game::bc_render_pass_update_context& p_param) override;
+		void update(const game::bc_render_pass_update_context& p_context) override;
 
-		void initialize_frame(const game::bc_render_pass_render_context& p_param) override;
+		void initialize_frame(const game::bc_render_pass_render_context& p_context) override;
 
-		void execute(const game::bc_render_pass_render_context& p_param) override;
+		void execute(const game::bc_render_pass_render_context& p_context) override;
 
-		void before_reset(const game::bc_render_pass_reset_context& p_param) override;
+		void before_reset(const game::bc_render_pass_reset_context& p_context) override;
 
-		void after_reset(const game::bc_render_pass_reset_context& p_param) override;
+		void after_reset(const game::bc_render_pass_reset_context& p_context) override;
 
 		void destroy(game::bc_render_system& p_render_system) override;
 		
@@ -54,9 +54,7 @@ namespace black_cat
 		graphic::bc_resource_view_ref m_specular_map_view;
 
 		graphic::bc_sampler_state_ref m_pcf_sampler;
-
 		graphic::bc_buffer_ref m_parameters_cbuffer;
-
 		graphic::bc_buffer_ref m_direct_lights_buffer;
 		graphic::bc_resource_view_ref m_direct_lights_buffer_view;
 		graphic::bc_buffer_ref m_point_lights_buffer;
@@ -74,7 +72,7 @@ namespace black_cat
 		graphic::bc_device_compute_state_ref m_device_compute_state;
 		game::bc_compute_state_ptr m_compute_state;
 
-		core::bc_query_result<game::bc_scene_light_query> m_lights_query;
-		core::bc_vector_movable<game::bc_light_instance> m_lights;
+		core::bc_query_result<game::bc_main_camera_scene_light_query> m_lights_query;
+		core::bc_vector<game::bc_light_instance> m_lights;
 	};
 }

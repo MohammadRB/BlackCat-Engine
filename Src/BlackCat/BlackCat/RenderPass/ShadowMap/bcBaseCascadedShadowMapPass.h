@@ -42,7 +42,7 @@ namespace black_cat
 		core::bc_vector_program<_bc_cascaded_shadow_map_light_state> m_light_instance_states;
 
 		core::bc_query_result<game::bc_scene_light_query> m_lights_query;
-		core::bc_vector_movable<game::bc_light_instance> m_lights;
+		core::bc_vector<game::bc_light_instance> m_lights;
 		
 		bool m_capture_debug_shapes = false;
 		game::bci_camera::extend m_captured_camera;
@@ -126,17 +126,17 @@ namespace black_cat
 	public:
 		void initialize_resources(game::bc_render_system& p_render_system) override final;
 
-		void update(const game::bc_render_pass_update_context& p_param) override final;
+		void update(const game::bc_render_pass_update_context& p_context) override final;
 
-		void initialize_frame(const game::bc_render_pass_render_context& p_param) override final;
+		void initialize_frame(const game::bc_render_pass_render_context& p_context) override final;
 
-		void execute(const game::bc_render_pass_render_context& p_param) override final;
+		void execute(const game::bc_render_pass_render_context& p_context) override final;
 
-		void cleanup_frame(const game::bc_render_pass_render_context& p_param) override final;
+		void cleanup_frame(const game::bc_render_pass_render_context& p_context) override final;
 
-		void before_reset(const game::bc_render_pass_reset_context& p_param) override final;
+		void before_reset(const game::bc_render_pass_reset_context& p_context) override final;
 
-		void after_reset(const game::bc_render_pass_reset_context& p_param) override final;
+		void after_reset(const game::bc_render_pass_reset_context& p_context) override final;
 
 		void destroy(game::bc_render_system& p_render_system) override final;
 

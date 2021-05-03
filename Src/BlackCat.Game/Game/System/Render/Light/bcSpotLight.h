@@ -17,7 +17,8 @@ namespace black_cat
 				bcFLOAT p_length, 
 				bcFLOAT p_angle, 
 				const core::bc_vector3f& p_color, 
-				bcFLOAT p_intensity);
+				bcFLOAT p_intensity,
+				const bc_light_flare* p_flare = nullptr);
 
 			bc_spot_light(const bc_spot_light&) = default;
 
@@ -53,6 +54,12 @@ namespace black_cat
 
 			void set_intensity(bcFLOAT p_intensity) noexcept;
 
+			const bc_light_flare* get_flare() const noexcept;
+
+			void set_flare(bc_light_flare p_flare) noexcept;
+
+			void set_flare_intensity(bcFLOAT p_intensity) noexcept;
+		
 		private:
 			core::bc_vector3f m_position;
 			core::bc_vector3f m_direction;
@@ -60,6 +67,7 @@ namespace black_cat
 			bcFLOAT m_angle;
 			core::bc_vector3f m_color;
 			bcFLOAT m_intensity;
+			core::bc_nullable<bc_light_flare> m_flare;
 		};
 
 		inline bc_spot_light::bc_spot_light(const core::bc_vector3f& p_position, 
@@ -67,7 +75,8 @@ namespace black_cat
 			bcFLOAT p_length, 
 			bcFLOAT p_angle, 
 			const core::bc_vector3f& p_color, 
-			bcFLOAT p_intensity)
+			bcFLOAT p_intensity,
+			const bc_light_flare* p_flare)
 			: m_position(p_position),
 			m_direction(p_direction),
 			m_length(p_length),
@@ -76,6 +85,10 @@ namespace black_cat
 			m_intensity(p_intensity)
 		{
 			m_direction.normalize();
+			if(p_flare)
+			{
+				m_flare = *p_flare;
+			}
 		}
 
 		inline core::bc_vector3f bc_spot_light::get_position() const noexcept
@@ -146,6 +159,24 @@ namespace black_cat
 		inline void bc_spot_light::set_intensity(bcFLOAT p_intensity) noexcept
 		{
 			m_intensity = p_intensity;
+		}
+
+		inline const bc_light_flare* bc_spot_light::get_flare() const noexcept
+		{
+			return m_flare.get();
+		}
+
+		inline void bc_spot_light::set_flare(bc_light_flare p_flare) noexcept
+		{
+			m_flare = std::move(p_flare);
+		}
+
+		inline void bc_spot_light::set_flare_intensity(bcFLOAT p_intensity) noexcept
+		{
+			if (m_flare.has_value())
+			{
+				m_flare->set_intensity(p_intensity);
+			}
 		}
 	}
 }

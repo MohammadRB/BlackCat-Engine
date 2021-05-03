@@ -31,6 +31,8 @@ namespace black_cat
 			void _infoToggled(bool p_toggle);
 
 			void _debugToggled(bool p_toggle);
+			
+			void _warningToggled(bool p_toggle);
 
 			void _errorToggled(bool p_toggle);
 
@@ -48,6 +50,7 @@ namespace black_cat
 
 			QColor m_info_color;
 			QColor m_debug_color;
+			QColor m_warning_color;
 			QColor m_error_color;
 			QColor m_script_color;
 
@@ -56,6 +59,7 @@ namespace black_cat
 			QFrame* m_toolbar;
 			QPushButton* m_toolbar_info;
 			QPushButton* m_toolbar_debug;
+			QPushButton* m_toolbar_warning;
 			QPushButton* m_toolbar_error;
 			QPushButton* m_toolbar_script;
 			QPushButton* m_toolbar_clear;

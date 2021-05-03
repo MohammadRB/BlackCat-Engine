@@ -10,10 +10,10 @@ namespace black_cat
 	namespace game
 	{
 		template< class TContainer >
-		class bc_light_iterator_buffer : public core::bc_const_iterator_adapter< TContainer >
+		class bc_light_iterator_buffer : public core::bc_const_iterator_adapter<TContainer>
 		{
 		public:
-			using container_type = typename core::bc_const_iterator_adapter< TContainer >::container_type;
+			using container_type = typename core::bc_const_iterator_adapter<TContainer>::container_type;
 
 		public:
 			bc_light_iterator_buffer(core_platform::bc_shared_mutex& p_container_lock, const container_type& p_container);
@@ -33,17 +33,17 @@ namespace black_cat
 			const container_type* m_container;
 		};
 
-		template< class TContainer >
-		bc_light_iterator_buffer< TContainer >::bc_light_iterator_buffer(core_platform::bc_shared_mutex& p_container_lock, const container_type& p_container)
-			: core::bc_const_iterator_adapter< TContainer >(p_container),
+		template<class TContainer>
+		bc_light_iterator_buffer<TContainer>::bc_light_iterator_buffer(core_platform::bc_shared_mutex& p_container_lock, const container_type& p_container)
+			: core::bc_const_iterator_adapter<TContainer>(p_container),
 			m_container_lock(&p_container_lock),
 			m_container(&p_container)
 		{
 		}
 
-		template< class TContainer >
+		template<class TContainer>
 		bc_light_iterator_buffer<TContainer>::bc_light_iterator_buffer(bc_light_iterator_buffer&& p_other) noexcept
-			: core::bc_const_iterator_adapter< TContainer >(*p_other.m_container),
+			: core::bc_const_iterator_adapter<TContainer>(*p_other.m_container),
 			m_container_lock(p_other.m_container_lock),
 			m_container(p_other.m_container)
 		{

@@ -16,9 +16,9 @@ namespace black_cat
 		auto* l_light_component = p_context.m_actor.get_component<game::bc_light_component>();
 		auto* l_emitter_component = p_context.m_actor.get_create_component<game::bc_particle_emitter_component>();
 
-		if (!l_light_component)
+		if (!l_light_component || !l_light_component->get_light()->as_point_light())
 		{
-			throw bc_invalid_operation_exception("fire actor must have light components");
+			throw bc_invalid_operation_exception("fire actor must have point light components");
 		}
 
 		const auto l_emitter = game::bc_particle_builder()
@@ -39,7 +39,10 @@ namespace black_cat
 		                       .with_particle_size(0.1f, 0.3f)
 		                       .emit_particles(0, 3, 25, 0.0f);
 		l_emitter_component->add_emitter(l_emitter);
-		m_light_intensity = l_light_component->get_light()->as_point_light()->get_intensity();
+
+		auto* l_point_light = l_light_component->get_light()->as_point_light();
+		m_light_intensity = l_point_light->get_intensity();
+		m_light_flare_intensity = l_point_light->get_flare() ? l_point_light->get_flare()->get_intensity() : 0;
 	}
 
 	void bc_fire_actor_controller::update(const game::bc_actor_component_update_content& p_context)
@@ -50,6 +53,7 @@ namespace black_cat
 		const bcFLOAT l_noise = (bc_noise(p_context.m_clock.m_total_elapsed_second / 7.5f, 1) - 0.5f) * m_light_intensity * 0.2f;
 		auto* l_point_light = l_light_component->get_light()->as_point_light();
 		l_point_light->set_intensity(m_light_intensity + l_noise);
+		l_point_light->set_flare_intensity(m_light_flare_intensity + l_noise);
 
 		const bcUINT32 l_total_particles_in_current_second = (p_context.m_clock.m_total_elapsed_second - std::floor(p_context.m_clock.m_total_elapsed_second)) * m_num_particles_per_second;
 		if (l_total_particles_in_current_second < m_num_spawned_particles_in_current_second)

@@ -91,9 +91,9 @@ namespace black_cat
 			core::bc_vector_frame<const bcCHAR*> get_entity_names() const;
 
 			/**
-			 * \brief Create an actor along with it's components
+			 * \brief Create an actor along with it's components. In case of any error returns invalid actor
 			 * \param p_entity_name 
-			 * \return 
+			 * \return Created actor or invalid actor
 			 */
 			bc_actor create_entity(const bcCHAR* p_entity_name);
 

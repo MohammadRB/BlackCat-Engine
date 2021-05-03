@@ -66,7 +66,7 @@ namespace black_cat
 			{
 				auto& l_px_scene = m_scene->get_px_scene();
 
-				const physics::bc_ray l_ray(m_deviated_position, m_direction, l_elapsed * m_speed);
+				const physics::bc_ray l_ray(m_deviated_position, m_direction, (m_direction * l_elapsed * m_speed).magnitude());
 				physics::bc_scene_ray_query_buffer l_query_buffer;
 				bool l_has_collided;
 
@@ -94,7 +94,7 @@ namespace black_cat
 			})
 		);
 
-		if(l_query_result.is_set())
+		if(l_query_result.has_value())
 		{
 			m_scene->remove_actor(p_context.m_actor);
 

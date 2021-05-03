@@ -25,9 +25,10 @@ namespace black_cat
 		{
 			info = static_cast<bcUBYTE>(core::bc_log_type::info),
 			debug = static_cast<bcUBYTE>(core::bc_log_type::debug),
+			warning = static_cast<bcUBYTE>(core::bc_log_type::warning),
 			error = static_cast<bcUBYTE>(core::bc_log_type::error),
-			script = 8,
-			_count = 4
+			script = 16,
+			_count = 5
 		};
 
 		class bc_game_console_bind
@@ -100,8 +101,8 @@ namespace black_cat
 			bci_game_console_imp* m_imp;
 
 			core_platform::bc_mutex m_logs_mutex;
-			core::bc_array< bool, static_cast<bcSIZE>(bc_console_output_type::_count) > m_log_types;
-			core::bc_vector< std::pair< bc_console_output_type, core::bc_estring > > m_logs;
+			core::bc_array<bool, static_cast<bcSIZE>(bc_console_output_type::_count)> m_log_types;
+			core::bc_vector<std::pair<bc_console_output_type, core::bc_estring>> m_logs;
 
 			core_platform::bc_mutex m_scripts_mutex;
 			core::bc_vector< _bc_script_queue_entry > m_scripts;

@@ -26,6 +26,7 @@ namespace black_cat
 			bc_ui_command_service* m_command_service;
 			QAction* m_game_mode_button;
 			QAction* m_editor_mode_button;
+			bool m_editor_mode;
 		};
 	}
 }

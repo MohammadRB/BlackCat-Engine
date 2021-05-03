@@ -45,7 +45,7 @@ namespace black_cat
 		public:
 			bc_light(bc_light&& p_other) noexcept;
 
-			~bc_light() = default;
+			~bc_light();
 
 			bc_light& operator=(bc_light&& p_other) noexcept;
 

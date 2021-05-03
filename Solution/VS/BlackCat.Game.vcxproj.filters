@@ -312,9 +312,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneLightQuery.h">
       <Filter>Game\Query</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraSceneQuery.h">
-      <Filter>Game\Query</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightIteratorBuffer.h">
       <Filter>Game\System\Render\Light</Filter>
     </ClInclude>
@@ -527,6 +524,18 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcSceneCheckPoint.h">
       <Filter>Game\Object\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraSceneLightSharedQuery.h">
+      <Filter>Game\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraSceneSharedQuery.h">
+      <Filter>Game\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraSceneLightQuery.h">
+      <Filter>Game\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcLightFlare.h">
+      <Filter>Game\System\Render\Light</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -802,6 +811,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcSceneCheckPoint.cpp">
       <Filter>Game\Object\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraSceneLightSharedQuery.cpp">
+      <Filter>Game\Query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraSceneLightQuery.cpp">
+      <Filter>Game\Query</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

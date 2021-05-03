@@ -12,6 +12,7 @@ namespace black_cat
 			m_awesome(p_awesome),
 			m_info_color(QColor(26, 189, 242)),
 			m_debug_color(QColor(251, 160, 28)),
+			m_warning_color(QColor(250, 201, 38)),
 			m_error_color(QColor(250, 106, 106)),
 			m_script_color(QColor(174, 174, 174))
 		{
@@ -20,6 +21,7 @@ namespace black_cat
 			QObject::connect(m_console_input, SIGNAL(returnPressed()), this, SLOT(_returnPressed()));
 			QObject::connect(m_toolbar_info, SIGNAL(toggled(bool)), this, SLOT(_infoToggled(bool)));
 			QObject::connect(m_toolbar_debug, SIGNAL(toggled(bool)), this, SLOT(_debugToggled(bool)));
+			QObject::connect(m_toolbar_warning, SIGNAL(toggled(bool)), this, SLOT(_warningToggled(bool)));
 			QObject::connect(m_toolbar_error, SIGNAL(toggled(bool)), this, SLOT(_errorToggled(bool)));
 			QObject::connect(m_toolbar_script, SIGNAL(toggled(bool)), this, SLOT(_scriptToggled(bool)));
 			QObject::connect(m_toolbar_clear, SIGNAL(clicked()), this, SLOT(_clearClicked()));
@@ -39,8 +41,12 @@ namespace black_cat
 				l_color = m_info_color;
 				break;
 			case game::bc_console_output_type::debug: 
-				l_icon = fa::handpointero;
+				l_icon = fa::bug;
 				l_color = m_debug_color;
+				break;
+			case game::bc_console_output_type::warning:
+				l_icon = fa::warning;
+				l_color = m_warning_color;
 				break;
 			case game::bc_console_output_type::error: 
 				l_icon = fa::close;
@@ -98,6 +104,18 @@ namespace black_cat
 			}
 		}
 
+		void bc_widget_console::_warningToggled(bool p_toggle)
+		{
+			if (p_toggle)
+			{
+				emit executeScript("console.enableOutput(console.outputWarning)", false);
+			}
+			else
+			{
+				emit executeScript("console.disableOutput(console.outputWarning)", false);
+			}
+		}
+
 		void bc_widget_console::_errorToggled(bool p_toggle)
 		{
 			if (p_toggle)
@@ -151,6 +169,11 @@ namespace black_cat
 			l_debug_icon_options.insert("color-selected", m_debug_color);
 			l_debug_icon_options.insert("color-active", m_debug_color);
 			l_debug_icon_options.insert("scale-factor", 0.7);
+			QVariantMap l_warning_icon_options;
+			l_warning_icon_options.insert("color", m_warning_color);
+			l_warning_icon_options.insert("color-selected", m_warning_color);
+			l_warning_icon_options.insert("color-active", m_warning_color);
+			l_warning_icon_options.insert("scale-factor", 0.7);
 			QVariantMap l_error_icon_options;
 			l_error_icon_options.insert("color", m_error_color);
 			l_error_icon_options.insert("color-selected", m_error_color);
@@ -174,6 +197,12 @@ namespace black_cat
 			m_toolbar_debug->setChecked(true);
 			m_toolbar_debug->setStyleSheet(l_toolbar_button_style);
 			m_toolbar_debug->setIcon(m_awesome->icon(fa::circle, l_debug_icon_options));
+			m_toolbar_warning = new QPushButton(nullptr);
+			m_toolbar_warning->setText("Warning");
+			m_toolbar_warning->setCheckable(true);
+			m_toolbar_warning->setChecked(true);
+			m_toolbar_warning->setStyleSheet(l_toolbar_button_style);
+			m_toolbar_warning->setIcon(m_awesome->icon(fa::circle, l_warning_icon_options));
 			m_toolbar_error = new QPushButton(nullptr);
 			m_toolbar_error->setText("Error");
 			m_toolbar_error->setCheckable(true);

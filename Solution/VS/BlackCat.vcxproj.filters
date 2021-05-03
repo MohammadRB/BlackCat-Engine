@@ -64,6 +64,9 @@
     <Filter Include="BlackCat\SampleImp\Particle">
       <UniqueIdentifier>{4ab9c3f0-d322-451c-b2f0-dabf98843651}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BlackCat\Content\Shader\DirectX11\PostProcess">
+      <UniqueIdentifier>{2071d54a-0059-4402-b697-5d7d1d33d141}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.h">
@@ -207,6 +210,9 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcRocketActorController.h">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\PostProcess\bcLightFlarePass.h">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -326,6 +332,9 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcRocketActorController.cpp">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\PostProcess\bcLightFlarePass.cpp">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcShapeDraw.hlsl">
@@ -391,6 +400,9 @@
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\GBuffer\bcDecalGBuffer.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\GBuffer</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\PostProcess\bcLightFlare.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\PostProcess</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Src\BlackCat\BlackCat\Content\Data\ContentStream.json">
@@ -435,6 +447,15 @@
       <Filter>BlackCat\Content\Texture</Filter>
     </Image>
     <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Decal.spec.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Flare1.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Flare2.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat\BlackCat\Content\Texture\Flare3.dds">
       <Filter>BlackCat\Content\Texture</Filter>
     </Image>
   </ItemGroup>

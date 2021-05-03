@@ -351,7 +351,7 @@ namespace black_cat
 
 		void bc_frame_renderer::update(const update_context& p_update_param)
 		{
-			if(m_camera_instance.is_set())
+			if(m_camera_instance.has_value())
 			{
 				m_prev_camera_instance.reset(*m_camera_instance.get());
 				m_prev_camera.store(m_prev_camera_instance.get(), core_platform::bc_memory_order::release);

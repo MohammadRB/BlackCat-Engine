@@ -20,7 +20,8 @@ namespace black_cat
 		{
 			info = 1,
 			debug = 2,
-			error = 4,
+			warning = 4,
+			error = 8,
 		};
 
 		/**
@@ -74,8 +75,8 @@ namespace black_cat
 			BC_SERVICE(logger)
 
 		private:
-			using key_type = std::underlying_type< bc_log_type >::type;
-			using map_type = bc_array< bc_vector< _bc_log_listener_container >, 3 >;
+			using key_type = std::underlying_type<bc_log_type>::type;
+			using map_type = bc_array<bc_vector<_bc_log_listener_container>, 4>;
 
 		public:
 			bc_logger() = default;
@@ -106,6 +107,11 @@ namespace black_cat
 #endif
 			}
 
+			void log_warning(const bcECHAR* p_log)
+			{
+				_log(bc_log_type::warning, p_log);
+			}
+			
 			void log_error(const bcECHAR* p_log)
 			{
 				_log(bc_log_type::error, p_log);

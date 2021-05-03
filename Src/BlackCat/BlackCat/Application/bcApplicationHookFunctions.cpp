@@ -207,6 +207,7 @@ namespace black_cat
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_shaders");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "deferred_rendering_shaders");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "particle_shaders");
+		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "post_process_shaders");
 		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_assets");
 	}
 
@@ -225,6 +226,7 @@ namespace black_cat
 	void bc_unload_engine_resources(core::bc_content_stream_manager& p_stream_manager)
 	{
 		p_stream_manager.unload_content_stream("engine_assets");
+		p_stream_manager.unload_content_stream("post_process_shaders");
 		p_stream_manager.unload_content_stream("particle_shaders");
 		p_stream_manager.unload_content_stream("deferred_rendering_shaders");
 		p_stream_manager.unload_content_stream("engine_shaders");

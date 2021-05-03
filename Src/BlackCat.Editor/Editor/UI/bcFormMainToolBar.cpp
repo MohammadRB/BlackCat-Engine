@@ -9,7 +9,8 @@ namespace black_cat
 	namespace editor
 	{
 		bc_form_main_tool_bar::bc_form_main_tool_bar(bc_ui_command_service& p_command_service, QToolBar& p_container)
-			: m_command_service(&p_command_service)
+			: m_command_service(&p_command_service),
+			m_editor_mode(true)
 		{
 			auto* l_actions_group = new QActionGroup(this);
 			auto l_actions = p_container.actions();
@@ -39,11 +40,23 @@ namespace black_cat
 
 		void bc_form_main_tool_bar::gameModeClick(bool)
 		{
+			if(!m_editor_mode)
+			{
+				return;
+			}
+			
+			m_editor_mode = false;
 			m_command_service->queue_command(bc_ui_editor_mode_command(false));
 		}
 
 		void bc_form_main_tool_bar::editorModeClick(bool)
 		{
+			if(m_editor_mode)
+			{
+				return;
+			}
+			
+			m_editor_mode = true;
 			m_command_service->queue_command(bc_ui_editor_mode_command(true));
 		}
 	}

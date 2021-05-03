@@ -6,7 +6,7 @@
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/Object/Scene/bcScene.h"
-#include "Game/Query/bcMainCameraSceneQuery.h"
+#include "Game/Query/bcMainCameraSceneSharedQuery.h"
 #include "BlackCat/RenderPass/bcShapeDrawPass.h"
 #include "BlackCat/bcConstant.h"
 
@@ -21,7 +21,7 @@ namespace black_cat
 
 	void bc_scene_debug_shape_query::execute(const game::bc_scene_query_context& p_context) noexcept
 	{
-		const auto& l_actors_buffer = p_context.get_shared_query<game::bc_main_camera_scene_query>().get_scene_buffer();
+		const auto& l_actors_buffer = p_context.get_shared_query<game::bc_main_camera_scene_shared_query>().get_scene_buffer();
 		
 		if(m_selected_actor.is_valid())
 		{
@@ -73,83 +73,83 @@ namespace black_cat
 		);
 		
 		after_reset(game::bc_render_pass_reset_context
-		(
-			p_render_system, 
-			l_device, graphic::bc_device_parameters
 			(
-				0,
-				0,
-				graphic::bc_format::unknown,
-				graphic::bc_texture_ms_config(1, 0)
-			), 
-			graphic::bc_device_parameters
-			(
-				l_back_buffer_texture.get_width(),
-				l_back_buffer_texture.get_height(),
-				l_back_buffer_texture.get_format(),
-				l_back_buffer_texture.get_sample_count()
-			)
-		));
+				p_render_system, 
+				l_device, graphic::bc_device_parameters
+				(
+					0,
+					0,
+					graphic::bc_format::unknown,
+					graphic::bc_texture_ms_config(1, 0)
+				), 
+				graphic::bc_device_parameters
+				(
+					l_back_buffer_texture.get_width(),
+					l_back_buffer_texture.get_height(),
+					l_back_buffer_texture.get_format(),
+					l_back_buffer_texture.get_sample_count()
+				)
+			));
 	}
 
-	void bc_shape_draw_pass::update(const game::bc_render_pass_update_context& p_update_param)
+	void bc_shape_draw_pass::update(const game::bc_render_pass_update_context& p_context)
 	{
 	}
 
-	void bc_shape_draw_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
+	void bc_shape_draw_pass::initialize_frame(const game::bc_render_pass_render_context& p_context)
 	{
 		m_scene_debug_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
-			bc_scene_debug_shape_query(p_param.m_render_system.get_shape_drawer(), m_selected_actor)
+			bc_scene_debug_shape_query(p_context.m_render_system.get_shape_drawer(), m_selected_actor)
 		);
 	}
 
-	void bc_shape_draw_pass::execute(const game::bc_render_pass_render_context& p_param)
+	void bc_shape_draw_pass::execute(const game::bc_render_pass_render_context& p_context)
 	{
-		auto& l_shape_drawer = p_param.m_render_system.get_shape_drawer();
+		auto& l_shape_drawer = p_context.m_render_system.get_shape_drawer();
 		
-		p_param.m_render_thread.start();
-		p_param.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
+		p_context.m_render_thread.start();
+		p_context.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
 
-		auto l_render_state_buffer = p_param.m_frame_renderer.create_buffer();
-		l_shape_drawer.render(p_param.m_render_system, p_param.m_render_thread, l_render_state_buffer);
-		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, l_render_state_buffer, p_param.m_render_camera);
+		auto l_render_state_buffer = p_context.m_frame_renderer.create_buffer();
+		l_shape_drawer.render(p_context.m_render_system, p_context.m_render_thread, l_render_state_buffer);
+		p_context.m_frame_renderer.render_buffer(p_context.m_render_thread, l_render_state_buffer, p_context.m_render_camera);
 
-		p_param.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
-		p_param.m_render_thread.finish();
+		p_context.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
+		p_context.m_render_thread.finish();
 	}
 
-	void bc_shape_draw_pass::cleanup_frame(const game::bc_render_pass_render_context& p_param)
+	void bc_shape_draw_pass::cleanup_frame(const game::bc_render_pass_render_context& p_context)
 	{
 	}
 
-	void bc_shape_draw_pass::before_reset(const game::bc_render_pass_reset_context& p_param)
+	void bc_shape_draw_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
 	{
 		if
 		(
-			p_param.m_old_parameters.m_width != p_param.m_new_parameters.m_width ||
-			p_param.m_old_parameters.m_height != p_param.m_new_parameters.m_height
+			p_context.m_old_parameters.m_width != p_context.m_new_parameters.m_width ||
+			p_context.m_old_parameters.m_height != p_context.m_new_parameters.m_height
 		)
 		{
 			m_render_pass_state.reset();
 		}
 	}
 
-	void bc_shape_draw_pass::after_reset(const game::bc_render_pass_reset_context& p_param)
+	void bc_shape_draw_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
 		if
 		(
-			p_param.m_old_parameters.m_width != p_param.m_new_parameters.m_width ||
-			p_param.m_old_parameters.m_height != p_param.m_new_parameters.m_height
+			p_context.m_old_parameters.m_width != p_context.m_new_parameters.m_width ||
+			p_context.m_old_parameters.m_height != p_context.m_new_parameters.m_height
 		)
 		{
-			const auto l_back_buffer_texture = p_param.m_device.get_back_buffer_texture();
+			const auto l_back_buffer_texture = p_context.m_device.get_back_buffer_texture();
 
 			const auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(constant::g_rpass_depth_stencil_render_view);
 			const auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(m_render_target_view_variable);
 			const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
 			
-			m_render_pass_state = p_param.m_render_system.create_render_pass_state
+			m_render_pass_state = p_context.m_render_system.create_render_pass_state
 			(
 				m_pipeline_state.get(),
 				l_viewport,
@@ -158,7 +158,7 @@ namespace black_cat
 				{},
 				{},
 				{},
-				{ p_param.m_render_system.get_global_cbuffer() }
+				{ p_context.m_render_system.get_global_cbuffer() }
 			);
 		}
 	}

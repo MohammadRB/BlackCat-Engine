@@ -116,7 +116,7 @@ namespace black_cat
 			// to avoid reversing auto-scale
 			_calculate_inverse_bind_pose();
 			
-			if(p_builder.m_auto_scale.is_set())
+			if(p_builder.m_auto_scale.has_value())
 			{
 				_apply_auto_scale(*p_builder.m_auto_scale);
 			}

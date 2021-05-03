@@ -162,7 +162,7 @@ namespace black_cat
 
 		bool bc_default_game_console::is_visible()
 		{
-			return m_console.is_set();
+			return m_console.has_value();
 		}
 
 		void bc_default_game_console::update(core_platform::bc_clock::update_param p_clock_update_param)

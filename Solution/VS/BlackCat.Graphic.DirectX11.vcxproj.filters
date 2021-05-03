@@ -150,6 +150,9 @@
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceTextRenderer.cpp">
       <Filter>GraphicImp\Device</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceOcclusionQuery.cpp">
+      <Filter>GraphicImp\Device</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandList.h">
@@ -309,6 +312,9 @@
       <Filter>GraphicImp\Resource</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceTextRenderer.h">
+      <Filter>GraphicImp\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceOcclusionQuery.h">
       <Filter>GraphicImp\Device</Filter>
     </ClInclude>
   </ItemGroup>

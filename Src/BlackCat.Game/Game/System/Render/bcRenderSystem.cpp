@@ -84,20 +84,6 @@ namespace black_cat
 			return *this;
 		}
 
-		bool bc_render_system::remove_render_pass(bcUINT p_location)
-		{
-			bci_render_pass* l_pass = m_render_pass_manager->get_pass(p_location);
-
-			if (!l_pass)
-			{
-				return false;
-			}
-
-			l_pass->destroy(*this);
-
-			return m_render_pass_manager->remove_pass(p_location);
-		}
-
 		void bc_render_system::update(const update_context& p_update_params)
 		{
 			m_frame_renderer->update(bc_frame_renderer_update_context(p_update_params.m_clock, bc_camera_instance(p_update_params.m_camera)));
@@ -204,12 +190,12 @@ namespace black_cat
 
 		bc_render_pass_state_ptr bc_render_system::create_render_pass_state(graphic::bc_device_pipeline_state p_pipeline_state,
 			graphic::bc_viewport p_viewport,
-			bc_render_pass_state_render_target_view_array&& p_shader_targets,
+			bc_render_pass_state_render_target_view_array p_shader_targets,
 			graphic::bc_depth_stencil_view p_shader_depth,
-			bc_render_pass_state_sampler_array&& p_shader_samplers,
-			bc_render_pass_state_resource_view_array&& p_resource_views,
-			bc_render_pass_state_unordered_view_array&& p_unordered_views,
-			bc_render_pass_state_constant_buffer_array&& p_shader_buffers)
+			bc_render_pass_state_sampler_array p_shader_samplers,
+			bc_render_pass_state_resource_view_array p_resource_views,
+			bc_render_pass_state_unordered_view_array p_unordered_views,
+			bc_render_pass_state_constant_buffer_array p_shader_buffers)
 		{
 			bc_render_pass_state l_render_pass_state
 			(
@@ -257,8 +243,8 @@ namespace black_cat
 			bc_index_type p_index_type,
 			bcUINT32 p_index_count, 
 			bcUINT32 p_index_buffer_offset, 
-			bc_render_state_resource_view_array&& p_resource_views,
-			bc_render_state_constant_buffer_array&& p_shader_buffers)
+			bc_render_state_resource_view_array p_resource_views,
+			bc_render_state_constant_buffer_array p_shader_buffers)
 		{
 			bc_render_state l_render_state
 			(
@@ -294,10 +280,10 @@ namespace black_cat
 		}
 
 		bc_compute_state_ptr bc_render_system::create_compute_state(graphic::bc_device_compute_state p_compute_state,
-			bc_compute_state_sampler_array&& p_samplers,
-			bc_compute_state_resource_view_array&& p_resource_views,
-			bc_compute_state_unordered_view_array&& p_unordered_views,
-			bc_compute_state_constant_buffer_array&& p_cbuffers)
+			bc_compute_state_sampler_array p_samplers,
+			bc_compute_state_resource_view_array p_resource_views,
+			bc_compute_state_unordered_view_array p_unordered_views,
+			bc_compute_state_constant_buffer_array p_cbuffers)
 		{
 			bc_compute_state l_compute_state
 			(

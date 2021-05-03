@@ -19,6 +19,7 @@
     "rps_bb_wrt",
     "rps_shp_drw",
     "rps_ptc_sys",
+    "rps_lgt_flr",
     "rps_txt_drw"
   ],
   "key_values": {

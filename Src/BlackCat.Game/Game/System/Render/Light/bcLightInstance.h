@@ -17,6 +17,9 @@ namespace black_cat
 		class BC_GAME_DLL bc_light_instance
 		{
 		public:
+			using id_t = bcINTPTR;
+			
+		public:
 			explicit bc_light_instance(const bc_light& p_light) noexcept;
 
 			bc_light_instance(const bc_light_instance& p_other) noexcept;
@@ -24,6 +27,11 @@ namespace black_cat
 			~bc_light_instance();
 
 			bc_light_instance& operator=(const bc_light_instance& p_other) noexcept;
+
+			id_t get_id() const noexcept
+			{
+				return m_id;
+			}
 			
 			bc_light_type get_type() const noexcept
 			{
@@ -39,6 +47,8 @@ namespace black_cat
 
 			core::bc_vector3f get_max_bound() const noexcept;
 
+			const bc_light_flare* get_flare() const noexcept;
+			
 			bc_direct_light* as_direct_light() noexcept;
 
 			const bc_direct_light* as_direct_light() const noexcept;
@@ -58,6 +68,7 @@ namespace black_cat
 				bc_point_light m_point_light;
 				bc_spot_light m_spot_light;
 			};
+			id_t m_id;
 			bc_light_type m_type;
 			physics::bc_bound_box m_bound_box;
 		};

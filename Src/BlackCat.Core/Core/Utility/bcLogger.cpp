@@ -11,8 +11,7 @@ namespace black_cat
 	{
 		void bc_logger::log(bc_log_type p_types, const bcECHAR* p_log)
 		{
-			bc_array< bc_log_type, 3 > l_types{ { bc_log_type::info, bc_log_type::debug, bc_log_type::error } };
-			auto l_listeners_end = std::end(m_listeners);
+			bc_array<bc_log_type, 4> l_types{ { bc_log_type::info, bc_log_type::debug, bc_log_type::warning, bc_log_type::error } };
 
 			for (auto l_type : l_types)
 			{
@@ -58,7 +57,7 @@ namespace black_cat
 
 		void bc_logger::_log(bc_log_type p_types, const bcECHAR* p_log)
 		{
-			auto l_entry_index = std::log2(static_cast<map_type::size_type>(p_types));
+			const auto l_entry_index = std::log2(static_cast<map_type::size_type>(p_types));
 			auto& l_entry = m_listeners.at(l_entry_index);
 
 			for (auto& l_listener : l_entry)
@@ -69,8 +68,7 @@ namespace black_cat
 
 		void bc_logger::_register_listener(bc_log_type p_types, _bc_log_listener_container&& p_listener)
 		{
-			bc_array< bc_log_type, 3 > l_types{ { bc_log_type::info, bc_log_type::debug, bc_log_type::error } };
-			auto l_listeners_end = std::end(m_listeners);
+			bc_array<bc_log_type, 4> l_types{ { bc_log_type::info, bc_log_type::debug, bc_log_type::warning, bc_log_type::error } };
 
 			for (auto l_type : l_types)
 			{
@@ -79,9 +77,8 @@ namespace black_cat
 					continue;
 				}
 
-				auto l_entry_idnex = std::log2(static_cast< map_type::size_type >(l_type));
-				
-				m_listeners.at(l_entry_idnex).push_back(p_listener);
+				const auto l_entry_index = std::log2(static_cast<map_type::size_type>(l_type));
+				m_listeners.at(l_entry_index).push_back(p_listener);
 			}
 		}
 	}

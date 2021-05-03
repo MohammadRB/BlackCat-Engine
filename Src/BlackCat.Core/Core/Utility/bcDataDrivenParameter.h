@@ -154,7 +154,7 @@ namespace black_cat
 			{
 				const auto l_value = get_value_vector2f(p_name);
 
-				if (!l_value.is_set())
+				if (!l_value.has_value())
 				{
 					const auto l_msg = bc_string_frame("No parameter with given name was found: ") + p_name;
 					throw bc_key_not_found_exception(l_msg.c_str());
@@ -185,7 +185,7 @@ namespace black_cat
 			{
 				const auto l_value = get_value_vector3f(p_name);
 
-				if(!l_value.is_set())
+				if(!l_value.has_value())
 				{
 					const auto l_msg = bc_string_frame("No parameter with given name was found: ") + p_name;
 					throw bc_key_not_found_exception(l_msg.c_str());
@@ -217,7 +217,7 @@ namespace black_cat
 			{
 				const auto l_value = get_value_vector4f(p_name);
 
-				if (!l_value.is_set())
+				if (!l_value.has_value())
 				{
 					const auto l_msg = bc_string_frame("No parameter with given name was found: ") + p_name;
 					throw bc_key_not_found_exception(l_msg.c_str());

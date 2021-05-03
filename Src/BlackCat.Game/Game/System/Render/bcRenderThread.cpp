@@ -80,28 +80,6 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_render_thread::start(graphic::bc_device_command_list p_command_list) noexcept
-		{
-			BC_ASSERT(!m_command_list.is_valid());
-
-			m_command_list = p_command_list;
-			m_pipeline->start_command_list();
-		}
-
-		graphic::bc_device_command_list bc_render_thread::finish() noexcept
-		{
-			BC_ASSERT(m_command_list.is_valid());
-
-			m_pipeline->finish_command_list(m_command_list);
-			m_executor->execute_command_list(m_command_list);
-			m_command_list.finished();
-
-			graphic::bc_device_command_list l_command_list;
-			std::swap(l_command_list, m_command_list);
-
-			return l_command_list;
-		}
-
 		void bc_render_thread::bind_render_pass_state(const bc_render_pass_state& p_render_pass_state)
 		{
 			bcSIZE l_render_target_count = 0;
@@ -576,6 +554,43 @@ namespace black_cat
 		void bc_render_thread::resolve_subresource(graphic::bci_resource& p_dest_resource, bcUINT p_dest_subresource, graphic::bci_resource& p_src_resource, bcUINT p_src_subresource, graphic::bc_format p_format)
 		{
 			m_pipeline->resolve_subresource(p_dest_resource, p_dest_subresource, p_src_resource, p_src_subresource, p_format);
+		}
+
+		void bc_render_thread::start(graphic::bc_device_command_list p_command_list) noexcept
+		{
+			BC_ASSERT(!m_command_list.is_valid());
+
+			m_command_list = p_command_list;
+			m_pipeline->start_command_list();
+		}
+
+		graphic::bc_device_command_list bc_render_thread::finish() noexcept
+		{
+			BC_ASSERT(m_command_list.is_valid());
+
+			m_pipeline->finish_command_list(m_command_list);
+			m_executor->execute_command_list(m_command_list);
+			m_command_list.finished();
+
+			graphic::bc_device_command_list l_command_list;
+			std::swap(l_command_list, m_command_list);
+
+			return l_command_list;
+		}
+
+		void bc_render_thread::start_query(graphic::bc_device_occlusion_query& p_query)
+		{
+			m_pipeline->start_query(p_query);
+		}
+
+		void bc_render_thread::end_query(graphic::bc_device_occlusion_query& p_query)
+		{
+			m_pipeline->end_query(p_query);
+		}
+
+		std::pair<bool, bcUINT64> bc_render_thread::get_query_data(graphic::bc_device_occlusion_query& p_query)
+		{
+			return m_pipeline->get_query_data(p_query);
 		}
 
 		void bc_render_thread::reset()

@@ -21,10 +21,9 @@ namespace black_cat
 		struct _bc_render_pass_entry
 		{
 		public:
-			bcUINT32 m_position;
 			const bcCHAR* m_name;
-			core::bc_unique_ptr< bci_render_pass > m_pass;
-			core::bc_unique_ptr< core::bc_stop_watch > m_stop_watch;
+			core::bc_unique_ptr<bci_render_pass> m_pass;
+			core::bc_unique_ptr<core::bc_stop_watch> m_stop_watch;
 		};
 
 		class BC_GAME_DLL bc_render_pass_manager : public core_platform::bc_no_copy
@@ -38,18 +37,17 @@ namespace black_cat
 
 			bc_render_pass_manager& operator=(bc_render_pass_manager&&) noexcept = default;
 
-			template< typename T >
-			void add_pass(bcUINT32 p_location, T&& p_pass);
+			template<typename TPass>
+			TPass* get_pass();
 
-			template< typename T >
-			T* get_pass();
+			template<typename TPass>
+			void add_pass(TPass p_pass);
 
-			bci_render_pass* get_pass(bcUINT32 p_location);
+			template<typename TPass, class TPassBefore>
+			void add_pass_before(TPass p_pass);
 
-			template< typename T >
+			template<typename TPass>
 			bool remove_pass();
-
-			bool remove_pass(bcUINT32 p_location);
 
 			void pass_initialize_resources(bc_render_system& p_render_system);
 
@@ -64,44 +62,55 @@ namespace black_cat
 			void pass_destroy(bc_render_system& p_render_system);
 
 		private:
-			void _add_pass(_bc_render_pass_entry&& p_entry);
+			void _add_pass(const bcCHAR* p_name, core::bc_unique_ptr<bci_render_pass> p_pass, const bcCHAR* p_before = nullptr);
 
 			bool _remove_pass(const bcCHAR* p_name);
 
 			bci_render_pass* _get_pass(const bcCHAR* p_name);
 
-			core::bc_vector< _bc_render_pass_entry > m_passes;
+			core::bc_vector<_bc_render_pass_entry> m_passes;
 			bc_render_pass_resource_share m_state_share;
 		};
 
-		template< typename T >
-		void bc_render_pass_manager::add_pass(bcUINT32 p_location, T&& p_pass)
+		template<typename TPass>
+		TPass* bc_render_pass_manager::get_pass()
 		{
-			static_assert(std::is_base_of_v<bci_render_pass, T>, "T must inherit from bc_irender_pass");
+			static_assert(std::is_base_of_v<bci_render_pass, TPass>, "TPass must inherit from bc_irender_pass");
 
-			_bc_render_pass_entry l_entry;
-			l_entry.m_position = p_location;
-			l_entry.m_name = bc_render_pass_trait<T>::render_pass_name();
-			l_entry.m_pass = core::bc_make_unique<T>(core::bc_alloc_type::program, std::move(p_pass));
-			l_entry.m_stop_watch = core::bc_make_unique<core::bc_stop_watch>();
+			return static_cast<TPass*>(_get_pass(bc_render_pass_trait<TPass>::render_pass_name()));
+		}
+		
+		template<typename TPass>
+		void bc_render_pass_manager::add_pass(TPass p_pass)
+		{
+			static_assert(std::is_base_of_v<bci_render_pass, TPass>, "TPass must inherit from bc_irender_pass");
 
-			_add_pass(std::move(l_entry));
+			_add_pass
+			(
+				bc_render_pass_trait<TPass>::render_pass_name(), 
+				core::bc_make_unique<TPass>(core::bc_alloc_type::program, std::move(p_pass))
+			);
 		}
 
-		template< typename T >
+		template<typename TPass, class TPassBefore>
+		void bc_render_pass_manager::add_pass_before(TPass p_pass)
+		{
+			static_assert(std::is_base_of_v<bci_render_pass, TPass>, "TPass must inherit from bc_irender_pass");
+
+			_add_pass
+			(
+				bc_render_pass_trait<TPass>::render_pass_name(),
+				core::bc_make_unique<TPass>(core::bc_alloc_type::program, std::move(p_pass)),
+				bc_render_pass_trait<TPassBefore>::render_pass_name()
+			);
+		}
+
+		template<typename TPass>
 		bool bc_render_pass_manager::remove_pass()
 		{
-			static_assert(std::is_base_of_v<bci_render_pass, T>, "T must inherite from bc_irender_pass");
+			static_assert(std::is_base_of_v<bci_render_pass, TPass>, "T must inherit from bc_irender_pass");
 
-			return _remove_pass(bc_render_pass_trait<T>::render_pass_name());
-		}
-
-		template< typename T >
-		T* bc_render_pass_manager::get_pass()
-		{
-			static_assert(std::is_base_of_v<bci_render_pass, T>, "T must inherite from bc_irender_pass");
-
-			return static_cast< T* >(_get_pass(bc_render_pass_trait<T>::render_pass_name()));
+			return _remove_pass(bc_render_pass_trait<TPass>::render_pass_name());
 		}
 	}
 }

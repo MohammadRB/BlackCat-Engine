@@ -7,6 +7,7 @@
 #include "Core/File/bcJsonDocument.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcParameterPack.h"
+#include "Core/Utility/bcLogger.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
@@ -213,10 +214,15 @@ namespace black_cat
 					);
 				}
 			}
-			catch (...)
+			catch (const std::exception& p_exception)
 			{
 				m_actor_component_manager.remove_actor(l_actor);
-				throw;
+
+				auto l_msg = core::bc_string_frame("Error in creation of entity '") + p_entity_name + "': " + p_exception.what();
+				core::bc_log(core::bc_log_type::error, core::bc_to_estring_frame(l_msg).c_str());
+
+				l_actor = bc_actor();
+				//throw;
 			}
 
 			return l_actor;

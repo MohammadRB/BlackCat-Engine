@@ -250,7 +250,7 @@ namespace black_cat
 		m_scene = nullptr;
 		m_active_job = nullptr;
 		
-		if(m_weapon.is_set())
+		if(m_weapon.has_value())
 		{
 			m_weapon.reset();
 		}
@@ -352,7 +352,7 @@ namespace black_cat
 
 	void bc_xbot_controller::shoot_weapon() noexcept
 	{
-		if(!m_weapon.is_set())
+		if(!m_weapon.has_value())
 		{
 			return;
 		}
@@ -756,7 +756,7 @@ namespace black_cat
 
 		if (m_move_amount <= 0)
 		{
-			if(m_weapon.is_set())
+			if(m_weapon.has_value())
 			{
 				switch (m_weapon->m_class)
 				{
@@ -777,7 +777,7 @@ namespace black_cat
 		}
 		else
 		{
-			if (m_weapon.is_set())
+			if (m_weapon.has_value())
 			{
 				switch (m_weapon->m_class)
 				{
@@ -858,7 +858,7 @@ namespace black_cat
 
 	void bc_xbot_controller::_blend_weapon_shoot_animation()
 	{
-		if (!m_weapon.is_set())
+		if (!m_weapon.has_value())
 		{
 			return;
 		}
@@ -960,7 +960,7 @@ namespace black_cat
 
 	void bc_xbot_controller::_update_weapon_transform()
 	{
-		if(!m_weapon.is_set())
+		if(!m_weapon.has_value())
 		{
 			return;
 		}

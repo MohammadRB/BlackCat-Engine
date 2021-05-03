@@ -32,6 +32,7 @@
 #include "BlackCat/RenderPass/ShadowMap/bcVegetableCascadedShadowMapPass.h"
 #include "BlackCat/RenderPass/ShadowMap/bcSkinnedCascadedShadowMapPass.h"
 #include "BlackCat/RenderPass/PostProcess/bcParticleSystemPassDx11.h"
+#include "BlackCat/RenderPass/PostProcess/bcLightFlarePass.h"
 #include "BlackCat/RenderPass/bcBackBufferWritePass.h"
 #include "BlackCat/RenderPass/bcTextDrawPass.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
@@ -100,20 +101,21 @@ namespace black_cat
 			l_camera->set_look_at(l_camera_pos, l_camera_look_at);
 			l_input_system.add_editor_camera(std::move(l_camera));
 			
-			l_render_system.add_render_pass(0, bc_gbuffer_initialize_pass());
-			l_render_system.add_render_pass(1, bc_gbuffer_terrain_pass_dx11());
-			l_render_system.add_render_pass(2, bc_gbuffer_pass());
-			l_render_system.add_render_pass(3, bc_gbuffer_vegetable_pass());
-			l_render_system.add_render_pass(4, bc_gbuffer_skinned_pass());
-			l_render_system.add_render_pass(5, bc_gbuffer_decal_pass());
-			l_render_system.add_render_pass(6, bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 2, { {30, 1}, {60, 1}, {120, 2} }));
-			l_render_system.add_render_pass(7, bc_vegetable_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
-			l_render_system.add_render_pass(8, bc_skinned_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
-			l_render_system.add_render_pass(9, bc_gbuffer_light_map_pass(constant::g_rpass_direct_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
-			l_render_system.add_render_pass(10, bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
-			l_render_system.add_render_pass(11, bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
-			l_render_system.add_render_pass(12, bc_particle_system_pass_dx11());
-			l_render_system.add_render_pass(13, bc_text_draw_pass(constant::g_rpass_back_buffer_view));
+			l_render_system.add_render_pass(bc_gbuffer_initialize_pass());
+			l_render_system.add_render_pass(bc_gbuffer_terrain_pass_dx11());
+			l_render_system.add_render_pass(bc_gbuffer_pass());
+			l_render_system.add_render_pass(bc_gbuffer_vegetable_pass());
+			l_render_system.add_render_pass(bc_gbuffer_skinned_pass());
+			l_render_system.add_render_pass(bc_gbuffer_decal_pass());
+			l_render_system.add_render_pass(bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 2, { {30, 1}, {60, 1}, {120, 2} }));
+			l_render_system.add_render_pass(bc_vegetable_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
+			l_render_system.add_render_pass(bc_skinned_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
+			l_render_system.add_render_pass(bc_gbuffer_light_map_pass(constant::g_rpass_direct_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
+			l_render_system.add_render_pass(bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
+			l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
+			l_render_system.add_render_pass(bc_particle_system_pass_dx11());
+			l_render_system.add_render_pass(bc_light_flare_pass());
+			l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_view));
 
 			game::bc_event_editor_mode l_editor_mode_event(true);
 			core::bc_get_service<core::bc_event_manager>()->process_event(l_editor_mode_event);
@@ -128,7 +130,7 @@ namespace black_cat
 
 			const auto l_scene = l_content_manager->load< game::bc_scene >
 			(
-				l_file_system.get_content_path(bcL("Scene\\test.json")).c_str(),
+				l_file_system.get_content_path(bcL("Scene\\CrysisHeightMap.json")).c_str(),
 				nullptr,
 				core::bc_content_loader_parameter()
 			);
@@ -193,14 +195,14 @@ namespace black_cat
 					}
 
 					l_scene->add_actor(l_actor);*/
-					l_scene->add_bullet(game::bc_bullet(l_camera.get_position(), l_camera.get_forward(), 250, 0.2f));
+					//l_scene->add_bullet(game::bc_bullet(l_camera.get_position(), l_camera.get_forward(), 250, 0.2f));
 
-					/*game::bc_actor l_rocket = l_entity_manager->create_entity("sample_rocket");
+					game::bc_actor l_rocket = l_entity_manager->create_entity("sample_rocket");
 					l_rocket.add_event(game::bc_world_transform_actor_event
 					(
 						bc_matrix4f_from_position_and_direction(l_camera.get_position(), l_camera.get_direction())
 					));
-					l_scene->add_actor(l_rocket);*/
+					l_scene->add_actor(l_rocket);
 				}
 				
 				return true;

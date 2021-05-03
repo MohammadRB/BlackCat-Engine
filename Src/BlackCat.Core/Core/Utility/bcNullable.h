@@ -51,7 +51,7 @@ namespace black_cat
 			{
 				static_assert(bc_type_traits< type >::is_copyable, "T is not copyable");
 				
-				if(p_other.is_set())
+				if(p_other.has_value())
 				{
 					_set(*p_other.get());
 				}
@@ -60,7 +60,7 @@ namespace black_cat
 			bc_nullable(bc_nullable&& p_other) noexcept(bc_type_traits<type>::is_no_throw_move)
 				: bc_nullable()
 			{
-				if(p_other.is_set())
+				if(p_other.has_value())
 				{
 					_set(std::move(*p_other.get()));
 					p_other._unset();
@@ -76,7 +76,7 @@ namespace black_cat
 			{
 				static_assert(bc_type_traits< type >::is_copyable, "T is not copyable");
 				
-				if(p_other.is_set())
+				if(p_other.has_value())
 				{
 					_set(*p_other.get());
 				}
@@ -90,7 +90,7 @@ namespace black_cat
 
 			bc_nullable& operator=(bc_nullable&& p_other) noexcept(bc_type_traits<type>::is_no_throw_move)
 			{
-				if(p_other.is_set())
+				if(p_other.has_value())
 				{
 					_set(std::move(*p_other.get()));
 					p_other._unset();
@@ -172,8 +172,8 @@ namespace black_cat
 				return const_cast<bc_nullable*>(this)->get();
 			}
 
-			bool is_set() const noexcept
-			{ 
+			bool has_value() const noexcept
+			{
 				return m_pointer != nullptr;
 			}
 
@@ -203,7 +203,7 @@ namespace black_cat
 
 			void _set(const type& p_value)
 			{
-				if (!is_set())
+				if (!has_value())
 				{
 					m_pointer = reinterpret_cast<type*>(&m_buffer[0]);
 					new(m_pointer) type(p_value);
@@ -216,7 +216,7 @@ namespace black_cat
 
 			void _set(type&& p_value)
 			{
-				if (!is_set())
+				if (!has_value())
 				{
 					m_pointer = reinterpret_cast<type*>(&m_buffer[0]);
 					new (m_pointer) type(std::move(p_value));
@@ -229,7 +229,7 @@ namespace black_cat
 
 			void _unset()
 			{
-				if(is_set())
+				if(has_value())
 				{
 					m_pointer->~type();
 					m_pointer = nullptr;
@@ -238,9 +238,9 @@ namespace black_cat
 
 			bool _equal(bc_nullable& p_other) const
 			{
-				if (!is_set())
+				if (!has_value())
 				{
-					return !p_other.is_set();
+					return !p_other.has_value();
 				}
 
 				return *get() == *p_other.get();
@@ -248,7 +248,7 @@ namespace black_cat
 
 			bool _equal(std::nullptr_t) const
 			{
-				return !is_set();
+				return !has_value();
 			}
 		};
 	}

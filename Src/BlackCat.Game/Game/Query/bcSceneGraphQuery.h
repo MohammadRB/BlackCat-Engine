@@ -82,7 +82,7 @@ namespace black_cat
 			(
 				[&](const bc_scene_query_context& p_context, const core::bc_nullable< bc_camera_frustum >& p_frustum)
 				{
-					if (p_frustum.is_set())
+					if (p_frustum.has_value())
 					{
 						return p_context.m_scene->get_scene_graph().get_actors< TComponent >(*p_frustum);
 					}
@@ -103,7 +103,7 @@ namespace black_cat
 			}
 			else
 			{
-				if (m_frustum.is_set())
+				if (m_frustum.has_value())
 				{
 					m_scene_buffer = p_context.m_scene->get_scene_graph().get_actors(*m_frustum);
 				}

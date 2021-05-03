@@ -4,6 +4,8 @@
 
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
+#include "Core/Utility/bcNullable.h"
+#include "Game/System/Render/Light/bcLightFlare.h"
 
 namespace black_cat
 {
@@ -15,14 +17,16 @@ namespace black_cat
 			bc_point_light(const core::bc_vector3f& p_position, 
 				bcFLOAT p_radius, 
 				const core::bc_vector3f& p_color, 
-				bcFLOAT p_intensity);
+				bcFLOAT p_intensity,
+				const bc_light_flare* p_flare = nullptr);
 
 			bc_point_light(const core::bc_vector3f& p_position, 
 				bcFLOAT p_radius, 
 				const core::bc_vector3f& p_color, 
 				bcFLOAT p_intensity,
 				bool p_particle_cast,
-				bcFLOAT p_particle_intensity);
+				bcFLOAT p_particle_intensity,
+				const bc_light_flare* p_flare = nullptr);
 
 			bc_point_light(const bc_point_light&) = default;
 
@@ -55,7 +59,13 @@ namespace black_cat
 			bcFLOAT get_particle_intensity() const noexcept;
 
 			void set_particle_intensity(bcFLOAT p_intensity) noexcept;
-			
+
+			const bc_light_flare* get_flare() const noexcept;
+
+			void set_flare(bc_light_flare p_flare) noexcept;
+
+			void set_flare_intensity(bcFLOAT p_intensity) noexcept;
+		
 		private:
 			core::bc_vector3f m_position;
 			bcFLOAT m_radius;
@@ -63,12 +73,14 @@ namespace black_cat
 			bcFLOAT m_intensity;
 			bool m_particle_cast;
 			bcFLOAT m_particle_intensity;
+			core::bc_nullable<bc_light_flare> m_flare;
 		};
 
 		inline bc_point_light::bc_point_light(const core::bc_vector3f& p_position,
 			bcFLOAT p_radius,
 			const core::bc_vector3f& p_color,
-			bcFLOAT p_intensity)
+			bcFLOAT p_intensity,
+			const bc_light_flare* p_flare)
 			: bc_point_light
 			(
 				p_position,
@@ -76,7 +88,8 @@ namespace black_cat
 				p_color,
 				p_intensity,
 				false,
-				0
+				0,
+				p_flare
 			)
 		{
 		}
@@ -86,7 +99,8 @@ namespace black_cat
 			const core::bc_vector3f& p_color,
 			bcFLOAT p_intensity,
 			bool p_particle_cast,
-			bcFLOAT p_particle_intensity)
+			bcFLOAT p_particle_intensity,
+			const bc_light_flare* p_flare)
 			: m_position(p_position),
 			m_radius(p_radius),
 			m_color(p_color),
@@ -94,6 +108,10 @@ namespace black_cat
 			m_particle_cast(p_particle_cast),
 			m_particle_intensity(p_particle_intensity)
 		{
+			if(p_flare)
+			{
+				m_flare = *p_flare;
+			}
 		}
 
 		inline core::bc_vector3f bc_point_light::get_position() const noexcept
@@ -159,6 +177,24 @@ namespace black_cat
 		inline void bc_point_light::set_particle_intensity(bcFLOAT p_intensity) noexcept
 		{
 			m_particle_intensity = p_intensity;
+		}
+
+		inline const bc_light_flare* bc_point_light::get_flare() const noexcept
+		{
+			return m_flare.get();
+		}
+
+		inline void bc_point_light::set_flare(bc_light_flare p_flare) noexcept
+		{
+			m_flare = std::move(p_flare);
+		}
+
+		inline void bc_point_light::set_flare_intensity(bcFLOAT p_intensity) noexcept
+		{
+			if(m_flare.has_value())
+			{
+				m_flare->set_intensity(p_intensity);
+			}
 		}
 	}
 }

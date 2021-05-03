@@ -7,7 +7,7 @@
 #include "GraphicImp/Resource/View/bcDepthStencilView.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
-#include "Game/Query/bcSceneLightQuery.h"
+#include "Game/Query/bcMainCameraSceneLightQuery.h"
 #include "Game/Query/bcSceneWindQuery.h"
 #include "BlackCat/bcExport.h"
 
@@ -20,17 +20,17 @@ namespace black_cat
 	public:
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 
-		void update(const game::bc_render_pass_update_context& p_update_param) override;
+		void update(const game::bc_render_pass_update_context& p_context) override;
 
-		void initialize_frame(const game::bc_render_pass_render_context& p_param) override;
+		void initialize_frame(const game::bc_render_pass_render_context& p_context) override;
 
-		void execute(const game::bc_render_pass_render_context& p_param) override;
+		void execute(const game::bc_render_pass_render_context& p_context) override;
 
-		void cleanup_frame(const game::bc_render_pass_render_context& p_param) override;
+		void cleanup_frame(const game::bc_render_pass_render_context& p_context) override;
 
-		void before_reset(const game::bc_render_pass_reset_context& p_param) override;
+		void before_reset(const game::bc_render_pass_reset_context& p_context) override;
 
-		void after_reset(const game::bc_render_pass_reset_context& p_param) override;
+		void after_reset(const game::bc_render_pass_reset_context& p_context) override;
 
 		void destroy(game::bc_render_system& p_render_system) override;
 
@@ -44,9 +44,9 @@ namespace black_cat
 		graphic::bc_render_target_view_ref m_normal_map_view;
 		graphic::bc_render_target_view_ref m_specular_map_view;
 
-		core::bc_query_result< game::bc_scene_light_query > m_lights_query;
-		core::bc_vector_movable< game::bc_light_instance > m_lights_query_result;
-		core::bc_query_result< game::bc_scene_wind_query > m_winds_query;
+		core::bc_query_result<game::bc_main_camera_scene_light_query> m_lights_query;
+		core::bc_vector<game::bc_light_instance> m_lights_query_result;
+		core::bc_query_result<game::bc_scene_wind_query> m_winds_query;
 		core::bc_vector<game::bc_wind> m_winds_query_result;
 	};
 }

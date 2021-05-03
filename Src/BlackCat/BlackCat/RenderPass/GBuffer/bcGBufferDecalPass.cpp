@@ -31,14 +31,6 @@ namespace black_cat
 		bcUINT32 m_group;
 	};
 
-	struct bc_instance_cbuffer_parameter
-	{
-		BC_CBUFFER_ALIGN
-		core::bc_matrix4f m_world_inv;
-		BC_CBUFFER_ALIGN
-		core::bc_matrix4f m_world_view_projection;
-	};
-
 	struct bc_decal_instance_parameter
 	{
 		core::bc_matrix4f m_world_inv;
@@ -54,7 +46,7 @@ namespace black_cat
 	{
 		auto& l_device = p_render_system.get_device();
 		
-		core::bc_array< core::bc_vector3f, 8 > l_cube_vertices
+		core::bc_array<core::bc_vector3f, 8> l_cube_vertices
 		{
 			core::bc_vector3f(-.5, -.5, -.5),
 			core::bc_vector3f(-.5, -.5, .5),
@@ -65,7 +57,7 @@ namespace black_cat
 			core::bc_vector3f(.5, .5, .5),
 			core::bc_vector3f(.5, .5, -.5),
 		};
-		core::bc_array< bcINT16, 36 > l_cube_indices
+		core::bc_array<bcINT16, 36> l_cube_indices
 		{
 			0,2,1, // Bottom
 			0,3,2,
@@ -155,28 +147,28 @@ namespace black_cat
 		);
 	}
 
-	void bc_gbuffer_decal_pass::update(const game::bc_render_pass_update_context& p_param)
+	void bc_gbuffer_decal_pass::update(const game::bc_render_pass_update_context& p_context)
 	{
 	}
 
-	void bc_gbuffer_decal_pass::initialize_frame(const game::bc_render_pass_render_context& p_param)
+	void bc_gbuffer_decal_pass::initialize_frame(const game::bc_render_pass_render_context& p_context)
 	{
 		if(m_decals_query.is_executed())
 		{
 			m_decals_buffer = m_decals_query.get().get_render_state_buffer();
 		}
 
-		m_decals_query = p_param.m_query_manager.queue_query
+		m_decals_query = p_context.m_query_manager.queue_query
 		(
 			game::bc_scene_decal_query
 			(
-				p_param.m_update_camera.get_position(),
-				p_param.m_frame_renderer.create_buffer()
+				p_context.m_update_camera.get_position(),
+				p_context.m_frame_renderer.create_buffer()
 			)
 		);
 	}
 
-	void bc_gbuffer_decal_pass::execute(const game::bc_render_pass_render_context& p_param)
+	void bc_gbuffer_decal_pass::execute(const game::bc_render_pass_render_context& p_context)
 	{
 		decal_group_container l_decal_groups;
 		decal_group_container l_non_culling_decals;
@@ -198,26 +190,26 @@ namespace black_cat
 			);
 		}
 
-		_render_decals(p_param, *m_render_pass_state, l_decal_groups, &l_non_culling_decals);
+		_render_decals(p_context, *m_render_pass_state, l_decal_groups, &l_non_culling_decals);
 		
 		if(l_non_culling_decals.empty())
 		{
 			return;
 		}
 
-		_render_decals(p_param, *m_render_pass_state_for_non_culling, l_non_culling_decals, nullptr);
+		_render_decals(p_context, *m_render_pass_state_for_non_culling, l_non_culling_decals, nullptr);
 	}
 
-	void bc_gbuffer_decal_pass::before_reset(const game::bc_render_pass_reset_context& p_param)
+	void bc_gbuffer_decal_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
 	{
 	}
 
-	void bc_gbuffer_decal_pass::after_reset(const game::bc_render_pass_reset_context& p_param)
+	void bc_gbuffer_decal_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
 		if
 		(
-			p_param.m_old_parameters.m_width == p_param.m_new_parameters.m_width &&
-			p_param.m_old_parameters.m_height == p_param.m_new_parameters.m_height
+			p_context.m_old_parameters.m_width == p_context.m_new_parameters.m_width &&
+			p_context.m_old_parameters.m_height == p_context.m_new_parameters.m_height
 		)
 		{
 			return;
@@ -242,10 +234,10 @@ namespace black_cat
 			.as_texture_view(graphic::bc_format::X24_TYPELESS_G8_UINT)
 			.as_tex2d_shader_view(0, 1)
 			.on_texture2d();
-		m_depth_view = p_param.m_device.create_resource_view(l_depth_stencil, l_depth_view_config);
-		m_stencil_view = p_param.m_device.create_resource_view(l_depth_stencil, l_stencil_view_config);
+		m_depth_view = p_context.m_device.create_resource_view(l_depth_stencil, l_depth_view_config);
+		m_stencil_view = p_context.m_device.create_resource_view(l_depth_stencil, l_stencil_view_config);
 		
-		m_device_pipeline_state = p_param.m_render_system.create_device_pipeline_state
+		m_device_pipeline_state = p_context.m_render_system.create_device_pipeline_state
 		(
 			"gbuffer_decal_vs",
 			nullptr,
@@ -263,7 +255,7 @@ namespace black_cat
 			l_depth_stencil.get_format(),
 			game::bc_multi_sample_type::c1_q1
 		);
-		m_render_pass_state = p_param.m_render_system.create_render_pass_state
+		m_render_pass_state = p_context.m_render_system.create_render_pass_state
 		(
 			m_device_pipeline_state.get(),
 			l_viewport,
@@ -283,10 +275,10 @@ namespace black_cat
 			{
 			},
 			{
-				p_param.m_render_system.get_global_cbuffer()
+				p_context.m_render_system.get_global_cbuffer()
 			}
 		);
-		m_device_pipeline_state_for_non_culling = p_param.m_render_system.create_device_pipeline_state
+		m_device_pipeline_state_for_non_culling = p_context.m_render_system.create_device_pipeline_state
 		(
 			"gbuffer_decal_vs",
 			nullptr,
@@ -304,7 +296,7 @@ namespace black_cat
 			l_depth_stencil.get_format(),
 			game::bc_multi_sample_type::c1_q1
 		);
-		m_render_pass_state_for_non_culling = p_param.m_render_system.create_render_pass_state
+		m_render_pass_state_for_non_culling = p_context.m_render_system.create_render_pass_state
 		(
 			m_device_pipeline_state_for_non_culling.get(),
 			l_viewport,
@@ -324,7 +316,7 @@ namespace black_cat
 			{
 			},
 			{
-				p_param.m_render_system.get_global_cbuffer()
+				p_context.m_render_system.get_global_cbuffer()
 			}
 		);
 	}

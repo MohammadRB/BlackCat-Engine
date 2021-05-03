@@ -21,44 +21,6 @@
 		{
 		}
 
-		bci_render_pass* bc_render_pass_manager::get_pass(bcUINT32 p_location)
-		{
-			for (auto& l_entry : m_passes)
-			{
-				if (l_entry.m_position == p_location)
-				{
-					return l_entry.m_pass.get();
-				}
-			}
-
-			return nullptr;
-		}
-
-		bool bc_render_pass_manager::remove_pass(bcUINT32 p_location)
-		{
-			bool l_found = false;
-			bcUINT32 l_location = 0;
-
-			for (auto& l_entry : m_passes)
-			{
-				if (l_entry.m_position == p_location)
-				{
-					l_found = true;
-					break;
-				}
-
-				l_location++;
-			}
-
-			if (l_found)
-			{
-				m_passes.erase(std::next(std::cbegin(m_passes), l_location));
-				return true;
-			}
-
-			return false;
-		}
-
 		void bc_render_pass_manager::pass_initialize_resources(bc_render_system& p_render_system)
 		{
 			for (auto& l_entry : m_passes)
@@ -128,26 +90,34 @@
 			}
 		}
 
-		void bc_render_pass_manager::_add_pass(_bc_render_pass_entry&& p_entry)
+		void bc_render_pass_manager::_add_pass(const bcCHAR* p_name, core::bc_unique_ptr<bci_render_pass> p_pass, const bcCHAR* p_before)
 		{
-			p_entry.m_pass->_set_pass_resource_share(&m_state_share);
+			_bc_render_pass_entry l_entry;
+			l_entry.m_name = p_name;
+			l_entry.m_pass = std::move(p_pass);
+			l_entry.m_stop_watch = core::bc_make_unique<core::bc_stop_watch>();
+			l_entry.m_pass->_set_pass_resource_share(&m_state_share);
 
-			const auto l_entry_with_same_position = std::find_if(std::cbegin(m_passes), std::cend(m_passes), [&](decltype(m_passes)::const_reference p_item)
+			if(p_before == nullptr)
 			{
-				return p_entry.m_position == p_item.m_position;
-			});
-
-			if(l_entry_with_same_position != std::cend(m_passes))
-			{
-				throw bc_invalid_operation_exception("a render pass with same position has been already added");
+				m_passes.push_back(std::move(l_entry));
 			}
-			
-			m_passes.push_back(std::move(p_entry));
-
-			std::sort(std::begin(m_passes), std::end(m_passes), [](_bc_render_pass_entry& p_first, _bc_render_pass_entry& p_second)
+			else
 			{
-				return p_first.m_position < p_second.m_position;
-			});
+				const auto l_before_ite = std::find_if
+				(
+					std::begin(m_passes),
+					std::end(m_passes),
+					[=](const _bc_render_pass_entry& p_pass)
+					{
+						return p_pass.m_name == p_before;
+					}
+				);
+
+				BC_ASSERT(l_before_ite != std::end(m_passes));
+
+				m_passes.insert(l_before_ite, std::move(l_entry));
+			}
 		}
 
 		bool bc_render_pass_manager::_remove_pass(const bcCHAR* p_name)

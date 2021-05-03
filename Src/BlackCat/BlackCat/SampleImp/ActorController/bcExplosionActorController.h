@@ -24,6 +24,7 @@ namespace black_cat
 		const bcCHAR* m_decal_name = nullptr;
 		bcFLOAT m_light_intensity = 0;
 		bcFLOAT m_light_particle_intensity = 0;
+		bcFLOAT m_light_flare_intensity = 0;
 		bcFLOAT m_light_radius = 0;
 		bcFLOAT m_light_rise_per_second = 0;
 		bcFLOAT m_light_lifetime_second = 1.0f;

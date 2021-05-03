@@ -223,6 +223,35 @@
       ]
     },
     {
+      "stream_name": "post_process_shaders",
+      "stream_content": [
+        {
+          "content_title": "light_flare_query_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcLightFlare.hlsl",
+          "content_parameter": { "function": "light_flare_query_vs" }
+        },
+        {
+          "content_title": "light_flare_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcLightFlare.hlsl",
+          "content_parameter": { "function": "light_flare_vs" }
+        },
+        {
+          "content_title": "light_flare_gs",
+          "content_loader": "geometry_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcLightFlare.hlsl",
+          "content_parameter": { "function": "light_flare_gs" }
+        },
+        {
+          "content_title": "light_flare_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcLightFlare.hlsl",
+          "content_parameter": { "function": "light_flare_ps" }
+        }
+      ] 
+    },
+    {
       "stream_name": "engine_assets",
       "stream_content": [
         {
@@ -241,6 +270,24 @@
           "content_title": "decal_texture.spec",
           "content_loader": "texture2d",
           "content_file": "content\\Texture\\Decal.spec.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "flare1",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\Flare1.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "flare2",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\Flare2.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "flare3",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\Flare3.dds",
           "content_parameter": {}
         },
         {
@@ -397,7 +444,7 @@
           "content_loader": "animation",
           "content_file": "content\\model\\xbot\\xbot-firing-rifle.fbx",
           "content_parameter": {
-            "additive": true 
+            "additive": true
           }
         },
         {

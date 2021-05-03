@@ -192,6 +192,11 @@ namespace black_cat
 		for (auto& l_json_actor : l_json_document->m_actors)
 		{
 			game::bc_actor l_actor = l_entity_manager->create_entity(l_json_actor->m_entity_name->c_str());
+			if(!l_actor.is_valid())
+			{
+				continue;
+			}
+			
 			l_actor.get_components(std::back_inserter(l_actor_components));
 			
 			for (auto* l_actor_component : l_actor_components)

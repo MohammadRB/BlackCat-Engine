@@ -125,41 +125,41 @@ namespace black_cat
 
 			/**
 			 * \brief This function will be called during app update phase
-			 * \param p_param 
+			 * \param p_context 
 			 */
-			virtual void update(const bc_render_pass_update_context& p_param) = 0;
+			virtual void update(const bc_render_pass_update_context& p_context) = 0;
 
 			/**
 			 * \brief This function will be called in the start of frame draw phase.
 			 * Threading: This function will be executed concurrently by a cpu worker thread.
-			 * \param p_param
+			 * \param p_context
 			 */
-			virtual void initialize_frame(const bc_render_pass_render_context& p_param) = 0;
+			virtual void initialize_frame(const bc_render_pass_render_context& p_context) = 0;
 
 			/**
 			 * \brief This function will be called in frame draw phase.
 			 * Threading: This function will be executed concurrently by a cpu worker thread.
-			 * \param p_param
+			 * \param p_context
 			 */
-			virtual void execute(const bc_render_pass_render_context& p_param) = 0;
+			virtual void execute(const bc_render_pass_render_context& p_context) = 0;
 
 			/**
 			 * \brief This function will be called in the end of frame draw phase.
-			 * \param p_param
+			 * \param p_context
 			 */
-			virtual void cleanup_frame(const bc_render_pass_render_context& p_param);
+			virtual void cleanup_frame(const bc_render_pass_render_context& p_context);
 
 			/**
 			 * \brief This function will be called when device duo to some parameter changes and buffer resize need reset
-			 * \param p_param
+			 * \param p_context
 			 */
-			virtual void before_reset(const bc_render_pass_reset_context& p_param) = 0;
+			virtual void before_reset(const bc_render_pass_reset_context& p_context) = 0;
 
 			/**
 			 * \brief This function will be called when device duo to some parameter changes and buffer resize need reset
-			 * \param p_param
+			 * \param p_context
 			 */
-			virtual void after_reset(const bc_render_pass_reset_context& p_param) = 0;
+			virtual void after_reset(const bc_render_pass_reset_context& p_context) = 0;
 
 			/**
 			 * \brief This function will be called when pass is going to be destroy.
@@ -186,7 +186,7 @@ namespace black_cat
 			bc_render_pass_resource_share* m_resource_share;
 		};
 
-		inline void bci_render_pass::cleanup_frame(const bc_render_pass_render_context& p_param)
+		inline void bci_render_pass::cleanup_frame(const bc_render_pass_render_context& p_context)
 		{
 		}
 

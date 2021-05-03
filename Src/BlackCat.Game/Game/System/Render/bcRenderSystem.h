@@ -94,7 +94,7 @@ namespace black_cat
 			core::bc_query_manager& m_query_manager;
 		};
 
-		class BC_GAME_DLL bc_render_system : public core::bc_initializable< core::bc_content_stream_manager&, bc_physics_system&, bc_render_system_parameter >
+		class BC_GAME_DLL bc_render_system : public core::bc_initializable<core::bc_content_stream_manager&, bc_physics_system&, bc_render_system_parameter>
 		{
 		private:
 			friend class _bc_render_pass_state_handle_deleter;
@@ -148,17 +148,18 @@ namespace black_cat
 			
 			const graphic::bc_constant_buffer_parameter& get_per_skinned_object_cbuffer() const;
 
-			template< typename T >
-			T* get_render_pass();
+			template<class TPass>
+			TPass* get_render_pass();
 
-			template< typename TPass >
-			void add_render_pass(bcUINT p_location, TPass&& p_pass);
+			template<class TPass>
+			void add_render_pass(TPass p_pass);
 
-			template< typename TPass >
+			template<class TPass, class TPassBefore>
+			void add_render_pass_before(TPass p_pass);
+
+			template<typename TPass>
 			bool remove_render_pass();
 			
-			bool remove_render_pass(bcUINT p_location);
-
 			void update(const update_context& p_update_params);
 
 			void render(const render_context& p_render_param);
@@ -196,7 +197,7 @@ namespace black_cat
 				bc_depth_stencil_type p_depth_stencil,
 				bc_rasterizer_type p_rasterizer,
 				bcUINT p_sample_mask,
-				std::initializer_list< bc_surface_format_type > p_render_target_formats,
+				std::initializer_list<bc_surface_format_type> p_render_target_formats,
 				bc_surface_format_type p_depth_stencil_format,
 				bc_multi_sample_type p_ms_config);
 
@@ -222,12 +223,12 @@ namespace black_cat
 			 */
 			bc_render_pass_state_ptr create_render_pass_state(graphic::bc_device_pipeline_state p_pipeline_state,
 				graphic::bc_viewport p_viewport,
-				bc_render_pass_state_render_target_view_array&& p_shader_targets,
+				bc_render_pass_state_render_target_view_array p_shader_targets,
 				graphic::bc_depth_stencil_view p_shader_depth,
-				bc_render_pass_state_sampler_array&& p_shader_samplers,
-				bc_render_pass_state_resource_view_array&& p_resource_views,
-				bc_render_pass_state_unordered_view_array&& p_unordered_views,
-				bc_render_pass_state_constant_buffer_array&& p_shader_buffers);
+				bc_render_pass_state_sampler_array p_shader_samplers,
+				bc_render_pass_state_resource_view_array p_resource_views,
+				bc_render_pass_state_unordered_view_array p_unordered_views,
+				bc_render_pass_state_constant_buffer_array p_shader_buffers);
 
 			/**
 			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
@@ -252,8 +253,8 @@ namespace black_cat
 				bc_index_type p_index_type,
 				bcUINT32 p_index_count,
 				bcUINT32 p_index_buffer_offset,
-				bc_render_state_resource_view_array&& p_resource_views,
-				bc_render_state_constant_buffer_array&& p_shader_buffers);
+				bc_render_state_resource_view_array p_resource_views,
+				bc_render_state_constant_buffer_array p_shader_buffers);
 
 			/**
 			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
@@ -266,10 +267,10 @@ namespace black_cat
 			 * \return 
 			 */
 			bc_compute_state_ptr create_compute_state(graphic::bc_device_compute_state p_compute_state,
-				bc_compute_state_sampler_array&& p_samplers,
-				bc_compute_state_resource_view_array&& p_resource_views,
-				bc_compute_state_unordered_view_array&& p_unordered_views,
-				bc_compute_state_constant_buffer_array&& p_cbuffers);
+				bc_compute_state_sampler_array p_samplers,
+				bc_compute_state_resource_view_array p_resource_views,
+				bc_compute_state_unordered_view_array p_unordered_views,
+				bc_compute_state_constant_buffer_array p_cbuffers);
 			
 		private:			
 			void _initialize(core::bc_content_stream_manager& p_content_stream, bc_physics_system& p_physics_system, bc_render_system_parameter p_parameter) override;
@@ -404,23 +405,33 @@ namespace black_cat
 			return m_frame_renderer->get_per_skinned_object_cbuffer();
 		}
 		
-		template< typename T >
-		T* bc_render_system::get_render_pass()
+		template<typename TPass>
+		TPass* bc_render_system::get_render_pass()
 		{
-			return m_render_pass_manager->get_pass< T >();
+			return m_render_pass_manager->get_pass<TPass>();
 		}
 
-		template< typename TPass >
-		void bc_render_system::add_render_pass(bcUINT p_location, TPass&& p_pass)
+		template<typename TPass>
+		void bc_render_system::add_render_pass(TPass p_pass)
 		{
-			m_render_pass_manager->add_pass(p_location, std::move(p_pass));
+			m_render_pass_manager->add_pass<TPass>(std::move(p_pass));
 
-			auto l_pass = m_render_pass_manager->get_pass(p_location);
+			auto l_pass = m_render_pass_manager->get_pass<TPass>();
 
 			l_pass->initialize_resources(*this);
 		}
 
-		template< typename TPass >
+		template<class TPass, class TPassBefore>
+		void bc_render_system::add_render_pass_before(TPass p_pass)
+		{
+			m_render_pass_manager->add_pass_before<TPass, TPassBefore>(std::move(p_pass));
+
+			auto l_pass = m_render_pass_manager->get_pass<TPass>();
+
+			l_pass->initialize_resources(*this);
+		}
+
+		template<typename TPass>
 		bool bc_render_system::remove_render_pass()
 		{
 			auto* l_pass = m_render_pass_manager->get_pass<TPass>();

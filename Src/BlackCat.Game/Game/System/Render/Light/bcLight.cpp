@@ -51,8 +51,40 @@ namespace black_cat
 		}
 		
 		bc_light::bc_light(bc_light&& p_other) noexcept
+			: m_type(p_other.m_type),
+			m_transformation(p_other.m_transformation),
+			m_bound_box(p_other.m_bound_box)
 		{
-			operator=(std::move(p_other));
+			switch (m_type)
+			{
+			case bc_light_type::direct:
+				new (&m_direct_light) bc_direct_light(p_other.m_direct_light);
+				break;
+			case bc_light_type::point:
+				new (&m_point_light) bc_point_light(p_other.m_point_light);
+				break;
+			case bc_light_type::spot:
+				new (&m_spot_light) bc_spot_light(p_other.m_spot_light);
+				break;
+			}
+		}
+
+		bc_light::~bc_light()
+		{
+			switch (m_type)
+			{
+			case bc_light_type::direct:
+				m_direct_light.~bc_direct_light();
+				break;
+			case bc_light_type::point:
+				m_point_light.~bc_point_light();
+				break;
+			case bc_light_type::spot:
+				m_spot_light.~bc_spot_light();
+				break;
+			default:
+				BC_ASSERT(false);
+			}
 		}
 
 		bc_light& bc_light::operator=(bc_light&& p_other) noexcept
