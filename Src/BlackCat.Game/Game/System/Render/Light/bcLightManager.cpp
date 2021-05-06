@@ -28,17 +28,11 @@ namespace black_cat
 		bc_light_manager::bc_light_manager()
 			: m_lights(200)
 		{
-			m_lights_query_handle = core::bc_get_service<core::bc_query_manager>()->register_query_provider<bc_light_instances_query_context>
-			(
-				core::bc_query_manager::provider_delegate_t(*this, &bc_light_manager::_get_query_context)
-			);
 		}
 
 		bc_light_manager::bc_light_manager(bc_light_manager&& p_other) noexcept
-			: m_lights(std::move(p_other.m_lights)),
-			m_lights_query_handle(std::move(p_other.m_lights_query_handle))
+			: m_lights(std::move(p_other.m_lights))
 		{
-			m_lights_query_handle.reassign(core::bc_query_manager::provider_delegate_t(*this, &bc_light_manager::_get_query_context));
 		}
 
 		bc_light_manager::~bc_light_manager() = default;
@@ -46,8 +40,6 @@ namespace black_cat
 		bc_light_manager& bc_light_manager::operator=(bc_light_manager&& p_other) noexcept
 		{
 			m_lights = std::move(p_other.m_lights);
-			m_lights_query_handle = std::move(p_other.m_lights_query_handle);
-			m_lights_query_handle.reassign(core::bc_query_manager::provider_delegate_t(*this, &bc_light_manager::_get_query_context));
 			
 			return *this;
 		}
@@ -86,6 +78,11 @@ namespace black_cat
 		{
 		}
 
+		bc_light_manager::iterator_buffer bc_light_manager::get_iterator_buffer() const noexcept
+		{
+			return iterator_buffer(m_lights_lock, m_lights);
+		}
+
 		void bc_light_manager::destroy_light(bc_light* p_light)
 		{
 			{
@@ -99,13 +96,6 @@ namespace black_cat
 					}
 				);
 			}
-		}
-
-		core::bc_query_context_ptr bc_light_manager::_get_query_context() const
-		{
-			bc_light_instances_query_context l_context(iterator_buffer(m_lights_lock, m_lights));
-			
-			return core::bc_make_query_context(std::move(l_context));
 		}
 	}
 }

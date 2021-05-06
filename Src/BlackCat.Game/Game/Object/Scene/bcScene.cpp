@@ -15,32 +15,42 @@
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
+#include "Game/Object/Scene/Bullet/bcBulletManager.h"
+#include "Game/System/bcGameSystem.h"
+#include "Game/System/Render/Light/bcLightManager.h"
+#include "Game/System/Render/Particle/bcParticleManager.h"
+#include "Game/System/Render/Decal/bcDecalManager.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		bc_scene::bc_scene(core::bc_estring p_path,
+		bc_scene::bc_scene(bc_game_system& p_game_system,
+			core::bc_estring p_path,
 			core::bc_string p_name,
 			core::bc_vector<core::bc_string> p_stream_files,
 			core::bc_vector<core::bc_string> p_entity_files,
 			core::bc_vector<core::bc_string> p_material_files,
+			core::bc_vector<core::bc_string> p_decal_files,
 			core::bc_vector<core::bc_string> p_loaded_streams,
 			bc_scene_graph p_scene_graph,
-			bc_physics_system& p_physics,
 			physics::bc_scene_ref p_px_scene)
 			: m_path(std::move(p_path)),
 			m_name(std::move(p_name)),
 			m_stream_files(std::move(p_stream_files)),
 			m_entity_files(std::move(p_entity_files)),
 			m_material_files(std::move(p_material_files)),
+			m_decal_files(std::move(p_decal_files)),
 			m_loaded_streams(std::move(p_loaded_streams)),
 			m_scene_graph(std::move(p_scene_graph)),
-			m_physics(&p_physics),
-			m_px_scene(std::move(p_px_scene)),
-			m_bullet_manager(p_physics)
+			m_physics(&p_game_system.get_physics_system()),
+			m_px_scene(std::move(p_px_scene))
 		{
 			m_global_scale = get_global_config().get_global_scale();
+			m_bullet_manager = core::bc_make_unique<bc_bullet_manager>(bc_bullet_manager(*m_physics));
+			m_light_manager = core::bc_make_unique<bc_light_manager>(bc_light_manager());
+			m_particle_manager = core::bc_make_unique<bc_particle_manager>(bc_particle_manager());
+			m_decal_manager = core::bc_make_unique<bc_decal_manager>(bc_decal_manager(p_game_system.get_render_system().get_material_manager()));
 		}
 
 		bc_scene::bc_scene(bc_scene&& p_other) noexcept
@@ -49,12 +59,16 @@ namespace black_cat
 			m_stream_files(std::move(p_other.m_stream_files)),
 			m_entity_files(std::move(p_other.m_entity_files)),
 			m_material_files(std::move(p_other.m_material_files)),
+			m_decal_files(std::move(p_other.m_decal_files)),
 			m_loaded_streams(std::move(p_other.m_loaded_streams)),
 			m_global_scale(p_other.m_global_scale),
 			m_scene_graph(std::move(p_other.m_scene_graph)),
 			m_physics(p_other.m_physics),
 			m_px_scene(std::move(p_other.m_px_scene)),
-			m_bullet_manager(std::move(p_other.m_bullet_manager))
+			m_bullet_manager(std::move(p_other.m_bullet_manager)),
+			m_light_manager(std::move(p_other.m_light_manager)),
+			m_particle_manager(std::move(p_other.m_particle_manager)),
+			m_decal_manager(std::move(p_other.m_decal_manager))
 		{
 		}
 
@@ -77,12 +91,16 @@ namespace black_cat
 			m_stream_files = std::move(p_other.m_stream_files);
 			m_entity_files = std::move(p_other.m_entity_files);
 			m_material_files = std::move(p_other.m_material_files);
+			m_decal_files = std::move(p_other.m_decal_files);
 			m_loaded_streams = std::move(p_other.m_loaded_streams);
 			m_scene_graph = std::move(p_other.m_scene_graph);
 			m_global_scale = p_other.m_global_scale;
 			m_physics = p_other.m_physics;
 			m_px_scene = std::move(p_other.m_px_scene);
 			m_bullet_manager = std::move(p_other.m_bullet_manager);
+			m_light_manager = std::move(p_other.m_light_manager);
+			m_particle_manager = std::move(p_other.m_particle_manager);
+			m_decal_manager = std::move(p_other.m_decal_manager);
 
 			return *this;
 		}
@@ -136,7 +154,7 @@ namespace black_cat
 
 		void bc_scene::add_bullet(const bc_bullet& p_bullet)
 		{
-			m_bullet_manager.add_bullet(p_bullet);
+			m_bullet_manager->add_bullet(p_bullet);
 		}
 
 		void bc_scene::draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const
@@ -194,7 +212,7 @@ namespace black_cat
 
 		void bc_scene::update_bullets(const core_platform::bc_clock::update_param& p_clock)
 		{
-			m_bullet_manager.update(*this, p_clock);
+			m_bullet_manager->update(*this, p_clock);
 		}
 
 		core::bc_task<void> bc_scene::update_bullets_async(const core_platform::bc_clock::update_param& p_clock)

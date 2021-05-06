@@ -76,14 +76,14 @@ namespace black_cat
 
 		void bc_mediate_component::_handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_transformation_event = core::bci_message::as< bc_world_transform_actor_event >(p_context.m_event);
+			const auto* l_transformation_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
 			if (l_transformation_event)
 			{
 				m_world_transform = l_transformation_event->get_transform();
 				return;
 			}
 
-			const auto* l_bound_box_event = core::bci_message::as< bc_bound_box_changed_actor_event >(p_context.m_event);
+			const auto* l_bound_box_event = core::bci_message::as<bc_bound_box_changed_actor_event>(p_context.m_event);
 			if (l_bound_box_event)
 			{
 				if(!m_bound_box_changed) // update prev box once only in case of multiple events per frame
@@ -95,7 +95,7 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_added_to_scene_event = core::bci_message::as< bc_added_to_scene_actor_event >(p_context.m_event);
+			const auto* l_added_to_scene_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
 			if (l_added_to_scene_event)
 			{
 				m_scene = &l_added_to_scene_event->get_scene();
@@ -106,7 +106,7 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_remove_from_scene_event = core::bci_message::as< bc_removed_from_scene_actor_event >(p_context.m_event);
+			const auto* l_remove_from_scene_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event);
 			if (l_remove_from_scene_event)
 			{
 				if (m_controller)

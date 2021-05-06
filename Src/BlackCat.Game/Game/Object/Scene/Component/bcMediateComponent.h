@@ -43,6 +43,8 @@ namespace black_cat
 			void set_entity_name(const bcCHAR* p_entity_name) noexcept;
 
 			void set_controller(core::bc_unique_ptr< bci_actor_controller > p_controller, const bc_actor_component_initialize_context& p_context);
+
+			bc_scene* get_scene() const noexcept;
 			
 			const physics::bc_bound_box& get_prev_bound_box() const noexcept;
 			
@@ -83,6 +85,11 @@ namespace black_cat
 			m_entity_name = p_entity_name;
 		}
 
+		inline bc_scene* bc_mediate_component::get_scene() const noexcept
+		{
+			return m_scene;
+		}
+		
 		inline const physics::bc_bound_box& bc_mediate_component::get_prev_bound_box() const noexcept
 		{
 			return m_prev_bound_box;

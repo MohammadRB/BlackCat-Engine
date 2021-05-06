@@ -12,14 +12,14 @@ namespace black_cat
 {
 	namespace game
 	{
-		void bc_main_camera_scene_light_query::execute(const bc_light_instances_query_context& p_context) noexcept
+		void bc_main_camera_scene_light_query::execute(const bc_scene_query_context& p_context) noexcept
 		{
 			const bool l_need_direct = core::bc_enum::has(m_types, bc_light_type::direct);
 			const bool l_need_spot = core::bc_enum::has(m_types, bc_light_type::spot);
 			const bool l_need_point = core::bc_enum::has(m_types, bc_light_type::point);
 			const auto l_light_instances = p_context.get_shared_query<bc_main_camera_scene_light_shared_query>().get_lights();
 			
-			for (auto& l_light : l_light_instances)
+			for (const auto& l_light : l_light_instances)
 			{
 				const bool l_is_direct = l_need_direct && l_light.get_type() == bc_light_type::direct;
 				if (l_is_direct)

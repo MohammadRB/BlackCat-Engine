@@ -54,14 +54,14 @@ namespace black_cat
 			auto& l_actor_component_manager = *core::bc_get_service<bc_actor_component_manager>();
 			auto& l_query_manager = *m_query_manager;
 			auto& l_animation_manager = m_render_system.get_animation_manager();
-			auto& l_particle_manager = m_render_system.get_particle_manager();
-			auto& l_decal_manager = m_render_system.get_decal_manager();
 			auto& l_render_system = m_render_system;
 			auto& l_script_system = m_script_system;
 			auto& l_input_system = m_input_system;
 			auto& l_physics_system = m_physics_system;
 			auto& l_console = m_console;
 			auto* l_scene = m_scene.get();
+			auto* l_particle_manager = l_scene ? &l_scene->get_particle_manager() : static_cast<bc_particle_manager*>(nullptr);
+			auto* l_decal_manager = l_scene ? &l_scene->get_decal_manager() : static_cast<bc_decal_manager*>(nullptr);
 
 			if(!m_editor_mode)
 			{
@@ -100,10 +100,11 @@ namespace black_cat
 				{
 					l_scene_task = l_scene->update_graph_async(p_clock);
 					l_scene_task1 = l_scene->update_bullets_async(p_clock);
+
+					l_particle_manager->update(p_clock);
+					l_decal_manager->update_decal_lifespans(p_clock);
 				}
 
-				l_particle_manager.update(p_clock);
-				l_decal_manager.update_decal_lifespans(p_clock);
 				l_script_system.update(p_clock);
 				l_console->update(p_clock);
 				l_render_system.update(bc_render_system::update_context(p_clock, *m_input_system.get_camera()));
@@ -154,6 +155,11 @@ namespace black_cat
 		{
 			m_query_manager->process_query_queue(p_clock);
 			m_query_manager->swap_frame();
+		}
+
+		void bc_game_system::render_swap_frame(const core_platform::bc_clock::update_param& p_clock)
+		{
+			m_render_system.swap(bc_render_system::swap_context(p_clock));
 		}
 
 		void bc_game_system::_initialize(bc_game_system_parameter p_parameter)

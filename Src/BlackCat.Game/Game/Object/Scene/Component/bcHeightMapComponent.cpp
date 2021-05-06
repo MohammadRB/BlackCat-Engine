@@ -101,7 +101,7 @@ namespace black_cat
 				if(l_material.m_collider_material.m_collision_particle)
 				{
 					auto l_particle_color = l_material.m_mesh_material->get_diffuse().xyz();
-					p_context.m_game_system.get_render_system().get_particle_manager().spawn_emitter
+					p_context.m_game_system.get_scene()->get_particle_manager().spawn_emitter
 					(
 						l_material.m_collider_material.m_collision_particle,
 						l_bullet_hit_event->get_hit_position(),

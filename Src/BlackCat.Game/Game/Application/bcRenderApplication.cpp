@@ -15,17 +15,28 @@ namespace black_cat
 	{
 		struct bc_render_loop_state
 		{
+			enum class signal : bcUBYTE
+			{
+				ready = 0,
+				render = 1,
+				swap = 2,
+				pause = 3
+			};
+			
 			using render_func = void (bc_render_application::*)(const core_platform::bc_clock::update_param& p_clock);
 			using pause_func = void (bc_render_application::*)(const core_platform::bc_clock::update_param& p_clock);
+			using swap_func = void (bc_render_application::*)(const core_platform::bc_clock::update_param& p_clock);
 			
 			bc_render_loop_state(bc_render_application* p_app, 
 				render_func p_render_function,
-				pause_func p_pause_function)
+				pause_func p_pause_function,
+				swap_func p_swap_function)
 				: m_app(p_app),
 				m_render_function(p_render_function),
 				m_pause_function(p_pause_function),
+				m_swap_function(p_swap_function),
 				m_terminate(false),
-				m_signal(0),
+				m_signal(signal::ready),
 				m_clock(0, 0, 0)
 			{
 			}
@@ -33,8 +44,9 @@ namespace black_cat
 			bc_render_application* m_app;
 			render_func m_render_function;
 			pause_func m_pause_function;
+			swap_func m_swap_function;
 			core_platform::bc_atomic<bool> m_terminate;
-			core_platform::bc_atomic<bcUINT32> m_signal;
+			core_platform::bc_atomic<signal> m_signal;
 
 			core_platform::bc_clock::update_param m_clock;
 		};
@@ -76,11 +88,13 @@ namespace black_cat
 
 		bcINT32 bc_render_application::run()
 		{
+			constexpr auto l_pause_sleep_ms = 50U;
 			bc_render_loop_state l_render_thread_state
 			(
 				this, 
 				&bc_render_application::app_render, 
-				&bc_render_application::app_pause_render_idle
+				&bc_render_application::app_render_pause_idle,
+				&bc_render_application::app_render_swap_frame
 			);
 			core_platform::bc_thread l_render_thread
 			(
@@ -88,23 +102,33 @@ namespace black_cat
 				{
 					while (!p_state->m_terminate.load(core_platform::bc_memory_order::relaxed))
 					{
-						bcUINT32 l_signal;
-						while ((l_signal = p_state->m_signal.load(core_platform::bc_memory_order::acquire)) == 0)
+						bc_render_loop_state::signal l_signal;
+						while ((l_signal = p_state->m_signal.load(core_platform::bc_memory_order::acquire)) == bc_render_loop_state::signal::ready)
 						{
 							core_platform::bc_thread::current_thread_yield();
 						}
 
-						if(l_signal == 1)
+						if(l_signal == bc_render_loop_state::signal::render)
 						{
 							(p_state->m_app->*p_state->m_render_function)(p_state->m_clock);
 						}
-						else
+						else if(l_signal == bc_render_loop_state::signal::pause)
 						{
 							(p_state->m_app->*p_state->m_pause_function)(p_state->m_clock);
-							core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(100));
+							core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(l_pause_sleep_ms));
+							continue;
 						}
 
-						p_state->m_signal.store(0, core_platform::bc_memory_order::release);
+						p_state->m_signal.store(bc_render_loop_state::signal::ready, core_platform::bc_memory_order::release);
+						
+						while (p_state->m_signal.load(core_platform::bc_memory_order::acquire) != bc_render_loop_state::signal::swap)
+						{
+							core_platform::bc_thread::current_thread_yield();
+						}
+						
+						(p_state->m_app->*p_state->m_swap_function)(p_state->m_clock);
+						
+						p_state->m_signal.store(bc_render_loop_state::signal::ready, core_platform::bc_memory_order::release);
 					}
 				},
 				&l_render_thread_state
@@ -129,16 +153,14 @@ namespace black_cat
 					{
 						platform::bc_app_event_pause_state l_pause_event(platform::bc_app_event_pause_state::state::paused);
 						core::bc_get_service<core::bc_event_manager>()->process_event(l_pause_event);
-						
-						core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(100));
 
 						const auto l_clock = core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed);
-						
 						l_render_thread_state.m_clock = l_clock;
-						l_render_thread_state.m_signal.store(2, core_platform::bc_memory_order::release);
+						l_render_thread_state.m_signal.store(bc_render_loop_state::signal::pause, core_platform::bc_memory_order::release);
 
 						app_pause_idle(l_clock);
-						
+
+						core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(l_pause_sleep_ms));
 						continue;
 					}
 
@@ -156,7 +178,7 @@ namespace black_cat
 #endif
 
 					l_render_thread_state.m_clock = l_clock;
-					l_render_thread_state.m_signal.store(1, core_platform::bc_memory_order::release);
+					l_render_thread_state.m_signal.store(bc_render_loop_state::signal::render, core_platform::bc_memory_order::release);
 
 					l_local_elapsed += l_elapsed;
 					const auto l_update_call_count = std::max(static_cast<bcUINT32>(std::floor(l_local_elapsed / l_min_update_elapsed)), 1U);
@@ -170,12 +192,19 @@ namespace black_cat
 
 					l_local_elapsed = std::max(l_local_elapsed - l_min_update_elapsed * l_update_call_count, static_cast<core_platform::bc_clock::small_delta_time>(0));
 					
-					while (l_render_thread_state.m_signal.load(core_platform::bc_memory_order::acquire) != 0)
+					while (l_render_thread_state.m_signal.load(core_platform::bc_memory_order::acquire) != bc_render_loop_state::signal::ready)
 					{
 						app_swap_frame_idle(l_clock);
 					}
 
+					l_render_thread_state.m_signal.store(bc_render_loop_state::signal::swap, core_platform::bc_memory_order::release);
+					
 					app_swap_frame(l_clock);
+
+					while (l_render_thread_state.m_signal.load(core_platform::bc_memory_order::acquire) != bc_render_loop_state::signal::ready)
+					{
+						core_platform::bc_thread::current_thread_yield();
+					}
 
 #ifdef BC_MEMORY_ENABLE
 					core::bc_memory_manager::get().end_of_frame();
@@ -208,7 +237,7 @@ namespace black_cat
 #endif
 			}
 
-			l_render_thread_state.m_signal.store(1, core_platform::bc_memory_order::relaxed);
+			l_render_thread_state.m_signal.store(bc_render_loop_state::signal::render, core_platform::bc_memory_order::relaxed);
 			l_render_thread_state.m_terminate.store(true, core_platform::bc_memory_order::relaxed);
 			l_render_thread.join();
 			

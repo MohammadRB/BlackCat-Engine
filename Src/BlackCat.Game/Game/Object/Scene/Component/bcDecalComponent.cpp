@@ -118,7 +118,7 @@ namespace black_cat
 
 		void bc_decal_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			m_decal_manager = &p_context.m_game_system.get_render_system().get_decal_manager();
+			m_decal_manager = &p_context.m_game_system.get_scene()->get_decal_manager();
 			m_decals.resize(m_decals_count);
 		}
 

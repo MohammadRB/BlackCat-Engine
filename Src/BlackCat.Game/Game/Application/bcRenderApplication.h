@@ -98,7 +98,7 @@ namespace black_cat
 			 * \brief Called when render thread is paused 
 			 * \param p_clock 
 			 */
-			virtual void app_pause_render_idle(const core_platform::bc_clock::update_param& p_clock) = 0;
+			virtual void app_render_pause_idle(const core_platform::bc_clock::update_param& p_clock) = 0;
 			
 			/**
 			 * \brief Called when main thread is idle before swap frame
@@ -109,6 +109,11 @@ namespace black_cat
 			 * \brief Called when both update and render are executed and ready to start next frame
 			 */
 			virtual void app_swap_frame(const core_platform::bc_clock::update_param& p_clock) = 0;
+
+			/**
+			 * \brief Called when both update and render are executed and ready to start next frame
+			 */
+			virtual void app_render_swap_frame(const core_platform::bc_clock::update_param& p_clock) = 0;
 			
 			/**
 			 * \brief Handle app events

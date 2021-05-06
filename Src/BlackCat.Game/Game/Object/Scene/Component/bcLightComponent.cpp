@@ -45,7 +45,7 @@ namespace black_cat
 
 		void bc_light_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			auto& l_light_manager = p_context.m_game_system.get_render_system().get_light_manager();
+			auto& l_light_manager = p_context.m_game_system.get_scene()->get_light_manager();
 			auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();
 			const auto& l_light_type = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_light_type);
 

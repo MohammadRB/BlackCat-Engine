@@ -5,8 +5,6 @@
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcListPool.h"
-#include "Core/Messaging/Query/bcQueryContext.h"
-#include "Core/Messaging/Query/bcQueryProviderHandle.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/Light/bcLight.h"
 #include "Game/System/Render/Light/bcLightIteratorBuffer.h"
@@ -40,15 +38,13 @@ namespace black_cat
 
 			void update(const core_platform::bc_clock::update_param& p_clock);
 
+			iterator_buffer get_iterator_buffer() const noexcept;
+			
 			void destroy_light(bc_light* p_light);
 
 		private:
-			core::bc_query_context_ptr _get_query_context() const;
-			
 			container_t m_lights;
 			mutable core_platform::bc_shared_mutex m_lights_lock;
-
-			core::bc_query_provider_handle m_lights_query_handle;
 		};
 	}
 }

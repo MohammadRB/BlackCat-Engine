@@ -60,11 +60,13 @@ namespace black_cat
 
 		void app_pause_idle(const core_platform::bc_clock::update_param& p_clock) override;
 
-		void app_pause_render_idle(const core_platform::bc_clock::update_param& p_clock) override;
+		void app_render_pause_idle(const core_platform::bc_clock::update_param& p_clock) override;
 		
 		void app_swap_frame_idle(const core_platform::bc_clock::update_param& p_clock) override;
 		
 		void app_swap_frame(const core_platform::bc_clock::update_param& p_clock) override;
+
+		void app_render_swap_frame(const core_platform::bc_clock::update_param& p_clock) override;
 		
 		bool app_event(core::bci_event& p_event) override final;
 

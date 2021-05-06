@@ -75,7 +75,7 @@ namespace black_cat
 			return *this;
 		}
 
-		template< class TComponent >
+		template<class TComponent>
 		bc_scene_graph_query& bc_scene_graph_query::only() noexcept
 		{
 			m_execute_with_component.bind

@@ -4,11 +4,14 @@
 
 #include "Core/Math/bcVector4f.h"
 #include "Core/Container/bcVector.h"
+#include "Core/Content/bcContentManager.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Utility/bcEnumOperand.h"
 #include "GraphicImp/Shader/Parameter/bcResourceViewParameter.h"
 #include "GraphicImp/Resource/View/bcRenderTargetViewConfig.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
+#include "Game/System/bcGameSystem.h"
+#include "Game/System/Input/bcInputSystem.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
@@ -76,10 +79,33 @@ namespace black_cat
 		core::bc_vector4f m_lights[TLightCount * 2];
 	};
 
+	bc_particle_system_pass_dx11::bc_particle_system_pass_dx11(const bcECHAR* p_sprites_content_name)
+		: m_sprites_content_name(p_sprites_content_name)
+	{
+	}
+
 	void bc_particle_system_pass_dx11::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
+		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
+		auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
 
+		const auto l_sprites_path = l_game_system.get_file_system().get_content_texture_path(m_sprites_content_name);
+		m_sprites_texture = l_content_manager.load<graphic::bc_texture2d_content>
+		(
+			core::bc_alloc_type::program,
+			l_sprites_path.c_str(),
+			nullptr,
+			core::bc_content_loader_parameter()
+		);
+		auto l_sprites_texture = m_sprites_texture->get_resource();
+		auto l_sprites_view_config = graphic::bc_graphic_resource_builder()
+			.as_resource_view()
+			.as_texture_view(m_sprites_texture->get_resource().get_format())
+			.as_tex2d_shader_view(0, -1)
+			.on_texture2d();
+		m_sprites_view = l_device.create_resource_view(l_sprites_texture, l_sprites_view_config);
+		
 		auto l_emitters_buffer_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_buffer(s_emitters_count, sizeof(_bc_emitter_struct), graphic::bc_resource_usage::gpu_rw, graphic::bc_resource_view_type::shader)
@@ -140,7 +166,7 @@ namespace black_cat
 
 		core::bc_array<bcUINT32, 4> l_draw_args = { 1,0,0,0 };
 
-		const auto& l_curves = p_render_system.get_particle_manager().get_curves();
+		const auto& l_curves = game::bc_particle_manager::get_curves();
 		_bc_curve_cbuffer_struct l_curve_cbuffer_struct;
 		for(bcSIZE l_curve_i = 0; l_curve_i < l_curves.size(); ++l_curve_i)
 		{
@@ -285,7 +311,7 @@ namespace black_cat
 
 		m_emitters_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
-			game::bc_particle_emitter_query()
+			game::bc_scene_particle_emitter_query()
 		);
 		m_lights_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
@@ -429,8 +455,7 @@ namespace black_cat
 	{
 		m_depth_buffer_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
 		m_depth_buffer_shader_view = get_shared_resource_throw<graphic::bc_resource_view>(constant::g_rpass_depth_stencil_read_view);
-		m_default_sprites_shader_view = p_context.m_render_system.get_particle_manager().get_sprites_view();
-
+		
 		m_emission_compute = p_context.m_render_system.create_compute_state
 		(
 			m_emission_compute_state.get(),
@@ -581,7 +606,7 @@ namespace black_cat
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::geometry, m_particles_shader_view.get()),
 				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::geometry, m_alive_particles1_shader_view.get()),
 				graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::pixel, m_depth_buffer_shader_view),
-				graphic::bc_resource_view_parameter(3, graphic::bc_shader_type::pixel, m_default_sprites_shader_view),
+				graphic::bc_resource_view_parameter(3, graphic::bc_shader_type::pixel, m_sprites_view.get()),
 			},
 			{},
 			{
@@ -593,9 +618,12 @@ namespace black_cat
 
 	void bc_particle_system_pass_dx11::destroy(game::bc_render_system& p_render_system)
 	{
-		m_emitters_query = core::bc_query_result<game::bc_particle_emitter_query>();
+		m_emitters_query = core::bc_query_result<game::bc_scene_particle_emitter_query>();
+		m_lights_query = core::bc_query_result<game::bc_scene_light_query>();
 		m_emitters_query_result.clear();
 		m_emitters_query_result.shrink_to_fit();
+		m_lights_query_result.clear();
+		m_lights_query_result.shrink_to_fit();
 
 		m_linear_sampler.reset();
 		m_point_sampler.reset();

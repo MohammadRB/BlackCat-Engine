@@ -14,7 +14,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_main_camera_scene_light_shared_query : public core::bc_query<bc_light_instances_query_context>
+		class BC_GAME_DLL bc_main_camera_scene_light_shared_query : public core::bc_query<bc_scene_query_context>
 		{
 			BC_SHARED_QUERY(sc_lgt)
 
@@ -30,7 +30,7 @@ namespace black_cat
 			core::bc_const_span<bc_light_instance> get_lights() noexcept;
 
 		protected:
-			void execute(const bc_light_instances_query_context& p_context) noexcept override;
+			void execute(const bc_scene_query_context& p_context) noexcept override;
 
 		private:
 			bc_camera_frustum m_frustum;

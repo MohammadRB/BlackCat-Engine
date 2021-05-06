@@ -42,6 +42,8 @@ namespace black_cat
 		BC_RENDER_PASS(lgt_flr)
 		
 	public:
+		bc_light_flare_pass();
+		
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 		
 		void update(const game::bc_render_pass_update_context& p_context) override;
@@ -69,6 +71,7 @@ namespace black_cat
 		constexpr static bcUINT32 s_per_draw_texture_count = 10U;
 		constexpr static bcFLOAT s_flare_size_ratio = 0.9;
 		constexpr static bcFLOAT s_flare_size_distance = 5;
+		bcFLOAT m_flare_size_distance;
 		
 		graphic::bc_sampler_state_ref m_linear_sampler;
 		graphic::bc_buffer_ref m_cube_vb;

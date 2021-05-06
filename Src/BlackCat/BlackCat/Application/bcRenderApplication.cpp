@@ -121,7 +121,7 @@ namespace black_cat
 		core::bc_get_service<core::bc_event_manager>()->process_event_queue(p_clock);
 	}
 
-	void bc_render_application::app_pause_render_idle(const core_platform::bc_clock::update_param& p_clock)
+	void bc_render_application::app_render_pause_idle(const core_platform::bc_clock::update_param& p_clock)
 	{
 		core::bc_get_service<core::bc_event_manager>()->process_render_event_queue(p_clock);
 	}
@@ -160,6 +160,11 @@ namespace black_cat
 		m_swap_watch.restart();
 
 		l_counter_value_manager->add_counter("swap_time", m_swap_watch.average_total_elapsed());
+	}
+
+	void bc_render_application::app_render_swap_frame(const core_platform::bc_clock::update_param& p_clock)
+	{
+		m_game_system->render_swap_frame(p_clock);
 	}
 
 	bool bc_render_application::app_event(core::bci_event& p_event)

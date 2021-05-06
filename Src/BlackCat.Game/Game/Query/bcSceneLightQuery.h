@@ -15,7 +15,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_scene_light_query : public core::bc_query<bc_light_instances_query_context>
+		class BC_GAME_DLL bc_scene_light_query : public core::bc_query<bc_scene_query_context>
 		{
 			BC_QUERY(sc_lgt)
 
@@ -33,7 +33,7 @@ namespace black_cat
 			core::bc_vector<bc_light_instance> get_lights() noexcept;
 
 		protected:
-			void execute(const bc_light_instances_query_context& p_context) noexcept override;
+			void execute(const bc_scene_query_context& p_context) noexcept override;
 			
 		private:
 			bc_light_type m_types;

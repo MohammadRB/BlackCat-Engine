@@ -149,6 +149,8 @@ namespace black_cat
 			
 			void swap_frame(const core_platform::bc_clock::update_param& p_clock);
 
+			void render_swap_frame(const core_platform::bc_clock::update_param& p_clock);
+
 		private:
 			void _initialize(bc_game_system_parameter) override;
 

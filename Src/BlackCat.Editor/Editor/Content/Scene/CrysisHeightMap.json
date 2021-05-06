@@ -2,7 +2,7 @@
   "name": "CrysisHeightMap",
   "stream_files": [ "Scene\\CrysisHeightMap_ContentStream.json" ],
   "material_files": [ "Scene\\CrysisHeightMap_Material.json" ],
-  "decal_files": [ "Scene\\CrysisHeightMap_Decal.json" ],
+  "decal_files": [ "Data\\Decal.json", "Scene\\CrysisHeightMap_Decal.json" ],
   "entity_files": [ "Scene\\CrysisHeightMap_EntityType.json" ],
   "streams": [
     "terrain_textures",
@@ -51,18 +51,18 @@
     {
       "entity_name": "Palm_Tree_Large_d",
       "position": [
-        29.1959228515625,
-        48.100006103515628,
-        -732.553955078125
+        29.0,
+        48.0,
+        -732.0
       ],
       "parameters": {}
     },
     {
       "entity_name": "sample_fire",
       "position": [
-        29.299915313720704,
-        48.35887145996094,
-        -732.876953125
+        29.0,
+        48.0,
+        -732.0
       ],
       "parameters": {}
     }

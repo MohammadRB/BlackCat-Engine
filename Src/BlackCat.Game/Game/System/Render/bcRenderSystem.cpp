@@ -34,8 +34,7 @@ namespace black_cat
 		extern graphic::bc_pipeline_stage _convert_shader_type_to_pipeline_stage(graphic::bc_shader_type p_shader_types);
 
 		bc_render_system::bc_render_system()
-			: m_content_stream(nullptr),
-			m_app_active_flag(true)
+			: m_content_stream(nullptr)
 		{
 		}
 
@@ -60,9 +59,6 @@ namespace black_cat
 			m_material_manager = std::move(p_other.m_material_manager);
 			m_render_pass_manager = std::move(p_other.m_render_pass_manager);
 			m_animation_manager = std::move(p_other.m_animation_manager);
-			m_light_manager = std::move(p_other.m_light_manager);
-			m_particle_manager = std::move(p_other.m_particle_manager);
-			m_decal_manager = std::move(p_other.m_decal_manager);
 			m_shape_drawer = std::move(p_other.m_shape_drawer);
 			m_frame_renderer = std::move(p_other.m_frame_renderer);
 
@@ -75,7 +71,6 @@ namespace black_cat
 			m_render_states = std::move(p_other.m_render_states);
 			m_compute_states = std::move(p_other.m_compute_states);
 
-			m_app_active_flag.store(m_app_active_flag.load());
 			m_window_resize_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
 			m_app_active_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
 			m_device_reset_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
@@ -94,6 +89,34 @@ namespace black_cat
 			m_frame_renderer->render(bc_frame_renderer_render_context(p_render_param.m_clock, p_render_param.m_query_manager, *this));
 
 			m_device.present();
+		}
+
+		void bc_render_system::swap(const swap_context& p_swap_context)
+		{
+			if(!m_device_reset_event.has_value())
+			{
+				return;
+			}
+			
+			m_render_pass_manager->before_reset(bc_render_pass_reset_context
+			(
+				*this,
+				*m_device_reset_event->m_device,
+				m_device_reset_event->m_old_parameters,
+				m_device_reset_event->m_new_parameters
+			));
+
+			m_device.resize_back_buffer(m_device_reset_event->m_new_parameters.m_width, m_device_reset_event->m_new_parameters.m_height);
+
+			m_render_pass_manager->after_reset(bc_render_pass_reset_context
+			(
+				*this,
+				*m_device_reset_event->m_device,
+				m_device_reset_event->m_old_parameters,
+				m_device_reset_event->m_new_parameters
+			));
+
+			m_device_reset_event.reset();
 		}
 
 		void bc_render_system::add_render_task(bci_render_task& p_task)
@@ -355,9 +378,6 @@ namespace black_cat
 			m_material_manager = core::bc_make_unique< bc_material_manager >(core::bc_alloc_type::program, *m_content_stream, *this, p_physics_system);
 			m_render_pass_manager = core::bc_make_unique< bc_render_pass_manager >(core::bc_alloc_type::program);
 			m_animation_manager = core::bc_make_unique< bc_animation_manager >(core::bc_alloc_type::program);
-			m_light_manager = core::bc_make_unique< bc_light_manager >(core::bc_alloc_type::program);
-			m_particle_manager = core::bc_make_unique< bc_particle_manager >(core::bc_alloc_type::program, m_device, *m_content_stream);
-			m_decal_manager = core::bc_make_unique< bc_decal_manager >(core::bc_alloc_type::program, *m_material_manager);
 			m_shape_drawer = core::bc_make_unique< bc_shape_drawer >(core::bc_alloc_type::program);
 			m_frame_renderer = core::bc_make_unique< bc_frame_renderer >(core::bc_alloc_type::program, m_device, *m_thread_manager, *m_render_pass_manager);
 
@@ -386,6 +406,7 @@ namespace black_cat
 		void bc_render_system::_destroy()
 		{
 			bc_mesh_utility::clear_mesh_render_states_cache();
+			bc_particle_manager::clear_emitter_definitions();
 			
 			m_render_pass_manager->pass_destroy(*this);
 			// Delete all render passes to clear queries and references which they might hold
@@ -398,9 +419,6 @@ namespace black_cat
 
 			m_frame_renderer.reset();
 			m_shape_drawer.reset();
-			m_decal_manager.reset();
-			m_particle_manager.reset();
-			m_light_manager.reset();
 			m_material_manager.reset();
 			m_thread_manager.reset();
 			
@@ -439,9 +457,6 @@ namespace black_cat
 						l_device_back_buffer.get_sample_count()
 					);
 
-					// Request application pause
-					platform::bc_app_event_pause_state l_pause_event(platform::bc_app_event_pause_state::state::pause_request);
-					l_event_manager->process_event(l_pause_event);
 					// Put device reset event in render event queue
 					l_event_manager->queue_event(graphic::bc_app_event_device_reset(m_device, l_old_parameters, l_new_parameters, true), 0);
 				}
@@ -449,52 +464,10 @@ namespace black_cat
 				return true;
 			}
 
-			auto* l_app_pause_event = core::bci_message::as<platform::bc_app_event_pause_state>(p_event);
-			if(l_app_pause_event)
-			{
-				if(l_app_pause_event->get_state() == platform::bc_app_event_pause_state::state::paused)
-				{
-					m_app_active_flag.store(false, core_platform::bc_memory_order::relaxed);
-				}
-				if (l_app_pause_event->get_state() == platform::bc_app_event_pause_state::state::resume_request)
-				{
-					m_app_active_flag.store(true, core_platform::bc_memory_order::relaxed);
-				}
-				
-				return true;
-			}
-
 			auto* l_device_reset_event = core::bci_message::as<graphic::bc_app_event_device_reset>(p_event);
 			if(l_device_reset_event)
 			{
-				// If application is not in pause state, requeue device reset event and return
-				// to let main thread proceed into pause state
-				if (m_app_active_flag.load(core_platform::bc_memory_order::relaxed))
-				{
-					l_event_manager->queue_event(*l_device_reset_event, 0);
-					return true;
-				}
-				
-				m_render_pass_manager->before_reset(bc_render_pass_reset_context
-				(
-					*this, 
-					*l_device_reset_event->m_device, 
-					l_device_reset_event->m_old_parameters,
-					l_device_reset_event->m_new_parameters
-				));
-
-				m_device.resize_back_buffer(l_device_reset_event->m_new_parameters.m_width, l_device_reset_event->m_new_parameters.m_height);
-				
-				m_render_pass_manager->after_reset(bc_render_pass_reset_context
-				(
-					*this, 
-					*l_device_reset_event->m_device,
-					l_device_reset_event->m_old_parameters,
-					l_device_reset_event->m_new_parameters
-				));
-
-				// Request application resume
-				l_event_manager->queue_event(platform::bc_app_event_pause_state(platform::bc_app_event_pause_state::state::resume_request), 0);
+				m_device_reset_event.reset(*l_device_reset_event);
 				
 				return true;
 			}

@@ -640,14 +640,14 @@ namespace black_cat
 		{
 			core::bc_array<bc_octal_tree_graph_node*, 8> l_children
 			{
-				&*m_top_left_back,
-				&*m_top_left_front,
-				&*m_top_right_front,
-				&*m_top_right_back,
-				&*m_bottom_left_back,
-				&*m_bottom_left_front,
-				&*m_bottom_right_front,
-				&*m_bottom_right_back
+				m_top_left_back,
+				m_top_left_front,
+				m_top_right_front,
+				m_top_right_back,
+				m_bottom_left_back,
+				m_bottom_left_front,
+				m_bottom_right_front,
+				m_bottom_right_back
 			};
 
 			for (auto* l_child : l_children)
@@ -658,7 +658,7 @@ namespace black_cat
 					continue;
 				}
 
-				m_actors.splice(std::rbegin(m_actors).base(), l_child->m_actors);
+				m_actors.splice(std::end(m_actors), l_child->m_actors);
 
 				auto l_last_entry = std::rbegin(m_actors);
 				while (l_child_actor_count-- > 0)

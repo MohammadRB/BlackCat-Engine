@@ -88,5 +88,29 @@ namespace black_cat
 		};
 		
 		using bc_particle_emitter_ptr = core::bc_ref_count_ptr<bc_external_particle_emitter, _bc_particle_emitter_ptr_deleter>;
+
+		struct bc_particle_emitter_state
+		{
+			core::bc_vector3f m_prev_position;
+			core::bc_vector3f m_position;
+			core::bc_vector3f m_emission_direction;
+			bcFLOAT m_energy;
+			bcUINT32 m_emission_deviation;
+			core::bc_vector3f m_emission_deviation_force;
+			bcUINT32 m_sprite_index;
+			core::bc_vector3f m_particles_color;
+			bcFLOAT m_particles_color_intensity;
+			bcUINT32 m_particles_count;
+			bcFLOAT m_particles_lifetime;
+			bcFLOAT m_particles_force;
+			bcFLOAT m_particles_mass;
+			bcFLOAT m_particles_start_size;
+			bcFLOAT m_particles_end_size;
+			bcFLOAT m_particles_rotation;
+			bcUINT32 m_particles_velocity_curve_index;
+			bcFLOAT m_particles_velocity_curve_duration;
+			bcUINT32 m_particles_size_curve_index;
+			bcUINT32 m_particles_fade_curve_index;
+		};
 	}
 }

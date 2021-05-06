@@ -12,7 +12,6 @@
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Input/bcFileSystem.h"
-#include "Game/Query/bcParticleEmittersQuery.h"
 #include "Game/bcUtility.h"
 #include "Game/bcException.h"
 
@@ -20,6 +19,9 @@ namespace black_cat
 {
 	namespace game
 	{
+		bc_particle_manager::curves_container bc_particle_manager::m_curves{};
+		bc_particle_manager::particle_definition_container bc_particle_manager::m_emitter_definitions;
+		
 		_bc_particle_emitter_instance::_bc_particle_emitter_instance(const bc_particle_emitter_trait& p_trait)
 			: bc_particle_emitter_trait(p_trait)
 		{
@@ -29,7 +31,7 @@ namespace black_cat
 			m_particles_count_to_spawn = 0;
 		}
 
-		bc_particle_manager::bc_particle_manager(graphic::bc_device& p_device, core::bc_content_stream_manager& p_content_stream)
+		bc_particle_manager::bc_particle_manager()
 			: m_emitters(s_emitter_count, core::bc_alloc_type::unknown_movable),
 			m_external_emitters(s_emitter_count / 4)
 		{
@@ -60,66 +62,25 @@ namespace black_cat
 				
 				m_curves[l_curve_i] = l_curve_samples_container;
 			}
-
-			m_emitters_provider_handle = core::bc_get_service< core::bc_query_manager >()->register_query_provider< bc_particle_emitters_query_context >
-			(
-				core::bc_query_provider_handle::delegate_t
-				(*this, &bc_particle_manager::_emitters_query_context_provider)
-			);
-
-			const auto l_sprites_path = core::bc_get_service<bc_game_system>()->get_file_system().get_content_texture_path(bcL("Sprites.dds"));
-			m_sprites = p_content_stream.get_content_manager().load< graphic::bc_texture2d_content >
-			(
-				core::bc_alloc_type::program,
-				l_sprites_path.c_str(),
-				nullptr,
-				core::bc_content_loader_parameter()
-			);
-
-			auto l_sprites_texture = m_sprites->get_resource();
-			auto l_sprites_view_config = graphic::bc_graphic_resource_builder()
-				.as_resource_view()
-				.as_texture_view(m_sprites->get_resource().get_format())
-				.as_tex2d_shader_view(0, -1)
-				.on_texture2d();
-			m_sprites_view = p_device.create_resource_view(l_sprites_texture, l_sprites_view_config);
 		}
 
 		bc_particle_manager::bc_particle_manager(bc_particle_manager&& p_other) noexcept
-			: m_curves(p_other.m_curves),
-			m_emitter_definitions(std::move(p_other.m_emitter_definitions)),
-			m_emitters(std::move(p_other.m_emitters)),
-			m_external_emitters(std::move(p_other.m_external_emitters)),
-			m_emitters_provider_handle(std::move(p_other.m_emitters_provider_handle)),
-			m_sprites(std::move(p_other.m_sprites)),
-			m_sprites_view(std::move(p_other.m_sprites_view))
+			: m_emitters(std::move(p_other.m_emitters)),
+			m_external_emitters(std::move(p_other.m_external_emitters))
 		{
-			m_emitters_provider_handle.reassign(core::bc_query_provider_handle::delegate_t(*this, &bc_particle_manager::_emitters_query_context_provider));
 		}
 
 		bc_particle_manager::~bc_particle_manager() = default;
 
 		bc_particle_manager& bc_particle_manager::operator=(bc_particle_manager&& p_other) noexcept
 		{
-			m_curves = p_other.m_curves;
-			m_emitter_definitions = std::move(p_other.m_emitter_definitions);
 			m_emitters = std::move(p_other.m_emitters);
 			m_external_emitters = std::move(p_other.m_external_emitters);
-			m_emitters_provider_handle = std::move(p_other.m_emitters_provider_handle);
-			m_sprites = std::move(p_other.m_sprites);
-			m_sprites_view = std::move(p_other.m_sprites_view);
 			
-			m_emitters_provider_handle.reassign(core::bc_query_provider_handle::delegate_t(*this, &bc_particle_manager::_emitters_query_context_provider));
-
 			return *this;
 		}
 
-		graphic::bc_resource_view bc_particle_manager::get_sprites_view() const noexcept
-		{
-			return m_sprites_view.get();
-		}
-
-		const bc_particle_manager::curves_container& bc_particle_manager::get_curves() const noexcept
+		const bc_particle_manager::curves_container& bc_particle_manager::get_curves() noexcept
 		{
 			return m_curves;
 		}
@@ -291,45 +252,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_particle_manager::_destroy_emitter(bc_external_particle_emitter* p_emitter)
-		{
-			{
-				core_platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, core_platform::bc_lock_operation::light);
-
-				const auto l_external_emitter_entry = std::find_if
-				(
-					std::begin(m_external_emitters),
-					std::end(m_external_emitters),
-					[=](const bc_external_particle_emitter& p_external_emitter)
-					{
-						return &p_external_emitter == p_emitter;
-					}
-				);
-
-				BC_ASSERT(l_external_emitter_entry != std::end(m_external_emitters));
-
-				for (bc_particle_emitter_trait* l_external_emitter : l_external_emitter_entry->m_emitters)
-				{
-					const auto l_emitter_entry = std::find_if
-					(
-						std::begin(m_emitters),
-						std::end(m_emitters),
-						[=](const _bc_particle_emitter_instance& p_emitter)
-						{
-							return &p_emitter == l_external_emitter;
-						}
-					);
-
-					BC_ASSERT(l_emitter_entry != std::end(m_emitters));
-
-					m_emitters.erase(l_emitter_entry);
-				}
-
-				m_external_emitters.erase(l_external_emitter_entry);
-			}
-		}
-
-		core::bc_query_context_ptr bc_particle_manager::_emitters_query_context_provider() const noexcept
+		core::bc_vector_movable<bc_particle_emitter_state> bc_particle_manager::get_emitter_states() const noexcept
 		{
 			{
 				core_platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, core_platform::bc_lock_operation::heavy);
@@ -370,7 +293,50 @@ namespace black_cat
 					}
 				);
 
-				return core::bc_make_query_context(bc_particle_emitters_query_context(l_emitters));
+				return std::move(l_emitters);
+			}
+		}
+		
+		void bc_particle_manager::clear_emitter_definitions()
+		{
+			m_emitter_definitions.clear();
+		}
+
+		void bc_particle_manager::_destroy_emitter(bc_external_particle_emitter* p_emitter)
+		{
+			{
+				core_platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, core_platform::bc_lock_operation::light);
+
+				const auto l_external_emitter_entry = std::find_if
+				(
+					std::begin(m_external_emitters),
+					std::end(m_external_emitters),
+					[=](const bc_external_particle_emitter& p_external_emitter)
+					{
+						return &p_external_emitter == p_emitter;
+					}
+				);
+
+				BC_ASSERT(l_external_emitter_entry != std::end(m_external_emitters));
+
+				for (bc_particle_emitter_trait* l_external_emitter : l_external_emitter_entry->m_emitters)
+				{
+					const auto l_emitter_entry = std::find_if
+					(
+						std::begin(m_emitters),
+						std::end(m_emitters),
+						[=](const _bc_particle_emitter_instance& p_emitter)
+						{
+							return &p_emitter == l_external_emitter;
+						}
+					);
+
+					BC_ASSERT(l_emitter_entry != std::end(m_emitters));
+
+					m_emitters.erase(l_emitter_entry);
+				}
+
+				m_external_emitters.erase(l_external_emitter_entry);
 			}
 		}
 

@@ -11,7 +11,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_scene_query : public core::bc_query< bc_scene_query_context >
+		class bc_scene_query : public core::bc_query<bc_scene_query_context>
 		{
 			BC_QUERY(sq)
 			

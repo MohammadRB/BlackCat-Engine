@@ -157,7 +157,7 @@
             "particle_cast": true,
             "particle_intensity": 8.0,
             "flare_surface": [ 3.0, 3.0, 3.0 ],
-            "flare_intensity": 1.0,
+            "flare_intensity": 1.5,
             "flare_mask_material": "flare1"
           }
         }

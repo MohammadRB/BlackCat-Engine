@@ -84,8 +84,8 @@ namespace black_cat
 			m_bullet_speed = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_bullet_speed);
 			m_bullet_mass = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_bullet_mass);
 
-			m_particle_manager = &p_context.m_game_system.get_render_system().get_particle_manager();
-			m_light_manager = &p_context.m_game_system.get_render_system().get_light_manager();
+			m_particle_manager = &p_context.m_game_system.get_scene()->get_particle_manager();
+			m_light_manager = &p_context.m_game_system.get_scene()->get_light_manager();
 		}
 
 		void bc_weapon_component::update(const bc_actor_component_update_content& p_context)

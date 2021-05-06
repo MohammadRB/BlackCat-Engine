@@ -113,7 +113,7 @@ namespace black_cat
 			l_render_system.add_render_pass(bc_gbuffer_light_map_pass(constant::g_rpass_direct_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_view));
-			l_render_system.add_render_pass(bc_particle_system_pass_dx11());
+			l_render_system.add_render_pass(bc_particle_system_pass_dx11(bcL("Sprites.dds")));
 			l_render_system.add_render_pass(bc_light_flare_pass());
 			l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_view));
 

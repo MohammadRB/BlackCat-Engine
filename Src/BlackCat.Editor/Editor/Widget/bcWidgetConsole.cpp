@@ -233,9 +233,10 @@ namespace black_cat
 			m_main_layout->addWidget(m_console_input);
 			m_toolbar_layout->insertWidget(0, m_toolbar_info);
 			m_toolbar_layout->insertWidget(1, m_toolbar_debug);
-			m_toolbar_layout->insertWidget(2, m_toolbar_error);
-			m_toolbar_layout->insertWidget(3, m_toolbar_script);
-			m_toolbar_layout->insertWidget(4, m_toolbar_clear);
+			m_toolbar_layout->insertWidget(2, m_toolbar_warning);
+			m_toolbar_layout->insertWidget(3, m_toolbar_error);
+			m_toolbar_layout->insertWidget(4, m_toolbar_script);
+			m_toolbar_layout->insertWidget(5, m_toolbar_clear);
 		}
 	}
 }

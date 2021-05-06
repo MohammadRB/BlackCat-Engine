@@ -86,7 +86,7 @@ namespace black_cat
 		if(m_scene_terrain_query.is_executed())
 		{
 			auto l_hit_result = *m_scene_terrain_query.get().get_result().as<core::bc_nullable<game::bc_ray_hit>>();
-			auto& l_particle_manager = p_context.m_game_system.get_render_system().get_particle_manager();
+			auto& l_particle_manager = m_scene->get_particle_manager();
 			auto& l_mediate_component = *p_context.m_actor.get_component<game::bc_mediate_component>();
 			m_direction = l_mediate_component.get_world_transform().get_basis_z();
 

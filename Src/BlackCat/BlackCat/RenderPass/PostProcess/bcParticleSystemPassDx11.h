@@ -11,7 +11,7 @@
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/State/bcComputeState.h"
 #include "Game/System/Render/State/bcRenderPassState.h"
-#include "Game/Query/bcParticleEmittersQuery.h"
+#include "Game/Query/bcSceneParticleEmitterQuery.h"
 #include "Game/Query/bcSceneLightQuery.h"
 #include "BlackCat/bcExport.h"
 
@@ -22,6 +22,8 @@ namespace black_cat
 		BC_RENDER_PASS(ptc_sys)
 		
 	public:
+		explicit bc_particle_system_pass_dx11(const bcECHAR* p_sprites_content_name);
+		
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 		
 		void update(const game::bc_render_pass_update_context& p_context) override;
@@ -53,11 +55,12 @@ namespace black_cat
 		static const bcSIZE s_lights_count = 10;
 		
 		bcINT32 m_dead_particles_initial_count = s_particles_count;
-
+		const bcECHAR* m_sprites_content_name;
+		
 		graphic::bc_depth_stencil_view m_depth_buffer_view;
 		graphic::bc_resource_view m_depth_buffer_shader_view;
-		graphic::bc_resource_view m_default_sprites_shader_view;
-		
+		graphic::bc_texture2d_content_ptr m_sprites_texture;
+		graphic::bc_resource_view_ref m_sprites_view;
 		graphic::bc_buffer_ref m_emitters_buffer;
 		graphic::bc_buffer_ref m_particles_buffer;
 		graphic::bc_buffer_ref m_alive_particles_buffer1;
@@ -97,7 +100,7 @@ namespace black_cat
 		graphic::bc_device_pipeline_state_ref m_device_pipeline_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;
 
-		core::bc_query_result<game::bc_particle_emitter_query> m_emitters_query;
+		core::bc_query_result<game::bc_scene_particle_emitter_query> m_emitters_query;
 		core::bc_query_result<game::bc_scene_light_query> m_lights_query;
 		core::bc_vector_movable<game::bc_particle_emitter_state> m_emitters_query_result;
 		core::bc_vector<game::bc_light_instance> m_lights_query_result;

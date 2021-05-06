@@ -47,14 +47,31 @@ namespace black_cat
 			m_decal_instances_pool(2000, core::bc_alloc_type::program)
 		{
 			m_decals_pool.initialize(100, core::bc_alloc_type::program);
+		}
 
-			m_decals_query_handle = core::bc_get_service<core::bc_query_manager>()->register_query_provider<bc_decal_instances_query_context>
-			(
-				core::bc_query_manager::provider_delegate_t(*this, &bc_decal_manager::_get_query_context)
-			);
+		bc_decal_manager::bc_decal_manager(bc_decal_manager&& p_other) noexcept
+			: m_material_manager(p_other.m_material_manager),
+			m_update_interval_seconds(p_other.m_update_interval_seconds),
+			m_decals_pool(std::move(p_other.m_decals_pool)),
+			m_decal_descriptions(std::move(p_other.m_decal_descriptions)),
+			m_decals(std::move(p_other.m_decals)),
+			m_decal_instances_pool(std::move(p_other.m_decal_instances_pool))
+		{
 		}
 
 		bc_decal_manager::~bc_decal_manager() = default;
+
+		bc_decal_manager& bc_decal_manager::operator=(bc_decal_manager&& p_other) noexcept
+		{
+			m_material_manager = p_other.m_material_manager;
+			m_update_interval_seconds = p_other.m_update_interval_seconds;
+			m_decals_pool = std::move(p_other.m_decals_pool);
+			m_decal_descriptions = std::move(p_other.m_decal_descriptions);
+			m_decals = std::move(p_other.m_decals);
+			m_decal_instances_pool = std::move(p_other.m_decal_instances_pool);
+			
+			return *this;
+		}
 
 		void bc_decal_manager::read_decal_file(const bcECHAR* p_decal_file)
 		{
@@ -287,6 +304,11 @@ namespace black_cat
 			return l_task;
 		}
 
+		bc_decal_manager::iterator_buffer bc_decal_manager::get_iterator_buffer() const noexcept
+		{
+			return iterator_buffer(m_decal_instances_mutex, m_decal_instances_pool);
+		}
+
 		void bc_decal_manager::destroy_decal(bc_decal* p_decal)
 		{
 			auto* l_entry = static_cast<_bc_decal_entry*>(p_decal);
@@ -316,13 +338,6 @@ namespace black_cat
 				core_platform::bc_mutex_guard l_lock(m_decal_instances_mutex);
 				m_decal_instances_pool.erase(l_entry->m_iterator);
 			}
-		}
-
-		core::bc_query_context_ptr bc_decal_manager::_get_query_context() const
-		{
-			bc_decal_instances_query_context l_context(iterator_buffer(m_decal_instances_mutex, m_decal_instances_pool));
-
-			return core::bc_make_query_context(std::move(l_context));
 		}
 	}	
 }

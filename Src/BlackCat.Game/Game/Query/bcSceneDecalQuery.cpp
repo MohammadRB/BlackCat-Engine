@@ -4,19 +4,21 @@
 
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Game/System/Input/bcGlobalConfig.h"
+#include "Game/System/Render/Decal/bcDecalManager.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/Query/bcSceneDecalQuery.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		void bc_scene_decal_query::execute(const bc_decal_instances_query_context& p_context) noexcept
+		void bc_scene_decal_query::execute(const bc_scene_query_context& p_context) noexcept
 		{
 			{
-				auto& l_iterator = const_cast<bc_decal_manager::iterator_buffer&>(p_context.m_iterator);
+				auto l_iterator = p_context.m_scene->get_decal_manager().get_iterator_buffer();
 				core_platform::bc_lock_guard<bc_decal_manager::iterator_buffer> l_lock(l_iterator);
 
-				for (auto& l_decal_instance : p_context.m_iterator)
+				for (auto& l_decal_instance : l_iterator)
 				{
 					auto* l_decal = l_decal_instance.get_decal();
 					const auto l_lod_factor = std::max(l_decal->get_width(), l_decal->get_height()) * l_decal->get_lod_scale() * get_global_config().get_lod_global_scale();

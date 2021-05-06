@@ -7,8 +7,6 @@
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Container/bcListPool.h"
 #include "Core/Concurrency/bcTask.h"
-#include "Core/Messaging/Query/bcQueryContext.h"
-#include "Core/Messaging/Query/bcQueryProviderHandle.h"
 #include "Core/Utility/bcObjectPool.h"
 #include "Game/System/Render/Decal/bcDecal.h"
 #include "Game/System/Render/Decal/bcDecalInstance.h"
@@ -81,11 +79,11 @@ namespace black_cat
 		public:
 			explicit bc_decal_manager(bc_material_manager& p_material_manager);
 
-			bc_decal_manager(bc_decal_manager&&) noexcept = delete;
+			bc_decal_manager(bc_decal_manager&&) noexcept;
 
 			~bc_decal_manager();
 
-			bc_decal_manager& operator=(bc_decal_manager&&) noexcept = delete;
+			bc_decal_manager& operator=(bc_decal_manager&&) noexcept;
 
 			/**
 			 * \brief Read decal json file and load decal descriptors
@@ -155,16 +153,15 @@ namespace black_cat
 			void update_decal_lifespans(const core_platform::bc_clock::update_param& p_clock) noexcept;
 			
 			core::bc_task<void> update_decal_lifespans_async(const core_platform::bc_clock::update_param& p_clock) noexcept;
+
+			iterator_buffer get_iterator_buffer() const noexcept;
 			
 			void destroy_decal(bc_decal* p_decal);
 			
 			void destroy_decal_instance(bc_decal_instance* p_instance);
 			
 		private:
-			core::bc_query_context_ptr _get_query_context() const;
-
 			bc_material_manager* m_material_manager;
-			core::bc_query_provider_handle m_decals_query_handle;
 			bcFLOAT m_update_interval_seconds;
 
 			core::bc_concurrent_object_pool<_bc_decal_entry> m_decals_pool;

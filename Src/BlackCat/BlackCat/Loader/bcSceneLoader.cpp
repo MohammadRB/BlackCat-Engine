@@ -65,32 +65,26 @@ namespace black_cat
 		
 		l_json_document.load(l_json_str.data());
 
-		auto* l_game_system = core::bc_get_service<game::bc_game_system>();
-		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
-		auto& l_material_manager = l_game_system->get_render_system().get_material_manager();
-		auto& l_decal_manager = l_game_system->get_render_system().get_decal_manager();
-		auto* l_entity_manager = core::bc_get_service<game::bc_entity_manager>();
-		auto& l_file_system = l_game_system->get_file_system();
+		auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
+		auto& l_content_stream_manager = *core::bc_get_service<core::bc_content_stream_manager>();
+		auto& l_material_manager = l_game_system.get_render_system().get_material_manager();
+		auto& l_entity_manager = *core::bc_get_service<game::bc_entity_manager>();
+		auto& l_file_system = l_game_system.get_file_system();
 
 		for (core::bc_json_value<core::bc_string_frame>& l_stream_file : l_json_document->m_stream_files)
 		{
 			auto l_path = core::bc_to_estring_frame(l_stream_file->c_str());
-			l_content_stream_manager->read_stream_file(l_file_system.get_content_path(l_path.c_str()).c_str());
+			l_content_stream_manager.read_stream_file(l_file_system.get_content_path(l_path.c_str()).c_str());
 		}
 		for (core::bc_json_value<core::bc_string_frame>& l_material_file : l_json_document->m_material_files)
 		{
 			auto l_path = core::bc_to_estring_frame(l_material_file->c_str());
 			l_material_manager.read_material_file(l_file_system.get_content_path(l_path.c_str()).c_str());
 		}
-		for (core::bc_json_value<core::bc_string_frame>& l_decal_file : l_json_document->m_decal_files)
-		{
-			auto l_path = core::bc_to_estring_frame(l_decal_file->c_str());
-			l_decal_manager.read_decal_file(l_file_system.get_content_path(l_path.c_str()).c_str());
-		}
 		for (core::bc_json_value<core::bc_string_frame>& l_entity_file : l_json_document->m_entity_files)
 		{
 			auto l_path = core::bc_to_estring_frame(l_entity_file->c_str());
-			l_entity_manager->read_entity_file(l_file_system.get_content_path(l_path.c_str()).c_str());
+			l_entity_manager.read_entity_file(l_file_system.get_content_path(l_path.c_str()).c_str());
 		}
 		
 		core::bc_vector_frame<core::bc_task<void>> l_stream_tasks;
@@ -101,14 +95,14 @@ namespace black_cat
 			std::begin(l_json_document->m_streams),
 			std::end(l_json_document->m_streams),
 			std::back_inserter(l_stream_tasks),
-			[=](const core::bc_json_value<core::bc_string_frame>& p_stream)
+			[&](const core::bc_json_value<core::bc_string_frame>& p_stream)
 			{
-				return l_content_stream_manager->load_content_stream_async(core::bc_alloc_type::unknown, p_stream->c_str());
+				return l_content_stream_manager.load_content_stream_async(core::bc_alloc_type::unknown, p_stream->c_str());
 			}
 		);
 		core::bc_concurrency::when_all(std::cbegin(l_stream_tasks), std::cend(l_stream_tasks));
 
-		auto l_px_scene = l_game_system->get_physics_system().get_physics().create_scene
+		auto l_px_scene = l_game_system.get_physics_system().get_physics().create_scene
 		(
 			m_px_scene_builder_factory()
 		);
@@ -160,6 +154,18 @@ namespace black_cat
 				return p_value->c_str();
 			}
 		);
+		core::bc_vector<core::bc_string> l_decal_file_names;
+		l_material_file_names.reserve(l_json_document->m_decal_files.size());
+		std::transform
+		(
+			std::cbegin(l_json_document->m_decal_files),
+			std::cend(l_json_document->m_decal_files),
+			std::back_inserter(l_decal_file_names),
+			[](const core::bc_json_value<core::bc_string_frame>& p_value)
+			{
+				return p_value->c_str();
+			}
+		);
 		core::bc_vector<core::bc_string> l_stream_names;
 		l_stream_names.reserve(l_json_document->m_streams.size());
 		std::transform
@@ -175,23 +181,31 @@ namespace black_cat
 		
 		p_context.set_result(game::bc_scene
 		(
+			l_game_system,
 			core::bc_estring(p_context.m_file_path),
 			core::bc_string(l_json_document->m_name->c_str()),
 			l_stream_file_names,
 			l_entity_file_names,
 			l_material_file_names,
+			l_decal_file_names,
 			l_stream_names,
 			std::move(l_scene_graph),
-			l_game_system->get_physics_system(),
 			std::move(l_px_scene)
 		));
 
 		auto& l_scene = *p_context.m_result->get_result<game::bc_scene>();
+		auto& l_decal_manager = l_scene.get_decal_manager();
+
+		for (core::bc_json_value<core::bc_string_frame>& l_decal_file : l_json_document->m_decal_files)
+		{
+			auto l_path = core::bc_to_estring_frame(l_decal_file->c_str());
+			l_decal_manager.read_decal_file(l_file_system.get_content_path(l_path.c_str()).c_str());
+		}
 		
 		core::bc_vector_frame<game::bci_actor_component*> l_actor_components;
 		for (auto& l_json_actor : l_json_document->m_actors)
 		{
-			game::bc_actor l_actor = l_entity_manager->create_entity(l_json_actor->m_entity_name->c_str());
+			game::bc_actor l_actor = l_entity_manager.create_entity(l_json_actor->m_entity_name->c_str());
 			if(!l_actor.is_valid())
 			{
 				continue;

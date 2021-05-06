@@ -14,7 +14,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_scene_decal_query : public core::bc_query<bc_decal_instances_query_context>
+		class BC_GAME_DLL bc_scene_decal_query : public core::bc_query<bc_scene_query_context>
 		{
 			BC_QUERY(sc_dcl)
 
@@ -32,7 +32,7 @@ namespace black_cat
 			bc_render_state_buffer get_render_state_buffer() noexcept;
 
 		protected:
-			void execute(const bc_decal_instances_query_context& p_context) noexcept override;
+			void execute(const bc_scene_query_context& p_context) noexcept override;
 
 		private:
 			core::bc_vector3f m_camera_position;

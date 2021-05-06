@@ -2,13 +2,14 @@
 
 #pragma once
 
-#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcArray.h"
 #include "Core/Messaging/Event/bcEvent.h"
 #include "Core/Utility/bcInitializable.h"
+#include "Core/Utility/bcNullable.h"
 #include "Core/Utility/bcObjectPool.h"
+#include "Graphic/bcEvent.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
@@ -44,9 +45,6 @@ namespace black_cat
 		class bc_render_thread_manager;
 		class bc_material_manager;
 		class bc_animation_manager;
-		class bc_light_manager;
-		class bc_particle_manager;
-		class bc_decal_manager;
 		class bc_scene;
 		
 		struct bc_render_system_parameter
@@ -94,6 +92,16 @@ namespace black_cat
 			core::bc_query_manager& m_query_manager;
 		};
 
+		struct bc_render_system_swap_context
+		{
+			bc_render_system_swap_context(const core_platform::bc_clock::update_param& p_clock)
+				: m_clock(p_clock)
+			{
+			}
+
+			core_platform::bc_clock::update_param m_clock;
+		};
+
 		class BC_GAME_DLL bc_render_system : public core::bc_initializable<core::bc_content_stream_manager&, bc_physics_system&, bc_render_system_parameter>
 		{
 		private:
@@ -104,6 +112,7 @@ namespace black_cat
 		public:
 			using update_context = bc_render_system_update_context;
 			using render_context = bc_render_system_render_context;
+			using swap_context = bc_render_system_swap_context;
 
 		public:
 			bc_render_system();
@@ -125,18 +134,6 @@ namespace black_cat
 			bc_animation_manager& get_animation_manager() noexcept;
 			
 			const bc_animation_manager& get_animation_manager() const noexcept;
-			
-			bc_light_manager& get_light_manager() noexcept;
-			
-			const bc_light_manager& get_light_manager() const noexcept;
-
-			bc_particle_manager& get_particle_manager() noexcept;
-			
-			const bc_particle_manager& get_particle_manager() const noexcept;
-
-			bc_decal_manager& get_decal_manager() noexcept;
-
-			const bc_decal_manager& get_decal_manager() const noexcept;
 
 			bc_shape_drawer& get_shape_drawer() noexcept;
 			
@@ -163,6 +160,8 @@ namespace black_cat
 			void update(const update_context& p_update_params);
 
 			void render(const render_context& p_render_param);
+
+			void swap(const swap_context& p_swap_context);
 
 			/**
 			 * \brief \b ThreadSafe
@@ -307,13 +306,10 @@ namespace black_cat
 			core::bc_unique_ptr<bc_material_manager> m_material_manager;
 			core::bc_unique_ptr<bc_render_pass_manager> m_render_pass_manager;
 			core::bc_unique_ptr<bc_animation_manager> m_animation_manager;
-			core::bc_unique_ptr<bc_light_manager> m_light_manager;
-			core::bc_unique_ptr<bc_particle_manager> m_particle_manager;
-			core::bc_unique_ptr<bc_decal_manager> m_decal_manager;
 			core::bc_unique_ptr<bc_shape_drawer> m_shape_drawer;
 			core::bc_unique_ptr<bc_frame_renderer> m_frame_renderer;
 
-			core_platform::bc_atomic<bool> m_app_active_flag;
+			core::bc_nullable<graphic::bc_app_event_device_reset> m_device_reset_event;
 			core::bc_event_listener_handle m_window_resize_handle;
 			core::bc_event_listener_handle m_app_active_handle;
 			core::bc_event_listener_handle m_device_reset_handle;
@@ -349,37 +345,7 @@ namespace black_cat
 		{
 			return *m_animation_manager;
 		}
-		
-		inline bc_light_manager& bc_render_system::get_light_manager() noexcept
-		{
-			return *m_light_manager;
-		}
-
-		inline const bc_light_manager& bc_render_system::get_light_manager() const noexcept
-		{
-			return *m_light_manager;
-		}
-
-		inline bc_particle_manager& bc_render_system::get_particle_manager() noexcept
-		{
-			return *m_particle_manager;
-		}
-
-		inline const bc_particle_manager& bc_render_system::get_particle_manager() const noexcept
-		{
-			return *m_particle_manager;
-		}
-
-		inline bc_decal_manager& bc_render_system::get_decal_manager() noexcept
-		{
-			return *m_decal_manager;
-		}
-
-		inline const bc_decal_manager& bc_render_system::get_decal_manager() const noexcept
-		{
-			return *m_decal_manager;
-		}
-		
+				
 		inline bc_shape_drawer& bc_render_system::get_shape_drawer() noexcept
 		{
 			return *m_shape_drawer;

@@ -8,6 +8,7 @@
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "GraphicImp/Shader/Parameter/bcSamplerParameter.h"
+#include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcDefaultRenderThread.h"
 #include "BlackCat/RenderPass/PostProcess/bcLightFlarePass.h"
@@ -27,7 +28,12 @@ namespace black_cat
 		bcFLOAT m_u1;
 		bcFLOAT m_v1;
 	};
-	
+
+	bc_light_flare_pass::bc_light_flare_pass()
+	{
+		m_flare_size_distance = s_flare_size_distance * get_global_config().get_global_scale();
+	}
+
 	void bc_light_flare_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
@@ -399,7 +405,7 @@ namespace black_cat
 						}
 
 						const auto l_flare_distance = (l_flare.m_position - p_context.m_render_camera.get_position()).magnitude();
-						l_flare.m_size *= std::max(0.3f, std::min(1.0f, l_flare_distance / s_flare_size_distance));
+						l_flare.m_size *= std::max(0.3f, std::min(1.0f, l_flare_distance / m_flare_size_distance));
 						l_flare.m_size *= s_flare_size_ratio;
 						
 						m_ready_to_draw_instances.push_back(l_flare);

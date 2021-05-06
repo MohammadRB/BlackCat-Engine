@@ -30,7 +30,7 @@ namespace black_cat
 
 		void bc_particle_emitter_component::add_emitter(const bc_particle_builder& p_builder)
 		{
-			m_emitter = core::bc_get_service<bc_game_system>()->get_render_system().get_particle_manager().add_emitter(p_builder);
+			m_emitter = get_actor().get_component<bc_mediate_component>()->get_scene()->get_particle_manager().add_emitter(p_builder);
 		}
 		
 		void bc_particle_emitter_component::initialize(const bc_actor_component_initialize_context& p_context)
