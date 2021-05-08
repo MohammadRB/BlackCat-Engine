@@ -12,8 +12,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_particle_manager;
-		class bc_light_manager;
+		class bc_scene;
 		
 		enum class bc_weapon_class : bcUBYTE
 		{
@@ -52,6 +51,8 @@ namespace black_cat
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
 			void update(const bc_actor_component_update_content& p_context) override;
+
+			void handle_event(const bc_actor_component_event_context& p_context) override;
 			
 		private:
 			bc_weapon_class m_class;
@@ -68,8 +69,7 @@ namespace black_cat
 			bcFLOAT m_bullet_speed;
 			bcFLOAT m_bullet_mass;
 
-			bc_particle_manager* m_particle_manager;
-			bc_light_manager* m_light_manager;
+			bc_scene* m_scene;
 			bc_light_ptr m_light;
 			bcFLOAT m_light_age;
 		};

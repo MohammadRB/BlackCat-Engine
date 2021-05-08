@@ -198,11 +198,7 @@ namespace black_cat
 					//l_scene->add_bullet(game::bc_bullet(l_camera.get_position(), l_camera.get_forward(), 250, 0.2f));
 
 					game::bc_actor l_rocket = l_entity_manager->create_entity("sample_rocket");
-					l_rocket.add_event(game::bc_world_transform_actor_event
-					(
-						bc_matrix4f_from_position_and_direction(l_camera.get_position(), l_camera.get_direction())
-					));
-					l_scene->add_actor(l_rocket);
+					l_scene->add_actor(l_rocket, bc_matrix4f_from_position_and_direction(l_camera.get_position(), l_camera.get_direction()));
 				}
 				
 				return true;

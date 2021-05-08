@@ -5,6 +5,7 @@
 #include "Core/Math/bcMatrix3f.h"
 #include "Game/Object/Scene/Component/bcWeaponComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
@@ -25,8 +26,7 @@ namespace black_cat
 			m_rate_of_fire_seconds(0),
 			m_bullet_speed(0),
 			m_bullet_mass(0),
-			m_particle_manager(nullptr),
-			m_light_manager(nullptr),
+			m_scene(nullptr),
 			m_light_age(0)
 		{
 		}
@@ -45,8 +45,8 @@ namespace black_cat
 			const auto l_position = (l_transform * core::bc_vector4f(m_fire_offset_ls, 1)).xyz();
 			const auto l_direction = core::bc_vector3f::normalize(l_transform.get_rotation() * m_forward_ls);
 
-			m_particle_manager->spawn_emitter(m_fire_particle, l_position, l_direction);
-			m_light = m_light_manager->add_light(bc_point_light
+			m_scene->get_particle_manager().spawn_emitter(m_fire_particle, l_position, l_direction);
+			m_light = m_scene->get_light_manager().add_light(bc_point_light
 			(
 				l_position,
 				m_fire_light_radius,
@@ -83,9 +83,6 @@ namespace black_cat
 			m_rate_of_fire_seconds = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_rate_of_fire_seconds);
 			m_bullet_speed = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_bullet_speed);
 			m_bullet_mass = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_bullet_mass);
-
-			m_particle_manager = &p_context.m_game_system.get_scene()->get_particle_manager();
-			m_light_manager = &p_context.m_game_system.get_scene()->get_light_manager();
 		}
 
 		void bc_weapon_component::update(const bc_actor_component_update_content& p_context)
@@ -107,6 +104,15 @@ namespace black_cat
 			auto* l_point_light = m_light->as_point_light();
 			const auto l_normal_age = pow(1 - (m_light_age / l_light_lifetime), 2);
 			l_point_light->set_intensity(m_fire_light_intensity * l_normal_age);
+		}
+
+		void bc_weapon_component::handle_event(const bc_actor_component_event_context& p_context)
+		{
+			const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
+			if(l_scene_add_event)
+			{
+				m_scene = &l_scene_add_event->get_scene();
+			}
 		}
 	}	
 }

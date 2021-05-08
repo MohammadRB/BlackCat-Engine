@@ -99,13 +99,9 @@ namespace black_cat
 			m_scene->remove_actor(p_context.m_actor);
 
 			auto l_explosion = core::bc_get_service<game::bc_entity_manager>()->create_entity(m_explosion_entity);
-			l_explosion.add_event(game::bc_world_transform_actor_event
-			(
-				bc_matrix4f_from_position_and_direction(l_query_result->get_position(), l_query_result->get_normal())
-			));
 			l_explosion.mark_for_double_update();
-
-			m_scene->add_actor(l_explosion);
+			
+			m_scene->add_actor(l_explosion, bc_matrix4f_from_position_and_direction(l_query_result->get_position(), l_query_result->get_normal()));
 
 			return;
 		}

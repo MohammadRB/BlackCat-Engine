@@ -11,6 +11,7 @@
 #include "Core/Container/bcListPool.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Utility/bcRandom.h"
+#include "Core/Utility/bcNullable.h"
 #include "Game/System/Render/Particle/bcParticleBuilder.h"
 #include "Game/bcExport.h"
 
@@ -62,8 +63,6 @@ namespace black_cat
 			bc_particle_manager& operator=(bc_particle_manager&&) noexcept;
 
 			static const curves_container& get_curves() noexcept;
-			
-			static void register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder);
 
 			void spawn_emitter(const bcCHAR* p_emitter_name, 
 				const core::bc_vector3f& p_pos, 
@@ -76,6 +75,8 @@ namespace black_cat
 			void update(const core_platform::bc_clock::update_param& p_clock);
 
 			core::bc_vector_movable<bc_particle_emitter_state> bc_particle_manager::get_emitter_states() const noexcept;
+
+			static void register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder);
 			
 			static void clear_emitter_definitions();
 			
@@ -88,10 +89,11 @@ namespace black_cat
 			
 			constexpr static bcSIZE s_emitter_count = 300;
 
-			core::bc_random m_random;
 			static curves_container m_curves;
-			static particle_definition_container m_emitter_definitions;
-
+			// Use nullable to postpone initialization to the time when memory manager is initialized
+			static core::bc_nullable<particle_definition_container> m_emitter_definitions;
+			
+			core::bc_random m_random;
 			mutable core_platform::bc_hybrid_mutex m_emitters_lock;
 			emitters_container m_emitters;
 			external_emitters_container m_external_emitters;

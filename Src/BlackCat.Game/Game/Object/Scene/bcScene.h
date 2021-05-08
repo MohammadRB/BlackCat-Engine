@@ -99,8 +99,9 @@ namespace black_cat
 			/**
 			 * \brief ThreadSafe
 			 * \param p_actor
+			 * \param p_world_transform Initial world transform of actor
 			 */
-			void add_actor(bc_actor& p_actor);
+			void add_actor(bc_actor& p_actor, const core::bc_matrix4f& p_world_transform);
 
 			/**
 			 * \brief ThreadSafe

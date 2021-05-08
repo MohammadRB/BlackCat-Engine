@@ -20,7 +20,7 @@ namespace black_cat
 	namespace game
 	{
 		bc_particle_manager::curves_container bc_particle_manager::m_curves{};
-		bc_particle_manager::particle_definition_container bc_particle_manager::m_emitter_definitions;
+		core::bc_nullable<bc_particle_manager::particle_definition_container> bc_particle_manager::m_emitter_definitions;
 		
 		_bc_particle_emitter_instance::_bc_particle_emitter_instance(const bc_particle_emitter_trait& p_trait)
 			: bc_particle_emitter_trait(p_trait)
@@ -85,24 +85,6 @@ namespace black_cat
 			return m_curves;
 		}
 
-		void bc_particle_manager::register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder)
-		{
-			core::bc_vector_program<bc_particle_emitter_trait> l_emitters(std::begin(p_builder.m_emitters), std::end(p_builder.m_emitters));
-			
-			auto l_hash = string_hash_t()(p_name);
-			auto l_value = std::make_pair(l_hash, std::move(l_emitters));
-			auto l_entry = m_emitter_definitions.find(l_hash);
-
-			if(l_entry == std::end(m_emitter_definitions))
-			{
-				l_entry = m_emitter_definitions.insert(std::move(l_value)).first;
-			}
-			else
-			{
-				l_entry->second = std::move(l_value.second);
-			}
-		}
-
 		void bc_particle_manager::spawn_emitter(const bcCHAR* p_emitter_name, 
 			const core::bc_vector3f& p_pos, 
 			const core::bc_vector3f& p_dir, 
@@ -110,8 +92,8 @@ namespace black_cat
 			bcFLOAT p_scale)
 		{
 			const auto l_rotation = bc_matrix3f_rotation_between_two_vector_checked(core::bc_vector3f::up(), p_dir);
-			const auto l_definition_ite = m_emitter_definitions.find(string_hash_t()(p_emitter_name));
-			BC_ASSERT(l_definition_ite != std::end(m_emitter_definitions));
+			const auto l_definition_ite = m_emitter_definitions->find(string_hash_t()(p_emitter_name));
+			BC_ASSERT(l_definition_ite != std::end(*m_emitter_definitions));
 
 			{
 				core_platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, core_platform::bc_lock_operation::light);
@@ -156,7 +138,7 @@ namespace black_cat
 				{
 					m_emitters.emplace_back(l_emitter);
 					auto l_ite = m_emitters.rbegin();
-
+					
 					l_ite->m_lifetime = -1;
 					l_ite->m_prev_position = l_ite->m_position;
 					l_ite->m_lifetime += .001f; // to avoid division by zero
@@ -296,10 +278,34 @@ namespace black_cat
 				return std::move(l_emitters);
 			}
 		}
+
+		void bc_particle_manager::register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder)
+		{
+			if (!m_emitter_definitions.has_value())
+			{
+				m_emitter_definitions.reset(particle_definition_container());
+			}
+
+			core::bc_vector_program<bc_particle_emitter_trait> l_emitters(std::begin(p_builder.m_emitters), std::end(p_builder.m_emitters));
+
+			auto l_hash = string_hash_t()(p_name);
+			auto l_value = std::make_pair(l_hash, std::move(l_emitters));
+			auto l_entry = m_emitter_definitions->find(l_hash);
+
+			if (l_entry == std::end(*m_emitter_definitions))
+			{
+				l_entry = m_emitter_definitions->insert(std::move(l_value)).first;
+			}
+			else
+			{
+				l_entry->second = std::move(l_value.second);
+			}
+		}
 		
 		void bc_particle_manager::clear_emitter_definitions()
 		{
-			m_emitter_definitions.clear();
+			m_emitter_definitions->clear();
+			m_emitter_definitions.reset();
 		}
 
 		void bc_particle_manager::_destroy_emitter(bc_external_particle_emitter* p_emitter)

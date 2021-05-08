@@ -105,7 +105,7 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_scene::add_actor(bc_actor& p_actor)
+		void bc_scene::add_actor(bc_actor& p_actor, const core::bc_matrix4f& p_world_transform)
 		{
 			{
 				core_platform::bc_hybrid_mutex_guard l_lock_guard
@@ -114,6 +114,9 @@ namespace black_cat
 				);
 				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::add, p_actor));
 			}
+
+			p_actor.add_event(bc_added_to_scene_actor_event(*this));
+			p_actor.add_event(bc_world_transform_actor_event(p_world_transform));
 		}
 
 		void bc_scene::update_actor(bc_actor& p_actor)
@@ -313,11 +316,8 @@ namespace black_cat
 			const bool l_added = m_scene_graph.add_actor(p_actor);
 			if (!l_added)
 			{
-				p_actor.destroy();
-				return;
+				_remove_actor_event(_bc_scene_actor_remove_state::removed_from_graph, p_actor);
 			}
-
-			p_actor.add_event(bc_added_to_scene_actor_event(*this));
 		}
 
 		void bc_scene::_update_actor(bc_actor& p_actor)

@@ -42,7 +42,7 @@ namespace black_cat
 		
 		l_json_document.load(l_json_str.c_str());
 
-		core::bc_vector_frame<game::bc_actor> l_actors;
+		core::bc_vector_frame<std::pair<game::bc_actor, core::bc_matrix4f>> l_actors;
 		core::bc_vector_frame<game::bci_actor_component*> l_actor_components;
 		l_actors.reserve(l_json_document->m_actors.size());
 		
@@ -60,8 +60,7 @@ namespace black_cat
 			l_transform.set_translation(*l_json_actor->m_position);
 			l_transform.set_rotation(bc_matrix3f_rotation_euler(l_json_actor->m_rotation->xyz(), l_json_actor->m_rotation->w));
 
-			l_actor.add_event(game::bc_world_transform_actor_event(l_transform));
-			l_actors.push_back(l_actor);
+			l_actors.push_back(std::make_pair(l_actor, l_transform));
 			l_actor_components.clear();
 		}
 
@@ -90,7 +89,7 @@ namespace black_cat
 				l_component->write_instance(game::bc_actor_component_write_context(*l_json_entry->m_parameters, l_actor));
 			}
 
-			auto& l_world_transform = l_mediate_component->get_world_transform();
+			const auto& l_world_transform = l_mediate_component->get_world_transform();
 			
 			*l_json_entry->m_entity_name = l_mediate_component->get_entity_name();
 			*l_json_entry->m_position = l_world_transform.get_translation();

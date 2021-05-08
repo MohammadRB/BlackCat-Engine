@@ -117,7 +117,7 @@ namespace black_cat
 		{
 			BC_ASSERT(is_valid());
 			
-			_get_manager().remove_actor(*this);
+			_get_entity_manager().remove_entity(*this);
 			m_index = invalid_index;
 		}
 

@@ -218,8 +218,7 @@ namespace black_cat
 				l_actor_component->load_instance(game::bc_actor_component_load_context(*l_json_actor->m_parameters, l_actor));
 			}
 
-			l_scene.add_actor(l_actor);
-			l_actor.add_event(game::bc_world_transform_actor_event(*l_json_actor->m_position));
+			l_scene.add_actor(l_actor, core::bc_matrix4f::translation_matrix(*l_json_actor->m_position));
 			l_actor_components.clear();
 		}
 	}

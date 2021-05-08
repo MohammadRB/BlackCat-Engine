@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcVector.h"
+#include "Core/Math/bcMatrix4f.h"
 #include "Core/Content/bcContent.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/bcExport.h"
@@ -28,7 +29,7 @@ namespace black_cat
 
 			core::bc_vector_frame<bc_actor> export_dynamic_actors() const;
 
-			void import_dynamic_actors(core::bc_vector_frame<bc_actor>& p_actors);
+			void import_dynamic_actors(core::bc_vector_frame<std::pair<bc_actor, core::bc_matrix4f>>& p_actors);
 
 		private:
 			bc_scene* m_scene;

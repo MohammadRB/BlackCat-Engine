@@ -263,15 +263,13 @@ namespace black_cat
 		}
 
 		m_current_weapon = core::bc_get_service<game::bc_entity_manager>()->create_entity(p_entity);
-		m_current_weapon.add_event(game::bc_world_transform_actor_event(get_position()));
-
 		auto* l_rigid_dynamic_component = m_current_weapon.get_component<game::bc_rigid_dynamic_component>();
 		if(l_rigid_dynamic_component)
 		{
 			l_rigid_dynamic_component->set_enable(false);
 		}
 
-		get_scene()->add_actor(m_current_weapon);
+		get_scene()->add_actor(m_current_weapon, core::bc_matrix4f::translation_matrix(get_position()));
 		bc_xbot_controller::attach_weapon(m_current_weapon);
 	}
 

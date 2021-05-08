@@ -13,6 +13,10 @@ namespace black_cat
 {
 	void bc_fire_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
+	}
+
+	void bc_fire_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
+	{
 		auto* l_light_component = p_context.m_actor.get_component<game::bc_light_component>();
 		auto* l_emitter_component = p_context.m_actor.get_create_component<game::bc_particle_emitter_component>();
 
@@ -22,22 +26,22 @@ namespace black_cat
 		}
 
 		const auto l_emitter = game::bc_particle_builder()
-		                       .emitter(core::bc_vector3f(0), core::bc_vector3f::up(), 100, 0, 0)
-		                       .with_emission_deviation(60)
-		                       .with_texture(4)
-		                       .with_particles_color({ 0.1f, 0.1f, 0.1f }, 1)
-		                       .with_particle_size(2.0f, 8.0f)
-		                       .with_particles_rotation(20)
-		                       .with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step2, 5)
-		                       .emit_particles(0, 10, 20, -0.1f)
-		                       .duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up())
-		                       .with_texture(0)
-		                       .emit_particles(0, 11, 19, -0.1f)
-		                       .duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up())
-		                       .with_texture(10)
-		                       .with_particles_color({ 0.9f, 0.005f, 0.001f }, 3.0)
-		                       .with_particle_size(0.1f, 0.3f)
-		                       .emit_particles(0, 3, 25, 0.0f);
+			.emitter(core::bc_vector3f(0), core::bc_vector3f::up(), 100, 0, 0)
+			.with_emission_deviation(60)
+			.with_texture(4)
+			.with_particles_color({ 0.1f, 0.1f, 0.1f }, 1)
+			.with_particle_size(2.0f, 8.0f)
+			.with_particles_rotation(20)
+			.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step2, 5)
+			.emit_particles(0, 10, 20, -0.1f)
+			.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up())
+			.with_texture(0)
+			.emit_particles(0, 11, 19, -0.1f)
+			.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up())
+			.with_texture(10)
+			.with_particles_color({ 0.9f, 0.005f, 0.001f }, 3.0)
+			.with_particle_size(0.1f, 0.3f)
+			.emit_particles(0, 3, 25, 0.0f);
 		l_emitter_component->add_emitter(l_emitter);
 
 		auto* l_point_light = l_light_component->get_light()->as_point_light();

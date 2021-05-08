@@ -12,7 +12,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		void bc_main_camera_scene_light_query::execute(const bc_scene_query_context& p_context) noexcept
+		/*void bc_main_camera_scene_light_query::execute(const bc_scene_query_context& p_context) noexcept
 		{
 			const bool l_need_direct = core::bc_enum::has(m_types, bc_light_type::direct);
 			const bool l_need_spot = core::bc_enum::has(m_types, bc_light_type::spot);
@@ -42,6 +42,6 @@ namespace black_cat
 					continue;
 				}
 			}
-		}
+		}*/
 	}
 }

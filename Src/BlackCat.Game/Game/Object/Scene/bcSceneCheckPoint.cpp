@@ -37,7 +37,7 @@ namespace black_cat
 			return l_result;
 		}
 
-		void bc_scene_check_point::import_dynamic_actors(core::bc_vector_frame<bc_actor>& p_actors)
+		void bc_scene_check_point::import_dynamic_actors(core::bc_vector_frame<std::pair<bc_actor, core::bc_matrix4f>>& p_actors)
 		{
 			for (bc_actor& l_actor : m_scene->get_scene_graph())
 			{
@@ -48,9 +48,9 @@ namespace black_cat
 				}
 			}
 
-			for(bc_actor& l_actor : p_actors)
+			for(auto& l_actor : p_actors)
 			{
-				m_scene->add_actor(l_actor);
+				m_scene->add_actor(std::get<bc_actor>(l_actor), std::get<core::bc_matrix4f>(l_actor));
 			}
 		}
 	}	
