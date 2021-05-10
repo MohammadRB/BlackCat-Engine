@@ -20,18 +20,11 @@ namespace black_cat
 	namespace game
 	{
 		bc_light_component::bc_light_component(bc_actor_index p_actor_index, bc_actor_component_index p_index)
-			: bci_actor_component(p_actor_index, p_index),
-			m_light_holder(nullptr)
+			: bci_actor_component(p_actor_index, p_index)
 		{
 		}
 
-		bc_light_component::~bc_light_component()
-		{
-			if(m_light_holder)
-			{
-				BC_DELETE(m_light_holder);
-			}
-		}
+		bc_light_component::~bc_light_component() = default;
 
 		bc_actor bc_light_component::get_actor() const noexcept
 		{
@@ -56,6 +49,7 @@ namespace black_cat
 		void bc_light_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();
+			auto& l_light_manager = p_context.m_scene.get_light_manager();
 			const auto& l_light_type = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_light_type);
 			
 			if(l_light_type == "direct")
@@ -64,18 +58,14 @@ namespace black_cat
 				const auto l_color = p_context.m_parameters.get_value_vector4f_throw(constant::g_param_light_color);
 				const auto l_ambient_color = p_context.m_parameters.get_value_vector4f_throw(constant::g_param_light_ambient_color);
 
-				m_light_holder = BC_NEW
+				m_light = l_light_manager.add_light(bc_direct_light
 				(
-					_bc_light_component_light_holder(bc_direct_light
-					(
-						core::bc_vector3f::normalize(l_direction),
-						l_color.xyz(),
-						l_color.w,
-						l_ambient_color.xyz(),
-						l_ambient_color.w
-					)),
-					core::bc_alloc_type::unknown
-				);
+					core::bc_vector3f::normalize(l_direction),
+					l_color.xyz(),
+					l_color.w,
+					l_ambient_color.xyz(),
+					l_ambient_color.w
+				));
 			}
 			else if(l_light_type == "point")
 			{
@@ -105,20 +95,16 @@ namespace black_cat
 					));
 				}
 
-				m_light_holder = BC_NEW
+				m_light = l_light_manager.add_light(bc_point_light
 				(
-					_bc_light_component_light_holder(bc_point_light
-					(
-						l_position,
-						l_radius,
-						l_color.xyz(),
-						l_color.w,
-						l_particle_cast,
-						l_particle_intensity,
-						l_flare.get()
-					)),
-					core::bc_alloc_type::unknown
-				);
+					l_position,
+					l_radius,
+					l_color.xyz(),
+					l_color.w,
+					l_particle_cast,
+					l_particle_intensity,
+					l_flare.get()
+				));
 			}
 			else if(l_light_type == "spot")
 			{
@@ -148,20 +134,16 @@ namespace black_cat
 					));
 				}
 
-				m_light_holder = BC_NEW
+				m_light = l_light_manager.add_light(bc_spot_light
 				(
-					_bc_light_component_light_holder(bc_spot_light
-					(
-						l_position,
-						core::bc_vector3f::normalize(l_direction),
-						l_length,
-						l_angle,
-						l_color.xyz(),
-						l_color.w,
-						l_flare.get()
-					)),
-					core::bc_alloc_type::unknown
-				);
+					l_position,
+					core::bc_vector3f::normalize(l_direction),
+					l_length,
+					l_angle,
+					l_color.xyz(),
+					l_color.w,
+					l_flare.get()
+				));
 			}
 			else
 			{
@@ -171,28 +153,7 @@ namespace black_cat
 		}
 
 		void bc_light_component::handle_event(const bc_actor_component_event_context& p_context)
-		{
-			const auto* l_added_to_scene_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
-			if (l_added_to_scene_event)
-			{
-				switch (m_light_holder->m_type)
-				{
-				case bc_light_type::direct:
-					m_light = l_added_to_scene_event->get_scene().get_light_manager().add_light(m_light_holder->m_direct_light);
-					break;
-				case bc_light_type::point:
-					m_light = l_added_to_scene_event->get_scene().get_light_manager().add_light(m_light_holder->m_point_light);
-					break;
-				case bc_light_type::spot:
-					m_light = l_added_to_scene_event->get_scene().get_light_manager().add_light(m_light_holder->m_spot_light);
-					break;
-				}
-
-				BC_DELETE(m_light_holder);
-
-				return;
-			}
-			
+		{			
 			const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
 			if(l_world_transform_event)
 			{

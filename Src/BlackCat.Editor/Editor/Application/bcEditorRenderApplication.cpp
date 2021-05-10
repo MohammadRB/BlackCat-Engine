@@ -197,8 +197,7 @@ namespace black_cat
 					l_scene->add_actor(l_actor);*/
 					//l_scene->add_bullet(game::bc_bullet(l_camera.get_position(), l_camera.get_forward(), 250, 0.2f));
 
-					game::bc_actor l_rocket = l_entity_manager->create_entity("sample_rocket");
-					l_scene->add_actor(l_rocket, bc_matrix4f_from_position_and_direction(l_camera.get_position(), l_camera.get_direction()));
+					l_scene->create_actor("sample_rocket", bc_matrix4f_from_position_and_direction(l_camera.get_position(), l_camera.get_direction()));
 				}
 				
 				return true;
@@ -226,7 +225,6 @@ namespace black_cat
 
 		void bc_editor_render_app::application_unload_content(core::bc_content_stream_manager* p_stream_manager)
 		{
-			m_game_system->set_scene(nullptr);
 			core::bc_get_service<bc_ui_command_service>()->unload_content();
 		}
 

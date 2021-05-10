@@ -67,7 +67,7 @@ namespace black_cat
 	struct _bc_curve_cbuffer_struct
 	{
 		BC_CBUFFER_ALIGN
-		core::bc_vector4f m_curves[game::bc_particle_manager::curve_count][game::bc_particle_manager::curve_sample_count];
+		core::bc_vector4f m_curves[game::bc_particle_manager::s_curve_count][game::bc_particle_manager::s_curve_sample_count];
 	};
 
 	template<bcSIZE TLightCount>

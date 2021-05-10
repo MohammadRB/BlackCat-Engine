@@ -73,9 +73,7 @@ namespace black_cat
 			}
 
 			const std::string l_entity_name = m_entity_name.toStdString();
-			game::bc_actor l_actor = core::bc_get_service<game::bc_entity_manager>()->create_entity(l_entity_name.c_str());
-
-			p_context.m_game_system.get_scene()->add_actor(l_actor, core::bc_matrix4f::translation_matrix(l_position));
+			p_context.m_game_system.get_scene()->create_actor(l_entity_name.c_str(), core::bc_matrix4f::translation_matrix(l_position));
 
 			return false;
 		}

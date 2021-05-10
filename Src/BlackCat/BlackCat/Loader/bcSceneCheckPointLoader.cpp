@@ -33,7 +33,6 @@ namespace black_cat
 
 	void bc_scene_check_point_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
-		auto* l_entity_manager = core::bc_get_service<game::bc_entity_manager>();
 		auto* l_scene = const_cast<game::bc_scene*>(p_context.m_instance_parameters.get_value_throw<game::bc_scene*>("scene"));
 		
 		core::bc_json_document<_bc_scene_check_point_json> l_json_document;
@@ -42,13 +41,17 @@ namespace black_cat
 		
 		l_json_document.load(l_json_str.c_str());
 
-		core::bc_vector_frame<std::pair<game::bc_actor, core::bc_matrix4f>> l_actors;
 		core::bc_vector_frame<game::bci_actor_component*> l_actor_components;
+		core::bc_vector_frame<game::bc_actor> l_actors;
 		l_actors.reserve(l_json_document->m_actors.size());
 		
 		for (auto& l_json_actor : l_json_document->m_actors)
 		{
-			game::bc_actor l_actor = l_entity_manager->create_entity(l_json_actor->m_entity_name->c_str());
+			auto l_transform = core::bc_matrix4f::identity();
+			l_transform.set_translation(*l_json_actor->m_position);
+			l_transform.set_rotation(bc_matrix3f_rotation_euler(l_json_actor->m_rotation->xyz(), l_json_actor->m_rotation->w));
+			
+			game::bc_actor l_actor = l_scene->create_actor(l_json_actor->m_entity_name->c_str(), l_transform);
 			l_actor.get_components(std::back_inserter(l_actor_components));
 
 			for (auto* l_actor_component : l_actor_components)
@@ -56,17 +59,12 @@ namespace black_cat
 				l_actor_component->load_instance(game::bc_actor_component_load_context(*l_json_actor->m_parameters, l_actor));
 			}
 
-			auto l_transform = core::bc_matrix4f::identity();
-			l_transform.set_translation(*l_json_actor->m_position);
-			l_transform.set_rotation(bc_matrix3f_rotation_euler(l_json_actor->m_rotation->xyz(), l_json_actor->m_rotation->w));
-
-			l_actors.push_back(std::make_pair(l_actor, l_transform));
+			l_actors.push_back(l_actor);
 			l_actor_components.clear();
 		}
 
 		game::bc_scene_check_point l_check_point(*l_scene);
 		l_check_point.import_dynamic_actors(l_actors);
-
 		p_context.set_result(std::move(l_check_point));
 	}
 

@@ -7,6 +7,7 @@
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Game/System/Input/bcGlobalConfig.h"
+#include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
@@ -25,7 +26,8 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_scene::bc_scene(bc_game_system& p_game_system,
+		bc_scene::bc_scene(bc_entity_manager& p_entity_manager,
+			bc_game_system& p_game_system,
 			core::bc_estring p_path,
 			core::bc_string p_name,
 			core::bc_vector<core::bc_string> p_stream_files,
@@ -42,8 +44,9 @@ namespace black_cat
 			m_material_files(std::move(p_material_files)),
 			m_decal_files(std::move(p_decal_files)),
 			m_loaded_streams(std::move(p_loaded_streams)),
-			m_scene_graph(std::move(p_scene_graph)),
+			m_entity_manager(&p_entity_manager),
 			m_physics(&p_game_system.get_physics_system()),
+			m_scene_graph(std::move(p_scene_graph)),
 			m_px_scene(std::move(p_px_scene))
 		{
 			m_global_scale = get_global_config().get_global_scale();
@@ -62,8 +65,9 @@ namespace black_cat
 			m_decal_files(std::move(p_other.m_decal_files)),
 			m_loaded_streams(std::move(p_other.m_loaded_streams)),
 			m_global_scale(p_other.m_global_scale),
-			m_scene_graph(std::move(p_other.m_scene_graph)),
+			m_entity_manager(p_other.m_entity_manager),
 			m_physics(p_other.m_physics),
+			m_scene_graph(std::move(p_other.m_scene_graph)),
 			m_px_scene(std::move(p_other.m_px_scene)),
 			m_bullet_manager(std::move(p_other.m_bullet_manager)),
 			m_light_manager(std::move(p_other.m_light_manager)),
@@ -95,6 +99,7 @@ namespace black_cat
 			m_loaded_streams = std::move(p_other.m_loaded_streams);
 			m_scene_graph = std::move(p_other.m_scene_graph);
 			m_global_scale = p_other.m_global_scale;
+			m_entity_manager = p_other.m_entity_manager;
 			m_physics = p_other.m_physics;
 			m_px_scene = std::move(p_other.m_px_scene);
 			m_bullet_manager = std::move(p_other.m_bullet_manager);
@@ -105,18 +110,20 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_scene::add_actor(bc_actor& p_actor, const core::bc_matrix4f& p_world_transform)
+		bc_actor bc_scene::create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform)
 		{
+			auto l_actor = m_entity_manager->create_entity(*this, p_entity_name);
+			
 			{
 				core_platform::bc_hybrid_mutex_guard l_lock_guard
 				(
 					m_changed_actors_lock, core_platform::bc_lock_operation::light
 				);
-				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::add, p_actor));
+				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::add, l_actor));
 			}
 
-			p_actor.add_event(bc_added_to_scene_actor_event(*this));
-			p_actor.add_event(bc_world_transform_actor_event(p_world_transform));
+			l_actor.add_event(bc_world_transform_actor_event(p_world_transform));
+			return l_actor;
 		}
 
 		void bc_scene::update_actor(bc_actor& p_actor)
@@ -317,7 +324,10 @@ namespace black_cat
 			if (!l_added)
 			{
 				_remove_actor_event(_bc_scene_actor_remove_state::removed_from_graph, p_actor);
+				return;
 			}
+
+			p_actor.add_event(bc_added_to_scene_actor_event(*this));
 		}
 
 		void bc_scene::_update_actor(bc_actor& p_actor)

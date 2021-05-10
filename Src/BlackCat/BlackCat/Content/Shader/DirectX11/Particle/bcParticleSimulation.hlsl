@@ -5,7 +5,7 @@
 #include "bcParticle.hlsli"
 
 #define THREAD_GROUP_SIZE 1024
-#define CURVE_COUNT 11
+#define CURVE_COUNT 12
 #define CURVE_SAMPLE_COUNT 10
 cbuffer g_curves_cbuffer								: register(BC_COMPUTE_STATE_CB1)
 {

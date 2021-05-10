@@ -98,15 +98,17 @@ namespace black_cat
 		{
 			m_scene->remove_actor(p_context.m_actor);
 
-			auto l_explosion = core::bc_get_service<game::bc_entity_manager>()->create_entity(m_explosion_entity);
+			auto l_explosion = m_scene->create_actor
+			(
+				m_explosion_entity, 
+				bc_matrix4f_from_position_and_direction(l_query_result->get_position(), l_query_result->get_normal())
+			);
 			l_explosion.mark_for_double_update();
-			
-			m_scene->add_actor(l_explosion, bc_matrix4f_from_position_and_direction(l_query_result->get_position(), l_query_result->get_normal()));
 
 			return;
 		}
 
-		const auto l_deviation = 5 * m_scene->get_global_scale();
+		const auto l_deviation = 2.5f * m_scene->get_global_scale();
 		const auto l_deviation_cycle = 5 * m_scene->get_global_scale();
 		const auto l_sin = std::sinf(static_cast<bcFLOAT>(p_context.m_clock.m_total_elapsed_second) * l_deviation_cycle);
 		const auto l_cos = std::cosf(static_cast<bcFLOAT>(p_context.m_clock.m_total_elapsed_second) * l_deviation_cycle);

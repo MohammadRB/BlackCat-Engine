@@ -181,6 +181,7 @@ namespace black_cat
 		
 		p_context.set_result(game::bc_scene
 		(
+			l_entity_manager,
 			l_game_system,
 			core::bc_estring(p_context.m_file_path),
 			core::bc_string(l_json_document->m_name->c_str()),
@@ -205,7 +206,7 @@ namespace black_cat
 		core::bc_vector_frame<game::bci_actor_component*> l_actor_components;
 		for (auto& l_json_actor : l_json_document->m_actors)
 		{
-			game::bc_actor l_actor = l_entity_manager.create_entity(l_json_actor->m_entity_name->c_str());
+			game::bc_actor l_actor = l_scene.create_actor(l_json_actor->m_entity_name->c_str(), core::bc_matrix4f::translation_matrix(*l_json_actor->m_position));
 			if(!l_actor.is_valid())
 			{
 				continue;
@@ -218,7 +219,6 @@ namespace black_cat
 				l_actor_component->load_instance(game::bc_actor_component_load_context(*l_json_actor->m_parameters, l_actor));
 			}
 
-			l_scene.add_actor(l_actor, core::bc_matrix4f::translation_matrix(*l_json_actor->m_position));
 			l_actor_components.clear();
 		}
 	}

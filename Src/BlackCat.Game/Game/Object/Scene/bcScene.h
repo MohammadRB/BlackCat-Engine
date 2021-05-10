@@ -9,14 +9,14 @@
 #include "Core/Content/bcContent.h"
 #include "Core/bcConstant.h"
 #include "PhysicsImp/Fundation/bcScene.h"
-#include "Game/Object/Scene/SceneGraph/bcScenceGraph.h"
-#include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
-#include "Game/Object/Scene/Bullet/bcBulletManager.h"
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/System/Render/Light/bcLightManager.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Render/Decal/bcDecalManager.h"
+#include "Game/Object/Scene/Bullet/bcBulletManager.h"
+#include "Game/Object/Scene/SceneGraph/bcScenceGraph.h"
+#include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -29,6 +29,8 @@ namespace black_cat
 	
 	namespace game
 	{
+		class bc_entity_manager;
+		
 		enum class _bc_scene_actor_operation
 		{
 			add, update, remove
@@ -45,7 +47,8 @@ namespace black_cat
 			BC_CONTENT(scene)
 
 		public:
-			bc_scene(bc_game_system& p_game_system,
+			bc_scene(bc_entity_manager& p_entity_manager,
+				bc_game_system& p_game_system,
 				core::bc_estring p_path,
 				core::bc_string p_name,
 				core::bc_vector<core::bc_string> p_stream_files,
@@ -98,10 +101,10 @@ namespace black_cat
 			
 			/**
 			 * \brief ThreadSafe
-			 * \param p_actor
+			 * \param p_entity_name
 			 * \param p_world_transform Initial world transform of actor
 			 */
-			void add_actor(bc_actor& p_actor, const core::bc_matrix4f& p_world_transform);
+			bc_actor create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform);
 
 			/**
 			 * \brief ThreadSafe
@@ -153,8 +156,9 @@ namespace black_cat
 			core::bc_vector<core::bc_string> m_loaded_streams;
 
 			bcFLOAT m_global_scale;
-			bc_scene_graph m_scene_graph;
+			bc_entity_manager* m_entity_manager;
 			bc_physics_system* m_physics;
+			bc_scene_graph m_scene_graph;
 			physics::bc_scene_ref m_px_scene;
 			core::bc_unique_ptr<bc_bullet_manager> m_bullet_manager;
 			core::bc_unique_ptr<bc_light_manager> m_light_manager;

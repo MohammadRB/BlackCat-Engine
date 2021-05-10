@@ -11,6 +11,7 @@
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActorController.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
 
 namespace black_cat
 {
@@ -26,6 +27,7 @@ namespace black_cat
 		struct _bc_entity_component_callbacks;
 		class bc_entity_manager;
 		class bc_game_system;
+		class bc_scene;
 
 		template<typename TController>
 		class bc_actor_controller_register
@@ -92,10 +94,11 @@ namespace black_cat
 
 			/**
 			 * \brief Create an actor along with it's components. In case of any error returns invalid actor
+			 * \param p_scene
 			 * \param p_entity_name 
 			 * \return Created actor or invalid actor
 			 */
-			bc_actor create_entity(const bcCHAR* p_entity_name);
+			bc_actor create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name);
 
 			/**
 			 * \brief Remove actor and all of it's components
@@ -157,12 +160,14 @@ namespace black_cat
 		template<class TComponent>
 		void bc_entity_manager::create_entity_component(bc_actor& p_actor)
 		{
+			auto* l_mediate_component = p_actor.get_component<bc_mediate_component>();
 			m_actor_component_manager.create_component<TComponent>(p_actor);
 			_actor_component_initialization<TComponent>(bc_actor_component_initialize_context
 			(
 				core::bc_data_driven_parameter(),
 				m_content_stream_manager,
 				m_game_system,
+				*l_mediate_component->get_scene(),
 				p_actor
 			));
 			_actor_component_entity_initialization<TComponent>(bc_actor_component_initialize_entity_context
@@ -170,6 +175,7 @@ namespace black_cat
 				core::bc_data_driven_parameter(),
 				m_content_stream_manager,
 				m_game_system,
+				*l_mediate_component->get_scene(),
 				p_actor
 			));
 		}

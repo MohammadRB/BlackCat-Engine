@@ -32,36 +32,9 @@ namespace black_cat
 		}
 
 		bc_particle_manager::bc_particle_manager()
-			: m_emitters(s_emitter_count, core::bc_alloc_type::unknown_movable),
-			m_external_emitters(s_emitter_count / 4)
+			: m_emitters(s_emitters_pool_size, core::bc_alloc_type::unknown),
+			m_external_emitters(s_emitters_pool_size / 4)
 		{
-			for(bcSIZE l_curve_i = 0; l_curve_i < bc_particle_builder::s_curves.size(); ++l_curve_i)
-			{
-				const auto* l_particle_curve = bc_particle_builder::s_curves[l_curve_i];
-				core::bc_curve2f l_curve(std::cbegin(*l_particle_curve), std::cend(*l_particle_curve));
-				// Sample at higher rate than actually needed to avoid repeated values in output array
-				auto l_curve_samples = l_curve.sample_many(curve_sample_count * 2);
-				curve_sample_container l_curve_samples_container;
-
-				for(bcSIZE l_curve_sample_i = 0; l_curve_sample_i < curve_sample_count; ++l_curve_sample_i)
-				{
-					const auto l_time = static_cast<bcFLOAT>(l_curve_sample_i) / (curve_sample_count - 1);
-					const auto l_read_sample = std::lower_bound
-					(
-						std::begin(l_curve_samples), 
-						std::end(l_curve_samples), 
-						core::bc_vector2f(l_time),
-						[&](const core::bc_vector2f& p_sample1, const core::bc_vector2f& p_sample2)
-						{
-							return p_sample1.x < p_sample2.x;
-						}
-					);
-					
-					l_curve_samples_container[l_curve_sample_i] = l_read_sample->y;
-				}
-				
-				m_curves[l_curve_i] = l_curve_samples_container;
-			}
 		}
 
 		bc_particle_manager::bc_particle_manager(bc_particle_manager&& p_other) noexcept
@@ -124,7 +97,7 @@ namespace black_cat
 					bc_randomize_direction(m_random, l_ite.m_direction, l_ite.m_direction_deviation, &l_ite.m_direction, &l_ite.m_direction + 1);
 				}
 
-				BC_ASSERT(m_emitters.size() <= s_emitter_count);
+				BC_ASSERT(m_emitters.size() <= s_emitters_pool_size);
 			}
 		}
 
@@ -151,7 +124,7 @@ namespace black_cat
 					}
 				}
 
-				BC_ASSERT(m_emitters.size() <= s_emitter_count);
+				BC_ASSERT(m_emitters.size() <= s_emitters_pool_size);
 
 				bc_external_particle_emitter l_external_emitter;
 				l_external_emitter.m_emitters.reserve(p_builder.m_emitters.size());
@@ -279,6 +252,37 @@ namespace black_cat
 			}
 		}
 
+		void bc_particle_manager::init_emitter_states()
+		{
+			for (bcSIZE l_curve_i = 0; l_curve_i < bc_particle_builder::s_curves.size(); ++l_curve_i)
+			{
+				const auto* l_particle_curve = bc_particle_builder::s_curves[l_curve_i];
+				core::bc_curve2f l_curve(std::cbegin(*l_particle_curve), std::cend(*l_particle_curve));
+				// Sample at higher rate than actually needed to avoid repeated values in output array
+				auto l_curve_samples = l_curve.sample_many(s_curve_sample_count * 2);
+				curve_sample_container l_curve_samples_container;
+
+				for (bcSIZE l_curve_sample_i = 0; l_curve_sample_i < s_curve_sample_count; ++l_curve_sample_i)
+				{
+					const auto l_time = static_cast<bcFLOAT>(l_curve_sample_i) / (s_curve_sample_count - 1);
+					const auto l_read_sample = std::lower_bound
+					(
+						std::begin(l_curve_samples),
+						std::end(l_curve_samples),
+						core::bc_vector2f(l_time),
+						[&](const core::bc_vector2f& p_sample1, const core::bc_vector2f& p_sample2)
+						{
+							return p_sample1.x < p_sample2.x;
+						}
+					);
+
+					l_curve_samples_container[l_curve_sample_i] = l_read_sample->y;
+				}
+
+				m_curves[l_curve_i] = l_curve_samples_container;
+			}
+		}
+
 		void bc_particle_manager::register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder)
 		{
 			if (!m_emitter_definitions.has_value())
@@ -302,7 +306,7 @@ namespace black_cat
 			}
 		}
 		
-		void bc_particle_manager::clear_emitter_definitions()
+		void bc_particle_manager::clear_emitter_states()
 		{
 			m_emitter_definitions->clear();
 			m_emitter_definitions.reset();
@@ -362,13 +366,13 @@ namespace black_cat
 		{
 			p_normalized_time = std::min(1.f, p_normalized_time);
 			const curve_sample_container& l_curve_samples = m_curves[p_curve_index];
-			const bcFLOAT l_time = p_normalized_time * (curve_sample_count - 1);
+			const bcFLOAT l_time = p_normalized_time * (s_curve_sample_count - 1);
 			const bcSIZE l_lower_band = std::floor(l_time);
 			const bcSIZE l_upper_band = std::ceil(l_time);
 
-			const bcFLOAT l_lower_band_time = static_cast<bcFLOAT>(l_lower_band) / (curve_sample_count - 1);
+			const bcFLOAT l_lower_band_time = static_cast<bcFLOAT>(l_lower_band) / (s_curve_sample_count - 1);
 			const bcFLOAT l_lower_band_sample = l_curve_samples[l_lower_band];
-			const bcFLOAT l_upper_band_time = static_cast<bcFLOAT>(l_upper_band) / (curve_sample_count - 1);
+			const bcFLOAT l_upper_band_time = static_cast<bcFLOAT>(l_upper_band) / (s_curve_sample_count - 1);
 			const bcFLOAT l_upper_band_sample = l_curve_samples[l_upper_band];
 
 			const bcFLOAT l_normalized_time_between_samples = (p_normalized_time - l_lower_band_time) / (l_upper_band_time - l_lower_band_time + .001f);

@@ -27,7 +27,9 @@ namespace black_cat
 			);
 		}
 
-		bc_query_manager::~bc_query_manager() = default;
+		bc_query_manager::~bc_query_manager()
+		{
+		}
 
 		void bc_query_manager::replace_query_provider(bc_query_provider_handle& p_provider_handle, provider_delegate_t&& p_delegate)
 		{
@@ -44,7 +46,7 @@ namespace black_cat
 		void bc_query_manager::unregister_query_provider(bc_query_provider_handle& p_provider_handle)
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_shared_mutex> m_guard(m_providers_lock);
+				core_platform::bc_lock_guard<core_platform::bc_shared_mutex> l_guard(m_providers_lock);
 
 				m_providers.erase(p_provider_handle.m_context_hash);
 			}
@@ -216,7 +218,7 @@ namespace black_cat
 		}
 
 		void bc_query_manager::destroy()
-		{			
+		{
 			// Before service get destroyed we must unregister this handler
 			m_null_query_context_handle.reset();
 			m_executed_queries.clear();

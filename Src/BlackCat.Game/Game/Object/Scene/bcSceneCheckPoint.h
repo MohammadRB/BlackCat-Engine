@@ -29,7 +29,7 @@ namespace black_cat
 
 			core::bc_vector_frame<bc_actor> export_dynamic_actors() const;
 
-			void import_dynamic_actors(core::bc_vector_frame<std::pair<bc_actor, core::bc_matrix4f>>& p_actors);
+			void import_dynamic_actors(core::bc_vector_frame<bc_actor>& p_actors);
 
 		private:
 			bc_scene* m_scene;

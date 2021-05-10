@@ -127,7 +127,7 @@ namespace black_cat
 			return l_result;
 		}
 
-		bc_actor bc_entity_manager::create_entity(const bcCHAR* p_entity_name)
+		bc_actor bc_entity_manager::create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name)
 		{
 			const auto l_hash = string_hash()(p_entity_name);
 			auto l_entity_entry = m_entities.find(l_hash);
@@ -141,7 +141,7 @@ namespace black_cat
 			
 			try
 			{
-				l_actor.create_component<bc_mediate_component>();
+				m_actor_component_manager.create_component<bc_mediate_component>(l_actor);
 				auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
 				l_mediate_component->set_entity_name(l_entity_entry->second.m_entity_name.c_str());
 				l_mediate_component->initialize
@@ -151,6 +151,7 @@ namespace black_cat
 						l_entity_entry->second.m_parameters,
 						m_content_stream_manager,
 						m_game_system,
+						p_scene,
 						l_actor
 					)
 				);
@@ -171,6 +172,7 @@ namespace black_cat
 							l_entity_component_data.m_component_parameters,
 							m_content_stream_manager,
 							m_game_system,
+							p_scene,
 							l_actor
 						)
 					);
@@ -187,6 +189,7 @@ namespace black_cat
 							l_entity_component_data.m_component_parameters,
 							m_content_stream_manager,
 							m_game_system,
+							p_scene,
 							l_actor
 						)
 					);
@@ -209,6 +212,7 @@ namespace black_cat
 							l_entity_entry->second.m_parameters,
 							m_content_stream_manager,
 							m_game_system,
+							p_scene,
 							l_actor
 						)
 					);

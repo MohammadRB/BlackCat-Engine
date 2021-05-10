@@ -12,8 +12,6 @@ namespace black_cat
 	public:
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
 
-		void added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
-		
 		void update(const game::bc_actor_component_update_content& p_context) override;
 
 	private:

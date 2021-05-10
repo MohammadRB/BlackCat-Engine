@@ -5,6 +5,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcParameterPack.h"
 #include "Game/bcConstant.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcHierarchyComponent.h"
@@ -70,8 +71,7 @@ namespace black_cat
 
 		void bc_hierarchy_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			const auto& l_child_entity_names = p_context.m_parameters.get_value_throw< core::bc_string >(constant::g_param_child_actor);
-			auto* l_entity_manager = core::bc_get_service< bc_entity_manager >();
+			const auto& l_child_entity_names = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_child_actor);
 
 			core::bc_string::size_type l_last_pos = 0;
 			core::bc_string::size_type l_pos = 0;
@@ -81,7 +81,7 @@ namespace black_cat
 				l_child_entity_name = l_child_entity_names.substr(l_last_pos, l_pos);
 				l_last_pos = l_pos;
 
-				bc_actor l_child_actor = l_entity_manager->create_entity(l_child_entity_name.c_str());
+				bc_actor l_child_actor = p_context.m_scene.create_actor(l_child_entity_name.c_str(), core::bc_matrix4f::identity());
 
 				add_actor(l_child_actor);
 			}

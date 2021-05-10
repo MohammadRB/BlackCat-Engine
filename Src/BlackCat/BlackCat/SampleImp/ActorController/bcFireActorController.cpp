@@ -13,10 +13,6 @@ namespace black_cat
 {
 	void bc_fire_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
-	}
-
-	void bc_fire_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
-	{
 		auto* l_light_component = p_context.m_actor.get_component<game::bc_light_component>();
 		auto* l_emitter_component = p_context.m_actor.get_create_component<game::bc_particle_emitter_component>();
 

@@ -102,10 +102,11 @@ namespace black_cat
 				{
 					while (!p_state->m_terminate.load(core_platform::bc_memory_order::relaxed))
 					{
-						bc_render_loop_state::signal l_signal;
-						while ((l_signal = p_state->m_signal.load(core_platform::bc_memory_order::acquire)) == bc_render_loop_state::signal::ready)
+						const auto l_signal = p_state->m_signal.load(core_platform::bc_memory_order::acquire);
+						if (l_signal == bc_render_loop_state::signal::ready)
 						{
 							core_platform::bc_thread::current_thread_yield();
+							continue;
 						}
 
 						if(l_signal == bc_render_loop_state::signal::render)
@@ -237,7 +238,6 @@ namespace black_cat
 #endif
 			}
 
-			l_render_thread_state.m_signal.store(bc_render_loop_state::signal::render, core_platform::bc_memory_order::relaxed);
 			l_render_thread_state.m_terminate.store(true, core_platform::bc_memory_order::relaxed);
 			l_render_thread.join();
 			

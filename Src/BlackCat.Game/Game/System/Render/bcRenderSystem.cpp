@@ -401,15 +401,17 @@ namespace black_cat
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
 			);
+
+			bc_particle_manager::init_emitter_states();
 		}
 
 		void bc_render_system::_destroy()
 		{
 			bc_mesh_utility::clear_mesh_render_states_cache();
-			bc_particle_manager::clear_emitter_definitions();
+			bc_particle_manager::clear_emitter_states();
 			
 			m_render_pass_manager->pass_destroy(*this);
-			// Delete all render passes to clear queries and references which they might hold
+			// Delete all render passes to clear queries and references which they may hold
 			m_render_pass_manager.reset(); 
 
 			m_device_reset_handle.reset();

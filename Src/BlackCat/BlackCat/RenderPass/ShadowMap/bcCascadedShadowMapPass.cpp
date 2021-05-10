@@ -94,6 +94,7 @@ namespace black_cat
 	{
 		m_device_pipeline.reset();
 		m_scene_queries.clear();
+		m_scene_query_results.clear();
 	}
 
 	core::bc_vector<game::bc_render_pass_state_ptr> bc_cascaded_shadow_map_pass::create_render_pass_states(game::bc_render_system& p_render_system,

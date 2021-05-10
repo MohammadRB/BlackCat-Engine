@@ -23,6 +23,7 @@ namespace black_cat
 	{
 		class bc_game_system;
 		class bc_actor_component_manager;
+		class bc_scene;
 		class bc_shape_drawer;
 		
 		using bc_actor_component_hash = bcSIZE;
@@ -33,10 +34,12 @@ namespace black_cat
 			bc_actor_component_initialize_context(const core::bc_data_driven_parameter& p_parameters,
 				const core::bc_content_stream_manager& p_stream_manager,
 				bc_game_system& p_game_system,
+				bc_scene& p_scene,
 				bc_actor& p_actor)
 				: m_parameters(p_parameters),
 				m_stream_manager(p_stream_manager),
 				m_game_system(p_game_system),
+				m_scene(p_scene),
 				m_actor(p_actor)
 			{
 			}
@@ -44,6 +47,7 @@ namespace black_cat
 			const core::bc_data_driven_parameter& m_parameters;
 			const core::bc_content_stream_manager& m_stream_manager;
 			bc_game_system& m_game_system;
+			bc_scene& m_scene;
 			bc_actor& m_actor;
 		};
 
@@ -52,10 +56,12 @@ namespace black_cat
 			bc_actor_component_initialize_entity_context(const core::bc_data_driven_parameter& p_parameters,
 				const core::bc_content_stream_manager& p_stream_manager,
 				bc_game_system& p_game_system,
+				bc_scene& p_scene,
 				bc_actor& p_actor)
 				: m_parameters(p_parameters),
 				m_stream_manager(p_stream_manager),
 				m_game_system(p_game_system),
+				m_scene(p_scene),
 				m_actor(p_actor)
 			{
 			}
@@ -63,6 +69,7 @@ namespace black_cat
 			const core::bc_data_driven_parameter& m_parameters;
 			const core::bc_content_stream_manager& m_stream_manager;
 			bc_game_system& m_game_system;
+			bc_scene& m_scene;
 			bc_actor& m_actor;
 		};
 

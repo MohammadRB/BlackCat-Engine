@@ -48,10 +48,10 @@ namespace black_cat
 			using external_emitters_container = core::bc_list_pool<bc_external_particle_emitter>;
 			
 		public:
-			static constexpr bcSIZE curve_sample_count = 10;
-			static constexpr bcSIZE curve_count = bc_particle_builder::s_curves.size();
-			using curve_sample_container = core::bc_array<bcFLOAT, curve_sample_count>;
-			using curves_container = core::bc_array<curve_sample_container, curve_count>;
+			static constexpr bcSIZE s_curve_sample_count = 10;
+			static constexpr bcSIZE s_curve_count = bc_particle_builder::s_curves.size();
+			using curve_sample_container = core::bc_array<bcFLOAT, s_curve_sample_count>;
+			using curves_container = core::bc_array<curve_sample_container, s_curve_count>;
 			
 		public:
 			bc_particle_manager();
@@ -76,9 +76,11 @@ namespace black_cat
 
 			core::bc_vector_movable<bc_particle_emitter_state> bc_particle_manager::get_emitter_states() const noexcept;
 
+			static void init_emitter_states();
+			
 			static void register_emitter_definition(const bcCHAR* p_name, const bc_particle_builder& p_builder);
 			
-			static void clear_emitter_definitions();
+			static void clear_emitter_states();
 			
 			void _destroy_emitter(bc_external_particle_emitter* p_emitter);
 
@@ -87,7 +89,7 @@ namespace black_cat
 			
 			bcFLOAT _sample_curve(bcSIZE p_curve_index, bcFLOAT p_normalized_time) const noexcept;
 			
-			constexpr static bcSIZE s_emitter_count = 300;
+			constexpr static bcSIZE s_emitters_pool_size = 300;
 
 			static curves_container m_curves;
 			// Use nullable to postpone initialization to the time when memory manager is initialized

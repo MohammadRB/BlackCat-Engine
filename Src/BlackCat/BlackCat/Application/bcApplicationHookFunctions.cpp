@@ -103,14 +103,15 @@ namespace black_cat
 		core::bc_register_service(core::bc_make_service<core::bc_counter_value_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
-		core::bc_register_service(core::bc_make_service<game::bc_game_system>());
-		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>(*core::bc_get_service<core::bc_query_manager>(), *core::bc_get_service<game::bc_game_system>()));
+		auto l_game_system = core::bc_make_service<game::bc_game_system>();
+		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>(*core::bc_get_service<core::bc_query_manager>(), *l_game_system));
 		core::bc_register_service(core::bc_make_service<game::bc_entity_manager>
 		(
 			*core::bc_get_service<core::bc_content_stream_manager>(), 
 			*core::bc_get_service<game::bc_actor_component_manager>(),
-			*core::bc_get_service<game::bc_game_system>()
+			*l_game_system
 		));
+		core::bc_register_service(std::move(l_game_system));
 	}
 
 	void bc_register_engine_loaders(game::bc_engine_application_parameter& p_parameters)

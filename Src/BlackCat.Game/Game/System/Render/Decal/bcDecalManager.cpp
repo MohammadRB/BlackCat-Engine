@@ -59,7 +59,9 @@ namespace black_cat
 		{
 		}
 
-		bc_decal_manager::~bc_decal_manager() = default;
+		bc_decal_manager::~bc_decal_manager()
+		{
+		}
 
 		bc_decal_manager& bc_decal_manager::operator=(bc_decal_manager&& p_other) noexcept
 		{

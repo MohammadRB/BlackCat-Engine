@@ -191,7 +191,7 @@ namespace black_cat
 		{
 			m_editor_event_handle.reset();
 			m_scene_query_context_provider.reset();
-			
+
 			m_scene.reset();
 			m_console.reset();
 			m_render_system.destroy();
