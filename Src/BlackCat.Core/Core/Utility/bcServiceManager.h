@@ -45,8 +45,6 @@ namespace black_cat
 
 		private:
 			virtual void update(const core_platform::bc_clock::update_param& p_clock);
-
-			virtual void destroy();
 		};
 
 		template< class TService >

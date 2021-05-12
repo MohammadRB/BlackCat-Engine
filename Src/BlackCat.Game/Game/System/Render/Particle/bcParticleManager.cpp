@@ -32,7 +32,7 @@ namespace black_cat
 		}
 
 		bc_particle_manager::bc_particle_manager()
-			: m_emitters(s_emitters_pool_size, core::bc_alloc_type::unknown),
+			: m_emitters(s_emitters_pool_size),
 			m_external_emitters(s_emitters_pool_size / 4)
 		{
 		}

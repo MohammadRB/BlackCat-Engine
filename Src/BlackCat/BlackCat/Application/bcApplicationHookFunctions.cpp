@@ -92,7 +92,7 @@ namespace black_cat
 #endif
 		core::bc_register_service
 		(
-			core::bc_make_service< core::bc_thread_manager >
+			core::bc_make_service<core::bc_thread_manager>
 			(
 				p_parameters.m_engine_parameters.m_thread_manager_thread_count,
 				p_parameters.m_engine_parameters.m_thread_manager_reserved_thread_count

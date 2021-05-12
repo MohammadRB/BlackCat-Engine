@@ -44,9 +44,9 @@ namespace black_cat
 		bc_decal_manager::bc_decal_manager(bc_material_manager& p_material_manager)
 			: m_material_manager(&p_material_manager),
 			m_update_interval_seconds(0),
-			m_decal_instances_pool(2000, core::bc_alloc_type::program)
+			m_decal_instances_pool(2000)
 		{
-			m_decals_pool.initialize(100, core::bc_alloc_type::program);
+			m_decals_pool.initialize(100, core::bc_alloc_type::unknown);
 		}
 
 		bc_decal_manager::bc_decal_manager(bc_decal_manager&& p_other) noexcept
@@ -59,9 +59,7 @@ namespace black_cat
 		{
 		}
 
-		bc_decal_manager::~bc_decal_manager()
-		{
-		}
+		bc_decal_manager::~bc_decal_manager() = default;
 
 		bc_decal_manager& bc_decal_manager::operator=(bc_decal_manager&& p_other) noexcept
 		{

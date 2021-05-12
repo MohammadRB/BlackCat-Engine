@@ -61,6 +61,8 @@ namespace black_cat
 
 			void pass_destroy(bc_render_system& p_render_system);
 
+			void pass_clear();
+
 		private:
 			void _add_pass(const bcCHAR* p_name, core::bc_unique_ptr<bci_render_pass> p_pass, const bcCHAR* p_before = nullptr);
 

@@ -8,6 +8,7 @@
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Messaging/Event/bcEventManager.h"
+#include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Utility/bcEnumOperand.h"
 #include "Core/Utility/bcLogger.h"
 #include "Core/bcEvent.h"
@@ -354,6 +355,13 @@ namespace black_cat
 			return bc_compute_state_ptr(l_compute_state_ptr, _bc_compute_state_handle_deleter(this));
 		}
 
+		void bc_render_system::destroy_render_passes()
+		{
+			m_render_pass_manager->pass_destroy(*this);
+			// Delete all render passes to clear queries and references which they may hold
+			m_render_pass_manager->pass_clear();
+		}
+
 		void bc_render_system::_initialize(core::bc_content_stream_manager& p_content_stream, bc_physics_system& p_physics_system, bc_render_system_parameter p_parameter)
 		{
 			m_device.initialize
@@ -410,10 +418,8 @@ namespace black_cat
 			bc_mesh_utility::clear_mesh_render_states_cache();
 			bc_particle_manager::clear_emitter_states();
 			
-			m_render_pass_manager->pass_destroy(*this);
-			// Delete all render passes to clear queries and references which they may hold
-			m_render_pass_manager.reset(); 
-
+			destroy_render_passes();
+			
 			m_device_reset_handle.reset();
 			m_app_active_handle.reset();
 			m_window_resize_handle.reset();

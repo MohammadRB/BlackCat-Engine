@@ -18,18 +18,9 @@ namespace black_cat
 			m_query_pool[0].initialize(core::bc_get_service<bc_thread_manager>()->max_thread_count(), 2000 * static_cast<bcSIZE>(bc_mem_size::kb));
 			m_query_pool[1].initialize(core::bc_get_service<bc_thread_manager>()->max_thread_count(), 2000 * static_cast<bcSIZE>(bc_mem_size::kb));
 			m_query_entry_pool.initialize(1000, sizeof(query_list_t::node_type), bc_alloc_type::unknown);
-			m_null_query_context_handle = register_query_provider< bc_null_query_context >
-			(
-				[]()
-				{
-					return bc_make_query_context(bc_null_query_context());
-				}
-			);
 		}
 
-		bc_query_manager::~bc_query_manager()
-		{
-		}
+		bc_query_manager::~bc_query_manager() = default;
 
 		void bc_query_manager::replace_query_provider(bc_query_provider_handle& p_provider_handle, provider_delegate_t&& p_delegate)
 		{
@@ -188,6 +179,16 @@ namespace black_cat
 			return l_task;
 		}
 
+		void bc_query_manager::clear_queries()
+		{
+			for(auto& l_provider : m_providers)
+			{
+				l_provider.second.m_queries.clear();
+			}
+			m_executed_queries.clear();
+			m_executed_shared_queries.clear();
+		}
+
 		void bc_query_manager::swap_frame()
 		{
 			for (auto& l_provider : m_providers)
@@ -215,18 +216,6 @@ namespace black_cat
 		void bc_query_manager::_mark_shared_state(_bc_query_shared_state& p_shared_state)
 		{
 			p_shared_state.m_state.store(_bc_query_shared_state::state::deleted, core_platform::bc_memory_order::relaxed);
-		}
-
-		void bc_query_manager::destroy()
-		{
-			// Before service get destroyed we must unregister this handler
-			m_null_query_context_handle.reset();
-			m_executed_queries.clear();
-			m_executed_shared_queries.clear();
-			m_providers.clear();
-			m_query_entry_pool.destroy();
-			m_query_pool[0].destroy();
-			m_query_pool[1].destroy();
 		}
 
 		bc_query_provider_handle bc_query_manager::_register_query_provider(bc_query_context_hash p_context_hash, provider_delegate_t&& p_delegate)

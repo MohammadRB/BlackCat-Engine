@@ -16,7 +16,7 @@ namespace black_cat
 	{
 		bc_bullet_manager::bc_bullet_manager(bc_physics_system& p_physics_system)
 			: m_physics_system(&p_physics_system),
-			m_bullets(100, core::bc_alloc_type::unknown_movable)
+			m_bullets(100)
 		{
 		}
 

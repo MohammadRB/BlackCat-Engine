@@ -31,13 +31,13 @@ namespace black_cat
 			BC_SERVICE(qr_mng)
 
 		public:
-			using provider_delegate_t = bc_delegate< bc_query_context_ptr() >;
+			using provider_delegate_t = bc_delegate<bc_query_context_ptr()>;
 
 		private:
 			class _provider_entry;
 			class _query_entry;
 
-			using provider_map_t = bc_unordered_map_program< bc_query_context_hash, _provider_entry >;
+			using provider_map_t = bc_unordered_map_program<bc_query_context_hash, _provider_entry>;
 			using query_list_t = bc_list<_query_entry, bc_memory_pool_allocator<_query_entry>>;
 
 		public:
@@ -45,7 +45,7 @@ namespace black_cat
 
 			bc_query_manager(bc_query_manager&&) noexcept = delete;
 
-			~bc_query_manager();
+			~bc_query_manager() override;
 
 			bc_query_manager& operator=(bc_query_manager&&) noexcept = delete;
 
@@ -55,33 +55,33 @@ namespace black_cat
 			 * \param p_delegate
 			 * \return
 			 */
-			template< class TContext >
+			template<class TContext>
 			bc_query_provider_handle register_query_provider(provider_delegate_t&& p_delegate);
 
 			void replace_query_provider(bc_query_provider_handle& p_provider_handle, provider_delegate_t&& p_delegate);
 
 			void unregister_query_provider(bc_query_provider_handle& p_provider_handle);
 
-			template< class TQuery >
-			bc_query_result<std::decay_t< TQuery >> queue_query(TQuery&& p_query);
+			template<class TQuery>
+			bc_query_result<std::decay_t<TQuery>> queue_query(TQuery&& p_query);
 
-			template< class TQuery >
+			template<class TQuery>
 			void queue_shared_query(TQuery&& p_query);
 
 			bcUINT32 process_query_queue(const core_platform::bc_clock::update_param& p_clock);
 
 			bc_task<bcUINT32> process_query_queue_async(const core_platform::bc_clock::update_param& p_clock);
 
+			void clear_queries();
+			
 			void swap_frame();
 
-			template< class TQuery >
+			template<class TQuery>
 			TQuery& _get_shared_query();
 
 			void _mark_shared_state(_bc_query_shared_state& p_shared_state);
 
 		private:
-			void destroy() override;
-
 			bc_query_provider_handle _register_query_provider(bc_query_context_hash p_context_hash, provider_delegate_t&& p_delegate);
 
 			_bc_query_shared_state& _queue_query(bc_query_context_hash p_context_hash, bool p_is_shared, bcUBYTE p_pool_index, bci_query* p_query);
@@ -95,8 +95,6 @@ namespace black_cat
 			core_platform::bc_mutex m_executed_queries_lock;
 			query_list_t m_executed_shared_queries;
 			query_list_t m_executed_queries;
-
-			bc_query_provider_handle m_null_query_context_handle;
 		};
 
 		class bc_query_manager::_query_entry : public _bc_query_shared_state
@@ -142,8 +140,8 @@ namespace black_cat
 			return _register_query_provider(l_context_type_info.hash_code(), std::move(p_delegate));
 		}
 
-		template< class TQuery >
-		bc_query_result< std::decay_t< TQuery > > bc_query_manager::queue_query(TQuery&& p_query)
+		template<class TQuery>
+		bc_query_result<std::decay_t<TQuery>> bc_query_manager::queue_query(TQuery&& p_query)
 		{
 			using query_t = std::decay_t< TQuery >;
 			static_assert(std::is_base_of_v< bci_query, query_t >, "TQuery must be derived from bc_iquery");
@@ -156,10 +154,10 @@ namespace black_cat
 
 			auto& l_shared_state = _queue_query(l_context_type_info.hash_code(), false, m_active_query_pool, l_query);
 
-			return bc_query_result< query_t >(*this, l_shared_state);
+			return bc_query_result<query_t>(*this, l_shared_state);
 		}
 
-		template< class TQuery >
+		template<class TQuery>
 		void bc_query_manager::queue_shared_query(TQuery&& p_query)
 		{
 			using query_t = std::decay_t< TQuery >;
@@ -174,7 +172,7 @@ namespace black_cat
 			auto& l_shared_state = _queue_query(l_context_type_info.hash_code(), true, m_active_query_pool, l_query);
 		}
 
-		template< class TQuery >
+		template<class TQuery>
 		TQuery& bc_query_manager::_get_shared_query()
 		{
 			static_assert(std::is_base_of_v< bci_query, TQuery >, "TQuery must be derived from bc_iquery");

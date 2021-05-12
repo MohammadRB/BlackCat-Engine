@@ -9,15 +9,11 @@ namespace black_cat
 {
 	namespace core
 	{
-		template BC_CORE_DLL class bc_singleton< bc_service_manager() >;
+		template BC_CORE_DLL class bc_singleton<bc_service_manager()>;
 
 		bci_service::~bci_service() = default;
 
 		void bci_service::update(const core_platform::bc_clock::update_param& p_clock)
-		{
-		}
-
-		void bci_service::destroy()
 		{
 		}
 
@@ -47,10 +43,10 @@ namespace black_cat
 
 		void bc_service_manager::_destroy()
 		{
-			for(auto l_ite = std::rbegin(m_sorted_services), l_end = std::rend(m_sorted_services); l_ite != l_end; ++l_ite)
+			/*for(auto l_ite = std::rbegin(m_sorted_services), l_end = std::rend(m_sorted_services); l_ite != l_end; ++l_ite)
 			{
 				(*l_ite)->m_service->destroy();
-			}
+			}*/
 
 			for (auto l_ite = std::rbegin(m_sorted_services), l_end = std::rend(m_sorted_services); l_ite != l_end; ++l_ite)
 			{

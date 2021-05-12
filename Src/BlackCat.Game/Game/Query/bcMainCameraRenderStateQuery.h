@@ -12,7 +12,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_main_camera_render_state_query : public core::bc_query<core::bc_null_query_context>
+		class bc_main_camera_render_state_query : public core::bc_query<bc_scene_query_context>
 		{
 			BC_QUERY(rs)
 
@@ -31,7 +31,7 @@ namespace black_cat
 			bc_main_camera_render_state_query& only(TArgs&&... p_render_args) noexcept;
 
 		protected:
-			void execute(const core::bc_null_query_context& p_context) noexcept override;
+			void execute(const bc_scene_query_context& p_context) noexcept override;
 
 		private:
 			bc_actor_render_camera m_camera;
@@ -85,7 +85,7 @@ namespace black_cat
 			return *this;
 		}
 
-		inline void bc_main_camera_render_state_query::execute(const core::bc_null_query_context & p_context) noexcept
+		inline void bc_main_camera_render_state_query::execute(const bc_scene_query_context& p_context) noexcept
 		{
 			const auto& l_main_camera_scene_buffer = p_context.get_shared_query<bc_main_camera_scene_shared_query>().get_scene_buffer();
 

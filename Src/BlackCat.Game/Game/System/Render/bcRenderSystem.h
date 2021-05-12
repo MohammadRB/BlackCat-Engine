@@ -270,6 +270,11 @@ namespace black_cat
 				bc_compute_state_resource_view_array p_resource_views,
 				bc_compute_state_unordered_view_array p_unordered_views,
 				bc_compute_state_constant_buffer_array p_cbuffers);
+
+			/**
+			 * \brief Destroy all registered render passes to release probable references in queries
+			 */
+			void destroy_render_passes();
 			
 		private:			
 			void _initialize(core::bc_content_stream_manager& p_content_stream, bc_physics_system& p_physics_system, bc_render_system_parameter p_parameter) override;

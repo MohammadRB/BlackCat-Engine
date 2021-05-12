@@ -17,9 +17,7 @@
 			m_passes.reserve(1);
 		}
 
-		bc_render_pass_manager::~bc_render_pass_manager()
-		{
-		}
+		bc_render_pass_manager::~bc_render_pass_manager() = default;
 
 		void bc_render_pass_manager::pass_initialize_resources(bc_render_system& p_render_system)
 		{
@@ -88,6 +86,11 @@
 			{
 				l_entry.m_pass->destroy(p_render_system);
 			}
+		}
+
+		void bc_render_pass_manager::pass_clear()
+		{
+			m_passes.clear();
 		}
 
 		void bc_render_pass_manager::_add_pass(const bcCHAR* p_name, core::bc_unique_ptr<bci_render_pass> p_pass, const bcCHAR* p_before)
