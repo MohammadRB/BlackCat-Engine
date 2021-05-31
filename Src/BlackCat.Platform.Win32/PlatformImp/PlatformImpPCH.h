@@ -8,3 +8,5 @@
 #include "3rdParty/ChakraCore/Include/ChakraCommon.h"
 #include "3rdParty/ChakraCore/Include/ChakraCommonWindows.h"
 #include "3rdParty/ChakraCore/Include/ChakraDebug.h"
+
+#pragma comment(lib, "Ws2_32.lib")

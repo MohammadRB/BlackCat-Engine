@@ -17,10 +17,6 @@ namespace black_cat
 		~bc_script_interrupted_exception() = default;
 
 		bc_script_interrupted_exception& operator =(const bc_script_interrupted_exception&) = default;
-
-	protected:
-
-	private:
 	};
 
 	class bc_script_execute_exception : public bc_runtime_exception
@@ -33,10 +29,6 @@ namespace black_cat
 		~bc_script_execute_exception() = default;
 
 		bc_script_execute_exception& operator=(const bc_script_execute_exception&) = default;
-
-	protected:
-
-	private:
 	};
 
 	class bc_script_compile_exception : public bc_runtime_exception
@@ -56,12 +48,22 @@ namespace black_cat
 
 		bcINT32 column() const noexcept;
 
-	protected:
-
 	private:
 		core::bc_string m_source;
 		bcINT32 m_line;
 		bcINT32 m_column;
+	};
+
+	class bc_network_exception : public bc_runtime_exception
+	{
+	public:
+		explicit bc_network_exception(const bcCHAR* p_message);
+
+		bc_network_exception(const bc_network_exception&) = default;
+
+		~bc_network_exception() = default;
+
+		bc_network_exception& operator=(const bc_network_exception&) = default;
 	};
 
 	inline bc_script_execute_exception::bc_script_execute_exception(const bcCHAR* p_message)
@@ -90,5 +92,10 @@ namespace black_cat
 	inline bcINT32 bc_script_compile_exception::column() const noexcept
 	{
 		return m_column;
+	}
+
+	inline bc_network_exception::bc_network_exception(const bcCHAR* p_message)
+		: bc_runtime_exception(p_message)
+	{
 	}
 }

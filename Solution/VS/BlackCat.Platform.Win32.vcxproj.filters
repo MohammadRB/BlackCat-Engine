@@ -13,6 +13,9 @@
     <Filter Include="PlatformImp\Script">
       <UniqueIdentifier>{58b88f36-d869-457f-8fd8-cabdf529528a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlatformImp\Network">
+      <UniqueIdentifier>{b5a505c8-2711-49f1-aca0-4f28867d245c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcApplication.h">
@@ -93,6 +96,21 @@
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcIDELogger.h">
       <Filter>PlatformImp</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Network\bcNetworkAddress.h">
+      <Filter>PlatformImp\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Network\bcSocket.h">
+      <Filter>PlatformImp\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcUtility.h">
+      <Filter>PlatformImp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Network\bcNetworkDefinitions.h">
+      <Filter>PlatformImp\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Network\bcNonBlockSocket.h">
+      <Filter>PlatformImp\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcApplication.cpp">
@@ -154,6 +172,21 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcIDELogger.cpp">
       <Filter>PlatformImp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Network\bcNetworkAddress.cpp">
+      <Filter>PlatformImp\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Network\bcSocket.cpp">
+      <Filter>PlatformImp\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcUtility.cpp">
+      <Filter>PlatformImp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Network\bcNetworkDefinitions.cpp">
+      <Filter>PlatformImp\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Network\bcNonBlockSocket.cpp">
+      <Filter>PlatformImp\Network</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

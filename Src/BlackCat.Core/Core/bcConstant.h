@@ -29,6 +29,8 @@ namespace black_cat
 
 #define BC_RENDER_PASS_NAME(p_name)				"rps_" ## #p_name
 
+#define BC_NETWORK_COMMAND_NAME(p_name)			"cmd_" ## #p_name
+		
 #define BC_SERVICE(p_name) \
 	public: \
 	static constexpr const bcCHAR* service_name() \
@@ -120,3 +122,14 @@ namespace black_cat
 	}
 	}
 }
+
+#define BC_NETWORK_COMMAND(p_name) \
+	public: \
+	static constexpr const bcCHAR* command_name() \
+	{ \
+		return BC_EVENT_NAME(p_name); \
+	} \
+	static constexpr bcUINT32 command_hash() \
+	{ \
+		return BC_COMPILE_TIME_STRING_HASH(BC_EVENT_NAME(p_name)); \
+	} \

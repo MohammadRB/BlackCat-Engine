@@ -130,7 +130,7 @@ namespace black_cat
 
 			const auto l_scene = l_content_manager->load< game::bc_scene >
 			(
-				l_file_system.get_content_path(bcL("Scene\\CrysisHeightMap.json")).c_str(),
+				l_file_system.get_content_path(bcL("Scene\\Test.json")).c_str(),
 				nullptr,
 				core::bc_content_loader_parameter()
 			);
@@ -160,7 +160,6 @@ namespace black_cat
 				{
 					auto& l_input_system = m_game_system->get_input_system();
 					auto& l_camera = *l_input_system.get_camera();
-					auto* l_entity_manager = core::bc_get_service<game::bc_entity_manager>();
 					auto* l_scene = m_game_system->get_scene();
 
 					/*game::bc_actor l_actor;
@@ -196,8 +195,7 @@ namespace black_cat
 
 					l_scene->add_actor(l_actor);*/
 					//l_scene->add_bullet(game::bc_bullet(l_camera.get_position(), l_camera.get_forward(), 250, 0.2f));
-
-					l_scene->create_actor("sample_rocket", bc_matrix4f_from_position_and_direction(l_camera.get_position(), l_camera.get_direction()));
+					//l_scene->create_actor("sample_rocket", bc_matrix4f_from_position_and_direction(l_camera.get_position(), l_camera.get_direction()));
 				}
 				
 				return true;

@@ -73,6 +73,12 @@
     <Filter Include="Game\Object\Scene\Bullet">
       <UniqueIdentifier>{74eb0cb2-057a-483c-9026-92f74a99d866}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\System\Network">
+      <UniqueIdentifier>{0af08e12-f59c-4337-a134-c66ef03299fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\System\Network\Command">
+      <UniqueIdentifier>{470e2d19-aa7d-4c5c-9a8b-6483fc31f355}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h">
@@ -537,6 +543,27 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneParticleEmitterQuery.h">
       <Filter>Game\Query</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkSystem.h">
+      <Filter>Game\System\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcNetworkComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkServerManager.h">
+      <Filter>Game\System\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkClientManager.h">
+      <Filter>Game\System\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkManager.h">
+      <Filter>Game\System\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Command\bcNetworkCommand.h">
+      <Filter>Game\System\Network\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkConnection.h">
+      <Filter>Game\System\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -817,6 +844,15 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraSceneLightQuery.cpp">
       <Filter>Game\Query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkSystem.cpp">
+      <Filter>Game\System\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcNetworkComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Command\bcNetworkCommand.cpp">
+      <Filter>Game\System\Network\Command</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -13,6 +13,9 @@
     <Filter Include="Platform\Script">
       <UniqueIdentifier>{600c2e28-6ac0-4e48-aa40-29a23d3883ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Platform\Network">
+      <UniqueIdentifier>{b8386183-58b0-43be-aa68-37b82b4619b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Application\bcApplication.h">
@@ -104,6 +107,18 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\bcIDELogger.h">
       <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Network\bcSocket.h">
+      <Filter>Platform\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Network\bcNetworkAddress.h">
+      <Filter>Platform\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Network\bcNetworkDefinitions.h">
+      <Filter>Platform\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Network\bcNonBlockSocket.h">
+      <Filter>Platform\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

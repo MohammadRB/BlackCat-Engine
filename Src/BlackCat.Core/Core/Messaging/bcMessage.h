@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		using bc_message_hash = bcSIZE;
+		using bc_message_hash = bcUINT32;
 
 		template<class TMessage>
 		struct bc_message_traits

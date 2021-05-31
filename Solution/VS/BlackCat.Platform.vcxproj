@@ -30,6 +30,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Network\bcNetworkAddress.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Network\bcNetworkDefinitions.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Network\bcNonBlockSocket.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Network\bcSocket.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\PlatformPCH.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Script\bcScriptArray.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Script\bcScriptByteCode.h" />

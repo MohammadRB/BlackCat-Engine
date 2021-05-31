@@ -110,13 +110,13 @@ namespace black_cat
 			void create_entity_component(bc_actor& p_actor);
 
 			template<class ...TCAdapter>
-			void register_component_types(TCAdapter ... p_components);
+			void register_component_types(TCAdapter... p_components);
 
 			template<class ...TCAdapter>
-			void register_abstract_component_types(TCAdapter ... p_components);
+			void register_abstract_component_types(TCAdapter... p_components);
 
 			template<class ...TCAdapter>
-			void register_actor_controller(TCAdapter ... p_controllers);
+			void register_actor_controller(TCAdapter... p_controllers);
 			
 		private:
 			template<class TComponent>
@@ -190,7 +190,7 @@ namespace black_cat
 				(
 					[this, p_components]()
 					{
-						this->_register_component_type< typename TCAdapter::component_t >(p_components.m_data_driven_name);
+						this->_register_component_type<typename TCAdapter::component_t>(p_components.m_data_driven_name);
 						return true;
 					}()
 				)...
