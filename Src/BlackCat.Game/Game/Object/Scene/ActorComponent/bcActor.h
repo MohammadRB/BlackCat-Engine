@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/Container/bcVector.h"
 #include "CorePlatform/bcType.h"
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorGroup.h"
@@ -14,6 +15,11 @@ namespace black_cat
 		class bc_entity_manager;
 		class bc_shape_drawer;
 		using bc_actor_index = bcINT32;
+		class bci_actor_component;
+		struct bc_actor_component_write_context;
+		struct bc_actor_component_load_context;
+		struct bc_actor_component_network_write_context;
+		struct bc_actor_component_network_load_context;
 
 		class bc_actor
 		{
@@ -80,6 +86,14 @@ namespace black_cat
 			static bc_entity_manager& _get_entity_manager() noexcept;
 
 			bc_actor_index m_index;
-		};		
+		};
+
+		void bc_actor_load_instance(core::bc_vector_frame<bci_actor_component*>& p_buffer, const bc_actor_component_load_context& p_context);
+
+		void bc_actor_write_instance(core::bc_vector_frame<bci_actor_component*>& p_buffer, const bc_actor_component_write_context& p_context);
+
+		void bc_actor_load_network_instance(core::bc_vector_frame<bci_actor_component*>& p_buffer, const bc_actor_component_network_load_context& p_context);
+
+		void bc_actor_write_network_instance(core::bc_vector_frame<bci_actor_component*>& p_buffer, const bc_actor_component_network_write_context& p_context);
 	}
 }

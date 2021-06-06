@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Platform/Network/bcNeworkDefinitions.h"
+#include "Platform/Network/bcNetworkDefinitions.h"
 
 namespace black_cat
 {

@@ -14,19 +14,23 @@ namespace black_cat
 		void bc_throw_network_exception()
 		{
 			bcCHAR l_error_string[MAX_PATH];
+			const auto l_error_code = WSAGetLastError();
 
 			FormatMessageA
 			(
 				FORMAT_MESSAGE_FROM_SYSTEM,
 				0,
-				WSAGetLastError(),
+				l_error_code,
 				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 				l_error_string,
 				MAX_PATH,
 				NULL
 			);
 
-			bc_throw_network_exception(l_error_string);
+			core::bc_string_frame l_message = "Win32 socket error: ";
+			l_message += l_error_string;
+
+			throw bc_network_exception(l_error_code, l_message.c_str());
 		}
 
 		void bc_throw_network_exception(const bcCHAR* p_message)

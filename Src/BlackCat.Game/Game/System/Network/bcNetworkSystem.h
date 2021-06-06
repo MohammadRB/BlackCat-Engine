@@ -16,6 +16,8 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bci_network_client_manager_hook;
+		
 		using bc_actor_network_id = bcSIZE;
 		
 		enum class bc_network_manager_type : bcUBYTE
@@ -23,7 +25,7 @@ namespace black_cat
 			client, server
 		};
 		
-		class BC_GAME_DLL bc_network_system : public core::bc_initializable<bc_network_manager_type>
+		class BC_GAME_DLL bc_network_system : public core::bc_initializable<>
 		{
 		private:
 			using command_create_delegate = core::bc_delegate<bc_network_command_ptr()>;
@@ -38,10 +40,16 @@ namespace black_cat
 
 			bc_network_system& operator=(bc_network_system&&) noexcept;
 
+			void start_server(bcUINT16 p_port);
+
+			void start_client(const bcCHAR* p_ip, bcUINT16 p_port, bci_network_client_manager_hook& p_hook);
+			
 			void add_actor(bc_actor& p_actor);
 			
 			void remove_actor(bc_actor& p_actor);
 
+			bc_network_command_ptr create_command_instance(bc_network_command_hash p_hash);
+			
 			template<class TCommand>
 			void send_command(TCommand p_command);
 			
@@ -51,15 +59,16 @@ namespace black_cat
 			void register_commands(TCommand... p_commands);
 			
 		private:
-			void _initialize(bc_network_manager_type p_manager) override;
+			void _initialize() override;
 			
 			void _destroy() override;
 
 			template<class TCommand>
 			void _register_command();
 
-			core::bc_unique_ptr<bci_network_manager> m_manager;
 			commands_container m_command_factories;
+			bc_network_manager_type m_manager_type;
+			core::bc_unique_ptr<bci_network_manager> m_manager;
 		};
 
 		template<class TCommand>
@@ -87,6 +96,7 @@ namespace black_cat
 		void bc_network_system::_register_command()
 		{
 			static_assert(std::is_base_of_v<bci_network_command, TCommand>);
+			static_assert(std::is_default_constructible_v<TCommand>);
 			
 			m_command_factories.insert(std::make_pair
 			(

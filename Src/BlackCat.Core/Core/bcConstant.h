@@ -27,9 +27,9 @@ namespace black_cat
 
 #define BC_QUERY_NAME(p_name)					"qur_" ## #p_name
 
-#define BC_RENDER_PASS_NAME(p_name)				"rps_" ## #p_name
-
 #define BC_NETWORK_COMMAND_NAME(p_name)			"cmd_" ## #p_name
+		
+#define BC_RENDER_PASS_NAME(p_name)				"rps_" ## #p_name
 		
 #define BC_SERVICE(p_name) \
 	public: \
@@ -110,6 +110,17 @@ namespace black_cat
 		
 #define BC_SHARED_QUERY(p_name) BC_QUERY_DEFINITION(p_name, true)
 
+#define BC_NETWORK_COMMAND(p_name) \
+	public: \
+	static constexpr const bcCHAR* message_name() \
+	{ \
+		return BC_NETWORK_COMMAND_NAME(p_name); \
+	} \
+	static constexpr bcUINT32 message_hash() \
+	{ \
+		return BC_COMPILE_TIME_STRING_HASH(BC_NETWORK_COMMAND_NAME(p_name)); \
+	}
+		
 #define BC_RENDER_PASS(p_name) \
 	public: \
 	static constexpr const bcCHAR* render_pass_name() \
@@ -120,16 +131,6 @@ namespace black_cat
 	{ \
 		return BC_COMPILE_TIME_STRING_HASH(BC_RENDER_PASS_NAME(p_name)); \
 	}
+	
 	}
 }
-
-#define BC_NETWORK_COMMAND(p_name) \
-	public: \
-	static constexpr const bcCHAR* command_name() \
-	{ \
-		return BC_EVENT_NAME(p_name); \
-	} \
-	static constexpr bcUINT32 command_hash() \
-	{ \
-		return BC_COMPILE_TIME_STRING_HASH(BC_EVENT_NAME(p_name)); \
-	} \

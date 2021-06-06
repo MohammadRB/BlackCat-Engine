@@ -4,6 +4,7 @@
 
 #include "CorePlatform/bcPlatform.h"
 #include "Platform/Network/bcNetworkDefinitions.h"
+#include "Platform/bcException.h"
 
 namespace black_cat
 {
@@ -38,7 +39,7 @@ namespace black_cat
 			void set_timeout(bcUINT32 p_milliseconds);
 			
 			/**
-			 * \brief Bind to a specified network address to accept client connections. In case of any error throws a network exception
+			 * \brief Bind to a specified network address to accept client connections. In case of any error throws network exception
 			 * \param p_port 
 			 */
 			void bind(bcUINT16 p_port);
@@ -55,7 +56,7 @@ namespace black_cat
 			bc_platform_socket accept();
 			
 			/**
-			 * \brief Try to connect to specified network address. In case of any error throws a network exception
+			 * \brief Try to connect to specified network address. In case of any error throws network exception
 			 * \param p_address_family 
 			 * \param p_ip 
 			 * \param p_port 
@@ -63,7 +64,7 @@ namespace black_cat
 			void connect(bc_socket_address p_address_family, const bcCHAR* p_ip, bcUINT16 p_port);
 
 			/**
-			 * \brief Send data over a connected socket. In case of any error throws a network exception
+			 * \brief Send data over a connected socket. In case of any error throws network exception
 			 * \param p_buffer 
 			 * \param p_buffer_size 
 			 * \return The total number of bytes sent
@@ -71,7 +72,7 @@ namespace black_cat
 			bcUINT32 send(const void* p_buffer, bcUINT32 p_buffer_size);
 
 			/**
-			 * \brief Receives data from a connected socket. In case of any error throws a network exception
+			 * \brief Receives data from a connected socket. In case of any error throws network exception
 			 * \param p_buffer 
 			 * \param p_buffer_size 
 			 * \return The total number of bytes received

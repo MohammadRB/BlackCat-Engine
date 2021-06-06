@@ -11,7 +11,11 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_network_system::bc_network_system() = default;
+		bc_network_system::bc_network_system()
+			: m_manager_type(bc_network_manager_type::client),
+			m_manager(nullptr)
+		{
+		}
 
 		bc_network_system::bc_network_system(bc_network_system&&) noexcept = default;
 
@@ -25,6 +29,17 @@ namespace black_cat
 
 		bc_network_system& bc_network_system::operator=(bc_network_system&&) noexcept = default;
 
+		void bc_network_system::start_server(bcUINT16 p_port)
+		{
+			m_manager = core::bc_make_unique<bc_network_server_manager>(bc_network_server_manager(p_port));
+		}
+
+		void bc_network_system::start_client(const bcCHAR* p_ip, bcUINT16 p_port, bci_network_client_manager_hook& p_hook)
+		{
+			m_manager = core::bc_make_unique<bc_network_client_manager>(bc_network_client_manager(p_ip, p_port, p_hook));
+			m_manager_type = bc_network_manager_type::client;
+		}
+
 		void bc_network_system::add_actor(bc_actor& p_actor)
 		{
 		}
@@ -33,20 +48,40 @@ namespace black_cat
 		{
 		}
 
-		void bc_network_system::update(const core_platform::bc_clock::update_param& p_clock)
+		bc_network_command_ptr bc_network_system::create_command_instance(bc_network_command_hash p_hash)
 		{
+			const auto l_ite = m_command_factories.find(p_hash);
+			if(l_ite == std::cend(m_command_factories))
+			{
+				return nullptr;
+			}
+
+			auto l_command = l_ite->second();
+			return l_command;
 		}
 
-		void bc_network_system::_initialize(bc_network_manager_type p_manager)
+		void bc_network_system::update(const core_platform::bc_clock::update_param& p_clock)
+		{
+			if(!m_manager)
+			{
+				return;
+			}
+
+			m_manager->update(p_clock);
+		}
+
+		void bc_network_system::_initialize()
 		{
 			platform::bc_initialize_socket_library();
-			m_manager = p_manager == bc_network_manager_type::server ?
-				core::bc_make_unique<bc_network_server_manager>() :
-				core::bc_make_unique<bc_network_client_manager>();
 		}
 
 		void bc_network_system::_destroy()
 		{
+			if(m_manager)
+			{
+				m_manager.reset();
+			}
+			
 			platform::bc_cleanup_socket_library();
 		}
 	}

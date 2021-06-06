@@ -4,6 +4,7 @@
 
 #include "CorePlatform/bcPlatform.h"
 #include "Platform/Network/bcNetworkDefinitions.h"
+#include "Platform/bcException.h"
 
 namespace black_cat
 {
@@ -44,10 +45,11 @@ namespace black_cat
 			bool is_accept_available() const;
 
 			/**
-			 * \brief If socket is in connect mode, means connection establishment successfully completes
-			 * \return 
+			 * \brief If socket is in connect mode, means connection establishment successfully completed.
+			 * \n If any error has occurred during connection, throws network exception.
+			 * \return True if connection has established or False if connection is still in progress
 			 */
-			bool is_connect_available() const;
+			bool is_connect_succeeded() const;
 
 			/**
 			 * \brief Means queued data is available for reading such that a call to receive is guaranteed not to block
@@ -62,7 +64,7 @@ namespace black_cat
 			bool is_send_available() const;
 			
 			/**
-			 * \brief Bind to a specified network address to accept client connections. In case of any error throws a network exception
+			 * \brief Bind to a specified network address to accept client connections. In case of any error throws network exception
 			 * \param p_port
 			 */
 			void bind(bcUINT16 p_port);
@@ -79,7 +81,7 @@ namespace black_cat
 			bc_platform_non_block_socket accept();
 
 			/**
-			 * \brief Try to connect to specified network address. In case of any error throws a network exception
+			 * \brief Try to connect to specified network address. In case of any error throws network exception
 			 * \param p_address_family
 			 * \param p_ip
 			 * \param p_port
@@ -87,7 +89,7 @@ namespace black_cat
 			void connect(bc_socket_address p_address_family, const bcCHAR* p_ip, bcUINT16 p_port);
 
 			/**
-			 * \brief Send data over a connected socket. In case of any error throws a network exception
+			 * \brief Send data over a connected socket. In case of any error throws network exception
 			 * \param p_buffer
 			 * \param p_buffer_size
 			 * \return The total number of bytes sent
@@ -95,7 +97,7 @@ namespace black_cat
 			bcUINT32 send(const void* p_buffer, bcUINT32 p_buffer_size);
 
 			/**
-			 * \brief Receives data from a connected socket. In case of any error throws a network exception
+			 * \brief Receives data from a connected socket. In case of any error throws network exception
 			 * \param p_buffer
 			 * \param p_buffer_size
 			 * \return The total number of bytes received

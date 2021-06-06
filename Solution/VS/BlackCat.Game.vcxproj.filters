@@ -561,8 +561,17 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Command\bcNetworkCommand.h">
       <Filter>Game\System\Network\Command</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkConnection.h">
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkClientManagerHook.h">
       <Filter>Game\System\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcClientSocketStateMachine.h">
+      <Filter>Game\System\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkCommandPacket.h">
+      <Filter>Game\System\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Command\bcActorSyncNetworkCommand.h">
+      <Filter>Game\System\Network\Command</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -853,6 +862,15 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Command\bcNetworkCommand.cpp">
       <Filter>Game\System\Network\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkClientManager.cpp">
+      <Filter>Game\System\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkServerManager.cpp">
+      <Filter>Game\System\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Command\bcNetworkCommandPacket.cpp">
+      <Filter>Game\System\Network</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

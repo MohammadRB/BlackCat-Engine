@@ -4,12 +4,12 @@
 
 #include "CorePlatform/bcType.h"
 #include "CorePlatformImp/Utility/bcClock.h"
-#include "Core/bcConstant.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Core/Utility/bcDataDrivenParameter.h"
-#include "Game/bcExport.h"
+#include "Core/bcConstant.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
@@ -97,6 +97,30 @@ namespace black_cat
 			bc_actor& m_actor;
 		};
 
+		struct bc_actor_component_network_load_context
+		{
+			bc_actor_component_network_load_context(const core::bc_json_key_value& p_parameters, bc_actor& p_actor)
+				: m_parameters(p_parameters),
+				m_actor(p_actor)
+			{
+			}
+
+			const core::bc_json_key_value& m_parameters;
+			bc_actor& m_actor;
+		};
+
+		struct bc_actor_component_network_write_context
+		{
+			bc_actor_component_network_write_context(core::bc_json_key_value& p_parameters, bc_actor& p_actor)
+				: m_parameters(p_parameters),
+				m_actor(p_actor)
+			{
+			}
+
+			core::bc_json_key_value& m_parameters;
+			bc_actor& m_actor;
+		};
+
 		struct bc_actor_component_update_content
 		{
 			bc_actor_component_update_content(const core_platform::bc_clock::update_param& p_clock, core::bc_query_manager& p_query_manager, bc_game_system& p_game_system, bc_actor& p_actor)
@@ -156,8 +180,7 @@ namespace black_cat
 			virtual bc_actor get_actor() const noexcept = 0; // TODO provide default implementation
 
 			/**
-			 * \brief Will be called for every component which is added to actor's component list.
-			 * \n Must be used to initialize component data members that are shared between instances of this component.
+			 * \brief Must be used to initialize component data members that are shared between instances of this component.
 			 * \n In other word data members that act like entity template data.
 			 * \param p_context
 			 */
@@ -172,6 +195,10 @@ namespace black_cat
 			virtual void load_instance(const bc_actor_component_load_context& p_context);
 
 			virtual void write_instance(const bc_actor_component_write_context& p_context);
+
+			virtual void load_network_instance(const bc_actor_component_network_load_context& p_context);
+
+			virtual void write_network_instance(const bc_actor_component_network_write_context& p_context);
 
 			virtual void update(const bc_actor_component_update_content& p_context);
 
@@ -233,6 +260,14 @@ namespace black_cat
 		{
 		}
 
+		inline void bci_actor_component::load_network_instance(const bc_actor_component_network_load_context& p_context)
+		{
+		}
+
+		inline void bci_actor_component::write_network_instance(const bc_actor_component_network_write_context& p_context)
+		{
+		}
+		
 		inline void bci_actor_component::update(const bc_actor_component_update_content& p_context)
 		{
 		}

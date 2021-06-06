@@ -101,18 +101,31 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_non_block_socket<core_platform::g_api_win32>::is_connect_available() const
+		bool bc_platform_non_block_socket<core_platform::g_api_win32>::is_connect_succeeded() const
 		{
 			timeval l_no_timeout = { 0,0 };
 			fd_set l_socket = { 1, {m_pack.m_socket} };
 
-			const auto l_result = select(0, nullptr, &l_socket, nullptr, &l_no_timeout);
-			if (l_result == SOCKET_ERROR)
+			const auto l_write_result = select(0, nullptr, &l_socket, nullptr, &l_no_timeout);
+			if (l_write_result == SOCKET_ERROR)
 			{
 				bc_throw_network_exception();
 			}
 
-			return l_result > 1;
+			const bool l_succeeded = l_write_result > 1;
+			if(l_succeeded)
+			{
+				return true;
+			}
+
+			const auto l_except_result = select(0, nullptr, nullptr, &l_socket, &l_no_timeout);
+			const bool l_failed = l_except_result > 1;
+			if(l_failed)
+			{
+				bc_throw_network_exception();
+			}
+
+			return false;
 		}
 
 		template<>
@@ -228,6 +241,12 @@ namespace black_cat
 			const auto l_connect_result = ::connect(m_pack.m_socket, reinterpret_cast<sockaddr*>(&l_address), sizeof(l_address));
 			if (l_connect_result == SOCKET_ERROR)
 			{
+				const auto l_error = WSAGetLastError();
+				if(l_error == WSAEWOULDBLOCK)
+				{
+					return;
+				}
+				
 				bc_throw_network_exception();
 			}
 		}

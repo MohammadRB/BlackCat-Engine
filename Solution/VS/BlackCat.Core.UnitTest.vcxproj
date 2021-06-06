@@ -17,8 +17,9 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7FA92545-9115-47FE-87E3-134ED2595105}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>BlackCarCoreUnitTest</RootNamespace>
+    <RootNamespace>BlackCatCoreUnitTest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>BlackCat.Core.UnitTest</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -88,12 +89,13 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;..\..\Src\BlackCar.Core.UnitTest;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;..\..\Src\BlackCat.Core.UnitTest;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>CoreUnitTest/CoreUnitTestPCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -110,7 +112,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;..\..\Src\BlackCar.Core.UnitTest;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;..\..\Src\BlackCat.Core.UnitTest;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>CoreUnitTest/CoreUnitTestPCH.h</PrecompiledHeaderFile>
@@ -118,6 +120,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -136,12 +139,13 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;..\..\Src\BlackCar.Core.UnitTest;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;..\..\Src\BlackCat.Core.UnitTest;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>CoreUnitTest/CoreUnitTestPCH.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -153,19 +157,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Src\BlackCar.Core.UnitTest\CoreUnitTest\CoreUnitTestPCH.h" />
-    <ClInclude Include="..\..\Src\BlackCar.Core.UnitTest\CoreUnitTest\Memory\bcMemoryHeap.h" />
-    <ClInclude Include="..\..\Src\BlackCar.Core.UnitTest\CoreUnitTest\Memory\bcMemoryStack.h" />
-    <ClInclude Include="..\..\Src\BlackCar.Core.UnitTest\CoreUnitTest\targetver.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core.UnitTest\CoreUnitTest\CoreUnitTestPCH.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Src\BlackCar.Core.UnitTest\CoreUnitTest\CoreUnitTestPCH.cpp">
+    <ClCompile Include="..\..\Src\BlackCat.Core.UnitTest\CoreUnitTest\Container\bcStateMachine.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core.UnitTest\CoreUnitTest\CoreUnitTestPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCar.Core.UnitTest\CoreUnitTest\Memory\bcMemoryHeap.cpp" />
-    <ClCompile Include="..\..\Src\BlackCar.Core.UnitTest\CoreUnitTest\Memory\bcMemoryStack.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core.UnitTest\CoreUnitTest\Memory\bcMemoryHeap.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core.UnitTest\CoreUnitTest\Memory\bcMemoryStack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="BlackCat.Core.Platform.Win32.vcxproj">

@@ -2,7 +2,9 @@
 
 #pragma once
 
-#include "Core/CorePCH.h"
+#include <memory>
+#include <type_traits>
+#include <iterator>
 
 namespace black_cat
 {
@@ -174,6 +176,12 @@ namespace black_cat
 			static constexpr bool is_movable = std::is_move_constructible< raw_type >::value && std::is_move_assignable< raw_type >::value;
 			static constexpr bool is_no_throw_copy = std::is_nothrow_copy_constructible<type>::value && std::is_nothrow_copy_assignable<type>::value;
 			static constexpr bool is_no_throw_move = std::is_nothrow_move_constructible<type>::value && std::is_nothrow_move_assignable<type>::value;
+		};
+
+		template<typename T, typename ...Ts>
+		struct bc_contains
+		{
+			static constexpr bool value = std::disjunction_v<std::is_same<T, Ts>...>;
 		};
 	}
 }

@@ -59,11 +59,23 @@ namespace black_cat
 	public:
 		explicit bc_network_exception(const bcCHAR* p_message);
 
+		bc_network_exception(bcINT32 p_code, const bcCHAR* p_message);
+
 		bc_network_exception(const bc_network_exception&) = default;
 
 		~bc_network_exception() = default;
 
 		bc_network_exception& operator=(const bc_network_exception&) = default;
+
+		bcINT32 get_error_code() const noexcept;
+
+		core::bc_string_frame get_full_message() const
+		{
+			return core::bc_string_frame("Socket error with error-code: ") + core::bc_to_string_frame(m_error_code) + " " + what();
+		}
+	
+	private:
+		bcINT32 m_error_code;
 	};
 
 	inline bc_script_execute_exception::bc_script_execute_exception(const bcCHAR* p_message)
@@ -95,7 +107,19 @@ namespace black_cat
 	}
 
 	inline bc_network_exception::bc_network_exception(const bcCHAR* p_message)
-		: bc_runtime_exception(p_message)
+		: bc_runtime_exception(p_message),
+		m_error_code(0)
 	{
+	}
+
+	inline bc_network_exception::bc_network_exception(bcINT32 p_code, const bcCHAR* p_message)
+		: bc_runtime_exception(p_message),
+		m_error_code(p_code)
+	{
+	}
+
+	inline bcINT32 bc_network_exception::get_error_code() const noexcept
+	{
+		return m_error_code;
 	}
 }

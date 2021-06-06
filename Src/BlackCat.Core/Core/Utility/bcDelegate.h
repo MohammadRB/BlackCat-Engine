@@ -355,7 +355,7 @@ namespace black_cat
 			template< typename TFunctor >
 			void _bind(TFunctor& p_functor)
 			{
-				static_assert(sizeof(TFunctor) <= s_buffer_size, "Functor object is much large");
+				static_assert(sizeof(TFunctor) <= s_buffer_size, "Functor object is too large");
 
 				m_stub_call = &_func_stub_call<TFunctor>;
 				m_stub_action = &_func_stub_action<TFunctor>;

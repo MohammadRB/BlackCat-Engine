@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CorePlatformImp/Utility/bcClock.h"
-#include "Core/Container/bcSpan.h"
 #include "Game/System/Network/Command/bcNetworkCommand.h"
 
 namespace black_cat
@@ -23,7 +22,7 @@ namespace black_cat
 
 			virtual void send_command(bc_network_command_ptr p_command);
 			
-			virtual void update(const core_platform::bc_clock& p_clock, core::bc_span<bc_actor> p_actors) = 0;
+			virtual void update(const core_platform::bc_clock::update_param& p_clock) = 0;
 		};
 	}	
 }

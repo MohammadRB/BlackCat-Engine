@@ -12,7 +12,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test", "Test\Test.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BlackCat.Core", "BlackCat.Core.vcxproj", "{E4A77CC4-66C0-49B1-BFCF-A92173763741}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BlackCar.Core.UnitTest", "BlackCar.Core.UnitTest.vcxproj", "{7FA92545-9115-47FE-87E3-134ED2595105}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BlackCat.Core.UnitTest", "BlackCat.Core.UnitTest.vcxproj", "{7FA92545-9115-47FE-87E3-134ED2595105}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BlackCat.Core.Platform", "BlackCat.Core.Platform.vcxproj", "{0A058655-E489-4A80-962D-CECE777411AB}"
 EndProject

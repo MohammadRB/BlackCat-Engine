@@ -91,6 +91,7 @@
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <MinimalRebuild>false</MinimalRebuild>
       <EnablePREfast>true</EnablePREfast>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -132,6 +133,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
       <EnablePREfast>true</EnablePREfast>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -173,6 +175,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <EnablePREfast>true</EnablePREfast>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -217,6 +220,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcSpan.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcListPool.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcQueue.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcStateMachine.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcUnorderedMap.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcContent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Content\bcContentLoader.h" />

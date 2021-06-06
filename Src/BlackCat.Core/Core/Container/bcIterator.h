@@ -8,12 +8,14 @@ namespace black_cat
 {
 	namespace core
 	{
-		template< class TProvider >
+		template<class TProvider>
 		struct bc_input_iterator_provider_traits
 		{
 		public:
 			using provider_type = TProvider;
 			using value_type = typename provider_type::value_type;
+			using pointer = typename provider_type::pointer;
+			using reference = typename provider_type::reference;
 			using node_type = typename provider_type::node_type;
 
 			static bool validate(const provider_type& p_provider, const node_type* p_node) noexcept
@@ -42,17 +44,25 @@ namespace black_cat
 			}
 		};
 
-		template< typename TProvider >
-		struct bc_forward_iterator_provider_traits : public bc_input_iterator_provider_traits< TProvider >
-		{
-		};
-
-		template< typename TProvider >
-		struct bc_bidirectional_iterator_provider_traits : public bc_forward_iterator_provider_traits< TProvider >
+		template<typename TProvider>
+		struct bc_forward_iterator_provider_traits : public bc_input_iterator_provider_traits<TProvider>
 		{
 		public:
 			using provider_type = TProvider;
 			using value_type = typename provider_type::value_type;
+			using pointer = typename provider_type::pointer;
+			using reference = typename provider_type::reference;
+			using node_type = typename provider_type::node_type;
+		};
+
+		template<typename TProvider>
+		struct bc_bidirectional_iterator_provider_traits : public bc_forward_iterator_provider_traits<TProvider>
+		{
+		public:
+			using provider_type = TProvider;
+			using value_type = typename provider_type::value_type;
+			using pointer = typename provider_type::pointer;
+			using reference = typename provider_type::reference;
 			using node_type = typename provider_type::node_type;
 
 			static node_type* decrement(const provider_type& p_provider, node_type* p_node)
@@ -61,15 +71,18 @@ namespace black_cat
 			}
 		};
 
-		template< typename TProvider >
-		struct bc_random_access_iterator_provider_traits : public bc_bidirectional_iterator_provider_traits< TProvider >
+		template<typename TProvider>
+		struct bc_random_access_iterator_provider_traits : public bc_bidirectional_iterator_provider_traits<TProvider>
 		{
+		public:
 			using provider_type = TProvider;
 			using value_type = typename provider_type::value_type;
+			using pointer = typename provider_type::pointer;
+			using reference = typename provider_type::reference;
 			using node_type = typename provider_type::node_type;
 			using difference_type = typename provider_type::difference_type;
-			using bc_bidirectional_iterator_provider_traits< TProvider >::increment;
-			using bc_bidirectional_iterator_provider_traits< TProvider >::decrement;
+			using bc_bidirectional_iterator_provider_traits<TProvider>::increment;
+			using bc_bidirectional_iterator_provider_traits<TProvider>::decrement;
 
 			static node_type* increment(const provider_type& p_provider, node_type* p_node, difference_type p_step)
 			{
@@ -82,21 +95,23 @@ namespace black_cat
 			}
 		};
 
-		template< typename TProvider >
+		template<typename TProvider>
 		class bc_input_iterator : public std::iterator
-		< 
+		<
 			std::input_iterator_tag,
 			typename TProvider::value_type,
 			typename TProvider::difference_type,
 			typename TProvider::pointer,
-			typename TProvider::reference 
+			typename TProvider::reference
 		>
 		{
 		public:
 			using this_type = bc_input_iterator;
 			using provider_type = TProvider;
-			using value_type = typename bc_input_iterator_provider_traits< provider_type >::value_type;
-			using node_type = typename bc_input_iterator_provider_traits< provider_type >::node_type;
+			using value_type = typename bc_input_iterator_provider_traits<provider_type>::value_type;
+			using pointer = typename bc_input_iterator_provider_traits<provider_type>::pointer;
+			using reference = typename bc_input_iterator_provider_traits<provider_type>::reference;
+			using node_type = typename bc_input_iterator_provider_traits<provider_type>::node_type;
 
 		public:
 			bc_input_iterator(const provider_type* p_provider, node_type* p_node) noexcept
@@ -111,9 +126,7 @@ namespace black_cat
 			{
 			}
 
-			~bc_input_iterator()
-			{
-			}
+			~bc_input_iterator() = default;
 
 			this_type& operator =(const this_type& p_other) noexcept
 			{
@@ -182,17 +195,22 @@ namespace black_cat
 			node_type* m_node;
 		};
 
-		template< typename TProvider >
-		class bc_const_forward_iterator : public std::iterator<std::forward_iterator_tag,
+		template<typename TProvider>
+		class bc_const_forward_iterator : public std::iterator
+		<
+			std::forward_iterator_tag,
 			typename TProvider::value_type,
 			typename TProvider::difference_type,
 			typename TProvider::pointer,
-			typename TProvider::reference >
+			typename TProvider::reference
+		>
 		{
 		public:
 			using this_type = bc_const_forward_iterator;
 			using provider_type = TProvider;
 			using value_type = typename bc_forward_iterator_provider_traits< provider_type >::value_type;
+			using pointer = typename bc_forward_iterator_provider_traits<provider_type>::pointer;
+			using reference = typename bc_forward_iterator_provider_traits<provider_type>::reference;
 			using node_type = typename bc_forward_iterator_provider_traits< provider_type >::node_type;
 
 		public:
@@ -208,9 +226,7 @@ namespace black_cat
 			{
 			}
 
-			~bc_const_forward_iterator()
-			{
-			}
+			~bc_const_forward_iterator() = default;
 
 			this_type& operator =(const this_type& p_other) noexcept
 			{
@@ -280,14 +296,16 @@ namespace black_cat
 		};
 
 		template< typename TProvider >
-		class bc_forward_iterator : public bc_const_forward_iterator< TProvider >
+		class bc_forward_iterator : public bc_const_forward_iterator<TProvider>
 		{
 		public:
 			using this_type = bc_forward_iterator;
-			using base_type = bc_const_forward_iterator< TProvider >;
+			using base_type = bc_const_forward_iterator<TProvider>;
 			using provider_type = TProvider;
-			using value_type = typename bc_forward_iterator_provider_traits< provider_type >::value_type;
-			using node_type = typename bc_forward_iterator_provider_traits< provider_type >::node_type;
+			using value_type = typename bc_forward_iterator_provider_traits<provider_type>::value_type;
+			using pointer = typename bc_forward_iterator_provider_traits<provider_type>::pointer;
+			using reference = typename bc_forward_iterator_provider_traits<provider_type>::reference;
+			using node_type = typename bc_forward_iterator_provider_traits<provider_type>::node_type;
 
 		public:
 			bc_forward_iterator(const provider_type* p_provider, node_type* p_node) noexcept
@@ -300,9 +318,7 @@ namespace black_cat
 			{
 			}
 
-			~bc_forward_iterator()
-			{
-			}
+			~bc_forward_iterator() = default;
 
 			this_type& operator =(const this_type& p_other) noexcept
 			{
@@ -353,17 +369,22 @@ namespace black_cat
 			}
 		};
 
-		template< typename TProvider >
-		class bc_const_bidirectional_iterator : public std::iterator< std::bidirectional_iterator_tag,
+		template<typename TProvider>
+		class bc_const_bidirectional_iterator : public std::iterator
+		<
+			std::bidirectional_iterator_tag,
 		    typename TProvider::value_type,
 		    typename TProvider::difference_type,
 		    typename TProvider::pointer,
-		    typename TProvider::reference >
+		    typename TProvider::reference
+		>
 		{
 		public:
 			using this_type = bc_const_bidirectional_iterator;
 			using provider_type = TProvider;
-			using value_type = typename bc_bidirectional_iterator_provider_traits< provider_type >::value_type;
+			using value_type = typename bc_bidirectional_iterator_provider_traits<provider_type>::value_type;
+			using pointer = typename bc_bidirectional_iterator_provider_traits<provider_type>::pointer;
+			using reference = typename bc_bidirectional_iterator_provider_traits<provider_type>::reference;
 			using node_type = typename bc_bidirectional_iterator_provider_traits< provider_type >::node_type;
 
 		public:
@@ -379,9 +400,7 @@ namespace black_cat
 			{
 			}
 
-			~bc_const_bidirectional_iterator()
-			{
-			}
+			~bc_const_bidirectional_iterator() = default;
 
 			this_type& operator =(const this_type& p_other) noexcept
 			{
@@ -470,15 +489,17 @@ namespace black_cat
 			node_type* m_node;
 		};
 
-		template< typename TProvider >
-		class bc_bidirectional_iterator : public bc_const_bidirectional_iterator< TProvider >
+		template<typename TProvider>
+		class bc_bidirectional_iterator : public bc_const_bidirectional_iterator<TProvider>
 		{
 		public:
 			using this_type = bc_bidirectional_iterator;
-			using base_type = bc_const_bidirectional_iterator< TProvider >;
+			using base_type = bc_const_bidirectional_iterator<TProvider>;
 			using provider_type = TProvider;
-			using value_type = typename bc_bidirectional_iterator_provider_traits< provider_type >::value_type;
-			using node_type = typename bc_bidirectional_iterator_provider_traits< provider_type >::node_type;
+			using value_type = typename bc_bidirectional_iterator_provider_traits<provider_type>::value_type;
+			using pointer = typename bc_bidirectional_iterator_provider_traits<provider_type>::pointer;
+			using reference = typename bc_bidirectional_iterator_provider_traits<provider_type>::reference;
+			using node_type = typename bc_bidirectional_iterator_provider_traits<provider_type>::node_type;
 
 		public:
 			bc_bidirectional_iterator(const provider_type* p_provider, node_type* p_node) noexcept
@@ -491,9 +512,7 @@ namespace black_cat
 			{
 			}
 
-			~bc_bidirectional_iterator()
-			{
-			}
+			~bc_bidirectional_iterator() = default;
 
 			this_type& operator =(const this_type& p_other) noexcept
 			{
@@ -560,18 +579,24 @@ namespace black_cat
 			}
 		};
 
-		template< typename TProvider >
-		class bc_const_random_access_iterator : public std::iterator< std::random_access_iterator_tag,
+		template<typename TProvider>
+		class bc_const_random_access_iterator : public std::iterator
+		<
+			std::random_access_iterator_tag,
 			typename TProvider::value_type,
 			typename TProvider::difference_type,
 			typename TProvider::pointer,
-			typename TProvider::reference >
+			typename TProvider::reference
+		>
 		{
 		public:
 			using this_type = bc_const_random_access_iterator;
 			using provider_type = TProvider;
-			using value_type = typename bc_random_access_iterator_provider_traits< provider_type >::value_type;
-			using node_type = typename bc_random_access_iterator_provider_traits< provider_type >::node_type;
+			using value_type = typename bc_random_access_iterator_provider_traits<provider_type>::value_type;
+			using pointer = typename bc_random_access_iterator_provider_traits<provider_type>::pointer;
+			using reference = typename bc_random_access_iterator_provider_traits<provider_type>::reference;
+			using node_type = typename bc_random_access_iterator_provider_traits<provider_type>::node_type;
+			using difference_type = typename bc_random_access_iterator_provider_traits<provider_type>::difference_type;
 
 		public:
 			bc_const_random_access_iterator(const provider_type* p_provider, node_type* p_node) noexcept
@@ -586,9 +611,7 @@ namespace black_cat
 			{
 			}
 
-			~bc_const_random_access_iterator()
-			{
-			}
+			~bc_const_random_access_iterator() = default;
 
 			this_type& operator =(const this_type& p_other) noexcept
 			{
@@ -740,15 +763,18 @@ namespace black_cat
 			node_type* m_node;
 		};
 
-		template< typename TProvider >
-		class bc_random_access_iterator : public bc_const_random_access_iterator< TProvider >
+		template<typename TProvider>
+		class bc_random_access_iterator : public bc_const_random_access_iterator<TProvider>
 		{
 		public:
 			using this_type = bc_random_access_iterator;
-			using base_type = bc_const_random_access_iterator< TProvider >;
+			using base_type = bc_const_random_access_iterator<TProvider>;
 			using provider_type = TProvider;
-			using value_type = typename bc_bidirectional_iterator_provider_traits< provider_type >::value_type;
-			using node_type = typename bc_bidirectional_iterator_provider_traits< provider_type >::node_type;
+			using value_type = typename bc_bidirectional_iterator_provider_traits<provider_type>::value_type;
+			using pointer = typename bc_random_access_iterator_provider_traits<provider_type>::pointer;
+			using reference = typename bc_random_access_iterator_provider_traits<provider_type>::reference;
+			using node_type = typename bc_bidirectional_iterator_provider_traits<provider_type>::node_type;
+			using difference_type = typename bc_random_access_iterator_provider_traits<provider_type>::difference_type;
 
 		public:
 			bc_random_access_iterator(const provider_type* p_provider, node_type* p_node) noexcept
@@ -761,9 +787,7 @@ namespace black_cat
 			{
 			}
 
-			~bc_random_access_iterator()
-			{
-			}
+			~bc_random_access_iterator() = default;
 
 			this_type& operator =(const this_type& p_other) noexcept
 			{
@@ -885,7 +909,7 @@ namespace black_cat
 			}
 		};
 
-		template< class TProvider >
+		template<class TProvider>
 		bc_const_random_access_iterator<TProvider> operator +(typename bc_const_random_access_iterator<TProvider>::difference_type p_first,
 			bc_const_random_access_iterator<TProvider>& p_second)
 		{
@@ -895,7 +919,7 @@ namespace black_cat
 			return l_temp;
 		}
 
-		template< class TProvider >
+		template<class TProvider>
 		bc_random_access_iterator<TProvider> operator +(typename bc_random_access_iterator<TProvider>::difference_type p_first,
 			bc_random_access_iterator<TProvider>& p_second)
 		{
@@ -909,18 +933,22 @@ namespace black_cat
 		 * \brief Unlike std::reverse_iterator this iterator does not point to one-past-the-end iterator
 		 * \tparam TIterator 
 		 */
-		template< typename TIterator >
-		class bc_reverse_iterator : public std::iterator< typename std::iterator_traits<TIterator>::iterator_category,
+		template<typename TIterator>
+		class bc_reverse_iterator : public std::iterator
+		<
+			typename std::iterator_traits<TIterator>::iterator_category,
 			typename std::iterator_traits<TIterator>::value_type,
 			typename std::iterator_traits<TIterator>::difference_type,
 			typename std::iterator_traits<TIterator>::pointer,
-			typename std::iterator_traits<TIterator>::reference >
+			typename std::iterator_traits<TIterator>::reference
+		>
 		{
 		public:
 			using this_type = bc_reverse_iterator;
 			using iterator_type = TIterator;
 			using pointer = typename std::iterator_traits<TIterator>::pointer;
 			using reference = typename std::iterator_traits<TIterator>::reference;
+			using difference_type = typename std::iterator_traits<TIterator>::difference_type;
 
 		public:
 			explicit bc_reverse_iterator(TIterator p_iterator) noexcept
@@ -933,9 +961,7 @@ namespace black_cat
 			{
 			}
 
-			~bc_reverse_iterator()
-			{
-			}
+			~bc_reverse_iterator() = default;
 
 			this_type& operator =(const this_type& p_other) noexcept
 			{
