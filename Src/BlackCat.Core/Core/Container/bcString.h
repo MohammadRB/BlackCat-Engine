@@ -448,29 +448,29 @@ namespace black_cat
 		};
 		*/
 
-		template< typename TChar, typename TTraits, typename TAllocator >
+		template<typename TChar, typename TTraits, typename TAllocator>
 		using bc_basic_string = std::basic_string<TChar, TTraits, TAllocator>;
 
-		using bc_string = bc_basic_string< bcCHAR, std::char_traits< bcCHAR >, bc_allocator< bcCHAR > >;
+		using bc_string = bc_basic_string<bcCHAR, std::char_traits<bcCHAR>, bc_allocator<bcCHAR>>;
 
-		template<template<typename> typename TAllocator >
-		using bc_string_a = bc_basic_string< bcCHAR, std::char_traits< bcCHAR >, TAllocator< bcCHAR > >;
+		template<template<typename> typename TAllocator>
+		using bc_string_a = bc_basic_string<bcCHAR, std::char_traits<bcCHAR>, TAllocator<bcCHAR>>;
 
-		using bc_string_program = bc_string_a< bc_allocator_program >;
+		using bc_string_program = bc_string_a<bc_allocator_program>;
 
-		using bc_string_frame = bc_string_a< bc_allocator_frame >;
+		using bc_string_frame = bc_string_a<bc_allocator_frame>;
 
 		/*template<template<typename> typename TAllocator >
 		using bc_string_movable = bc_string_a< bc_allocator_movable >;*/
 
-		using bc_wstring = bc_basic_string< bcWCHAR, std::char_traits< bcWCHAR >, bc_allocator< bcECHAR > >;
+		using bc_wstring = bc_basic_string<bcWCHAR, std::char_traits<bcWCHAR>, bc_allocator<bcECHAR>>;
 
 		template<template<typename> typename TAllocator >
-		using bc_wstring_a = bc_basic_string< bcWCHAR, std::char_traits< bcWCHAR >, TAllocator< bcECHAR > >;
+		using bc_wstring_a = bc_basic_string<bcWCHAR, std::char_traits<bcWCHAR>, TAllocator<bcECHAR>>;
 
-		using bc_wstring_program = bc_wstring_a< bc_allocator_program >;
+		using bc_wstring_program = bc_wstring_a<bc_allocator_program>;
 
-		using bc_wstring_frame = bc_wstring_a< bc_allocator_frame >;
+		using bc_wstring_frame = bc_wstring_a<bc_allocator_frame>;
 
 		/*template<template<typename> typename TAllocator >
 		using bc_wstring_movable = bc_wstring_a< bc_allocator_movable >;*/
@@ -478,18 +478,18 @@ namespace black_cat
 #ifdef BC_UNICODE
 		using bc_estring = bc_wstring;
 
-		template<template<typename> typename TAllocator >
-		using bc_estring_a = bc_wstring_a< TAllocator >;
+		template<template<typename> typename TAllocator>
+		using bc_estring_a = bc_wstring_a<TAllocator>;
 #else
 		using bc_estring = bc_string;
 
-		template<template<typename> typename TAllocator >
+		template<template<typename> typename TAllocator>
 		using bc_estring_a = bc_string_a<TAllocator>;
 #endif
 
-		using bc_estring_program = bc_estring_a< bc_allocator_program >;
+		using bc_estring_program = bc_estring_a<bc_allocator_program>;
 
-		using bc_estring_frame = bc_estring_a< bc_allocator_frame >;
+		using bc_estring_frame = bc_estring_a<bc_allocator_frame>;
 		
 		/*
 		template< class TChar, class TTraits, class TAllocator >
@@ -2146,29 +2146,31 @@ namespace black_cat
 		{
 			return *p_str ? 1 + bc_compile_time_str_len(p_str + 1) : 0;
 		}
+
+		using bc_string_cmp_hash = bcUINT32;
 		
 		// http://stackoverflow.com/questions/2111667/compile-time-string-hashing
-		template< bcSIZE TIdx >
-		constexpr bcUINT32 _str_crc32(const bcCHAR* p_str)
+		template<bcSIZE TLen>
+		constexpr bc_string_cmp_hash _str_crc32(const bcCHAR* p_str)
 		{
-			static_assert(TIdx + 1 <= 11, "Length of compile time string must be equal-lower than 11");
-			return (_str_crc32< TIdx - 1 >(p_str) >> 8) ^ _crc_table[(_str_crc32< TIdx - 1 >(p_str) ^ p_str[TIdx]) & 0x000000FF];
+			static_assert(TLen + 1 <= 11, "Length of compile time string must be equal-lower than 11");
+			return (_str_crc32< TLen - 1 >(p_str) >> 8) ^ _crc_table[(_str_crc32< TLen - 1 >(p_str) ^ p_str[TLen]) & 0x000000FF];
 		}
 
 		template<>
-		constexpr bcUINT32 _str_crc32< bcSIZE(-1) >(const bcCHAR* p_str)
+		constexpr bc_string_cmp_hash _str_crc32<static_cast<bcSIZE>(-1)>(const bcCHAR* p_str)
 		{
 			return 0xFFFFFFFF;
 		}
 
-		inline bcUINT32 __str_crc32(const bcCHAR* p_str, bcSIZE p_idx)
+		inline bc_string_cmp_hash __str_crc32(const bcCHAR* p_str, bcSIZE p_idx)
 		{
 			if(p_idx == -1)
 			{
 				return 0xFFFFFFFF;
 			}
 
-			const bcUINT32 l_prev_crc = __str_crc32(p_str, p_idx - 1); // TODO make function non recursive
+			const bc_string_cmp_hash l_prev_crc = __str_crc32(p_str, p_idx - 1); // TODO make function non recursive
 			return (l_prev_crc >> 8) ^ _crc_table[(l_prev_crc ^ p_str[p_idx]) & 0x000000FF];
 		}
 

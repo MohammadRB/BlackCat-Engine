@@ -14,17 +14,18 @@ namespace black_cat
 		class bc_actor_component_manager;
 		class bc_entity_manager;
 		class bc_shape_drawer;
-		using bc_actor_index = bcINT32;
 		class bci_actor_component;
 		struct bc_actor_component_write_context;
 		struct bc_actor_component_load_context;
 		struct bc_actor_component_network_write_context;
 		struct bc_actor_component_network_load_context;
+		using bc_actor_id = bcINT32;
+		using bc_actor_network_id = bcINT32;
 
 		class bc_actor
 		{
 		public:
-			constexpr static bc_actor_index invalid_index = static_cast< bc_actor_index >(-1);
+			constexpr static bc_actor_id invalid_id = static_cast<bc_actor_id>(-1);
 
 		private:
 			friend class bc_actor_component_manager;
@@ -32,7 +33,7 @@ namespace black_cat
 		public:
 			bc_actor();
 
-			explicit bc_actor(bc_actor_index p_index);
+			explicit bc_actor(bc_actor_id p_index);
 
 			bc_actor(const bc_actor&) noexcept;
 
@@ -40,7 +41,7 @@ namespace black_cat
 
 			bc_actor& operator=(const bc_actor&) noexcept;
 
-			bc_actor_index get_index() const noexcept;
+			bc_actor_id get_id() const noexcept;
 
 			const bc_actor_event* get_events() const noexcept;
 			
@@ -85,7 +86,7 @@ namespace black_cat
 			
 			static bc_entity_manager& _get_entity_manager() noexcept;
 
-			bc_actor_index m_index;
+			bc_actor_id m_index;
 		};
 
 		void bc_actor_load_instance(core::bc_vector_frame<bci_actor_component*>& p_buffer, const bc_actor_component_load_context& p_context);

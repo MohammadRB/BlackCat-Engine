@@ -18,12 +18,12 @@ namespace black_cat
 {
 	namespace core
 	{
-#define BC_JSON_VALUE(type, name)			black_cat::core::bc_json_value< type > m_##name { #name, this }
-#define BC_JSON_VALUE_OP(type, name)		black_cat::core::bc_json_value< type > m_##name { #name, this, true }
-#define BC_JSON_OBJECT(type, name)			black_cat::core::bc_json_object< type > m_##name { #name, this }
-#define BC_JSON_OBJECT_OP(type, name)		black_cat::core::bc_json_object< type > m_##name { #name, this, true }
-#define BC_JSON_ARRAY(type, name)			black_cat::core::bc_json_array< type > m_##name { #name, this }
-#define BC_JSON_ARRAY_OP(type, name)		black_cat::core::bc_json_array< type > m_##name { #name, this, true }
+#define BC_JSON_VALUE(type, name)			black_cat::core::bc_json_value<type> m_##name { #name, this }
+#define BC_JSON_VALUE_OP(type, name)		black_cat::core::bc_json_value<type> m_##name { #name, this, true }
+#define BC_JSON_OBJECT(type, name)			black_cat::core::bc_json_object<type> m_##name { #name, this }
+#define BC_JSON_OBJECT_OP(type, name)		black_cat::core::bc_json_object<type> m_##name { #name, this, true }
+#define BC_JSON_ARRAY(type, name)			black_cat::core::bc_json_array<type> m_##name { #name, this }
+#define BC_JSON_ARRAY_OP(type, name)		black_cat::core::bc_json_array<type> m_##name { #name, this, true }
 #define BC_JSON_STRUCTURE(type)				struct type : public black_cat::core::bci_json_structure
 
 		class bci_json_value;
@@ -153,7 +153,7 @@ namespace black_cat
 		class bc_json_key_value
 		{
 		public:
-			using key_value_array = bc_vector< std::pair< bc_string, bc_any > >;
+			using key_value_array = bc_vector<std::pair<bc_string, bc_any>>;
 			using value_type = key_value_array::value_type;
 			using pointer = key_value_array::pointer;
 			using const_pointer = key_value_array::const_pointer;
@@ -271,7 +271,7 @@ namespace black_cat
 		 * bc_string_frame, bc_json_key_value and bc_parameter_pack which last one can hold all of previous types.
 		 * \tparam T
 		 */
-		template< typename T >
+		template<typename T>
 		class bc_json_value : public bci_json_value
 		{
 		public:
@@ -664,7 +664,7 @@ namespace black_cat
 			T m_value;
 		};
 
-		template< class T >
+		template<class T>
 		class bc_json_object : public bci_json_value
 		{
 		public:
@@ -679,7 +679,7 @@ namespace black_cat
 
 			bc_json_object(bc_json_object&&) noexcept(std::is_nothrow_move_constructible<T>::value) = delete;
 
-			~bc_json_object() = default;
+			~bc_json_object() override = default;
 
 			bc_json_object& operator=(const bc_json_object&) noexcept(std::is_nothrow_copy_assignable<T>::value) = delete;
 
@@ -768,8 +768,8 @@ namespace black_cat
 			T m_value;
 		};
 
-		template< typename T, typename T1 = void >
-		class bc_json_array : public bci_json_value, public bc_iterator_adapter<bc_list< bc_json_object< T > >>
+		template<typename T, typename T1 = void>
+		class bc_json_array : public bci_json_value, public bc_iterator_adapter<bc_list<bc_json_object< T >>>
 		{
 		public:
 			using list_t = bc_list< bc_json_object< T > >;
@@ -806,7 +806,7 @@ namespace black_cat
 			{
 			}
 
-			~bc_json_array() = default;
+			~bc_json_array() override = default;
 
 			bc_json_array& operator=(const bc_json_array&) noexcept(std::is_nothrow_copy_assignable<T>::value) = default;
 
@@ -858,7 +858,7 @@ namespace black_cat
 				}
 			}
 
-			bc_json_object< T >& new_entry()
+			bc_json_object<T>& new_entry()
 			{
 				m_value.emplace_back(nullptr, nullptr);
 
@@ -876,26 +876,26 @@ namespace black_cat
 			list_t m_value;			// Because json objects are not copyable and movable we have used list instead of vector
 		};
 
-		template< typename T >
+		template<typename T>
 		class bc_json_array
 			<
 			T,
 			typename std::enable_if
 			<
-			std::is_same< bool, typename std::decay< T >::type >::value ||
-			std::is_same< bcINT, typename std::decay< T >::type >::value ||
-			std::is_same< bcUINT, typename std::decay< T >::type >::value ||
-			std::is_same< bcFLOAT, typename std::decay< T >::type >::value ||
-			std::is_same< bc_string, typename std::decay< T >::type >::value ||
-			std::is_same< bc_string_program, typename std::decay< T >::type >::value ||
-			std::is_same< bc_string_frame, typename std::decay< T >::type >::value ||
-			std::is_same< bc_parameter_pack, typename std::decay< T >::type >::value ||
-			std::is_same< bc_any, typename std::decay< T >::type >::value
+			std::is_same<bool, typename std::decay<T>::type>::value ||
+			std::is_same<bcINT, typename std::decay<T>::type>::value ||
+			std::is_same<bcUINT, typename std::decay<T>::type>::value ||
+			std::is_same<bcFLOAT, typename std::decay<T>::type>::value ||
+			std::is_same<bc_string, typename std::decay<T>::type>::value ||
+			std::is_same<bc_string_program, typename std::decay<T>::type>::value ||
+			std::is_same<bc_string_frame, typename std::decay<T>::type>::value ||
+			std::is_same<bc_parameter_pack, typename std::decay<T>::type>::value ||
+			std::is_same<bc_any, typename std::decay<T>::type>::value
 			>::type
-		> : public bci_json_value, public bc_iterator_adapter<bc_list< bc_json_value< T > >>
+		> : public bci_json_value, public bc_iterator_adapter<bc_list<bc_json_value<T>>>
 		{
 		public:
-			using list_t = bc_list< bc_json_value< T > >;
+			using list_t = bc_list<bc_json_value<T>>;
 			using value_type = typename list_t::value_type;
 			using pointer = typename list_t::pointer;
 			using reference = typename list_t::reference;
@@ -929,7 +929,7 @@ namespace black_cat
 			{
 			}
 
-			~bc_json_array() = default;
+			~bc_json_array() override = default;
 
 			bc_json_array& operator=(const bc_json_array&) noexcept(std::is_nothrow_copy_assignable<T>::value) = delete;
 
@@ -981,7 +981,7 @@ namespace black_cat
 				}
 			}
 
-			bc_json_value< T >& new_entry()
+			bc_json_value<T>& new_entry()
 			{
 				m_value.emplace_back(nullptr, nullptr);
 
@@ -999,7 +999,7 @@ namespace black_cat
 			list_t m_value;			// Because json objects are not copyable and movable we have used list instead of vector
 		};
 
-		template< typename T >
+		template<typename T>
 		class bc_json_document
 		{
 		public:

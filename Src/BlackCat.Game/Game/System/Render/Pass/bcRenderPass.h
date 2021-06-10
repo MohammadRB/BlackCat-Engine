@@ -4,6 +4,7 @@
 
 #include "CorePlatform/Utility/bcNoCopy.h"
 #include "CorePlatformImp/Utility/bcClock.h"
+#include "Core/Container/bcString.h"
 #include "Graphic/bcEvent.h"
 #include "Game/bcConstant.h"
 #include "Game/System/Render/Pass/bcRenderPassResourceShare.h"
@@ -34,7 +35,7 @@ namespace black_cat
 				return TPass::render_pass_name();
 			}
 			
-			static constexpr bcUINT32 render_pass_hash()
+			static constexpr core::bc_string_cmp_hash render_pass_hash()
 			{
 				return TPass::render_pass_hash();
 			}

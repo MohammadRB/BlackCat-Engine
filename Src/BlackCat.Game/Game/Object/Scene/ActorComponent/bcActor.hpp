@@ -15,11 +15,11 @@ namespace black_cat
 	namespace game
 	{
 		inline bc_actor::bc_actor()
-			: m_index(invalid_index)
+			: m_index(invalid_id)
 		{
 		}
 
-		inline bc_actor::bc_actor(bc_actor_index p_index)
+		inline bc_actor::bc_actor(bc_actor_id p_index)
 			: m_index(p_index)
 		{
 		}
@@ -30,7 +30,7 @@ namespace black_cat
 
 		inline bc_actor& bc_actor::operator=(const bc_actor&) noexcept = default;
 
-		inline bc_actor_index bc_actor::get_index() const noexcept
+		inline bc_actor_id bc_actor::get_id() const noexcept
 		{
 			return m_index;
 		}
@@ -119,12 +119,12 @@ namespace black_cat
 			BC_ASSERT(is_valid());
 			
 			_get_entity_manager().remove_entity(*this);
-			m_index = invalid_index;
+			m_index = invalid_id;
 		}
 
 		inline bool bc_actor::is_valid() const noexcept
 		{
-			return m_index != invalid_index;
+			return m_index != invalid_id;
 		}
 
 		inline bool bc_actor::operator==(const bc_actor& p_other) const noexcept

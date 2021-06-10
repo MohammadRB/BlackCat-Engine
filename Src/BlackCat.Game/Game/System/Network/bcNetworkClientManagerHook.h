@@ -3,7 +3,7 @@
 #pragma once
 
 #include "PlatformImp/Network/bcNonBlockSocket.h"
-#include "Game/System/Network/Command/bcNetworkCommand.h"
+#include "Game/System/Network/Message/bcNetworkMessage.h"
 
 namespace black_cat
 {
@@ -18,9 +18,9 @@ namespace black_cat
 			
 			void error_occurred(const bc_network_exception* p_exception);
 
-			void command_sent(bci_network_command& p_command);
+			void message_sent(bci_network_message& p_message);
 			
-			void command_received(bci_network_command& p_command);
+			void message_received(bci_network_message& p_message);
 		};
 	}	
 }

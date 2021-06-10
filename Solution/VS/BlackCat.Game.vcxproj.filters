@@ -76,7 +76,7 @@
     <Filter Include="Game\System\Network">
       <UniqueIdentifier>{0af08e12-f59c-4337-a134-c66ef03299fb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\System\Network\Command">
+    <Filter Include="Game\System\Network\Message">
       <UniqueIdentifier>{470e2d19-aa7d-4c5c-9a8b-6483fc31f355}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -558,20 +558,32 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkManager.h">
       <Filter>Game\System\Network</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Command\bcNetworkCommand.h">
-      <Filter>Game\System\Network\Command</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkClientManagerHook.h">
       <Filter>Game\System\Network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcClientSocketStateMachine.h">
       <Filter>Game\System\Network</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkCommandPacket.h">
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkMessageBuffer.h">
       <Filter>Game\System\Network</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Command\bcActorSyncNetworkCommand.h">
-      <Filter>Game\System\Network\Command</Filter>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcNetworkMessage.h">
+      <Filter>Game\System\Network\Message</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcActorSyncNetworkMessage.h">
+      <Filter>Game\System\Network\Message</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcActorReplicateNetworkMessage.h">
+      <Filter>Game\System\Network\Message</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcActorRemoveNetworkMessage.h">
+      <Filter>Game\System\Network\Message</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcAcknowledgeNetworkMessage.h">
+      <Filter>Game\System\Network\Message</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcServerSocketStateMachine.h">
+      <Filter>Game\System\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -860,16 +872,16 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcNetworkComponent.cpp">
       <Filter>Game\Object\Scene\Component</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Command\bcNetworkCommand.cpp">
-      <Filter>Game\System\Network\Command</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkClientManager.cpp">
       <Filter>Game\System\Network</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkServerManager.cpp">
       <Filter>Game\System\Network</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Command\bcNetworkCommandPacket.cpp">
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcNetworkMessage.cpp">
+      <Filter>Game\System\Network\Message</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkMessageBuffer.cpp">
       <Filter>Game\System\Network</Filter>
     </ClCompile>
   </ItemGroup>

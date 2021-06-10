@@ -10,6 +10,9 @@
     <Filter Include="CoreUnitTest\Container">
       <UniqueIdentifier>{ad311cb9-1029-4f1a-854e-52a5ea6bb2d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CoreUnitTest\File">
+      <UniqueIdentifier>{482cc5c3-b809-462d-b556-17221c507db9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Core.UnitTest\CoreUnitTest\CoreUnitTestPCH.h">
@@ -28,6 +31,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core.UnitTest\CoreUnitTest\CoreUnitTestPCH.cpp">
       <Filter>CoreUnitTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.UnitTest\CoreUnitTest\File\bcMemoryStream.cpp">
+      <Filter>CoreUnitTest\File</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

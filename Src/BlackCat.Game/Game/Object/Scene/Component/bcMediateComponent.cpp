@@ -14,7 +14,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_mediate_component::bc_mediate_component(bc_actor_index p_actor_index, bc_actor_component_index p_index)
+		bc_mediate_component::bc_mediate_component(bc_actor_id p_actor_index, bc_actor_component_id p_index)
 			: bci_actor_component(p_actor_index, p_index),
 			m_entity_name(nullptr),
 			m_scene(nullptr),

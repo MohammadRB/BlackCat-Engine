@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CorePlatformImp/Utility/bcClock.h"
-#include "Game/System/Network/Command/bcNetworkCommand.h"
+#include "Game/System/Network/Message/bcNetworkMessage.h"
 
 namespace black_cat
 {
@@ -20,7 +20,7 @@ namespace black_cat
 
 			virtual void remove_actor(bc_actor& p_actor) = 0;
 
-			virtual void send_command(bc_network_command_ptr p_command);
+			virtual void send_message(bc_network_message_ptr p_command);
 			
 			virtual void update(const core_platform::bc_clock::update_param& p_clock) = 0;
 		};

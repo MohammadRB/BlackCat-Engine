@@ -25,13 +25,13 @@ namespace black_cat
 		public:
 			virtual ~bci_actor_component_container() = default;
 
-			virtual bci_actor_component* get(bc_actor_component_index p_index) = 0;
+			virtual bci_actor_component* get(bc_actor_component_id p_index) = 0;
 
-			virtual bc_actor_component_index create(bc_actor_index p_actor_index) = 0;
+			virtual bc_actor_component_id create(bc_actor_id p_actor_index) = 0;
 
-			virtual bc_actor_component_index create_after(bc_actor_index p_actor_index, bc_actor_component_index p_parent_index = bci_actor_component::invalid_index) = 0;
+			virtual bc_actor_component_id create_after(bc_actor_id p_actor_index, bc_actor_component_id p_parent_index = bci_actor_component::invalid_id) = 0;
 
-			virtual void remove(bc_actor_component_index p_index) = 0;
+			virtual void remove(bc_actor_component_id p_index) = 0;
 
 			virtual void handle_events(core::bc_query_manager& p_query_manager, 
 				bc_game_system& p_game_system, 
@@ -60,15 +60,15 @@ namespace black_cat
 
 			bc_actor_component_container& operator=(bc_actor_component_container&&) noexcept;
 
-			TComponent* get(bc_actor_component_index p_index) override;
+			TComponent* get(bc_actor_component_id p_index) override;
 
-			bc_actor_component_index create(bc_actor_index p_actor_index) override;
+			bc_actor_component_id create(bc_actor_id p_actor_index) override;
 
 			// In case of parent child relative between actors, component of child actor must be inserted after
 			// component of parent actor so it will be updated after parent component
-			bc_actor_component_index create_after(bc_actor_index p_actor_index, bc_actor_component_index p_parent_index) override;
+			bc_actor_component_id create_after(bc_actor_id p_actor_index, bc_actor_component_id p_parent_index) override;
 
-			void remove(bc_actor_component_index p_index) override;
+			void remove(bc_actor_component_id p_index) override;
 
 			void handle_events(core::bc_query_manager& p_query_manager,
 				bc_game_system& p_game_system,
@@ -102,7 +102,7 @@ namespace black_cat
 		bc_actor_component_container<TComponent>& bc_actor_component_container<TComponent>::operator=(bc_actor_component_container&&) noexcept = default;
 
 		template<class TComponent>
-		TComponent* bc_actor_component_container<TComponent>::get(bc_actor_component_index p_index)
+		TComponent* bc_actor_component_container<TComponent>::get(bc_actor_component_id p_index)
 		{
 			const auto l_is_set = m_bit_block[p_index];
 			if(!l_is_set)
@@ -115,7 +115,7 @@ namespace black_cat
 		}
 
 		template<class TComponent>
-		bc_actor_component_index bc_actor_component_container<TComponent>::create(bc_actor_index p_actor_index)
+		bc_actor_component_id bc_actor_component_container<TComponent>::create(bc_actor_id p_actor_index)
 		{
 			bcUINT32 l_free_slot;
 			const auto l_has_free_slot = m_bit_block.find_first_false(l_free_slot);
@@ -137,7 +137,7 @@ namespace black_cat
 		}
 
 		template<class TComponent>
-		bc_actor_component_index bc_actor_component_container<TComponent>::create_after(bc_actor_index p_actor_index, bc_actor_component_index p_parent_index)
+		bc_actor_component_id bc_actor_component_container<TComponent>::create_after(bc_actor_id p_actor_index, bc_actor_component_id p_parent_index)
 		{
 			bcUINT32 l_free_slot;
 			const auto l_has_free_slot = m_bit_block.find_first_false(l_free_slot, p_parent_index);
@@ -159,7 +159,7 @@ namespace black_cat
 		}
 
 		template<class TComponent>
-		void bc_actor_component_container<TComponent>::remove(bc_actor_component_index p_index)
+		void bc_actor_component_container<TComponent>::remove(bc_actor_component_id p_index)
 		{
 			m_bit_block.make_false(p_index);
 			m_components[p_index].~TComponent();

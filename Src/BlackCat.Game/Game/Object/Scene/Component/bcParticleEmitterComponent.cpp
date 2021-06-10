@@ -13,7 +13,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_particle_emitter_component::bc_particle_emitter_component(bc_actor_index p_actor_index, bc_actor_component_index p_index) noexcept
+		bc_particle_emitter_component::bc_particle_emitter_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
 			: bci_actor_component(p_actor_index, p_index)
 		{
 		}

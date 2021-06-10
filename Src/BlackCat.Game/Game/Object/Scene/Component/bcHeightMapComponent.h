@@ -19,7 +19,7 @@ namespace black_cat
 			BC_COMPONENT(hgt_map, true, false)
 
 		public:
-			bc_height_map_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
+			bc_height_map_component(bc_actor_id p_actor_index, bc_actor_component_id p_index);
 
 			bc_height_map_component(bc_height_map_component&&) noexcept;
 

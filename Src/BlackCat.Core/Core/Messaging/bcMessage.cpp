@@ -2,7 +2,6 @@
 
 #include "Core/CorePCH.h"
 #include "Core/Messaging/bcMessage.h"
-#include "Core/Container/bcString.h"
 
 namespace black_cat
 {

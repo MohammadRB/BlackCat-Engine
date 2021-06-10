@@ -47,7 +47,7 @@ namespace black_cat
 		{
 #ifdef BC_DEBUG
 			const auto l_current_thread_id = id_hasher()(core_platform::bc_thread::current_thread_id());
-			auto l_expected = static_cast< id_hash_t >(0);
+			auto l_expected = static_cast<id_hash_t>(0);
 
 			const auto l_locked = m_thread_id.compare_exchange_strong
 			(

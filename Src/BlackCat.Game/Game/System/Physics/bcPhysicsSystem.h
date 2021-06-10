@@ -110,12 +110,12 @@ namespace black_cat
 
 		inline bc_actor bc_physics_system::get_game_actor(const physics::bc_actor& p_px_actor) const noexcept
 		{
-			return bc_actor(static_cast<bc_actor_index>(reinterpret_cast<bcINTPTR>(p_px_actor.get_data())));
+			return bc_actor(static_cast<bc_actor_id>(reinterpret_cast<bcINTPTR>(p_px_actor.get_data())));
 		}
 		
 		inline void bc_physics_system::set_game_actor(physics::bc_actor& p_px_actor, const bc_actor& p_actor) noexcept
 		{
-			p_px_actor.set_data(reinterpret_cast<void*>(static_cast<bcINTPTR>(p_actor.get_index())));
+			p_px_actor.set_data(reinterpret_cast<void*>(static_cast<bcINTPTR>(p_actor.get_id())));
 		}
 		
 		inline bcFLOAT bc_physics_system::height_to_float(bcINT16 p_physics_height) noexcept

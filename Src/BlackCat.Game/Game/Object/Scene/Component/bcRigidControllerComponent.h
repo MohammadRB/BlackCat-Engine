@@ -18,7 +18,7 @@ namespace black_cat
 			BC_COMPONENT(rgd_ctr, true, false)
 
 		public:
-			bc_rigid_controller_component(bc_actor_index p_actor_index, bc_actor_component_index p_index) noexcept;
+			bc_rigid_controller_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept;
 
 			bc_rigid_controller_component(bc_rigid_controller_component&&) noexcept;
 

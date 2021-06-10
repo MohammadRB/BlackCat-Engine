@@ -230,6 +230,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcFileStream.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcJsonDocument.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcJsonParse.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcMemoryStream.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcPath.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcStream.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcCoordinate.h" />
@@ -325,6 +326,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Core/CorePCH.h</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcMemoryStream.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcPath.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcStream.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcMatrix3f.cpp" />

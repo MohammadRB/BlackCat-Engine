@@ -8,17 +8,15 @@
 #include "Core/Utility/bcInitializable.h"
 #include "Core/Utility/bcDelegate.h"
 #include "Game/System/Network/bcNetworkManager.h"
-#include "Game/System/Network/Command/bcNetworkCommand.h"
-#include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/System/Network/Message/bcNetworkMessage.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		class bc_actor;
 		class bci_network_client_manager_hook;
-		
-		using bc_actor_network_id = bcSIZE;
 		
 		enum class bc_network_manager_type : bcUBYTE
 		{
@@ -28,8 +26,8 @@ namespace black_cat
 		class BC_GAME_DLL bc_network_system : public core::bc_initializable<>
 		{
 		private:
-			using command_create_delegate = core::bc_delegate<bc_network_command_ptr()>;
-			using commands_container = core::bc_unordered_map_program<bc_network_command_hash, command_create_delegate>;
+			using command_create_delegate = core::bc_delegate<bc_network_message_ptr()>;
+			using message_factory_container = core::bc_unordered_map_program<bc_network_message_hash, command_create_delegate>;
 			
 		public:
 			bc_network_system();
@@ -48,15 +46,15 @@ namespace black_cat
 			
 			void remove_actor(bc_actor& p_actor);
 
-			bc_network_command_ptr create_command_instance(bc_network_command_hash p_hash);
+			bc_network_message_ptr create_message_instance(bc_network_message_hash p_hash);
 			
-			template<class TCommand>
-			void send_command(TCommand p_command);
+			template<class TMessage>
+			void send_message(TMessage p_command);
 			
 			void update(const core_platform::bc_clock::update_param& p_clock);
 
-			template<class ...TCommand>
-			void register_commands(TCommand... p_commands);
+			template<class ...TMessage>
+			void register_messages(TMessage... p_commands);
 			
 		private:
 			void _initialize() override;
@@ -64,46 +62,46 @@ namespace black_cat
 			void _destroy() override;
 
 			template<class TCommand>
-			void _register_command();
+			void _register_message();
 
-			commands_container m_command_factories;
+			message_factory_container m_message_factories;
 			bc_network_manager_type m_manager_type;
 			core::bc_unique_ptr<bci_network_manager> m_manager;
 		};
 
-		template<class TCommand>
-		void bc_network_system::send_command(TCommand p_command)
+		template<class TMessage>
+		void bc_network_system::send_message(TMessage p_command)
 		{
-			m_manager->send_command(bc_make_network_command(p_command));
+			m_manager->send_message(bc_make_network_message(p_command));
 		}
 
-		template<class ...TCommand>
-		void bc_network_system::register_commands(TCommand...)
+		template<class ...TMessage>
+		void bc_network_system::register_messages(TMessage...)
 		{
 			auto l_expansion_list =
 			{
 				(
 					[this]()
 					{
-						_register_command<TCommand>();
+						_register_message<TMessage>();
 						return true;
 					}()
 				)...
 			};
 		}
 
-		template<class TCommand>
-		void bc_network_system::_register_command()
+		template<class TMessage>
+		void bc_network_system::_register_message()
 		{
-			static_assert(std::is_base_of_v<bci_network_command, TCommand>);
-			static_assert(std::is_default_constructible_v<TCommand>);
+			static_assert(std::is_base_of_v<bci_network_message, TMessage>);
+			static_assert(std::is_default_constructible_v<TMessage>);
 			
-			m_command_factories.insert(std::make_pair
+			m_message_factories.insert(std::make_pair
 			(
-				bc_network_command_traits<TCommand>::command_hash(),
+				bc_network_message_traits<TMessage>::command_hash(),
 				command_create_delegate([]()
 				{
-					return bc_make_network_command(TCommand());
+					return bc_make_network_message(TMessage());
 				})
 			));
 		}

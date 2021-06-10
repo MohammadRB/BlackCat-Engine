@@ -57,12 +57,35 @@ namespace black_cat
 
 			virtual bcUINT64 get_position() const = 0;
 
+			/**
+			 * \brief Move stream pointer by offset(bytes) and return new location from beginning of stream.
+			 * \n Implementations should allow position to exceed current stream capacity.
+			 * \param p_seek_location 
+			 * \param p_offset 
+			 * \return 
+			 */
 			virtual bcUINT64 set_position(bc_stream_seek p_seek_location, bcINT64 p_offset) = 0;
 
+			/**
+			 * \brief Get end of stream pointer
+			 * \return 
+			 */
 			virtual bcUINT64 get_eof_position() const = 0;
 
+			/**
+			 * \brief Return number of bytes which has been read
+			 * \param p_buffer
+			 * \param p_bytes_to_read
+			 * \return
+			 */
 			virtual bcSIZE read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read) = 0;
 
+			/**
+			 * \brief Return number of bytes which has been written
+			 * \param p_buffer
+			 * \param p_bytes_to_write
+			 * \return
+			 */
 			virtual bcSIZE write(const bcBYTE* p_buffer, bcSIZE p_bytes_to_write) = 0;
 
 			virtual bcUINT64 length() const noexcept = 0;
@@ -91,9 +114,9 @@ namespace black_cat
 				class TStreamAdapter,
 				typename = std::enable_if_t
 				<
-					!std::is_lvalue_reference_v< TStreamAdapter > 
+					!std::is_lvalue_reference_v<TStreamAdapter> 
 					&&
-					!std::is_same_v< std::decay_t< TStreamAdapter >, bc_stream > 
+					!std::is_same_v<std::decay_t<TStreamAdapter>, bc_stream> 
 				> 
 			>
 			explicit bc_stream(TStreamAdapter&& p_stream);
@@ -137,7 +160,7 @@ namespace black_cat
 			bcUINT64 set_position(bc_stream_seek p_seek_location, bcINT64 p_offset);
 
 			/**
-			 * \brief Return number of bytes that has been read
+			 * \brief Return number of bytes which has been read
 			 * \param p_buffer 
 			 * \param p_bytes_to_read 
 			 * \return 
@@ -145,7 +168,7 @@ namespace black_cat
 			bcSIZE read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read);
 
 			/**
-			 * \brief Return number of bytes that has been written
+			 * \brief Return number of bytes which has been written
 			 * \param p_buffer 
 			 * \param p_bytes_to_write 
 			 * \return 
@@ -163,7 +186,7 @@ namespace black_cat
 			bc_stream_type get_type() const noexcept;
 
 		private:
-			bc_unique_ptr< bci_stream_adapter > m_stream;
+			bc_unique_ptr<bci_stream_adapter> m_stream;
 		};
 
 		inline bc_stream::bc_stream()

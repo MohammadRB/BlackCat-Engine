@@ -4,13 +4,13 @@
 
 #include "CorePlatform/bcType.h"
 #include "CorePlatform/CorePlatformPCH.h"
-#include "Core/bcExport.h"
-#include "Core/bcConstant.h"
+#include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcArray.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcServiceManager.h"
-#include "Core/Memory/bcPtr.h"
+#include "Core/bcExport.h"
+#include "Core/bcConstant.h"
 
 namespace black_cat
 {

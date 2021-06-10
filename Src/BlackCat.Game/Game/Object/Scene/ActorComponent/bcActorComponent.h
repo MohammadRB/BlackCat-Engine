@@ -26,8 +26,8 @@ namespace black_cat
 		class bc_scene;
 		class bc_shape_drawer;
 		
-		using bc_actor_component_hash = bcSIZE;
-		using bc_actor_component_index = bcINT32;
+		using bc_actor_component_hash = core::bc_string_cmp_hash;
+		using bc_actor_component_id = bcINT32;
 
 		struct bc_actor_component_initialize_context
 		{
@@ -168,14 +168,14 @@ namespace black_cat
 		class BC_GAME_DLL bci_actor_component
 		{
 		public:
-			constexpr static bc_actor_component_index invalid_index = static_cast< bc_actor_component_index >(-1);
+			constexpr static bc_actor_component_id invalid_id = static_cast<bc_actor_component_id>(-1);
 
 		public:
 			virtual ~bci_actor_component();
 
-			bc_actor_index get_actor_index() const noexcept;
+			bc_actor_id get_actor_id() const noexcept;
 			
-			bc_actor_component_index get_index() const noexcept;
+			bc_actor_component_id get_id() const noexcept;
 			
 			virtual bc_actor get_actor() const noexcept = 0; // TODO provide default implementation
 
@@ -207,7 +207,7 @@ namespace black_cat
 			virtual void debug_draw(const bc_actor_component_debug_draw_context& p_context);
 			
 		protected:
-			bci_actor_component(bc_actor_index p_actor_index, bc_actor_component_index p_index) noexcept;
+			bci_actor_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept;
 
 			bci_actor_component(bci_actor_component&& p_other) noexcept;
 
@@ -216,8 +216,8 @@ namespace black_cat
 			static bc_actor_component_manager& get_manager() noexcept;
 
 		private:
-			bc_actor_index m_actor_index;
-			bc_actor_component_index m_index;
+			bc_actor_id m_actor_index;
+			bc_actor_component_id m_index;
 		};
 
 		class BC_GAME_DLL bci_actor_abstract_component : public virtual bci_actor_component
@@ -234,12 +234,12 @@ namespace black_cat
 
 		inline bci_actor_component::~bci_actor_component() = default;
 
-		inline bc_actor_index bci_actor_component::get_actor_index() const noexcept
+		inline bc_actor_id bci_actor_component::get_actor_id() const noexcept
 		{
 			return m_actor_index;
 		}
 		
-		inline bc_actor_component_index bci_actor_component::get_index() const noexcept
+		inline bc_actor_component_id bci_actor_component::get_id() const noexcept
 		{
 			return m_index;
 		}
@@ -280,7 +280,7 @@ namespace black_cat
 		{
 		}
 		
-		inline bci_actor_component::bci_actor_component(bc_actor_index p_actor_index, bc_actor_component_index p_index) noexcept
+		inline bci_actor_component::bci_actor_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
 			: m_actor_index(p_actor_index),
 			m_index(p_index)
 		{

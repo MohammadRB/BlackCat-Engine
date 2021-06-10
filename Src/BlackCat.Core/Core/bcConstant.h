@@ -37,7 +37,7 @@ namespace black_cat
 	{ \
 		return BC_SERVICE_NAME(p_name); \
 	} \
-	static constexpr bcUINT32 service_hash() \
+	static constexpr core::bc_string_cmp_hash service_hash() \
 	{ \
 		return BC_COMPILE_TIME_STRING_HASH(BC_SERVICE_NAME(p_name)); \
 	} \
@@ -48,7 +48,7 @@ namespace black_cat
 	{ \
 		return BC_CONTENT_NAME(p_name); \
 	} \
-	static constexpr bcUINT32 content_hash() \
+	static constexpr core::bc_string_cmp_hash content_hash() \
 	{ \
 		return BC_COMPILE_TIME_STRING_HASH(BC_CONTENT_NAME(p_name)); \
 	} \
@@ -71,7 +71,7 @@ namespace black_cat
 	{ \
 		return BC_COMPONENT_NAME(p_name); \
 	} \
-	static constexpr bcUINT32 component_hash() \
+	static constexpr core::bc_string_cmp_hash component_hash() \
 	{ \
 		return BC_COMPILE_TIME_STRING_HASH(BC_COMPONENT_NAME(p_name)); \
 	} \
@@ -86,7 +86,7 @@ namespace black_cat
 	{ \
 		return BC_EVENT_NAME(p_name); \
 	} \
-	static constexpr bcUINT32 message_hash() \
+	static constexpr core::bc_string_cmp_hash message_hash() \
 	{ \
 		return BC_COMPILE_TIME_STRING_HASH(BC_EVENT_NAME(p_name)); \
 	} \
@@ -97,7 +97,7 @@ namespace black_cat
 	{ \
 		return BC_QUERY_NAME(p_name); \
 	} \
-	static constexpr bcUINT32 message_hash() \
+	static constexpr core::bc_string_cmp_hash message_hash() \
 	{ \
 		return BC_COMPILE_TIME_STRING_HASH(BC_QUERY_NAME(p_name)); \
 	} \
@@ -116,7 +116,7 @@ namespace black_cat
 	{ \
 		return BC_NETWORK_COMMAND_NAME(p_name); \
 	} \
-	static constexpr bcUINT32 message_hash() \
+	static constexpr core::bc_string_cmp_hash message_hash() \
 	{ \
 		return BC_COMPILE_TIME_STRING_HASH(BC_NETWORK_COMMAND_NAME(p_name)); \
 	}
@@ -127,7 +127,7 @@ namespace black_cat
 	{ \
 		return BC_RENDER_PASS_NAME(p_name); \
 	} \
-	static constexpr bcUINT32 render_pass_hash() \
+	static constexpr core::bc_string_cmp_hash render_pass_hash() \
 	{ \
 		return BC_COMPILE_TIME_STRING_HASH(BC_RENDER_PASS_NAME(p_name)); \
 	}

@@ -175,7 +175,7 @@ namespace black_cat
 						}
 					}
 
-					_clear_actor_events(l_actor.get_index());
+					_clear_actor_events(l_actor.get_id());
 				}
 				while (m_event_pools[m_write_event_pool].size());
 

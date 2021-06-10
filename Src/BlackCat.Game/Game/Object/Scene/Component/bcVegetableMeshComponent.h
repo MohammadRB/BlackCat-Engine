@@ -14,7 +14,7 @@ namespace black_cat
 			BC_COMPONENT(veg_msh, true, false)
 
 		public:
-			bc_vegetable_mesh_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
+			bc_vegetable_mesh_component(bc_actor_id p_actor_index, bc_actor_component_id p_index);
 
 			bc_vegetable_mesh_component(bc_vegetable_mesh_component&& p_other) noexcept;
 

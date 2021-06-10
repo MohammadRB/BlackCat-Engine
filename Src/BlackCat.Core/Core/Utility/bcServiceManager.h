@@ -19,14 +19,14 @@ namespace black_cat
 		class bc_service_traits
 		{
 		public:
-			static constexpr bcUINT32 service_hash()
-			{
-				return TService::service_hash();
-			}
-			
 			static constexpr const bcCHAR* service_name()
 			{
 				return TService::service_name();
+			}
+			
+			static constexpr bc_string_cmp_hash service_hash()
+			{
+				return TService::service_hash();
 			}
 		};
 

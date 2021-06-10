@@ -89,7 +89,7 @@ namespace black_cat
 			using state_transition = bc_state_transition<TMachine>;
 
 		private:
-			virtual state_transition handle(const TEvent& p_event) = 0;
+			virtual state_transition handle(TEvent& p_event) = 0;
 		};
 		
 		template<class TMachine, class ...TEvents>
@@ -110,7 +110,7 @@ namespace black_cat
 		
 		private:
 			template<class TEvent>
-			state_transition process_event(const TEvent& p_event)
+			state_transition process_event(TEvent& p_event)
 			{
 				return handle(p_event);
 			}
@@ -126,7 +126,7 @@ namespace black_cat
 			}
 
 			template<class TEvent>
-			state_transition handle(const TEvent&)
+			state_transition handle(TEvent&)
 			{
 				// ignore all not interested events
 				return state_transition::empty();
@@ -182,7 +182,7 @@ namespace black_cat
 			}
 			
 			template<class TEvent>
-			void process_event(const TEvent& p_event)
+			void process_event(TEvent& p_event)
 			{
 				std::visit
 				(

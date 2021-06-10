@@ -102,7 +102,8 @@ namespace black_cat
 			bool open_write(const bcECHAR* p_file) noexcept;
 
 			/**
-			 * \brief Move file pointer by offset(bytes) and return new location from beginning of file
+			 * \brief Move file pointer by offset(bytes) and return new location from beginning of file.
+			 * \n Seeking to a location beyond the length of file is valid.
 			 * \param p_seek_location 
 			 * \param p_offset 
 			 * \return 

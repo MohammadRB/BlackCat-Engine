@@ -88,7 +88,7 @@ namespace black_cat
 			BC_COMPONENT(wind, true, false)
 
 		public:
-			bc_wind_component(bc_actor_index p_actor_index, bc_actor_component_index p_index);
+			bc_wind_component(bc_actor_id p_actor_index, bc_actor_component_id p_index);
 
 			bc_wind_component(bc_wind_component&& p_other) noexcept = default;
 

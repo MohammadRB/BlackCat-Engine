@@ -20,7 +20,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_simple_mesh_component::bc_simple_mesh_component(bc_actor_index p_actor_index, bc_actor_component_index p_index)
+		bc_simple_mesh_component::bc_simple_mesh_component(bc_actor_id p_actor_index, bc_actor_component_id p_index)
 			: bci_actor_component(p_actor_index, p_index),
 			bc_mesh_component(),
 			m_render_group(bc_render_group::unknown)

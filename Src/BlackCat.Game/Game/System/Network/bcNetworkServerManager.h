@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/System/Network/bcNetworkManager.h"
 #include "Game/bcExport.h"
 
@@ -24,9 +25,9 @@ namespace black_cat
 			
 			void remove_actor(bc_actor& p_actor) override;
 
-			void send_command(bc_network_command_ptr p_command) override;
+			void send_message(bc_network_message_ptr p_command) override;
 			
-			void update(const core_platform::bc_clock& p_clock) override;
+			void update(const core_platform::bc_clock::update_param& p_clock) override;
 			
 		private:
 		};

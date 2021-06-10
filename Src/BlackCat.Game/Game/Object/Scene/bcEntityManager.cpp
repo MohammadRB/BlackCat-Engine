@@ -226,7 +226,6 @@ namespace black_cat
 				core::bc_log(core::bc_log_type::error, core::bc_to_estring_frame(l_msg).c_str());
 
 				l_actor = bc_actor();
-				//throw;
 			}
 
 			return l_actor;

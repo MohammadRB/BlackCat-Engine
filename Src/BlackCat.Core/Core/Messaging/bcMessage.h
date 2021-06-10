@@ -3,13 +3,14 @@
 #pragma once
 
 #include "CorePlatform/bcType.h"
+#include "Core/Container/bcString.h"
 #include "Core/bcExport.h"
 
 namespace black_cat
 {
 	namespace core
 	{
-		using bc_message_hash = bcUINT32;
+		using bc_message_hash = bc_string_cmp_hash;
 
 		template<class TMessage>
 		struct bc_message_traits
@@ -19,7 +20,7 @@ namespace black_cat
 				return TMessage::message_name();
 			}
 
-			static constexpr bcUINT32 message_hash()
+			static constexpr bc_message_hash message_hash()
 			{
 				return TMessage::message_hash();
 			}

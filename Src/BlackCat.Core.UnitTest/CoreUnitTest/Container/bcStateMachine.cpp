@@ -33,12 +33,12 @@ namespace black_cat
 		class bc_open_state : public core::bc_state<bc_door_state_machine, bc_close_event, bc_assert_event>
 		{
 		private:
-			state_transition handle(const bc_close_event& p_event) override
+			state_transition handle(bc_close_event& p_event) override
 			{
 				return state_transition::transfer_to<bc_close_state>();
 			}
 
-			state_transition handle(const bc_assert_event& p_event) override
+			state_transition handle(bc_assert_event& p_event) override
 			{
 				Assert::IsTrue(p_event.m_state == bc_assert_event::state::open);
 				return state_transition::empty();
@@ -48,12 +48,12 @@ namespace black_cat
 		class bc_close_state : public core::bc_state<bc_door_state_machine, bc_open_event, bc_assert_event>
 		{
 		private:
-			state_transition handle(const bc_open_event& p_event) override
+			state_transition handle(bc_open_event& p_event) override
 			{
 				return state_transition::transfer_to<bc_open_state>();
 			}
 
-			state_transition handle(const bc_assert_event& p_event) override
+			state_transition handle(bc_assert_event& p_event) override
 			{
 				Assert::IsTrue(p_event.m_state == bc_assert_event::state::close);
 				return state_transition::empty();
@@ -73,7 +73,7 @@ namespace black_cat
 			}
 		};
 		
-		TEST_CLASS(bc_state_machine_test)
+		TEST_CLASS(bc_state_machine)
 		{
 		public:
 			TEST_METHOD(overal_test)

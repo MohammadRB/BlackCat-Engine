@@ -2,12 +2,17 @@
 
 #pragma once
 
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "PlatformImp/Network/bcNonBlockSocket.h"
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcUnorderedMap.h"
 #include "Core/Math/bcValueSampler.h"
+#include "Core/Concurrency/bcMutexTest.h"
+#include "Core/File/bcMemoryStream.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/System/Network/bcNetworkManager.h"
 #include "Game/System/Network/bcClientSocketStateMachine.h"
-#include "Game/System/Network/bcNetworkCommandPacket.h"
+#include "Game/System/Network/bcNetworkMessageBuffer.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -32,41 +37,42 @@ namespace black_cat
 			
 			void remove_actor(bc_actor& p_actor) override;
 
-			void send_command(bc_network_command_ptr p_command) override;
+			void send_message(bc_network_message_ptr p_command) override;
 			
 			void update(const core_platform::bc_clock::update_param& p_clock) override;
 
 		private:
-			void on_enter(const bc_socket_error_state& p_state) override;
+			void on_enter(const bc_client_socket_error_state& p_state) override;
 			
-			void on_enter(const bc_socket_connecting_state& p_state) override;
+			void on_enter(const bc_client_socket_connecting_state& p_state) override;
 			
-			void on_enter(const bc_socket_connected_state& p_state) override;
-			
-			void on_enter(const bc_socket_sending_state& p_state) override;
-			
-			void on_enter(const bc_socket_receiving_state& p_state) override;
-			
-			void on_exit(const bc_socket_error_state& p_state) override;
-			
-			void on_exit(const bc_socket_connecting_state& p_state) override;
-			
-			void on_exit(const bc_socket_connected_state& p_state) override;
-			
-			void on_exit(const bc_socket_sending_state& p_state) override;
-			
-			void on_exit(const bc_socket_receiving_state& p_state) override;
+			void on_enter(const bc_client_socket_connected_state& p_state) override;
+
+			void on_enter(const bc_client_socket_sending_state& p_state) override;
+
+			void _receive_from_server(const core_platform::bc_clock::update_param& p_clock);
+
+			void _send_to_server(const core_platform::bc_clock::update_param& p_clock);
 
 			const bcCHAR* m_ip;
 			bcUINT16 m_port;
+			bool m_socket_is_connected;
+			bool m_socket_is_ready;
 			platform::bc_non_block_socket m_socket;
-			bc_network_packet_time m_last_rtt_time;
-			core::bc_value_sampler<bc_network_packet_time, 64> m_rtt_time;
 			bci_network_client_manager_hook* m_hook;
-			
+			bc_network_packet_time m_last_sync_time;
+			core::bc_value_sampler<bc_network_packet_time, 64> m_rtt_sampler;
+
+			core::bc_mutex_test m_actors_lock;
+			core::bc_vector<bc_actor> m_new_actors;
 			core::bc_vector<bc_actor> m_sync_actors;
-			core::bc_vector<bc_network_command_ptr> m_commands;
-			bc_network_command_packet m_commands_packet;
+			core::bc_unordered_map<bc_actor_network_id, bc_actor> m_network_actors;
+
+			core_platform::bc_mutex m_messages_lock;
+			core::bc_vector<bc_network_message_ptr> m_messages;
+			core::bc_vector<bc_network_message_ptr> m_messages_waiting_acknowledgment;
+			core::bc_memory_stream m_receive_buffer;
+			bc_network_message_buffer m_messages_buffer;
 		};
 	}	
 }

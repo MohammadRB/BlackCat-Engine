@@ -48,10 +48,10 @@ namespace black_cat
 		{
 		}
 
-		bc_network_command_ptr bc_network_system::create_command_instance(bc_network_command_hash p_hash)
+		bc_network_message_ptr bc_network_system::create_message_instance(bc_network_message_hash p_hash)
 		{
-			const auto l_ite = m_command_factories.find(p_hash);
-			if(l_ite == std::cend(m_command_factories))
+			const auto l_ite = m_message_factories.find(p_hash);
+			if(l_ite == std::cend(m_message_factories))
 			{
 				return nullptr;
 			}

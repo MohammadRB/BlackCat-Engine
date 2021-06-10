@@ -17,11 +17,11 @@ namespace black_cat
 		public:
 			bc_file_stream();
 
-			bc_file_stream(bc_file_stream&& p_other) noexcept(std::is_nothrow_move_constructible< core_platform::bc_file >::value);
+			bc_file_stream(bc_file_stream&& p_other) noexcept(std::is_nothrow_move_constructible<core_platform::bc_file>::value);
 
-			~bc_file_stream();
+			~bc_file_stream() override;
 
-			bc_file_stream& operator=(bc_file_stream&& p_other) noexcept(std::is_nothrow_move_constructible< core_platform::bc_file >::value);
+			bc_file_stream& operator=(bc_file_stream&& p_other) noexcept(std::is_nothrow_move_assignable<core_platform::bc_file>::value);
 
 			const core_platform::bc_file& get_file() const noexcept;
 

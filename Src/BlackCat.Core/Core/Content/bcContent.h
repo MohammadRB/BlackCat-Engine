@@ -14,7 +14,7 @@ namespace black_cat
 		class bci_content;
 		class bc_content_manager;
 
-		using bc_content_hash_t = std::hash< const bcECHAR* >;
+		using bc_content_hash_t = std::hash<const bcECHAR*>;
 
 		class BC_CORE_DLL _bc_content_ptr_deleter
 		{
@@ -41,7 +41,7 @@ namespace black_cat
 				return TContent::content_name();
 			}
 
-			static constexpr bcUINT32 content_hash()
+			static constexpr bc_string_cmp_hash content_hash()
 			{
 				return TContent::content_hash();
 			}
@@ -78,6 +78,6 @@ namespace black_cat
 			bc_content_hash_t::result_type m_hash = 0;
 		};
 
-		using bc_icontent_ptr = bc_content_ptr< bci_content >;
+		using bc_icontent_ptr = bc_content_ptr<bci_content>;
 	}
 }
