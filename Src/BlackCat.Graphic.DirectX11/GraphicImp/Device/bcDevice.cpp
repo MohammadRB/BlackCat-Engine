@@ -465,7 +465,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_platform_device<g_api_dx11>::~bc_platform_device()
 		{
-			if (m_initialized)
+			if (is_initialized())
 			{
 				_destroy();
 			}

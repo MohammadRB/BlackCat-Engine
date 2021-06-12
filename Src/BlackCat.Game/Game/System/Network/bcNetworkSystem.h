@@ -8,6 +8,8 @@
 #include "Core/Utility/bcInitializable.h"
 #include "Core/Utility/bcDelegate.h"
 #include "Game/System/Network/bcNetworkManager.h"
+#include "Game/System/Network/Client/bcNetworkClientManagerHook.h"
+#include "Game/System/Network/Server/bcNetworkServerManagerHook.h"
 #include "Game/System/Network/Message/bcNetworkMessage.h"
 #include "Game/bcExport.h"
 
@@ -16,12 +18,6 @@ namespace black_cat
 	namespace game
 	{
 		class bc_actor;
-		class bci_network_client_manager_hook;
-		
-		enum class bc_network_manager_type : bcUBYTE
-		{
-			client, server
-		};
 		
 		class BC_GAME_DLL bc_network_system : public core::bc_initializable<>
 		{
@@ -38,7 +34,7 @@ namespace black_cat
 
 			bc_network_system& operator=(bc_network_system&&) noexcept;
 
-			void start_server(bcUINT16 p_port);
+			void start_server(bcUINT16 p_port, bci_network_server_manager_hook& p_hook);
 
 			void start_client(const bcCHAR* p_ip, bcUINT16 p_port, bci_network_client_manager_hook& p_hook);
 			
@@ -65,7 +61,6 @@ namespace black_cat
 			void _register_message();
 
 			message_factory_container m_message_factories;
-			bc_network_manager_type m_manager_type;
 			core::bc_unique_ptr<bci_network_manager> m_manager;
 		};
 

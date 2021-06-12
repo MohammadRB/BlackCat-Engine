@@ -2,11 +2,13 @@
 
 #pragma once
 
+#include "Core/bcExport.h"
+
 namespace black_cat
 {
 	namespace core
 	{
-		template< typename ...TArgs >
+		template<typename ...TArgs>
 		class bc_initializable
 		{
 		public:
@@ -50,10 +52,35 @@ namespace black_cat
 
 			virtual void _destroy() = 0;
 
-		protected:
+		private:
 			bool m_initialized = false;
+		};
+
+		template<>
+		class BC_CORE_DLL bc_initializable<>
+		{
+		public:
+			void initialize();
+
+			void destroy();
+
+			bool is_initialized() const;
+
+		protected:
+			bc_initializable();
+
+			bc_initializable(bc_initializable&& p_other) noexcept;
+
+			~bc_initializable();
+
+			bc_initializable& operator=(bc_initializable&& p_other) noexcept;
+
+			virtual void _initialize() = 0;
+
+			virtual void _destroy() = 0;
 
 		private:
+			bool m_initialized = false;
 		};
 	}
 }

@@ -7,18 +7,16 @@ namespace black_cat
 {
 	namespace core
 	{
-		template< typename T >
+		template<typename T>
 		class bc_singleton;
 
 		// Any singleton class is no copyable and movable
-		template < typename C, typename ...A >
-		class bc_singleton< C(A...) > 
-			: public bc_initializable< A... >, 
-			private core_platform::bc_no_copy_move
+		template<typename C, typename ...A>
+		class bc_singleton<C(A...)> : public bc_initializable<A...>, private core_platform::bc_no_copy_move
 		{
 		private:
-			using this_type = bc_singleton< C(A...) >;
-			using base_type = bc_initializable< A... >;
+			using this_type = bc_singleton<C(A...)>;
+			using base_type = bc_initializable<A...>;
 
 		public:
 			bc_singleton()
@@ -60,7 +58,7 @@ namespace black_cat
 			static C* m_instance;
 		};
 
-		template < typename C, typename ...A >
-		C* bc_singleton< C(A...) >::m_instance = nullptr;
+		template <typename C, typename ...A>
+		C* bc_singleton<C(A...)>::m_instance = nullptr;
 	}
 }

@@ -130,7 +130,7 @@ namespace black_cat
 		template< typename T >
 		bc_concurrent_object_pool< T >::~bc_concurrent_object_pool()
 		{
-			if (m_initialized)
+			if (is_initialized())
 			{
 				destroy();
 			}

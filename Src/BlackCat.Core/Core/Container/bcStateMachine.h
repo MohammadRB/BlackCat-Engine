@@ -35,7 +35,10 @@ namespace black_cat
 			static bc_state_transition<TMachine> transfer_to()
 			{
 				bc_state_transition<TMachine> l_transporter;
-				l_transporter.m_state_transporter = bc_delegate<void(TMachine&)>(&bc_state_transition<TMachine>::template _transfer<TState>);
+				l_transporter.m_state_transporter = bc_delegate<void(TMachine&)>
+				(
+					&bc_state_transition<TMachine>::template _transfer<TState>
+				);
 
 				return l_transporter;
 			}
@@ -44,11 +47,14 @@ namespace black_cat
 			static bc_state_transition<TMachine> transfer_to(TBeforeTransfer p_before_transfer)
 			{
 				bc_state_transition<TMachine> l_transporter;
-				l_transporter.m_state_transporter = [p_before_transfer](TMachine& p_machine)
-				{
-					p_before_transfer(p_machine.template get_state<TState>());
-					_transfer<TState>(p_machine);
-				};
+				l_transporter.m_state_transporter = bc_delegate<void(TMachine&)>
+				(
+					[p_before_transfer](TMachine& p_machine)
+					{
+						p_before_transfer(p_machine.template get_state<TState>());
+						bc_state_transition<TMachine>::template _transfer<TState>(p_machine);
+					}
+				);
 
 				return l_transporter;
 			}
@@ -147,11 +153,11 @@ namespace black_cat
 			template<class ...TStates> friend class bc_state_machine;
 			
 		private:
-			virtual void on_enter(const TState& p_state)
+			virtual void on_enter(TState& p_state)
 			{
 			}
 
-			virtual void on_exit(const TState& p_state)
+			virtual void on_exit(TState& p_state)
 			{
 			}
 		};
@@ -164,7 +170,7 @@ namespace black_cat
 			
 		public:
 			explicit bc_state_machine(TStates... p_states)
-				: m_states(std::make_tuple(p_states...))
+				: m_states(std::make_tuple(std::move(p_states)...))
 			{
 				m_current_state = &std::get<0>(m_states);
 			}

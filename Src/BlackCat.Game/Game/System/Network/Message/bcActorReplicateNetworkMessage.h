@@ -10,7 +10,7 @@ namespace black_cat
 	{
 		class bc_actor_replicate_network_message : public bci_network_message
 		{
-			BC_NETWORK_COMMAND(act_rpl)
+			BC_NETWORK_MESSAGE(act_rpl)
 
 		public:
 			bc_actor_replicate_network_message();
@@ -26,5 +26,24 @@ namespace black_cat
 
 			void deserialize_message(const core::bc_json_key_value& p_params) override;
 		};
+
+		inline bc_actor_replicate_network_message::bc_actor_replicate_network_message()
+			: bci_network_message(message_name())
+		{
+		}
+
+		inline bc_actor_replicate_network_message::bc_actor_replicate_network_message(bc_actor_replicate_network_message&&) noexcept = default;
+
+		inline bc_actor_replicate_network_message::~bc_actor_replicate_network_message() = default;
+
+		inline bc_actor_replicate_network_message& bc_actor_replicate_network_message::operator=(bc_actor_replicate_network_message&&) noexcept = default;
+
+		inline void bc_actor_replicate_network_message::serialize_message(core::bc_json_key_value& p_params) const
+		{
+		}
+
+		inline void bc_actor_replicate_network_message::deserialize_message(const core::bc_json_key_value& p_params)
+		{
+		}
 	}
 }

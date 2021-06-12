@@ -28,7 +28,7 @@ namespace black_cat
 
 		bc_memory_fixed_size::~bc_memory_fixed_size() noexcept
 		{
-			if (m_initialized)
+			if (is_initialized())
 			{
 				destroy();
 			}

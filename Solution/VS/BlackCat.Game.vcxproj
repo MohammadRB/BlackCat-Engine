@@ -141,6 +141,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <EnablePREfast>true</EnablePREfast>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -182,6 +183,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
       <EnablePREfast>true</EnablePREfast>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -252,6 +254,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnablePREfast>true</EnablePREfast>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -410,14 +413,17 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFreeCamera.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcGlobalConfig.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcInputSystem.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkClientManager.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkClientManagerHook.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcClientSocketStateMachine.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Client\bcNetworkClientManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Client\bcNetworkClientManagerHook.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Client\bcClientSocketStateMachine.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkMessageBuffer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkManager.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkServerManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManagerClient.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManagerHook.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkSystem.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcServerSocketStateMachine.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcServerClientSocketStateMachine.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcServerSocketStateMachine.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcAcknowledgeNetworkMessage.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcActorRemoveNetworkMessage.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcActorReplicateNetworkMessage.h" />
@@ -543,11 +549,12 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFreeCamera.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcGlobalConfig.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcInputSystem.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkClientManager.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkServerManager.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Client\bcNetworkClientManager.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkSystem.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcNetworkMessage.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkMessageBuffer.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManagerClient.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsSimulationCallback.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsSystem.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcPhysicsShapeUtility.cpp" />

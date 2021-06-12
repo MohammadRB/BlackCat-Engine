@@ -25,7 +25,7 @@ namespace black_cat
 
 		bc_memory_stack::~bc_memory_stack() noexcept
 		{
-			if (m_initialized)
+			if (is_initialized())
 			{
 				destroy();
 			}

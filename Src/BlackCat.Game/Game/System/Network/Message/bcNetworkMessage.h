@@ -32,12 +32,12 @@ namespace black_cat
 
 		class bc_network_system;
 		class bci_network_message;
-		using bc_network_message_ptr = core::bc_unique_ptr<bci_network_message>;
+		using bc_network_message_ptr = core::bc_shared_ptr<bci_network_message>;
 
 		template<class TCommand>
 		bc_network_message_ptr bc_make_network_message(TCommand p_command)
 		{
-			return core::bc_make_unique<TCommand>(std::move(p_command));
+			return core::bc_make_shared<TCommand>(std::move(p_command));
 		}
 		
 		struct bc_network_message_client_context

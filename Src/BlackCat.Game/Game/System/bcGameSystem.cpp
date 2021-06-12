@@ -37,7 +37,7 @@ namespace black_cat
 
 		bc_game_system::~bc_game_system()
 		{
-			if (m_initialized)
+			if (is_initialized())
 			{
 				bc_initializable::destroy();
 			}

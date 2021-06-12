@@ -24,7 +24,7 @@ namespace black_cat
 
 		bc_concurrent_memory_pool::~bc_concurrent_memory_pool()
 		{
-			if (m_initialized)
+			if (is_initialized())
 			{
 				destroy();
 			}

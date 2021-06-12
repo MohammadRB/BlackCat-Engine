@@ -18,13 +18,13 @@ namespace black_cat
 {
 	namespace core
 	{
-		template< class TMemory >
+		template<class TMemory>
 		class bc_memory_extender_bucket
 		{
 		public:
 			using memory_type = TMemory;
-			using initializer_type = bc_delegate< memory_type*() >;
-			using cleanup_type = bc_delegate< void(memory_type*) >;
+			using initializer_type = bc_delegate<memory_type*()>;
+			using cleanup_type = bc_delegate<void(memory_type*)>;
 
 		public:
 			bc_memory_extender_bucket(initializer_type p_initializer, cleanup_type p_cleanup)
@@ -102,8 +102,8 @@ namespace black_cat
 			core_platform::bc_atomic<bc_memory_extender_bucket* > m_next;
 		};
 
-		template< typename TMemory >
-		class bc_memory_extender : public bci_memory, public bc_initializable< bc_delegate< TMemory*() >, bc_delegate< void(TMemory*) > >
+		template<typename TMemory>
+		class bc_memory_extender : public bci_memory, public bc_initializable<bc_delegate<TMemory*()>, bc_delegate<void(TMemory*)>>
 		{
 		public:
 			using this_type = bc_memory_extender;
@@ -144,38 +144,38 @@ namespace black_cat
 			bucket_type* m_first;
 		};
 
-		template< typename TMemory >
-		bc_memory_extender< TMemory >::bc_memory_extender()
+		template<typename TMemory>
+		bc_memory_extender<TMemory>::bc_memory_extender()
 			: m_initializer(),
 			m_cleanup(),
 			m_first(nullptr)
 		{
 		}
 
-		template< typename TMemory >
-		bc_memory_extender< TMemory >::bc_memory_extender(this_type&& p_other) noexcept
+		template<typename TMemory>
+		bc_memory_extender<TMemory>::bc_memory_extender(this_type&& p_other) noexcept
 		{
 			_assign(std::move(p_other));
 		}
 
-		template< typename TMemory >
-		bc_memory_extender< TMemory >::~bc_memory_extender()
+		template<typename TMemory>
+		bc_memory_extender<TMemory>::~bc_memory_extender()
 		{
-			if (m_initialized)
+			if (is_initialized())
 			{
 				destroy();
 			}
 		}
 
-		template< typename TMemory >
-		typename bc_memory_extender< TMemory >::this_type& bc_memory_extender< TMemory >::operator=(this_type&& p_other) noexcept
+		template<typename TMemory>
+		typename bc_memory_extender<TMemory>::this_type& bc_memory_extender<TMemory>::operator=(this_type&& p_other) noexcept
 		{
 			_assign(std::move(p_other));
 			return *this;
 		}
 
-		template< typename TMemory >
-		void* bc_memory_extender< TMemory >::alloc(bc_memblock* p_memblock) noexcept
+		template<typename TMemory>
+		void* bc_memory_extender<TMemory>::alloc(bc_memblock* p_memblock) noexcept
 		{
 			void* l_result = nullptr;
 			bucket_type* l_current_bucket = m_first;
@@ -192,8 +192,8 @@ namespace black_cat
 			return l_result;
 		}
 
-		template< typename TMemory >
-		void bc_memory_extender< TMemory >::free(void* p_pointer, bc_memblock* p_memblock) noexcept
+		template<typename TMemory>
+		void bc_memory_extender<TMemory>::free(void* p_pointer, bc_memblock* p_memblock) noexcept
 		{
 			bucket_type* l_current_bucket = m_first;
 
@@ -209,8 +209,8 @@ namespace black_cat
 			}
 		}
 
-		template< typename TMemory >
-		bool bc_memory_extender< TMemory >::contain_pointer(void* p_pointer) const noexcept
+		template<typename TMemory>
+		bool bc_memory_extender<TMemory>::contain_pointer(void* p_pointer) const noexcept
 		{
 			bool l_result = false;
 			auto* l_current_bucket = m_first;
@@ -229,8 +229,8 @@ namespace black_cat
 			return l_result;
 		}
 
-		template< typename TMemory >
-		void bc_memory_extender< TMemory >::clear() noexcept
+		template<typename TMemory>
+		void bc_memory_extender<TMemory>::clear() noexcept
 		{
 			bucket_type* l_current_bucket = m_first;
 
@@ -241,7 +241,7 @@ namespace black_cat
 			}
 		}
 
-		template< typename TMemory >
+		template<typename TMemory>
 		const bc_memory_tracer& bc_memory_extender< TMemory >::tracer()
 		{
 			bucket_type* l_current_bucket = m_first;
@@ -279,8 +279,8 @@ namespace black_cat
 			return m_tracer;
 		}
 
-		template< typename TMemory >
-		void bc_memory_extender< TMemory >::_initialize(initializer_type p_initializer, cleanup_type p_cleanup)
+		template<typename TMemory>
+		void bc_memory_extender<TMemory>::_initialize(initializer_type p_initializer, cleanup_type p_cleanup)
 		{
 			m_initializer = std::move(p_initializer);
 			m_cleanup = std::move(p_cleanup);
@@ -289,16 +289,16 @@ namespace black_cat
 			new(m_first)bc_memory_extender_bucket< TMemory >(m_initializer, m_cleanup);
 		}
 
-		template< typename TMemory >
-		void bc_memory_extender< TMemory >::_destroy() noexcept
+		template<typename TMemory>
+		void bc_memory_extender<TMemory>::_destroy() noexcept
 		{
 			m_first->~bc_memory_extender_bucket();
 			core_platform::bc_mem_free(m_first);
 			m_first = nullptr;
 		}
 
-		template< typename TMemory >
-		void bc_memory_extender< TMemory >::_assign(this_type&& p_other)
+		template<typename TMemory>
+		void bc_memory_extender<TMemory>::_assign(this_type&& p_other)
 		{
 			m_initializer = std::move(p_other.m_initializer);
 			m_cleanup = std::move(p_other.m_cleanup);

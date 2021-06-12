@@ -47,7 +47,11 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_non_block_socket<core_platform::g_api_win32>::bc_platform_non_block_socket(bc_platform_non_block_socket&& p_other) noexcept = default;
+		bc_platform_non_block_socket<core_platform::g_api_win32>::bc_platform_non_block_socket(bc_platform_non_block_socket&& p_other) noexcept
+		{
+			m_pack.m_socket = p_other.m_pack.m_socket;
+			p_other.m_pack.m_socket = INVALID_SOCKET;
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
@@ -63,7 +67,13 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_non_block_socket<core_platform::g_api_win32>& bc_platform_non_block_socket<core_platform::g_api_win32>::operator=(bc_platform_non_block_socket&&) noexcept = default;
+		bc_platform_non_block_socket<core_platform::g_api_win32>& bc_platform_non_block_socket<core_platform::g_api_win32>::operator=(bc_platform_non_block_socket&& p_other) noexcept
+		{
+			m_pack.m_socket = p_other.m_pack.m_socket;
+			p_other.m_pack.m_socket = INVALID_SOCKET;
+
+			return *this;
+		}
 
 		template<>
 		BC_PLATFORMIMP_DLL

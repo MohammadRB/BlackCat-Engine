@@ -46,7 +46,7 @@ namespace black_cat
 
 		bc_render_system::~bc_render_system()
 		{
-			if(m_initialized)
+			if(is_initialized())
 			{
 				destroy();
 			}
@@ -493,19 +493,19 @@ namespace black_cat
 		
 		void bc_render_system::_destroy_render_pass_state(bc_render_pass_state* p_render_pass_state)
 		{
-			BC_ASSERT(m_initialized);
+			BC_ASSERT(is_initialized());
 			m_render_pass_states.free(p_render_pass_state);
 		}
 
 		void bc_render_system::_destroy_render_state(bc_render_state* p_render_state)
 		{
-			BC_ASSERT(m_initialized);
+			BC_ASSERT(is_initialized());
 			m_render_states.free(p_render_state);
 		}
 
 		void bc_render_system::_destroy_compute_state(bc_compute_state* p_compute_state)
 		{
-			BC_ASSERT(m_initialized);
+			BC_ASSERT(is_initialized());
 			m_compute_states.free(p_compute_state);
 		}
 	}

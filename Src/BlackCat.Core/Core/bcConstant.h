@@ -27,7 +27,7 @@ namespace black_cat
 
 #define BC_QUERY_NAME(p_name)					"qur_" ## #p_name
 
-#define BC_NETWORK_COMMAND_NAME(p_name)			"cmd_" ## #p_name
+#define BC_NETWORK_MESSAGE_NAME(p_name)			"msg_" ## #p_name
 		
 #define BC_RENDER_PASS_NAME(p_name)				"rps_" ## #p_name
 		
@@ -110,15 +110,15 @@ namespace black_cat
 		
 #define BC_SHARED_QUERY(p_name) BC_QUERY_DEFINITION(p_name, true)
 
-#define BC_NETWORK_COMMAND(p_name) \
+#define BC_NETWORK_MESSAGE(p_name) \
 	public: \
 	static constexpr const bcCHAR* message_name() \
 	{ \
-		return BC_NETWORK_COMMAND_NAME(p_name); \
+		return BC_NETWORK_MESSAGE_NAME(p_name); \
 	} \
 	static constexpr core::bc_string_cmp_hash message_hash() \
 	{ \
-		return BC_COMPILE_TIME_STRING_HASH(BC_NETWORK_COMMAND_NAME(p_name)); \
+		return BC_COMPILE_TIME_STRING_HASH(BC_NETWORK_MESSAGE_NAME(p_name)); \
 	}
 		
 #define BC_RENDER_PASS(p_name) \

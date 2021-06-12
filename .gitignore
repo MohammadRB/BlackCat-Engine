@@ -201,8 +201,6 @@ BlackCat.VC.VC.opendb
 BC_SDK/
 BlackCar.Core.UnitTest/
 ipch/
-Test/
-Test2/
 TestResults/
 .vs/
 Debug/

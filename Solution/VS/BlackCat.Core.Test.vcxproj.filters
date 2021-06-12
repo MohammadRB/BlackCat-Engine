@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="CoreTest">
+      <UniqueIdentifier>{1aeffdb2-1d5c-49a1-8be3-9def0297d927}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CoreTest\Memory">
+      <UniqueIdentifier>{1598bcfe-dde7-4eb8-b649-acb18769ced7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CoreTest\Container">
+      <UniqueIdentifier>{ad311cb9-1029-4f1a-854e-52a5ea6bb2d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CoreTest\File">
+      <UniqueIdentifier>{482cc5c3-b809-462d-b556-17221c507db9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Memory\bcMemoryHeap.cpp">
+      <Filter>CoreTest\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Memory\bcMemoryStack.cpp">
+      <Filter>CoreTest\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\File\bcMemoryStream.cpp">
+      <Filter>CoreTest\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Container\bcStateMachine.cpp">
+      <Filter>CoreTest\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\CoreTestPCH.cpp">
+      <Filter>CoreTest</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Test\CoreTest\CoreTestPCH.h">
+      <Filter>CoreTest</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

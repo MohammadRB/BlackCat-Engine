@@ -56,7 +56,7 @@ namespace black_cat
 
 		bc_memory_heap::~bc_memory_heap() noexcept
 		{
-			if (m_initialized)
+			if (is_initialized())
 			{
 				destroy();
 			}

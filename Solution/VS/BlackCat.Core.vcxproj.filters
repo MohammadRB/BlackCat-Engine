@@ -440,5 +440,8 @@
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\File\bcMemoryStream.cpp">
       <Filter>Core\File</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcInitializable.cpp">
+      <Filter>Core\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="GameTest">
+      <UniqueIdentifier>{469282a4-c23e-45de-91f8-c10309c87e66}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat.Game.Test\GameTest\test.cpp">
+      <Filter>GameTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game.Test\GameTest\GameTestPCH.cpp">
+      <Filter>GameTest</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.Game.Test\GameTest\GameTestPCH.h">
+      <Filter>GameTest</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -63,7 +63,7 @@ namespace black_cat
 			m_dirty_end(-1),
 			m_update_needed(false)
 		{
-			m_states.assign(p_initial_state);
+			m_states.fill(p_initial_state);
 		}
 
 		template< typename TState, bcUINT32 TNum >

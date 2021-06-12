@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		template< typename T >
+		template<typename T>
 		class bc_memory_pool_allocator
 		{
 		private:
@@ -17,7 +17,7 @@ namespace black_cat
 			friend class bc_memory_pool_allocator;
 
 		public:
-			using this_type = bc_memory_pool_allocator< T >;
+			using this_type = bc_memory_pool_allocator<T>;
 			using value_type = T;
 			using pointer = value_type*;
 			using const_pointer = const value_type*;
@@ -33,7 +33,7 @@ namespace black_cat
 			template< typename TOther >
 			struct rebind
 			{
-				using other = bc_memory_pool_allocator< TOther >;
+				using other = bc_memory_pool_allocator<TOther>;
 			};
 
 		public:
@@ -53,7 +53,7 @@ namespace black_cat
 			}
 
 			template< typename TOther >
-			bc_memory_pool_allocator(const bc_memory_pool_allocator< TOther >& p_other) noexcept
+			bc_memory_pool_allocator(const bc_memory_pool_allocator<TOther>& p_other) noexcept
 			{
 				operator=(p_other);
 			}
@@ -71,8 +71,8 @@ namespace black_cat
 				return *this;
 			}
 
-			template< typename TOther >
-			this_type& operator =(const bc_memory_pool_allocator< TOther >& p_other) noexcept
+			template<typename TOther>
+			this_type& operator =(const bc_memory_pool_allocator<TOther>& p_other) noexcept
 			{
 				m_memory_pool = p_other.m_memory_pool;
 				return *this;
@@ -94,7 +94,7 @@ namespace black_cat
 				return std::addressof(p_object);
 			}
 
-			pointer allocate(size_type p_count, std::allocator<void>::const_pointer p_hint = nullptr)
+			pointer allocate(size_type p_count, const void* p_hint = nullptr)
 			{
 				if (p_count > 1)
 				{

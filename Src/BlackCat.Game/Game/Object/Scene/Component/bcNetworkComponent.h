@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_network_component : bci_actor_component
+		class BC_GAME_DLL bc_network_component : public bci_actor_component
 		{
 			BC_COMPONENT(ntwr, true, false)
 			

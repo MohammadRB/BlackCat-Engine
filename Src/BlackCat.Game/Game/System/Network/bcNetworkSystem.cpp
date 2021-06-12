@@ -4,48 +4,58 @@
 
 #include "PlatformImp/Network/bcNetworkDefinitions.h"
 #include "Game/System/Network/bcNetworkSystem.h"
-#include "Game/System/Network/bcNetworkClientManager.h"
-#include "Game/System/Network/bcNetworkServerManager.h"
+#include "Game/System/Network/Server/bcNetworkServerManager.h"
+#include "Game/System/Network/Client/bcNetworkClientManager.h"
 
 namespace black_cat
 {
 	namespace game
 	{
 		bc_network_system::bc_network_system()
-			: m_manager_type(bc_network_manager_type::client),
-			m_manager(nullptr)
+			: m_manager(nullptr)
 		{
 		}
 
-		bc_network_system::bc_network_system(bc_network_system&&) noexcept = default;
+		bc_network_system::bc_network_system(bc_network_system&& p_other) noexcept
+			: m_message_factories(std::move(p_other.m_message_factories)),
+			m_manager(std::move(p_other.m_manager))
+		{
+		}
 
 		bc_network_system::~bc_network_system()
 		{
-			if(m_initialized)
+			if(is_initialized())
 			{
 				destroy();
 			}
 		}
 
-		bc_network_system& bc_network_system::operator=(bc_network_system&&) noexcept = default;
-
-		void bc_network_system::start_server(bcUINT16 p_port)
+		bc_network_system& bc_network_system::operator=(bc_network_system&& p_other) noexcept
 		{
-			m_manager = core::bc_make_unique<bc_network_server_manager>(bc_network_server_manager(p_port));
+			m_message_factories = std::move(p_other.m_message_factories);
+			m_manager = std::move(p_other.m_manager);
+
+			return *this;
+		}
+
+		void bc_network_system::start_server(bcUINT16 p_port, bci_network_server_manager_hook& p_hook)
+		{
+			m_manager = core::bc_make_unique<bc_network_server_manager>(bc_network_server_manager(*this, p_hook, p_port));
 		}
 
 		void bc_network_system::start_client(const bcCHAR* p_ip, bcUINT16 p_port, bci_network_client_manager_hook& p_hook)
 		{
-			m_manager = core::bc_make_unique<bc_network_client_manager>(bc_network_client_manager(p_ip, p_port, p_hook));
-			m_manager_type = bc_network_manager_type::client;
+			m_manager = core::bc_make_unique<bc_network_client_manager>(bc_network_client_manager(*this, p_hook, p_ip, p_port));
 		}
 
 		void bc_network_system::add_actor(bc_actor& p_actor)
 		{
+			m_manager->add_actor(p_actor);
 		}
 
 		void bc_network_system::remove_actor(bc_actor& p_actor)
 		{
+			m_manager->remove_actor(p_actor);
 		}
 
 		bc_network_message_ptr bc_network_system::create_message_instance(bc_network_message_hash p_hash)

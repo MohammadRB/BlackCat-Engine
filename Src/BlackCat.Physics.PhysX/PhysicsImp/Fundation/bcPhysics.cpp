@@ -53,7 +53,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_platform_physics< g_api_physx >::~bc_platform_physics()
 		{
-			if (m_initialized)
+			if (is_initialized())
 			{
 				destroy();
 			}
