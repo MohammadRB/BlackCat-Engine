@@ -190,5 +190,12 @@ namespace black_cat
 
 			throw bc_invalid_operation_exception("No shared query were found");
 		}
+
+		template<class TQuery>
+		TQuery& bc_query_context::get_shared_query() const
+		{
+			// query manager definition is available here
+			return m_query_manager->_get_shared_query<TQuery>();
+		}
 	}
 }

@@ -20,6 +20,7 @@
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Render/Decal/bcDecalManager.h"
 #include "Game/System/Physics/bcPhysicsSimulationCallback.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentContainer.hpp"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/bcScene.h"

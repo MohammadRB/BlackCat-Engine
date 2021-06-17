@@ -81,9 +81,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Script\bcScriptRuntime.h">
       <Filter>Platform\Script</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Script\bcScriptRuntime.hpp">
-      <Filter>Platform\Script</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Script\bcScriptString.h">
       <Filter>Platform\Script</Filter>
     </ClInclude>
@@ -119,6 +116,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Network\bcNonBlockSocket.h">
       <Filter>Platform\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Script\bcScriptRuntime.hpp">
+      <Filter>Platform\Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

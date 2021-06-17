@@ -6,9 +6,9 @@
 * This file is created duo to circular dependency between other implementation headers and bcScriptContext.h
 */
 
-#include "Platform/Script/bcScriptExternalObject.h"
-#include "Platform/Script/bcScriptContext.h"
 #include "PlatformImp/PlatformImpPCH.h"
+#include "PlatformImp/Script/bcScriptContext.h"
+#include "PlatformImp/Script/bcScriptExternalObject.h"
 #include "PlatformImp/Script/bcScriptRuntime.h"
 #include "PlatformImp/Script/bcScriptReference.h"
 #include "PlatformImp/Script/bcScriptVariable.h"
@@ -36,8 +36,7 @@ namespace black_cat
 			: m_runtime(&p_runtime)
 		{
 		}
-
-
+		
 		template<>
 		inline bc_platform_script_context< core_platform::g_api_win32 >::bc_platform_script_context(const bc_platform_script_context& p_other) noexcept
 			: bc_platform_script_reference(p_other)

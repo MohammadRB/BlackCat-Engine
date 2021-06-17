@@ -15,7 +15,7 @@ namespace black_cat
 	{
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_output_merger_stage< g_api_dx11 >::bc_platform_output_merger_stage(platform_pack& p_pack)
+		bc_platform_output_merger_stage< g_api_dx11 >::bc_platform_output_merger_stage(platform_pack p_pack)
 			: m_pack(p_pack)
 		{
 		}

@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentContainer.hpp"
 
 namespace black_cat
 {
@@ -10,7 +11,6 @@ namespace black_cat
 		void bc_actor_component_manager::process_actor_events(const core_platform::bc_clock::update_param& p_clock)
 		{
 			core::bc_vector_frame<_bc_actor_component_entry*> l_components_with_event;
-
 			l_components_with_event.reserve(m_components.size());
 
 			for (auto& l_entry : m_components)

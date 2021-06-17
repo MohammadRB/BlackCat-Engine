@@ -21,7 +21,7 @@ namespace black_cat
 			auto l_code = JsCreateRuntime(JsRuntimeAttributeDispatchSetExceptionsToDebugger, nullptr, &m_pack.m_js_runtime);
 			if (l_code != JsNoError)
 			{
-				throw bc_platform_exception(static_cast<bcINT>(l_code), "Faild to create chakra runtime");
+				throw bc_platform_exception(static_cast<bcINT>(l_code), "Failed to create Chakra runtime");
 			}
 		}
 

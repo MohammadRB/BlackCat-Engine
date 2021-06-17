@@ -75,7 +75,7 @@ namespace black_cat
 			using platform_pack = bc_platform_stream_output_stage_pack<TRenderApi>;
 
 		public:
-			bc_platform_stream_output_stage(platform_pack& p_pack) noexcept;
+			bc_platform_stream_output_stage(platform_pack p_pack) noexcept;
 
 			bc_platform_stream_output_stage(bc_platform_stream_output_stage&&) noexcept;
 

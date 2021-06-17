@@ -22,14 +22,14 @@ namespace black_cat
 		template< typename T >
 		void CHAKRA_CALLBACK _js_object_ctor_finalizer(void* p_object)
 		{
-			bc_script_runtime::destroy_native(reinterpret_cast<bc_script_external_object< T >*>(p_object));
+			bc_script_runtime::destroy_native(static_cast<bc_script_external_object< T >*>(p_object));
 		}
 
 		template< typename T, typename ...TA >
 		JsValueRef CHAKRA_CALLBACK _js_object_ctor(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			BC_ASSERT(p_is_construct_call);
-			// TODO Make a chiose for more and less argument count than expected
+			// TODO Make a choose for more and less argument count than expected
 			BC_ASSERT(p_argument_count == sizeof...(TA) + 1);
 
 			bc_chakra_call l_call;
@@ -239,45 +239,6 @@ namespace black_cat
 		}
 
 		template< typename TR, typename ...TA >
-		JsValueRef CHAKRA_CALLBACK _js_function(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
-		{
-			// TODO Make a chiose for more and less argument count than expected
-			BC_ASSERT(p_argument_count == sizeof...(TA) + 1);
-
-			using function_t = bc_script_free_function<TR, TA...>;
-
-			JsValueRef l_this;
-			function_t l_external_function;
-			bc_script_var_pack< TA... > l_pack;
-
-			l_this = p_arguments[0];
-			l_external_function = reinterpret_cast<function_t>(p_callback_state);
-
-			std::transform
-			(
-				std::next(p_arguments), // First argument is 'this' object
-				std::next(p_arguments, p_argument_count),
-				std::begin(l_pack),
-				[](JsValueRef p_js_value)
-				{
-					bc_script_variable l_variable;
-					l_variable.get_platform_pack().m_js_value = p_js_value;
-
-					return l_variable;
-				}
-			);
-
-			bc_script_variable l_call_result = _js_function_call< TR, TA... >
-			(
-				std::is_same< TR, void >::type(),
-				l_external_function,
-				l_pack
-			);
-
-			return l_call_result.get_platform_pack().m_js_value;
-		}
-
-		template< typename TR, typename ...TA >
 		bc_script_variable _js_function_call(std::false_type, bc_script_free_function<TR, TA...> p_external_function, bc_script_var_pack< TA... >& p_pack)
 		{
 			auto l_call_callable = [p_external_function](const TA&... p_args)
@@ -316,7 +277,86 @@ namespace black_cat
 
 			return l_variable;
 		}
+		
+		template< typename TR, typename ...TA >
+		JsValueRef CHAKRA_CALLBACK _js_function(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
+		{
+			// TODO Make a chiose for more and less argument count than expected
+			BC_ASSERT(p_argument_count == sizeof...(TA) + 1);
 
+			using function_t = bc_script_free_function<TR, TA...>;
+
+			JsValueRef l_this;
+			function_t l_external_function;
+			bc_script_var_pack< TA... > l_pack;
+
+			l_this = p_arguments[0];
+			l_external_function = reinterpret_cast<function_t>(p_callback_state);
+
+			std::transform
+			(
+				std::next(p_arguments), // First argument is 'this' object
+				std::next(p_arguments, p_argument_count),
+				std::begin(l_pack),
+				[](JsValueRef p_js_value)
+				{
+					bc_script_variable l_variable;
+					l_variable.get_platform_pack().m_js_value = p_js_value;
+
+					return l_variable;
+				}
+			);
+
+			bc_script_variable l_call_result = _js_function_call< TR, TA... >
+			(
+				std::is_same< TR, void >::type(),
+				l_external_function,
+				l_pack
+			);
+
+			return l_call_result.get_platform_pack().m_js_value;
+		}
+
+		template< typename T, typename TR, typename ...TA >
+		bc_script_variable _js_object_function_call(std::false_type, bc_script_external_object< T >* p_external_object, bcUINT32 p_member_function_index, bc_script_var_pack< TA... >& p_pack)
+		{
+			auto l_member_call_callable = [p_external_object, p_member_function_index](const TA&... p_args)
+			{
+				return p_external_object->call_member_function< TR, TA... >(p_member_function_index, p_args...);
+			};
+
+			TR l_call_result = bc_script_function< TR(TA ...) >::_call_callback
+			(
+				l_member_call_callable,
+				p_pack.data(),
+				p_pack.size()
+			);
+
+			bc_script_variable l_variable = bc_script_variable::_pack_arg(l_call_result);
+
+			return l_variable;
+		}
+
+		template< typename T, typename TR, typename ...TA >
+		bc_script_variable _js_object_function_call(std::true_type, bc_script_external_object< T >* p_external_object, bcUINT32 p_member_function_index, bc_script_var_pack< TA... >& p_pack)
+		{
+			auto l_member_call_callable = [p_external_object, p_member_function_index](const TA&... p_args)
+			{
+				return p_external_object->call_member_function< TR, TA... >(p_member_function_index, p_args...);
+			};
+
+			bc_script_function< TR(TA ...) >::_call_callback
+			(
+				l_member_call_callable,
+				p_pack.data(),
+				p_pack.size()
+			);
+
+			bc_script_variable l_variable = bc_script_variable::_pack_arg();
+
+			return l_variable;
+		}
+		
 		template< typename T, typename TR, typename ...TA >
 		JsValueRef CHAKRA_CALLBACK _js_object_function(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
@@ -356,46 +396,6 @@ namespace black_cat
 			);
 
 			return l_call_result.get_platform_pack().m_js_value;
-		}
-
-		template< typename T, typename TR, typename ...TA >
-		bc_script_variable _js_object_function_call(std::false_type, bc_script_external_object< T >* p_external_object, bcUINT32 p_member_function_index, bc_script_var_pack< TA... >& p_pack)
-		{
-			auto l_member_call_callable = [p_external_object, p_member_function_index](const TA&... p_args)
-			{
-				return p_external_object->call_member_function< TR, TA... >(p_member_function_index, p_args...);
-			};
-
-			TR l_call_result = bc_script_function< TR(TA ...) >::_call_callback
-			(
-				l_member_call_callable,
-				p_pack.data(),
-				p_pack.size()
-			);
-
-			bc_script_variable l_variable = bc_script_variable::_pack_arg(l_call_result);
-
-			return l_variable;
-		}
-
-		template< typename T, typename TR, typename ...TA >
-		bc_script_variable _js_object_function_call(std::true_type, bc_script_external_object< T >* p_external_object, bcUINT32 p_member_function_index, bc_script_var_pack< TA... >& p_pack)
-		{
-			auto l_member_call_callable = [p_external_object, p_member_function_index](const TA&... p_args)
-				{
-					return p_external_object->call_member_function< TR, TA... >(p_member_function_index, p_args...);
-				};
-
-			bc_script_function< TR(TA ...) >::_call_callback
-			(
-				l_member_call_callable,
-				p_pack.data(),
-				p_pack.size()
-			);
-
-			bc_script_variable l_variable = bc_script_variable::_pack_arg();
-
-			return l_variable;
 		}
 
 		inline JsValueRef _create_js_descriptor(bc_script_context& p_context, bool p_writable, bool p_enumerable, bool p_configurable, JsValueRef p_value)

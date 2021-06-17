@@ -1,7 +1,9 @@
 // [06/07/2021 MRB]
 
 #include "CoreTest/CoreTestPCH.h"
+
 #include "Core/File/bcMemoryStream.h"
+#include "CoreTest/bcTestFixture.h"
 
 namespace black_cat
 {
@@ -9,7 +11,7 @@ namespace black_cat
 	{
 		TEST(MemoryStream, OveralTest)
 		{
-			core::bc_memory_manager::startup(1, 16, 10, 16, 16, 1024, 1024, 1024);
+			bc_test_init();
 			
 			{
 				core::bc_memory_stream l_stream;
@@ -44,7 +46,7 @@ namespace black_cat
 				EXPECT_TRUE(l_stream.get_position() == 215);
 			}
 
-			core::bc_memory_manager::close();
+			bc_test_close();
 		}
 	}
 }

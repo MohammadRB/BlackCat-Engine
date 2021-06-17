@@ -72,7 +72,7 @@ namespace black_cat
 
 			graphic::bc_device_output get_device_output() const override
 			{
-				return graphic::bc_device_output::from_window(const_cast< platform::bc_basic_window& >(m_window));
+				return graphic::bc_device_output::from_window(const_cast<platform::bc_basic_window&>(m_window));
 			}
 
 			void update() override
@@ -84,8 +84,6 @@ namespace black_cat
 			{
 				return m_window.close();
 			}
-
-		protected:
 
 		private:
 			platform::bc_basic_window m_window;

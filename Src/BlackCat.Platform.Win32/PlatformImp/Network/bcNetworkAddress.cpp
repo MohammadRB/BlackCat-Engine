@@ -44,7 +44,7 @@ namespace black_cat
 			platform_pack l_pack;
 
 			l_pack.m_address.sin_port = p_port;
-			l_pack.m_address.sin_family = bc_platform_cast(p_address_family);
+			l_pack.m_address.sin_family = bc_cast_from_address_family(p_address_family);
 			
 			const auto l_ip_convert = inet_pton(l_pack.m_address.sin_family, p_ip, &l_pack.m_address.sin_addr.S_un.S_addr);
 			if(l_ip_convert == 0)

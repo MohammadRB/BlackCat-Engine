@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="BoX">
+      <UniqueIdentifier>{c4fb3289-b159-49a9-b25f-9061319d080b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX\Application">
+      <UniqueIdentifier>{69851fb1-1035-46dc-b606-bdb932041282}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Src\BoX\BattleOfXbots.cpp">
+      <Filter>BoX</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -27,9 +27,9 @@ namespace black_cat
 		{
 			m_pack.m_socket = socket
 			(
-				bc_platform_cast(p_address),
-				bc_platform_cast(p_type),
-				bc_platform_cast(p_protocol)
+				bc_cast_from_address_family(p_address),
+				bc_cast_from_socket_type(p_type),
+				bc_cast_from_socket_protocol(p_protocol)
 			);
 
 			if (!is_valid())
@@ -73,6 +73,58 @@ namespace black_cat
 			p_other.m_pack.m_socket = INVALID_SOCKET;
 
 			return *this;
+		}
+
+		template<>
+		BC_PLATFORMIMP_DLL
+		bc_socket_address bc_platform_non_block_socket<core_platform::g_api_win32>::get_address_family() const
+		{
+			bc_socket_address l_address;
+			bc_socket_type l_type;
+			bc_socket_protocol l_protocol;
+			get_traits(l_address, l_type, l_protocol);
+
+			return l_address;
+		}
+
+		template<>
+		BC_PLATFORMIMP_DLL
+		bc_socket_type bc_platform_non_block_socket<core_platform::g_api_win32>::get_type() const
+		{
+			bc_socket_address l_address;
+			bc_socket_type l_type;
+			bc_socket_protocol l_protocol;
+			get_traits(l_address, l_type, l_protocol);
+
+			return l_type;
+		}
+
+		template<>
+		BC_PLATFORMIMP_DLL
+		bc_socket_protocol bc_platform_non_block_socket<core_platform::g_api_win32>::get_protocol() const
+		{
+			bc_socket_address l_address;
+			bc_socket_type l_type;
+			bc_socket_protocol l_protocol;
+			get_traits(l_address, l_type, l_protocol);
+
+			return l_protocol;
+		}
+
+		template<>
+		BC_PLATFORMIMP_DLL
+		void bc_platform_non_block_socket<core_platform::g_api_win32>::get_traits(bc_socket_address& p_address, bc_socket_type& p_type, bc_socket_protocol& p_protocol) const
+		{
+			WSAPROTOCOL_INFO l_socket_info;
+			const auto l_result = WSADuplicateSocket(m_pack.m_socket, GetCurrentProcessId(), &l_socket_info);
+			if(l_result != 0)
+			{
+				bc_throw_network_exception();
+			}
+
+			p_address = bc_cast_to_address_family(l_socket_info.iAddressFamily);
+			p_type = bc_cast_to_socket_type(l_socket_info.iSocketType);
+			p_protocol = bc_cast_to_socket_protocol(l_socket_info.iProtocol);
 		}
 
 		template<>
@@ -236,7 +288,7 @@ namespace black_cat
 		{
 			sockaddr_in l_address;
 			l_address.sin_port = p_port;
-			l_address.sin_family = bc_platform_cast(p_address_family);
+			l_address.sin_family = bc_cast_from_address_family(p_address_family);
 
 			const auto l_ip_convert = inet_pton(l_address.sin_family, p_ip, &l_address.sin_addr.S_un.S_addr);
 			if (l_ip_convert == 0)

@@ -71,7 +71,7 @@ namespace black_cat
 
 		core::bc_string_frame get_full_message() const
 		{
-			return core::bc_string_frame("Socket error with error-code: ") + core::bc_to_string_frame(m_error_code) + " " + what();
+			return core::bc_string_frame("Socket error with code: ") + core::bc_to_string_frame(m_error_code) + " message: " + what();
 		}
 	
 	private:

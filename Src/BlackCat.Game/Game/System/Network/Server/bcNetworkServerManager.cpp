@@ -21,6 +21,13 @@ namespace black_cat
 			m_actor_network_id_counter(0),
 			m_messages_buffer(p_network_system)
 		{
+			m_socket = platform::bc_non_block_socket
+			(
+				platform::bc_socket_address::inter_network,
+				platform::bc_socket_type::data_gram,
+				platform::bc_socket_protocol::udp
+			);
+			
 			bc_server_socket_bind_event l_bind_event{ m_port };
 			bc_server_socket_state_machine::process_event(l_bind_event);
 		}

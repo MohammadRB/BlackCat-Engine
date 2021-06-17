@@ -382,12 +382,12 @@ namespace black_cat
 			m_compute_states.initialize(20, core::bc_alloc_type::program);
 			
 			m_content_stream = &p_content_stream;
-			m_thread_manager = core::bc_make_unique< bc_render_thread_manager >(core::bc_alloc_type::program , *this, std::max(1U, l_hw_info.proccessor_count / 2));
-			m_material_manager = core::bc_make_unique< bc_material_manager >(core::bc_alloc_type::program, *m_content_stream, *this, p_physics_system);
-			m_render_pass_manager = core::bc_make_unique< bc_render_pass_manager >(core::bc_alloc_type::program);
-			m_animation_manager = core::bc_make_unique< bc_animation_manager >(core::bc_alloc_type::program);
-			m_shape_drawer = core::bc_make_unique< bc_shape_drawer >(core::bc_alloc_type::program);
-			m_frame_renderer = core::bc_make_unique< bc_frame_renderer >(core::bc_alloc_type::program, m_device, *m_thread_manager, *m_render_pass_manager);
+			m_thread_manager = core::bc_make_unique<bc_render_thread_manager>(core::bc_alloc_type::program , *this, std::max(1U, l_hw_info.proccessor_count / 2));
+			m_material_manager = core::bc_make_unique<bc_material_manager>(core::bc_alloc_type::program, *m_content_stream, *this, p_physics_system);
+			m_render_pass_manager = core::bc_make_unique<bc_render_pass_manager>(core::bc_alloc_type::program);
+			m_animation_manager = core::bc_make_unique<bc_animation_manager>(core::bc_alloc_type::program);
+			m_shape_drawer = core::bc_make_unique<bc_shape_drawer>(core::bc_alloc_type::program);
+			m_frame_renderer = core::bc_make_unique<bc_frame_renderer>(core::bc_alloc_type::program, m_device, *m_thread_manager, *m_render_pass_manager);
 
 			m_device.set_allocator_alloc_type(l_alloc_type);
 			

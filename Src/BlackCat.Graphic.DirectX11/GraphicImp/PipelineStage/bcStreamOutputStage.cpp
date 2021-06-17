@@ -13,7 +13,7 @@ namespace black_cat
 	{
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_stream_output_stage<g_api_dx11>::bc_platform_stream_output_stage(platform_pack& p_pack) noexcept
+		bc_platform_stream_output_stage<g_api_dx11>::bc_platform_stream_output_stage(platform_pack p_pack) noexcept
 			: m_pack(p_pack)
 		{
 		}

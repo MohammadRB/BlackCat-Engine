@@ -58,13 +58,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">GameTestPCH.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game.Test\GameTest\test.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">GameTestPCH.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">GameTestPCH.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">GameTestPCH.h</PrecompiledHeaderFile>
-    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game.Test\GameTest\Network\bcSocketStateMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.Game.Test\GameTest\bcTestFixture.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game.Test\GameTest\GameTestPCH.h" />
   </ItemGroup>
   <ItemGroup>
@@ -95,13 +92,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>GameTestPCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>GameTest\GameTestPCH.h</PrecompiledHeaderFile>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\Src\BlackCat.Game;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat.Game.Test;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -115,13 +112,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>GameTestPCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>GameTest\GameTestPCH.h</PrecompiledHeaderFile>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\Src\BlackCat.Game;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat.Game.Test;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -165,12 +162,12 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>GameTestPCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>GameTest\GameTestPCH.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\Src\BlackCat.Game;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat.Game.Test;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>

@@ -1218,10 +1218,11 @@ namespace black_cat
 			switch (l_context_type)
 			{
 			case D3D11_DEVICE_CONTEXT_IMMEDIATE:
-				return bc_pipeline_type::default;
+				return bc_pipeline_type::immediate;
 			case D3D11_DEVICE_CONTEXT_DEFERRED:
 				return bc_pipeline_type::deferred;
-			default: 
+			default:
+				return bc_pipeline_type::immediate;
 				BC_ASSERT(false);
 			}
 		}

@@ -39,6 +39,7 @@
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptContext.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptContext.hpp" />
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptError.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptExternalObject.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptFunction.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptGlobalPrototypeBuilder.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptObject.h" />

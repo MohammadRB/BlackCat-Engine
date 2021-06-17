@@ -32,6 +32,14 @@ namespace black_cat
 
 			bc_platform_socket& operator=(bc_platform_socket&&) noexcept;
 
+			bc_socket_address get_address_family() const;
+
+			bc_socket_type get_type() const;
+
+			bc_socket_protocol get_protocol() const;
+
+			void get_traits(bc_socket_address& p_address, bc_socket_type& p_type, bc_socket_protocol& p_protocol) const;
+			
 			/**
 			 * \brief Set timeout in milliseconds
 			 * \param p_milliseconds 

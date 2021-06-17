@@ -11,7 +11,7 @@ namespace black_cat
 	namespace platform
 	{
 		template<>
-		struct bc_platform_script_runtime_pack< core_platform::g_api_win32 >
+		struct bc_platform_script_runtime_pack<core_platform::g_api_win32>
 		{
 		public:
 			JsRuntimeHandle m_js_runtime;

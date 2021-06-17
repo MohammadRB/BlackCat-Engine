@@ -13,6 +13,7 @@
 #include "Game/System/Input/bcFileSystem.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
+#include "Game/System/Network/bcNetworkSystem.h"
 #include "Game/System/Script/bcScriptSystem.h"
 #include "Game/System/Script/bcGameConsole.h"
 #include "Game/Object/Scene/bcScene.h"
@@ -76,16 +77,6 @@ namespace black_cat
 				return m_file_system;
 			}
 
-			bc_render_system& get_render_system()
-			{
-				return m_render_system;
-			}
-
-			const bc_render_system& get_render_system() const
-			{
-				return m_render_system;
-			}
-
 			bc_physics_system& get_physics_system()
 			{
 				return m_physics_system;
@@ -94,6 +85,16 @@ namespace black_cat
 			const bc_physics_system& get_physics_system() const
 			{
 				return m_physics_system;
+			}
+
+			bc_network_system& get_network_system()
+			{
+				return m_network_system;
+			}
+
+			const bc_network_system& get_network_system() const
+			{
+				return m_network_system;
 			}
 
 			bc_script_system& get_script_system()
@@ -106,6 +107,16 @@ namespace black_cat
 				return m_script_system;
 			}
 
+			bc_render_system& get_render_system()
+			{
+				return m_render_system;
+			}
+
+			const bc_render_system& get_render_system() const
+			{
+				return m_render_system;
+			}
+			
 			bc_game_console& get_console()
 			{
 				return *m_console;
@@ -163,6 +174,7 @@ namespace black_cat
 			bc_file_system m_file_system;
 			bc_input_system m_input_system;
 			bc_physics_system m_physics_system;
+			bc_network_system m_network_system;
 			bc_script_system m_script_system;
 			bc_render_system m_render_system;
 			core::bc_unique_ptr<bc_game_console> m_console;

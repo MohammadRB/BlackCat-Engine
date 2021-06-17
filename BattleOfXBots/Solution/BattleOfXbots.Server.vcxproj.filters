@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="BoX.Server">
+      <UniqueIdentifier>{d73b0e6d-4cbd-46d6-a799-7aba65540858}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX.Server\Application">
+      <UniqueIdentifier>{d314c2ef-92c8-47d5-82b1-f8a73df0c512}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Src\BoX.Server\BattleOfXbots.Server.cpp">
+      <Filter>BoX.Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Server\Application\bxApplication.cpp">
+      <Filter>BoX.Server\Application</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Src\BoX.Server\Application\bxApplication.h">
+      <Filter>BoX.Server\Application</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

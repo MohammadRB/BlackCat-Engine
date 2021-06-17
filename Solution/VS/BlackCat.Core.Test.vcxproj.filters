@@ -35,5 +35,8 @@
     <ClInclude Include="..\..\Src\BlackCat.Core.Test\CoreTest\CoreTestPCH.h">
       <Filter>CoreTest</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Test\CoreTest\bcTestFixture.h">
+      <Filter>CoreTest</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

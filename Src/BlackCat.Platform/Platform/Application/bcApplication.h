@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template< core_platform::bc_platform >
+		template<core_platform::bc_platform>
 		struct bc_platform_application_parameter_pack
 		{
 		public:
@@ -25,19 +25,18 @@ namespace black_cat
 			const bcCHAR* m_commandline;
 		};
 
-		using bc_application_parameter = bc_platform_application_parameter_pack< core_platform::g_current_platform >;
+		using bc_application_parameter = bc_platform_application_parameter_pack<core_platform::g_current_platform>;
 
-		template< core_platform::bc_platform >
+		template<core_platform::bc_platform>
 		struct bc_platform_application_pack
 		{
-
 		};
 
-		template< core_platform::bc_platform TPlatform >
+		template<core_platform::bc_platform TPlatform>
 		class bc_platform_application
 		{
 		public:
-			using platform_pack = bc_platform_application_pack< TPlatform >;
+			using platform_pack = bc_platform_application_pack<TPlatform>;
 
 		public:
 			bc_platform_application(bc_application_parameter& p_parameter);
@@ -46,7 +45,7 @@ namespace black_cat
 
 			~bc_platform_application();
 
-			bc_platform_application operator=(bc_platform_application&&) noexcept;
+			bc_platform_application& operator=(bc_platform_application&&) noexcept;
 
 			/**
 			 * \brief Create a basic window.
@@ -72,12 +71,10 @@ namespace black_cat
 
 			void request_termination();
 
-		protected:
-
 		private:
 			platform_pack m_pack;
 		};
 
-		using bc_application = bc_platform_application< core_platform::g_api_win32 >;
+		using bc_application = bc_platform_application<core_platform::g_api_win32>;
 	}
 }

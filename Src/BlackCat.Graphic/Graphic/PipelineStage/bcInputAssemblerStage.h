@@ -94,7 +94,7 @@ namespace black_cat
 			using platform_pack = bc_platform_input_assembler_stage_pack<TRenderApi>;
 
 		public:
-			bc_platform_input_assembler_stage(platform_pack& p_pack);
+			bc_platform_input_assembler_stage(platform_pack p_pack);
 
 			bc_platform_input_assembler_stage(bc_platform_input_assembler_stage&&) noexcept;
 

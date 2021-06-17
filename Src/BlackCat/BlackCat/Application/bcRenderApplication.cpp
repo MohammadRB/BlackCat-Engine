@@ -174,7 +174,7 @@ namespace black_cat
 
 	void bc_render_application::app_unload_content()
 	{
-		auto* l_content_stream_manager = core::bc_get_service< core::bc_content_stream_manager >();
+		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
 		
 		application_unload_content(l_content_stream_manager);
 		bc_unload_engine_resources(*l_content_stream_manager);
@@ -183,6 +183,7 @@ namespace black_cat
 	void bc_render_application::app_destroy()
 	{
 		application_destroy();
+		m_game_system->destroy();
 	}
 
 	void bc_render_application::app_close_engine_components()

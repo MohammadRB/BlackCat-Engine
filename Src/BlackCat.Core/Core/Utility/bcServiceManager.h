@@ -50,26 +50,6 @@ namespace black_cat
 		template<class TService>
 		using bc_service_ptr = bc_unique_ptr<TService>;
 
-		template<class TService, typename ...TArgs>
-		bc_service_ptr< TService > bc_make_service(TArgs&&... p_args)
-		{
-			return bc_make_unique< TService >(bc_alloc_type::program, std::forward<TArgs>(p_args)...);
-		}
-
-		template<class TService>
-		TService* bc_register_service(bc_service_ptr<TService> p_service)
-		{
-			static bc_service_manager& s_instance = bc_service_manager::get();
-			return s_instance.register_service(std::move(p_service));
-		}
-
-		template<class TService>
-		TService* bc_get_service()
-		{
-			static bc_service_manager& s_instance = bc_service_manager::get();
-			return s_instance.get_service<TService>();
-		}
-
 		class BC_CORE_DLL _bc_service_container : private core_platform::bc_no_copy
 		{
 		public:
@@ -96,12 +76,12 @@ namespace black_cat
 		public:
 			bc_service_manager();
 
-			~bc_service_manager();
+			~bc_service_manager() override;
 
-			template< class TService >
+			template<class TService>
 			TService* get_service();
 
-			template< class TService >
+			template<class TService>
 			TService* register_service(bc_service_ptr<TService> p_service);
 
 			void update(const core_platform::bc_clock::update_param& p_clock_update_param);
@@ -134,6 +114,26 @@ namespace black_cat
 			constexpr auto l_hash = bc_service_traits<TService>::service_hash();
 			constexpr auto* l_name = bc_service_traits<TService>::service_name();
 			return static_cast<TService*>(_register_service(l_hash, l_name, std::move(p_service)));
+		}
+
+		template<class TService, typename ...TArgs>
+		bc_service_ptr< TService > bc_make_service(TArgs&&... p_args)
+		{
+			return bc_make_unique<TService>(bc_alloc_type::program, std::forward<TArgs>(p_args)...);
+		}
+
+		template<class TService>
+		TService* bc_register_service(bc_service_ptr<TService> p_service)
+		{
+			static bc_service_manager& s_instance = bc_service_manager::get();
+			return s_instance.register_service(std::move(p_service));
+		}
+
+		template<class TService>
+		TService* bc_get_service()
+		{
+			static bc_service_manager& s_instance = bc_service_manager::get();
+			return s_instance.get_service<TService>();
 		}
 	}
 }

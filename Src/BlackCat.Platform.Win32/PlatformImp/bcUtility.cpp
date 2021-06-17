@@ -41,7 +41,7 @@ namespace black_cat
 			throw bc_network_exception(l_message.c_str());
 		}
 
-		bcINT bc_platform_cast(bc_socket_address p_address_family)
+		bcINT bc_cast_from_address_family(bc_socket_address p_address_family)
 		{
 			switch (p_address_family)
 			{
@@ -55,7 +55,21 @@ namespace black_cat
 			}
 		}
 
-		bcINT bc_platform_cast(bc_socket_type p_socket_type)
+		bc_socket_address bc_cast_to_address_family(bcINT p_address_family)
+		{
+			switch (p_address_family)
+			{
+			case AF_INET:
+				return bc_socket_address::inter_network;
+			case AF_INET6:
+				return bc_socket_address::inter_network_v6;
+			default:
+				BC_ASSERT(false);
+				return static_cast<bc_socket_address>(0);
+			}
+		}
+
+		bcINT bc_cast_from_socket_type(bc_socket_type p_socket_type)
 		{
 			switch (p_socket_type)
 			{
@@ -69,9 +83,23 @@ namespace black_cat
 			}
 		}
 
-		bcINT bc_platform_cast(bc_socket_protocol p_socket_type)
+		bc_socket_type bc_cast_to_socket_type(bcINT p_socket_type)
 		{
 			switch (p_socket_type)
+			{
+			case SOCK_DGRAM:
+				return bc_socket_type::data_gram;
+			case SOCK_STREAM:
+				return bc_socket_type::stream;
+			default:
+				BC_ASSERT(false);
+				return static_cast<bc_socket_type>(0);
+			}
+		}
+
+		bcINT bc_cast_from_socket_protocol(bc_socket_protocol p_socket_protocol)
+		{
+			switch (p_socket_protocol)
 			{
 			case bc_socket_protocol::tcp:
 				return IPPROTO_TCP;
@@ -80,6 +108,20 @@ namespace black_cat
 			default:
 				BC_ASSERT(false);
 				return 0;
+			}
+		}
+
+		bc_socket_protocol bc_cast_to_socket_protocol(bcINT p_socket_protocol)
+		{
+			switch (p_socket_protocol)
+			{
+			case IPPROTO_TCP:
+				return bc_socket_protocol::tcp;
+			case IPPROTO_UDP:
+				return bc_socket_protocol::udp;
+			default:
+				BC_ASSERT(false);
+				return static_cast<bc_socket_protocol>(0);
 			}
 		}
 	}

@@ -74,7 +74,7 @@ namespace black_cat
 			
 			void update(const core_platform::bc_clock::update_param& p_clock);
 
-			core::bc_vector_movable<bc_particle_emitter_state> bc_particle_manager::get_emitter_states() const noexcept;
+			core::bc_vector_movable<bc_particle_emitter_state> get_emitter_states() const noexcept;
 
 			static void init_emitter_states();
 			

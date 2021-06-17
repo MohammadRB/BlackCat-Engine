@@ -146,7 +146,7 @@ namespace black_cat
 
 			bc_platform_script_function::_pack_args(l_packed_args, p_args...);
 
-			l_call_result = bc_platform_script_function_base::operator()(p_this, l_packed_args.data(), l_packed_args.size());
+			l_call_result = bc_platform_script_function_base<TPlatform>::operator()(p_this, l_packed_args.data(), l_packed_args.size());
 
 			TR l_result;
 			bc_script_variable::_unpack_arg(l_call_result, &l_result);

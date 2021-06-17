@@ -111,6 +111,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Network\bcNonBlockSocket.h">
       <Filter>PlatformImp\Network</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptExternalObject.h">
+      <Filter>PlatformImp\Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcApplication.cpp">

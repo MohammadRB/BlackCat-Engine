@@ -12,6 +12,9 @@ namespace black_cat
 	{
 		template<class ...TStates>
 		class bc_state_machine;
+
+		template<class TMachine, class ...TEvents>
+		class bc_state;
 		
 		template<class TMachine>
 		class bc_state_transition
@@ -93,6 +96,7 @@ namespace black_cat
 		class bc_state_event_driver
 		{
 			using state_transition = bc_state_transition<TMachine>;
+			template<class TMachine, class ...TEvents> friend class bc_state;
 
 		private:
 			virtual state_transition handle(TEvent& p_event) = 0;
@@ -103,6 +107,7 @@ namespace black_cat
 		{
 		protected:
 			using state_transition = bc_state_transition<TMachine>;
+			using bc_state_event_driver<TMachine, TEvents>::handle...;
 			template<class ...TStates> friend class bc_state_machine;
 			
 		protected:

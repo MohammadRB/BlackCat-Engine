@@ -76,8 +76,8 @@ namespace black_cat
 			bc_door_state_machine l_machine;
 			l_machine.transfer_state<bc_open_state>();
 
-			bc_assert_event l_open_event{ bc_assert_event::state::open };
-			bc_assert_event l_close_event{ bc_assert_event::state::close };
+			bc_open_event l_open_event{ };
+			bc_close_event l_close_event{ };
 			bc_assert_event l_open_assert_event{ bc_assert_event::state::open };
 			bc_assert_event l_close_assert_event{ bc_assert_event::state::close };
 			

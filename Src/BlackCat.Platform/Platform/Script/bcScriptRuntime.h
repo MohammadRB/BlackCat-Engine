@@ -10,22 +10,22 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template< core_platform::bc_platform TPlatform >
+		template<core_platform::bc_platform TPlatform>
 		class bc_platform_script_context;
-		using bc_script_context = bc_platform_script_context< core_platform::g_current_platform >;
+		using bc_script_context = bc_platform_script_context<core_platform::g_current_platform>;
 
-		template< core_platform::bc_platform TPlatform >
+		template<core_platform::bc_platform TPlatform>
 		class bc_platform_script_bytecode;
-		using bc_script_bytecode = bc_platform_script_bytecode< core_platform::g_current_platform >;
+		using bc_script_bytecode = bc_platform_script_bytecode<core_platform::g_current_platform>;
 
-		template< core_platform::bc_platform TPlatform >
+		template<core_platform::bc_platform TPlatform>
 		class bc_platform_script_variable;
-		using bc_script_variable = bc_platform_script_variable< core_platform::g_current_platform >;
+		using bc_script_variable = bc_platform_script_variable<core_platform::g_current_platform>;
 
-		template< typename T >
+		template<typename T>
 		class bc_script_external_object;
 
-		template< core_platform::bc_platform TPlatform >
+		template<core_platform::bc_platform TPlatform>
 		struct bc_platform_script_runtime_pack
 		{
 		};
@@ -34,11 +34,11 @@ namespace black_cat
 		 * \brief Incompatible with movable memory
 		 * \tparam TPlatform 
 		 */
-		template< core_platform::bc_platform TPlatform >
+		template<core_platform::bc_platform TPlatform>
 		class bc_platform_script_runtime
 		{
 		public:
-			using platform_pack = bc_platform_script_runtime_pack< TPlatform >;
+			using platform_pack = bc_platform_script_runtime_pack<TPlatform>;
 
 		public:
 			bc_platform_script_runtime() noexcept;
@@ -101,28 +101,21 @@ namespace black_cat
 				return m_pack;
 			}
 
-			template< typename T, typename ...TA >
+			template<typename T, typename ...TA>
 			static bc_script_external_object<T>* create_native(TA&&... p_args);
 
-			template< typename T >
+			template<typename T>
 			static void destroy_native(bc_script_external_object<T>* p_object);
 
-			template< typename T >
-			typename bc_script_external_object<T>::meta_data* _create_external_object_meta_data()
-			{
-				m_external_object_meta_data.push_back(core::bc_any(bc_script_external_object<T>::meta_data()));
-
-				auto* l_meta_data = m_external_object_meta_data.rbegin()->as< typename bc_script_external_object<T>::meta_data >();
-
-				return l_meta_data;
-			}
+			template<typename T>
+			typename bc_script_external_object<T>::meta_data* _create_external_object_meta_data();
 
 		private:
 			// Hold all external object meta data in one place so when runtime destroyed we can clear these data
-			core::bc_list_program< core::bc_any > m_external_object_meta_data;
+			core::bc_list_program<core::bc_any> m_external_object_meta_data;
 			platform_pack m_pack;
 		};
 
-		using bc_script_runtime = bc_platform_script_runtime< core_platform::g_current_platform >;
+		using bc_script_runtime = bc_platform_script_runtime<core_platform::g_current_platform>;
 	}
 }

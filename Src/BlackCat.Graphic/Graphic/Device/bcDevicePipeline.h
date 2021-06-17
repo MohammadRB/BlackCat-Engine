@@ -34,7 +34,7 @@ namespace black_cat
 	{
 		enum class bc_pipeline_type
 		{
-			default, deferred
+			immediate, deferred
 		};
 		
 		template<bc_render_api TRenderApi>

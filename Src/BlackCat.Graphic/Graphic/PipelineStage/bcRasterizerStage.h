@@ -81,7 +81,7 @@ namespace black_cat
 			using platform_pack = bc_platform_rasterizer_stage_pack<TRenderApi>;
 
 		public:
-			bc_platform_rasterizer_stage(platform_pack& p_pack) noexcept;
+			bc_platform_rasterizer_stage(platform_pack p_pack) noexcept;
 
 			bc_platform_rasterizer_stage(bc_platform_rasterizer_stage&&) noexcept;
 

@@ -76,7 +76,11 @@ namespace black_cat
 				try
 				{
 					m_socket->bind(p_event.m_port);
-					m_socket->listen();
+
+					if(m_socket->get_protocol() != platform::bc_socket_protocol::udp)
+					{
+						m_socket->listen();
+					}
 					
 					return state_transition::transfer_to<bc_server_socket_listening_state>();
 				}
@@ -103,7 +107,6 @@ namespace black_cat
 
 			void on_exit() override
 			{
-				m_last_exception.reset();
 			}
 
 			platform::bc_non_block_socket* m_socket;
@@ -151,14 +154,13 @@ namespace black_cat
 			{
 				if(m_socket->is_accept_available())
 				{
-					auto l_client_socket = m_socket->accept();
-
 					return state_transition::transfer_to<bc_server_socket_accepting_state>
 					(
-						//[l_socket = std::move(l_client_socket)](bc_server_socket_accepting_state& p_state)
-						//{
-						//	//p_state.set_client_socket(std::move(l_socket));
-						//}
+						[this](bc_server_socket_accepting_state& p_state)
+						{
+							auto l_client_socket = m_socket->accept();
+							p_state.set_client_socket(std::move(l_client_socket));
+						}
 					);
 				}
 

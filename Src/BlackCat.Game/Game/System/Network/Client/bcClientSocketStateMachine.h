@@ -80,7 +80,6 @@ namespace black_cat
 
 			void on_exit() override
 			{
-				m_last_exception.reset();
 			}
 			
 			platform::bc_non_block_socket* m_socket;
