@@ -20,50 +20,125 @@ namespace black_cat
 		};
 
 		template<core_platform::bc_platform TPlatform>
-		template<typename TR, typename ... TA>
-		bc_platform_script_variable<TPlatform>::bc_platform_script_variable(bc_script_context& p_context, bc_script_function<TR(TA...)>& p_function)
+		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(void)
 		{
-			as_function(p_function);
+			bc_script_variable l_result;
+
+			return l_result;
 		}
 
 		template<core_platform::bc_platform TPlatform>
-		template<typename TR, typename ... TA>
-		void bc_platform_script_variable<TPlatform>::as_function(const bc_script_function<TR(TA ...)>& p_function)
+		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(bc_script_bool p_value)
 		{
-			m_pack.m_js_value = const_cast< bc_script_function<TR(TA ...)>&>(p_function).get_platform_pack().m_js_function;
+			bc_script_variable l_result;
+
+			l_result.as_boolean(p_value);
+
+			return l_result;
 		}
 
 		template<core_platform::bc_platform TPlatform>
-		template<typename TR, typename ... TA>
-		bc_script_function<TR(TA ...)> bc_platform_script_variable<TPlatform>::as_function() const
+		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(bc_script_int p_value)
 		{
-			BC_ASSERT(is_function());
+			bc_script_variable l_result;
 
-			bc_script_function<TR(TA ...)> l_function;
+			l_result.as_integer(p_value);
 
-			l_function.get_platform_pack().m_js_function = m_pack.m_js_value;
-
-			return l_function;
+			return l_result;
 		}
 
-		template<>
-		template<typename T>
-		void bc_platform_script_variable<core_platform::g_api_win32>::as_array(const bc_script_array<T>& p_array)
+		template<core_platform::bc_platform TPlatform>
+		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(bc_script_double p_value)
 		{
-			as_object(p_array);
+			bc_script_variable l_result;
+
+			l_result.as_double(p_value);
+
+			return l_result;
 		}
 
-		template<>
-		template<typename T>
-		bc_script_array<T> bc_platform_script_variable<core_platform::g_api_win32>::as_array() const
+		template<core_platform::bc_platform TPlatform>
+		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(const bc_script_variable& p_value)
 		{
-			BC_ASSERT(is_array());
+			return p_value;
+		}
 
-			bc_script_array<T> l_array;
+		template<core_platform::bc_platform TPlatform>
+		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(const bc_script_string& p_value)
+		{
+			bc_script_variable l_result;
 
-			static_cast<bc_script_object&>(l_array).get_platform_pack().m_js_object = m_pack.m_js_value;
+			l_result.as_string(p_value);
 
-			return l_array;
+			return l_result;
+		}
+
+		template<core_platform::bc_platform TPlatform>
+		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(const bc_script_object& p_value)
+		{
+			bc_script_variable l_result;
+
+			l_result.as_object(p_value);
+
+			return l_result;
+		}
+
+		template<core_platform::bc_platform TPlatform>
+		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(const bc_script_array& p_value)
+		{
+			bc_script_variable l_result;
+
+			l_result.as_array(p_value);
+
+			return l_result;
+		}
+
+		template<core_platform::bc_platform TPlatform>
+		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_bool* p_value)
+		{
+			*p_value = p_pack.as_boolean();
+		}
+
+		template<core_platform::bc_platform TPlatform>
+		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_int* p_value)
+		{
+			*p_value = p_pack.as_integer();
+		}
+
+		template<core_platform::bc_platform TPlatform>
+		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_double* p_value)
+		{
+			*p_value = p_pack.as_double();
+		}
+
+		template<core_platform::bc_platform TPlatform>
+		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_variable* p_value)
+		{
+			*p_value = p_pack;
+		}
+
+		template<core_platform::bc_platform TPlatform>
+		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_string* p_value)
+		{
+			*p_value = p_pack.as_string();
+		}
+
+		template<core_platform::bc_platform TPlatform>
+		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_object* p_value)
+		{
+			*p_value = p_pack.as_object();
+		}
+
+		template<core_platform::bc_platform TPlatform>
+		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_function* p_value)
+		{
+			*p_value = p_pack.as_function();
+		}
+
+		template<core_platform::bc_platform TPlatform>
+		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_array* p_value)
+		{
+			*p_value = p_pack.as_array();
 		}
 	}
 }

@@ -104,7 +104,10 @@ namespace black_cat
 			void update(core_platform::bc_clock::update_param p_clock_update_param);
 
 		protected:
+			void _initialize(bool) override;
 
+			void _destroy() override;
+			
 		private:
 			platform::bc_script_context& _get_context(bc_script_context p_context)
 			{
@@ -117,15 +120,9 @@ namespace black_cat
 				}
 			}
 
-		protected:
-			void _initialize(bool) override;
-
-			void _destroy() override;
-
-		private:
 			core::bc_unique_ptr<platform::bc_script_runtime> m_script_runtime;
 			core::bc_unique_ptr<bc_script_ui_context> m_ui_context;
-			platform::bc_script_function_ref< platform::bc_script_string(platform::bc_script_variable) > m_stringify_function;
+			platform::bc_script_function_wrapper_ref<platform::bc_script_string(platform::bc_script_variable)> m_stringify_function;
 		};
 	}
 }

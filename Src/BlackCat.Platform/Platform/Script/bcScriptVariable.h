@@ -32,15 +32,13 @@ namespace black_cat
 		class bc_platform_script_object;
 		using bc_script_object = bc_platform_script_object<core_platform::g_current_platform>;
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<core_platform::bc_platform TPlatform>
 		class bc_platform_script_array;
-		template<typename T>
-		using bc_script_array = bc_platform_script_array<core_platform::g_current_platform, T>;
+		using bc_script_array = bc_platform_script_array<core_platform::g_current_platform>;
 
-		template<core_platform::bc_platform TPlatform, typename TR, typename ...TA>
+		template<core_platform::bc_platform TPlatform>
 		class bc_platform_script_function;
-		template<typename TR, typename ...TA>
-		using bc_script_function = bc_platform_script_function<core_platform::g_current_platform, TR, TA...>;
+		using bc_script_function = bc_platform_script_function<core_platform::g_current_platform>;
 
 		template<core_platform::bc_platform TPlatform>
 		class bc_platform_script_error;
@@ -68,16 +66,17 @@ namespace black_cat
 
 			bc_platform_script_variable(bc_script_context& p_context, bc_script_string& p_string);
 
+			bc_platform_script_variable(bc_script_context& p_context, bc_script_array& p_array);
+
 			bc_platform_script_variable(bc_script_context& p_context, bc_script_object& p_object);
 
-			template<typename TR, typename ...TA>
-			bc_platform_script_variable(bc_script_context& p_context, bc_script_function<TR(TA...)>& p_function);
+			bc_platform_script_variable(bc_script_context& p_context, bc_script_function& p_function);
 
 			bc_platform_script_variable(bc_script_context& p_context, bc_script_error& p_error);
 
-			~bc_platform_script_variable();
-
 			bc_platform_script_variable(const bc_platform_script_variable&) noexcept;
+			
+			~bc_platform_script_variable();
 
 			bc_platform_script_variable& operator=(const bc_platform_script_variable&) noexcept;
 			
@@ -121,17 +120,13 @@ namespace black_cat
 
 			bc_script_object as_object() const;
 
-			template<typename TR, typename ...TA>
-			void as_function(const bc_script_function<TR(TA...)>& p_function);
+			void as_function(const bc_script_function& p_function);
 
-			template<typename TR, typename ...TA>
-			bc_script_function<TR(TA...)> as_function() const;
+			bc_script_function as_function() const;
 
-			template<typename T>
-			void as_array(const bc_script_array<T>& p_array);
+			void as_array(const bc_script_array& p_array);
 
-			template<typename T>
-			bc_script_array<T> as_array() const;
+			bc_script_array as_array() const;
 
 			void as_error(const bc_script_error& p_error);
 
@@ -172,8 +167,7 @@ namespace black_cat
 
 			static bc_script_variable _pack_arg(const bc_script_object& p_value);
 
-			template<typename T>
-			static bc_script_variable _pack_arg(const bc_script_array<T>& p_value);
+			static bc_script_variable _pack_arg(const bc_script_array& p_value);
 
 			static void _unpack_arg(const bc_script_variable& p_pack, bc_script_bool* p_value);
 
@@ -187,11 +181,9 @@ namespace black_cat
 
 			static void _unpack_arg(const bc_script_variable& p_pack, bc_script_object* p_value);
 
-			template<typename TR, typename ...TA>
-			static void _unpack_arg(const bc_script_variable& p_pack, bc_script_function<TR(TA...)>* p_value);
+			static void _unpack_arg(const bc_script_variable& p_pack, bc_script_function* p_value);
 
-			template<typename T>
-			static void _unpack_arg(const bc_script_variable& p_pack, bc_script_array<T>* p_value);
+			static void _unpack_arg(const bc_script_variable& p_pack, bc_script_array* p_value);
 
 		private:
 			platform_pack m_pack;
@@ -199,130 +191,5 @@ namespace black_cat
 
 		using bc_script_variable = bc_platform_script_variable<core_platform::g_current_platform>;
 		using bc_script_variable_ref = bc_script_ref<bc_script_variable>;
-
-		template<core_platform::bc_platform TPlatform>
-		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(void)
-		{
-			bc_script_variable l_result;
-
-			return l_result;
-		}
-
-		template<core_platform::bc_platform TPlatform>
-		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(bc_script_bool p_value)
-		{
-			bc_script_variable l_result;
-
-			l_result.as_boolean(p_value);
-
-			return l_result;
-		}
-
-		template<core_platform::bc_platform TPlatform>
-		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(bc_script_int p_value)
-		{
-			bc_script_variable l_result;
-
-			l_result.as_integer(p_value);
-
-			return l_result;
-		}
-
-		template<core_platform::bc_platform TPlatform>
-		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(bc_script_double p_value)
-		{
-			bc_script_variable l_result;
-
-			l_result.as_double(p_value);
-
-			return l_result;
-		}
-
-		template<core_platform::bc_platform TPlatform>
-		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(const bc_script_variable& p_value)
-		{
-			return p_value;
-		}
-
-		template<core_platform::bc_platform TPlatform>
-		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(const bc_script_string& p_value)
-		{
-			bc_script_variable l_result;
-
-			l_result.as_string(p_value);
-
-			return l_result;
-		}
-
-		template<core_platform::bc_platform TPlatform>
-		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(const bc_script_object& p_value)
-		{
-			bc_script_variable l_result;
-
-			l_result.as_object(p_value);
-
-			return l_result;
-		}
-
-		template<core_platform::bc_platform TPlatform>
-		template<typename T>
-		bc_script_variable bc_platform_script_variable<TPlatform>::_pack_arg(const bc_script_array<T>& p_value)
-		{
-			bc_script_variable l_result;
-
-			l_result.as_array(p_value);
-
-			return l_result;
-		}
-
-		template<core_platform::bc_platform TPlatform>
-		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_bool* p_value)
-		{
-			*p_value = p_pack.as_boolean();
-		}
-
-		template<core_platform::bc_platform TPlatform>
-		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_int* p_value)
-		{
-			*p_value = p_pack.as_integer();
-		}
-
-		template<core_platform::bc_platform TPlatform>
-		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_double* p_value)
-		{
-			*p_value = p_pack.as_double();
-		}
-
-		template<core_platform::bc_platform TPlatform>
-		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_variable* p_value)
-		{
-			*p_value = p_pack;
-		}
-
-		template<core_platform::bc_platform TPlatform>
-		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_string* p_value)
-		{
-			*p_value = p_pack.as_string();
-		}
-
-		template<core_platform::bc_platform TPlatform>
-		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_object* p_value)
-		{
-			*p_value = p_pack.as_object();
-		}
-
-		template<core_platform::bc_platform TPlatform>
-		template<typename TR, typename ... TA>
-		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_function<TR(TA...)>* p_value)
-		{
-			*p_value = p_pack.as_function<TR, TA...>();
-		}
-
-		template<core_platform::bc_platform TPlatform>
-		template<typename T>
-		void bc_platform_script_variable<TPlatform>::_unpack_arg(const bc_script_variable& p_pack, bc_script_array<T>* p_value)
-		{
-			*p_value = p_pack.as_array<T>();
-		}
 	}
 }

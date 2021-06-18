@@ -169,25 +169,33 @@ namespace black_cat
 					switch (p_value.get_type())
 					{
 					case platform::bc_script_value_type::function:
+					{
 						l_result_string = bcL("function");
 						break;
+					}
 					case platform::bc_script_value_type::error:
+					{
 						l_result_string = p_value.as_error().error_message();
 						break;
+					}
 					case platform::bc_script_value_type::null:
+					{
 						l_result_string = bcL("null");
 						break;
+					}
 					case platform::bc_script_value_type::undefined:
+					{
 						l_result_string = bcL("undefined");
 						break;
+					}
 					default:
-						platform::bc_script_string l_json = (*m_stringify_function)
-						(
-							l_context_scope.get_context().create_variable(l_context_scope.get_context().get_global()),
-							p_value
-						);
+					{
+						auto l_global_obj = l_context_scope.get_context().get_global();
+						auto l_arg = l_context_scope.get_context().create_variable(l_global_obj);
+						const auto l_json = (*m_stringify_function)(l_arg,p_value);
 						l_result_string = l_json.data();
 						break;
+					}
 					}
 				}
 			}
@@ -227,7 +235,7 @@ namespace black_cat
 					.get_property(L"JSON")
 					.as_object()
 					.get_property(L"stringify")
-					.as_function< platform::bc_script_string, platform::bc_script_variable >();
+					.as_function();
 			}
 		}
 

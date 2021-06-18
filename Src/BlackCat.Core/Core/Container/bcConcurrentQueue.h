@@ -11,12 +11,12 @@ namespace black_cat
 {
 	namespace core
 	{
-		template< typename T, typename TAllocator >
-		class bc_concurrent_queue_base : bc_concurrent_container< T, TAllocator >
+		template<typename T, typename TAllocator>
+		class bc_concurrent_queue_base : bc_concurrent_container<T, TAllocator>
 		{
 		public:
 			using this_type = bc_concurrent_queue_base;
-			using base_type = bc_container< T, TAllocator >;
+			using base_type = bc_container<T, TAllocator>;
 			using value_type = typename base_type::value_type;
 			using allocator_type = typename base_type::allocator_type;
 			using pointer = value_type*;
@@ -30,8 +30,8 @@ namespace black_cat
 			struct node;
 
 			using node_type = node;
-			using node_pointer = typename std::pointer_traits< pointer >::template rebind< node_type >;
-			using internal_allocator_type = typename bc_allocator_traits< allocator_type >::template rebind_alloc< node_type >::other;
+			using node_pointer = typename std::pointer_traits<pointer>::template rebind<node_type>;
+			using internal_allocator_type = typename bc_allocator_traits<allocator_type>::template rebind_alloc<node_type>::other;
 
 		public:
 			explicit bc_concurrent_queue_base(const allocator_type& p_allocator = allocator_type())
@@ -41,8 +41,8 @@ namespace black_cat
 				static_assert(std::is_default_constructible<value_type>::value == true, "T must be default constructable");
 				static_assert(std::is_nothrow_move_assignable<value_type>::value == true, "T must be nothrow move assignable");
 
-				node_pointer l_node = bc_allocator_traits< internal_allocator_type >::allocate(m_allocator, 1);
-				bc_allocator_traits< internal_allocator_type >::construct(m_allocator, l_node);
+				node_pointer l_node = bc_allocator_traits<internal_allocator_type>::allocate(m_allocator, 1);
+				bc_allocator_traits<internal_allocator_type>::construct(m_allocator, l_node);
 				
 				m_tail.store(l_node, core_platform::bc_memory_order::relaxed);
 				m_head.store(l_node, core_platform::bc_memory_order::relaxed);
@@ -57,7 +57,7 @@ namespace black_cat
 
 			~bc_concurrent_queue_base()
 			{
-				bc_allocator_traits< internal_allocator_type >::deallocate
+				bc_allocator_traits<internal_allocator_type>::deallocate
 				(
 					m_allocator, 
 					m_head.load(core_platform::bc_memory_order::relaxed)
@@ -74,11 +74,11 @@ namespace black_cat
 			}
 
 		protected:
-			template< typename ...TArgs >
+			template<typename ...TArgs>
 			node_type* _enqueue(TArgs&&... p_args)
 			{
-				node_pointer l_node = bc_allocator_traits< internal_allocator_type >::allocate(m_allocator, 1);
-				bc_allocator_traits< internal_allocator_type >::construct(m_allocator, l_node, std::forward<TArgs>(p_args)...);
+				node_pointer l_node = bc_allocator_traits<internal_allocator_type>::allocate(m_allocator, 1);
+				bc_allocator_traits<internal_allocator_type>::construct(m_allocator, l_node, std::forward<TArgs>(p_args)...);
 
 				node_pointer l_tail_copy = m_tail.load(core_platform::bc_memory_order::seqcst);
 				node_pointer l_tail = l_tail_copy;
@@ -126,8 +126,8 @@ namespace black_cat
 				return l_local_head;
 			}
 
-			core_platform::bc_atomic< node_pointer > m_tail;
-			core_platform::bc_atomic< node_pointer > m_head;
+			core_platform::bc_atomic<node_pointer> m_tail;
+			core_platform::bc_atomic<node_pointer> m_head;
 			internal_allocator_type m_allocator;
 
 		private:
@@ -151,38 +151,38 @@ namespace black_cat
 			}
 		};
 
-		template< typename T, typename TAllocator >
-		struct bc_concurrent_queue_base<T, TAllocator>::node : public bc_container_node< value_type >
+		template<typename T, typename TAllocator>
+		struct bc_concurrent_queue_base<T, TAllocator>::node : public bc_container_node<value_type>
 		{
 		public:
 			node(const value_type& p_value) noexcept(std::is_nothrow_copy_constructible<bc_container_node<value_type>>::value)
-				: bc_container_node(p_value),
+				: bc_container_node<value_type>(p_value),
 				m_next(nullptr)
 			{
 			}
 
 			node(value_type&& p_value) noexcept(std::is_nothrow_move_constructible<bc_container_node<value_type>>::value)
-				: bc_container_node(std::move(p_value)),
+				: bc_container_node<value_type>(std::move(p_value)),
 				m_next(nullptr)
 			{
 			}
 
 			node(const node& p_other) noexcept(std::is_nothrow_copy_constructible<bc_container_node<value_type>>::value)
-				: bc_container_node(p_other.m_value),
+				: bc_container_node<value_type>(p_other.m_value),
 				m_next(p_other.m_next)
 			{
 			}
 
 			node(node&& p_other) noexcept(std::is_nothrow_move_constructible<bc_container_node<value_type>>::value)
-				: bc_container_node(std::move(p_other.m_value)),
+				: bc_container_node<value_type>(std::move(p_other.m_value)),
 				m_next(p_other.m_next)
 			{
 				p_other.m_next = nullptr;
 			}
 
-			template< typename ...TArgs >
-			node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible< bc_container_node< value_type >, TArgs... >::value)
-				: bc_container_node(std::forward< TArgs >(p_args)...),
+			template<typename ...TArgs>
+			node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible<bc_container_node<value_type>, TArgs...>::value)
+				: bc_container_node<value_type>(std::forward<TArgs>(p_args)...),
 				m_next(nullptr)
 			{
 			}
@@ -193,17 +193,17 @@ namespace black_cat
 
 			node& operator=(node&&) = delete;
 
-			core_platform::bc_atomic< node_pointer > m_next;
+			core_platform::bc_atomic<node_pointer> m_next;
 		};
 
-		template< typename T, typename TAllocator = bc_allocator< T > >
-		class bc_concurrent_queue : private bc_concurrent_queue_base< T, TAllocator >
+		template<typename T, typename TAllocator = bc_allocator<T>>
+		class bc_concurrent_queue : private bc_concurrent_queue_base<T, TAllocator>
 		{
 			friend struct bc_lockfree_memmng_container_traits<bc_concurrent_queue>;
 
 		public:
 			using this_type = bc_concurrent_queue;
-			using base_type = bc_concurrent_queue_base< T, TAllocator >;
+			using base_type = bc_concurrent_queue_base<T, TAllocator>;
 			using value_type = typename base_type::value_type;
 			using allocator_type = typename base_type::allocator_type;
 			using pointer = typename base_type::pointer;
@@ -219,11 +219,13 @@ namespace black_cat
 			using internal_allocator_type = typename base_type::internal_allocator_type;
 
 		public:
-			bc_concurrent_queue() : base_type()
+			bc_concurrent_queue()
+			: base_type()
 			{
 			}
 
-			bc_concurrent_queue(const allocator_type& p_allocator) : base_type(p_allocator)
+			bc_concurrent_queue(const allocator_type& p_allocator)
+			: base_type(p_allocator)
 			{
 			}
 
@@ -275,7 +277,7 @@ namespace black_cat
 				base_type::_enqueue(std::move(p_value));
 			}
 
-			template< typename ...TArgs >
+			template<typename ...TArgs>
 			void emplace(TArgs&&... p_args)
 			{
 				base_type::_enqueue(std::forward<TArgs>(p_args)...);
@@ -319,8 +321,8 @@ namespace black_cat
 		private:
 			void reclaim_node(node_type* p_node)
 			{
-				bc_allocator_traits< internal_allocator_type >::destroy(base_type::m_allocator, p_node);
-				bc_allocator_traits< internal_allocator_type >::deallocate(base_type::m_allocator, p_node);
+				bc_allocator_traits<internal_allocator_type>::destroy(base_type::m_allocator, p_node);
+				bc_allocator_traits<internal_allocator_type>::deallocate(base_type::m_allocator, p_node);
 			}
 
 			node_type* next(node_type* p_node) const noexcept(true)
@@ -333,14 +335,14 @@ namespace black_cat
 				p_node->m_next.store(p_next, core_platform::bc_memory_order::seqcst);
 			}
 
-			bc_lockfree_memmng< this_type > m_memmng;
+			bc_lockfree_memmng<this_type> m_memmng;
 		};
 
-		template< typename T, template< typename > typename TAllocator >
-		using bc_concurrent_queue_a = bc_concurrent_queue< T, TAllocator< T > >;
+		template<typename T, template<typename> typename TAllocator>
+		using bc_concurrent_queue_a = bc_concurrent_queue<T, TAllocator<T>>;
 
-		template< typename T, typename TAllocator >
-		void swap(bc_concurrent_queue< T, TAllocator > p_first, bc_concurrent_queue< T, TAllocator > p_second)
+		template<typename T, typename TAllocator>
+		void swap(bc_concurrent_queue<T, TAllocator> p_first, bc_concurrent_queue<T, TAllocator> p_second)
 		{
 			p_first.swap(p_second);
 		}

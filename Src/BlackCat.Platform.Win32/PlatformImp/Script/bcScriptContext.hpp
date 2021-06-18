@@ -16,6 +16,7 @@
 #include "PlatformImp/Script/bcScriptString.h"
 #include "PlatformImp/Script/bcScriptError.h"
 #include "PlatformImp/Script/bcScriptFunction.h"
+#include "PlatformImp/Script/bcScriptArray.h"
 #include "PlatformImp/Script/bcScriptGlobalPrototypeBuilder.h"
 #include "PlatformImp/Script/bcScriptPrototypeBuilder.h"
 #include "PlatformImp/Script/bcScriptPrototype.h"
@@ -124,15 +125,13 @@ namespace black_cat
 		}
 
 		template<>
-		template< typename T >
-		bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bc_script_array< T >& p_array)
+		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bc_script_array& p_array)
 		{
 			return bc_script_variable(*this, p_array);
 		}
 
 		template<>
-		template< typename TR, typename ... TA >
-		bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bc_script_function< TR(TA ...) >& p_function)
+		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bc_script_function& p_function)
 		{
 			return bc_script_variable(*this, p_function);
 		}
@@ -157,17 +156,9 @@ namespace black_cat
 		}
 
 		template<>
-		template< typename T >
-		bc_script_array< T > bc_platform_script_context< core_platform::g_api_win32 >::create_array(bcSIZE p_length)
+		inline bc_script_array bc_platform_script_context< core_platform::g_api_win32 >::create_array(bcSIZE p_length)
 		{
-			return bc_script_array< T >(*this, p_length);
-		}
-
-		template<>
-		template< typename T >
-		bc_script_array< T > bc_platform_script_context< core_platform::g_api_win32 >::create_array(std::initializer_list< T >& p_array)
-		{
-			return bc_script_array< T >(*this, p_array);
+			return bc_script_array(*this, p_length);
 		}
 
 		/*template<>

@@ -17,50 +17,48 @@ namespace black_cat
 		using bc_script_int = bcINT32;
 		using bc_script_double = bcDOUBLE;
 
-		template< core_platform::bc_platform TPlatform >
+		template<core_platform::bc_platform TPlatform>
 		class bc_platform_script_variable;
-		using bc_script_variable = bc_platform_script_variable< core_platform::g_current_platform >;
+		using bc_script_variable = bc_platform_script_variable<core_platform::g_current_platform>;
 
-		template< core_platform::bc_platform TPlatform >
+		template<core_platform::bc_platform TPlatform>
 		class bc_platform_script_string;
-		using bc_script_string = bc_platform_script_string< core_platform::g_current_platform >;
+		using bc_script_string = bc_platform_script_string<core_platform::g_current_platform>;
 
-		template< core_platform::bc_platform TPlatform >
+		template<core_platform::bc_platform TPlatform>
 		class bc_platform_script_object;
-		using bc_script_object = bc_platform_script_object< core_platform::g_current_platform >;
+		using bc_script_object = bc_platform_script_object<core_platform::g_current_platform>;
 
-		template< core_platform::bc_platform TPlatform, typename T >
+		template<core_platform::bc_platform TPlatform>
 		class bc_platform_script_array;
-		template< typename T >
-		using bc_script_array = bc_platform_script_array< core_platform::g_current_platform, T >;
+		using bc_script_array = bc_platform_script_array<core_platform::g_current_platform>;
 
-		template< core_platform::bc_platform TPlatform, typename TR, typename ...TA >
+		template<core_platform::bc_platform TPlatform>
 		class bc_platform_script_function;
-		template< typename TR, typename ...TA >
-		using bc_script_function = bc_platform_script_function< core_platform::g_current_platform, TR, TA... >;
+		using bc_script_function = bc_platform_script_function<core_platform::g_current_platform>;
 
-		template< core_platform::bc_platform TPlatform >
+		template<core_platform::bc_platform TPlatform>
 		class bc_platform_script_error;
-		using bc_script_error = bc_platform_script_error< core_platform::g_current_platform >;
+		using bc_script_error = bc_platform_script_error<core_platform::g_current_platform>;
 
-		template< core_platform::bc_platform TPlatform, typename T >
+		template<core_platform::bc_platform TPlatform, typename T>
 		class bc_platform_script_prototype_builder;
-		template< typename T >
-		using bc_script_prototype_builder = bc_platform_script_prototype_builder< core_platform::g_current_platform, T >;
+		template<typename T>
+		using bc_script_prototype_builder = bc_platform_script_prototype_builder<core_platform::g_current_platform, T>;
 
-		template< core_platform::bc_platform TPlatform, typename T >
+		template<core_platform::bc_platform TPlatform, typename T>
 		class bc_platform_script_prototype;
-		template< typename T >
-		using bc_script_prototype = bc_platform_script_prototype< core_platform::g_current_platform, T >;
+		template<typename T>
+		using bc_script_prototype = bc_platform_script_prototype<core_platform::g_current_platform, T>;
 
-		template< core_platform::bc_platform TPlatform >
+		template<core_platform::bc_platform TPlatform>
 		class bc_platform_script_global_prototype_builder;
-		using bc_script_global_prototype_builder = bc_platform_script_global_prototype_builder< core_platform::g_current_platform >;
+		using bc_script_global_prototype_builder = bc_platform_script_global_prototype_builder<core_platform::g_current_platform>;
 
-		template< core_platform::bc_platform TPlatform >
+		template<core_platform::bc_platform TPlatform>
 		class bc_script_context_scope;
 
-		template< core_platform::bc_platform TPlatform >
+		template<core_platform::bc_platform TPlatform>
 		struct bc_platform_script_context_pack
 		{
 		};
@@ -71,12 +69,12 @@ namespace black_cat
 		 * Incompatible with movable memory
 		 * \tparam TPlatform 
 		 */
-		template< core_platform::bc_platform TPlatform >
-		class bc_platform_script_context : public bc_platform_script_reference< TPlatform >
+		template<core_platform::bc_platform TPlatform>
+		class bc_platform_script_context : public bc_platform_script_reference<TPlatform>
 		{
 		public:
-			using platform_pack = bc_platform_script_context_pack< TPlatform >;
-			using scope = bc_script_context_scope< TPlatform >;
+			using platform_pack = bc_platform_script_context_pack<TPlatform>;
+			using scope = bc_script_context_scope<TPlatform>;
 			friend bc_script_runtime;
 			friend scope;
 
@@ -116,38 +114,32 @@ namespace black_cat
 
 			bc_script_variable create_variable(bc_script_object& p_object);
 
-			template< typename T >
-			bc_script_variable create_variable(bc_script_array< T >& p_array);
+			bc_script_variable create_variable(bc_script_array& p_array);
 
-			template< typename TR, typename ...TA >
-			bc_script_variable create_variable(bc_script_function< TR(TA...) >& p_function);
+			bc_script_variable create_variable(bc_script_function& p_function);
 
 			bc_script_variable create_variable(bc_script_error& p_error);
 
 			bc_script_string create_string(core::bc_wstring& p_string);
 
-			template< typename T >
-			bc_script_object create_object(bc_script_prototype< T >& p_prototype, T&& p_native_object);
+			template<typename T>
+			bc_script_object create_object(bc_script_prototype<T>& p_prototype, T&& p_native_object);
 
-			template< typename T >
-			bc_script_array< T > create_array(bcSIZE p_length);
-
-			template< typename T >
-			bc_script_array< T > create_array(std::initializer_list< T >& p_array);
-
-			/*template< typename TR, typename ...TA >
+			bc_script_array create_array(bcSIZE p_length);
+			
+			/*template<typename TR, typename ...TA>
 			bc_script_function<TR(TA...)> create_function(typename bc_script_function<TR, TA...>::callback_t p_delegate);*/
 
 			bc_script_error create_error(const core::bc_wstring& p_message);
 
-			template< typename T >
+			template<typename T>
 			bc_script_prototype_builder<T> create_prototype_builder();
 
-			template< typename T >
+			template<typename T>
 			bc_script_prototype<T> create_prototype(bc_script_prototype_builder<T>& p_prototype_builder);
 
-			template< typename T >
-			void register_prototype(bcWCHAR* p_object_name, bc_script_prototype< T >& p_object_prototype);
+			template<typename T>
+			void register_prototype(bcWCHAR* p_object_name, bc_script_prototype<T>& p_object_prototype);
 
 			/**
 			 * \brief This function check if context is in exception state.
@@ -191,7 +183,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_script_context = bc_platform_script_context< core_platform::g_current_platform >;
-		using bc_script_context_ref = bc_script_ref< bc_script_context >;
+		using bc_script_context = bc_platform_script_context<core_platform::g_current_platform>;
+		using bc_script_context_ref = bc_script_ref<bc_script_context>;
 	}
 }

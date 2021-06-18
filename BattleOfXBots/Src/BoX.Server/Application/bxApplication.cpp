@@ -6,7 +6,7 @@ using namespace black_cat;
 
 namespace box
 {
-	/*void bx_application::application_start_engine_components(game::bc_engine_application_parameter& p_parameters)
+	void bx_application::application_start_engine_components(game::bc_engine_application_parameter& p_parameters)
 	{
 	}
 
@@ -41,5 +41,5 @@ namespace box
 
 	void bx_application::application_close_engine_components()
 	{
-	}*/
+	}
 }

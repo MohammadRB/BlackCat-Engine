@@ -1597,7 +1597,7 @@ namespace black_cat
 			l_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 			l_swap_chain_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 			l_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-			l_swap_chain_desc.OutputWindow = p_output.get_platform_pack().m_output_handle;
+			l_swap_chain_desc.OutputWindow = nullptr; // p_output.get_platform_pack().m_output_handle;
 			l_swap_chain_desc.Windowed = true;
 
 			l_result = l_factory->CreateSwapChain(m_pack.m_device.Get(), &l_swap_chain_desc, m_pack.m_swap_chain.GetAddressOf());

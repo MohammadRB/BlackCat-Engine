@@ -1,14 +1,12 @@
 // [06/13/2021 MRB]
 
 #include "CorePlatformImp/Utility/bcHardwareInfo.h"
-//#include "Core/Utility/bcServiceManager.h"
-//#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
-//#include "Game/Object/Scene/SceneGraph/bcOctalTreeSceneGraphNode.h"
-//#include "BoX.Server/Application/bxApplication.h"
+#include "Game/Object/Scene/SceneGraph/bcOctalTreeSceneGraphNode.h"
+#include "BoX.Server/Application/bxApplication.h"
 
 int main()
 {
-	/*HINSTANCE l_instance = GetModuleHandle(nullptr);
+	const HINSTANCE l_instance = GetModuleHandle(nullptr);
 	
 	core_platform::bc_basic_hardware_info l_hardware_info;
 	core_platform::bc_hardware_info::get_basic_info(&l_hardware_info);
@@ -59,5 +57,5 @@ int main()
 
 	l_app.destroy();
 
-	return l_return_code;*/
+	return l_return_code;
 }

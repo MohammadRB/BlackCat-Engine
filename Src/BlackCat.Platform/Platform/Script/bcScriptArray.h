@@ -12,29 +12,29 @@ namespace black_cat
 	namespace platform
 	{
 		template<core_platform::bc_platform TPlatform>
-		class bc_platform_script_array_base_element;
+		class bc_platform_script_array_element;
 
 		template<core_platform::bc_platform TPlatform>
-		struct bc_platform_script_array_base_pack
+		struct bc_platform_script_array_pack
 		{
 		};
 
 		template<core_platform::bc_platform TPlatform>
-		class bc_platform_script_array_base : public bc_platform_script_object<TPlatform>
+		class bc_platform_script_array : public bc_platform_script_object<TPlatform>
 		{
 		public:
-			using platform_pack = bc_platform_script_array_base_pack<TPlatform>;
-			using element = bc_platform_script_array_base_element<TPlatform>;
+			using platform_pack = bc_platform_script_array_pack<TPlatform>;
+			using element = bc_platform_script_array_element<TPlatform>;
 			friend bc_script_context;
 
 		public:
-			bc_platform_script_array_base();
+			bc_platform_script_array();
 
-			bc_platform_script_array_base(const bc_platform_script_array_base&) noexcept;
+			bc_platform_script_array(const bc_platform_script_array&) noexcept;
 
-			~bc_platform_script_array_base() override;
+			~bc_platform_script_array() override;
 
-			bc_platform_script_array_base& operator=(const bc_platform_script_array_base&) noexcept;
+			bc_platform_script_array& operator=(const bc_platform_script_array&) noexcept;
 
 			bcSIZE size() const noexcept;
 
@@ -46,28 +46,28 @@ namespace black_cat
 			}
 
 		private:
-			bc_platform_script_array_base(bc_script_context& p_context, bcSIZE p_length);
+			bc_platform_script_array(bc_script_context& p_context, bcSIZE p_length);
 
-			bc_platform_script_array_base(bc_script_context& p_context, std::initializer_list<bc_script_variable> p_array);
+			bc_platform_script_array(bc_script_context& p_context, std::initializer_list<bc_script_variable> p_array);
 
 			platform_pack m_pack;
 		};
 
 		template<core_platform::bc_platform TPlatform>
-		struct bc_platform_script_array_base_element_pack
+		struct bc_platform_script_array_element_pack
 		{
 		};
 
 		template<core_platform::bc_platform TPlatform>
-		class bc_platform_script_array_base_element
+		class bc_platform_script_array_element
 		{
 		public:
-			using platform_pack = bc_platform_script_array_base_element_pack<TPlatform>;
+			using platform_pack = bc_platform_script_array_element_pack<TPlatform>;
 
 		public:
-			bc_platform_script_array_base_element(bc_platform_script_array_base<TPlatform>& p_array, bcINT p_index);
+			bc_platform_script_array_element(bc_platform_script_array<TPlatform>& p_array, bcINT p_index);
 
-			bc_platform_script_array_base_element& operator=(bc_script_variable p_value);
+			bc_platform_script_array_element& operator=(bc_script_variable p_value);
 
 			operator bc_script_variable();
 
@@ -76,108 +76,48 @@ namespace black_cat
 		};
 
 		template<core_platform::bc_platform TPlatform, typename T>
-		class bc_platform_script_array_element;
+		class bc_platform_script_array_wrapper_element;
 
 		template<core_platform::bc_platform TPlatform, typename T>
-		class bc_platform_script_array : public bc_platform_script_array_base<TPlatform>
+		class bc_platform_script_array_wrapper : public bc_platform_script_array<TPlatform>
 		{
 		public:
-			using element = bc_platform_script_array_element<TPlatform, T>;
+			using element = bc_platform_script_array_wrapper_element<TPlatform, T>;
 			friend bc_script_context;
 
 		public:
-			bc_platform_script_array();
+			bc_platform_script_array_wrapper();
+			
+			bc_platform_script_array_wrapper(const bc_platform_script_array<TPlatform>& p_array);
 
-			bc_platform_script_array(const bc_platform_script_array&) noexcept;
+			bc_platform_script_array_wrapper(const bc_platform_script_array<TPlatform>& p_array, std::initializer_list<T> p_init);
 
-			~bc_platform_script_array();
+			bc_platform_script_array_wrapper(const bc_platform_script_array_wrapper&) noexcept;
 
-			bc_platform_script_array& operator=(const bc_platform_script_array&) noexcept;
+			~bc_platform_script_array_wrapper();
+
+			bc_platform_script_array_wrapper& operator=(const bc_platform_script_array_wrapper&) noexcept;
 
 			element operator[](bcINT p_index);
-
-		private:
-			bc_platform_script_array(bc_script_context& p_context, bcSIZE p_length);
-
-			bc_platform_script_array(bc_script_context& p_context, std::initializer_list<T> p_array);
 		};
 
 		template<core_platform::bc_platform TPlatform, typename T>
-		class bc_platform_script_array_element : public bc_platform_script_array_base_element<TPlatform>
+		class bc_platform_script_array_wrapper_element : public bc_platform_script_array_element<TPlatform>
 		{
 		public:
-			bc_platform_script_array_element(bc_script_array<T>& p_array, bcINT p_index);
+			bc_platform_script_array_wrapper_element(bc_platform_script_array_element<TPlatform>& p_element);
 
-			bc_platform_script_array_element& operator=(T p_value);
+			bc_platform_script_array_wrapper_element& operator=(T p_value);
 
 			operator T();
 		};
 
-		using bc_script_array_base = bc_platform_script_array_base<core_platform::g_current_platform>;
-		using bc_script_array_base_ref = bc_script_ref<bc_script_array_base>;
+		using bc_script_array = bc_platform_script_array<core_platform::g_current_platform>;
+		using bc_script_array_ref = bc_script_ref<bc_script_array>;
 
 		template<typename T>
-		using bc_script_array = bc_platform_script_array<core_platform::g_current_platform, T>;
+		using bc_script_array_wrapper = bc_platform_script_array_wrapper<core_platform::g_current_platform, T>;
 		template<typename T>
-		using bc_script_array_ref = bc_script_ref<bc_script_array<T>>;
-
-		template<core_platform::bc_platform TPlatform, typename T>
-		bc_platform_script_array<TPlatform, T>::bc_platform_script_array() = default;
-
-		template<core_platform::bc_platform TPlatform, typename T>
-		bc_platform_script_array<TPlatform, T>::bc_platform_script_array(bc_script_context& p_context, bcSIZE p_length)
-			: bc_platform_script_array_base(p_context, p_length)
-		{
-		}
-
-		template<core_platform::bc_platform TPlatform, typename T>
-		bc_platform_script_array<TPlatform, T>::bc_platform_script_array(bc_script_context& p_context, std::initializer_list<T> p_array)
-			: bc_platform_script_array_base(p_context, p_array.size())
-		{
-			bcSIZE l_index = 0;
-
-			for (auto& l_item : p_array)
-			{
-				(*this)[l_index++] = l_item;
-			}
-		}
-
-		template<core_platform::bc_platform TPlatform, typename T>
-		bc_platform_script_array<TPlatform, T>::bc_platform_script_array(const bc_platform_script_array&) noexcept = default;
-
-		template<core_platform::bc_platform TPlatform, typename T>
-		bc_platform_script_array<TPlatform, T>::~bc_platform_script_array() = default;
-
-		template<core_platform::bc_platform TPlatform, typename T>
-		bc_platform_script_array<TPlatform, T>& bc_platform_script_array<TPlatform, T>::operator=(const bc_platform_script_array&) noexcept = default;
-
-		template<core_platform::bc_platform TPlatform, typename T>
-		typename bc_platform_script_array<TPlatform, T>::element bc_platform_script_array<TPlatform, T>::operator[](bcINT p_index)
-		{
-			return element(*this, p_index);
-		}
-
-		template<core_platform::bc_platform TPlatform, typename T>
-		bc_platform_script_array_element<TPlatform, T>::bc_platform_script_array_element(bc_script_array<T>& p_array, bcINT p_index)
-			: bc_platform_script_array_base_element(p_array, p_index)
-		{
-		}
-
-		template<core_platform::bc_platform TPlatform, typename T>
-		bc_platform_script_array_element<TPlatform, T>& bc_platform_script_array_element<TPlatform, T>::operator=(T p_value)
-		{
-			(*this) = bc_script_variable::_pack_arg(p_value);
-
-			return *this;
-		}
-
-		template<core_platform::bc_platform TPlatform, typename T>
-		bc_platform_script_array_element<TPlatform, T>::operator T()
-		{
-			T l_result;
-			bc_script_variable::_unpack_arg(static_cast<bc_script_variable>(*this), &l_result);
-
-			return l_result;
-		}
+		using bc_script_array_wrapper_ref = bc_script_ref<bc_script_array_wrapper<T>>;
 	}
 }

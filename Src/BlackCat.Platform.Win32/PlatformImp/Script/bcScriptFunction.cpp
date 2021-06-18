@@ -12,7 +12,7 @@ namespace black_cat
 		{
 			BC_ASSERT(p_argument_count <= 10);
 
-			auto l_function = reinterpret_cast< bc_script_function_base::callback_t >(p_callback_state);
+			const auto l_function = reinterpret_cast<bc_script_function::callback_t>(p_callback_state);
 			bc_script_var_pack
 			<
 				bc_script_variable, bc_script_variable,
@@ -47,7 +47,7 @@ namespace black_cat
 			// TODO Make a chiose for more and less argument count than expected
 			BC_ASSERT(p_argument_count == sizeof...(TA)+1);
 
-			auto l_function = reinterpret_cast< typename bc_script_function< TR, TA... >::callback_t >(p_callback_state);
+			auto l_function = reinterpret_cast< typename bc_script_function_wrapper< TR, TA... >::callback_t >(p_callback_state);
 			bc_script_var_pack< TA... > l_pack;
 
 			std::transform
@@ -56,15 +56,15 @@ namespace black_cat
 				std::next(p_arguments, p_argument_count),
 				std::begin(l_pack),
 				[](JsValueRef p_js_value)
-			{
-				bc_script_variable l_variable;
-				l_variable.get_platform_pack().m_js_value = p_js_value;
+				{
+					bc_script_variable l_variable;
+					l_variable.get_platform_pack().m_js_value = p_js_value;
 
-				return l_variable;
-			}
+					return l_variable;
+				}
 			);
 
-			bc_script_variable l_callback_result = bc_script_function< TR, TA... >::_call_callback
+			bc_script_variable l_callback_result = bc_script_function_wrapper< TR, TA... >::_call_callback
 			(
 				std::ptr_fun(l_function),
 				l_pack.data(),
@@ -76,7 +76,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		inline bc_platform_script_function_base<core_platform::g_api_win32>::bc_platform_script_function_base()
+		inline bc_platform_script_function<core_platform::g_api_win32>::bc_platform_script_function()
 			: bc_platform_script_reference()
 		{
 			m_pack.m_js_function = JS_INVALID_REFERENCE;
@@ -84,7 +84,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		inline bc_platform_script_function_base<core_platform::g_api_win32>::bc_platform_script_function_base(bc_script_context& p_context/*, callback_t p_callback*/)
+		inline bc_platform_script_function<core_platform::g_api_win32>::bc_platform_script_function(bc_script_context& p_context/*, callback_t p_callback*/)
 			: bc_platform_script_reference()
 		{
 			/*static_assert(sizeof(callback_t) == sizeof(void*), "Function pointer size isn't equal to size of void*");
@@ -96,20 +96,20 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		inline bc_platform_script_function_base<core_platform::g_api_win32>::bc_platform_script_function_base(const bc_platform_script_function_base& p_other) noexcept
+		inline bc_platform_script_function<core_platform::g_api_win32>::bc_platform_script_function(const bc_platform_script_function& p_other) noexcept
 		{
 			operator=(p_other);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		inline bc_platform_script_function_base<core_platform::g_api_win32>::~bc_platform_script_function_base()
+		inline bc_platform_script_function<core_platform::g_api_win32>::~bc_platform_script_function()
 		{
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		inline bc_platform_script_function_base<core_platform::g_api_win32>& bc_platform_script_function_base<core_platform::g_api_win32>::operator=(const bc_platform_script_function_base& p_other) noexcept
+		inline bc_platform_script_function<core_platform::g_api_win32>& bc_platform_script_function<core_platform::g_api_win32>::operator=(const bc_platform_script_function& p_other) noexcept
 		{
 			bc_platform_script_reference::operator=(p_other);
 			m_pack.m_js_function = p_other.m_pack.m_js_function;
@@ -119,7 +119,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		inline bc_script_variable bc_platform_script_function_base<core_platform::g_api_win32>::operator()(bc_script_variable& p_this, bc_script_variable* p_args, bcSIZE p_arg_count) const
+		inline bc_script_variable bc_platform_script_function<core_platform::g_api_win32>::operator()(bc_script_variable& p_this, bc_script_variable* p_args, bcSIZE p_arg_count) const
 		{
 			BC_ASSERT(p_arg_count <= 10);
 
@@ -152,7 +152,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		inline bool bc_platform_script_function_base<core_platform::g_api_win32>::is_valid() const noexcept
+		inline bool bc_platform_script_function<core_platform::g_api_win32>::is_valid() const noexcept
 		{
 			return m_pack.m_js_function != JS_INVALID_REFERENCE;
 		}

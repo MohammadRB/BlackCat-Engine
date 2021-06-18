@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template< core_platform::bc_platform TPlatform, typename T>
+		template<core_platform::bc_platform TPlatform, typename T>
 		struct bc_platform_script_ref_pack
 		{
 		};
@@ -19,12 +19,12 @@ namespace black_cat
 		 * \brief Store a strong reference to given script object
 		 * \tparam T 
 		 */
-		template< core_platform::bc_platform TPlatform, typename T >
+		template<core_platform::bc_platform TPlatform, typename T>
 		class bc_platform_script_ref
 		{
 		public:
 			using type = T;
-			using platform_pack = bc_platform_script_ref_pack< TPlatform, type >;
+			using platform_pack = bc_platform_script_ref_pack<TPlatform, type>;
 
 		public:
 			bc_platform_script_ref();
@@ -33,7 +33,7 @@ namespace black_cat
 			<
 				typename = typename std::enable_if
 				<
-					std::is_base_of< bc_platform_script_reference< TPlatform >, std::decay_t< type > >::value
+					std::is_base_of<bc_platform_script_reference<TPlatform>, std::decay_t<type>>::value
 				>::type
 			>
 			explicit bc_platform_script_ref(const type& p_object);
@@ -67,7 +67,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< typename T >
-		using bc_script_ref = bc_platform_script_ref< core_platform::g_current_platform, T >;
+		template<typename T>
+		using bc_script_ref = bc_platform_script_ref<core_platform::g_current_platform, T>;
 	}
 }

@@ -66,22 +66,22 @@ namespace black_cat
 			bc_chakra_call l_call = JsRelease(p_string.get_platform_pack().m_js_string, nullptr);
 		}
 
-		void _inc_ref(bc_platform_script_function_base< core_platform::g_api_win32 >& p_function)
+		void _inc_ref(bc_platform_script_function< core_platform::g_api_win32 >& p_function)
 		{
 			bc_chakra_call l_call = JsAddRef(p_function.get_platform_pack().m_js_function, nullptr);
 		}
 
-		void _dec_ref(bc_platform_script_function_base< core_platform::g_api_win32 >& p_function)
+		void _dec_ref(bc_platform_script_function< core_platform::g_api_win32 >& p_function)
 		{
 			bc_chakra_call l_call = JsRelease(p_function.get_platform_pack().m_js_function, nullptr);
 		}
 
-		void _inc_ref(bc_platform_script_array_base< core_platform::g_api_win32 >& p_array)
+		void _inc_ref(bc_platform_script_array< core_platform::g_api_win32 >& p_array)
 		{
 			_inc_ref(static_cast< bc_script_object& >(p_array));
 		}
 
-		void _dec_ref(bc_platform_script_array_base< core_platform::g_api_win32 >& p_array)
+		void _dec_ref(bc_platform_script_array< core_platform::g_api_win32 >& p_array)
 		{
 			_dec_ref(static_cast< bc_script_object& >(p_array));
 		}
@@ -97,19 +97,19 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void _inc_ref(bc_platform_script_prototype< core_platform::g_api_win32, T >& p_error)
+		void _inc_ref(bc_platform_script_prototype< core_platform::g_api_win32, T >& p_prototype)
 		{
 			bc_chakra_call l_call;
-			l_call = JsAddRef(p_error.get_platform_pack().m_js_ctor_function, nullptr);
-			l_call = JsAddRef(p_error.get_platform_pack().m_js_prototype, nullptr);
+			l_call = JsAddRef(p_prototype.get_platform_pack().m_js_ctor_function, nullptr);
+			l_call = JsAddRef(p_prototype.get_platform_pack().m_js_prototype, nullptr);
 		}
 
 		template< typename T >
-		void _dec_ref(bc_platform_script_prototype< core_platform::g_api_win32, T >& p_error)
+		void _dec_ref(bc_platform_script_prototype< core_platform::g_api_win32, T >& p_prototype)
 		{
 			bc_chakra_call l_call;
-			l_call = JsRelease(p_error.get_platform_pack().m_js_ctor_function, nullptr);
-			l_call = JsAddRef(p_error.get_platform_pack().m_js_prototype, nullptr);
+			l_call = JsRelease(p_prototype.get_platform_pack().m_js_ctor_function, nullptr);
+			l_call = JsAddRef(p_prototype.get_platform_pack().m_js_prototype, nullptr);
 		}
 	}
 }

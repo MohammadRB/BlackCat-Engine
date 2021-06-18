@@ -50,11 +50,25 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
+		bc_platform_script_variable<core_platform::g_api_win32>::bc_platform_script_variable(bc_script_context& p_context, bc_script_array& p_array)
+		{
+			as_array(p_array);
+		}
+		
+		template<>
+		BC_PLATFORMIMP_DLL
 		bc_platform_script_variable< core_platform::g_api_win32 >::bc_platform_script_variable(bc_script_context& p_context, bc_script_object& p_object)
 		{
 			as_object(p_object);
 		}
 
+		template<>
+		BC_PLATFORMIMP_DLL
+		bc_platform_script_variable<core_platform::g_api_win32>::bc_platform_script_variable(bc_script_context& p_context, bc_script_function& p_function)
+		{
+			as_function(p_function);
+		}
+		
 		template<>
 		BC_PLATFORMIMP_DLL
 		bc_platform_script_variable< core_platform::g_api_win32 >::bc_platform_script_variable(bc_script_context& p_context, bc_script_error& p_error)
@@ -333,6 +347,46 @@ namespace black_cat
 			return l_object;
 		}
 
+		template<>
+		BC_PLATFORMIMP_DLL
+		void bc_platform_script_variable<core_platform::g_api_win32>::as_function(const bc_script_function& p_function)
+		{
+			m_pack.m_js_value = const_cast<bc_script_function&>(p_function).get_platform_pack().m_js_function;
+		}
+
+		template<>
+		BC_PLATFORMIMP_DLL
+		bc_script_function bc_platform_script_variable<core_platform::g_api_win32>::as_function() const
+		{
+			BC_ASSERT(is_function());
+
+			bc_script_function l_function;
+
+			l_function.get_platform_pack().m_js_function = m_pack.m_js_value;
+
+			return l_function;
+		}
+		
+		template<>
+		BC_PLATFORMIMP_DLL
+		void bc_platform_script_variable<core_platform::g_api_win32>::as_array(const bc_script_array& p_array)
+		{
+			as_object(p_array);
+		}
+
+		template<>
+		BC_PLATFORMIMP_DLL
+		bc_script_array bc_platform_script_variable<core_platform::g_api_win32>::as_array() const
+		{
+			BC_ASSERT(is_array());
+
+			bc_script_array l_array;
+
+			static_cast<bc_script_object&>(l_array).get_platform_pack().m_js_object = m_pack.m_js_value;
+
+			return l_array;
+		}
+		
 		template<>
 		BC_PLATFORMIMP_DLL
 		void bc_platform_script_variable< core_platform::g_api_win32 >::as_error(const bc_script_error& p_error)
