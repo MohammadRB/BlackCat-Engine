@@ -53,7 +53,6 @@ namespace black_cat
 		
 		bc_render_application::bc_render_application()
 			: m_app(nullptr),
-			m_default_output_window(nullptr),
 			m_output_window(nullptr),
 			m_clock(nullptr),
 			m_min_update_rate(0),
@@ -62,16 +61,6 @@ namespace black_cat
 			m_paused(false),
 			m_termination_code(0)
 		{
-		}
-
-		bci_render_application_output_window& bc_render_application::get_output_window() const
-		{
-			return *m_output_window;
-		}
-
-		core_platform::bc_clock& bc_render_application::get_clock() const
-		{
-			return *m_clock;
 		}
 
 		void bc_render_application::set_fps(bcUINT32 p_fps)
@@ -147,8 +136,11 @@ namespace black_cat
 				
 				while (!m_is_terminated)
 				{
-					m_output_window->update();
 					m_app->update();
+					if(m_output_window)
+					{
+						m_output_window->update();
+					}
 
 					if (m_paused)
 					{
@@ -264,7 +256,7 @@ namespace black_cat
 			app_start_engine_components(p_parameters);
 			m_app = core::bc_make_unique<platform::bc_application>(core::bc_alloc_type::program, p_parameters.m_app_parameters);
 
-			if (p_parameters.m_app_parameters.m_output_window == nullptr)
+			/*if (p_parameters.m_app_parameters.m_output_window == nullptr)
 			{
 				m_default_output_window = core::bc_make_unique<bc_render_application_basic_output_window>(create_basic_render_window
 				(
@@ -273,7 +265,7 @@ namespace black_cat
 					450
 				));
 				p_parameters.m_app_parameters.m_output_window = m_default_output_window.get();
-			}
+			}*/
 
 			m_output_window = p_parameters.m_app_parameters.m_output_window;
 			m_clock = core::bc_make_unique<core_platform::bc_clock>(core::bc_alloc_type::program);
@@ -349,7 +341,6 @@ namespace black_cat
 
 			m_clock.reset(nullptr);
 			m_output_window->close();
-			m_default_output_window.reset(nullptr);
 			m_app.reset(nullptr);
 
 			app_close_engine_components();

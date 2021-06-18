@@ -32,7 +32,7 @@ namespace black_cat
 		{
 			explicit bc_game_system_parameter(core::bc_query_manager& p_query_manager,
 				core::bc_event_manager& p_event_manager,
-				bc_render_system_parameter&& p_render_system_parameter)
+				bc_render_system_parameter p_render_system_parameter)
 				: m_query_manager(&p_query_manager),
 				m_event_manager(&p_event_manager),
 				m_render_system_parameter(std::move(p_render_system_parameter))

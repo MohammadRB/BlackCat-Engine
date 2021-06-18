@@ -59,6 +59,7 @@ namespace black_cat
 			auto& l_input_system = m_input_system;
 			auto& l_physics_system = m_physics_system;
 			auto& l_console = m_console;
+			auto* l_camera = m_input_system.get_camera();
 			auto* l_scene = m_scene.get();
 			auto* l_particle_manager = l_scene ? &l_scene->get_particle_manager() : static_cast<bc_particle_manager*>(nullptr);
 			auto* l_decal_manager = l_scene ? &l_scene->get_decal_manager() : static_cast<bc_decal_manager*>(nullptr);
@@ -107,7 +108,11 @@ namespace black_cat
 
 				l_script_system.update(p_clock);
 				l_console->update(p_clock);
-				l_render_system.update(bc_render_system::update_context(p_clock, *m_input_system.get_camera()));
+
+				if(l_camera)
+				{
+					l_render_system.update(bc_render_system::update_context(p_clock, *l_camera));
+				}
 
 				core::bc_concurrency::when_all(l_scene_task, l_scene_task1);
 			}
@@ -123,7 +128,11 @@ namespace black_cat
 
 				l_script_system.update(p_clock);
 				l_console->update(p_clock);
-				l_render_system.update(bc_render_system::update_context(p_clock, *m_input_system.get_camera()));
+				
+				if (l_camera)
+				{
+					l_render_system.update(bc_render_system::update_context(p_clock, *l_camera));
+				}
 
 				core::bc_concurrency::when_all(l_scene_task);
 			}
@@ -134,8 +143,8 @@ namespace black_cat
 		void bc_game_system::render_game(const core_platform::bc_clock::update_param& p_clock)
 		{
 			m_event_manager->process_render_event_queue(p_clock);
-			
-			if(m_scene)
+
+			if(m_input_system.get_camera() && m_scene)
 			{
 				m_render_system.render(bc_render_system::render_context(p_clock, *m_query_manager));
 			}
@@ -169,7 +178,7 @@ namespace black_cat
 			m_physics_system.initialize();
 			m_network_system.initialize();
 			m_script_system.initialize(true);
-			m_render_system.initialize(*core::bc_get_service<core::bc_content_stream_manager>(), m_physics_system, std::move(p_parameter.m_render_system_parameter));
+			m_render_system.initialize(std::move(p_parameter.m_render_system_parameter));
 			m_console = core::bc_make_unique<bc_game_console>(core::bc_alloc_type::program, m_script_system);
 
 			m_editor_event_handle = m_event_manager->register_event_listener<bc_event_editor_mode>

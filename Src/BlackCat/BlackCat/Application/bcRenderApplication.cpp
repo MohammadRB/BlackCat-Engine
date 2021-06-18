@@ -46,13 +46,21 @@ namespace black_cat
 			(
 				*core::bc_get_service<core::bc_query_manager>(),
 				*core::bc_get_service<core::bc_event_manager>(),
-				game::bc_render_system_parameter
-				(
-					game::bc_render_application::get_output_window().get_width(),
-					game::bc_render_application::get_output_window().get_height(),
-					graphic::bc_format::R8G8B8A8_UNORM,
-					game::bc_render_application::get_output_window().get_device_output()
-				)
+				game::bc_render_application::get_output_window()
+					? game::bc_render_system_parameter
+					(
+						*core::bc_get_service<core::bc_content_stream_manager>(),
+						m_game_system->get_physics_system(),
+						game::bc_render_application::get_output_window()->get_width(),
+						game::bc_render_application::get_output_window()->get_height(),
+						graphic::bc_format::R8G8B8A8_UNORM,
+						game::bc_render_application::get_output_window()->get_device_output()
+					)
+					: game::bc_render_system_parameter
+					(
+						*core::bc_get_service<core::bc_content_stream_manager>(),
+						m_game_system->get_physics_system()
+					)
 			)
 		);
 

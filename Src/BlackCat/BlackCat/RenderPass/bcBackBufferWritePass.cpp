@@ -21,6 +21,8 @@ namespace black_cat
 	void bc_back_buffer_write_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
+		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
+		
 		const auto l_sampler_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_sampler_state
@@ -81,13 +83,13 @@ namespace black_cat
 		);
 		graphic::bc_device_parameters l_new_parameters
 		(
-			l_device.get_back_buffer_width(),
-			l_device.get_back_buffer_height(),
-			l_device.get_back_buffer_format(),
-			l_device.get_back_buffer_texture().get_sample_count()
+			l_device_swap_buffer.get_back_buffer_width(),
+			l_device_swap_buffer.get_back_buffer_height(),
+			l_device_swap_buffer.get_back_buffer_format(),
+			l_device_swap_buffer.get_back_buffer_texture().get_sample_count()
 		);
 
-		after_reset(game::bc_render_pass_reset_context(p_render_system, l_device, l_old_parameters, l_new_parameters));
+		after_reset(game::bc_render_pass_reset_context(p_render_system, l_device, l_device_swap_buffer, l_old_parameters, l_new_parameters));
 	}
 
 	void bc_back_buffer_write_pass::update(const game::bc_render_pass_update_context& p_context)
@@ -133,7 +135,7 @@ namespace black_cat
 		auto l_resource_configure = graphic::bc_graphic_resource_builder();
 
 		auto l_input_texture = *get_shared_resource<graphic::bc_texture2d>(m_input_texture);
-		auto l_back_buffer = p_context.m_device.get_back_buffer_texture();
+		auto l_back_buffer = p_context.m_device_swap_buffer.get_back_buffer_texture();
 
 		auto l_input_texture_view_config = l_resource_configure
 			.as_resource_view()
@@ -161,7 +163,7 @@ namespace black_cat
 			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_off, game::bc_depth_stencil_type::stencil_off }),
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0x1,
-			{ p_context.m_device.get_back_buffer_format() },
+			{ p_context.m_device_swap_buffer.get_back_buffer_format() },
 			get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture)->get_format(),
 			game::bc_multi_sample_type::c1_q1
 		);

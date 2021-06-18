@@ -106,9 +106,10 @@ namespace black_cat
 			m_key_device.update();
 			m_pointing_device.update();
 
-			if (get_camera())
+			auto* l_camera = get_camera();
+			if (l_camera)
 			{
-				get_camera()->update(p_clock_update_param);
+				l_camera->update(p_clock_update_param);
 			}
 		}
 

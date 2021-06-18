@@ -37,6 +37,7 @@ namespace black_cat
 	void bc_light_flare_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
+		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
 
 		core::bc_array<core::bc_vector3f, 8> l_cube_vertices
 		{
@@ -109,6 +110,7 @@ namespace black_cat
 			(
 				p_render_system,
 				l_device,
+				l_device_swap_buffer,
 				graphic::bc_device_parameters
 				(
 					0,
@@ -118,10 +120,10 @@ namespace black_cat
 				),
 				graphic::bc_device_parameters
 				(
-					l_device.get_back_buffer_width(),
-					l_device.get_back_buffer_height(),
-					l_device.get_back_buffer_format(),
-					l_device.get_back_buffer_texture().get_sample_count()
+					l_device_swap_buffer.get_back_buffer_width(),
+					l_device_swap_buffer.get_back_buffer_height(),
+					l_device_swap_buffer.get_back_buffer_format(),
+					l_device_swap_buffer.get_back_buffer_texture().get_sample_count()
 				)
 			)
 		);
@@ -188,7 +190,7 @@ namespace black_cat
 
 		const auto l_depth_stencil = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
 		const auto l_depth_stencil_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
-		const auto l_back_buffer = p_context.m_device.get_back_buffer_texture();
+		const auto l_back_buffer = p_context.m_device_swap_buffer.get_back_buffer_texture();
 		const auto l_back_buffer_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_back_buffer_view);
 		const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer.get_width(), l_back_buffer.get_height());
 		

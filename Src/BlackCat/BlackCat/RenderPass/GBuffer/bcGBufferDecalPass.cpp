@@ -45,6 +45,7 @@ namespace black_cat
 	void bc_gbuffer_decal_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
+		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
 		
 		core::bc_array<core::bc_vector3f, 8> l_cube_vertices
 		{
@@ -128,7 +129,8 @@ namespace black_cat
 			game::bc_render_pass_reset_context
 			(
 				p_render_system, 
-				l_device, 
+				l_device,
+				l_device_swap_buffer,
 				graphic::bc_device_parameters
 				(
 					0,
@@ -138,10 +140,10 @@ namespace black_cat
 				),
 				graphic::bc_device_parameters
 				(
-					l_device.get_back_buffer_width(),
-					l_device.get_back_buffer_height(),
-					l_device.get_back_buffer_format(),
-					l_device.get_back_buffer_texture().get_sample_count()
+					l_device_swap_buffer.get_back_buffer_width(),
+					l_device_swap_buffer.get_back_buffer_height(),
+					l_device_swap_buffer.get_back_buffer_format(),
+					l_device_swap_buffer.get_back_buffer_texture().get_sample_count()
 				)
 			)
 		);

@@ -53,7 +53,7 @@ namespace black_cat
 	void bc_shape_draw_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
-		const auto l_back_buffer_texture = l_device.get_back_buffer_texture();
+		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
 
 		m_pipeline_state = p_render_system.create_device_pipeline_state
 		(
@@ -67,29 +67,31 @@ namespace black_cat
 			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_less, game::bc_depth_stencil_type::stencil_off }),
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			1,
-			{ l_back_buffer_texture.get_format()},
+			{ l_device_swap_buffer.get_back_buffer_texture().get_format()},
 			game::bc_surface_format_type::D32_FLOAT,
 			game::bc_multi_sample_type::c1_q1
 		);
 		
 		after_reset(game::bc_render_pass_reset_context
+		(
+			p_render_system, 
+			l_device,
+			l_device_swap_buffer,
+			graphic::bc_device_parameters
 			(
-				p_render_system, 
-				l_device, graphic::bc_device_parameters
-				(
-					0,
-					0,
-					graphic::bc_format::unknown,
-					graphic::bc_texture_ms_config(1, 0)
-				), 
-				graphic::bc_device_parameters
-				(
-					l_back_buffer_texture.get_width(),
-					l_back_buffer_texture.get_height(),
-					l_back_buffer_texture.get_format(),
-					l_back_buffer_texture.get_sample_count()
-				)
-			));
+				0,
+				0,
+				graphic::bc_format::unknown,
+				graphic::bc_texture_ms_config(1, 0)
+			), 
+			graphic::bc_device_parameters
+			(
+				l_device_swap_buffer.get_back_buffer_width(),
+				l_device_swap_buffer.get_back_buffer_height(),
+				l_device_swap_buffer.get_back_buffer_format(),
+				l_device_swap_buffer.get_back_buffer_texture().get_sample_count()
+			)
+		));
 	}
 
 	void bc_shape_draw_pass::update(const game::bc_render_pass_update_context& p_context)
@@ -143,7 +145,7 @@ namespace black_cat
 			p_context.m_old_parameters.m_height != p_context.m_new_parameters.m_height
 		)
 		{
-			const auto l_back_buffer_texture = p_context.m_device.get_back_buffer_texture();
+			const auto l_back_buffer_texture = p_context.m_device_swap_buffer.get_back_buffer_texture();
 
 			const auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(constant::g_rpass_depth_stencil_render_view);
 			const auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(m_render_target_view_variable);

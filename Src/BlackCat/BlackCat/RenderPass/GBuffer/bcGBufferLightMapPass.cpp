@@ -81,6 +81,7 @@ namespace black_cat
 	void bc_gbuffer_light_map_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
+		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
 
 		m_device_compute_state = p_render_system.create_device_compute_state("gbuffer_light_map");
 
@@ -159,24 +160,25 @@ namespace black_cat
 		m_shadow_maps_buffer_view = l_device.create_resource_view(m_shadow_maps_buffer.get(), l_shadow_maps_buffer_view_config);
 
 		after_reset(game::bc_render_pass_reset_context
+		(
+			p_render_system,
+			l_device,
+			l_device_swap_buffer,
+			graphic::bc_device_parameters
 			(
-				p_render_system,
-				l_device,
-				graphic::bc_device_parameters
-				(
-					0,
-					0,
-					graphic::bc_format::unknown,
-					graphic::bc_texture_ms_config(1, 0)
-				),
-				graphic::bc_device_parameters
-				(
-					l_device.get_back_buffer_width(),
-					l_device.get_back_buffer_height(),
-					l_device.get_back_buffer_format(),
-					l_device.get_back_buffer_texture().get_sample_count()
-				)
-			));
+				0,
+				0,
+				graphic::bc_format::unknown,
+				graphic::bc_texture_ms_config(1, 0)
+			),
+			graphic::bc_device_parameters
+			(
+				l_device_swap_buffer.get_back_buffer_width(),
+				l_device_swap_buffer.get_back_buffer_height(),
+				l_device_swap_buffer.get_back_buffer_format(),
+				l_device_swap_buffer.get_back_buffer_texture().get_sample_count()
+			)
+		));
 	}
 
 	void bc_gbuffer_light_map_pass::update(const game::bc_render_pass_update_context& p_context)
@@ -381,8 +383,8 @@ namespace black_cat
 		p_context.m_render_thread.bind_compute_state(*m_compute_state.get());
 		p_context.m_render_thread.dispatch
 		(
-			p_context.m_render_system.get_device().get_back_buffer_width() / m_shader_thread_group_size + 1,
-			p_context.m_render_system.get_device().get_back_buffer_height() / m_shader_thread_group_size + 1,
+			p_context.m_render_system.get_device_swap_buffer().get_back_buffer_width() / m_shader_thread_group_size + 1,
+			p_context.m_render_system.get_device_swap_buffer().get_back_buffer_height() / m_shader_thread_group_size + 1,
 			1
 		);
 		p_context.m_render_thread.unbind_compute_state(*m_compute_state.get());

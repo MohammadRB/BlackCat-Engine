@@ -78,7 +78,7 @@ namespace black_cat
 				{
 					bc_app_event_exit l_exit_event(l_msg.wParam);
 
-					core::bc_get_service< core::bc_event_manager >()->process_event(l_exit_event);
+					core::bc_get_service<core::bc_event_manager>()->process_event(l_exit_event);
 				}
 			}
 		}

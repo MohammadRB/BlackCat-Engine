@@ -2,8 +2,8 @@
 
 #include "GraphicImp/GraphicImpPCH.h"
 #include "GraphicImp/Device/bcDevice.h"
+#include "GraphicImp/Device/bcDeviceSwapBuffer.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
-#include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Device/bcDeviceTextRenderer.h"
 
 namespace black_cat
@@ -52,10 +52,10 @@ namespace black_cat
 
 		template< >
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_text_renderer<g_api_dx11>::draw_texts(bc_device& p_device, bc_render_target_view& p_back_buffer_view, const bc_device_text* p_texts, bcSIZE p_count)
+		void bc_platform_device_text_renderer<g_api_dx11>::draw_texts(bc_device& p_device, bc_device_swap_buffer& p_swap_buffer, bc_render_target_view& p_back_buffer_view, const bc_device_text* p_texts, bcSIZE p_count)
 		{
-			const auto l_back_buffer_width = p_device.get_back_buffer_width();
-			const auto l_back_buffer_height = p_device.get_back_buffer_height();
+			const auto l_back_buffer_width = p_swap_buffer.get_back_buffer_width();
+			const auto l_back_buffer_height = p_swap_buffer.get_back_buffer_height();
 
 			D3D11_VIEWPORT l_viewport;
 			l_viewport.TopLeftX = 0;

@@ -79,7 +79,7 @@ namespace black_cat
 			
 			return *this;
 		}
-
+		
 		void bc_render_system::update(const update_context& p_update_params)
 		{
 			m_frame_renderer->update(bc_frame_renderer_update_context(p_update_params.m_clock, bc_camera_instance(p_update_params.m_camera)));
@@ -89,7 +89,10 @@ namespace black_cat
 		{
 			m_frame_renderer->render(bc_frame_renderer_render_context(p_render_param.m_clock, p_render_param.m_query_manager, *this));
 
-			m_device.present();
+			if(m_swap_buffer->is_valid())
+			{
+				m_swap_buffer->present();
+			}
 		}
 
 		void bc_render_system::swap(const swap_context& p_swap_context)
@@ -103,16 +106,21 @@ namespace black_cat
 			(
 				*this,
 				*m_device_reset_event->m_device,
+				m_swap_buffer.get(),
 				m_device_reset_event->m_old_parameters,
 				m_device_reset_event->m_new_parameters
 			));
 
-			m_device.resize_back_buffer(m_device_reset_event->m_new_parameters.m_width, m_device_reset_event->m_new_parameters.m_height);
+			if(m_swap_buffer->is_valid())
+			{
+				m_swap_buffer->resize_back_buffer(m_device, m_device_reset_event->m_new_parameters.m_width, m_device_reset_event->m_new_parameters.m_height);
+			}
 
 			m_render_pass_manager->after_reset(bc_render_pass_reset_context
 			(
 				*this,
 				*m_device_reset_event->m_device,
+				m_swap_buffer.get(),
 				m_device_reset_event->m_old_parameters,
 				m_device_reset_event->m_new_parameters
 			));
@@ -362,15 +370,20 @@ namespace black_cat
 			m_render_pass_manager->pass_clear();
 		}
 
-		void bc_render_system::_initialize(core::bc_content_stream_manager& p_content_stream, bc_physics_system& p_physics_system, bc_render_system_parameter p_parameter)
+		void bc_render_system::_initialize(bc_render_system_parameter p_parameter)
 		{
-			m_device.initialize
-			(
-				p_parameter.m_device_backbuffer_width,
-				p_parameter.m_device_backbuffer_height,
-				p_parameter.m_device_backbuffer_format,
-				std::move(p_parameter.m_render_output)
-			);
+			m_device.initialize();
+
+			if(p_parameter.m_render_output.is_valid())
+			{
+				m_swap_buffer = m_device.create_swap_buffer
+				(
+					p_parameter.m_device_backbuffer_width,
+					p_parameter.m_device_backbuffer_height,
+					p_parameter.m_device_backbuffer_format,
+					std::move(p_parameter.m_render_output)
+				);
+			}
 			
 			const auto l_alloc_type = m_device.set_allocator_alloc_type(core::bc_alloc_type::program);
 			
@@ -381,9 +394,9 @@ namespace black_cat
 			m_render_states.initialize(500, core::bc_alloc_type::program);
 			m_compute_states.initialize(20, core::bc_alloc_type::program);
 			
-			m_content_stream = &p_content_stream;
+			m_content_stream = &p_parameter.m_content_stream;
 			m_thread_manager = core::bc_make_unique<bc_render_thread_manager>(core::bc_alloc_type::program , *this, std::max(1U, l_hw_info.proccessor_count / 2));
-			m_material_manager = core::bc_make_unique<bc_material_manager>(core::bc_alloc_type::program, *m_content_stream, *this, p_physics_system);
+			m_material_manager = core::bc_make_unique<bc_material_manager>(core::bc_alloc_type::program, *m_content_stream, *this, p_parameter.m_physics_system);
 			m_render_pass_manager = core::bc_make_unique<bc_render_pass_manager>(core::bc_alloc_type::program);
 			m_animation_manager = core::bc_make_unique<bc_animation_manager>(core::bc_alloc_type::program);
 			m_shape_drawer = core::bc_make_unique<bc_shape_drawer>(core::bc_alloc_type::program);
@@ -433,7 +446,8 @@ namespace black_cat
 			m_render_pass_states.destroy();
 			m_render_states.destroy();
 			m_compute_states.destroy();
-			
+
+			m_swap_buffer.reset();
 			m_device.destroy();
 		}
 		
@@ -444,30 +458,36 @@ namespace black_cat
 			auto* l_window_resize_event = core::bci_message::as<platform::bc_app_event_window_resize>(p_event);
 			if(l_window_resize_event)
 			{
-				// If nothing has change do not continue
-				if (l_window_resize_event->width() != m_device.get_back_buffer_width() ||
-					l_window_resize_event->height() != m_device.get_back_buffer_height())
+				if(!m_swap_buffer->is_valid())
 				{
-					const auto l_device_back_buffer = m_device.get_back_buffer_texture();
-
-					graphic::bc_device_parameters l_old_parameters
-					(
-						l_device_back_buffer.get_width(),
-						l_device_back_buffer.get_height(),
-						l_device_back_buffer.get_format(),
-						l_device_back_buffer.get_sample_count()
-					);
-					graphic::bc_device_parameters l_new_parameters
-					(
-						l_window_resize_event->width(),
-						l_window_resize_event->height(),
-						l_device_back_buffer.get_format(),
-						l_device_back_buffer.get_sample_count()
-					);
-
-					// Put device reset event in render event queue
-					l_event_manager->queue_event(graphic::bc_app_event_device_reset(m_device, l_old_parameters, l_new_parameters, true), 0);
+					return true;
 				}
+				
+				// If nothing has change do not continue
+				if (l_window_resize_event->width() == m_swap_buffer->get_back_buffer_width() && l_window_resize_event->height() == m_swap_buffer->get_back_buffer_height())
+				{
+					return true;
+				}
+
+				const auto l_device_back_buffer = m_swap_buffer->get_back_buffer_texture();
+
+				graphic::bc_device_parameters l_old_parameters
+				(
+					l_device_back_buffer.get_width(),
+					l_device_back_buffer.get_height(),
+					l_device_back_buffer.get_format(),
+					l_device_back_buffer.get_sample_count()
+				);
+				graphic::bc_device_parameters l_new_parameters
+				(
+					l_window_resize_event->width(),
+					l_window_resize_event->height(),
+					l_device_back_buffer.get_format(),
+					l_device_back_buffer.get_sample_count()
+				);
+
+				// Put device reset event in render event queue
+				l_event_manager->queue_event(graphic::bc_app_event_device_reset(m_device, m_swap_buffer.get(), l_old_parameters, l_new_parameters, true), 0);
 
 				return true;
 			}

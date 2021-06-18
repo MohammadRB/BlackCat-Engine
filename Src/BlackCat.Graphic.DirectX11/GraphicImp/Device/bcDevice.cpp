@@ -35,6 +35,7 @@
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "GraphicImp/Device/bcDeviceTextRenderer.h"
 #include "GraphicImp/Device/bcDeviceOcclusionQuery.h"
+#include "GraphicImp/Device/bcDeviceSwapBuffer.h"
 #include "3rdParty/DirectXTK-master/Include/DDSTextureLoader.h"
 #include "3rdParty/DirectXTK-master/Include/WICTextureLoader.h"
 #include "3rdParty/DirectXTK-master/Include/ScreenGrab.h"
@@ -435,22 +436,10 @@ namespace black_cat
 			return l_render_target_view;
 		}
 
-		void _check_best_dxgi_fullscreen_setting(ID3D11Device* p_device, IDXGISwapChain* p_swap_chain, DXGI_MODE_DESC* p_new_desc, DXGI_MODE_DESC* p_best_desc)
-		{
-			ComPtr<IDXGIDevice> l_dxgi_device;
-			ComPtr<IDXGIAdapter> l_adapter;
-			ComPtr<IDXGIOutput> l_output;
-
-			dx_call(p_swap_chain->GetDevice(__uuidof(IDXGIDevice), reinterpret_cast<void**>(l_dxgi_device.GetAddressOf())));
-			l_dxgi_device->GetAdapter(l_adapter.GetAddressOf());
-			l_adapter->EnumOutputs(0, l_output.GetAddressOf());
-
-			dx_call(l_output->FindClosestMatchingMode(p_new_desc, p_best_desc, p_device));
-		}
-
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_device<g_api_dx11>::bc_platform_device()
+			: m_pack()
 		{
 		}
 
@@ -475,86 +464,21 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_platform_device<g_api_dx11>& bc_platform_device<g_api_dx11>::operator=(bc_platform_device&& p_other) noexcept
 		{
-			m_pack.m_vsync = p_other.m_pack.m_vsync;
 			m_pack.m_device = std::move(p_other.m_pack.m_device);
 			m_pack.m_immediate_context = std::move(p_other.m_pack.m_immediate_context);
-			m_pack.m_swap_chain = std::move(p_other.m_pack.m_swap_chain);
 
 			return *this;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bool bc_platform_device<g_api_dx11>::get_vsync() const
-		{
-			return m_pack.m_vsync;
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		void bc_platform_device<g_api_dx11>::set_vsync(bool p_sync)
-		{
-			m_pack.m_vsync = p_sync;
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bool bc_platform_device<g_api_dx11>::get_full_screen() const
-		{
-			DXGI_SWAP_CHAIN_DESC l_desc;
-			m_pack.m_swap_chain->GetDesc(&l_desc);
-
-			return !l_desc.Windowed;
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		void bc_platform_device<g_api_dx11>::set_full_screen(bool p_full_screen)
-		{
-			if (p_full_screen)
-			{
-				DXGI_SWAP_CHAIN_DESC l_swap_chain_desc;
-				DXGI_MODE_DESC l_best_mode_desc;
-
-				m_pack.m_swap_chain->GetDesc(&l_swap_chain_desc);
-
-				_check_best_dxgi_fullscreen_setting
-				(
-					m_pack.m_device.Get(),
-					m_pack.m_swap_chain.Get(),
-					&l_swap_chain_desc.BufferDesc,
-					&l_best_mode_desc
-				);
-				// Will send a WM_SIZE event so back buffer and all other buffers will be resizing by inter app events
-				dx_call(m_pack.m_swap_chain->ResizeTarget(&l_best_mode_desc)); 
-			}
-
-			dx_call(m_pack.m_swap_chain->SetFullscreenState(p_full_screen, nullptr));
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_texture2d bc_platform_device<g_api_dx11>::get_back_buffer_texture() const
-		{
-			ComPtr<ID3D11Texture2D> l_surface;
-			dx_call(m_pack.m_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(l_surface.GetAddressOf())));
-
-			bc_texture2d::platform_pack l_pack;
-			l_pack.m_resource = l_surface.Get();
-			l_pack.m_texture = l_surface.Get();
-
-			return bc_texture2d(l_pack);
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_device_info bc_platform_device<g_api_dx11>::get_device_info() const
+		bc_device_info bc_platform_device<g_api_dx11>::get_device_info(bc_device_swap_buffer& p_swap_buffer) const
 		{
 			ComPtr<IDXGIDevice> l_dxgi_device;
 			ComPtr<IDXGIAdapter> l_adapter;
 			DXGI_ADAPTER_DESC l_adapter_desc;
 
-			dx_call(m_pack.m_swap_chain->GetDevice(__uuidof(IDXGIDevice), reinterpret_cast<void**>(l_dxgi_device.GetAddressOf())));
+			dx_call(p_swap_buffer.get_platform_pack().m_swap_chain->GetDevice(__uuidof(IDXGIDevice), reinterpret_cast<void**>(l_dxgi_device.GetAddressOf())));
 			l_dxgi_device->GetAdapter(l_adapter.GetAddressOf());
 			l_adapter->GetDesc(&l_adapter_desc);
 
@@ -1312,6 +1236,49 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
+		bc_device_swap_buffer_ref bc_platform_device<g_api_dx11>::create_swap_buffer(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, bc_platform_device_output<g_api_dx11> p_output)
+		{
+			ComPtr<IDXGIFactory> l_factory;
+			CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(l_factory.GetAddressOf()));
+			
+			DXGI_SWAP_CHAIN_DESC l_swap_chain_desc;
+			std::memset(&l_swap_chain_desc, 0, sizeof(DXGI_SWAP_CHAIN_DESC));
+
+			l_swap_chain_desc.BufferCount = 2;
+			l_swap_chain_desc.BufferDesc.Format = bc_graphic_cast(p_back_buffer_format);
+			l_swap_chain_desc.BufferDesc.Width = p_width;
+			l_swap_chain_desc.BufferDesc.Height = p_height;
+			l_swap_chain_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+			l_swap_chain_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+			l_swap_chain_desc.BufferDesc.RefreshRate.Numerator = 60;
+			l_swap_chain_desc.BufferDesc.RefreshRate.Denominator = 1;
+			l_swap_chain_desc.SampleDesc.Count = 1;
+			l_swap_chain_desc.SampleDesc.Quality = 0;
+			l_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+			l_swap_chain_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+			l_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+			l_swap_chain_desc.OutputWindow = p_output.get_platform_pack().m_output_handle;
+			l_swap_chain_desc.Windowed = true;
+
+			IDXGISwapChain* l_swap_chain;
+			const auto l_result = l_factory->CreateSwapChain(m_pack.m_device.Get(), &l_swap_chain_desc, &l_swap_chain);
+
+			if (FAILED(l_result))
+			{
+				DWORD l_error_code;
+				core_platform::win32_from_hresult(l_result, &l_error_code);
+				throw bc_graphic_exception(static_cast<bcINT>(l_error_code), "Failed to create DirectX11 SwapChain");
+			}
+
+			bc_device_swap_buffer::platform_pack l_pack;
+			l_pack.m_vsync = false;
+			l_pack.m_swap_chain = l_swap_chain;
+			
+			return bc_device_swap_buffer_ref(bc_device_swap_buffer(l_pack));
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
 		bc_mapped_resource bc_platform_device<g_api_dx11>::map_resource(bci_resource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type)
 		{
 			bc_mapped_resource l_result;
@@ -1345,54 +1312,6 @@ namespace black_cat
 				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_pack.m_immediate_context_mutex);
 
 				m_pack.m_immediate_context->Unmap(p_resource.get_resource_platform_pack().m_resource, p_subresource);
-			}
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		void bc_platform_device<g_api_dx11>::resize_back_buffer(bcUINT p_width, bcUINT p_height)
-		{
-			resize_back_buffer(p_width, p_height, get_back_buffer_format());
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		void bc_platform_device<g_api_dx11>::resize_back_buffer(bcUINT p_width, bcUINT p_height, bc_format p_format)
-		{
-			bc_texture2d l_back_buffer = get_back_buffer_texture();
-
-			// If we are in fullscreen state change resolution too
-			if (get_full_screen()) // TODO check for 
-			{
-				DXGI_SWAP_CHAIN_DESC l_new_mode_desc;
-				DXGI_MODE_DESC l_best_mode_desc;
-
-				m_pack.m_swap_chain->GetDesc(&l_new_mode_desc);
-				l_new_mode_desc.BufferDesc.Width = p_width;
-				l_new_mode_desc.BufferDesc.Height = p_height;
-				l_new_mode_desc.BufferDesc.Format = bc_graphic_cast(p_format);
-
-				_check_best_dxgi_fullscreen_setting
-				(
-					m_pack.m_device.Get(),
-					m_pack.m_swap_chain.Get(),
-					&l_new_mode_desc.BufferDesc,
-					&l_best_mode_desc
-				);
-				dx_call(m_pack.m_swap_chain->ResizeTarget(&l_best_mode_desc));
-			}
-
-			if (l_back_buffer.get_width() != p_width ||
-				l_back_buffer.get_height() != p_height)
-			{
-				dx_call(m_pack.m_swap_chain->ResizeBuffers
-				(
-					2,
-					p_width,
-					p_height,
-					bc_graphic_cast(p_format),
-					DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH
-				));
 			}
 		}
 
@@ -1492,14 +1411,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device<g_api_dx11>::present()
-		{
-			m_pack.m_swap_chain->Present(m_pack.m_vsync ? 1 : 0, 0);
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		void bc_platform_device<g_api_dx11>::_initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, bc_platform_device_output<g_api_dx11> p_output)
+		void bc_platform_device<g_api_dx11>::_initialize()
 		{
 			HRESULT l_result = S_OK;
 
@@ -1581,35 +1493,6 @@ namespace black_cat
 				throw bc_graphic_exception(static_cast<bcINT>(l_error_code), "Can not found an adapter compatible with DirectX11");
 			}
 
-			DXGI_SWAP_CHAIN_DESC l_swap_chain_desc;
-			std::memset(&l_swap_chain_desc, 0, sizeof(DXGI_SWAP_CHAIN_DESC));
-
-			l_swap_chain_desc.BufferCount = 2;
-			l_swap_chain_desc.BufferDesc.Format = bc_graphic_cast(p_back_buffer_format);
-			l_swap_chain_desc.BufferDesc.Width = p_width;
-			l_swap_chain_desc.BufferDesc.Height = p_height;
-			l_swap_chain_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-			l_swap_chain_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-			l_swap_chain_desc.BufferDesc.RefreshRate.Numerator = 60;
-			l_swap_chain_desc.BufferDesc.RefreshRate.Denominator = 1;
-			l_swap_chain_desc.SampleDesc.Count = 1;
-			l_swap_chain_desc.SampleDesc.Quality = 0;
-			l_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-			l_swap_chain_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-			l_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-			l_swap_chain_desc.OutputWindow = nullptr; // p_output.get_platform_pack().m_output_handle;
-			l_swap_chain_desc.Windowed = true;
-
-			l_result = l_factory->CreateSwapChain(m_pack.m_device.Get(), &l_swap_chain_desc, m_pack.m_swap_chain.GetAddressOf());
-
-			if (FAILED(l_result))
-			{
-				DWORD l_error_code;
-				core_platform::win32_from_hresult(l_result, &l_error_code);
-				throw bc_graphic_exception(static_cast<bcINT>(l_error_code), "Failed to create DirectX11 SwapChain");
-			}
-
-			set_vsync(false);
 			set_allocator_alloc_type(core::bc_alloc_type::unknown_movable);
 		}
 
@@ -1617,7 +1500,6 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device<g_api_dx11>::_destroy()
 		{
-			m_pack.m_swap_chain.ReleaseAndGetAddressOf();
 			m_pack.m_immediate_context.ReleaseAndGetAddressOf();
 
 #ifdef BC_DEBUG

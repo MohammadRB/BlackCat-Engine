@@ -80,7 +80,14 @@ namespace black_cat
 			std::memset(&l_to_wstring_state, 0, sizeof(std::mbstate_t));
 		}
 		
-		m_text_renderer->draw_texts(p_context.m_render_system.get_device(), m_back_buffer_view, l_texts.data(), l_texts.size());
+		m_text_renderer->draw_texts
+		(
+			p_context.m_render_system.get_device(), 
+			p_context.m_render_system.get_device_swap_buffer(), 
+			m_back_buffer_view, 
+			l_texts.data(), 
+			l_texts.size()
+		);
 	}
 
 	void bc_text_draw_pass::before_reset(const game::bc_render_pass_reset_context& p_context)

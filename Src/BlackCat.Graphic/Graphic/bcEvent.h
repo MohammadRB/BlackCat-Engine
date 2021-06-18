@@ -12,7 +12,11 @@ namespace black_cat
 	{
 		template<bc_render_api>
 		class bc_platform_device;
-		using bc_device = bc_platform_device< g_current_render_api >;
+		using bc_device = bc_platform_device<g_current_render_api>;
+
+		template<bc_render_api>
+		class bc_platform_device_swap_buffer;
+		using bc_device_swap_buffer = bc_platform_device_swap_buffer<g_current_render_api>;
 
 		struct bc_device_parameters
 		{
@@ -40,11 +44,13 @@ namespace black_cat
 
 		public:
 			bc_app_event_device_reset(bc_device& p_device,
+				bc_device_swap_buffer& p_device_swap_buffer,
 				bc_device_parameters& p_old_parameters,
 				bc_device_parameters& p_new_parameters,
 				bool p_before_reset)
 				: bc_app_render_event(message_name()),
 				m_device(&p_device),
+				m_device_swap_buffer(&p_device_swap_buffer),
 				m_old_parameters(p_old_parameters),
 				m_new_parameters(p_new_parameters),
 				m_before_reset(p_before_reset)
@@ -58,6 +64,7 @@ namespace black_cat
 			bc_app_event_device_reset& operator =(const bc_app_event_device_reset&) = default;
 
 			bc_device* m_device;
+			bc_device_swap_buffer* m_device_swap_buffer;
 			bc_device_parameters m_old_parameters;
 			bc_device_parameters m_new_parameters;
 			bool m_before_reset;

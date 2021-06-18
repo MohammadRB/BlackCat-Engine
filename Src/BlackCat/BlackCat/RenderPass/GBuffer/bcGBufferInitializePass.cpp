@@ -19,27 +19,29 @@ namespace black_cat
 	void bc_gbuffer_initialize_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
-		const auto l_back_buffer_texture = l_device.get_back_buffer_texture();
+		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
+		const auto l_back_buffer_texture = l_device_swap_buffer.get_back_buffer_texture();
 		
 		after_reset(game::bc_render_pass_reset_context
+		(
+			p_render_system, 
+			l_device,
+			l_device_swap_buffer,
+			graphic::bc_device_parameters
 			(
-				p_render_system, 
-				l_device, 
-				graphic::bc_device_parameters
-				(
-					0,
-					0,
-					graphic::bc_format::unknown,
-					graphic::bc_texture_ms_config(1, 0)
-				),
-				graphic::bc_device_parameters
-				(
-					l_back_buffer_texture.get_width(),
-					l_back_buffer_texture.get_height(),
-					l_back_buffer_texture.get_format(),
-					l_back_buffer_texture.get_sample_count()
-				)
-			));
+				0,
+				0,
+				graphic::bc_format::unknown,
+				graphic::bc_texture_ms_config(1, 0)
+			),
+			graphic::bc_device_parameters
+			(
+				l_back_buffer_texture.get_width(),
+				l_back_buffer_texture.get_height(),
+				l_back_buffer_texture.get_format(),
+				l_back_buffer_texture.get_sample_count()
+			)
+		));
 	}
 
 	void bc_gbuffer_initialize_pass::update(const game::bc_render_pass_update_context& p_context)

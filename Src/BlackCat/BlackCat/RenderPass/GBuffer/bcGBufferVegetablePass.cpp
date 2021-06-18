@@ -16,11 +16,13 @@ namespace black_cat
 	void bc_gbuffer_vegetable_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
+		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
 
 		after_reset(game::bc_render_pass_reset_context
 			(
 				p_render_system,
 				l_device,
+				l_device_swap_buffer,
 				graphic::bc_device_parameters
 				(
 					0,
@@ -30,10 +32,10 @@ namespace black_cat
 				),
 				graphic::bc_device_parameters
 				(
-					l_device.get_back_buffer_width(),
-					l_device.get_back_buffer_height(),
-					l_device.get_back_buffer_format(),
-					l_device.get_back_buffer_texture().get_sample_count()
+					l_device_swap_buffer.get_back_buffer_width(),
+					l_device_swap_buffer.get_back_buffer_height(),
+					l_device_swap_buffer.get_back_buffer_format(),
+					l_device_swap_buffer.get_back_buffer_texture().get_sample_count()
 				)
 			));
 	}
@@ -115,7 +117,7 @@ namespace black_cat
 		const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_1);
 		const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_2);
 		const auto* l_specular_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_3);
-		const auto l_viewport = graphic::bc_viewport::default_config(p_context.m_device.get_back_buffer_width(), p_context.m_device.get_back_buffer_height());
+		const auto l_viewport = graphic::bc_viewport::default_config(p_context.m_device_swap_buffer.get_back_buffer_width(), p_context.m_device_swap_buffer.get_back_buffer_height());
 		const auto l_sampler_config = graphic::bc_graphic_resource_builder().as_resource().as_sampler_state
 		(
 			graphic::bc_filter::min_mag_mip_linear,

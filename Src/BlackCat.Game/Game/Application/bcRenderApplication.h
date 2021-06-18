@@ -24,9 +24,9 @@ namespace black_cat
 
 			bc_render_application& operator=(bc_render_application&&) = delete;
 
-			bci_render_application_output_window& get_output_window() const;
+			const bci_render_application_output_window* get_output_window() const;
 
-			core_platform::bc_clock& get_clock() const;
+			const core_platform::bc_clock& get_clock() const;
 
 			/**
 			 * \brief Specify an upper range for application fps or use a value lower than 0 for unlimited fps.
@@ -144,7 +144,6 @@ namespace black_cat
 			bool _app_event(core::bci_event& p_event);
 
 			core::bc_unique_ptr<platform::bc_application> m_app;
-			core::bc_unique_ptr<bc_render_application_basic_output_window> m_default_output_window;
 			bci_render_application_output_window* m_output_window;
 			core::bc_unique_ptr<core_platform::bc_clock> m_clock;
 			bcUINT32 m_min_update_rate;
@@ -165,5 +164,15 @@ namespace black_cat
 			core::bc_event_listener_handle m_event_handle_key;
 			core::bc_event_listener_handle m_event_handle_pointing;
 		};
+
+		inline const bci_render_application_output_window* bc_render_application::get_output_window() const
+		{
+			return m_output_window;
+		}
+
+		inline const core_platform::bc_clock& bc_render_application::get_clock() const
+		{
+			return *m_clock;
+		}
 	}
 }

@@ -280,7 +280,7 @@ namespace black_cat
 		}
 
 		const auto l_light_state_count = m_state->m_light_instance_states.size();
-		m_state->m_shadow_map_size = std::max(p_context.m_device.get_back_buffer_width(), p_context.m_device.get_back_buffer_height()) * m_state->m_shadow_map_multiplier;
+		m_state->m_shadow_map_size = std::max(p_context.m_device_swap_buffer.get_back_buffer_width(), p_context.m_device_swap_buffer.get_back_buffer_height()) * m_state->m_shadow_map_multiplier;
 		m_state->m_light_instance_states.clear();
 
 		for(auto l_ite = 0U; l_ite < l_light_state_count; ++l_ite)

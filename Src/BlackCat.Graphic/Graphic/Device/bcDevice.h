@@ -149,6 +149,11 @@ namespace black_cat
 		class bc_platform_device_occlusion_query;
 		using bc_device_occlusion_query = bc_platform_device_occlusion_query<g_current_render_api>;
 		using bc_device_occlusion_query_ref = bc_device_ref<bc_device_occlusion_query>;
+
+		template<bc_render_api>
+		class bc_platform_device_swap_buffer;
+		using bc_device_swap_buffer = bc_platform_device_swap_buffer<g_current_render_api>;
+		using bc_device_swap_buffer_ref = bc_device_ref<bc_device_swap_buffer>;
 		
 		template<bc_render_api TRenderApi>
 		struct bc_platform_device_pack
@@ -160,8 +165,7 @@ namespace black_cat
 		 * \tparam TRenderApi 
 		 */
 		template<bc_render_api TRenderApi>
-		class bc_platform_device 
-			: public core::bc_initializable<bcUINT, bcUINT, bc_format, bc_device_output>,
+		class bc_platform_device : public core::bc_initializable<>,
 			public core::bc_object_allocator,
 			public core_platform::bc_no_copy
 		{
@@ -177,23 +181,7 @@ namespace black_cat
 
 			bc_platform_device& operator=(bc_platform_device&& p_other) noexcept;
 
-			bool get_vsync() const;
-
-			void set_vsync(bool p_sync);
-
-			bool get_full_screen() const;
-
-			void set_full_screen(bool p_full_screen);
-
-			bcUINT32 get_back_buffer_width() const;
-
-			bcUINT32 get_back_buffer_height() const;
-
-			bc_format get_back_buffer_format() const;
-
-			bc_texture2d get_back_buffer_texture() const;
-
-			bc_device_info get_device_info() const;
+			bc_device_info get_device_info(bc_device_swap_buffer& p_swap_buffer) const;
 
 			bcUINT check_multi_sampling(bc_format p_textue_format, bcUINT p_sample_count) const;
 
@@ -282,27 +270,12 @@ namespace black_cat
 			bc_device_text_renderer create_text_renderer();
 
 			bc_device_occlusion_query_ref create_occlusion_query();
+
+			bc_device_swap_buffer_ref create_swap_buffer(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, bc_platform_device_output<g_api_dx11> p_output);
 			
 			bc_mapped_resource map_resource(bci_resource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type);
 
 			void unmap_resource(bci_resource& p_resource, bcUINT p_subresource);
-
-			/**
-			 * \brief Resize back buffer and send bc_app_event_device_reset event to resize all other resizable resources. 
-			 * If device is in fullscreen mode change resolution too.
-			 * \param p_width 
-			 * \param p_height 
-			 */
-			void resize_back_buffer(bcUINT p_width, bcUINT p_height);
-
-			/**
-			* \brief Resize back buffer and send bc_app_event_device_reset event to resize all other resizable resources.
-			* If device is in fullscreen mode change resolution too.
-			* \param p_width
-			* \param p_height
-			* \param p_format
-			*/
-			void resize_back_buffer(bcUINT p_width, bcUINT p_height, bc_format p_format);
 
 			/**
 			 * \brief Resize texture and recreate all resource views on that texture that are passed to the function.
@@ -319,15 +292,13 @@ namespace black_cat
 				bci_resource_view** p_views,
 				bcUINT p_num_views);
 
-			void present();
-
 			platform_pack& get_platform_pack()
 			{
 				return m_pack;
 			}
 
 		private:
-			void _initialize(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, bc_device_output p_output) override;
+			void _initialize() override;
 
 			void _destroy() override;
 
@@ -335,23 +306,5 @@ namespace black_cat
 		};
 
 		using bc_device = bc_platform_device<g_current_render_api>;
-
-		template<bc_render_api TRenderApi>
-		bcUINT32 bc_platform_device<TRenderApi>::get_back_buffer_width() const
-		{
-			return get_back_buffer_texture().get_width();
-		}
-
-		template<bc_render_api TRenderApi>
-		bcUINT32 bc_platform_device<TRenderApi>::get_back_buffer_height() const
-		{
-			return get_back_buffer_texture().get_height();
-		}
-
-		template<bc_render_api TRenderApi>
-		bc_format bc_platform_device<TRenderApi>::get_back_buffer_format() const
-		{
-			return get_back_buffer_texture().get_format();
-		}
 	}
 }

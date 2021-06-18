@@ -44,7 +44,7 @@ namespace black_cat
 			{
 				if(!m_editor_mode)
 				{
-					return m_cameras.back().get();
+					return !m_cameras.empty() ? m_cameras.back().get() : nullptr;
 				}
 
 				return m_editor_camera;

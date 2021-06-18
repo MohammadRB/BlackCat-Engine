@@ -92,8 +92,8 @@ namespace black_cat
 
 			auto l_camera = core::bc_make_unique<game::bc_free_camera>
 			(
-				l_render_system.get_device().get_back_buffer_width(),
-				l_render_system.get_device().get_back_buffer_height(),
+				l_render_system.get_device_swap_buffer().get_back_buffer_width(),
+				l_render_system.get_device_swap_buffer().get_back_buffer_height(),
 				1.2,
 				0.3,
 				3000
@@ -158,9 +158,9 @@ namespace black_cat
 
 				if (l_key_event->get_key_state() == platform::bc_key_state::pressing && l_key_event->get_key() == platform::bc_key::kb_space)
 				{
-					auto& l_input_system = m_game_system->get_input_system();
+					/*auto& l_input_system = m_game_system->get_input_system();
 					auto& l_camera = *l_input_system.get_camera();
-					auto* l_scene = m_game_system->get_scene();
+					auto* l_scene = m_game_system->get_scene();*/
 
 					/*game::bc_actor l_actor;
 

@@ -21,6 +21,8 @@ namespace black_cat
 			using platform_pack = bc_platform_device_output_pack<TRenderApi>;
 
 		public:
+			bc_platform_device_output() noexcept;
+			
 			bc_platform_device_output(platform_pack p_parameter) noexcept;
 
 			bc_platform_device_output(bc_platform_device_output&&) noexcept;
@@ -31,6 +33,8 @@ namespace black_cat
 
 			static bc_platform_device_output from_window(platform::bc_basic_window& p_render_window);
 
+			bool is_valid() const noexcept;
+			
 			platform_pack& get_platform_pack() noexcept
 			{
 				return m_pack;

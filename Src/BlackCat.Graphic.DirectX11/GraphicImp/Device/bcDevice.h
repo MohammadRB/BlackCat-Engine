@@ -17,10 +17,8 @@ namespace black_cat
 		template<>
 		struct bc_platform_device_pack<bc_render_api::directx11>
 		{
-			bool m_vsync;
-			Microsoft::WRL::ComPtr< ID3D11Device > m_device;
-			Microsoft::WRL::ComPtr< ID3D11DeviceContext > m_immediate_context;
-			Microsoft::WRL::ComPtr< IDXGISwapChain > m_swap_chain;
+			Microsoft::WRL::ComPtr<ID3D11Device> m_device;
+			Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_immediate_context;
 			core_platform::bc_mutex m_immediate_context_mutex;
 		};
 	}

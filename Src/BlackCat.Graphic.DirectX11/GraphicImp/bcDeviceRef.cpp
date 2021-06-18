@@ -4,12 +4,14 @@
 #include "GraphicImp/bcExport.h"
 #include "GraphicImp/bcDeviceRef.h"
 #include "Graphic/Device/bcDeviceOcclusionQuery.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandList.h"
-#include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
+#include "Graphic/Device/bcDeviceSwapBuffer.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Device/bcDeviceOcclusionQuery.h"
+#include "GraphicImp/Device/bcDeviceSwapBuffer.h"
+#include "GraphicImp/Device/Command/bcDeviceCommandList.h"
+#include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
@@ -255,6 +257,16 @@ namespace black_cat
 		void _release(bc_platform_device_occlusion_query<g_api_dx11>& p_query)
 		{
 			p_query.get_platform_pack().m_query->Release();
+		}
+
+		void _add_ref(bc_platform_device_swap_buffer<g_api_dx11>& p_buffer)
+		{
+			p_buffer.get_platform_pack().m_swap_chain->AddRef();
+		}
+
+		void _release(bc_platform_device_swap_buffer<g_api_dx11>& p_buffer)
+		{
+			p_buffer.get_platform_pack().m_swap_chain->Release();
 		}
 	}
 }

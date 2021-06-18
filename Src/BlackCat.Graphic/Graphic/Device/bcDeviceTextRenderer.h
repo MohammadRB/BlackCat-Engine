@@ -11,13 +11,17 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_device;
-		using bc_device = bc_platform_device< g_current_render_api >;
+		using bc_device = bc_platform_device<g_current_render_api>;
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
+		class bc_platform_device_swap_buffer;
+		using bc_device_swap_buffer = bc_platform_device_swap_buffer<g_current_render_api>;
+
+		template<bc_render_api TRenderApi>
 		class bc_platform_render_target_view;
-		using bc_render_target_view = bc_platform_render_target_view< g_current_render_api >;
+		using bc_render_target_view = bc_platform_render_target_view<g_current_render_api>;
 		
 		struct bc_device_text
 		{
@@ -60,12 +64,12 @@ namespace black_cat
 			float m_scale;
 		};
 		
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_device_text_renderer_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_device_text_renderer
 		{
 		public:
@@ -82,7 +86,7 @@ namespace black_cat
 
 			core::bc_vector2f measure_text(const bcWCHAR* p_text);
 			
-			void draw_texts(bc_device& p_device, bc_render_target_view& p_back_buffer_view, const bc_device_text* p_texts, bcSIZE p_count);
+			void draw_texts(bc_device& p_device, bc_device_swap_buffer& p_swap_buffer, bc_render_target_view& p_back_buffer_view, const bc_device_text* p_texts, bcSIZE p_count);
 			
 			platform_pack& get_platform_pack() noexcept
 			{
@@ -98,6 +102,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_device_text_renderer = bc_platform_device_text_renderer< g_current_render_api >;
+		using bc_device_text_renderer = bc_platform_device_text_renderer<g_current_render_api>;
 	}
 }

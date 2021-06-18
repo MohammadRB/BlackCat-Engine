@@ -11,12 +11,12 @@
 #include "Core/Utility/bcObjectPool.h"
 #include "Graphic/bcEvent.h"
 #include "GraphicImp/Device/bcDevice.h"
+#include "GraphicImp/Device/bcDeviceSwapBuffer.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
-#include "Game/bcExport.h"
 #include "Game/System/Render/Pass/bcRenderPassManager.h"
 #include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/State/bcStateConfigs.h"
@@ -28,6 +28,7 @@
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/System/Render/bcFrameRenderer.h"
 #include "Game/System/Input/bcCamera.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
@@ -49,17 +50,33 @@ namespace black_cat
 		
 		struct bc_render_system_parameter
 		{
-			bc_render_system_parameter(bcUINT32 p_device_backbuffer_width, 
+			bc_render_system_parameter(core::bc_content_stream_manager& p_content_stream, bc_physics_system& p_physics_system)
+				: m_content_stream(p_content_stream),
+				m_physics_system(p_physics_system),
+				m_device_backbuffer_width(0),
+				m_device_backbuffer_height(0),
+				m_device_backbuffer_format(graphic::bc_format::unknown),
+				m_render_output()
+			{
+			}
+			
+			bc_render_system_parameter(core::bc_content_stream_manager& p_content_stream,
+				bc_physics_system& p_physics_system,
+				bcUINT32 p_device_backbuffer_width, 
 				bcUINT32 p_device_backbuffer_height, 
 				graphic::bc_format p_device_backbuffer_format, 
 				graphic::bc_device_output p_render_output)
-				: m_device_backbuffer_width(p_device_backbuffer_width),
+				: m_content_stream(p_content_stream),
+				m_physics_system(p_physics_system),
+				m_device_backbuffer_width(p_device_backbuffer_width),
 				m_device_backbuffer_height(p_device_backbuffer_height),
 				m_device_backbuffer_format(p_device_backbuffer_format),
 				m_render_output(std::move(p_render_output))
 			{
 			}
 
+			core::bc_content_stream_manager& m_content_stream;
+			bc_physics_system& m_physics_system;
 			bcUINT32 m_device_backbuffer_width;
 			bcUINT32 m_device_backbuffer_height;
 			graphic::bc_format m_device_backbuffer_format;
@@ -102,7 +119,7 @@ namespace black_cat
 			core_platform::bc_clock::update_param m_clock;
 		};
 
-		class BC_GAME_DLL bc_render_system : public core::bc_initializable<core::bc_content_stream_manager&, bc_physics_system&, bc_render_system_parameter>
+		class BC_GAME_DLL bc_render_system : public core::bc_initializable<bc_render_system_parameter>
 		{
 		private:
 			friend class _bc_render_pass_state_handle_deleter;
@@ -127,6 +144,10 @@ namespace black_cat
 			
 			const graphic::bc_device& get_device() const noexcept;
 
+			graphic::bc_device_swap_buffer& get_device_swap_buffer() noexcept;
+
+			const graphic::bc_device_swap_buffer& get_device_swap_buffer() const noexcept;
+			
 			bc_material_manager& get_material_manager() noexcept;
 			
 			const bc_material_manager& get_material_manager() const noexcept;
@@ -277,7 +298,7 @@ namespace black_cat
 			void destroy_render_passes();
 			
 		private:			
-			void _initialize(core::bc_content_stream_manager& p_content_stream, bc_physics_system& p_physics_system, bc_render_system_parameter p_parameter) override;
+			void _initialize(bc_render_system_parameter p_parameter) override;
 
 			void _destroy() override;
 
@@ -302,6 +323,7 @@ namespace black_cat
 			void _destroy_compute_state(bc_compute_state* p_compute_state);
 
 			graphic::bc_device m_device;
+			graphic::bc_device_swap_buffer_ref m_swap_buffer;
 			core::bc_concurrent_object_pool<bc_render_pass_state> m_render_pass_states;
 			core::bc_concurrent_object_pool<bc_render_state> m_render_states;
 			core::bc_concurrent_object_pool<bc_compute_state> m_compute_states;
@@ -329,6 +351,16 @@ namespace black_cat
 		inline const graphic::bc_device& bc_render_system::get_device() const noexcept
 		{
 			return m_device;
+		}
+
+		inline graphic::bc_device_swap_buffer& bc_render_system::get_device_swap_buffer() noexcept
+		{
+			return m_swap_buffer.get();
+		}
+
+		inline const graphic::bc_device_swap_buffer& bc_render_system::get_device_swap_buffer() const noexcept
+		{
+			return m_swap_buffer.get();
 		}
 
 		inline bc_material_manager& bc_render_system::get_material_manager() noexcept

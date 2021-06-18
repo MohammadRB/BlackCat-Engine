@@ -68,6 +68,9 @@ namespace black_cat
 		template<bc_render_api TApi>
 		class bc_platform_device_occlusion_query;
 
+		template<bc_render_api TApi>
+		class bc_platform_device_swap_buffer;
+
 		void BC_GRAPHICIMP_DLL _add_ref(bc_platform_device_command_list<g_api_dx11>& p_command_list);
 
 		void BC_GRAPHICIMP_DLL _release(bc_platform_device_command_list<g_api_dx11>& p_command_list);
@@ -143,6 +146,10 @@ namespace black_cat
 		void BC_GRAPHICIMP_DLL _add_ref(bc_platform_device_occlusion_query<g_api_dx11>& p_query);
 
 		void BC_GRAPHICIMP_DLL _release(bc_platform_device_occlusion_query<g_api_dx11>& p_query);
+
+		void BC_GRAPHICIMP_DLL _add_ref(bc_platform_device_swap_buffer<g_api_dx11>& p_buffer);
+
+		void BC_GRAPHICIMP_DLL _release(bc_platform_device_swap_buffer<g_api_dx11>& p_buffer);
 
 		template<class TObject>
 		struct bc_platform_device_ref_pack<g_api_dx11, TObject>

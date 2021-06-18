@@ -42,8 +42,8 @@ namespace black_cat
 
 	void bc_gbuffer_terrain_pass_dx11::initialize_resources(game::bc_render_system& p_render_system)
 	{
-		graphic::bc_device& l_device = p_render_system.get_device();
-		const graphic::bc_texture2d l_back_buffer_texture = l_device.get_back_buffer_texture();
+		auto& l_device = p_render_system.get_device();
+		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
 
 		auto l_parameter_cbuffer_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
@@ -60,24 +60,25 @@ namespace black_cat
 		m_run_chunk_info_shader = true;
 		
 		after_reset(game::bc_render_pass_reset_context
+		(
+			p_render_system,
+			l_device,
+			l_device_swap_buffer,
+			graphic::bc_device_parameters
 			(
-				p_render_system,
-				l_device,
-				graphic::bc_device_parameters
-				(
-					0,
-					0,
-					graphic::bc_format::unknown,
-					graphic::bc_texture_ms_config(1, 0)
-				),
-				graphic::bc_device_parameters
-				(
-					l_device.get_back_buffer_width(),
-					l_device.get_back_buffer_height(),
-					l_device.get_back_buffer_format(),
-					l_device.get_back_buffer_texture().get_sample_count()
-				)
-			));
+				0,
+				0,
+				graphic::bc_format::unknown,
+				graphic::bc_texture_ms_config(1, 0)
+			),
+			graphic::bc_device_parameters
+			(
+				l_device_swap_buffer.get_back_buffer_width(),
+				l_device_swap_buffer.get_back_buffer_height(),
+				l_device_swap_buffer.get_back_buffer_format(),
+				l_device_swap_buffer.get_back_buffer_texture().get_sample_count()
+			)
+		));
 	}
 
 	void bc_gbuffer_terrain_pass_dx11::update(const game::bc_render_pass_update_context& p_context)
@@ -184,7 +185,7 @@ namespace black_cat
 			p_context.m_old_parameters.m_height != p_context.m_new_parameters.m_height
 		)
 		{
-			graphic::bc_texture2d l_back_buffer_texture = p_context.m_device.get_back_buffer_texture();
+			graphic::bc_texture2d l_back_buffer_texture = p_context.m_device_swap_buffer.get_back_buffer_texture();
 
 			const auto l_height_map_sampler_config = graphic::bc_graphic_resource_builder().as_resource().as_sampler_state
 			(
@@ -209,7 +210,7 @@ namespace black_cat
 			const auto* l_diffuse_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_1);
 			const auto* l_normal_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_2);
 			const auto* l_specular_map_view = get_shared_resource<graphic::bc_render_target_view>(constant::g_rpass_render_target_render_view_3);
-			const auto l_viewport = graphic::bc_viewport::default_config(p_context.m_device.get_back_buffer_width(), p_context.m_device.get_back_buffer_height());
+			const auto l_viewport = graphic::bc_viewport::default_config(p_context.m_device_swap_buffer.get_back_buffer_width(), p_context.m_device_swap_buffer.get_back_buffer_height());
 
 			m_height_map_sampler = p_context.m_device.create_sampler_state(l_height_map_sampler_config);
 			m_texture_sampler = p_context.m_device.create_sampler_state(l_texture_sampler_config);
