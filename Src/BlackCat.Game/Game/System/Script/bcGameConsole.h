@@ -105,7 +105,7 @@ namespace black_cat
 			core::bc_vector<std::pair<bc_console_output_type, core::bc_estring>> m_logs;
 
 			core_platform::bc_mutex m_scripts_mutex;
-			core::bc_vector< _bc_script_queue_entry > m_scripts;
+			core::bc_vector<_bc_script_queue_entry> m_scripts;
 
 			core::bc_event_listener_handle m_key_event_handle;
 

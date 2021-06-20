@@ -87,7 +87,7 @@ namespace black_cat
 #ifdef BC_DEBUG
 		core::bc_get_service<core::bc_logger>()->register_listener
 		(
-			core::bc_enum::mask_or({ core::bc_log_type::debug, core::bc_log_type::error }),
+			core::bc_enum::mask_or({ core::bc_log_type::info, core::bc_log_type::debug, core::bc_log_type::warning, core::bc_log_type::error }),
 			core::bc_make_unique<platform::bc_ide_logger>(core::bc_alloc_type::program)
 		);
 #endif

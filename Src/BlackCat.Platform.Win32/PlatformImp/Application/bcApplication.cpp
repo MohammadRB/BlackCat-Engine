@@ -70,14 +70,13 @@ namespace black_cat
 			MSG l_msg;
 
 			// Get thread messages that doesn't belong to any window
-			while (PeekMessage(&l_msg, reinterpret_cast< HWND >(-1), 0, 0, PM_REMOVE))
+			while (PeekMessage(&l_msg, reinterpret_cast<HWND>(-1), 0, 0, PM_REMOVE))
 			{
 				TranslateMessage(&l_msg);
 
 				if (l_msg.message == WM_QUIT)
 				{
 					bc_app_event_exit l_exit_event(l_msg.wParam);
-
 					core::bc_get_service<core::bc_event_manager>()->process_event(l_exit_event);
 				}
 			}

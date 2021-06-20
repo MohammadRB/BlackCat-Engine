@@ -410,7 +410,7 @@ namespace black_cat
 			auto* l_close_event = core::bci_message::as<platform::bc_app_event_window_close>(p_event);
 			if (l_close_event)
 			{
-				if (l_close_event->get_window_id() == m_output_window->get_id())
+				if (m_output_window && m_output_window->get_id() == l_close_event->get_window_id())
 				{
 					platform::bc_app_event_exit l_exit_event(0);
 					l_event_manager->process_event(l_exit_event);

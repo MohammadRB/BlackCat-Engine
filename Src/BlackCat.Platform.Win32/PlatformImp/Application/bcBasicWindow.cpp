@@ -26,7 +26,7 @@ namespace black_cat
 		
 		LRESULT CALLBACK _window_proc(HWND p_hwnd, UINT p_msg, WPARAM p_wparam, LPARAM p_lparam)
 		{
-			auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
+			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 
 			// Handle some specific messages. Note that if we handle a message, we should return 0.
 			switch (p_msg)
@@ -36,12 +36,12 @@ namespace black_cat
 				{
 					if (LOWORD(p_wparam) == WA_INACTIVE)
 					{
-						bc_app_event_window_focus l_focus_event(reinterpret_cast< bc_window_id >(p_hwnd), false);
+						bc_app_event_window_focus l_focus_event(reinterpret_cast<bc_window_id>(p_hwnd), false);
 						l_event_manager->process_event(l_focus_event);
 					}
 					else
 					{
-						bc_app_event_window_focus l_focus_event(reinterpret_cast< bc_window_id >(p_hwnd), true);
+						bc_app_event_window_focus l_focus_event(reinterpret_cast<bc_window_id>(p_hwnd), true);
 						l_event_manager->process_event(l_focus_event);
 					}
 
@@ -66,7 +66,7 @@ namespace black_cat
 						l_state = bc_app_event_window_state::state::restored;
 					}
 
-					bc_app_event_window_state l_resize_event(reinterpret_cast< bc_window_id >(p_hwnd), l_state);
+					bc_app_event_window_state l_resize_event(reinterpret_cast<bc_window_id>(p_hwnd), l_state);
 					l_event_manager->process_event(l_resize_event);
 
 					break;
@@ -77,7 +77,7 @@ namespace black_cat
 					bcUINT32 l_width, l_height;
 					_get_window_size(p_hwnd, l_width, l_height);
 				
-					bc_app_event_window_resize l_start_event(reinterpret_cast< bc_window_id >(p_hwnd), l_width, l_height, true);
+					bc_app_event_window_resize l_start_event(reinterpret_cast<bc_window_id>(p_hwnd), l_width, l_height, true);
 					l_event_manager->process_event(l_start_event);
 
 					break;
@@ -88,7 +88,7 @@ namespace black_cat
 					bcUINT32 l_width, l_height;
 					_get_window_size(p_hwnd, l_width, l_height);
 				
-					bc_app_event_window_resize l_end_event(reinterpret_cast< bc_window_id >(p_hwnd), l_width, l_height, false);
+					bc_app_event_window_resize l_end_event(reinterpret_cast<bc_window_id>(p_hwnd), l_width, l_height, false);
 					l_event_manager->process_event(l_end_event);
 
 					break;
@@ -96,7 +96,7 @@ namespace black_cat
 				// WM_DESTROY is sent when the window is being destroyed.
 			case WM_DESTROY:
 				{
-					bc_app_event_window_close l_close_event(reinterpret_cast< bc_window_id >(p_hwnd));
+					bc_app_event_window_close l_close_event(reinterpret_cast<bc_window_id>(p_hwnd));
 					l_event_manager->process_event(l_close_event);
 
 					break;
@@ -176,7 +176,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL 
-		bc_platform_basic_window<core_platform::bc_platform::win32>& bc_platform_basic_window< core_platform::bc_platform::win32 >::operator=(bc_platform_basic_window&& p_other) noexcept
+		bc_platform_basic_window<core_platform::bc_platform::win32>& bc_platform_basic_window<core_platform::bc_platform::win32>::operator=(bc_platform_basic_window&& p_other) noexcept
 		{
 			bc_platform_window::operator=(std::move(p_other));
 			m_pack.m_instance = p_other.m_pack.m_instance;
@@ -190,9 +190,9 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_basic_window<core_platform::bc_platform::win32>::id bc_platform_basic_window< core_platform::bc_platform::win32 >::get_id() const noexcept
+		bc_platform_basic_window<core_platform::bc_platform::win32>::id bc_platform_basic_window<core_platform::bc_platform::win32>::get_id() const noexcept
 		{
-			return reinterpret_cast< id >(m_pack.m_handle);
+			return reinterpret_cast<id>(m_pack.m_handle);
 		}
 
 		template<>

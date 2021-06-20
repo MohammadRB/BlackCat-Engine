@@ -34,6 +34,7 @@ namespace black_cat
 				: m_local()
 			{
 				static_assert(TAllocType != bc_alloc_type::unknown_movable, "movable pointers are not allowed");
+				static_assert(std::is_default_constructible_v<value_type>, "T must be default constructable");
 			}
 
 			bc_thread_local(bc_thread_local&& p_other) noexcept
@@ -54,7 +55,7 @@ namespace black_cat
 
 			bc_thread_local& operator =(bc_thread_local&& p_other) noexcept
 			{
-				m_local = std::move(m_local);
+				m_local = std::move(p_other.m_local);
 
 				return *this;
 			}
@@ -107,9 +108,9 @@ namespace black_cat
 
 			value_type release() noexcept
 			{
-				//entry* l_current_value = m_local.release();
 				// TODO no release is done. use actual release and delete entry
-				entry* l_entry = m_local.get();
+				entry* l_entry = m_local.release();
+				//entry* l_entry = m_local.get();
 				value_type l_temp = std::move(l_entry->m_value);
 
 				return l_temp;
@@ -121,9 +122,9 @@ namespace black_cat
 				BC_DELETE(p_pointer);
 			}
 
-			template< typename T >
-			typename std::enable_if< std::is_integral< T >::value, entry* >::type _create() const
-			{				
+			template<typename T>
+			typename std::enable_if<std::is_integral<T>::value, entry*>::type _create()
+			{
 				entry* l_entry = BC_NEW(entry, TAllocType);
 				l_entry->m_value = value_type(0);
 				l_entry->m_next = nullptr;
@@ -133,11 +134,10 @@ namespace black_cat
 				return l_entry;
 			}
 
-			template< typename T >
-			typename std::enable_if< !std::is_integral< T >::value, entry* >::type _create() const
+			template<typename T>
+			typename std::enable_if<!std::is_integral<T>::value, entry*>::type _create()
 			{
 				entry* l_entry = BC_NEW(entry, TAllocType);
-				l_entry->m_value = value_type();
 				l_entry->m_next = nullptr;
 
 				_swap_first_entry(l_entry);
@@ -165,8 +165,8 @@ namespace black_cat
 				}
 			}
 
-			core_platform::bc_atomic< entry* > m_first_entry;
-			core_platform::bc_thread_local< entry > m_local;
+			core_platform::bc_atomic<entry*> m_first_entry; // All created instances by different threads
+			core_platform::bc_thread_local<entry> m_local;
 		};
 	}
 }

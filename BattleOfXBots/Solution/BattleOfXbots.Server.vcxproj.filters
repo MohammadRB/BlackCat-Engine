@@ -12,12 +12,12 @@
     <ClCompile Include="..\Src\BoX.Server\BattleOfXbots.Server.cpp">
       <Filter>BoX.Server</Filter>
     </ClCompile>
-    <ClCompile Include="..\Src\BoX.Server\Application\bxApplication.cpp">
+    <ClCompile Include="..\Src\BoX.Server\Application\bxServerApplication.cpp">
       <Filter>BoX.Server\Application</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Src\BoX.Server\Application\bxApplication.h">
+    <ClInclude Include="..\Src\BoX.Server\Application\bxServerApplication.h">
       <Filter>BoX.Server\Application</Filter>
     </ClInclude>
   </ItemGroup>

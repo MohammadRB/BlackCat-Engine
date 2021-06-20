@@ -33,6 +33,7 @@ namespace black_cat
 			m_scene(),
 			m_editor_mode(false)
 		{
+			m_console = core::bc_make_unique<bc_game_console>(core::bc_alloc_type::program, m_script_system);
 		}
 
 		bc_game_system::~bc_game_system()
@@ -179,7 +180,6 @@ namespace black_cat
 			m_network_system.initialize();
 			m_script_system.initialize(true);
 			m_render_system.initialize(std::move(p_parameter.m_render_system_parameter));
-			m_console = core::bc_make_unique<bc_game_console>(core::bc_alloc_type::program, m_script_system);
 
 			m_editor_event_handle = m_event_manager->register_event_listener<bc_event_editor_mode>
 			(

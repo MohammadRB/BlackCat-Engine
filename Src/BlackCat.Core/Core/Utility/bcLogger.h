@@ -5,10 +5,12 @@
 #include "CorePlatform/bcType.h"
 #include "CorePlatform/CorePlatformPCH.h"
 #include "Core/Memory/bcPtr.h"
+#include "Core/Concurrency/bcThreadLocal.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcArray.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcServiceManager.h"
+#include "Core/Utility/bcLoggerOutputStream.h"
 #include "Core/bcExport.h"
 #include "Core/bcConstant.h"
 
@@ -16,16 +18,8 @@ namespace black_cat
 {
 	namespace core
 	{
-		enum class bc_log_type : bcUBYTE
-		{
-			info = 1,
-			debug = 2,
-			warning = 4,
-			error = 8,
-		};
-
 		/**
-		 * \brief Interface for log listeners. Calls to `on_log` method can be called from different threads so
+		 * \brief Interface for log listeners. Calls to 'on_log' method can be called from different threads so
 		 * clients must take care of threads in their implementations.
 		 */
 		class bci_log_listener
@@ -88,8 +82,7 @@ namespace black_cat
 			bc_logger& operator=(bc_logger&&) noexcept = delete;
 
 			/**
-			 * \brief 
-			 * Use binary OR to pass multiple type.
+			 * \brief Use binary OR to pass multiple type.
 			 * \param p_types
 			 * \param p_log 
 			 */
@@ -118,18 +111,42 @@ namespace black_cat
 			}
 
 			/**
-			 * \brief 
-			 * Register and take the ownership of listener.
-			 * Use binary OR to pass multiple type.
+			 * \brief Get logger output stream for formatted logs
+			 * \return 
+			 */
+			bc_logger_output_stream& log(bc_log_type p_types);
+
+			bc_logger_output_stream& log_info()
+			{
+				return log(bc_log_type::info);
+			}
+
+			bc_logger_output_stream& log_debug()
+			{
+#ifdef BC_DEBUG
+				return log(bc_log_type::debug);
+#endif
+			}
+
+			bc_logger_output_stream& log_warning()
+			{
+				return log(bc_log_type::warning);
+			}
+
+			bc_logger_output_stream& log_error()
+			{
+				return log(bc_log_type::error);
+			}
+			
+			/**
+			 * \brief Register and take the ownership of listener. Use binary OR to pass multiple type.
 			 * \param p_types
 			 * \param p_listener 
 			 */
 			void register_listener(bc_log_type p_types, bc_unique_ptr<bci_log_listener> p_listener);
 
 			/**
-			 * \brief 
-			 * Register listener.
-			 * Use binary OR to pass multiple type.
+			 * \brief Register listener. Use binary OR to pass multiple type.
 			 * \param p_types
 			 * \param p_listener 
 			 */
@@ -143,11 +160,17 @@ namespace black_cat
 			void _register_listener(bc_log_type p_types, _bc_log_listener_container&& p_listener);
 
 			map_type m_listeners;
+			bc_thread_local<bc_logger_output_stream> m_log_stream;
 		};
 
 		inline void bc_log(bc_log_type p_types, const bcECHAR* p_log)
 		{
 			bc_get_service<bc_logger>()->log(p_types, p_log);
+		}
+
+		inline bc_logger_output_stream& bc_log(bc_log_type p_types)
+		{
+			return bc_get_service<bc_logger>()->log(p_types);
 		}
 	}
 }

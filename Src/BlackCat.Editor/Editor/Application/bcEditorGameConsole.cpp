@@ -57,7 +57,7 @@ namespace black_cat
 		{
 		}
 
-		void bc_editor_game_console::update(core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_editor_game_console::update(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 

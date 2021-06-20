@@ -11,12 +11,12 @@ namespace black_cat
 {
 	namespace platform
 	{
-		bool WINAPI _bc_console_handler(DWORD p_event)
+		bool WINAPI _console_handler(DWORD p_event)
 		{
 			if(p_event == CTRL_CLOSE_EVENT)
 			{
-				auto* l_event_manager = core::bc_get_service< core::bc_event_manager >();
-				bc_app_event_window_close l_event(static_cast< bc_console_window::id >(0U));
+				auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
+				bc_app_event_window_close l_event(reinterpret_cast<bc_console_window::id>(GetConsoleWindow()));
 
 				l_event_manager->process_event(l_event);
 
@@ -28,20 +28,18 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_console_window< core_platform::g_api_win32 >::bc_platform_console_window(bc_console_window_parameter& p_parameter)
+		bc_platform_console_window<core_platform::g_api_win32>::bc_platform_console_window(bc_console_window_parameter& p_parameter)
 		{
-			auto l_console_handle = GetConsoleWindow();
-
-			if (l_console_handle == nullptr)
+			m_pack.m_hwnd = GetConsoleWindow();
+			if (m_pack.m_hwnd == nullptr)
 			{
-				core_platform::win_call(static_cast< bool >(AllocConsole()));
+				core_platform::win_call(static_cast<bool>(AllocConsole()));
+				m_pack.m_hwnd = GetConsoleWindow();
 			}
 
-			// Disable close button because closing console cause whole process to exit
-			l_console_handle = GetConsoleWindow();
-			auto l_console_menu = GetSystemMenu(l_console_handle, FALSE);
-			core_platform::win_call(DeleteMenu(l_console_menu, SC_CLOSE, MF_BYCOMMAND) == TRUE);
-
+			// Disable close button because closing console causes whole process to exit
+			disable_close(true);
+			
 			m_pack.m_std_out = GetStdHandle(STD_OUTPUT_HANDLE);
 			std::freopen("CONIN$", "r", stdin);
 			std::freopen("CONOUT$", "w", stdout);
@@ -49,8 +47,7 @@ namespace black_cat
 			
 			core_platform::win_call(SetConsoleCtrlHandler
 			(
-				//reinterpret_cast<PHANDLER_ROUTINE>(_bc_console_handler),
-				nullptr,
+				reinterpret_cast<PHANDLER_ROUTINE>(_console_handler),
 				true
 			) == TRUE);
 
@@ -59,27 +56,28 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_console_window< core_platform::g_api_win32 >::bc_platform_console_window(bc_platform_console_window&& p_other) noexcept
+		bc_platform_console_window<core_platform::g_api_win32>::bc_platform_console_window(bc_platform_console_window&& p_other) noexcept
 			: bc_platform_window(std::move(p_other)),
 			m_pack(std::move(p_other.m_pack))
 		{
+			p_other.m_pack.m_hwnd = nullptr;
 			p_other.m_pack.m_std_out = nullptr;
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_console_window< core_platform::g_api_win32 >::~bc_platform_console_window()
+		bc_platform_console_window<core_platform::g_api_win32>::~bc_platform_console_window()
 		{
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_console_window< core_platform::g_api_win32 >& bc_platform_console_window< core_platform::g_api_win32 >::operator=(bc_platform_console_window&& p_other) noexcept
+		bc_platform_console_window<core_platform::g_api_win32>& bc_platform_console_window<core_platform::g_api_win32>::operator=(bc_platform_console_window&& p_other) noexcept
 		{
 			bc_platform_window::operator=(std::move(p_other));
-			m_pack.m_caption = std::move(p_other.m_pack.m_caption);
-			m_pack.m_std_out = p_other.m_pack.m_std_out;
+			m_pack = std::move(p_other.m_pack);
 
+			p_other.m_pack.m_hwnd = nullptr;
 			p_other.m_pack.m_std_out = nullptr;
 
 			return *this;
@@ -87,14 +85,46 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_console_window< core_platform::g_api_win32 >::id bc_platform_console_window< core_platform::g_api_win32 >::get_id() const
+		bc_platform_console_window<core_platform::g_api_win32>::id bc_platform_console_window<core_platform::g_api_win32>::get_id() const
 		{
-			return static_cast<id>(0U);
+			return reinterpret_cast<id>(m_pack.m_hwnd);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_console_window< core_platform::g_api_win32 >::set_text_color(bc_console_window_text_color p_color)
+		const bcECHAR* bc_platform_console_window<core_platform::g_api_win32>::get_caption() const
+		{
+			return m_pack.m_caption.c_str();
+		}
+
+		template<>
+		BC_PLATFORMIMP_DLL
+		void bc_platform_console_window<core_platform::g_api_win32>::set_caption(const bcECHAR* p_caption)
+		{
+			m_pack.m_caption = p_caption;
+			core_platform::win_call(SetConsoleTitle(m_pack.m_caption.c_str()) != 0);
+		}
+
+		template<>
+		BC_PLATFORMIMP_DLL
+		void bc_platform_console_window<core_platform::g_api_win32>::disable_close(bool p_disable)
+		{
+			const HMENU l_console_menu = GetSystemMenu(m_pack.m_hwnd, FALSE);
+
+			if(p_disable)
+			{
+				EnableMenuItem(l_console_menu, SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED) == TRUE;
+				//core_platform::win_call(DeleteMenu(l_console_menu, SC_CLOSE, MF_BYCOMMAND) == TRUE);
+			}
+			else
+			{
+				EnableMenuItem(l_console_menu, SC_CLOSE, MF_BYCOMMAND | MF_ENABLED) == TRUE;
+			}
+		}
+
+		template<>
+		BC_PLATFORMIMP_DLL
+		void bc_platform_console_window<core_platform::g_api_win32>::set_text_color(bc_console_window_text_color p_color)
 		{
 			bcINT l_color = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;;
 
@@ -130,46 +160,31 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_console_window< core_platform::g_api_win32 >::clear()
+		void bc_platform_console_window<core_platform::g_api_win32>::clear()
 		{
 			system("cls");
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		const bcECHAR* bc_platform_console_window< core_platform::g_api_win32 >::get_caption() const
+		void bc_platform_console_window<core_platform::g_api_win32>::update()
 		{
-			return m_pack.m_caption.c_str();
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_console_window< core_platform::g_api_win32 >::set_caption(const bcECHAR* p_caption)
-		{
-			m_pack.m_caption = p_caption;
-			core_platform::win_call(SetConsoleTitle(m_pack.m_caption.c_str()) != 0);
-		}
-
-		template<>
-		BC_PLATFORMIMP_DLL
-		void bc_platform_console_window< core_platform::g_api_win32 >::update()
-		{
-
-		}
-
-		template<>
-		BC_PLATFORMIMP_DLL
-		void bc_platform_console_window< core_platform::g_api_win32 >::close()
+		void bc_platform_console_window<core_platform::g_api_win32>::close()
 		{
 			core_platform::win_call(SetConsoleCtrlHandler
 			(
-				//reinterpret_cast<PHANDLER_ROUTINE>(_bc_console_handler),
-				nullptr,
+				reinterpret_cast<PHANDLER_ROUTINE>(_console_handler),
 				false
 			) == TRUE);
 
-			core_platform::win_call(PostMessage(GetConsoleWindow(), WM_CLOSE, 0, 0) == TRUE);
-			core_platform::win_call(static_cast< bool >(FreeConsole()));
+			core_platform::win_call(PostMessage(m_pack.m_hwnd, WM_CLOSE, 0, 0) == TRUE);
+			core_platform::win_call(static_cast<bool>(FreeConsole()));
+			m_pack.m_hwnd = nullptr;
+			m_pack.m_std_out = nullptr;
 		}
 	}
 }

@@ -1,6 +1,8 @@
  // [10/24/2016 MRB]
 
 #include "Game/GamePCH.h"
+
+#include "CorePlatformImp/Concurrency/bcThread.h"
 #include "Core/Container/bcString.h"
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Utility/bcEnumOperand.h"
@@ -16,7 +18,7 @@ namespace black_cat
 	{
 		bc_default_game_console::bc_default_game_console(bc_render_application& p_application, bc_game_console& p_game_console) noexcept
 			: bci_game_console_imp(p_game_console),
-			m_application(p_application)
+			m_application(&p_application)
 		{
 		}
 
@@ -39,9 +41,20 @@ namespace black_cat
 
 		bc_default_game_console& bc_default_game_console::operator=(bc_default_game_console&& p_other) noexcept
 		{
+			m_application = p_other.m_application;
 			m_console = std::move(p_other.m_console);
 
 			return *this;
+		}
+
+		platform::bc_console_window* bc_default_game_console::get_console_window() noexcept
+		{
+			return m_console.get();
+		}
+
+		const platform::bc_console_window* bc_default_game_console::get_console_window() const noexcept
+		{
+			return m_console.get();
 		}
 
 		void bc_default_game_console::write_output(bc_console_output_type p_type, const core::bc_estring& p_msg)
@@ -58,6 +71,10 @@ namespace black_cat
 			case bc_console_output_type::debug: 
 				l_message = bcL("Debug: ");
 				l_color = platform::bc_console_window_text_color::purple;
+				break;
+			case bc_console_output_type::warning:
+				l_message = bcL("Warning: ");
+				l_color = platform::bc_console_window_text_color::red;
 				break;
 			case bc_console_output_type::error: 
 				l_message = bcL("Error: ");
@@ -76,22 +93,21 @@ namespace black_cat
 
 			if (is_visible())
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_input_guard(m_input_mutex);
-				
-				auto l_input_line_size = m_input_line.size();
+				core_platform::bc_mutex_guard l_input_guard(m_input_mutex);
 
-				if(l_input_line_size > 0)
+				const auto l_input_line_size = m_input_line.size();
+				if(l_input_line_size> 0)
 				{
 					{
-						core_platform::bc_lock_guard< core_platform::bc_mutex > l_console_guard(m_console_mutex);
+						core_platform::bc_mutex_guard l_console_guard(m_console_mutex);
 						
 						// Clear current line if any content is entered by user
-						std::cout << '\r';
-						for(bcINT32 i = 0; i < l_input_line_size; ++i)
+						std::cout <<'\r';
+						for(auto i = 0U; i < l_input_line_size; ++i)
 						{
-							std::cout << ' ';
+							std::cout <<' ';
 						}
-						std::cout << '\r';
+						std::cout <<'\r';
 
 						// Write log message
 						m_console->set_text_color(l_color);
@@ -109,13 +125,13 @@ namespace black_cat
 				else
 				{
 					{
-						core_platform::bc_lock_guard< core_platform::bc_mutex > l_console_guard(m_console_mutex);
+						core_platform::bc_mutex_guard l_console_guard(m_console_mutex);
 						
 						m_console->set_text_color(l_color);
 #ifdef BC_UNICODE
-						std::wcout << l_message << std::endl;
+						std::wcout << l_message <<std::endl;
 #else
-						std::cout << l_message << std::endl;
+						std::cout << l_message <<std::endl;
 #endif
 						m_console->set_text_color(platform::bc_console_window_text_color::white);
 					}
@@ -127,8 +143,7 @@ namespace black_cat
 		{
 			if(is_visible())
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_console_mutex);
-				
+				core_platform::bc_mutex_guard l_guard(m_console_mutex);
 				m_console->clear();
 			}
 		}
@@ -140,10 +155,10 @@ namespace black_cat
 				return;
 			}
 
-			m_console.reset(m_application.create_console_window(bcL("BlackCat Console")));
+			m_console.reset(m_application->create_console_window(bcL("BlackCat Console")));
 			m_input_spin_task = core::bc_concurrency::start_task
 			(
-				core::bc_delegate< void() >(*this, &bc_default_game_console::_input_spin),
+				core::bc_delegate<void()>(*this, &bc_default_game_console::_input_spin),
 				core::bc_enum::mask_or({ core::bc_task_creation_option::policy_none, core::bc_task_creation_option::lifetime_exceed_frame })
 			);
 		}
@@ -165,7 +180,7 @@ namespace black_cat
 			return m_console.has_value();
 		}
 
-		void bc_default_game_console::update(core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_default_game_console::update(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 			if(is_visible())
 			{
@@ -185,7 +200,7 @@ namespace black_cat
 				core::bc_concurrency::check_for_interruption();
 
 				{
-					core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_input_mutex);
+					core_platform::bc_mutex_guard l_guard(m_input_mutex);
 
 					if (l_char != '\n')
 					{
@@ -204,6 +219,8 @@ namespace black_cat
 					
 					l_wline.clear();
 				}
+
+				core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(10));
 			}
 		}
 	}

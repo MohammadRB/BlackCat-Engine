@@ -26,7 +26,7 @@ namespace black_cat
 		template<core_platform::bc_platform>
 		struct bc_platform_console_window_parameter_pack
 		{
-			explicit bc_platform_console_window_parameter_pack(core::bc_estring p_caption)
+			bc_platform_console_window_parameter_pack(core::bc_estring p_caption)
 				: m_caption(std::move(p_caption))
 			{
 			}
@@ -59,13 +59,15 @@ namespace black_cat
 
 			id get_id() const override;
 
-			void set_text_color(bc_console_window_text_color p_color);
-
-			void clear();
-
 			const bcECHAR* get_caption() const override;
 
 			void set_caption(const bcECHAR* p_caption) override;
+
+			void disable_close(bool p_disable);
+			
+			void set_text_color(bc_console_window_text_color p_color);
+
+			void clear();
 
 			void update() override;
 

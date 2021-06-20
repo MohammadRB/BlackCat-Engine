@@ -8,6 +8,7 @@
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcCounterValueManager.h"
+#include "Core/Utility/bcLogger.h"
 #include "Core/bcEvent.h"
 #include "Game/System/Script/bcScriptSystem.h"
 #include "GraphicImp/Device/bcDevice.h"
@@ -28,8 +29,11 @@ namespace black_cat
 	bc_render_application::~bc_render_application() = default;
 
 	void bc_render_application::app_start_engine_components(game::bc_engine_application_parameter& p_parameters)
-	{
+	{		
 		bc_start_engine_services(p_parameters);
+
+		core::bc_log(core::bc_log_type::info) << "starting engine components" << core::bc_lend;
+		
 		bc_register_engine_loaders(p_parameters);
 		bc_register_engine_actor_components();
 		
@@ -40,6 +44,8 @@ namespace black_cat
 
 	void bc_render_application::app_initialize(game::bc_engine_application_parameter& p_parameters)
 	{
+		core::bc_log(core::bc_log_type::info) << "initializing engine" << core::bc_lend;
+		
 		m_game_system->initialize
 		(
 			game::bc_game_system_parameter
@@ -65,7 +71,6 @@ namespace black_cat
 		);
 
 		bc_bind_scripts(*m_game_system);
-		bc_load_engine_resources(*m_game_system);
 		bc_register_particle_emitters(*m_game_system);
 
 		application_initialize(p_parameters);
@@ -73,6 +78,9 @@ namespace black_cat
 
 	void bc_render_application::app_load_content()
 	{
+		core::bc_log(core::bc_log_type::info) << "loading engine resources" << core::bc_lend;
+		
+		bc_load_engine_resources(*m_game_system);
 		application_load_content(core::bc_get_service<core::bc_content_stream_manager>());
 	}
 
@@ -182,6 +190,8 @@ namespace black_cat
 
 	void bc_render_application::app_unload_content()
 	{
+		core::bc_log(core::bc_log_type::info) << "unloading engine resources" << core::bc_lend;
+		
 		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
 		
 		application_unload_content(l_content_stream_manager);
@@ -190,12 +200,16 @@ namespace black_cat
 
 	void bc_render_application::app_destroy()
 	{
+		core::bc_log(core::bc_log_type::info) << "destroying engine" << core::bc_lend;
+		
 		application_destroy();
 		m_game_system->destroy();
 	}
 
 	void bc_render_application::app_close_engine_components()
 	{
+		core::bc_log(core::bc_log_type::info) << "closing engine components" << core::bc_lend;
+		
 		application_close_engine_components();
 		bc_close_engine_services();
 	}

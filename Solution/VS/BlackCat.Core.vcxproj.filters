@@ -333,6 +333,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\File\bcMemoryStream.h">
       <Filter>Core\File</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcLoggerOutputStream.h">
+      <Filter>Core\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.cpp">
@@ -441,6 +444,9 @@
       <Filter>Core\File</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcInitializable.cpp">
+      <Filter>Core\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcLoggerOutputStream.cpp">
       <Filter>Core\Utility</Filter>
     </ClCompile>
   </ItemGroup>

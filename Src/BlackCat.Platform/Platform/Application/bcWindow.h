@@ -14,7 +14,6 @@ namespace black_cat
 		template<core_platform::bc_platform>
 		struct bc_platform_window_pack
 		{
-
 		};
 
 		template<core_platform::bc_platform TPlatform>

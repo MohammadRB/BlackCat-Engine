@@ -45,7 +45,7 @@ namespace black_cat
 			 * \brief Method to update output screen if required
 			 * \param p_clock_update_param
 			 */
-			virtual void update(core_platform::bc_clock::update_param p_clock_update_param) = 0;
+			virtual void update(const core_platform::bc_clock::update_param& p_clock_update_param) = 0;
 
 			/**
 			 * \brief Check the visibility of output screen

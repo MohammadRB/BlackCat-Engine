@@ -2,13 +2,14 @@
 
 #pragma once
 
+#include "Game/System/Script/bcDefaultGameConsole.h"
 #include "BlackCat/Application/bcRenderApplication.h"
 
 using namespace black_cat;
 
 namespace box
 {
-	class bx_application : public bc_render_application
+	class bx_server_application : public bc_render_application
 	{
 	private:
 		void application_start_engine_components(game::bc_engine_application_parameter& p_parameters) override;
@@ -28,5 +29,7 @@ namespace box
 		void application_destroy() override;
 		
 		void application_close_engine_components() override;
+	
+		core::bc_unique_ptr<game::bc_default_game_console> m_console;
 	};
 }

@@ -2,18 +2,16 @@
 
 #include "CorePlatformImp/Utility/bcHardwareInfo.h"
 #include "Game/Object/Scene/SceneGraph/bcOctalTreeSceneGraphNode.h"
-#include "BoX.Server/Application/bxApplication.h"
+#include "BoX.Server/Application/bxServerApplication.h"
 
-int main()
+int WINAPI WinMain(HINSTANCE p_instance, HINSTANCE p_prev_instance, CHAR* p_cmd_line, int p_cmd_show)
 {
-	const HINSTANCE l_instance = GetModuleHandle(nullptr);
-	
 	core_platform::bc_basic_hardware_info l_hardware_info;
 	core_platform::bc_hardware_info::get_basic_info(&l_hardware_info);
 
 	platform::bc_application_parameter l_app_parameters
 	(
-		l_instance,
+		p_instance,
 		bcL("BattleOfXbots.Server"),
 		nullptr
 	);
@@ -49,7 +47,7 @@ int main()
 		std::move(l_render_app_parameters)
 	);
 	
-	box::bx_application l_app;
+	box::bx_server_application l_app;
 	l_app.initialize(l_engine_app_parameters);
 	l_app.set_fps(60);
 

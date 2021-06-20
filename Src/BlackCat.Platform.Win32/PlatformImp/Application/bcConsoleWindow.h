@@ -14,6 +14,7 @@ namespace black_cat
 		struct bc_platform_console_window_pack< core_platform::g_api_win32 >
 		{
 			core::bc_estring m_caption;
+			HWND m_hwnd;
 			HANDLE m_std_out;
 		};
 	}

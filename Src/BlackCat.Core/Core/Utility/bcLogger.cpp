@@ -24,6 +24,12 @@ namespace black_cat
 			}
 		}
 
+		bc_logger_output_stream& bc_logger::log(bc_log_type p_types)
+		{
+			auto& l_stream = m_log_stream.get();
+			return l_stream.start_log(*this, p_types);
+		}
+
 		void bc_logger::register_listener(bc_log_type p_types, bc_unique_ptr<bci_log_listener> p_listener)
 		{
 			_register_listener(p_types, _bc_log_listener_container(std::move(p_listener)));
@@ -57,7 +63,7 @@ namespace black_cat
 
 		void bc_logger::_log(bc_log_type p_types, const bcECHAR* p_log)
 		{
-			const auto l_entry_index = std::log2(static_cast<map_type::size_type>(p_types));
+			const auto l_entry_index = static_cast<key_type>(std::log2(static_cast<map_type::size_type>(p_types)));
 			auto& l_entry = m_listeners.at(l_entry_index);
 
 			for (auto& l_listener : l_entry)
@@ -77,7 +83,7 @@ namespace black_cat
 					continue;
 				}
 
-				const auto l_entry_index = std::log2(static_cast<map_type::size_type>(l_type));
+				const auto l_entry_index = static_cast<key_type>(std::log2(static_cast<map_type::size_type>(l_type)));
 				m_listeners.at(l_entry_index).push_back(p_listener);
 			}
 		}
