@@ -189,7 +189,7 @@ namespace black_cat
 		auto& l_script_system = p_game_system.get_script_system();
 		auto l_script_binder = l_script_system.get_script_binder();
 
-		l_script_binder.bind<game::bc_game_console>(game::bc_script_context::ui, p_game_system.get_console());
+		l_script_binder.bind(game::bc_script_context::app, p_game_system.get_console());
 
 		l_script_system.set_script_binder(std::move(l_script_binder));
 	}

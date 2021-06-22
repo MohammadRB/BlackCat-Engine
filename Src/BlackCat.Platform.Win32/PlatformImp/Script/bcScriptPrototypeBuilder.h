@@ -32,7 +32,6 @@ namespace black_cat
 			// TODO Make a choose for more and less argument count than expected
 			BC_ASSERT(p_argument_count == sizeof...(TA) + 1);
 
-			bc_chakra_call l_call;
 			bc_script_var_pack<TA...> l_pack;
 			JsValueRef l_script_object;
 
@@ -57,7 +56,7 @@ namespace black_cat
 				l_pack.size()
 			);
 
-			l_call = JsCreateExternalObject(l_native_object, &_js_object_ctor_finalizer<T>, &l_script_object);
+			bc_chakra_call l_call = JsCreateExternalObject(l_native_object, &_js_object_ctor_finalizer<T>, &l_script_object);
 			l_call = JsSetPrototype(l_script_object, l_native_object->get_prototype().get_platform_pack().m_js_prototype);
 
 			return l_script_object;
@@ -66,7 +65,7 @@ namespace black_cat
 		template<typename TM>
 		JsValueRef CHAKRA_CALLBACK _js_getter_default(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
-			// TODO Make a chiose for more and less argument count than expected
+			// TODO Make a choise for more and less argument count than expected
 			BC_ASSERT(p_argument_count == 1);
 
 			JsValueRef l_this = p_arguments[0];
@@ -104,13 +103,11 @@ namespace black_cat
 			// TODO Make a chiose for more and less argument count than expected
 			BC_ASSERT(p_argument_count == 2);
 
-			JsValueRef l_this;
 			bc_script_variable l_arg;
-			TM* l_external_variable;
 
-			l_this = p_arguments[0];
+			JsValueRef l_this = p_arguments[0];
 			l_arg.get_platform_pack().m_js_value = p_arguments[1];
-			l_external_variable = reinterpret_cast<TM*>(p_callback_state);
+			TM* l_external_variable = reinterpret_cast<TM*>(p_callback_state);
 
 			TM l_variable;
 			bc_script_variable::_unpack_arg(l_arg, &l_variable);
@@ -190,15 +187,11 @@ namespace black_cat
 			// TODO Make a chiose for more and less argument count than expected
 			BC_ASSERT(p_argument_count == 2);
 
-			using setter_t = bc_script_setter<TM>;
-
-			JsValueRef l_this;
 			bc_script_variable l_arg;
-			setter_t l_external_setter;
 
-			l_this = p_arguments[0];
+			JsValueRef l_this = p_arguments[0];
 			l_arg.get_platform_pack().m_js_value = p_arguments[1];
-			l_external_setter = reinterpret_cast<setter_t>(p_callback_state);
+			bc_script_setter<TM> l_external_setter = reinterpret_cast<bc_script_setter<TM>>(p_callback_state);
 
 			TM l_variable;
 			bc_script_variable::_unpack_arg(l_arg, &l_variable);
@@ -280,12 +273,10 @@ namespace black_cat
 
 			using function_t = bc_script_free_function<TR, TA...>;
 
-			JsValueRef l_this;
-			function_t l_external_function;
 			bc_script_var_pack<TA...> l_pack;
 
-			l_this = p_arguments[0];
-			l_external_function = reinterpret_cast<function_t>(p_callback_state);
+			JsValueRef l_this = p_arguments[0];
+			function_t l_external_function = reinterpret_cast<function_t>(p_callback_state);
 
 			std::transform
 			(
@@ -466,26 +457,24 @@ namespace black_cat
 		bool _create_js_property_constant(bc_script_context& p_context, JsValueRef p_js_prototype, const bcWCHAR* p_name, TM p_value)
 		{
 			bc_chakra_call l_call(p_context);
-			bool l_successed = false;
-			JsValueRef l_value;
-			JsValueRef l_js_descriptor;
+			bool l_succeeded = false;
 			JsPropertyIdRef l_js_name;
 
-			l_value = p_context.create_variable(p_value).get_platform_pack().m_js_value;
-			l_js_descriptor = _create_js_descriptor(p_context, false, true, false, l_value);
+			JsValueRef l_value = p_context.create_variable(p_value).get_platform_pack().m_js_value;
+			JsValueRef l_js_descriptor = _create_js_descriptor(p_context, false, true, false, l_value);
 			JsGetPropertyIdFromName(p_name, &l_js_name);
 
-			l_call = JsDefineProperty(p_js_prototype, l_js_name, l_js_descriptor, &l_successed);
+			l_call = JsDefineProperty(p_js_prototype, l_js_name, l_js_descriptor, &l_succeeded);
 			//l_call = JsSetProperty(p_js_prototype, l_js_name, l_value.get_platform_pack().m_js_value, true);
 
-			return l_successed;
+			return l_succeeded;
 		}
 
 		template<typename TM>
 		bool _create_js_property_default_get_set(bc_script_context& p_context, JsValueRef p_js_prototype, const bcWCHAR* p_name, TM* p_pointer)
 		{
 			bc_chakra_call l_call(p_context);
-			bool l_successed = false;
+			bool l_succeeded = false;
 			JsValueRef l_js_getter;
 			JsValueRef l_js_setter;
 			JsValueRef l_js_descriptor;
@@ -496,16 +485,16 @@ namespace black_cat
 			l_js_descriptor = _create_js_descriptor(p_context, true, true, false, l_js_getter, l_js_setter);
 			JsGetPropertyIdFromName(p_name, &l_js_name);
 
-			l_call = JsDefineProperty(p_js_prototype, l_js_name, l_js_descriptor, &l_successed);
+			l_call = JsDefineProperty(p_js_prototype, l_js_name, l_js_descriptor, &l_succeeded);
 
-			return l_successed;
+			return l_succeeded;
 		}
 
 		template<typename T, typename TM>
 		bool _create_js_property_default_get_set(bc_script_context& p_context, JsValueRef p_js_prototype, const bcWCHAR* p_name, TM T::* p_pointer)
 		{
 			bc_chakra_call l_call(p_context);
-			bool l_successed = false;
+			bool l_succeeded = false;
 			JsValueRef l_js_getter;
 			JsValueRef l_js_setter;
 			JsValueRef l_js_descriptor;
@@ -518,16 +507,16 @@ namespace black_cat
 			l_js_descriptor = _create_js_descriptor(p_context, true, true, false, l_js_getter, l_js_setter);
 			JsGetPropertyIdFromName(p_name, &l_js_name);
 
-			l_call = JsDefineProperty(p_js_prototype, l_js_name, l_js_descriptor, &l_successed);
+			l_call = JsDefineProperty(p_js_prototype, l_js_name, l_js_descriptor, &l_succeeded);
 
-			return l_successed;
+			return l_succeeded;
 		}
 
 		template<typename TM>
 		bool _create_js_property_get_set(bc_script_context& p_context, JsValueRef p_js_prototype, const bcWCHAR* p_name, bc_script_property_descriptor<TM>& p_descriptor)
 		{
 			bc_chakra_call l_call(p_context);
-			bool l_successed = false;
+			bool l_succeeded = false;
 			JsValueRef l_js_getter;
 			JsValueRef l_js_setter;
 			JsValueRef l_js_descriptor;
@@ -547,16 +536,16 @@ namespace black_cat
 			l_js_descriptor = _create_js_descriptor(p_context, p_descriptor.m_writable, p_descriptor.m_enumerable, p_descriptor.m_configurable, l_js_getter, l_js_setter);
 			JsGetPropertyIdFromName(p_name, &l_js_name);
 
-			l_call = JsDefineProperty(p_js_prototype, l_js_name, l_js_descriptor, &l_successed);
+			l_call = JsDefineProperty(p_js_prototype, l_js_name, l_js_descriptor, &l_succeeded);
 
-			return l_successed;
+			return l_succeeded;
 		}
 
 		template<typename T, typename TM>
 		bool _create_js_property_get_set(bc_script_context& p_context, JsValueRef p_js_prototype, const bcWCHAR* p_name, bc_script_member_property_descriptor<T, TM>& p_descriptor)
 		{
 			bc_chakra_call l_call(p_context);
-			bool l_successed = false;
+			bool l_succeeded = false;
 			JsValueRef l_js_getter;
 			JsValueRef l_js_setter;
 			JsValueRef l_js_descriptor;
@@ -581,16 +570,16 @@ namespace black_cat
 			l_js_descriptor = _create_js_descriptor(p_context, true, true, false, l_js_getter, l_js_setter);
 			JsGetPropertyIdFromName(p_name, &l_js_name);
 
-			l_call = JsDefineProperty(p_js_prototype, l_js_name, l_js_descriptor, &l_successed);
+			l_call = JsDefineProperty(p_js_prototype, l_js_name, l_js_descriptor, &l_succeeded);
 
-			return l_successed;
+			return l_succeeded;
 		}
 
 		template<typename TR, typename ...TA>
 		bool _create_js_function(bc_script_context& p_context, JsValueRef p_js_prototype, const bcWCHAR* p_name, bc_script_free_function<TR, TA...> p_func)
 		{
 			bc_chakra_call l_call(p_context);
-			const bool l_successed = true;
+			const bool l_succeeded = true;
 			JsValueRef l_js_function;
 			JsPropertyIdRef l_js_name;
 
@@ -599,11 +588,11 @@ namespace black_cat
 
 			l_call = JsSetProperty(p_js_prototype, l_js_name, l_js_function, true);
 
-			return l_successed;
+			return l_succeeded;
 		}
 
 		template<typename T, typename TR, typename ...TA>
-		bool _create_js_function(bc_script_context& p_context, JsValueRef p_js_prototype, const bcWCHAR* p_name, bc_script_memeber_function<T, TR, TA...> p_member_func)
+		bool _create_js_function(bc_script_context& p_context, JsValueRef p_js_prototype, const bcWCHAR* p_name, bc_script_member_function<T, TR, TA...> p_member_func)
 		{
 			bc_chakra_call l_call(p_context);
 			const bool l_successed = true;
@@ -815,7 +804,7 @@ namespace black_cat
 
 		template<core_platform::bc_platform TPlatform, typename T>
 		template<typename TR, typename ... TA>
-		bc_platform_script_prototype_builder<TPlatform, T>& bc_platform_script_prototype_builder<TPlatform, T>::function(const bcWCHAR* p_name, bc_script_memeber_function<type, TR, TA...> p_member_func)
+		bc_platform_script_prototype_builder<TPlatform, T>& bc_platform_script_prototype_builder<TPlatform, T>::function(const bcWCHAR* p_name, bc_script_member_function<type, TR, TA...> p_member_func)
 		{
 			const bool l_succeeded = _create_js_function(m_context, m_pack.m_js_prototype, p_name, p_member_func);
 

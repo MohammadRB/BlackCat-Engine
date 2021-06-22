@@ -473,10 +473,10 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcVertexLayout.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcDefaultGameConsole.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcGameConsole.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcGameConsoleScript.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcIGameConsoleImp.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptBinding.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptSystem.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptUIContext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp" />
@@ -584,8 +584,8 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\State\bcStateConfigs.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Script\bcDefaultGameConsole.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Script\bcGameConsole.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Script\bcGameConsoleScript.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptSystem.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptUIContext.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcHeightMap.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMesh.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshCollider.cpp" />

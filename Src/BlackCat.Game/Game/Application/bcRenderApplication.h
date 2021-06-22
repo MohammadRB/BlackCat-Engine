@@ -48,14 +48,14 @@ namespace black_cat
 			* \param p_height
 			* \return
 			*/
-			platform::bc_basic_window create_basic_render_window(core::bc_estring p_caption, bcUINT32 p_width, bcUINT32 p_height);
+			platform::bc_basic_window create_basic_render_window(const bcECHAR* p_caption, bcUINT32 p_width, bcUINT32 p_height);
 
 			/**
 			* \brief Create a console window. Support for creating console window along with render window is platform specific.
 			* \param p_caption
 			* \return
 			*/
-			platform::bc_console_window create_console_window(core::bc_estring p_caption);
+			platform::bc_console_window create_console_window(const bcECHAR* p_caption);
 
 		private:
 			/**

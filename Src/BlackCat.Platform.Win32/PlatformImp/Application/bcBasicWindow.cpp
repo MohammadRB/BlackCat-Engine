@@ -117,10 +117,9 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL 
-		bc_platform_basic_window<core_platform::bc_platform::win32>::bc_platform_basic_window(bc_basic_window_parameter& p_parameters)
+		bc_platform_basic_window<core_platform::bc_platform::win32>::bc_platform_basic_window(const bc_basic_window_parameter& p_parameters)
 		{
 			m_pack.m_instance = p_parameters.m_instance;
-			m_pack.m_caption = std::move(p_parameters.m_caption);
 
 			// The first task to creating a window is to describe some of its characteristics by filling out a WNDCLASS structure.
 			WNDCLASS l_window_class;
@@ -145,7 +144,7 @@ namespace black_cat
 			core_platform::win_call((m_pack.m_handle = CreateWindow
 			(
 				l_window_class.lpszClassName,
-				m_pack.m_caption.c_str(),
+				p_parameters.m_caption,
 				WS_OVERLAPPEDWINDOW,
 				CW_USEDEFAULT,
 				CW_USEDEFAULT,
@@ -181,7 +180,6 @@ namespace black_cat
 			bc_platform_window::operator=(std::move(p_other));
 			m_pack.m_instance = p_other.m_pack.m_instance;
 			m_pack.m_handle = p_other.m_pack.m_handle;
-			m_pack.m_caption = std::move(p_other.m_pack.m_caption);
 
 			p_other.m_pack.m_handle = nullptr;
 
@@ -285,18 +283,21 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL 
-		const bcECHAR* bc_platform_basic_window<core_platform::bc_platform::win32>::get_caption() const
+		core::bc_estring bc_platform_basic_window<core_platform::bc_platform::win32>::get_caption() const
 		{
-			return m_pack.m_caption.c_str();
+			const auto l_title_length = GetWindowTextLength(m_pack.m_handle);
+			core::bc_estring l_str(l_title_length, bcL('#'));
+			
+			GetWindowText(m_pack.m_handle, &l_str[0], l_str.size());
+
+			return l_str;
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
 		void bc_platform_basic_window<core_platform::bc_platform::win32>::set_caption(const bcECHAR* p_caption)
 		{
-			m_pack.m_caption = p_caption;
-
-			SetWindowText(m_pack.m_handle, m_pack.m_caption.c_str());
+			SetWindowText(m_pack.m_handle, p_caption);
 		}
 
 		template<>

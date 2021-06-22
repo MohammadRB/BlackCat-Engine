@@ -49,7 +49,10 @@ namespace black_cat
 			game::bc_render_application_parameter l_render_app_parameters
 			(
 				l_app_parameters,
-				m_output_window,
+				[=]() 
+				{
+					return m_output_window;
+				},
 				[](game::bc_scene_graph_node_factory_parameter p_parameter)
 				{
 					return core::bc_make_unique<game::bc_octal_tree_graph_node>

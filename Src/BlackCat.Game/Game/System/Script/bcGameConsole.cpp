@@ -6,51 +6,14 @@
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Script/bcGameConsole.h"
 #include "Game/System/Script/bcIGameConsoleImp.h"
+#include "Game/System/Script/bcScriptSystem.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		// == bc_game_console_bind ===========================================================================
-
-		bc_game_console_bind::bc_game_console_bind(bc_game_console& p_game_console)
-			: m_game_console(p_game_console)
-		{
-		}
-
-		bc_game_console_bind::bc_game_console_bind(const bc_game_console_bind& p_other)
-			: m_game_console(p_other.m_game_console)
-		{
-		}
-
-		bc_game_console_bind::~bc_game_console_bind()
-		{
-		}
-
-		bc_game_console_bind& bc_game_console_bind::operator=(const bc_game_console_bind& p_other)
-		{
-			return *this;
-		}
-
-		void bc_game_console_bind::disable_output(const platform::bc_script_int& p_output)
-		{
-			m_game_console.disable_output(static_cast< bc_console_output_type >(p_output));
-		}
-
-		void bc_game_console_bind::enable_output(const platform::bc_script_int& p_output)
-		{
-			m_game_console.enable_output(static_cast< bc_console_output_type >(p_output));
-		}
-
-		void bc_game_console_bind::clear_output()
-		{
-			m_game_console.clear_output();
-		}
-
-		// == bc_game_console ==================================================================================
-
 		bc_game_console::bc_game_console(bc_script_system& p_script_system)
-			: m_script_system(p_script_system),
+			: m_script_system(&p_script_system),
 			m_imp(),
 			m_log_types({true, true, true, true, true}),
 			m_logs(),
@@ -81,23 +44,25 @@ namespace black_cat
 
 		bc_game_console::~bc_game_console()
 		{
-			if(m_bound_console->is_valid())
+			if (m_bound_console->is_valid())
 			{
 				{
 					platform::bc_script_context::scope l_scope(*m_bound_context);
 					m_bound_console.reset();
 				}
 			}
-
+			
 			core::bc_get_service<core::bc_logger>()->unregister_listener(this);
 		}
 
 		bc_game_console& bc_game_console::operator=(bc_game_console&& p_other) noexcept
 		{
+			m_script_system = p_other.m_script_system;
 			m_imp = p_other.m_imp;
 			m_log_types = p_other.m_log_types;
 			m_logs = std::move(p_other.m_logs);
 			m_scripts = std::move(p_other.m_scripts);
+			m_bound_context = p_other.m_bound_context;
 			m_bound_console = std::move(p_other.m_bound_console);
 
 			return *this;
@@ -153,7 +118,7 @@ namespace black_cat
 				{
 					p_output_to_console,
 					core::bc_wstring(p_script),
-					core_platform::bc_promise< platform::bc_script_variable >()
+					core_platform::bc_promise<platform::bc_script_variable>()
 				};
 
 				m_scripts.push_back(std::move(l_item));
@@ -171,7 +136,7 @@ namespace black_cat
 				{
 					p_output_to_console,
 					core::bc_wstring(p_script),
-					core_platform::bc_promise< platform::bc_script_variable >()
+					core_platform::bc_promise<platform::bc_script_variable>()
 				};
 				*p_result = l_item.m_promise.get_future();
 
@@ -196,12 +161,12 @@ namespace black_cat
 				{
 					for (_bc_script_queue_entry& l_item : m_scripts)
 					{
-						l_result = m_script_system.run_script(bc_script_context::ui, l_item.m_script.c_str());
+						l_result = m_script_system->run_script(bc_script_context::app, l_item.m_script.c_str());
 						l_item.m_promise.set_value(l_result);
 
 						if(l_item.m_output_to_console)
 						{
-							auto l_string = m_script_system.stringify(l_result);
+							auto l_string = m_script_system->stringify(l_result);
 							on_log(static_cast<core::bc_log_type>(bc_console_output_type::script), l_string.c_str());
 						}
 					}
@@ -216,29 +181,29 @@ namespace black_cat
 			{
 				platform::bc_script_context::scope l_scope(p_context);
 
-				auto l_console_builder = p_context.create_prototype_builder< bc_game_console_bind >();
+				auto l_console_builder = p_context.create_prototype_builder<bc_game_console_script>();
 
 				l_console_builder
-					.constant(L"outputInfo", static_cast< platform::bc_script_int >(bc_console_output_type::info))
-					.constant(L"outputDebug", static_cast< platform::bc_script_int >(bc_console_output_type::debug))
-					.constant(L"outputWarning", static_cast< platform::bc_script_int >(bc_console_output_type::warning))
-					.constant(L"outputError", static_cast< platform::bc_script_int >(bc_console_output_type::error))
-					.constant(L"outputScript", static_cast< platform::bc_script_int >(bc_console_output_type::script))
-					.function(L"enableOutput", &bc_game_console_bind::enable_output)
-					.function(L"disableOutput", &bc_game_console_bind::disable_output)
-					.function(L"clear", &bc_game_console_bind::clear_output);
+					.constant(L"outputInfo", static_cast<platform::bc_script_int>(bc_console_output_type::info))
+					.constant(L"outputDebug", static_cast<platform::bc_script_int>(bc_console_output_type::debug))
+					.constant(L"outputWarning", static_cast<platform::bc_script_int>(bc_console_output_type::warning))
+					.constant(L"outputError", static_cast<platform::bc_script_int>(bc_console_output_type::error))
+					.constant(L"outputScript", static_cast<platform::bc_script_int>(bc_console_output_type::script))
+					.function(L"enableOutput", &bc_game_console_script::enable_output)
+					.function(L"disableOutput", &bc_game_console_script::disable_output)
+					.function(L"clear", &bc_game_console_script::clear_output);
 
 				auto l_console_prototype = p_context.create_prototype(l_console_builder);
-				auto l_console_object = platform::bc_script_object_ref(p_context.create_object(l_console_prototype, bc_game_console_bind(p_instance)));
+				auto l_console_object = platform::bc_script_object_ref(p_context.create_object(l_console_prototype, bc_game_console_script(p_instance)));
 
 				p_instance.m_bound_context = &p_context;
 				p_instance.m_bound_console = std::move(l_console_object);
 
-				platform::bc_script_property_descriptor< platform::bc_script_object > l_console_descriptor(&p_instance.m_bound_console.get(), false);
+				platform::bc_script_property_descriptor<platform::bc_script_object> l_console_descriptor(&p_instance.m_bound_console.get(), false);
 				p_global_prototype.property(L"console", l_console_descriptor);
 			}
 		}
-
+		
 		void bc_game_console::on_log(core::bc_log_type p_type, const bcECHAR* p_log)
 		{
 			auto l_type = static_cast<bc_console_output_type>(p_type);
@@ -267,7 +232,7 @@ namespace black_cat
 				return false;
 			}
 
-			const auto l_key_event = static_cast< platform::bc_app_event_key& >(p_event);
+			const auto l_key_event = static_cast<platform::bc_app_event_key&>(p_event);
 
 			if (l_key_event.get_key() == platform::bc_key::kb_grave &&
 				l_key_event.get_key_state() == platform::bc_key_state::pressing)

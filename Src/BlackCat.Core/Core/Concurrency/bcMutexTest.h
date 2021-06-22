@@ -15,7 +15,7 @@ namespace black_cat
 		{
 		private:
 			using id_hasher = std::hash<core_platform::bc_thread::id>;
-			using id_hash_t = id_hasher::result_type;
+			using id_hash_t = bcSIZE;
 			
 		public:
 			bc_mutex_test();

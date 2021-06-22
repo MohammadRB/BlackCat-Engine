@@ -12,7 +12,6 @@ namespace black_cat
 		template<>
 		struct bc_platform_window_pack< core_platform::g_api_win32 >
 		{
-			using id = HWND;
 		};
 	}
 }

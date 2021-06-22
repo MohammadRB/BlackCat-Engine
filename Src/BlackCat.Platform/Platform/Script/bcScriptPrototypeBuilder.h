@@ -12,25 +12,25 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template< typename TM >
+		template<typename TM>
 		using bc_script_getter = TM(*)();
 
-		template< typename T, typename TM >
+		template<typename T, typename TM>
 		using bc_script_member_getter = TM(T::*)();
 
-		template< typename TM >
+		template<typename TM>
 		using bc_script_setter = void(*)(const TM&);
 
-		template< typename T, typename TM >
+		template<typename T, typename TM>
 		using bc_script_member_setter = void(T::*)(const TM&);
 
-		template< typename TR, typename ...TA >
+		template<typename TR, typename ...TA>
 		using bc_script_free_function = TR(*)(const TA&...);
 
-		template< typename T, typename TR, typename ...TA >
-		using bc_script_memeber_function = TR(T::*)(const TA&...);
+		template<typename T, typename TR, typename ...TA>
+		using bc_script_member_function = TR(T::*)(const TA&...);
 
-		template< typename TM >
+		template<typename TM>
 		class bc_script_property_descriptor
 		{
 		public:
@@ -44,7 +44,7 @@ namespace black_cat
 			{
 			}
 
-			bc_script_property_descriptor(bc_script_getter< TM > p_getter, bc_script_setter< TM > p_setter, bool p_enumerable = true, bool p_configurable = false)
+			bc_script_property_descriptor(bc_script_getter<TM> p_getter, bc_script_setter<TM> p_setter, bool p_enumerable = true, bool p_configurable = false)
 				: m_value(nullptr),
 				m_writable(false),
 				m_enumerable(p_enumerable),
@@ -58,11 +58,11 @@ namespace black_cat
 			bool m_writable;
 			bool m_enumerable;
 			bool m_configurable;
-			bc_script_getter< TM > m_getter;
-			bc_script_setter< TM > m_setter;
+			bc_script_getter<TM> m_getter;
+			bc_script_setter<TM> m_setter;
 		};
 
-		template< typename T, typename TM >
+		template<typename T, typename TM>
 		class bc_script_member_property_descriptor
 		{
 		public:
@@ -76,7 +76,7 @@ namespace black_cat
 			{
 			}
 
-			bc_script_member_property_descriptor(bc_script_member_getter< T, TM > p_getter, bc_script_member_setter< T, TM > p_setter, bool p_enumerable = true, bool p_configurable = false)
+			bc_script_member_property_descriptor(bc_script_member_getter<T, TM> p_getter, bc_script_member_setter<T, TM> p_setter, bool p_enumerable = true, bool p_configurable = false)
 				: m_value(nullptr),
 				m_writable(false),
 				m_enumerable(p_enumerable),
@@ -90,20 +90,20 @@ namespace black_cat
 			bool m_writable;
 			bool m_enumerable;
 			bool m_configurable;
-			bc_script_member_getter< T, TM > m_getter;
-			bc_script_member_setter< T, TM > m_setter;
+			bc_script_member_getter<T, TM> m_getter;
+			bc_script_member_setter<T, TM> m_setter;
 		};
 
-		template< core_platform::bc_platform TPlatform, typename T >
+		template<core_platform::bc_platform TPlatform, typename T>
 		struct bc_platform_script_prototype_builder_pack
 		{
 		};
 
-		template< core_platform::bc_platform TPlatform, typename T >
+		template<core_platform::bc_platform TPlatform, typename T>
 		class bc_platform_script_prototype_builder
 		{
 		public:
-			using platform_pack = bc_platform_script_prototype_builder_pack< TPlatform, T >;
+			using platform_pack = bc_platform_script_prototype_builder_pack<TPlatform, T>;
 			using type = T;
 			friend bc_script_context;
 
@@ -122,7 +122,7 @@ namespace black_cat
 			 * \tparam TA Arguments to constructor function
 			 * \return 
 			 */
-			template< typename ...TA >
+			template<typename ...TA>
 			bc_platform_script_prototype_builder& constructor();
 
 			/**
@@ -279,11 +279,11 @@ namespace black_cat
 			 * \tparam TR Return type of function
 			 * \tparam TA Arguments of function
 			 * \param p_name Name of function
-			 * \param member_func Callback function that is a member function of binding object
+			 * \param p_member_func Callback function that is a member function of binding object
 			 * \return 
 			 */
-			template< typename TR, typename ...TA >
-			bc_platform_script_prototype_builder& function(const bcWCHAR* p_name, bc_script_memeber_function<type, TR, TA...> p_member_func);
+			template<typename TR, typename ...TA>
+			bc_platform_script_prototype_builder& function(const bcWCHAR* p_name, bc_script_member_function<type, TR, TA...> p_member_func);
 
 			platform_pack& get_platform_pack()
 			{
@@ -298,7 +298,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< typename T >
-		using bc_script_prototype_builder = bc_platform_script_prototype_builder< core_platform::g_current_platform, T >;
+		template<typename T>
+		using bc_script_prototype_builder = bc_platform_script_prototype_builder<core_platform::g_current_platform, T>;
 	}
 }

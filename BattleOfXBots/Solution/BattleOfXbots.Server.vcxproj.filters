@@ -15,9 +15,15 @@
     <ClCompile Include="..\Src\BoX.Server\Application\bxServerApplication.cpp">
       <Filter>BoX.Server\Application</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\BoX.Server\Application\bcServerScript.cpp">
+      <Filter>BoX.Server\Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\BoX.Server\Application\bxServerApplication.h">
+      <Filter>BoX.Server\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Server\Application\bcServerScript.h">
       <Filter>BoX.Server\Application</Filter>
     </ClInclude>
   </ItemGroup>

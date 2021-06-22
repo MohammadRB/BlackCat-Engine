@@ -1,7 +1,11 @@
 // [06/15/2021 MRB]
 
 #include "Platform/bcEvent.h"
+#include "PlatformImp/Script/bcScriptGlobalPrototypeBuilder.h"
+#include "PlatformImp/Script/bcScriptPrototypeBuilder.h"
+#include "Game/System/Script/bcScriptBinding.h"
 #include "BoX.Server/Application/bxServerApplication.h"
+#include "BoX.Server/Application/bcServerScript.h"
 
 using namespace black_cat;
 
@@ -16,6 +20,9 @@ namespace box
 
 	void bx_server_application::application_initialize(game::bc_engine_application_parameter& p_parameters)
 	{
+		auto& l_script_system = m_game_system->get_script_system();
+		auto l_script_binder = l_script_system.get_script_binder();
+		l_script_binder.bind(game::bc_script_context::app, *this);
 	}
 
 	void bx_server_application::application_load_content(core::bc_content_stream_manager* p_stream_manager)
@@ -55,9 +62,32 @@ namespace box
 
 	void bx_server_application::application_destroy()
 	{
+		if (m_server_script_context->is_valid())
+		{
+			{
+				platform::bc_script_context::scope l_scope(*m_server_script_context);
+				m_server_script_object.reset();
+			}
+		}
 	}
 
 	void bx_server_application::application_close_engine_components()
 	{
+	}
+
+	void bx_server_application::bind(platform::bc_script_context& p_context, platform::bc_script_global_prototype_builder& p_global_prototype, bx_server_application& p_instance)
+	{
+		{
+			platform::bc_script_context::scope l_scope(p_context);
+
+			auto l_server_prototype_builder = p_context.create_prototype_builder<bc_server_script>();
+			l_server_prototype_builder.function(L"start", &bc_server_script::start);
+
+			auto l_server_prototype = p_context.create_prototype(l_server_prototype_builder);
+			p_instance.m_server_script_object.reset(p_context.create_object(l_server_prototype, bc_server_script(*p_instance.m_game_system)));
+
+			platform::bc_script_property_descriptor<platform::bc_script_object> l_server_property(&p_instance.m_server_script_object.get(), false);
+			p_global_prototype.property(L"server", l_server_property);
+		}
 	}
 }

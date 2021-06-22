@@ -165,9 +165,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptSystem.h">
       <Filter>Game\System\Script</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptUIContext.h">
-      <Filter>Game\System\Script</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\bcGameSystem.h">
       <Filter>Game\System</Filter>
     </ClInclude>
@@ -603,6 +600,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentContainer.hpp">
       <Filter>Game\Object\Scene\ActorComponent</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcGameConsoleScript.h">
+      <Filter>Game\System\Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -663,9 +663,6 @@
       <Filter>Game\System\Script</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptSystem.cpp">
-      <Filter>Game\System\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Script\bcScriptUIContext.cpp">
       <Filter>Game\System\Script</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\GamePCH.cpp">
@@ -904,6 +901,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManagerClient.cpp">
       <Filter>Game\System\Network\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Script\bcGameConsoleScript.cpp">
+      <Filter>Game\System\Script</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -18,7 +18,10 @@ int WINAPI WinMain(HINSTANCE p_instance, HINSTANCE p_prev_instance, CHAR* p_cmd_
 	game::bc_render_application_parameter l_render_app_parameters
 	(
 		l_app_parameters,
-		nullptr,
+		[]() 
+		{
+			return nullptr;
+		},
 		[](game::bc_scene_graph_node_factory_parameter p_parameter)
 		{
 			return core::bc_make_unique<game::bc_octal_tree_graph_node>

@@ -18,7 +18,7 @@ namespace black_cat
 		bc_script_system::bc_script_system(bc_script_system&& p_other) noexcept
 			: core::bc_initializable<bool>(std::move(p_other)),
 			m_script_runtime(std::move(p_other.m_script_runtime)),
-			m_ui_context(std::move(p_other.m_ui_context)),
+			m_app_context(std::move(p_other.m_app_context)),
 			m_stringify_function(std::move(p_other.m_stringify_function))
 		{
 
@@ -33,7 +33,7 @@ namespace black_cat
 		{
 			core::bc_initializable<bool>::operator=(std::move(p_other));
 			m_script_runtime = std::move(p_other.m_script_runtime);
-			m_ui_context = std::move(p_other.m_ui_context);
+			m_app_context = std::move(p_other.m_app_context);
 			m_stringify_function = std::move(p_other.m_stringify_function);
 
 			return *this;
@@ -41,7 +41,7 @@ namespace black_cat
 
 		bc_script_binding bc_script_system::get_script_binder() const noexcept
 		{
-			return bc_script_binding(const_cast< bc_script_system& >(*this));
+			return bc_script_binding(const_cast<bc_script_system&>(*this));
 		}
 
 		void bc_script_system::set_script_binder(bc_script_binding&& p_bindings)
@@ -162,7 +162,7 @@ namespace black_cat
 			core::bc_wstring l_result_string;
 
 			{
-				platform::bc_script_context::scope l_context_scope(_get_context(bc_script_context::ui));
+				platform::bc_script_context::scope l_context_scope(_get_context(bc_script_context::app));
 
 				if (p_value.is_valid())
 				{
@@ -225,10 +225,10 @@ namespace black_cat
 		void bc_script_system::_initialize(bool)
 		{
 			m_script_runtime = core::bc_make_unique<platform::bc_script_runtime>(core::bc_alloc_type::program);
-			m_ui_context = core::bc_make_unique<bc_script_ui_context>(core::bc_alloc_type::program, *m_script_runtime);
+			m_app_context.reset(m_script_runtime->create_context());
 
 			{
-				platform::bc_script_context::scope l_context_scope(_get_context(bc_script_context::ui));
+				platform::bc_script_context::scope l_context_scope(_get_context(bc_script_context::app));
 
 				m_stringify_function = l_context_scope.get_context()
 					.get_global()
@@ -244,12 +244,12 @@ namespace black_cat
 			if (m_stringify_function->is_valid())
 			{
 				{
-					platform::bc_script_context::scope l_context_scope(_get_context(bc_script_context::ui));
+					platform::bc_script_context::scope l_context_scope(_get_context(bc_script_context::app));
 					m_stringify_function.reset();
 				}
 			}
 
-			m_ui_context.reset();
+			m_app_context.reset();
 			m_script_runtime.reset();
 		}
 	}

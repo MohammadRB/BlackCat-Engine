@@ -13,10 +13,7 @@ namespace black_cat
 		class bc_script_binding : core_platform::bc_no_copy
 		{
 		private:
-			using context_array_t = core::bc_vector
-			<
-				std::pair< std::reference_wrapper< platform::bc_script_context >, platform::bc_script_global_prototype_builder >
-			>;
+			using context_array_t = core::bc_vector<std::pair<std::reference_wrapper<platform::bc_script_context>, platform::bc_script_global_prototype_builder>>;
 			friend class bc_script_system;
 
 		public:
@@ -30,12 +27,13 @@ namespace black_cat
 
 			bc_script_binding& operator=(bc_script_binding&& p_other) noexcept
 			{
+				m_script_system = p_other.m_script_system;
 				m_contexts = std::move(p_other.m_contexts);
 
 				return *this;
 			}
 
-			template< class TExtension >
+			template<class TExtension>
 			bc_script_binding& bind(bc_script_context p_context)
 			{
 				platform::bc_script_context& l_context = m_contexts[static_cast<bcSIZE>(p_context)].first;
@@ -46,7 +44,7 @@ namespace black_cat
 				return *this;
 			}
 
-			template< class TExtension >
+			template<class TExtension>
 			bc_script_binding& bind(bc_script_context p_context, TExtension& p_instance)
 			{
 				platform::bc_script_context& l_context = m_contexts[static_cast<bcSIZE>(p_context)].first;
@@ -57,13 +55,11 @@ namespace black_cat
 				return *this;
 			}
 
-		protected:
-
 		private:
 			explicit bc_script_binding(bc_script_system& p_script_system)
-				: m_script_system(p_script_system)
+				: m_script_system(&p_script_system)
 			{
-				auto& l_ui_context = p_script_system.get_ui_context().get_context();
+				auto& l_ui_context = p_script_system.get_app_context();
 
 				{
 					platform::bc_script_context::scope l_ui_context_scope(l_ui_context);
@@ -76,7 +72,7 @@ namespace black_cat
 				}
 			}
 
-			bc_script_system& m_script_system;
+			bc_script_system* m_script_system;
 			context_array_t m_contexts;
 		};
 	}

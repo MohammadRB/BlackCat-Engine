@@ -42,14 +42,14 @@ namespace black_cat
 		struct bc_platform_basic_window_parameter_pack
 		{
 		public:
-			bc_platform_basic_window_parameter_pack(core::bc_estring p_caption, bcUINT32 p_width, bcUINT32 p_height)
-				: m_caption(move(p_caption)),
+			bc_platform_basic_window_parameter_pack(const bcECHAR* p_caption, bcUINT32 p_width, bcUINT32 p_height)
+				: m_caption(p_caption),
 				m_width(p_width),
 				m_height(p_height)
 			{
 			}
 
-			core::bc_estring m_caption;
+			const bcECHAR* m_caption;
 			bcUINT32 m_width;
 			bcUINT32 m_height;
 		};
@@ -71,7 +71,7 @@ namespace black_cat
 			friend class bc_platform_application<TPlatform>;
 
 		public:
-			explicit bc_platform_basic_window(bc_basic_window_parameter& p_parameters);
+			explicit bc_platform_basic_window(const bc_basic_window_parameter& p_parameters);
 			
 			bc_platform_basic_window(bc_platform_basic_window&& p_other) noexcept;
 
@@ -101,7 +101,7 @@ namespace black_cat
 
 			void set_position(bcUINT32 p_left, bcUINT32 p_top) noexcept;
 
-			const bcECHAR* get_caption() const override;
+			core::bc_estring get_caption() const override;
 
 			void set_caption(const bcECHAR* p_caption) override;
 

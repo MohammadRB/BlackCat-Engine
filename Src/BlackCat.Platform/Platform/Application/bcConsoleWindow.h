@@ -26,12 +26,12 @@ namespace black_cat
 		template<core_platform::bc_platform>
 		struct bc_platform_console_window_parameter_pack
 		{
-			bc_platform_console_window_parameter_pack(core::bc_estring p_caption)
-				: m_caption(std::move(p_caption))
+			bc_platform_console_window_parameter_pack(const bcECHAR* p_caption)
+				: m_caption(p_caption)
 			{
 			}
 
-			core::bc_estring m_caption;
+			const bcECHAR* m_caption;
 		};
 
 		using bc_console_window_parameter = bc_platform_console_window_parameter_pack<core_platform::g_current_platform>;
@@ -51,6 +51,8 @@ namespace black_cat
 			friend class bc_platform_application<TPlatform>;
 
 		public:
+			bc_platform_console_window(const bc_console_window_parameter& p_parameter);
+			
 			bc_platform_console_window(bc_platform_console_window&& p_other) noexcept;
 
 			~bc_platform_console_window();
@@ -59,7 +61,7 @@ namespace black_cat
 
 			id get_id() const override;
 
-			const bcECHAR* get_caption() const override;
+			core::bc_estring get_caption() const override;
 
 			void set_caption(const bcECHAR* p_caption) override;
 
@@ -79,8 +81,6 @@ namespace black_cat
 			}
 
 		private:
-			bc_platform_console_window(bc_console_window_parameter& p_parameter);
-
 			platform_pack m_pack;
 		};
 

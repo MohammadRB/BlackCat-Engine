@@ -127,14 +127,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>..\..\Src;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Src;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -147,16 +147,16 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>..\..\Src;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Src;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -173,7 +173,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -188,7 +188,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -201,14 +201,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>..\..\Src;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Src;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -229,13 +229,14 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Src\BoX\Application\bcApplication.cpp" />
     <ClCompile Include="..\Src\BoX\BattleOfXbots.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -260,6 +261,9 @@
     <ProjectReference Include="..\..\Solution\VS\BlackCat.vcxproj">
       <Project>{d6d32113-4c80-4613-87df-1000c12d3fe9}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Src\BoX\Application\bxApplication.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

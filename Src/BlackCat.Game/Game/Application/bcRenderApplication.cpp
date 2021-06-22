@@ -89,6 +89,8 @@ namespace black_cat
 			(
 				[&](bc_render_loop_state* p_state)
 				{
+					core::bc_log(core::bc_log_type::info) << "render loop started" << core::bc_lend;
+					
 					while (!p_state->m_terminate.load(core_platform::bc_memory_order::relaxed))
 					{
 						const auto l_signal = p_state->m_signal.load(core_platform::bc_memory_order::acquire);
@@ -133,6 +135,8 @@ namespace black_cat
 				core_platform::bc_clock::small_delta_time l_elapsed = 0;
 				core_platform::bc_clock::small_delta_time l_local_elapsed = 0;
 				core_platform::bc_clock::big_delta_time l_total_elapsed = 0;
+
+				core::bc_log(core::bc_log_type::info) << "update loop started" << core::bc_lend;
 				
 				while (!m_is_terminated)
 				{
@@ -241,14 +245,14 @@ namespace black_cat
 			m_app->request_termination();
 		}
 
-		platform::bc_basic_window bc_render_application::create_basic_render_window(core::bc_estring p_caption, bcUINT32 p_width, bcUINT32 p_height)
+		platform::bc_basic_window bc_render_application::create_basic_render_window(const bcECHAR* p_caption, bcUINT32 p_width, bcUINT32 p_height)
 		{
-			return m_app->create_basic_window(std::move(p_caption), p_width, p_height);
+			return m_app->create_basic_window(p_caption, p_width, p_height);
 		}
 
-		platform::bc_console_window bc_render_application::create_console_window(core::bc_estring p_caption)
+		platform::bc_console_window bc_render_application::create_console_window(const bcECHAR* p_caption)
 		{
-			return m_app->create_console_window(std::move(p_caption));
+			return m_app->create_console_window(p_caption);
 		}
 
 		void bc_render_application::_initialize(bc_engine_application_parameter& p_parameters)
@@ -267,7 +271,7 @@ namespace black_cat
 				p_parameters.m_app_parameters.m_output_window = m_default_output_window.get();
 			}*/
 
-			m_output_window = p_parameters.m_app_parameters.m_output_window;
+			m_output_window = p_parameters.m_app_parameters.m_output_window_factory();
 			m_clock = core::bc_make_unique<core_platform::bc_clock>(core::bc_alloc_type::program);
 
 			m_is_terminated = false;

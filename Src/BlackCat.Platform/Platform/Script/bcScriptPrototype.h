@@ -12,16 +12,16 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template< core_platform::bc_platform TPlatform, typename T  >
+		template<core_platform::bc_platform TPlatform, typename T>
 		struct bc_platform_script_prototype_pack
 		{
 		};
 
-		template< core_platform::bc_platform TPlatform, typename T >
-		class bc_platform_script_prototype : public bc_platform_script_reference< TPlatform >
+		template<core_platform::bc_platform TPlatform, typename T>
+		class bc_platform_script_prototype : public bc_platform_script_reference<TPlatform>
 		{
 		public:
-			using platform_pack = bc_platform_script_prototype_pack< TPlatform, T >;
+			using platform_pack = bc_platform_script_prototype_pack<TPlatform, T>;
 			using type = T;
 			friend bc_script_context;
 
@@ -47,9 +47,9 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< typename T >
-		using bc_script_prototype = bc_platform_script_prototype< core_platform::g_current_platform, T >;
-		template< typename T >
-		using bc_script_prototype_ref = bc_script_ref< bc_script_prototype<T> >;
+		template<typename T>
+		using bc_script_prototype = bc_platform_script_prototype<core_platform::g_current_platform, T>;
+		template<typename T>
+		using bc_script_prototype_ref = bc_script_ref<bc_script_prototype<T>>;
 	}
 }

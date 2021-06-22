@@ -34,7 +34,7 @@ namespace black_cat
 
 			virtual id get_id() const = 0;
 
-			virtual const bcECHAR* get_caption() const = 0;
+			virtual core::bc_estring get_caption() const = 0;
 
 			virtual void set_caption(const bcECHAR* p_caption) = 0;
 			

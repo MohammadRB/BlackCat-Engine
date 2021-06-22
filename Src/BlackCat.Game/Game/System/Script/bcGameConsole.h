@@ -11,13 +11,15 @@
 #include "Core/Utility/bcLogger.h"
 #include "Core/Messaging/Event/bcEvent.h"
 #include "Core/Messaging/Event/bcEventListenerHandle.h"
+#include "PlatformImp/Script/bcScriptObject.h"
+#include "Game/System/Script/bcGameConsoleScript.h"
 #include "Game/bcExport.h"
-#include "Game/System/Script/bcScriptSystem.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		class bc_script_system;
 		class bc_game_console;
 		class bci_game_console_imp;
 
@@ -29,27 +31,6 @@ namespace black_cat
 			error = static_cast<bcUBYTE>(core::bc_log_type::error),
 			script = 16,
 			_count = 5
-		};
-
-		class bc_game_console_bind
-		{
-		public:
-			explicit bc_game_console_bind(bc_game_console& p_game_console);
-
-			bc_game_console_bind(const bc_game_console_bind&);
-
-			~bc_game_console_bind();
-
-			bc_game_console_bind& operator=(const bc_game_console_bind&);
-
-			void disable_output(const platform::bc_script_int& p_output);
-
-			void enable_output(const platform::bc_script_int& p_output);
-
-			void clear_output();
-
-		private:
-			bc_game_console& m_game_console;
 		};
 
 		struct _bc_script_queue_entry
@@ -89,7 +70,7 @@ namespace black_cat
 			void update(core_platform::bc_clock::update_param p_clock_update_param);
 
 			static void bind(platform::bc_script_context& p_context, platform::bc_script_global_prototype_builder& p_global_prototype, bc_game_console& p_instance);
-
+			
 		private:
 			void on_log(core::bc_log_type p_type, const bcECHAR* p_log) override;
 
@@ -97,7 +78,7 @@ namespace black_cat
 
 			void _write_logs();
 
-			bc_script_system& m_script_system;
+			bc_script_system* m_script_system;
 			bci_game_console_imp* m_imp;
 
 			core_platform::bc_mutex m_logs_mutex;
@@ -107,10 +88,10 @@ namespace black_cat
 			core_platform::bc_mutex m_scripts_mutex;
 			core::bc_vector<_bc_script_queue_entry> m_scripts;
 
-			core::bc_event_listener_handle m_key_event_handle;
-
 			platform::bc_script_context* m_bound_context;
 			platform::bc_script_object_ref m_bound_console;
+
+			core::bc_event_listener_handle m_key_event_handle;
 		};
 	}
 }

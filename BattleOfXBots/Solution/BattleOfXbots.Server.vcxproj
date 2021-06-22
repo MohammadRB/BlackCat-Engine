@@ -136,8 +136,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);..\..\3rdParty</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
@@ -158,8 +158,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);..\..\3rdParty</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -212,8 +212,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);..\..\3rdParty</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -236,10 +236,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Src\BoX.Server\Application\bcServerScript.cpp" />
     <ClCompile Include="..\Src\BoX.Server\Application\bxServerApplication.cpp" />
     <ClCompile Include="..\Src\BoX.Server\BattleOfXbots.Server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Src\BoX.Server\Application\bcServerScript.h" />
     <ClInclude Include="..\Src\BoX.Server\Application\bxServerApplication.h" />
   </ItemGroup>
   <ItemGroup>

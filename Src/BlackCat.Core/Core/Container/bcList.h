@@ -50,28 +50,28 @@ namespace black_cat
 				}
 
 				node(const value_type& p_value) noexcept(std::is_nothrow_copy_constructible<bc_container_node<value_type>>::value)
-					: bc_container_node(p_value),
+					: bc_container_node<value_type>(p_value),
 					m_next(nullptr),
 					m_prev(nullptr)
 				{
 				}
 
 				node(value_type&& p_value) noexcept(std::is_nothrow_move_constructible<bc_container_node<value_type>>::value)
-					: bc_container_node(std::move(p_value)),
+					: bc_container_node<value_type>(std::move(p_value)),
 					m_next(nullptr),
 					m_prev(nullptr)
 				{
 				}
 
 				node(const node& p_other)
-					: bc_container_node(p_other.m_value),
+					: bc_container_node<value_type>(p_other.m_value),
 					m_next(p_other.m_next),
 					m_prev(p_other.m_prev)
 				{
 				}
 
 				node(node&& p_other)
-					: bc_container_node(std::move(p_other.m_value)),
+					: bc_container_node<value_type>(std::move(p_other.m_value)),
 					m_next(p_other.m_next),
 					m_prev(p_other.m_prev)
 				{
@@ -81,7 +81,7 @@ namespace black_cat
 
 				template<typename ...TArgs>
 				node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible<bc_container_node<value_type>, TArgs...>::value)
-					: bc_container_node(std::forward<TArgs>(p_args)...),
+					: bc_container_node<value_type>(std::forward<TArgs>(p_args)...),
 					m_next(nullptr),
 					m_prev(nullptr)
 				{

@@ -12,5 +12,13 @@
     <ClCompile Include="..\Src\BoX\BattleOfXbots.cpp">
       <Filter>BoX</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\BoX\Application\bcApplication.cpp">
+      <Filter>BoX\Application</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Src\BoX\Application\bxApplication.h">
+      <Filter>BoX\Application</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -45,9 +45,9 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_basic_window bc_platform_application<core_platform::bc_platform::win32>::create_basic_window(core::bc_estring p_caption, bcUINT32 p_width, bcUINT32 p_height)
+		bc_basic_window bc_platform_application<core_platform::bc_platform::win32>::create_basic_window(const bcECHAR* p_caption, bcUINT32 p_width, bcUINT32 p_height)
 		{
-			bc_basic_window::parameter l_parameters(m_pack.m_instance, std::move(p_caption), p_width, p_height);
+			bc_basic_window::parameter l_parameters(m_pack.m_instance, p_caption, p_width, p_height);
 			bc_basic_window l_render_window(l_parameters);
 
 			return l_render_window;
@@ -55,9 +55,9 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_console_window bc_platform_application<core_platform::bc_platform::win32>::create_console_window(core::bc_estring p_caption)
+		bc_console_window bc_platform_application<core_platform::bc_platform::win32>::create_console_window(const bcECHAR* p_caption)
 		{
-			bc_console_window::parameter l_parameters(std::move(p_caption));
+			bc_console_window::parameter l_parameters(p_caption);
 			bc_console_window l_console_window(l_parameters);
 
 			return l_console_window;

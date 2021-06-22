@@ -9,16 +9,16 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template< core_platform::bc_platform TPlatform >
+		template<core_platform::bc_platform TPlatform>
 		struct bc_platform_script_global_prototype_builder_pack
 		{
 		};
 
-		template< core_platform::bc_platform TPlatform >
+		template<core_platform::bc_platform TPlatform>
 		class bc_platform_script_global_prototype_builder
 		{
 		public:
-			using platform_pack = bc_platform_script_global_prototype_builder_pack< TPlatform >;
+			using platform_pack = bc_platform_script_global_prototype_builder_pack<TPlatform>;
 			friend bc_script_context;
 
 		public:
@@ -143,7 +143,7 @@ namespace black_cat
 			* \param p_descriptor
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor< bc_script_bool >& p_descriptor);
+			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor<bc_script_bool>& p_descriptor);
 
 			/**
 			* \brief Define property in object prototype.
@@ -151,7 +151,7 @@ namespace black_cat
 			* \param p_descriptor
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor< bc_script_int >& p_descriptor);
+			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor<bc_script_int>& p_descriptor);
 
 			/**
 			* \brief Define property in object prototype.
@@ -159,7 +159,7 @@ namespace black_cat
 			* \param p_descriptor
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor< bc_script_double >& p_descriptor);
+			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor<bc_script_double>& p_descriptor);
 
 			/**
 			* \brief Define property in object prototype.
@@ -167,7 +167,7 @@ namespace black_cat
 			* \param p_descriptor
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor< bc_script_string >& p_descriptor);
+			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor<bc_script_string>& p_descriptor);
 
 			/**
 			* \brief Define property in object prototype.
@@ -175,7 +175,7 @@ namespace black_cat
 			* \param p_descriptor
 			* \return
 			*/
-			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor< bc_script_object >& p_descriptor);
+			bc_platform_script_global_prototype_builder& property(const bcWCHAR* p_name, bc_script_property_descriptor<bc_script_object>& p_descriptor);
 
 			/**
 			* \brief Define function in object prototype.
@@ -185,8 +185,8 @@ namespace black_cat
 			* \param p_func Callback function
 			* \return
 			*/
-			template< typename TR, typename ...TA >
-			bc_platform_script_global_prototype_builder& function(const bcWCHAR* p_name, bc_script_free_function< TR, TA... > p_func);
+			template<typename TR, typename ...TA>
+			bc_platform_script_global_prototype_builder& function(const bcWCHAR* p_name, bc_script_free_function<TR, TA...> p_func);
 
 			platform_pack& get_platform_pack()
 			{
@@ -201,6 +201,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_script_global_prototype_builder = bc_platform_script_global_prototype_builder< core_platform::g_current_platform >;
+		using bc_script_global_prototype_builder = bc_platform_script_global_prototype_builder<core_platform::g_current_platform>;
 	}
 }

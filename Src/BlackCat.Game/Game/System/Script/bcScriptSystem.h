@@ -18,7 +18,6 @@
 #include "PlatformImp/Script/bcScriptError.h"
 #include "PlatformImp/Script/bcScriptPrototype.h"
 #include "PlatformImp/Script/bcScriptPrototypeBuilder.h"
-#include "Game/System/Script/bcScriptUIContext.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -29,7 +28,7 @@ namespace black_cat
 
 		enum class bc_script_context : bcUBYTE
 		{
-			ui = 0,
+			app = 0,
 			_count = 1
 		};
 
@@ -44,9 +43,14 @@ namespace black_cat
 
 			bc_script_system& operator=(bc_script_system&&) noexcept;
 
-			bc_script_ui_context& get_ui_context()
+			platform::bc_script_context& get_app_context() noexcept
 			{
-				return *m_ui_context;
+				return *m_app_context;
+			}
+			
+			const platform::bc_script_context& get_app_context() const noexcept
+			{
+				return m_app_context.get();
 			}
 
 			bc_script_binding get_script_binder() const noexcept;
@@ -113,15 +117,15 @@ namespace black_cat
 			{
 				switch (p_context)
 				{
-				case bc_script_context::ui:
-					return m_ui_context->get_context();
+				case bc_script_context::app:
+					return m_app_context.get();
 				default: 
 					throw bc_invalid_argument_exception("Invalid script context");
 				}
 			}
 
 			core::bc_unique_ptr<platform::bc_script_runtime> m_script_runtime;
-			core::bc_unique_ptr<bc_script_ui_context> m_ui_context;
+			platform::bc_script_context_ref m_app_context;
 			platform::bc_script_function_wrapper_ref<platform::bc_script_string(platform::bc_script_variable)> m_stringify_function;
 		};
 	}
