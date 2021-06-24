@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "PlatformImp/Script/bcScriptContext.h"
+#include "PlatformImp/Script/bcScriptVariable.h"
 
 namespace black_cat
 {
@@ -27,7 +27,7 @@ namespace box
 
 		bc_server_script& operator=(const bc_server_script&) noexcept;
 
-		void start(const platform::bc_script_int& p_port);
+		platform::bc_script_variable start(const platform::bc_script_variable& p_port);
 
 	private:
 		game::bc_game_system* m_game_system;

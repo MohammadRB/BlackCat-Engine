@@ -5,6 +5,8 @@
 #include "Core/Container/bcVector.h"
 #include "Platform/Script/bcScriptPrototype.h"
 #include "Platform/Script/bcScriptPrototypeBuilder.h"
+#include "Platform/Script/bcScriptVariable.h"
+#include "Platform/Script/bcScriptFunction.h"
 
 namespace black_cat
 {
@@ -13,13 +15,9 @@ namespace black_cat
 		template<typename T>
 		class _bc_script_external_object_meta_data
 		{
-		public:
-			template<typename TM>
-			using member_variable_ptr_t = TM T::*;
-			template<typename TR, typename ...TA>
-			using member_function_ptr_t = TR(T::*)(const TA&...);
-			using _member_variable_ptr_t = member_variable_ptr_t<bcSIZE>;
-			using _member_function_ptr_t = member_function_ptr_t<bcSIZE, bcSIZE>;
+		private:
+			using _member_variable_ptr_t = bc_script_member_ptr<T, bcSIZE>;
+			using _member_function_ptr_t = bc_script_member_function<T, 1U>;
 
 		public:
 			_bc_script_external_object_meta_data()
@@ -45,12 +43,8 @@ namespace black_cat
 			using meta_data = _bc_script_external_object_meta_data<T>;
 
 		private:
-			template<typename TM>
-			using member_variable_ptr_t = typename meta_data::template member_variable_ptr_t<TM>;
-			template<typename TR, typename ...TA>
-			using member_function_ptr_t = typename meta_data::template member_function_ptr_t<TR, TA...>;
-			using _member_variable_ptr_t = member_variable_ptr_t<bcSIZE>;
-			using _member_function_ptr_t = member_function_ptr_t<bcSIZE, bcSIZE>;
+			using _member_variable_ptr_t = bc_script_member_ptr<T, bcSIZE>;
+			using _member_function_ptr_t = bc_script_member_function<T, 1>;
 
 		public:
 			explicit bc_script_external_object(T&& p_native_object)
@@ -102,9 +96,9 @@ namespace black_cat
 			template<typename TM>
 			TM get_member_variable(bcUINT32 p_variable_index)
 			{
-				static_assert(sizeof(member_variable_ptr_t< TM >) == sizeof(_member_variable_ptr_t), "Ops");
+				static_assert(sizeof(bc_script_member_ptr<T, TM>) == sizeof(_member_variable_ptr_t), "Ops");
 
-				auto l_member_variable_pointer = reinterpret_cast<member_variable_ptr_t< TM >>
+				auto l_member_variable_pointer = reinterpret_cast<bc_script_member_ptr<T, TM>>
 				(
 					s_object_meta_data->m_member_variables.at(p_variable_index)
 				);
@@ -114,9 +108,9 @@ namespace black_cat
 			template<typename TM>
 			void set_member_variable(bcUINT32 p_variable_index, const TM& p_variable)
 			{
-				static_assert(sizeof(member_variable_ptr_t< TM >) == sizeof(_member_variable_ptr_t), "Ops");
+				static_assert(sizeof(bc_script_member_ptr<T, TM>) == sizeof(_member_variable_ptr_t), "Ops");
 
-				auto l_member_variable_pointer = reinterpret_cast<member_variable_ptr_t< TM >>
+				auto l_member_variable_pointer = reinterpret_cast<bc_script_member_ptr<T, TM>>
 				(
 					s_object_meta_data->m_member_variables.at(p_variable_index)
 				);
@@ -124,28 +118,33 @@ namespace black_cat
 			}
 
 			template<typename TM>
-			static bcUINT32 set_member_variable_ptr(member_variable_ptr_t<TM> p_member_variable)
+			static bcUINT32 set_member_variable_ptr(bc_script_member_ptr<T, TM> p_member_variable)
 			{
-				s_object_meta_data->m_member_variables.push_back(reinterpret_cast< _member_variable_ptr_t >(p_member_variable));
+				s_object_meta_data->m_member_variables.push_back(reinterpret_cast<_member_variable_ptr_t>(p_member_variable));
 				return s_object_meta_data->m_member_variables.size() - 1;
 			}
 
-			template<typename TR, typename ...TA>
-			TR call_member_function(bcUINT32 p_function_index, const TA&... p_args)
+			template<bcSIZE TArgCount>
+			bc_script_variable call_member_function(bcUINT32 p_function_index, bc_script_arg_pack<TArgCount>& p_pack)
 			{
-				static_assert(sizeof(member_function_ptr_t< TR, TA... >) == sizeof(_member_function_ptr_t), "Ops");
+				static_assert(sizeof(bc_script_member_function<T, TArgCount>) == sizeof(_member_function_ptr_t), "Ops");
 
-				auto l_member_function_pointer = reinterpret_cast<member_function_ptr_t< TR, TA... >>
+				auto l_member_function_pointer = reinterpret_cast<bc_script_member_function<T, TArgCount>>
 				(
 					s_object_meta_data->m_member_functions.at(p_function_index)
 				);
-				return (m_object.*l_member_function_pointer)(p_args...);
+				auto l_member_function_callback = [this, l_member_function_pointer](const auto& ...p_args)
+				{
+					return (m_object.*l_member_function_pointer)(p_args...);
+				};
+				
+				return bc_script_function::call_callback(l_member_function_callback, p_pack);
 			}
 
-			template<typename TR, typename ...TA>
-			static bcUINT32 set_member_function_ptr(member_function_ptr_t<TR, TA...> p_member_function)
+			template<bcSIZE TArgCount>
+			static bcUINT32 set_member_function_ptr(bc_script_member_function<T, TArgCount> p_member_function)
 			{
-				s_object_meta_data->m_member_functions.push_back(reinterpret_cast< _member_function_ptr_t >(p_member_function));
+				s_object_meta_data->m_member_functions.push_back(reinterpret_cast<_member_function_ptr_t>(p_member_function));
 				return s_object_meta_data->m_member_functions.size() - 1;
 			}
 

@@ -186,7 +186,7 @@ namespace black_cat
 			* \return
 			*/
 			template<typename TR, typename ...TA>
-			bc_platform_script_global_prototype_builder& function(const bcWCHAR* p_name, bc_script_free_function<TR, TA...> p_func);
+			bc_platform_script_global_prototype_builder& function(const bcWCHAR* p_name, TR(*p_func)(const TA&...));
 
 			platform_pack& get_platform_pack()
 			{

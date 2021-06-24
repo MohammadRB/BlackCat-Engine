@@ -12,23 +12,150 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<typename TM>
-		using bc_script_getter = TM(*)();
+		template<bcSIZE TArgCount>
+		struct _bc_script_free_function;
 
+		template<>
+		struct _bc_script_free_function<0>
+		{
+			using func = bc_script_variable(*)();
+		};
+
+		template<>
+		struct _bc_script_free_function<1>
+		{
+			using member_func = bc_script_variable(*)(const bc_script_variable&);
+		};
+
+		template<>
+		struct _bc_script_free_function<2>
+		{
+			using member_func = bc_script_variable(*)(const bc_script_variable&, const bc_script_variable&);
+		};
+
+		template<>
+		struct _bc_script_free_function<3>
+		{
+			using member_func = bc_script_variable(*)(const bc_script_variable&, const bc_script_variable&, const bc_script_variable&);
+		};
+
+		template<>
+		struct _bc_script_free_function<4>
+		{
+			using member_func = bc_script_variable(*)(const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&);
+		};
+
+		template<>
+		struct _bc_script_free_function<5>
+		{
+			using member_func = bc_script_variable(*)(const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&);
+		};
+
+		template<>
+		struct _bc_script_free_function<6>
+		{
+			using member_func = bc_script_variable(*)(const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&);
+		};
+
+		template<>
+		struct _bc_script_free_function<7>
+		{
+			using member_func = bc_script_variable(*)(const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&);
+		};
+
+		template<>
+		struct _bc_script_free_function<8>
+		{
+			using member_func = bc_script_variable(*)(const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&);
+		};
+
+		template<>
+		struct _bc_script_free_function<9>
+		{
+			using member_func = bc_script_variable(*)(const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&);
+		};
+		
+		template<typename T, bcSIZE TArgCount>
+		struct _bc_script_member_function;
+
+		template<typename T>
+		struct _bc_script_member_function<T, 0>
+		{
+			using member_func = bc_script_variable(T::*)();
+		};
+
+		template<typename T>
+		struct _bc_script_member_function<T, 1>
+		{
+			using member_func = bc_script_variable(T::*)(const bc_script_variable&);
+		};
+
+		template<typename T>
+		struct _bc_script_member_function<T, 2>
+		{
+			using member_func = bc_script_variable(T::*)(const bc_script_variable&, const bc_script_variable&);
+		};
+
+		template<typename T>
+		struct _bc_script_member_function<T, 3>
+		{
+			using member_func = bc_script_variable(T::*)(const bc_script_variable&, const bc_script_variable&, const bc_script_variable&);
+		};
+
+		template<typename T>
+		struct _bc_script_member_function<T, 4>
+		{
+			using member_func = bc_script_variable(T::*)(const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&);
+		};
+
+		template<typename T>
+		struct _bc_script_member_function<T, 5>
+		{
+			using member_func = bc_script_variable(T::*)(const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&);
+		};
+
+		template<typename T>
+		struct _bc_script_member_function<T, 6>
+		{
+			using member_func = bc_script_variable(T::*)(const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&);
+		};
+
+		template<typename T>
+		struct _bc_script_member_function<T, 7>
+		{
+			using member_func = bc_script_variable(T::*)(const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&);
+		};
+
+		template<typename T>
+		struct _bc_script_member_function<T, 8>
+		{
+			using member_func = bc_script_variable(T::*)(const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&);
+		};
+
+		template<typename T>
+		struct _bc_script_member_function<T, 9>
+		{
+			using member_func = bc_script_variable(T::*)(const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&, const bc_script_variable&);
+		};
+		
 		template<typename T, typename TM>
-		using bc_script_member_getter = TM(T::*)();
+		using bc_script_member_ptr = TM T::*;
+		
+		using bc_script_getter = bc_script_variable(*)();
 
-		template<typename TM>
-		using bc_script_setter = void(*)(const TM&);
+		template<typename T>
+		using bc_script_member_getter = bc_script_variable(T::*)();
 
-		template<typename T, typename TM>
-		using bc_script_member_setter = void(T::*)(const TM&);
+		using bc_script_setter = bc_script_variable(*)(const bc_script_variable&);
 
-		template<typename TR, typename ...TA>
-		using bc_script_free_function = TR(*)(const TA&...);
+		template<typename T>
+		using bc_script_member_setter = bc_script_variable(T::*)(const bc_script_variable&);
 
-		template<typename T, typename TR, typename ...TA>
-		using bc_script_member_function = TR(T::*)(const TA&...);
+		template<bcSIZE TArgCount>
+		using bc_script_free_function = typename _bc_script_free_function<TArgCount>::func;
+
+		template<typename T, bcSIZE TArgCount>
+		using bc_script_member_function = typename _bc_script_member_function<T, TArgCount>::member_func;
 
 		template<typename TM>
 		class bc_script_property_descriptor
@@ -44,7 +171,7 @@ namespace black_cat
 			{
 			}
 
-			bc_script_property_descriptor(bc_script_getter<TM> p_getter, bc_script_setter<TM> p_setter, bool p_enumerable = true, bool p_configurable = false)
+			bc_script_property_descriptor(bc_script_getter p_getter, bc_script_setter p_setter, bool p_enumerable = true, bool p_configurable = false)
 				: m_value(nullptr),
 				m_writable(false),
 				m_enumerable(p_enumerable),
@@ -58,8 +185,8 @@ namespace black_cat
 			bool m_writable;
 			bool m_enumerable;
 			bool m_configurable;
-			bc_script_getter<TM> m_getter;
-			bc_script_setter<TM> m_setter;
+			bc_script_getter m_getter;
+			bc_script_setter m_setter;
 		};
 
 		template<typename T, typename TM>
@@ -76,7 +203,7 @@ namespace black_cat
 			{
 			}
 
-			bc_script_member_property_descriptor(bc_script_member_getter<T, TM> p_getter, bc_script_member_setter<T, TM> p_setter, bool p_enumerable = true, bool p_configurable = false)
+			bc_script_member_property_descriptor(bc_script_member_getter<T> p_getter, bc_script_member_setter<T> p_setter, bool p_enumerable = true, bool p_configurable = false)
 				: m_value(nullptr),
 				m_writable(false),
 				m_enumerable(p_enumerable),
@@ -86,12 +213,12 @@ namespace black_cat
 			{
 			}
 
-			TM T::* m_value;
+			bc_script_member_ptr<T, TM> m_value;
 			bool m_writable;
 			bool m_enumerable;
 			bool m_configurable;
-			bc_script_member_getter<T, TM> m_getter;
-			bc_script_member_setter<T, TM> m_setter;
+			bc_script_member_getter<T> m_getter;
+			bc_script_member_setter<T> m_setter;
 		};
 
 		template<core_platform::bc_platform TPlatform, typename T>
@@ -116,13 +243,13 @@ namespace black_cat
 
 			/**
 			 * \brief Specify constructor function signature. 
-			 * Defing constructor signature for new types is mandatory, but for objects that won't create
+			 * Defining constructor signature for new types is mandatory, but for objects that won't create
 			 * in script runtime(eg global objects) there is no need to define constructor signature.
 			 * Calling this function more than one time will throw bc_invalid_operation_exception.
-			 * \tparam TA Arguments to constructor function
+			 * \tparam TArgCount Number of arguments which constructor accepts
 			 * \return 
 			 */
-			template<typename ...TA>
+			template<bcSIZE TArgCount>
 			bc_platform_script_prototype_builder& constructor();
 
 			/**
@@ -283,7 +410,7 @@ namespace black_cat
 			 * \return 
 			 */
 			template<typename TR, typename ...TA>
-			bc_platform_script_prototype_builder& function(const bcWCHAR* p_name, bc_script_member_function<type, TR, TA...> p_member_func);
+			bc_platform_script_prototype_builder& function(const bcWCHAR* p_name, TR(T::* p_member_func)(const TA&...));
 
 			platform_pack& get_platform_pack()
 			{

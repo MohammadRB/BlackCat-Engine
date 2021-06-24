@@ -70,11 +70,11 @@ namespace black_cat
 				break;
 			case bc_console_output_type::debug: 
 				l_message = bcL("Debug: ");
-				l_color = platform::bc_console_window_text_color::purple;
+				l_color = platform::bc_console_window_text_color::yellow;
 				break;
 			case bc_console_output_type::warning:
 				l_message = bcL("Warning: ");
-				l_color = platform::bc_console_window_text_color::red;
+				l_color = platform::bc_console_window_text_color::purple;
 				break;
 			case bc_console_output_type::error: 
 				l_message = bcL("Error: ");
@@ -82,7 +82,7 @@ namespace black_cat
 				break;
 			case bc_console_output_type::script: 
 				l_message = bcL("Script: ");
-				l_color = platform::bc_console_window_text_color::yellow;
+				l_color = platform::bc_console_window_text_color::white;
 				break;
 			default: 
 				l_color = platform::bc_console_window_text_color::white;

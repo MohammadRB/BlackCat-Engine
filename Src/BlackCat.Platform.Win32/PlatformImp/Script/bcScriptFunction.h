@@ -21,6 +21,20 @@ namespace black_cat
 			JsValueRef m_js_function;
 		};
 
+		template<core_platform::bc_platform TPlatform>
+		template<typename TCallable, bcSIZE TArgCount>
+		bc_script_variable bc_platform_script_function<TPlatform>::call_callback(TCallable p_callable, bc_script_arg_pack<TArgCount>& p_args)
+		{
+			return _call_callback(p_callable, p_args, std::make_index_sequence<TArgCount>{});
+		}
+
+		template<core_platform::bc_platform TPlatform>
+		template<typename TCallable, bcSIZE TArgCount, bcSIZE ...TArgCountI>
+		bc_script_variable bc_platform_script_function<TPlatform>::_call_callback(TCallable p_callable, bc_script_arg_pack<TArgCount>& p_args, std::index_sequence<TArgCountI...>)
+		{
+			return p_callable(p_args[TArgCountI]...);
+		}
+
 		template<core_platform::bc_platform TPlatform, typename TR, typename ... TA>
 		bc_platform_script_function_wrapper<TPlatform, TR(TA...)>::bc_platform_script_function_wrapper()
 			: bc_platform_script_function<TPlatform>()
@@ -56,7 +70,7 @@ namespace black_cat
 		TR bc_platform_script_function_wrapper<TPlatform, TR(TA...)>::operator()(bc_script_variable& p_this, TA&... p_args) const
 		{
 			bc_script_variable l_call_result;
-			bc_script_var_pack<TA...> l_packed_args;
+			bc_script_arg_pack<sizeof...(TA)> l_packed_args;
 
 			_pack_args(l_packed_args, p_args...);
 
@@ -69,7 +83,7 @@ namespace black_cat
 		}
 
 		template<core_platform::bc_platform TPlatform, typename TR, typename ...TA>
-		void bc_platform_script_function_wrapper<TPlatform, TR(TA...)>::_pack_args(bc_script_var_pack<TA...>& p_pack, const TA&... p_args)
+		void bc_platform_script_function_wrapper<TPlatform, TR(TA...)>::_pack_args(bc_script_arg_pack<sizeof...(TA)>& p_pack, const TA&... p_args)
 		{
 			bcUINT32 l_counter = 0;
 
@@ -86,7 +100,7 @@ namespace black_cat
 		}
 
 		template<core_platform::bc_platform TPlatform, typename TR, typename ...TA>
-		void bc_platform_script_function_wrapper<TPlatform, TR(TA...)>::_unpack_args(bc_script_var_pack<TA...>& p_pack, const TA&... p_args)
+		void bc_platform_script_function_wrapper<TPlatform, TR(TA...)>::_unpack_args(bc_script_arg_pack<sizeof...(TA)>& p_pack, const TA&... p_args)
 		{
 			bcUINT32 l_counter = 0;
 
@@ -106,9 +120,6 @@ namespace black_cat
 		template<typename TCallable>
 		TR bc_platform_script_function_wrapper<TPlatform, TR(TA...)>::_call_callback(TCallable p_callable, bc_script_variable* p_args, bcUINT32 p_arg_count)
 		{
-			// TODO Make a choose for more and less argument count than expected
-			BC_ASSERT(sizeof...(TA) == p_arg_count);
-
 			bcUINT32 l_counter = 0;
 			return p_callable
 			(

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "PlatformImp/Script/bcScriptContext.h"
+#include "PlatformImp/Script/bcScriptVariable.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -22,11 +22,11 @@ namespace black_cat
 
 			bc_game_console_script& operator=(const bc_game_console_script&);
 
-			void disable_output(const platform::bc_script_int& p_output);
+			platform::bc_script_variable disable_output(const platform::bc_script_variable& p_output);
 
-			void enable_output(const platform::bc_script_int& p_output);
+			platform::bc_script_variable enable_output(const platform::bc_script_variable& p_output);
 
-			void clear_output();
+			platform::bc_script_variable clear_output();
 			
 		private:
 			bc_game_console* m_game_console;

@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Platform/Script/bcScriptRuntime.h"
-#include "Platform/Script/bcScriptExternalObject.h" // Make forward declared bc_script_external_object visible to clients
 #include "PlatformImp/PlatformImpPCH.h"
 
 namespace black_cat

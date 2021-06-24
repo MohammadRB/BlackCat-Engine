@@ -9,7 +9,7 @@
 
 #include "Core/Memory/bcPtr.h"
 #include "Platform/Script/bcScriptRuntime.h"
-#include "Platform/Script/bcScriptExternalObject.h"
+#include "PlatformImp/Script/bcScriptExternalObject.h"
 
 namespace black_cat
 {

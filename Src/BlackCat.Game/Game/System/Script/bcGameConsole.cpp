@@ -182,7 +182,7 @@ namespace black_cat
 				platform::bc_script_context::scope l_scope(p_context);
 
 				auto l_console_builder = p_context.create_prototype_builder<bc_game_console_script>();
-
+				
 				l_console_builder
 					.constant(L"outputInfo", static_cast<platform::bc_script_int>(bc_console_output_type::info))
 					.constant(L"outputDebug", static_cast<platform::bc_script_int>(bc_console_output_type::debug))

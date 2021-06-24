@@ -16,7 +16,8 @@ namespace box
 
 	bc_server_script& bc_server_script::operator=(const bc_server_script&) noexcept = default;
 
-	void bc_server_script::start(const platform::bc_script_int& p_port)
+	platform::bc_script_variable bc_server_script::start(const platform::bc_script_variable& p_port)
 	{
+		return platform::bc_script_variable();
 	}
 }

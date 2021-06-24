@@ -13,8 +13,8 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<typename ...TA>
-		using bc_script_var_pack = core::bc_array<bc_script_variable, sizeof...(TA)>;
+		template<bcSIZE TArgCount>
+		using bc_script_arg_pack = core::bc_array<bc_script_variable, TArgCount>;
 
 		template<core_platform::bc_platform TPlatform>
 		struct bc_platform_script_function_pack
@@ -47,10 +47,16 @@ namespace black_cat
 				return m_pack;
 			}
 
+			template<typename TCallable, bcSIZE TArgCount>
+			static bc_script_variable call_callback(TCallable p_callable, bc_script_arg_pack<TArgCount>& p_args);
+		
 		protected:
 			bc_platform_script_function(bc_script_context& p_context/*, callback_t p_callback*/);
 
 		private:
+			template<typename TCallable, bcSIZE TArgCount, bcSIZE ...TArgCountI>
+			static bc_script_variable _call_callback(TCallable p_callable, bc_script_arg_pack<TArgCount>& p_args, std::index_sequence<TArgCountI...>);
+			
 			platform_pack m_pack;
 		};
 
@@ -84,22 +90,13 @@ namespace black_cat
 
 			TR operator()(bc_script_variable& p_this, TA&... p_args) const;
 
-			/**
-			 * \brief Convert provided arguments to function signature parameters and call callable object 
-			 * with parameters
-			 * \tparam TCallable 
-			 * \param p_callable 
-			 * \param p_args 
-			 * \param p_arg_count 
-			 * \return 
-			 */
 			template<typename TCallable>
 			static TR _call_callback(TCallable p_callable, bc_script_variable* p_args, bcUINT32 p_arg_count);
 
 		private:
-			static void _pack_args(bc_script_var_pack<TA...>& p_pack, const TA&... p_args);
+			static void _pack_args(bc_script_arg_pack<sizeof...(TA)>& p_pack, const TA&... p_args);
 
-			static void _unpack_args(bc_script_var_pack<TA...>& p_pack, const TA&... p_args);
+			static void _unpack_args(bc_script_arg_pack<sizeof...(TA)>& p_pack, const TA&... p_args);
 		};
 
 		using bc_script_function = bc_platform_script_function<core_platform::g_current_platform>;
