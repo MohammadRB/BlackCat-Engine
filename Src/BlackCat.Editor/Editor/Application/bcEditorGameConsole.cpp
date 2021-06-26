@@ -39,9 +39,9 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_editor_game_console::write_output(game::bc_console_output_type p_type, const core::bc_estring& p_msg)
+		void bc_editor_game_console::write_output(game::bc_console_output_type p_type, const bcECHAR* p_msg)
 		{
-			emit logRecieved(p_type, QString::fromWCharArray(p_msg.c_str()));
+			emit logRecieved(p_type, QString::fromWCharArray(p_msg));
 		}
 
 		void bc_editor_game_console::clear_output()

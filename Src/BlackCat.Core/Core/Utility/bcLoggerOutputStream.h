@@ -19,6 +19,7 @@ namespace black_cat
 			debug = 2,
 			warning = 4,
 			error = 8,
+			all = info | debug | warning | error
 		};
 		
 		class BC_CORE_DLL bc_logger_output_stream : public std::basic_ostringstream<bcECHAR, std::char_traits<bcECHAR>, bc_allocator<bcECHAR>>

@@ -1,21 +1,45 @@
 // [06/15/2021 MRB]
 
+#include "Core/Utility/bcLogger.h"
 #include "Platform/bcEvent.h"
 #include "PlatformImp/Script/bcScriptGlobalPrototypeBuilder.h"
 #include "PlatformImp/Script/bcScriptPrototypeBuilder.h"
 #include "Game/System/Script/bcScriptBinding.h"
 #include "BoX.Server/Application/bxServerApplication.h"
-#include "BoX.Server/Application/bcServerScript.h"
+#include "BoX.Server/Application/bxServerScript.h"
 
 using namespace black_cat;
 
 namespace box
 {
+	void bx_server_application::bind(platform::bc_script_context& p_context, platform::bc_script_global_prototype_builder& p_global_prototype, bx_server_application& p_instance)
+	{
+		{
+			platform::bc_script_context::scope l_scope(p_context);
+
+			auto l_server_prototype_builder = p_context.create_prototype_builder<bx_server_script>();
+			l_server_prototype_builder.function(L"start", &bx_server_script::start);
+
+			auto l_server_prototype = p_context.create_prototype(l_server_prototype_builder);
+			const auto l_server_object = p_context.create_object(l_server_prototype, bx_server_script(*p_instance.m_game_system, p_instance));
+			
+			p_instance.m_server_script_context = &p_context;
+			p_instance.m_server_script_object.reset(l_server_object);
+
+			platform::bc_script_property_descriptor<platform::bc_script_object> l_server_property(&p_instance.m_server_script_object.get(), false);
+			p_global_prototype.property(L"server", l_server_property);
+		}
+	}
+	
 	void bx_server_application::application_start_engine_components(game::bc_engine_application_parameter& p_parameters)
 	{
-		m_console = core::bc_make_unique<game::bc_default_game_console>(*this, m_game_system->get_console());
+		auto& l_game_console = m_game_system->get_console();
+
+		m_console = core::bc_make_unique<game::bc_default_game_console>(*this, l_game_console);
 		m_console->show();
 		m_console->get_console_window()->disable_close(false);
+		m_console->get_console_window()->set_caption(p_parameters.m_app_parameters.m_app_name);
+		l_game_console.set_implementation(m_console.get());
 	}
 
 	void bx_server_application::application_initialize(game::bc_engine_application_parameter& p_parameters)
@@ -31,6 +55,13 @@ namespace box
 
 	void bx_server_application::application_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update)
 	{
+#ifdef BC_DEBUG
+		if(!m_server_started)
+		{
+			m_server_started = true;
+			m_game_system->get_network_system().start_server(6699, *this);
+		}
+#endif
 	}
 
 	void bx_server_application::application_render(core_platform::bc_clock::update_param p_clock)
@@ -69,25 +100,38 @@ namespace box
 				m_server_script_object.reset();
 			}
 		}
+		m_console.reset();
 	}
 
 	void bx_server_application::application_close_engine_components()
 	{
 	}
 
-	void bx_server_application::bind(platform::bc_script_context& p_context, platform::bc_script_global_prototype_builder& p_global_prototype, bx_server_application& p_instance)
+	void bx_server_application::started_listening(bcUINT16 p_port)
 	{
-		{
-			platform::bc_script_context::scope l_scope(p_context);
+		core::bc_log(core::bc_log_type::info) << "started listening on port " << p_port << core::bc_lend;
+	}
 
-			auto l_server_prototype_builder = p_context.create_prototype_builder<bc_server_script>();
-			l_server_prototype_builder.function(L"start", &bc_server_script::start);
+	void bx_server_application::client_connected()
+	{
+		core::bc_log(core::bc_log_type::info) << "new client connected" << core::bc_lend;
+	}
 
-			auto l_server_prototype = p_context.create_prototype(l_server_prototype_builder);
-			p_instance.m_server_script_object.reset(p_context.create_object(l_server_prototype, bc_server_script(*p_instance.m_game_system)));
+	void bx_server_application::client_disconnected()
+	{
+		core::bc_log(core::bc_log_type::info) << "client disconnected" << core::bc_lend;
+	}
 
-			platform::bc_script_property_descriptor<platform::bc_script_object> l_server_property(&p_instance.m_server_script_object.get(), false);
-			p_global_prototype.property(L"server", l_server_property);
-		}
+	void bx_server_application::message_sent(game::bci_network_message& p_message)
+	{
+	}
+
+	void bx_server_application::message_received(game::bci_network_message& p_message)
+	{
+	}
+
+	void bx_server_application::error_occurred(const bc_network_exception* p_exception)
+	{
+		core::bc_log(core::bc_log_type::error) << "error occurred in network connection: " << (p_exception ? p_exception->get_full_message().c_str() : "") << core::bc_lend;
 	}
 }

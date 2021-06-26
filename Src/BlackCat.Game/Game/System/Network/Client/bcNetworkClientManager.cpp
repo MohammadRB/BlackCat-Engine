@@ -15,7 +15,12 @@ namespace black_cat
 	namespace game
 	{
 		bc_network_client_manager::bc_network_client_manager(bc_network_system& p_network_system, bci_network_client_manager_hook& p_hook, const bcCHAR* p_ip, bcUINT16 p_port)
-			: bc_client_socket_state_machine(m_socket),
+			: bc_client_socket_state_machine(*BC_NEW(platform::bc_non_block_socket, core::bc_alloc_type::unknown)
+			(
+				platform::bc_socket_address::inter_network,
+				platform::bc_socket_type::stream,
+				platform::bc_socket_protocol::tcp
+			)),
 			m_ip(p_ip),
 			m_port(p_port),
 			m_socket_is_connected(false),
@@ -25,12 +30,7 @@ namespace black_cat
 			m_rtt_sampler(0),
 			m_messages_buffer(p_network_system)
 		{
-			m_socket = platform::bc_non_block_socket
-			(
-				platform::bc_socket_address::inter_network,
-				platform::bc_socket_type::data_gram,
-				platform::bc_socket_protocol::udp
-			);
+			m_socket.reset(&bc_client_socket_state_machine::get_socket());
 
 			bc_client_socket_connect_event l_connect_event{ m_ip, m_port };
 			bc_client_socket_state_machine::process_event(l_connect_event);
@@ -190,17 +190,20 @@ namespace black_cat
 					m_messages.push_back(bc_make_network_message(bc_actor_sync_network_message()));
 				}
 
-				const auto l_serialized_messages = m_messages_buffer.serialize(p_clock.m_total_elapsed, core::bc_make_span(m_messages));
-				bc_client_socket_send_event l_send_event{ *l_serialized_messages.first, l_serialized_messages.second, 0 };
-				bc_client_socket_state_machine::process_event(l_send_event);
-
-				for (auto& l_message : m_messages)
+				if(!m_messages.empty())
 				{
-					m_hook->message_sent(*l_message);
+					const auto l_serialized_messages = m_messages_buffer.serialize(p_clock.m_total_elapsed, core::bc_make_span(m_messages));
+					bc_client_socket_send_event l_send_event{ *l_serialized_messages.first, l_serialized_messages.second, 0 };
+					bc_client_socket_state_machine::process_event(l_send_event);
 
-					if (l_message->need_acknowledgment())
+					for (auto& l_message : m_messages)
 					{
-						m_messages_waiting_acknowledgment.push_back(std::move(l_message));
+						m_hook->message_sent(*l_message);
+
+						if (l_message->need_acknowledgment())
+						{
+							m_messages_waiting_acknowledgment.push_back(std::move(l_message));
+						}
 					}
 				}
 

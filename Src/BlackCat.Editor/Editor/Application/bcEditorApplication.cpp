@@ -34,6 +34,7 @@ namespace black_cat
 			game::bc_game_console& l_game_console = core::bc_get_service<game::bc_game_system>()->get_console();
 			m_editor_game_console = std::make_unique<bc_editor_game_console>(l_game_console, *m_console_widget);
 			m_editor_game_console->connect_widget(m_console_widget);
+			l_game_console.set_implementation(m_editor_game_console.get());
 			
 			m_ui_command_service = core::bc_get_service<bc_ui_command_service>();
 			m_form_main_menu = std::make_unique<bc_form_main_menu>(*ui.mainMenuBar, *m_ui_command_service);

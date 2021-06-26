@@ -57,8 +57,7 @@ namespace black_cat
 			auto* l_game_system = core::bc_get_service<bc_game_system>();
 			core::bc_file_stream l_script_file;
 
-			auto l_script_file_path = l_game_system->get_file_system().get_content_script_path(p_script_file);
-
+			const auto l_script_file_path = l_game_system->get_file_system().get_content_script_path(p_script_file);
 			l_script_file.open_read(l_script_file_path.c_str());
 
 			core::bc_wstring_frame l_script_file_content;
@@ -71,18 +70,18 @@ namespace black_cat
 
 			{
 				platform::bc_script_context::scope l_context_scope(_get_context(p_context));
-				platform::bc_script_bytecode l_bytecode = m_script_runtime->compile_script(l_script_file_content.c_str());
+				platform::bc_script_bytecode l_byte_code = m_script_runtime->compile_script(l_script_file_content.c_str());
 
 				if (l_context_scope.get_context().has_exception())
 				{
-					platform::bc_script_error l_error = l_context_scope.get_context().get_clear_exception();
-					auto l_error_message = core::bc_to_string_frame(l_error.error_message());
-					auto l_error_file = core::bc_to_exclusive_string(p_script_file);
+					const auto l_error = l_context_scope.get_context().get_clear_exception();
+					const auto l_error_message = core::bc_to_string_frame(l_error.error_message());
+					const auto l_error_file = core::bc_to_exclusive_string(p_script_file);
 
 					throw bc_script_compile_exception(l_error_file.c_str(), 0, 0, l_error_message.c_str());
 				}
 
-				return l_bytecode;
+				return l_byte_code;
 			}
 		}
 
@@ -90,9 +89,9 @@ namespace black_cat
 		{
 			{
 				platform::bc_script_context::scope l_context_scope(_get_context(p_context));
-			
-				platform::bc_script_bytecode l_bytecode = m_script_runtime->compile_script(p_script);
-
+				
+				platform::bc_script_bytecode l_byte_code = m_script_runtime->compile_script(p_script);
+				
 				if (l_context_scope.get_context().has_exception())
 				{
 					platform::bc_script_error l_error = l_context_scope.get_context().get_clear_exception();
@@ -100,7 +99,7 @@ namespace black_cat
 					return l_context_scope.get_context().create_variable(l_error);
 				}
 
-				return run_script(p_context, l_bytecode);
+				return run_script(p_context, l_byte_code);
 			}
 		}
 
@@ -113,8 +112,7 @@ namespace black_cat
 
 				if (l_context_scope.get_context().has_exception())
 				{
-					platform::bc_script_error l_error = l_context_scope.get_context().get_clear_exception();
-				
+					auto l_error = l_context_scope.get_context().get_clear_exception();
 					return l_context_scope.get_context().create_variable(l_error);
 				}
 
@@ -127,18 +125,18 @@ namespace black_cat
 			{
 				platform::bc_script_context::scope l_context_scope(_get_context(p_context));
 
-				platform::bc_script_bytecode l_bytecode = m_script_runtime->compile_script(p_script);
+				platform::bc_script_bytecode l_byte_code = m_script_runtime->compile_script(p_script);
 
 				if (l_context_scope.get_context().has_exception())
 				{
-					platform::bc_script_error l_error = l_context_scope.get_context().get_clear_exception();
-					auto l_error_message = core::bc_to_string_frame(l_error.error_message());
-					auto l_error_script = core::bc_to_exclusive_string(p_script);
+					const auto l_error = l_context_scope.get_context().get_clear_exception();
+					const auto l_error_message = core::bc_to_string_frame(l_error.error_message());
+					const auto l_error_script = core::bc_to_exclusive_string(p_script);
 
 					throw bc_script_compile_exception(l_error_script.c_str(), 0, 0, l_error_message.c_str());
 				}
 
-				return run_script_throw(p_context, l_bytecode);
+				return run_script_throw(p_context, l_byte_code);
 			}
 		}
 
@@ -148,8 +146,8 @@ namespace black_cat
 
 			if (l_result.is_error())
 			{
-				platform::bc_script_error l_error = l_result.as_error();
-				core::bc_string_frame l_error_message = core::bc_to_string_frame(l_error.error_message());
+				const auto l_error = l_result.as_error();
+				const auto l_error_message = core::bc_to_string_frame(l_error.error_message());
 
 				throw bc_script_execute_exception(l_error_message.c_str());
 			}

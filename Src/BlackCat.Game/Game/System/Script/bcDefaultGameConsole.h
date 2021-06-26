@@ -31,7 +31,7 @@ namespace black_cat
 			
 			const platform::bc_console_window* get_console_window() const noexcept;
 			
-			void write_output(bc_console_output_type p_type, const core::bc_estring& p_msg) override;
+			void write_output(bc_console_output_type p_type, const bcECHAR* p_msg) override;
 
 			void clear_output() override;
 

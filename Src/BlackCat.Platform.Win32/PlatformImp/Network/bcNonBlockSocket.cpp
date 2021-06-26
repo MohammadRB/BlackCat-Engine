@@ -158,7 +158,7 @@ namespace black_cat
 				bc_throw_network_exception();
 			}
 
-			return l_result > 1;
+			return l_result == 1;
 		}
 
 		template<>
@@ -174,14 +174,20 @@ namespace black_cat
 				bc_throw_network_exception();
 			}
 
-			const bool l_succeeded = l_write_result > 1;
+			const bool l_succeeded = l_write_result == 1;
 			if(l_succeeded)
 			{
 				return true;
 			}
 
+			l_socket = { 1, {m_pack.m_socket} };
 			const auto l_except_result = select(0, nullptr, nullptr, &l_socket, &l_no_timeout);
-			const bool l_failed = l_except_result > 1;
+			if(l_except_result == SOCKET_ERROR)
+			{
+				bc_throw_network_exception();
+			}
+			
+			const bool l_failed = l_except_result == 1;
 			if(l_failed)
 			{
 				bc_throw_network_exception();
@@ -203,7 +209,7 @@ namespace black_cat
 				bc_throw_network_exception();
 			}
 
-			return l_result > 1;
+			return l_result == 1;
 		}
 
 		template<>
@@ -219,7 +225,7 @@ namespace black_cat
 				bc_throw_network_exception();
 			}
 
-			return l_result > 1;
+			return l_result == 1;
 		}
 
 		template<>

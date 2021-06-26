@@ -267,8 +267,8 @@ namespace black_cat
 		};
 
 		/**
-		 * \brief T can be fundamental types like bool, bcINT, bcUINT, bcFLOAT32, bc_string, bc_string_program, bc_string_level,
-		 * bc_string_frame, bc_json_key_value and bc_parameter_pack which last one can hold all of previous types.
+		 * \brief T can be fundamental types like bool, bcINT, bcUINT, bcFLOAT, bcDOUBLE, bc_string, bc_string_program, bc_string_frame,
+		 * bc_json_key_value and bc_parameter_pack which last one can hold all of previous types.
 		 * \tparam T
 		 */
 		template<typename T>
@@ -413,7 +413,7 @@ namespace black_cat
 
 			void _load(bc_json_value_object& p_json_value, bcFLOAT& p_value)
 			{
-				if (!p_json_value.IsNumber())
+				if (!p_json_value.IsFloat())
 				{
 					throw bc_io_exception("bad json format. expected float value.");
 				}
@@ -424,6 +424,21 @@ namespace black_cat
 			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcFLOAT& p_value)
 			{
 				p_json_value.SetFloat(p_value);
+			}
+
+			void _load(bc_json_value_object& p_json_value, bcDOUBLE& p_value)
+			{
+				if (!p_json_value.IsDouble())
+				{
+					throw bc_io_exception("bad json format. expected double value.");
+				}
+
+				p_value = p_json_value.GetDouble();
+			}
+
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcDOUBLE& p_value)
+			{
+				p_json_value.SetDouble(p_value);
 			}
 
 			void _load(bc_json_value_object& p_json_value, bc_string& p_value)

@@ -65,16 +65,28 @@ namespace black_cat
 		private:
 			state_transition handle(bc_client_socket_connect_event& p_event) override
 			{
-				m_socket->connect(platform::bc_socket_address::inter_network, p_event.m_ip, p_event.m_port);
-				return state_transition::transfer_to<bc_client_socket_connecting_state>();
+				try
+				{
+					m_socket->connect(platform::bc_socket_address::inter_network, p_event.m_ip, p_event.m_port);
+					return state_transition::transfer_to<bc_client_socket_connecting_state>();
+				}
+				catch (const bc_network_exception& p_exception)
+				{
+					return state_transition::transfer_to<bc_client_socket_error_state>
+					(
+						[p_exception](bc_client_socket_error_state& p_error_state)
+						{
+							p_error_state.set_last_exception(p_exception);
+						}
+					);
+				}
 			}
 
 			void on_enter() override
 			{
 				if(m_last_exception.has_value())
 				{
-					const auto l_str = core::bc_to_estring_frame(m_last_exception->get_full_message());
-					core::bc_log(core::bc_log_type::error, l_str.c_str());
+					core::bc_log(core::bc_log_type::error) << m_last_exception->get_full_message() << core::bc_lend;
 				}
 			}
 
@@ -133,14 +145,14 @@ namespace black_cat
 		private:
 			state_transition handle(bc_client_socket_send_event& p_event) override
 			{
-				if(!m_socket->is_send_available())
-				{
-					p_event.m_bytes_sent = 0;
-					return state_transition::empty();
-				}
-				
 				try
 				{
+					if (!m_socket->is_send_available())
+					{
+						p_event.m_bytes_sent = 0;
+						return state_transition::empty();
+					}
+					
 					p_event.m_bytes_sent = m_socket->send(p_event.m_stream.get_position_data(), p_event.m_bytes_to_send);
 					return state_transition::transfer_to<bc_client_socket_sending_state>();
 				}
@@ -159,14 +171,14 @@ namespace black_cat
 			}
 			
 			state_transition handle(bc_client_socket_receive_event& p_event) override
-			{
-				if(!m_socket->is_receive_available())
-				{
-					return state_transition::empty();
-				}
-				
+			{				
 				try
 				{
+					if (!m_socket->is_receive_available())
+					{
+						return state_transition::empty();
+					}
+					
 					constexpr auto l_local_buffer_size = 100;
 					bcBYTE l_buffer[l_local_buffer_size];
 					
@@ -254,7 +266,7 @@ namespace black_cat
 						return state_transition::transfer_to<bc_client_socket_connected_state>();
 					}
 				}
-				catch (const bc_network_exception & p_exception)
+				catch (const bc_network_exception& p_exception)
 				{
 					return state_transition::transfer_to<bc_client_socket_error_state>
 					(

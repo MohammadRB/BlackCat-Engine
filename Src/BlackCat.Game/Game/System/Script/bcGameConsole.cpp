@@ -16,16 +16,12 @@ namespace black_cat
 			: m_script_system(&p_script_system),
 			m_imp(),
 			m_log_types({true, true, true, true, true}),
-			m_logs(),
 			m_bound_context(nullptr),
 			m_bound_console()
 		{
-			core::bc_get_service<core::bc_logger>()->register_listener
-			(
-				core::bc_enum::mask_or({core::bc_log_type::info, core::bc_log_type::debug, core::bc_log_type::warning, core::bc_log_type::error}),
-				this
-			);
-			m_key_event_handle = core::bc_get_service<core::bc_event_manager>()->register_event_listener<platform::bc_app_event_key>
+			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
+
+			m_key_event_handle = l_event_manager->register_event_listener<platform::bc_app_event_key>
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_game_console::_on_key)
 			);
@@ -35,7 +31,6 @@ namespace black_cat
 			: m_script_system(p_other.m_script_system),
 			m_imp(p_other.m_imp),
 			m_log_types(p_other.m_log_types),
-			m_logs(std::move(p_other.m_logs)),
 			m_scripts(std::move(p_other.m_scripts)),
 			m_bound_context(p_other.m_bound_context),
 			m_bound_console(std::move(p_other.m_bound_console))
@@ -60,7 +55,6 @@ namespace black_cat
 			m_script_system = p_other.m_script_system;
 			m_imp = p_other.m_imp;
 			m_log_types = p_other.m_log_types;
-			m_logs = std::move(p_other.m_logs);
 			m_scripts = std::move(p_other.m_scripts);
 			m_bound_context = p_other.m_bound_context;
 			m_bound_console = std::move(p_other.m_bound_console);
@@ -70,29 +64,25 @@ namespace black_cat
 
 		void bc_game_console::set_implementation(bci_game_console_imp* p_imp)
 		{
+			const bool l_register_listener = !m_imp;
+			
 			m_imp = p_imp;
+			
+			if(l_register_listener)
+			{
+				auto* l_logger = core::bc_get_service<core::bc_logger>();
+				l_logger->register_listener(core::bc_log_type::all, this);
+			}
 		}
 
 		void bc_game_console::disable_output(bc_console_output_type p_output) noexcept
 		{
 			m_log_types[std::log2(static_cast<bcSIZE>(p_output))] = false;
-
-			if(m_imp)
-			{
-				m_imp->clear_output();
-				_write_logs();
-			}
 		}
 
 		void bc_game_console::enable_output(bc_console_output_type p_output) noexcept
 		{
 			m_log_types[std::log2(static_cast<bcSIZE>(p_output))] = true;
-
-			if (m_imp)
-			{
-				m_imp->clear_output();
-				_write_logs();
-			}
 		}
 
 		void bc_game_console::clear_output()
@@ -100,12 +90,6 @@ namespace black_cat
 			if (m_imp)
 			{
 				m_imp->clear_output();
-			}
-
-			{
-				core_platform::bc_mutex_guard l_guard(m_logs_mutex);
-
-				m_logs.clear();
 			}
 		}
 
@@ -207,20 +191,13 @@ namespace black_cat
 		void bc_game_console::on_log(core::bc_log_type p_type, const bcECHAR* p_log)
 		{
 			auto l_type = static_cast<bc_console_output_type>(p_type);
-			auto l_log = core::bc_estring(p_log);
-
-			{
-				core_platform::bc_mutex_guard l_guard(m_logs_mutex);
-
-				m_logs.push_back(std::make_pair(l_type, std::move(l_log)));
-			}
 
 			if (m_imp)
 			{
 				const bool l_log_enabled = m_log_types[std::log2(static_cast<bcSIZE>(l_type))];
 				if(l_log_enabled)
 				{
-					m_imp->write_output(l_type, m_logs.back().second);
+					m_imp->write_output(l_type, p_log);
 				}
 			}
 		}
@@ -234,8 +211,7 @@ namespace black_cat
 
 			const auto l_key_event = static_cast<platform::bc_app_event_key&>(p_event);
 
-			if (l_key_event.get_key() == platform::bc_key::kb_grave &&
-				l_key_event.get_key_state() == platform::bc_key_state::pressing)
+			if (l_key_event.get_key() == platform::bc_key::kb_grave && l_key_event.get_key_state() == platform::bc_key_state::pressing)
 			{
 				if(m_imp->is_visible())
 				{
@@ -248,22 +224,6 @@ namespace black_cat
 			}
 
 			return true;
-		}
-
-		void bc_game_console::_write_logs()
-		{
-			{
-				core_platform::bc_mutex_guard l_guard(m_logs_mutex);
-
-				for (auto& l_log : m_logs)
-				{
-					const bool l_log_enabled = m_log_types[std::log2(static_cast<bcSIZE>(l_log.first))];
-					if (l_log_enabled)
-					{
-						m_imp->write_output(l_log.first, l_log.second);
-					}
-				}
-			}
 		}
 	}
 }

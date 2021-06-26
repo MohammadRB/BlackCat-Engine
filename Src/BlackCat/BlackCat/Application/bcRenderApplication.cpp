@@ -15,6 +15,7 @@
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "BlackCat/Application/bcRenderApplication.h"
 #include "BlackCat/Application/bcApplicationHookFuncations.h"
+#include "Platform/bcEvent.h"
 
 namespace black_cat
 {
@@ -134,6 +135,8 @@ namespace black_cat
 
 	void bc_render_application::app_pause_idle(const core_platform::bc_clock::update_param& p_clock)
 	{
+		platform::bc_app_event_pause_state l_pause_event(platform::bc_app_event_pause_state::state::paused);
+		core::bc_get_service<core::bc_event_manager>()->process_event(l_pause_event);
 		core::bc_get_service<core::bc_event_manager>()->process_event_queue(p_clock);
 	}
 

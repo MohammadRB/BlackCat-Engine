@@ -14,19 +14,19 @@ namespace black_cat
 	namespace game
 	{
 		bc_network_server_manager::bc_network_server_manager(bc_network_system& p_network_system, bci_network_server_manager_hook& p_hook, bcUINT16 p_port)
-			: bc_server_socket_state_machine(m_socket),
+			: bc_server_socket_state_machine(*BC_NEW(platform::bc_non_block_socket, core::bc_alloc_type::unknown)
+			(
+				platform::bc_socket_address::inter_network,
+				platform::bc_socket_type::stream,
+				platform::bc_socket_protocol::tcp
+			)),
 			m_port(p_port),
 			m_socket_is_listening(false),
 			m_hook(&p_hook),
 			m_actor_network_id_counter(0),
 			m_messages_buffer(p_network_system)
 		{
-			m_socket = platform::bc_non_block_socket
-			(
-				platform::bc_socket_address::inter_network,
-				platform::bc_socket_type::data_gram,
-				platform::bc_socket_protocol::udp
-			);
+			m_socket.reset(&bc_server_socket_state_machine::get_socket());
 			
 			bc_server_socket_bind_event l_bind_event{ m_port };
 			bc_server_socket_state_machine::process_event(l_bind_event);
@@ -193,16 +193,20 @@ namespace black_cat
 					p_client.add_message(bc_make_network_message(bc_actor_sync_network_message()));
 				}
 
-				const auto l_serialized_messages = m_messages_buffer.serialize(p_clock.m_total_elapsed, p_client.get_messages());
-				p_client.send(*l_serialized_messages.first, l_serialized_messages.second);
-
-				for (auto& l_message : p_client.get_messages())
+				auto l_client_messages = p_client.get_messages();
+				if(!l_client_messages.empty())
 				{
-					m_hook->message_sent(*l_message);
+					const auto l_serialized_messages = m_messages_buffer.serialize(p_clock.m_total_elapsed, l_client_messages);
+					p_client.send(*l_serialized_messages.first, l_serialized_messages.second);
 
-					if (l_message->need_acknowledgment())
+					for (auto& l_message : l_client_messages)
 					{
-						p_client.add_message_with_acknowledgment(l_message);
+						m_hook->message_sent(*l_message);
+
+						if (l_message->need_acknowledgment())
+						{
+							p_client.add_message_with_acknowledgment(l_message);
+						}
 					}
 				}
 			}

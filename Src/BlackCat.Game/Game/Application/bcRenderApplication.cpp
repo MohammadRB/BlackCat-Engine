@@ -148,9 +148,6 @@ namespace black_cat
 
 					if (m_paused)
 					{
-						platform::bc_app_event_pause_state l_pause_event(platform::bc_app_event_pause_state::state::paused);
-						core::bc_get_service<core::bc_event_manager>()->process_event(l_pause_event);
-
 						const auto l_clock = core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed);
 						l_render_thread_state.m_clock = l_clock;
 						l_render_thread_state.m_signal.store(bc_render_loop_state::signal::pause, core_platform::bc_memory_order::release);
@@ -378,7 +375,7 @@ namespace black_cat
 			auto* l_window_focus_event = core::bci_message::as<platform::bc_app_event_window_focus>(p_event);
 			if (l_window_focus_event)
 			{
-				if(l_window_focus_event->get_focus())
+				/*if(l_window_focus_event->get_focus())
 				{
 					platform::bc_app_event_pause_state l_active_event(platform::bc_app_event_pause_state::state::resume_request);
 					l_event_manager->process_event(l_active_event);
@@ -387,7 +384,7 @@ namespace black_cat
 				{
 					platform::bc_app_event_pause_state l_active_event(platform::bc_app_event_pause_state::state::pause_request);
 					l_event_manager->process_event(l_active_event);
-				}
+				}*/
 				
 				l_handled = true;
 			}

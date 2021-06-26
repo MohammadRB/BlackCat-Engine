@@ -58,7 +58,7 @@ namespace black_cat
 			bcUINT16 m_port;
 			bool m_socket_is_connected;
 			bool m_socket_is_ready;
-			platform::bc_non_block_socket m_socket;
+			core::bc_unique_ptr<platform::bc_non_block_socket> m_socket;
 			bci_network_client_manager_hook* m_hook;
 			bc_network_packet_time m_last_sync_time;
 			core::bc_value_sampler<bc_network_packet_time, 64> m_rtt_sampler;

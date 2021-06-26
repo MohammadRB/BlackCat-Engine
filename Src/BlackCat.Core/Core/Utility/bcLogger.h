@@ -39,7 +39,7 @@ namespace black_cat
 			{
 			}
 
-			explicit _bc_log_listener_container(bc_unique_ptr< bci_log_listener >&& p_smart_pointer) noexcept
+			explicit _bc_log_listener_container(bc_unique_ptr<bci_log_listener>&& p_smart_pointer) noexcept
 				: m_raw_pointer(nullptr),
 				m_smart_pointer(std::move(p_smart_pointer))
 			{
@@ -55,6 +55,11 @@ namespace black_cat
 
 			_bc_log_listener_container& operator=(_bc_log_listener_container&& p_other) = default;
 
+			bci_log_listener* operator*() const noexcept
+			{
+				return m_raw_pointer ? m_raw_pointer : m_smart_pointer.get();
+			}
+			
 			bci_log_listener* operator->() const noexcept
 			{
 				return m_raw_pointer ? m_raw_pointer : m_smart_pointer.get();
@@ -73,11 +78,11 @@ namespace black_cat
 			using map_type = bc_array<bc_vector<_bc_log_listener_container>, 4>;
 
 		public:
-			bc_logger() = default;
+			bc_logger();
 
 			bc_logger(bc_logger&&) noexcept = delete;
 
-			~bc_logger() = default;
+			~bc_logger() override = default;
 
 			bc_logger& operator=(bc_logger&&) noexcept = delete;
 
@@ -157,10 +162,16 @@ namespace black_cat
 		private:
 			void _log(bc_log_type p_type, const bcECHAR* p_log);
 
-			void _register_listener(bc_log_type p_types, _bc_log_listener_container&& p_listener);
+			void _register_listener(bc_log_type p_types, _bc_log_listener_container p_listener);
+
+			void _replicate_last_logs(bc_log_type p_types, bci_log_listener* p_listener);
 
 			map_type m_listeners;
 			bc_thread_local<bc_logger_output_stream> m_log_stream;
+
+			core_platform::bc_mutex m_logs_mutex;
+			bcSIZE m_logs_ptr;
+			bc_vector<std::pair<bc_log_type, bc_estring>> m_logs;
 		};
 
 		inline void bc_log(bc_log_type p_types, const bcECHAR* p_log)

@@ -100,8 +100,7 @@ namespace black_cat
 			{
 				if (m_last_exception.has_value())
 				{
-					const auto l_str = core::bc_to_estring_frame(m_last_exception->get_full_message());
-					core::bc_log(core::bc_log_type::error, l_str.c_str());
+					core::bc_log(core::bc_log_type::error) << m_last_exception->get_full_message() << core::bc_lend;
 				}
 			}
 
@@ -152,14 +151,27 @@ namespace black_cat
 		private:
 			state_transition handle(bc_server_socket_update_event& p_event) override
 			{
-				if(m_socket->is_accept_available())
+				try
 				{
-					return state_transition::transfer_to<bc_server_socket_accepting_state>
+					if (m_socket->is_accept_available())
+					{
+						return state_transition::transfer_to<bc_server_socket_accepting_state>
+						(
+							[this](bc_server_socket_accepting_state& p_state)
+							{
+								auto l_client_socket = m_socket->accept();
+								p_state.set_client_socket(std::move(l_client_socket));
+							}
+						);
+					}
+				}
+				catch (const bc_network_exception& p_exception)
+				{
+					return state_transition::transfer_to<bc_server_socket_error_state>
 					(
-						[this](bc_server_socket_accepting_state& p_state)
+						[p_exception](bc_server_socket_error_state& p_error_state)
 						{
-							auto l_client_socket = m_socket->accept();
-							p_state.set_client_socket(std::move(l_client_socket));
+							p_error_state.set_last_exception(p_exception);
 						}
 					);
 				}

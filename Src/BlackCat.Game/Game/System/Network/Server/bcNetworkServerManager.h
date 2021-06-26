@@ -57,7 +57,7 @@ namespace black_cat
 			
 			bcUINT16 m_port;
 			bool m_socket_is_listening;
-			platform::bc_non_block_socket m_socket;
+			core::bc_unique_ptr<platform::bc_non_block_socket> m_socket;
 			core_platform::bc_mutex m_clients_lock;
 			core::bc_vector<bc_network_server_manager_client> m_clients;
 			bci_network_server_manager_hook* m_hook;

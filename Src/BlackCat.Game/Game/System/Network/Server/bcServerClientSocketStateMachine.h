@@ -64,8 +64,7 @@ namespace black_cat
 			{
 				if (m_last_exception.has_value())
 				{
-					const auto l_str = core::bc_to_estring_frame(m_last_exception->get_full_message());
-					core::bc_log(core::bc_log_type::error, l_str.c_str());
+					core::bc_log(core::bc_log_type::error) << m_last_exception->get_full_message() << core::bc_lend;
 				}
 			}
 
@@ -88,14 +87,14 @@ namespace black_cat
 		private:
 			state_transition handle(bc_server_client_socket_send_event& p_event) override
 			{
-				if (!m_socket->is_send_available())
-				{
-					p_event.m_bytes_sent = 0;
-					return state_transition::empty();
-				}
-
 				try
 				{
+					if (!m_socket->is_send_available())
+					{
+						p_event.m_bytes_sent = 0;
+						return state_transition::empty();
+					}
+					
 					p_event.m_bytes_sent = m_socket->send(p_event.m_stream.get_position_data(), p_event.m_bytes_to_send);
 					return state_transition::transfer_to<bc_server_client_socket_sending_state>();
 				}
@@ -115,13 +114,13 @@ namespace black_cat
 
 			state_transition handle(bc_server_client_socket_receive_event& p_event) override
 			{
-				if (!m_socket->is_receive_available())
-				{
-					return state_transition::empty();
-				}
-
 				try
 				{
+					if (!m_socket->is_receive_available())
+					{
+						return state_transition::empty();
+					}
+					
 					constexpr auto l_local_buffer_size = 100;
 					bcBYTE l_buffer[l_local_buffer_size];
 
@@ -214,6 +213,16 @@ namespace black_cat
 			~bc_server_client_socket_state_machine() = default;
 
 			bc_server_client_socket_state_machine& operator=(bc_server_client_socket_state_machine&&) noexcept = default;
+
+			platform::bc_non_block_socket& get_socket() noexcept
+			{
+				return *m_socket;
+			}
+
+			const platform::bc_non_block_socket& get_socket() const noexcept
+			{
+				return *m_socket;
+			}
 		
 		private:
 			platform::bc_non_block_socket* m_socket;

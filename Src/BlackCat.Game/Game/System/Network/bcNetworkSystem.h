@@ -4,6 +4,7 @@
 
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Memory/bcPtr.h"
+#include "Core/Concurrency/bcTask.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Utility/bcInitializable.h"
 #include "Core/Utility/bcDelegate.h"
@@ -48,6 +49,8 @@ namespace black_cat
 			void send_message(TMessage p_command);
 			
 			void update(const core_platform::bc_clock::update_param& p_clock);
+			
+			core::bc_task<void> update_async(const core_platform::bc_clock::update_param& p_clock);
 
 			template<class ...TMessage>
 			void register_messages(TMessage... p_commands);

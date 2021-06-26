@@ -180,11 +180,35 @@ namespace black_cat
 				m_current_state = &std::get<0>(m_states);
 			}
 
-			bc_state_machine(bc_state_machine&&) noexcept = default;
+			bc_state_machine(bc_state_machine&& p_other) noexcept
+				: m_states(std::move(p_other.m_states))
+			{
+				std::visit
+				(
+					[this](auto p_state)
+					{
+						m_current_state = &std::get<std::decay_t<decltype(*p_state)>>(m_states);
+					},
+					p_other.m_current_state
+				);
+			}
 
 			~bc_state_machine() = default;
 
-			bc_state_machine& operator=(bc_state_machine&&) noexcept = default;
+			bc_state_machine& operator=(bc_state_machine&& p_other) noexcept
+			{
+				m_states = std::move(p_other.m_states);
+				std::visit
+				(
+					[this](auto p_state)
+					{
+						m_current_state = &std::get<std::decay_t<decltype(*p_state)>>(m_states);
+					},
+					p_other.m_current_state
+				);
+				
+				return *this;
+			}
 
 			template<class TState>
 			TState& get_state()

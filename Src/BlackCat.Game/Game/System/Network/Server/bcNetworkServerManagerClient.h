@@ -19,7 +19,7 @@ namespace black_cat
 		class bc_network_server_manager_client : private bc_server_client_socket_state_machine
 		{
 		public:
-			explicit bc_network_server_manager_client(bc_network_server_manager& p_manager, platform::bc_non_block_socket p_socket);
+			bc_network_server_manager_client(bc_network_server_manager& p_manager, platform::bc_non_block_socket p_socket);
 
 			bc_network_server_manager_client(bc_network_server_manager_client&&) noexcept;
 
@@ -65,25 +65,13 @@ namespace black_cat
 			bc_network_server_manager* m_manager;
 			bool m_socket_is_connected;
 			bool m_socket_is_ready;
-			platform::bc_non_block_socket m_socket;
+			core::bc_unique_ptr<platform::bc_non_block_socket> m_socket;
 			bc_network_packet_time m_last_sync_time;
 			core::bc_value_sampler<bc_network_packet_time, 64> m_rtt_sampler;
 
 			core::bc_vector<bc_network_message_ptr> m_messages;
 			core::bc_vector<bc_network_message_ptr> m_messages_waiting_acknowledgment;
 		};
-
-		inline bc_network_server_manager_client::bc_network_server_manager_client(bc_network_server_manager& p_manager, platform::bc_non_block_socket p_socket)
-			: bc_server_client_socket_state_machine(p_socket),
-			m_manager(&p_manager),
-			m_socket_is_connected(false),
-			m_socket_is_ready(false),
-			m_socket(std::move(p_socket)),
-			m_last_sync_time(0),
-			m_rtt_sampler(0)
-		{
-			bc_server_client_socket_state_machine::transfer_state<bc_server_client_socket_connected_state>();
-		}
 
 		inline bc_network_server_manager_client::bc_network_server_manager_client(bc_network_server_manager_client&&) noexcept = default;
 

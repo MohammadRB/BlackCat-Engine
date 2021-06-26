@@ -15,7 +15,7 @@
     <ClCompile Include="..\Src\BoX.Server\Application\bxServerApplication.cpp">
       <Filter>BoX.Server\Application</Filter>
     </ClCompile>
-    <ClCompile Include="..\Src\BoX.Server\Application\bcServerScript.cpp">
+    <ClCompile Include="..\Src\BoX.Server\Application\bxServerScript.cpp">
       <Filter>BoX.Server\Application</Filter>
     </ClCompile>
   </ItemGroup>
@@ -23,7 +23,7 @@
     <ClInclude Include="..\Src\BoX.Server\Application\bxServerApplication.h">
       <Filter>BoX.Server\Application</Filter>
     </ClInclude>
-    <ClInclude Include="..\Src\BoX.Server\Application\bcServerScript.h">
+    <ClInclude Include="..\Src\BoX.Server\Application\bxServerScript.h">
       <Filter>BoX.Server\Application</Filter>
     </ClInclude>
   </ItemGroup>

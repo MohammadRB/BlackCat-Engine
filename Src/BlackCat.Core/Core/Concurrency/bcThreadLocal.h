@@ -31,14 +31,16 @@ namespace black_cat
 
 		public:
 			bc_thread_local()
-				: m_local()
+				: m_first_entry(nullptr),
+				m_local()
 			{
 				static_assert(TAllocType != bc_alloc_type::unknown_movable, "movable pointers are not allowed");
 				static_assert(std::is_default_constructible_v<value_type>, "T must be default constructable");
 			}
 
 			bc_thread_local(bc_thread_local&& p_other) noexcept
-				: m_local(std::move(p_other.m_local))
+				: m_first_entry(p_other.m_first_entry.load(core_platform::bc_memory_order::relaxed)),
+				m_local(std::move(p_other.m_local))
 			{
 			}
 
@@ -55,6 +57,7 @@ namespace black_cat
 
 			bc_thread_local& operator =(bc_thread_local&& p_other) noexcept
 			{
+				m_first_entry.store(p_other.m_first_entry.load(core_platform::bc_memory_order::relaxed));
 				m_local = std::move(p_other.m_local);
 
 				return *this;

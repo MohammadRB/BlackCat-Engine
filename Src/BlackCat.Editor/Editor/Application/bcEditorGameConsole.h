@@ -25,7 +25,7 @@ namespace black_cat
 
 			bc_editor_game_console& operator=(bc_editor_game_console&&) noexcept;
 
-			void write_output(game::bc_console_output_type p_type, const core::bc_estring& p_msg) override;
+			void write_output(game::bc_console_output_type p_type, const bcECHAR* p_msg) override;
 
 			void clear_output() override;
 

@@ -1,13 +1,13 @@
 // [06/13/2021 MRB]
 
+#include <memory>
 #include "CorePlatformImp/Utility/bcHardwareInfo.h"
-#include "Core/Utility/bcNullable.h"
 #include "Game/Object/Scene/SceneGraph/bcOctalTreeSceneGraphNode.h"
 #include "BoX/Application/bxApplication.h"
 
 int WINAPI WinMain(HINSTANCE p_instance, HINSTANCE p_prev_instance, CHAR* p_cmd_line, int p_cmd_show)
 {
-	core::bc_nullable<game::bc_render_application_basic_output_window> l_output_window;
+	std::unique_ptr<game::bc_render_application_basic_output_window> l_output_window;
 	
 	core_platform::bc_basic_hardware_info l_hardware_info;
 	core_platform::bc_hardware_info::get_basic_info(&l_hardware_info);
@@ -25,7 +25,7 @@ int WINAPI WinMain(HINSTANCE p_instance, HINSTANCE p_prev_instance, CHAR* p_cmd_
 		{
 			l_output_window.reset
 			(
-				game::bc_render_application_basic_output_window
+				new game::bc_render_application_basic_output_window
 				(
 					platform::bc_basic_window(platform::bc_basic_window_parameter(p_instance, bcL("BattleOfXbots"), 1024, 700))
 				)
@@ -65,7 +65,7 @@ int WINAPI WinMain(HINSTANCE p_instance, HINSTANCE p_prev_instance, CHAR* p_cmd_
 	l_app.set_fps(60);
 
 	const auto l_return_code = l_app.run();
-
+	
 	l_app.destroy();
 
 	return l_return_code;

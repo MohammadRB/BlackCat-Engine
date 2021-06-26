@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 
+#include "Core/Concurrency/bcConcurrency.h"
 #include "PlatformImp/Network/bcNetworkDefinitions.h"
 #include "Game/System/Network/bcNetworkSystem.h"
 #include "Game/System/Network/Server/bcNetworkServerManager.h"
@@ -78,6 +79,22 @@ namespace black_cat
 			}
 
 			m_manager->update(p_clock);
+		}
+
+		core::bc_task<void> bc_network_system::update_async(const core_platform::bc_clock::update_param& p_clock)
+		{
+			auto l_task = core::bc_concurrency::start_task
+			(
+				core::bc_delegate< void() >
+				(
+					[=, &p_clock]()
+					{
+						update(p_clock);
+					}
+				)
+			);
+
+			return l_task;
 		}
 
 		void bc_network_system::_initialize()

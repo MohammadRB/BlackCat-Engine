@@ -24,7 +24,7 @@ namespace black_cat
 			 * \param p_type
 			 * \param p_msg
 			 */
-			virtual void write_output(bc_console_output_type p_type, const core::bc_estring& p_msg) = 0;
+			virtual void write_output(bc_console_output_type p_type, const bcECHAR* p_msg) = 0;
 
 			/**
 			 * \brief Clear output screen
@@ -55,9 +55,8 @@ namespace black_cat
 
 		protected:
 			explicit bci_game_console_imp(bc_game_console& p_game_console)
-				: m_game_console(p_game_console)
+				: m_game_console(&p_game_console)
 			{
-				m_game_console.set_implementation(this);
 			}
 
 			bci_game_console_imp(bci_game_console_imp&& p_other) noexcept
@@ -67,10 +66,11 @@ namespace black_cat
 
 			bci_game_console_imp& operator=(bci_game_console_imp&& p_other) noexcept
 			{
+				m_game_console = p_other.m_game_console;
 				return *this;
 			}
 
-			bc_game_console& m_game_console;
+			bc_game_console* m_game_console;
 		};
 	}
 }

@@ -57,8 +57,13 @@ namespace black_cat
 			return m_console.get();
 		}
 
-		void bc_default_game_console::write_output(bc_console_output_type p_type, const core::bc_estring& p_msg)
+		void bc_default_game_console::write_output(bc_console_output_type p_type, const bcECHAR* p_msg)
 		{
+			if (!is_visible())
+			{
+				return;
+			}
+			
 			core::bc_estring l_message;
 			platform::bc_console_window_text_color l_color;
 
@@ -91,7 +96,6 @@ namespace black_cat
 
 			l_message.append(p_msg);
 
-			if (is_visible())
 			{
 				core_platform::bc_mutex_guard l_input_guard(m_input_mutex);
 
@@ -195,6 +199,7 @@ namespace black_cat
 
 			while (true)
 			{
+				// This will block the thread
 				std::cin.get(l_char);
 
 				core::bc_concurrency::check_for_interruption();
@@ -215,12 +220,10 @@ namespace black_cat
 
 				if(!l_wline.empty())
 				{
-					m_game_console.run_script(l_wline.c_str(), true);
+					m_game_console->run_script(l_wline.c_str(), true);
 					
 					l_wline.clear();
 				}
-
-				core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(10));
 			}
 		}
 	}

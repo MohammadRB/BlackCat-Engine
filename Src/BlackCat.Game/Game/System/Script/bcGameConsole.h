@@ -47,12 +47,12 @@ namespace black_cat
 
 			bc_game_console(bc_game_console&&) noexcept;
 
-			~bc_game_console();
+			~bc_game_console() override;
 
 			bc_game_console& operator=(bc_game_console&&) noexcept;
-
+			
 			/**
-			 * \brief Set concrete console object. Ownership of object is by caller.
+			 * \brief Set console implementation object. Ownership of object is by caller.
 			 * \param p_imp 
 			 */
 			void set_implementation(bci_game_console_imp* p_imp);
@@ -76,14 +76,10 @@ namespace black_cat
 
 			bool _on_key(core::bci_event& p_event);
 
-			void _write_logs();
-
 			bc_script_system* m_script_system;
 			bci_game_console_imp* m_imp;
-
-			core_platform::bc_mutex m_logs_mutex;
+			
 			core::bc_array<bool, static_cast<bcSIZE>(bc_console_output_type::_count)> m_log_types;
-			core::bc_vector<std::pair<bc_console_output_type, core::bc_estring>> m_logs;
 
 			core_platform::bc_mutex m_scripts_mutex;
 			core::bc_vector<_bc_script_queue_entry> m_scripts;

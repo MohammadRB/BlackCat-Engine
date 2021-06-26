@@ -236,12 +236,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Src\BoX.Server\Application\bcServerScript.cpp" />
+    <ClCompile Include="..\Src\BoX.Server\Application\bxServerScript.cpp" />
     <ClCompile Include="..\Src\BoX.Server\Application\bxServerApplication.cpp" />
     <ClCompile Include="..\Src\BoX.Server\BattleOfXbots.Server.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Src\BoX.Server\Application\bcServerScript.h" />
+    <ClInclude Include="..\Src\BoX.Server\Application\bxServerScript.h" />
     <ClInclude Include="..\Src\BoX.Server\Application\bxServerApplication.h" />
   </ItemGroup>
   <ItemGroup>

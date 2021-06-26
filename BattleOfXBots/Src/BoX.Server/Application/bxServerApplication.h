@@ -5,15 +5,16 @@
 #include "PlatformImp/Script/bcScriptContext.hpp"
 #include "PlatformImp/Script/bcScriptObject.h"
 #include "Game/System/Script/bcDefaultGameConsole.h"
+#include "Game/System/Network/Server/bcNetworkServerManagerHook.h"
 #include "BlackCat/Application/bcRenderApplication.h"
 
 using namespace black_cat;
 
 namespace box
 {
-	class bc_server_script;
+	class bx_server_script;
 
-	class bx_server_application : public bc_render_application
+	class bx_server_application : public bc_render_application, game::bci_network_server_manager_hook
 	{
 	public:
 		static void bind(platform::bc_script_context& p_context, platform::bc_script_global_prototype_builder& p_global_prototype, bx_server_application& p_instance);
@@ -37,8 +38,23 @@ namespace box
 		
 		void application_close_engine_components() override;
 
+		void started_listening(bcUINT16 p_port) override;
+		
+		void client_connected() override;
+		
+		void client_disconnected() override;
+		
+		void message_sent(game::bci_network_message& p_message) override;
+		
+		void message_received(game::bci_network_message& p_message) override;
+		
+		void error_occurred(const bc_network_exception* p_exception) override;
+	
+	private:
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;
 		platform::bc_script_context* m_server_script_context = nullptr;
 		platform::bc_script_object_ref m_server_script_object;
+
+		bool m_server_started = false;
 	};
 }

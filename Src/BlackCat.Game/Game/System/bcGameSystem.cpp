@@ -59,6 +59,7 @@ namespace black_cat
 			auto& l_script_system = m_script_system;
 			auto& l_input_system = m_input_system;
 			auto& l_physics_system = m_physics_system;
+			auto& l_network_system = m_network_system;
 			auto& l_console = m_console;
 			auto* l_camera = m_input_system.get_camera();
 			auto* l_scene = m_scene.get();
@@ -80,6 +81,7 @@ namespace black_cat
 
 				core::bc_task<void> l_scene_task;
 				core::bc_task<void> l_scene_task1;
+				core::bc_task<void> l_network_task;
 
 				l_input_system.update(p_clock);
 				l_physics_system.update(p_clock);
@@ -107,6 +109,7 @@ namespace black_cat
 					l_decal_manager->update_decal_lifespans(p_clock);
 				}
 
+				l_network_task = l_network_system.update_async(p_clock);
 				l_script_system.update(p_clock);
 				l_console->update(p_clock);
 
@@ -115,17 +118,20 @@ namespace black_cat
 					l_render_system.update(bc_render_system::update_context(p_clock, *l_camera));
 				}
 
-				core::bc_concurrency::when_all(l_scene_task, l_scene_task1);
+				core::bc_concurrency::when_all(l_scene_task, l_scene_task1, l_network_task);
 			}
 			else
 			{
 				l_input_system.update(p_clock);
-				
 				l_event_manager.process_event_queue(p_clock);
-
 				l_actor_component_manager.process_actor_events(p_clock);
 
-				core::bc_task<void> l_scene_task = l_scene->update_graph_async(p_clock);
+				core::bc_task<void> l_scene_task;
+				
+				if (l_scene)
+				{
+					l_scene_task = l_scene->update_graph_async(p_clock);
+				}
 
 				l_script_system.update(p_clock);
 				l_console->update(p_clock);
