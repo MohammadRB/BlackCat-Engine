@@ -11,13 +11,16 @@ namespace black_cat
 		template<>
 		BC_PLATFORMIMP_DLL
 		bc_platform_script_string<core_platform::g_api_win32>::bc_platform_script_string()
-			: bc_platform_script_reference()
+			: bc_platform_script_reference(),
+			m_pack()
 		{
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
 		bc_platform_script_string<core_platform::g_api_win32>::bc_platform_script_string(bc_script_context& p_context, const core::bc_wstring& p_value)
+			: bc_platform_script_reference(),
+			m_pack()
 		{
 			JsPointerToString(p_value.data(), p_value.size(), &m_pack.m_js_string);
 		}
@@ -25,15 +28,14 @@ namespace black_cat
 		template<>
 		BC_PLATFORMIMP_DLL
 		bc_platform_script_string<core_platform::g_api_win32>::bc_platform_script_string(const bc_platform_script_string& p_other) noexcept
+			: bc_platform_script_reference(p_other),
+			m_pack(p_other.m_pack)
 		{
-			operator=(p_other);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_string<core_platform::g_api_win32>::~bc_platform_script_string()
-		{
-		}
+		bc_platform_script_string<core_platform::g_api_win32>::~bc_platform_script_string() = default;
 
 		template<>
 		BC_PLATFORMIMP_DLL
@@ -49,25 +51,25 @@ namespace black_cat
 		BC_PLATFORMIMP_DLL
 		bcSIZE bc_platform_script_string<core_platform::g_api_win32>::length() const noexcept
 		{
-			bcINT l_lenght;
+			bcINT l_length;
 
-			JsGetStringLength(m_pack.m_js_string, &l_lenght);
+			JsGetStringLength(m_pack.m_js_string, &l_length);
 
-			return l_lenght;
+			return l_length;
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
 		core::bc_wstring bc_platform_script_string<core_platform::g_api_win32>::data() const
 		{
-			bcSIZE l_lenght;
+			bcSIZE l_length;
 			const bcWCHAR* l_string;
 
 			JsStringToPointer
 			(
 				m_pack.m_js_string,
 				&l_string,
-				&l_lenght
+				&l_length
 			);
 
 			return core::bc_wstring(l_string);

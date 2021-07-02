@@ -76,11 +76,7 @@ namespace black_cat
 				try
 				{
 					m_socket->bind(p_event.m_port);
-
-					if(m_socket->get_protocol() != platform::bc_socket_protocol::udp)
-					{
-						m_socket->listen();
-					}
+					m_socket->listen();
 					
 					return state_transition::transfer_to<bc_server_socket_listening_state>();
 				}
@@ -182,6 +178,9 @@ namespace black_cat
 			platform::bc_non_block_socket* m_socket;
 		};
 		
+		/**
+		 * \brief State machine for connection oriented sockets
+		 */
 		class bc_server_socket_state_machine : public core::bc_state_machine
 		<
 			bc_server_socket_error_state,

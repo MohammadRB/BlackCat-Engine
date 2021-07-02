@@ -272,7 +272,7 @@ namespace black_cat
 			l_actor_components.clear();
 		}
 
-		const auto l_json = l_json_document.write();
+		const auto l_json = l_json_document.write_pretty();
 		p_context.m_file.write(reinterpret_cast<const bcBYTE*>(l_json.c_str()), sizeof(decltype(l_json)::value_type) * l_json.size());
 	}
 }

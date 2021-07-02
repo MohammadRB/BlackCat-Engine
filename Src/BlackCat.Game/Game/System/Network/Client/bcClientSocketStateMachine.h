@@ -27,8 +27,7 @@ namespace black_cat
 		
 		struct bc_client_socket_connect_event
 		{
-			const bcCHAR* m_ip;
-			bcUINT16 m_port;
+			const platform::bc_network_address& m_address;
 		};
 
 		struct bc_client_socket_send_event
@@ -67,7 +66,7 @@ namespace black_cat
 			{
 				try
 				{
-					m_socket->connect(platform::bc_socket_address::inter_network, p_event.m_ip, p_event.m_port);
+					m_socket->connect(p_event.m_address);
 					return state_transition::transfer_to<bc_client_socket_connecting_state>();
 				}
 				catch (const bc_network_exception& p_exception)
@@ -166,8 +165,6 @@ namespace black_cat
 						}
 					);
 				}
-				
-				return state_transition::empty();
 			}
 			
 			state_transition handle(bc_client_socket_receive_event& p_event) override
@@ -179,7 +176,7 @@ namespace black_cat
 						return state_transition::empty();
 					}
 					
-					constexpr auto l_local_buffer_size = 100;
+					constexpr auto l_local_buffer_size = 1000;
 					bcBYTE l_buffer[l_local_buffer_size];
 					
 					while(true)

@@ -603,6 +603,15 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Script\bcGameConsoleScript.h">
       <Filter>Game\System\Script</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcStringNetworkMessage.h">
+      <Filter>Game\System\Network\Message</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcServerSocket1StateMachine.h">
+      <Filter>Game\System\Network\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManagerClient1.h">
+      <Filter>Game\System\Network\Server</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">

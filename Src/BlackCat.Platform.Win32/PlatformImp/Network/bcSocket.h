@@ -3,6 +3,7 @@
 #pragma once
 
 #include "PlatformImp/Network/bcNetworkDefinitions.h"
+#include "PlatformImp/Network/bcNetworkAddress.h"
 
 #include "Platform/Network/bcSocket.h"
 #include <WinSock2.h>

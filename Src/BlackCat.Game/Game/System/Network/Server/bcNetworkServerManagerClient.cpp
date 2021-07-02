@@ -14,7 +14,7 @@ namespace black_cat
 			m_socket_is_connected(false),
 			m_socket_is_ready(false),
 			m_last_sync_time(0),
-			m_rtt_sampler(0)
+			m_rtt_sampler(100)
 		{
 			m_socket.reset(&bc_server_client_socket_state_machine::get_socket());
 			bc_server_client_socket_state_machine::transfer_state<bc_server_client_socket_connected_state>();
@@ -35,7 +35,7 @@ namespace black_cat
 		{
 			m_socket_is_connected = false;
 			m_socket_is_ready = false;
-			m_manager->client_disconnected(*this);
+			//m_manager->client_disconnected(*this);
 		}
 	}
 }

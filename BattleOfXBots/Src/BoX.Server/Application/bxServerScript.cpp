@@ -1,6 +1,7 @@
 // [06/20/2021 MRB]
 
 #include "Game/System/bcGameSystem.h"
+#include "Game/System/Network/Message/bcStringNetworkMessage.h"
 #include "BoX.Server/Application/bxServerScript.h"
 
 namespace box
@@ -24,7 +25,20 @@ namespace box
 			return platform::bc_script_variable();
 		}
 
-		m_game_system->get_network_system().start_server(p_port.as_integer(), *m_network_server_hook);
+		m_game_system->get_network_system().start_server(*m_network_server_hook, p_port.as_integer());
+		
+		return platform::bc_script_variable();
+	}
+
+	platform::bc_script_variable bx_server_script::send(const platform::bc_script_variable& p_str_content)
+	{
+		if(!p_str_content.is_string())
+		{
+			return platform::bc_script_variable();
+		}
+
+		auto l_str = core::bc_to_string(p_str_content.as_string().data());
+		m_game_system->get_network_system().send_message(game::bc_string_network_message(std::move(l_str)));
 		
 		return platform::bc_script_variable();
 	}

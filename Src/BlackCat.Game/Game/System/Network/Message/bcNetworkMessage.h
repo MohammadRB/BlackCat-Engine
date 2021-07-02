@@ -8,25 +8,26 @@
 #include "Core/Messaging/bcMessage.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Game/bcConstant.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		using bc_network_message_id = bcUINT32;
+		using bc_network_message_id = bcINT32; // it must be int because in json deserialization it is interpreted as int
 		using bc_network_message_hash = core::bc_string_cmp_hash;
 
 		template<class TCommand>
 		struct bc_network_message_traits
 		{
-			static constexpr const bcCHAR* command_name()
+			static constexpr const bcCHAR* message_name()
 			{
-				return TCommand::command_name();
+				return TCommand::message_name();
 			}
 
-			static constexpr bc_network_message_hash command_hash()
+			static constexpr bc_network_message_hash message_hash()
 			{
-				return TCommand::command_hash();
+				return TCommand::message_hash();
 			}
 		};
 
@@ -34,10 +35,10 @@ namespace black_cat
 		class bci_network_message;
 		using bc_network_message_ptr = core::bc_shared_ptr<bci_network_message>;
 
-		template<class TCommand>
-		bc_network_message_ptr bc_make_network_message(TCommand p_command)
+		template<class TMessage>
+		bc_network_message_ptr bc_make_network_message(TMessage p_command)
 		{
-			return core::bc_make_shared<TCommand>(std::move(p_command));
+			return core::bc_make_shared<TMessage>(std::move(p_command));
 		}
 		
 		struct bc_network_message_client_context
@@ -48,7 +49,7 @@ namespace black_cat
 		{
 		};
 		
-		class bci_network_message : public core::bci_message
+		class BC_GAME_DLL bci_network_message : public core::bci_message
 		{
 		public:
 			~bci_network_message() override = default;

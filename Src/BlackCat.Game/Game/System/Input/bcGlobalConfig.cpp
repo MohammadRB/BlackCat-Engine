@@ -79,7 +79,7 @@ namespace black_cat
 
 		core::bc_string_frame bc_global_config::write_json()
 		{
-			return m_json->write();
+			return m_json->write_pretty();
 		}
 	}
 }

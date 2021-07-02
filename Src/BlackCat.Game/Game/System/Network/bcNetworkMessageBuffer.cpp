@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 
+#include <chrono>
 #include "Core/File/bcJsonDocument.h"
 #include "Game/System/Network/bcNetworkSystem.h"
 #include "Game/System/Network/bcNetworkMessageBuffer.h"
@@ -18,21 +19,31 @@ namespace black_cat
 		
 		BC_JSON_STRUCTURE(bc_network_packet)
 		{
-			BC_JSON_VALUE(bc_network_packet_time, time);
+			black_cat::core::bc_json_value<bc_network_packet_time> m_time { "time", this };
 			BC_JSON_ARRAY(bc_network_packet_command, commands);
 		};
-		
+
+		bc_network_packet_time bc_current_packet_time() noexcept
+		{
+			return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		}
+
+		bc_network_packet_time bc_elapsed_packet_time(const bc_network_packet_time& p_packet_time) noexcept
+		{
+			return bc_current_packet_time() - p_packet_time;
+		}
+
 		bc_network_message_buffer::bc_network_message_buffer(bc_network_system& p_network_system)
 			: m_network_system(&p_network_system)
 		{
 		}
 
-		std::pair<core::bc_memory_stream*, bcUINT32> bc_network_message_buffer::serialize(bc_network_packet_time p_time, core::bc_span<bc_network_message_ptr> p_commands)
+		std::pair<core::bc_memory_stream*, bcUINT32> bc_network_message_buffer::serialize(bc_network_packet_time p_time, const core::bc_span<bc_network_message_ptr>& p_messages)
 		{
 			core::bc_json_document<bc_network_packet> l_json_packet;
 			l_json_packet->m_time.set(p_time);
 
-			for (auto& l_command : p_commands)
+			for (auto& l_command : p_messages)
 			{
 				auto& l_json_command = l_json_packet->m_commands.new_entry();
 				*l_json_command->m_hash = l_command->get_message_hash();
@@ -57,8 +68,12 @@ namespace black_cat
 			for (auto& l_json_command : l_json_packet->m_commands)
 			{
 				auto l_command = m_network_system->create_message_instance(*l_json_command->m_hash);
+				if(!l_command)
+				{
+					continue;
+				}
+				
 				l_command->deserialize(*l_json_command->m_values);
-
 				m_deserialize_buffer.push_back(std::move(l_command));
 			}
 

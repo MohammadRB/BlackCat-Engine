@@ -27,7 +27,7 @@ namespace black_cat
 			virtual _bc_parameter_pack_object* move(void* p_memory) = 0;
 		};
 
-		template< typename T >
+		template<typename T>
 		class _bc_parameter_pack_concrete_object : public _bc_parameter_pack_object
 		{
 		public:
@@ -37,7 +37,7 @@ namespace black_cat
 			{
 			}
 
-			~_bc_parameter_pack_concrete_object() = default;
+			~_bc_parameter_pack_concrete_object() override = default;
 
 			bcSIZE size() const override
 			{
@@ -71,6 +71,9 @@ namespace black_cat
 		 */
 		class bc_parameter_pack : public bc_object_allocator
 		{
+			template<typename T>
+			using decay_t = std::remove_cv_t<std::remove_reference_t<T>>;
+			
 		public:
 			bc_parameter_pack();
 
@@ -78,7 +81,7 @@ namespace black_cat
 
 			bc_parameter_pack(bc_parameter_pack&& p_other) noexcept;
 
-			template< typename T, typename = std::enable_if_t< !std::is_same_v< std::decay_t<T>, bc_parameter_pack > > >
+			template<typename T, typename = std::enable_if_t<!std::is_same_v<std::decay_t<T>, bc_parameter_pack>>>
 			explicit bc_parameter_pack(T&& p_value);
 
 			~bc_parameter_pack();
@@ -90,7 +93,7 @@ namespace black_cat
 			template<typename T>
 			void set_value(T&& p_data);
 
-			template< typename T >
+			template<typename T>
 			bool is() const;
 
 			/**
@@ -109,10 +112,10 @@ namespace black_cat
 			 * \tparam T
 			 * \return
 			 */
-			template< typename T >
+			template<typename T>
 			T& as_throw();
 
-			template< typename T >
+			template<typename T>
 			const T& as_throw() const;
 
 			template<typename T>
@@ -130,7 +133,7 @@ namespace black_cat
 		private:
 			static constexpr bcUINT s_buffer_size = 5 * sizeof(void*);
 
-			bcUINT m_buffer[s_buffer_size];
+			bcBYTE m_buffer[s_buffer_size];
 			_bc_parameter_pack_object* m_object;
 		};
 
@@ -144,20 +147,19 @@ namespace black_cat
 
 			explicit bc_any(const bc_parameter_pack& p_parameter);
 
-			bc_any(const bc_any& p_other);
-
-			bc_any(bc_any&& p_other) noexcept;
-
 			template
 			<
 				typename T,
 				typename = std::enable_if_t
 				<
-					!std::is_same_v< std::decay_t< T >, bc_parameter_pack > &&
-					!std::is_same_v< std::decay_t< T >, bc_any >
-				>
-			>
+					!std::is_same_v<std::decay_t<T>, bc_parameter_pack> &&
+					!std::is_same_v<std::decay_t<T>, bc_any>
+				>>
 			explicit bc_any(T&& p_value);
+			
+			bc_any(const bc_any& p_other);
+
+			bc_any(bc_any&& p_other) noexcept;
 
 			~bc_any();
 
@@ -187,7 +189,7 @@ namespace black_cat
 			operator=(std::move(p_other));
 		}
 
-		template< typename T, typename >
+		template<typename T, typename>
 		bc_parameter_pack::bc_parameter_pack(T&& p_value)
 			: bc_parameter_pack()
 		{
@@ -244,11 +246,11 @@ namespace black_cat
 			return *this;
 		}
 
-		template < typename T >
+		template <typename T>
 		void bc_parameter_pack::set_value(T&& p_data)
 		{
 			// Because function is perfect forwarded if parameter be l-value T will be deduced to T&
-			using T1 = std::remove_const_t< std::remove_reference_t< T > >;
+			using T1 = decay_t<T>;
 
 			reset();
 
@@ -263,39 +265,45 @@ namespace black_cat
 			}
 		}
 
-		template< typename T >
+		template<typename T>
 		bool bc_parameter_pack::is() const
 		{
+			using T1 = decay_t<T>;
+			
 			if (!has_value())
+			{
 				return false;
+			}
 
-			return dynamic_cast<_bc_parameter_pack_concrete_object<T>*>(m_object) != nullptr;
+			return dynamic_cast<_bc_parameter_pack_concrete_object<T1>*>(m_object) != nullptr;
 		}
 
-		template < typename T >
+		template <typename T>
 		T* bc_parameter_pack::as()
 		{
+			using T1 = decay_t<T>;
+			
 			if (!has_value())
 			{
 				return nullptr;
 			}
 
-			auto* l_imp = dynamic_cast<_bc_parameter_pack_concrete_object<T>*>(m_object);
+			auto* l_imp = dynamic_cast<_bc_parameter_pack_concrete_object<T1>*>(m_object);
 			if (l_imp)
 			{
-				return &l_imp->m_value;
+				return static_cast<T*>(&l_imp->m_value);
 			}
 
 			return nullptr;
 		}
 
-		template< typename T >
+		template<typename T>
 		const T* bc_parameter_pack::as() const
 		{
-			return const_cast<bc_parameter_pack&>(*this).as< T >();
+			return const_cast<bc_parameter_pack&>(*this).as<T>();
 		}
 
-		template < typename T >
+		template <typename T>
 		T& bc_parameter_pack::as_throw()
 		{
 			T* l_value = as<T>();
@@ -308,16 +316,16 @@ namespace black_cat
 			return *l_value;
 		}
 
-		template< typename T >
+		template<typename T>
 		const T& bc_parameter_pack::as_throw() const
 		{
-			return const_cast<bc_parameter_pack&>(*this).as_throw< T >();
+			return const_cast<bc_parameter_pack&>(*this).as_throw<T>();
 		}
 
-		template< typename T >
+		template<typename T>
 		T bc_parameter_pack::release_as()
 		{
-			T l_data = std::move(*as<T>());
+			T l_data(std::move(*as<T>()));
 
 			reset();
 
@@ -351,6 +359,7 @@ namespace black_cat
 		}
 
 		inline bc_any::bc_any()
+			: bc_parameter_pack()
 		{
 			set_allocator_alloc_type(bc_alloc_type::unknown);
 		}
@@ -361,24 +370,16 @@ namespace black_cat
 			operator=(p_parameter);
 		}
 
-		inline bc_any::bc_any(const bc_any& p_other)
-			: bc_any()
-		{
-			operator=(p_other);
-		}
-
-		inline bc_any::bc_any(bc_any&& p_other) noexcept
-			: bc_any()
-		{
-			operator=(std::move(p_other));
-		}
-
-		template< typename T, typename >
+		template<typename T, typename>
 		bc_any::bc_any(T&& p_value)
 			: bc_any()
 		{
 			set_value(std::forward<T>(p_value));
 		}
+		
+		inline bc_any::bc_any(const bc_any& p_other) = default;
+
+		inline bc_any::bc_any(bc_any&& p_other) noexcept = default;
 
 		inline bc_any::~bc_any() = default;
 

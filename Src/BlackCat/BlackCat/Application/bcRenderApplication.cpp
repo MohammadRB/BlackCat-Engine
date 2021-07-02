@@ -71,6 +71,7 @@ namespace black_cat
 			)
 		);
 
+		bc_register_network_messages(m_game_system->get_network_system());
 		bc_bind_scripts(*m_game_system);
 		bc_register_particle_emitters(*m_game_system);
 

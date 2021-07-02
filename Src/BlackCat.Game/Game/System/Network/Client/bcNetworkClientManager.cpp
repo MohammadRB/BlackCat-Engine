@@ -14,32 +14,30 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_network_client_manager::bc_network_client_manager(bc_network_system& p_network_system, bci_network_client_manager_hook& p_hook, const bcCHAR* p_ip, bcUINT16 p_port)
+		bc_network_client_manager::bc_network_client_manager(bc_network_system& p_network_system, bci_network_client_manager_hook& p_hook, const platform::bc_network_address& p_address)
 			: bc_client_socket_state_machine(*BC_NEW(platform::bc_non_block_socket, core::bc_alloc_type::unknown)
 			(
 				platform::bc_socket_address::inter_network,
-				platform::bc_socket_type::stream,
-				platform::bc_socket_protocol::tcp
+				platform::bc_socket_type::data_gram,
+				platform::bc_socket_protocol::udp
 			)),
-			m_ip(p_ip),
-			m_port(p_port),
+			m_address(p_address),
 			m_socket_is_connected(false),
 			m_socket_is_ready(false),
 			m_hook(&p_hook),
 			m_last_sync_time(0),
-			m_rtt_sampler(0),
+			m_rtt_sampler(100),
 			m_messages_buffer(p_network_system)
 		{
 			m_socket.reset(&bc_client_socket_state_machine::get_socket());
 
-			bc_client_socket_connect_event l_connect_event{ m_ip, m_port };
+			bc_client_socket_connect_event l_connect_event{ m_address };
 			bc_client_socket_state_machine::process_event(l_connect_event);
 		}
 
 		bc_network_client_manager::bc_network_client_manager(bc_network_client_manager&& p_other) noexcept
 			: bc_client_socket_state_machine(std::move(p_other)),
-			m_ip(p_other.m_ip),
-			m_port(p_other.m_port),
+			m_address(p_other.m_address),
 			m_socket_is_connected(p_other.m_socket_is_connected),
 			m_socket_is_ready(p_other.m_socket_is_ready),
 			m_socket(std::move(p_other.m_socket)),
@@ -61,8 +59,7 @@ namespace black_cat
 		bc_network_client_manager& bc_network_client_manager::operator=(bc_network_client_manager&& p_other) noexcept
 		{
 			bc_client_socket_state_machine::operator=(std::move(p_other));
-			m_ip = p_other.m_ip;
-			m_port = p_other.m_port;
+			m_address = p_other.m_address;
 			m_socket_is_connected = p_other.m_socket_is_connected;
 			m_socket_is_ready = p_other.m_socket_is_ready;
 			m_socket = std::move(p_other.m_socket);
@@ -118,11 +115,11 @@ namespace black_cat
 			}
 		}
 
-		void bc_network_client_manager::send_message(bc_network_message_ptr p_command)
+		void bc_network_client_manager::send_message(bc_network_message_ptr p_message)
 		{
 			{
 				core_platform::bc_mutex_guard l_lock(m_messages_lock);
-				m_messages.push_back(p_command);
+				m_messages.push_back(p_message);
 			}
 		}
 
@@ -136,15 +133,13 @@ namespace black_cat
 				return;
 			}
 
-			const auto l_elapsed_since_last_sync = p_clock.m_total_elapsed - m_last_sync_time;
-			if(l_elapsed_since_last_sync < m_rtt_sampler.average_value())
+			const auto l_elapsed_since_last_sync = bc_current_packet_time() - m_last_sync_time;
+			if(l_elapsed_since_last_sync > m_rtt_sampler.average_value())
 			{
-				_receive_from_server(p_clock);
+				_send_to_server();
 			}
-			else
-			{
-				_send_to_server(p_clock);
-			}
+
+			_receive_from_server();
 		}
 
 		void bc_network_client_manager::on_enter(bc_client_socket_error_state& p_state)
@@ -156,14 +151,14 @@ namespace black_cat
 
 		void bc_network_client_manager::on_enter(bc_client_socket_connecting_state& p_state)
 		{
-			m_hook->connecting_to_server(m_ip, m_port);
+			m_hook->connecting_to_server(m_address);
 		}
 
 		void bc_network_client_manager::on_enter(bc_client_socket_connected_state& p_state)
 		{
 			if(!m_socket_is_connected)
 			{
-				m_hook->connected_to_server(m_ip, m_port);
+				m_hook->connected_to_server(m_address);
 				m_socket_is_connected = true;
 			}
 			m_socket_is_ready = true;
@@ -174,7 +169,7 @@ namespace black_cat
 			m_socket_is_ready = false;
 		}
 
-		void bc_network_client_manager::_send_to_server(const core_platform::bc_clock::update_param& p_clock)
+		void bc_network_client_manager::_send_to_server()
 		{
 			{
 				core_platform::bc_mutex_guard l_lock(m_messages_lock);
@@ -189,21 +184,23 @@ namespace black_cat
 				{
 					m_messages.push_back(bc_make_network_message(bc_actor_sync_network_message()));
 				}
-
-				if(!m_messages.empty())
+				
+				if(m_messages.empty())
 				{
-					const auto l_serialized_messages = m_messages_buffer.serialize(p_clock.m_total_elapsed, core::bc_make_span(m_messages));
-					bc_client_socket_send_event l_send_event{ *l_serialized_messages.first, l_serialized_messages.second, 0 };
-					bc_client_socket_state_machine::process_event(l_send_event);
+					return;
+				}
 
-					for (auto& l_message : m_messages)
+				const auto l_serialized_messages = m_messages_buffer.serialize(bc_current_packet_time(), core::bc_make_span(m_messages));
+				bc_client_socket_send_event l_send_event{ *l_serialized_messages.first, l_serialized_messages.second, 0 };
+				bc_client_socket_state_machine::process_event(l_send_event);
+
+				for (auto& l_message : m_messages)
+				{
+					m_hook->message_sent(*l_message);
+
+					if (l_message->need_acknowledgment())
 					{
-						m_hook->message_sent(*l_message);
-
-						if (l_message->need_acknowledgment())
-						{
-							m_messages_waiting_acknowledgment.push_back(std::move(l_message));
-						}
+						m_messages_waiting_acknowledgment.push_back(std::move(l_message));
 					}
 				}
 
@@ -212,7 +209,7 @@ namespace black_cat
 			}
 		}
 		
-		void bc_network_client_manager::_receive_from_server(const core_platform::bc_clock::update_param& p_clock)
+		void bc_network_client_manager::_receive_from_server()
 		{
 			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
 			
@@ -225,16 +222,16 @@ namespace black_cat
 			}
 
 			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
-			const auto l_deserialized_messages = m_messages_buffer.deserialize(l_receive_event.m_stream, l_receive_event.m_bytes_received);
+			const auto [l_packet_time, l_messages] = m_messages_buffer.deserialize(l_receive_event.m_stream, l_receive_event.m_bytes_received);
 
-			for(const auto& l_message : l_deserialized_messages.second)
+			for(const auto& l_message : l_messages)
 			{
 				l_message->execute(bc_network_message_client_context());
 				m_hook->message_received(*l_message);
 			}
 			
-			m_rtt_sampler.add_sample(l_deserialized_messages.first);
-			m_last_sync_time = p_clock.m_total_elapsed;
+			m_rtt_sampler.add_sample(bc_elapsed_packet_time(l_packet_time));
+			m_last_sync_time = bc_current_packet_time();
 		}
 	}	
 }

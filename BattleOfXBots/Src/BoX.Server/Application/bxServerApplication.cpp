@@ -18,7 +18,9 @@ namespace box
 			platform::bc_script_context::scope l_scope(p_context);
 
 			auto l_server_prototype_builder = p_context.create_prototype_builder<bx_server_script>();
-			l_server_prototype_builder.function(L"start", &bx_server_script::start);
+			l_server_prototype_builder
+				.function(L"start", &bx_server_script::start)
+				.function(L"send", &bx_server_script::send);
 
 			auto l_server_prototype = p_context.create_prototype(l_server_prototype_builder);
 			const auto l_server_object = p_context.create_object(l_server_prototype, bx_server_script(*p_instance.m_game_system, p_instance));
@@ -59,7 +61,7 @@ namespace box
 		if(!m_server_started)
 		{
 			m_server_started = true;
-			m_game_system->get_network_system().start_server(6699, *this);
+			m_game_system->get_network_system().start_server(*this, 6699);
 		}
 #endif
 	}
@@ -124,10 +126,12 @@ namespace box
 
 	void bx_server_application::message_sent(game::bci_network_message& p_message)
 	{
+		core::bc_log(core::bc_log_type::debug) << "network message sent with hash " << p_message.get_message_hash() << " and id " << p_message.get_id() << core::bc_lend;
 	}
 
 	void bx_server_application::message_received(game::bci_network_message& p_message)
 	{
+		core::bc_log(core::bc_log_type::debug) << "network message received with hash " << p_message.get_message_hash() << " and id " << p_message.get_id() << core::bc_lend;
 	}
 
 	void bx_server_application::error_occurred(const bc_network_exception* p_exception)

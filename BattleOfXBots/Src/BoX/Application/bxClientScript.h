@@ -30,6 +30,8 @@ namespace box
 
 		platform::bc_script_variable connect(const platform::bc_script_variable& p_ip, const platform::bc_script_variable& p_port);
 
+		platform::bc_script_variable send(const platform::bc_script_variable& p_str_content);
+
 	private:
 		game::bc_game_system* m_game_system;
 		game::bci_network_client_manager_hook* m_network_client_hook;

@@ -8,6 +8,7 @@
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Utility/bcInitializable.h"
 #include "Core/Utility/bcDelegate.h"
+#include "PlatformImp/Network/bcNetworkAddress.h"
 #include "Game/System/Network/bcNetworkManager.h"
 #include "Game/System/Network/Client/bcNetworkClientManagerHook.h"
 #include "Game/System/Network/Server/bcNetworkServerManagerHook.h"
@@ -35,9 +36,9 @@ namespace black_cat
 
 			bc_network_system& operator=(bc_network_system&&) noexcept;
 
-			void start_server(bcUINT16 p_port, bci_network_server_manager_hook& p_hook);
+			void start_server(bci_network_server_manager_hook& p_hook, bcUINT16 p_port);
 
-			void start_client(const bcCHAR* p_ip, bcUINT16 p_port, bci_network_client_manager_hook& p_hook);
+			void start_client(bci_network_client_manager_hook& p_hook, const platform::bc_network_address& p_address);
 			
 			void add_actor(bc_actor& p_actor);
 			
@@ -53,7 +54,7 @@ namespace black_cat
 			core::bc_task<void> update_async(const core_platform::bc_clock::update_param& p_clock);
 
 			template<class ...TMessage>
-			void register_messages(TMessage... p_commands);
+			void register_messages();
 			
 		private:
 			void _initialize() override;
@@ -70,11 +71,11 @@ namespace black_cat
 		template<class TMessage>
 		void bc_network_system::send_message(TMessage p_command)
 		{
-			m_manager->send_message(bc_make_network_message(p_command));
+			m_manager->send_message(bc_make_network_message(std::move(p_command)));
 		}
 
 		template<class ...TMessage>
-		void bc_network_system::register_messages(TMessage...)
+		void bc_network_system::register_messages()
 		{
 			auto l_expansion_list =
 			{
@@ -96,7 +97,7 @@ namespace black_cat
 			
 			m_message_factories.insert(std::make_pair
 			(
-				bc_network_message_traits<TMessage>::command_hash(),
+				bc_network_message_traits<TMessage>::message_hash(),
 				command_create_delegate([]()
 				{
 					return bc_make_network_message(TMessage());

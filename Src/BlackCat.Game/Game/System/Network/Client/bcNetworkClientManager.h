@@ -9,6 +9,7 @@
 #include "Core/Math/bcValueSampler.h"
 #include "Core/Concurrency/bcMutexTest.h"
 #include "Core/File/bcMemoryStream.h"
+#include "PlatformImp/Network/bcNetworkAddress.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/System/Network/bcNetworkManager.h"
 #include "Game/System/Network/bcNetworkMessageBuffer.h"
@@ -25,7 +26,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_network_client_manager : public bci_network_manager, private bc_client_socket_state_machine
 		{
 		public:
-			bc_network_client_manager(bc_network_system& p_network_system, bci_network_client_manager_hook& p_hook, const bcCHAR* p_ip, bcUINT16 p_port);
+			bc_network_client_manager(bc_network_system& p_network_system, bci_network_client_manager_hook& p_hook, const platform::bc_network_address& p_address);
 
 			bc_network_client_manager(bc_network_client_manager&&) noexcept;
 
@@ -37,7 +38,7 @@ namespace black_cat
 			
 			void remove_actor(bc_actor& p_actor) override;
 
-			void send_message(bc_network_message_ptr p_command) override;
+			void send_message(bc_network_message_ptr p_message) override;
 			
 			void update(const core_platform::bc_clock::update_param& p_clock) override;
 
@@ -50,12 +51,11 @@ namespace black_cat
 
 			void on_enter(bc_client_socket_sending_state& p_state) override;
 
-			void _send_to_server(const core_platform::bc_clock::update_param& p_clock);
+			void _send_to_server();
 			
-			void _receive_from_server(const core_platform::bc_clock::update_param& p_clock);
+			void _receive_from_server();
 
-			const bcCHAR* m_ip;
-			bcUINT16 m_port;
+			platform::bc_network_address m_address;
 			bool m_socket_is_connected;
 			bool m_socket_is_ready;
 			core::bc_unique_ptr<platform::bc_non_block_socket> m_socket;

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/Container/bcArray.h"
 #include "CorePlatform/bcType.h"
 #include <cstring>
 
@@ -26,7 +27,7 @@ namespace black_cat
 			TValue average_value() const noexcept;
 
 		private:
-			TValue m_samples[TSampleCount];
+			bc_array<TValue, TSampleCount> m_samples;
 			bcUINT32 m_current_sample;
 		};
 
@@ -34,13 +35,14 @@ namespace black_cat
 		bc_value_sampler<TValue, TSampleCount>::bc_value_sampler(TValue p_default_value)
 			: m_current_sample(0)
 		{
-			std::memset(&m_samples, p_default_value, sizeof(TValue) * TSampleCount);
+			m_samples.fill(p_default_value);
 		}
 
 		template<typename TValue, bcUINT32 TSampleCount>
 		bc_value_sampler<TValue, TSampleCount>::bc_value_sampler(const bc_value_sampler& p_other) noexcept
+			: m_samples(p_other.m_samples),
+			m_current_sample(p_other.m_current_sample)
 		{
-			operator=(p_other);
 		}
 
 		template<typename TValue, bcUINT32 TSampleCount>
@@ -49,7 +51,7 @@ namespace black_cat
 		template<typename TValue, bcUINT32 TSampleCount>
 		bc_value_sampler<TValue, TSampleCount>& bc_value_sampler<TValue, TSampleCount>::operator=(const bc_value_sampler& p_other) noexcept
 		{
-			std::memcpy(&m_samples, &p_other.m_samples, sizeof(TValue) * TSampleCount);
+			m_samples = p_other.m_samples;
 			m_current_sample = p_other.m_current_sample;
 			return *this;
 		}

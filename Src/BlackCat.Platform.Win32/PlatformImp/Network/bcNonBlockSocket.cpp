@@ -79,41 +79,26 @@ namespace black_cat
 		BC_PLATFORMIMP_DLL
 		bc_socket_address bc_platform_non_block_socket<core_platform::g_api_win32>::get_address_family() const
 		{
-			bc_socket_address l_address;
-			bc_socket_type l_type;
-			bc_socket_protocol l_protocol;
-			get_traits(l_address, l_type, l_protocol);
-
-			return l_address;
+			return std::get<bc_socket_address>(get_traits());
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
 		bc_socket_type bc_platform_non_block_socket<core_platform::g_api_win32>::get_type() const
 		{
-			bc_socket_address l_address;
-			bc_socket_type l_type;
-			bc_socket_protocol l_protocol;
-			get_traits(l_address, l_type, l_protocol);
-
-			return l_type;
+			return std::get<bc_socket_type>(get_traits());
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
 		bc_socket_protocol bc_platform_non_block_socket<core_platform::g_api_win32>::get_protocol() const
 		{
-			bc_socket_address l_address;
-			bc_socket_type l_type;
-			bc_socket_protocol l_protocol;
-			get_traits(l_address, l_type, l_protocol);
-
-			return l_protocol;
+			return std::get<bc_socket_protocol>(get_traits());
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_non_block_socket<core_platform::g_api_win32>::get_traits(bc_socket_address& p_address, bc_socket_type& p_type, bc_socket_protocol& p_protocol) const
+			std::tuple<bc_socket_address, bc_socket_type, bc_socket_protocol> bc_platform_non_block_socket<core_platform::g_api_win32>::get_traits() const
 		{
 			WSAPROTOCOL_INFO l_socket_info;
 			const auto l_result = WSADuplicateSocket(m_pack.m_socket, GetCurrentProcessId(), &l_socket_info);
@@ -122,9 +107,11 @@ namespace black_cat
 				bc_throw_network_exception();
 			}
 
-			p_address = bc_cast_to_address_family(l_socket_info.iAddressFamily);
-			p_type = bc_cast_to_socket_type(l_socket_info.iSocketType);
-			p_protocol = bc_cast_to_socket_protocol(l_socket_info.iProtocol);
+			auto l_address = bc_cast_to_address_family(l_socket_info.iAddressFamily);
+			auto l_type = bc_cast_to_socket_type(l_socket_info.iSocketType);
+			auto l_protocol = bc_cast_to_socket_protocol(l_socket_info.iProtocol);
+
+			return std::make_tuple(l_address, l_type, l_protocol);
 		}
 
 		template<>
@@ -232,7 +219,7 @@ namespace black_cat
 		BC_PLATFORMIMP_DLL
 		void bc_platform_non_block_socket<core_platform::g_api_win32>::bind(bcUINT16 p_port)
 		{
-			WSAPROTOCOL_INFO l_socket_info;
+			/*WSAPROTOCOL_INFO l_socket_info;
 			WSADuplicateSocket(m_pack.m_socket, GetCurrentProcessId(), &l_socket_info);
 
 			addrinfo* l_addr_info;
@@ -258,7 +245,19 @@ namespace black_cat
 				bc_throw_network_exception();
 			}
 
-			freeaddrinfo(l_addr_info);
+			freeaddrinfo(l_addr_info);*/
+						
+			sockaddr_in l_address;
+			ZeroMemory(&l_address, sizeof(l_address));
+
+			l_address.sin_family = bc_cast_from_address_family(get_address_family());
+			l_address.sin_port = htons(p_port);
+
+			const auto l_bind_result = ::bind(m_pack.m_socket, reinterpret_cast<sockaddr*>(&l_address), sizeof(sockaddr_in));
+			if (l_bind_result == SOCKET_ERROR)
+			{
+				bc_throw_network_exception();
+			}
 		}
 
 		template<>
@@ -290,23 +289,15 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_non_block_socket<core_platform::g_api_win32>::connect(bc_socket_address p_address_family, const bcCHAR* p_ip, bcUINT16 p_port)
+		void bc_platform_non_block_socket<core_platform::g_api_win32>::connect(const bc_network_address& p_address)
 		{
-			sockaddr_in l_address;
-			l_address.sin_port = p_port;
-			l_address.sin_family = bc_cast_from_address_family(p_address_family);
-
-			const auto l_ip_convert = inet_pton(l_address.sin_family, p_ip, &l_address.sin_addr.S_un.S_addr);
-			if (l_ip_convert == 0)
+			if (!p_address.is_valid())
 			{
-				bc_throw_network_exception("Invalid ip address");
-			}
-			else if (l_ip_convert == -1)
-			{
-				bc_throw_network_exception();
+				bc_throw_network_exception("Invalid network address");
 			}
 
-			const auto l_connect_result = ::connect(m_pack.m_socket, reinterpret_cast<sockaddr*>(&l_address), sizeof(l_address));
+			const sockaddr_in& l_address = p_address.get_platform_pack().m_address;
+			const auto l_connect_result = ::connect(m_pack.m_socket, reinterpret_cast<const sockaddr*>(&l_address), sizeof(sockaddr_in));
 			if (l_connect_result == SOCKET_ERROR)
 			{
 				const auto l_error = WSAGetLastError();
@@ -321,9 +312,31 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bcUINT32 bc_platform_non_block_socket<core_platform::g_api_win32>::send(const void* p_buffer, bcUINT32 p_buffer_size)
+			bcUINT32 bc_platform_non_block_socket<core_platform::g_api_win32>::send(const void* p_buffer, bcUINT32 p_buffer_size)
 		{
 			const auto l_send_result = ::send(m_pack.m_socket, static_cast<const bcCHAR*>(p_buffer), p_buffer_size, 0);
+			if (l_send_result == SOCKET_ERROR)
+			{
+				bc_throw_network_exception();
+			}
+
+			return l_send_result;
+		}
+
+		template<>
+		BC_PLATFORMIMP_DLL
+		bcUINT32 bc_platform_non_block_socket<core_platform::g_api_win32>::send_to(const bc_network_address& p_address, const void* p_buffer, bcUINT32 p_buffer_size)
+		{
+			const sockaddr_in& l_address = p_address.get_platform_pack().m_address;
+			const auto l_send_result = ::sendto
+			(
+				m_pack.m_socket,
+				static_cast<const bcCHAR*>(p_buffer),
+				p_buffer_size,
+				0,
+				reinterpret_cast<const sockaddr*>(&l_address),
+				sizeof(sockaddr_in)
+			);
 			if (l_send_result == SOCKET_ERROR)
 			{
 				bc_throw_network_exception();
@@ -339,6 +352,42 @@ namespace black_cat
 			const auto l_receive_result = ::recv(m_pack.m_socket, static_cast<bcCHAR*>(p_buffer), p_buffer_size, 0);
 			if (l_receive_result == SOCKET_ERROR)
 			{
+				const auto l_error = WSAGetLastError();
+				if (l_error == WSAEWOULDBLOCK)
+				{
+					return 0;
+				}
+				
+				bc_throw_network_exception();
+			}
+
+			return l_receive_result;
+		}
+
+		template<>
+		BC_PLATFORMIMP_DLL
+		bcUINT32 bc_platform_non_block_socket<core_platform::g_api_win32>::receive_from(bc_network_address& p_address, void* p_buffer, bcUINT32 p_buffer_size)
+		{
+			sockaddr_in& l_address = p_address.get_platform_pack().m_address;
+			bcINT l_address_size = sizeof(sockaddr_in);
+
+			const auto l_receive_result = ::recvfrom
+			(
+				m_pack.m_socket,
+				static_cast<bcCHAR*>(p_buffer),
+				p_buffer_size,
+				0,
+				reinterpret_cast<sockaddr*>(&l_address),
+				&l_address_size
+			);
+			if (l_receive_result == SOCKET_ERROR)
+			{
+				const auto l_error = WSAGetLastError();
+				if (l_error == WSAEWOULDBLOCK)
+				{
+					return 0;
+				}
+				
 				bc_throw_network_exception();
 			}
 

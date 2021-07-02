@@ -267,8 +267,8 @@ namespace black_cat
 		};
 
 		/**
-		 * \brief T can be fundamental types like bool, bcINT, bcUINT, bcFLOAT, bcDOUBLE, bc_string, bc_string_program, bc_string_frame,
-		 * bc_json_key_value and bc_parameter_pack which last one can hold all of previous types.
+		 * \brief T can be fundamental types bool, bcINT8, bcUINT8, bcINT16, bcUINT16, bcINT32, bcUINT32, bcINT64, bcUINT64, bcFLOAT, bcDOUBLE,
+		 * bc_string, bc_string_program, bc_string_frame, bc_json_key_value and bc_parameter_pack which last one can hold all of previous types.
 		 * \tparam T
 		 */
 		template<typename T>
@@ -381,7 +381,7 @@ namespace black_cat
 				p_json_value.SetBool(p_value);
 			}
 
-			void _load(bc_json_value_object& p_json_value, bcINT& p_value)
+			void _load(bc_json_value_object& p_json_value, bcINT8& p_value)
 			{
 				if (!p_json_value.IsNumber())
 				{
@@ -391,12 +391,12 @@ namespace black_cat
 				p_value = p_json_value.GetInt();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcINT& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcINT8& p_value)
 			{
 				p_json_value.SetInt(p_value);
 			}
-
-			void _load(bc_json_value_object& p_json_value, bcUINT& p_value)
+			
+			void _load(bc_json_value_object& p_json_value, bcUINT8& p_value)
 			{
 				if (!p_json_value.IsNumber())
 				{
@@ -406,9 +406,99 @@ namespace black_cat
 				p_value = p_json_value.GetUint();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcUINT& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcUINT8& p_value)
 			{
 				p_json_value.SetUint(p_value);
+			}
+
+			void _load(bc_json_value_object& p_json_value, bcINT16& p_value)
+			{
+				if (!p_json_value.IsNumber())
+				{
+					throw bc_io_exception("bad json format. expected int value.");
+				}
+
+				p_value = p_json_value.GetInt();
+			}
+
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcINT16& p_value)
+			{
+				p_json_value.SetInt(p_value);
+			}
+
+			void _load(bc_json_value_object& p_json_value, bcUINT16& p_value)
+			{
+				if (!p_json_value.IsNumber())
+				{
+					throw bc_io_exception("bad json format. expected uint value.");
+				}
+
+				p_value = p_json_value.GetUint();
+			}
+
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcUINT16& p_value)
+			{
+				p_json_value.SetUint(p_value);
+			}
+			
+			void _load(bc_json_value_object& p_json_value, bcINT32& p_value)
+			{
+				if (!p_json_value.IsNumber())
+				{
+					throw bc_io_exception("bad json format. expected int value.");
+				}
+
+				p_value = p_json_value.GetInt();
+			}
+
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcINT32& p_value)
+			{
+				p_json_value.SetInt(p_value);
+			}
+
+			void _load(bc_json_value_object& p_json_value, bcUINT32& p_value)
+			{
+				if (!p_json_value.IsNumber())
+				{
+					throw bc_io_exception("bad json format. expected uint value.");
+				}
+
+				p_value = p_json_value.GetUint();
+			}
+
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcUINT32& p_value)
+			{
+				p_json_value.SetUint(p_value);
+			}
+
+			void _load(bc_json_value_object& p_json_value, bcINT64& p_value)
+			{
+				if (!p_json_value.IsNumber())
+				{
+					throw bc_io_exception("bad json format. expected int value.");
+				}
+
+				p_value = p_json_value.GetInt64();
+			}
+
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcINT64& p_value)
+			{
+				p_json_value.SetInt64(p_value);
+			}
+
+			void _load(bc_json_value_object& p_json_value, bcUINT64& p_value)
+			{
+				if (!p_json_value.IsNumber())
+				{
+					throw bc_io_exception("bad json format. expected uint value.");
+				}
+
+				p_value = p_json_value.GetUint64();
+			}
+
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcUINT64& p_value)
+			{
+				p_json_value.SetUint64(p_value);
 			}
 
 			void _load(bc_json_value_object& p_json_value, bcFLOAT& p_value)
@@ -893,7 +983,7 @@ namespace black_cat
 
 		template<typename T>
 		class bc_json_array
-			<
+		<
 			T,
 			typename std::enable_if
 			<
@@ -1055,17 +1145,26 @@ namespace black_cat
 				m_value.load(l_json_document);
 			}
 
+			bc_string_frame write_pretty()
+			{
+				bc_json_document_object l_json_document(rapidjson::kObjectType);
+				m_value.write(l_json_document, l_json_document);
+
+				rapidjson::StringBuffer l_json_buffer;
+				rapidjson::PrettyWriter<rapidjson::StringBuffer> l_json_writer(l_json_buffer);
+				l_json_document.Accept(l_json_writer);
+
+				bc_string_frame l_result = l_json_buffer.GetString();
+				return l_result;
+			}
+
 			bc_string_frame write()
 			{
 				bc_json_document_object l_json_document(rapidjson::kObjectType);
 				m_value.write(l_json_document, l_json_document);
 
 				rapidjson::StringBuffer l_json_buffer;
-#ifdef BC_DEBUG
-				rapidjson::PrettyWriter<rapidjson::StringBuffer> l_json_writer(l_json_buffer);
-#else
 				rapidjson::Writer<rapidjson::StringBuffer> l_json_writer(l_json_buffer);
-#endif
 				l_json_document.Accept(l_json_writer);
 
 				bc_string_frame l_result = l_json_buffer.GetString();

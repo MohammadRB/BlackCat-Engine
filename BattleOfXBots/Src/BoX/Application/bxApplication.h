@@ -34,9 +34,9 @@ namespace box
 
 		void application_close_engine_components() override;
 
-		void connecting_to_server(const bcCHAR* p_ip, bcUINT16 p_port) override;
+		void connecting_to_server(const platform::bc_network_address& p_address) override;
 		
-		void connected_to_server(const bcCHAR* p_ip, bcUINT16 p_port) override;
+		void connected_to_server(const platform::bc_network_address& p_address) override;
 		
 		void message_sent(game::bci_network_message& p_message) override;
 		

@@ -16,7 +16,9 @@ namespace box
 			platform::bc_script_context::scope l_scope(p_context);
 
 			auto l_client_prototype_builder = p_context.create_prototype_builder<bx_client_script>();
-			l_client_prototype_builder.function(bcL("connect"), &bx_client_script::connect);
+			l_client_prototype_builder
+				.function(L"connect", &bx_client_script::connect)
+				.function(L"send", &bx_client_script::send);
 
 			auto l_client_prototype = p_context.create_prototype(l_client_prototype_builder);
 			const auto l_client_object = p_context.create_object(l_client_prototype, bx_client_script(*p_instance.m_game_system, p_instance));
@@ -59,7 +61,11 @@ namespace box
 			m_client_start_time += p_clock.m_elapsed_second;
 			if(m_client_start_time > l_client_start_delay)
 			{
-				m_game_system->get_network_system().start_client("127.0.0.1", 6699, *this);
+				m_game_system->get_network_system().start_client
+				(
+					*this, 
+					platform::bc_network_address::from_ip_port(platform::bc_socket_address::inter_network, "127.0.0.1", 6699)
+				);
 			}
 		}
 #endif
@@ -94,22 +100,25 @@ namespace box
 	{
 	}
 
-	void bx_application::connecting_to_server(const bcCHAR* p_ip, bcUINT16 p_port)
+	void bx_application::connecting_to_server(const platform::bc_network_address& p_address)
 	{
-		core::bc_log(core::bc_log_type::info) << "connecting to server " << p_ip << ":" << p_port << core::bc_lend;
+		auto [l_family, l_ip, l_port] = p_address.get_traits();
+		core::bc_log(core::bc_log_type::info) << "connecting to server " << l_ip << ":" << l_port << core::bc_lend;
 	}
 
-	void bx_application::connected_to_server(const bcCHAR* p_ip, bcUINT16 p_port)
+	void bx_application::connected_to_server(const platform::bc_network_address& p_address)
 	{
 		core::bc_log(core::bc_log_type::info) << "connected to server" << core::bc_lend;
 	}
 
 	void bx_application::message_sent(game::bci_network_message& p_message)
 	{
+		core::bc_log(core::bc_log_type::debug) << "network message sent with hash " << p_message.get_message_hash() << " and id " << p_message.get_id() << core::bc_lend;
 	}
 
 	void bx_application::message_received(game::bci_network_message& p_message)
 	{
+		core::bc_log(core::bc_log_type::debug) << "network message received with hash " << p_message.get_message_hash() << " and id " << p_message.get_id() << core::bc_lend;
 	}
 
 	void bx_application::error_occurred(const bc_network_exception* p_exception)

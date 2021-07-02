@@ -30,6 +30,8 @@ namespace box
 
 		platform::bc_script_variable start(const platform::bc_script_variable& p_port);
 
+		platform::bc_script_variable send(const platform::bc_script_variable& p_str_content);
+
 	private:
 		game::bc_game_system* m_game_system;
 		game::bci_network_server_manager_hook* m_network_server_hook;

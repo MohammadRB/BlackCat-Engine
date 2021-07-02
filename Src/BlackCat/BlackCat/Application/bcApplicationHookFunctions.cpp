@@ -19,6 +19,12 @@
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Render/Decal/bcDecalManager.h"
+#include "Game/System/Network/bcNetworkSystem.h"
+#include "Game/System/Network/Message/bcStringNetworkMessage.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/System/Network/Message/bcActorReplicateNetworkMessage.h"
+#include "Game/System/Network/Message/bcActorSyncNetworkMessage.h"
+#include "Game/System/Network/Message/bcActorRemoveNetworkMessage.h"
 #include "Game/System/Physics/bcPhysicsSimulationCallback.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentContainer.hpp"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
@@ -180,6 +186,18 @@ namespace black_cat
 		);
 	}
 
+	void bc_register_network_messages(game::bc_network_system& p_network_system)
+	{
+		p_network_system.register_messages
+		<
+			game::bc_string_network_message,
+			game::bc_acknowledge_network_message,
+			game::bc_actor_replicate_network_message,
+			game::bc_actor_sync_network_message,
+			game::bc_actor_remove_network_message
+		>();
+	}
+	
 	void bc_bind_scripts(game::bc_game_system& p_game_system)
 	{
 		auto& l_script_system = p_game_system.get_script_system();
@@ -189,7 +207,7 @@ namespace black_cat
 
 		l_script_system.set_script_binder(std::move(l_script_binder));
 	}
-
+	
 	void bc_load_engine_resources(game::bc_game_system& p_game_system)
 	{
 		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();

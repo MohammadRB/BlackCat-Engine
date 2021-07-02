@@ -20,7 +20,7 @@ namespace black_cat
 
 			virtual void remove_actor(bc_actor& p_actor) = 0;
 
-			virtual void send_message(bc_network_message_ptr p_command) = 0;
+			virtual void send_message(bc_network_message_ptr p_message) = 0;
 			
 			virtual void update(const core_platform::bc_clock::update_param& p_clock) = 0;
 		};

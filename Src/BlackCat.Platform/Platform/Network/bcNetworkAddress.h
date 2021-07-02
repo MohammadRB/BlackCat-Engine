@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <tuple>
+#include "Core/Container/bcString.h"
 #include "CorePlatform/bcPlatform.h"
 #include "Platform/Network/bcNetworkDefinitions.h"
 
@@ -25,13 +27,19 @@ namespace black_cat
 
 			explicit bc_platform_network_address(platform_pack& p_pack);
 
-			bc_platform_network_address(const bc_platform_network_address&) noexcept;
+			bc_platform_network_address(const bc_platform_network_address<TPlatform>&) noexcept;
 
 			~bc_platform_network_address();
 
-			bc_platform_network_address& operator=(const bc_platform_network_address&) noexcept;
+			bc_platform_network_address& operator=(const bc_platform_network_address<TPlatform>&) noexcept;
 
-			static bc_platform_network_address from_ip_port(bc_socket_address p_address_family, const bcCHAR* p_ip, bcUINT32 p_port);
+			std::tuple<bc_socket_address, core::bc_string_frame, bcUINT16> get_traits() const noexcept;
+
+			bool is_valid() const noexcept;
+
+			bool operator==(const bc_platform_network_address<TPlatform>& p_other) const noexcept;
+			
+			bool operator!=(const bc_platform_network_address<TPlatform>& p_other) const noexcept;
 			
 			platform_pack& get_platform_pack() noexcept
 			{
@@ -42,6 +50,8 @@ namespace black_cat
 			{
 				return m_pack;
 			}
+
+			static bc_platform_network_address from_ip_port(bc_socket_address p_address_family, const bcCHAR* p_ip, bcUINT16 p_port) noexcept;
 		
 		private:
 			platform_pack m_pack;

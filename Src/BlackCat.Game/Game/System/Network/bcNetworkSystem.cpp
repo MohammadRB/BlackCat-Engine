@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "Core/Concurrency/bcConcurrency.h"
+#include "Core/Utility/bcLogger.h"
 #include "PlatformImp/Network/bcNetworkDefinitions.h"
 #include "Game/System/Network/bcNetworkSystem.h"
 #include "Game/System/Network/Server/bcNetworkServerManager.h"
@@ -39,14 +40,14 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_network_system::start_server(bcUINT16 p_port, bci_network_server_manager_hook& p_hook)
+		void bc_network_system::start_server(bci_network_server_manager_hook& p_hook, bcUINT16 p_port)
 		{
 			m_manager = core::bc_make_unique<bc_network_server_manager>(bc_network_server_manager(*this, p_hook, p_port));
 		}
 
-		void bc_network_system::start_client(const bcCHAR* p_ip, bcUINT16 p_port, bci_network_client_manager_hook& p_hook)
+		void bc_network_system::start_client(bci_network_client_manager_hook& p_hook, const platform::bc_network_address& p_address)
 		{
-			m_manager = core::bc_make_unique<bc_network_client_manager>(bc_network_client_manager(*this, p_hook, p_ip, p_port));
+			m_manager = core::bc_make_unique<bc_network_client_manager>(bc_network_client_manager(*this, p_hook, p_address));
 		}
 
 		void bc_network_system::add_actor(bc_actor& p_actor)
@@ -64,6 +65,7 @@ namespace black_cat
 			const auto l_ite = m_message_factories.find(p_hash);
 			if(l_ite == std::cend(m_message_factories))
 			{
+				core::bc_log(core::bc_log_type::warning) << "cannot find network message with hash " << p_hash << core::bc_lend;
 				return nullptr;
 			}
 

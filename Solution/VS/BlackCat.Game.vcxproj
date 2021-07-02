@@ -419,11 +419,14 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Client\bcClientSocketStateMachine.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkMessageBuffer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcStringNetworkMessage.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManagerClient.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManagerClient1.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManagerHook.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkSystem.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcServerClientSocketStateMachine.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcServerSocket1StateMachine.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcServerSocketStateMachine.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcAcknowledgeNetworkMessage.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcActorRemoveNetworkMessage.h" />
