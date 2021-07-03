@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcSpan.h"
 #include "Core/File/bcMemoryStream.h"
@@ -18,7 +19,7 @@ namespace black_cat
 		class bc_network_server_manager_client1
 		{
 		public:
-			bc_network_server_manager_client1(const platform::bc_network_address& p_address);
+			explicit bc_network_server_manager_client1(const platform::bc_network_address& p_address);
 
 			bc_network_server_manager_client1(bc_network_server_manager_client1&&) noexcept;
 
@@ -26,6 +27,10 @@ namespace black_cat
 
 			bc_network_server_manager_client1& operator=(bc_network_server_manager_client1&&) noexcept;
 
+			void lock();
+
+			void unlock();
+			
 			const platform::bc_network_address& get_address() const noexcept;
 			
 			bc_network_packet_time get_last_sync_time() const noexcept;
@@ -42,17 +47,20 @@ namespace black_cat
 
 			void clear_messages() noexcept;
 			
-			void add_message_with_acknowledgment(bc_network_message_ptr p_message) noexcept;
+			void add_message_with_acknowledgment(bc_message_with_time p_message) noexcept;
 			
-			core::bc_span<bc_network_message_ptr> get_messages_waiting_acknowledgment() noexcept;
+			core::bc_span<bc_message_with_time> get_messages_waiting_acknowledgment() noexcept;
+
+			void erase_message_with_acknowledgment(bc_network_message_id p_id) noexcept;
 			
 		private:
+			core_platform::bc_mutex m_mutex;
 			platform::bc_network_address m_address;
 			bc_network_packet_time m_last_sync_time;
 			core::bc_value_sampler<bc_network_packet_time, 64> m_rtt_sampler;
 
 			core::bc_vector<bc_network_message_ptr> m_messages;
-			core::bc_vector<bc_network_message_ptr> m_messages_waiting_acknowledgment;
+			core::bc_vector<bc_message_with_time> m_messages_waiting_acknowledgment;
 		};
 
 		inline bc_network_server_manager_client1::bc_network_server_manager_client1(const platform::bc_network_address& p_address)
@@ -62,11 +70,37 @@ namespace black_cat
 		{
 		}
 
-		inline bc_network_server_manager_client1::bc_network_server_manager_client1(bc_network_server_manager_client1&&) noexcept = default;
+		inline bc_network_server_manager_client1::bc_network_server_manager_client1(bc_network_server_manager_client1&& p_other) noexcept
+			: m_address(std::move(p_other.m_address)),
+			m_last_sync_time(p_other.m_last_sync_time),
+			m_rtt_sampler(std::move(p_other.m_rtt_sampler)),
+			m_messages(std::move(p_other.m_messages)),
+			m_messages_waiting_acknowledgment(std::move(p_other.m_messages_waiting_acknowledgment))
+		{
+		}
 
 		inline bc_network_server_manager_client1::~bc_network_server_manager_client1() = default;
 
-		inline bc_network_server_manager_client1& bc_network_server_manager_client1::operator=(bc_network_server_manager_client1&&) noexcept = default;
+		inline bc_network_server_manager_client1& bc_network_server_manager_client1::operator=(bc_network_server_manager_client1&& p_other) noexcept
+		{
+			m_address = std::move(p_other.m_address);
+			m_last_sync_time = p_other.m_last_sync_time;
+			m_rtt_sampler = std::move(p_other.m_rtt_sampler);
+			m_messages = std::move(p_other.m_messages);
+			m_messages_waiting_acknowledgment = std::move(p_other.m_messages_waiting_acknowledgment);
+			
+			return *this;
+		}
+
+		inline void bc_network_server_manager_client1::lock()
+		{
+			m_mutex.lock();
+		}
+
+		inline void bc_network_server_manager_client1::unlock()
+		{
+			m_mutex.unlock();
+		}
 
 		inline const platform::bc_network_address& bc_network_server_manager_client1::get_address() const noexcept
 		{
@@ -108,14 +142,28 @@ namespace black_cat
 			m_messages.clear();
 		}
 
-		inline void bc_network_server_manager_client1::add_message_with_acknowledgment(bc_network_message_ptr p_message) noexcept
+		inline void bc_network_server_manager_client1::add_message_with_acknowledgment(bc_message_with_time p_message) noexcept
 		{
 			m_messages_waiting_acknowledgment.push_back(std::move(p_message));
 		}
 		
-		inline core::bc_span<bc_network_message_ptr> bc_network_server_manager_client1::get_messages_waiting_acknowledgment() noexcept
+		inline core::bc_span<bc_message_with_time> bc_network_server_manager_client1::get_messages_waiting_acknowledgment() noexcept
 		{
 			return core::bc_make_span(m_messages_waiting_acknowledgment);
+		}
+
+		inline void bc_network_server_manager_client1::erase_message_with_acknowledgment(bc_network_message_id p_id) noexcept
+		{
+			const auto l_msg_ite = std::find_if
+			(
+				std::begin(m_messages_waiting_acknowledgment),
+				std::end(m_messages_waiting_acknowledgment),
+				[&](const bc_message_with_time& p_msg)
+				{
+					return p_msg.m_message->get_id() == p_id;
+				}
+			);
+			m_messages_waiting_acknowledgment.erase(l_msg_ite);
 		}
 	}	
 }

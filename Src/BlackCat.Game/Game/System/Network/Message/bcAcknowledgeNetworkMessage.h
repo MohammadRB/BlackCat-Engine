@@ -3,17 +3,20 @@
 #pragma once
 
 #include "Game/System/Network/Message/bcNetworkMessage.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		class bc_acknowledge_network_message : public bci_network_message
+		class BC_GAME_DLL bc_acknowledge_network_message : public bci_network_message
 		{
-			BC_NETWORK_MESSAGE(act_ack)
+			BC_NETWORK_MESSAGE(ack)
 
 		public:
 			bc_acknowledge_network_message();
+
+			explicit bc_acknowledge_network_message(bc_network_message_id p_acknowledged_message_id);
 
 			bc_acknowledge_network_message(bc_acknowledge_network_message&&) noexcept;
 
@@ -22,16 +25,29 @@ namespace black_cat
 			bc_acknowledge_network_message& operator=(bc_acknowledge_network_message&&) noexcept;
 
 			bc_network_message_id get_acknowledged_message_id() const noexcept;
+
+			void execute(const bc_network_message_client_context& p_context) noexcept override;
+			
+			void execute(const bc_network_message_server_context& p_context) noexcept override;
 		
 		private:
 			void serialize_message(core::bc_json_key_value& p_params) const override;
 
 			void deserialize_message(const core::bc_json_key_value& p_params) override;
+
+			bc_network_message_id m_ack_message_id;
 		};
 
 		inline bc_acknowledge_network_message::bc_acknowledge_network_message()
-			: bci_network_message(message_name())
+			: bci_network_message(message_name()),
+			m_ack_message_id(0)
 		{
+		}
+
+		inline bc_acknowledge_network_message::bc_acknowledge_network_message(bc_network_message_id p_acknowledged_message_id)
+			: bc_acknowledge_network_message()
+		{
+			m_ack_message_id = p_acknowledged_message_id;
 		}
 
 		inline bc_acknowledge_network_message::bc_acknowledge_network_message(bc_acknowledge_network_message&&) noexcept = default;
@@ -42,15 +58,7 @@ namespace black_cat
 
 		inline bc_network_message_id bc_acknowledge_network_message::get_acknowledged_message_id() const noexcept
 		{
-			return 0;
-		}
-
-		inline void bc_acknowledge_network_message::serialize_message(core::bc_json_key_value& p_params) const
-		{
-		}
-
-		inline void bc_acknowledge_network_message::deserialize_message(const core::bc_json_key_value& p_params)
-		{
+			return m_ack_message_id;
 		}
 	}
 }

@@ -21,6 +21,8 @@ namespace black_cat
 
 			bc_actor_replicate_network_message& operator=(bc_actor_replicate_network_message&&) noexcept;
 
+			bool need_acknowledgment() const noexcept override;
+
 		private:
 			void serialize_message(core::bc_json_key_value& p_params) const override;
 
@@ -37,6 +39,11 @@ namespace black_cat
 		inline bc_actor_replicate_network_message::~bc_actor_replicate_network_message() = default;
 
 		inline bc_actor_replicate_network_message& bc_actor_replicate_network_message::operator=(bc_actor_replicate_network_message&&) noexcept = default;
+
+		inline bool bc_actor_replicate_network_message::need_acknowledgment() const noexcept
+		{
+			return true;
+		}
 
 		inline void bc_actor_replicate_network_message::serialize_message(core::bc_json_key_value& p_params) const
 		{

@@ -26,6 +26,9 @@ namespace black_cat
 		class BC_GAME_DLL bc_network_client_manager : public bci_network_manager, private bc_client_socket_state_machine
 		{
 		public:
+			using bci_network_manager::send_message;
+			
+		public:
 			bc_network_client_manager(bc_network_system& p_network_system, bci_network_client_manager_hook& p_hook, const platform::bc_network_address& p_address);
 
 			bc_network_client_manager(bc_network_client_manager&&) noexcept;
@@ -37,11 +40,17 @@ namespace black_cat
 			void add_actor(bc_actor& p_actor) override;
 			
 			void remove_actor(bc_actor& p_actor) override;
-
+						
 			void send_message(bc_network_message_ptr p_message) override;
+			
+			void acknowledge_message(bc_network_message_id p_message_id);
 			
 			void update(const core_platform::bc_clock::update_param& p_clock) override;
 
+			void connection_approved();
+			
+			void actor_replicated(bc_actor& p_actor);
+			
 		private:
 			void on_enter(bc_client_socket_error_state& p_state) override;
 			
@@ -51,6 +60,8 @@ namespace black_cat
 
 			void on_enter(bc_client_socket_sending_state& p_state) override;
 
+			void _retry_messages_with_acknowledgment(bc_network_packet_time p_current_time);
+			
 			void _send_to_server();
 			
 			void _receive_from_server();
@@ -64,13 +75,12 @@ namespace black_cat
 			core::bc_value_sampler<bc_network_packet_time, 64> m_rtt_sampler;
 
 			core::bc_mutex_test m_actors_lock;
-			core::bc_vector<bc_actor> m_new_actors;
 			core::bc_vector<bc_actor> m_sync_actors;
 			core::bc_unordered_map<bc_actor_network_id, bc_actor> m_network_actors;
 
 			core_platform::bc_mutex m_messages_lock;
 			core::bc_vector<bc_network_message_ptr> m_messages;
-			core::bc_vector<bc_network_message_ptr> m_messages_waiting_acknowledgment;
+			core::bc_vector<bc_message_with_time> m_messages_waiting_acknowledgment;
 			core::bc_memory_stream m_memory_buffer;
 			bc_network_message_buffer m_messages_buffer;
 		};

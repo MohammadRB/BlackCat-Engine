@@ -12,9 +12,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Game.Test\GameTest\GameTestPCH.cpp">
       <Filter>GameTest</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game.Test\GameTest\Network\bcSocketStateMachine.cpp">
-      <Filter>GameTest\Network</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game.Test\GameTest\GameTestPCH.h">

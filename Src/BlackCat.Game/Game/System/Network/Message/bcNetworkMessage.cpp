@@ -31,19 +31,19 @@ namespace black_cat
 			deserialize_message(p_params);
 		}
 
-		void bci_network_message::execute(const bc_network_message_client_context& p_context)
+		void bci_network_message::execute(const bc_network_message_client_context& p_context) noexcept
 		{
 		}
 
-		void bci_network_message::execute(const bc_network_message_server_context& p_context)
+		void bci_network_message::execute(const bc_network_message_server_context& p_context) noexcept
 		{
 		}
 
-		void bci_network_message::acknowledge(const bc_network_message_client_context& p_context)
+		void bci_network_message::acknowledge(const bc_network_message_client_context& p_context) noexcept
 		{
 		}
 
-		void bci_network_message::acknowledge(const bc_network_message_server_context& p_context)
+		void bci_network_message::acknowledge(const bc_network_message_server_context& p_context) noexcept
 		{
 		}
 	}	

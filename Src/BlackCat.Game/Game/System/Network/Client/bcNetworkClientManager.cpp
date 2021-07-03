@@ -6,6 +6,8 @@
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/System/Network/Client/bcNetworkClientManager.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/System/Network/Message/bcClientConnectNetworkMessage.h"
 #include "Game/System/Network/Message/bcActorReplicateNetworkMessage.h"
 #include "Game/System/Network/Message/bcActorSyncNetworkMessage.h"
 #include "Game/System/Network/Message/bcActorRemoveNetworkMessage.h"
@@ -44,7 +46,6 @@ namespace black_cat
 			m_hook(p_other.m_hook),
 			m_last_sync_time(p_other.m_last_sync_time),
 			m_rtt_sampler(p_other.m_rtt_sampler),
-			m_new_actors(std::move(p_other.m_new_actors)),
 			m_sync_actors(std::move(p_other.m_sync_actors)),
 			m_network_actors(std::move(p_other.m_network_actors)),
 			m_messages(std::move(p_other.m_messages)),
@@ -54,6 +55,7 @@ namespace black_cat
 		{
 		}
 
+		// TODO send disconnect msg
 		bc_network_client_manager::~bc_network_client_manager() = default;
 
 		bc_network_client_manager& bc_network_client_manager::operator=(bc_network_client_manager&& p_other) noexcept
@@ -67,7 +69,6 @@ namespace black_cat
 			m_last_sync_time = p_other.m_last_sync_time;
 			m_rtt_sampler = p_other.m_rtt_sampler;
 
-			m_new_actors = std::move(p_other.m_new_actors);
 			m_sync_actors = std::move(p_other.m_sync_actors);
 			m_network_actors = std::move(p_other.m_network_actors);
 
@@ -88,30 +89,31 @@ namespace black_cat
 				return;
 			}
 
-			{
-				core::bc_mutex_test_guard l_lock(m_actors_lock);
-				m_new_actors.push_back(p_actor);
-			}
+			// TODO
+			send_message(bc_actor_replicate_network_message());
 		}
 
 		void bc_network_client_manager::remove_actor(bc_actor& p_actor)
 		{
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
-			if(l_network_component->get_network_id() != bc_actor::invalid_id)
+			if(l_network_component->get_network_id() == bc_actor::invalid_id)
 			{
+				return;
+			}
+				
+			{
+				core::bc_mutex_test_guard l_lock(m_actors_lock);
+
+				const auto l_ite = m_network_actors.find(l_network_component->get_network_id());
+				if (l_ite == std::cend(m_network_actors))
 				{
-					core::bc_mutex_test_guard l_lock(m_actors_lock);
-
-					const auto l_ite = m_network_actors.find(l_network_component->get_network_id());
-					if (l_ite == std::cend(m_network_actors))
-					{
-						core::bc_log(core::bc_log_type::error, bcL("actor network id was not found"));
-						return;
-					}
-
-					m_network_actors.erase(l_ite);
+					core::bc_log(core::bc_log_type::error, bcL("actor network id was not found"));
 					return;
 				}
+
+				m_network_actors.erase(l_ite);
+				// TODO
+				send_message(bc_actor_remove_network_message());
 			}
 		}
 
@@ -120,6 +122,36 @@ namespace black_cat
 			{
 				core_platform::bc_mutex_guard l_lock(m_messages_lock);
 				m_messages.push_back(p_message);
+			}
+		}
+
+		void bc_network_client_manager::acknowledge_message(bc_network_message_id p_message_id)
+		{
+			{
+				core_platform::bc_mutex_guard l_lock(m_messages_lock);
+
+				const auto l_message_ite = std::find_if
+				(
+					std::cbegin(m_messages_waiting_acknowledgment),
+					std::cend(m_messages_waiting_acknowledgment),
+					[=](const bc_message_with_time& p_msg)
+					{
+						return p_msg.m_message->get_id() == p_message_id;
+					}
+				);
+				if (l_message_ite == std::end(m_messages_waiting_acknowledgment))
+				{
+					core::bc_log(core::bc_log_type::warning) << "no message was found with id " << p_message_id << " to acknowledge";
+					return;
+				}
+
+				auto& l_message = *(*l_message_ite).m_message;
+				l_message.acknowledge(bc_network_message_client_context
+				{
+					*this
+				});
+
+				m_messages_waiting_acknowledgment.erase(l_message_ite);
 			}
 		}
 
@@ -142,6 +174,20 @@ namespace black_cat
 			_receive_from_server();
 		}
 
+		void bc_network_client_manager::connection_approved()
+		{
+			m_hook->connected_to_server(m_address);
+		}
+
+		void bc_network_client_manager::actor_replicated(bc_actor& p_actor)
+		{
+			{
+				core::bc_mutex_test_guard l_lock(m_actors_lock);
+
+				m_sync_actors.push_back(p_actor);
+			}
+		}
+
 		void bc_network_client_manager::on_enter(bc_client_socket_error_state& p_state)
 		{
 			m_hook->error_occurred(p_state.get_last_exception());
@@ -156,10 +202,10 @@ namespace black_cat
 
 		void bc_network_client_manager::on_enter(bc_client_socket_connected_state& p_state)
 		{
-			if(!m_socket_is_connected)
+			if (!m_socket_is_connected)
 			{
-				m_hook->connected_to_server(m_address);
 				m_socket_is_connected = true;
+				send_message(bc_client_connect_network_message());
 			}
 			m_socket_is_ready = true;
 		}
@@ -169,29 +215,43 @@ namespace black_cat
 			m_socket_is_ready = false;
 		}
 
+		void bc_network_client_manager::_retry_messages_with_acknowledgment(bc_network_packet_time p_current_time)
+		{
+			for(auto& l_msg : m_messages_waiting_acknowledgment)
+			{
+				const auto l_elapsed_since_last_send = p_current_time - l_msg.m_time;
+#ifndef BC_DEBUG
+				if (l_elapsed_since_last_send > m_rtt_sampler.average_value() * 3)
+				{
+					l_msg.m_time = p_current_time;
+					m_messages.push_back(l_msg.m_message);
+				}
+#endif				
+			}
+		}
+
 		void bc_network_client_manager::_send_to_server()
 		{
+			const auto l_current_time = bc_current_packet_time();
+			
 			{
 				core_platform::bc_mutex_guard l_lock(m_messages_lock);
 
 				// TODO
-				for (auto& l_actor : m_new_actors)
-				{
-					m_messages.push_back(bc_make_network_message(bc_actor_replicate_network_message()));
-				}
-
 				for (auto& l_actor : m_sync_actors)
 				{
 					m_messages.push_back(bc_make_network_message(bc_actor_sync_network_message()));
 				}
+
+				_retry_messages_with_acknowledgment(l_current_time);
 				
 				if(m_messages.empty())
 				{
 					return;
 				}
 
-				const auto l_serialized_messages = m_messages_buffer.serialize(bc_current_packet_time(), core::bc_make_span(m_messages));
-				bc_client_socket_send_event l_send_event{ *l_serialized_messages.first, l_serialized_messages.second, 0 };
+				const auto [l_stream, l_stream_size] = m_messages_buffer.serialize(l_current_time, core::bc_make_span(m_messages));
+				bc_client_socket_send_event l_send_event{ *l_stream, l_stream_size, 0 };
 				bc_client_socket_state_machine::process_event(l_send_event);
 
 				for (auto& l_message : m_messages)
@@ -200,11 +260,14 @@ namespace black_cat
 
 					if (l_message->need_acknowledgment())
 					{
-						m_messages_waiting_acknowledgment.push_back(std::move(l_message));
+						m_messages_waiting_acknowledgment.push_back(bc_message_with_time
+						{
+							l_current_time,
+							std::move(l_message)
+						});
 					}
 				}
 
-				m_new_actors.clear();
 				m_messages.clear();
 			}
 		}
@@ -226,7 +289,16 @@ namespace black_cat
 
 			for(const auto& l_message : l_messages)
 			{
-				l_message->execute(bc_network_message_client_context());
+				if (l_message->need_acknowledgment())
+				{
+					send_message(bc_acknowledge_network_message(l_message->get_id()));
+				}
+				
+				l_message->execute(bc_network_message_client_context
+				{
+					*this
+				});
+				
 				m_hook->message_received(*l_message);
 			}
 			

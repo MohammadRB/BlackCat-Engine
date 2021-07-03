@@ -58,7 +58,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">GameTestPCH.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Game.Test\GameTest\Network\bcSocketStateMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game.Test\GameTest\bcTestFixture.h" />

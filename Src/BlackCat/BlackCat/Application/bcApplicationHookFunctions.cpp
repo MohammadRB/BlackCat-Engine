@@ -22,6 +22,7 @@
 #include "Game/System/Network/bcNetworkSystem.h"
 #include "Game/System/Network/Message/bcStringNetworkMessage.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/System/Network/Message/bcClientConnectNetworkMessage.h"
 #include "Game/System/Network/Message/bcActorReplicateNetworkMessage.h"
 #include "Game/System/Network/Message/bcActorSyncNetworkMessage.h"
 #include "Game/System/Network/Message/bcActorRemoveNetworkMessage.h"
@@ -192,6 +193,7 @@ namespace black_cat
 		<
 			game::bc_string_network_message,
 			game::bc_acknowledge_network_message,
+			game::bc_client_connect_network_message,
 			game::bc_actor_replicate_network_message,
 			game::bc_actor_sync_network_message,
 			game::bc_actor_remove_network_message

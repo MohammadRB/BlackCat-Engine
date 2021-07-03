@@ -419,6 +419,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Client\bcClientSocketStateMachine.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkMessageBuffer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcClientConnectNetworkMessage.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcStringNetworkMessage.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManagerClient.h" />
@@ -554,6 +555,8 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcGlobalConfig.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcInputSystem.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Client\bcNetworkClientManager.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcAcknowledgeNetworkMessage.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcClientConnectNetworkMessage.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkSystem.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcNetworkMessage.cpp" />

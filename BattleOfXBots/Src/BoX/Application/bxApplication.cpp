@@ -113,12 +113,12 @@ namespace box
 
 	void bx_application::message_sent(game::bci_network_message& p_message)
 	{
-		core::bc_log(core::bc_log_type::debug) << "network message sent with hash " << p_message.get_message_hash() << " and id " << p_message.get_id() << core::bc_lend;
+		core::bc_log(core::bc_log_type::debug) << "network message sent with hash '" << p_message.get_message_name() << "' and id " << p_message.get_id() << core::bc_lend;
 	}
 
 	void bx_application::message_received(game::bci_network_message& p_message)
 	{
-		core::bc_log(core::bc_log_type::debug) << "network message received with hash " << p_message.get_message_hash() << " and id " << p_message.get_id() << core::bc_lend;
+		core::bc_log(core::bc_log_type::debug) << "network message received with hash '" << p_message.get_message_name() << "' and id " << p_message.get_id() << core::bc_lend;
 	}
 
 	void bx_application::error_occurred(const bc_network_exception* p_exception)
