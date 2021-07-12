@@ -2,18 +2,23 @@
 
 #pragma once
 
+#include "Core/Container/bcString.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/System/Network/Message/bcNetworkMessage.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		class bc_actor_replicate_network_message : public bci_network_message
+		class BC_GAME_DLL bc_actor_replicate_network_message : public bci_network_message
 		{
 			BC_NETWORK_MESSAGE(act_rpl)
 
 		public:
 			bc_actor_replicate_network_message();
+
+			explicit bc_actor_replicate_network_message(const bc_actor& p_actor_to_serialize);
 
 			bc_actor_replicate_network_message(bc_actor_replicate_network_message&&) noexcept;
 
@@ -23,34 +28,21 @@ namespace black_cat
 
 			bool need_acknowledgment() const noexcept override;
 
+			void execute(const bc_network_message_client_context& p_context) noexcept override;
+			
+			void execute(const bc_network_message_server_context& p_context) noexcept override;
+			
 		private:
-			void serialize_message(core::bc_json_key_value& p_params) const override;
+			void serialize_message(const bc_network_message_serialization_context& p_context) override;
 
-			void deserialize_message(const core::bc_json_key_value& p_params) override;
+			void deserialize_message(const bc_network_message_deserialization_context& p_context) override;
+
+			bc_actor m_actor_to_serialize;
 		};
-
-		inline bc_actor_replicate_network_message::bc_actor_replicate_network_message()
-			: bci_network_message(message_name())
-		{
-		}
-
-		inline bc_actor_replicate_network_message::bc_actor_replicate_network_message(bc_actor_replicate_network_message&&) noexcept = default;
-
-		inline bc_actor_replicate_network_message::~bc_actor_replicate_network_message() = default;
-
-		inline bc_actor_replicate_network_message& bc_actor_replicate_network_message::operator=(bc_actor_replicate_network_message&&) noexcept = default;
 
 		inline bool bc_actor_replicate_network_message::need_acknowledgment() const noexcept
 		{
 			return true;
-		}
-
-		inline void bc_actor_replicate_network_message::serialize_message(core::bc_json_key_value& p_params) const
-		{
-		}
-
-		inline void bc_actor_replicate_network_message::deserialize_message(const core::bc_json_key_value& p_params)
-		{
 		}
 	}
 }

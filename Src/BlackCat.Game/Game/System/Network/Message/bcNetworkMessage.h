@@ -32,9 +32,11 @@ namespace black_cat
 			}
 		};
 
+		class bc_actor;
 		class bc_network_system;
-		class bc_network_client_manager;
-		class bc_network_server_manager;
+		class bci_network_message_server_bridge;
+		class bci_network_message_client_bridge;
+		class bci_network_message_deserialization_bridge;
 		class bci_network_message;
 		using bc_network_message_ptr = core::bc_shared_ptr<bci_network_message>;
 
@@ -43,16 +45,27 @@ namespace black_cat
 		{
 			return core::bc_make_shared<TMessage>(std::move(p_command));
 		}
+
+		struct bc_network_message_serialization_context
+		{
+			core::bc_json_key_value& m_params;
+		};
+
+		struct bc_network_message_deserialization_context
+		{
+			bci_network_message_deserialization_bridge& m_bridge;
+			const core::bc_json_key_value& m_params;
+		};
 		
 		struct bc_network_message_client_context
 		{
-			bc_network_client_manager& m_manager;
+			bci_network_message_client_bridge& m_bridge;
 		};
 
 		struct bc_network_message_server_context
 		{
 			const platform::bc_network_address& m_address;
-			bc_network_server_manager& m_manager;
+			bci_network_message_server_bridge& m_bridge;
 		};
 		
 		class BC_GAME_DLL bci_network_message : public core::bci_message
@@ -67,24 +80,24 @@ namespace black_cat
 			 * \return 
 			 */
 			bc_network_message_id get_id() const noexcept;
-			
-			/**
-			 * \brief Serialize command into json key/value pair which is provided as parameter
-			 * \param p_params 
-			 */
-			void serialize(core::bc_json_key_value& p_params) const;
-
-			/**
-			 * \brief Deserialize command from json key/value pair which is provided as parameter. 
-			 * \param p_params
-			 */
-			void deserialize(const core::bc_json_key_value& p_params);
 
 			/**
 			 * \brief Indicate whether message must be acknowledged by the receiver or not
-			 * \return 
+			 * \return
 			 */
 			virtual bool need_acknowledgment() const noexcept;
+			
+			/**
+			 * \brief Serialize command into json key/value pair which is provided as parameter
+			 * \param p_context 
+			 */
+			void serialize(const bc_network_message_serialization_context& p_context);
+
+			/**
+			 * \brief Deserialize command from json key/value pair which is provided as parameter. 
+			 * \param p_context
+			 */
+			void deserialize(const bc_network_message_deserialization_context& p_context);
 			
 			/**
 			 * \brief Execute message logic on the remote part of connection
@@ -122,9 +135,9 @@ namespace black_cat
 			bci_network_message& operator=(bci_network_message&&) noexcept = default;
 
 		private:
-			virtual void serialize_message(core::bc_json_key_value& p_params) const = 0;
+			virtual void serialize_message(const bc_network_message_serialization_context& p_context) = 0;
 
-			virtual void deserialize_message(const core::bc_json_key_value& p_params) = 0;
+			virtual void deserialize_message(const bc_network_message_deserialization_context& p_context) = 0;
 
 			static core_platform::bc_atomic<bc_network_message_id> s_id_counter;
 			
@@ -140,5 +153,46 @@ namespace black_cat
 		{
 			return false;
 		}
+
+		class bci_network_message_deserialization_bridge
+		{
+		public:
+			virtual bc_actor create_actor(const bcCHAR* p_entity_name, const core::bc_json_key_value& p_params) = 0;
+
+		protected:
+			bci_network_message_deserialization_bridge() = default;
+
+			~bci_network_message_deserialization_bridge() = default;
+		};
+
+		class bci_network_message_server_bridge
+		{
+		public:
+			virtual void client_connected(const platform::bc_network_address& p_address) = 0;
+
+			virtual void client_disconnected(const platform::bc_network_address& p_address) = 0;
+
+			virtual void acknowledge_message(const platform::bc_network_address& p_address, bc_network_message_id p_message_id) = 0;
+
+		protected:
+			bci_network_message_server_bridge() = default;
+
+			~bci_network_message_server_bridge() = default;
+		};
+
+		class bci_network_message_client_bridge
+		{
+		public:
+			virtual void connection_approved() = 0;
+
+			virtual void actor_replicated(bc_actor& p_actor) = 0;
+
+			virtual void acknowledge_message(bc_network_message_id p_message_id) = 0;
+
+		protected:
+			bci_network_message_client_bridge() = default;
+
+			~bci_network_message_client_bridge() = default;
+		};
 	}
 }

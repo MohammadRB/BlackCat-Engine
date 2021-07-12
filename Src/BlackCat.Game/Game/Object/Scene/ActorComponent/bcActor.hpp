@@ -41,7 +41,7 @@ namespace black_cat
 		}
 		
 		template<typename TEvent>
-		inline void bc_actor::add_event(TEvent&& p_event)
+		void bc_actor::add_event(TEvent&& p_event)
 		{
 			_get_manager().actor_add_event(*this, std::move(p_event));
 		}

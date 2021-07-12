@@ -59,5 +59,6 @@ namespace black_cat
 		BC_PARAMETER(light_flare_mask_v0, "flare_mask_v0");
 		BC_PARAMETER(light_flare_mask_u1, "flare_mask_u1");
 		BC_PARAMETER(light_flare_mask_v1, "flare_mask_v1");
+		BC_PARAMETER(network_data_dir, "data_dir");
 	}
 }

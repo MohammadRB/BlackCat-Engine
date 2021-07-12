@@ -14,37 +14,37 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_server_client_socket_state_machine;
-		class bc_server_client_socket_error_state;
-		class bc_server_client_socket_connected_state;
-		class bc_server_client_socket_sending_state;
+		class bc_server_tcp_client_socket_state_machine;
+		class bc_server_tcp_client_socket_error_state;
+		class bc_server_tcp_client_socket_connected_state;
+		class bc_server_tcp_client_socket_sending_state;
 
-		struct bc_server_client_socket_update_event
+		struct bc_server_tcp_client_socket_update_event
 		{
 			core_platform::bc_clock::update_param m_clock;
 		};
 
-		struct bc_server_client_socket_send_event
+		struct bc_server_tcp_client_socket_send_event
 		{
 			core::bc_memory_stream& m_stream;
 			bcSIZE m_bytes_to_send;
 			bcSIZE m_bytes_sent;
 		};
 
-		struct bc_server_client_socket_receive_event
+		struct bc_server_tcp_client_socket_receive_event
 		{
 			core::bc_memory_stream& m_stream;
 			bcSIZE m_bytes_received;
 		};
 
-		struct bc_server_client_socket_disconnect_event
+		struct bc_server_tcp_client_socket_disconnect_event
 		{
 		};
 
-		class bc_server_client_socket_error_state : public core::bc_state<bc_server_client_socket_state_machine>
+		class bc_server_tcp_client_socket_error_state : public core::bc_state<bc_server_tcp_client_socket_state_machine>
 		{
 		public:
-			bc_server_client_socket_error_state(platform::bc_non_block_socket& p_socket)
+			bc_server_tcp_client_socket_error_state(platform::bc_non_block_socket& p_socket)
 				: m_socket(&p_socket)
 			{
 			}
@@ -76,16 +76,16 @@ namespace black_cat
 			core::bc_nullable<bc_network_exception> m_last_exception;
 		};
 
-		class bc_server_client_socket_connected_state : public core::bc_state<bc_server_client_socket_state_machine, bc_server_client_socket_send_event, bc_server_client_socket_receive_event>
+		class bc_server_tcp_client_socket_connected_state : public core::bc_state<bc_server_tcp_client_socket_state_machine, bc_server_tcp_client_socket_send_event, bc_server_tcp_client_socket_receive_event>
 		{
 		public:
-			bc_server_client_socket_connected_state(platform::bc_non_block_socket& p_socket)
+			bc_server_tcp_client_socket_connected_state(platform::bc_non_block_socket& p_socket)
 				: m_socket(&p_socket)
 			{
 			}
 
 		private:
-			state_transition handle(bc_server_client_socket_send_event& p_event) override
+			state_transition handle(bc_server_tcp_client_socket_send_event& p_event) override
 			{
 				try
 				{
@@ -96,13 +96,13 @@ namespace black_cat
 					}
 					
 					p_event.m_bytes_sent = m_socket->send(p_event.m_stream.get_position_data(), p_event.m_bytes_to_send);
-					return state_transition::transfer_to<bc_server_client_socket_sending_state>();
+					return state_transition::transfer_to<bc_server_tcp_client_socket_sending_state>();
 				}
 				catch (const bc_network_exception & p_exception)
 				{
-					return state_transition::transfer_to<bc_server_client_socket_error_state>
+					return state_transition::transfer_to<bc_server_tcp_client_socket_error_state>
 					(
-						[p_exception](bc_server_client_socket_error_state& p_error_state)
+						[p_exception](bc_server_tcp_client_socket_error_state& p_error_state)
 						{
 							p_error_state.set_last_exception(p_exception);
 						}
@@ -112,7 +112,7 @@ namespace black_cat
 				return state_transition::empty();
 			}
 
-			state_transition handle(bc_server_client_socket_receive_event& p_event) override
+			state_transition handle(bc_server_tcp_client_socket_receive_event& p_event) override
 			{
 				try
 				{
@@ -138,9 +138,9 @@ namespace black_cat
 				}
 				catch (const bc_network_exception & p_exception)
 				{
-					return state_transition::transfer_to<bc_server_client_socket_error_state>
+					return state_transition::transfer_to<bc_server_tcp_client_socket_error_state>
 					(
-						[p_exception](bc_server_client_socket_error_state& p_error_state)
+						[p_exception](bc_server_tcp_client_socket_error_state& p_error_state)
 						{
 							p_error_state.set_last_exception(p_exception);
 						}
@@ -153,30 +153,30 @@ namespace black_cat
 			platform::bc_non_block_socket* m_socket;
 		};
 
-		class bc_server_client_socket_sending_state : public core::bc_state<bc_server_client_socket_state_machine, bc_server_client_socket_update_event>
+		class bc_server_tcp_client_socket_sending_state : public core::bc_state<bc_server_tcp_client_socket_state_machine, bc_server_tcp_client_socket_update_event>
 		{
 		public:
-			bc_server_client_socket_sending_state(platform::bc_non_block_socket& p_socket)
+			bc_server_tcp_client_socket_sending_state(platform::bc_non_block_socket& p_socket)
 				: m_socket(&p_socket)
 			{
 			}
 
 		private:
-			state_transition handle(bc_server_client_socket_update_event& p_event) override
+			state_transition handle(bc_server_tcp_client_socket_update_event& p_event) override
 			{
 				try
 				{
 					const bool l_is_available = m_socket->is_send_available();
 					if (l_is_available)
 					{
-						return state_transition::transfer_to<bc_server_client_socket_connected_state>();
+						return state_transition::transfer_to<bc_server_tcp_client_socket_connected_state>();
 					}
 				}
 				catch (const bc_network_exception& p_exception)
 				{
-					return state_transition::transfer_to<bc_server_client_socket_error_state>
+					return state_transition::transfer_to<bc_server_tcp_client_socket_error_state>
 					(
-						[p_exception](bc_server_client_socket_error_state& p_error_state)
+						[p_exception](bc_server_tcp_client_socket_error_state& p_error_state)
 						{
 							p_error_state.set_last_exception(p_exception);
 						}
@@ -189,30 +189,30 @@ namespace black_cat
 			platform::bc_non_block_socket* m_socket;
 		};
 
-		class bc_server_client_socket_state_machine : public core::bc_state_machine
+		class bc_server_tcp_client_socket_state_machine : public core::bc_state_machine
 		<
-			bc_server_client_socket_connected_state,
-			bc_server_client_socket_sending_state,
-			bc_server_client_socket_error_state
+			bc_server_tcp_client_socket_connected_state,
+			bc_server_tcp_client_socket_sending_state,
+			bc_server_tcp_client_socket_error_state
 		>
 		{
 		public:
-			bc_server_client_socket_state_machine(platform::bc_non_block_socket& p_socket)
+			bc_server_tcp_client_socket_state_machine(platform::bc_non_block_socket& p_socket)
 				: bc_state_machine
 				(
-					bc_server_client_socket_connected_state(p_socket),
-					bc_server_client_socket_sending_state(p_socket),
-					bc_server_client_socket_error_state(p_socket)
+					bc_server_tcp_client_socket_connected_state(p_socket),
+					bc_server_tcp_client_socket_sending_state(p_socket),
+					bc_server_tcp_client_socket_error_state(p_socket)
 				),
 				m_socket(&p_socket)
 			{
 			}
 
-			bc_server_client_socket_state_machine(bc_server_client_socket_state_machine&&) noexcept = default;
+			bc_server_tcp_client_socket_state_machine(bc_server_tcp_client_socket_state_machine&&) noexcept = default;
 
-			~bc_server_client_socket_state_machine() = default;
+			~bc_server_tcp_client_socket_state_machine() = default;
 
-			bc_server_client_socket_state_machine& operator=(bc_server_client_socket_state_machine&&) noexcept = default;
+			bc_server_tcp_client_socket_state_machine& operator=(bc_server_tcp_client_socket_state_machine&&) noexcept = default;
 
 			platform::bc_non_block_socket& get_socket() noexcept
 			{

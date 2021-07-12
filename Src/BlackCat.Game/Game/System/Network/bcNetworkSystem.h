@@ -19,9 +19,15 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_game_system;
 		class bc_actor;
+
+		struct bc_network_system_parameter
+		{
+			bc_game_system& m_game_system;
+		};
 		
-		class BC_GAME_DLL bc_network_system : public core::bc_initializable<>
+		class BC_GAME_DLL bc_network_system : public core::bc_initializable<bc_network_system_parameter>
 		{
 		private:
 			using command_create_delegate = core::bc_delegate<bc_network_message_ptr()>;
@@ -57,13 +63,14 @@ namespace black_cat
 			void register_messages();
 			
 		private:
-			void _initialize() override;
+			void _initialize(bc_network_system_parameter p_param) override;
 			
 			void _destroy() override;
 
 			template<class TCommand>
 			void _register_message();
 
+			bc_game_system* m_game_system;
 			message_factory_container m_message_factories;
 			core::bc_unique_ptr<bci_network_manager> m_manager;
 		};

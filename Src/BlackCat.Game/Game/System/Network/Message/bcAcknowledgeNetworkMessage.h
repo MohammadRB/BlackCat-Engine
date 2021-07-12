@@ -31,30 +31,12 @@ namespace black_cat
 			void execute(const bc_network_message_server_context& p_context) noexcept override;
 		
 		private:
-			void serialize_message(core::bc_json_key_value& p_params) const override;
+			void serialize_message(const bc_network_message_serialization_context& p_context) override;
 
-			void deserialize_message(const core::bc_json_key_value& p_params) override;
+			void deserialize_message(const bc_network_message_deserialization_context& p_context) override;
 
 			bc_network_message_id m_ack_message_id;
 		};
-
-		inline bc_acknowledge_network_message::bc_acknowledge_network_message()
-			: bci_network_message(message_name()),
-			m_ack_message_id(0)
-		{
-		}
-
-		inline bc_acknowledge_network_message::bc_acknowledge_network_message(bc_network_message_id p_acknowledged_message_id)
-			: bc_acknowledge_network_message()
-		{
-			m_ack_message_id = p_acknowledged_message_id;
-		}
-
-		inline bc_acknowledge_network_message::bc_acknowledge_network_message(bc_acknowledge_network_message&&) noexcept = default;
-
-		inline bc_acknowledge_network_message::~bc_acknowledge_network_message() = default;
-
-		inline bc_acknowledge_network_message& bc_acknowledge_network_message::operator=(bc_acknowledge_network_message&&) noexcept = default;
 
 		inline bc_network_message_id bc_acknowledge_network_message::get_acknowledged_message_id() const noexcept
 		{

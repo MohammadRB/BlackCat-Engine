@@ -19,7 +19,7 @@ namespace black_cat
 		
 		BC_JSON_STRUCTURE(bc_network_packet)
 		{
-			black_cat::core::bc_json_value<bc_network_packet_time> m_time { "time", this };
+			BC_JSON_VALUE(bc_network_packet_time, time);
 			BC_JSON_ARRAY(bc_network_packet_command, commands);
 		};
 
@@ -38,16 +38,16 @@ namespace black_cat
 		{
 		}
 
-		std::pair<core::bc_memory_stream*, bcUINT32> bc_network_message_buffer::serialize(bc_network_packet_time p_time, const core::bc_span<bc_network_message_ptr>& p_messages)
+		std::pair<core::bc_memory_stream*, bcUINT32> bc_network_message_buffer::serialize(const bc_network_packet_time p_time, const core::bc_span<bc_network_message_ptr>& p_messages)
 		{
 			core::bc_json_document<bc_network_packet> l_json_packet;
 			l_json_packet->m_time.set(p_time);
 
-			for (auto& l_command : p_messages)
+			for (const auto& l_command : p_messages)
 			{
 				auto& l_json_command = l_json_packet->m_commands.new_entry();
 				*l_json_command->m_hash = l_command->get_message_hash();
-				l_command->serialize(*l_json_command->m_values);
+				l_command->serialize(bc_network_message_serialization_context{ *l_json_command->m_values });
 			}
 
 			const auto l_packet_str = l_json_packet.write();
@@ -58,7 +58,9 @@ namespace black_cat
 			return std::make_pair<core::bc_memory_stream*, bcUINT32>(&m_serialize_buffer, l_packet_str.size());
 		}
 
-		std::pair<bc_network_packet_time, core::bc_span<bc_network_message_ptr>> bc_network_message_buffer::deserialize(core::bc_memory_stream& p_buffer, bcUINT32 p_buffer_size)
+		std::pair<bc_network_packet_time, core::bc_span<bc_network_message_ptr>> bc_network_message_buffer::deserialize(bci_network_message_deserialization_bridge& p_bridge, 
+			core::bc_memory_stream& p_buffer,
+			bcUINT32 p_buffer_size)
 		{
 			const core::bc_string_frame l_str(static_cast<const bcCHAR*>(p_buffer.get_position_data()), p_buffer_size);
 			core::bc_json_document<bc_network_packet> l_json_packet;
@@ -73,11 +75,11 @@ namespace black_cat
 					continue;
 				}
 				
-				l_command->deserialize(*l_json_command->m_values);
+				l_command->deserialize(bc_network_message_deserialization_context{ p_bridge, *l_json_command->m_values });
 				m_deserialize_buffer.push_back(std::move(l_command));
 			}
 
 			return std::make_pair(*l_json_packet->m_time, core::bc_make_span(m_deserialize_buffer));
 		}
-	}	
+	}
 }

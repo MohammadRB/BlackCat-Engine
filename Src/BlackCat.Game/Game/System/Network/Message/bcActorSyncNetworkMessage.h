@@ -3,12 +3,13 @@
 #pragma once
 
 #include "Game/System/Network/Message/bcNetworkMessage.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		class bc_actor_sync_network_message : public bci_network_message
+		class BC_GAME_DLL bc_actor_sync_network_message : public bci_network_message
 		{
 			BC_NETWORK_MESSAGE(act_syc)
 			
@@ -22,28 +23,9 @@ namespace black_cat
 			bc_actor_sync_network_message& operator=(bc_actor_sync_network_message&&) noexcept;
 		
 		private:
-			void serialize_message(core::bc_json_key_value& p_params) const override;
+			void serialize_message(const bc_network_message_serialization_context& p_context) override;
 			
-			void deserialize_message(const core::bc_json_key_value& p_params) override;
+			void deserialize_message(const bc_network_message_deserialization_context& p_context) override;
 		};
-
-		inline bc_actor_sync_network_message::bc_actor_sync_network_message()
-			: bci_network_message(message_name())
-		{
-		}
-
-		inline bc_actor_sync_network_message::bc_actor_sync_network_message(bc_actor_sync_network_message&&) noexcept = default;
-
-		inline bc_actor_sync_network_message::~bc_actor_sync_network_message() = default;
-
-		inline bc_actor_sync_network_message& bc_actor_sync_network_message::operator=(bc_actor_sync_network_message&&) noexcept = default;
-
-		inline void bc_actor_sync_network_message::serialize_message(core::bc_json_key_value& p_params) const
-		{
-		}
-
-		inline void bc_actor_sync_network_message::deserialize_message(const core::bc_json_key_value& p_params)
-		{
-		}
 	}	
 }

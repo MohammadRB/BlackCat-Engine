@@ -9,7 +9,13 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_scene;
 		class bc_actor;
+
+		struct bc_network_manager_update_context
+		{
+			const core_platform::bc_clock::update_param& m_clock;
+		};
 		
 		class bci_network_manager
 		{
@@ -22,7 +28,7 @@ namespace black_cat
 			
 			virtual void send_message(bc_network_message_ptr p_message) = 0;
 
-			virtual void update(const core_platform::bc_clock::update_param& p_clock) = 0;
+			virtual void update(const bc_network_manager_update_context& p_context) = 0;
 
 			template<class TMessage, typename = std::enable_if_t<!std::is_same_v<TMessage, bc_network_message_ptr>>>
 			void send_message(TMessage p_message);

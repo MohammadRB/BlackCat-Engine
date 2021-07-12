@@ -15,6 +15,8 @@ namespace black_cat
 	namespace game
 	{
 		class bc_network_system;
+		class bc_scene;
+		
 		using bc_network_packet_time = core_platform::bc_clock::big_clock;
 
 		BC_GAME_DLL bc_network_packet_time bc_current_packet_time() noexcept;
@@ -40,7 +42,9 @@ namespace black_cat
 			
 			std::pair<core::bc_memory_stream*, bcUINT32> serialize(bc_network_packet_time p_time, const core::bc_span<bc_network_message_ptr>& p_messages);
 
-			std::pair<bc_network_packet_time, core::bc_span<bc_network_message_ptr>> deserialize(core::bc_memory_stream& p_buffer, bcUINT32 p_buffer_size);
+			std::pair<bc_network_packet_time, core::bc_span<bc_network_message_ptr>> deserialize(bci_network_message_deserialization_bridge& p_bridge, 
+				core::bc_memory_stream& p_buffer,
+				bcUINT32 p_buffer_size);
 
 		private:
 			bc_network_system* m_network_system;

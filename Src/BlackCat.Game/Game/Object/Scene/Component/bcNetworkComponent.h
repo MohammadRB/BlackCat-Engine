@@ -9,6 +9,13 @@ namespace black_cat
 {
 	namespace game
 	{
+		enum class bc_actor_network_data_dir
+		{
+			upload,
+			upload_stream,
+			download
+		};
+		
 		class BC_GAME_DLL bc_network_component : public bci_actor_component
 		{
 			BC_COMPONENT(ntwr, true, false)
@@ -36,6 +43,7 @@ namespace black_cat
 			
 		private:
 			bc_actor_network_id m_id;
+			bc_actor_network_data_dir m_data_dir;
 		};
 
 		inline bc_actor_network_id bc_network_component::get_network_id() const noexcept

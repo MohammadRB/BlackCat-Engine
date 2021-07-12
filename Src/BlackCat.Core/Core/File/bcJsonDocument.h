@@ -232,6 +232,11 @@ namespace black_cat
 				return m_key_values.rbegin().base();
 			}
 
+			iterator add(bc_string p_key, bc_any p_value)
+			{
+				return add(std::make_pair(std::move(p_key), std::move(p_value)));
+			}
+
 			void remove(const bcCHAR* p_key)
 			{
 				auto l_current = std::begin(m_key_values);
@@ -252,7 +257,7 @@ namespace black_cat
 				m_key_values.clear();
 			}
 
-			void reserve(size_type p_new_capacity)
+			void reserve(const size_type p_new_capacity)
 			{
 				m_key_values.reserve(p_new_capacity);
 			}

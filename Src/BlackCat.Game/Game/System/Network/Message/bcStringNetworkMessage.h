@@ -25,9 +25,9 @@ namespace black_cat
 			bc_string_network_message& operator=(bc_string_network_message&&) noexcept;
 
 		private:
-			void serialize_message(core::bc_json_key_value& p_params) const override;
+			void serialize_message(const bc_network_message_serialization_context& p_context) override;
 
-			void deserialize_message(const core::bc_json_key_value& p_params) override;
+			void deserialize_message(const bc_network_message_deserialization_context& p_context) override;
 
 			core::bc_string m_str;
 		};
@@ -49,14 +49,14 @@ namespace black_cat
 
 		inline bc_string_network_message& bc_string_network_message::operator=(bc_string_network_message&&) noexcept = default;
 
-		inline void bc_string_network_message::serialize_message(core::bc_json_key_value& p_params) const
+		inline void bc_string_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
 		{
-			p_params.add(std::make_pair("str", core::bc_any(m_str)));
+			p_context.m_params.add("str", core::bc_any(m_str));
 		}
 
-		inline void bc_string_network_message::deserialize_message(const core::bc_json_key_value& p_params)
+		inline void bc_string_network_message::deserialize_message(const bc_network_message_deserialization_context& p_context)
 		{
-			const auto l_str = p_params.find("str")->second.as<core::bc_string>();
+			const auto* l_str = p_context.m_params.find("str")->second.as<core::bc_string>();
 			if(l_str)
 			{
 				m_str = *l_str;
