@@ -18,7 +18,7 @@ namespace black_cat
 		public:
 			bc_actor_replicate_network_message();
 
-			explicit bc_actor_replicate_network_message(const bc_actor& p_actor_to_serialize);
+			explicit bc_actor_replicate_network_message(const bc_actor& p_actor);
 
 			bc_actor_replicate_network_message(bc_actor_replicate_network_message&&) noexcept;
 
@@ -37,7 +37,7 @@ namespace black_cat
 
 			void deserialize_message(const bc_network_message_deserialization_context& p_context) override;
 
-			bc_actor m_actor_to_serialize;
+			bc_actor m_actor;
 		};
 
 		inline bool bc_actor_replicate_network_message::need_acknowledgment() const noexcept

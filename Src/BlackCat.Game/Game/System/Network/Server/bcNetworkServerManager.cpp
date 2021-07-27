@@ -3,8 +3,10 @@
 #include "Game/GamePCH.h"
 
 #include "Core/Utility/bcLogger.h"
-#include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/Object/Scene/bcScene.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/System/Network/Server/bcNetworkServerManager.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 #include "Game/System/Network/Message/bcClientConnectNetworkMessage.h"
@@ -87,8 +89,8 @@ namespace black_cat
 			}
 			
 			l_network_component->set_network_id(l_actor_network_id);
-			// TODO
-			send_message(bc_make_network_message(bc_actor_replicate_network_message()));
+			
+			send_message(bc_actor_replicate_network_message(p_actor));
 		}
 
 		void bc_network_server_manager::remove_actor(bc_actor& p_actor)
@@ -114,7 +116,7 @@ namespace black_cat
 
 			l_network_component->set_network_id(bc_actor::invalid_id);
 			// TODO
-			send_message(bc_make_network_message(bc_actor_remove_network_message()));
+			send_message(bc_actor_remove_network_message());
 		}
 
 		void bc_network_server_manager::send_message(bc_network_message_ptr p_message)
@@ -231,9 +233,26 @@ namespace black_cat
 			l_client->erase_message_with_acknowledgment(p_message_id);
 		}
 		
-		bc_actor bc_network_server_manager::create_actor(const bcCHAR* p_entity_name, const core::bc_json_key_value& p_params)
+		bc_actor bc_network_server_manager::create_actor(const bcCHAR* p_entity_name)
 		{
-			return bc_actor();
+			auto l_actor = m_game_system->get_scene()->create_actor(p_entity_name, core::bc_matrix4f::identity());
+
+			return l_actor;
+		}
+
+		bc_actor bc_network_server_manager::get_actor(bc_actor_network_id p_actor_network_id)
+		{
+			{
+				core_platform::bc_mutex_guard l_lock(m_actors_lock);
+
+				const auto l_ite = m_network_actors.find(p_actor_network_id);
+				if (l_ite == std::end(m_network_actors))
+				{
+					return bc_actor();
+				}
+
+				return l_ite->second;
+			}
 		}
 
 		void bc_network_server_manager::_retry_messages_with_acknowledgment(bc_network_packet_time p_current_time, bc_network_server_manager_client& p_client)

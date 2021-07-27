@@ -3,8 +3,10 @@
 #include "Game/GamePCH.h"
 
 #include "Core/Utility/bcLogger.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/System/Network/Client/bcNetworkClientManager.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 #include "Game/System/Network/Message/bcClientConnectNetworkMessage.h"
@@ -98,8 +100,7 @@ namespace black_cat
 				return;
 			}
 
-			// TODO
-			send_message(bc_actor_replicate_network_message());
+			send_message(bc_actor_replicate_network_message(p_actor));
 		}
 
 		void bc_network_client_manager::remove_actor(bc_actor& p_actor)
@@ -180,21 +181,12 @@ namespace black_cat
 			m_socket_is_ready = false;
 		}
 
-		void bc_network_client_manager::connection_approved()
+		void bc_network_client_manager::visitor_connection_approved()
 		{
 			m_hook->connected_to_server(m_address);
 		}
 
-		void bc_network_client_manager::actor_replicated(bc_actor& p_actor)
-		{
-			{
-				core::bc_mutex_test_guard l_lock(m_actors_lock);
-
-				m_sync_actors.push_back(p_actor);
-			}
-		}
-		
-		void bc_network_client_manager::acknowledge_message(bc_network_message_id p_message_id)
+		void bc_network_client_manager::visitor_acknowledge_message(bc_network_message_id p_message_id)
 		{
 			bc_network_message_ptr l_message;
 
@@ -226,11 +218,44 @@ namespace black_cat
 				});
 		}
 		
-		bc_actor bc_network_client_manager::create_actor(const bcCHAR* p_entity_name, const core::bc_json_key_value& p_params)
+		void bc_network_client_manager::visitor_replicate_actor(bc_actor& p_actor)
 		{
-			return bc_actor();
+			auto* l_network_component = p_actor.get_component<bc_network_component>();
+			if (!l_network_component || l_network_component->get_network_id() == bc_actor::invalid_id)
+			{
+				core::bc_log(core::bc_log_type::error, bcL("actor without network component or invalid network id cannot be added to network sync process"));
+				return;
+			}
+			
+			{
+				core::bc_mutex_test_guard l_lock(m_actors_lock);
+
+				m_network_actors.insert(std::make_pair(l_network_component->get_network_id(), p_actor));
+			}
 		}
 		
+		bc_actor bc_network_client_manager::visitor_create_actor(const bcCHAR* p_entity_name)
+		{
+			auto l_actor = m_game_system->get_scene()->create_actor(p_entity_name, core::bc_matrix4f::identity());
+			
+			return l_actor;
+		}
+
+		bc_actor bc_network_client_manager::visitor_get_actor(bc_actor_network_id p_actor_network_id)
+		{
+			{
+				core::bc_mutex_test_guard l_lock(m_actors_lock);
+
+				const auto l_ite = m_network_actors.find(p_actor_network_id);
+				if(l_ite == std::end(m_network_actors))
+				{
+					return bc_actor();
+				}
+
+				return l_ite->second;
+			}
+		}
+
 		void bc_network_client_manager::_retry_messages_with_acknowledgment(bc_network_packet_time p_current_time)
 		{
 			for(auto& l_msg : m_messages_waiting_acknowledgment)

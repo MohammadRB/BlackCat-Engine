@@ -23,12 +23,12 @@ namespace black_cat
 		
 		void bc_client_connect_network_message::acknowledge(const bc_network_message_client_context& p_context) noexcept
 		{
-			p_context.m_bridge.connection_approved();
+			p_context.m_visitor.connection_approved();
 		}
 
 		void bc_client_connect_network_message::execute(const bc_network_message_server_context& p_context) noexcept
 		{
-			p_context.m_bridge.client_connected(p_context.m_address);
+			p_context.m_visitor.client_connected(p_context.m_address);
 		}
 
 		void bc_client_connect_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
@@ -41,7 +41,7 @@ namespace black_cat
 
 		void bc_client_disconnect_network_message::execute(const bc_network_message_server_context& p_context) noexcept
 		{
-			p_context.m_bridge.client_disconnected(p_context.m_address);
+			p_context.m_visitor.client_disconnected(p_context.m_address);
 		}
 		
 		void bc_client_disconnect_network_message::serialize_message(const bc_network_message_serialization_context& p_context)

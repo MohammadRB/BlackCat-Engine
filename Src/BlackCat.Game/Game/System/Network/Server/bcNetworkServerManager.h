@@ -27,8 +27,8 @@ namespace black_cat
 		class bc_network_system;
 
 		class BC_GAME_DLL bc_network_server_manager : public bci_network_manager,
-				public bci_network_message_deserialization_bridge,
-				public bci_network_message_server_bridge,
+				public bci_network_message_deserialization_visitor,
+				public bci_network_message_server_visitor,
 				private bc_server_socket_state_machine
 		{
 		public:
@@ -62,7 +62,9 @@ namespace black_cat
 
 			void acknowledge_message(const platform::bc_network_address& p_address, bc_network_message_id p_message_id) override;
 			
-			bc_actor create_actor(const bcCHAR* p_entity_name, const core::bc_json_key_value& p_params) override;
+			bc_actor create_actor(const bcCHAR* p_entity_name) override;
+
+			bc_actor get_actor(bc_actor_network_id p_actor_network_id) override;
 			
 			void _retry_messages_with_acknowledgment(bc_network_packet_time p_current_time, bc_network_server_manager_client& p_client);
 			

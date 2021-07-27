@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "CorePlatformImp/Utility/bcClock.h"
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/Messaging/bcMessage.h"
 #include "Core/File/bcJsonDocument.h"
 #include "PlatformImp/Network/bcNetworkAddress.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/bcConstant.h"
 #include "Game/bcExport.h"
 
@@ -32,11 +32,10 @@ namespace black_cat
 			}
 		};
 
-		class bc_actor;
 		class bc_network_system;
-		class bci_network_message_server_bridge;
-		class bci_network_message_client_bridge;
-		class bci_network_message_deserialization_bridge;
+		class bci_network_message_deserialization_visitor;
+		class bci_network_message_server_visitor;
+		class bci_network_message_client_visitor;
 		class bci_network_message;
 		using bc_network_message_ptr = core::bc_shared_ptr<bci_network_message>;
 
@@ -53,19 +52,19 @@ namespace black_cat
 
 		struct bc_network_message_deserialization_context
 		{
-			bci_network_message_deserialization_bridge& m_bridge;
+			bci_network_message_deserialization_visitor& m_visitor;
 			const core::bc_json_key_value& m_params;
 		};
 		
 		struct bc_network_message_client_context
 		{
-			bci_network_message_client_bridge& m_bridge;
+			bci_network_message_client_visitor& m_visitor;
 		};
 
 		struct bc_network_message_server_context
 		{
 			const platform::bc_network_address& m_address;
-			bci_network_message_server_bridge& m_bridge;
+			bci_network_message_server_visitor& m_visitor;
 		};
 		
 		class BC_GAME_DLL bci_network_message : public core::bci_message
@@ -154,18 +153,20 @@ namespace black_cat
 			return false;
 		}
 
-		class bci_network_message_deserialization_bridge
+		class bci_network_message_deserialization_visitor
 		{
 		public:
-			virtual bc_actor create_actor(const bcCHAR* p_entity_name, const core::bc_json_key_value& p_params) = 0;
+			virtual bc_actor create_actor(const bcCHAR* p_entity_name) = 0;
+
+			virtual bc_actor get_actor(bc_actor_network_id p_actor_network_id) = 0;
 
 		protected:
-			bci_network_message_deserialization_bridge() = default;
+			bci_network_message_deserialization_visitor() = default;
 
-			~bci_network_message_deserialization_bridge() = default;
+			~bci_network_message_deserialization_visitor() = default;
 		};
 
-		class bci_network_message_server_bridge
+		class bci_network_message_server_visitor
 		{
 		public:
 			virtual void client_connected(const platform::bc_network_address& p_address) = 0;
@@ -175,24 +176,26 @@ namespace black_cat
 			virtual void acknowledge_message(const platform::bc_network_address& p_address, bc_network_message_id p_message_id) = 0;
 
 		protected:
-			bci_network_message_server_bridge() = default;
+			bci_network_message_server_visitor() = default;
 
-			~bci_network_message_server_bridge() = default;
+			~bci_network_message_server_visitor() = default;
 		};
 
-		class bci_network_message_client_bridge
+		class bci_network_message_client_visitor
 		{
 		public:
 			virtual void connection_approved() = 0;
 
-			virtual void actor_replicated(bc_actor& p_actor) = 0;
-
 			virtual void acknowledge_message(bc_network_message_id p_message_id) = 0;
 
-		protected:
-			bci_network_message_client_bridge() = default;
+			virtual void replicate_actor(bc_actor& p_actor) = 0;
 
-			~bci_network_message_client_bridge() = default;
+			virtual void remove_actor(bc_actor& p_actor) = 0;
+
+		protected:
+			bci_network_message_client_visitor() = default;
+
+			~bci_network_message_client_visitor() = default;
 		};
 	}
 }

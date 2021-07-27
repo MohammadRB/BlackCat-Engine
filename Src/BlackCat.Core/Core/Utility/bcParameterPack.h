@@ -3,11 +3,10 @@
 #pragma once
 
 #include <utility>
-
-#include "Core/CorePCH.h"
-#include "Core/bcException.h"
 #include "Core/Memory/bcAlloc.h"
 #include "Core/Container/bcAllocator.h"
+#include "Core/Container/bcString.h"
+#include "Core/bcException.h"
 
 namespace black_cat
 {
@@ -131,7 +130,7 @@ namespace black_cat
 			bool used_internal_buffer() const;
 
 		private:
-			static constexpr bcUINT s_buffer_size = 5 * sizeof(void*);
+			static constexpr bcUINT s_buffer_size = sizeof(bc_string);
 
 			bcBYTE m_buffer[s_buffer_size];
 			_bc_parameter_pack_object* m_object;
