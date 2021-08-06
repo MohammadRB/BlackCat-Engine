@@ -87,7 +87,7 @@ namespace black_cat
 			throw bc_invalid_argument_exception((core::bc_to_string(p_context.m_file_path) + " Unknown image file format").c_str());
 		}
 
-		graphic::bc_device& l_device = core::bc_get_service< game::bc_game_system >()->get_render_system().get_device();
+		graphic::bc_device& l_device = core::bc_get_service<game::bc_game_system>()->get_render_system().get_device();
 		const graphic::bc_texture_config* l_config = p_context.m_instance_parameters.get_value<graphic::bc_texture_config>(constant::g_param_texture_config);
 
 		l_config = l_config ? l_config : &s_default_config;
@@ -105,7 +105,7 @@ namespace black_cat
 
 	void bc_texture_loader::content_processing(core::bc_content_saving_context& p_context) const
 	{
-		auto* l_game_system = core::bc_get_service< game::bc_game_system >();
+		auto* l_game_system = core::bc_get_service<game::bc_game_system>();
 		auto& l_device = l_game_system->get_render_system().get_device();
 		auto* l_texture_content = static_cast<graphic::bc_texture2d_content*>(p_context.m_content);
 

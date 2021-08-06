@@ -25,54 +25,9 @@ namespace black_cat
 		class bc_game_system;
 		class bc_network_system;
 
-		class bc_network_client_manager_visitor : private bci_network_message_deserialization_visitor, private bci_network_message_client_visitor
-		{
-		private:
-			bc_actor create_actor(const bcCHAR* p_entity_name) override final
-			{
-				return visitor_create_actor(p_entity_name);
-			}
-
-			bc_actor get_actor(bc_actor_network_id p_actor_network_id) override final
-			{
-				return visitor_get_actor(p_actor_network_id);
-			}
-			
-			void connection_approved() override final
-			{
-				visitor_connection_approved();
-			}
-
-			void acknowledge_message(bc_network_message_id p_message_id) override final
-			{
-				visitor_acknowledge_message(p_message_id);
-			}
-
-			void replicate_actor(bc_actor& p_actor) override final
-			{
-				visitor_replicate_actor(p_actor);
-			}
-
-			void remove_actor(bc_actor& p_actor) override final
-			{
-				visitor_remove_actor(p_actor);
-			}
-
-			virtual bc_actor visitor_create_actor(const bcCHAR* p_entity_name) = 0;
-
-			virtual bc_actor visitor_get_actor(bc_actor_network_id p_actor_network_id) = 0;
-
-			virtual void visitor_connection_approved() = 0;
-
-			virtual void visitor_acknowledge_message(bc_network_message_id p_message_id) = 0;
-
-			virtual void visitor_replicate_actor(bc_actor& p_actor) = 0;
-
-			virtual void visitor_remove_actor(bc_actor& p_actor) = 0;
-		};
-		
 		class BC_GAME_DLL bc_network_client_manager : public bci_network_manager,
-				private bc_network_client_manager_visitor,
+				private bci_network_message_deserialization_visitor,
+				private bci_network_message_client_visitor,
 				private bc_client_socket_state_machine
 		{
 		public:
@@ -90,9 +45,9 @@ namespace black_cat
 
 			bc_network_client_manager& operator=(bc_network_client_manager&&) noexcept;
 
-			void add_actor(bc_actor& p_actor) override;
+			void add_actor_to_sync(bc_actor& p_actor) override;
 			
-			void remove_actor(bc_actor& p_actor) override;
+			void remove_actor_from_sync(bc_actor& p_actor) override;
 			
 			void send_message(bc_network_message_ptr p_message) override;
 			
@@ -107,22 +62,24 @@ namespace black_cat
 
 			void on_enter(bc_client_socket_sending_state& p_state) override;
 
-			void visitor_connection_approved() override;
+			void connection_approved() override;
 			
-			void visitor_acknowledge_message(bc_network_message_id p_message_id) override;
+			void acknowledge_message(bc_network_message_id p_message_id) override;
 
-			void visitor_replicate_actor(bc_actor& p_actor) override;
+			void replicate_actor(bc_actor& p_actor) override;
+
+			void remove_actor(bc_actor& p_actor) override;
 			
-			bc_actor visitor_create_actor(const bcCHAR* p_entity_name) override;
+			bc_actor create_actor(const bcCHAR* p_entity_name) override;
 
-			bc_actor visitor_get_actor(bc_actor_network_id p_actor_network_id) override;
+			bc_actor get_actor(bc_actor_network_id p_actor_network_id) override;
 			
 			void _retry_messages_with_acknowledgment(bc_network_packet_time p_current_time);
 			
 			void _send_to_server();
 			
 			void _receive_from_server();
-
+			
 			bc_game_system* m_game_system;
 			
 			bool m_socket_is_connected;

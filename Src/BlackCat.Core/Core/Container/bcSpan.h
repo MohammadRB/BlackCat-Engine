@@ -284,7 +284,7 @@ namespace black_cat
 		template< typename T >
 		constexpr typename bc_span<T>::reference bc_span<T>::back()
 		{
-			return base_type::m_data[m_size - 1];
+			return base_type::m_data[base_type::m_size - 1];
 		}
 
 		template< typename T >

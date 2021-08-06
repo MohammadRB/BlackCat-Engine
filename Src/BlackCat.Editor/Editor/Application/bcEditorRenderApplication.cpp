@@ -67,28 +67,11 @@ namespace black_cat
 			auto& l_input_system = m_game_system->get_input_system();
 			auto& l_global_config = get_global_config();
 			
+			bool l_camera_read = false;
 			core::bc_vector3f l_camera_pos;
 			core::bc_vector3f l_camera_look_at;
-			core::bc_any l_config_value;
-
-			l_config_value.reset();
-			l_global_config.read_config_key("camera_position_x", l_config_value);
-			l_camera_pos.x = bc_null_default(l_config_value.as<bcFLOAT>(), 0);
-			l_config_value.reset();
-			l_global_config.read_config_key("camera_position_y", l_config_value);
-			l_camera_pos.y = bc_null_default(l_config_value.as<bcFLOAT>(), 0);
-			l_config_value.reset();
-			l_global_config.read_config_key("camera_position_z", l_config_value);
-			l_camera_pos.z = bc_null_default(l_config_value.as<bcFLOAT>(), 0);
-			l_config_value.reset();
-			l_global_config.read_config_key("camera_lookat_x", l_config_value);
-			l_camera_look_at.x = bc_null_default(l_config_value.as<bcFLOAT>(), 0);
-			l_config_value.reset();
-			l_global_config.read_config_key("camera_lookat_y", l_config_value);
-			l_camera_look_at.y = bc_null_default(l_config_value.as<bcFLOAT>(), 0);
-			l_config_value.reset();
-			l_global_config.read_config_key("camera_lookat_z", l_config_value);
-			l_camera_look_at.z = bc_null_default(l_config_value.as<bcFLOAT>(), 1);
+			l_global_config.read_config_key("camera_position", l_camera_pos, l_camera_read);
+			l_global_config.read_config_key("camera_lookat", l_camera_look_at, l_camera_read);
 
 			auto l_camera = core::bc_make_unique<game::bc_free_camera>
 			(
@@ -121,14 +104,14 @@ namespace black_cat
 			core::bc_get_service<core::bc_event_manager>()->process_event(l_editor_mode_event);
 		}
 
-		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager* p_stream_manager)
+		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager& p_stream_manager)
 		{
 			core::bc_get_service<bc_ui_command_service>()->load_content();
 
-			auto* l_content_manager = core::bc_get_service< core::bc_content_manager >();
+			auto* l_content_manager = core::bc_get_service<core::bc_content_manager>();
 			auto& l_file_system = m_game_system->get_file_system();
 
-			const auto l_scene = l_content_manager->load< game::bc_scene >
+			const auto l_scene = l_content_manager->load<game::bc_scene>
 			(
 				l_file_system.get_content_path(bcL("Scene\\Test.json")).c_str(),
 				nullptr,
@@ -202,26 +185,27 @@ namespace black_cat
 			}
 
 			auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event);
-			if(l_exit_event)
+			if (l_exit_event)
 			{
 				auto& l_global_config = get_global_config();
-				auto& l_camera = *m_game_system->get_input_system().get_camera();
-				const auto l_camera_position = l_camera.get_position();
-				const auto l_camera_target = l_camera.get_look_at();
+				auto* l_camera = m_game_system->get_input_system().get_camera();
+				if (!l_camera)
+				{
+					return true;
+				}
 
-				l_global_config.add_or_update_config_key("camera_position_x", core::bc_any(l_camera_position.x))
-				               .add_or_update_config_key("camera_position_y", core::bc_any(l_camera_position.y))
-				               .add_or_update_config_key("camera_position_z", core::bc_any(l_camera_position.z))
-				               .add_or_update_config_key("camera_lookat_x", core::bc_any(l_camera_target.x))
-				               .add_or_update_config_key("camera_lookat_y", core::bc_any(l_camera_target.y))
-				               .add_or_update_config_key("camera_lookat_z", core::bc_any(l_camera_target.z))
-				               .flush_changes();
+				const auto l_camera_position = l_camera->get_position();
+				const auto l_camera_target = l_camera->get_look_at();
+
+				l_global_config.add_or_update_config_key("camera_position", l_camera_position)
+					.add_or_update_config_key("camera_lookat", l_camera_target)
+					.flush_changes();
 			}
 
 			return false;
 		}
 
-		void bc_editor_render_app::application_unload_content(core::bc_content_stream_manager* p_stream_manager)
+		void bc_editor_render_app::application_unload_content(core::bc_content_stream_manager& p_stream_manager)
 		{
 			core::bc_get_service<bc_ui_command_service>()->unload_content();
 		}

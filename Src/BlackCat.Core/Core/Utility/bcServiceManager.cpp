@@ -81,13 +81,18 @@ namespace black_cat
 			}
 			else
 			{
-				throw bc_invalid_operation_exception("A service with the same name has already registered");
+				throw bc_invalid_operation_exception("A service with same name has already been registered");
 			}
 
-			std::sort(std::begin(m_sorted_services), std::end(m_sorted_services), [](const sorted_map_t::value_type p_first, const sorted_map_t::value_type p_second)
-			{
-				return p_first->m_priority < p_second->m_priority;
-			});
+			std::sort
+			(
+				std::begin(m_sorted_services),
+				std::end(m_sorted_services),
+				[](const sorted_map_t::value_type p_first, const sorted_map_t::value_type p_second)
+				{
+					return p_first->m_priority < p_second->m_priority;
+				}
+			);
 
 			return l_ite->second.m_service.get();
 		}

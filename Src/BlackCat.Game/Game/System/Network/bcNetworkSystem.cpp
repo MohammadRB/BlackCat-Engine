@@ -55,12 +55,12 @@ namespace black_cat
 
 		void bc_network_system::add_actor(bc_actor& p_actor)
 		{
-			m_manager->add_actor(p_actor);
+			m_manager->add_actor_to_sync(p_actor);
 		}
 
 		void bc_network_system::remove_actor(bc_actor& p_actor)
 		{
-			m_manager->remove_actor(p_actor);
+			m_manager->remove_actor_from_sync(p_actor);
 		}
 
 		bc_network_message_ptr bc_network_system::create_message_instance(bc_network_message_hash p_hash)

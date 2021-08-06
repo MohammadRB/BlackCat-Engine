@@ -51,7 +51,7 @@ namespace box
 		l_script_binder.bind(game::bc_script_context::app, *this);
 	}
 
-	void bx_server_application::application_load_content(core::bc_content_stream_manager* p_stream_manager)
+	void bx_server_application::application_load_content(core::bc_content_stream_manager& p_stream_manager)
 	{
 	}
 
@@ -89,7 +89,7 @@ namespace box
 		return false;
 	}
 
-	void bx_server_application::application_unload_content(core::bc_content_stream_manager* p_stream_manager)
+	void bx_server_application::application_unload_content(core::bc_content_stream_manager& p_stream_manager)
 	{
 	}
 
@@ -102,6 +102,7 @@ namespace box
 				m_server_script_object.reset();
 			}
 		}
+		m_game_system->get_console().set_implementation(nullptr);
 		m_console.reset();
 	}
 
@@ -124,14 +125,16 @@ namespace box
 		core::bc_log(core::bc_log_type::info) << "client disconnected" << core::bc_lend;
 	}
 
-	void bx_server_application::message_sent(game::bci_network_message& p_message)
+	void bx_server_application::message_packet_sent(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
 	{
-		core::bc_log(core::bc_log_type::debug) << "network message sent with hash '" << p_message.get_message_name() << "' and id " << p_message.get_id() << core::bc_lend;
+		core::bc_log(core::bc_log_type::debug) << "network message packet sent with size of '" << p_packet_size << "' bytes" << core::bc_lend;
+		//core::bc_log(core::bc_log_type::debug) << "network message sent with hash '" << p_message.get_message_name() << "' and id " << p_message.get_id() << core::bc_lend;
 	}
 
-	void bx_server_application::message_received(game::bci_network_message& p_message)
+	void bx_server_application::message_packet_received(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
 	{
-		core::bc_log(core::bc_log_type::debug) << "network message received with hash '" << p_message.get_message_name() << "' and id " << p_message.get_id() << core::bc_lend;
+		core::bc_log(core::bc_log_type::debug) << "network message packet received with size of '" << p_packet_size << "' bytes" << core::bc_lend;
+		//core::bc_log(core::bc_log_type::debug) << "network message received with hash '" << p_message.get_message_name() << "' and id " << p_message.get_id() << core::bc_lend;
 	}
 
 	void bx_server_application::error_occurred(const bc_network_exception* p_exception)

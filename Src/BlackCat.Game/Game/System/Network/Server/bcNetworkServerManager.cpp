@@ -72,7 +72,7 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_network_server_manager::add_actor(bc_actor& p_actor)
+		void bc_network_server_manager::add_actor_to_sync(bc_actor& p_actor)
 		{
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
 			if (!l_network_component)
@@ -93,10 +93,11 @@ namespace black_cat
 			send_message(bc_actor_replicate_network_message(p_actor));
 		}
 
-		void bc_network_server_manager::remove_actor(bc_actor& p_actor)
+		void bc_network_server_manager::remove_actor_from_sync(bc_actor& p_actor)
 		{
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
-			if (l_network_component->get_network_id() == bc_actor::invalid_id)
+			const auto l_network_id = l_network_component->get_network_id();
+			if (l_network_id == bc_actor::invalid_id)
 			{
 				return;
 			}
@@ -115,8 +116,8 @@ namespace black_cat
 			}
 
 			l_network_component->set_network_id(bc_actor::invalid_id);
-			// TODO
-			send_message(bc_actor_remove_network_message());
+			
+			send_message(bc_actor_remove_network_message(l_network_id));
 		}
 
 		void bc_network_server_manager::send_message(bc_network_message_ptr p_message)
@@ -277,7 +278,7 @@ namespace black_cat
 				
 				for (auto& l_actor : m_network_actors)
 				{
-					p_client.add_message(bc_make_network_message(bc_actor_sync_network_message()));
+					p_client.add_message(bc_make_network_message(bc_actor_sync_network_message(std::get<bc_actor>(l_actor))));
 				}
 
 				_retry_messages_with_acknowledgment(l_current_time, p_client);
@@ -291,11 +292,11 @@ namespace black_cat
 				const auto [l_stream, l_stream_size] = m_messages_buffer.serialize(l_current_time, l_client_messages);
 				bc_server_socket_send_event l_send_event{p_client.get_address(), *l_stream, l_stream_size};
 				bc_server_socket_state_machine::process_event(l_send_event);
+
+				m_hook->message_packet_sent(l_stream_size, core::bc_make_cspan(l_client_messages));
 				
 				for (auto& l_message : l_client_messages)
 				{
-					m_hook->message_sent(*l_message);
-
 					if (l_message->need_acknowledgment())
 					{
 						p_client.add_message_with_acknowledgment(bc_message_with_time 
@@ -329,6 +330,8 @@ namespace black_cat
 			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
 			const auto [l_packet_time, l_messages] = m_messages_buffer.deserialize(*this, m_memory_buffer, l_bytes_received);
 
+			m_hook->message_packet_received(l_bytes_received, core::bc_make_cspan(l_messages));
+			
 			if (!l_client)
 			{
 				// Check to see if a new client connection is requested
@@ -349,13 +352,12 @@ namespace black_cat
 					l_client = _find_client(l_address);
 					l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message->get_id())));
 
-					m_hook->message_received(*l_message);
 					break;
 				}
 								
 				return;
 			}
-
+			
 			const bc_network_message_id l_last_executed_message_id = l_client->get_last_executed_message_id();
 			bc_network_message_id l_max_message_id = 0;
 
@@ -381,7 +383,6 @@ namespace black_cat
 						*this
 					});
 
-					m_hook->message_received(*l_message);
 					l_max_message_id = std::max(l_max_message_id, l_message->get_id());
 				}
 			}

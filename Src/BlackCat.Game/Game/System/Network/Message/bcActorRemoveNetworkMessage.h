@@ -17,7 +17,7 @@ namespace black_cat
 		public:
 			bc_actor_remove_network_message();
 
-			explicit bc_actor_remove_network_message(bc_actor& p_actor);
+			explicit bc_actor_remove_network_message(bc_actor_network_id p_id);
 
 			bc_actor_remove_network_message(bc_actor_remove_network_message&&) noexcept;
 
@@ -36,7 +36,7 @@ namespace black_cat
 
 			void deserialize_message(const bc_network_message_deserialization_context& p_context) override;
 
-			bc_actor m_actor;
+			bc_actor_network_id m_id;
 		};
 
 		inline bool bc_actor_remove_network_message::need_acknowledgment() const noexcept

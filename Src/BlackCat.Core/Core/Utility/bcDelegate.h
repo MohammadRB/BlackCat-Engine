@@ -10,7 +10,7 @@ namespace black_cat
 	namespace core
 	{
 		// wrapper for free functions
-		template< typename TR, typename ...TA >
+		template<typename TR, typename ...TA>
 		class _functor_func
 		{
 		public:
@@ -51,7 +51,7 @@ namespace black_cat
 		};
 
 		// wrapper for member functions
-		template< typename TClass, typename TR, typename ...TA >
+		template<typename TClass, typename TR, typename ...TA>
 		class _functor_member_func
 		{
 		public:
@@ -95,7 +95,7 @@ namespace black_cat
 		};
 
 		// wrapper for const member functions
-		template< typename TClass, typename TR, typename ...TA >
+		template<typename TClass, typename TR, typename ...TA>
 		class _functor_const_member_func
 		{
 		public:
@@ -140,22 +140,22 @@ namespace black_cat
 
 		enum class bc_alloc_type : bcUBYTE;
 
-		template< typename T >
+		template<typename T>
 		class bc_delegate;
 		
 		// Delegate class that use internal buffer for it's allocations and never call dynamic memory
 		// allocation functions. In case of large functor objects that doesn't fit in this class use
 		// make_from_big_object method
-		template< typename TR, typename ...TA >
-		class bc_delegate< TR(TA...) >
+		template<typename TR, typename ...TA>
+		class bc_delegate<TR(TA...)>
 		{
 		public:
 			using this_type = bc_delegate<TR(TA...)>;
 			using result_type = TR;
 			using func_type = TR(*)(TA...);
-			template< typename TClass > 
+			template<typename TClass> 
 			using member_func_type = TR(TClass::*)(TA...);
-			template< typename TClass >
+			template<typename TClass>
 			using const_member_func_type = TR(TClass::*)(TA...) const;
 
 		public:
@@ -172,7 +172,7 @@ namespace black_cat
 				_bind(p_obj, p_func);
 			}
 
-			template< typename TObj >
+			template<typename TObj>
 			bc_delegate(const TObj& p_obj, const_member_func_type<TObj> p_func) noexcept
 			{
 				_bind(p_obj, p_func);
@@ -199,12 +199,12 @@ namespace black_cat
 				typename = std::enable_if_t // Disable template constructor for delegate type itself so copy ctor and move ctor has a chance to be called
 				<
 					(
-						!std::is_same_v< this_type, std::decay_t< TFunctor > > ||
-						!std::is_same_v< func_type, std::decay_t< TFunctor > >
-					) && bc_is_callable< TFunctor >::value // Check if TFunctor is actually a callable object
+						!std::is_same_v<this_type, std::decay_t<TFunctor>> ||
+						!std::is_same_v<func_type, std::decay_t<TFunctor>>
+					) && bc_is_callable<TFunctor>::value // Check if TFunctor is actually a callable object
 				>
 			>
-			bc_delegate(TFunctor p_functor) noexcept(std::is_nothrow_copy_constructible< TFunctor >::value)
+			bc_delegate(TFunctor p_functor) noexcept(std::is_nothrow_copy_constructible<TFunctor>::value)
 			{
 				_bind(p_functor);
 			}
@@ -228,13 +228,13 @@ namespace black_cat
 				return *this;
 			}
 
-			template< typename TObj >
+			template<typename TObj>
 			void bind(TObj* p_obj_ptr, member_func_type<TObj> p_func) noexcept
 			{
 				_bind(p_obj_ptr, p_func);
 			}
 
-			template< typename TObj >
+			template<typename TObj>
 			void bind(const TObj* p_obj_ptr, const_member_func_type<TObj> p_func) noexcept
 			{
 				_bind(p_obj_ptr, p_func);
@@ -248,14 +248,14 @@ namespace black_cat
 			template
 			<
 				typename TFunctor,
-				// Disable template bind for func_type so appropriate bind function overload can be called 
+				// Disable template bind for func_type so correct bind function overload can be called 
 				typename = typename std::enable_if
 				<
-					!std::is_same< func_type, typename std::decay< TFunctor >::type >::value && 
-					bc_is_callable< TFunctor >::value // Check if TFunctor is actually a callable object
+					!std::is_same<func_type, typename std::decay<TFunctor>::type>::value && 
+					bc_is_callable<TFunctor>::value // Check if TFunctor is actually a callable object
 				>::type
 			>
-			void bind(TFunctor& p_functor) noexcept(std::is_nothrow_copy_constructible<TFunctor>::value)
+			void bind(TFunctor p_functor) noexcept(std::is_nothrow_copy_constructible<TFunctor>::value)
 			{
 				_bind(p_functor);
 			}
@@ -298,10 +298,10 @@ namespace black_cat
 				return !operator ==(nullptr);
 			}
 
-			template< typename TFunctor >
+			template<typename TFunctor>
 			static this_type make_from_big_object(bc_alloc_type p_alloc_type, TFunctor&& p_functor);
 
-			template< typename TFunctor >
+			template<typename TFunctor>
 			static this_type make_from_big_object(TFunctor&& p_functor);
 
 		private:
@@ -309,37 +309,37 @@ namespace black_cat
 			using _stub_action_type = void(*)(void*, void*, bcUINT8);
 
 			// http://www.codeproject.com/Articles/11015/The-Impossibly-Fast-C-Delegates
-			template< typename TFunctor >
+			template<typename TFunctor>
 			static TR _func_stub_call(void* p_buffer, TA... p_args)
 			{
-				TFunctor* l_functor = static_cast<TFunctor*>(p_buffer);
+				auto* l_functor = static_cast<TFunctor*>(p_buffer);
 				return (*l_functor)(std::forward<TA>(p_args)...);
 			}
 
-			template< typename TFunctor > // 1 copy-construction, 2 destruction
+			template<typename TFunctor> // 1 copy-construction, 2 destruction
 			static void _func_stub_action(void* p_buffer, void* p_other, const bcUINT8 p_action) 
 			{
 				if (p_action == 1)
 				{
-					TFunctor* l_other = static_cast<TFunctor*>(p_other);
-					new (p_buffer)TFunctor(std::move(*l_other));		// Try to move functor object because it's possible 												
-				}													// functor object does not be copyable
+					auto* l_other = static_cast<TFunctor*>(p_other);
+					new (p_buffer)TFunctor(std::move(*l_other));		// Try to move functor object because it's possible functor object does not be copyable										
+				}
 				else
 				{
-					TFunctor* l_functor = static_cast<TFunctor*>(p_buffer);
+					auto* l_functor = static_cast<TFunctor*>(p_buffer);
 					l_functor->~TFunctor();
 				}
 			}
 
 			// bind to member function
-			template< typename TObj >
+			template<typename TObj>
 			void _bind(TObj& p_obj, member_func_type<TObj> p_func)
 			{
 				_bind(_functor_member_func<TObj, TR, TA...>(&p_obj, p_func));
 			}
 
 			// bind to const member function
-			template< typename TObj >
+			template<typename TObj>
 			void _bind(const TObj& p_obj, const_member_func_type<TObj> p_func)
 			{
 				_bind(_functor_const_member_func<TObj, TR, TA...>(&p_obj, p_func));
@@ -352,7 +352,7 @@ namespace black_cat
 			}
 
 			// bind to functor objects
-			template< typename TFunctor >
+			template<typename TFunctor>
 			void _bind(TFunctor& p_functor)
 			{
 				static_assert(sizeof(TFunctor) <= s_buffer_size, "Functor object is too large");

@@ -15,9 +15,9 @@ namespace black_cat
 		{
 		}
 
-		bc_actor_remove_network_message::bc_actor_remove_network_message(bc_actor& p_actor)
+		bc_actor_remove_network_message::bc_actor_remove_network_message(bc_actor_network_id p_id)
 			: bci_network_message(message_name()),
-			m_actor(p_actor)
+			m_id(p_id)
 		{
 		}
 
@@ -37,8 +37,7 @@ namespace black_cat
 
 		void bc_actor_remove_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
 		{
-			const auto* l_network_component = m_actor.get_component<bc_network_component>();
-			p_context.m_params.add("net_id", core::bc_any(l_network_component->get_network_id()));
+			p_context.m_params.add("net_id", core::bc_any(m_id));
 		}
 
 		void bc_actor_remove_network_message::deserialize_message(const bc_network_message_deserialization_context& p_context)
@@ -50,7 +49,7 @@ namespace black_cat
 				return;
 			}
 
-			m_actor = p_context.m_visitor.get_actor(*l_actor_network_id);
+			p_context.m_visitor.get_actor(*l_actor_network_id);
 		}
 	}
 }

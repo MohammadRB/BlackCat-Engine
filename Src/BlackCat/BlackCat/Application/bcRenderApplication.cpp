@@ -30,7 +30,7 @@ namespace black_cat
 	bc_render_application::~bc_render_application() = default;
 
 	void bc_render_application::app_start_engine_components(game::bc_engine_application_parameter& p_parameters)
-	{		
+	{
 		bc_start_engine_services(p_parameters);
 
 		core::bc_log(core::bc_log_type::info) << "starting engine components" << core::bc_lend;
@@ -74,6 +74,7 @@ namespace black_cat
 		bc_register_network_messages(m_game_system->get_network_system());
 		bc_bind_scripts(*m_game_system);
 		bc_register_particle_emitters(*m_game_system);
+		bc_load_engine_shaders(*core::bc_get_service<core::bc_content_stream_manager>(), *m_game_system);
 
 		application_initialize(p_parameters);
 	}
@@ -81,9 +82,11 @@ namespace black_cat
 	void bc_render_application::app_load_content()
 	{
 		core::bc_log(core::bc_log_type::info) << "loading engine resources" << core::bc_lend;
+
+		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
 		
-		bc_load_engine_resources(*m_game_system);
-		application_load_content(core::bc_get_service<core::bc_content_stream_manager>());
+		bc_load_engine_resources(*l_content_stream_manager, *m_game_system);
+		application_load_content(*l_content_stream_manager);
 	}
 
 	void bc_render_application::app_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
@@ -198,7 +201,7 @@ namespace black_cat
 		
 		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
 		
-		application_unload_content(l_content_stream_manager);
+		application_unload_content(*l_content_stream_manager);
 		bc_unload_engine_resources(*l_content_stream_manager);
 	}
 

@@ -34,7 +34,7 @@ namespace black_cat
 
 		virtual void application_initialize(game::bc_engine_application_parameter& p_parameters) = 0;
 
-		virtual void application_load_content(core::bc_content_stream_manager* p_stream_manager) = 0;
+		virtual void application_load_content(core::bc_content_stream_manager& p_stream_manager) = 0;
 
 		virtual void application_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update) = 0;
 
@@ -42,7 +42,7 @@ namespace black_cat
 
 		virtual bool application_event(core::bci_event& p_event) = 0;
 
-		virtual void application_unload_content(core::bc_content_stream_manager* p_stream_manager) = 0;
+		virtual void application_unload_content(core::bc_content_stream_manager& p_stream_manager) = 0;
 
 		virtual void application_destroy() = 0;
 

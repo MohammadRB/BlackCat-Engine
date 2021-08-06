@@ -20,7 +20,7 @@ namespace box
 
 		void application_initialize(game::bc_engine_application_parameter& p_parameters) override;
 
-		void application_load_content(core::bc_content_stream_manager* p_stream_manager) override;
+		void application_load_content(core::bc_content_stream_manager& p_stream_manager) override;
 
 		void application_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update) override;
 
@@ -28,7 +28,7 @@ namespace box
 
 		bool application_event(core::bci_event& p_event) override;
 
-		void application_unload_content(core::bc_content_stream_manager* p_stream_manager) override;
+		void application_unload_content(core::bc_content_stream_manager& p_stream_manager) override;
 
 		void application_destroy() override;
 
@@ -38,13 +38,12 @@ namespace box
 		
 		void connected_to_server(const platform::bc_network_address& p_address) override;
 		
-		void message_sent(game::bci_network_message& p_message) override;
+		void message_packet_sent(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) override;
 		
-		void message_received(game::bci_network_message& p_message) override;
+		void message_packet_received(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) override;
 		
 		void error_occurred(const bc_network_exception* p_exception) override;
 	
-	private:
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;
 		platform::bc_script_context* m_client_script_context = nullptr;
 		platform::bc_script_object_ref m_client_script_object;

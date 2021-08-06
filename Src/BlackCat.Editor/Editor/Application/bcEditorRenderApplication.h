@@ -21,7 +21,7 @@ namespace black_cat
 
 			void application_initialize(game::bc_engine_application_parameter& p_parameters) override;
 
-			void application_load_content(core::bc_content_stream_manager* p_stream_manager) override;
+			void application_load_content(core::bc_content_stream_manager& p_stream_manager) override;
 
 			void application_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_partial_update) override;
 
@@ -29,7 +29,7 @@ namespace black_cat
 
 			bool application_event(core::bci_event& p_event) override;
 
-			void application_unload_content(core::bc_content_stream_manager* p_stream_manager) override;
+			void application_unload_content(core::bc_content_stream_manager& p_stream_manager) override;
 
 			void application_destroy() override;
 

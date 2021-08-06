@@ -210,23 +210,6 @@ namespace black_cat
 
 		l_script_system.set_script_binder(std::move(l_script_binder));
 	}
-	
-	void bc_load_engine_resources(game::bc_game_system& p_game_system)
-	{
-		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
-		auto& l_material_manager = p_game_system.get_render_system().get_material_manager();
-		auto* l_entity_manager = core::bc_get_service<game::bc_entity_manager>();
-
-		l_content_stream_manager->read_stream_file(p_game_system.get_file_system().get_content_data_path(bcL("ContentStream.json")).c_str());
-		l_material_manager.read_material_file(p_game_system.get_file_system().get_content_data_path(bcL("Material.json")).c_str());
-		l_entity_manager->read_entity_file(p_game_system.get_file_system().get_content_data_path(bcL("EntityType.json")).c_str());
-
-		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_shaders");
-		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "deferred_rendering_shaders");
-		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "particle_shaders");
-		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "post_process_shaders");
-		l_content_stream_manager->load_content_stream(core::bc_alloc_type::program, "engine_assets");
-	}
 
 	void bc_register_particle_emitters(game::bc_game_system& p_game_system)
 	{
@@ -237,6 +220,27 @@ namespace black_cat
 		game::bc_particle_manager::register_emitter_definition("bullet_terrain", bc_bullet_terrain_particle()(l_random));
 		game::bc_particle_manager::register_emitter_definition("bullet_soil", bc_bullet_soil_particle()());
 		game::bc_particle_manager::register_emitter_definition("bullet_iron", bc_bullet_iron_particle()());
+	}
+
+	void bc_load_engine_shaders(core::bc_content_stream_manager& p_stream_manager, game::bc_game_system& p_game_system)
+	{
+		p_stream_manager.read_stream_file(p_game_system.get_file_system().get_content_data_path(bcL("ContentStream.json")).c_str());
+
+		p_stream_manager.load_content_stream(core::bc_alloc_type::program, "engine_shaders");
+		p_stream_manager.load_content_stream(core::bc_alloc_type::program, "deferred_rendering_shaders");
+		p_stream_manager.load_content_stream(core::bc_alloc_type::program, "particle_shaders");
+		p_stream_manager.load_content_stream(core::bc_alloc_type::program, "post_process_shaders");
+	}
+
+	void bc_load_engine_resources(core::bc_content_stream_manager& p_stream_manager, game::bc_game_system& p_game_system)
+	{
+		auto& l_material_manager = p_game_system.get_render_system().get_material_manager();
+		auto* l_entity_manager = core::bc_get_service<game::bc_entity_manager>();
+				
+		l_material_manager.read_material_file(p_game_system.get_file_system().get_content_data_path(bcL("Material.json")).c_str());
+		l_entity_manager->read_entity_file(p_game_system.get_file_system().get_content_data_path(bcL("EntityType.json")).c_str());
+
+		p_stream_manager.load_content_stream(core::bc_alloc_type::program, "engine_assets");
 	}
 
 	void bc_unload_engine_resources(core::bc_content_stream_manager& p_stream_manager)

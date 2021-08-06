@@ -29,9 +29,5 @@ namespace black_cat
 		void content_processing(core::bc_content_saving_context& p_context) const override;
 
 		static graphic::bc_texture_config s_default_config;
-
-	protected:
-
-	private:
 	};
 }

@@ -101,7 +101,7 @@ namespace black_cat
 			bc_content_manager& operator=(bc_content_manager&&) noexcept = delete;
 
 			template<class TContent, class TLoader>
-			void register_loader(bc_cloader_ptr<TLoader>&& p_loader);
+			void register_loader(bc_cloader_ptr<TLoader> p_loader);
 
 			/**
 			 * \brief Load specified content from file or if it's loaded earlier return a pointer to it.
@@ -240,15 +240,27 @@ namespace black_cat
 		}
 
 		template<class TContent, class TLoader>
-		void bc_content_manager::register_loader(bc_cloader_ptr<TLoader>&& p_loader)
+		void bc_content_manager::register_loader(bc_cloader_ptr<TLoader> p_loader)
 		{
 			static_assert(std::is_base_of<bci_content, TContent>::value, "Content must inherit from bc_icontent");
 			static_assert(std::is_base_of<bci_content_loader, TLoader>::value, "Content loader must inherit from bc_icontent_loader");
 
-			bc_service_manager::get().register_service<_content_wrapper<TContent>>
+			auto* l_loader_wrapper = static_cast<_loader_wrapper<TContent>*>
 			(
-				core::bc_make_service<_loader_wrapper<TContent>>(std::move(p_loader))
+				bc_get_service<_content_wrapper<TContent>>()
 			);
+			
+			if(!l_loader_wrapper)
+			{
+				bc_register_service<_content_wrapper<TContent>>
+				(
+					core::bc_make_service<_loader_wrapper<TContent>>(std::move(p_loader))
+				);
+			}
+			else
+			{
+				l_loader_wrapper->m_loader = std::move(p_loader);
+			}
 		}
 
 		template<class TContent>
@@ -439,14 +451,14 @@ namespace black_cat
 		template<class TContent>
 		bci_content_loader* bc_content_manager::_get_loader()
 		{
-			_loader_wrapper<TContent>* l_loader_wrapper = static_cast<_loader_wrapper<TContent>*>
+			auto* l_loader_wrapper = static_cast<_loader_wrapper<TContent>*>
 			(
 				bc_get_service<_content_wrapper<TContent>>()
 			);
 
 			if (l_loader_wrapper == nullptr)
 			{
-				throw bc_invalid_argument_exception((bc_string("Loader for ") + _loader_wrapper<TContent>::service_name() + " not found").c_str());
+				throw bc_invalid_argument_exception((bc_string_frame("Loader for ") + _loader_wrapper<TContent>::service_name() + " not found").c_str());
 			}
 
 			bci_content_loader* l_loader = l_loader_wrapper->m_loader.get();

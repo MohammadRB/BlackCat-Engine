@@ -27,8 +27,8 @@ namespace black_cat
 		class bc_network_system;
 
 		class BC_GAME_DLL bc_network_server_manager : public bci_network_manager,
-				public bci_network_message_deserialization_visitor,
-				public bci_network_message_server_visitor,
+				private bci_network_message_deserialization_visitor,
+				private bci_network_message_server_visitor,
 				private bc_server_socket_state_machine
 		{
 		public:
@@ -43,9 +43,9 @@ namespace black_cat
 
 			bc_network_server_manager& operator=(bc_network_server_manager&&) noexcept;
 
-			void add_actor(bc_actor& p_actor) override;
+			void add_actor_to_sync(bc_actor& p_actor) override;
 			
-			void remove_actor(bc_actor& p_actor) override;
+			void remove_actor_from_sync(bc_actor& p_actor) override;
 
 			void send_message(bc_network_message_ptr p_message) override;
 			
