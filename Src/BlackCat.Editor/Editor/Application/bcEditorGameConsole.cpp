@@ -73,9 +73,9 @@ namespace black_cat
 
 		void bc_editor_game_console::executeScript(const QString& p_ui_script, bool p_output_console)
 		{
-			auto l_wstring = p_ui_script.toStdWString();
+			const auto l_wstring = p_ui_script.toStdWString();
 
-			m_game_console.run_script(l_wstring.c_str(), p_output_console);
+			m_game_console->run_script(l_wstring.c_str(), p_output_console);
 
 			emit scriptExecuted(p_ui_script);
 		}

@@ -16,7 +16,7 @@ namespace black_cat
 		bc_network_component::bc_network_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
 			: bci_actor_component(p_actor_index, p_index),
 			m_id(bc_actor::invalid_id),
-			m_data_dir(bc_actor_network_data_dir::download)
+			m_data_dir(bc_actor_network_data_dir::replicate)
 		{
 		}
 
@@ -35,17 +35,17 @@ namespace black_cat
 		{
 			const auto& l_data_dir_param = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_network_data_dir);
 			
-			if(l_data_dir_param == "upload")
+			if(l_data_dir_param == "replicate")
 			{
-				m_data_dir = bc_actor_network_data_dir::upload;
+				m_data_dir = bc_actor_network_data_dir::replicate;
 			}
-			else if(l_data_dir_param == "upload_stream")
+			else if(l_data_dir_param == "replicate_sync")
 			{
-				m_data_dir = bc_actor_network_data_dir::upload_stream;
+				m_data_dir = bc_actor_network_data_dir::replicate_sync;
 			}
-			else if(l_data_dir_param == "download")
+			else if(l_data_dir_param == "replicate_sync_from_client")
 			{
-				m_data_dir = bc_actor_network_data_dir::download;
+				m_data_dir = bc_actor_network_data_dir::replicate_sync_from_client;
 			}
 			else
 			{
@@ -59,31 +59,48 @@ namespace black_cat
 
 		void bc_network_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
+			const auto l_network_type = p_context.m_game_system.get_network_system().get_network_type();
+			
 			const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
 			if (l_scene_add_event)
 			{
-				if(m_data_dir == bc_actor_network_data_dir::upload_stream)
+				if(l_network_type == bc_network_type::server)
 				{
-					p_context.m_game_system.get_network_system().add_actor(p_context.m_actor);
+					if (m_data_dir == bc_actor_network_data_dir::replicate_sync)
+					{
+						p_context.m_game_system.get_network_system().add_actor(p_context.m_actor);
+					}
+					else if(m_data_dir == bc_actor_network_data_dir::replicate)
+					{
+						p_context.m_game_system.get_network_system().send_message(bc_actor_replicate_network_message(p_context.m_actor));
+					}
 				}
-				else if(m_data_dir == bc_actor_network_data_dir::upload)
+				else if(l_network_type == bc_network_type::client)
 				{
-					p_context.m_game_system.get_network_system().send_message(bc_actor_replicate_network_message());
+					if(m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
+					{
+						p_context.m_game_system.get_network_system().add_actor(p_context.m_actor);
+					}
+					// If this is client, we should remove network actors because they will be replicated by the server
+					else if(m_data_dir == bc_actor_network_data_dir::replicate_sync || m_data_dir == bc_actor_network_data_dir::replicate)
+					{
+						l_scene_add_event->get_scene().remove_actor(p_context.m_actor);
+					}
 				}
-
+				
 				return;
 			}
 
 			const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event);
 			if (l_scene_remove_event)
 			{
-				if (m_data_dir == bc_actor_network_data_dir::upload_stream || m_data_dir == bc_actor_network_data_dir::upload)
+				if (m_data_dir == bc_actor_network_data_dir::replicate_sync || m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
 				{
 					p_context.m_game_system.get_network_system().remove_actor(p_context.m_actor);
 				}
-					
+				
 				return;
 			}
 		}
-	}	
+	}
 }

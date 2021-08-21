@@ -37,6 +37,7 @@ namespace black_cat
 			void deserialize_message(const bc_network_message_deserialization_context& p_context) override;
 
 			bc_actor_network_id m_id;
+			bc_actor m_actor;
 		};
 
 		inline bool bc_actor_remove_network_message::need_acknowledgment() const noexcept

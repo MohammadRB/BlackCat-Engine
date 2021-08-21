@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 
+#include "Core/Content/bcContentManager.h"
 #include "Core/Utility/bcLogger.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
@@ -13,6 +14,7 @@
 #include "Game/System/Network/Message/bcActorReplicateNetworkMessage.h"
 #include "Game/System/Network/Message/bcActorSyncNetworkMessage.h"
 #include "Game/System/Network/Message/bcActorRemoveNetworkMessage.h"
+#include "Game/System/Network/Message/bcSceneReplicateNetworkMessage.h"
 
 namespace black_cat
 {
@@ -100,6 +102,11 @@ namespace black_cat
 				return;
 			}
 
+			{
+				core::bc_mutex_test_guard l_lock(m_actors_lock);
+				m_sync_actors.push_back(p_actor);
+			}
+
 			send_message(bc_actor_replicate_network_message(p_actor));
 		}
 
@@ -115,14 +122,17 @@ namespace black_cat
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);
 
-				const auto l_ite = m_network_actors.find(l_network_component->get_network_id());
-				if (l_ite == std::cend(m_network_actors))
+				const auto l_ite = std::find_if(std::cbegin(m_sync_actors), std::cend(m_sync_actors), [&](const bc_actor& p_entry)
+				{
+					return p_entry.get_component<bc_network_component>()->get_network_id() == l_network_id;
+				});
+				if (l_ite == std::cend(m_sync_actors))
 				{
 					core::bc_log(core::bc_log_type::error, bcL("actor network id was not found"));
 					return;
 				}
 
-				m_network_actors.erase(l_ite);
+				m_sync_actors.erase(l_ite);
 			}
 
 			send_message(bc_actor_remove_network_message(l_network_id));
@@ -213,12 +223,32 @@ namespace black_cat
 				m_messages_waiting_acknowledgment.erase(l_message_ite);
 			}
 
-			l_message->acknowledge(bc_network_message_client_context
-				{
-					*this
-				});
+			l_message->acknowledge(bc_network_message_client_context{*this});
 		}
-		
+
+		void bc_network_client_manager::load_scene(const bcECHAR* p_scene_name)
+		{
+			auto* l_content_manager = core::bc_get_service<core::bc_content_manager>();
+			auto& l_file_system = m_game_system->get_file_system();
+
+			try
+			{
+				auto l_scene = l_content_manager->load<bc_scene>
+				(
+					l_file_system.get_content_scene_path(p_scene_name).c_str(),
+					nullptr,
+					core::bc_content_loader_parameter()
+				);
+				m_game_system->set_scene(std::move(l_scene));
+
+				send_message(bc_scene_replicate_network_message());
+			}
+			catch (...)
+			{
+				core::bc_log(core::bc_log_type::error) << "Error on loading scene '" << p_scene_name << " '";
+			}
+		}
+
 		void bc_network_client_manager::replicate_actor(bc_actor& p_actor)
 		{
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
@@ -321,11 +351,27 @@ namespace black_cat
 				{
 					if (l_message->need_acknowledgment())
 					{
-						m_messages_waiting_acknowledgment.push_back(bc_message_with_time
+						const auto l_ite = std::find_if
+						(
+							std::cbegin(m_messages_waiting_acknowledgment),
+							std::cend(m_messages_waiting_acknowledgment),
+							[&](const bc_message_with_time& p_entry)
+							{
+								return p_entry.m_message->get_id() == l_message->get_id();
+							}
+						);
+						if (l_ite == std::cend(m_messages_waiting_acknowledgment))
 						{
-							l_current_time,
-							std::move(l_message)
-						});
+							// Message is not already in the buffer to be acknowledged
+							m_messages_waiting_acknowledgment.push_back
+							(
+								bc_message_with_time
+								{
+									l_current_time,
+									std::move(l_message)
+								}
+							);
+						}
 					}
 				}
 

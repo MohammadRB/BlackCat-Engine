@@ -8,6 +8,7 @@
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Core/Utility/bcJsonParse.h"
+#include "Core/Utility/bcLogger.h"
 #include "PhysicsImp/Fundation/bcSceneBuilder.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/SceneGraph/bcScenceGraph.h"
@@ -17,6 +18,7 @@
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/Render/Decal/bcDecalManager.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/bcUtility.h"
 #include "BlackCat/Loader/bcSceneLoader.h"
 
 namespace black_cat
@@ -25,6 +27,7 @@ namespace black_cat
 	{
 		BC_JSON_VALUE(core::bc_string_frame, entity_name);
 		BC_JSON_VALUE(core::bc_vector3f, position);
+		BC_JSON_VALUE(core::bc_vector4f, rotation);
 		BC_JSON_VALUE_OP(core::bc_json_key_value, parameters);
 	};
 
@@ -59,6 +62,8 @@ namespace black_cat
 
 	void bc_scene_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
+		core::bc_log(core::bc_log_type::info) << "Loading scene " << p_context.m_file_path << core::bc_lend;
+		
 		core::bc_json_document<_bc_scene_json> l_json_document;
 		core::bc_string_frame l_json_str(p_context.m_file_buffer_size + 1, '\0');
 		std::memcpy(const_cast<bcCHAR*>(l_json_str.data()), p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
@@ -206,7 +211,11 @@ namespace black_cat
 		core::bc_vector_frame<game::bci_actor_component*> l_actor_components;
 		for (auto& l_json_actor : l_json_document->m_actors)
 		{
-			game::bc_actor l_actor = l_scene.create_actor(l_json_actor->m_entity_name->c_str(), core::bc_matrix4f::translation_matrix(*l_json_actor->m_position));
+			auto l_transform = core::bc_matrix4f::identity();
+			l_transform.set_translation(*l_json_actor->m_position);
+			l_transform.set_rotation(bc_matrix3f_rotation_euler(l_json_actor->m_rotation->xyz(), l_json_actor->m_rotation->w));
+			
+			game::bc_actor l_actor = l_scene.create_actor(l_json_actor->m_entity_name->c_str(), l_transform);
 			if(!l_actor.is_valid())
 			{
 				continue;
@@ -214,6 +223,8 @@ namespace black_cat
 
 			game::bc_actor_load_instance(l_actor_components, game::bc_actor_component_load_context(*l_json_actor->m_parameters, l_actor));
 		}
+
+		core::bc_log(core::bc_log_type::info) << "Scene loaded" << core::bc_lend;
 	}
 
 	void bc_scene_loader::content_processing(core::bc_content_saving_context& p_context) const
@@ -222,7 +233,7 @@ namespace black_cat
 
 		core::bc_json_document<_bc_scene_json> l_json_document;
 		
-		*l_json_document->m_name = l_scene->get_name().c_str();
+		*l_json_document->m_name = l_scene->get_name();
 		*l_json_document->m_scene_graph->m_center = l_scene->get_scene_graph().get_bound_box().get_center();
 		*l_json_document->m_scene_graph->m_half_extends = l_scene->get_scene_graph().get_bound_box().get_half_extends();
 
@@ -254,6 +265,7 @@ namespace black_cat
 			auto& l_json_entry = l_json_document->m_actors.new_entry();			
 			*l_json_entry->m_entity_name = l_mediate_component->get_entity_name();
 			*l_json_entry->m_position = l_mediate_component->get_position();
+			*l_json_entry->m_rotation = bc_matrix4f_decompose_to_euler_rotation(l_mediate_component->get_world_transform());
 
 			game::bc_actor_write_instance(l_actor_components, game::bc_actor_component_write_context(*l_json_entry->m_parameters, l_actor));
 		}

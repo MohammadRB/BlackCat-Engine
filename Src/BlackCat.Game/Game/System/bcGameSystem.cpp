@@ -46,7 +46,10 @@ namespace black_cat
 
 		void bc_game_system::set_scene(bc_scene_ptr p_scene)
 		{
-			m_scene = std::move(p_scene);
+			m_new_scene = std::move(p_scene);
+
+			bc_event_scene_change l_scene_change_event(m_new_scene->get_name());
+			m_event_manager->process_event(l_scene_change_event);
 		}
 
 		void bc_game_system::update_game(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
@@ -171,6 +174,12 @@ namespace black_cat
 		{
 			m_query_manager->process_query_queue(p_clock);
 			m_query_manager->swap_frame();
+
+			if(m_new_scene)
+			{
+				m_scene = std::move(m_new_scene);
+				m_new_scene = nullptr;
+			}
 		}
 
 		void bc_game_system::render_swap_frame(const core_platform::bc_clock::update_param& p_clock)

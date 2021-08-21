@@ -2,6 +2,7 @@
 
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Network/Message/bcStringNetworkMessage.h"
+#include "Game/System/Network/Message/bcSceneChangeNetworkMessage.h"
 #include "BoX.Server/Application/bxServerScript.h"
 
 namespace box
@@ -27,6 +28,38 @@ namespace box
 
 		m_game_system->get_network_system().start_server(*m_network_server_hook, p_port.as_integer());
 		
+		return platform::bc_script_variable();
+	}
+
+	platform::bc_script_variable bx_server_script::load_scene(const platform::bc_script_variable& p_scene_name)
+	{
+		if (!p_scene_name.is_string())
+		{
+			return platform::bc_script_variable();
+		}
+
+		const core::bc_string_frame l_scene_extension(".json");
+		auto l_scene_name = core::bc_to_string(p_scene_name.as_string().data());
+		const bool l_end_with_json = l_scene_name.length() >= l_scene_extension.length()
+			? std::equal
+			(
+				std::rbegin(l_scene_extension),
+				std::rend(l_scene_extension),
+				(std::rbegin(l_scene_name)),
+				[](bcCHAR ch1, bcCHAR ch2)
+				{
+					return std::tolower(ch1) == std::tolower(ch2);
+				}
+			)
+			: false;
+		
+		if(!l_end_with_json)
+		{
+			l_scene_name += l_scene_extension;
+		}
+		
+		m_game_system->get_network_system().send_message(game::bc_scene_change_network_message(std::move(l_scene_name)));
+
 		return platform::bc_script_variable();
 	}
 

@@ -48,7 +48,7 @@ namespace box
 
 		void message_packet_received(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) override;
 		
-		void error_occurred(const bc_network_exception* p_exception) override;
+		void error_occurred(const bc_network_exception* p_exception, const platform::bc_network_address* p_client) override;
 	
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;
 		platform::bc_script_context* m_server_script_context = nullptr;

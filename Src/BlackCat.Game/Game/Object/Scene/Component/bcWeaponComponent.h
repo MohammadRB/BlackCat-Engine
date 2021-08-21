@@ -21,7 +21,7 @@ namespace black_cat
 		
 		class BC_GAME_DLL bc_weapon_component : public bci_actor_component
 		{
-			BC_COMPONENT(weapon, false, true)
+			BC_COMPONENT(weapon, true, true)
 
 		public:
 			bc_weapon_component(bc_actor_id p_actor_index, bc_actor_component_id p_index);

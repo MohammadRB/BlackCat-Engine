@@ -44,7 +44,7 @@ namespace black_cat
 			~bc_network_client_manager() override;
 
 			bc_network_client_manager& operator=(bc_network_client_manager&&) noexcept;
-
+			
 			void add_actor_to_sync(bc_actor& p_actor) override;
 			
 			void remove_actor_from_sync(bc_actor& p_actor) override;
@@ -54,6 +54,8 @@ namespace black_cat
 			void update(const bc_network_manager_update_context& p_context) override;
 			
 		private:
+			// State machine methods
+			
 			void on_enter(bc_client_socket_error_state& p_state) override;
 			
 			void on_enter(bc_client_socket_connecting_state& p_state) override;
@@ -62,10 +64,14 @@ namespace black_cat
 
 			void on_enter(bc_client_socket_sending_state& p_state) override;
 
+			// Client visitor methods
+			
 			void connection_approved() override;
 			
 			void acknowledge_message(bc_network_message_id p_message_id) override;
 
+			void load_scene(const bcECHAR* p_scene_name) override;
+			
 			void replicate_actor(bc_actor& p_actor) override;
 
 			void remove_actor(bc_actor& p_actor) override;
@@ -79,7 +85,7 @@ namespace black_cat
 			void _send_to_server();
 			
 			void _receive_from_server();
-			
+
 			bc_game_system* m_game_system;
 			
 			bool m_socket_is_connected;

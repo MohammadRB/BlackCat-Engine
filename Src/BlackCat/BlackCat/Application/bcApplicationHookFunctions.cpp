@@ -26,6 +26,8 @@
 #include "Game/System/Network/Message/bcActorReplicateNetworkMessage.h"
 #include "Game/System/Network/Message/bcActorSyncNetworkMessage.h"
 #include "Game/System/Network/Message/bcActorRemoveNetworkMessage.h"
+#include "Game/System/Network/Message/bcSceneChangeNetworkMessage.h"
+#include "Game/System/Network/Message/bcSceneReplicateNetworkMessage.h"
 #include "Game/System/Physics/bcPhysicsSimulationCallback.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentContainer.hpp"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
@@ -197,7 +199,9 @@ namespace black_cat
 			game::bc_client_disconnect_network_message,
 			game::bc_actor_replicate_network_message,
 			game::bc_actor_sync_network_message,
-			game::bc_actor_remove_network_message
+			game::bc_actor_remove_network_message,
+			game::bc_scene_change_network_message,
+			game::bc_scene_replicate_network_message
 		>();
 	}
 	

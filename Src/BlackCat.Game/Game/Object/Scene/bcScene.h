@@ -65,9 +65,9 @@ namespace black_cat
 
 			bc_scene& operator=(bc_scene&&) noexcept;
 
-			const core::bc_estring& get_path() const noexcept;
+			const bcECHAR* get_path() const noexcept;
 
-			const core::bc_string& get_name() const noexcept;
+			const bcCHAR* get_name() const noexcept;
 
 			const core::bc_vector<core::bc_string>& get_stream_files() const noexcept;
 
@@ -172,14 +172,14 @@ namespace black_cat
 
 		using bc_scene_ptr = core::bc_content_ptr<bc_scene>;
 
-		inline const core::bc_estring& bc_scene::get_path() const noexcept
+		inline const bcECHAR* bc_scene::get_path() const noexcept
 		{
-			return m_path;
+			return m_path.c_str();
 		}
 
-		inline const core::bc_string& bc_scene::get_name() const noexcept
+		inline const bcCHAR* bc_scene::get_name() const noexcept
 		{
-			return m_name;
+			return m_name.c_str();
 		}
 
 		inline const core::bc_vector<core::bc_string>& bc_scene::get_stream_files() const noexcept

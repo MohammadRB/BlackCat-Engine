@@ -13,35 +13,51 @@ namespace black_cat
 			BC_EVENT(edt_mde)
 
 		public:
-			explicit bc_event_editor_mode(bool p_editor_mode) noexcept;
+			explicit bc_event_editor_mode(bool p_editor_mode) noexcept
+				: bc_app_event(message_name()),
+				m_editor_mode(p_editor_mode)
+			{
+			}
 
-			bc_event_editor_mode(const bc_event_editor_mode&) noexcept;
+			bc_event_editor_mode(const bc_event_editor_mode&) noexcept = default;
 
-			~bc_event_editor_mode() override;
+			~bc_event_editor_mode() override = default;
 
-			bc_event_editor_mode& operator=(const bc_event_editor_mode&) noexcept;
+			bc_event_editor_mode& operator=(const bc_event_editor_mode&) noexcept = default;
 
-			bool get_editor_mode() const noexcept;
+			bool get_editor_mode() const noexcept
+			{
+				return m_editor_mode;
+			}
 
 		private:
 			bool m_editor_mode;
 		};
 
-		inline bc_event_editor_mode::bc_event_editor_mode(bool p_editor_mode) noexcept
-			: bc_app_event(message_name()),
-			m_editor_mode(p_editor_mode)
+		class bc_event_scene_change : public core::bc_app_event
 		{
-		}
+			BC_EVENT(scn_chg)
+			
+		public:
+			explicit bc_event_scene_change(const bcCHAR* p_scene_name)
+				: bc_app_event(message_name()),
+				m_scene_name(p_scene_name)
+			{
+			}
 
-		inline bc_event_editor_mode::bc_event_editor_mode(const bc_event_editor_mode&) noexcept = default;
+			bc_event_scene_change(const bc_event_scene_change&) noexcept = default;
 
-		inline bc_event_editor_mode::~bc_event_editor_mode() = default;
+			~bc_event_scene_change() override = default;
 
-		inline bc_event_editor_mode& bc_event_editor_mode::operator=(const bc_event_editor_mode&) noexcept = default;
+			bc_event_scene_change& operator=(const bc_event_scene_change&) noexcept = default;
 
-		inline bool bc_event_editor_mode::get_editor_mode() const noexcept
-		{
-			return m_editor_mode;
-		}
-	}	
+			const bcCHAR* get_scene_name() const noexcept
+			{
+				return m_scene_name;
+			}
+		
+		private:
+			const bcCHAR* m_scene_name;
+		};
+	}
 }

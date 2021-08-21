@@ -304,6 +304,12 @@ namespace black_cat
 			template<typename TFunctor>
 			static this_type make_from_big_object(TFunctor&& p_functor);
 
+			template<typename TFunctor>
+			static constexpr bool fit_into_buffer()
+			{
+				return sizeof(TFunctor) <= s_buffer_size;
+			}
+		
 		private:
 			using _stub_call_type = TR(*)(void*, TA...);
 			using _stub_action_type = void(*)(void*, void*, bcUINT8);
@@ -355,7 +361,7 @@ namespace black_cat
 			template<typename TFunctor>
 			void _bind(TFunctor& p_functor)
 			{
-				static_assert(sizeof(TFunctor) <= s_buffer_size, "Functor object is too large");
+				static_assert(fit_into_buffer<TFunctor>(), "Functor object is too large");
 
 				m_stub_call = &_func_stub_call<TFunctor>;
 				m_stub_action = &_func_stub_action<TFunctor>;

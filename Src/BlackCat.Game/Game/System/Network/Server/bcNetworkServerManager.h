@@ -52,15 +52,23 @@ namespace black_cat
 			void update(const bc_network_manager_update_context& p_context) override;
 			
 		private:
+			// State machine methods
+			
 			void on_enter(bc_server_socket_error_state& p_state) override;
 			
 			void on_enter(bc_server_socket_listening_state& p_state) override;
 
+			// Server visitor methods
+			
 			void client_connected(const platform::bc_network_address& p_address) override;
 
 			void client_disconnected(const platform::bc_network_address& p_address) override;
 
 			void acknowledge_message(const platform::bc_network_address& p_address, bc_network_message_id p_message_id) override;
+
+			void replicate_scene(const platform::bc_network_address& p_address) override;
+			
+			// Deserialization visitor methods
 			
 			bc_actor create_actor(const bcCHAR* p_entity_name) override;
 

@@ -11,7 +11,8 @@ namespace black_cat
 	namespace game
 	{
 		bc_actor_remove_network_message::bc_actor_remove_network_message()
-			: bci_network_message(message_name())
+			: bci_network_message(message_name()),
+			m_id(bc_actor::invalid_id)
 		{
 		}
 
@@ -29,10 +30,12 @@ namespace black_cat
 
 		void bc_actor_remove_network_message::execute(const bc_network_message_client_context& p_context) noexcept
 		{
+			p_context.m_visitor.remove_actor(m_actor);
 		}
 
 		void bc_actor_remove_network_message::execute(const bc_network_message_server_context& p_context) noexcept
 		{
+			// TODO
 		}
 
 		void bc_actor_remove_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
@@ -49,7 +52,7 @@ namespace black_cat
 				return;
 			}
 
-			p_context.m_visitor.get_actor(*l_actor_network_id);
+			m_actor = p_context.m_visitor.get_actor(*l_actor_network_id);
 		}
 	}
 }

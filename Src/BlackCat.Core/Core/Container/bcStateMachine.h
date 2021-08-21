@@ -50,14 +50,20 @@ namespace black_cat
 			static bc_state_transition<TMachine> transfer_to(TBeforeTransfer p_before_transfer)
 			{
 				bc_state_transition<TMachine> l_transporter;
-				l_transporter.m_state_transporter = bc_delegate<void(TMachine&)>
-				(
-					[p_before_transfer](TMachine& p_machine)
-					{
-						p_before_transfer(p_machine.template get_state<TState>());
-						bc_state_transition<TMachine>::template _transfer<TState>(p_machine);
-					}
-				);
+				auto l_transporter_delegate = [p_before_transfer](TMachine& p_machine)
+				{
+					p_before_transfer(p_machine.template get_state<TState>());
+					bc_state_transition<TMachine>::template _transfer<TState>(p_machine);
+				};
+
+				if constexpr (bc_delegate<void(TMachine&)>::template fit_into_buffer<TBeforeTransfer>())
+				{
+					l_transporter.m_state_transporter = bc_delegate<void(TMachine&)>(std::move(l_transporter_delegate));
+				}
+				else
+				{
+					l_transporter.m_state_transporter = bc_delegate<void(TMachine&)>::make_from_big_object(std::move(l_transporter_delegate));
+				}
 
 				return l_transporter;
 			}

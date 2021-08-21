@@ -58,6 +58,10 @@ namespace black_cat
 
 			core::bc_estring get_content_script_path(const bcECHAR* p_script_path) const noexcept;
 
+			const bcECHAR* get_content_scene_path() const noexcept;
+
+			core::bc_estring get_content_scene_path(const bcECHAR* p_scene_path) const noexcept;
+
 			bc_global_config& get_global_config() noexcept;
 
 			const bc_global_config& get_global_config() const noexcept;
@@ -70,6 +74,7 @@ namespace black_cat
 			core::bc_estring m_content_model_path;
 			core::bc_estring m_content_platform_shader_path;
 			core::bc_estring m_content_script_path;
+			core::bc_estring m_content_scene_path;
 			core::bc_unique_ptr<bc_global_config> m_global_config;
 			
 			core::bc_content_manager* m_content_manager;

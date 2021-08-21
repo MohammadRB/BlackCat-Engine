@@ -30,6 +30,8 @@ namespace box
 
 		platform::bc_script_variable start(const platform::bc_script_variable& p_port);
 
+		platform::bc_script_variable load_scene(const platform::bc_script_variable& p_scene_name);
+		
 		platform::bc_script_variable send(const platform::bc_script_variable& p_str_content);
 
 	private:

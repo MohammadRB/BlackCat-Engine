@@ -50,6 +50,10 @@ namespace black_cat
 			l_temp.combine(core::bc_path(bcL("Content\\Script")));
 			m_content_script_path = l_temp.get_string();
 
+			l_temp = l_execute_path;
+			l_temp.combine(core::bc_path(bcL("Content\\Scene")));
+			m_content_scene_path = l_temp.get_string();
+
 			m_global_config = core::bc_make_unique<bc_global_config>(core::bc_alloc_type::program, m_content_base_path.c_str());
 			set_global_config(*m_global_config);
 		}
@@ -72,6 +76,7 @@ namespace black_cat
 			m_content_model_path = std::move(p_other.m_content_model_path);
 			m_content_platform_shader_path = std::move(m_content_platform_shader_path);
 			m_content_script_path = std::move(m_content_script_path);
+			m_content_scene_path = std::move(m_content_scene_path);
 			m_global_config = std::move(p_other.m_global_config);
 
 			m_content_manager = p_other.m_content_manager;
@@ -174,6 +179,19 @@ namespace black_cat
 		{
 			core::bc_path l_path(get_content_script_path());
 			l_path.combine(core::bc_path(p_script_path));
+
+			return l_path.get_string();
+		}
+
+		const bcECHAR* bc_file_system::get_content_scene_path() const noexcept
+		{
+			return m_content_scene_path.c_str();
+		}
+
+		core::bc_estring bc_file_system::get_content_scene_path(const bcECHAR* p_scene_path) const noexcept
+		{
+			core::bc_path l_path(get_content_scene_path());
+			l_path.combine(core::bc_path(p_scene_path));
 
 			return l_path.get_string();
 		}

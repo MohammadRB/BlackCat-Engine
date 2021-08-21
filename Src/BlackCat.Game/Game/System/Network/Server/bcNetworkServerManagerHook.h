@@ -23,7 +23,7 @@ namespace black_cat
 
 			virtual void message_packet_received(bcSIZE p_packet_size, core::bc_const_span<bc_network_message_ptr> p_messages) = 0;
 			
-			virtual void error_occurred(const bc_network_exception* p_exception) = 0;
+			virtual void error_occurred(const bc_network_exception* p_exception, const platform::bc_network_address* p_client) = 0;
 		};
 	}
 }

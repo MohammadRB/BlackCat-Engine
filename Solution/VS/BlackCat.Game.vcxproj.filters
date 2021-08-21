@@ -615,6 +615,15 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManagerClient.h">
       <Filter>Game\System\Network\Server</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcSceneChangeNetworkMessage.h">
+      <Filter>Game\System\Network\Message</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcSceneReplicateNetworkMessage.h">
+      <Filter>Game\System\Network\Message</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\bcNetworkMessageVisitor.h">
+      <Filter>Game\System\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -930,6 +939,12 @@
       <Filter>Game\System\Network\Message</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcActorSyncNetworkMessage.cpp">
+      <Filter>Game\System\Network\Message</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcSceneChangeNetworkMessage.cpp">
+      <Filter>Game\System\Network\Message</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcSceneReplicateNetworkMessage.cpp">
       <Filter>Game\System\Network\Message</Filter>
     </ClCompile>
   </ItemGroup>

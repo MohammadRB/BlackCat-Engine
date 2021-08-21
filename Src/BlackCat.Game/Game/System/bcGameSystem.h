@@ -178,7 +178,9 @@ namespace black_cat
 			bc_script_system m_script_system;
 			bc_render_system m_render_system;
 			core::bc_unique_ptr<bc_game_console> m_console;
+
 			bc_scene_ptr m_scene;
+			bc_scene_ptr m_new_scene;
 
 			core::bc_event_listener_handle m_editor_event_handle;
 			core::bc_query_provider_handle m_scene_query_context_provider;

@@ -11,9 +11,9 @@ namespace black_cat
 	{
 		enum class bc_actor_network_data_dir
 		{
-			upload,
-			upload_stream,
-			download
+			replicate,
+			replicate_sync,
+			replicate_sync_from_client
 		};
 		
 		class BC_GAME_DLL bc_network_component : public bci_actor_component
@@ -34,6 +34,8 @@ namespace black_cat
 			bc_actor_network_id get_network_id() const noexcept;
 
 			void set_network_id(bc_actor_network_id p_id) noexcept;
+
+			bc_actor_network_data_dir get_network_data_dir() const noexcept;
 			
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 			
@@ -54,6 +56,11 @@ namespace black_cat
 		inline void bc_network_component::set_network_id(bc_actor_network_id p_id) noexcept
 		{
 			m_id = p_id;
+		}
+
+		inline bc_actor_network_data_dir bc_network_component::get_network_data_dir() const noexcept
+		{
+			return m_data_dir;
 		}
 	}
 }

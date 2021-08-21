@@ -21,7 +21,7 @@ namespace black_cat
 		{
 		public:
 			virtual ~bci_network_manager() = default;
-			
+
 			virtual void add_actor_to_sync(bc_actor& p_actor) = 0;
 
 			virtual void remove_actor_from_sync(bc_actor& p_actor) = 0;

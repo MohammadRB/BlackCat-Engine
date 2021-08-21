@@ -113,7 +113,7 @@ namespace black_cat
 
 			const auto l_scene = l_content_manager->load<game::bc_scene>
 			(
-				l_file_system.get_content_path(bcL("Scene\\Test.json")).c_str(),
+				l_file_system.get_content_scene_path(bcL("Test.json")).c_str(),
 				nullptr,
 				core::bc_content_loader_parameter()
 			);

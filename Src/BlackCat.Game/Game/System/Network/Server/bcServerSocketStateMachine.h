@@ -58,11 +58,25 @@ namespace black_cat
 				return m_last_exception.get();
 			}
 
-			void set_last_exception(const bc_network_exception& p_exception)
+			const platform::bc_network_address* get_last_client_address() const noexcept
+			{
+				return m_last_client_address.get();
+			}
+			
+			void set_last_exception(const bc_network_exception& p_exception, const platform::bc_network_address* p_client_address) noexcept
 			{
 				m_last_exception.reset(p_exception);
-			}
 
+				if(p_client_address)
+				{
+					m_last_client_address.reset(*p_client_address);
+				}
+				else
+				{
+					m_last_client_address.reset();
+				}
+			}
+		
 		private:
 			state_transition handle(bc_server_socket_bind_event& p_event) override
 			{
@@ -77,7 +91,7 @@ namespace black_cat
 					(
 						[p_exception](bc_server_socket_error_state& p_error_state)
 						{
-							p_error_state.set_last_exception(p_exception);
+							p_error_state.set_last_exception(p_exception, nullptr);
 						}
 					);
 				}
@@ -97,6 +111,7 @@ namespace black_cat
 
 			platform::bc_non_block_socket* m_socket;
 			core::bc_nullable<bc_network_exception> m_last_exception;
+			core::bc_nullable<platform::bc_network_address> m_last_client_address;
 		};
 		
 		class bc_server_socket_listening_state : public core::bc_state<bc_server_socket_state_machine, bc_server_socket_send_event, bc_server_socket_receive_event>
@@ -123,11 +138,12 @@ namespace black_cat
 				}
 				catch (const bc_network_exception& p_exception)
 				{
+					const auto& l_address = p_event.m_address;
 					return state_transition::transfer_to<bc_server_socket_error_state>
 					(
-						[p_exception](bc_server_socket_error_state& p_error_state)
+						[p_exception, l_address](bc_server_socket_error_state& p_error_state)
 						{
-							p_error_state.set_last_exception(p_exception);
+							p_error_state.set_last_exception(p_exception, &l_address);
 						}
 					);
 				}
@@ -159,11 +175,12 @@ namespace black_cat
 				}
 				catch (const bc_network_exception & p_exception)
 				{
+					const auto& l_address = p_event.m_address;
 					return state_transition::transfer_to<bc_server_socket_error_state>
 					(
-						[p_exception](bc_server_socket_error_state& p_error_state)
+						[p_exception, l_address](bc_server_socket_error_state& p_error_state)
 						{
-							p_error_state.set_last_exception(p_exception);
+							p_error_state.set_last_exception(p_exception, &l_address);
 						}
 					);
 				}
@@ -193,13 +210,13 @@ namespace black_cat
 						return state_transition::transfer_to<bc_server_socket_listening_state>();
 					}
 				}
-				catch (const bc_network_exception & p_exception)
+				catch (const bc_network_exception& p_exception)
 				{
 					return state_transition::transfer_to<bc_server_socket_error_state>
 					(
 						[p_exception](bc_server_socket_error_state& p_error_state)
 						{
-							p_error_state.set_last_exception(p_exception);
+							p_error_state.set_last_exception(p_exception, nullptr);
 						}
 					);
 				}
@@ -235,7 +252,7 @@ namespace black_cat
 					(
 						[p_exception](bc_server_socket_error_state& p_error_state)
 						{
-							p_error_state.set_last_exception(p_exception);
+							p_error_state.set_last_exception(p_exception, nullptr);
 						}
 					);
 				}
@@ -287,5 +304,5 @@ namespace black_cat
 		private:
 			platform::bc_non_block_socket* m_socket;
 		};
-	}	
+	}
 }

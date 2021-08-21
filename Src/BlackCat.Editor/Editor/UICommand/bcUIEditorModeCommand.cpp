@@ -37,7 +37,7 @@ namespace black_cat
 			}
 
 			auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
-			auto l_path = core::bc_path(l_scene->get_path().c_str());
+			auto l_path = core::bc_path(l_scene->get_path());
 			const auto l_new_file_name = l_path.get_filename_without_extension() + bcL(".editor_checkpoint") + l_path.get_file_extension();
 			l_path.set_filename(l_new_file_name.c_str());
 			

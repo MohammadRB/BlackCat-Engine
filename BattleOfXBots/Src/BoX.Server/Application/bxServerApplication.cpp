@@ -20,6 +20,7 @@ namespace box
 			auto l_server_prototype_builder = p_context.create_prototype_builder<bx_server_script>();
 			l_server_prototype_builder
 				.function(L"start", &bx_server_script::start)
+				.function(L"load_scene", &bx_server_script::load_scene)
 				.function(L"send", &bx_server_script::send);
 
 			auto l_server_prototype = p_context.create_prototype(l_server_prototype_builder);
@@ -137,8 +138,17 @@ namespace box
 		//core::bc_log(core::bc_log_type::debug) << "network message received with hash '" << p_message.get_message_name() << "' and id " << p_message.get_id() << core::bc_lend;
 	}
 
-	void bx_server_application::error_occurred(const bc_network_exception* p_exception)
+	void bx_server_application::error_occurred(const bc_network_exception* p_exception, const platform::bc_network_address* p_client)
 	{
-		core::bc_log(core::bc_log_type::error) << "error occurred in network connection: " << (p_exception ? p_exception->get_full_message().c_str() : "") << core::bc_lend;
+		if(p_client)
+		{
+			core::bc_log(core::bc_log_type::error) << "error occurred in client network connection (" << std::get<core::bc_string_frame>(p_client->get_traits()) << "): ";
+		}
+		else
+		{
+			core::bc_log(core::bc_log_type::error) << "error occurred in network connection: ";
+		}
+		
+		core::bc_log(core::bc_log_type::error) <<  (p_exception ? p_exception->get_full_message().c_str() : "") << core::bc_lend;
 	}
 }

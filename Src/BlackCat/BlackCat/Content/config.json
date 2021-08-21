@@ -23,11 +23,5 @@
     "rps_txt_drw"
   ],
   "key_values": {
-    "camera_position_x": 50.0,
-    "camera_position_y": 34.0,
-    "camera_position_z": -846.0,
-    "camera_lookat_x": 49.0,
-    "camera_lookat_y": 34.0,
-    "camera_lookat_z": -845.0
   }
 }

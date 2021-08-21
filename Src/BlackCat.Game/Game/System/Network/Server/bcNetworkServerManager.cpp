@@ -165,8 +165,12 @@ namespace black_cat
 
 		void bc_network_server_manager::on_enter(bc_server_socket_error_state& p_state)
 		{
-			m_socket_is_listening = false;
-			m_hook->error_occurred(p_state.get_last_exception());
+			if(!p_state.get_last_client_address())
+			{
+				m_socket_is_listening = false;
+			}
+			
+			m_hook->error_occurred(p_state.get_last_exception(), p_state.get_last_client_address());
 		}
 
 		void bc_network_server_manager::on_enter(bc_server_socket_listening_state& p_state)
@@ -177,13 +181,14 @@ namespace black_cat
 
 		void bc_network_server_manager::client_connected(const platform::bc_network_address& p_address)
 		{
-			// Client lock is acquired during update function
+			// Clients lock is acquired during update function
 			m_clients.push_back(bc_network_server_manager_client(p_address));
 			m_hook->client_connected();
 		}
 
 		void bc_network_server_manager::client_disconnected(const platform::bc_network_address& p_address)
 		{
+			// Clients lock is already acquired in the receive function
 			const auto l_ite = std::find_if
 			(
 				std::begin(m_clients),
@@ -205,7 +210,7 @@ namespace black_cat
 
 		void bc_network_server_manager::acknowledge_message(const platform::bc_network_address& p_address, bc_network_message_id p_message_id)
 		{
-			// Client lock is already acquired in the receive function 
+			// Clients lock is already acquired in the receive function 
 			auto* l_client = _find_client(p_address);
 			auto l_messages = l_client->get_messages_waiting_acknowledgment();
 			const auto l_msg_ite = std::find_if
@@ -225,15 +230,26 @@ namespace black_cat
 			}
 
 			auto& l_message = *(*l_msg_ite).m_message;
-			l_message.acknowledge(bc_network_message_server_context
-				{
-					p_address,
-					*this
-				});
+			l_message.acknowledge
+			(
+				bc_network_message_server_context{p_address, *this}
+			);
 
-			l_client->erase_message_with_acknowledgment(p_message_id);
+			l_client->erase_message_waiting_acknowledgment(p_message_id);
 		}
-		
+
+		void bc_network_server_manager::replicate_scene(const platform::bc_network_address& p_address)
+		{
+			// Clients lock is already acquired in the receive function
+			auto* l_client = _find_client(p_address);
+
+			for(auto [l_id, l_actor] : m_network_actors)
+			{
+				// Client lock is already acquired in the receive function
+				l_client->add_message(bc_make_network_message(bc_actor_replicate_network_message(l_actor)));
+			}
+		}
+
 		bc_actor bc_network_server_manager::create_actor(const bcCHAR* p_entity_name)
 		{
 			auto l_actor = m_game_system->get_scene()->create_actor(p_entity_name, core::bc_matrix4f::identity());
@@ -261,11 +277,13 @@ namespace black_cat
 			for (auto& l_msg : p_client.get_messages_waiting_acknowledgment())
 			{
 				const auto l_elapsed_since_last_send = p_current_time - l_msg.m_time;
+#ifndef BC_DEBUG
 				if (l_elapsed_since_last_send > p_client.get_rtt_time() * 3)
 				{
 					l_msg.m_time = p_current_time;
 					p_client.add_message(l_msg.m_message);
 				}
+#endif
 			}
 		}
 
@@ -299,7 +317,7 @@ namespace black_cat
 				{
 					if (l_message->need_acknowledgment())
 					{
-						p_client.add_message_with_acknowledgment(bc_message_with_time 
+						p_client.add_message_waiting_acknowledgment_if_not_exist(bc_message_with_time 
 						{
 							l_current_time,
 							l_message
@@ -331,10 +349,10 @@ namespace black_cat
 			const auto [l_packet_time, l_messages] = m_messages_buffer.deserialize(*this, m_memory_buffer, l_bytes_received);
 
 			m_hook->message_packet_received(l_bytes_received, core::bc_make_cspan(l_messages));
-			
+
+			// Check to see if a new client connection is requested
 			if (!l_client)
 			{
-				// Check to see if a new client connection is requested
 				for (const auto& l_message : l_messages)
 				{
 					if (!core::bci_message::is<bc_client_connect_network_message>(*l_message))

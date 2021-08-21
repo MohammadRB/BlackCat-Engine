@@ -44,18 +44,18 @@ namespace black_cat
 			void set_last_executed_message_id(bc_network_message_id p_id) noexcept;
 
 			bc_network_message_id get_last_executed_message_id() const noexcept;
+
+			core::bc_span<bc_network_message_ptr> get_messages() noexcept;
 			
 			void add_message(bc_network_message_ptr p_message);
 
-			core::bc_span<bc_network_message_ptr> get_messages() noexcept;
-
 			void clear_messages() noexcept;
-			
-			void add_message_with_acknowledgment(bc_message_with_time p_message) noexcept;
-			
-			core::bc_span<bc_message_with_time> get_messages_waiting_acknowledgment() noexcept;
 
-			void erase_message_with_acknowledgment(bc_network_message_id p_id) noexcept;
+			core::bc_span<bc_message_with_time> get_messages_waiting_acknowledgment() noexcept;
+			
+			void add_message_waiting_acknowledgment_if_not_exist(bc_message_with_time p_message) noexcept;
+
+			void erase_message_waiting_acknowledgment(bc_network_message_id p_id) noexcept;
 			
 		private:
 			core_platform::bc_mutex m_mutex;
@@ -145,14 +145,14 @@ namespace black_cat
 			return m_last_executed_message_id;
 		}
 
-		inline void bc_network_server_manager_client::add_message(bc_network_message_ptr p_message)
-		{
-			m_messages.push_back(std::move(p_message));
-		}
-
 		inline core::bc_span<bc_network_message_ptr> bc_network_server_manager_client::get_messages() noexcept
 		{
 			return core::bc_make_span(m_messages);
+		}
+		
+		inline void bc_network_server_manager_client::add_message(bc_network_message_ptr p_message)
+		{
+			m_messages.push_back(std::move(p_message));
 		}
 
 		inline void bc_network_server_manager_client::clear_messages() noexcept
@@ -160,17 +160,32 @@ namespace black_cat
 			m_messages.clear();
 		}
 
-		inline void bc_network_server_manager_client::add_message_with_acknowledgment(bc_message_with_time p_message) noexcept
-		{
-			m_messages_waiting_acknowledgment.push_back(std::move(p_message));
-		}
-		
 		inline core::bc_span<bc_message_with_time> bc_network_server_manager_client::get_messages_waiting_acknowledgment() noexcept
 		{
 			return core::bc_make_span(m_messages_waiting_acknowledgment);
 		}
-
-		inline void bc_network_server_manager_client::erase_message_with_acknowledgment(bc_network_message_id p_id) noexcept
+		
+		inline void bc_network_server_manager_client::add_message_waiting_acknowledgment_if_not_exist(bc_message_with_time p_message) noexcept
+		{
+			const auto l_ite = std::find_if
+			(
+				std::cbegin(m_messages_waiting_acknowledgment),
+				std::cend(m_messages_waiting_acknowledgment),
+				[&](const bc_message_with_time& p_entry)
+				{
+					return p_entry.m_message->get_id() == p_message.m_message->get_id();
+				}
+			);
+			if(l_ite != std::cend(m_messages_waiting_acknowledgment))
+			{
+				// Message is already in the buffer to be acknowledged
+				return;
+			}
+			
+			m_messages_waiting_acknowledgment.push_back(std::move(p_message));
+		}
+		
+		inline void bc_network_server_manager_client::erase_message_waiting_acknowledgment(bc_network_message_id p_id) noexcept
 		{
 			const auto l_msg_ite = std::find_if
 			(

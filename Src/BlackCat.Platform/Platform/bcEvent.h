@@ -25,7 +25,7 @@ namespace black_cat
 
 			bc_app_event_exit(const bc_app_event_exit&) = default;
 
-			~bc_app_event_exit() = default;
+			~bc_app_event_exit() override = default;
 
 			bc_app_event_exit& operator =(const bc_app_event_exit&) = default;
 
@@ -59,7 +59,7 @@ namespace black_cat
 
 			bc_app_event_pause_state(const bc_app_event_pause_state&) = default;
 
-			~bc_app_event_pause_state() = default;
+			~bc_app_event_pause_state() override = default;
 
 			bc_app_event_pause_state& operator =(const bc_app_event_pause_state&) = default;
 
@@ -86,10 +86,15 @@ namespace black_cat
 
 			bc_app_event_window_focus(const bc_app_event_window_focus&) = default;
 
-			~bc_app_event_window_focus() = default;
+			~bc_app_event_window_focus() override = default;
 
 			bc_app_event_window_focus& operator =(const bc_app_event_window_focus&) = default;
 
+			bc_window_id get_window_id() const noexcept
+			{
+				return m_window_id;
+			}
+			
 			bool get_focus() const
 			{
 				return p_focus;
@@ -119,7 +124,7 @@ namespace black_cat
 
 			bc_app_event_window_resize(const bc_app_event_window_resize&) = default;
 
-			~bc_app_event_window_resize() = default;
+			~bc_app_event_window_resize() override = default;
 
 			bc_app_event_window_resize& operator =(const bc_app_event_window_resize&) = default;
 
@@ -179,7 +184,7 @@ namespace black_cat
 
 			bc_app_event_window_state(const bc_app_event_window_state&) = default;
 
-			~bc_app_event_window_state() = default;
+			~bc_app_event_window_state() override = default;
 
 			bc_app_event_window_state& operator =(const bc_app_event_window_state&) = default;
 
@@ -214,7 +219,7 @@ namespace black_cat
 
 			bc_app_event_window_close(const bc_app_event_window_close&) = default;
 
-			~bc_app_event_window_close() = default;
+			~bc_app_event_window_close() override = default;
 
 			bc_app_event_window_close& operator =(const bc_app_event_window_close&) = default;
 
@@ -241,7 +246,7 @@ namespace black_cat
 
 			bc_app_event_key(const bc_app_event_key&) = default;
 
-			~bc_app_event_key() = default;
+			~bc_app_event_key() override = default;
 
 			bc_app_event_key& operator =(const bc_app_event_key&) = default;
 
@@ -273,7 +278,7 @@ namespace black_cat
 
 			bc_app_event_pointing(const bc_app_event_pointing&) = default;
 
-			~bc_app_event_pointing() = default;
+			~bc_app_event_pointing() override = default;
 
 			bc_app_event_pointing& operator =(const bc_app_event_pointing&) = default;
 

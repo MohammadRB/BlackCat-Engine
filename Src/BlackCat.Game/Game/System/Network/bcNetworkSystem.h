@@ -22,6 +22,11 @@ namespace black_cat
 		class bc_game_system;
 		class bc_actor;
 
+		enum class bc_network_type : bcUBYTE
+		{
+			not_started, server, client
+		};
+		
 		struct bc_network_system_parameter
 		{
 			bc_game_system& m_game_system;
@@ -42,6 +47,8 @@ namespace black_cat
 
 			bc_network_system& operator=(bc_network_system&&) noexcept;
 
+			bc_network_type get_network_type() const noexcept;
+			
 			void start_server(bci_network_server_manager_hook& p_hook, bcUINT16 p_port);
 
 			void start_client(bci_network_client_manager_hook& p_hook, const platform::bc_network_address& p_address);
@@ -49,8 +56,6 @@ namespace black_cat
 			void add_actor(bc_actor& p_actor);
 			
 			void remove_actor(bc_actor& p_actor);
-
-			bc_network_message_ptr create_message_instance(bc_network_message_hash p_hash);
 			
 			template<class TMessage>
 			void send_message(TMessage p_command);
@@ -59,6 +64,8 @@ namespace black_cat
 			
 			core::bc_task<void> update_async(const core_platform::bc_clock::update_param& p_clock);
 
+			bc_network_message_ptr create_message_instance(bc_network_message_hash p_hash);
+			
 			template<class ...TMessage>
 			void register_messages();
 			
@@ -72,9 +79,15 @@ namespace black_cat
 
 			bc_game_system* m_game_system;
 			message_factory_container m_message_factories;
+			bc_network_type m_network_type;
 			core::bc_unique_ptr<bci_network_manager> m_manager;
 		};
 
+		inline bc_network_type bc_network_system::get_network_type() const noexcept
+		{
+			return m_network_type;
+		}
+		
 		template<class TMessage>
 		void bc_network_system::send_message(TMessage p_command)
 		{
