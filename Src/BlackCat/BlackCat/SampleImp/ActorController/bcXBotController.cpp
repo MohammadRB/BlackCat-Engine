@@ -7,6 +7,7 @@
 #include "Core/Utility/bcLogger.h"
 #include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcJsonParse.h"
+#include "Core/Utility/bcLogger.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "PhysicsImp/Shape/bcShape.h"
 #include "PhysicsImp/Body/bcRigidDynamic.h"
@@ -314,10 +315,10 @@ namespace black_cat
 	void bc_xbot_controller::attach_weapon(game::bc_actor& p_weapon) noexcept
 	{
 		auto* l_weapon_component = p_weapon.get_component<game::bc_weapon_component>();
-
 		if(!l_weapon_component)
 		{
-			throw bc_invalid_argument_exception("Passed actor has not weapon component");
+			core::bc_log(core::bc_log_type::error) << "Passed actor does not have weapon component" << core::bc_lend;
+			return;
 		}
 
 		bc_xbot_weapon l_weapon;

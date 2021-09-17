@@ -17,6 +17,11 @@
 
 namespace black_cat
 {
+	namespace core
+	{
+		class bc_event_manager;
+	}
+	
 	namespace game
 	{
 		class bc_game_system;
@@ -29,6 +34,7 @@ namespace black_cat
 		
 		struct bc_network_system_parameter
 		{
+			core::bc_event_manager& m_event_manager;
 			bc_game_system& m_game_system;
 		};
 		
@@ -77,6 +83,7 @@ namespace black_cat
 			template<class TCommand>
 			void _register_message();
 
+			core::bc_event_manager* m_event_manager;
 			bc_game_system* m_game_system;
 			message_factory_container m_message_factories;
 			bc_network_type m_network_type;

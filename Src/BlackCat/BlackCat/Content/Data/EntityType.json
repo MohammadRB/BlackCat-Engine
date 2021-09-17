@@ -22,6 +22,33 @@
       ]
     },
     {
+      "name": "box-net",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "box",
+            "lod_scale": 3.0
+          }
+        },
+        {
+          "name": "rigid_dynamic",
+          "parameters": {
+            "mass": 30.0,
+            "collider_materials": {
+              "cube": "iron"
+            }
+          }
+        },
+        {
+          "name": "network",
+          "parameters": {
+            "data_dir": "replicate_sync" 
+          }
+        }
+      ]
+    },
+    {
       "name": "sphere",
       "components": [
         {

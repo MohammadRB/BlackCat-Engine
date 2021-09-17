@@ -81,8 +81,8 @@ namespace black_cat
 					{
 						p_context.m_game_system.get_network_system().add_actor(p_context.m_actor);
 					}
-					// If this is client, we should remove network actors because they will be replicated by the server
-					else if(m_data_dir == bc_actor_network_data_dir::replicate_sync || m_data_dir == bc_actor_network_data_dir::replicate)
+					// we should remove network actors if they are not loaded through network, because they will be replicated by the server
+					else if(m_id == invalid_id && (m_data_dir == bc_actor_network_data_dir::replicate_sync || m_data_dir == bc_actor_network_data_dir::replicate))
 					{
 						l_scene_add_event->get_scene().remove_actor(p_context.m_actor);
 					}
@@ -94,13 +94,40 @@ namespace black_cat
 			const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event);
 			if (l_scene_remove_event)
 			{
-				if (m_data_dir == bc_actor_network_data_dir::replicate_sync || m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
+				if (l_network_type == bc_network_type::server)
 				{
-					p_context.m_game_system.get_network_system().remove_actor(p_context.m_actor);
+					if (m_data_dir == bc_actor_network_data_dir::replicate_sync)
+					{
+						p_context.m_game_system.get_network_system().remove_actor(p_context.m_actor);
+					}
+				}
+				else if (l_network_type == bc_network_type::client)
+				{
+					if (m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
+					{
+						p_context.m_game_system.get_network_system().remove_actor(p_context.m_actor);
+					}
 				}
 				
 				return;
 			}
+		}
+
+		void bc_network_component::load_network_instance(const bc_actor_component_network_load_context& p_context)
+		{
+			auto* l_net_id_param = p_context.m_parameters.find("net_id")->second.as<bc_actor_network_id>();
+			if(!l_net_id_param)
+			{
+				m_id = bc_actor::invalid_id;
+				return;
+			}
+
+			m_id = *l_net_id_param;
+		}
+
+		void bc_network_component::write_network_instance(const bc_actor_component_network_write_context& p_context)
+		{
+			p_context.m_parameters.add("net_id", core::bc_any(m_id));
 		}
 	}
 }

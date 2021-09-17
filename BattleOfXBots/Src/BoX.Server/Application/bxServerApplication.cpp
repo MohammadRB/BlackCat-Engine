@@ -5,6 +5,7 @@
 #include "PlatformImp/Script/bcScriptGlobalPrototypeBuilder.h"
 #include "PlatformImp/Script/bcScriptPrototypeBuilder.h"
 #include "Game/System/Script/bcScriptBinding.h"
+#include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
 #include "BoX.Server/Application/bxServerApplication.h"
 #include "BoX.Server/Application/bxServerScript.h"
 
@@ -43,6 +44,11 @@ namespace box
 		m_console->get_console_window()->disable_close(false);
 		m_console->get_console_window()->set_caption(p_parameters.m_app_parameters.m_app_name);
 		l_game_console.set_implementation(m_console.get());
+
+		core::bc_register_loader<game::bc_height_map, bc_height_map_loader_dx11>
+		(
+			"height_map", core::bc_make_loader<bc_height_map_loader_dx11>()
+		);
 	}
 
 	void bx_server_application::application_initialize(game::bc_engine_application_parameter& p_parameters)
@@ -61,8 +67,11 @@ namespace box
 #ifdef BC_DEBUG
 		if(!m_server_started)
 		{
+			auto& l_script_system = m_game_system->get_script_system();
+			l_script_system.run_script_throw(game::bc_script_context::app, L"server.start(6699);");
+			l_script_system.run_script_throw(game::bc_script_context::app, L"server.load_scene(\"test\");");
+
 			m_server_started = true;
-			m_game_system->get_network_system().start_server(*this, 6699);
 		}
 #endif
 	}
@@ -113,7 +122,7 @@ namespace box
 
 	void bx_server_application::started_listening(bcUINT16 p_port)
 	{
-		core::bc_log(core::bc_log_type::info) << "started listening on port " << p_port << core::bc_lend;
+		//core::bc_log(core::bc_log_type::info) << "started listening on port " << p_port << core::bc_lend;
 	}
 
 	void bx_server_application::client_connected()
@@ -128,13 +137,13 @@ namespace box
 
 	void bx_server_application::message_packet_sent(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
 	{
-		core::bc_log(core::bc_log_type::debug) << "network message packet sent with size of '" << p_packet_size << "' bytes" << core::bc_lend;
+		//core::bc_log(core::bc_log_type::debug) << "network message packet sent with size of '" << p_packet_size << "' bytes" << core::bc_lend;
 		//core::bc_log(core::bc_log_type::debug) << "network message sent with hash '" << p_message.get_message_name() << "' and id " << p_message.get_id() << core::bc_lend;
 	}
 
 	void bx_server_application::message_packet_received(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
 	{
-		core::bc_log(core::bc_log_type::debug) << "network message packet received with size of '" << p_packet_size << "' bytes" << core::bc_lend;
+		//core::bc_log(core::bc_log_type::debug) << "network message packet received with size of '" << p_packet_size << "' bytes" << core::bc_lend;
 		//core::bc_log(core::bc_log_type::debug) << "network message received with hash '" << p_message.get_message_name() << "' and id " << p_message.get_id() << core::bc_lend;
 	}
 

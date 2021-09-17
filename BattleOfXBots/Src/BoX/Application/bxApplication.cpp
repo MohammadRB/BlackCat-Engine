@@ -113,16 +113,6 @@ namespace box
 
 	void bx_application::application_load_content(core::bc_content_stream_manager& p_stream_manager)
 	{
-		auto* l_content_manager = core::bc_get_service<core::bc_content_manager>();
-		auto& l_file_system = m_game_system->get_file_system();
-
-		/*const auto l_scene = l_content_manager->load<game::bc_scene>
-		(
-			l_file_system.get_content_scene_path(bcL("Test.json")).c_str(),
-			nullptr,
-			core::bc_content_loader_parameter()
-		);
-		m_game_system->set_scene(l_scene);*/
 	}
 
 	void bx_application::application_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update)
@@ -134,11 +124,8 @@ namespace box
 			m_client_start_time += p_clock.m_elapsed_second;
 			if(m_client_start_time > l_client_start_delay)
 			{
-				m_game_system->get_network_system().start_client
-				(
-					*this, 
-					platform::bc_network_address::from_ip_port(platform::bc_socket_address::inter_network, "127.0.0.1", 6699)
-				);
+				auto& l_script_system = m_game_system->get_script_system();
+				l_script_system.run_script_throw(game::bc_script_context::app, L"client.connect(\"127.0.0.1\", 6699);");
 			}
 		}
 #endif
@@ -205,13 +192,13 @@ namespace box
 
 	void bx_application::message_packet_sent(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
 	{
-		core::bc_log(core::bc_log_type::debug) << "network message packet sent with size of '" << p_packet_size << "' bytes" << core::bc_lend;
+		//core::bc_log(core::bc_log_type::debug) << "network message packet sent with size of '" << p_packet_size << "' bytes" << core::bc_lend;
 		//core::bc_log(core::bc_log_type::debug) << "network message sent with hash '" << p_message.get_message_name() << "' and id " << p_message.get_id() << core::bc_lend;
 	}
 
 	void bx_application::message_packet_received(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
 	{
-		core::bc_log(core::bc_log_type::debug) << "network message packet received with size of '" << p_packet_size << "' bytes" << core::bc_lend;
+		//core::bc_log(core::bc_log_type::debug) << "network message packet received with size of '" << p_packet_size << "' bytes" << core::bc_lend;
 		//core::bc_log(core::bc_log_type::debug) << "network message received with hash '" << p_message.get_message_name() << "' and id " << p_message.get_id() << core::bc_lend;
 	}
 

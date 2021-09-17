@@ -17,11 +17,35 @@ namespace black_cat
 
 	void bc_text_draw_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
+		auto& l_device = p_render_system.get_device();
+		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
+		
 		m_text_renderer = core::bc_make_unique<graphic::bc_device_text_renderer>
 		(
 			p_render_system.get_device().create_text_renderer()
 		);
 		m_text_bound = m_text_renderer->measure_text(L"Test");
+
+		after_reset(game::bc_render_pass_reset_context
+		(
+			p_render_system,
+			l_device,
+			l_device_swap_buffer,
+			graphic::bc_device_parameters
+			(
+				0,
+				0,
+				graphic::bc_format::unknown,
+				graphic::bc_texture_ms_config(1, 0)
+			),
+			graphic::bc_device_parameters
+			(
+				l_device_swap_buffer.get_back_buffer_width(),
+				l_device_swap_buffer.get_back_buffer_height(),
+				l_device_swap_buffer.get_back_buffer_format(),
+				l_device_swap_buffer.get_back_buffer_texture().get_sample_count()
+			)
+		));
 	}
 
 	void bc_text_draw_pass::update(const game::bc_render_pass_update_context& p_context)

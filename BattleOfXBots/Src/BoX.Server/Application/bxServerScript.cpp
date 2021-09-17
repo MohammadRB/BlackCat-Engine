@@ -3,6 +3,7 @@
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Network/Message/bcStringNetworkMessage.h"
 #include "Game/System/Network/Message/bcSceneChangeNetworkMessage.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "BoX.Server/Application/bxServerScript.h"
 
 namespace box
@@ -21,7 +22,7 @@ namespace box
 
 	platform::bc_script_variable bx_server_script::start(const platform::bc_script_variable& p_port)
 	{
-		if(!p_port.is_valid())
+		if(!p_port.is_number())
 		{
 			return platform::bc_script_variable();
 		}
@@ -38,27 +39,26 @@ namespace box
 			return platform::bc_script_variable();
 		}
 
-		const core::bc_string_frame l_scene_extension(".json");
-		auto l_scene_name = core::bc_to_string(p_scene_name.as_string().data());
-		const bool l_end_with_json = l_scene_name.length() >= l_scene_extension.length()
-			? std::equal
-			(
-				std::rbegin(l_scene_extension),
-				std::rend(l_scene_extension),
-				(std::rbegin(l_scene_name)),
-				[](bcCHAR ch1, bcCHAR ch2)
-				{
-					return std::tolower(ch1) == std::tolower(ch2);
-				}
-			)
-			: false;
+		const auto l_scene_name = p_scene_name.as_string().data();
 		
-		if(!l_end_with_json)
+		try
 		{
-			l_scene_name += l_scene_extension;
+			auto* l_content_manager = core::bc_get_service<core::bc_content_manager>();
+			auto& l_file_system = m_game_system->get_file_system();
+			
+			auto l_scene = l_content_manager->load<game::bc_scene>
+			(
+				l_file_system.get_content_scene_path(l_scene_name.c_str()).c_str(),
+				nullptr,
+				core::bc_content_loader_parameter()
+			);
+			
+			m_game_system->set_scene(std::move(l_scene));
 		}
-		
-		m_game_system->get_network_system().send_message(game::bc_scene_change_network_message(std::move(l_scene_name)));
+		catch (...)
+		{
+			core::bc_log(core::bc_log_type::error) << "Error on loading scene '" << l_scene_name << "'" << core::bc_lend;
+		}
 
 		return platform::bc_script_variable();
 	}

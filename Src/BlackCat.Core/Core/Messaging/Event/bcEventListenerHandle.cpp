@@ -42,14 +42,14 @@ namespace black_cat
 
 		void bc_event_listener_handle::reassign(delegate_type&& p_delegate)
 		{
-			bc_get_service< bc_event_manager >()->replace_event_listener(*this, std::move(p_delegate));
+			bc_get_service<bc_event_manager>()->replace_event_listener(*this, std::move(p_delegate));
 		}
 
 		void bc_event_listener_handle::reset()
 		{
 			if (m_event_name)
 			{
-				bc_get_service< bc_event_manager >()->unregister_event_listener(*this);
+				bc_get_service<bc_event_manager>()->unregister_event_listener(*this);
 				m_event_name = nullptr;
 				m_event_index = -1;
 			}

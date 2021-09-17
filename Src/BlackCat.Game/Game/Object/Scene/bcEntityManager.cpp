@@ -131,16 +131,17 @@ namespace black_cat
 		{
 			const auto l_hash = string_hash()(p_entity_name);
 			auto l_entity_entry = m_entities.find(l_hash);
-
-			if(l_entity_entry == std::end(m_entities))
-			{
-				throw bc_invalid_argument_exception("Invalid entity name");
-			}
-
-			bc_actor l_actor = m_actor_component_manager.create_actor();
+			bc_actor l_actor;
 			
 			try
 			{
+				if (l_entity_entry == std::end(m_entities))
+				{
+					throw bc_invalid_argument_exception("Invalid entity name");
+				}
+
+				l_actor = m_actor_component_manager.create_actor();
+				
 				m_actor_component_manager.create_component<bc_mediate_component>(l_actor);
 				auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
 				l_mediate_component->set_entity_name(l_entity_entry->second.m_entity_name.c_str());
@@ -180,7 +181,7 @@ namespace black_cat
 
 				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
 				{
-					auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
+					const auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
 
 					l_entity_component_entry->second.m_initialize_entity_delegate
 					(
@@ -220,12 +221,13 @@ namespace black_cat
 			}
 			catch (const std::exception& p_exception)
 			{
-				m_actor_component_manager.remove_actor(l_actor);
-
-				auto l_msg = core::bc_string_frame("Error in creation of entity '") + p_entity_name + "': " + p_exception.what();
-				core::bc_log(core::bc_log_type::error, core::bc_to_estring_frame(l_msg).c_str());
-
-				l_actor = bc_actor();
+				if(l_actor.is_valid())
+				{
+					m_actor_component_manager.remove_actor(l_actor);
+					l_actor = bc_actor();
+				}
+				
+				core::bc_log(core::bc_log_type::error) << "Error in creation of entity '" << p_entity_name << "': " << p_exception.what() << core::bc_lend;
 			}
 
 			return l_actor;

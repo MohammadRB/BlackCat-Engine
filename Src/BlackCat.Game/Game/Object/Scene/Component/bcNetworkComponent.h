@@ -42,6 +42,10 @@ namespace black_cat
 			void initialize_entity(const bc_actor_component_initialize_entity_context& p_context) override;
 			
 			void handle_event(const bc_actor_component_event_context& p_context) override;
+
+			void load_network_instance(const bc_actor_component_network_load_context& p_context) override;
+			
+			void write_network_instance(const bc_actor_component_network_write_context& p_context) override;
 			
 		private:
 			bc_actor_network_id m_id;

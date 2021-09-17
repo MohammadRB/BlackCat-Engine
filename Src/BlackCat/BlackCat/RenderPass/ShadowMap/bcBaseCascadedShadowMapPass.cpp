@@ -68,12 +68,36 @@ namespace black_cat
 	
 	void bc_base_cascaded_shadow_map_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
+		auto& l_device = p_render_system.get_device();
+		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
+		
 		initialize_pass(p_render_system);
 
 		if(m_my_index == 0)
 		{
 			share_resource(m_state->m_output_depth_buffers_share_slot, bc_cascaded_shadow_map_buffer_container());
 		}
+
+		after_reset(game::bc_render_pass_reset_context
+		(
+			p_render_system,
+			l_device,
+			l_device_swap_buffer,
+			graphic::bc_device_parameters
+			(
+				0,
+				0,
+				graphic::bc_format::unknown,
+				graphic::bc_texture_ms_config(1, 0)
+			),
+			graphic::bc_device_parameters
+			(
+				l_device_swap_buffer.get_back_buffer_width(),
+				l_device_swap_buffer.get_back_buffer_height(),
+				l_device_swap_buffer.get_back_buffer_format(),
+				l_device_swap_buffer.get_back_buffer_texture().get_sample_count()
+			)
+		));
 	}
 	
 	void bc_base_cascaded_shadow_map_pass::update(const game::bc_render_pass_update_context& p_context)

@@ -9,6 +9,7 @@
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Math/bcValueSampler.h"
 #include "Core/File/bcMemoryStream.h"
+#include "Core/Messaging/Event/bcEventListenerHandle.h"
 #include "PlatformImp/Network/bcNetworkAddress.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/System/Network/bcNetworkManager.h"
@@ -21,6 +22,11 @@
 
 namespace black_cat
 {
+	namespace core
+	{
+		class bc_event_manager;
+	}
+	
 	namespace game
 	{
 		class bc_game_system;
@@ -35,7 +41,11 @@ namespace black_cat
 			using bci_network_manager::send_message;
 			
 		public:
-			bc_network_server_manager(bc_game_system& p_game_system, bc_network_system& p_network_system, bci_network_server_manager_hook& p_hook, bcUINT16 p_port);
+			bc_network_server_manager(core::bc_event_manager& p_event_manager, 
+				bc_game_system& p_game_system, 
+				bc_network_system& p_network_system, 
+				bci_network_server_manager_hook& p_hook, 
+				bcUINT16 p_port);
 
 			bc_network_server_manager(bc_network_server_manager&&) noexcept;
 
@@ -82,6 +92,9 @@ namespace black_cat
 
 			bc_network_server_manager_client* _find_client(const platform::bc_network_address& p_address);
 
+			bool _event_handler(core::bci_event& p_event);
+			
+			core::bc_event_manager* m_event_manager;
 			bc_game_system* m_game_system;
 			
 			bcUINT16 m_port;
@@ -97,6 +110,9 @@ namespace black_cat
 			
 			core::bc_memory_stream m_memory_buffer;
 			bc_network_message_buffer m_messages_buffer;
+
+			core::bc_event_listener_handle m_scene_change_event;
+			core::bc_string m_scene_name;
 		};
 	}
 }

@@ -32,6 +32,10 @@ namespace black_cat
 			void unlock();
 			
 			const platform::bc_network_address& get_address() const noexcept;
+
+			bool get_ready_for_sync() const noexcept;
+
+			void set_ready_for_sync(bool p_ready) noexcept;
 			
 			bc_network_packet_time get_last_sync_time() const noexcept;
 
@@ -60,6 +64,8 @@ namespace black_cat
 		private:
 			core_platform::bc_mutex m_mutex;
 			platform::bc_network_address m_address;
+
+			bool m_ready_for_sync;
 			bc_network_packet_time m_last_sync_time;
 			core::bc_value_sampler<bc_network_packet_time, 64> m_rtt_sampler;
 
@@ -70,6 +76,7 @@ namespace black_cat
 
 		inline bc_network_server_manager_client::bc_network_server_manager_client(const platform::bc_network_address& p_address)
 			: m_address(p_address),
+			m_ready_for_sync(false),
 			m_last_sync_time(0),
 			m_rtt_sampler(100),
 			m_last_executed_message_id(0)
@@ -78,6 +85,7 @@ namespace black_cat
 
 		inline bc_network_server_manager_client::bc_network_server_manager_client(bc_network_server_manager_client&& p_other) noexcept
 			: m_address(std::move(p_other.m_address)),
+			m_ready_for_sync(p_other.m_ready_for_sync),
 			m_last_sync_time(p_other.m_last_sync_time),
 			m_rtt_sampler(std::move(p_other.m_rtt_sampler)),
 			m_last_executed_message_id(p_other.m_last_executed_message_id),
@@ -91,6 +99,7 @@ namespace black_cat
 		inline bc_network_server_manager_client& bc_network_server_manager_client::operator=(bc_network_server_manager_client&& p_other) noexcept
 		{
 			m_address = std::move(p_other.m_address);
+			m_ready_for_sync = p_other.m_ready_for_sync;
 			m_last_sync_time = p_other.m_last_sync_time;
 			m_rtt_sampler = std::move(p_other.m_rtt_sampler);
 			m_last_executed_message_id = p_other.m_last_executed_message_id;
@@ -113,6 +122,16 @@ namespace black_cat
 		inline const platform::bc_network_address& bc_network_server_manager_client::get_address() const noexcept
 		{
 			return m_address;
+		}
+
+		inline bool bc_network_server_manager_client::get_ready_for_sync() const noexcept
+		{
+			return m_ready_for_sync;
+		}
+
+		inline void bc_network_server_manager_client::set_ready_for_sync(bool p_ready) noexcept
+		{
+			m_ready_for_sync = p_ready;
 		}
 
 		inline bc_network_packet_time bc_network_server_manager_client::get_last_sync_time() const noexcept

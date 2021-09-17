@@ -113,6 +113,10 @@ namespace black_cat
 		bc_actor bc_scene::create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform)
 		{
 			auto l_actor = m_entity_manager->create_entity(*this, p_entity_name);
+			if(!l_actor.is_valid())
+			{
+				return l_actor;
+			}
 			
 			{
 				core_platform::bc_hybrid_mutex_guard l_lock_guard

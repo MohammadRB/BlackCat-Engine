@@ -169,7 +169,7 @@ namespace black_cat
 							break;
 						}
 
-						p_event.m_stream.write(l_buffer, l_local_buffer_size);
+						p_event.m_stream.write(l_buffer, l_bytes_received);
 						p_event.m_bytes_received += l_bytes_received;
 					}
 				}

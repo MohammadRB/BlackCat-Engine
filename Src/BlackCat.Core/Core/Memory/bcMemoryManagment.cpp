@@ -303,8 +303,8 @@ namespace black_cat
 
 			std::memcpy
 			(
-				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(l_new_pointer) + l_new_block->offset()),
-				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer) + l_block->offset()),
+				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(l_new_pointer)),
+				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer)),
 				l_min_size
 			);
 
@@ -422,14 +422,18 @@ namespace black_cat
 			auto* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 
 			auto* l_new_pointer = aligned_alloc(p_new_size, p_alignment, p_alloc_type, p_file, p_line);
+			if (!l_new_pointer)
+			{
+				return l_new_pointer;
+			}
+			
 			auto* l_new_block = bc_memblock::retrieve_mem_block(l_new_pointer);
-
 			const bcSIZE l_min_size = std::min<bcSIZE>(l_block->size() - l_block->offset(), l_new_block->size() - l_new_block->offset());
 
 			std::memcpy
 			(
-				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(l_new_pointer) + l_new_block->offset()),
-				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer) + l_block->offset()),
+				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(l_new_pointer)),
+				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer)),
 				l_min_size
 			);
 

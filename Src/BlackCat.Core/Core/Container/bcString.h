@@ -2,9 +2,10 @@
 
 #pragma once
 
+#include "Core/Container/bcContainer.h"
 #include "Core/CorePCH.h"
 #include "Core/bcException.h"
-#include "Core/Container/bcContainer.h"
+#include "Core/bcExport.h"
 #include <cerrno>
 #include <string>
 
@@ -2070,6 +2071,10 @@ namespace black_cat
 
 			return l_hash;
 		}
+
+		BC_CORE_DLL bool bc_string_ends_with(const bcCHAR* p_str, bcSIZE p_str_len, const bcCHAR* p_search_str, bcSIZE p_search_str_len);
+
+		BC_CORE_DLL bool bc_string_ends_with(const bcWCHAR* p_str, bcSIZE p_str_len, const bcWCHAR* p_search_str, bcSIZE p_search_str_len);
 		
 		// CRC32 Table (zlib polynomial)
 		static constexpr bcUINT32 _crc_table[256] = {

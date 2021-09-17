@@ -14,13 +14,13 @@ namespace black_cat
 		void bci_network_message::serialize(const bc_network_message_serialization_context& p_context)
 		{
 			m_id = s_id_counter.fetch_add(1);
-			p_context.m_params.add("id", core::bc_any(m_id));
+			p_context.m_params.add("msg_id", core::bc_any(m_id));
 			serialize_message(p_context);
 		}
 
 		void bci_network_message::deserialize(const bc_network_message_deserialization_context& p_context)
 		{
-			auto* l_id = p_context.m_params.find("id")->second.as<bc_network_message_id>();
+			auto* l_id = p_context.m_params.find("msg_id")->second.as<bc_network_message_id>();
 			if(!l_id)
 			{
 				core::bc_log(core::bc_log_type::error, bcL("Failed to deserialize network message id"));

@@ -192,7 +192,7 @@ namespace black_cat
 			m_query_manager = p_parameter.m_query_manager;
 			m_event_manager = p_parameter.m_event_manager;
 			m_physics_system.initialize();
-			m_network_system.initialize(bc_network_system_parameter{ *this });
+			m_network_system.initialize(bc_network_system_parameter{ *m_event_manager, *this });
 			m_script_system.initialize(true);
 			m_render_system.initialize(std::move(p_parameter.m_render_system_parameter));
 

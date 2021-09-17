@@ -39,9 +39,6 @@ namespace black_cat
 		{
 			p_context.m_params.reserve(10);
 
-			const auto* l_network_component = m_actor.get_component<bc_network_component>();
-			p_context.m_params.add("net_id", core::bc_any(l_network_component->get_network_id()));
-
 			core::bc_vector_frame<bci_actor_component*> l_components(10);
 			const bc_actor_component_network_write_context l_context(p_context.m_params, m_actor);
 
@@ -58,6 +55,11 @@ namespace black_cat
 			}
 
 			m_actor = p_context.m_visitor.get_actor(*l_actor_network_id);
+			if(!m_actor.is_valid())
+			{
+				core::bc_log(core::bc_log_type::warning, bcL("Failed to find network actor in sync network message"));
+				return;
+			}
 
 			core::bc_vector_frame<bci_actor_component*> l_components(10);
 			const bc_actor_component_network_load_context l_context(p_context.m_params, m_actor);

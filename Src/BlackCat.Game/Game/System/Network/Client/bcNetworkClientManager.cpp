@@ -245,7 +245,7 @@ namespace black_cat
 			}
 			catch (...)
 			{
-				core::bc_log(core::bc_log_type::error) << "Error on loading scene '" << p_scene_name << " '";
+				core::bc_log(core::bc_log_type::error) << "Error on loading scene '" << p_scene_name << "'" << core::bc_lend;
 			}
 		}
 
@@ -376,6 +376,7 @@ namespace black_cat
 				}
 
 				m_messages.clear();
+				m_last_sync_time = bc_current_packet_time();
 			}
 		}
 		
@@ -392,11 +393,22 @@ namespace black_cat
 			}
 
 			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
-			const auto [l_packet_time, l_messages] = m_messages_buffer.deserialize(*this, l_receive_event.m_stream, l_receive_event.m_bytes_received);
-			bc_network_message_id l_max_message_id = 0;
+
+			bc_network_packet_time l_packet_time;
+			core::bc_span<bc_network_message_ptr> l_messages;
+
+			try
+			{
+				std::tie(l_packet_time, l_messages) = m_messages_buffer.deserialize(*this, l_receive_event.m_stream, l_receive_event.m_bytes_received);
+			}
+			catch (const std::exception& l_exception)
+			{
+				core::bc_log(core::bc_log_type::warning) << "Deserialization of network packet encountered error: '" << l_exception.what() << "'" << core::bc_lend;
+			}
 
 			m_hook->message_packet_received(l_receive_event.m_bytes_received, core::bc_make_cspan(l_messages));
-			
+
+			bc_network_message_id l_max_message_id = 0;
 			for(const auto& l_message : l_messages)
 			{
 				if(l_message->get_id() < m_last_executed_message_id)
@@ -420,7 +432,7 @@ namespace black_cat
 
 			m_last_executed_message_id = l_max_message_id;
 			m_rtt_sampler.add_sample(bc_elapsed_packet_time(l_packet_time));
-			m_last_sync_time = bc_current_packet_time();
+			//m_last_sync_time = bc_current_packet_time();
 		}
 	}	
 }

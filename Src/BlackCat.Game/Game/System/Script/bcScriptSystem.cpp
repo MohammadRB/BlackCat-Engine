@@ -106,7 +106,7 @@ namespace black_cat
 		platform::bc_script_variable bc_script_system::run_script(bc_script_context p_context, platform::bc_script_bytecode& p_script)
 		{
 			{
-				platform::bc_script_context::scope l_context_scope(_get_context(p_context));
+				const platform::bc_script_context::scope l_context_scope(_get_context(p_context));
 
 				platform::bc_script_variable l_result = m_script_runtime->run_script(p_script);
 
@@ -123,7 +123,7 @@ namespace black_cat
 		platform::bc_script_variable bc_script_system::run_script_throw(bc_script_context p_context, const bcWCHAR* p_script)
 		{
 			{
-				platform::bc_script_context::scope l_context_scope(_get_context(p_context));
+				const platform::bc_script_context::scope l_context_scope(_get_context(p_context));
 
 				platform::bc_script_bytecode l_byte_code = m_script_runtime->compile_script(p_script);
 

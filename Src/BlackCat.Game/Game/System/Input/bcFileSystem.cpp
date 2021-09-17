@@ -190,8 +190,22 @@ namespace black_cat
 
 		core::bc_estring bc_file_system::get_content_scene_path(const bcECHAR* p_scene_path) const noexcept
 		{
+			core::bc_wstring_frame l_scene_name = p_scene_path;
+			const core::bc_wstring_frame l_scene_extension(L".json");
+			const bool l_end_with_json = core::bc_string_ends_with
+			(
+				l_scene_name.data(),
+				l_scene_name.length(),
+				l_scene_extension.data(),
+				l_scene_extension.length()
+			);
+			if (!l_end_with_json)
+			{
+				l_scene_name += l_scene_extension;
+			}
+			
 			core::bc_path l_path(get_content_scene_path());
-			l_path.combine(core::bc_path(p_scene_path));
+			l_path.combine(core::bc_path(l_scene_name.data()));
 
 			return l_path.get_string();
 		}
