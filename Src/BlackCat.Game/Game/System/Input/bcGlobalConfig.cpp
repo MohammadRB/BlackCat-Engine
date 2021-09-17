@@ -39,6 +39,7 @@ namespace black_cat
 			if(!l_json->m_counter_values.get_had_value())
 			{
 				l_json->m_counter_values.new_entry().set("fps");
+				l_json->m_counter_values.new_entry().set("ping");
 				l_json->m_counter_values.new_entry().set("update_time");
 				l_json->m_counter_values.new_entry().set("render_time");
 				l_json->m_counter_values.new_entry().set("swap_time");

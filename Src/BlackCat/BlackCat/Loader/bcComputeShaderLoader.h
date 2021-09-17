@@ -24,9 +24,5 @@ namespace black_cat
 		void content_offline_processing(core::bc_content_loading_context& p_context) const override;
 
 		void content_processing(core::bc_content_loading_context& p_context) const override;
-
-	protected:
-
-	private:
 	};
 }

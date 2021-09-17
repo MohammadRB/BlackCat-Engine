@@ -3,6 +3,7 @@
   "lod_culling_index": 6,
   "counter_values": [
     "fps",
+    "ping",
     "update_time",
     "render_time",
     "swap_time",

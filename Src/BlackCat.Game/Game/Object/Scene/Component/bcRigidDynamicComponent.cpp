@@ -12,6 +12,7 @@
 #include "Game/Object/Scene/Component/Event/bcHierarchyTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcNetworkReplicateActorEvent.h"
 
 namespace black_cat
 {
@@ -115,6 +116,22 @@ namespace black_cat
 			{
 				remove_from_scene(l_scene_remove_event->get_scene().get_px_scene(), m_px_actor_ref.get());
 				return;
+			}
+
+			const auto* l_network_replicate_event = core::bci_message::as<bc_network_replicate_actor_event>(p_context.m_event);
+			if(l_network_replicate_event)
+			{
+				const auto l_network_type = p_context.m_game_system.get_network_system().get_network_type();
+				const auto l_data_dir = l_network_replicate_event->get_data_dir();
+
+				if(l_network_type == bc_network_type::server && l_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
+				{
+					set_enable(false);
+				}
+				else if (l_network_type == bc_network_type::client && l_data_dir == bc_actor_network_data_dir::replicate_sync)
+				{
+					set_enable(false);
+				}
 			}
 		}
 

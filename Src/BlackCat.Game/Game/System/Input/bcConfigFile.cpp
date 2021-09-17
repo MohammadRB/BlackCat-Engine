@@ -2,10 +2,9 @@
 
 #include "Game/GamePCH.h"
 
-#include "Core/Container/bcString.h"
-#include "Core/Container/bcVector.h"
 #include "Core/File/bcPath.h"
 #include "Core/File/bcJsonDocument.h"
+#include "Core/Utility/bcJsonParse.h"
 #include "Game/System/Input/bcConfigFile.h"
 #include "Game/bcException.h"
 
@@ -37,32 +36,20 @@ namespace black_cat
 
 		bc_config_file& bc_config_file::add_or_update_config_key(const bcCHAR* p_key, const core::bc_vector2f& p_value) noexcept
 		{
-			core::bc_vector<core::bc_any> l_array(2);
-			l_array[0].set_value(p_value.x);
-			l_array[1].set_value(p_value.y);
-
-			return add_or_update_config_key(p_key, core::bc_any(std::move(l_array)));
+			json_parse::bc_write(*m_json_key_value, p_key, p_value);
+			return *this;
 		}
 
 		bc_config_file& bc_config_file::add_or_update_config_key(const bcCHAR* p_key, const core::bc_vector3f& p_value) noexcept
 		{
-			core::bc_vector<core::bc_any> l_array(3);
-			l_array[0].set_value(p_value.x);
-			l_array[1].set_value(p_value.y);
-			l_array[2].set_value(p_value.z);
-
-			return add_or_update_config_key(p_key, core::bc_any(std::move(l_array)));
+			json_parse::bc_write(*m_json_key_value, p_key, p_value);
+			return *this;
 		}
 
 		bc_config_file& bc_config_file::add_or_update_config_key(const bcCHAR* p_key, const core::bc_vector4f& p_value) noexcept
 		{
-			core::bc_vector<core::bc_any> l_array(4);
-			l_array[0].set_value(p_value.x);
-			l_array[1].set_value(p_value.y);
-			l_array[2].set_value(p_value.z);
-			l_array[3].set_value(p_value.w);
-
-			return add_or_update_config_key(p_key, core::bc_any(std::move(l_array)));
+			json_parse::bc_write(*m_json_key_value, p_key, p_value);
+			return *this;
 		}
 
 		bc_config_file& bc_config_file::read_config_key(const bcCHAR* p_key, core::bc_any& p_value) noexcept
@@ -89,130 +76,52 @@ namespace black_cat
 
 		bc_config_file& bc_config_file::read_config_key(const bcCHAR* p_key, core::bc_vector2f& p_value)
 		{
-			core::bc_any l_value;
-			read_config_key(p_key, l_value);
+			const bool l_succeeded = json_parse::bc_load(*m_json_key_value, p_key, p_value);
+			if(!l_succeeded)
+			{
+				throw bc_invalid_operation_exception("Cannot read config key of type vector2");
+			}
 
-			auto& l_array = l_value.as_throw<core::bc_vector<core::bc_any>>();
-
-			p_value.x = l_array[0].as_throw<bcFLOAT>();
-			p_value.y = l_array[1].as_throw<bcFLOAT>();
-			
 			return *this;
 		}
 
 		bc_config_file& bc_config_file::read_config_key(const bcCHAR* p_key, core::bc_vector2f& p_value, bool& p_succeeded) noexcept
 		{
-			core::bc_any l_value;
-			read_config_key(p_key, l_value);
-
-			auto* l_array = l_value.as<core::bc_vector<core::bc_any>>();
-			if(!l_array || l_array->size() < 2)
-			{
-				p_succeeded = false;
-				return *this;
-			}
-
-			auto* l_x = (*l_array)[0].as<bcFLOAT>();
-			auto* l_y = (*l_array)[1].as<bcFLOAT>();
-			if(!l_x || !l_y)
-			{
-				p_succeeded = false;
-				return *this;
-			}
-			
-			p_value.x = *l_x;
-			p_value.y = *l_y;
-
-			p_succeeded = true;
+			p_succeeded = json_parse::bc_load(*m_json_key_value, p_key, p_value);
 			return *this;
 		}
 
 		bc_config_file& bc_config_file::read_config_key(const bcCHAR* p_key, core::bc_vector3f& p_value)
 		{
-			core::bc_any l_value;
-			read_config_key(p_key, l_value);
-
-			auto& l_array = l_value.as_throw<core::bc_vector<core::bc_any>>();
-
-			p_value.x = l_array[0].as_throw<bcFLOAT>();
-			p_value.y = l_array[1].as_throw<bcFLOAT>();
-			p_value.z = l_array[3].as_throw<bcFLOAT>();
+			const bool l_succeeded = json_parse::bc_load(*m_json_key_value, p_key, p_value);
+			if (!l_succeeded)
+			{
+				throw bc_invalid_operation_exception("Cannot read config key of type vector3");
+			}
 
 			return *this;
 		}
 
 		bc_config_file& bc_config_file::read_config_key(const bcCHAR* p_key, core::bc_vector3f& p_value, bool& p_succeeded) noexcept
 		{
-			core::bc_any l_value;
-			read_config_key(p_key, l_value);
-
-			auto* l_array = l_value.as<core::bc_vector<core::bc_any>>();
-			if (!l_array || l_array->size() < 3)
-			{
-				p_succeeded = false;
-				return *this;
-			}
-
-			auto* l_x = (*l_array)[0].as<bcFLOAT>();
-			auto* l_y = (*l_array)[1].as<bcFLOAT>();
-			auto* l_z = (*l_array)[2].as<bcFLOAT>();
-			if (!l_x || !l_y || !l_z)
-			{
-				p_succeeded = false;
-				return *this;
-			}
-
-			p_value.x = *l_x;
-			p_value.y = *l_y;
-			p_value.z = *l_z;
-
-			p_succeeded = true;
+			p_succeeded = json_parse::bc_load(*m_json_key_value, p_key, p_value);
 			return *this;
 		}
 
 		bc_config_file& bc_config_file::read_config_key(const bcCHAR* p_key, core::bc_vector4f& p_value)
 		{
-			core::bc_any l_value;
-			read_config_key(p_key, l_value);
-
-			auto& l_array = l_value.as_throw<core::bc_vector<core::bc_any>>();
-
-			p_value.x = l_array[0].as_throw<bcFLOAT>();
-			p_value.y = l_array[1].as_throw<bcFLOAT>();
-			p_value.z = l_array[3].as_throw<bcFLOAT>();
-			p_value.w = l_array[4].as_throw<bcFLOAT>();
+			const bool l_succeeded = json_parse::bc_load(*m_json_key_value, p_key, p_value);
+			if (!l_succeeded)
+			{
+				throw bc_invalid_operation_exception("Cannot read config key of type vector4");
+			}
 
 			return *this;
 		}
 
 		bc_config_file& bc_config_file::read_config_key(const bcCHAR* p_key, core::bc_vector4f& p_value, bool& p_succeeded) noexcept
 		{
-			core::bc_any l_value;
-			read_config_key(p_key, l_value);
-
-			auto* l_array = l_value.as<core::bc_vector<core::bc_any>>();
-			if (!l_array || l_array->size() < 4)
-			{
-				p_succeeded = false;
-				return *this;
-			}
-
-			auto* l_x = (*l_array)[0].as<bcFLOAT>();
-			auto* l_y = (*l_array)[1].as<bcFLOAT>();
-			auto* l_z = (*l_array)[2].as<bcFLOAT>();
-			auto* l_w = (*l_array)[3].as<bcFLOAT>();
-			if (!l_x || !l_y || !l_z || !l_w)
-			{
-				p_succeeded = false;
-				return *this;
-			}
-
-			p_value.x = *l_x;
-			p_value.y = *l_y;
-			p_value.z = *l_z;
-			p_value.w = *l_w;
-
-			p_succeeded = true;
+			p_succeeded = json_parse::bc_load(*m_json_key_value, p_key, p_value);
 			return *this;
 		}
 

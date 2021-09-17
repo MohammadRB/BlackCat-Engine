@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "Core/Content/bcContentManager.h"
+#include "Core/Utility/bcCounterValueManager.h"
 #include "Core/Utility/bcLogger.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
@@ -157,12 +158,15 @@ namespace black_cat
 			}
 
 			const auto l_elapsed_since_last_sync = bc_current_packet_time() - m_last_sync_time;
-			if(l_elapsed_since_last_sync > m_rtt_sampler.average_value())
+			const auto l_rtt_time = m_rtt_sampler.average_value();
+			if(l_elapsed_since_last_sync > l_rtt_time)
 			{
 				_send_to_server();
 			}
 
 			_receive_from_server();
+
+			core::bc_get_service<core::bc_counter_value_manager>()->add_counter("ping", core::bc_to_wstring(l_rtt_time));
 		}
 
 		void bc_network_client_manager::on_enter(bc_client_socket_error_state& p_state)

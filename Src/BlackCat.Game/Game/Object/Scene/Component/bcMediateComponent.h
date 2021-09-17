@@ -30,11 +30,11 @@ namespace black_cat
 		public:
 			bc_mediate_component(bc_actor_id p_actor_index, bc_actor_component_id p_index);
 
-			bc_mediate_component(bc_mediate_component&&) = default;
+			bc_mediate_component(bc_mediate_component&&) noexcept;
 
-			~bc_mediate_component() = default;
+			~bc_mediate_component();
 			
-			bc_mediate_component& operator=(bc_mediate_component&&) = default;
+			bc_mediate_component& operator=(bc_mediate_component&&) noexcept;
 
 			bc_actor get_actor() const noexcept override;
 
@@ -55,6 +55,10 @@ namespace black_cat
 			core::bc_vector3f get_position() const noexcept;
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
+
+			void load_network_instance(const bc_actor_component_network_load_context& p_context) override;
+
+			void write_network_instance(const bc_actor_component_network_write_context& p_context) override;
 			
 			void update(const bc_actor_component_update_content& p_context) override;
 			
@@ -75,6 +79,12 @@ namespace black_cat
 			core::bc_unique_ptr<bci_actor_controller> m_controller;
 		};
 
+		inline bc_mediate_component::bc_mediate_component(bc_mediate_component&&) noexcept = default;
+
+		inline bc_mediate_component::~bc_mediate_component() = default;
+
+		inline bc_mediate_component& bc_mediate_component::operator=(bc_mediate_component&&) noexcept = default;
+		
 		inline const bcCHAR* bc_mediate_component::get_entity_name() const noexcept
 		{
 			return m_entity_name;

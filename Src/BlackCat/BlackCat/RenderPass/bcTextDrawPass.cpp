@@ -74,15 +74,15 @@ namespace black_cat
 		core::bc_wstring_frame l_string_buffer;
 		l_string_buffer.reserve(300);
 		
-		for(const core::bc_json_value< core::bc_string >& l_counter_name : l_counter_values)
+		for(const core::bc_json_value<core::bc_string>& l_counter_name : l_counter_values)
 		{
-			const auto l_counter_value = l_counter_value_manager.find(l_counter_name->c_str());
-			if (l_counter_value == std::end(l_counter_value_manager))
-			{
-				continue;
-			}
+			const auto l_counter_value_ite = l_counter_value_manager.find(l_counter_name->c_str());
+			const auto* l_counter_value = L"-";
 
-			BC_ASSERT(l_counter_name->size() + 2 + l_counter_value->second.size() < l_string_buffer.capacity());
+			if (l_counter_value_ite != std::end(l_counter_value_manager))
+			{
+				l_counter_value = l_counter_value_ite->second.c_str();
+			}
 
 			const auto* l_counter_name_ptr = (*l_counter_name).c_str();
 			std::mbsrtowcs(&l_to_wstring_buffer[0], &l_counter_name_ptr, l_counter_name->size(), &l_to_wstring_state);
@@ -90,7 +90,7 @@ namespace black_cat
 			//l_string_buffer.append(core::bc_to_wstring_frame(*l_counter_name));
 			l_string_buffer.append(l_to_wstring_buffer, l_counter_name->size());
 			l_string_buffer.append(L": ");
-			l_string_buffer.append(l_counter_value->second.c_str());
+			l_string_buffer.append(l_counter_value);
 
 			graphic::bc_device_text l_text
 			(

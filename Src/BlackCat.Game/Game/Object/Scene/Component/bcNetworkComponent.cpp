@@ -7,6 +7,7 @@
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcNetworkReplicateActorEvent.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat
@@ -74,6 +75,10 @@ namespace black_cat
 					{
 						p_context.m_game_system.get_network_system().send_message(bc_actor_replicate_network_message(p_context.m_actor));
 					}
+					else if(m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
+					{
+						p_context.m_actor.add_event(bc_network_replicate_actor_event(m_data_dir));
+					}
 				}
 				else if(l_network_type == bc_network_type::client)
 				{
@@ -81,10 +86,14 @@ namespace black_cat
 					{
 						p_context.m_game_system.get_network_system().add_actor(p_context.m_actor);
 					}
-					// we should remove network actors if they are not loaded through network, because they will be replicated by the server
 					else if(m_id == invalid_id && (m_data_dir == bc_actor_network_data_dir::replicate_sync || m_data_dir == bc_actor_network_data_dir::replicate))
 					{
+						// we should remove network actors if they are not loaded through network, because they will be replicated by the server
 						l_scene_add_event->get_scene().remove_actor(p_context.m_actor);
+					}
+					else if(m_data_dir == bc_actor_network_data_dir::replicate_sync || m_data_dir == bc_actor_network_data_dir::replicate)
+					{
+						p_context.m_actor.add_event(bc_network_replicate_actor_event(m_data_dir));
 					}
 				}
 				

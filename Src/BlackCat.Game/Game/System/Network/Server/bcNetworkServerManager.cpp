@@ -315,7 +315,6 @@ namespace black_cat
 		{
 			for (auto& l_msg : p_client.get_messages_waiting_acknowledgment())
 			{
-				
 				const auto l_elapsed_since_last_send = p_current_time - l_msg.m_time;
 #ifndef BC_DEBUG
 				if (l_elapsed_since_last_send > p_client.get_rtt_time() * 3)
@@ -341,6 +340,7 @@ namespace black_cat
 
 						for (auto& l_actor : m_network_actors)
 						{
+							// sync if actor is active
 							p_client.add_message(bc_make_network_message(bc_actor_sync_network_message(std::get<bc_actor>(l_actor))));
 						}
 					}

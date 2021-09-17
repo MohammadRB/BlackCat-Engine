@@ -1,6 +1,8 @@
 // [12/22/2018 MRB]
 
 #include "Game/GamePCH.h"
+
+#include "Core/Utility/bcJsonParse.h"
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
@@ -9,6 +11,7 @@
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
+#include "Game/bcUtility.h"
 
 namespace black_cat
 {
@@ -40,7 +43,28 @@ namespace black_cat
 		{
 			m_scene = &p_context.m_scene;
 		}
-				
+
+		void bc_mediate_component::load_network_instance(const bc_actor_component_network_load_context& p_context)
+		{
+			core::bc_vector3f l_position;
+			core::bc_vector4f l_rotation;
+
+			json_parse::bc_load(p_context.m_parameters, "pos", l_position);
+			json_parse::bc_load(p_context.m_parameters, "rot", l_rotation);
+
+			auto l_transform = core::bc_matrix4f::identity();
+			l_transform.set_translation(l_position);
+			l_transform.set_rotation(bc_matrix3f_rotation_euler(l_rotation.xyz(), l_rotation.w));
+
+			p_context.m_actor.add_event(bc_world_transform_actor_event(l_transform));
+		}
+
+		void bc_mediate_component::write_network_instance(const bc_actor_component_network_write_context& p_context)
+		{
+			json_parse::bc_write(p_context.m_parameters, "pos", m_world_transform.get_translation());
+			json_parse::bc_write(p_context.m_parameters, "rot", bc_matrix4f_decompose_to_euler_rotation(m_world_transform));
+		}
+
 		void bc_mediate_component::update(const bc_actor_component_update_content& p_context)
 		{
 			if(m_scene && m_bound_box_changed)

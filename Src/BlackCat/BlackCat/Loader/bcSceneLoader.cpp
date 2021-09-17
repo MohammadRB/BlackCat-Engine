@@ -229,6 +229,8 @@ namespace black_cat
 
 	void bc_scene_loader::content_processing(core::bc_content_saving_context& p_context) const
 	{
+		core::bc_log(core::bc_log_type::info) << "Saving scene " << p_context.m_file_path << core::bc_lend;
+
 		auto* l_scene = static_cast<game::bc_scene*>(p_context.m_content);
 
 		core::bc_json_document<_bc_scene_json> l_json_document;
@@ -272,5 +274,7 @@ namespace black_cat
 
 		const auto l_json = l_json_document.write_pretty();
 		p_context.m_file.write(reinterpret_cast<const bcBYTE*>(l_json.c_str()), sizeof(decltype(l_json)::value_type) * l_json.size());
+
+		core::bc_log(core::bc_log_type::info) << "Scene saved" << core::bc_lend;
 	}
 }

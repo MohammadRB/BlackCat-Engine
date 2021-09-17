@@ -28,7 +28,10 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "box",
-            "lod_scale": 3.0
+            "lod_scale": 3.0,
+            "materials": {
+              "cube": "shine_red"
+            }
           }
         },
         {
@@ -127,7 +130,7 @@
           "parameters": {
             "mesh": "xbot",
             "materials": {
-              "Beta_Surface": "xbot-red"
+              "Beta_Surface": "shine_red"
             },
             "animations": [
               "xbot-neutral-idle"
@@ -173,7 +176,7 @@
           "parameters": {
             "mesh": "xbot",
             "materials": {
-              "Beta_Surface": "xbot-blue"
+              "Beta_Surface": "shine_blue"
             },
             "animations": [
               "xbot-neutral-idle"
@@ -221,7 +224,7 @@
           "parameters": {
             "mesh": "xbot",
             "materials": {
-              "Beta_Surface": "xbot-red"
+              "Beta_Surface": "shine_red"
             },
             "animations": [
               "xbot-neutral-idle",
