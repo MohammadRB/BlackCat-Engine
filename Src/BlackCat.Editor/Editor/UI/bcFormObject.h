@@ -35,10 +35,9 @@ namespace black_cat
 			QLineEdit* m_entity_position_x_text;
 			QLineEdit* m_entity_position_y_text;
 			QLineEdit* m_entity_position_z_text;
-			QLineEdit* m_entity_up_x_text;
-			QLineEdit* m_entity_up_y_text;
-			QLineEdit* m_entity_up_z_text;
-			QLineEdit* m_entity_up_r_text;
+			QLineEdit* m_entity_rotation_x_text;
+			QLineEdit* m_entity_rotation_y_text;
+			QLineEdit* m_entity_rotation_z_text;
 
 			game::bc_actor m_selected_actor;
 		};

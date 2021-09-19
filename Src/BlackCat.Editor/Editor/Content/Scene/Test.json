@@ -1,0 +1,185 @@
+{
+    "name": "Test",
+    "stream_files": [
+        "Scene\\Test_ContentStream.json"
+    ],
+    "material_files": [
+        "Scene\\Test_Material.json"
+    ],
+    "decal_files": [],
+    "entity_files": [
+        "Scene\\Test_EntityType.json"
+    ],
+    "streams": [
+        "terrain_textures",
+        "models"
+    ],
+    "scene_graph": {
+        "center": [
+            0.0,
+            -1.0,
+            -0.0
+        ],
+        "half_extends": [
+            1024.0,
+            1024.0,
+            1024.0
+        ]
+    },
+    "actors": [
+        {
+            "entity_name": "xbot-red",
+            "position": [
+                42.0,
+                0.0,
+                -800.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "box",
+            "position": [
+                60.0,
+                20.0,
+                -800.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "box",
+            "position": [
+                40.0,
+                20.0,
+                -800.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "box-net",
+            "position": [
+                65.0,
+                120.0,
+                -800.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "xbot-blue",
+            "position": [
+                55.0,
+                0.0,
+                -800.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "box",
+            "position": [
+                45.0,
+                20.0,
+                -800.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "box",
+            "position": [
+                55.0,
+                20.0,
+                -800.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "box",
+            "position": [
+                50.0,
+                20.0,
+                -800.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "sun_light",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "wind",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "flat_height_map",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "parameters": {}
+        }
+    ]
+}

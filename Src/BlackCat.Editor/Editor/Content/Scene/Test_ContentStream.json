@@ -1,0 +1,163 @@
+{
+  "streams": [
+    {
+      "stream_name": "terrain_textures",
+      "stream_content": [
+        {
+          "content_title": "beach_white_sand_fine",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\beach_white_sand_fine.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "beach_white_sand_fine_nrm",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\beach_white_sand_fine_nrm.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "cliff_is2",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\cliff_is2.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "cliff_is2_nrm",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\cliff_is2_nrm.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "field_earth",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\field_earth.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "field_earth_nrm",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\field_earth_nrm.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "plains_dry_grass_fern",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\plains_dry_grass_fern.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "plains_dry_grass_fern_nrm",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\plains_dry_grass_fern_nrm.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "plains_ferns_green",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\plains_ferns_green.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "plains_ferns_green_nrm",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\plains_ferns_green_nrm.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "plains_pepples_a",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\plains_pepples_a.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "plains_pepples_a_nrm",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\plains_pepples_a_nrm.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "ground_earth_village_var",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\ground_earth_village_var.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "ground_earth_village_var_nrm",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\ground_earth_village_var_nrm.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "plains_dry_grass_detailed_highpassed",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\plains_dry_grass_detailed_highpassed.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "plains_dry_grass_detailed_highpassed_nrm",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\TerrainTextures\\plains_dry_grass_detailed_highpassed_nrm.dds",
+          "content_parameter": {}
+        }
+      ]
+    },
+    {
+      "stream_name": "models",
+      "stream_content": [
+        {
+          "content_title": "flat_height_map",
+          "content_loader": "height_map",
+          "content_file": "content\\texture\\HeightMaps\\FlatHeightMap.jpg",
+          "content_parameter": {
+            "xz_multiplier": 1,
+            "y_multiplier": 512,
+            "distance_detail": 100,
+            "height_detail": 10,
+            "materials": [
+              {
+                "mesh_material": "terrain_material_1",
+                "collider_material": "terrain_material_1",
+                "scale": 1.0
+              },
+              {
+                "mesh_material": "terrain_material_2",
+                "collider_material": "terrain_material_2",
+                "scale": 20.0
+              },
+              {
+                "mesh_material": "terrain_material_3",
+                "collider_material": "terrain_material_3",
+                "scale": 1.0
+              },
+              {
+                "mesh_material": "terrain_material_4",
+                "collider_material": "terrain_material_4",
+                "scale": 1.0
+              },
+              {
+                "mesh_material": "terrain_material_5",
+                "collider_material": "terrain_material_5",
+                "scale": 1.0
+              },
+              {
+                "mesh_material": "terrain_material_6",
+                "collider_material": "terrain_material_6",
+                "scale": 1.0
+              },
+              {
+                "mesh_material": "terrain_material_7",
+                "collider_material": "terrain_material_7",
+                "scale": 1.0
+              },
+              {
+                "mesh_material": "terrain_material_8",
+                "collider_material": "terrain_material_8",
+                "scale": 1.0
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

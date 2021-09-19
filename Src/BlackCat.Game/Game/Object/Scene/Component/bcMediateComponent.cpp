@@ -47,14 +47,14 @@ namespace black_cat
 		void bc_mediate_component::load_network_instance(const bc_actor_component_network_load_context& p_context)
 		{
 			core::bc_vector3f l_position;
-			core::bc_vector4f l_rotation;
+			core::bc_vector3f l_euler_rot;
 
 			json_parse::bc_load(p_context.m_parameters, "pos", l_position);
-			json_parse::bc_load(p_context.m_parameters, "rot", l_rotation);
+			json_parse::bc_load(p_context.m_parameters, "rot", l_euler_rot);
 
 			auto l_transform = core::bc_matrix4f::identity();
 			l_transform.set_translation(l_position);
-			l_transform.set_rotation(bc_matrix3f_rotation_euler(l_rotation.xyz(), l_rotation.w));
+			l_transform.set_rotation(bc_matrix3f_rotation_zyx(l_euler_rot));
 
 			p_context.m_actor.add_event(bc_world_transform_actor_event(l_transform));
 		}
@@ -62,7 +62,7 @@ namespace black_cat
 		void bc_mediate_component::write_network_instance(const bc_actor_component_network_write_context& p_context)
 		{
 			json_parse::bc_write(p_context.m_parameters, "pos", m_world_transform.get_translation());
-			json_parse::bc_write(p_context.m_parameters, "rot", bc_matrix4f_decompose_to_euler_rotation(m_world_transform));
+			json_parse::bc_write(p_context.m_parameters, "rot", bc_matrix4f_decompose_to_euler_angles(m_world_transform));
 		}
 
 		void bc_mediate_component::update(const bc_actor_component_update_content& p_context)

@@ -17,7 +17,7 @@ namespace black_cat
 	{
 		BC_JSON_VALUE(core::bc_string_frame, entity_name);
 		BC_JSON_VALUE(core::bc_vector3f, position);
-		BC_JSON_VALUE(core::bc_vector4f, rotation);
+		BC_JSON_VALUE(core::bc_vector3f, rotation);
 		BC_JSON_VALUE_OP(core::bc_json_key_value, parameters);
 	};
 
@@ -49,7 +49,7 @@ namespace black_cat
 		{
 			auto l_transform = core::bc_matrix4f::identity();
 			l_transform.set_translation(*l_json_actor->m_position);
-			l_transform.set_rotation(bc_matrix3f_rotation_euler(l_json_actor->m_rotation->xyz(), l_json_actor->m_rotation->w));
+			l_transform.set_rotation(bc_matrix3f_rotation_zyx(*l_json_actor->m_rotation));
 			
 			game::bc_actor l_actor = l_scene->create_actor(l_json_actor->m_entity_name->c_str(), l_transform);
 			l_actor.get_components(std::back_inserter(l_actor_components));
@@ -91,7 +91,7 @@ namespace black_cat
 			
 			*l_json_entry->m_entity_name = l_mediate_component->get_entity_name();
 			*l_json_entry->m_position = l_world_transform.get_translation();
-			*l_json_entry->m_rotation = bc_matrix4f_decompose_to_euler_rotation(l_world_transform);
+			*l_json_entry->m_rotation = bc_matrix4f_decompose_to_euler_angles(l_world_transform);
 
 			l_actor_components.clear();
 		}

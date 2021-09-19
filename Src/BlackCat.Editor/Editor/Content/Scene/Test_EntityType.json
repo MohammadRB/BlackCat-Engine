@@ -1,0 +1,48 @@
+{
+  "entities": [
+    {
+      "name": "sun_light",
+      "components": [
+        {
+          "name": "light",
+          "parameters": {
+            "type": "direct",
+            "direction": [ 0.4, -0.3, -0.5 ],
+            "color": [ 0.79, 0.78, 0.68, 1.2 ],
+            "ambient_color": [ 0.66, 0.68, 0.70, 0.8 ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "wind",
+      "components": [
+        {
+          "name": "wind",
+          "parameters": {
+            "type": "direct",
+            "direction_x": 0.0,
+            "direction_y": 0.0,
+            "direction_z": 1.0,
+            "power": 1.5
+          }
+        }
+      ]
+    },
+    {
+      "name": "flat_height_map",
+      "components": [
+        {
+          "name": "height_map",
+          "parameters": {
+            "heightmap": "flat_height_map"
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {}
+        }
+      ]
+    }
+  ]
+}

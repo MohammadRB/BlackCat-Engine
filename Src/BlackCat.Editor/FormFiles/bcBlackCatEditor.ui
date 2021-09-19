@@ -221,7 +221,7 @@
              <property name="geometry">
               <rect>
                <x>160</x>
-               <y>200</y>
+               <y>180</y>
                <width>81</width>
                <height>31</height>
               </rect>
@@ -330,7 +330,7 @@
               <bool>false</bool>
              </property>
             </widget>
-            <widget class="QLineEdit" name="entityUpZText">
+            <widget class="QLineEdit" name="entityRotationZText">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -346,7 +346,7 @@
               <bool>false</bool>
              </property>
             </widget>
-            <widget class="QLabel" name="entityUpXLabel">
+            <widget class="QLabel" name="entityRotationXLabel">
              <property name="geometry">
               <rect>
                <x>140</x>
@@ -359,7 +359,7 @@
               <string>x:</string>
              </property>
             </widget>
-            <widget class="QLabel" name="entityUpYLabel">
+            <widget class="QLabel" name="entityRotationYLabel">
              <property name="geometry">
               <rect>
                <x>140</x>
@@ -372,7 +372,7 @@
               <string>y:</string>
              </property>
             </widget>
-            <widget class="QLabel" name="entityUpLabel">
+            <widget class="QLabel" name="entityRotationLabel">
              <property name="geometry">
               <rect>
                <x>140</x>
@@ -382,10 +382,10 @@
               </rect>
              </property>
              <property name="text">
-              <string>Entity Up:</string>
+              <string>Entity Rotation:</string>
              </property>
             </widget>
-            <widget class="QLineEdit" name="entityUpYText">
+            <widget class="QLineEdit" name="entityRotationYText">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -401,7 +401,7 @@
               <bool>false</bool>
              </property>
             </widget>
-            <widget class="QLabel" name="entityUpZLabel">
+            <widget class="QLabel" name="entityRotationZLabel">
              <property name="geometry">
               <rect>
                <x>140</x>
@@ -414,7 +414,7 @@
               <string>z:</string>
              </property>
             </widget>
-            <widget class="QLineEdit" name="entityUpXText">
+            <widget class="QLineEdit" name="entityRotationXText">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -437,42 +437,13 @@
              <property name="geometry">
               <rect>
                <x>30</x>
-               <y>200</y>
+               <y>180</y>
                <width>81</width>
                <height>31</height>
               </rect>
              </property>
              <property name="text">
               <string>Update</string>
-             </property>
-            </widget>
-            <widget class="QLineEdit" name="entityUpRotationText">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="geometry">
-              <rect>
-               <x>160</x>
-               <y>160</y>
-               <width>91</width>
-               <height>25</height>
-              </rect>
-             </property>
-             <property name="readOnly">
-              <bool>false</bool>
-             </property>
-            </widget>
-            <widget class="QLabel" name="entityUpRotationLabel">
-             <property name="geometry">
-              <rect>
-               <x>140</x>
-               <y>160</y>
-               <width>16</width>
-               <height>16</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>r:</string>
              </property>
             </widget>
            </widget>

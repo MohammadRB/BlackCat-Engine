@@ -502,6 +502,21 @@
     <None Include="..\..\Src\BlackCat.Editor\FormFiles\bcBlackCatEditor.qrc">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\Test.json">
+      <Filter>Editor\Content\Scene</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\Test_ContentStream.json">
+      <Filter>Editor\Content\Scene</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\Test_Decal.json">
+      <Filter>Editor\Content\Scene</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\Test_EntityType.json">
+      <Filter>Editor\Content\Scene</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\Test_Material.json">
+      <Filter>Editor\Content\Scene</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat.Editor\Editor\Content\Shader\DirectX11\bcTerrainHeight.hlsl">
